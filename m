@@ -1,43 +1,42 @@
-Return-Path: <linux-rdma+bounces-9655-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9656-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2358A95D06
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Apr 2025 06:40:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3664A95D2A
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Apr 2025 07:01:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2E29189915C
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Apr 2025 04:40:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 981F61898791
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Apr 2025 05:01:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68E901A83F7;
-	Tue, 22 Apr 2025 04:40:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C33FC1A314A;
+	Tue, 22 Apr 2025 05:01:01 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B2EA186E40;
-	Tue, 22 Apr 2025 04:40:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6A2EED6;
+	Tue, 22 Apr 2025 05:00:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745296806; cv=none; b=oc4JqcOKb3zNuf/eqzKihL5YU/6lXYPm2P5hB+AlIAT1mRT51q/5hq5fgk193cbOwLQ/mJ16NU2SSVXM1vO+rwSJ/HIK4vLfQeClPLQYH4XZQeFnMB/SY+f9QWmTbw4yLtRxU22wPAL5yDg6RakLUOmn4S11CZkGAwDv3UlJmwY=
+	t=1745298061; cv=none; b=lYVP/2254zc5oA3I+idXj8TwVTBKuiVMQv9tl/7YkGbNMOP2bIcn9gPXk/74PW8RKjo+udyX0Yyyl8Hmj14kuCnGUryT2txgPLoN60NIFua728xtq3yx/X/7JLlpqaTznnN/RMO9yJO+pMzMOdiH+otfSgoen1SvTTrfUHW5qhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745296806; c=relaxed/simple;
-	bh=CpQQRZuyWfvKRbSY9l+oYTtKKd/SUjT2q+YM4GZSr6Y=;
+	s=arc-20240116; t=1745298061; c=relaxed/simple;
+	bh=/ELFZKv4e0D7TteJyW9Rpn8e4XtrEsidyb7gbxlwYqY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QELs/JkBS25XsACH7L6moom0efRANZONpE/sNyhs2g8WYIAem/geWK0P0z/QSO86zX1HjujNjxA9Bpf2dfa7JUc4wt+XcGWpOkgqCYBec/F8ulZF8KQzUxMtRntvxAP08gujIS/qsBeMG4bprh+U87mJGS8FJqu6kZEcVvaXv08=
+	 Content-Type:Content-Disposition:In-Reply-To; b=aFHEzZDzPNVr2hmgdvvdnOqGOORVR1np0nRqkQmPpUOpPK2xkiH4P9M7Q64VrqPNJoo45rzC22XmMAJvtdeU2zI9H9Gvq0Ezy/7MEewzougAP63tKLhxQI621BRNOVCUnLO1mtgCtK/HMqSVtOvJl1kN+WAxOLcUzMOeLDHKVwM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
 Received: by verein.lst.de (Postfix, from userid 2407)
-	id 89EBF68BFE; Tue, 22 Apr 2025 06:39:56 +0200 (CEST)
-Date: Tue, 22 Apr 2025 06:39:56 +0200
+	id 1414268BFE; Tue, 22 Apr 2025 07:00:51 +0200 (CEST)
+Date: Tue, 22 Apr 2025 07:00:50 +0200
 From: Christoph Hellwig <hch@lst.de>
 To: Leon Romanovsky <leon@kernel.org>
 Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
 	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-	Keith Busch <kbusch@kernel.org>,
-	Kanchan Joshi <joshi.k@samsung.com>, Jake Edge <jake@lwn.net>,
+	Keith Busch <kbusch@kernel.org>, Jake Edge <jake@lwn.net>,
 	Jonathan Corbet <corbet@lwn.net>, Jason Gunthorpe <jgg@ziepe.ca>,
 	Zhu Yanjun <zyjzyj2000@gmail.com>,
 	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
@@ -59,12 +58,12 @@ Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
 	Luis Chamberlain <mcgrof@kernel.org>,
 	Matthew Wilcox <willy@infradead.org>,
 	Dan Williams <dan.j.williams@intel.com>,
+	Kanchan Joshi <joshi.k@samsung.com>,
 	Chaitanya Kulkarni <kch@nvidia.com>,
-	Nitesh Shetty <nj.shetty@samsung.com>,
 	Leon Romanovsky <leonro@nvidia.com>
-Subject: Re: [PATCH v8 24/24] nvme-pci: optimize single-segment handling
-Message-ID: <20250422043955.GA28077@lst.de>
-References: <cover.1744825142.git.leon@kernel.org> <670389227a033bd5b7c5aa55191aac9943244028.1744825142.git.leon@kernel.org>
+Subject: Re: [PATCH v8 23/24] nvme-pci: convert to blk_rq_dma_map
+Message-ID: <20250422050050.GB28077@lst.de>
+References: <cover.1744825142.git.leon@kernel.org> <f06a04098cb14e1051bddec8a7bdebe1c384d983.1744825142.git.leon@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -73,34 +72,49 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <670389227a033bd5b7c5aa55191aac9943244028.1744825142.git.leon@kernel.org>
+In-Reply-To: <f06a04098cb14e1051bddec8a7bdebe1c384d983.1744825142.git.leon@kernel.org>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Fri, Apr 18, 2025 at 09:47:54AM +0300, Leon Romanovsky wrote:
-> From: Kanchan Joshi <joshi.k@samsung.com>
-> 
-> blk_rq_dma_map API is costly for single-segment requests.
-> Avoid using it and map the bio_vec directly.
+> +	dma_len = min_t(u32, length, NVME_CTRL_PAGE_SIZE - (dma_addr & (NVME_CTRL_PAGE_SIZE - 1)));
 
-This needs to be folded into the earlier patches or split prep patches
-instead of undoing work done earlier, preferably combined with a bit
-of code movement so that the new nvme_try_setup_prp_simple stays in
-the same place as before and the diff shows it reusing code.
+And overly long line slipped in here during one of the rebases.
 
-E.g. change
+> +		/*
+> +		 * We are in this mode as IOVA path wasn't taken and DMA length
+> +		 * is morethan two sectors. In such case, mapping was perfoormed
+> +		 * per-NVME_CTRL_PAGE_SIZE, so unmap accordingly.
+> +		 */
 
-"nvme-pci: use a better encoding for small prp pool allocations" to
-already use the flags instead of my boolean, and maybe include 
-abort in the flags instead of using a separate bool so that we
-don't increase hte iod size.
+Where does this comment come from?  Lots of spelling errors, and I
+also don't understand what it is talking about as setors are entirely
+irrelevant here.
 
-Slot in a new patch after that that dropping the single SGL segment
-fastpath if we think we don't need that, although if we need the PRP
-one I suspect that one would still be very helpful as well.
+> +	if (!blk_rq_dma_unmap(req, dev->dev, &iod->dma_state, iod->total_len)) {
+> +		if (iod->cmd.common.flags & NVME_CMD_SGL_METABUF)
+> +			nvme_free_sgls(dev, req);
 
-Add a patch if we want the try_ version of, although when keeping
-the optimization for SGLs as well that are will look a bit different.
+With the addition of metadata SGL support this also needs to check
+NVME_CMD_SGL_METASEG.
 
-I'm happy to give away my patch authorship credits if that helps with
-the folding.
+The commit message should also really mentioned that someone
+significantly altered the patch for merging with latest upstream,
+as I as the nominal author can't recognize some of that code.
+
+> +	unsigned int entries = req->nr_integrity_segments;
+>  	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
+>  
+> +	if (!blk_rq_dma_unmap(req, dev->dev, &iod->dma_meta_state,
+> +			      iod->total_meta_len)) {
+> +		if (entries == 1) {
+> +			dma_unmap_page(dev->dev, iod->meta_dma,
+> +				       rq_integrity_vec(req).bv_len,
+> +				       rq_dma_dir(req));
+> +			return;
+>  		}
+>  	}
+>  
+> +	dma_pool_free(dev->prp_small_pool, iod->meta_list, iod->meta_dma);
+
+This now doesn't unmap for entries > 1 in the non-IOVA case.
+
 
