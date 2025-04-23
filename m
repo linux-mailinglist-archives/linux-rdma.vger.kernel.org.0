@@ -1,87 +1,88 @@
-Return-Path: <linux-rdma+bounces-9747-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9748-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2486A99632
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Apr 2025 19:15:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99FB6A99640
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Apr 2025 19:16:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 688635A4A6A
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Apr 2025 17:15:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 131E018892CF
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Apr 2025 17:16:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12B0D28B4F3;
-	Wed, 23 Apr 2025 17:15:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 359C828CF47;
+	Wed, 23 Apr 2025 17:15:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="f3RJOF+9"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="igc8GuoA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE04428A1D6
-	for <linux-rdma@vger.kernel.org>; Wed, 23 Apr 2025 17:15:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1C7028B4FB
+	for <linux-rdma@vger.kernel.org>; Wed, 23 Apr 2025 17:15:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745428541; cv=none; b=Af/KXR989MxIcaoz9jqANc9gPWeVF/kvjkR4iOm/m4r0zk8/+ylXVywhzCHUoHusYgzdN+kYBN80JPhiXD4Z4HqmEzs9bbrMpEewFVski9vOMeClYCirjXrHgQ2QHDNDx184ljmduDESA7jwA0zIt9f1gKgCGuFvULZU6rI4L0E=
+	t=1745428559; cv=none; b=JPeXPDUuNrTdfvbptv0f8dC3wJT4AY/MxSpyl18nqBzek2Z+jaPvoWgN7HiHSIL8nLckg5rp/mWcjDFMtXFKBClv+mnz5wwVqqKIPx6tVzsHBieqoOKqI2We4Ba4Oia/gRtFcB0YnmICVt6NncvfcG5RXyri3Hva8Vx06QuHvLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745428541; c=relaxed/simple;
-	bh=ZSWmIXnoHeqHpg22is4DCb+FQUxyjWQhdchI0xl2uAo=;
+	s=arc-20240116; t=1745428559; c=relaxed/simple;
+	bh=vMXucndq2S6GHUftC4QAjKIvCRBxtQ3mQadyEEn05iE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Tqf00ac7tqg6A1JztbHOCyp8DYkyFcIxGe0Bpb5+jVNEj6PGih1SE85TBOR++lRxYTAGowYWa3EYano2c+VpYs2qjSGKTx7P9qGvEeCXqZs2Hda6AXrwbmxvNQknBPbf/ryXp7bAs4ttwpeLtCMDc599Qv3/BB2pUR3beMascLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=f3RJOF+9; arc=none smtp.client-ip=209.85.222.48
+	 Content-Type:Content-Disposition:In-Reply-To; b=LCf/Xz9x7ZElV+WwnXgcOfEYPhc28cnodnKSglz/dwV1Lwet47INGyZzezD95YfxlUnrxHGfhNxqj1vhigT4f5k8kYIzsxp0AQFdNGDrO7SfhJmfupJwUhNSSMHg5YzVgImoW4Zrm01A9cj3kisH2+EDQM6VV7QCqdxGt3K6r6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=igc8GuoA; arc=none smtp.client-ip=209.85.222.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-86cce5dac90so71143241.0
-        for <linux-rdma@vger.kernel.org>; Wed, 23 Apr 2025 10:15:39 -0700 (PDT)
+Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-7c560c55bc1so5671085a.1
+        for <linux-rdma@vger.kernel.org>; Wed, 23 Apr 2025 10:15:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1745428539; x=1746033339; darn=vger.kernel.org;
+        d=ziepe.ca; s=google; t=1745428555; x=1746033355; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sAA3ahIS+2Nb+9ARKVTXCSjk2uwR/TOFzjA5DEQnqxg=;
-        b=f3RJOF+9I5aUeLfKwhY41cyNNsV/7gzE8mnt0B7y7vbeRVxS8lsyPkRNroBYBI3tAJ
-         LoOcUnWESA/cjHCPlWjRHA3M+53oDTrejya0NpMfeL6ljH+lfqQ/w5WsXx5ptqIdwRDv
-         nsp4EdSeE1qB0xl7OhzzYJKM36aE0m+MI2XLpfk6xpvXrCfNBJoewKHE7+njIVYSVVE9
-         uh237S2zCPLxHmND8hCSoBynFpTclSrt0aPYz/VfLhJATgS9agmNsggyOtAJAI5FOQCt
-         Odf2Xxn7vp+XAbxZin8Yl6xswoHmQ5A7Db9GS23ti5naaSYjMpciujFTq8n0nXWju1+8
-         8EaA==
+        bh=K5HpTnu16aeUYpErbp5yUwht+j3Mgf+r7FFUrUseQ0w=;
+        b=igc8GuoAzkxq23x3zTwtP5oibqkeQg53VG0Iq7gad/MlX8rlFoaVwdhQ0apeqpKH2h
+         U63IQo5nrNVr/aYRLNtMYNdCv4gydkVivRxSKp9R7pa6wsgSApmCtQMmO9kL+FNLuCYl
+         X/+CooWu7xCeo0ATpiDWk+fOrcm0n3wgS7PLKA/bTH1rXQkbm6fbMji0uJQNUxm58yoB
+         Rqu6j7oRTifpHPPn+9M3hN6fwsO7KeVdJS2pUvi/LGbn6oETIDds/1hWRCeug9xrcImW
+         WzY6PYLDgjbbO+z5bnOFm9GEuBEpX2dZ4T7e+CqVXT1fnIfwTIv3FZayq4iQBioe8nnf
+         CfWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745428539; x=1746033339;
+        d=1e100.net; s=20230601; t=1745428555; x=1746033355;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sAA3ahIS+2Nb+9ARKVTXCSjk2uwR/TOFzjA5DEQnqxg=;
-        b=TgJ3w0JYyA7NQ5eDQl6ztT1I9v8+lt27O7SkH8YNRj0cXy964pGIVpvuqPIkGxoZc0
-         mdmjpYEsE2QG4RLi1jsSRyGZC+W0Q6ws9PKTz7MEz0O625J6BR0m3bwCWNYv9pFNvcwO
-         m3Oq5yzz938CueCVCXZW1Hcn83CgFdnzdp0CJsAJlplBvjIqm37pBUZXRzWP4XRLI6Qj
-         LU6Q2mTBAi3TtjbPGNDlp7B9jJxoy2R9AHNgjYY4GvEorP6br1bLoOlYBSxVBBNfXV3t
-         BuFtFxD3QAM9E8hDGp9cD4R9kz/agOJb3IOqkzL+Esrr/YgQ3vB2sLxw4ks+iFHwDlzq
-         4uWw==
-X-Forwarded-Encrypted: i=1; AJvYcCWc48IGpxJ9m45IzmCARTWgk242YPwtcjhaBfwTLUVp9LaaZnDWIMY76Cr11PiSDbUD0v9FhO0hC8PC@vger.kernel.org
-X-Gm-Message-State: AOJu0YxrByvr41uYzeuNZ7MnnlmJfErpeszkEMl2RmG+/aRfGbLWv4ew
-	JZi6gwfJy6Va52nToNhn98xLxWoAgCL5eFQjzn1neoZxvv3WKk4C7psRWCperHo=
-X-Gm-Gg: ASbGncsqly2V5UqF3vO52JHjW6HPz5PDvx4siXzUtZOXxFJhvpO3NhtVoUdFFZAuzO1
-	460ziuFic8aEcIblFpgJFeFnAPRq7scaRK73uxwl3koJjPz0yE6tZRiX7UXPrTSlrSkhXxF3Rr4
-	0EaMBHV5gHKqdhZ66CWYxjhUfgTm+v1u6u9lK66EBJLtaK94M8mB81muxuXhjzrV3UqZWQSPNaw
-	xEqtAITqhJmN96ZSi3O/29bLV9pNkMdOn+omtajODgA+Ln6IktkYxRgteJRPMr1twP1mAxXx7JN
-	dAoCPPP8bXaUsxQkj0gHTAVL7K7K2TYGri7sgmrz5tBvrypFWT3d6/3hTFFN0ogMA+J+dHucQ18
-	5qe4PyEewj+sfdya10EcdEg+7lhJ8Kw==
-X-Google-Smtp-Source: AGHT+IG91ka296h4XrJ4QPDo73jdYlZoOj1Zkc9PInMILwbVuqXEZMd5w4C/WgEttaatAxBubBvu3Q==
-X-Received: by 2002:a05:6122:3c54:b0:529:24f8:dbdd with SMTP id 71dfb90a1353d-529253da601mr17813854e0c.4.1745428538734;
-        Wed, 23 Apr 2025 10:15:38 -0700 (PDT)
+        bh=K5HpTnu16aeUYpErbp5yUwht+j3Mgf+r7FFUrUseQ0w=;
+        b=SU11P5wzotDEwzC2OddkHnWQOMkfUzobnJLOSt7Y325Fg5ITFIPKOEEbTmxuH6/i5J
+         UjNk/Yc8udQPDj7rPt+5uzZRNC26Y202lMvBJF6zZtI3m0cKfuJ9G1sxREsHgwsTGW3/
+         7W91xSDVlQYTF+/DRmplsJXGHyc3uatPbw0aOGdpJm7rQmYzXfREBiW6cuAL3gopnlTR
+         b9o9AqQYidiq+UCDWHZaSc35RfYU9wJSQkygvJbnLGBkrCs3b3hMOEYgkdxpnaGH+eAt
+         AFzl1ACNGFP/M999vbkLGsD8Fl2TW7zUWzoFIEwUwNbERIzsPZTthrP64A0W7wwkTqmN
+         T1FA==
+X-Forwarded-Encrypted: i=1; AJvYcCUko60m5nI/Dz+8zvBPKQTnCQOmXEXZu0GnWy+lt65bvB4ANumgbvXpfznww8wa8HZ6OOlYqjVzMpW7@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKLkWtEZM0eOj+I4lF42Il4AqR9WkxaMX50AcbPlbkyFjShFJA
+	hf3DTkLFPi+yb9ngi1LFKWKxkBQux/0PDrh3EMXIEptMZ7rXYK7bXcraGdHz28Q=
+X-Gm-Gg: ASbGncsGZzYdhO2StnB8OfA+DjddnvKEzTTTFig9qLObYJrgs78FpfYSs6zA2+l2zaL
+	9P6nFGgI364MLgkqt/u/8B6q/o88Y16llvCDD/MXdvI73zOGTC/PhXmB38DlADBIiOWlzPZ72cl
+	bErVodwS0piArA71I5DYwM6jKUhAMMWy9RICsKLngBlQRhSawhdJ8X5jcaYxdYnzOc4ChDkzj0H
+	/oBCprghxHWVj2TZHL/Ci+4aIo9ifdEVE7IybB5ZQ50tJNFVUxSkfanq1uJFgGjbRj5Z4oLPhPW
+	R2v6TrTU5vmoTmn6sZlna0IV0EQnjfyQ5HXBujBLYbLAHXisCj1Rsg8ITNsFB9tBggPjJAgW8Hh
+	ElQLDVmtL4yWyl5Y7NWU=
+X-Google-Smtp-Source: AGHT+IHusnUQ6QwwVsDnvg+0qYOM6lcQLPltCEX7WmRgNJP3vwJodfip7PxZnn5pgy7BG5cQ6pnE/Q==
+X-Received: by 2002:a05:620a:4456:b0:7c7:a5e1:f204 with SMTP id af79cd13be357-7c955e14768mr54555485a.56.1745428554903;
+        Wed, 23 Apr 2025 10:15:54 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-167-219-86.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.167.219.86])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-52a74d3a2d0sm79186e0c.40.2025.04.23.10.15.38
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c925b4e93asm705867885a.70.2025.04.23.10.15.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Apr 2025 10:15:38 -0700 (PDT)
+        Wed, 23 Apr 2025 10:15:54 -0700 (PDT)
 Received: from jgg by wakko with local (Exim 4.97)
 	(envelope-from <jgg@ziepe.ca>)
-	id 1u7dhB-00000007LQW-2UhV;
-	Wed, 23 Apr 2025 14:15:37 -0300
-Date: Wed, 23 Apr 2025 14:15:37 -0300
+	id 1u7dhR-00000007LQy-3kud;
+	Wed, 23 Apr 2025 14:15:53 -0300
+Date: Wed, 23 Apr 2025 14:15:53 -0300
 From: Jason Gunthorpe <jgg@ziepe.ca>
 To: Leon Romanovsky <leon@kernel.org>
 Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
 	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-	Keith Busch <kbusch@kernel.org>, Jake Edge <jake@lwn.net>,
+	Keith Busch <kbusch@kernel.org>,
+	Leon Romanovsky <leonro@nvidia.com>, Jake Edge <jake@lwn.net>,
 	Jonathan Corbet <corbet@lwn.net>, Zhu Yanjun <zyjzyj2000@gmail.com>,
 	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
 	Will Deacon <will@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
@@ -103,13 +104,11 @@ Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
 	Matthew Wilcox <willy@infradead.org>,
 	Dan Williams <dan.j.williams@intel.com>,
 	Kanchan Joshi <joshi.k@samsung.com>,
-	Chaitanya Kulkarni <kch@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>
-Subject: Re: [PATCH v9 03/24] iommu: generalize the batched sync after map
- interface
-Message-ID: <20250423171537.GJ1213339@ziepe.ca>
+	Chaitanya Kulkarni <kch@nvidia.com>
+Subject: Re: [PATCH v9 04/24] iommu: add kernel-doc for iommu_unmap_fast
+Message-ID: <20250423171553.GK1213339@ziepe.ca>
 References: <cover.1745394536.git.leon@kernel.org>
- <2ce6a74ddf5e13a7fdb731984aa781a15f17749d.1745394536.git.leon@kernel.org>
+ <9becc0989ed0a6770e4e320580d1152b716acd0d.1745394536.git.leon@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -118,44 +117,24 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2ce6a74ddf5e13a7fdb731984aa781a15f17749d.1745394536.git.leon@kernel.org>
+In-Reply-To: <9becc0989ed0a6770e4e320580d1152b716acd0d.1745394536.git.leon@kernel.org>
 
-On Wed, Apr 23, 2025 at 11:12:54AM +0300, Leon Romanovsky wrote:
-> From: Christoph Hellwig <hch@lst.de>
+On Wed, Apr 23, 2025 at 11:12:55AM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> For the upcoming IOVA-based DMA API we want to use the interface batch the
-> sync after mapping multiple entries from dma-iommu without having a
-> scatterlist.
-
-Grammer:
-
- For the upcoming IOVA-based DMA API we want to batch the
- ops->iotlb_sync_map() call after mapping multiple IOVAs from
- dma-iommu without having a scatterlist. Improve the API.
-
- Add a wrapper for the map_sync as iommu_sync_map() so that callers don't
- need to poke into the methods directly.
-
- Formalize __iommu_map() into iommu_map_nosync() which requires the
- caller to call iommu_sync_map() after all maps are completed.
-
- Refactor the existing sanity checks from all the different layers
- into iommu_map_nosync().
-
->  drivers/iommu/iommu.c | 65 +++++++++++++++++++------------------------
->  include/linux/iommu.h |  4 +++
->  2 files changed, 33 insertions(+), 36 deletions(-)
+> Add kernel-doc section for iommu_unmap_fast to document existing
+> limitation of underlying functions which can't split individual ranges.
+> 
+> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+> Acked-by: Will Deacon <will@kernel.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Tested-by: Jens Axboe <axboe@kernel.dk>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  drivers/iommu/iommu.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
 
 Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-
-> +	/* Discourage passing strange GFP flags */
-> +	if (WARN_ON_ONCE(gfp & (__GFP_COMP | __GFP_DMA | __GFP_DMA32 |
-> +				__GFP_HIGHMEM)))
-> +		return -EINVAL;
-
-There is some kind of overlap with the new iommu_alloc_pages_node()
-here that does a similar check, nothing that can be addressed in this
-series but maybe a TBD for later..
 
 Jason
 
