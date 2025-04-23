@@ -1,82 +1,82 @@
-Return-Path: <linux-rdma+bounces-9751-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9752-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C422AA996C4
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Apr 2025 19:35:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1497A996CF
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Apr 2025 19:37:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 753963BC256
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Apr 2025 17:34:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B65816311A
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Apr 2025 17:36:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEC4C28B4E7;
-	Wed, 23 Apr 2025 17:34:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20FD328C5DA;
+	Wed, 23 Apr 2025 17:36:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="jKeC0wG0"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="nECGOegw"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A03372857C3
-	for <linux-rdma@vger.kernel.org>; Wed, 23 Apr 2025 17:34:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C7D32857C3
+	for <linux-rdma@vger.kernel.org>; Wed, 23 Apr 2025 17:36:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745429699; cv=none; b=ft+PQBvtLFKOhdQYN9jGsXPBKZ4RSCxm71RmQgxOQxBNT6jXpmxREc8Zg8FxMYfP0169AYIBQYhnN/G99jlZvl9PHKkJzWbQ2FIW8h6tcQtknuBqVdcuM/d5oB8/5PZa9IspoDgEDHBmIhWGPi2HeK66iDU2UBE392rFLOfggsY=
+	t=1745429789; cv=none; b=OatHc/++Y8TgH3bzmqzyEqCeDkcCHPbFamSrJ8TxZEbnc7t/2XnNwKl16iQ0o+CGzUjcvMhLv0RORn9AiyK7Um8T177JQi3EEVGjAi7rPeZx2ZXXp3qoX5f3ip5Bk2HAJOn/cxEnfkv6voLh6PeohcoXyWMovIbfHcaO/5WWyc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745429699; c=relaxed/simple;
-	bh=zB24IJl1jZzMHzgO4K1Iy0NHxHgoWs9FaxvjZYsQalw=;
+	s=arc-20240116; t=1745429789; c=relaxed/simple;
+	bh=drAiBKTIiyi9mLR+BwbEskkyvzsYVuH4EzXGje0dF0c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ODHvKcoz25qHk5sIHKs9NB552JzPiDJgEsLCR5bU4fJifjdrnsZCzKq9/b3Bd7PQEwVj2U0LiFOUy2OwDVeDgdGHE65X60j6+f7VN4N4PNPlB/UDbwnPwCJBYNT2/pg9M0aBZbG93+nuzQWAzNu5+Ucq41L3hmlKS5MOnUVl5HU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=jKeC0wG0; arc=none smtp.client-ip=209.85.222.179
+	 Content-Type:Content-Disposition:In-Reply-To; b=Khh1iwo2HRKiQjYd6uAMol8V/qUX0ojlgWsr7BgTe83GNhJQg7vXjVY9KjjYKZcML9QMhx76CjQk5tqs01CC8SPKbWxT7ip8cAREExcjml5q0sgXtMuXRFPvK+h7W+C4DQU09CiKbZTdGbRrlPqiE5yTOgxVZyvjAHybwxx45rA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=nECGOegw; arc=none smtp.client-ip=209.85.222.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-7c0e135e953so8170085a.2
-        for <linux-rdma@vger.kernel.org>; Wed, 23 Apr 2025 10:34:57 -0700 (PDT)
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-7c54b651310so14110185a.0
+        for <linux-rdma@vger.kernel.org>; Wed, 23 Apr 2025 10:36:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1745429696; x=1746034496; darn=vger.kernel.org;
+        d=ziepe.ca; s=google; t=1745429786; x=1746034586; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=I+fayQ/PBTnrOfxtrw3IgFnI1QJK9xAjEiHuuXs7Kpg=;
-        b=jKeC0wG0Rxs29aLtFTXrwvm6sCjBlI+WjPNCPmALgo/mjnmuyNi8RzQ8EoTi2n9ato
-         G2uR8+wTHeXdzUwlwgxBh5NicR8ymrLhg0bWgtzToqLWFgmbk1yR2sBCKvTWpQ2XzEqK
-         c+gqSngWmaHabqIMpagt+bie9Wb3ZUbIY0uf9WN8dkBe5oq6/jz0Omc/q/isRe5XxD6s
-         wIyd2QIvWZ+V+k8HV/tY0iBuNr8JlAnZaGxdHRzWwWJdpEc7zUCULfC7NElEQ7ugzKS1
-         ukaL0jDlfBwfBtKiA5JthSNqw13rTy4KL+WCFZHxth3Teiilhqthip7KWkPBUKtkiX7c
-         Z7dA==
+        bh=rNJodNA/CGOE8qYPmCoAIvEyeqrCcwNf4apB4pxSGaA=;
+        b=nECGOegwoDaon8i7eVtKxXoiAeyi+dwz/Mu4/CD/hldn1xswY9Jn8BCh4H3ajxW1i0
+         LYO5ucHVY+hQ6Enk8MJef6znkZLkmrsKK498EwoF216ulIsuSKn9KaxdU4cFdbcPVGD4
+         jalkaWuOrHVCdfs5yVqjLX7mi2DMOINJAtF2iY1DKphNwhBU1BAt8TNjjo/7TQi9EWoE
+         10WiL8VhTOgMQMWGR9lRHkTcsIOzU7y12U8RAeJT32k19zA0zXtL3WLyTpaYzOO+dcno
+         stvqp3Wc7DgapQLNyGoyKUxeLxhjaHDNkRzqHhIwiuTIRTwQ+OimLmRQ9y52fkxYGEJG
+         LN/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745429696; x=1746034496;
+        d=1e100.net; s=20230601; t=1745429786; x=1746034586;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=I+fayQ/PBTnrOfxtrw3IgFnI1QJK9xAjEiHuuXs7Kpg=;
-        b=DnZB2tujpGmub+d6NlubAepYtueoYEupDf/xAfdvoA1TaWjhvw2fCG/t+73JSsC28E
-         nS5IAZgc4HkZUqn0K1glu5jHh9LOOKpOiaTUiX5XSbEKsLdn5m8lVh/vj9h/ZskUsE6L
-         WJLA6fNu3t3PaIeo6iCjyFv2F1yfcYxpnZCcVJm8O8dc2rrS5T0vepzTkGUzPtDow0Ud
-         cmt7reZKY0FZ9q5vyzO0rNlrqXAr8wE9y1lUCG07YuspD6YfEBr+FJGSOUn19ELI+pVg
-         WChuD3XnoOC7nHp9WfB6N7a7mqErK0d2NNN+9FlpSIZseQLleBR3NblP6K1Ac88t4LNu
-         a+iw==
-X-Forwarded-Encrypted: i=1; AJvYcCVD2VfAqM2zJ5Igbm7YyjWc0QyCc7oIqTIkoSklqY4LSbOmEdmIlx3QJBj8LZsEJOazIMfW9McziwhQ@vger.kernel.org
-X-Gm-Message-State: AOJu0YylgXSBXHTLf+5KKf6Ui726FKDBrjVEyNWlYcYM4nWjAtI3Rz40
-	cp4mdwmwypdX86kb2aLeI9AbmYtOgSfu6lbO1/kg2CGbiCWIWUZt3lL/hpoZMpc=
-X-Gm-Gg: ASbGncvPZupvo0bbvtUZGAPnwhcLYTJ6x6yBt3NjgxzUDuYf4gIOmFsdCz1la40nTyi
-	3vk1JtRrihM4K/7YiLw1t7Ub9IdIVo+AmjpBdXywUFxGgM5/AX8e1Y95rI1YMGxK/f7eg/jnjYH
-	hUqVaqMOQY6zsZ1m3v8kPAfnp42ylOak6aVzVDdLu2aqPvjp4OnLVB447GiPYhdYapZ4Up3u6/2
-	7C7fJAqZ4TtXUlHmPe9JqtDnrdMRNeRMce15ipF2FSSFsUY6SHlmN9G46cqSJvUOR2VAN5A0Vu9
-	ekt3zLhCxAsURbVUCj5q6cGHf5hDbdOo8cjkWRoZXF1gKakwX6bODbKbHTn338okiRCnfLYRau9
-	zMWRBBdHBWWC7AzEN04Y=
-X-Google-Smtp-Source: AGHT+IHrcKTZfJXCAhkO2WaOum0PT2hRMW3vGaRhpe2sCjwAXzgjbldqD9beTUKDcznlrIIPKNuBAw==
-X-Received: by 2002:a05:620a:2953:b0:7c7:97ff:ca42 with SMTP id af79cd13be357-7c955e7c7d7mr65261285a.41.1745429696505;
-        Wed, 23 Apr 2025 10:34:56 -0700 (PDT)
+        bh=rNJodNA/CGOE8qYPmCoAIvEyeqrCcwNf4apB4pxSGaA=;
+        b=AdUdn5PN6U4034DlTWwUjcIpxQAF4RNyx6wXUT8tMfEHtEvW6qZDI0IaLlmlP0CY+R
+         Hi6J17ZNee0LpaYfSjicY9v2nmlurdeffFRKd7Zm7KccWmXDegXr3+vI2g4KxiNgIaW0
+         C/Z4EYclxOd58diPW+7HYHcDS8u2wKhoamOV5SfgiPVqH7ipiilKb7h/AVNYSBQokGNZ
+         WVIr7zHuUkcHwOxK4NF3AVqILVzEA/3A+WI0UcDty8A/ITmz5QOLQF/MJO+85JJyx+6M
+         TZIF4C/nr/GjuT+3EJcuHq75VBpQwFESsjBmfOOg0BcHT1psQW1+48JyV0iOUVU77nc7
+         aRtw==
+X-Forwarded-Encrypted: i=1; AJvYcCU2YInEGqlD2fFqQ5/nsowsD7+lt581vQYDgzJzoSQ3XXJs/RsfTuk/n34980tPyxJwRpj+Pno9iyqo@vger.kernel.org
+X-Gm-Message-State: AOJu0YzxeA9JLynjeonilthsw3uiz6Wcm8rHVv37Z3XscOvNosIN6K2w
+	p/N3bga8lbBjLLtdSVARA2mkgOQuq2xrxCtY+as9qQabKZqkmnmVT0pLJi+r1Xk=
+X-Gm-Gg: ASbGncshqTukwzEljlFOYft5MsO/5QF2ONaxRwVb9GUXQS8wmCbJWUyJ3KJgslfKlTe
+	1qRwIyQJO0NZZW8W5uO9MBRU6fwjQ/3VWLFsfhMvTtY0K10ofeSk45Yo8RspowpE7Uz8J86RQo4
+	dHaQyGX/E160D64r7HYDz5WtnoFIOjGd4X7Clz4XVC0MUPFJxqHDYdsb9FIGWgXSEeCgkNaDVWC
+	DcqCQvim0+A7Z4VWsGCh8VI7xoJTTw2mw261WaGUQbnrAQ4I2Zxt4e5XxSR2R2/Szs9pVW/qtIe
+	du8PR5rVKR/a9UL4JrpD/1aGRLk5wmo4N8RH+y/+hrR02rzp6bxCI6PNv2cgJGkfjympntnoDmi
+	bL6FnnmYv/Znfz8mw388=
+X-Google-Smtp-Source: AGHT+IFfYFJ3H6MHGXkZxUwtNrKhvKS2i7aEibqmChB9ejFnkuFqgY0c21HHcZ68bh6mda7wa7inKA==
+X-Received: by 2002:a05:620a:44d3:b0:7c7:a5ce:aaf1 with SMTP id af79cd13be357-7c928018e95mr2986289985a.35.1745429786563;
+        Wed, 23 Apr 2025 10:36:26 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-167-219-86.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.167.219.86])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c925a8bf65sm707741185a.25.2025.04.23.10.34.55
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7c925a6eb31sm709808085a.3.2025.04.23.10.36.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Apr 2025 10:34:56 -0700 (PDT)
+        Wed, 23 Apr 2025 10:36:26 -0700 (PDT)
 Received: from jgg by wakko with local (Exim 4.97)
 	(envelope-from <jgg@ziepe.ca>)
-	id 1u7dzr-00000007LbA-2PtY;
-	Wed, 23 Apr 2025 14:34:55 -0300
-Date: Wed, 23 Apr 2025 14:34:55 -0300
+	id 1u7e1J-00000007Lca-2cT8;
+	Wed, 23 Apr 2025 14:36:25 -0300
+Date: Wed, 23 Apr 2025 14:36:25 -0300
 From: Jason Gunthorpe <jgg@ziepe.ca>
 To: Leon Romanovsky <leon@kernel.org>
 Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
@@ -105,11 +105,11 @@ Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
 	Dan Williams <dan.j.williams@intel.com>,
 	Kanchan Joshi <joshi.k@samsung.com>,
 	Chaitanya Kulkarni <kch@nvidia.com>
-Subject: Re: [PATCH v9 12/24] RDMA/umem: Store ODP access mask information in
- PFN
-Message-ID: <20250423173455.GN1213339@ziepe.ca>
+Subject: Re: [PATCH v9 13/24] RDMA/core: Convert UMEM ODP DMA mapping to
+ caching IOVA and page linkage
+Message-ID: <20250423173625.GO1213339@ziepe.ca>
 References: <cover.1745394536.git.leon@kernel.org>
- <f81331e55cf95b941e6c57f940a2a204141bf2e1.1745394536.git.leon@kernel.org>
+ <7d6f3d50c4e6eb3ab75fd4c5bbaa8efcb1a15b3c.1745394536.git.leon@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -118,23 +118,24 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f81331e55cf95b941e6c57f940a2a204141bf2e1.1745394536.git.leon@kernel.org>
+In-Reply-To: <7d6f3d50c4e6eb3ab75fd4c5bbaa8efcb1a15b3c.1745394536.git.leon@kernel.org>
 
-On Wed, Apr 23, 2025 at 11:13:03AM +0300, Leon Romanovsky wrote:
+On Wed, Apr 23, 2025 at 11:13:04AM +0300, Leon Romanovsky wrote:
 > From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> As a preparation to remove dma_list, store access mask in PFN pointer
-> and not in dma_addr_t.
+> Reuse newly added DMA API to cache IOVA and only link/unlink pages
+> in fast path for UMEM ODP flow.
 > 
 > Tested-by: Jens Axboe <axboe@kernel.dk>
 > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 > ---
->  drivers/infiniband/core/umem_odp.c   | 103 +++++++++++----------------
->  drivers/infiniband/hw/mlx5/mlx5_ib.h |   1 +
->  drivers/infiniband/hw/mlx5/odp.c     |  37 +++++-----
->  drivers/infiniband/sw/rxe/rxe_odp.c  |  14 ++--
->  include/rdma/ib_umem_odp.h           |  14 +---
->  5 files changed, 70 insertions(+), 99 deletions(-)
+>  drivers/infiniband/core/umem_odp.c   | 104 ++++++---------------------
+>  drivers/infiniband/hw/mlx5/mlx5_ib.h |  11 +--
+>  drivers/infiniband/hw/mlx5/odp.c     |  40 +++++++----
+>  drivers/infiniband/hw/mlx5/umr.c     |  12 +++-
+>  drivers/infiniband/sw/rxe/rxe_odp.c  |   4 +-
+>  include/rdma/ib_umem_odp.h           |  13 +---
+>  6 files changed, 71 insertions(+), 113 deletions(-)
 
 Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
