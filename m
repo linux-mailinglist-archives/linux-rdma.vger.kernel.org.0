@@ -1,93 +1,105 @@
-Return-Path: <linux-rdma+bounces-9737-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9738-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3DB9A98E1B
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Apr 2025 16:52:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A18D2A98F3F
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Apr 2025 17:06:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 446673B2823
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Apr 2025 14:51:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 608941B84CDE
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Apr 2025 15:00:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34BFC27FD42;
-	Wed, 23 Apr 2025 14:50:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C368284B48;
+	Wed, 23 Apr 2025 14:58:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="L5tKP8P8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rNAIeayX"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76961C8EB
-	for <linux-rdma@vger.kernel.org>; Wed, 23 Apr 2025 14:50:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.250
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E20A280CDC;
+	Wed, 23 Apr 2025 14:58:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745419855; cv=none; b=p4sjgHSnMUijxaDtzrI5OIu4q03AHNHZKsABy8fZFQslKRI/Pihz2evstQC3zXDpBDkUXsEoAeKbT5QtbTul31BRpssWg7UiviKuhiXRtT5AsEWtzNk6D5opihgPlUfBtvXC38FbPBPTDVUcVOanpUqGJvdjTAwlerqf7gNs0Q8=
+	t=1745420337; cv=none; b=Lmc+CaM2y3DwbxypYB691e08zoYtfXjty05T63sHmWKhNJvac0VayM6P4kk5SfDKeAnoXDFW9BYQn1Raxr4bZd6zQdW4h+OFBVF6S+S0G4Skm+99q38xU4u0QAj/feFeBmEXamvvPr4CozcBn7lqrJZfkIsLYov44grkQZ2cGlI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745419855; c=relaxed/simple;
-	bh=GbwZDkmq4Sk7A9qRXSBk/gFJe4eJ49v56ZdlCDXLu18=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=uXicYWfR3UT09TDZtz3d5NrP+le9R2Lc5YZ/j6RbbxR82a5AzTQbnBFuoYQriJwVEB8Q1InKoDTtGQk+NSkcHwp6yIFlXk4g8CjW4gJgubm+9fEke4c8CmHJboH801Uu/mVdOXdjP/EQ8hgidPO7M5KekcLZ4q+t+vPXkbhfgLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=L5tKP8P8; arc=none smtp.client-ip=185.125.188.250
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
-Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id A424743946
-	for <linux-rdma@vger.kernel.org>; Wed, 23 Apr 2025 14:50:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-	s=20210803; t=1745419845;
-	bh=GbwZDkmq4Sk7A9qRXSBk/gFJe4eJ49v56ZdlCDXLu18=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
-	 Reply-To;
-	b=L5tKP8P86ldJmliCIOElqyePr3hYQeBqQku4cZuPs2YczvWXLccdBh8o86LdkGOQp
-	 XYXhc8kYK9/Q+UpiTjXBNzlJA33GbpecYoMz6KQ74EVYqCZPyOkk5CwWHOpmdQ+YlQ
-	 zvOpZn4kCRq76kvH/QNg5h72f0ZFQoojoR5z2Mrsl54NAw0gsu0ji1HU9OT7i+x+v6
-	 kHhVdvJeaQDhvU+lWNKjFrfIL5yG1ut31T3nNrEEPCO2kGQYU3knxl/axYlD2w0xgV
-	 R+p5KyO0p2li31R4TnWClaiMuCPrBBhUxNqP3Nm69jv3PtRdjAdO1Cnj8VjG376mDl
-	 XlEkj3wZ+fSvA==
-Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
-	by buildd-manager.lp.internal (Postfix) with ESMTP id 8920D7E25B
-	for <linux-rdma@vger.kernel.org>; Wed, 23 Apr 2025 14:50:45 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1745420337; c=relaxed/simple;
+	bh=Cq/9ebClxlVbVqFqG5/6zORZ18/N3r0Ih3h4rsgmibY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YtCMF+BiR1J/6Jc7ehBZPb26tR8eHPSTNzLZEl0fiUi7VGTTgr66eblCnp3tmSIaMfwRGEmLeyU7/VQnlmoTLqBhpKTWP6C+ErRhlnsBYe6/tYBMvczrNjv7R7PHOC7q+8I5ai1dPk+W3Y0rpwsugEQWGYq5AL+5Du7Ozn0dRu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rNAIeayX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E6EEC4CEE3;
+	Wed, 23 Apr 2025 14:58:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745420336;
+	bh=Cq/9ebClxlVbVqFqG5/6zORZ18/N3r0Ih3h4rsgmibY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rNAIeayXStayTh+kdSzMXaruBcLJXQoaQdrPfgYfteRcWk5W3bpzX/9lOPNmTRawT
+	 3Js8n/jzA0KcrggLtIDYykZlPj6Dez+Yrx3Z9APc1t4hhfKysBTJkG0duPuNwBnGks
+	 0sGpxPSNXrScaZ1ZIlrdsqsiEWDsoZMPg15dosv1MW/ySTAaOgCmQLtKdBwGsHiVTZ
+	 1SBYhdxbfYY3VuqejbFMedI1znQqqlAc4ideI8ClyIhmPZGcJE6eB6IQ4iR3ICvNqX
+	 aQmYnghFpNOVpmT0E+j6DR29WFQtH/r3ajJ27yThOcM7hr5AG84maPgUId3dJkxSan
+	 aVj53L0H7Llpg==
+Date: Wed, 23 Apr 2025 08:58:51 -0600
+From: Keith Busch <kbusch@kernel.org>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
+	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+	Jake Edge <jake@lwn.net>, Jonathan Corbet <corbet@lwn.net>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Zhu Yanjun <zyjzyj2000@gmail.com>,
+	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Logan Gunthorpe <logang@deltatee.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
+	linux-pci@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Kanchan Joshi <joshi.k@samsung.com>,
+	Chaitanya Kulkarni <kch@nvidia.com>,
+	Nitesh Shetty <nj.shetty@samsung.com>,
+	Leon Romanovsky <leonro@nvidia.com>
+Subject: Re: [PATCH v9 23/24] nvme-pci: convert to blk_rq_dma_map
+Message-ID: <aAkAKyr4fbd5sLCH@kbusch-mbp.dhcp.thefacebook.com>
+References: <cover.1745394536.git.leon@kernel.org>
+ <7c5c5267cba2c03f6650444d4879ba0d13004584.1745394536.git.leon@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Launchpad-Message-Rationale: Requester @linux-rdma
-X-Launchpad-Message-For: linux-rdma
-X-Launchpad-Notification-Type: recipe-build-status
-X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
-X-Launchpad-Build-State: MANUALDEPWAIT
-To: Linux RDMA <linux-rdma@vger.kernel.org>
-From: noreply@launchpad.net
-Subject: [recipe build #3886956] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
-Message-Id: <174541984553.6997.12117783233947769548.launchpad@buildd-manager.lp.internal>
-Date: Wed, 23 Apr 2025 14:50:45 -0000
-Reply-To: noreply@launchpad.net
-Sender: noreply@launchpad.net
-Errors-To: noreply@launchpad.net
-Precedence: bulk
-X-Generated-By: Launchpad (canonical.com); Revision="e76edd883483c71c468bb038e98836435de44530"; Instance="launchpad-buildd-manager"
-X-Launchpad-Hash: 898f11da1aa799423d3c4e18edf41ca03d9712f1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7c5c5267cba2c03f6650444d4879ba0d13004584.1745394536.git.leon@kernel.org>
 
- * State: Dependency wait
- * Recipe: linux-rdma/rdma-core-daily
- * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Distroseries: xenial
- * Duration: 5 minutes
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+recipebuild/3886956/+files/buildlog.txt.gz
- * Upload Log:=20
- * Builder: https://launchpad.net/builders/lcy02-amd64-054
+On Wed, Apr 23, 2025 at 11:13:14AM +0300, Leon Romanovsky wrote:
+> +static bool nvme_try_setup_sgl_simple(struct nvme_dev *dev, struct request *req,
+> +				      struct nvme_rw_command *cmnd,
+> +				      struct blk_dma_iter *iter)
+> +{
+> +	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
+> +	struct bio_vec bv = req_bvec(req);
+> +
+> +	if (IS_ENABLED(CONFIG_PCI_P2PDMA) && (req->cmd_flags & REQ_P2PDMA))
+> +		return false;
+> +
+> +	if ((bv.bv_offset & (NVME_CTRL_PAGE_SIZE - 1)) + bv.bv_len >
+> +			NVME_CTRL_PAGE_SIZE * 2)
+> +		return false;
 
---=20
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
-ild/3886956
-Your team Linux RDMA is the requester of the build.
-
+We don't need this check for SGLs. If we have a single segment, we can
+put it in a single SG element no matter how large it is.
 
