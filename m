@@ -1,88 +1,53 @@
-Return-Path: <linux-rdma+bounces-9745-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9746-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B5ECA995F3
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Apr 2025 19:00:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56F36A99616
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Apr 2025 19:11:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0533A5A274A
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Apr 2025 17:00:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9414F7ADC3C
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Apr 2025 17:10:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCB5C28A415;
-	Wed, 23 Apr 2025 17:00:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0E5628A409;
+	Wed, 23 Apr 2025 17:11:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="UARDqsgx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WKE+8APY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87468264A70
-	for <linux-rdma@vger.kernel.org>; Wed, 23 Apr 2025 17:00:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C88933F9;
+	Wed, 23 Apr 2025 17:11:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745427624; cv=none; b=MMFuJjKgdMd2Itxd9ra/1JEKHiueKvN1SfA9l7zatF3+Vr6ROpjkrO4E4KIhhCWr2jiJNZ25GrFbz6F7io2KD02N3rVF2h/UH/y6vXMezJoGTysFVpBlAD1eldCz4ntYtXKvx5yYyEkuot13FosZjxsY39S5rXVQ6AyZ2m8s8xc=
+	t=1745428274; cv=none; b=rYPo5kWz3cGBX72Fdqjhtoca6WswVBUGq7yaSYTVGy5neLTx+6TWvTuDaNmvSw+UlkmKmUxl0LFbTV96WiGuqk0fn70KexPGia08WwDL14ljUf8tVHExe1mh+oOfoc43s73e3CHIB/Ia7jHzipMCa7Sg6/dqDt8x7IumUWam9HA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745427624; c=relaxed/simple;
-	bh=Oq+RUVKXoierg4o0zQGaueU+iLWLxzwb7ZA+t/XFi9w=;
+	s=arc-20240116; t=1745428274; c=relaxed/simple;
+	bh=wm5GF1+5ZhFui3p0uI/jDDATw03CDOZZzdN2e7V0TSU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JdDamWCZweHXydtbnwb6gv4yD37n9CiME2nHEziUuhYgFFp+69qz59d2e5sjCfK7Paud/kxXULrcBT4n0ObRigdreKNw7YP5YDlFV5ODOCjTiLHADeETYVMZXpefbyYD/ebOoADGNv1ADIUflbhKX3IhyLmQK0XR2IAxkpZJToI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=UARDqsgx; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-47664364628so1045821cf.1
-        for <linux-rdma@vger.kernel.org>; Wed, 23 Apr 2025 10:00:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1745427621; x=1746032421; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wWxVg46eMCFdiWQ6X6K5wh7BwyllE/TFgcnWyILw7vo=;
-        b=UARDqsgxOC+cJtWdyN+NC2FY/WCTVe7z3WFx7smCC0E32+wheWqdAVaqyZuMIN2aMg
-         bYi30GQ5/MbJgUzSusKZHoKpetThYKOQb6prIavNr2Nm8nhyRI5OLVpd03M6nJutlPIQ
-         8X8itz0LgQdwoScBesYqaixgUfPxwTIkwGLN1aIVBGVRnkq8PGzRrPN5ygxBtf6jtGJ5
-         9oD9uONx64IyINlPGGwW6qOrIH8DeRKjy/bUyPoubWzTdYFhG1OSbmgg8Bgs/Rfee3Dt
-         xUQTD9Igf9RC5VSQJ6fdAqzjen7lbn1D0IWGZSegnpLfXYufUFsFYPjfslA9NpLe2QAc
-         jKkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1745427621; x=1746032421;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wWxVg46eMCFdiWQ6X6K5wh7BwyllE/TFgcnWyILw7vo=;
-        b=TRAAr3Qymxh7/Cy97+BZysAn8mr96DNV9rBVUaax7lOlgrwqr77nBwCHEzrr7YERG8
-         PdiOrgGcf9NCYd06XdBs7oXnpHnDAeuqQlDdR9N3pDC6RyY3H1KmowpuYCybA8hrpKlq
-         nOeiLhc2jNgrfNmdfV3UMLgEAzjKR/RVnKnL7lmYkyVYyUQThtQVn5UyPywfNYJUwdrm
-         AC4X9Vr7Xn+mXeLJJhvhZzysWa3EBMFrnAd/hS/j1a4TFmrGCgE7615xhSCfNDdSpNzV
-         UKcXMseMMbE/PzhLl3H8/f/5Diw5dbBhbQXeL+gOiGIaKbXGm+XHzBH6M5NQ45XBJuNV
-         ZveQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVFHkdYFtCXyGZnzg1tR771R+/eUEHFoCwaVLx/gmGx+ikhX//NreMEI5QLDbTySjR6ies3eufiecc8@vger.kernel.org
-X-Gm-Message-State: AOJu0YzsOuFnp6TseEV9R46vRUN71nddZjVaPmNxxo0SqPKkRqRcDyZa
-	Hzgz6DLRYiDmELAlUOBLsgSMsOCD16S/nYrkQN4BmqufCuVGu6QasA+DhGGl4JY=
-X-Gm-Gg: ASbGncuVtImUgBYLhqQyPYZFoyVUA2KX1OQ+jm1syU2244KWp64Iep0hdgCQedk3iF3
-	+YJ+0434gffZfnsl7R62j1ZCFNEgWguEzbnU7+nYcgT9NF4PD8OF+IHwxnOj7h4J4XDdy1THL7Y
-	gYF+lY12KYPjCZeLhqRluWVwrAfVzaHvBHsoWrs37tlfVX+1UijsAVp6FDgx4x97wrZOlvryirJ
-	iZhpz84gxrXGI8zknXPAjlpDtUAiLrGU+05aBxcJ17VwHnorF0gsARYXFi7ukYx9qGPeTxvO5Bf
-	8bL7v1Wj2qoPKTMqZs1wbpcyeYO877g+iTfBjGXF1PDD4DC8aOrAXFSnEvm33ggFxzJj8vNxTmB
-	fLBaIB52OCAs6n9qrB5k20sXfRqXlSA==
-X-Google-Smtp-Source: AGHT+IHksHmB8zXVAbJv0K8R7XmlcjQan86yStXGt3YpvcZVpCrvagDTNNdOsaaJ2R0ZGC6sR1O+4g==
-X-Received: by 2002:a05:622a:118f:b0:47e:641:9665 with SMTP id d75a77b69052e-47e0641979dmr20773641cf.5.1745427621264;
-        Wed, 23 Apr 2025 10:00:21 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-167-219-86.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.167.219.86])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6f2c2bfcfd0sm72347416d6.82.2025.04.23.10.00.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Apr 2025 10:00:20 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1u7dSO-00000007LHo-0vIz;
-	Wed, 23 Apr 2025 14:00:20 -0300
-Date: Wed, 23 Apr 2025 14:00:20 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Leon Romanovsky <leon@kernel.org>, Keith Busch <kbusch@kernel.org>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Jens Axboe <axboe@kernel.dk>, Jake Edge <jake@lwn.net>,
-	Jonathan Corbet <corbet@lwn.net>, Zhu Yanjun <zyjzyj2000@gmail.com>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=BF5nzJ19mU3qXvupTsq4MR2rPkzVPLmtbiL9gvtVbKMMfyq9DghZHwhWNcvwXeLkG5goXzPEqE7Bi5ulcJdb/FuoDXEiMJpo+Nm0y4hIyMrkGSREKt0zCrIO/kbOnOJSEeiAOnY2EbcejCCYbaqi4+LJJ6+0BrjBM70qhajPcnY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WKE+8APY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEA7BC4CEE2;
+	Wed, 23 Apr 2025 17:11:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1745428273;
+	bh=wm5GF1+5ZhFui3p0uI/jDDATw03CDOZZzdN2e7V0TSU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WKE+8APYL7laFptOx5V5tlTW6vx8OhdD2WZd+VGxrXtV67FrKncs+kqu+pF5u2EGG
+	 UOokgA7a2oH+932TcBKZF7az+Ped9NzAHFBaGnehVleJXvWIBUCJeL1sQ2Qmw7D00x
+	 t3RQhR9MeIT9X6K4x10h4rIx8fAT5Xzfh4DWU3ruajS1BQDApG5h93OllIWbkN2aId
+	 wdKj+YjyrKbqPlk1S3NqyKmfDMZw+PqaheehQ4VEM2e62rg2kfh4ZmgP8NXJJpagND
+	 oUgY6vbnwDC/BH3tlAmiFa7bG+aa9E3K6tCMbaiT1v0F8o94QDy3SA0813/IgeDR3G
+	 KIYJwJTivuM1w==
+Date: Wed, 23 Apr 2025 20:11:08 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Keith Busch <kbusch@kernel.org>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
+	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+	Jake Edge <jake@lwn.net>, Jonathan Corbet <corbet@lwn.net>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Zhu Yanjun <zyjzyj2000@gmail.com>,
 	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
 	Will Deacon <will@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
 	Bjorn Helgaas <bhelgaas@google.com>,
@@ -91,7 +56,7 @@ Cc: Leon Romanovsky <leon@kernel.org>, Keith Busch <kbusch@kernel.org>,
 	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
 	Kevin Tian <kevin.tian@intel.com>,
 	Alex Williamson <alex.williamson@redhat.com>,
-	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
@@ -106,12 +71,10 @@ Cc: Leon Romanovsky <leon@kernel.org>, Keith Busch <kbusch@kernel.org>,
 	Chaitanya Kulkarni <kch@nvidia.com>,
 	Nitesh Shetty <nj.shetty@samsung.com>
 Subject: Re: [PATCH v9 23/24] nvme-pci: convert to blk_rq_dma_map
-Message-ID: <20250423170020.GI1213339@ziepe.ca>
+Message-ID: <20250423171108.GK48485@unreal>
 References: <cover.1745394536.git.leon@kernel.org>
  <7c5c5267cba2c03f6650444d4879ba0d13004584.1745394536.git.leon@kernel.org>
- <20250423092437.GA1895@lst.de>
- <20250423100314.GH48485@unreal>
- <20250423154712.GA32009@lst.de>
+ <aAkAKyr4fbd5sLCH@kbusch-mbp.dhcp.thefacebook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -120,27 +83,28 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250423154712.GA32009@lst.de>
+In-Reply-To: <aAkAKyr4fbd5sLCH@kbusch-mbp.dhcp.thefacebook.com>
 
-On Wed, Apr 23, 2025 at 05:47:12PM +0200, Christoph Hellwig wrote:
-> On Wed, Apr 23, 2025 at 01:03:14PM +0300, Leon Romanovsky wrote:
-> > On Wed, Apr 23, 2025 at 11:24:37AM +0200, Christoph Hellwig wrote:
-> > > I don't think the meta SGL handling is quite right yet, and the
-> > > single segment data handling also regressed.  Totally untested
-> > > patch below, I'll try to allocate some testing time later today.
-> > 
-> > Christoph,
-> > 
-> > Can we please progress with the DMA patches and leave NVMe for later?
-> > NVMe is one the users for new DMA API, let's merge API first.
+On Wed, Apr 23, 2025 at 08:58:51AM -0600, Keith Busch wrote:
+> On Wed, Apr 23, 2025 at 11:13:14AM +0300, Leon Romanovsky wrote:
+> > +static bool nvme_try_setup_sgl_simple(struct nvme_dev *dev, struct request *req,
+> > +				      struct nvme_rw_command *cmnd,
+> > +				      struct blk_dma_iter *iter)
+> > +{
+> > +	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
+> > +	struct bio_vec bv = req_bvec(req);
+> > +
+> > +	if (IS_ENABLED(CONFIG_PCI_P2PDMA) && (req->cmd_flags & REQ_P2PDMA))
+> > +		return false;
+> > +
+> > +	if ((bv.bv_offset & (NVME_CTRL_PAGE_SIZE - 1)) + bv.bv_len >
+> > +			NVME_CTRL_PAGE_SIZE * 2)
+> > +		return false;
 > 
-> We'll need to merge the block/nvme patches through the block tree
-> anyway to avoid merges from hell, so yes.
+> We don't need this check for SGLs. If we have a single segment, we can
+> put it in a single SG element no matter how large it is.
 
-RDMA has been having conflicts on the ODP patches too, so yeah we need
-a shared branch and this thing into each trees. I'd rely on Marek to
-make the shared branch and I'll take the RDMA parts on top.
+Absolutely, removed it and updated my dma-split-wip branch.
 
-Thanks,
-Jason
+Thanks
 
