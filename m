@@ -1,47 +1,47 @@
-Return-Path: <linux-rdma+bounces-9763-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9764-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42747A9A2AB
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Apr 2025 08:55:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA917A9A316
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Apr 2025 09:16:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD1213A7513
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Apr 2025 06:55:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3DD7448451
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Apr 2025 07:16:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F86E1EB1B7;
-	Thu, 24 Apr 2025 06:55:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E17B1E8837;
+	Thu, 24 Apr 2025 07:15:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JBMG74Uf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aBTgU71u"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E280D84FAD;
-	Thu, 24 Apr 2025 06:55:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D24A4CA52;
+	Thu, 24 Apr 2025 07:15:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745477718; cv=none; b=Cahe5lCyUTmA8xhd5zNt1JeNf0V32o4SFDOWvdfXw03N6HdaPASevNCkwAl7tnkt+m9d3polvbhE2VGeFpV0Dfj7LJEgetXss6LBabVIbxNz+ju7uxrdV4r0rNTOBE4OOlUGKTqojHm+gyj0lONLhawLBesQPE23Ntm7w+U+zZw=
+	t=1745478952; cv=none; b=FI24Nzb+mhsuzug8076nMp2QNckg//CvQoVQcBZh+4/EvpVxky1v3j+It1Vjc9qokbAIPf5MZ2sjnQ/rL5tUVbchDjNFdoKywslJpRpAp2nt4szoVqh/bE7KcjOOz+xclykMGshC2vpZzHYz/BogMMICj6meOq5rpm2ZZpbdCRw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745477718; c=relaxed/simple;
-	bh=O2NhhAxby4h2wdAG9lotXu0r8Mq+CnbUeKJ51V9RGiM=;
+	s=arc-20240116; t=1745478952; c=relaxed/simple;
+	bh=pTkF/OxNxP3a5nhNTZxPZtH9LiokbdzIPY4lcClh0Q0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B7bKa4MgWy8nnA6slFa2MAFA9CV2ZUhWO4Uh4kZuTcii5MbyTHnx6tbhzWVcJY+DGNMclihNzuATN0sy7NMkBWLiUHD7tJHVgMQUgj9Ac3/GTyCy/egdRHu1XBkx3OHyRW41a8hEW6K9t3iLTBCoWU9DwVNNGnVAHHcAaShh1pY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JBMG74Uf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63A31C4CEE3;
-	Thu, 24 Apr 2025 06:55:16 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=LkL6ZRu6rZ1q2KFRUROFPShUq/68RaF++pKn22XR0HrQZdXhA8ee0sA0NHs0scmQHpCkmqaI63RdnDV8f3h03CdqO4fD+7Vvn2A8Ht1kAB3WbpTQeSvLGmjWk62GEqr2iO+vHu0ojDnZjxr4k8PNpOQAPCzgxBIame0w5jEciTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aBTgU71u; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B8E3C4CEE3;
+	Thu, 24 Apr 2025 07:15:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745477717;
-	bh=O2NhhAxby4h2wdAG9lotXu0r8Mq+CnbUeKJ51V9RGiM=;
+	s=k20201202; t=1745478951;
+	bh=pTkF/OxNxP3a5nhNTZxPZtH9LiokbdzIPY4lcClh0Q0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JBMG74Uf2ayBsAyXOsGDu/Pky6ixNS1c4BDJHd4lwbNECLO5LrTPDLt1r0eNUPLy0
-	 ynut6BgnWakwJKSAx+8FK+EGFCkITnvLnelLONPxIjuG0tdC90cdj3pniHXtHm9Fxa
-	 wl45/ZTtb8BKv0iNv76Ij9tfHUWh6rTMYx7CAUO3rppkqiaLH7xleBCQXesauRPbp2
-	 FUUzSE+hvgKs3WwAsv1qWr/zBPK1T2EbndRkbynGnImy0ZnvZycZXxoAzu4XEX+teR
-	 a2VWk0rzolhjEPmNfygA5hJqIMt43/HcuEsUyDD2XFjdC06yV7sioUDVdESF6SAvcW
-	 F+H5S2kqGr5vg==
-Date: Thu, 24 Apr 2025 09:55:11 +0300
+	b=aBTgU71uDQ76gGQRWfJMAVuYX3A0QbPaLJvEVuFRBRrxPSIlRhqbBqclL9MgN42Mz
+	 mOyKpbfujbO9d4jcdRZl8T1Go5m+UqQxIRaX0tVYAWP8gY0N23/sDzG80Ns8/xrjOx
+	 yRFGVRmXxsj5fmUE6A3mSSt4ikS5jl7uqbR1Q9jdp7zW3uELJvckJZvlrjbWQLAFMI
+	 rlKfp1i/mcS2aG+fPOR4bIoU7h9FpaLggeY2LHT/xOyqKlGS/6YJVHuNgwdRNVVRsH
+	 wu0LFFiidEyDynwIeD0OFcSLI8I/quvZGtTqBj02iqPtvdHAUsLiUcS2TnnGA7c1LM
+	 7VSAaFBMPFnUw==
+Date: Thu, 24 Apr 2025 10:15:45 +0300
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
@@ -69,12 +69,11 @@ Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
 	Dan Williams <dan.j.williams@intel.com>,
 	Kanchan Joshi <joshi.k@samsung.com>,
 	Chaitanya Kulkarni <kch@nvidia.com>
-Subject: Re: [PATCH v9 03/24] iommu: generalize the batched sync after map
- interface
-Message-ID: <20250424065511.GL48485@unreal>
+Subject: Re: [PATCH v9 11/24] mm/hmm: provide generic DMA managing logic
+Message-ID: <20250424071545.GM48485@unreal>
 References: <cover.1745394536.git.leon@kernel.org>
- <2ce6a74ddf5e13a7fdb731984aa781a15f17749d.1745394536.git.leon@kernel.org>
- <20250423171537.GJ1213339@ziepe.ca>
+ <3abc42885831f841dd5dfe78d7c4e56c620670ea.1745394536.git.leon@kernel.org>
+ <20250423172856.GM1213339@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -83,53 +82,69 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250423171537.GJ1213339@ziepe.ca>
+In-Reply-To: <20250423172856.GM1213339@ziepe.ca>
 
-On Wed, Apr 23, 2025 at 02:15:37PM -0300, Jason Gunthorpe wrote:
-> On Wed, Apr 23, 2025 at 11:12:54AM +0300, Leon Romanovsky wrote:
-> > From: Christoph Hellwig <hch@lst.de>
+On Wed, Apr 23, 2025 at 02:28:56PM -0300, Jason Gunthorpe wrote:
+> On Wed, Apr 23, 2025 at 11:13:02AM +0300, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
 > > 
-> > For the upcoming IOVA-based DMA API we want to use the interface batch the
-> > sync after mapping multiple entries from dma-iommu without having a
-> > scatterlist.
+> > HMM callers use PFN list to populate range while calling
+> > to hmm_range_fault(), the conversion from PFN to DMA address
+> > is done by the callers with help of another DMA list. However,
+> > it is wasteful on any modern platform and by doing the right
+> > logic, that DMA list can be avoided.
+> > 
+> > Provide generic logic to manage these lists and gave an interface
+> > to map/unmap PFNs to DMA addresses, without requiring from the callers
+> > to be an experts in DMA core API.
+> > 
+> > Tested-by: Jens Axboe <axboe@kernel.dk>
 > 
-> Grammer:
+> I don't think Jens tested the RDMA and hmm parts :)
+
+I know, but he posted his Tested-by tag on cover letter and b4 picked it
+for whole series. I decided to keep it as is.
+
 > 
->  For the upcoming IOVA-based DMA API we want to batch the
->  ops->iotlb_sync_map() call after mapping multiple IOVAs from
->  dma-iommu without having a scatterlist. Improve the API.
+> > +	/*
+> > +	 * The HMM API violates our normal DMA buffer ownership rules and can't
+> > +	 * transfer buffer ownership.  The dma_addressing_limited() check is a
+> > +	 * best approximation to ensure no swiotlb buffering happens.
+> > +	 */
 > 
->  Add a wrapper for the map_sync as iommu_sync_map() so that callers don't
->  need to poke into the methods directly.
+> This is a bit unclear, HMM inherently can't do cache flushing or
+> swiotlb bounce buffering because its entire purpose is to DMA directly
+> and coherently to a mm_struct's page tables. There are no sensible
+> points we could put the required flushing that wouldn't break the
+> entire model.
 > 
->  Formalize __iommu_map() into iommu_map_nosync() which requires the
->  caller to call iommu_sync_map() after all maps are completed.
+> FWIW I view that fact that we now fail back to userspace in these
+> cases instead of quietly malfunction to be a big improvement.
 > 
->  Refactor the existing sanity checks from all the different layers
->  into iommu_map_nosync().
+> > +bool hmm_dma_unmap_pfn(struct device *dev, struct hmm_dma_map *map, size_t idx)
+> > +{
+> > +	struct dma_iova_state *state = &map->state;
+> > +	dma_addr_t *dma_addrs = map->dma_list;
+> > +	unsigned long *pfns = map->pfn_list;
+> > +	unsigned long attrs = 0;
+> > +
+> > +#define HMM_PFN_VALID_DMA (HMM_PFN_VALID | HMM_PFN_DMA_MAPPED)
+> > +	if ((pfns[idx] & HMM_PFN_VALID_DMA) != HMM_PFN_VALID_DMA)
+> > +		return false;
+> > +#undef HMM_PFN_VALID_DMA
 > 
-> >  drivers/iommu/iommu.c | 65 +++++++++++++++++++------------------------
-> >  include/linux/iommu.h |  4 +++
-> >  2 files changed, 33 insertions(+), 36 deletions(-)
+> If a v10 comes I'd put this in a const function level variable:
+> 
+>           const unsigned int HMM_PFN_VALID_DMA = HMM_PFN_VALID | HMM_PFN_DMA_MAPPED;
 > 
 > Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> 
-> > +	/* Discourage passing strange GFP flags */
-> > +	if (WARN_ON_ONCE(gfp & (__GFP_COMP | __GFP_DMA | __GFP_DMA32 |
-> > +				__GFP_HIGHMEM)))
-> > +		return -EINVAL;
-> 
-> There is some kind of overlap with the new iommu_alloc_pages_node()
-> here that does a similar check, nothing that can be addressed in this
-> series but maybe a TBD for later..
 
-This series is based on pure -rc1 to allow creation of shared branch,
-while you removed iommu_alloc_pages_node() in IOMMU tree. So we must
-merge it first and tidy the code after that.
+I have no idea if v10 is needed. DMA API is stable for a long time and
+only DMA part should go in shared branch. Everything else will need to
+go through relevant subsystems anyway.
 
 Thanks
 
 > 
 > Jason
-> 
 
