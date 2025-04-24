@@ -1,47 +1,47 @@
-Return-Path: <linux-rdma+bounces-9765-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9766-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F3A8A9A433
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Apr 2025 09:38:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32C41A9A4F9
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Apr 2025 09:55:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C4F47A16F7
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Apr 2025 07:37:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BAE516245B
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Apr 2025 07:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65EB623D28F;
-	Thu, 24 Apr 2025 07:22:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06EA1F419B;
+	Thu, 24 Apr 2025 07:55:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WoDzuOVN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NosDI+x4"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9A9F23C8C9;
-	Thu, 24 Apr 2025 07:22:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A0919CC3A;
+	Thu, 24 Apr 2025 07:55:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745479359; cv=none; b=AhlMXb+Y0Bt4+AfrJbIfIlWnI45LNaLKWG5S0FhjDDx97EIKwXib03SW5NTx/xrwDbHtrov7jdLnEM4JADEp0GMIAQKr7bBxrA/iIW+WrYuyARb3p5PvO0kTARUVDR81nrl4XfCz8sz+6uzq3x3lmd3nbIzmxBLBFtuP25RTGsU=
+	t=1745481338; cv=none; b=GNvhKm/6lITibq13hcBah+vuUrRE6Q4jBrHfzgyho4Ug72TIGYslbwHMIdrzG38DUuYRJWeSgi4ADN2caJyT/k29UKmlnrrXaB+X/89WtCk3ua84xyWPWNhebPIZwbaQS5gTDO3aLULUYP8BkSKYglCbAM/iUH+DhmoNLR2cHz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745479359; c=relaxed/simple;
-	bh=pkWE6sGGOL/lS7z2PofBZdgR94MWvVoyVMrCsfmGWMk=;
+	s=arc-20240116; t=1745481338; c=relaxed/simple;
+	bh=eZB03wlWn20hlMjq44G4y2WHS0oF7M3JiBoS6ve+Nmc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Tn371pCa+uNXeOei2I1d05TNxg5oHFLyoQ5SrTy8/cY+RLEAPZq1UlBmf8cGR1tYt5I/HhzZR+poBla+4zLOu2XB1uMkdFSAxx6Srus4X0wzwNcLHkxShgt0q7U4uPUjIqSy1VzV1skajGcdVBYXr3HJ6tikSsMWn+RZ2DYI+ZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WoDzuOVN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D07BC4CEEC;
-	Thu, 24 Apr 2025 07:22:37 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=t/Q519Efp2IMchBNsD9fdrZ8z+DLDR3ORuW50ZfVXxUhWriY9b5r1BJnFrB7ss/G7y9rjkPaDt4GiURleQF4zdhUF4cjFSVexElqUAgSaO8XDu94DFO6Zu1Y2OLgvW5bCqwfDtJ7Y1Ba8NXV8fHIcpCdZPQSsZL0YOQdQweHspg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NosDI+x4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7605C4CEE3;
+	Thu, 24 Apr 2025 07:55:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745479358;
-	bh=pkWE6sGGOL/lS7z2PofBZdgR94MWvVoyVMrCsfmGWMk=;
+	s=k20201202; t=1745481337;
+	bh=eZB03wlWn20hlMjq44G4y2WHS0oF7M3JiBoS6ve+Nmc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WoDzuOVNM5Th9/6MPQtwK/rt0LHybLoQmVej7xUL7pi/+grRTLzz3YO22zNR2UUpv
-	 L0Bn1mEP+wHrMmXMnVi+xdnrx+pb56/i+NwcME8rl7+krJ8X06sAa4KiT0AJGFeGhO
-	 zvG4gVJvRX6aT9o2FnS7IA1RJT+icqhZ42NzdhXqk+vXT48zoVpYbdHXg/hsIbpVVW
-	 mb5tmX1IUQBMyuSJU93RCrakk1F6JJ/M7rFzDCbJQt3wrlrbWfV338F+OcjU+P+e3j
-	 bzNLphJk97vP+hv977iF8cPx4g8hsnK1XXRSn4AkJbQ0zy97kvPiSWubQUhNoqskr/
-	 o45akYSgJ5EsQ==
-Date: Thu, 24 Apr 2025 10:22:34 +0300
+	b=NosDI+x4cvbYgNU24M08GNHc6d7pJ4hl5/qxuZCxf+xwL2RBZRrJJUhOnFprAFHAp
+	 uMXuNxDsAPF8h8GL3TMV0/p3zy00XpDJUj1Mc5rlsuJvcv+Nh4bTlPohNQGuUY4EuN
+	 YdeQRGTfUzW8sL2ypAalBBGrL4iwWbiNeslamejqORQdHrhgX8L3E8sStLGQsqijej
+	 pyQJVsd0fCj3iAMLYy/oXTlGqfTe/wKosof0Q4BTawzUGoCVJidUnxK+0FFEnz2fZ7
+	 9cHCcUgloCY9p7vNTJA50fE41QpG2My1P6zfNwh4v++zjtZTJG0F4JLP9YIeCN29iU
+	 73C7zFzzL2JzQ==
+Date: Thu, 24 Apr 2025 10:55:32 +0300
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
@@ -69,12 +69,11 @@ Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
 	Dan Williams <dan.j.williams@intel.com>,
 	Kanchan Joshi <joshi.k@samsung.com>,
 	Chaitanya Kulkarni <kch@nvidia.com>
-Subject: Re: [PATCH v9 11/24] mm/hmm: provide generic DMA managing logic
-Message-ID: <20250424072234.GN48485@unreal>
+Subject: Re: [PATCH v9 17/24] vfio/mlx5: Enable the DMA link API
+Message-ID: <20250424075532.GO48485@unreal>
 References: <cover.1745394536.git.leon@kernel.org>
- <3abc42885831f841dd5dfe78d7c4e56c620670ea.1745394536.git.leon@kernel.org>
- <20250423172856.GM1213339@ziepe.ca>
- <20250424071545.GM48485@unreal>
+ <b7a11f0e93a4b244523e07b82475a7616ba739c9.1745394536.git.leon@kernel.org>
+ <20250423180941.GS1213339@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -83,51 +82,78 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250424071545.GM48485@unreal>
+In-Reply-To: <20250423180941.GS1213339@ziepe.ca>
 
-On Thu, Apr 24, 2025 at 10:15:45AM +0300, Leon Romanovsky wrote:
-> On Wed, Apr 23, 2025 at 02:28:56PM -0300, Jason Gunthorpe wrote:
-> > On Wed, Apr 23, 2025 at 11:13:02AM +0300, Leon Romanovsky wrote:
-> > > From: Leon Romanovsky <leonro@nvidia.com>
-
-<...>
-
-> > > +bool hmm_dma_unmap_pfn(struct device *dev, struct hmm_dma_map *map, size_t idx)
-> > > +{
-> > > +	struct dma_iova_state *state = &map->state;
-> > > +	dma_addr_t *dma_addrs = map->dma_list;
-> > > +	unsigned long *pfns = map->pfn_list;
-> > > +	unsigned long attrs = 0;
-> > > +
-> > > +#define HMM_PFN_VALID_DMA (HMM_PFN_VALID | HMM_PFN_DMA_MAPPED)
-> > > +	if ((pfns[idx] & HMM_PFN_VALID_DMA) != HMM_PFN_VALID_DMA)
-> > > +		return false;
-> > > +#undef HMM_PFN_VALID_DMA
+On Wed, Apr 23, 2025 at 03:09:41PM -0300, Jason Gunthorpe wrote:
+> On Wed, Apr 23, 2025 at 11:13:08AM +0300, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
 > > 
-> > If a v10 comes I'd put this in a const function level variable:
+> > Remove intermediate scatter-gather table completely and
+> > enable new DMA link API.
 > > 
-> >           const unsigned int HMM_PFN_VALID_DMA = HMM_PFN_VALID | HMM_PFN_DMA_MAPPED;
+> > Tested-by: Jens Axboe <axboe@kernel.dk>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> >  drivers/vfio/pci/mlx5/cmd.c  | 298 ++++++++++++++++-------------------
+> >  drivers/vfio/pci/mlx5/cmd.h  |  21 ++-
+> >  drivers/vfio/pci/mlx5/main.c |  31 ----
+> >  3 files changed, 147 insertions(+), 203 deletions(-)
+> 
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> 
+> > +static int register_dma_pages(struct mlx5_core_dev *mdev, u32 npages,
+> > +			      struct page **page_list, u32 *mkey_in,
+> > +			      struct dma_iova_state *state,
+> > +			      enum dma_data_direction dir)
+> > +{
+> > +	dma_addr_t addr;
+> > +	size_t mapped = 0;
+> > +	__be64 *mtt;
+> > +	int i, err;
+> >  
+> > -	return mlx5_core_create_mkey(mdev, mkey, mkey_in, inlen);
+> > +	WARN_ON_ONCE(dir == DMA_NONE);
+> > +
+> > +	mtt = (__be64 *)MLX5_ADDR_OF(create_mkey_in, mkey_in, klm_pas_mtt);
+> > +
+> > +	if (dma_iova_try_alloc(mdev->device, state, 0, npages * PAGE_SIZE)) {
+> > +		addr = state->addr;
+> > +		for (i = 0; i < npages; i++) {
+> > +			err = dma_iova_link(mdev->device, state,
+> > +					    page_to_phys(page_list[i]), mapped,
+> > +					    PAGE_SIZE, dir, 0);
+> > +			if (err)
+> > +				goto error;
+> > +			*mtt++ = cpu_to_be64(addr);
+> > +			addr += PAGE_SIZE;
+> > +			mapped += PAGE_SIZE;
+> > +		}
+> 
+> This is an area I'd like to see improvement on as a follow up.
+> 
+> Given we know we are allocating contiguous IOVA we should be able to
+> request a certain alignment so we can know that it can be put into the
+> mkey as single mtt. That would eliminate the double translation cost in
+> the HW.
+> 
+> The RDMA mkey builder is able to do this from the scatterlist but the
+> logic to do that was too complex to copy into vfio. This is close to
+> being simple enough, just the alignment is the only problem.
 
-diff --git a/mm/hmm.c b/mm/hmm.c
-index c0bee5aa00fc..a8bf097677f3 100644
---- a/mm/hmm.c
-+++ b/mm/hmm.c
-@@ -807,15 +807,14 @@ EXPORT_SYMBOL_GPL(hmm_dma_map_pfn);
-  */
- bool hmm_dma_unmap_pfn(struct device *dev, struct hmm_dma_map *map, size_t idx)
- {
-+       const unsigned long valid_dma = HMM_PFN_VALID | HMM_PFN_DMA_MAPPED;
-        struct dma_iova_state *state = &map->state;
-        dma_addr_t *dma_addrs = map->dma_list;
-        unsigned long *pfns = map->pfn_list;
-        unsigned long attrs = 0;
- 
--#define HMM_PFN_VALID_DMA (HMM_PFN_VALID | HMM_PFN_DMA_MAPPED)
--       if ((pfns[idx] & HMM_PFN_VALID_DMA) != HMM_PFN_VALID_DMA)
-+       if ((pfns[idx] & valid_dma) != valid_dma)
-                return false;
--#undef HMM_PFN_VALID_DMA
- 
-        if (pfns[idx] & HMM_PFN_P2PDMA_BUS)
-                ; /* no need to unmap bus address P2P mappings */
+I saw this improvement as well, but there is a need to generalize this 
+"if (dma_iova_try_alloc) ... else ..." code first, as it will be used
+by all vfio HW drivers.
+
+So the plan is:
+1. Merge the code as is.
+2. Convert second vfio HW to the new API.
+3. Propose something like dma_map_pages(..., struct page **page_list, ...)
+   to map array of pages.
+4. Optimize mlx5 vfio MTT creation.
+
+Thanks
+
+> 
+> Jason
+> 
 
