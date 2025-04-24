@@ -1,50 +1,41 @@
-Return-Path: <linux-rdma+bounces-9767-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9768-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2695A9A53B
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Apr 2025 10:07:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95281A9A56D
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Apr 2025 10:12:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 434384434F7
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Apr 2025 08:07:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86E123B7236
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Apr 2025 08:11:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B16F1FDE0E;
-	Thu, 24 Apr 2025 08:07:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ODyOD7bZ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9747C20ADC9;
+	Thu, 24 Apr 2025 08:11:16 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92D0119CCEA;
-	Thu, 24 Apr 2025 08:07:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C5ADE552;
+	Thu, 24 Apr 2025 08:11:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745482070; cv=none; b=ZRavegX6XgO4ycdaIFapp66EzgMH4jwnRiYHYECVNbjM5GlYxy23egJRDwp79HJiW12ieeXZV+wx66UmhotCI5Eip/tDLOvzXIFWT61lAkBoNlKvHU9BieKczHwcfw/qr3kysb6zd5KaDsMwSsBiUN18OQbF4jLePVKA9QddKYs=
+	t=1745482276; cv=none; b=CAVJN0JWMmcGyI0sz53vADj2uYM5ZMHYWaxFthQ+z1vXNMgLbturC+qNLOUdkRm2RAy8UcAFcxYjhHk3a0kD3tAB0QzNSXfbcWmirpqFPXtdtVZM4OQGWxLanuKZrECOc/TXkWVbMsrmQR+wk9m+1JNvKpxHkqN0xPTnz/NenFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745482070; c=relaxed/simple;
-	bh=gQ9J0xOhC6db6xC9+l1fS/rU8P/+uRvFwj9Ophiqh+Q=;
+	s=arc-20240116; t=1745482276; c=relaxed/simple;
+	bh=JGL3psGtkPH2/js8ND1zwM6GdWFnAznTJQ556NVu1Dw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hEhM7mKefqFsB2aVpNrsNouf01/pPPMsJhi33z0xeNU66DwGpXb/oY9s5wrLJUWUOSqqhWaXFfGBcYChvPx1pEc3UqZfCKlMqC34mDU0dSd0i7O3dgC8+/Vdz7PC14srmGIsqqc5CHb8C5MOotDmQMAxfmwUI5GEZR9/RIx60sA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ODyOD7bZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0ED08C4CEEB;
-	Thu, 24 Apr 2025 08:07:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745482069;
-	bh=gQ9J0xOhC6db6xC9+l1fS/rU8P/+uRvFwj9Ophiqh+Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ODyOD7bZFe6psyTBbbqHrGyTN9bbO06+mLsjpOZpZAtyeVZhSMtIzzHp4uk/bPwRF
-	 Fg+5AuYPCHFaO1iJ7AZ0hnuzbSatu3RKpWWB0igu+ysf5GxyCdAj0/zoHi8abPgms6
-	 UyWqrFeuVLz7KWExbAlMl6sGk3pIBXhjJdgkeyS5U7v4meyETDlnI/bCnajjhgK5ip
-	 tIFTA4qEdRjUs4v9+5Yqy4cTSqzgz9evKITnLdxHo0yebJZSxHX+clynB3yYqiaA9g
-	 TAOPbev3sVV+FH5Ob1WbUIU/+f8jJU3YQkiM1kHRm7HKmFAywX5r91KPZh1EV5IySo
-	 WbMrUBYNBAOvw==
-Date: Thu, 24 Apr 2025 11:07:44 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Mika =?iso-8859-1?Q?Penttil=E4?= <mpenttil@redhat.com>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=rHO4u/Y/lGtHRuH0Uk2/BW6hQZ6oL9oPpn8lmUi3ivcOLa0NoaU8eFySORTnhjI+Q6UL3pfWMUC4Zl8MmW3qVCyBZABRVYTC4vpdutK9tbqj5BfDd2GtKaqvHVJ+wCRbrzrC8QtwY0nLsjhMAGvgaVoEtfYhF/z8+VpalxsjW9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 2F45667373; Thu, 24 Apr 2025 10:11:01 +0200 (CEST)
+Date: Thu, 24 Apr 2025 10:11:01 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>,
+	Mika =?iso-8859-1?Q?Penttil=E4?= <mpenttil@redhat.com>,
 	Marek Szyprowski <m.szyprowski@samsung.com>,
 	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
 	Keith Busch <kbusch@kernel.org>, Jake Edge <jake@lwn.net>,
@@ -70,50 +61,28 @@ Cc: Mika =?iso-8859-1?Q?Penttil=E4?= <mpenttil@redhat.com>,
 	Dan Williams <dan.j.williams@intel.com>,
 	Kanchan Joshi <joshi.k@samsung.com>,
 	Chaitanya Kulkarni <kch@nvidia.com>
-Subject: Re: [PATCH v9 10/24] mm/hmm: let users to tag specific PFN with DMA
- mapped bit
-Message-ID: <20250424080744.GP48485@unreal>
-References: <cover.1745394536.git.leon@kernel.org>
- <0a7c1e06269eee12ff8912fe0da4b7692081fcde.1745394536.git.leon@kernel.org>
- <7185c055-fc9e-4510-a9bf-6245673f2f92@redhat.com>
- <20250423181706.GT1213339@ziepe.ca>
- <36891b0e-d5fa-4cf8-a181-599a20af1da3@redhat.com>
- <20250423233335.GW1213339@ziepe.ca>
+Subject: Re: [PATCH v9 10/24] mm/hmm: let users to tag specific PFN with
+ DMA mapped bit
+Message-ID: <20250424081101.GA22989@lst.de>
+References: <cover.1745394536.git.leon@kernel.org> <0a7c1e06269eee12ff8912fe0da4b7692081fcde.1745394536.git.leon@kernel.org> <7185c055-fc9e-4510-a9bf-6245673f2f92@redhat.com> <20250423181706.GT1213339@ziepe.ca> <36891b0e-d5fa-4cf8-a181-599a20af1da3@redhat.com> <20250423233335.GW1213339@ziepe.ca> <20250424080744.GP48485@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250423233335.GW1213339@ziepe.ca>
+In-Reply-To: <20250424080744.GP48485@unreal>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Wed, Apr 23, 2025 at 08:33:35PM -0300, Jason Gunthorpe wrote:
-> On Wed, Apr 23, 2025 at 09:37:24PM +0300, Mika Penttilä wrote:
-> > 
-> > On 4/23/25 21:17, Jason Gunthorpe wrote:
-> > > On Wed, Apr 23, 2025 at 08:54:05PM +0300, Mika Penttilä wrote:
-> > >>> @@ -36,6 +38,13 @@ enum hmm_pfn_flags {
-> > >>>  	HMM_PFN_VALID = 1UL << (BITS_PER_LONG - 1),
-> > >>>  	HMM_PFN_WRITE = 1UL << (BITS_PER_LONG - 2),
-> > >>>  	HMM_PFN_ERROR = 1UL << (BITS_PER_LONG - 3),
-> > >>> +
-> > >>> +	/*
-> > >>> +	 * Sticky flags, carried from input to output,
-> > >>> +	 * don't forget to update HMM_PFN_INOUT_FLAGS
-> > >>> +	 */
-> > >>> +	HMM_PFN_DMA_MAPPED = 1UL << (BITS_PER_LONG - 7),
-> > >>> +
-> > >> How is this playing together with the mapped order usage?
-> > > Order shift starts at bit 8, DMA_MAPPED is at bit 7
-> > 
-> > hmm bits are the high bits, and order is 5 bits starting from
-> > (BITS_PER_LONG - 8)
+On Thu, Apr 24, 2025 at 11:07:44AM +0300, Leon Romanovsky wrote:
+> > I see, so yes order occupies 5 bits [-4,-5,-6,-7,-8] and the
+> > DMA_MAPPED overlaps, it should be 9 not 7 because of the backwardness.
 > 
-> I see, so yes order occupies 5 bits [-4,-5,-6,-7,-8] and the
-> DMA_MAPPED overlaps, it should be 9 not 7 because of the backwardness.
+> Thanks for the fix.
 
-Thanks for the fix.
+Maybe we can use the chance to make the scheme less fragile?  i.e.
+put flags in the high bits and derive the first valid bit from the
+pfn order?
 
