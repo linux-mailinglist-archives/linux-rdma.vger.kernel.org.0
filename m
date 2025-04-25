@@ -1,343 +1,217 @@
-Return-Path: <linux-rdma+bounces-9793-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9796-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EBECA9CA5D
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Apr 2025 15:31:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F493A9CAE1
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Apr 2025 15:54:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6653462269
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Apr 2025 13:30:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4103E1BC44AD
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Apr 2025 13:54:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21D0B259C9B;
-	Fri, 25 Apr 2025 13:29:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0131F233737;
+	Fri, 25 Apr 2025 13:54:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="CLNYtVQW"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="oWQtztkK"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AB8625524D;
-	Fri, 25 Apr 2025 13:29:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745587779; cv=none; b=JpzsrSxViAgl1JAf7E4hmUCycrgdIFfCEfOF8zq1uj2wAbEIEYe6T8IVDMUUWBH8xW4xnLmx4MVHyF8YS+GUJgzPNznVhrcsnqz41khsMng/gdQr2j2XHMVyh36lIK/P99TE7xASOZbYjCwhLR2g34If3jtb9b9OnjGtL8hs8VU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745587779; c=relaxed/simple;
-	bh=X9s38AFitvss5w9rj6xKtTNuhrCtPgInhOR92ySVVYI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=Q35koe6gVAmigavTZBq06ySpjtQs6IgoMGt0po+4B1JaOM5MTdkYbQMIh48b/H4xx/DPs0FC5Qz1W8JzlFXnmWrjHyoWnWzgYy/6fhX0x0mr75H5128t874CmLd56PQQmoS34FS1A2ocfrb8IJ72X17UhHCJMsHnKu5TUlENiFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=CLNYtVQW; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1186)
-	id C7641202095C; Fri, 25 Apr 2025 06:29:37 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C7641202095C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1745587777;
-	bh=RiOFjcGtYKwB80UEqpnpaVJHrzdwUYUItgslE4NxIVw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CLNYtVQWP+nifHlUMhfCzBoPyJ4+59cSs3u0Hc0EwFJqokrC51R6At86z4ABgwdmK
-	 XU/t+zcHCePLyGEeWbTg6IWT75lxKTWrwpwRmPhg8trVeUjPCla3KEJ08TwKcIVbcR
-	 m5zSfOCgxuj7CnI59OJPu9OUayw+ZVp6HMoZ/z0I=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	pabeni@redhat.com,
-	haiyangz@microsoft.com,
-	kys@microsoft.com,
-	edumazet@google.com,
-	kuba@kernel.org,
-	davem@davemloft.net,
-	decui@microsoft.com,
-	wei.liu@kernel.org,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH rdma-next v2 4/4] net: mana: Add support for auxiliary device servicing events
-Date: Fri, 25 Apr 2025 06:29:37 -0700
-Message-Id: <1745587777-15716-5-git-send-email-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1745587777-15716-1-git-send-email-kotaranov@linux.microsoft.com>
-References: <1745587777-15716-1-git-send-email-kotaranov@linux.microsoft.com>
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2044.outbound.protection.outlook.com [40.107.236.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C74A42069;
+	Fri, 25 Apr 2025 13:54:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.44
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1745589252; cv=fail; b=CDYTelbRRwRcbnQlH/VCzbI+hyp3XSRUCZ0CBxUyQTf03FbDGxORNZya8l1xfgx1facBs7zK5SOrsBE9Bf+v046JOYKb0x8hI/3xfGAeK03La4+ig6/gaKCbKQkyEbudwKVAwkGl5xwEYbMa6ov+wVXBiGWe9qx3bIQ3q+IyELM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1745589252; c=relaxed/simple;
+	bh=KwOgzi9Bu7S2lZ1Aluvyhj8PjfxdCKQ+2hvHVpGiDJA=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=T30LBbgFvj9RXDbGVu1ms1XE4N61jXuGsy4S7KGCrTfFvv6nsvpt8TPY3b5dfv4niVqH0bFeTBrz8x/Yw5//0zVodUtPm/wPWV2rPyENzdIbYF/O07RMPDAaG+jmyUmMts+Ghl79AiUmlHXQaiGsZBumr94CGyCG78XQWOQA3o4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=oWQtztkK; arc=fail smtp.client-ip=40.107.236.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=KsuolqIYKdSZOjMM3PNQ21uW51EjQ9V5wRQHRx98/dHKfduKO4NTmCbgyBO4UKl2NnmA4d/s393RBIRntEC9XGlKc6dra50q/grihmOnYYukY4XWs+GWa7QexxHQeFS2yx5txBAtAHlmjr7D0cs4Hwsg8W84qmVZSa1CkDvdD3bf3gdE3rp/SLOUuIfC5p82QvUpYrxAZy+Za+g6P8dPqcaSiQF9YIWYZo94L4aBuBF6reBRW1SUJRtPReWHGXUKhTQw/SXaR2BA4C7VtSwt0ycCCff2CLhcpip3SVC0BtNlBSnEQZHmsfZAegiHiEQ8oDxK1wrzNhRMvqtM9XFPMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KwOgzi9Bu7S2lZ1Aluvyhj8PjfxdCKQ+2hvHVpGiDJA=;
+ b=PMPCyzz2OaYQq/Wktm8vb8ufWOevs2XiI3AYmLxe1S5fF88CVMiCUqgPVfLXzDQJzorFX/yYAgaPpxQwv6B1MKe21ACJyqOW882YUh7xW+BXqLFSZdExWzznjX/xnjP2p/UydKfSJfpewJzjDYMPAX6Gp1q2FnnRmqSdFgwwx8Np2k5MbUFOLwYnrqiyzdXtOyjrcT9iSl+GFBhe9Ah5iFsEN+LtMv+mUAR1jHSojK/H4nWQrB+EjoSWmODoYaWCplS8FJjqf1mAsOYIID6obO4MQIbUA89jFMFOJaHOOUyZzOA1QKCjFemcyn5d8NRKE2fzpco/fKrAouwPMUfGNQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KwOgzi9Bu7S2lZ1Aluvyhj8PjfxdCKQ+2hvHVpGiDJA=;
+ b=oWQtztkKR6EyAKp6GjpzXs/TgGD1r0TpFLP1MuBX/ByRUakJOo4Vdtp7SW+UIyXhAI1qdRMk34ohPp9QXNCckXO6BcbLBvlmsaFogWoldv6boY6u9RhezxEn4mgPOUJ5rh7YN9yf0uD0NW0CGKMHynPzUH4diy4JPM51tQyAO87dd8U8071Z9cHFW3s5SLjZInyFjDx5xtDnCXzwpvpdi/kAA6v2kw2/UeV73mI4S7iNrBkTPgKAy6AXMW4itDtADJdA95Tx2EwmchfikeJcCUnu9XlWvXIlLdfDPaeeQOtsS+sRSBZC0GaW8xnoytdXWYndSjQUuYRauvw4u4n5PA==
+Received: from PH8PR12MB7208.namprd12.prod.outlook.com (2603:10b6:510:224::7)
+ by SJ2PR12MB7800.namprd12.prod.outlook.com (2603:10b6:a03:4c1::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8678.27; Fri, 25 Apr
+ 2025 13:54:07 +0000
+Received: from PH8PR12MB7208.namprd12.prod.outlook.com
+ ([fe80::1664:178c:a93e:8c42]) by PH8PR12MB7208.namprd12.prod.outlook.com
+ ([fe80::1664:178c:a93e:8c42%3]) with mapi id 15.20.8678.025; Fri, 25 Apr 2025
+ 13:54:07 +0000
+From: Parav Pandit <parav@nvidia.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+CC: "Eric W. Biederman" <ebiederm@xmission.com>, "Serge E. Hallyn"
+	<serge@hallyn.com>, "linux-rdma@vger.kernel.org"
+	<linux-rdma@vger.kernel.org>, "linux-security-module@vger.kernel.org"
+	<linux-security-module@vger.kernel.org>, Leon Romanovsky <leonro@nvidia.com>
+Subject: RE: [PATCH] RDMA/uverbs: Consider capability of the process that
+ opens the file
+Thread-Topic: [PATCH] RDMA/uverbs: Consider capability of the process that
+ opens the file
+Thread-Index:
+ AQHbk9YLoK1pT4atn0WpWWxcsGvDt7N3vsYAgACIALCAAIEngIAAkUBrgAAxToCAGipgUIAZ+iMAgACAGGCAACPuAIAAA3qQgABFyACAAUU9AIAAB8qAgAAxbYCAAAUbgIABS0ZQgAAqToCAABIpe4AAAEUAgAAOzYCAAQq5sIAAXSeAgAF369CAAA4KAIAABCOg
+Date: Fri, 25 Apr 2025 13:54:07 +0000
+Message-ID:
+ <PH8PR12MB720834D2635090B376790F30DC842@PH8PR12MB7208.namprd12.prod.outlook.com>
+References: <20250422161127.GO823903@nvidia.com>
+ <20250422162943.GA589534@mail.hallyn.com>
+ <CY8PR12MB71955B492640B228145DB9CFDCBA2@CY8PR12MB7195.namprd12.prod.outlook.com>
+ <20250423144649.GA1743270@nvidia.com>
+ <87msc6khn7.fsf@email.froward.int.ebiederm.org>
+ <CY8PR12MB71955CC99FD7D12E3774BA54DCBA2@CY8PR12MB7195.namprd12.prod.outlook.com>
+ <20250423164545.GM1648741@nvidia.com>
+ <CY8PR12MB7195D5ED46D8E920A5281393DC852@CY8PR12MB7195.namprd12.prod.outlook.com>
+ <20250424141347.GS1648741@nvidia.com>
+ <CY8PR12MB7195F2A210D670E07EC14DE9DC842@CY8PR12MB7195.namprd12.prod.outlook.com>
+ <20250425132930.GB1804142@nvidia.com>
+In-Reply-To: <20250425132930.GB1804142@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH8PR12MB7208:EE_|SJ2PR12MB7800:EE_
+x-ms-office365-filtering-correlation-id: f5e8b13c-c624-420b-bfaa-08dd8400a5cc
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|366016|376014|1800799024|38070700018;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?RFbeXPNkhrTpn9Ii/2CRgxBvIc42haBhwfNvU6XeLb5zZGvOfTiHP5TtKqlM?=
+ =?us-ascii?Q?sDVg8T29ij3UD0boQ3DLiXVxoj/7l7H59EAu78Me+S4n+4UtwQMx6KM/W/BM?=
+ =?us-ascii?Q?yS3qdohUlM776YTtDY+0vLvECi6WHK04r5HeY2smjJ8/kOmMbpqtXFCzrpKd?=
+ =?us-ascii?Q?7/7UeCV3s7LpBl2NXM5j+FznXQh0KhCPHX3mvEGAYtUFA1PlZuLBx5AH/hkE?=
+ =?us-ascii?Q?HKrmGuMXG+WQhn2dlGc8ybpq4ppEXzFxd/gKXDephDGDybNwF15RSP9pfwBb?=
+ =?us-ascii?Q?ktleB5xA/827fRq2bAFhwpgh3duWpkMsO5yVZlEoAfZhcUNsedUXJ8O4nKDw?=
+ =?us-ascii?Q?4+9B+/TpZwyEbmh7yqsDpgm1Z95ZtarC1BaJVWL15ZNYNxgP+xVeuW6chpMi?=
+ =?us-ascii?Q?dtweZql7HdOh+e7jFwxmMoYCMWBXkXoPSrczUZs3YMS8ePel9TCkD2K+qmbY?=
+ =?us-ascii?Q?Qh3IA4N7JQMDo85hFQt3xwGcJbGYjlD0uqPvhyBQseUw6Jkd9GXIbZE86id4?=
+ =?us-ascii?Q?EaSAa6XpuwzkPGT69XoSJjrTK0muue64uHZyvExy1wNunm5+tphG1WNymdbO?=
+ =?us-ascii?Q?WVEcNNPSa87s3c0tYwBcBr8LU1DHzXOBwC//nlMRoS8Rs7xG2Cuw979yLgNP?=
+ =?us-ascii?Q?qT2ViBi1HoJqED6hAhXDeenuLLWHQw3mSdQz7Ug0M249Q/2gR1EODTNM8jim?=
+ =?us-ascii?Q?S76o2oC1p0NjCYsQG5/hBfNjmCqdv7hYDKyzoO1s6606bOFwzYOj1xy6H+u+?=
+ =?us-ascii?Q?WZq46MuYVKdBivT2P6r1T+roUYw+DbAOVRSLPbebFFwXl83CVMKqyKlDS5jX?=
+ =?us-ascii?Q?BoxrKtwMSlINEKUUE0Hwm5F3HDr/G3S8gvZd248f6bNfor6zlj4NJ9qWEimn?=
+ =?us-ascii?Q?qdBpxHU80w2h5mYjMseMvwLY/PTZy9HfXrZKwh3wLJtUMfoU8htlj1G6VOtH?=
+ =?us-ascii?Q?opOuKAeNdEIvF9zcd0WVyj3E6daLE3Qeto04iNP/vGMiNbJCxbtF6uqeFhIp?=
+ =?us-ascii?Q?rBxlEG/0nEyBB+dfwvG9zTuu1vosV1LWJ3LCM+q0wx2Fb2rvkm2ytwRhfTgR?=
+ =?us-ascii?Q?6XxUf3iS6tUlvTHweg+7XwbbDfAb9frcHigkBbRIbtv+hdYmpBekvNAezUKJ?=
+ =?us-ascii?Q?FX345fkHNTn0QirRblCpYe4fviJk68A+ZQ7BwSUhq9AYuBRdIo3PdB4nSxCR?=
+ =?us-ascii?Q?Vi4VWRT8fxPt5gtv07tIeUED9lGAMhOja70SyTbc/wu0NHVDDxaEFD6dmXZf?=
+ =?us-ascii?Q?cVZ8/8ccBiqA38GW4SN+Z3mHIvwe4uSBsybQhLylQNEjACFVe3eh6/ZyylcF?=
+ =?us-ascii?Q?iwDvbOk9yM4/VvkXpBtAIchTHp6E1w7d77+Lf7mFW0D71nJrF8jvy/Jd+4A4?=
+ =?us-ascii?Q?bsER3pSvNzT8h45zoQlJKCT3EmmtmNR55f1vN9PEciBJ1yqowQM46RrmvKT7?=
+ =?us-ascii?Q?soGoY7mhoXbz5DqOQvsgDewG8Ku/BueR/U/vnn0EEWt01VOefriA4w=3D=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR12MB7208.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?yRbMoKV12pVM7Y3ae0E/iKT1vxLjkAUorgKOyhrXpQFg9t8S16roznCnA2eW?=
+ =?us-ascii?Q?iFiOx5Y9cGuWQc5WN7Jgnl3CrERjKyxpsvvOaOGm8/n2h+EqrjeFwzK4dBV+?=
+ =?us-ascii?Q?xUVwcx9ZUvha99GC03TAqtcvEC8gEcxatqDYqJajE3Sx0q78o1RFNQTIVw94?=
+ =?us-ascii?Q?x1GerJMitelu+/5WoApe4wm9s80WrASclmflVu4WdXzqYWg2BkrkZpFdyJHR?=
+ =?us-ascii?Q?a9VNyyRutwi4GR+d8UNi+uAKVJNmXMSBF7NwvvUPPitmoi3kE7o5ypS82j/L?=
+ =?us-ascii?Q?yBRIFihfuaJM5sm/b+jTFtg0e8s2ShZq2edk/RJ8lkJhOd24KlB9ElDrdQmq?=
+ =?us-ascii?Q?/j3GuvRVepuWCiLqk8/43eOYkTZgJXJl5AYMK1TwduHYOjj9moGfmVaGWHeu?=
+ =?us-ascii?Q?FRAx3t9n735GBYfv4nBJlCBVdnFwJJ1YikCpjhi46LWCREZxP0HPQ0qsBJ1G?=
+ =?us-ascii?Q?PDOLhM2+m7B3dNGxWgNl2s9e5/h73JQ9yxDqA2HvcS9bRs3YuqGDVDfLwpt9?=
+ =?us-ascii?Q?TwqzYIlOvy1yJQZNqWvMU9z8w+PwD4Zfx66NwJpq2xIpjg5mKTkdkUh9U5MR?=
+ =?us-ascii?Q?SdBguifWpDVv6XJNRjiCfVlBpK3E0tMM1i9GrTLIpESXQf9dVyj3mpZIHWnz?=
+ =?us-ascii?Q?MUwButAyuF0qvRbgJLeZEU0jUPtfueaq54zVy+Bb84dOYWgdvPJW25MhNXOZ?=
+ =?us-ascii?Q?2+BoBQbTQeMWntyh1QCLYjUk8w+4vmIPQUyY5qaYi35p9QU3v2CxYwBvvxP2?=
+ =?us-ascii?Q?h8kSXiR7hHu4+gHhSPSWD+NYf4//Bntb9swQ/TICsZACgRna86MNiVzTE7rd?=
+ =?us-ascii?Q?f/o0syJAAd+vA/AaTKg+FZVJS5jwdYwTJgbCrLd7LHAj8Ng54HCoahu//ILm?=
+ =?us-ascii?Q?Ps5se/q+Yzwtvy4sRjZln/jMD0AmEWnTwuDr71Uccq8xUTYioaK3Zb6qPY5y?=
+ =?us-ascii?Q?tATgPnnpFxJe9TaOe7SI5r7Oh/njsLNiFiawqtdfylBgrcffEJc4MSrRJYlD?=
+ =?us-ascii?Q?sDo7tSMy8YIys28uwtrlMOy+K8AKRoWzLfyo5ptOusTPjAxfcX+2soC1vpw7?=
+ =?us-ascii?Q?o2VWXkyA13lfPKNRJHyVFatWd8As9emrmwhs8uVibkDMZUxomZhly9FWQK/T?=
+ =?us-ascii?Q?1eKbv+zdfhevQPPFOmBUzu5/GJvNWyIQKtM4hMMpA7G6uFb0BTdeLdtIb2FQ?=
+ =?us-ascii?Q?EmznojmMJBqDEYxGIzVmSTeA15fj9xibU1VI34lM4PVCiSlYT5mZo2iP7tt9?=
+ =?us-ascii?Q?x6wyY7i8jGRkJ/MegxYRtQH+ReHrkEknIXmHfyQyLibDEb8LlP2HP9aP2Zga?=
+ =?us-ascii?Q?jVdoCEoLm5daAzSpJpVGxToXRH5CcmKILh4FfxPceTQJZUtI+JL7Q3n+f/ha?=
+ =?us-ascii?Q?npBGqg/iG+udiI4LFDJah9Au/PyfVqQuoX5byO+hxKZ0h0NATm94/bWJfamD?=
+ =?us-ascii?Q?iS+GsnT3sDrnzhlI2LR5ErKE1GKgOOddppymc9NERUJteTxIIKe49KryQP27?=
+ =?us-ascii?Q?WxsTuT4lQ3pA8Sv02gvQQ8RGf7Sc2o8P2lkLgO9dNEPr4+LFwKp+doUrvZBa?=
+ =?us-ascii?Q?b3B0sn1w6iEghBJLcbo=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR12MB7208.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f5e8b13c-c624-420b-bfaa-08dd8400a5cc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Apr 2025 13:54:07.2426
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 46vPzZuqMVY9eji3KyymSLmkpqUXpBzyXSHoxecOev7DAFDjW9SP14CiKmLbl1jyXpkOWsqQYYLQwRCGbTIhhA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7800
 
-From: Shiraz Saleem <shirazsaleem@microsoft.com>
 
-Handle soc servcing events which require the rdma auxiliary device resources to
-be cleaned up during a suspend, and re-initialized during a resume.
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> Sent: Friday, April 25, 2025 7:00 PM
+>=20
+> On Fri, Apr 25, 2025 at 01:14:35PM +0000, Parav Pandit wrote:
+>=20
+> > 1. In uobject creation syscall, I will add the check current->nsproxy->=
+net-
+> >user_ns capability using ns_capable().
+> > And we don't hold any reference for user ns.
+>=20
+> This is the thing that makes my head ache.. Is that really the right way =
+to get
+> the user_ns of current?=20
 
-Signed-off-by: Shiraz Saleem <shirazsaleem@microsoft.com>
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
----
- drivers/net/ethernet/microsoft/mana/gdma_main.c  | 11 +++-
- drivers/net/ethernet/microsoft/mana/hw_channel.c | 19 +++++++
- drivers/net/ethernet/microsoft/mana/mana_en.c    | 69 ++++++++++++++++++++++++
- include/net/mana/gdma.h                          | 19 +++++++
- include/net/mana/hw_channel.h                    |  9 ++++
- 5 files changed, 126 insertions(+), 1 deletion(-)
+> Is it possible that current has multiple user_ns's?=20
+I don't think so.
 
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 1caf73c..1d98dd6 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -385,6 +385,7 @@ static void mana_gd_process_eqe(struct gdma_queue *eq)
- 	case GDMA_EQE_HWC_INIT_EQ_ID_DB:
- 	case GDMA_EQE_HWC_INIT_DATA:
- 	case GDMA_EQE_HWC_INIT_DONE:
-+	case GDMA_EQE_HWC_SOC_SERVICE:
- 	case GDMA_EQE_RNIC_QP_FATAL:
- 		if (!eq->eq.callback)
- 			break;
-@@ -1438,9 +1439,13 @@ static int mana_gd_setup(struct pci_dev *pdev)
- 	mana_gd_init_registers(pdev);
- 	mana_smc_init(&gc->shm_channel, gc->dev, gc->shm_base);
- 
-+	gc->service_wq = alloc_ordered_workqueue("gdma_service_wq", 0);
-+	if (!gc->service_wq)
-+		return -ENOMEM;
-+
- 	err = mana_gd_setup_irqs(pdev);
- 	if (err)
--		return err;
-+		goto free_workqueue;
- 
- 	err = mana_hwc_create_channel(gc);
- 	if (err)
-@@ -1464,6 +1469,8 @@ destroy_hwc:
- 	mana_hwc_destroy_channel(gc);
- remove_irq:
- 	mana_gd_remove_irqs(pdev);
-+free_workqueue:
-+	destroy_workqueue(gc->service_wq);
- 	return err;
- }
- 
-@@ -1474,6 +1481,8 @@ static void mana_gd_cleanup(struct pci_dev *pdev)
- 	mana_hwc_destroy_channel(gc);
- 
- 	mana_gd_remove_irqs(pdev);
-+
-+	destroy_workqueue(gc->service_wq);
- }
- 
- static bool mana_is_pf(unsigned short dev_id)
-diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-index a00f915..407b46e 100644
---- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
-+++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-@@ -112,11 +112,13 @@ out:
- static void mana_hwc_init_event_handler(void *ctx, struct gdma_queue *q_self,
- 					struct gdma_event *event)
- {
-+	union hwc_init_soc_service_type service_data;
- 	struct hw_channel_context *hwc = ctx;
- 	struct gdma_dev *gd = hwc->gdma_dev;
- 	union hwc_init_type_data type_data;
- 	union hwc_init_eq_id_db eq_db;
- 	u32 type, val;
-+	int ret;
- 
- 	switch (event->type) {
- 	case GDMA_EQE_HWC_INIT_EQ_ID_DB:
-@@ -199,7 +201,24 @@ static void mana_hwc_init_event_handler(void *ctx, struct gdma_queue *q_self,
- 		}
- 
- 		break;
-+	case GDMA_EQE_HWC_SOC_SERVICE:
-+		service_data.as_uint32 = event->details[0];
-+		type = service_data.type;
-+		val = service_data.value;
- 
-+		switch (type) {
-+		case GDMA_SERVICE_TYPE_RDMA_SUSPEND:
-+		case GDMA_SERVICE_TYPE_RDMA_RESUME:
-+			ret = mana_rdma_service_event(gd->gdma_context, type);
-+			if (ret)
-+				dev_err(hwc->dev, "Failed to schedule adev service event: %d\n", ret);
-+			break;
-+		default:
-+			dev_warn(hwc->dev, "Received unknown SOC service type %u\n", type);
-+			break;
-+		}
-+
-+		break;
- 	default:
- 		dev_warn(hwc->dev, "Received unknown gdma event %u\n", event->type);
- 		/* Ignore unknown events, which should never happen. */
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index e08b43f..d35b7fd 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -2982,6 +2982,70 @@ idx_fail:
- 	return ret;
- }
- 
-+static void mana_handle_rdma_servicing(struct work_struct *work)
-+{
-+	struct mana_service_work *serv_work =
-+		container_of(work, struct mana_service_work, work);
-+	struct gdma_dev *gd = serv_work->gdma_dev;
-+	struct device *dev = gd->gdma_context->dev;
-+	int ret;
-+
-+	if (READ_ONCE(gd->rdma_teardown))
-+		goto out;
-+
-+	switch (serv_work->event) {
-+	case GDMA_SERVICE_TYPE_RDMA_SUSPEND:
-+		if (!gd->adev || gd->is_suspended)
-+			break;
-+
-+		remove_adev(gd);
-+		gd->is_suspended = true;
-+		break;
-+
-+	case GDMA_SERVICE_TYPE_RDMA_RESUME:
-+		if (!gd->is_suspended)
-+			break;
-+
-+		ret = add_adev(gd, "rdma");
-+		if (ret)
-+			dev_err(dev, "Failed to add adev on resume: %d\n", ret);
-+		else
-+			gd->is_suspended = false;
-+		break;
-+
-+	default:
-+		dev_warn(dev, "unknown adev service event %u\n",
-+			 serv_work->event);
-+		break;
-+	}
-+
-+out:
-+	kfree(serv_work);
-+}
-+
-+int mana_rdma_service_event(struct gdma_context *gc, enum gdma_service_type event)
-+{
-+	struct gdma_dev *gd = &gc->mana_ib;
-+	struct mana_service_work *serv_work;
-+
-+	if (gd->dev_id.type != GDMA_DEVICE_MANA_IB) {
-+		/* RDMA device is not detected on pci */
-+		return 0;
-+	}
-+
-+	serv_work = kzalloc(sizeof(*serv_work), GFP_ATOMIC);
-+	if (!serv_work)
-+		return -ENOMEM;
-+
-+	serv_work->event = event;
-+	serv_work->gdma_dev = gd;
-+
-+	INIT_WORK(&serv_work->work, mana_handle_rdma_servicing);
-+	queue_work(gc->service_wq, &serv_work->work);
-+
-+	return 0;
-+}
-+
- int mana_probe(struct gdma_dev *gd, bool resuming)
- {
- 	struct gdma_context *gc = gd->gdma_context;
-@@ -3153,11 +3217,16 @@ int mana_rdma_probe(struct gdma_dev *gd)
- 
- void mana_rdma_remove(struct gdma_dev *gd)
- {
-+	struct gdma_context *gc = gd->gdma_context;
-+
- 	if (gd->dev_id.type != GDMA_DEVICE_MANA_IB) {
- 		/* RDMA device is not detected on pci */
- 		return;
- 	}
- 
-+	WRITE_ONCE(gd->rdma_teardown, true);
-+	flush_workqueue(gc->service_wq);
-+
- 	if (gd->adev)
- 		remove_adev(gd);
- 
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index 89abf98..6b79788 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -60,6 +60,7 @@ enum gdma_eqe_type {
- 	GDMA_EQE_HWC_INIT_DONE		= 131,
- 	GDMA_EQE_HWC_SOC_RECONFIG	= 132,
- 	GDMA_EQE_HWC_SOC_RECONFIG_DATA	= 133,
-+	GDMA_EQE_HWC_SOC_SERVICE	= 134,
- 	GDMA_EQE_RNIC_QP_FATAL		= 176,
- };
- 
-@@ -70,6 +71,18 @@ enum {
- 	GDMA_DEVICE_MANA_IB	= 3,
- };
- 
-+enum gdma_service_type {
-+	GDMA_SERVICE_TYPE_NONE		= 0,
-+	GDMA_SERVICE_TYPE_RDMA_SUSPEND	= 1,
-+	GDMA_SERVICE_TYPE_RDMA_RESUME	= 2,
-+};
-+
-+struct mana_service_work {
-+	struct work_struct work;
-+	struct gdma_dev *gdma_dev;
-+	enum gdma_service_type event;
-+};
-+
- struct gdma_resource {
- 	/* Protect the bitmap */
- 	spinlock_t lock;
-@@ -224,6 +237,8 @@ struct gdma_dev {
- 	void *driver_data;
- 
- 	struct auxiliary_device *adev;
-+	bool is_suspended;
-+	bool rdma_teardown;
- };
- 
- /* MANA_PAGE_SIZE is the DMA unit */
-@@ -409,6 +424,8 @@ struct gdma_context {
- 	struct gdma_dev		mana_ib;
- 
- 	u64 pf_cap_flags1;
-+
-+	struct workqueue_struct *service_wq;
- };
- 
- #define MAX_NUM_GDMA_DEVICES	4
-@@ -888,4 +905,6 @@ int mana_gd_destroy_dma_region(struct gdma_context *gc, u64 dma_region_handle);
- void mana_register_debugfs(void);
- void mana_unregister_debugfs(void);
- 
-+int mana_rdma_service_event(struct gdma_context *gc, enum gdma_service_type event);
-+
- #endif /* _GDMA_H */
-diff --git a/include/net/mana/hw_channel.h b/include/net/mana/hw_channel.h
-index 158b125..83cf933 100644
---- a/include/net/mana/hw_channel.h
-+++ b/include/net/mana/hw_channel.h
-@@ -49,6 +49,15 @@ union hwc_init_type_data {
- 	};
- }; /* HW DATA */
- 
-+union hwc_init_soc_service_type {
-+	u32 as_uint32;
-+
-+	struct {
-+		u32 value	: 28;
-+		u32 type	:  4;
-+	};
-+}; /* HW DATA */
-+
- struct hwc_rx_oob {
- 	u32 type	: 6;
- 	u32 eom		: 1;
--- 
-1.8.3.1
+> We
+> are picking nsproxy because ib_dev has a net namespace affiliation?
+>=20
+Yes.
 
+After ruling out file's user ns, I believe there are two user ns.
+
+1. current_user_ns()=20
+2. current->nsproxy->net->user_ns.
+
+In most cases #1 and #2 should be same to my knowledge.
+
+When/if user wants to do have nested user ns, and don't want to create a ne=
+w net ns, #2 can be of use.
+For example,
+a. Process1 starts in user_ns_1 which created net_ns_1
+b. rdma device is in net_ns_1
+c. Process1 unshare and moves to user_ns_2.
+d. For some reason user_ns_2 does not have the cap.
+
+By current UTS and other namespace semantics, since rdma device belongs to =
+net ns, net ns's creator user ns to be considered.
+
+I am unsure if doing #1 breaks any existing model.
+I like to get Eric/Serge's view also, if we should consider #1 or #2.
 
