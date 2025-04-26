@@ -1,102 +1,108 @@
-Return-Path: <linux-rdma+bounces-9821-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9822-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AE9DA9D6F3
-	for <lists+linux-rdma@lfdr.de>; Sat, 26 Apr 2025 03:14:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1B84A9D81E
+	for <lists+linux-rdma@lfdr.de>; Sat, 26 Apr 2025 08:08:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E0AE4C2F30
-	for <lists+linux-rdma@lfdr.de>; Sat, 26 Apr 2025 01:14:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 388B31BC5447
+	for <lists+linux-rdma@lfdr.de>; Sat, 26 Apr 2025 06:08:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E2971EEA59;
-	Sat, 26 Apr 2025 01:14:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF275191F84;
+	Sat, 26 Apr 2025 06:08:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q5DnBKuz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UIlbAqfG"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4296E282EE;
-	Sat, 26 Apr 2025 01:14:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7202C481B6;
+	Sat, 26 Apr 2025 06:08:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745630074; cv=none; b=m2DBs4LYFiA8w7DLerNO7Vs7Xi5Xg0JVXftjMn6sgLeT88GOaS3m7lTDz1vubX1XH7HAqyXuDGPfIVdJeV9or70+DhPGrKa1xOEHdrFu+rNRu614v4YIQbsF+Jah4/7x25WmvWhx+I2Z7V67cPt1zTPXMBcGPV0N8nm0khtTZE8=
+	t=1745647682; cv=none; b=iGCswgw/eYhkV/ERVbMvqjMlM2XAZOn2OSrn2R0GwuBidJZSPkpJuHUa3uyKCzFofPapcp4XCaZv0OBxstvSsKfjU1ov4SShJ8OeihgGeLWEjCV9zik6sBgajRQTA5w+29JofN9MbBWGXWKrl1dcFPN93M7LdpBRro6Exx35r6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745630074; c=relaxed/simple;
-	bh=2LCUrZMeV2HZzBU2CuLrVTRtvZm5lDggJtqpE4KrVpY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sDlydX8SmHI4GVfZ2p3vXpALt6fWKhX42pPwm3tqxsoG4JWO+BTPEF0B+GW5pwctwdFqbSnyiLqLFjA9NekHLNqUUj3gf15ZzURD7K1yCJ+4cIQDD9n5uFhAQs17G5HH3fqzqGGWN0nT42djIzUtoEPseF/idasw7qtOYJnA2Q8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q5DnBKuz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D45A8C4CEE4;
-	Sat, 26 Apr 2025 01:14:32 +0000 (UTC)
+	s=arc-20240116; t=1745647682; c=relaxed/simple;
+	bh=os9zCEaCkCpN9yXXWUgkC0GWbB1/AbE3Rvj9+ZNhXGI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BlbDlW2gUgIfzmwfz0iiTXqhPNes7EwOvD+Dwb693IGCPZnuo+BZnIRCktNI4LtELCVgW15i6NI9aBy37qZQra9B0PykZAmaI3aB/kq3olg4td1/KjM4FWM2X9K2h0u3jgBG1ltGgRdB9d51GnA7mGfEIlAMTC2Y2uBm7RxE34g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UIlbAqfG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CE53C4CEE2;
+	Sat, 26 Apr 2025 06:08:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745630073;
-	bh=2LCUrZMeV2HZzBU2CuLrVTRtvZm5lDggJtqpE4KrVpY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=q5DnBKuzNiqtvCl6bt5OSuQ4Tc06r1bDEkNLVpzhjD6vhR5V5lliPHNnef8KwuRTG
-	 YUUrqLo48zbTsbToeDLKvt7DHSn7KOpZkaC7YPm/XMeVJox3cmAD22GhCnSbz8Hgep
-	 eMz7yioUwd3EDW+jW9mv2QPglXm4OO5jDGi7umHe0BslaXl3e3veXTl+YrY1kifVHi
-	 4XQITuMZUb873n0U8G2mYYDyiy9Fz5rUgdyja1NzYtgg1qwPX5nxLWdauAOlbasW+s
-	 3b6rwAUYeWMKhP2es1RmPrWaM/kXo2KHDrF5OfYVP4QcQ83jMavfxt/JRQoUA1WruP
-	 ddvaSB+syb4UQ==
-Date: Fri, 25 Apr 2025 18:14:31 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
-	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-	Keith Busch <kbusch@kernel.org>, Jake Edge <jake@lwn.net>,
-	Jonathan Corbet <corbet@lwn.net>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Zhu Yanjun <zyjzyj2000@gmail.com>,
-	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
-	linux-pci@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Kanchan Joshi <joshi.k@samsung.com>,
-	Chaitanya Kulkarni <kch@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>
-Subject: Re: [PATCH v9 06/24] iommu/dma: Factor out a iommu_dma_map_swiotlb
- helper
-Message-ID: <aAwzd_PE6U4ukQQp@bombadil.infradead.org>
-References: <cover.1745394536.git.leon@kernel.org>
- <9ef79ed6c24d12cfea7e6f491da48ae170a5f3f3.1745394536.git.leon@kernel.org>
+	s=k20201202; t=1745647682;
+	bh=os9zCEaCkCpN9yXXWUgkC0GWbB1/AbE3Rvj9+ZNhXGI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=UIlbAqfG2NuOCQ/4keS3DbgJERxOBXmliKxntsJBaPF/5eNTsofy3oW5+7NXJjb+4
+	 0laX6LRwC3uecmAy8ciMSQK31GKJYoK+pAwyEwHXx3TlS1sx/trJiQGiyi4Of2n6jX
+	 KjvGAWz7LdKQ32Y2jHAwyRa4dSvYQBuLqnL4d6z3woAOSlHPMD64c1Kc9fyH4xc8u3
+	 B6wBxyR89o8gGyYCdi/VUp1TdQ61s0GJqZWqO1IjE3WMY50Y0ZsQb2ZnldTJUL4Xzo
+	 FqXv/uGXKJa3IWQBS1y4JIXP8GfsdurNi/zuVq+G5vugSTIT0dvDvxAf0DDut9UVBi
+	 PMjzcn1jrtZrA==
+From: Kees Cook <kees@kernel.org>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: Kees Cook <kees@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] net/mlx4_core: Adjust allocation type for buddy->bits
+Date: Fri, 25 Apr 2025 23:07:58 -0700
+Message-Id: <20250426060757.work.865-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ef79ed6c24d12cfea7e6f491da48ae170a5f3f3.1745394536.git.leon@kernel.org>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1623; i=kees@kernel.org; h=from:subject:message-id; bh=os9zCEaCkCpN9yXXWUgkC0GWbB1/AbE3Rvj9+ZNhXGI=; b=owGbwMvMwCVmps19z/KJym7G02pJDBk8FXadu/kd/v0yzbedkP1WVK3iclrQxfZHV4xVjhk21 z9fO21PRykLgxgXg6yYIkuQnXuci8fb9nD3uYowc1iZQIYwcHEKwERsVjAybO//pap2s1fl05Ej cucnKXAavS95XxkztYDB6a7sJY8FbQz/TJyzY//L9Cp3buKUniWosm7JpmMOV5cpPfE/pCa9R7q NGwA=
+X-Developer-Key: i=kees@kernel.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 23, 2025 at 11:12:57AM +0300, Leon Romanovsky wrote:
-> From: Christoph Hellwig <hch@lst.de>
-> 
-> Split the iommu logic from iommu_dma_map_page into a separate helper.
-> This not only keeps the code neatly separated, but will also allow for
-> reuse in another caller.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Tested-by: Jens Axboe <axboe@kernel.dk>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+In preparation for making the kmalloc family of allocators type aware,
+we need to make sure that the returned type from the allocation matches
+the type of the variable being assigned. (Before, the allocator would
+always return "void *", which can be implicitly cast to any pointer type.)
 
-Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+The assigned type is "unsigned long **", but the returned type will be
+"long **". These are the same size allocation (pointer size) but the
+types do not match. Adjust the allocation type to match the assignment.
 
-  Luis
+Signed-off-by: Kees Cook <kees@kernel.org>
+---
+Cc: Tariq Toukan <tariqt@nvidia.com>
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: <netdev@vger.kernel.org>
+Cc: <linux-rdma@vger.kernel.org>
+---
+ drivers/net/ethernet/mellanox/mlx4/mr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx4/mr.c b/drivers/net/ethernet/mellanox/mlx4/mr.c
+index d7444782bfdd..698a5d1f0d7e 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/mr.c
++++ b/drivers/net/ethernet/mellanox/mlx4/mr.c
+@@ -106,7 +106,7 @@ static int mlx4_buddy_init(struct mlx4_buddy *buddy, int max_order)
+ 	buddy->max_order = max_order;
+ 	spin_lock_init(&buddy->lock);
+ 
+-	buddy->bits = kcalloc(buddy->max_order + 1, sizeof(long *),
++	buddy->bits = kcalloc(buddy->max_order + 1, sizeof(*buddy->bits),
+ 			      GFP_KERNEL);
+ 	buddy->num_free = kcalloc(buddy->max_order + 1, sizeof(*buddy->num_free),
+ 				  GFP_KERNEL);
+-- 
+2.34.1
+
 
