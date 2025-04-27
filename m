@@ -1,47 +1,47 @@
-Return-Path: <linux-rdma+bounces-9829-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9830-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB21CA9E061
-	for <lists+linux-rdma@lfdr.de>; Sun, 27 Apr 2025 09:25:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8024A9E099
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Apr 2025 09:53:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68F2D3B3584
-	for <lists+linux-rdma@lfdr.de>; Sun, 27 Apr 2025 07:25:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A3B646180A
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Apr 2025 07:53:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9BA72459E0;
-	Sun, 27 Apr 2025 07:25:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4581824633C;
+	Sun, 27 Apr 2025 07:53:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O1xqE+mq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OmokyrrK"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 823868BE7;
-	Sun, 27 Apr 2025 07:25:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F15366;
+	Sun, 27 Apr 2025 07:53:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745738712; cv=none; b=m8A1ONpjtDWfN/06FtimLX3dQUc+seGSV4cjYLxQVMBr3T10zSz6OFjQoOxNo/vvC/XrBxC/VSFYdJYooEj1qdTGZdCYZN3CrKSgR54MQePw8lkspeS2n/Jnn/ZuLwa0lyrVnwE8mdxNfpDTLCqEjBGEkNq8nzuP/d7gQXe6Yaw=
+	t=1745740419; cv=none; b=elYloxKKYcJTFLHSV2dhHFmM81zgBck3trN45/AftiF4lU3uZY0oqBBgRiixf8/v4vkWxgdzjIAJzDTvfIFxgkFpVOcAnoWq9Bok+kvTOsXLVhgKHRk+wx3FuMFIla4QgdiBVSL43tU5XqdRSt9xUmZ3bKFdlpOT7iXpmxP7QSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745738712; c=relaxed/simple;
-	bh=bERqNoVKbx4P/SwDDUOXyFXrxjwzNnYFUoDcCNKCVfw=;
+	s=arc-20240116; t=1745740419; c=relaxed/simple;
+	bh=iKyTQwydNmAM/0HcUlde1DtC+bZbAuPZo0BeWV99Sn0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Cje/cKoF1gV8pQ6CBVfcjehbzOMIoEQZAq5pRKC5DnsU0sjL+HkCw1AJ2j5bQTYwXwMbRQx64JkMHr+CcWJL8pOCh/7WtryWX/aZesAYAJdMRHKZ/YjOtGyq3Fj1m5c3cLNk95Cwpq1xI76PEdDKquujyhEuzRooHD6IzJX/PFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O1xqE+mq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40495C4CEE3;
-	Sun, 27 Apr 2025 07:25:11 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=sQy/zUSDFekwZcMyPogIZATaX87cJP1y0nFyl7mRGyrL28dhfs7E7ij1vsLZprnlRzmSh+Qhh0Y559CCwNyuAmzpU1qaUyPg+48fzdkzSmaVlNVhguBVk/O9NqxnGF2BD1dxqwup0NF4kHIssTXEQ2lfj/6xma9Bt+5XFpsP0w8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OmokyrrK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9CD1C4CEE3;
+	Sun, 27 Apr 2025 07:53:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745738712;
-	bh=bERqNoVKbx4P/SwDDUOXyFXrxjwzNnYFUoDcCNKCVfw=;
+	s=k20201202; t=1745740418;
+	bh=iKyTQwydNmAM/0HcUlde1DtC+bZbAuPZo0BeWV99Sn0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=O1xqE+mqwh8U+55fROspjUrKNzRVSIzJfDGM+Ls83njMJYStvF3kCZtrxDGnS8SVT
-	 FH2Y3/4QmPSaIrhVwSXIBJfNKQb2jOqg/0R9XOlNO+8e0XTTOVDsgTNzItS/cuPjFL
-	 PJCX+bYuGxOwMqFXAxDt9oJubodYIurQ+knbiSyXMkoJmOUGIl6AyOiN49LQkcuXwW
-	 lX4Zt8yUC+E7ZRN3ptmo7qa1Dn9p3RQqNw+5yoy5YM9m0zO7K7IBGHJkXHsUDSieM4
-	 qCQegX3jtiPkdIH87I9vQ2L9GafYOjlgT1bfZh8UZrFfu8pXhN2WP2XoeZGCszveQ5
-	 tJLYM5tBLk6AQ==
-Date: Sun, 27 Apr 2025 10:25:07 +0300
+	b=OmokyrrKogcvAy75PZnoqbf/SV/3tN6a/jr9gHE56cV2aAUja1b1vR87w7sFYp9SM
+	 2MTW/5zl9jZEDztFGGMRMoytnKxQ/fH3Nx6Llyyms85hrYsAaXPnI47FYKgA+tncyk
+	 mkQJNR/IXAW+albRz+ErujsbIoPBM+w7flk409Lh3ddIk6MNaLOs5tByMzgIIbhf5K
+	 jRQYMV0yr7lWDCaipx7Aq5g43zt2+567TjgKvYuKc8lxRSBlEQo2Qk0Kj38yk4NdCj
+	 I1x37331Ys/wwpuT1EUyEcmT/tN7FXyY29DcKZ5RlQ/ztukgb7skj9uPZ3RY+pbnTx
+	 CTtopc3JapJnQ==
+Date: Sun, 27 Apr 2025 10:53:32 +0300
 From: Leon Romanovsky <leon@kernel.org>
 To: Luis Chamberlain <mcgrof@kernel.org>
 Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
@@ -69,11 +69,12 @@ Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
 	Dan Williams <dan.j.williams@intel.com>,
 	Kanchan Joshi <joshi.k@samsung.com>,
 	Chaitanya Kulkarni <kch@nvidia.com>
-Subject: Re: [PATCH v9 01/24] PCI/P2PDMA: Refactor the p2pdma mapping helpers
-Message-ID: <20250427072507.GB5848@unreal>
+Subject: Re: [PATCH v9 02/24] dma-mapping: move the PCI P2PDMA mapping
+ helpers to pci-p2pdma.h
+Message-ID: <20250427075332.GC5848@unreal>
 References: <cover.1745394536.git.leon@kernel.org>
- <3a962f9039f0265de939f4c81924ee8208fc93a6.1745394536.git.leon@kernel.org>
- <aAwnJwLeOs7rfkHL@bombadil.infradead.org>
+ <493a6ab31fdd73e84e16662578858f194e9f87b9.1745394536.git.leon@kernel.org>
+ <aAwqBvLP3kaZsEdZ@bombadil.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -82,52 +83,65 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aAwnJwLeOs7rfkHL@bombadil.infradead.org>
+In-Reply-To: <aAwqBvLP3kaZsEdZ@bombadil.infradead.org>
 
-On Fri, Apr 25, 2025 at 05:21:59PM -0700, Luis Chamberlain wrote:
-> On Wed, Apr 23, 2025 at 11:12:52AM +0300, Leon Romanovsky wrote:
+On Fri, Apr 25, 2025 at 05:34:14PM -0700, Luis Chamberlain wrote:
+> On Wed, Apr 23, 2025 at 11:12:53AM +0300, Leon Romanovsky wrote:
 > > From: Christoph Hellwig <hch@lst.de>
-> > 
-> > The current scheme with a single helper to determine the P2P status
-> > and map a scatterlist segment force users to always use the map_sg
-> > helper to DMA map, which we're trying to get away from because they
-> > are very cache inefficient.
-> > 
-> > Refactor the code so that there is a single helper that checks the P2P
-> > state for a page, including the result that it is not a P2P page to
-> > simplify the callers, and a second one to perform the address translation
-> > for a bus mapped P2P transfer that does not depend on the scatterlist
-> > structure.
-> > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-> > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> > Tested-by: Jens Axboe <axboe@kernel.dk>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > +enum pci_p2pdma_map_type {
+> > +	/*
+> > +	 * PCI_P2PDMA_MAP_UNKNOWN: Used internally for indicating the mapping
+> > +	 * type hasn't been calculated yet. Functions that return this enum
+> > +	 * never return this value.
+> > +	 */
 > 
-> Might make it easier for patch review to split off adding
-> __pci_p2pdma_update_state() in a seprate patch first.
-
-Original code __pci_p2pdma_update_state() had this code and was
-dependent on SG, which we are removing in this patch.
-
-       if (state->map == PCI_P2PDMA_MAP_BUS_ADDR) {
-               sg->dma_address = sg_phys(sg) + state->bus_off;
-               sg_dma_len(sg) = sg->length;
-               sg_dma_mark_bus_address(sg);
-       }
-
-So to split, we would need to introduce new version of __pci_p2pdma_update_state(),
-rename existing one to something like __pci_p2pdma_update_state2() and
-remove it in next patch. Such pattern of adding and immediately deleting
-code is not welcomed.
-
-> Other than that, looks good.
+> This last sentence is confusing. How about:
 > 
-> Reviewed-by: Luis Chamberlain <mcgrof@kenrel.org>
+> * PCI_P2PDMA_MAP_UNKNOWN: Used internally as an initial state before
+> * the mapping type has been calculated. Exported routines for the API
+> * will never return this value.
+
+This patch moved code as is, but sure, let's update the comments.
+
+> 
+> > +	PCI_P2PDMA_MAP_UNKNOWN = 0,
+> > +
+> > +	/*
+> > +	 * Not a PCI P2PDMA transfer.
+> > +	 */
+> > +	PCI_P2PDMA_MAP_NONE,
+> > +
+> > +	/*
+> > +	 * PCI_P2PDMA_MAP_NOT_SUPPORTED: Indicates the transaction will
+> > +	 * traverse the host bridge and the host bridge is not in the
+> > +	 * allowlist. DMA Mapping routines should return an error when
+> > +	 * this is returned.
+> > +	 */
+> > +	PCI_P2PDMA_MAP_NOT_SUPPORTED,
+> > +
+> > +	/*
+> > +	 * PCI_P2PDMA_BUS_ADDR: Indicates that two devices can talk to
+> 
+> You mean   PCI_P2PDMA_MAP_BUS_ADDR
+
+done
+
+> 
+> > + * pci_p2pdma_bus_addr_map - map a PCI_P2PDMA_MAP_BUS_ADDR P2P transfer
+> 
+> Hrm, maybe with a bit more clarity:
+> 
+> Translate a physical address to a bus address for a  PCI_P2PDMA_MAP_BUS_ADDR
+> transfer.
+> 
+> 
+> Other than that.
+> 
+> Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
 
 Thanks
 
 > 
 >   Luis
+> 
 
