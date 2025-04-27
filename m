@@ -1,87 +1,88 @@
-Return-Path: <linux-rdma+bounces-9834-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9835-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22E37A9E2DB
-	for <lists+linux-rdma@lfdr.de>; Sun, 27 Apr 2025 13:52:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15041A9E392
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Apr 2025 16:31:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 614A518972CD
-	for <lists+linux-rdma@lfdr.de>; Sun, 27 Apr 2025 11:52:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F2467AB60F
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Apr 2025 14:30:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6CA8252900;
-	Sun, 27 Apr 2025 11:51:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N0GrFQVK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07E3613633F;
+	Sun, 27 Apr 2025 14:31:09 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.hallyn.com (mail.hallyn.com [178.63.66.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CD292528F3;
-	Sun, 27 Apr 2025 11:51:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFAA3440C;
+	Sun, 27 Apr 2025 14:31:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.63.66.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745754701; cv=none; b=d1B8ahSVQVa+AHUuTIwzCkymZsbIYMY24V/xBvCS2EikucpEBkcxHK9j51vU+abgBGC0oeSESa7y1YpnKocnsWtYPcM3v+jes191xC9fvVjcYzaZMsdlqNb03kst8QRSXwaHQgXoUyWumeAkQFZGRbnKVB/MP0LUiarceWYyxps=
+	t=1745764268; cv=none; b=lHQhvZruXYtGaVh0rknE54JS7PaAuGPfy3p26+CKTPcaUR7/um/8NFp27bxXbzq+uWD32ign8wMyM31Jn/fsgBbpsseLMhgl8mUyGESQFPxmCdiRyPaDPE14w4CiL0M2MUr/E0anFXE5JszNblb0gZ+3ISIK7dBu/vrXrASmsW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745754701; c=relaxed/simple;
-	bh=1k+xOpUEfnhtcxBkF6lYKZOL8VcrasBDIMWwD+uGyBs=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=raGFeHTcLuEVGu7A/Nn61ll14bOzhEeMmoHD68fbvrxAlu3aUHzqTK55+6jgkvcj5cvWrjewiglcNtnVBJUPPYl/1cLy7BhfEVZFSKbDgpnHAr7MYVkDkNslC/eXx9ARxnhiAiXeohvW+845G5bTO7wS0ca6kLFqLRKBcCG2dPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N0GrFQVK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79B93C4CEEA;
-	Sun, 27 Apr 2025 11:51:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745754700;
-	bh=1k+xOpUEfnhtcxBkF6lYKZOL8VcrasBDIMWwD+uGyBs=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=N0GrFQVKFslLbx1ODGWXGi04icoFMfeh0SGFyjoFSWsDXZrVer7NMcocy5thXtZb3
-	 svdfi80/eyNRHg+GDFOyf79Pktn5E9Od3K7dkOgNoI/wv/pjkbL0Pn1v6DO6Jj+cYX
-	 yYh94adyQUx1x/K3dYGc3kufMJdoYPa0302jyd73SkOkEUvOAep1hpBWI3+vhAid1w
-	 Hcgv7fVTZppxCsUtpCsTzv6x2exoHabuwIGkG4pX4xptD5UH3uXm7hdD+OtxtdjAy4
-	 PSwNt/XNrvKv+UUiUZ0/Ijmed08DDpjMSTGVfaXmxjxgAcedrRFLS7xhKBJaqO+VPk
-	 42sqFsj8/OYPQ==
-From: Leon Romanovsky <leon@kernel.org>
-To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, 
- Kees Cook <kees@kernel.org>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-In-Reply-To: <20250426061247.work.261-kees@kernel.org>
-References: <20250426061247.work.261-kees@kernel.org>
-Subject: Re: [PATCH] IB/hfi1: Adjust fd->entry_to_rb allocation type
-Message-Id: <174575469757.624502.17135732008958282347.b4-ty@kernel.org>
-Date: Sun, 27 Apr 2025 07:51:37 -0400
+	s=arc-20240116; t=1745764268; c=relaxed/simple;
+	bh=bYfd+KEj6odgTjCh3IeEijxIjewlcPFewJK9LEdoVYY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pOTs9WW0qB9w86XN04AR10HN1OiqnDxmj5rNgYN5tEc6ndWpNo++eGh4irN4ox+ifxM+dkltfrNJY3sAdgBDy+4VwXz3eH1vuaBNXRHenMhJAe6+ygSB46rlXSMQyBrfCZcB1Kjwn+DHsMX8SNSovV/O5bjTCcrfN1UKFU6wpus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hallyn.com; spf=pass smtp.mailfrom=mail.hallyn.com; arc=none smtp.client-ip=178.63.66.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hallyn.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail.hallyn.com
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+	id 90020E3F; Sun, 27 Apr 2025 09:30:58 -0500 (CDT)
+Date: Sun, 27 Apr 2025 09:30:58 -0500
+From: "Serge E. Hallyn" <serge@hallyn.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	Parav Pandit <parav@nvidia.com>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-security-module@vger.kernel.org" <linux-security-module@vger.kernel.org>,
+	Leon Romanovsky <leonro@nvidia.com>
+Subject: Re: [PATCH] RDMA/uverbs: Consider capability of the process that
+ opens the file
+Message-ID: <20250427143058.GA622212@mail.hallyn.com>
+References: <CY8PR12MB7195D5ED46D8E920A5281393DC852@CY8PR12MB7195.namprd12.prod.outlook.com>
+ <20250424141347.GS1648741@nvidia.com>
+ <CY8PR12MB7195F2A210D670E07EC14DE9DC842@CY8PR12MB7195.namprd12.prod.outlook.com>
+ <20250425132930.GB1804142@nvidia.com>
+ <20250425140144.GB610516@mail.hallyn.com>
+ <20250425142429.GC1804142@nvidia.com>
+ <87h62ci7ec.fsf@email.froward.int.ebiederm.org>
+ <20250425162102.GA2012301@nvidia.com>
+ <875xisf8ma.fsf@email.froward.int.ebiederm.org>
+ <20250425183529.GB2012301@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250425183529.GB2012301@nvidia.com>
 
-
-On Fri, 25 Apr 2025 23:12:48 -0700, Kees Cook wrote:
-> In preparation for making the kmalloc family of allocators type aware,
-> we need to make sure that the returned type from the allocation matches
-> the type of the variable being assigned. (Before, the allocator would
-> always return "void *", which can be implicitly cast to any pointer type.)
+On Fri, Apr 25, 2025 at 03:35:29PM -0300, Jason Gunthorpe wrote:
+> On Fri, Apr 25, 2025 at 12:34:21PM -0500, Eric W. Biederman wrote:
+> > > What about something like CAP_SYS_RAWIO? I don't think we would ever
+> > > make that a per-userns thing, but as a thought experiment, do we check
+> > > current->XXX->user_ns or still check ibdev->netns->XX->user_ns?
+> > >
+> > 
+> > Oh.  CAP_SYS_RAWIO is totally is something you can have.  In fact
+> > the first process in a user namespace starts out with CAP_SYS_RAWIO.
+> > That said it is CAP_SYS_RAWIO with respect to the user namespace.
+> > 
+> > What would be almost certainly be a bug is for any permission check
+> > to be relaxed to ns_capable(resource->user_ns, CAP_SYS_RAWIO).
 > 
-> The assigned type is "struct tid_rb_node **", but the return type will be
-> "struct rb_node **". These are the same allocation size (pointer size),
-> but the types do not match. Adjust the allocation type to match the
-> assignment.
-> 
-> [...]
+> So a process "has" it but the kernel never accepts it?
 
-Applied, thanks!
+Capabilities are targeted at some resource.  Sometimes the resource is
+global, or always belongs to the initial user namespace.  In the case
+of rawio, if ever "device namespaces" became acceptable, then it could
+in fact become namespaced for some resources.
 
-[1/1] IB/hfi1: Adjust fd->entry_to_rb allocation type
-      https://git.kernel.org/rdma/rdma/c/3db60cf9b7da4a
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+-serge
 
