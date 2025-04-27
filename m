@@ -1,52 +1,52 @@
-Return-Path: <linux-rdma+bounces-9827-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9828-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CECEDA9DDA4
-	for <lists+linux-rdma@lfdr.de>; Sun, 27 Apr 2025 00:49:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80E94A9E04F
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Apr 2025 09:10:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E7883B9407
-	for <lists+linux-rdma@lfdr.de>; Sat, 26 Apr 2025 22:49:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8171F17ACD4
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Apr 2025 07:10:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCA6B1FF7B3;
-	Sat, 26 Apr 2025 22:49:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78CB92459D1;
+	Sun, 27 Apr 2025 07:10:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dq4DN7sY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M96skoYC"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C3A71F19A;
-	Sat, 26 Apr 2025 22:49:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F43B173;
+	Sun, 27 Apr 2025 07:10:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745707775; cv=none; b=Z9v8AVidEdQ8uxljX2Caf0ffdwsN5hpZ6SekpAB4kkla5ql970oOHrPXRuqFyI50RCmHsHwS555NWaKQeYeB8Dgy1eQPRWtpWLns647lbCDZ4dgZq1a0aMRDEWX9dDxAmaasxrm+VfUaGAKUUhi+Aa9yxdzHBUh5LptW/k0WRnA=
+	t=1745737833; cv=none; b=C6j1/ZlAv9na6uhfYAI06H53qIjhyqzh/v0lg4INQRC043yroqIDqHEa6+RRgXGDZ9b6BYY41gwH0MkxzLo8iSuOmtc/CTK7mtiUbQ193yMsFFqpr9kJBqRDQzJMPDBgzyvqvMCz/pgOEDxLOg7zjt2DJgLaPl/hnOZUwWn4nnI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745707775; c=relaxed/simple;
-	bh=nmMFwB0+2Q83FWwoIeN84/Hsbr1BD0MNyu6u3Ztzl+U=;
+	s=arc-20240116; t=1745737833; c=relaxed/simple;
+	bh=CGnsiRcgcTLWNshlRKt3+TY3846/zeQqAZXDX5kQlSo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DqQOKcI6zcxF6ERRLfIwF0Pqqcxmj19j1V/6AweGhUfQ+E8C5qBPOnqxjxxW0FtCiwZA/A8ZoMNhsTI+3vu/v6l2ieBZWzDeZZ5vbRaXAMxNxmr03h0goddky9gi/InCEwbYkyRW2YpLMc+WTH5zokOV5yz7Hvd5on4rCMzXCAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dq4DN7sY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E2A6C4CEE2;
-	Sat, 26 Apr 2025 22:49:33 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=LqkWi8+P2ZDAkrg1g3/cQELePi0zNRNAsMgpWyC/+fYJMcSxojzW6zQQueR8s8sTOupZz7FFn3t7G/VbGTFyv0Os2qAP/5aWFDlG0+aA6seBOPhMDYiimwozYy/gYyc8NOn/ACxl7+7NitRrn1i0mRhviqnx5kiQ5mG8+kWPiO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M96skoYC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7284DC4CEE3;
+	Sun, 27 Apr 2025 07:10:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745707774;
-	bh=nmMFwB0+2Q83FWwoIeN84/Hsbr1BD0MNyu6u3Ztzl+U=;
+	s=k20201202; t=1745737832;
+	bh=CGnsiRcgcTLWNshlRKt3+TY3846/zeQqAZXDX5kQlSo=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dq4DN7sYvzyKsbFrdTgHJyYQ/t0IfLJyjoz6RDjDdoU+n+O0s9VMQ5Fe4sETqQqXu
-	 DCeQkOkzWcikGSsz5cSEC9TkTjmCk7WVtWRGMVFf+u/m2XaDyfr5iPT82X6WifKMG2
-	 gh1V5xEEIy9jECtkpExskL33+bhy82ETGBU7hbmEoEGMpmALKALDa3hF5i3anZHhG3
-	 jVXw8747itRVfwTZvsh4/6M7lMFtHzVL1MAcGeyBOA0lj2Rflt0Cr/LoaF/1k5b43X
-	 r6s70MJCK+obsUgmZqZbzwSqcw3Wt8+DvxNsviVfWn0igDvBWICqZ4yqkUwueY0OUR
-	 l+77ooG0Rb3eQ==
-Date: Sat, 26 Apr 2025 15:49:32 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
-	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-	Keith Busch <kbusch@kernel.org>, Jake Edge <jake@lwn.net>,
+	b=M96skoYCIAliV9mE/cHFjQyXeYgIKCso7ocEVoV4QwsavwZFE3rfEM0dziGcjOR6b
+	 7kjkhtEE/0EQdgXtARUS6cI7T75h7ppRVSbbVbM6R6qxPwg9Sg1vSFr6VbnyOZQ57g
+	 o/iTgqG/YLNmmypwMR2+p+Nr3hxoD01W7r5hdZeZwzGeiH97kZ/4Ut5fcVkg1wzjts
+	 hXvK19kK7wEZSW5jdM0EDEgy9k/RevkU6uLUiXDosGVulyNXnwwR8BBoNXzP3d0oXt
+	 HjLpbmZL7Uu8naYplITM7UrID84hix6jY7jTs9NC+PEEEgVOxLpTdYZy8aECiq9kdG
+	 KVcDCKntZyoxA==
+Date: Sun, 27 Apr 2025 10:10:26 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Keith Busch <kbusch@kernel.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Jens Axboe <axboe@kernel.dk>, Jake Edge <jake@lwn.net>,
 	Jonathan Corbet <corbet@lwn.net>, Jason Gunthorpe <jgg@ziepe.ca>,
 	Zhu Yanjun <zyjzyj2000@gmail.com>,
 	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
@@ -65,15 +65,17 @@ Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
 	linux-pci@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
 	Niklas Schnelle <schnelle@linux.ibm.com>,
 	Chuck Lever <chuck.lever@oracle.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
 	Matthew Wilcox <willy@infradead.org>,
 	Dan Williams <dan.j.williams@intel.com>,
 	Kanchan Joshi <joshi.k@samsung.com>,
 	Chaitanya Kulkarni <kch@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>
-Subject: Re: [PATCH v9 08/24] dma-mapping: add a dma_need_unmap helper
-Message-ID: <aA1i_HJ1eimihSI2@bombadil.infradead.org>
+	Nitesh Shetty <nj.shetty@samsung.com>
+Subject: Re: [PATCH v9 23/24] nvme-pci: convert to blk_rq_dma_map
+Message-ID: <20250427071026.GA5848@unreal>
 References: <cover.1745394536.git.leon@kernel.org>
- <e55ceb86c6529a276484e13b0e6ea58764daf854.1745394536.git.leon@kernel.org>
+ <7c5c5267cba2c03f6650444d4879ba0d13004584.1745394536.git.leon@kernel.org>
+ <20250423092437.GA1895@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -82,19 +84,14 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e55ceb86c6529a276484e13b0e6ea58764daf854.1745394536.git.leon@kernel.org>
+In-Reply-To: <20250423092437.GA1895@lst.de>
 
-On Wed, Apr 23, 2025 at 11:12:59AM +0300, Leon Romanovsky wrote:
-> From: Christoph Hellwig <hch@lst.de>
-> 
-> Add helper that allows a driver to skip calling dma_unmap_*
-> if the DMA layer can guarantee that they are no-nops.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Tested-by: Jens Axboe <axboe@kernel.dk>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+On Wed, Apr 23, 2025 at 11:24:37AM +0200, Christoph Hellwig wrote:
+> I don't think the meta SGL handling is quite right yet, and the
+> single segment data handling also regressed.  
 
-Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+If my testing is correct, my dma-split-wip branch passes all tests,
+including single segment.
 
-  Luis
+Thanks
 
