@@ -1,126 +1,121 @@
-Return-Path: <linux-rdma+bounces-9886-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9888-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A6C9A9F75B
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Apr 2025 19:30:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A472EA9F8AE
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Apr 2025 20:36:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D83181A84FD8
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Apr 2025 17:30:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6E757A7FAC
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Apr 2025 18:35:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B577E293478;
-	Mon, 28 Apr 2025 17:30:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D967290BAB;
+	Mon, 28 Apr 2025 18:36:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EFNCyztK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sv17Njz8"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57E50153808;
-	Mon, 28 Apr 2025 17:30:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39F00288B1;
+	Mon, 28 Apr 2025 18:36:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745861439; cv=none; b=JKVMCE2OP921/4Gzo3q/K5uW380QulmKutpljMGRc8EgITNC7kUsIt8RP2WdvdOFs0EYn/o4R4HXUj2ST0okwtUZQJhLiaSW/fAgTYyH5M+Ocfa/lWMGMlWDysw70lKqm008PJ3MGEvzcJWuyKTcqdvYwHJen9IiOD+PwwNQth4=
+	t=1745865381; cv=none; b=BwouWO+Yxhpd8mVBBWAUX23OnRD0p7B39+QMjys0qLWrIkhot+Vw2OEkG43zGM3xqkVUWR7AlRlul4rwndPmj5/Ongrd58dh7Bae8cBy6roZsY9YETTiGcC9gF4fw3/BETRa6Wumm15XtLnvwv50xvE8ZGRDG8xoAGtZGcyXJ6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745861439; c=relaxed/simple;
-	bh=ab2ae8e/65ivTF8ecHo7+deewxqwGOGmR1WVeufmqHc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c6vQSr+KFjAhqKUIaFEe3o1YiqKQNQXIUEeefYK8tKgcb/PcdqglhuRcXZCBXRVqM+ZV7V7QuF0vHQNiwcqBQuj8u5P7WqWDS0U/n34v9XzLQH9k4azIG7ABXVfObK0wN1Zoe5ncZz0mnVYuKXIFC4T8OyzAOd4NfrysDGkbK4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EFNCyztK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78575C4CEE4;
-	Mon, 28 Apr 2025 17:30:36 +0000 (UTC)
+	s=arc-20240116; t=1745865381; c=relaxed/simple;
+	bh=PAnPWNAX8XbCDa80rpnYS7ta/qUgh5STcklx7oFzhy0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Daq54mNX4qdEVlDg6r/HXQHbRNtQ5/wn4lbA7YT37s15saiqqXxfG+WRvS7H6kh078Y1Uc8bxXgXeuIRypPSpyKVTaqb1zDtFNKNN4IU++fIsHRVwYJQHnxSHn1U5GG/9X8fHwGrHwDDzySLFpPYD8VfvP/gswkzm1dYZ3Q2fZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Sv17Njz8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C88D1C4CEE4;
+	Mon, 28 Apr 2025 18:36:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745861438;
-	bh=ab2ae8e/65ivTF8ecHo7+deewxqwGOGmR1WVeufmqHc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EFNCyztKW7+/Evx7uEJGPtK2SefAgYmqtED4ANsvGmvDwBuQlhn5S/nOmqu3WBR1z
-	 +VFQyVwyP+0O2cMp8wyAXepn0PBELCi0ksp0PKLJBKlMwsEdig7AFEj4wICYu3fAJQ
-	 /zZeikIV4GSdae/Y2/DwH4bks++gRwmwp9dpfRTMH4Z1ZCpPgQcQmi4pOO08SmuMpb
-	 PTiv7J0eh/bS37eMFbiD7C8K8hWZiVIArkSUuuY+DzvZ8SoAg2vgkigVBG4ZUgJkdE
-	 7Vrm2LUXRrJhMi9MPNfGblL+7IObYzGv0HZAEJnZAxGsJP7ubWBtZWh1DwAjICEoUP
-	 0fglvd90xB7zw==
-Date: Mon, 28 Apr 2025 11:30:34 -0600
-From: Keith Busch <kbusch@kernel.org>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
-	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-	Jake Edge <jake@lwn.net>, Jonathan Corbet <corbet@lwn.net>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Zhu Yanjun <zyjzyj2000@gmail.com>,
-	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
-	linux-pci@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Kanchan Joshi <joshi.k@samsung.com>,
-	Chaitanya Kulkarni <kch@nvidia.com>,
-	Nitesh Shetty <nj.shetty@samsung.com>
-Subject: Re: [PATCH v10 23/24] nvme-pci: convert to blk_rq_dma_map
-Message-ID: <aA-7Oh4T-mDGvLXh@kbusch-mbp.dhcp.thefacebook.com>
-References: <cover.1745831017.git.leon@kernel.org>
- <007e00134d49160d5edab94a72c35b7b91429b09.1745831017.git.leon@kernel.org>
- <aA-w20gOKus5hyAV@kbusch-mbp.dhcp.thefacebook.com>
- <20250428172225.GG5848@unreal>
+	s=k20201202; t=1745865377;
+	bh=PAnPWNAX8XbCDa80rpnYS7ta/qUgh5STcklx7oFzhy0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Sv17Njz86olQF0A4TDVAIOJZ5Jlh2hucanS9BNpZPQtBr+jSfKYJGYvLrmgcswKAn
+	 NLLH9EwXLbSykIk6iNN9p1/HXhXJMH+J26un4oHn+fJx5W751MKTVyJfYrWezs2HV0
+	 dwJwkEgLsmQnxyAl8sihK/ZG66yYhjizeFpNmnvXLg1gAG4MvTpL6rHABolfC88Byy
+	 QGY7acTujJ/sKfMaBnySaa2j0N27NZRU1n0d5d+q/7xjW/PFnZoRO+kotngluVXgyx
+	 mXy3SZxm2+1h6YLD2VauXE5ODpnAq6i5DsxhhzUO5MFHnnhVVJ4MHVaIfv1NtqW7X/
+	 zlv8nU6sgwcZg==
+Message-ID: <abb0f9c9-796b-4d4e-9df4-37908fd9a00b@kernel.org>
+Date: Mon, 28 Apr 2025 14:36:15 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250428172225.GG5848@unreal>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] svcrdma: Unregister the device if svc_rdma_accept() fails
+To: Zhu Yanjun <yanjun.zhu@linux.dev>, NeilBrown <neil@brown.name>,
+ Jeff Layton <jlayton@kernel.org>, Olga Kornievskaia <okorniev@redhat.com>,
+ Dai Ngo <dai.ngo@oracle.com>, Tom Talpey <tom@talpey.com>
+Cc: linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org,
+ Chuck Lever <chuck.lever@oracle.com>
+References: <20250427163959.5126-1-cel@kernel.org>
+ <6d21d80b-db20-4f00-bff0-147716693baf@linux.dev>
+Content-Language: en-US
+From: Chuck Lever <cel@kernel.org>
+Organization: kernel.org
+In-Reply-To: <6d21d80b-db20-4f00-bff0-147716693baf@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 28, 2025 at 08:22:25PM +0300, Leon Romanovsky wrote:
-> On Mon, Apr 28, 2025 at 10:46:19AM -0600, Keith Busch wrote:
-> > On Mon, Apr 28, 2025 at 12:22:29PM +0300, Leon Romanovsky wrote:
-> > > +	do {
-> > > +		if (WARN_ON_ONCE(mapped == entries)) {
-> > > +			iter.status = BLK_STS_IOERR;
-> > > +			break;
-> > > +		}
-> > > +		nvme_pci_sgl_set_data(&sg_list[mapped++], &iter);
-> > 
-> > I think this should say "++mapped" so that the data blocks start at
-> > index 1 (continued below...)
-> > 
-> > > +		iod->total_len += iter.len;
-> > > +	} while (blk_rq_dma_map_iter_next(req, dev->dev, &iod->dma_meta_state,
-> > > +				 &iter));
-> > >  
-> > > -out_unmap_sg:
-> > > -	dma_unmap_sgtable(dev->dev, &iod->meta_sgt, rq_dma_dir(req), 0);
-> > > -out_free_sg:
-> > > -	mempool_free(iod->meta_sgt.sgl, dev->iod_meta_mempool);
-> > > -	return BLK_STS_RESOURCE;
-> > > +	nvme_pci_sgl_set_seg(sg_list, sgl_dma, mapped);
-> > 
-> > because this here is setting sg_list index 0 to be the segment
-> > descriptor.
-> > 
-> > And you also need to increment sgl_dma to point to the element after
-> > sg_list, otherwise it's pointing right back to itself, creating a looped
-> > list.
+On 4/28/25 2:10 AM, Zhu Yanjun wrote:
+> 在 2025/4/27 18:39, cel@kernel.org 写道:
+>> From: Chuck Lever <chuck.lever@oracle.com>
+>>
+>> To handle device removal, svc_rdma_accept() registers an interest in
+>                                                            ^^^^^^^^
+> interface?
+
+I did indeed mean "interest" (as in, "I'm interested in notification")
+but I agree, it's awkward phrasing. I rewrote it.
+
+
+> Except that, looks good to me.
 > 
-> Thanks for pointing to the difference between data_map and metadata_map,
+> Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-Yeah, They're different because the SQE has 16 bytes available for the
-data map, so the command can fit an SGL descriptor directly in its
-submission entry. The metadata field only has 8 bytes in the SQE, so we
-have to set it to the address of an external SGL segment descriptor.
+Thanks!
+
+
+> Zhu Yanjun
+> 
+>> the underlying device when accepting a connection. However
+>> svc_rdma_free() is not invoked if svc_rdma_accept() fails. There
+>> needs to be a matching "unregister" in that case; otherwise the
+>> device cannot be removed.
+>>
+>> Fixes: c4de97f7c454 ("svcrdma: Handle device removal outside of the CM
+>> event handler")
+>> X-Cc: stable@vger.kernel.org
+>> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+>> ---
+>>   net/sunrpc/xprtrdma/svc_rdma_transport.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/net/sunrpc/xprtrdma/svc_rdma_transport.c b/net/sunrpc/
+>> xprtrdma/svc_rdma_transport.c
+>> index aca8bdf65d72..5940a56023d1 100644
+>> --- a/net/sunrpc/xprtrdma/svc_rdma_transport.c
+>> +++ b/net/sunrpc/xprtrdma/svc_rdma_transport.c
+>> @@ -575,6 +575,7 @@ static struct svc_xprt *svc_rdma_accept(struct
+>> svc_xprt *xprt)
+>>       if (newxprt->sc_qp && !IS_ERR(newxprt->sc_qp))
+>>           ib_destroy_qp(newxprt->sc_qp);
+>>       rdma_destroy_id(newxprt->sc_cm_id);
+>> +    rpcrdma_rn_unregister(dev, &newxprt->sc_rn);
+>>       /* This call to put will destroy the transport */
+>>       svc_xprt_put(&newxprt->sc_xprt);
+>>       return NULL;
+> 
+
+
+-- 
+Chuck Lever
 
