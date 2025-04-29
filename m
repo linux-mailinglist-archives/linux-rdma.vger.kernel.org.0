@@ -1,228 +1,133 @@
-Return-Path: <linux-rdma+bounces-9912-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9913-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC256AA0032
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Apr 2025 05:15:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 164CCAA00FB
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Apr 2025 05:57:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B00E35A787A
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Apr 2025 03:15:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 734E916DA25
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Apr 2025 03:57:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 031BC1B86EF;
-	Tue, 29 Apr 2025 03:15:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ko1kScYs"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3F832690CB;
+	Tue, 29 Apr 2025 03:57:02 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEDEC1D5ABF;
-	Tue, 29 Apr 2025 03:15:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0718D1876;
+	Tue, 29 Apr 2025 03:57:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.70.13.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745896519; cv=none; b=Dk4KRA5f/wqz4JGhjkmgamD3RF31cm2H26/SFwDv6ezKMJf2nY3nAUP9rHGYUzWZ9mGTR1RPJr03G5+6uM8ptOR2OLXzZxDUggisWlzG+reVdMk3ZMO2eLLkMg8KJ4VYRPJVbOIMQp+5tebf9YuI3CsSX39M+wztZynrvEGbphw=
+	t=1745899022; cv=none; b=CaoZYvcfYdmPhVGjsTG6xvSdqisUvn0+klXgO43GGQT+T47gzHeLbvFNBRGPKlqH4WCaf+VEBNSjuRlO5Bw6+Emv96qAYV2Q5WAKuV7vpRokpld0D8kU9LMnxf1R5zQ3Fc918oOwfLpiVSrRZiZYirnZsU/SNY5GDyZcnPK/5+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745896519; c=relaxed/simple;
-	bh=gF3+aJs3Gf/hJScKyT1fbK46ZtYQ+FrmHh+AQDsrL0w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=heqSH1TPJsLFKMaFUE/tF8+V91M7BoXGULmJ+GpR2w0no6pdGzEcwAUpSe+3l/24zDKS7d6/EIWT12IUi7fUycR0Iocp2vvn+7ThurtwuE1wU0q9DkoCqcL5LWSvYUrX+5MbeMzV3fnVQCMcuaAjy7F5guhNthMB5lmZ/1ZOmnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ko1kScYs; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1745896517; x=1777432517;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=gF3+aJs3Gf/hJScKyT1fbK46ZtYQ+FrmHh+AQDsrL0w=;
-  b=Ko1kScYsg+YyREB4A+YRch1TOVHQz8KWGhn4Ui5UZUtAbUzkIixv78bP
-   tXJSAHQmEb8eIu+/GG3ieYLFsMuFQR2COmLPRMX09BiOBXXDL/CjzNdHn
-   jwDDCAEFxi4fXFoPytugtHDg3E4Y3iV9VwW8eLQ+AxCoh/T/uonwZIt/g
-   eecJ7JzHceD+e8vNmIf87SOmNktZ/NYD/kfTEabHadtuCdWdpQnrtA9Ag
-   A8l1UgR31LKxhfK+uloIJg9DDyl0HJb9STYzIiwDANRcMXKu+n6fM0iDF
-   zWD/2zhQdz5jdvbUljCu3sHRwNUSoWVLY92N8JukW/abJXRIXscBYttDU
-   g==;
-X-CSE-ConnectionGUID: /+1i8YPtRcKh0efR4BJNsA==
-X-CSE-MsgGUID: naMycftATTinNUijWUxKfg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11417"; a="50164771"
-X-IronPort-AV: E=Sophos;i="6.15,248,1739865600"; 
-   d="scan'208";a="50164771"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2025 20:15:16 -0700
-X-CSE-ConnectionGUID: ed4rLAGbTImlyIcMdAHXJw==
-X-CSE-MsgGUID: 8LoauE1fTyG98pnYRixuDg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,248,1739865600"; 
-   d="scan'208";a="133600998"
-Received: from allen-sbox.sh.intel.com (HELO [10.239.159.30]) ([10.239.159.30])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2025 20:15:07 -0700
-Message-ID: <0086302d-1cb3-43dd-a989-e4b1995a0d22@linux.intel.com>
-Date: Tue, 29 Apr 2025 11:10:54 +0800
+	s=arc-20240116; t=1745899022; c=relaxed/simple;
+	bh=cFOMsBbwPSi3Bt1oRuZIcKi6mL3Xo1RJgbuK0xItMVQ=;
+	h=From:To:Cc:References:Date:In-Reply-To:Message-ID:MIME-Version:
+	 Content-Type:Subject; b=aPKoJChA3P9CvIlmhQShrN+ZGsoJ/pqcvmPkXDbA+JsWTcfbc/xM5j4saT9bK54JpzmokJU7+Q8Tg5TWfKLsVgpJBOLDj5F2sxd+QLF7SILs5efbELIN/xKZcfQP+DFx6CPJ/Hf3ziSS/uICVCQ1jyyiRt1IfbyrRUDEx0vO/0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com; spf=pass smtp.mailfrom=xmission.com; arc=none smtp.client-ip=166.70.13.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xmission.com
+Received: from in01.mta.xmission.com ([166.70.13.51]:51682)
+	by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1u9c5b-000VC8-56; Mon, 28 Apr 2025 21:56:59 -0600
+Received: from ip72-198-198-28.om.om.cox.net ([72.198.198.28]:48562 helo=email.froward.int.ebiederm.org.xmission.com)
+	by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1u9c5a-008svE-8b; Mon, 28 Apr 2025 21:56:58 -0600
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: "Serge E. Hallyn" <serge@hallyn.com>,  Parav Pandit <parav@nvidia.com>,
+  "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+  "linux-security-module@vger.kernel.org"
+ <linux-security-module@vger.kernel.org>,  Leon Romanovsky
+ <leonro@nvidia.com>
+References: <20250423164545.GM1648741@nvidia.com>
+	<CY8PR12MB7195D5ED46D8E920A5281393DC852@CY8PR12MB7195.namprd12.prod.outlook.com>
+	<20250424141347.GS1648741@nvidia.com>
+	<CY8PR12MB7195F2A210D670E07EC14DE9DC842@CY8PR12MB7195.namprd12.prod.outlook.com>
+	<20250425132930.GB1804142@nvidia.com>
+	<20250425140144.GB610516@mail.hallyn.com>
+	<20250425142429.GC1804142@nvidia.com>
+	<87h62ci7ec.fsf@email.froward.int.ebiederm.org>
+	<20250425162102.GA2012301@nvidia.com>
+	<875xisf8ma.fsf@email.froward.int.ebiederm.org>
+	<20250425183529.GB2012301@nvidia.com>
+	<87tt68cj64.fsf@email.froward.int.ebiederm.org>
+Date: Mon, 28 Apr 2025 22:56:13 -0500
+In-Reply-To: <87tt68cj64.fsf@email.froward.int.ebiederm.org> (Eric
+	W. Biederman's message of "Mon, 28 Apr 2025 12:03:47 -0500")
+Message-ID: <87ikmnd3j6.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 05/24] dma-mapping: Provide an interface to allow
- allocate IOVA
-To: Leon Romanovsky <leon@kernel.org>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Jens Axboe <axboe@kernel.dk>,
- Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>
-Cc: Leon Romanovsky <leonro@nvidia.com>, Jake Edge <jake@lwn.net>,
- Jonathan Corbet <corbet@lwn.net>, Jason Gunthorpe <jgg@ziepe.ca>,
- Zhu Yanjun <zyjzyj2000@gmail.com>, Robin Murphy <robin.murphy@arm.com>,
- Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
- Sagi Grimberg <sagi@grimberg.me>, Bjorn Helgaas <bhelgaas@google.com>,
- Logan Gunthorpe <logang@deltatee.com>, Yishai Hadas <yishaih@nvidia.com>,
- Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
- Kevin Tian <kevin.tian@intel.com>,
- Alex Williamson <alex.williamson@redhat.com>,
- =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
- linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
- linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
- kvm@vger.kernel.org, linux-mm@kvack.org,
- Niklas Schnelle <schnelle@linux.ibm.com>,
- Chuck Lever <chuck.lever@oracle.com>, Luis Chamberlain <mcgrof@kernel.org>,
- Matthew Wilcox <willy@infradead.org>, Dan Williams
- <dan.j.williams@intel.com>, Kanchan Joshi <joshi.k@samsung.com>,
- Chaitanya Kulkarni <kch@nvidia.com>
-References: <cover.1745831017.git.leon@kernel.org>
- <30f0601d400711b3859deeb8fef3090f5b2020a4.1745831017.git.leon@kernel.org>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <30f0601d400711b3859deeb8fef3090f5b2020a4.1745831017.git.leon@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1u9c5a-008svE-8b;;;mid=<87ikmnd3j6.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=72.198.198.28;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX18uH2pqgq6DvUjlbTsrqa8HDrUvJgshvvY=
+X-Spam-Level: 
+X-Spam-Virus: No
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	*  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+	*      [score: 0.4996]
+	*  0.7 XMSubLong Long Subject
+	*  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+	* -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+	*      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Jason Gunthorpe <jgg@nvidia.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 390 ms - load_scoreonly_sql: 0.05 (0.0%),
+	signal_user_changed: 4.7 (1.2%), b_tie_ro: 3.3 (0.8%), parse: 1.09
+	(0.3%), extract_message_metadata: 14 (3.6%), get_uri_detail_list: 1.05
+	(0.3%), tests_pri_-2000: 20 (5.2%), tests_pri_-1000: 1.87 (0.5%),
+	tests_pri_-950: 0.98 (0.3%), tests_pri_-900: 0.79 (0.2%),
+	tests_pri_-90: 50 (12.9%), check_bayes: 49 (12.6%), b_tokenize: 3.9
+	(1.0%), b_tok_get_all: 5.0 (1.3%), b_comp_prob: 1.17 (0.3%),
+	b_tok_touch_all: 37 (9.4%), b_finish: 0.70 (0.2%), tests_pri_0: 282
+	(72.4%), check_dkim_signature: 0.38 (0.1%), check_dkim_adsp: 3.8
+	(1.0%), poll_dns_idle: 2.4 (0.6%), tests_pri_10: 2.7 (0.7%),
+	tests_pri_500: 8 (1.9%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] RDMA/uverbs: Consider capability of the process that
+ opens the file
+X-SA-Exim-Connect-IP: 166.70.13.51
+X-SA-Exim-Rcpt-To: leonro@nvidia.com, linux-security-module@vger.kernel.org, linux-rdma@vger.kernel.org, parav@nvidia.com, serge@hallyn.com, jgg@nvidia.com
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-SA-Exim-Scanned: No (on out03.mta.xmission.com); SAEximRunCond expanded to false
 
-On 4/28/25 17:22, Leon Romanovsky wrote:
-> From: Leon Romanovsky<leonro@nvidia.com>
-> 
-> The existing .map_page() callback provides both allocating of IOVA
+"Eric W. Biederman" <ebiederm@xmission.com> writes:
 
-.map_pages()
+> Jason Gunthorpe <jgg@nvidia.com> writes:
+>
 
-> and linking DMA pages. That combination works great for most of the
-> callers who use it in control paths, but is less effective in fast
-> paths where there may be multiple calls to map_page().
-> 
-> These advanced callers already manage their data in some sort of
-> database and can perform IOVA allocation in advance, leaving range
-> linkage operation to be in fast path.
-> 
-> Provide an interface to allocate/deallocate IOVA and next patch
-> link/unlink DMA ranges to that specific IOVA.
-> 
-> In the new API a DMA mapping transaction is identified by a
-> struct dma_iova_state, which holds some recomputed information
-> for the transaction which does not change for each page being
-> mapped, so add a check if IOVA can be used for the specific
-> transaction.
-> 
-> The API is exported from dma-iommu as it is the only implementation
-> supported, the namespace is clearly different from iommu_* functions
-> which are not allowed to be used. This code layout allows us to save
-> function call per API call used in datapath as well as a lot of boilerplate
-> code.
-> 
-> Reviewed-by: Christoph Hellwig<hch@lst.de>
-> Tested-by: Jens Axboe<axboe@kernel.dk>
-> Reviewed-by: Luis Chamberlain<mcgrof@kernel.org>
-> Signed-off-by: Leon Romanovsky<leonro@nvidia.com>
-> ---
->   drivers/iommu/dma-iommu.c   | 86 +++++++++++++++++++++++++++++++++++++
->   include/linux/dma-mapping.h | 48 +++++++++++++++++++++
->   2 files changed, 134 insertions(+)
-> 
-> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> index 9ba8d8bc0ce9..d3211a8d755e 100644
-> --- a/drivers/iommu/dma-iommu.c
-> +++ b/drivers/iommu/dma-iommu.c
-> @@ -1723,6 +1723,92 @@ size_t iommu_dma_max_mapping_size(struct device *dev)
->   	return SIZE_MAX;
->   }
->   
-> +/**
-> + * dma_iova_try_alloc - Try to allocate an IOVA space
-> + * @dev: Device to allocate the IOVA space for
-> + * @state: IOVA state
-> + * @phys: physical address
-> + * @size: IOVA size
-> + *
-> + * Check if @dev supports the IOVA-based DMA API, and if yes allocate IOVA space
-> + * for the given base address and size.
-> + *
-> + * Note: @phys is only used to calculate the IOVA alignment. Callers that always
-> + * do PAGE_SIZE aligned transfers can safely pass 0 here.
+>> It sounds like we just totally ignore current->cred->user_ns from the
+>> rdma subsystem perspective?
+>
+> Since you don't allow anything currently to happen in a user namespace
+> that is completely reasonable.
+>
+> Once ns_capable checks start being added that changes.
 
-Have you considered adding a direct alignment parameter to
-dma_iova_try_alloc()? '0' simply means the default PAGE_SIZE alignment.
+My apologies I misspoke.
 
-I'm imagining that some devices might have particular alignment needs
-for better performance, especially for the ATS cache efficiency. This
-would allow those device drivers to express the requirements directly
-during iova allocation.
+Where infiniband currently uses current->cred->user_ns is in calls to
+"capable()".
 
-> + *
-> + * Returns %true if the IOVA-based DMA API can be used and IOVA space has been
-> + * allocated, or %false if the regular DMA API should be used.
-> + */
-> +bool dma_iova_try_alloc(struct device *dev, struct dma_iova_state *state,
-> +		phys_addr_t phys, size_t size)
-> +{
-> +	struct iommu_dma_cookie *cookie;
-> +	struct iommu_domain *domain;
-> +	struct iova_domain *iovad;
-> +	size_t iova_off;
-> +	dma_addr_t addr;
-> +
-> +	memset(state, 0, sizeof(*state));
-> +	if (!use_dma_iommu(dev))
-> +		return false;
-> +
-> +	domain = iommu_get_dma_domain(dev);
-> +	cookie = domain->iova_cookie;
-> +	iovad = &cookie->iovad;
-> +	iova_off = iova_offset(iovad, phys);
-> +
-> +	if (static_branch_unlikely(&iommu_deferred_attach_enabled) &&
-> +	    iommu_deferred_attach(dev, iommu_get_domain_for_dev(dev)))
-> +		return false;
-> +
-> +	if (WARN_ON_ONCE(!size))
-> +		return false;
-> +
-> +	/*
-> +	 * DMA_IOVA_USE_SWIOTLB is flag which is set by dma-iommu
-> +	 * internals, make sure that caller didn't set it and/or
-> +	 * didn't use this interface to map SIZE_MAX.
-> +	 */
-> +	if (WARN_ON_ONCE((u64)size & DMA_IOVA_USE_SWIOTLB))
+That will continue if those calls are relaxed to "ns_capable()".
 
-I'm a little concerned that device drivers might inadvertently misuse
-the state->__size by forgetting about the high bit being used for
-DMA_IOVA_USE_SWIOTLB. Perhaps adding a separate flag within struct
-dma_iova_state to prevent such issues?
+All of which makes sense fundamentally because the only place it
+really makes sense to look at the credentials of a process is in
+the permission checks.
 
-> +		return false;
-> +
-> +	addr = iommu_dma_alloc_iova(domain,
-> +			iova_align(iovad, size + iova_off),
-> +			dma_get_mask(dev), dev);
-> +	if (!addr)
-> +		return false;
-> +
-> +	state->addr = addr + iova_off;
-> +	state->__size = size;
-> +	return true;
-> +}
-> +EXPORT_SYMBOL_GPL(dma_iova_try_alloc);
+Eric
 
-Thanks,
-baolu
+
 
