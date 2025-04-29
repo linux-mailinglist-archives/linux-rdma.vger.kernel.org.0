@@ -1,47 +1,47 @@
-Return-Path: <linux-rdma+bounces-9918-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9919-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAE63AA0295
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Apr 2025 08:10:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1198AA032B
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Apr 2025 08:23:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56B577B17AC
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Apr 2025 06:09:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E3993A919C
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Apr 2025 06:21:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5984274FF3;
-	Tue, 29 Apr 2025 06:09:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E67C8289364;
+	Tue, 29 Apr 2025 06:18:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uDWNet5k"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kTGc5PsS"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ABC62749C5;
-	Tue, 29 Apr 2025 06:09:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D930276046;
+	Tue, 29 Apr 2025 06:18:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745906964; cv=none; b=GMXQNt49RYwLCxCqIojbucNTRWZCxiYh7NfGTQYCbNLjC9Wmd/B9WCxRNMPcgyp7MoCUB5QxIyn0M6nx2Xi9dkjbj/D0oL2cYhEHr2Z/7eGRKfD9fTiX3sf/8KPh9JcV7ytLt1g0ztv3uR49RGXx58z/JulBkO+Wk0Hcga69R+4=
+	t=1745907534; cv=none; b=MoisXsWJm788O/KUFOo10kvuHfeox3wN4gE4FiirGHOFA7uaqAnfT6SCQwKurb+D1LbIBqGcoaGFdqmOCou+oDBkQ9VQNz+iwXPFYrp7nHDhNOymWARq5aXnw42DrVyQYc8cV1KxsksOtYOcgRBAL9LGB3sej6etg6SJoPlFdAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745906964; c=relaxed/simple;
-	bh=PNH//cVkWbnB2fS1ezNe4WtvGXzhnSIV29jcs1sTleU=;
+	s=arc-20240116; t=1745907534; c=relaxed/simple;
+	bh=vExQvIRKgBFgSfzxHEyrFALVuzPRUmMmvaWq9RovN60=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LC4Y9G9XatJ7cZNVmDIxZjM+RNMgb1Wdr4JOc7Wyd9snxmD7kbJaqsjyFMepN95YFmTiIgsZRsCoVx8xqdNxn5+rSP38hXLhhEpY4BMAQEMOT90SH81huMGNXtf6KSsHWS0Ewa6ea+LqJvm3vC5Y+ydJq9EObC5zZU68NM4XA+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uDWNet5k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B524AC4CEE3;
-	Tue, 29 Apr 2025 06:09:22 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=l1oTR+Lk3dcq0scby1EjfHnjtlDQ23cXHbvslB9GuJDHp11E8eh13kQ1vK81UTit35v4zIqRHl5r+3tcEmJsjAgyL52rEkZ82dxHIB42ZVpsQEX5A9q+VpcbNDuGavsoP9AaKsuBY2oFF1oHpQgj5tYhJ2LGgXDVyS683XjNXPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kTGc5PsS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7F91C4CEE3;
+	Tue, 29 Apr 2025 06:18:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1745906963;
-	bh=PNH//cVkWbnB2fS1ezNe4WtvGXzhnSIV29jcs1sTleU=;
+	s=k20201202; t=1745907533;
+	bh=vExQvIRKgBFgSfzxHEyrFALVuzPRUmMmvaWq9RovN60=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uDWNet5k2IklSXyclsdy71tc6aXagAuOzOP5Z1vsPDPEw1xByvYmxH/7R8kedffmR
-	 K3ASHl60pRtDMWg9p0JxFzxO/3aGKB98mGU3GQziALdCRkObg3CMNM8boWhkMNq5Fb
-	 SoRi+onUpbh4+8C7egZp68jWH9bVq8JE2GNbbjKqgOv4PvtvgZAdPdF4XvW8+i2Vac
-	 6q6ESVLxxn8p2qJcdlZLSSecESrOtQeA31phlOs3O0ew9tbbYj38i+QlIYTLHGum0F
-	 nK+XngMnFMQRY8/5XFAQ7Xguljv3BaQDuFiBtITTOynS0B/PtXC5n3GH/3WSmM3hcr
-	 NiVEF7HYK25Ng==
-Date: Tue, 29 Apr 2025 09:09:18 +0300
+	b=kTGc5PsSm7YoP9EmrE3/tfdAeh2ilrH28OMMhkA1i7TaGCseb+D12f8U4iRskFrE0
+	 RSM+Ykr/eeWEOV3E2nvuETPKv5WgV2r3K5S0fSLkCufCBscRZZxm5uTAwOKKZQ34F/
+	 w5YLetGv0DGVj4FS79jc9/KMtke5/3tgrMHoSQ+QeJcqJgLI/MgFlbbaDFejjar1j7
+	 p+0iatgN6tx2738QkPeIAJSzLkpoG/pCdY9ka1HCzAgLK31eNn58UEn17swH4oZLFI
+	 lBdvSt34FC1+vbqL/TFGUu3Gtp8x21gTZM2GnLCqybPJvtISk7Z3RIRONLDJ0zW3JA
+	 NWZpkM6/vXKLw==
+Date: Tue, 29 Apr 2025 09:18:49 +0300
 From: Leon Romanovsky <leon@kernel.org>
 To: Baolu Lu <baolu.lu@linux.intel.com>
 Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
@@ -69,14 +69,15 @@ Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
 	Matthew Wilcox <willy@infradead.org>,
 	Dan Williams <dan.j.williams@intel.com>,
 	Kanchan Joshi <joshi.k@samsung.com>,
-	Chaitanya Kulkarni <kch@nvidia.com>,
-	Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH v10 03/24] iommu: generalize the batched sync after map
- interface
-Message-ID: <20250429060918.GK5848@unreal>
+	Chaitanya Kulkarni <kch@nvidia.com>
+Subject: Re: [PATCH v10 06/24] iommu/dma: Factor out a iommu_dma_map_swiotlb
+ helper
+Message-ID: <20250429061849.GL5848@unreal>
 References: <cover.1745831017.git.leon@kernel.org>
- <69da19d2cc5df0be5112f0cf2365a0337b00d873.1745831017.git.leon@kernel.org>
- <f8d86cde-d485-4e5a-a693-e9323679474f@linux.intel.com>
+ <f9a6a7874760a2919bea1f255bb3c81c6369ed1c.1745831017.git.leon@kernel.org>
+ <8416e94f-171e-4956-b8fe-246ed12a2314@linux.intel.com>
+ <20250429055339.GJ5848@unreal>
+ <9d1abdbc-4b21-47e2-bcaf-6bc8ca365b01@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -85,132 +86,172 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f8d86cde-d485-4e5a-a693-e9323679474f@linux.intel.com>
+In-Reply-To: <9d1abdbc-4b21-47e2-bcaf-6bc8ca365b01@linux.intel.com>
 
-On Tue, Apr 29, 2025 at 10:19:46AM +0800, Baolu Lu wrote:
-> On 4/28/25 17:22, Leon Romanovsky wrote:
-> > From: Christoph Hellwig<hch@lst.de>
+On Tue, Apr 29, 2025 at 01:58:06PM +0800, Baolu Lu wrote:
+> On 4/29/25 13:53, Leon Romanovsky wrote:
+> > On Tue, Apr 29, 2025 at 12:58:18PM +0800, Baolu Lu wrote:
+> > > On 4/28/25 17:22, Leon Romanovsky wrote:
+> > > > From: Christoph Hellwig<hch@lst.de>
+> > > > 
+> > > > Split the iommu logic from iommu_dma_map_page into a separate helper.
+> > > > This not only keeps the code neatly separated, but will also allow for
+> > > > reuse in another caller.
+> > > > 
+> > > > Signed-off-by: Christoph Hellwig<hch@lst.de>
+> > > > Tested-by: Jens Axboe<axboe@kernel.dk>
+> > > > Reviewed-by: Luis Chamberlain<mcgrof@kernel.org>
+> > > > Signed-off-by: Leon Romanovsky<leonro@nvidia.com>
+> > > 
+> > > Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+> > > 
+> > > with a nit below ...
+> > > 
+> > > > ---
+> > > >    drivers/iommu/dma-iommu.c | 73 ++++++++++++++++++++++-----------------
+> > > >    1 file changed, 41 insertions(+), 32 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> > > > index d3211a8d755e..d7684024c439 100644
+> > > > --- a/drivers/iommu/dma-iommu.c
+> > > > +++ b/drivers/iommu/dma-iommu.c
+> > > > @@ -1138,6 +1138,43 @@ void iommu_dma_sync_sg_for_device(struct device *dev, struct scatterlist *sgl,
+> > > >    			arch_sync_dma_for_device(sg_phys(sg), sg->length, dir);
+> > > >    }
+> > > > +static phys_addr_t iommu_dma_map_swiotlb(struct device *dev, phys_addr_t phys,
+> > > > +		size_t size, enum dma_data_direction dir, unsigned long attrs)
+> > > > +{
+> > > > +	struct iommu_domain *domain = iommu_get_dma_domain(dev);
+> > > > +	struct iova_domain *iovad = &domain->iova_cookie->iovad;
+> > > > +
+> > > > +	if (!is_swiotlb_active(dev)) {
+> > > > +		dev_warn_once(dev, "DMA bounce buffers are inactive, unable to map unaligned transaction.\n");
+> > > > +		return (phys_addr_t)DMA_MAPPING_ERROR;
+> > > > +	}
+> > > > +
+> > > > +	trace_swiotlb_bounced(dev, phys, size);
+> > > > +
+> > > > +	phys = swiotlb_tbl_map_single(dev, phys, size, iova_mask(iovad), dir,
+> > > > +			attrs);
+> > > > +
+> > > > +	/*
+> > > > +	 * Untrusted devices should not see padding areas with random leftover
+> > > > +	 * kernel data, so zero the pre- and post-padding.
+> > > > +	 * swiotlb_tbl_map_single() has initialized the bounce buffer proper to
+> > > > +	 * the contents of the original memory buffer.
+> > > > +	 */
+> > > > +	if (phys != (phys_addr_t)DMA_MAPPING_ERROR && dev_is_untrusted(dev)) {
+> > > > +		size_t start, virt = (size_t)phys_to_virt(phys);
+> > > > +
+> > > > +		/* Pre-padding */
+> > > > +		start = iova_align_down(iovad, virt);
+> > > > +		memset((void *)start, 0, virt - start);
+> > > > +
+> > > > +		/* Post-padding */
+> > > > +		start = virt + size;
+> > > > +		memset((void *)start, 0, iova_align(iovad, start) - start);
+> > > > +	}
+> > > > +
+> > > > +	return phys;
+> > > > +}
+> > > > +
+> > > >    dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
+> > > >    	      unsigned long offset, size_t size, enum dma_data_direction dir,
+> > > >    	      unsigned long attrs)
+> > > > @@ -1151,42 +1188,14 @@ dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
+> > > >    	dma_addr_t iova, dma_mask = dma_get_mask(dev);
+> > > >    	/*
+> > > > -	 * If both the physical buffer start address and size are
+> > > > -	 * page aligned, we don't need to use a bounce page.
+> > > > +	 * If both the physical buffer start address and size are page aligned,
+> > > > +	 * we don't need to use a bounce page.
+> > > >    	 */
+> > > >    	if (dev_use_swiotlb(dev, size, dir) &&
+> > > >    	    iova_offset(iovad, phys | size)) {
+> > > > -		if (!is_swiotlb_active(dev)) {
+> > > 
+> > > ... Is it better to move this check into the helper? Simply no-op if a
+> > > bounce page is not needed:
+> > > 
+> > > 	if (!dev_use_swiotlb(dev, size, dir) ||
+> > > 	    !iova_offset(iovad, phys | size))
+> > > 		return phys;
 > > 
-> > For the upcoming IOVA-based DMA API we want to batch the
-> > ops->iotlb_sync_map() call after mapping multiple IOVAs from
-> > dma-iommu without having a scatterlist. Improve the API.
+> > Am I missing something? iommu_dma_map_page() has more code after this
+> > check, so it is not correct to return immediately:
 > > 
-> > Add a wrapper for the map_sync as iommu_sync_map() so that callers
-> > don't need to poke into the methods directly.
+> >    1189 dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
+> >    1190               unsigned long offset, size_t size, enum dma_data_direction dir,
+> >    1191               unsigned long attrs)
+> >    1192 {
 > > 
-> > Formalize __iommu_map() into iommu_map_nosync() which requires the
-> > caller to call iommu_sync_map() after all maps are completed.
+> > <...>
 > > 
-> > Refactor the existing sanity checks from all the different layers
-> > into iommu_map_nosync().
-> > 
-> > Signed-off-by: Christoph Hellwig<hch@lst.de>
-> > Acked-by: Will Deacon<will@kernel.org>
-> > Tested-by: Jens Axboe<axboe@kernel.dk>
-> > Reviewed-by: Jason Gunthorpe<jgg@nvidia.com>
-> > Reviewed-by: Luis Chamberlain<mcgrof@kernel.org>
-> > Signed-off-by: Leon Romanovsky<leonro@nvidia.com>
-> > ---
-> >   drivers/iommu/iommu.c | 65 +++++++++++++++++++------------------------
-> >   include/linux/iommu.h |  4 +++
-> >   2 files changed, 33 insertions(+), 36 deletions(-)
-> > 
-> > diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> > index 4f91a740c15f..02960585b8d4 100644
-> > --- a/drivers/iommu/iommu.c
-> > +++ b/drivers/iommu/iommu.c
-> > @@ -2443,8 +2443,8 @@ static size_t iommu_pgsize(struct iommu_domain *domain, unsigned long iova,
-> >   	return pgsize;
-> >   }
-> > -static int __iommu_map(struct iommu_domain *domain, unsigned long iova,
-> > -		       phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
-> > +int iommu_map_nosync(struct iommu_domain *domain, unsigned long iova,
-> > +		phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
-> >   {
-> >   	const struct iommu_domain_ops *ops = domain->ops;
-> >   	unsigned long orig_iova = iova;
-> > @@ -2453,12 +2453,19 @@ static int __iommu_map(struct iommu_domain *domain, unsigned long iova,
-> >   	phys_addr_t orig_paddr = paddr;
-> >   	int ret = 0;
-> > +	might_sleep_if(gfpflags_allow_blocking(gfp));
-> > +
-> >   	if (unlikely(!(domain->type & __IOMMU_DOMAIN_PAGING)))
-> >   		return -EINVAL;
-> >   	if (WARN_ON(!ops->map_pages || domain->pgsize_bitmap == 0UL))
-> >   		return -ENODEV;
-> > +	/* Discourage passing strange GFP flags */
-> > +	if (WARN_ON_ONCE(gfp & (__GFP_COMP | __GFP_DMA | __GFP_DMA32 |
-> > +				__GFP_HIGHMEM)))
-> > +		return -EINVAL;
-> > +
-> >   	/* find out the minimum page size supported */
-> >   	min_pagesz = 1 << __ffs(domain->pgsize_bitmap);
-> > @@ -2506,31 +2513,27 @@ static int __iommu_map(struct iommu_domain *domain, unsigned long iova,
-> >   	return ret;
-> >   }
-> > -int iommu_map(struct iommu_domain *domain, unsigned long iova,
-> > -	      phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
-> > +int iommu_sync_map(struct iommu_domain *domain, unsigned long iova, size_t size)
-> >   {
-> >   	const struct iommu_domain_ops *ops = domain->ops;
-> > -	int ret;
-> > -
-> > -	might_sleep_if(gfpflags_allow_blocking(gfp));
-> > -	/* Discourage passing strange GFP flags */
-> > -	if (WARN_ON_ONCE(gfp & (__GFP_COMP | __GFP_DMA | __GFP_DMA32 |
-> > -				__GFP_HIGHMEM)))
-> > -		return -EINVAL;
-> > +	if (!ops->iotlb_sync_map)
-> > +		return 0;
-> > +	return ops->iotlb_sync_map(domain, iova, size);
-> > +}
+> >    1201         /*
+> >    1202          * If both the physical buffer start address and size are page aligned,
+> >    1203          * we don't need to use a bounce page.
+> >    1204          */
+> >    1205         if (dev_use_swiotlb(dev, size, dir) &&
+> >    1206             iova_unaligned(iovad, phys, size)) {
+> >    1207                 phys = iommu_dma_map_swiotlb(dev, phys, size, dir, attrs);
+> >    1208                 if (phys == (phys_addr_t)DMA_MAPPING_ERROR)
+> >    1209                         return DMA_MAPPING_ERROR;
+> >    1210         }
+> >    1211
+> >    1212         if (!coherent && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+> >    1213                 arch_sync_dma_for_device(phys, size, dir);
+> >    1214
+> >    1215         iova = __iommu_dma_map(dev, phys, size, prot, dma_mask);
+> >    1216         if (iova == DMA_MAPPING_ERROR)
+> >    1217                 swiotlb_tbl_unmap_single(dev, phys, size, dir, attrs);
+> >    1218         return iova;
+> >    1219 }
 > 
-> I am wondering whether iommu_sync_map() needs a return value. The
-> purpose of this callback is just to sync the TLB cache after new
-> mappings are created, which should effectively be a no-fail operation.
+> static phys_addr_t iommu_dma_map_swiotlb(struct device *dev, phys_addr_t
+> phys,
+> 		size_t size, enum dma_data_direction dir, unsigned long attrs)
+> {
+> <...>
+> 	/*
+> 	 * If both the physical buffer start address and size are page aligned,
+> 	 * we don't need to use a bounce page.
+> 	 */
+> 	if (!dev_use_swiotlb(dev, size, dir) ||
+> 	    !iova_offset(iovad, phys | size))
+> 		return phys;
+> <...>
+> }
 > 
-> The definition of iotlb_sync_map in struct iommu_domain_ops seems
-> unnecessary:
+> Then,
 > 
-> struct iommu_domain_ops {
-> ...
->         int (*iotlb_sync_map)(struct iommu_domain *domain, unsigned long
-> iova,
->                               size_t size);
-> ...
-> };
-> 
-> Furthermore, currently no iommu driver implements this callback in a way
-> that returns a failure. We could clean up the iommu definition in a
-> subsequent patch series, but for this driver-facing interface, it's
-> better to get it right from the beginning.
+> dma_addr_t iommu_dma_map_page(struct device *dev, struct page *page,
+> 	unsigned long offset, size_t size, enum dma_data_direction dir,
+> 	unsigned long attrs)
+> {
+> <...>
+> 	phys = iommu_dma_map_swiotlb(dev, phys, size, dir, attrs);
+> 	if (phys == (phys_addr_t)DMA_MAPPING_ERROR)
+> 		return DMA_MAPPING_ERROR;
+> <...>
+> }
 
-I see that s390 is relying on return values:
+Such change will cause to extra function call for everyone who doesn't
+use SWIOTLB (RDMA, HMM e.t.c).
 
-  569 static int s390_iommu_iotlb_sync_map(struct iommu_domain *domain,
-  570                                      unsigned long iova, size_t size)
-  571 {
+In addition, iommu_dma_map_swiotlb() is called through
+dma_iova_link -> 
+	iommu_dma_iova_link_swiotlb -> 
+		iommu_dma_iova_bounce_and_link() -> 
+			iommu_dma_map_swiotlb()
+and dma_iova_link() has this "if (dev_use_swiotlb(dev, size, dir) && iova_unaligned(iovad, phys, size))"
+very early at call stack.
 
-<...>
+So, in dma_iova_link() we will find ourselves with same check twice.
 
-  581                 ret = zpci_refresh_trans((u64)zdev->fh << 32,
-  582                                          iova, size);
-  583                 /*
-  584                  * let the hypervisor discover invalidated entries
-  585                  * allowing it to free IOVAs and unpin pages
-  586                  */
-  587                 if (ret == -ENOMEM) {
-  588                         ret = zpci_refresh_all(zdev);
-  589                         if (ret)
-  590                                 break;
-  591                 }
-
-<...>
-
-  595         return ret;
-  596 }
+Thanks
 
 > 
 > Thanks,
 > baolu
+> 
 
