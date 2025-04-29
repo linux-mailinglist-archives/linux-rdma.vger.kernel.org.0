@@ -1,65 +1,65 @@
-Return-Path: <linux-rdma+bounces-9909-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9910-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77030A9FF89
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Apr 2025 04:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A70FA9FFC0
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Apr 2025 04:24:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ED0C48167F
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Apr 2025 02:13:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8457A17A5A6
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Apr 2025 02:24:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92742253B7D;
-	Tue, 29 Apr 2025 02:13:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD20620D4E2;
+	Tue, 29 Apr 2025 02:24:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="INvP6gVu"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Eu/VLqjy"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A522F202F92;
-	Tue, 29 Apr 2025 02:13:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA66C79F2;
+	Tue, 29 Apr 2025 02:24:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745892809; cv=none; b=k1I3rbkyyaaCdrE8JneJBSxD6TrSTMfzTcY1unetGmL96/NVbba+6FPUnydH7QPDnx5UNUhBAVgvHK/oeLddF6EoaQf2Cw+/K4db6OeGywOdH4Q9V1Ad67Cm1zIcXnCte0uE5RcoBPLsIeQ1Nw9xbIKCXM2psA7Yn97qq0zPz60=
+	t=1745893449; cv=none; b=kcwFF5yJ07lHWqiO5+UtU2D8kBA2aAUUc+OWtaudElAZYUivHaPg5YIqPizIuDy3kaVNlSOMnOyTtb5aQiAzrYgQ8ddJq496mnPG2jati8zhIKdCFqHDQ/kem+uNOnjQz3dSSFZbBkRNcZVEiZxXe+aqEw2iBGpNoWBfHc4ORas=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745892809; c=relaxed/simple;
-	bh=cl37MECxv3M+3URhi+36RMhj2hMQV9W9XGD1Q2/sh04=;
+	s=arc-20240116; t=1745893449; c=relaxed/simple;
+	bh=6sGMzojzYlJ54g3FQSKtIDOIOOhDQGpN7BZFln60WPk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EGc60M2ZkVInieYY12tCksFmF+OdnQeh6r71fNpUaRy0/TjqAMGMbI6p8Xt9TLjZP6e2iLcZloH+/DEhwNWKix4ndFuCsXXeLcnbvjVOU9uYnMsFZtEsvqN7aFrsTuUsE+Yk8gmLlpVaFRppASbqs7GSqvf5J6i2QZM12OEAdXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=INvP6gVu; arc=none smtp.client-ip=192.198.163.15
+	 In-Reply-To:Content-Type; b=OosZecm9LnBg0mBuzP6MgeZYuVp6SREIE2fdq96Iwlx6nzkgmEqZ8dzKdnrJlof2bwBoy7CBbtMTou1CIksxkBwFsCH72V3kVQals56veGf3H+ZnrMHR+HdKXx1zyhiAQs72EANgU6ZDi0FUZQfmtio58py4/NvMoT0p8nrw9yM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Eu/VLqjy; arc=none smtp.client-ip=192.198.163.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1745892808; x=1777428808;
+  t=1745893448; x=1777429448;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=cl37MECxv3M+3URhi+36RMhj2hMQV9W9XGD1Q2/sh04=;
-  b=INvP6gVufKO91G4YEFb5LDAGQLB2ZOoBqaNVTEZ++6ZTyT4ccdg+ciHG
-   3M7tIfx6pJfsOZHUJbEnSdQB8I22mSJtdQ5G6GkALEEMAyIv9zYSJoXMZ
-   jEXU2fvxmk8WP1qy8THSJMfzTF4w5J0mnbbR85xhufBrsrzeWG2+x0ig0
-   ipUA5rj2AsTNYjeUotJZmyDbvH2w+PNvXgz4O09Nh0v5Y36aI8K+dVKDv
-   x6ZMUTkoRsbOf8WyCXv58f+SbvMIhYagrcXDNjQMt7frLSV83RozorSlG
-   i4cmi7E1ah/xfiYaKEQaK7SJD2tNZQWyoVK3L0yRVwmww/cLTLRSy9Vny
-   Q==;
-X-CSE-ConnectionGUID: 27iqQTDZRUe0QlmqofO6jA==
-X-CSE-MsgGUID: aB13QRVEQ8+4Vmc9wwBDrw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11417"; a="47641300"
+  bh=6sGMzojzYlJ54g3FQSKtIDOIOOhDQGpN7BZFln60WPk=;
+  b=Eu/VLqjyox+WFVF+DSJk7KALGB0hPQxZNaElUOTs/9MHfcfQkMMjvbKA
+   QxV/IKnHvE3G2hOpJzQWN/LRs5BG60dlyNPvvPC+0glutslE21IAjLJa4
+   eCN/kkNUJcaG/j6O8Nj+j/toW+nd7Cm5Wb93GLyjiteEb+2V939km2bjC
+   fo0t3vL4b4CxEbzF9xEwds+5xJKBtwN0heILzn1Us1z5FWbVvMRLM8TYB
+   vYAXIQcIO/0zhu+S5UzEYQ5R+DZ2qhOZSW2vIYkM6YsaqqSiXBJBA58is
+   0XaNgHmT5BQY5l7fQUrik/ys15YT044OXjcq3y4bbs8/TsJsy/IJJbXYO
+   g==;
+X-CSE-ConnectionGUID: xLITgjHoSoi5zUBRHaa20A==
+X-CSE-MsgGUID: T1xMIlc/T5SOx+skZ3Tksg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11417"; a="51319144"
 X-IronPort-AV: E=Sophos;i="6.15,247,1739865600"; 
-   d="scan'208";a="47641300"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2025 19:13:27 -0700
-X-CSE-ConnectionGUID: vTMeR4UxT2GBmzm6ilMYHw==
-X-CSE-MsgGUID: qu1jwlhkTHumLQTjOKxa+g==
+   d="scan'208";a="51319144"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2025 19:24:07 -0700
+X-CSE-ConnectionGUID: vvNJFknhTVeWI8A1w+PaZg==
+X-CSE-MsgGUID: xZVcFf42RYGbSOpMJUPKUw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.15,247,1739865600"; 
-   d="scan'208";a="137721865"
+   d="scan'208";a="138678340"
 Received: from allen-sbox.sh.intel.com (HELO [10.239.159.30]) ([10.239.159.30])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2025 19:13:19 -0700
-Message-ID: <abbb616e-9ca2-4811-8721-9aa746a4d600@linux.intel.com>
-Date: Tue, 29 Apr 2025 10:09:07 +0800
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2025 19:23:58 -0700
+Message-ID: <f8d86cde-d485-4e5a-a693-e9323679474f@linux.intel.com>
+Date: Tue, 29 Apr 2025 10:19:46 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -67,8 +67,8 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 02/24] dma-mapping: move the PCI P2PDMA mapping
- helpers to pci-p2pdma.h
+Subject: Re: [PATCH v10 03/24] iommu: generalize the batched sync after map
+ interface
 To: Leon Romanovsky <leon@kernel.org>,
  Marek Szyprowski <m.szyprowski@samsung.com>, Jens Axboe <axboe@kernel.dk>,
  Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>
@@ -91,33 +91,120 @@ Cc: Jake Edge <jake@lwn.net>, Jonathan Corbet <corbet@lwn.net>,
  Chuck Lever <chuck.lever@oracle.com>, Luis Chamberlain <mcgrof@kernel.org>,
  Matthew Wilcox <willy@infradead.org>, Dan Williams
  <dan.j.williams@intel.com>, Kanchan Joshi <joshi.k@samsung.com>,
- Chaitanya Kulkarni <kch@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>
+ Chaitanya Kulkarni <kch@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>,
+ Leon Romanovsky <leonro@nvidia.com>
 References: <cover.1745831017.git.leon@kernel.org>
- <1c9f2a2e97f77d6eebb5e19651723c0459e0dc29.1745831017.git.leon@kernel.org>
+ <69da19d2cc5df0be5112f0cf2365a0337b00d873.1745831017.git.leon@kernel.org>
 Content-Language: en-US
 From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <1c9f2a2e97f77d6eebb5e19651723c0459e0dc29.1745831017.git.leon@kernel.org>
+In-Reply-To: <69da19d2cc5df0be5112f0cf2365a0337b00d873.1745831017.git.leon@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 4/28/25 17:22, Leon Romanovsky wrote:
 > From: Christoph Hellwig<hch@lst.de>
 > 
-> To support the upcoming non-scatterlist mapping helpers, we need to go
-> back to have them called outside of the DMA API.  Thus move them out of
-> dma-map-ops.h, which is only for DMA API implementations to pci-p2pdma.h,
-> which is for driver use.
+> For the upcoming IOVA-based DMA API we want to batch the
+> ops->iotlb_sync_map() call after mapping multiple IOVAs from
+> dma-iommu without having a scatterlist. Improve the API.
 > 
-> Note that the core helper is still not exported as the mapping is
-> expected to be done only by very highlevel subsystem code at least for
-> now.
+> Add a wrapper for the map_sync as iommu_sync_map() so that callers
+> don't need to poke into the methods directly.
+> 
+> Formalize __iommu_map() into iommu_map_nosync() which requires the
+> caller to call iommu_sync_map() after all maps are completed.
+> 
+> Refactor the existing sanity checks from all the different layers
+> into iommu_map_nosync().
 > 
 > Signed-off-by: Christoph Hellwig<hch@lst.de>
-> Reviewed-by: Logan Gunthorpe<logang@deltatee.com>
-> Acked-by: Bjorn Helgaas<bhelgaas@google.com>
+> Acked-by: Will Deacon<will@kernel.org>
 > Tested-by: Jens Axboe<axboe@kernel.dk>
+> Reviewed-by: Jason Gunthorpe<jgg@nvidia.com>
 > Reviewed-by: Luis Chamberlain<mcgrof@kernel.org>
 > Signed-off-by: Leon Romanovsky<leonro@nvidia.com>
+> ---
+>   drivers/iommu/iommu.c | 65 +++++++++++++++++++------------------------
+>   include/linux/iommu.h |  4 +++
+>   2 files changed, 33 insertions(+), 36 deletions(-)
+> 
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index 4f91a740c15f..02960585b8d4 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -2443,8 +2443,8 @@ static size_t iommu_pgsize(struct iommu_domain *domain, unsigned long iova,
+>   	return pgsize;
+>   }
+>   
+> -static int __iommu_map(struct iommu_domain *domain, unsigned long iova,
+> -		       phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
+> +int iommu_map_nosync(struct iommu_domain *domain, unsigned long iova,
+> +		phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
+>   {
+>   	const struct iommu_domain_ops *ops = domain->ops;
+>   	unsigned long orig_iova = iova;
+> @@ -2453,12 +2453,19 @@ static int __iommu_map(struct iommu_domain *domain, unsigned long iova,
+>   	phys_addr_t orig_paddr = paddr;
+>   	int ret = 0;
+>   
+> +	might_sleep_if(gfpflags_allow_blocking(gfp));
+> +
+>   	if (unlikely(!(domain->type & __IOMMU_DOMAIN_PAGING)))
+>   		return -EINVAL;
+>   
+>   	if (WARN_ON(!ops->map_pages || domain->pgsize_bitmap == 0UL))
+>   		return -ENODEV;
+>   
+> +	/* Discourage passing strange GFP flags */
+> +	if (WARN_ON_ONCE(gfp & (__GFP_COMP | __GFP_DMA | __GFP_DMA32 |
+> +				__GFP_HIGHMEM)))
+> +		return -EINVAL;
+> +
+>   	/* find out the minimum page size supported */
+>   	min_pagesz = 1 << __ffs(domain->pgsize_bitmap);
+>   
+> @@ -2506,31 +2513,27 @@ static int __iommu_map(struct iommu_domain *domain, unsigned long iova,
+>   	return ret;
+>   }
+>   
+> -int iommu_map(struct iommu_domain *domain, unsigned long iova,
+> -	      phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
+> +int iommu_sync_map(struct iommu_domain *domain, unsigned long iova, size_t size)
+>   {
+>   	const struct iommu_domain_ops *ops = domain->ops;
+> -	int ret;
+> -
+> -	might_sleep_if(gfpflags_allow_blocking(gfp));
+>   
+> -	/* Discourage passing strange GFP flags */
+> -	if (WARN_ON_ONCE(gfp & (__GFP_COMP | __GFP_DMA | __GFP_DMA32 |
+> -				__GFP_HIGHMEM)))
+> -		return -EINVAL;
+> +	if (!ops->iotlb_sync_map)
+> +		return 0;
+> +	return ops->iotlb_sync_map(domain, iova, size);
+> +}
 
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+I am wondering whether iommu_sync_map() needs a return value. The
+purpose of this callback is just to sync the TLB cache after new
+mappings are created, which should effectively be a no-fail operation.
+
+The definition of iotlb_sync_map in struct iommu_domain_ops seems
+unnecessary:
+
+struct iommu_domain_ops {
+...
+         int (*iotlb_sync_map)(struct iommu_domain *domain, unsigned 
+long iova,
+                               size_t size);
+...
+};
+
+Furthermore, currently no iommu driver implements this callback in a way
+that returns a failure. We could clean up the iommu definition in a
+subsequent patch series, but for this driver-facing interface, it's
+better to get it right from the beginning.
+
+Thanks,
+baolu
 
