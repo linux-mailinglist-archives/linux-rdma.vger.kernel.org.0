@@ -1,215 +1,190 @@
-Return-Path: <linux-rdma+bounces-9949-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9950-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D2FEAA694B
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 May 2025 05:23:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D1EFAA6A8A
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 May 2025 08:10:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05A1D1B66A90
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 May 2025 03:23:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34C791BA6E76
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 May 2025 06:10:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE28A19DFB4;
-	Fri,  2 May 2025 03:22:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47C191F3FC3;
+	Fri,  2 May 2025 06:08:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lbhx2baH"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="AiVEFlUu"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25C9519D07B;
-	Fri,  2 May 2025 03:22:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 279C31E51E3;
+	Fri,  2 May 2025 06:08:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746156170; cv=none; b=ZvL6mL/Vp1nHzeUVz127tL0bVBhJH8OULAnuA4niy4hMkg00I082coDit1Sey79EPIJmO5wgs/KAptZnBbeY2g5S4AEBMSl5WVnKqcB7pgKFkuEg6Lfpj3AgUeUD+jY6OGwogxsgKHWJ4bYGOJaQhrY/8B3iDJ0/fzpyLskACZU=
+	t=1746166092; cv=none; b=Mu7S7ernV6ip37iU5KZ5t9o1kEg/0bGLMOydjeVZLqEjtXKdVQ0V7medHtGYEzV1hxuXvX2nOdXlNKTCZLLklXK2JQdZ/bJcNCyn2w4kooG5JwnGEEwMaBIdl80VLN6dR9kDpdy/u54CJD1eTZqxIpECYCO7dtCZMFjDbPd8gVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746156170; c=relaxed/simple;
-	bh=BdKu0oMC7/nD8hs7w81lDziT8JF9hMEzpVS5Pu+wuQE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uCdHG2owa8N2kutpt9LGXH6miKAEtQXL4gCKCKBilOVakJwhaU4g2gZIZmAYtNEKXVyQsB3YqQHbBs06T8iFevrRQ0YpQ2a/NlFETlqu7p+CrerhkIUX2PBNU4TmQ9fSDM7IkfOspM7vkXIYfBTGUQeYRvCyh3tY7n5gvyhoCWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lbhx2baH; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-227d6b530d8so16731645ad.3;
-        Thu, 01 May 2025 20:22:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746156168; x=1746760968; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=crcCfkxFdjrxFLxSuvrgCSvgU5gXMq8U8EeleetQwqI=;
-        b=lbhx2baHq/yldOQFvCe+XZJQFTEIQ1EAuKeaxHn9TdU0W4Um0fKKYICVJeWwbr01nL
-         +MR1I7Vvq9dSa7JfRZ7YgCTWqkuqpoQLrB7g6yeAdmwb1zHubmWGvneTDl6aaOaU4DZZ
-         Z/0DrZ55zzk+TwThPtb/i497lqt+XNNj7OG/oG+TH+MuAmvOV3prkEhtgUa6DhhbR8f+
-         LzbLVaZPJRmM0WtIahgS6QC0xKUXznvqwwo2L+fmlQ4E4qVNNYmBALgQhTpRR6YQn+fh
-         fDZ7EsU5ctyed2nzTtKrwV+zbTzbFVL+NqR4PFXn46Rm0K0weRkG04bLSDGhz1P4dp8l
-         mz9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746156168; x=1746760968;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=crcCfkxFdjrxFLxSuvrgCSvgU5gXMq8U8EeleetQwqI=;
-        b=a09zvXLyRspHKJn33vJ6G09isZ1awtj1DSBdGlVe3mXGUyGt/WzHXQAet/NXcLhRGI
-         BXxxVi7Mn2hfVFvOiwMb53PtbxA+BW0P2NHtVhSvsd6I3UCgSgx1B9Jb+4eU0XtWrftx
-         eCmCxA35RLe4dhIVlmDvdIXk7lxUeoauZdcv2TmJO1G7m8Iw0DsA1OoSeP5a0GCFCFlk
-         F0liolwjyfhx4wP03TZ82gj7ZnzX6v4PupAcR0izG7gW81/oPgc2JtoQ8HA4gxSpjq9d
-         /NxukSwtzE5HA8cMchl18wX8v8Cwn3sKJIoSnms6KqbBQq61wE78q7hSovV+FUifBAQL
-         FDvw==
-X-Forwarded-Encrypted: i=1; AJvYcCWXMjmHGc1AOXATZKdGtGH3O7VpSksSBES/gjMF8flp3rmI3iPBwVeeQNJOJhOsO2iKKXBIDmrhanPZ@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy0+PFqZacTuSkV0q7q/H/35HeEuxMwiBHjnixWnEB/rZZcluec
-	m1BUgwF9tPd9sgXctn5sikdxlWWBoYAEb38r8g9d870gdR1kXgOF4hAAn4lUuvg=
-X-Gm-Gg: ASbGncvzBZ0mKJaATxFrQ9Gp2rq5jVPjYSeopl2+Il9mzeKRricnbS18PSS0TvZi/mp
-	vUHN46TM0GUjh+il7II1TgwQQxV8Uo43uPwM7i6RsZGl9yODEYv4JBLr7YvzGVYCL4KtBk1T/5a
-	oGnMLe27LWemCMYBa2O369oDSTFk/q2k62lz2lB+N1yG+32Aljk76/Hz/BxNLNNyh6JAX+irxIn
-	OSGLBxG4uuG6z/IS8yI3sfvGcM5cYiIbxX05x1gU1AiX1F4xqTNV7WgAEldQmBUXUHjKIO9maSM
-	NDL4NHrZ+HyzlvQDchboGNPjXOAJMsR9FZH2bC9jeqmBSRMGxO3sGLGxlCWRDZl7DkFwjPOLMh7
-	f2avI/A==
-X-Google-Smtp-Source: AGHT+IEcXRsplwpkPypleSvEnPMerG17oo6wxpKrObWBXKL2hFdTwH1do6qXSFEjAx4wCYEWNHR3Nw==
-X-Received: by 2002:a17:903:120f:b0:220:eade:d77e with SMTP id d9443c01a7336-22e103559d3mr19937535ad.40.1746156168386;
-        Thu, 01 May 2025 20:22:48 -0700 (PDT)
-Received: from trigkey.. (FL1-119-244-79-106.tky.mesh.ad.jp. [119.244.79.106])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22e1094063bsm3974625ad.248.2025.05.01.20.22.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 May 2025 20:22:47 -0700 (PDT)
-From: Daisuke Matsuda <dskmtsd@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	leon@kernel.org,
-	jgg@ziepe.ca,
-	zyjzyj2000@gmail.com
-Cc: Daisuke Matsuda <dskmtsd@gmail.com>
-Subject: [PATCH for-next v1 2/2] RDMA/rxe: Enable asynchronous prefetch for ODP MRs
-Date: Fri,  2 May 2025 03:22:16 +0000
-Message-ID: <20250502032216.2312-3-dskmtsd@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250502032216.2312-1-dskmtsd@gmail.com>
-References: <20250502032216.2312-1-dskmtsd@gmail.com>
+	s=arc-20240116; t=1746166092; c=relaxed/simple;
+	bh=Vx2THve1rmsHzjpjDKRkcdp0KoxQt1d23ap0dGDJAX0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X5V2fI9jIUoDSI1cSx/LCAaFDbH26DF5lmja4l7HfM9WrfRX+aEx8VaiEEMFghxqzvkglnCiH+lXPeNvbLSQY9JUDe3cYlHvlmL2nayTBMY7GvNhkBPm6UxtRitexvTddlt83kuljimMueOhjVz0szZwTMECGIulaTjkWPsOsuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=AiVEFlUu; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id 789102020964; Thu,  1 May 2025 23:08:09 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 789102020964
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1746166089;
+	bh=9+r69ZddY1UZkHR3/FwhIdCjqmNBZaadDjUSZVoYSAo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AiVEFlUu8IfyCCGNVGXAeB65x7LTHiBsP3cyaB05BdyktmMQdrW7BvdxLv00u1I+K
+	 r1g0rPMQqAsJ3B7qyaA52zhAQgAZXeGda+rIgFQ4eUeNd7kZJ40alPQW5JDCrpituU
+	 tCG1qe5CmLcW70KOfqLSp6O8Dh//y+Ae1fadP70w=
+Date: Thu, 1 May 2025 23:08:09 -0700
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: Michael Kelley <mhklinux@outlook.com>
+Cc: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Nipun Gupta <nipun.gupta@amd.com>,
+	Yury Norov <yury.norov@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Jonathan Cameron <Jonathan.Cameron@huwei.com>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Kevin Tian <kevin.tian@intel.com>, Long Li <longli@microsoft.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Krzysztof Wilczy?ski <kw@linux.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Simon Horman <horms@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+	Maxim Levitsky <mlevitsk@redhat.com>,
+	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	Paul Rosswurm <paulros@microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: Re: [PATCH v2 3/3] net: mana: Allocate MSI-X vectors dynamically as
+ required
+Message-ID: <20250502060809.GA10704@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1745578407-14689-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <1745578478-15195-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <SN6PR02MB4157FF2CA8E37298FC634491D4822@SN6PR02MB4157.namprd02.prod.outlook.com>
+ <20250501142354.GA6208@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <SN6PR02MB4157EAC71A53E152EE684A4DD4822@SN6PR02MB4157.namprd02.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SN6PR02MB4157EAC71A53E152EE684A4DD4822@SN6PR02MB4157.namprd02.prod.outlook.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-Calling ibv_advise_mr(3) with flags other than IBV_ADVISE_MR_FLAG_FLUSH
-invokes asynchronous request. It is best-effort, and thus can safely be
-deferred to the system-wide workqueue.
+On Thu, May 01, 2025 at 03:56:48PM +0000, Michael Kelley wrote:
+> From: Shradha Gupta <shradhagupta@linux.microsoft.com> Sent: Thursday, May 1, 2025 7:24 AM
+> > 
+> > On Thu, May 01, 2025 at 05:27:49AM +0000, Michael Kelley wrote:
+> > > From: Shradha Gupta <shradhagupta@linux.microsoft.com> Sent: Friday, April 25,
+> > 2025 3:55 AM
+> > > >
+> > > > Currently, the MANA driver allocates MSI-X vectors statically based on
+> > > > MANA_MAX_NUM_QUEUES and num_online_cpus() values and in some cases ends
+> > > > up allocating more vectors than it needs. This is because, by this time
+> > > > we do not have a HW channel and do not know how many IRQs should be
+> > > > allocated.
+> > > >
+> > > > To avoid this, we allocate 1 MSI-X vector during the creation of HWC and
+> > > > after getting the value supported by hardware, dynamically add the
+> > > > remaining MSI-X vectors.
+> > >
+> > > I have a top-level thought about the data structures used to manage a
+> > > dynamic number of MSI-X vectors. The current code allocates a fixed size
+> > > array of struct gdma_irq_context, with one entry in the array for each
+> > > MSI-X vector. To find the entry for a particular msi_index, the code can
+> > > just index into the array, which is nice and simple.
+> > >
+> > > The new code uses a linked list of struct gdma_irq_context entries, with
+> > > one entry in the list for each MSI-X vector.  In the dynamic case, you can
+> > > start with one entry in the list, and then add to the list however many
+> > > additional entries the hardware will support.
+> > >
+> > > But this additional linked list adds significant complexity to the code
+> > > because it must be linearly searched to find the entry for a particular
+> > > msi_index, and there's the messiness of putting entries onto the list
+> > > and taking them off.  A spin lock is required.  Etc., etc.
+> > >
+> > > Here's an intermediate approach that would be simpler. Allocate a fixed
+> > > size array of pointers to struct gdma_irq_context. The fixed size is the
+> > > maximum number of possible MSI-X vectors for the device, which I
+> > > think is MANA_MAX_NUM_QUEUES, or 64 (correct me if I'm wrong
+> > > about that). Allocate a new struct gdma_irq_context when needed,
+> > > but store the address in the array rather than adding it onto a list.
+> > > Code can then directly index into the array to access the entry.
+> > >
+> > > Some entries in the array will be unused (and "wasted") if the device
+> > > uses fewer MSI-X vector, but each unused entry is only 8 bytes. The
+> > > max space unused is fewer than 512 bytes (assuming 64 entries in
+> > > the array), which is neglible in the grand scheme of things. With the
+> > > simpler code, and not having the additional list entry embedded in
+> > > each struct gmda_irq_context, you'll get some of that space back
+> > > anyway.
+> > >
+> > > Maybe there's a reason for the list that I missed in my initial
+> > > review of the code. But if not, it sure seems like the code could
+> > > be simpler, and having some unused 8 bytes entries in the array
+> > > is worth the tradeoff for the simplicity.
+> > >
+> > > Michael
+> > 
+> > Hey  Michael,
+> > 
+> > Thanks for your inputs. We did think of this approach and in fact that
+> > was how this patch was implemented(fixed size array) in the v1 of our
+> > internal reviews.
+> > 
+> > However, it came up in those reviews that we want to move away
+> > from the 64(MANA_MAX_NUM_QUEUES) as a hard limit for some new
+> > requirements, atleast for the dynamic IRQ allocation path. And now the
+> > new limit for all hardening purposes would be num_online_cpus().
+> > 
+> > Using this limit and the fixed array size approach creates problems,
+> > especially in machines with high number of vCPUs. It would lead to
+> > quite a bit of memory/resource wastage.
+> > 
+> > Hence, we decided to go ahead with this design.
+> > 
+> > Regards,
+> > Shradha.
+> 
+> One other thought:  Did you look at using an xarray? See
+> https://www.kernel.org/doc/html/latest/core-api/xarray.html.
+> It has most of or all the properties you need to deal with
+> a variable number of entries, while handling all the locking
+> automatically. Entries can be accessed with just a simple
+> index value.
+> 
+> I don't have first-hand experience writing code using xarrays,
+> so I can't be sure that it would simplify things for MANA IRQ
+> allocation, but it seems to be a very appropriate abstraction
+> for this use case.
+> 
+> Michael
+>
+Thanks Michael,
 
-Signed-off-by: Daisuke Matsuda <dskmtsd@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_odp.c | 81 ++++++++++++++++++++++++++++-
- 1 file changed, 80 insertions(+), 1 deletion(-)
+This does look promising for our usecase. I will try it with this patch,
+update the thread and then send out the next version as required.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
-index e5c60b061d7e..d98b385a18ce 100644
---- a/drivers/infiniband/sw/rxe/rxe_odp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_odp.c
-@@ -425,6 +425,73 @@ enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
- 	return RESPST_NONE;
- }
- 
-+struct prefetch_mr_work {
-+	struct work_struct work;
-+	u32 pf_flags;
-+	u32 num_sge;
-+	struct {
-+		u64 io_virt;
-+		struct rxe_mr *mr;
-+		size_t length;
-+	} frags[];
-+};
-+
-+static void rxe_ib_prefetch_mr_work(struct work_struct *w)
-+{
-+	struct prefetch_mr_work *work =
-+		container_of(w, struct prefetch_mr_work, work);
-+	int ret;
-+	u32 i;
-+
-+	/* We rely on IB/core that work is executed if we have num_sge != 0 only. */
-+	WARN_ON(!work->num_sge);
-+	for (i = 0; i < work->num_sge; ++i) {
-+		struct ib_umem_odp *umem_odp;
-+
-+		ret = rxe_odp_do_pagefault_and_lock(work->frags[i].mr, work->frags[i].io_virt,
-+						    work->frags[i].length, work->pf_flags);
-+		if (ret < 0) {
-+			rxe_dbg_mr(work->frags[i].mr, "failed to prefetch the mr\n");
-+			continue;
-+		}
-+
-+		umem_odp = to_ib_umem_odp(work->frags[i].mr->umem);
-+		mutex_unlock(&umem_odp->umem_mutex);
-+	}
-+
-+	kvfree(work);
-+}
-+
-+static int rxe_init_prefetch_work(struct ib_pd *ibpd,
-+				  enum ib_uverbs_advise_mr_advice advice,
-+				  u32 pf_flags, struct prefetch_mr_work *work,
-+				  struct ib_sge *sg_list, u32 num_sge)
-+{
-+	struct rxe_pd *pd = container_of(ibpd, struct rxe_pd, ibpd);
-+	u32 i;
-+
-+	INIT_WORK(&work->work, rxe_ib_prefetch_mr_work);
-+	work->pf_flags = pf_flags;
-+
-+	for (i = 0; i < num_sge; ++i) {
-+		struct rxe_mr *mr;
-+
-+		mr = lookup_mr(pd, IB_ACCESS_LOCAL_WRITE,
-+			       sg_list[i].lkey, RXE_LOOKUP_LOCAL);
-+		if (IS_ERR(mr)) {
-+			work->num_sge = i;
-+			return PTR_ERR(mr);
-+		}
-+		work->frags[i].io_virt = sg_list[i].addr;
-+		work->frags[i].length = sg_list[i].length;
-+		work->frags[i].mr = mr;
-+
-+		rxe_put(mr);
-+	}
-+	work->num_sge = num_sge;
-+	return 0;
-+}
-+
- static int rxe_ib_prefetch_sg_list(struct ib_pd *ibpd,
- 				   enum ib_uverbs_advise_mr_advice advice,
- 				   u32 pf_flags, struct ib_sge *sg_list,
-@@ -478,6 +545,8 @@ static int rxe_ib_advise_mr_prefetch(struct ib_pd *ibpd,
- 				     u32 flags, struct ib_sge *sg_list, u32 num_sge)
- {
- 	u32 pf_flags = RXE_PAGEFAULT_DEFAULT;
-+	struct prefetch_mr_work *work;
-+	int rc;
- 
- 	if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH)
- 		pf_flags |= RXE_PAGEFAULT_RDONLY;
-@@ -490,7 +559,17 @@ static int rxe_ib_advise_mr_prefetch(struct ib_pd *ibpd,
- 		return rxe_ib_prefetch_sg_list(ibpd, advice, pf_flags, sg_list,
- 					       num_sge);
- 
--	/* Asynchronous call is "best-effort" */
-+	/* Asynchronous call is "best-effort" and allowed to fail */
-+	work = kvzalloc(struct_size(work, frags, num_sge), GFP_KERNEL);
-+	if (!work)
-+		return -ENOMEM;
-+
-+	rc = rxe_init_prefetch_work(ibpd, advice, pf_flags, work, sg_list, num_sge);
-+	if (rc) {
-+		kvfree(work);
-+		return rc;
-+	}
-+	queue_work(system_unbound_wq, &work->work);
- 
- 	return 0;
- }
--- 
-2.43.0
-
+Regards,
+Shradha.
 
