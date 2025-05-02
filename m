@@ -1,190 +1,199 @@
-Return-Path: <linux-rdma+bounces-9950-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9951-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D1EFAA6A8A
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 May 2025 08:10:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ED27AA6E83
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 May 2025 11:54:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34C791BA6E76
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 May 2025 06:10:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2DD09A64D8
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 May 2025 09:54:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47C191F3FC3;
-	Fri,  2 May 2025 06:08:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14F6A23184A;
+	Fri,  2 May 2025 09:54:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="AiVEFlUu"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="he/Xkw6I"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 279C31E51E3;
-	Fri,  2 May 2025 06:08:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2DC223182E
+	for <linux-rdma@vger.kernel.org>; Fri,  2 May 2025 09:54:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746166092; cv=none; b=Mu7S7ernV6ip37iU5KZ5t9o1kEg/0bGLMOydjeVZLqEjtXKdVQ0V7medHtGYEzV1hxuXvX2nOdXlNKTCZLLklXK2JQdZ/bJcNCyn2w4kooG5JwnGEEwMaBIdl80VLN6dR9kDpdy/u54CJD1eTZqxIpECYCO7dtCZMFjDbPd8gVI=
+	t=1746179680; cv=none; b=eEwlnD2tCPKe7L6tKSgw4k1HasiGn/BwGGK1nIlAG6L5QloyODKjSSFUhf7F25j1i5Z5/WL4DDj53RoJNHy7vkQder/K4Ue5ndvsa1pyKJ5jM1H+dAgidkpDpZfwkRA/TpIoXYsZ/jp/33jqgPvsrga/9bS1UCVx4VW/pKNqlEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746166092; c=relaxed/simple;
-	bh=Vx2THve1rmsHzjpjDKRkcdp0KoxQt1d23ap0dGDJAX0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X5V2fI9jIUoDSI1cSx/LCAaFDbH26DF5lmja4l7HfM9WrfRX+aEx8VaiEEMFghxqzvkglnCiH+lXPeNvbLSQY9JUDe3cYlHvlmL2nayTBMY7GvNhkBPm6UxtRitexvTddlt83kuljimMueOhjVz0szZwTMECGIulaTjkWPsOsuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=AiVEFlUu; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id 789102020964; Thu,  1 May 2025 23:08:09 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 789102020964
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1746166089;
-	bh=9+r69ZddY1UZkHR3/FwhIdCjqmNBZaadDjUSZVoYSAo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AiVEFlUu8IfyCCGNVGXAeB65x7LTHiBsP3cyaB05BdyktmMQdrW7BvdxLv00u1I+K
-	 r1g0rPMQqAsJ3B7qyaA52zhAQgAZXeGda+rIgFQ4eUeNd7kZJ40alPQW5JDCrpituU
-	 tCG1qe5CmLcW70KOfqLSp6O8Dh//y+Ae1fadP70w=
-Date: Thu, 1 May 2025 23:08:09 -0700
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Michael Kelley <mhklinux@outlook.com>
-Cc: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Nipun Gupta <nipun.gupta@amd.com>,
-	Yury Norov <yury.norov@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Jonathan Cameron <Jonathan.Cameron@huwei.com>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Kevin Tian <kevin.tian@intel.com>, Long Li <longli@microsoft.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Krzysztof Wilczy?ski <kw@linux.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Simon Horman <horms@kernel.org>, Leon Romanovsky <leon@kernel.org>,
-	Maxim Levitsky <mlevitsk@redhat.com>,
-	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	Paul Rosswurm <paulros@microsoft.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>
-Subject: Re: [PATCH v2 3/3] net: mana: Allocate MSI-X vectors dynamically as
- required
-Message-ID: <20250502060809.GA10704@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1745578407-14689-1-git-send-email-shradhagupta@linux.microsoft.com>
- <1745578478-15195-1-git-send-email-shradhagupta@linux.microsoft.com>
- <SN6PR02MB4157FF2CA8E37298FC634491D4822@SN6PR02MB4157.namprd02.prod.outlook.com>
- <20250501142354.GA6208@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <SN6PR02MB4157EAC71A53E152EE684A4DD4822@SN6PR02MB4157.namprd02.prod.outlook.com>
+	s=arc-20240116; t=1746179680; c=relaxed/simple;
+	bh=3LU789saYyrutCozDG0IOlxxmIN4Z1wthUFZjP4Ozbc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=P/YF4KAKi04j/zR1Y8E4Vf8FpSAJRW+iwFa1Sfc9Yk+zzlXnjF7agAdwXlqWfq+GbQPeueu4hYfV2zu/I/IXzKhhzimAXYDd1JabZnwyskoLc4N6CcoBM5ZdS666RAizwNTRBO8PE4ugli06ojR7qgdegGbY6wtp4J4ccphIPE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=he/Xkw6I; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <64c14861-c7ef-4608-9e12-4567775bc5af@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1746179665;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+yfmn0tK+qTWIj7LV5pZmbdVGhS233Htkxsoag4Qbfs=;
+	b=he/Xkw6IHpnh5DFcegTV1kjxZyzUViCF0HeVZJfHd7nZG5VBoVd/NqeMJj7Iu4gWuiLsFY
+	gFvkkKLg01jjL42Nk+vnGqzdJGhTi98/NewFAuxP5+Z3JJ319nCmIB2wemEw11z5Fzo90e
+	Bh2XJ0OBcUPlVLlGKNl9KJ2eNWPaMS8=
+Date: Fri, 2 May 2025 11:54:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SN6PR02MB4157EAC71A53E152EE684A4DD4822@SN6PR02MB4157.namprd02.prod.outlook.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Subject: Re: [syzbot] [rdma?] WARNING in rxe_skb_tx_dtor
+To: syzbot <syzbot+8425ccfb599521edb153@syzkaller.appspotmail.com>,
+ jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+ zyjzyj2000@gmail.com
+References: <6813a531.050a0220.14dd7d.0018.GAE@google.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <6813a531.050a0220.14dd7d.0018.GAE@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, May 01, 2025 at 03:56:48PM +0000, Michael Kelley wrote:
-> From: Shradha Gupta <shradhagupta@linux.microsoft.com> Sent: Thursday, May 1, 2025 7:24 AM
-> > 
-> > On Thu, May 01, 2025 at 05:27:49AM +0000, Michael Kelley wrote:
-> > > From: Shradha Gupta <shradhagupta@linux.microsoft.com> Sent: Friday, April 25,
-> > 2025 3:55 AM
-> > > >
-> > > > Currently, the MANA driver allocates MSI-X vectors statically based on
-> > > > MANA_MAX_NUM_QUEUES and num_online_cpus() values and in some cases ends
-> > > > up allocating more vectors than it needs. This is because, by this time
-> > > > we do not have a HW channel and do not know how many IRQs should be
-> > > > allocated.
-> > > >
-> > > > To avoid this, we allocate 1 MSI-X vector during the creation of HWC and
-> > > > after getting the value supported by hardware, dynamically add the
-> > > > remaining MSI-X vectors.
-> > >
-> > > I have a top-level thought about the data structures used to manage a
-> > > dynamic number of MSI-X vectors. The current code allocates a fixed size
-> > > array of struct gdma_irq_context, with one entry in the array for each
-> > > MSI-X vector. To find the entry for a particular msi_index, the code can
-> > > just index into the array, which is nice and simple.
-> > >
-> > > The new code uses a linked list of struct gdma_irq_context entries, with
-> > > one entry in the list for each MSI-X vector.  In the dynamic case, you can
-> > > start with one entry in the list, and then add to the list however many
-> > > additional entries the hardware will support.
-> > >
-> > > But this additional linked list adds significant complexity to the code
-> > > because it must be linearly searched to find the entry for a particular
-> > > msi_index, and there's the messiness of putting entries onto the list
-> > > and taking them off.  A spin lock is required.  Etc., etc.
-> > >
-> > > Here's an intermediate approach that would be simpler. Allocate a fixed
-> > > size array of pointers to struct gdma_irq_context. The fixed size is the
-> > > maximum number of possible MSI-X vectors for the device, which I
-> > > think is MANA_MAX_NUM_QUEUES, or 64 (correct me if I'm wrong
-> > > about that). Allocate a new struct gdma_irq_context when needed,
-> > > but store the address in the array rather than adding it onto a list.
-> > > Code can then directly index into the array to access the entry.
-> > >
-> > > Some entries in the array will be unused (and "wasted") if the device
-> > > uses fewer MSI-X vector, but each unused entry is only 8 bytes. The
-> > > max space unused is fewer than 512 bytes (assuming 64 entries in
-> > > the array), which is neglible in the grand scheme of things. With the
-> > > simpler code, and not having the additional list entry embedded in
-> > > each struct gmda_irq_context, you'll get some of that space back
-> > > anyway.
-> > >
-> > > Maybe there's a reason for the list that I missed in my initial
-> > > review of the code. But if not, it sure seems like the code could
-> > > be simpler, and having some unused 8 bytes entries in the array
-> > > is worth the tradeoff for the simplicity.
-> > >
-> > > Michael
-> > 
-> > Hey  Michael,
-> > 
-> > Thanks for your inputs. We did think of this approach and in fact that
-> > was how this patch was implemented(fixed size array) in the v1 of our
-> > internal reviews.
-> > 
-> > However, it came up in those reviews that we want to move away
-> > from the 64(MANA_MAX_NUM_QUEUES) as a hard limit for some new
-> > requirements, atleast for the dynamic IRQ allocation path. And now the
-> > new limit for all hardening purposes would be num_online_cpus().
-> > 
-> > Using this limit and the fixed array size approach creates problems,
-> > especially in machines with high number of vCPUs. It would lead to
-> > quite a bit of memory/resource wastage.
-> > 
-> > Hence, we decided to go ahead with this design.
-> > 
-> > Regards,
-> > Shradha.
+On 01.05.25 18:45, syzbot wrote:
+> Hello,
 > 
-> One other thought:  Did you look at using an xarray? See
-> https://www.kernel.org/doc/html/latest/core-api/xarray.html.
-> It has most of or all the properties you need to deal with
-> a variable number of entries, while handling all the locking
-> automatically. Entries can be accessed with just a simple
-> index value.
+> syzbot found the following issue on:
 > 
-> I don't have first-hand experience writing code using xarrays,
-> so I can't be sure that it would simplify things for MANA IRQ
-> allocation, but it seems to be a very appropriate abstraction
-> for this use case.
+> HEAD commit:    8bac8898fe39 Merge tag 'mmc-v6.15-rc1' of git://git.kernel..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16b6d774580000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=a9a25b7a36123454
+> dashboard link: https://syzkaller.appspot.com/bug?extid=8425ccfb599521edb153
+> compiler:       Debian clang version 20.1.2 (++20250402124445+58df0ef89dd6-1~exp1~20250402004600.97), Debian LLD 20.1.2
 > 
-> Michael
->
-Thanks Michael,
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> Downloadable assets:
+> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-8bac8898.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/2a76d594c0f5/vmlinux-8bac8898.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/dae09c25780d/bzImage-8bac8898.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+8425ccfb599521edb153@syzkaller.appspotmail.com
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 1046 at drivers/infiniband/sw/rxe/rxe_net.c:357 rxe_skb_tx_dtor+0x8b/0x2a0 drivers/infiniband/sw/rxe/rxe_net.c:357
 
-This does look promising for our usecase. I will try it with this patch,
-update the thread and then send out the next version as required.
+This is a known problem. It seems to be related with the following commit.
 
-Regards,
-Shradha.
+commit 1a633bdc8fd9e9e4a9f9a668ae122edfc5aacc86
+Author: Bob Pearson <rpearsonhpe@gmail.com>
+Date:   Fri Mar 29 09:55:15 2024 -0500
+
+     RDMA/rxe: Let destroy qp succeed with stuck packet
+
+     In some situations a sent packet may get queued in the NIC longer than
+     than timeout of a ULP. Currently if this happens the ULP may try to 
+reset
+     the link by destroying the qp and setting up an alternate 
+connection but
+     will fail because the rxe driver is waiting for the packet to finish
+     getting sent and be returned to the skb destructor function where 
+the qp
+     reference holding things up will be dropped. This patch modifies 
+the way
+     that the qp is passed to the destructor to pass the qp index and 
+not a qp
+     pointer.  Then the destructor will attempt to lookup the qp from 
+its index
+     and if it fails exit early. This requires taking a reference on the 
+struct
+     sock rather than the qp allowing the qp to be destroyed while the sk is
+     still around waiting for the packet to finish.
+
+     Link: 
+https://lore.kernel.org/r/20240329145513.35381-15-rpearsonhpe@gmail.com
+     Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+     Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+
+Zhu Yanjun
+
+> Modules linked in:
+> CPU: 0 UID: 0 PID: 1046 Comm: kworker/u4:9 Not tainted 6.15.0-rc4-syzkaller-00040-g8bac8898fe39 #0 PREEMPT(full)
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+> Workqueue: rxe_wq do_work
+> RIP: 0010:rxe_skb_tx_dtor+0x8b/0x2a0 drivers/infiniband/sw/rxe/rxe_net.c:357
+> Code: 80 3c 20 00 74 08 4c 89 ff e8 41 ee 8c f9 4d 8b 37 44 89 f6 83 e6 01 31 ff e8 11 fe 2a f9 41 f6 c6 01 75 0e e8 26 f9 2a f9 90 <0f> 0b 90 e9 b4 01 00 00 4c 89 ff e8 35 c4 fa 01 48 89 c7 be 0e 00
+> RSP: 0018:ffffc90000007a08 EFLAGS: 00010246
+> RAX: ffffffff8894c5aa RBX: ffff88803ec8d280 RCX: ffff888035088000
+> RDX: 0000000000000100 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: ffffffff886e3f04 R12: dffffc0000000000
+> R13: 1ffff11007d91a5b R14: 0000000000025820 R15: ffff888034060000
+> FS:  0000000000000000(0000) GS:ffff88808d6cc000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f7c6d874fc8 CR3: 00000000428c8000 CR4: 0000000000352ef0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>   <IRQ>
+>   skb_release_head_state+0xfe/0x250 net/core/skbuff.c:1149
+>   napi_consume_skb+0xd2/0x1e0 net/core/skbuff.c:-1
+>   e1000_unmap_and_free_tx_resource drivers/net/ethernet/intel/e1000/e1000_main.c:1972 [inline]
+>   e1000_clean_tx_irq drivers/net/ethernet/intel/e1000/e1000_main.c:3864 [inline]
+>   e1000_clean+0x49d/0x2b00 drivers/net/ethernet/intel/e1000/e1000_main.c:3805
+>   __napi_poll+0xc4/0x480 net/core/dev.c:7324
+>   napi_poll net/core/dev.c:7388 [inline]
+>   net_rx_action+0x6ea/0xdf0 net/core/dev.c:7510
+>   handle_softirqs+0x283/0x870 kernel/softirq.c:579
+>   do_softirq+0xec/0x180 kernel/softirq.c:480
+>   </IRQ>
+>   <TASK>
+>   __local_bh_enable_ip+0x17d/0x1c0 kernel/softirq.c:407
+>   local_bh_enable include/linux/bottom_half.h:33 [inline]
+>   rcu_read_unlock_bh include/linux/rcupdate.h:910 [inline]
+>   __dev_queue_xmit+0x1cd7/0x3a70 net/core/dev.c:4656
+>   neigh_output include/net/neighbour.h:539 [inline]
+>   ip6_finish_output2+0x11fb/0x16a0 net/ipv6/ip6_output.c:141
+>   __ip6_finish_output net/ipv6/ip6_output.c:-1 [inline]
+>   ip6_finish_output+0x234/0x7d0 net/ipv6/ip6_output.c:226
+>   rxe_send drivers/infiniband/sw/rxe/rxe_net.c:391 [inline]
+>   rxe_xmit_packet+0x79e/0xa30 drivers/infiniband/sw/rxe/rxe_net.c:450
+>   rxe_requester+0x1fea/0x3d20 drivers/infiniband/sw/rxe/rxe_req.c:805
+>   rxe_sender+0x16/0x50 drivers/infiniband/sw/rxe/rxe_req.c:839
+>   do_task+0x1ad/0x6b0 drivers/infiniband/sw/rxe/rxe_task.c:127
+>   process_one_work kernel/workqueue.c:3238 [inline]
+>   process_scheduled_works+0xadb/0x17a0 kernel/workqueue.c:3319
+>   worker_thread+0x8a0/0xda0 kernel/workqueue.c:3400
+>   kthread+0x70e/0x8a0 kernel/kthread.c:464
+>   ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:153
+>   ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+>   </TASK>
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
+
 
