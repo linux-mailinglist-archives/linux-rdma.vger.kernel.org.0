@@ -1,199 +1,399 @@
-Return-Path: <linux-rdma+bounces-9951-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9952-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ED27AA6E83
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 May 2025 11:54:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5535DAA777F
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 May 2025 18:42:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2DD09A64D8
-	for <lists+linux-rdma@lfdr.de>; Fri,  2 May 2025 09:54:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B352C468592
+	for <lists+linux-rdma@lfdr.de>; Fri,  2 May 2025 16:42:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14F6A23184A;
-	Fri,  2 May 2025 09:54:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1448425DD16;
+	Fri,  2 May 2025 16:42:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="he/Xkw6I"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cMrS9OD7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2DC223182E
-	for <linux-rdma@vger.kernel.org>; Fri,  2 May 2025 09:54:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A1531EEE6
+	for <linux-rdma@vger.kernel.org>; Fri,  2 May 2025 16:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746179680; cv=none; b=eEwlnD2tCPKe7L6tKSgw4k1HasiGn/BwGGK1nIlAG6L5QloyODKjSSFUhf7F25j1i5Z5/WL4DDj53RoJNHy7vkQder/K4Ue5ndvsa1pyKJ5jM1H+dAgidkpDpZfwkRA/TpIoXYsZ/jp/33jqgPvsrga/9bS1UCVx4VW/pKNqlEo=
+	t=1746204129; cv=none; b=NLcr7+IoaWjKGGTlKq/tdNqPys9rOqzO/nRZrImwfpvVQEu/w9r6FJirToxmpTY5NMRJVSm3Ikno+iX6QHD+7oXGI1mZyJ1WDeAYKeSEkFlbC44NJzuiHE4r2zfJyhWXV09Y3UNwGPF/HcW0tMYEbUE/LVvQr63zDAgbkBgMfJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746179680; c=relaxed/simple;
-	bh=3LU789saYyrutCozDG0IOlxxmIN4Z1wthUFZjP4Ozbc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=P/YF4KAKi04j/zR1Y8E4Vf8FpSAJRW+iwFa1Sfc9Yk+zzlXnjF7agAdwXlqWfq+GbQPeueu4hYfV2zu/I/IXzKhhzimAXYDd1JabZnwyskoLc4N6CcoBM5ZdS666RAizwNTRBO8PE4ugli06ojR7qgdegGbY6wtp4J4ccphIPE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=he/Xkw6I; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <64c14861-c7ef-4608-9e12-4567775bc5af@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1746179665;
+	s=arc-20240116; t=1746204129; c=relaxed/simple;
+	bh=9nnEA3NydnV0mgGZg4IXn/W1XUlu3f00qPYvIHVy8qU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=JV6yAK90nxZZmbVpgI9H7N2+DFskMLzDkk7W05J6/c4N+GOJwmlVwjJ8DnWDdiEnZUzA4y/19BK43ynOZoN/mgugqOAoZtQIb9az2irHsMD+ogrt5wOZ+9S/7n76OCnwlTO/ksroN+u6TtXFn09p39INdzkIYK9EgMEyPZ24Wz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cMrS9OD7; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1746204126;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+yfmn0tK+qTWIj7LV5pZmbdVGhS233Htkxsoag4Qbfs=;
-	b=he/Xkw6IHpnh5DFcegTV1kjxZyzUViCF0HeVZJfHd7nZG5VBoVd/NqeMJj7Iu4gWuiLsFY
-	gFvkkKLg01jjL42Nk+vnGqzdJGhTi98/NewFAuxP5+Z3JJ319nCmIB2wemEw11z5Fzo90e
-	Bh2XJ0OBcUPlVLlGKNl9KJ2eNWPaMS8=
-Date: Fri, 2 May 2025 11:54:22 +0200
+	bh=nQ6LGo3EmUQNiuDdGer7Pnmf83Ixx9VZUInNoC4VPuU=;
+	b=cMrS9OD7Ohm9akCbpBtX9l09M4dylP2yF/fV4dgEnaZ6ijUOQgNB749t9CXZuqIMZKXs9S
+	+QgvgYTgJ2q+faMwF5vBLLmjWUpyb8YpF3sxq1fxkm1EsHn5iDokj1ZmvYjteGxXTyOTNy
+	kUtx96qgmrEUWqy7VyLb3s8CFsBL1bQ=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-398-o2Cw-VNbOtm8ofxPB-f3Sg-1; Fri, 02 May 2025 12:42:05 -0400
+X-MC-Unique: o2Cw-VNbOtm8ofxPB-f3Sg-1
+X-Mimecast-MFC-AGG-ID: o2Cw-VNbOtm8ofxPB-f3Sg_1746204125
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-47699e92ab0so46674731cf.0
+        for <linux-rdma@vger.kernel.org>; Fri, 02 May 2025 09:42:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746204125; x=1746808925;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nQ6LGo3EmUQNiuDdGer7Pnmf83Ixx9VZUInNoC4VPuU=;
+        b=E/9ryNPMkoWmubU6jj1mFBH0iB9ZKJN23csQGI0oU38j7n5AnRk8e1W0YzOQyrdD64
+         zgP/BTvIJK9VN7DlnVY/TJvT1g3exYtV/ssZYNvvZJbzk5sy3AUvz1Ahpw/UMbF9/lCa
+         B5RUPU55od1219qLvZOMeYeYKZQ/NgcHQMYMUGIbo1ZOj5uK4fqrEwymuuAlEF6rXtk6
+         tTfc0kIQNyBh4yMKNbOKi8yyqszuEMLn/Tr0V8urP/nBbs3Kf/QkSEvKpei2WLRqkDNy
+         WiT4jscsEpV5s4P+UbImcKwXA1lUFCo44gZDKvIwzCNCOM/3FKTZkog6vWVyZjijoORT
+         cZ8g==
+X-Forwarded-Encrypted: i=1; AJvYcCXpEwMBUKhg5+oS9ng/EjAoEarTtBsnrgn2dzpoxsQuZydOae5nvl3foxUYvwj62h3lv/llyl8GVaQ6@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy0OtI6C0Xy3a43rBFfF2q5QwArL9P6Q5EKdzm3froWuaKedbn9
+	UFPYqgXPhGqvKfgmehm1EATp82Xbc7Vc64KcEdcbVv1grclGA1rlODHKg/4dEOIB+QtN+CiFvnr
+	YJsnkNmcZLVRoPWvH5WsH9SuRoYHtCtlRzDqfok6dvEmwhoFkY3JU0Nx8RSU=
+X-Gm-Gg: ASbGncsa4a9YKYSv4iooXuRSkqXlUePcF6NW9k99592Uh8g2xQF2/M7PX9Bauay7LAZ
+	hFp6NDlSXQDh7/HsYbKpWqgO5wj0KDBqK3e99Nm84mJQfBDkYcj1+rpDuxNCP5/1sXNFYPZcJPD
+	w5xquLMFOtAzJd90RZSHgchhqKD/bILSCSSaMHhFeDAmsWmH3JJ140zeQt7CVzvDnDyNGyCBSvu
+	14GsEOPkjcoO91wM9Hvp+O1NCFfLhsC4/yzoUvpw8E1sTijpbdnWBrupA9yFWnZDzX5ZI8paCu7
+X-Received: by 2002:a05:622a:ed5:b0:48b:5656:bb01 with SMTP id d75a77b69052e-48c311649cfmr39084001cf.10.1746204125052;
+        Fri, 02 May 2025 09:42:05 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHYLdRbciPNTI8T2YmCs7k44odWgi3wpbc6/Iw57N6IsUYOnrdyJ+dZuiBRoWddHNXCnzQ6tw==
+X-Received: by 2002:a05:622a:ed5:b0:48b:5656:bb01 with SMTP id d75a77b69052e-48c311649cfmr39083691cf.10.1746204124694;
+        Fri, 02 May 2025 09:42:04 -0700 (PDT)
+Received: from x1.com ([85.131.185.92])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7cad23d1c8dsm203108385a.60.2025.05.02.09.42.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 May 2025 09:42:02 -0700 (PDT)
+From: Peter Xu <peterx@redhat.com>
+To: qemu-devel@nongnu.org
+Cc: Fabiano Rosas <farosas@suse.de>,
+	Stefan Hajnoczi <stefanha@redhat.com>,
+	peterx@redhat.com,
+	Jack Wang <jinpu.wang@ionos.com>,
+	Li Zhijian <lizhijian@fujitsu.com>,
+	Yu Zhang <yu.zhang@ionos.com>,
+	linux-rdma@vger.kernel.org,
+	michael@flatgalaxy.com,
+	Michael Galaxy <mrgalaxy@nvidia.com>
+Subject: [PULL 13/14] migration/rdma: Remove qemu_rdma_broken_ipv6_kernel
+Date: Fri,  2 May 2025 12:41:40 -0400
+Message-ID: <20250502164141.747202-14-peterx@redhat.com>
+X-Mailer: git-send-email 2.48.1
+In-Reply-To: <20250502164141.747202-1-peterx@redhat.com>
+References: <20250502164141.747202-1-peterx@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [syzbot] [rdma?] WARNING in rxe_skb_tx_dtor
-To: syzbot <syzbot+8425ccfb599521edb153@syzkaller.appspotmail.com>,
- jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com,
- zyjzyj2000@gmail.com
-References: <6813a531.050a0220.14dd7d.0018.GAE@google.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <6813a531.050a0220.14dd7d.0018.GAE@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On 01.05.25 18:45, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    8bac8898fe39 Merge tag 'mmc-v6.15-rc1' of git://git.kernel..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16b6d774580000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=a9a25b7a36123454
-> dashboard link: https://syzkaller.appspot.com/bug?extid=8425ccfb599521edb153
-> compiler:       Debian clang version 20.1.2 (++20250402124445+58df0ef89dd6-1~exp1~20250402004600.97), Debian LLD 20.1.2
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Downloadable assets:
-> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-8bac8898.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/2a76d594c0f5/vmlinux-8bac8898.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/dae09c25780d/bzImage-8bac8898.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+8425ccfb599521edb153@syzkaller.appspotmail.com
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 1046 at drivers/infiniband/sw/rxe/rxe_net.c:357 rxe_skb_tx_dtor+0x8b/0x2a0 drivers/infiniband/sw/rxe/rxe_net.c:357
+From: Jack Wang <jinpu.wang@ionos.com>
 
-This is a known problem. It seems to be related with the following commit.
+I hit following error which testing migration in pure RoCE env:
+"-incoming rdma:[::]:8089: RDMA ERROR: You only have RoCE / iWARP devices in your
+systems and your management software has specified '[::]', but IPv6 over RoCE /
+iWARP is not supported in Linux.#012'."
 
-commit 1a633bdc8fd9e9e4a9f9a668ae122edfc5aacc86
-Author: Bob Pearson <rpearsonhpe@gmail.com>
-Date:   Fri Mar 29 09:55:15 2024 -0500
+In our setup, we use rdma bind on ipv6 on target host, while connect from source
+with ipv4, remove the qemu_rdma_broken_ipv6_kernel, migration just work
+fine.
 
-     RDMA/rxe: Let destroy qp succeed with stuck packet
+Checking the git history, the function was added since introducing of
+rdma migration, which is more than 10 years ago. linux-rdma has
+improved support on RoCE/iWARP for ipv6 over past years. There are a few fixes
+back in 2016 seems related to the issue, eg:
+aeb76df46d11 ("IB/core: Set routable RoCE gid type for ipv4/ipv6 networks")
 
-     In some situations a sent packet may get queued in the NIC longer than
-     than timeout of a ULP. Currently if this happens the ULP may try to 
-reset
-     the link by destroying the qp and setting up an alternate 
-connection but
-     will fail because the rxe driver is waiting for the packet to finish
-     getting sent and be returned to the skb destructor function where 
-the qp
-     reference holding things up will be dropped. This patch modifies 
-the way
-     that the qp is passed to the destructor to pass the qp index and 
-not a qp
-     pointer.  Then the destructor will attempt to lookup the qp from 
-its index
-     and if it fails exit early. This requires taking a reference on the 
-struct
-     sock rather than the qp allowing the qp to be destroyed while the sk is
-     still around waiting for the packet to finish.
+other fixes back in 2018, eg:
+052eac6eeb56 RDMA/cma: Update RoCE multicast routines to use net namespace
+8d20a1f0ecd5 RDMA/cma: Fix rdma_cm raw IB path setting for RoCE
+9327c7afdce3 RDMA/cma: Provide a function to set RoCE path record L2 parameters
+5c181bda77f4 RDMA/cma: Set default GID type as RoCE when resolving RoCE route
+3c7f67d1880d IB/cma: Fix default RoCE type setting
+be1d325a3358 IB/core: Set RoCEv2 MGID according to spec
+63a5f483af0e IB/cma: Set default gid type to RoCEv2
 
-     Link: 
-https://lore.kernel.org/r/20240329145513.35381-15-rpearsonhpe@gmail.com
-     Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
-     Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+So remove the outdated function and it's usage.
 
-Zhu Yanjun
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Li Zhijian <lizhijian@fujitsu.com>
+Cc: Yu Zhang <yu.zhang@ionos.com>
+Cc: Fabiano Rosas <farosas@suse.de>
+Cc: qemu-devel@nongnu.org
+Cc: linux-rdma@vger.kernel.org
+Cc: michael@flatgalaxy.com
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+Tested-by: Li zhijian <lizhijian@fujitsu.com>
+Reviewed-by: Michael Galaxy <mrgalaxy@nvidia.com>
+Link: https://lore.kernel.org/r/20250402051306.6509-1-jinpu.wang@ionos.com
+[peterx: some cosmetic changes]
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ migration/rdma.c | 180 ++---------------------------------------------
+ 1 file changed, 4 insertions(+), 176 deletions(-)
 
-> Modules linked in:
-> CPU: 0 UID: 0 PID: 1046 Comm: kworker/u4:9 Not tainted 6.15.0-rc4-syzkaller-00040-g8bac8898fe39 #0 PREEMPT(full)
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-> Workqueue: rxe_wq do_work
-> RIP: 0010:rxe_skb_tx_dtor+0x8b/0x2a0 drivers/infiniband/sw/rxe/rxe_net.c:357
-> Code: 80 3c 20 00 74 08 4c 89 ff e8 41 ee 8c f9 4d 8b 37 44 89 f6 83 e6 01 31 ff e8 11 fe 2a f9 41 f6 c6 01 75 0e e8 26 f9 2a f9 90 <0f> 0b 90 e9 b4 01 00 00 4c 89 ff e8 35 c4 fa 01 48 89 c7 be 0e 00
-> RSP: 0018:ffffc90000007a08 EFLAGS: 00010246
-> RAX: ffffffff8894c5aa RBX: ffff88803ec8d280 RCX: ffff888035088000
-> RDX: 0000000000000100 RSI: 0000000000000000 RDI: 0000000000000000
-> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: ffffffff886e3f04 R12: dffffc0000000000
-> R13: 1ffff11007d91a5b R14: 0000000000025820 R15: ffff888034060000
-> FS:  0000000000000000(0000) GS:ffff88808d6cc000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f7c6d874fc8 CR3: 00000000428c8000 CR4: 0000000000352ef0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   <IRQ>
->   skb_release_head_state+0xfe/0x250 net/core/skbuff.c:1149
->   napi_consume_skb+0xd2/0x1e0 net/core/skbuff.c:-1
->   e1000_unmap_and_free_tx_resource drivers/net/ethernet/intel/e1000/e1000_main.c:1972 [inline]
->   e1000_clean_tx_irq drivers/net/ethernet/intel/e1000/e1000_main.c:3864 [inline]
->   e1000_clean+0x49d/0x2b00 drivers/net/ethernet/intel/e1000/e1000_main.c:3805
->   __napi_poll+0xc4/0x480 net/core/dev.c:7324
->   napi_poll net/core/dev.c:7388 [inline]
->   net_rx_action+0x6ea/0xdf0 net/core/dev.c:7510
->   handle_softirqs+0x283/0x870 kernel/softirq.c:579
->   do_softirq+0xec/0x180 kernel/softirq.c:480
->   </IRQ>
->   <TASK>
->   __local_bh_enable_ip+0x17d/0x1c0 kernel/softirq.c:407
->   local_bh_enable include/linux/bottom_half.h:33 [inline]
->   rcu_read_unlock_bh include/linux/rcupdate.h:910 [inline]
->   __dev_queue_xmit+0x1cd7/0x3a70 net/core/dev.c:4656
->   neigh_output include/net/neighbour.h:539 [inline]
->   ip6_finish_output2+0x11fb/0x16a0 net/ipv6/ip6_output.c:141
->   __ip6_finish_output net/ipv6/ip6_output.c:-1 [inline]
->   ip6_finish_output+0x234/0x7d0 net/ipv6/ip6_output.c:226
->   rxe_send drivers/infiniband/sw/rxe/rxe_net.c:391 [inline]
->   rxe_xmit_packet+0x79e/0xa30 drivers/infiniband/sw/rxe/rxe_net.c:450
->   rxe_requester+0x1fea/0x3d20 drivers/infiniband/sw/rxe/rxe_req.c:805
->   rxe_sender+0x16/0x50 drivers/infiniband/sw/rxe/rxe_req.c:839
->   do_task+0x1ad/0x6b0 drivers/infiniband/sw/rxe/rxe_task.c:127
->   process_one_work kernel/workqueue.c:3238 [inline]
->   process_scheduled_works+0xadb/0x17a0 kernel/workqueue.c:3319
->   worker_thread+0x8a0/0xda0 kernel/workqueue.c:3400
->   kthread+0x70e/0x8a0 kernel/kthread.c:464
->   ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:153
->   ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
->   </TASK>
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
+diff --git a/migration/rdma.c b/migration/rdma.c
+index 4875ca1987..2d839fce6c 100644
+--- a/migration/rdma.c
++++ b/migration/rdma.c
+@@ -767,149 +767,6 @@ static void qemu_rdma_dump_gid(const char *who, struct rdma_cm_id *id)
+     trace_qemu_rdma_dump_gid(who, sgid, dgid);
+ }
+ 
+-/*
+- * As of now, IPv6 over RoCE / iWARP is not supported by linux.
+- * We will try the next addrinfo struct, and fail if there are
+- * no other valid addresses to bind against.
+- *
+- * If user is listening on '[::]', then we will not have a opened a device
+- * yet and have no way of verifying if the device is RoCE or not.
+- *
+- * In this case, the source VM will throw an error for ALL types of
+- * connections (both IPv4 and IPv6) if the destination machine does not have
+- * a regular infiniband network available for use.
+- *
+- * The only way to guarantee that an error is thrown for broken kernels is
+- * for the management software to choose a *specific* interface at bind time
+- * and validate what time of hardware it is.
+- *
+- * Unfortunately, this puts the user in a fix:
+- *
+- *  If the source VM connects with an IPv4 address without knowing that the
+- *  destination has bound to '[::]' the migration will unconditionally fail
+- *  unless the management software is explicitly listening on the IPv4
+- *  address while using a RoCE-based device.
+- *
+- *  If the source VM connects with an IPv6 address, then we're OK because we can
+- *  throw an error on the source (and similarly on the destination).
+- *
+- *  But in mixed environments, this will be broken for a while until it is fixed
+- *  inside linux.
+- *
+- * We do provide a *tiny* bit of help in this function: We can list all of the
+- * devices in the system and check to see if all the devices are RoCE or
+- * Infiniband.
+- *
+- * If we detect that we have a *pure* RoCE environment, then we can safely
+- * thrown an error even if the management software has specified '[::]' as the
+- * bind address.
+- *
+- * However, if there is are multiple hetergeneous devices, then we cannot make
+- * this assumption and the user just has to be sure they know what they are
+- * doing.
+- *
+- * Patches are being reviewed on linux-rdma.
+- */
+-static int qemu_rdma_broken_ipv6_kernel(struct ibv_context *verbs, Error **errp)
+-{
+-    /* This bug only exists in linux, to our knowledge. */
+-#ifdef CONFIG_LINUX
+-    struct ibv_port_attr port_attr;
+-
+-    /*
+-     * Verbs are only NULL if management has bound to '[::]'.
+-     *
+-     * Let's iterate through all the devices and see if there any pure IB
+-     * devices (non-ethernet).
+-     *
+-     * If not, then we can safely proceed with the migration.
+-     * Otherwise, there are no guarantees until the bug is fixed in linux.
+-     */
+-    if (!verbs) {
+-        int num_devices;
+-        struct ibv_device **dev_list = ibv_get_device_list(&num_devices);
+-        bool roce_found = false;
+-        bool ib_found = false;
+-
+-        for (int x = 0; x < num_devices; x++) {
+-            verbs = ibv_open_device(dev_list[x]);
+-            /*
+-             * ibv_open_device() is not documented to set errno.  If
+-             * it does, it's somebody else's doc bug.  If it doesn't,
+-             * the use of errno below is wrong.
+-             * TODO Find out whether ibv_open_device() sets errno.
+-             */
+-            if (!verbs) {
+-                if (errno == EPERM) {
+-                    continue;
+-                } else {
+-                    error_setg_errno(errp, errno,
+-                                     "could not open RDMA device context");
+-                    return -1;
+-                }
+-            }
+-
+-            if (ibv_query_port(verbs, 1, &port_attr)) {
+-                ibv_close_device(verbs);
+-                error_setg(errp,
+-                           "RDMA ERROR: Could not query initial IB port");
+-                return -1;
+-            }
+-
+-            if (port_attr.link_layer == IBV_LINK_LAYER_INFINIBAND) {
+-                ib_found = true;
+-            } else if (port_attr.link_layer == IBV_LINK_LAYER_ETHERNET) {
+-                roce_found = true;
+-            }
+-
+-            ibv_close_device(verbs);
+-
+-        }
+-
+-        if (roce_found) {
+-            if (ib_found) {
+-                warn_report("migrations may fail:"
+-                            " IPv6 over RoCE / iWARP in linux"
+-                            " is broken. But since you appear to have a"
+-                            " mixed RoCE / IB environment, be sure to only"
+-                            " migrate over the IB fabric until the kernel "
+-                            " fixes the bug.");
+-            } else {
+-                error_setg(errp, "RDMA ERROR: "
+-                           "You only have RoCE / iWARP devices in your systems"
+-                           " and your management software has specified '[::]'"
+-                           ", but IPv6 over RoCE / iWARP is not supported in Linux.");
+-                return -1;
+-            }
+-        }
+-
+-        return 0;
+-    }
+-
+-    /*
+-     * If we have a verbs context, that means that some other than '[::]' was
+-     * used by the management software for binding. In which case we can
+-     * actually warn the user about a potentially broken kernel.
+-     */
+-
+-    /* IB ports start with 1, not 0 */
+-    if (ibv_query_port(verbs, 1, &port_attr)) {
+-        error_setg(errp, "RDMA ERROR: Could not query initial IB port");
+-        return -1;
+-    }
+-
+-    if (port_attr.link_layer == IBV_LINK_LAYER_ETHERNET) {
+-        error_setg(errp, "RDMA ERROR: "
+-                   "Linux kernel's RoCE / iWARP does not support IPv6 "
+-                   "(but patches on linux-rdma in progress)");
+-        return -1;
+-    }
+-
+-#endif
+-
+-    return 0;
+-}
+-
+ /*
+  * Figure out which RDMA device corresponds to the requested IP hostname
+  * Also create the initial connection manager identifiers for opening
+@@ -917,7 +774,6 @@ static int qemu_rdma_broken_ipv6_kernel(struct ibv_context *verbs, Error **errp)
+  */
+ static int qemu_rdma_resolve_host(RDMAContext *rdma, Error **errp)
+ {
+-    Error *err = NULL;
+     int ret;
+     struct rdma_addrinfo *res;
+     char port_str[16];
+@@ -953,9 +809,8 @@ static int qemu_rdma_resolve_host(RDMAContext *rdma, Error **errp)
+         goto err_resolve_get_addr;
+     }
+ 
+-    /* Try all addresses, saving the first error in @err */
++    /* Try all addresses, exit loop on first success of resolving address */
+     for (struct rdma_addrinfo *e = res; e != NULL; e = e->ai_next) {
+-        Error **local_errp = err ? NULL : &err;
+ 
+         inet_ntop(e->ai_family,
+             &((struct sockaddr_in *) e->ai_dst_addr)->sin_addr, ip, sizeof ip);
+@@ -964,25 +819,12 @@ static int qemu_rdma_resolve_host(RDMAContext *rdma, Error **errp)
+         ret = rdma_resolve_addr(rdma->cm_id, NULL, e->ai_dst_addr,
+                 RDMA_RESOLVE_TIMEOUT_MS);
+         if (ret >= 0) {
+-            if (e->ai_family == AF_INET6) {
+-                ret = qemu_rdma_broken_ipv6_kernel(rdma->cm_id->verbs,
+-                                                   local_errp);
+-                if (ret < 0) {
+-                    continue;
+-                }
+-            }
+-            error_free(err);
+             goto route;
+         }
+     }
+ 
+     rdma_freeaddrinfo(res);
+-    if (err) {
+-        error_propagate(errp, err);
+-    } else {
+-        error_setg(errp, "RDMA ERROR: could not resolve address %s",
+-                   rdma->host);
+-    }
++    error_setg(errp, "RDMA ERROR: could not resolve address %s", rdma->host);
+     goto err_resolve_get_addr;
+ 
+ route:
+@@ -2611,7 +2453,6 @@ err_rdma_source_connect:
+ 
+ static int qemu_rdma_dest_init(RDMAContext *rdma, Error **errp)
+ {
+-    Error *err = NULL;
+     int ret;
+     struct rdma_cm_id *listen_id;
+     char ip[40] = "unknown";
+@@ -2661,9 +2502,8 @@ static int qemu_rdma_dest_init(RDMAContext *rdma, Error **errp)
+         goto err_dest_init_bind_addr;
+     }
+ 
+-    /* Try all addresses, saving the first error in @err */
++    /* Try all addresses */
+     for (e = res; e != NULL; e = e->ai_next) {
+-        Error **local_errp = err ? NULL : &err;
+ 
+         inet_ntop(e->ai_family,
+             &((struct sockaddr_in *) e->ai_dst_addr)->sin_addr, ip, sizeof ip);
+@@ -2672,24 +2512,12 @@ static int qemu_rdma_dest_init(RDMAContext *rdma, Error **errp)
+         if (ret < 0) {
+             continue;
+         }
+-        if (e->ai_family == AF_INET6) {
+-            ret = qemu_rdma_broken_ipv6_kernel(listen_id->verbs,
+-                                               local_errp);
+-            if (ret < 0) {
+-                continue;
+-            }
+-        }
+-        error_free(err);
+         break;
+     }
+ 
+     rdma_freeaddrinfo(res);
+     if (!e) {
+-        if (err) {
+-            error_propagate(errp, err);
+-        } else {
+-            error_setg(errp, "RDMA ERROR: Error: could not rdma_bind_addr!");
+-        }
++        error_setg(errp, "RDMA ERROR: Error: could not rdma_bind_addr!");
+         goto err_dest_init_bind_addr;
+     }
+ 
+-- 
+2.48.1
 
 
