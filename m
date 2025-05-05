@@ -1,135 +1,203 @@
-Return-Path: <linux-rdma+bounces-9970-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9971-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26434AA931C
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 May 2025 14:29:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8634AA9772
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 May 2025 17:25:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 624F53BAD14
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 May 2025 12:29:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C9CD168386
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 May 2025 15:25:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A63D6250C0F;
-	Mon,  5 May 2025 12:29:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D732E25C809;
+	Mon,  5 May 2025 15:25:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="d5rF7RkT"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SG4YBXSN"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9646D2500D0
-	for <linux-rdma@vger.kernel.org>; Mon,  5 May 2025 12:29:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5964725C6EA
+	for <linux-rdma@vger.kernel.org>; Mon,  5 May 2025 15:25:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746448147; cv=none; b=U663qGiHPwoy/H2n9yBdvz78tZWz5kzMRnLR3RT3g6lNRQTokK5A4U6pzt9ycFRs4Rps80aCxTwRO5wOjFHrAwuZlHveJFwE2/yNP7DVeZtIYMTKVbAjW5+cudVS5gUaUgwUix5smtbBvu/QeG4PC+YaDl18F/VV0WAVgqYWQYI=
+	t=1746458736; cv=none; b=Pwuk/42/n2hCYbuiZRPSj9rLbKjyfFbWpxEWOGT4zt/xFcmnmEgNiX9IDm6X4Udu17j/D/3D0kMmppMqkLbnB0qhaym/GLt8a5ZYuwLAn96X0si9OW7VjFm1H+sE1TRj/d8th6KjmDEFmUYVVPTPOas9eRUon1JnNL8U3HBrb1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746448147; c=relaxed/simple;
-	bh=8st2WkhNjYa0sS1ZjGydQ5cI8qeMQD3qVytw+PewtLU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V7eFdgEgaO3UPveEzFordoz4sC9wciBOSkPPbMG+RULcSF9DhVLltE08bNOaS5ir2Q+maoClJgS7coFT3vjfEB5D2e961CEKQPn4W+eKhmovV/8E88h/J1j8sHeppoi5k4KQPmPB9ZVle+aHwEHDuY5xHODIeuM0+dqF5aA0hlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=d5rF7RkT; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6f4cd4c07c3so38122606d6.2
-        for <linux-rdma@vger.kernel.org>; Mon, 05 May 2025 05:29:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1746448144; x=1747052944; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mfu+tu5hpHDhrhemjgH6VucLj0HupA6g7txg5hR1fns=;
-        b=d5rF7RkTmsJIBWsVD7r8ZkiItKXsgG/IbfI1O5P30GgnZ18NuAXa9eP3PofKtR4MG0
-         K3hKiOCDSlt1JiNQdhav+XFXb3Uu6gZqSHBorp5ZpiG1Hm/lph0vpRPQ0MP2poUZKyCZ
-         gLaF+DKDt6doc4D+XMMDB+puE8X1g0e1seAAPnKRXk6pn30VYcTdFZ2Vv58Th9J4lcvu
-         QFpQupl7AMl5vIx0jZlhfvDVfNplt3sa/ll0jeXRRN/jOxqPVOuRRbGLzME9SNr0s1jh
-         r80iCVsOAcD5bTSFn1dsarpkJqTWD7NBAJ+kwQbClpuV4o31q9LP5LPBTWmmjxrOJai7
-         Nf/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746448144; x=1747052944;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mfu+tu5hpHDhrhemjgH6VucLj0HupA6g7txg5hR1fns=;
-        b=tQhTlxPFBPbgQQiBSzY/kZ4Oav9nMiu/M3PTOfkdez/wT/EoV1vqMkPu8Lll8/rfe8
-         VdNHfGKns1WFVqieXCfECGfgV4INu6jXJBUIMHJajpfq29cqNc4Zq+ok++CJkyG4aaVB
-         +O/Zf7/zAJZWY8Ue/kB5Ypf0EjxbTU+E77V6wVnjJUQy52l9CpPiQkpbFZP6JSCa3HZL
-         jIvc5WuNpo7ZMfSDOHQ7iylGJ7um1sszOTCjun5/ZVicmrhy2NHxvTKMsE9dMGV3M1t2
-         hJaEz92yik31HxFJ4rrM7lcbihn4O/uJdPoCiFVu/PiQ+Y40FXnj2FnS20u16preSfUK
-         q7BQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWM73/vPCe+cUpMI9oZuChVGC8dOABCc77kHcwsAFxtDSToazkLtSVbsPaTOVD8Q71d8VJHiVlqZpye@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6lYG/6VqOjmaQbjM0kxpjh9g12hOmFPFnI0ljoGw9ok/a7hly
-	huetGFqSQMYPDaZc6i3EPa5YPDgWEDseOtAZW0TJjKCXO15fxBa7U3VcsDHRp3I=
-X-Gm-Gg: ASbGncv3hiZSuWK2qett6srhprMqyEd0/jFRaoauyq4btxVUb8WUeXnDJmv+f+GZJdG
-	sa7KDxLg4LYqej3z/4rxuBOnwzEayNvpoTyTc8SwmUNKSd6cOrviQW6sOn9ewvq59MeuQfvoPWx
-	5z0OcBEt+HV6yQxCmAodcJsoXbzDEnHd60NwryWN8KTwZJu16zNN3z2pXAx7GiuJWWslOZfUJ/q
-	cddtJlX/ss4rT8o9qHhxwUd6vbCMUwEonHmsuriGOQrR9mhJ6wRBDdjl1tMqBVfu573pzrdUCTS
-	31EvOswEiKlW/PdqxgbkckhfuCsceW5lgoDm4gxbnUiBs81L3kJTqBs/AqgM6GYduPfNxCfNBgc
-	xRAE+M4HVEfFWVD487J8=
-X-Google-Smtp-Source: AGHT+IHrrCkbPkXSi1eXZMzeybSC5P++W/lKXALdeEOdhNPGMmZG6yFN5oZZyeIbSctGCJtNUEnJAg==
-X-Received: by 2002:a05:6214:b69:b0:6d8:99cf:d2db with SMTP id 6a1803df08f44-6f523852b68mr146814446d6.38.1746448144313;
-        Mon, 05 May 2025 05:29:04 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-167-219-86.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.167.219.86])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6f50f3c3887sm54983076d6.38.2025.05.05.05.29.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 May 2025 05:29:03 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1uBuwQ-0000000GxAs-3q1W;
-	Mon, 05 May 2025 09:29:02 -0300
-Date: Mon, 5 May 2025 09:29:02 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
-	Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-	Keith Busch <kbusch@kernel.org>, Jake Edge <jake@lwn.net>,
-	Jonathan Corbet <corbet@lwn.net>, Zhu Yanjun <zyjzyj2000@gmail.com>,
-	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
-	linux-pci@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Kanchan Joshi <joshi.k@samsung.com>,
-	Chaitanya Kulkarni <kch@nvidia.com>
-Subject: Re: [PATCH v11 0/9] Provide a new two step DMA mapping API
-Message-ID: <20250505122902.GF2260621@ziepe.ca>
-References: <cover.1746424934.git.leon@kernel.org>
+	s=arc-20240116; t=1746458736; c=relaxed/simple;
+	bh=s+fPTgi+PnfcHm8KT9pxFAJyEcOpPBROHIKmCaeZRzA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Dd2m6DFYgINBnAIr3zukYuV8apyNokvZy4ERffb/pGdGd3U/otb3/KfSVOVRgQ2P9PCr3jkAhhPGYniHUoq8otJAyLsEjxPQrTPZvv5Q+YuHMUpWjtR5cFRsIPfl0o7p2bguhuQXOg7QQ29GAmPcALQX6C90nGneSI9G7R51BlA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SG4YBXSN; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <dbc1bcdf-144d-44d2-8fc8-77bc2ad58b51@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1746458730;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7Nqp0itdoqW9IkU14n7l4W+RXavOiRNHEeUpgqQ00TM=;
+	b=SG4YBXSNXCYM2O5ykctPWYC11DrwHq3W8DTZZkiQDKAx/rFv/rGrbiU4XxeNhW2e/RTtWk
+	B5I+PX9jUnePayFxers4wMXhzJwcaiteTzK9ka5X/RO2uduwqlVsAarnrImmDDNCWykTE1
+	/RIeJrSyZBmrADF5JnT+b5C8Gv3RPDA=
+Date: Mon, 5 May 2025 17:25:26 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1746424934.git.leon@kernel.org>
+Subject: Re: [PATCH for-next v2 2/2] RDMA/rxe: Enable asynchronous prefetch
+ for ODP MRs
+To: Daisuke Matsuda <dskmtsd@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, leon@kernel.org, jgg@ziepe.ca,
+ zyjzyj2000@gmail.com
+References: <20250503134224.4867-1-dskmtsd@gmail.com>
+ <20250503134224.4867-3-dskmtsd@gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20250503134224.4867-3-dskmtsd@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, May 05, 2025 at 10:01:37AM +0300, Leon Romanovsky wrote:
-> Hi Marek,
+On 03.05.25 15:42, Daisuke Matsuda wrote:
+> Calling ibv_advise_mr(3) with flags other than IBV_ADVISE_MR_FLAG_FLUSH
+> invokes asynchronous requests. It is best-effort, and thus can safely be
+> deferred to the system-wide workqueue.
 > 
-> These are the DMA/IOMMU patches only, which have not seen functional
-> changes for a while.  They are tested and reviewed and ready to merge.
+> Signed-off-by: Daisuke Matsuda <dskmtsd@gmail.com>
+
+I have made tests with rdma-core after applying this patch series. It 
+seems that it can work well.
+I read through this commit. Other than the following minor problems, I 
+am fine with this commit.
+
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+
+> ---
+>   drivers/infiniband/sw/rxe/rxe_odp.c | 81 ++++++++++++++++++++++++++++-
+>   1 file changed, 80 insertions(+), 1 deletion(-)
 > 
-> We will work with relevant subsystems to merge rest of the conversion
-> patches. At least some of them will be done in next cycle to reduce
-> merge conflicts.
+> diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
+> index e5c60b061d7e..d98b385a18ce 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_odp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
+> @@ -425,6 +425,73 @@ enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
+>   	return RESPST_NONE;
+>   }
+>   
+> +struct prefetch_mr_work {
+> +	struct work_struct work;
+> +	u32 pf_flags;
+> +	u32 num_sge;
+> +	struct {
+> +		u64 io_virt;
+> +		struct rxe_mr *mr;
+> +		size_t length;
+> +	} frags[];
+> +};
 
-Please lets have this on a branch so I can do the rdma parts this
-cycle.
+The struct prefetch_mr_work should be moved into header file? IMO, it is 
+better to move this struct to rxe_loc.h?
 
-Thanks,
-Jason
+> +
+> +static void rxe_ib_prefetch_mr_work(struct work_struct *w)
+> +{
+> +	struct prefetch_mr_work *work =
+> +		container_of(w, struct prefetch_mr_work, work);
+> +	int ret;
+> +	u32 i;
+> +
+> +	/* We rely on IB/core that work is executed if we have num_sge != 0 only. */
+> +	WARN_ON(!work->num_sge);
+> +	for (i = 0; i < work->num_sge; ++i) {
+> +		struct ib_umem_odp *umem_odp;
+> +
+> +		ret = rxe_odp_do_pagefault_and_lock(work->frags[i].mr, work->frags[i].io_virt,
+> +						    work->frags[i].length, work->pf_flags);
+> +		if (ret < 0) {
+> +			rxe_dbg_mr(work->frags[i].mr, "failed to prefetch the mr\n");
+> +			continue;
+> +		}
+> +
+> +		umem_odp = to_ib_umem_odp(work->frags[i].mr->umem);
+> +		mutex_unlock(&umem_odp->umem_mutex);
+
+Obviously this function is dependent on the mutex lock umem_mutex. So in 
+the beginning of this function, it is better to  add 
+lockdep_assert_held(&umem_odp->umem_mutex)?
+
+Zhu Yanjun
+
+> +	}
+> +
+> +	kvfree(work);
+> +}
+> +
+> +static int rxe_init_prefetch_work(struct ib_pd *ibpd,
+> +				  enum ib_uverbs_advise_mr_advice advice,
+> +				  u32 pf_flags, struct prefetch_mr_work *work,
+> +				  struct ib_sge *sg_list, u32 num_sge)
+> +{
+> +	struct rxe_pd *pd = container_of(ibpd, struct rxe_pd, ibpd);
+> +	u32 i;
+> +
+> +	INIT_WORK(&work->work, rxe_ib_prefetch_mr_work);
+> +	work->pf_flags = pf_flags;
+> +
+> +	for (i = 0; i < num_sge; ++i) {
+> +		struct rxe_mr *mr;
+> +
+> +		mr = lookup_mr(pd, IB_ACCESS_LOCAL_WRITE,
+> +			       sg_list[i].lkey, RXE_LOOKUP_LOCAL);
+> +		if (IS_ERR(mr)) {
+> +			work->num_sge = i;
+> +			return PTR_ERR(mr);
+> +		}
+> +		work->frags[i].io_virt = sg_list[i].addr;
+> +		work->frags[i].length = sg_list[i].length;
+> +		work->frags[i].mr = mr;
+> +
+> +		rxe_put(mr);
+> +	}
+> +	work->num_sge = num_sge;
+> +	return 0;
+> +}
+> +
+>   static int rxe_ib_prefetch_sg_list(struct ib_pd *ibpd,
+>   				   enum ib_uverbs_advise_mr_advice advice,
+>   				   u32 pf_flags, struct ib_sge *sg_list,
+> @@ -478,6 +545,8 @@ static int rxe_ib_advise_mr_prefetch(struct ib_pd *ibpd,
+>   				     u32 flags, struct ib_sge *sg_list, u32 num_sge)
+>   {
+>   	u32 pf_flags = RXE_PAGEFAULT_DEFAULT;
+> +	struct prefetch_mr_work *work;
+> +	int rc;
+>   
+>   	if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH)
+>   		pf_flags |= RXE_PAGEFAULT_RDONLY;
+> @@ -490,7 +559,17 @@ static int rxe_ib_advise_mr_prefetch(struct ib_pd *ibpd,
+>   		return rxe_ib_prefetch_sg_list(ibpd, advice, pf_flags, sg_list,
+>   					       num_sge);
+>   
+> -	/* Asynchronous call is "best-effort" */
+> +	/* Asynchronous call is "best-effort" and allowed to fail */
+> +	work = kvzalloc(struct_size(work, frags, num_sge), GFP_KERNEL);
+> +	if (!work)
+> +		return -ENOMEM;
+> +
+> +	rc = rxe_init_prefetch_work(ibpd, advice, pf_flags, work, sg_list, num_sge);
+> +	if (rc) {
+> +		kvfree(work);
+> +		return rc;
+> +	}
+> +	queue_work(system_unbound_wq, &work->work);
+>   
+>   	return 0;
+>   }
+
 
