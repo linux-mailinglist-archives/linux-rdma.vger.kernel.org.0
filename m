@@ -1,67 +1,70 @@
-Return-Path: <linux-rdma+bounces-9990-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9991-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AFABAAA4DD
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 01:37:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76B62AAA4EA
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 01:38:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 392841A81790
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 May 2025 23:35:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 792E546674F
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 May 2025 23:38:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3819F28A1E3;
-	Mon,  5 May 2025 22:27:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EF4F308144;
+	Mon,  5 May 2025 22:28:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jb4XfHhN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W6h9/zux"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2043305721;
-	Mon,  5 May 2025 22:27:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 068D230814B;
+	Mon,  5 May 2025 22:28:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746484072; cv=none; b=KVzhItK32CzTBgOxarniJ105h/faVlnA9UUJcvSMheLWVJG/aE3jkibKvh6uJi+Pw5iCWz9anCPJSztoLXq+vUTzbGwuw9Iv+uuFdlNEIpa0Q8UjrQ7ZD26lOgBwVtVPyvKEGd6Lt8z/s6dzFXyGF9PZ4ER7cuDdLtC/TOAmucU=
+	t=1746484096; cv=none; b=aslNPgLpPL1POx3PilNCZN9fVMPdQwgp2T9rzfQOT9vW39EFYFfuPQaHilCnpSD6UcEGYnGQFnlXDCRMUd1YXIvGMypXDYxk3Q9PKw5uFDwhG+UnkILkUto27PwbWhWdNAM/Hkom9ngWC2URMaaEVi8UBMzv62zf7bfavY1XNwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746484072; c=relaxed/simple;
-	bh=Os1cUf3C85srmQ6nseFz6BkNxGokAim0dxrhNcZ/kN4=;
+	s=arc-20240116; t=1746484096; c=relaxed/simple;
+	bh=dhoCfpOHS0OUTZp4TEo2mmOgeJLlhKm5KIG++G/GU4Y=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=m2bJkGsw7339QPrnas4aj0/CI46WLcFYIv3OnN9g+3jlDuchn1V4gK0POwJVN6qL0Qt07nV5TZdKmsZFq1zxpFBXXvY739WY7CDAAGm1JtJh7eizM+L2Ntc/Wnk2X+Jz672pSiT54IbR81QlQ2f/dS7K8D8ea428dFjhfQCa684=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jb4XfHhN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 123D8C4CEE4;
-	Mon,  5 May 2025 22:27:49 +0000 (UTC)
+	 MIME-Version; b=P6WFOWv2q+532GzBlBHwdN4lf29crQYFk2YdXTx30nXksWPUZn04yn+8kynYtiOq4EPdVYJV4xdZlJsL9MD3MNy7gLBOpfQ3EYVUZos4MehP4YV3JxwB5Dbv9nh1mRGSau3/EFIbHqru3CDbDiNiSROgPxVDspoHUpzPiXzFv+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W6h9/zux; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76431C4CEE4;
+	Mon,  5 May 2025 22:28:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746484071;
-	bh=Os1cUf3C85srmQ6nseFz6BkNxGokAim0dxrhNcZ/kN4=;
+	s=k20201202; t=1746484095;
+	bh=dhoCfpOHS0OUTZp4TEo2mmOgeJLlhKm5KIG++G/GU4Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jb4XfHhN2XMNJQZi4550MzMwFjfiyJHeXyQ9KbZBbrBgas0ibyWX0jZJsn3LXvvWe
-	 r1yDizZbY6O0MJ6B5WminM20n07oZM/6oqg0oms4iHyQAtUAQCcztaWVAuQzCTEJPC
-	 zJn4oeNR3IihChbRlzLuOUr0gtK18UFALy6VHT67TI226Jrj7Dqmywet+gVSGO3J69
-	 MDugUQ/OFKL2LiR+zsqiqyTXs9rzZ/DWaJEl5Qs5H5UD61D0zMsqMXT1KUL1rNLuXN
-	 YnsXLTQwz0a1Vu99KlJLdKZMkcJqJNhdFebR8+kZCkHGaCk/AHMdtv+b7w0QZpz8JO
-	 0HcxAkBUM8Qpw==
+	b=W6h9/zuxsGoLfHSbc3OLyN4La+FpfqDnsLU47E3SaJ2GARayxfUblgJORG8WOY/a5
+	 5SZM1VleOdDJyxpBFyGv+2HZIhqJ5TpoqNA15Hyu9nhQf2+h4rACCaihmXPfVF0svB
+	 ukj+QI8r5eU1AzhvlmE6neQfRqg86+QdNyY5RYut3OtfWWxPCkk4okk7RBz+j6N4ZN
+	 QSwgnTWvaPrkRTjX7kHuebTeUhFIkiKPYQ0JxC0W3L+XxRUlO8+roZmPZZgfFLcqaI
+	 lRPOj1H9HHwIqCSF7rSnEhwwH5BTOzTovtTjsVgyaNnOI4s2fu9Zff7/jmpC8rqd36
+	 bCpGkMJ356zsw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jianbo Liu <jianbol@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>,
-	Patrisious Haddad <phaddad@nvidia.com>,
+Cc: Patrisious Haddad <phaddad@nvidia.com>,
+	Maor Gottlieb <maorg@nvidia.com>,
+	Mark Bloch <mbloch@nvidia.com>,
 	Tariq Toukan <tariqt@nvidia.com>,
-	Jakub Kicinski <kuba@kernel.org>,
+	Leon Romanovsky <leon@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	saeedm@nvidia.com,
 	andrew+netdev@lunn.ch,
 	davem@davemloft.net,
 	edumazet@google.com,
+	kuba@kernel.org,
 	pabeni@redhat.com,
-	rrameshbabu@nvidia.com,
-	moshe@nvidia.com,
+	cratiu@nvidia.com,
+	bpoirier@nvidia.com,
+	vulab@iscas.ac.cn,
+	horms@kernel.org,
 	netdev@vger.kernel.org,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.14 335/642] net/mlx5e: Add correct match to check IPSec syndromes for switchdev mode
-Date: Mon,  5 May 2025 18:09:11 -0400
-Message-Id: <20250505221419.2672473-335-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.14 347/642] net/mlx5: Change POOL_NEXT_SIZE define value and make it global
+Date: Mon,  5 May 2025 18:09:23 -0400
+Message-Id: <20250505221419.2672473-347-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505221419.2672473-1-sashal@kernel.org>
 References: <20250505221419.2672473-1-sashal@kernel.org>
@@ -76,145 +79,106 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.14.5
 Content-Transfer-Encoding: 8bit
 
-From: Jianbo Liu <jianbol@nvidia.com>
+From: Patrisious Haddad <phaddad@nvidia.com>
 
-[ Upstream commit 85e4a808af2545fefaf18c8fe50071b06fcbdabc ]
+[ Upstream commit 80df31f384b4146a62a01b3d4beb376cc7b9a89e ]
 
-In commit dddb49b63d86 ("net/mlx5e: Add IPsec and ASO syndromes check
-in HW"), IPSec and ASO syndromes checks after decryption for the
-specified ASO object were added. But they are correct only for eswith
-in legacy mode. For switchdev mode, metadata register c1 is used to
-save the mapped id (not ASO object id). So, need to change the match
-accordingly for the check rules in status table.
+Change POOL_NEXT_SIZE define value from 0 to BIT(30), since this define
+is used to request the available maximum sized flow table, and zero doesn't
+make sense for it, whereas some places in the driver use zero explicitly
+expecting the smallest table size possible but instead due to this
+define they end up allocating the biggest table size unawarely.
 
-Signed-off-by: Jianbo Liu <jianbol@nvidia.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Reviewed-by: Patrisious Haddad <phaddad@nvidia.com>
+In addition move the definition to "include/linux/mlx5/fs.h" to expose the
+define to IB driver as well, while appropriately renaming it.
+
+Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
+Reviewed-by: Mark Bloch <mbloch@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Link: https://patch.msgid.link/20250220213959.504304-4-tariqt@nvidia.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Link: https://patch.msgid.link/20250219085808.349923-3-tariqt@nvidia.com
+Signed-off-by: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../mellanox/mlx5/core/en_accel/ipsec_fs.c    | 28 ++++++++++++++-----
- .../mellanox/mlx5/core/esw/ipsec_fs.c         | 13 +++++++++
- .../mellanox/mlx5/core/esw/ipsec_fs.h         |  5 ++++
- include/linux/mlx5/eswitch.h                  |  2 ++
- 4 files changed, 41 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/esw/legacy.c    | 2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c    | 6 ++++--
+ drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.h    | 2 --
+ drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c | 3 ++-
+ include/linux/mlx5/fs.h                                 | 2 ++
+ 5 files changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c
-index e7b64679f1219..3cf44fbdf5ee6 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c
-@@ -165,6 +165,25 @@ static void ipsec_rx_status_pass_destroy(struct mlx5e_ipsec *ipsec,
- #endif
- }
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/legacy.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/legacy.c
+index 45183de424f3d..76382626ad41d 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/esw/legacy.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/legacy.c
+@@ -96,7 +96,7 @@ static int esw_create_legacy_fdb_table(struct mlx5_eswitch *esw)
+ 	if (!flow_group_in)
+ 		return -ENOMEM;
  
-+static void ipsec_rx_rule_add_match_obj(struct mlx5e_ipsec_sa_entry *sa_entry,
-+					struct mlx5e_ipsec_rx *rx,
-+					struct mlx5_flow_spec *spec)
-+{
-+	struct mlx5e_ipsec *ipsec = sa_entry->ipsec;
+-	ft_attr.max_fte = POOL_NEXT_SIZE;
++	ft_attr.max_fte = MLX5_FS_MAX_POOL_SIZE;
+ 	ft_attr.prio = LEGACY_FDB_PRIO;
+ 	fdb = mlx5_create_flow_table(root_ns, &ft_attr);
+ 	if (IS_ERR(fdb)) {
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c
+index c14590acc7726..f6abfd00d7e68 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.c
+@@ -50,10 +50,12 @@ mlx5_ft_pool_get_avail_sz(struct mlx5_core_dev *dev, enum fs_flow_table_type tab
+ 	int i, found_i = -1;
+ 
+ 	for (i = ARRAY_SIZE(FT_POOLS) - 1; i >= 0; i--) {
+-		if (dev->priv.ft_pool->ft_left[i] && FT_POOLS[i] >= desired_size &&
++		if (dev->priv.ft_pool->ft_left[i] &&
++		    (FT_POOLS[i] >= desired_size ||
++		     desired_size == MLX5_FS_MAX_POOL_SIZE) &&
+ 		    FT_POOLS[i] <= max_ft_size) {
+ 			found_i = i;
+-			if (desired_size != POOL_NEXT_SIZE)
++			if (desired_size != MLX5_FS_MAX_POOL_SIZE)
+ 				break;
+ 		}
+ 	}
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.h b/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.h
+index 25f4274b372b5..173e312db7204 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_ft_pool.h
+@@ -7,8 +7,6 @@
+ #include <linux/mlx5/driver.h>
+ #include "fs_core.h"
+ 
+-#define POOL_NEXT_SIZE 0
+-
+ int mlx5_ft_pool_init(struct mlx5_core_dev *dev);
+ void mlx5_ft_pool_destroy(struct mlx5_core_dev *dev);
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c
+index 711d14dea2485..d313cb7f0ed88 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/fs_chains.c
+@@ -161,7 +161,8 @@ mlx5_chains_create_table(struct mlx5_fs_chains *chains,
+ 		ft_attr.flags |= (MLX5_FLOW_TABLE_TUNNEL_EN_REFORMAT |
+ 				  MLX5_FLOW_TABLE_TUNNEL_EN_DECAP);
+ 
+-	sz = (chain == mlx5_chains_get_nf_ft_chain(chains)) ? FT_TBL_SZ : POOL_NEXT_SIZE;
++	sz = (chain == mlx5_chains_get_nf_ft_chain(chains)) ?
++		FT_TBL_SZ : MLX5_FS_MAX_POOL_SIZE;
+ 	ft_attr.max_fte = sz;
+ 
+ 	/* We use chains_default_ft(chains) as the table's next_ft till
+diff --git a/include/linux/mlx5/fs.h b/include/linux/mlx5/fs.h
+index 2a69d9d71276d..01cb72d68c231 100644
+--- a/include/linux/mlx5/fs.h
++++ b/include/linux/mlx5/fs.h
+@@ -40,6 +40,8 @@
+ 
+ #define MLX5_SET_CFG(p, f, v) MLX5_SET(create_flow_group_in, p, f, v)
+ 
++#define MLX5_FS_MAX_POOL_SIZE BIT(30)
 +
-+	if (rx == ipsec->rx_esw) {
-+		mlx5_esw_ipsec_rx_rule_add_match_obj(sa_entry, spec);
-+	} else {
-+		MLX5_SET_TO_ONES(fte_match_param, spec->match_criteria,
-+				 misc_parameters_2.metadata_reg_c_2);
-+		MLX5_SET(fte_match_param, spec->match_value,
-+			 misc_parameters_2.metadata_reg_c_2,
-+			 sa_entry->ipsec_obj_id | BIT(31));
-+
-+		spec->match_criteria_enable |= MLX5_MATCH_MISC_PARAMETERS_2;
-+	}
-+}
-+
- static int rx_add_rule_drop_auth_trailer(struct mlx5e_ipsec_sa_entry *sa_entry,
- 					 struct mlx5e_ipsec_rx *rx)
- {
-@@ -200,11 +219,8 @@ static int rx_add_rule_drop_auth_trailer(struct mlx5e_ipsec_sa_entry *sa_entry,
- 
- 	MLX5_SET_TO_ONES(fte_match_param, spec->match_criteria, misc_parameters_2.ipsec_syndrome);
- 	MLX5_SET(fte_match_param, spec->match_value, misc_parameters_2.ipsec_syndrome, 1);
--	MLX5_SET_TO_ONES(fte_match_param, spec->match_criteria, misc_parameters_2.metadata_reg_c_2);
--	MLX5_SET(fte_match_param, spec->match_value,
--		 misc_parameters_2.metadata_reg_c_2,
--		 sa_entry->ipsec_obj_id | BIT(31));
- 	spec->match_criteria_enable = MLX5_MATCH_MISC_PARAMETERS_2;
-+	ipsec_rx_rule_add_match_obj(sa_entry, rx, spec);
- 	rule = mlx5_add_flow_rules(ft, spec, &flow_act, &dest, 1);
- 	if (IS_ERR(rule)) {
- 		err = PTR_ERR(rule);
-@@ -281,10 +297,8 @@ static int rx_add_rule_drop_replay(struct mlx5e_ipsec_sa_entry *sa_entry, struct
- 
- 	MLX5_SET_TO_ONES(fte_match_param, spec->match_criteria, misc_parameters_2.metadata_reg_c_4);
- 	MLX5_SET(fte_match_param, spec->match_value, misc_parameters_2.metadata_reg_c_4, 1);
--	MLX5_SET_TO_ONES(fte_match_param, spec->match_criteria, misc_parameters_2.metadata_reg_c_2);
--	MLX5_SET(fte_match_param, spec->match_value,  misc_parameters_2.metadata_reg_c_2,
--		 sa_entry->ipsec_obj_id | BIT(31));
- 	spec->match_criteria_enable = MLX5_MATCH_MISC_PARAMETERS_2;
-+	ipsec_rx_rule_add_match_obj(sa_entry, rx, spec);
- 	rule = mlx5_add_flow_rules(ft, spec, &flow_act, &dest, 1);
- 	if (IS_ERR(rule)) {
- 		err = PTR_ERR(rule);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/ipsec_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/ipsec_fs.c
-index ed977ae75fab8..4bba2884c1c05 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/ipsec_fs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/ipsec_fs.c
-@@ -85,6 +85,19 @@ int mlx5_esw_ipsec_rx_setup_modify_header(struct mlx5e_ipsec_sa_entry *sa_entry,
- 	return err;
- }
- 
-+void mlx5_esw_ipsec_rx_rule_add_match_obj(struct mlx5e_ipsec_sa_entry *sa_entry,
-+					  struct mlx5_flow_spec *spec)
-+{
-+	MLX5_SET(fte_match_param, spec->match_criteria,
-+		 misc_parameters_2.metadata_reg_c_1,
-+		 ESW_IPSEC_RX_MAPPED_ID_MATCH_MASK);
-+	MLX5_SET(fte_match_param, spec->match_value,
-+		 misc_parameters_2.metadata_reg_c_1,
-+		 sa_entry->rx_mapped_id << ESW_ZONE_ID_BITS);
-+
-+	spec->match_criteria_enable |= MLX5_MATCH_MISC_PARAMETERS_2;
-+}
-+
- void mlx5_esw_ipsec_rx_id_mapping_remove(struct mlx5e_ipsec_sa_entry *sa_entry)
- {
- 	struct mlx5e_ipsec *ipsec = sa_entry->ipsec;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/ipsec_fs.h b/drivers/net/ethernet/mellanox/mlx5/core/esw/ipsec_fs.h
-index ac9c65b89166e..514c15258b1d1 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/esw/ipsec_fs.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/ipsec_fs.h
-@@ -20,6 +20,8 @@ int mlx5_esw_ipsec_rx_ipsec_obj_id_search(struct mlx5e_priv *priv, u32 id,
- void mlx5_esw_ipsec_tx_create_attr_set(struct mlx5e_ipsec *ipsec,
- 				       struct mlx5e_ipsec_tx_create_attr *attr);
- void mlx5_esw_ipsec_restore_dest_uplink(struct mlx5_core_dev *mdev);
-+void mlx5_esw_ipsec_rx_rule_add_match_obj(struct mlx5e_ipsec_sa_entry *sa_entry,
-+					  struct mlx5_flow_spec *spec);
- #else
- static inline void mlx5_esw_ipsec_rx_create_attr_set(struct mlx5e_ipsec *ipsec,
- 						     struct mlx5e_ipsec_rx_create_attr *attr) {}
-@@ -48,5 +50,8 @@ static inline void mlx5_esw_ipsec_tx_create_attr_set(struct mlx5e_ipsec *ipsec,
- 						     struct mlx5e_ipsec_tx_create_attr *attr) {}
- 
- static inline void mlx5_esw_ipsec_restore_dest_uplink(struct mlx5_core_dev *mdev) {}
-+static inline void
-+mlx5_esw_ipsec_rx_rule_add_match_obj(struct mlx5e_ipsec_sa_entry *sa_entry,
-+				     struct mlx5_flow_spec *spec) {}
- #endif /* CONFIG_MLX5_ESWITCH */
- #endif /* __MLX5_ESW_IPSEC_FS_H__ */
-diff --git a/include/linux/mlx5/eswitch.h b/include/linux/mlx5/eswitch.h
-index df73a2ccc9af3..67256e776566c 100644
---- a/include/linux/mlx5/eswitch.h
-+++ b/include/linux/mlx5/eswitch.h
-@@ -147,6 +147,8 @@ u32 mlx5_eswitch_get_vport_metadata_for_set(struct mlx5_eswitch *esw,
- 
- /* reuse tun_opts for the mapped ipsec obj id when tun_id is 0 (invalid) */
- #define ESW_IPSEC_RX_MAPPED_ID_MASK GENMASK(ESW_TUN_OPTS_BITS - 1, 0)
-+#define ESW_IPSEC_RX_MAPPED_ID_MATCH_MASK \
-+	GENMASK(31 - ESW_RESERVED_BITS, ESW_ZONE_ID_BITS)
- 
- u8 mlx5_eswitch_mode(const struct mlx5_core_dev *dev);
- u16 mlx5_eswitch_get_total_vports(const struct mlx5_core_dev *dev);
+ enum mlx5_flow_destination_type {
+ 	MLX5_FLOW_DESTINATION_TYPE_NONE,
+ 	MLX5_FLOW_DESTINATION_TYPE_VPORT,
 -- 
 2.39.5
 
