@@ -1,65 +1,65 @@
-Return-Path: <linux-rdma+bounces-10065-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10060-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A126FAAB515
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 07:22:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB3BAAAB779
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 08:12:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58C597A5047
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 05:19:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A2A517CEE4
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 06:09:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAAC3496EA8;
-	Tue,  6 May 2025 00:45:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11E13488CDF;
+	Tue,  6 May 2025 00:44:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W21STe2U"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MxXhmg1V"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDD092DFA23;
-	Mon,  5 May 2025 23:17:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5A222F4F5F;
+	Mon,  5 May 2025 23:16:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746487047; cv=none; b=ebOd/BAEPtFk5hAeBvx7YFm0hoNWvC2e6A3VPl7nRSItNyM5zbtPvknHUQu+xro6FLmJ98xvyk8iHm5xXCZlRRRQeHPW/jQm5AcvvDogwNHcLF4tVYZf63rLhfb8qzVcrOTkrBl3bAhwHTOOM6btkugTgyhc5DfW6KYRsjNPZCk=
+	t=1746486963; cv=none; b=NfXRSmMOmfcb7h6YyBsPq0Mtr3Iivz4+3MzRJ2c+vISzauRMwHvnS1dhfKuc4L3ypaKDICS9AsLLngeQlMXpAMtkJWzgTwgAMt+pu/UC9qx0cN5IPvBXlyN9Z/PGCa+Fc0/f293LskLw0Os1ME7ib+l9zFqQBPEofeF+P1Qk3PI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746487047; c=relaxed/simple;
-	bh=UXdsgPW4q/gYnzy2QjsqjqUASLdk6p45bA7QgTcgMmI=;
+	s=arc-20240116; t=1746486963; c=relaxed/simple;
+	bh=yXnrpblpUCPR/DQm/KS0JbHkePIGHb+ONn9ox3YVM/w=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jYuSrUF06+Zy0rgFDsTdqSYsvNhoZcMWAn9UjinRqUjJZIIgCc2CBnU5jwyoPIggdlvJXLUVBVnPGE6o0xzyOwEx5J6JaA51JStRRf6UxpimM1gSYkWLbJ11yCoigYL7hP67zSr5YeMBpGL1H4XDHBi7IQyPzB7c8c1hzEelUlU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W21STe2U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 419C7C4CEE4;
-	Mon,  5 May 2025 23:17:25 +0000 (UTC)
+	 MIME-Version; b=f38PQXtolnTpnc/dKiG4o98SYoeETtQPE4t1Cho2HwL8GjS9tQsmMz8j8Vuq3UB42JJLM+EqiIskk7cgp5iItw885l7sGQmyJWeXoAK9PzCanGITDhKRq5PRzZ1l/tm3nXD+7n4ezTFMjoNSPo+ExYi4nLOemEM8VIV3Sf0izp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MxXhmg1V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A846C4CEF1;
+	Mon,  5 May 2025 23:16:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746487046;
-	bh=UXdsgPW4q/gYnzy2QjsqjqUASLdk6p45bA7QgTcgMmI=;
+	s=k20201202; t=1746486963;
+	bh=yXnrpblpUCPR/DQm/KS0JbHkePIGHb+ONn9ox3YVM/w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=W21STe2UXIWAjNGuGZ+MC5Ubhw4e34QibuqWuLbJ3zygoIncVkXd4zyPSQysvB5wl
-	 ncOJSUBbonis7cxcFRFpTWAnmZ7hLaFndioxkxBrswipD05OsY80eU8ftOIE8gwXbf
-	 21l+Qpago1mn5bB/S9ukpYueWoXmZPqi7L73c7G/GRGLeMORjMDBfEitqclKZRyyxj
-	 12wGZiiQl63fCN3sHd7EzKK5eCyte2MAzmJaDTBDkCZLu51x9YLvswSN0PYfj98YNL
-	 awC0VUKitNRt93TkgqEHyTm1ztDqev03iU92e50fkun4kcntNLUNUnhkafd4cp59qh
-	 9H3br/yGA9Teg==
+	b=MxXhmg1VcctwD0zjfKuDELevv3MUMF12KDgPmYGQejALHssd4goTpwBoY5kGxc0ed
+	 5Dm/3WN7mne6dKU2/3KG07p22SBUnU3ZPJnOOhbHL1TNn0AqUIkbCX8GYh8UFOiRsE
+	 jZT61k/8XTIA/ZLZEuh0TUSojK3M9J+MynvV9BdsqcGlPmeZVHHyOghD2bphBTx85L
+	 GKd8nCelhBz1rn3j0UDYIrMf3Z0rIl7gwnR+7NBpw9evBQ3ebHGrRySOQHsgHb5i49
+	 tfiLdN9NCoVHH2hF33MDCQ95STq36+xBl2TppAB7OzzEtxzk10lY0HH7dO5sgJNSYI
+	 Nck9m45cwp5mA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: William Tu <witu@nvidia.com>,
-	Bodong Wang <bodong@nvidia.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
+Cc: Moshe Shemesh <moshe@nvidia.com>,
+	Shahar Shitrit <shshitrit@nvidia.com>,
 	Tariq Toukan <tariqt@nvidia.com>,
-	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-	Jakub Kicinski <kuba@kernel.org>,
+	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
+	saeedm@nvidia.com,
 	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
 	edumazet@google.com,
+	kuba@kernel.org,
 	pabeni@redhat.com,
 	netdev@vger.kernel.org,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 125/153] net/mlx5e: reduce rep rxq depth to 256 for ECPF
-Date: Mon,  5 May 2025 19:12:52 -0400
-Message-Id: <20250505231320.2695319-125-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 082/153] net/mlx5: Avoid report two health errors on same syndrome
+Date: Mon,  5 May 2025 19:12:09 -0400
+Message-Id: <20250505231320.2695319-82-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505231320.2695319-1-sashal@kernel.org>
 References: <20250505231320.2695319-1-sashal@kernel.org>
@@ -74,73 +74,40 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.181
 Content-Transfer-Encoding: 8bit
 
-From: William Tu <witu@nvidia.com>
+From: Moshe Shemesh <moshe@nvidia.com>
 
-[ Upstream commit b9cc8f9d700867aaa77aedddfea85e53d5e5d584 ]
+[ Upstream commit b5d7b2f04ebcff740f44ef4d295b3401aeb029f4 ]
 
-By experiments, a single queue representor netdev consumes kernel
-memory around 2.8MB, and 1.8MB out of the 2.8MB is due to page
-pool for the RXQ. Scaling to a thousand representors consumes 2.8GB,
-which becomes a memory pressure issue for embedded devices such as
-BlueField-2 16GB / BlueField-3 32GB memory.
+In case health counter has not increased for few polling intervals, miss
+counter will reach max misses threshold and health report will be
+triggered for FW health reporter. In case syndrome found on same health
+poll another health report will be triggered.
 
-Since representor netdevs mostly handles miss traffic, and ideally,
-most of the traffic will be offloaded, reduce the default non-uplink
-rep netdev's RXQ default depth from 1024 to 256 if mdev is ecpf eswitch
-manager. This saves around 1MB of memory per regular RQ,
-(1024 - 256) * 2KB, allocated from page pool.
+Avoid two health reports on same syndrome by marking this syndrome as
+already known.
 
-With rxq depth of 256, the netlink page pool tool reports
-$./tools/net/ynl/cli.py --spec Documentation/netlink/specs/netdev.yaml \
-	 --dump page-pool-get
- {'id': 277,
-  'ifindex': 9,
-  'inflight': 128,
-  'inflight-mem': 786432,
-  'napi-id': 775}]
-
-This is due to mtu 1500 + headroom consumes half pages, so 256 rxq
-entries consumes around 128 pages (thus create a page pool with
-size 128), shown above at inflight.
-
-Note that each netdev has multiple types of RQs, including
-Regular RQ, XSK, PTP, Drop, Trap RQ. Since non-uplink representor
-only supports regular rq, this patch only changes the regular RQ's
-default depth.
-
-Signed-off-by: William Tu <witu@nvidia.com>
-Reviewed-by: Bodong Wang <bodong@nvidia.com>
-Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Moshe Shemesh <moshe@nvidia.com>
+Reviewed-by: Shahar Shitrit <shshitrit@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-Link: https://patch.msgid.link/20250209101716.112774-8-tariqt@nvidia.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_rep.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/health.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-index 3c8bfedeafffd..8e44fa0d3f371 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
-@@ -58,6 +58,7 @@
- #define MLX5E_REP_PARAMS_DEF_LOG_SQ_SIZE \
- 	max(0x7, MLX5E_PARAMS_MINIMUM_LOG_SQ_SIZE)
- #define MLX5E_REP_PARAMS_DEF_NUM_CHANNELS 1
-+#define MLX5E_REP_PARAMS_DEF_LOG_RQ_SIZE 0x8
- 
- static const char mlx5e_rep_driver_name[] = "mlx5e_rep";
- 
-@@ -615,6 +616,8 @@ static void mlx5e_build_rep_params(struct net_device *netdev)
- 
- 	/* RQ */
- 	mlx5e_build_rq_params(mdev, params);
-+	if (!mlx5e_is_uplink_rep(priv) && mlx5_core_is_ecpf(mdev))
-+		params->log_rq_mtu_frames = MLX5E_REP_PARAMS_DEF_LOG_RQ_SIZE;
- 
- 	/* CQ moderation params */
- 	params->rx_dim_enabled = MLX5_CAP_GEN(mdev, cq_moderation);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
+index 1504856fafde4..2a0b111fbcd3c 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
+@@ -737,6 +737,7 @@ static void poll_health(struct timer_list *t)
+ 	health->prev = count;
+ 	if (health->miss_counter == MAX_MISSES) {
+ 		mlx5_core_err(dev, "device's health compromised - reached miss count\n");
++		health->synd = ioread8(&h->synd);
+ 		print_health_info(dev);
+ 		queue_work(health->wq, &health->report_work);
+ 	}
 -- 
 2.39.5
 
