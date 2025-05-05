@@ -1,61 +1,63 @@
-Return-Path: <linux-rdma+bounces-10047-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10048-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7818DAAB704
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 08:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 821BEAAB358
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 06:43:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3FE63AFFCC
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 05:56:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29ACE3B433B
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 04:37:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2C1C2248A5;
-	Tue,  6 May 2025 00:36:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B535022B59A;
+	Tue,  6 May 2025 00:36:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FkxS23eE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O+P5yBYI"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A880C391A9A;
-	Mon,  5 May 2025 23:02:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2373A2E3383;
+	Mon,  5 May 2025 23:03:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746486175; cv=none; b=rs7Anfx8G1ZfU84kWt8NC6fxNmzs9mTos95cHeqY0i1bQw51O9FYt/4NV3J7whUL3z/BXKuEcb1XV4vme6kZd4U5F/Su3VbhcHU+Drlz2ZwcmDB7qB9ylmDC20Q2oZPAiEJnLoT2hQMz4AY2BZpJvjgkwHUswZWDYdqaGW/vCsM=
+	t=1746486221; cv=none; b=b4Hvjc4BEL+1wcRSbE7lsfwyx6HsAgGpSMa2xpIQ7V6BHWrRAzWOo9xMhaoQ5KIRYkPXwHjWGBnSg4bATkJkim1/cjZKyBPBF84T68yHksqNnCu0AMI3UxlvCK/x/9BMA/MmzpXZRmHa2Po8ceDsBqla3xd7vwcyCC9sRxq5Eak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746486175; c=relaxed/simple;
-	bh=A3OWxrK3x+4+EbjKrzZrjIZmodmYY2tggIjBEaOPV4c=;
+	s=arc-20240116; t=1746486221; c=relaxed/simple;
+	bh=/poekQtgswXL0n9PrpAg6A9ekTrrgUkF7TlsYeW/k5A=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kHWl7hTGxNtqb+UvJzkvOZk9I6d0Mn6L9OJm450DWuTVe8hEkMCSslqnqv5j6QUHRvEwTFU2IimOGCmnA4LUiOavgQQNUAmKZ7RwR6T5/UhxGfsg+lhuCCFo1EllbgXJ+XjdFiafjUL6u1Fus+Wr+MFBjHdw5+iQQZ7OtxscHsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FkxS23eE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F802C4CEE4;
-	Mon,  5 May 2025 23:02:54 +0000 (UTC)
+	 MIME-Version; b=fd+tYcD8VLGmxoBwQ/rvRXVA/wG38F8uTjMXb8R5lBof/gl9PL807g3a+WG7v6avy/z98ZdkasrFLLNlGe0znDBYJy/Q+4hBXoxxGoUgOxGPkwqXOcGiKu9wlMXy0xCIVjN+oo6hkGFgnr4imhcOJBV0XU0uSLByGelc74SM8M4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O+P5yBYI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F19DC4CEF2;
+	Mon,  5 May 2025 23:03:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746486175;
-	bh=A3OWxrK3x+4+EbjKrzZrjIZmodmYY2tggIjBEaOPV4c=;
+	s=k20201202; t=1746486220;
+	bh=/poekQtgswXL0n9PrpAg6A9ekTrrgUkF7TlsYeW/k5A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FkxS23eEvsPSa3jVY18kvJObtUkUWxJgakzAKIruGQh3hxE2HpFKEfKFxF2TOJl3g
-	 GPb5xB5+5XMJF4ebGyWNJ84muYyHLrdJQEh1eql56EjxszPBGJH0UUeD/K9MGPEYSt
-	 3hltUVMPhkmHOlmyWe/HNyg2Q9S5TvEH3e9mJEGynuvRJ1K8W3UBJDg5wQrSJY2I2d
-	 kKcxIaplMM0HnXC8OBxzGXPM2QDc9gm1mBGNefAaJ8h+ZvFpkRwd9Z9SAzLf0yNDin
-	 md3XDNtaryY9hdvnPs/XhjfJ7clARsrxdm8cZSALp1I0oN3f8VQgBOHOIRjrloyUTp
-	 I5+dpHoV5vRNA==
+	b=O+P5yBYICznq+2q7rPMP/4ie1YpNvIxfTNzkHpQMnSJXCqpFmeAV7K4efswH0RVl3
+	 WnxuZw46l7aM/60QRn4eWm2FTymcI3wuRAXL2UqcKCTWBdneimO7ifm9mlzW/GfvOY
+	 Z5pc0uxS3KCIUA7q3fFj17kdEXyEBXNcF4UsdFUqTVyFFXloboGAZii2RIcEWKUg6j
+	 7M6K52HaIRuJis6gK55YUXQpf1IWqdU71GVcWRVjAth4zuvNjsnK3PoOqPoRs8l1Du
+	 qj3GbzUGZI/RvZWu0VCXulFN+YcVeYnUTBrEbiwAbsqen8Suh6IgtsRIvelNb6ov9B
+	 3Gz4MXGKZaB0g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Michael Margolin <mrgolin@amazon.com>,
-	Firas Jahjah <firasj@amazon.com>,
-	Yonatan Nachum <ynachum@amazon.com>,
-	Leon Romanovsky <leon@kernel.org>,
+Cc: Kees Cook <kees@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	phaddad@nvidia.com,
-	mbloch@nvidia.com,
-	mgurtovoy@nvidia.com,
+	tariqt@nvidia.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	yishaih@nvidia.com,
+	netdev@vger.kernel.org,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 187/294] RDMA/core: Fix best page size finding when it can cross SG entries
-Date: Mon,  5 May 2025 18:54:47 -0400
-Message-Id: <20250505225634.2688578-187-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 214/294] net/mlx4_core: Avoid impossible mlx4_db_alloc() order value
+Date: Mon,  5 May 2025 18:55:14 -0400
+Message-Id: <20250505225634.2688578-214-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505225634.2688578-1-sashal@kernel.org>
 References: <20250505225634.2688578-1-sashal@kernel.org>
@@ -70,137 +72,76 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.89
 Content-Transfer-Encoding: 8bit
 
-From: Michael Margolin <mrgolin@amazon.com>
+From: Kees Cook <kees@kernel.org>
 
-[ Upstream commit 486055f5e09df959ad4e3aa4ee75b5c91ddeec2e ]
+[ Upstream commit 4a6f18f28627e121bd1f74b5fcc9f945d6dbeb1e ]
 
-A single scatter-gather entry is limited by a 32 bits "length" field
-that is practically 4GB - PAGE_SIZE. This means that even when the
-memory is physically contiguous, we might need more than one entry to
-represent it. Additionally when using dmabuf, the sg_table might be
-originated outside the subsystem and optimized for other needs.
+GCC can see that the value range for "order" is capped, but this leads
+it to consider that it might be negative, leading to a false positive
+warning (with GCC 15 with -Warray-bounds -fdiagnostics-details):
 
-For instance an SGT of 16GB GPU continuous memory might look like this:
-(a real life example)
+../drivers/net/ethernet/mellanox/mlx4/alloc.c:691:47: error: array subscript -1 is below array bounds of 'long unsigned int *[2]' [-Werror=array-bounds=]
+  691 |                 i = find_first_bit(pgdir->bits[o], MLX4_DB_PER_PAGE >> o);
+      |                                    ~~~~~~~~~~~^~~
+  'mlx4_alloc_db_from_pgdir': events 1-2
+  691 |                 i = find_first_bit(pgdir->bits[o], MLX4_DB_PER_PAGE >> o);                        |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                     |                         |                                                   |                     |                         (2) out of array bounds here
+      |                     (1) when the condition is evaluated to true                             In file included from ../drivers/net/ethernet/mellanox/mlx4/mlx4.h:53,
+                 from ../drivers/net/ethernet/mellanox/mlx4/alloc.c:42:
+../include/linux/mlx4/device.h:664:33: note: while referencing 'bits'
+  664 |         unsigned long          *bits[2];
+      |                                 ^~~~
 
-dma_address 34401400000, length fffff000
-dma_address 345013ff000, length fffff000
-dma_address 346013fe000, length fffff000
-dma_address 347013fd000, length fffff000
-dma_address 348013fc000, length 4000
+Switch the argument to unsigned int, which removes the compiler needing
+to consider negative values.
 
-Since ib_umem_find_best_pgsz works within SG entries, in the above case
-we will result with the worst possible 4KB page size.
-
-Fix this by taking into consideration only the alignment of addresses of
-real discontinuity points rather than treating SG entries as such, and
-adjust the page iterator to correctly handle cross SG entry pages.
-
-There is currently an assumption that drivers do not ask for pages
-bigger than maximal DMA size supported by their devices.
-
-Reviewed-by: Firas Jahjah <firasj@amazon.com>
-Reviewed-by: Yonatan Nachum <ynachum@amazon.com>
-Signed-off-by: Michael Margolin <mrgolin@amazon.com>
-Link: https://patch.msgid.link/20250217141623.12428-1-mrgolin@amazon.com
-Signed-off-by: Leon Romanovsky <leon@kernel.org>
+Signed-off-by: Kees Cook <kees@kernel.org>
+Link: https://patch.msgid.link/20250210174504.work.075-kees@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/umem.c  | 36 ++++++++++++++++++++++++---------
- drivers/infiniband/core/verbs.c | 11 +++++-----
- 2 files changed, 32 insertions(+), 15 deletions(-)
+ drivers/net/ethernet/mellanox/mlx4/alloc.c | 6 +++---
+ include/linux/mlx4/device.h                | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index 07c571c7b6999..c5b6863947605 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -80,9 +80,12 @@ unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
- 				     unsigned long pgsz_bitmap,
- 				     unsigned long virt)
+diff --git a/drivers/net/ethernet/mellanox/mlx4/alloc.c b/drivers/net/ethernet/mellanox/mlx4/alloc.c
+index b330020dc0d67..f2bded847e61d 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/alloc.c
++++ b/drivers/net/ethernet/mellanox/mlx4/alloc.c
+@@ -682,9 +682,9 @@ static struct mlx4_db_pgdir *mlx4_alloc_db_pgdir(struct device *dma_device)
+ }
+ 
+ static int mlx4_alloc_db_from_pgdir(struct mlx4_db_pgdir *pgdir,
+-				    struct mlx4_db *db, int order)
++				    struct mlx4_db *db, unsigned int order)
  {
--	struct scatterlist *sg;
-+	unsigned long curr_len = 0;
-+	dma_addr_t curr_base = ~0;
- 	unsigned long va, pgoff;
-+	struct scatterlist *sg;
- 	dma_addr_t mask;
-+	dma_addr_t end;
+-	int o;
++	unsigned int o;
  	int i;
  
- 	umem->iova = va = virt;
-@@ -107,17 +110,30 @@ unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
- 	pgoff = umem->address & ~PAGE_MASK;
- 
- 	for_each_sgtable_dma_sg(&umem->sgt_append.sgt, sg, i) {
--		/* Walk SGL and reduce max page size if VA/PA bits differ
--		 * for any address.
-+		/* If the current entry is physically contiguous with the previous
-+		 * one, no need to take its start addresses into consideration.
- 		 */
--		mask |= (sg_dma_address(sg) + pgoff) ^ va;
-+		if (check_add_overflow(curr_base, curr_len, &end) ||
-+		    end != sg_dma_address(sg)) {
-+
-+			curr_base = sg_dma_address(sg);
-+			curr_len = 0;
-+
-+			/* Reduce max page size if VA/PA bits differ */
-+			mask |= (curr_base + pgoff) ^ va;
-+
-+			/* The alignment of any VA matching a discontinuity point
-+			* in the physical memory sets the maximum possible page
-+			* size as this must be a starting point of a new page that
-+			* needs to be aligned.
-+			*/
-+			if (i != 0)
-+				mask |= va;
-+		}
-+
-+		curr_len += sg_dma_len(sg);
- 		va += sg_dma_len(sg) - pgoff;
--		/* Except for the last entry, the ending iova alignment sets
--		 * the maximum possible page size as the low bits of the iova
--		 * must be zero when starting the next chunk.
--		 */
--		if (i != (umem->sgt_append.sgt.nents - 1))
--			mask |= va;
-+
- 		pgoff = 0;
- 	}
- 
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index ba05de0380e96..6567d43751280 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -3029,22 +3029,23 @@ EXPORT_SYMBOL(__rdma_block_iter_start);
- bool __rdma_block_iter_next(struct ib_block_iter *biter)
- {
- 	unsigned int block_offset;
--	unsigned int sg_delta;
-+	unsigned int delta;
- 
- 	if (!biter->__sg_nents || !biter->__sg)
- 		return false;
- 
- 	biter->__dma_addr = sg_dma_address(biter->__sg) + biter->__sg_advance;
- 	block_offset = biter->__dma_addr & (BIT_ULL(biter->__pg_bit) - 1);
--	sg_delta = BIT_ULL(biter->__pg_bit) - block_offset;
-+	delta = BIT_ULL(biter->__pg_bit) - block_offset;
- 
--	if (sg_dma_len(biter->__sg) - biter->__sg_advance > sg_delta) {
--		biter->__sg_advance += sg_delta;
--	} else {
-+	while (biter->__sg_nents && biter->__sg &&
-+	       sg_dma_len(biter->__sg) - biter->__sg_advance <= delta) {
-+		delta -= sg_dma_len(biter->__sg) - biter->__sg_advance;
- 		biter->__sg_advance = 0;
- 		biter->__sg = sg_next(biter->__sg);
- 		biter->__sg_nents--;
- 	}
-+	biter->__sg_advance += delta;
- 
- 	return true;
+ 	for (o = order; o <= 1; ++o) {
+@@ -712,7 +712,7 @@ static int mlx4_alloc_db_from_pgdir(struct mlx4_db_pgdir *pgdir,
+ 	return 0;
  }
+ 
+-int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, int order)
++int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, unsigned int order)
+ {
+ 	struct mlx4_priv *priv = mlx4_priv(dev);
+ 	struct mlx4_db_pgdir *pgdir;
+diff --git a/include/linux/mlx4/device.h b/include/linux/mlx4/device.h
+index 27f42f713c891..86f0f2a25a3d6 100644
+--- a/include/linux/mlx4/device.h
++++ b/include/linux/mlx4/device.h
+@@ -1135,7 +1135,7 @@ int mlx4_write_mtt(struct mlx4_dev *dev, struct mlx4_mtt *mtt,
+ int mlx4_buf_write_mtt(struct mlx4_dev *dev, struct mlx4_mtt *mtt,
+ 		       struct mlx4_buf *buf);
+ 
+-int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, int order);
++int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, unsigned int order);
+ void mlx4_db_free(struct mlx4_dev *dev, struct mlx4_db *db);
+ 
+ int mlx4_alloc_hwq_res(struct mlx4_dev *dev, struct mlx4_hwq_resources *wqres,
 -- 
 2.39.5
 
