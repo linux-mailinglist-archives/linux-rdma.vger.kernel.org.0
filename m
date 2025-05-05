@@ -1,63 +1,64 @@
-Return-Path: <linux-rdma+bounces-10025-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10026-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6A87AAB01E
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 05:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 172DAAAB022
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 05:32:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CEA5188B738
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 03:32:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FDCE1A8726D
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 03:32:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76715308724;
-	Mon,  5 May 2025 23:38:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A78CB308A62;
+	Mon,  5 May 2025 23:38:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vF0zXtEO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pEEGu1r7"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0B452F9268;
-	Mon,  5 May 2025 23:21:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AEA12F8DFB;
+	Mon,  5 May 2025 23:21:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746487267; cv=none; b=DSJKjKHB1xHZZYvNPWnOlJAUGl6Y4Ne8MKKNCQiSxnbEnNLTOTAgQG3ZSEYdSydOkGp5jFOwcSC59ziHKkftx2raOtdESZItIFCjEN1RrGyc0PtOUrCWSNWMM8Z5jNOkphzAFZvyavTpcWnaMiCLHK4VruXkDHcWBu24dAYkF0Q=
+	t=1746487276; cv=none; b=I68uOEl3SB1ZfZM9IziJqWCgCTw6ZZxb2kLi82cTebT0LqngSZApIhMJ2rmIFRt/pkaKnTz4SnsVDg09Q9ZAJRiWUHNvh4xZa3ny8FKwMnzQAOm1Zu/vuPX13pSt+HIhLZe8M+4+03x5OOQqdBvzlUD9MLOK+J2SbVb0qjDwpeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746487267; c=relaxed/simple;
-	bh=1sa2Jw+wH6zoFeNIuZAt3AaFBzZe2lQP8ObR3nd3yMM=;
+	s=arc-20240116; t=1746487276; c=relaxed/simple;
+	bh=EDmeW1Odctp79+4oJ8K+oDAGd4UCmE1KWx5Rr2il8sM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ak5OsYdk+EqYTwjZMoZqf4RhMdEwMEhX7GgI3E2eCHqbz0Q+X1oQCsImJMD+oaOQRtTmFc1817QX1yb4+sRsI4Yme2aWPzp13k/UO+LesBdxts8FUdCKi597rbi6CHehaAUVGBVV8TCi9WaZzF/IrUe81yCzJXDlbubeTR8RJQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vF0zXtEO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B175C4CEED;
-	Mon,  5 May 2025 23:21:06 +0000 (UTC)
+	 MIME-Version; b=HsmtujtzABxBX65XmlBssTrjQp+1r/1CwQWhdqNKVoav/bFogvlu/suCB8bv9AveMEmtEcyOsx/R2ktsQ6uI4f8pgHFDlm7Siux9nH+fJe2cBNZFCZvq1l9W3xzyMHruzudjN9x39k5DHXw/fFNtYWUjUbbO6oiJ0PlHOfW9EBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pEEGu1r7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72071C4CEEE;
+	Mon,  5 May 2025 23:21:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746487267;
-	bh=1sa2Jw+wH6zoFeNIuZAt3AaFBzZe2lQP8ObR3nd3yMM=;
+	s=k20201202; t=1746487274;
+	bh=EDmeW1Odctp79+4oJ8K+oDAGd4UCmE1KWx5Rr2il8sM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=vF0zXtEOI9Ww/4+MhfhTrxJdW/5ya6QueC9VUmimLMCeJLnLzZvzmRakDkPkp9KZH
-	 aP63c7YXtebHW07YIB6N2QA8Rqa/WCwpod2UcBcFiJqHL+af6wjLun5wAgVIiiKa21
-	 ThBjVVEnpQ6Ug5blt9Fu8X6LIAiJJGExxUJc7YM+mQm26gJ2Mk/alu6E9WISfpIdkx
-	 XbJlEistR8sp0nm5LgY8k+eIPmFaGDZcsRgNPCM+xLBIVsUdSABLM5mBAh357v+tTH
-	 w4Sge66qM/hOmIfmXN8HhUcUc+T9wdotvGLEEcdBZQOwe/w/FEP1eTdiKs2KsjoPvT
-	 GWMmkfr8ClIwg==
+	b=pEEGu1r7lposS7MlCRggpbijKMbQEQxaYegedQkhHk8AKHuAkGEvb9UXasxntHj7c
+	 BlfSsb/5umHvbLRKZcfnbtZs+ilkwNxFDRSH2xdkSbiOnmFsQm52tkyVYMtPp3Gk9g
+	 4SEuiW0UitKXvaAGs2ZEWoKwomVvrfaYZfcof28DQKgBit2e84S5gMYFIIP++7qtwV
+	 oAJQJRTkQxv2Hid7YnA2yY+q3rar/+zqDjKQ0cGZYG+/G/uhLfqt7+saknGKs0G0rq
+	 DCTs8n/Xsv37PJe6RWz0jzMdo3K8kDFFbsDWvcHKL1LLIn3dOzxq/r0qpUcL7njcUp
+	 +9ZtS1E67oZzQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kees Cook <kees@kernel.org>,
+Cc: Alexei Lazar <alazar@nvidia.com>,
+	Dragos Tatulea <dtatulea@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	tariqt@nvidia.com,
+	saeedm@nvidia.com,
 	andrew+netdev@lunn.ch,
 	davem@davemloft.net,
 	edumazet@google.com,
 	pabeni@redhat.com,
-	yishaih@nvidia.com,
 	netdev@vger.kernel.org,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 090/114] net/mlx4_core: Avoid impossible mlx4_db_alloc() order value
-Date: Mon,  5 May 2025 19:17:53 -0400
-Message-Id: <20250505231817.2697367-90-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 093/114] net/mlx5: Extend Ethtool loopback selftest to support non-linear SKB
+Date: Mon,  5 May 2025 19:17:56 -0400
+Message-Id: <20250505231817.2697367-93-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505231817.2697367-1-sashal@kernel.org>
 References: <20250505231817.2697367-1-sashal@kernel.org>
@@ -72,76 +73,39 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.237
 Content-Transfer-Encoding: 8bit
 
-From: Kees Cook <kees@kernel.org>
+From: Alexei Lazar <alazar@nvidia.com>
 
-[ Upstream commit 4a6f18f28627e121bd1f74b5fcc9f945d6dbeb1e ]
+[ Upstream commit 95b9606b15bb3ce1198d28d2393dd0e1f0a5f3e9 ]
 
-GCC can see that the value range for "order" is capped, but this leads
-it to consider that it might be negative, leading to a false positive
-warning (with GCC 15 with -Warray-bounds -fdiagnostics-details):
+Current loopback test validation ignores non-linear SKB case in
+the SKB access, which can lead to failures in scenarios such as
+when HW GRO is enabled.
+Linearize the SKB so both cases will be handled.
 
-../drivers/net/ethernet/mellanox/mlx4/alloc.c:691:47: error: array subscript -1 is below array bounds of 'long unsigned int *[2]' [-Werror=array-bounds=]
-  691 |                 i = find_first_bit(pgdir->bits[o], MLX4_DB_PER_PAGE >> o);
-      |                                    ~~~~~~~~~~~^~~
-  'mlx4_alloc_db_from_pgdir': events 1-2
-  691 |                 i = find_first_bit(pgdir->bits[o], MLX4_DB_PER_PAGE >> o);                        |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      |                     |                         |                                                   |                     |                         (2) out of array bounds here
-      |                     (1) when the condition is evaluated to true                             In file included from ../drivers/net/ethernet/mellanox/mlx4/mlx4.h:53,
-                 from ../drivers/net/ethernet/mellanox/mlx4/alloc.c:42:
-../include/linux/mlx4/device.h:664:33: note: while referencing 'bits'
-  664 |         unsigned long          *bits[2];
-      |                                 ^~~~
-
-Switch the argument to unsigned int, which removes the compiler needing
-to consider negative values.
-
-Signed-off-by: Kees Cook <kees@kernel.org>
-Link: https://patch.msgid.link/20250210174504.work.075-kees@kernel.org
+Signed-off-by: Alexei Lazar <alazar@nvidia.com>
+Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+Link: https://patch.msgid.link/20250209101716.112774-15-tariqt@nvidia.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx4/alloc.c | 6 +++---
- include/linux/mlx4/device.h                | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_selftest.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/alloc.c b/drivers/net/ethernet/mellanox/mlx4/alloc.c
-index b330020dc0d67..f2bded847e61d 100644
---- a/drivers/net/ethernet/mellanox/mlx4/alloc.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/alloc.c
-@@ -682,9 +682,9 @@ static struct mlx4_db_pgdir *mlx4_alloc_db_pgdir(struct device *dma_device)
- }
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_selftest.c b/drivers/net/ethernet/mellanox/mlx5/core/en_selftest.c
+index ce8ab1f018769..c380340b81665 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_selftest.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_selftest.c
+@@ -188,6 +188,9 @@ mlx5e_test_loopback_validate(struct sk_buff *skb,
+ 	struct udphdr *udph;
+ 	struct iphdr *iph;
  
- static int mlx4_alloc_db_from_pgdir(struct mlx4_db_pgdir *pgdir,
--				    struct mlx4_db *db, int order)
-+				    struct mlx4_db *db, unsigned int order)
- {
--	int o;
-+	unsigned int o;
- 	int i;
- 
- 	for (o = order; o <= 1; ++o) {
-@@ -712,7 +712,7 @@ static int mlx4_alloc_db_from_pgdir(struct mlx4_db_pgdir *pgdir,
- 	return 0;
- }
- 
--int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, int order)
-+int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, unsigned int order)
- {
- 	struct mlx4_priv *priv = mlx4_priv(dev);
- 	struct mlx4_db_pgdir *pgdir;
-diff --git a/include/linux/mlx4/device.h b/include/linux/mlx4/device.h
-index eb8169c03d899..0eb04d537038c 100644
---- a/include/linux/mlx4/device.h
-+++ b/include/linux/mlx4/device.h
-@@ -1116,7 +1116,7 @@ int mlx4_write_mtt(struct mlx4_dev *dev, struct mlx4_mtt *mtt,
- int mlx4_buf_write_mtt(struct mlx4_dev *dev, struct mlx4_mtt *mtt,
- 		       struct mlx4_buf *buf);
- 
--int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, int order);
-+int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, unsigned int order);
- void mlx4_db_free(struct mlx4_dev *dev, struct mlx4_db *db);
- 
- int mlx4_alloc_hwq_res(struct mlx4_dev *dev, struct mlx4_hwq_resources *wqres,
++	if (skb_linearize(skb))
++		goto out;
++
+ 	/* We are only going to peek, no need to clone the SKB */
+ 	if (MLX5E_TEST_PKT_SIZE - ETH_HLEN > skb_headlen(skb))
+ 		goto out;
 -- 
 2.39.5
 
