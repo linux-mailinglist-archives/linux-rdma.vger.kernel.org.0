@@ -1,65 +1,66 @@
-Return-Path: <linux-rdma+bounces-10060-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10061-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB3BAAAB779
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 08:12:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1C21AAB7BB
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 08:17:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A2A517CEE4
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 06:09:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B7173B5C56
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 06:10:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11E13488CDF;
-	Tue,  6 May 2025 00:44:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9B5D3464A0;
+	Tue,  6 May 2025 00:45:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MxXhmg1V"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uGJqqAGu"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5A222F4F5F;
-	Mon,  5 May 2025 23:16:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB7C284692;
+	Mon,  5 May 2025 23:16:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746486963; cv=none; b=NfXRSmMOmfcb7h6YyBsPq0Mtr3Iivz4+3MzRJ2c+vISzauRMwHvnS1dhfKuc4L3ypaKDICS9AsLLngeQlMXpAMtkJWzgTwgAMt+pu/UC9qx0cN5IPvBXlyN9Z/PGCa+Fc0/f293LskLw0Os1ME7ib+l9zFqQBPEofeF+P1Qk3PI=
+	t=1746487014; cv=none; b=Ww2Akq6vlnk+kS+FJkmrpXWeIyIiOjHNKseasdLgMUj0u8XK1OOEdkdb6KUQ+jsqYDpsxPJD+2SHyX25k7Ev0lBG5Yn8OifOUGgVt9GLrGFf5Y+1HS1cVxuzdAQZ2AOU0d2AYcue06eMx62mxklpDIMht27uHakHYxsw1PwbFKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746486963; c=relaxed/simple;
-	bh=yXnrpblpUCPR/DQm/KS0JbHkePIGHb+ONn9ox3YVM/w=;
+	s=arc-20240116; t=1746487014; c=relaxed/simple;
+	bh=luk1d5dvK5s4+w24BiCGoAm4BeBTHfKMzopG+08qbQY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=f38PQXtolnTpnc/dKiG4o98SYoeETtQPE4t1Cho2HwL8GjS9tQsmMz8j8Vuq3UB42JJLM+EqiIskk7cgp5iItw885l7sGQmyJWeXoAK9PzCanGITDhKRq5PRzZ1l/tm3nXD+7n4ezTFMjoNSPo+ExYi4nLOemEM8VIV3Sf0izp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MxXhmg1V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A846C4CEF1;
-	Mon,  5 May 2025 23:16:02 +0000 (UTC)
+	 MIME-Version; b=MiMvEfIxKSAQ61gvgtiTXAhwPYAIi/nq7LBJG68YgHGqR6Yx9Kl2IGOt4gKJfVp3DJh3AYzpkmKDyV18oCXstXnbChUHas82kexU2CDtpee1NxSXXqMPkqbw7JT9hWJT9sQQjvwDNktINXEsRpp/Jn8zZ2ELWDbLqejvY3Q33ws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uGJqqAGu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0E2AC4CEE4;
+	Mon,  5 May 2025 23:16:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746486963;
-	bh=yXnrpblpUCPR/DQm/KS0JbHkePIGHb+ONn9ox3YVM/w=;
+	s=k20201202; t=1746487013;
+	bh=luk1d5dvK5s4+w24BiCGoAm4BeBTHfKMzopG+08qbQY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MxXhmg1VcctwD0zjfKuDELevv3MUMF12KDgPmYGQejALHssd4goTpwBoY5kGxc0ed
-	 5Dm/3WN7mne6dKU2/3KG07p22SBUnU3ZPJnOOhbHL1TNn0AqUIkbCX8GYh8UFOiRsE
-	 jZT61k/8XTIA/ZLZEuh0TUSojK3M9J+MynvV9BdsqcGlPmeZVHHyOghD2bphBTx85L
-	 GKd8nCelhBz1rn3j0UDYIrMf3Z0rIl7gwnR+7NBpw9evBQ3ebHGrRySOQHsgHb5i49
-	 tfiLdN9NCoVHH2hF33MDCQ95STq36+xBl2TppAB7OzzEtxzk10lY0HH7dO5sgJNSYI
-	 Nck9m45cwp5mA==
+	b=uGJqqAGud+f2IoXcaUOGCC7TM82ffcUKRZs5x8sqbJIb+VXebtI6Pta0mLa23Ms+d
+	 EvqN1UfD+NYl3a5ozvggOg22MS8pZjmFBGNsGntgEu+EuPX43Shr07ddrOTjQ1T8cd
+	 nl7dMmJCEqtei3YbwSuETEgoIqSr3T2P1nCJVO4nbMiR33fUEAOQnUDvVOcJwRgA0D
+	 vYyOcfBbsZ4ljUyYO53/pLgIUGXVqSt0AOjOVg3dxK7icnOjQRV5Voz06jqFlQCVNC
+	 h6JJzymGqxKTHzHRazhZPIltpgxVeRgYYJUjWauJXrh4wwKiDvygLLDyPPLPIDvPYe
+	 2471rkZpfu/Zw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Moshe Shemesh <moshe@nvidia.com>,
-	Shahar Shitrit <shshitrit@nvidia.com>,
+Cc: Jakub Kicinski <kuba@kernel.org>,
 	Tariq Toukan <tariqt@nvidia.com>,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	saeedm@nvidia.com,
 	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
 	edumazet@google.com,
-	kuba@kernel.org,
 	pabeni@redhat.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
 	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 082/153] net/mlx5: Avoid report two health errors on same syndrome
-Date: Mon,  5 May 2025 19:12:09 -0400
-Message-Id: <20250505231320.2695319-82-sashal@kernel.org>
+	linux-rdma@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 107/153] eth: mlx4: don't try to complete XDP frames in netpoll
+Date: Mon,  5 May 2025 19:12:34 -0400
+Message-Id: <20250505231320.2695319-107-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505231320.2695319-1-sashal@kernel.org>
 References: <20250505231320.2695319-1-sashal@kernel.org>
@@ -74,40 +75,37 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.181
 Content-Transfer-Encoding: 8bit
 
-From: Moshe Shemesh <moshe@nvidia.com>
+From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit b5d7b2f04ebcff740f44ef4d295b3401aeb029f4 ]
+[ Upstream commit 8fdeafd66edaf420ea0063a1f13442fe3470fe70 ]
 
-In case health counter has not increased for few polling intervals, miss
-counter will reach max misses threshold and health report will be
-triggered for FW health reporter. In case syndrome found on same health
-poll another health report will be triggered.
+mlx4 doesn't support ndo_xdp_xmit / XDP_REDIRECT and wasn't
+using page pool until now, so it could run XDP completions
+in netpoll (NAPI budget == 0) just fine. Page pool has calling
+context requirements, make sure we don't try to call it from
+what is potentially HW IRQ context.
 
-Avoid two health reports on same syndrome by marking this syndrome as
-already known.
-
-Signed-off-by: Moshe Shemesh <moshe@nvidia.com>
-Reviewed-by: Shahar Shitrit <shshitrit@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Link: https://patch.msgid.link/20250213010635.1354034-3-kuba@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/health.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/mellanox/mlx4/en_tx.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-index 1504856fafde4..2a0b111fbcd3c 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-@@ -737,6 +737,7 @@ static void poll_health(struct timer_list *t)
- 	health->prev = count;
- 	if (health->miss_counter == MAX_MISSES) {
- 		mlx5_core_err(dev, "device's health compromised - reached miss count\n");
-+		health->synd = ioread8(&h->synd);
- 		print_health_info(dev);
- 		queue_work(health->wq, &health->report_work);
- 	}
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_tx.c b/drivers/net/ethernet/mellanox/mlx4/en_tx.c
+index c56b9dba4c718..ed695f7443a83 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_tx.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_tx.c
+@@ -445,6 +445,8 @@ int mlx4_en_process_tx_cq(struct net_device *dev,
+ 
+ 	if (unlikely(!priv->port_up))
+ 		return 0;
++	if (unlikely(!napi_budget) && cq->type == TX_XDP)
++		return 0;
+ 
+ 	netdev_txq_bql_complete_prefetchw(ring->tx_queue);
+ 
 -- 
 2.39.5
 
