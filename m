@@ -1,66 +1,67 @@
-Return-Path: <linux-rdma+bounces-10007-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10008-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE11BAAAA2C
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 03:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 40BB1AAAA9C
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 03:41:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 830E6166644
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 01:30:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 792DB16333B
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 01:41:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6C97385367;
-	Mon,  5 May 2025 23:00:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4634037AABB;
+	Mon,  5 May 2025 23:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MVf91LAU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z4TWE7sY"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF07B3635D4;
-	Mon,  5 May 2025 22:51:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B56EF374589;
+	Mon,  5 May 2025 22:58:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746485488; cv=none; b=ogEEOifDjCOy4SnNAOQmbx7JPWRRiePlko0SFRrsmf4xXnxndj2FL6g2OKrX3YmPHZJdk/mhJUqwSLt0BPAsOMaNiUFpeg8U7CuyVrZ9az9NTy9EcMVKKJz8mughhaw3YTAP9TjgRMlLY8AC354Tm2EBxo4kTEIUw6BvWnjllE8=
+	t=1746485932; cv=none; b=kfln9k/XPngn9hLNjfzLDPTCnbxaSYtHlavtkYegcOaK9dTpz1sPBW6k49Ytmmi/2sELUJav73du+RbIfFZoHtjB7sqGMF3GBeWTjKeSP4azRGD6qOrVd+fbWfm4l/ZXPeYXQ2UfJNATT9Pj/k32h+wJV3B6OmkzqU+fj3gTmPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746485488; c=relaxed/simple;
-	bh=/poekQtgswXL0n9PrpAg6A9ekTrrgUkF7TlsYeW/k5A=;
+	s=arc-20240116; t=1746485932; c=relaxed/simple;
+	bh=GK31QfUDyBBGfYjJDHgtizcta3uBh9rj9nFl+F5ZUjc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nD4pAK9hSw9VLZZsb7TicJXiEHsEQUH0BwdMmRcgjWugRYPFFJC9HeICfBZxcHw00bvOHs734zdJntpuVKne/mqu8jPncX5D97+IdcNOWYZRxJTisdTvIvvhnewnn2gZP5F/szA8mGw0kzmC33u38Z3V74lyXhCGx8L4fE5o3js=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MVf91LAU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AA25C4CEEE;
-	Mon,  5 May 2025 22:51:27 +0000 (UTC)
+	 MIME-Version; b=R63mUhldImhiLb+gJ3XGgRvGftfj9v5ZFxxKKYpZNR4KhGTxaZok6CSuH4ZIX6HjCePwITPn0KRSUzFT/9M5abf9RQQkeeTnsuAeXz0qV72BnRII5NEvxabxcyMKU2UR6dnFNTjwLaWMfpIy4Uj5SGrHKtEpoSQEKNuQGgMYqp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z4TWE7sY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AF9EC4CEEE;
+	Mon,  5 May 2025 22:58:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746485488;
-	bh=/poekQtgswXL0n9PrpAg6A9ekTrrgUkF7TlsYeW/k5A=;
+	s=k20201202; t=1746485931;
+	bh=GK31QfUDyBBGfYjJDHgtizcta3uBh9rj9nFl+F5ZUjc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MVf91LAUVzVhi7d23aiIYr90/8tQ8znfC1FMjPZVYdgYatTCURSN7WTT8ctQx1rNy
-	 puTVBIovu1ODYhsrmSK8V2C40Rh79pBNi4GnrD2dmlr/GQRmmxLRwej+i0h+4nPjdu
-	 mTjLie4KMylRvXubtXipsVheN8yfK0mrqcZ2t2cMjzp7B5nWlUYtRbRUiyBkxXuzS6
-	 AmAVE8VNAtD+GtPSJZ0flMZ21VH21tKE9KyyW2fTW7MA/dOTeZpoF5C3FnuyZNrBaZ
-	 jNEOP2R4Ca1BuhXyjzwX7AN6Om8FMZJqm6RdgtAhjTcQonTHWlHFv4iNMZbyJrzTdK
-	 +fsxv7tiJJA+Q==
+	b=Z4TWE7sYa2akso7vMYJtNIh6ZkH1PFsde3FfzLwNyXM2SsTsJGRZve7YrBPsYiRSi
+	 FkSAfH4h8m0rjJfiO9j/rSkoz+fDT/Lu8KhnQ+RXP/y8IEGBnxPW8XYqfkFY+dZxcT
+	 lwyPpZQNhICEIw5YdtjEEBN3lW5JKRKLlOEZu0VixChS9zTDNjYs7LG5nk4R7PFZ+x
+	 x1sEOtFzgDw963c5J6H/6aGIGbt/qdfaBNUGwpH6y8cntBaO7UjTIWwEEvNo3x1P4O
+	 pUB6sM/qDzCPr57647ybU98ipPbUsKGIFFAa+ll+HWY+EYa3/5ruAHLrDmmR4zcL83
+	 3gB4LxCQRz1ug==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Kees Cook <kees@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>,
+Cc: Guangguan Wang <guangguan.wang@linux.alibaba.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Halil Pasic <pasic@linux.ibm.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	tariqt@nvidia.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
+	jaka@linux.ibm.com,
 	edumazet@google.com,
+	kuba@kernel.org,
 	pabeni@redhat.com,
-	yishaih@nvidia.com,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 342/486] net/mlx4_core: Avoid impossible mlx4_db_alloc() order value
-Date: Mon,  5 May 2025 18:36:58 -0400
-Message-Id: <20250505223922.2682012-342-sashal@kernel.org>
+	linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 072/294] net/smc: use the correct ndev to find pnetid by pnetid table
+Date: Mon,  5 May 2025 18:52:52 -0400
+Message-Id: <20250505225634.2688578-72-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250505223922.2682012-1-sashal@kernel.org>
-References: <20250505223922.2682012-1-sashal@kernel.org>
+In-Reply-To: <20250505225634.2688578-1-sashal@kernel.org>
+References: <20250505225634.2688578-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -69,79 +70,121 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.12.26
+X-stable-base: Linux 6.6.89
 Content-Transfer-Encoding: 8bit
 
-From: Kees Cook <kees@kernel.org>
+From: Guangguan Wang <guangguan.wang@linux.alibaba.com>
 
-[ Upstream commit 4a6f18f28627e121bd1f74b5fcc9f945d6dbeb1e ]
+[ Upstream commit bfc6c67ec2d64d0ca4e5cc3e1ac84298a10b8d62 ]
 
-GCC can see that the value range for "order" is capped, but this leads
-it to consider that it might be negative, leading to a false positive
-warning (with GCC 15 with -Warray-bounds -fdiagnostics-details):
+When using smc_pnet in SMC, it will only search the pnetid in the
+base_ndev of the netdev hierarchy(both HW PNETID and User-defined
+sw pnetid). This may not work for some scenarios when using SMC in
+container on cloud environment.
+In container, there have choices of different container network,
+such as directly using host network, virtual network IPVLAN, veth,
+etc. Different choices of container network have different netdev
+hierarchy. Examples of netdev hierarchy show below. (eth0 and eth1
+in host below is the netdev directly related to the physical device).
+            _______________________________
+           |   _________________           |
+           |  |POD              |          |
+           |  |                 |          |
+           |  | eth0_________   |          |
+           |  |____|         |__|          |
+           |       |         |             |
+           |       |         |             |
+           |   eth1|base_ndev| eth0_______ |
+           |       |         |    | RDMA  ||
+           | host  |_________|    |_______||
+           ---------------------------------
+     netdev hierarchy if directly using host network
+           ________________________________
+           |   _________________           |
+           |  |POD  __________  |          |
+           |  |    |upper_ndev| |          |
+           |  |eth0|__________| |          |
+           |  |_______|_________|          |
+           |          |lower netdev        |
+           |        __|______              |
+           |   eth1|         | eth0_______ |
+           |       |base_ndev|    | RDMA  ||
+           | host  |_________|    |_______||
+           ---------------------------------
+            netdev hierarchy if using IPVLAN
+            _______________________________
+           |   _____________________       |
+           |  |POD        _________ |      |
+           |  |          |base_ndev||      |
+           |  |eth0(veth)|_________||      |
+           |  |____________|________|      |
+           |               |pairs          |
+           |        _______|_              |
+           |       |         | eth0_______ |
+           |   veth|base_ndev|    | RDMA  ||
+           |       |_________|    |_______||
+           |        _________              |
+           |   eth1|base_ndev|             |
+           | host  |_________|             |
+           ---------------------------------
+             netdev hierarchy if using veth
+Due to some reasons, the eth1 in host is not RDMA attached netdevice,
+pnetid is needed to map the eth1(in host) with RDMA device so that POD
+can do SMC-R. Because the eth1(in host) is managed by CNI plugin(such
+as Terway, network management plugin in container environment), and in
+cloud environment the eth(in host) can dynamically be inserted by CNI
+when POD create and dynamically be removed by CNI when POD destroy and
+no POD related to the eth(in host) anymore. It is hard to config the
+pnetid to the eth1(in host). But it is easy to config the pnetid to the
+netdevice which can be seen in POD. When do SMC-R, both the container
+directly using host network and the container using veth network can
+successfully match the RDMA device, because the configured pnetid netdev
+is a base_ndev. But the container using IPVLAN can not successfully
+match the RDMA device and 0x03030000 fallback happens, because the
+configured pnetid netdev is not a base_ndev. Additionally, if config
+pnetid to the eth1(in host) also can not work for matching RDMA device
+when using veth network and doing SMC-R in POD.
 
-../drivers/net/ethernet/mellanox/mlx4/alloc.c:691:47: error: array subscript -1 is below array bounds of 'long unsigned int *[2]' [-Werror=array-bounds=]
-  691 |                 i = find_first_bit(pgdir->bits[o], MLX4_DB_PER_PAGE >> o);
-      |                                    ~~~~~~~~~~~^~~
-  'mlx4_alloc_db_from_pgdir': events 1-2
-  691 |                 i = find_first_bit(pgdir->bits[o], MLX4_DB_PER_PAGE >> o);                        |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      |                     |                         |                                                   |                     |                         (2) out of array bounds here
-      |                     (1) when the condition is evaluated to true                             In file included from ../drivers/net/ethernet/mellanox/mlx4/mlx4.h:53,
-                 from ../drivers/net/ethernet/mellanox/mlx4/alloc.c:42:
-../include/linux/mlx4/device.h:664:33: note: while referencing 'bits'
-  664 |         unsigned long          *bits[2];
-      |                                 ^~~~
+To resolve the problems list above, this patch extends to search user
+-defined sw pnetid in the clc handshake ndev when no pnetid can be found
+in the base_ndev, and the base_ndev take precedence over ndev for backward
+compatibility. This patch also can unify the pnetid setup of different
+network choices list above in container(Config user-defined sw pnetid in
+the netdevice can be seen in POD).
 
-Switch the argument to unsigned int, which removes the compiler needing
-to consider negative values.
-
-Signed-off-by: Kees Cook <kees@kernel.org>
-Link: https://patch.msgid.link/20250210174504.work.075-kees@kernel.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
+Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx4/alloc.c | 6 +++---
- include/linux/mlx4/device.h                | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ net/smc/smc_pnet.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/alloc.c b/drivers/net/ethernet/mellanox/mlx4/alloc.c
-index b330020dc0d67..f2bded847e61d 100644
---- a/drivers/net/ethernet/mellanox/mlx4/alloc.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/alloc.c
-@@ -682,9 +682,9 @@ static struct mlx4_db_pgdir *mlx4_alloc_db_pgdir(struct device *dma_device)
- }
- 
- static int mlx4_alloc_db_from_pgdir(struct mlx4_db_pgdir *pgdir,
--				    struct mlx4_db *db, int order)
-+				    struct mlx4_db *db, unsigned int order)
+diff --git a/net/smc/smc_pnet.c b/net/smc/smc_pnet.c
+index dbcc72b43d0c0..d44d7f427fc94 100644
+--- a/net/smc/smc_pnet.c
++++ b/net/smc/smc_pnet.c
+@@ -1084,14 +1084,16 @@ static void smc_pnet_find_roce_by_pnetid(struct net_device *ndev,
+ 					 struct smc_init_info *ini)
  {
--	int o;
-+	unsigned int o;
- 	int i;
+ 	u8 ndev_pnetid[SMC_MAX_PNETID_LEN];
++	struct net_device *base_ndev;
+ 	struct net *net;
  
- 	for (o = order; o <= 1; ++o) {
-@@ -712,7 +712,7 @@ static int mlx4_alloc_db_from_pgdir(struct mlx4_db_pgdir *pgdir,
- 	return 0;
- }
- 
--int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, int order)
-+int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, unsigned int order)
- {
- 	struct mlx4_priv *priv = mlx4_priv(dev);
- 	struct mlx4_db_pgdir *pgdir;
-diff --git a/include/linux/mlx4/device.h b/include/linux/mlx4/device.h
-index 27f42f713c891..86f0f2a25a3d6 100644
---- a/include/linux/mlx4/device.h
-+++ b/include/linux/mlx4/device.h
-@@ -1135,7 +1135,7 @@ int mlx4_write_mtt(struct mlx4_dev *dev, struct mlx4_mtt *mtt,
- int mlx4_buf_write_mtt(struct mlx4_dev *dev, struct mlx4_mtt *mtt,
- 		       struct mlx4_buf *buf);
- 
--int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, int order);
-+int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, unsigned int order);
- void mlx4_db_free(struct mlx4_dev *dev, struct mlx4_db *db);
- 
- int mlx4_alloc_hwq_res(struct mlx4_dev *dev, struct mlx4_hwq_resources *wqres,
+-	ndev = pnet_find_base_ndev(ndev);
++	base_ndev = pnet_find_base_ndev(ndev);
+ 	net = dev_net(ndev);
+-	if (smc_pnetid_by_dev_port(ndev->dev.parent, ndev->dev_port,
++	if (smc_pnetid_by_dev_port(base_ndev->dev.parent, base_ndev->dev_port,
+ 				   ndev_pnetid) &&
++	    smc_pnet_find_ndev_pnetid_by_table(base_ndev, ndev_pnetid) &&
+ 	    smc_pnet_find_ndev_pnetid_by_table(ndev, ndev_pnetid)) {
+-		smc_pnet_find_rdma_dev(ndev, ini);
++		smc_pnet_find_rdma_dev(base_ndev, ini);
+ 		return; /* pnetid could not be determined */
+ 	}
+ 	_smc_pnet_find_roce_by_pnetid(ndev_pnetid, ini, NULL, net);
 -- 
 2.39.5
 
