@@ -1,192 +1,239 @@
-Return-Path: <linux-rdma+bounces-9968-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9969-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9476EAA8CCA
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 May 2025 09:05:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1543FAA8DB4
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 May 2025 09:58:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD5F03AE8D3
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 May 2025 07:05:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 661033A3DE6
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 May 2025 07:58:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87C6D1F5402;
-	Mon,  5 May 2025 07:02:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B4391DED4A;
+	Mon,  5 May 2025 07:58:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="udIyTs1j"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="whFYwnxF"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30D7B1F4C8A;
-	Mon,  5 May 2025 07:02:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC6E91B424A
+	for <linux-rdma@vger.kernel.org>; Mon,  5 May 2025 07:58:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746428558; cv=none; b=K9PqOFwzWxOalEnbu6uJK0xhYtjEw6nzYSgSQQwsg7Tgn83ksalhp0NqGFjT/OeVdIrAC27TRBf8KVlPag0qF4PHZVQEG1E7Wnbi76JrwoRaB4I6txG97C3LqVQKOtv81KUB7VBMF4/+9fcERTXMMdySMK6I7cSQPigqk+iPyCo=
+	t=1746431885; cv=none; b=rCnPIl4QLsC/hOG/FdHmAfZ6qErYePmtpUegZ8TmQ8BMm3bnL275+mej696VN5tq2FTTR9Lp8l6BlwVE/PwNAUn1RxKitVbq92Ac+BJVJ7hDBjPXWpQBUJiPYvIY1xmWkrYRkwSxjhv8ERWwvNWZfHk3Cg16umHTBRxr/w8V8P8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746428558; c=relaxed/simple;
-	bh=d1+z79zg+kihe5QDvuiZPuBTqwMqD9eJrziwPARATZw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HfvIs/uUAdqD/dz/m/Emmc/NnoUCypT3XeHf6PV3eyA2CULIqoA+PIWlooQO+jM0ZcqPZmlIGAM7qSIDdJ8VkOFvmPOt6hBnBNv6bqPLfHaONCB7BlDw7gDB5U7j1uWWhLzNRHhThUA2PJuJbcci/jgCuDaIQ+5+vVfVZiY2b7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=udIyTs1j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA5DBC4CEE4;
-	Mon,  5 May 2025 07:02:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746428557;
-	bh=d1+z79zg+kihe5QDvuiZPuBTqwMqD9eJrziwPARATZw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=udIyTs1jU0xkkPO2JwNPXSUyJHDJzOGOAJqZEBd18QourGwZw+baXEZ9gTe8BJ0EJ
-	 DKGtIef9GidDihg430dzb3TV4U9nSk0oH0fWDOqZMUUied876JK1wN1He2oUOPQ9+s
-	 4talNO552304u79Njy1LPb0QYEBAPSm4JRnjt0U38ZXHn3uQXTkQ6SLZmvo5VPfcSN
-	 4oQb+HpClX6Qepsm/ir1G8Cf48WpHUEF6GV/yNoKGVauQurcR8AKjzjpLESRp4OM8E
-	 eFEoy59bj9uf5LIDs5y+12okk38f0cZDP+qoR+lYvzBX1noadVlU3+zY/zH2A2FB5S
-	 5rtZiYk4O/uXQ==
-From: Leon Romanovsky <leon@kernel.org>
-To: 
-Cc: Christoph Hellwig <hch@lst.de>,
-	Jens Axboe <axboe@kernel.dk>,
-	Keith Busch <kbusch@kernel.org>,
-	Jake Edge <jake@lwn.net>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Zhu Yanjun <zyjzyj2000@gmail.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>,
-	Sagi Grimberg <sagi@grimberg.me>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Logan Gunthorpe <logang@deltatee.com>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev,
-	linux-nvme@lists.infradead.org,
-	linux-pci@vger.kernel.org,
-	kvm@vger.kernel.org,
-	linux-mm@kvack.org,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Kanchan Joshi <joshi.k@samsung.com>,
-	Chaitanya Kulkarni <kch@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>
-Subject: [PATCH v11 9/9] docs: core-api: document the IOVA-based API
-Date: Mon,  5 May 2025 10:01:46 +0300
-Message-ID: <a3a7009a0b75b4087e9edc903f6dc3ed3ff5a0a1.1746424934.git.leon@kernel.org>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <cover.1746424934.git.leon@kernel.org>
-References: <cover.1746424934.git.leon@kernel.org>
+	s=arc-20240116; t=1746431885; c=relaxed/simple;
+	bh=BC6yh8feRGe0HTksMyAzP0kruepYkQ9pZ5Zi+hcEdjg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=BC3e+ciaDqLSy1BQR1J2lJBv3hXjDePRxJp3k5HQ8T01/A9F/9qYsFym1lGICQsIO4lQZ7wdOii/MIzA+BkLYKLuhvgA6CIEnVfl+ohVhhfu3URWqONoUTLPlSh7hvJ/mjpj//QKU+MFUyrbKGkKGgPXYMLyX0ZvUCF3CYhicwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=whFYwnxF; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2e3676d3-ce82-4a87-be33-9ce6d7007c3b@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1746431878;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zRjj2CDxRbfCsULDTH03+1VRA4nDtCwu722TDI87JmA=;
+	b=whFYwnxFDF2dTnR+DMchcijZ0Qcz/KACdj8p75esEhxcumw0Wkk5Ca8UZKtM1gc5eoWzPp
+	7SpEZ3TT1eEPMOt7vZlxCNFmI0cf6+Bp7/pNi4rt6XsQUD8o5R/3NtajzPV36aGs9aKJ1s
+	eNoreJe2q+l6wK6CjOCn7VjkiGdw8nU=
+Date: Mon, 5 May 2025 09:57:56 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH for-next v2 1/2] RDMA/rxe: Implement synchronous prefetch
+ for ODP MRs
+To: Daisuke Matsuda <dskmtsd@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, leon@kernel.org, jgg@ziepe.ca,
+ zyjzyj2000@gmail.com
+References: <20250503134224.4867-1-dskmtsd@gmail.com>
+ <20250503134224.4867-2-dskmtsd@gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20250503134224.4867-2-dskmtsd@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-From: Christoph Hellwig <hch@lst.de>
+On 03.05.25 15:42, Daisuke Matsuda wrote:
+> Minimal implementation of ibv_advise_mr(3) requires synchronous calls being
+> successful with the IBV_ADVISE_MR_FLAG_FLUSH flag. Asynchronous requests,
+> which are best-effort, will be added subsequently.
+> 
+> Signed-off-by: Daisuke Matsuda <dskmtsd@gmail.com>
+> ---
+>   drivers/infiniband/sw/rxe/rxe.c     |  7 +++
+>   drivers/infiniband/sw/rxe/rxe_loc.h | 10 ++++
+>   drivers/infiniband/sw/rxe/rxe_odp.c | 86 +++++++++++++++++++++++++++++
+>   3 files changed, 103 insertions(+)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+> index 3a77d6db1720..e891199cbdef 100644
+> --- a/drivers/infiniband/sw/rxe/rxe.c
+> +++ b/drivers/infiniband/sw/rxe/rxe.c
+> @@ -34,6 +34,10 @@ void rxe_dealloc(struct ib_device *ib_dev)
+>   	mutex_destroy(&rxe->usdev_lock);
+>   }
+>   
+> +static const struct ib_device_ops rxe_ib_dev_odp_ops = {
+> +	.advise_mr = rxe_ib_advise_mr,
+> +};
+> +
+>   /* initialize rxe device parameters */
+>   static void rxe_init_device_param(struct rxe_dev *rxe, struct net_device *ndev)
+>   {
+> @@ -103,6 +107,9 @@ static void rxe_init_device_param(struct rxe_dev *rxe, struct net_device *ndev)
+>   		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_SRQ_RECV;
+>   		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_FLUSH;
+>   		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_ATOMIC_WRITE;
+> +
+> +		/* set handler for ODP prefetching API - ibv_advise_mr(3) */
+> +		ib_set_device_ops(&rxe->ib_dev, &rxe_ib_dev_odp_ops);
+>   	}
+>   }
+>   
+> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+> index f7dbb9cddd12..21b070f3dbb8 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+> @@ -197,6 +197,9 @@ enum resp_states rxe_odp_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
+>   int rxe_odp_flush_pmem_iova(struct rxe_mr *mr, u64 iova,
+>   			    unsigned int length);
+>   enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value);
+> +int rxe_ib_advise_mr(struct ib_pd *pd, enum ib_uverbs_advise_mr_advice advice,
+> +		     u32 flags, struct ib_sge *sg_list, u32 num_sge,
+> +		     struct uverbs_attr_bundle *attrs);
+>   #else /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
+>   static inline int
+>   rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
+> @@ -225,6 +228,13 @@ static inline enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr,
+>   {
+>   	return RESPST_ERR_UNSUPPORTED_OPCODE;
+>   }
+> +static inline int rxe_ib_advise_mr(struct ib_pd *pd, enum ib_uverbs_advise_mr_advice advice,
+> +				   u32 flags, struct ib_sge *sg_list, u32 num_sge,
+> +				   struct uverbs_attr_bundle *attrs)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+>   #endif /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
+>   
+>   #endif /* RXE_LOC_H */
+> diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
+> index 6149d9ffe7f7..e5c60b061d7e 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_odp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
+> @@ -424,3 +424,89 @@ enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
+>   
+>   	return RESPST_NONE;
+>   }
+> +
+> +static int rxe_ib_prefetch_sg_list(struct ib_pd *ibpd,
+> +				   enum ib_uverbs_advise_mr_advice advice,
+> +				   u32 pf_flags, struct ib_sge *sg_list,
+> +				   u32 num_sge)
+> +{
+> +	struct rxe_pd *pd = container_of(ibpd, struct rxe_pd, ibpd);
+> +	unsigned int i;
+> +	int ret = 0;
+> +
+> +	for (i = 0; i < num_sge; ++i) {
 
-Add an explanation of the newly added IOVA-based mapping API.
+i is unsigned int, num_sge is u32. Perhaps they all use u32 type?
+It is a minor problem.
+Other than that, I am fine with this commit.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Tested-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- Documentation/core-api/dma-api.rst | 71 ++++++++++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
+I have made tests with rdma-core. Both the synchronous and asynchrounos 
+modes can work well.
 
-diff --git a/Documentation/core-api/dma-api.rst b/Documentation/core-api/dma-api.rst
-index 8e3cce3d0a23..2ad08517e626 100644
---- a/Documentation/core-api/dma-api.rst
-+++ b/Documentation/core-api/dma-api.rst
-@@ -530,6 +530,77 @@ routines, e.g.:::
- 		....
- 	}
- 
-+Part Ie - IOVA-based DMA mappings
-+---------------------------------
-+
-+These APIs allow a very efficient mapping when using an IOMMU.  They are an
-+optional path that requires extra code and are only recommended for drivers
-+where DMA mapping performance, or the space usage for storing the DMA addresses
-+matter.  All the considerations from the previous section apply here as well.
-+
-+::
-+
-+    bool dma_iova_try_alloc(struct device *dev, struct dma_iova_state *state,
-+		phys_addr_t phys, size_t size);
-+
-+Is used to try to allocate IOVA space for mapping operation.  If it returns
-+false this API can't be used for the given device and the normal streaming
-+DMA mapping API should be used.  The ``struct dma_iova_state`` is allocated
-+by the driver and must be kept around until unmap time.
-+
-+::
-+
-+    static inline bool dma_use_iova(struct dma_iova_state *state)
-+
-+Can be used by the driver to check if the IOVA-based API is used after a
-+call to dma_iova_try_alloc.  This can be useful in the unmap path.
-+
-+::
-+
-+    int dma_iova_link(struct device *dev, struct dma_iova_state *state,
-+		phys_addr_t phys, size_t offset, size_t size,
-+		enum dma_data_direction dir, unsigned long attrs);
-+
-+Is used to link ranges to the IOVA previously allocated.  The start of all
-+but the first call to dma_iova_link for a given state must be aligned
-+to the DMA merge boundary returned by ``dma_get_merge_boundary())``, and
-+the size of all but the last range must be aligned to the DMA merge boundary
-+as well.
-+
-+::
-+
-+    int dma_iova_sync(struct device *dev, struct dma_iova_state *state,
-+		size_t offset, size_t size);
-+
-+Must be called to sync the IOMMU page tables for IOVA-range mapped by one or
-+more calls to ``dma_iova_link()``.
-+
-+For drivers that use a one-shot mapping, all ranges can be unmapped and the
-+IOVA freed by calling:
-+
-+::
-+
-+   void dma_iova_destroy(struct device *dev, struct dma_iova_state *state,
-+		size_t mapped_len, enum dma_data_direction dir,
-+                unsigned long attrs);
-+
-+Alternatively drivers can dynamically manage the IOVA space by unmapping
-+and mapping individual regions.  In that case
-+
-+::
-+
-+    void dma_iova_unlink(struct device *dev, struct dma_iova_state *state,
-+		size_t offset, size_t size, enum dma_data_direction dir,
-+		unsigned long attrs);
-+
-+is used to unmap a range previously mapped, and
-+
-+::
-+
-+   void dma_iova_free(struct device *dev, struct dma_iova_state *state);
-+
-+is used to free the IOVA space.  All regions must have been unmapped using
-+``dma_iova_unlink()`` before calling ``dma_iova_free()``.
- 
- Part II - Non-coherent DMA allocations
- --------------------------------------
--- 
-2.49.0
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+
+Zhu Yanjun
+
+> +		struct rxe_mr *mr;
+> +		struct ib_umem_odp *umem_odp;
+> +
+> +		mr = lookup_mr(pd, IB_ACCESS_LOCAL_WRITE,
+> +			       sg_list[i].lkey, RXE_LOOKUP_LOCAL);
+> +
+> +		if (IS_ERR(mr)) {
+> +			rxe_dbg_pd(pd, "mr with lkey %x not found\n", sg_list[i].lkey);
+> +			return PTR_ERR(mr);
+> +		}
+> +
+> +		if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_WRITE &&
+> +		    !mr->umem->writable) {
+> +			rxe_dbg_mr(mr, "missing write permission\n");
+> +			rxe_put(mr);
+> +			return -EPERM;
+> +		}
+> +
+> +		ret = rxe_odp_do_pagefault_and_lock(mr, sg_list[i].addr,
+> +						    sg_list[i].length, pf_flags);
+> +		if (ret < 0) {
+> +			if (sg_list[i].length == 0)
+> +				continue;
+> +
+> +			rxe_dbg_mr(mr, "failed to prefetch the mr\n");
+> +			rxe_put(mr);
+> +			return ret;
+> +		}
+> +
+> +		umem_odp = to_ib_umem_odp(mr->umem);
+> +		mutex_unlock(&umem_odp->umem_mutex);
+> +
+> +		rxe_put(mr);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int rxe_ib_advise_mr_prefetch(struct ib_pd *ibpd,
+> +				     enum ib_uverbs_advise_mr_advice advice,
+> +				     u32 flags, struct ib_sge *sg_list, u32 num_sge)
+> +{
+> +	u32 pf_flags = RXE_PAGEFAULT_DEFAULT;
+> +
+> +	if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH)
+> +		pf_flags |= RXE_PAGEFAULT_RDONLY;
+> +
+> +	if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_NO_FAULT)
+> +		pf_flags |= RXE_PAGEFAULT_SNAPSHOT;
+> +
+> +	/* Synchronous call */
+> +	if (flags & IB_UVERBS_ADVISE_MR_FLAG_FLUSH)
+> +		return rxe_ib_prefetch_sg_list(ibpd, advice, pf_flags, sg_list,
+> +					       num_sge);
+> +
+> +	/* Asynchronous call is "best-effort" */
+> +
+> +	return 0;
+> +}
+> +
+> +int rxe_ib_advise_mr(struct ib_pd *ibpd,
+> +		     enum ib_uverbs_advise_mr_advice advice,
+> +		     u32 flags,
+> +		     struct ib_sge *sg_list,
+> +		     u32 num_sge,
+> +		     struct uverbs_attr_bundle *attrs)
+> +{
+> +	if (advice != IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH &&
+> +	    advice != IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_WRITE &&
+> +	    advice != IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_NO_FAULT)
+> +		return -EOPNOTSUPP;
+> +
+> +	return rxe_ib_advise_mr_prefetch(ibpd, advice, flags,
+> +					 sg_list, num_sge);
+> +}
 
 
