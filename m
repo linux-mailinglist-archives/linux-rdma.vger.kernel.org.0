@@ -1,52 +1,53 @@
-Return-Path: <linux-rdma+bounces-9998-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-9999-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BC7FAAA659
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 02:11:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0AC0AAA65C
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 02:11:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 283204A0720
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 00:10:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1743E1693EF
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 00:11:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 250F0326078;
-	Mon,  5 May 2025 22:34:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05CDC32559F;
+	Mon,  5 May 2025 22:34:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bD41xayW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PZ9dyBqY"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC35032606D;
-	Mon,  5 May 2025 22:34:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E0632606C;
+	Mon,  5 May 2025 22:34:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746484472; cv=none; b=K+mwMen9Ypjxliy2GjIHrdBdJNZPjS5JUHiDKrfvYU+gGIOoBQm8fMUiav8kREOqrdIF0Pb41DSSqzzDn232Yb9rGSHAJIPzPjVvR5DLxiBJpnGz8Q51JwQn7KawUdkztifSiLfOQP0FSuEpU6dbbThpf6HqHSDPjS2RkMGeKuA=
+	t=1746484474; cv=none; b=RUgpL2xdVaqInDYK8Oifn8i5KGhpsEAzwxBYseEtFDIL+HKCcZ5OvIx2ZXYVQ5airMCANY5/+3htXbj4f49kLHGS2hfyfqGVsRvnWwumltV3Wn6HURzcrzDTzGgyiWcJruI339VjoETC3+Uyiy8LrCnpE2uE2LlUOGOqOijuu8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746484472; c=relaxed/simple;
-	bh=EmCvoM54o0Hc3u6jIcjuGXPnlYegD/VTwsBsxC1EqLw=;
+	s=arc-20240116; t=1746484474; c=relaxed/simple;
+	bh=yj8N7ydUkJeETkXiFJ2rni803peU78BSSgQScQ0qg6U=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Qna2gAxlegIbYICdTLFMDsFi0mb+TLC7HWhNEt8+UKHy83I7xhI4XA15rep1TZgf10Y1wWwHxTUMzqnaYu4gA5Pn85TA53MHVob1xq3aUJg86Tz/JSFe9p4AhAOwMAB6FPWeAHil5wvPDqVrIm+SDkR3v8Cd0qcyXRcdo17PCbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bD41xayW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F445C4CEF2;
-	Mon,  5 May 2025 22:34:30 +0000 (UTC)
+	 MIME-Version; b=lPSDCoOjym0IZlmSWKL8wZNOBrEhWr2DauxCMMObmR6R/y34EjwRLncEs+BZRAiH/VcbZlprNrYxuFgj/yau/aHWcqXwxoANLP39KCe5tYtEF6KdLo/oPXGkRMK9ANjGURWAFcfesSjwcckEiyUY36eUpyhlWuudw3ozU7rs56E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PZ9dyBqY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1E57C4CEED;
+	Mon,  5 May 2025 22:34:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746484472;
-	bh=EmCvoM54o0Hc3u6jIcjuGXPnlYegD/VTwsBsxC1EqLw=;
+	s=k20201202; t=1746484474;
+	bh=yj8N7ydUkJeETkXiFJ2rni803peU78BSSgQScQ0qg6U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bD41xayWImiLPBxzTR0jNjTQAm+I/GGOo0ke3yC+j6jrBd+cCr9PzDHJo+vzVFy2x
-	 EgwEGy2soBhOIcuaU83L47YYRDUAhITW00wnScKEAieeGW8W+EDUZIGn5kgCkz6MmF
-	 YBzsO+Q+6jZU2G66Pr9cMofiAtOrPVEn4O2F9SRJoU/FCslegu7MjeYaEIe5AdoyXI
-	 +kwxmactbT+fJGHsCF5jUYhCJ81bCNXKi+3N65Sizup+pGSIgpwpS5lXGD1ReDAxSF
-	 Mi7zk+1CYEPR+dcPt0mDIijtQZWGqLdAZhP0Wy6UeH5hN7ir391MRoZ1vECIpreToT
-	 tc2MiNgvphmrQ==
+	b=PZ9dyBqYDfivq6FkirWqzC1FhjXaK/XYYWgJcO78YBd6CW4eWVV6FdbdYQ/8kePQh
+	 BaxjO1V2z2Vvism/5EeaT7B3kt0WVWIA+Vdu7BL0BHBbZwTkEik70qbm0+6NlVqAB8
+	 UCc1cqtZWrUNdhK7nmHGA3B2YLbE46W2HlqCzpIESjeA8qlvkC8V5j8ygMKz7WTTXr
+	 bbQfRjjKPzlUXvFxo1MjxP7incWC1WzOi+8g7sLpF5iKV4ELq1JDDDj/yW2uF8GZz2
+	 hZ1LxJmJJIUWfbrOhQ2+p0xJgKSMRNRIp5ibsMGosFoMhr9OynwWIdtzbNhibGrWLN
+	 eqROVNpbGFWfg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alexei Lazar <alazar@nvidia.com>,
-	Dragos Tatulea <dtatulea@nvidia.com>,
+Cc: William Tu <witu@nvidia.com>,
+	Daniel Jurgens <danielj@nvidia.com>,
 	Tariq Toukan <tariqt@nvidia.com>,
+	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	saeedm@nvidia.com,
@@ -56,9 +57,9 @@ Cc: Alexei Lazar <alazar@nvidia.com>,
 	pabeni@redhat.com,
 	netdev@vger.kernel.org,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.14 487/642] net/mlx5: Extend Ethtool loopback selftest to support non-linear SKB
-Date: Mon,  5 May 2025 18:11:43 -0400
-Message-Id: <20250505221419.2672473-487-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.14 488/642] net/mlx5e: set the tx_queue_len for pfifo_fast
+Date: Mon,  5 May 2025 18:11:44 -0400
+Message-Id: <20250505221419.2672473-488-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250505221419.2672473-1-sashal@kernel.org>
 References: <20250505221419.2672473-1-sashal@kernel.org>
@@ -73,39 +74,42 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.14.5
 Content-Transfer-Encoding: 8bit
 
-From: Alexei Lazar <alazar@nvidia.com>
+From: William Tu <witu@nvidia.com>
 
-[ Upstream commit 95b9606b15bb3ce1198d28d2393dd0e1f0a5f3e9 ]
+[ Upstream commit a38cc5706fb9f7dc4ee3a443f61de13ce1e410ed ]
 
-Current loopback test validation ignores non-linear SKB case in
-the SKB access, which can lead to failures in scenarios such as
-when HW GRO is enabled.
-Linearize the SKB so both cases will be handled.
+By default, the mq netdev creates a pfifo_fast qdisc. On a
+system with 16 core, the pfifo_fast with 3 bands consumes
+16 * 3 * 8 (size of pointer) * 1024 (default tx queue len)
+= 393KB. The patch sets the tx qlen to representor default
+value, 128 (1<<MLX5E_REP_PARAMS_DEF_LOG_SQ_SIZE), which
+consumes 16 * 3 * 8 * 128 = 49KB, saving 344KB for each
+representor at ECPF.
 
-Signed-off-by: Alexei Lazar <alazar@nvidia.com>
-Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+Signed-off-by: William Tu <witu@nvidia.com>
+Reviewed-by: Daniel Jurgens <danielj@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Link: https://patch.msgid.link/20250209101716.112774-15-tariqt@nvidia.com
+Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+Link: https://patch.msgid.link/20250209101716.112774-9-tariqt@nvidia.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_selftest.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/en_rep.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_selftest.c b/drivers/net/ethernet/mellanox/mlx5/core/en_selftest.c
-index 1d60465cc2ca4..2f7a543feca62 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_selftest.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_selftest.c
-@@ -166,6 +166,9 @@ mlx5e_test_loopback_validate(struct sk_buff *skb,
- 	struct udphdr *udph;
- 	struct iphdr *iph;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+index fdff9fd8a89ec..6667ec26e079b 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.c
+@@ -886,6 +886,8 @@ static void mlx5e_build_rep_netdev(struct net_device *netdev,
+ 	netdev->ethtool_ops = &mlx5e_rep_ethtool_ops;
  
-+	if (skb_linearize(skb))
-+		goto out;
-+
- 	/* We are only going to peek, no need to clone the SKB */
- 	if (MLX5E_TEST_PKT_SIZE - ETH_HLEN > skb_headlen(skb))
- 		goto out;
+ 	netdev->watchdog_timeo    = 15 * HZ;
++	if (mlx5_core_is_ecpf(mdev))
++		netdev->tx_queue_len = 1 << MLX5E_REP_PARAMS_DEF_LOG_SQ_SIZE;
+ 
+ #if IS_ENABLED(CONFIG_MLX5_CLS_ACT)
+ 	netdev->hw_features    |= NETIF_F_HW_TC;
 -- 
 2.39.5
 
