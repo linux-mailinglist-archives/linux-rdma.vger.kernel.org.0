@@ -1,254 +1,136 @@
-Return-Path: <linux-rdma+bounces-10108-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10109-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B939AACE8D
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 22:02:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7814AAD06A
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 23:57:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B00D61BC22DF
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 20:03:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 556543BDFB5
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 21:54:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5454A154C15;
-	Tue,  6 May 2025 20:02:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 805A872615;
+	Tue,  6 May 2025 21:55:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="TyF75l/5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R0vGGvLa"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2060.outbound.protection.outlook.com [40.107.92.60])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FBA73D3B8;
-	Tue,  6 May 2025 20:02:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.60
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746561774; cv=fail; b=ZCIYptCprAhheZ6Mz5xasPcN25fsBpdftqjdNHLdYMghbEvvrCCf0mjRPi2+HrHx1RUqbc6F95xSHNhbY+PGB4yrsftsq9O2YYZHJOLrhCLipjtkKY5HYlc+4fOMic25HJ9JM0SyWAPLuHiSv+xPbNQ/EBxfYExfKbcBqzabNE8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746561774; c=relaxed/simple;
-	bh=MjLWPfSvUCMobGj0Tcuyas9RmbQpbqe1IiDBpgtJIUQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=FKNpS3Ryz9caG+fLcRV3phvISHt9sSnBqY7pMO7FAwL4NPJwKQ/Xy573EfXbmFNv0DlQhV3gtGIQRr1kWYLwsi2OXf/PmrANRBOyXbwoVPfRxyKo8tMpY+kgS/NPCS3PmYVb17nMwRVdhmcTJSRPgRnfNjnTA+73tCCrGtQKyHM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=TyF75l/5; arc=fail smtp.client-ip=40.107.92.60
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=q8dkoop895gUVXsU2IM7ekZy7xPFG/HyQsRmzzfqmGIemzVkLTPJ1lMGZ5paqc5oP5oKX3sy+STHxfcSoTgapxf8T/AqEPpY0cjscttVrKm3O/htSZzA8OOtKjCeSTIl61RlerWoSlqN+l8QJ5d3LzS/BrDqQ9daAlbiIOs+vZeGlArxeRvZ6AjnTgv+En8BYo+4ga5Obc9PFNscxJqtxl/6ojrYCh4Lb9r2QibW3rLQ2lIhkZyQrCKng3o+MExxfrUitaoOlehc7SEq9zAGcsGqTIVlVytwzUg1nnr1SRO2drDCmVUlEsYgW1VgbiFl+KHtkzBV6QM07H4c6POZNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bkng1EAz8eloMmcSFwqVmXe1aWl3q0aVEJtjoWu4Eeo=;
- b=MR4/kyOAZat9oZVFHhbuzTxyc3gwR87oGp2q/0XdK8I28OfsppMwwaGBv+FWi6KhgMTq62ukr1ljB6y8M1F2HCIrXJ9JLCuIjyFxO6i3T6h/BmP+BWa3XxLXRA6JHRpy95+Xll4r3+7nQWkugR10q18mAM/Yv97IAzIG33Dsve12AoW3kcXfrCuxFEbDlajzhU/XNA0eHfm2k6tOPxEbmuQVAXzexec0SmBV6Nt6V7t3yXCfLKrIrT3DH3yjVAuxqsVQWfyofl4bjCn/DdOEw8a9zbNpFYUiPq0NDtijG9zC5880fc4VKOlsz4rgNvj3r+0Mu/ZQyxbpL39n7pPgFA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=wunner.de smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bkng1EAz8eloMmcSFwqVmXe1aWl3q0aVEJtjoWu4Eeo=;
- b=TyF75l/5XSJoq8L7TM7dE62dGXYgW23EvurBUXJ3htMw03sAObyuleJLYiYAmyXdGbvsF2LfcwD/OGKm5RM9lDRScpYul9IUFA8afWeJNdCkj5ZEdkr/cISyjbyntRVxNdhecFHkr8Bp7J/YyHYcL11Y40P+aOiSmqA2LP6MyNLT1nQLthPuFuQISrI71CVaBnJ5wAe9F7SKKwRAeUYTrywFpueE6hdp/6sfVWv7OOi8YXkxGyGI2QfNRirBftPFbI+Xj87h9R74TqmyMrRKeHrtjTpKKHjUByK69eKer+DZt1s0EFCzXZ95eXtJElumOQpTQNEnjRSltcv+FuHa+g==
-Received: from SN7P220CA0002.NAMP220.PROD.OUTLOOK.COM (2603:10b6:806:123::7)
- by DS0PR12MB8294.namprd12.prod.outlook.com (2603:10b6:8:f4::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8699.24; Tue, 6 May
- 2025 20:02:45 +0000
-Received: from SA2PEPF00003AE4.namprd02.prod.outlook.com
- (2603:10b6:806:123:cafe::e7) by SN7P220CA0002.outlook.office365.com
- (2603:10b6:806:123::7) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8722.20 via Frontend Transport; Tue,
- 6 May 2025 20:02:44 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SA2PEPF00003AE4.mail.protection.outlook.com (10.167.248.4) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8722.18 via Frontend Transport; Tue, 6 May 2025 20:02:43 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 6 May 2025
- 13:02:31 -0700
-Received: from [172.27.33.235] (10.126.230.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Tue, 6 May
- 2025 13:02:20 -0700
-Message-ID: <6687db3a-33b2-4982-b65a-c6ecea130cc3@nvidia.com>
-Date: Tue, 6 May 2025 23:02:18 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E08BF4B1E5C;
+	Tue,  6 May 2025 21:55:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1746568512; cv=none; b=ZbXBM8BQeak81MlmoQjt+LLt49lnRcZZXlxEncylE0hjxl+gRyh5cw3ianr5FyYsVpPnCqTRStrs3WOoadoN3Ni7TO2vH2Ihd9V7aCTTMeX0sADud040mLe/46Nv4jfMCCI603FYn55G5aihCF/pK3HZkY2Wr6LCAKiWNe6SSSw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1746568512; c=relaxed/simple;
+	bh=9nhpMzXTeNMxVi4L6WegKDk49ifAtG2YL+CH5aMmbLA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VSNzOLsMViDctzw4m41NfzBesUDFlpNGbAOqJCqwfjWcyCKIG8TZWZJ8wbznPJ4lH6YzsdsHxOLmZFri1kNqJsTi8Fysrym/7ghjbk00fV2QOeXE59l0LJWKYwaHmfuHqbHn+DHjgrzxnJwQsAjXbasK+Onl0OwkBRY1A8s38FE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R0vGGvLa; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-736aaeed234so5490414b3a.0;
+        Tue, 06 May 2025 14:55:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746568510; x=1747173310; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DUulXuLoXvy+J7CYdN/iBa8zKhQkvTAtk/40HjSBy8g=;
+        b=R0vGGvLazDSaGHY1eTiCbSmx4ucfJTn5gWaC9+d6wfB0ErmIDutUk4CoE2+W9b/qCk
+         qPcq2tPMGCEbj+Zs/KHTuCIb4wPuR/xEuG0cI0VtNNxbXcgBzhFyf3HwHHZ5nyWwIx63
+         PjKxCE2uNwJskOgy+JhITPEO3qhOSg4rY6z2nT6isruWPqtBKqTqUXS0C9tRX0feVm6k
+         Khx92zqQbNaoGJXz9C0aC4liY/z4AzUyc2IGUOFAaFoIqprrk0YjQi+NKJhfGhuA9QB7
+         FfqpQmbaR2Pdpzt010/9ebvu4VFui+5I9cAu/uhSpBgFUQ6u2LWDNCBTXQV7i6kk4sw+
+         lKUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746568510; x=1747173310;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DUulXuLoXvy+J7CYdN/iBa8zKhQkvTAtk/40HjSBy8g=;
+        b=T7T73p97Oo98YwisN7SHEv5TehsyLOV42rhTt1JeDxZEZBwN4ACPDFef8DgTY8Ocxa
+         8UxcC2/aQSSxjPjMehfCgeKFf6JrrGmpykqxAojktXvSlbhpbAym/57wOy8CjDDn4RUR
+         38st/oQCayMYxmJqmshFrB45WmnLtrVgr6c0c4VDwq+uxj5FP4BuOSYYFNYgPZqhW56H
+         iEUjG7fWCtVK4x6xEFKj00OqSMkISz1epro7NpA64P54kv8F3KUKgVe41gBAUIblZHGJ
+         wDXUNeuDPRqcLyl+ch8A7Q8fCXlmLmbN1XcYYD07o4S+SMkwcApHNfFZbLuH5FtkxBk2
+         +pdg==
+X-Forwarded-Encrypted: i=1; AJvYcCUurtkxzqTPxrMgsztrt+i9/Tu9/djnpoBuZ4Hsm78O5kgL+6nooOBNgJ0zcQyr7kigePLcloNZIDNQpA==@vger.kernel.org, AJvYcCVJ/jXAUgRonzlEVWx4KuzW8V08uymuQDEARbqaUonl/lkD68rUryBtj5Bxx+ZvGXfRn9N0VFC0MGw0jvk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyUVKahRtu2TXZLniFi9So7Dyle7ysi5uQEZ91HCC5sO8CRrvtW
+	BH5lp0Oy3OsOl9VDV/O5So/QNQXAbTl5nprpxmWwEKBbzORN8L3YuhKZgO4=
+X-Gm-Gg: ASbGncvjfdUNvZqSOjMH/YRMhHnod0thGMPBj8dhPUWoxbWDb7UyCptNFFROqQh8CVR
+	cGdmS6JVn7ieGoraAx5xtrobcYDPykF0rXJZapGp8cb3SqILa+SiD8yD4/ReqjprNaRascXOpGL
+	/5fGpE+vB2ZWlDTTAb0AUu4rqto0vKwwM4lqS1t1DjMTW7LGMP8Tccym/4ZoU6lU7X6IS0/JLWl
+	UBPD2ZR+9yJqdsooTUeJ5qDx0GL1cwF2mJnCxNRPnjwa+tzNc7WDvkcjc1WBESsXJ2KSubFGdNu
+	Ytxhg2Xo88JaHiN9oveL4cBRUGzjyMAp5vSKRbhftbQgRNvQ/vDL5anA8Y3JwruEoQS50c24ZQw
+	PObnm2ufWCg==
+X-Google-Smtp-Source: AGHT+IFX2Ch7efSSLeEUlCZbZ/ZnYOKg1sJE0VDho937amSJc+t2A91D7vRhYykBcY3VbybZXfNQ+Q==
+X-Received: by 2002:a05:6a00:ad8f:b0:736:d297:164 with SMTP id d2e1a72fcca58-7409cee42eamr863756b3a.1.1746568509703;
+        Tue, 06 May 2025 14:55:09 -0700 (PDT)
+Received: from localhost (c-73-170-40-124.hsd1.ca.comcast.net. [73.170.40.124])
+        by smtp.gmail.com with UTF8SMTPSA id 41be03b00d2f7-b1fb3b62502sm8016838a12.32.2025.05.06.14.55.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 May 2025 14:55:09 -0700 (PDT)
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	saeedm@nvidia.com,
+	tariqt@nvidia.com,
+	andrew+netdev@lunn.ch,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	leon@kernel.org
+Subject: [PATCH net-next] net/mlx5: support software TX timestamp
+Date: Tue,  6 May 2025 14:55:08 -0700
+Message-ID: <20250506215508.3611977-1-stfomichev@gmail.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 09/16] net/mlx5: Handle sync reset now event
-To: Lukas Wunner <lukas@wunner.de>, Moshe Shemesh <moshe@mellanox.com>, "Saeed
- Mahameed" <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq
- Toukan <tariqt@nvidia.com>, <linux-rdma@vger.kernel.org>
-CC: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
-	Jiri Pirko <jiri@nvidia.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>
-References: <1602050457-21700-1-git-send-email-moshe@mellanox.com>
- <1602050457-21700-10-git-send-email-moshe@mellanox.com>
- <Z-g6pzpZu_TU0-nA@wunner.de>
-Content-Language: en-US
-From: Moshe Shemesh <moshe@nvidia.com>
-In-Reply-To: <Z-g6pzpZu_TU0-nA@wunner.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF00003AE4:EE_|DS0PR12MB8294:EE_
-X-MS-Office365-Filtering-Correlation-Id: 499ea63c-49ee-43ef-d17c-08dd8cd8f696
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|36860700013|82310400026|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?ODdxRDEreFZSTEZ4NVdTdWd2Rnp1d29aZVBlN3QrMEJ0SnVVM3BzNUpJb3ZI?=
- =?utf-8?B?WVdneldYM1BkWmJPLytncGE0YXcwMWZkdHZoMmxOQnJDcHA0UnBhZ0hOYnBF?=
- =?utf-8?B?TGliQUo5ZFZESlF5MlFTY2M1bzRGd1F2dTZLdVB6K09VOG9WOFVobytmVFJw?=
- =?utf-8?B?cGRrUzdIMEFlTkVSMk9KMjlxV1l4YmdXdXNHOHhiOG15ZFltZTBZUmZ3SjlU?=
- =?utf-8?B?dkkwMFNwSzlrWG5hNXNpTldqMDFwVjh1TzJrZkRWL2JIY2xwUWErSHlvblow?=
- =?utf-8?B?cy9jMGkwTWJta3QvekYxQzVJTFU3K09pRWZRcUdjR2ppZklCZFdQdklwN3Ix?=
- =?utf-8?B?dEFiT1FGLzUwZjlwckdudllrbVU0a2poVHVqQ3VoVkZ3d2tab3RnVDlEMjN4?=
- =?utf-8?B?Q3B3aEh1VFdIV0hqNXJ5dTh6a1VCVHArL3Q4TWptdUg2Z1pFZFFXcjBuTEk2?=
- =?utf-8?B?Qk5WSkxBaUV3cHkzb2FhTWF6Z2dqbkNWNWZsU2hWZ3JTQXkyWkhSc2JUWTFt?=
- =?utf-8?B?MDlMRkRuOU5uQUdtN2Y3c3JtRG5vRTc4ODJtVlhOMzN3U294eVdRdG9mNml2?=
- =?utf-8?B?cFpGNmo5MHJPeE9SZUJoM21yRkVES0U3K1FuOVRxbUJldEtZdjErZ0hRbGoy?=
- =?utf-8?B?QklYSXZnSUJxVHhhS1FtQ1phdDZEKzB5VWowZlFLYUlLbmExQ21kbDluM2NQ?=
- =?utf-8?B?bjNwSEpsbGJpN0pFbTJYTEtvK2xqdndNT0tkUm9SQk1HN215Y2M4UXdwblJF?=
- =?utf-8?B?TStxRGc2c3NNcVlPMnRCVld5T1JPblNqQUJoU0NmMUpMcDNsbmFKSERHQ2Vw?=
- =?utf-8?B?bHp5UWdic0pzNXRONndoSUJibTMrVFFURmNaVlV0LzBFZjRxeFlEWXl1K0ww?=
- =?utf-8?B?NnBsVDNmMDZQUnNJTVgzTjZpazlPTFB3aGJBc3RZM29WdmxwU0ZYOXVVWnNx?=
- =?utf-8?B?c1l0Ti96azZPQ1p2aHRIUUU2SEJTMmFFcGY1U3dkdXd4UTFlRFFjQXFGd1FI?=
- =?utf-8?B?NDFVdXJ5M0E5SXhmQzlzSFdWanhzb3hXWjNYelVKOS9SWlZYRE5FQWhxdWw2?=
- =?utf-8?B?aDNwQWI2UlJtSFdYWnVUUHcvMWdkdkNBTE9NMG5aZk1xdVJQVTFWNzl5TW9u?=
- =?utf-8?B?cjFRY3FtdVlZeWRxODFBc1BOYzBwVXN6N2JyKzQzQWJiaGlOTW01aEdmN2Zj?=
- =?utf-8?B?LzdtSUtlWnJjSUxXS3I3dnNPTEhtTDJ4cEZDY2Y4L1phZFZCa1IwT1BJOWVs?=
- =?utf-8?B?M3NFYTk5ZVlCVTJZdm5EcVk3STdXMDFqSzJCazRUYW9hRmw5djZOdVplNnNy?=
- =?utf-8?B?eC9Xb0dINWZPQTRjYjE5OVYwMkxlb2JzQXJqdXVwbmdGN1NzaGNabTJKYWJP?=
- =?utf-8?B?OUpMTnBiZXBvMVBHUE5kbFphcGUzNENvdTBlZVh2UVQxZkhlNXI2M3Jta0hQ?=
- =?utf-8?B?UVJJcWxWMWRZTEpPeTBDRVZJL3ZMN2doczIrSFVkR3RPQVpGcHNJRVhGMTd3?=
- =?utf-8?B?dDdiYXFEZDc2UGlxQ3RjZEVjTTlNV0tPZjFLSXdtdUtyVStPWXVOd0gvYkFX?=
- =?utf-8?B?Z1QxQldYUmpYaHhaMXd4eXEyeUNmNURyNmxaaHA4cXVGaU5IV1BUNzhtT2Rt?=
- =?utf-8?B?MXdJVFJiTWtqaGFRWTlpK3NrNGRtZEtieGFUbmt0cXp3MzV2Z3ZHOXlsUk1D?=
- =?utf-8?B?MHhoMmduNHlZbTQ3TlRab3hFUW84NGMyeVRYcXpKN1lwam0wdzZxTmYxaFc4?=
- =?utf-8?B?Z2E3eHYwLytBNk51ZGZkRXlqYjZxcDc4S0NDcjZzcW94WEZmZ2ZEeXBJWWtW?=
- =?utf-8?B?VW1LVEY3enN2Qldxcm5JQkN2T3BHQlp6MnhhSVR2bmEwOGhMV3NIaHFMQjFa?=
- =?utf-8?B?cEUvV0VIa0RnY2U5U3J1UFFRbFVFQXdpSnZ0NFBiamwvaXZRSEVsQVRPR0hv?=
- =?utf-8?B?RFAwK3FvYW5SS2dURmozVWZBM2tGWVR6c3BFbVljamdrUk90OFRRN1kxc3NK?=
- =?utf-8?B?bFBuYXUrT0xMYkVwN2hnZVhqOFNhU1Q2Sk1KWDFNZ1NWWHAvaGVlOTJNY1Rv?=
- =?utf-8?Q?xC2HSu?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(36860700013)(82310400026)(376014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2025 20:02:43.3040
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 499ea63c-49ee-43ef-d17c-08dd8cd8f696
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SA2PEPF00003AE4.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8294
+Content-Transfer-Encoding: 8bit
 
+Having a software timestamp (along with existing hardware one) is
+useful to trace how the packets flow through the stack.
+mlx5e_tx_skb_update_hwts_flags is called from tx paths
+to setup HW timestamp; extend it to add software one as well.
 
+Signed-off-by: Stanislav Fomichev <stfomichev@gmail.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c | 1 +
+ drivers/net/ethernet/mellanox/mlx5/core/en_tx.c      | 1 +
+ 2 files changed, 2 insertions(+)
 
-On 3/29/2025 9:23 PM, Lukas Wunner wrote:
-> 
-> The following was applied as commit eabe8e5e88f5 ("net/mlx5: Handle
-> sync reset now event").
-> 
-> It does some questionable things (from a PCI perspective), so allow
-> me to ask for details:
-> 
-> On Wed, Oct 07, 2020 at 09:00:50AM +0300, Moshe Shemesh wrote:
->> On sync_reset_now event the driver does reload and PCI link toggle to
->> activate firmware upgrade reset. When the firmware sends this event it
->> syncs the event on all PFs, so all PFs will do PCI link toggle at once.
->> To do PCI link toggle, the driver ensures that no other device ID under
->> the same bridge by checking that all the PF functions under the same PCI
->> bridge have same device ID. If no other device it uses PCI bridge link
->> control to turn link down and up.
-> [...]
->> --- a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
->> +++ b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
->> @@ -156,6 +157,120 @@ static void mlx5_sync_reset_request_event(struct work_struct *work)
->>                mlx5_core_warn(dev, "PCI Sync FW Update Reset Ack. Device reset is expected.\n");
->>   }
->>
->> +#define MLX5_PCI_LINK_UP_TIMEOUT 2000
->> +
->> +static int mlx5_pci_link_toggle(struct mlx5_core_dev *dev)
->> +{
->> +     struct pci_bus *bridge_bus = dev->pdev->bus;
->> +     struct pci_dev *bridge = bridge_bus->self;
->> +     u16 reg16, dev_id, sdev_id;
->> +     unsigned long timeout;
->> +     struct pci_dev *sdev;
->> +     int cap, err;
->> +     u32 reg32;
->> +
->> +     /* Check that all functions under the pci bridge are PFs of
->> +      * this device otherwise fail this function.
->> +      */
->> +     err = pci_read_config_word(dev->pdev, PCI_DEVICE_ID, &dev_id);
->> +     if (err)
->> +             return err;
->> +     list_for_each_entry(sdev, &bridge_bus->devices, bus_list) {
->> +             err = pci_read_config_word(sdev, PCI_DEVICE_ID, &sdev_id);
->> +             if (err)
->> +                     return err;
->> +             if (sdev_id != dev_id)
->> +                     return -EPERM;
->> +     }
->> +
->> +     cap = pci_find_capability(bridge, PCI_CAP_ID_EXP);
->> +     if (!cap)
->> +             return -EOPNOTSUPP;
->> +
->> +     list_for_each_entry(sdev, &bridge_bus->devices, bus_list) {
->> +             pci_save_state(sdev);
->> +             pci_cfg_access_lock(sdev);
->> +     }
->> +     /* PCI link toggle */
->> +     err = pci_read_config_word(bridge, cap + PCI_EXP_LNKCTL, &reg16);
->> +     if (err)
->> +             return err;
->> +     reg16 |= PCI_EXP_LNKCTL_LD;
->> +     err = pci_write_config_word(bridge, cap + PCI_EXP_LNKCTL, reg16);
->> +     if (err)
->> +             return err;
->> +     msleep(500);
->> +     reg16 &= ~PCI_EXP_LNKCTL_LD;
->> +     err = pci_write_config_word(bridge, cap + PCI_EXP_LNKCTL, reg16);
->> +     if (err)
->> +             return err;
-> 
-Sorry for late response.
-> The commit message doesn't state the reason why you're toggling
-> the Link Disable bit.
-> 
-> It propagates a Hot Reset down the hierarchy, so perhaps that's
-> the reason you're doing this?
-> 
-> If it is, why didn't you just use one of the existing library calls
-> such as pci_reset_bus(bridge)?
-
-We need PCI link down on all the device functions (can be 2 or even 4) 
-for full chip reset, to activate new FW. The hot reset by 
-pci_reset_bus() has the link down only for 2 ms, not enough for sync 
-reset on all functions with pci link down for new FW load and boot.
-> 
-> Thanks,
-> 
-> Lukas
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+index fdf9e9bb99ac..e399d7a3d6cb 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+@@ -1689,6 +1689,7 @@ int mlx5e_ethtool_get_ts_info(struct mlx5e_priv *priv,
+ 		return 0;
+ 
+ 	info->so_timestamping = SOF_TIMESTAMPING_TX_HARDWARE |
++				SOF_TIMESTAMPING_TX_SOFTWARE |
+ 				SOF_TIMESTAMPING_RX_HARDWARE |
+ 				SOF_TIMESTAMPING_RAW_HARDWARE;
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
+index 4fd853d19e31..f6dd26ad29e5 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
+@@ -341,6 +341,7 @@ static void mlx5e_tx_skb_update_hwts_flags(struct sk_buff *skb)
+ {
+ 	if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_HW_TSTAMP))
+ 		skb_shinfo(skb)->tx_flags |= SKBTX_IN_PROGRESS;
++	skb_tx_timestamp(skb);
+ }
+ 
+ static void mlx5e_tx_check_stop(struct mlx5e_txqsq *sq)
+-- 
+2.49.0
 
 
