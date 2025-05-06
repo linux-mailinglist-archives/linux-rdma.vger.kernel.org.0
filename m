@@ -1,43 +1,43 @@
-Return-Path: <linux-rdma+bounces-10103-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10104-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D537AACD7A
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 20:52:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3182EAACD7C
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 20:52:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3D2E1BA6BE2
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 18:52:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51ABE3BEF74
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 18:52:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2C9928689B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0D132868AA;
 	Tue,  6 May 2025 18:52:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Ozhomk+e"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="MPJK5BMt"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 269B4286404;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A8B286422;
 	Tue,  6 May 2025 18:52:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746557543; cv=none; b=PqWXPFqEhjc74eU3bmA7HDA8OlmFOZxgxya9TsmYxtEOw/1lkYYBq1CEv77zEnfR/YenmnrOsokMdLDk3IGBjA3DiyqgHqAgEkXePR+45lbbUslXI+bBrwhXCOIlD6ik2mAaedZYCREth39WHFbigJsSpSIwvNLdhbCpQGIP4r8=
+	t=1746557543; cv=none; b=DF/GObmCFew7v9yTdaiy64QTgQ/gtblxytaicz8Knlz7GnsLDntPosAdafbVEc7G/mAicZCRku56sJkrPAt8I9oWLCA6xjRYYlpaI2VdaRil+RW4tG0IYtqmaFuTCL9W+5Pl3hb+6o5KHXl2DLfqyA2hZswLzVOnH5oUmjKujkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1746557543; c=relaxed/simple;
-	bh=KUJduQ2vsQa+Ov9/yQbSLfr8nj0gtSfAeQ/mF+RRIoM=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=An+5BJRkOnB+/yCSjL9kJYyn+T29JlgUwN9blV7zp/+AxEhTWNTC3gQzXo4SAtPbcwKbgywSHmx+TOHZ7tiMkfjqgOxbGBwV+lm5R8l2Ro1kk5u84fTG7+D2KuQtlXK11KuwyAnXQKxbZpq/C8ARrrKZ4b82rgM4umzhRGxJ2ek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Ozhomk+e; arc=none smtp.client-ip=13.77.154.182
+	bh=eWOm3tIdj0/52qr5XJF93UlruH3ToGnAu4hQP5+FsAs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=qals1uEdqOiBUQjVmMH6AhaRvSxWsiI23CdRxlOdz079hyvXYfi91+7pI+YqrJZdhfAEk3v62xufWgVWnYObAssNiygqZAd+Cz2mFmBIUnN7PTUxLEYfKr3pI8Dj5ljV45MkhIPtBN/mDE6qF7/TAPoQitohbhuyBIPJssPxSlU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=MPJK5BMt; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: by linux.microsoft.com (Postfix, from userid 1186)
-	id A86BF2115DD2; Tue,  6 May 2025 11:52:21 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A86BF2115DD2
+	id B62BB2115DD4; Tue,  6 May 2025 11:52:21 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B62BB2115DD4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
 	s=default; t=1746557541;
-	bh=FINroussaWJ1aXWM/XZWn0Q04kq+1Sr8fSUhtF3rb+Y=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Ozhomk+eYTCo8EI3gutYKclkIKb9ydNsuBAjAGTzuzqXUQ9h8GlLR/bX26uMDBos8
-	 DZlUUf97wYZIc2tqri1HHy0Yg45tdr9CnVVNc4cIadLnj1xuR/jM4JmqYE1E0zSHq4
-	 rIacrj0jHQ2Q4yuuxjeDkn37JzJj1dBEJt+D0/d4=
+	bh=aCEe+5U2tYKwmEkS8vQ+CK+zdrUx5Hi7XJADJXyNCTU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=MPJK5BMt02i8GuAhG+9LhtNqHA2V7oOU6ECJZaDokG7aLCzeD1WNdrNoRshVjm3kM
+	 l7+cRhqpCqAwQD8xUyaGO7c3EGW4D3KgXN0SIOw0r4dYrKFFWYPYFNg+LAoWQw8Sc5
+	 OxKlP/yl3FwqZWDGvjXjch4LLeCOC49Tha9x3yAk=
 From: Konstantin Taranov <kotaranov@linux.microsoft.com>
 To: kotaranov@microsoft.com,
 	pabeni@redhat.com,
@@ -54,56 +54,186 @@ To: kotaranov@microsoft.com,
 Cc: linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH rdma-next v3 0/4] RDMA/mana_ib: allow separate mana_ib for each mana client
-Date: Tue,  6 May 2025 11:52:17 -0700
-Message-Id: <1746557541-3617-1-git-send-email-kotaranov@linux.microsoft.com>
+Subject: [PATCH rdma-next v3 1/4] net: mana: Probe rdma device in mana driver
+Date: Tue,  6 May 2025 11:52:18 -0700
+Message-Id: <1746557541-3617-2-git-send-email-kotaranov@linux.microsoft.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1746557541-3617-1-git-send-email-kotaranov@linux.microsoft.com>
+References: <1746557541-3617-1-git-send-email-kotaranov@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
-Microsoft mana adapter has 2 devices in the HW: mana ethernet device and RNIC device.
-Both devices can implement RDMA drivers and, so far, they have been sharing
-one ib device context. However, they are different devices with different
-capabilities in the HW and have different lifetime model.
+From: Konstantin Taranov <kotaranov@microsoft.com>
 
-This series allows us to model the aforementioned two devices as separate ib devices.
-The mana_ib will continue supporting two devices but as individual ib devices.
-It enables the driver to dynamically destroy and create the auxiliary device over
-RNIC, when the HW reboots the RNIC module. Without this separation, the reboot
-would cause destruction of the ib device serving DPDK clients from the uninterrupted
-ethernet HW module.
+Initialize gdma device for rdma inside mana module.
+For each gdma device, initialize an auxiliary ib device.
 
-v2:
-- renamed aux device from mana.dpdk to mana.eth (patch 1 and 2)
-- Fixed a possible race between servicing and pci threads (patch 4)
+Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+---
+ drivers/net/ethernet/microsoft/mana/gdma_main.c | 16 ++++++++--
+ drivers/net/ethernet/microsoft/mana/mana_en.c   | 39 +++++++++++++++++++++++--
+ include/net/mana/mana.h                         |  3 ++
+ 3 files changed, 53 insertions(+), 5 deletions(-)
 
-v3:
-- Added vendorid and partid in mana_ib_query_device (patch 2)
-
-Konstantin Taranov (3):
-  net: mana: Probe rdma device in mana driver
-  RDMA/mana_ib: Add support of mana_ib for RNIC and ETH nic
-  RDMA/mana_ib: unify mana_ib functions to support any gdma device
-
-Shiraz Saleem (1):
-  net: mana: Add support for auxiliary device servicing events
-
- drivers/infiniband/hw/mana/cq.c                  |   4 +-
- drivers/infiniband/hw/mana/device.c              | 174 +++++++++++------------
- drivers/infiniband/hw/mana/main.c                |  82 ++++++++---
- drivers/infiniband/hw/mana/mana_ib.h             |   6 +
- drivers/infiniband/hw/mana/qp.c                  |   5 +-
- drivers/net/ethernet/microsoft/mana/gdma_main.c  |  27 +++-
- drivers/net/ethernet/microsoft/mana/hw_channel.c |  19 +++
- drivers/net/ethernet/microsoft/mana/mana_en.c    | 108 +++++++++++++-
- include/net/mana/gdma.h                          |  19 +++
- include/net/mana/hw_channel.h                    |   9 ++
- include/net/mana/mana.h                          |   3 +
- 11 files changed, 333 insertions(+), 123 deletions(-)
-
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index b5156d4..1caf73c 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -978,7 +978,6 @@ int mana_gd_register_device(struct gdma_dev *gd)
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL_NS(mana_gd_register_device, "NET_MANA");
+ 
+ int mana_gd_deregister_device(struct gdma_dev *gd)
+ {
+@@ -1009,7 +1008,6 @@ int mana_gd_deregister_device(struct gdma_dev *gd)
+ 
+ 	return err;
+ }
+-EXPORT_SYMBOL_NS(mana_gd_deregister_device, "NET_MANA");
+ 
+ u32 mana_gd_wq_avail_space(struct gdma_queue *wq)
+ {
+@@ -1541,8 +1539,15 @@ static int mana_gd_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	if (err)
+ 		goto cleanup_gd;
+ 
++
++	err = mana_rdma_probe(&gc->mana_ib);
++	if (err)
++		goto cleanup_mana;
++
+ 	return 0;
+ 
++cleanup_mana:
++	mana_remove(&gc->mana, false);
+ cleanup_gd:
+ 	mana_gd_cleanup(pdev);
+ unmap_bar:
+@@ -1569,6 +1574,7 @@ static void mana_gd_remove(struct pci_dev *pdev)
+ {
+ 	struct gdma_context *gc = pci_get_drvdata(pdev);
+ 
++	mana_rdma_remove(&gc->mana_ib);
+ 	mana_remove(&gc->mana, false);
+ 
+ 	mana_gd_cleanup(pdev);
+@@ -1588,6 +1594,7 @@ static int mana_gd_suspend(struct pci_dev *pdev, pm_message_t state)
+ {
+ 	struct gdma_context *gc = pci_get_drvdata(pdev);
+ 
++	mana_rdma_remove(&gc->mana_ib);
+ 	mana_remove(&gc->mana, true);
+ 
+ 	mana_gd_cleanup(pdev);
+@@ -1612,6 +1619,10 @@ static int mana_gd_resume(struct pci_dev *pdev)
+ 	if (err)
+ 		return err;
+ 
++	err = mana_rdma_probe(&gc->mana_ib);
++	if (err)
++		return err;
++
+ 	return 0;
+ }
+ 
+@@ -1622,6 +1633,7 @@ static void mana_gd_shutdown(struct pci_dev *pdev)
+ 
+ 	dev_info(&pdev->dev, "Shutdown was called\n");
+ 
++	mana_rdma_remove(&gc->mana_ib);
+ 	mana_remove(&gc->mana, true);
+ 
+ 	mana_gd_cleanup(pdev);
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index 4e870b1..e08b43f 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -2936,7 +2936,7 @@ static void remove_adev(struct gdma_dev *gd)
+ 	gd->adev = NULL;
+ }
+ 
+-static int add_adev(struct gdma_dev *gd)
++static int add_adev(struct gdma_dev *gd, const char *name)
+ {
+ 	struct auxiliary_device *adev;
+ 	struct mana_adev *madev;
+@@ -2952,7 +2952,7 @@ static int add_adev(struct gdma_dev *gd)
+ 		goto idx_fail;
+ 	adev->id = ret;
+ 
+-	adev->name = "rdma";
++	adev->name = name;
+ 	adev->dev.parent = gd->gdma_context->dev;
+ 	adev->dev.release = adev_release;
+ 	madev->mdev = gd;
+@@ -3064,7 +3064,7 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
+ 		}
+ 	}
+ 
+-	err = add_adev(gd);
++	err = add_adev(gd, "eth");
+ out:
+ 	if (err)
+ 		mana_remove(gd, false);
+@@ -3131,6 +3131,39 @@ out:
+ 	kfree(ac);
+ }
+ 
++int mana_rdma_probe(struct gdma_dev *gd)
++{
++	int err = 0;
++
++	if (gd->dev_id.type != GDMA_DEVICE_MANA_IB) {
++		/* RDMA device is not detected on pci */
++		return err;
++	}
++
++	err = mana_gd_register_device(gd);
++	if (err)
++		return err;
++
++	err = add_adev(gd, "rdma");
++	if (err)
++		mana_gd_deregister_device(gd);
++
++	return err;
++}
++
++void mana_rdma_remove(struct gdma_dev *gd)
++{
++	if (gd->dev_id.type != GDMA_DEVICE_MANA_IB) {
++		/* RDMA device is not detected on pci */
++		return;
++	}
++
++	if (gd->adev)
++		remove_adev(gd);
++
++	mana_gd_deregister_device(gd);
++}
++
+ struct net_device *mana_get_primary_netdev(struct mana_context *ac,
+ 					   u32 port_index,
+ 					   netdevice_tracker *tracker)
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index 0f78065..5857efc 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -488,6 +488,9 @@ int mana_detach(struct net_device *ndev, bool from_close);
+ int mana_probe(struct gdma_dev *gd, bool resuming);
+ void mana_remove(struct gdma_dev *gd, bool suspending);
+ 
++int mana_rdma_probe(struct gdma_dev *gd);
++void mana_rdma_remove(struct gdma_dev *gd);
++
+ void mana_xdp_tx(struct sk_buff *skb, struct net_device *ndev);
+ int mana_xdp_xmit(struct net_device *ndev, int n, struct xdp_frame **frames,
+ 		  u32 flags);
 -- 
 1.8.3.1
 
