@@ -1,148 +1,199 @@
-Return-Path: <linux-rdma+bounces-10068-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10069-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73EB2AAB80B
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 08:24:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DC5AAABDB2
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 10:49:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED9093AEC03
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 06:17:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B08D1C23477
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 08:49:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24AAB4AFFF9;
-	Tue,  6 May 2025 00:53:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6FDF2627E5;
+	Tue,  6 May 2025 08:49:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j55qTF6Y"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Phk5P9/W"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57EB63BEEC7;
-	Mon,  5 May 2025 23:23:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD18B24728D;
+	Tue,  6 May 2025 08:49:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746487418; cv=none; b=GWpknKurrV9RCkFj1jLFS/9oJjCpbYfZHRUMpnpuaLJTfFQ3majxVkIMGMAj85+fqhOUvxIPd1nMo9eyoeCLGLwDgoWBzFigY5RygBETvfpwx6nptYJavZPcZc50O/qjEzXcPxt6zv2pihjDGMC8o6jz8qXxZriOKkJmSjANb1s=
+	t=1746521361; cv=none; b=bgFTAAGHL0Lj66tApyxUhkI+GVZhTKOZjhPJUFYwDJpTvPPCfte9xhjSCGsIlGUD3Lf1KDbiryDg971vQzIQFDKEgESXytLSGtniijJHeiUDJNG/ZyNfU7qe2eDCc7yk0gx9iBa1Eqo/fEi0Q0fHNzRXTT0UxanGCjUtoEkqba4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746487418; c=relaxed/simple;
-	bh=ymRGSnOUYCVaT5kFAkKEB47zA5IKBa3/u2yKaN1wEKk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JvDLfRVeVSztlKgXm9myeKpg2YdZIUHkOyXYA/eY0L9dHzg8CwomznQU2E1bdFBdm6dGPDVzzhhcVWeOmTbQi4Uy0NmM/VtcVngG5ZXOQ5lI5tgqzf3RUecirFivqxNOF5meJw/PBPTcAR5zv+DLRG/JZkqQLijNBiXkE2W0XQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j55qTF6Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68AE7C4CEEE;
-	Mon,  5 May 2025 23:23:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746487417;
-	bh=ymRGSnOUYCVaT5kFAkKEB47zA5IKBa3/u2yKaN1wEKk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=j55qTF6Y4HJZBDKg7HR+pjgqorfAl3PHK56g1m/R12JPQnBz9bmpfrGsO6Dhyqe7Z
-	 ApUyDSwf7tE+wXiwi9ujTeMHFSKFYwtOd5rah/QD67XhIc+XRlVMhGTz8sP9wEClvT
-	 DFCt47XSsWykex35BhOPbunJD/eG091Z5ED51yszrLeAH9w9dmbdZm/g52JGEu30YD
-	 aP3ZRfkgBzKLwkfStkfmjm7VGQ+4Pe2FnkKvHMTUKaixnPwixBMJXeNVzCncIQWjkE
-	 OorRuOFruKmn3BK9dHbTa+CVCkoOkLsD0wxni40e8Iz3TV6AhBjvOXO2gGezhV7FsC
-	 vWBXmf+O+FxYQ==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Kees Cook <kees@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	tariqt@nvidia.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	yishaih@nvidia.com,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 60/79] net/mlx4_core: Avoid impossible mlx4_db_alloc() order value
-Date: Mon,  5 May 2025 19:21:32 -0400
-Message-Id: <20250505232151.2698893-60-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250505232151.2698893-1-sashal@kernel.org>
-References: <20250505232151.2698893-1-sashal@kernel.org>
+	s=arc-20240116; t=1746521361; c=relaxed/simple;
+	bh=PsFyWkBSqOuAbANmFg9l3Rst31omXfpz376QBgWUmZg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RUpUHwgjoPkpzQdjQ+IH75cGaLO5Q0J9VWPYqQnUPeYxrkP6CeQXMi+mxpxHXYED0x5mPuLq1ncICkcEcB2XizwaQrgPeEaFaSTFPylo3cznDQp1HZxK08bNI+AnOUdqO1gpcuT7wMZSuuTzSLEngR0k7ehVlHLOoNHvgsJu8lM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Phk5P9/W; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id 3CDD72115DC8; Tue,  6 May 2025 01:49:19 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3CDD72115DC8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1746521359;
+	bh=uwy/EmQIoAPCObU0zJcyrXXg1lFEKn8FQ7H0liGhwik=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Phk5P9/WtKci4t8ZlzYrG9pCEZmSMX4bzK6apBGZ1BbuW5jxEJOT534M6P3xqjaaE
+	 cY9q+bzGwLlor0AIWOmhOlVflyRp/HjJORbCPDMMBYzWJaOAn2Ecegiu/XJ28U7MSp
+	 WWK//hvEHhkq2oVw4wVlS1VW+SM9yQaQPqwKtxFY=
+Date: Tue, 6 May 2025 01:49:19 -0700
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: Michael Kelley <mhklinux@outlook.com>
+Cc: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Nipun Gupta <nipun.gupta@amd.com>,
+	Yury Norov <yury.norov@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Jonathan Cameron <Jonathan.Cameron@huwei.com>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Kevin Tian <kevin.tian@intel.com>, Long Li <longli@microsoft.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Krzysztof Wilczy?ski <kw@linux.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Simon Horman <horms@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+	Maxim Levitsky <mlevitsk@redhat.com>,
+	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	Paul Rosswurm <paulros@microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: Re: [PATCH v2 3/3] net: mana: Allocate MSI-X vectors dynamically as
+ required
+Message-ID: <20250506084919.GA5952@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1745578407-14689-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <1745578478-15195-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <SN6PR02MB4157FF2CA8E37298FC634491D4822@SN6PR02MB4157.namprd02.prod.outlook.com>
+ <20250501142354.GA6208@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <SN6PR02MB4157EAC71A53E152EE684A4DD4822@SN6PR02MB4157.namprd02.prod.outlook.com>
+ <20250502060809.GA10704@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.293
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250502060809.GA10704@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-From: Kees Cook <kees@kernel.org>
+On Thu, May 01, 2025 at 11:08:09PM -0700, Shradha Gupta wrote:
+> On Thu, May 01, 2025 at 03:56:48PM +0000, Michael Kelley wrote:
+> > From: Shradha Gupta <shradhagupta@linux.microsoft.com> Sent: Thursday, May 1, 2025 7:24 AM
+> > > 
+> > > On Thu, May 01, 2025 at 05:27:49AM +0000, Michael Kelley wrote:
+> > > > From: Shradha Gupta <shradhagupta@linux.microsoft.com> Sent: Friday, April 25,
+> > > 2025 3:55 AM
+> > > > >
+> > > > > Currently, the MANA driver allocates MSI-X vectors statically based on
+> > > > > MANA_MAX_NUM_QUEUES and num_online_cpus() values and in some cases ends
+> > > > > up allocating more vectors than it needs. This is because, by this time
+> > > > > we do not have a HW channel and do not know how many IRQs should be
+> > > > > allocated.
+> > > > >
+> > > > > To avoid this, we allocate 1 MSI-X vector during the creation of HWC and
+> > > > > after getting the value supported by hardware, dynamically add the
+> > > > > remaining MSI-X vectors.
+> > > >
+> > > > I have a top-level thought about the data structures used to manage a
+> > > > dynamic number of MSI-X vectors. The current code allocates a fixed size
+> > > > array of struct gdma_irq_context, with one entry in the array for each
+> > > > MSI-X vector. To find the entry for a particular msi_index, the code can
+> > > > just index into the array, which is nice and simple.
+> > > >
+> > > > The new code uses a linked list of struct gdma_irq_context entries, with
+> > > > one entry in the list for each MSI-X vector.  In the dynamic case, you can
+> > > > start with one entry in the list, and then add to the list however many
+> > > > additional entries the hardware will support.
+> > > >
+> > > > But this additional linked list adds significant complexity to the code
+> > > > because it must be linearly searched to find the entry for a particular
+> > > > msi_index, and there's the messiness of putting entries onto the list
+> > > > and taking them off.  A spin lock is required.  Etc., etc.
+> > > >
+> > > > Here's an intermediate approach that would be simpler. Allocate a fixed
+> > > > size array of pointers to struct gdma_irq_context. The fixed size is the
+> > > > maximum number of possible MSI-X vectors for the device, which I
+> > > > think is MANA_MAX_NUM_QUEUES, or 64 (correct me if I'm wrong
+> > > > about that). Allocate a new struct gdma_irq_context when needed,
+> > > > but store the address in the array rather than adding it onto a list.
+> > > > Code can then directly index into the array to access the entry.
+> > > >
+> > > > Some entries in the array will be unused (and "wasted") if the device
+> > > > uses fewer MSI-X vector, but each unused entry is only 8 bytes. The
+> > > > max space unused is fewer than 512 bytes (assuming 64 entries in
+> > > > the array), which is neglible in the grand scheme of things. With the
+> > > > simpler code, and not having the additional list entry embedded in
+> > > > each struct gmda_irq_context, you'll get some of that space back
+> > > > anyway.
+> > > >
+> > > > Maybe there's a reason for the list that I missed in my initial
+> > > > review of the code. But if not, it sure seems like the code could
+> > > > be simpler, and having some unused 8 bytes entries in the array
+> > > > is worth the tradeoff for the simplicity.
+> > > >
+> > > > Michael
+> > > 
+> > > Hey  Michael,
+> > > 
+> > > Thanks for your inputs. We did think of this approach and in fact that
+> > > was how this patch was implemented(fixed size array) in the v1 of our
+> > > internal reviews.
+> > > 
+> > > However, it came up in those reviews that we want to move away
+> > > from the 64(MANA_MAX_NUM_QUEUES) as a hard limit for some new
+> > > requirements, atleast for the dynamic IRQ allocation path. And now the
+> > > new limit for all hardening purposes would be num_online_cpus().
+> > > 
+> > > Using this limit and the fixed array size approach creates problems,
+> > > especially in machines with high number of vCPUs. It would lead to
+> > > quite a bit of memory/resource wastage.
+> > > 
+> > > Hence, we decided to go ahead with this design.
+> > > 
+> > > Regards,
+> > > Shradha.
+> > 
+> > One other thought:  Did you look at using an xarray? See
+> > https://www.kernel.org/doc/html/latest/core-api/xarray.html.
+> > It has most of or all the properties you need to deal with
+> > a variable number of entries, while handling all the locking
+> > automatically. Entries can be accessed with just a simple
+> > index value.
+> > 
+> > I don't have first-hand experience writing code using xarrays,
+> > so I can't be sure that it would simplify things for MANA IRQ
+> > allocation, but it seems to be a very appropriate abstraction
+> > for this use case.
+> > 
+> > Michael
+> >
+> Thanks Michael,
+> 
+> This does look promising for our usecase. I will try it with this patch,
+> update the thread and then send out the next version as required.
+> 
+> Regards,
+> Shradha.
 
-[ Upstream commit 4a6f18f28627e121bd1f74b5fcc9f945d6dbeb1e ]
+Hi Michael,
 
-GCC can see that the value range for "order" is capped, but this leads
-it to consider that it might be negative, leading to a false positive
-warning (with GCC 15 with -Warray-bounds -fdiagnostics-details):
+going ahead with xarray implementation of the irq_contexts structure for
+the next version.
 
-../drivers/net/ethernet/mellanox/mlx4/alloc.c:691:47: error: array subscript -1 is below array bounds of 'long unsigned int *[2]' [-Werror=array-bounds=]
-  691 |                 i = find_first_bit(pgdir->bits[o], MLX4_DB_PER_PAGE >> o);
-      |                                    ~~~~~~~~~~~^~~
-  'mlx4_alloc_db_from_pgdir': events 1-2
-  691 |                 i = find_first_bit(pgdir->bits[o], MLX4_DB_PER_PAGE >> o);                        |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      |                     |                         |                                                   |                     |                         (2) out of array bounds here
-      |                     (1) when the condition is evaluated to true                             In file included from ../drivers/net/ethernet/mellanox/mlx4/mlx4.h:53,
-                 from ../drivers/net/ethernet/mellanox/mlx4/alloc.c:42:
-../include/linux/mlx4/device.h:664:33: note: while referencing 'bits'
-  664 |         unsigned long          *bits[2];
-      |                                 ^~~~
-
-Switch the argument to unsigned int, which removes the compiler needing
-to consider negative values.
-
-Signed-off-by: Kees Cook <kees@kernel.org>
-Link: https://patch.msgid.link/20250210174504.work.075-kees@kernel.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/ethernet/mellanox/mlx4/alloc.c | 6 +++---
- include/linux/mlx4/device.h                | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx4/alloc.c b/drivers/net/ethernet/mellanox/mlx4/alloc.c
-index b330020dc0d67..f2bded847e61d 100644
---- a/drivers/net/ethernet/mellanox/mlx4/alloc.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/alloc.c
-@@ -682,9 +682,9 @@ static struct mlx4_db_pgdir *mlx4_alloc_db_pgdir(struct device *dma_device)
- }
- 
- static int mlx4_alloc_db_from_pgdir(struct mlx4_db_pgdir *pgdir,
--				    struct mlx4_db *db, int order)
-+				    struct mlx4_db *db, unsigned int order)
- {
--	int o;
-+	unsigned int o;
- 	int i;
- 
- 	for (o = order; o <= 1; ++o) {
-@@ -712,7 +712,7 @@ static int mlx4_alloc_db_from_pgdir(struct mlx4_db_pgdir *pgdir,
- 	return 0;
- }
- 
--int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, int order)
-+int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, unsigned int order)
- {
- 	struct mlx4_priv *priv = mlx4_priv(dev);
- 	struct mlx4_db_pgdir *pgdir;
-diff --git a/include/linux/mlx4/device.h b/include/linux/mlx4/device.h
-index 35b4e324e17f2..7c399831540d7 100644
---- a/include/linux/mlx4/device.h
-+++ b/include/linux/mlx4/device.h
-@@ -1128,7 +1128,7 @@ int mlx4_write_mtt(struct mlx4_dev *dev, struct mlx4_mtt *mtt,
- int mlx4_buf_write_mtt(struct mlx4_dev *dev, struct mlx4_mtt *mtt,
- 		       struct mlx4_buf *buf);
- 
--int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, int order);
-+int mlx4_db_alloc(struct mlx4_dev *dev, struct mlx4_db *db, unsigned int order);
- void mlx4_db_free(struct mlx4_dev *dev, struct mlx4_db *db);
- 
- int mlx4_alloc_hwq_res(struct mlx4_dev *dev, struct mlx4_hwq_resources *wqres,
--- 
-2.39.5
-
+Thanks.
 
