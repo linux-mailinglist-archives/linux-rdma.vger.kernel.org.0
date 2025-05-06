@@ -1,48 +1,48 @@
-Return-Path: <linux-rdma+bounces-10091-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10092-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CF36AAC732
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 16:00:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7B53AAC78E
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 16:13:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69D6B7AC577
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 13:58:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 057DF1C08C0B
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 14:14:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 181E028137A;
-	Tue,  6 May 2025 13:59:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A1B528153C;
+	Tue,  6 May 2025 14:13:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DPep8NXC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e1zdbJII"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C752D281369;
-	Tue,  6 May 2025 13:59:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C05C728151D;
+	Tue,  6 May 2025 14:13:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746539976; cv=none; b=onQpu/ZUZ3JXAZXzXvpNBbsMEYTxCqtT56c4z3YDI3Wc4sq09eAAf+YPsKxDIXmhgoC3p8IPKto7QXNGSsCDyXW6lDeIqpGvQuDrI1PDEEv1BJdGmmg9O5F3okSucJHumx8G+H7MJ23qJGPWm0IzoBkWvX1ObvQrp/1ZjNU0/i0=
+	t=1746540782; cv=none; b=rnp4+TMxGcauaW5OzpFB4wjNDUuxPsMycWRrSGsK25hFI7R4VfSm1VhrI7Ix3IEv1vYaV9+e1d1u92KOzTEeZuM6lhpUJJ0+QselsGwh5RUuRyCHADX9d4eAlrH/MC8Ko6RDQggkMxYFj4MlB2JLMvxBIiaqVT9ZupyAPfK4aE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746539976; c=relaxed/simple;
-	bh=N+Fy0SWace4VRSzZe9xJ2XWM6pLAhrdNjIc/ELtCYEQ=;
+	s=arc-20240116; t=1746540782; c=relaxed/simple;
+	bh=sHB5xB6ZlgMWavAZfAu7pxqL26cOwNdXZepJmr3qCw4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lOBjhsb0RoO2ByR+j5rrUeySA/xk+fXkv8iufcJri5Uc/t9y1gq6hXydQAkMMbIcRt20OXt6FjUCppjBEgeaBWWWzHTA0ft77ou8aLQ1R2b5T83B7CgCGCfwD662LDUt4/E1VjPHbZATXnMDyvFpmh1TOuO2tzprEFcCqf6ekcs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DPep8NXC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 647A1C4CEF0;
-	Tue,  6 May 2025 13:59:35 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=EjSbVGkrvcmhlQqgKl+P5c3Zi2uY3UmF8d9X9/w9GDKOHl6tZAxzevyjjBoL/LgjbbggH+3xSrKxNdGPLvk1SX2Q+qYYbh/y1yRelteogZTQEadLbQqgRlYFZuZwUK2MRvp80XF1DgNUrSccZqplYiQlZm7XnGyz5mHFRtSwdsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e1zdbJII; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C740C4CEE4;
+	Tue,  6 May 2025 14:13:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746539976;
-	bh=N+Fy0SWace4VRSzZe9xJ2XWM6pLAhrdNjIc/ELtCYEQ=;
+	s=k20201202; t=1746540782;
+	bh=sHB5xB6ZlgMWavAZfAu7pxqL26cOwNdXZepJmr3qCw4=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=DPep8NXC/vl9nbyf+1vVek08yQM3DZi77Yu9VgIGCZ5YQx1sOB9Dv9JArkZH44feA
-	 5Z2uG46abTev7aO6qIwM3WFdBe9p2uAqcfqdFtPFRGdk26I1jKRtCOafBkJ7MDA+Jp
-	 xCXkIF7LVwpzY6FR+OgCv2GTXkVrzy7l4A5y3qftdhdlS8lMgWcWHAkzJ0AkWnNbZp
-	 ePDWCtEyvn8DbUVlzLQkvPQjvBSObiLcC3gtRyaH8JQtfKD+y/kxJq2bD/YiI7ZB8W
-	 lblMqNIKrx7YyrkJxnKOMuotBkQRCcqlY733KkwrBJT6G7IFLSVPOskedBBToAEhsb
-	 RUOwn1FmpTQSQ==
-Message-ID: <bae5b474-8945-4e27-ab72-432a63b8a1e0@kernel.org>
-Date: Tue, 6 May 2025 09:59:34 -0400
+	b=e1zdbJIIwYe4gSduQWtnBgAfpdwBH4dmlQZfxcLPNhPkdVmbLnuldAOEsNtMtT+X5
+	 04976iIYzOGipfuhrdEUZWXAKw4QFfSmgOMiVtScGuFhkHtuMOUgww6p4fQ131BsqR
+	 HWanQwJ7xc+BX8wbxTm32xRg/pR8pFsgE3e+HcVK66kMYayshKN6/haolDaPVzUD3Z
+	 MxrG/n8kFrV7RaONbnZ1MwgMUFC/BqB2ocYEsxWTb4CwkrvqqxZdT4MzUmU2+jsloq
+	 xDUSX+z/oBrlDi67mtyZOjVlVuWJkoljkLQ2jJAELXX0+QVwhYiF3RXedzwOHlFCD5
+	 80Yvs+at5//4A==
+Message-ID: <be740f28-8d68-400c-85bc-81cc4e48ccc6@kernel.org>
+Date: Tue, 6 May 2025 10:13:00 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -50,74 +50,82 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 14/14] SUNRPC: Bump the maximum payload size for the
- server
-To: Jeff Layton <jlayton@kernel.org>, Christoph Hellwig <hch@infradead.org>
-Cc: NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>,
- Dai Ngo <dai.ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
- Anna Schumaker <anna@kernel.org>, linux-nfs@vger.kernel.org,
- linux-rdma@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>
+Subject: Re: [PATCH v4 01/14] svcrdma: Reduce the number of rdma_rw contexts
+ per-QP
+To: Jason Gunthorpe <jgg@ziepe.ca>, Christoph Hellwig <hch@infradead.org>
+Cc: NeilBrown <neil@brown.name>, Jeff Layton <jlayton@kernel.org>,
+ Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <dai.ngo@oracle.com>,
+ Tom Talpey <tom@talpey.com>, Anna Schumaker <anna@kernel.org>,
+ linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org,
+ Chuck Lever <chuck.lever@oracle.com>, Leon Romanovsky <leon@kernel.org>
 References: <20250428193702.5186-1-cel@kernel.org>
- <20250428193702.5186-15-cel@kernel.org> <aBoP249KZ5G9hU81@infradead.org>
- <390ac9ce-d32d-4534-a406-52288f79ab0c@kernel.org>
- <d3cd6ed78404a5ac354ef428c2c00912de0baa33.camel@kernel.org>
+ <20250428193702.5186-2-cel@kernel.org> <aBoJ64qDSp7U3twh@infradead.org>
+ <20250506131722.GG2260621@ziepe.ca> <aBoRSeERzax5lTvH@infradead.org>
+ <20250506135536.GH2260621@ziepe.ca>
 Content-Language: en-US
 From: Chuck Lever <cel@kernel.org>
 Organization: kernel.org
-In-Reply-To: <d3cd6ed78404a5ac354ef428c2c00912de0baa33.camel@kernel.org>
+In-Reply-To: <20250506135536.GH2260621@ziepe.ca>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 5/6/25 9:54 AM, Jeff Layton wrote:
-> On Tue, 2025-05-06 at 09:52 -0400, Chuck Lever wrote:
->> On 5/6/25 9:34 AM, Christoph Hellwig wrote:
->>> On Mon, Apr 28, 2025 at 03:37:02PM -0400, cel@kernel.org wrote:
->>>> From: Chuck Lever <chuck.lever@oracle.com>
+On 5/6/25 9:55 AM, Jason Gunthorpe wrote:
+> On Tue, May 06, 2025 at 06:40:25AM -0700, Christoph Hellwig wrote:
+>> On Tue, May 06, 2025 at 10:17:22AM -0300, Jason Gunthorpe wrote:
+>>> On Tue, May 06, 2025 at 06:08:59AM -0700, Christoph Hellwig wrote:
+>>>> On Mon, Apr 28, 2025 at 03:36:49PM -0400, cel@kernel.org wrote:
+>>>>> qp_attr.cap.max_rdma_ctxs. The QP's actual Send Queue length is on
+>>>>> the order of the sum of qp_attr.cap.max_send_wr and a factor times
+>>>>> qp_attr.cap.max_rdma_ctxs. The factor can be up to three, depending
+>>>>> on whether MR operations are required before RDMA Reads.
+>>>>>
+>>>>> This limit is not visible to RDMA consumers via dev->attrs. When the
+>>>>> limit is surpassed, QP creation fails with -ENOMEM. For example:
 >>>>
->>>> Increase the maximum server-side RPC payload to 4MB. The default
->>>> remains at 1MB.
->>>>
->>>> To adjust the operational maximum, shut down the NFS server. Then
->>>> echo a new value into:
->>>>
->>>>   /proc/fs/nfsd/max_block_size
->>>>
->>>> And restart the NFS server.
+>>>> Can we find a way to expose this limit from the HCA drivers and the
+>>>> RDMA core?
 >>>
->>> Are you going to wire this up to a config file in nfs-utils that
->>> gets set before the daemon starts?
+>>> Shouldn't it be max_qp_wr?
 >>
->> That's up to SteveD -- it might be added to /etc/nfs.conf.
->>
->>
+>> Does that allow for arbitrary combination of different WRs?  
 > 
-> Can we also add this to the netlink interface for nfsd and nfsdctl?
-
-Sure, that's possible, however:
-
-The purpose of this series is only to enable experimentation (aside from
-the other nice clean-ups).
-
-Once that is complete, what are the use cases for admins to increase or
-decrease this value? (Not a rhetorical question: I'd like to invite some
-discussion about that).
-
-As always, these interfaces need documentation and long-term support. I
-would like to get some technical rationale on the table before we
-commit to the support costs.
-
-
->>> Because otherwise this is a pretty horrible user interface.
->>
->> This is an API that has existed forever.
->>
->> I don't even like that this maximum can be tuned. After a period of
->> experimentation, I was going to set the default to a higher value and
->> be done with it, because I can't think of a reason why it needs to be
->> shifted up or down after that.
->>
+> I think it is supposed to be the maximum QP WR depth you can create..
 > 
+> A QP shouldn't behave differently depending on the WR operation, each
+> one takes one WR entry.
+> 
+> Chuck do you know differently?
 
+qp_attr.cap.max_rdma_ctxs reserves a number of SQEs over and above
+qp_attr.cap.max_send_wr. The sum of those two cannot exceed max_qp_wr,
+of course.
+
+But there is a multiplier, due to whether the device wants a
+registration and invalidation WR in addition to each RDMA Read WR.
+
+Further, in drivers/infiniband/hw/mlx5/qp.c :: calc_sq_size
+
+        wq_size = roundup_pow_of_two(attr->cap.max_send_wr * wqe_size);
+        qp->sq.wqe_cnt = wq_size / MLX5_SEND_WQE_BB;
+        if (qp->sq.wqe_cnt > (1 << MLX5_CAP_GEN(dev->mdev,
+log_max_qp_sz))) {
+                mlx5_ib_dbg(dev, "send queue size (%d * %d / %d -> %d)
+exceeds limits(%d)\n",
+                            attr->cap.max_send_wr, wqe_size,
+MLX5_SEND_WQE_BB
+                            qp->sq.wqe_cnt,
+
+                            1 << MLX5_CAP_GEN(dev->mdev, log_max_qp_sz));
+                return -ENOMEM;
+        }
+
+So when svcrdma requests a large number of ctxts on top of a Send
+Queue size of 135, svc_rdma_accept() fails and the debug message above
+pops out.
+
+In this patch I'm trying to include the reg/inv multiplier in the
+calculation, but that doesn't seem to be enough to make "accept"
+reliable, IMO due to this extra calculation in calc_sq_size().
 
 -- 
 Chuck Lever
