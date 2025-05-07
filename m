@@ -1,124 +1,115 @@
-Return-Path: <linux-rdma+bounces-10120-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10121-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 880C9AAE2F8
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 May 2025 16:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6598CAAE5C4
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 May 2025 18:01:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C1E41B65476
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 May 2025 14:27:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64F0718890F7
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 May 2025 15:59:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D734D2820A6;
-	Wed,  7 May 2025 14:25:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D0A328B7EF;
+	Wed,  7 May 2025 15:59:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fds/vJ7V"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="J832e/1f"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93124281369;
-	Wed,  7 May 2025 14:25:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 982C028B509;
+	Wed,  7 May 2025 15:59:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746627905; cv=none; b=kuSBq4pDDp0yvzTW1VhGo7zFealxItIOfxMKqKRhnvhZYiuuLtS27iqzO+eQtxvuUAvDzAAgbux80OgAylPzCuyutBSUHkNgsPZfHc45JPnzlsrhpuN+fr/R8YBXAPONURMmsFf9d5fbbzUdBMLBaEQrDmQRRKf3UPj09qIqS+Q=
+	t=1746633547; cv=none; b=F9dvwykX0uZNqTEYVtrlU++iCh5c1wWVdc704bYnC33JaIrGRd5IQ44cu55Tn6CuXse41L1pcoDBYf5xfORBvv6VU75+Txs80oVgjMY5gBpfl39iSj0v9lKjQfT1TRCW/BIoBLHA9kX+2R1cC3rI77UmUgctGBrJb9eU8rmeBTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746627905; c=relaxed/simple;
-	bh=VWD7WqVDPeXj9twUcUFapIRynqKgAhDd6ooWQ/9Di0U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lC5gfkHnNAn2YwcqoD3aHXE2gmVToT/L4AxKPI+cFzIRklnLYT3LIJJZaDSSz2aV4SOzVvAR7ekhlvJ9KbH12Iiut9+3pq8wogawwKvUnRQx9wrRyEv1MLEF6UDnsekvzAA5UsUz5PM0lNz2xD+mONVSdKhaalBHzHpltyh/P3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fds/vJ7V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3154AC4CEE2;
-	Wed,  7 May 2025 14:25:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746627905;
-	bh=VWD7WqVDPeXj9twUcUFapIRynqKgAhDd6ooWQ/9Di0U=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=fds/vJ7V06A7HlNn3H3ZjvOB8u9lUFpjg6cX11BHRg1MBg933JgQk1PArkgS8nTmg
-	 AXNiguvL6VmU1UKgeOybpdyKrVl1sAA0D8Kbqy1XXh7vNEPp+JKLd6SOXU+YqpQkxy
-	 21qc9dAXtBUnd0F1f+FgZQXmgH7hQq5kxKELMKIa3MPHWTRsTKTURSSc4LzLMPSQqb
-	 Jc9KSDCWnXziVCAU5NOZsiVbLBA23K7m+mokL2HBNj3L7XQL/ZknKCA732eQO4S9kR
-	 Y188ry4xsfHkxW+5eyyQ4p1cIPxQtDNMYnJ9/znI50eDC8WQ+gRAr1qNwAQl42UbGR
-	 7AEvykn5yrJLw==
-Message-ID: <c92cddd9-9099-4ccf-87c3-6bb427342794@kernel.org>
-Date: Wed, 7 May 2025 10:25:03 -0400
+	s=arc-20240116; t=1746633547; c=relaxed/simple;
+	bh=9LXhD+2vhDKKSLAhFNemE77DPRi7sVuaJaYgABOlYAs=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=fs6dZgVJH7kuz8vwmC9ySBOMyDxgH+BI16UkljV6iYmjjJHQKpHa5Hn0LLHNNwZCiAYf4R7pNWTxMCrWGr09nE6KrAYdUM2zdxmOlcyGQIWBlr580YZbcNkp/Q7bHVBxY5Gs9FZP75+Yg5iOZRPB6BePPtL7W296WRHcC84N+G0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=J832e/1f; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1186)
+	id 2DD2021180CC; Wed,  7 May 2025 08:59:05 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2DD2021180CC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1746633545;
+	bh=5KXFCZ2x1knV4BT2iU8q8mIItJczMnow9Q3vIolibAA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=J832e/1fvgil29e7QbjZ60on5dGSIshvD41gAR7aGulLtl92WNM52wF48rDzxermp
+	 vpArDoyzCnOILEGfNRr3nVFHIExmVL9QkmzebB00M5sRxb92oymG9nPfOB0Pd0ZBd/
+	 iQT4xlVkbX0zd/vggA9HjN8U31MO5zzo9UP2pXEM=
+From: Konstantin Taranov <kotaranov@linux.microsoft.com>
+To: kotaranov@microsoft.com,
+	pabeni@redhat.com,
+	haiyangz@microsoft.com,
+	kys@microsoft.com,
+	edumazet@google.com,
+	kuba@kernel.org,
+	davem@davemloft.net,
+	decui@microsoft.com,
+	wei.liu@kernel.org,
+	longli@microsoft.com,
+	jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH rdma-next v4 0/4] RDMA/mana_ib: allow separate mana_ib for each mana client
+Date: Wed,  7 May 2025 08:59:01 -0700
+Message-Id: <1746633545-17653-1-git-send-email-kotaranov@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 14/14] SUNRPC: Bump the maximum payload size for the
- server
-To: Christoph Hellwig <hch@infradead.org>
-Cc: NeilBrown <neil@brown.name>, Jeff Layton <jlayton@kernel.org>,
- Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <dai.ngo@oracle.com>,
- Tom Talpey <tom@talpey.com>, Anna Schumaker <anna@kernel.org>,
- linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org,
- Chuck Lever <chuck.lever@oracle.com>
-References: <20250428193702.5186-1-cel@kernel.org>
- <20250428193702.5186-15-cel@kernel.org> <aBoP249KZ5G9hU81@infradead.org>
- <390ac9ce-d32d-4534-a406-52288f79ab0c@kernel.org>
- <aBsO28mbIZrU2HHD@infradead.org>
-Content-Language: en-US
-From: Chuck Lever <cel@kernel.org>
-Organization: kernel.org
-In-Reply-To: <aBsO28mbIZrU2HHD@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 5/7/25 3:42 AM, Christoph Hellwig wrote:
-> On Tue, May 06, 2025 at 09:52:06AM -0400, Chuck Lever wrote:
->>> Are you going to wire this up to a config file in nfs-utils that
->>> gets set before the daemon starts?
->>
->> That's up to SteveD -- it might be added to /etc/nfs.conf.
-> 
-> Well, you should be talking to him or even include a patch.
+From: Konstantin Taranov <kotaranov@microsoft.com>
 
-On this list, we post nfs-utils patches separately, once the kernel API
-is nailed. Steve doesn't pull such changes until the kernel changes
-have been merged.
+Microsoft mana adapter has 2 devices in the HW: mana ethernet device and RNIC device.
+Both devices can implement RDMA drivers and, so far, they have been sharing
+one ib device context. However, they are different devices with different
+capabilities in the HW and have different lifetime model.
 
-But see below: I'm still not convinced this is a tunable that is worth
-going to that level of trouble for.
+This series allows us to model the aforementioned two devices as separate ib devices.
+The mana_ib will continue supporting two devices but as individual ib devices.
+It enables the driver to dynamically destroy and create the auxiliary device over
+RNIC, when the HW reboots the RNIC module. Without this separation, the reboot
+would cause destruction of the ib device serving DPDK clients from the uninterrupted
+ethernet HW module.
 
+v2:
+- renamed aux device from mana.dpdk to mana.eth (patch 1 and 2)
+- Fixed a possible race between servicing and pci threads (patch 4)
 
->>> Because otherwise this is a pretty horrible user interface.
->>
->> This is an API that has existed forever.
-> 
-> Huh?  It is a brand new file added by this patch.
+v3:
+- Added vendorid and partid in mana_ib_query_device (patch 2)
 
-/proc/fs/nfsd/max_block_size was added by commit 596bbe53eb3a ("[PATCH]
-knfsd: Allow max size of NFSd payload to be configured") in 2006.
+v4:
+- rabased on latest rdma-next
 
-Or are you referring to something else?
+Konstantin Taranov (3):
+  net: mana: Probe rdma device in mana driver
+  RDMA/mana_ib: Add support of mana_ib for RNIC and ETH nic
+  RDMA/mana_ib: unify mana_ib functions to support any gdma device
 
+Shiraz Saleem (1):
+  net: mana: Add support for auxiliary device servicing events
 
->> I don't even like that this maximum can be tuned. After a period of
->> experimentation, I was going to set the default to a higher value and
->> be done with it, because I can't think of a reason why it needs to be
->> shifted up or down after that.
-> 
-> Why not?  A tiny desk NAS box has very different resources available
-> compared to say a multi-socket enterprise AI data server.
-
-I don't believe system memory size is a concern.
-
-a. max_block_size is automatically reduced on small memory systems. See
-   nfsd_get_default_max_blksize().
-
-b. The extra memory allocation is per thread, so a smaller server can
-   reduce the standing memory requirements by lowering the number of
-   nfsd threads.
-
-c. we're now removing rq_vec, so there's already less memory to allocate
-   than before.
-
+ drivers/infiniband/hw/mana/cq.c               |   4 +-
+ drivers/infiniband/hw/mana/device.c           | 174 +++++++++---------
+ drivers/infiniband/hw/mana/main.c             |  82 +++++++--
+ drivers/infiniband/hw/mana/mana_ib.h          |   6 +
+ drivers/infiniband/hw/mana/qp.c               |   5 +-
+ .../net/ethernet/microsoft/mana/gdma_main.c   |  26 ++-
+ .../net/ethernet/microsoft/mana/hw_channel.c  |  20 ++
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 108 ++++++++++-
+ include/net/mana/gdma.h                       |  19 ++
+ include/net/mana/hw_channel.h                 |   9 +
+ include/net/mana/mana.h                       |   3 +
+ 11 files changed, 333 insertions(+), 123 deletions(-)
 
 -- 
-Chuck Lever
+2.43.0
+
 
