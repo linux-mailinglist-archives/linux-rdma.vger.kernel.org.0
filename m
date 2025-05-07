@@ -1,90 +1,84 @@
-Return-Path: <linux-rdma+bounces-10114-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10115-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52D36AAD614
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 May 2025 08:31:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 862A3AAD852
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 May 2025 09:38:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B94F0179343
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 May 2025 06:31:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FCAC3AF39A
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 May 2025 07:34:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A96A20C024;
-	Wed,  7 May 2025 06:31:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5C51211A3F;
+	Wed,  7 May 2025 07:34:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="eRLI6fBn"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sWax+VhP"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF93414A4CC
-	for <linux-rdma@vger.kernel.org>; Wed,  7 May 2025 06:31:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61C30219A94;
+	Wed,  7 May 2025 07:34:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746599512; cv=none; b=XbiVCNXaHi7GHdgWyW/7VIwX37M24VFMwyrItaz7AAT9ZNF/aasRmAgut3B7iLEKHD5++vrnQdONa+b7Zo1uC1dmtXh8rL2PzUxPiSePHe+aY5BEx3mw5iW/56HY0xrFJsURoRblNxjtOUrEiU9mrWOFwKEJqfNe6viiFw1OhIw=
+	t=1746603291; cv=none; b=k8JKnSbN44SHfM8YfsUn9DFfYGFsJRFGDI0Vvc+i+Z0TaajNRKMuP/9x1HfDnytUb0KtJGHRL4sMDDUVRL4El+JAnc+CJD//bPRoBduGpprnnLm8T57tomwbAbE+G37Vyldegr0d+Q/hQ0Kb+OmZ8FvjghmanQ8Ppzryi16HsL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746599512; c=relaxed/simple;
-	bh=MNtlRfjNQnc0euRI2ftn5nBoEwLTa0GS318qy6IJLNU=;
-	h=Date:From:To:Subject:Content-Type:MIME-Version:Message-ID; b=b1Qsw2EA9ERQEhHHBS0+GfQ6F71qqK5IFL4gYZkJkZPmqbdH9clo0K3wIwtY7W72m92gOD5zaKw93RSK+npJxoGdVzL3dHap47CV+SrdyLmMZQXeV1QLjlNbvF3B/4tCE9Y1zLbysWDLgpWwWbYZLYZhcc1uu2qqy+8I+Tv92YA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=eRLI6fBn reason="signature verification failed"; arc=none smtp.client-ip=220.197.31.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-	Message-ID; bh=IX1Bsv0yJ/fss4BOSBAmm+e0fCIa9GVJC663M0dtLvA=; b=e
-	RLI6fBn64kCIKCwIpmiCMSLMtM4KSecez+4cjYLX8s0vU/9KbSjOHofiZ4fbGpJ9
-	WKZVYNIsvNcBekTWMcMN7/22J942oWsccP/cipuYPA/sPQzHYQiSY7vXqeLYqeYu
-	jh7SRlTUr7yw3+Mm73SCHzzsahVKdDCG8bCsCpxI5Y=
-Received: from hfzhou369$163.com ( [61.49.251.2] ) by
- ajax-webmail-wmsvr-40-142 (Coremail) ; Wed, 7 May 2025 14:31:36 +0800 (CST)
-Date: Wed, 7 May 2025 14:31:36 +0800 (CST)
-From: =?UTF-8?B?5ZGo5rSq6ZSL?= <hfzhou369@163.com>
-To: linux-rdma@vger.kernel.org
-Subject: Clarification on rdma-core Code Style and Contribution Guidelines
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20240801(9da12a7b)
- Copyright (c) 2002-2025 www.mailtech.cn 163com
-X-NTES-SC: AL_Qu2fBPmStkwi4CWbZekfmUwUheo3XMe0vPoi3IZXO598jCDr2QcuYntMIHHY99+OIR6qkReYXxhh4+1HbZN6b5MbwUNGlZo+2FgKx2FzviL3zw==
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+	s=arc-20240116; t=1746603291; c=relaxed/simple;
+	bh=FRJMIxuItrqlBH6hD1fxtf5iWOAq9HO1NS/4YNco+gg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XZoBaNJhRfHfSnR3YtQ7MTeAxtG1w2QgXBYyMlacJj7476h/hjfZI1fjL/DUas9k5FW1bkJjDuNyE93FAUVMWYrhfMg1TsG5ILWIU8HY1MfGCgVWhF0UAyhjhNKNTkhqrLpcPyTFrnkgrT3xWeJFjyVz++7uDli7WLA/T9YsHZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=sWax+VhP; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=VB7GNqcHALqFt6+2NfxKfelVFxEvl27IRcoTg3hyhkk=; b=sWax+VhP6L2w+Pn1r9NwJ5QH2P
+	uowq+8HWGtTwz7W8Vu1iQR95h1LgMc140DSvomcDM+J8y0/CQv0+mwPy9ovQsDV79g+9zeeAcdRHx
+	4p2PBoSAfYyVSDcCT0x0XkDGCkWh0CPg2wdEqoHXDjcirohJyfTciGrVtiomYmEDPSemgkBN+fqaN
+	6Fup8ac4qMk05Tw+efPNzOvf84X9o3eNG2LGWZ7++6c84Ndm2RkQWcTaqRaKsHgvEYBuO1F4RgmNt
+	ku5n7OKA3bYpnRupTnt2AmmC7YTb2gP+D2/feGTNZLdB1P9GEJeC8M92mzGZUWsLlghQT8/dl6l6O
+	SlFuN2zQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1uCZIm-0000000EYNS-1Mvz;
+	Wed, 07 May 2025 07:34:48 +0000
+Date: Wed, 7 May 2025 00:34:48 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Chuck Lever <cel@kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org>, NeilBrown <neil@brown.name>,
+	Jeff Layton <jlayton@kernel.org>,
+	Olga Kornievskaia <okorniev@redhat.com>,
+	Dai Ngo <dai.ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+	Anna Schumaker <anna@kernel.org>, linux-nfs@vger.kernel.org,
+	linux-rdma@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>
+Subject: Re: [PATCH v4 05/14] sunrpc: Replace the rq_vec array with
+ dynamically-allocated memory
+Message-ID: <aBsNGHoahR2FJKA1@infradead.org>
+References: <20250428193702.5186-1-cel@kernel.org>
+ <20250428193702.5186-6-cel@kernel.org>
+ <aBoOr0wZ5rqE6Erl@infradead.org>
+ <1ad45c3b-8882-4583-9cb2-afbc232e08d7@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <2442ea1c.5bd5.196a9714b5b.Coremail.hfzhou369@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:jigvCgDnjxFI_hpoTfKlAA--.24568W
-X-CM-SenderInfo: xki2x0jxtwmqqrwthudrp/xtbBaRYRuGfVXU-9wQADsJ
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1ad45c3b-8882-4583-9cb2-afbc232e08d7@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-CgpEZWFyIE1haW50YWluZXJzLAoKCkkgaG9wZSB0aGlzIG1lc3NhZ2UgZmluZHMgeW91IHdlbGwu
-CgoKSSdtIFpob3UgSG9uZ2ZlbmcgZnJvbSBCaXRJbnRlbGxpZ2VuY2UsIGEgbmV0d29yayBjb21w
-YW55IGZyb20gQ2hpbmEsIGFuZCBJ4oCZbSBpbnRlcmVzdGVkIGluIGNvbnRyaWJ1dGluZyB0byBy
-ZG1hLWNvcmUuIFdoaWxlIHByZXBhcmluZyBteSBwYXRjaGVzLCBJIHdhbnQgdG8gZW5zdXJlIG15
-IGNvZGUgYWRoZXJlcyB0byB0aGUgcHJvamVjdOKAmXMgc3R5bGUgZ3VpZGVsaW5lcy4gSG93ZXZl
-ciwgSSBub3RpY2VkIGEgZmV3IHVuY2VydGFpbnRpZXMgcmVnYXJkaW5nIHRoZSBjdXJyZW50IHBy
-YWN0aWNlczoKCgrigIPigINgLmNsYW5nLWZvcm1hdGAgVXNhZ2U6IFRoZSByZXBvc2l0b3J5IGlu
-Y2x1ZGVzIGEgLmNsYW5nLWZvcm1hdCBmaWxlLCBidXQgaXQgaGFzbuKAmXQgYmVlbiB1cGRhdGVk
-IGluIGEgd2hpbGUuIFdoZW4gSSByYW4gY2xhbmctZm9ybWF0LTExKSBvbiB0aGUgZXhpc3Rpbmcg
-Y29kZWJhc2UsIG5lYXJseSBhbGwgZmlsZXMgc2hvd2VkIGZvcm1hdHRpbmcgZGlmZmVyZW5jZXMu
-IFRoaXMgc3VnZ2VzdHMgdGhlIGNvbmZpZyBtaWdodCBub3QgZnVsbHkgYWxpZ24gd2l0aCB0aGUg
-YWN0dWFsIGNvZGUgc3R5bGUuIElzIGBjbGFuZy1mb3JtYXRgIHRoZSByZWNvbW1lbmRlZCB0b29s
-IGZvciBlbmZvcmNpbmcgc3R5bGUgY29uc2lzdGVuY3k/IElmIHNvLCBpcyB0aGVyZSBhbiB1cGRh
-dGVkIHZlcnNpb24gb2YgdGhlIGNvbmZpZyBmaWxlIHRoYXQgbWFpbnRhaW5lcnMgZW5kb3JzZT8K
-CgrigIPigINNYW51YWwgU3R5bGUgUnVsZXM6IElmIHRoZSBwcm9qZWN0IHByaW9yaXRpemVzIG1h
-bnVhbCBzdHlsZSBlbmZvcmNlbWVudCBvdmVyIGF1dG9tYXRlZCB0b29scywgY291bGQgeW91IHBv
-aW50IG1lIHRvIGRvY3VtZW50ZWQgY29udmVudGlvbnMgKGUuZy4sIGluZGVudGF0aW9uLCBuYW1p
-bmcsIGNvbW1lbnRzKT8KCgrigIPigINQcmUtU3VibWlzc2lvbiBIYW5kbGluZzogU2hvdWxkIGNv
-bnRyaWJ1dG9ycyBtYW51YWxseSBtYXRjaCB0aGUgZXhpc3Rpbmcgc3R5bGUsIG9yIGlzIGl0IGFj
-Y2VwdGFibGUgdG8gc3VibWl0IHBhdGNoZXMgcmVmb3JtYXR0ZWQgd2l0aCBhbiB1cGRhdGVkIC5j
-bGFuZy1mb3JtYXQ/CgoKQWRkaXRpb25hbGx5LCBpZiB0aGVyZSBhcmUgb3RoZXIgY29udHJpYnV0
-aW9uIGd1aWRlbGluZXMgKGUuZy4sIGNvbW1pdCBtZXNzYWdlIGZvcm1hdCwgdGVzdGluZyByZXF1
-aXJlbWVudHMpLCBJ4oCZZCBhcHByZWNpYXRlIGFueSBwb2ludGVycyB0byBhdm9pZCB1bm5lY2Vz
-c2FyeSByZXZpZXcgb3ZlcmhlYWQuCgoKVGhhbmsgeW91IGZvciB5b3VyIHRpbWUgYW5kIGd1aWRh
-bmNlISBJ4oCZbSBoYXBweSB0byBhZGp1c3QgbXkgd29ya2Zsb3cgdG8gYWxpZ24gd2l0aCB0aGUg
-cHJvamVjdOKAmXMgc3RhbmRhcmRzLiBMb29raW5nIGZvcndhcmQgdG8geW91ciBpbnNpZ2h0cy4K
-CgpCZXN0IHJlZ2FyZHMsClpob3UgSG9uZ2ZlbmcKR2l0aHViLmNvbS96aGY5OTkK
+On Tue, May 06, 2025 at 12:31:37PM -0400, Chuck Lever wrote:
+> > And given that both are only used by the server and never the client
+> > maybe they should both only be conditionally allocated?
+> 
+> Not sure I follow you here. The client certainly does make extensive use
+> of xdr_buf::bvec.
+
+Yeah.  It doesn't use rq_bvec, but that's because that is in a
+server-only structure..
+
 
