@@ -1,136 +1,150 @@
-Return-Path: <linux-rdma+bounces-10109-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10110-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7814AAD06A
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 23:57:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 648AEAAD20D
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 May 2025 02:16:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 556543BDFB5
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 May 2025 21:54:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D07A3520D5F
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 May 2025 00:16:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 805A872615;
-	Tue,  6 May 2025 21:55:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28D3A4B1E4E;
+	Wed,  7 May 2025 00:16:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R0vGGvLa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YvKdCbXV"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E08BF4B1E5C;
-	Tue,  6 May 2025 21:55:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ABF1EEBA;
+	Wed,  7 May 2025 00:16:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746568512; cv=none; b=ZbXBM8BQeak81MlmoQjt+LLt49lnRcZZXlxEncylE0hjxl+gRyh5cw3ianr5FyYsVpPnCqTRStrs3WOoadoN3Ni7TO2vH2Ihd9V7aCTTMeX0sADud040mLe/46Nv4jfMCCI603FYn55G5aihCF/pK3HZkY2Wr6LCAKiWNe6SSSw=
+	t=1746577003; cv=none; b=FfIujGr58DMnJRNal0a4fyIfUWK1mp7dKMEi6STCPgvUwG5R/pW+Yw9I3qRK2B6/sdrQ3y5qGnzA/N63SlkRnkxtRPjZTDy79qdb7oowy9b0UTjJG6M765UMipjSfxQPi5KB8zz5RWz7blJBnqd0Fl3Y5DI0l3AXX3KlrvinEmU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746568512; c=relaxed/simple;
-	bh=9nhpMzXTeNMxVi4L6WegKDk49ifAtG2YL+CH5aMmbLA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VSNzOLsMViDctzw4m41NfzBesUDFlpNGbAOqJCqwfjWcyCKIG8TZWZJ8wbznPJ4lH6YzsdsHxOLmZFri1kNqJsTi8Fysrym/7ghjbk00fV2QOeXE59l0LJWKYwaHmfuHqbHn+DHjgrzxnJwQsAjXbasK+Onl0OwkBRY1A8s38FE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R0vGGvLa; arc=none smtp.client-ip=209.85.210.182
+	s=arc-20240116; t=1746577003; c=relaxed/simple;
+	bh=WIblESYxXagNVxFzdusv4dclpEA4QpzqQV7zQARweF0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aKbCr+2agNl6lJP5VwLEGM4qdbM5XeyFKORC/XKuxVbHVfcSgZNjatpWXrUNuN89duN6p/+x719Ck5/tQYeGCZRpjowvfSp8n+mF6ahqPnwvsff8K7OjGk/Kfl/6jtlXHWrkuwADc67KgPelnNbrexqBlPMIHJ0ig56Q4zfQYmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YvKdCbXV; arc=none smtp.client-ip=209.85.166.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-736aaeed234so5490414b3a.0;
-        Tue, 06 May 2025 14:55:10 -0700 (PDT)
+Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-3da739653b2so974835ab.0;
+        Tue, 06 May 2025 17:16:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1746568510; x=1747173310; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DUulXuLoXvy+J7CYdN/iBa8zKhQkvTAtk/40HjSBy8g=;
-        b=R0vGGvLazDSaGHY1eTiCbSmx4ucfJTn5gWaC9+d6wfB0ErmIDutUk4CoE2+W9b/qCk
-         qPcq2tPMGCEbj+Zs/KHTuCIb4wPuR/xEuG0cI0VtNNxbXcgBzhFyf3HwHHZ5nyWwIx63
-         PjKxCE2uNwJskOgy+JhITPEO3qhOSg4rY6z2nT6isruWPqtBKqTqUXS0C9tRX0feVm6k
-         Khx92zqQbNaoGJXz9C0aC4liY/z4AzUyc2IGUOFAaFoIqprrk0YjQi+NKJhfGhuA9QB7
-         FfqpQmbaR2Pdpzt010/9ebvu4VFui+5I9cAu/uhSpBgFUQ6u2LWDNCBTXQV7i6kk4sw+
-         lKUQ==
+        d=gmail.com; s=20230601; t=1746577001; x=1747181801; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ERN4tZBNNxWUBbXOxBBa/C7QnG/J+3w3a9uKSXFs/2E=;
+        b=YvKdCbXV2NwAOiz7xKTYqU5wUDecj0eh6okGZgsqt+tfB3g4pJbPMs9JHRpG0jls34
+         ltFa4zPf8yyGskqzbCNUm0NDKB9qWGovicrsPSK1pNBxWCOMcHlKymMnbJNHUtzueBRK
+         43wN32MEtk+Hyutev11OA3fo71PxPAxVVCZiAp29ShcGay+KA0Ko591f50LHwzLRUw5d
+         6yMsDeJ/h2ElGxu67W6fY0hGK7r0z50LSPpiX1TmyE6fUKRyik8GwKmiSzmkjroE1P1f
+         ZVFo2benA1GPJXlDQVUEYIUX9KYSom61M7LBfQEw/AoRcYkSAcOhXR3KGB/FAFaUxgpM
+         8Llg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1746568510; x=1747173310;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DUulXuLoXvy+J7CYdN/iBa8zKhQkvTAtk/40HjSBy8g=;
-        b=T7T73p97Oo98YwisN7SHEv5TehsyLOV42rhTt1JeDxZEZBwN4ACPDFef8DgTY8Ocxa
-         8UxcC2/aQSSxjPjMehfCgeKFf6JrrGmpykqxAojktXvSlbhpbAym/57wOy8CjDDn4RUR
-         38st/oQCayMYxmJqmshFrB45WmnLtrVgr6c0c4VDwq+uxj5FP4BuOSYYFNYgPZqhW56H
-         iEUjG7fWCtVK4x6xEFKj00OqSMkISz1epro7NpA64P54kv8F3KUKgVe41gBAUIblZHGJ
-         wDXUNeuDPRqcLyl+ch8A7Q8fCXlmLmbN1XcYYD07o4S+SMkwcApHNfFZbLuH5FtkxBk2
-         +pdg==
-X-Forwarded-Encrypted: i=1; AJvYcCUurtkxzqTPxrMgsztrt+i9/Tu9/djnpoBuZ4Hsm78O5kgL+6nooOBNgJ0zcQyr7kigePLcloNZIDNQpA==@vger.kernel.org, AJvYcCVJ/jXAUgRonzlEVWx4KuzW8V08uymuQDEARbqaUonl/lkD68rUryBtj5Bxx+ZvGXfRn9N0VFC0MGw0jvk=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyUVKahRtu2TXZLniFi9So7Dyle7ysi5uQEZ91HCC5sO8CRrvtW
-	BH5lp0Oy3OsOl9VDV/O5So/QNQXAbTl5nprpxmWwEKBbzORN8L3YuhKZgO4=
-X-Gm-Gg: ASbGncvjfdUNvZqSOjMH/YRMhHnod0thGMPBj8dhPUWoxbWDb7UyCptNFFROqQh8CVR
-	cGdmS6JVn7ieGoraAx5xtrobcYDPykF0rXJZapGp8cb3SqILa+SiD8yD4/ReqjprNaRascXOpGL
-	/5fGpE+vB2ZWlDTTAb0AUu4rqto0vKwwM4lqS1t1DjMTW7LGMP8Tccym/4ZoU6lU7X6IS0/JLWl
-	UBPD2ZR+9yJqdsooTUeJ5qDx0GL1cwF2mJnCxNRPnjwa+tzNc7WDvkcjc1WBESsXJ2KSubFGdNu
-	Ytxhg2Xo88JaHiN9oveL4cBRUGzjyMAp5vSKRbhftbQgRNvQ/vDL5anA8Y3JwruEoQS50c24ZQw
-	PObnm2ufWCg==
-X-Google-Smtp-Source: AGHT+IFX2Ch7efSSLeEUlCZbZ/ZnYOKg1sJE0VDho937amSJc+t2A91D7vRhYykBcY3VbybZXfNQ+Q==
-X-Received: by 2002:a05:6a00:ad8f:b0:736:d297:164 with SMTP id d2e1a72fcca58-7409cee42eamr863756b3a.1.1746568509703;
-        Tue, 06 May 2025 14:55:09 -0700 (PDT)
-Received: from localhost (c-73-170-40-124.hsd1.ca.comcast.net. [73.170.40.124])
-        by smtp.gmail.com with UTF8SMTPSA id 41be03b00d2f7-b1fb3b62502sm8016838a12.32.2025.05.06.14.55.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 May 2025 14:55:09 -0700 (PDT)
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	saeedm@nvidia.com,
-	tariqt@nvidia.com,
-	andrew+netdev@lunn.ch,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	leon@kernel.org
-Subject: [PATCH net-next] net/mlx5: support software TX timestamp
-Date: Tue,  6 May 2025 14:55:08 -0700
-Message-ID: <20250506215508.3611977-1-stfomichev@gmail.com>
-X-Mailer: git-send-email 2.49.0
+        d=1e100.net; s=20230601; t=1746577001; x=1747181801;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ERN4tZBNNxWUBbXOxBBa/C7QnG/J+3w3a9uKSXFs/2E=;
+        b=PBtryJ5QneWurcagCN3PamnjZePtvlZ985xGdS/3kdzjPGalppL30p3JiXDM5SbzyS
+         sFqEhQUlAqL4gIrF47QsHEglk7pLL7xCqwBCXtB2mLtGEOUt0G5qGWnreQ19Cmsp0j2V
+         Me8eMHuwSnSn/GUvNIUHJJ6DQ6GMfRpxroOFd5pw+Z7olofd6UwFSVuBVCX5KSBNDmXf
+         G6M2kN0WNf/ysdH1Tcohp8TJYFhdugxEAUcna5EVPCWjo17QPL13ycUk23A0SM1O0tdN
+         zCjE01PISNGQG4mDUebKqnT488kFntIy6n7pMwkwDR0nswaUmqJioALMMU/I1fzd+rCB
+         9hwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUSV/ElePCSCiUDLD3NcrITVjDAj+R/NaV8qMRl4ilFZr3QRBfiNO+H89TwL9LXyricXlroHHJ1ug6HR04=@vger.kernel.org, AJvYcCVaTGPNt92RMXxY4jyrZaq3p6EF7ofcKZv54pT5WhG/ZjcBUCvx5Z4vETyK/6yABGnbcVVZrzDqdEcFPQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyQKZCz3sNaPhseBCHasAvSRletU5VqLeFv9XBm15VgHPruHzHQ
+	KOg64etxJGJBbNoKIUZEBcEHB8JHwUIGry2ZRI4/BW/u5hTza2IIrFNjm7UFSH+Lvog6mz+Ctk9
+	6Z762TfyU49n6FqqC7t/rtEEJHq0=
+X-Gm-Gg: ASbGncs084bYV/TbcwOFtzeNHVvvegjWpXOSDvN6TAtLiSXhwAeb/S84HO8cLX47QzK
+	cP83QLxunw0ZfH5y+oQCSSr0QvFHdUldrmQlZyikDu/k9KKJHizCAd2GN5A2FTnM3x5nh5av3VU
+	v9hbFjiWz1lZVOvTZzCmyv6Q==
+X-Google-Smtp-Source: AGHT+IF+RYfQnJXX2wiCv2f8FgLw9KAqzSO3hRhozP+0qGjgOmXPg5RSE0/cNow9QHK8qnUlcemlOTjy+nWSCQxf124=
+X-Received: by 2002:a05:6e02:1d92:b0:3d3:f27a:9103 with SMTP id
+ e9e14a558f8ab-3da738ed799mr12884645ab.1.1746577001455; Tue, 06 May 2025
+ 17:16:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250506215508.3611977-1-stfomichev@gmail.com>
+In-Reply-To: <20250506215508.3611977-1-stfomichev@gmail.com>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Wed, 7 May 2025 08:16:05 +0800
+X-Gm-Features: ATxdqUHZDuiLA7f7witp6xXHQswch3oKUZrSiSSAzpg7yLhrFN5x-dJ8eqivnlA
+Message-ID: <CAL+tcoCUofwE7zNf95KO75tkiVJkcJ3O4ybu07aYFo-wbV13JA@mail.gmail.com>
+Subject: Re: [PATCH net-next] net/mlx5: support software TX timestamp
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, saeedm@nvidia.com, tariqt@nvidia.com, 
+	andrew+netdev@lunn.ch, linux-rdma@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, leon@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Having a software timestamp (along with existing hardware one) is
-useful to trace how the packets flow through the stack.
-mlx5e_tx_skb_update_hwts_flags is called from tx paths
-to setup HW timestamp; extend it to add software one as well.
+On Wed, May 7, 2025 at 5:57=E2=80=AFAM Stanislav Fomichev <stfomichev@gmail=
+.com> wrote:
+>
+> Having a software timestamp (along with existing hardware one) is
+> useful to trace how the packets flow through the stack.
+> mlx5e_tx_skb_update_hwts_flags is called from tx paths
+> to setup HW timestamp; extend it to add software one as well.
+>
+> Signed-off-by: Stanislav Fomichev <stfomichev@gmail.com>
 
-Signed-off-by: Stanislav Fomichev <stfomichev@gmail.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c | 1 +
- drivers/net/ethernet/mellanox/mlx5/core/en_tx.c      | 1 +
- 2 files changed, 2 insertions(+)
+Reviewed-by: Jason Xing <kerneljasonxing@gmail.com>
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-index fdf9e9bb99ac..e399d7a3d6cb 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-@@ -1689,6 +1689,7 @@ int mlx5e_ethtool_get_ts_info(struct mlx5e_priv *priv,
- 		return 0;
- 
- 	info->so_timestamping = SOF_TIMESTAMPING_TX_HARDWARE |
-+				SOF_TIMESTAMPING_TX_SOFTWARE |
- 				SOF_TIMESTAMPING_RX_HARDWARE |
- 				SOF_TIMESTAMPING_RAW_HARDWARE;
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-index 4fd853d19e31..f6dd26ad29e5 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-@@ -341,6 +341,7 @@ static void mlx5e_tx_skb_update_hwts_flags(struct sk_buff *skb)
- {
- 	if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_HW_TSTAMP))
- 		skb_shinfo(skb)->tx_flags |= SKBTX_IN_PROGRESS;
-+	skb_tx_timestamp(skb);
- }
- 
- static void mlx5e_tx_check_stop(struct mlx5e_txqsq *sq)
--- 
-2.49.0
+Only one nit as below.
 
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c | 1 +
+>  drivers/net/ethernet/mellanox/mlx5/core/en_tx.c      | 1 +
+>  2 files changed, 2 insertions(+)
+>
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drive=
+rs/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+> index fdf9e9bb99ac..e399d7a3d6cb 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+> @@ -1689,6 +1689,7 @@ int mlx5e_ethtool_get_ts_info(struct mlx5e_priv *pr=
+iv,
+>                 return 0;
+>
+>         info->so_timestamping =3D SOF_TIMESTAMPING_TX_HARDWARE |
+> +                               SOF_TIMESTAMPING_TX_SOFTWARE |
+>                                 SOF_TIMESTAMPING_RX_HARDWARE |
+>                                 SOF_TIMESTAMPING_RAW_HARDWARE;
+>
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c b/drivers/ne=
+t/ethernet/mellanox/mlx5/core/en_tx.c
+> index 4fd853d19e31..f6dd26ad29e5 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
+> @@ -341,6 +341,7 @@ static void mlx5e_tx_skb_update_hwts_flags(struct sk_=
+buff *skb)
+
+nit: the function name including 'hwts' doesn't reflect the following
+software behavior.
+
+Thanks,
+Jason
+
+>  {
+>         if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_HW_TSTAMP))
+>                 skb_shinfo(skb)->tx_flags |=3D SKBTX_IN_PROGRESS;
+> +       skb_tx_timestamp(skb);
+>  }
+>
+>  static void mlx5e_tx_check_stop(struct mlx5e_txqsq *sq)
+> --
+> 2.49.0
+>
+>
 
