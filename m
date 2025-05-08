@@ -1,203 +1,176 @@
-Return-Path: <linux-rdma+bounces-10155-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10157-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C752CAAF6F8
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 May 2025 11:43:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ADA6AAF9DC
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 May 2025 14:27:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA58E3ADA0F
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 May 2025 09:43:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A21B94C6D2A
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 May 2025 12:27:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69C05264FB8;
-	Thu,  8 May 2025 09:43:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1FA822541C;
+	Thu,  8 May 2025 12:27:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="J+KqvhBk"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VTMBHg7M"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABA6F263F4E;
-	Thu,  8 May 2025 09:43:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CEC714A4C7;
+	Thu,  8 May 2025 12:27:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746697433; cv=none; b=dNxEqiAT+tMEZbpzl7N4QeqrDUGqGCWeRSeRd2hnfXfaofdTZ8BU4tEkXZfadwQG3k9rfLLguM4mJ6mKFzp3+E+uMQN4ht83D6ELagKsPuttAb5kMpCb99MXvG7cHlxbXkKpvG+vB/FaVwf+/BOglhQxNzG80qAUKzhhrVYbdcw=
+	t=1746707246; cv=none; b=msWbITtU2s73NARQ+5/CfivSEs1uZDNO7ysBCR6SfqRoBjF+xBr50F52lxxRYL9fQhbzsfb83ebXn6yrceEw5oaaR5HKv46Nh4yOtLJDtxbtsac+/Wr0sDoaigCKRP6PAlBicBovISy5dzo/xIL6leZE0R8yb2iRE076lMSvKYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746697433; c=relaxed/simple;
-	bh=H/WhQNKlzogJE4QdmSUmR0gkiVXIC0GbzPbzBw7pZ5k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SG4OsLfotsQplrwGWo2evWiQrAxULMo7X0qGDoTLnuxu1EGCbP+gRE0FfkEeR2875QvsZKSopQIoruMXJ2Ai/twRzLgddxuwvitlUCwtBUR/rQSCxl0wXwljCWRGRZLLDjSXZeZMDcMIc0r2J2hahdirBvjX5JiQqw4/BJvRDl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=J+KqvhBk; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id 382CD21199E0; Thu,  8 May 2025 02:43:51 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 382CD21199E0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1746697431;
-	bh=T55MVOVWe61rHi3lJfC1UHDy1Z+yOeyzZCnQiMX1Uo4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=J+KqvhBkERu+CQQma0RImBsW5LhVreeG9YYNffcEWSycBij+lh93WmlyNcF60pvxY
-	 5jBHglrAgT/MZ2QfE7n74bZ+Il6OEFOcm+jODe3kV8EbPDgU4U1/ggwjXDqA8w2hvf
-	 yulekqL+wc8ni0Xqki+vOAWIXEeX4rD6Ax8zRHSQ=
-Date: Thu, 8 May 2025 02:43:51 -0700
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	decui@microsoft.com, stephen@networkplumber.org, kys@microsoft.com,
-	paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
-	davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
-	longli@microsoft.com, ssengar@linux.microsoft.com,
-	linux-rdma@vger.kernel.org, daniel@iogearbox.net,
-	john.fastabend@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
-	hawk@kernel.org, tglx@linutronix.de, andrew+netdev@lunn.ch,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: mana: Add handler for hardware servicing
- events
-Message-ID: <20250508094351.GA8528@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1746633519-17549-1-git-send-email-haiyangz@microsoft.com>
- <20250508092924.GA2081@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	s=arc-20240116; t=1746707246; c=relaxed/simple;
+	bh=6GjyiTfn5SI4PebBO0uNWjR6eASjOV4bUgJNv0Jed3A=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RYeJFwj7kk4ZzISeUakvDU1LiWzWoYbHPqZv/M2akaQsd+Eg3oxVE4hnsV8ng2IuqFHmFcBbKehuusVgwfmelVbRh+24svGQD3wD4+cAV2gt672rM892f5N3kKngceRTlI/msl1C49E5lWfsa3yPFy6Iow8iL55gklz3cPPsY84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VTMBHg7M; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1746707245; x=1778243245;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=6GjyiTfn5SI4PebBO0uNWjR6eASjOV4bUgJNv0Jed3A=;
+  b=VTMBHg7M6pffPze0+emr06uAUjZG8/KntYsoEEF6FSlNyWoC4hywLHMR
+   lWyO+pw1NxlETUeYzuqj+1OCZZa5QmJlXgsIXsJWlVq1dZVf9IEhK2oXO
+   zNGLi5kSl+bf4R5RgH7To9WHHgtMzsk2CqWQdOezQIY3WapMpyVSYjaLF
+   6jfK0y9b4B8NZgvI1gtpz3lYAJlb3GgyGBxOl2OmA/+81a54c2ALND6gP
+   EXFr8tyT6o4Y1OcuxR2GKOUL+QoWyoxXsDVaz6VRzC56BjscHdPKVOyLT
+   57SOrw/oH92JM8xJMetDGKVFG7YyMdaIYwppgWvT7wC4hpEtpe3LB6UUn
+   w==;
+X-CSE-ConnectionGUID: Nw0o8fcMQUePT2Gr5uknRg==
+X-CSE-MsgGUID: q2nApTZASEWdUgoPlVOVUA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11426"; a="36115102"
+X-IronPort-AV: E=Sophos;i="6.15,272,1739865600"; 
+   d="scan'208";a="36115102"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2025 05:27:25 -0700
+X-CSE-ConnectionGUID: 65W7j38jRyO6Pv3w4+EBiA==
+X-CSE-MsgGUID: fsyGWW4PQO+5/tmgOs6e+w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,272,1739865600"; 
+   d="scan'208";a="136772854"
+Received: from amlin-018-114.igk.intel.com ([10.102.18.114])
+  by fmviesa010.fm.intel.com with ESMTP; 08 May 2025 05:27:19 -0700
+From: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+To: donald.hunter@gmail.com,
+	kuba@kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	vadim.fedorenko@linux.dev,
+	jiri@resnulli.us,
+	anthony.l.nguyen@intel.com,
+	przemyslaw.kitszel@intel.com,
+	andrew+netdev@lunn.ch,
+	saeedm@nvidia.com,
+	leon@kernel.org,
+	tariqt@nvidia.com,
+	jonathan.lemon@gmail.com,
+	richardcochran@gmail.com,
+	aleksandr.loktionov@intel.com,
+	milena.olech@intel.com
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org,
+	linux-rdma@vger.kernel.org,
+	Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+Subject: [PATCH net-next v3 0/3]  dpll: add all inputs phase offset monitor
+Date: Thu,  8 May 2025 14:21:25 +0200
+Message-Id: <20250508122128.1216231-1-arkadiusz.kubalewski@intel.com>
+X-Mailer: git-send-email 2.38.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250508092924.GA2081@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 
-On Thu, May 08, 2025 at 02:29:24AM -0700, Shradha Gupta wrote:
-> On Wed, May 07, 2025 at 08:58:39AM -0700, Haiyang Zhang wrote:
-> > To collaborate with hardware servicing events, upon receiving the special
-> > EQE notification from the HW channel, remove the devices on this bus.
-> > Then, after a waiting period based on the device specs, rescan the parent
-> > bus to recover the devices.
-> > 
-> > Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> > ---
-> >  .../net/ethernet/microsoft/mana/gdma_main.c   | 61 +++++++++++++++++++
-> >  include/net/mana/gdma.h                       |  5 +-
-> >  2 files changed, 65 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > index 4ffaf7588885..aa2ccf4d0ec6 100644
-> > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > @@ -352,11 +352,52 @@ void mana_gd_ring_cq(struct gdma_queue *cq, u8 arm_bit)
-> >  }
-> >  EXPORT_SYMBOL_NS(mana_gd_ring_cq, "NET_MANA");
-> >  
-> > +#define MANA_SERVICE_PERIOD 10
-> > +
-> > +struct mana_serv_work {
-> > +	struct work_struct serv_work;
-> > +	struct pci_dev *pdev;
-> > +};
-> > +
-> > +static void mana_serv_func(struct work_struct *w)
-> > +{
-> > +	struct mana_serv_work *mns_wk = container_of(w, struct mana_serv_work, serv_work);
-> > +	struct pci_dev *pdev = mns_wk->pdev;
-> > +	struct pci_bus *bus, *parent;
-> > +
-> > +	if (!pdev)
-> > +		goto out;
-> > +
-> > +	bus = pdev->bus;
-> > +	if (!bus) {
-> > +		dev_err(&pdev->dev, "MANA service: no bus\n");
-> > +		goto out;
-> > +	}
-> > +
-> > +	parent = bus->parent;
-> > +	if (!parent) {
-> > +		dev_err(&pdev->dev, "MANA service: no parent bus\n");
-> > +		goto out;
-> > +	}
-> > +
-> > +	pci_stop_and_remove_bus_device_locked(bus->self);
-> > +
-> > +	msleep(MANA_SERVICE_PERIOD * 1000);
-> > +
-> > +	pci_lock_rescan_remove();
-> > +	pci_rescan_bus(parent);
-> > +	pci_unlock_rescan_remove();
-> > +
-> > +out:
-> > +	kfree(mns_wk);
-> 
-> Shouldn't gc->in_service be set to false again?
+Add dpll device level feature: phase offset monitor.
 
-ah, nevermind. That won't be needed. Thanks
-> 
-> > +}
-> > +
-> >  static void mana_gd_process_eqe(struct gdma_queue *eq)
-> >  {
-> >  	u32 head = eq->head % (eq->queue_size / GDMA_EQE_SIZE);
-> >  	struct gdma_context *gc = eq->gdma_dev->gdma_context;
-> >  	struct gdma_eqe *eq_eqe_ptr = eq->queue_mem_ptr;
-> > +	struct mana_serv_work *mns_wk;
-> >  	union gdma_eqe_info eqe_info;
-> >  	enum gdma_eqe_type type;
-> >  	struct gdma_event event;
-> > @@ -400,6 +441,26 @@ static void mana_gd_process_eqe(struct gdma_queue *eq)
-> >  		eq->eq.callback(eq->eq.context, eq, &event);
-> >  		break;
-> >  
-> > +	case GDMA_EQE_HWC_FPGA_RECONFIG:
-> > +	case GDMA_EQE_HWC_SOCMANA_CRASH:
-> 
-> may be we also add a log(dev_dbg) to indicate if the servicing is for
-> FPGA reconfig or socmana crash.
-> 
-> > +		if (gc->in_service) {
-> > +			dev_info(gc->dev, "Already in service\n");
-> > +			break;
-> > +		}
-> > +
-> > +		mns_wk = kzalloc(sizeof(*mns_wk), GFP_ATOMIC);
-> > +		if (!mns_wk) {
-> > +			dev_err(gc->dev, "Fail to alloc mana_serv_work\n");
-> > +			break;
-> > +		}
-> > +
-> > +		dev_info(gc->dev, "Start MANA service\n");
-> > +		gc->in_service = true;
-> > +		mns_wk->pdev = to_pci_dev(gc->dev);
-> > +		INIT_WORK(&mns_wk->serv_work, mana_serv_func);
-> > +		schedule_work(&mns_wk->serv_work);
-> > +		break;
-> > +
-> >  	default:
-> >  		break;
-> >  	}
-> > diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-> > index 228603bf03f2..13cfbcf67815 100644
-> > --- a/include/net/mana/gdma.h
-> > +++ b/include/net/mana/gdma.h
-> > @@ -58,8 +58,9 @@ enum gdma_eqe_type {
-> >  	GDMA_EQE_HWC_INIT_EQ_ID_DB	= 129,
-> >  	GDMA_EQE_HWC_INIT_DATA		= 130,
-> >  	GDMA_EQE_HWC_INIT_DONE		= 131,
-> > -	GDMA_EQE_HWC_SOC_RECONFIG	= 132,
-> > +	GDMA_EQE_HWC_FPGA_RECONFIG	= 132,
-> >  	GDMA_EQE_HWC_SOC_RECONFIG_DATA	= 133,
-> > +	GDMA_EQE_HWC_SOCMANA_CRASH	= 135,
-> >  	GDMA_EQE_RNIC_QP_FATAL		= 176,
-> >  };
-> >  
-> > @@ -388,6 +389,8 @@ struct gdma_context {
-> >  	u32			test_event_eq_id;
-> >  
-> >  	bool			is_pf;
-> > +	bool			in_service;
-> > +
-> >  	phys_addr_t		bar0_pa;
-> >  	void __iomem		*bar0_va;
-> >  	void __iomem		*shm_base;
-> > -- 
-> > 2.34.1
+Phase offset measurement is typically performed against the current active
+source. However, some DPLL (Digital Phase-Locked Loop) devices may offer
+the capability to monitor phase offsets across all available inputs.
+The attribute and current feature state shall be included in the response
+message of the ``DPLL_CMD_DEVICE_GET`` command for supported DPLL devices.
+In such cases, users can also control the feature using the
+``DPLL_CMD_DEVICE_SET`` command by setting the ``enum dpll_feature_state``
+values for the attribute.
+
+Implement feature support in ice driver for dpll-enabled devices.
+
+Verify capability:
+$ ./tools/net/ynl/pyynl/cli.py \
+ --spec Documentation/netlink/specs/dpll.yaml \
+ --dump device-get
+[{'clock-id': 4658613174691613800,
+  'id': 0,
+  'lock-status': 'locked-ho-acq',
+  'mode': 'automatic',
+  'mode-supported': ['automatic'],
+  'module-name': 'ice',
+  'type': 'eec'},
+ {'clock-id': 4658613174691613800,
+  'id': 1,
+  'lock-status': 'locked-ho-acq',
+  'mode': 'automatic',
+  'mode-supported': ['automatic'],
+  'module-name': 'ice',
+  'phase-offset-monitor': 'disable',
+  'type': 'pps'}]
+
+Enable the feature:
+$ ./tools/net/ynl/pyynl/cli.py \
+ --spec Documentation/netlink/specs/dpll.yaml \
+ --do device-set --json '{"id":1, "phase-offset-monitor":"enable"}'
+
+Verify feature is enabled:
+$ ./tools/net/ynl/pyynl/cli.py \
+ --spec Documentation/netlink/specs/dpll.yaml \
+ --dump device-get
+[
+ [...]
+ {'capabilities': {'all-inputs-phase-offset-monitor'},
+  'clock-id': 4658613174691613800,
+  'id': 1,
+ [...]
+  'phase-offset-monitor': 'enable',
+ [...]]
+
+v3:
+- removed patch 1/4:
+  "dpll: use struct dpll_device_info for dpll registration"
+
+
+Arkadiusz Kubalewski (3):
+  dpll: add phase-offset-monitor feature to netlink spec
+  dpll: add phase_offset_monitor_get/set callbacks
+  ice: add phase offset monitor for all PPS dpll inputs
+
+ Documentation/driver-api/dpll.rst             |  16 ++
+ Documentation/netlink/specs/dpll.yaml         |  24 +++
+ drivers/dpll/dpll_netlink.c                   |  76 ++++++-
+ drivers/dpll/dpll_nl.c                        |   5 +-
+ .../net/ethernet/intel/ice/ice_adminq_cmd.h   |  20 ++
+ drivers/net/ethernet/intel/ice/ice_common.c   |  26 +++
+ drivers/net/ethernet/intel/ice/ice_common.h   |   3 +
+ drivers/net/ethernet/intel/ice/ice_dpll.c     | 191 +++++++++++++++++-
+ drivers/net/ethernet/intel/ice/ice_dpll.h     |   6 +
+ drivers/net/ethernet/intel/ice/ice_main.c     |   4 +
+ include/linux/dpll.h                          |   8 +
+ include/uapi/linux/dpll.h                     |  12 ++
+ 12 files changed, 386 insertions(+), 5 deletions(-)
+
+
+base-commit: 46431fd5224f7f3bab2823992ae1cf6f2700f1ce
+-- 
+2.38.1
+
 
