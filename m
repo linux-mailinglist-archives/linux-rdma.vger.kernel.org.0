@@ -1,289 +1,603 @@
-Return-Path: <linux-rdma+bounces-10149-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10150-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF49EAAF43D
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 May 2025 09:03:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAEC2AAF4C0
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 May 2025 09:37:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 625987ACB31
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 May 2025 07:02:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D15AB1C0646A
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 May 2025 07:37:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5328F21C185;
-	Thu,  8 May 2025 07:03:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0DEE221F0B;
+	Thu,  8 May 2025 07:37:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="OstEXokX";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="FNNnWHWl"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="S+A/3Cg7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 412AA33FD
-	for <linux-rdma@vger.kernel.org>; Thu,  8 May 2025 07:03:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.143.124
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746687793; cv=fail; b=KHhxBbEa3GOJTB36amV3DEpoh9uYmxIfMDIT8Fzzs4iSRAGvFaLveDNwCQIGxKZfAsKJ2ftL7vOBK9QOoKIWDaoY3OpqpgF8NHgDZoTS7MmMrpkT350xkiZWNV0fT3zmrdaQcSJc71m6sqNKaupH5p87cuRIyUbNWRg1tC7pJt0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746687793; c=relaxed/simple;
-	bh=irLP3/0hFzgBHnsLsrdKwzqOlpXY6jOXLX78CIfS1Jk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=PZLsyAVAGam4t9tZscF/3qDcdSGIlcFCOP72P/t6NNtJe8ZVkkppM8ORlI46mlLn+h7Aah0tuSdARJXsDqKRjYNSgCsbmcRKL+YuEXz1VdNh9WpdNiiRzI7rj64M/14ebzpHO8SHfw2qw90ahkBQCsURWD7sVVp2qy7ajPI/ayw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=OstEXokX; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=FNNnWHWl; arc=fail smtp.client-ip=68.232.143.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1746687791; x=1778223791;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=irLP3/0hFzgBHnsLsrdKwzqOlpXY6jOXLX78CIfS1Jk=;
-  b=OstEXokX6I8Ps6jZZk3tAa6VjrIMLUoDWAeVyiEvBrooFAtHmmzNyy0J
-   eRY1mNXCvx8knAhEUCXLe/bynq/+3sH+zJtrZiqwOqoc6slJ8L7ajopaL
-   sEBQwhq/z13rmZYXCgEXAAnWCj6boplmjePnAJ6r91wU0KQjWVwSyGe7r
-   Wj2YcEpfTwvDRrXZYT5uIY5N5Th6W+ITmVw4LNzVw4/tnI8N0O3it69yJ
-   IznL7ID1VLPZwD+Ase+rYAqu10CpwoEa2GyUVmUiMk+xRboffqx/0KZ5B
-   4MUB4lJqZiTMwj8X5/qxubJgl7ubyIwXzzTaYa22/1f01Vh21MMV6xxRS
-   A==;
-X-CSE-ConnectionGUID: iLJFQN4GQkC8MPDkoeooNg==
-X-CSE-MsgGUID: 8J1StAwvTUaNvzXmTgi6Hg==
-X-IronPort-AV: E=Sophos;i="6.15,271,1739808000"; 
-   d="scan'208";a="85565960"
-Received: from mail-bn7nam10lp2043.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.43])
-  by ob1.hgst.iphmx.com with ESMTP; 08 May 2025 15:03:09 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=VtC734Bkzcng3cvzxXcaDOItEktbPm6zosqBYJc4nJMaIw1a96hteULsCj4dTJfoNSEgCw0Ewp1ZmqMKsprOrc5Fop8UwV39MlUGBhQZj3b1D+ZKRARxbdAMkYo3htlzO5Lj5VvLWTiQy131oMcaXDRiss+6jqWVJoRZBYorXNuETfhw8k0D5qhuY+fmrNdmP62TMEHPqU71X45Rbeq/rxa73HIQnX6m+HlpMWVsXCMQv7cpbY++kpa+IxU9adNOQBgXnR/dQ7MLIsAE55g9o+ZPu4+J91fFcE1qsRoLoO8kZRqu38Cvsj5P9iymonYMtyrbbiF6IJsPQHUcdoa4IQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nDe1C7TPBH1WDhfW11R6MWWpYHWXuW93qFb8xs5j6v4=;
- b=EPYVJlVWeWvxJij1UdsxjlcZKmH9zHdWK5cf+8IAc+sr8FcK1C5WWVYCoD7sNxiU2P8BCpYN9kXHUysCaY+C9ssOySAc0Um7i7i50FueiEDp6N6mt5MfxHgRxlAB5o9pgcPBf2+3As7Rk5b6cWOsswZu6iRAdKy8LmvPRWQZ+XXeDpE8fRwyA+ptKHSBNf6fY+ntsYSr7dLROKKmKQ5/0AzSYn3MsRxEjs81ZRkUoofVpN7+dgimm44irC4WlJMQQY1rlqAYq6wP+KXZZ2rS5Va8fabVQCzSaDfr7zwbIbM0s/yCLMdxktabg4mYq0SthmaggI9txmqnxm2nzLazaQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C9F121D596
+	for <linux-rdma@vger.kernel.org>; Thu,  8 May 2025 07:37:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1746689823; cv=none; b=jWXI2F426ptpZt/4CeFKPQzoy8X4RuXz4Yspdv/TESvu1HlXTEylBtvw2i8k/RieWEWVzYFe2zu+zPa2Ue1YKgzmWYSkoeb2o0sWKI2oAOJUX0eqVCh3QcD4A8mci5dKJaX8N1p3rP7Q/BrGIhGXhgroPKlME8Vh3KLiE7HUTuU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1746689823; c=relaxed/simple;
+	bh=aV9GSRXkFpfrXUDnQdF5YMiuhIbSpZGgZyqtfUaSdZs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=edLF61uf1X5g/bAYAuHuYhnwosqdlzYqQtHpJKBRYZdJYtVirvJT7yuTgPW91c0p23NMad+8cFA7Jcm7MC23tqMLbm+WM4QLu40bs/n4wl4a9nXHmHkaVmoU6gjYyIUKw9OC4R2vZHrkRhj8QItQC43jRB62fSMh/eWTHGLy+qg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=S+A/3Cg7; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-7399a2dc13fso934395b3a.2
+        for <linux-rdma@vger.kernel.org>; Thu, 08 May 2025 00:37:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nDe1C7TPBH1WDhfW11R6MWWpYHWXuW93qFb8xs5j6v4=;
- b=FNNnWHWlM1gv4B3XTdbg91cngurqcdZr1AnKSEZ4RJOnYedDq/PkJe3pjNAUwRNbXvqROg+K9FQRGb0GS+jP0vf5fESxP7EkDsZfDjWVHzlCOgC64SoWtNKuhIr70gSMt1GAlleXlH24pm7oElNdnuHq8wKnG3Xlo4jjUlFSPSg=
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com (2603:10b6:8:f::6) by
- DM6PR04MB6732.namprd04.prod.outlook.com (2603:10b6:5:1::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8699.20; Thu, 8 May 2025 07:03:03 +0000
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::b27f:cdfa:851:e89a]) by DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::b27f:cdfa:851:e89a%4]) with mapi id 15.20.8699.026; Thu, 8 May 2025
- 07:03:03 +0000
-From: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-To: Bernard Metzler <BMT@zurich.ibm.com>
-CC: "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, Daniel Wagner
-	<wagi@kernel.org>
-Subject: Re: [bug report] blktests nvme/061 hang with rdma transport and siw
- driver
-Thread-Topic: [bug report] blktests nvme/061 hang with rdma transport and siw
- driver
-Thread-Index: AQHbrfdhJhGSraouF0ezotWmIGdrJbOkzJXwgADapACAIstSAA==
-Date: Thu, 8 May 2025 07:03:03 +0000
-Message-ID: <d4xfwos54mccrwgw76t6q5nhwe2n3bxbt46cmyuhjcpcsub2hy@7d3zsewjkycv>
-References: <r5676e754sv35aq7cdsqrlnvyhiq5zktteaurl7vmfih35efko@z6lay7uypy3c>
- <BN8PR15MB251354A3F4F39E0360B9B41399B22@BN8PR15MB2513.namprd15.prod.outlook.com>
- <lembalemdaoaqocvyd6n3rtdocv45734d22kmaleliwjoqpnpi@hrkfn3bl6hsv>
-In-Reply-To: <lembalemdaoaqocvyd6n3rtdocv45734d22kmaleliwjoqpnpi@hrkfn3bl6hsv>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM8PR04MB8037:EE_|DM6PR04MB6732:EE_
-x-ms-office365-filtering-correlation-id: 89e1bf42-2a59-4169-ea1b-08dd8dfe6044
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|366016|376014|38070700018;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?FEqPqLJkh6tZ+nSxqx3M/Eus6zwdWng06Yn9KPoxqrwHNr++107QmK35K81g?=
- =?us-ascii?Q?NfnNz2N0zbi6B+H+v6u4hNMcBSuXf3otPlbKn4cD61h8E6i51R+kp33jxuLI?=
- =?us-ascii?Q?pEWZtI3IKKy2LcdeHJ/EMGQyz5WerUc6H+nrzymSbkxlnHz7M/96a/qzGIgT?=
- =?us-ascii?Q?lWe9oyyxy8IQK0GLhqr2RhM1lxOyqHQMvUsm/71fk7YhWecXkwgM2WMSyS4k?=
- =?us-ascii?Q?EkC6hGORv6jid9J8MAKUpEVxM3a/GIFWj/bJYl/xFEnua8d5Ijfv+ziWtj0I?=
- =?us-ascii?Q?V81fEIOoL/WlXqROEd+eIzP13B5sA7ntyUDysDsFHiDeeYicIMcKqfSdJUno?=
- =?us-ascii?Q?osqiDJaGsX+xgHu1uF9LrunsHaD4qNJAw1vWJDOQOMKctDp4hkxAkeIHlahn?=
- =?us-ascii?Q?tQkwSCbe8f6vQ18iBfM0dwA3gPGUqBfeQaD2GaL4rx/fk/+Lls/XdQAGq1qI?=
- =?us-ascii?Q?sm/623X3tNJWeg+2MJLs/xomm8n4AlCTq5dZLppi56MI3clZb4yNIWE2V2uV?=
- =?us-ascii?Q?LS0r6bCPOUNwvoFyk1uDMbjCYfIkwgBbwdEHZpbTkeHVHb4fgfnYVnuEP4gB?=
- =?us-ascii?Q?I9mcmoHj2hbDkK89lgkO+kTf8HyDhifS2wRLr0yBh66bcUJgx8Z15B96s4ML?=
- =?us-ascii?Q?IRyAwmY0kbCfjekbOuG0OS3+GRmStXt4I7wvxyYiFE+dBYnUzz8MwpEwcCcO?=
- =?us-ascii?Q?yakDzYs1EEVt/8oO3o6FZgkQuIaJX6KwH8tuzsr0GFFANYD+bDLeUyKn297a?=
- =?us-ascii?Q?rQ4T/XlwV3WT7uDfVEGmpfFYszgOxtk3EoXyJqFTo9DSsMGFLZiZEl30YoMN?=
- =?us-ascii?Q?bY+C2qkdHum/H/aS+XS4j5MISyfLP78QoCU3WpCw0vIpWzjK8H/9P6dVdxsA?=
- =?us-ascii?Q?jvflQ/qhXxKDNRNBaxwdJ36sZwXDVWqOEy1eJaDF/uonjo+zzk7s4Onpi2j+?=
- =?us-ascii?Q?PGCNcOlKydkVQKulwpbLtHSbRUXHnuL+Ds/p3xD7aymB+t3L6T2f1HUT8Wtn?=
- =?us-ascii?Q?Zc/CpJXXwEusduPNZ1sIY3u/qZ/j37VUIfcwQM/ASNHk5c7N2MyaiGGzL7AG?=
- =?us-ascii?Q?5IkuWcer4L2XRABR+g+C7EO8LlyufvzeRXLXrfjuzY1R6W4D3FR8dUH+/hAb?=
- =?us-ascii?Q?O90Sbwr3uOGqnNs4RQ6fo0CyI6ukOD+JO/L1A0sgdWz1qDl0TlFt2bj1jRQE?=
- =?us-ascii?Q?HZuYdvD3jPc/fqZXqbeX0gMzd4CtawNRmYTD4zDjX0ryS0YXEqGJ2hzOmhLt?=
- =?us-ascii?Q?dcLS0L7if4LiH0VVf7tOMoZGFP2efOd8IH9DZXFGEctTzTAw5jt8UTvJcmxy?=
- =?us-ascii?Q?T8q4oqWo4AX/vIl1smukCeef/9V7XrqypVedVQm3Lx/otpBm0kqm5wVTswTl?=
- =?us-ascii?Q?wmc1UwyjNUNoZgeccncVHHI9lsGkWyvHwQOQZFKx2OfIJH/IrVZ2sI52CUq+?=
- =?us-ascii?Q?7KGjd38S/7vAvVYtaMhUt30qD7sdB/EsKh6cOn9zbA2BNwtFvdq8ZQ=3D=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8037.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?qrnJ1bhO1R3pO+NsPxFvzOnm4eSRx5n+AQdy3RnSH3TwfobUX155yr9rIeQi?=
- =?us-ascii?Q?3jT2H+EyjgMZmVGGZxlO/j8FAEf7bFsNaP0/eG7P0kXoTYMwhEVU1RuAhn3T?=
- =?us-ascii?Q?OqD2lHEdOYS1l+V2rdad0ORlq2//5Lb8fhhfuYgMLoO4ELa6B9qu+yM67mmn?=
- =?us-ascii?Q?RCvdYBvycnH7Umcr7TUVSs76MH+rfg+PMCy42sFU7Vb36PK6L0stGEMSic9x?=
- =?us-ascii?Q?wI/AU037t4BznHZ/kDJIpslHoV9OODjG/Mo9ultzojmRYe21NMGFD/mtjWv5?=
- =?us-ascii?Q?wBU4iv9BdWOvSR3wH7ACx2X+20XAVWfbpyRyS42MdREFMmgsXLu1/7Z7RG/W?=
- =?us-ascii?Q?Ap2u/Mqd5CoFt125B24qSiEy2pQm59fj3ts3ZtotIcgP+9QYO+C9Dk7bWPgl?=
- =?us-ascii?Q?LBF21ieMmmvj7cbUFIRVlAvI+HZsduxyQqC8SXgQQtnxojLhNfgSRHNplDvE?=
- =?us-ascii?Q?vEPrkWaNQXhwr1zTRKWJOLW0m+RColM9b1wOxVTYQNEiVgYpek9RHmH3mIA6?=
- =?us-ascii?Q?PZv898nT4W6r9+qMWPQfvQei45gXz4avieYq3tTZbuFmov7R0u2NZbvg/8zc?=
- =?us-ascii?Q?UOH7plu0NW5Vj6pgz6dHe2Em889S5hbXAHTCaJgM5NjCmKgDO8x+fuJreqBx?=
- =?us-ascii?Q?6XTRZtNztNKq4RCgf+cFBdn2hhWMgFn6aaBB7EOZnXck48Xnv9Po6nGm3tbD?=
- =?us-ascii?Q?LSGzawSmp9gx/X+23WVUPPayPOOmjC9uzCF+XAIFk7hhs+z4Ij0H2Uk8hy/v?=
- =?us-ascii?Q?C2KAgKuReh7751XAcN0R31mZOD7f9th+500kpWKNK+LbNK+ACYuVPGOMeHvq?=
- =?us-ascii?Q?Y6/31ekYzl+u/jJFgK+SbDVZ1gwrFFM9IOjeHwXqS3PsMmWhfX/W1PbvoGzG?=
- =?us-ascii?Q?KwDeHBKTz/rrIceJHHcS+nOsB/9TXwtxuf7i5fsYnshJXndh4R/lHFEhyRX6?=
- =?us-ascii?Q?jssURKLsGEV0WvMJUAo7QSSurk+xPmtsRNyw0TGw2nXx8Cs9vkYG7fCVEFZN?=
- =?us-ascii?Q?FPcTddgcstJnLafm+sQAp8l9dNa13zFx75HUHere3kJv3dbczz15HlNBbfi8?=
- =?us-ascii?Q?GJvz/JYADv8h3oOO8YBKez5QFWS1Nwp5H9AteR8g33foG97WJkt1CIs7u4Ui?=
- =?us-ascii?Q?f2eSiLZQ7zE1bUE65tecgZ/nZwbZWhc08IJnTywrYG25P705guH36u0Qdbxz?=
- =?us-ascii?Q?k3jMb69P4SX5sZCXDB0EKEaVu+KojWPhAnhcn0LPynYnMY5ZwNiE9HFvGncg?=
- =?us-ascii?Q?HrFZcOSLGcZTbQJTbSxps5snNMX39AX3Aw2nR3WUqfYfMB8UbAs6ATRtmYnZ?=
- =?us-ascii?Q?Sc+GXFY5AlkO9mtgw+avhoOEdvg+agiaSAaTeqJwf167FNxfE77ResawQARf?=
- =?us-ascii?Q?m3bkbH/idNi3b/z3XiWxwxTWdSPwSghYDX4Z+b6rCmf9c1ZYOpfi2yVhEVKK?=
- =?us-ascii?Q?1OI3XqA94RuLk2cCgxDasIl0POLDaSU6T05cY7XxyuSaI9VdNPKlkEb1XK+4?=
- =?us-ascii?Q?huUw0n6anvtLqMastV0mTsf+A3D7r+4H/ALYUl6DEOq/juEKKAT6OypL68kE?=
- =?us-ascii?Q?2Z5ypDOB1m9EdHvT9HHu2J+kFGSrONuFxOjDkj0IDUwFhp6E2qXnO/J9INdh?=
- =?us-ascii?Q?Cg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <23714901BBF1C349A7B9744B858FFE4A@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=broadcom.com; s=google; t=1746689819; x=1747294619; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=XrT0dMZXA7jGZJH7z2Wk9Vn/fV/CXKfd2L11bqedvhY=;
+        b=S+A/3Cg7iihOaEpprFhSIFIVTXo1LSWoJvVPzx3zJ4my01iReU3ALtYjGarOU6E3Tz
+         RGr5JmcIxbLqUo/QlglYMFrRdwNoFgn+UpVNGO9yU9btILiOJhhC5dXpfKeMItkQKTuJ
+         vY5pOSE29IJ21TvOOxJKQhDaRlscbqjhvpsaY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746689819; x=1747294619;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XrT0dMZXA7jGZJH7z2Wk9Vn/fV/CXKfd2L11bqedvhY=;
+        b=WEvn4IdcmHkuDO8xWfW1yO+eaM0Gcn+q0wbvWjUmCKWiPnkFTanrJCC7DpTu/ziRYB
+         px2zbjPgAT+HA0g5mKap/2dx8hyyJf9FjriFRI40/R4rP6+oX0FSk4AjFgMJ2SFUBN76
+         EaKc7Z+1sSwF4WcEE3A1e4R60aDN+nl9QxdyqJySzm6/KghImi7hjJKsfC0cWbRIWPQy
+         9ooLbBog4Z0ENGyIJ9XtVKQebCd0tx3dW4vfJD9qLGxXXEhFFOpq7PirzrUSvQ9R7k6c
+         2BSkioVQF5cYGKWgkNzS0OPEptIjy6jm4ZVkKqcNEIMUuFv/sAb3RZ+VmUoSVpQeuWCf
+         GDyg==
+X-Forwarded-Encrypted: i=1; AJvYcCXvQOXIHt8s4AswWS0b4UomDBiRV5JyFvvF+GeVs7oE/F0Zz3H1aRCVdLV6ZwFgY7CCxTCAiABegoE6@vger.kernel.org
+X-Gm-Message-State: AOJu0YzZ9ZvmgniE36UNIGhmyxkupgoKs6hwy6rlx/NLPDC4K85dDVp9
+	AUsF6Pbk3GJhB+m21sQAXCEe3z/3jXj0wnAP2rpewjFIuSIUWGM5bM2en4RuqfBuM7uPg5Hg4eC
+	JwN/n3NKX72/EwgBWa0tYeOdB0UGg2ex7yAnU
+X-Gm-Gg: ASbGncuB/aKFeFYfbrKUPG3Zk3vIITk9bTVCAgA/63+UFdUaoJ22DaJiw7mkvXoHAz5
+	MrQH/k7BcpVDO/lohjlSIQGnUOjzxEXpkIGOL6sVhfwK0MTmbtxyISTZ2txlXVWf4MM9Uhi6EjG
+	qYKid4Uj++6N46pa+rkeJV
+X-Google-Smtp-Source: AGHT+IFB8JkFGRlbnlOVYykX7v/f06YcLbeGlLW2aAxnTBsvwBu08mIWRTh3ZelYym01WYd+YNsc/0ZnZEOLCsunXrY=
+X-Received: by 2002:aa7:9316:0:b0:736:2a73:6756 with SMTP id
+ d2e1a72fcca58-7409cfef303mr9062460b3a.21.1746689819508; Thu, 08 May 2025
+ 00:36:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	Mry1jmhuoaLNqgHveVAFs1BCC9Ty8aZ3wZFC77UataF9Lpg6paXnHzNECUBD9MSa8RyyouhlLABdItNVN4924epRtoFoGRMA+Z7r/Ag2t/OfZV0vq4wLU09bOvigqEbzFe4z8qTtU7/OxAzezjMAgP7ROqwrFNiGDOZ+mkDDSZLPSq593Sp+dujQvDRlVSEHL+qh3w3L02ERqm6nZ+R+uK9SyHytUcVJbeG3zwPtA38SJ1vKFZt8XO8PTEL7iK+rfvCE/f4ho3+HwsSnQKRLIbpRR8ZU0FJ3khMu6G9Y9JiqclRfrgY8TlAy9Br/+VqZwIGFkOA4xUXfwjPhoH37sAaoOCPOflK5Mqle/0NjjK23nmKI3BsgZjPABLodXT4TNZov56kKvqN7L6smLdUM6xTuTunV8WvBQrRVT3YK+zNFoYkS3qH6+6kJbor52Al0Vm2+MuT+DJ839w5JgDaZW8hps7HLL5OuFfXmqyZzeODoLtVaFQ/dgkzOWsCfODek5oW8GpncXu088KhFviBGfTRsOUkuYrnBiIldPN2/X2oinoSwpni7Ei9RgpUFPyTQK1IUvTIJFw6HkXT3kfA2rf18MMyVf/zrjTE3UPuP4e2r26/fpIiWVo0QfN/lmq2N
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8037.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 89e1bf42-2a59-4169-ea1b-08dd8dfe6044
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 May 2025 07:03:03.2528
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CqMDUH2s1aU/uEWaKCKsFN04W6J+scqIeKz6ztEd8IjCCa9ow9TCSckfqwxHmrASXaXUU/j/IW7Nql5tvr3YY7tODpwvEb5tCIzWsqm1w/M=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6732
+References: <20250508045957.2823318-1-abhijit.gangurde@amd.com> <20250508045957.2823318-9-abhijit.gangurde@amd.com>
+In-Reply-To: <20250508045957.2823318-9-abhijit.gangurde@amd.com>
+From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
+Date: Thu, 8 May 2025 13:06:47 +0530
+X-Gm-Features: ATxdqUGhazH4PlIoFulZVFyin8xyWDgso205DYpeeWHlQh8sghrJfFsB8Owk4B0
+Message-ID: <CAH-L+nM86KduwFfEUDdGOSx865Dq=YHaVfUZU8GRqb2C3tq7dQ@mail.gmail.com>
+Subject: Re: [PATCH v2 08/14] RDMA/ionic: Register auxiliary module for ionic
+ ethernet adapter
+To: Abhijit Gangurde <abhijit.gangurde@amd.com>
+Cc: shannon.nelson@amd.com, brett.creeley@amd.com, davem@davemloft.net, 
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, corbet@lwn.net, 
+	jgg@ziepe.ca, leon@kernel.org, andrew+netdev@lunn.ch, allen.hubbe@amd.com, 
+	nikhil.agarwal@amd.com, linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Andrew Boyer <andrew.boyer@amd.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="0000000000003f299e06349aeade"
 
-On Apr 16, 2025 / 12:42, Shin'ichiro Kawasaki wrote:
-> On Apr 15, 2025 / 15:18, Bernard Metzler wrote:
-[...]
-> > At first glance, to me it looks like a problem in the iwcm code,
-> > where a cmid's work queue handling might be broken.
+--0000000000003f299e06349aeade
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I agree. The BUG slab-use-after-free happened for a work object. The call
-trace indicates that happened for the work handled by iw_cm_wq, not
-siw_cm_wq.
+On Thu, May 8, 2025 at 10:33=E2=80=AFAM Abhijit Gangurde
+<abhijit.gangurde@amd.com> wrote:
+>
+> Register auxiliary module to create ibdevice for ionic
+> ethernet adapter.
+>
+> Co-developed-by: Andrew Boyer <andrew.boyer@amd.com>
+> Signed-off-by: Andrew Boyer <andrew.boyer@amd.com>
+> Co-developed-by: Allen Hubbe <allen.hubbe@amd.com>
+> Signed-off-by: Allen Hubbe <allen.hubbe@amd.com>
+> Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
+> ---
+> v1->v2
+>   - Removed netdev references from ionic RDMA driver
+>   - Moved to ionic_lif* instead of void* to convey information between
+>     aux devices and drivers.
+>
+>  drivers/infiniband/hw/ionic/ionic_ibdev.c   | 135 ++++++++++++++++++++
+>  drivers/infiniband/hw/ionic/ionic_ibdev.h   |  21 +++
+>  drivers/infiniband/hw/ionic/ionic_lif_cfg.c | 121 ++++++++++++++++++
+>  drivers/infiniband/hw/ionic/ionic_lif_cfg.h |  65 ++++++++++
+>  4 files changed, 342 insertions(+)
+>  create mode 100644 drivers/infiniband/hw/ionic/ionic_ibdev.c
+>  create mode 100644 drivers/infiniband/hw/ionic/ionic_ibdev.h
+>  create mode 100644 drivers/infiniband/hw/ionic/ionic_lif_cfg.c
+>  create mode 100644 drivers/infiniband/hw/ionic/ionic_lif_cfg.h
+>
+> diff --git a/drivers/infiniband/hw/ionic/ionic_ibdev.c b/drivers/infiniba=
+nd/hw/ionic/ionic_ibdev.c
+> new file mode 100644
+> index 000000000000..ca047a789378
+> --- /dev/null
+> +++ b/drivers/infiniband/hw/ionic/ionic_ibdev.c
+> @@ -0,0 +1,135 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (C) 2018-2025, Advanced Micro Devices, Inc. */
+> +
+> +#include <linux/module.h>
+> +#include <linux/printk.h>
+> +#include <net/addrconf.h>
+> +
+> +#include "ionic_ibdev.h"
+> +
+> +#define DRIVER_DESCRIPTION "AMD Pensando RoCE HCA driver"
+> +#define DEVICE_DESCRIPTION "AMD Pensando RoCE HCA"
+> +
+> +MODULE_AUTHOR("Allen Hubbe <allen.hubbe@amd.com>");
+> +MODULE_DESCRIPTION(DRIVER_DESCRIPTION);
+> +MODULE_LICENSE("GPL");
+> +MODULE_IMPORT_NS("NET_IONIC");
+> +
+> +static const struct auxiliary_device_id ionic_aux_id_table[] =3D {
+> +       { .name =3D "ionic.rdma", },
+> +       {},
+> +};
+> +
+> +MODULE_DEVICE_TABLE(auxiliary, ionic_aux_id_table);
+> +
+> +static void ionic_destroy_ibdev(struct ionic_ibdev *dev)
+> +{
+> +       ib_unregister_device(&dev->ibdev);
+> +       ib_dealloc_device(&dev->ibdev);
+> +}
+> +
+> +static struct ionic_ibdev *ionic_create_ibdev(struct ionic_aux_dev *ioni=
+c_adev)
+> +{
+> +       struct ib_device *ibdev;
+> +       struct ionic_ibdev *dev;
+> +       int rc;
+> +
+> +       rc =3D ionic_version_check(&ionic_adev->adev.dev, ionic_adev->lif=
+);
+> +       if (rc)
+> +               goto err_dev;
+You can return directly from here
+> +
+> +       dev =3D ib_alloc_device(ionic_ibdev, ibdev);
+> +       if (!dev) {
+> +               rc =3D -ENOMEM;
+> +               goto err_dev;
+You can return directly from here
+> +       }
+> +
+> +       ionic_fill_lif_cfg(ionic_adev->lif, &dev->lif_cfg);
+> +
+> +       ibdev =3D &dev->ibdev;
+> +       ibdev->dev.parent =3D dev->lif_cfg.hwdev;
+> +
+> +       strscpy(ibdev->name, "ionic_%d", IB_DEVICE_NAME_MAX);
+> +       strscpy(ibdev->node_desc, DEVICE_DESCRIPTION, IB_DEVICE_NODE_DESC=
+_MAX);
+> +
+> +       ibdev->node_type =3D RDMA_NODE_IB_CA;
+> +       ibdev->phys_port_cnt =3D 1;
+> +
+> +       /* the first two eq are reserved for async events */
+> +       ibdev->num_comp_vectors =3D dev->lif_cfg.eq_count - 2;
+> +
+> +       addrconf_ifid_eui48((u8 *)&ibdev->node_guid,
+> +                           ionic_lif_netdev(ionic_adev->lif));
+> +
+> +       rc =3D ib_device_set_netdev(ibdev, ionic_lif_netdev(ionic_adev->l=
+if), 1);
+> +       if (rc)
+> +               goto err_admin;
+> +
+> +       rc =3D ib_register_device(ibdev, "ionic_%d", ibdev->dev.parent);
+> +       if (rc)
+> +               goto err_register;
+> +
+> +       return dev;
+> +
+> +err_register:
+Unnecessary label
+> +err_admin:
+> +       ib_dealloc_device(&dev->ibdev);
+> +err_dev:
+> +       return ERR_PTR(rc);
+> +}
+> +
+> +static int ionic_aux_probe(struct auxiliary_device *adev,
+> +                          const struct auxiliary_device_id *id)
+> +{
+> +       struct ionic_aux_dev *ionic_adev;
+> +       struct ionic_ibdev *dev;
+> +
+> +       ionic_adev =3D container_of(adev, struct ionic_aux_dev, adev);
+> +       dev =3D ionic_create_ibdev(ionic_adev);
+> +       if (IS_ERR(dev))
+> +               return dev_err_probe(&adev->dev, PTR_ERR(dev),
+> +                                    "Failed to register ibdev\n");
+> +
+> +       auxiliary_set_drvdata(adev, dev);
+> +       ibdev_dbg(&dev->ibdev, "registered\n");
+> +
+> +       return 0;
+> +}
+> +
+> +static void ionic_aux_remove(struct auxiliary_device *adev)
+> +{
+> +       struct ionic_ibdev *dev =3D auxiliary_get_drvdata(adev);
+> +
+> +       dev_dbg(&adev->dev, "unregister ibdev\n");
+> +       ionic_destroy_ibdev(dev);
+> +       dev_dbg(&adev->dev, "unregistered\n");
+> +}
+> +
+> +static struct auxiliary_driver ionic_aux_r_driver =3D {
+> +       .name =3D "rdma",
+> +       .probe =3D ionic_aux_probe,
+> +       .remove =3D ionic_aux_remove,
+> +       .id_table =3D ionic_aux_id_table,
+> +};
+> +
+> +static int __init ionic_mod_init(void)
+> +{
+> +       int rc;
+> +
+> +       rc =3D auxiliary_driver_register(&ionic_aux_r_driver);
+> +       if (rc)
+> +               goto err_aux;
+> +
+> +       return 0;
+> +
+> +err_aux:
+> +       return rc;
+You can simplify this function as "return
+auxiliary_driver_register(&ionic_aux_r_driver);"
+> +}
+> +
+> +static void __exit ionic_mod_exit(void)
+> +{
+> +       auxiliary_driver_unregister(&ionic_aux_r_driver);
+> +}
+> +
+> +module_init(ionic_mod_init);
+> +module_exit(ionic_mod_exit);
+> diff --git a/drivers/infiniband/hw/ionic/ionic_ibdev.h b/drivers/infiniba=
+nd/hw/ionic/ionic_ibdev.h
+> new file mode 100644
+> index 000000000000..e13adff390d7
+> --- /dev/null
+> +++ b/drivers/infiniband/hw/ionic/ionic_ibdev.h
+> @@ -0,0 +1,21 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/* Copyright (C) 2018-2025, Advanced Micro Devices, Inc. */
+> +
+> +#ifndef _IONIC_IBDEV_H_
+> +#define _IONIC_IBDEV_H_
+> +
+> +#include <rdma/ib_verbs.h>
+> +#include <ionic_api.h>
+> +
+> +#include "ionic_lif_cfg.h"
+> +
+> +#define IONIC_MIN_RDMA_VERSION 0
+> +#define IONIC_MAX_RDMA_VERSION 2
+> +
+> +struct ionic_ibdev {
+> +       struct ib_device        ibdev;
+> +
+> +       struct ionic_lif_cfg    lif_cfg;
+> +};
+> +
+> +#endif /* _IONIC_IBDEV_H_ */
+> diff --git a/drivers/infiniband/hw/ionic/ionic_lif_cfg.c b/drivers/infini=
+band/hw/ionic/ionic_lif_cfg.c
+> new file mode 100644
+> index 000000000000..a02eb2f5bd45
+> --- /dev/null
+> +++ b/drivers/infiniband/hw/ionic/ionic_lif_cfg.c
+> @@ -0,0 +1,121 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (C) 2018-2025, Advanced Micro Devices, Inc. */
+> +
+> +#include <linux/kernel.h>
+> +
+> +#include <ionic.h>
+> +#include <ionic_lif.h>
+> +
+> +#include "ionic_lif_cfg.h"
+> +
+> +#define IONIC_MIN_RDMA_VERSION 0
+> +#define IONIC_MAX_RDMA_VERSION 2
+> +
+> +static u8 ionic_get_expdb(struct ionic_lif *lif)
+> +{
+> +       u8 expdb_support =3D 0;
+> +
+> +       if (lif->ionic->idev.phy_cmb_expdb64_pages)
+> +               expdb_support |=3D IONIC_EXPDB_64B_WQE;
+> +       if (lif->ionic->idev.phy_cmb_expdb128_pages)
+> +               expdb_support |=3D IONIC_EXPDB_128B_WQE;
+> +       if (lif->ionic->idev.phy_cmb_expdb256_pages)
+> +               expdb_support |=3D IONIC_EXPDB_256B_WQE;
+> +       if (lif->ionic->idev.phy_cmb_expdb512_pages)
+> +               expdb_support |=3D IONIC_EXPDB_512B_WQE;
+> +
+> +       return expdb_support;
+> +}
+> +
+> +void ionic_fill_lif_cfg(struct ionic_lif *lif, struct ionic_lif_cfg *cfg=
+)
+> +{
+> +       union ionic_lif_identity *ident =3D &lif->ionic->ident.lif;
+> +
+> +       cfg->lif =3D lif;
+> +       cfg->hwdev =3D &lif->ionic->pdev->dev;
+> +       cfg->lif_index =3D lif->index;
+> +       cfg->lif_hw_index =3D lif->hw_index;
+> +
+> +       cfg->dbid =3D lif->kern_pid;
+> +       cfg->dbid_count =3D le32_to_cpu(lif->ionic->ident.dev.ndbpgs_per_=
+lif);
+> +       cfg->dbpage =3D lif->kern_dbpage;
+> +       cfg->intr_ctrl =3D lif->ionic->idev.intr_ctrl;
+> +
+> +       cfg->db_phys =3D lif->ionic->bars[IONIC_PCI_BAR_DBELL].bus_addr;
+> +
+> +       if (IONIC_VERSION(ident->rdma.version, ident->rdma.minor_version)=
+ >=3D
+> +           IONIC_VERSION(2, 1))
+> +               cfg->page_size_supported =3D
+> +                   cpu_to_le64(ident->rdma.page_size_cap);
+> +       else
+> +               cfg->page_size_supported =3D IONIC_PAGE_SIZE_SUPPORTED;
+> +
+> +       cfg->rdma_version =3D ident->rdma.version;
+> +       cfg->qp_opcodes =3D ident->rdma.qp_opcodes;
+> +       cfg->admin_opcodes =3D ident->rdma.admin_opcodes;
+> +
+> +       cfg->stats_type =3D cpu_to_le16(ident->rdma.stats_type);
+> +       cfg->npts_per_lif =3D le32_to_cpu(ident->rdma.npts_per_lif);
+> +       cfg->nmrs_per_lif =3D le32_to_cpu(ident->rdma.nmrs_per_lif);
+> +       cfg->nahs_per_lif =3D le32_to_cpu(ident->rdma.nahs_per_lif);
+> +
+> +       cfg->aq_base =3D le32_to_cpu(ident->rdma.aq_qtype.qid_base);
+> +       cfg->cq_base =3D le32_to_cpu(ident->rdma.cq_qtype.qid_base);
+> +       cfg->eq_base =3D le32_to_cpu(ident->rdma.eq_qtype.qid_base);
+> +
+> +       /*
+> +        * ionic_create_rdma_admin() may reduce aq_count or eq_count if
+> +        * it is unable to allocate all that were requested.
+> +        * aq_count is tunable; see ionic_aq_count
+> +        * eq_count is tunable; see ionic_eq_count
+> +        */
+> +       cfg->aq_count =3D le32_to_cpu(ident->rdma.aq_qtype.qid_count);
+> +       cfg->eq_count =3D le32_to_cpu(ident->rdma.eq_qtype.qid_count);
+> +       cfg->cq_count =3D le32_to_cpu(ident->rdma.cq_qtype.qid_count);
+> +       cfg->qp_count =3D le32_to_cpu(ident->rdma.sq_qtype.qid_count);
+> +       cfg->dbid_count =3D le32_to_cpu(lif->ionic->ident.dev.ndbpgs_per_=
+lif);
+> +
+> +       cfg->aq_qtype =3D ident->rdma.aq_qtype.qtype;
+> +       cfg->sq_qtype =3D ident->rdma.sq_qtype.qtype;
+> +       cfg->rq_qtype =3D ident->rdma.rq_qtype.qtype;
+> +       cfg->cq_qtype =3D ident->rdma.cq_qtype.qtype;
+> +       cfg->eq_qtype =3D ident->rdma.eq_qtype.qtype;
+> +       cfg->udma_qgrp_shift =3D ident->rdma.udma_shift;
+> +       cfg->udma_count =3D 2;
+> +
+> +       cfg->max_stride =3D ident->rdma.max_stride;
+> +       cfg->expdb_mask =3D ionic_get_expdb(lif);
+> +
+> +       cfg->sq_expdb =3D
+> +           !!(lif->qtype_info[IONIC_QTYPE_TXQ].features & IONIC_QIDENT_F=
+_EXPDB);
+> +       cfg->rq_expdb =3D
+> +           !!(lif->qtype_info[IONIC_QTYPE_RXQ].features & IONIC_QIDENT_F=
+_EXPDB);
+> +}
+> +
+> +struct net_device *ionic_lif_netdev(struct ionic_lif *lif)
+> +{
+> +       return lif->netdev;
+> +}
+> +
+> +int ionic_version_check(const struct device *dev, struct ionic_lif *lif)
+> +{
+> +       union ionic_lif_identity *ident =3D &lif->ionic->ident.lif;
+> +       int rc;
+local variable "rc" is not needed here, you can return directly.
+> +
+> +       if (ident->rdma.version < IONIC_MIN_RDMA_VERSION ||
+> +           ident->rdma.version > IONIC_MAX_RDMA_VERSION) {
+> +               rc =3D -EINVAL;
+> +               dev_err_probe(dev, rc,
+> +                             "ionic_rdma: incompatible version, fw ver %=
+u\n",
+> +                             ident->rdma.version);
+> +               dev_err_probe(dev, rc,
+> +                             "ionic_rdma: Driver Min Version %u\n",
+> +                             IONIC_MIN_RDMA_VERSION);
+> +               dev_err_probe(dev, rc,
+> +                             "ionic_rdma: Driver Max Version %u\n",
+> +                             IONIC_MAX_RDMA_VERSION);
+> +               return rc;
+> +       }
+> +
+> +       return 0;
+> +}
+> diff --git a/drivers/infiniband/hw/ionic/ionic_lif_cfg.h b/drivers/infini=
+band/hw/ionic/ionic_lif_cfg.h
+> new file mode 100644
+> index 000000000000..b095637c54cf
+> --- /dev/null
+> +++ b/drivers/infiniband/hw/ionic/ionic_lif_cfg.h
+> @@ -0,0 +1,65 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/* Copyright (C) 2018-2025, Advanced Micro Devices, Inc. */
+> +
+> +#ifndef _IONIC_LIF_CFG_H_
+> +
+> +#define IONIC_VERSION(a, b) (((a) << 16) + ((b) << 8))
+> +#define IONIC_PAGE_SIZE_SUPPORTED      0x40201000 /* 4kb, 2Mb, 1Gb */
+> +
+> +#define IONIC_EXPDB_64B_WQE    BIT(0)
+> +#define IONIC_EXPDB_128B_WQE   BIT(1)
+> +#define IONIC_EXPDB_256B_WQE   BIT(2)
+> +#define IONIC_EXPDB_512B_WQE   BIT(3)
+> +
+> +struct ionic_lif_cfg {
+> +       struct device *hwdev;
+> +       struct ionic_lif *lif;
+> +
+> +       int lif_index;
+> +       int lif_hw_index;
+> +
+> +       u32 dbid;
+> +       int dbid_count;
+> +       u64 __iomem *dbpage;
+> +       struct ionic_intr __iomem *intr_ctrl;
+> +       phys_addr_t db_phys;
+> +
+> +       u64 page_size_supported;
+> +       u32 npts_per_lif;
+> +       u32 nmrs_per_lif;
+> +       u32 nahs_per_lif;
+> +
+> +       u32 aq_base;
+> +       u32 cq_base;
+> +       u32 eq_base;
+> +
+> +       int aq_count;
+> +       int eq_count;
+> +       int cq_count;
+> +       int qp_count;
+> +
+> +       u16 stats_type;
+> +       u8 aq_qtype;
+> +       u8 sq_qtype;
+> +       u8 rq_qtype;
+> +       u8 cq_qtype;
+> +       u8 eq_qtype;
+> +
+> +       u8 udma_count;
+> +       u8 udma_qgrp_shift;
+> +
+> +       u8 rdma_version;
+> +       u8 qp_opcodes;
+> +       u8 admin_opcodes;
+> +
+> +       u8 max_stride;
+> +       bool sq_expdb;
+> +       bool rq_expdb;
+> +       u8 expdb_mask;
+> +};
+> +
+> +int ionic_version_check(const struct device *dev, struct ionic_lif *lif)=
+;
+> +void ionic_fill_lif_cfg(struct ionic_lif *lif, struct ionic_lif_cfg *cfg=
+);
+> +struct net_device *ionic_lif_netdev(struct ionic_lif *lif);
+> +
+> +#endif /* _IONIC_LIF_CFG_H_ */
+> --
+> 2.34.1
+>
+>
 
-I took a close looks, and I think the work objects allocated for each cm_id
-is freed too early. The work objects are freed in dealloc_work_entries() wh=
-en
-all references to the cm_id are removed. IIUC, when the last reference to t=
-he
-cm_id is removed in the work, the work object for the work itself gets remo=
-ved.
-Hence the use-after-free.
 
-Based on this guess, I created a fix trial patch below. It delays the refer=
-ence
-removal in the cm_id destroy context, to ensure that the reference count be=
-comes
-zeor not in the work contexts but in the cm_id destroy context. It moves
-iwcm_deref_id() call from destroy_cm_id() to its callers. Also call
-iwcm_deref_id() after flushing the pending works. With this patch, I observ=
-ed
-use-after-free goes away. Comments on the fix trial patch will be welcomed.
+--=20
+Regards,
+Kalesh AP
 
-One left question is why the failure was not observed with rxe driver, but =
-with
-siw driver. My mere guess is that is because siw driver calls id->add_ref()=
- and
-cm_id->rem_ref().
+--0000000000003f299e06349aeade
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-
-diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.=
-c
-index f4486cbd8f45..600cf8ea6a39 100644
---- a/drivers/infiniband/core/iwcm.c
-+++ b/drivers/infiniband/core/iwcm.c
-@@ -368,12 +368,9 @@ EXPORT_SYMBOL(iw_cm_disconnect);
- /*
-  * CM_ID <-- DESTROYING
-  *
-- * Clean up all resources associated with the connection and release
-- * the initial reference taken by iw_create_cm_id.
-- *
-- * Returns true if and only if the last cm_id_priv reference has been drop=
-ped.
-+ * Clean up all resources associated with the connection.
-  */
--static bool destroy_cm_id(struct iw_cm_id *cm_id)
-+static void destroy_cm_id(struct iw_cm_id *cm_id)
- {
- 	struct iwcm_id_private *cm_id_priv;
- 	struct ib_qp *qp;
-@@ -442,20 +439,22 @@ static bool destroy_cm_id(struct iw_cm_id *cm_id)
- 		iwpm_remove_mapinfo(&cm_id->local_addr, &cm_id->m_local_addr);
- 		iwpm_remove_mapping(&cm_id->local_addr, RDMA_NL_IWCM);
- 	}
--
--	return iwcm_deref_id(cm_id_priv);
- }
-=20
- /*
-  * This function is only called by the application thread and cannot
-  * be called by the event thread. The function will wait for all
-- * references to be released on the cm_id and then kfree the cm_id
-- * object.
-+ * references to be released on the cm_id and then release the initial
-+ * reference taken by iw_create_cm_id.
-  */
- void iw_destroy_cm_id(struct iw_cm_id *cm_id)
- {
--	if (!destroy_cm_id(cm_id))
--		flush_workqueue(iwcm_wq);
-+	struct iwcm_id_private *cm_id_priv;
-+
-+	cm_id_priv =3D container_of(cm_id, struct iwcm_id_private, id);
-+	destroy_cm_id(cm_id);
-+	flush_workqueue(iwcm_wq);
-+	iwcm_deref_id(cm_id_priv);
- }
- EXPORT_SYMBOL(iw_destroy_cm_id);
-=20
-@@ -1035,8 +1034,10 @@ static void cm_work_handler(struct work_struct *_wor=
-k)
-=20
- 		if (!test_bit(IWCM_F_DROP_EVENTS, &cm_id_priv->flags)) {
- 			ret =3D process_event(cm_id_priv, &levent);
--			if (ret)
--				WARN_ON_ONCE(destroy_cm_id(&cm_id_priv->id));
-+			if (ret) {
-+				destroy_cm_id(&cm_id_priv->id);
-+				WARN_ON_ONCE(iwcm_deref_id(cm_id_priv));
-+			}
- 		} else
- 			pr_debug("dropping event %d\n", levent.event);
- 		if (iwcm_deref_id(cm_id_priv))
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBWowggRSoAMCAQICDDfBRQmwNSI92mit0zANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAwODI5NTZaFw0yNTA5MTAwODI5NTZaMIGi
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xHzAdBgNVBAMTFkthbGVzaCBBbmFra3VyIFB1cmF5aWwxMjAw
+BgkqhkiG9w0BCQEWI2thbGVzaC1hbmFra3VyLnB1cmF5aWxAYnJvYWRjb20uY29tMIIBIjANBgkq
+hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxnv1Reaeezfr6NEmg3xZlh4cz9m7QCN13+j4z1scrX+b
+JfnV8xITT5yvwdQv3R3p7nzD/t29lTRWK3wjodUd2nImo6vBaH3JbDwleIjIWhDXLNZ4u7WIXYwx
+aQ8lYCdKXRsHXgGPY0+zSx9ddpqHZJlHwcvas3oKnQN9WgzZtsM7A8SJefWkNvkcOtef6bL8Ew+3
+FBfXmtsPL9I2vita8gkYzunj9Nu2IM+MnsP7V/+Coy/yZDtFJHp30hDnYGzuOhJchDF9/eASvE8T
+T1xqJODKM9xn5xXB1qezadfdgUs8k8QAYyP/oVBafF9uqDudL6otcBnziyDBQdFCuAQN7wIDAQAB
+o4IB5DCCAeAwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZC
+aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJj
+YTIwMjAuY3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3Iz
+cGVyc29uYWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcC
+ARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNV
+HR8EQjBAMD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNp
+Z24yY2EyMDIwLmNybDAuBgNVHREEJzAlgSNrYWxlc2gtYW5ha2t1ci5wdXJheWlsQGJyb2FkY29t
+LmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGP
+zzAdBgNVHQ4EFgQUI3+tdStI+ABRGSqksMsiCmO9uDAwDQYJKoZIhvcNAQELBQADggEBAGfe1o9b
+4wUud0FMjb/FNdc433meL15npjdYWUeioHdlCGB5UvEaMGu71QysfoDOfUNeyO9YKp0h0fm7clvo
+cBqeWe4CPv9TQbmLEtXKdEpj5kFZBGmav69mGTlu1A9KDQW3y0CDzCPG2Fdm4s73PnkwvemRk9E2
+u9/kcZ8KWVeS+xq+XZ78kGTKQ6Wii3dMK/EHQhnDfidadoN/n+x2ySC8yyDNvy81BocnblQzvbuB
+a30CvRuhokNO6Jzh7ZFtjKVMzYas3oo6HXgA+slRszMu4pc+fRPO41FHjeDM76e6P5OnthhnD+NY
+x6xokUN65DN1bn2MkeNs0nQpizDqd0QxggJgMIICXAIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYD
+VQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25h
+bFNpZ24gMiBDQSAyMDIwAgw3wUUJsDUiPdpordMwDQYJYIZIAWUDBAIBBQCggccwLwYJKoZIhvcN
+AQkEMSIEIDgR1CvKUA/YJ9TaZgbXzZS0o/ciG1B2oj/8Su/KrNyBMBgGCSqGSIb3DQEJAzELBgkq
+hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI1MDUwODA3MzY1OVowXAYJKoZIhvcNAQkPMU8wTTAL
+BglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG
+9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBABk5PFg28mfGH4Yogmgxa1whmS1z
+GsieMJFtSKO3NPCYcTEfRrh/HvoXgxW+7cNtNO0fp3+MZe4Y8SSGeDza7VnvZyMQEQvKdue7pEw/
+PDFELuNUiqPDAQh/3n/R6kpTDECPQ2MV5IM7hRUgibfMQCyKBnCPrD9Ixdsto8Q3YX0k+JMDR1aN
++Bm3G1dEI8P4/WgwpebdbuYRVTZNAjlWtfg+j8W32NnuFUXKBG9p7cP6qBreGkgGJjirV3d5Hieh
+IvkWILfMh2KymQelQB9abh2bVVWAbmkt+yG49Wx3CqXVeOll4KbLYip1reFPIBQAebv7YoZvfKcR
+DJAeDEy0hKo=
+--0000000000003f299e06349aeade--
 
