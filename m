@@ -1,293 +1,161 @@
-Return-Path: <linux-rdma+bounces-10170-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10171-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFF04AB004A
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 May 2025 18:21:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46384AB0053
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 May 2025 18:22:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E24CA5008CD
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 May 2025 16:21:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 168CA9E3E3E
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 May 2025 16:21:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F5BB2820A8;
-	Thu,  8 May 2025 16:21:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A5A281526;
+	Thu,  8 May 2025 16:22:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="QlWX6uZg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nbx+ofP6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CO1PR03CU002.outbound.protection.outlook.com (mail-westus2azon11020108.outbound.protection.outlook.com [52.101.46.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98047280CCE;
-	Thu,  8 May 2025 16:20:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.46.108
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746721260; cv=fail; b=nexG2IO8caEZ0lf/UVbowV41nchHKvObQLmp+DQLuaZpQc1cht+3GZdJSwQ5ia+GWiYLjzLW6p++BiuqrMs22xEBFTpFhNcnJleu0F10H9ndna7R9KMyKsZSuHGyWTl/qfS28bRsbMJc/rlGvFFdXPgfr/m/N/Q0FON1w5ozUes=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746721260; c=relaxed/simple;
-	bh=A2xovAIVlfnS3CJb1lK2TnT44Le1H9kdrkVT5OhuwgY=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=hCLNbeantgAubz6fBeEcptzcNwr3rTLqNVRSFk85awOHRnuuRrKsuKnOeYQxmHaEktc0y+WlSpytXqwG4w9vVaXw93qmp3ZX4tSKAkKmSZo1Yw9oLm7F8/axre8MggjvVJX58IYBFLpzRVojueEEP/jax8WdOd2v/BTz9bEY+Dg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=QlWX6uZg; arc=fail smtp.client-ip=52.101.46.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=S/wdL8LnJ1f2OXLWt17a+IHmwz+0fOmfqA3KP1TeCTZlA9ZSX4bafKRYZhUyvinlrdNcUCjHNXvKOWJgw98W47vbrvUOePAQ+xcZBaMj5789qZSYshS7D91oxRqA2tWh5GOErg+Jd8WmpAKxKIaMsfLAKUYX7PeeZ3d1N1CbhhUeWXBdBl1J79L0iPkLdfS9C+je1ycLK3ASh+PthbJ7kXo94iQV+aILUNqbmo6POkpCwX1EBBXDnr67tqzk66E0gpUGfCUk01i/a5FRExwa1CROdmg9caCjqOkDgXE6Pxf7+FVpdFlUBgX0WHyP+2LT87kU+SqXrxVB+B/fFGakmQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+cAyAeQAQTx8V5pBe2tQAXegvugVrKedFCN2NCRor9A=;
- b=Mmt8B5pQhan1+HVgF9YgUsplN/6CD8GTwf6qnouXK5drsYjDUsFZvqgtV02DmZHb9HOtq2VopziDxLlU0Nxed4uvhqHfx+uUfnE2rMghuU8ehFPH5TeHjTTZfDXVaBjo8Qav9/hHsnosauoicPc1orJmwPISlN9kAJkK5GBnZSAHGqgfutHcekAkG7ma9KXYAZyXmYG/KeyVMfHDM5G94VKNK0cpJ/bmEQQxg3qKvRk60Jd4EWFEYkkNQ9Hhs+chAVnJzouiPZaOpeR4zW/8kHCJC9ENQY1w+bvqDEBTJrsrTcPvGzsJmvYdadOnMPz8xLHBxli6c390qedlGl7Kxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+cAyAeQAQTx8V5pBe2tQAXegvugVrKedFCN2NCRor9A=;
- b=QlWX6uZg2KegD0xopEz/XKtQI1siK/kRPGUA5yaEagA2w3jOcBSAI1yukg8nbYV4ysw8y+IzdQGLTJZCJExh5Ht46jG1vTuRv2l3xG6pdv0q1B+rRHPvhzt5Qe1A7W2t3CGLWbqiIqHey9Smsiw5+voTzBme/uUsFGJ1IK4aRi8=
-Received: from MN0PR21MB3437.namprd21.prod.outlook.com (2603:10b6:208:3d2::17)
- by BL1PR21MB3331.namprd21.prod.outlook.com (2603:10b6:208:39c::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8722.6; Thu, 8 May
- 2025 16:20:54 +0000
-Received: from MN0PR21MB3437.namprd21.prod.outlook.com
- ([fe80::5125:461:1c07:1a97]) by MN0PR21MB3437.namprd21.prod.outlook.com
- ([fe80::5125:461:1c07:1a97%4]) with mapi id 15.20.8746.005; Thu, 8 May 2025
- 16:20:54 +0000
-From: Haiyang Zhang <haiyangz@microsoft.com>
-To: Shradha Gupta <shradhagupta@linux.microsoft.com>
-CC: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, Dexuan Cui
-	<decui@microsoft.com>, "stephen@networkplumber.org"
-	<stephen@networkplumber.org>, KY Srinivasan <kys@microsoft.com>, Paul
- Rosswurm <paulros@microsoft.com>, "olaf@aepfle.de" <olaf@aepfle.de>,
-	"vkuznets@redhat.com" <vkuznets@redhat.com>, "davem@davemloft.net"
-	<davem@davemloft.net>, "wei.liu@kernel.org" <wei.liu@kernel.org>,
-	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
-	<kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>, "leon@kernel.org"
-	<leon@kernel.org>, Long Li <longli@microsoft.com>,
-	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, "john.fastabend@gmail.com"
-	<john.fastabend@gmail.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"ast@kernel.org" <ast@kernel.org>, "hawk@kernel.org" <hawk@kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>, "andrew+netdev@lunn.ch"
-	<andrew+netdev@lunn.ch>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH net-next] net: mana: Add handler for hardware servicing
- events
-Thread-Topic: [PATCH net-next] net: mana: Add handler for hardware servicing
- events
-Thread-Index: AQHbv2kCKqGuw59gGE6DfYvpyoXn+7PIeI0AgAByxCA=
-Date: Thu, 8 May 2025 16:20:54 +0000
-Message-ID:
- <MN0PR21MB34378EC0697BCDCE76FFA429CA8BA@MN0PR21MB3437.namprd21.prod.outlook.com>
-References: <1746633519-17549-1-git-send-email-haiyangz@microsoft.com>
- <20250508092924.GA2081@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-In-Reply-To:
- <20250508092924.GA2081@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=8a06a2d5-acc2-4d50-a746-e1a6c6e169fd;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2025-05-08T16:20:10Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
- 3, 0, 1;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR21MB3437:EE_|BL1PR21MB3331:EE_
-x-ms-office365-filtering-correlation-id: 93141478-98c5-424e-1a8f-08dd8e4c4e83
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|7416014|376014|1800799024|366016|7053199007|38070700018;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?kYUd5jb5VPGIjxyMVIByqVzESm3YIp8nMFEJNkSHxeMJmAyoa6Thopc+k85V?=
- =?us-ascii?Q?Sksn4Zo0KDlrglhFMN2UbQD3MCT7WnPNgzYhdC8BeCVLNmYL7LsUGuyO4pL4?=
- =?us-ascii?Q?4qn5GVjUiDwMfnbNBh5E1cbCJrdW0nv5EodIA83z3BowG69Xkq+WWhChWhWi?=
- =?us-ascii?Q?Cz7AVNNxnjkVx9irAWvAWklLpa0u0ZaPaYvYkYXHIf4NBjdUtCuK1aDg7j76?=
- =?us-ascii?Q?hCAIpTodxSmgZX/jeyoPdh2gGKutPpQA9rLZ7h+uH2MKPKRTZNfU0naei4+n?=
- =?us-ascii?Q?fdoUq20cm2p1yoDemIe1/w6vRCoRnw+xXObyC4tQJI7XwC+fUmiwcRfXEPTi?=
- =?us-ascii?Q?eqUjzl1i6yRfe33SUh5MIDjob8+c7rSAizDeEkgY0l/hjkWagJ6DDFa/zY4H?=
- =?us-ascii?Q?GQGPHlK0CGBQr8CvTjRoPDMxrCEkGhMr891ejJB8Y2Braf5ZBTT+J+c7g/TT?=
- =?us-ascii?Q?pJLL+JjZlGO7xopu70xQ8ERdcxfiSjzpdNUz77NKCURF8TR8O6tGe17mkBfG?=
- =?us-ascii?Q?1eZPz8bJZlv8IvsfXq9UyGo7H6WuoxuO3In3R9xwM4BrzY0odGAToQxjhKF7?=
- =?us-ascii?Q?CWDBE6X0SFTOykHtZ+SNxhK7OIu7MjI5eL6fzvv+Nsb+b7CAStqmuyOcIxdA?=
- =?us-ascii?Q?cHSCkuGIhRRUZwWwfD8GNl6WjfeSBM5zJdQ+7SqeX139X0KpFllG6JsLHY8L?=
- =?us-ascii?Q?7MzZfKmW9co3bH8w//jD+wIZl51q0iHA/SUdIvUTqTZyWD31ESltV7oi+TkB?=
- =?us-ascii?Q?TCZCD/Rti+cEK5mL8KCahOz7hPVRJx39aKs43rYnswPpGzCa3e6bpKW6qqaT?=
- =?us-ascii?Q?ChmzWil01Jhqr/isUkWw8KTNFq7oHr1wEPuOgrI+QSVBs36Y/BWm8/JmblzI?=
- =?us-ascii?Q?lpwkEH1Bk+JNzrsDEwE0iE4SeZ6JseYcC3+5+EUbmjDDK8vw7oozSwXSk/7o?=
- =?us-ascii?Q?UuDsxVkql1zYJfJnlZVNThXukNxTbIsB3ju1wXVm5Y3XzD51T8p5K5oZtKgh?=
- =?us-ascii?Q?w4JZMPHpkU7+HJz+5LMLDof3y3GbRMUaZU3dReKYD+pf1W+QqOevldgMqNql?=
- =?us-ascii?Q?/W0afkxE3qhuFsSR+eNqUoHROUohD2prFOtJMw/4uTmuXblXC2furY3b/F25?=
- =?us-ascii?Q?PIRNWoD8bn3ipcSXLb66H4gSe6OxC2RQ6tQ9+riiQ6pVM5hKa5qpRaQfX5aQ?=
- =?us-ascii?Q?sMABad1sjR4t73EEFujYjcj26zVkUdWJ4hwODwa1+ItPu/oPnDWYdDVCqr/8?=
- =?us-ascii?Q?HBd2bDxSB/3/cn0w+4LnyUCs4tQApf8/oZ7qluYcwEWIHttgE4o0ZTZWthuy?=
- =?us-ascii?Q?YKGkmCYcaGt9E4gBasTzq3y12R5J0UsgK7vA/jtB/qw4qxOa6NMMvgxsYR0Y?=
- =?us-ascii?Q?jBrlj23zM8Dw9Q4bmyZCbcwvatUHp1Tu+XoHCSdffoXmZLy2z40YSe4XuEgB?=
- =?us-ascii?Q?pUCQygtXZE2HF3HheMEQJ8CZty0Jem3/mCbFUHhRyDd5N5OjWy9hqA=3D=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR21MB3437.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016)(7053199007)(38070700018);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?DTxnPE1zZAGK6KSRI9ahx6dFAMQ8no2hsuSrPDPHDJOyJbZP0xP5BrLztSFq?=
- =?us-ascii?Q?cgCbQgawn57452WSNFogkU92BeKE+PlDaUsMDz7Bn2nGKeuDeIlYp9rXjznN?=
- =?us-ascii?Q?il9TqBz4LFBo/Ns/cU9g0otDWjl+Lj2b7G1LEyTWp+7sPp/IOUymY2YDlyun?=
- =?us-ascii?Q?grahYvcOor6g0VxbWGqJdq2PJUTKxmQEewJKYHfMzzwxsFfbHCgPRzk+fLp5?=
- =?us-ascii?Q?MvFCU7mevHvvXAhuqCl3d6PYh18TJoMpVXVvGUApBsU9Gsx63Ei8jgHjJ3vO?=
- =?us-ascii?Q?zp7MhWqJ5lEuhnkDGXiKdun21+r0cep2A8S5Y5g1gtwBHg7xQKGwrK/OuQaF?=
- =?us-ascii?Q?Ri3sWFvrsHrhaZnrXXE7KJwWEGz2Wsw7N9KKpz5YLj3bWPjrLim+YcuYJf4D?=
- =?us-ascii?Q?8w4zU3Fx9mBWCMskV2ppgUwuarb1kPxw5fZahY1RNBz4xmXpvmLP4XzJM4M+?=
- =?us-ascii?Q?2JhNqKMN4EvuYmezxKNVcmVN5Z7BA7ind0adCeVpmLXvBA7yvWDG4dkvCy2A?=
- =?us-ascii?Q?0TFnIDgwOQ0Kbjy+0a1ELwxswHtd9dHVNOyhDnSH6KF4HBS8h8eTaQfAfIRI?=
- =?us-ascii?Q?10DwgQZNlTyHog/UgNqwSZa1BP+LkeVxt7QYsC9dP43qDyKpofcobVxrFKfz?=
- =?us-ascii?Q?bIIxR+sRsXPHSsr2Y401Xd+jxnNo2em7XZ91MOuIVrAPtX78hhoJMwFBeakx?=
- =?us-ascii?Q?rsFIdPV3xCzYRsyH+9QcxIyGMb9pMW4ls7zTz+SXU8WBn1DqlSRVvDIwxcrV?=
- =?us-ascii?Q?3WIAZy3Ff4xiXk/u9VHv2kuYbXpK+YMTRcKjCk7vPVuebzyL4qnLDrfpjgme?=
- =?us-ascii?Q?G0t17J+I79MFXN5u0YqHCWKUVSpPgq/c/JUI2xKAswaJQD8j7JfcQ4wuOune?=
- =?us-ascii?Q?9JNi9QeMywfvAbQIUrSpXc69fsi+OL5LdcyBwcx4WUaHOWX+OKjG/3CPuhRv?=
- =?us-ascii?Q?aFTgQdOG4rHCvrxW+eNgRJCKCUWKzckd+iBKS2p/IicuM0uW7aAjimKZ1WFo?=
- =?us-ascii?Q?oIDeQiL+CE9ZLlIhKxYyOfTvXQ0Q18pdrEH0VH5P47s+39/kQtOl1u12Y1Pk?=
- =?us-ascii?Q?9ie9v/rhpBBdpH5vg8nnBe01apmx+iHOCyE/9Z5/OWPFyOs05NIiPd6PkZTE?=
- =?us-ascii?Q?qYxOKCzybgcEcBoXpn8GR7Utlh1yjw3dWhuFANnJL9+Sd32ycyybYKz6D3Sn?=
- =?us-ascii?Q?blenh3Uo+3gZLT7njS6O+wsCpfIwU3IdjHAwvTDOlgG4hin6xnjHn5zTPn3N?=
- =?us-ascii?Q?UanevhmaNt8kg8sK90ehbAtAVAhXhgJEVv3z9bfFnCSiLi1W9BNFf5MUkG3Y?=
- =?us-ascii?Q?ksmkEO9fH6qsuu0eM9a0FxqJCg/ZBlLy7C3w2WT56qSJOVIKzVYr/9m9vIM3?=
- =?us-ascii?Q?LTtxIZhnryhtWBgqNEIXMqgrDjB5YfB2x67/ewvUFfCeaaYdgeL/Q8B7TrGE?=
- =?us-ascii?Q?YHSpDHhVwzEAms0/1dkp4vuDP2TCZcp+l8cOrcxRqBefcna5nVOZe6P53uDM?=
- =?us-ascii?Q?JnNl2sAAbRXQcrbA75cRev9/2+0JPOFZHtTjbvztnfI50LT1Z3iEK2lVqN8C?=
- =?us-ascii?Q?pk6hsekRVsuK89j/LRj0qxNaV8SgnYjFsG77iveX?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC092280A5E;
+	Thu,  8 May 2025 16:22:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1746721328; cv=none; b=OKL9cHv9sg1bpsgXp3Ms24bYcTbBEogfu7GIw0Ncio+QvMa9qaO7HPghbNLiGfD3kwCKdX5PZ4xh2EnNx3XEGuw2M4J7T6PT+X00rEo5kCrw6rfyG/YDTwLPCEjIumcLwulFR4deR5IRXk4LMsn3KWiZJPv9oZdL+ejfhDNp7mQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1746721328; c=relaxed/simple;
+	bh=PQxdxrBAS+BBqq54qHh1QboGFz5O4D3o1Yv6WeUM98o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UKChRLbaiWKzsZNjFkzPGAFTcC9jNIWaTa3CQ6PIgdR+136L5Gy2PUUCev7A3VZkn0KgQzZXHsxQkZgwWRQ5p6ThYfNHyAaHebZ7M09UGIMeCiKyx+dFqDHgdQWFJI4lqe8NnpWxOxuNPbSfMg0DWBQ8Bbc4Ryn+C3US48MSxX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nbx+ofP6; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-7398d65476eso1092427b3a.1;
+        Thu, 08 May 2025 09:22:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746721325; x=1747326125; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=a2Gx3yX5c/pf7u9kHRJ3SRF2a7k4C6XArHo/Wa84CEQ=;
+        b=Nbx+ofP6gbHF0y0rcE/pCTU4acmPrCw0s4Nc7HspmXDStvBpaTq+ouCU2mV72ZSOAd
+         wdokcCdg6B2gDOdv7fv8UZh6R2LwHm9T1ryZ3NrT7a0Lhqoky7Ro0PlK2OJbDpP4juF4
+         uowTDH4ROfQ8AQDASHcYR4fERtNW2Utk4NyLhsCncFj5ZfkNNbtTirNHsBIQO/LUhnM2
+         xP8sh6DQvrD+LczLj6pFkd8a2Bb0AVUbmHmIrgL2BE6Cz7z6ySKBE4tnEA7tTkdgUhgG
+         FfX/kve4RnSJ7NqLUkrG2qBA35jsnsCUKW8zOTaaRg7Vp104+5nTdAMpXf2ZpiFuioCA
+         uXLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746721325; x=1747326125;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a2Gx3yX5c/pf7u9kHRJ3SRF2a7k4C6XArHo/Wa84CEQ=;
+        b=BACcwT54DgvB9gjsVYShdTazIR56663tyY0aKAB3tZzbBOQ80dmlJqMVfaXXnVO6D1
+         bqKCgbjKdckeEWHc4zex0d/cs9b1JSRqH87vFetZHwlx4TZU/1C0Y/h/uWvmudXryPq+
+         hEJZ71lq/zs+vBCcN7xAucY5GyhGsfeTgmDOLtw/VSFz0hq8jg2nSJeZt4HlQkwh+N8a
+         mW0aPm3DOJ7KdDSikCr73Gw9UYUeMaxdJBnbVr51c5P+IQsdIoBI9nVAeyJRX87lhAUZ
+         6YKJH9VTJ9N2nKkNa8SDN8178s52W9KBPNAPxlK3WfqRUac6CoJH48WsA+hBhFvQN+tT
+         EyQA==
+X-Forwarded-Encrypted: i=1; AJvYcCVGiPVavNqzC+hBhCDP6QW0qafB4LPDDdCdDD3IQrz/VuLPwW5s3PwC+aZCIEyG8FRbfoRS3ZLIn7alZtY=@vger.kernel.org, AJvYcCX1TxnKPUkczPFcgKsUqUmXI9bY/L49yMBwxUODGX9wKs4LL0QBd2bhnPlHk9BVFmmvdfYqvBzg@vger.kernel.org, AJvYcCXgqtiq+ggPH8G/p6E9JBGUSprHJ/Y7afoRYx37KRqBK66WBFsmOoNE+WqFVPv51av3m6mZuBKeuKggLw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz7TQTbOJ/ym9xB+Cc5ngBJh/uiKuqJ6Zn7M3HRgd5nKAGNM2cN
+	TWQQMy5ydH0RDFfWQ+FPnr0BlOvU6wNw2A76/BQhBiSHpqXxlQY=
+X-Gm-Gg: ASbGnctqYPDnD/8BzwcUL9AwG3r2UvunGd0iNta8jp04FZh1V+tsH1ptUaCw2pbBVse
+	/YzmqYVMXrg9YXereuWTcOEo33KT60gy9KngOrWKQTHzTse5pyCgqgV9+z4/lhR68ZMC5E2gDhc
+	KZoO6zPx8ps/ZvZ0KAggml7jvYdZ+Q7zyBzagqGRxLvESNP2oXe9HIACVNRCBh7zyKOmhes1PkM
+	hqeonROgbKS+BlPkpAk2ccamN+0M3s500hygB5I2tHcLkJlVANEneXELhhka1Lx2uRU/i2knXYg
+	xMZsfdpG018rHfm/naL9CiAnlYhocND7LGvpWJKXY8QmmJnuQMZvPT/KiAn63wXjzmdlVmcI4g5
+	CMQ==
+X-Google-Smtp-Source: AGHT+IEwiOpDE9ISawmRTVyFChZiQ1HpPzeohQiapfqaohheesT+OSOTvCWMlz0rdgC/+nhL6U39PQ==
+X-Received: by 2002:a05:6a00:2c86:b0:73d:f9d2:9c64 with SMTP id d2e1a72fcca58-740a947b507mr6254846b3a.10.1746721324988;
+        Thu, 08 May 2025 09:22:04 -0700 (PDT)
+Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
+        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-74237a8f4f2sm181409b3a.174.2025.05.08.09.22.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 May 2025 09:22:04 -0700 (PDT)
+Date: Thu, 8 May 2025 09:22:03 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: Tariq Toukan <ttoukan.linux@gmail.com>, netdev@vger.kernel.org,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, saeedm@nvidia.com, tariqt@nvidia.com,
+	andrew+netdev@lunn.ch, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, leon@kernel.org,
+	Carolina Jubran <cjubran@nvidia.com>
+Subject: Re: [PATCH net-next] net/mlx5: support software TX timestamp
+Message-ID: <aBzaK8I0hA31ba_4@mini-arch>
+References: <20250506215508.3611977-1-stfomichev@gmail.com>
+ <1a1ab6eb-9bfc-4298-ba1e-a6f4229ce091@gmail.com>
+ <CAL+tcoDu0NdZQ+QmqL9mF8VNj+4cPLgmy1maAucAc7JkKOjm6A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR21MB3437.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 93141478-98c5-424e-1a8f-08dd8e4c4e83
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 May 2025 16:20:54.2102
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: nwb7fm6toHaEjhy/RldTNCO5Mu+kKyM0RCIjsJ39T+a7+PaE7ZAzz7dU6hgytGB3kjmlybBsZ39LBTo+3bjk1A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR21MB3331
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL+tcoDu0NdZQ+QmqL9mF8VNj+4cPLgmy1maAucAc7JkKOjm6A@mail.gmail.com>
 
-
-
-> -----Original Message-----
-> From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> Sent: Thursday, May 8, 2025 5:29 AM
-> To: Haiyang Zhang <haiyangz@microsoft.com>
-> Cc: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; Dexuan Cui
-> <decui@microsoft.com>; stephen@networkplumber.org; KY Srinivasan
-> <kys@microsoft.com>; Paul Rosswurm <paulros@microsoft.com>;
-> olaf@aepfle.de; vkuznets@redhat.com; davem@davemloft.net;
-> wei.liu@kernel.org; edumazet@google.com; kuba@kernel.org;
-> pabeni@redhat.com; leon@kernel.org; Long Li <longli@microsoft.com>;
-> ssengar@linux.microsoft.com; linux-rdma@vger.kernel.org;
-> daniel@iogearbox.net; john.fastabend@gmail.com; bpf@vger.kernel.org;
-> ast@kernel.org; hawk@kernel.org; tglx@linutronix.de;
-> andrew+netdev@lunn.ch; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH net-next] net: mana: Add handler for hardware
-> servicing events
->=20
-> On Wed, May 07, 2025 at 08:58:39AM -0700, Haiyang Zhang wrote:
-> > To collaborate with hardware servicing events, upon receiving the
-> special
-> > EQE notification from the HW channel, remove the devices on this bus.
-> > Then, after a waiting period based on the device specs, rescan the
-> parent
-> > bus to recover the devices.
+On 05/08, Jason Xing wrote:
+> Hi Tariq,
+> 
+> On Thu, May 8, 2025 at 2:30 PM Tariq Toukan <ttoukan.linux@gmail.com> wrote:
 > >
-> > Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> > ---
-> >  .../net/ethernet/microsoft/mana/gdma_main.c   | 61 +++++++++++++++++++
-> >  include/net/mana/gdma.h                       |  5 +-
-> >  2 files changed, 65 insertions(+), 1 deletion(-)
 > >
-> > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > index 4ffaf7588885..aa2ccf4d0ec6 100644
-> > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > @@ -352,11 +352,52 @@ void mana_gd_ring_cq(struct gdma_queue *cq, u8
-> arm_bit)
-> >  }
-> >  EXPORT_SYMBOL_NS(mana_gd_ring_cq, "NET_MANA");
 > >
-> > +#define MANA_SERVICE_PERIOD 10
-> > +
-> > +struct mana_serv_work {
-> > +	struct work_struct serv_work;
-> > +	struct pci_dev *pdev;
-> > +};
-> > +
-> > +static void mana_serv_func(struct work_struct *w)
-> > +{
-> > +	struct mana_serv_work *mns_wk =3D container_of(w, struct
-> mana_serv_work, serv_work);
-> > +	struct pci_dev *pdev =3D mns_wk->pdev;
-> > +	struct pci_bus *bus, *parent;
-> > +
-> > +	if (!pdev)
-> > +		goto out;
-> > +
-> > +	bus =3D pdev->bus;
-> > +	if (!bus) {
-> > +		dev_err(&pdev->dev, "MANA service: no bus\n");
-> > +		goto out;
-> > +	}
-> > +
-> > +	parent =3D bus->parent;
-> > +	if (!parent) {
-> > +		dev_err(&pdev->dev, "MANA service: no parent bus\n");
-> > +		goto out;
-> > +	}
-> > +
-> > +	pci_stop_and_remove_bus_device_locked(bus->self);
-> > +
-> > +	msleep(MANA_SERVICE_PERIOD * 1000);
-> > +
-> > +	pci_lock_rescan_remove();
-> > +	pci_rescan_bus(parent);
-> > +	pci_unlock_rescan_remove();
-> > +
-> > +out:
-> > +	kfree(mns_wk);
->=20
-> Shouldn't gc->in_service be set to false again?
->=20
-> > +}
-> > +
-> >  static void mana_gd_process_eqe(struct gdma_queue *eq)
-> >  {
-> >  	u32 head =3D eq->head % (eq->queue_size / GDMA_EQE_SIZE);
-> >  	struct gdma_context *gc =3D eq->gdma_dev->gdma_context;
-> >  	struct gdma_eqe *eq_eqe_ptr =3D eq->queue_mem_ptr;
-> > +	struct mana_serv_work *mns_wk;
-> >  	union gdma_eqe_info eqe_info;
-> >  	enum gdma_eqe_type type;
-> >  	struct gdma_event event;
-> > @@ -400,6 +441,26 @@ static void mana_gd_process_eqe(struct gdma_queue
-> *eq)
-> >  		eq->eq.callback(eq->eq.context, eq, &event);
-> >  		break;
+> > On 07/05/2025 0:55, Stanislav Fomichev wrote:
+> > > Having a software timestamp (along with existing hardware one) is
+> > > useful to trace how the packets flow through the stack.
+> > > mlx5e_tx_skb_update_hwts_flags is called from tx paths
+> > > to setup HW timestamp; extend it to add software one as well.
+> > >
+> > > Signed-off-by: Stanislav Fomichev <stfomichev@gmail.com>
+> > > ---
+> > >   drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c | 1 +
+> > >   drivers/net/ethernet/mellanox/mlx5/core/en_tx.c      | 1 +
+> > >   2 files changed, 2 insertions(+)
+> > >
+> > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+> > > index fdf9e9bb99ac..e399d7a3d6cb 100644
+> > > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+> > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+> > > @@ -1689,6 +1689,7 @@ int mlx5e_ethtool_get_ts_info(struct mlx5e_priv *priv,
+> > >               return 0;
+> > >
+> > >       info->so_timestamping = SOF_TIMESTAMPING_TX_HARDWARE |
+> > > +                             SOF_TIMESTAMPING_TX_SOFTWARE |
+> > >                               SOF_TIMESTAMPING_RX_HARDWARE |
+> > >                               SOF_TIMESTAMPING_RAW_HARDWARE;
+> > >
+> > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
+> > > index 4fd853d19e31..f6dd26ad29e5 100644
+> > > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
+> > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
+> > > @@ -341,6 +341,7 @@ static void mlx5e_tx_skb_update_hwts_flags(struct sk_buff *skb)
+> > >   {
+> > >       if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_HW_TSTAMP))
+> > >               skb_shinfo(skb)->tx_flags |= SKBTX_IN_PROGRESS;
+> > > +     skb_tx_timestamp(skb);
 > >
-> > +	case GDMA_EQE_HWC_FPGA_RECONFIG:
-> > +	case GDMA_EQE_HWC_SOCMANA_CRASH:
->=20
-> may be we also add a log(dev_dbg) to indicate if the servicing is for
-> FPGA reconfig or socmana crash.
+> > Doesn't this interfere with skb_tstamp_tx call in the completion flow
+> > (mlx5e_consume_skb)?
+> 
+> skb_tstamp_tx() only takes care of hardware timestamp in this case.
+> 
+> >
+> > What happens if both flags (SKBTX_SW_TSTAMP / SKBTX_HW_TSTAMP) are set
+> > Is it possible?
+> 
+> If only these two are set, only hardware timestamp will be passed to
+> the userspace because of the SOF_TIMESTAMPING_OPT_TX_SWHW limit in
+> __skb_tstamp_tx().
+> 
+> If users expect to see both timestamps, then
+> SOF_TIMESTAMPING_OPT_TX_SWHW has to be set.
 
-Thanks, I will add this.
-
-- Haiyang
+Right, skb_tx_timestamp does nothing and bails out if it detects
+SKBTX_IN_PROGRESS. And skb_tstamp_tx in mlx5e_consume_skb handles
+only (and will trigger only for) HW tstamp case.
 
