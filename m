@@ -1,93 +1,232 @@
-Return-Path: <linux-rdma+bounces-10206-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10207-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7D22AB182A
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 May 2025 17:16:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A38FAB183F
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 May 2025 17:19:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6C443AD431
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 May 2025 15:16:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8279D189E2A2
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 May 2025 15:20:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 478091E32D3;
-	Fri,  9 May 2025 15:16:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9062822DFA2;
+	Fri,  9 May 2025 15:19:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qi4B+HiJ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rNMBIrhb"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB9E7136672;
-	Fri,  9 May 2025 15:16:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1397F1EF1D
+	for <linux-rdma@vger.kernel.org>; Fri,  9 May 2025 15:19:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746803788; cv=none; b=OrucPl8H1ZSepcFg/PIIWZoI6/gi52ir6OwQzAMtRhJrdx8hOzmutzG1eQfld3C/9Xucmu9sfXNZMkV8FRO+k2ssaHBhpqm0UaYpIUZ9ME7T6UWGBYHCW87WPjpPZEP53G4GaxjGWm4LpZ07Ff2qhSyhRyDCmsUbZ2Ii3nyfNUE=
+	t=1746803974; cv=none; b=iZBpWeCAzQ8kF1g9UoxgINtBt50KbAiqfGMef3z/Xdeaq4ln37Y7am3EIZo80kr1E9rk/QlXPYoPMqJO132nfR07eOJPoqZjtgYy2t4zIEWrFZ+kRLYSTTD33/VYV9vLTqNi6u0d/3iDe/XCunPMQnNBhAma3QFNbTbGk/FmVcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746803788; c=relaxed/simple;
-	bh=Pmkce8qVMsNVwI69XQITO9G5V/cr9TvluNNQw1inero=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JwIlJFjYuhpWrVnmuCCpnWPeSDyZ0EJXWwoE8EIwt6FLHEx08S5fAc/pA9I79x/AKAdO3z3bgJY4aowMqoVoTnXJHTOg47DStk29i0eCY8KzfpCmWd7cuXobHAXzTN3jxNU9pD8PSri8bcMfcBSMM0X6ZANNRYngqhLQn40NHT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qi4B+HiJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1058C4CEE4;
-	Fri,  9 May 2025 15:16:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1746803787;
-	bh=Pmkce8qVMsNVwI69XQITO9G5V/cr9TvluNNQw1inero=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=qi4B+HiJNPdyFh+T0o6JQZj8iKBeNJszyNC1/RPQ9AgHoXGNA55u9nyGGVqz/IcaU
-	 Zm4fyb3VuAtTJcdgima7v5gDZceJjCCZuG+/025xshFU6fS4oxbXKWOhvfH3QSm6Ey
-	 JR5nchlUK6MAsAIuaL0qVjzF7dDjw8T7ODEL65incR2M/mLbLJ4cITY9tMZTxMHCLy
-	 Tz7cWGCiAiNgAewXktvhmPlct+LAU5jHyitUusWQWrJLTcZDNHaJoKMpnGgNDR9rtP
-	 eF9FL0TmZlvs2VCu4FIq05RTFjq6N40yT+Q452/c1NbecURWdyhEnynjVSfiJtRH9R
-	 g80hWSxmkKKYQ==
-Date: Fri, 9 May 2025 08:16:25 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Paolo Abeni
- <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew Lunn"
- <andrew+netdev@lunn.ch>, Jiri Pirko <jiri@nvidia.com>, Gal Pressman
- <gal@nvidia.com>, "Leon Romanovsky" <leonro@nvidia.com>, Donald Hunter
- <donald.hunter@gmail.com>, "Jiri Pirko" <jiri@resnulli.us>, Jonathan Corbet
- <corbet@lwn.net>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
- <leon@kernel.org>, <netdev@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
- <linux-rdma@vger.kernel.org>, Moshe Shemesh <moshe@nvidia.com>, Mark Bloch
- <mbloch@nvidia.com>, Carolina Jubran <cjubran@nvidia.com>, Cosmin Ratiu
- <cratiu@nvidia.com>
-Subject: Re: [PATCH net-next V9 1/5] devlink: Extend devlink rate API with
- traffic classes bandwidth management
-Message-ID: <20250509081625.5d4589a5@kernel.org>
-In-Reply-To: <1746769389-463484-2-git-send-email-tariqt@nvidia.com>
-References: <1746769389-463484-1-git-send-email-tariqt@nvidia.com>
-	<1746769389-463484-2-git-send-email-tariqt@nvidia.com>
+	s=arc-20240116; t=1746803974; c=relaxed/simple;
+	bh=2xHWD4KLfdNpzQ97wTKuNF6OyatfQp6W3sjEptEz6RE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=GBiXb98dzuZMj2Dx4sjow2yAsBseHhc2qmcUza/q9zyWJzvGQwczyziYrORX5LfIt51iuaHugJullGpjRnAXW6jvALTZfkG+p2ma5RxkBbRsuXqOWHiawfZ+NVQWMVp5gPHjk9UTiulrIqvjfXVAPGPA6J0SvVbd641LCOBHWY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rNMBIrhb; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <cdea578b-5570-4a8d-98cc-61081a281a84@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1746803967;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=y6xXAi6Y6zyC7gogZ2MCtrxpjOOwSTEh1MN+VnZXjk4=;
+	b=rNMBIrhbb4mYp7nTa6mvh8zkijnl5oliIvISBkrgxRbF2bsfSVv2Uy7ieFSUoGI0/vkw/M
+	r9VI5HKFDGot8j4WDiVRqg7dJvQ2Rg6dTf+oX3KpYGTx1i5uQiYyYmuYXPwVEzR3tGmhTK
+	XCKVR6UY29qau0047wDcxkPJbI1mc5o=
+Date: Fri, 9 May 2025 17:19:25 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [PATCH for-next v2 1/2] RDMA/rxe: Implement synchronous prefetch
+ for ODP MRs
+To: Daisuke Matsuda <dskmtsd@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, leon@kernel.org, jgg@ziepe.ca,
+ zyjzyj2000@gmail.com
+References: <20250503134224.4867-1-dskmtsd@gmail.com>
+ <20250503134224.4867-2-dskmtsd@gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20250503134224.4867-2-dskmtsd@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, 9 May 2025 08:43:05 +0300 Tariq Toukan wrote:
-> +  -
-> +    name:  devlink-rate-tc-index-max
-> +    header: uapi/linux/devlink.h
-> +    type: const
-> +    value: 7
+On 03.05.25 15:42, Daisuke Matsuda wrote:
+> Minimal implementation of ibv_advise_mr(3) requires synchronous calls being
+> successful with the IBV_ADVISE_MR_FLAG_FLUSH flag. Asynchronous requests,
+> which are best-effort, will be added subsequently.
+> 
+> Signed-off-by: Daisuke Matsuda <dskmtsd@gmail.com>
+> ---
+>   drivers/infiniband/sw/rxe/rxe.c     |  7 +++
+>   drivers/infiniband/sw/rxe/rxe_loc.h | 10 ++++
+>   drivers/infiniband/sw/rxe/rxe_odp.c | 86 +++++++++++++++++++++++++++++
+>   3 files changed, 103 insertions(+)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+> index 3a77d6db1720..e891199cbdef 100644
+> --- a/drivers/infiniband/sw/rxe/rxe.c
+> +++ b/drivers/infiniband/sw/rxe/rxe.c
+> @@ -34,6 +34,10 @@ void rxe_dealloc(struct ib_device *ib_dev)
+>   	mutex_destroy(&rxe->usdev_lock);
+>   }
+>   
+> +static const struct ib_device_ops rxe_ib_dev_odp_ops = {
+> +	.advise_mr = rxe_ib_advise_mr,
+> +};
+> +
+>   /* initialize rxe device parameters */
+>   static void rxe_init_device_param(struct rxe_dev *rxe, struct net_device *ndev)
+>   {
+> @@ -103,6 +107,9 @@ static void rxe_init_device_param(struct rxe_dev *rxe, struct net_device *ndev)
+>   		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_SRQ_RECV;
+>   		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_FLUSH;
+>   		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_ATOMIC_WRITE;
+> +
+> +		/* set handler for ODP prefetching API - ibv_advise_mr(3) */
+> +		ib_set_device_ops(&rxe->ib_dev, &rxe_ib_dev_odp_ops);
+>   	}
+>   }
+>   
+> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+> index f7dbb9cddd12..21b070f3dbb8 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+> @@ -197,6 +197,9 @@ enum resp_states rxe_odp_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
+>   int rxe_odp_flush_pmem_iova(struct rxe_mr *mr, u64 iova,
+>   			    unsigned int length);
+>   enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value);
+> +int rxe_ib_advise_mr(struct ib_pd *pd, enum ib_uverbs_advise_mr_advice advice,
+> +		     u32 flags, struct ib_sge *sg_list, u32 num_sge,
+> +		     struct uverbs_attr_bundle *attrs);
+>   #else /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
+>   static inline int
+>   rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
+> @@ -225,6 +228,13 @@ static inline enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr,
+>   {
+>   	return RESPST_ERR_UNSUPPORTED_OPCODE;
+>   }
+> +static inline int rxe_ib_advise_mr(struct ib_pd *pd, enum ib_uverbs_advise_mr_advice advice,
+> +				   u32 flags, struct ib_sge *sg_list, u32 num_sge,
+> +				   struct uverbs_attr_bundle *attrs)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+>   #endif /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
+>   
+>   #endif /* RXE_LOC_H */
+> diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
+> index 6149d9ffe7f7..e5c60b061d7e 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_odp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
+> @@ -424,3 +424,89 @@ enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
+>   
+>   	return RESPST_NONE;
+>   }
+> +
+> +static int rxe_ib_prefetch_sg_list(struct ib_pd *ibpd,
+> +				   enum ib_uverbs_advise_mr_advice advice,
+> +				   u32 pf_flags, struct ib_sge *sg_list,
+> +				   u32 num_sge)
+> +{
+> +	struct rxe_pd *pd = container_of(ibpd, struct rxe_pd, ibpd);
+> +	unsigned int i;
+> +	int ret = 0;
+> +
+> +	for (i = 0; i < num_sge; ++i) {
+> +		struct rxe_mr *mr;
+> +		struct ib_umem_odp *umem_odp;
+> +
+> +		mr = lookup_mr(pd, IB_ACCESS_LOCAL_WRITE,
+> +			       sg_list[i].lkey, RXE_LOOKUP_LOCAL);
+> +
+> +		if (IS_ERR(mr)) {
+> +			rxe_dbg_pd(pd, "mr with lkey %x not found\n", sg_list[i].lkey);
+> +			return PTR_ERR(mr);
+> +		}
+> +
+> +		if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_WRITE &&
+> +		    !mr->umem->writable) {
+> +			rxe_dbg_mr(mr, "missing write permission\n");
+> +			rxe_put(mr);
+> +			return -EPERM;
+> +		}
+> +
+> +		ret = rxe_odp_do_pagefault_and_lock(mr, sg_list[i].addr,
+> +						    sg_list[i].length, pf_flags);
+> +		if (ret < 0) {
+> +			if (sg_list[i].length == 0)
+> +				continue;
+> +
+> +			rxe_dbg_mr(mr, "failed to prefetch the mr\n");
+> +			rxe_put(mr);
+> +			return ret;
+> +		}
+> +
+> +		umem_odp = to_ib_umem_odp(mr->umem);
+> +		mutex_unlock(&umem_odp->umem_mutex);
+> +
+> +		rxe_put(mr);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int rxe_ib_advise_mr_prefetch(struct ib_pd *ibpd,
+> +				     enum ib_uverbs_advise_mr_advice advice,
+> +				     u32 flags, struct ib_sge *sg_list, u32 num_sge)
+> +{
+> +	u32 pf_flags = RXE_PAGEFAULT_DEFAULT;
+> +
+> +	if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH)
+> +		pf_flags |= RXE_PAGEFAULT_RDONLY;
+> +
+> +	if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_NO_FAULT)
+> +		pf_flags |= RXE_PAGEFAULT_SNAPSHOT;
+> +
+> +	/* Synchronous call */
+> +	if (flags & IB_UVERBS_ADVISE_MR_FLAG_FLUSH)
+> +		return rxe_ib_prefetch_sg_list(ibpd, advice, pf_flags, sg_list,
+> +					       num_sge);
+> +
+> +	/* Asynchronous call is "best-effort" */
 
-Ugh, still wrong, the user space headers don't have uAPI in the path
-when installed. They go to /usr/include/linux/$name.h
-But for defines "local" to the family you don't have to specify header:
-at all, just drop it.
+Asynchronous call is not implemented now, why does this comment appear?
 
-And please do build tests the next version:
+Zhu Yanjun
 
-	make -C tools/net/ynl/ W=1 -j
+> +
+> +	return 0;
+> +}
+> +
+> +int rxe_ib_advise_mr(struct ib_pd *ibpd,
+> +		     enum ib_uverbs_advise_mr_advice advice,
+> +		     u32 flags,
+> +		     struct ib_sge *sg_list,
+> +		     u32 num_sge,
+> +		     struct uverbs_attr_bundle *attrs)
+> +{
+> +	if (advice != IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH &&
+> +	    advice != IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_WRITE &&
+> +	    advice != IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_NO_FAULT)
+> +		return -EOPNOTSUPP;
+> +
+> +	return rxe_ib_advise_mr_prefetch(ibpd, advice, flags,
+> +					 sg_list, num_sge);
+> +}
 
-I'm going to also give you a hint that my next complaint will be that
-there are no selftests in this series, and it extends uAPI.
--- 
-pw-bot: cr
 
