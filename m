@@ -1,232 +1,183 @@
-Return-Path: <linux-rdma+bounces-10207-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10208-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A38FAB183F
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 May 2025 17:19:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5262AB1940
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 May 2025 17:50:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8279D189E2A2
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 May 2025 15:20:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 676947AFE8E
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 May 2025 15:49:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9062822DFA2;
-	Fri,  9 May 2025 15:19:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7F75231A24;
+	Fri,  9 May 2025 15:50:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rNMBIrhb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dPN+BgY9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1397F1EF1D
-	for <linux-rdma@vger.kernel.org>; Fri,  9 May 2025 15:19:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D50323182E;
+	Fri,  9 May 2025 15:49:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746803974; cv=none; b=iZBpWeCAzQ8kF1g9UoxgINtBt50KbAiqfGMef3z/Xdeaq4ln37Y7am3EIZo80kr1E9rk/QlXPYoPMqJO132nfR07eOJPoqZjtgYy2t4zIEWrFZ+kRLYSTTD33/VYV9vLTqNi6u0d/3iDe/XCunPMQnNBhAma3QFNbTbGk/FmVcc=
+	t=1746805801; cv=none; b=UJnRHnGHYzyYIhVJt2Mu+Dqx/BWTTBaFrHyGvCHm6gMOeBrypIE9WetvwKhqCGjF0zYSyqfOI9nixU0TwLMxvKAywzTpg86P0xIP6XvRnuREAWTzzANBK02XQ4Tf5YLLF5aOEFGgVyQgz9x1YZdqo1Ot3n8p9nDfrG4EmhIW7pY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746803974; c=relaxed/simple;
-	bh=2xHWD4KLfdNpzQ97wTKuNF6OyatfQp6W3sjEptEz6RE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=GBiXb98dzuZMj2Dx4sjow2yAsBseHhc2qmcUza/q9zyWJzvGQwczyziYrORX5LfIt51iuaHugJullGpjRnAXW6jvALTZfkG+p2ma5RxkBbRsuXqOWHiawfZ+NVQWMVp5gPHjk9UTiulrIqvjfXVAPGPA6J0SvVbd641LCOBHWY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rNMBIrhb; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <cdea578b-5570-4a8d-98cc-61081a281a84@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1746803967;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y6xXAi6Y6zyC7gogZ2MCtrxpjOOwSTEh1MN+VnZXjk4=;
-	b=rNMBIrhbb4mYp7nTa6mvh8zkijnl5oliIvISBkrgxRbF2bsfSVv2Uy7ieFSUoGI0/vkw/M
-	r9VI5HKFDGot8j4WDiVRqg7dJvQ2Rg6dTf+oX3KpYGTx1i5uQiYyYmuYXPwVEzR3tGmhTK
-	XCKVR6UY29qau0047wDcxkPJbI1mc5o=
-Date: Fri, 9 May 2025 17:19:25 +0200
+	s=arc-20240116; t=1746805801; c=relaxed/simple;
+	bh=zQ1c+z3DU2vCiy7RW7edMeE1/mWOk8neFuh84o59zlY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ixjCNH43NgE3GzO3LhXlPCjCV5kW7XNf7jKgjRGNCwEGbfZtZTZR8e5n4IISxD4STOjTSA8KNG0+4N8NcVI0k9Nj+4PDCL7P+wpzUgi690f1CdQwIuZq0pAGoAoXa7ET9iwl2CA9jjNy9UsOKyBLn1E32R2aRTYDoShNZfpOyd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dPN+BgY9; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-7423fb98cb1so703155b3a.3;
+        Fri, 09 May 2025 08:49:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1746805799; x=1747410599; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6qJxB7qnX5LFLqWFBhUK9DfojI/2BwlgTRn1G+RNsSs=;
+        b=dPN+BgY9xLlECYCT6MN9yPd7Wq+GJK+mKCp2qxNxvisCIZldhTDi1LItRogcTnyFKx
+         xXeDTLUGcx8SR2gPZwB5WEqg+cJd90ToGass2zj5olThOgVtP4+lGfMamyuh/rcIa2pw
+         alyMKaOiOAGDW1Qei4aS+LcaRuzjUA+BXpHWlNBRI2B0qzz0LO7v62KJZTVn4QTJaqbm
+         atyBZA4qcXlNHHl+xakCHa0J/C8SZQonKNi63OAAWpKMWBzZr1z8odDPW2EGySsBe14F
+         XPBU316xicW6KhoSZbm2zGcWnlcEXqDsCBmMoaptY5yE2GDQFuwWi8YHP0N9uscgFSIs
+         hilA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1746805799; x=1747410599;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6qJxB7qnX5LFLqWFBhUK9DfojI/2BwlgTRn1G+RNsSs=;
+        b=MviphyIpmtLX8QMo0lfMKNbQz+qy3uX/k3PSntXWSGdwvcu9NRXO2b8i8bUA/OZ0Tj
+         4QZK66UFFnwbBhv9Q6YrjSUDN0jIFyx97AAKOaWAbaVzuWjADEm7AZa/t7jEDYAf/IUy
+         9guW1o0bcU7uMVqndPKYFGXPba+uSVlYJvNczH3Y+K6pPEbkxHF+ffRNsQvxJOjWPbJQ
+         tboQEo7HE6wZECeK1gbgrMgAZzEpDr0Y2d6FQoI3bGZXm/FKuFdMDFvVQfla+jLmPeMV
+         GK6s/fLhfAJai6vdw9W65EFUm4jZigJcnU1VrxJ6koZSycb0BRARoj3pqjeMO8GhZT4b
+         YHtw==
+X-Forwarded-Encrypted: i=1; AJvYcCUWy2h7OpMFK241PC6w1V4BNMUHKUx/BEPW0QDaYkV4AR65H1TRBvywHemFZU6V6GUXVRHa1sXHY7wzaA==@vger.kernel.org, AJvYcCUYOtKrTMlCELVcudSN9Bs0aYq8fYPkWDFC+EsxqRubhN3bYBeFcnsdHE2KgJBSPyvBSffcHkyHjFniHVY=@vger.kernel.org, AJvYcCVdF8IXEko5J4037Rc3X3njGQqf6w9jVROsYNz01gh1c3CQIUghLWzH4eSo3db3sXsxGKRVcOb2M6X4t9rq@vger.kernel.org, AJvYcCWUGWoAWTZpENUsHx8yLygSlBPKVsAmLH1aGMXjORYIIi0QHKomhjzaos9f9k4pqgSCjF6p26dC@vger.kernel.org, AJvYcCWpp9TjUPvStyv/r6I7Yvu7NyRZR//RtcgzV8Od9VKj52KJSQo7Rh2dmUI2uaRWwZ4ER5SXZlB4SILF@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxt8O1ZjqM+B4btg+fjcsYwJxXhIjuohUR17O7KO1xWqjAUvRXq
+	/26a2cxyCP+/RglF0NZTvqsFhOe4Ofl7BpNcs0xgrexXi8X4/rmv
+X-Gm-Gg: ASbGncv3yK2xLMdTrxwDKM/7rCj6On1dk1hWZqc2mT2HUey7whvuJLnhyM7+OPtsgcX
+	LgLMY60RtL2SDH0KSHu/HMXfo1pd7hI0M4E2YEFWS/uBHFY3UImeJb+hWvSugig/+Aii0+3PjsV
+	Gc6wwkDj6NkHOEt3Lhb7knib/KQBHm41oZYlJOj+eWHeeTjm3CKHA0ROz0ADFz+re2oHGpd4A9l
+	CNTU8HDYOrDfVETUoCU3a+Nl2roOcjxkQ9sQ8gnA0EL93iZMwRCMqvTxCXDrDwZ+BW1qDDW0jib
+	JvR4DXoTknUx9SjXJ8jXSk+OD2rx2WsECVdmbU5W
+X-Google-Smtp-Source: AGHT+IFIh0uHRzJCT7/GnkTq7w++wVD/1lCTkum2tABfnk4IkfODFcEQ0pNzHdqudOyEjI24/Mih9A==
+X-Received: by 2002:a17:903:1787:b0:216:393b:23d4 with SMTP id d9443c01a7336-22fc8b193ebmr64273025ad.11.1746805799099;
+        Fri, 09 May 2025 08:49:59 -0700 (PDT)
+Received: from localhost ([216.228.127.129])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-22fc7741d9fsm18904205ad.81.2025.05.09.08.49.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 May 2025 08:49:58 -0700 (PDT)
+Date: Fri, 9 May 2025 11:49:56 -0400
+From: Yury Norov <yury.norov@gmail.com>
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Cc: Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Simon Horman <horms@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+	Maxim Levitsky <mlevitsk@redhat.com>,
+	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
+	Peter Zijlstra <peterz@infradead.org>, linux-hyperv@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Nipun Gupta <nipun.gupta@amd.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Jonathan Cameron <Jonathan.Cameron@huwei.com>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Kevin Tian <kevin.tian@intel.com>, Long Li <longli@microsoft.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Krzysztof =?utf-8?Q?Wilczy=EF=BF=BD~Dski?= <kw@linux.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, Paul Rosswurm <paulros@microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: Re: [PATCH v3 3/4] net: mana: Allow irq_setup() to skip cpus for
+ affinity
+Message-ID: <aB4kJNG2duAsP8bK@yury>
+References: <1746785566-4337-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <1746785625-4753-1-git-send-email-shradhagupta@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH for-next v2 1/2] RDMA/rxe: Implement synchronous prefetch
- for ODP MRs
-To: Daisuke Matsuda <dskmtsd@gmail.com>, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, leon@kernel.org, jgg@ziepe.ca,
- zyjzyj2000@gmail.com
-References: <20250503134224.4867-1-dskmtsd@gmail.com>
- <20250503134224.4867-2-dskmtsd@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20250503134224.4867-2-dskmtsd@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1746785625-4753-1-git-send-email-shradhagupta@linux.microsoft.com>
 
-On 03.05.25 15:42, Daisuke Matsuda wrote:
-> Minimal implementation of ibv_advise_mr(3) requires synchronous calls being
-> successful with the IBV_ADVISE_MR_FLAG_FLUSH flag. Asynchronous requests,
-> which are best-effort, will be added subsequently.
+On Fri, May 09, 2025 at 03:13:45AM -0700, Shradha Gupta wrote:
+> In order to prepare the MANA driver to allocate the MSI-X IRQs
+> dynamically, we need to prepare the irq_setup() to allow skipping
+> affinitizing IRQs to first CPU sibling group.
 > 
-> Signed-off-by: Daisuke Matsuda <dskmtsd@gmail.com>
+> This would be for cases when number of IRQs is less than or equal
+> to number of online CPUs. In such cases for dynamically added IRQs
+> the first CPU sibling group would already be affinitized with HWC IRQ
+> 
+> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
 > ---
->   drivers/infiniband/sw/rxe/rxe.c     |  7 +++
->   drivers/infiniband/sw/rxe/rxe_loc.h | 10 ++++
->   drivers/infiniband/sw/rxe/rxe_odp.c | 86 +++++++++++++++++++++++++++++
->   3 files changed, 103 insertions(+)
+>  drivers/net/ethernet/microsoft/mana/gdma_main.c | 16 ++++++++++++++--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-> index 3a77d6db1720..e891199cbdef 100644
-> --- a/drivers/infiniband/sw/rxe/rxe.c
-> +++ b/drivers/infiniband/sw/rxe/rxe.c
-> @@ -34,6 +34,10 @@ void rxe_dealloc(struct ib_device *ib_dev)
->   	mutex_destroy(&rxe->usdev_lock);
->   }
->   
-> +static const struct ib_device_ops rxe_ib_dev_odp_ops = {
-> +	.advise_mr = rxe_ib_advise_mr,
-> +};
+> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> index 4ffaf7588885..2de42ce43373 100644
+> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> @@ -1288,7 +1288,8 @@ void mana_gd_free_res_map(struct gdma_resource *r)
+>  	r->size = 0;
+>  }
+>  
+> -static int irq_setup(unsigned int *irqs, unsigned int len, int node)
+> +static int irq_setup(unsigned int *irqs, unsigned int len, int node,
+> +		     bool skip_first_cpu)
+>  {
+>  	const struct cpumask *next, *prev = cpu_none_mask;
+>  	cpumask_var_t cpus __free(free_cpumask_var);
+> @@ -1303,9 +1304,20 @@ static int irq_setup(unsigned int *irqs, unsigned int len, int node)
+>  		while (weight > 0) {
+>  			cpumask_andnot(cpus, next, prev);
+>  			for_each_cpu(cpu, cpus) {
+> +				/*
+> +				 * if the CPU sibling set is to be skipped we
+> +				 * just move on to the next CPUs without len--
+> +				 */
+> +				if (unlikely(skip_first_cpu)) {
+> +					skip_first_cpu = false;
+> +					goto next_cpumask;
+> +				}
 > +
->   /* initialize rxe device parameters */
->   static void rxe_init_device_param(struct rxe_dev *rxe, struct net_device *ndev)
->   {
-> @@ -103,6 +107,9 @@ static void rxe_init_device_param(struct rxe_dev *rxe, struct net_device *ndev)
->   		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_SRQ_RECV;
->   		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_FLUSH;
->   		rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_ATOMIC_WRITE;
+>  				if (len-- == 0)
+>  					goto done;
 > +
-> +		/* set handler for ODP prefetching API - ibv_advise_mr(3) */
-> +		ib_set_device_ops(&rxe->ib_dev, &rxe_ib_dev_odp_ops);
->   	}
->   }
->   
-> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-> index f7dbb9cddd12..21b070f3dbb8 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-> @@ -197,6 +197,9 @@ enum resp_states rxe_odp_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
->   int rxe_odp_flush_pmem_iova(struct rxe_mr *mr, u64 iova,
->   			    unsigned int length);
->   enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value);
-> +int rxe_ib_advise_mr(struct ib_pd *pd, enum ib_uverbs_advise_mr_advice advice,
-> +		     u32 flags, struct ib_sge *sg_list, u32 num_sge,
-> +		     struct uverbs_attr_bundle *attrs);
->   #else /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
->   static inline int
->   rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
-> @@ -225,6 +228,13 @@ static inline enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr,
->   {
->   	return RESPST_ERR_UNSUPPORTED_OPCODE;
->   }
-> +static inline int rxe_ib_advise_mr(struct ib_pd *pd, enum ib_uverbs_advise_mr_advice advice,
-> +				   u32 flags, struct ib_sge *sg_list, u32 num_sge,
-> +				   struct uverbs_attr_bundle *attrs)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
->   #endif /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
->   
->   #endif /* RXE_LOC_H */
-> diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
-> index 6149d9ffe7f7..e5c60b061d7e 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_odp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
-> @@ -424,3 +424,89 @@ enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
->   
->   	return RESPST_NONE;
->   }
-> +
-> +static int rxe_ib_prefetch_sg_list(struct ib_pd *ibpd,
-> +				   enum ib_uverbs_advise_mr_advice advice,
-> +				   u32 pf_flags, struct ib_sge *sg_list,
-> +				   u32 num_sge)
-> +{
-> +	struct rxe_pd *pd = container_of(ibpd, struct rxe_pd, ibpd);
-> +	unsigned int i;
-> +	int ret = 0;
-> +
-> +	for (i = 0; i < num_sge; ++i) {
-> +		struct rxe_mr *mr;
-> +		struct ib_umem_odp *umem_odp;
-> +
-> +		mr = lookup_mr(pd, IB_ACCESS_LOCAL_WRITE,
-> +			       sg_list[i].lkey, RXE_LOOKUP_LOCAL);
-> +
-> +		if (IS_ERR(mr)) {
-> +			rxe_dbg_pd(pd, "mr with lkey %x not found\n", sg_list[i].lkey);
-> +			return PTR_ERR(mr);
-> +		}
-> +
-> +		if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_WRITE &&
-> +		    !mr->umem->writable) {
-> +			rxe_dbg_mr(mr, "missing write permission\n");
-> +			rxe_put(mr);
-> +			return -EPERM;
-> +		}
-> +
-> +		ret = rxe_odp_do_pagefault_and_lock(mr, sg_list[i].addr,
-> +						    sg_list[i].length, pf_flags);
-> +		if (ret < 0) {
-> +			if (sg_list[i].length == 0)
-> +				continue;
-> +
-> +			rxe_dbg_mr(mr, "failed to prefetch the mr\n");
-> +			rxe_put(mr);
-> +			return ret;
-> +		}
-> +
-> +		umem_odp = to_ib_umem_odp(mr->umem);
-> +		mutex_unlock(&umem_odp->umem_mutex);
-> +
-> +		rxe_put(mr);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int rxe_ib_advise_mr_prefetch(struct ib_pd *ibpd,
-> +				     enum ib_uverbs_advise_mr_advice advice,
-> +				     u32 flags, struct ib_sge *sg_list, u32 num_sge)
-> +{
-> +	u32 pf_flags = RXE_PAGEFAULT_DEFAULT;
-> +
-> +	if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH)
-> +		pf_flags |= RXE_PAGEFAULT_RDONLY;
-> +
-> +	if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_NO_FAULT)
-> +		pf_flags |= RXE_PAGEFAULT_SNAPSHOT;
-> +
-> +	/* Synchronous call */
-> +	if (flags & IB_UVERBS_ADVISE_MR_FLAG_FLUSH)
-> +		return rxe_ib_prefetch_sg_list(ibpd, advice, pf_flags, sg_list,
-> +					       num_sge);
-> +
-> +	/* Asynchronous call is "best-effort" */
+>  				irq_set_affinity_and_hint(*irqs++, topology_sibling_cpumask(cpu));
+> +next_cpumask:
+>  				cpumask_andnot(cpus, cpus, topology_sibling_cpumask(cpu));
+>  				--weight;
+>  			}
+> @@ -1403,7 +1415,7 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+>  		}
+>  	}
+>  
+> -	err = irq_setup(irqs, (nvec - start_irq_index), gc->numa_node);
+> +	err = irq_setup(irqs, (nvec - start_irq_index), gc->numa_node, false);
 
-Asynchronous call is not implemented now, why does this comment appear?
+What for the 2nd parameter is parenthesized?
 
-Zhu Yanjun
+>  	if (err)
+>  		goto free_irq;
+>  
+> -- 
+> 2.34.1
 
-> +
-> +	return 0;
-> +}
-> +
-> +int rxe_ib_advise_mr(struct ib_pd *ibpd,
-> +		     enum ib_uverbs_advise_mr_advice advice,
-> +		     u32 flags,
-> +		     struct ib_sge *sg_list,
-> +		     u32 num_sge,
-> +		     struct uverbs_attr_bundle *attrs)
-> +{
-> +	if (advice != IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH &&
-> +	    advice != IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_WRITE &&
-> +	    advice != IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_NO_FAULT)
-> +		return -EOPNOTSUPP;
-> +
-> +	return rxe_ib_advise_mr_prefetch(ibpd, advice, flags,
-> +					 sg_list, num_sge);
-> +}
 
+Reviewed-by: Yury Norov [NVIDIA] <yury.norov@gmail.com>
 
