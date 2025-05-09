@@ -1,540 +1,197 @@
-Return-Path: <linux-rdma+bounces-10194-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10195-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40216AB1039
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 May 2025 12:15:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 534C3AB1069
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 May 2025 12:21:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B17034A74EB
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 May 2025 10:14:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA85917253E
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 May 2025 10:21:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9DD828FA80;
-	Fri,  9 May 2025 10:14:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D028D28DF5C;
+	Fri,  9 May 2025 10:21:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="SBTI+6qT"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="O0OyTsqH"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7678C28F51D;
-	Fri,  9 May 2025 10:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01B92274FEA
+	for <linux-rdma@vger.kernel.org>; Fri,  9 May 2025 10:21:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746785642; cv=none; b=NYyj3dSbLhL7O4K/Mw021M8OcafcFyxX5k0IV4OXE4jAZEJIM7G+Jp/aNvq6YBe8732nCsbWyLj+5fD75corWxj+Tr6ntd/49XYxCCj2i8b1ZOeW8SjeRjiGrMYo9ZhuoYyZNZnEtA21zQbN7ukZ8OfNMP5zvL+YPbOaLPsBKeQ=
+	t=1746786071; cv=none; b=GNHkqsn7Cr+UNQgNgCW180LXZDBbasf2JU4cZAAo42OaQwja9zI11LmMvlCDs7GC+djgwL1IcDBRHLxwOdt9YN8fG+32LGqy914QOMkgiEEx74eK2R6+nhfEL+1Nv5qXCjSPhc6X9qvbXpE2/vrvrQIHnDByrpaNgF8g6pa6AKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746785642; c=relaxed/simple;
-	bh=dj2bntkdl7xEPsU3O8kNrVVqiaY9ql9KfTEsUCfgmbQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=D5zuVj1Zn6vgiL6/HloNpDrO3s8RNRDJELlUIkoja9Gltw4VByjlILPA3fsedwarG4ziR74nPRrfjj0PXiZpiMseK/FBbcPKHtmml2HhG9mq80CtoqundJvBPbcQL57+fNZO/6YkqiRDi3CugEeE7Wa6VtQ5BuDQE4dDwmWYvKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=SBTI+6qT; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id 091A92098462; Fri,  9 May 2025 03:13:59 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 091A92098462
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1746785639;
-	bh=j0hv02lMNf3ygxb/Gu2IuZyCzEMjtz+gbRdiT+OLPPg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SBTI+6qThlS97fRCryGco2kspD3TzuiKHPkm152kXMIQstFup7tonhUeWdp8Wi8aj
-	 xUNjTJoXgr07lzcMF02GNOND9ijoXfFJq6Bup6omNO6Yw6pGDpEifn/mO82NORbeAm
-	 M92uanuJVaxYNsY8rO++MsuOlwiXB0gCOx27044w=
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Dexuan Cui <decui@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Simon Horman <horms@kernel.org>,
-	Leon Romanovsky <leon@kernel.org>,
-	Maxim Levitsky <mlevitsk@redhat.com>,
-	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
-	Peter Zijlstra <peterz@infradead.org>
-Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
-	linux-hyperv@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Nipun Gupta <nipun.gupta@amd.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Jonathan Cameron <Jonathan.Cameron@huwei.com>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Long Li <longli@microsoft.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Rob Herring <robh@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	=?UTF-8?q?Krzysztof=20Wilczy=EF=BF=BD=7EDski?= <kw@linux.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	Paul Rosswurm <paulros@microsoft.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>
-Subject: [PATCH v3 4/4] net: mana: Allocate MSI-X vectors dynamically
-Date: Fri,  9 May 2025 03:13:57 -0700
-Message-Id: <1746785637-4881-1-git-send-email-shradhagupta@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1746785566-4337-1-git-send-email-shradhagupta@linux.microsoft.com>
-References: <1746785566-4337-1-git-send-email-shradhagupta@linux.microsoft.com>
+	s=arc-20240116; t=1746786071; c=relaxed/simple;
+	bh=FqBAxblzPI124Gs/63Xq+gfsdPgQK56bi/JsdBLrSZs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ksQvRKC7rz4QTkuwznWmZpwpuLlocpTa9VGvXiMyQtYDLWbtk5p5qBN1iMsUI3xJf0Iw2EUBux+xfEjzcQvzzZl8h2CkHaNuDu6hJfN3qntoFF/f62rFxrO7gyZmHq5PkDeLXwNls7Jscy5Jy6SaW7lpfGAIBrXSbMPPtATSVqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=O0OyTsqH; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <f3ebdaad-9911-4533-ac4c-35aa9e7184f8@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1746786067;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mmHabweNHOq4Q440GkJ89iI6ajF8QS7PW41+GMp/Vk4=;
+	b=O0OyTsqH8fMh/6BMCIftlSKNZV0VYa/FLZ/uBjvwsxKlWAnZrzFr3H0TGw+KFmc386J5iK
+	VVJ8HmSTw2BoOkh9qoTUCvYNqDUpMJ0FUpw5NmpvkmheEr0y7LEm99snZGNeTH1mfp+wUZ
+	BqR3GU0Q3iwUpL1sCIyJvD3sVb6qp60=
+Date: Fri, 9 May 2025 12:21:03 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Subject: Re: [bug report] blktests nvme/061 hang with rdma transport and siw
+ driver
+To: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+ Bernard Metzler <BMT@zurich.ibm.com>
+Cc: "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ Daniel Wagner <wagi@kernel.org>
+References: <r5676e754sv35aq7cdsqrlnvyhiq5zktteaurl7vmfih35efko@z6lay7uypy3c>
+ <BN8PR15MB251354A3F4F39E0360B9B41399B22@BN8PR15MB2513.namprd15.prod.outlook.com>
+ <lembalemdaoaqocvyd6n3rtdocv45734d22kmaleliwjoqpnpi@hrkfn3bl6hsv>
+ <d4xfwos54mccrwgw76t6q5nhwe2n3bxbt46cmyuhjcpcsub2hy@7d3zsewjkycv>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <d4xfwos54mccrwgw76t6q5nhwe2n3bxbt46cmyuhjcpcsub2hy@7d3zsewjkycv>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Currently, the MANA driver allocates MSI-X vectors statically based on
-MANA_MAX_NUM_QUEUES and num_online_cpus() values and in some cases ends
-up allocating more vectors than it needs. This is because, by this time
-we do not have a HW channel and do not know how many IRQs should be
-allocated.
+On 08.05.25 09:03, Shinichiro Kawasaki wrote:
+> On Apr 16, 2025 / 12:42, Shin'ichiro Kawasaki wrote:
+>> On Apr 15, 2025 / 15:18, Bernard Metzler wrote:
+> [...]
+>>> At first glance, to me it looks like a problem in the iwcm code,
+>>> where a cmid's work queue handling might be broken.
+> 
+> I agree. The BUG slab-use-after-free happened for a work object. The call
+> trace indicates that happened for the work handled by iw_cm_wq, not
+> siw_cm_wq.
+> 
+> I took a close looks, and I think the work objects allocated for each cm_id
+> is freed too early. The work objects are freed in dealloc_work_entries() when
+> all references to the cm_id are removed. IIUC, when the last reference to the
+> cm_id is removed in the work, the work object for the work itself gets removed.
+> Hence the use-after-free.
+> 
+> Based on this guess, I created a fix trial patch below. It delays the reference
+> removal in the cm_id destroy context, to ensure that the reference count becomes
+> zeor not in the work contexts but in the cm_id destroy context. It moves
+> iwcm_deref_id() call from destroy_cm_id() to its callers. Also call
+> iwcm_deref_id() after flushing the pending works. With this patch, I observed
+> use-after-free goes away. Comments on the fix trial patch will be welcomed.
 
-To avoid this, we allocate 1 MSI-X vector during the creation of HWC and
-after getting the value supported by hardware, dynamically add the
-remaining MSI-X vectors.
+It seems that this problem is related with the following commit.
 
-Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
----
- Changes in v3:
- * implemented irq_contexts as xarrays rather than list
- * split the patch to create a perparation patch around irq_setup()
- * add log when IRQ allocation/setup for remaining IRQs fails
----
- Changes in v2:
- * Use string 'MSI-X vectors' instead of 'pci vectors'
- * make skip-cpu a bool instead of int
- * rearrange the comment arout skip_cpu variable appropriately
- * update the capability bit for driver indicating dynamic IRQ allocation
- * enforced max line length to 80
- * enforced RCT convention
- * initialized gic to NULL, for when there is a possibility of gic
-   not being populated correctly
----
- .../net/ethernet/microsoft/mana/gdma_main.c   | 248 +++++++++++++++---
- include/net/mana/gdma.h                       |   8 +-
- 2 files changed, 211 insertions(+), 45 deletions(-)
+commit aee2424246f9f1dadc33faa78990c1e2eb7826e4
+Author: Bart Van Assche <bvanassche@acm.org>
+Date:   Wed Jun 5 08:51:01 2024 -0600
 
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 2de42ce43373..f07cebffc30d 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -6,6 +6,8 @@
- #include <linux/pci.h>
- #include <linux/utsname.h>
- #include <linux/version.h>
-+#include <linux/msi.h>
-+#include <linux/irqdomain.h>
- 
- #include <net/mana/mana.h>
- 
-@@ -80,8 +82,15 @@ static int mana_gd_query_max_resources(struct pci_dev *pdev)
- 		return err ? err : -EPROTO;
- 	}
- 
--	if (gc->num_msix_usable > resp.max_msix)
--		gc->num_msix_usable = resp.max_msix;
-+	if (!pci_msix_can_alloc_dyn(pdev)) {
-+		if (gc->num_msix_usable > resp.max_msix)
-+			gc->num_msix_usable = resp.max_msix;
-+	} else {
-+		/* If dynamic allocation is enabled we have already allocated
-+		 * hwc msi
-+		 */
-+		gc->num_msix_usable = min(resp.max_msix, num_online_cpus() + 1);
-+	}
- 
- 	if (gc->num_msix_usable <= 1)
- 		return -ENOSPC;
-@@ -482,7 +491,9 @@ static int mana_gd_register_irq(struct gdma_queue *queue,
- 	}
- 
- 	queue->eq.msix_index = msi_index;
--	gic = &gc->irq_contexts[msi_index];
-+	gic = xa_load(&gc->irq_contexts, msi_index);
-+	if (!gic)
-+		return -EINVAL;
- 
- 	spin_lock_irqsave(&gic->lock, flags);
- 	list_add_rcu(&queue->entry, &gic->eq_list);
-@@ -507,7 +518,10 @@ static void mana_gd_deregiser_irq(struct gdma_queue *queue)
- 	if (WARN_ON(msix_index >= gc->num_msix_usable))
- 		return;
- 
--	gic = &gc->irq_contexts[msix_index];
-+	gic = xa_load(&gc->irq_contexts, msix_index);
-+	if (!gic)
-+		return;
-+
- 	spin_lock_irqsave(&gic->lock, flags);
- 	list_for_each_entry_rcu(eq, &gic->eq_list, entry) {
- 		if (queue == eq) {
-@@ -1329,29 +1343,96 @@ static int irq_setup(unsigned int *irqs, unsigned int len, int node,
- 	return 0;
- }
- 
--static int mana_gd_setup_irqs(struct pci_dev *pdev)
-+static int mana_gd_setup_dyn_irqs(struct pci_dev *pdev, int nvec)
- {
- 	struct gdma_context *gc = pci_get_drvdata(pdev);
--	unsigned int max_queues_per_port;
- 	struct gdma_irq_context *gic;
--	unsigned int max_irqs, cpu;
--	int start_irq_index = 1;
--	int nvec, *irqs, irq;
-+	bool skip_first_cpu = false;
- 	int err, i = 0, j;
-+	int *irqs, irq;
- 
- 	cpus_read_lock();
--	max_queues_per_port = num_online_cpus();
--	if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
--		max_queues_per_port = MANA_MAX_NUM_QUEUES;
- 
--	/* Need 1 interrupt for the Hardware communication Channel (HWC) */
--	max_irqs = max_queues_per_port + 1;
-+	irqs = kmalloc_array(nvec, sizeof(int), GFP_KERNEL);
-+	if (!irqs) {
-+		err = -ENOMEM;
-+		goto free_irq_vector;
-+	}
- 
--	nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
--	if (nvec < 0) {
--		cpus_read_unlock();
--		return nvec;
-+	for (i = 0; i < nvec; i++) {
-+		gic = kcalloc(1, sizeof(struct gdma_irq_context), GFP_KERNEL);
-+		if (!gic) {
-+			err = -ENOMEM;
-+			goto free_irq;
-+		}
-+		gic->handler = mana_gd_process_eq_events;
-+		INIT_LIST_HEAD(&gic->eq_list);
-+		spin_lock_init(&gic->lock);
-+
-+		snprintf(gic->name, MANA_IRQ_NAME_SZ, "mana_q%d@pci:%s",
-+			 i, pci_name(pdev));
-+
-+		/* one pci vector is already allocated for HWC */
-+		irqs[i] = pci_irq_vector(pdev, i + 1);
-+		if (irqs[i] < 0) {
-+			err = irqs[i];
-+			goto free_current_gic;
-+		}
-+
-+		err = request_irq(irqs[i], mana_gd_intr, 0, gic->name, gic);
-+		if (err)
-+			goto free_current_gic;
-+
-+		xa_store(&gc->irq_contexts, i + 1, gic, GFP_KERNEL);
- 	}
-+
-+	/*
-+	 * When calling irq_setup() for dynamically added IRQs, if number of
-+	 * CPUs is more than or equal to allocated MSI-X, we need to skip the
-+	 * first CPU sibling group since they are already affinitized to HWC IRQ
-+	 */
-+	if (gc->num_msix_usable <= num_online_cpus())
-+		skip_first_cpu = true;
-+
-+	err = irq_setup(irqs, nvec, gc->numa_node, skip_first_cpu);
-+	if (err)
-+		goto free_irq;
-+
-+	cpus_read_unlock();
-+	kfree(irqs);
-+	return 0;
-+
-+free_current_gic:
-+	kfree(gic);
-+free_irq:
-+	for (j = i; j >= 0; j--) {
-+		irq = pci_irq_vector(pdev, j);
-+		gic = xa_load(&gc->irq_contexts, j);
-+		if (!gic)
-+			continue;
-+
-+		irq_update_affinity_hint(irq, NULL);
-+		free_irq(irq, gic);
-+		xa_erase(&gc->irq_contexts, j);
-+		kfree(gic);
-+	}
-+	kfree(irqs);
-+free_irq_vector:
-+	cpus_read_unlock();
-+	return err;
-+}
-+
-+static int mana_gd_setup_irqs(struct pci_dev *pdev, int nvec)
-+{
-+	struct gdma_context *gc = pci_get_drvdata(pdev);
-+	struct gdma_irq_context *gic;
-+	int start_irq_index = 1;
-+	unsigned int cpu;
-+	int *irqs, irq;
-+	int err, i = 0, j;
-+
-+	cpus_read_lock();
-+
- 	if (nvec <= num_online_cpus())
- 		start_irq_index = 0;
- 
-@@ -1361,15 +1442,13 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
- 		goto free_irq_vector;
- 	}
- 
--	gc->irq_contexts = kcalloc(nvec, sizeof(struct gdma_irq_context),
--				   GFP_KERNEL);
--	if (!gc->irq_contexts) {
--		err = -ENOMEM;
--		goto free_irq_array;
--	}
--
- 	for (i = 0; i < nvec; i++) {
--		gic = &gc->irq_contexts[i];
-+		gic = kcalloc(1, sizeof(struct gdma_irq_context), GFP_KERNEL);
-+		if (!gic) {
-+			err = -ENOMEM;
-+			goto free_irq;
-+		}
-+
- 		gic->handler = mana_gd_process_eq_events;
- 		INIT_LIST_HEAD(&gic->eq_list);
- 		spin_lock_init(&gic->lock);
-@@ -1384,13 +1463,13 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
- 		irq = pci_irq_vector(pdev, i);
- 		if (irq < 0) {
- 			err = irq;
--			goto free_irq;
-+			goto free_current_gic;
- 		}
- 
- 		if (!i) {
- 			err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
- 			if (err)
--				goto free_irq;
-+				goto free_current_gic;
- 
- 			/* If number of IRQ is one extra than number of online CPUs,
- 			 * then we need to assign IRQ0 (hwc irq) and IRQ1 to
-@@ -1408,39 +1487,110 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
- 			}
- 		} else {
- 			irqs[i - start_irq_index] = irq;
--			err = request_irq(irqs[i - start_irq_index], mana_gd_intr, 0,
--					  gic->name, gic);
-+			err = request_irq(irqs[i - start_irq_index],
-+					  mana_gd_intr, 0, gic->name, gic);
- 			if (err)
--				goto free_irq;
-+				goto free_current_gic;
- 		}
-+
-+		xa_store(&gc->irq_contexts, i, gic, GFP_KERNEL);
- 	}
- 
- 	err = irq_setup(irqs, (nvec - start_irq_index), gc->numa_node, false);
- 	if (err)
- 		goto free_irq;
- 
--	gc->max_num_msix = nvec;
--	gc->num_msix_usable = nvec;
- 	cpus_read_unlock();
- 	kfree(irqs);
- 	return 0;
- 
-+free_current_gic:
-+	kfree(gic);
- free_irq:
- 	for (j = i - 1; j >= 0; j--) {
- 		irq = pci_irq_vector(pdev, j);
--		gic = &gc->irq_contexts[j];
-+		gic = xa_load(&gc->irq_contexts, j);
-+		if (!gic)
-+			continue;
- 
- 		irq_update_affinity_hint(irq, NULL);
- 		free_irq(irq, gic);
-+		xa_erase(&gc->irq_contexts, j);
-+		kfree(gic);
- 	}
- 
--	kfree(gc->irq_contexts);
--	gc->irq_contexts = NULL;
--free_irq_array:
- 	kfree(irqs);
- free_irq_vector:
-+	xa_destroy(&gc->irq_contexts);
- 	cpus_read_unlock();
--	pci_free_irq_vectors(pdev);
-+	return err;
-+}
-+
-+static int mana_gd_setup_hwc_irqs(struct pci_dev *pdev)
-+{
-+	struct gdma_context *gc = pci_get_drvdata(pdev);
-+	unsigned int max_irqs, min_irqs;
-+	int max_queues_per_port;
-+	int nvec, err;
-+
-+	if (pci_msix_can_alloc_dyn(pdev)) {
-+		max_irqs = 1;
-+		min_irqs = 1;
-+	} else {
-+		max_queues_per_port = num_online_cpus();
-+		if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
-+			max_queues_per_port = MANA_MAX_NUM_QUEUES;
-+		/* Need 1 interrupt for HWC */
-+		max_irqs = max_queues_per_port + 1;
-+		min_irqs = 2;
-+	}
-+
-+	nvec = pci_alloc_irq_vectors(pdev, min_irqs, max_irqs, PCI_IRQ_MSIX);
-+	if (nvec < 0)
-+		return nvec;
-+
-+	err = mana_gd_setup_irqs(pdev, nvec);
-+	if (err) {
-+		pci_free_irq_vectors(pdev);
-+		return err;
-+	}
-+
-+	gc->num_msix_usable = nvec;
-+	gc->max_num_msix = nvec;
-+
-+	return err;
-+}
-+
-+static int mana_gd_setup_remaining_irqs(struct pci_dev *pdev)
-+{
-+	struct gdma_context *gc = pci_get_drvdata(pdev);
-+	int max_irqs, i, err = 0;
-+	struct msi_map irq_map;
-+
-+	if (!pci_msix_can_alloc_dyn(pdev))
-+		/* remain irqs are already allocated with HWC IRQ */
-+		return 0;
-+
-+	/* allocate only remaining IRQs*/
-+	max_irqs = gc->num_msix_usable - 1;
-+
-+	for (i = 1; i <= max_irqs; i++) {
-+		irq_map = pci_msix_alloc_irq_at(pdev, i, NULL);
-+		if (!irq_map.virq) {
-+			err = irq_map.index;
-+			/* caller will handle cleaning up all allocated
-+			 * irqs, after HWC is destroyed
-+			 */
-+			return err;
-+		}
-+	}
-+
-+	err = mana_gd_setup_dyn_irqs(pdev, max_irqs);
-+	if (err)
-+		return err;
-+
-+	gc->max_num_msix = gc->max_num_msix + max_irqs;
-+
- 	return err;
- }
- 
-@@ -1458,19 +1608,22 @@ static void mana_gd_remove_irqs(struct pci_dev *pdev)
- 		if (irq < 0)
- 			continue;
- 
--		gic = &gc->irq_contexts[i];
-+		gic = xa_load(&gc->irq_contexts, i);
-+		if (!gic)
-+			continue;
- 
- 		/* Need to clear the hint before free_irq */
- 		irq_update_affinity_hint(irq, NULL);
- 		free_irq(irq, gic);
-+		xa_erase(&gc->irq_contexts, i);
-+		kfree(gic);
- 	}
- 
- 	pci_free_irq_vectors(pdev);
- 
- 	gc->max_num_msix = 0;
- 	gc->num_msix_usable = 0;
--	kfree(gc->irq_contexts);
--	gc->irq_contexts = NULL;
-+	xa_destroy(&gc->irq_contexts);
- }
- 
- static int mana_gd_setup(struct pci_dev *pdev)
-@@ -1481,9 +1634,10 @@ static int mana_gd_setup(struct pci_dev *pdev)
- 	mana_gd_init_registers(pdev);
- 	mana_smc_init(&gc->shm_channel, gc->dev, gc->shm_base);
- 
--	err = mana_gd_setup_irqs(pdev);
-+	err = mana_gd_setup_hwc_irqs(pdev);
- 	if (err) {
--		dev_err(gc->dev, "Failed to setup IRQs: %d\n", err);
-+		dev_err(gc->dev, "Failed to setup IRQs for HWC creation: %d\n",
-+			err);
- 		return err;
- 	}
- 
-@@ -1499,6 +1653,12 @@ static int mana_gd_setup(struct pci_dev *pdev)
- 	if (err)
- 		goto destroy_hwc;
- 
-+	err = mana_gd_setup_remaining_irqs(pdev);
-+	if (err) {
-+		dev_err(gc->dev, "Failed to setup remaining IRQs: %d", err);
-+		goto destroy_hwc;
-+	}
-+
- 	err = mana_gd_detect_devices(pdev);
- 	if (err)
- 		goto destroy_hwc;
-@@ -1575,6 +1735,7 @@ static int mana_gd_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	gc->is_pf = mana_is_pf(pdev->device);
- 	gc->bar0_va = bar0_va;
- 	gc->dev = &pdev->dev;
-+	xa_init(&gc->irq_contexts);
- 
- 	if (gc->is_pf)
- 		gc->mana_pci_debugfs = debugfs_create_dir("0", mana_debugfs_root);
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index 228603bf03f2..f20d1d1ea5e8 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -373,7 +373,7 @@ struct gdma_context {
- 	unsigned int		max_num_queues;
- 	unsigned int		max_num_msix;
- 	unsigned int		num_msix_usable;
--	struct gdma_irq_context	*irq_contexts;
-+	struct xarray		irq_contexts;
- 
- 	/* L2 MTU */
- 	u16 adapter_mtu;
-@@ -558,12 +558,16 @@ enum {
- /* Driver can handle holes (zeros) in the device list */
- #define GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP BIT(11)
- 
-+/* Driver supports dynamic MSI-X vector allocation */
-+#define GDMA_DRV_CAP_FLAG_1_DYNAMIC_IRQ_ALLOC_SUPPORT BIT(13)
-+
- #define GDMA_DRV_CAP_FLAGS1 \
- 	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
- 	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
- 	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG | \
- 	 GDMA_DRV_CAP_FLAG_1_VARIABLE_INDIRECTION_TABLE_SUPPORT | \
--	 GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP)
-+	 GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP | \
-+	 GDMA_DRV_CAP_FLAG_1_DYNAMIC_IRQ_ALLOC_SUPPORT)
- 
- #define GDMA_DRV_CAP_FLAGS2 0
- 
--- 
-2.34.1
+     RDMA/iwcm: Fix a use-after-free related to destroying CM IDs
+
+     iw_conn_req_handler() associates a new struct rdma_id_private 
+(conn_id) with
+     an existing struct iw_cm_id (cm_id) as follows:
+
+             conn_id->cm_id.iw = cm_id;
+             cm_id->context = conn_id;
+             cm_id->cm_handler = cma_iw_handler;
+
+     rdma_destroy_id() frees both the cm_id and the struct 
+rdma_id_private. Make
+     sure that cm_work_handler() does not trigger a use-after-free by only
+     freeing of the struct rdma_id_private after all pending work has 
+finished.
+
+     Cc: stable@vger.kernel.org
+     Fixes: 59c68ac31e15 ("iw_cm: free cm_id resources on the last deref")
+     Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+     Tested-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+     Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+     Link: 
+https://lore.kernel.org/r/20240605145117.397751-6-bvanassche@acm.org
+     Signed-off-by: Leon Romanovsky <leon@kernel.org>
+
+
+Zhu Yanjun
+
+> 
+> One left question is why the failure was not observed with rxe driver, but with
+> siw driver. My mere guess is that is because siw driver calls id->add_ref() and
+> cm_id->rem_ref().
+> 
+> 
+> diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
+> index f4486cbd8f45..600cf8ea6a39 100644
+> --- a/drivers/infiniband/core/iwcm.c
+> +++ b/drivers/infiniband/core/iwcm.c
+> @@ -368,12 +368,9 @@ EXPORT_SYMBOL(iw_cm_disconnect);
+>   /*
+>    * CM_ID <-- DESTROYING
+>    *
+> - * Clean up all resources associated with the connection and release
+> - * the initial reference taken by iw_create_cm_id.
+> - *
+> - * Returns true if and only if the last cm_id_priv reference has been dropped.
+> + * Clean up all resources associated with the connection.
+>    */
+> -static bool destroy_cm_id(struct iw_cm_id *cm_id)
+> +static void destroy_cm_id(struct iw_cm_id *cm_id)
+>   {
+>   	struct iwcm_id_private *cm_id_priv;
+>   	struct ib_qp *qp;
+> @@ -442,20 +439,22 @@ static bool destroy_cm_id(struct iw_cm_id *cm_id)
+>   		iwpm_remove_mapinfo(&cm_id->local_addr, &cm_id->m_local_addr);
+>   		iwpm_remove_mapping(&cm_id->local_addr, RDMA_NL_IWCM);
+>   	}
+> -
+> -	return iwcm_deref_id(cm_id_priv);
+>   }
+>   
+>   /*
+>    * This function is only called by the application thread and cannot
+>    * be called by the event thread. The function will wait for all
+> - * references to be released on the cm_id and then kfree the cm_id
+> - * object.
+> + * references to be released on the cm_id and then release the initial
+> + * reference taken by iw_create_cm_id.
+>    */
+>   void iw_destroy_cm_id(struct iw_cm_id *cm_id)
+>   {
+> -	if (!destroy_cm_id(cm_id))
+> -		flush_workqueue(iwcm_wq);
+> +	struct iwcm_id_private *cm_id_priv;
+> +
+> +	cm_id_priv = container_of(cm_id, struct iwcm_id_private, id);
+> +	destroy_cm_id(cm_id);
+> +	flush_workqueue(iwcm_wq);
+> +	iwcm_deref_id(cm_id_priv);
+>   }
+>   EXPORT_SYMBOL(iw_destroy_cm_id);
+>   
+> @@ -1035,8 +1034,10 @@ static void cm_work_handler(struct work_struct *_work)
+>   
+>   		if (!test_bit(IWCM_F_DROP_EVENTS, &cm_id_priv->flags)) {
+>   			ret = process_event(cm_id_priv, &levent);
+> -			if (ret)
+> -				WARN_ON_ONCE(destroy_cm_id(&cm_id_priv->id));
+> +			if (ret) {
+> +				destroy_cm_id(&cm_id_priv->id);
+> +				WARN_ON_ONCE(iwcm_deref_id(cm_id_priv));
+> +			}
+>   		} else
+>   			pr_debug("dropping event %d\n", levent.event);
+>   		if (iwcm_deref_id(cm_id_priv))
 
 
