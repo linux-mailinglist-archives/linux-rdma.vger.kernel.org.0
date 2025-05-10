@@ -1,240 +1,264 @@
-Return-Path: <linux-rdma+bounces-10245-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10246-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D054AB2340
-	for <lists+linux-rdma@lfdr.de>; Sat, 10 May 2025 12:05:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B33B4AB2342
+	for <lists+linux-rdma@lfdr.de>; Sat, 10 May 2025 12:10:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE6349E83BC
-	for <lists+linux-rdma@lfdr.de>; Sat, 10 May 2025 10:04:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFA1B9E52CF
+	for <lists+linux-rdma@lfdr.de>; Sat, 10 May 2025 10:10:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA044221DA0;
-	Sat, 10 May 2025 10:04:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2D562222A2;
+	Sat, 10 May 2025 10:10:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="FYrLEOrl";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="seGerJ3D"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="LEn3kO4u"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16F031E9B0D
-	for <linux-rdma@vger.kernel.org>; Sat, 10 May 2025 10:04:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.144
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746871494; cv=fail; b=ac21HFtnsy6PB+bn6YLD+vkhl07LHL3fqgaQaaXfIrln4PKin89GpGH2xFznehNRM0s/yZNhaqWNLme4vo51r/+DNyhqdtfwcpfVdn4+0tXCJaeXzTUOvvS8nw1DhBAZ9yzoYX/hPVC/cqXawUYwVMMor2wetaZMqgPg38uUopo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746871494; c=relaxed/simple;
-	bh=LeFNBplPsoOS+O1Wu+o1bXAgVBnsgu1ah0Ypw0rCSbM=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=M5y65GvcunrLcxcu5/I0AkwczZ5n9fQSh7tEkVw8jXvY9z5rO9/rm0UsqvaahGGbDhbRgsL7eGsutXHtabP0kkrRgamn+3W+iRpL8j8AwAIQxz3MZyYJvtCEsnkhY5Ivnb3dWVDnoGj1hS9dGIq1JP9NBuhSFF3yUZmio3odr+Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=FYrLEOrl; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=seGerJ3D; arc=fail smtp.client-ip=216.71.153.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1DEE1DC198
+	for <linux-rdma@vger.kernel.org>; Sat, 10 May 2025 10:10:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.45
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1746871841; cv=none; b=lVmA3n4oP6g68/e8c6VuxuEBUHcSiJXlUIV/tg1Ryii/grQ/qsXpRE4LtQG4o+/vtIw7p2v/Erg0PHUehaEhNzfei7WophG4091VuUs1kEhciUI91/YqXeJHimBDLxHtlIPo61n23XdqXIbvjKLWtaD2fG5QD4+zVQbB65wJLZ4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1746871841; c=relaxed/simple;
+	bh=srE5tXQ280cRiamiMRGi1jFXBncb1Q2fMGEWzl2yyOs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fKBVSjVcDrDdrn+fyw7lgFvqaSioTh1PppuKT0KSY/U7Qd16nLyHpDcLGGtu/U5pF1PJNqd67ZtVjSYipQuu0IBWff9jsiTusUVhrQgtvyQ4xcY3lQZLw36r7PoVz/tR+z09G/APjux6VsTe5d9cQ2cg4ZD4Ce/wj91DSW+JraY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=LEn3kO4u; arc=none smtp.client-ip=216.71.154.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1746871493; x=1778407493;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=LeFNBplPsoOS+O1Wu+o1bXAgVBnsgu1ah0Ypw0rCSbM=;
-  b=FYrLEOrlF0plYdmJMq8laUq9YYtgpqQ35GDl1cE+ZX4LLJlep4VEQLOe
-   BT+NzYdxoY6Eza5ktheBHdySUjisHSznqOaqkWw87K6AkV0d0flaTUot2
-   oUz15bIiA1aYf7OK5gN10+T0+lXnjdGVzvATd6UgTtrbkd8rtcINuvc5J
-   3q2gk2hs+nzs13flSY4n51MGjbTeEv5gsbSpBYpvpcflje152E0JwXlVF
-   6sIH4JGHOfr2ZVVt/RaVNt3IeEBujUwyrP4KORPzrNz3m5DkQUKaWmYCb
-   7P+NfoSb2mv2tZCWtMTdEma7uyKfNLIcaF9KDZ5qdY5GrcfzegEvfKgJ7
-   g==;
-X-CSE-ConnectionGUID: aE/c92AoR3KbtMUOj0otUA==
-X-CSE-MsgGUID: TpdxJtY9QlCxWyDTXxdytA==
+  t=1746871839; x=1778407839;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=srE5tXQ280cRiamiMRGi1jFXBncb1Q2fMGEWzl2yyOs=;
+  b=LEn3kO4uSk7tXrLD13fB0Askx5kYPCXDZQr5K44xHNSS3092mp8hdnnh
+   l3VLHj1ua4PN9cXWQ2Cigs+s1fylM7bFMEWFUnl1PcwxGHQfSphPeG7EU
+   of3klA/e6a9jCqCKokYd2AZb/LjRBR6p5QlWU8ciN7ATBaJoLXknVOQBg
+   y++p9wEDLwn5pJr8DUBSZC7OCuwD+QTEL89Q7yG626d4Sf1nX6udMLRDw
+   DWq5Nhb7EpWIOHwpFO8QGEObwDgUbOq0MnnrIMbqZf1I46mMFlQO8jPWo
+   8zJVethoU5oiNV/xDy5OpDu+a4zJkkg+XSrKK/iDO0dHYoPOoq3DFhbEd
+   w==;
+X-CSE-ConnectionGUID: EIf/gzLVRzS0/t+k2yEIjA==
+X-CSE-MsgGUID: VOTWZqh+R5KfOaSc5YR9FA==
 X-IronPort-AV: E=Sophos;i="6.15,276,1739808000"; 
-   d="scan'208";a="79974049"
-Received: from mail-mw2nam04lp2177.outbound.protection.outlook.com (HELO NAM04-MW2-obe.outbound.protection.outlook.com) ([104.47.73.177])
-  by ob1.hgst.iphmx.com with ESMTP; 10 May 2025 18:04:45 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=H2ATPEbUWJsOUth2ezIWKBoUhAA51lk1Gwzd8uOnvDD6f2bdaB33zWtxt6Fra/3SY4DCllbWEO6IN/uShkHhnpWIP/Ikp8qTi24dn473rdw+iXl6AKZ5OEOpwA+6Q3rPLOxbNiVgSNFwcqfrobqfManYGlo1ddE5YEoE3ruffh7S+nV5kfk8JeA7BZcwP9Sv6Dn6zF6SxwxrgBz5aVw26MUIVqM25hgpVOE1PZoGbW7lWREN0vUfzsxIg3CqosKtasC+KJ6jC6wTuulfvTJC8pYA1bYaNiDR8ZoqL6AZtLBp6KiFOTm2OhmwJlQHooSY23Uxlwwdx1IbDP9UdmrpBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eNci1VME6Eej3Zj2CrjZZKlfPsZYXV4xYglde2oJacg=;
- b=GtEEnU7M4UxgbLwI1zowoHg/PTf5xW9f6SDFLSi22Zg+SiR7fsG9pBI8Amp5t7tFuVHtgnquL5GpU1xVqZiTCd9bdd7GUlI5sZaM1+vSklu9GaVb/SGKK9f6yTjLNdAKzMN50s8cn8xtUsZ6tJ92Qlg/DjYXNuTd8keQSrkXsSWH8VVbI/tAaG7RsVst7b6G1zxOdInLv4MfMT8I/HTfwtU19jtPCSs1ySu6ZoMCum5XjLJ+yxuUqVbjwoK6J3+8JDdOHDmayOtYeXtsQjr3JrwF0o33TVBsCr7peorRBuPQSXXylRKId0nO4nZBtaWqfn6CZSH/DycyoXn5M5K0dA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eNci1VME6Eej3Zj2CrjZZKlfPsZYXV4xYglde2oJacg=;
- b=seGerJ3D+F3eg8EMgHKDNljsNCTfm6ECAH4BYawr9fO1AY/xCRIxNC3DFIxqINk34Ul6duv8MWTn/GSjXWz5HEkBeRoD/z2XluwtmccZtFbnilQ3Igrpdp6zOs4bFafkoq83cUhksyC7OFBKjqr8a59D2qEH+8HOS1qiZEsIjnM=
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com (2603:10b6:8:f::6) by
- CH0PR04MB8179.namprd04.prod.outlook.com (2603:10b6:610:fc::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8722.25; Sat, 10 May 2025 10:04:43 +0000
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::b27f:cdfa:851:e89a]) by DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::b27f:cdfa:851:e89a%5]) with mapi id 15.20.8722.021; Sat, 10 May 2025
- 10:04:43 +0000
-From: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-To: Bernard Metzler <BMT@zurich.ibm.com>
-CC: "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, Daniel Wagner
-	<wagi@kernel.org>
-Subject: Re: [bug report] blktests nvme/061 hang with rdma transport and siw
- driver
-Thread-Topic: [bug report] blktests nvme/061 hang with rdma transport and siw
- driver
-Thread-Index: AQHbrfdhJhGSraouF0ezotWmIGdrJbOkzJXwgADapACAIstSAIADV2sA
-Date: Sat, 10 May 2025 10:04:42 +0000
-Message-ID: <jkh67wynvdtouvhxe3ztdwf4xuxxtimov44oy3chol4rephnqa@7yt6tujnqe44>
-References: <r5676e754sv35aq7cdsqrlnvyhiq5zktteaurl7vmfih35efko@z6lay7uypy3c>
- <BN8PR15MB251354A3F4F39E0360B9B41399B22@BN8PR15MB2513.namprd15.prod.outlook.com>
- <lembalemdaoaqocvyd6n3rtdocv45734d22kmaleliwjoqpnpi@hrkfn3bl6hsv>
- <d4xfwos54mccrwgw76t6q5nhwe2n3bxbt46cmyuhjcpcsub2hy@7d3zsewjkycv>
-In-Reply-To: <d4xfwos54mccrwgw76t6q5nhwe2n3bxbt46cmyuhjcpcsub2hy@7d3zsewjkycv>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM8PR04MB8037:EE_|CH0PR04MB8179:EE_
-x-ms-office365-filtering-correlation-id: d413f756-a839-45bb-932d-08dd8faa15db
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|376014|366016|1800799024|38070700018;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?yELsfTgqgwdZ9Q2iSXQZrEm0qdOhSo/kKJXKIonnT5HhjkuiQ4v+4jmbo7Qc?=
- =?us-ascii?Q?jsaj2C5IfcI2Ra6M7VUTfSiF02Obrw0TsCj/9uYJG/5exG9ocKOfstKSL6UX?=
- =?us-ascii?Q?D/7vSnUNE1S3sdAv7BPj4by7Qf3qJ0ma+LQOjbqgwaPnWFfvgfGQxj0ptomS?=
- =?us-ascii?Q?FzrXW2TQyIi2ZNGIyxPTjqwu7LNjsnHCiKm6RDCD/9MtpY+MlBOuafStSBHP?=
- =?us-ascii?Q?xKSF+IaUCoH58yVXaXTnPI4afDu+5wf3nUlGE8KNaoThmUo8EFAu8ihL3w2k?=
- =?us-ascii?Q?xL2BSefVn3Shot9ZWrFurrnYoM7W328z8OP3qE9+uTerj799y9/tvXxQdlRh?=
- =?us-ascii?Q?yReXAPGJKWzJhisKnAA51JgM5CyhwO6Tve3EXh5rY2PSH/XdMkOSvCHs3pfr?=
- =?us-ascii?Q?Sf+d9a3Zm8nuE1mxu3YsO9CA1xLy1ObsIFF5XpFlJ2+pR99GA7bKWfvB1kuX?=
- =?us-ascii?Q?6SoyJSO6Q2VYmbwN+ntjbw6qJhsGoM9fasndCg6jBmrP70NGvR3LjRwIjxWw?=
- =?us-ascii?Q?TdxxBB4VyKy3gTcdyilMmXM2zBzI+7HrXfvGZfiWi7pqYFp6YJnon0Ix9fE9?=
- =?us-ascii?Q?ZwW/JiIaYDuxOL1E+qzsXT2IaAC2aMe8NXCcXHHGV8meSXCm5oANN5abw6Qz?=
- =?us-ascii?Q?pJHcEvdyNQplpyzdxIg6ds9ZtyUYpFMHMhOM2Qn4C/8sgamRbZ1YThwdulg6?=
- =?us-ascii?Q?xZjBlqFunHq0QppwIJqn8T1VQC2B/jA2UIcpxj5cO88aWOEj/1NDtbC6bdqC?=
- =?us-ascii?Q?3W0mQdDHHD+fOjtOdsbaLy6L/3MdZFLa5qHc9W8Wsc2TFikm8EO3HprA3mOm?=
- =?us-ascii?Q?aMzPoWrFvhKgP0kBDkY6QYkiHmTvhJa/0v1BQXyGAuDqsQLnFyBsvJQiCyHj?=
- =?us-ascii?Q?/Uqs5R/XSY2eqIRFwfrQZFZK4jB9ZjmZKzaW4bHeL8CzTeFCd+bSMjHeViK1?=
- =?us-ascii?Q?nTe4TzebgKBzriHAz2H9VkP55bTTUOMTY39PHwftzsaPuEN5ncUKumm6KWGC?=
- =?us-ascii?Q?Tpit27zhI0msebQEGZrtzJv8k7UELrtcDQOgnyMinhyO3fA+FMZ9Yg8eOxl3?=
- =?us-ascii?Q?w0dr1DwG8giCGNXp1F3p+FPny1VK9mU/a86+mC7tdzrwISs8CeZB1UeMoUYK?=
- =?us-ascii?Q?dHT9zXUgDBIDV86JFzINbA+N2IJQTT9J3VjVsu7xR3/+NnNs+W4ZxTDRDHpP?=
- =?us-ascii?Q?eq8n7A4cskHR9g4zUsgkqWXz8Rk0Ev7+0cWHLM3i/zG/APW/RP6FaY14bNLX?=
- =?us-ascii?Q?VwGVSonQ1VEedJ2y2uvYUEeWDmv9yL0BzvdR8AkgQms/FdBbOGmvNrzUpYIV?=
- =?us-ascii?Q?WGBQTRHvCu9Na3CXWorDd29iTBZRKsW8Yehu5ZKQStF2eKIWtRJqA6jVyJyK?=
- =?us-ascii?Q?PLSUsiCca0tAcgXUi5TEl61iq1OlWTGkMwz+sOWnfX8oiE+qLLG+Pt5kVNkV?=
- =?us-ascii?Q?sJrWCZEZ3M8UOJHTqnnXfztqjsVq8xDSVp+50cXzPBt1dxqY1jU4WQ=3D=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8037.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?K2VuowidcN+P+Nd2K+RjhOmKGqSO+/OA4pkL1oCmfwVZNjFqfrjP7VW2G5eH?=
- =?us-ascii?Q?xz0UFMDOv+eFYt1yRUIwfxSiijNLJPPDl6tFivt36aXVVUYMqwI0foOQRfVR?=
- =?us-ascii?Q?mZG9Kckll7PrWFMDpPfy+EIU6CjKTsoOlLvBOX7k2qqqNz6CPMNo2h1eEZ8h?=
- =?us-ascii?Q?+Hzp3puEjmH1N4+wVQZ+yxUeT9nknLzHcMdmIXqo+Lh5tECOk7HqHiQrdLDZ?=
- =?us-ascii?Q?L4UO0XGDdUnkEKG8aNLsNQumjzI0NC6umj5QRKs9x1DoMG1xc2iBTjOX6Hen?=
- =?us-ascii?Q?7suNY3Haa1rg7zmhpyC7doqwVg5VdF6vuXtJgP5ldm0lew9uszFH/veUGT6v?=
- =?us-ascii?Q?2nLwEnQRN/Slj1/TH7wht5/qU518s7pJ2UkkmxgESn88JxqSax2fIw1w5Ya0?=
- =?us-ascii?Q?S4L7ze0ABtxFMlWZZuabJzxjelNGQY3WUWyE9oWa8QjDVgyiMKJBbggMhl6E?=
- =?us-ascii?Q?Dp0eoZU8TwAyu95YJ6s9Y4HApiFEpju7ES3uxHrG6HvsrCmGgQjcZHr9gHQO?=
- =?us-ascii?Q?VQRB4I4Y/Y5Psy/OT3skM/9bDv33kzZk/oO0u4L+NNZSmvyjKiH9qZWVZ2RZ?=
- =?us-ascii?Q?dFzQ2vEW0EDyfZdzJYJBKoE/Cjlo3kk++2Ciu0Pl9G8PA7lnkvVm+0UEdDzX?=
- =?us-ascii?Q?qciW0SwyAwPew6dScKhDCme1nf4K8a4aS/7s9y9rb21gBTa8QnFwsDaCelIu?=
- =?us-ascii?Q?FGwlDo1ijYWPYO7JTpWWioivWZ7MS3XfEwDng28dXUQ0uKcyCKIUHxvtI+vu?=
- =?us-ascii?Q?iX9Y/akmFQlHKMN6R/cWqr6d3BImz8PikFKrMVNqOOpSrSz0mL0ivxEk6JC4?=
- =?us-ascii?Q?FhT+jh2DBSrm1VW66YKLhTPU4GGQe0o0ynPGn3Dfygd+5UNKFtNkwZyZu60d?=
- =?us-ascii?Q?YS+H0rJnSbp2mTzhCYkW/TFyjOYC4BaJQRH+hXNM7HnuiznbBa7fWP+/af+O?=
- =?us-ascii?Q?9G034zdeZkkuiQEmVN/EgxLiqTVeLjZhprKIUpp2p7u1awv9njrej52Z2Xy0?=
- =?us-ascii?Q?/swu7mH4bY/G93tVZUoh5bKUmk7mzwCdo/QFgxMywVZljew73CYWcktY+g9f?=
- =?us-ascii?Q?9/SYyug1DJFTGXwnteybCPDtpu8loiKkD+f1P6WxDZwzXz9oO+j5i6HEJdO5?=
- =?us-ascii?Q?mNX4rKsiwfrSoumooIu25o+Le1Luub66RBlhu266QSYTJZ7NRi67GrB2+dhh?=
- =?us-ascii?Q?5bBkrsFQP8YjTGvFBidXjelomXQpUqo1L7hdCIX40c5SrshhlkBOUA1WIuOc?=
- =?us-ascii?Q?Hck8IqZyoUw5Zee9uT1hbrKzFrPZDm4P9CbsYAS2Qg1ig2MkaxoMdKnIKhQx?=
- =?us-ascii?Q?aDtC5wYSCKLYeigAW+ZfvQSpZ4eDxlM3e5DtobqwRkp4lz5BYjMaq3df+a3e?=
- =?us-ascii?Q?CRdG0FhXoaQzT8aSoDHQiUCj2rAq30gwNyt1xRXgYfIP6IfwlhGMvyedwf9m?=
- =?us-ascii?Q?FoEl/pAsMRT7K17AgJZ9oyPvd82v80M0wkcrH4CgQBxkIwmJv2VMmLwSzsQp?=
- =?us-ascii?Q?Khxu8Yp82mu1SpQcBAh9YSL8LBCNyb/he9hBT88byMLk04gpqpEmdQwbftWM?=
- =?us-ascii?Q?DpRby/gzA3qtOrqQoqrNR2vhatVopViFm4kgPjmlksZQaHdRpb9ec71sepDD?=
- =?us-ascii?Q?OQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <C82576A9C0DD6A48927AFA970287B440@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+   d="scan'208";a="84831883"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 10 May 2025 18:10:38 +0800
+IronPort-SDR: 681f17ea_+loNdNgvJYQxmeSyoK/OlBew1O2rc+o3nIF6eX3eRyIm6S7
+ nlx2+RX03Dj0WfiXCXe8I4hTfEdr2PCe3or2URw==
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 10 May 2025 02:10:02 -0700
+WDCIronportException: Internal
+Received: from 4q4cl13.ad.shared (HELO shinmob.flets-east.jp) ([10.224.173.210])
+  by uls-op-cesaip02.wdc.com with ESMTP; 10 May 2025 03:10:37 -0700
+From: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To: linux-rdma@vger.kernel.org,
+	Bernard Metzler <BMT@zurich.ibm.com>,
+	Zhu Yanjun <yanjun.zhu@linux.dev>,
+	Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Steve Wise <larrystevenwise@gmail.com>,
+	Doug Ledford <dledford@redhat.com>,
+	Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Subject: [PATCH] RDMA/iwcm: Fix use-after-free of work objects after cm_id destruction
+Date: Sat, 10 May 2025 19:10:36 +0900
+Message-ID: <20250510101036.1756439-1-shinichiro.kawasaki@wdc.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	/QbHFPmMRJ6Ddvdzh3OxenctCDCyNxwpocoN1C2HMvSciJgbn9P51JZRNkb4jyKZi6tOWABLMFxYHbzTKhiUA9Ts3YegKc/d+V1x69xYg8odvVLEJbyolC3IR1HeKQlJmcqbjrnSsajY3qGAzKf8K7yAPuyNJ1gEQu7NxbQ9G/gt+GAmB0HHdsaaDDOGUOwHMoKpzfFXi/eXPmMmGiAa9vpKmHw4gXbCakOtRDt38wBaZ/NPkTDQVRfdCn2vlig3SDhBEqNkRfAO8zVoWAEdJZBiNnKFAGgw8BYT3WYtNWuvP1q7g3BzbiGAcZYs68DE7KKZYgkw6eNWMSZoFEIXejcGZkdev+NHv51l960ErZSua1pWuFVe8TTkW8kg+Y6Oi6usnvRNJL+gvZANm/uZ6YY7tPLvyN8DeWhZuzbYE6LhDpbBrHLKdRk4rOpmKInSHbfTdhP74s07B+FLaB9ixuDuP7qtcOlwruaexQ90BNhvByNeMYB4iO6M1g07eznP9Yavrq9PItI+M5+n83nXOl9aLX0CunxLNrSjb5gQQ+zjaq0NDlNf7enJGOjyfxYtjrBCeWfD0p9Kf4OM67gnB11fL40xHILmuRCroBABFHHk3iS+3pHzYU0Es/C13Ter
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8037.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d413f756-a839-45bb-932d-08dd8faa15db
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 May 2025 10:04:42.9768
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: y3460RWKo8gYv3S9hBCaEAl3TVfIcVpQGMHPLOJEfy0t5Oti1tGmo4xu4WTNjn8ao5NArP7uwQqkXoBc6MAYMnQ/4WpJ/jkrqyH8Aseq26I=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR04MB8179
+Content-Transfer-Encoding: 8bit
 
-On May 08, 2025 / 07:03, Shinichiro Kawasaki wrote:
-[...]
-> diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwc=
-m.c
-> index f4486cbd8f45..600cf8ea6a39 100644
-> --- a/drivers/infiniband/core/iwcm.c
-> +++ b/drivers/infiniband/core/iwcm.c
-[...]
-> @@ -442,20 +439,22 @@ static bool destroy_cm_id(struct iw_cm_id *cm_id)
->  		iwpm_remove_mapinfo(&cm_id->local_addr, &cm_id->m_local_addr);
->  		iwpm_remove_mapping(&cm_id->local_addr, RDMA_NL_IWCM);
->  	}
-> -
-> -	return iwcm_deref_id(cm_id_priv);
->  }
-> =20
->  /*
->   * This function is only called by the application thread and cannot
->   * be called by the event thread. The function will wait for all
-> - * references to be released on the cm_id and then kfree the cm_id
-> - * object.
-> + * references to be released on the cm_id and then release the initial
-> + * reference taken by iw_create_cm_id.
->   */
->  void iw_destroy_cm_id(struct iw_cm_id *cm_id)
->  {
-> -	if (!destroy_cm_id(cm_id))
-> -		flush_workqueue(iwcm_wq);
+The commit 59c68ac31e15 ("iw_cm: free cm_id resources on the last
+deref") simplified cm_id resource management by freeing cm_id once all
+references to the cm_id were removed. The references are removed either
+upon completion of iw_cm event handlers or when the application destroys
+the cm_id. This commit introduced the use-after-free condition where
+cm_id_private object could still be in use by event handler works during
+the destruction of cm_id. The commit aee2424246f9 ("RDMA/iwcm: Fix a
+use-after-free related to destroying CM IDs") addressed this use-after-
+free by flushing all pending works at the cm_id destruction.
 
-While I evalute this fix patch, I notcied that the if statement above shoul=
-d be
-left. Or, srp tests with the siw drivers hang.
+However, still another use-after-free possibility remained. It happens
+with the work objects allocated for each cm_id_priv within
+alloc_work_entries() during cm_id creation, and subsequently freed in
+dealloc_work_entries() once all references to the cm_id are removed.
+If the cm_id's last reference is decremented in the event handler work,
+the work object for the work itself gets removed, and causes the use-
+after-free BUG below:
 
-> +	struct iwcm_id_private *cm_id_priv;
-> +
-> +	cm_id_priv =3D container_of(cm_id, struct iwcm_id_private, id);
-> +	destroy_cm_id(cm_id);
-> +	flush_workqueue(iwcm_wq);
+  BUG: KASAN: slab-use-after-free in __pwq_activate_work+0x1ff/0x250
+  Read of size 8 at addr ffff88811f9cf800 by task kworker/u16:1/147091
 
-To keep the if statement above, I modified the line above as folllows,
-then the srp tests passed.
+  CPU: 2 UID: 0 PID: 147091 Comm: kworker/u16:1 Not tainted 6.15.0-rc2+ #27 PREEMPT(voluntary)
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-3.fc41 04/01/2014
+  Workqueue:  0x0 (iw_cm_wq)
+  Call Trace:
+   <TASK>
+   dump_stack_lvl+0x6a/0x90
+   print_report+0x174/0x554
+   ? __virt_addr_valid+0x208/0x430
+   ? __pwq_activate_work+0x1ff/0x250
+   kasan_report+0xae/0x170
+   ? __pwq_activate_work+0x1ff/0x250
+   __pwq_activate_work+0x1ff/0x250
+   pwq_dec_nr_in_flight+0x8c5/0xfb0
+   process_one_work+0xc11/0x1460
+   ? __pfx_process_one_work+0x10/0x10
+   ? assign_work+0x16c/0x240
+   worker_thread+0x5ef/0xfd0
+   ? __pfx_worker_thread+0x10/0x10
+   kthread+0x3b0/0x770
+   ? __pfx_kthread+0x10/0x10
+   ? rcu_is_watching+0x11/0xb0
+   ? _raw_spin_unlock_irq+0x24/0x50
+   ? rcu_is_watching+0x11/0xb0
+   ? __pfx_kthread+0x10/0x10
+   ret_from_fork+0x30/0x70
+   ? __pfx_kthread+0x10/0x10
+   ret_from_fork_asm+0x1a/0x30
+   </TASK>
 
-       if (refcount_read(&cm_id_priv->refcount) > 1)
-                flush_workqueue(iwcm_wq);
+  Allocated by task 147416:
+   kasan_save_stack+0x2c/0x50
+   kasan_save_track+0x10/0x30
+   __kasan_kmalloc+0xa6/0xb0
+   alloc_work_entries+0xa9/0x260 [iw_cm]
+   iw_cm_connect+0x23/0x4a0 [iw_cm]
+   rdma_connect_locked+0xbfd/0x1920 [rdma_cm]
+   nvme_rdma_cm_handler+0x8e5/0x1b60 [nvme_rdma]
+   cma_cm_event_handler+0xae/0x320 [rdma_cm]
+   cma_work_handler+0x106/0x1b0 [rdma_cm]
+   process_one_work+0x84f/0x1460
+   worker_thread+0x5ef/0xfd0
+   kthread+0x3b0/0x770
+   ret_from_fork+0x30/0x70
+   ret_from_fork_asm+0x1a/0x30
 
-Will post the formal patch with this modification.
+  Freed by task 147091:
+   kasan_save_stack+0x2c/0x50
+   kasan_save_track+0x10/0x30
+   kasan_save_free_info+0x37/0x60
+   __kasan_slab_free+0x4b/0x70
+   kfree+0x13a/0x4b0
+   dealloc_work_entries+0x125/0x1f0 [iw_cm]
+   iwcm_deref_id+0x6f/0xa0 [iw_cm]
+   cm_work_handler+0x136/0x1ba0 [iw_cm]
+   process_one_work+0x84f/0x1460
+   worker_thread+0x5ef/0xfd0
+   kthread+0x3b0/0x770
+   ret_from_fork+0x30/0x70
+   ret_from_fork_asm+0x1a/0x30
 
-> +	iwcm_deref_id(cm_id_priv);
->  }
->  EXPORT_SYMBOL(iw_destroy_cm_id);=
+  Last potentially related work creation:
+   kasan_save_stack+0x2c/0x50
+   kasan_record_aux_stack+0xa3/0xb0
+   __queue_work+0x2ff/0x1390
+   queue_work_on+0x67/0xc0
+   cm_event_handler+0x46a/0x820 [iw_cm]
+   siw_cm_upcall+0x330/0x650 [siw]
+   siw_cm_work_handler+0x6b9/0x2b20 [siw]
+   process_one_work+0x84f/0x1460
+   worker_thread+0x5ef/0xfd0
+   kthread+0x3b0/0x770
+   ret_from_fork+0x30/0x70
+   ret_from_fork_asm+0x1a/0x30
+
+This BUG is reproducible by repeating the blktests test case nvme/061
+for the rdma transport and the siw driver.
+
+To avoid the use-after-free of cm_id_private work objects, ensure that
+the last reference to the cm_id is decremented not in the event handler
+works, but in the cm_id destruction context. For that purpose, move
+iwcm_deref_id() call from destroy_cm_id() to the callers of
+destroy_cm_id(). In iw_destroy_cm_id(), call iwcm_deref_id() after
+flushing the pending works.
+
+During the fix work, I noticed that iw_destroy_cm_id() is called from
+cm_work_handler() and process_event() context. However, the comment of
+iw_destroy_cm_id() notes that the function "cannot be called by the
+event thread". Drop the false comment.
+
+Closes: https://lore.kernel.org/linux-rdma/r5676e754sv35aq7cdsqrlnvyhiq5zktteaurl7vmfih35efko@z6lay7uypy3c/
+Fixes: 59c68ac31e15 ("iw_cm: free cm_id resources on the last deref")
+Cc: stable@vger.kernel.org
+Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+---
+ drivers/infiniband/core/iwcm.c | 29 +++++++++++++++--------------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
+index f4486cbd8f45..62410578dec3 100644
+--- a/drivers/infiniband/core/iwcm.c
++++ b/drivers/infiniband/core/iwcm.c
+@@ -368,12 +368,9 @@ EXPORT_SYMBOL(iw_cm_disconnect);
+ /*
+  * CM_ID <-- DESTROYING
+  *
+- * Clean up all resources associated with the connection and release
+- * the initial reference taken by iw_create_cm_id.
+- *
+- * Returns true if and only if the last cm_id_priv reference has been dropped.
++ * Clean up all resources associated with the connection.
+  */
+-static bool destroy_cm_id(struct iw_cm_id *cm_id)
++static void destroy_cm_id(struct iw_cm_id *cm_id)
+ {
+ 	struct iwcm_id_private *cm_id_priv;
+ 	struct ib_qp *qp;
+@@ -442,20 +439,22 @@ static bool destroy_cm_id(struct iw_cm_id *cm_id)
+ 		iwpm_remove_mapinfo(&cm_id->local_addr, &cm_id->m_local_addr);
+ 		iwpm_remove_mapping(&cm_id->local_addr, RDMA_NL_IWCM);
+ 	}
+-
+-	return iwcm_deref_id(cm_id_priv);
+ }
+ 
+ /*
+- * This function is only called by the application thread and cannot
+- * be called by the event thread. The function will wait for all
+- * references to be released on the cm_id and then kfree the cm_id
+- * object.
++ * Destroy cm_id. If the cm_id still has other references, wait for all
++ * references to be released on the cm_id and then release the initial
++ * reference taken by iw_create_cm_id.
+  */
+ void iw_destroy_cm_id(struct iw_cm_id *cm_id)
+ {
+-	if (!destroy_cm_id(cm_id))
++	struct iwcm_id_private *cm_id_priv;
++
++	cm_id_priv = container_of(cm_id, struct iwcm_id_private, id);
++	destroy_cm_id(cm_id);
++	if (refcount_read(&cm_id_priv->refcount) > 1)
+ 		flush_workqueue(iwcm_wq);
++	iwcm_deref_id(cm_id_priv);
+ }
+ EXPORT_SYMBOL(iw_destroy_cm_id);
+ 
+@@ -1035,8 +1034,10 @@ static void cm_work_handler(struct work_struct *_work)
+ 
+ 		if (!test_bit(IWCM_F_DROP_EVENTS, &cm_id_priv->flags)) {
+ 			ret = process_event(cm_id_priv, &levent);
+-			if (ret)
+-				WARN_ON_ONCE(destroy_cm_id(&cm_id_priv->id));
++			if (ret) {
++				destroy_cm_id(&cm_id_priv->id);
++				WARN_ON_ONCE(iwcm_deref_id(cm_id_priv));
++			}
+ 		} else
+ 			pr_debug("dropping event %d\n", levent.event);
+ 		if (iwcm_deref_id(cm_id_priv))
+-- 
+2.49.0
+
 
