@@ -1,259 +1,251 @@
-Return-Path: <linux-rdma+bounces-10247-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10248-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 905D1AB253D
-	for <lists+linux-rdma@lfdr.de>; Sat, 10 May 2025 22:45:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C719BAB25B3
+	for <lists+linux-rdma@lfdr.de>; Sun, 11 May 2025 01:12:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF4E71B6499E
-	for <lists+linux-rdma@lfdr.de>; Sat, 10 May 2025 20:46:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81FD47AD842
+	for <lists+linux-rdma@lfdr.de>; Sat, 10 May 2025 23:11:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5CC1CBEB9;
-	Sat, 10 May 2025 20:45:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32ABD20E708;
+	Sat, 10 May 2025 23:12:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hVK3XUfc"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="e2HkvhJN"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2078.outbound.protection.outlook.com [40.107.212.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699A45475E
-	for <linux-rdma@vger.kernel.org>; Sat, 10 May 2025 20:45:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746909943; cv=none; b=YJ5EFbMVwHMyaQcq1T4CWEjbpeuV7HJA+W/hKUG0zsgsDAgtsL3HkC+0i3Zy1FF4gEn+/pVHsltkl36IEBcoxpn5Yo0cF0al2uXKv1+0yv3YK6AuTiFwsUfxwkrHjoqVrhyKGjqBXr1LmjN/aOt85P84pnDkfOP75JVLSu2KpX4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746909943; c=relaxed/simple;
-	bh=mNtQBV8goMK4uNtF9rTybAtb8P4+Vx9OfCo72KVqLXY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X12CVAoK87BxiGY4SOK8MKQ/UEe1hyi7RPkAAdA6Tx8XkkXtX5J+gjzXxsEj/Hqp2atSGO0/dD+iOs3sG6FNIBERhuljXKl3qiCymMTLb4ZcuTnEgSexk5jdK2qjSZWycqBGQZc5MdCRL9dwbmEVxDH4OcYVz32lTqO3R6Venbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hVK3XUfc; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <94db186c-24fe-45d8-bf88-badcc3fe9695@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1746909938;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MJW4PzbE4nc9FmF8nXivqrwezqx/nDf6gnGtdgCu0lY=;
-	b=hVK3XUfcntHZ2FcapVz51c+26pFdDZKeYjarzI5Je72A2AQmm5BjYWJQS1q/fA9WrlKTvE
-	zs45jrIAFrnWKG0ANdQ1UIKXrrR3oj7U7qdwLWw4SYERo8+spje3yzJ+GpUwzi9z+x5h/z
-	NAX0A/cVH1NyoT+fZpZouscFFx8OOUA=
-Date: Sat, 10 May 2025 22:45:03 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2465620C489;
+	Sat, 10 May 2025 23:12:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.78
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1746918750; cv=fail; b=Zh949lp/Q6/0x8KIGI0xswr5p9klbEQ9ki7Acr7zCq40KEcfnV3U9QSWd8zULXrUGmt4t9IL8M+w8LbX/GpJR6BMLwgA81l3aQRDFzspBtwqx6BoZC0YTtAVATr9f8gSg2khmr7gVWCbSi9z2UVgZtVek2c5w/XL94ygoMMnP2k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1746918750; c=relaxed/simple;
+	bh=PCoZNvPoqPhjn28ADCAJQuDHAEu1rKmYtg0mM++KyDo=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=g3bggUvoocvZ1rdzSR5VB8gKcljq+cEtw1oUrYouhHfEAwKFaEWwj9BzvJfKoQdPEuWQyisLXjo6DBamwoD7QCaA+ikg5KHPLsUdPU3hUuOACeu5mrIjUg0/lwrybkyepn5uSUkOfQ8VrbDdrWlfagvxEj4DEa2P8pV7MzOZmbk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=e2HkvhJN; arc=fail smtp.client-ip=40.107.212.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=D4KNOBWK6fosdU7lJApxhUgxfndLT7vBBHucn1HAU8eCQgaJ5nqrlAXJNb8lb6cuYFJ/KLsBIWkLKraT0tueu5d7tkorhkO11w8bDJ9sxG7KkmrrXWd7to2pdSsUUk58PnoxymljTBnHe3klz6qPCIzID2+8R4g/EbB2w4tw+ANyf8NYmppgAiCx4kwpI153APoXOaIy4HdsI7mfVr+CadXFnesSV9rGqed716tdGewwZM0EZtZsT393vlgVim10cVkicR6iDTWcpienhv/Q3gEvRxxu5wx2v7ZBoD9GmfbVc4OGoBlpDok/y1+KiLTjtmX5+JyAMqDL5L5MgK9Mcg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cyYcc3IL6IzTM3lRpEbRz2MnGsCLox3lqCPCVUdMTqI=;
+ b=NaCLBH73Kj2dxzFxYGa56EUhDUoRM73Z2J2AyBjhDUsu39dblbsb6VwLeO0mRN8dfZMUEcfRvE3hNg5P7IxqpJmnO5k/QpBAB6wLL31FhnOda/bM6tVXqjzxvXs+VWiRlojT7RAScSt1WfuASuysxH12czKtVJkfuqrAgsaWbenQSyppL81YBwun0KDt5fsY/FdE7g8xiuSTKPTE3l6u+Hm5TxxXNJ9pvSdRv4LGUB8VfaVbvkE0V4koME+xacqO8msIUcVW4XOfZhLI8StI56sogMnNZys8TmUxCLJeUfqeSDy4SYNTV+6H5tWgWsaaq8wYLUKQECYZlX0frWosqw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cyYcc3IL6IzTM3lRpEbRz2MnGsCLox3lqCPCVUdMTqI=;
+ b=e2HkvhJNTH7mgVkM74WTFmfBCL7VrzB5B8JkONc/wL10W4lAjdaldZ5auDo+YD1ksvAiwWY66moJSbMn/uUlXbRhl67dXf3cXZgzYQ0Qhllv1SDvL9q9oaImasDa6VtRJ/UisB/sYkh7nmgXBlUUw4FG5F5OvghJRNLGGZfYkAdN0K1CPcJswin3R9IqqfiSffiV1fMe4VR2zjyESVazet1xiKsvTSLavHaQOfjAZyosC+iAxsR2Z5srT0SYxeIzGpmRY5QwFVVooV5Xd/1pwnVA5IKslrnY+F1wDEaKVC8jtmucNaaQcPaSLQYhsBktFDAAX5gIL0GzoTdtlZxN9A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from SJ0PR12MB5663.namprd12.prod.outlook.com (2603:10b6:a03:42a::18)
+ by MW5PR12MB5600.namprd12.prod.outlook.com (2603:10b6:303:195::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8699.22; Sat, 10 May
+ 2025 23:12:24 +0000
+Received: from SJ0PR12MB5663.namprd12.prod.outlook.com
+ ([fe80::b41f:9a21:f1fa:185a]) by SJ0PR12MB5663.namprd12.prod.outlook.com
+ ([fe80::b41f:9a21:f1fa:185a%5]) with mapi id 15.20.8699.012; Sat, 10 May 2025
+ 23:12:23 +0000
+Message-ID: <e9e3c6ba-3a45-4fe6-967a-ffa100705663@nvidia.com>
+Date: Sun, 11 May 2025 02:12:16 +0300
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 01/14] svcrdma: Reduce the number of rdma_rw contexts
+ per-QP
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Chuck Lever <cel@kernel.org>, Christoph Hellwig <hch@infradead.org>,
+ NeilBrown <neil@brown.name>, Jeff Layton <jlayton@kernel.org>,
+ Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <dai.ngo@oracle.com>,
+ Tom Talpey <tom@talpey.com>, Anna Schumaker <anna@kernel.org>,
+ "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ Chuck Lever <chuck.lever@oracle.com>, Leon Romanovsky <leon@kernel.org>
+References: <20250428193702.5186-2-cel@kernel.org>
+ <aBoJ64qDSp7U3twh@infradead.org> <20250506131722.GG2260621@ziepe.ca>
+ <aBoRSeERzax5lTvH@infradead.org> <20250506135536.GH2260621@ziepe.ca>
+ <be740f28-8d68-400c-85bc-81cc4e48ccc6@kernel.org>
+ <20250506141705.GI2260621@ziepe.ca>
+ <d7115cd7-c34c-4212-b244-e5247ac68fcc@kernel.org>
+ <20250506142202.GJ2260621@ziepe.ca>
+ <1a1bcbd5-4b78-47ae-bede-36265586c7ff@nvidia.com>
+ <20250508124328.GA6500@ziepe.ca>
+Content-Language: en-US
+From: Edward Srouji <edwards@nvidia.com>
+In-Reply-To: <20250508124328.GA6500@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0397.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:cf::13) To SJ0PR12MB5663.namprd12.prod.outlook.com
+ (2603:10b6:a03:42a::18)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] RDMA/iwcm: Fix use-after-free of work objects after cm_id
- destruction
-To: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
- linux-rdma@vger.kernel.org, Bernard Metzler <BMT@zurich.ibm.com>,
- Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Leon Romanovsky <leon@kernel.org>, Bart Van Assche <bvanassche@acm.org>,
- Steve Wise <larrystevenwise@gmail.com>, Doug Ledford <dledford@redhat.com>
-References: <20250510101036.1756439-1-shinichiro.kawasaki@wdc.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20250510101036.1756439-1-shinichiro.kawasaki@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR12MB5663:EE_|MW5PR12MB5600:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6ecb7ae6-de1f-4f08-6d9e-08dd90181f3f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?Mi9Od0ZGYitJd3pYb012eHBNNkNVMDM4dWJOSW5rbTZXSEUrdWJsNmwxRWtF?=
+ =?utf-8?B?aTlpZGFMY2hRRnNLZTVtamszVmd5MTc5MnFtWjNpMzJPNEtSakxocStSYjZl?=
+ =?utf-8?B?VXpNVmFxL3dicHhCNkplcVpNMHEvdm5sdk5xWXJYS3NTQ2FJd2M4RkZOaUpC?=
+ =?utf-8?B?Vno2UFZPVjU1WWdsOHBzQ1FmYm9UdU9EWVducGdFVjJYUFVFNEhrWlR5azdk?=
+ =?utf-8?B?ZW9hRnNma0N2dXRFeFhjVndSUnZMTWlHbVloeWtqZkpQQXZuOXp1NE8ybHRq?=
+ =?utf-8?B?ZFgxanJNT0h5R0Z5QWljbW9UTUZPRXFKMFhTRVZiMkdtQ2NScjEvWGcrUUl1?=
+ =?utf-8?B?QmdvN3lpZ3djWFBlVmcvMmVjcjVsN2dSNXhXM3lWb3psZDRsb09Ed0RldnNU?=
+ =?utf-8?B?b0VnUDFnTmJ0d0k0NFZZL1cyb0VLdm9OY0dsZDkyWVhpVVJqbkZTMDMwQ3Zs?=
+ =?utf-8?B?NTZjYUhCVlVwK1lDb3pQSWVzY0o2alI2cVJTOFVPb0pUaHJJUHZ2WlprdHlh?=
+ =?utf-8?B?ZnF1cUM1VUFvWXFublQxL29xblNYUkphRjRSODhEOW9DVXNNcGJoQ3ZuNnpG?=
+ =?utf-8?B?eFJUb0Jnb1pDdkFQblUyN3VCY0RuTWVjdDBmLzA1VU1mT1BibndBeldVRkpK?=
+ =?utf-8?B?ZTUxcmZ6VWpXYWc4L0JyNTM4UnhPS2haWFdrWW5vekxoOTEweXFGVXVzb0Ir?=
+ =?utf-8?B?SDdJOVR3QVdYMkprTTVEQm1mMGFrMmdyZWZWL1huY3dxOHVFOTNlWTBqdVUv?=
+ =?utf-8?B?VW1DME1DdUtraS85QTk2cnR5anVJTnRwOEQ2S1I4aUNjVVRScmg0RXFWT2E1?=
+ =?utf-8?B?eGpxWkZ4eFdqTldyN3l1bk5oTE4wS1puVzF4cG9WVkRKZUhHMVlOblRLUVhz?=
+ =?utf-8?B?a2RnQTY5eGdsQTRLTXNWYlc1VlBISFFZZHZaRnJVMlp0eW9SWmpkVm1rYzFJ?=
+ =?utf-8?B?bFByY2RpZitUekR5aXNSM1gzY1JEQkFVOGo4QzhtSWoxV0VsTjJXT1VINW1j?=
+ =?utf-8?B?aEgxdjIyemFBTjhabGowZ05PV1QzWm95QWlZeXk0ZWlHUkVlUTIwQ2Z6dVBy?=
+ =?utf-8?B?QU94R1dLeUZ2T3JhNUN5YlBmY01kNmZZZjRWSzd5ZFlQODRiZmhLaWt4MkI1?=
+ =?utf-8?B?WmljaithRVRHc2o5d3lmU01yZ0s4aW92Qk81YTNYa09waWVUdnpNcTlyRzN6?=
+ =?utf-8?B?TDNtQjZNOVo3QndiYWNyblZpemVvWmdQK0hJcFNIbHlYdTUwUFFxczZWL1Fu?=
+ =?utf-8?B?VzNzOTAzc0h4L3FiTFhUa2JGcDVRUWoyY3M3WFlkeXpvQUdnbDVja2I1VUhB?=
+ =?utf-8?B?bzBEMzhTb3daTUVPTVBYOFA4ZitnNEU3NU8vRkhzN1o2Mk9ab2xCRjlCZUFp?=
+ =?utf-8?B?L1g1UHZQWkZ0aFFZSVJXSFdGNlpWbldpN1hvWTBXbzRidHU1ZDEzclg3ODZt?=
+ =?utf-8?B?Zm9KY3VwK3kvaHpmTTRMSkRGd0JtcTg1bXJiTkY0RjNuQ3FBNE5UdkRJYUdy?=
+ =?utf-8?B?SElxVEkxZG1BSlQ5dUpOckVIUTlNN3NXUFdId2V4c1g3bUxBNVR4dmpsbWNy?=
+ =?utf-8?B?RjhLTmFJaElDS0J0OG1uMURyTmZoKzUrdm85WEtGWEpaUTdURXBoMFhSSGxz?=
+ =?utf-8?B?Q1RBWCtwSEMvN1ZNbjNFK05JM1YxMHFWdWlLK3VRRlowWGhkaGFWamtSWDh5?=
+ =?utf-8?B?bzlqYXRKalFteitIWlF5WlNZTTNXYVZFcXpXUE5RdGp1dmJUby9RcEgrWU5S?=
+ =?utf-8?B?b2FUM2dadzlGUGhtT0ROc09Yby9EVElUbUdSNWlGYzNrVm9BWUU2Nm1qZ0h3?=
+ =?utf-8?B?U1ZJd2t0aWhsdDZWVENNMmRIY2hrY3pHd1lHeFVSTFEvckxuOUdoQ2pzVlVI?=
+ =?utf-8?B?MGtNR0FqdmVMcW55Q0p0c3VGTWxFM1FjZ0M4UW0rSFhsTFZJRU5oTmlWeHNw?=
+ =?utf-8?Q?gsgIj9vVAlU=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR12MB5663.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?UUV5NndKVjhQdnpTcFgrSGZRQW9ldmhONjlQSlFDTzhQenhJSFROTnBpMk9D?=
+ =?utf-8?B?TVVRY1d2NG9wY0JRTTRUcmxpNDlxR1gyazc5SzFDOTFiT3ROMHR5cEVHb3BM?=
+ =?utf-8?B?Y1R3cC9NM1BMd0h0SURURHJqY0UydEsrdWc1YkxGa0xpekpYcFFqTUcwUVpo?=
+ =?utf-8?B?T3lFcnE3MXpkeEREZ0NMVnp4RDRqNWNnTDJqWWlnTnN1MFNML0pCNnNvQmJC?=
+ =?utf-8?B?b3U1b0wyQWR6RmNpdFg2TzI4M1pqS2xKbkNjbjBHRmRGWW9qdEJlT0V3ODFC?=
+ =?utf-8?B?YUFndmV4Y0FQWm9pckd6TVlwcnNhVDNOTndkNWozME55OU1sTHYxSGVuZzZm?=
+ =?utf-8?B?TWNqNU9RSmxMUFRWZ2ZFczlSVDVBaEYyS3o0WDVzUXFBQkdQQXFwajk4N3U4?=
+ =?utf-8?B?YzczZzJ6Vm1taGlsc1dlcXI5N1JhY01JNGF4VExITlhVeFQ3OGZDSG1kTVRu?=
+ =?utf-8?B?MnF6NTJYK0piQWsyOFdaaHlUYU9xdC9QTW9GSW5JQkh6eHNWbXpoTVJNdXR0?=
+ =?utf-8?B?OERNc1ZGbnZCUm9CeFlmakI4Ym5sc0FqeXllNmQxcWRBb0RqUlcyRUdDRUFk?=
+ =?utf-8?B?ZVp2SVhoUWozS25CUURidEZiTHJrKzJRUEVrOTgyWnFaUXlybG5XRnVtdzBB?=
+ =?utf-8?B?UVBQQkpMR0NRbVduT2QvM1JsRWpMMVpRbVpSSlc3WG9iaTFqNzI1RTFlQUox?=
+ =?utf-8?B?UE8xcVpaaHBscFB2R1VqU2tWd3AwZUxpWGg0ZEg1OE8yNkpNYzJtMUJ1Vjhr?=
+ =?utf-8?B?VTI4UEV1eVhSaHllQUcwM0J2N1lMM2lLeEZTUFNmRG9uUnpOMEV6QnhnQXp3?=
+ =?utf-8?B?bHN5TG5tamEyYm9xalBsQVY0cmthaGVjSzdUdnFqdGtla3BjQUhEdlVwaVZ1?=
+ =?utf-8?B?WEtxY1NpZ0MrRjR3bSsxZnFuUjBqWU00MXBpczBLRm9EMzFRc2dQTG9PaW1J?=
+ =?utf-8?B?MEc0T2M3aTg3cHkyR3JKTGI1OXd1c0NrYWFPQ2JSbzRPS202aWlpSktjYjQy?=
+ =?utf-8?B?bTNRa0xoUTJHbDF5eWFQRWdVUG1KcGxPM0g5ZTZKUk93UVJONUpFeGRWdDIw?=
+ =?utf-8?B?WXNSUjFDenpiWlViVjd0VmF2K0lVRlYzVktyKy9Hc0xlRVlYUWllYlgvejBw?=
+ =?utf-8?B?YTBBbHVtVk9jemswSStKR09JdGR2bHB5M3NISjlXZ0JtSXlMeEVVNWx5dWNa?=
+ =?utf-8?B?dzYzOVEzMmVUTVJhQzZMdW1FVTl6NzFrc2R4M0FsaE10QkhIRVdyZHRjM1Nw?=
+ =?utf-8?B?Vm5ZWm80dkQ0Y0lUdk9yOGsvNm40MmFZZmJmQm5PVE9EZEVFc2FKSzdtNWhx?=
+ =?utf-8?B?KzRhakhjZGhtSFp1VUxIOGpoV1lLYjJRcnpNbExWNGN2ZWZFd3ZIVndSZ2x6?=
+ =?utf-8?B?RHlZOXZsLzgyTFQ2TDA2eC8wNDZYTG03VHdRWUdqYWhleDBuV2lZNEdtNCt0?=
+ =?utf-8?B?aEZZRktqK3NTRW15R2FZdTdSZGdIRHZ3NDlXK09QRm8ySkIvUmtGV09UaXFX?=
+ =?utf-8?B?TEVhRC9oQ0hHSTVENjRlWTBaV0x3K3RWY1dUQ0pmbkh0Zm91dFVqa2dTalA1?=
+ =?utf-8?B?VkpNRjI1MEdHbWk4czZLTXBXUnNKUXRoRUc3Y1FmT2NEa3NVdWFPNXpSdWtk?=
+ =?utf-8?B?TEZBUWxnelFGMUd0TTBmZmJLY3VuaWs2UUtaR3Y5MXNVT2pWY0VyNnBIYTN1?=
+ =?utf-8?B?eFdPUEZ3RVRwOFU1NlRJanYxMEttYUFlQ3VyaTBic0xraS9FMnhybjZpb0hS?=
+ =?utf-8?B?NEErOUdKYkRBWTlNdXpweDI2TFRVNDVTTHZoMmwyUExrSE1rZU9HQVlWWmZs?=
+ =?utf-8?B?K1BuWTBmRW1KSW9SWlI2QXQyTnF3YytoT0pkY0VnN0dvSlFNR29qYk5jUDJs?=
+ =?utf-8?B?clFVK1NqSUdiSDA1R1QwVFJ4U1NuYUlHZitjMFVzWHlFSFcxVkJSeTlnYzZx?=
+ =?utf-8?B?UVM0S2JqR0xKMGpYNzIvTDB0azQxVm0wQlNPYkROZ2N2YWhpZm5LVk9LS1k1?=
+ =?utf-8?B?aDF1ekRJc0RiUlNUZGtwaVdvdWpaYkJ2Qnc2Q1EycmwxdC9PMXcwSVlYQk9n?=
+ =?utf-8?B?cUtURTVjVyt6bGNzOU1uK2VXWE5PQ0ZaQWJVdXZHVUFyRjFoU2dLU1I1Q2hZ?=
+ =?utf-8?Q?49tu0S9N6l6wZGRsuwnFedXE9?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ecb7ae6-de1f-4f08-6d9e-08dd90181f3f
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR12MB5663.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 May 2025 23:12:23.7211
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 17B345PPEyubt1OJTzQJ7+YOBnOpOhD4ud4v/jVrjUII8qdBReysTT3rbjXQbQod0jhC5nZ2JNO4U+sG2iaF5w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR12MB5600
 
-在 2025/5/10 12:10, Shin'ichiro Kawasaki 写道:
-> The commit 59c68ac31e15 ("iw_cm: free cm_id resources on the last
-> deref") simplified cm_id resource management by freeing cm_id once all
-> references to the cm_id were removed. The references are removed either
-> upon completion of iw_cm event handlers or when the application destroys
-> the cm_id. This commit introduced the use-after-free condition where
-> cm_id_private object could still be in use by event handler works during
-> the destruction of cm_id. The commit aee2424246f9 ("RDMA/iwcm: Fix a
-> use-after-free related to destroying CM IDs") addressed this use-after-
-> free by flushing all pending works at the cm_id destruction.
-> 
-> However, still another use-after-free possibility remained. It happens
-> with the work objects allocated for each cm_id_priv within
-> alloc_work_entries() during cm_id creation, and subsequently freed in
-> dealloc_work_entries() once all references to the cm_id are removed.
-> If the cm_id's last reference is decremented in the event handler work,
-> the work object for the work itself gets removed, and causes the use-
-> after-free BUG below:
-> 
->    BUG: KASAN: slab-use-after-free in __pwq_activate_work+0x1ff/0x250
->    Read of size 8 at addr ffff88811f9cf800 by task kworker/u16:1/147091
-> 
->    CPU: 2 UID: 0 PID: 147091 Comm: kworker/u16:1 Not tainted 6.15.0-rc2+ #27 PREEMPT(voluntary)
->    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-3.fc41 04/01/2014
->    Workqueue:  0x0 (iw_cm_wq)
->    Call Trace:
->     <TASK>
->     dump_stack_lvl+0x6a/0x90
->     print_report+0x174/0x554
->     ? __virt_addr_valid+0x208/0x430
->     ? __pwq_activate_work+0x1ff/0x250
->     kasan_report+0xae/0x170
->     ? __pwq_activate_work+0x1ff/0x250
->     __pwq_activate_work+0x1ff/0x250
->     pwq_dec_nr_in_flight+0x8c5/0xfb0
->     process_one_work+0xc11/0x1460
->     ? __pfx_process_one_work+0x10/0x10
->     ? assign_work+0x16c/0x240
->     worker_thread+0x5ef/0xfd0
->     ? __pfx_worker_thread+0x10/0x10
->     kthread+0x3b0/0x770
->     ? __pfx_kthread+0x10/0x10
->     ? rcu_is_watching+0x11/0xb0
->     ? _raw_spin_unlock_irq+0x24/0x50
->     ? rcu_is_watching+0x11/0xb0
->     ? __pfx_kthread+0x10/0x10
->     ret_from_fork+0x30/0x70
->     ? __pfx_kthread+0x10/0x10
->     ret_from_fork_asm+0x1a/0x30
->     </TASK>
-> 
->    Allocated by task 147416:
->     kasan_save_stack+0x2c/0x50
->     kasan_save_track+0x10/0x30
->     __kasan_kmalloc+0xa6/0xb0
->     alloc_work_entries+0xa9/0x260 [iw_cm]
->     iw_cm_connect+0x23/0x4a0 [iw_cm]
->     rdma_connect_locked+0xbfd/0x1920 [rdma_cm]
->     nvme_rdma_cm_handler+0x8e5/0x1b60 [nvme_rdma]
->     cma_cm_event_handler+0xae/0x320 [rdma_cm]
->     cma_work_handler+0x106/0x1b0 [rdma_cm]
->     process_one_work+0x84f/0x1460
->     worker_thread+0x5ef/0xfd0
->     kthread+0x3b0/0x770
->     ret_from_fork+0x30/0x70
->     ret_from_fork_asm+0x1a/0x30
-> 
->    Freed by task 147091:
->     kasan_save_stack+0x2c/0x50
->     kasan_save_track+0x10/0x30
->     kasan_save_free_info+0x37/0x60
->     __kasan_slab_free+0x4b/0x70
->     kfree+0x13a/0x4b0
->     dealloc_work_entries+0x125/0x1f0 [iw_cm]
->     iwcm_deref_id+0x6f/0xa0 [iw_cm]
->     cm_work_handler+0x136/0x1ba0 [iw_cm]
->     process_one_work+0x84f/0x1460
->     worker_thread+0x5ef/0xfd0
->     kthread+0x3b0/0x770
->     ret_from_fork+0x30/0x70
->     ret_from_fork_asm+0x1a/0x30
-> 
->    Last potentially related work creation:
->     kasan_save_stack+0x2c/0x50
->     kasan_record_aux_stack+0xa3/0xb0
->     __queue_work+0x2ff/0x1390
->     queue_work_on+0x67/0xc0
->     cm_event_handler+0x46a/0x820 [iw_cm]
->     siw_cm_upcall+0x330/0x650 [siw]
->     siw_cm_work_handler+0x6b9/0x2b20 [siw]
->     process_one_work+0x84f/0x1460
->     worker_thread+0x5ef/0xfd0
->     kthread+0x3b0/0x770
->     ret_from_fork+0x30/0x70
->     ret_from_fork_asm+0x1a/0x30
-> 
-> This BUG is reproducible by repeating the blktests test case nvme/061
-> for the rdma transport and the siw driver.
-> 
-> To avoid the use-after-free of cm_id_private work objects, ensure that
-> the last reference to the cm_id is decremented not in the event handler
-> works, but in the cm_id destruction context. For that purpose, move
-> iwcm_deref_id() call from destroy_cm_id() to the callers of
-> destroy_cm_id(). In iw_destroy_cm_id(), call iwcm_deref_id() after
-> flushing the pending works.
-> 
-> During the fix work, I noticed that iw_destroy_cm_id() is called from
-> cm_work_handler() and process_event() context. However, the comment of
-> iw_destroy_cm_id() notes that the function "cannot be called by the
-> event thread". Drop the false comment.
-> 
-> Closes: https://lore.kernel.org/linux-rdma/r5676e754sv35aq7cdsqrlnvyhiq5zktteaurl7vmfih35efko@z6lay7uypy3c/
-> Fixes: 59c68ac31e15 ("iw_cm: free cm_id resources on the last deref")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
 
-I do not have hosts to reproduce this problem. I just applied this 
-commit in upstream kernel and built the kernel successfully.
+On 5/8/2025 3:43 PM, Jason Gunthorpe wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> On Thu, May 08, 2025 at 11:41:18AM +0300, Edward Srouji wrote:
+>> On 5/6/2025 5:22 PM, Jason Gunthorpe wrote:
+>>> On Tue, May 06, 2025 at 10:19:06AM -0400, Chuck Lever wrote:
+>>>>>> In this patch I'm trying to include the reg/inv multiplier in the
+>>>>>> calculation, but that doesn't seem to be enough to make "accept"
+>>>>>> reliable, IMO due to this extra calculation in calc_sq_size().
+>>>>> Did ib_create_qp get called with more than max_qp_wr ?
+>>>> The request was for, like, 9300 SQEs. max_qp_wr is 32K on my systems.
+>>> Sounds like it is broken then..
+>>>
+>>>      props->max_qp_wr           = 1 << MLX5_CAP_GEN(mdev, log_max_qp_sz);
+>>>
+>>> So it is ignoring the wqe_size adustment.. It should adjust by the worst
+>>> case result of calc_send_wqe() for the device..
+>> How do you suggest adjusting to the worst case?
+>> How inline messages could be addressed and taken into account?
+> I think assume 0 size inline for computing max sizes
+>
+>> Even if we ignore the inline size, worst case potentially could be less than
+>> 1/8th of the max HCA CAP, not sure we want to deliver this as a limitation
+>> to users.
+> The math is simply wrong - log_max_qp_sz is not the number of work
+> queue entries in the queue, it is the number of MLX5_SEND_WQE_BB's
+> units which is some internal value.
 
-I read through this commit. I think that this commit looks good to me.
+I agree, no doubt that the returned max_qp_wr is wrong and misleading...
 
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+>
+> For a verbs API the result should be the max number of work queue
+> entries that can be requested for any of XRC/RC/UC/UD QP types using a
+> 0 inline size, 1 SGL and no other special features.
+>
+> Even for a simple RC QP sq_overhead() will return 132 which already
+> makes props->max_qp_wr uselessly wrong. 132 goes into here:
+>
+>                  return ALIGN(max_t(int, inl_size, size), MLX5_SEND_WQE_BB);
+>
+> Comes out as 192 - so props->max_qp_wr is off by 3x even for a simple
+> no-feature RC QP.
+>
+> Chuck is getting:
+>
+> calc_sq_size:618:(pid 1514): send queue size (9326 * 256 / 64 -> 65536) exceeds limits(32768)
+>
+> So I suppose that extra 64 bytes is coming from cap.max_send_sge >= 3?
+>
+> Without a new API we can't make it fully discoverable, but the way it
+> is now is clearly wrong.
 
-Zhu Yanjun
+This is what I was considering, a new API.
+The above suggested calculation will return a reasonable value but 
+obviously won't satisfy all use-cases (probably someone else will face 
+similar issue later on).
+The question is whether it is worth a new dedicated API for an accurate 
+"per user-case" calculation.
 
-> ---
->   drivers/infiniband/core/iwcm.c | 29 +++++++++++++++--------------
->   1 file changed, 15 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
-> index f4486cbd8f45..62410578dec3 100644
-> --- a/drivers/infiniband/core/iwcm.c
-> +++ b/drivers/infiniband/core/iwcm.c
-> @@ -368,12 +368,9 @@ EXPORT_SYMBOL(iw_cm_disconnect);
->   /*
->    * CM_ID <-- DESTROYING
->    *
-> - * Clean up all resources associated with the connection and release
-> - * the initial reference taken by iw_create_cm_id.
-> - *
-> - * Returns true if and only if the last cm_id_priv reference has been dropped.
-> + * Clean up all resources associated with the connection.
->    */
-> -static bool destroy_cm_id(struct iw_cm_id *cm_id)
-> +static void destroy_cm_id(struct iw_cm_id *cm_id)
->   {
->   	struct iwcm_id_private *cm_id_priv;
->   	struct ib_qp *qp;
-> @@ -442,20 +439,22 @@ static bool destroy_cm_id(struct iw_cm_id *cm_id)
->   		iwpm_remove_mapinfo(&cm_id->local_addr, &cm_id->m_local_addr);
->   		iwpm_remove_mapping(&cm_id->local_addr, RDMA_NL_IWCM);
->   	}
-> -
-> -	return iwcm_deref_id(cm_id_priv);
->   }
->   
->   /*
-> - * This function is only called by the application thread and cannot
-> - * be called by the event thread. The function will wait for all
-> - * references to be released on the cm_id and then kfree the cm_id
-> - * object.
-> + * Destroy cm_id. If the cm_id still has other references, wait for all
-> + * references to be released on the cm_id and then release the initial
-> + * reference taken by iw_create_cm_id.
->    */
->   void iw_destroy_cm_id(struct iw_cm_id *cm_id)
->   {
-> -	if (!destroy_cm_id(cm_id))
-> +	struct iwcm_id_private *cm_id_priv;
-> +
-> +	cm_id_priv = container_of(cm_id, struct iwcm_id_private, id);
-> +	destroy_cm_id(cm_id);
-> +	if (refcount_read(&cm_id_priv->refcount) > 1)
->   		flush_workqueue(iwcm_wq);
-> +	iwcm_deref_id(cm_id_priv);
->   }
->   EXPORT_SYMBOL(iw_destroy_cm_id);
->   
-> @@ -1035,8 +1034,10 @@ static void cm_work_handler(struct work_struct *_work)
->   
->   		if (!test_bit(IWCM_F_DROP_EVENTS, &cm_id_priv->flags)) {
->   			ret = process_event(cm_id_priv, &levent);
-> -			if (ret)
-> -				WARN_ON_ONCE(destroy_cm_id(&cm_id_priv->id));
-> +			if (ret) {
-> +				destroy_cm_id(&cm_id_priv->id);
-> +				WARN_ON_ONCE(iwcm_deref_id(cm_id_priv));
-> +			}
->   		} else
->   			pr_debug("dropping event %d\n", levent.event);
->   		if (iwcm_deref_id(cm_id_priv))
-
+>
+> Jason
 
