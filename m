@@ -1,43 +1,43 @@
-Return-Path: <linux-rdma+bounces-10280-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10281-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05676AB2AA1
-	for <lists+linux-rdma@lfdr.de>; Sun, 11 May 2025 21:42:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15DC3AB2AA4
+	for <lists+linux-rdma@lfdr.de>; Sun, 11 May 2025 21:42:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13DF91892280
-	for <lists+linux-rdma@lfdr.de>; Sun, 11 May 2025 19:42:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87109175150
+	for <lists+linux-rdma@lfdr.de>; Sun, 11 May 2025 19:42:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45A3525F97A;
-	Sun, 11 May 2025 19:39:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 280052676EE;
+	Sun, 11 May 2025 19:40:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="YN5kRbGE"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="qK9PASx2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2041.outbound.protection.outlook.com [40.107.93.41])
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2054.outbound.protection.outlook.com [40.107.100.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1EF7266B47;
-	Sun, 11 May 2025 19:39:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD9742673B6;
+	Sun, 11 May 2025 19:40:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.54
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1746992394; cv=fail; b=utujqx1y82CI2RK6ZbST88jxgSlBgUP16PHVjCUq/fmICOr+tvcEqHEOW/0BrOhrXrKDfQGry+ZFi22tv0D8m7xqpylZtU2lequPLC8UxoLTxzDf9QmRRj24TYat3x69KvmunvrcSS/l4cfovOs26Som7eitMPFawVcKMtJ63OM=
+	t=1746992404; cv=fail; b=ao9KyyYqkT7cxM8G9fYyrhnwwj7bbZLnvpxGeB5nTX9k+AmP94rFMRPb7C/oqi3Oa4CH4ccp1ARXkh7wPlqAwC+GsyaaXzGmv2LAw/d/hTt169uZJLEcEDTALt+pYT3dz1N4w4BMi4gmvzQKK0y4pLV2RaNqy6pyiWMcV2rUy0Y=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1746992394; c=relaxed/simple;
-	bh=ngyZyJkriuWBgH6ehVGyW0iTw1fC1IVVmB73MDvjszs=;
+	s=arc-20240116; t=1746992404; c=relaxed/simple;
+	bh=bDcrdolzhl8zjEsHtBA7qYeFwxTh6TeiPWaIiS7NYEo=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=f2OuJJAIU3NQuvcT9uwTa1V1Tgc2W2EPqnPLnnt+EJCHG6dGsvJlk+i8JRPZpSHFazFVM0x+ZEZ8xbuKm3TD5trK0Of9fNAOpEL/Tsy6EwdPu/v/99YKamGuc5B5Lk23RkTfYdQrS65MetAOKuW4Vw9n3o1MtWPrHsn9VnXMAkA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=YN5kRbGE; arc=fail smtp.client-ip=40.107.93.41
+	 MIME-Version:Content-Type; b=X97eZgQwlALGY7fPHJWrjfJoTm38acVeTtAPoYeqalmgHCJ/HUty03X1rU3ZR36ACkW16z+ABB+F1i/ZIgEsmoSCgEhk62K9tOr8kzbhn93cXLJIbiLOYN5YdHDeZzWyUIeqYEIxTWWrK9y0nMDsxprOgtp+8/codopMXjptv+w=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=qK9PASx2; arc=fail smtp.client-ip=40.107.100.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=XHQO491tGeFyez64CIlyOzZoq4H9wR7SN5evCFmjU0I7YJGVmv6mXc0wUjs5PUkhZ57mfT22tTiU/GoS4kd/rXh07tbNzzKxQ7pzFbxu2DIHdS5m17m+MkGzJnIxYborCsegwMv64pdO7Qy0Pr3OmVqTtr1xVqm1CKMqLv++ZgAIwdsGyAsCerkFexWV+qr00hwmiARbZY3ADNaE2JOd3BNEGyl3Kq1Qg8QvGk34mN8xkA8GzJ8BIY+dU0qw7BBGN4Ik6F4G1+hHGEmluVsRondPYa11oMbalnL1GWwL4wGwBCKsuB0iA8BXN16UgmdqJQqH0xQyHNIJW413ebpArg==
+ b=TvCqaa4nYItUoTbsl1suudg0OBucXkyENKpA5kwpH+Aeb9c1gx1rtoJkHFu8WO1x3c8oIK0mARnmnG9OMqo8CvhyPh1bX2X+B75D/RwKO6rAGtETpHkpE7FnPLG5dcJ2LCtmgY/W5uRuVNV/DkCxtAz9ofyKH1iRh6/KKL6YuMnZWX/x9zraH557YUq45pqT5KfMc+t4ybMEMLCUWrYpsZDRuYrTrpmMd5o0VX5puhPiUrkhZWsGd0NiCgskSgcHdWW3t9e5HdpcrhLUW1Oh+O47EklEpi557eL6xvanR6sDa+3ydHXk9ZJZucnMWSOqc2M0/YZdhPBCmf4/LSQJIw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QLkCFHrHKYXFEqM6MvND1QK36DFVD5kectElTp20Zy0=;
- b=fZI1z/zqOvLul1+LI2K27N5mnfW5WMcbLD1U96hj+DyUlvgXTcT+Qz1UFn4uh+XXnwetR8RXR04T5zrJ7vVHDLGohJhkoNjcZL00ODZXlMD1hs+XAcfev/w8XUxXuReupWC0HoS5Lhm5EGiibaVesyotaAvRe3H47gF6/OimXIoHVbXuBRIczZnWVzg6mgzjioNA2iueLoCo0UBA2TGNjKQt3plYzfHsTc4LM7uov/hMLoscZfzFXyqOuf98Atmsmcj5SVjcWXT/duPixQRZx8JH2yfbWli1mAsc5ILYwd7pE7wIQ1ShMX4O1XuKrF5LVXwQcpI/JHp7PT2nq/HmrQ==
+ bh=J7UD4EVBB6r+T4K5Vz6vjhUNU3YsvXbgZt7QPTHL3vM=;
+ b=uFoM3+JM9z+sEc3vJ72vGNp7lG5kIS/pa2Sv87uHZZI3PG3KhdL39K0o+C7sFdhTn1Ao9lqpMEj3hBaGuLx7YjQ1OtQzpNPabWqGTlHDmJYWoeJAmMxZqMq/4D2UVqlUeGezPKPbWAucbko3p9DORnqzQVb18raUrcMdd7rcaws7qybyeVKUiGv2NGHrEeXhQEmAP/j/mqKFyXHqm9IC3SidCiUwgLV8BQysIQyskCFFHDmo1e/v4hRY1aiZdwnKg0+9ftXjiidUHmPazbw/QWC2jeUXuk9m8OsN597Z3fg53jFfq77f8A3IdaBt7OLzBGY0mPjq/RMB/mSgrmTdjg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.117.160) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -45,17 +45,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QLkCFHrHKYXFEqM6MvND1QK36DFVD5kectElTp20Zy0=;
- b=YN5kRbGEitJcgMf0dXgLIxXblXRrd+e7lL/7Tg3xBqe4mabcVzsAaY594JbvZTm5WkDq50jaJ7ZuKJzXowDYj1ZsFyJEiolRyiCg8FqELiZxFqlImlfx/uLUcxtmHx08yfXWx2ulfQP3gk4GY/FQ2cJ4ejZH0N/ko9s62AY4B8Stzp2eJ+7+J8Aj1hIHEN14pVi43bPBmxrtA6CAOx2IAmrWCHkw2RdSw0DCy3C/FOcCU9h1tSI3pF3PsG2izJZMrDexEuXH81KCidQEKmz+OwsbUbhR8cQog8/9GZpcBptZO2JGdHlERXrFrXyjH134dMn6vgh+NraRoHzQKZoA8w==
-Received: from BY3PR05CA0040.namprd05.prod.outlook.com (2603:10b6:a03:39b::15)
- by DM4PR12MB5964.namprd12.prod.outlook.com (2603:10b6:8:6b::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8722.29; Sun, 11 May 2025 19:39:49 +0000
-Received: from SJ5PEPF000001D4.namprd05.prod.outlook.com
- (2603:10b6:a03:39b:cafe::d1) by BY3PR05CA0040.outlook.office365.com
- (2603:10b6:a03:39b::15) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8722.20 via Frontend Transport; Sun,
- 11 May 2025 19:39:48 +0000
+ bh=J7UD4EVBB6r+T4K5Vz6vjhUNU3YsvXbgZt7QPTHL3vM=;
+ b=qK9PASx22lrKfzgq+CLxPuKjHH0Eovm/SOdki6H62yZUbu/XzPFAolhZvA9+zIVeDFbhZNvzrtd2XolZLSeFYPlSYeia6N63OUm9VSMFaIpA/NWlCuEMuX0c4GIu3UwnmD7VgL31Gv2xE2ry6XZeE4sPlHgccmBZ2Opmppbz32xMzpdTv8XSX7IaHc2oR3dK5rVWQx4Uk+GlCKEaeowEVe8SaxVHy04W2uXh1cobuybyKTK5LQQeDFl772PsXB5f3Qss2hqeUfoYI2YqvCV+G41SfRoPcy++J1dk9E3oP7Itp8UjsEjSOayRXqO8aS2Ozo3MB6/Rt92y2mqiwVhtfw==
+Received: from SJ0PR03CA0149.namprd03.prod.outlook.com (2603:10b6:a03:33c::34)
+ by MW3PR12MB4490.namprd12.prod.outlook.com (2603:10b6:303:2f::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8722.28; Sun, 11 May
+ 2025 19:39:54 +0000
+Received: from SJ5PEPF000001D2.namprd05.prod.outlook.com
+ (2603:10b6:a03:33c:cafe::e0) by SJ0PR03CA0149.outlook.office365.com
+ (2603:10b6:a03:33c::34) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8699.31 via Frontend Transport; Sun,
+ 11 May 2025 19:39:54 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -63,20 +64,20 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.117.160 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.117.160) by
- SJ5PEPF000001D4.mail.protection.outlook.com (10.167.242.56) with Microsoft
+ SJ5PEPF000001D2.mail.protection.outlook.com (10.167.242.54) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8722.18 via Frontend Transport; Sun, 11 May 2025 19:39:48 +0000
+ 15.20.8722.18 via Frontend Transport; Sun, 11 May 2025 19:39:54 +0000
 Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
  (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Sun, 11 May
- 2025 12:39:39 -0700
+ 2025 12:39:44 -0700
 Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail204.nvidia.com
  (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Sun, 11 May
- 2025 12:39:39 -0700
+ 2025 12:39:43 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.8)
  with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Sun, 11
- May 2025 12:39:35 -0700
+ May 2025 12:39:39 -0700
 From: Tariq Toukan <tariqt@nvidia.com>
 To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew
@@ -87,9 +88,9 @@ CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
 	<moshe@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Vlad Dogaru
 	<vdogaru@nvidia.com>, Yevgeny Kliteynik <kliteyn@nvidia.com>, Gal Pressman
 	<gal@nvidia.com>
-Subject: [PATCH net-next 09/10] net/mlx5: HWS, rework rehash loop
-Date: Sun, 11 May 2025 22:38:09 +0300
-Message-ID: <1746992290-568936-10-git-send-email-tariqt@nvidia.com>
+Subject: [PATCH net-next 10/10] net/mlx5: HWS, dump bad completion details
+Date: Sun, 11 May 2025 22:38:10 +0300
+Message-ID: <1746992290-568936-11-git-send-email-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.8.0
 In-Reply-To: <1746992290-568936-1-git-send-email-tariqt@nvidia.com>
 References: <1746992290-568936-1-git-send-email-tariqt@nvidia.com>
@@ -103,247 +104,230 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: AnonymousSubmission
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ5PEPF000001D4:EE_|DM4PR12MB5964:EE_
-X-MS-Office365-Filtering-Correlation-Id: 94d4994a-9ac8-4e1e-f7c3-08dd90c39710
+X-MS-TrafficTypeDiagnostic: SJ5PEPF000001D2:EE_|MW3PR12MB4490:EE_
+X-MS-Office365-Filtering-Correlation-Id: 64b2a8fc-1277-4c86-dd56-08dd90c39aaf
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230040|376014|82310400026|1800799024|36860700013;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?1RBxBSY8WCoMRGIBoCy5vXByiqKCIBz/BEPaRSM+hNSe4ISmyh0+PnVzGJjM?=
- =?us-ascii?Q?NrKYtPD4YURCwZhpAjpjx7Lq34qQvEl6Pvy1QvL5NdnwZciswtoIfGUurdbR?=
- =?us-ascii?Q?0xUP5LW4HZqrY14UfNmAD9PS4fjnkcKAXglZ+76MlfBLhyM9peLg+h4kTzxS?=
- =?us-ascii?Q?O8+JfPTcC1uZQhpxMRRPx3O7lXUtKX5j5ddjQMn77mBZqVPFLpq4Tv6EYqDm?=
- =?us-ascii?Q?tQOPdTzoGXvTSPX1usG4vZdArDxVhJEfV4jjmJA64fwyTSmtV361y6DBRtZ1?=
- =?us-ascii?Q?zN3XhPU8n9BJ3YvcUKeTKoJ5le1PPV0EB70ia3CRjTzN2Zgffknd5kwWFnTH?=
- =?us-ascii?Q?iS7bKGZi6EV3Qfod45rLTfckBH2BTeS0jbMiSA0zBK0kb9Mq+jQn+32witUI?=
- =?us-ascii?Q?F3arfpxvr2z6sBhunOlHQwg5Sx/UXQF/jmze+ikWgnQhaZD/6WZaJ5rO9aiT?=
- =?us-ascii?Q?6JPgS8FRuOHqSTf+XzuWenogFVGYqsZT5fQPWzQ85fdOkXs1UCAjiPKbBTDR?=
- =?us-ascii?Q?Y+ZVnHlsuoV5iIgJ0SIvC2vpEUepb6nRaHiaURGEA0nblYbUu4hJ3XHNkmFf?=
- =?us-ascii?Q?HKIZrSUXoIUAjMU+XtSqPSaLIhcliUaeeEfdFBOQhGuTiXzDi50MRdIgqfqr?=
- =?us-ascii?Q?E5EMq5en+T+vX3N8znP8alV4XiL2qpMMKdOTu2AbDksaiaojq7EMA3bjIF+9?=
- =?us-ascii?Q?+z88tN62abcLq7SMB2uN4WudjnA7wL7830npsahSB7+DagMLM8A1/AB3HETx?=
- =?us-ascii?Q?xUc3O9NCrlJs+I095hKLCgl5fysotUehgzBxtSOif1VuHkHF29WJcniC9toZ?=
- =?us-ascii?Q?t6otzIHUPx9PcY7QX9/XI0e5GM/A6LrIIMPkcXbEA/3BuZRfnAUYEMWNBdBa?=
- =?us-ascii?Q?lx3FzOLsOFIuZNHfMWUFpE1b28YO9ZZgix5zMGXMmI0zG43jwVKOrWsC1GBQ?=
- =?us-ascii?Q?8Hh0rEtxUBKo9oeeKvG8DAfSPjbrMkjzVWy7SkpRi7MlHyIERJl8KtnDZb7p?=
- =?us-ascii?Q?2dokFdUcLGt3l++1MS3VbjTTs9qC64Cz/sQeU/4cEO/nlEa3c15Q2Cf03Wuf?=
- =?us-ascii?Q?htII8njWoVbl43jOEW3RWUJBNKk5xsnMy9HnuLUqxR9ShNfwPmtcMmS756Kn?=
- =?us-ascii?Q?kin7v3pDNQJbfJzPnCR7qxoW9Z9VrMAQn+4JvDArlcy71oQ2FgiAf8v6zQkW?=
- =?us-ascii?Q?Lj1M3QcUItFc0N5jagIXqocW299gm+RnnRbL9Bq6J7li3BZrvMnXL5cKPxb5?=
- =?us-ascii?Q?pcCTWlvz+npZ67Gw+E3aqp0hiTD6ajS07K7WmUCm8DjWzs0ziBW51cCPWTNR?=
- =?us-ascii?Q?F4PhJQjjfJRFkzOU/LDryAbu48n4m2ol4XvLsUbXUeLQrXktnRj5bvK2sOLE?=
- =?us-ascii?Q?BoqSP9sIBKI6xUfFHda+qBZPcunnbW6tWyTqUmHML/k06MKWOtT0zOcoa8g7?=
- =?us-ascii?Q?LeEUv5/M50WznE0ftZlwvvwfQ1jLsgGQ7ZJm3gjXcV1YB1hyUJW45ALDoiV7?=
- =?us-ascii?Q?dT6Feqw13drBmYLHj0E86V5lesvo51ZQy0Lz?=
+	=?us-ascii?Q?D8wj2H5WSOR2v7HpGKvBHFAlgcfzMLTeZsni9ZAqBY7UUd1ZV/f4V1VKs4RE?=
+ =?us-ascii?Q?vEL4qO+nqnzhIw6KXnBJfJvDpk+T0WxIjwpvQTEhavdd+9ASKUqOtYz1xXYu?=
+ =?us-ascii?Q?b+FlSkIdC+SX4sROPxcIiCYD3lewvnsn5s3i4XK43Vrj8TywCOOoqRbboHM2?=
+ =?us-ascii?Q?/V5n/SE0Sum+MEjlH4wNcmhGsNiommCwggJGivJqc/A2mqDEUnwYA3wIgUFB?=
+ =?us-ascii?Q?X6zvY86qc/7H2MlnGlTyjShXJ526PyA4aPzzlPSytTMYGb5TzIYe6gZlaF1S?=
+ =?us-ascii?Q?B3YFZi99hCaigZKBza/n1jXa/P7KT2UUzgaHHTR0z6Re9AhPbG9cnywl8ZFB?=
+ =?us-ascii?Q?GrYTbZwsnOkZr8jfL9N7OL56jr4aE+bgAbBMl0sJKMLoxkXlCmtl1zRqXmRo?=
+ =?us-ascii?Q?K+VDXAvONSN/WgwDd6VAL6ROCRyIQAT3kGCvbqKSgG0T79OijBQ8EZm912Y2?=
+ =?us-ascii?Q?aopWABqergwdK3XwL8wnyT32e6ACdqmvM10/53m8sUlifx3rMTfyQGR9885V?=
+ =?us-ascii?Q?9zbFyCowwP2qdSgok3BXMQgQoxGBOu8pP1TaoPNdHPVj6iBEJ5jE7wvwxgk+?=
+ =?us-ascii?Q?04hGorKdSL5lTYBgzXCy+WEVXlmxaVkxr5RMKtEkVLvuZe/OdwZMmO2/AQ9l?=
+ =?us-ascii?Q?dO9BhmArzZMW5wELwruE5FTYE/yeRLNENYSCXmF7WHxZ+Uj6rijJCLPDE7u0?=
+ =?us-ascii?Q?htkmRt8BEBfidNnSdsvD6QdiXasJXx/CfXQJa+S+ZmrzcmsgopCn3jNMT5nW?=
+ =?us-ascii?Q?rI3Q+Ctuw8WXtyKVWwIAM7vStdpz6mtBVscvZJNtZmH/gkDW/XSLEM0gCr8K?=
+ =?us-ascii?Q?92N2HnMW1JY3/9YNQeNJ97mKR0ggwmgAVitEAOzn95tuaZMyx4e2BVcI4eFg?=
+ =?us-ascii?Q?0/LUSR+KEvLnSNbAbQXeV5uUXcTF2rltJLhg5h4ALWFrcgF3RPS5vKifDj8q?=
+ =?us-ascii?Q?IaFV0WHD9MyOmKD0CybV9u70xD8cxvF8soMLhHCPo+SxMfJgT+rEk+0qFNAP?=
+ =?us-ascii?Q?8so3DeNBrf14k9cMairY7wgxttwNGtsUp+pFS2cEc+vrTK1uVFIrmL2urTaI?=
+ =?us-ascii?Q?FnmWOKG/T+FZnzQVTPLXcF3N4jic+DHX6vKRuTEaCfTm7MLJUHIz7uMt6Ixm?=
+ =?us-ascii?Q?/NRcPfDo2vRKfre//sGcXwMBRXD2zwUXWppgLzLk66Fr978DV5q4obJFRPz9?=
+ =?us-ascii?Q?ZluplN46HTTF/i3JHxe5dbBPqo7E3PKwvBOAkiPwGkPx7YnX6Mkij77IP147?=
+ =?us-ascii?Q?G9+Tk2NmWYowVIxuJnmD6xFYf73CXpbraQLA2mn2clhzc9xC506mLKfYacgi?=
+ =?us-ascii?Q?EbsHTFxDTHql+X4OYwtuOXWr6aVNg96UsZyAWkzb8uFXcy3tM8DfbaeVpZFi?=
+ =?us-ascii?Q?d+HgH+qsK+SKhQahTc9Oho4hogrkmtPk3UVu4YZiwg+XE18OaWv2xHQtp9pp?=
+ =?us-ascii?Q?rZaEfNEi0s9P3uXVHQGlIRCTrwc4K/xfI72LLlWSlJhAkvLSsi+q5q0uKIdu?=
+ =?us-ascii?Q?NLFnYnNncBnn6ZFbqYoO0/F3KdK9AqtZh0pM?=
 X-Forefront-Antispam-Report:
 	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(82310400026)(1800799024)(36860700013);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2025 19:39:48.2728
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2025 19:39:54.3444
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 94d4994a-9ac8-4e1e-f7c3-08dd90c39710
+X-MS-Exchange-CrossTenant-Network-Message-Id: 64b2a8fc-1277-4c86-dd56-08dd90c39aaf
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SJ5PEPF000001D4.namprd05.prod.outlook.com
+	SJ5PEPF000001D2.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5964
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4490
 
 From: Yevgeny Kliteynik <kliteyn@nvidia.com>
 
-Reworking the rehash loop - simplifying the code and making it less
-error prone:
- - Instead of doing round-robin on all the queues with batch of rules in
-   each cycle, just go over all the queues and move all the rules that
-   belong to this queue.
- - If at some stage of moving the rule we get a failure (which should
-   not happen), this can't be rolled back. So instead of aborting
-   rehash and leaving the matcher in a broken state, allow the loop
-   to continue: attempt to move the rest of the rules and delete the
-   old matcher. A rule that failed to move to a new matcher will loose
-   its match STE once the rehash is completed and the old matcher is
-   deleted, so the rule won't match any traffic any more. This rule's
-   packets will fall back to the steering pipeline w/o HW offload.
-   Rehash procedure will return an error, which will cause the rule
-   insertion to fail for the rule that started this whole rehash.
+Failing to insert/delete a rule should not happen. If it does happen,
+it would be good to know at which stage it happened and what was the
+failure. This patch adds printing of bad CQE details.
 
 Signed-off-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
 Reviewed-by: Vlad Dogaru <vdogaru@nvidia.com>
 Reviewed-by: Mark Bloch <mbloch@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- .../mellanox/mlx5/core/steering/hws/bwc.c     | 127 +++++++-----------
- 1 file changed, 52 insertions(+), 75 deletions(-)
+ .../mellanox/mlx5/core/steering/hws/send.c    | 122 +++++++++++++++++-
+ .../mellanox/mlx5/core/steering/hws/send.h    |   1 +
+ 2 files changed, 120 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.c
-index 456fac895f5e..9e057f808ea5 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.c
-@@ -610,95 +610,69 @@ hws_bwc_matcher_find_at(struct mlx5hws_bwc_matcher *bwc_matcher,
- 
- static int hws_bwc_matcher_move_all_simple(struct mlx5hws_bwc_matcher *bwc_matcher)
- {
-+	bool move_error = false, poll_error = false, drain_error = false;
- 	struct mlx5hws_context *ctx = bwc_matcher->matcher->tbl->ctx;
-+	struct mlx5hws_matcher *matcher = bwc_matcher->matcher;
- 	u16 bwc_queues = mlx5hws_bwc_queues(ctx);
--	struct mlx5hws_bwc_rule **bwc_rules;
- 	struct mlx5hws_rule_attr rule_attr;
--	u32 *pending_rules;
--	int i, j, ret = 0;
--	bool all_done;
--	u16 burst_th;
-+	struct mlx5hws_bwc_rule *bwc_rule;
-+	struct mlx5hws_send_engine *queue;
-+	struct list_head *rules_list;
-+	u32 pending_rules;
-+	int i, ret = 0;
- 
- 	mlx5hws_bwc_rule_fill_attr(bwc_matcher, 0, 0, &rule_attr);
- 
--	pending_rules = kcalloc(bwc_queues, sizeof(*pending_rules), GFP_KERNEL);
--	if (!pending_rules)
--		return -ENOMEM;
--
--	bwc_rules = kcalloc(bwc_queues, sizeof(*bwc_rules), GFP_KERNEL);
--	if (!bwc_rules) {
--		ret = -ENOMEM;
--		goto free_pending_rules;
--	}
--
- 	for (i = 0; i < bwc_queues; i++) {
- 		if (list_empty(&bwc_matcher->rules[i]))
--			bwc_rules[i] = NULL;
--		else
--			bwc_rules[i] = list_first_entry(&bwc_matcher->rules[i],
--							struct mlx5hws_bwc_rule,
--							list_node);
--	}
-+			continue;
- 
--	do {
--		all_done = true;
-+		pending_rules = 0;
-+		rule_attr.queue_id = mlx5hws_bwc_get_queue_id(ctx, i);
-+		rules_list = &bwc_matcher->rules[i];
- 
--		for (i = 0; i < bwc_queues; i++) {
--			rule_attr.queue_id = mlx5hws_bwc_get_queue_id(ctx, i);
--			burst_th = hws_bwc_get_burst_th(ctx, rule_attr.queue_id);
--
--			for (j = 0; j < burst_th && bwc_rules[i]; j++) {
--				rule_attr.burst = !!((j + 1) % burst_th);
--				ret = mlx5hws_matcher_resize_rule_move(bwc_matcher->matcher,
--								       bwc_rules[i]->rule,
--								       &rule_attr);
--				if (unlikely(ret)) {
--					mlx5hws_err(ctx,
--						    "Moving BWC rule failed during rehash (%d)\n",
--						    ret);
--					goto free_bwc_rules;
--				}
-+		list_for_each_entry(bwc_rule, rules_list, list_node) {
-+			ret = mlx5hws_matcher_resize_rule_move(matcher,
-+							       bwc_rule->rule,
-+							       &rule_attr);
-+			if (unlikely(ret && !move_error)) {
-+				mlx5hws_err(ctx,
-+					    "Moving BWC rule: move failed (%d), attempting to move rest of the rules\n",
-+					    ret);
-+				move_error = true;
-+			}
- 
--				all_done = false;
--				pending_rules[i]++;
--				bwc_rules[i] = list_is_last(&bwc_rules[i]->list_node,
--							    &bwc_matcher->rules[i]) ?
--					       NULL : list_next_entry(bwc_rules[i], list_node);
--
--				ret = mlx5hws_bwc_queue_poll(ctx,
--							     rule_attr.queue_id,
--							     &pending_rules[i],
--							     false);
--				if (unlikely(ret)) {
--					mlx5hws_err(ctx,
--						    "Moving BWC rule failed during rehash (%d)\n",
--						    ret);
--					goto free_bwc_rules;
--				}
-+			pending_rules++;
-+			ret = mlx5hws_bwc_queue_poll(ctx,
-+						     rule_attr.queue_id,
-+						     &pending_rules,
-+						     false);
-+			if (unlikely(ret && !poll_error)) {
-+				mlx5hws_err(ctx,
-+					    "Moving BWC rule: poll failed (%d), attempting to move rest of the rules\n",
-+					    ret);
-+				poll_error = true;
- 			}
- 		}
--	} while (!all_done);
--
--	/* drain all the bwc queues */
--	for (i = 0; i < bwc_queues; i++) {
--		if (pending_rules[i]) {
--			u16 queue_id = mlx5hws_bwc_get_queue_id(ctx, i);
- 
--			mlx5hws_send_engine_flush_queue(&ctx->send_queue[queue_id]);
--			ret = mlx5hws_bwc_queue_poll(ctx, queue_id,
--						     &pending_rules[i], true);
--			if (unlikely(ret)) {
-+		if (pending_rules) {
-+			queue = &ctx->send_queue[rule_attr.queue_id];
-+			mlx5hws_send_engine_flush_queue(queue);
-+			ret = mlx5hws_bwc_queue_poll(ctx,
-+						     rule_attr.queue_id,
-+						     &pending_rules,
-+						     true);
-+			if (unlikely(ret && !drain_error)) {
- 				mlx5hws_err(ctx,
--					    "Moving BWC rule failed during rehash (%d)\n", ret);
--				goto free_bwc_rules;
-+					    "Moving BWC rule: drain failed (%d), attempting to move rest of the rules\n",
-+					    ret);
-+				drain_error = true;
- 			}
- 		}
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c
+index cb6abc4ab7df..c4b22be19a9b 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.c
+@@ -344,18 +344,133 @@ hws_send_engine_update_rule_resize(struct mlx5hws_send_engine *queue,
  	}
- 
--free_bwc_rules:
--	kfree(bwc_rules);
--free_pending_rules:
--	kfree(pending_rules);
-+	if (move_error || poll_error || drain_error)
-+		ret = -EINVAL;
- 
- 	return ret;
  }
-@@ -742,15 +716,18 @@ static int hws_bwc_matcher_move(struct mlx5hws_bwc_matcher *bwc_matcher)
- 	}
  
- 	ret = hws_bwc_matcher_move_all(bwc_matcher);
--	if (ret) {
--		mlx5hws_err(ctx, "Rehash error: moving rules failed\n");
--		return -ENOMEM;
--	}
-+	if (ret)
-+		mlx5hws_err(ctx, "Rehash error: moving rules failed, attempting to remove the old matcher\n");
++static void hws_send_engine_dump_error_cqe(struct mlx5hws_send_engine *queue,
++					   struct mlx5hws_send_ring_priv *priv,
++					   struct mlx5_cqe64 *cqe)
++{
++	u8 wqe_opcode = cqe ? be32_to_cpu(cqe->sop_drop_qpn) >> 24 : 0;
++	struct mlx5hws_context *ctx = priv->rule->matcher->tbl->ctx;
++	u32 opcode = cqe ? get_cqe_opcode(cqe) : 0;
++	struct mlx5hws_rule *rule = priv->rule;
 +
-+	/* Error during rehash can't be rolled back.
-+	 * The best option here is to allow the rehash to complete and remove
-+	 * the old matcher - can't leave the matcher in the 'in_resize' state.
++	/* If something bad happens and lots of rules are failing, we don't
++	 * want to pollute dmesg. Print only the first bad cqe per engine,
++	 * the one that started the avalanche.
 +	 */
++	if (queue->error_cqe_printed)
++		return;
++
++	queue->error_cqe_printed = true;
++
++	if (mlx5hws_rule_move_in_progress(rule))
++		mlx5hws_err(ctx,
++			    "--- rule 0x%08llx: error completion moving rule: phase %s, wqes left %d\n",
++			    HWS_PTR_TO_ID(rule),
++			    rule->resize_info->state ==
++			    MLX5HWS_RULE_RESIZE_STATE_WRITING ? "WRITING" :
++			    rule->resize_info->state ==
++			    MLX5HWS_RULE_RESIZE_STATE_DELETING ? "DELETING" :
++			    "UNKNOWN",
++			    rule->pending_wqes);
++	else
++		mlx5hws_err(ctx,
++			    "--- rule 0x%08llx: error completion %s (%d), wqes left %d\n",
++			    HWS_PTR_TO_ID(rule),
++			    rule->status ==
++			    MLX5HWS_RULE_STATUS_CREATING ? "CREATING" :
++			    rule->status ==
++			    MLX5HWS_RULE_STATUS_DELETING ? "DELETING" :
++			    rule->status ==
++			    MLX5HWS_RULE_STATUS_FAILING ? "FAILING" :
++			    rule->status ==
++			    MLX5HWS_RULE_STATUS_UPDATING ? "UPDATING" : "NA",
++			    rule->status,
++			    rule->pending_wqes);
++
++	mlx5hws_err(ctx, "    rule 0x%08llx: matcher 0x%llx %s\n",
++		    HWS_PTR_TO_ID(rule),
++		    HWS_PTR_TO_ID(rule->matcher),
++		    (rule->matcher->flags & MLX5HWS_MATCHER_FLAGS_ISOLATED) ?
++		    "(isolated)" : "");
++
++	if (!cqe) {
++		mlx5hws_err(ctx, "    rule 0x%08llx: no CQE\n",
++			    HWS_PTR_TO_ID(rule));
++		return;
++	}
++
++	mlx5hws_err(ctx, "    rule 0x%08llx: cqe->opcode      = %d %s\n",
++		    HWS_PTR_TO_ID(rule), opcode,
++		    opcode == MLX5_CQE_REQ ? "(MLX5_CQE_REQ)" :
++		    opcode == MLX5_CQE_REQ_ERR ? "(MLX5_CQE_REQ_ERR)" : " ");
++
++	if (opcode == MLX5_CQE_REQ_ERR) {
++		struct mlx5_err_cqe *err_cqe = (struct mlx5_err_cqe *)cqe;
++
++		mlx5hws_err(ctx,
++			    "    rule 0x%08llx:  |--- hw_error_syndrome = 0x%x\n",
++			    HWS_PTR_TO_ID(rule),
++			    err_cqe->rsvd1[16]);
++		mlx5hws_err(ctx,
++			    "    rule 0x%08llx:  |--- hw_syndrome_type = 0x%x\n",
++			    HWS_PTR_TO_ID(rule),
++			    err_cqe->rsvd1[17] >> 4);
++		mlx5hws_err(ctx,
++			    "    rule 0x%08llx:  |--- vendor_err_synd = 0x%x\n",
++			    HWS_PTR_TO_ID(rule),
++			    err_cqe->vendor_err_synd);
++		mlx5hws_err(ctx,
++			    "    rule 0x%08llx:  |--- syndrome = 0x%x\n",
++			    HWS_PTR_TO_ID(rule),
++			    err_cqe->syndrome);
++	}
++
++	mlx5hws_err(ctx,
++		    "    rule 0x%08llx: cqe->byte_cnt      = 0x%08x\n",
++		    HWS_PTR_TO_ID(rule), be32_to_cpu(cqe->byte_cnt));
++	mlx5hws_err(ctx,
++		    "    rule 0x%08llx:  |-- UPDATE STATUS = %s\n",
++		    HWS_PTR_TO_ID(rule),
++		    (be32_to_cpu(cqe->byte_cnt) & 0x80000000) ?
++		    "FAILURE" : "SUCCESS");
++	mlx5hws_err(ctx,
++		    "    rule 0x%08llx:  |------- SYNDROME = %s\n",
++		    HWS_PTR_TO_ID(rule),
++		    ((be32_to_cpu(cqe->byte_cnt) & 0x00000003) == 1) ?
++		    "SET_FLOW_FAIL" :
++		    ((be32_to_cpu(cqe->byte_cnt) & 0x00000003) == 2) ?
++		    "DISABLE_FLOW_FAIL" : "UNKNOWN");
++	mlx5hws_err(ctx,
++		    "    rule 0x%08llx: cqe->sop_drop_qpn  = 0x%08x\n",
++		    HWS_PTR_TO_ID(rule), be32_to_cpu(cqe->sop_drop_qpn));
++	mlx5hws_err(ctx,
++		    "    rule 0x%08llx:  |-send wqe opcode = 0x%02x %s\n",
++		    HWS_PTR_TO_ID(rule), wqe_opcode,
++		    wqe_opcode == MLX5HWS_WQE_OPCODE_TBL_ACCESS ?
++		    "(MLX5HWS_WQE_OPCODE_TBL_ACCESS)" : "(UNKNOWN)");
++	mlx5hws_err(ctx,
++		    "    rule 0x%08llx:  |------------ qpn = 0x%06x\n",
++		    HWS_PTR_TO_ID(rule),
++		    be32_to_cpu(cqe->sop_drop_qpn) & 0xffffff);
++}
++
+ static void hws_send_engine_update_rule(struct mlx5hws_send_engine *queue,
+ 					struct mlx5hws_send_ring_priv *priv,
+ 					u16 wqe_cnt,
+-					enum mlx5hws_flow_op_status *status)
++					enum mlx5hws_flow_op_status *status,
++					struct mlx5_cqe64 *cqe)
+ {
+ 	priv->rule->pending_wqes--;
  
- 	bwc_matcher->matcher = new_matcher;
- 	mlx5hws_matcher_destroy(old_matcher);
+-	if (*status == MLX5HWS_FLOW_OP_ERROR) {
++	if (unlikely(*status == MLX5HWS_FLOW_OP_ERROR)) {
+ 		if (priv->retry_id) {
++			/* If there is a retry_id, then it's not an error yet,
++			 * retry to insert this rule in the collision RTC.
++			 */
+ 			hws_send_engine_retry_post_send(queue, priv, wqe_cnt);
+ 			return;
+ 		}
++		hws_send_engine_dump_error_cqe(queue, priv, cqe);
+ 		/* Some part of the rule failed */
+ 		priv->rule->status = MLX5HWS_RULE_STATUS_FAILING;
+ 		*priv->used_id = 0;
+@@ -420,7 +535,8 @@ static void hws_send_engine_update(struct mlx5hws_send_engine *queue,
  
--	return 0;
-+	return ret;
- }
+ 	if (priv->user_data) {
+ 		if (priv->rule) {
+-			hws_send_engine_update_rule(queue, priv, wqe_cnt, &status);
++			hws_send_engine_update_rule(queue, priv, wqe_cnt,
++						    &status, cqe);
+ 			/* Completion is provided on the last rule WQE */
+ 			if (priv->rule->pending_wqes)
+ 				return;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.h b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.h
+index f833092235c1..3fb8e99309b2 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/send.h
+@@ -140,6 +140,7 @@ struct mlx5hws_send_engine {
+ 	u16 used_entries;
+ 	u16 num_entries;
+ 	bool err;
++	bool error_cqe_printed;
+ 	struct mutex lock; /* Protects the send engine */
+ };
  
- static int
 -- 
 2.31.1
 
