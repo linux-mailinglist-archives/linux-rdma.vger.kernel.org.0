@@ -1,61 +1,64 @@
-Return-Path: <linux-rdma+bounces-10301-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10302-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9546FAB35EF
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 May 2025 13:33:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A584AB3A41
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 May 2025 16:16:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C6AA189DD1F
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 May 2025 11:33:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CFA117C8A9
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 May 2025 14:16:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00F2C277038;
-	Mon, 12 May 2025 11:32:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C6FC1EDA28;
+	Mon, 12 May 2025 14:15:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uNBB0uOF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k8djEoCP"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB96B1AAE17;
-	Mon, 12 May 2025 11:32:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC7E91E505;
+	Mon, 12 May 2025 14:15:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747049574; cv=none; b=KVqEe0hmPDMamx4TENspapxYuDfL9dT5TbiHHXqWY9xroZdHAIat8cXWG2fh9f/GwmsYM+YmCwuFtTZB0tm49Nz0HDT3oZz9R7KjowA/S1u0MxI7kCD2+UwJ+a420Xnyt0zcsIs1HARLZliCRc3aVK06sSSr/iS2Qa8UjZst+rM=
+	t=1747059354; cv=none; b=uhonIVZLbqSrQEAwroBwT1ldu4wrabkxdvXeSjVtYZybK3AFOMr2a8Nci7Rg3ptqn9Xx3pUqrJoECGzQ1ZgnJLHXhj9Neu3Z5yJQItj7K2+58M1CGqb7zhaUsHkqnjQke+uf8qcgHzDiwQ1gy0ZjBj+OZAX3t2manY6A96QuYBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747049574; c=relaxed/simple;
-	bh=zOMLk73PSMsU04fU5LBHuwqBVTYpG5lILfgp7VOkvVI=;
+	s=arc-20240116; t=1747059354; c=relaxed/simple;
+	bh=MEHGyJSZV6ZmVvbm4C4hI9TFH3oY2U0jBbfKq+YT31I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mDSunRgSgSd1qfQXUq/dtCnFSQ9veV+UsyRLPdo4CIZ8ZSyDbPAbtOW5TAQP5HpGgz39lV+QCynk5C8a2EUj3IDJucxJ+q4H2TsEnSl/dHx8Svqwm1aLQt7GZ64oFnK7F0C4vw3FuVdviD/0lRSpT6Vrv7H7oyWqFLjqJBbL1Kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uNBB0uOF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37CC3C4CEE7;
-	Mon, 12 May 2025 11:32:53 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=C4QHtIWcYNjDfBWQWdSsNq0vY15cJCVDSkM7MRtpN4SEF6cTY2zRvf2zV5ZXnDP7Hj3eHCz29NDiYgjQ2gL4WKQL+8n72e4czrwf/WgeEw8xuyTghNSN9aMmT7wXDLn04Z/+NzjZAGyVVkoM2qQXtNG1a6bt/dafujZWkazZbQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k8djEoCP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97AACC4CEEF;
+	Mon, 12 May 2025 14:15:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747049574;
-	bh=zOMLk73PSMsU04fU5LBHuwqBVTYpG5lILfgp7VOkvVI=;
+	s=k20201202; t=1747059353;
+	bh=MEHGyJSZV6ZmVvbm4C4hI9TFH3oY2U0jBbfKq+YT31I=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uNBB0uOFTAdqwd931+tTSsSrx++vlKq5oeJkBA4JOwiKVcs5DKw9dU9QsA6ns4Pm2
-	 OqPajNBWnTAQ/nfiY+LkoWY37anPg/11AkYCWCNwzR03FwoLowWdmcXAKT+7jJt7qe
-	 57H0Zn1PO7gV2Absm0II561uqnQVuay0J56yDd01VX3AZd8PftXrCY2pB2//yOzWB+
-	 g+oF+V5cXhy0ZN4VwlTHped+Cp7ct4Him5J6n7PEsjjsL0SvvJws/TypLk9ErKt6Ff
-	 wDAuPACHq4AyhMvmaoIHzhmahqgItlso7zx21WYVYc63zudcdvMkf2jL4/jOzixbJ1
-	 K2P21hqOoBOng==
-Date: Mon, 12 May 2025 14:32:48 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: ALOK TIWARI <alok.a.tiwari@oracle.com>
-Cc: Konstantin Taranov <kotaranov@linux.microsoft.com>,
-	kotaranov@microsoft.com, pabeni@redhat.com, haiyangz@microsoft.com,
-	kys@microsoft.com, edumazet@google.com, kuba@kernel.org,
-	davem@davemloft.net, decui@microsoft.com, wei.liu@kernel.org,
-	longli@microsoft.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH rdma-next v4 4/4] net: mana: Add support for auxiliary
- device servicing events
-Message-ID: <20250512113248.GE22843@unreal>
-References: <1746633545-17653-1-git-send-email-kotaranov@linux.microsoft.com>
- <1746633545-17653-5-git-send-email-kotaranov@linux.microsoft.com>
- <01f27ba0-6239-4195-beda-bc3fea1a30cf@oracle.com>
+	b=k8djEoCPjVGyQx42aTZVSbqgQDZkJ/Bj5aRHJUHgLcQd/mnl/eY5cWr5F1P4swDmb
+	 lzG6JLGZU0Ux1ZZs5sjKcv5w4aTYiilPh5dzD717eImtSkvgPEpRmCKwi9n93zKQV0
+	 UKaX8fY2iUpJgoVN7Qf78dmv80A95BDTKkzqIE5TXbeFEh/O+sRPUc6YO8UxSq4o8n
+	 SlQne8XGIR0WeijFfGryo85ElqzfZXctr8HKG1FebB3u6NGhfAhjEefVEI01K1wp9R
+	 VMQDo7Zvn7Kd7dGauwJtfURxUSALzYzHGi5P79HmdlQAgQRlKnLZ30P6zhm0cKOiW1
+	 9mLZbKqtKN/CA==
+Date: Mon, 12 May 2025 15:15:46 +0100
+From: Simon Horman <horms@kernel.org>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	decui@microsoft.com, stephen@networkplumber.org, kys@microsoft.com,
+	paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
+	davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
+	longli@microsoft.com, ssengar@linux.microsoft.com,
+	linux-rdma@vger.kernel.org, daniel@iogearbox.net,
+	john.fastabend@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
+	hawk@kernel.org, tglx@linutronix.de,
+	shradhagupta@linux.microsoft.com, andrew+netdev@lunn.ch,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next,v2] net: mana: Add handler for hardware
+ servicing events
+Message-ID: <20250512141546.GI3339421@horms.kernel.org>
+References: <1746832603-4340-1-git-send-email-haiyangz@microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -64,34 +67,85 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <01f27ba0-6239-4195-beda-bc3fea1a30cf@oracle.com>
+In-Reply-To: <1746832603-4340-1-git-send-email-haiyangz@microsoft.com>
 
-On Mon, May 12, 2025 at 10:59:43AM +0530, ALOK TIWARI wrote:
+On Fri, May 09, 2025 at 04:16:43PM -0700, Haiyang Zhang wrote:
+> To collaborate with hardware servicing events, upon receiving the special
+> EQE notification from the HW channel, remove the devices on this bus.
+> Then, after a waiting period based on the device specs, rescan the parent
+> bus to recover the devices.
 > 
+> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+> ---
+> v2: 
+> Added dev_dbg for service type as suggested by Shradha Gupta.
+> Added driver cap bit.
 > 
-> On 07-05-2025 21:29, Konstantin Taranov wrote:
-> > From: Shiraz Saleem <shirazsaleem@microsoft.com>
-> > 
-> > Handle soc servcing events which require the rdma auxiliary device resources to
+> ---
+>  .../net/ethernet/microsoft/mana/gdma_main.c   | 63 +++++++++++++++++++
+>  include/net/mana/gdma.h                       | 11 +++-
+>  2 files changed, 72 insertions(+), 2 deletions(-)
 > 
-> typo servcing ->servicing
+> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
 
-<...>
+...
 
-> > +		val = service_data.value;
-> 
-> what is use of val?
-> 
+> +static void mana_serv_func(struct work_struct *w)
+> +{
+> +	struct mana_serv_work *mns_wk = container_of(w, struct mana_serv_work, serv_work);
+> +	struct pci_dev *pdev = mns_wk->pdev;
+> +	struct pci_bus *bus, *parent;
 
-<...>
+Please avoid lines wider than 80 columns in Networking code.  In this case
+I would suggest separating the declaration and initialisation of mns_wk and
+pdev.  Something like this (completely untested!):
 
-> > +static void mana_handle_rdma_servicing(struct work_struct *work)
-> 
-> this name does not sound clearer and more aligned with typical naming
-> conventions.
-> Since it is an RDMA service event handler, it could be named to
-> mana_rdma_service_handle. What are your thoughts on this?"
+	struct mana_serv_work *mns_wk;
+	struct pci_bus *bus, *parent;
+	struct pci_dev *pdev;
 
-I fixed all these comments locally when applied the series.
-Thank you for the review.
+	mns_wk = container_of(w, struct mana_serv_work, serv_work);
+	pdev = mns_wk->pdev;
+
+
+...
+
+> @@ -400,6 +441,28 @@ static void mana_gd_process_eqe(struct gdma_queue *eq)
+>  		eq->eq.callback(eq->eq.context, eq, &event);
+>  		break;
+>  
+> +	case GDMA_EQE_HWC_FPGA_RECONFIG:
+> +	case GDMA_EQE_HWC_SOCMANA_CRASH:
+> +		dev_dbg(gc->dev, "Recv MANA service type:%d\n", type);
+> +
+> +		if (gc->in_service) {
+> +			dev_info(gc->dev, "Already in service\n");
+> +			break;
+> +		}
+> +
+> +		mns_wk = kzalloc(sizeof(*mns_wk), GFP_ATOMIC);
+> +		if (!mns_wk) {
+> +			dev_err(gc->dev, "Fail to alloc mana_serv_work\n");
+
+The memory allocator will log a message on error.
+So please don't also do so here.
+
+> +			break;
+> +		}
+> +
+> +		dev_info(gc->dev, "Start MANA service type:%d\n", type);
+> +		gc->in_service = true;
+> +		mns_wk->pdev = to_pci_dev(gc->dev);
+> +		INIT_WORK(&mns_wk->serv_work, mana_serv_func);
+> +		schedule_work(&mns_wk->serv_work);
+> +		break;
+> +
+>  	default:
+>  		break;
+>  	}
+
+...
+
+-- 
+pw-bot: changes-requested
 
