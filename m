@@ -1,132 +1,86 @@
-Return-Path: <linux-rdma+bounces-10290-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10291-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECC91AB30A9
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 May 2025 09:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DF3AAB329F
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 May 2025 11:03:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80F8B7A2E95
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 May 2025 07:37:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A57AA7AEA69
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 May 2025 09:02:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37300257430;
-	Mon, 12 May 2025 07:38:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2831B25A62D;
+	Mon, 12 May 2025 09:02:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="HlC68Ufk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Plk7nQkp"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D7E37DA82;
-	Mon, 12 May 2025 07:38:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC58B25A357
+	for <linux-rdma@vger.kernel.org>; Mon, 12 May 2025 09:02:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747035537; cv=none; b=WleEzmAdqW+GXSnvwj82g76pqw73Aj/BLZ+ca5Q2h1TDyIeTHBeu8cPMBX7EUew7OkU7UbKnlI8h1nmH5jBzIm2GSH9vJgqTtddyLERDkEyZe8PqKsFBETOrtBZHssD0cSQzfa18lE/GYSoBR1lB1wKR8Y52KddLEkGZNAHeRRo=
+	t=1747040553; cv=none; b=tdfD9lTJZfgUfS9l0z3bvW1ygFXFRcp/rNynbyd1YZlqNwaE+zhkyQiJmAQYIiCPHeyS+cS16mz8XaoEj7zT3jdPzxzG/gLmpDajL/OZRX0wj896qbKAsI+UOCxugIJ2FdWX8+2x+FTK2aZK3CIJ116pfX3wk6cLXCq5uhSS8UA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747035537; c=relaxed/simple;
-	bh=KNKMctxAxmRTyPlLDhq3kAG6uesIsQg9Qnqn3OmcROA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kpU00I1B1lujBYc0SIvrn3QsK4wZpng9Uj9HoUxodZx8d9yNtm9MW3wofEEQy2+5AlSqzBm3NZHKnkTHBfAqoTRzREmmEQghBs6rlMPOcogi3lChr9wb/5YK2QuYEJAAch6eR28G6vQWgNr18MJzvXlD8WPZXwM9nsyqvBN7wJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=HlC68Ufk; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id D9C09211D8A9; Mon, 12 May 2025 00:38:54 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D9C09211D8A9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1747035534;
-	bh=iCzTBbpF34iqkrSJNQgb27YnZ03WEMtHWiX6C1C7y7E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HlC68UfkHiW5i7tFfqIlUH2OLMYsAlzaWhoQuFG+G//YihxYb786pWYAaLzFsnU+b
-	 Rl2wNOVjtzjrX7ifZDwXSWSGbqhDZOYVCCnY4MNyqRObJ2gbk5MuU0xSRZKpmBhZIx
-	 s45E2Zoc/QNT05qBIQnkWg21hglbabyNeWdMBeYs=
-Date: Mon, 12 May 2025 00:38:54 -0700
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
-	Krzysztof Wilczy???~Dski <kw@linux.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Nipun Gupta <nipun.gupta@amd.com>,
-	Yury Norov <yury.norov@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Jonathan Cameron <Jonathan.Cameron@huwei.com>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Kevin Tian <kevin.tian@intel.com>, Long Li <longli@microsoft.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Simon Horman <horms@kernel.org>, Leon Romanovsky <leon@kernel.org>,
-	Maxim Levitsky <mlevitsk@redhat.com>,
-	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
-	Peter Zijlstra <peterz@infradead.org>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, Paul Rosswurm <paulros@microsoft.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>
-Subject: Re: [PATCH v3 2/4] PCI: hv: Allow dynamic MSI-X vector allocation
-Message-ID: <20250512073854.GB23493@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1746785566-4337-1-git-send-email-shradhagupta@linux.microsoft.com>
- <1746785602-4600-1-git-send-email-shradhagupta@linux.microsoft.com>
- <plrpscito5e76t4dvtukgqm724stsfxim3zv3xqwnjewenee53@72dipu3yunlr>
+	s=arc-20240116; t=1747040553; c=relaxed/simple;
+	bh=FwVbfe4WeG6M4OhWk0ehpgyI2WPSVhDR5MZsSIcC3OU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=XO6E1RzprkOupv7sWJ37O3zn8ve+qaFINoEbZejI+tD9gLNnUkAqWQ3iXsN7VXUdKUbRziFXiOAG4DC7Ts1PylPQC6o+npa8ALALwehfbC6EcxV6K18HvD6VlQZ/8LLUbSNhxnICBhclbLmYbt+fhru/8/PIHLaBs2JYV2h12Bw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Plk7nQkp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2B51C4CEE7;
+	Mon, 12 May 2025 09:02:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747040553;
+	bh=FwVbfe4WeG6M4OhWk0ehpgyI2WPSVhDR5MZsSIcC3OU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=Plk7nQkpxJhW+ool2GhnaEkXgIcEFEuVYF0BCMYzlVN9X4UJvjE+dRYs4Xc5sdFO+
+	 Xpv16YdojujPrLY0dd093pTZPZJp58x6Wi2nP5BWF1/5GyTL+4Is4UPqRznU//1Vw5
+	 V3tnrvxAb/jVCyAwaWIIbozg84jjhCbV73blTyKXveu7X6KZ+3mUrMSmVWq3dJBKhk
+	 Hj6sdoHWLfxa4MVKZFR+AQB4DeHK9nutb138XGMSy9b3fv0ZwwTFmoA2WvcM8MSMuT
+	 f8QdaptSHjpEz2rnf9Dulu1WpgouIvshT7fmkw3KnNFfZJYTZH0QcFE+BqDiLPwJ6d
+	 w7kfrq+LIbPFQ==
+From: Leon Romanovsky <leon@kernel.org>
+To: jgg@ziepe.ca, Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com, 
+ tangchengchang@huawei.com, paulmck@kernel.org
+In-Reply-To: <20250507033903.2879433-1-huangjunxian6@hisilicon.com>
+References: <20250507033903.2879433-1-huangjunxian6@hisilicon.com>
+Subject: Re: [PATCH for-next] RDMA/hns: Fix build error of hns_roce_trace
+Message-Id: <174704054955.547926.17952486467201868736.b4-ty@kernel.org>
+Date: Mon, 12 May 2025 05:02:29 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <plrpscito5e76t4dvtukgqm724stsfxim3zv3xqwnjewenee53@72dipu3yunlr>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-37811
 
-On Mon, May 12, 2025 at 12:30:04PM +0530, Manivannan Sadhasivam wrote:
-> On Fri, May 09, 2025 at 03:13:22AM -0700, Shradha Gupta wrote:
-> > Allow dynamic MSI-X vector allocation for pci_hyperv PCI controller
-> > by adding support for the flag MSI_FLAG_PCI_MSIX_ALLOC_DYN and using
-> > pci_msix_prepare_desc() to prepare the MSI-X descriptors.
-> > 
-> > Feature support added for both x86 and ARM64
-> > 
-> > Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> > Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-> > ---
-> >  Changes in v3:
-> >  * Add arm64 support
-> > ---
-> >  Changes in v2:
-> >  * split the patch to keep changes in PCI and pci_hyperv controller
-> >    seperate
-> >  * replace strings "pci vectors" by "MSI-X vectors"
-> > ---
-> >  drivers/pci/controller/pci-hyperv.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-> > index ac27bda5ba26..8c8882cb0ad2 100644
-> > --- a/drivers/pci/controller/pci-hyperv.c
-> > +++ b/drivers/pci/controller/pci-hyperv.c
-> > @@ -598,7 +598,8 @@ static unsigned int hv_msi_get_int_vector(struct irq_data *data)
-> >  	return cfg->vector;
-> >  }
-> >  
-> > -#define hv_msi_prepare		pci_msi_prepare
-> > +#define hv_msi_prepare			pci_msi_prepare
-> > +#define hv_msix_prepare_desc		pci_msix_prepare_desc
-> 
-> Please do not use custom macro unless its defintion changes based on some
-> conditional. In this case, you should use pci_msix_prepare_desc directly for
-> prepare_desc() callback.
-> 
-> - Mani
-> 
-> --
-> ??????????????????????????? ????????????????????????
 
-Thanks for catching this Mani, I agree. I will fix this.
+On Wed, 07 May 2025 11:39:03 +0800, Junxian Huang wrote:
+> Add include path to find hns_roce_trace.h to fix the following
+> build error:
+> 
+> In file included from drivers/infiniband/hw/hns/hns_roce_trace.h:213,
+>                  from drivers/infiniband/hw/hns/hns_roce_hw_v2.c:53:
+> ./include/trace/define_trace.h:110:42: fatal error: ./hns_roce_trace.h: No such file or directory
+>   110 | #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+>       |                                          ^
+> compilation terminated.
+> 
+> [...]
 
-regards,
-Shradha.
+Applied, thanks!
+
+[1/1] RDMA/hns: Fix build error of hns_roce_trace
+      https://git.kernel.org/rdma/rdma/c/4ffb62fa8925c1
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
