@@ -1,86 +1,146 @@
-Return-Path: <linux-rdma+bounces-10291-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10292-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DF3AAB329F
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 May 2025 11:03:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99E71AB33AF
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 May 2025 11:34:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A57AA7AEA69
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 May 2025 09:02:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9432C3A7D21
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 May 2025 09:31:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2831B25A62D;
-	Mon, 12 May 2025 09:02:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1974D267AFC;
+	Mon, 12 May 2025 09:27:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Plk7nQkp"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tihqNMiV";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="r3Dom5kl"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC58B25A357
-	for <linux-rdma@vger.kernel.org>; Mon, 12 May 2025 09:02:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34386267B04;
+	Mon, 12 May 2025 09:27:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747040553; cv=none; b=tdfD9lTJZfgUfS9l0z3bvW1ygFXFRcp/rNynbyd1YZlqNwaE+zhkyQiJmAQYIiCPHeyS+cS16mz8XaoEj7zT3jdPzxzG/gLmpDajL/OZRX0wj896qbKAsI+UOCxugIJ2FdWX8+2x+FTK2aZK3CIJ116pfX3wk6cLXCq5uhSS8UA=
+	t=1747042071; cv=none; b=GQi5QwXb1G0hxKVYrD6QUq1j8cwz8OV4r9vrkTiPK5HjQ5n+aTWNmeEredvvZKLwbublYljNLA5HX1c7Fi2JcmrvIxnHbK7TJY9e9Z3jpyT31fvQoXSPsBg0bguzZWsBli9aDMDC0z5JdMLSqhXnuTiIYvdmZhhUHiG71o4WpQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747040553; c=relaxed/simple;
-	bh=FwVbfe4WeG6M4OhWk0ehpgyI2WPSVhDR5MZsSIcC3OU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=XO6E1RzprkOupv7sWJ37O3zn8ve+qaFINoEbZejI+tD9gLNnUkAqWQ3iXsN7VXUdKUbRziFXiOAG4DC7Ts1PylPQC6o+npa8ALALwehfbC6EcxV6K18HvD6VlQZ/8LLUbSNhxnICBhclbLmYbt+fhru/8/PIHLaBs2JYV2h12Bw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Plk7nQkp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2B51C4CEE7;
-	Mon, 12 May 2025 09:02:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747040553;
-	bh=FwVbfe4WeG6M4OhWk0ehpgyI2WPSVhDR5MZsSIcC3OU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Plk7nQkpxJhW+ool2GhnaEkXgIcEFEuVYF0BCMYzlVN9X4UJvjE+dRYs4Xc5sdFO+
-	 Xpv16YdojujPrLY0dd093pTZPZJp58x6Wi2nP5BWF1/5GyTL+4Is4UPqRznU//1Vw5
-	 V3tnrvxAb/jVCyAwaWIIbozg84jjhCbV73blTyKXveu7X6KZ+3mUrMSmVWq3dJBKhk
-	 Hj6sdoHWLfxa4MVKZFR+AQB4DeHK9nutb138XGMSy9b3fv0ZwwTFmoA2WvcM8MSMuT
-	 f8QdaptSHjpEz2rnf9Dulu1WpgouIvshT7fmkw3KnNFfZJYTZH0QcFE+BqDiLPwJ6d
-	 w7kfrq+LIbPFQ==
-From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com, 
- tangchengchang@huawei.com, paulmck@kernel.org
-In-Reply-To: <20250507033903.2879433-1-huangjunxian6@hisilicon.com>
-References: <20250507033903.2879433-1-huangjunxian6@hisilicon.com>
-Subject: Re: [PATCH for-next] RDMA/hns: Fix build error of hns_roce_trace
-Message-Id: <174704054955.547926.17952486467201868736.b4-ty@kernel.org>
-Date: Mon, 12 May 2025 05:02:29 -0400
+	s=arc-20240116; t=1747042071; c=relaxed/simple;
+	bh=jOJA68RRCsFupoKbIXpdPkdpTgYXhITPGS5zLjDwJlw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=giTmn+f/fqv7W2rqZ0I/+syr/MJ/DR/V64KqvbY0TQ3BvsdMR2q8U9eREu2FtFVjsVkdcztFwhhr4adxRtnDSREuGjwmKNPlm0ZC7LzpZ7L6pwruBTr3LQgeSaXTHLPejmWZqsEw35gI7B5QVnNZxxFkmzSLhYdO2zSG7MynkM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tihqNMiV; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=r3Dom5kl; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1747042067;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QW4ASRASgx99S0FnlTl8xeHoYCpECC/wdaoXtQZvpSA=;
+	b=tihqNMiV3HwTpJH2ATdT4yNwRWfHsbCiFGfJVC5jDHkLGoNwNjS1fcXRnNxxLGeb5uk/fU
+	VI2/dyDTTaV4dxwPxFqxtiF9MU+fHeQkTqWQ1mZjuCRvJ2TyOOw/4tmwm4CYDl35bVAuUr
+	Q6SlACk88pibS8UwWzYORmgPrNV0GN1eHn95bbeRcMLU+z2D5y72fPZJUZPAu48U8fq9rr
+	HoimwPKQ7mlnv7NOEK8mXTgsEcqy1skziOWKsQTuPmXhg+cWjPivUOjIHbeZYS9T07JDuj
+	rjxgzaLIexwj2rCZ9a3gKB6w7d0ccnvyVrZwrr83srHYhLWy5OBWewwukE3wwQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1747042067;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QW4ASRASgx99S0FnlTl8xeHoYCpECC/wdaoXtQZvpSA=;
+	b=r3Dom5klltEdw93cM6xYV/3G/n2YWdUCXITg8Tkh9WahQPFhoJVOPJcH8Mggta1p45x/V4
+	MECcw3r5z1gugXDg==
+To: netdev@vger.kernel.org,
+	linux-rt-devel@lists.linux.dev
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Allison Henderson <allison.henderson@oracle.com>,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH net-next v4 13/15] rds: Disable only bottom halves in rds_page_remainder_alloc()
+Date: Mon, 12 May 2025 11:27:34 +0200
+Message-ID: <20250512092736.229935-14-bigeasy@linutronix.de>
+In-Reply-To: <20250512092736.229935-1-bigeasy@linutronix.de>
+References: <20250512092736.229935-1-bigeasy@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Transfer-Encoding: quoted-printable
 
+rds_page_remainder_alloc() is invoked from a preemptible context or a
+tasklet. There is no need to disable interrupts for locking.
 
-On Wed, 07 May 2025 11:39:03 +0800, Junxian Huang wrote:
-> Add include path to find hns_roce_trace.h to fix the following
-> build error:
-> 
-> In file included from drivers/infiniband/hw/hns/hns_roce_trace.h:213,
->                  from drivers/infiniband/hw/hns/hns_roce_hw_v2.c:53:
-> ./include/trace/define_trace.h:110:42: fatal error: ./hns_roce_trace.h: No such file or directory
->   110 | #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
->       |                                          ^
-> compilation terminated.
-> 
-> [...]
+Use local_bh_disable() instead of local_irq_save() for locking.
 
-Applied, thanks!
+Cc: Allison Henderson <allison.henderson@oracle.com>
+Cc: linux-rdma@vger.kernel.org
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ net/rds/page.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-[1/1] RDMA/hns: Fix build error of hns_roce_trace
-      https://git.kernel.org/rdma/rdma/c/4ffb62fa8925c1
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+diff --git a/net/rds/page.c b/net/rds/page.c
+index 7cc57e098ddb9..e0dd4f62ea47a 100644
+--- a/net/rds/page.c
++++ b/net/rds/page.c
+@@ -69,7 +69,6 @@ int rds_page_remainder_alloc(struct scatterlist *scat, un=
+signed long bytes,
+ 			     gfp_t gfp)
+ {
+ 	struct rds_page_remainder *rem;
+-	unsigned long flags;
+ 	struct page *page;
+ 	int ret;
+=20
+@@ -88,7 +87,7 @@ int rds_page_remainder_alloc(struct scatterlist *scat, un=
+signed long bytes,
+ 	}
+=20
+ 	rem =3D &per_cpu(rds_page_remainders, get_cpu());
+-	local_irq_save(flags);
++	local_bh_disable();
+=20
+ 	while (1) {
+ 		/* avoid a tiny region getting stuck by tossing it */
+@@ -116,13 +115,13 @@ int rds_page_remainder_alloc(struct scatterlist *scat=
+, unsigned long bytes,
+ 		}
+=20
+ 		/* alloc if there is nothing for us to use */
+-		local_irq_restore(flags);
++		local_bh_enable();
+ 		put_cpu();
+=20
+ 		page =3D alloc_page(gfp);
+=20
+ 		rem =3D &per_cpu(rds_page_remainders, get_cpu());
+-		local_irq_save(flags);
++		local_bh_disable();
+=20
+ 		if (!page) {
+ 			ret =3D -ENOMEM;
+@@ -140,7 +139,7 @@ int rds_page_remainder_alloc(struct scatterlist *scat, =
+unsigned long bytes,
+ 		rem->r_offset =3D 0;
+ 	}
+=20
+-	local_irq_restore(flags);
++	local_bh_enable();
+ 	put_cpu();
+ out:
+ 	rdsdebug("bytes %lu ret %d %p %u %u\n", bytes, ret,
+--=20
+2.49.0
 
 
