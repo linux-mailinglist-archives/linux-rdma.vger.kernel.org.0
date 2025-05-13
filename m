@@ -1,220 +1,358 @@
-Return-Path: <linux-rdma+bounces-10314-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10315-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC858AB4AB8
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 May 2025 07:04:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38776AB4AF0
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 May 2025 07:23:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCDA8860575
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 May 2025 05:04:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70A7C8C1618
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 May 2025 05:23:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 594811E3762;
-	Tue, 13 May 2025 05:04:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 579D71E5200;
+	Tue, 13 May 2025 05:23:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JF2o+Ud5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H9o+8IxV"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86C791BEF9B;
-	Tue, 13 May 2025 05:04:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 546081E3DE5;
+	Tue, 13 May 2025 05:23:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747112689; cv=none; b=QUhmR350PB6JvKGqqigfTFVLQ16UT5b+CSef9hFWEQCr18Ow7YXnVlaJQGIl2wI/2pIIuKi9EgCDhJjbxk5NuNH/6eYFuWzHLievZz6Q905jsH3RLTT3Muzx6flkAwfs0UR92wnv4pvQbun4h8sWPdmiiHtWzlatYxvcm+x1U8U=
+	t=1747113803; cv=none; b=RQ0gylpXiawb0lbPyjPF0CM6y885EsCfrfFz+qf+wc17Rp2SDbN6vCMHhb6g4aSXyOWNq63J97e/KLTWTDhBvgmPT+9EBJYr4Wff9FWzJ4e5H60LxXzR0mL1jVC3q++dIMJ8j1DrbpUzh+xgTneVQYFkp5EWgpYa0h4gqkmnTcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747112689; c=relaxed/simple;
-	bh=LGz1txiWghIZcSLUqlxspDyZYmpBLLzXkkI6c58D49w=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XhoDHr7+NNZgZCT7KjXz0Jzc9SAUf7KSp87GbFgtkcoCZWhYZiLm1U2xoLycybwzE9iEF5QiM3pdvNRo/lOxBbXO7DEunP5q+lE38cCr6631L5c/i6EmbymsJ1GMBu6sBmDES5xPeYPR3O26kgz+TyZbzAayYRysWA0LqMaGdt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JF2o+Ud5; arc=none smtp.client-ip=209.85.216.45
+	s=arc-20240116; t=1747113803; c=relaxed/simple;
+	bh=aE8ztuB3Eqeqn5wiysT2iC/+hyLn74AWp47PIUslqkc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mc7IOM4Iqv0zyKBwqKm+Z4Xtoku0AHv5p5S29Sr8LgEHLSXTxfoubYzwFV5mlfbeAsux/osnKq1lZG5OGrs16Y4NLDUwyLf9LjtjZyGQf9vtGKtvRYF9KUzwz1fjCp4cyM2iC4rzQpJqDgMgetKI8yIIWqi1xGPYWIMN9jdn7Xs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H9o+8IxV; arc=none smtp.client-ip=209.85.216.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-30a89c31ae7so6844339a91.2;
-        Mon, 12 May 2025 22:04:47 -0700 (PDT)
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-30a8c929220so4278199a91.0;
+        Mon, 12 May 2025 22:23:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747112687; x=1747717487; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YGMMYICEA6yi0x1V/+Su91nHfwS9QAhqK1x9pOl+LpM=;
-        b=JF2o+Ud5hlzGmlQTVje7D2n8KTfznewUcF9cpFhetQzpVj7rPP+J6t9gIY8uiuRivJ
-         sNTJ/w4M8DwI8YYCag1ug1hPqi+FMIAfcoZwgajy++oEIHt54q1Zjgt0/A+5stl9eZEn
-         uh+SqrxSM+GzKpwFW4DkPb0jNbpy4GRVMkluF8XiHbn7Cg1JRr1vw6gryz181+AV9PDP
-         uihvRiVer821U0ZPxSS/Z1uAAWqBZjJ4BhaYZD3zmrdvZ6620tEJFisizd01+SztuIEO
-         G/fSi6Yi6dMV7Pi41tLKAzeK7gS9Nl0BNLeBNguvnkEihk/G55xITTcbK+gYKI5qaUEV
-         QmVA==
+        d=gmail.com; s=20230601; t=1747113800; x=1747718600; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yQisTrxwC/Vl5fN/D8+UckrSbUIKShKukgNP8WEycMA=;
+        b=H9o+8IxVn+9KNCBXL2YGMjRF7BovlOSiDbhAR0a4J7SklSzMjRXyzbu2YKQHnaCMIC
+         lA713UkVMg0AFLvoi08HSTZdkY0bDDd+6vvkW/8Fi6GTjOuD9vBY1ADY3+QDju/hcjXC
+         k+yOx1zsil8O+q/iI3r1FThq3Vz7w6bAfowu8ivAv+ygN07QYHL8rxKE7IWtUmDjzd0R
+         oScNb7PXHmc7KwSEGyHJvulsqu+sR7fcSp4uXIOmzMLGhmBBNSSouQw6hp7Fhvxjlqk0
+         +HmVBI+5D29oaQmY3EtSZ+bJHm94hdJH8T+TeP2nAtGBiJmtTRKBy1cuobjm5sMzP5Tu
+         42bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747112687; x=1747717487;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YGMMYICEA6yi0x1V/+Su91nHfwS9QAhqK1x9pOl+LpM=;
-        b=hB023iPcufZOzfTRx+d8RrqiKtDdaRlV4zbsUaA+8lBaGlvmX+u+rpGaF+bzhvCBgI
-         wrHDPx8HktVXJdDQ4pP/EXLHckZ4WLH3gvWIYLQ1u3Y3mHlzlkHSJR59Bgl2FP/eP8BQ
-         PJ0cRqPEt72L1PDKE1hAdm2E9qKTuAwGRyZ05iPlg1xUwDasX41SMSUXF3C3evsInlcM
-         E9jofTCW9bW0MupEmfPMXJDs2g1yD75GD0Iknt3FrdQYB61iZ8uwbV0eR2ryyBJBj+z0
-         N4k81GsKnfvgDE36CNFD3VDooMbGNAw6fKdi693Fg2usMXRVisLDJ9PC/U/bbZ14qvLp
-         4I3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVb0xFwzlCMP8IPoEoTAqBio34Nsp4kxly4qPNjsJVJlbLSkOpXnBW4XhJzWQ/M3A+q4g/8EaNZ22qO@vger.kernel.org
-X-Gm-Message-State: AOJu0YzI99JdZofzv+6GUyD/UAiC7MU74ztQJiFcj2W8E58eGeD5pUrV
-	50tgcNRqzXrXmjyPWMoL3XtckSKcsnod1ngboGqvF9h4QNjq4bpLA1ghb6Uq
-X-Gm-Gg: ASbGnculYVjK/IqxehPjuliHsQgkKcU+FJEwPdl85Z0loOzByjXcNi4nlPTZqTdy6ra
-	4U9o0V67S8YbwpuHoH5+8MdrYTBYms3bH++bT5G1NGmG1ltR3Ljqj6OeRyarb2U1d1JvfmxpkYD
-	YePbhwQPhPdvYT/v+YZ72qycKaHq8+vCo1yfJCb8eOM9hZuPDq0kQrmvuEijw50YCFWZGYifsQQ
-	IjRU9ce1QhZL6hB35LslM5XowKil13Mso6kTSzHfKbCrjeZvX4SFbntG761O6DAvsd15Dnfd1/5
-	6iB/nmx/d9pwrtVwS1NM8a96EJQ8QKI6Zf4EQaZC4B0zctW1FzI3zJ1NzaMuv50fJDZlYR8djjs
-	9tHIReHnnlQS2/QFT
-X-Google-Smtp-Source: AGHT+IFs+q0OaqtLBs4eT4DP8/0g4WfTOJ4fphf2ovAtdiiEWdphTfb/auryyAS+TzXT37NrXNOT1Q==
-X-Received: by 2002:a17:90a:d2cc:b0:30c:5255:ffd6 with SMTP id 98e67ed59e1d1-30c52560062mr14647808a91.6.1747112686663;
-        Mon, 12 May 2025 22:04:46 -0700 (PDT)
-Received: from trigkey.. (FL1-119-244-79-106.tky.mesh.ad.jp. [119.244.79.106])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30ad4ffb545sm10744493a91.45.2025.05.12.22.04.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 May 2025 22:04:46 -0700 (PDT)
-From: Daisuke Matsuda <dskmtsd@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	leon@kernel.org,
-	jgg@ziepe.ca,
-	zyjzyj2000@gmail.com
-Cc: Daisuke Matsuda <dskmtsd@gmail.com>,
-	Zhu Yanjun <yanjun.zhu@linux.dev>
-Subject: [PATCH for-next v3 2/2] RDMA/rxe: Enable asynchronous prefetch for ODP MRs
-Date: Tue, 13 May 2025 05:04:05 +0000
-Message-ID: <20250513050405.3456-3-dskmtsd@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250513050405.3456-1-dskmtsd@gmail.com>
-References: <20250513050405.3456-1-dskmtsd@gmail.com>
+        d=1e100.net; s=20230601; t=1747113800; x=1747718600;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yQisTrxwC/Vl5fN/D8+UckrSbUIKShKukgNP8WEycMA=;
+        b=qc9N+wIFbvTtaeUhLQWuQIMsQBEFXGzE58iNFueS9TXuBibXUw6LHozePxnb7Yyvnn
+         HwShlK6habQYlXxBPjYHVWJW9Kt1MP6lTwu14PEuabFv7Dh/B+iM6jrOmGgEUwhfQwI6
+         Q4oDAamVp12YdW/ZL3EFw4sxwre447XEOr68h51NMtBbIX09xJ+1rmN32zJjPwAuICmp
+         GGzOdbDaQCBTv+t6oLWwMo0lwqrf+KJbyRuFwIbUNPMRevMZa48s8Bg670fpjtXe7JdY
+         QeMnahz9JJpnd7KsTol0j2z9tmFY5fyQMo7NpGhkkhmV6VnsEe4zRezo0q+1t7LyuWVj
+         XeoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUhqOGtRhm7MV+NqeO5GrSQSxAAO/kcc4XXqoVCS8qI12ndjY2zCRygv70LCb2esJ+4w0JjN8BugQWm@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx1VQyL9jj9BgHoF1SnEEPds4MaQ3RAvtZAZ3L456jiPt7RHgqc
+	Me6j6daomsvjQi1Ioke5kky7LCmvMT5kiRwlGuSjECepw5S4Q3P4jLOTpMHx
+X-Gm-Gg: ASbGncsmJInrE7GEPt1czH/Df+PeAA14iJ8sw55os5qQAFRcHdxMxeqjzaD4JGa6H61
+	tEmZBv1f9KGq5T6C8vjL/SkAxGkaESucp9VJ4R1eAX+SnWhp2FL34EMZTkSfHhmjgUSpIe5ivws
+	0C9XtjCtMOMJ7Lj+A/XT0h7g+0UBUDSKbrf0T2rwLKg3xOoSXbdyaetttaYqZSKZXGpZDhdnwSL
+	mSK4GQkuHoY1SLTlTt3L4RLbdBo+ufIj/x3tzjF+aZOkVjfxNrh/2hdCZHPEAdcLi/py/m5VC2e
+	w75C7rR+Jxf2PEooSel7BcgWDLJ6Vj4bPz2qrhhCVRK6RllRFdZuryqJhIMG9M/SCllSJ6gbLSu
+	jmctqYC+C0I/P7mrE5VNuGQNF7nI=
+X-Google-Smtp-Source: AGHT+IFPZzFgALlgRXL53V1F4nuJumyPijThB62BcwxNiLZj9TZ85tqMnN8xvWT7OAcubIqDQb9ktw==
+X-Received: by 2002:a17:90b:3c06:b0:2ff:5ec1:6c6a with SMTP id 98e67ed59e1d1-30c3d3e8dd3mr28274066a91.18.1747113800248;
+        Mon, 12 May 2025 22:23:20 -0700 (PDT)
+Received: from [192.168.11.2] (FL1-119-244-79-106.tky.mesh.ad.jp. [119.244.79.106])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-30c39e607dasm8353102a91.35.2025.05.12.22.23.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 May 2025 22:23:19 -0700 (PDT)
+Message-ID: <c30a327d-c9bf-4683-b05f-588f5ff6ab3f@gmail.com>
+Date: Tue, 13 May 2025 14:23:17 +0900
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH for-next v2 1/2] RDMA/rxe: Implement synchronous prefetch
+ for ODP MRs
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ leon@kernel.org, jgg@ziepe.ca, zyjzyj2000@gmail.com
+References: <20250503134224.4867-1-dskmtsd@gmail.com>
+ <20250503134224.4867-2-dskmtsd@gmail.com>
+ <cdea578b-5570-4a8d-98cc-61081a281a84@linux.dev>
+ <b5560914-e613-499d-88c8-82f5255a1dd1@gmail.com>
+ <093ee42f-4dd5-4f52-b7a5-ba5e22b18bdc@linux.dev>
+ <e07e0ad8-32da-452e-809a-f3dfeb8b56f3@gmail.com>
+ <CAEz=LcutW6BZKB-Def3HmV=WrzjKjmAt_WnxPw3Yu45CoV0+Hw@mail.gmail.com>
+ <ad917c1c-2508-41eb-ae5a-8b4fcd97ca7f@gmail.com>
+ <c009c4e5-418c-444d-8609-0475f3864ed9@linux.dev>
+Content-Language: en-US
+From: Daisuke Matsuda <dskmtsd@gmail.com>
+In-Reply-To: <c009c4e5-418c-444d-8609-0475f3864ed9@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Calling ibv_advise_mr(3) with flags other than IBV_ADVISE_MR_FLAG_FLUSH
-invokes asynchronous request. It is best-effort, and thus can safely be
-deferred to the system-wide workqueue.
 
-Signed-off-by: Daisuke Matsuda <dskmtsd@gmail.com>
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
- drivers/infiniband/sw/rxe/rxe_odp.c | 84 ++++++++++++++++++++++++++++-
- 1 file changed, 82 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
-index 4c98a02d572c..0f3b281a265f 100644
---- a/drivers/infiniband/sw/rxe/rxe_odp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_odp.c
-@@ -425,6 +425,73 @@ enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
- 	return RESPST_NONE;
- }
- 
-+struct prefetch_mr_work {
-+	struct work_struct work;
-+	u32 pf_flags;
-+	u32 num_sge;
-+	struct {
-+		u64 io_virt;
-+		struct rxe_mr *mr;
-+		size_t length;
-+	} frags[];
-+};
-+
-+static void rxe_ib_prefetch_mr_work(struct work_struct *w)
-+{
-+	struct prefetch_mr_work *work =
-+		container_of(w, struct prefetch_mr_work, work);
-+	int ret;
-+	u32 i;
-+
-+	/* We rely on IB/core that work is executed if we have num_sge != 0 only. */
-+	WARN_ON(!work->num_sge);
-+	for (i = 0; i < work->num_sge; ++i) {
-+		struct ib_umem_odp *umem_odp;
-+
-+		ret = rxe_odp_do_pagefault_and_lock(work->frags[i].mr, work->frags[i].io_virt,
-+						    work->frags[i].length, work->pf_flags);
-+		if (ret < 0) {
-+			rxe_dbg_mr(work->frags[i].mr, "failed to prefetch the mr\n");
-+			continue;
-+		}
-+
-+		umem_odp = to_ib_umem_odp(work->frags[i].mr->umem);
-+		mutex_unlock(&umem_odp->umem_mutex);
-+	}
-+
-+	kvfree(work);
-+}
-+
-+static int rxe_init_prefetch_work(struct ib_pd *ibpd,
-+				  enum ib_uverbs_advise_mr_advice advice,
-+				  u32 pf_flags, struct prefetch_mr_work *work,
-+				  struct ib_sge *sg_list, u32 num_sge)
-+{
-+	struct rxe_pd *pd = container_of(ibpd, struct rxe_pd, ibpd);
-+	u32 i;
-+
-+	INIT_WORK(&work->work, rxe_ib_prefetch_mr_work);
-+	work->pf_flags = pf_flags;
-+
-+	for (i = 0; i < num_sge; ++i) {
-+		struct rxe_mr *mr;
-+
-+		mr = lookup_mr(pd, IB_ACCESS_LOCAL_WRITE,
-+			       sg_list[i].lkey, RXE_LOOKUP_LOCAL);
-+		if (IS_ERR(mr)) {
-+			work->num_sge = i;
-+			return PTR_ERR(mr);
-+		}
-+		work->frags[i].io_virt = sg_list[i].addr;
-+		work->frags[i].length = sg_list[i].length;
-+		work->frags[i].mr = mr;
-+
-+		rxe_put(mr);
-+	}
-+	work->num_sge = num_sge;
-+	return 0;
-+}
-+
- static int rxe_ib_prefetch_sg_list(struct ib_pd *ibpd,
- 				   enum ib_uverbs_advise_mr_advice advice,
- 				   u32 pf_flags, struct ib_sge *sg_list,
-@@ -475,6 +542,8 @@ static int rxe_ib_advise_mr_prefetch(struct ib_pd *ibpd,
- 				     u32 flags, struct ib_sge *sg_list, u32 num_sge)
- {
- 	u32 pf_flags = RXE_PAGEFAULT_DEFAULT;
-+	struct prefetch_mr_work *work;
-+	int rc;
- 
- 	if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH)
- 		pf_flags |= RXE_PAGEFAULT_RDONLY;
-@@ -487,8 +556,19 @@ static int rxe_ib_advise_mr_prefetch(struct ib_pd *ibpd,
- 		return rxe_ib_prefetch_sg_list(ibpd, advice, pf_flags, sg_list,
- 					       num_sge);
- 
--	/* Asynchronous call is to be added in the next patch */
--	return -EOPNOTSUPP;
-+	/* Asynchronous call is "best-effort" and allowed to fail */
-+	work = kvzalloc(struct_size(work, frags, num_sge), GFP_KERNEL);
-+	if (!work)
-+		return -ENOMEM;
-+
-+	rc = rxe_init_prefetch_work(ibpd, advice, pf_flags, work, sg_list, num_sge);
-+	if (rc) {
-+		kvfree(work);
-+		return rc;
-+	}
-+	queue_work(system_unbound_wq, &work->work);
-+
-+	return 0;
- }
- 
- int rxe_ib_advise_mr(struct ib_pd *ibpd,
--- 
-2.43.0
+On 2025/05/11 13:52, Zhu Yanjun wrote:
+> 在 2025/5/11 4:06, Daisuke Matsuda 写道:
+>>
+>> On 2025/05/10 17:04, Greg Sword wrote:
+>>> On Sat, May 10, 2025 at 3:19 PM Daisuke Matsuda <dskmtsd@gmail.com> wrote:
+>>>>
+>>>> On 2025/05/10 13:43, Zhu Yanjun wrote:
+>>>>>
+>>>>> 在 2025/5/10 4:46, Daisuke Matsuda 写道:
+>>>>>> On 2025/05/10 0:19, Zhu Yanjun wrote:
+>>>>>>> On 03.05.25 15:42, Daisuke Matsuda wrote:
+>>>>>>>> Minimal implementation of ibv_advise_mr(3) requires synchronous calls being
+>>>>>>>> successful with the IBV_ADVISE_MR_FLAG_FLUSH flag. Asynchronous requests,
+>>>>>>>> which are best-effort, will be added subsequently.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Daisuke Matsuda <dskmtsd@gmail.com>
+>>>>>>>> ---
+>>>>>>>>    drivers/infiniband/sw/rxe/rxe.c     |  7 +++
+>>>>>>>>    drivers/infiniband/sw/rxe/rxe_loc.h | 10 ++++
+>>>>>>>>    drivers/infiniband/sw/rxe/rxe_odp.c | 86 +++++++++++++++++++++ ++++++++
+>>>>>>>>    3 files changed, 103 insertions(+)
+>>>>>>>>
+>>>>>>>> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/ infiniband/sw/rxe/rxe.c
+>>>>>>>> index 3a77d6db1720..e891199cbdef 100644
+>>>>>>>> --- a/drivers/infiniband/sw/rxe/rxe.c
+>>>>>>>> +++ b/drivers/infiniband/sw/rxe/rxe.c
+>>>>>>>> @@ -34,6 +34,10 @@ void rxe_dealloc(struct ib_device *ib_dev)
+>>>>>>>>        mutex_destroy(&rxe->usdev_lock);
+>>>>>>>>    }
+>>>>>>>> +static const struct ib_device_ops rxe_ib_dev_odp_ops = {
+>>>>>>>> +    .advise_mr = rxe_ib_advise_mr,
+>>>>>>>> +};
+>>>>>>>> +
+>>>>>>>>    /* initialize rxe device parameters */
+>>>>>>>>    static void rxe_init_device_param(struct rxe_dev *rxe, struct net_device *ndev)
+>>>>>>>>    {
+>>>>>>>> @@ -103,6 +107,9 @@ static void rxe_init_device_param(struct rxe_dev *rxe, struct net_device *ndev)
+>>>>>>>>            rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_SRQ_RECV;
+>>>>>>>>            rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_FLUSH;
+>>>>>>>>            rxe->attr.odp_caps.per_transport_caps.rc_odp_caps |= IB_ODP_SUPPORT_ATOMIC_WRITE;
+>>>>>>>> +
+>>>>>>>> +        /* set handler for ODP prefetching API - ibv_advise_mr(3) */
+>>>>>>>> +        ib_set_device_ops(&rxe->ib_dev, &rxe_ib_dev_odp_ops);
+>>>>>>>>        }
+>>>>>>>>    }
+>>>>>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/ infiniband/sw/rxe/rxe_loc.h
+>>>>>>>> index f7dbb9cddd12..21b070f3dbb8 100644
+>>>>>>>> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
+>>>>>>>> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+>>>>>>>> @@ -197,6 +197,9 @@ enum resp_states rxe_odp_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
+>>>>>>>>    int rxe_odp_flush_pmem_iova(struct rxe_mr *mr, u64 iova,
+>>>>>>>>                    unsigned int length);
+>>>>>>>>    enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value);
+>>>>>>>> +int rxe_ib_advise_mr(struct ib_pd *pd, enum ib_uverbs_advise_mr_advice advice,
+>>>>>>>> +             u32 flags, struct ib_sge *sg_list, u32 num_sge,
+>>>>>>>> +             struct uverbs_attr_bundle *attrs);
+>>>>>>>>    #else /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
+>>>>>>>>    static inline int
+>>>>>>>>    rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length, u64 iova,
+>>>>>>>> @@ -225,6 +228,13 @@ static inline enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr,
+>>>>>>>>    {
+>>>>>>>>        return RESPST_ERR_UNSUPPORTED_OPCODE;
+>>>>>>>>    }
+>>>>>>>> +static inline int rxe_ib_advise_mr(struct ib_pd *pd, enum ib_uverbs_advise_mr_advice advice,
+>>>>>>>> +                   u32 flags, struct ib_sge *sg_list, u32 num_sge,
+>>>>>>>> +                   struct uverbs_attr_bundle *attrs)
+>>>>>>>> +{
+>>>>>>>> +    return -EOPNOTSUPP;
+>>>>>>>> +}
+>>>>>>>> +
+>>>>>>>>    #endif /* CONFIG_INFINIBAND_ON_DEMAND_PAGING */
+>>>>>>>>    #endif /* RXE_LOC_H */
+>>>>>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/ infiniband/sw/rxe/rxe_odp.c
+>>>>>>>> index 6149d9ffe7f7..e5c60b061d7e 100644
+>>>>>>>> --- a/drivers/infiniband/sw/rxe/rxe_odp.c
+>>>>>>>> +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
+>>>>>>>> @@ -424,3 +424,89 @@ enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
+>>>>>>>>        return RESPST_NONE;
+>>>>>>>>    }
+>>>>>>>> +
+>>>>>>>> +static int rxe_ib_prefetch_sg_list(struct ib_pd *ibpd,
+>>>>>>>> +                   enum ib_uverbs_advise_mr_advice advice,
+>>>>>>>> +                   u32 pf_flags, struct ib_sge *sg_list,
+>>>>>>>> +                   u32 num_sge)
+>>>>>>>> +{
+>>>>>>>> +    struct rxe_pd *pd = container_of(ibpd, struct rxe_pd, ibpd);
+>>>>>>>> +    unsigned int i;
+>>>>>>>> +    int ret = 0;
+>>>>>>>> +
+>>>>>>>> +    for (i = 0; i < num_sge; ++i) {
+>>>>>>>> +        struct rxe_mr *mr;
+>>>>>>>> +        struct ib_umem_odp *umem_odp;
+>>>>>>>> +
+>>>>>>>> +        mr = lookup_mr(pd, IB_ACCESS_LOCAL_WRITE,
+>>>>>>>> +                   sg_list[i].lkey, RXE_LOOKUP_LOCAL);
+>>>>>>>> +
+>>>>>>>> +        if (IS_ERR(mr)) {
+>>>>>>>> +            rxe_dbg_pd(pd, "mr with lkey %x not found\n", sg_list[i].lkey);
+>>>>>>>> +            return PTR_ERR(mr);
+>>>>>>>> +        }
+>>>>>>>> +
+>>>>>>>> +        if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_WRITE &&
+>>>>>>>> +            !mr->umem->writable) {
+>>>>>>>> +            rxe_dbg_mr(mr, "missing write permission\n");
+>>>>>>>> +            rxe_put(mr);
+>>>>>>>> +            return -EPERM;
+>>>>>>>> +        }
+>>>>>>>> +
+>>>>>>>> +        ret = rxe_odp_do_pagefault_and_lock(mr, sg_list[i].addr,
+>>>>>>>> +                            sg_list[i].length, pf_flags);
+>>>>>>>> +        if (ret < 0) {
+>>>>>>>> +            if (sg_list[i].length == 0)
+>>>>>>>> +                continue;
+>>>>>>>> +
+>>>>>>>> +            rxe_dbg_mr(mr, "failed to prefetch the mr\n");
+>>>>>>>> +            rxe_put(mr);
+>>>>>>>> +            return ret;
+>>>>>>>> +        }
+>>>>>>>> +
+>>>>>>>> +        umem_odp = to_ib_umem_odp(mr->umem);
+>>>>>>>> +        mutex_unlock(&umem_odp->umem_mutex);
+>>>>>>>> +
+>>>>>>>> +        rxe_put(mr);
+>>>>>>>> +    }
+>>>>>>>> +
+>>>>>>>> +    return 0;
+>>>>>>>> +}
+>>>>>>>> +
+>>>>>>>> +static int rxe_ib_advise_mr_prefetch(struct ib_pd *ibpd,
+>>>>>>>> +                     enum ib_uverbs_advise_mr_advice advice,
+>>>>>>>> +                     u32 flags, struct ib_sge *sg_list, u32 num_sge)
+>>>>>>>> +{
+>>>>>>>> +    u32 pf_flags = RXE_PAGEFAULT_DEFAULT;
+>>>>>>>> +
+>>>>>>>> +    if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH)
+>>>>>>>> +        pf_flags |= RXE_PAGEFAULT_RDONLY;
+>>>>>>>> +
+>>>>>>>> +    if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_NO_FAULT)
+>>>>>>>> +        pf_flags |= RXE_PAGEFAULT_SNAPSHOT;
+>>>>>>>> +
+>>>>>>>> +    /* Synchronous call */
+>>>>>>>> +    if (flags & IB_UVERBS_ADVISE_MR_FLAG_FLUSH)
+>>>>>>>> +        return rxe_ib_prefetch_sg_list(ibpd, advice, pf_flags, sg_list,
+>>>>>>>> +                           num_sge);
+>>>>>>>> +
+>>>>>>>> +    /* Asynchronous call is "best-effort" */
+>>>>>>>
+>>>>>>> Asynchronous call is not implemented now, why does this comment appear?
+>>>>>>
+>>>>>> Even without the 2nd patch, async calls are reported as successful.
+>>>>>
+>>>>>
+>>>>> Async call is not implemented. How to call "async calls are reported as successful"?
+>>>>
+>>>> Please see the manual.
+>>>> cf. https://manpages.debian.org/testing/libibverbs-dev/ ibv_advise_mr.3.en.html
+>>>>
+>>>> If IBV_ADVISE_MR_FLAG_FLUSH is not given to 'flags' parameter,
+>>>> then this function 'rxe_ib_advise_mr_prefetch()' simply returns 0.
+>>>> Consequently, ibv_advise_mr(3) and underlying ioctl(2) get no error.
+>>>> This behaviour is allowd in the spec as I quoted in the last reply.
+>>>
+>>> The functionality wasn't implemented, you added the comments first.
+>>> You're still weaseling when people point this out.
+>>>
+>>>>
+>>>> It might be nice to return -EOPNOTSUPP just below the comment instead,
+>>>> but not doing so is acceptable according to the spec. Additionally,
+>>>> such change will be overwritten in the next patch after all.
+>>>
+>>> Move comments to the next patch. In this patch, return -EOPNOTSUPP.
+>>
+>> Any opinion from Zhu?
+>> I may post a new revision to change the intermediate code,
+>> but the final result after applying the patchset will be the same.
+>> You are the maintainer of rxe, so I will follow that.
+> 
+> Thanks a lot. I am fine with your commit.
+> Please "Move comments to the next patch. In this patch, return -EOPNOTSUPP".
+> I think that it is a good idea. The final result should be the same. Please send out the latest commit following the suggestions.
+> 
+> Thanks a lot for your contributions and efforts.
+
+Thank you for the reply and support.
+
+I've posted a new version with the following changes:
+  - Added return -EOPNOTSUPP; (1st patch)
+  - Changed type definition from 'unsigned int' to 'u32' as you suggested (1st patch)
+  - Deleted redundant if-continue statements in rxe_ib_prefetch_sg_list() (1st patch)
+
+Thanks,
+Daisuke
+
+> 
+> Best Regards,
+> Zhu Yanjun
+> 
+>>
+>> Thanks,
+>> Daisuke
+>>
+>>
+>>>
+>>> --G--
+>>>
+>>>>
+>>>> Thanks,
+>>>> Daisuke
+>>>>
+>>>>>
+>>>>>
+>>>>> Zhu Yanjun
+>>>>>
+>>>>>> The comment is inserted to show the reason, which is based on the
+>>>>>> description from 'man 3 ibv_advise_mr' as follows:
+>>>>>> ===
+>>>>>> An application may pre-fetch any address range within an ODP MR when using the IBV_ADVISE_MR_ADVICE_PREFETCH or IBV_ADVISE_MR_ADVICE_PREFETCH_WRITE advice. Semantically, this operation is best-effort. That means the kernel does not guarantee that underlying pages are updated in the HCA or the pre-fetched pages would remain resident.
+>>>>>> ===
+>>>>>>
+>>>>>> Thanks,
+>>>>>> Daisuke
+>>>>>>
+>>>>>>>
+>>>>>>> Zhu Yanjun
+>>>>>>>
+>>>>>>>> +
+>>>>>>>> +    return 0;
+>>>>>>>> +}
+>>>>>>>> +
+>>>>>>>> +int rxe_ib_advise_mr(struct ib_pd *ibpd,
+>>>>>>>> +             enum ib_uverbs_advise_mr_advice advice,
+>>>>>>>> +             u32 flags,
+>>>>>>>> +             struct ib_sge *sg_list,
+>>>>>>>> +             u32 num_sge,
+>>>>>>>> +             struct uverbs_attr_bundle *attrs)
+>>>>>>>> +{
+>>>>>>>> +    if (advice != IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH &&
+>>>>>>>> +        advice != IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_WRITE &&
+>>>>>>>> +        advice != IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_NO_FAULT)
+>>>>>>>> +        return -EOPNOTSUPP;
+>>>>>>>> +
+>>>>>>>> +    return rxe_ib_advise_mr_prefetch(ibpd, advice, flags,
+>>>>>>>> +                     sg_list, num_sge);
+>>>>>>>> +}
+>>>>>>>
+>>>>>>
+>>>>
+>>>>
+>>
+> 
 
 
