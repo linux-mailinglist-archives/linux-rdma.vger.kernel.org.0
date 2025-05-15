@@ -1,94 +1,103 @@
-Return-Path: <linux-rdma+bounces-10361-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10362-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D96E1AB8A8B
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 17:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B2A8AB8E89
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 20:09:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 849023BA6C0
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 15:19:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3E90A07712
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 18:08:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49D8A215198;
-	Thu, 15 May 2025 15:20:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B202525B1E0;
+	Thu, 15 May 2025 18:09:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lg/u3Pty"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mgTeyS0n"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0146818FC91;
-	Thu, 15 May 2025 15:20:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60BAA1F4C96;
+	Thu, 15 May 2025 18:09:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747322403; cv=none; b=nl5G/Dl2LE40cEDG9q4Ch07HGl3GHDq0tqHbK2nxHvsZUAGd14lm48TKsMiyDRuinHghU3gI3bjlfd35krjP7chNFwRZZKVmqjUy0VoKQW1uXVK3h/PwhrqUzxn5MHn7XvaOX6HUn4JEveH8SqH+dnUaVkaPDK4SEzRRk0Da5ww=
+	t=1747332544; cv=none; b=PTqkWbFZhDw0Vlg5AAhdOt27LtB9REmk28sA3JaKKeELXolmWLjumct29JbZAq0YvVOvzxr04JYiB0ez1J7MlT+BIaFzDtG/tVqth7YfwqpXvOvOhJ8WYeLe0yKVqbTIRFfdFPcP/HSADirnv/ejw0qSYtZdJck4AvZFNNfetyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747322403; c=relaxed/simple;
-	bh=SBgb0vTlu2RtuW96PAdlVVB6BgteIAVWl6pfUjNz1v8=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Tz7lg1AR1CNY8HkY5Yvp1aKAPeU8ph4nh4UXa9+kNCD1s7h04zHS//jQlNqpnZ8EZntUULymmyfmV99T8gyClNzh4ZTp+Vfgm/69vCZJb4KRFWunerfbJqa3uh3DCaKlKTafGYZ7ugHleJ9KHvGPo1ZAEpA3Fz5G9lX/aahg1Mk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lg/u3Pty; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 696A0C4CEE7;
-	Thu, 15 May 2025 15:20:02 +0000 (UTC)
+	s=arc-20240116; t=1747332544; c=relaxed/simple;
+	bh=EMbkV613PdDRHIH0TklJGK8IdRcNls/AaRkWvfzUGpQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fLphbU13iFSvd2LMNBIDKl7G7gl3F1ws1qm3ymYOm8TO7zTgNKMWICYfkC+PsvjQWjUvGpkNRG5lkWiL084KhMfmrAI4RtWj+BcpJ0Pv7uKJD7dHigq8GVHRHEcFc66dcgUwVIwlfaGCTerbK1TOWXR+9TUB1XehLDmc0T2ubS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mgTeyS0n; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BBDBC4CEE7;
+	Thu, 15 May 2025 18:09:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747322402;
-	bh=SBgb0vTlu2RtuW96PAdlVVB6BgteIAVWl6pfUjNz1v8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Lg/u3PtybrRTpI6u2kIoLESoUYc/WP1G8UP5ih6JsdCP1tWeZbTPGEoOKwCmeEAU+
-	 IzvzUygvw5Ir5kTXOBE56761f+GGyy8KHqNtixosm3ZNcDv+LlcWO3W2UcCxJJ+/hW
-	 B5hubuV0m+1qNWTqnuj4bTnxyAJfGH7qRci2GiyHvI3JAdU+/YEFy7/M5gLuj0F/Xd
-	 d/23+xELdYcNW8uQ+eqFG/zN8eb6gaq1wxmdVCJ9zco1cqG+wpmyEvLWwU1lHjDfqj
-	 +3pW6XuufRDjWtjB3onUdcAoPsCm7naK76PsfpO1iW6BdDxqyVsgcoUEBiQ4OGDhFx
-	 lQosL80O9vPjA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADFC73806659;
-	Thu, 15 May 2025 15:20:40 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1747332543;
+	bh=EMbkV613PdDRHIH0TklJGK8IdRcNls/AaRkWvfzUGpQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mgTeyS0nRo/8GGQox7waepWvBt89X11Tjc4IIkuPLN0GqeY5JaU0dP3ym2OYbstyL
+	 hPFl1HqPwySKYVlNGI38eFb3BPYb3C2/AcLkuR50wXRdHE08PjpxH9cqqp+Mas8EYK
+	 myf9BJtwv/4ZVcfwyLFJvrIrIAML+DPXg8il6uwFuWTw6hOY1VNhSmZOBCVAOktZe5
+	 jIGzEPHRseWZPp8ondAPHuPX3YYAZUytRpBBj/4SyF2rV8x/Ga8V0gNi+mZuNkdA/z
+	 rU46XFYpoJRDo7+XpyKuN9P7N0Qyw6cTd0saAbr5xlcFyL2S1yity0q4TbtzPQ+f7d
+	 z44zZxxq4c07w==
+Date: Thu, 15 May 2025 11:09:01 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-sctp@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+	Sagi Grimberg <sagi@grimberg.me>, Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH net-next 08/10] net: add
+ skb_copy_and_crc32c_datagram_iter()
+Message-ID: <20250515180901.GA1411@quark>
+References: <20250511004110.145171-1-ebiggers@kernel.org>
+ <20250511004110.145171-9-ebiggers@kernel.org>
+ <20250513144154.49f8faaa@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2] net/mlx5: Use to_delayed_work()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174732243949.3145583.8227565924121305936.git-patchwork-notify@kernel.org>
-Date: Thu, 15 May 2025 15:20:39 +0000
-References: <20250514072419.2707578-1-nichen@iscas.ac.cn>
-In-Reply-To: <20250514072419.2707578-1-nichen@iscas.ac.cn>
-To: Chen Ni <nichen@iscas.ac.cn>
-Cc: saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250513144154.49f8faaa@kernel.org>
 
-Hello:
-
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Wed, 14 May 2025 15:24:19 +0800 you wrote:
-> Use to_delayed_work() instead of open-coding it.
+On Tue, May 13, 2025 at 02:41:54PM -0700, Jakub Kicinski wrote:
+> On Sat, 10 May 2025 17:41:08 -0700 Eric Biggers wrote:
+> > +/**
+> > + *	skb_copy_and_crc32c_datagram_iter - Copy datagram to an iovec iterator
+> > + *		and update a CRC32C value.
+> > + *	@skb: buffer to copy
+> > + *	@offset: offset in the buffer to start copying from
+> > + *	@to: iovec iterator to copy to
+> > + *	@len: amount of data to copy from buffer to iovec
+> > + *	@crcp: pointer to CRC32C value to update
+> > + */
 > 
-> Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
-> ---
-> Changelog:
-> 
-> v1 -> v2:
-> 
-> [...]
+> When you repost please toss a Return: statement here.
+> kernel-doc -Wall is complaining
 
-Here is the summary with links:
-  - [net-next,v2] net/mlx5: Use to_delayed_work()
-    https://git.kernel.org/netdev/net-next/c/ee39bae6c141
+I'll plan to fold in the following:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+diff --git a/net/core/datagram.c b/net/core/datagram.c
+index 3599eda959917..fa87abb666324 100644
+--- a/net/core/datagram.c
++++ b/net/core/datagram.c
+@@ -538,10 +538,12 @@ static size_t crc32c_and_copy_to_iter(const void *addr, size_t bytes,
+  *	@skb: buffer to copy
+  *	@offset: offset in the buffer to start copying from
+  *	@to: iovec iterator to copy to
+  *	@len: amount of data to copy from buffer to iovec
+  *	@crcp: pointer to CRC32C value to update
++ *
++ *	Return: 0 on success, -EFAULT if there was a fault during copy.
+  */
+ int skb_copy_and_crc32c_datagram_iter(const struct sk_buff *skb, int offset,
+ 				      struct iov_iter *to, int len, u32 *crcp)
+ {
+ 	return __skb_datagram_iter(skb, offset, to, len, true,
 
