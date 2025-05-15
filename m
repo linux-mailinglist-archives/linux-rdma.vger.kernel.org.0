@@ -1,90 +1,79 @@
-Return-Path: <linux-rdma+bounces-10368-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10369-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6273AAB9099
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 22:12:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B4E6AB90CE
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 22:31:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3DEBC7B7210
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 20:11:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B99A71BC0FB9
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 20:31:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66FA828A1D1;
-	Thu, 15 May 2025 20:12:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11E121E1308;
+	Thu, 15 May 2025 20:31:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eVlfuHKg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vMt/a2fg"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14F4E282F1;
-	Thu, 15 May 2025 20:12:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C159E185B67;
+	Thu, 15 May 2025 20:31:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747339970; cv=none; b=UUcVm54BwOGn4+jLULYBQ3jkG16Af3i9ZiXYR76cn0nGQeMz2U/l9/l8bAt4qlGAvcOciaDOucZV+IDKjfyJKKuEjtxtoLg1p6hy3+XXod6WyJ/QAHQ12LXXjWOCBw1Bhc1oBeSqG5VJPVMTRHwU5QjDvTxogXPITLfwmSEtQKA=
+	t=1747341085; cv=none; b=G4G3E7HscXNxR5opT/aFuOuu4UoOs+5K4QNlixsLBLn2/W9pGkAVLL2t1GsseOewYbQ7pm7O/Z+PzkJ1R53pUfUQ6/Z8oUEIKgBsxODRxkRALc/2NRrlBXL63GVc9R9DCMr0zQW+sh7QM5bRGlHb88qOiu4gAQEiQqSAbBzYYj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747339970; c=relaxed/simple;
-	bh=fGPTYiA6cdbBydyA22vKFEs2piBzXgBhEu5Frcpbros=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j2YeV/wb4rph7TsBhYB6OWNNk96llTJ47I7OmW2U9fH/Fv/FAYec3vb3RQ0Vb7b35yZ4ej9vuBMVM++KDriJT9tuOMswlM01nn8vuad9g7bo3Z4HFiXd99j2GD4R/9n2gkXNb9s2xx764FingfcHkmnaqLBhNBAqbRWKk36rdJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eVlfuHKg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E22F1C4CEE7;
-	Thu, 15 May 2025 20:12:48 +0000 (UTC)
+	s=arc-20240116; t=1747341085; c=relaxed/simple;
+	bh=RV6stD2Wceg12X5UtH4xHMEe4GMnrSLj7LVhBEPjZkA=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=soRva4hRxHSkwSOZsmdEkiVWKYY1YxqDG2Ar1RjtGKY2zkhVmzDUGRmUGQKgDD2K9BUdH20ryfDJ7fXuvrYDdfcYsVcwQF+WbPJJ1+VHQ25bUc8F0GQOg8oBIH24lMeG0OUsliVAdAeMgfbaMTT25eN7Uj+vFoWBZpEajLnH1UM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vMt/a2fg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29ED8C4CEE7;
+	Thu, 15 May 2025 20:31:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747339969;
-	bh=fGPTYiA6cdbBydyA22vKFEs2piBzXgBhEu5Frcpbros=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eVlfuHKgjAfU5NWY8AgjXLeWjafxAwEFhJBl5HWk1jgr7/FqCdrcDoxZ5UpRTrIVx
-	 tFOeGFiM0DfmxTyQbGMKHB/5Lg0mpryUEwoTQMVe/dx5w0m/bkNV94/HxC1RRzHNg7
-	 OabmtMEN2j/tIV+ugY/gBAe6F+9Qmb+YpJ3vKYOug9Eu3adVO43emVVAXRhQ0dQD2c
-	 sRSLixA8n+IvpBFntjGRERkUn3e7eg2k1JbSRCF7kugaoCcadw8vdLRG1M1vZyLVAi
-	 lhsvKhbttP/uvfXmt3MUTcSklnUou90moJEaYY4jKLScbZsQRNagW3+Q4XfM9mfZL0
-	 RCIw2ZZXatXbA==
-Date: Thu, 15 May 2025 13:12:47 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Bart Van Assche <bvanassche@acm.org>
-Cc: netdev@vger.kernel.org, Bernard Metzler <bmt@zurich.ibm.com>,
-	linux-nvme@lists.infradead.org, linux-sctp@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-	Sagi Grimberg <sagi@grimberg.me>, Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH net-next 04/10] RDMA/siw: use skb_crc32c() instead of
- __skb_checksum()
-Message-ID: <20250515201247.GM1411@quark>
-References: <20250511004110.145171-1-ebiggers@kernel.org>
- <20250511004110.145171-5-ebiggers@kernel.org>
- <69341806-3ffd-41f0-95d6-6c8b750a6b45@acm.org>
+	s=k20201202; t=1747341085;
+	bh=RV6stD2Wceg12X5UtH4xHMEe4GMnrSLj7LVhBEPjZkA=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=vMt/a2fgGrN4KXQ3ROwyBarxRpnSGbel2UlCuLKjQ5jPK7Ffn7kQCkRC3Z5Qtx1FV
+	 lMyCRn3pgLsV7NJDlHUgGvLWPYcvYlHqjb/5cfkry4Db2VMpPiSbQ0T8428pbBBiUk
+	 YAemLxvyjQKBltPryme463j4QFQCyaX74ptY2GJ1/hy2XUPcQsE0tNXGQAK7d6+UOb
+	 RZXsMtZ69zI8L7SU0CkoiRdwHCfVe+bNMmtPrAZKM7wyb1lrMHmtbDMbOciRnOopaX
+	 W7l15rwHw0/Y8l7oqIamyz1JnyqyS+IsKoNRNVFaXEc43Vu9gkixHxJyI0NqxhSZGn
+	 P7Tus0sBYwYNA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33FD23806659;
+	Thu, 15 May 2025 20:32:03 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20250515191213.GA612809@nvidia.com>
+References: <20250515191213.GA612809@nvidia.com>
+X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20250515191213.GA612809@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: d0706bfd3ee40923c001c6827b786a309e2a8713
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4d0be1aa26b7dba4960c37d9f8d695eb513bb04d
+Message-Id: <174734112177.3241512.2020572692437195548.pr-tracker-bot@kernel.org>
+Date: Thu, 15 May 2025 20:32:01 +0000
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <69341806-3ffd-41f0-95d6-6c8b750a6b45@acm.org>
 
-On Thu, May 15, 2025 at 01:02:20PM -0700, Bart Van Assche wrote:
-> On 5/10/25 5:41 PM, Eric Biggers wrote:
-> > Instead of calling __skb_checksum() with a skb_checksum_ops struct that
-> > does CRC32C, just call the new function skb_crc32c().  This is faster
-> > and simpler.
-> Bernard, since you are the owner and author of the siw driver, please help
-> with reviewing this patch.
-> 
-> Eric, do you already have a test case for the siw driver? If not,
-> multiple tests in the blktests framework use this driver intensively,
-> including the SRP tests that I wrote myself. See also
-> https://github.com/osandov/blktests.
+The pull request you sent on Thu, 15 May 2025 16:12:13 -0300:
 
-No.  I'll try that out when I have a chance.
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-If the developers/maintainers of the driver could help test it, that would be a
-lot easier though.  I've been cleaning up the CRC calls across the whole kernel,
-and it gets time-consuming when individual subsystems insist on me running their
-custom test suite(s) and providing subsystem-specific benchmarks.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4d0be1aa26b7dba4960c37d9f8d695eb513bb04d
 
-- Eric
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
