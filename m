@@ -1,220 +1,194 @@
-Return-Path: <linux-rdma+bounces-10364-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10365-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF194AB8FBB
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 21:12:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B03A3AB8FE7
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 21:22:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 266631BA3974
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 19:12:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0641A06B13
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 19:21:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04E6A28B407;
-	Thu, 15 May 2025 19:12:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 486BA297107;
+	Thu, 15 May 2025 19:21:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="I/Qf9Zm9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NyMuVjVM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2056.outbound.protection.outlook.com [40.107.244.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27582259CB9;
-	Thu, 15 May 2025 19:12:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.56
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747336340; cv=fail; b=lpA+KR6QT9bIoAIesD4HsGqUVZxyt1svBGKoJH4+gOWo4YJ/+CNns024wNWsJL50b9xw0e6TEziqFCr2m74JNu2Bb94noo0vUqX8QzxKir3zJJtQ75NN/xSpgIfvERvlH+Lv299o/8onc5BznENR5a62hSmw5hooitMPZP9OZqE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747336340; c=relaxed/simple;
-	bh=Q5lq4Ey9/CKs0MX7ENVarOVWqHrP+uctE450JXthzR8=;
-	h=Date:From:To:Cc:Subject:Message-ID:Content-Type:
-	 Content-Disposition:MIME-Version; b=baqwWzPmADCxpCFSGVYYUFWAP4ING9z30vug6SA8Jx+F7Omtk7r/acOPHMJ2IKf1Eh/7WM5nNB/Fmt8Pe9V9eoL4+VH+sRlH4MIT/ozHVr5ehadnurUjXbzTaqn9Pop8oAPmaV2c/eQxLxNux9R9nB+GMb7oKZ0EfCZdZmBYooE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=I/Qf9Zm9; arc=fail smtp.client-ip=40.107.244.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=tZLQdwSvtOUk6nK/Dn1NJ8pWbmZI7b5M4smw0vw0yWqjZgNE6R7yukmSgqFH7ngYCy6f/xyMU+6xh7KMSgNROnDZYK/Zo2EwVjxGCOKz6d7t+O0TQtWy4OCWJtazd4ZgVpBrQ9D7rSERSjwdP7P8r/mLFu7hNIm2ZwsWzWqb0Oke06hKn3PPgOwMsQTr50y9h5DAGaLTIrBpjtxaBgGmAEA3FkfjJrYfdvY2wifxw6bQgwORtOrbfNEj6EOYqfJMZofkEbqiZ4BJT6xUfNf6M7JrrLw87PMjp7rhW+KPxGsVAD0BaZfzGiQEOKagz6RSU+3dOAnWeUXzZVz4IawOmw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1uEi59CDg/p/U/9k8FDw7uNf8/xnKxvvAZeRj/vi36M=;
- b=YF+a9n1QXc0iULCSpd8t75vxbXIEQWslbQUnYkCAMo4C2YnG/vVqYAtheOPE4mgnB64XTarGFOJGY0M+7r1yyr0QwhDX9fO5h6Eqg9AhUEF1ZPwr2+wyZrGgDTIYB1mkd1aKsmZa5mK8HDQXbP0ortLwrz5NvUT2Yjw0+8CGaW3/DYabLvyU/c02ziGxQviIDOZfU/aR4VQQommrVLqpklAxbG9xcFZCqH8Oqm5gJw+mjSIzWMz34b0BBKbmBTiktN0OnU5syiD0eIVLZ8b8+9Gm/PiA7z0uQ/yjbEOsJIvfL1NPdve/eURG8Y5a1nFqTXanVxNnHItZ++E9ETH8Ng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1uEi59CDg/p/U/9k8FDw7uNf8/xnKxvvAZeRj/vi36M=;
- b=I/Qf9Zm9u8ArLG0bsVgiy+AkrSC/ChmiQTo2l/G65mNISdvJqO/yxRxjuWUtoR993dm41d4u++KCVIdmiiQHO3i5c2KKtIYj0DytDizF7B9HI+rBN3B/K0JUrLM0YDTT1lMJWA39bY70+CK3eWBGQsyvo5Nbbe7Na0Hy01ZmnAfNTR4UZAm0FAXNfGny7X8D/7BzEfQCDtcPbg5zffPBuqZRlNcRqPjnYmbqNUDBc6yhDQ6iWiwnGgJKPZegAF8qfBjOggfEUpBgoU4DBme+UMXVfN9ZPv04PpBuhPCuf9BXsa4HDwnv3f6fFD2MrN7jd0GHsyxiZ/8BJmC5HUZe2A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
- by MN2PR12MB4453.namprd12.prod.outlook.com (2603:10b6:208:260::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8722.32; Thu, 15 May
- 2025 19:12:15 +0000
-Received: from CH3PR12MB8659.namprd12.prod.outlook.com
- ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
- ([fe80::6eb6:7d37:7b4b:1732%7]) with mapi id 15.20.8722.031; Thu, 15 May 2025
- 19:12:15 +0000
-Date: Thu, 15 May 2025 16:12:13 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Leon Romanovsky <leonro@nvidia.com>
-Subject: [GIT PULL] Please pull RDMA subsystem changes
-Message-ID: <20250515191213.GA612809@nvidia.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="nrmCbAKEYJqGwNX4"
-Content-Disposition: inline
-X-ClientProxiedBy: MN2PR15CA0029.namprd15.prod.outlook.com
- (2603:10b6:208:1b4::42) To CH3PR12MB8659.namprd12.prod.outlook.com
- (2603:10b6:610:17c::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40165DDC1;
+	Thu, 15 May 2025 19:21:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1747336908; cv=none; b=Z91QuctkTyuh5dyy33w5M5UueZIJtWjBr3GwmxgaRhx7XaVjR2SaheTVzD3cMxjllBgraZVNeKYJ1zn+fXjJDDGFFg0RXI1MpIrkwR/Q19NfYslMvqDrBC7qpu6M+1NDFI/BBvyK0KVxyuxW/8nyGW9jDJQ/HBmprhDDkmH9El4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1747336908; c=relaxed/simple;
+	bh=9Fovz36nZ5hdCxHe+hSpR4ZB5DBL38AjU+XU381hyz8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=uprcJJ74bW1yGfKLYXChrODJJF5iUv6lhelutYTLrW29+J1fBC/RtNPmpnbZpgOIQs7THApRWXMaFaOgbdfk66Owm44vI/DXofAuxWgiPybfHIfot2PeSIBateGH6+0F3vpdgGhlUdJSs8vFvmnmvVS9jpr1mKwXvFMr+BIU2Yc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NyMuVjVM; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3a0b9e2d640so1119450f8f.2;
+        Thu, 15 May 2025 12:21:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747336904; x=1747941704; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mDgKha8Mvg0JAQ/SjGW3x+GqfdnE0RD9BNggcIcuKkc=;
+        b=NyMuVjVM7caMZLMF5lgMPWARU/VrG3D7ddKMeBMhmOSOC1Xc05vzSFPrk+wACU9w64
+         U0c9/R36iXeZrnZ3gInQJ6zAJ5va76cloNv/vGimMM7sFO7VonMylL9MTe0QSqvLT2OQ
+         j9XsxdcLoRMLx75SnZmNZ79duiSqchqR9gRG4R61CLL+chQ9swuzn7k/qwpRymUqf2Zl
+         ufW2pXYWgDBhny6sMzICCjXuUaD4Vv+y03CSasaC21O4LyzIF6hV4sgaczNIgCx/yit/
+         LWvYYeI1baLu1TEZ02nUrTO0Qmcnlm39KSN8VUBkYVt9NsmLBYHfxaDHKNmfTpRHsO8V
+         9Rkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747336904; x=1747941704;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mDgKha8Mvg0JAQ/SjGW3x+GqfdnE0RD9BNggcIcuKkc=;
+        b=cdMOGE7SdywlKMLpGQsJoM7D1jKpBkqZAcdhcwc10JKPdob1sf74EaSAzRqxsWlQ2B
+         QlrezEAsSwYCf27+XO/8G0rIKy1Hdi+AnKZ/r0/9McPelgCflsugrJ5P0zYgVqwBgg8/
+         Rb4cElQwQSeTXcuv6Cf1p0MNwsr0WyRZwlA4ZZLzs9J07Qh2EImW5ZE/gAtgXYSg2x6s
+         CTpBNjyodm0rVKyLtPUikVCUYZwU1MZGvjzt0J0qQ63Y3VKzvi1q2kdHeArvxVKrqbNd
+         PKd/P6QJ4zuQKBaraynr7AAxo+tQ+mjLF92zJCGGVYq8G5fzFeEdMPQalHN8xFf/nc9Z
+         1CSw==
+X-Forwarded-Encrypted: i=1; AJvYcCU9SLNtytzlTLcDe6B6J5WwdXxfNJ5N1sRITPTiQ48bCRoyORP5YB+tvzE2z6z3arz+v4x+kYo8H+eB3oY=@vger.kernel.org, AJvYcCULao2lgvf7bySHvR+enuNRBkO9LfHbSlGzwx3MwU4amaUxoCsquxG/u29jHmX+/cMSGfu0C57U@vger.kernel.org, AJvYcCWVYKHDUi1Yhq9cYnJkJSRckQyDhgpnLevpggJnrkQoWNEXyejXRl+BgNJJPnhhqb59mlgGNJ0sM5gdfA==@vger.kernel.org, AJvYcCWiqgkfd/xtxiLXUgqJ9PogeCS0kR1HLFZ/0Jx2Jkmctg/rydZ+qmy/gVke98xzbUqYercNXuq1zNIK6Q==@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywk3RBRi0yPc0LntRr8IKAdkRTmmAlcov68h48pLj+x5ycPbKCa
+	zAmtwu/WkLmVRT9yGqHEdNekuvGrslRFZZIXQ4JbMgpHZcbT3MluAQUgAa17Kg==
+X-Gm-Gg: ASbGncuOMR123namNxO3wvL6hvLSwpTu2YuZjcjGK9Z2cEVJ95We9bM9dsqf0Agle7i
+	FRTtP+zCMYoosc0Y4ydFY0C/wvgBOKC6UpG2b6K42jQ4f86JSBHZHWJaJ55MNBr7D4eGNy6bhD1
+	+Qx6wHtyLU105GnTg2EtM+leTq0BmPw+9we2NecUHM/Lju1f7kam61z7zTppGz/m1d91vTxu5nd
+	SWkFy4wesFo4PPxrEKt3gDywHdQdM+8oS7y+gixg9rUka+8d9JOG1YX16kI6FmzPV/H+cEZ0tUj
+	bh1iIckJ+ec74craZf6gLgbnGto6O+5OZ/91sqI+QhhNbmi8v/TmnaqfnyAErMgpNk/3xrhy1b6
+	IMe7eWPiNed273Q==
+X-Google-Smtp-Source: AGHT+IEErv75ySz7SPIWQxReFuvVqrBn08S2Tj1lWQLN0bVqYJE1NAor3PrV0mVxMNg0j179PRXNjQ==
+X-Received: by 2002:a05:6000:2af:b0:3a0:ad55:c9f2 with SMTP id ffacd0b85a97d-3a35c808d10mr1223950f8f.1.1747336904253;
+        Thu, 15 May 2025 12:21:44 -0700 (PDT)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-442fd583fb7sm6501185e9.32.2025.05.15.12.21.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 May 2025 12:21:43 -0700 (PDT)
+Date: Thu, 15 May 2025 20:21:36 +0100
+From: David Laight <david.laight.linux@gmail.com>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+ netdev@vger.kernel.org, linux-nvme@lists.infradead.org,
+ linux-sctp@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+ Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, Sagi Grimberg
+ <sagi@grimberg.me>
+Subject: Re: [PATCH net-next 00/10] net: faster and simpler CRC32C
+ computation
+Message-ID: <20250515202136.32b4f456@pumpkin>
+In-Reply-To: <20250511230750.GA87326@sol>
+References: <20250511004110.145171-1-ebiggers@kernel.org>
+	<b9b0f188-d873-43ff-b1e1-259e2afdda6c@lunn.ch>
+	<20250511172929.GA1239@sol>
+	<fe9fdf65-8eb1-4e33-88ce-4856a10364b2@lunn.ch>
+	<CAMj1kXFSm9-5+uBoF3mBbZKRU6wK9jmmyh=L538FoGvZ1XVShQ@mail.gmail.com>
+	<20250511230750.GA87326@sol>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|MN2PR12MB4453:EE_
-X-MS-Office365-Filtering-Correlation-Id: 10f70cd4-635d-4396-cdce-08dd93e46744
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?Nov3GYrm3GBGwd/z+X75gFKNxKZUYyb8w9/q1TcKCvQOoEOO6PgAGqICU4QD?=
- =?us-ascii?Q?+ahP72PCCvXN2Bs+85ENopzt2X9kpWxIMp+phAgpJ2RDh4dQGjMCpIZod4MS?=
- =?us-ascii?Q?2DzDTuWnCQ6JGQLB1Tz15j/h2gdaR6CZu5RlZel+Bs2q+JLYWhrHBL2+JQru?=
- =?us-ascii?Q?ydhddqeo81vALbnttpzCB7j8QL2lx+MN7CidVkGjxrlx96qGIj8nUt4J1873?=
- =?us-ascii?Q?0MMUuZqdhu4OKB1HbESBkiWGaq1MlpZbRhXPpJICdjr+NadfYT3i4cEcsNR0?=
- =?us-ascii?Q?tqLGUeBauTQ9AIcjNYaXM+9nCq4QSWEoDHlf2GEJCfsNVbnuNN8yLSFhYDhp?=
- =?us-ascii?Q?mXqn3G3ny07aMX72JFJinViFNjRGfAiR8xOvB37CRmRCPitSxS/TNhGNGNuu?=
- =?us-ascii?Q?ebMP14VZ6qR+iIEPiwQQTlhOnyViSk9BpJ8Mp0oxQKTfgGgC/ln/y1A7hjHC?=
- =?us-ascii?Q?E7vTk4W6C+qVN4BMjAits1XaU762Mp8Cf5xJtreY/UbkkeWSuYGCc5eq9vC/?=
- =?us-ascii?Q?zsB+o0QfeV1b0H3v+Sbqni8UGgY63uqAWmgfaFsCsll0FEzA857bI97ktcsv?=
- =?us-ascii?Q?XDfoP19Q8Nj9eDtZPw8lZ17l+oCQYllHgE+nBQbEyu+Lk3cbY1pEunO1fu8U?=
- =?us-ascii?Q?rCVtpJt7wQ/ZdUIqk1rlGOp2EiIDOvb8P9UtOGxh+1BdTgD4xGq0zF1K002w?=
- =?us-ascii?Q?ZfRUY8fLWg4NkmCa67Fm5w+JxahFyt1dznVqRYwAKuPjhXRPekJ9cUUbvddL?=
- =?us-ascii?Q?l4mpaVYJ5R5rYD2b6LTED4JjAbenV4x1bjSsWdbtT85gxfnyTCxtWt7Xqijk?=
- =?us-ascii?Q?HjnBKtKtwwP2+T8scOLTm7vS18IsP6V+UtpkHB0F34eFHvJqqB+uwaMV0hpn?=
- =?us-ascii?Q?dERqfMm8IJJfcgxph0M1E8LhmJvD5b4ovXKwNLGPwLbOocQ4HRmLYg3nDJRX?=
- =?us-ascii?Q?SbGeTZ7VM9KE1PqEcL44lCA+vocpNQD95qVSxm++oK9iRK2uTkOOpUPmMXI9?=
- =?us-ascii?Q?wlb5YrZ3kdwnfROfwOSk1NOu6lKu5/HwYAMelK53OlOyKQhLabHDW0aP9WU2?=
- =?us-ascii?Q?YCkqA1y3W2yK23qkylOtqEOve4gWl6MXLb0Cpt9tY4N+fPvDZ8nTwDgSvKds?=
- =?us-ascii?Q?sLRCCGbhFmQKqSemrI1Xepv4gGcWBzrVW/V0S8oKzScm5Qljho/IWrfRIaY6?=
- =?us-ascii?Q?NuUuh6OKGgwdT9Sb1WRhuv1z8dK4zFKVKzQyQuJa/xiO8zTerqHaWLIevUis?=
- =?us-ascii?Q?XwZDe3PkNc50ORUNWZZnalXjx3H1Er9W14XLmT8/DgFdPSGUMNEjPRYomS6c?=
- =?us-ascii?Q?4Rtt/bfs1jz8meL2i4casuSwJnen7Q7gm9sdNR7ZqcqMhR8/Bw6oYEhzQKhx?=
- =?us-ascii?Q?DCy3UUe2f4/mCN/kHd8P5QhFlfPilveDWtGeNmHy/G4svZ3uvLXzLk4MZAq6?=
- =?us-ascii?Q?5GqA239UY/E=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Hac44iVkrR76a/jGxTkPOPy9b85e15Y9tQJ0gtoScAY5z6DVDvZM7CRaXDp/?=
- =?us-ascii?Q?voTDC+3tRUmnOWYcpmPinsyZnV9k5Iw7cAE2O0rlK5/FRpLqyisM/OrxvoQB?=
- =?us-ascii?Q?cD5yY+aB6lQwTVi9WW/khfXIF6mWba0r7ON60htz2n0YB84+BXZxY8AdCR0A?=
- =?us-ascii?Q?HtEtJSmvdmgDt/xJUu7bTAbhHNJT1SFVSkhuSMnX98gV44EOY/fA9k0mSIej?=
- =?us-ascii?Q?ujQ8LDeUa/nxyeXnlHzS8LpNVf26pIxXD2UPpCPvBXNliqp4ePv/KD/JvqAw?=
- =?us-ascii?Q?kSSzURyRzMu+7f0CIXaR0Yvpu3iXNZ82oEir1ihjbXCInE8zlihudlWf6ifV?=
- =?us-ascii?Q?HSjYuTFZVBevzrAX47PyyfHt2XWyQVMkwqQZ/iSJXtQb4LDZPxAG9s/6iAmg?=
- =?us-ascii?Q?wtd6NMmEpy8AaE2vYbEnbTScAgEYxj2btpGHV4IjmvSUNfBEPOehzAY+iv5M?=
- =?us-ascii?Q?MCWhJq/0PFWeYDL6WvHbVp0WIbZ3yKDrGzYZS7/3S66jkat3+wqtOG5zcrEp?=
- =?us-ascii?Q?MhEnCbcGwomKc76mtpLF9ytvZxttnVx5bZdzItcGXCMpT6A5ns4qMbGvBqF/?=
- =?us-ascii?Q?C5xr5v7Q/gkYhyBd1eyRT5aMhLm/zHKo0760aKF5zn4M1ZN400tEQjHPjpMl?=
- =?us-ascii?Q?sMzri4TzkHMxo7dPf/D8yHYam8sBgO4HSx2NLNrX74Xz53OmjfFGtkKKHcOB?=
- =?us-ascii?Q?eIt6aLai1KLjkaBrxqkozo51L/fzLPwdcIvlVVsQvNtpj2AD3d+N1//JDd5i?=
- =?us-ascii?Q?UbNDHP4ropVd+jonJ0QYPj53dQvML6h6RWS1AyVhD/YehARl1pxT01NR715p?=
- =?us-ascii?Q?SoeZxCTvAKfFxtHz4UMStRE3mO4mDZFR63SAPVQHmsZOodMGMgKPTgAIyee2?=
- =?us-ascii?Q?l/lZcUvJHkWJc1bsMyuvAzcyq63+3rIBbCD2PtvFAn0aEBSY7NWYbliEv4Wx?=
- =?us-ascii?Q?OivSfnBxjojifnBjP7Yl3k1sCVJmcX2L1fCACQx58cbz43xOjJ3dk0X+DODh?=
- =?us-ascii?Q?V6afCvccoM11x+jumdgAHXNPcCkUYLGIHyG5fXn28sqfr0qsKOZvoYwziLON?=
- =?us-ascii?Q?BIa/f/UjRiVzptydqgX4+LglT3q0628m/M9SNeGiObcGa7VLeY9JJ0PhT4/W?=
- =?us-ascii?Q?eu228a5q2WBuRMnI8hECDk5ohLQY1HiA+IdNmP474+z5k8nhddRd7VeleCE2?=
- =?us-ascii?Q?QqBD4wZRH/aGO1W/C4ilcj3gZ6LGEOK3vssFDZ0t5rNpZlEzh7wba/adRiJ1?=
- =?us-ascii?Q?I6vZIZJwlRBT17U7d/6sTFTATa/kua7H1sxLb6l1FhkMd54XsRsqXNXktOXK?=
- =?us-ascii?Q?UAqcqy6NGeO3/L9toVYDfpYdsJqMM/FFlDYaF3K+riitsJN0qV6OwJZvbalm?=
- =?us-ascii?Q?k1SqeI6derxXAl8Tbs3K3OoIxaGZ69MOavwJlWpkPT0CSGFFm+mKdCXVkQhs?=
- =?us-ascii?Q?kdyKdLzlzroL0qUP3NS/FgwGRoNsZMk2nRD8axwlpMCwLHHNyx+u3wl8D0xP?=
- =?us-ascii?Q?X13YqphdVFafuXgEG2sH+l0VotNR21jVJ535YLouRUli6DXMf+Sr5XXVnSMp?=
- =?us-ascii?Q?j3wLef/yTNMmqlCwjV93appLE1LwhlolxUZg8SQ/?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 10f70cd4-635d-4396-cdce-08dd93e46744
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 May 2025 19:12:15.2927
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tAIb+jmgWUHn2KbSR+YIaO8tG0RcunVi6h0vuPM4clXy/a54jNYhViIhJM0I5ghK
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4453
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
---nrmCbAKEYJqGwNX4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Sun, 11 May 2025 16:07:50 -0700
+Eric Biggers <ebiggers@kernel.org> wrote:
 
-Hi Linus,
+> On Sun, May 11, 2025 at 11:45:14PM +0200, Ard Biesheuvel wrote:
+> > On Sun, 11 May 2025 at 23:22, Andrew Lunn <andrew@lunn.ch> wrote:  
+> > >
+> > > On Sun, May 11, 2025 at 10:29:29AM -0700, Eric Biggers wrote:  
+> > > > On Sun, May 11, 2025 at 06:30:25PM +0200, Andrew Lunn wrote:  
+> > > > > On Sat, May 10, 2025 at 05:41:00PM -0700, Eric Biggers wrote:  
+> > > > > > Update networking code that computes the CRC32C of packets to just call
+> > > > > > crc32c() without unnecessary abstraction layers.  The result is faster
+> > > > > > and simpler code.  
+> > > > >
+> > > > > Hi Eric
+> > > > >
+> > > > > Do you have some benchmarks for these changes?
+> > > > >
+> > > > >     Andrew  
+> > > >
+> > > > Do you want benchmarks that show that removing the indirect calls makes things
+> > > > faster?  I think that should be fairly self-evident by now after dealing with
+> > > > retpoline for years, but I can provide more details if you need them.  
+> > >
+> > > I was think more like iperf before/after? Show the CPU load has gone
+> > > down without the bandwidth also going down.
+> > >
+> > > Eric Dumazet has a T-Shirt with a commit message on the back which
+> > > increased network performance by X%. At the moment, there is nothing
+> > > T-Shirt quotable here.
+> > >  
+> > 
+> > I think that removing layers of redundant code to ultimately call the
+> > same core CRC-32 implementation is a rather obvious win, especially
+> > when indirect calls are involved. The diffstat speaks for itself, so
+> > maybe you can print that on a T-shirt.  
+> 
+> Agreed with Ard.  I did try doing some SCTP benchmarks with iperf3 earlier, but
+> they were very noisy and the CRC32C checksumming seemed to be lost in the noise.
+> There probably are some tricks to running reliable networking benchmarks; I'm
+> not a networking developer.  Regardless, this series is a clear win for the
+> CRC32C code, both from a simplicity and performance perspective.  It also fixes
+> the kconfig dependency issues.  That should be good enough, IMO.
+> 
+> In case it's helpful, here are some microbenchmarks of __skb_checksum (old) vs
+> skb_crc32c (new):
+> 
+>     Linear sk_buffs
+> 
+>         Length in bytes    __skb_checksum cycles    skb_crc32c cycles
+>         ===============    =====================    =================
+>                      64                       43                   18
+>                    1420                      204                  161
+>                   16384                     1735                 1642
+> 
+>     Nonlinear sk_buffs (even split between head and one fragment)
+> 
+>         Length in bytes    __skb_checksum cycles    skb_crc32c cycles
+>         ===============    =====================    =================
+>                      64                      579                   22
+>                    1420                     1506                  194
+>                   16384                     4365                 1682
+> 
+> So 1420-byte linear buffers (roughly the most common case) is 21% faster,
 
-Last few fixes for RC that have been pending.
+1420 bytes is unlikely to be the most common case - at least for some users.
+SCTP is message oriented so the checksum is over a 'user message'.
+A non-uncommon use is carrying mobile network messages (eg SMS) over the IP
+network (instead of TDM links).
+In that case the maximum data chunk size (what is being checksummed) is limited
+to not much over 256 bytes - and a lot of data chunks will be smaller.
+The actual difficulty is getting multiple data chunks into a single ethernet
+packet without adding significant delays.
 
-Thanks,
-Jason
+But the changes definitely improve things.
 
-The following changes since commit 834a4a689699090a406d1662b03affa8b155d025:
+	David
 
-  Merge tag 'for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma (2025-04-14 10:24:04 -0700)
 
-are available in the Git repository at:
+> but other cases range from 5% to 2500% faster.  This was on an AMD Zen 5 processor,
+> where the kernel defaults to using IBRS instead of retpoline; I understand that
+> an even larger improvement may be seen when retpoline is enabled.
+> 
+> But again this is just the CRC32C checksumming performance.  I'm not claiming
+> measurable improvements to overall SCTP (or NVME-TLS) latency or throughput,
+> though it's possible that there are.
+> 
+> - Eric
+> 
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-
-for you to fetch changes up to d0706bfd3ee40923c001c6827b786a309e2a8713:
-
-  RDMA/core: Fix "KASAN: slab-use-after-free Read in ib_register_device" problem (2025-05-06 14:36:57 -0300)
-
-----------------------------------------------------------------
-RDMA v6.15 second rc pull request
-
-Four small fixes for crashes:
-
-- Double free in rxe
-
-- UAF in irdma from early freeing the rf
-
-- Off by one undoing the IRQ allocations during error unwind in irdma
-
-- Another race with device rename and uevent generation. uevents access
-  the struct device name and UAF when it is changed.
-
-----------------------------------------------------------------
-Dan Carpenter (1):
-      ice, irdma: fix an off by one in error handling code
-
-Michal Swiatkowski (1):
-      irdma: free iwdev->rf after removing MSI-X
-
-Zhu Yanjun (2):
-      RDMA/rxe: Fix slab-use-after-free Read in rxe_queue_cleanup bug
-      RDMA/core: Fix "KASAN: slab-use-after-free Read in ib_register_device" problem
-
- drivers/infiniband/core/device.c    | 6 ++++--
- drivers/infiniband/hw/irdma/main.c  | 4 +++-
- drivers/infiniband/hw/irdma/verbs.c | 1 -
- drivers/infiniband/sw/rxe/rxe_cq.c  | 5 +----
- 4 files changed, 8 insertions(+), 8 deletions(-)
-
---nrmCbAKEYJqGwNX4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRRRCHOFoQz/8F5bUaFwuHvBreFYQUCaCY8jAAKCRCFwuHvBreF
-YVudAP4rPnCjSZ2juLd40vM7QAQX+9n+Ye7SZvL+2Dw7FRGW+gD/WOGsEqPArFcZ
-OJ7fzRky8emeqbn6lncC2NsGkvvb5As=
-=vVg3
------END PGP SIGNATURE-----
-
---nrmCbAKEYJqGwNX4--
 
