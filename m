@@ -1,132 +1,112 @@
-Return-Path: <linux-rdma+bounces-10358-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10359-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C1F0AB7DED
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 08:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 914D6AB8843
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 15:40:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 042AD161CBA
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 06:24:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 110414C4E47
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 13:40:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE58F296FCF;
-	Thu, 15 May 2025 06:23:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P9oPXJU6"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75206142E86;
+	Thu, 15 May 2025 13:40:09 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F2622D4C6;
-	Thu, 15 May 2025 06:23:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 445454B1E52;
+	Thu, 15 May 2025 13:40:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747290191; cv=none; b=EwNHEje7RP1+nyydDp2nRML0LnMHn+B/5t8cAOpP0YCAHxCN7Aa+nJqbZoMBCPi+1rgXU7xv8CwR9XkUKei4/+tMrYS+8BW6uIkMwpfkzh+Xkw00J9av5StxdyiB/2lTUWrk5GunWl2bWt8pfxxDP2hReOvC5s7pTXP2N9YjiCA=
+	t=1747316409; cv=none; b=YjivjaKnn45R1Ra8aJXTiwFbhGiwz7ZxpF0SnZO++ovQmu6raZGmqxW6JABs0TeGhfWvLIqY08PkbgQ+a+olc50HWee4Xbtt9FfnorYQiybCqD0pAx4Bl414yOAkf3wxEEicASjSamvKAyCs26jYEc2LI0l5kV0WArCfLIbIUkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747290191; c=relaxed/simple;
-	bh=FR5qoOS0+vrvZ0hhVirpXp51hgUYilUFfQ3ti+H8NzQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZEesJ0nub2xMLOFFjxyX0gBjlfKZnUnY7m5NKJ/I1V5aFoL11uFyNS+iputEFL4Xnf7nEet7hlkOYSGoMq91JkK9IeDg216fMloYSwxg6nczYQo+C+OgihXux/uBVQwvQpoWqlGQV+21hXaCufW2kuzboZoLD5R4t5p1tv9nYIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P9oPXJU6; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-442ea95f738so3727615e9.3;
-        Wed, 14 May 2025 23:23:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747290188; x=1747894988; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mnSk+kKvzNQ3bwp6mK1AlyLoOulm4ArWZ8jPfknR5eY=;
-        b=P9oPXJU6YIXZUmuUNgYNAdRFMyZKzm+Dc/JaBXrRHOsgraIyqxqoPM0u4Vt3Xbt6cJ
-         SjTxgP3LR0lM13JgibgncwBRWhHRCa66t7AcNACFe6TUqY2uIaASMa1RPOeC5J1rUYPA
-         9WRuQG4b0b9/WJ6GhrLYa4Kma5edUPsvK5lgXErHbvKnGeGO5Q6dmd2VL4kvqqzhXKFw
-         0jLePAdiTc40dxyX0UTnqWxWmFGcoPRAUV4MhrlBKd8vl+WJsUqQsDoFdOVvLn0cjuHG
-         qUW9FR59OGlJie2CExaHDjk5/WAiqit4tFtKpJU+f1P/GjXxV7dEZpeqNE814R97mFsR
-         MNmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747290188; x=1747894988;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mnSk+kKvzNQ3bwp6mK1AlyLoOulm4ArWZ8jPfknR5eY=;
-        b=vdY60D7x0+OUP1G0AMkMKR+W4p+S/fir9TIJ2CK9YqHugdptqE0QtB8HQxN1BryV8E
-         kPyqsM6zSd4/4p35Uacdr7aAInThT3dXqSrxzHvMZ5LXVivuD1guteXKTtVLu9KAalY1
-         5RRFlVUwiFmy7V0GDbUS5DZFrPnqSJ1sffu5WQGxDGnq7KHXHZ+KTxdKqC/MTD/ebFpl
-         fAmfj541JJyDM1KotJ8vqtLnhZU+UeoUPNGnsEs6POlgPh+XvZRI5qFihNfGvj0mXpO7
-         BweJoyaRVfMk3t/2sCoDLuijd4TRpSnE4CdLkrS3QYCBElUIWZbYuxOJ1p6j2BSNcX2M
-         W5Ag==
-X-Forwarded-Encrypted: i=1; AJvYcCUV9tm60NAWisqTnT+6vh63n3PoW7gqhF+gxc24pYEj/zwmSWyiyx8Eg3fnq/rQSCgaM+PHj894Q1JXk/s=@vger.kernel.org, AJvYcCX0ixE8d9JUkTrVEo3dFj8cVHiYMpWiy15AlSRTFQHm+DBpd9biYff5g7J88hEr9lz/Nz6id6XKVlBvUA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxdPZ6gHPrW+gUFOgcU67VW0O9sY+wJyBGUQ87APpJK4bk3n2SN
-	KQGld9vQFAAlf017I36eVeYo/gT9+o3e6qlfzxrYFQp/1DnWfjUw
-X-Gm-Gg: ASbGnctlQW/PuGfI+9LT+5KfPeGBg22yruJ9PD6KTChZmjxx5gf1H2H1D7sPZxwhWNY
-	dpstkIIcqpMxjazcIrFsPKjRAu2Irt3TmMsC5sp/XmUaUrvA+glI3nd5vw4oW0I0ZRO2/+pL61Z
-	FJiLaPgba/mnQJsLU6sIzuYocer03jOA8U71wB8VuqnNx/0wEqB1wuEedLF+jxIe0jWaqhFbG15
-	vEiLg9Y5KSElY/1EHh45ER3Atvn1L19ZlerbB+H1TISUuTkct+a6cTzG8ytV2Ygi9sYt0Dk+7eM
-	cgWtF6bGhEdC1rEiq3Zfj/U/Wxf0yufUvS1peXNa0ErnhSIq6nxa2zpggZLFeHsa2HMneHxBKwp
-	ARs8fH+4=
-X-Google-Smtp-Source: AGHT+IGj4TS7tJITPcLt1pcDhqz1LJ4GCh1s9sL3GjU2OZQ0ubdPWiDTqfG1FVleV47vDUcJ8HWQYQ==
-X-Received: by 2002:a05:600c:1d95:b0:43d:160:cd97 with SMTP id 5b1f17b1804b1-442f2161391mr49047365e9.25.1747290187401;
-        Wed, 14 May 2025 23:23:07 -0700 (PDT)
-Received: from [172.27.33.110] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-442f39e84acsm57588055e9.25.2025.05.14.23.23.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 May 2025 23:23:06 -0700 (PDT)
-Message-ID: <e2c6c100-c1bb-45f1-a171-2effdd69e409@gmail.com>
-Date: Thu, 15 May 2025 09:23:01 +0300
+	s=arc-20240116; t=1747316409; c=relaxed/simple;
+	bh=bLsm45s9D0qARSqkBSIJVd3zYZoqeCxjGRV/ULXVIrA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ny6r4n7qe3PgZiqGRquCvRZqiidcLcZL0HGKG0M2Cuv5A/JGdlgG/G1xd7/z0lWMe5Z52v9JSC994GP3DPOmFQSbGi7ZSzlQlpS/SGfaa3ENReeAQb/m6SvQC8awzeJsztlj/oHSQlR0Ehg9985CVEK0g/FkwE2kSEr85U+5Mjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
+Received: from localhost.localdomain (unknown [124.16.141.245])
+	by APP-03 (Coremail) with SMTP id rQCowAAXxUGm7iVorh3cFQ--.28807S2;
+	Thu, 15 May 2025 21:39:54 +0800 (CST)
+From: Wentao Liang <vulab@iscas.ac.cn>
+To: mustafa.ismail@intel.com,
+	tatyana.e.nikolova@intel.com,
+	jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Wentao Liang <vulab@iscas.ac.cn>,
+	stable@vger.kernel.org
+Subject: [PATCH] RDMA/irdma: puda: Clear entries after allocation to ensure clean state
+Date: Thu, 15 May 2025 21:39:28 +0800
+Message-ID: <20250515133929.1222-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.42.0.windows.2
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2] net/mlx5: Use to_delayed_work()
-To: Chen Ni <nichen@iscas.ac.cn>, saeedm@nvidia.com, leon@kernel.org,
- tariqt@nvidia.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250514072419.2707578-1-nichen@iscas.ac.cn>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20250514072419.2707578-1-nichen@iscas.ac.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:rQCowAAXxUGm7iVorh3cFQ--.28807S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uw45Zr18Gw4rur18uF1kuFg_yoW8Gry3pa
+	yDJr1q9rZ0qa1UWa1DG393CFW3Xa17Gr9FvrZFk3s3ZF45Jr10qF1kGryj9F4kGr1xuw4x
+	Xrnrtr15C3Wrur7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j
+	6r4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
+	JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
+	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
+	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
+	v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8
+	JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUf8nOUUU
+	UU=
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCQ8DA2glvjRVYQAEsx
 
+The irdma_puda_send() calls the irdma_puda_get_next_send_wqe() to get
+entries, but does not clear the entries after the function call. This
+could lead to wqe data inconsistency. A proper implementation can be
+found in irdma_uk_send().
 
+Add the irdma_clr_wqes() after irdma_puda_get_next_send_wqe(). Add the
+headfile of the irdma_clr_wqes().
 
-On 14/05/2025 10:24, Chen Ni wrote:
-> Use to_delayed_work() instead of open-coding it.
-> 
-> Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
-> ---
-> Changelog:
-> 
-> v1 -> v2:
-> 
-> 1. Specify the target tree.
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-> index e53dbdc0a7a1..b1aeea7c4a91 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-> @@ -927,8 +927,7 @@ static void mlx5_cmd_comp_handler(struct mlx5_core_dev *dev, u64 vec, bool force
->   
->   static void cb_timeout_handler(struct work_struct *work)
->   {
-> -	struct delayed_work *dwork = container_of(work, struct delayed_work,
-> -						  work);
-> +	struct delayed_work *dwork = to_delayed_work(work);
->   	struct mlx5_cmd_work_ent *ent = container_of(dwork,
->   						     struct mlx5_cmd_work_ent,
->   						     cb_timeout_work);
+Fixes: a3a06db504d3 ("RDMA/irdma: Add privileged UDA queue implementation")
+Cc: stable@vger.kernel.org # v5.14
+Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
+---
+ drivers/infiniband/hw/irdma/puda.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+diff --git a/drivers/infiniband/hw/irdma/puda.c b/drivers/infiniband/hw/irdma/puda.c
+index 7e3f9bca2c23..1d113ad05500 100644
+--- a/drivers/infiniband/hw/irdma/puda.c
++++ b/drivers/infiniband/hw/irdma/puda.c
+@@ -7,6 +7,7 @@
+ #include "protos.h"
+ #include "puda.h"
+ #include "ws.h"
++#include "user.h"
+ 
+ static void irdma_ieq_receive(struct irdma_sc_vsi *vsi,
+ 			      struct irdma_puda_buf *buf);
+@@ -444,6 +445,8 @@ int irdma_puda_send(struct irdma_sc_qp *qp, struct irdma_puda_send_info *info)
+ 	if (!wqe)
+ 		return -ENOMEM;
+ 
++	irdma_clr_wqes(qp, wqe_idx);
++
+ 	qp->qp_uk.sq_wrtrk_array[wqe_idx].wrid = (uintptr_t)info->scratch;
+ 	/* Third line of WQE descriptor */
+ 	/* maclen is in words */
+-- 
+2.42.0.windows.2
 
-Thanks for your patch.
 
