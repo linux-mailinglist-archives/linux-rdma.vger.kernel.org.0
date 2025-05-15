@@ -1,49 +1,73 @@
-Return-Path: <linux-rdma+bounces-10359-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10360-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 914D6AB8843
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 15:40:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D6A9AB89E1
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 16:51:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 110414C4E47
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 13:40:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDB91A06862
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 May 2025 14:50:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75206142E86;
-	Thu, 15 May 2025 13:40:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3ED21D6DBB;
+	Thu, 15 May 2025 14:51:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="DRpgYJUw"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from smtp-fw-52002.amazon.com (smtp-fw-52002.amazon.com [52.119.213.150])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 445454B1E52;
-	Thu, 15 May 2025 13:40:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4954B1DED5B
+	for <linux-rdma@vger.kernel.org>; Thu, 15 May 2025 14:50:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747316409; cv=none; b=YjivjaKnn45R1Ra8aJXTiwFbhGiwz7ZxpF0SnZO++ovQmu6raZGmqxW6JABs0TeGhfWvLIqY08PkbgQ+a+olc50HWee4Xbtt9FfnorYQiybCqD0pAx4Bl414yOAkf3wxEEicASjSamvKAyCs26jYEc2LI0l5kV0WArCfLIbIUkk=
+	t=1747320664; cv=none; b=V1uOFKyJiLykSW7oHi1IDWg1I9qN+NO56pLQO4iA3gwSlfsQt39UIk/ascRXuq/naqfwllb9B4iODy1cD2c0YAJJcogjDPQgJrmkT3IJf1uhuOoibCMQP2hXnvUWb/Eglp6V66WcPzwgidt6wV994PS+RBz4jMOYPZZQazUf9IM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747316409; c=relaxed/simple;
-	bh=bLsm45s9D0qARSqkBSIJVd3zYZoqeCxjGRV/ULXVIrA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ny6r4n7qe3PgZiqGRquCvRZqiidcLcZL0HGKG0M2Cuv5A/JGdlgG/G1xd7/z0lWMe5Z52v9JSC994GP3DPOmFQSbGi7ZSzlQlpS/SGfaa3ENReeAQb/m6SvQC8awzeJsztlj/oHSQlR0Ehg9985CVEK0g/FkwE2kSEr85U+5Mjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from localhost.localdomain (unknown [124.16.141.245])
-	by APP-03 (Coremail) with SMTP id rQCowAAXxUGm7iVorh3cFQ--.28807S2;
-	Thu, 15 May 2025 21:39:54 +0800 (CST)
-From: Wentao Liang <vulab@iscas.ac.cn>
-To: mustafa.ismail@intel.com,
-	tatyana.e.nikolova@intel.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Wentao Liang <vulab@iscas.ac.cn>,
-	stable@vger.kernel.org
-Subject: [PATCH] RDMA/irdma: puda: Clear entries after allocation to ensure clean state
-Date: Thu, 15 May 2025 21:39:28 +0800
-Message-ID: <20250515133929.1222-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.42.0.windows.2
+	s=arc-20240116; t=1747320664; c=relaxed/simple;
+	bh=cDa5xqtskvdT63WTVB3B624mr+wFpMWPw9PBmM6H+Gw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=EkVjxWxhQaOxrM+g0x9FNi67eBqw/uAX4KLcZgH6aYQD7RGmGhEZImmEox1rmAh/du35U50+4JsEOzijQbHRxRAv9EdVJTP2K3GQ5jJFT+7GJklY935gIFc/a/H3ZETi3pvgRrUlbQVTQXAd56kY1Fsz2upiMNix/vpb2idnGBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=DRpgYJUw; arc=none smtp.client-ip=52.119.213.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1747320659; x=1778856659;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=H/0kTwjtUmjjwlwfeMGQZMu0FL+JijRSIoQ43fb+NXk=;
+  b=DRpgYJUwhD5xzIrdpsa3S8g3tzndX99he8bIxtF8DHmc9GMEieEPpCdz
+   ccHlIfthZC7xglDvK3z6mZzMSnn6fmS0i4G4lw6agMjWCwryjhicYCADu
+   GmsfuwXz1tRvJqT4Ecvz3z/CJd7CkKs6INHW8EaWXBCccm0scN6hnrzoN
+   Thjh7RQ5lDBfAHBjrC5MGFuYyMebQasj3r4l2gOrLrjag858bp9te5Ro1
+   JAgrOevka+Q7/JOlhOsX+LGo28q+fDKjab1LKAm2KILibRHaduF4yW2LK
+   DvVqQKmXwpaKNHCp2v3cBRLVhfIsGMMgnvmKNThDxmRSo59mICz4D6J0H
+   A==;
+X-IronPort-AV: E=Sophos;i="6.15,291,1739836800"; 
+   d="scan'208";a="723101322"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-52002.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2025 14:50:56 +0000
+Received: from EX19MTAEUB001.ant.amazon.com [10.0.43.254:36284]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.35.49:2525] with esmtp (Farcaster)
+ id 2fc5668b-3f66-47c0-90fa-66cdb691399a; Thu, 15 May 2025 14:50:55 +0000 (UTC)
+X-Farcaster-Flow-ID: 2fc5668b-3f66-47c0-90fa-66cdb691399a
+Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
+ EX19MTAEUB001.ant.amazon.com (10.252.51.28) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
+ Thu, 15 May 2025 14:50:53 +0000
+Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
+ (10.253.103.172) by EX19D031EUB003.ant.amazon.com (10.252.61.88) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14; Thu, 15 May 2025
+ 14:50:50 +0000
+From: Michael Margolin <mrgolin@amazon.com>
+To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>, "Daniel
+ Kranzdorf" <dkkranzd@amazon.com>, Yonatan Nachum <ynachum@amazon.com>
+Subject: [PATCH for-next] RDMA/efa: Add CQ with external memory support
+Date: Thu, 15 May 2025 14:50:40 +0000
+Message-ID: <20250515145040.6862-1-mrgolin@amazon.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -51,62 +75,183 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:rQCowAAXxUGm7iVorh3cFQ--.28807S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uw45Zr18Gw4rur18uF1kuFg_yoW8Gry3pa
-	yDJr1q9rZ0qa1UWa1DG393CFW3Xa17Gr9FvrZFk3s3ZF45Jr10qF1kGryj9F4kGr1xuw4x
-	Xrnrtr15C3Wrur7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j
-	6r4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
-	JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
-	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
-	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
-	v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8
-	JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUf8nOUUU
-	UU=
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCQ8DA2glvjRVYQAEsx
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D046UWA004.ant.amazon.com (10.13.139.76) To
+ EX19D031EUB003.ant.amazon.com (10.252.61.88)
 
-The irdma_puda_send() calls the irdma_puda_get_next_send_wqe() to get
-entries, but does not clear the entries after the function call. This
-could lead to wqe data inconsistency. A proper implementation can be
-found in irdma_uk_send().
+Add an option to create CQ using external memory instead of allocating
+in the driver. The memory can be passed from userspace by dmabuf fd and
+an offset. Add a capability bit to reflect on the feature support.
 
-Add the irdma_clr_wqes() after irdma_puda_get_next_send_wqe(). Add the
-headfile of the irdma_clr_wqes().
-
-Fixes: a3a06db504d3 ("RDMA/irdma: Add privileged UDA queue implementation")
-Cc: stable@vger.kernel.org # v5.14
-Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
+Reviewed-by: Daniel Kranzdorf <dkkranzd@amazon.com>
+Reviewed-by: Yonatan Nachum <ynachum@amazon.com>
+Signed-off-by: Michael Margolin <mrgolin@amazon.com>
 ---
- drivers/infiniband/hw/irdma/puda.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/infiniband/hw/efa/efa.h       |  1 +
+ drivers/infiniband/hw/efa/efa_verbs.c | 60 ++++++++++++++++++++++-----
+ include/uapi/rdma/efa-abi.h           |  8 +++-
+ 3 files changed, 58 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/infiniband/hw/irdma/puda.c b/drivers/infiniband/hw/irdma/puda.c
-index 7e3f9bca2c23..1d113ad05500 100644
---- a/drivers/infiniband/hw/irdma/puda.c
-+++ b/drivers/infiniband/hw/irdma/puda.c
-@@ -7,6 +7,7 @@
- #include "protos.h"
- #include "puda.h"
- #include "ws.h"
-+#include "user.h"
+diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
+index 838182d0409c..fd609a50cea0 100644
+--- a/drivers/infiniband/hw/efa/efa.h
++++ b/drivers/infiniband/hw/efa/efa.h
+@@ -107,6 +107,7 @@ struct efa_cq {
+ 	u16 cq_idx;
+ 	/* NULL when no interrupts requested */
+ 	struct efa_eq *eq;
++	struct ib_umem *umem;
+ };
  
- static void irdma_ieq_receive(struct irdma_sc_vsi *vsi,
- 			      struct irdma_puda_buf *buf);
-@@ -444,6 +445,8 @@ int irdma_puda_send(struct irdma_sc_qp *qp, struct irdma_puda_send_info *info)
- 	if (!wqe)
- 		return -ENOMEM;
+ struct efa_qp {
+diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+index a8645a40730f..ecebc47ff249 100644
+--- a/drivers/infiniband/hw/efa/efa_verbs.c
++++ b/drivers/infiniband/hw/efa/efa_verbs.c
+@@ -249,6 +249,7 @@ int efa_query_device(struct ib_device *ibdev,
+ 		resp.max_rdma_size = dev_attr->max_rdma_size;
  
-+	irdma_clr_wqes(qp, wqe_idx);
+ 		resp.device_caps |= EFA_QUERY_DEVICE_CAPS_CQ_WITH_SGID;
++		resp.device_caps |= EFA_QUERY_DEVICE_CAPS_CQ_WITH_EXT_MEM_DMABUF;
+ 		if (EFA_DEV_CAP(dev, RDMA_READ))
+ 			resp.device_caps |= EFA_QUERY_DEVICE_CAPS_RDMA_READ;
+ 
+@@ -1082,8 +1083,11 @@ int efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+ 		xa_erase(&dev->cqs_xa, cq->cq_idx);
+ 		synchronize_irq(cq->eq->irq.irqn);
+ 	}
+-	efa_free_mapped(dev, cq->cpu_addr, cq->dma_addr, cq->size,
+-			DMA_FROM_DEVICE);
 +
- 	qp->qp_uk.sq_wrtrk_array[wqe_idx].wrid = (uintptr_t)info->scratch;
- 	/* Third line of WQE descriptor */
- 	/* maclen is in words */
++	if (cq->umem)
++		ib_umem_release(cq->umem);
++	else
++		efa_free_mapped(dev, cq->cpu_addr, cq->dma_addr, cq->size, DMA_FROM_DEVICE);
+ 	return 0;
+ }
+ 
+@@ -1133,8 +1137,10 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 	struct efa_com_create_cq_result result;
+ 	struct ib_device *ibdev = ibcq->device;
+ 	struct efa_dev *dev = to_edev(ibdev);
++	struct ib_umem_dmabuf *umem_dmabuf;
+ 	struct efa_ibv_create_cq cmd = {};
+ 	struct efa_cq *cq = to_ecq(ibcq);
++	struct scatterlist *umem_sgl;
+ 	int entries = attr->cqe;
+ 	bool set_src_addr;
+ 	int err;
+@@ -1202,11 +1208,40 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 
+ 	cq->ucontext = ucontext;
+ 	cq->size = PAGE_ALIGN(cmd.cq_entry_size * entries * cmd.num_sub_cqs);
+-	cq->cpu_addr = efa_zalloc_mapped(dev, &cq->dma_addr, cq->size,
+-					 DMA_FROM_DEVICE);
+-	if (!cq->cpu_addr) {
+-		err = -ENOMEM;
+-		goto err_out;
++
++	if (cmd.flags & EFA_CREATE_CQ_WITH_EXT_MEM_DMABUF) {
++		if (cmd.ext_mem_length < cq->size) {
++			ibdev_dbg(&dev->ibdev, "External memory too small\n");
++			err = -EINVAL;
++			goto err_out;
++		}
++
++		umem_dmabuf = ib_umem_dmabuf_get_pinned(ibdev, cmd.ext_mem_offset,
++							cq->size, cmd.ext_mem_fd,
++							IB_ACCESS_LOCAL_WRITE);
++		if (IS_ERR(umem_dmabuf)) {
++			err = PTR_ERR(umem_dmabuf);
++			ibdev_dbg(&dev->ibdev, "Failed to get dmabuf umem[%d]\n", err);
++			goto err_out;
++		}
++		cq->umem = &umem_dmabuf->umem;
++		umem_sgl = cq->umem->sgt_append.sgt.sgl;
++
++		if (sg_dma_len(umem_sgl) < ib_umem_offset(cq->umem) + cq->size) {
++			ibdev_dbg(&dev->ibdev, "Non contiguous CQ unsupported\n");
++			err = -EINVAL;
++			goto err_free_mapped;
++		}
++
++		cq->cpu_addr = NULL;
++		cq->dma_addr = sg_dma_address(umem_sgl) + ib_umem_offset(cq->umem);
++	} else {
++		cq->cpu_addr = efa_zalloc_mapped(dev, &cq->dma_addr, cq->size,
++						 DMA_FROM_DEVICE);
++		if (!cq->cpu_addr) {
++			err = -ENOMEM;
++			goto err_out;
++		}
+ 	}
+ 
+ 	params.uarn = cq->ucontext->uarn;
+@@ -1231,7 +1266,9 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 	cq->ibcq.cqe = result.actual_depth;
+ 	WARN_ON_ONCE(entries != result.actual_depth);
+ 
+-	err = cq_mmap_entries_setup(dev, cq, &resp, result.db_valid);
++	if (!(cmd.flags & EFA_CREATE_CQ_WITH_EXT_MEM_DMABUF))
++		err = cq_mmap_entries_setup(dev, cq, &resp, result.db_valid);
++
+ 	if (err) {
+ 		ibdev_dbg(ibdev, "Could not setup cq[%u] mmap entries\n",
+ 			  cq->cq_idx);
+@@ -1270,8 +1307,11 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ err_destroy_cq:
+ 	efa_destroy_cq_idx(dev, cq->cq_idx);
+ err_free_mapped:
+-	efa_free_mapped(dev, cq->cpu_addr, cq->dma_addr, cq->size,
+-			DMA_FROM_DEVICE);
++	if (cq->umem)
++		ib_umem_release(cq->umem);
++	else
++		efa_free_mapped(dev, cq->cpu_addr, cq->dma_addr, cq->size,
++				DMA_FROM_DEVICE);
+ 
+ err_out:
+ 	atomic64_inc(&dev->stats.create_cq_err);
+diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
+index 11b94b0b035b..f2bcef789571 100644
+--- a/include/uapi/rdma/efa-abi.h
++++ b/include/uapi/rdma/efa-abi.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-2-Clause) */
+ /*
+- * Copyright 2018-2024 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2025 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #ifndef EFA_ABI_USER_H
+@@ -56,6 +56,7 @@ struct efa_ibv_alloc_pd_resp {
+ enum {
+ 	EFA_CREATE_CQ_WITH_COMPLETION_CHANNEL = 1 << 0,
+ 	EFA_CREATE_CQ_WITH_SGID               = 1 << 1,
++	EFA_CREATE_CQ_WITH_EXT_MEM_DMABUF     = 1 << 2,
+ };
+ 
+ struct efa_ibv_create_cq {
+@@ -64,6 +65,10 @@ struct efa_ibv_create_cq {
+ 	__u16 num_sub_cqs;
+ 	__u8 flags;
+ 	__u8 reserved_58[5];
++	__aligned_u64 ext_mem_offset;
++	__aligned_u64 ext_mem_length;
++	__u32 ext_mem_fd;
++	__u8 reserved_120[4];
+ };
+ 
+ enum {
+@@ -131,6 +136,7 @@ enum {
+ 	EFA_QUERY_DEVICE_CAPS_DATA_POLLING_128 = 1 << 4,
+ 	EFA_QUERY_DEVICE_CAPS_RDMA_WRITE = 1 << 5,
+ 	EFA_QUERY_DEVICE_CAPS_UNSOLICITED_WRITE_RECV = 1 << 6,
++	EFA_QUERY_DEVICE_CAPS_CQ_WITH_EXT_MEM_DMABUF = 1 << 7,
+ };
+ 
+ struct efa_ibv_ex_query_device_resp {
 -- 
-2.42.0.windows.2
+2.47.1
 
 
