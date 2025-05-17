@@ -1,81 +1,104 @@
-Return-Path: <linux-rdma+bounces-10383-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10384-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52C21ABA771
-	for <lists+linux-rdma@lfdr.de>; Sat, 17 May 2025 03:04:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0EB6ABA93D
+	for <lists+linux-rdma@lfdr.de>; Sat, 17 May 2025 11:58:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FC061BC5C4F
-	for <lists+linux-rdma@lfdr.de>; Sat, 17 May 2025 01:05:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72A6B9E773F
+	for <lists+linux-rdma@lfdr.de>; Sat, 17 May 2025 09:58:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48EF65A79B;
-	Sat, 17 May 2025 01:04:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tocTpl6R"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 756FC1E8824;
+	Sat, 17 May 2025 09:58:40 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4D424B1E72;
-	Sat, 17 May 2025 01:04:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B06EC1C1F2F;
+	Sat, 17 May 2025 09:58:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747443883; cv=none; b=VKAt13KOSP+KpbxpyxESQvfv+50P8QHz14HfYuNlOsK58UtkctpFRNiWFNvoR5AiTWwsANXDjtror60WJhqrtQS6vR+NJ/m0/WyUN3WouyXvOnlmin8O7o55f4q3LIKmziQUwVgK88xPIMU52ukNMhmJxhlcn8dp8YCP5UNIg/c=
+	t=1747475920; cv=none; b=bflNdD3gC6VqiuTWlgQyeUHL/TRgQmyEX995JejNc5WNnrQBLu4Xp7EdLdTN6mRpIhsUIOZObC+DrzmWmUKf89ye0/rVlkQLfTWGAmmbap9OTCvhQ+aBQHkldf9YmmiapD3GHSeUaiT+6g7GDn2AHV0mPcqTOb7pjyOkJo2ScBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747443883; c=relaxed/simple;
-	bh=jcHht5WS/feibSCEyYSDp6D4++cceJSdS3lvFn8RHw8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UXEBEYoO/UH8+URiBRNoVBkF1gT+hfiul51XPXhnTgZ2k8Z+44+1M3LB+2YaQXLhqDSQ4s2l4iJkQX/Ii6bx01WwRY2hg6Ho47N9JtgTeSxGmtA4vv4Jv1RU0juSD5b82PJk0RbJL55vrIEo0tf2mnQZb75QVXCjR+KL78netxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tocTpl6R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DE26C4CEE4;
-	Sat, 17 May 2025 01:04:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747443882;
-	bh=jcHht5WS/feibSCEyYSDp6D4++cceJSdS3lvFn8RHw8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=tocTpl6RoB4hnphxYtmhsuVcAMzvr9u44nz1b8bpzJoWt6T/RTj5rIBs5xi4n8NqQ
-	 HaJY8974i6fTBLqu/hQyTD+GUx5fmkJGd7QjdfvT0anA0500tivmK9EXq5NOmbuDFb
-	 qoxQd9R4sFif9HCwimyy/F0dUrW1sFDALjo7Yla/0CeSkNzM6213OkimqmzBpEpqB6
-	 z2+sTp+HXVU/y85a49gdKnXMlHmFJTcFopklT0udSjAA5Zqh1FXDtCKcQF8GUEuQxP
-	 vazXBbl11cZw01mXhz9X+5WXTET3J78VzNreI9C+5v+GPXACiz9peTGgYR1fzHYl9X
-	 vcKNh//UX7e0A==
-Date: Fri, 16 May 2025 18:04:40 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- decui@microsoft.com, stephen@networkplumber.org, kys@microsoft.com,
- paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
- davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
- pabeni@redhat.com, leon@kernel.org, longli@microsoft.com,
- ssengar@linux.microsoft.com, linux-rdma@vger.kernel.org,
- daniel@iogearbox.net, john.fastabend@gmail.com, bpf@vger.kernel.org,
- ast@kernel.org, hawk@kernel.org, tglx@linutronix.de,
- shradhagupta@linux.microsoft.com, andrew+netdev@lunn.ch,
- kotaranov@microsoft.com, horms@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next,v4] net: mana: Add handler for hardware
- servicing events
-Message-ID: <20250516180440.0db7b35a@kernel.org>
-In-Reply-To: <1747254637-3537-1-git-send-email-haiyangz@microsoft.com>
-References: <1747254637-3537-1-git-send-email-haiyangz@microsoft.com>
+	s=arc-20240116; t=1747475920; c=relaxed/simple;
+	bh=VIs2OF54lqPLhmf74bUbL4CZ0VFfWopF/SaPWVXUFPY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PxfC+KOCK3SFYHK1iu40eyZ/onTJO3X4cEaZkubDonTltxfHCs6yB0kVD0FrBszov4gOnhCjNC3FFbktQfBhH/gamLHTamf9yvQWvpWU8p8TEiiTHouKXkRai2gcrbvhLBK8r8HpVBiFUeLmBWZlYXdLSMIgG/18OPafuiCiVG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-43cfba466b2so30323025e9.3;
+        Sat, 17 May 2025 02:58:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747475917; x=1748080717;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=L1xybqkdxpFEj1EI8QA+pvcqPiyMXAo9agsU9POzFbs=;
+        b=utSwGTDT3p5U+3zmB1XtEg9AzOUVqnA+t0+xCn9UjgkgaFLxEKFn0fQ2moF8Wc4zLw
+         IJ1vcudo9Mi6xLqlEdSCKLKkyhJYhittfiTgInSXdbGMX7d72xamojtnT0AtocOkL2Aw
+         oRMD4fUsahhdDdivRo2Uw8cSrgGnorFg4KBxoPEruliFe/9KzgXp+tMPvV9Le8UN+Ckw
+         DrlJc7OK8JW39cfaKVrzs5BBBn43kkphoPG5h8NwFSYRpuqzizDTY9ASdE7f29xp7mQg
+         wZrIMEBQoPfTieT3q041BOaVnZBGUhcxTvZC+9gK7apDQ06cuk6wb/Bu3TtU21tBnV1F
+         r3oA==
+X-Forwarded-Encrypted: i=1; AJvYcCV32CF7iWUa4FsNZ9kyhVFNkJljX3qA5AFxi+/8r5I8qoZrOuFh7d6UTyvTzbRMoUveY5L7UafgIdohHQ==@vger.kernel.org, AJvYcCWW9m3x3L4Fu7kR4rs0HyCPx/Yi7OXK2caq4sBT7FDMa0iqKlv8MdAxsBbIm4HzcrrB+UOhg2yQ@vger.kernel.org, AJvYcCX8YgDy2XUpOCqZMymsJdZdi5/X3k6lBX1C3U4A5R59App/D3qo2xS/vCXliZKlXy7roUISDbsXrJ5EzA==@vger.kernel.org, AJvYcCXyV+9btsAvhGGZTwpfwe3cqzIZ4KBNYYVPdoP0S2p+tmMjzJ10As8S/wp3pVJLaLbQ+19RTRxfr4ajFrs=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyw6fFjZ+KodxM8nSdQGLMv4UlbMLvqT0L7KOflks4Eo7PMH/xV
+	IvsrdkTtIv9QEwUfO+Lj2k8UGLu8mPgHfR6ekUQwVfliZI+776msT4qh
+X-Gm-Gg: ASbGncvtoyBCYQBBYrPorHliixxTww5IYcwyM8zJwhrFuchyG3FkA2ECm7P2GlQTCa9
+	kVtGlLxvdIug/zu2yBithYrO0MvLK0JRPMhGoeKt5A7MLLuMYmQzMFQPZNY99baBUWRcrwmrkSp
+	C75fDvriSu89/bknpuSP6BbcAXGdL+0rKgFPCqeEk/qrf058a6LUiOH7zwaOVCPRtvDtVsstyc2
+	vInw7sJ3BmBHjNIa0ePIX4+KKOBsft7GmgI+mud5iIaH5NozqMChBsd5Gj2iCgqha+mh1Th4W4l
+	KgijiYYA0ysCukELqpMbb+47nTDe2THGZQ1HBPK/ekhWd1A3PJScz2eQlpMrt/JyWmamUT9RPlz
+	QByXodzvU
+X-Google-Smtp-Source: AGHT+IEL1yy1dVgbHcGpQ/e6QxEBlTdRtwZtph6z/27chlWDRnOkl9UnAko5e06/JsZwHle1RrNcjQ==
+X-Received: by 2002:a05:600c:1d82:b0:43c:f969:13c0 with SMTP id 5b1f17b1804b1-442ff03bd03mr53445255e9.29.1747475916740;
+        Sat, 17 May 2025 02:58:36 -0700 (PDT)
+Received: from [10.100.102.74] (89-138-68-29.bb.netvision.net.il. [89.138.68.29])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-442fd50b983sm63604445e9.11.2025.05.17.02.58.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 May 2025 02:58:36 -0700 (PDT)
+Message-ID: <8b4db290-00c0-4627-a03e-d39a22c56fcf@grimberg.me>
+Date: Sat, 17 May 2025 12:58:35 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 09/10] nvme-tcp: use crc32c() and
+ skb_copy_and_crc32c_datagram_iter()
+To: Eric Biggers <ebiggers@kernel.org>, netdev@vger.kernel.org
+Cc: linux-nvme@lists.infradead.org, linux-sctp@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+ Ard Biesheuvel <ardb@kernel.org>
+References: <20250511004110.145171-1-ebiggers@kernel.org>
+ <20250511004110.145171-10-ebiggers@kernel.org>
+Content-Language: en-US
+From: Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <20250511004110.145171-10-ebiggers@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On Wed, 14 May 2025 13:30:37 -0700 Haiyang Zhang wrote:
-> +		dev_info(gc->dev, "Start MANA service type:%d\n", type);
-> +		gc->in_service = true;
-> +		mns_wk->pdev = to_pci_dev(gc->dev);
-> +		INIT_WORK(&mns_wk->serv_work, mana_serv_func);
-> +		schedule_work(&mns_wk->serv_work);
+>   #include "nvme.h"
+>   #include "fabrics.h"
+> @@ -166,12 +166,12 @@ struct nvme_tcp_queue {
+>   	bool			rd_enabled;
+>   
+>   	bool			hdr_digest;
+>   	bool			data_digest;
+>   	bool			tls_enabled;
+> -	struct ahash_request	*rcv_hash;
+> -	struct ahash_request	*snd_hash;
+> +	u32			rcv_crc;
+> +	u32			snd_crc;
 
-I don't see any refcounting in this patch, and the work is not
-canceled. What if the device is removed between work being scheduled
-and running?
+Let's call it rcv_dgst (recv digest) and snd_dgst (send digest).
+Other than that, looks good to me.
+
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
 
