@@ -1,109 +1,103 @@
-Return-Path: <linux-rdma+bounces-10386-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10387-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8156BABABB5
-	for <lists+linux-rdma@lfdr.de>; Sat, 17 May 2025 19:46:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5A2FABABCA
+	for <lists+linux-rdma@lfdr.de>; Sat, 17 May 2025 20:12:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1ADA29E2962
-	for <lists+linux-rdma@lfdr.de>; Sat, 17 May 2025 17:45:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B3CB178168
+	for <lists+linux-rdma@lfdr.de>; Sat, 17 May 2025 18:13:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D49C4B1E7F;
-	Sat, 17 May 2025 17:46:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9E17212FAB;
+	Sat, 17 May 2025 18:12:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tq0DH6KX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TYvwMKUf"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1940C19CC27;
-	Sat, 17 May 2025 17:46:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E45BA204F93
+	for <linux-rdma@vger.kernel.org>; Sat, 17 May 2025 18:12:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747503963; cv=none; b=GTalQBJtMLFbpGsgwvQIQoaXt5N/fBdVh+5phRaPoLpx2C0pqxXSJVVq6Nl98rBgn4vgvsT26QS8Gg3wdqyCYM9afHxkgqmRnrh8hB1OoLQO4nqp/nhcRQqeZTKBFJUpOa7hcVM4fOpf5C3RKtWeXnd7USk9dFmJbOvltb/MndE=
+	t=1747505575; cv=none; b=l1FiOj8RS+FnQMoS/BkWDHEp+icT6YrcjqDxBnstlgWTXmz+6feXQO4JPlShCQ2xCnhWMRWDpbHcO78C1C8lkrWVXm3wA8KRQLaJHs/59byr0jsdFUBGrTjMG8ejruHIqr+5Sg+8atxjMtECrqGvPBmWIpGvdLiNQmfvQoSHnd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747503963; c=relaxed/simple;
-	bh=7/27gGuAO+opB7qDSlkxsDQOtI6hEvDd/hdxFCWHj3w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yhpxc8c+md28lCntMOsEkDEbPA733Qeo9VI0EIK7/UDSQuTMYuJmBZcjoEi9ZpZgPmY5/MaIC3gvIPQsEOn12wCTKnJlarhFcWzm04kZmZAsfWJj1ZaDCwI4mLlvFETmWOYfqp3nS73kOOmOJimQwzY6mGN37oempQEyCwXZn9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tq0DH6KX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3353EC4CEE3;
-	Sat, 17 May 2025 17:46:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747503962;
-	bh=7/27gGuAO+opB7qDSlkxsDQOtI6hEvDd/hdxFCWHj3w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Tq0DH6KXX9NRv3ifq9zWCcgIkIisXar1upGP0dZfAOxX/1CK8mmpbD2+XzhZodLGS
-	 zH0RTmSq+1NguowNMBpHoiW/bBAmwFsjyr68tRP1dce6DFxX9BtLRnmqfGvjWucQVR
-	 wkgR8NIg14iSz1TXnwDFYN905bLZKa17jb+KfohwSVrJSo8QBnt/W6QIaPyyIHK9hR
-	 +gt48u1e1zwrC/eUWS3QVuZ5LWX7oh0T78mvP+LHUGjP9E8W9ZpMQTEe4XIiJFAe8L
-	 EnkRjS80iJUrcGt+uvBhqrb19Evv5yxMuLVTwWASELtQj+B+pKHmLTe6gbe7pH6oAs
-	 CDexrVCAuG/KA==
-Date: Sat, 17 May 2025 10:45:52 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: netdev@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-sctp@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-	Sagi Grimberg <sagi@grimberg.me>, Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH net-next 09/10] nvme-tcp: use crc32c() and
- skb_copy_and_crc32c_datagram_iter()
-Message-ID: <20250517174552.GB1239@sol>
-References: <20250511004110.145171-1-ebiggers@kernel.org>
- <20250511004110.145171-10-ebiggers@kernel.org>
- <aCbAsCkTPMNE6Ogb@infradead.org>
- <20250516053100.GA10488@sol>
- <aCbWAFNoBUjci7HG@infradead.org>
+	s=arc-20240116; t=1747505575; c=relaxed/simple;
+	bh=BeMgKY3Uh91S5ZbFHQoDIVbOb+B40eZqgaNEmq2kq6s=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=m499vbcy1hhfaZemAvvLsvKRVlS8akDs7Tbgz9DAjCsnP9ocBh6HYvEsxmawLYyOLNkg208ljhZRDp+RTXf0oV1SyO0VARkaRZVJIysQGINdelz5sIbS7ZECeKtLxqLtVhQdQDlrhoBhQHrmboSb/AgP4UW8xmxx3jewVJmD72s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TYvwMKUf; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-442f5b3c710so24110705e9.1
+        for <linux-rdma@vger.kernel.org>; Sat, 17 May 2025 11:12:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747505572; x=1748110372; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BeMgKY3Uh91S5ZbFHQoDIVbOb+B40eZqgaNEmq2kq6s=;
+        b=TYvwMKUf5TytkVcbd1Ar7IXKHM/ZePjt+NbMEJUhqtPRj7rAoHx9kZWg7Tj4jA89l/
+         6Sgi2nOg6GqYZKqcGcDy64z/dc7vEXvSe1iiYVDRwoE6BpEL20nNCm/5zOF8axdhCkoa
+         3VkC8TIwqaX/BOOH8WuUg26l8JQGamxgKu/wL+sfYx7yv589mmmZmRrdL09gkP8mfRHv
+         yONq6XrEO50CRXtV57SOywQ98kbCizq00N9UrmYLViMDl+l/bsB6xvRMHyAmvAfQTZNp
+         ZH7U4YNrAXjlXF0WeeJCbTTDDM8B3/K3miVuOFnPFKdahXNTVVXQv6m4k+ZT6qMepoVk
+         4wWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747505572; x=1748110372;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BeMgKY3Uh91S5ZbFHQoDIVbOb+B40eZqgaNEmq2kq6s=;
+        b=O6sPtl/gy/E1Tazk8MI2q+J5HrGajZIimAKMLD3DUnGs7f5jhzn0tFvRnYmrKP5s3c
+         o724PDaP2vefNGkwqqnM5hYkHEl1amJhSHrKh+50LI859MCr1SClkmtvc0IkInpalM7r
+         N2Mv9UnvCsk1nS2l/IPDsw5tufbv09sVJZEkUvJYro5IOSMS5zn8X/AqSBeuXlt1CunE
+         +y9RFOdrLBj97Bf4iq9rh2gNEj5OpTzd9u+r3xjUUFInOCkiAKX+1IQH+7EpBFN910Um
+         MkGkHJ/AKPGq5/Epj3PpyPx4+AmXWHziK1x1B7rynQoTeousMB4ctbexXRuezp5NvDrx
+         uiCA==
+X-Forwarded-Encrypted: i=1; AJvYcCXzUop44ewEjp0zyfYqgTBenmeqnOUOAS9cZupHAgubHM8FS3jDKK6BDynpnHhmW65qeiChkPlGRKi/@vger.kernel.org
+X-Gm-Message-State: AOJu0YyORPwCZdAl9QiwJ/lm/VbQsiyQZxEsyzhK1XUiL5WEuFNlRxch
+	tN1WjwdU4ft28qNkabGU/gN3DdvRZBR0JjvrIsNoMhHgnVzVF7i8BlfY
+X-Gm-Gg: ASbGncu26cmz9z8MgdsUurCU8YIe3VbhaQ01qHUYmnlJeTBKgnccJ0CTlUZW425YziI
+	VWYgKNTul9FWerXAx54GZLxIIfI5JMroSmoFIOR6Rj+onXfmOiK5GWg8JQfIFWv6XYg3FTtbbkE
+	/0/CtGrlouxJZBT3aQsCKh4VooyD9qeixOazxgD/3n11jM23x3foUw3cCOEpOEcyOV2TGecCDy0
+	h3w7f/eXPrpWe0Yh40CGiqGv5yjf/8XM4sx8GlzabgwHuKIWYn9PZ+ZPNxB7oSIJKHCMNNQmVVU
+	fIW0v8FH6K9mluA3U6pAmZWRpHJE6Md5IhRJ0GAoOAJUPRI/jTERc5MWuU6NR+c=
+X-Google-Smtp-Source: AGHT+IEALcykz/akwNAocIzQbPzEXf74h4NfoYnvQjZSq7JlrWTYSY5BC4ZxICxoPdPa1JPYTQoQ9A==
+X-Received: by 2002:a05:600c:3f19:b0:43c:fe85:e4ba with SMTP id 5b1f17b1804b1-442fd63c755mr87596125e9.15.1747505572005;
+        Sat, 17 May 2025 11:12:52 -0700 (PDT)
+Received: from localhost.localdomain ([78.172.0.119])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a35ca8ce9asm6875895f8f.86.2025.05.17.11.12.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 May 2025 11:12:50 -0700 (PDT)
+From: goralbaris <goralbaris@gmail.com>
+To: allison.henderson@oracle.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: horms@kernel.org,
+	linux-rdma@vger.kernel.org,
+	skhan@linuxfoundation.org
+Subject: [PATCH net-next v2] Replace strncpy with strscpy
+Date: Sat, 17 May 2025 21:12:48 +0300
+Message-Id: <20250517181248.28913-1-goralbaris@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250408212122.10517-1-goralbaris@gmail.com>
+References: <20250408212122.10517-1-goralbaris@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aCbWAFNoBUjci7HG@infradead.org>
+Content-Transfer-Encoding: 8bit
 
-On Thu, May 15, 2025 at 11:06:56PM -0700, Christoph Hellwig wrote:
-> On Thu, May 15, 2025 at 10:31:00PM -0700, Eric Biggers wrote:
-> > +static inline __le32 nvme_tcp_hdgst(const void *pdu, size_t len)
-> > +{
-> > +	return cpu_to_le32(~crc32c(NVME_TCP_CRC_SEED, pdu, len));
-> >  }
-> 
-> This drops the unaligned handling.  Now in the NVMe protocol it will
-> always be properly aligned, but my TCP-foo is not good enough to
-> remember if the networking code will also guarantee 32-bit alignment
-> for the start of the packet?
-> 
-> Otherwise this looks great:
-> 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+Hi,
+Any news about this Patch?
 
-The nvme-tcp driver already assumes that the header is at least 4-byte aligned,
-considering that it accesses hdr->plen and the struct doesn't use __packed:
-
-    struct nvme_tcp_hdr {
-            __u8	type;
-            __u8	flags;
-            __u8	hlen;
-            __u8	pdo;
-            __le32	plen;
-    };
-
-On the send size, the header size is always sizeof(struct nvme_tcp_cmd_pdu) or
-sizeof(struct nvme_tcp_data_pdu) which are multiples of 4.  On the receive side,
-nvme-tcp validates hdr->hlen == sizeof(struct nvme_tcp_rsp_pdu) and then does:
-
-    recv_digest = *(__le32 *)(pdu + hdr->hlen);
-
-So, using put_unaligned_le32() is unnecessary.  I just had it there in v1
-because I had directly translated crypto_ahash_digest(), which does ultimately
-do a put_unaligned_le32() once you unravel all the API layers.
-
-- Eric
+Best Regards,
+Baris
 
