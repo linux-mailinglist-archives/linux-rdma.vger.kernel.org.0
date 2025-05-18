@@ -1,73 +1,95 @@
-Return-Path: <linux-rdma+bounces-10399-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10400-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8BC0ABB0C4
-	for <lists+linux-rdma@lfdr.de>; Sun, 18 May 2025 18:10:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AD68ABB179
+	for <lists+linux-rdma@lfdr.de>; Sun, 18 May 2025 21:54:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9FE01897F8F
-	for <lists+linux-rdma@lfdr.de>; Sun, 18 May 2025 16:10:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 046EC166C8D
+	for <lists+linux-rdma@lfdr.de>; Sun, 18 May 2025 19:54:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A8A191F77;
-	Sun, 18 May 2025 16:10:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 209521F5842;
+	Sun, 18 May 2025 19:54:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="NDEfxMd2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FHKdBjPL"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED6752746C
-	for <linux-rdma@vger.kernel.org>; Sun, 18 May 2025 16:10:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.184.29
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 446101D63FC;
+	Sun, 18 May 2025 19:54:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747584622; cv=none; b=r8aCtggeXRCIVUxtPt9kooqIKly4FbDEX/oDc/WnP5toCeHaMY7f/nSzpcxLDPo+/mCanogZ40YFDOYDxq/EndRMgU/Potc1Bsp8GqmuzbnDWzas3dSVEj5qK6as74YMmM7FIYcN+wgRAFo7ElfVtG6JQCxbNvkgQtQLHkh45ho=
+	t=1747598046; cv=none; b=S76CFnKXSImEB9hcsNC8c3tEd1qhaSFdJKF8/65KrpYa3ogvwCI6YQuY3zTxicbVJZx9oj5ztPX91TT9VpGJMpF0RriyZ0TRW9LuchFSAcoSkeMJoUJbhFPr4ko2o9Qjy0aQv6avuZR9vBy6pqBF6WdfvVG3zsxuVV+TOC+gTg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747584622; c=relaxed/simple;
-	bh=Gxn31F+zPJr2y+Vca8hZHU7I76Kh5AOEpiTDvHcxOXg=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UAmb/40eYtSYJLPsVw47r4zQMH9V/voVsH8H80RXnRgxnleaNZm53UNod0tqOfGRXCOLi8EA3mbo7BlK/DXaVEBtl+xmkDE/U4Vpb9zPHcpRppBvPoYW6ZnFkNZ4BgsLIPhbfLM2E0vcV+D5CrI6oJObmZo1yUVs9me/FyRo1mE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=NDEfxMd2; arc=none smtp.client-ip=207.171.184.29
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+	s=arc-20240116; t=1747598046; c=relaxed/simple;
+	bh=GjyQRxDj/zHB3ZABsXLrupJYo0+DVNEsnoP0kXv4Pg4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Bpec2tzTdkXxJrYtAJqWO+NSuL3F3p4iBbGx0Ajs6Q49bg58qzMbKy7Nm5CfArpr5kQc1IXUdk21raaBw9ftaMqt1ANITDdeCnq3AyCnMMIrQGs4p3KVncwD2sR5JyZT66C3LyE0vpeHPvfdOl4MXxGdlzcPLROssCJ/1l3J5x4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FHKdBjPL; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3a36e950e41so253609f8f.0;
+        Sun, 18 May 2025 12:54:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1747584621; x=1779120621;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ivnms+6pbvBIgPqoIQyuB2pGFyqptSi67hLpqrexuLA=;
-  b=NDEfxMd2NW2e6UJg5pNN9jyMzZ+F1XC72nkrVWur79B4IH4t1LT3hgzM
-   GldXbjLjQCGsGk2+/IHvwxxL4h1R1587eh2u8oZwo4t73aURFxC78/aU5
-   MZbt7ta9PkKP6e4gmr9jSHjBPdj0Meud0Pt5K0EvJDkYJTjMUeOibqu+J
-   5ySk61es7GPg2t0IAx3GEShyECoXMyd5nWv1vsKSS3BhVmNqEHovNa5mZ
-   BbeVYbWYnBgn4C1+qjRlV8sb1CwhDKXI4eQuVQy9/9ghX0eJcl+7ft/u0
-   yfkI3B9QWk7dE9H4yK4auS5E6m8Z5qhHgkO/WQNHO4wW91tPpkyy/Rd5I
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.15,299,1739836800"; 
-   d="scan'208";a="521729441"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.25.36.214])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2025 16:10:14 +0000
-Received: from EX19MTAEUC002.ant.amazon.com [10.0.10.100:10901]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.44.226:2525] with esmtp (Farcaster)
- id 248ce623-c8f2-4493-98c8-31f0d6019763; Sun, 18 May 2025 16:10:12 +0000 (UTC)
-X-Farcaster-Flow-ID: 248ce623-c8f2-4493-98c8-31f0d6019763
-Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
- EX19MTAEUC002.ant.amazon.com (10.252.51.245) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Sun, 18 May 2025 16:10:12 +0000
-Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
- (10.253.103.172) by EX19D031EUB003.ant.amazon.com (10.252.61.88) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14; Sun, 18 May 2025
- 16:10:09 +0000
-From: Michael Margolin <mrgolin@amazon.com>
-To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
-CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>, "Daniel
- Kranzdorf" <dkkranzd@amazon.com>, Yonatan Nachum <ynachum@amazon.com>
-Subject: [PATCH for-next v2] RDMA/efa: Add CQ with external memory support
-Date: Sun, 18 May 2025 16:09:56 +0000
-Message-ID: <20250518160956.14711-1-mrgolin@amazon.com>
-X-Mailer: git-send-email 2.47.1
+        d=gmail.com; s=20230601; t=1747598043; x=1748202843; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7QEmH00c1v4Apy/bHp47nFjmBVfuKI/Ra2tULl3wUHo=;
+        b=FHKdBjPLv5E2gjWO7RZlIRJhsjeI3fBPZZ0VYru5+IKNiy+LfZRlZ5m3Zfo3JgzBE1
+         iz5o2QNwJ5xUHqH7ABvTixDSmGrEF/7H0x8j9A8uO2ny43tbR8qSpB8B1zDXH+P33PnT
+         z2gjF2ziDjE2Mi2Tbj8i5W4bw+Oc4Cg2lDEf9Ac3UTuncswD0UF8vsTE7qv0uBIUtjl1
+         0qG0u/hnJhwgf4J/xy/NlYP5m6CAoT785TvhFRWZWSO2m2vEoiXrjTAAmmVfNmQGs2pU
+         0287agkmD3xil/q5ZNFfl4K855GR/Mo9eJfpioScMKvboqCuO9J+1TZyg07obr4pykoj
+         m/JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747598043; x=1748202843;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7QEmH00c1v4Apy/bHp47nFjmBVfuKI/Ra2tULl3wUHo=;
+        b=TprzQ/OQjruQi+w7itZiVwCSgV5NOm5QhMGa/a4AbWy/0BlTkJBr2JEC/flAhVChVe
+         APzMBhONdIuTNqRvYz6S4NtE6U06vYz69+4qzAG1gEQc1xvzekYTUbmK7GhpwvAgMfei
+         ay4UPwN9T1I9ccSBZ4R+ikP01ks/u0kV+qjJvIkqSnFIQoNqnDZwRC6y1/RJ6D44vVVi
+         5Ffapz9t9V3PSMDaXeMrbBxD1uzSCjuNRYQ0wLCzCxbl83BFsmOuE7wCxARePOsdUCS7
+         nvQpC3XIfsSS/2Fvqi5oCgdcSyZI2oMH7skNRQpDt+SXGHMNJHYHITPIyqHADGFX6Vev
+         t2Kw==
+X-Forwarded-Encrypted: i=1; AJvYcCWQozBzAc/TyOY8fwvdvAv5yeCx7vM2t2tKui73+PchyrFVBixwYcNe+l6OKkung4bpcW+BAaGei/qx@vger.kernel.org, AJvYcCXxBQ4mZ1xREHHB5R7nm7kub9E20mK+bdV7n0x8sZJ4u89i/G6m6DSgcDiqwAB5vbmTS4c1fMBn@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx7jC6ZwIkl0VyT/Bn7HH+VcHz5tEb5igvT8elm/JIzRj6rDAd+
+	NJeRYLC1UvMjx55K4VQorndG0cgy3gdeq16Frj5RNQwSI6U7uL8QK3UC
+X-Gm-Gg: ASbGncvGk0xe7g1xTwh6P7s7W6mwh3/W2y5eAQWhgHdQ1Sl11J+CJVbJR/XO5jJO40I
+	4OIQJT78MQ5cZZJQjFo+/29pa0GY1g4pX9ilwKHgWFYDxRI1dTmayVIHdfl3p6MSVUiL7Q97UI2
+	HBxWygM6ef9sQiv52rRsilzVhxrUsi4mUbd5MFjrL7U+eEgBJTims16qMIqNm4v+I6DU9S7RNFm
+	NqF9XgQX3fNHfgWBrH+LuSnE9ZM0uEWI/o4LWQse+CZiHDoFzffn7TcdCmscAU/X3CS4QKINCmm
+	kmuApRwQLP52tRmF25eq6/OcXDdFULzHecCFQj8oTtVY3cg+SvtgG663d5hDT54=
+X-Google-Smtp-Source: AGHT+IGi9WjH9VBaLdl7h7A0PKGH1Vs0ohzHfGw4txAo+2SK3nGed6P8+JltaEnWPPj1/DOajVDYKg==
+X-Received: by 2002:a05:6000:1a8d:b0:3a3:6584:3f9d with SMTP id ffacd0b85a97d-3a365844b33mr4415691f8f.41.1747598043371;
+        Sun, 18 May 2025 12:54:03 -0700 (PDT)
+Received: from localhost.localdomain ([78.172.0.119])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a35ca4d105sm10429231f8f.11.2025.05.18.12.54.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 May 2025 12:54:02 -0700 (PDT)
+From: goralbaris <goralbaris@gmail.com>
+To: horms@kernel.org
+Cc: allison.henderson@oracle.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	goralbaris@gmail.com,
+	kuba@kernel.org,
+	linux-rdma@vger.kernel.org,
+	pabeni@redhat.com,
+	skhan@linuxfoundation.org,
+	shankari.ak0208@gmail.com,
+	netdev@vger.kernel.org
+Subject: [PATCH v3 net-next: rds] replace strncpy with strscpy_pad
+Date: Sun, 18 May 2025 22:53:29 +0300
+Message-Id: <20250518195328.14469-1-goralbaris@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250518090020.GA366906@horms.kernel.org>
+References: <20250518090020.GA366906@horms.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -75,186 +97,45 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D036UWB001.ant.amazon.com (10.13.139.133) To
- EX19D031EUB003.ant.amazon.com (10.252.61.88)
 
-Add an option to create CQ using external memory instead of allocating
-in the driver. The memory can be passed from userspace by dmabuf fd and
-an offset. One of the possible usages is creating CQs that reside in
-accelerator memory, allowing low latency asynchronous direct polling
-from the accelerator device. Add a capability bit to reflect on the
-feature support.
+The strncpy() function is actively dangerous to use since it may not
+NULL-terminate the destination string, resulting in potential memory.
+Link: https://github.com/KSPP/linux/issues/90
 
-Reviewed-by: Daniel Kranzdorf <dkkranzd@amazon.com>
-Reviewed-by: Yonatan Nachum <ynachum@amazon.com>
-Signed-off-by: Michael Margolin <mrgolin@amazon.com>
+In addition, strscpy_pad is more appropriate because it also zero-fills 
+any remaining space in the destination if the source is shorter than 
+the provided buffer size.
+
+Signed-off-by: goralbaris <goralbaris@gmail.com>
 ---
- drivers/infiniband/hw/efa/efa.h       |  1 +
- drivers/infiniband/hw/efa/efa_verbs.c | 60 ++++++++++++++++++++++-----
- include/uapi/rdma/efa-abi.h           |  8 +++-
- 3 files changed, 58 insertions(+), 11 deletions(-)
+ net/rds/connection.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
-index 838182d0409c..fd609a50cea0 100644
---- a/drivers/infiniband/hw/efa/efa.h
-+++ b/drivers/infiniband/hw/efa/efa.h
-@@ -107,6 +107,7 @@ struct efa_cq {
- 	u16 cq_idx;
- 	/* NULL when no interrupts requested */
- 	struct efa_eq *eq;
-+	struct ib_umem *umem;
- };
+diff --git a/net/rds/connection.c b/net/rds/connection.c
+index c749c5525b40..d62f486ab29f 100644
+--- a/net/rds/connection.c
++++ b/net/rds/connection.c
+@@ -749,8 +749,7 @@ static int rds_conn_info_visitor(struct rds_conn_path *cp, void *buffer)
+ 	cinfo->laddr = conn->c_laddr.s6_addr32[3];
+ 	cinfo->faddr = conn->c_faddr.s6_addr32[3];
+ 	cinfo->tos = conn->c_tos;
+-	strncpy(cinfo->transport, conn->c_trans->t_name,
+-		sizeof(cinfo->transport));
++	strscpy_pad(cinfo->transport, conn->c_trans->t_name);
+ 	cinfo->flags = 0;
  
- struct efa_qp {
-diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-index a8645a40730f..ecebc47ff249 100644
---- a/drivers/infiniband/hw/efa/efa_verbs.c
-+++ b/drivers/infiniband/hw/efa/efa_verbs.c
-@@ -249,6 +249,7 @@ int efa_query_device(struct ib_device *ibdev,
- 		resp.max_rdma_size = dev_attr->max_rdma_size;
+ 	rds_conn_info_set(cinfo->flags, test_bit(RDS_IN_XMIT, &cp->cp_flags),
+@@ -775,8 +774,7 @@ static int rds6_conn_info_visitor(struct rds_conn_path *cp, void *buffer)
+ 	cinfo6->next_rx_seq = cp->cp_next_rx_seq;
+ 	cinfo6->laddr = conn->c_laddr;
+ 	cinfo6->faddr = conn->c_faddr;
+-	strncpy(cinfo6->transport, conn->c_trans->t_name,
+-		sizeof(cinfo6->transport));
++	strscpy_pad(cinfo6->transport, conn->c_trans->t_name);
+ 	cinfo6->flags = 0;
  
- 		resp.device_caps |= EFA_QUERY_DEVICE_CAPS_CQ_WITH_SGID;
-+		resp.device_caps |= EFA_QUERY_DEVICE_CAPS_CQ_WITH_EXT_MEM_DMABUF;
- 		if (EFA_DEV_CAP(dev, RDMA_READ))
- 			resp.device_caps |= EFA_QUERY_DEVICE_CAPS_RDMA_READ;
- 
-@@ -1082,8 +1083,11 @@ int efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
- 		xa_erase(&dev->cqs_xa, cq->cq_idx);
- 		synchronize_irq(cq->eq->irq.irqn);
- 	}
--	efa_free_mapped(dev, cq->cpu_addr, cq->dma_addr, cq->size,
--			DMA_FROM_DEVICE);
-+
-+	if (cq->umem)
-+		ib_umem_release(cq->umem);
-+	else
-+		efa_free_mapped(dev, cq->cpu_addr, cq->dma_addr, cq->size, DMA_FROM_DEVICE);
- 	return 0;
- }
- 
-@@ -1133,8 +1137,10 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	struct efa_com_create_cq_result result;
- 	struct ib_device *ibdev = ibcq->device;
- 	struct efa_dev *dev = to_edev(ibdev);
-+	struct ib_umem_dmabuf *umem_dmabuf;
- 	struct efa_ibv_create_cq cmd = {};
- 	struct efa_cq *cq = to_ecq(ibcq);
-+	struct scatterlist *umem_sgl;
- 	int entries = attr->cqe;
- 	bool set_src_addr;
- 	int err;
-@@ -1202,11 +1208,40 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 
- 	cq->ucontext = ucontext;
- 	cq->size = PAGE_ALIGN(cmd.cq_entry_size * entries * cmd.num_sub_cqs);
--	cq->cpu_addr = efa_zalloc_mapped(dev, &cq->dma_addr, cq->size,
--					 DMA_FROM_DEVICE);
--	if (!cq->cpu_addr) {
--		err = -ENOMEM;
--		goto err_out;
-+
-+	if (cmd.flags & EFA_CREATE_CQ_WITH_EXT_MEM_DMABUF) {
-+		if (cmd.ext_mem_length < cq->size) {
-+			ibdev_dbg(&dev->ibdev, "External memory too small\n");
-+			err = -EINVAL;
-+			goto err_out;
-+		}
-+
-+		umem_dmabuf = ib_umem_dmabuf_get_pinned(ibdev, cmd.ext_mem_offset,
-+							cq->size, cmd.ext_mem_fd,
-+							IB_ACCESS_LOCAL_WRITE);
-+		if (IS_ERR(umem_dmabuf)) {
-+			err = PTR_ERR(umem_dmabuf);
-+			ibdev_dbg(&dev->ibdev, "Failed to get dmabuf umem[%d]\n", err);
-+			goto err_out;
-+		}
-+		cq->umem = &umem_dmabuf->umem;
-+		umem_sgl = cq->umem->sgt_append.sgt.sgl;
-+
-+		if (sg_dma_len(umem_sgl) < ib_umem_offset(cq->umem) + cq->size) {
-+			ibdev_dbg(&dev->ibdev, "Non contiguous CQ unsupported\n");
-+			err = -EINVAL;
-+			goto err_free_mapped;
-+		}
-+
-+		cq->cpu_addr = NULL;
-+		cq->dma_addr = sg_dma_address(umem_sgl) + ib_umem_offset(cq->umem);
-+	} else {
-+		cq->cpu_addr = efa_zalloc_mapped(dev, &cq->dma_addr, cq->size,
-+						 DMA_FROM_DEVICE);
-+		if (!cq->cpu_addr) {
-+			err = -ENOMEM;
-+			goto err_out;
-+		}
- 	}
- 
- 	params.uarn = cq->ucontext->uarn;
-@@ -1231,7 +1266,9 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	cq->ibcq.cqe = result.actual_depth;
- 	WARN_ON_ONCE(entries != result.actual_depth);
- 
--	err = cq_mmap_entries_setup(dev, cq, &resp, result.db_valid);
-+	if (!(cmd.flags & EFA_CREATE_CQ_WITH_EXT_MEM_DMABUF))
-+		err = cq_mmap_entries_setup(dev, cq, &resp, result.db_valid);
-+
- 	if (err) {
- 		ibdev_dbg(ibdev, "Could not setup cq[%u] mmap entries\n",
- 			  cq->cq_idx);
-@@ -1270,8 +1307,11 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- err_destroy_cq:
- 	efa_destroy_cq_idx(dev, cq->cq_idx);
- err_free_mapped:
--	efa_free_mapped(dev, cq->cpu_addr, cq->dma_addr, cq->size,
--			DMA_FROM_DEVICE);
-+	if (cq->umem)
-+		ib_umem_release(cq->umem);
-+	else
-+		efa_free_mapped(dev, cq->cpu_addr, cq->dma_addr, cq->size,
-+				DMA_FROM_DEVICE);
- 
- err_out:
- 	atomic64_inc(&dev->stats.create_cq_err);
-diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
-index 11b94b0b035b..f2bcef789571 100644
---- a/include/uapi/rdma/efa-abi.h
-+++ b/include/uapi/rdma/efa-abi.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-2-Clause) */
- /*
-- * Copyright 2018-2024 Amazon.com, Inc. or its affiliates. All rights reserved.
-+ * Copyright 2018-2025 Amazon.com, Inc. or its affiliates. All rights reserved.
-  */
- 
- #ifndef EFA_ABI_USER_H
-@@ -56,6 +56,7 @@ struct efa_ibv_alloc_pd_resp {
- enum {
- 	EFA_CREATE_CQ_WITH_COMPLETION_CHANNEL = 1 << 0,
- 	EFA_CREATE_CQ_WITH_SGID               = 1 << 1,
-+	EFA_CREATE_CQ_WITH_EXT_MEM_DMABUF     = 1 << 2,
- };
- 
- struct efa_ibv_create_cq {
-@@ -64,6 +65,10 @@ struct efa_ibv_create_cq {
- 	__u16 num_sub_cqs;
- 	__u8 flags;
- 	__u8 reserved_58[5];
-+	__aligned_u64 ext_mem_offset;
-+	__aligned_u64 ext_mem_length;
-+	__u32 ext_mem_fd;
-+	__u8 reserved_120[4];
- };
- 
- enum {
-@@ -131,6 +136,7 @@ enum {
- 	EFA_QUERY_DEVICE_CAPS_DATA_POLLING_128 = 1 << 4,
- 	EFA_QUERY_DEVICE_CAPS_RDMA_WRITE = 1 << 5,
- 	EFA_QUERY_DEVICE_CAPS_UNSOLICITED_WRITE_RECV = 1 << 6,
-+	EFA_QUERY_DEVICE_CAPS_CQ_WITH_EXT_MEM_DMABUF = 1 << 7,
- };
- 
- struct efa_ibv_ex_query_device_resp {
+ 	rds_conn_info_set(cinfo6->flags, test_bit(RDS_IN_XMIT, &cp->cp_flags),
 -- 
-2.47.1
+2.34.1
 
 
