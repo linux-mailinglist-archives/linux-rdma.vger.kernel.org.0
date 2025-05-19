@@ -1,128 +1,139 @@
-Return-Path: <linux-rdma+bounces-10402-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10403-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE5F4ABB3AB
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 May 2025 05:41:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 487F9ABB561
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 May 2025 08:53:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D50791893052
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 May 2025 03:41:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B823D17288E
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 May 2025 06:53:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0421C1E412A;
-	Mon, 19 May 2025 03:41:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BD0C2580F1;
+	Mon, 19 May 2025 06:53:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b4VTDdJb"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3119E1AA1D2;
-	Mon, 19 May 2025 03:41:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57F562580D2;
+	Mon, 19 May 2025 06:53:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747626087; cv=none; b=Z3dPTXrHY9fA4A7GMIe/3LQLs9obPW27QPRa2G6R5rsqmAUyc9muZIgcov0nyjGt+CN/vzUlN0UR36kgwc7tICHkZ8Txw7R23wgRAl9pJUSu6BqoNxvmq+Sf6OP8+WQnHUuKDOiRR05Eq/ss0ZfTkF7uThO2WrUoUBANNslbA+0=
+	t=1747637618; cv=none; b=q1kAoXcuHBlFDjJHkkQTmcBzS+BAlJ++Ej2Nwxg59h5Q2g7NFGXtINPtgyQjj+RS46JM9kFlHcPPUcoTh0QhnpZKFYvElqFoILjZ/rBXA499CibQxCoCxiPKewpr58ZzNBcI5o/4Bu0MAI2Uw3YtczI4RLziVs53NxFzF2D9XjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747626087; c=relaxed/simple;
-	bh=YLy0bIxUyBEJ4MsErB/HNh/nkpkd4n4QESqkZKSikzQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QsbMbJNrUnFGe+JukLUwMPHmkD8smO5JEnjdr4NqbIneXSYBqr97surTokoczp8IHVmppeKptL1Xn8jMWjXEod9EkxxrNjxpbLEsECs4DuSIKlN9J7utz5cBPf6ERinBCembg7m5snEKCa1nwfm/g9W6h7SWHndDBhDe6Ppcy+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from localhost.localdomain (unknown [124.16.141.245])
-	by APP-01 (Coremail) with SMTP id qwCowABXw8JNqCpoWNs_AQ--.48942S2;
-	Mon, 19 May 2025 11:41:03 +0800 (CST)
-From: Wentao Liang <vulab@iscas.ac.cn>
-To: saeedm@nvidia.com,
-	leon@kernel.org,
-	tariqt@nvidia.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Wentao Liang <vulab@iscas.ac.cn>,
+	s=arc-20240116; t=1747637618; c=relaxed/simple;
+	bh=nBwP1grA6UIlhLhOYF5v2kN93NVunh0xAiFM5b1iJ/k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s1RHrUrp4S6aLBrUohfPgq1GWgiZFeJ0lB+jbrsyzX4AR1dYYAFBcjwuAQYB+/rqUCr1TqzwNr/jCDoE3b2t2+7hdqHyDyYagcyC0vM7LUZ/1P/lgzFFu8ORXUJ/LTYrPBgCjoKgaGg2vQkZpdjAZvtUioSOLhlQqQQuQIcnh84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b4VTDdJb; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1747637617; x=1779173617;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=nBwP1grA6UIlhLhOYF5v2kN93NVunh0xAiFM5b1iJ/k=;
+  b=b4VTDdJbZcTb+smaF9F5g+vcSYdtrOtUJflVnju13DND8vZ9oDaH0Plf
+   hOnkT9lUNwLM1Sn6ckfHiBXVm4615dyqjoYyWOx0byMEdum6iDaZ1l7h4
+   kShofN69a0KYo8qXWxy9BB3zjFZAXGQ65QGLLL/dAvgmS70MI1U9ZZCPz
+   +aHGy5kbFjuUG7UA4saNScSpIaZ5oCyDpYtw389VDluCKadxA1aHGXWek
+   j48OfjOttkpiav49mTbxmiDH5R1h1cOyeLDboNcMoKZddgryvBmndP9iK
+   uLcqkpiJqe1o9r79lZ21OtI84aTh7XjQx+a87x6JYacc/Jc2DJxFP1gz5
+   A==;
+X-CSE-ConnectionGUID: 8Z3fqi1cTpiWkTne+ySwPg==
+X-CSE-MsgGUID: AkmdLKvvThyJs2CAVoITaQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11437"; a="53197801"
+X-IronPort-AV: E=Sophos;i="6.15,300,1739865600"; 
+   d="scan'208";a="53197801"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2025 23:53:35 -0700
+X-CSE-ConnectionGUID: 0IBbtwdSSeKHiGoetnGPqw==
+X-CSE-MsgGUID: 6JJo0pwhQ5al/LNF9Dqz/A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,300,1739865600"; 
+   d="scan'208";a="144051944"
+Received: from mev-dev.igk.intel.com ([10.237.112.144])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2025 23:53:31 -0700
+Date: Mon, 19 May 2025 08:52:57 +0200
+From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+To: Wentao Liang <vulab@iscas.ac.cn>
+Cc: saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com,
+	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH] net: mlx5: vport: Add error handling in mlx5_query_nic_vport_qkey_viol_cntr()
-Date: Mon, 19 May 2025 11:40:43 +0800
-Message-ID: <20250519034043.1247-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.42.0.windows.2
+Subject: Re: [PATCH] net: mlx5: vport: Add error handling in
+ mlx5_query_nic_vport_qkey_viol_cntr()
+Message-ID: <aCrVQOqV68u4AQkR@mev-dev.igk.intel.com>
+References: <20250519034043.1247-1-vulab@iscas.ac.cn>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qwCowABXw8JNqCpoWNs_AQ--.48942S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr4ruF45tFy7Aw48Ww47CFg_yoW8AF4DpF
-	47tr93XrykJa40v3WjkFWrZrs5CrWku3W09a4xt34fXr4qyr4DAr45AF9FgrWUurW8trZa
-	yr42y3ZxCF98C37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-	6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
-	1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-	6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-	0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
-	8cxan2IY04v7MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFV
-	Cjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWl
-	x4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r
-	1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_
-	JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-	sGvfC2KfnxnUUI43ZEXa7VUbGQ6JUUUUU==
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiDAUHA2gqdptmMwACs1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250519034043.1247-1-vulab@iscas.ac.cn>
 
-The function mlx5_query_nic_vport_qkey_viol_cntr() calls the functuion
-mlx5_query_nic_vport_context() but does not check its return value. This
-could lead to undefined behavior if the query fails. A proper
-implementation can be found in mlx5_nic_vport_query_local_lb().
+On Mon, May 19, 2025 at 11:40:43AM +0800, Wentao Liang wrote:
+> The function mlx5_query_nic_vport_qkey_viol_cntr() calls the functuion
+> mlx5_query_nic_vport_context() but does not check its return value. This
+> could lead to undefined behavior if the query fails. A proper
+> implementation can be found in mlx5_nic_vport_query_local_lb().
+> 
+> Add error handling for mlx5_query_nic_vport_context(). If it fails, free
+> the out buffer via kvfree() and return error code.
+> 
+> Fixes: 9efa75254593 ("net/mlx5_core: Introduce access functions to query vport RoCE fields")
+> Cc: stable@vger.kernel.org # v4.5
+> Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/vport.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/vport.c b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
+> index 0d5f750faa45..276b162ccf18 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/vport.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
+> @@ -518,20 +518,23 @@ int mlx5_query_nic_vport_qkey_viol_cntr(struct mlx5_core_dev *mdev,
+>  					u16 *qkey_viol_cntr)
+>  {
+>  	u32 *out;
+> -	int outlen = MLX5_ST_SZ_BYTES(query_nic_vport_context_out);
+> +	int ret, outlen = MLX5_ST_SZ_BYTES(query_nic_vport_context_out);
 
-Add error handling for mlx5_query_nic_vport_context(). If it fails, free
-the out buffer via kvfree() and return error code.
+You can fix RCT here.
 
-Fixes: 9efa75254593 ("net/mlx5_core: Introduce access functions to query vport RoCE fields")
-Cc: stable@vger.kernel.org # v4.5
-Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
----
- drivers/net/ethernet/mellanox/mlx5/core/vport.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+>  
+>  	out = kvzalloc(outlen, GFP_KERNEL);
+>  	if (!out)
+>  		return -ENOMEM;
+>  
+> -	mlx5_query_nic_vport_context(mdev, 0, out);
+> +	ret = mlx5_query_nic_vport_context(mdev, 0, out);
+> +	if (ret)
+> +		goto out;
+>  
+>  	*qkey_viol_cntr = MLX5_GET(query_nic_vport_context_out, out,
+>  				   nic_vport_context.qkey_violation_counter);
+> -
+> +	ret = 0;
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/vport.c b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
-index 0d5f750faa45..276b162ccf18 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/vport.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
-@@ -518,20 +518,23 @@ int mlx5_query_nic_vport_qkey_viol_cntr(struct mlx5_core_dev *mdev,
- 					u16 *qkey_viol_cntr)
- {
- 	u32 *out;
--	int outlen = MLX5_ST_SZ_BYTES(query_nic_vport_context_out);
-+	int ret, outlen = MLX5_ST_SZ_BYTES(query_nic_vport_context_out);
- 
- 	out = kvzalloc(outlen, GFP_KERNEL);
- 	if (!out)
- 		return -ENOMEM;
- 
--	mlx5_query_nic_vport_context(mdev, 0, out);
-+	ret = mlx5_query_nic_vport_context(mdev, 0, out);
-+	if (ret)
-+		goto out;
- 
- 	*qkey_viol_cntr = MLX5_GET(query_nic_vport_context_out, out,
- 				   nic_vport_context.qkey_violation_counter);
--
-+	ret = 0;
-+out:
- 	kvfree(out);
- 
--	return 0;
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(mlx5_query_nic_vport_qkey_viol_cntr);
- 
--- 
-2.42.0.windows.2
+ret is already 0 here, no need to reassign it.
 
+> +out:
+>  	kvfree(out);
+>  
+> -	return 0;
+> +	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(mlx5_query_nic_vport_qkey_viol_cntr);
+>  
+> -- 
+> 2.42.0.windows.2
 
