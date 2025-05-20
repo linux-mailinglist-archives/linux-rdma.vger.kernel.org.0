@@ -1,56 +1,64 @@
-Return-Path: <linux-rdma+bounces-10437-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10438-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A389ABD914
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 May 2025 15:15:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D8F4ABD92B
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 May 2025 15:18:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB6CC3A6928
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 May 2025 13:14:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9CA78C018F
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 May 2025 13:18:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F59022F177;
-	Tue, 20 May 2025 13:15:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69DBA2417E4;
+	Tue, 20 May 2025 13:18:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hzKdsfOC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GHZFwaCx"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0347022E41D;
-	Tue, 20 May 2025 13:15:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A56B241696;
+	Tue, 20 May 2025 13:18:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747746915; cv=none; b=E5+6FV09oKFiF5aAVXWJMhCHh3AaBAKGxCqnZKvky27HF6EoabQHcCREXN1dHiqL31Z595XnzVLUVEh9UnU2Qr9J+X3XH2OVmtoVT0kMqww9s+n5erVht4ocTyaaK6tjJtJINFJ8KWkO1gQWyw0Y85FGBYI/5qxJSenvGv0NKM8=
+	t=1747747126; cv=none; b=ZKJYw9lE0tV7aSAfA60XlzEUkxtM5AE8QdUjdfk7lKJUKxuzlQNAoYQm90bRlDvh5zOicy4RqmTLYHWOEULLd58dCC1ixMKm6wm9Fbe/IjuR72j/WWwLO7Ifk+miXMgkVIKxQF5JIUY4DsdWht6c8qC2SuSNwluPB3yyPCbD0zg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747746915; c=relaxed/simple;
-	bh=9tj76eu3sKrF8PVmXoXkqtJ9c6WRvLo3PI0Ap5SxH08=;
+	s=arc-20240116; t=1747747126; c=relaxed/simple;
+	bh=3MlZ6pJ3PgzLg+lrX3zgXpF30gosCty23jYj1U6ABBg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FsxW+ayWWnpHKRxeIadFDnPPVk6oTEWfk8q1zn97fW0du6AWW1Jck4VGVQHBq/b6YXlr6MkaloJs01sR/Z0mCLR26SKlQovLnbo7zkzmYOAmRarIVTHuNhfUhmXKlWFvzMJUY1HJ50IwADkUctIRQK/IDm6DUlokbcAAXEfyPDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hzKdsfOC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03600C4CEE9;
-	Tue, 20 May 2025 13:15:13 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=BIZQ8Nj9mVXXXybOQL8VMy6nM3B8zPTdGblhcv3FlC3/nBM624GdNl/nHi4l1L0kzefAWAjsc0qjyyZOY19y7Y09HSdY5+Xy3MLXLJusNO7GMQK6+1+vKrD7nQpDUGAHxPCNBuSEPqtLy1Y7iEnaSrrLX45t+sb8nPzGUnhe/5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GHZFwaCx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1F6BC4CEE9;
+	Tue, 20 May 2025 13:18:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747746914;
-	bh=9tj76eu3sKrF8PVmXoXkqtJ9c6WRvLo3PI0Ap5SxH08=;
+	s=k20201202; t=1747747125;
+	bh=3MlZ6pJ3PgzLg+lrX3zgXpF30gosCty23jYj1U6ABBg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hzKdsfOC7xVkJ6zwsMcExFPc25JypJphrY1RWcicJlVNezG4cvu6YEJVZ0ybcVHMh
-	 bPZuxUh9IK7WT5zdMgzZTidjXF02n5MDaQVWKVgbovarWJSqHl/iTz3Mp1icYlvQ8z
-	 jUlPSsZJOqZNw/Ca3bUaG8cDlxHyPvqoraUyp889vHxNCC4a8zdze9DD7yfcRdqs/Y
-	 8aRRxiAXyfDqc6vA/2KOihPglbw7QQlXnBF2H1FKl8SuKkzJIViXP0BacUEo0nNm6s
-	 TZPjLrFUygXv+ka+2hspO8vLRC3GujDFShcl6JZiFlajBd1DoZzBEc/S2mEPA/MUc7
-	 YwE/Fx5hrOYYw==
-Date: Tue, 20 May 2025 16:15:10 +0300
+	b=GHZFwaCxrPnFBX+bCrP5SkGGkSpo8BjIXmypxC9p1xgUqUVI4SItq8gDUSbD/AZfa
+	 wtrfH0zta4wZBkhj62UOCiue0+e33QAgbRtBIGgqva+jRnocD2SZleuKv63XMgiKV9
+	 j9lbRtSHDM9ULHKpQnU/yIFlVUYNTenfQHTGRKoZOVPEjis08m3aMIMLmjTA//YMju
+	 V7fmp3019Gsydch6NSzmwWZMxrYP0phNVLd3cvY7QV7kOC/Sv1H8igKvkr/VTVd2qC
+	 yCDPCvIO9eg96H353N5rnH7gGbQaXeC6V2eWT00dQ7okBDANBDYR69Z10sD9Hu4DT/
+	 r+bZgLir/nF4w==
+Date: Tue, 20 May 2025 16:18:41 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Wentao Liang <vulab@iscas.ac.cn>, mustafa.ismail@intel.com,
-	tatyana.e.nikolova@intel.com
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v2] RDMA/irdma: puda: Clear entries after allocation to
- ensure clean state
-Message-ID: <20250520131510.GG7435@unreal>
-References: <20250518144942.714-1-vulab@iscas.ac.cn>
+To: Bernard Metzler <BMT@zurich.ibm.com>
+Cc: Eric Biggers <ebiggers@kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+	"linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+	Sagi Grimberg <sagi@grimberg.me>, Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH net-next 04/10] RDMA/siw: use skb_crc32c() instead of
+ __skb_checksum()
+Message-ID: <20250520131841.GH7435@unreal>
+References: <20250511004110.145171-1-ebiggers@kernel.org>
+ <20250511004110.145171-5-ebiggers@kernel.org>
+ <BN8PR15MB2513872CE462784A1A4E50B7999CA@BN8PR15MB2513.namprd15.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -59,26 +67,21 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250518144942.714-1-vulab@iscas.ac.cn>
+In-Reply-To: <BN8PR15MB2513872CE462784A1A4E50B7999CA@BN8PR15MB2513.namprd15.prod.outlook.com>
 
-On Sun, May 18, 2025 at 10:49:42PM +0800, Wentao Liang wrote:
-> The irdma_puda_send() calls the irdma_puda_get_next_send_wqe() to get
-> entries, but does not clear the entries after the function call. A proper
-> implementation can be found in irdma_uk_send().
+On Mon, May 19, 2025 at 09:04:04AM +0000, Bernard Metzler wrote:
 > 
-> Add the irdma_clr_wqes() after irdma_puda_get_next_send_wqe(). Add the
-> headfile of the irdma_clr_wqes().
-> 
-> Fixes: a3a06db504d3 ("RDMA/irdma: Add privileged UDA queue implementation")
-> Cc: stable@vger.kernel.org # v5.14
-> Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
-> ---
-> v2: Fix code error and remove improper description.
-> 
->  drivers/infiniband/hw/irdma/puda.c | 3 +++
->  1 file changed, 3 insertions(+)
 
-I need Ack from irdma maintainers.
+<...>
+
+> > 
+> 
+> Thanks Eric!
+> Works fine. Correct checksum tested against siw and cxgb4 peers.
+> 
+> Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
+
+This patch should go through RDMA repository, Please resend it.
 
 Thanks
 
