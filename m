@@ -1,43 +1,43 @@
-Return-Path: <linux-rdma+bounces-10449-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10450-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA44AABE315
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 May 2025 20:47:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD142ABE319
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 May 2025 20:48:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1F763BB6FE
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 May 2025 18:47:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 006013BAC48
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 May 2025 18:47:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95EED280A52;
-	Tue, 20 May 2025 18:47:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDA9127054F;
+	Tue, 20 May 2025 18:47:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="WkJsiNng"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="LQecFnp1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2058.outbound.protection.outlook.com [40.107.101.58])
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2059.outbound.protection.outlook.com [40.107.96.59])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A608326C390;
-	Tue, 20 May 2025 18:47:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D383248F75;
+	Tue, 20 May 2025 18:47:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.96.59
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747766852; cv=fail; b=KrRXvmrsgvN/Jqpc7pk7Sc0EwAfk49BE7821snGPpJDpng9qBKVdj42fIMVgp+eHzr9z61VG3ACQSfGbjLh65Qv8a53JHiyVLiLA0KjdxChLmx74Ey8z3R6xR31fIMaDK24N+C5ayA/zoyNnxTJpx9QxZ7/QC9OJjAfdEqDYa/E=
+	t=1747766859; cv=fail; b=Z2+kUYZv0cTyQGqRailBVmxc88H1aHUx3pNWMooBJW7CGXstwS+tp9uePnciPmJNInjOoqmVn8S+3UDt8+/7bse8hDbVJqDf2clWg1D48rZbkAl0G+cZ7A92TichRqPz2U3nY4OSHWPBGbgph0PWrIL3zEBMfmKclAfWkuQAu+I=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747766852; c=relaxed/simple;
-	bh=ZeI7Zz7BmCiFA1CKJNGwrxCNoP2DLQCd4djMZoOAZEM=;
+	s=arc-20240116; t=1747766859; c=relaxed/simple;
+	bh=72BRmgZDwMp4HT9LU2xf9HGhqTEMUPULAtVgj2vN9x4=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=AtH5Gkq58JSBNPJWURXciGzTMQY+EXd4fDazEA7PqHtJtDJAky4w49bylGVkLy2g/L/x2JZiuJdN1OCilE2qbDnmKqy+NXMAX63FUb/lnAYPDQQ+2V8fKAv3wsWYWcpmuw5Qtx03SFEgb0XQ7HE31wR3tLjA3bwYtrucPye8IOE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=WkJsiNng; arc=fail smtp.client-ip=40.107.101.58
+	 MIME-Version:Content-Type; b=L3/ndlHTRgESvuEN4Vm1S2dqVUEgebmudlQmalp7Fz0mWSCFNOFxaxshxSae2472aCMz6jLrCNgLb4hcw3kEkSLfm9U+JZ5HjFhKcRP2kztCUNss6gA9GxLSzoKJSLfLX9SIPBIoZCtTIP9FAY9g5cmgvH49LFgw7Ww7DPT7wiU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=LQecFnp1; arc=fail smtp.client-ip=40.107.96.59
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=fXQqs5NPHnKqF5Zl3J9nuSYophxDhXL9w1ra8ehtWBdfTvpPb5ODOsLy8nQZtumRDrOvRU75huD32N/dhmV6X62qrF8w4X5MES4YSElQYwsPDU96VzUqP/J51EZRJzJh9uRQ89+uWygL4TgHu4IdfNAB7deOIUpNwmTzyEt005md7zv4MOJq4Y8CxXtOkO4x4w0Q5Wvwa/9Gy1TXbp7bTKeywBlLVBxyZOXCToChHebzydNJnK6dn/ZnuVrw4ZIcjFzwAisQqB/BBdMVj3bRqsCjInIcHhr3AYH+2syNcNGgLZczR3QXn8FsyDke5jJ77nl40aogzbbthc+s97mZ5A==
+ b=iNRQM9RE/TBOgZRBu4XsW1nrPxIuv9OqZMqEnYalVMRgRcuefkKV4HD/hkACRawoAbje9sGf38Dwa17juc0Vg9kGlL6m/hzbKoMk85026qtgQl53YNqlhQZAebbyvDmMi8t/kAEDcD6wDHaM4m5hZnHIQts9DtPDuE3Zs+J/cH54uASgNh5RvpbE/+8zNAbvzwb1xARvodbm0GFyO2GMWDt9nj3Wka1lximWSvlHqF9eplSJ0Ntmq6LWCw2195lQn8XfBUwvkiKrUAX3bpKrg6V5/sTkqRhmwOAoXz5gHOnBQO7b/c7MToTM5hoq6A73CW/IsAHb85c4wuJC91RvEQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ALQZ3ElS3370N3TjjIWVntyuDTFazLwf3JyVrRK/V/s=;
- b=MGcJtfLKiAUMVcbsZVxC3mmyG53umaiM1c9F2418ziyvS7P/tcCd6buSJCS0ILCE2njXZ5Kd98EPc/k9m65XTGrWUIJtEtOvbXZP1ifpeXfjsqz4tKIVerXDHxzybIInsQ8h9YU0rPTG30d13WrtyeDlsfjSJys8/mINtOvr2UX3jtCNrF11RYdWuwxyoluOoK0tdw4yufP9duecG1IP3/HP2mK1sECV31yHpWD2xj02lOXPeyI02Td/GcTCDkhisw4yCSl+2vWEOuHvUz0BUC3ailseQKAQB0Hs6QgDB4y8OCXCRPy7pGFYH4SuUpTb6CTIn+YywE31NJRGQIWi0g==
+ bh=CWo9GcRuO+9eyKK9n7x1SCAjaDyayUyXKa7H2r9SJ5Y=;
+ b=vYlzWnLCuB/CTd7iC6LlI2NIr2FGqi1VriM6/UxGY7nN3t/kDuxq6mxOdYjV5nFrvVct7kxB4+4RtgmSiQi7ZPl34jGE03dYB4nUH6pwJsGLHtEaXIi/upnkmLg/IqGwtUY3P9xD896tN4eqOFVpvAP1yFuwMflRH6wbtZujUQSVfGzv0cU7fMf8qFQUE15C7+rjogzyclEYOULd72omgPMY/z+k/W05KoCzlPZabYFfJmZ8C+nLyOLTsBqY7/PxtCaJKwuwbvnjJTWGVVYXy/4HoTCQf+i+Rkraz23PrJrKkmanHneFHrTevOFHQBsBxJoLP2B6gtcmCOUgc4AIwA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.117.160) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -45,18 +45,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ALQZ3ElS3370N3TjjIWVntyuDTFazLwf3JyVrRK/V/s=;
- b=WkJsiNngpFZHqIQbylcihKkwQkD2J7VMmshPUsZwPCN99NpSvgsbEAFgffyWVw3vQ4FD14cFleXckbWitjE3cz57QWmQ9VZ5I+DZAlZIP+0yuAqomPYl38BtgIt4phHE8gptZOSbi6DDxGRIyqU+mRpJ5gvT1z1DEWFxAB7Rgud7dxD/4t692Z7RomfjNG5+8Dl46Q7rB8cNzK2w8N+SW0jgHaD5BMZf1L5R983ACxEoauCPdxMJr6KAdKRTFeLmNFN7i3J+k3KwHth6OaFSE1XHS4p43769QFIfB0Ybh8Ld00CbQCvUo9h1rKC9B2dAKSw955oKtM+vFM8O5oFPNw==
-Received: from PH8P221CA0047.NAMP221.PROD.OUTLOOK.COM (2603:10b6:510:346::26)
- by CY8PR12MB8066.namprd12.prod.outlook.com (2603:10b6:930:70::5) with
+ bh=CWo9GcRuO+9eyKK9n7x1SCAjaDyayUyXKa7H2r9SJ5Y=;
+ b=LQecFnp1zytlqof9xffgBvwTHm3qqTDvRlEaqZDCuc9IEuUdgjXXPL/79Xjsy8dAJDZPu66T/jOFqnmiCGvkp2pjPaypVRORaDexoX5GPWhidn5G4elXrcQcwH/wD02aUtqET6xpRiDFyIRY75B67LjT7wBeAkyHfDHiyNH8GuGTXYrAvnTVVzZNMpBez0rPHxUVG7R4IBYj+Xb7JbpB4UqOXsU70TzN/s/hEBD9aj1M+5/YetoWGZC5PzxVnEBxd3TCjvlz792uOcCGKFsKjVvEl76JqA9ARoyOq1Ci13Jk8C8Y7Xq1Z+JxPmx/xIXV4yFLqRSxjrWNeOi2FZkYSQ==
+Received: from PH8P221CA0041.NAMP221.PROD.OUTLOOK.COM (2603:10b6:510:346::13)
+ by BN7PPF3C1137D8A.namprd12.prod.outlook.com (2603:10b6:40f:fc02::6cd) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8746.30; Tue, 20 May
- 2025 18:47:25 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8699.19; Tue, 20 May
+ 2025 18:47:29 +0000
 Received: from CO1PEPF000044FA.namprd21.prod.outlook.com
- (2603:10b6:510:346:cafe::7b) by PH8P221CA0047.outlook.office365.com
- (2603:10b6:510:346::26) with Microsoft SMTP Server (version=TLS1_3,
+ (2603:10b6:510:346:cafe::33) by PH8P221CA0041.outlook.office365.com
+ (2603:10b6:510:346::13) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.20.8769.18 via Frontend Transport; Tue,
- 20 May 2025 18:47:25 +0000
+ 20 May 2025 18:47:28 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -66,18 +66,18 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
 Received: from mail.nvidia.com (216.228.117.160) by
  CO1PEPF000044FA.mail.protection.outlook.com (10.167.241.200) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8792.4 via Frontend Transport; Tue, 20 May 2025 18:47:24 +0000
+ 15.20.8792.4 via Frontend Transport; Tue, 20 May 2025 18:47:28 +0000
 Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
  (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 20 May
- 2025 11:47:06 -0700
+ 2025 11:47:10 -0700
 Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail203.nvidia.com
  (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Tue, 20 May
- 2025 11:47:06 -0700
+ 2025 11:47:10 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.9)
  with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Tue, 20
- May 2025 11:47:02 -0700
+ May 2025 11:47:06 -0700
 From: Tariq Toukan <tariqt@nvidia.com>
 To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew
@@ -88,9 +88,9 @@ CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
 	<moshe@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Vlad Dogaru
 	<vdogaru@nvidia.com>, Yevgeny Kliteynik <kliteyn@nvidia.com>, Gal Pressman
 	<gal@nvidia.com>
-Subject: [PATCH net-next 1/4] net/mlx5: SWS, fix reformat id error handling
-Date: Tue, 20 May 2025 21:46:39 +0300
-Message-ID: <1747766802-958178-2-git-send-email-tariqt@nvidia.com>
+Subject: [PATCH net-next 2/4] net/mlx5: HWS, register reformat actions with fw
+Date: Tue, 20 May 2025 21:46:40 +0300
+Message-ID: <1747766802-958178-3-git-send-email-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.8.0
 In-Reply-To: <1747766802-958178-1-git-send-email-tariqt@nvidia.com>
 References: <1747766802-958178-1-git-send-email-tariqt@nvidia.com>
@@ -104,238 +104,289 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: AnonymousSubmission
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044FA:EE_|CY8PR12MB8066:EE_
-X-MS-Office365-Filtering-Correlation-Id: cb25d138-92b3-4753-f34d-08dd97cec30b
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044FA:EE_|BN7PPF3C1137D8A:EE_
+X-MS-Office365-Filtering-Correlation-Id: 40b8cff2-1b36-405c-190d-08dd97cec576
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
 	BCL:0;ARA:13230040|1800799024|36860700013|82310400026|376014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?q2YEW+BBOLXLBIeAJbT2UiIU0A9zjBEOXpKIYTEL1731WwcnOHENcs/IKIRI?=
- =?us-ascii?Q?9OzsHqMIyOh9sPhXgVyys9z+Kxw1gZVsNvWIqfIX4Pj+gxKeRdEOEOmaHNtH?=
- =?us-ascii?Q?iRRsV950nuw3RulmOVbiwDbUn76XEFra01+ufNAsFQZU7BhLMlfEhxxVlIwh?=
- =?us-ascii?Q?4ds/SqtH11cgBe4K4vbaIF6KRPxlLaxnGWS3bB9MOBSPAlMn1+F/s5Fc7Mpj?=
- =?us-ascii?Q?Ek6mVkC6APlDRZ3UDz8MT3aJbb35lI5GfzbjdMKOwQDgarChIeW7V0Obws5G?=
- =?us-ascii?Q?jrWkSHFcU+RFDCp9grbWVeWKjBiiMfxtLtqg6QCPj8E6GIyBNIPMJhvVlt24?=
- =?us-ascii?Q?YHTn+Bv8t8vZzoJ6FxLn5ZVC7tLcRgrKat2bTXTKJ6PWo5/8/OpXsO+KQZRA?=
- =?us-ascii?Q?/NRf8uZoNpE6HKHHoNrwNcACjzX5EZdwJrEbhBV4mkZZhXuO+yCgNR85OSf7?=
- =?us-ascii?Q?Ntn5mtmbtkearcXB9N2/WURMrAcScC23rejSO/jrBnQ0PMn+qdQ31wr/vaRm?=
- =?us-ascii?Q?Y3srNEjE2pq1b8uZXrCBTcXLKmmjRN0E8dLw6Az5lJOiuuurw8LH1logqgFO?=
- =?us-ascii?Q?U3KdgxipZtue5PKZuvpfejnEHUyiFrOjgMLrhO5lmeronMCYbvqZCddZf7gx?=
- =?us-ascii?Q?+GOiF2aCMGpFucCXEaGNZI8n8/4ihBibhfkZMFqhTsXZ9qAdF2NrjO9yf4A4?=
- =?us-ascii?Q?NH5p7QhdKKKHUehI5mczcpUAx5+RBtuuGb/nBR9NvhP9PXEdCIYEg+gQ+oOn?=
- =?us-ascii?Q?WKADQPm80iqsvQI/9v9yA77RUu2FireAfrfTx6wueqny7MDTy9XGktMRuOkR?=
- =?us-ascii?Q?dw7USyIYq2TWVhl3qsh+ka684gQidHm+vk+RCr+BjI/nOJz/dfHd5breA8Hy?=
- =?us-ascii?Q?gM7+KBLaPYvENYELOObq3xgIJR6ji7awYF9gg/72OGkfE61Yy7s1JPXOfDAa?=
- =?us-ascii?Q?wtNuaWHa0xSsmfYWrc96UdajmFhfMn7RS/Hf+WaaiX4PW2f1fMoKrFbtIbzA?=
- =?us-ascii?Q?oDXUH/11a4H+OjYW6U4UMRnpStTDPdStptMM+mu6nU3pbquoFZ985/uE5/Xr?=
- =?us-ascii?Q?uFVa/RY9MYs4Xbvp03mqgXSD+zR9HY5vzbPxYW5J0YiDihwezEvAwwhLqaQV?=
- =?us-ascii?Q?Fuw/KewIwE2HQc+eFMJoVXmlxio/jR0tAQyzUnhfXTQDeKQAhwumyCv/7MDE?=
- =?us-ascii?Q?Cxl/9IdHiEwXma3CYyvx4kDKcYGaNvbaLH6bCfZaWKPLPJDME2l/FwamcXs2?=
- =?us-ascii?Q?yTOKBbmduq5B9TdqWvZhubZ2Ct9YQsY/wphwhfN9kJNpb8ix3bkFf9QAazx9?=
- =?us-ascii?Q?1SIBDR+H6ql3Br4dlNEd4eMnD4D2XWAN40AUVzx+8X+3c900HaLhywlY/NOB?=
- =?us-ascii?Q?KV7wB828Z5N6M8keTu1E8xQ9as4XS6ETv3esw04o5HqgPCXZ3oB+E1Ln3NGa?=
- =?us-ascii?Q?1lKqc933r4bG+gouBQRtOjl0oyAgehbDFRSNc7BAd8KIpfcVmbVL1petMA6T?=
- =?us-ascii?Q?7Dis9vSFECsvkVWGqC/83Py/Wi+BPVhQaUNA?=
+	=?us-ascii?Q?1idv8MVPmIE4jFxrvLTENKinNx4WXQyS1k0j/uYDnolDtY6DN3D2Z0QD5dAC?=
+ =?us-ascii?Q?QFWnRcDpqORJu/i1iiQ20+iNhZ17Cly3gpZtFSDpLgb1Z6Fmt3HlnYhEAHR7?=
+ =?us-ascii?Q?Q924j+METtF2+gaT4cx+z2vOW/BhFuh26rovbV3UNJNjfKw4PJVGitu7kXlm?=
+ =?us-ascii?Q?udL7p64d2ryDl6bktRmiaqJ1SZI161ArugDUqpobVoWPgQ6iWsLLVXCw2Pxt?=
+ =?us-ascii?Q?4gI1O0W8EOoi77KCZfMAJszJqctV4KRUK2wrtyTwHgiYACuKkP/RlW2gFt8n?=
+ =?us-ascii?Q?wRyopVJL7a2KLySGY5BXR9/gH1Au5X3GUHosVrEhaV+z7XsOBkZEjlAmSnZm?=
+ =?us-ascii?Q?OXCCDBDx6aUuiwdvrkAaRcj9lMH0dgSSm7VofUUfatj+2VKx+M3RIqYP7ETv?=
+ =?us-ascii?Q?mBmxmADxBb1pa5trGUMMn0pG9R3IGe/546B/GhTa9GfM7dV2zZKVbdkqVP6T?=
+ =?us-ascii?Q?YN+qXAq2St6zwfYbIo9lqv2uNyfgMC5BvCirP0CFdZkVbTOAJtLb7XDWVsYw?=
+ =?us-ascii?Q?2Y2udrXd8HWTRbVLRsyPntWwdR3Rm9znhUMCmqz8bYzsJHYqV10XS5+3+veg?=
+ =?us-ascii?Q?zdl4qZaw6hUYK91OQ4cEfEe+N5b/Dd6hJT5/r6+ydw3+ggQfebZRaZqzKraT?=
+ =?us-ascii?Q?0Fz+NSrsFs/5E5r4JIV1bX3tRRSZTnuYkCvcgCiBaxfL5Q6frzOPCulUTnH6?=
+ =?us-ascii?Q?rS3XTICUVMoTpF4CNvdSFCwpjnNRqANV1jcylRgt6eGwyYs7om9/lilo4noE?=
+ =?us-ascii?Q?K41RGxEGjS7djcDs2c7vIhvK1G/2MIhHS62FeRDmwdz3pLlS5w76hy/LgGAX?=
+ =?us-ascii?Q?+Az3Nm5lmRioG4Upwn033pxn6IZbTlaTNyGwCLjtUX1UHAUnscQ+ffX9MUTU?=
+ =?us-ascii?Q?iq/D3zMLIqbDzlFqQhx0oQS6FaihyBNafQ4Dvl1rgnrfWo4v3QTxYZm1fqff?=
+ =?us-ascii?Q?eYV1w5vOJsCGQUw1oVn025dK2EWv6cAUrSAJcq4FBAgmX29g7LkwqFfVYZ6i?=
+ =?us-ascii?Q?9AAftGAf1yzdB0AGos15RGVADDk9K2Vc0eNSqt7UaRfqN3JI8krAUN9lo/TX?=
+ =?us-ascii?Q?S2uuRHuysbIW1PcMMulbl2s0Guu0VN6LyUmYcOaOEeWqoI8F8sZ9Zu3TN5NV?=
+ =?us-ascii?Q?j5zQCebHEz1F7s7Y7A3vLrDOtIhpIYLIPNgIQynzR7zG0G2vFEozpwJB7vLR?=
+ =?us-ascii?Q?QCPGg4oaJybrPsFHHZhK53PeOhIXWSWzvZ0FU3R9BTJ/d4db29cD00UipDMf?=
+ =?us-ascii?Q?rz8mmGhuXbWN9US9xKvBi7vdT0+uCwGFQTTUrBaHSX8F+/YKH41A0pT3cN4h?=
+ =?us-ascii?Q?SL9e1vFqXsWcWaFGBMGUcK5GkLXS1dGYPe0Mjdr8vSVQ9WEy+iUlwhlbHsiO?=
+ =?us-ascii?Q?aOwlSoidqr4J4xxL/v2cvLgr9BEZ8S2t9UX/6CgI0UiinbhfXkpIysEOaz86?=
+ =?us-ascii?Q?z0m3SmvayqB6GWIYPVYZwvdvkCAHY26LADdbp/NDTcsH1vqsnuey/MoFOifG?=
+ =?us-ascii?Q?6+/O31Qw3A2HAFEo4cZaIrr7QfBplW1IgwDh?=
 X-Forefront-Antispam-Report:
 	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(36860700013)(82310400026)(376014);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2025 18:47:24.6064
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2025 18:47:28.7003
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cb25d138-92b3-4753-f34d-08dd97cec30b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 40b8cff2-1b36-405c-190d-08dd97cec576
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
 	CO1PEPF000044FA.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB8066
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PPF3C1137D8A
 
 From: Vlad Dogaru <vdogaru@nvidia.com>
 
-The firmware reformat id is a u32 and can't safely be returned as an
-int. Because the functions also need a way to signal error, prefer to
-return the id as an output parameter and keep the return code only for
-success/error.
+Hardware steering handles actions differently from firmware, but for
+termination rules that use encapsulation the firmware needs to be aware
+of the action.
 
-While we're at it, also extract some duplicate code to fetch the
-reformat id from a more generic struct pkt_reformat.
+Fix this by registering reformat actions with the firmware the first
+time this is needed. To do this, add a third possible owner for an
+action, and also a lock to protect against registration of the same
+action from different threads.
 
 Signed-off-by: Vlad Dogaru <vdogaru@nvidia.com>
 Signed-off-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
 Reviewed-by: Mark Bloch <mbloch@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- .../net/ethernet/mellanox/mlx5/core/fs_cmd.c  | 28 +++++++++---------
- .../net/ethernet/mellanox/mlx5/core/fs_core.c | 29 +++++++++++++++----
- .../net/ethernet/mellanox/mlx5/core/fs_core.h |  3 ++
- .../mellanox/mlx5/core/steering/sws/fs_dr.c   | 10 +++++--
- .../mellanox/mlx5/core/steering/sws/fs_dr.h   | 10 +++++--
- 5 files changed, 55 insertions(+), 25 deletions(-)
+ .../net/ethernet/mellanox/mlx5/core/fs_core.c |  2 +
+ .../net/ethernet/mellanox/mlx5/core/fs_core.h |  1 +
+ .../mellanox/mlx5/core/steering/hws/action.c  |  5 ++
+ .../mellanox/mlx5/core/steering/hws/fs_hws.c  | 71 +++++++++++++++++--
+ .../mellanox/mlx5/core/steering/hws/fs_hws.h  | 16 +++++
+ .../mellanox/mlx5/core/steering/hws/mlx5hws.h |  9 +++
+ 6 files changed, 97 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c
-index a47c29571f64..1af76da8b132 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c
-@@ -527,7 +527,7 @@ static int mlx5_cmd_set_fte(struct mlx5_core_dev *dev,
- 	struct mlx5_flow_rule *dst;
- 	void *in_flow_context, *vlan;
- 	void *in_match_value;
--	int reformat_id = 0;
-+	u32 reformat_id = 0;
- 	unsigned int inlen;
- 	int dst_cnt_size;
- 	u32 *in, action;
-@@ -580,23 +580,21 @@ static int mlx5_cmd_set_fte(struct mlx5_core_dev *dev,
- 	MLX5_SET(flow_context, in_flow_context, action, action);
- 
- 	if (!extended_dest && fte->act_dests.action.pkt_reformat) {
--		struct mlx5_pkt_reformat *pkt_reformat = fte->act_dests.action.pkt_reformat;
--
--		if (pkt_reformat->owner == MLX5_FLOW_RESOURCE_OWNER_SW) {
--			reformat_id = mlx5_fs_dr_action_get_pkt_reformat_id(pkt_reformat);
--			if (reformat_id < 0) {
--				mlx5_core_err(dev,
--					      "Unsupported SW-owned pkt_reformat type (%d) in FW-owned table\n",
--					      pkt_reformat->reformat_type);
--				err = reformat_id;
--				goto err_out;
--			}
--		} else {
--			reformat_id = fte->act_dests.action.pkt_reformat->id;
-+		struct mlx5_pkt_reformat *pkt_reformat =
-+			fte->act_dests.action.pkt_reformat;
-+
-+		err = mlx5_fs_get_packet_reformat_id(pkt_reformat,
-+						     &reformat_id);
-+		if (err) {
-+			mlx5_core_err(dev,
-+				      "Unsupported pkt_reformat type (%d)\n",
-+				      pkt_reformat->reformat_type);
-+			goto err_out;
- 		}
- 	}
- 
--	MLX5_SET(flow_context, in_flow_context, packet_reformat_id, (u32)reformat_id);
-+	MLX5_SET(flow_context, in_flow_context, packet_reformat_id,
-+		 reformat_id);
- 
- 	if (fte->act_dests.action.modify_hdr) {
- 		if (fte->act_dests.action.modify_hdr->owner == MLX5_FLOW_RESOURCE_OWNER_SW) {
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-index 6163bc98d94a..a81b81a3b8f0 100644
+index a81b81a3b8f0..23a7e8e7adfa 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-@@ -1830,14 +1830,33 @@ static int create_auto_flow_group(struct mlx5_flow_table *ft,
- 	return err;
- }
- 
-+int mlx5_fs_get_packet_reformat_id(struct mlx5_pkt_reformat *pkt_reformat,
-+				   u32 *id)
-+{
-+	switch (pkt_reformat->owner) {
-+	case MLX5_FLOW_RESOURCE_OWNER_FW:
-+		*id = pkt_reformat->id;
-+		return 0;
-+	case MLX5_FLOW_RESOURCE_OWNER_SW:
-+		return mlx5_fs_dr_action_get_pkt_reformat_id(pkt_reformat, id);
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
- static bool mlx5_pkt_reformat_cmp(struct mlx5_pkt_reformat *p1,
- 				  struct mlx5_pkt_reformat *p2)
- {
--	return p1->owner == p2->owner &&
--		(p1->owner == MLX5_FLOW_RESOURCE_OWNER_FW ?
--		 p1->id == p2->id :
--		 mlx5_fs_dr_action_get_pkt_reformat_id(p1) ==
--		 mlx5_fs_dr_action_get_pkt_reformat_id(p2));
-+	int err1, err2;
-+	u32 id1, id2;
-+
-+	if (p1->owner != p2->owner)
-+		return false;
-+
-+	err1 = mlx5_fs_get_packet_reformat_id(p1, &id1);
-+	err2 = mlx5_fs_get_packet_reformat_id(p2, &id2);
-+
-+	return !err1 && !err2 && id1 == id2;
- }
- 
- static bool mlx5_flow_dests_cmp(struct mlx5_flow_destination *d1,
+@@ -1839,6 +1839,8 @@ int mlx5_fs_get_packet_reformat_id(struct mlx5_pkt_reformat *pkt_reformat,
+ 		return 0;
+ 	case MLX5_FLOW_RESOURCE_OWNER_SW:
+ 		return mlx5_fs_dr_action_get_pkt_reformat_id(pkt_reformat, id);
++	case MLX5_FLOW_RESOURCE_OWNER_HWS:
++		return mlx5_fs_hws_action_get_pkt_reformat_id(pkt_reformat, id);
+ 	default:
+ 		return -EINVAL;
+ 	}
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.h b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.h
-index 0767239f651c..248a74108fb1 100644
+index 248a74108fb1..500826229b0b 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.h
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.h
-@@ -386,6 +386,9 @@ u32 mlx5_fs_get_capabilities(struct mlx5_core_dev *dev, enum mlx5_flow_namespace
+@@ -58,6 +58,7 @@ struct mlx5_flow_definer {
+ enum mlx5_flow_resource_owner {
+ 	MLX5_FLOW_RESOURCE_OWNER_FW,
+ 	MLX5_FLOW_RESOURCE_OWNER_SW,
++	MLX5_FLOW_RESOURCE_OWNER_HWS,
+ };
  
- struct mlx5_flow_root_namespace *find_root(struct fs_node *node);
- 
-+int mlx5_fs_get_packet_reformat_id(struct mlx5_pkt_reformat *pkt_reformat,
-+				   u32 *id);
-+
- #define fs_get_obj(v, _node)  {v = container_of((_node), typeof(*v), node); }
- 
- #define fs_list_for_each_entry(pos, root)		\
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/fs_dr.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/fs_dr.c
-index 8007d3f523c9..f367997ab61e 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/fs_dr.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/fs_dr.c
-@@ -833,15 +833,21 @@ static u32 mlx5_cmd_dr_get_capabilities(struct mlx5_flow_root_namespace *ns,
- 	return steering_caps;
+ struct mlx5_modify_hdr {
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/action.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/action.c
+index bef4d25c1a2a..aa47a7af6f50 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/action.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/action.c
+@@ -72,6 +72,11 @@ enum mlx5hws_action_type mlx5hws_action_get_type(struct mlx5hws_action *action)
+ 	return action->type;
  }
  
--int mlx5_fs_dr_action_get_pkt_reformat_id(struct mlx5_pkt_reformat *pkt_reformat)
-+int
-+mlx5_fs_dr_action_get_pkt_reformat_id(struct mlx5_pkt_reformat *pkt_reformat,
-+				      u32 *reformat_id)
- {
-+	struct mlx5dr_action *dr_action;
++struct mlx5_core_dev *mlx5hws_action_get_dev(struct mlx5hws_action *action)
++{
++	return action->ctx->mdev;
++}
 +
- 	switch (pkt_reformat->reformat_type) {
- 	case MLX5_REFORMAT_TYPE_L2_TO_VXLAN:
- 	case MLX5_REFORMAT_TYPE_L2_TO_NVGRE:
- 	case MLX5_REFORMAT_TYPE_L2_TO_L2_TUNNEL:
- 	case MLX5_REFORMAT_TYPE_L2_TO_L3_TUNNEL:
- 	case MLX5_REFORMAT_TYPE_INSERT_HDR:
--		return mlx5dr_action_get_pkt_reformat_id(pkt_reformat->fs_dr_action.dr_action);
-+		dr_action = pkt_reformat->fs_dr_action.dr_action;
-+		*reformat_id = mlx5dr_action_get_pkt_reformat_id(dr_action);
-+		return 0;
+ static int hws_action_get_shared_stc_nic(struct mlx5hws_context *ctx,
+ 					 enum mlx5hws_context_shared_stc_type stc_type,
+ 					 u8 tbl_type)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/fs_hws.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/fs_hws.c
+index 1b787cd66e6f..9d1c0e4b224a 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/fs_hws.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/fs_hws.c
+@@ -1081,13 +1081,8 @@ static int mlx5_cmd_hws_create_fte(struct mlx5_flow_root_namespace *ns,
+ 	struct mlx5hws_bwc_rule *rule;
+ 	int err = 0;
+ 
+-	if (mlx5_fs_cmd_is_fw_term_table(ft)) {
+-		/* Packet reformat on terminamtion table not supported yet */
+-		if (fte->act_dests.action.action &
+-		    MLX5_FLOW_CONTEXT_ACTION_PACKET_REFORMAT)
+-			return -EOPNOTSUPP;
++	if (mlx5_fs_cmd_is_fw_term_table(ft))
+ 		return mlx5_fs_cmd_get_fw_cmds()->create_fte(ns, ft, group, fte);
+-	}
+ 
+ 	err = mlx5_fs_fte_get_hws_actions(ns, ft, group, fte, &ractions);
+ 	if (err)
+@@ -1362,7 +1357,7 @@ mlx5_cmd_hws_packet_reformat_alloc(struct mlx5_flow_root_namespace *ns,
+ 		pkt_reformat->fs_hws_action.pr_data = pr_data;
  	}
- 	return -EOPNOTSUPP;
+ 
+-	pkt_reformat->owner = MLX5_FLOW_RESOURCE_OWNER_SW;
++	pkt_reformat->owner = MLX5_FLOW_RESOURCE_OWNER_HWS;
+ 	pkt_reformat->fs_hws_action.hws_action = hws_action;
+ 	return 0;
+ 
+@@ -1380,6 +1375,15 @@ static void mlx5_cmd_hws_packet_reformat_dealloc(struct mlx5_flow_root_namespace
+ 	struct mlx5_fs_hws_pr *pr_data;
+ 	struct mlx5_fs_pool *pr_pool;
+ 
++	if (pkt_reformat->fs_hws_action.fw_reformat_id != 0) {
++		struct mlx5_pkt_reformat fw_pkt_reformat = { 0 };
++
++		fw_pkt_reformat.id = pkt_reformat->fs_hws_action.fw_reformat_id;
++		mlx5_fs_cmd_get_fw_cmds()->
++			packet_reformat_dealloc(ns, &fw_pkt_reformat);
++		pkt_reformat->fs_hws_action.fw_reformat_id = 0;
++	}
++
+ 	if (pkt_reformat->reformat_type == MLX5_REFORMAT_TYPE_REMOVE_HDR)
+ 		return;
+ 
+@@ -1499,6 +1503,7 @@ static int mlx5_cmd_hws_modify_header_alloc(struct mlx5_flow_root_namespace *ns,
+ 		err = -ENOMEM;
+ 		goto release_mh;
+ 	}
++	mutex_init(&modify_hdr->fs_hws_action.lock);
+ 	modify_hdr->fs_hws_action.mh_data = mh_data;
+ 	modify_hdr->fs_hws_action.fs_pool = pool;
+ 	modify_hdr->owner = MLX5_FLOW_RESOURCE_OWNER_SW;
+@@ -1532,6 +1537,58 @@ static void mlx5_cmd_hws_modify_header_dealloc(struct mlx5_flow_root_namespace *
+ 	modify_hdr->fs_hws_action.mh_data = NULL;
  }
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/fs_dr.h b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/fs_dr.h
-index 99a3b2eff6b8..f869f2daefbf 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/fs_dr.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/sws/fs_dr.h
-@@ -38,7 +38,9 @@ struct mlx5_fs_dr_table {
  
- bool mlx5_fs_dr_is_supported(struct mlx5_core_dev *dev);
- 
--int mlx5_fs_dr_action_get_pkt_reformat_id(struct mlx5_pkt_reformat *pkt_reformat);
 +int
-+mlx5_fs_dr_action_get_pkt_reformat_id(struct mlx5_pkt_reformat *pkt_reformat,
-+				      u32 *reformat_id);
- 
- const struct mlx5_flow_cmds *mlx5_fs_cmd_get_dr_cmds(void);
- 
-@@ -49,9 +51,11 @@ static inline const struct mlx5_flow_cmds *mlx5_fs_cmd_get_dr_cmds(void)
- 	return NULL;
- }
- 
--static inline u32 mlx5_fs_dr_action_get_pkt_reformat_id(struct mlx5_pkt_reformat *pkt_reformat)
-+static inline int
-+mlx5_fs_dr_action_get_pkt_reformat_id(struct mlx5_pkt_reformat *pkt_reformat,
-+				      u32 *reformat_id)
++mlx5_fs_hws_action_get_pkt_reformat_id(struct mlx5_pkt_reformat *pkt_reformat,
++				       u32 *reformat_id)
++{
++	enum mlx5_flow_namespace_type ns_type = pkt_reformat->ns_type;
++	struct mutex *lock = &pkt_reformat->fs_hws_action.lock;
++	u32 *id = &pkt_reformat->fs_hws_action.fw_reformat_id;
++	struct mlx5_pkt_reformat fw_pkt_reformat = { 0 };
++	struct mlx5_pkt_reformat_params params = { 0 };
++	struct mlx5_flow_root_namespace *ns;
++	struct mlx5_core_dev *dev;
++	int ret;
++
++	mutex_lock(lock);
++
++	if (*id != 0) {
++		*reformat_id = *id;
++		ret = 0;
++		goto unlock;
++	}
++
++	dev = mlx5hws_action_get_dev(pkt_reformat->fs_hws_action.hws_action);
++	if (!dev) {
++		ret = -EINVAL;
++		goto unlock;
++	}
++
++	ns = mlx5_get_root_namespace(dev, ns_type);
++	if (!ns) {
++		ret = -EINVAL;
++		goto unlock;
++	}
++
++	params.type = pkt_reformat->reformat_type;
++	params.size = pkt_reformat->fs_hws_action.pr_data->data_size;
++	params.data = pkt_reformat->fs_hws_action.pr_data->data;
++
++	ret = mlx5_fs_cmd_get_fw_cmds()->
++		packet_reformat_alloc(ns, &params, ns_type, &fw_pkt_reformat);
++	if (ret)
++		goto unlock;
++
++	*id = fw_pkt_reformat.id;
++	*reformat_id = *id;
++	ret = 0;
++
++unlock:
++	mutex_unlock(lock);
++
++	return ret;
++}
++
+ static int mlx5_cmd_hws_create_match_definer(struct mlx5_flow_root_namespace *ns,
+ 					     u16 format_id, u32 *match_mask)
  {
--	return 0;
-+	return -EOPNOTSUPP;
- }
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/fs_hws.h b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/fs_hws.h
+index 8b56298288da..b92d55b2d147 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/fs_hws.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/fs_hws.h
+@@ -41,6 +41,11 @@ struct mlx5_fs_hws_action {
+ 	struct mlx5_fs_pool *fs_pool;
+ 	struct mlx5_fs_hws_pr *pr_data;
+ 	struct mlx5_fs_hws_mh *mh_data;
++	u32 fw_reformat_id;
++	/* Protect `fw_reformat_id` against being initialized from multiple
++	 * threads.
++	 */
++	struct mutex lock;
+ };
  
- static inline bool mlx5_fs_dr_is_supported(struct mlx5_core_dev *dev)
+ struct mlx5_fs_hws_matcher {
+@@ -84,12 +89,23 @@ void mlx5_fs_put_hws_action(struct mlx5_fs_hws_data *fs_hws_data);
+ 
+ #ifdef CONFIG_MLX5_HW_STEERING
+ 
++int
++mlx5_fs_hws_action_get_pkt_reformat_id(struct mlx5_pkt_reformat *pkt_reformat,
++				       u32 *reformat_id);
++
+ bool mlx5_fs_hws_is_supported(struct mlx5_core_dev *dev);
+ 
+ const struct mlx5_flow_cmds *mlx5_fs_cmd_get_hws_cmds(void);
+ 
+ #else
+ 
++static inline int
++mlx5_fs_hws_action_get_pkt_reformat_id(struct mlx5_pkt_reformat *pkt_reformat,
++				       u32 *reformat_id)
++{
++	return -EOPNOTSUPP;
++}
++
+ static inline bool mlx5_fs_hws_is_supported(struct mlx5_core_dev *dev)
+ {
+ 	return false;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/mlx5hws.h b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/mlx5hws.h
+index fbd63369da10..9bbadc4d8a0b 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/mlx5hws.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/mlx5hws.h
+@@ -503,6 +503,15 @@ int mlx5hws_rule_action_update(struct mlx5hws_rule *rule,
+ enum mlx5hws_action_type
+ mlx5hws_action_get_type(struct mlx5hws_action *action);
+ 
++/**
++ * mlx5hws_action_get_dev - Get mlx5 core device.
++ *
++ * @action: The action to get the device from.
++ *
++ * Return: mlx5 core device.
++ */
++struct mlx5_core_dev *mlx5hws_action_get_dev(struct mlx5hws_action *action);
++
+ /**
+  * mlx5hws_action_create_dest_drop - Create a direct rule drop action.
+  *
 -- 
 2.31.1
 
