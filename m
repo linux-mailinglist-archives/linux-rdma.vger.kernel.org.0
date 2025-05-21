@@ -1,130 +1,140 @@
-Return-Path: <linux-rdma+bounces-10489-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10490-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 092EBABF63E
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 15:36:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57936ABF702
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 16:03:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9E1F4E81A2
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 13:36:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D23B01BC590F
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 14:03:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDF0927AC43;
-	Wed, 21 May 2025 13:36:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5856A18A6AB;
+	Wed, 21 May 2025 14:02:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qqYnON9t"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A63774040;
-	Wed, 21 May 2025 13:36:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05C0914EC60;
+	Wed, 21 May 2025 14:02:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747834612; cv=none; b=QQz65yC8pxGuSbsybodX01s9AFk6g0uaufcrD62eQPfeLnAnnwaqlfx2rvSb+AZjw3LTTmDKHKvDGx+aaAbQCk3IK1b3VVAOCOv+WOUG5sGQv/gVfwsxu8gBNKoKwhpZoaMdO2tW/UTImC4fQvws6GwUrW4lh2n/mIzxYanthiQ=
+	t=1747836159; cv=none; b=ZvIUnhXSsZNL747C5yfKD7Ew/YDBjbEe/lKyTq3WmhWTttzSz3f7HF0/h2FWrM+YZIdiI1hEllRMbmMRppF7VtDh1VGuJHJdhSkY/lLy2q65xxXGP4d5lAK93BW9imErG+m+9+wY8/zDmBem1lADAC3SvVpSVuYWCVNNkWvA1Fw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747834612; c=relaxed/simple;
-	bh=YiyyForGuheKosxXUamDSECCLyk4mgZKtF8u/JT1kQs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=epqbWr2TQkko0VKhqnQixKY5iLZScsQVm1aQoXENVZpgMKZakp8acVhwJVw2WiBFRCYWity9g45I4/FS6JJQCpgdzjAlUpjOA80h/p/j/Wreu//AbNCaOZxrBpwwOB4YMdv18c5Bc+ZPGKjGhCP+EjfhPZb2Tsfm8iBnOQgKrPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from localhost.localdomain (unknown [124.16.141.245])
-	by APP-05 (Coremail) with SMTP id zQCowAD3OSzk1i1o4V4dAg--.57274S2;
-	Wed, 21 May 2025 21:36:38 +0800 (CST)
-From: Wentao Liang <vulab@iscas.ac.cn>
-To: saeedm@nvidia.com,
-	leon@kernel.org,
-	tariqt@nvidia.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Wentao Liang <vulab@iscas.ac.cn>,
-	stable@vger.kernel.org
-Subject: [PATCH v3] net/mlx5_core: Add error handling inmlx5_query_nic_vport_qkey_viol_cntr()
-Date: Wed, 21 May 2025 21:36:20 +0800
-Message-ID: <20250521133620.912-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.42.0.windows.2
+	s=arc-20240116; t=1747836159; c=relaxed/simple;
+	bh=XzBNibcp7iKkeEFDUAzJdibe/Jo7NOOf5PX3W+wxgD0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mVoNPW/8h8D5A1ZVIHUikLgf550p2RT8gjypiqVVm253W18VizrHa0Xi6yRDAMat3+GUzeEwzNykWvQKmzWMGXBG87992ZgHEDEN/gVQ4zOFhg+1qvSlPk11BzIg3oOoEN6uHI1AJlDc5q6xpzJYYgNy4sELsrVt61F6Fn61+vs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qqYnON9t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE7C4C4CEE4;
+	Wed, 21 May 2025 14:02:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747836158;
+	bh=XzBNibcp7iKkeEFDUAzJdibe/Jo7NOOf5PX3W+wxgD0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qqYnON9tKaNxbz622vXY3a5h7IsI/+xBDvDXZa2hyvFfYeSmdv8EYSNVWOsAZRhSo
+	 4VMLh5AP7aPS0z++jYbK1J81HUMEYW+CVwNZdITNgGWHALlo5mUgQmM/RdLr7T3519
+	 hxt1g0F01btuw74hzw9xKDzXf+AD45KPhCbMVqrLqbSl8DsTCbgkA2h+D252WseKg9
+	 2dvz6JNAm0Qa4qcC3jd8so/+1qjD3zKHrJ8i3FR4DkeDngUckkbLaBezxLC5nECWQn
+	 eUBfkvyTuzMsNPtIsfzIyZRbnbqeuOgf7IptoXwQurBKBjODWatfRl3vkhFI3d9ZDC
+	 gqIOVPi1xYw5A==
+Date: Wed, 21 May 2025 15:02:31 +0100
+From: Simon Horman <horms@kernel.org>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	decui@microsoft.com, stephen@networkplumber.org, kys@microsoft.com,
+	paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
+	davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
+	longli@microsoft.com, ssengar@linux.microsoft.com,
+	linux-rdma@vger.kernel.org, daniel@iogearbox.net,
+	john.fastabend@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
+	hawk@kernel.org, tglx@linutronix.de,
+	shradhagupta@linux.microsoft.com, andrew+netdev@lunn.ch,
+	kotaranov@microsoft.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next,v2] net: mana: Add support for Multi Vports on
+ Bare metal
+Message-ID: <20250521140231.GW365796@horms.kernel.org>
+References: <1747671636-5810-1-git-send-email-haiyangz@microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zQCowAD3OSzk1i1o4V4dAg--.57274S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr4rJw13Cr4rXFyDAry3XFb_yoW8AFW7pF
-	47tr97XrWkJa4Fv3Wj9rWrZr1ruay8ua409a4xt343Xr4vyr4DAr4YyryagrWUuFWUKrZY
-	yrsFy3ZxCFn8C37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9K14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-	6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-	n2kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCY02Avz4vE14v_Xr4l42xK82IYc2Ij64vIr4
-	1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
-	67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
-	8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
-	wI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14
-	v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUn2NKUUUUU
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBwwJA2gtsp90PQAAsg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1747671636-5810-1-git-send-email-haiyangz@microsoft.com>
 
-The function mlx5_query_nic_vport_qkey_viol_cntr() calls the function
-mlx5_query_nic_vport_context() but does not check its return value. This
-could lead to undefined behavior if the query fails. A proper
-implementation can be found in mlx5_nic_vport_query_local_lb().
+On Mon, May 19, 2025 at 09:20:36AM -0700, Haiyang Zhang wrote:
+> To support Multi Vports on Bare metal, increase the device config response
+> version. And, skip the register HW vport, and register filter steps, when
+> the Bare metal hostmode is set.
+> 
+> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+> ---
+> v2:
+>   Updated comments as suggested by ALOK TIWARI.
+>   Fixed the version check.
+> 
+> ---
+>  drivers/net/ethernet/microsoft/mana/mana_en.c | 24 ++++++++++++-------
+>  include/net/mana/mana.h                       |  4 +++-
+>  2 files changed, 19 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> index 2bac6be8f6a0..9c58d9e0bbb5 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> @@ -921,7 +921,7 @@ static void mana_pf_deregister_filter(struct mana_port_context *apc)
+>  
+>  static int mana_query_device_cfg(struct mana_context *ac, u32 proto_major_ver,
+>  				 u32 proto_minor_ver, u32 proto_micro_ver,
+> -				 u16 *max_num_vports)
+> +				 u16 *max_num_vports, u8 *bm_hostmode)
+>  {
+>  	struct gdma_context *gc = ac->gdma_dev->gdma_context;
+>  	struct mana_query_device_cfg_resp resp = {};
+> @@ -932,7 +932,7 @@ static int mana_query_device_cfg(struct mana_context *ac, u32 proto_major_ver,
+>  	mana_gd_init_req_hdr(&req.hdr, MANA_QUERY_DEV_CONFIG,
+>  			     sizeof(req), sizeof(resp));
+>  
+> -	req.hdr.resp.msg_version = GDMA_MESSAGE_V2;
+> +	req.hdr.resp.msg_version = GDMA_MESSAGE_V3;
+>  
+>  	req.proto_major_ver = proto_major_ver;
+>  	req.proto_minor_ver = proto_minor_ver;
 
-Add error handling for mlx5_query_nic_vport_context(). If it fails, free
-the out buffer via kvfree() and return error code.
+> @@ -956,11 +956,16 @@ static int mana_query_device_cfg(struct mana_context *ac, u32 proto_major_ver,
+>  
+>  	*max_num_vports = resp.max_num_vports;
+>  
+> -	if (resp.hdr.response.msg_version == GDMA_MESSAGE_V2)
+> +	if (resp.hdr.response.msg_version >= GDMA_MESSAGE_V2)
+>  		gc->adapter_mtu = resp.adapter_mtu;
+>  	else
+>  		gc->adapter_mtu = ETH_FRAME_LEN;
+>  
+> +	if (resp.hdr.response.msg_version >= GDMA_MESSAGE_V3)
+> +		*bm_hostmode = resp.bm_hostmode;
+> +	else
+> +		*bm_hostmode = 0;
 
-Fixes: 9efa75254593 ("net/mlx5_core: Introduce access functions to query vport RoCE fields")
-Cc: stable@vger.kernel.org # v4.5
-Target: net
-Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
----
-v3: Explicitly mention target branch. Change improper code.
-v2: Remove redundant reassignment. Fix RCT.
+Hi,
 
- drivers/net/ethernet/mellanox/mlx5/core/vport.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Perhaps not strictly related to this patch, but I see
+that mana_verify_resp_hdr() is called a few lines above.
+And that verifies a minimum msg_version. But I do not see
+any verification of the maximum msg_version supported by the code.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/vport.c b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
-index 66e44905c1f0..e4b86633d2fe 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/vport.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
-@@ -522,19 +522,22 @@ int mlx5_query_nic_vport_qkey_viol_cntr(struct mlx5_core_dev *mdev,
- {
- 	u32 *out;
- 	int outlen = MLX5_ST_SZ_BYTES(query_nic_vport_context_out);
-+	int err;
- 
- 	out = kvzalloc(outlen, GFP_KERNEL);
- 	if (!out)
- 		return -ENOMEM;
- 
--	mlx5_query_nic_vport_context(mdev, 0, out);
-+	err = mlx5_query_nic_vport_context(mdev, 0, out);
-+	if (err)
-+		goto out;
- 
- 	*qkey_viol_cntr = MLX5_GET(query_nic_vport_context_out, out,
- 				   nic_vport_context.qkey_violation_counter);
--
-+out:
- 	kvfree(out);
- 
--	return 0;
-+	return err;
- }
- EXPORT_SYMBOL_GPL(mlx5_query_nic_vport_qkey_viol_cntr);
- 
--- 
-2.42.0.windows.2
+I am concerned about a hypothetical scenario where, say the as yet unknown
+version 5 is sent as the version, and the above behaviour is used, while
+not being correct.
 
+Could you shed some light on this?
+
+...
 
