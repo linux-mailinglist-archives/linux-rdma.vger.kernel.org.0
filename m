@@ -1,68 +1,66 @@
-Return-Path: <linux-rdma+bounces-10491-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10492-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4DF8ABF765
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 16:12:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC766ABF7EA
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 16:34:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2D0F3AE1F1
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 14:11:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6455F4E67D8
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 14:34:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 391EF256C94;
-	Wed, 21 May 2025 14:10:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A4E31DD543;
+	Wed, 21 May 2025 14:34:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LmMkkQJy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ROoqVqcZ"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6ADE194137;
-	Wed, 21 May 2025 14:10:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4AE71D88D0;
+	Wed, 21 May 2025 14:34:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747836611; cv=none; b=VRIqMc0EbfmCi+ipYzoQeHztE9ffxb+z6qmxBJ/YkEjvhSK7hhceVUJRwy44NSBfR0Nb49jnA7xgHp2woShdybwhcAwV8Q5ShuNbb1xavV+O+D+Lh1rfK/npRgVaDzDAt0FLMBB5yj4/H9NqW08tBjkUfctdzL0hxGPyYz6r6K0=
+	t=1747838044; cv=none; b=gM3uB8fTi6L1FtQhfugaXcZ6Db8cM0USaeav8oM51ctjqy2M0nanoSgI0AsjW90YwnsdoOmgXInxywo8PgH/m/tmVNV8Z7srbjKrRG159f8kowyt7Jpk4BIJF8jqPBiuNCLJJw7dXfTu5a1NNmVKFHHIGoxAEGYG3f8LVj2dHNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747836611; c=relaxed/simple;
-	bh=DZEgFzM4nzHH/r9PZ/9x1SizshuzRtVrhWfn2VQ2doU=;
+	s=arc-20240116; t=1747838044; c=relaxed/simple;
+	bh=6P7mIPj7B7sJ/vEA58VPqJNIo45jgikPcikO/uSzLsk=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TOrMuxzzBQQqnDY+vEC0nX1/w614xThTkif/sYaOWiOBJb5kuGi8DO/YMmJtCF1QIiJdfccnPXhDQ6Iu9mPXHv0EpMPPM9SpjJ7+aF+Sepax+f7uTaqzulsgsi+x/h0+G4rUMz1bznfud5+P2dVfFkehN2hdNhg6TAu6/dhTrMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LmMkkQJy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88FE2C4CEE4;
-	Wed, 21 May 2025 14:10:08 +0000 (UTC)
+	 MIME-Version:Content-Type; b=uq+Nf31uK72j6Kks/LWHRq8rJ0HQSZr8ds29Joi7ZirSFAaVH2gHXxQrZvYanHIbai1l6XDOXCxC9neysWPDquABSvtBtQOiCXeNHJ3emdumjyHU7dslfqGOV8WC97mBIBUAEkG7jo+4umXxJJtkApgI9BJnXCL1hTJStdC1uPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ROoqVqcZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 844E2C4CEE4;
+	Wed, 21 May 2025 14:34:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747836609;
-	bh=DZEgFzM4nzHH/r9PZ/9x1SizshuzRtVrhWfn2VQ2doU=;
+	s=k20201202; t=1747838043;
+	bh=6P7mIPj7B7sJ/vEA58VPqJNIo45jgikPcikO/uSzLsk=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=LmMkkQJyNw/VJjwBRHSX4EySj8hOlqgazOjmHYKGiPMEaXn8ah3/Tb2sJUt1zHkY7
-	 e4uGKGfZmvJnt6m7xBkPuEdk6A7JHQe7+iHfKB6azSYbRy2coHdgm8xjwAiToeTiIa
-	 AcyuLvWX+EbwkmH9EreeBYC6jjtT9Z8e1NLu5YHz0aQHsEq/SKo8YkWNtvWrgVstJW
-	 Ik21uYYr9k6KO35Ma7+6zyJ+XrpDJKezW+dqqILGnwPw7F8VIjwWUlBDvY8uDH45tP
-	 BNbDPhuXHAmIdp+65UdUcCn/P7rIWt31JyU5T6FWJycJfUhNYNp/72AESV69hrhEwI
-	 NWjGotVjDuyxA==
-Date: Wed, 21 May 2025 07:10:07 -0700
+	b=ROoqVqcZH42CiPfobRxDgWMXSJf4HEuZ6B1czaH2zeQkFIBOACu3jK8u2NIUfuT6v
+	 cYl6uDa7GJEkHJsvzeCIYZcttLv4QoAEOf41rqvjb5Fi38bWgvQWJhiY0AT/e8LBp9
+	 Ac1NNbYgfSr6KOmglkrkgrTWucmupgDw+Cuh51tJnNGZgvSPRMUi2sTjnL0i4TGEhe
+	 xz78vjUlWFWZ09t83r11c+9EqGCDiQq4psW8ZeLppzE9UZohwQ42LIckZ9attzA8m+
+	 q+RLSpOQAhFx+hLxVAW3lVIvpDO79xY6PzqU2fXrwFGMN5nFPnW7Hz2Zl1D6e3X2pF
+	 yLD8HBwBPJVkQ==
+Date: Wed, 21 May 2025 07:34:01 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Tariq Toukan <ttoukan.linux@gmail.com>
-Cc: Carolina Jubran <cjubran@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
- "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
- Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Jiri Pirko <jiri@nvidia.com>, Gal Pressman <gal@nvidia.com>, Leon
- Romanovsky <leonro@nvidia.com>, Donald Hunter <donald.hunter@gmail.com>,
- Jiri Pirko <jiri@resnulli.us>, Jonathan Corbet <corbet@lwn.net>, Saeed
- Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Shuah Khan
- <shuah@kernel.org>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Moshe Shemesh <moshe@nvidia.com>, Mark
- Bloch <mbloch@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>
-Subject: Re: [PATCH net-next V10 2/6] selftest: netdevsim: Add devlink rate
- tc-bw test
-Message-ID: <20250521071007.0cb6f546@kernel.org>
-In-Reply-To: <80b40828-8fa3-4313-8c98-823ac7c055c1@gmail.com>
-References: <1747766287-950144-1-git-send-email-tariqt@nvidia.com>
-	<1747766287-950144-3-git-send-email-tariqt@nvidia.com>
-	<20250520155957.04b27217@kernel.org>
-	<80b40828-8fa3-4313-8c98-823ac7c055c1@gmail.com>
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+ pabeni@redhat.com, skalluru@marvell.com, manishc@marvell.com,
+ andrew+netdev@lunn.ch, michael.chan@broadcom.com,
+ pavan.chebbi@broadcom.com, ajit.khaparde@broadcom.com,
+ sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
+ anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com,
+ tariqt@nvidia.com, saeedm@nvidia.com, louis.peens@corigine.com,
+ shshaikh@marvell.com, GR-Linux-NIC-Dev@marvell.com, ecree.xilinx@gmail.com,
+ horms@kernel.org, dsahern@kernel.org, ruanjinjie@huawei.com,
+ mheib@redhat.com, linux-kernel@vger.kernel.org,
+ intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
+ oss-drivers@corigine.com, linux-net-drivers@amd.com, leon@kernel.org
+Subject: Re: [PATCH net-next 2/3] udp_tunnel: remove rtnl_lock dependency
+Message-ID: <20250521073401.67fbd1bc@kernel.org>
+In-Reply-To: <20250520203614.2693870-3-stfomichev@gmail.com>
+References: <20250520203614.2693870-1-stfomichev@gmail.com>
+	<20250520203614.2693870-3-stfomichev@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -72,51 +70,65 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 21 May 2025 10:05:13 +0300 Tariq Toukan wrote:
-> On 21/05/2025 1:59, Jakub Kicinski wrote:
-> > On Tue, 20 May 2025 21:38:03 +0300 Tariq Toukan wrote:  
-> >> Test verifies that netdevsim correctly implements devlink ops callbacks
-> >> that set tc-bw on leaf or node rate object.  
-> > 
-> > Please add a test that can actually validate a NIC HW.
-> > The test probably needs to be in Python to use a remote endpoint,
-> > and should live under tools/testing/../drivers/net/hw
-> > 
-> > We had a long conversation about what we expect from the API
-> > vs how your HW works. One of the test cases should confirm
-> > the expected behavior, IOW fail on mlx5. Which is fine,
-> > unlikely that any NIC will have 100% compliance. But at
-> > least we will be documenting the expectations.
-> 
-> No problem with that, we'll add.
-> 
-> We could've saved this extra cycle if my questions [1] exactly about 
-> this topic weren't ignored.
-> Area is vague and not well defined. We can continue with the iterative 
-> guess and fix cycles, or alternatively get it clearly and formally defined.
+On Tue, 20 May 2025 13:36:13 -0700 Stanislav Fomichev wrote:
+> Drivers that are using ops lock and don't depend on RTNL lock
+> still need to manage it because udp_tunnel's RTNL dependency.
+> Introduce new udp_tunnel_nic_lock and use it instead of
+> rtnl_lock. Drop non-UDP_TUNNEL_NIC_INFO_MAY_SLEEP mode from
+> udp_tunnel infra (udp_tunnel_nic_device_sync_work needs to
+> grab udp_tunnel_nic_lock mutex and might sleep).
 
-I started a couple of times on answering but my hands go a little limb
-when I have to explain things so obvious like "testing is a crucial part
-of software development" :S  I mean.. nvidia certainly tests their code,
-so I'm not sure where the disconnect is. I had a short conversation with
-Gal at some conference where he, AFAIU, was doubting that device testing
-can be part of an open source project.
+There is a netdevsim-based test for this that needs to be fixed up.
 
-It certainly is not advantageous to companies to have to share their
-test code. So when you ask me for details on the rules what I hear is
-"how can we make sure we do as little as possible".
+> diff --git a/include/net/udp_tunnel.h b/include/net/udp_tunnel.h
+> index 2df3b8344eb5..7f5537fdf2c9 100644
+> --- a/include/net/udp_tunnel.h
+> +++ b/include/net/udp_tunnel.h
+> @@ -221,19 +221,17 @@ static inline void udp_tunnel_encap_enable(struct sock *sk)
+>  #define UDP_TUNNEL_NIC_MAX_TABLES	4
+>  
+>  enum udp_tunnel_nic_info_flags {
+> -	/* Device callbacks may sleep */
+> -	UDP_TUNNEL_NIC_INFO_MAY_SLEEP	= BIT(0),
 
-Broadly, any new uAPI should come with tests which exercise the
-functionality. We started a decade or so ago with netdevsim tests
-which just validate the API layer itself. That did not provide
-sufficient validation of the real implementations, crucially it did 
-not check whether shallow APIs (devlink) actually behave the same
-when implemented by multiple vendors. So two years ago we built 
-the Python harness to be able to write tests for NIC functionality.
-That is the level of testing we expect now. Obviously there will always
-be exceptions. For instance I was pushing for common tests for the time
-sync code (DPLL etc.) but I was convinced by the experts that it's hard
-and that they generally test with $x0,000 measurement equipment.
-So fair, I guess that's too hard. But for BW shaping tests? 
-IIRC mlxsw has qdisc offload tests for BW shaping upstream.
+Could we use a different lock for sleeping and non-sleeping drivers?
+
+> @@ -554,11 +543,11 @@ static void __udp_tunnel_nic_reset_ntf(struct net_device *dev)
+>  	struct udp_tunnel_nic *utn;
+>  	unsigned int i, j;
+>  
+> -	ASSERT_RTNL();
+> +	mutex_lock(&udp_tunnel_nic_lock);
+>  
+>  	utn = dev->udp_tunnel_nic;
+
+utn and info's lifetimes are tied to the lifetime of the device
+I think their existence can remain protected by the external locks
+
+>  	if (!utn)
+> -		return;
+> +		goto unlock;
+>  
+>  	utn->need_sync = false;
+>  	for (i = 0; i < utn->n_tables; i++)
+
+> -	rtnl_lock();
+> +	mutex_lock(&udp_tunnel_nic_lock);
+>  	utn->work_pending = 0;
+>  	__udp_tunnel_nic_device_sync(utn->dev, utn);
+>  
+> -	if (utn->need_replay)
+> +	if (utn->need_replay) {
+> +		rtnl_lock();
+>  		udp_tunnel_nic_replay(utn->dev, utn);
+> -	rtnl_unlock();
+> +		rtnl_unlock();
+> +	}
+> +	mutex_unlock(&udp_tunnel_nic_lock);
+>  }
+
+What's the lock ordering between the new lock and rtnl lock?
+
+BTW the lock could live in utn, right? We can't use the instance
+lock because of sharing, but we could put the lock in utn?
 
