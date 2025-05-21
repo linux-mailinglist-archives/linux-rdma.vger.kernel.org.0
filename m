@@ -1,136 +1,143 @@
-Return-Path: <linux-rdma+bounces-10462-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10463-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B405ABECB8
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 09:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C717BABEEAD
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 10:57:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBD7017B11E
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 07:05:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88FE64A4B94
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 08:57:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91603235043;
-	Wed, 21 May 2025 07:05:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 105F0238145;
+	Wed, 21 May 2025 08:57:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GrIUPiya"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="f05Yi26W"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A1F22B8C3;
-	Wed, 21 May 2025 07:05:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F1A238143
+	for <linux-rdma@vger.kernel.org>; Wed, 21 May 2025 08:57:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747811123; cv=none; b=u8LgGSZtsBW+YLR3v0EAo+QN5H89eSYorj1Ztj+X5uOezyn7tE//Ix1MHrVarJxKpdwhEznNMBbD1C5U9TXjQI8laMUojPv0NRdWvUPZgsm88bLgRZ10fr00GCSlsYUNaYYlMDz/SzVK2fPYT4Sft4Bz1/Vp7pvi8sCpgObaO48=
+	t=1747817822; cv=none; b=TsqyXkGXRcODItFlwU3gtgdk5sI58hCHgV7DfVvz+buZvjJ3qBfxiEhOo+4ut2aLg3t0VI5Np0Q6vNFxNkgpBsd3ZUVX7s5l0TXFkkXiVroj30tqApbXoVW0AAsUXuH0vD7KoGEu5b00n1g1LOMQirvF7DMxZyMXI+LdMlPG2s0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747811123; c=relaxed/simple;
-	bh=CRWJpCEQTlPV9zuvKipkjRcKPNnuB3s5a8Y/uhRQISg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NN/d1Dmsb+zIY70QWdPh5MN0pkcVZd+26clCN/VfM+eM0YnuuVaXEoSAa33XCdC6wtj8REuo0+dPVtcFwJLzolaiQq4vZtMwOkd7hWS0FrjF2Z5E4ZjtJXEPfB2I6omUkDQZixOhgkkdE4ZMgNf36gBxMMRVpGY3gvm1rXhdE+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GrIUPiya; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-43ede096d73so46911685e9.2;
-        Wed, 21 May 2025 00:05:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747811120; x=1748415920; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cVBMFYR66wWyXi/ZLPMoKBQITzYK4w2QbdTYAurV8Y8=;
-        b=GrIUPiya8k7FN9ik+h3vp3mcIiJUZs+Xcf+q9Ph2FCA4dzLwevLAaCGLswhATZ1G5v
-         dHhKLiIQd4e8RsQsLR37ivrK5lCP3s5MSIZ2141aELlgbbhVPXBQBkw3wWNuo0Yt99El
-         3KLOtTqMCaX8d4Nt1tmfRgFYN/JPGIVINby7+1eFRTU7EWUTd2+7EZEsptZkbKmMMJ0+
-         6mnEiSgKpHkaUhJGaiC2msFXOUVK7vOq9CCJgIQzlMq+QMi5gKFohaIkfSI+mNxar6X1
-         bqHwD0tddOcvmpLfLWq2x16XbD0DBTS+mQrarbZLBGTBbaS7Fh3x0Qxf0FehIVSWUg3Z
-         E0Mg==
+	s=arc-20240116; t=1747817822; c=relaxed/simple;
+	bh=XSVAWIQJLeLQ+EnAe2fX432Jiet3EaT40S7A2jVLi7Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZHJ0dpXtzGs9Kc5JruTBxcjaJfY0oE0qnibpcEIiNO9OwmLoh387hstvbic98yf1kBu7orbcxl5/Nac04BYp586oip4wY5wHekH+FJ8BkvNdcrggvo4DibeX5yd+/HzVMovYEYFBTmIcPiETnekBwg5rkKgwC4jCGhNzOFjbZbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=f05Yi26W; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1747817820;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z5ISw/s/gG2J/o4w18hQ658TJ8AN+hELaWEkOZaX4Ho=;
+	b=f05Yi26We9j/BQYxoHcPfBL4QnY44Kn1ZdxkZJHiowgTTeFxHS76GtNZzgpcA87zG6eemJ
+	u5mY+pEjda+/MV64cXgh8wBl7bcJpPJKl0PLYvTJ2CuOTxR+/5eeikI9kyDtwDW+NPFHhl
+	OWvuG7066wYKAArxj5lmr9Om0UoUjAI=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-399-dSKhOwq3N9ifioPzacWTIg-1; Wed, 21 May 2025 04:56:58 -0400
+X-MC-Unique: dSKhOwq3N9ifioPzacWTIg-1
+X-Mimecast-MFC-AGG-ID: dSKhOwq3N9ifioPzacWTIg_1747817818
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-6f8c8a36dddso75378496d6.1
+        for <linux-rdma@vger.kernel.org>; Wed, 21 May 2025 01:56:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747811120; x=1748415920;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cVBMFYR66wWyXi/ZLPMoKBQITzYK4w2QbdTYAurV8Y8=;
-        b=GA4ZR5v9+IM7SsGHwjDh6Ov1gQ/HGCo9VOXjpvOiffuFcIC5NfTa7RcByeu4gjLSIz
-         J9wEg9JJlVxSuhsyUPTKFE6cyGS2aduMypldrfrgGskfvF2aEHLyBvidq4JGEYxzWXCJ
-         j4EhYShyD5hs5gLMfOabWoGVCL45Ym4c1FDa0B/DArz5bQpOXhRVHknH7dMaFntwhycq
-         R0Or0UXv1KCfqMDkJAfz4rkFJIx41hLBnOFHPEQWA9mhoxHLY9eLXWlLryVBex5CD31E
-         2KlFbsbG0qUXVbc+4OB8/MtzkiuBn8wcQLa15mUBTfRGys9Wqw3WIEBVX6i5KHN2G9QW
-         ad6g==
-X-Forwarded-Encrypted: i=1; AJvYcCUARHDsqypX7wtVV3ezxlfOkkx1IDUXVz5rBqyS9PJuz5C0QgL5i0RTH1bCBFUImwHilrJx/EkdeZw=@vger.kernel.org, AJvYcCUD5rGDwSe2w5+zhC3UyfH09zhREjjKM/3vRdIzv0YMyLH1ckqtKUqWFcnJZfml5xbPpcjSskcw@vger.kernel.org, AJvYcCUTr4j+BO33yW9DWEpM2VCm/MmbGVKtKCiO06L+Sfg2M9Djx0KqiRxxiqHBsrmk2SMQlhZbkYgfmW7cNA==@vger.kernel.org, AJvYcCVOsn++c/eTSx5QnZEgAEr0/PohnBkvNFTQzME43FTe+EQjllQfKp14/cqJcfTPCoMbL10JnvBo7IY9DG00/rDO@vger.kernel.org, AJvYcCX1Fieiac28MVoB2K0GIvnH+F8Z682FLOi4Ns+M/1woYQY1iXMWgA6CX7zTgHyaRLQa2dFeONU0AwR+eBFn@vger.kernel.org
-X-Gm-Message-State: AOJu0YxyQzJ5d1qJpn8Qt+7tmO/6hp0aezjjPpHzqqjyeu6/VC8ZQiPR
-	lw9Qjr0MV7pH+Ww3HIOxcofdNozeNvvK5VoxjSgIv1ePJ4IunWbpK4dr
-X-Gm-Gg: ASbGnct4Ti7oj2RCkaeO3Jy17GNRdX0AOUkqesUjEpf1RoRiJgepr+qN79K4aS1VEA+
-	6cCqMB+hIM/3ro7xg/wlMkZ1PNi5qzkZZlFRSeDxMiDKc9gsunrIEwmviDTBJwMxyBV5g8C7vqH
-	7w6f5+SrVxOgioiisZxNZgdR6dUglw/3Mxo39m9N7HKQhhriyxLnwKmGnK7g8vZp4yAJgNC0N8r
-	wrEvYyTd5t4SJQ+BKssRKgY6XNp5JlP2mDql3TBJlYld3GBu5NA9JNeujnAmot6chB4/innHTc+
-	8f1dvp4BBxFarJHlCho1vK0RucNmIHM8LukJNWT65kYKzjbtUQlBJyYBv8j1tjlHtXRYgpbD
-X-Google-Smtp-Source: AGHT+IH76b0+NNb6/NkbSwWOkVm7cWNBavLWnfUchKABErnQARC8/2YWL6aXIXncA8+i1sj6S+5VGw==
-X-Received: by 2002:a05:6000:3105:b0:3a3:64d3:4047 with SMTP id ffacd0b85a97d-3a364d3405emr13275697f8f.37.1747811119524;
-        Wed, 21 May 2025 00:05:19 -0700 (PDT)
-Received: from [172.27.21.230] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a35ca889a7sm18892685f8f.72.2025.05.21.00.05.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 May 2025 00:05:19 -0700 (PDT)
-Message-ID: <80b40828-8fa3-4313-8c98-823ac7c055c1@gmail.com>
-Date: Wed, 21 May 2025 10:05:13 +0300
+        d=1e100.net; s=20230601; t=1747817818; x=1748422618;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=z5ISw/s/gG2J/o4w18hQ658TJ8AN+hELaWEkOZaX4Ho=;
+        b=qVlLE43eKsqO8eoFwUhGriXlpjmWyw/pnoRUSU7SZUIaZwiVIb+QZ9jV4+F9dhqIkj
+         3deLtvObNsyCtdgVRECvPbAEH28WgsWL4ZJawmh4R4tmyy8/ZqDke3/QPmzAS2kxFREF
+         toGDlqBCjzGVzqnzSlVY6uCCc8+UEEhrhHBb6NnepLI8pqsBt+Emz7b48y9uUFC4xwE0
+         n1YVJM5fEgBCunXAc0lMtkMPeXtA25C1KcnS559nubWwzeoxQYmmgeInh98pZ5WplsK2
+         NBpUgRu2KyRAU2tZldJzUrBUOWS15OUZT4xUWbNHEWnC3dz1D/OmHvvJ+SF83rqpcWXN
+         oFtg==
+X-Forwarded-Encrypted: i=1; AJvYcCU3wNvG4cO7fgCzqq8UoK1NPCAHk2Sx847/76WnhatdDyoafaH68GpCQrcRfkAklbEZVRctp8UCExJx@vger.kernel.org
+X-Gm-Message-State: AOJu0YwmO6n2uxjqPk26w6YAFoBCk2Pac3PmbqiEUCQRcEQyX1QMTU0K
+	eO355t9sXrF2T+iMucuG1tCC6wHTwc7ZArF5dpfPg3WO06qyxYkNilED49PIxfBfUSEY4P3ElD7
+	QD9jkAMEB4+LO8d44Ex+eZVwlmEZf55oX0SIH2IahtjZxdOMGhnZnls+Kl2ta1hzqkdSZ0pdSE2
+	k0F3O9OAizM7EFc5gt2TdHfAluMA2Ddnq08nBMcg==
+X-Gm-Gg: ASbGncvB1SnacP1wU2wvdN6VV8A2yKQEoSot0126DVY5eJaZBjvj2hdsMAaQd9ZRaGr
+	jcDQ2RvqLDgcQpO7of/Km/QEBxRc7jNlO9xc/Lidw/jPb7cRUvM54111LS/JcwAaKOUU=
+X-Received: by 2002:a05:6214:2681:b0:6f8:8df1:648 with SMTP id 6a1803df08f44-6f8b2c37a19mr343338896d6.7.1747817818420;
+        Wed, 21 May 2025 01:56:58 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGaO4WTOV6fJAlmH9DP3inkXOYir+cNPdLYhrMs4mbVZjO2ZBdSoayKvQmU0Z4z5PR9AxBgDQglVFmrFM7Wvjg=
+X-Received: by 2002:a05:6214:2681:b0:6f8:8df1:648 with SMTP id
+ 6a1803df08f44-6f8b2c37a19mr343338606d6.7.1747817818106; Wed, 21 May 2025
+ 01:56:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next V10 2/6] selftest: netdevsim: Add devlink rate
- tc-bw test
-To: Jakub Kicinski <kuba@kernel.org>, Carolina Jubran <cjubran@nvidia.com>
-Cc: Tariq Toukan <tariqt@nvidia.com>, "David S. Miller"
- <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
- Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Jiri Pirko <jiri@nvidia.com>, Gal Pressman <gal@nvidia.com>,
- Leon Romanovsky <leonro@nvidia.com>, Donald Hunter
- <donald.hunter@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
- Jonathan Corbet <corbet@lwn.net>, Saeed Mahameed <saeedm@nvidia.com>,
- Leon Romanovsky <leon@kernel.org>, Shuah Khan <shuah@kernel.org>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Moshe Shemesh <moshe@nvidia.com>,
- Mark Bloch <mbloch@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>
-References: <1747766287-950144-1-git-send-email-tariqt@nvidia.com>
- <1747766287-950144-3-git-send-email-tariqt@nvidia.com>
- <20250520155957.04b27217@kernel.org>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20250520155957.04b27217@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <1747253032-663457-1-git-send-email-tariqt@nvidia.com>
+ <CAADnVQLSMvk3uuzTCjqQKXs6hbZH9-_XeYo2Uvu2uHAiYrnkog@mail.gmail.com>
+ <dcb3053f-6588-4c87-be42-a172dacb1828@gmail.com> <09377c1a-dac5-487d-9fc1-d973b20b04dd@kernel.org>
+In-Reply-To: <09377c1a-dac5-487d-9fc1-d973b20b04dd@kernel.org>
+From: Samuel Dobron <sdobron@redhat.com>
+Date: Wed, 21 May 2025 10:56:47 +0200
+X-Gm-Features: AX0GCFu5dfswcCWTTkSyc0z9SXYg_lElASwlqEtz7krxELOPksJgTCJdKDQl7-M
+Message-ID: <CA+h3auNLbmQFXrN1A5Ashek4UiMGa_j+EHaFFp-d74kGZvyjsA@mail.gmail.com>
+Subject: Re: [PATCH net-next] net/mlx5e: Reuse per-RQ XDP buffer to avoid
+ stack zeroing overhead
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Tariq Toukan <ttoukan.linux@gmail.com>, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, 
+	Andrew Lunn <andrew+netdev@lunn.ch>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Network Development <netdev@vger.kernel.org>, 
+	linux-rdma@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>, Moshe Shemesh <moshe@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
+	Gal Pressman <gal@nvidia.com>, Carolina Jubran <cjubran@nvidia.com>, 
+	Sebastiano Miano <mianosebastiano@gmail.com>, Benjamin Poirier <bpoirier@redhat.com>, 
+	Toke Hoiland Jorgensen <toke@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 
+Hey,
+I ran tests just on stack zeroing kernel.
 
+> The XDP_TX number are actually lower than I expected.
+> Hmm... I wonder if we regressed here(?)
 
-On 21/05/2025 1:59, Jakub Kicinski wrote:
-> On Tue, 20 May 2025 21:38:03 +0300 Tariq Toukan wrote:
->> Test verifies that netdevsim correctly implements devlink ops callbacks
->> that set tc-bw on leaf or node rate object.
-> 
-> Please add a test that can actually validate a NIC HW.
-> The test probably needs to be in Python to use a remote endpoint,
-> and should live under tools/testing/../drivers/net/hw
-> 
-> We had a long conversation about what we expect from the API
-> vs how your HW works. One of the test cases should confirm
-> the expected behavior, IOW fail on mlx5. Which is fine,
-> unlikely that any NIC will have 100% compliance. But at
-> least we will be documenting the expectations.
-> 
+The absolute numbers look more or less the same,
+so I would say no. The first results we have for TX is from
+6.13.0-0.rc1.20241202gite70140ba0d2b.14.eln144
+comparing it to 6.15.0-0.rc5.250509g9c69f8884904.47.eln148
+there is actually 1% improvement. But that might be a
+random fluctuation (numbers are based on 1 iteration).
+We don't have data for earlier kernels...
 
-No problem with that, we'll add.
+However, for TX I get better results:
 
-We could've saved this extra cycle if my questions [1] exactly about 
-this topic weren't ignored.
-Area is vague and not well defined. We can continue with the iterative 
-guess and fix cycles, or alternatively get it clearly and formally defined.
+XDP_TX: DPA, swap macs:
+- baseline: 9.75 Mpps
+- patched 10.78 Mpps (+10%)
 
-[1] 
-https://lore.kernel.org/all/98386cab-11c0-4f74-9925-8230af2e65c8@gmail.com/
+Maybe just different test configuration? We use xdp-bench
+in dpa mode+swapping macs.
+
+XDP_DROP:
+> >>> Stack zeroing enabled:
+> >>> - XDP_DROP:
+> >>>      * baseline:                     24.32 Mpps
+> >>>      * baseline + per-RQ allocation: 32.27 Mpps (+32.7%)
+
+Same results on my side:
+- baseline 16.6 Mpps
+- patched  24.6 Mpps (+32.5%)
+
+Seems to be fixed :)
+
+Sam.
 
 
