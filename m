@@ -1,140 +1,122 @@
-Return-Path: <linux-rdma+bounces-10490-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10491-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57936ABF702
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 16:03:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4DF8ABF765
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 16:12:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D23B01BC590F
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 14:03:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2D0F3AE1F1
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 14:11:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5856A18A6AB;
-	Wed, 21 May 2025 14:02:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 391EF256C94;
+	Wed, 21 May 2025 14:10:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qqYnON9t"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LmMkkQJy"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05C0914EC60;
-	Wed, 21 May 2025 14:02:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6ADE194137;
+	Wed, 21 May 2025 14:10:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747836159; cv=none; b=ZvIUnhXSsZNL747C5yfKD7Ew/YDBjbEe/lKyTq3WmhWTttzSz3f7HF0/h2FWrM+YZIdiI1hEllRMbmMRppF7VtDh1VGuJHJdhSkY/lLy2q65xxXGP4d5lAK93BW9imErG+m+9+wY8/zDmBem1lADAC3SvVpSVuYWCVNNkWvA1Fw=
+	t=1747836611; cv=none; b=VRIqMc0EbfmCi+ipYzoQeHztE9ffxb+z6qmxBJ/YkEjvhSK7hhceVUJRwy44NSBfR0Nb49jnA7xgHp2woShdybwhcAwV8Q5ShuNbb1xavV+O+D+Lh1rfK/npRgVaDzDAt0FLMBB5yj4/H9NqW08tBjkUfctdzL0hxGPyYz6r6K0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747836159; c=relaxed/simple;
-	bh=XzBNibcp7iKkeEFDUAzJdibe/Jo7NOOf5PX3W+wxgD0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mVoNPW/8h8D5A1ZVIHUikLgf550p2RT8gjypiqVVm253W18VizrHa0Xi6yRDAMat3+GUzeEwzNykWvQKmzWMGXBG87992ZgHEDEN/gVQ4zOFhg+1qvSlPk11BzIg3oOoEN6uHI1AJlDc5q6xpzJYYgNy4sELsrVt61F6Fn61+vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qqYnON9t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE7C4C4CEE4;
-	Wed, 21 May 2025 14:02:33 +0000 (UTC)
+	s=arc-20240116; t=1747836611; c=relaxed/simple;
+	bh=DZEgFzM4nzHH/r9PZ/9x1SizshuzRtVrhWfn2VQ2doU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=TOrMuxzzBQQqnDY+vEC0nX1/w614xThTkif/sYaOWiOBJb5kuGi8DO/YMmJtCF1QIiJdfccnPXhDQ6Iu9mPXHv0EpMPPM9SpjJ7+aF+Sepax+f7uTaqzulsgsi+x/h0+G4rUMz1bznfud5+P2dVfFkehN2hdNhg6TAu6/dhTrMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LmMkkQJy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88FE2C4CEE4;
+	Wed, 21 May 2025 14:10:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747836158;
-	bh=XzBNibcp7iKkeEFDUAzJdibe/Jo7NOOf5PX3W+wxgD0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qqYnON9tKaNxbz622vXY3a5h7IsI/+xBDvDXZa2hyvFfYeSmdv8EYSNVWOsAZRhSo
-	 4VMLh5AP7aPS0z++jYbK1J81HUMEYW+CVwNZdITNgGWHALlo5mUgQmM/RdLr7T3519
-	 hxt1g0F01btuw74hzw9xKDzXf+AD45KPhCbMVqrLqbSl8DsTCbgkA2h+D252WseKg9
-	 2dvz6JNAm0Qa4qcC3jd8so/+1qjD3zKHrJ8i3FR4DkeDngUckkbLaBezxLC5nECWQn
-	 eUBfkvyTuzMsNPtIsfzIyZRbnbqeuOgf7IptoXwQurBKBjODWatfRl3vkhFI3d9ZDC
-	 gqIOVPi1xYw5A==
-Date: Wed, 21 May 2025 15:02:31 +0100
-From: Simon Horman <horms@kernel.org>
-To: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	decui@microsoft.com, stephen@networkplumber.org, kys@microsoft.com,
-	paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
-	davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
-	longli@microsoft.com, ssengar@linux.microsoft.com,
-	linux-rdma@vger.kernel.org, daniel@iogearbox.net,
-	john.fastabend@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
-	hawk@kernel.org, tglx@linutronix.de,
-	shradhagupta@linux.microsoft.com, andrew+netdev@lunn.ch,
-	kotaranov@microsoft.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next,v2] net: mana: Add support for Multi Vports on
- Bare metal
-Message-ID: <20250521140231.GW365796@horms.kernel.org>
-References: <1747671636-5810-1-git-send-email-haiyangz@microsoft.com>
+	s=k20201202; t=1747836609;
+	bh=DZEgFzM4nzHH/r9PZ/9x1SizshuzRtVrhWfn2VQ2doU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=LmMkkQJyNw/VJjwBRHSX4EySj8hOlqgazOjmHYKGiPMEaXn8ah3/Tb2sJUt1zHkY7
+	 e4uGKGfZmvJnt6m7xBkPuEdk6A7JHQe7+iHfKB6azSYbRy2coHdgm8xjwAiToeTiIa
+	 AcyuLvWX+EbwkmH9EreeBYC6jjtT9Z8e1NLu5YHz0aQHsEq/SKo8YkWNtvWrgVstJW
+	 Ik21uYYr9k6KO35Ma7+6zyJ+XrpDJKezW+dqqILGnwPw7F8VIjwWUlBDvY8uDH45tP
+	 BNbDPhuXHAmIdp+65UdUcCn/P7rIWt31JyU5T6FWJycJfUhNYNp/72AESV69hrhEwI
+	 NWjGotVjDuyxA==
+Date: Wed, 21 May 2025 07:10:07 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Tariq Toukan <ttoukan.linux@gmail.com>
+Cc: Carolina Jubran <cjubran@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
+ "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Jiri Pirko <jiri@nvidia.com>, Gal Pressman <gal@nvidia.com>, Leon
+ Romanovsky <leonro@nvidia.com>, Donald Hunter <donald.hunter@gmail.com>,
+ Jiri Pirko <jiri@resnulli.us>, Jonathan Corbet <corbet@lwn.net>, Saeed
+ Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Shuah Khan
+ <shuah@kernel.org>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Moshe Shemesh <moshe@nvidia.com>, Mark
+ Bloch <mbloch@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>
+Subject: Re: [PATCH net-next V10 2/6] selftest: netdevsim: Add devlink rate
+ tc-bw test
+Message-ID: <20250521071007.0cb6f546@kernel.org>
+In-Reply-To: <80b40828-8fa3-4313-8c98-823ac7c055c1@gmail.com>
+References: <1747766287-950144-1-git-send-email-tariqt@nvidia.com>
+	<1747766287-950144-3-git-send-email-tariqt@nvidia.com>
+	<20250520155957.04b27217@kernel.org>
+	<80b40828-8fa3-4313-8c98-823ac7c055c1@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1747671636-5810-1-git-send-email-haiyangz@microsoft.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, May 19, 2025 at 09:20:36AM -0700, Haiyang Zhang wrote:
-> To support Multi Vports on Bare metal, increase the device config response
-> version. And, skip the register HW vport, and register filter steps, when
-> the Bare metal hostmode is set.
+On Wed, 21 May 2025 10:05:13 +0300 Tariq Toukan wrote:
+> On 21/05/2025 1:59, Jakub Kicinski wrote:
+> > On Tue, 20 May 2025 21:38:03 +0300 Tariq Toukan wrote:  
+> >> Test verifies that netdevsim correctly implements devlink ops callbacks
+> >> that set tc-bw on leaf or node rate object.  
+> > 
+> > Please add a test that can actually validate a NIC HW.
+> > The test probably needs to be in Python to use a remote endpoint,
+> > and should live under tools/testing/../drivers/net/hw
+> > 
+> > We had a long conversation about what we expect from the API
+> > vs how your HW works. One of the test cases should confirm
+> > the expected behavior, IOW fail on mlx5. Which is fine,
+> > unlikely that any NIC will have 100% compliance. But at
+> > least we will be documenting the expectations.
 > 
-> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> ---
-> v2:
->   Updated comments as suggested by ALOK TIWARI.
->   Fixed the version check.
+> No problem with that, we'll add.
 > 
-> ---
->  drivers/net/ethernet/microsoft/mana/mana_en.c | 24 ++++++++++++-------
->  include/net/mana/mana.h                       |  4 +++-
->  2 files changed, 19 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> index 2bac6be8f6a0..9c58d9e0bbb5 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> @@ -921,7 +921,7 @@ static void mana_pf_deregister_filter(struct mana_port_context *apc)
->  
->  static int mana_query_device_cfg(struct mana_context *ac, u32 proto_major_ver,
->  				 u32 proto_minor_ver, u32 proto_micro_ver,
-> -				 u16 *max_num_vports)
-> +				 u16 *max_num_vports, u8 *bm_hostmode)
->  {
->  	struct gdma_context *gc = ac->gdma_dev->gdma_context;
->  	struct mana_query_device_cfg_resp resp = {};
-> @@ -932,7 +932,7 @@ static int mana_query_device_cfg(struct mana_context *ac, u32 proto_major_ver,
->  	mana_gd_init_req_hdr(&req.hdr, MANA_QUERY_DEV_CONFIG,
->  			     sizeof(req), sizeof(resp));
->  
-> -	req.hdr.resp.msg_version = GDMA_MESSAGE_V2;
-> +	req.hdr.resp.msg_version = GDMA_MESSAGE_V3;
->  
->  	req.proto_major_ver = proto_major_ver;
->  	req.proto_minor_ver = proto_minor_ver;
+> We could've saved this extra cycle if my questions [1] exactly about 
+> this topic weren't ignored.
+> Area is vague and not well defined. We can continue with the iterative 
+> guess and fix cycles, or alternatively get it clearly and formally defined.
 
-> @@ -956,11 +956,16 @@ static int mana_query_device_cfg(struct mana_context *ac, u32 proto_major_ver,
->  
->  	*max_num_vports = resp.max_num_vports;
->  
-> -	if (resp.hdr.response.msg_version == GDMA_MESSAGE_V2)
-> +	if (resp.hdr.response.msg_version >= GDMA_MESSAGE_V2)
->  		gc->adapter_mtu = resp.adapter_mtu;
->  	else
->  		gc->adapter_mtu = ETH_FRAME_LEN;
->  
-> +	if (resp.hdr.response.msg_version >= GDMA_MESSAGE_V3)
-> +		*bm_hostmode = resp.bm_hostmode;
-> +	else
-> +		*bm_hostmode = 0;
+I started a couple of times on answering but my hands go a little limb
+when I have to explain things so obvious like "testing is a crucial part
+of software development" :S  I mean.. nvidia certainly tests their code,
+so I'm not sure where the disconnect is. I had a short conversation with
+Gal at some conference where he, AFAIU, was doubting that device testing
+can be part of an open source project.
 
-Hi,
+It certainly is not advantageous to companies to have to share their
+test code. So when you ask me for details on the rules what I hear is
+"how can we make sure we do as little as possible".
 
-Perhaps not strictly related to this patch, but I see
-that mana_verify_resp_hdr() is called a few lines above.
-And that verifies a minimum msg_version. But I do not see
-any verification of the maximum msg_version supported by the code.
-
-I am concerned about a hypothetical scenario where, say the as yet unknown
-version 5 is sent as the version, and the above behaviour is used, while
-not being correct.
-
-Could you shed some light on this?
-
-...
+Broadly, any new uAPI should come with tests which exercise the
+functionality. We started a decade or so ago with netdevsim tests
+which just validate the API layer itself. That did not provide
+sufficient validation of the real implementations, crucially it did 
+not check whether shallow APIs (devlink) actually behave the same
+when implemented by multiple vendors. So two years ago we built 
+the Python harness to be able to write tests for NIC functionality.
+That is the level of testing we expect now. Obviously there will always
+be exceptions. For instance I was pushing for common tests for the time
+sync code (DPLL etc.) but I was convinced by the experts that it's hard
+and that they generally test with $x0,000 measurement equipment.
+So fair, I guess that's too hard. But for BW shaping tests? 
+IIRC mlxsw has qdisc offload tests for BW shaping upstream.
 
