@@ -1,68 +1,68 @@
-Return-Path: <linux-rdma+bounces-10506-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10507-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AF43ABFF6D
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 00:24:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECF31ABFF8C
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 00:31:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 984C61BA5683
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 22:24:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E7384E0F02
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 22:31:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A265E23A562;
-	Wed, 21 May 2025 22:24:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B4C2239E62;
+	Wed, 21 May 2025 22:31:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eBXxWeYK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YUL1rEPi"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F543148827;
-	Wed, 21 May 2025 22:24:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7603136351;
+	Wed, 21 May 2025 22:31:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747866273; cv=none; b=oAAXwSndJvtzGOSiPkdFFqxWzTER2cHhLmChYssSagUpznAtXdMJhNySz++VWEE8C+w7d0ChZJFub6I95k2WMRFVFU0D9uIq2PdjXxJV9oNOn/ELpDIib40zncEaUBivsGWu7/oQhMfNPA6RxdjEIuDgIkGSokC3sy0uXOxF8hQ=
+	t=1747866668; cv=none; b=oBhOeCuYusJY8HoZrli56bIQmOu5poX19iT4zIJg8wwsM/cipTz3KL1bvWbLCLOPS6N8qUUoGL88oa6CWv1cEUpjzGyb5NFYMji0sSuE5OpQoxlxCzvOvn3MENU7v8OY0usfRdHlO7Pi/DUGI5gL09NKuQpe3lV1sIUwx2L3CNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747866273; c=relaxed/simple;
-	bh=rcfJMid0U4cIWv6iZ+LwO1ZLuUmxSmI5sKUmm3O/BjI=;
+	s=arc-20240116; t=1747866668; c=relaxed/simple;
+	bh=mfOAhsIWu5Z4ODKpt4UPUgtiPYOuu8DX97OEMhASu5k=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iVEsuEe/iDzLwE454miKQY22ocBA2rPwVkLPwCUcwlgg3O0vf6Px/i4bHVB3+yUF33Dwoq6g4EbidSwxK0BLZJVKvOXAQ3dorhimjhrufpGpwENBMDIi2IX8Dof76UNajc9tGy7pLfqyGMa9ENVVnSEtlIpROOW7eFaw41MJQMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eBXxWeYK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A3D8C4CEE4;
-	Wed, 21 May 2025 22:24:32 +0000 (UTC)
+	 MIME-Version:Content-Type; b=bR1h5Uh1qNpyvquQDJpb2AX8AyNkgriQZDStu1a+OH2hRvJtPio3eMjwLzkLK6C3udAkxrr6rFeunkXP0SnVNkOAjqvRwlHnnEHoNIREgGfcaeU4UziUZi1RWHQjj/1urbLw6XbavDosCxgapUZGUREwOgNSWQbEsire9TMUmYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YUL1rEPi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4ECAC4CEE4;
+	Wed, 21 May 2025 22:31:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747866272;
-	bh=rcfJMid0U4cIWv6iZ+LwO1ZLuUmxSmI5sKUmm3O/BjI=;
+	s=k20201202; t=1747866668;
+	bh=mfOAhsIWu5Z4ODKpt4UPUgtiPYOuu8DX97OEMhASu5k=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=eBXxWeYKurv7wpSzLSEP6u+SZgbUssr4hTy0pMxj8Ufd3NTDHjXiIvhSCAN9b4YUt
-	 7LQ2vMeKG7p1LmhNAuwp7/LdJQevfz9jhtIUVapLokNY4kOsO9KLmWmxGMlC52rHKI
-	 A0JD4qQXeY+0FhCCt8EqYjBXa1wBl+lXpCflstA/O+6DW2Pn10mRWqGcIvo7QRVi62
-	 Ud6vY5MubCH9s90fkBko3zfp6TUKXcajJro3Z6qodWL8gEfHqaqzZyInKgSygKCqga
-	 lKKoDhpVQ0pteUvVMRVJH5ySq4NA7VU0x6dD39puIwcCidn/m99TKduA5IYnXMhyjv
-	 we+FplDfZ3hsA==
-Date: Wed, 21 May 2025 15:24:31 -0700
+	b=YUL1rEPiwYnxwoN2OoAyzyGKm8BCc9d95twKiFTPMjfwdhNs5O2OzAKgdb8ggXx+3
+	 UJiiGWdX8UGQF+BSkt90/59AgI8walNx9x2AQHDpLL6v31o58OakNpvNuYrxw7/H66
+	 Md7q30GtamKasCWvDXPkncYzrf3diBC8u9KQIrQHiynVAUP8QrLDeedNCm+3GPzwx1
+	 wAX/VZbfZKn7ZiUszLGlKGGvFyNSua/3rSUb+pQcHuLFvji6290jC5Nco3RgaxFLcU
+	 qSJU78yAn1eGghCTO5w0m97NsTZKckEebotvqAqFQilRdHfd422dwk7Iu4+cEPRn+Z
+	 egpA0kYk8H4hg==
+Date: Wed, 21 May 2025 15:31:07 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Carolina Jubran <cjubran@nvidia.com>
-Cc: Tariq Toukan <tariqt@nvidia.com>, "David S. Miller"
- <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, Eric Dumazet
- <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Jiri Pirko
- <jiri@nvidia.com>, Gal Pressman <gal@nvidia.com>, Leon Romanovsky
- <leonro@nvidia.com>, Donald Hunter <donald.hunter@gmail.com>, Jiri Pirko
- <jiri@resnulli.us>, Jonathan Corbet <corbet@lwn.net>, Saeed Mahameed
- <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Shuah Khan
- <shuah@kernel.org>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Moshe Shemesh <moshe@nvidia.com>, Mark
- Bloch <mbloch@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>
-Subject: Re: [PATCH net-next V10 2/6] selftest: netdevsim: Add devlink rate
- tc-bw test
-Message-ID: <20250521152431.56a77580@kernel.org>
-In-Reply-To: <de344976-6117-478f-987c-3d24be590399@nvidia.com>
-References: <1747766287-950144-1-git-send-email-tariqt@nvidia.com>
-	<1747766287-950144-3-git-send-email-tariqt@nvidia.com>
-	<20250520155957.04b27217@kernel.org>
-	<de344976-6117-478f-987c-3d24be590399@nvidia.com>
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+ pabeni@redhat.com, skalluru@marvell.com, manishc@marvell.com,
+ andrew+netdev@lunn.ch, michael.chan@broadcom.com,
+ pavan.chebbi@broadcom.com, ajit.khaparde@broadcom.com,
+ sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
+ anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com,
+ tariqt@nvidia.com, saeedm@nvidia.com, louis.peens@corigine.com,
+ shshaikh@marvell.com, GR-Linux-NIC-Dev@marvell.com, ecree.xilinx@gmail.com,
+ horms@kernel.org, dsahern@kernel.org, ruanjinjie@huawei.com,
+ mheib@redhat.com, linux-kernel@vger.kernel.org,
+ intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
+ oss-drivers@corigine.com, linux-net-drivers@amd.com, leon@kernel.org
+Subject: Re: [PATCH net-next 2/3] udp_tunnel: remove rtnl_lock dependency
+Message-ID: <20250521153107.150f01e1@kernel.org>
+In-Reply-To: <aC4FK0fmUoaXYt4k@mini-arch>
+References: <20250520203614.2693870-1-stfomichev@gmail.com>
+	<20250520203614.2693870-3-stfomichev@gmail.com>
+	<20250521073401.67fbd1bc@kernel.org>
+	<aC4FK0fmUoaXYt4k@mini-arch>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -72,28 +72,20 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 22 May 2025 00:05:32 +0300 Carolina Jubran wrote:
-> On 21/05/2025 1:59, Jakub Kicinski wrote:
-> > On Tue, 20 May 2025 21:38:03 +0300 Tariq Toukan wrote:  
-> >> Test verifies that netdevsim correctly implements devlink ops callbacks
-> >> that set tc-bw on leaf or node rate object.  
+On Wed, 21 May 2025 09:54:03 -0700 Stanislav Fomichev wrote:
+> > >  enum udp_tunnel_nic_info_flags {
+> > > -	/* Device callbacks may sleep */
+> > > -	UDP_TUNNEL_NIC_INFO_MAY_SLEEP	= BIT(0),  
 > > 
-> > Please add a test that can actually validate a NIC HW.
-> > The test probably needs to be in Python to use a remote endpoint,
-> > and should live under tools/testing/../drivers/net/hw
-> > 
-> > We had a long conversation about what we expect from the API
-> > vs how your HW works. One of the test cases should confirm
-> > the expected behavior, IOW fail on mlx5. Which is fine,
-> > unlikely that any NIC will have 100% compliance. But at
-> > least we will be documenting the expectations.  
+> > Could we use a different lock for sleeping and non-sleeping drivers?  
 > 
-> Working on this. Let me know if the netdevsim selftest should stay 
-> alongside the hardware tests, or be removed.
+> We can probably do it if we reorder the locks (as you ask/suggest
+> below). Overall, I'm not sure I understand why we want to have two
+> paths here. If we can do everything via work queue, why have a separate
+> path for the non-sleepable callback? (more code -> more bugs)
 
-I think it's nice to have. But please share a link to the patches which
-add the support in the CLI next time. Can be a lore link if posted, or a
-GH repo. 
-
-I need to pull the pending patches into the CI so that the test can run.
+I think when I was pulling this code out of the drivers I was trying 
+to preserve the fast path for drivers which don't have to sleep.
+But if some drivers are okay with the wq then the mechanism must work,
+so I guess you're right, it should be fine to make all go via wq.
 
