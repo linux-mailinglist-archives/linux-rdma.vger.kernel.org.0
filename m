@@ -1,130 +1,139 @@
-Return-Path: <linux-rdma+bounces-10493-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10494-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10FB7ABF911
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 17:20:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0201ABFAEB
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 18:12:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C134917CEAC
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 15:20:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 212E9502C5C
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 16:10:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA4251DF991;
-	Wed, 21 May 2025 15:20:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A7F2139C8;
+	Wed, 21 May 2025 16:10:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="JvnyPKXQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B6lckxdo"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-52002.amazon.com (smtp-fw-52002.amazon.com [52.119.213.150])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A99E2CCC9
-	for <linux-rdma@vger.kernel.org>; Wed, 21 May 2025 15:20:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7D451714AC;
+	Wed, 21 May 2025 16:10:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747840807; cv=none; b=sOBLSkoe5T4Uty5bgc/zblWIXoEc5wX+n5C15jc53yRjbjK+TS8bBG3QB2uPs1L3aC+GlYeAhpjhcOtXnuBfy9Kba/cuTOKerG/4NNFMZN0ed64b5EOVmyBmZGuq5kvS62z7cCiSyIUih8mlYpapVQO+5bO1zBOF1p4+/FZg1HE=
+	t=1747843853; cv=none; b=SldoSUcA95ovVtUhBENz5tfA6sVIRPls1u4v/ziBYgqFx7Nl9UGnkus9jG67W7YMPUYG5ANo2OVbbzKb7ktvc7Z7iF1wbpX0juWR04RipWlvEtQoW4dFva0M0rfojODfHgmTAgOD8Gl4T3YWpjO6CVqFRNn2cco9iUThCD4prEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747840807; c=relaxed/simple;
-	bh=E4dHxybIYr2S1PKluCMHUFVLC6mYVhTrfhtaNtd4oAY=;
-	h=Subject:Message-ID:Date:MIME-Version:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Tes0EQ1Y3EvLNems7txrfS7B9ZYRiYxbQcxV9ZQKyipd8Krdww4R68jr71KmgCkieywaCHw0Nmq8pnW/nYTFohsCNiGSa8iYXZRmnGkx5+dux/cpkhz2wB2wT/4HaBqwEgDilIlOxSbxFInykYgaT5NN/o3ABN2mUrDBrnK9elw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=JvnyPKXQ; arc=none smtp.client-ip=52.119.213.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+	s=arc-20240116; t=1747843853; c=relaxed/simple;
+	bh=x5muKbCVzItFqAnOAT50XHNKJhDgcS8Cum8SC4y29HM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AMdiaage1CsRKCa+JQy20cuJHAX8AQpNu3vUr6H0Py2MXI/rpxdqe9dfrSILr+YOK1BGGs4aWDjmNxESCnZemY80zqHbGY0dKl6aPSLixtjPYz1WBwFMoxij3ZpnrIkHsQGZL4aTE8Abf0ZZB06h+JsRnLRW8QcbkIdMGcUzwD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B6lckxdo; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-43d0618746bso57017275e9.2;
+        Wed, 21 May 2025 09:10:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1747840806; x=1779376806;
-  h=message-id:date:mime-version:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=Ht69PZCHhcfHJO7PqY00LYXvmPniwJCTmO0bQ/BBRAE=;
-  b=JvnyPKXQk/cz4vOIaRQTaStUyyR1+H1St8HRZvwUYhJIAi7ykXe25ECz
-   Te05PozqWgD7dkGgfsUjoGfq1Jnbu4NE8lh5CFpxEDCW+n8ZftLe6w6El
-   bqQ61iRQ/IMHMRmA0JCD3SVunN6I08j6ppL4vbuTP47EjzTE6HjkBbPnn
-   qbRVvFhnTD76dooBZ/r7xhbkfjlUqz7LSsrEkY1FnDWDxsg7HLkB/Uzo7
-   yegSofcnt+3F6l3ZcsbifmD8cgBu90npQUItgYpacJKdzAeHtD67fP4FO
-   kUZyLTKjb/+w/wIxJiLWNWPEptDdnG48Z3+sj/LmEQRae/qfPmAvAKY0l
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.15,303,1739836800"; 
-   d="scan'208";a="725174874"
-Subject: Re: [PATCH for-next] RDMA/efa: Add CQ with external memory support
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-52002.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2025 15:20:02 +0000
-Received: from EX19MTAEUB002.ant.amazon.com [10.0.10.100:30753]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.28.53:2525] with esmtp (Farcaster)
- id 282e9168-3c0a-4443-953d-4af54b2e9153; Wed, 21 May 2025 15:20:01 +0000 (UTC)
-X-Farcaster-Flow-ID: 282e9168-3c0a-4443-953d-4af54b2e9153
-Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
- EX19MTAEUB002.ant.amazon.com (10.252.51.59) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Wed, 21 May 2025 15:20:00 +0000
-Received: from [192.168.137.48] (10.85.143.179) by
- EX19D031EUB003.ant.amazon.com (10.252.61.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Wed, 21 May 2025 15:19:56 +0000
-Message-ID: <9ae80a03-e31b-4f33-8900-541a27e30eac@amazon.com>
-Date: Wed, 21 May 2025 18:19:51 +0300
+        d=gmail.com; s=20230601; t=1747843850; x=1748448650; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dFb/8UDIi4+DL9YBgWv8kfPMDoQAHsOz6JPN/DZoxFg=;
+        b=B6lckxdoe5EcyTwx/a+4WWz4VHUAnRQGeSmgfyR68IZlmcC2qmN2W9mfrg+/rwvPTN
+         kLgnnFjtAXpGmlVS5RN5RipXT7NgdSHED3t3DPe2WS73xPPU0cE/6kDwa1aODPDA3rBt
+         12BCknmqR+AkJFFkREKdI1p0YPkWhhqNbq51ND4uURkv5bRhFv/zRofiDCTxDpb/F8pK
+         OcNr3R/CBMg3KdTf6XmTF7yslAuXHGc6sHinQidfL4zVtl3ojFp0lRs7XOXdNghJRAFg
+         ro+nMr0g+rMbT+qyAHm07tAJQ50mBF1X+EmrCgEDu4a/ggUeDAwgwPy+O956tHZj25bU
+         WtEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747843850; x=1748448650;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dFb/8UDIi4+DL9YBgWv8kfPMDoQAHsOz6JPN/DZoxFg=;
+        b=ux4jeJoqC61IqDgyuLh/pe3ozkFMsR4UXoeaUz+C8p+cV6gLjl+LfJ+3FmI7euMMPx
+         VOHIp+tnPCOzy/8HeGAC6sHUPovqEjOxdYG6Apu0tzNd16wxH03joabu1RhpL6m4m5LX
+         DBUvegvPeHTrpVxHMAfCUYvmpK6fTvo2vusePz34VXW0+PqWy8NRzDzje8QhoyYGYnC8
+         tYdnAhoKHywwr40EOTaonf+yPDyUnSChRiog44U+0EQmXUrU31xhkr+H4bfOqbDnmSyD
+         lXkftEGymNl/KVbDf/c0Z9i2N4/4Lyi/QOjeUtKXhuc8vyCBdLUsBknZMrfkifElGHcd
+         cVPA==
+X-Forwarded-Encrypted: i=1; AJvYcCW5bcdL9FmzDzwKsOkgCSIC0pGfClE74a2CaXJ+iQlWQR8jOqbQlk8xeUd2kQwfIo1I8hPIld5E@vger.kernel.org, AJvYcCWU/UcDuVEDHXTB6coA3FIFb86NdIuFzLKtIG6ojn+7lDWRkl0xUWNU8bKnkrZcLLe3QyF0btEfvHTb@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywv5G8NVNrAe45qmtwlhkZrogtpAEDALc1MlrbbVucD/qSyhPP2
+	DTVMUk4MW+KDhe06YjO8ugBFq21YDAB6VjXrW1sc8/GUtFLOAMjZJe3Z
+X-Gm-Gg: ASbGncs3a7gj3cnTlRTk8wKN7K4mFcX5ViJuz/xTYwOmkdYMpIBQ4RNgBm7YEYy+l5+
+	/pL4MYVkTBH5OiMPAlRnwSUfMHvRNVSPeZEQfxrvhuF7aHWKKOySFqt8Bd4YYUtrQJ7w7PfN59q
+	ZXSOUQ3F9I5dw12Ny0aEnVu6gZZj+zw4FcfogGxbFLgYtOaeSVTLcbQQGZr9AHqJy54AJ5Bi3cF
+	r2wO/RLVhr8TwUu/yqQeelUoRmmjaPerNgr7U/rBPA6Y81OBZR4xAXu0JMvggHA7OoqigA/fTPB
+	CilA6I6DMbA+smKPBY7yUUhZCGumfH6J/aCHKYEWbdDQtCJstLvR6TFNvuuUT70=
+X-Google-Smtp-Source: AGHT+IHzIxNlI+zjB3xjUR+ku+S6qJVfmvxQ1Rdkn+jT5PKzhQ5pEuxf0DtxPakEoqyNf2Lbax4ZXQ==
+X-Received: by 2002:a05:600c:c8c:b0:442:f4a3:b5ec with SMTP id 5b1f17b1804b1-442fefd5f8dmr219244645e9.4.1747843849476;
+        Wed, 21 May 2025 09:10:49 -0700 (PDT)
+Received: from localhost.localdomain ([78.172.0.119])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-447eee9d8desm77947025e9.0.2025.05.21.09.10.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 May 2025 09:10:49 -0700 (PDT)
+From: Baris Can Goral <goralbaris@gmail.com>
+To: allison.henderson@oracle.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	horms@kernel.org,
+	kuba@kernel.org
+Cc: goralbaris@gmail.com,
+	linux-rdma@vger.kernel.org,
+	michal.swiatkowski@linux.intel.com,
+	netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	shankari.ak0208@gmail.com,
+	skhan@linuxfoundation.org
+Subject: [PATCH v5 net-next: rds] replace strncpy with strscpy_pad
+Date: Wed, 21 May 2025 19:10:37 +0300
+Message-Id: <20250521161036.14489-1-goralbaris@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Leon Romanovsky <leon@kernel.org>, <jgg@nvidia.com>
-CC: <linux-rdma@vger.kernel.org>, <sleybo@amazon.com>, <matua@amazon.com>,
-	<gal.pressman@linux.dev>, Daniel Kranzdorf <dkkranzd@amazon.com>, "Yonatan
- Nachum" <ynachum@amazon.com>
-References: <20250515145040.6862-1-mrgolin@amazon.com>
- <20250518064241.GC7435@unreal>
- <985b77cc-63bb-4cf9-885e-c2d6aca95551@amazon.com>
- <20250520091638.GF7435@unreal>
-Content-Language: en-US
-From: "Margolin, Michael" <mrgolin@amazon.com>
-In-Reply-To: <20250520091638.GF7435@unreal>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EX19D042UWB001.ant.amazon.com (10.13.139.160) To
- EX19D031EUB003.ant.amazon.com (10.252.61.88)
+Content-Transfer-Encoding: 8bit
 
+The strncpy() function is actively dangerous to use since it may not
+NULL-terminate the destination string, resulting in potential memory
+content exposures, unbounded reads, or crashes.
+Link: https://github.com/KSPP/linux/issues/90
 
-On 5/20/2025 12:16 PM, Leon Romanovsky wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
->
->
->
-> On Sun, May 18, 2025 at 11:56:56AM +0300, Margolin, Michael wrote:
->> On 5/18/2025 9:42 AM, Leon Romanovsky wrote:
->>> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
->>>
->>>
->>>
->>> On Thu, May 15, 2025 at 02:50:40PM +0000, Michael Margolin wrote:
->>>> Add an option to create CQ using external memory instead of allocating
->>>> in the driver. The memory can be passed from userspace by dmabuf fd and
->>>> an offset.
->>> EFA is unique here. This patch is missing description of why it is
->>> needed, and why existing solutions if any exist, can't be used.
->>>
->>> Thanks
->> I probably should have explained more, the purpose is creating CQs that
->> reside in GPU HBM enabling low latency polling directly by the GPU. EFA
->> isn't unique in receiving pre-allocated memory from userspace, the extension
->> here is the use of dmabuf for that purpose as a general mechanism that
->> allows using memory independent of its source. I will add more info in the
->> commit message.
-> I think that this functionality is worth to have as general verb and not DV.
-> mlx5 has something similar and now EFA needs it too.
->
-> Let's wait for Jason's response before rushing to implement it.
->
-> Thanks
+In addition, strscpy_pad is more appropriate because it also zero-fills
+any remaining space in the destination if the source is shorter than
+the provided buffer size.
 
-Jason, any thoughts on this?
+Signed-off-by: Baris Can Goral <goralbaris@gmail.com>
+---
+ net/rds/connection.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-We can probably add optional attributes to create CQ command, but most 
-of the handling will remain vendor specific. I'm not convinced it's 
-beneficial enough.
-
-Michael
+diff --git a/net/rds/connection.c b/net/rds/connection.c
+index c749c5525b40..d62f486ab29f 100644
+--- a/net/rds/connection.c
++++ b/net/rds/connection.c
+@@ -749,8 +749,7 @@ static int rds_conn_info_visitor(struct rds_conn_path *cp, void *buffer)
+ 	cinfo->laddr = conn->c_laddr.s6_addr32[3];
+ 	cinfo->faddr = conn->c_faddr.s6_addr32[3];
+ 	cinfo->tos = conn->c_tos;
+-	strncpy(cinfo->transport, conn->c_trans->t_name,
+-		sizeof(cinfo->transport));
++	strscpy_pad(cinfo->transport, conn->c_trans->t_name);
+ 	cinfo->flags = 0;
+ 
+ 	rds_conn_info_set(cinfo->flags, test_bit(RDS_IN_XMIT, &cp->cp_flags),
+@@ -775,8 +774,7 @@ static int rds6_conn_info_visitor(struct rds_conn_path *cp, void *buffer)
+ 	cinfo6->next_rx_seq = cp->cp_next_rx_seq;
+ 	cinfo6->laddr = conn->c_laddr;
+ 	cinfo6->faddr = conn->c_faddr;
+-	strncpy(cinfo6->transport, conn->c_trans->t_name,
+-		sizeof(cinfo6->transport));
++	strscpy_pad(cinfo6->transport, conn->c_trans->t_name);
+ 	cinfo6->flags = 0;
+ 
+ 	rds_conn_info_set(cinfo6->flags, test_bit(RDS_IN_XMIT, &cp->cp_flags),
+-- 
+2.34.1
 
 
