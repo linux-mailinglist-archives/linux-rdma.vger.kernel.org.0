@@ -1,181 +1,129 @@
-Return-Path: <linux-rdma+bounces-10487-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10488-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDFA7ABF5D6
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 15:17:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9AEAABF605
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 15:24:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B060E1B67888
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 13:17:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBABC9E2D6D
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 May 2025 13:24:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5036263892;
-	Wed, 21 May 2025 13:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EJhNf7t7"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35C03278E67;
+	Wed, 21 May 2025 13:24:33 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F8BE4CB5B;
-	Wed, 21 May 2025 13:16:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C80F4CB5B;
+	Wed, 21 May 2025 13:24:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747833419; cv=none; b=K35vV4zuDmBE8OLA+nc7bze0STQ0ruYG+LYjNcIzeYQ7WfD57MrzBIehBkQNdfUAnPBwpk9rHm4NRYTt7E/prYfuXy43Kxlp03vmfKGDsFisaXeof/mLAPiqb78iZFtiuPm1JIhY1M1JNXbhmm+4xTtdPPtB1omjWlFc/oamnbo=
+	t=1747833873; cv=none; b=K3QMCGPiSqOLQz7tElc1gN83HQDeyTIlWlP7iYFl9CBX++Ivqngx0wvkfVktTbkvV/erl5DapdWpxI3rZmYlwQ5QTZuNqGeJq+bQNClmakwM/HuXEn9+bALMM9jEY2ETbyL4Gq6F7g2mY3tNzEEULD0nw4A9u15aSudwD1j4cio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747833419; c=relaxed/simple;
-	bh=vKhw6z6V7OCV8t82boQCakDHSPpGxBivjHyP4/VgWOQ=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=bKtwj8agBs7R9GPiucwECH+NNf7PzJmwRTufL4ykEhxeAALyqXdeShvgE1VQeH2TFW5as3VphIllA8fNBam1oFx01PoE/N32juKnzUmQTDP0k4nAPXg4p4yHIsmshVt8BDwVc2JJ1fhenMUZn+sPHpQyZmjaWUXLjuMX+Jj/KRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EJhNf7t7; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2322f8afe02so31003715ad.2;
-        Wed, 21 May 2025 06:16:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747833417; x=1748438217; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :to:from:subject:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7cYgvyteFUsDXg+ceLCjMI2UWdgFf/NgcDDOuU7Imm8=;
-        b=EJhNf7t7noGNkty2s5qCtX38m44kKIg1GyMJ3q50+q99ihoAL8MecdHWgVSfiL7Nsg
-         pWe2YsW1nVZDPDOiUdEmya3xPOTP9GfY+BLZneGZdEKz/4oZNR/aWZa4/xsijbuqhNct
-         zEGsO+dxQOEOGwBLgaP+BT/N3R5AwNabsfZqGg2gxsTnJDLw4LmSX9y8pmbYMCsdiO5W
-         dWrkpmJUcwruJp89WtoXtFNkOoxjoxOStkdx6hyDoWxq8xPbrHtke9APNyELvVG9LtfB
-         bTAC3lFRNxZfmnwVxIb23v3ORpHGfr3sUAOBI7NGtTLVpzS/33gfYRoK/rfEThoWWI27
-         URRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747833417; x=1748438217;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7cYgvyteFUsDXg+ceLCjMI2UWdgFf/NgcDDOuU7Imm8=;
-        b=OhKitthchX4xExpA3Xym36a6ETOgY6QZrovWeHcr7xPZAW8Oo1+GgAWOA3/bVtJbx5
-         +UPzrmxg0e/72eTTYeT+MbmW33yztYd+gRS8BLYMTyppIRI7er+hy6GQVwa87UupHUcE
-         4NCijyl3vTSFLh9OlLQoi6qLsZIx34wsjRMAlRuE9wJaqafRUDem36Wuo0bJgcuRy9pY
-         BFVaFHCu6XIKAC+Z+qfchtbonYdU4hHf3rZ3GMgZ+0x3KA3+E8nhqXgcjYMQA5l8ZS48
-         Y8ntL/U9+FB08XHxWsKJr2+Ea+2uIuURelIATewuKi6v7256mU+wupQKyq8Jdf5RL37Q
-         /vPA==
-X-Forwarded-Encrypted: i=1; AJvYcCWL+NbIQvwMIkgMg0rWh12qQm8saPoOs8t+d9JWt+vpDYY3lB11cj+hCKdZv25JpBBc1rX2Wn3naAM+nMw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzxSRLhE4mlnUMtK0eYdEQxnESsg922rvdVZ30PGMEOWrtZ9x6D
-	jrRzYjUoNuQ+ly2cvsgSsTnUSlbyH2XhU4CXLiRkbWXraYZiiElbdIELqRy6VPrZ
-X-Gm-Gg: ASbGnctdKX1ussmvJ7ZLuYAUopv3S0nXaqhoWEhuBzZK3t9QC8Ff31dTaki8O0uZN0d
-	xfraP9rmqUkHFDO4+6PPeUR6kQSTPGoXdQYjkbY23vnEFaondvMcj6dgCgWlp/Qc5Tp/llOhdJK
-	BwJlgiBLiYeZ3IKXj380rPZkSnac7Vj8URqFRDVmrAePC5y1FjN/XEUxieStpbqYJoEyOTiv43i
-	ADDmbWDaE6TZez/1XxAZrEkx7M/R/PpjBMcJYM5wChaIwjH2cEZVZY9TV1fSA8NZS/o7UojDPmc
-	rLYeg/iY494cOWLZfMPjPC/JYwAvy6HrxLJMdtPOuPPVihbKpZqJhIHZ9e7J7/rsrwlFbwbtjN+
-	5PUWXKPUZ4wbJhosNttzSzvfbIXY=
-X-Google-Smtp-Source: AGHT+IEivtc5dtn52yLZuRGBOCa9xzAJH8RadB2Uw1Xoob3rPki8A8YLhX1DkIkTXI+bI/7zg+cbTg==
-X-Received: by 2002:a17:902:d4c3:b0:232:4f8c:1af9 with SMTP id d9443c01a7336-2324f8c1c69mr142772375ad.21.1747833417107;
-        Wed, 21 May 2025 06:16:57 -0700 (PDT)
-Received: from [192.168.11.2] (FL1-119-244-79-106.tky.mesh.ad.jp. [119.244.79.106])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-231d4adbfe1sm92901325ad.66.2025.05.21.06.16.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 May 2025 06:16:56 -0700 (PDT)
-Message-ID: <3016329a-4edd-4550-862f-b298a1b79a39@gmail.com>
-Date: Wed, 21 May 2025 22:16:53 +0900
+	s=arc-20240116; t=1747833873; c=relaxed/simple;
+	bh=DXRBNohjBKRvMBf7q2uiahg8uAYiKa9riN8m6bUxBBs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UbVPTM/wZ6AtRTDqCkbV81K5ABwV5/B+5FKrVo12BJfvRf/t6XmovUJ+um8d5cUxMTkJrW0YIN2dqx6WQXsWxu5llq4PmKQbZGufBCACrANqMAYErmGM7QR+JBPCM32gj7DhhEi7fU9T1EWq3xH2RgjRtix8Fjew/KwtEKWLVoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
+Received: from localhost.localdomain (unknown [124.16.141.245])
+	by APP-05 (Coremail) with SMTP id zQCowAA3dCb20y1oPaQcAg--.57214S2;
+	Wed, 21 May 2025 21:24:07 +0800 (CST)
+From: Wentao Liang <vulab@iscas.ac.cn>
+To: saeedm@nvidia.com,
+	leon@kernel.org,
+	tariqt@nvidia.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Wentao Liang <vulab@iscas.ac.cn>,
+	stable@vger.kernel.org
+Subject: [PATCH v3] net/mlx5: Add error handling in mlx5_query_nic_vport_node_guid()
+Date: Wed, 21 May 2025 21:23:43 +0800
+Message-ID: <20250521132343.844-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.42.0.windows.2
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [bug report] [rdma] RXE ODP test hangs with new DMA map API
-From: Daisuke Matsuda <dskmtsd@gmail.com>
-To: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- leon@kernel.org, jgg@ziepe.ca, zyjzyj2000@gmail.com
-References: <3e8f343f-7d66-4f7a-9f08-3910623e322f@gmail.com>
-Content-Language: en-US
-In-Reply-To: <3e8f343f-7d66-4f7a-9f08-3910623e322f@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:zQCowAA3dCb20y1oPaQcAg--.57214S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJr4rCF1DWr1DGF48uw4xXrb_yoW8Ar4xpF
+	47tr9rCrykGa4rX34jkFWrZrn5u3yjyayUua47tw13Xr4ktr4qyr45Ar9IgrWUuFW0ka9Y
+	yr42y3Z8AFn8C37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9K14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+	6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCY02Avz4vE14v_Xr4l42xK82IYc2Ij64vIr4
+	1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
+	67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
+	8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
+	wI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14
+	v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU87KsUUUUU
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCREJA2gtsp4AvwABsF
 
+The function mlx5_query_nic_vport_node_guid() calls the function
+mlx5_query_nic_vport_context() but does not check its return value.
+A proper implementation can be found in mlx5_nic_vport_query_local_lb().
 
->    RDMA/umem: Store ODP access mask information in PFN
+Add error handling for mlx5_query_nic_vport_context(). If it fails, free
+the out buffer via kvfree() and return error code.
 
-This one generates a build error. I modified manually and tried running the test.
-It also hanged with ERROR:
-```
-$ ./build/bin/run_tests.py -v -k odp
-test_odp_dc_traffic (tests.test_mlx5_dc.DCTest.test_odp_dc_traffic) ... skipped                                                                                                                                                              'Can not run the test over non MLX5 device'
-test_devx_rc_qp_odp_traffic (tests.test_mlx5_devx.Mlx5DevxRcTrafficTest.test_dev                                                                                                                                                             x_rc_qp_odp_traffic) ... skipped 'Can not run the test over non MLX5 device'
-test_odp_mkey_list_new_api (tests.test_mlx5_mkey.Mlx5MkeyTest.test_odp_mkey_list                                                                                                                                                             _new_api)
-Create Mkeys above ODP MR, configure it with memory layout using the new API and                                                                                                                                                              ... skipped 'Could not open mlx5 context (This is not an MLX5 device)'
-test_odp_async_prefetch_rc_traffic (tests.test_odp.OdpTestCase.test_odp_async_pr                                                                                                                                                             efetch_rc_traffic) ... skipped 'Advise MR with flags (0) and advice (0) is not s                                                                                                                                                             upported'
-test_odp_implicit_async_prefetch_rc_traffic (tests.test_odp.OdpTestCase.test_odp                                                                                                                                                             _implicit_async_prefetch_rc_traffic) ... skipped 'ODP implicit is not supported'
-test_odp_implicit_rc_traffic (tests.test_odp.OdpTestCase.test_odp_implicit_rc_tr                                                                                                                                                             affic) ... skipped 'ODP implicit is not supported'
-test_odp_implicit_sync_prefetch_rc_traffic (tests.test_odp.OdpTestCase.test_odp_                                                                                                                                                             implicit_sync_prefetch_rc_traffic) ... skipped 'ODP implicit is not supported'
-test_odp_prefetch_async_no_page_fault_rc_traffic (tests.test_odp.OdpTestCase.tes                                                                                                                                                             t_odp_prefetch_async_no_page_fault_rc_traffic) ... skipped 'Advise MR with flags                                                                                                                                                              (0) and advice (2) is not supported'
-test_odp_prefetch_sync_no_page_fault_rc_traffic (tests.test_odp.OdpTestCase.test                                                                                                                                                             _odp_prefetch_sync_no_page_fault_rc_traffic) ... skipped 'Advise MR with flags (                                                                                                                                                             1) and advice (2) is not supported'
-test_odp_qp_ex_rc_atomic_write (tests.test_odp.OdpTestCase.test_odp_qp_ex_rc_ato                                                                                                                                                             mic_write) ... ERROR
+Fixes: 9efa75254593 ("net/mlx5_core: Introduce access functions to query vport RoCE fields")
+Cc: stable@vger.kernel.org # v4.5
+Target: net
+Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
+---
+v3: Explicitly mention target branch. Change improper code.
+v2: Remove redundant reassignment. Fix typo error.
 
+ drivers/net/ethernet/mellanox/mlx5/core/vport.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-```
-
-Here are the stack of the process:
-```
-[<0>] rxe_ib_invalidate_range+0x3e/0xa0 [rdma_rxe]
-[<0>] __mmu_notifier_invalidate_range_start+0x197/0x200
-[<0>] unmap_vmas+0x184/0x190
-[<0>] vms_clear_ptes+0x12c/0x190
-[<0>] vms_complete_munmap_vmas+0x83/0x1d0
-[<0>] do_vmi_align_munmap+0x17f/0x1b0
-[<0>] do_vmi_munmap+0xd3/0x190
-[<0>] __vm_munmap+0xbb/0x190
-[<0>] __x64_sys_munmap+0x1b/0x30
-[<0>] x64_sys_call+0x1ea8/0x2660
-[<0>] do_syscall_64+0x7e/0x170
-[<0>] entry_SYSCALL_64_after_hwframe+0x76/0x7e
-```
-I think this one is related to umem mutex.
-
-So it looks there are two problems:
-The stuck issue in rxe_ib_invalidate_range() comes from "RDMA/umem: Store ODP access mask information in PFN",
-and the stuck issue in uverbs_destroy_ufile_hw() derives from "RDMA/core: Convert UMEM ODP DMA mapping to caching IOVA and page linkage".
-
-I'd welcome your help in fixing them.
-
-Thanks,
-Daisuke
-
-On 2025/05/21 21:48, Daisuke Matsuda wrote:
-> Hi,
-> 
-> After these two patches are merged to the for-next tree, RXE ODP test always hangs:
->    RDMA/core: Convert UMEM ODP DMA mapping to caching IOVA and page linkage
->    RDMA/umem: Store ODP access mask information in PFN
-> cf. https://lore.kernel.org/linux-rdma/cover.1745831017.git.leon@kernel.org/
-> 
-> Here is the console log:
-> ```
-> $ ./build/bin/run_tests.py -v -k odp
-> test_odp_dc_traffic (tests.test_mlx5_dc.DCTest.test_odp_dc_traffic) ... skipped 'Can not run the test over non MLX5 device'
-> test_devx_rc_qp_odp_traffic (tests.test_mlx5_devx.Mlx5DevxRcTrafficTest.test_devx_rc_qp_odp_traffic) ... skipped 'Can not run the test over non MLX5 device'
-> test_odp_mkey_list_new_api (tests.test_mlx5_mkey.Mlx5MkeyTest.test_odp_mkey_list_new_api)
-> Create Mkeys above ODP MR, configure it with memory layout using the new API and ... skipped 'Could not open mlx5 context (This is not an MLX5 device)'
-> test_odp_async_prefetch_rc_traffic (tests.test_odp.OdpTestCase.test_odp_async_prefetch_rc_traffic) ...
-> 
-> 
-> ```
-> 
-> It looks that the python process is somehow stuck in uverbs_destroy_ufile_hw():
-> ```
-> $ sudo cat /proc/1845/task/1845/stack
-> [<0>] uverbs_destroy_ufile_hw+0x24/0x100 [ib_uverbs]
-> [<0>] ib_uverbs_close+0x1b/0xc0 [ib_uverbs]
-> [<0>] __fput+0xea/0x2d0
-> [<0>] ____fput+0x15/0x20
-> [<0>] task_work_run+0x5d/0xa0
-> [<0>] do_exit+0x316/0xa50
-> [<0>] make_task_dead+0x81/0x160
-> [<0>] rewind_stack_and_make_dead+0x16/0x20
-> ```
-> 
-> I am not sure about the root cause but hope we can fix this before the next merge window.
-> 
-> Thanks,
-> Daisuke
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/vport.c b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
+index 0d5f750faa45..66e44905c1f0 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/vport.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/vport.c
+@@ -465,19 +465,22 @@ int mlx5_query_nic_vport_node_guid(struct mlx5_core_dev *mdev, u64 *node_guid)
+ {
+ 	u32 *out;
+ 	int outlen = MLX5_ST_SZ_BYTES(query_nic_vport_context_out);
++	int err;
+ 
+ 	out = kvzalloc(outlen, GFP_KERNEL);
+ 	if (!out)
+ 		return -ENOMEM;
+ 
+-	mlx5_query_nic_vport_context(mdev, 0, out);
++	ret = mlx5_query_nic_vport_context(mdev, 0, out);
++	if (err)
++		goto out;
+ 
+ 	*node_guid = MLX5_GET64(query_nic_vport_context_out, out,
+ 				nic_vport_context.node_guid);
+-
++out:
+ 	kvfree(out);
+ 
+-	return 0;
++	return err;
+ }
+ EXPORT_SYMBOL_GPL(mlx5_query_nic_vport_node_guid);
+ 
+-- 
+2.42.0.windows.2
 
 
