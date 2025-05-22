@@ -1,162 +1,130 @@
-Return-Path: <linux-rdma+bounces-10580-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10581-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 085E1AC179F
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 May 2025 01:21:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6693DAC17E8
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 May 2025 01:29:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E871A3AC03D
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 23:21:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B5A1189E129
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 23:29:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EE712D1929;
-	Thu, 22 May 2025 23:19:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68272D1F5A;
+	Thu, 22 May 2025 23:24:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ri7ME5py"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="R8DT7Cwk"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E30D32D0278;
-	Thu, 22 May 2025 23:19:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D896E2494F0
+	for <linux-rdma@vger.kernel.org>; Thu, 22 May 2025 23:24:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747955970; cv=none; b=cFUgoVn4itg/lowCM1/AXywu7CYk+8uw4KoLQF7ZkemvetoTbblnkIngiSYNPk7zEYjemcfmFn8E+MBKMUJeX1TBm0vSm2NjtYMMyk+qYOVP6FJC6v2KfipRoFhME9wOg3kz/3qEej9JjjVzdigHi34qXPQhyo92X8jKUKe8gqA=
+	t=1747956291; cv=none; b=O7WBf/igxpZCe7JZ3LPff2zdefBHitAodeQJ2faKejIIr3GunzeKbcq2Q3vSic2DAUaNDeYXvSXR8N6IyWqCHD7eGBFawdOWLRfMy/EV2F1yPvB8iK+fv23j3sgjoSSFctxT/WPgAmrMXef/bcjkkIdwJJ5bRDm3vsD0kUooTf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747955970; c=relaxed/simple;
-	bh=cjW9PVL0/Eq1a/hOUaEzc/Ua2x1NBZ3c6LCU6XFANY4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VGG9jmzJtre8e2ULbeEjLXgXshaLoY+pWi52DkAoecfLA1iVVWHhxLKZY38RnoCGFzsanbX9QO302g69UfOIKJuSCWvZM59Ow+xlTVkW7CNa1jS/xXuq7IXjjfpQicODUdytPVSNJk9YH72itolK+x/TiLY9zn+4JmfvIRLuh4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ri7ME5py; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA0DEC4CEEB;
-	Thu, 22 May 2025 23:19:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747955969;
-	bh=cjW9PVL0/Eq1a/hOUaEzc/Ua2x1NBZ3c6LCU6XFANY4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ri7ME5py8Wd8vPgE55M2cznFBRaWDAnh9A+NLgy6HDiyAWwxN7JyPN2BkDRZnJ4Sb
-	 0Cdoi2YVrDug1iwiDI/iSj9MlY3v2fSroUA/MkXxTExu4I16HxlyMtuQNw0haI9mlT
-	 cUljrxCmG6C303b3vY8V4J/UwFsxg/wKLzgljxoHLt0fg7Ue8y/7rBPn/4kNvDz1Lw
-	 5s70ZB+ykmQV3O/uLQwp8/Ndzc+GvA9ljB0JVfVhvznWzJAdl5Iq1bPZdojLIobFEF
-	 vVyzt9A8O6LVkTzMd4AQSoebTWCnNzNNHdPHsds0w3tFSsAGUI9FVorQWVGrlRPgPt
-	 gyRPrX2ZRU7TA==
-Date: Thu, 22 May 2025 16:19:28 -0700
-From: Saeed Mahameed <saeed@kernel.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Tariq Toukan <tariqt@nvidia.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, Moshe Shemesh <moshe@nvidia.com>,
-	Mark Bloch <mbloch@nvidia.com>, Gal Pressman <gal@nvidia.com>,
-	Cosmin Ratiu <cratiu@nvidia.com>,
-	Dragos Tatulea <dtatulea@nvidia.com>
-Subject: Re: [PATCH net-next V2 11/11] net/mlx5e: Support ethtool
- tcp-data-split settings
-Message-ID: <aC-xAK0Unw2XE-2T@x130>
-References: <1747950086-1246773-1-git-send-email-tariqt@nvidia.com>
- <1747950086-1246773-12-git-send-email-tariqt@nvidia.com>
- <20250522155518.47ab81d3@kernel.org>
+	s=arc-20240116; t=1747956291; c=relaxed/simple;
+	bh=VtTmEXuxauJ3B94DH+XF9n637EHj0gRGrWRBC9z/qsc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XrZvhuzdKrYr+yosRONhcr+NAukKdtAq7i7xyWAFR9F+f2zpOmav1Fku4H9wuQb0xgwObcQHa3e+Ym8TDqRvYJg9IKaodTNalj0L9v9n93HWCW98weIuPh507oBCiUKWHqTthTWG10F9VRolJ7TZl+ADrLCf6SDNQemBpbOPVAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=R8DT7Cwk; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-231f61dc510so88205ad.0
+        for <linux-rdma@vger.kernel.org>; Thu, 22 May 2025 16:24:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1747956289; x=1748561089; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VtTmEXuxauJ3B94DH+XF9n637EHj0gRGrWRBC9z/qsc=;
+        b=R8DT7Cwky8b5fWqDANKkdFpT89nT7Ul0Au54CykoXx0tHPkwWi8FLxrcPmpJjZPm/Y
+         mfuD068ImdI6xzzk0MZY/J4fbCCcVbEPNR7z7YAnRr6vB3hJUNMZ48N11eHkPcEw4iWE
+         HfpbJ4PdQIaengo3a+0/yVEB65h6y3slD6KRQobGucJVS8AeWfEeCkZYhheQwQNzKdfO
+         oJNpm05tRsZ4kcyGCm4jjWLFXSoQ4GBPAooo7koTds74GxihoEQ7S8P8tSW93MApMQvb
+         CRO7fZMpccFqtJ0h2DUjXIFz9Ja1HV7DL5zNCVPhYoyq6TKS64e98wQljdrUQSie63G8
+         mAZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747956289; x=1748561089;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VtTmEXuxauJ3B94DH+XF9n637EHj0gRGrWRBC9z/qsc=;
+        b=FqDgjQrAbq5ZmeNpW97IMlzJRBRTFMYqaq1ZISqnk22fulILoLItxZIZR3pdT9ouA7
+         i7vbg66nbatgc6Nl/QL0ojRauegkUFBb0Gwwsben4Wdi/XKMmGI5zRoprMdkcMoy28pt
+         3Qt5D+b9JXBWSzlSSlUmquNr/9imTd2e7KPeFXZ8AoauAUICKOrjCr5tvjVbaaMhp072
+         5gliio6qDNKO3D6YQtIb3DQ2p1W+DQPW5pbeWCH8TOSZwk+cGYie+qU2c71bBaYg2tzQ
+         E/UXz+O56HssUg/0AsX9vQf1c1atNWYAhcATkqOTrPrx6iH+jBcw1LA1Gac9yWzhiIKh
+         7RKA==
+X-Forwarded-Encrypted: i=1; AJvYcCVWhX4wBaXy0zC7CBfrPnUBNXsPFjxtde7d0QHIT3XYyRN1vO4i5vOjL+QJzDqq0Fgt/I/Qoeui5v3b@vger.kernel.org
+X-Gm-Message-State: AOJu0YzG+mMn6II39srHwv2hpK+N/vU7m2Ipud3sVsLMiJWn1YsWKvkG
+	MQrfe2dH7ZWgZGMTFWzJTIClMIcKNEDBejlXc70IgEZliQOvVASobx+KOcgUqwnBeHQUu9ui3cP
+	pSHbs1fTkZk9dsINlwmAcuzAt44vib1HnGXvUQarI
+X-Gm-Gg: ASbGncvHv3XKPqJ5OSY1yy0evnQbZ/kOuUC1Z6uK4rLbv6uptTYHmWxhmKUkrIk+W+X
+	a1epMtxoj8UW6+D9no/pHvttnHMCr/0DGOCKofFE2zgAoCBraNvlsuEzXgyoTLUrJ6CimHSdAVR
+	49YZz1j51xMELjTogTBkpq1D9Tvdl+3TXgTYQEqLDZljQwdAboN0fTHFoP5WZXwco6y6Ckz53Hv
+	w==
+X-Google-Smtp-Source: AGHT+IEajyNx7hV1BwdOTZbSU0n/gFRM/BXhlbIdxZrRO5FIvUh2DpmsX58Q/EetJ9zHiSgysM3tASbsdYoFqzmr4fw=
+X-Received: by 2002:a17:903:17c4:b0:21f:465d:c588 with SMTP id
+ d9443c01a7336-233f3081323mr584655ad.14.1747956288662; Thu, 22 May 2025
+ 16:24:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20250522155518.47ab81d3@kernel.org>
+References: <1747950086-1246773-1-git-send-email-tariqt@nvidia.com>
+ <1747950086-1246773-7-git-send-email-tariqt@nvidia.com> <20250522153013.62ac43be@kernel.org>
+ <aC-ugDzGHB_WqKew@x130>
+In-Reply-To: <aC-ugDzGHB_WqKew@x130>
+From: Mina Almasry <almasrymina@google.com>
+Date: Thu, 22 May 2025 16:24:36 -0700
+X-Gm-Features: AX0GCFs7hrA7hWZzLZD_-PN_wrJl-jW1GTwnaFT-Wn-3aE1B_J4p79S4m2U7qA0
+Message-ID: <CAHS8izNPJjAwbVwDnVQwHmjTKfxSqbt-jEnNzcWzTfQNGr9Lag@mail.gmail.com>
+Subject: Re: [PATCH net-next V2 06/11] net/mlx5e: SHAMPO: Separate pool for headers
+To: Saeed Mahameed <saeed@kernel.org>
+Cc: Jakub Kicinski <kuba@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, 
+	"David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, 
+	Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
+	Richard Cochran <richardcochran@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	Moshe Shemesh <moshe@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Gal Pressman <gal@nvidia.com>, 
+	Cosmin Ratiu <cratiu@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 22 May 15:55, Jakub Kicinski wrote:
->On Fri, 23 May 2025 00:41:26 +0300 Tariq Toukan wrote:
->> +	/* if HW GRO is not enabled due to external limitations but is wanted,
->> +	 * report HDS state as unknown so it won't get turned off explicitly.
->> +	 */
->> +	if (kernel_param->tcp_data_split == ETHTOOL_TCP_DATA_SPLIT_DISABLED &&
->> +	    priv->netdev->wanted_features & NETIF_F_GRO_HW)
->> +		kernel_param->tcp_data_split = ETHTOOL_TCP_DATA_SPLIT_UNKNOWN;
+On Thu, May 22, 2025 at 4:09=E2=80=AFPM Saeed Mahameed <saeed@kernel.org> w=
+rote:
 >
->The kernel_param->tcp_data_split here is the user config, right?
->It would be cleaner to not support setting SPLIT_DISABLED.
->Nothing requires that, you can support just setting AUTO and ENABLED.
+> On 22 May 15:30, Jakub Kicinski wrote:
+> >On Fri, 23 May 2025 00:41:21 +0300 Tariq Toukan wrote:
+> >> Allocate a separate page pool for headers when SHAMPO is enabled.
+> >> This will be useful for adding support to zc page pool, which has to b=
+e
+> >> different from the headers page pool.
+> >
+> >Could you explain why always allocate a separate pool?
 >
-
-I think I agree, AUTO might require some extra work on the driver side to
-figure out current internal mode, but it actually makes more sense than
-just doing "UNKNOWN", UKNOWN here means that HW GRO needs to be enabled
-when disabling TCP HDR split, and we still don't know if that will work..
-
-Cosmin will you look into this ? 
-
->> +
+> Better flow management, 0 conditional code on data path to alloc/return
+> header buffers, since in mlx5 we already have separate paths to handle
+> header, we don't have/need bnxt_separate_head_pool() and
+> rxr->need_head_pool spread across the code..
 >
->nit: extra empty line, please run checkpatch
->
->>  }
->>
->>  static void mlx5e_get_ringparam(struct net_device *dev,
->> @@ -383,6 +391,43 @@ static void mlx5e_get_ringparam(struct net_device *dev,
->>  	mlx5e_ethtool_get_ringparam(priv, param, kernel_param);
->>  }
->>
->> +static bool mlx5e_ethtool_set_tcp_data_split(struct mlx5e_priv *priv,
->> +					     u8 tcp_data_split)
->> +{
->> +	bool enable = (tcp_data_split == ETHTOOL_TCP_DATA_SPLIT_ENABLED);
->> +	struct net_device *dev = priv->netdev;
->> +
->> +	if (tcp_data_split == ETHTOOL_TCP_DATA_SPLIT_UNKNOWN)
->> +		return true;
->> +
->> +	if (enable && !(dev->hw_features & NETIF_F_GRO_HW)) {
->> +		netdev_warn(dev, "TCP-data-split is not supported when GRO HW is not supported\n");
->> +		return false; /* GRO HW is not supported */
->> +	}
->> +
->> +	if (enable && (dev->features & NETIF_F_GRO_HW)) {
->> +		/* Already enabled */
->> +		dev->wanted_features |= NETIF_F_GRO_HW;
->> +		return true;
->> +	}
->> +
->> +	if (!enable && !(dev->features & NETIF_F_GRO_HW)) {
->> +		/* Already disabled */
->> +		dev->wanted_features &= ~NETIF_F_GRO_HW;
->> +		return true;
->> +	}
->> +
->> +	/* Try enable or disable GRO HW */
->> +	if (enable)
->> +		dev->wanted_features |= NETIF_F_GRO_HW;
->> +	else
->> +		dev->wanted_features &= ~NETIF_F_GRO_HW;
->
->Why are you modifying wanted_features? wanted_features is what
->*user space* wanted! You should probably operate on hw_features ?
->Tho, may be cleaner to return an error and an extack if the user
->tries to set HDS and GRO to conflicting values.
+> Since we alloc and return pages in bulks, it makes more sense to manage
+> headers and data in separate pools if we are going to do it anyway for
+> "undreadable_pools", and when there's no performance impact.
 >
 
-hw_features is hw capabilities, it doesn't mean on/off.. so no we can't
-rely on that.
+Are you allocating full pages for each incoming header (which is much
+smaller than a page)? Or are you reusing the same PAGE_SIZE from the
+page_pool to store multiple headers?
 
-To enable TCP_DATA_SPLIT we tie it to GRO_HW, so we enable GRO_HW when
-TCP_DATA_SPLIT is set to on and vise-versa. I agree not the cleanest.. 
-But it is good for user-visibility as you would see both ON if you query
-from user, which is the actual state. This is the only way to set HW_GRO
-to on by driver and not lose previous state when we turn the other bit
-on/off.
-
-Yes, I guess such logic should be in the stack, although I don't see
-anything wrong here in terms of correctness.
-
+--=20
+Thanks,
+Mina
 
