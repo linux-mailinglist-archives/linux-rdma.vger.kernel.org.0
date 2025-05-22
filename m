@@ -1,125 +1,130 @@
-Return-Path: <linux-rdma+bounces-10522-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10523-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41E79AC0807
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 10:59:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A27CAC0804
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 10:59:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6218E3A50D2
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 08:58:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84C064A09DD
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 08:59:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43979286415;
-	Thu, 22 May 2025 08:57:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AFE6289348;
+	Thu, 22 May 2025 08:58:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="beOWBqJG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gDErB1ft"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A359C27C869;
-	Thu, 22 May 2025 08:57:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 161EC288CA9
+	for <linux-rdma@vger.kernel.org>; Thu, 22 May 2025 08:58:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747904234; cv=none; b=PCsMAcrKxpxLGfFe6VYnojtPJX6rTekDRPq1FiCJroL58gk6Mx/J4QqiuV+E4gNoDruJvkc/lQglLGJ5nclC68cLon7TEfnuRBdvSnc6M9h+mgENXYJZpjfyUG/yiWk98WQe+bLswW+dxCPQQVzcfhzL4+04hg/Y+Zzeufqkdiw=
+	t=1747904324; cv=none; b=l4YCbn00S47MUmn0UcWgSwf6vC9rY8yWd2crzzb723tD/q07dnXUsy+WqDnvc9dckZWpgVE9pcBJt8ttJf2Gv3UOqID5cBvg+a5G3BAwbEYL3hF0QnizajPxBOWgVxpuTrYioyq11jp+Inefg8sejiu2uAIagnhS/8LDquqUIrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747904234; c=relaxed/simple;
-	bh=ydkaUK3wouda2Zq0gztkdTwGivh4JjLzuWEGh4AtuY0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Iaq2BE76lnjvclbXoHJ6J8wFkeptjA3/9ovy1OypQ5Wt8WE+2EBiVSJJOMG0poXVdwn4dsSyAW9T2+Mogdr1xJhR5I8Cf21oS/nCxToqfG+C67O3RORqeKBGkF8wvTKrrV2VOSAN1deTcE8ckz/x38zA+e/w4OPskQoLIW7rzmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=beOWBqJG; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1747904233; x=1779440233;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ydkaUK3wouda2Zq0gztkdTwGivh4JjLzuWEGh4AtuY0=;
-  b=beOWBqJGY6OLCAwPHcb1szR5rG5hjJWO4/cI27z7IEzFkhLpxCX+D4Mu
-   1Jbd5CpNyDOAETUR6KPD/XNsdEg3KoRElFqozx6JxOuCO0lS+gijBoi0H
-   1x2igG0aeF4tOZVD4m1wJOlMju+ae1ROS4J/bq9RunAaFYsq6PQHjMdpL
-   Qh8rVpgjcYp8EeGHndRH+NbJGFbLT3ZIKiyIdwoUVWmsLCKIY1ulMipYD
-   Ii5pvbAu9NYl45EIwgy+SNCD0dmH/DsFdDxCY3j00rTlZ2JNlYQ7hX754
-   04eUCmlpkJRIgAgMra6aOLxUgVZlkiUUOnqKW6Ri2yFjnP3A5Gx0NMqoF
-   w==;
-X-CSE-ConnectionGUID: fbuGTL4+TMuc1A904oTCpA==
-X-CSE-MsgGUID: 555lSB/0QU6/jLd0i/vz/g==
-X-IronPort-AV: E=McAfee;i="6700,10204,11440"; a="61259888"
-X-IronPort-AV: E=Sophos;i="6.15,305,1739865600"; 
-   d="scan'208";a="61259888"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2025 01:57:09 -0700
-X-CSE-ConnectionGUID: FMCyh0FiRPmXd2hwpibqDw==
-X-CSE-MsgGUID: GOjCuW2NRHenkmUhJ8Yn6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,305,1739865600"; 
-   d="scan'208";a="145470752"
-Received: from soc-5cg4396xfb.clients.intel.com (HELO [172.28.180.67]) ([172.28.180.67])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2025 01:57:06 -0700
-Message-ID: <5e6f4582-4c4a-461f-8298-c9ce207eae25@linux.intel.com>
-Date: Thu, 22 May 2025 10:57:01 +0200
+	s=arc-20240116; t=1747904324; c=relaxed/simple;
+	bh=EWtMKjV7qK00a//Prt5xhUTl7GQK9KURYfpYwVla3yM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gliF/uXEHgeVHecm+AZc1CRDRopK+l7C6F1uLb7ksoAIiE+80pJBjc6O8hlMG/70fJwqDBDOxKnMEC9YQC3o3y5KtQhgGysTQgZR9NqzFJWvDZmeygr+ipsL2AkMvaeub/c1Bf3iNE+2ch1Bk2/6lIkUqwNgCMket4atwhLJCnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gDErB1ft; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5604C4CEEF;
+	Thu, 22 May 2025 08:58:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747904323;
+	bh=EWtMKjV7qK00a//Prt5xhUTl7GQK9KURYfpYwVla3yM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gDErB1ftIxGjZ/rr1tqHaQb/0LmWhi8E3x8gaP8YZYVWOqtKuTO7DK4wi+pck4uaq
+	 hTfXYir9P8d8DMwuwlZNDLxpyQjztT02wY0q5x+8ZgH3t5lu52hMOjUyYVCGf4Yh9K
+	 Jla/EeUN/DRY1FlTLENPvsAhWvapo2w1QFUyqCSVcWQBRueH4apEhAA+Av8+tqZ+VH
+	 sKo6o7pwz9YQSkf5kH7GoLJK5GqNACpcq6ecd/SU/4YZHQ0YZ76kJJhXN8AA7QjRPo
+	 44/Wgl/KUSE2nLS0KP97545/r9jUhSxdpwfg4T11nMmh5YpWpINjR1Qv1Dwj3V7zgm
+	 PtLnS0LOHn3ag==
+Date: Thu, 22 May 2025 11:58:38 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Sharath Srinivasan <sharath.srinivasan@oracle.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>, Jack Morgenstein <jackm@nvidia.com>,
+	Feng Liu <feliu@nvidia.com>,
+	=?iso-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>,
+	linux-rdma@vger.kernel.org, Patrisious Haddad <phaddad@nvidia.com>,
+	Vlad Dumitrescu <vdumitrescu@nvidia.com>
+Subject: Re: [PATCH rdma-rc] RDMA/cma: Fix hang when cma_netevent_callback
+ fails to queue_work
+Message-ID: <20250522085838.GO7435@unreal>
+References: <4f3640b501e48d0166f312a64fdadf72b059bd04.1747827103.git.leon@kernel.org>
+ <0f005949-cf9b-403f-afcb-95be492a8e49@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 1/2] net/mlx5: Ensure fw pages are always allocated on
- same NUMA
-To: Tariq Toukan <tariqt@nvidia.com>, "David S. Miller"
- <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>
-Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, Moshe Shemesh <moshe@nvidia.com>,
- Mark Bloch <mbloch@nvidia.com>, Gal Pressman <gal@nvidia.com>
-References: <1747895286-1075233-1-git-send-email-tariqt@nvidia.com>
- <1747895286-1075233-2-git-send-email-tariqt@nvidia.com>
-Content-Language: pl, en-US
-From: Dawid Osuchowski <dawid.osuchowski@linux.intel.com>
-In-Reply-To: <1747895286-1075233-2-git-send-email-tariqt@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0f005949-cf9b-403f-afcb-95be492a8e49@oracle.com>
 
-On 2025-05-22 8:28 AM, Tariq Toukan wrote:
-> From: Moshe Shemesh <moshe@nvidia.com>
+On Wed, May 21, 2025 at 11:59:22AM -0700, Sharath Srinivasan wrote:
 > 
-> When firmware asks the driver to allocate more pages, using event of
-> give_pages, the driver should always allocate it from same NUMA, the
-> original device NUMA. Current code uses dev_to_node() which can result
-> in different NUMA as it is changed by other driver flows, such as
-> mlx5_dma_zalloc_coherent_node(). Instead, use saved numa node for
-> allocating firmware pages.
+> On 2025-05-21 4:36 a.m., Leon Romanovsky wrote:
+> > From: Jack Morgenstein <jackm@nvidia.com>
+> > 
+> > The cited commit fixed a crash when cma_netevent_callback was called for
+> > a cma_id while work on that id from a previous call had not yet started.
+> > The work item was re-initialized in the second call, which corrupted the
+> > work item currently in the work queue.
+> > 
+> > However, it left a problem when queue_work fails (because the item is
+> > still pending in the work queue from a previous call). In this case,
+> > cma_id_put (which is called in the work handler) is therefore not
+> > called. This results in a userspace process hang (zombie process).
+> > 
+> > Fix this by calling cma_id_put() if queue_work fails.
+> > 
+> > Fixes: 45f5dcdd0497 ("RDMA/cma: Fix workqueue crash in cma_netevent_work_handler")
 > 
-> Fixes: 311c7c71c9bb ("net/mlx5e: Allocate DMA coherent memory on reader NUMA node")
-> Signed-off-by: Moshe Shemesh <moshe@nvidia.com>
-> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> IMO the above Fixes: tag should point to the commit that introduced the line:
+> "queue_work(cma_wq, &current_id->id.net_work);"
 > 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c b/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
-> index 972e8e9df585..9bc9bd83c232 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
-> @@ -291,7 +291,7 @@ static void free_4k(struct mlx5_core_dev *dev, u64 addr, u32 function)
->   static int alloc_system_page(struct mlx5_core_dev *dev, u32 function)
->   {
->   	struct device *device = mlx5_core_dma_dev(dev);
-> -	int nid = dev_to_node(device);
-> +	int nid = dev->priv.numa_node;
+> i.e. Fixes: 925d046e7e52 ("RDMA/core: Add a netevent notifier to cma")
+> 
+> and not another bug fix (45f5dcdd0497) which did not introduce the problem being described in this patch (a missing cma_id_put() when queue_work() fails).
 
-Reviewed-by: Dawid Osuchowski <dawid.osuchowski@linux.intel.com>
+It is not, according to the queue_work() description and implementation,
+that function call can fail only if this work already exist. Before commit 45f5dcdd0497
+that cma_netevent_work was always new and hence can't fail. This is why queue_work()
+returned value is almost never checked in the kernel.
 
-Thanks,
-Dawid
+Thanks
 
->   	struct page *page;
->   	u64 zero_addr = 1;
->   	u64 addr;
-
+> 
+> Otherwise the fix looks good to me:
+> Reviewed-by: Sharath Srinivasan <sharath.srinivasan@oracle.com>
+> 
+> Thanks,
+> Sharath
+> 
+> > Signed-off-by: Jack Morgenstein <jackm@nvidia.com>
+> > Signed-off-by: Feng Liu <feliu@nvidia.com>
+> > Reviewed-by: Vlad Dumitrescu <vdumitrescu@nvidia.com>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> >  drivers/infiniband/core/cma.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+> > index ab31eefa916b3..274cfbd5aaba7 100644
+> > --- a/drivers/infiniband/core/cma.c
+> > +++ b/drivers/infiniband/core/cma.c
+> > @@ -5245,7 +5245,8 @@ static int cma_netevent_callback(struct notifier_block *self,
+> >  			   neigh->ha, ETH_ALEN))
+> >  			continue;
+> >  		cma_id_get(current_id);
+> > -		queue_work(cma_wq, &current_id->id.net_work);
+> > +		if (!queue_work(cma_wq, &current_id->id.net_work))
+> > +			cma_id_put(current_id);
+> >  	}
+> >  out:
+> >  	spin_unlock_irqrestore(&id_table_lock, flags);
+> 
 
