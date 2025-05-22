@@ -1,198 +1,146 @@
-Return-Path: <linux-rdma+bounces-10532-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10533-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E72D1AC0B07
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 14:02:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61813AC0CC2
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 15:29:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFAF31B62835
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 12:02:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D1AB1624C4
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 13:29:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39D3528A1DC;
-	Thu, 22 May 2025 12:02:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BACD28BA82;
+	Thu, 22 May 2025 13:29:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kKWf7UZr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="liUUg6uh"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA2711DF965;
-	Thu, 22 May 2025 12:02:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6133328BA9A
+	for <linux-rdma@vger.kernel.org>; Thu, 22 May 2025 13:29:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747915357; cv=none; b=E4WBoE9xMv0itVC0gE/FQ/wjwfT7IiTn21PUSJyz75qlahLrEKsGRY5otmAi9fFBhs2kY4mZB6quOwivag7IPZhfrq9ZsNf8QnE3LsfFKZir8gi2Kco24T6UDgjwXGfgdJnXlliidk2FX3Hw0E9CWeITvr1gOcRAxdtNewM5R88=
+	t=1747920548; cv=none; b=ECrtilPQTKV+y5BUt6aU/Zfv16OeQWVE0ngkQtfaZv1SfjTyWggzS10U7b9IfyLY6DBqCSNslnFLl1XH2jR8Z5apGpFINh3xtSC0lOtbX4+V1RH3A1ynDYXtQ0Mv1fEkhxlLdcyPImkcW8wbEV4QjdvME7xUDy4l/xZRIcuG03A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747915357; c=relaxed/simple;
-	bh=3EqVS0mPt9FHYeHpJEN9TOubD2eRleBP0208eEeLR2s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ez5Xm7yCNPhzV6kMGu7NT1a6XZFfJeEIjJNo9GyfnfC6Jabn+n3rP56dZsOl9K4y4j/Zn/9S0w2xfM95xX7iy/XtO+RlwyqKYXvFKfqosg9AUduj9XjbbBYnuwHisCCTIQkhQY+PVstt9Neuzht+SwGG/1L6wRBfHE5leUy5Lfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kKWf7UZr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69DEDC4CEE4;
-	Thu, 22 May 2025 12:02:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747915356;
-	bh=3EqVS0mPt9FHYeHpJEN9TOubD2eRleBP0208eEeLR2s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kKWf7UZrSMObWEDDrmj8yJWq72sycQWbfYl/ymYM0KUSgFVtxmkEpwe/FlC3P/OwE
-	 qzXFvINcYYRcrGh3W9CuA9GkAoNONfTY/SHelsuth3KzWoCR2EdwuCJsvYLMi3IaVZ
-	 MR3Fusi7rfKC+65QQby5DmodHWCKvm3jsZ/VMu6gOlU2d4S17MiZm1aMXFKJp5gYmE
-	 kJ3sMJid/uUoabCzppg6t2zcoFaMb32nRGFA9z5I5Kl9ZkybaaH14v98w1JLm9mkEC
-	 drvWNVpQBbCzawLA+U0xgnbmN+33Kvn/rpgi2Tx+aYUSksSfPObedGeRUfmpcXDFcA
-	 V6mZid1e6fccw==
-Date: Thu, 22 May 2025 13:02:29 +0100
-From: Simon Horman <horms@kernel.org>
-To: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	"stephen@networkplumber.org" <stephen@networkplumber.org>,
-	KY Srinivasan <kys@microsoft.com>,
-	Paul Rosswurm <paulros@microsoft.com>,
-	"olaf@aepfle.de" <olaf@aepfle.de>,
-	"vkuznets@redhat.com" <vkuznets@redhat.com>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>,
-	"edumazet@google.com" <edumazet@google.com>,
-	"kuba@kernel.org" <kuba@kernel.org>,
-	"pabeni@redhat.com" <pabeni@redhat.com>,
-	"leon@kernel.org" <leon@kernel.org>, Long Li <longli@microsoft.com>,
-	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"ast@kernel.org" <ast@kernel.org>,
-	"hawk@kernel.org" <hawk@kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
-	"andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [EXTERNAL] Re: [PATCH net-next,v2] net: mana: Add support for
- Multi Vports on Bare metal
-Message-ID: <20250522120229.GX365796@horms.kernel.org>
-References: <1747671636-5810-1-git-send-email-haiyangz@microsoft.com>
- <20250521140231.GW365796@horms.kernel.org>
- <MN0PR21MB34373B1A0162D8452018ABAACA9EA@MN0PR21MB3437.namprd21.prod.outlook.com>
+	s=arc-20240116; t=1747920548; c=relaxed/simple;
+	bh=qjw4rnqr37/XOrKDkd2Lxp+KRhfyhnwGsN7+FBpUT24=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hRuUUhaGmBNxoyXFp6xb481DSAw2MvkrI3ZxyjxsavZtcGyNiJd0CN26Q+EOP/vX9xmsh6UuJqbftTMCmwXY5t8TQUfxYkvOdD3PYome6sMUbNnTTj6UznmJGV2pNIYhELj9+AiN+dRVp2RE3iasVy9+ywwxOmzvji0SfLFIANI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=liUUg6uh; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-742c27df0daso4450243b3a.1
+        for <linux-rdma@vger.kernel.org>; Thu, 22 May 2025 06:29:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1747920545; x=1748525345; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gK4n6E4VOcll5TxrlVGhNj/kWzcbVSmTb4uP4qAj834=;
+        b=liUUg6uhCbwdf+K8sc7e2nGoYBIVEiw6AxFKWKZZedbCWanr8R+h3CHmxU2xmvIFRt
+         tRMHwyBNwFRNuazQO8HcFKezkb8jGTWg/3HhDBd/x7T9q9dJFYR2pWSjCT24Vp0L4h1x
+         oxCwdFvjDphVUJ0XEWdftMYnwo9n8LlE650RU6snenF3mS4yQ0qKmFAMFUSwvsWFLZ8r
+         4IApAK5ixUETiVXrQFuAk/LWOr2yuemZ3xf8RdP/ndWYqI/FiyD0Rh7q1f2OtTgrK+kb
+         zVHkBWNYpOcq9Bie27orqt8194eVtALa69sH0/oWL5G9TxCGVGrONjMxVIy0ONQH5ODT
+         BZAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1747920545; x=1748525345;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gK4n6E4VOcll5TxrlVGhNj/kWzcbVSmTb4uP4qAj834=;
+        b=J14FKASM38Bm12dEdwY5I9IdS3jGBBy2IL8/K+G2/vGoiWVpDZv5pEerQf24tdWiAM
+         mpBCZt7wlw6Db3Po82Qbk57UKIZ4RDw1sRrItVuAq19rW/incV1EpVkeH747hPp29FhP
+         o9xSHBa7vfUTA37d034ZAacxT6EPSOnSppU+x4q0vuPl68Dt41rk6aAGZWEkQShgxOiS
+         LhxIL0ZDML4T83ITe22Z7nt5dUkPQXcNiiAZmOxyyN42l/8vMgZTE7Q9+RNUP1Giuq14
+         dI7q7vATuEPfgbE7RPZirIYnehSU47i5y2zFB9Qfg8fCLnkLWjN/HckygZDgHSKpfnlx
+         ubPA==
+X-Forwarded-Encrypted: i=1; AJvYcCVFMOZV7FMt+YBxSFnnqG2yJRZrFIySAKiFQqGebj3FRc6qQ36735ldLhGpjljnN1fnnAJB1pz1iuBS@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywtts8REjT11dFyU4Y3dE9odAPjxo8VhtZHtx6OlCchPOdX/0ws
+	WPOdkgwigfObwK8I4looOe1l5d/Fph//9wjKq6V64xWpDN5IY7y3wSqc
+X-Gm-Gg: ASbGncsoISAVrJKDbiqc09yCG1suR2gyE8nWirtwry9ohA/AsW6uV+fJttHxcs6kOC6
+	PG0suTUiQoBM3aAL3DLMWlhiATFFjIK85m2SNyUwzLJ0ghOKlxooYn4V354JzPPr+7uS7XDZm9i
+	Z5enzNLCbI7n2PtU5Xf74aXdBe9hmxOzdn3VkG9QJjK2NIkTPuvQrL1V/v5efk3rvy2bjPq3as4
+	YAO6xU4MAbhSd+CrVLtCZ99fxk65inIxwPFufZ52yeyUL9eaeFqSz4LhYcCWfAsUZQ0UJSY/Ket
+	z5fnHkgD63t56zMOLzI5JVilX1lJeLk7VW6mLKbbwCwl+XZaLfIQBBBt0Bsif1XwbpUBEqq82fh
+	wzi3MQj75uzfMtPK4wtLNFFOl+kE=
+X-Google-Smtp-Source: AGHT+IHvebejzdE9uu2QiZ6i1CfxdcHSON9IJx/tto/2YUZTtQ22JFs2RuSlFjguYYkyn99Hr7WPzQ==
+X-Received: by 2002:a05:6a00:198e:b0:740:91e4:8107 with SMTP id d2e1a72fcca58-742a963242bmr35547399b3a.0.1747920545420;
+        Thu, 22 May 2025 06:29:05 -0700 (PDT)
+Received: from [192.168.11.2] (FL1-119-244-79-106.tky.mesh.ad.jp. [119.244.79.106])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-742a982a0b1sm11637181b3a.109.2025.05.22.06.29.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 May 2025 06:29:05 -0700 (PDT)
+Message-ID: <72a82333-b005-4383-888c-7632bf1ce4ae@gmail.com>
+Date: Thu, 22 May 2025 22:29:02 +0900
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MN0PR21MB34373B1A0162D8452018ABAACA9EA@MN0PR21MB3437.namprd21.prod.outlook.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH rdma-next] RDMA/rxe: Break endless pagefault loop for RO
+ pages
+To: Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
+Cc: Leon Romanovsky <leonro@nvidia.com>, linux-rdma@vger.kernel.org,
+ Zhu Yanjun <zyjzyj2000@gmail.com>
+References: <096fab178d48ed86942ee22eafe9be98e29092aa.1747913377.git.leonro@nvidia.com>
+Content-Language: en-US
+From: Daisuke Matsuda <dskmtsd@gmail.com>
+In-Reply-To: <096fab178d48ed86942ee22eafe9be98e29092aa.1747913377.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, May 21, 2025 at 05:28:33PM +0000, Haiyang Zhang wrote:
+
+On 2025/05/22 20:36, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
+> RO pages has "perm" equal to 0, that caused to the situation
+> where such pages were marked as needed to have fault and caused
+> to infinite loop.
 > 
-> > -----Original Message-----
-> > From: Simon Horman <horms@kernel.org>
-> > Sent: Wednesday, May 21, 2025 10:03 AM
-> > To: Haiyang Zhang <haiyangz@microsoft.com>
-> > Cc: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; Dexuan Cui
-> > <decui@microsoft.com>; stephen@networkplumber.org; KY Srinivasan
-> > <kys@microsoft.com>; Paul Rosswurm <paulros@microsoft.com>;
-> > olaf@aepfle.de; vkuznets@redhat.com; davem@davemloft.net;
-> > wei.liu@kernel.org; edumazet@google.com; kuba@kernel.org;
-> > pabeni@redhat.com; leon@kernel.org; Long Li <longli@microsoft.com>;
-> > ssengar@linux.microsoft.com; linux-rdma@vger.kernel.org;
-> > daniel@iogearbox.net; john.fastabend@gmail.com; bpf@vger.kernel.org;
-> > ast@kernel.org; hawk@kernel.org; tglx@linutronix.de;
-> > shradhagupta@linux.microsoft.com; andrew+netdev@lunn.ch; Konstantin
-> > Taranov <kotaranov@microsoft.com>; linux-kernel@vger.kernel.org
-> > Subject: [EXTERNAL] Re: [PATCH net-next,v2] net: mana: Add support for
-> > Multi Vports on Bare metal
-> > 
-> > On Mon, May 19, 2025 at 09:20:36AM -0700, Haiyang Zhang wrote:
-> > > To support Multi Vports on Bare metal, increase the device config
-> > response
-> > > version. And, skip the register HW vport, and register filter steps,
-> > when
-> > > the Bare metal hostmode is set.
-> > >
-> > > Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> > > ---
-> > > v2:
-> > >   Updated comments as suggested by ALOK TIWARI.
-> > >   Fixed the version check.
-> > >
-> > > ---
-> > >  drivers/net/ethernet/microsoft/mana/mana_en.c | 24 ++++++++++++-------
-> > >  include/net/mana/mana.h                       |  4 +++-
-> > >  2 files changed, 19 insertions(+), 9 deletions(-)
-> > >
-> > > diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > > index 2bac6be8f6a0..9c58d9e0bbb5 100644
-> > > --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > > +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > > @@ -921,7 +921,7 @@ static void mana_pf_deregister_filter(struct
-> > mana_port_context *apc)
-> > >
-> > >  static int mana_query_device_cfg(struct mana_context *ac, u32
-> > proto_major_ver,
-> > >  				 u32 proto_minor_ver, u32 proto_micro_ver,
-> > > -				 u16 *max_num_vports)
-> > > +				 u16 *max_num_vports, u8 *bm_hostmode)
-> > >  {
-> > >  	struct gdma_context *gc = ac->gdma_dev->gdma_context;
-> > >  	struct mana_query_device_cfg_resp resp = {};
-> > > @@ -932,7 +932,7 @@ static int mana_query_device_cfg(struct mana_context
-> > *ac, u32 proto_major_ver,
-> > >  	mana_gd_init_req_hdr(&req.hdr, MANA_QUERY_DEV_CONFIG,
-> > >  			     sizeof(req), sizeof(resp));
-> > >
-> > > -	req.hdr.resp.msg_version = GDMA_MESSAGE_V2;
-> > > +	req.hdr.resp.msg_version = GDMA_MESSAGE_V3;
-> > >
-> > >  	req.proto_major_ver = proto_major_ver;
-> > >  	req.proto_minor_ver = proto_minor_ver;
-> > 
-> > > @@ -956,11 +956,16 @@ static int mana_query_device_cfg(struct
-> > mana_context *ac, u32 proto_major_ver,
-> > >
-> > >  	*max_num_vports = resp.max_num_vports;
-> > >
-> > > -	if (resp.hdr.response.msg_version == GDMA_MESSAGE_V2)
-> > > +	if (resp.hdr.response.msg_version >= GDMA_MESSAGE_V2)
-> > >  		gc->adapter_mtu = resp.adapter_mtu;
-> > >  	else
-> > >  		gc->adapter_mtu = ETH_FRAME_LEN;
-> > >
-> > > +	if (resp.hdr.response.msg_version >= GDMA_MESSAGE_V3)
-> > > +		*bm_hostmode = resp.bm_hostmode;
-> > > +	else
-> > > +		*bm_hostmode = 0;
-> > 
-> > Hi,
-> > 
-> > Perhaps not strictly related to this patch, but I see
-> > that mana_verify_resp_hdr() is called a few lines above.
-> > And that verifies a minimum msg_version. But I do not see
-> > any verification of the maximum msg_version supported by the code.
-> > 
-> > I am concerned about a hypothetical scenario where, say the as yet unknown
-> > version 5 is sent as the version, and the above behaviour is used, while
-> > not being correct.
-> > 
-> > Could you shed some light on this?
-> > 
-> 
-> In driver, we specify the expected reply msg version is v3 here:
-> req.hdr.resp.msg_version = GDMA_MESSAGE_V3;
-> 
-> If the HW side is upgraded, it won't send reply msg version higher
-> than expected, which may break the driver.
+> Fixes: eedd5b1276e7 ("RDMA/umem: Store ODP access mask information in PFN")
+> Reported-by: Daisuke Matsuda <dskmtsd@gmail.com>
+> Closes: https://lore.kernel.org/all/3e8f343f-7d66-4f7a-9f08-3910623e322f@gmail.com
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+
+Tested-by: Daisuke Matsuda <dskmtsd@gmail.com>
+
+Thank you!
+This change fixes one of the two issues I reported.
+The kernel module does not get stuck in rxe_ib_invalidate_range() anymore.
+
+
+The remaining one is the stuck issue in uverbs_destroy_ufile_hw().
+cf. https://lore.kernel.org/all/3e8f343f-7d66-4f7a-9f08-3910623e322f@gmail.com/
+
+The issue occurs with test_odp_async_prefetch_rc_traffic, which is not yet
+enabled in rxe. It might indicate that the root cause lies in ib_uverbs layer.
+I will take a closer look anyway.
 
 Thanks,
+Daisuke
 
-If I understand things correctly the HW side will honour the
-req.hdr.resp.msg_version and thus the SW won't receive anything
-it doesn't expect. Is that right?
 
+> ---
+>   drivers/infiniband/sw/rxe/rxe_odp.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
+> index a1416626f61a5..0f67167ddddd1 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_odp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
+> @@ -137,7 +137,7 @@ static inline bool rxe_check_pagefault(struct ib_umem_odp *umem_odp,
+>   	while (addr < iova + length) {
+>   		idx = (addr - ib_umem_start(umem_odp)) >> umem_odp->page_shift;
+>   
+> -		if (!(umem_odp->map.pfn_list[idx] & perm)) {
+> +		if (!(umem_odp->map.pfn_list[idx] & HMM_PFN_VALID)) {
+>   			need_fault = true;
+>   			break;
+>   		}
 
 
