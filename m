@@ -1,81 +1,86 @@
-Return-Path: <linux-rdma+bounces-10549-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10551-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 706A9AC10D0
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 18:13:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 090BBAC1127
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 18:36:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BE73501F08
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 16:12:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96BE8A22464
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 16:35:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EBFE29A324;
-	Thu, 22 May 2025 16:12:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 767CD28C875;
+	Thu, 22 May 2025 16:35:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="H0MMvTQ7"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mxzAbpMy"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D9BB298986;
-	Thu, 22 May 2025 16:12:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.219
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76051248862;
+	Thu, 22 May 2025 16:35:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747930372; cv=none; b=DTAv3Ke29tQocIBHWtBZBaGFG4pABgcfMTjb4oifQjhFjLd1XWxMRG2xDFvog7RPJqdufoWI7ob7B7hTq5RS4KV73KBaAqm/dXOJJGRv5nRWX1iitTOL5eoinAhWjvfOzc15xswN/XF3OEPjyPnUlcUIN3fziRIgawn7pUpmErw=
+	t=1747931749; cv=none; b=pFwrunwBQBRo6Z9yCux4+TOIu3vd8qCiB0Lp9jRiS9jLmD5BSCeTqmBoLFrH5VlEy33xGapga5Pp6ubjUMRFjVJilHmaKsf/ohuHegmb1hIXD+8AjUaHmiEZgNd9PFAjCoxdtwtTXoy2iuqn5kAlH3p0jiqP7V0AnyAQ0lz//HM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747930372; c=relaxed/simple;
-	bh=r/9YbCnf38I2uNWxlrT08OWQjmU2+IxyxKka3g6yh7U=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mT1dzJHYLtWbiUwWadFBDf936DFuIwSNuExOMS4zFQ3du/VUdFFjzVmifdXIUAWBIiCAQeqqUw/a1qOEjcBSV45QnHVYiNvDCu+iPlz1u1qbbNC1sTEYqqCmqos5psdq+4fqITF8Z46UCbAI19nSvY4di00uC5xRFhgPEC6hGQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=H0MMvTQ7; arc=none smtp.client-ip=99.78.197.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1747930370; x=1779466370;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=q83a3aOAlFEsUBxycxiFP+NkK9i6pWmdjvMN3DiYJEA=;
-  b=H0MMvTQ7QE1Kopn2QsQPABCVvDnXKdyXkuc5GQckz0i69GInlMDt7RpN
-   6UxIuhWaUU8PzaRicPGorasoKCOqeABKgB+o7lK0ulk6qxt/kTOtx/LTD
-   ViM2xgjec9k5w18Nub2CStiS8QX7WI7h49kWB4KKENgwHatfe9xznFA9I
-   RN/0XQPuJ061dMWYHAO+vY0QG82NbaMLJL3wIVf5lT2jk3foqvdSolS6N
-   40dm2NR/X9faXY3ow3sOnrwUutQp18AEB7erCpcLHe/rSIU0SetZ5o67v
-   648MAkkGZI4bACRrJIlW0+BxIg4C3cXgw64Qiwzz6SZ7ADzcFYS4mrxYG
+	s=arc-20240116; t=1747931749; c=relaxed/simple;
+	bh=ux9eZaPRebseznFfCMQVDgdu76v+ODiKx1nrwgRY7uY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tRNhd2W69QRFsSGmjDeWHCPRS6zZSVp1pvT7gTY3fZPHsxledat3VnCrb+HG3P949CmDa6IzOfvPemVVemYFQsO9WXrXE7MqUPWuau1z7uQI9useysIAyEW0o/CxNJF0y1cc1WDvQt4PPd8FEL9L1Ms7QVmaiVD51Ew0U8BC3qU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mxzAbpMy; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1747931748; x=1779467748;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ux9eZaPRebseznFfCMQVDgdu76v+ODiKx1nrwgRY7uY=;
+  b=mxzAbpMyKlHQuZ9GUoLLSZD0gPzxppvRMwercBiwLo/HV+CKJ26K6W9o
+   3DHLOOGw+yirprZJqmgg3WlBmq0ZG2WprDgdMsjMJ/taLnPYvrqTRexFY
+   LP8k6h+awJ6Nl1vVZvCAoSTzh6/nxHH+R/Q1+E6X8FKAisC6di1v5AwpW
+   XTxVxsOyit5UIw4JTYfLyfbJR/xB5qGaFH+ld6TretUvf40h/bTgzeV/l
+   2uz3h7BVps6MVKMuS/4HgKXkuxXIgRmhWzIb3G1osrzDrDlknoSckqDpa
+   9eRubHyS13+2ofzY6pP/7I2neoGTxQuxRczSQxPEgQklq9djSyHG21EAF
    g==;
-X-IronPort-AV: E=Sophos;i="6.15,306,1739836800"; 
-   d="scan'208";a="199907297"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
-  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2025 16:12:48 +0000
-Received: from EX19MTAUWB002.ant.amazon.com [10.0.7.35:57322]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.3.185:2525] with esmtp (Farcaster)
- id 5dac8cde-4bb0-4f29-b099-51b167a264c8; Thu, 22 May 2025 16:12:48 +0000 (UTC)
-X-Farcaster-Flow-ID: 5dac8cde-4bb0-4f29-b099-51b167a264c8
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Thu, 22 May 2025 16:12:47 +0000
-Received: from 6c7e67bfbae3.amazon.com (10.187.170.32) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Thu, 22 May 2025 16:12:43 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <pabeni@redhat.com>
-CC: <axboe@kernel.dk>, <chuck.lever@oracle.com>, <davem@davemloft.net>,
-	<edumazet@google.com>, <hch@lst.de>, <horms@kernel.org>,
-	<jaka@linux.ibm.com>, <jlayton@kernel.org>, <kbusch@kernel.org>,
-	<kuba@kernel.org>, <kuni1840@gmail.com>, <kuniyu@amazon.com>,
-	<linux-nfs@vger.kernel.org>, <linux-nvme@lists.infradead.org>,
-	<linux-rdma@vger.kernel.org>, <matttbe@kernel.org>, <mptcp@lists.linux.dev>,
-	<netdev@vger.kernel.org>, <sfrench@samba.org>, <wenjia@linux.ibm.com>,
-	<willemb@google.com>
-Subject: Re: [PATCH v1 net-next 4/6] socket: Remove kernel socket conversion except for net/rds/.
-Date: Thu, 22 May 2025 09:12:22 -0700
-Message-ID: <20250522161235.32989-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <7a965a97-a6d0-462f-b7dd-8833605ea7c9@redhat.com>
-References: <7a965a97-a6d0-462f-b7dd-8833605ea7c9@redhat.com>
+X-CSE-ConnectionGUID: A5K775xTTceD33WfZD1F7A==
+X-CSE-MsgGUID: KEPc6NbOTg2/9qqNUOlMUQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11441"; a="49889025"
+X-IronPort-AV: E=Sophos;i="6.15,306,1739865600"; 
+   d="scan'208";a="49889025"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2025 09:35:47 -0700
+X-CSE-ConnectionGUID: a6/QFpl9RSWoEr/nOLM3sQ==
+X-CSE-MsgGUID: WjNNFZnOQTmzoaUNJRYBHg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,306,1739865600"; 
+   d="scan'208";a="145631339"
+Received: from amlin-018-114.igk.intel.com ([10.102.18.114])
+  by orviesa004.jf.intel.com with ESMTP; 22 May 2025 09:35:42 -0700
+From: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+To: donald.hunter@gmail.com,
+	kuba@kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	vadim.fedorenko@linux.dev,
+	jiri@resnulli.us,
+	anthony.l.nguyen@intel.com,
+	przemyslaw.kitszel@intel.com,
+	andrew+netdev@lunn.ch,
+	aleksandr.loktionov@intel.com,
+	corbet@lwn.net
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org,
+	linux-rdma@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+Subject: [PATCH net-next v3 0/3] dpll: add Reference SYNC feature
+Date: Thu, 22 May 2025 18:29:35 +0200
+Message-Id: <20250522162938.1490791-1-arkadiusz.kubalewski@intel.com>
+X-Mailer: git-send-email 2.38.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -83,107 +88,80 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D040UWB001.ant.amazon.com (10.13.138.82) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-From: Paolo Abeni <pabeni@redhat.com>
-Date: Thu, 22 May 2025 10:55:47 +0200
-> On 5/17/25 5:50 AM, Kuniyuki Iwashima wrote:
-> > Since commit 26abe14379f8 ("net: Modify sk_alloc to not reference
-> > count the netns of kernel sockets."), TCP kernel socket has caused
-> > many UAF.
-> > 
-> > We have converted such sockets to hold netns refcnt, and we have
-> > the same pattern in cifs, mptcp, nvme, rds, smc, and sunrpc.
-> > 
-> >   __sock_create_kern(..., &sock);
-> >   sk_net_refcnt_upgrade(sock->sk);
-> > 
-> > Let's drop the conversion and use sock_create_kern() instead.
-> > 
-> > The changes for cifs, mptcp, nvme, and smc are straightforward.
-> > 
-> > For sunrpc, we call sock_create_net() for IPPROTO_TCP only and still
-> > call __sock_create_kern() for others.
-> > 
-> > For rds, we cannot drop sk_net_refcnt_upgrade() for accept()ed
-> > sockets.
-> > 
-> > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
-> 
-> This LGTM, but is touching a few other subsystems, it would be great to
-> collect acks from the relevant maintainers: I'm adding a few CCs.
-> 
-> Direct link to the series:
-> 
-> https://lore.kernel.org/all/20250517035120.55560-1-kuniyu@amazon.com/#t
-> 
-> > diff --git a/fs/smb/client/connect.c b/fs/smb/client/connect.c
-> > index 37a2ba38f10e..c7b4f5a7cca1 100644
-> > --- a/fs/smb/client/connect.c
-> > +++ b/fs/smb/client/connect.c
-> > @@ -3348,21 +3348,14 @@ generic_ip_connect(struct TCP_Server_Info *server)
-> >  		socket = server->ssocket;
-> >  	} else {
-> >  		struct net *net = cifs_net_ns(server);
-> > -		struct sock *sk;
-> >  
-> > -		rc = __sock_create_kern(net, sfamily, SOCK_STREAM,
-> > -					IPPROTO_TCP, &server->ssocket);
-> > +		rc = sock_create_kern(net, sfamily, SOCK_STREAM,
-> > +				      IPPROTO_TCP, &server->ssocket);
-> >  		if (rc < 0) {
-> >  			cifs_server_dbg(VFS, "Error %d creating socket\n", rc);
-> >  			return rc;
-> >  		}
-> >  
-> > -		sk = server->ssocket->sk;
-> > -		__netns_tracker_free(net, &sk->ns_tracker, false);
-> > -		sk->sk_net_refcnt = 1;
-> > -		get_net_track(net, &sk->ns_tracker, GFP_KERNEL);
-> > -		sock_inuse_add(net, 1);
-> 
-> AFAICS the above implicitly adds a missing net_passive_dec(net), which
-> in turns looks like a separate bugfix. What about adding a separate
-> patch introducing that line? Could be in the same series to simplify the
-> processing.
+The device may support the Reference SYNC feature, which allows the
+combination of two inputs into a Reference SYNC pair. In this
+configuration, clock signals from both inputs are used to synchronize
+the dpll device. The higher frequency signal is utilized for the loop
+bandwidth of the DPLL, while the lower frequency signal is used to
+syntonize the output signal of the DPLL device. This feature enables
+the provision of a high-quality loop bandwidth signal from an external
+source.
 
-Thanks for catching!
+A capable input provides a list of inputs that can be paired to create
+a Reference SYNC pair. To control this feature, the user must request a
+desired state for a target pin: use ``DPLL_PIN_STATE_CONNECTED`` to
+enable or ``DPLL_PIN_STATE_DISCONNECTED`` to disable the feature. Only
+two pins can be bound to form a Reference SYNC pair at any given time.
 
-Will add this patch before this change.
+Verify pins bind state/capabilities:
+$ ./tools/net/ynl/pyynl/cli.py \
+ --spec Documentation/netlink/specs/dpll.yaml \
+ --do pin-get \
+ --json '{"id":0}'
+{'board-label': 'CVL-SDP22',
+ 'id': 0,
+ [...]
+ 'reference-sync': [{'id': 1, 'state': 'disconnected'}],
+ [...]}
 
----8<---
-commit c7ff005fe4d930169f319aca0bd9577541cd7459 (HEAD)
-Author: Kuniyuki Iwashima <kuniyu@amazon.com>
-Date:   Thu May 22 16:03:29 2025 +0000
+Bind the pins by setting connected state between them:
+$ ./tools/net/ynl/pyynl/cli.py \
+ --spec Documentation/netlink/specs/dpll.yaml \
+ --do pin-set \
+ --json '{"id":0, "reference-sync":{"id":1, "state":"connected"}}'
 
-    smb: client: Add missing net_passive_dec().
-    
-    While reverting commit e9f2517a3e18 ("smb: client: fix TCP timers deadlock
-    after rmmod"), I should have added net_passive_dec(), which was added between
-    the original commit and the revert by commit 5c70eb5c593d ("net: better track
-    kernel sockets lifetime").
-    
-    Let's call net_passive_dec() in generic_ip_connect().
-    
-    Note that this commit is only needed for 6.14+.
-    
-    Fixes: 95d2b9f693ff ("Revert "smb: client: fix TCP timers deadlock after rmmod"")
-    Cc: <stable@vger.kernel.org> # 6.14.x
-    Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+Verify pins bind state:
+$ ./tools/net/ynl/pyynl/cli.py \
+ --spec Documentation/netlink/specs/dpll.yaml \
+ --do pin-get \
+ --json '{"id":0}'
+{'board-label': 'CVL-SDP22',
+ 'id': 0,
+ [...]
+ 'reference-sync': [{'id': 1, 'state': 'connected'}],
+ [...]}
 
-diff --git a/fs/smb/client/connect.c b/fs/smb/client/connect.c
-index 37a2ba38f10e..afac23a5a3ec 100644
---- a/fs/smb/client/connect.c
-+++ b/fs/smb/client/connect.c
-@@ -3359,6 +3359,7 @@ generic_ip_connect(struct TCP_Server_Info *server)
- 
-                sk = server->ssocket->sk;
-                __netns_tracker_free(net, &sk->ns_tracker, false);
-+               net_passive_dec(net);
-                sk->sk_net_refcnt = 1;
-                get_net_track(net, &sk->ns_tracker, GFP_KERNEL);
-                sock_inuse_add(net, 1);
----8<---
+Unbind the pins by setting disconnected state between them:
+$ ./tools/net/ynl/pyynl/cli.py \
+ --spec Documentation/netlink/specs/dpll.yaml \
+ --do pin-set \
+ --json '{"id":0, "reference-sync":{"id":1, "state":"disconnected"}}'
+
+v3:
+- no change.
+
+Arkadiusz Kubalewski (3):
+  dpll: add reference-sync netlink attribute
+  dpll: add reference sync get/set
+  ice: add ref-sync dpll pins
+
+ Documentation/driver-api/dpll.rst             |  25 +++
+ Documentation/netlink/specs/dpll.yaml         |  19 ++
+ drivers/dpll/dpll_core.c                      |  27 +++
+ drivers/dpll/dpll_core.h                      |   2 +
+ drivers/dpll/dpll_netlink.c                   | 188 ++++++++++++++++--
+ drivers/dpll/dpll_nl.c                        |  10 +-
+ drivers/dpll/dpll_nl.h                        |   1 +
+ .../net/ethernet/intel/ice/ice_adminq_cmd.h   |   2 +
+ drivers/net/ethernet/intel/ice/ice_dpll.c     | 186 +++++++++++++++++
+ include/linux/dpll.h                          |  10 +
+ include/uapi/linux/dpll.h                     |   1 +
+ 11 files changed, 451 insertions(+), 20 deletions(-)
+
+
+base-commit: 4ff4d86f6cceb6bea583bdb230e5439655778cce
+-- 
+2.38.1
+
 
