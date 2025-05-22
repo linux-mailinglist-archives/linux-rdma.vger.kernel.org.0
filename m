@@ -1,684 +1,276 @@
-Return-Path: <linux-rdma+bounces-10524-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10525-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FE80AC085E
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 11:18:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C86E9AC095B
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 12:05:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B75344E5C8F
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 09:18:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 757B3179B96
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 10:05:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79CA6286D65;
-	Thu, 22 May 2025 09:17:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E117D13C918;
+	Thu, 22 May 2025 10:05:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="s+R/gFze"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iP8GWQ8s"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31F3E286899;
-	Thu, 22 May 2025 09:17:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59D0F288C22
+	for <linux-rdma@vger.kernel.org>; Thu, 22 May 2025 10:05:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747905472; cv=none; b=uzBMCQi8RO6+Npy5dStGiPXgeYU5YxXryQUgAfAIh3amFeIoJ2lw/7Ga0ZshWA4DvRpPrvqJjoqYKnqZJP+r6r8V79CKTY3uKVXYPgONeWhQyLeSP2n7be45S5DHL3AQp++E47m0Tb4dpEMt6DtV8mE0lXKdF3ZDrdzHz5mA6DI=
+	t=1747908334; cv=none; b=SiC1GY1vgwaPuHbUvAmjftsJ2txTX+n3v1XTgawpnjXEV++b1E1tQXsMGSY42NP7V3iKQmz6G0BlV10OAl7cJUs50Xs6Txf/UfBTLlOXnUaLMuhqWL/jc5zbrLjzlC/6gRL3rl5rLf3Qeh69UZSl83bkTEUVqXEuRfc6rJbxwck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747905472; c=relaxed/simple;
-	bh=u31APRfzDx1o7zqGbXeBCALzW8frmyRJ272T/G6Cd4k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RvLD7nnNJPeqRWdb9yXvcB23MPM5PzijWg4EEDjxkCKzdd1v/U9zUS4fVp6OJSl7ahZtyUcjKGiUIAzFfWhYGZ5oWfLtBVr1JM41kfCVm4mkzTSPngvj36NcKqO3t7PxZaRwCKPNdx0aTufutZLGBulEaeipzRxEKNpAm+jB7jg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=s+R/gFze; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id 96AB4211CF80; Thu, 22 May 2025 02:17:49 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 96AB4211CF80
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1747905469;
-	bh=i3nEz26Q8SpOVHOcOEJdVg8abGKvI0bRKzmPw5hK8Hs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=s+R/gFzeaqsOxoo6b7TfYa26R6Yy0v+dZpub3ezFOpi63jsf7aB4hOgK2FlzkQU98
-	 V3A2kB/41USLEsYjs31mKplo+YpzFJbz+ILBqy4a3O68kaTVa3Krn7PxvqWM64bCRD
-	 nJ/EheFVy4hKlZNOHwgcnBjDceJYgObwlIDiLPgA=
-Date: Thu, 22 May 2025 02:17:49 -0700
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Michael Kelley <mhklinux@outlook.com>
-Cc: Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Simon Horman <horms@kernel.org>, Leon Romanovsky <leon@kernel.org>,
-	Maxim Levitsky <mlevitsk@redhat.com>,
-	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Nipun Gupta <nipun.gupta@amd.com>,
-	Yury Norov <yury.norov@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Jonathan Cameron <Jonathan.Cameron@huwei.com>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Kevin Tian <kevin.tian@intel.com>, Long Li <longli@microsoft.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Krzysztof Wilczy???~Dski <kw@linux.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	Paul Rosswurm <paulros@microsoft.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>
-Subject: Re: [PATCH v3 4/4] net: mana: Allocate MSI-X vectors dynamically
-Message-ID: <20250522091749.GA13266@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1746785566-4337-1-git-send-email-shradhagupta@linux.microsoft.com>
- <1746785637-4881-1-git-send-email-shradhagupta@linux.microsoft.com>
- <BN7PR02MB414863E6F4E36CF14F71F80BD49EA@BN7PR02MB4148.namprd02.prod.outlook.com>
+	s=arc-20240116; t=1747908334; c=relaxed/simple;
+	bh=XXlU/6xEO9L9Q/LWMq+qpy4bcEzYWWlPPqnm5wXSlDM=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=nTgLtNNkB7r8dNvphBqPvwvM4a64/lAw6K2x9KRatYSS0062VlB1v+N439b+VdE4YrMI1qx3xrNBSEpvKbWKKMYye05M5k+EnKrxvoHuEYmPonXXg9jMCz19i8xIFQKIOUxTSuRxLOz2iHJ7x0uFRtRUUGwKm/uCWI0D9iCYXAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iP8GWQ8s; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1747908332; x=1779444332;
+  h=date:from:to:cc:subject:message-id;
+  bh=XXlU/6xEO9L9Q/LWMq+qpy4bcEzYWWlPPqnm5wXSlDM=;
+  b=iP8GWQ8sXiJOszv5ftlULRel40YAjiPxqInE/1LTeqkgKuTNrlEz69fX
+   PT0+YSUo/JTcs5w8arQ9q7/yks+2W41nJl0D9KMDf9t8PFFrISmm/jaqD
+   aRX2gCOWg3NPLYpHtdW41wywmwK4LVSE+U9c327b4ibf8K5hfc839jVr8
+   SlkddJAz7EVmUGaBRB59A6+h7zGiDmgz6D8JtLpbtsteDoFWTPO3ykpHe
+   BaeSelPlsK//3fArM2kl5W3E81xoVrCZ2r9sl9mzwE1ZNw9ojcepVater
+   N2R0GwBM/CEbuOsd9KH1yLIpsfMgAo383HHwuWxymK/ZY34qROZ9n6gvW
+   w==;
+X-CSE-ConnectionGUID: PjKMkA9OQ0u+XDHyrAcDUg==
+X-CSE-MsgGUID: DcUKnumCQCOzTi/JRVqkyA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11440"; a="49799813"
+X-IronPort-AV: E=Sophos;i="6.15,305,1739865600"; 
+   d="scan'208";a="49799813"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2025 03:05:31 -0700
+X-CSE-ConnectionGUID: a4yiWgF0TKGmdI/zKn1Hog==
+X-CSE-MsgGUID: peBlYWnASNyHicmutwhOUQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.15,305,1739865600"; 
+   d="scan'208";a="140394276"
+Received: from lkp-server01.sh.intel.com (HELO 1992f890471c) ([10.239.97.150])
+  by orviesa006.jf.intel.com with ESMTP; 22 May 2025 03:05:31 -0700
+Received: from kbuild by 1992f890471c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1uI2nn-000PCm-2k;
+	Thu, 22 May 2025 10:05:27 +0000
+Date: Thu, 22 May 2025 18:05:01 +0800
+From: kernel test robot <lkp@intel.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Doug Ledford <dledford@redhat.com>,
+ Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ 990b5c07f677a0b633b41130a70771337c18343e
+Message-ID: <202505221851.V9LukFIA-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN7PR02MB414863E6F4E36CF14F71F80BD49EA@BN7PR02MB4148.namprd02.prod.outlook.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Wed, May 21, 2025 at 04:27:04PM +0000, Michael Kelley wrote:
-> From: Shradha Gupta <shradhagupta@linux.microsoft.com> Sent: Friday, May 9, 2025 3:14 AM
-> > 
-> > Currently, the MANA driver allocates MSI-X vectors statically based on
-> > MANA_MAX_NUM_QUEUES and num_online_cpus() values and in some cases ends
-> > up allocating more vectors than it needs. This is because, by this time
-> > we do not have a HW channel and do not know how many IRQs should be
-> > allocated.
-> > 
-> > To avoid this, we allocate 1 MSI-X vector during the creation of HWC and
-> > after getting the value supported by hardware, dynamically add the
-> > remaining MSI-X vectors.
-> > 
-> > Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> > Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-> > ---
-> >  Changes in v3:
-> >  * implemented irq_contexts as xarrays rather than list
-> >  * split the patch to create a perparation patch around irq_setup()
-> >  * add log when IRQ allocation/setup for remaining IRQs fails
-> > ---
-> >  Changes in v2:
-> >  * Use string 'MSI-X vectors' instead of 'pci vectors'
-> >  * make skip-cpu a bool instead of int
-> >  * rearrange the comment arout skip_cpu variable appropriately
-> >  * update the capability bit for driver indicating dynamic IRQ allocation
-> >  * enforced max line length to 80
-> >  * enforced RCT convention
-> >  * initialized gic to NULL, for when there is a possibility of gic
-> >    not being populated correctly
-> > ---
-> >  .../net/ethernet/microsoft/mana/gdma_main.c   | 248 +++++++++++++++---
-> >  include/net/mana/gdma.h                       |   8 +-
-> >  2 files changed, 211 insertions(+), 45 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > index 2de42ce43373..f07cebffc30d 100644
-> > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > @@ -6,6 +6,8 @@
-> >  #include <linux/pci.h>
-> >  #include <linux/utsname.h>
-> >  #include <linux/version.h>
-> > +#include <linux/msi.h>
-> > +#include <linux/irqdomain.h>
-> > 
-> >  #include <net/mana/mana.h>
-> > 
-> > @@ -80,8 +82,15 @@ static int mana_gd_query_max_resources(struct pci_dev *pdev)
-> >  		return err ? err : -EPROTO;
-> >  	}
-> > 
-> > -	if (gc->num_msix_usable > resp.max_msix)
-> > -		gc->num_msix_usable = resp.max_msix;
-> > +	if (!pci_msix_can_alloc_dyn(pdev)) {
-> > +		if (gc->num_msix_usable > resp.max_msix)
-> > +			gc->num_msix_usable = resp.max_msix;
-> > +	} else {
-> > +		/* If dynamic allocation is enabled we have already allocated
-> > +		 * hwc msi
-> > +		 */
-> > +		gc->num_msix_usable = min(resp.max_msix, num_online_cpus() + 1);
-> > +	}
-> > 
-> >  	if (gc->num_msix_usable <= 1)
-> >  		return -ENOSPC;
-> > @@ -482,7 +491,9 @@ static int mana_gd_register_irq(struct gdma_queue *queue,
-> >  	}
-> > 
-> >  	queue->eq.msix_index = msi_index;
-> > -	gic = &gc->irq_contexts[msi_index];
-> > +	gic = xa_load(&gc->irq_contexts, msi_index);
-> > +	if (!gic)
-> > +		return -EINVAL;
-> > 
-> >  	spin_lock_irqsave(&gic->lock, flags);
-> >  	list_add_rcu(&queue->entry, &gic->eq_list);
-> > @@ -507,7 +518,10 @@ static void mana_gd_deregiser_irq(struct gdma_queue *queue)
-> >  	if (WARN_ON(msix_index >= gc->num_msix_usable))
-> >  		return;
-> > 
-> > -	gic = &gc->irq_contexts[msix_index];
-> > +	gic = xa_load(&gc->irq_contexts, msix_index);
-> > +	if (!gic)
-> > +		return;
-> 
-> If xa_load() doesn't return a valid gic, it seems like that would warrant a
-> WARN_ON(), like the above case where the msix_index is out of range.
->
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: 990b5c07f677a0b633b41130a70771337c18343e  RDMA/bnxt_re: Fix return code of bnxt_re_configure_cc
 
-That makes sense, I will add this change
- 
-> > +
-> >  	spin_lock_irqsave(&gic->lock, flags);
-> >  	list_for_each_entry_rcu(eq, &gic->eq_list, entry) {
-> >  		if (queue == eq) {
-> > @@ -1329,29 +1343,96 @@ static int irq_setup(unsigned int *irqs, unsigned int len, int node,
-> >  	return 0;
-> >  }
-> > 
-> > -static int mana_gd_setup_irqs(struct pci_dev *pdev)
-> > +static int mana_gd_setup_dyn_irqs(struct pci_dev *pdev, int nvec)
-> >  {
-> >  	struct gdma_context *gc = pci_get_drvdata(pdev);
-> > -	unsigned int max_queues_per_port;
-> >  	struct gdma_irq_context *gic;
-> > -	unsigned int max_irqs, cpu;
-> > -	int start_irq_index = 1;
-> > -	int nvec, *irqs, irq;
-> > +	bool skip_first_cpu = false;
-> >  	int err, i = 0, j;
-> 
-> Initializing "i" to 0 is superfluous.  The "for" loop below does it.
->
+elapsed time: 1431m
 
-noted
- 
-> > +	int *irqs, irq;
-> > 
-> >  	cpus_read_lock();
-> > -	max_queues_per_port = num_online_cpus();
-> > -	if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
-> > -		max_queues_per_port = MANA_MAX_NUM_QUEUES;
-> > 
-> > -	/* Need 1 interrupt for the Hardware communication Channel (HWC) */
-> > -	max_irqs = max_queues_per_port + 1;
-> > +	irqs = kmalloc_array(nvec, sizeof(int), GFP_KERNEL);
-> > +	if (!irqs) {
-> > +		err = -ENOMEM;
-> > +		goto free_irq_vector;
-> > +	}
-> > 
-> > -	nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
-> > -	if (nvec < 0) {
-> > -		cpus_read_unlock();
-> > -		return nvec;
-> > +	for (i = 0; i < nvec; i++) {
-> > +		gic = kcalloc(1, sizeof(struct gdma_irq_context), GFP_KERNEL);
-> 
-> kcalloc() with a constant 1 first argument is a bit unusual. Just use kzalloc() since
-> there's no array here?
-> 
+configs tested: 182
+configs skipped: 4
 
-sure, will make this change
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> > +		if (!gic) {
-> > +			err = -ENOMEM;
-> > +			goto free_irq;
-> > +		}
-> > +		gic->handler = mana_gd_process_eq_events;
-> > +		INIT_LIST_HEAD(&gic->eq_list);
-> > +		spin_lock_init(&gic->lock);
-> > +
-> > +		snprintf(gic->name, MANA_IRQ_NAME_SZ, "mana_q%d@pci:%s",
-> > +			 i, pci_name(pdev));
-> > +
-> > +		/* one pci vector is already allocated for HWC */
-> > +		irqs[i] = pci_irq_vector(pdev, i + 1);
-> > +		if (irqs[i] < 0) {
-> > +			err = irqs[i];
-> > +			goto free_current_gic;
-> > +		}
-> > +
-> > +		err = request_irq(irqs[i], mana_gd_intr, 0, gic->name, gic);
-> > +		if (err)
-> > +			goto free_current_gic;
-> > +
-> > +		xa_store(&gc->irq_contexts, i + 1, gic, GFP_KERNEL);
-> >  	}
-> > +
-> > +	/*
-> > +	 * When calling irq_setup() for dynamically added IRQs, if number of
-> > +	 * CPUs is more than or equal to allocated MSI-X, we need to skip the
-> > +	 * first CPU sibling group since they are already affinitized to HWC IRQ
-> > +	 */
-> > +	if (gc->num_msix_usable <= num_online_cpus())
-> > +		skip_first_cpu = true;
-> > +
-> > +	err = irq_setup(irqs, nvec, gc->numa_node, skip_first_cpu);
-> > +	if (err)
-> > +		goto free_irq;
-> > +
-> > +	cpus_read_unlock();
-> > +	kfree(irqs);
-> > +	return 0;
-> > +
-> > +free_current_gic:
-> > +	kfree(gic);
-> > +free_irq:
-> 
-> In the error case, this label is reached with "i" in two possible
-> states. Case 1: It might be the index of the entry that failed due to
-> the "goto free_current_gic" statements.  Case 2: It might be the
-> index of one entry past all the successfully requested irqs, when the
-> failure occurs on irq_setup() and the code does "goto free_irq".
-> 
-> > +	for (j = i; j >= 0; j--) {
-> 
-> So the "for" loop starts with "j" set to an index that doesn't
-> exist (in Case 2 above), or an index that is only partially
-> complete (Case 1 above).
-> 
-> And actually, local variable "j" isn't needed for this loop.
-> It could just count down using "i".
-> 
-> > +		irq = pci_irq_vector(pdev, j);
-> 
-> This seems to be looking up the wrong irq vector. In the main
-> loop earlier, the index to pci_irq_vector() is "i + 1" but there's
-> no "+ 1" here.
-> 
-> > +		gic = xa_load(&gc->irq_contexts, j);
-> > +		if (!gic)
-> > +			continue;
-> 
-> So evidently it is expected that this xa_load() will fail
-> the first time through this "j" loop.  In Case 1, the xa_store()
-> was never done, and in Case 2, the index starts out one
-> too big.
-> 
-> > +
-> > +		irq_update_affinity_hint(irq, NULL);
-> > +		free_irq(irq, gic);
-> > +		xa_erase(&gc->irq_contexts, j);
-> > +		kfree(gic);
-> > +	}
-> 
-> Except for the wrong index to pci_irq_vector(), I think this works,
-> but it's a bit bizarre. More natural would be to initialize "j" to
-> "i - 1" so that the first iteration through the loop isn't degenerate.
-> In that case, all the calls to xa_load() should succeed, and you
-> might put a WARN_ON() if there's a failure.
->
+tested configs:
+alpha                             allnoconfig    gcc-14.2.0
+alpha                            allyesconfig    gcc-14.2.0
+arc                              allmodconfig    gcc-14.2.0
+arc                               allnoconfig    gcc-14.2.0
+arc                              allyesconfig    gcc-14.2.0
+arc                   randconfig-001-20250521    gcc-10.5.0
+arc                   randconfig-001-20250522    gcc-15.1.0
+arc                   randconfig-002-20250521    gcc-12.4.0
+arc                   randconfig-002-20250522    gcc-15.1.0
+arm                              allmodconfig    gcc-14.2.0
+arm                               allnoconfig    clang-21
+arm                              allyesconfig    gcc-14.2.0
+arm                          moxart_defconfig    gcc-14.2.0
+arm                            mps2_defconfig    clang-21
+arm                   randconfig-001-20250521    clang-21
+arm                   randconfig-001-20250522    clang-21
+arm                   randconfig-002-20250521    clang-21
+arm                   randconfig-002-20250522    clang-21
+arm                   randconfig-003-20250521    clang-16
+arm                   randconfig-003-20250522    clang-18
+arm                   randconfig-004-20250521    clang-21
+arm                   randconfig-004-20250522    gcc-7.5.0
+arm64                            allmodconfig    clang-19
+arm64                             allnoconfig    gcc-14.2.0
+arm64                 randconfig-001-20250521    gcc-6.5.0
+arm64                 randconfig-001-20250522    clang-21
+arm64                 randconfig-002-20250521    gcc-6.5.0
+arm64                 randconfig-002-20250522    gcc-7.5.0
+arm64                 randconfig-003-20250521    gcc-8.5.0
+arm64                 randconfig-003-20250522    clang-21
+arm64                 randconfig-004-20250521    gcc-8.5.0
+arm64                 randconfig-004-20250522    gcc-5.5.0
+csky                              allnoconfig    gcc-14.2.0
+csky                  randconfig-001-20250521    gcc-10.5.0
+csky                  randconfig-001-20250522    gcc-15.1.0
+csky                  randconfig-002-20250521    gcc-12.4.0
+csky                  randconfig-002-20250522    gcc-15.1.0
+hexagon                          allmodconfig    clang-17
+hexagon                           allnoconfig    clang-21
+hexagon                          allyesconfig    clang-21
+hexagon               randconfig-001-20250521    clang-20
+hexagon               randconfig-001-20250522    clang-17
+hexagon               randconfig-002-20250521    clang-21
+hexagon               randconfig-002-20250522    clang-21
+i386                             allmodconfig    gcc-12
+i386                              allnoconfig    gcc-12
+i386                             allyesconfig    gcc-12
+i386        buildonly-randconfig-001-20250521    clang-20
+i386        buildonly-randconfig-001-20250522    clang-20
+i386        buildonly-randconfig-002-20250521    clang-20
+i386        buildonly-randconfig-002-20250522    gcc-12
+i386        buildonly-randconfig-003-20250521    gcc-12
+i386        buildonly-randconfig-003-20250522    gcc-12
+i386        buildonly-randconfig-004-20250521    clang-20
+i386        buildonly-randconfig-004-20250522    gcc-12
+i386        buildonly-randconfig-005-20250521    gcc-12
+i386        buildonly-randconfig-005-20250522    gcc-12
+i386        buildonly-randconfig-006-20250521    gcc-12
+i386        buildonly-randconfig-006-20250522    clang-20
+i386                                defconfig    clang-20
+loongarch                        allmodconfig    gcc-14.2.0
+loongarch                         allnoconfig    gcc-14.2.0
+loongarch             randconfig-001-20250521    gcc-15.1.0
+loongarch             randconfig-001-20250522    gcc-15.1.0
+loongarch             randconfig-002-20250521    gcc-14.2.0
+loongarch             randconfig-002-20250522    gcc-15.1.0
+m68k                             allmodconfig    gcc-14.2.0
+m68k                              allnoconfig    gcc-14.2.0
+m68k                             allyesconfig    gcc-14.2.0
+m68k                       m5275evb_defconfig    gcc-14.2.0
+m68k                        m5307c3_defconfig    gcc-14.2.0
+microblaze                       allmodconfig    gcc-14.2.0
+microblaze                        allnoconfig    gcc-14.2.0
+microblaze                       allyesconfig    gcc-14.2.0
+mips                              allnoconfig    gcc-14.2.0
+mips                   sb1250_swarm_defconfig    gcc-14.2.0
+nios2                             allnoconfig    gcc-14.2.0
+nios2                 randconfig-001-20250521    gcc-14.2.0
+nios2                 randconfig-001-20250522    gcc-9.3.0
+nios2                 randconfig-002-20250521    gcc-14.2.0
+nios2                 randconfig-002-20250522    gcc-9.3.0
+openrisc                          allnoconfig    gcc-14.2.0
+openrisc                         allyesconfig    gcc-14.2.0
+openrisc                            defconfig    gcc-14.2.0
+parisc                           allmodconfig    gcc-14.2.0
+parisc                            allnoconfig    gcc-14.2.0
+parisc                           allyesconfig    gcc-14.2.0
+parisc                              defconfig    gcc-14.2.0
+parisc                randconfig-001-20250521    gcc-13.3.0
+parisc                randconfig-001-20250522    gcc-6.5.0
+parisc                randconfig-002-20250521    gcc-11.5.0
+parisc                randconfig-002-20250522    gcc-12.4.0
+powerpc                          allmodconfig    gcc-14.2.0
+powerpc                           allnoconfig    gcc-14.2.0
+powerpc                          allyesconfig    clang-21
+powerpc                 canyonlands_defconfig    clang-21
+powerpc                       ebony_defconfig    clang-21
+powerpc                        fsp2_defconfig    gcc-14.2.0
+powerpc                          g5_defconfig    gcc-14.2.0
+powerpc                 linkstation_defconfig    clang-20
+powerpc                   motionpro_defconfig    clang-21
+powerpc                      ppc64e_defconfig    gcc-14.2.0
+powerpc               randconfig-001-20250521    clang-21
+powerpc               randconfig-001-20250522    gcc-9.3.0
+powerpc               randconfig-002-20250521    gcc-8.5.0
+powerpc               randconfig-002-20250522    clang-21
+powerpc               randconfig-003-20250521    gcc-6.5.0
+powerpc               randconfig-003-20250522    gcc-7.5.0
+powerpc                        warp_defconfig    gcc-14.2.0
+powerpc64             randconfig-001-20250521    gcc-8.5.0
+powerpc64             randconfig-001-20250522    clang-21
+powerpc64             randconfig-002-20250521    gcc-6.5.0
+powerpc64             randconfig-002-20250522    gcc-10.5.0
+powerpc64             randconfig-003-20250521    clang-21
+powerpc64             randconfig-003-20250522    gcc-7.5.0
+riscv                            allmodconfig    clang-21
+riscv                             allnoconfig    gcc-14.2.0
+riscv                            allyesconfig    clang-16
+riscv                               defconfig    clang-21
+riscv                 randconfig-001-20250521    gcc-8.5.0
+riscv                 randconfig-001-20250522    gcc-9.3.0
+riscv                 randconfig-002-20250521    gcc-8.5.0
+riscv                 randconfig-002-20250522    clang-18
+s390                             allmodconfig    clang-18
+s390                              allnoconfig    clang-21
+s390                             allyesconfig    gcc-14.2.0
+s390                                defconfig    clang-21
+s390                  randconfig-001-20250521    clang-20
+s390                  randconfig-001-20250522    clang-19
+s390                  randconfig-002-20250521    clang-21
+s390                  randconfig-002-20250522    clang-18
+s390                       zfcpdump_defconfig    clang-21
+sh                               allmodconfig    gcc-14.2.0
+sh                                allnoconfig    gcc-14.2.0
+sh                               allyesconfig    gcc-14.2.0
+sh                                  defconfig    gcc-14.2.0
+sh                    randconfig-001-20250521    gcc-12.4.0
+sh                    randconfig-001-20250522    gcc-13.3.0
+sh                    randconfig-002-20250521    gcc-15.1.0
+sh                    randconfig-002-20250522    gcc-13.3.0
+sparc                            allmodconfig    gcc-14.2.0
+sparc                             allnoconfig    gcc-14.2.0
+sparc                 randconfig-001-20250521    gcc-13.3.0
+sparc                 randconfig-001-20250522    gcc-14.2.0
+sparc                 randconfig-002-20250521    gcc-13.3.0
+sparc                 randconfig-002-20250522    gcc-6.5.0
+sparc64                             defconfig    gcc-14.2.0
+sparc64               randconfig-001-20250521    gcc-13.3.0
+sparc64               randconfig-001-20250522    gcc-14.2.0
+sparc64               randconfig-002-20250521    gcc-13.3.0
+sparc64               randconfig-002-20250522    gcc-12.4.0
+um                               allmodconfig    clang-19
+um                                allnoconfig    clang-21
+um                               allyesconfig    gcc-12
+um                                  defconfig    clang-21
+um                             i386_defconfig    gcc-12
+um                    randconfig-001-20250521    clang-21
+um                    randconfig-001-20250522    gcc-12
+um                    randconfig-002-20250521    clang-21
+um                    randconfig-002-20250522    gcc-12
+um                           x86_64_defconfig    clang-21
+x86_64                            allnoconfig    clang-20
+x86_64                           allyesconfig    clang-20
+x86_64      buildonly-randconfig-001-20250521    clang-20
+x86_64      buildonly-randconfig-001-20250522    clang-20
+x86_64      buildonly-randconfig-002-20250521    clang-20
+x86_64      buildonly-randconfig-002-20250522    gcc-12
+x86_64      buildonly-randconfig-003-20250521    gcc-12
+x86_64      buildonly-randconfig-003-20250522    gcc-12
+x86_64      buildonly-randconfig-004-20250521    gcc-12
+x86_64      buildonly-randconfig-004-20250522    gcc-12
+x86_64      buildonly-randconfig-005-20250521    clang-20
+x86_64      buildonly-randconfig-005-20250522    gcc-12
+x86_64      buildonly-randconfig-006-20250521    clang-20
+x86_64      buildonly-randconfig-006-20250522    gcc-12
+x86_64                              defconfig    gcc-11
+x86_64                          rhel-9.4-rust    clang-18
+xtensa                            allnoconfig    gcc-14.2.0
+xtensa                randconfig-001-20250521    gcc-15.1.0
+xtensa                randconfig-001-20250522    gcc-14.2.0
+xtensa                randconfig-002-20250521    gcc-15.1.0
+xtensa                randconfig-002-20250522    gcc-10.5.0
 
-Okay, I think I get your point. Let me try to make this error handling
-more intuitive and straight forward.
- 
-> > +	kfree(irqs);
-> > +free_irq_vector:
-> > +	cpus_read_unlock();
-> > +	return err;
-> > +}
-> > +
-> > +static int mana_gd_setup_irqs(struct pci_dev *pdev, int nvec)
-> > +{
-> > +	struct gdma_context *gc = pci_get_drvdata(pdev);
-> > +	struct gdma_irq_context *gic;
-> > +	int start_irq_index = 1;
-> > +	unsigned int cpu;
-> > +	int *irqs, irq;
-> > +	int err, i = 0, j;
-> 
-> Initializing "i" to 0 is superfluous.
-> 
-
-Noted
-
-> > +
-> > +	cpus_read_lock();
-> > +
-> >  	if (nvec <= num_online_cpus())
-> >  		start_irq_index = 0;
-> > 
-> > @@ -1361,15 +1442,13 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
-> >  		goto free_irq_vector;
-> >  	}
-> > 
-> > -	gc->irq_contexts = kcalloc(nvec, sizeof(struct gdma_irq_context),
-> > -				   GFP_KERNEL);
-> > -	if (!gc->irq_contexts) {
-> > -		err = -ENOMEM;
-> > -		goto free_irq_array;
-> > -	}
-> > -
-> >  	for (i = 0; i < nvec; i++) {
-> > -		gic = &gc->irq_contexts[i];
-> > +		gic = kcalloc(1, sizeof(struct gdma_irq_context), GFP_KERNEL);
-> 
-> kcalloc() with a constant 1 first argument is a bit unusual. Just use kzalloc() since
-> there's no array here?
->
-
-noted
- 
-> > +		if (!gic) {
-> > +			err = -ENOMEM;
-> > +			goto free_irq;
-> > +		}
-> > +
-> >  		gic->handler = mana_gd_process_eq_events;
-> >  		INIT_LIST_HEAD(&gic->eq_list);
-> >  		spin_lock_init(&gic->lock);
-> > @@ -1384,13 +1463,13 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
-> >  		irq = pci_irq_vector(pdev, i);
-> >  		if (irq < 0) {
-> >  			err = irq;
-> > -			goto free_irq;
-> > +			goto free_current_gic;
-> >  		}
-> > 
-> >  		if (!i) {
-> >  			err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
-> >  			if (err)
-> > -				goto free_irq;
-> > +				goto free_current_gic;
-> > 
-> >  			/* If number of IRQ is one extra than number of online CPUs,
-> >  			 * then we need to assign IRQ0 (hwc irq) and IRQ1 to
-> > @@ -1408,39 +1487,110 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
-> >  			}
-> >  		} else {
-> >  			irqs[i - start_irq_index] = irq;
-> > -			err = request_irq(irqs[i - start_irq_index], mana_gd_intr, 0,
-> > -					  gic->name, gic);
-> > +			err = request_irq(irqs[i - start_irq_index],
-> > +					  mana_gd_intr, 0, gic->name, gic);
-> >  			if (err)
-> > -				goto free_irq;
-> > +				goto free_current_gic;
-> >  		}
-> > +
-> > +		xa_store(&gc->irq_contexts, i, gic, GFP_KERNEL);
-> >  	}
-> 
-> FWIW, I think all this logic around "start_irq_index" could be simplified,
-> though I haven't worked through the details. If it would simplify the code,
-> it would be fine to allocate the "irqs" array with one extra entry that is unused
-> if IRQ0 and IRQ1 use the same CPUs.
->
-
-Sure, let me try that
- 
-> > 
-> >  	err = irq_setup(irqs, (nvec - start_irq_index), gc->numa_node, false);
-> >  	if (err)
-> >  		goto free_irq;
-> > 
-> > -	gc->max_num_msix = nvec;
-> > -	gc->num_msix_usable = nvec;
-> >  	cpus_read_unlock();
-> >  	kfree(irqs);
-> >  	return 0;
-> > 
-> > +free_current_gic:
-> > +	kfree(gic);
-> >  free_irq:
-> >  	for (j = i - 1; j >= 0; j--) {
-> 
-> In this case j is initialized to i - 1, which is what I expected in 
-> the previous case.
-> 
-> Again, this loop could just countdown using "i" instead of
-> introducing "j".
-> 
-> >  		irq = pci_irq_vector(pdev, j);
-> > -		gic = &gc->irq_contexts[j];
-> > +		gic = xa_load(&gc->irq_contexts, j);
-> > +		if (!gic)
-> > +			continue;
-> 
-> Failure to get a valid gic should never happen, so perhaps a WARN_ON()
-> is appropriate.
->
-
-noted
- 
-> > 
-> >  		irq_update_affinity_hint(irq, NULL);
-> >  		free_irq(irq, gic);
-> > +		xa_erase(&gc->irq_contexts, j);
-> > +		kfree(gic);
-> >  	}
-> > 
-> > -	kfree(gc->irq_contexts);
-> > -	gc->irq_contexts = NULL;
-> > -free_irq_array:
-> >  	kfree(irqs);
-> >  free_irq_vector:
-> > +	xa_destroy(&gc->irq_contexts);
-> 
-> This seems like the wrong place to be doing xa_destroy(). It leads
-> to inconsistencies. For example, if mana_gd_setup_hwc_irqs()
-> fails, it may have failed before calling mana_gd_setup_irqs(), in
-> which case the xa_destroy() is not done. Or if the failure occurred here
-> in mana_gd_setup_irqs(), then xa_destroy() will have been done.
-> Ideally, the xa_destroy() for error cases could be done in
-> mana_gd_probe() where the xa_init() is done so that the calls match
-> up, and of course in mana_gd_remove() when the device goes away
-> entirely.
->
-
-I agree, I'll fix this
- 
-> >  	cpus_read_unlock();
-> > -	pci_free_irq_vectors(pdev);
-> > +	return err;
-> > +}
-> > +
-> > +static int mana_gd_setup_hwc_irqs(struct pci_dev *pdev)
-> > +{
-> > +	struct gdma_context *gc = pci_get_drvdata(pdev);
-> > +	unsigned int max_irqs, min_irqs;
-> > +	int max_queues_per_port;
-> > +	int nvec, err;
-> > +
-> > +	if (pci_msix_can_alloc_dyn(pdev)) {
-> > +		max_irqs = 1;
-> > +		min_irqs = 1;
-> > +	} else {
-> > +		max_queues_per_port = num_online_cpus();
-> > +		if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
-> > +			max_queues_per_port = MANA_MAX_NUM_QUEUES;
-> > +		/* Need 1 interrupt for HWC */
-> > +		max_irqs = max_queues_per_port + 1;
-> 
-> This code is simply being copied from existing code, but it would be nicer to
-> code it as:
-> 
-> 		max_irqs = min(num_online_cpus(), MANA_MAX_NUM_QUEUES) + 1; 
-> 
-> Explicitly using the "min" function reduces the cognitive effort to parse
-> the "if" statement and figure out that it is picking the minimum of the two
-> values. And the local variable max_queues_per_port can be dropped, but
-> keep the comment :-)
-> 
-
-noted
-
-> > +		min_irqs = 2;
-> > +	}
-> > +
-> > +	nvec = pci_alloc_irq_vectors(pdev, min_irqs, max_irqs, PCI_IRQ_MSIX);
-> > +	if (nvec < 0)
-> > +		return nvec;
-> > +
-> > +	err = mana_gd_setup_irqs(pdev, nvec);
-> > +	if (err) {
-> > +		pci_free_irq_vectors(pdev);
-> > +		return err;
-> > +	}
-> > +
-> > +	gc->num_msix_usable = nvec;
-> > +	gc->max_num_msix = nvec;
-> > +
-> > +	return err;
-> 
-> "err" should always be zero at this point, so could do "return 0"
->
-
-noted
- 
-> > +}
-> > +
-> > +static int mana_gd_setup_remaining_irqs(struct pci_dev *pdev)
-> > +{
-> > +	struct gdma_context *gc = pci_get_drvdata(pdev);
-> > +	int max_irqs, i, err = 0;
-> > +	struct msi_map irq_map;
-> > +
-> > +	if (!pci_msix_can_alloc_dyn(pdev))
-> > +		/* remain irqs are already allocated with HWC IRQ */
-> > +		return 0;
-> > +
-> > +	/* allocate only remaining IRQs*/
-> > +	max_irqs = gc->num_msix_usable - 1;
-> > +
-> > +	for (i = 1; i <= max_irqs; i++) {
-> > +		irq_map = pci_msix_alloc_irq_at(pdev, i, NULL);
-> > +		if (!irq_map.virq) {
-> > +			err = irq_map.index;
-> > +			/* caller will handle cleaning up all allocated
-> > +			 * irqs, after HWC is destroyed
-> > +			 */
-> > +			return err;
-> > +		}
-> > +	}
-> > +
-> > +	err = mana_gd_setup_dyn_irqs(pdev, max_irqs);
-> > +	if (err)
-> > +		return err;
-> > +
-> > +	gc->max_num_msix = gc->max_num_msix + max_irqs;
-> > +
-> >  	return err;
-> 
-> Again, err must always be zero here.
-> 
-> >  }
-> > 
-> > @@ -1458,19 +1608,22 @@ static void mana_gd_remove_irqs(struct pci_dev *pdev)
-> >  		if (irq < 0)
-> >  			continue;
-> > 
-> > -		gic = &gc->irq_contexts[i];
-> > +		gic = xa_load(&gc->irq_contexts, i);
-> > +		if (!gic)
-> > +			continue;
-> > 
-> >  		/* Need to clear the hint before free_irq */
-> >  		irq_update_affinity_hint(irq, NULL);
-> >  		free_irq(irq, gic);
-> > +		xa_erase(&gc->irq_contexts, i);
-> > +		kfree(gic);
-> >  	}
-> > 
-> >  	pci_free_irq_vectors(pdev);
-> > 
-> >  	gc->max_num_msix = 0;
-> >  	gc->num_msix_usable = 0;
-> > -	kfree(gc->irq_contexts);
-> > -	gc->irq_contexts = NULL;
-> > +	xa_destroy(&gc->irq_contexts);
-> 
-> As noted above, I'm doubtful about this being the right place to do
-> xa_destroy().
-> 
-> >  }
-> > 
-> >  static int mana_gd_setup(struct pci_dev *pdev)
-> > @@ -1481,9 +1634,10 @@ static int mana_gd_setup(struct pci_dev *pdev)
-> >  	mana_gd_init_registers(pdev);
-> >  	mana_smc_init(&gc->shm_channel, gc->dev, gc->shm_base);
-> > 
-> > -	err = mana_gd_setup_irqs(pdev);
-> > +	err = mana_gd_setup_hwc_irqs(pdev);
-> >  	if (err) {
-> > -		dev_err(gc->dev, "Failed to setup IRQs: %d\n", err);
-> > +		dev_err(gc->dev, "Failed to setup IRQs for HWC creation: %d\n",
-> > +			err);
-> >  		return err;
-> >  	}
-> > 
-> > @@ -1499,6 +1653,12 @@ static int mana_gd_setup(struct pci_dev *pdev)
-> >  	if (err)
-> >  		goto destroy_hwc;
-> > 
-> > +	err = mana_gd_setup_remaining_irqs(pdev);
-> > +	if (err) {
-> > +		dev_err(gc->dev, "Failed to setup remaining IRQs: %d", err);
-> > +		goto destroy_hwc;
-> > +	}
-> > +
-> >  	err = mana_gd_detect_devices(pdev);
-> >  	if (err)
-> >  		goto destroy_hwc;
-> > @@ -1575,6 +1735,7 @@ static int mana_gd_probe(struct pci_dev *pdev, const struct
-> > pci_device_id *ent)
-> >  	gc->is_pf = mana_is_pf(pdev->device);
-> >  	gc->bar0_va = bar0_va;
-> >  	gc->dev = &pdev->dev;
-> > +	xa_init(&gc->irq_contexts);
-> > 
-> >  	if (gc->is_pf)
-> >  		gc->mana_pci_debugfs = debugfs_create_dir("0", mana_debugfs_root);
-> > diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-> > index 228603bf03f2..f20d1d1ea5e8 100644
-> > --- a/include/net/mana/gdma.h
-> > +++ b/include/net/mana/gdma.h
-> > @@ -373,7 +373,7 @@ struct gdma_context {
-> >  	unsigned int		max_num_queues;
-> >  	unsigned int		max_num_msix;
-> >  	unsigned int		num_msix_usable;
-> > -	struct gdma_irq_context	*irq_contexts;
-> > +	struct xarray		irq_contexts;
-> > 
-> >  	/* L2 MTU */
-> >  	u16 adapter_mtu;
-> > @@ -558,12 +558,16 @@ enum {
-> >  /* Driver can handle holes (zeros) in the device list */
-> >  #define GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP BIT(11)
-> > 
-> > +/* Driver supports dynamic MSI-X vector allocation */
-> > +#define GDMA_DRV_CAP_FLAG_1_DYNAMIC_IRQ_ALLOC_SUPPORT BIT(13)
-> > +
-> >  #define GDMA_DRV_CAP_FLAGS1 \
-> >  	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
-> >  	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
-> >  	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG | \
-> >  	 GDMA_DRV_CAP_FLAG_1_VARIABLE_INDIRECTION_TABLE_SUPPORT | \
-> > -	 GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP)
-> > +	 GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP | \
-> > +	 GDMA_DRV_CAP_FLAG_1_DYNAMIC_IRQ_ALLOC_SUPPORT)
-> > 
-> >  #define GDMA_DRV_CAP_FLAGS2 0
-> > 
-> > --
-> > 2.34.1
-> > 
-> 
-
-Thanks for all the comments Michael, I will have them all incorporated
-in the next version.
-
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
