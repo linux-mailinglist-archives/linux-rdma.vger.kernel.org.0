@@ -1,122 +1,120 @@
-Return-Path: <linux-rdma+bounces-10576-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10577-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85919AC174F
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 May 2025 01:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AC913AC1752
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 May 2025 01:08:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC2131BC268C
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 23:08:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 173861B6328D
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 23:09:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB4062C2AA9;
-	Thu, 22 May 2025 23:07:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA9092C1799;
+	Thu, 22 May 2025 23:08:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dN0xssO/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mmHiDINk"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B1002C0337
-	for <linux-rdma@vger.kernel.org>; Thu, 22 May 2025 23:07:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E5222C1785;
+	Thu, 22 May 2025 23:08:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747955241; cv=none; b=KLVY8PW1DrHEst3zLOArpAbPuV9NcJcqGGmgTvKjl7WClBDfb93lgjG9VD3QATP7AIFzMJ1RpDyoUrWtAsTx8/A62+kUihRQiAbiQuoh93jXu8IWHvY++0uQ/EUo+Tmo2xUwpxZKv2CbqFPHtWfYHqT5gbiz/Pr8FQw0sLLwIVI=
+	t=1747955329; cv=none; b=YYuF8AJSNVHcyB/2CR9tNvZDadUpSHpGuuc8pN8neuainFVDj4ba8aXp0J+fJ66rdZ0Pe9KGWC6EABdKBgExqihWUekogtboeF3ZNOGH3gMMeRerh0cG/A28GI1zVqRSG8YvPEzw52aP2LaNfBJe4AigpFCuu0XdUgiNWjn/WkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747955241; c=relaxed/simple;
-	bh=9k3VME5bwvvpc/ullR/HlyYZhFldfmD97iNNOe9Kyvw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Nk+qV5LlvAEkVmD7wUQRQTxRyOisOAyXjxUCpEMuM/OlkVbfJnhZdh3VvtxcKDnvHpv1u3ae8lGUqQIOYB2Wq9X5UCB2eyTvcqmXfF9x0KIBDGzpGWwuVQreI8GTufZdlXlJevl2xebdDYPfQW4f6Q4vHTYJArkhhIYnCWKqCaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dN0xssO/; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-231ba6da557so42595ad.1
-        for <linux-rdma@vger.kernel.org>; Thu, 22 May 2025 16:07:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1747955239; x=1748560039; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9k3VME5bwvvpc/ullR/HlyYZhFldfmD97iNNOe9Kyvw=;
-        b=dN0xssO/yLKwBNBu/SpBp4hXBIjmC+ZgcbRmx2yK8CwMpMdU4rfSrAQm9lsNuLZw08
-         GKKFiSQl+b8yjPCaSra2AaVJl6AK9JzKaN6v/H5VRAgtBDX0q0TFAmGaZaczBFoiP0Pw
-         6P4RjCXA4luqZZrng/F8hBd/PsD5lCZ+EGoNlsD4r50kttqAz5RCwq56OpCbfJ6Nj8YZ
-         r4O+pOQkE8Y3XeGaD508x1RSzObtL1aM8k5EZQIvzjS6dUhkV7vwHI95aRmo6823/svr
-         u0OjCJw2x92eVpVA7QznywEvIJsGEspC1ptM16+eUdSnvIO+epRIL8ZaZ6tsIuNM6SyN
-         UBSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747955239; x=1748560039;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9k3VME5bwvvpc/ullR/HlyYZhFldfmD97iNNOe9Kyvw=;
-        b=Aq7ojqZrFZlpyt88hQFHN4xajWTOOsnNRwTBk9e50xBtUhzUAivRFnVzs8w8NGMnbi
-         jxVrxNkSQRDmLrQZbE7k2q1edQ3KP8qi+hCw0qkEpcc3h7UrCvf3VQ0whKWLMBzN7Vyh
-         wKilq5yvuSX0Q0NcCB6AvwyyvAeNW04wCam0HpKOmaUKrWgI07FymfY4nxyZQjCmflfi
-         AzfH5A3CkrfJ6xKE7GLNxFIHaTkBp7+cjgfLtiYZ/Gn6IiepznmCo8+y/Bw9mL70ITFG
-         WcLK5PIjCcuGCbXxWqat2gSsQTd4P5z/woSrX4Qc8O5cB0wE3SMYZGyBa6w6ZaU8zwQJ
-         3W9g==
-X-Forwarded-Encrypted: i=1; AJvYcCWUvmI8/emW5Pto3rBY942C7OW7/3xygoYb3a5M0jQAnaULXiDeRwpFVYMb2UGTmXHzGBj/vwODRrXB@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzr/kxXcy7OFsqELQaUuhc6TXA2A6sWaS4J6N7vfIF+QI2GN/gu
-	QhHCE1A5W23RqKgRvgs4Z+W7BKTZbkej3BeaB3eRCRbaG8NT8CffxssOAuIKOz9eAKn1eBwXiJY
-	/rrRt8e0x6iO6F6PGnDe9rDsvMIYh521u0Gyqa1aO
-X-Gm-Gg: ASbGncuuJTCA0pbUUcqe0GhIWvZc8Rzo8EEN2bbXs3ho3Y4TrQfTtjfzs2bYz42xd9r
-	Oupe2kyGL/UYnI0s79d9gal6lC43opR3SU/0UNFeT7bL2xTXHux3d1xuGZ31Vkab7ylMPjMWjV/
-	AQPKeci9GoaqE1MkHD5Hzdiuv6dkUuA1v+bm+F/9yaNyhcQUOi2OGoOn7tsJbxg6MV2T3avf9vQ
-	A==
-X-Google-Smtp-Source: AGHT+IHU4w0zFDczr9krT/bEYfz6eUrChXM9C2DLD3YJztsZ4hg5mbDDQkqfKBOb6e0hru6SRzufp2/mwXiVYMr87dI=
-X-Received: by 2002:a17:903:2f82:b0:21f:631c:7fc9 with SMTP id
- d9443c01a7336-233f2f5c39amr718885ad.0.1747955238967; Thu, 22 May 2025
- 16:07:18 -0700 (PDT)
+	s=arc-20240116; t=1747955329; c=relaxed/simple;
+	bh=QEfzR85v3/zt/zSaAzV3QJxBJhSb+tSKSnYDT1H9gRU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ftIZHjudpWMRxZOnMVy+TqZu/6RvzSsks9nBBzp+m1OsHtML4FwKZaCPuQ+iGrz6d+WOCFsaA+igtQmoDhTunzUkjW9/rWBe/iTkE0kLgN9hfhj5brkJLhd+43KVyKQL5dwLw+/cwAb59W0Vncks7FQwQXMoyaQZBR04iLjVhiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mmHiDINk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C3F9C4CEE4;
+	Thu, 22 May 2025 23:08:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747955329;
+	bh=QEfzR85v3/zt/zSaAzV3QJxBJhSb+tSKSnYDT1H9gRU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mmHiDINk5eItvcBw97SzWVJ8AsXlYnNR5JAnDXvufgHF4fyJRSk7jz7TvBR6UULWk
+	 /dEEt0XggvxEPutVz7brT58vUiiS1pZSienyjNXd0mpspgZ80rwl+N8Sn2LqGh7wTp
+	 FuO9pRw5ZpMRbzBP/sJGcVRJbheY4zWTzhI3t7rG1C6l9UdyS1OdZPCYrviVqNwuWe
+	 1kxdLD2tbzUqUOCgLnOWQ66gYNyWgxIxaDX87rvW7+CNksz1PG4cGkZ7VGsvALx8x4
+	 JQ3dQ5OLDnVDmm+Etxp6tAX94j6p0d+YE5cSfRWSTlocJSxk1o1YnHLNMjD6/qe8qz
+	 aRjzdVvDTKSEw==
+Date: Thu, 22 May 2025 16:08:48 -0700
+From: Saeed Mahameed <saeed@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Tariq Toukan <tariqt@nvidia.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, Moshe Shemesh <moshe@nvidia.com>,
+	Mark Bloch <mbloch@nvidia.com>, Gal Pressman <gal@nvidia.com>,
+	Cosmin Ratiu <cratiu@nvidia.com>,
+	Dragos Tatulea <dtatulea@nvidia.com>
+Subject: Re: [PATCH net-next V2 06/11] net/mlx5e: SHAMPO: Separate pool for
+ headers
+Message-ID: <aC-ugDzGHB_WqKew@x130>
+References: <1747950086-1246773-1-git-send-email-tariqt@nvidia.com>
+ <1747950086-1246773-7-git-send-email-tariqt@nvidia.com>
+ <20250522153013.62ac43be@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1747950086-1246773-1-git-send-email-tariqt@nvidia.com> <1747950086-1246773-2-git-send-email-tariqt@nvidia.com>
-In-Reply-To: <1747950086-1246773-2-git-send-email-tariqt@nvidia.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Thu, 22 May 2025 16:07:05 -0700
-X-Gm-Features: AX0GCFtg6n-BJbnwZ4ncUt-OvxE-HSzTGHOggSVSO4oEhmp8jL0GlZSc61OGYLI
-Message-ID: <CAHS8izMANyVqznTjt_3qkcUdpbT96FK=m6Hc6AU4WGqhyq7zmQ@mail.gmail.com>
-Subject: Re: [PATCH net-next V2 01/11] net: Kconfig NET_DEVMEM selects GENERIC_ALLOCATOR
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, Saeed Mahameed <saeedm@nvidia.com>, 
-	Leon Romanovsky <leon@kernel.org>, Richard Cochran <richardcochran@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	Moshe Shemesh <moshe@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Gal Pressman <gal@nvidia.com>, 
-	Cosmin Ratiu <cratiu@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20250522153013.62ac43be@kernel.org>
 
-On Thu, May 22, 2025 at 2:43=E2=80=AFPM Tariq Toukan <tariqt@nvidia.com> wr=
-ote:
+On 22 May 15:30, Jakub Kicinski wrote:
+>On Fri, 23 May 2025 00:41:21 +0300 Tariq Toukan wrote:
+>> Allocate a separate page pool for headers when SHAMPO is enabled.
+>> This will be useful for adding support to zc page pool, which has to be
+>> different from the headers page pool.
 >
-> From: Saeed Mahameed <saeedm@nvidia.com>
->
-> GENERIC_ALLOCATOR is a non-prompt kconfig, meaning users can't enable it
-> selectively. All kconfig users of GENERIC_ALLOCATOR select it, except of
-> NET_DEVMEM which only depends on it, there is no easy way to turn
-> GENERIC_ALLOCATOR on unless we select other unnecessary configs that
-> will select it.
->
-> Instead of depending on it, select it when NET_DEVMEM is enabled.
->
-> Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
-> Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
-> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+>Could you explain why always allocate a separate pool?
 
-Reviewed-by: Mina Almasry <almasrymina@google.com>
+Better flow management, 0 conditional code on data path to alloc/return
+header buffers, since in mlx5 we already have separate paths to handle
+header, we don't have/need bnxt_separate_head_pool() and
+rxr->need_head_pool spread across the code.. 
 
+Since we alloc and return pages in bulks, it makes more sense to manage
+headers and data in separate pools if we are going to do it anyway for 
+"undreadable_pools", and when there's no performance impact.
 
---=20
-Thanks,
-Mina
+>For bnxt we do it only if ZC is enabled (or system pages are large),
+>see bnxt_separate_head_pool() and page_pool_is_unreadable().
+>
+>Not sure if page_pool_is_unreadable() existed when this code
+>was written.
+>
+>> -	wq_size = BIT(MLX5_GET(wq, wqc, log_wq_sz));
+>> -	*pool_size += (rq->mpwqe.shampo->hd_per_wqe * wq_size) /
+>> -		     MLX5E_SHAMPO_WQ_HEADER_PER_PAGE;
+>> +
+>> +	/* separate page pool for shampo headers */
+>> +	{
+>> +		int wq_size = BIT(MLX5_GET(wq, wqc, log_wq_sz));
+>> +		struct page_pool_params pp_params = { };
+>> +		u32 pool_size;
+>
+>A free standing code block? I this it's universally understood
+>to be very poor coding style..
+>
+
+Sure if used excessively and incorrectly. Here it's only used for temporary
+variable scoping. I don't think there is anything wrong with free-standing
+blocks when used in the proper situations.
+
 
