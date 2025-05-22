@@ -1,94 +1,95 @@
-Return-Path: <linux-rdma+bounces-10546-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10547-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 664FEAC10A3
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 18:03:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66EEFAC10B8
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 18:07:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99B851BC77B7
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 16:03:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D20717EACE
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 16:07:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE89F299AB9;
-	Thu, 22 May 2025 16:03:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47D50299ABC;
+	Thu, 22 May 2025 16:07:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Xa8FIgBb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VQfg1Ras"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D2F28DB74;
-	Thu, 22 May 2025 16:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0690F19F461
+	for <linux-rdma@vger.kernel.org>; Thu, 22 May 2025 16:07:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747929781; cv=none; b=bAiheDsKn2fo81PO0hxy3Sr9eTI55n0weyp/eoe43+NAj1qEROwpqTTaYWoHjcK0+D+bdl7iyUPtJ4dP6W+TGrQLaly6bRtiCsN8zh0nmWaDxdAktCSOsFInArLeWENhbwnHPd6XP2qUhhKcTW25Ka6gfmPECrQ/hVCfbhNjI0E=
+	t=1747930031; cv=none; b=V0QVTv9Lsq0nJC/OsEhTi1bInx67ib1SyjKMNXNxXwTUsit5ORY8+uDyoQk2BvrWtYWFT+kTOb6/K67oSlGl7jLb1CnSnOAaDNhag7eeCOPKJ8b/dc6RfG/6kxusA2JaAfNsXFZcaxAvTvBzJI0daSLpzolWepE42Tg/gCvhwd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747929781; c=relaxed/simple;
-	bh=D6ravmCBSVatM9FHIJ31YvtkmOKYHcAxJeudYDVHco0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ruav0ADPSUP9yvgC+5pWkYvfgF3T2/W+WdQsKf/KHDUprwrqe/0dAvkA/sDIgDaCy3uoIPR280t/TGxuVBa5eKzEpIreFKV+1DmCf1x5XCNRbtLVLQfDAH8N0t6k042rsakDSMZY0yE9IXQtqyFOij6VP/3oov/MOvm4EUXXZ7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Xa8FIgBb; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=F1dsqNtUuf3M8zsJPk5NeexiAp4QTOkB320yTzwQKvE=; b=Xa8FIgBbD9AdgAGgb4A3Lh5FOo
-	iTWFgJa73bwF7+u4DtMq8KNBzMOOXxXecUU6RmfVxKjqxaov+u2pNaqITKhYoOuPOwbG6FvQscNUx
-	mNzi3zEs2nG0pE+iU9GfhLgYpY3p3Sz723VAUdhEeqlnX5f6U3K0zxLInQR9Mdtt+ML+xDk1f3yN1
-	pAZJn/6tbA3invnvxWWeBKTDJEPiQIAMmFGRzsx2jStPCP2D4uzvSG7cFKBQRffnCvFDV+s9X+ycZ
-	JPPxbONXG0fR31rAGYqZIaCB4GprbYFq9OWKodFYIdm3xk8wyvvyt15GuBv+MF3ecLTk3kCRl++yU
-	DEd7neXA==;
-Received: from [50.53.25.54] (helo=[192.168.254.17])
-	by desiato.infradead.org with esmtpsa (Exim 4.98.1 #2 (Red Hat Linux))
-	id 1uI8Nd-000000013Ap-06Vh;
-	Thu, 22 May 2025 16:02:49 +0000
-Message-ID: <0a9c4d5a-a84c-420c-a781-84b18e90d34a@infradead.org>
-Date: Thu, 22 May 2025 09:02:44 -0700
+	s=arc-20240116; t=1747930031; c=relaxed/simple;
+	bh=HmIwLBR/xjGkOHwjxtfpmMduSM1bmHBLMW3jQbMev3g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LDOI42ZYLWimmlHNUV6tLZZh6Rcd41qErcYNLSRKAQpQIOcjSn0B0yfJlgFr61tVY5MdVN3rmRQy5SD0zK7YUOtLK2prRMQSLFoQvI7jBXbr6hv+x0umCzPpWvmJs9CNNTJfrlvbOf4MDD9aO/2Sj0pVlYSh1tVeahSmGPcsznA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VQfg1Ras; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 774E4C4CEEA;
+	Thu, 22 May 2025 16:07:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747930029;
+	bh=HmIwLBR/xjGkOHwjxtfpmMduSM1bmHBLMW3jQbMev3g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VQfg1RasaK/4jtJfURbJEAXazBv0E2vQ9lDI7jvAwo907IGIi62hkT/V7/oDag8ar
+	 z7qTce2reMV9g9HtYaga7lVjMiDArD6SQR822j+/AFnXhcb8CK33d+kEvbSR2rtkF7
+	 L8uvWNhUzOeKfarnQFAj5gnO8yoQx0s0mHKnhDJTMhHRdPfJNJcmz5tgNYOEVNkm20
+	 a+7tTUdaGgPIKVSZsiUdAY+u0nQh1K9Iti/XF1sYk6V60Ym8vzY2K+MmpCCKhKT6qH
+	 8z67M92klTYjFAsf4VlJqXFtoT0CcdmQMCrDwGSbpJHATAlnHNldq0YYVDnZqppD8D
+	 BchajdLJA56qQ==
+Date: Thu, 22 May 2025 19:07:04 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: Jason Gunthorpe <jgg@nvidia.com>, Daisuke Matsuda <dskmtsd@gmail.com>,
+	linux-rdma@vger.kernel.org, Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next] RDMA/rxe: Break endless pagefault loop for RO
+ pages
+Message-ID: <20250522160704.GS7435@unreal>
+References: <096fab178d48ed86942ee22eafe9be98e29092aa.1747913377.git.leonro@nvidia.com>
+ <bb5dcd1c-669a-4e23-8b41-4dc018331b82@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Doc: networking: Fix various typos in rds.rst
-To: Alok Tiwari <alok.a.tiwari@oracle.com>, allison.henderson@oracle.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, horms@kernel.org, corbet@lwn.net, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
- linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, darren.kenny@oracle.com
-References: <20250522074413.3634446-1-alok.a.tiwari@oracle.com>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20250522074413.3634446-1-alok.a.tiwari@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bb5dcd1c-669a-4e23-8b41-4dc018331b82@linux.dev>
 
-
-
-On 5/22/25 12:43 AM, Alok Tiwari wrote:
-> Corrected "sages" to "messages" in the bitmap allocation description.
-> Fixed "competed" to "completed" in the recv path datagram handling section.
-> Corrected "privatee" to "private" in the multipath RDS section.
-> Fixed "mutlipath" to "multipath" in the transport capabilities description.
+On Thu, May 22, 2025 at 05:40:38PM +0200, Zhu Yanjun wrote:
+> 在 2025/5/22 13:36, Leon Romanovsky 写道:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> > 
+> > RO pages has "perm" equal to 0, that caused to the situation
+> > where such pages were marked as needed to have fault and caused
+> > to infinite loop.
+> > 
+> > Fixes: eedd5b1276e7 ("RDMA/umem: Store ODP access mask information in PFN")
+> > Reported-by: Daisuke Matsuda <dskmtsd@gmail.com>
+> > Closes: https://lore.kernel.org/all/3e8f343f-7d66-4f7a-9f08-3910623e322f@gmail.com
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> >   drivers/infiniband/sw/rxe/rxe_odp.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
+> > index a1416626f61a5..0f67167ddddd1 100644
+> > --- a/drivers/infiniband/sw/rxe/rxe_odp.c
+> > +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
+> > @@ -137,7 +137,7 @@ static inline bool rxe_check_pagefault(struct ib_umem_odp *umem_odp,
+> >   	while (addr < iova + length) {
+> >   		idx = (addr - ib_umem_start(umem_odp)) >> umem_odp->page_shift;
+> > -		if (!(umem_odp->map.pfn_list[idx] & perm)) {
+> > +		if (!(umem_odp->map.pfn_list[idx] & HMM_PFN_VALID)) {
 > 
-> These changes improve documentation clarity and maintain consistency.
-> 
-> Signed-off-by: Alok Tiwari <alok.a.tiwari@oracle.com>
+> Because perm is not used, it is not necessary to calculate and pass perm to
+> rxe_check_pagefault. The cleanup is as below:
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
->  Documentation/networking/rds.rst | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-
--- 
-~Randy
+Thanks a lot, I folded this cleanup to the fix.
 
