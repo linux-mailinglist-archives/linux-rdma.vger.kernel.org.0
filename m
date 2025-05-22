@@ -1,95 +1,92 @@
-Return-Path: <linux-rdma+bounces-10547-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10548-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66EEFAC10B8
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 18:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A30FAC10C7
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 18:10:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D20717EACE
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 16:07:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50BA65020C9
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 May 2025 16:10:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47D50299ABC;
-	Thu, 22 May 2025 16:07:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8655529A31E;
+	Thu, 22 May 2025 16:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VQfg1Ras"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gsu+Qr4E"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0690F19F461
-	for <linux-rdma@vger.kernel.org>; Thu, 22 May 2025 16:07:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38528299ABC;
+	Thu, 22 May 2025 16:10:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747930031; cv=none; b=V0QVTv9Lsq0nJC/OsEhTi1bInx67ib1SyjKMNXNxXwTUsit5ORY8+uDyoQk2BvrWtYWFT+kTOb6/K67oSlGl7jLb1CnSnOAaDNhag7eeCOPKJ8b/dc6RfG/6kxusA2JaAfNsXFZcaxAvTvBzJI0daSLpzolWepE42Tg/gCvhwd4=
+	t=1747930228; cv=none; b=OoFWcCBGL9uY01Uu8MebTnlhMwo0TYCv3yiimzxmol93YVkmHS0JBCLzZjvpVEB0eyRq5pznEGCLxCOja7ghluPwVnMK6kTrLW2sEpg3Jjry7ErFRRTyU3MRkCBIlHz1J6sjdeEcFCqNLAwo4FDDord3vYky6tdJvt0UVC4DUiM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747930031; c=relaxed/simple;
-	bh=HmIwLBR/xjGkOHwjxtfpmMduSM1bmHBLMW3jQbMev3g=;
+	s=arc-20240116; t=1747930228; c=relaxed/simple;
+	bh=//yqCWhyxufogzeM11hu7dBxsi7i01w6ShrWzTpUBY4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LDOI42ZYLWimmlHNUV6tLZZh6Rcd41qErcYNLSRKAQpQIOcjSn0B0yfJlgFr61tVY5MdVN3rmRQy5SD0zK7YUOtLK2prRMQSLFoQvI7jBXbr6hv+x0umCzPpWvmJs9CNNTJfrlvbOf4MDD9aO/2Sj0pVlYSh1tVeahSmGPcsznA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VQfg1Ras; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 774E4C4CEEA;
-	Thu, 22 May 2025 16:07:08 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=b3b4nz4LbogmYhDxcmmOiYV5PWvSMXA9weTkTe/d1PB5IrOYdsb03XZ4NHNcOQI+luH8doQtWMaZnJ77hL0/JbOyjIRKpBQB1BHc+VJQaF2SJoyqB9NKW7S5D/RvS41n31GQ7AECHc6DspgADdnKKGS0ENq7IqX5B176u3DWeLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gsu+Qr4E; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45455C4CEE4;
+	Thu, 22 May 2025 16:10:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1747930029;
-	bh=HmIwLBR/xjGkOHwjxtfpmMduSM1bmHBLMW3jQbMev3g=;
+	s=k20201202; t=1747930227;
+	bh=//yqCWhyxufogzeM11hu7dBxsi7i01w6ShrWzTpUBY4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VQfg1RasaK/4jtJfURbJEAXazBv0E2vQ9lDI7jvAwo907IGIi62hkT/V7/oDag8ar
-	 z7qTce2reMV9g9HtYaga7lVjMiDArD6SQR822j+/AFnXhcb8CK33d+kEvbSR2rtkF7
-	 L8uvWNhUzOeKfarnQFAj5gnO8yoQx0s0mHKnhDJTMhHRdPfJNJcmz5tgNYOEVNkm20
-	 a+7tTUdaGgPIKVSZsiUdAY+u0nQh1K9Iti/XF1sYk6V60Ym8vzY2K+MmpCCKhKT6qH
-	 8z67M92klTYjFAsf4VlJqXFtoT0CcdmQMCrDwGSbpJHATAlnHNldq0YYVDnZqppD8D
-	 BchajdLJA56qQ==
-Date: Thu, 22 May 2025 19:07:04 +0300
+	b=Gsu+Qr4EUAYEmRKAdWcMXYA7WTDwWoya9pIQYv30e9k6a7jHH6ouza9NDedA3SiD1
+	 VqWIpU4+TqEY0WoqxSi1Cl7NQ9AoX1H0x6IvyYBc9Kxpv0a/T4brF0X2ZqYWMIgIRh
+	 6kpvjg3M6HD6jfGFibT4GO4LjAr4w6L3B3g5P8WSaaD6ptZMBgsaQiGHOnrudg3Fx7
+	 w9wgYxfPN0w6PLHV5jF/x8KwZ9JOvSGCZdro9/+WChqG32VHBxhP29+CyDdmSTMg9+
+	 FP005z9vCHsQJrBDqfNy356pHHHgQ7qiUEheyqLUOcgIdQDUKsN/l2KjWRpSg1+8bP
+	 hQ0d/HMgkt8eQ==
+Date: Thu, 22 May 2025 19:10:23 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc: Jason Gunthorpe <jgg@nvidia.com>, Daisuke Matsuda <dskmtsd@gmail.com>,
-	linux-rdma@vger.kernel.org, Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next] RDMA/rxe: Break endless pagefault loop for RO
- pages
-Message-ID: <20250522160704.GS7435@unreal>
-References: <096fab178d48ed86942ee22eafe9be98e29092aa.1747913377.git.leonro@nvidia.com>
- <bb5dcd1c-669a-4e23-8b41-4dc018331b82@linux.dev>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Tariq Toukan <tariqt@nvidia.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, bpf@vger.kernel.org,
+	Moshe Shemesh <moshe@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	Gal Pressman <gal@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>
+Subject: Re: [PATCH net-next 0/5] net/mlx5: Convert mlx5 to netdev instance
+ locking
+Message-ID: <20250522161023.GT7435@unreal>
+References: <1747829342-1018757-1-git-send-email-tariqt@nvidia.com>
+ <20250522085132.177d7a16@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bb5dcd1c-669a-4e23-8b41-4dc018331b82@linux.dev>
+In-Reply-To: <20250522085132.177d7a16@kernel.org>
 
-On Thu, May 22, 2025 at 05:40:38PM +0200, Zhu Yanjun wrote:
-> 在 2025/5/22 13:36, Leon Romanovsky 写道:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > RO pages has "perm" equal to 0, that caused to the situation
-> > where such pages were marked as needed to have fault and caused
-> > to infinite loop.
-> > 
-> > Fixes: eedd5b1276e7 ("RDMA/umem: Store ODP access mask information in PFN")
-> > Reported-by: Daisuke Matsuda <dskmtsd@gmail.com>
-> > Closes: https://lore.kernel.org/all/3e8f343f-7d66-4f7a-9f08-3910623e322f@gmail.com
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> >   drivers/infiniband/sw/rxe/rxe_odp.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
-> > index a1416626f61a5..0f67167ddddd1 100644
-> > --- a/drivers/infiniband/sw/rxe/rxe_odp.c
-> > +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
-> > @@ -137,7 +137,7 @@ static inline bool rxe_check_pagefault(struct ib_umem_odp *umem_odp,
-> >   	while (addr < iova + length) {
-> >   		idx = (addr - ib_umem_start(umem_odp)) >> umem_odp->page_shift;
-> > -		if (!(umem_odp->map.pfn_list[idx] & perm)) {
-> > +		if (!(umem_odp->map.pfn_list[idx] & HMM_PFN_VALID)) {
+On Thu, May 22, 2025 at 08:51:32AM -0700, Jakub Kicinski wrote:
+> On Wed, 21 May 2025 15:08:57 +0300 Tariq Toukan wrote:
+> > This series by Cosmin converts mlx5 to use the recently added netdev
+> > instance locking scheme.
 > 
-> Because perm is not used, it is not necessary to calculate and pass perm to
-> rxe_check_pagefault. The cleanup is as below:
+> Are you planning to re-submit this as a PR?
+> The subject tag and Leon's reviews being present makes me think
+> that applying directly is fine, but I wanted to confirm..
 
-Thanks a lot, I folded this cleanup to the fix.
+Yes, please apply them directly. There are no changes in IPoIB in this
+cycle, so it will be safe to merge the code through netdev.
+
+Cosmin added my ROB tags, after internal review, so I didn't want to be silly
+and send my Acked-by in addition to already existing tags.
+
+Thanks
 
