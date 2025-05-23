@@ -1,262 +1,142 @@
-Return-Path: <linux-rdma+bounces-10610-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10611-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39CD0AC1CE0
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 May 2025 08:20:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F8D2AC1D89
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 May 2025 09:20:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A80C7B30F6
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 May 2025 06:19:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3000B17D906
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 May 2025 07:20:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21799224B0E;
-	Fri, 23 May 2025 06:20:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 152C921C9E0;
+	Fri, 23 May 2025 07:19:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JWJDTqQ6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nZRIYEg9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EA5F10A3E;
-	Fri, 23 May 2025 06:20:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B64C721C178;
+	Fri, 23 May 2025 07:19:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747981243; cv=none; b=pRiACJsKl7hE7ji+sfPjvwQ+2oe1aHpbJYL6aCqxWhGHIUpDxI7K5kmtRLRgKXOFgVM85Kkjv/OLaa+DJrPUBb9irm3jQOShnwMis/zLQCv+PAbtRuWToqHYMjeukU6ARCNMyPlHCo55cBIXIwq6LCW7EMk2T+xnEma4yrJ7U+Q=
+	t=1747984796; cv=none; b=jONkYGLH/AhPSFOuMxMKXyWxfw75diYza5AzZuMO8tfi9zNGIhmWzsoCgObJOFEAKAK21TLTyGk95CnZsF9X7BPxHGeGXwJgUuoq1W/KtTR5ODAyh4j3aMYazsCf82SmFa8va8WmCcN95OPDQLH40IdjIlL7fazI8/FY87nfTJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747981243; c=relaxed/simple;
-	bh=mJlXIqaDSLJv2xahICj+/scxRlbgF0AGsJSa8Df/Onc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Qz/PExDpk9Rtd/qd1eIhkqPsTyR88bw3RqGeaDWoBGtQXWkbopLhp7S34FUmoft5f0Zel3xFBvsihSP5KyykyOXK+5qjJO5gBng96WZA7/yTY2A5A9DE8AwSqk7palQb4pxjK2pS492IF5k8l6zBZXNjSjItCwN6ktye/GJ7/ak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JWJDTqQ6; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-6020ff8d54bso6482978a12.2;
-        Thu, 22 May 2025 23:20:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1747981239; x=1748586039; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SJKle3xhIDDR9OqTTDo3kadxyXGdGsylyJI+gVZs2nc=;
-        b=JWJDTqQ6CJqDkBb1YM6VTrjTdFGWGFaJxIcbPTlk1E9xtpqDhdeDypy4sfp9hk4K8f
-         0p2mm0F17vLEWiHHuQs0/i48JZvorzAeaPFbo3EkepazNc1123ptNgx7/qYVJeipSzQC
-         yWmdnPU5+0PbpBy062Cs8o2mpwfMP7mj2w8Gi0kbSLjtBNULoT20xdd7/q9+eptC6qho
-         7txwmJA2XxF5jVKyAUzPgtqbf7xD7doRM6b8fYPO+MB8X6QGaQ62uwfmO7xSPAOry1Y9
-         bVlfCQQ5GuA04AF0fA+sLEB7N53mFcqzlZcUd1VP04rF5QwWUC5L2H1KT5spc6Zj4ela
-         eEBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747981239; x=1748586039;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SJKle3xhIDDR9OqTTDo3kadxyXGdGsylyJI+gVZs2nc=;
-        b=JyDYkxRs3iIHYD9l2Lipi4PbbBRlEuLiWquXmEHJ5JuhEWDHIzVPiSY92ZfxpJ/PVh
-         PlHdkMzRHvDxp7TSa6SpkcP1U3DoxickZFwOvCDgsFKTiuuptNlT8IUJFxvvBCQEXXXP
-         E+f5/SgMpq3UdAJHOBXs0NG2BDbA6D8HPN2s0v4iEv2O8wI1OojZhR5gwWGrR9zuHuHt
-         SHYa95xlfBJI9ztH8EijXOt+FxAymm1YBVJRk2u+I3Ly5QYnD3T7KyZ+gRouQNmg1OUp
-         uJNuWbahK2N2TrDFW6V5t1bO7jtgCVWqsVz4FIGdk2k6ul664j7+ylSRpBWj/acTxjW8
-         YfXw==
-X-Forwarded-Encrypted: i=1; AJvYcCUCA6dTQ1bs3wPKKhqnzPBYZ+ypC/I0QN6mkWf5E1FxlC/8AgGyARBoaOCYHdkixDsJo4rvn6GpZ4lo2g==@vger.kernel.org, AJvYcCVOicHkFjD82nyEjz4lvwxYkMoHIqc/7wlkfaZvzNd6MIO+zSGmNCToE8raRdtutWXqlos6QMw88B58Sn7q@vger.kernel.org, AJvYcCVQ+Y0VZ6tEpeQH4kHy9FegZAgMI1lxHKJBmPMRjnZ5uh3s9XTPlNg7B3BFVftkD4AIEX1w/Web@vger.kernel.org, AJvYcCWXw/5u+nFbsSlc3TDbVnumSDzZJ9a2Cj+KZj5f/hKzKVQv+Td64toOdLxmr8AbdMLzVws=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yze22y6DsfATB8JTX72hKAV2crjRegMJgIb8nZEC+/zHkI6zoP9
-	4GTh/sMO5esH0OsroDu6Dbujwb4ia+1zYfh1r50NORGBQEz4lsF7BzkAB+EvlSsfCR4IIU9PY1+
-	xABz+QIVzFOnrROG8RNx5CTkJ+dcJ8O0=
-X-Gm-Gg: ASbGncvzD97iY1iMVKdbGd+EuWS4wO/4lUg+Wr/sYqIqYM6mYvropIBIKgL10AY560W
-	R6VMp1jz5Xz5vAI32hLzhs8O0XTM24zepKFnZLx4qMQs2j5IEqzFK6N4WwgKCkzJT7UlyfUIEHT
-	eMFGWkH8DQ6gF+kBg6a4LLjD4IyCwbNGeOhgpqw6hoXRdj2Q==
-X-Google-Smtp-Source: AGHT+IGbTR82/LzienQDKEDXoJF5IcGdBgl4Man5RPmJSQnxzH+IiU2ooaMYWOxIUaA7swrBIT0sR6ZoDWL2aYGtGtI=
-X-Received: by 2002:a05:6402:3494:b0:602:225e:1d46 with SMTP id
- 4fb4d7f45d1cf-6029163eb6fmr1466817a12.3.1747981239301; Thu, 22 May 2025
- 23:20:39 -0700 (PDT)
+	s=arc-20240116; t=1747984796; c=relaxed/simple;
+	bh=aEtUCaVHTrmJDEuedumuApTBnp00wSWAxrbB4vvfuSo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AF4xdCsgtdz5gtZzjTo5U++Xnrm6BMX4b1jyjTOr9ZJrBFyzi4sZdBXkcX079En/1V7WO0uIgEgKEOS7HWnN6RY42aecOM035InHQ/zbf2EMqOLWjt28Ws4HdRnO/CAxPf/RKJnmRj6LcwnCAx1Ws21M/7TvFOGlXVWiOJbNSSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nZRIYEg9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AC9AC4CEE9;
+	Fri, 23 May 2025 07:19:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1747984796;
+	bh=aEtUCaVHTrmJDEuedumuApTBnp00wSWAxrbB4vvfuSo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nZRIYEg9qsgPAtly1UXn8khOlwhVwJ+LaiirtAQd1lEtfXDBWImjwIhfM7Ctr06Zx
+	 aPV1gW7rrIZUpc3pkx9JTbEuBnMVRXZdKdl4C5UkgYPVi7zF0QOp01Y9uRtUs3Pzj4
+	 z6XBtTZ2kvFnlYpUCuNDabtv0h+rvqNuQusUVSeYznJCsXsXh46QG/C/SweEh+qJP2
+	 UtgMBaNs3ikjpA5Zd6fSZdEBR/xaaBSA2fk6RUCPlegprwVdTMRezE+WCV3jYzILaw
+	 x3r0/bcrCySpCuML91lS6O6ooSXPbjESvfBR65Hls0bOmh1qSAl0xAmgKy6PiKOsb2
+	 BoVVMfYNb0T/g==
+Date: Fri, 23 May 2025 08:19:50 +0100
+From: Simon Horman <horms@kernel.org>
+To: Jianbo Liu <jianbol@nvidia.com>
+Cc: Tariq Toukan <tariqt@nvidia.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Moshe Shemesh <moshe@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	Gal Pressman <gal@nvidia.com>
+Subject: Re: [PATCH net 2/2] net/mlx5e: Fix leak of Geneve TLV option object
+Message-ID: <20250523071950.GP365796@horms.kernel.org>
+References: <1747895286-1075233-1-git-send-email-tariqt@nvidia.com>
+ <1747895286-1075233-3-git-send-email-tariqt@nvidia.com>
+ <20250522191651.GL365796@horms.kernel.org>
+ <1a8cb838-d487-4c56-8dfa-8179f305de02@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250523032609.16334-1-byungchul@sk.com>
-In-Reply-To: <20250523032609.16334-1-byungchul@sk.com>
-From: Taehee Yoo <ap420073@gmail.com>
-Date: Fri, 23 May 2025 15:20:27 +0900
-X-Gm-Features: AX0GCFubwjG0J56ovWaE10v3Q9RxO1SAGGmwA1wkCCPwSFKvPmaSkQrB3cPFVV4
-Message-ID: <CAMArcTWx+8GFzk4=A2-DCUZkMtyYRaDZSqf+HvOf2KyC80BqsA@mail.gmail.com>
-Subject: Re: [PATCH 00/18] Split netmem from struct page
-To: Byungchul Park <byungchul@sk.com>
-Cc: willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org, 
-	almasrymina@google.com, ilias.apalodimas@linaro.org, harry.yoo@oracle.com, 
-	hawk@kernel.org, akpm@linux-foundation.org, davem@davemloft.net, 
-	john.fastabend@gmail.com, andrew+netdev@lunn.ch, asml.silence@gmail.com, 
-	toke@redhat.com, tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com, 
-	saeedm@nvidia.com, leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, 
-	vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com, 
-	horms@kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org, 
-	vishal.moola@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1a8cb838-d487-4c56-8dfa-8179f305de02@nvidia.com>
 
-On Fri, May 23, 2025 at 12:36=E2=80=AFPM Byungchul Park <byungchul@sk.com> =
-wrote:
->
+On Fri, May 23, 2025 at 09:58:57AM +0800, Jianbo Liu wrote:
+> 
+> 
+> On 5/23/2025 3:16 AM, Simon Horman wrote:
+> > On Thu, May 22, 2025 at 09:28:06AM +0300, Tariq Toukan wrote:
+> > > From: Jianbo Liu <jianbol@nvidia.com>
+> > > 
+> > > Previously, a unique tunnel id was added for the matching on TC
+> > > non-zero chains, to support inner header rewrite with goto action.
+> > > Later, it was used to support VF tunnel offload for vxlan, then for
+> > > Geneve and GRE. To support VF tunnel, a temporary mlx5_flow_spec is
+> > > used to parse tunnel options. For Geneve, if there is TLV option, a
+> > > object is created, or refcnt is added if already exists. But the
+> > > temporary mlx5_flow_spec is directly freed after parsing, which causes
+> > > the leak because no information regarding the object is saved in
+> > > flow's mlx5_flow_spec, which is used to free the object when deleting
+> > > the flow.
+> > > 
+> > > To fix the leak, call mlx5_geneve_tlv_option_del() before free the
+> > > temporary spec if it has TLV object.
+> > > 
+> > > Fixes: 521933cdc4aa ("net/mlx5e: Support Geneve and GRE with VF tunnel offload")
+> > > Signed-off-by: Jianbo Liu <jianbol@nvidia.com>
+> > > Reviewed-by: Cosmin Ratiu <cratiu@nvidia.com>
+> > > Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> > > ---
+> > >   drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 7 ++++---
+> > >   1 file changed, 4 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+> > > index f1d908f61134..b9c1d7f8f05c 100644
+> > > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+> > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+> > > @@ -2028,9 +2028,8 @@ mlx5e_tc_add_fdb_flow(struct mlx5e_priv *priv,
+> > >   	return err;
+> > >   }
+> > > -static bool mlx5_flow_has_geneve_opt(struct mlx5e_tc_flow *flow)
+> > > +static bool mlx5_flow_has_geneve_opt(struct mlx5_flow_spec *spec)
+> > >   {
+> > > -	struct mlx5_flow_spec *spec = &flow->attr->parse_attr->spec;
+> > >   	void *headers_v = MLX5_ADDR_OF(fte_match_param,
+> > >   				       spec->match_value,
+> > >   				       misc_parameters_3);
+> > > @@ -2069,7 +2068,7 @@ static void mlx5e_tc_del_fdb_flow(struct mlx5e_priv *priv,
+> > >   	}
+> > >   	complete_all(&flow->del_hw_done);
+> > > -	if (mlx5_flow_has_geneve_opt(flow))
+> > > +	if (mlx5_flow_has_geneve_opt(&attr->parse_attr->spec))
+> > >   		mlx5_geneve_tlv_option_del(priv->mdev->geneve);
+> > >   	if (flow->decap_route)
+> > 
+> > Hi,
+> > 
+> > The lines leading up to the hung below are:
+> > 
+> > 	      err = mlx5e_tc_tun_parse(filter_dev, priv, tmp_spec, f, match_level);
+> >                if (err) {
+> >                          kvfree(tmp_spec);
+> >                          NL_SET_ERR_MSG_MOD(extack, "Failed to parse tunnel attributes");
+> >                          netdev_warn(priv->netdev, "Failed to parse tunnel attributes");
+> > 
+> > I am wondering if the same resource leak described in the patch description
+> > can occur if mlx5e_tc_tun_parse() fails after it successfully calls
+> > tunnel->parse_tunnel().
+> > 
+> 
+> Yes, I missed that. I will fix in next version.
 
-Hi Byungchul,
-Thanks a lot for this work!
-
-> The MM subsystem is trying to reduce struct page to a single pointer.
-> The first step towards that is splitting struct page by its individual
-> users, as has already been done with folio and slab.  This patchset does
-> that for netmem which is used for page pools.
->
-> Matthew Wilcox tried and stopped the same work, you can see in:
->
->    https://lore.kernel.org/linux-mm/20230111042214.907030-1-willy@infrade=
-ad.org/
->
-> Mina Almasry already has done a lot fo prerequisite works by luck, he
-> said :).  I stacked my patches on the top of his work e.i. netmem.
->
-> I focused on removing the page pool members in struct page this time,
-> not moving the allocation code of page pool from net to mm.  It can be
-> done later if needed.
->
-> My rfc version of this work is:
->
->    https://lore.kernel.org/all/20250509115126.63190-1-byungchul@sk.com/
->
-> There are still a lot of works to do, to remove the dependency on struct
-> page in the network subsystem.  I will continue to work on this after
-> this base patchset is merged.
-
-There is a compile failure.
-
-In file included from drivers/net/ethernet/intel/libeth/rx.c:4:
-./include/net/libeth/rx.h: In function =E2=80=98libeth_rx_sync_for_cpu=E2=
-=80=99:
-./include/net/libeth/rx.h:140:40: error: =E2=80=98struct page=E2=80=99 has =
-no member named =E2=80=98pp=E2=80=99
-  140 |         page_pool_dma_sync_for_cpu(page->pp, page, fqe->offset, len=
-);
-      |                                        ^~
-drivers/net/ethernet/intel/libeth/rx.c: In function =E2=80=98libeth_rx_recy=
-cle_slow=E2=80=99:
-drivers/net/ethernet/intel/libeth/rx.c:210:38: error: =E2=80=98struct page=
-=E2=80=99
-has no member named =E2=80=98pp=E2=80=99
-  210 |         page_pool_recycle_direct(page->pp, page);
-      |                                      ^~
-make[7]: *** [scripts/Makefile.build:203:
-drivers/net/ethernet/intel/libeth/rx.o] Error 1
-make[6]: *** [scripts/Makefile.build:461:
-drivers/net/ethernet/intel/libeth] Error 2
-make[5]: *** [scripts/Makefile.build:461: drivers/net/ethernet/intel] Error=
- 2
-make[5]: *** Waiting for unfinished jobs....
-
-There are page->pp usecases in drivers/net
-./drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c:1574:
- } else if (page->pp) {
-./drivers/net/ethernet/freescale/fec_main.c:1046:
-                 page_pool_put_page(page->pp, page, 0, false);
-./drivers/net/ethernet/freescale/fec_main.c:1584:
- page_pool_put_page(page->pp, page, 0, true);
-./drivers/net/ethernet/freescale/fec_main.c:3351:
-         page_pool_put_page(page->pp, page, 0, false);
-./drivers/net/ethernet/ti/icssg/icssg_prueth_sr1.c:370:
-page_pool_recycle_direct(page->pp, page);
-./drivers/net/ethernet/ti/icssg/icssg_prueth_sr1.c:395:
-page_pool_recycle_direct(page->pp, page);
-./drivers/net/ethernet/ti/icssg/icssg_common.c:111:
-page_pool_recycle_direct(page->pp, swdata->data.page);
-./drivers/net/ethernet/intel/idpf/idpf_txrx.c:389:
-page_pool_put_full_page(rx_buf->page->pp, rx_buf->page, false);
-./drivers/net/ethernet/intel/idpf/idpf_txrx.c:3254:     u32 hr =3D
-rx_buf->page->pp->p.offset;
-./drivers/net/ethernet/intel/idpf/idpf_txrx.c:3286:     dst =3D
-page_address(hdr->page) + hdr->offset + hdr->page->pp->p.offset;
-./drivers/net/ethernet/intel/idpf/idpf_txrx.c:3287:     src =3D
-page_address(buf->page) + buf->offset + buf->page->pp->p.offset;
-./drivers/net/ethernet/intel/idpf/idpf_txrx.c:3305:     u32 hr =3D
-buf->page->pp->p.offset;
-./drivers/net/ethernet/intel/libeth/rx.c:210:
-page_pool_recycle_direct(page->pp, page);
-./drivers/net/ethernet/intel/iavf/iavf_txrx.c:1200:     u32 hr =3D
-rx_buffer->page->pp->p.offset;
-./drivers/net/ethernet/intel/iavf/iavf_txrx.c:1217:     u32 hr =3D
-rx_buffer->page->pp->p.offset;
-./drivers/net/wireless/mediatek/mt76/mt76.h:1800:
-page_pool_put_full_page(page->pp, page, allow_direct);
-./include/net/libeth/rx.h:140:  page_pool_dma_sync_for_cpu(page->pp,
-page, fqe->offset, len);
-
-Thanks a lot!
-Taehee Yoo
-
->
-> ---
->
-> Changes from rfc:
->         1. Rebase on net-next's main branch
->            https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-nex=
-t.git/
->         2. Fix a build error reported by kernel test robot
->            https://lore.kernel.org/all/202505100932.uzAMBW1y-lkp@intel.co=
-m/
->         3. Add given 'Reviewed-by's, thanks to Mina and Ilias
->         4. Do static_assert() on the size of struct netmem_desc instead
->            of placing place-holder in struct page, feedbacked by Matthew
->         5. Do struct_group_tagged(netmem_desc) on struct net_iov instead
->            of wholly renaming it to strcut netmem_desc, feedbacked by
->            Mina and Pavel
->
-> Byungchul Park (18):
->   netmem: introduce struct netmem_desc struct_group_tagged()'ed on
->     struct net_iov
->   netmem: introduce netmem alloc APIs to wrap page alloc APIs
->   page_pool: use netmem alloc/put APIs in __page_pool_alloc_page_order()
->   page_pool: rename __page_pool_alloc_page_order() to
->     __page_pool_alloc_large_netmem()
->   page_pool: use netmem alloc/put APIs in __page_pool_alloc_pages_slow()
->   page_pool: rename page_pool_return_page() to page_pool_return_netmem()
->   page_pool: use netmem put API in page_pool_return_netmem()
->   page_pool: rename __page_pool_release_page_dma() to
->     __page_pool_release_netmem_dma()
->   page_pool: rename __page_pool_put_page() to __page_pool_put_netmem()
->   page_pool: rename __page_pool_alloc_pages_slow() to
->     __page_pool_alloc_netmems_slow()
->   mlx4: use netmem descriptor and APIs for page pool
->   page_pool: use netmem APIs to access page->pp_magic in
->     page_pool_page_is_pp()
->   mlx5: use netmem descriptor and APIs for page pool
->   netmem: use _Generic to cover const casting for page_to_netmem()
->   netmem: remove __netmem_get_pp()
->   page_pool: make page_pool_get_dma_addr() just wrap
->     page_pool_get_dma_addr_netmem()
->   netdevsim: use netmem descriptor and APIs for page pool
->   mm, netmem: remove the page pool members in struct page
->
->  drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  46 ++++----
->  drivers/net/ethernet/mellanox/mlx4/en_tx.c    |   8 +-
->  drivers/net/ethernet/mellanox/mlx4/mlx4_en.h  |   4 +-
->  drivers/net/ethernet/mellanox/mlx5/core/en.h  |   4 +-
->  .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  18 ++--
->  .../net/ethernet/mellanox/mlx5/core/en/xdp.h  |   2 +-
->  .../net/ethernet/mellanox/mlx5/core/en_main.c |  15 ++-
->  .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  66 ++++++------
->  drivers/net/netdevsim/netdev.c                |  18 ++--
->  drivers/net/netdevsim/netdevsim.h             |   2 +-
->  include/linux/mm.h                            |   5 +-
->  include/linux/mm_types.h                      |  11 --
->  include/linux/skbuff.h                        |  14 +++
->  include/net/netmem.h                          | 101 ++++++++++--------
->  include/net/page_pool/helpers.h               |  11 +-
->  net/core/page_pool.c                          |  97 +++++++++--------
->  16 files changed, 221 insertions(+), 201 deletions(-)
->
->
-> base-commit: f44092606a3f153bb7e6b277006b1f4a5b914cfc
-> --
-> 2.17.1
->
->
+Thanks, much appreciated.
 
