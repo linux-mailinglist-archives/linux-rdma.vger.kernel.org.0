@@ -1,157 +1,492 @@
-Return-Path: <linux-rdma+bounces-10616-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10617-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B76DDAC1F20
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 May 2025 11:01:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7212DAC226E
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 May 2025 14:13:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0382B1BC75F6
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 May 2025 09:01:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 332BE1C03E2D
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 May 2025 12:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1848F221FB2;
-	Fri, 23 May 2025 09:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D931D2356A8;
+	Fri, 23 May 2025 12:13:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hP9TFbWg"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="mESv5129"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A071F4171
-	for <linux-rdma@vger.kernel.org>; Fri, 23 May 2025 09:01:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7ACA2367A6
+	for <linux-rdma@vger.kernel.org>; Fri, 23 May 2025 12:13:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747990869; cv=none; b=fSDIlvngpUUFfRVOHd26t/7Hg7Jnwo+53HNG3h52fZwy8sCXiYfhjTYiUJHKcUttFJul/xAAq0Q1BXCCx5KGL1RBoH08o3ujZv6iIOmjIfNrmBInnpBF6R6w2Iuh5wBChdkBVJsNEO6hihH/zIroKQbSZTl1iLsOtB5iaPTi7Lc=
+	t=1748002426; cv=none; b=mo+754Hv2rjD7TCFSstaz2NwY/y1gdsbwPHTARHcTW6Luovxa8UISKnM6Zo6eNZneLMqzr/AP1ZfhIEaNoCYmx8bRKSf4kcTO/Sq9fYobrgEg2t2bMDMY4K4RSapAFPvXnKfJN3h5uuuykvJ5BBs8q+ng+fKgQXmIgpeVAwyANM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747990869; c=relaxed/simple;
-	bh=6AD71GZ1oJAgToKv63EU9Cvf388e1iJs65ueGm/PeYg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=hEUIO0TnEtXAL7GNg62/pSY7AbbT5E1TmIbOffD6wPDOXsrAYgOgqp29uiU2EB9FD6pguCgvz0w0h+IvMt0UeL2CVRXP1zXTqysDS/ZlxnkUT+tNHMUWJftq4g9k2eyQxyIUmVDzVoWFgrW9uEMHD58S5H6f+6rAbxB1T9nq+Oo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hP9TFbWg; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1747990867;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W9137AuC1JXl/uRnv3Q7irr3oyxG/GyI+XTAgsgelrk=;
-	b=hP9TFbWgSuC4evXTGoYuZ5DdbKmI7+YCFf6g7Z3WUvh/xiF2MnbHhAAumEObhhXpRY6fMm
-	jBvWl9I4QKXBbKeWh73GNWBulfZAC+JyzjCA5jRVu0ONJAd2OQBttAgv3kft3fPk/t70Zj
-	ln8bwle63CR090vEmNTGzomN8CRpyR8=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-325-kzlIquYlNeyEF91IUzF06w-1; Fri, 23 May 2025 05:01:05 -0400
-X-MC-Unique: kzlIquYlNeyEF91IUzF06w-1
-X-Mimecast-MFC-AGG-ID: kzlIquYlNeyEF91IUzF06w_1747990864
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-32810342d69so50407031fa.1
-        for <linux-rdma@vger.kernel.org>; Fri, 23 May 2025 02:01:05 -0700 (PDT)
+	s=arc-20240116; t=1748002426; c=relaxed/simple;
+	bh=QwnM0CAVFEMq5AF+Q3d9i2AyovIT3v6pbtbAkQmXxXk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ph5cMYeJeBEy4FqRFO6p0Ee97V7DwB1n5Mv9iHEin2ytpLURRBfqiP+AFdCqdenEC1O8YHTkcpjYG7b0PRR9AHzD0tCxEnjioIQrob/bAKngGKj8600euJohAqPi4YCuF9nnvGLO7R90tfLDMvnj3efEuXOzlIqPJadK6WcpcCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=mESv5129; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-441ab63a415so95676685e9.3
+        for <linux-rdma@vger.kernel.org>; Fri, 23 May 2025 05:13:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1748002422; x=1748607222; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fcMMazqETMFBjpqAXtEjk8AFpIIhwiLrmwH6TDT81Xc=;
+        b=mESv5129nr8eW9p2uje1ijmcrLD/7sXxCz8PvVSIKj6+R1AcRUPGIAZwNt5Fs9BACB
+         UsTcK41KYHGwtklfZ143yDVkK15CuxOFn/A/8tuZbzgx4J1r86CyqCXgfn0GyCDaPh7X
+         To1KHesvTucDqQY9WVX+W4mgf2mQ62cUWo2a+68idmLz1ZwLW/2Jlr48qlXZwVEea2JZ
+         lCqpkPNBpxiTXq3kKOOJBqMEFBFZYma+ircSkzHJQgEWsP0NeXPsD65//ZIIf/BQYq/U
+         8ruHg1GDqF0mSPInhP6rydgakXbFoecjKMWGVqFuy39AVXPLSWpHc/V/hsbAAWLov5Ey
+         4KLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1747990864; x=1748595664;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=W9137AuC1JXl/uRnv3Q7irr3oyxG/GyI+XTAgsgelrk=;
-        b=rbqWOlYue1dEDR2/xHxe0vV1sAPkEwfQ6ntbHTFZD7cUAFIaqmd9Vuh8mKw7ubwsRy
-         ZZiDZ8z3fDsiirkeH5QQcNn0vnpa4urDDETWZOPEBHcp6urv3ROqHNiAQ88xEpswqMFS
-         pBaJ/kzPCDmLcu7numVZA57vwDjdsu/NcygNlZs8kvOw+ZJQT0bemdZXgB45gUFCkPA0
-         CN1aJlluYPzsh9y6BIK9IMvNXv+evHfp+9urC5O6egTF4uSvGPvaxWJTJST4cxgBhJtG
-         nWmmLGZNa1VFrNo102AYF2bjLEN1QyRMcApOo2n38Fm1wMOzeHBAA3CX8OuuYYSZrpg3
-         OPOg==
-X-Forwarded-Encrypted: i=1; AJvYcCXffJburUzao4USFUoO8RxMzE16s/WfJvpCk2wtIf7X+9dAMkkdTDkeETzyo0GIHpS7UClFTIIW8J02@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywdp0EmKjm56w+8+y3i8THmcbGWDugfhEiK/tNo2Ut1NpFEY9mB
-	OOjSL1Z0gvLz5p9o01crwWfLB9ptNK9CriwYN6YjIap89Qtf9xJRJ3PCXQheCLforYtUlxYbHqz
-	w2yRgBLcgRr5V/g9uHD8qZKIkQ3F/L8SxdB5QuDKgC1tLEV3+836En6P+oDULAdc=
-X-Gm-Gg: ASbGnctIl57XVEKID3NUbLDdnKpSPh8pRVpPXqZYMtkGmh6rk0So4V4iW4D7u+LAw5Y
-	gPBuJ55cC1I7RBx5M3YyoMHfvnvaTpoKAaSEOBqZxeKk8nzQvOeX5lKws+0soTP9yfnrIEjgb1E
-	EICxbVRENtu98UbRAjIVe6V1TlcJI2FmeDlEDKzYAN9J8HBrjC7xc+VPSSIVj3GZB2wegyeVyf1
-	TWta1WemgCpeGIA8pthZ1lSeiFJGwVhyiURCYg5xiYsbsPa2enJ0lk6fACf9FB24ArTTsiyVT8W
-	hOzZq/Md
-X-Received: by 2002:a05:6512:3d05:b0:549:4bf7:6463 with SMTP id 2adb3069b0e04-550e98ff25dmr10391799e87.44.1747990863808;
-        Fri, 23 May 2025 02:01:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGZQSs+uyNdVjrDhVHs2IglUPHTshvnWvanx+qtFny8cuAL31NdNk4CU+Vw4AmeBNf/utBp3w==
-X-Received: by 2002:a05:6512:3d05:b0:549:4bf7:6463 with SMTP id 2adb3069b0e04-550e98ff25dmr10391773e87.44.1747990863352;
-        Fri, 23 May 2025 02:01:03 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-550e703f606sm3782184e87.238.2025.05.23.02.01.02
+        d=1e100.net; s=20230601; t=1748002422; x=1748607222;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fcMMazqETMFBjpqAXtEjk8AFpIIhwiLrmwH6TDT81Xc=;
+        b=GN34pF2kd9T4/QI7J7AlTyahDhh3KPckv+hTmdQZ7V8cfFdsfq06EQC72QBqp2JFc2
+         i4ybcBs4gWSj+9uI9y55xK5TIfnKkybT7gBwKc9KdZKqiHSBhdn041QuWQVc9NcQrJrC
+         TXn8c/4Ia6EByAPsc63VpZO6Q4lGhwkGDh3Xd2QfofBVdzNUT+MocJOYj7ImRek2DPgz
+         sPfckNYkb0jlgwKJNwKXtN0eXmexvn5lCYZHeScLnQdezKY/jpL8yBt5CGqEtSsdqVaU
+         KJTcYwWzCA53TYrbyyIobjI2O/ZDL3uVMSTcL5N+jkq75LDtg3WNVB73yK+VTmr8ozJt
+         zOyA==
+X-Forwarded-Encrypted: i=1; AJvYcCVv4bS2EZO3OR+pwt3aFnuraEOVPwIXp2z2iuydfr9B4GSg4BaL1fDKOWnOYDoE1Y8dIYZ4C2y2Qu0+@vger.kernel.org
+X-Gm-Message-State: AOJu0YzMMydCyvtNbvEdl+XV1BUw/+h5SdgS+ebYCack4jKRGoAspetd
+	J6ITkV1WMwbrbfL0z/GNanMaaAN7TV8Fcp4HvTdWVyEkXFEXLDhBgWjT5Js4IKZye5k=
+X-Gm-Gg: ASbGncvVt7VYDyxPzOEGPA2OLtKGkrP0kxoc/1OWnCWpBhIc66MqrTGG9beVSgg6h/e
+	YsnZ2lkEix1hRxScVO51VAsGIQ5mm4NqxwH21UX3otjpRxBvy0jKmr4BLU/VR4ASKu6B186/uE8
+	31sGIe6dmeiYhJjucohDwA30nTY6MB18M7HfmJ6weM70PeYY52Keyn4MzlzGgyI7yXi6BAuDp1x
+	1YHzVLNnYX7pPJo3o1IZ319xEaIahhiqgK7HHibbLoNTtcC8AFDcEgwDXCq/7FHM25hrF8IweBk
+	XxhyzywB8ZBfnOALQHg2Xg0kemCkzFmbZvcdWc4CqQE1H6Ccu298lVp87y8BhYk2U4IPXlbs14Z
+	2f/A=
+X-Google-Smtp-Source: AGHT+IFWpuJ+LGIYOg0ukSHD3MDEX+F5KEHQMJa0aTYMPEXLHnq293emw2qfMGaBfuv1xqKajS7f1w==
+X-Received: by 2002:a05:600c:64cd:b0:43d:745a:5a50 with SMTP id 5b1f17b1804b1-442fd6313demr219563725e9.19.1748002421719;
+        Fri, 23 May 2025 05:13:41 -0700 (PDT)
+Received: from jiri-mlt (37-48-1-197.nat.epc.tmcz.cz. [37.48.1.197])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a369140048sm22111829f8f.57.2025.05.23.05.13.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 May 2025 02:01:02 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 957971AA3B8F; Fri, 23 May 2025 11:01:01 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Byungchul Park <byungchul@sk.com>, willy@infradead.org,
- netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- kernel_team@skhynix.com, kuba@kernel.org, almasrymina@google.com,
- ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
- akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com,
- andrew+netdev@lunn.ch, asml.silence@gmail.com, tariqt@nvidia.com,
- edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com,
- leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com,
- lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
- rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org,
- linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
-Subject: Re: [PATCH 01/18] netmem: introduce struct netmem_desc
- struct_group_tagged()'ed on struct net_iov
-In-Reply-To: <20250523032609.16334-2-byungchul@sk.com>
-References: <20250523032609.16334-1-byungchul@sk.com>
- <20250523032609.16334-2-byungchul@sk.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Fri, 23 May 2025 11:01:01 +0200
-Message-ID: <87bjrjn1ki.fsf@toke.dk>
+        Fri, 23 May 2025 05:13:41 -0700 (PDT)
+Date: Fri, 23 May 2025 14:13:37 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+Cc: donald.hunter@gmail.com, kuba@kernel.org, davem@davemloft.net, 
+	edumazet@google.com, pabeni@redhat.com, horms@kernel.org, vadim.fedorenko@linux.dev, 
+	anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com, andrew+netdev@lunn.ch, 
+	aleksandr.loktionov@intel.com, corbet@lwn.net, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org, 
+	linux-doc@vger.kernel.org, Milena Olech <milena.olech@intel.com>
+Subject: Re: [PATCH net-next v3 2/3] dpll: add reference sync get/set
+Message-ID: <yklt5svyyahn56bynp7b2ba4ceonyo2ivddtr3fr2ye5ubyjjj@jpnmxnsweyf5>
+References: <20250522162938.1490791-1-arkadiusz.kubalewski@intel.com>
+ <20250522162938.1490791-3-arkadiusz.kubalewski@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250522162938.1490791-3-arkadiusz.kubalewski@intel.com>
 
-Byungchul Park <byungchul@sk.com> writes:
-
-> To simplify struct page, the page pool members of struct page should be
-> moved to other, allowing these members to be removed from struct page.
+Thu, May 22, 2025 at 06:29:37PM +0200, arkadiusz.kubalewski@intel.com wrote:
+>Define function for reference sync pin registration and callback ops to
+>set/get current feature state.
 >
-> Introduce a network memory descriptor to store the members, struct
-> netmem_desc, reusing struct net_iov that already mirrored struct page.
+>Implement netlink handler to fill netlink messages with reference sync
+>pin configuration of capable pins (pin-get).
 >
-> While at it, relocate _pp_mapping_pad to group struct net_iov's fields.
+>Implement netlink handler to call proper ops and configure reference
+>sync pin state (pin-set).
 >
-> Signed-off-by: Byungchul Park <byungchul@sk.com>
-> ---
->  include/linux/mm_types.h |  2 +-
->  include/net/netmem.h     | 43 +++++++++++++++++++++++++++++++++-------
->  2 files changed, 37 insertions(+), 8 deletions(-)
+>Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+>Reviewed-by: Milena Olech <milena.olech@intel.com>
+>Signed-off-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+>---
+> v3:
+>- fix kdoc missing ':' after argument name ref_sync_pins,
+>- propagate ret in dpll_pin_ref_sync_state_set().
+>---
+> drivers/dpll/dpll_core.c    |  27 ++++++
+> drivers/dpll/dpll_core.h    |   2 +
+> drivers/dpll/dpll_netlink.c | 188 ++++++++++++++++++++++++++++++++----
+> include/linux/dpll.h        |  10 ++
+> 4 files changed, 209 insertions(+), 18 deletions(-)
 >
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 56d07edd01f9..873e820e1521 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -120,13 +120,13 @@ struct page {
->  			unsigned long private;
->  		};
->  		struct {	/* page_pool used by netstack */
-> +			unsigned long _pp_mapping_pad;
->  			/**
->  			 * @pp_magic: magic value to avoid recycling non
->  			 * page_pool allocated pages.
->  			 */
->  			unsigned long pp_magic;
->  			struct page_pool *pp;
-> -			unsigned long _pp_mapping_pad;
->  			unsigned long dma_addr;
->  			atomic_long_t pp_ref_count;
->  		};
+>diff --git a/drivers/dpll/dpll_core.c b/drivers/dpll/dpll_core.c
+>index 20bdc52f63a5..805c7aca58c5 100644
+>--- a/drivers/dpll/dpll_core.c
+>+++ b/drivers/dpll/dpll_core.c
+>@@ -506,6 +506,7 @@ dpll_pin_alloc(u64 clock_id, u32 pin_idx, struct module *module,
+> 	refcount_set(&pin->refcount, 1);
+> 	xa_init_flags(&pin->dpll_refs, XA_FLAGS_ALLOC);
+> 	xa_init_flags(&pin->parent_refs, XA_FLAGS_ALLOC);
+>+	xa_init_flags(&pin->ref_sync_pins, XA_FLAGS_ALLOC);
+> 	ret = xa_alloc_cyclic(&dpll_pin_xa, &pin->id, pin, xa_limit_32b,
+> 			      &dpll_pin_xa_id, GFP_KERNEL);
+> 	if (ret < 0)
+>@@ -514,6 +515,7 @@ dpll_pin_alloc(u64 clock_id, u32 pin_idx, struct module *module,
+> err_xa_alloc:
+> 	xa_destroy(&pin->dpll_refs);
+> 	xa_destroy(&pin->parent_refs);
+>+	xa_destroy(&pin->ref_sync_pins);
+> 	dpll_pin_prop_free(&pin->prop);
+> err_pin_prop:
+> 	kfree(pin);
+>@@ -595,6 +597,7 @@ void dpll_pin_put(struct dpll_pin *pin)
+> 		xa_erase(&dpll_pin_xa, pin->id);
+> 		xa_destroy(&pin->dpll_refs);
+> 		xa_destroy(&pin->parent_refs);
+>+		xa_destroy(&pin->ref_sync_pins);
+> 		dpll_pin_prop_free(&pin->prop);
+> 		kfree_rcu(pin, rcu);
+> 	}
+>@@ -783,6 +786,30 @@ void dpll_pin_on_pin_unregister(struct dpll_pin *parent, struct dpll_pin *pin,
+> }
+> EXPORT_SYMBOL_GPL(dpll_pin_on_pin_unregister);
+> 
+>+/**
+>+ * dpll_pin_ref_sync_pair_add - create a reference sync signal pin pair
+>+ * @base: pin which produces the base frequency
+>+ * @sync: pin which produces the sync signal
+>+ *
+>+ * Once pins are paired, the user-space configuration of reference sync pair
+>+ * is possible.
+>+ * Context: Acquires a lock (dpll_lock)
+>+ * Return:
+>+ * * 0 on success
+>+ * * negative - error value
+>+ */
+>+int dpll_pin_ref_sync_pair_add(struct dpll_pin *base, struct dpll_pin *sync)
 
-The reason that field is called "_pp_mapping_pad" is that it's supposed
-to overlay the page->mapping field, so that none of the page_pool uses
-set a value here. Moving it breaks that assumption. Once struct
-netmem_desc is completely decoupled from struct page this obviously
-doesn't matter, but I think it does today? At least, trying to use that
-field for the DMA index broke things, which is why we ended up with the
-bit-stuffing in pp_magic...
+Perhaps call it "pin" and "ref_sync_pin"?
 
--Toke
 
+>+{
+>+	int ret;
+>+
+>+	mutex_lock(&dpll_lock);
+>+	ret = xa_insert(&base->ref_sync_pins, sync->pin_idx, sync, GFP_KERNEL);
+>+	mutex_unlock(&dpll_lock);
+>+
+>+	return ret;
+>+}
+>+EXPORT_SYMBOL_GPL(dpll_pin_ref_sync_pair_add);
+
+How do you handle remove?
+
+
+>+
+> static struct dpll_device_registration *
+> dpll_device_registration_first(struct dpll_device *dpll)
+> {
+>diff --git a/drivers/dpll/dpll_core.h b/drivers/dpll/dpll_core.h
+>index 2b6d8ef1cdf3..93c68e78b351 100644
+>--- a/drivers/dpll/dpll_core.h
+>+++ b/drivers/dpll/dpll_core.h
+>@@ -44,6 +44,7 @@ struct dpll_device {
+>  * @module:		module of creator
+>  * @dpll_refs:		hold referencees to dplls pin was registered with
+>  * @parent_refs:	hold references to parent pins pin was registered with
+>+ * @ref_sync_pins:	hold references to pins for Reference SYNC feature
+>  * @prop:		pin properties copied from the registerer
+>  * @rclk_dev_name:	holds name of device when pin can recover clock from it
+>  * @refcount:		refcount
+>@@ -56,6 +57,7 @@ struct dpll_pin {
+> 	struct module *module;
+> 	struct xarray dpll_refs;
+> 	struct xarray parent_refs;
+>+	struct xarray ref_sync_pins;
+> 	struct dpll_pin_properties prop;
+> 	refcount_t refcount;
+> 	struct rcu_head rcu;
+>diff --git a/drivers/dpll/dpll_netlink.c b/drivers/dpll/dpll_netlink.c
+>index c130f87147fa..854bd46a7d27 100644
+>--- a/drivers/dpll/dpll_netlink.c
+>+++ b/drivers/dpll/dpll_netlink.c
+>@@ -48,6 +48,24 @@ dpll_msg_add_dev_parent_handle(struct sk_buff *msg, u32 id)
+> 	return 0;
+> }
+> 
+>+static bool dpll_pin_available(struct dpll_pin *pin)
+>+{
+>+	struct dpll_pin_ref *par_ref;
+>+	unsigned long i;
+>+
+>+	if (!xa_get_mark(&dpll_pin_xa, pin->id, DPLL_REGISTERED))
+>+		return false;
+>+	xa_for_each(&pin->parent_refs, i, par_ref)
+>+		if (xa_get_mark(&dpll_pin_xa, par_ref->pin->id,
+>+				DPLL_REGISTERED))
+>+			return true;
+>+	xa_for_each(&pin->dpll_refs, i, par_ref)
+>+		if (xa_get_mark(&dpll_device_xa, par_ref->dpll->id,
+>+				DPLL_REGISTERED))
+>+			return true;
+>+	return false;
+>+}
+>+
+> /**
+>  * dpll_msg_add_pin_handle - attach pin handle attribute to a given message
+>  * @msg: pointer to sk_buff message to attach a pin handle
+>@@ -408,6 +426,47 @@ dpll_msg_add_pin_esync(struct sk_buff *msg, struct dpll_pin *pin,
+> 	return -EMSGSIZE;
+> }
+> 
+>+static int
+>+dpll_msg_add_pin_ref_sync(struct sk_buff *msg, struct dpll_pin *pin,
+>+			  struct dpll_pin_ref *ref,
+>+			  struct netlink_ext_ack *extack)
+>+{
+>+	const struct dpll_pin_ops *ops = dpll_pin_ops(ref);
+>+	struct dpll_device *dpll = ref->dpll;
+>+	enum dpll_pin_state state;
+>+	void *pin_priv, *sp_priv;
+>+	struct dpll_pin *sp;
+
+Make sure you are consistent in variables naming. You call this "sync"
+whan you add it.
+
+
+>+	struct nlattr *nest;
+>+	unsigned long index;
+>+	int ret;
+>+
+>+	pin_priv = dpll_pin_on_dpll_priv(dpll, pin);
+>+	xa_for_each(&pin->ref_sync_pins, index, sp) {
+>+		if (!dpll_pin_available(sp))
+>+			continue;
+>+		sp_priv = dpll_pin_on_dpll_priv(dpll, sp);
+>+		if (WARN_ON(!ops->ref_sync_get))
+>+			return -EOPNOTSUPP;
+>+		ret = ops->ref_sync_get(pin, pin_priv, sp, sp_priv,
+>+					&state, extack);
+>+		if (ret)
+>+			return ret;
+>+		nest = nla_nest_start(msg, DPLL_A_PIN_REFERENCE_SYNC);
+>+		if (!nest)
+>+			return -EMSGSIZE;
+>+		if (nla_put_s32(msg, DPLL_A_PIN_ID, sp->id))
+>+			goto nest_cancel;
+>+		if (nla_put_s32(msg, DPLL_A_PIN_STATE, state))
+>+			goto nest_cancel;
+>+		nla_nest_end(msg, nest);
+>+	}
+>+	return 0;
+>+
+>+nest_cancel:
+>+	nla_nest_cancel(msg, nest);
+>+	return -EMSGSIZE;
+>+}
+>+
+> static bool dpll_pin_is_freq_supported(struct dpll_pin *pin, u32 freq)
+> {
+> 	int fs;
+>@@ -550,6 +609,10 @@ dpll_cmd_pin_get_one(struct sk_buff *msg, struct dpll_pin *pin,
+> 	if (ret)
+> 		return ret;
+> 	ret = dpll_msg_add_pin_esync(msg, pin, ref, extack);
+>+	if (ret)
+>+		return ret;
+>+	if (!xa_empty(&pin->ref_sync_pins))
+>+		ret = dpll_msg_add_pin_ref_sync(msg, pin, ref, extack);
+> 	if (ret)
+> 		return ret;
+> 	if (xa_empty(&pin->parent_refs))
+>@@ -642,24 +705,6 @@ __dpll_device_change_ntf(struct dpll_device *dpll)
+> 	return dpll_device_event_send(DPLL_CMD_DEVICE_CHANGE_NTF, dpll);
+> }
+> 
+>-static bool dpll_pin_available(struct dpll_pin *pin)
+>-{
+>-	struct dpll_pin_ref *par_ref;
+>-	unsigned long i;
+>-
+>-	if (!xa_get_mark(&dpll_pin_xa, pin->id, DPLL_REGISTERED))
+>-		return false;
+>-	xa_for_each(&pin->parent_refs, i, par_ref)
+>-		if (xa_get_mark(&dpll_pin_xa, par_ref->pin->id,
+>-				DPLL_REGISTERED))
+>-			return true;
+>-	xa_for_each(&pin->dpll_refs, i, par_ref)
+>-		if (xa_get_mark(&dpll_device_xa, par_ref->dpll->id,
+>-				DPLL_REGISTERED))
+>-			return true;
+>-	return false;
+>-}
+>-
+> /**
+>  * dpll_device_change_ntf - notify that the dpll device has been changed
+>  * @dpll: registered dpll pointer
+>@@ -887,6 +932,108 @@ dpll_pin_esync_set(struct dpll_pin *pin, struct nlattr *a,
+> 	return ret;
+> }
+> 
+>+static int
+>+dpll_pin_ref_sync_state_set(struct dpll_pin *pin, unsigned long sync_pin_idx,
+>+			    const enum dpll_pin_state state,
+>+			    struct netlink_ext_ack *extack)
+>+
+>+{
+>+	struct dpll_pin_ref *ref, *failed;
+>+	const struct dpll_pin_ops *ops;
+>+	enum dpll_pin_state old_state;
+>+	struct dpll_pin *sync_pin;
+
+Again, please name this consistently...
+
+
+>+	struct dpll_device *dpll;
+>+	unsigned long i;
+>+	int ret;
+>+
+>+	if (state != DPLL_PIN_STATE_CONNECTED &&
+>+	    state != DPLL_PIN_STATE_DISCONNECTED)
+
+Extack message? But, isn't this sanitized already by policy? Then,
+please remove.
+
+
+>+		return -EINVAL;
+>+	sync_pin = xa_find(&pin->ref_sync_pins, &sync_pin_idx, ULONG_MAX,
+>+			   XA_PRESENT);
+>+	if (!sync_pin) {
+>+		NL_SET_ERR_MSG(extack, "reference sync pin not found");
+>+		return -EINVAL;
+>+	}
+>+	if (!dpll_pin_available(sync_pin)) {
+>+		NL_SET_ERR_MSG(extack, "reference sync pin not available");
+>+		return -EINVAL;
+>+	}
+>+	ref = dpll_xa_ref_dpll_first(&pin->dpll_refs);
+>+	ASSERT_NOT_NULL(ref);
+>+	ops = dpll_pin_ops(ref);
+>+	if (!ops->ref_sync_set || !ops->ref_sync_get) {
+>+		NL_SET_ERR_MSG(extack, "reference sync not supported by this pin");
+>+		return -EOPNOTSUPP;
+>+	}
+>+	dpll = ref->dpll;
+>+	ret = ops->ref_sync_get(pin, dpll_pin_on_dpll_priv(dpll, pin), sync_pin,
+>+				dpll_pin_on_dpll_priv(dpll, sync_pin),
+>+				&old_state, extack);
+>+	if (ret) {
+>+		NL_SET_ERR_MSG(extack, "unable to get old reference sync state");
+>+		return ret;
+>+	}
+>+	if (state == old_state)
+>+		return 0;
+>+	xa_for_each(&pin->dpll_refs, i, ref) {
+>+		ops = dpll_pin_ops(ref);
+>+		dpll = ref->dpll;
+>+		ret = ops->ref_sync_set(pin, dpll_pin_on_dpll_priv(dpll, pin),
+>+					sync_pin,
+>+					dpll_pin_on_dpll_priv(dpll, sync_pin),
+>+					state, extack);
+>+		if (ret) {
+>+			failed = ref;
+>+			NL_SET_ERR_MSG_FMT(extack, "reference sync set failed for dpll_id:%u",
+>+					   dpll->id);
+>+			goto rollback;
+>+		}
+>+	}
+>+	__dpll_pin_change_ntf(pin);
+>+
+>+	return 0;
+>+
+>+rollback:
+>+	xa_for_each(&pin->dpll_refs, i, ref) {
+>+		if (ref == failed)
+>+			break;
+>+		ops = dpll_pin_ops(ref);
+>+		dpll = ref->dpll;
+>+		if (ops->ref_sync_set(pin, dpll_pin_on_dpll_priv(dpll, pin),
+>+				      sync_pin,
+>+				      dpll_pin_on_dpll_priv(dpll, sync_pin),
+>+				      old_state, extack))
+>+			NL_SET_ERR_MSG(extack, "set reference sync rollback failed");
+>+	}
+>+	return ret;
+>+}
+>+
+>+static int
+>+dpll_pin_ref_sync_set(struct dpll_pin *pin, struct nlattr *nest,
+>+		      struct netlink_ext_ack *extack)
+>+{
+>+	struct nlattr *tb[DPLL_A_PIN_MAX + 1];
+>+	enum dpll_pin_state state;
+>+	u32 sync_pin_id;
+>+
+>+	nla_parse_nested(tb, DPLL_A_PIN_MAX, nest,
+>+			 dpll_reference_sync_nl_policy, extack);
+>+	if (!tb[DPLL_A_PIN_ID]) {
+>+		NL_SET_ERR_MSG(extack, "sync pin id expected");
+>+		return -EINVAL;
+>+	}
+>+	sync_pin_id = nla_get_u32(tb[DPLL_A_PIN_ID]);
+>+
+>+	if (!tb[DPLL_A_PIN_STATE]) {
+>+		NL_SET_ERR_MSG(extack, "sync pin state expected");
+>+		return -EINVAL;
+>+	}
+>+	state = nla_get_u32(tb[DPLL_A_PIN_STATE]);
+>+
+>+	return dpll_pin_ref_sync_state_set(pin, sync_pin_id, state, extack);
+>+}
+>+
+> static int
+> dpll_pin_on_pin_state_set(struct dpll_pin *pin, u32 parent_idx,
+> 			  enum dpll_pin_state state,
+>@@ -1193,6 +1340,11 @@ dpll_pin_set_from_nlattr(struct dpll_pin *pin, struct genl_info *info)
+> 			if (ret)
+> 				return ret;
+> 			break;
+>+		case DPLL_A_PIN_REFERENCE_SYNC:
+>+			ret = dpll_pin_ref_sync_set(pin, a, info->extack);
+>+			if (ret)
+>+				return ret;
+>+			break;
+> 		}
+> 	}
+> 
+>diff --git a/include/linux/dpll.h b/include/linux/dpll.h
+>index 5e4f9ab1cf75..f1f1fdda67fe 100644
+>--- a/include/linux/dpll.h
+>+++ b/include/linux/dpll.h
+>@@ -95,6 +95,14 @@ struct dpll_pin_ops {
+> 			 const struct dpll_device *dpll, void *dpll_priv,
+> 			 struct dpll_pin_esync *esync,
+> 			 struct netlink_ext_ack *extack);
+>+	int (*ref_sync_set)(const struct dpll_pin *pin, void *pin_priv,
+>+			    const struct dpll_pin *ref_pin, void *ref_pin_priv,
+>+			    const enum dpll_pin_state state,
+>+			    struct netlink_ext_ack *extack);
+>+	int (*ref_sync_get)(const struct dpll_pin *pin, void *pin_priv,
+>+			    const struct dpll_pin *ref_pin, void *ref_pin_priv,
+
+"ref_pin". This is 4th name of the same variable. Weird...
+
+
+>+			    enum dpll_pin_state *state,
+>+			    struct netlink_ext_ack *extack);
+> };
+> 
+> struct dpll_pin_frequency {
+>@@ -194,6 +202,8 @@ int dpll_pin_on_pin_register(struct dpll_pin *parent, struct dpll_pin *pin,
+> void dpll_pin_on_pin_unregister(struct dpll_pin *parent, struct dpll_pin *pin,
+> 				const struct dpll_pin_ops *ops, void *priv);
+> 
+>+int dpll_pin_ref_sync_pair_add(struct dpll_pin *base, struct dpll_pin *sync);
+>+
+> int dpll_device_change_ntf(struct dpll_device *dpll);
+> 
+> int dpll_pin_change_ntf(struct dpll_pin *pin);
+>-- 
+>2.38.1
+>
 
