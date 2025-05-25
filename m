@@ -1,238 +1,357 @@
-Return-Path: <linux-rdma+bounces-10670-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10671-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0778CAC3272
-	for <lists+linux-rdma@lfdr.de>; Sun, 25 May 2025 07:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 387E0AC3279
+	for <lists+linux-rdma@lfdr.de>; Sun, 25 May 2025 07:24:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 611961898EBC
-	for <lists+linux-rdma@lfdr.de>; Sun, 25 May 2025 05:23:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C2761898FA4
+	for <lists+linux-rdma@lfdr.de>; Sun, 25 May 2025 05:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AB0F14885D;
-	Sun, 25 May 2025 05:22:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BZm6saAM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D68CE154425;
+	Sun, 25 May 2025 05:24:26 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FEE61448D5
-	for <linux-rdma@vger.kernel.org>; Sun, 25 May 2025 05:22:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AD8933DF;
+	Sun, 25 May 2025 05:24:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748150569; cv=none; b=biPZYGV0MjDBoj8KlO32rbB4x+RJJOawjl8zZ8ePV3OTvm8gEsoGxSnh/GIh99XuRYuups+RMnIwNA0NAsyEj9tqntocfPbb9diDC01Z/jDcjssO8W+cuhkNWa4G3Nk1L+bFqmV8DBLk3wkioDRdT24yQdZzzzrTr88SoSF+RTE=
+	t=1748150666; cv=none; b=U1qmjIPGtWOAi6B6x2Xj6sFW3Bwnn/yqP5/Vs6n0HJoy5iFlhmztGY318CVfY99NQ22D9RIkCvyQ3QtwJAm9dhM6IlHoI09ZfAyyXZxXhG8Jnmmgs7cMgkUtLgY6xfOjNdIdVir/twFEAD68pn0n8JqPgeyso46RJIUuvZ4/o7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748150569; c=relaxed/simple;
-	bh=Y0cKLo2CRuRqesXQHK7UPNsQP2uYigpqB/5Xc7bhblk=;
+	s=arc-20240116; t=1748150666; c=relaxed/simple;
+	bh=WeGePuB2mQxa2aS1fXPWGaff/Jp90J0KeRSN2OlulPw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Bcjl2S5w8i2MIs+y6LbpqdcceyfC0pIF5AW4Wri9rSO9HqrhXf/oIr1Eu08UsAklWP+H4YoCJK9OlY0xImMyuLv786k2oRMxGF9A3E9CFFBYPPgX5l6ScDwQqS6WATcLWnEwfeagmNQ6pnCaB5PHxyPrPWMZNYF9RgKA1+dsTtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BZm6saAM; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <c8d6bfb6-570c-48b2-be62-188e11353c5a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748150563;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ePdy++AUzSGQt0jdpQhw2NDW+rHZoCino5XFKMdBg8U=;
-	b=BZm6saAM54E6afEmIAR3+9ovXEHEjRhUAYo3Ru3Np1H78iHhMCVFbMFzLs0trouNyHDt3Z
-	+H5/v46+b94QXVBMuSqKoNIv0xJt3cmxxNGYenUQv7rBVDp7VcANbVdavGcoQbnuHGTvg/
-	r0BtzsW2Jw+Na1FWLOsdd9rDGBkl/tY=
-Date: Sun, 25 May 2025 07:22:40 +0200
+	 In-Reply-To:Content-Type; b=Yl0+l9hrSFcq3+oRev7i5VNUZZQ00ULaP8RIfeQYrUuYTXVHUQ8+j9T48VJx9Pvh1DVpV7Rk9ea9VdQLJTwrpDEFsN/iVez5pTDxY83FKpIuhpD2U9K5HEgiBWmOnTkxFpnHPzaul0BT/XlIruyhuoQuAjKL8YWsavNdRfud2sU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [192.168.2.107] (p5b13a30a.dip0.t-ipconnect.de [91.19.163.10])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 45C1161E64783;
+	Sun, 25 May 2025 07:23:36 +0200 (CEST)
+Message-ID: <86b40e25-23af-4542-86de-415677b38486@molgen.mpg.de>
+Date: Sun, 25 May 2025 07:23:34 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH for-next v3] RDMA/core: Avoid hmm_dma_map_alloc() for
- virtual DMA devices
-To: Daisuke Matsuda <dskmtsd@gmail.com>, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, leon@kernel.org, jgg@ziepe.ca,
- zyjzyj2000@gmail.com
-Cc: hch@infradead.org
-References: <20250524144328.4361-1-dskmtsd@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20250524144328.4361-1-dskmtsd@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Intel-wired-lan] [iwl-next 1/6] idpf: use reserved RDMA vectors
+ from control plane
+To: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
+Cc: intel-wired-lan@lists.osuosl.org, jgg@nvidia.com, leon@kernel.org,
+ linux-rdma@vger.kernel.org, netdev@vger.kernel.org, kuba@kernel.org,
+ anthony.l.nguyen@intel.com, Joshua Hay <joshua.a.hay@intel.com>
+References: <20250523170435.668-1-tatyana.e.nikolova@intel.com>
+ <20250523170435.668-2-tatyana.e.nikolova@intel.com>
+Content-Language: en-US
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20250523170435.668-2-tatyana.e.nikolova@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-在 2025/5/24 16:43, Daisuke Matsuda 写道:
-> Drivers such as rxe, which use virtual DMA, must not call into the DMA
-> mapping core since they lack physical DMA capabilities. Otherwise, a NULL
-> pointer dereference is observed as shown below. This patch ensures the RDMA
-> core handles virtual and physical DMA paths appropriately.
+Dear Tatyana,
+
+
+Thank you for your patch.
+
+Am 23.05.25 um 19:04 schrieb Tatyana Nikolova:
+> From: Joshua Hay <joshua.a.hay@intel.com>
 > 
-> This fixes the following kernel oops:
-> 
->   BUG: kernel NULL pointer dereference, address: 00000000000002fc
->   #PF: supervisor read access in kernel mode
->   #PF: error_code(0x0000) - not-present page
->   PGD 1028eb067 P4D 1028eb067 PUD 105da0067 PMD 0
->   Oops: Oops: 0000 [#1] SMP NOPTI
->   CPU: 3 UID: 1000 PID: 1854 Comm: python3 Tainted: G        W           6.15.0-rc1+ #11 PREEMPT(voluntary)
->   Tainted: [W]=WARN
->   Hardware name: Trigkey Key N/Key N, BIOS KEYN101 09/02/2024
->   RIP: 0010:hmm_dma_map_alloc+0x25/0x100
->   Code: 90 90 90 90 90 0f 1f 44 00 00 55 48 89 e5 41 57 41 56 49 89 d6 49 c1 e6 0c 41 55 41 54 53 49 39 ce 0f 82 c6 00 00 00 49 89 fc <f6> 87 fc 02 00 00 20 0f 84 af 00 00 00 49 89 f5 48 89 d3 49 89 cf
->   RSP: 0018:ffffd3d3420eb830 EFLAGS: 00010246
->   RAX: 0000000000001000 RBX: ffff8b727c7f7400 RCX: 0000000000001000
->   RDX: 0000000000000001 RSI: ffff8b727c7f74b0 RDI: 0000000000000000
->   RBP: ffffd3d3420eb858 R08: 0000000000000000 R09: 0000000000000000
->   R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
->   R13: 00007262a622a000 R14: 0000000000001000 R15: ffff8b727c7f74b0
->   FS:  00007262a62a1080(0000) GS:ffff8b762ac3e000(0000) knlGS:0000000000000000
->   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->   CR2: 00000000000002fc CR3: 000000010a1f0004 CR4: 0000000000f72ef0
->   PKRU: 55555554
->   Call Trace:
->    <TASK>
->    ib_init_umem_odp+0xb6/0x110 [ib_uverbs]
->    ib_umem_odp_get+0xf0/0x150 [ib_uverbs]
->    rxe_odp_mr_init_user+0x71/0x170 [rdma_rxe]
->    rxe_reg_user_mr+0x217/0x2e0 [rdma_rxe]
->    ib_uverbs_reg_mr+0x19e/0x2e0 [ib_uverbs]
->    ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0xd9/0x150 [ib_uverbs]
->    ib_uverbs_cmd_verbs+0xd19/0xee0 [ib_uverbs]
->    ? mmap_region+0x63/0xd0
->    ? __pfx_ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0x10/0x10 [ib_uverbs]
->    ib_uverbs_ioctl+0xba/0x130 [ib_uverbs]
->    __x64_sys_ioctl+0xa4/0xe0
->    x64_sys_call+0x1178/0x2660
->    do_syscall_64+0x7e/0x170
->    ? syscall_exit_to_user_mode+0x4e/0x250
->    ? do_syscall_64+0x8a/0x170
->    ? do_syscall_64+0x8a/0x170
->    ? syscall_exit_to_user_mode+0x4e/0x250
->    ? do_syscall_64+0x8a/0x170
->    ? syscall_exit_to_user_mode+0x4e/0x250
->    ? do_syscall_64+0x8a/0x170
->    ? do_user_addr_fault+0x1d2/0x8d0
->    ? irqentry_exit_to_user_mode+0x43/0x250
->    ? irqentry_exit+0x43/0x50
->    ? exc_page_fault+0x93/0x1d0
->    entry_SYSCALL_64_after_hwframe+0x76/0x7e
->   RIP: 0033:0x7262a6124ded
->   Code: 04 25 28 00 00 00 48 89 45 c8 31 c0 48 8d 45 10 c7 45 b0 10 00 00 00 48 89 45 b8 48 8d 45 d0 48 89 45 c0 b8 10 00 00 00 0f 05 <89> c2 3d 00 f0 ff ff 77 1a 48 8b 45 c8 64 48 2b 04 25 28 00 00 00
->   RSP: 002b:00007fffd08c3960 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
->   RAX: ffffffffffffffda RBX: 00007fffd08c39f0 RCX: 00007262a6124ded
->   RDX: 00007fffd08c3a10 RSI: 00000000c0181b01 RDI: 0000000000000007
->   RBP: 00007fffd08c39b0 R08: 0000000014107820 R09: 00007fffd08c3b44
->   R10: 000000000000000c R11: 0000000000000246 R12: 00007fffd08c3b44
->   R13: 000000000000000c R14: 00007fffd08c3b58 R15: 0000000014107960
->    </TASK>
-> 
-> Fixes: 1efe8c0670d6 ("RDMA/core: Convert UMEM ODP DMA mapping to caching IOVA and page linkage")
-> Closes: https://lore.kernel.org/all/3e8f343f-7d66-4f7a-9f08-3910623e322f@gmail.com/
-> Signed-off-by: Daisuke Matsuda <dskmtsd@gmail.com>
+> Fetch the number of reserved RDMA vectors from the control plane.
+> Adjust the number of reserved LAN vectors if necessary. Adjust the
+> minimum number of vectors the OS should reserve to include RDMA; and
+> fail if the OS cannot reserve enough vectors for the minimum number of
+> LAN and RDMA vectors required. Create a separate msix table for the
+> reserved RDMA vectors, which will just get handed off to the RDMA core
+> device to do with what it will.
 
-I tried to apply this commit to the following rdma branch.
-But I failed. The error is as below:
+How can this all be tested? It’d be great if you added the commands and 
+outputs.
 
-"
-Applying: RDMA/core: Avoid hmm_dma_map_alloc() for virtual DMA devices
-error: patch failed: drivers/infiniband/core/umem_odp.c:75
-error: drivers/infiniband/core/umem_odp.c: patch does not apply
-Patch failed at 0001 RDMA/core: Avoid hmm_dma_map_alloc() for virtual 
-DMA devices
-hint: Use 'git am --show-current-patch=diff' to see the failed patch
-When you have resolved this problem, run "git am --continue".
-If you prefer to skip this patch, run "git am --skip" instead.
-To restore the original branch and stop patching, run "git am --abort".
-
-"
-
-The remote branch is remotes/rdma/rdma-next
-The head commit is 3b6a1e410c7f RDMA/mlx5: Fix CC counters query for MPV
-
-I am not sure if I use the correct repository and branch or not.
-
-Best Regards,
-Zhu Yanjun
-
+> Reviewed-by: Madhu Chittim <madhu.chittim@intel.com>
+> Signed-off-by: Joshua Hay <joshua.a.hay@intel.com>
+> Signed-off-by: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
 > ---
->   drivers/infiniband/core/device.c   | 17 +++++++++++++++++
->   drivers/infiniband/core/umem_odp.c | 11 ++++++++---
->   include/rdma/ib_verbs.h            |  4 ++++
->   3 files changed, 29 insertions(+), 3 deletions(-)
+>   drivers/net/ethernet/intel/idpf/idpf.h      | 28 +++++++-
+>   drivers/net/ethernet/intel/idpf/idpf_lib.c  | 74 +++++++++++++++++----
+>   drivers/net/ethernet/intel/idpf/idpf_txrx.h |  1 +
+>   drivers/net/ethernet/intel/idpf/virtchnl2.h |  5 +-
+>   4 files changed, 92 insertions(+), 16 deletions(-)
 > 
-> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-> index b4e3e4beb7f4..abb8fed292c0 100644
-> --- a/drivers/infiniband/core/device.c
-> +++ b/drivers/infiniband/core/device.c
-> @@ -2864,6 +2864,23 @@ int ib_dma_virt_map_sg(struct ib_device *dev, struct scatterlist *sg, int nents)
->   	return nents;
->   }
->   EXPORT_SYMBOL(ib_dma_virt_map_sg);
-> +int ib_dma_virt_map_alloc(struct hmm_dma_map *map, size_t nr_entries,
-> +			  size_t dma_entry_size)
+> diff --git a/drivers/net/ethernet/intel/idpf/idpf.h b/drivers/net/ethernet/intel/idpf/idpf.h
+> index 66544faab710..8ef7120e6717 100644
+> --- a/drivers/net/ethernet/intel/idpf/idpf.h
+> +++ b/drivers/net/ethernet/intel/idpf/idpf.h
+> @@ -489,10 +489,11 @@ struct idpf_vc_xn_manager;
+>    * @flags: See enum idpf_flags
+>    * @reset_reg: See struct idpf_reset_reg
+>    * @hw: Device access data
+> - * @num_req_msix: Requested number of MSIX vectors
+>    * @num_avail_msix: Available number of MSIX vectors
+>    * @num_msix_entries: Number of entries in MSIX table
+>    * @msix_entries: MSIX table
+> + * @num_rdma_msix_entries: Available number of MSIX vectors for RDMA
+> + * @rdma_msix_entries: RDMA MSIX table
+>    * @req_vec_chunks: Requested vector chunk data
+>    * @mb_vector: Mailbox vector data
+>    * @vector_stack: Stack to store the msix vector indexes
+> @@ -542,10 +543,11 @@ struct idpf_adapter {
+>   	DECLARE_BITMAP(flags, IDPF_FLAGS_NBITS);
+>   	struct idpf_reset_reg reset_reg;
+>   	struct idpf_hw hw;
+> -	u16 num_req_msix;
+>   	u16 num_avail_msix;
+>   	u16 num_msix_entries;
+>   	struct msix_entry *msix_entries;
+> +	u16 num_rdma_msix_entries;
+> +	struct msix_entry *rdma_msix_entries;
+>   	struct virtchnl2_alloc_vectors *req_vec_chunks;
+>   	struct idpf_q_vector mb_vector;
+>   	struct idpf_vector_lifo vector_stack;
+> @@ -609,6 +611,17 @@ static inline int idpf_is_queue_model_split(u16 q_model)
+>   bool idpf_is_capability_ena(struct idpf_adapter *adapter, bool all,
+>   			    enum idpf_cap_field field, u64 flag);
+>   
+> +/**
+> + * idpf_is_rdma_cap_ena - Determine if RDMA is supported
+> + * @adapter: private data struct
+> + *
+> + * Return: true if RDMA capability is enabled, false otherwise
+> + */
+> +static inline bool idpf_is_rdma_cap_ena(struct idpf_adapter *adapter)
 > +{
-> +	if (!(nr_entries * PAGE_SIZE / dma_entry_size))
-> +		return -EINVAL;
-> +
-> +	map->dma_entry_size = dma_entry_size;
-> +	map->pfn_list = kvcalloc(nr_entries, sizeof(*map->pfn_list),
-> +				 GFP_KERNEL | __GFP_NOWARN);
-> +	if (!map->pfn_list)
-> +		return -ENOMEM;
-> +
-> +	map->dma_list = NULL;
-> +
-> +	return 0;
+> +	return idpf_is_cap_ena(adapter, IDPF_OTHER_CAPS, VIRTCHNL2_CAP_RDMA);
 > +}
-> +EXPORT_SYMBOL(ib_dma_virt_map_alloc);
->   #endif /* CONFIG_INFINIBAND_VIRT_DMA */
->   
->   static const struct rdma_nl_cbs ibnl_ls_cb_table[RDMA_NL_LS_NUM_OPS] = {
-> diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
-> index 51d518989914..a5b17be0894a 100644
-> --- a/drivers/infiniband/core/umem_odp.c
-> +++ b/drivers/infiniband/core/umem_odp.c
-> @@ -75,9 +75,14 @@ static int ib_init_umem_odp(struct ib_umem_odp *umem_odp,
->   	if (unlikely(end < page_size))
->   		return -EOVERFLOW;
->   
-> -	ret = hmm_dma_map_alloc(dev->dma_device, &umem_odp->map,
-> -				(end - start) >> PAGE_SHIFT,
-> -				1 << umem_odp->page_shift);
-> +	if (ib_uses_virt_dma(dev))
-> +		ret = ib_dma_virt_map_alloc(&umem_odp->map,
-> +					    (end - start) >> PAGE_SHIFT,
-> +					    1 << umem_odp->page_shift);
-> +	else
-> +		ret = hmm_dma_map_alloc(dev->dma_device, &umem_odp->map,
-> +					(end - start) >> PAGE_SHIFT,
-> +					1 << umem_odp->page_shift);
->   	if (ret)
->   		return ret;
->   
-> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-> index b06a0ed81bdd..9ea41f288736 100644
-> --- a/include/rdma/ib_verbs.h
-> +++ b/include/rdma/ib_verbs.h
-> @@ -36,6 +36,7 @@
->   #include <linux/irqflags.h>
->   #include <linux/preempt.h>
->   #include <linux/dim.h>
-> +#include <linux/hmm-dma.h>
->   #include <uapi/rdma/ib_user_verbs.h>
->   #include <rdma/rdma_counter.h>
->   #include <rdma/restrack.h>
-> @@ -4221,6 +4222,9 @@ static inline void ib_dma_unmap_sg_attrs(struct ib_device *dev,
->   				   dma_attrs);
+> +
+>   #define IDPF_CAP_RSS (\
+>   	VIRTCHNL2_CAP_RSS_IPV4_TCP	|\
+>   	VIRTCHNL2_CAP_RSS_IPV4_TCP	|\
+> @@ -663,6 +676,17 @@ static inline u16 idpf_get_reserved_vecs(struct idpf_adapter *adapter)
+>   	return le16_to_cpu(adapter->caps.num_allocated_vectors);
 >   }
 >   
-> +int ib_dma_virt_map_alloc(struct hmm_dma_map *map, size_t nr_entries,
-> +			  size_t dma_entry_size);
+> +/**
+> + * idpf_get_reserved_rdma_vecs - Get reserved RDMA vectors
+> + * @adapter: private data struct
+> + *
+> + * Return: number of vectors reserved for RDMA
+> + */
+> +static inline u16 idpf_get_reserved_rdma_vecs(struct idpf_adapter *adapter)
+> +{
+> +	return le16_to_cpu(adapter->caps.num_rdma_allocated_vectors);
+> +}
 > +
 >   /**
->    * ib_dma_map_sgtable_attrs - Map a scatter/gather table to DMA addresses
->    * @dev: The device for which the DMA addresses are to be created
+>    * idpf_get_default_vports - Get default number of vports
+>    * @adapter: private data struct
+> diff --git a/drivers/net/ethernet/intel/idpf/idpf_lib.c b/drivers/net/ethernet/intel/idpf/idpf_lib.c
+> index aa755dedb41d..0d5c57502cac 100644
+> --- a/drivers/net/ethernet/intel/idpf/idpf_lib.c
+> +++ b/drivers/net/ethernet/intel/idpf/idpf_lib.c
+> @@ -87,6 +87,8 @@ void idpf_intr_rel(struct idpf_adapter *adapter)
+>   	idpf_deinit_vector_stack(adapter);
+>   	kfree(adapter->msix_entries);
+>   	adapter->msix_entries = NULL;
+> +	kfree(adapter->rdma_msix_entries);
+> +	adapter->rdma_msix_entries = NULL;
+>   }
+>   
+>   /**
+> @@ -314,13 +316,33 @@ int idpf_req_rel_vector_indexes(struct idpf_adapter *adapter,
+>    */
+>   int idpf_intr_req(struct idpf_adapter *adapter)
+>   {
+> +	u16 num_lan_vecs, min_lan_vecs, num_rdma_vecs = 0, min_rdma_vecs = 0;
+>   	u16 default_vports = idpf_get_default_vports(adapter);
+>   	int num_q_vecs, total_vecs, num_vec_ids;
+>   	int min_vectors, v_actual, err;
+
+Unrelated, but `v_actual` is strangely named, when all other variables 
+seem to use vec.
+
+>   	unsigned int vector;
+>   	u16 *vecids;
+> +	int i;
+
+size_t?
+
+>   
+>   	total_vecs = idpf_get_reserved_vecs(adapter);
+> +	num_lan_vecs = total_vecs;
+> +	if (idpf_is_rdma_cap_ena(adapter)) {
+> +		num_rdma_vecs = idpf_get_reserved_rdma_vecs(adapter);
+> +		min_rdma_vecs = IDPF_MIN_RDMA_VEC;
+> +
+> +		if (!num_rdma_vecs) {
+> +			/* If idpf_get_reserved_rdma_vecs is 0, vectors are
+> +			 * pulled from the LAN pool.
+> +			 */
+> +			num_rdma_vecs = min_rdma_vecs;
+> +		} else if (num_rdma_vecs < min_rdma_vecs) {
+> +			dev_err(&adapter->pdev->dev,
+> +				"Not enough vectors reserved for RDMA (min: %u, current: %u)\n",
+> +				min_rdma_vecs, num_rdma_vecs);
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+>   	num_q_vecs = total_vecs - IDPF_MBX_Q_VEC;
+>   
+>   	err = idpf_send_alloc_vectors_msg(adapter, num_q_vecs);
+> @@ -331,52 +353,75 @@ int idpf_intr_req(struct idpf_adapter *adapter)
+>   		return -EAGAIN;
+>   	}
+>   
+> -	min_vectors = IDPF_MBX_Q_VEC + IDPF_MIN_Q_VEC * default_vports;
+> +	min_lan_vecs = IDPF_MBX_Q_VEC + IDPF_MIN_Q_VEC * default_vports;
+> +	min_vectors = min_lan_vecs + min_rdma_vecs;
+>   	v_actual = pci_alloc_irq_vectors(adapter->pdev, min_vectors,
+>   					 total_vecs, PCI_IRQ_MSIX);
+>   	if (v_actual < min_vectors) {
+> -		dev_err(&adapter->pdev->dev, "Failed to allocate MSIX vectors: %d\n",
+> +		dev_err(&adapter->pdev->dev, "Failed to allocate minimum MSIX vectors required: %d\n",
+>   			v_actual);
+>   		err = -EAGAIN;
+>   		goto send_dealloc_vecs;
+>   	}
+>   
+> -	adapter->msix_entries = kcalloc(v_actual, sizeof(struct msix_entry),
+> -					GFP_KERNEL);
+> +	if (idpf_is_rdma_cap_ena(adapter)) {
+> +		if (v_actual < total_vecs) {
+> +			dev_warn(&adapter->pdev->dev,
+> +				 "Warning: not enough vectors available. Defaulting to minimum for RDMA and remaining for LAN.\n");
+
+Also log `v_actual`, `total_vecs` and `IDPF_MIN_RDMA_VEC`?
+
+> +			num_rdma_vecs = IDPF_MIN_RDMA_VEC;
+> +		}
+>   
+> +		adapter->rdma_msix_entries =
+> +			kcalloc(num_rdma_vecs,
+> +				sizeof(struct msix_entry), GFP_KERNEL);
+> +		if (!adapter->rdma_msix_entries) {
+> +			err = -ENOMEM;
+> +			goto free_irq;
+> +		}
+> +	}
+> +
+> +	num_lan_vecs = v_actual - num_rdma_vecs;
+> +	adapter->msix_entries = kcalloc(num_lan_vecs, sizeof(struct msix_entry),
+> +					GFP_KERNEL);
+>   	if (!adapter->msix_entries) {
+>   		err = -ENOMEM;
+> -		goto free_irq;
+> +		goto free_rdma_msix;
+>   	}
+>   
+>   	idpf_set_mb_vec_id(adapter);
+>   
+> -	vecids = kcalloc(total_vecs, sizeof(u16), GFP_KERNEL);
+> +	vecids = kcalloc(v_actual, sizeof(u16), GFP_KERNEL);
+>   	if (!vecids) {
+>   		err = -ENOMEM;
+>   		goto free_msix;
+>   	}
+>   
+> -	num_vec_ids = idpf_get_vec_ids(adapter, vecids, total_vecs,
+> +	num_vec_ids = idpf_get_vec_ids(adapter, vecids, v_actual,
+>   				       &adapter->req_vec_chunks->vchunks);
+>   	if (num_vec_ids < v_actual) {
+>   		err = -EINVAL;
+>   		goto free_vecids;
+>   	}
+>   
+> -	for (vector = 0; vector < v_actual; vector++) {
+> -		adapter->msix_entries[vector].entry = vecids[vector];
+> -		adapter->msix_entries[vector].vector =
+> +	for (i = 0, vector = 0; vector < num_lan_vecs; vector++, i++) {
+> +		adapter->msix_entries[i].entry = vecids[vector];
+> +		adapter->msix_entries[i].vector =
+> +			pci_irq_vector(adapter->pdev, vector);
+
+Excuse my ignorance, but why are two counting variables needed, that 
+seem to be identical?
+
+> +	}
+> +	for (i = 0; i < num_rdma_vecs; vector++, i++) {
+> +		adapter->rdma_msix_entries[i].entry = vecids[vector];
+> +		adapter->rdma_msix_entries[i].vector =
+>   			pci_irq_vector(adapter->pdev, vector);
+>   	}
+>   
+> -	adapter->num_req_msix = total_vecs;
+> -	adapter->num_msix_entries = v_actual;
+>   	/* 'num_avail_msix' is used to distribute excess vectors to the vports
+>   	 * after considering the minimum vectors required per each default
+>   	 * vport
+>   	 */
+> -	adapter->num_avail_msix = v_actual - min_vectors;
+> +	adapter->num_avail_msix = num_lan_vecs - min_lan_vecs;
+> +	adapter->num_msix_entries = num_lan_vecs;
+> +	if (idpf_is_rdma_cap_ena(adapter))
+> +		adapter->num_rdma_msix_entries = num_rdma_vecs;
+>   
+>   	/* Fill MSIX vector lifo stack with vector indexes */
+>   	err = idpf_init_vector_stack(adapter);
+> @@ -398,6 +443,9 @@ int idpf_intr_req(struct idpf_adapter *adapter)
+>   free_msix:
+>   	kfree(adapter->msix_entries);
+>   	adapter->msix_entries = NULL;
+> +free_rdma_msix:
+> +	kfree(adapter->rdma_msix_entries);
+> +	adapter->rdma_msix_entries = NULL;
+>   free_irq:
+>   	pci_free_irq_vectors(adapter->pdev);
+>   send_dealloc_vecs:
+> diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.h b/drivers/net/ethernet/intel/idpf/idpf_txrx.h
+> index b029f566e57c..9cb97397d89b 100644
+> --- a/drivers/net/ethernet/intel/idpf/idpf_txrx.h
+> +++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.h
+> @@ -57,6 +57,7 @@
+>   /* Default vector sharing */
+>   #define IDPF_MBX_Q_VEC		1
+>   #define IDPF_MIN_Q_VEC		1
+> +#define IDPF_MIN_RDMA_VEC	2
+>   
+>   #define IDPF_DFLT_TX_Q_DESC_COUNT		512
+>   #define IDPF_DFLT_TX_COMPLQ_DESC_COUNT		512
+> diff --git a/drivers/net/ethernet/intel/idpf/virtchnl2.h b/drivers/net/ethernet/intel/idpf/virtchnl2.h
+> index 63deb120359c..80c17e4a394e 100644
+> --- a/drivers/net/ethernet/intel/idpf/virtchnl2.h
+> +++ b/drivers/net/ethernet/intel/idpf/virtchnl2.h
+> @@ -473,6 +473,8 @@ VIRTCHNL2_CHECK_STRUCT_LEN(8, virtchnl2_version_info);
+>    *			segment offload.
+>    * @max_hdr_buf_per_lso: Max number of header buffers that can be used for
+>    *			 an LSO.
+> + * @num_rdma_allocated_vectors: Maximum number of allocated RDMA vectors for
+> + *				the device.
+>    * @pad1: Padding for future extensions.
+>    *
+>    * Dataplane driver sends this message to CP to negotiate capabilities and
+> @@ -520,7 +522,8 @@ struct virtchnl2_get_capabilities {
+>   	__le32 device_type;
+>   	u8 min_sso_packet_len;
+>   	u8 max_hdr_buf_per_lso;
+> -	u8 pad1[10];
+> +	__le16 num_rdma_allocated_vectors;
+> +	u8 pad1[8];
+>   };
+>   VIRTCHNL2_CHECK_STRUCT_LEN(80, virtchnl2_get_capabilities);
+
+
+Kind regards,
+
+Paul
 
 
