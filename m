@@ -1,137 +1,146 @@
-Return-Path: <linux-rdma+bounces-10733-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10734-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AEA8AC438F
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 May 2025 19:53:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1184AAC4395
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 May 2025 20:00:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8CB017850D
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 May 2025 17:53:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 134B31895250
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 May 2025 18:01:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 040DD23D2BC;
-	Mon, 26 May 2025 17:53:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91C1023F295;
+	Mon, 26 May 2025 18:00:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EBDvkXWI"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="f7vNnabh"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5880B2A1A4;
-	Mon, 26 May 2025 17:53:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C3E6F53E
+	for <linux-rdma@vger.kernel.org>; Mon, 26 May 2025 18:00:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748281993; cv=none; b=H1b5suVcWMx9W74BiDI+TMS6PdRqQrIU6GKkVXOYCrtl3M9apN7mT/sQC34I2lWCN65VAmlsf0JbSOwg0005l1RQ1ozcbUma1OO4MDq79anT7/bG7+yf7RLWA6QTnEwQbWApe7ippgT13TUHUiXNgZRy2crVP6SynxZ0JFJ9WbM=
+	t=1748282446; cv=none; b=NJ38nZWmplY9aIwHp16K8Thqjia2w6+0OnzkQMs/iJxZmwwwAqg/yVs/Jd4p/de/a3Fnv3Vtbnk1MQe8UTAeDmLp4BhqmaHn1+w2YbLuH+aIPqu+admf84KTvuKGe2GSlMFgV0s3axBbORHr8cD8K3iOBUOyYWsq2K1yNIv4GTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748281993; c=relaxed/simple;
-	bh=nNrK6YYKXxNt5ah8SdqHu4+Qazda+8qswns2KblJlu8=;
+	s=arc-20240116; t=1748282446; c=relaxed/simple;
+	bh=rI+licYUolL5nhcW9GoIZLfSpbwxMtL6YthxBl22SZU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KOv+3CNBiuot4EA7YC4iapHFMfu5uIB7Ficv5xVbvw4nCpQ69MqQn/L7zdFC95Fc0v0M/mzSGIADXhKrvdighybLTPtqdqvR3Si2BN1RiIw3xXozCkaPF7hAub2dcA37Yc3WEUY4z2IRnSnntdW2pTwD8B9PoccpBywpXv0YjgI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EBDvkXWI; arc=none smtp.client-ip=209.85.210.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-73502b47f24so1369950a34.3;
-        Mon, 26 May 2025 10:53:12 -0700 (PDT)
+	 To:Cc:Content-Type; b=sHRA8cd7cbY9EDZFW7JJgvkxiu6ehYx+UPpXXyS5xtCDoiTHhhiI66kkADsSY/7/uA5w6ifGaMCgqSbRF5BoKc4OdVf+dyIsc6K4OVcQtKbOCVh9mSbLdn1LlZKQOOseri/DyuhkRP3t5YJi7es4bsXp7RVIDeoM8sqJqEakX8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=f7vNnabh; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2348ac8e0b4so85455ad.1
+        for <linux-rdma@vger.kernel.org>; Mon, 26 May 2025 11:00:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748281991; x=1748886791; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1748282444; x=1748887244; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ulsmYMmE1xUbmctzUeDHmMIiGFwac4tdbygToyXWamg=;
-        b=EBDvkXWI7fU4amtRettdaLX7HVARA4gv8TC+jisz5081wKno72VsuJ1YM7y3NmNIve
-         HL5EAkuOE9d2hTAL7CRjeVF2LhDWN6fKRa8yu3hJpaHyxWd8Em3UTb/fxMBTWQxrbqdz
-         H8EWN52CA06e5sXyLxgRaD3u9uWG7sJP0Y9QKsBSkvwUobjUmWacnBpAx3+sbug0jE79
-         HY1QUDWSH2WX3kCVdFnuPLuICg58rh/UjxiSvOQ3NKl3sV6Dy/Oep+y9f3CE1gL6uGM4
-         fzd4bhMSCECp7L71I05lU8pvweQEizz+a52n4LGaiPM+Nxah1ftmSf5xUP79S42Hg47X
-         I48A==
+        bh=BE00iNGaQOBcvJTWH1HJdDZjS8vODDdLLtmR/QEPXS8=;
+        b=f7vNnabhvdOz0PP/Pa+YruFib71wohXXIsckWp4N7raMihaWFWdtGU0iwOCFIUuKsp
+         rHDtYtQm8cvpalAzewKWO5Qsu2Ni/Lj388MvKw+8Ubnks0PPr3Bu6WhunmtXo3CrKUTv
+         FEa4NQNNzeBdCLIOcO2Ablmh3WcJ7VDyumAWkhPl2NY1/AHTPrvmAGd25fjGTMsm7xOb
+         OrEVPBJ3NPzLIW5m/zqzTVAZp7HSkx5QIvBX9xBrQ/MifvQxp/reImpMB4t39wpUcN8K
+         HaHm7RrnACuH2U8cWM/prs4K4HStYaQkftkA6T25bScCeeNtaw8zc0UukANCGaMPR19P
+         GySA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748281991; x=1748886791;
+        d=1e100.net; s=20230601; t=1748282444; x=1748887244;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ulsmYMmE1xUbmctzUeDHmMIiGFwac4tdbygToyXWamg=;
-        b=nZ12000CZNVt6+215q7OUPVIyzfxwpaiy09fWP5jlQk5nkf7zRD37PL+zxFTX83CQY
-         fE/7CIzVGbpeKIIxXUYdT9bOJihq1qYArDDEG9meTbKrYc22XWVSukDmm8id0CR8Qbma
-         j5OakBF+HeZaAQdB3O16BuT/FqFjtg457ripYuvfk3uIwOd+s/7Vv95aHjnniygPvzEB
-         E5rGM9U7mJtOfl+ZnSfdYkEEXe1kLmsthvKBF0hyG5bm9EGEQ+DTKoIiP1ELugNb+oQH
-         xga7OkKD/qcpoWed+J4/fu3G12QBWjNyjIu/uSX61Gt/NXesOfix28f5kQXy9I9nXTFf
-         xaZA==
-X-Forwarded-Encrypted: i=1; AJvYcCWu57R38OSaGDRUBUh/ohHyXwRO5AwG1XWH0aLK2LGn+2E5m+8vYeIoaxWs6eRBtYZ+OwvY0Cjnd99rI8s=@vger.kernel.org, AJvYcCXd5QlEgdzjV8ww/P0obuoxCwvJxyHZTf2KOHBWadl1zuUNnzMx3aTrrJCCQ/R1NEmL69dUsMZUp63XNQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yww/1Qp8TJ/1exLUo0W0EqLKUCjfJITWQfIcLA0kUs/mXf4neq8
-	gueGGj7+vkeR6dwC48BKzMfb7v6YQOGuFV69gAyf0IwPujWi6EjUNVPp97GEWhCkUCTY2LlLPA+
-	UkmpoHYV5/8IUVXs9dgvxrjRn77tLeKs=
-X-Gm-Gg: ASbGncsE1Dlpj7/mC0D2k0/wa2VdOJ4skim8L0LxpD4qBJEi3r10sHhne9tJwnWD8fG
-	omiA/slUwwzsQUHI3a9ERHmv6jVYH++29A98aQDGk3yvOe3k0LiTS5CgrUVep5D2h0KZXKEcQhn
-	T0kt1arcvrMuL/EpySZYIYGWrOgOTlzBhUzWErTyw1ATk=
-X-Google-Smtp-Source: AGHT+IFs0D7+cR9FJaHXuX1a5FrjxV5JqlnkXYUx55jl/OJ/Qe7INh47qfrrlQwWDcHo7WCZkTdOme/8CNgKYnu3Cio=
-X-Received: by 2002:a05:6808:320a:b0:401:e963:e973 with SMTP id
- 5614622812f47-40646873007mr5662803b6e.30.1748281991290; Mon, 26 May 2025
- 10:53:11 -0700 (PDT)
+        bh=BE00iNGaQOBcvJTWH1HJdDZjS8vODDdLLtmR/QEPXS8=;
+        b=TQfjfjlkXg90tn1tlY17kWU5ngeyWVYu4KMRpkc2OsxwAebtQrmkwlFm5ezILiatYu
+         PrntiylXtRIIb+mDyoaOwoHxjqvc9K9PHXoz203JTLkehna6WP5RB33gojN1HLp2mFNM
+         nmQb2HCh9byF0N2GuVtqqkgwi2dcyBpIxorowQlgjDpCbGW1g58/Ly+BTf+2GczAFBe7
+         6eR5I3WZJU3MX78Ci9iEiFHZ/IAjWbNQvQBLjL5ypgnurzJMoby4cFXYjMzMqW7pScGz
+         G/XCVRe7FniAH7Ezj/NzYoKP61Z5w4PruJHQeLK9UOdoHS3hS/+j54swXRlxj0/g2Ktp
+         BCAA==
+X-Forwarded-Encrypted: i=1; AJvYcCXNsLEMCJ7NKGi4glIoa9hyJsvmn0SQDulZScDvWBp6umsG52c8dAUCVd2+2N8ipzBAhMa51jKUd2Cl@vger.kernel.org
+X-Gm-Message-State: AOJu0YwJ3uVG4OFe8nzlaka31myyNguZR5TYR0bfqUYgoATD0nOZlVnc
+	s0etwOg3/ioDe2+1OOHoWpm/PW4/mD6DHb3kn/tAriWiWk15Da6BFWJiHOzHek18Spk+YiIEMN/
+	0myp7xVUgWPrCTwiF1/tZQrCNO5/L7+p6Ee/+LcNc
+X-Gm-Gg: ASbGnct9DAFArB7AgBet0eNI9Cc4WGfGOIEQZBWlwJ2z1BOC0jrkK8/9/3moe75WAM/
+	5YroPT0wng61+dlHfwqiK0MdIKhOrqJd3em8sfKXCtM6RGXKJBiT71fo3HSWnDWe25OeoM/omVN
+	1PXAunaUGwRxntfXBbsM5HS01pRz1XnMg6WqSLwOa8MU/H
+X-Google-Smtp-Source: AGHT+IEtmxefPpCTSi1gvHA9a9DIBuanG4oeTpITjr5Cfh4ZkHf1HTV7gnyeYgG8lD3UeMrlJvwRa++zz4aloVbC260=
+X-Received: by 2002:a17:902:ec8d:b0:216:6ecd:8950 with SMTP id
+ d9443c01a7336-2341b52771amr4576785ad.19.1748282443435; Mon, 26 May 2025
+ 11:00:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250524144328.4361-1-dskmtsd@gmail.com> <CAEz=LcsmU0A1oa40fVnh_rEDE+wxwfSo0HpKFa_1BzZGzGG71g@mail.gmail.com>
- <20250525060549.GV7435@unreal>
-In-Reply-To: <20250525060549.GV7435@unreal>
-From: Greg Sword <gregsword0@gmail.com>
-Date: Tue, 27 May 2025 01:52:58 +0800
-X-Gm-Features: AX0GCFuljsHn80Jjc9veZAmLVsJvzdAbnaH6AeX0CUeYQlehRiYzjnxqsm4TxUY
-Message-ID: <CAEz=Lcu3KtR5vNK5KbUcUzziit7z=rJofNQjVB-FA=35jiAseQ@mail.gmail.com>
-Subject: Re: [PATCH for-next v3] RDMA/core: Avoid hmm_dma_map_alloc() for
- virtual DMA devices
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Daisuke Matsuda <dskmtsd@gmail.com>, linux-kernel@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, jgg@ziepe.ca, zyjzyj2000@gmail.com, 
-	hch@infradead.org
+References: <20250523032609.16334-1-byungchul@sk.com> <20250523032609.16334-14-byungchul@sk.com>
+ <CAHS8izOX0j04=KB-=_kpyR+_HZHk+4hKK-xTEtsGNNHzZFvhKQ@mail.gmail.com>
+ <20250526030858.GA56990@system.software.com> <20250526081247.GA47983@system.software.com>
+In-Reply-To: <20250526081247.GA47983@system.software.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Mon, 26 May 2025 11:00:30 -0700
+X-Gm-Features: AX0GCFsrsXIO7EOCYLWTkGfVc6XTbNgw4nzAjpdO0g7ysDNdP-dZJFnwMLd86jQ
+Message-ID: <CAHS8izOMkgiWnkixFLhJ1+7OWFbYv+N0am83jV_2cgBecj-jxw@mail.gmail.com>
+Subject: Re: [PATCH 13/18] mlx5: use netmem descriptor and APIs for page pool
+To: Byungchul Park <byungchul@sk.com>
+Cc: willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org, 
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org, 
+	akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com, 
+	andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com, 
+	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, 
+	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com, 
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz, 
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org, 
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, May 25, 2025 at 2:05=E2=80=AFPM Leon Romanovsky <leon@kernel.org> w=
+On Mon, May 26, 2025 at 1:12=E2=80=AFAM Byungchul Park <byungchul@sk.com> w=
 rote:
 >
-> On Sun, May 25, 2025 at 05:27:23AM +0800, Greg Sword wrote:
-> > On Sat, May 24, 2025 at 10:43=E2=80=AFPM Daisuke Matsuda <dskmtsd@gmail=
-.com> wrote:
+> On Mon, May 26, 2025 at 12:08:58PM +0900, Byungchul Park wrote:
+> > On Fri, May 23, 2025 at 10:13:27AM -0700, Mina Almasry wrote:
+> > > On Thu, May 22, 2025 at 8:26=E2=80=AFPM Byungchul Park <byungchul@sk.=
+com> wrote:
+> > > >
+> > > > To simplify struct page, the effort to seperate its own descriptor =
+from
+> > > > struct page is required and the work for page pool is on going.
+> > > >
+> > > > Use netmem descriptor and APIs for page pool in mlx5 code.
+> > > >
+> > > > Signed-off-by: Byungchul Park <byungchul@sk.com>
 > > >
-> > > Drivers such as rxe, which use virtual DMA, must not call into the DM=
-A
-> > > mapping core since they lack physical DMA capabilities. Otherwise, a =
-NULL
-> > > pointer dereference is observed as shown below. This patch ensures th=
-e RDMA
-> > > core handles virtual and physical DMA paths appropriately.
->
-> <...>
->
-> > > +EXPORT_SYMBOL(ib_dma_virt_map_alloc);
-> > >  #endif /* CONFIG_INFINIBAND_VIRT_DMA */
+> > > Just FYI, you're racing with Nvidia adding netmem support to mlx5 as
+> > > well. Probably they prefer to take their patch. So try to rebase on
+> > > top of that maybe? Up to you.
 > > >
-> >
-> > Your ODP patches have caused significant issues, including system
-> > instability. The latest version of your patches has led to critical
-> > failures in our environment. Due to these ongoing problems, we have
-> > decided that our system will no longer incorporate your patches going
-> > forward.
+> > > https://lore.kernel.org/netdev/1747950086-1246773-9-git-send-email-ta=
+riqt@nvidia.com/
+> > >
+> > > I also wonder if you should send this through the net-next tree, sinc=
+e
+> > > it seem to race with changes that are going to land in net-next soon.
+> > > Up to you, I don't have any strong preference. But if you do send to
+> > > net-next, there are a bunch of extra rules to keep in mind:
+> > >
+> > > https://docs.kernel.org/process/maintainer-netdev.html
 >
-> Please be civil and appreciate the work done by other people. Daisuke
-> invested a lot of effort to implement ODP which is very non-trivial part
-> of RDMA HW.
+> It looks like I have to wait for net-next to reopen, maybe until the
+> next -rc1 released..  Right?  However, I can see some patches posted now.
+> Hm..
 >
-> If you can do it better, just do it, we will be happy to merge your
-> patches too.
->
-> At the end, we are talking about -next branch, which has potential to be
-> unstable, so next time provide detailed bug report to support your claims=
-.
->
-> In addition, it was me who broke RXE.
 
-Is it an Honor?
+We try to stick to 15 patches, but I've seen up to 20 sometimes get reviewe=
+d.
 
->
-> Thanks
+net-next just closed unfortunately, so yes you'll need to wait until
+it reopens. RFCs are welcome in the meantime, and if you want to stick
+to mm-unstable that's fine by me too, FWIW.
+
+--=20
+Thanks,
+Mina
 
