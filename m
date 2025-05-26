@@ -1,260 +1,148 @@
-Return-Path: <linux-rdma+bounces-10696-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10697-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4343AC36BF
-	for <lists+linux-rdma@lfdr.de>; Sun, 25 May 2025 22:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CD0B7AC3780
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 May 2025 02:57:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74944168BD0
-	for <lists+linux-rdma@lfdr.de>; Sun, 25 May 2025 20:31:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63829170402
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 May 2025 00:57:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7262D1A2389;
-	Sun, 25 May 2025 20:31:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="QXnybs2X"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24FB64AEE2;
+	Mon, 26 May 2025 00:56:54 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2051.outbound.protection.outlook.com [40.107.244.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E39247F9;
-	Sun, 25 May 2025 20:31:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.51
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748205077; cv=fail; b=Vt/TszH05yX/Ph95GyXSFE6PGeSryPkOm2AFkGFXtuyWhvwQb1WetYDC8UjZtaMd+Ja0AbWfpvg1drmNYuNyt+g/iJ5GJ1fLCUaLNY888LFMTEY55OOkJ5OJfjQagkxbSK4mVEpY36TZhiVqat64eaykoU0LX1yr+sqqg7cz+6c=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748205077; c=relaxed/simple;
-	bh=g83MZvlDdbyM5TWteeR6U7U3oyTvRd5TtxL3rE4tTjc=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=YpXyT2IVtBx4+M1Gelzdn6xdn2y0ZcNbQdxjiv36F0SgZQfHUicmQwka07Vxt3eTcVDU5ddGkWp4jlyosC5h2hEcFZGkiXe3IvrOUyvYqnxniFjd1tzoWr0D8rnHPi+LitiHMewN8+MMn6Po6pNLNncqEmeSgMwurASZqzAhc9I=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=QXnybs2X; arc=fail smtp.client-ip=40.107.244.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=rhyWJHKe5s1TLeRI0rSWaHdOKzOkTvY9PmlUJyrn3Vk3+yyawStnoG8GgnmG/MrXtm7IUoNE9uxCH2f0xAb5pubrqwgHji+81mG8zbGpBwFoz0iyW6T0WgsCFOUepDsrJ11Osbza2FZG7T2PLxI3cqFM8quTUNhdtMtJQcJvz43j7GzcXOAr33F7g70wXYnVmjNoO0CqTEPDzo6LqlXFw6wUHJVrKykHu/cAjGeluc8g2ilkeRqmmQ09mJDX4+lPwgrstfBC2MwLMhN4N2pIVbAd3Ojrm8xz/FydKbCyZizTWF1Evmhay5SQsKyLnhnmJ4M7ZUqHhK6qJIhnSV+NFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=krnJaukq++C57Z1QDW65zgCiwWvQHJFfQoRxOlXY9Ig=;
- b=sQ2f5t0HX/Vih6bUj02eJupO0iwV90YQUzdVyz5InhqlN0HCFDzvswasDlb5cPGCltuo0Ojzc+5c1ED0ySkKFs/7VmJbqTvrLGZyQj4zp0N3C57rj+dTOACNewEQiR7zEuZpHCRTVJ6GhxKK1+BqX6ty0BQ+kLIXuqfCas+LYbkbjTpVB3sWOKkAuKLidOETIzpp0zW69nCR1gcg6s4JgcPsujiM0ytymNLrsuoacxxl3o+Hq1iDn8H+9iJj0aiRAJ2UcytkJ6rzZ4seSNjo5x7Oz9zkvOiaODfCwq7rLgLnrFsaBO55Y7H+LcDBohNU/89Ixgh13RO//itjkzaZ/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=krnJaukq++C57Z1QDW65zgCiwWvQHJFfQoRxOlXY9Ig=;
- b=QXnybs2Xz0KLusaJsVFGzDvU5PJTD/mD4VrXw2VXnSQhwzrugs9WanIAlkV2CiNcuLLD+WKIjMLRsUeJKxo1HBc54qe+mUOEMkCUCSngxwYBoy65JwxhH0k49qp6YGWjopYL7ouB4CwxEDaNgs3kSldF+DUKUY6i8x/I+F5RP7YkNCQ+zzhqG5X0UJAaCw2ya/ovOiDpcVqLok5Xv9ud3Z0x+ZD2m97rfLuwX1p21TCM7/8t6i47Tedj7AO6l66M+yXV1epXgIRADxm/hTqgoXz8IPGWYhd1h/jiPyrVdD20lusLF5HfroriRAuQJWR2rTg5tkH4DbiTBHK63AMtPg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH3PR12MB7500.namprd12.prod.outlook.com (2603:10b6:610:148::17)
- by IA0PR12MB7506.namprd12.prod.outlook.com (2603:10b6:208:442::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8769.26; Sun, 25 May
- 2025 20:31:11 +0000
-Received: from CH3PR12MB7500.namprd12.prod.outlook.com
- ([fe80::7470:5626:d269:2bf2]) by CH3PR12MB7500.namprd12.prod.outlook.com
- ([fe80::7470:5626:d269:2bf2%5]) with mapi id 15.20.8769.019; Sun, 25 May 2025
- 20:31:10 +0000
-Message-ID: <3a3ce4c2-5cc1-4deb-be47-d936b61c42c4@nvidia.com>
-Date: Sun, 25 May 2025 23:31:01 +0300
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next V10 2/6] selftest: netdevsim: Add devlink rate
- tc-bw test
-To: Jakub Kicinski <kuba@kernel.org>, Tariq Toukan <ttoukan.linux@gmail.com>
-Cc: Carolina Jubran <cjubran@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
- "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
- Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Jiri Pirko <jiri@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>,
- Donald Hunter <donald.hunter@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
- Jonathan Corbet <corbet@lwn.net>, Saeed Mahameed <saeedm@nvidia.com>,
- Leon Romanovsky <leon@kernel.org>, Shuah Khan <shuah@kernel.org>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Moshe Shemesh <moshe@nvidia.com>,
- Mark Bloch <mbloch@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>
-References: <1747766287-950144-1-git-send-email-tariqt@nvidia.com>
- <1747766287-950144-3-git-send-email-tariqt@nvidia.com>
- <20250520155957.04b27217@kernel.org>
- <80b40828-8fa3-4313-8c98-823ac7c055c1@gmail.com>
- <20250521071007.0cb6f546@kernel.org>
-Content-Language: en-US
-From: Gal Pressman <gal@nvidia.com>
-In-Reply-To: <20250521071007.0cb6f546@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MM0P280CA0114.SWEP280.PROD.OUTLOOK.COM
- (2603:10a6:190:9::11) To CH3PR12MB7500.namprd12.prod.outlook.com
- (2603:10b6:610:148::17)
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E695F9D9;
+	Mon, 26 May 2025 00:56:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1748221014; cv=none; b=VDSWMKDopDxjlEbdXGC3OkVouuzGAYUV2T0f60GodDHBGmlWAy/clo5kwkmXWpRjS/WyzK2NPkIlFiwy4Y6dZHhDtbifHxEtTnCKos5Yj2TO33en57lTZ9ZGbT/y4ZxVahiDiEW0F37aBlIsaOVoTxPhdvv1jbJjdXbV5rbtKnk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1748221014; c=relaxed/simple;
+	bh=K47UkHVob1O4NflDYAefhNTIq7anxymMfXawllReXnM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PQnAJtJBjHQydwzMjJsjzdpCSL6yge9c6fGp2iRqniMyW7/FpxMYVL3FsjaGr0JM/5IAQ7PjJcIdkop9Ou4i4KpW+GngABILClcedTInoX5dT/P8M2ZtBUOlXMUHp6wOfe2GplemJcx+61MzWMr26EzEIZ5djTuYOiiGN7zdxf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-681ff7000002311f-4f-6833bc4813ec
+Date: Mon, 26 May 2025 09:56:34 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc: willy@infradead.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, kuba@kernel.org, almasrymina@google.com,
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
+	akpm@linux-foundation.org, davem@davemloft.net,
+	john.fastabend@gmail.com, andrew+netdev@lunn.ch,
+	asml.silence@gmail.com, tariqt@nvidia.com, edumazet@google.com,
+	pabeni@redhat.com, saeedm@nvidia.com, leon@kernel.org,
+	ast@kernel.org, daniel@iogearbox.net, david@redhat.com,
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+	horms@kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+	vishal.moola@gmail.com
+Subject: Re: [PATCH 01/18] netmem: introduce struct netmem_desc
+ struct_group_tagged()'ed on struct net_iov
+Message-ID: <20250526005634.GA74632@system.software.com>
+References: <20250523032609.16334-1-byungchul@sk.com>
+ <20250523032609.16334-2-byungchul@sk.com>
+ <87bjrjn1ki.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB7500:EE_|IA0PR12MB7506:EE_
-X-MS-Office365-Filtering-Correlation-Id: c03dc37e-ec15-404a-810f-08dd9bcb15b0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|7416014|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?OVhDWmFLck5FY0pFblFINUdEdzkxcnpmMm1yZWRUTlZCNHl4ZElyU3RleURF?=
- =?utf-8?B?SmdTQk5RaXZxdzkzQWF0MjJmSzUwNW5oM1A0bjVCejZDOUwzbTkzR3hhOUpo?=
- =?utf-8?B?a0xoQnl1YjZjUUd5VWFBcFlZODBPOWxKTlhvRDB5TDhnYkQ2YWljQUVwS0oy?=
- =?utf-8?B?cDBtZTJBSFhQY0tpM1hGbDk4QWo0ZVFsOWI4d2UzcWtFODNCcTlOQ0FDRWVn?=
- =?utf-8?B?T2w1d0ROaHRjR2NSenBVNUgzaU5mSXI4bUhzS2lzWjlmVlc3NTFpNUZyUktV?=
- =?utf-8?B?anZMeVBIdUsyUVYrWnVYaXlBMzAxNUlHQ1FtY3ZMZFV0aUFISXdSQXdtdk9Y?=
- =?utf-8?B?MmtBdXhIN2JDY1A2T29sLzJmUHNPWTZabGJGTUxWSlBkcm1jNWI5UkxVSk1u?=
- =?utf-8?B?TU5yOXpiU3FWTWwxeUYxUWxQZnFES0ljYkwwUG1XbU1xSU1HaUtoQ1daeDAz?=
- =?utf-8?B?L2Y5WWJxOVc0UVdSVTI5bVhqUFVOK1Q5cUVtWVBRM0JuRVlnSFI4amRkSmJ2?=
- =?utf-8?B?YkpZcjlsZWNYN2dxNjlOa1kxUlEwSWd0dzM4Q1Y1MFZ5bmozenV4WXdyTE9i?=
- =?utf-8?B?Z0xsaXZ4bjhtaXBOSXVZcVdBNzVDUm1IenpzRDRjYUVqckRra3RSMDl6Ulkz?=
- =?utf-8?B?dVlWejNJeFgzMEEyWXZ5L3c5WVdHWGpjSXNtZmVTT0FyWGNBSDBablVsL2VQ?=
- =?utf-8?B?Z05iNTlLTmJLQUwrRzFTYTgyZ1VNZE5xWnJBVFMrZTh4dEQ2STM0Q0ZjajJq?=
- =?utf-8?B?c0t1cTRMUS9sZHV2c3pSNlJ4aHBBOTQ1cEQvN1p4Wm5QOGVqS2hTRTdETzJr?=
- =?utf-8?B?T080ck5yLzRkajA2OFZibm0xdUh6VC90ZjlrK3pWcy9rVjBUOFRpL2JMREU3?=
- =?utf-8?B?UjdoeS8rUklyUnFGUUx2OTVlK3ZtL1JVeHhtYm95VUh6Q2FkWnFESkJ6b3V4?=
- =?utf-8?B?UVpxQkN6WXVGaUZ3cWV1ZWdrQnNkTkFYRS9yV29PUnZxdDJsdEI4enBaMmdY?=
- =?utf-8?B?bXIvTTNBWmQ4cks5MlF4Y3JuQjRXRTdUVXladGhWR0NYNlpQRWRUU095LzRB?=
- =?utf-8?B?ek84VnIzSEV4TENSbnovTTZYV1UzNW9JSjQzTkdFVFUwWks0SXFhRGdDWDJ0?=
- =?utf-8?B?aU1MMGpJMDR6T2k3ekZjT3JLRVhmS09BSjNqVXltZ2lZMzFIc1N4VmtTeG1O?=
- =?utf-8?B?TENrUWd6S2Y2Q3VZQ3pHMmtaS0hwWTYwUFZZeEg1N0FtWEVKc05UOHJJUjUr?=
- =?utf-8?B?bHIyNWNVNThnWE0zNE5mM1FqeGloU2RhWGF5M0cyS29SR3EvS1Qwd2JZY0dx?=
- =?utf-8?B?bk92SWgrWEg4ZFJLbVN3NkVVU2czdW1pQmV0SGJNaGpDVnlRSVFKVHV0KzVB?=
- =?utf-8?B?cE43dzBHZHlhUUJZamNycVEwenphM3FubTBKVmZ0VlBpZUVadVBvRkdBL2t1?=
- =?utf-8?B?U1ZHbnpXVi94MFAwQS9VUTJ1V0tFZGtVcUVzWkh3OWRDZXU5RHZxR0REajJl?=
- =?utf-8?B?RmtBTEhUTHRnSUE0UGZNMkhRcnJPVk91cTA4Qk51VC9PWE5hdm1RRnBsd3RO?=
- =?utf-8?B?eTVMd01jeGkyL1Q4SXJ4KzV0TkJ2VUMxcWZTY0RJMW9rbGlWZlpuVEdNMDhn?=
- =?utf-8?B?RnBhcHc3VVA5enZJU2dUeE1uKzZtM2tyeDNieUFUbm1PcUVHV05JdHVFc3RL?=
- =?utf-8?B?TnBkTGNaRFZNcjZMUXVabjloVjZRS2lETDFPdlFydERiZkt3aU9mTTVKd3lk?=
- =?utf-8?B?MzBRN1V0VUIrTlNhN2o3L3creW1peEFscEhOMk85UU9LaFhKV1lKUGRmM3Zs?=
- =?utf-8?B?NHdvNWoyTGt5Mms1TXZzZTZLbW9vNGlJNXYxNmQzVitkaks0NEFLcW9OamhO?=
- =?utf-8?B?UUFtd05DTWtVUTBOL2RvblUxNFZKdkJ3YWs1SDJBellzUUZwaFFuMWJXcDhi?=
- =?utf-8?Q?oorg9qQtyHo=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB7500.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?cURQNDVJZlNyLys2MEhrTDBVcnlkdndBbkxjcEtkbUlFTjMvNlZtYW85eUpY?=
- =?utf-8?B?Zm1PazVmQ1Z3TUZYS3ZyZ2cvUVI4dytpTFR3M2ZOMmk2YjZsNEE5ZFZNRzVE?=
- =?utf-8?B?THRCNktLZ3JOWDNndHgycnNtOVh2RmpudzZkc1BxUllXVisrYnF0UTN2Zkti?=
- =?utf-8?B?NDFlUVlHZjJRTTArS2U2enBPUTJyNXZtMTZLMTVpREpOL3BYZmNGaVJBZktw?=
- =?utf-8?B?cGVpSTdKRndBZ2JoZkd0dUVybUNqS3ZtbTE3OWErWHFTb0VoRnJYbDhUM2NH?=
- =?utf-8?B?cHNOU0hQR3p3TndkRzlHYm8rb1pCZjVmSnY4aTAxcWFJNi9iV1I2bjd6bFpq?=
- =?utf-8?B?QUQrdWR6SHVpUmRpVHJrTk13ZDdINWJYdTB2NGRadHNPQ1VoQWwrSEpOMVJE?=
- =?utf-8?B?OGpoUzBZL09IWEgya3JoalBhaHRmQ2svNVhVSTI5RDQyTnFnaUVKN2JBNE9Z?=
- =?utf-8?B?cmUxQTZVMUdxeHNnS3JOOVd1VGxiM2tvUVZSckV3bk41REFGeGVkdHkzZGJz?=
- =?utf-8?B?MjRkaS9pV0hHaEdSd0hNOWFtNEdmcXluZ1I5NkhyMDV2akpncWcyUkthbm4w?=
- =?utf-8?B?NWxVcjI5bitRK0dyMnpFRDYwL3cyNkxReThKUkhyWGlqWnFOdHhsQkpxRFNq?=
- =?utf-8?B?WEV3U21xV243WHN3Y1R5Y3I3RGFxWFNzVjNjaXNMeEpjSFFJRmlWZU5OYVNm?=
- =?utf-8?B?aEt5cVVkb1VEaGtyM3dXcWwvNWp5Q1V2NjBjY0JXK0ZpRk9wSnM5MTFRMkFP?=
- =?utf-8?B?VEQ4eUJMQmtta3ZtZ0I0eG9uMW1ydFI0RlVEaFd3OXFsNW5HY1pCR3duSU5x?=
- =?utf-8?B?TEZjL1pVMFE2TVU3ejBaL3ZSVWtqQ09JRm5UWVRKTklPUktkbGJPMEpvaFZy?=
- =?utf-8?B?NHJwZndlUmQ3eUs3QlZPQUpEeTg2NXluZmh5dVArNVFBS0x6em5pTFBPTFlk?=
- =?utf-8?B?QnlWYlJsRTZQc0dYWEtOMzlNa2dmUyt2QksvMEJkdTQ3am55cVZQWEpobXBR?=
- =?utf-8?B?LzhBV3dZNE5Wc1B4RVBIQkFiZ0ppOThDenFMb3pqOFBIekVlczBmTlZWdWpo?=
- =?utf-8?B?dWs1WGNzQVFrS2FnRk5IOVhJUXhpSXJoNzRQdDY3YTJqOU1qdy9WcnUwS0d0?=
- =?utf-8?B?aUcxaHJwNGxJV3ZybVFkSXMwYU9qSEplMXNFM2daQUhoc1BqdjArMUNlSlVM?=
- =?utf-8?B?MUk4UHo2UkhzTFUzU0Y1ZEx3LzVuRjZDK2RYRnFON0t3U0hhL1dqOVlLUFA0?=
- =?utf-8?B?cmhHVi8vaHJPRDlVWDlDdDM1L2RRNVZCTmVOd0JvZVdlaU1kMXkrejBQZDJ3?=
- =?utf-8?B?eDQ3aEZ2MThSVG1kQTJPeEwycFFxaW80ZkhjazNQNndyQkJZbDljNGtEaFl3?=
- =?utf-8?B?c1JQY1R2NHpmbnZIeFRkY1I5U1Nvb3ZwczhIUjVsNkZrOStEMzRiVUhPRFps?=
- =?utf-8?B?Y01jVkFscGp3WDJ6a2RFWCsrQ21SMEFoOG9aWHkrazNWWjU5WURYclF5WXVy?=
- =?utf-8?B?RHJhbWppS1hhcmhHVGVZU0lWVmdSdC96dzlldExPUXRhakRFejc1eVkxSU82?=
- =?utf-8?B?R2NuMWJacGVXOGljd1hhZFRqSjZlOTd1eVNiWnB3blQ2OVFQVWtNOWpLRlhp?=
- =?utf-8?B?MHVMNndTbmdnVE1oSWNjWEZ4UHd5bVk4L2FSUzg1U0FmcDNPcTA0UnluZWxx?=
- =?utf-8?B?eEFUS3J0R3BTUWx2Tm8zbmhVY2g4RUtrZUpHSkxhSHQxREdEOElDLzl6YVQy?=
- =?utf-8?B?QXdXL2pMYVFHZXY2Y2VBd1VzYWgyNk1tckRYWEIxNWJIVDlQVTAzTUNqaDZY?=
- =?utf-8?B?UnhUNEN6bVZDU2U4Nk9lQ1FXM1RHbElMd21aUTloY3VWWHgxWHB6VjB1QkNO?=
- =?utf-8?B?MGl4R2RkYTZHV05XNlNRNzRoazVPVW9uMHpHMXRNaS9rZXpnZkx4bHl2cTZY?=
- =?utf-8?B?eUNzYmpPMHYweW1iTXlnMTVVTm9VdWNITnpmV1lDSXRidGZOMVZ3VlBZSFdW?=
- =?utf-8?B?dGRsRTBVZkpDU05OZEdWSWE0dk5SL2RIdEIybUhlS1pQSHk5ampic3IxVUls?=
- =?utf-8?B?SUJhZEJrMDFKOG04R0MrcUpuZWpnK2djTlVVVUFadXBUcHhhbHBZemNpMDlM?=
- =?utf-8?Q?MJgDCoEQJhPXzogDU9am8j65m?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c03dc37e-ec15-404a-810f-08dd9bcb15b0
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB7500.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2025 20:31:10.3605
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: u+QKUnzgttlk7CCUSU4/x2zCCM9BKNjC5EfB64yXFNx2hMAghm8FrhOjrgR1j2DC
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7506
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87bjrjn1ki.fsf@toke.dk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0iTYRTHefZe9rpcvS2zp5SkRRRRZilxPkQURDxdPgQFXSFHvrXpnDGd
+	aRR4A2nqshK1tWhqeUsZLZ2zzGqJZjMSzVppaU6toJLUlk27OC3y249z/uf8zofDUbIiZgmn
+	0iQIWo1CLWcltOSzf/Fa0hCuDHvfHAQmSxULN8eToKzPzoCp0oZg7Ee3GEabWlgoKfJQYHqW
+	QcM3i5eCweZ+MfSWDtHQkFlHQf/5xyzkZExQkGYvF0G7zcBAnvcGBXUpfWLovGNi4W3VbwaG
+	HDk0tBoraOg1bIFmcyB4nJ8QNFnqRODJvsrCpQ4zC+6MXgQdj/ppuJJqQGBpdDEwMW5itywj
+	NRWvRKTe+EZMzFYduV2+muhdHRSxVp5jiXXkopj0vGhgyePCCZrU20dFJCf9C0u+Dr6myXBj
+	F0ssNV00aTM3icmodeke/pBkU5SgViUK2nWbIyXKwt5c6mTVvKSXDzQp6PscPfLjMB+BC/IL
+	2H9sSKsW+5jmV+Dah5mMj1l+JXa5flB6xHEB/FbsHD+hRxKO4gcYXPexYjqzgFfj4kuTtI+l
+	PODu6+8oH8v4M9imd4tn6vNx6+WB6QzFr8H1tT2sbyfFB+GyX9xMOQSn116ZHvWbOsFtm4kv
+	5JfjB7YWkc+LeTuH8/Sdf29ejB+Wu+hcNN84S2GcpTD+VxhnKcyIrkQylSYxVqFSR4QqkzWq
+	pNBjcbFWNPU4pWcnD9vRSPteB+I5JPeXRsrDlTJGkRifHOtAmKPkAdJgU5hSJo1SJJ8WtHFH
+	tTq1EO9AQRwtXyTd4DkVJeNPKBKEGEE4KWj/dUWc35IUFPi6JexCm+78xbu66GzW6726Zhdp
+	zTyeHTmWG/LeGZ7qsGU0t4y6nas6d0x0fT27rG8o/95wTtbBxs7hkYr9Tt3w/aoP/oxKG3Ps
+	Qupg+G3Zbs/452uxXT/n7nw5FMxU79sWd2Bge3DNucr7/SXuW4boF/XPF0e7254e8W4MUGTZ
+	nsjpeKVi/WpKG6/4A6Zhe4w0AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0iTYRTHe/Ze9m61el3LXjIKVyJI3srqkF3sQ/QUkUFE0Jdc+uaGc9Wm
+	pmVkuqhGrrQCmzNXmres0dRthkg5UYfRxdCWafNORVR28ZLRZUrktx//8z8/zofDEFI9tYRR
+	aVJ4rUahltNiUrw7OicUN6xRRhR1iMBsrabhzkQ6lPc5KTBX2RF8m3wthK/NrTSU3BwjwPxU
+	T8J36w8ChlsGhOAtGyGh4ZyDgIFLbTTk6qcIyHZWCMBV5Kbgmd1IwdUftwlwZPUJ4cUDMw1v
+	qn9TMNKUS4LbVEmC1xgDLRZ/GGv/gKDZ6hDA2MUiGq50WGgY1HsRdLgGSCg8Y0RgbfRQMDVh
+	pmPkuLbylQDXm3qF2GJLxTUVIdjg6SCwreoCjW1f8oW4p6uBxm0FUySud34V4NycjzQeHe4m
+	8afGThqXvP0swNbaThI/tjQL9/gdEG9M4NWqNF4bvjlOrCzwXiaOVi9If/lQk4XG5xqQiOHY
+	KM6YfVfoY5IN4uoenaN8TLPBnMczSRgQw8jYrVz7RKIBiRmCHaI4x7vK6c5CVs3duvKT9LGE
+	Be51aT/hYymbydkNg8KZ3I9zXx+a7hDsKq6+rof2OQk2gCv/xczEy7mcusLpVdHfEwbtM/VF
+	7Aruob1VcBnNN80ymWaZTP9NplkmCyKrkEylSUtWqNRrw3RJygyNKj0s/kiyDf39jbJTP/Oc
+	6NuL7U2IZZB8niROvkYppRRpuozkJsQxhFwmWWqOUEolCYqME7z2yEFtqprXNaEAhpQvluzc
+	z8dJ2URFCp/E80d57b+pgBEtyUIXXIP6dcZlwduoTbHF41sELZP+CfN2nTxcY7qW9VL85EZX
+	17HnojnxCX3enYtSJZ/khyb6gyhdLLM4e2xfY5lseS831aOku7t3uErXvx0t2TCy0b56iyzk
+	fPDp6L0F72Pye8OjeIUzMu94ToDN3T50tv1+RfGx0MAPq1YOB+pM9zLlpE6piAwhtDrFH2vK
+	gPgXAwAA
+X-CFilter-Loop: Reflected
 
-On 21/05/2025 17:10, Jakub Kicinski wrote:
->> We could've saved this extra cycle if my questions [1] exactly about 
->> this topic weren't ignored.
->> Area is vague and not well defined. We can continue with the iterative 
->> guess and fix cycles, or alternatively get it clearly and formally defined.
+On Fri, May 23, 2025 at 11:01:01AM +0200, Toke Høiland-Jørgensen wrote:
+> Byungchul Park <byungchul@sk.com> writes:
 > 
-> I started a couple of times on answering but my hands go a little limb
-> when I have to explain things so obvious like "testing is a crucial part
-> of software development" :S
-
-You're acting as if kernel testing is obvious, and the only way to test
-the kernel is through selftests. The kernel and networking subsystem are
-tested regardless of selftests, the fact that you don't see the tests
-does not mean it doesn't happen.
-
-We are not new contributors, plenty of uapi changes have been merged
-without selftests, it's natural for us to try and understand this new
-requirement.
-
-> I mean.. nvidia certainly tests their code, so I'm not sure where the disconnect is. 
-
-Absolutely!
-Our testing and coverage are far more complex and valuable than what the
-existing selftests provide.
-
-We have testing infrastructure that predates these recent selftests
-addition by years, and we don't plan on switching them to something
-inferior.
-
-Writing selftests will not replace our internal tests, we're wasting
-extra cycles adapting our tests to yet another project, just for the
-sake of having them in the kernel tree?
-
-> I had a short conversation with
-> Gal at some conference where he, AFAIU, was doubting that device testing
-> can be part of an open source project.
-
-What's your point?
-Did that prevent me from being a top 10 netdev selftests contributor in
-v6.15?
-
-I don't care if tests are open source or not, I care about having good
-tests that run often and report bugs and regressions.
-
+> > To simplify struct page, the page pool members of struct page should be
+> > moved to other, allowing these members to be removed from struct page.
+> >
+> > Introduce a network memory descriptor to store the members, struct
+> > netmem_desc, reusing struct net_iov that already mirrored struct page.
+> >
+> > While at it, relocate _pp_mapping_pad to group struct net_iov's fields.
+> >
+> > Signed-off-by: Byungchul Park <byungchul@sk.com>
+> > ---
+> >  include/linux/mm_types.h |  2 +-
+> >  include/net/netmem.h     | 43 +++++++++++++++++++++++++++++++++-------
+> >  2 files changed, 37 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> > index 56d07edd01f9..873e820e1521 100644
+> > --- a/include/linux/mm_types.h
+> > +++ b/include/linux/mm_types.h
+> > @@ -120,13 +120,13 @@ struct page {
+> >  			unsigned long private;
+> >  		};
+> >  		struct {	/* page_pool used by netstack */
+> > +			unsigned long _pp_mapping_pad;
+> >  			/**
+> >  			 * @pp_magic: magic value to avoid recycling non
+> >  			 * page_pool allocated pages.
+> >  			 */
+> >  			unsigned long pp_magic;
+> >  			struct page_pool *pp;
+> > -			unsigned long _pp_mapping_pad;
+> >  			unsigned long dma_addr;
+> >  			atomic_long_t pp_ref_count;
+> >  		};
 > 
-> It certainly is not advantageous to companies to have to share their
-> test code. So when you ask me for details on the rules what I hear is
-> "how can we make sure we do as little as possible".
+> The reason that field is called "_pp_mapping_pad" is that it's supposed
+> to overlay the page->mapping field, so that none of the page_pool uses
+> set a value here. Moving it breaks that assumption. Once struct
 
-No, I'm asking for predictability, we've been circling this point for
-quite some time.
+Right.  I will fix it.  Thanks.
 
-We shouldn't have to wait until v9 to guess whether a certain submission
-requires the addition of a test.
-We shouldn't submit a bug fix, to find out that it's blocked due to lack
-of a test.
+	Byungchul
 
-As an example, we have well documented coding style, so:
-- You don't have to waste your time commenting on things that could have
-been handled before submission.
-- Rules are clear, comments don't rely on personal taste or mood.
-- Developers learn, number of review iterations are reduced.
-
-What's the difference with documenting requirements for tests? We can't
-read your mind.
-
+> netmem_desc is completely decoupled from struct page this obviously
+> doesn't matter, but I think it does today? At least, trying to use that
+> field for the DMA index broke things, which is why we ended up with the
+> bit-stuffing in pp_magic...
 > 
-> Broadly, any new uAPI should come with tests which exercise the
-> functionality.
-
-I'm fine with this definition (though I think it's too vague), can I add
-it to maintainer-netdev.rst?
+> -Toke
+> 
 
