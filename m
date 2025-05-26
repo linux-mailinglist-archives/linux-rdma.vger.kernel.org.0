@@ -1,144 +1,114 @@
-Return-Path: <linux-rdma+bounces-10731-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10732-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 497F7AC437A
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 May 2025 19:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EDE2BAC438E
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 May 2025 19:52:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E76F83BB3B3
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 May 2025 17:33:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF8EF3B3904
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 May 2025 17:51:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53DAF23F40E;
-	Mon, 26 May 2025 17:34:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94B4023E358;
+	Mon, 26 May 2025 17:51:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="j5+6Fx9T"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Teg6X/wj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 971ED3C465
-	for <linux-rdma@vger.kernel.org>; Mon, 26 May 2025 17:34:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7BFB1F37D4;
+	Mon, 26 May 2025 17:51:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748280849; cv=none; b=kHkS9HjkRO3sldIXC5FikwK+QtWd+gAh/r3y7OwO7+fJ3Uvm6rK/MPgiteNLy5sEGl42EPTXcImZq3MKwFyiP111Y4/SkIoL4qGnsNQhG/AL2jzxnQJVY+e3FCL2lVWqaWDiDhAv/kRfF6nXyffd3gGuZLsRGR1Z9vo9DXVZZNA=
+	t=1748281915; cv=none; b=Cz18kCCaMK/uAuP/Pi76wdqtH5rVHYF6t83TXdSzqBEJTKgOS+d45EShBwmbk5eq5emabb+BA8/Gwj4I9PcfF2skT7QSj6NaX8xlK8XyRm2pxokBFqo/dhgvOQNFYZm6hBK6caBkYK3YG6s0p5jWfb5NrlmgP1gdCm9uBprBRCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748280849; c=relaxed/simple;
-	bh=iLUd1Atl7F2XhGCO4Taa7I7wq59LVRkty/S6nhFd6J8=;
+	s=arc-20240116; t=1748281915; c=relaxed/simple;
+	bh=2k88PnJhpaw0nwX/rLtY9mHSGuWNeOjNdRUmXCcIA7w=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uC5iOBjoQJNieOdaP6icsqIyiV6Tm8fyGYzG6tRTJNAdtSXctvX6/SgYiRx9bNOb6QY5C6IBWowH0NrJ7QxkMNQN6kOLI6AR8nVEJSz2teFOfuk+L06vXBnCU5jYC2X86NmBHjgskMJGj87P35l7rId+ckrbaa0/dCUH6fBON90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=j5+6Fx9T; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2349068ebc7so45305ad.0
-        for <linux-rdma@vger.kernel.org>; Mon, 26 May 2025 10:34:07 -0700 (PDT)
+	 To:Cc:Content-Type; b=NRjHrRYUSMxJ0dx6ekknnn5b8z9UuJI+PwFXMHjxZlDZDvsnBm5DgRUfctMk4lmovl1/ZNZ3lxeqz8GLFbaNTct1ngl4REnMiP+LbAyBzSeqYnliN4C5qtr6+YgL6vqV9cr4QF57IhUJu6qeavcilwmCpws0iUzdFkS1mSVqzQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Teg6X/wj; arc=none smtp.client-ip=209.85.161.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-601ad30bc0cso2112859eaf.0;
+        Mon, 26 May 2025 10:51:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1748280847; x=1748885647; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1748281913; x=1748886713; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Hgxk+Us9mQiW48CfwTTJ3SbvDd6vhg6S6WT+88w+Zks=;
-        b=j5+6Fx9T1x0ZI0mXrTN9DCk2lDY6v3exbploQnxTq4Shoum7qJArG4mv+L6xSe5myG
-         AI/Wq7eKLYlnP5ytjU4YIc/w3WNgmuHFCaY5LxW+59rVsApSrLm2CahADnCID+dY9Vm+
-         icVSo5zTkg9tQqifdNdi4hDrf8oLEkZFDsyLjuXWhYTDaHQQgkqywbUer9uE6LUrddrd
-         T0wJa8R/TFW+Gx3b1m2dc9Qmc1+LRrwllg5MFkYUqmShzhMglH0McTDwoXgwwg+qX+aw
-         FewAQt1YS6C8krImANDYY465dELMaqwB4CYYC4g+/e2gH5iKfGsrN2YtSvcesa8LRZ/b
-         ELHg==
+        bh=2k88PnJhpaw0nwX/rLtY9mHSGuWNeOjNdRUmXCcIA7w=;
+        b=Teg6X/wjghzcir4ybGuWUedickjSRo8zS2k9FjY74B4G2/t7RVeF0Xyfmo+dtRpeGM
+         EILOWwXImyd7OEr3YMeoAW4zzzvrNJ19cVypq12x1KQmSPAZJ186W+tTY7ZHiCf7NYP7
+         b4NOLjQLPHcOfe+tLPKaB9M6FyaRUT3agpMOxXXduD6ixxGmrgQWEfM4hdg8Z1CeAlnc
+         Hhp16NkErJS+60lNfG1qgoW61/Wx80ZOZ+yVjvEdUsc3G7HifwkZkSCaLBXrG5qjXj2p
+         a6yRU1irtLKe5bV2R45h6y0pWeNEO0SQZ0JUbhMfJh4IGW71TIpF9zdUg/+v5VKrPCZL
+         Mz8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748280847; x=1748885647;
+        d=1e100.net; s=20230601; t=1748281913; x=1748886713;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Hgxk+Us9mQiW48CfwTTJ3SbvDd6vhg6S6WT+88w+Zks=;
-        b=KlVEMTSRKWVOqMhkFlQFBkR2TefUavzztFrbCUjkpHJg/usKArPlA78ItZRa61A0OZ
-         0WMxXcqUWSZnVhPo5fIJxA++f0bKobzpI5wYjeq7ZDYyK4mBx/pd6R4jgA46yjJ6+6Wd
-         CLEsJCtdHe+7lTNU+q+GGoXLE2lB0SVg+B5/zXIm9ib+I+dRlRXWr9EF46vQ58gFjIkm
-         Joy6dxfi3QJfztk8LQKM4HjT0se2poeZZZPGjAmR5EaRlGjd2p2jxSpxyBtyoIksG8HU
-         d4I2K854HCF9To0QHiXkZHMX4kcYRNDwG6ygoMSTnIimBbhMcV7qmZ8U7MxpcjLOG5NP
-         GMNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXW+5aUyM++VjpBm+L6q7obkbgP15vmQydYBCnSm7G4gc33eTY4hbqSZp+jfWjhY+sR+np5lcJJ52DK@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy3zUOAvSS8vD2uqCeI5A7bXUyvToilANGPTGYToQsTy9ImsN9M
-	mpGFkTvQ1kBYZD35bAAglMc3pzQyODCsT2E48BVKSPmiBHoKhiFSyJRhxtn1queXuUQiEAU7cOF
-	6noGfQi2WKCcDJql4WHyJ35JRDOb005tQ+ZcFFUjJ
-X-Gm-Gg: ASbGnctM0nKDOY5/geuzYPEi1zgtaNl/4VFqJ0QNA/Bf5rZhSSHc/yXJMCBeegTQSxn
-	ngE1BNDJjSCiclEC5WPsfJv1AfnjVaIfdfItsl1lOiO0+xtRNKjXleqQ8mJ6w28OhyhgvVc52pW
-	oZQ/pnMtkiYV2dFH3M7eppgjPbC3uRh1u9dNEoyR6qH7qn
-X-Google-Smtp-Source: AGHT+IFQ3dUetNFfbOk0QYXpICwB0ij6uIvhORtrNLO5srstLqnDueoHgPjQ8gqgOvQXudMrOUcM53NL7t+iY+hfgmI=
-X-Received: by 2002:a17:903:234e:b0:22c:3cda:df11 with SMTP id
- d9443c01a7336-2341807dc84mr4471365ad.10.1748280846532; Mon, 26 May 2025
- 10:34:06 -0700 (PDT)
+        bh=2k88PnJhpaw0nwX/rLtY9mHSGuWNeOjNdRUmXCcIA7w=;
+        b=O0B0muLTnDrxYVrPnjo/aEWTAKAHOft8WumleKxyEcCCFRHPyKb7mkl+6e8jVsgPh1
+         dpKOLzXrHou7yQ+ljdGHB3GA92wOHWPlatQQQR6x8zWmA/3WsRK0eXu+s2dl6criSrH+
+         aw7i2fkNEBn5mpE0Ft2FQ+KvuSfGT/iA3zRcHhb0xR5so3gktzd94kVr0ASyZnuhmYIg
+         FMlg2cWIZI16JaCqdBGHlGB44Lcx96WsRL1Vn2pNLJ1MCyMW+3RZetqRx5Nu6F/Vywn6
+         /FGg3+PqYxgEw3li31T0tDX9w9PnLRrM3KOE2bC3l+bDOPXO+swxr8WmyRxVuYfuBmtG
+         VwKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWOrnlLR3Va2gJ6ZRklc/vqxTNjfPg8Cgu1TLBYZ7x+bFdkeLgehnkplG1ITETuy049Hxenlv1907ao@vger.kernel.org
+X-Gm-Message-State: AOJu0YxG7cHrpuIQKd/ioCZaot6smEX/5qUKrzc3Z9fdCRyVGJRQbCxq
+	toLHniXdtX8VYNMIrqRRUBVHCy9ZIsHJGZKonKJa6VdGY5ueRXrQ26Pu2B9s286E/fckDJZvJ8Y
+	RLVTx14aLL//2MXgIFOuYIRhT4Mb47+8=
+X-Gm-Gg: ASbGncsMKwU4Z3Bfi71pS5YY5nRnKbU7MDrkZAxkQVtaad9fjRkr83jTZYW9A5il9Px
+	1CtTLH9tLP7jY7o62+6Va9dZTXrnXQ6/QkIRyo6EkLqyQStIcH0rWkXvCn2J2xB+ECoRB96/ka4
+	X7QlEXPl9ObM1YfaV1V5MPf+9mBiEX1gL2
+X-Google-Smtp-Source: AGHT+IHfQzUQlWpF3xqMyX71z6KhzG9Q7TBZLdmiLySLL7YcDhNzHNOHQWNhFnhWKVRrbrQnK/7FWB1TjDqwBrKBPLE=
+X-Received: by 2002:a05:6820:818e:b0:606:3abb:1934 with SMTP id
+ 006d021491bc7-60b9f9373ccmr5453708eaf.2.1748281912877; Mon, 26 May 2025
+ 10:51:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250523032609.16334-1-byungchul@sk.com> <20250523032609.16334-19-byungchul@sk.com>
- <CAHS8izM-ee5C8W2D2x9ChQz667PQEaYFOtgKZcFCMT4HRHL0fQ@mail.gmail.com>
- <20250526013744.GD74632@system.software.com> <cae26eaa-66cf-4d1f-ae13-047fb421824a@gmail.com>
-In-Reply-To: <cae26eaa-66cf-4d1f-ae13-047fb421824a@gmail.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Mon, 26 May 2025 10:33:52 -0700
-X-Gm-Features: AX0GCFvbcQEfDXG3A2E85eQ0suvZ9QGF79i6mkSHWdI2UWVhJN8XZ-nz6-kdVFg
-Message-ID: <CAHS8izM5xd=cBRuUpAUNtcFzZ3hMwmseyh6rsV+WPRAvdzv4cA@mail.gmail.com>
-Subject: Re: [PATCH 18/18] mm, netmem: remove the page pool members in struct page
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Byungchul Park <byungchul@sk.com>, willy@infradead.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, kernel_team@skhynix.com, 
-	kuba@kernel.org, ilias.apalodimas@linaro.org, harry.yoo@oracle.com, 
-	hawk@kernel.org, akpm@linux-foundation.org, davem@davemloft.net, 
-	john.fastabend@gmail.com, andrew+netdev@lunn.ch, toke@redhat.com, 
-	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, 
-	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com, 
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz, 
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org, 
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
+References: <20250524144328.4361-1-dskmtsd@gmail.com> <CAEz=LcsmU0A1oa40fVnh_rEDE+wxwfSo0HpKFa_1BzZGzGG71g@mail.gmail.com>
+ <dbf60d49-fa1e-49ce-b6db-16e834e42e42@gmail.com>
+In-Reply-To: <dbf60d49-fa1e-49ce-b6db-16e834e42e42@gmail.com>
+From: Greg Sword <gregsword0@gmail.com>
+Date: Tue, 27 May 2025 01:51:40 +0800
+X-Gm-Features: AX0GCFtT0baM6oZKA_mDPeBTGvWFL0qzuDBj_usrFR8qpdJumaxPdCqhTum73-0
+Message-ID: <CAEz=LcurXJWDws=D1CkkDhOrUQB-xatszjpZp67AUou-Cs39dQ@mail.gmail.com>
+Subject: Re: [PATCH for-next v3] RDMA/core: Avoid hmm_dma_map_alloc() for
+ virtual DMA devices
+To: Daisuke Matsuda <dskmtsd@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, leon@kernel.org, 
+	jgg@ziepe.ca, zyjzyj2000@gmail.com, hch@infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 26, 2025 at 9:57=E2=80=AFAM Pavel Begunkov <asml.silence@gmail.=
-com> wrote:
-> >> Removing these asserts is actually a bit dangerous. Functions like
-> >> netmem_or_pp_magic() rely on the fact that the offsets are the same
-> >> between struct page and struct net_iov to access these fields without
+On Sun, May 25, 2025 at 10:54=E2=80=AFAM Daisuke Matsuda <dskmtsd@gmail.com=
+> wrote:
+>
+>
+> > Your ODP patches have caused significant issues, including system
+> > instability. The latest version of your patches has led to critical
+> > failures in our environment. Due to these ongoing problems, we have
+> > decided that our system will no longer incorporate your patches going
+> > forward.
+>
+> I always wonder why this kind of "report" seen around RXE never includes
+> the details of the problem encountered and the steps to reproduce them.
+> Everybody else in the linux kernel community does so.
+
+Test it a few more times on your local machine and you can re this
+issue, it's such a simple test, can't you do it?
+
+>
+> --D--
+>
 > >
-> > Worth noting this patch removes the page pool fields from struct page.
->
-> static inline struct net_iov *__netmem_clear_lsb(netmem_ref netmem)
-> {
->         return (struct net_iov *)((__force unsigned long)netmem & ~NET_IO=
-V);
-> }
->
-> static inline atomic_long_t *netmem_get_pp_ref_count_ref(netmem_ref netme=
-m)
-> {
->         return &__netmem_clear_lsb(netmem)->pp_ref_count;
-> }
->
-> That's a snippet of code after applying the series. So, let's say we
-> take a page, it's casted to netmem, then the netmem (as it was before)
-> is casted to net_iov. Before it relied on net_iov and the pp's part of
-> the page having the same layout, which was checked by static asserts,
-> but now, unless I'm mistaken, it's aligned in the exactly same way but
-> points to a seemingly random offset of the page. We should not be doing
-> that.
->
-
-Agreed.
-
-> Just to be clear, I think casting pages to struct net_iov *, as it
-> currently is, is quite ugly, but that's something netmem_desc and this
-> effort can help with.
->
-
-Agreed it's quite ugly. It was done in the name of optimizing the page
-pool benchmark to the extreme as far as I can remember. We could use
-page pool benchmark numbers on this series to make sure these new
-changes aren't regressing the fast path.
-
---=20
-Thanks,
-Mina
+> > --G--
 
