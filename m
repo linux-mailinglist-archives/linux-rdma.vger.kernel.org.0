@@ -1,109 +1,171 @@
-Return-Path: <linux-rdma+bounces-10719-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10720-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3976BAC3D1B
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 May 2025 11:42:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13DB4AC3D23
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 May 2025 11:43:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42596188FB38
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 May 2025 09:42:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F1A71763FB
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 May 2025 09:43:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A1FF13A3ED;
-	Mon, 26 May 2025 09:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="VwSakXoz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AAB71F150B;
+	Mon, 26 May 2025 09:43:20 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D37071F1306
-	for <linux-rdma@vger.kernel.org>; Mon, 26 May 2025 09:42:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D1411DED51;
+	Mon, 26 May 2025 09:43:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748252527; cv=none; b=RLdF+Qavee4tZ8knfYmBawdGbGeEhRCJaUgOIe23Ks4/dnk6R3i2wdn1IXMpLnzcRu8tVh7/SyzYmvQaQ2qe1jADLj5R7Wxl0tvqEaCFDgsTVJXf98VPqGPj9cAWdRa4TjyW+NwdozAt0V+rnGKiW7gyArYQLW4vt8dX1iPeERs=
+	t=1748252600; cv=none; b=IB8lR4UNIp7A4kVLqMbOgWs+sBYvAzB/BnaN05cVXM7l36LeeNdUVR4BoPo/yzPo7uPEPFGsuqqfZpz88j5RDfrd6x6a2vu830MCKGoxR2fDQ2JadRcvvvmqLU6cty2nxVa5JvBXZv9yT6iwmcPehTl7sGyfa70XWeRmvtwAE2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748252527; c=relaxed/simple;
-	bh=27+HxxD+Nnzh7/t8b6hLfpxekNp9wQ15a2r2Zx2hs2E=;
+	s=arc-20240116; t=1748252600; c=relaxed/simple;
+	bh=RAownFC008qLgAz0i6YGuiM00cnuDux7xgF6Vj1jySM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bW2uL8s4IIGkkwDQB2fxRwYOSZ4NVPC1iy9bx+9vXdb9mN6MWHqnDhaDe06xdBCQmmmkBdlJNnZcxq0dxpd85m4tQMs8ssKDch9o1FWwJscoyC0zMXDlgeD3TX+z0PVlt/m6GlxdMF5NyazDMQvnBs0tKraSn2H2FO3NhkkSTB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=VwSakXoz; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-441d1ed82faso15583625e9.0
-        for <linux-rdma@vger.kernel.org>; Mon, 26 May 2025 02:42:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1748252524; x=1748857324; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=27+HxxD+Nnzh7/t8b6hLfpxekNp9wQ15a2r2Zx2hs2E=;
-        b=VwSakXozz/3SRJRYu7ybWRUpHuaVIpUyPaMMLFUzLddZLQcVlmmS2jTm9Uomb/61hh
-         W4f5Kp4P9d/gig+/H6t/qBsfrUbiZTyX+MioCE8+B/gdw0QoU86SYs8ZgdQv1MoQtNNT
-         57pCGXW7oLLs0wQGIWTgPs/JXxxiwTcgt8eyPh8pMFr6V2a3SyGrGlYggcNcxuK7oVrw
-         diqdGM9Z7JELko9YskyJjYZufCMUUHb42T6oHUdi9oasXXZwUM/E4ajoHZHy4FqBVivv
-         +8IRiuqCDVz81zZE33obk1+M/9TC385hcg/BQ+TqBbGFOql+FkRYBRZvEFnBI4hQqF6M
-         PpjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748252524; x=1748857324;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=27+HxxD+Nnzh7/t8b6hLfpxekNp9wQ15a2r2Zx2hs2E=;
-        b=f5lfJl8xVAc9xHADb5JCenaz9ANfTHrFD7nkzc73h2hAJ/J7J+Y/1PqhQUg5EgEUG4
-         2tqlD3xUf6X1KwObIYyVJrMzS1bqRp5KKb4pJSoLcUP9XGSd/oYcg172B3YI1ASC3Z5J
-         Gde0X42jw0OzbpagT7TWHaeg7nDvx5B5oy7NBQ2RRI50ympoIbBY9bBuS1FjLwScEhwn
-         OOaJZOsbNDt/6Pesve2YhNDoOdNu5hhcjlSPJ9mAzx650HrBM+c6uN7NItugtvWGD2NB
-         +AdK/9C8xWt78NoOT3ijADroxnbEPfUsj2pEEnAFdLvJz9OmVoXksj/SE3jGr0K+mL3v
-         yS3g==
-X-Forwarded-Encrypted: i=1; AJvYcCUyO4OedBu2Lz/ICDEu9zOFMKDI/36r7wsSgRaSn/lf6whRegSEMQp6Sqd1Xo+qjyExEbhsupIyWXjD@vger.kernel.org
-X-Gm-Message-State: AOJu0YxkG6igaWWeewnzEqgGX24yLM7OVObEcNcB/OUieLa4qMXhr0PZ
-	ot4sRwrPQwT1qhDsVQP0uw379yH27pTQWYtKnJT6DceZQJu5M5O/XdOXd8v8Dhm9gno=
-X-Gm-Gg: ASbGncs+LGUJK3z2nG6Y9Uoej4r0eum/bmcJlERrhKEUkZgu3dIE1YOpfIif7bv5r5w
-	a/JgfVnxgtTLLSO788akVuImUAhtLNaqd0YfsXFkuc7lcrUakbZbbA5iq3ajttQKAXCazpKXOmm
-	9Ur+YIy27LpLfpNFqjmfluag6d33ROuAp9tImFxlr1J0ra7uDzOhfmvpPpbFjDURCzgU+XImDNy
-	wdGH+uhuHqpHOerp/+ZeLg0Lue0LTeO05FMGmhrxbmvhRimmOyCFOO7vydb+3HsoJJrzouSDjly
-	v12IWaH0mvQ9sa48Vx1RLkBOKFI2CFtmPHDjIMKwDaVijHU5XYcSH5zJTaN/ZuAkDU9m5qIB8xe
-	ZE4E=
-X-Google-Smtp-Source: AGHT+IGj/TCuJ1rymJwAmhwD9hEHb2YavTmDlg3uKm0ah5yuR6f/5Sm9EUvqo4UPAzGWQCJs2xZcoA==
-X-Received: by 2002:a05:600c:3c84:b0:442:d9f2:c6ef with SMTP id 5b1f17b1804b1-44c9301660cmr86938965e9.2.1748252524118;
-        Mon, 26 May 2025 02:42:04 -0700 (PDT)
-Received: from jiri-mlt (37-48-1-197.nat.epc.tmcz.cz. [37.48.1.197])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-447f6b29619sm242667995e9.7.2025.05.26.02.42.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 May 2025 02:42:03 -0700 (PDT)
-Date: Mon, 26 May 2025 11:42:01 +0200
-From: Jiri Pirko <jiri@resnulli.us>
-To: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
-Cc: donald.hunter@gmail.com, kuba@kernel.org, davem@davemloft.net, 
-	edumazet@google.com, pabeni@redhat.com, horms@kernel.org, vadim.fedorenko@linux.dev, 
-	anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com, andrew+netdev@lunn.ch, 
-	aleksandr.loktionov@intel.com, corbet@lwn.net, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org, 
-	linux-doc@vger.kernel.org, Milena Olech <milena.olech@intel.com>
-Subject: Re: [PATCH net-next v4 1/3] dpll: add reference-sync netlink
- attribute
-Message-ID: <pu6s2lvqaulyurarklqxumdtcd3tql7djhyun3ylgvyv3lmsf7@oun62hhb5hkk>
-References: <20250523172650.1517164-1-arkadiusz.kubalewski@intel.com>
- <20250523172650.1517164-2-arkadiusz.kubalewski@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PZG3hOJuy4RH4v1y0E5hjOx9vhEJBZdcxpDMxGdCF/b2qqE3/5mSoYX2YyxiDlX6BjgXuqAKQeeuMFTg11TUgcRtFpXztfx46LR6IxcLbJ2cEn8+gJqAMVQf0MzOa4xn/P+wwKN7jsgapPUl+ZmFCjvFET1F/NWG6MH625w46mo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-681ff7000002311f-0e-683437af7710
+Date: Mon, 26 May 2025 18:43:05 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc: Mina Almasry <almasrymina@google.com>, willy@infradead.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org,
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
+	akpm@linux-foundation.org, davem@davemloft.net,
+	john.fastabend@gmail.com, andrew+netdev@lunn.ch,
+	asml.silence@gmail.com, tariqt@nvidia.com, edumazet@google.com,
+	pabeni@redhat.com, saeedm@nvidia.com, leon@kernel.org,
+	ast@kernel.org, daniel@iogearbox.net, david@redhat.com,
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+	horms@kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+	vishal.moola@gmail.com
+Subject: Re: [PATCH 12/18] page_pool: use netmem APIs to access
+ page->pp_magic in page_pool_page_is_pp()
+Message-ID: <20250526094305.GA29080@system.software.com>
+References: <20250523032609.16334-1-byungchul@sk.com>
+ <20250523032609.16334-13-byungchul@sk.com>
+ <CAHS8izN6QAcAr-qkFSYAy0JaTU+hdM56r-ug-AWDGGqLvHkNuQ@mail.gmail.com>
+ <20250526022307.GA27145@system.software.com>
+ <20250526023624.GB27145@system.software.com>
+ <87o6vfahoh.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250523172650.1517164-2-arkadiusz.kubalewski@intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87o6vfahoh.fsf@toke.dk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRzGe3fOzo7L0XFmvWkoLSQoKithf0rCiOAQFGF0QYMa7eSWc8o0
+	0yjUNMp5zfygc9lUsrUuq2VuRWjpUIdRtlCm5QWvlV28NTSlcpPIbz+e932f3/PhpQlxJT+Q
+	VqqTOY1appJQQlL4zbdqs1kargh7OxIAevN9Cu7NpMKdfhsf9KY6BNOzHwQwZW+hoLrSTYD+
+	bTYJP82/CBhuHhBAX80ICS+uWgkYKGylID97joDLNiMP2usK+FDy6zYB1ox+Abx/rqeg9/4f
+	Pow05pPg0N0loa8gEpoNq8Dd9hWB3WzlgTvvJgU3nAYKBrP7EDibBkgozyxAYK538WFuRk9F
+	rmNr73bx2Ge6HgFrsJxjnxg3slqXk2AtphyKtUwWC9iPnS8otrV0jmSf2aZ4bH7Wd4qdGO4m
+	2R/1HRRrru0g2dcGu4CdsgQfYqKFEXJOpUzhNFt3nxIqSgqPJObgVHfOI14G6hJrkQ+NmXD8
+	OleL/nF7TwPpYZIJxa6rTsLDFLMBu1yzC0zTK5k9uG0mVouENMFM8bFpMt97x585i/O6RykP
+	ixjADY5iby5mqni4q/XEYu6HHWVD3n5ioXO+wuntJJggfOc3vRiH4Kyn5d6nPgsTbk2/8U4L
+	YNbjl3UtPI8XMw9ofH38DbG4eQ1+ZXSRRchPt0ShW6LQ/VfoligMiDQhsVKdEi9TqsK3KNLU
+	ytQtpxPiLWjh49Rcmo+xocn2w42IoZHEV3RKskMh5stSktLiGxGmCclK0Vp9mEIsksvSLnCa
+	hJOacyouqREF0aRktWi7+7xczMTKkrk4jkvkNP9OebRPYAZadWyscLSs6J10LLOyYnXZK1vz
+	nuLQTQe/Fh+Q7vI3lqbaI0L+DPXkxcq/xwSMOTTRn5p7o/afkeyIuFC7z9oWJ093XHNpS1eM
+	T+rnjwfvbeqNCv9y5ejOBwc+n2gZK8odEjGP/SY6VXsHw0o+FUgfjq/A6dWRcRdDS5ZJn9cE
+	UteXS8gkhWzbRkKTJPsL/3bhnjQDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRiA+845OzuuFqel9ZGSsAhLSo2MXqgsf/kVJPWjgpBy5Mktddam
+	okUw20A0L138oXPVTHRm0WyVrpuKiilJycyamhesWT+66lze0LZF5L+H53vfh/fHx9Eyg2gd
+	p1JnCBq1IlXOShhJ/C79VuvOaGWUpQGByXqPhbvT2WAZtYvAVOdV7plBMUy2v2ShqtJDg+mN
+	gYEp6ywNro4xMYzUjDPwPK+RhrGSThaKDHM0XLLXUtB2o0sEPQ3FIiidraahUTcqht6nJhaG
+	7y2KYLy1iIEu4x0GRor3QYd5DXhefUXQbm2kwFN4g4XrDjMLHw0jCBxtYwxU5BYjsDY5RTA3
+	bWL3ycmjO/0UeWIcEhOzLZM8rA0nBU4HTWx1+SyxTVwTkw/vnrOks2yOIU/skxQp0n9nyS/X
+	AEN+NPWxpOrLT4pYH/UxpNvcLj606rhkd5KQqsoSNJExiRJlacmRs/k425NfT+lQv6wABXCY
+	j8Y9Q82Mjxl+I3bmOWgfs3wYdjpnvMxxgXwsfjWdXIAkHM1PinDdRJF/ZjV/BhcOfGZ9LOUB
+	N3dd83sZf5vC/Z0Jf/0q3FX+yd+nvc35mw5/k+aDsWWB+6tDsf5xhX81wHvCLfdr5OMgfgNu
+	aXhJXUErjUtKxiUl4/+ScUnJjJg6FKhSZ6UpVKk7IrQpyhy1KjviVHqaDXn/Rs3F+at25O6N
+	a0U8h+QrpIny7UqZSJGlzUlrRZij5YHSEFOUUiZNUuScFzTpJzWZqYK2FQVzjHyt9MAxIVHG
+	JysyhBRBOCto/r1SXMA6HQq/2b0psayF73Ddnw3ecjkEmpfNr30muXJB4TqcEXE1xPVtc+iE
+	IFuPu5mYwQfvTxzVW8K01l3pNVMnLOVUi7viF3YkDdfXHlx8cTruNLWnOvLngni/u/JUu22b
+	wZ5w5FysK63pcUKeUxcUB9XP7F/eGrRuw/LfOfF7K5WkJlfOaJWKbeG0Rqv4AwzywKAXAwAA
+X-CFilter-Loop: Reflected
 
-Fri, May 23, 2025 at 07:26:48PM +0200, arkadiusz.kubalewski@intel.com wrote:
->Add new netlink attribute to allow user space configuration of reference
->sync pin pairs, where both pins are used to provide one clock signal
->consisting of both: base frequency and sync signal.
->
->Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
->Reviewed-by: Milena Olech <milena.olech@intel.com>
->Signed-off-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+On Mon, May 26, 2025 at 10:40:30AM +0200, Toke Høiland-Jørgensen wrote:
+> Byungchul Park <byungchul@sk.com> writes:
+> 
+> > On Mon, May 26, 2025 at 11:23:07AM +0900, Byungchul Park wrote:
+> >> On Fri, May 23, 2025 at 10:21:17AM -0700, Mina Almasry wrote:
+> >> > On Thu, May 22, 2025 at 8:26 PM Byungchul Park <byungchul@sk.com> wrote:
+> >> > >
+> >> > > To simplify struct page, the effort to seperate its own descriptor from
+> >> > > struct page is required and the work for page pool is on going.
+> >> > >
+> >> > > To achieve that, all the code should avoid accessing page pool members
+> >> > > of struct page directly, but use safe APIs for the purpose.
+> >> > >
+> >> > > Use netmem_is_pp() instead of directly accessing page->pp_magic in
+> >> > > page_pool_page_is_pp().
+> >> > >
+> >> > > Signed-off-by: Byungchul Park <byungchul@sk.com>
+> >> > > ---
+> >> > >  include/linux/mm.h   | 5 +----
+> >> > >  net/core/page_pool.c | 5 +++++
+> >> > >  2 files changed, 6 insertions(+), 4 deletions(-)
+> >> > >
+> >> > > diff --git a/include/linux/mm.h b/include/linux/mm.h
+> >> > > index 8dc012e84033..3f7c80fb73ce 100644
+> >> > > --- a/include/linux/mm.h
+> >> > > +++ b/include/linux/mm.h
+> >> > > @@ -4312,10 +4312,7 @@ int arch_lock_shadow_stack_status(struct task_struct *t, unsigned long status);
+> >> > >  #define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
+> >> > >
+> >> > >  #ifdef CONFIG_PAGE_POOL
+> >> > > -static inline bool page_pool_page_is_pp(struct page *page)
+> >> > > -{
+> >> > > -       return (page->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
+> >> > > -}
+> >> > 
+> >> > I vote for keeping this function as-is (do not convert it to netmem),
+> >> > and instead modify it to access page->netmem_desc->pp_magic.
+> >> 
+> >> Once the page pool fields are removed from struct page, struct page will
+> >> have neither struct netmem_desc nor the fields..
+> >> 
+> >> So it's unevitable to cast it to netmem_desc in order to refer to
+> >> pp_magic.  Again, pp_magic is no longer associated to struct page.
+> >
+> > Options that come across my mind are:
+> >
+> >    1. use lru field of struct page instead, with appropriate comment but
+> >       looks so ugly.
+> >    2. instead of a full word for the magic, use a bit of flags or use
+> >       the private field for that purpose.
+> >    3. do not check magic number for page pool.
+> >    4. more?
+> 
+> I'm not sure I understand Mina's concern about CPU cycles from casting.
+> The casting is a compile-time thing, which shouldn't affect run-time
 
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+I didn't mention it but yes.
+
+> performance as long as the check is kept as an inline function. So it's
+> "just" a matter of exposing struct netmem_desc to mm.h so it can use it
+
+Then.. we should expose net_iov as well, but I'm afraid it looks weird.
+Do you think it's okay?
+
+As I told in another thread, embedding strcut netmem_desc into struct
+net_iov will require a huge single patch altering all the users of
+struct net_iov.
+
+	Byungchul
+
+> in the inline definition. Unless I'm missing something?
+> 
+> -Toke
 
