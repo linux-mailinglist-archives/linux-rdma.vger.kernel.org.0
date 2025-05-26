@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-10737-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10738-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5619AC4437
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 May 2025 22:00:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5680BAC447F
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 May 2025 22:40:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 347B816B867
-	for <lists+linux-rdma@lfdr.de>; Mon, 26 May 2025 20:00:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B236A3B78AE
+	for <lists+linux-rdma@lfdr.de>; Mon, 26 May 2025 20:39:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F76423F439;
-	Mon, 26 May 2025 19:59:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A639B23ED6A;
+	Mon, 26 May 2025 20:39:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JMermqow"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kDc42CFH"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2332314830A;
-	Mon, 26 May 2025 19:59:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57E142147EF;
+	Mon, 26 May 2025 20:39:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748289596; cv=none; b=OCo5Lcitnopo4gsMthZUuSo2ADI9gBfUWdDAVcjhBdH0DNuXuqIRLb1LmDH0DH5/wetZJFAws8Ool+xO+JD6yvYIkYqBTn6oTN+UCgmijhE6b7VH41aBgvHejpKzNZsH8euUJQWlgpRMft6X20AVH1bZ5Sq24sirbHHL3pn4mjM=
+	t=1748291995; cv=none; b=XtEHhyVjQSQTaJZXWBKAMBlL2fKE65ZmDfzRbmseq6IxzT2zz+CJ0YWDPopsijjf61PBUZqPqhyB2O/OYSnkO/rrmuJ7V1DF49TiXoth6AQLhGajIPzL+dhlW/Azz7STo4gmsF8KzQQWc2a/DcIbU7cWLfhuoawsrNwKB2IRKgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748289596; c=relaxed/simple;
-	bh=o5410J5V/wER+tLzUSDIkrzGAIb8DMmxc072FNGuheg=;
+	s=arc-20240116; t=1748291995; c=relaxed/simple;
+	bh=EEEQyHf81xh4XanVF972Z1UpwXEWm0dlmJQER+VPF9w=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=A/v9GhwtCv+wzZWHQK2Lw7u16lefxvKjeOoHcSxlWKtfm9LmN74H2CoLceu2+qcaG2JK26EM/0VQWAMHlxo8aj/Caw1qXMyHkyrHQ/3FedqgegqWv2gBy7kSGFPQBE9foi8ftW97YSUQG+Y9eH4HXU//8BhZtg5Jc+ndPWBYoqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JMermqow; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88564C4CEE7;
-	Mon, 26 May 2025 19:59:54 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=kKnFM+b3KlJ7UaGYrhY3+vlPZSNe4D7cae1tUGo9ISBEUM8B1Xt/Q/xVk378UG3Lq6qLj4LOBslOTpzC9EuyvNydpKUzcMBKs9A9k2bLJMedxs7n3ogZGyrHnvGlFFp+HIsihUq9QHsIGPaStcX6GBAK6ZuOn9+FNFHqIv+WbIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kDc42CFH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C39AEC4CEEF;
+	Mon, 26 May 2025 20:39:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748289594;
-	bh=o5410J5V/wER+tLzUSDIkrzGAIb8DMmxc072FNGuheg=;
+	s=k20201202; t=1748291994;
+	bh=EEEQyHf81xh4XanVF972Z1UpwXEWm0dlmJQER+VPF9w=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=JMermqowHisW8Pjp3O6dbZiZBzGx3nSr4RDUMR80MUczrQK/JeiJPMjYd15hu2NYK
-	 cZs811cdnkemGTlrCQQOL3J2UcZt9uu12Xol4PfvnKKxxSUsj8LfKmvQM8C9WL5Fjm
-	 ubfq87rUvPxlqA7ahP68RN4U3mZybKahi+rUoerzaBDXucvgR6IAvAxirtiJbp4eAX
-	 LYGD/2R2Z9xO7DGQ0Zve1MK6TCvPlkS99wVYEO5GPkbFJ3QZXV1U/7NoJDodcGrQb0
-	 9OWYF4yJHRpvAY7vWyJipCvJVHEq8+Y6o18rlZW0b+9aGiue7zYq6M7RW1nxD7C3PV
-	 9fyunoVzbON3A==
+	b=kDc42CFH+RwMiM76q2KV+r6Jl6jilN7Xx5XQfcAmeJfK50dJcYBnMBHi16K5sPnLt
+	 CjxcQKl81P3vKJxCwsxxspYFechiwfYxIDU2maDC+Nn07uP5t0YNr3nnCnvwP76CR6
+	 5JbAk50rhOhiIuli5h/1eO8a0AXjVpIAJNCX603sVwsWSOTQg9xJxuS4Wj7ZIYHSqY
+	 iZqI1CdPVG7OudywgqfUTX4bIkyRkKV8/kNgQH1s3+w+b1JnUOv+kzQqkQj4JfquYp
+	 Vi8PsmE/2l+ppiUIGrcMkFkeU9cz+9CGW8G+bsDtt4hT9maczwmKYxivuJdCuS5m57
+	 23iM1EDSG9sBg==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 3401B3805D8E;
-	Mon, 26 May 2025 20:00:30 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70E673805D8E;
+	Mon, 26 May 2025 20:40:30 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -52,40 +52,39 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3] net/mlx5_core: Add error handling
- inmlx5_query_nic_vport_qkey_viol_cntr()
+Subject: Re: [PATCH v5 net-next: rds] replace strncpy with strscpy_pad
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <174828962901.1030381.7843371532564989086.git-patchwork-notify@kernel.org>
-Date: Mon, 26 May 2025 20:00:29 +0000
-References: <20250521133620.912-1-vulab@iscas.ac.cn>
-In-Reply-To: <20250521133620.912-1-vulab@iscas.ac.cn>
-To: Wentao Liang <vulab@iscas.ac.cn>
-Cc: saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
+ <174829202904.1039758.3366879265618643528.git-patchwork-notify@kernel.org>
+Date: Mon, 26 May 2025 20:40:29 +0000
+References: <20250521161036.14489-1-goralbaris@gmail.com>
+In-Reply-To: <20250521161036.14489-1-goralbaris@gmail.com>
+To: Baris Can Goral <goralbaris@gmail.com>
+Cc: allison.henderson@oracle.com, davem@davemloft.net, edumazet@google.com,
+ horms@kernel.org, kuba@kernel.org, linux-rdma@vger.kernel.org,
+ michal.swiatkowski@linux.intel.com, netdev@vger.kernel.org,
+ pabeni@redhat.com, shankari.ak0208@gmail.com, skhan@linuxfoundation.org
 
 Hello:
 
-This patch was applied to netdev/net.git (main)
+This patch was applied to netdev/net-next.git (main)
 by Paolo Abeni <pabeni@redhat.com>:
 
-On Wed, 21 May 2025 21:36:20 +0800 you wrote:
-> The function mlx5_query_nic_vport_qkey_viol_cntr() calls the function
-> mlx5_query_nic_vport_context() but does not check its return value. This
-> could lead to undefined behavior if the query fails. A proper
-> implementation can be found in mlx5_nic_vport_query_local_lb().
+On Wed, 21 May 2025 19:10:37 +0300 you wrote:
+> The strncpy() function is actively dangerous to use since it may not
+> NULL-terminate the destination string, resulting in potential memory
+> content exposures, unbounded reads, or crashes.
+> Link: https://github.com/KSPP/linux/issues/90
 > 
-> Add error handling for mlx5_query_nic_vport_context(). If it fails, free
-> the out buffer via kvfree() and return error code.
+> In addition, strscpy_pad is more appropriate because it also zero-fills
+> any remaining space in the destination if the source is shorter than
+> the provided buffer size.
 > 
 > [...]
 
 Here is the summary with links:
-  - [v3] net/mlx5_core: Add error handling inmlx5_query_nic_vport_qkey_viol_cntr()
-    https://git.kernel.org/netdev/net/c/f0b50730bdd8
+  - [v5,net-next:,rds] replace strncpy with strscpy_pad
+    https://git.kernel.org/netdev/net-next/c/5bccdc51f90c
 
 You are awesome, thank you!
 -- 
