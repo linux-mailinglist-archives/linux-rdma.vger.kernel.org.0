@@ -1,211 +1,345 @@
-Return-Path: <linux-rdma+bounces-10770-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10771-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 291C2AC5B31
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 May 2025 22:03:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DC4FAC5C5E
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 May 2025 23:43:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 545AB3AE233
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 May 2025 20:03:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C97B4170010
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 May 2025 21:43:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 832D9204F9C;
-	Tue, 27 May 2025 20:03:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5679214815;
+	Tue, 27 May 2025 21:43:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EgkStVp7"
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="Tmh43fxQ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11020099.outbound.protection.outlook.com [52.101.61.99])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCE3F4685
-	for <linux-rdma@vger.kernel.org>; Tue, 27 May 2025 20:03:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748376227; cv=none; b=kIKb/mGfkTCUyyvK8fHwHdpqHN7/dqYHBuE4kkk5uAenAssSFchGwZP58v3Etn7rGZ72tKDTRAkSnmdja6x7va03yU79iR2qspNhKl4aajOOivWA0vihFlrqpMAyeMD4ElT4U+dRItDqJ2kfnm5VSjJdsYoTVSMQAuVS+hADp2g=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748376227; c=relaxed/simple;
-	bh=XCRePEtybr4g8bPvuFUSge14CpPV5pqGRnXt8bWbS7E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GROVlUxSABQR0h89P9xR9O5YzVhhofHWuEYtNjdW/hPk9KQ5NPH29Bl1Kp3cGojSUr+AEJ088tCwWfMzzwTWKNC8Xn2tjsTsEw8szBGUd7GeOSlhH4b2sf/4nJsyuZVQQvouioC2YX3uepE9XP6XpLzqSYb+dp1i5NbCx2ph6z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EgkStVp7; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2348ac8e0b4so6115ad.1
-        for <linux-rdma@vger.kernel.org>; Tue, 27 May 2025 13:03:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1748376225; x=1748981025; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d9dz0ws5wSMj6T2W2k35nGsxHRv0jWVpPv3Vh+2hBGc=;
-        b=EgkStVp7+ed22JBuVfSYxLIpkB9yK270/DslYHqulqnqfJvOhqBUHu9Y/XHFuzsqdk
-         wP+IU1R+WRSM+naIdPX4DZ8NUJgzBvP7fO+mH5jFFNhUUeHSb4aQZhA3FyTYNXKg0pkl
-         NWm/p2+l16q/7Z7G7RCDqwmxzHvVP6LXnoc8b5h1ecqvP2ENRGwVJh+MPUOwXyDa2VLp
-         wKnLzXPvIL511AXSKCdRhduL8VedczStcftB6Bl46PqiKY7DyH68U1NsmUA41B+7c6D0
-         afOk5hEwBb+N8HpgNh3kMZZULJpqBI9ANEzoENVB5etEOnT28VEFqzUSx/NINveh6PDO
-         Nt7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748376225; x=1748981025;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d9dz0ws5wSMj6T2W2k35nGsxHRv0jWVpPv3Vh+2hBGc=;
-        b=oZRhsHIChiMolb8rtSav91msPPVWAbeHn9LClo1o/qh0Gpx7OUdtkntaQa6cLCo8Ps
-         V8lZr65ZqyXix44s4/4eAiFzHHAJKuJbhl+qNN3tWzcFf+kzsI386TSrky7zjDokuxIw
-         UExi7FwtdCB3+6GTnwuGwiO7M2lWY08Zcr4DLAqYvVWDo6FBh79Un0Omb6fjrhxQNAdl
-         CYkTQn5WcMuloBn7yn5AEhV0XObNS5DCl7ImKs4I4ruUcbAOWuDYNk5Ez5lFsHzLK6xC
-         Ui3GVPhBVjckM2zEd58x5kT9gXxv9fV30z5djZ8YvHpzgVjl/HTWA3JrIGV9/4ysbPJW
-         /JDA==
-X-Forwarded-Encrypted: i=1; AJvYcCWvpjgC3ygGMCUtEmIoeyntyiP2ej7ZHcPicQU3oolGBIIy2n5EGIXc2/bdC5x63ywxwNGH/UqPz4sz@vger.kernel.org
-X-Gm-Message-State: AOJu0YzaemHn+yyPjltbR8ap5//pLa6hO653Eu8h4LsQU9edEjMz/80o
-	eR5wvMXE+klUzPnlPQAyamO+smkH79JF2Q7jmNahwXFWNppnvKqDiZz7E5qLtbujbKQzVo18Edt
-	B+ZrMht9nL1U6XkLwHhYgEcOUboaeBXoI2/HSCUa7
-X-Gm-Gg: ASbGnctxXIv28U8LuU3r/2ndkBQXL+xQ404zoTLCuLE0Sie+wzDUfA89NeHQiVJpaBL
-	R0LVMDXfC72WxdLs7aUOmzmxRDH+XexzOoeCmnl3pVDfbqKgLmLBxcjPsFt60I3qH1LOKXfjhZr
-	sXIjVOopE1JhfWKw4kQRGqkIOwchTRy2Yx8ygM5p21+BE4RwN5RqiGyJJADcLx9O5W3GkGXLW0b
-	w==
-X-Google-Smtp-Source: AGHT+IHQVJN4DbRxvYDuHpB5h+PIroixwpeUhP8CEFDbawUwaYaKS06ZXwlx5TNq2vDV+gnge25smvMObf/GzpJzcwM=
-X-Received: by 2002:a17:902:e5c4:b0:231:ddc9:7b82 with SMTP id
- d9443c01a7336-234c5b776efmr483995ad.13.1748376224659; Tue, 27 May 2025
- 13:03:44 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C482C1ACEAC;
+	Tue, 27 May 2025 21:43:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.99
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1748382222; cv=fail; b=cSD0EyCJouGU0AjU9NwnzzJgnISXVW6CjVsqshyE7sYLzX5OFsC949p8glqd5At+LKlQ6T+MwUXepcw5TUpPBlgTx8Cnr9bb1jI57cE3cUFJlWqcUTBUtrDJxC2qrhIzw4O9kslbkLjJHZ3Epk3ERKV5mF6lx+ULLneamQefZc0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1748382222; c=relaxed/simple;
+	bh=f8VK67e4BcQW2yIVhiPqTVje5WOnKHbb3YgsJYhvXdQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=soquUbz+cUzeSCI52bFvWFKfzXkSMuk5WPtcFg45w/KwoquFr9QRAOMGFEVIt0M2pRHiDGAb37gOhzDH9VqQjQadUykU1FuOZCj4uDRHytBoPREyz16B38Slp6PHpWOCXnoewQ9O+zuDkD1y0CrKr3dD/AqY2eXCWY3KCrRbiww=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=Tmh43fxQ; arc=fail smtp.client-ip=52.101.61.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=nEnX2XZwr6kde0Y/lT01JurI0rqs/YPwSRqTt8YxcV+B4H4iXzU0/wN8z7JGf4kaWmANvLiav32jTAIt4zbyg/R/tjmbrpM10In+NQ5ixjc4B8wfJG/IxSG+8Tp5gt0z/P08yMN02ptuTjAHxWPVYfmkU/Q41y2ulR69Wmdx+RKVzIjKw653PwPZ6BO3Azl4Do7T30XlL+I1X9eSJO7rsjggrhhTEAqX2BSwkqtTVlrsDKwZCgA3b1aWDCJAWvyZnnDuZ8A+2aHj48zYWgus6wgzrhsDzJdW7Y+VOmwxY/iposRAu8T12r7KPBlvsHUw78re7DHD0eB41rW/qW129w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LEVJy38ZhR1vIrKiCt4/w60bcbF60LsE0SdQYNHt1d4=;
+ b=aB9+/kKXBVWTBQG2gufHHZAhR3uHxfnji6ebD+sxFtukaUqpRZNbagZygDmS70Jh284xH71rkXTAo9fK9gDVjfW/RXnMilss5bbUb/jhciBnLPauwW6zxN3X+EGTc9jl69GfEYcNu78jMWtERWfqKtcKrzD9iHheXDZTOog95h9ftY9rfngwbzbVqik3PKOp/54SZ8nP76O216ssP6BC5PdhOvLVs9I3si5odM31I91YlDcSX+U1f6VZGPz+Qrns8nPq+ehGwF6wRONH7R6wAy5ljbkmNqWqLUShQ/vCfUeBACKeM36p7cHYOEFhB9bP+p3iZDq/G1DuiAxEFbIAnQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LEVJy38ZhR1vIrKiCt4/w60bcbF60LsE0SdQYNHt1d4=;
+ b=Tmh43fxQ07UM/0WXc3MVg0H7YVFGzPak8hRG/eOHKERUtUUAGkjQj/a9CZ0yPiAHemXXH8sRkzFmAqSLO2ZN/GRI6GVLyv7eu95p/dRNJFT0DD5apCNEIZ7OpSMYWu7NlhJtVM9Zzcq/n9vp50lEtsUkZ9N7KuZIHpvKs+EcPqk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+Received: from MN0PR21MB3606.namprd21.prod.outlook.com (2603:10b6:208:3d1::17)
+ by BL1PR21MB3043.namprd21.prod.outlook.com (2603:10b6:208:387::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8746.6; Tue, 27 May
+ 2025 21:43:36 +0000
+Received: from MN0PR21MB3606.namprd21.prod.outlook.com
+ ([fe80::5120:641f:e060:2dc4]) by MN0PR21MB3606.namprd21.prod.outlook.com
+ ([fe80::5120:641f:e060:2dc4%4]) with mapi id 15.20.8769.001; Tue, 27 May 2025
+ 21:43:36 +0000
+From: Haiyang Zhang <haiyangz@microsoft.com>
+To: linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: haiyangz@microsoft.com,
+	decui@microsoft.com,
+	stephen@networkplumber.org,
+	kys@microsoft.com,
+	paulros@microsoft.com,
+	olaf@aepfle.de,
+	vkuznets@redhat.com,
+	davem@davemloft.net,
+	wei.liu@kernel.org,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	leon@kernel.org,
+	longli@microsoft.com,
+	ssengar@linux.microsoft.com,
+	linux-rdma@vger.kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	bpf@vger.kernel.org,
+	ast@kernel.org,
+	hawk@kernel.org,
+	tglx@linutronix.de,
+	shradhagupta@linux.microsoft.com,
+	andrew+netdev@lunn.ch,
+	kotaranov@microsoft.com,
+	horms@kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next,v6] net: mana: Add handler for hardware servicing events
+Date: Tue, 27 May 2025 14:42:46 -0700
+Message-Id: <1748382166-1886-1-git-send-email-haiyangz@microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+Content-Type: text/plain
+X-ClientProxiedBy: MW4PR03CA0190.namprd03.prod.outlook.com
+ (2603:10b6:303:b8::15) To MN0PR21MB3606.namprd21.prod.outlook.com
+ (2603:10b6:208:3d1::17)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250523032609.16334-1-byungchul@sk.com> <20250523032609.16334-2-byungchul@sk.com>
- <20250527025047.GA71538@system.software.com>
-In-Reply-To: <20250527025047.GA71538@system.software.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Tue, 27 May 2025 13:03:32 -0700
-X-Gm-Features: AX0GCFtJVZCEXBjwMxqvaH9kWHgitMv7x6i4UovC30AFbm7wSMX4R7wbC9s9-Rs
-Message-ID: <CAHS8izOJ6BEhiY6ApKuUkKw8+_R_pZ7kKwE9NqzCyC=g_2JGcA@mail.gmail.com>
-Subject: Re: [PATCH 01/18] netmem: introduce struct netmem_desc
- struct_group_tagged()'ed on struct net_iov
-To: Byungchul Park <byungchul@sk.com>
-Cc: willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org, 
-	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org, 
-	akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com, 
-	andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com, 
-	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, 
-	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com, 
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz, 
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org, 
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Sender: LKML haiyangz <lkmlhyz@microsoft.com>
+X-MS-Exchange-MessageSentRepresentingType: 2
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR21MB3606:EE_|BL1PR21MB3043:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5b0f2dbf-a0fd-4ea4-a7e0-08dd9d6788d0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|52116014|376014|7416014|1800799024|38350700014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?uav/7sCx3Vy+2kZwVUK5Z72gMSAFFU87mF5etmF9ytPmjb9RG0fPT/a3WFnY?=
+ =?us-ascii?Q?MuY3C51DOW8S6DmsxZA24SWTXwY9+c8W/b9EU/Eim4ty6T5ldkOEUwqZgQ7n?=
+ =?us-ascii?Q?O79lVV3+yNrlDexqBvhVxyVoMMNFLJwG0bxWQ41fSTFSsHgWcaI4mIoow6RQ?=
+ =?us-ascii?Q?Y8D/XpNw1e42D5Xp2EiV3O1cn9rGv6I/V3/YfBAdzlr2sd/MfCY31HU4jvYc?=
+ =?us-ascii?Q?LDJq52i6zUbpuO4BqmNoJVlhOQnm5TNdybahqHEufGHPg+0/Q9rqKAHVHcCX?=
+ =?us-ascii?Q?gjn5FKNvL3985gdBVQCN/NmvMNSsBPEDp/ihZ57gnGDXn9BvhjU5rzMlBswt?=
+ =?us-ascii?Q?UBVRJDnrkf1BBnRYhynCTZxL0qpodNObH2GIY02fhhSMJ5+Zk26dJzmkkQYk?=
+ =?us-ascii?Q?3Bfk1uqC+95A0AkXaayuKYGV/YRXXvrrJcwPzCnSAiQAFrY+xMLJPS0HNiz1?=
+ =?us-ascii?Q?E8ux7jH+vpO5G7h1d70E8m5kjudwsfehG+54gp6K5Zz8AhAhA5O62Qdtnrd9?=
+ =?us-ascii?Q?Q5u0Ip/0G4rBTYiTia3k9cAVRuFpG5A3ao7uh0Hp5OEkB/be241F+UvVwRHw?=
+ =?us-ascii?Q?u7PamfM3myzXBqM8ZVFVDxb/dQIdmtvdXQzXDUimg8Spk3pFwprGFByvwJce?=
+ =?us-ascii?Q?1QROorhOPxO35rKRLbJN5/QySDO9qaQpNJbYS0NkLq3OtrfgeTHc/2EHRKwv?=
+ =?us-ascii?Q?qyzYznS2527nCHsqmZGYcWM/zlKUdtGGMikaf7OA1x72jnY9uM0xXeLm24//?=
+ =?us-ascii?Q?V59JX1Pk4obAftFRY1S4xR501rNEEsSR6b2cwKjVsQ0pETPTqJxn6/3yOE7m?=
+ =?us-ascii?Q?D78cNeLUWL/uSuzc+EZRd2JRamjmtkGKQHBx3Ngb9qW0Y6ieubN+AG8SXu/m?=
+ =?us-ascii?Q?IT2F/fLItFKmxiPVpOVdS8w8ti2HByVpciNPm31k9qS74lF61h/YEXRzQa/O?=
+ =?us-ascii?Q?JolYEhdsjHRFF8d5oTraevTPrN6O26OOkw2NmrZghpdn4ShG66kvbE3XnGPf?=
+ =?us-ascii?Q?9ZYjcEZeoEFnqTqne4MQU23DH7Xr2IEXuhxC0D97gENSdP+RAQ0HshPbAFoU?=
+ =?us-ascii?Q?Kv1dBgV6FNWhdQ/Q47+phS2ez3jx4aXwQvtWkZfao/ihOcE9HbsdH5+GsoDd?=
+ =?us-ascii?Q?bx6eHRTtM6EVMcDD+zWIYHpJvUSv6ggUL1NAN1iE0svspeZ16eQfJ12pWb1b?=
+ =?us-ascii?Q?ECSpCc8AbvR7DYQkyyc6tHFCGYtt4MOSt6BjJgYNbJfChD6NcbhEzaeZD/bv?=
+ =?us-ascii?Q?yGdIfvEPhVKL9ANot7RTP118fCAspAz94CdmCBHQYXoIshaaUTZpRUE8NG6Q?=
+ =?us-ascii?Q?FipDE6rfNACY0xhQH1CwKi2Jr9/7eg+4FLtTF/SvIjg56ymXWmCRZ9X+r9vt?=
+ =?us-ascii?Q?fJRJKELBz0aBnHLYWlDYZcghUIa/HEdPpZ2A4O5gdeQL0aplInrGCHhqsQaY?=
+ =?us-ascii?Q?KgF8BnKbtrTAr69hQzA/9lATcJXvCNE88bHHcBcMIbXAfbBAafGIPQ=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR21MB3606.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(52116014)(376014)(7416014)(1800799024)(38350700014);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?oo2EVoHSm0/Hq8K1BB2iV/rD3XxDfwVXz0Pj3jdBJYIKNCZ6pnua3pBPpSko?=
+ =?us-ascii?Q?301iEmTuIVfq8VT9BQrqLg5oYhFKu8W+rwwDUy5nhyWp43bviykZvJzMjrTt?=
+ =?us-ascii?Q?9XDjIWcF9L/Vyu81JIGDR/IWlQtGpizxUUHT+E7oxLFyPuxELCKZBzwpX2QC?=
+ =?us-ascii?Q?OJbhaST5IW9m22nOY/zmch3y6q7x8daaMmc1/VVvAJ4FyN+5Zxw+BIAQZcLT?=
+ =?us-ascii?Q?Pte4CQBxGk53plB+rJ1ceqEFNcK5agVlbE4AnmIlMrRIUo4H3yGohd0H8FLo?=
+ =?us-ascii?Q?XjDdM/WmarurweUv0+nr1dR+rqxwnb2Hc2rlfueaiM+Ot2cmZz1UXb4HQcv+?=
+ =?us-ascii?Q?DVQ7ABv2PVc1FyHRxbKrSPe+hDEjngh1nTUS2UcZKy6kVwdae2WEAT2fON0q?=
+ =?us-ascii?Q?y/Pcep91oXpKsqc3RXouu5E5u5Un2Cdw+zxcWopUkMKc7Db/VQyw4acOqmOV?=
+ =?us-ascii?Q?dUpFc621mKzEu1KmYQRszr+3VaqhWuJMstvjhzvwmenSm/27t6wRK8Qcqooz?=
+ =?us-ascii?Q?yzsEbjv2C1mWgoMRI0QiH3oST65Nv/ooYs5lkl7J2ffiaCMshAuf2fzCuG0S?=
+ =?us-ascii?Q?5iVuctTZkn0jdPmMXtaSalbwKkxW6pwWZFgtX+cIuabRoJj1EEvG3De2fWRp?=
+ =?us-ascii?Q?bmy6I+pVteMHiEi8RS1MRXRpfGzSllPrjOuGcyjhszNA0VKqN/uE/5wvMmbE?=
+ =?us-ascii?Q?oyGcgl4UXPfHTBqtMbr77wjiT4uFOmfz+er1IrHxKBFflrhzODe24MbLkAvp?=
+ =?us-ascii?Q?qTcL9DXANlKyYXEzpUi5BvpxNU1EZr6xGD21G+8OeWoAcENH3togXtCAvJZJ?=
+ =?us-ascii?Q?9PCCJeLLnLnSMiqbUBhUoEL+GQVuCqUycVCHvnyTfl90iAWj4NDQiyil6rbk?=
+ =?us-ascii?Q?abbnPWq9U7DTjzaGaLwPOP7EZnIsX1uw38+w2J/s3H/GksQBT3uEILWn58S8?=
+ =?us-ascii?Q?7NAWxV5ijpzrfHg0sMn5Ac774rJGCiOGyJl61LkrKgwazZYyY8t3M/oNW/Vq?=
+ =?us-ascii?Q?iEAwBdY75kcCSOvqBOazCuTQvGG/zS4LBUnZMjFaND4hbB2cJjadBL5n/Yzq?=
+ =?us-ascii?Q?+4oOamZkKZmc8rCG497cC8O7/ABkyCY1GrDEoa133XubVBGCzrH+BBqRK4hI?=
+ =?us-ascii?Q?xp17y1CWNxATnX621BpW2L10UuzakSdb4QG2RBcVbq4H7yYFtmBuHlZs7+Ea?=
+ =?us-ascii?Q?BwpfPLh3ccDV5clA6GZU384j44k0HovBuhPUFGcCtwwHBFuBC7jjZJpH1YSn?=
+ =?us-ascii?Q?V9jvWXHPkpmaaMdkOsGIbnKF07g0b8uNHeWVlZw9D16De+TAQFp0l5SOM4dE?=
+ =?us-ascii?Q?qg1/lw24jxfit0yPtVm7y+POe3WRyYJIT7j4jZtmNMeqirmozqRVW0+2szOj?=
+ =?us-ascii?Q?2ugcRCuY1+8qBVdzeNdmtL5oRHxAsCN94Sj89UbJBtakEPa5gdVUAIUom3ji?=
+ =?us-ascii?Q?xrUEhxr6SpHkGhJ1PSJU+mmHVGS9NcKg+E12RN5YxlG28RI9MrJSoruvp2iF?=
+ =?us-ascii?Q?7xHGn3XHAbcMsxCYsGSH7qoNpsOk3cvhDqAZ8OORSZbXYGdGW/wjsWOxki4O?=
+ =?us-ascii?Q?IApxAqF38o7u9s+46yW8sqJCu0lGnHHdOGn3epb/?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5b0f2dbf-a0fd-4ea4-a7e0-08dd9d6788d0
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR21MB3606.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2025 21:43:36.6758
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: v8qRowfqynfB6Ipe+eKJnPVGhclxD9a5tD3sKAKAfI1CsedTTI0rNDjrCIuQwws5X2Rxz2Vc+vT+3giGS9FjAA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR21MB3043
 
-On Mon, May 26, 2025 at 7:50=E2=80=AFPM Byungchul Park <byungchul@sk.com> w=
-rote:
->
-> On Fri, May 23, 2025 at 12:25:52PM +0900, Byungchul Park wrote:
-> > To simplify struct page, the page pool members of struct page should be
-> > moved to other, allowing these members to be removed from struct page.
-> >
-> > Introduce a network memory descriptor to store the members, struct
-> > netmem_desc, reusing struct net_iov that already mirrored struct page.
-> >
-> > While at it, relocate _pp_mapping_pad to group struct net_iov's fields.
-> >
-> > Signed-off-by: Byungchul Park <byungchul@sk.com>
-> > ---
-> >  include/linux/mm_types.h |  2 +-
-> >  include/net/netmem.h     | 43 +++++++++++++++++++++++++++++++++-------
-> >  2 files changed, 37 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> > index 56d07edd01f9..873e820e1521 100644
-> > --- a/include/linux/mm_types.h
-> > +++ b/include/linux/mm_types.h
-> > @@ -120,13 +120,13 @@ struct page {
-> >                       unsigned long private;
-> >               };
-> >               struct {        /* page_pool used by netstack */
-> > +                     unsigned long _pp_mapping_pad;
-> >                       /**
-> >                        * @pp_magic: magic value to avoid recycling non
-> >                        * page_pool allocated pages.
-> >                        */
-> >                       unsigned long pp_magic;
-> >                       struct page_pool *pp;
-> > -                     unsigned long _pp_mapping_pad;
-> >                       unsigned long dma_addr;
-> >                       atomic_long_t pp_ref_count;
-> >               };
-> > diff --git a/include/net/netmem.h b/include/net/netmem.h
-> > index 386164fb9c18..08e9d76cdf14 100644
-> > --- a/include/net/netmem.h
-> > +++ b/include/net/netmem.h
-> > @@ -31,12 +31,41 @@ enum net_iov_type {
-> >  };
-> >
-> >  struct net_iov {
-> > -     enum net_iov_type type;
-> > -     unsigned long pp_magic;
-> > -     struct page_pool *pp;
-> > -     struct net_iov_area *owner;
-> > -     unsigned long dma_addr;
-> > -     atomic_long_t pp_ref_count;
-> > +     /*
-> > +      * XXX: Now that struct netmem_desc overlays on struct page,
-> > +      * struct_group_tagged() should cover all of them.  However,
-> > +      * a separate struct netmem_desc should be declared and embedded,
-> > +      * once struct netmem_desc is no longer overlayed but it has its
-> > +      * own instance from slab.  The final form should be:
-> > +      *
-> > +      *    struct netmem_desc {
-> > +      *         unsigned long pp_magic;
-> > +      *         struct page_pool *pp;
-> > +      *         unsigned long dma_addr;
-> > +      *         atomic_long_t pp_ref_count;
-> > +      *    };
-> > +      *
-> > +      *    struct net_iov {
-> > +      *         enum net_iov_type type;
-> > +      *         struct net_iov_area *owner;
-> > +      *         struct netmem_desc;
-> > +      *    };
-> > +      */
-> > +     struct_group_tagged(netmem_desc, desc,
->
-> So..  For now, this is the best option we can pick.  We can do all that
-> you told me once struct netmem_desc has it own instance from slab.
->
-> Again, it's because the page pool fields (or netmem things) from struct
-> page will be gone by this series.
->
-> Mina, thoughts?
->
+To collaborate with hardware servicing events, upon receiving the special
+EQE notification from the HW channel, remove the devices on this bus.
+Then, after a waiting period based on the device specs, rescan the parent
+bus to recover the devices.
 
-Can you please post an updated series with the approach you have in
-mind? I think this series as-is seems broken vis-a-vie the
-_pp_padding_map param move that looks incorrect. Pavel and I have also
-commented on patch 18 that removing the ASSERTS seems incorrect as
-it's breaking the symmetry between struct page and struct net_iov.
+Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+Reviewed-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
+---
+v6:
+Not acquiring module refcnt as suggested by Paolo Abeni.
 
-It's not clear to me if the fields are being removed from struct page,
-where are they going... the approach ptdesc for example has taken is
-to create a mirror of struct page, then show via asserts that the
-mirror is equivalent to struct page, AFAIU:
+v5:
+Get refcnt of the pdev struct to avoid removal before running the work
+as suggested by Jakub Kicinski.
 
-https://elixir.bootlin.com/linux/v6.14.3/source/include/linux/mm_types.h#L4=
-37
+v4:
+Renamed EQE type 135 to GDMA_EQE_HWC_RESET_REQUEST, since there can
+be multiple cases of this reset request.
 
-Also the same approach for zpdesc:
+v3:
+Updated for checkpatch warnings as suggested by Simon Horman.
 
-https://elixir.bootlin.com/linux/v6.14.3/source/mm/zpdesc.h#L29
+v2:
+Added dev_dbg for service type as suggested by Shradha Gupta.
+Added driver cap bit.
+---
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 67 +++++++++++++++++++
+ include/net/mana/gdma.h                       | 10 ++-
+ 2 files changed, 75 insertions(+), 2 deletions(-)
 
-In this series you're removing the entries from struct page, I'm not
-really sure where they went, and you're removing the asserts that we
-have between net_iov and struct page so we're not even sure that those
-are in sync anymore. I would suggest for me at least reposting with
-the new types you have in mind and with clear asserts showing what is
-meant to be in sync (and overlay) what.
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index 4ffaf7588885..999cf7f88d5d 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -352,11 +352,58 @@ void mana_gd_ring_cq(struct gdma_queue *cq, u8 arm_bit)
+ }
+ EXPORT_SYMBOL_NS(mana_gd_ring_cq, "NET_MANA");
+ 
++#define MANA_SERVICE_PERIOD 10
++
++struct mana_serv_work {
++	struct work_struct serv_work;
++	struct pci_dev *pdev;
++};
++
++static void mana_serv_func(struct work_struct *w)
++{
++	struct mana_serv_work *mns_wk;
++	struct pci_bus *bus, *parent;
++	struct pci_dev *pdev;
++
++	mns_wk = container_of(w, struct mana_serv_work, serv_work);
++	pdev = mns_wk->pdev;
++
++	pci_lock_rescan_remove();
++
++	if (!pdev)
++		goto out;
++
++	bus = pdev->bus;
++	if (!bus) {
++		dev_err(&pdev->dev, "MANA service: no bus\n");
++		goto out;
++	}
++
++	parent = bus->parent;
++	if (!parent) {
++		dev_err(&pdev->dev, "MANA service: no parent bus\n");
++		goto out;
++	}
++
++	pci_stop_and_remove_bus_device(bus->self);
++
++	msleep(MANA_SERVICE_PERIOD * 1000);
++
++	pci_rescan_bus(parent);
++
++out:
++	pci_unlock_rescan_remove();
++
++	pci_dev_put(pdev);
++	kfree(mns_wk);
++}
++
+ static void mana_gd_process_eqe(struct gdma_queue *eq)
+ {
+ 	u32 head = eq->head % (eq->queue_size / GDMA_EQE_SIZE);
+ 	struct gdma_context *gc = eq->gdma_dev->gdma_context;
+ 	struct gdma_eqe *eq_eqe_ptr = eq->queue_mem_ptr;
++	struct mana_serv_work *mns_wk;
+ 	union gdma_eqe_info eqe_info;
+ 	enum gdma_eqe_type type;
+ 	struct gdma_event event;
+@@ -400,6 +447,26 @@ static void mana_gd_process_eqe(struct gdma_queue *eq)
+ 		eq->eq.callback(eq->eq.context, eq, &event);
+ 		break;
+ 
++	case GDMA_EQE_HWC_FPGA_RECONFIG:
++		dev_info(gc->dev, "Recv MANA service type:%d\n", type);
++
++		if (gc->in_service) {
++			dev_info(gc->dev, "Already in service\n");
++			break;
++		}
++
++		mns_wk = kzalloc(sizeof(*mns_wk), GFP_ATOMIC);
++		if (!mns_wk)
++			break;
++
++		dev_info(gc->dev, "Start MANA service type:%d\n", type);
++		gc->in_service = true;
++		mns_wk->pdev = to_pci_dev(gc->dev);
++		pci_dev_get(mns_wk->pdev);
++		INIT_WORK(&mns_wk->serv_work, mana_serv_func);
++		schedule_work(&mns_wk->serv_work);
++		break;
++
+ 	default:
+ 		break;
+ 	}
+diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+index 228603bf03f2..150ab3610869 100644
+--- a/include/net/mana/gdma.h
++++ b/include/net/mana/gdma.h
+@@ -58,7 +58,7 @@ enum gdma_eqe_type {
+ 	GDMA_EQE_HWC_INIT_EQ_ID_DB	= 129,
+ 	GDMA_EQE_HWC_INIT_DATA		= 130,
+ 	GDMA_EQE_HWC_INIT_DONE		= 131,
+-	GDMA_EQE_HWC_SOC_RECONFIG	= 132,
++	GDMA_EQE_HWC_FPGA_RECONFIG	= 132,
+ 	GDMA_EQE_HWC_SOC_RECONFIG_DATA	= 133,
+ 	GDMA_EQE_RNIC_QP_FATAL		= 176,
+ };
+@@ -388,6 +388,8 @@ struct gdma_context {
+ 	u32			test_event_eq_id;
+ 
+ 	bool			is_pf;
++	bool			in_service;
++
+ 	phys_addr_t		bar0_pa;
+ 	void __iomem		*bar0_va;
+ 	void __iomem		*shm_base;
+@@ -558,12 +560,16 @@ enum {
+ /* Driver can handle holes (zeros) in the device list */
+ #define GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP BIT(11)
+ 
++/* Driver can self reset on FPGA Reconfig EQE notification */
++#define GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE BIT(17)
++
+ #define GDMA_DRV_CAP_FLAGS1 \
+ 	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
+ 	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
+ 	 GDMA_DRV_CAP_FLAG_1_HWC_TIMEOUT_RECONFIG | \
+ 	 GDMA_DRV_CAP_FLAG_1_VARIABLE_INDIRECTION_TABLE_SUPPORT | \
+-	 GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP)
++	 GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP | \
++	 GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE)
+ 
+ #define GDMA_DRV_CAP_FLAGS2 0
+ 
+-- 
+2.34.1
 
---=20
-Thanks,
-Mina
 
