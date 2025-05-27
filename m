@@ -1,165 +1,121 @@
-Return-Path: <linux-rdma+bounces-10741-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10742-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBE97AC45EA
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 May 2025 03:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 98F9DAC45F3
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 May 2025 03:37:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBDBE3A42B4
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 May 2025 01:31:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 313453B6328
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 May 2025 01:37:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E52C08633A;
-	Tue, 27 May 2025 01:31:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4C2413AA3E;
+	Tue, 27 May 2025 01:37:40 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 397C88F58;
-	Tue, 27 May 2025 01:31:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 320AE2CA9;
+	Tue, 27 May 2025 01:37:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748309489; cv=none; b=HQRF03dTym5aJeICQi3AY/8L/JBWeib5pjgFkMQ3wpb8cJsZx24M1KJhsKai7ilqhx9q1IKv+Ad1ZHXnJrbP5HZxaHqE+J5FkJJ3wWR+4Bl3mi6eBtT/dS7Ax5AYA2r3ME3ZFx1ojH3ECL8XCWCE2sW5YiUYzK7UM8eF+KJFIVY=
+	t=1748309860; cv=none; b=Ma14zwEETsRAe41HOuqekPIJMCbXlTF8/Up9jtr64Q0EXuI0Sd7CmbpftHjaPwvql71ZRfm6rO9WG6HvPA3a6q1Ho/zlxxoh884q2MEtbKI9aHZHxVy90YTJt5hryt1nx5SdjEWXff4DRHIWm3FfIYgXrkEk9VgnQHu0mY/KcTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748309489; c=relaxed/simple;
-	bh=pm3Pc32Zf4LoF+JccJiR/o/mHSX4HrNhTRUfRVe+RHw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XjOXV+EnVn0Q3Ssp/dbVYEmmuUUOddEq/TgIWRXEFIDP+n5NxfspkZdqo/WUpJR9ArEHqrNXubuyqhT196gbowKroJO/2bp1AayMYaOtYGCMDpjKJYIW78SgWFcNGrc2+VT0EVwuhgJmf+eNphB0awAmdGvWr7rutyt3wAf80Pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-669ff7000002311f-dc-683515e91fbd
-Date: Tue, 27 May 2025 10:31:16 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Mina Almasry <almasrymina@google.com>, willy@infradead.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org,
-	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
-	akpm@linux-foundation.org, davem@davemloft.net,
-	john.fastabend@gmail.com, andrew+netdev@lunn.ch, toke@redhat.com,
-	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
-	saeedm@nvidia.com, leon@kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, david@redhat.com, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, horms@kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	vishal.moola@gmail.com
-Subject: Re: [PATCH 18/18] mm, netmem: remove the page pool members in struct
- page
-Message-ID: <20250527013116.GA37906@system.software.com>
-References: <20250523032609.16334-1-byungchul@sk.com>
- <20250523032609.16334-19-byungchul@sk.com>
- <CAHS8izM-ee5C8W2D2x9ChQz667PQEaYFOtgKZcFCMT4HRHL0fQ@mail.gmail.com>
- <20250526013744.GD74632@system.software.com>
- <cae26eaa-66cf-4d1f-ae13-047fb421824a@gmail.com>
- <20250527010226.GA19906@system.software.com>
+	s=arc-20240116; t=1748309860; c=relaxed/simple;
+	bh=pbGrf70WuVs3YlkzIH2h7srYzjq+d+2zO5jywaGI35g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ggFQpxgwZ2cyu5qj/OkVVBu4Q/GerGcKvBYeK3T0c0sTO8jhdZcwbkFxiiKequg0FErp/3soR6Ju5bVf+OnljgWcuBBw4/RrPM1RxE/SHa0OTN9Ql6QV0B6bT/JEvX/95750vt+l2FWGbhCzYvQq+mq0ItkEF6nZySkXA6xXsF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 269f6fa83a9b11f0b29709d653e92f7d-20250527
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
+	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
+	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
+	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_EXISTED
+	SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, CIE_BAD
+	CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU
+	AMN_T1, AMN_GOOD, AMN_C_TI, AMN_C_BU, ABX_MISS_RDNS
+X-CID-UNFAMILIAR: 1
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.45,REQID:b3edf028-c6c0-4aff-a5be-e49ceee0d7ed,IP:10,
+	URL:0,TC:0,Content:-25,EDM:0,RT:0,SF:8,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-7
+X-CID-INFO: VERSION:1.1.45,REQID:b3edf028-c6c0-4aff-a5be-e49ceee0d7ed,IP:10,UR
+	L:0,TC:0,Content:-25,EDM:0,RT:0,SF:8,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-7
+X-CID-META: VersionHash:6493067,CLOUDID:b05fd3528457c1948b45fc94d07ca05a,BulkI
+	D:250527093732DL80ZNKU,BulkQuantity:0,Recheck:0,SF:16|19|24|38|44|66|78|10
+	2,TC:nil,Content:0|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,B
+	EC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_USA,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 269f6fa83a9b11f0b29709d653e92f7d-20250527
+X-User: zhaochenguang@kylinos.cn
+Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <zhaochenguang@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 1422044838; Tue, 27 May 2025 09:37:29 +0800
+From: Chenguang Zhao <zhaochenguang@kylinos.cn>
+To: Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Chenguang Zhao <zhaochenguang@kylinos.cn>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH] net/mlx5: Flag state up only after cmdif is ready
+Date: Tue, 27 May 2025 09:37:23 +0800
+Message-Id: <20250527013723.242599-1-zhaochenguang@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250527010226.GA19906@system.software.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SfUzMcRzHfX/PHWdfh3w9jDkzW1YeVvNB0sbmN6OhZsOGW/3W3XQnV1Ia
-	OzQPTQnN6hy7hh5OHCfXSaITMm2uQ64HHaXGlKe49WDFjxn/vfd6vz/vz+ePj0CrjrFTBJ0h
-	VTIaNElqTsEoescUhb6fGKGdX5u3GCz2cg4u96dDyWsXCxabE8G3gVYe+uoecXChKECD5WkW
-	A9/tgzR0PezgwV/czUD1kUoaOk7Uc5CTNUTDQVcpBR5nLgv5g5doqDS95uFZlYWD9vIRFrrd
-	OQw8Npcx4M+NhofWYAg86UFQZ6+kIHD8HAenvVYOOrP8CLz3Oxg4eyAXgb3Gx8JQv4WLnilW
-	lDVT4i3zK160OnaLN0pDxGyflxYdtmOc6Ph6ihfbmqo5sb5giBFvufooMefQR0780tXCiJ9q
-	XnCiveIFIzZY63ixzzF9Hd6siEyQknRpknFe1HaF1tv1jk8+ODa9p6WVM6ECRTYKEggOJx6T
-	g/6rXfmNKBsJAoNnk6rueBlzeA7x+QZ+RybgueTDSzefjRQCjXtYYj/iZGRjPI4jz98U8vKs
-	EgN52TlJxipcRZGTz1bLWonHkceFb3/HaRxCfMPvKTlO46mkZFiQcRBeTPxfrlGynohnkXvO
-	R5S8iuAygdy2nWP/nDmZ1Jb6mDyEzf/Vmv+rNf+rtSLahlQ6Q5peo0sKD9NmGHTpYfE79Q70
-	60GK9/3Y4kJfPbFuhAWkHqP0SOFaFatJS8nQuxERaPUEpTPvF1ImaDL2Ssad24y7k6QUN5oq
-	MOpJyoWBPQkqnKhJlXZIUrJk/OtSQtAUE8rt71iUHHq1qLOeWw8bYjwRnRvHVZx5Hhdt6L9T
-	aDilDH41eobfuSTqYtPdFdfDE1d1bz0/EvM5ZAE3LWxtvu16cGZ7E7MrbfNN7/5lzcMx+uTY
-	4Ss7apT32xoyFx1tPTr28Nrm6KVsVuiam/wWZk3jHp4Ki2wctSnSsfxBIK7h7cpeNZOi1SwI
-	oY0pmp98m5tjHAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRzGe885O+e4nLya1sGCYt01rcjqH4pYBL34IRICTSJdemijeWkz
-	06AwlURT06zQtWIlZS5jsWROEaklXkjQNGtlNdPUiVLZxWqa1gmivj38nuf37eFpv0kmkNek
-	Zoi6VJVWycoZ+d7wvJDxgK3qTZWzQWC01LFw53sW1AzaZWA02xB8+THAwefWdhaqr0/TYOzO
-	Z+CrxUPDSNsQB65boww0FzTQMHS+g4WS/Bkacu23KXh0tVMGPbZSGVz03KShIWeQg74mIwtv
-	6uZlMOooYaDTUMuAqzQK2kyLYfrxJIJWSwMF08VXWajoNbEwnO9C0PtoiIErZ0oRWFqcMpj5
-	bmSjlKS+9gVFGg2vOWKyHif3bweRImcvTazmQpZYP13gyKtnzSzpqJxhSKP9M0VK8t6zZGrk
-	JUM+tPSzpNr9kSKW+n6GdJlauX2+8fKIZFGryRR1GyMT5ereETeXnuuTNflygM1BlfIi5MUL
-	OEywX3yCihDPM3i10DSaJGEWrxWczh+0lP1xsDDx3MEVITlP40mZYCmwMVKxCO8Xnr6t4iRX
-	gUF4PrxEwn64iRLK+6KlrMC+QmfVuz9zGgcJzrlxSprTeKlQM8dL2AvvEFxT9ygpB+CVwgNb
-	O1WGFIb/bMN/tuGfbUK0GflrUjNTVBrt1lD9UXV2qiYrNCktxYp+f+DWqdlyO/rSt8eBMI+U
-	3ooeMUztJ1Nl6rNTHEjgaaW/wlb2GymSVdknRV1agu64VtQ70FKeUS5RRMeKiX74iCpDPCqK
-	6aLub0vxXoE5qLu9Yx0T820ivC0mPinMa316hPemhws+1B4ez9f3b/vp9ozvOqZNDunJqVm+
-	/dyaWX/vhupY7PmadmPKThIix2Kjg6sqggfVyV3vWqoPHpk3R3iu+caNXfZ5srtwC05bZU+w
-	3l3sCkiRxw2c3nCoeNlY+E732UsrWFn9AfeJXJ+JhUpGr1ZtDqJ1etUvF08Tpf8CAAA=
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 
-On Tue, May 27, 2025 at 10:02:26AM +0900, Byungchul Park wrote:
-> On Mon, May 26, 2025 at 05:58:10PM +0100, Pavel Begunkov wrote:
-> > struct net_iov {
-> > 	unsigned long flags_padding;
-> > 	union {
-> > 		struct {
-> > 			// same layout as in page + build asserts;
-> > 			...
-> > 			struct page_pool *pp;
-> > 			...
-> > 		};
-> > 		struct netmem_desc desc;
-> > 	};
-> > };
-> > 
-> > struct netmem_desc *page_to_netmem_desc(struct page *page)
-> > {
-> > 	return &page->netmem_desc;
-> 
-> page will not have any netmem things in it after this, that matters.
-						   ^
-						   this patch series
-	Byungchul
-> 
-> > }
-> > 
-> > struct netmem_desc *netmem_to_desc(netmem_t netmem)
-> > {
-> > 	if (netmem_is_page(netmem))
-> > 		return page_to_netmem_desc(netmem_to_page(netmem);
-> > 	return &netmem_to_niov(netmem)->desc;
-> > }
-> > 
-> > The compiler should be able to optimise the branch in netmem_to_desc(),
-> > but we might need to help it a bit.
-> > 
-> > 
-> > Then, patch 2 ... N convert page pool and everyone else accessing
-> > those page fields directly to netmem_to_desc / etc.
-> > 
-> > And the final patch replaces the struct group in the page with a
-> > new field:
-> > 
-> > struct netmem_desc {
-> > 	struct page_pool *pp;
-> > 	...
-> > };
-> > 
-> > struct page {
-> > 	unsigned long flags_padding;
-> > 	union {
-> > 		struct netmem_desc desc;
-> 		^
-> 		should be gone.
-> 
-> 	Byungchul
-> > 		...
-> > 	};
-> > };
-> > 
-> > net_iov will drop its union in a later series to avoid conflicts.
-> > 
-> > btw, I don't think you need to convert page pool to netmem for this
-> > to happen, so that can be done in a separate unrelated series. It's
-> > 18 patches, and netdev usually requires it to be no more than 15.
-> > 
-> > -- 
-> > Pavel Begunkov
+When driver is reloading during recovery flow, it can't get new commands
+till command interface is up again. Otherwise we may get to null pointer
+trying to access non initialized command structures.
+
+Signed-off-by: Chenguang Zhao <zhaochenguang@kylinos.cn>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/main.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+index 41e8660c819c..713f1f4f2b42 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+@@ -1210,6 +1210,9 @@ static int mlx5_function_enable(struct mlx5_core_dev *dev, bool boot, u64 timeou
+ 	dev->caps.embedded_cpu = mlx5_read_embedded_cpu(dev);
+ 	mlx5_cmd_set_state(dev, MLX5_CMDIF_STATE_UP);
+ 
++	/* remove any previous indication of internal error */
++	dev->state = MLX5_DEVICE_STATE_UP;
++
+ 	err = mlx5_core_enable_hca(dev, 0);
+ 	if (err) {
+ 		mlx5_core_err(dev, "enable hca failed\n");
+@@ -1602,8 +1605,6 @@ int mlx5_load_one_devl_locked(struct mlx5_core_dev *dev, bool recovery)
+ 		mlx5_core_warn(dev, "interface is up, NOP\n");
+ 		goto out;
+ 	}
+-	/* remove any previous indication of internal error */
+-	dev->state = MLX5_DEVICE_STATE_UP;
+ 
+ 	if (recovery)
+ 		timeout = mlx5_tout_ms(dev, FW_PRE_INIT_ON_RECOVERY_TIMEOUT);
+-- 
+2.25.1
+
 
