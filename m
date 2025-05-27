@@ -1,137 +1,145 @@
-Return-Path: <linux-rdma+bounces-10748-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10749-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25EF2AC4985
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 May 2025 09:47:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CA8BAC4B88
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 May 2025 11:29:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98EE93ADDD2
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 May 2025 07:46:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD2DB16E0F2
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 May 2025 09:29:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5211248F4F;
-	Tue, 27 May 2025 07:46:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 497B32505A5;
+	Tue, 27 May 2025 09:28:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Im4qVtpx"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GcnF3O2+"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA5D7288DB
-	for <linux-rdma@vger.kernel.org>; Tue, 27 May 2025 07:46:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 723E63C01
+	for <linux-rdma@vger.kernel.org>; Tue, 27 May 2025 09:28:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748332012; cv=none; b=GyFRhOhGTh5pHAEmv4u7XEO8qPhN6xrEPLdp+0nYegvUpZj8WG8SUOKAWsHs7MWS49cxu0pRC/kJUIhOeVNveH/yD7ZXfWvLMipof/jID0BCgtgepPZ3jcYUEE7K57EksTCls/Bre9e/5My3DeFYOvxh7axGI4AnXIAvCc4OkkE=
+	t=1748338139; cv=none; b=CFXa6wRMGJRMChsucm/de37hFry1cU6EOCMgZRHsvvhPbxkRZTUcluKlOL9EUwmqIeSLZ5FAKuhk4kQhbYPaL4rbXGSI8OFLrk1QobPsB2uw80yQNRwB+23aeWmJQkK0WhdQqk91TQ56jFGqd7zYCvO8FgmCTgVPXuTf4aR60YQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748332012; c=relaxed/simple;
-	bh=UU7+oRb86zVwx+HEnFQvsgq6dEP8Udyba5tT6b19DPI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Iff0xoCOhyVitukVinvJqQekKESjsEAxvA/d4UVGJFo4SingYp+whmQa5kOJKWJkT9AqVxT4/ffrmaw2gFbQp2PQaMDxXQc9M7dlRJWxIwQJgejONgliR9zKqnQ7koxxa1iBiF5hCp6cpfTdym9ZvfGGmGjIH4UXd0215YhlW68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Im4qVtpx; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5efe8d9ebdfso5898847a12.3
-        for <linux-rdma@vger.kernel.org>; Tue, 27 May 2025 00:46:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1748332009; x=1748936809; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kGjUxtNR3mJ/2u7hranrVFwikwHAbHm/cRFgPsL7dCQ=;
-        b=Im4qVtpx+F4huEWmY0J0/WOS+oOH04KEMoGTiqfzBvF6fMNs9a/e0yXLwflVeV+tr3
-         406rYR0ZGeWtWAtiIqKULbuE6m6CWECUEaIXvExkepk3DaK5015n7vKsmtcug40Zc8ke
-         yBulrFiS1XB5zRlgoOZxJqKWfT4NX+En2PUQMgN1bMpdaK4a8gj4rtHUjuaVXNZ3NxlY
-         qT28V5k6SRvBGZvcqpraYlHW+m622tvZmyEaNAUcmA9YHFRhIYS1ioi12yTrbAPKaYdt
-         UdGo7cSPJ+fXLM5QaqThyxLTQLZfOqZkw4yFMIxUqgskVM2m1tHTpOX+gzjVVX1auloG
-         Tz+Q==
+	s=arc-20240116; t=1748338139; c=relaxed/simple;
+	bh=jYEhg75W17+LrrRp5ozft0smLaCDvCUlIDdgZkc8Maw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JhvNwvfhRIXFAauGQNR0SfFuuwuVkaNewVTIPIABOd3uQzIOyw4cXtUie1LwyTx3w0iEgTrDafeC8pARynWKPHVcI3Ytb2j5iI36CdWEJj5s5hhVJYQea+isKurT2oZEfq0fG1Hp2L0T1Z82gCfP+yiCkoDup4bjyRGt0sEFUV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GcnF3O2+; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1748338136;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d2VX9MfL1HCTriT+S3B9Z1XwLwg3XDZQ+O6lDXv3bE4=;
+	b=GcnF3O2+DhFxEc9GW8lAH0adS9eRHDdbK9qujz628jaSAOdvosEvbho12Xw395xCiZK7QJ
+	ZuNvrRLEIXoPnMFelBvsL+tT5Epk9WZA2rq5QV+0bRaQpSPM57k+CDAgKIDNfHrL9rZLNk
+	bbO6XtMt6TTIrBsKgyVLTUpUr6ZXJ8c=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-70-GIGIiofPMn-LP4KcZYae4g-1; Tue, 27 May 2025 05:28:54 -0400
+X-MC-Unique: GIGIiofPMn-LP4KcZYae4g-1
+X-Mimecast-MFC-AGG-ID: GIGIiofPMn-LP4KcZYae4g_1748338133
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-43e9b0fd00cso15797255e9.0
+        for <linux-rdma@vger.kernel.org>; Tue, 27 May 2025 02:28:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748332009; x=1748936809;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kGjUxtNR3mJ/2u7hranrVFwikwHAbHm/cRFgPsL7dCQ=;
-        b=BnI9fAF04s6x5WzQmseAZcpoBxwNfrNcmMGocUPxvUN9vZ/ehhXftMKvJ1oz4G4bHA
-         dIrCkY1D7ekXTTysIVivJjZ61Rnwc4i7a7f9zPADdopmG/LTwJcTbgvRM2kohiqf1dBX
-         J58TF55MO2J7hkqKceU/jKHsAoWpqhvM/Cv/Swt8zH9P8rtKpdUjN5s1BFTIdW5r9Fxn
-         4na4V2+mcyjlFPaiIDA0xHSuXV+l2c2/H+eVcMQWaFTgbBezDr4LQLHOSjRmqCddJxYg
-         2HQqRku/FLSoApnOLxnfkQAxZ0rUhO2inWrS8Y+YydDeQ4wVirV+hdGRzZprDSRg5XZe
-         NXWw==
-X-Forwarded-Encrypted: i=1; AJvYcCWRU1uAf0g3g65Z/jlfU7/Tl4OpY3FPCw0nVulYMq2aYMHFoOGeSA3xNAisUgsK//RUuAVOj2pDy6EO@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6VkeFPHoR87r1EEcNRe2B3A636hOVMsYXcUJim5xp1FSvLL19
-	Kcxx8sCQ5XdNn1WnmHP5dYZkfoZVWFROK/ygitF2KRubmv2J0avjqzcLaiRD8DmDeao=
-X-Gm-Gg: ASbGncvadA0lmjDR+xU2eMCHURMcs6lOTqKv0oPSfKdqez66XD5ayFbscA7h7I/uQNY
-	OQZ5ERLliaT8gvgBtJe3Cm6PFuEZ+W2GM+P77v2nwmHWpwd26/F0d691HaqXajhP/+57Eba6fsH
-	pMBfDzjRTlFybNhgyJmoai3eIF+Xk4Ogv9NvnL4t3ZfcKJEUsHwEg81DWqhb/g3br4HQNrxbwzf
-	+bDN52amDMuoDORtD0R1nhNt8NPe9KYkHQ1G5Zoe7ujR7alZwximLublafmWAI02pd4hLG2c2YF
-	2tUmbXssf/XOa7LmLCXjvYpKtb+Zg/WntG3ePCoUJH2Pe14y1PwhJRGDNpIG1lGPljiMiQofLRs
-	=
-X-Google-Smtp-Source: AGHT+IEWcJvokDvwPgBmEe7nvuQpRK4D3ziJpdJh7OejYmQl2V009fIRSgH2jBGO0ZeLuhaFxXPszA==
-X-Received: by 2002:a17:906:dc8a:b0:ad5:1bfd:30d2 with SMTP id a640c23a62f3a-ad85b2795f0mr1165498366b.55.1748332008808;
-        Tue, 27 May 2025 00:46:48 -0700 (PDT)
-Received: from localhost (hf94.n1.ips.mtn.co.ug. [41.210.143.148])
-        by smtp.gmail.com with UTF8SMTPSA id a640c23a62f3a-ad52d437585sm1789776266b.115.2025.05.27.00.46.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 May 2025 00:46:48 -0700 (PDT)
-Date: Tue, 27 May 2025 10:46:44 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Subbaraya Sundeep <sbhatta@marvell.com>
-Cc: Eugenia Emantayev <eugenia@mellanox.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Or Gerlitz <ogerlitz@mellanox.com>,
-	Matan Barak <matanb@mellanox.com>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH net] net/mlx4_en: Prevent potential integer overflow
- calculating Hz
-Message-ID: <aDVt5LZe-jo7mVxt@stanley.mountain>
-References: <aDVS6vGV7N4UnqWS@stanley.mountain>
- <aDVqSjcpG3kvl-0g@b570aef45a5c>
+        d=1e100.net; s=20230601; t=1748338133; x=1748942933;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=d2VX9MfL1HCTriT+S3B9Z1XwLwg3XDZQ+O6lDXv3bE4=;
+        b=MJT9AbDB69TAFItDrniY9zlWWJLrH9fXBxrV/ks/OHWOJSml7VyLIlzRcia+8lU+Ot
+         VzQI0Esy0TLjclWP6HArFMqyleho7rCS14uDk/4B7haPEQlmc7mkhM0wTNuzIDvfCY39
+         4vxUIU2+KBQFObS2GjMw9iJAUv1ACBC7HP5E2vwMD/lSSrshpyRVSDP3b/jyT9irWk7h
+         RXGLuuyM4zGFZc1N+aYEiZfHsn4p7u1aK+le+6az0xV1tHiA0+NSJxxuLtThrS3Kswo9
+         PPtA0z6AR89EIM4s0igniFfAP6GpR/dcJo0PqlVC02dlKqchETdYgtJ1mSSsx6olIkTE
+         19/A==
+X-Forwarded-Encrypted: i=1; AJvYcCUjovHe/EnISVXDK1krb+nr9GzXtAm7/Ke5bbNrCcvFcn24M71ZF+T4SXomAycO6sg9KYpyivaTBSgO@vger.kernel.org
+X-Gm-Message-State: AOJu0YwUUH05JBXH6otCwrilti6sLWecv4rZwVwCik6CG9ruehldE0Fm
+	PTNqIdGRuBQXXGyLtOeCWyEMzv4rD1YQBaeDVCSqN1VFHqb/dEMptJh9c4/C9ljllLrKf8YcZCI
+	dV3u6LcJBPkN6DKf8H9KUdTGy6XCT5xl6bfC3+1ArGelTVIJD5+Kp4xPTrQSEpsc=
+X-Gm-Gg: ASbGncvOT8S3Fao7QopAWHQLDqG+CLagTQJIW+MeSPlGPuQuU5JIKz7MAcpKX3uPRNl
+	L6DTN4ZTeEIIEkjmRGmU9QrB+d8FFwhcNsfhHjzKAlGReP2CQUITw4q70T9WMVYuhfJ3gF+8TMN
+	vIZDIDOfwxbxKglqMRE1+jYnuzecrDmblMpHUBhp7X3oVp7esX2E6Jiqx1qCRyzUiXJ1oPqhgKg
+	D67mx6hZnM3giKMkSeXOu4H7Btoa42xJXaZ1vbqPM7qPps9fkNvTzkBimHxdfvthhInloNfrvDZ
+	nTquc9I7spR6uc08q2g=
+X-Received: by 2002:a05:600c:1d0a:b0:43d:186d:a4bf with SMTP id 5b1f17b1804b1-44c77bf3aa2mr98283825e9.0.1748338133529;
+        Tue, 27 May 2025 02:28:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFW/XvOutq354S3u3kVQy6maNZpndfNYmmZuqtvnQwyMkFCqY+qleAw2OpAQBAisEp90oBu4Q==
+X-Received: by 2002:a05:600c:1d0a:b0:43d:186d:a4bf with SMTP id 5b1f17b1804b1-44c77bf3aa2mr98283485e9.0.1748338133127;
+        Tue, 27 May 2025 02:28:53 -0700 (PDT)
+Received: from ?IPV6:2a0d:3344:2728:e810::f39? ([2a0d:3344:2728:e810::f39])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a4e4c4739csm290454f8f.0.2025.05.27.02.28.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 May 2025 02:28:52 -0700 (PDT)
+Message-ID: <ea6b8065-76e4-45c8-a51f-858abab4d639@redhat.com>
+Date: Tue, 27 May 2025 11:28:50 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aDVqSjcpG3kvl-0g@b570aef45a5c>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next,v5] net: mana: Add handler for hardware servicing
+ events
+To: Haiyang Zhang <haiyangz@microsoft.com>, linux-hyperv@vger.kernel.org,
+ netdev@vger.kernel.org
+Cc: decui@microsoft.com, stephen@networkplumber.org, kys@microsoft.com,
+ paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
+ davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
+ kuba@kernel.org, leon@kernel.org, longli@microsoft.com,
+ ssengar@linux.microsoft.com, linux-rdma@vger.kernel.org,
+ daniel@iogearbox.net, john.fastabend@gmail.com, bpf@vger.kernel.org,
+ ast@kernel.org, hawk@kernel.org, tglx@linutronix.de,
+ shradhagupta@linux.microsoft.com, andrew+netdev@lunn.ch,
+ kotaranov@microsoft.com, horms@kernel.org, linux-kernel@vger.kernel.org
+References: <1747873343-3118-1-git-send-email-haiyangz@microsoft.com>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <1747873343-3118-1-git-send-email-haiyangz@microsoft.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, May 27, 2025 at 07:31:22AM +0000, Subbaraya Sundeep wrote:
-> Hi,
-> 
-> On 2025-05-27 at 05:51:38, Dan Carpenter (dan.carpenter@linaro.org) wrote:
-> > The "freq" variable is in terms of MHz and "max_val_cycles" is in terms
-> > of Hz.  The fact that "max_val_cycles" is a u64 suggests that support
-> > for high frequency is intended but the "freq_khz * 1000" would overflow
-> > the u32 type if we went above 4GHz.  Use unsigned long type for the
-> > mutliplication to prevent that.
-> > 
-> > Fixes: 31c128b66e5b ("net/mlx4_en: Choose time-stamping shift value according to HW frequency")
-> > Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > ---
-> >  drivers/net/ethernet/mellanox/mlx4/en_clock.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/ethernet/mellanox/mlx4/en_clock.c b/drivers/net/ethernet/mellanox/mlx4/en_clock.c
-> > index cd754cd76bde..7abd6a7c9ebe 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx4/en_clock.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx4/en_clock.c
-> > @@ -249,7 +249,7 @@ static const struct ptp_clock_info mlx4_en_ptp_clock_info = {
-> >  static u32 freq_to_shift(u16 freq)
-> >  {
-> >  	u32 freq_khz = freq * 1000;
-> > -	u64 max_val_cycles = freq_khz * 1000 * MLX4_EN_WRAP_AROUND_SEC;
-> > +	u64 max_val_cycles = freq_khz * 1000UL * MLX4_EN_WRAP_AROUND_SEC;
-> 
-> 1000ULL would be better then.
+On 5/22/25 2:22 AM, Haiyang Zhang wrote:
+> @@ -400,6 +448,33 @@ static void mana_gd_process_eqe(struct gdma_queue *eq)
+>  		eq->eq.callback(eq->eq.context, eq, &event);
+>  		break;
+>  
+> +	case GDMA_EQE_HWC_FPGA_RECONFIG:
+> +		dev_info(gc->dev, "Recv MANA service type:%d\n", type);
+> +
+> +		if (gc->in_service) {
+> +			dev_info(gc->dev, "Already in service\n");
+> +			break;
+> +		}
+> +
+> +		if (!try_module_get(THIS_MODULE)) {
+> +			dev_info(gc->dev, "Module is unloading\n");
+> +			break;
+> +		}
+> +
+> +		mns_wk = kzalloc(sizeof(*mns_wk), GFP_ATOMIC);
+> +		if (!mns_wk) {
+> +			module_put(THIS_MODULE);
+> +			break;
+> +		}
+> +
+> +		dev_info(gc->dev, "Start MANA service type:%d\n", type);
+> +		gc->in_service = true;
+> +		mns_wk->pdev = to_pci_dev(gc->dev);
+> +		pci_dev_get(mns_wk->pdev);
 
-Yeah, that's true.
+Acquiring both the device and the module reference is confusing and
+likely unnecessary. pci_dev_get() should suffice.
 
-regards,
-dan carpenter
+/P
 
 
