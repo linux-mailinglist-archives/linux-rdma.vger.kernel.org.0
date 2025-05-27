@@ -1,234 +1,200 @@
-Return-Path: <linux-rdma+bounces-10768-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10769-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1446AC5A3C
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 May 2025 20:48:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C52EFAC5A6F
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 May 2025 21:10:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8B7E165A16
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 May 2025 18:48:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59D238A5B43
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 May 2025 19:10:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D7981F561D;
-	Tue, 27 May 2025 18:48:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28FA4280A5C;
+	Tue, 27 May 2025 19:10:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BaHuHj4C"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jWdgfvR5"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 725FE1E2847
-	for <linux-rdma@vger.kernel.org>; Tue, 27 May 2025 18:48:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 538A027B505;
+	Tue, 27 May 2025 19:10:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748371705; cv=none; b=Wf6JlNdlgAkn2LZMKxgtd08U+VQFKMUHjIr/wQQLNnsQBE4OEJcaVrYwTYIZ0YcMdVdHg6Nf5qV5RU7iIs4SM9lVO+zGFSVv4RYoTP1oNiYic5D9HBLW14/cFEwtXtXqbkFaVRbej2XSPfe49mlN7TehXHfwan9w3CSQfOwwatg=
+	t=1748373020; cv=none; b=ofMx14tUGX4aJB3YYbWiUDu1+t66aFJVba/eIRq6I5tSkp5K8Cii7JbPGPSR7fH3D688q7PHn+Yt6UZEt955iZ3d2yYignvbVVMQjSshBaeD/SZt60obls9Gx+A2XupLVvfVZ0WIT9lX8MMt0aPnILcX1wMZXAI1KXXDauMyQys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748371705; c=relaxed/simple;
-	bh=ewQQcswoqPhAikMJvG+HmV/301fVZzdLKrCZxbkv9Rk=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=TP3AbCTp+IZ6KkviVJy61TPauTWBaO8qfiNPU2zoUOPZXI2JvQ4P2G86Ta8VuAA3MtXOUN9pbTjIS8JAqpojFCZgBZqp4uWldrYvzPMJoWIK268XrlfoL9zd19X0QE/ioy0Eg6FYGteG+3tLxbzjlD1BkALXwZ4yBWLbEqlDDJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BaHuHj4C; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1748371704; x=1779907704;
-  h=date:from:to:cc:subject:message-id;
-  bh=ewQQcswoqPhAikMJvG+HmV/301fVZzdLKrCZxbkv9Rk=;
-  b=BaHuHj4CfPEFoRuL1APJM73aFvVWASQHVJ2nHqrLh9gF/8HxiV/4ladf
-   0drM0/tgVRucXdedOQ2g87KZFTMx6eZvEoPVf8SnR9gV7irTs81DVnH25
-   JXHukUj/jrMvPsVnRAadYLHaPv3yZw3UTYl4olYwQNUb2dKdSeB0U6J9u
-   jHa+J0IXn+4XQ79zaefWtWkICOQOZlaUwXeuOx5EeDMiIQiAQNzz0G04q
-   FDJDIxB1gsAi+T7tQrFvNQaY5qdwCIC65fLGDB6t8lKt0bOMKja/3lBHn
-   kQlEJyU/C2rjSaSUzavOn6TUt6BE+8enHQJtLFbCIaDRZkWQ2UF+RDtsD
-   Q==;
-X-CSE-ConnectionGUID: xGKPSvK4TraNKH/V57kk9w==
-X-CSE-MsgGUID: yYRbxDZeTYaBCsd05cidJA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11446"; a="61783079"
-X-IronPort-AV: E=Sophos;i="6.15,319,1739865600"; 
-   d="scan'208";a="61783079"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2025 11:48:21 -0700
-X-CSE-ConnectionGUID: xjrjDlNrQde1M0m8gdpNuQ==
-X-CSE-MsgGUID: HipjYJvhQ96G//2H6EgpEw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.15,319,1739865600"; 
-   d="scan'208";a="142849109"
-Received: from lkp-server01.sh.intel.com (HELO 1992f890471c) ([10.239.97.150])
-  by orviesa006.jf.intel.com with ESMTP; 27 May 2025 11:48:20 -0700
-Received: from kbuild by 1992f890471c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1uJzLV-000UuQ-0s;
-	Tue, 27 May 2025 18:48:17 +0000
-Date: Wed, 28 May 2025 02:47:37 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: [rdma:wip/for-testing] BUILD SUCCESS
- bbfadc699bfd194a326cc4f84acfe9a34373e0f6
-Message-ID: <202505280227.9CScKDSf-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1748373020; c=relaxed/simple;
+	bh=jvIursIm7xirFrAF6+nx9NHgILyAFssbM2BZDvh0Xjs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WYuUvwldZ/46zBbCNVtEEwQ5XKvrjeeubd01sjbyCwT84XFu1nDFZcI5eAHHtmJx5xk4MC830iDfhGOC0WtMM7jxr/QQIw23i+p4QxXd2zP+CjffuPMj+S0iqCWZuE2f/D4VItwejZEOsQIio3Uv4H972cltN5YVy9B8xjuxYgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jWdgfvR5; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2301ac32320so31379325ad.1;
+        Tue, 27 May 2025 12:10:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748373018; x=1748977818; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hQ4L0D20ndsCdzFmLfAE6nfeaO8SPFx82dBJgoFLkBI=;
+        b=jWdgfvR5bDIKMrvCDma9xTvwfEcYD1nrh/b298vgoOKEaIORbI99Blx36EqxziHRho
+         A6cFzeNFDKQ50eQO98d0aO/z3mvJRBC2VMy3NOmkK3prkdnpfoP0RfNmmn6LAGwKMrBj
+         yJCAX1kysRZ6HpZHs8nKP0OyZ6OTWtwH8RkNpoH0x30MsfNaAgr5SG+a+vnLsnmK5si6
+         L6BtNppYBJgA+4yATkf/orU3jgr4w6PqXTPmUBMUUlnfDcYvBiLtWseyM/Nx+WVnNtL/
+         vSu3R27a3Bk9sITlh0H5YOP/hfm3H9+aRU1MpDxEHjGgiMsCEWkYZm7hKYn3jItkYmlp
+         6+eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748373018; x=1748977818;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hQ4L0D20ndsCdzFmLfAE6nfeaO8SPFx82dBJgoFLkBI=;
+        b=VnHEe0UD/wPkyrwnGdjLNxID+EFazgM9VziTZAo6NsTmKnVxBfxFu1nkG1QOV4v0qN
+         XPk5XFnjBBDdUhMHLpy0KhxXIrODr6cJ2r8FydNF0ra85pPIRoIMwiX+pKG5krrIKPYY
+         d1BtHWrO7H29FqER9YpPgoM4OuQwTu2wopO+QA6tj8qcssInH9TmCEJczvJYLmadEr0x
+         uwCdVgYtzJfBNuoDz1XEHn5QXMC/n83vDfuJnPVcBMUOUD4h+X9fjiHEwri2GL1icJCT
+         oqniQb+NLLcqXsPA8lA3VaJdu9sAf0E8KCDFpVXts/TMRN6EbGKzHownGKIOgSaV7SIe
+         VgYw==
+X-Forwarded-Encrypted: i=1; AJvYcCU1TUDJSSO2YaHkLf2jBW9dNJWa50sv1ESloOpfwP3pIPo5scsJuF13EOFR/pLt1c4yyGlx2HIam6Xo8Q==@vger.kernel.org, AJvYcCUOO/NFLfoA8sMwOj1jLhDfN/lDhyw2v3h0cXzD2vDxNHYi+qF0qk2DxHX7RLpOT9Q34cuX1QggMF20XiE=@vger.kernel.org, AJvYcCVQucvKsZOOL2rEIIxqzdu+cOInP+HwHLN9dMTdfgUwerObUGXiGbdcuuwSIx19HF1MLLr0KnzaEM+9TnXX@vger.kernel.org, AJvYcCWeG9qj4IuL592mcZ7kdXB7r+lrb+bSA+OLr37rGUhYZgFxy84lMqTBEtUDXVXG7J0dKW3e94ke@vger.kernel.org, AJvYcCXAw8On3T9KO4aYHm7sLFcGE75dAzsKZX9QLgaSKcdHz5sKrG8XHulKA2roqyKZbgDTRGtNeEFTge4O@vger.kernel.org
+X-Gm-Message-State: AOJu0YwL1e8TtYXBRgHGlQ+tfzyMsKxGvfI0y9SW49ago5V6oFuZ+gtA
+	O71gAlQ4VmGpQLf7mZFzt+SKaYEdRseMblh1hTBjRaMIloelgY2EpMb/DvlGXw==
+X-Gm-Gg: ASbGncsE7ZZqmFnV2puCCa7t7ejJ4RJq9zzk/iuzhlIqSf/2/60f4CwUtWHJk+vJQcN
+	EPuv3q/aZ5bgDRIyrqlikQ80v3JRkUFxPh4VUJ9PeNR/DNnONDKd9fHcfQ+E/OoMJx2Qw9Hvqcc
+	lJ9sDhySUT+VJEZlu4FBGBGOLMkW/KCWaBs6VpE3zYwjXIhzsttPHmKxMPZCJEp/W8cAHAjYlzU
+	qbhrhexAoO4cO1T62XAMWyajjZHrA/zbeFAU0sIqHI2tf1p9bwyMa46GF1KY4/WU3hqCApOSE9f
+	8a/Aqd50LTwkjNsZko+CHhDhOjM5hbYhIzMv2W5UdPi8ONNaWcA=
+X-Google-Smtp-Source: AGHT+IE4iGM8B7MNpxVPekqnTow+ybSs+QzOfae2nsSVmSU48C6P19U5szUtP3FoDqyqAr63lEfoCg==
+X-Received: by 2002:a17:903:2593:b0:234:9374:cfae with SMTP id d9443c01a7336-2349374d00dmr57470505ad.19.1748373018305;
+        Tue, 27 May 2025 12:10:18 -0700 (PDT)
+Received: from localhost ([216.228.127.130])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-234a1681ca4sm14031415ad.46.2025.05.27.12.10.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 May 2025 12:10:17 -0700 (PDT)
+Date: Tue, 27 May 2025 15:10:15 -0400
+From: Yury Norov <yury.norov@gmail.com>
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Cc: Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Simon Horman <horms@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+	Maxim Levitsky <mlevitsk@redhat.com>,
+	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Michael Kelley <mhklinux@outlook.com>, linux-hyperv@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Nipun Gupta <nipun.gupta@amd.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Jonathan Cameron <Jonathan.Cameron@huwei.com>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Kevin Tian <kevin.tian@intel.com>, Long Li <longli@microsoft.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Krzysztof =?utf-8?Q?Wilczy=EF=BF=BD~Dski?= <kw@linux.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, Paul Rosswurm <paulros@microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: Re: [PATCH v4 3/5] net: mana: explain irq_setup() algorithm
+Message-ID: <aDYOFzQrfDFcti-u@yury>
+References: <1748361453-25096-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <1748361505-25513-1-git-send-email-shradhagupta@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1748361505-25513-1-git-send-email-shradhagupta@linux.microsoft.com>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/for-testing
-branch HEAD: bbfadc699bfd194a326cc4f84acfe9a34373e0f6  Merge tag 'v6.15' into k.o/wip/for-testing
+So now git will think that you're the author of the patch.
 
-elapsed time: 1443m
+If author and sender are different people, the first line in commit
+message body should state that. In this case, it should be:
 
-configs tested: 141
-configs skipped: 5
+From: Yury Norov <yury.norov@gmail.com>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Please consider this one example
 
-tested configs:
-alpha                             allnoconfig    gcc-14.2.0
-alpha                            allyesconfig    gcc-14.2.0
-alpha                               defconfig    gcc-14.2.0
-arc                              allmodconfig    gcc-14.2.0
-arc                               allnoconfig    gcc-14.2.0
-arc                              allyesconfig    gcc-14.2.0
-arc                                 defconfig    gcc-14.2.0
-arc                            hsdk_defconfig    gcc-14.2.0
-arc                   randconfig-001-20250527    gcc-10.5.0
-arc                   randconfig-002-20250527    gcc-10.5.0
-arm                              allmodconfig    gcc-14.2.0
-arm                               allnoconfig    clang-21
-arm                              allyesconfig    gcc-14.2.0
-arm                                 defconfig    clang-21
-arm                       imx_v6_v7_defconfig    clang-16
-arm                   milbeaut_m10v_defconfig    clang-19
-arm                   randconfig-001-20250527    clang-21
-arm                   randconfig-002-20250527    gcc-7.5.0
-arm                   randconfig-003-20250527    clang-19
-arm                   randconfig-004-20250527    clang-21
-arm64                            allmodconfig    clang-19
-arm64                             allnoconfig    gcc-14.2.0
-arm64                               defconfig    gcc-14.2.0
-arm64                 randconfig-001-20250527    gcc-8.5.0
-arm64                 randconfig-002-20250527    gcc-8.5.0
-arm64                 randconfig-003-20250527    clang-16
-arm64                 randconfig-004-20250527    gcc-6.5.0
-csky                              allnoconfig    gcc-14.2.0
-csky                                defconfig    gcc-14.2.0
-csky                  randconfig-001-20250527    gcc-12.4.0
-csky                  randconfig-002-20250527    gcc-12.4.0
-hexagon                          allmodconfig    clang-17
-hexagon                           allnoconfig    clang-21
-hexagon                          allyesconfig    clang-21
-hexagon                             defconfig    clang-21
-hexagon               randconfig-001-20250527    clang-21
-hexagon               randconfig-002-20250527    clang-21
-i386                             allmodconfig    gcc-12
-i386                              allnoconfig    gcc-12
-i386                             allyesconfig    gcc-12
-i386        buildonly-randconfig-001-20250527    gcc-12
-i386        buildonly-randconfig-002-20250527    clang-20
-i386        buildonly-randconfig-003-20250527    clang-20
-i386        buildonly-randconfig-004-20250527    clang-20
-i386        buildonly-randconfig-005-20250527    gcc-11
-i386        buildonly-randconfig-006-20250527    gcc-12
-i386                                defconfig    clang-20
-loongarch                        allmodconfig    gcc-14.2.0
-loongarch                         allnoconfig    gcc-14.2.0
-loongarch                           defconfig    gcc-14.2.0
-loongarch             randconfig-001-20250527    gcc-15.1.0
-loongarch             randconfig-002-20250527    gcc-15.1.0
-m68k                             allmodconfig    gcc-14.2.0
-m68k                              allnoconfig    gcc-14.2.0
-m68k                             allyesconfig    gcc-14.2.0
-m68k                         apollo_defconfig    gcc-14.2.0
-m68k                       bvme6000_defconfig    gcc-14.2.0
-m68k                                defconfig    gcc-14.2.0
-microblaze                       allmodconfig    gcc-14.2.0
-microblaze                        allnoconfig    gcc-14.2.0
-microblaze                       allyesconfig    gcc-14.2.0
-microblaze                          defconfig    gcc-14.2.0
-mips                              allnoconfig    gcc-14.2.0
-mips                           ci20_defconfig    clang-21
-nios2                             allnoconfig    gcc-14.2.0
-nios2                               defconfig    gcc-14.2.0
-nios2                 randconfig-001-20250527    gcc-14.2.0
-nios2                 randconfig-002-20250527    gcc-10.5.0
-openrisc                          allnoconfig    gcc-14.2.0
-openrisc                         allyesconfig    gcc-14.2.0
-openrisc                            defconfig    gcc-14.2.0
-parisc                           allmodconfig    gcc-14.2.0
-parisc                            allnoconfig    gcc-14.2.0
-parisc                           allyesconfig    gcc-14.2.0
-parisc                              defconfig    gcc-14.2.0
-parisc                randconfig-001-20250527    gcc-9.3.0
-parisc                randconfig-002-20250527    gcc-11.5.0
-parisc64                            defconfig    gcc-15.1.0
-powerpc                          allmodconfig    gcc-14.2.0
-powerpc                           allnoconfig    gcc-14.2.0
-powerpc                          allyesconfig    clang-21
-powerpc                       ebony_defconfig    clang-21
-powerpc                          g5_defconfig    gcc-14.2.0
-powerpc                        icon_defconfig    gcc-14.2.0
-powerpc                     mpc83xx_defconfig    clang-21
-powerpc               randconfig-001-20250527    gcc-6.5.0
-powerpc               randconfig-002-20250527    clang-18
-powerpc               randconfig-003-20250527    gcc-8.5.0
-powerpc64             randconfig-001-20250527    clang-21
-powerpc64             randconfig-002-20250527    clang-21
-powerpc64             randconfig-003-20250527    clang-21
-riscv                            allmodconfig    clang-21
-riscv                             allnoconfig    gcc-14.2.0
-riscv                            allyesconfig    clang-16
-riscv                               defconfig    clang-21
-riscv                 randconfig-001-20250527    gcc-8.5.0
-riscv                 randconfig-002-20250527    gcc-15.1.0
-s390                              allnoconfig    clang-21
-s390                             allyesconfig    gcc-14.2.0
-s390                                defconfig    clang-21
-s390                  randconfig-001-20250527    gcc-6.5.0
-s390                  randconfig-002-20250527    gcc-9.3.0
-sh                               allmodconfig    gcc-14.2.0
-sh                                allnoconfig    gcc-14.2.0
-sh                               allyesconfig    gcc-14.2.0
-sh                                  defconfig    gcc-14.2.0
-sh                          lboxre2_defconfig    gcc-14.2.0
-sh                    randconfig-001-20250527    gcc-10.5.0
-sh                    randconfig-002-20250527    gcc-15.1.0
-sh                             sh03_defconfig    gcc-14.2.0
-sh                        sh7763rdp_defconfig    gcc-14.2.0
-sparc                            allmodconfig    gcc-14.2.0
-sparc                             allnoconfig    gcc-14.2.0
-sparc                 randconfig-001-20250527    gcc-11.5.0
-sparc                 randconfig-002-20250527    gcc-7.5.0
-sparc64                             defconfig    gcc-14.2.0
-sparc64               randconfig-001-20250527    gcc-5.5.0
-sparc64               randconfig-002-20250527    gcc-7.5.0
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-21
-um                               allyesconfig    gcc-12
-um                                  defconfig    clang-21
-um                             i386_defconfig    gcc-12
-um                    randconfig-001-20250527    clang-21
-um                    randconfig-002-20250527    gcc-12
-um                           x86_64_defconfig    clang-21
-x86_64                            allnoconfig    clang-20
-x86_64                           allyesconfig    clang-20
-x86_64      buildonly-randconfig-001-20250527    gcc-12
-x86_64      buildonly-randconfig-002-20250527    clang-20
-x86_64      buildonly-randconfig-003-20250527    gcc-12
-x86_64      buildonly-randconfig-004-20250527    clang-20
-x86_64      buildonly-randconfig-005-20250527    clang-20
-x86_64      buildonly-randconfig-006-20250527    clang-20
-x86_64                              defconfig    gcc-11
-x86_64                          rhel-9.4-rust    clang-18
-xtensa                           alldefconfig    gcc-14.2.0
-xtensa                            allnoconfig    gcc-14.2.0
-xtensa                  audio_kc705_defconfig    gcc-14.2.0
-xtensa                randconfig-001-20250527    gcc-9.3.0
-xtensa                randconfig-002-20250527    gcc-15.1.0
+https://patchew.org/linux/20250326-fixed-type-genmasks-v8-0-24afed16ca00@wanadoo.fr/20250326-fixed-type-genmasks-v8-6-24afed16ca00@wanadoo.fr/
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Yury
+
+On Tue, May 27, 2025 at 08:58:25AM -0700, Shradha Gupta wrote:
+> Commit 91bfe210e196 ("net: mana: add a function to spread IRQs per CPUs")
+> added the irq_setup() function that distributes IRQs on CPUs according
+> to a tricky heuristic. The corresponding commit message explains the
+> heuristic.
+> 
+> Duplicate it in the source code to make available for readers without
+> digging git in history. Also, add more detailed explanation about how
+> the heuristics is implemented.
+> 
+> Signed-off-by: Yury Norov [NVIDIA] <yury.norov@gmail.com>
+> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> ---
+>  .../net/ethernet/microsoft/mana/gdma_main.c   | 41 +++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> index 4ffaf7588885..f9e8d4d1ba3a 100644
+> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> @@ -1288,6 +1288,47 @@ void mana_gd_free_res_map(struct gdma_resource *r)
+>  	r->size = 0;
+>  }
+>  
+> +/*
+> + * Spread on CPUs with the following heuristics:
+> + *
+> + * 1. No more than one IRQ per CPU, if possible;
+> + * 2. NUMA locality is the second priority;
+> + * 3. Sibling dislocality is the last priority.
+> + *
+> + * Let's consider this topology:
+> + *
+> + * Node            0               1
+> + * Core        0       1       2       3
+> + * CPU       0   1   2   3   4   5   6   7
+> + *
+> + * The most performant IRQ distribution based on the above topology
+> + * and heuristics may look like this:
+> + *
+> + * IRQ     Nodes   Cores   CPUs
+> + * 0       1       0       0-1
+> + * 1       1       1       2-3
+> + * 2       1       0       0-1
+> + * 3       1       1       2-3
+> + * 4       2       2       4-5
+> + * 5       2       3       6-7
+> + * 6       2       2       4-5
+> + * 7       2       3       6-7
+> + *
+> + * The heuristics is implemented as follows.
+> + *
+> + * The outer for_each() loop resets the 'weight' to the actual number
+> + * of CPUs in the hop. Then inner for_each() loop decrements it by the
+> + * number of sibling groups (cores) while assigning first set of IRQs
+> + * to each group. IRQs 0 and 1 above are distributed this way.
+> + *
+> + * Now, because NUMA locality is more important, we should walk the
+> + * same set of siblings and assign 2nd set of IRQs (2 and 3), and it's
+> + * implemented by the medium while() loop. We do like this unless the
+> + * number of IRQs assigned on this hop will not become equal to number
+> + * of CPUs in the hop (weight == 0). Then we switch to the next hop and
+> + * do the same thing.
+> + */
+> +
+>  static int irq_setup(unsigned int *irqs, unsigned int len, int node)
+>  {
+>  	const struct cpumask *next, *prev = cpu_none_mask;
+> -- 
+> 2.34.1
 
