@@ -1,153 +1,233 @@
-Return-Path: <linux-rdma+bounces-10820-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10821-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E51B4AC6199
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 08:08:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E15CAC61E7
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 08:27:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13D6C17C291
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 06:08:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39DA016A19D
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 06:27:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7325212B02;
-	Wed, 28 May 2025 06:07:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A6822A1CD;
+	Wed, 28 May 2025 06:27:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="i4e/Q6mf"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF1D11E8331;
-	Wed, 28 May 2025 06:07:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C773520FA96
+	for <linux-rdma@vger.kernel.org>; Wed, 28 May 2025 06:27:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748412473; cv=none; b=d3nGrt0XA7Uq99DywNy4v3a8q6/CQtPj/N3+jXIrcUxv/jh3EcnqY+UQFoMXem17xbZ3OEWFpVHxGqxMB/0niPr5NCKdNfuZQKAPW7MnAuVyA6300Jz34bHneQMd9vgTr1ju15Y2EKnKE3u5epScDkajlXe2sLWx1CrMft5DRbM=
+	t=1748413660; cv=none; b=qQHOm8jYwA4Xb3hJezU1mRgWgrS4XI/+4KX42TLAncK1teXsrulKCNY5l5EMXRwnmsSL9h2xOFvNd0kJe70+zoMZgFHF0500Sg8KexHVKC3tUaVw2rwt5bRaVrOZFFomWGa2vYEb93iUNGqV6E+FkF1dmFDr7sw0TKXn90l1yqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748412473; c=relaxed/simple;
-	bh=FD/vRrr0K61/ryvWyfuUqQQl+H5RGKY7HCqtiLqKHdU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bP3vem5QRU0NwUT7E3eJNwiXBnw4+G9mr8w4gm4yhtzPo54cxor+XHEsltV/P50IF6WNqUaRlRI2BkeNa0opupNOUn9HObu6oAPvdlfBU7yeBsPXZTUpPOOP4AMekls5qXDCU1bQKtygCa5mq5Yr9zIF4PrMcUhyRsb8G9UxPf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-9b-6836a8356a99
-Date: Wed, 28 May 2025 15:07:44 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Mina Almasry <almasrymina@google.com>
-Cc: willy@infradead.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, kuba@kernel.org,
-	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
-	akpm@linux-foundation.org, davem@davemloft.net,
-	john.fastabend@gmail.com, andrew+netdev@lunn.ch,
-	asml.silence@gmail.com, toke@redhat.com, tariqt@nvidia.com,
-	edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com,
-	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	david@redhat.com, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, horms@kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	vishal.moola@gmail.com
-Subject: Re: [PATCH v2 16/16] mt76: use netmem descriptor and APIs for page
- pool
-Message-ID: <20250528060744.GF9346@system.software.com>
-References: <20250528022911.73453-1-byungchul@sk.com>
- <20250528022911.73453-17-byungchul@sk.com>
- <CAHS8izM-hfueYox9Eqti4OsoCafh=pDL2v-6BEJRyt4ay580hQ@mail.gmail.com>
+	s=arc-20240116; t=1748413660; c=relaxed/simple;
+	bh=f1WOn5bnj2UiZh1qSh/Jp9KeecmIWyjy1z5A+Z1c9OQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QbFSAatHQo856AsfEKojY0lDvPeeqMMERXzTCI/BSQRMp9Z7hzF0ZgDG41eMHVvMUF0IWV3eica0Hnn99bIrhfbCb8MePMAiLH0+CJBySsdHucdxLvvo61aYTgCekaAyTY/BRvs/nVZijClqNxFIiD5BShTTpzJQ/a7o78o16B0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=i4e/Q6mf; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1748413657;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CvTHk+O/1QSNVGu8SxpKsRTrNLnlauH5F8Emt0iiKkY=;
+	b=i4e/Q6mf6cBSIZd+P2kNNAmIW/gNiZl+NOdEDAS+KqySDwegqrigrMR9zLmMRWvJopWEY2
+	XZ2dPpuwSqArvgnaZVgAnPJ6AgQ4hqj+X9Ekhz1XXsweXyEy1IXTRLpEnOEmmgtuBb3d9j
+	uzV3gD0Jz1XC54uXsLdxdU62ixSUkD0=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-397-yCefQFKCN_uGGKTGEO02hg-1; Wed, 28 May 2025 02:27:35 -0400
+X-MC-Unique: yCefQFKCN_uGGKTGEO02hg-1
+X-Mimecast-MFC-AGG-ID: yCefQFKCN_uGGKTGEO02hg_1748413654
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-43d007b2c79so30616895e9.2
+        for <linux-rdma@vger.kernel.org>; Tue, 27 May 2025 23:27:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748413654; x=1749018454;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CvTHk+O/1QSNVGu8SxpKsRTrNLnlauH5F8Emt0iiKkY=;
+        b=OFnqUnTfV5b/ZvF5cn4sUJaFrg4Hpywjz7mLCOLm2888MMjYsr0pTv5/U8kRDaROTp
+         e76gH/h7NFycnIy423teAzRA7LdA+V5/4Ys3sV1VpoKBK55gL7z8KP+jsDgeHoXWOYPG
+         5Vn4NydYCbTTZPoXq+ELgAQj2ugWQQ2EpeL0A/5vBQ9yLmImdNZbEGbgKxAUjq9sl9WV
+         zfN/JWRSB04J/zal93RGtieNUl/yb/D7wkgfed5fIskiMYGahklXSh0KBJDhYiDtp9Cz
+         OnTQ/pDErtiHS4yvGLayTIF/3ewBwvstuH7FzxK49zNWytZF5W3NEAc4IilzBAgcLmDz
+         wsfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX03VCX8YjZgxM69XfNZ0AXhNx+8KN+2Xk6SAhxW7W4v8kuABejEYJGagFWn9Yqp9W0AXOOFhvNs7mm@vger.kernel.org
+X-Gm-Message-State: AOJu0YyBk8BEd9NsMkFJ53OLSQ2nqUv5WkAFKI2V2zmQIo+9+jusNgSm
+	qMHKL/6TPhgmgyukvMTuJqyjk8q68QeCG0jsYm3gCDq64xzeyshnKqgf+vtujzmRi+dtUtMtPAt
+	ET1Grz4+wZF/+881TUAVCBKgbpoQEZquEeyDZdU/PcMxkzIDc3LgecANextC8yW8=
+X-Gm-Gg: ASbGncuFt8491vhxOJa8+l4TIXLDNZbBwAd+LKFQFjurjqPOqzgH4Qua/FugD3V0I4S
+	OdgIoAKRWFlyDE349JfSRMGvVbV9u47Oo3KraAniHzcSb3IWArPRtMJNId07ws7p9AYoOY2U/vK
+	oKuEYukTRO/AqTfQ3Oe32etYRTSW5upaY7RawX6EC7XmsHde1vnfkLIC2hqwaJ1ARqv3/tdgjrK
+	DSbwF/UJ8WZ/MI0qOMH3ovzHtGOXbbndZ7J4g8H9hHk4qS2dXIe4wWZLiyL2e1bIHpa8CKCOhJ6
+	CrjTW4gjjMVmjVR4XynhSXCnYCYXkQ8wij5Dcjhl22SWyvcDk1DsrAva9Bs=
+X-Received: by 2002:a05:6000:250f:b0:3a4:ea9a:1656 with SMTP id ffacd0b85a97d-3a4ea9a16ddmr675503f8f.10.1748413654177;
+        Tue, 27 May 2025 23:27:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG3ksxKXCaZGLNbvzK9nMv3YAIr7uCKvT4NZXCaUrz8CA2YqI+qp5uV65PPS+UexzqChEwaNw==
+X-Received: by 2002:a05:6000:250f:b0:3a4:ea9a:1656 with SMTP id ffacd0b85a97d-3a4ea9a16ddmr675469f8f.10.1748413653728;
+        Tue, 27 May 2025 23:27:33 -0700 (PDT)
+Received: from ?IPV6:2a0d:3344:2728:e810:827d:a191:aa5f:ba2f? ([2a0d:3344:2728:e810:827d:a191:aa5f:ba2f])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a4eac7ea29sm573113f8f.37.2025.05.27.23.27.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 May 2025 23:27:33 -0700 (PDT)
+Message-ID: <648d56af-ed86-4d45-8e7a-944d1563117c@redhat.com>
+Date: Wed, 28 May 2025 08:27:30 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHS8izM-hfueYox9Eqti4OsoCafh=pDL2v-6BEJRyt4ay580hQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa1CMcRTG/d/bvi3La0v+YsgaQ81I2DgfTOTTnxn3LwYzWXrHrtpiu5vB
-	qowpWrcYtq020U1mWdRmmkrSZWqUzWVJF+s2BqFouqxoa4y+/eY8z3me8+HwtDyP9eE1kTGi
-	LlIVoeCkjPTrlNwlQYUr1YGncgLBZCnh4MZAAhR021gwFZci+DnYLoG+2noO8nL7aTC1pDDw
-	yzJEw/s6pwS68j8wUHGyjAbnmQYO0lOGaUiyFVLQWmpgIWPoOg1l+m4JtN03cdBZ8oeFDzXp
-	DDQaixjoMqyFOrM39Dd9QVBrKaOg/3QWBxfsZg7epnQhsD90MpB53IDAUulgYXjAxK2dT+4W
-	vaRIubFDQszWWHKn0J+kOew0sRancsTae15CXj+v4EjD5WGGlNv6KJKe3MORH+9fMeRb5TOO
-	WO4+Y0izuVZC+qxztwg7pavDxAhNnKhbGrxHqh5pPUUdHJQn3M/LZPUoeVoa8uCxoMRNAxbu
-	H3/Pesq6mREW4qttesrNnLAIOxyDtJu9BD98rfLcmIcWulj82HTAzZ7CNtxzaWjMLxNWYX12
-	y2imlJcLRQhf7Emhx4XpuPHKO2Z8eRF2ZdtH5/woz8YFI/z4eB5Ovpc5ZvcQtuKPLzrHbpsh
-	LMDVpfWUOxMLNh735qRKxo+ehR8UOpizaLpxQoVxQoXxf4VxQoUZMcVIromM06o0EcoAdWKk
-	JiFgX5TWikZfJ/+Ia5cN9bZur0ECjxRTZORWkFrOquKiE7U1CPO0wkuWtGalWi4LUyUeFnVR
-	obrYCDG6Bs3mGcVM2fL++DC5sF8VI4aL4kFR90+leA8fPcqoq6r226Hl3xx+1LwuY9Lii589
-	Q+ITP9kXdPRVyTYr12vOxR/67U1Cbm8KCS+/6Rc+OVsZGuw6sdF5oaFkd/sk40hsz59QtXN9
-	oyH35NaANGxw1k4tVu7e8lvtZd74pa3el6p88mvPhqMu116p9zs+d0X9sSCtbPH59BZfWXfG
-	nEAFE61WLfOnddGqvyuGtq82AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0iTYRiGe7/TPlfTr6X1lqAw6aDQkbQHkvRP+dKPyAiCimrlh1vqrC1N
-	g2I5KbJcWZY1p6xWqctYLZszxGKJKVaKtlpHTTtKqOX5QOWUyH8X930/16+Hp+Un2AW8WnNI
-	1GqUyQpOykg3rTUsjSyNUq1oLA4Bs72cg1vDGVDS7mLBbHMi6B95K4G+2iccWK8O0mBuymZg
-	wD5Kw+e6Dgm03fzCQPXJSho6ztZzkJs9RkOWq5SCx0UNLDQ7jSzkj96goVLfLoHWB2YOPpT/
-	YeGLO5eBBlMZA23GWKizzIXBxh8Iau2VFAyeKeLgQouFg87sNgQtjzsYKDxuRGCv8bIwNmzm
-	YhWkouw1RapM7yXE4kgj90ojSI63hSYO2ymOOH6dl5B3L6s5Un95jCFVrj6K5Bq6OfLz8xuG
-	9NR4OGL91ksRe4WHIU8ttZLNs7dLoxPEZHW6qF2+bo9U9bv5NHVgRJ7xwFrI6pEhIAf58VhY
-	jXuLXrA+ZoSF+FqrnvIxJyzGXu8I7eNAIRxfr8mb3NBCG4ufm/f7eI6wBXdfGp3cy4Q1WF/c
-	xOUgKS8XyhC+2J1NTxWzccOVT8zU8WI8XtwykfMTHIxLfvNTcSg23C+cnPsJ8fjrqw+cj4OE
-	MPzI+YQ6h/xN00ymaSbTf5NpmsmCGBsKVGvSU5Tq5MhluiRVpkadsWxfaooDTXzHzaPjeS7U
-	3xrnRgKPFLNk5E6kSs4q03WZKW6EeVoRKMuKiVLJZQnKzCOiNnW3Ni1Z1LlRMM8o5sk2bhP3
-	yIVE5SExSRQPiNp/LcX7LdCjJWc/sh7XzFRNnneQGY33N9j6o2PCi5t6KgZuz7LFdG2gTzmd
-	Bcd7OxlLe1eTw+OR4/mrhtQz4yLupu3N/55WlRB5sC487FmWtDHPetfonLGd9DYXJj3N2fAt
-	IGpo/Y65P439zYmvd9cvkhx2h8QX7Nwa0vcmbv6x8tCHDUG71kcrGJ1KuTKC1uqUfwEHnLX6
-	GQMAAA==
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla Thunderbird
+Subject: Re: [EXTERNAL] Re: [PATCH net-next,v2] net: mana: Add support for
+ Multi Vports on Bare metal
+To: Haiyang Zhang <haiyangz@microsoft.com>, Simon Horman <horms@kernel.org>
+Cc: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ Dexuan Cui <decui@microsoft.com>,
+ "stephen@networkplumber.org" <stephen@networkplumber.org>,
+ KY Srinivasan <kys@microsoft.com>, Paul Rosswurm <paulros@microsoft.com>,
+ "olaf@aepfle.de" <olaf@aepfle.de>, "vkuznets@redhat.com"
+ <vkuznets@redhat.com>, "davem@davemloft.net" <davem@davemloft.net>,
+ "wei.liu@kernel.org" <wei.liu@kernel.org>,
+ "edumazet@google.com" <edumazet@google.com>,
+ "kuba@kernel.org" <kuba@kernel.org>, "leon@kernel.org" <leon@kernel.org>,
+ Long Li <longli@microsoft.com>,
+ "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,
+ "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "ast@kernel.org"
+ <ast@kernel.org>, "hawk@kernel.org" <hawk@kernel.org>,
+ "tglx@linutronix.de" <tglx@linutronix.de>,
+ "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
+ "andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>,
+ Konstantin Taranov <kotaranov@microsoft.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <1747671636-5810-1-git-send-email-haiyangz@microsoft.com>
+ <20250521140231.GW365796@horms.kernel.org>
+ <MN0PR21MB34373B1A0162D8452018ABAACA9EA@MN0PR21MB3437.namprd21.prod.outlook.com>
+ <20250522120229.GX365796@horms.kernel.org>
+ <5470f2d2-d3cb-4451-b8e8-5ee768ed9741@redhat.com>
+ <MN0PR21MB3437196CFAF4574776862F6ACA99A@MN0PR21MB3437.namprd21.prod.outlook.com>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <MN0PR21MB3437196CFAF4574776862F6ACA99A@MN0PR21MB3437.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, May 27, 2025 at 08:32:55PM -0700, Mina Almasry wrote:
-> On Tue, May 27, 2025 at 7:29 PM Byungchul Park <byungchul@sk.com> wrote:
-> >
-> > To simplify struct page, the effort to separate its own descriptor from
-> > struct page is required and the work for page pool is on going.
-> >
-> > Use netmem descriptor and APIs for page pool in mt76 code.
-> >
-> > Signed-off-by: Byungchul Park <byungchul@sk.com>
+On 5/22/25 4:51 PM, Haiyang Zhang wrote:
+>> -----Original Message-----
+>> From: Paolo Abeni <pabeni@redhat.com>
+>> Sent: Thursday, May 22, 2025 9:44 AM
+>> To: Simon Horman <horms@kernel.org>; Haiyang Zhang
+>> <haiyangz@microsoft.com>
 > 
-> This patch looks fine to me... but this is converting 1 driver to
-> netmem. There are hundreds of other drivers in the tree. Are we
-> converting all of them to netmem...?
+>>>>>>  static int mana_query_device_cfg(struct mana_context *ac, u32
+>>>>> proto_major_ver,
+>>>>>>  				 u32 proto_minor_ver, u32 proto_micro_ver,
+>>>>>> -				 u16 *max_num_vports)
+>>>>>> +				 u16 *max_num_vports, u8 *bm_hostmode)
+>>>>>>  {
+>>>>>>  	struct gdma_context *gc = ac->gdma_dev->gdma_context;
+>>>>>>  	struct mana_query_device_cfg_resp resp = {};
+>>>>>> @@ -932,7 +932,7 @@ static int mana_query_device_cfg(struct
+>> mana_context
+>>>>> *ac, u32 proto_major_ver,
+>>>>>>  	mana_gd_init_req_hdr(&req.hdr, MANA_QUERY_DEV_CONFIG,
+>>>>>>  			     sizeof(req), sizeof(resp));
+>>>>>>
+>>>>>> -	req.hdr.resp.msg_version = GDMA_MESSAGE_V2;
+>>>>>> +	req.hdr.resp.msg_version = GDMA_MESSAGE_V3;
+>>>>>>
+>>>>>>  	req.proto_major_ver = proto_major_ver;
+>>>>>>  	req.proto_minor_ver = proto_minor_ver;
+>>>>>
+>>>>>> @@ -956,11 +956,16 @@ static int mana_query_device_cfg(struct
+>>>>> mana_context *ac, u32 proto_major_ver,
+>>>>>>
+>>>>>>  	*max_num_vports = resp.max_num_vports;
+>>>>>>
+>>>>>> -	if (resp.hdr.response.msg_version == GDMA_MESSAGE_V2)
+>>>>>> +	if (resp.hdr.response.msg_version >= GDMA_MESSAGE_V2)
+>>>>>>  		gc->adapter_mtu = resp.adapter_mtu;
+>>>>>>  	else
+>>>>>>  		gc->adapter_mtu = ETH_FRAME_LEN;
+>>>>>>
+>>>>>> +	if (resp.hdr.response.msg_version >= GDMA_MESSAGE_V3)
+>>>>>> +		*bm_hostmode = resp.bm_hostmode;
+>>>>>> +	else
+>>>>>> +		*bm_hostmode = 0;
+>>>>>
+>>>>> Hi,
+>>>>>
+>>>>> Perhaps not strictly related to this patch, but I see
+>>>>> that mana_verify_resp_hdr() is called a few lines above.
+>>>>> And that verifies a minimum msg_version. But I do not see
+>>>>> any verification of the maximum msg_version supported by the code.
+>>>>>
+>>>>> I am concerned about a hypothetical scenario where, say the as yet
+>> unknown
+>>>>> version 5 is sent as the version, and the above behaviour is used,
+>> while
+>>>>> not being correct.
+>>>>>
+>>>>> Could you shed some light on this?
+>>>>>
+>>>>
+>>>> In driver, we specify the expected reply msg version is v3 here:
+>>>> req.hdr.resp.msg_version = GDMA_MESSAGE_V3;
+>>>>
+>>>> If the HW side is upgraded, it won't send reply msg version higher
+>>>> than expected, which may break the driver.
+>>>
+>>> Thanks,
+>>>
+>>> If I understand things correctly the HW side will honour the
+>>> req.hdr.resp.msg_version and thus the SW won't receive anything
+>>> it doesn't expect. Is that right?
+>>
+>> @Haiyang, if Simon's interpretation is correct, please change the
+>> version checking in the driver from:
+>>
+>> 	if (resp.hdr.response.msg_version >= GDMA_MESSAGE_V3)
+>>
+>> to
+>> 	if (resp.hdr.response.msg_version == GDMA_MESSAGE_V3)
+>>
+>> As the current code is misleading.
 > 
-> The motivating reason for existing drivers to use netmem is because
-> it's an abstract memory type that lets the driver support dma-buf
-> memory and io_uring memory:
+> Simon:
+> Yes, you are right. So newer HW can support older driver, and vice
+> versa.
 > 
-> https://www.kernel.org/doc/Documentation/networking/netmem.rst
+> Paolo:
+> The MANA protocol doesn't remove any existing fields during upgrades.
 > 
-> This driver does not use the page_pool, doesn't support dma-buf
-> memory, or io_uring memory. Moving it to netmem I think will add
-> overhead due to the netmem_is_net_iov checks while providing no
-> tangible benefit AFAICT. Is your long term plan to convert all drivers
-> to netmem? That maybe thousands of lines of code that need to be
-> touched :(
+> So (resp.hdr.response.msg_version >= GDMA_MESSAGE_V3) will continue
+> to work in the future. If we change it to 
+> (resp.hdr.response.msg_version == GDMA_MESSAGE_V3), 
+> we will have to remember to update it to something like:
+> (resp.hdr.response.msg_version >= GDMA_MESSAGE_V3 &&
+>  resp.hdr.response.msg_version <= GDMA_MESSAGE_V5), 
+> if the version is upgraded to v5 in the future. And keep on updating
+> the checks on existing fields every time when the version is
+> upgraded.
 > 
-> > ---
-> >  drivers/net/wireless/mediatek/mt76/dma.c      |  6 ++---
-> >  drivers/net/wireless/mediatek/mt76/mt76.h     | 12 +++++-----
-> >  .../net/wireless/mediatek/mt76/sdio_txrx.c    | 24 +++++++++----------
-> >  drivers/net/wireless/mediatek/mt76/usb.c      | 10 ++++----
-> >  4 files changed, 26 insertions(+), 26 deletions(-)
-> >
-> > diff --git a/drivers/net/wireless/mediatek/mt76/dma.c b/drivers/net/wireless/mediatek/mt76/dma.c
-> > index 35b4ec91979e..cceff435ec4a 100644
-> > --- a/drivers/net/wireless/mediatek/mt76/dma.c
-> > +++ b/drivers/net/wireless/mediatek/mt76/dma.c
-> > @@ -820,10 +820,10 @@ mt76_add_fragment(struct mt76_dev *dev, struct mt76_queue *q, void *data,
-> >         int nr_frags = shinfo->nr_frags;
-> >
-> >         if (nr_frags < ARRAY_SIZE(shinfo->frags)) {
-> > -               struct page *page = virt_to_head_page(data);
-> > -               int offset = data - page_address(page) + q->buf_offset;
-> > +               netmem_ref netmem = netmem_compound_head(virt_to_netmem(data));
-> 
-> It may be worth adding virt_to_head_netmem helper instead of doing
-> these 2 calls together everywhere.
+> So, can I keep the ">=" condition, to avoid future bug if anyone
+> forget to update checks on all existing fields?
 
-Sounds good.  I will.
+Ok, thanks for the clarification. fine by me.
 
-	Byungchul
-> 
-> -- 
-> Thanks,
-> Mina
+/P
+
 
