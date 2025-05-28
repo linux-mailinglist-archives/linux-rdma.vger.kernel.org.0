@@ -1,102 +1,158 @@
-Return-Path: <linux-rdma+bounces-10822-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10823-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08419AC621D
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 08:40:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 365F9AC62D1
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 09:20:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1275C9E7660
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 06:39:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35F56189ED93
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 07:20:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0707424397B;
-	Wed, 28 May 2025 06:39:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F3B7244678;
+	Wed, 28 May 2025 07:19:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MG+tGgO7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FB+mTpCf"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3B0D1F1507;
-	Wed, 28 May 2025 06:39:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 560BE1367;
+	Wed, 28 May 2025 07:19:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748414394; cv=none; b=LkSuJW/NHE2XSofv0lwclFHmcT+OLc7pjeZ8PqcxJ8P1T9t5d/LA9b2ct7H8SXc0/m+DaIH4AcBvPt7QY4PMLZQtVBlvZNE7mRweILsepFzCsnBraW5HLAfbyk+iMX7FkS0C70c0DWTaH/pzqPauWodGVgLnJJZm1R2wmeOhmS0=
+	t=1748416794; cv=none; b=gbPEm0fP0Z/LL9MCDB21Pg7+FjMCi/Rj8HXS5KVd0c1/fT7x7Zzahzr8fQ+ZWzwTdtdHwiT3t8aZq8F7jzt2PAO5NOUy7ukphxBWez0E3Fk/2DKfyi+ROuCOp54n0xukIFKGgOLYEuUHY3Ev0rkkirlr1ZS7F65SVF1JQMn/Lgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748414394; c=relaxed/simple;
-	bh=6kzdFimLYbbRrahrMQogfiYEoFCwuFBfTY0KaSQMewI=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=pw82rP/MCnUel3y6MI2Ah/cCszXsFNQszSLFS0YYSbFibo3sW1J9yXTIQAGI+Ua92NjTwlNpHTBZJLfpB2VgXhcPg7B0K3qOGnQyjPeuYpwnFwXP8y2wYdF3uDrtlcHdG6yU0aT9EK4EvvBHUJYfxP9dnKtGWJKfAeFFY5d6IQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MG+tGgO7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 241BDC4CEE7;
-	Wed, 28 May 2025 06:39:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748414394;
-	bh=6kzdFimLYbbRrahrMQogfiYEoFCwuFBfTY0KaSQMewI=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=MG+tGgO7sqNV/yoBBf6BNGKaSykvoPPK/2rnCDFcR2diBn0X1IFuoJwDrfXzT9g6m
-	 ZCyr7FLMKDa+SncilWAC5M8bbDHwWl6KgXt/558Lu3TSKMRyW8SsHiqT3oOt0jfMy6
-	 G5DDDN3onCt2A7zHa+ys2XnIbNanZDCZFxTFLdgbQdIiyOgBAMHTvdk2QPViesvU5X
-	 F5RN72EAP4PGtSDlqSEfueV1AqZ9J3ec1XYzk1m2Im9R++WC012/q7hy86TgnZTuXR
-	 5f5d/R7MVAMRW21LPoH4rM3CP/I8eE3pGuNIU+F9xqj0hoC1giT5Tglum4xVdeaPsK
-	 QIintSI4oQ5Bw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70D6039F1DE4;
-	Wed, 28 May 2025 06:40:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1748416794; c=relaxed/simple;
+	bh=ntMPcjZr9Pm033gu7Fx/HPiDio0i+/tdgt6pURKOm3g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c6AzwIi/EEPINIewO4UBGkPAD1gH8wY6jWwEoeRLlLMSWfdjFPb1CwnUVmyJlKUUnUOpSiaMKH9eflT3LcouWpREqmO6vpW23+uYNN9y2tGQ9s6LNdlR4WfS9cNlG6yqatKZXJ1wBEB96H76MSYhwuOfZaSmWADzlA3DK5+Z3xY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FB+mTpCf; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-ac3eb3fdd2eso756682966b.0;
+        Wed, 28 May 2025 00:19:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1748416790; x=1749021590; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OUbnFWv1f37Ta+BVjxPt8pmoACrgGpNv4OYgueKntrw=;
+        b=FB+mTpCfdRvwEn1BlHrIVHbShcpMMUmFr6tI6TGzrSEJ59tlIB897ZiAH+fRNBYV4r
+         yZtcxXqa/vmE7KTEf55H5ZdS/G5fgUYYs1hlGaxPu83NR+eSSRHCAvBzv+HbRQYsR9xC
+         Gc7gd1fla9AcvALJhEgFLlKIibWodgprLTjOvTfyUXetovUej3Q1c0Ml9vH+rI/Ua/Ea
+         7YKbG8LL7R2OAc8wRvsIQv+hCRr/w1nur5Y8yd7DxRNGZaxT59dg7keKsCgssHgwmpaD
+         tNh8x72NGXp1P4iU6A3mFiDZxwM+lgAmbQVKKj7yyqGqJ10fagGG4YyymQm4pFNgxeW/
+         4OZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748416790; x=1749021590;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OUbnFWv1f37Ta+BVjxPt8pmoACrgGpNv4OYgueKntrw=;
+        b=IGFX9P/KDK01l754Dxig8VSc4rLfAIRZ5/LO1ImlESVtdqdonANfZJO0PbUdLMwAE8
+         iziT7p3FvZ/30OMe08sHWdm8te7A5xPpcs06XBDImztHvDP0cZf0/VYuyMD6zgaUCaXb
+         +YzdfRYVMAa8tZWPnwoEIGwwMV+WbBITCP78vfzC09a1+DrrkvdKvLQ2wMWtKC8WT81I
+         SQKoIz7RhyplmGSYRI0ZMTnVvVCpMBFKN1VhOe9/9IPdIJ14Zzd12v3rA3BZV+vZAHcT
+         D9NYhzhkgsfXo6A5BCuRYxaKrZXReBpM5mujuK1GogrMJjjS5lldzf6uxlI+l2/wjE1B
+         Ll1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVYVwMYO4KVbW3+957pXKxizbiePZN4RiOkUruL9c4YZEtDpd80vYvsjmPh6kZBeQ7y3f8=@vger.kernel.org, AJvYcCVzvc54lxEiA5dYECfEGbxAMUkzj6vvtoclAtW9Hlmd4NHQ1DIjgdjynv1/E/i6RhGKHynIvzAl@vger.kernel.org, AJvYcCXKZZ1WGMtpdQD+uSQzg9//Ho/mdZ5e3ZSNjildIogi2OBMU2Ms6HZP9PZg9ss8Y5C3ZV5IgzB4NAKF09DG@vger.kernel.org, AJvYcCXU6x0mBro9pOZjX3U7TXOQ4Sk2X+NKgQnb3wSWVA6ncqxbLktPkCKPlgmukSyD3m1D/HmsweiozODNRw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxgU1QrPRCTt64/HuuGXR/Ujwr2Dkk812nc537mDTdgQ0ti2j0+
+	9QL0ie8/ygoWP2Whg6InVgNWD381Q+eZiMcSuRsRXqNLxCQxXXD/cOM+
+X-Gm-Gg: ASbGncv+cNgeQY/BocoIccFuN1oNmcPzXiouER6WZc9ABVqUeKQtqE5asw3dvXDaqgP
+	AcnVjBBsYNd7kPtPN3s27MehzFziCxGTeytznvUzw849F7MC8jy8whLlul5Ogc6XcuKoBkNesxi
+	BRaRMKJ3eUqNLg1NZ3LfoR+wIfZFbYJINtMx4DAMiPPWhqmGgcIwXAmgD4WrUpW/+8a/zAPU4d3
+	IFxe2ISSMD2vMNNLJnhF4TtguWBaYf3hs7aBwUkgvLcHnkg1Zmcvp2LfjxM37V0RmPH8TvwHubh
+	hGRdxSZPhq9osKyywfavmIpTS6MYbqEpiJ2wXrmMfRyepUWGiq4Wm4uFt64eEP0=
+X-Google-Smtp-Source: AGHT+IF8u/oWlE6nDqmRdBTJqi0N5ZpxlTVC/BaksAktgdabSWc2dFiSy583FQXlAFD49z4UcobfKw==
+X-Received: by 2002:a17:907:3fa3:b0:ad1:e4e9:6b4f with SMTP id a640c23a62f3a-ad8a1f31b03mr95247266b.36.1748416790119;
+        Wed, 28 May 2025 00:19:50 -0700 (PDT)
+Received: from ?IPV6:2620:10d:c096:325::6f? ([2620:10d:c092:600::1:c447])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ad8a1a1322fsm58712266b.80.2025.05.28.00.19.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 May 2025 00:19:49 -0700 (PDT)
+Message-ID: <187e12ce-7e25-4fe0-871d-170f22125f8e@gmail.com>
+Date: Wed, 28 May 2025 08:21:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next,v2] net: mana: Add support for Multi Vports on Bare
- metal
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <174841442825.1926848.6843941704832885467.git-patchwork-notify@kernel.org>
-Date: Wed, 28 May 2025 06:40:28 +0000
-References: <1747671636-5810-1-git-send-email-haiyangz@microsoft.com>
-In-Reply-To: <1747671636-5810-1-git-send-email-haiyangz@microsoft.com>
-To: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, decui@microsoft.com,
- stephen@networkplumber.org, kys@microsoft.com, paulros@microsoft.com,
- olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net, wei.liu@kernel.org,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
- longli@microsoft.com, ssengar@linux.microsoft.com,
- linux-rdma@vger.kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- bpf@vger.kernel.org, ast@kernel.org, hawk@kernel.org, tglx@linutronix.de,
- shradhagupta@linux.microsoft.com, andrew+netdev@lunn.ch,
- kotaranov@microsoft.com, horms@kernel.org, linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 18/18] mm, netmem: remove the page pool members in struct
+ page
+To: Mina Almasry <almasrymina@google.com>
+Cc: Byungchul Park <byungchul@sk.com>, willy@infradead.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ kernel_team@skhynix.com, kuba@kernel.org, ilias.apalodimas@linaro.org,
+ harry.yoo@oracle.com, hawk@kernel.org, akpm@linux-foundation.org,
+ davem@davemloft.net, john.fastabend@gmail.com, andrew+netdev@lunn.ch,
+ toke@redhat.com, tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
+ saeedm@nvidia.com, leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+ vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+ horms@kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+ vishal.moola@gmail.com
+References: <20250523032609.16334-1-byungchul@sk.com>
+ <20250523032609.16334-19-byungchul@sk.com>
+ <CAHS8izM-ee5C8W2D2x9ChQz667PQEaYFOtgKZcFCMT4HRHL0fQ@mail.gmail.com>
+ <20250526013744.GD74632@system.software.com>
+ <cae26eaa-66cf-4d1f-ae13-047fb421824a@gmail.com>
+ <20250527010226.GA19906@system.software.com>
+ <651351db-e3ec-4944-8db5-e63290a578e8@gmail.com>
+ <CAHS8izNYmWTgb+QDA72RYAQaFC15Tfc59tK3Q2d670gHyyKJNQ@mail.gmail.com>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <CAHS8izNYmWTgb+QDA72RYAQaFC15Tfc59tK3Q2d670gHyyKJNQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello:
-
-This patch was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Mon, 19 May 2025 09:20:36 -0700 you wrote:
-> To support Multi Vports on Bare metal, increase the device config response
-> version. And, skip the register HW vport, and register filter steps, when
-> the Bare metal hostmode is set.
+On 5/27/25 18:38, Mina Almasry wrote:
+...>>>> struct netmem_desc *page_to_netmem_desc(struct page *page)
+>>>> {
+>>>>       return &page->netmem_desc;
+>>>
+>>> page will not have any netmem things in it after this, that matters.
+>>
+>> Ok, the question is where are you going to stash the fields?
+>> We still need space to store them. Are you going to do the
+>> indirection mm folks want?
+>>
 > 
-> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> ---
-> v2:
->   Updated comments as suggested by ALOK TIWARI.
->   Fixed the version check.
+> I think I see some confusion here. I'm not sure indirection is what mm
+> folks want. The memdesc effort has already been implemented for zpdesc
+
+To the best of my knowledge, it is. What you're looking at should be
+a temporary state before all other users are converted, after which
+mm will shrink the page in a single patch / small series.
+
+> and ptdesc[1], and the approach they did is very different from this
+> series. zpdesc and ptdesc have created a struct that mirrors the
+> entirety of struct page, not a subfield of struct page with
+> indirection:
 > 
-> [...]
+> https://elixir.bootlin.com/linux/v6.14.3/source/mm/zpdesc.h#L29
+> 
+> I'm now a bit confused, because the code changes in this series do not
+> match the general approach that zpdesc and ptdesc have done.
 
-Here is the summary with links:
-  - [net-next,v2] net: mana: Add support for Multi Vports on Bare metal
-    https://git.kernel.org/netdev/net-next/c/290e5d3c49f6
+In my estimation, the only bits that mm needs for a clean final
+patch is a new struct with use case specific fields (i.e. netmem_desc),
+a helper converting a page to it, and that everyone uses the helper
+to access the fields. I'd argue a temporary placeholder in struct
+page is an easier approach than separate overlays, but either is
+fine to me.
 
-You are awesome, thank you!
+> Byungchul, is the deviation in approach from zpdesc and ptdecs
+> intentional? And if so why? Should we follow the zpdesc and ptdesc
+> lead and implement a new struct that mirrors the entirety of struct
+> page?
+> 
+> [1] https://kernelnewbies.org/MatthewWilcox/Memdescs/Path
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Pavel Begunkov
 
 
