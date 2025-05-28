@@ -1,34 +1,34 @@
-Return-Path: <linux-rdma+bounces-10817-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10818-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D688AC6176
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 07:56:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DA5BAC6189
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 08:04:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FC014A3BB8
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 05:56:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB9C19E48DC
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 06:04:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BFC520CCF4;
-	Wed, 28 May 2025 05:56:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6483D20A5EA;
+	Wed, 28 May 2025 06:04:30 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C5E3382;
-	Wed, 28 May 2025 05:56:31 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BED81C7009;
+	Wed, 28 May 2025 06:04:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748411799; cv=none; b=sBrs2XZ3BOIRRpFMgoWwmUjRc0uiliPXxCcWEy0NF5dXJuYtcuts+nkl07NbkUQ5gk2pxxisCQfmqEeB6L8iRP5k/TQ+Z9lh+QTQTuim6tdwefFvzzWyGXaHrapLI1rF9owvtyCgYELN857dB2XEMRuW2phPBe2msjwc397d7l8=
+	t=1748412270; cv=none; b=Ru4F60pztkGCWHZ9ls07E5yaKmARuW3ScK/KX+Y5hBFAduFDsaytrQTtsthc0HMvnK5uatTLygXABHzb0smUfWzBbYm8kCpWehLDLlUD3PJRb9dDAWauxznJc7j5NW1JkjRjcmqGGWPnVyl+O5QgXRE35qvp3MJ12QDYeZu6xOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748411799; c=relaxed/simple;
-	bh=X99puUxvPH/bppFqEF/37i/DLRj5Pyc7gUk5/d2kbZ8=;
+	s=arc-20240116; t=1748412270; c=relaxed/simple;
+	bh=7IvHI2yD3Ow1/HEpiyk6jSpf6fV/MSVK/eSw5hHlsV8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lXPzY4BQROjl6bRtEZFKhtcPALbYdEwYlIfdZmLqG4cx+siqlSNhOf3sL7wVo+mfXg5ZczzD4AzQ4e8MozdS/tYkAgx2oauj0HslxAOLQyoJ/z4TFqhbE/R4QV2BqEwgQghEKFgaE2YS8sPWgpQ+gHuQVfmebUYXgiFPecdLb5E=
+	 Content-Type:Content-Disposition:In-Reply-To; b=Tu5rLpbb6/Df44Ey6GtEkDpWTKEoO1Wz9VqBQiH5AfYqEP7tlmbneibcEno24L3Hi6uF/HtQpWgMVWlqwQfTr9I4n3y+8dCjEThDg6r7isItNz4rSbLeAhMj1Nh7z7et/IOK/kYR7PgfSzJ5W/GEHDuWtCgr+X2NfFC87zsQp2E=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-669ff7000002311f-e4-6836a58e1e56
-Date: Wed, 28 May 2025 14:56:25 +0900
+X-AuditID: a67dfc5b-681ff7000002311f-a1-6836a765b53f
+Date: Wed, 28 May 2025 15:04:16 +0900
 From: Byungchul Park <byungchul@sk.com>
 To: Mina Almasry <almasrymina@google.com>
 Cc: willy@infradead.org, netdev@vger.kernel.org,
@@ -45,12 +45,12 @@ Cc: willy@infradead.org, netdev@vger.kernel.org,
 	surenb@google.com, mhocko@suse.com, horms@kernel.org,
 	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
 	vishal.moola@gmail.com
-Subject: Re: [PATCH v2 08/16] page_pool: rename
- __page_pool_release_page_dma() to __page_pool_release_netmem_dma()
-Message-ID: <20250528055625.GC9346@system.software.com>
+Subject: Re: [PATCH v2 15/16] netdevsim: use netmem descriptor and APIs for
+ page pool
+Message-ID: <20250528060416.GD9346@system.software.com>
 References: <20250528022911.73453-1-byungchul@sk.com>
- <20250528022911.73453-9-byungchul@sk.com>
- <CAHS8izMmsHa4taaujEbTK5PM+APYsRJzv1LqGESJf2x6BRnxag@mail.gmail.com>
+ <20250528022911.73453-16-byungchul@sk.com>
+ <CAHS8izMwUvLYZipvj+0gcK4Ch8EqGu3g00aP488563VD3d9N9g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -60,95 +60,96 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHS8izMmsHa4taaujEbTK5PM+APYsRJzv1LqGESJf2x6BRnxag@mail.gmail.com>
+In-Reply-To: <CAHS8izMwUvLYZipvj+0gcK4Ch8EqGu3g00aP488563VD3d9N9g@mail.gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUhTYRiGeXfOzo7LyXGZvSqUzSKStBLNt5CUqHgLgsrqR0U18tRWOmVT
-	UyNQk6SV86NAm7O21LZMmMzSabJ0iRaV2tKcqSmr/KNZag0/0nKOyH8X93M/XM+PhyaEOq4/
-	LZUls3KZOF5E8Un+N09dSH7ldsnWpkYCaYzVFHo8nYb0w2Yu0lTVAfRzpp+HplrbKVSucy42
-	OnNI9Ms4S6CvbQ4eGno4QqKm3HoCOfJfUigvZ45A2WYDB3XVqbjozmwlgeozh3nofaOGQp+q
-	/3DRiDWPRK/Uj0g0pIpBbVpf5Hw9BlCrsZ6DnLfKKHTbpqXQ55whgGwvHCQqzVIBZLTYuWhu
-	WkPFrMNPHvVxcIN6kIe1phRcawjGSruNwKaqGxQ2TRbx8MCHJgq/LJkjcYN5ioPzro1TeOLr
-	RxJ/t/RQ2Pikh8RvtK08PGVac4g5wY+KY+Olqax8y66zfMn10WZO0sTKNMfzcioTtHkpgQcN
-	mXBYUaviKAG9xD8GY10xyWyABZ11lIspZiO022cIF/swm2CFpZDrYoIZ4sIOzUUXr2SSYXv3
-	+FJfwERCu8Gy2OHTQsYA4Py0heceeMNXd7+Q7uWN8Pc9G+HyEkwA1C/Q7ngtvPa0dMnlwRyG
-	ZdX2JV7FBMHmunaO+2QzDXvfhrnZD7YY7GQB8FYvM6iXGdT/DeplBi0gq4BQKktNEEvjw0Ml
-	6TJpWui5xAQTWHych1d/nzSDya5YK2BoIPIU4JoIiZArTlWkJ1gBpAmRjyA7ertEKIgTp2ew
-	8sQz8pR4VmEFATQpWi0Ic16OEzIXxMnsJZZNYuX/phzawz8T6DO8rtqC9wUGzyij5hXKQqtz
-	oCTy+BXf4gJd2B6/WfpgYonfA+93OzzuNB+o2bXe1B1yk8oodxSMPZataB6tOVXa25Pb0a8f
-	Oc/sLuqT1bZEF+7NqgiSC9OeZQfmLnhGb546U0+HiTMdxfuLdfyoiKz+Y0d3Zh3p6j99VJVw
-	P9spIhUS8bZgQq4Q/wU3diWLNAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SfUzMcRzHfX9P9+u49nMO35WNHWYYZROfZMSMr/6wjKV57Jbf3Ol6cJd2
-	hS11xKnj8AfXZZeUSnMJPVg76TlM5GHnsXal2SiVnshTVzP999rn/f68Pv98eFp+gvXhNTHx
-	oi5GpVVyUka6JSh1iTl3hdq/f8AfbI4iDm4MG+B6WzkLtsJSBP3f30rgW20DBznZgzTYmo0M
-	DDh+0PCx3i2B1rxOBirTymhwn23kIMM4QkNKeT4FNVlNLDwtNbNw8UcuDWXJbRJ4fs/GwYei
-	Pyx0Vmcw0GQtYKDVHAz19hkw+OgLglpHGQWD6VkcXGixc9BubEXQUuNmIPO4GYHD6WJhZNjG
-	BSvJnYLXFKmwvpcQe8lhcjt/ETG5WmhSUniaIyV95yXk3atKjjReGmFIRfk3imSkdnOk9+Mb
-	hnx1vuRIzqceijjuvGTIY3utJHTqTunq/aJWkyDq/NZESNUnP1dRcb3TDO77OVwyqvc2IZ7H
-	wnLc836bCXnxjDAfn2su5TzMCQuwy/Wd9rBCWIivOS2sh2mhlcVPbAc9PE2Ixw0vusf6MmEl
-	duU7RztSXi7kI/xr2CkZD6bipssdzPjyAvzzSgvtuUsLvvj6b358PBun3s0cu+UlbMVZRa4x
-	ni7MxVWlDdQ55G2dYLJOMFn/m6wTTHbEFCKFJiYhWqXRBizVR6kTYzSGpZGx0SVo9Dnyjv20
-	lKP+55uqkcAj5RQZKQ5Qy1lVgj4xuhphnlYqZClrV6jlsv2qxCRRF7tPd1gr6quRL88oZ8pC
-	dogRcuGAKl6MEsU4UfcvpXgvn2TUGOl7lDJp0rol7fWxdHbVMNwqPq1NCNmN807WiXV7tyn2
-	rd+ekWReP4fuCzNEnDI/bju/ymLURhknz9uz8UbX2ewhPzqooMsyY12cJjyvwnBIfjUlLC5t
-	gz1zV5fPsUfdD5iOM43h4YHEsnjzrPSbQ9vfHn826chvb9O60CTFw0Alo1erli2idXrVXx7P
-	cGYYAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SWUwTURSGczvTmaGhZqyIVzQaa1wgERURT1zRB71xiSgPJm5QZbSVUqAs
+	gokGEaJWC+KSYCmm4sKaVKtCUSCKCBgJNhihrFUUeHCLoBUoAS1o5O3L/+fk+x8OR8lMYh9O
+	pYkXtBqFWs5IaMkXz7wlR/KDlMvqakVgNJcwUDyYBPnvrGIwFpUi+DHUzsJATR0Dt246KTC+
+	TqPhp3mYgp7abhYcd3tpqDhbRkF3Zj0D+jQXBanWAhHYSjPEcHX4DgVlKe9YePPYyEBXyZgY
+	eqv1NLw0FNLgyAiGWpM3OF99RlBjLhOB82IuA1eaTAx8SHMgaHreTUPO6QwE5iq7GFyDRiZ4
+	HnlY2Coi5YZOlpgsCeRBgR/R2ZsoYik6zxBL/2WWdDRXMKQ+20WTcuuAiOjPfGXI9542mnyr
+	essQ88O3NGkw1bBkwDInhN8rWRshqFWJgnbp+nCJsvJTOhuTJUtqsVxnU5BeqkMeHOYDceW5
+	XJEOceN8p8/XHdP8ApzrGmXczPCLsN0+RLnZi/fFt6uyxG6meIcYNxqPuXkavwc35P+i3Szl
+	V+GWS51IhyScjC9E+EVmq2iimIpfXv9ITxwvwiM3mii3l+Jn4fxRbiKei888yhl3efC7cEe7
+	cXzDdH4+flpa93emlcNZmybWz8TPCuz0JTTVMElgmCQw/BcYJglMiC5CMpUmMUqhUgf6K5M1
+	qiT/w9FRFvTnb+6eHNlnRf220GrEc0juKSX3ViplYkViXHJUNcIcJfeSpm4IUsqkEYrkE4I2
+	OkyboBbiqtEsjpbPkAY4j0fI+KOKeCFSEGIE7b9WxHn4pKCQdsfqxddWjNjA2a9bmNRmVI1t
+	D9b0Xgi2mdccrPnal3021pTwpNR7SnpBJoRemzI7cm36lvdbY/DnzQnbjr84kB053KPJCWp+
+	ZTqUp15wdMf7oE0X7+/OCO866dpfri+Zu9X2IDm0b0N01Rz/4pDdsdkep8ICKkvWNep2/mTz
+	NuIxOR2nVCz3o7Rxit8vwvoEMwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SeUiTcRjH+b3XXker12n5ln9E65CM1kHaAx32l/0SigpEiKLe8qWt3LRN
+	RYPCPMhG8+iAXDMWplMLVsszD8TbLmNqaZoTKxudlrczqyWR/314vjyf7/PHw5LyNHoZq9bG
+	ijqtEKVgpJR037aU9aI1WLWxoEQJZts9Bu5OJoB1oIIGc3EZgtGpXgmMNLYwkHd7nARzeyoF
+	Y7ZpEt43D0rAWTBEQfXFchIGM1sZMKa6SUiuKCSgIbeNhhdlGTRcm84noTxpQAIdj8wM9N/7
+	RcNQvZGCNlMRBc6MXdBsWQLjTz4jaLSVEzB+OZeBqw4LA29TnQgcDYMU3LyQgcBW202De9LM
+	7FLgkqIeAlea3kiwxR6HHxYGYkO3g8T24ksMtv+4IsF9L6sZ3HrDTeHKihECG1O+Mvj7+9cU
+	/lbbxeA81zCBbSVdFH5qaZTs9z4k3R4pRqnjRd2GncekqppPaZKYbHnCK3uOJAkZZQbEsjy3
+	hc//sNaAvFiKW83numcZDzNcAN/dPUV62Jdby9+pzaY9THJOmn9uPuVhHy6Cf2qdoDws47by
+	r7LeIAOSsnKuCPFNmT3EXODNt+W8o+aWA/iZWw7S00ty/rx1lp0bL+dTSm/+7fLiDvB9vea/
+	NyzmVvJ1ZS1EFlpommcyzTOZ/ptM80wWRBUjX7U2XiOoo4KU+tOqRK06QXkiWmNHf56j4NxM
+	dgUa7dhdjzgWKRbI8P0glZwW4vWJmnrEs6TCV5YcEqySyyKFxLOiLvqoLi5K1Ncjf5ZS+MnC
+	IsRjcu6kECueFsUYUfcvJVivZUnoQfhL1+aWhnVf2/uBc9Q4t+WFBuwtTu+JWbqUYwt27BcX
+	7Vse61R+6Ty8Z827qsIVbkHN5FR19Zp1LmFr+pFSQ+vuODgzE54coDEOcaGhlUkPf7gel3b6
+	he09eJ1pekY03Zj5uVh7nfSxj31sHxbGX4ccd5Wcn1hV9yQi/EzYBQWlVwmbAkmdXvgNM57y
+	KhgDAAA=
 X-CFilter-Loop: Reflected
 
-On Tue, May 27, 2025 at 08:21:32PM -0700, Mina Almasry wrote:
+On Tue, May 27, 2025 at 08:25:54PM -0700, Mina Almasry wrote:
 > On Tue, May 27, 2025 at 7:29 PM Byungchul Park <byungchul@sk.com> wrote:
 > >
-> > Now that __page_pool_release_page_dma() is for releasing netmem, not
-> > struct page, rename it to __page_pool_release_netmem_dma() to reflect
-> > what it does.
+> > To simplify struct page, the effort to separate its own descriptor from
+> > struct page is required and the work for page pool is on going.
+> >
+> > Use netmem descriptor and APIs for page pool in netdevsim code.
 > >
 > > Signed-off-by: Byungchul Park <byungchul@sk.com>
 > > ---
-> >  net/core/page_pool.c | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> >  drivers/net/netdevsim/netdev.c    | 19 ++++++++++---------
+> >  drivers/net/netdevsim/netdevsim.h |  2 +-
+> >  2 files changed, 11 insertions(+), 10 deletions(-)
 > >
-> > diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> > index fb487013ef00..af889671df23 100644
-> > --- a/net/core/page_pool.c
-> > +++ b/net/core/page_pool.c
-> > @@ -674,8 +674,8 @@ void page_pool_clear_pp_info(netmem_ref netmem)
-> >         netmem_set_pp(netmem, NULL);
-> >  }
+> > diff --git a/drivers/net/netdevsim/netdev.c b/drivers/net/netdevsim/netdev.c
+> > index af545d42961c..d134a6195bfa 100644
+> > --- a/drivers/net/netdevsim/netdev.c
+> > +++ b/drivers/net/netdevsim/netdev.c
+> > @@ -821,7 +821,7 @@ nsim_pp_hold_read(struct file *file, char __user *data,
+> >         struct netdevsim *ns = file->private_data;
+> >         char buf[3] = "n\n";
 > >
-> > -static __always_inline void __page_pool_release_page_dma(struct page_pool *pool,
-> > -                                                        netmem_ref netmem)
-> > +static __always_inline void __page_pool_release_netmem_dma(struct page_pool *pool,
-> > +                                                          netmem_ref netmem)
-> >  {
-> >         struct page *old, *page = netmem_to_page(netmem);
-> >         unsigned long id;
-> > @@ -722,7 +722,7 @@ static void page_pool_return_netmem(struct page_pool *pool, netmem_ref netmem)
-> >         if (static_branch_unlikely(&page_pool_mem_providers) && pool->mp_ops)
-> >                 put = pool->mp_ops->release_netmem(pool, netmem);
-> >         else
-> > -               __page_pool_release_page_dma(pool, netmem);
-> > +               __page_pool_release_netmem_dma(pool, netmem);
+> > -       if (ns->page)
+> > +       if (ns->netmem)
+> >                 buf[0] = 'y';
 > >
-> >         /* This may be the last page returned, releasing the pool, so
-> >          * it is not safe to reference pool afterwards.
-> > @@ -1140,7 +1140,7 @@ static void page_pool_scrub(struct page_pool *pool)
-> >                 }
+> >         return simple_read_from_buffer(data, count, ppos, buf, 2);
+> > @@ -841,18 +841,19 @@ nsim_pp_hold_write(struct file *file, const char __user *data,
 > >
-> >                 xa_for_each(&pool->dma_mapped, id, ptr)
-> > -                       __page_pool_release_page_dma(pool, page_to_netmem(ptr));
-> > +                       __page_pool_release_netmem_dma(pool, page_to_netmem((struct page *)ptr));
+> >         rtnl_lock();
+> >         ret = count;
+> > -       if (val == !!ns->page)
+> > +       if (val == !!ns->netmem)
+> >                 goto exit;
+> >
+> >         if (!netif_running(ns->netdev) && val) {
+> >                 ret = -ENETDOWN;
+> >         } else if (val) {
+> > -               ns->page = page_pool_dev_alloc_pages(ns->rq[0]->page_pool);
+> > -               if (!ns->page)
+> > +               ns->netmem = page_pool_alloc_netmems(ns->rq[0]->page_pool,
+> > +                                                    GFP_ATOMIC | __GFP_NOWARN);
 > 
-> I think this needs to remain page_to_netmem(). This static cast should
+> Can we add a page_pool_dev_alloc_netmems instead of doing this GFP at
+> the callsite? Other drivers will be interested in using
+> _dev_alloc_netmems as well.
 
-Do you mean to ask to revert the casting patch of page_to_netmem()?
+Sounds good.  I can add it tho, however, Tariq Toukan might also need
+the API while working on converting to netmem in mlx5.
 
-Or leave page_to_netmem(ptr) unchanged?
+Since I will re-work on his work done, why don't we ask him to add the
+API so that he, I, and any other drivers can use it?
 
-I added the casting '(struct page *)ptr' above to avoid compliler
-warning..  Do you see another warning on it?
++cc tariqt@nvidia.com
 
 	Byungchul
-
-> generate a compiler warning since netmem_ref is a __bitwise.
 > 
 > -- 
 > Thanks,
