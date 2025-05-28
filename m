@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-10777-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10778-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56921AC5EAD
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 03:20:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94E32AC5EC1
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 03:22:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 919971BA4627
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 01:20:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 231FE3B2A61
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 01:21:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E6EE191F7E;
-	Wed, 28 May 2025 01:20:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0206E1EF38C;
+	Wed, 28 May 2025 01:20:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OuvJE8cg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KsX4TH5j"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5BEC7FD;
-	Wed, 28 May 2025 01:20:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A65CF1EE7BE;
+	Wed, 28 May 2025 01:20:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748395209; cv=none; b=R48MKzr/3MnUiNFQkGVULOKLgu/NS04YCQdAJuErQQ35uwuHcuAwJb+6WGk2sp7rqAQmlrchS3WV24H31C8+j+sMwd1flFvSr57Am7LKU1a7VCaoKRJjYEqRzJn2ld+q1bKDiOdqCLlxxzpI9p8eFjAqOwIJ5VJ/WycJw8gCHPE=
+	t=1748395219; cv=none; b=Ejrk/wRTx9Aw9t/Z6Nmtg4/py2ekEk/dSiJB3jDUR/zO4/YD2RyWrQXKwTQeoVNjhnIxKdgJ47bBGHmcRYKnuyvkxb7QqhfUPR7tvmyuApwIIdR96siHUCYq9krxAiS14QBjNDY7dLVbDJDHry2YGwP+aKYrVJRL7qb3frZgDP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748395209; c=relaxed/simple;
-	bh=yc8Llua673bI0rhnunlq6rge6KO86YUAfTYW39ONZjs=;
+	s=arc-20240116; t=1748395219; c=relaxed/simple;
+	bh=tf2eN1NSxXBp6thc/aiZCb1w13OZWvzEQmOaH9edm08=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=BDFLZqUz8q+dMYhzRpd5OoGX+66py1hcBv3vnRkN8ZiqhcXaTw5rDwEEp+4a6Ls/Lv3X1fNWZa8i3k/u3XE3NLQ3YEaCfWAYmXtfwh8PMd7s+Jf3hdVVRJjOKTsRByP9/DIOqYU0Wh0MGuCoGaKYZ5oD6yx09Hy9uUdetXsEVZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OuvJE8cg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DFCDC4CEED;
-	Wed, 28 May 2025 01:20:09 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=ntko+ekA7GkadG70wDsDMdvNcK0U5T6Q4bHt+t6Gugb5mRm7V5cpmVzhp1p1TdkUBpewrIF6wlB2MWgYtFUrfuVHrJA/13sP8/5Ia+s9T57QzqSNC8DuM80KlnA3CMaBNJ4UaGcpSRniEsQjlJnb/jcsNmZqpgpawbiVpLUvhQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KsX4TH5j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 863F2C4CEE9;
+	Wed, 28 May 2025 01:20:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748395209;
-	bh=yc8Llua673bI0rhnunlq6rge6KO86YUAfTYW39ONZjs=;
+	s=k20201202; t=1748395219;
+	bh=tf2eN1NSxXBp6thc/aiZCb1w13OZWvzEQmOaH9edm08=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=OuvJE8cg2cxK88Lwb6TOjm14Phr6y+9K8waG/MZvr+tzf4vTOsTRALDAQ7kg0y2D3
-	 SdpDyB84SEbIgn+LDK0aPQdFV0fvE8O9Si4BowsK7KkH0+CpUeoNixcM9vzPtVyZmk
-	 xxj3Eoq18bErexixMJ8lsSVFHHbLsJEjYvfKxBAK341twB9ATK87Bm5iEqLYUDcARX
-	 lloo7FB2bD1X2qA7s8vQX7yhxG9CrmRmqIUkij/TwvAaE+X7aS9i0wBX4TpWeXzvYY
-	 VcYqffxTX+qeejw3dWgaQeHjK92yiYm8WYPCIvDkuhqeidde0x1vXh4KGHfnna4Obb
-	 AvdQVfKQVVhgw==
+	b=KsX4TH5j8FUJxyS2DmLQri4ddYJbAabtM4RmcvD7ptMhNvnDQvWr+hSzz/xHIG0H9
+	 QC+H3MzwLdWa7p2kGak3jwC5/VP9tK6gHm6qI1bHCtcSvzvCGJEC1qZtlaAxPP0NGy
+	 DdblQoHmzyJHZPywVgL3y3EqecKfy2gZhKOdJl8KrgKiD4qJVbZP7Johw7Y7Z8mpVF
+	 lLpOCnV9mWf6aX4sRrWnTB60iXWVwmhXOPxmje0OlBo3CwWnHy+33Ni7bAMOmzXEYr
+	 7kvYNIIZYwO3EP5Nge+5CZjEMhI8r16BkvWUHtC3lEF/V3BRbjKVGNssNazHVwcF+n
+	 9fDB5u093+MGg==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70EA2380AAE2;
-	Wed, 28 May 2025 01:20:44 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAD05380AAE2;
+	Wed, 28 May 2025 01:20:54 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -52,61 +52,39 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next V2 00/11] net/mlx5e: Add support for devmem and
- io_uring TCP zero-copy
+Subject: Re: [PATCH net-next] net/mlx5: HWS, Fix an error code in
+ mlx5hws_bwc_rule_create_complex()
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <174839524325.1849945.2813758587760916594.git-patchwork-notify@kernel.org>
-Date: Wed, 28 May 2025 01:20:43 +0000
-References: <1747950086-1246773-1-git-send-email-tariqt@nvidia.com>
-In-Reply-To: <1747950086-1246773-1-git-send-email-tariqt@nvidia.com>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
- edumazet@google.com, andrew+netdev@lunn.ch, saeedm@nvidia.com,
- leon@kernel.org, richardcochran@gmail.com, ast@kernel.org,
- daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org, moshe@nvidia.com,
- mbloch@nvidia.com, gal@nvidia.com, cratiu@nvidia.com, dtatulea@nvidia.com
+ <174839525349.1849945.8234116859810090724.git-patchwork-notify@kernel.org>
+Date: Wed, 28 May 2025 01:20:53 +0000
+References: <aDCbjNcquNC68Hyj@stanley.mountain>
+In-Reply-To: <aDCbjNcquNC68Hyj@stanley.mountain>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: kliteyn@nvidia.com, saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, cratiu@nvidia.com, mbloch@nvidia.com,
+ vdogaru@nvidia.com, netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net-next.git (main)
+This patch was applied to netdev/net-next.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Fri, 23 May 2025 00:41:15 +0300 you wrote:
-> This series from the team adds support for zerocopy rx TCP with devmem
-> and io_uring for ConnectX7 NICs and above. For performance reasons and
-> simplicity HW-GRO will also be turned on when header-data split mode is
-> on.
+On Fri, 23 May 2025 19:00:12 +0300 you wrote:
+> This was intended to be negative -ENOMEM but the '-' character was left
+> off accidentally.  This typo doesn't affect runtime because the caller
+> treats all non-zero returns the same.
 > 
-> Find more details below.
+> Fixes: 17e0accac577 ("net/mlx5: HWS, support complex matchers")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,V2,01/11] net: Kconfig NET_DEVMEM selects GENERIC_ALLOCATOR
-    https://git.kernel.org/netdev/net-next/c/cb575e5e9fd1
-  - [net-next,V2,02/11] net: Add skb_can_coalesce for netmem
-    (no matching commit)
-  - [net-next,V2,03/11] net/mlx5e: SHAMPO: Reorganize mlx5_rq_shampo_alloc
-    (no matching commit)
-  - [net-next,V2,04/11] net/mlx5e: SHAMPO: Remove redundant params
-    (no matching commit)
-  - [net-next,V2,05/11] net/mlx5e: SHAMPO: Improve hw gro capability checking
-    (no matching commit)
-  - [net-next,V2,06/11] net/mlx5e: SHAMPO: Separate pool for headers
-    (no matching commit)
-  - [net-next,V2,07/11] net/mlx5e: SHAMPO: Headers page pool stats
-    (no matching commit)
-  - [net-next,V2,08/11] net/mlx5e: Convert over to netmem
-    (no matching commit)
-  - [net-next,V2,09/11] net/mlx5e: Add support for UNREADABLE netmem page pools
-    (no matching commit)
-  - [net-next,V2,10/11] net/mlx5e: Implement queue mgmt ops and single channel swap
-    (no matching commit)
-  - [net-next,V2,11/11] net/mlx5e: Support ethtool tcp-data-split settings
-    (no matching commit)
+  - [net-next] net/mlx5: HWS, Fix an error code in mlx5hws_bwc_rule_create_complex()
+    https://git.kernel.org/netdev/net-next/c/a540ee75945a
 
 You are awesome, thank you!
 -- 
