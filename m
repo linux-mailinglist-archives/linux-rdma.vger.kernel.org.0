@@ -1,57 +1,56 @@
-Return-Path: <linux-rdma+bounces-10845-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10846-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FDDDAC6725
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 12:40:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8037EAC679D
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 12:46:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9CB63AC71B
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 10:40:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABA6717B63C
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 May 2025 10:45:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5B3B279907;
-	Wed, 28 May 2025 10:40:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5E9E27A129;
+	Wed, 28 May 2025 10:44:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DBNy2Q7A"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iAfhC0NO"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FF6918DB03;
-	Wed, 28 May 2025 10:40:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B3920B806;
+	Wed, 28 May 2025 10:44:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748428847; cv=none; b=oro+uZAhJqw1nMPmSM44l47aMBFWUMch0Q3iNzmBqfqD6W20hS2GgLgpAj4E+m7+/S/Cqj62y0kpB9fXhUpfuMu9QE6deWUHA+WQKBoK+lBSjTvvtC0BBWFnSAzPDuwnK8OjcmbNFa3T1sHWvIn5USOOipcWDsmmhqWwZpp3EHg=
+	t=1748429052; cv=none; b=MEcy1m+seYhdzEp6K/UvmdibDvGwx3n9wFTvlHV8egKo4fLRHONGsL36O8neWiS/fAx/kHdx706PRxiuqemH4gmCKqLTnkfUs/5NGly+X3pvDSS33/rFitxXvBQZk59KvgM08FVQFXLuHm8+CzxxY02Qd1XRt6t1S8mjSQrq/+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748428847; c=relaxed/simple;
-	bh=VX4AsLj/Fc3QRbtPLrfPBaZuthCoHrVRnGWu/0hh6/s=;
+	s=arc-20240116; t=1748429052; c=relaxed/simple;
+	bh=3VvPOVTPfky32Wj9xAy3aa71oo39L3aLtSBZat6Oa24=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iqjSx7vK9pLPzJGAPFNps0aZPvbnpEfpkVfkngRsEyWzZy//6h/V6yhG6Zta39JZeApzu7V5hY49wjl2ykC7FxSwU8Jsgi5V5y04b1SXOBQ7iJOihxUVMT/mfZ9IIuakHKZpwyh5L1+jJvhWcl4mMKy3Nk+iCyNhSdthjX7SOZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DBNy2Q7A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42EA0C4CEE7;
-	Wed, 28 May 2025 10:40:45 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=qIYRxwm0kX+UF5AeUf4EGlFiTidCDRmWjtOEaC+b6fEhNe9mQNLDejJB3U2E+Use03g/efDUtfKrCzxhh87NI3s8udtwm8YDjp0Vw5ulw3dllR0UofpAGwPNCwL03lj+le90jV9dS7a19pNKKqPOURVrm0l8ago6onyy0fNH/S4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iAfhC0NO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 150C5C4CEE7;
+	Wed, 28 May 2025 10:44:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748428847;
-	bh=VX4AsLj/Fc3QRbtPLrfPBaZuthCoHrVRnGWu/0hh6/s=;
+	s=k20201202; t=1748429051;
+	bh=3VvPOVTPfky32Wj9xAy3aa71oo39L3aLtSBZat6Oa24=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DBNy2Q7AqCm7rbyZI1/Jwu3dX6jaQZ/uR/Rm/RMLrneZa5W0YNMtjfnF4IhVJ81Vz
-	 j1htjKwNoaxpCO69J7Sxq0+CjDEeD2DrE00VFngcduUeDKqDAD2/8j2ZRNVU7No2WD
-	 3q9yS/S2311vS0svJnbhPEdfvNn6TSF388x/PAiWmEcWZjbkMAyG3+DSN3/MHdlZ1M
-	 B0hZpF1RFvR0Lbj6Pdv4JyDRMRRpyv+k3JAhFkAFmQ1gkgcsgn6lchNfQmfPkYOHSs
-	 4J0dC1ZockszvKCn866jqlPRcaaCumJj80bWPOQ9pYeYLIbZeqBp7NAvRHO3Au2GZ+
-	 0ypxKvEiA9HQw==
-Date: Wed, 28 May 2025 11:40:43 +0100
+	b=iAfhC0NOSWJRUFmNUInJJGJ+OcGalmd/KFHT76JPvejknwJ0KvYoKWJ5OlSIxiYMi
+	 WuJ4MFd+ISoa5ml1UB6xM3XB3g/DPM9t6caFglVpa9o1V1C+xIlk6uQ6bOtaY81nNJ
+	 LKDpDlXRp4FJgJQDkH5YtzQLrC9vdS3LW2zFgxR3n97RkJvhYiQO3OmBB/ps9hedKI
+	 93hzPUP1oK8dOu9W9pHmY17HilN5WJP5asMnTQ4btdOTyHPzhnAOsbl63a67y2DfmG
+	 vRlyrj3q16EGiAcb2ZjYKkR0jponXhr4iFLfo2Q0+P1/y/pB/e4oqCLMXjvbmOK726
+	 OU51rkUSyZX/A==
+Date: Wed, 28 May 2025 11:44:07 +0100
 From: Simon Horman <horms@kernel.org>
 To: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
 Cc: intel-wired-lan@lists.osuosl.org, jgg@nvidia.com, leon@kernel.org,
 	linux-rdma@vger.kernel.org, netdev@vger.kernel.org, kuba@kernel.org,
 	anthony.l.nguyen@intel.com, Joshua Hay <joshua.a.hay@intel.com>
-Subject: Re: [iwl-next 2/6] idpf: implement core RDMA auxiliary dev create,
- init, and destroy
-Message-ID: <20250528104043.GA365796@horms.kernel.org>
+Subject: Re: [iwl-next 6/6] idpf: implement get LAN MMIO memory regions
+Message-ID: <20250528104407.GB365796@horms.kernel.org>
 References: <20250523170435.668-1-tatyana.e.nikolova@intel.com>
- <20250523170435.668-3-tatyana.e.nikolova@intel.com>
+ <20250523170435.668-7-tatyana.e.nikolova@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -60,26 +59,35 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250523170435.668-3-tatyana.e.nikolova@intel.com>
+In-Reply-To: <20250523170435.668-7-tatyana.e.nikolova@intel.com>
 
-On Fri, May 23, 2025 at 12:04:31PM -0500, Tatyana Nikolova wrote:
+On Fri, May 23, 2025 at 12:04:35PM -0500, Tatyana Nikolova wrote:
 > From: Joshua Hay <joshua.a.hay@intel.com>
 > 
-> Add the initial idpf_idc.c file with the functions to kick off the IDC
-> initialization, create and initialize a core RDMA auxiliary device, and
-> destroy said device.
+> The RDMA driver needs to map its own MMIO regions for the sake of
+> performance, meaning the IDPF needs to avoid mapping portions of the BAR
+> space. However, the IDPF cannot assume where these are and must avoid
+> mapping hard coded regions as much as possible.
 > 
-> The RDMA core has a dependency on the vports being created by the
-> control plane before it can be initialized. Therefore, once all the
-> vports are up after a hard reset (either during driver load or a function
-> level reset), the core RDMA device info will be created. It is populated
-> with the function type (as distinguished by the IDC initialization
-> function pointer), the core idc_ops function points (just stubs for
-> now), the reserved RDMA MSIX table, and various other info the core RDMA
-> auxiliary driver will need. It is then plugged on to the bus.
+> The IDPF maps the bare minimum to load and communicate with the
+> control plane, i.e., the mailbox registers and the reset state
+> registers. Because of how and when mailbox reigster offsets are
+> initialized, it is easier to adjust the existing defines to be relative
+> to the mailbox region starting address. Use a specific mailbox register
+> write function that uses these relative offsets. The reset state
+> register addresses are calculated the same way as for other registers,
+> described below.
 > 
-> During a function level reset or driver unload, the device will be
-> unplugged from the bus and destroyed.
+> The IDPF then calls a new virtchnl op to fetch a list of MMIO regions
+> that it should map. The addresses for the registers in these regions are
+> calculated by determining what region the register resides in, adjusting
+> the offset to be relative to that region, and then adding the
+> register's offset to that region's mapped address.
+> 
+> If the new virtchnl op is not supported, the IDPF will fallback to
+> mapping the whole bar. However, it will still map them as separate
+> regions outside the mailbox and reset state registers. This way we can
+> use the same logic in both cases to access the MMIO space.
 > 
 > Reviewed-by: Madhu Chittim <madhu.chittim@intel.com>
 > Signed-off-by: Joshua Hay <joshua.a.hay@intel.com>
@@ -91,61 +99,32 @@ On Fri, May 23, 2025 at 12:04:31PM -0500, Tatyana Nikolova wrote:
 
 ...
 
-> +/**
-> + * idpf_idc_init_aux_core_dev - initialize Auxiliary Device(s)
-> + * @adapter: driver private data structure
-> + * @ftype: PF or VF
-> + *
-> + * Return: 0 on success or error code on failure.
-> + */
-> +int idpf_idc_init_aux_core_dev(struct idpf_adapter *adapter,
-> +			       enum iidc_function_type ftype)
-> +{
-> +	struct iidc_rdma_core_dev_info *cdev_info;
-> +	struct iidc_rdma_priv_dev_info *privd;
-> +	int err;
+> @@ -447,12 +469,15 @@ int idpf_idc_init_aux_core_dev(struct idpf_adapter *adapter,
+>   */
+>  void idpf_idc_deinit_core_aux_device(struct iidc_rdma_core_dev_info *cdev_info)
+>  {
+> +	struct iidc_rdma_priv_dev_info *privd = cdev_info->iidc_priv;
 > +
-> +	adapter->cdev_info = kzalloc(sizeof(*cdev_info), GFP_KERNEL);
-> +	if (!adapter->cdev_info)
-> +		return -ENOMEM;
-> +
-> +	privd = kzalloc(sizeof(*privd), GFP_KERNEL);
-> +	if (!privd) {
-> +		err = -ENOMEM;
-> +		goto err_privd_alloc;
 
 Hi Joshua, Tatyana, all,
 
-Jumping to err_privd_alloc will free cdev_info.
-However cdev_info isn't initialised until a few lines
-further down.
+On the line below it is assumed that cdev_info may be NULL.
+But on the line above cdev_info is unconditionally dereferenced.
+This doesn't seem consistent.
 
 Flagged by Smatch.
 
-> +	}
-> +
-> +	cdev_info = adapter->cdev_info;
-> +	cdev_info->iidc_priv = privd;
-> +	cdev_info->pdev = adapter->pdev;
-> +	cdev_info->rdma_protocol = IIDC_RDMA_PROTOCOL_ROCEV2;
-> +	privd->ftype = ftype;
-> +
-> +	idpf_idc_init_msix_data(adapter);
-> +
-> +	err = idpf_plug_core_aux_dev(cdev_info);
-> +	if (err)
-> +		goto err_plug_aux_dev;
-> +
-> +	return 0;
-> +
-> +err_plug_aux_dev:
+>  	if (!cdev_info)
+>  		return;
+>  
+>  	idpf_unplug_aux_dev(cdev_info->adev);
+>  
+> -	kfree(cdev_info->iidc_priv);
+> +	kfree(privd->mapped_mem_regions);
 > +	kfree(privd);
-> +err_privd_alloc:
-> +	kfree(cdev_info);
-> +	adapter->cdev_info = NULL;
-> +
-> +	return err;
-> +}
+>  	kfree(cdev_info);
+>  }
+>  
 
 ...
 
