@@ -1,197 +1,152 @@
-Return-Path: <linux-rdma+bounces-10923-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10924-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FF79AC9537
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 May 2025 19:50:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43F59AC957A
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 May 2025 20:07:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A9B4A80815
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 May 2025 17:50:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2CB11C021A2
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 May 2025 18:08:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E69B275868;
-	Fri, 30 May 2025 17:50:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73EA0274FEA;
+	Fri, 30 May 2025 18:07:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="saRCg2bT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uHUthBaI"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5CC262FD1
-	for <linux-rdma@vger.kernel.org>; Fri, 30 May 2025 17:50:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EA6D230D1E;
+	Fri, 30 May 2025 18:07:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748627438; cv=none; b=Eqh0vEKJeQC8m/oTXa9PdJYhbc8gpt64jIFwWUZTNPtqwW0Ak9oYWMgUtR+YoNv/EB50BbeGWK7I8p0zGF57pcrmuqlLiprJbZ1AyFGlvveq03FVWDmSjOWNfk5D98GiWN5qu59a6o36Nff5MN4eGJq7DK+X+0VqGlmfHxx/aOg=
+	t=1748628461; cv=none; b=uupDSYOih4IjaCyeZl3YPviADCdKHIV0BkgEHLaxeOKSMbz7BYA72AxaHul2vxayhIHosowHw4twd8aCvW8NbkPhKkZdjrW1Aa0u52+2xAUSExw/im0qfw/Kb38oVIyBLeTkNGJSR9fmS+wwYIBbI23kO7cXZVRNn0xW45/uz7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748627438; c=relaxed/simple;
-	bh=ZpyN4/g0fIVhnbT8d1gKlwHIPtIdzBgiCO0etih4F9c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lOyCRqK4Uj8aVkdlANg83sPagTGdjANNY2E614SFZE3qeBVhxMsjPmxpnkbfveD8VVNb4phLq6xPAcsuBHsgOR3MyRROUsov7WnIHNLNLGMMA5goCNNXA0NaAn5SzSasS80/jcxs/vtlijlalmxsHnm8fK/Tum9s1n/jBSq/DQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=saRCg2bT; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2348ac8e0b4so16845ad.1
-        for <linux-rdma@vger.kernel.org>; Fri, 30 May 2025 10:50:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1748627436; x=1749232236; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LZxelI4d4NvZ/TF/J+tAC98NjF7+jArlYHEM3kySd7Y=;
-        b=saRCg2bTJPbra+aNMFsPyKAbAZlqc8IdH/0Ku2IoHdPOUzLWf7PwI6kcvT0KvGBcQv
-         YCwmBj2b8KBBgL3Etw97zdUUnbAm+yUdQfngtlQTvR9evGmleuYl7911bIjZi1e2QbfR
-         mRWu90UgdcDAN8CD64cXCVWcyoThVdqgcLPlnU8E0m4k7a9US9/3mBAfkaohQwIwWk2s
-         urCtb/k1cZtfmNwNnXloR7U0oaxIaH3NBSY7n1C0CkCwzhZY65wZb2i29kNWMKij6B9Q
-         KhHkHebGOgUWsJ/9zUmbfOIG9jdwSjyqaesv6HOhiHT2w/v9K5s/H8pN+14Yu3O7Wly1
-         D+Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748627436; x=1749232236;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LZxelI4d4NvZ/TF/J+tAC98NjF7+jArlYHEM3kySd7Y=;
-        b=b+L5U3CGbKjAQ5m8YuFs2eMED3XH4pGfZNZc4et8gKg6rMmWf8Xsn+QeiMsj4kcRua
-         xm0lbeb1WYs7iut25+BZRLtMC3G1r+GBzbMaUduY8be4dVgiWYR0AQraUW+OEPlTndqK
-         FFucnEFLEzUUjgQD3lvCnsH2bJwPsno1r5TE/WTN5L0Ie/w4EGDV6YnfYvLKeLf2q71o
-         Af4IU0wkk0a/S3IqYT5oMIknpKIsMwlZw0h2QbduJA5p4zoHHmEULmyJ2DwGjXNAz3bf
-         KxtJ8GlWrN03wsg/1elh++CaBDODpBgkw8tOTO67LYJ9bj7OgZTPnEcMVKKtjlt8xXgM
-         0qHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUUwChFbQ0WAcDU1TB2jjw5qrUv+61g2WWNjeY0LNGnjEU2mgFmjuwks1l9fIf+dOACylV6hYSC+8Eo@vger.kernel.org
-X-Gm-Message-State: AOJu0YwV9N4pV1gTUhcYe8iP9BM67NTibsblIIV1HpazpmZjxas9CmjT
-	L6xmr3kPEK0h3J6PRb38DqF3GliohsdiAAY/zEQK7by11I1FXZQjyixl0KezTPStIx7EXmIFi1F
-	RRUtvNl3l2LRTibLDnKzAixVblBb0OjsNJygXYiWb
-X-Gm-Gg: ASbGncuIvBKayy4NWZgpY6IVk8sdTM44xqHKmEwVm9gnwDUiWZ1arrtXmeEIj7iS32h
-	zs2ildIu3J15QEYDFGKPUc3Qw20MpWplSwgRuzuBMXuwcZHrv6p6Bg+//PiN6ye2wViQw6Xvpcy
-	5FK9HvEt1kQBZ4VZN+BmfMmZfdAh2/O2Dmqkkxtrh1MxhSZlvNIqWty8SeZBVNjYQmQK6hW8weM
-	Q==
-X-Google-Smtp-Source: AGHT+IF/dpJ3V6p0xr1UkmFfbIzfoRNakFfjWEsSzdnU9K0wExcotWGzZLbWs+c4kGKxup4uLNw2Dwpv5BnHj6UuyNs=
-X-Received: by 2002:a17:902:ecd2:b0:231:eedd:de3a with SMTP id
- d9443c01a7336-2353220f83emr3003775ad.25.1748627435241; Fri, 30 May 2025
- 10:50:35 -0700 (PDT)
+	s=arc-20240116; t=1748628461; c=relaxed/simple;
+	bh=J8XMf0vUFlBtb0P+eOBHmln++KcIOG7Tsc+hBZYxgdM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NHSg/+ukN4pEAE3A8vP6j3I5iNJgZhBq1sFaXNEV8O2pwJbtXApXeqgtsMz5XgTrOKSSjfoLSpYToE7yPSwYgq5Ne2FgSyAfAQdSmBRuEnYDhu3dZ7uyUujFsFgo3Ef92c5bLUcXYCTFvKrg0tFR9AxYq4RUBVfwxNRhxlC6B6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uHUthBaI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99E41C4CEE9;
+	Fri, 30 May 2025 18:07:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1748628460;
+	bh=J8XMf0vUFlBtb0P+eOBHmln++KcIOG7Tsc+hBZYxgdM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uHUthBaI2V1BxM8csIfknNXieTWV8RxUPyHCOIKqiG15pf/ErTqbSTFk5veJxT51j
+	 qqmNXkupTdmOnJhgg/65Pb8J+fKNLcJFJbWO1edYqwflKHLebh016uufcjEBF7GdW0
+	 LnZv6f4xN2zZEv1IN20Na3U5gDvBek8QwqvmBzASM8x6i7TTHpkpQph5JnFM7JK9B2
+	 cxB8RNk/VdfAK8KqTq6Zf97V44CcCSre8lC+mvy7si7oKxY3nZPK4eQv4oy4w1F8QV
+	 pMIob6qRgBnmFW4u+eYyFpkQ20rVVQPc9NQAtwuQTd4+eWX8elC8uqNTERpg+JUkNT
+	 OSMFhbEt8AQZQ==
+Date: Fri, 30 May 2025 19:07:32 +0100
+From: Simon Horman <horms@kernel.org>
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Cc: linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Nipun Gupta <nipun.gupta@amd.com>,
+	Yury Norov <yury.norov@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Jonathan Cameron <Jonathan.Cameron@huwei.com>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Kevin Tian <kevin.tian@intel.com>, Long Li <longli@microsoft.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Krzysztof Wilczy???~Dski <kw@linux.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Maxim Levitsky <mlevitsk@redhat.com>,
+	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
+	Peter Zijlstra <peterz@infradead.org>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, Paul Rosswurm <paulros@microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: Re: [PATCH v4 0/5] Allow dyn MSI-X vector allocation of MANA
+Message-ID: <20250530180732.GS1484967@horms.kernel.org>
+References: <1748361453-25096-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <20250528185508.GK1484967@horms.kernel.org>
+ <20250529132845.GE27681@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250529031047.7587-1-byungchul@sk.com> <20250529031047.7587-2-byungchul@sk.com>
- <CAHS8izNBjkMLbQsP++0r+fbkW2q7gGOdrbmE7gH-=jQUMCgJ1g@mail.gmail.com> <20250530011002.GA3093@system.software.com>
-In-Reply-To: <20250530011002.GA3093@system.software.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Fri, 30 May 2025 10:50:22 -0700
-X-Gm-Features: AX0GCFvslPZ_UC7JzYeAi_Zy_ofVmEwzK1hvI1l778wh4YYuE9pFk1RpuJvt08A
-Message-ID: <CAHS8izNPSHR7B24Y3RZiBeZHkPyzKAKdZbQgXwqwgs01HzxDTw@mail.gmail.com>
-Subject: Re: [RFC v3 01/18] netmem: introduce struct netmem_desc mirroring
- struct page
-To: Byungchul Park <byungchul@sk.com>
-Cc: willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org, 
-	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org, 
-	akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com, 
-	andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com, 
-	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, 
-	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com, 
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz, 
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org, 
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250529132845.GE27681@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 
-On Thu, May 29, 2025 at 6:10=E2=80=AFPM Byungchul Park <byungchul@sk.com> w=
-rote:
->
-> On Thu, May 29, 2025 at 09:31:40AM -0700, Mina Almasry wrote:
-> > On Wed, May 28, 2025 at 8:11=E2=80=AFPM Byungchul Park <byungchul@sk.co=
-m> wrote:
-> > >  struct net_iov {
-> > > -       enum net_iov_type type;
-> > > -       unsigned long pp_magic;
-> > > -       struct page_pool *pp;
-> > > -       struct net_iov_area *owner;
-> > > -       unsigned long dma_addr;
-> > > -       atomic_long_t pp_ref_count;
-> > > +       union {
-> > > +               struct netmem_desc desc;
-> > > +
-> > > +               /* XXX: The following part should be removed once all
-> > > +                * the references to them are converted so as to be
-> > > +                * accessed via netmem_desc e.g. niov->desc.pp instea=
-d
-> > > +                * of niov->pp.
-> > > +                *
-> > > +                * Plus, once struct netmem_desc has it own instance
-> > > +                * from slab, network's fields of the following can b=
-e
-> > > +                * moved out of struct netmem_desc like:
-> > > +                *
-> > > +                *    struct net_iov {
-> > > +                *       struct netmem_desc desc;
-> > > +                *       struct net_iov_area *owner;
-> > > +                *       ...
-> > > +                *    };
-> > > +                */
-> >
-> > We do not need to wait until netmem_desc has its own instance from
-> > slab to move the net_iov-specific fields out of netmem_desc. We can do
-> > that now, because there are no size restrictions on net_iov.
->
-> Got it.  Thanks for explanation.
->
-> > So, I recommend change this to:
-> >
-> > struct net_iov {
-> >   /* Union for anonymous aliasing: */
-> >   union {
-> >     struct netmem_desc desc;
-> >     struct {
-> >        unsigned long _flags;
-> >        unsigned long pp_magic;
-> >        struct page_pool *pp;
-> >        unsigned long _pp_mapping_pad;
-> >        unsigned long dma_addr;
-> >        atomic_long_t pp_ref_count;
-> >     };
-> >     struct net_iov_area *owner;
-> >     enum net_iov_type type;
-> > };
->
-> Do you mean?
->
->   struct net_iov {
->     /* Union for anonymous aliasing: */
->     union {
->       struct netmem_desc desc;
->       struct {
->          unsigned long _flags;
->          unsigned long pp_magic;
->          struct page_pool *pp;
->          unsigned long _pp_mapping_pad;
->          unsigned long dma_addr;
->          atomic_long_t pp_ref_count;
->       };
->     };
->     struct net_iov_area *owner;
->     enum net_iov_type type;
->   };
->
-> Right?  If so, I will.
->
+On Thu, May 29, 2025 at 06:28:45AM -0700, Shradha Gupta wrote:
+> On Wed, May 28, 2025 at 07:55:08PM +0100, Simon Horman wrote:
+> > On Tue, May 27, 2025 at 08:57:33AM -0700, Shradha Gupta wrote:
+> > > In this patchset we want to enable the MANA driver to be able to
+> > > allocate MSI-X vectors in PCI dynamically.
+> > > 
+> > > The first patch exports pci_msix_prepare_desc() in PCI to be able to
+> > > correctly prepare descriptors for dynamically added MSI-X vectors.
+> > > 
+> > > The second patch adds the support of dynamic vector allocation in
+> > > pci-hyperv PCI controller by enabling the MSI_FLAG_PCI_MSIX_ALLOC_DYN
+> > > flag and using the pci_msix_prepare_desc() exported in first patch.
+> > > 
+> > > The third patch adds a detailed description of the irq_setup(), to
+> > > help understand the function design better.
+> > > 
+> > > The fourth patch is a preparation patch for mana changes to support
+> > > dynamic IRQ allocation. It contains changes in irq_setup() to allow
+> > > skipping first sibling CPU sets, in case certain IRQs are already
+> > > affinitized to them.
+> > > 
+> > > The fifth patch has the changes in MANA driver to be able to allocate
+> > > MSI-X vectors dynamically. If the support does not exist it defaults to
+> > > older behavior.
+> > 
+> > Hi Shradha,
+> > 
+> > It's unclear what the target tree for this patch-set is.
+> > But if it is net-next, which seems likely given the code under
+> > drivers/net/, then:
+> > 
+> > Please include that target in the subject of each patch in the patch-set.
+> > 
+> > 	Subject: [PATCH v5 net-next 0/5] ...
+> > 
+> > And, moreover, ...
+> > 
+> > ## Form letter - net-next-closed
+> > 
+> > The merge window for v6.16 has begun and therefore net-next is closed
+> > for new drivers, features, code refactoring and optimizations. We are
+> > currently accepting bug fixes only.
+> > 
+> > Please repost when net-next reopens after June 8th.
+> > 
+> > RFC patches sent for review only are obviously welcome at any time.
+> 
+> Thank you Simon.
+> 
+> While posting this patchset I was a bit confused about what should be
+> the target tree. That's why in the cover letter of the V1 for this
+> series, I had requested more clarity on the same (since there are patches
+> from PCI and net-next both).
+> 
+> In such cases how do we decide which tree to target?
 
-Yes, sounds good.
+Yes, that isn't entirely clear to me either.
+Hopefully the maintainers can negotiate this.
 
-Also, maybe having a union with the same fields for anonymous aliasing
-can be error prone if someone updates netmem_desc and forgets to
-update the mirror in struct net_iov. If you can think of a way to deal
-with that, great, if not lets maybe put a comment on top of struct
-netmem_desc:
-
-/* Do not update the fields in netmem_desc without also updating the
-anonymous aliasing union in struct net_iov */.
-
-Or something like that.
-
---=20
-Thanks,
-Mina
+> 
+> Also, noted about the next merge window for net-next :-)
+> 
+> Regards,
+> Shradha.
+> 
 
