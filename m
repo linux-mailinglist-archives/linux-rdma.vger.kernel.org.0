@@ -1,47 +1,47 @@
-Return-Path: <linux-rdma+bounces-10909-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10910-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06DEAAC85C0
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 May 2025 02:49:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2B1AAC85CC
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 May 2025 02:56:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED2911BA29DE
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 May 2025 00:49:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05B453A249F
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 May 2025 00:56:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D416933985;
-	Fri, 30 May 2025 00:49:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CEF560DCF;
+	Fri, 30 May 2025 00:56:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G/1oTXcJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D5yTMsUX"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D8C2FBF0;
-	Fri, 30 May 2025 00:49:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0F68AD5E;
+	Fri, 30 May 2025 00:56:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748566159; cv=none; b=RWJLU7bB0Xg1k/NIYUd8VFmR78WxhYT7wXajzhhuwCI5vz1oqjNcfkPIX2ZgwHf6OiuRPyTJGvHFpA8G2/ecdhcCcZGXV56FRkgxnuPMmqHsTuybAc7N5c4UBEouNTcrKxI0MQsdK5B0WpQmUoUDpcXIZx0ah1IwrdmuuImfPfw=
+	t=1748566589; cv=none; b=VMsPbteKLiaclB44YiADWoblI/tTxZ2/yC+Yg4glal7KCM8tjC3iNcHToZ3yCPG9mrOeqr9I5YBj3wfF8GwRUr7Xgedfyzj/FoPKLu2w8QHBBD3NJZd+htZcCOYEnFAm168K3pUqm8MU2mKM9y1zk+bPVNd8NmFJfAeaoWzm9Gg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748566159; c=relaxed/simple;
-	bh=8Bl71w9e4E6Qo6rtxryDax3y08LU+Nx9kHzGp2J0tEk=;
+	s=arc-20240116; t=1748566589; c=relaxed/simple;
+	bh=yg6Wh8XDP53XOaEfOboKxLKTBHVS/nUo2gmPowtLxbo=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KqCnpl9L8ZHC9rcJxwxzaSjeA7taBRLa9I3cXlzijBoN02ua+to4kDSykMajx9wRpy9epw+y5xb1xz81ahZ2Fvq/7tvRxfUV2+8HeAQqD5mJxpyh5x2u0yrqXZkNcngzOln9TzHuBy48kWL4rIR1npMn+huByg+br6GUyrrQsa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G/1oTXcJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D524C4CEE7;
-	Fri, 30 May 2025 00:49:16 +0000 (UTC)
+	 MIME-Version:Content-Type; b=fY9x/DbKqMFpWfvtpuXq8fsC0a6PvNmX1YlLQFvA3MIpQ1qZzfDSKcNOR0kSThWfvgex26A9wAmFr1CXFarHk23DaqlQ+TFRjj32OEM/L8hIw663pcWNVxqm9Xxi0rqMXQES/51qFu3GVy+OPl8aztxE3ZLaueholW7wa+ypCoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D5yTMsUX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51CDEC4CEE7;
+	Fri, 30 May 2025 00:56:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748566156;
-	bh=8Bl71w9e4E6Qo6rtxryDax3y08LU+Nx9kHzGp2J0tEk=;
+	s=k20201202; t=1748566589;
+	bh=yg6Wh8XDP53XOaEfOboKxLKTBHVS/nUo2gmPowtLxbo=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=G/1oTXcJfmrJCGtkYZhcTh5rIRqFiCd1irrdkiqp+Y9mefG/2ac0qSvw0Siko8rua
-	 nkWTbjqN2s0i9vCAzlyfo9hgqUVVST/i0soLWxMWm4yQjizSGOXk60eYH6ZwA9gJo6
-	 msmtC3+9MnNrYGQlmDNGHFCkGVQQGq8RIj0S5Yda/uLOFsYE213XkUgtCGmPje2a/i
-	 nJd9uNugpY/u0gfYejO2l96XH7tkBD1HPcsSg/Db/NMqAqynIl3Osi86IwwxKaHs/C
-	 O4wBg4PoQsi8v2s94WAEuZbI5Pi3nUZx9xV0csl4K6W3CCPBHPZxn0r9/DU8BDQdqh
-	 /pMKhYRPE4aHg==
-Date: Thu, 29 May 2025 17:49:14 -0700
+	b=D5yTMsUXYJkXKA/3AcLLVZtYKMkrbG7yBjq6Hz2CnCLmzDpTU+WuwJY/phWaP7LWK
+	 DH4sGRZP5sNjiuZI2lbzQ42iNVCv7M0Lqom0Yvd9yfFjLlLPun+tW5laqn3p8EPiO6
+	 VhGLVjm8KUzTfHtQPYo9eDBQnBW6wmwRx5MTcO3HPFAmIWG/wBR2Tn7rVV4fgCHfUF
+	 buiRCeXTUvQPm9FWsgGuzQBy2kAfzGJAMk+NYCX5cWZivNmpmV7UDFhsAFL+3BQwo6
+	 gsjjyQFKCMLAJ0P8cRIkGgi58XLvnhBBxXbrTn0iq0kNZELtg4Aj+XGs1NTiEORLZN
+	 Cx4g/jqxeB+WA==
+Date: Thu, 29 May 2025 17:56:27 -0700
 From: Jakub Kicinski <kuba@kernel.org>
 To: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
 Cc: donald.hunter@gmail.com, davem@davemloft.net, edumazet@google.com,
@@ -51,47 +51,84 @@ Cc: donald.hunter@gmail.com, davem@davemloft.net, edumazet@google.com,
  netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
  intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
  linux-doc@vger.kernel.org, Milena Olech <milena.olech@intel.com>
-Subject: Re: [PATCH net-next v4 1/3] dpll: add reference-sync netlink
- attribute
-Message-ID: <20250529174914.179c1a34@kernel.org>
-In-Reply-To: <20250523172650.1517164-2-arkadiusz.kubalewski@intel.com>
+Subject: Re: [PATCH net-next v4 2/3] dpll: add reference sync get/set
+Message-ID: <20250529175627.4e6a3b07@kernel.org>
+In-Reply-To: <20250523172650.1517164-3-arkadiusz.kubalewski@intel.com>
 References: <20250523172650.1517164-1-arkadiusz.kubalewski@intel.com>
-	<20250523172650.1517164-2-arkadiusz.kubalewski@intel.com>
+	<20250523172650.1517164-3-arkadiusz.kubalewski@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 23 May 2025 19:26:48 +0200 Arkadiusz Kubalewski wrote:
-> +The device may support the Reference SYNC feature, which allows the combination
-> +of two inputs into a Reference SYNC pair. In this configuration, clock signals
-> +from both inputs are used to synchronize the dpll device. The higher frequency
-> +signal is utilized for the loop bandwidth of the DPLL, while the lower frequency
-> +signal is used to syntonize the output signal of the DPLL device. This feature
-> +enables the provision of a high-quality loop bandwidth signal from an external
-> +source.
+On Fri, 23 May 2025 19:26:49 +0200 Arkadiusz Kubalewski wrote:
+> +static int
+> +dpll_pin_ref_sync_state_set(struct dpll_pin *pin,
+> +			    unsigned long ref_sync_pin_idx,
+> +			    const enum dpll_pin_state state,
+> +			    struct netlink_ext_ack *extack)
+> +
+> +{
+> +	struct dpll_pin_ref *ref, *failed;
+> +	const struct dpll_pin_ops *ops;
+> +	enum dpll_pin_state old_state;
+> +	struct dpll_pin *ref_sync_pin;
+> +	struct dpll_device *dpll;
+> +	unsigned long i;
+> +	int ret;
+> +
+> +	ref_sync_pin =3D xa_find(&pin->ref_sync_pins, &ref_sync_pin_idx,
+> +			       ULONG_MAX, XA_PRESENT);
+> +	if (!ref_sync_pin) {
+> +		NL_SET_ERR_MSG(extack, "reference sync pin not found");
+> +		return -EINVAL;
+> +	}
+> +	if (!dpll_pin_available(ref_sync_pin)) {
+> +		NL_SET_ERR_MSG(extack, "reference sync pin not available");
+> +		return -EINVAL;
+> +	}
+> +	ref =3D dpll_xa_ref_dpll_first(&pin->dpll_refs);
+> +	ASSERT_NOT_NULL(ref);
 
-I'm uninitiated into the deeper arts of time sync, but to me this
-sounds like a reference clock. Are you trying not to call it clock
-because in time clock means a ticker, and this is an oscillator?
+why the assert? The next line will crash very.. "informatively"
+if ref is NULL =F0=9F=A4=B7=EF=B8=8F
 
-> +A capable input provides a list of inputs that can be paired to create a
-> +Reference SYNC pair. To control this feature, the user must request a desired
-> +state for a target pin: use ``DPLL_PIN_STATE_CONNECTED`` to enable or
-> +``DPLL_PIN_STATE_DISCONNECTED`` to disable the feature. Only two pins can be
-> +bound to form a Reference SYNC pair at any given time.
+> +static int
+> +dpll_pin_ref_sync_set(struct dpll_pin *pin, struct nlattr *nest,
+> +		      struct netlink_ext_ack *extack)
+> +{
+> +	struct nlattr *tb[DPLL_A_PIN_MAX + 1];
+> +	enum dpll_pin_state state;
+> +	u32 sync_pin_id;
+> +
+> +	nla_parse_nested(tb, DPLL_A_PIN_MAX, nest,
+> +			 dpll_reference_sync_nl_policy, extack);
+> +	if (!tb[DPLL_A_PIN_ID]) {
 
-Mostly I got confused by the doc saying "Reference SYNC pair".
-I was expecting that you'll have to provide 2 ref sync signals.
-But IIUC the first signal is still the existing signal we lock
-into, so the pair is of a reference sync + an input pin?
-Not a pair of two reference syncs.
+NL_REQ_ATTR_CHECK(), please
 
-IOW my reading of the doc made me expect 2 pins to always be passed in
-as ref sync, but the example from the cover letter shows only adding
-one.
+	if (NL_REQ_ATTR_CHECK(extack, nest, tb, DPLL_A_PIN_ID) ||
+	    NL_REQ_ATTR_CHECK(extack, nest, tb, DPLL_A_PIN_STATE))
+		return -EINVAL;
+
+it will set ATTR_MISS metadata for you. Not 100% sure if Python YNL
+can decode miss attrs in nests but that's a SMOP :) C YNL can do it.
+
+> +		NL_SET_ERR_MSG(extack, "sync pin id expected");
+> +		return -EINVAL;
+> +	}
+> +	sync_pin_id =3D nla_get_u32(tb[DPLL_A_PIN_ID]);
+> +
+> +	if (!tb[DPLL_A_PIN_STATE]) {
+> +		NL_SET_ERR_MSG(extack, "sync pin state expected");
+> +		return -EINVAL;
+> +	}
+> +	state =3D nla_get_u32(tb[DPLL_A_PIN_STATE]);
+> +
+> +	return dpll_pin_ref_sync_state_set(pin, sync_pin_id, state, extack);
+> +}
 
