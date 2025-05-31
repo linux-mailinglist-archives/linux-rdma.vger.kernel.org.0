@@ -1,152 +1,96 @@
-Return-Path: <linux-rdma+bounces-10924-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10925-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43F59AC957A
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 May 2025 20:07:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EB3FAC9BB2
+	for <lists+linux-rdma@lfdr.de>; Sat, 31 May 2025 18:20:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2CB11C021A2
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 May 2025 18:08:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41466189951F
+	for <lists+linux-rdma@lfdr.de>; Sat, 31 May 2025 16:20:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73EA0274FEA;
-	Fri, 30 May 2025 18:07:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uHUthBaI"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67488149E13;
+	Sat, 31 May 2025 16:20:04 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EA6D230D1E;
-	Fri, 30 May 2025 18:07:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C691117A2EA
+	for <linux-rdma@vger.kernel.org>; Sat, 31 May 2025 16:20:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748628461; cv=none; b=uupDSYOih4IjaCyeZl3YPviADCdKHIV0BkgEHLaxeOKSMbz7BYA72AxaHul2vxayhIHosowHw4twd8aCvW8NbkPhKkZdjrW1Aa0u52+2xAUSExw/im0qfw/Kb38oVIyBLeTkNGJSR9fmS+wwYIBbI23kO7cXZVRNn0xW45/uz7Q=
+	t=1748708404; cv=none; b=HfH4pGQG2kA4mD7tmTkNE7eQXCVcmmjU/0HXOxhS8L3mHI79de4kSmfQ+52uZEMsxq9D00uZUlRLG3blMnH4isILIPczTGzWGAp32Vrj5r0gXE8lL8HSZ0g1REHKhEa+jtlaQ/5mTTdLxf8IH/g/jiBxqFCBXnoNW7WYLqbXeAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748628461; c=relaxed/simple;
-	bh=J8XMf0vUFlBtb0P+eOBHmln++KcIOG7Tsc+hBZYxgdM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NHSg/+ukN4pEAE3A8vP6j3I5iNJgZhBq1sFaXNEV8O2pwJbtXApXeqgtsMz5XgTrOKSSjfoLSpYToE7yPSwYgq5Ne2FgSyAfAQdSmBRuEnYDhu3dZ7uyUujFsFgo3Ef92c5bLUcXYCTFvKrg0tFR9AxYq4RUBVfwxNRhxlC6B6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uHUthBaI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99E41C4CEE9;
-	Fri, 30 May 2025 18:07:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748628460;
-	bh=J8XMf0vUFlBtb0P+eOBHmln++KcIOG7Tsc+hBZYxgdM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uHUthBaI2V1BxM8csIfknNXieTWV8RxUPyHCOIKqiG15pf/ErTqbSTFk5veJxT51j
-	 qqmNXkupTdmOnJhgg/65Pb8J+fKNLcJFJbWO1edYqwflKHLebh016uufcjEBF7GdW0
-	 LnZv6f4xN2zZEv1IN20Na3U5gDvBek8QwqvmBzASM8x6i7TTHpkpQph5JnFM7JK9B2
-	 cxB8RNk/VdfAK8KqTq6Zf97V44CcCSre8lC+mvy7si7oKxY3nZPK4eQv4oy4w1F8QV
-	 pMIob6qRgBnmFW4u+eYyFpkQ20rVVQPc9NQAtwuQTd4+eWX8elC8uqNTERpg+JUkNT
-	 OSMFhbEt8AQZQ==
-Date: Fri, 30 May 2025 19:07:32 +0100
-From: Simon Horman <horms@kernel.org>
-To: Shradha Gupta <shradhagupta@linux.microsoft.com>
-Cc: linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Nipun Gupta <nipun.gupta@amd.com>,
-	Yury Norov <yury.norov@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Jonathan Cameron <Jonathan.Cameron@huwei.com>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Kevin Tian <kevin.tian@intel.com>, Long Li <longli@microsoft.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Krzysztof Wilczy???~Dski <kw@linux.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Maxim Levitsky <mlevitsk@redhat.com>,
-	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
-	Peter Zijlstra <peterz@infradead.org>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, Paul Rosswurm <paulros@microsoft.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>
-Subject: Re: [PATCH v4 0/5] Allow dyn MSI-X vector allocation of MANA
-Message-ID: <20250530180732.GS1484967@horms.kernel.org>
-References: <1748361453-25096-1-git-send-email-shradhagupta@linux.microsoft.com>
- <20250528185508.GK1484967@horms.kernel.org>
- <20250529132845.GE27681@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	s=arc-20240116; t=1748708404; c=relaxed/simple;
+	bh=sgPA9Q230YlwYNsgLsUAGT+EIJ3MJXCV8CkuV+njEC8=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=h++K/4vpIsvYxikqgHRuSKSL0BaOQGLUGXCSsWkLQB3Eiq/92MlvaQXyNMwlvfLdB5/qZiUtnC1q916U6noZAfNnIkjUDcKI2mjjyLRZcVcwOY+JsN7HXhc8/HCfnTKA3WbX/Q8O+ncaNMufKhF6h2MV+yZaWBqhIorK4Thk9KQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3dc854af016so37200725ab.3
+        for <linux-rdma@vger.kernel.org>; Sat, 31 May 2025 09:20:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748708402; x=1749313202;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jOT3+3dtKmIMbjiKp4WKPYIYOuy19lzYdhT8ETpxuvo=;
+        b=iBR4m2bFL+7oDvCOreJlR7+Red0dvHtyRidJiC+N71c+xZpQtObtfoFXkJqk+UD5T/
+         oaIBKB8PRiKNjjsWZIcYXYK2+9Nc8+XFgUJHRdb96mYcUv31lq1WbGAax1OGIvy6KOeU
+         XEK4MJ/buDX2ZII+9LkUFWnCak4/aJ46jUyp6G1YO0IqRb7mKtNYKvQlHBdas584TKhU
+         60fqEr8S1IWN5PfDwk5NRiQPyVnkz54rZk1YeQRmSxVE5tDg5BSLdd9+nziQpGOIqOIi
+         P7iMrummOFkbzjaXJWuaHzzWKZ2WhREMOInu67BP+RoCSuGxhKGY83EaGA7P8FuVNuh2
+         xfAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU+uQAwWPidvU20bSS3FGNWMnwOrENUr4zY1HHHsNMaJXxNMbRDoZM8BR+tX/yPv2xFGZa3/IG644kl@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzu5vZkPqvpigpGmwJ5qchDlUmFWZ+j2lP2XiKpHz9LWhcWbT0d
+	C55qlfTJlFly01RbvX+Nc3NNiLtXErna1hU4dByb7+fFzQA25N0gQb7moVvizQpGwHyNEbBxgW9
+	9B9bVLnHyxXFlMDlnVsmcxl9blnVdf/XjVWQN/tUPg+s9ivXL2zi/qfclxPw=
+X-Google-Smtp-Source: AGHT+IGdap3ueor/+dC4QVfuI3dEjhxnuRezgHUx4IFWYUjshQSu+2Ssy2m7Z8B44GaIOMUzHwVmDX58Z5+KnBdSnlu+zMS+qDxq
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250529132845.GE27681@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+X-Received: by 2002:a05:6e02:1568:b0:3dd:8a06:4db3 with SMTP id
+ e9e14a558f8ab-3dda339232emr19169295ab.19.1748708401944; Sat, 31 May 2025
+ 09:20:01 -0700 (PDT)
+Date: Sat, 31 May 2025 09:20:01 -0700
+In-Reply-To: <000000000000ec1f6b061ba43f7d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <683b2c31.a00a0220.d8eae.001b.GAE@google.com>
+Subject: Re: [syzbot] [smc?] possible deadlock in smc_switch_to_fallback (2)
+From: syzbot <syzbot+bef85a6996d1737c1a2f@syzkaller.appspotmail.com>
+To: agordeev@linux.ibm.com, alibuda@linux.alibaba.com, davem@davemloft.net, 
+	edumazet@google.com, guwen@linux.alibaba.com, horms@kernel.org, 
+	jaka@linux.ibm.com, kuba@kernel.org, kuniyu@amazon.com, 
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com, tonylu@linux.alibaba.com, 
+	wenjia@linux.ibm.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, May 29, 2025 at 06:28:45AM -0700, Shradha Gupta wrote:
-> On Wed, May 28, 2025 at 07:55:08PM +0100, Simon Horman wrote:
-> > On Tue, May 27, 2025 at 08:57:33AM -0700, Shradha Gupta wrote:
-> > > In this patchset we want to enable the MANA driver to be able to
-> > > allocate MSI-X vectors in PCI dynamically.
-> > > 
-> > > The first patch exports pci_msix_prepare_desc() in PCI to be able to
-> > > correctly prepare descriptors for dynamically added MSI-X vectors.
-> > > 
-> > > The second patch adds the support of dynamic vector allocation in
-> > > pci-hyperv PCI controller by enabling the MSI_FLAG_PCI_MSIX_ALLOC_DYN
-> > > flag and using the pci_msix_prepare_desc() exported in first patch.
-> > > 
-> > > The third patch adds a detailed description of the irq_setup(), to
-> > > help understand the function design better.
-> > > 
-> > > The fourth patch is a preparation patch for mana changes to support
-> > > dynamic IRQ allocation. It contains changes in irq_setup() to allow
-> > > skipping first sibling CPU sets, in case certain IRQs are already
-> > > affinitized to them.
-> > > 
-> > > The fifth patch has the changes in MANA driver to be able to allocate
-> > > MSI-X vectors dynamically. If the support does not exist it defaults to
-> > > older behavior.
-> > 
-> > Hi Shradha,
-> > 
-> > It's unclear what the target tree for this patch-set is.
-> > But if it is net-next, which seems likely given the code under
-> > drivers/net/, then:
-> > 
-> > Please include that target in the subject of each patch in the patch-set.
-> > 
-> > 	Subject: [PATCH v5 net-next 0/5] ...
-> > 
-> > And, moreover, ...
-> > 
-> > ## Form letter - net-next-closed
-> > 
-> > The merge window for v6.16 has begun and therefore net-next is closed
-> > for new drivers, features, code refactoring and optimizations. We are
-> > currently accepting bug fixes only.
-> > 
-> > Please repost when net-next reopens after June 8th.
-> > 
-> > RFC patches sent for review only are obviously welcome at any time.
-> 
-> Thank you Simon.
-> 
-> While posting this patchset I was a bit confused about what should be
-> the target tree. That's why in the cover letter of the V1 for this
-> series, I had requested more clarity on the same (since there are patches
-> from PCI and net-next both).
-> 
-> In such cases how do we decide which tree to target?
+syzbot suspects this issue was fixed by commit:
 
-Yes, that isn't entirely clear to me either.
-Hopefully the maintainers can negotiate this.
+commit 752e2217d789be2c6a6ac66554b981cd71cd9f31
+Author: Kuniyuki Iwashima <kuniyu@amazon.com>
+Date:   Mon Apr 7 17:03:17 2025 +0000
 
-> 
-> Also, noted about the next merge window for net-next :-)
-> 
-> Regards,
-> Shradha.
-> 
+    smc: Fix lockdep false-positive for IPPROTO_SMC.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13833ed4580000
+start commit:   47e55e4b410f openvswitch: fix lockup on tx to unregisterin..
+git tree:       net
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4ef22c4fce5135b4
+dashboard link: https://syzkaller.appspot.com/bug?extid=bef85a6996d1737c1a2f
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14832cb0580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17e17218580000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: smc: Fix lockdep false-positive for IPPROTO_SMC.
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
