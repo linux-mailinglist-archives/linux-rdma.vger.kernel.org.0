@@ -1,96 +1,177 @@
-Return-Path: <linux-rdma+bounces-10925-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10926-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EB3FAC9BB2
-	for <lists+linux-rdma@lfdr.de>; Sat, 31 May 2025 18:20:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A371AC9EF0
+	for <lists+linux-rdma@lfdr.de>; Sun,  1 Jun 2025 16:54:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41466189951F
-	for <lists+linux-rdma@lfdr.de>; Sat, 31 May 2025 16:20:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 116213B6909
+	for <lists+linux-rdma@lfdr.de>; Sun,  1 Jun 2025 14:54:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67488149E13;
-	Sat, 31 May 2025 16:20:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82A3F1E7C06;
+	Sun,  1 Jun 2025 14:54:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="c5w1BAxt"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C691117A2EA
-	for <linux-rdma@vger.kernel.org>; Sat, 31 May 2025 16:20:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2774B1D54EE
+	for <linux-rdma@vger.kernel.org>; Sun,  1 Jun 2025 14:54:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748708404; cv=none; b=HfH4pGQG2kA4mD7tmTkNE7eQXCVcmmjU/0HXOxhS8L3mHI79de4kSmfQ+52uZEMsxq9D00uZUlRLG3blMnH4isILIPczTGzWGAp32Vrj5r0gXE8lL8HSZ0g1REHKhEa+jtlaQ/5mTTdLxf8IH/g/jiBxqFCBXnoNW7WYLqbXeAo=
+	t=1748789668; cv=none; b=So/EvtjQFxi+1BL+IhWYJyEAMPUfU82kjbTJth1bj/RcruRjlMkAm84t16XKidhSe3MX4CwGjCaIGpUBowz8xEMHO2YWqyTZbRD92/ptxtpkG7rRAQDzW1E0Osp5f5WZeQ1KNW3pTypbMx0IOEnKAk+S5u5gHC39v46a47IlY6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748708404; c=relaxed/simple;
-	bh=sgPA9Q230YlwYNsgLsUAGT+EIJ3MJXCV8CkuV+njEC8=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=h++K/4vpIsvYxikqgHRuSKSL0BaOQGLUGXCSsWkLQB3Eiq/92MlvaQXyNMwlvfLdB5/qZiUtnC1q916U6noZAfNnIkjUDcKI2mjjyLRZcVcwOY+JsN7HXhc8/HCfnTKA3WbX/Q8O+ncaNMufKhF6h2MV+yZaWBqhIorK4Thk9KQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3dc854af016so37200725ab.3
-        for <linux-rdma@vger.kernel.org>; Sat, 31 May 2025 09:20:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748708402; x=1749313202;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jOT3+3dtKmIMbjiKp4WKPYIYOuy19lzYdhT8ETpxuvo=;
-        b=iBR4m2bFL+7oDvCOreJlR7+Red0dvHtyRidJiC+N71c+xZpQtObtfoFXkJqk+UD5T/
-         oaIBKB8PRiKNjjsWZIcYXYK2+9Nc8+XFgUJHRdb96mYcUv31lq1WbGAax1OGIvy6KOeU
-         XEK4MJ/buDX2ZII+9LkUFWnCak4/aJ46jUyp6G1YO0IqRb7mKtNYKvQlHBdas584TKhU
-         60fqEr8S1IWN5PfDwk5NRiQPyVnkz54rZk1YeQRmSxVE5tDg5BSLdd9+nziQpGOIqOIi
-         P7iMrummOFkbzjaXJWuaHzzWKZ2WhREMOInu67BP+RoCSuGxhKGY83EaGA7P8FuVNuh2
-         xfAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU+uQAwWPidvU20bSS3FGNWMnwOrENUr4zY1HHHsNMaJXxNMbRDoZM8BR+tX/yPv2xFGZa3/IG644kl@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzu5vZkPqvpigpGmwJ5qchDlUmFWZ+j2lP2XiKpHz9LWhcWbT0d
-	C55qlfTJlFly01RbvX+Nc3NNiLtXErna1hU4dByb7+fFzQA25N0gQb7moVvizQpGwHyNEbBxgW9
-	9B9bVLnHyxXFlMDlnVsmcxl9blnVdf/XjVWQN/tUPg+s9ivXL2zi/qfclxPw=
-X-Google-Smtp-Source: AGHT+IGdap3ueor/+dC4QVfuI3dEjhxnuRezgHUx4IFWYUjshQSu+2Ssy2m7Z8B44GaIOMUzHwVmDX58Z5+KnBdSnlu+zMS+qDxq
+	s=arc-20240116; t=1748789668; c=relaxed/simple;
+	bh=pAsAKxToGmEVd3RIVnzdeeufEYuTCSyv5WEoqg6uhl8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OeoAlSwSHfptsyNRDuXUg6jC+xLS6VljLez8Uix7/NrbkjQeSH3eK31Njc0FSGozoircFAP36JzO219LlM2ZxmVY7c6Vk7qRrveRuTKtirlypa5ofjRuedOyt2zYvXQETeYhECmcQmzKll1t4mRUxel0HwMhP9M/HD1wMvfCXwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=c5w1BAxt; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <83244641-8fab-4f05-9d31-c5881fa1660c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1748789653;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lOAhBl1Qhlq6wH2PH80gzRHGRgdy1O7aBgxLtbf1Yvc=;
+	b=c5w1BAxtYORCvEZoUtLIKVfUN0MKQgkVrFsOrwv0Zm73CWxGdO/mJV3n1432IKIxiIh2KN
+	yBIDnMbDLwSonNWt0ItBnisw9me9S+Oz0nYupaVp09WJN3kzH1k7nn0QDRrkWk3YpHnDBz
+	Si22yGpyvte1D9UyxJX3dg/Nux+Kq4M=
+Date: Sun, 1 Jun 2025 16:53:31 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1568:b0:3dd:8a06:4db3 with SMTP id
- e9e14a558f8ab-3dda339232emr19169295ab.19.1748708401944; Sat, 31 May 2025
- 09:20:01 -0700 (PDT)
-Date: Sat, 31 May 2025 09:20:01 -0700
-In-Reply-To: <000000000000ec1f6b061ba43f7d@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <683b2c31.a00a0220.d8eae.001b.GAE@google.com>
-Subject: Re: [syzbot] [smc?] possible deadlock in smc_switch_to_fallback (2)
-From: syzbot <syzbot+bef85a6996d1737c1a2f@syzkaller.appspotmail.com>
-To: agordeev@linux.ibm.com, alibuda@linux.alibaba.com, davem@davemloft.net, 
-	edumazet@google.com, guwen@linux.alibaba.com, horms@kernel.org, 
-	jaka@linux.ibm.com, kuba@kernel.org, kuniyu@amazon.com, 
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-s390@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com, tonylu@linux.alibaba.com, 
-	wenjia@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v4 0/5] Allow dyn MSI-X vector allocation of MANA
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Cc: linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Nipun Gupta <nipun.gupta@amd.com>,
+ Yury Norov <yury.norov@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Jonathan Cameron <Jonathan.Cameron@huwei.com>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Kevin Tian <kevin.tian@intel.com>, Long Li <longli@microsoft.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Bjorn Helgaas <bhelgaas@google.com>,
+ Rob Herring <robh@kernel.org>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=EF=BF=BD=7EDski?= <kw@linux.com>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+ Wei Liu <wei.liu@kernel.org>, Haiyang Zhang <haiyangz@microsoft.com>,
+ "K. Y. Srinivasan" <kys@microsoft.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Konstantin Taranov <kotaranov@microsoft.com>, Simon Horman
+ <horms@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+ Maxim Levitsky <mlevitsk@redhat.com>,
+ Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
+ Peter Zijlstra <peterz@infradead.org>, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, Paul Rosswurm <paulros@microsoft.com>,
+ Shradha Gupta <shradhagupta@microsoft.com>
+References: <1748361453-25096-1-git-send-email-shradhagupta@linux.microsoft.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <1748361453-25096-1-git-send-email-shradhagupta@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-syzbot suspects this issue was fixed by commit:
+在 2025/5/27 17:57, Shradha Gupta 写道:
+> In this patchset we want to enable the MANA driver to be able to
+> allocate MSI-X vectors in PCI dynamically.
+> 
+> The first patch exports pci_msix_prepare_desc() in PCI to be able to
+> correctly prepare descriptors for dynamically added MSI-X vectors.
+> 
+> The second patch adds the support of dynamic vector allocation in
+> pci-hyperv PCI controller by enabling the MSI_FLAG_PCI_MSIX_ALLOC_DYN
+> flag and using the pci_msix_prepare_desc() exported in first patch.
+> 
+> The third patch adds a detailed description of the irq_setup(), to
+> help understand the function design better.
+> 
+> The fourth patch is a preparation patch for mana changes to support
+> dynamic IRQ allocation. It contains changes in irq_setup() to allow
+> skipping first sibling CPU sets, in case certain IRQs are already
+> affinitized to them.
+> 
+> The fifth patch has the changes in MANA driver to be able to allocate
+> MSI-X vectors dynamically. If the support does not exist it defaults to
+> older behavior.
+> ---
+>   Change in v4
+>   * add a patch describing the functionality of irq_setup() through a
+>     comment
+>   * In irq_setup(), avoid using a label next_cpumask:
+>   * modify the changes in MANA patch about restructuring the error
+>     handling path in mana_gd_setup_dyn_irqs()
+>   * modify the mana_gd_setup_irqs() to simplify handling around
+>     start_irq_index
+>   * add warning if an invalid gic is returned
+>   * place the xa_destroy() cleanup in mana_gd_remove
+> ---
+>   Changes in v3
+>   * split the 3rd patch into preparation patch around irq_setup() and
+>     changes in mana driver to allow dynamic IRQ allocation
+>   * Add arm64 support for dynamic MSI-X allocation in pci_hyperv
+>     controller
+> ---
+>   Changes in v2
+>   * split the first patch into two(exporting the preapre_desc
+>     func and using the function and flag in pci-hyperv)
+>   * replace 'pci vectors' by 'MSI-X vectors'
+>   * Change the cover letter description to align with changes made
+> ---
+> 
+> Shradha Gupta (5):
+>    PCI/MSI: Export pci_msix_prepare_desc() for dynamic MSI-X allocations
+>    PCI: hv: Allow dynamic MSI-X vector allocation
+>    net: mana: explain irq_setup() algorithm
+>    net: mana: Allow irq_setup() to skip cpus for affinity
+>    net: mana: Allocate MSI-X vectors dynamically
 
-commit 752e2217d789be2c6a6ac66554b981cd71cd9f31
-Author: Kuniyuki Iwashima <kuniyu@amazon.com>
-Date:   Mon Apr 7 17:03:17 2025 +0000
+In this patchset, base-commit seems missing.
 
-    smc: Fix lockdep false-positive for IPPROTO_SMC.
+Please see this link:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.15#n868
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13833ed4580000
-start commit:   47e55e4b410f openvswitch: fix lockup on tx to unregisterin..
-git tree:       net
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4ef22c4fce5135b4
-dashboard link: https://syzkaller.appspot.com/bug?extid=bef85a6996d1737c1a2f
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14832cb0580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17e17218580000
+"
+When you open ``outgoing/0000-cover-letter.patch`` for editing, you will
+notice that it will have the ``base-commit:`` trailer at the very
+bottom, which provides the reviewer and the CI tools enough information
+to properly perform ``git am`` without worrying about conflicts::
+"
 
-If the result looks correct, please mark the issue as fixed by replying with:
+When creating patches:
+"
+git format-patch --base=main origin/main
+"
 
-#syz fix: smc: Fix lockdep false-positive for IPPROTO_SMC.
+This will include a base-commit: line in each patch file:
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+"
+base-commit: abcdef1234567890...
+"
+
+This is useful when submitting patches to mailing lists or other tooling.
+
+Please follow the submitting-patches.rst to add base-commit.
+
+Best Regards,
+Zhu Yanjun
+
+> 
+>   .../net/ethernet/microsoft/mana/gdma_main.c   | 356 ++++++++++++++----
+>   drivers/pci/controller/pci-hyperv.c           |   5 +-
+>   drivers/pci/msi/irqdomain.c                   |   5 +-
+>   include/linux/msi.h                           |   2 +
+>   include/net/mana/gdma.h                       |   8 +-
+>   5 files changed, 293 insertions(+), 83 deletions(-)
+> 
+
 
