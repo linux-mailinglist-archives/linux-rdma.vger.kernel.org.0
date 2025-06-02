@@ -1,140 +1,123 @@
-Return-Path: <linux-rdma+bounces-10930-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10931-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8172ACA92F
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Jun 2025 08:03:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BBD1ACBCD7
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Jun 2025 23:53:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 140CB18843BB
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Jun 2025 06:03:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 446D0170BB7
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Jun 2025 21:53:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB06C156F45;
-	Mon,  2 Jun 2025 06:03:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A80624DCE5;
+	Mon,  2 Jun 2025 21:53:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pf+qgvAb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KWy2VeR+"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1EC04B5AE
-	for <linux-rdma@vger.kernel.org>; Mon,  2 Jun 2025 06:03:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7E642C3250;
+	Mon,  2 Jun 2025 21:53:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748844218; cv=none; b=fPD0Wqla27UE3M8SZ51zPH3kjTvpKx+9Ppsk8pszoc/n8zlfboFtXy+AqjvOEB9WcNY0t+uODIDT6WS9GP8s+1MDvCok8ef390ajlyxIgAktrWynR9e+E0LNdXCTkA6A2EnkM4Gch4/uonPoZZGyZYuP9r1X/7O5Ze96x4pEApM=
+	t=1748901199; cv=none; b=BnWB1vrv7GgVEjVzwBC/cGjD7IsAtQ8wDcsZ/8S6rv3i42saz/7YZwOtF2fruGCKK73m//6BaGWosreE2oVDyCl6f5QpatZAOgNtLx+/f7CcxlnykkNebgjNtVVrtOEKLLWoTcbOi0DrIjeUMxpAu/CySbvKFAayB6i/u0gY5uA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748844218; c=relaxed/simple;
-	bh=eEW107ipIPy61Sk24Q1qrxcbmZLvd1y/kuKYBUoXKlU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jU7umH7L+RNrCuwnAowpnatX9Bhn/dJeUmqtDLQ2BPh2MqvzIniWe5Tq/gNaHAbFAsZa4WWQUcUTy1ZPBWaCP9Eh+vy8oAMv9WMFwKMzESnqJnLodxqMRKgMi5IdpvBxk60cRUx2Lj5S52wm/Stf/MbbW7yEVBW0r/T7/92m9Ps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pf+qgvAb; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-450dd065828so14434415e9.2
-        for <linux-rdma@vger.kernel.org>; Sun, 01 Jun 2025 23:03:36 -0700 (PDT)
+	s=arc-20240116; t=1748901199; c=relaxed/simple;
+	bh=AIFKKpyKFXNqHaQaeip2wcUVUnkpbec6eRCBmD+Lb9I=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=O5iKCAk73UX+YwePDuyMSoETcZM6EU8zu0dUJXWP1BBtSyHr4Dv95YI1Tc0XtUDKJEu9f7YHVeMwHU7wmPzIKAxIf9dUZCOO7/FRdlO9znF4WPnkK9onCRMuw5OI4/EAyaV6spEdXK0qZWeGjeoMEqEI1rBk6yITVIvSZstxgaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KWy2VeR+; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-231e98e46c0so45287365ad.3;
+        Mon, 02 Jun 2025 14:53:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1748844215; x=1749449015; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VT+t88x6BILNu5xqyX1dO4pc6n5FbFQHrDThePEkea4=;
-        b=pf+qgvAb38MKBtH3sGtsAeClqJaum1sp9tzib8AS7ap08n2Y/h+fbuchIDOUr/kCFO
-         twqKlS2f3pj8my5bGAJmwky9Zow5DqHiGK5GT0svE2CS5wAC6RvdEkTA65/NxpXRveF+
-         oR+KJHbL1dZcKomfvXG8j+0NuWdPUGU7Gw+QyPaDkL0URl2CYYtUT3lDVTYwc19enALu
-         smwc4x2DA4vxbw7N01IIErGPJ++InkWrc8RqH/GSIY8ZybKYptHCYjjp1fq6uyk8CCcT
-         elYHskdyGkb5cf57wXfOZ7yciUUb5xZuPkwEDRE2p5Hdb4H8z9CA/clgdyQI+c07NHMy
-         C8XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748844215; x=1749449015;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1748901197; x=1749505997; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VT+t88x6BILNu5xqyX1dO4pc6n5FbFQHrDThePEkea4=;
-        b=Mb/Bf0hhUb5qQ9wj6eUVopvueIiGaixqS4Ck9Q4tmIkMnxqVs2yoEdf7Yiu3r3y8GJ
-         wX41z4N88Ts8o15dD5n01kD/U9qV7lB8MCIyUJkYshf/+w0bL7C7ZNs0s4ONFgz5OEA5
-         UgiLoa1iJyZ2d9Wl2gMcT4zvA9uU0X7kICVA6RAbxo6yLEsc7ovZmNaLB5P55GCfvzNh
-         BGTqKDmQdZReE2MCxh4NvTSrPRpmHNN0SiLEXiHjE5vDM0KAitmOnZw8np6sF5Axfz9f
-         n7Z73eyKFRjxfl19HGDb+3udJNNkLxdJxbbliCYwsu8k529GKcbtw94NtfYL4rqj3kHo
-         QIsA==
-X-Forwarded-Encrypted: i=1; AJvYcCWC6GThDqBnV3LwM4q8+Hctt9krT1o7Ilg8lH4Y2P9crvw3ZsGI5YcNN5Ai9XE9g0kdBsEtQIeglaAv@vger.kernel.org
-X-Gm-Message-State: AOJu0YwSP5+Gfcr0RY1Tp0cddZVXEk0WVJtD4WLh9a4GlDqx8+7AQnCV
-	fMRGAAwr36gOIVdY9gkQMeZQ6mXsaV724CWtH6NqgAdxfDr6cT0e2McDXuvxymjq3qw=
-X-Gm-Gg: ASbGnct/XwBg7GR0k6bXACqMn3GgLkIAxRIHEGmq5MObhqFBqEo8dH+ITae+FU04h8X
-	qFNo18p0DEiyVjyNC6arIsfdnwJWpbeld5qS9Bfk4LVulYrUEYpsATZ1kMFRszSQm6+TQ47kA74
-	go1qoS96z3NXGQMJnCtolD79FbodvZZia/oFv4SNdvp6eNWgrrvhRmAMDaNLOjdCz3PxiDAlYMh
-	ROQHDqwLNVI9xDQsipqbJn5M/v9gPUBmaGoCvn9QOTnVo1TfvPVrhAHvLOe/luEgDlklIYeRdJ5
-	aTIQmqtNxyHanr68Uf4Mm3l7AylStDio375fEN5gmsIyPeCzhuZspESKu4c93jZMZg==
-X-Google-Smtp-Source: AGHT+IFiHvYxhztMfN11RapKmiEYv4gtaP/8gucGt4yDxjSNPii/2nMxpa6+aKJVEioWfWekhwNrGQ==
-X-Received: by 2002:a05:600c:3b8b:b0:43d:b3:fb1 with SMTP id 5b1f17b1804b1-450d8876dd6mr86632475e9.27.1748844215286;
-        Sun, 01 Jun 2025 23:03:35 -0700 (PDT)
-Received: from localhost ([41.210.143.146])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-450d8000f3esm109149925e9.23.2025.06.01.23.03.34
+        bh=E4+gh6dDpCcbatPs3U4I0oqizAhZfGMCTAgt1Y0fPDM=;
+        b=KWy2VeR+IEonOeneRi0h771D6y5pAQZClENOyGA74l1Ckcev93IQXGdewmrXCMXZi3
+         ra3AkWpCbYmlNJ+JcBm5su3EQhBKDYxtFQj/4/lpKfxj2+lpaEE62nRxLOWDVMyFMkWw
+         6/u83JJSvs6rFknnz0q/dKJX7mE6zO4TnIaHU2WiunkpJAWrZGpTBKHTPW/1ExUQxqh1
+         zf/BvjJbxRbmnd5K1MZuyqhkt1zEEEo64yM4gel3F/NiNs5IJDXOSU3MRtpVUolrZrRV
+         nh6JzlvzXTKh5N5wejXHBv5IB29+vZk/lykhrFrwP8YHPJ/BZC1tnanQfR4qyGKB1DYQ
+         dkdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1748901197; x=1749505997;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E4+gh6dDpCcbatPs3U4I0oqizAhZfGMCTAgt1Y0fPDM=;
+        b=HF/Frn35TYkrzCM/kOdIxuCkOLTYDFAoYPCb/LAtQ5jGnK/hTVxY+ZKWVLhpvxN8mE
+         usWYA+mNL2Q/N7zxxxKwsR+Ll0eVrnn+3XmvmCb6jgiJkx9hLA2SSwuDjxQtTz6uouz0
+         6DdzQW7qx39bi/GGXX4RzzHyYDsYvd7IiLJntFu8e1AkGtCWwV+AnPfHftu/hPSewvpf
+         sHE5nT6tKfiB+5ByuVmhbuBbqryqNTucSvcC2gncBbN5s4N/18Q2hHH62oVewN4P+4lx
+         QR3KvCVIcqTLm/LITXIzO+Zy7v+JcKHTtIaeqSIlqZXmwlcfmnoWSb9lIulhIRFx6WYv
+         J/rA==
+X-Forwarded-Encrypted: i=1; AJvYcCUSFc9GfS+7ILy9O7yuuUpmb1AnC5KqqEowv+rvrCar81jln7l2r2bix38w2kmJ6NgFj5j/BeD9FcSaRg==@vger.kernel.org, AJvYcCVqwlWR+jDSXbC0jPPihKcYyujU4+Gca5PeGnQhDtU31TaE5NI3WRXdBmdmr4B/PJbMrMTgFV+M@vger.kernel.org, AJvYcCWrSXP4iY7Sc6Z8TtfrGXFU1Fv010Htz8EUcJvT7oynv4mBlh9wfcb9plVFJq4f9oU7r7O6nsh5ez0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzyWeoAtYjGK9OAE0TLFLrUps0F6jSUVRtkK7JSN/dALRtdB/Mf
+	K9HnvQ3UZFa2UKnp53FoD8B6OwNXhBH9xCe0DzO5ftfcEV6yr6E7ctk=
+X-Gm-Gg: ASbGncvmiFCXOv+pI3W8PTYoqoHkClY+X9mHhCIBOmw9j8gdNigagoyeHvahghBXoOk
+	zRq6jL21SvSbRiORd/TY8/DK3tHS2YvPABx1IkredHKmP4fcsrFyVlEaJ2OkGFhuFq9uFB/0tm+
+	6lTWPMLMq54hEN8W8Y7emtPojFxBi0WaYnrw+23ABjq5wod5EOezKswE9ILrbU+8k5wWWRsgN/b
+	dYCmE0Cm3Yljigj4T31PeR85+zQZo2AQD8sfnhsrwug1YesEhFF96Cjt0/rUbLX304KljHNw0UF
+	0qbSwP9ph0HZczOYh3k1iPvPpNe7
+X-Google-Smtp-Source: AGHT+IFablHnOD0Qjkeg3PmBrfl9McO7L58/0ECQc55ZulNN/C+wNm8xqlIMyGBLFl88nguN3OKykw==
+X-Received: by 2002:a17:902:ea06:b0:234:ef42:5d65 with SMTP id d9443c01a7336-2355f79fb5amr139393815ad.52.1748901197133;
+        Mon, 02 Jun 2025 14:53:17 -0700 (PDT)
+Received: from fedora.. ([2601:647:6700:3390::c8d1])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23506cf954esm75552875ad.210.2025.06.02.14.53.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Jun 2025 23:03:34 -0700 (PDT)
-Date: Mon, 2 Jun 2025 09:03:30 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Yevgeny Kliteynik <kliteyn@nvidia.com>
-Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Mark Bloch <mbloch@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>,
-	Vlad Dogaru <vdogaru@nvidia.com>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH net-next] net/mlx5: HWS, Add an error check in
- hws_bwc_rule_complex_hash_node_get()
-Message-ID: <aD0-snUAsqT2_3NH@stanley.mountain>
-References: <aDbFcPR6U2mXYjhK@stanley.mountain>
- <782913be-5e22-4b4f-9867-26a6019271d9@nvidia.com>
+        Mon, 02 Jun 2025 14:53:16 -0700 (PDT)
+From: Kuniyuki Iwashima <kuni1840@gmail.com>
+To: hch@lst.de
+Cc: axboe@kernel.dk,
+	chuck.lever@oracle.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	horms@kernel.org,
+	jaka@linux.ibm.com,
+	jlayton@kernel.org,
+	kbusch@kernel.org,
+	kuba@kernel.org,
+	kuni1840@gmail.com,
+	kuniyu@amazon.com,
+	linux-nfs@vger.kernel.org,
+	linux-nvme@lists.infradead.org,
+	linux-rdma@vger.kernel.org,
+	matttbe@kernel.org,
+	mptcp@lists.linux.dev,
+	netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	sfrench@samba.org,
+	wenjia@linux.ibm.com,
+	willemb@google.com
+Subject: Re: [PATCH v2 net-next 6/7] socket: Replace most sock_create() calls with sock_create_kern().
+Date: Mon,  2 Jun 2025 14:52:47 -0700
+Message-ID: <20250602215314.2531309-1-kuni1840@gmail.com>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250602050949.GA21943@lst.de>
+References: <20250602050949.GA21943@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <782913be-5e22-4b4f-9867-26a6019271d9@nvidia.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, May 29, 2025 at 01:26:17AM +0300, Yevgeny Kliteynik wrote:
-> On 28-May-25 11:12, Dan Carpenter wrote:
-> > The rhashtable_lookup_get_insert_fast() function inserts an object into
-> > the hashtable.  If the object was already present in the table it
-> > returns a pointer to the original object.  If the object wasn't there
-> > it returns NULL.  If there was an allocation error or some other kind
-> > of failure, it returns an error pointer.
-> > 
-> > This caller needs to check for error pointers to avoid an error pointer
-> > dereference.  Add the check.
-> > 
-> > Fixes: 17e0accac577 ("net/mlx5: HWS, support complex matchers")
-> > Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > ---
-> >   .../net/ethernet/mellanox/mlx5/core/steering/hws/bwc_complex.c | 3 +++
-> >   1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc_complex.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc_complex.c
-> > index 5d30c5b094fc..6ae362fe2f36 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc_complex.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc_complex.c
-> > @@ -1094,6 +1094,9 @@ hws_bwc_rule_complex_hash_node_get(struct mlx5hws_bwc_rule *bwc_rule,
-> >   	old_node = rhashtable_lookup_get_insert_fast(refcount_hash,
-> >   						     &node->hash_node,
-> >   						     hws_refcount_hash);
-> > +	if (IS_ERR(old_node))
-> > +		return PTR_ERR(old_node);
-> > +
+From: Christoph Hellwig <hch@lst.de>
+Date: Mon, 2 Jun 2025 07:09:49 +0200
+> On Thu, May 29, 2025 at 08:03:06PM -0700, Kuniyuki Iwashima wrote:
+> > I actually tried to to do so as sock_create_user() in the
+> > previous series but was advised to avoid rename as the benefit
+> > against LoC was low.
 > 
-> Agree with the need to check IS_ERR, but error flow is missing here.
-> Need to free the previously allocated IDA and node.
-> 
+> I can't really parse this.  What is the 'benefit against LoC'?
 
-:/  Yeah.  Sorry...  I'll resend.
-
-regards,
-dan carpenter
-
+It was a kind of subjective opinion whether the amount of changes
+was worth or not.
 
