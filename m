@@ -1,177 +1,70 @@
-Return-Path: <linux-rdma+bounces-10926-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10927-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A371AC9EF0
-	for <lists+linux-rdma@lfdr.de>; Sun,  1 Jun 2025 16:54:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AEEEACA8C2
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Jun 2025 07:08:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 116213B6909
-	for <lists+linux-rdma@lfdr.de>; Sun,  1 Jun 2025 14:54:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D9293B5138
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Jun 2025 05:08:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82A3F1E7C06;
-	Sun,  1 Jun 2025 14:54:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="c5w1BAxt"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E61B7167DB7;
+	Mon,  2 Jun 2025 05:08:24 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2774B1D54EE
-	for <linux-rdma@vger.kernel.org>; Sun,  1 Jun 2025 14:54:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2789C2C3266;
+	Mon,  2 Jun 2025 05:08:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748789668; cv=none; b=So/EvtjQFxi+1BL+IhWYJyEAMPUfU82kjbTJth1bj/RcruRjlMkAm84t16XKidhSe3MX4CwGjCaIGpUBowz8xEMHO2YWqyTZbRD92/ptxtpkG7rRAQDzW1E0Osp5f5WZeQ1KNW3pTypbMx0IOEnKAk+S5u5gHC39v46a47IlY6Q=
+	t=1748840904; cv=none; b=b8sIgE6szOdYWQGk6uXymwCSK/GZmndJ5YNqoWQDn9b7sEDQmiZiuiDsZGWGsQmG2UXRgP6fVxrlWAra1MUzYSTdnq3gb7pEPOdBfyRWzbbTsHw24vRWJNaicQZwUDKCJaC9k6/kZgZ0hWw0Xkgz2uBzPLQ0OTlTHlbUEXv3PuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748789668; c=relaxed/simple;
-	bh=pAsAKxToGmEVd3RIVnzdeeufEYuTCSyv5WEoqg6uhl8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OeoAlSwSHfptsyNRDuXUg6jC+xLS6VljLez8Uix7/NrbkjQeSH3eK31Njc0FSGozoircFAP36JzO219LlM2ZxmVY7c6Vk7qRrveRuTKtirlypa5ofjRuedOyt2zYvXQETeYhECmcQmzKll1t4mRUxel0HwMhP9M/HD1wMvfCXwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=c5w1BAxt; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <83244641-8fab-4f05-9d31-c5881fa1660c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1748789653;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lOAhBl1Qhlq6wH2PH80gzRHGRgdy1O7aBgxLtbf1Yvc=;
-	b=c5w1BAxtYORCvEZoUtLIKVfUN0MKQgkVrFsOrwv0Zm73CWxGdO/mJV3n1432IKIxiIh2KN
-	yBIDnMbDLwSonNWt0ItBnisw9me9S+Oz0nYupaVp09WJN3kzH1k7nn0QDRrkWk3YpHnDBz
-	Si22yGpyvte1D9UyxJX3dg/Nux+Kq4M=
-Date: Sun, 1 Jun 2025 16:53:31 +0200
+	s=arc-20240116; t=1748840904; c=relaxed/simple;
+	bh=/khSDaQuzQ6CIf7NeRL4A2ijMe2HAkVY85ZYkN/uVrw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=McFcvJCIPrsn4NdopKwi2jXZ+dyTLk1fWchg5bJ98axflcNKbrZjdPG7nlwQGeAn/kkCQmbk52YvoTabg4hVRzFIgJEfL3AEiZ3kxsIzY0Vy0qKtzEUove81mAUxevDAYVSqNQCF/aqZpXrdXraZkBuS48uxbPMYUDoqFUtu5NA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id C2BB768D0D; Mon,  2 Jun 2025 07:08:17 +0200 (CEST)
+Date: Mon, 2 Jun 2025 07:08:17 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Kuniyuki Iwashima <kuni1840@gmail.com>
+Cc: hch@lst.de, axboe@kernel.dk, chuck.lever@oracle.com,
+	davem@davemloft.net, edumazet@google.com, horms@kernel.org,
+	jaka@linux.ibm.com, jlayton@kernel.org, kbusch@kernel.org,
+	kuba@kernel.org, kuniyu@amazon.com, linux-nfs@vger.kernel.org,
+	linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org,
+	matttbe@kernel.org, mptcp@lists.linux.dev, netdev@vger.kernel.org,
+	pabeni@redhat.com, sfrench@samba.org, wenjia@linux.ibm.com,
+	willemb@google.com
+Subject: Re: [PATCH v2 net-next 3/7] socket: Restore sock_create_kern().
+Message-ID: <20250602050817.GA21900@lst.de>
+References: <20250526053227.GD11639@lst.de> <20250530025401.3211542-1-kuni1840@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 0/5] Allow dyn MSI-X vector allocation of MANA
-To: Shradha Gupta <shradhagupta@linux.microsoft.com>
-Cc: linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
- linux-kernel@vger.kernel.org, Nipun Gupta <nipun.gupta@amd.com>,
- Yury Norov <yury.norov@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Jonathan Cameron <Jonathan.Cameron@huwei.com>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>,
- Kevin Tian <kevin.tian@intel.com>, Long Li <longli@microsoft.com>,
- Thomas Gleixner <tglx@linutronix.de>, Bjorn Helgaas <bhelgaas@google.com>,
- Rob Herring <robh@kernel.org>,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=EF=BF=BD=7EDski?= <kw@linux.com>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>, Dexuan Cui <decui@microsoft.com>,
- Wei Liu <wei.liu@kernel.org>, Haiyang Zhang <haiyangz@microsoft.com>,
- "K. Y. Srinivasan" <kys@microsoft.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Konstantin Taranov <kotaranov@microsoft.com>, Simon Horman
- <horms@kernel.org>, Leon Romanovsky <leon@kernel.org>,
- Maxim Levitsky <mlevitsk@redhat.com>,
- Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
- Peter Zijlstra <peterz@infradead.org>, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, Paul Rosswurm <paulros@microsoft.com>,
- Shradha Gupta <shradhagupta@microsoft.com>
-References: <1748361453-25096-1-git-send-email-shradhagupta@linux.microsoft.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <1748361453-25096-1-git-send-email-shradhagupta@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250530025401.3211542-1-kuni1840@gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-在 2025/5/27 17:57, Shradha Gupta 写道:
-> In this patchset we want to enable the MANA driver to be able to
-> allocate MSI-X vectors in PCI dynamically.
+On Thu, May 29, 2025 at 07:53:41PM -0700, Kuniyuki Iwashima wrote:
+> In the old days, sock_create_kern() did take a ref to netns,
+> but an implicit change that avoids taking the ref has caused
+> a lot of problems for people who used to the old semantics.
 > 
-> The first patch exports pci_msix_prepare_desc() in PCI to be able to
-> correctly prepare descriptors for dynamically added MSI-X vectors.
-> 
-> The second patch adds the support of dynamic vector allocation in
-> pci-hyperv PCI controller by enabling the MSI_FLAG_PCI_MSIX_ALLOC_DYN
-> flag and using the pci_msix_prepare_desc() exported in first patch.
-> 
-> The third patch adds a detailed description of the irq_setup(), to
-> help understand the function design better.
-> 
-> The fourth patch is a preparation patch for mana changes to support
-> dynamic IRQ allocation. It contains changes in irq_setup() to allow
-> skipping first sibling CPU sets, in case certain IRQs are already
-> affinitized to them.
-> 
-> The fifth patch has the changes in MANA driver to be able to allocate
-> MSI-X vectors dynamically. If the support does not exist it defaults to
-> older behavior.
-> ---
->   Change in v4
->   * add a patch describing the functionality of irq_setup() through a
->     comment
->   * In irq_setup(), avoid using a label next_cpumask:
->   * modify the changes in MANA patch about restructuring the error
->     handling path in mana_gd_setup_dyn_irqs()
->   * modify the mana_gd_setup_irqs() to simplify handling around
->     start_irq_index
->   * add warning if an invalid gic is returned
->   * place the xa_destroy() cleanup in mana_gd_remove
-> ---
->   Changes in v3
->   * split the 3rd patch into preparation patch around irq_setup() and
->     changes in mana driver to allow dynamic IRQ allocation
->   * Add arm64 support for dynamic MSI-X allocation in pci_hyperv
->     controller
-> ---
->   Changes in v2
->   * split the first patch into two(exporting the preapre_desc
->     func and using the function and flag in pci-hyperv)
->   * replace 'pci vectors' by 'MSI-X vectors'
->   * Change the cover letter description to align with changes made
-> ---
-> 
-> Shradha Gupta (5):
->    PCI/MSI: Export pci_msix_prepare_desc() for dynamic MSI-X allocations
->    PCI: hv: Allow dynamic MSI-X vector allocation
->    net: mana: explain irq_setup() algorithm
->    net: mana: Allow irq_setup() to skip cpus for affinity
->    net: mana: Allocate MSI-X vectors dynamically
+> This series rather rolls back the change, so I think using
+> the same name here is better than leaving the catchy
+> sock_create_kern() error-prone.
 
-In this patchset, base-commit seems missing.
-
-Please see this link:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.15#n868
-
-"
-When you open ``outgoing/0000-cover-letter.patch`` for editing, you will
-notice that it will have the ``base-commit:`` trailer at the very
-bottom, which provides the reviewer and the CI tools enough information
-to properly perform ``git am`` without worrying about conflicts::
-"
-
-When creating patches:
-"
-git format-patch --base=main origin/main
-"
-
-This will include a base-commit: line in each patch file:
-
-"
-base-commit: abcdef1234567890...
-"
-
-This is useful when submitting patches to mailing lists or other tooling.
-
-Please follow the submitting-patches.rst to add base-commit.
-
-Best Regards,
-Zhu Yanjun
-
-> 
->   .../net/ethernet/microsoft/mana/gdma_main.c   | 356 ++++++++++++++----
->   drivers/pci/controller/pci-hyperv.c           |   5 +-
->   drivers/pci/msi/irqdomain.c                   |   5 +-
->   include/linux/msi.h                           |   2 +
->   include/net/mana/gdma.h                       |   8 +-
->   5 files changed, 293 insertions(+), 83 deletions(-)
-> 
+Ok.
 
 
