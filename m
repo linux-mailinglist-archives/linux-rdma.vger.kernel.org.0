@@ -1,139 +1,157 @@
-Return-Path: <linux-rdma+bounces-10932-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10933-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C4F8ACBE6E
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Jun 2025 04:16:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09564ACBF20
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Jun 2025 06:16:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BBD7C7A8D38
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Jun 2025 02:15:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1CA018903AA
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Jun 2025 04:16:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D1EA1FDD;
-	Tue,  3 Jun 2025 02:16:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C325B190462;
+	Tue,  3 Jun 2025 04:15:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Oj6zAqAm"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F243C173
-	for <linux-rdma@vger.kernel.org>; Tue,  3 Jun 2025 02:16:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BCC885626;
+	Tue,  3 Jun 2025 04:15:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748916995; cv=none; b=DQ8Tq7nhxyQfTOOO7GSXtgBuzkxt7x054baayA0MRnzLu9qC6bi0rzosB0mf776WmOwVHlIb00l6htuDfzwBvvwqoJPyOLuibbPUU6Yzm3Bo8aVbfFdJ7jt8/gQ02LF4QMzFk7mCRf1bzbeEobd8XlcLxGxKpdoYp+Y6DQGfiko=
+	t=1748924158; cv=none; b=mQLyRnWlfCvG7MObHrfWDNpsuT8fRe2/JTUOsDlUyl3gCXEaFyuXFNnoWzLcEwHBn55Jqhd+6HoKjfwmRs+ILAjrZE5pFbP4LIXEa/PC1xSuydzN5LPG8LaZkJeuFNAh1d4+hbMz0O1mOXt2/UOHZ0vSaLZwku8+IELc05h3t0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748916995; c=relaxed/simple;
-	bh=ueWyLGY4Qg3BBwCXYQnCTUGhFhsRjrHTeGsnfFfQHRo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=gGWgSyKYMDoucARX4JRv5/iVkiKVln5Ht0NFxaqN4vG2g9ICHA4J0JmgZ8UgHnRhS42/eDiQMBd7xCYXP6+bxzZzVs89uAG2O/Xvxf1Wndm5DZr04x6vpsgT/rE8aV5qxJk5NSY1+onm6Hb3QLUw/nSKLAQHiHHkeY1GdLi1+9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4bBDmM0yCdz1R850;
-	Tue,  3 Jun 2025 10:14:11 +0800 (CST)
-Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 012F41402C1;
-	Tue,  3 Jun 2025 10:16:29 +0800 (CST)
-Received: from [10.67.120.168] (10.67.120.168) by
- kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Tue, 3 Jun 2025 10:16:28 +0800
-Message-ID: <bfa2366e-6876-ad51-ce07-fe98a46f7833@hisilicon.com>
-Date: Tue, 3 Jun 2025 10:16:21 +0800
+	s=arc-20240116; t=1748924158; c=relaxed/simple;
+	bh=MlvvGTpdzSKTap3TlPhsvcx+1M0T4uoo2j8237yeDO4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PeSMiwx5nFDcppOH55IHXAhh2y50dqqYYFrFm5bmwzzQAwrniKEtn/p5A/8esobiNOKB4JU4MsdmwmEIg9CdBrSOqu3tNx37N1iiuVeAB5jzvmj3BGs1noiMbqNvmVhJT1bhwjffd+0742qVEEUb/cpoDqHglQKKm97o5T7lT5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Oj6zAqAm; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id 601172113A6F; Mon,  2 Jun 2025 21:15:56 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 601172113A6F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1748924156;
+	bh=sCEuSoHnaBxencTvRdXH37MacmVEDhNuJiuJCs23a8s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Oj6zAqAmiLKz00j9lZzHmKwI7rMl1QTY/LTfV0lL0UJLFuQ5jwKJ4MFMqJ/jre5mH
+	 Mq3GVtYkXESB7XkTIfE1U+koP+QrXp9dcUwgs8FlAr8AwyK2E9QOI8kpnr/ipOeK8Z
+	 kk9FxAblfeHtNqyEeP2KJly2d2fqHfWIBxYAm88w=
+Date: Mon, 2 Jun 2025 21:15:56 -0700
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: Simon Horman <horms@kernel.org>
+Cc: linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Nipun Gupta <nipun.gupta@amd.com>,
+	Yury Norov <yury.norov@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Jonathan Cameron <Jonathan.Cameron@huwei.com>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Kevin Tian <kevin.tian@intel.com>, Long Li <longli@microsoft.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Krzysztof Wilczy???~Dski <kw@linux.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Maxim Levitsky <mlevitsk@redhat.com>,
+	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
+	Peter Zijlstra <peterz@infradead.org>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, Paul Rosswurm <paulros@microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: Re: [PATCH v4 0/5] Allow dyn MSI-X vector allocation of MANA
+Message-ID: <20250603041556.GA7800@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1748361453-25096-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <20250528185508.GK1484967@horms.kernel.org>
+ <20250529132845.GE27681@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20250530180732.GS1484967@horms.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] RDMA/hns: ZERO_OR_NULL_PTR macro overdetection
-Content-Language: en-US
-To: luoqing <l1138897701@163.com>
-CC: <tangchengchang@huawei.com>, <jgg@ziepe.ca>, <leon@kernel.org>,
-	<luoqing@kylinos.cn>, linux-rdma <linux-rdma@vger.kernel.org>
-References: <20250603015936.103600-1-l1138897701@163.com>
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <20250603015936.103600-1-l1138897701@163.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
- kwepemf100018.china.huawei.com (7.202.181.17)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250530180732.GS1484967@horms.kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-
-
-On 2025/6/3 9:59, luoqing wrote:
-> From: luoqing <luoqing@kylinos.cn>
+On Fri, May 30, 2025 at 07:07:32PM +0100, Simon Horman wrote:
+> On Thu, May 29, 2025 at 06:28:45AM -0700, Shradha Gupta wrote:
+> > On Wed, May 28, 2025 at 07:55:08PM +0100, Simon Horman wrote:
+> > > On Tue, May 27, 2025 at 08:57:33AM -0700, Shradha Gupta wrote:
+> > > > In this patchset we want to enable the MANA driver to be able to
+> > > > allocate MSI-X vectors in PCI dynamically.
+> > > > 
+> > > > The first patch exports pci_msix_prepare_desc() in PCI to be able to
+> > > > correctly prepare descriptors for dynamically added MSI-X vectors.
+> > > > 
+> > > > The second patch adds the support of dynamic vector allocation in
+> > > > pci-hyperv PCI controller by enabling the MSI_FLAG_PCI_MSIX_ALLOC_DYN
+> > > > flag and using the pci_msix_prepare_desc() exported in first patch.
+> > > > 
+> > > > The third patch adds a detailed description of the irq_setup(), to
+> > > > help understand the function design better.
+> > > > 
+> > > > The fourth patch is a preparation patch for mana changes to support
+> > > > dynamic IRQ allocation. It contains changes in irq_setup() to allow
+> > > > skipping first sibling CPU sets, in case certain IRQs are already
+> > > > affinitized to them.
+> > > > 
+> > > > The fifth patch has the changes in MANA driver to be able to allocate
+> > > > MSI-X vectors dynamically. If the support does not exist it defaults to
+> > > > older behavior.
+> > > 
+> > > Hi Shradha,
+> > > 
+> > > It's unclear what the target tree for this patch-set is.
+> > > But if it is net-next, which seems likely given the code under
+> > > drivers/net/, then:
+> > > 
+> > > Please include that target in the subject of each patch in the patch-set.
+> > > 
+> > > 	Subject: [PATCH v5 net-next 0/5] ...
+> > > 
+> > > And, moreover, ...
+> > > 
+> > > ## Form letter - net-next-closed
+> > > 
+> > > The merge window for v6.16 has begun and therefore net-next is closed
+> > > for new drivers, features, code refactoring and optimizations. We are
+> > > currently accepting bug fixes only.
+> > > 
+> > > Please repost when net-next reopens after June 8th.
+> > > 
+> > > RFC patches sent for review only are obviously welcome at any time.
+> > 
+> > Thank you Simon.
+> > 
+> > While posting this patchset I was a bit confused about what should be
+> > the target tree. That's why in the cover letter of the V1 for this
+> > series, I had requested more clarity on the same (since there are patches
+> > from PCI and net-next both).
+> > 
+> > In such cases how do we decide which tree to target?
 > 
-> sizeof(xx) these variable values' return values cannot be 0.
-> For memory allocation requests of non-zero length,
-> there is no need to check other return values;
-> it is sufficient to only verify that it is not null.
-> 
-> Signed-off-by: luoqing <luoqing@kylinos.cn>
+> Yes, that isn't entirely clear to me either.
+> Hopefully the maintainers can negotiate this.
+>
 
-For future patches, please add RDMA maillist.
-
-Thanks,
-Reviewed-by: Junxian Huang <huangjunxian6@hisilicon.com>
-
-> ---
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 6 +++---
->  drivers/infiniband/hw/hns/hns_roce_qp.c    | 4 ++--
->  2 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> index 160e8927d364..65884f63fc7c 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> @@ -2613,7 +2613,7 @@ static struct ib_pd *free_mr_init_pd(struct hns_roce_dev *hr_dev)
->  	struct ib_pd *pd;
->  
->  	hr_pd = kzalloc(sizeof(*hr_pd), GFP_KERNEL);
-> -	if (ZERO_OR_NULL_PTR(hr_pd))
-> +	if (!hr_pd)
->  		return NULL;
->  	pd = &hr_pd->ibpd;
->  	pd->device = ibdev;
-> @@ -2644,7 +2644,7 @@ static struct ib_cq *free_mr_init_cq(struct hns_roce_dev *hr_dev)
->  	cq_init_attr.cqe = HNS_ROCE_FREE_MR_USED_CQE_NUM;
->  
->  	hr_cq = kzalloc(sizeof(*hr_cq), GFP_KERNEL);
-> -	if (ZERO_OR_NULL_PTR(hr_cq))
-> +	if (!hr_cq)
->  		return NULL;
->  
->  	cq = &hr_cq->ib_cq;
-> @@ -2677,7 +2677,7 @@ static int free_mr_init_qp(struct hns_roce_dev *hr_dev, struct ib_cq *cq,
->  	int ret;
->  
->  	hr_qp = kzalloc(sizeof(*hr_qp), GFP_KERNEL);
-> -	if (ZERO_OR_NULL_PTR(hr_qp))
-> +	if (!hr_qp)
->  		return -ENOMEM;
->  
->  	qp = &hr_qp->ibqp;
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-> index 9f376a2232b0..6ff1b8ce580c 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-> @@ -1003,14 +1003,14 @@ static int alloc_kernel_wrid(struct hns_roce_dev *hr_dev,
->  	int ret;
->  
->  	sq_wrid = kcalloc(hr_qp->sq.wqe_cnt, sizeof(u64), GFP_KERNEL);
-> -	if (ZERO_OR_NULL_PTR(sq_wrid)) {
-> +	if (!sq_wrid) {
->  		ibdev_err(ibdev, "failed to alloc SQ wrid.\n");
->  		return -ENOMEM;
->  	}
->  
->  	if (hr_qp->rq.wqe_cnt) {
->  		rq_wrid = kcalloc(hr_qp->rq.wqe_cnt, sizeof(u64), GFP_KERNEL);
-> -		if (ZERO_OR_NULL_PTR(rq_wrid)) {
-> +		if (!rq_wrid) {
->  			ibdev_err(ibdev, "failed to alloc RQ wrid.\n");
->  			ret = -ENOMEM;
->  			goto err_sq;
+Thanks Simon. also since teh target tree is not entirely clear, can I
+still send out an updated version with suggested changes?
+ 
+> > 
+> > Also, noted about the next merge window for net-next :-)
+> > 
+> > Regards,
+> > Shradha.
+> > 
 
