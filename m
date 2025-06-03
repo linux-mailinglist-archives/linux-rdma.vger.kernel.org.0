@@ -1,123 +1,139 @@
-Return-Path: <linux-rdma+bounces-10931-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10932-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BBD1ACBCD7
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Jun 2025 23:53:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C4F8ACBE6E
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Jun 2025 04:16:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 446D0170BB7
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Jun 2025 21:53:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BBD7C7A8D38
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Jun 2025 02:15:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A80624DCE5;
-	Mon,  2 Jun 2025 21:53:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KWy2VeR+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D1EA1FDD;
+	Tue,  3 Jun 2025 02:16:35 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7E642C3250;
-	Mon,  2 Jun 2025 21:53:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F243C173
+	for <linux-rdma@vger.kernel.org>; Tue,  3 Jun 2025 02:16:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748901199; cv=none; b=BnWB1vrv7GgVEjVzwBC/cGjD7IsAtQ8wDcsZ/8S6rv3i42saz/7YZwOtF2fruGCKK73m//6BaGWosreE2oVDyCl6f5QpatZAOgNtLx+/f7CcxlnykkNebgjNtVVrtOEKLLWoTcbOi0DrIjeUMxpAu/CySbvKFAayB6i/u0gY5uA=
+	t=1748916995; cv=none; b=DQ8Tq7nhxyQfTOOO7GSXtgBuzkxt7x054baayA0MRnzLu9qC6bi0rzosB0mf776WmOwVHlIb00l6htuDfzwBvvwqoJPyOLuibbPUU6Yzm3Bo8aVbfFdJ7jt8/gQ02LF4QMzFk7mCRf1bzbeEobd8XlcLxGxKpdoYp+Y6DQGfiko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748901199; c=relaxed/simple;
-	bh=AIFKKpyKFXNqHaQaeip2wcUVUnkpbec6eRCBmD+Lb9I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=O5iKCAk73UX+YwePDuyMSoETcZM6EU8zu0dUJXWP1BBtSyHr4Dv95YI1Tc0XtUDKJEu9f7YHVeMwHU7wmPzIKAxIf9dUZCOO7/FRdlO9znF4WPnkK9onCRMuw5OI4/EAyaV6spEdXK0qZWeGjeoMEqEI1rBk6yITVIvSZstxgaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KWy2VeR+; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-231e98e46c0so45287365ad.3;
-        Mon, 02 Jun 2025 14:53:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748901197; x=1749505997; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E4+gh6dDpCcbatPs3U4I0oqizAhZfGMCTAgt1Y0fPDM=;
-        b=KWy2VeR+IEonOeneRi0h771D6y5pAQZClENOyGA74l1Ckcev93IQXGdewmrXCMXZi3
-         ra3AkWpCbYmlNJ+JcBm5su3EQhBKDYxtFQj/4/lpKfxj2+lpaEE62nRxLOWDVMyFMkWw
-         6/u83JJSvs6rFknnz0q/dKJX7mE6zO4TnIaHU2WiunkpJAWrZGpTBKHTPW/1ExUQxqh1
-         zf/BvjJbxRbmnd5K1MZuyqhkt1zEEEo64yM4gel3F/NiNs5IJDXOSU3MRtpVUolrZrRV
-         nh6JzlvzXTKh5N5wejXHBv5IB29+vZk/lykhrFrwP8YHPJ/BZC1tnanQfR4qyGKB1DYQ
-         dkdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748901197; x=1749505997;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E4+gh6dDpCcbatPs3U4I0oqizAhZfGMCTAgt1Y0fPDM=;
-        b=HF/Frn35TYkrzCM/kOdIxuCkOLTYDFAoYPCb/LAtQ5jGnK/hTVxY+ZKWVLhpvxN8mE
-         usWYA+mNL2Q/N7zxxxKwsR+Ll0eVrnn+3XmvmCb6jgiJkx9hLA2SSwuDjxQtTz6uouz0
-         6DdzQW7qx39bi/GGXX4RzzHyYDsYvd7IiLJntFu8e1AkGtCWwV+AnPfHftu/hPSewvpf
-         sHE5nT6tKfiB+5ByuVmhbuBbqryqNTucSvcC2gncBbN5s4N/18Q2hHH62oVewN4P+4lx
-         QR3KvCVIcqTLm/LITXIzO+Zy7v+JcKHTtIaeqSIlqZXmwlcfmnoWSb9lIulhIRFx6WYv
-         J/rA==
-X-Forwarded-Encrypted: i=1; AJvYcCUSFc9GfS+7ILy9O7yuuUpmb1AnC5KqqEowv+rvrCar81jln7l2r2bix38w2kmJ6NgFj5j/BeD9FcSaRg==@vger.kernel.org, AJvYcCVqwlWR+jDSXbC0jPPihKcYyujU4+Gca5PeGnQhDtU31TaE5NI3WRXdBmdmr4B/PJbMrMTgFV+M@vger.kernel.org, AJvYcCWrSXP4iY7Sc6Z8TtfrGXFU1Fv010Htz8EUcJvT7oynv4mBlh9wfcb9plVFJq4f9oU7r7O6nsh5ez0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzyWeoAtYjGK9OAE0TLFLrUps0F6jSUVRtkK7JSN/dALRtdB/Mf
-	K9HnvQ3UZFa2UKnp53FoD8B6OwNXhBH9xCe0DzO5ftfcEV6yr6E7ctk=
-X-Gm-Gg: ASbGncvmiFCXOv+pI3W8PTYoqoHkClY+X9mHhCIBOmw9j8gdNigagoyeHvahghBXoOk
-	zRq6jL21SvSbRiORd/TY8/DK3tHS2YvPABx1IkredHKmP4fcsrFyVlEaJ2OkGFhuFq9uFB/0tm+
-	6lTWPMLMq54hEN8W8Y7emtPojFxBi0WaYnrw+23ABjq5wod5EOezKswE9ILrbU+8k5wWWRsgN/b
-	dYCmE0Cm3Yljigj4T31PeR85+zQZo2AQD8sfnhsrwug1YesEhFF96Cjt0/rUbLX304KljHNw0UF
-	0qbSwP9ph0HZczOYh3k1iPvPpNe7
-X-Google-Smtp-Source: AGHT+IFablHnOD0Qjkeg3PmBrfl9McO7L58/0ECQc55ZulNN/C+wNm8xqlIMyGBLFl88nguN3OKykw==
-X-Received: by 2002:a17:902:ea06:b0:234:ef42:5d65 with SMTP id d9443c01a7336-2355f79fb5amr139393815ad.52.1748901197133;
-        Mon, 02 Jun 2025 14:53:17 -0700 (PDT)
-Received: from fedora.. ([2601:647:6700:3390::c8d1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23506cf954esm75552875ad.210.2025.06.02.14.53.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Jun 2025 14:53:16 -0700 (PDT)
-From: Kuniyuki Iwashima <kuni1840@gmail.com>
-To: hch@lst.de
-Cc: axboe@kernel.dk,
-	chuck.lever@oracle.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	horms@kernel.org,
-	jaka@linux.ibm.com,
-	jlayton@kernel.org,
-	kbusch@kernel.org,
-	kuba@kernel.org,
-	kuni1840@gmail.com,
-	kuniyu@amazon.com,
-	linux-nfs@vger.kernel.org,
-	linux-nvme@lists.infradead.org,
-	linux-rdma@vger.kernel.org,
-	matttbe@kernel.org,
-	mptcp@lists.linux.dev,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	sfrench@samba.org,
-	wenjia@linux.ibm.com,
-	willemb@google.com
-Subject: Re: [PATCH v2 net-next 6/7] socket: Replace most sock_create() calls with sock_create_kern().
-Date: Mon,  2 Jun 2025 14:52:47 -0700
-Message-ID: <20250602215314.2531309-1-kuni1840@gmail.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250602050949.GA21943@lst.de>
-References: <20250602050949.GA21943@lst.de>
+	s=arc-20240116; t=1748916995; c=relaxed/simple;
+	bh=ueWyLGY4Qg3BBwCXYQnCTUGhFhsRjrHTeGsnfFfQHRo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=gGWgSyKYMDoucARX4JRv5/iVkiKVln5Ht0NFxaqN4vG2g9ICHA4J0JmgZ8UgHnRhS42/eDiQMBd7xCYXP6+bxzZzVs89uAG2O/Xvxf1Wndm5DZr04x6vpsgT/rE8aV5qxJk5NSY1+onm6Hb3QLUw/nSKLAQHiHHkeY1GdLi1+9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4bBDmM0yCdz1R850;
+	Tue,  3 Jun 2025 10:14:11 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id 012F41402C1;
+	Tue,  3 Jun 2025 10:16:29 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 3 Jun 2025 10:16:28 +0800
+Message-ID: <bfa2366e-6876-ad51-ce07-fe98a46f7833@hisilicon.com>
+Date: Tue, 3 Jun 2025 10:16:21 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] RDMA/hns: ZERO_OR_NULL_PTR macro overdetection
+Content-Language: en-US
+To: luoqing <l1138897701@163.com>
+CC: <tangchengchang@huawei.com>, <jgg@ziepe.ca>, <leon@kernel.org>,
+	<luoqing@kylinos.cn>, linux-rdma <linux-rdma@vger.kernel.org>
+References: <20250603015936.103600-1-l1138897701@163.com>
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+In-Reply-To: <20250603015936.103600-1-l1138897701@163.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-From: Christoph Hellwig <hch@lst.de>
-Date: Mon, 2 Jun 2025 07:09:49 +0200
-> On Thu, May 29, 2025 at 08:03:06PM -0700, Kuniyuki Iwashima wrote:
-> > I actually tried to to do so as sock_create_user() in the
-> > previous series but was advised to avoid rename as the benefit
-> > against LoC was low.
+
+
+On 2025/6/3 9:59, luoqing wrote:
+> From: luoqing <luoqing@kylinos.cn>
 > 
-> I can't really parse this.  What is the 'benefit against LoC'?
+> sizeof(xx) these variable values' return values cannot be 0.
+> For memory allocation requests of non-zero length,
+> there is no need to check other return values;
+> it is sufficient to only verify that it is not null.
+> 
+> Signed-off-by: luoqing <luoqing@kylinos.cn>
 
-It was a kind of subjective opinion whether the amount of changes
-was worth or not.
+For future patches, please add RDMA maillist.
+
+Thanks,
+Reviewed-by: Junxian Huang <huangjunxian6@hisilicon.com>
+
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 6 +++---
+>  drivers/infiniband/hw/hns/hns_roce_qp.c    | 4 ++--
+>  2 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> index 160e8927d364..65884f63fc7c 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> @@ -2613,7 +2613,7 @@ static struct ib_pd *free_mr_init_pd(struct hns_roce_dev *hr_dev)
+>  	struct ib_pd *pd;
+>  
+>  	hr_pd = kzalloc(sizeof(*hr_pd), GFP_KERNEL);
+> -	if (ZERO_OR_NULL_PTR(hr_pd))
+> +	if (!hr_pd)
+>  		return NULL;
+>  	pd = &hr_pd->ibpd;
+>  	pd->device = ibdev;
+> @@ -2644,7 +2644,7 @@ static struct ib_cq *free_mr_init_cq(struct hns_roce_dev *hr_dev)
+>  	cq_init_attr.cqe = HNS_ROCE_FREE_MR_USED_CQE_NUM;
+>  
+>  	hr_cq = kzalloc(sizeof(*hr_cq), GFP_KERNEL);
+> -	if (ZERO_OR_NULL_PTR(hr_cq))
+> +	if (!hr_cq)
+>  		return NULL;
+>  
+>  	cq = &hr_cq->ib_cq;
+> @@ -2677,7 +2677,7 @@ static int free_mr_init_qp(struct hns_roce_dev *hr_dev, struct ib_cq *cq,
+>  	int ret;
+>  
+>  	hr_qp = kzalloc(sizeof(*hr_qp), GFP_KERNEL);
+> -	if (ZERO_OR_NULL_PTR(hr_qp))
+> +	if (!hr_qp)
+>  		return -ENOMEM;
+>  
+>  	qp = &hr_qp->ibqp;
+> diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+> index 9f376a2232b0..6ff1b8ce580c 100644
+> --- a/drivers/infiniband/hw/hns/hns_roce_qp.c
+> +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+> @@ -1003,14 +1003,14 @@ static int alloc_kernel_wrid(struct hns_roce_dev *hr_dev,
+>  	int ret;
+>  
+>  	sq_wrid = kcalloc(hr_qp->sq.wqe_cnt, sizeof(u64), GFP_KERNEL);
+> -	if (ZERO_OR_NULL_PTR(sq_wrid)) {
+> +	if (!sq_wrid) {
+>  		ibdev_err(ibdev, "failed to alloc SQ wrid.\n");
+>  		return -ENOMEM;
+>  	}
+>  
+>  	if (hr_qp->rq.wqe_cnt) {
+>  		rq_wrid = kcalloc(hr_qp->rq.wqe_cnt, sizeof(u64), GFP_KERNEL);
+> -		if (ZERO_OR_NULL_PTR(rq_wrid)) {
+> +		if (!rq_wrid) {
+>  			ibdev_err(ibdev, "failed to alloc RQ wrid.\n");
+>  			ret = -ENOMEM;
+>  			goto err_sq;
 
