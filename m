@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-10947-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10948-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32F37ACD406
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 03:25:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CFC1ACD3FC
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 03:24:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 971D5189A5D9
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 01:20:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CD3B16FB2A
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 01:24:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D2612673A9;
-	Wed,  4 Jun 2025 01:03:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84B5B219A7E;
+	Wed,  4 Jun 2025 01:04:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jlXgDxDT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gd9ACUfz"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E4920B804;
-	Wed,  4 Jun 2025 01:03:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FC5D221F38;
+	Wed,  4 Jun 2025 01:04:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748998987; cv=none; b=H9n1zFjTWi5q9ZQKgRKGYNDq2YnQq5Y8Er8lDrnxJE23zm7VrKZZva604pUWRSwK+oiDjDo1z5UKTG+iDFzjWwPsBOthACIgcAMaF3EWXThH61kVYUb2RnpHekaYB40ewbVJymcUiKbfs0n0oVsyyamH5CyaCb/J4SMr0gxi7ac=
+	t=1748999090; cv=none; b=NVvOZP564YN0KfEEigcsow75E5SJw2l3djfL0ZI2zaKVSG0V1uW5BQlF/xhzxqnB0eCBdXqSzFlU2h2GyMOq9dxZbAi27bVfDeWvS4sS3XV9y+4s1ZdAZLwDWZYpOZUI3aa5E/QQ2mfMXAT2LeX5/IS2rn5e4pH+LWCnIDns/oM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748998987; c=relaxed/simple;
-	bh=08BxaT9ZGJXp3r0UYYVj8yIm9CHhMt71rgBI9Nq5iyM=;
+	s=arc-20240116; t=1748999090; c=relaxed/simple;
+	bh=U2l+RvcdGPXyFuGMERH0HGOjlz9AOyis6dD/0emDhbU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=g9m4pLrVB0whQW6Twq4Y07X+nShteICYyJYnzXGMV0SbIQLqJzd45aAwfnofbqdYMChr5Mpk+18drDA5J/ns0eIitBMWXHNR2MhcwT0IoMQg0Ka2y4PMPgGG7fOuo3ijXV4SfoO/KUZZgaO9RuewF8z/nsgVmPMlobQ6dKVvO6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jlXgDxDT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB197C4CEF2;
-	Wed,  4 Jun 2025 01:03:06 +0000 (UTC)
+	 MIME-Version:Content-Type; b=LQ5AqTDIIqzKDPF2Dij8Hl7kvW1J4EvkN18lmoZbU5XMg7t7hHsMSU/7vp7uRsHPp0FFCqdJdmCR0UK9yrml4VaJ0BFZJkNjqSvtlZotKl1qhYRfKXsJQBIXFZDcDpNCtEOI3ksXawMrkUUovJqW/8VRth1EYOSxv73o/gU7hK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gd9ACUfz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 257A4C4CEEF;
+	Wed,  4 Jun 2025 01:04:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1748998987;
-	bh=08BxaT9ZGJXp3r0UYYVj8yIm9CHhMt71rgBI9Nq5iyM=;
+	s=k20201202; t=1748999090;
+	bh=U2l+RvcdGPXyFuGMERH0HGOjlz9AOyis6dD/0emDhbU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jlXgDxDTI7TkHxWsQvEz/h4zVS27eFRMzMR5bXHrym6VADfeRkoBA+sK2WR607kIP
-	 VP7qYPIIoQ2du8JkCGQBIX3GlI5Dxkr1ahJKW3wOjvtn7pZEvxwaIvTbjkNoboxbqh
-	 XdZo7GnH0zMMSSPdC40EppZ2W1CM+bldNLOB+e5cqQ+6UrKx57heQS/9evPiUKRLPQ
-	 98sokrVfZxzPTzuIWT/CBFLOFeNJgfZwwm/xToWQUO5SiVVvuu/TphG2iLi3ZttIRd
-	 vJq4qODb6QTn4mU2PB3WzIQJLFFj2jFhaJ4U/tlNK5BZ6eXAA0+TROrJgbPpqaFJG3
-	 cEI6swyFamKCQ==
+	b=Gd9ACUfz2MAoXJkiMBF32Ip/bBtT9sa7VvVxb5wXxL82G3oUnnP0GDXIc11j/lp4q
+	 Q12I693vQgNkXAZQBMxQIqfTBkD3kARAb+4W+U5Sc+MBpnpaxeKU1+jXtTx3uImKIN
+	 aa8JleefOixh7nFEZn6bUC/XIG/vus/CU8FpaF7YKwXDqnrK4wSJmKM+oAcW296OVG
+	 vesKPI88Se7+ufTzr0uuY35u9XTq1DbEau+caemnjDCLiYFrGhBdyRycAKnFQNartp
+	 hGR2sD9/B0ky5/4nL+aBPIY4/jt4O9ApohTATLb4nIjR1xiOCRz+eb2VyOao3gdldj
+	 sg8ifMWhU6XRg==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
@@ -50,12 +50,12 @@ Cc: Jason Xing <kernelxing@tencent.com>,
 	Sasha Levin <sashal@kernel.org>,
 	netdev@vger.kernel.org,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 30/62] net: mlx4: add SOF_TIMESTAMPING_TX_SOFTWARE flag when getting ts info
-Date: Tue,  3 Jun 2025 21:01:41 -0400
-Message-Id: <20250604010213.3462-30-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 25/46] net: mlx4: add SOF_TIMESTAMPING_TX_SOFTWARE flag when getting ts info
+Date: Tue,  3 Jun 2025 21:03:43 -0400
+Message-Id: <20250604010404.5109-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250604010213.3462-1-sashal@kernel.org>
-References: <20250604010213.3462-1-sashal@kernel.org>
+In-Reply-To: <20250604010404.5109-1-sashal@kernel.org>
+References: <20250604010404.5109-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -64,7 +64,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.92
+X-stable-base: Linux 6.1.140
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
@@ -130,7 +130,7 @@ actually implemented.
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-index 164a13272faa2..07dced3c2b1c0 100644
+index 7d45f1d55f799..d1a319ad6af1a 100644
 --- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
 +++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
 @@ -1916,6 +1916,7 @@ static int mlx4_en_get_ts_info(struct net_device *dev,
