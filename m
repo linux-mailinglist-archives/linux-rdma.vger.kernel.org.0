@@ -1,74 +1,107 @@
-Return-Path: <linux-rdma+bounces-10982-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10983-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24FB6ACE170
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 17:30:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FB44ACE26C
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 18:53:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 247A4163C8C
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 15:30:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74CCE18991D6
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 16:53:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E83541C84AB;
-	Wed,  4 Jun 2025 15:27:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A9F71E51F6;
+	Wed,  4 Jun 2025 16:53:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="34Q7dwG4";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YpY9q+Q6"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dvgBp8vC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6E0B1953BB;
-	Wed,  4 Jun 2025 15:27:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B9DE1DDA0C
+	for <linux-rdma@vger.kernel.org>; Wed,  4 Jun 2025 16:53:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749050832; cv=none; b=SebTGB7sr6PxRXkHA/zQHSgh/ugnXr7vRkNCOyurENmM4Rs6TYADH1VMYoZP/eHCb3EmXgJ9pq/JaWC0LVcyC99TD91/brdvguAhyYf+hsRcOZ2dOkKit7xmeSQ0hMAHsR3THhDQ6ZYtqBnwq/NDgynM4lfW/OyXsnxuXIBBgRE=
+	t=1749055990; cv=none; b=GByAsmnObha8u+uoWOxgEqjUkBeE2KqxMY1pBKHy+xRJqpYlRULMf1RaWgQNK0K6lfzc3Locve5mrfIA0TexFKDmIb05x1hiiYGm9wlXia+7jXWTzczhSZQSgxR6nu/lRDS+LRZ9yEmr2V4GkaqrUf7bhYagtxldq3ba615BEVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749050832; c=relaxed/simple;
-	bh=ECBw3mcegDKUHOLSOkINmT0psmeYZUxNdiRS0riunZY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZZ6EEJFWBPx2X9BpSN5a7ji1mMKlswjB6SsrMTegP0slKcxp/z/av5raWAkucQybjnpS2BFzUAPZItWpB3P3Vs78z+f8Ou3B49M7LocJsv+y9MbxKqdGa8fXr8KuSMNvSlJnEYTQ+Kd9HCVQRTZLvN2Mf1Ruqkq4cK+v3hV9iDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=34Q7dwG4; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YpY9q+Q6; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 4 Jun 2025 17:27:07 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1749050829;
+	s=arc-20240116; t=1749055990; c=relaxed/simple;
+	bh=Y6psz76j6Q54BLu/dla5y9lVeHPkpDqvYnlf52GvYWU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=bKdzPl/NAqpsI3nJiQIGU6DfuOgIvf3KII9XXnQ4eY8VwXq0ej4H+9igr8SYqt78mZ6DTLpXAG/kr/e8ooqN64Fjce51yzJKCU/Z3xelLSzTYMk5spiJCJvSxAcBFnxvqli1vGbu8QWc8G5lu58f4gnu1b5B8d94+g5AoYtGmnY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dvgBp8vC; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1749055987;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KeczW7bWlrnXwwKkhxyWJXZmEyyc0PgR7tMYRMUOC6I=;
-	b=34Q7dwG4LxD4q21PPvVoIzD3+E69BsgoN/OBVM3uCHFuMo6TtTovefwoogy9xK7FXCyyY3
-	NO9stWBO8jpUM3OhReD5Jq8Dfr8E05aGAdrzx2JKgF5FjXsAt7z8GuNVZqpphi9pofgmsm
-	voihIm2NFF3iFuq3EQcJ+2JgT8WGKb/ThSJiVut4k/dqR7foSWF5acrrkw7vlii4k+Boe/
-	aqe/5/Eh9BRrbxA+Q9ODz/YFnGeBydNi9MuZsMNNhAOG5Vd0J6jOE7P6d1DHui5PLCaEMP
-	W20IXFmeUiAQIthDnr88Z7Wr2L5ZuJe6TzcjSXocJjah8GN0O+V+sc7IUd0Vgw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1749050829;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KeczW7bWlrnXwwKkhxyWJXZmEyyc0PgR7tMYRMUOC6I=;
-	b=YpY9q+Q6UGXz9kl8L+b9cC1SlKw7LULJmhHnZ4iD8pQxAMJ4TPc1zScPQ3/9UTTHoCuEQE
-	IKZGrmrYMtn8LRBA==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: linux-modules@vger.kernel.org
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
-	kernel test robot <oliver.sang@intel.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Allison Henderson <allison.henderson@oracle.com>,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com, Luis Chamberlain <mcgrof@kernel.org>,
-	Petr Pavlu <petr.pavlu@suse.com>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Daniel Gomez <da.gomez@samsung.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH] module: Make sure relocations are applied to the per-CPU
- section
-Message-ID: <20250604152707.CieD9tN0@linutronix.de>
-References: <202506041623.e45e4f7d-lkp@intel.com>
+	bh=Y6psz76j6Q54BLu/dla5y9lVeHPkpDqvYnlf52GvYWU=;
+	b=dvgBp8vC/q8thG/Z5+iTVw4PwPwI6svJq+U/Cc2do8UgvUl57QswQvHC29L8VJnrNlNpSP
+	XLAKWHRK+AzJKQXv2zZ5QsBPAuFnblZTFMzbDJ9UbhNOP6pn26Nsl4HKwx2nwg+y0Ctgil
+	3RPPY/t+Py+f72Xk88p45eYRJxU6iI4=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-134-bqRh_7J7NrmsoennNOtObw-1; Wed, 04 Jun 2025 12:53:06 -0400
+X-MC-Unique: bqRh_7J7NrmsoennNOtObw-1
+X-Mimecast-MFC-AGG-ID: bqRh_7J7NrmsoennNOtObw_1749055985
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-32a64f93c68so831851fa.0
+        for <linux-rdma@vger.kernel.org>; Wed, 04 Jun 2025 09:53:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749055985; x=1749660785;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y6psz76j6Q54BLu/dla5y9lVeHPkpDqvYnlf52GvYWU=;
+        b=VRu3C3oqvBwmLaNjpLQCpJaPD/i1sd/HOSC3BcL/7OlQOZPJF1EPS0MkrnIAuGB0o/
+         09Vz4YbD1TYKrS91eFagDvx8x88OcPzOG4+QzmXeEvGDX2xOz/t9WsOcjBrqlPPV8htN
+         6uK1tIcNhRrKnsm00nDdKBlGjKSkvt4p9aFuddW5WvYmCnHurTyS5X6M5MynF5hsbYcw
+         HKds2R5SEDqhNuei0CJV2j03G7Xhx3cezbq6+LBH5QtBtaOwINZBP6Y+xrAgeXPQQWm3
+         yjk6rlPoDot8OSCJDp2JeaSlg6P3F88WwLFdI2Of3Tj0MJnSJ+6aW9Avh3RUd8oRcXVD
+         BTPg==
+X-Forwarded-Encrypted: i=1; AJvYcCV8OKV24j5ajSGeS+Wdn+UBzCbMOl/DUWnkF9gKV8cVjr98F2xvHWUYNGkg1qqIceW0utwIG7VxFSGB@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywk4GhjXKgkZxKPvpbJbmTfe1ZPqpTWSVf5DbiNMXHxRbklYs4z
+	xrLDh6CojWQMkOrUhlPOcO2V5TAsQDPydo0TpUPlic8aE9J3sUO3/f+oZaM+tAhztwrx3ShrtuP
+	ASzmaSHlxzsM3PVWZAY+y7VAtu/v8mLNgrYdzE1ZiEikWiiBLywCv53nqpDxKRho=
+X-Gm-Gg: ASbGncvJu8HPnKrZ6VClMR3DW0NMGKCGOX5b7hMwTgDf7w4r7Sko2+xi5C13N0froZd
+	sf64SVucHcjZIZYNx7LIPMnurDw7CvAfyd9C8Pj0bUImCprDVHMBbMT8P/xBsStyrIFXuaXWBD3
+	LxYzCz+bO7BWHW+/jKCSqFq9Y8x9r3OgHfjBVuGEUilWTCwze5dWVIzQPiv2XR2uqT5DXRljFNU
+	BiWYBg/fF2ouFlHFUNvbTh7W8UJjkVYxadBPXHLrkO3xu1bNMKJj9Pp3Nmg8wXfHtHNHpyw/MLa
+	bTkm0LoNdeQBJVsg9UjrsYWeBYtfqWAbvxDZhJOgtjiQ77I=
+X-Received: by 2002:a05:651c:1508:b0:309:20da:6188 with SMTP id 38308e7fff4ca-32ad11be38amr1206461fa.6.1749055984829;
+        Wed, 04 Jun 2025 09:53:04 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFOVkK8aXlCZgkjT/0iG8wOa9KpXdYeRE73KlsXw6lWnYujNdB6WOp6huRvzJhw27fbEzbHrw==
+X-Received: by 2002:a05:651c:1508:b0:309:20da:6188 with SMTP id 38308e7fff4ca-32ad11be38amr1206111fa.6.1749055984366;
+        Wed, 04 Jun 2025 09:53:04 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-32a85b527e1sm22753181fa.47.2025.06.04.09.53.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Jun 2025 09:53:03 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id B3D351AA9156; Wed, 04 Jun 2025 18:53:02 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: Byungchul Park <byungchul@sk.com>, willy@infradead.org,
+ netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ kernel_team@skhynix.com, kuba@kernel.org, almasrymina@google.com,
+ ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
+ akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com,
+ andrew+netdev@lunn.ch, asml.silence@gmail.com, tariqt@nvidia.com,
+ edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com,
+ leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com,
+ lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+ rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org,
+ linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
+Subject: Re: [RFC v4 01/18] netmem: introduce struct netmem_desc mirroring
+ struct page
+In-Reply-To: <20250604025246.61616-2-byungchul@sk.com>
+References: <20250604025246.61616-1-byungchul@sk.com>
+ <20250604025246.61616-2-byungchul@sk.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Wed, 04 Jun 2025 18:53:02 +0200
+Message-ID: <877c1rwis1.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -76,50 +109,19 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202506041623.e45e4f7d-lkp@intel.com>
+Content-Transfer-Encoding: quoted-printable
 
-The per-CPU data section is handled differently than the other sections.
-The memory allocations requires a special __percpu pointer and then the
-section is copied into the view of each CPU. Therefore the SHF_ALLOC
-flag is removed to ensure move_module() skips it.
+Byungchul Park <byungchul@sk.com> writes:
 
-Later, relocations are applied and apply_relocations() skips sections
-without SHF_ALLOC because they have not been copied. This also skips the
-per-CPU data section.
+> To simplify struct page, the page pool members of struct page should be
+> moved to other, allowing these members to be removed from struct page.
+>
+> Introduce a network memory descriptor to store the members, struct
+> netmem_desc, and make it union'ed with the existing fields in struct
+> net_iov, allowing to organize the fields of struct net_iov.
+>
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
 
-The missing relocations result in a NULL pointer on x86-64 and very
-small values on x86-32. This results in a crash because it is not
-skipped like NULL pointer would and it can't be dereferenced.
-
-Such an assignment happens during compile time per-CPU lock
-initialisation with lockdep enabled.
-
-Add the SHF_ALLOC flag back for the per-CPU section after move_module().
-
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202506041623.e45e4f7d-lkp@intel.com
-Fixes: 8d8022e8aba85 ("module: do percpu allocation after uniqueness check.  No, really!")
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- kernel/module/main.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/kernel/module/main.c b/kernel/module/main.c
-index 5c6ab20240a6d..35abb5f13d7dc 100644
---- a/kernel/module/main.c
-+++ b/kernel/module/main.c
-@@ -2816,6 +2816,9 @@ static struct module *layout_and_allocate(struct load_info *info, int flags)
- 	if (err)
- 		return ERR_PTR(err);
- 
-+	/* Add SHF_ALLOC back so that relocations are applied. */
-+	info->sechdrs[info->index.pcpu].sh_flags |= SHF_ALLOC;
-+
- 	/* Module has been copied to its final place now: return it. */
- 	mod = (void *)info->sechdrs[info->index.mod].sh_addr;
- 	kmemleak_load_module(mod, info);
--- 
-2.49.0
+Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
 
