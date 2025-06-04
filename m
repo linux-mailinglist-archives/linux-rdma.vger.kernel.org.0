@@ -1,86 +1,86 @@
-Return-Path: <linux-rdma+bounces-10995-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10996-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A162FACE2BB
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 19:04:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E19B7ACE2C0
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 19:04:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5671D3A7AC1
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 17:03:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C01C61883779
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 17:04:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6567E1F4262;
-	Wed,  4 Jun 2025 17:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C3D91F463A;
+	Wed,  4 Jun 2025 17:03:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="R/stcwcY"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bpmMt7ik"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA5A51EF39E
-	for <linux-rdma@vger.kernel.org>; Wed,  4 Jun 2025 17:03:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A05611F3D58
+	for <linux-rdma@vger.kernel.org>; Wed,  4 Jun 2025 17:03:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749056595; cv=none; b=ZlTgsg2ArJ5RAPsaQu3o4YS/N+QSgOwwlTnWT7uMeOLAHwE5hcYfFCY901m77SeHoO5H4WEo9bfwmGIRDnO0wSFB/d1VeaW6hfpQXWR3AMpo8oqyGDrSLbxyZkA9sDSX8V6lt08md4vo9TAiUuRfyrc9qK2uVLLgYpAtf9pVNXE=
+	t=1749056622; cv=none; b=JZ5m9Im6VslI3akpdALCYZPCMU8E1qt+CVfDqydDNRUeYe2DPffoQR7x9Z1GVbni95ZGq0QgUmJ7rYljij+YtxFHnHHVkpUqYge71UlGkRjAYBiDpwoiesiNopbZ41Ljx9WZjUd1JVL9cpDDDzvGhKjPsj2/aYeYhvsWbTMA2bk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749056595; c=relaxed/simple;
-	bh=BdQGqhIQcXP7dsPfNkEdiTmcnCKK5h488sLxxJBhbs8=;
+	s=arc-20240116; t=1749056622; c=relaxed/simple;
+	bh=jayrpGQ8EMuNrxluCYCn92f4Z9jqZ5yLz/s/cukRdq8=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=DTu8B5DzUuo79BlX864Y4h2PPf1VxfrWp015uaelQci8uEq/wuAZES5fUQArmFnx4NUS9x1zoRjH9QlqiAnGGNtkQPtRRRSIiYMYIih8NVgYd/Ghv3i1hv96zkWFfT+v1weBo85Q6ch1drJHrG+YWGhDxF1Ux5gIHy96elUofeQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=R/stcwcY; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version:Content-Type; b=qDI8e23SqOCaO6WYisRmNXWiWH66wobdunfr+DbgXTQ7ESy5OLuemnPA+4Z88UPXNLPZ4q0TciCjQ1GlvWYCFertnEQVphhMnvXh24t9m8fYEsa7B4GRLx04gRO2rAzua86UwqC7r1q562IQT5yglHaBaRhEpc1zKcf71RS9fLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bpmMt7ik; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1749056592;
+	s=mimecast20190719; t=1749056619;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BdQGqhIQcXP7dsPfNkEdiTmcnCKK5h488sLxxJBhbs8=;
-	b=R/stcwcY+WZZ4oU/te1L8MbJTeGtVVoIRH9Mpf5ifHCVKlc3AoM+XNyCAlB30RSodpCxCf
-	/TDf6BwYPH8p9/pMXu0gAGghCxSz/U8FOhAAG5QdA/6oEqRUEs56CUPMM1N9Thub9YU/aT
-	6kUUW4RG0XXn5bQzWJfQgWzYBgla6NI=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=jayrpGQ8EMuNrxluCYCn92f4Z9jqZ5yLz/s/cukRdq8=;
+	b=bpmMt7ik+S8LlV0RjRynQNWU/bEj9cAUes9smFKlQWKQxWICUEyqLO0OEBcNrAUahtxWaC
+	fGCx5n2G5tmyI/lDMIlo216shPvRpTfb/aCgfQxcVLE47v0WyFLn9+gb4vb7qzyHi2OCks
+	bnhiN6MgJ9tf/4WZltIkKaL+oNMOPhE=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-462-YsZ1pWwFMTaGUFcz0qDOcQ-1; Wed, 04 Jun 2025 13:03:09 -0400
-X-MC-Unique: YsZ1pWwFMTaGUFcz0qDOcQ-1
-X-Mimecast-MFC-AGG-ID: YsZ1pWwFMTaGUFcz0qDOcQ_1749056588
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-ad212166df4so3744766b.0
-        for <linux-rdma@vger.kernel.org>; Wed, 04 Jun 2025 10:03:09 -0700 (PDT)
+ us-mta-216-D-89VqJBMtSPE0A95Y8Apw-1; Wed, 04 Jun 2025 13:03:38 -0400
+X-MC-Unique: D-89VqJBMtSPE0A95Y8Apw-1
+X-Mimecast-MFC-AGG-ID: D-89VqJBMtSPE0A95Y8Apw_1749056617
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-30d8365667cso217601fa.1
+        for <linux-rdma@vger.kernel.org>; Wed, 04 Jun 2025 10:03:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749056588; x=1749661388;
+        d=1e100.net; s=20230601; t=1749056617; x=1749661417;
         h=content-transfer-encoding:mime-version:message-id:date:references
          :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BdQGqhIQcXP7dsPfNkEdiTmcnCKK5h488sLxxJBhbs8=;
-        b=Cuh+4zL6nuHA3f16loC08L+2LVdZKUpQD/40m9eG0MCkbAox0VSxubjS5gGrwl7hBU
-         +pXneHn5NZeLsaamLQUtGOO0o4VK0WIhDz04yP9SdqFhNoP20AtkneWLvesg1Jcf5zOQ
-         CmalrNQlEY1fMr6t6tNHX+aAdFRQOtSQeSh3f3ZM93DWX0HT1KPrR4MsWelpGlyxM593
-         5eYAOQhW/2doKHHmJYYHnCNgVn74AiTGDo38JZaGf382ELElyW2zccnBulZjNn2QID+6
-         BNw99D5LIt8ZaQXoyInU3S27dfij5+CvvafXe1gKjJEx1O7pJzn7UAtPOFsvQ9+CboEh
-         wCtA==
-X-Forwarded-Encrypted: i=1; AJvYcCWKM9rGfmpxpSqMxsIgNd4pVk8GE1OEcya6/Nqksms3yLNVmxvGfFKJwizuDh05btj1PBouovFuTlAK@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz9HGFGSFzxo8F8KPMZz2MwZg+teBADlHhLLEfK2Iv3h3tryQx0
-	AakFgvsYP/LXOQQ4pkHGOE0YGB9ISvaIPVc+LmBGNdnWPylXGrAloktoMM6dv3x0b3QGqGVV4M1
-	jqacM/Rx0r5EzGVIm3DwOndUaB9sJw+L+58BpXvcJpGd2OfKFD+VlGoQmVQPfL/4=
-X-Gm-Gg: ASbGncv704IWNgYxOol7xaO2+vi+zPoE6r+tcr0Vlo9u8DaTjqBbBCG/Wqola4U2YrJ
-	M8uK4DXlZmXkC9EuS9n2CIj+NNDBUQ3OE42g/4VtRu01s/C9cEJgIF4+PQuaYZ1uAiuVKE15Zln
-	3gtnu7aLswTPJ4YutTzDCC4gTAZ7fGcMocYyO13YUmDZBSgOS12QViU0ZAVrVeE9DU1ivkvjD2v
-	JFukVwbGVzJTrJtzjjYAKgp1SXi2OvPEgpsrfs/Zz+ByvAppQvRcydQFcQfJRNXGt7RFhUNE9Yg
-	AxgNBpEu
-X-Received: by 2002:a17:907:3fa6:b0:ad8:8c09:a51a with SMTP id a640c23a62f3a-addf8c30aefmr329524566b.4.1749056587544;
-        Wed, 04 Jun 2025 10:03:07 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEts9xRj/XK3SRKIWyfVZvu6UAgFyS0hpnI7mT5nnKFo1hg8wg/AtXBkeW4IXe7ZmieN8tHNQ==
-X-Received: by 2002:a17:907:3fa6:b0:ad8:8c09:a51a with SMTP id a640c23a62f3a-addf8c30aefmr329518466b.4.1749056587038;
-        Wed, 04 Jun 2025 10:03:07 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ada5dd045edsm1116783966b.119.2025.06.04.10.03.06
+        bh=jayrpGQ8EMuNrxluCYCn92f4Z9jqZ5yLz/s/cukRdq8=;
+        b=UvzRQTfqx9XhGJmot/aol8T0+lqZZc1ICN9MToZKqJvBvY0suYBL/vm8wuLt9TMaTT
+         ThDHaD5XhKVRv3aispnexqfdxtQLh51Hcd32Scv5nEbDsJHuHoij+qSbePg/lIwPaIlv
+         osaTSjp3Cj5Yp/EU4m1dW4UvI7hjPhtjp1B7KGvLlVJ9jihZRgM5rR8V7KgT+s3aCYom
+         Mrzsr8faesogGljt7Q43MdX+YssmSAc+hdAMBGUpUHxb9f3CytZfUid+2yJ1uTSIJPMm
+         qYYEv1IlG+gIYfhgAF4sw/uhJXTeEKbYTrkBoG5m8+N5/ADEEWqFXAQMILxzllbjF9P3
+         tPig==
+X-Forwarded-Encrypted: i=1; AJvYcCXmLdjideLyfeMzc2sDdri+s88OKIMxYfh4zPuyD8xgPx+rY6+iCwbLhzxTAl/f0o8C3D8fk7TVUYiL@vger.kernel.org
+X-Gm-Message-State: AOJu0YxmD1Dwbahpgqyybub8tC7Q0IlbMtRmFDdfg+VXvpLI7JaAruZC
+	EbIvfYDxXe92BDiGCpjdvV8FDlGOTgb16qWDHjU38NmADPHyDVHlGVYnK0zBRm+SndS+NbSZjxP
+	LAnic7RLSyy6p7DSvvFz2yZmDuIg/at5XqEZA4CvlXG6nIjFVCMMRUQkafVmjsJQ=
+X-Gm-Gg: ASbGncvhAjpHJOTDbSUCOML1KACzR/+zuWcebe4AkHklFkMxfI/iHq6bX9XiS1ESndI
+	47SudRES2HNbxGfdIEfSK5Q6WUh+mueCWiT6dxdhM/6XgFANmB/qiWMAGOsPoodt0lopzpDEvfl
+	80hRnkfslHLhV5SA56IRRhcH/o2paGl9A0kxuhEXlhWM9V/uVEMM7mJlcGEDbARi0HSXAU11xWT
+	JNlmaupYQHtZCnWC3fkmHWLFAZaWHMJ6ypkCEm0OCr6yBfPg/Cxcw3O/0TazisvCcje1tw/DSG8
+	M+f9XBjsvjo4p4nsQSIhiE8ERmD7ucrFP/1Qwr46QEAtprs=
+X-Received: by 2002:a2e:a581:0:b0:30b:b908:ce06 with SMTP id 38308e7fff4ca-32ac79599f8mr11789811fa.19.1749056615265;
+        Wed, 04 Jun 2025 10:03:35 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFhvowgSTP9uwRV+BqJt6GC7sN1OE+Dwxjsqttfw8aGqFJyzPj9td+LDCaCRBwp+P5agViq4g==
+X-Received: by 2002:a2e:a581:0:b0:30b:b908:ce06 with SMTP id 38308e7fff4ca-32ac79599f8mr11789411fa.19.1749056614743;
+        Wed, 04 Jun 2025 10:03:34 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-32a85bd26d7sm22115981fa.106.2025.06.04.10.03.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Jun 2025 10:03:06 -0700 (PDT)
+        Wed, 04 Jun 2025 10:03:34 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id C8F371AA9171; Wed, 04 Jun 2025 19:03:05 +0200 (CEST)
+	id 74C7C1AA9173; Wed, 04 Jun 2025 19:03:33 +0200 (CEST)
 From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To: Byungchul Park <byungchul@sk.com>, willy@infradead.org,
  netdev@vger.kernel.org
@@ -94,14 +94,14 @@ Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
  lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
  rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org,
  linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
-Subject: Re: [RFC v4 06/18] page_pool: rename page_pool_return_page() to
- page_pool_return_netmem()
-In-Reply-To: <20250604025246.61616-7-byungchul@sk.com>
+Subject: Re: [RFC v4 10/18] page_pool: rename __page_pool_alloc_pages_slow()
+ to __page_pool_alloc_netmems_slow()
+In-Reply-To: <20250604025246.61616-11-byungchul@sk.com>
 References: <20250604025246.61616-1-byungchul@sk.com>
- <20250604025246.61616-7-byungchul@sk.com>
+ <20250604025246.61616-11-byungchul@sk.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date: Wed, 04 Jun 2025 19:03:05 +0200
-Message-ID: <878qm7v3qu.fsf@toke.dk>
+Date: Wed, 04 Jun 2025 19:03:33 +0200
+Message-ID: <875xhbv3q2.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -113,8 +113,9 @@ Content-Transfer-Encoding: quoted-printable
 
 Byungchul Park <byungchul@sk.com> writes:
 
-> Now that page_pool_return_page() is for returning netmem, not struct
-> page, rename it to page_pool_return_netmem() to reflect what it does.
+> Now that __page_pool_alloc_pages_slow() is for allocating netmem, not
+> struct page, rename it to __page_pool_alloc_netmems_slow() to reflect
+> what it does.
 >
 > Signed-off-by: Byungchul Park <byungchul@sk.com>
 > Reviewed-by: Mina Almasry <almasrymina@google.com>
