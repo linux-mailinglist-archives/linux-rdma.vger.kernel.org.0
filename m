@@ -1,107 +1,87 @@
-Return-Path: <linux-rdma+bounces-10998-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10999-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95283ACE472
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 20:37:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24694ACE525
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 21:40:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB18C162CF0
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 18:37:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8E7116D116
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 19:40:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B25CA1FFC74;
-	Wed,  4 Jun 2025 18:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC36C20E03C;
+	Wed,  4 Jun 2025 19:39:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cnro/LL2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ch2nhSE4"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A87B7260F;
-	Wed,  4 Jun 2025 18:37:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50F071A2393;
+	Wed,  4 Jun 2025 19:39:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749062257; cv=none; b=Ad2QHaz4VU4gOat4laxlskrPVW87a5hyaqXz5G6/LlIdZwWBQdCU1ystoB6aCtryOLu2VH6XCl2ZefbWopBZjfHP5ZrEzgOj1KA3p4/hORbSAIjficjUYcJZk8qnPeqNhgFAC228riCH/3dNW5iGBcOmIe8nQ4lNAjfmpoOkOjw=
+	t=1749065994; cv=none; b=o31Bp5tm46dqlvLJ6yJvznmmIoO+UgDorkiXzpxJYbpIco8LQfzBj0shrEI8fFtlxKL/uP4VnW47uIC8u7KazoJuEGaon3xRWBWnEnzS40ru0x+BW5INal2F/rhzpbHw52sg2nNy5M9gdmINjn9vdZhroLzRvezfwhAov1U+jCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749062257; c=relaxed/simple;
-	bh=kMacitpLXMv1GwpjR46stCcXET1RA/LYFLgeKG2ri0w=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NufkR24cZ5svXpKyzZVvxK3DEkur7RVatpHExwoCRgCiau1L1Nda70TwlLUYgPdnQSCkL1PBUw+U2eXRAH5D6eKccBR31esFmecm37coM7CLwCs+M41Lr7EgwiLQRTUqpa06lSP6If5MY1HKgbAdxi89m89tsKzt90NJ93yhxvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cnro/LL2; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1749065994; c=relaxed/simple;
+	bh=h85K3/PQXQ6HKASsGnciD90T1y1zgHXaf+mjcY7s5eI=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=uIse2tbUZvCzv2CT8GSuyD6tLBTo4L9xxNvehg0lPkfw/X43OHNWN5qZozoZzQKB3BvDvM6xS/LIklQ74tzpDdr9FM1u8RCn5PTSSNEmP5vpb2/bKw1Vl0I++fRSLUzBkMWBceh77mmcepDrgE5LO8eXdJ0Aj5aZ40Q6j+ppgMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ch2nhSE4; arc=none smtp.client-ip=209.85.219.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-23526264386so1507005ad.2;
-        Wed, 04 Jun 2025 11:37:35 -0700 (PDT)
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-e8134dee405so281269276.1;
+        Wed, 04 Jun 2025 12:39:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749062255; x=1749667055; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EMJKoOEyvjYK7yMgj6XYrB7SCgQJhbeYmY5wKASLWgQ=;
-        b=Cnro/LL2772IgfPvBkcj02q0G22wGtxA8oVHUIfPS/6i5JI1niOK/8UGgZ5yyvbC85
-         rGJg4XnWLiinbPfCbtheI1Mdn4no/w4kY7u/Gkxj+2nu3IgKzxFM5Ax01Cg5hDWvlErW
-         wVHZXLXFy5/e79ZIPXde018nbAuY1j9yGon46cJX/icgcFSPPsyD5XcHO9R10UQqaOMV
-         Gut+tNvjBwJwsSKJpOmrG15Ltc7t7Tkz7WoLrNAknPUPi5mq2/cnDWQGFfmreu2JPKSH
-         j8ajrW8SptgYUUfY3l4R45g5/fswpIU2mb6szkeeBM3HduyWJLND3x72oA/Gk2LQ0V9T
-         tUKA==
+        d=gmail.com; s=20230601; t=1749065992; x=1749670792; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=L+J3xnyodfbGpSJfZCd6DwgmfJZJ1xgvVAIbtDVDgYY=;
+        b=Ch2nhSE420GrSnGHANqLW4KrioHY2rvGEXWxo2plL3jdfRimy7QsvjlhX0rWERb4kP
+         EMKagju+udhO9TdYeAL1Oy+EunLWS3VrRBclDu6uk3+FqEVGGypsB1L2nqUYPyI1sc8z
+         srMMLOPsie3Y9j37X0tgV/fnId6oPIJQ2/mvDutQDMsBRpAaftYgIITumX+AFEfq9CP2
+         BHNmeXCWqEsBoqsiv3yNJ9mXuaY72P9VgSqCjgK2s1qnin2BJMiYwbtn/haJI9PkZwZe
+         xybS5YpA23Oqd+fZE1RapenUEloZ5w7uE/frNNRRr2/mfTxJ94qdwUmvU+W2/CyO/Sc3
+         AY1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749062255; x=1749667055;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EMJKoOEyvjYK7yMgj6XYrB7SCgQJhbeYmY5wKASLWgQ=;
-        b=Lw1kkFEsEekJ3Y7k8xIHj9xdMCkofnl8AI9L3eu9W+Ae5rJAmFlfrA1xKdfvDiC7xc
-         PWblmrm8ZQzCzxUNme9yK0Qgr9Oni8utLNUjfxapOWHKUfoqtJgIN56W9kIm4scRht1v
-         yzN+uOds/EpbdbbsFWer4Z8gpDjZviGpLH7uVg4/10946ID+gJLQAGRm9DbnhxpXbS2E
-         nIoohJf8mApE+K56SJGBcgCjEproiaS2zUm4X2pmTCNKTD7YlNCZIWbLLwteCvwruNqg
-         g475KeITNL7GrBZ6GOsMgjsLMs0CZC43aaa3OHFJ+VBJnjLhD2bp7RCKj9OdTG4wyaYp
-         GRzg==
-X-Forwarded-Encrypted: i=1; AJvYcCVG4hxnkiB55tP5sF6bMSiUJtpjpeuNi7LFFI6jOB0ojvVc8sRzsAkbGn3RhKsLf2gFcbdOKA76gYfYig==@vger.kernel.org, AJvYcCX83t8MlTlH+cCwDOYTX0xKpWAtC2JpUnXHpnnSgRauHdl3nNNDAzeXXUcQ6mY+Sl0CMtRccf+UE6c=@vger.kernel.org, AJvYcCXsshSbWBN9N8PQNKFu8+WJ/mQrk9JwvoDOmIGw0vHifxRv1r+0gdng2v2dzJf6T/fyQD/0twNi@vger.kernel.org
-X-Gm-Message-State: AOJu0YwdHtusHQPbf78sH4cpGmexl72o3d7TC225XVS0JSeiIemmARVW
-	mBfEkE6J+JIv/T5kd2HywwYlLoANp6bQ137qR1NLWI4azb/YZXZZCac=
-X-Gm-Gg: ASbGncto7WFhZHMIJzWX4FjNzENIxmr1umyKRKxGgxr/2WeaoVdwe2L7LFNFuo/Ybvu
-	RmnryC2spEj5VuQE2YqDAti0dwVHgnQ+xPHbLvSOjFjmx/rs7/EWaZYRBg+/gG5fQdO8CzaH+wA
-	I3spq6nHEKHZkzqyE63AtwhSjkeS6s3sZypbM5uCugCRahVKP4aQIx7SbZmHUpxTGi330IcqSuX
-	Xm6VsJlaYU+FDECZBo0VrRhj4CpffCCIP+xOeKsMvRj52+1FGf6dE9YDt5IG7inZSlgLpD2zXmN
-	D5+owXLg9YyuNr5xXOtz2Q8hI+i4
-X-Google-Smtp-Source: AGHT+IHzeMlOG8WaEKyWojPC70HY/eTfvQSuJDc6Tquqle6do5jo7DuCE23TvCyOkWhB0uyKaHd7DQ==
-X-Received: by 2002:a17:903:3d0b:b0:234:a033:b6f6 with SMTP id d9443c01a7336-235e11cb901mr52517545ad.31.1749062255383;
-        Wed, 04 Jun 2025 11:37:35 -0700 (PDT)
-Received: from fedora.. ([2601:647:6700:3390::c8d1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23506d14c63sm107254965ad.241.2025.06.04.11.37.34
+        d=1e100.net; s=20230601; t=1749065992; x=1749670792;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=L+J3xnyodfbGpSJfZCd6DwgmfJZJ1xgvVAIbtDVDgYY=;
+        b=YBc2f3eMQBKq6uPZd64jX7HuAywdi32bzCSp44CmWZl+/wGunBHnYfmeyKy854Or1Q
+         LuxHkGOsKqUxNoFbWMMrDRxR2Yjrk/bgCu7xpLyjxkG2g4tXOA51PXEvIdOwhZ+cSmM0
+         oFTaJ8XpDEaLhOHRmpQlsYhrYvckWl5QjmaJsfm0aAcHt8mf9b/ATXa6IfLsCbTo7/Uy
+         SGB45h9AD5Trwh6ECOry6eTr4scmC+Fr0mNs3Ql40BKjtMC0OjoC4IT71u+aDZsKpq3k
+         O5ow3lo+mfhVgVH18Cu/lZB9h+nhY66qCyVRVlbNVf4887YoZeZzzG4Cyble9SB4Y/Qy
+         o9Vw==
+X-Forwarded-Encrypted: i=1; AJvYcCX+Mhq3RUoLN6A2y26oBHNMFMvH7U2AaqSgbNuvf20supefz4QPyFDtj9M1FMynDwK8J2wLsD51l9J2AC8=@vger.kernel.org, AJvYcCXIRUI/C7LZ2cprd2BXbcSZyOSIhOOYHALGszixELqg22UIdmcihPYnqgwxJAM5N5CEP1AK3qCA4XpS3g==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwIDzIWSYL30nDOYLZHbXzH4tPF0rUAf78+5gs3j08RWOO/F+1r
+	s/wX/5RXfR/nTkei+tkoBBK+vudRQiGFgoORL31ZIU1ot+CTxf5xDhff
+X-Gm-Gg: ASbGncuewDHd8O6U7kmjnm38IOREb79kng3tfnC34STk7WHd12Kz4ZWatdz7LYiprVG
+	cn6EMbmcu0mirTD9u903epE+0U0slTve8e58s1tH/WK8ovsaSltiJqKLRV6RqKr4aU4Z4YFzBDf
+	7nH4YVcbo+Rz10ACCqMpTl+Qwf+M/hn1tPYVDCKfHmAfzQgo6cC4NntpzsBHhznB2+I/DIKWmRT
+	r/oPJODz5Pjtx1EGjO5dEMBWj5SJEbIXBZEiQs9puyfQVKwY/Wo1ciUDAygjZ6rmR/kVs/w+sFS
+	GFKL8+IkxnRXTyO9DyE53c0WbFzYqBNSbJuj2UcgVFOabGdx3z0MGwJ5eebVDCBC82aSpqvRov8
+	1l8as63neRnQ=
+X-Google-Smtp-Source: AGHT+IEVQv6vNxHNeQQu3wOYaeVBjA2cv7P5yNh4XsGY0ymKZp/JmOZKdoUfkRdeeLQSl2w9J1N6AA==
+X-Received: by 2002:a05:6902:2582:b0:e81:88a0:af75 with SMTP id 3f1490d57ef6-e8188a0b317mr844306276.4.1749065992080;
+        Wed, 04 Jun 2025 12:39:52 -0700 (PDT)
+Received: from localhost (c-73-224-175-84.hsd1.fl.comcast.net. [73.224.175.84])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e7f733ed0e6sm3304384276.32.2025.06.04.12.39.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Jun 2025 11:37:34 -0700 (PDT)
-From: Kuniyuki Iwashima <kuni1840@gmail.com>
-To: david.laight.linux@gmail.com
-Cc: axboe@kernel.dk,
-	chuck.lever@oracle.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	hch@lst.de,
-	horms@kernel.org,
-	jaka@linux.ibm.com,
-	jlayton@kernel.org,
-	kbusch@kernel.org,
-	kuba@kernel.org,
-	kuni1840@gmail.com,
-	kuniyu@amazon.com,
-	linux-nfs@vger.kernel.org,
-	linux-nvme@lists.infradead.org,
+        Wed, 04 Jun 2025 12:39:51 -0700 (PDT)
+From: Yury Norov <yury.norov@gmail.com>
+To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Yury Norov <yury.norov@gmail.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
 	linux-rdma@vger.kernel.org,
-	matttbe@kernel.org,
-	mptcp@lists.linux.dev,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	sfrench@samba.org,
-	wenjia@linux.ibm.com,
-	willemb@google.com
-Subject: Re: [PATCH v2 net-next 3/7] socket: Restore sock_create_kern().
-Date: Wed,  4 Jun 2025 11:36:43 -0700
-Message-ID: <20250604183733.135820-1-kuni1840@gmail.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250603223020.3344d362@pumpkin>
-References: <20250603223020.3344d362@pumpkin>
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/7] RDMA: hfi1: cpumasks usage fixes
+Date: Wed,  4 Jun 2025 15:39:36 -0400
+Message-ID: <20250604193947.11834-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -110,61 +90,23 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: David Laight <david.laight.linux@gmail.com>
-Date: Tue, 3 Jun 2025 22:30:20 +0100
-> On Mon, 2 Jun 2025 07:08:17 +0200
-> Christoph Hellwig <hch@lst.de> wrote:
-> 
-> > On Thu, May 29, 2025 at 07:53:41PM -0700, Kuniyuki Iwashima wrote:
-> > > In the old days, sock_create_kern() did take a ref to netns,
-> > > but an implicit change that avoids taking the ref has caused
-> > > a lot of problems for people who used to the old semantics.
-> 
-> That must have been a long time ago.
-> Was it even long after the namespace code was added?
-> (I don't have a system with the git tree up at the moment)
+The driver uses cpumasks API in a non-optimal way; partially because of
+absence of proper functions. Fix this and nearby logic.
 
-2007: 1b8d7ae42d02 ("[NET]: Make socket creation namespace safe.")
-2015: 26abe14379f8 ("net: Modify sk_alloc to not reference count the netns of kernel sockets.")
+Yury Norov [NVIDIA] (7):
+  cpumask: add cpumask_clear_cpus()
+  RDMA: hfi1: fix possible divide-by-zero in find_hw_thread_mask()
+  RDMA: hfi1: simplify find_hw_thread_mask()
+  RDMA: hfi1: simplify init_real_cpu_mask()
+  RDMA: hfi1: use rounddown in find_hw_thread_mask()
+  RDMA: hfi1: simplify hfi1_get_proc_affinity()
+  RDMI: hfi1: drop cpumask_empty() call in hfi1/affinity.c
 
-It's been long since the implicit change, but it's only _recently_ that
-people started to notice the issue thanks?/due to k8s use cases, e.g.
-fs mounted in netns (ef7134c7fc48, 1be52169c348 + b013b817f32f, etc).
+ drivers/infiniband/hw/hfi1/affinity.c | 96 +++++++++++----------------
+ include/linux/cpumask.h               | 12 ++++
+ 2 files changed, 49 insertions(+), 59 deletions(-)
 
+-- 
+2.43.0
 
-> 
-> > > 
-> > > This series rather rolls back the change, so I think using
-> > > the same name here is better than leaving the catchy
-> > > sock_create_kern() error-prone.  
-> > 
-> > Ok.
-> 
-> Except that you are changing the semantics again.
-> So you end up with the same problem the other way around.
-> I can imagine code ending up with an extra reference to the ns.
-
-I don't think so because it's rare case where we want to use
-the no-refcnt version and it usually happens under net/ or
-drivers/net.
-
-Now we have SOCKET entry in MAINTAINERS so I can add sock_create
-there so that we are always CCed to prevent such issues.
-
-
-> 
-> The obvious name a a function for general driver use would be
-> kernel_socket() - matching the other functions that were added
-> when set_fs(KERNEL_DS) was removed.
-
-kernel_socket() doesn't fit here as kernel_XXX() takes struct
-socket, not struct sock.
-
-
-> 
-> I definitely aim to end up where the existing code fails to
-> compile - just to ensure all the code is found.
-
-You can see the patch 2 renaming sock_create_kern() to __sock_create_kern()
-does the job to find all users with the help of compilers.
 
