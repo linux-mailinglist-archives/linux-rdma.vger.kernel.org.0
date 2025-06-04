@@ -1,83 +1,84 @@
-Return-Path: <linux-rdma+bounces-10997-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10998-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70A7EACE449
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 20:20:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95283ACE472
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 20:37:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77E687A7F3E
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 18:19:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB18C162CF0
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 18:37:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B0391FF1A1;
-	Wed,  4 Jun 2025 18:20:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B25CA1FFC74;
+	Wed,  4 Jun 2025 18:37:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JsI1edO/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cnro/LL2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A466D1DE3DB;
-	Wed,  4 Jun 2025 18:20:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A87B7260F;
+	Wed,  4 Jun 2025 18:37:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749061225; cv=none; b=Mvor8hBsYvohOLvjrvtJidaGw+LMRklmv3XegCE51T0yKDmnudr4su9qK/1fj1LSJFuSPnRy7h1ZPWrDMvZ7m97NNRSyRy6yRRaR0x+Tha6jdxxYWDZ1SqV81P7H809ZDz1y8IXh5v0ibycUDZti+xuf0K2Q0bXCYgq+jw7LBjY=
+	t=1749062257; cv=none; b=Ad2QHaz4VU4gOat4laxlskrPVW87a5hyaqXz5G6/LlIdZwWBQdCU1ystoB6aCtryOLu2VH6XCl2ZefbWopBZjfHP5ZrEzgOj1KA3p4/hORbSAIjficjUYcJZk8qnPeqNhgFAC228riCH/3dNW5iGBcOmIe8nQ4lNAjfmpoOkOjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749061225; c=relaxed/simple;
-	bh=xq8Pfxlh3I4akIPbWg6cSsZWuj6UwsxawCqEy+t4kCs=;
+	s=arc-20240116; t=1749062257; c=relaxed/simple;
+	bh=kMacitpLXMv1GwpjR46stCcXET1RA/LYFLgeKG2ri0w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Rxi5wMyGozXdAV0vNQ2VW5gSCtUbcQDFMtIaLXweaFKyvDxlojSLzZSFHUmGKpEO7afBrVwFROePVY34+euq0TfO8AlpqSFVp2w53XDtmSOdf/cNIWunvhqDnirai+bVGFNDlIRA0WMwnRcBKZYxGB9UqzvbnMbBSpknAvZwEq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JsI1edO/; arc=none smtp.client-ip=209.85.214.173
+	 MIME-Version; b=NufkR24cZ5svXpKyzZVvxK3DEkur7RVatpHExwoCRgCiau1L1Nda70TwlLUYgPdnQSCkL1PBUw+U2eXRAH5D6eKccBR31esFmecm37coM7CLwCs+M41Lr7EgwiLQRTUqpa06lSP6If5MY1HKgbAdxi89m89tsKzt90NJ93yhxvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cnro/LL2; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-23539a1a421so1779475ad.0;
-        Wed, 04 Jun 2025 11:20:23 -0700 (PDT)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-23526264386so1507005ad.2;
+        Wed, 04 Jun 2025 11:37:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749061223; x=1749666023; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1749062255; x=1749667055; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=i9Wbm1mpu+LrSj9fhlQVho/f6spGI1rLCVKmxwzSbfY=;
-        b=JsI1edO/V+HqIZY3qcryPkFn3FGuvWdRaED/+Gw7HIQVYybWIHCl2bK4JYLNIPAUbP
-         qTUUTxYM/ppJBCx2HXqG/yIDiwDMFwvN4TTiMdIntBkbOK84QeuykjBXcLti9pOZEycK
-         nV5klKzb5BrN401IzxZ4BdwcdObenRT0HxmzmNXntzoUeWGgt0p/T1J6PJaBGOPDhjcj
-         QoJlK6OaeJ3F0nKks1rp75PD7q7l3IVY5E2uUHNezAo0exPlsNbXxJb5NXYI60Egddzg
-         aQZjM00rfbcjp/Zg8YHuxRQCp9XPaDtwRTDLskK7cYdl/ZFhN9MicfhzMR6A/u0jsbJt
-         BmzQ==
+        bh=EMJKoOEyvjYK7yMgj6XYrB7SCgQJhbeYmY5wKASLWgQ=;
+        b=Cnro/LL2772IgfPvBkcj02q0G22wGtxA8oVHUIfPS/6i5JI1niOK/8UGgZ5yyvbC85
+         rGJg4XnWLiinbPfCbtheI1Mdn4no/w4kY7u/Gkxj+2nu3IgKzxFM5Ax01Cg5hDWvlErW
+         wVHZXLXFy5/e79ZIPXde018nbAuY1j9yGon46cJX/icgcFSPPsyD5XcHO9R10UQqaOMV
+         Gut+tNvjBwJwsSKJpOmrG15Ltc7t7Tkz7WoLrNAknPUPi5mq2/cnDWQGFfmreu2JPKSH
+         j8ajrW8SptgYUUfY3l4R45g5/fswpIU2mb6szkeeBM3HduyWJLND3x72oA/Gk2LQ0V9T
+         tUKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749061223; x=1749666023;
+        d=1e100.net; s=20230601; t=1749062255; x=1749667055;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=i9Wbm1mpu+LrSj9fhlQVho/f6spGI1rLCVKmxwzSbfY=;
-        b=go6wM1CEa4jEW8UOBaN4ehYu4Xz/9SloQB3oSMF1dPVW+rDPPx1WrRurZ+1VfnF9W4
-         LHz0VjJJjYZl5GD5KqEUwbSx1+noZmaYlfI8+eZSzZdmgA485lXxq5F6xTHSvKVzm9AC
-         QJfuYLNtk/imsqaDrO3n7nShzLmqsvVAZAx7+6+zAWYMcH8Ns90mxH1cfwW+mUIBIU7w
-         0t8RaRm8/jjR4jlNXTAuCTvk+yAwmoJ3wW5D/triBNiqsatIjNKnDY2s7ExWibqSqn9X
-         rxe/TChFvmioGrYiJr8BTckqqfrpsW5p+89jZ/pQuqSoyk3NZd8LVVrrrXb+TaAx75o1
-         CrEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVzO7xsM2k0WF/DrbFgfpa63hcU/RiqjxZ9mkjqYpuf4ACaNVpEEjD8tHwAERsrZbi851UBGaj5Fng=@vger.kernel.org, AJvYcCWVh1pxgz88qI14QHSyNrGTUFHi3wkgIRwxI1FwPwzcIj761uDmuQtmt9ZQCIRk+Ksz6HILMHyT@vger.kernel.org, AJvYcCXrhxH+wbVSaf56pNCNfn1KgJ1L4aou9oCcOM6P2liGiVjihQ2XCE7vcOFWU725ARBVxTG0wFCSBc17tg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzpkWikhYWuAYtMWOj0uVZ3rqfkUymxcLCXA3NWL4syciegVnaG
-	5kOxg7zKV7nv47KyINP2bLleqtj3ers1zFMoAlNa6eCOMbS29kfG8+o=
-X-Gm-Gg: ASbGncuHOy6RGzTJzLQw2VrYPkeczLwMp9tbb0WxDGa9NBwiP4MTW5+aG174D7TCDFv
-	UTDy25ni5uW8wrxp4kIARfLUJacCT1oU8cJi484KuLhRqR6yg6d4ZZY3/6lZZk66QLjdKbc0tXr
-	o3MgSaKLs5FNNjKrpsqo+ZXwDGt72tSL1v+pHGOYM+IqaUlHMyvoCEvEeilQF8cIxQEOYLxPsF5
-	9FQfiISEpsO4owfEneuJ+sUIrN3dDnc7IgvdOoXRDixsjySzpyfQN8rqXYDs66M38eyQ8Ut3HkZ
-	kGT+utCNISQR/wylE/Jl0QCBli3O9btgKBAOOwY=
-X-Google-Smtp-Source: AGHT+IGIouN/nMiCxvNDy5Ikm1iFDpXIIVrGTTraPYBI83jtD4OKXOtjOvlar8/eWBmagZfZh4sDMA==
-X-Received: by 2002:a17:902:e74c:b0:235:225d:3098 with SMTP id d9443c01a7336-235e11fef9amr54068335ad.46.1749061222816;
-        Wed, 04 Jun 2025 11:20:22 -0700 (PDT)
+        bh=EMJKoOEyvjYK7yMgj6XYrB7SCgQJhbeYmY5wKASLWgQ=;
+        b=Lw1kkFEsEekJ3Y7k8xIHj9xdMCkofnl8AI9L3eu9W+Ae5rJAmFlfrA1xKdfvDiC7xc
+         PWblmrm8ZQzCzxUNme9yK0Qgr9Oni8utLNUjfxapOWHKUfoqtJgIN56W9kIm4scRht1v
+         yzN+uOds/EpbdbbsFWer4Z8gpDjZviGpLH7uVg4/10946ID+gJLQAGRm9DbnhxpXbS2E
+         nIoohJf8mApE+K56SJGBcgCjEproiaS2zUm4X2pmTCNKTD7YlNCZIWbLLwteCvwruNqg
+         g475KeITNL7GrBZ6GOsMgjsLMs0CZC43aaa3OHFJ+VBJnjLhD2bp7RCKj9OdTG4wyaYp
+         GRzg==
+X-Forwarded-Encrypted: i=1; AJvYcCVG4hxnkiB55tP5sF6bMSiUJtpjpeuNi7LFFI6jOB0ojvVc8sRzsAkbGn3RhKsLf2gFcbdOKA76gYfYig==@vger.kernel.org, AJvYcCX83t8MlTlH+cCwDOYTX0xKpWAtC2JpUnXHpnnSgRauHdl3nNNDAzeXXUcQ6mY+Sl0CMtRccf+UE6c=@vger.kernel.org, AJvYcCXsshSbWBN9N8PQNKFu8+WJ/mQrk9JwvoDOmIGw0vHifxRv1r+0gdng2v2dzJf6T/fyQD/0twNi@vger.kernel.org
+X-Gm-Message-State: AOJu0YwdHtusHQPbf78sH4cpGmexl72o3d7TC225XVS0JSeiIemmARVW
+	mBfEkE6J+JIv/T5kd2HywwYlLoANp6bQ137qR1NLWI4azb/YZXZZCac=
+X-Gm-Gg: ASbGncto7WFhZHMIJzWX4FjNzENIxmr1umyKRKxGgxr/2WeaoVdwe2L7LFNFuo/Ybvu
+	RmnryC2spEj5VuQE2YqDAti0dwVHgnQ+xPHbLvSOjFjmx/rs7/EWaZYRBg+/gG5fQdO8CzaH+wA
+	I3spq6nHEKHZkzqyE63AtwhSjkeS6s3sZypbM5uCugCRahVKP4aQIx7SbZmHUpxTGi330IcqSuX
+	Xm6VsJlaYU+FDECZBo0VrRhj4CpffCCIP+xOeKsMvRj52+1FGf6dE9YDt5IG7inZSlgLpD2zXmN
+	D5+owXLg9YyuNr5xXOtz2Q8hI+i4
+X-Google-Smtp-Source: AGHT+IHzeMlOG8WaEKyWojPC70HY/eTfvQSuJDc6Tquqle6do5jo7DuCE23TvCyOkWhB0uyKaHd7DQ==
+X-Received: by 2002:a17:903:3d0b:b0:234:a033:b6f6 with SMTP id d9443c01a7336-235e11cb901mr52517545ad.31.1749062255383;
+        Wed, 04 Jun 2025 11:37:35 -0700 (PDT)
 Received: from fedora.. ([2601:647:6700:3390::c8d1])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b2eceb9a5eesm7841454a12.53.2025.06.04.11.20.21
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-23506d14c63sm107254965ad.241.2025.06.04.11.37.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Jun 2025 11:20:22 -0700 (PDT)
+        Wed, 04 Jun 2025 11:37:34 -0700 (PDT)
 From: Kuniyuki Iwashima <kuni1840@gmail.com>
-To: hch@lst.de
+To: david.laight.linux@gmail.com
 Cc: axboe@kernel.dk,
 	chuck.lever@oracle.com,
 	davem@davemloft.net,
 	edumazet@google.com,
+	hch@lst.de,
 	horms@kernel.org,
 	jaka@linux.ibm.com,
 	jlayton@kernel.org,
@@ -95,12 +96,12 @@ Cc: axboe@kernel.dk,
 	sfrench@samba.org,
 	wenjia@linux.ibm.com,
 	willemb@google.com
-Subject: Re: [PATCH v2 net-next 6/7] socket: Replace most sock_create() calls with sock_create_kern().
-Date: Wed,  4 Jun 2025 11:20:17 -0700
-Message-ID: <20250604182020.126258-1-kuni1840@gmail.com>
+Subject: Re: [PATCH v2 net-next 3/7] socket: Restore sock_create_kern().
+Date: Wed,  4 Jun 2025 11:36:43 -0700
+Message-ID: <20250604183733.135820-1-kuni1840@gmail.com>
 X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250603045021.GA8367@lst.de>
-References: <20250603045021.GA8367@lst.de>
+In-Reply-To: <20250603223020.3344d362@pumpkin>
+References: <20250603223020.3344d362@pumpkin>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -109,25 +110,61 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Christoph Hellwig <hch@lst.de>
-Date: Tue, 3 Jun 2025 06:50:21 +0200
-> On Mon, Jun 02, 2025 at 02:52:47PM -0700, Kuniyuki Iwashima wrote:
-> > From: Christoph Hellwig <hch@lst.de>
-> > Date: Mon, 2 Jun 2025 07:09:49 +0200
-> > > On Thu, May 29, 2025 at 08:03:06PM -0700, Kuniyuki Iwashima wrote:
-> > > > I actually tried to to do so as sock_create_user() in the
-> > > > previous series but was advised to avoid rename as the benefit
-> > > > against LoC was low.
-> > > 
-> > > I can't really parse this.  What is the 'benefit against LoC'?
-> > 
-> > It was a kind of subjective opinion whether the amount of changes
-> > was worth or not.
+From: David Laight <david.laight.linux@gmail.com>
+Date: Tue, 3 Jun 2025 22:30:20 +0100
+> On Mon, 2 Jun 2025 07:08:17 +0200
+> Christoph Hellwig <hch@lst.de> wrote:
 > 
-> So the simple scripted renaming was not worth it.  Maybe I misunderstand,
-> but based on the reading we should basically have about a handful
-> callers of the non-__kern variant left.  Or is it a lot more?
+> > On Thu, May 29, 2025 at 07:53:41PM -0700, Kuniyuki Iwashima wrote:
+> > > In the old days, sock_create_kern() did take a ref to netns,
+> > > but an implicit change that avoids taking the ref has caused
+> > > a lot of problems for people who used to the old semantics.
+> 
+> That must have been a long time ago.
+> Was it even long after the namespace code was added?
+> (I don't have a system with the git tree up at the moment)
 
-Yes, after this series, only 2 sock_create() left, one in sctp and
-another in core.
+2007: 1b8d7ae42d02 ("[NET]: Make socket creation namespace safe.")
+2015: 26abe14379f8 ("net: Modify sk_alloc to not reference count the netns of kernel sockets.")
+
+It's been long since the implicit change, but it's only _recently_ that
+people started to notice the issue thanks?/due to k8s use cases, e.g.
+fs mounted in netns (ef7134c7fc48, 1be52169c348 + b013b817f32f, etc).
+
+
+> 
+> > > 
+> > > This series rather rolls back the change, so I think using
+> > > the same name here is better than leaving the catchy
+> > > sock_create_kern() error-prone.  
+> > 
+> > Ok.
+> 
+> Except that you are changing the semantics again.
+> So you end up with the same problem the other way around.
+> I can imagine code ending up with an extra reference to the ns.
+
+I don't think so because it's rare case where we want to use
+the no-refcnt version and it usually happens under net/ or
+drivers/net.
+
+Now we have SOCKET entry in MAINTAINERS so I can add sock_create
+there so that we are always CCed to prevent such issues.
+
+
+> 
+> The obvious name a a function for general driver use would be
+> kernel_socket() - matching the other functions that were added
+> when set_fs(KERNEL_DS) was removed.
+
+kernel_socket() doesn't fit here as kernel_XXX() takes struct
+socket, not struct sock.
+
+
+> 
+> I definitely aim to end up where the existing code fails to
+> compile - just to ensure all the code is found.
+
+You can see the patch 2 renaming sock_create_kern() to __sock_create_kern()
+does the job to find all users with the help of compilers.
 
