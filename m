@@ -1,149 +1,143 @@
-Return-Path: <linux-rdma+bounces-10977-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-10978-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F143ACDBE7
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 12:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E443ACDC12
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 12:47:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01B983A4B21
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 10:23:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0BC13A299D
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Jun 2025 10:46:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B7826156B;
-	Wed,  4 Jun 2025 10:23:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C7D928C5B6;
+	Wed,  4 Jun 2025 10:47:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="O0na44ib"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R+xQzyPG"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from fout-b8-smtp.messagingengine.com (fout-b8-smtp.messagingengine.com [202.12.124.151])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0615227574;
-	Wed,  4 Jun 2025 10:23:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AD557262F
+	for <linux-rdma@vger.kernel.org>; Wed,  4 Jun 2025 10:46:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749032629; cv=none; b=uJHY/dxI/Y5+MqRk77eoljuk5o4bGj458kPz9xeDb3EN88l9ZlLzoZHhf5Ozv4su/q/fK63W7WATekz2F220blDu9WltgDX8ej2TuC/28HJfY6hXofKa4DQ+JTds6SruvQ+7Dx8UoUT30qmV/BhRakKo9Q1iZduzlhmWgSa2a8U=
+	t=1749034020; cv=none; b=lpfuclyX916rzQNENs8ryQ2qDInahcC8FwN8Zcjq6hRFfcTp+/V56c0J8NldXCiwKB+1aUULlV6Fb0G+OYocjly9QDobOSANo83Prc4y/F57UoXP3RG0+mxMu4zzA01BAcTq+p/Ib+tgAg/kslvWrb/dS+9XlRLbnwXWImBfJbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749032629; c=relaxed/simple;
-	bh=QxNSTDXCGJOmWNBGEOkx78UPdyo2nZYaQ3Fb7w+/lws=;
+	s=arc-20240116; t=1749034020; c=relaxed/simple;
+	bh=dwFj09Wv/47n5Q/m5gEmNT9biYmFzuo2CYC8eVdX2gw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rergP1k9pjbquP9MYUxsReO7Ei8p3vxfVkh18k3XKrbngwfMIfHBdLTCqoDWUp0y9iVOH53EVAEUW8Nr2abukrWxvkwAhRcgCdlqxSJlz9p9RZl0x10zbn4ezlILxsPJ5agbHw4V1Wt1gse/hW45EIN1yk4ru46fEl5i18s8mNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org; spf=none smtp.mailfrom=idosch.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=O0na44ib; arc=none smtp.client-ip=202.12.124.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=idosch.org
-Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
-	by mailfout.stl.internal (Postfix) with ESMTP id 63D0B1140142;
-	Wed,  4 Jun 2025 06:23:45 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-06.internal (MEProxy); Wed, 04 Jun 2025 06:23:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1749032625; x=
-	1749119025; bh=HjeA796RFt94HBnou7FcFNxCyD0fs7Jyu9j4FkElU7c=; b=O
-	0na44ibaSzxf1NrXoE2V5ZGwpoAM7NQVFLd/s/7v32+tw0yKDB2gDPLHUP+4lphu
-	cMt8WX9k1AZLKcqM/R00DW9zB2KCvA4w6R1IRHDFhXX2/vwoatl+QF89vhbBtLF/
-	VTYbt5EtNhssgJE/1O2RSySzeZnnfP7f6K/m617vGbgWE8tSnT5omQsWykUIUe1/
-	Qqw0x39uRTB13imdwOtJfaHgUATAnOJ8nIuWSdxO5eeMv67sPK0nvTr5dDInNze7
-	a5TAc9w/WDx4cKgoZ7INAl5tqbIozQm8C0UkmQYOXCgU9R43oocnDPlpb8cnejg8
-	Duh1qmERoqUB+2v0hPvvg==
-X-ME-Sender: <xms:sB5AaMpPOmEDLgVz71jxwql8VU--mtfOyHp7m6lb7vdSvP0FyCJcKQ>
-    <xme:sB5AaCqRscuHMXPJKbYyA33ZUtoXbBI0YoZO5YRUfd2lNA0bCHFlqT4Vnsvnq3eBj
-    HCzRSSfHOLllLw>
-X-ME-Received: <xmr:sB5AaBPjHnkZ0PwzYvhE1mr8YMdHRF3SELzYVdOWERwibwJShz1o3Sk_8QiD>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddugdduleeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdej
-    necuhfhrohhmpefkughoucfutghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrd
-    horhhgqeenucggtffrrghtthgvrhhnpeekgefggefhuedvgeettdegvdeuvdfhudejvddv
-    jeetledvuedtheehleelhffhudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhgpdhnsggprhgtphht
-    thhopeduhedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohephigthhgvmhhlrgesnh
-    hvihguihgrrdgtohhmpdhrtghpthhtohepkhhusggrsehkvghrnhgvlhdrohhrghdprhgt
-    phhtthhopehtrghrihhqthesnhhvihguihgrrdgtohhmpdhrtghpthhtohepuggrvhgvmh
-    esuggrvhgvmhhlohhfthdrnhgvthdprhgtphhtthhopehprggsvghnihesrhgvughhrght
-    rdgtohhmpdhrtghpthhtohepvgguuhhmrgiivghtsehgohhoghhlvgdrtghomhdprhgtph
-    htthhopegrnhgurhgvfidonhgvthguvghvsehluhhnnhdrtghhpdhrtghpthhtohepshgr
-    vggvughmsehnvhhiughirgdrtghomhdprhgtphhtthhopehlvghonheskhgvrhhnvghlrd
-    horhhg
-X-ME-Proxy: <xmx:sB5AaD4tkWY5BOzrYbi1ML5dWNcPznC6zqdJDm3zn5mn7SkTiR465g>
-    <xmx:sB5AaL674c-b4D_wCz4iFJqcQ_Tepap7vKdelTs7RmRWLsO0pmibug>
-    <xmx:sB5AaDhA2KkOjJQ09X8BqyPk6jTNQ1Lf2EIvcUw8Om4XnaqwUbsVEA>
-    <xmx:sB5AaF45A9G_7DoLTpVr1Yzeefc-tAO4GqfsfDwL3wuBkd5ViBSZ2g>
-    <xmx:sR5AaOc4iUAA06aGfHmDHjUf64jxLYEBlVGp5yQh150WFicpvMZ9Z1-i>
-Feedback-ID: i494840e7:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 4 Jun 2025 06:23:43 -0400 (EDT)
-Date: Wed, 4 Jun 2025 13:23:41 +0300
-From: Ido Schimmel <idosch@idosch.org>
-To: Yael Chemla <ychemla@nvidia.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Moshe Shemesh <moshe@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
-	Gal Pressman <gal@nvidia.com>
-Subject: Re: [PATCH net-next 2/2] net/mlx5e: Log error messages when extack
- is not present
-Message-ID: <aEAerYw-5p8S4bHq@shredder>
-References: <1748173652-1377161-1-git-send-email-tariqt@nvidia.com>
- <1748173652-1377161-3-git-send-email-tariqt@nvidia.com>
- <20250527174955.594f3617@kernel.org>
- <2c0f4a69-dd90-4822-9981-faa90f7a58a6@nvidia.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=s/ydEqsGASPPt+QmM9T4KduuZPJlZFPHWNE3e2JW3hE7Xm0zU/RL/oWxw4tXGGRrYXUFq1e2BaK5AxA7a3EuQFN4wbWgdlAoYESYRJad9t3o5BrvRWgeLHgwDxG6mEhcEfXBWy+8Wpzln+xc70jqlzGgWf+kNmIt3b1uUMu7BcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R+xQzyPG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05027C4CEE7;
+	Wed,  4 Jun 2025 10:46:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749034019;
+	bh=dwFj09Wv/47n5Q/m5gEmNT9biYmFzuo2CYC8eVdX2gw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=R+xQzyPG/sCHR/eAzRAmG94img6nag9yOG5a8b9+ukTMIYBxjld/yhzGZ+9TfKO+J
+	 CKo1YF4Z2dR4gL8fzs1MMwDdhAnfWH+si4c3ty0raf1SdoqqFvB8wscmkIn4yZQaS8
+	 m9bJ5Ay4rsCBrSw5VrZ2rPpCDxoj9KlmcRr3IZdZ/Bne3QYeIrGGhFfqHyLb4q/Twa
+	 DPIr4cEzpTlMfWjum75suco2S8br/GDgsUq3vzqVQ68gfW/xvLjj3q/te53dAZM3kD
+	 EyJvCKqmIjGGo1vRcUucwjcrT88vWl+O3QpBnjvR5iiMurqsiQcBQKYPeTolvPT/wI
+	 +WcFow3v7qaDw==
+Date: Wed, 4 Jun 2025 13:46:52 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: luoqing <l1138897701@163.com>, tangchengchang@huawei.com, jgg@ziepe.ca,
+	luoqing@kylinos.cn, linux-rdma <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH] RDMA/hns: ZERO_OR_NULL_PTR macro overdetection
+Message-ID: <20250604104652.GE7435@unreal>
+References: <20250603015936.103600-1-l1138897701@163.com>
+ <bfa2366e-6876-ad51-ce07-fe98a46f7833@hisilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2c0f4a69-dd90-4822-9981-faa90f7a58a6@nvidia.com>
+In-Reply-To: <bfa2366e-6876-ad51-ce07-fe98a46f7833@hisilicon.com>
 
-On Wed, Jun 04, 2025 at 12:01:05AM +0300, Yael Chemla wrote:
-> Ethtool APIs: While Netlink support was introduced around versions
-> 5.6–5.8, many LTS distributions (e.g., Ubuntu 20.04, CentOS 7) still
-> ship with older userspace ethtool utilities that rely on ioctl for
-> certain operations. In these ioctl-based paths, the extack pointer
-> passed down to the driver may legitimately be NULL.
+On Tue, Jun 03, 2025 at 10:16:21AM +0800, Junxian Huang wrote:
+> 
+> 
+> On 2025/6/3 9:59, luoqing wrote:
+> > From: luoqing <luoqing@kylinos.cn>
+> > 
+> > sizeof(xx) these variable values' return values cannot be 0.
+> > For memory allocation requests of non-zero length,
+> > there is no need to check other return values;
+> > it is sufficient to only verify that it is not null.
+> > 
+> > Signed-off-by: luoqing <luoqing@kylinos.cn>
+> 
+> For future patches, please add RDMA maillist.
 
-[...]
+For this patch too. Please resend.
 
-> If a narrower scope is preferred, I can revise the patch to include only
-> the ethtool-related changes, which were the primary motivation behind
-> this work.
+Thanks
 
-FWIW, there is a netlink extack tracepoint that is always triggered from
-NL_SET_ERR_MSG(). Example:
-
-ethtool$ ./configure --disable-netlink &> /dev/null
-ethtool$ make -j14 &> /dev/null
-# echo "10 1" > /sys/bus/netdevsim/new_device
-# echo 1 > /sys/kernel/tracing/events/netlink/netlink_extack/enable
-# cat /sys/kernel/tracing/trace_pipe &
-[1] 390
-# ./ethtool --set-ring eni10np1 rx 1
-         ethtool-413     [008] .....    80.588053: netlink_extack: msg=netdevsim: testing123
-
-Used this dummy patch:
-
-diff --git a/drivers/net/netdevsim/ethtool.c b/drivers/net/netdevsim/ethtool.c
-index 4d191a3293c7..38022e8e1f37 100644
---- a/drivers/net/netdevsim/ethtool.c
-+++ b/drivers/net/netdevsim/ethtool.c
-@@ -85,6 +85,7 @@ static int nsim_set_ringparam(struct net_device *dev,
- {
- 	struct netdevsim *ns = netdev_priv(dev);
- 
-+	NL_SET_ERR_MSG_MOD(extack, "testing123");
- 	ns->ethtool.ring.rx_pending = ring->rx_pending;
- 	ns->ethtool.ring.rx_jumbo_pending = ring->rx_jumbo_pending;
- 	ns->ethtool.ring.rx_mini_pending = ring->rx_mini_pending;
+> 
+> Thanks,
+> Reviewed-by: Junxian Huang <huangjunxian6@hisilicon.com>
+> 
+> > ---
+> >  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 6 +++---
+> >  drivers/infiniband/hw/hns/hns_roce_qp.c    | 4 ++--
+> >  2 files changed, 5 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> > index 160e8927d364..65884f63fc7c 100644
+> > --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> > +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> > @@ -2613,7 +2613,7 @@ static struct ib_pd *free_mr_init_pd(struct hns_roce_dev *hr_dev)
+> >  	struct ib_pd *pd;
+> >  
+> >  	hr_pd = kzalloc(sizeof(*hr_pd), GFP_KERNEL);
+> > -	if (ZERO_OR_NULL_PTR(hr_pd))
+> > +	if (!hr_pd)
+> >  		return NULL;
+> >  	pd = &hr_pd->ibpd;
+> >  	pd->device = ibdev;
+> > @@ -2644,7 +2644,7 @@ static struct ib_cq *free_mr_init_cq(struct hns_roce_dev *hr_dev)
+> >  	cq_init_attr.cqe = HNS_ROCE_FREE_MR_USED_CQE_NUM;
+> >  
+> >  	hr_cq = kzalloc(sizeof(*hr_cq), GFP_KERNEL);
+> > -	if (ZERO_OR_NULL_PTR(hr_cq))
+> > +	if (!hr_cq)
+> >  		return NULL;
+> >  
+> >  	cq = &hr_cq->ib_cq;
+> > @@ -2677,7 +2677,7 @@ static int free_mr_init_qp(struct hns_roce_dev *hr_dev, struct ib_cq *cq,
+> >  	int ret;
+> >  
+> >  	hr_qp = kzalloc(sizeof(*hr_qp), GFP_KERNEL);
+> > -	if (ZERO_OR_NULL_PTR(hr_qp))
+> > +	if (!hr_qp)
+> >  		return -ENOMEM;
+> >  
+> >  	qp = &hr_qp->ibqp;
+> > diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+> > index 9f376a2232b0..6ff1b8ce580c 100644
+> > --- a/drivers/infiniband/hw/hns/hns_roce_qp.c
+> > +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+> > @@ -1003,14 +1003,14 @@ static int alloc_kernel_wrid(struct hns_roce_dev *hr_dev,
+> >  	int ret;
+> >  
+> >  	sq_wrid = kcalloc(hr_qp->sq.wqe_cnt, sizeof(u64), GFP_KERNEL);
+> > -	if (ZERO_OR_NULL_PTR(sq_wrid)) {
+> > +	if (!sq_wrid) {
+> >  		ibdev_err(ibdev, "failed to alloc SQ wrid.\n");
+> >  		return -ENOMEM;
+> >  	}
+> >  
+> >  	if (hr_qp->rq.wqe_cnt) {
+> >  		rq_wrid = kcalloc(hr_qp->rq.wqe_cnt, sizeof(u64), GFP_KERNEL);
+> > -		if (ZERO_OR_NULL_PTR(rq_wrid)) {
+> > +		if (!rq_wrid) {
+> >  			ibdev_err(ibdev, "failed to alloc RQ wrid.\n");
+> >  			ret = -ENOMEM;
+> >  			goto err_sq;
 
