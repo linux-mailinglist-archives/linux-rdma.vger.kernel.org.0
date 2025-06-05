@@ -1,51 +1,53 @@
-Return-Path: <linux-rdma+bounces-11008-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11009-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDBDBACE876
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Jun 2025 04:49:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9216ACE8C0
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Jun 2025 05:49:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DA0F3AA236
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Jun 2025 02:49:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CE221890FC9
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Jun 2025 03:50:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0287E1F78F2;
-	Thu,  5 Jun 2025 02:49:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D84C81E5B64;
+	Thu,  5 Jun 2025 03:49:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="PIjE3T2N"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC815136348
-	for <linux-rdma@vger.kernel.org>; Thu,  5 Jun 2025 02:49:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC4EB3C465
+	for <linux-rdma@vger.kernel.org>; Thu,  5 Jun 2025 03:49:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749091770; cv=none; b=Mz+M92GjJIdT2kLxWKe8ZE4flIQf9TkKsp68nEX+ev7rk78kaROrlALl0XEOxJz+osGjPQxOpApjLstnxHpWqoKDJ7e4dipfefjuXN2kA/OZ0qtTNyuQL8sHpKgn/ukuQn9StyLtoUfc/nPr6s9dCM2hU8sYuPo06TgCv6nYt1c=
+	t=1749095390; cv=none; b=sOF+5bERkeAcMAW2hD/jgHs7s1yPFAukbf+6BrqI6bQG18ZJQAgqMKB7quRyEqzhuNxdQ8TC4RxoZFQd6rIVZYOPswfxEkKFgyBapIg994Nbm6ofn7ftimkkM2NTONNfua8lRi/KR7jvH7AQQWZitgelBfzT1pnW3dKTkYwrF6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749091770; c=relaxed/simple;
-	bh=zdTHCMfjIUviluNlLLJvE7Z+y7b+HSukfzZjsEFWErg=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Cd9Z410en6HBhe4Jchoc0ZZYGJc5gC0gKhskn6naKdOYuL5sZnJfxUyif+a63Td4K6Fk0hDGVReWXvvdu2KxcY/IxisLPFX9lcj2KoAsdjK9hAQ0EH+chRA3sEIfAXqOoatdEpzhdWQ0lZY84uR6nV16HT43v3FN3K6Ii1wr0Ao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4bCTM75mP9zQkxT;
-	Thu,  5 Jun 2025 10:45:07 +0800 (CST)
-Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3296E180236;
-	Thu,  5 Jun 2025 10:49:18 +0800 (CST)
-Received: from localhost.localdomain (10.50.165.33) by
- kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 5 Jun 2025 10:49:17 +0800
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-To: <jgg@ziepe.ca>, <leon@kernel.org>
-CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<huangjunxian6@hisilicon.com>, <tangchengchang@huawei.com>
-Subject: [PATCH for-next] RDMA/hns: Remove MW support
-Date: Thu, 5 Jun 2025 10:49:17 +0800
-Message-ID: <20250605024917.1132393-1-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.33.0
+	s=arc-20240116; t=1749095390; c=relaxed/simple;
+	bh=TfE6eppglpvgy3YJJZvwo78RvONQvtswkHATzytWfR8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XbQ2wxxkVqZojYRScyeBj4OYcPmGkoUok1XVwURu4Ml3/2PrryH1HEkMo/Op0y59SGrq8tYOXiNuH2tlFN0glN/C0aqM4aDe27sAhEzfv3zqpdOAY5uToUcFRVvwm+jLIoSJ3PK1+vvUq8qu1atkpedu9LitcECWthHQ02YBoYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=PIjE3T2N; arc=none smtp.client-ip=220.197.31.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=pW
+	2kEkaHVmiiE1cfQnI9QdNIDmVACPz1nD2dkLUo+wQ=; b=PIjE3T2NYKwDbCJqZt
+	00r3bMhxNm2Ahee9W2+RZNdJYb0duFD8SjgW+yUwpALYUia2x/VDvTHylX6uq6us
+	BM0/4q8qlxX6RNc5cm2ix7rdBKtqfhQH1AD18WVccWNXyp0kxG/rJL1my4fintsD
+	Im4Jau65tqs5lKviQ3tCUUP7k=
+Received: from localhost.localdomain (unknown [])
+	by gzga-smtp-mtada-g0-4 (Coremail) with SMTP id _____wDXzb6+E0FoSZkuGQ--.16347S2;
+	Thu, 05 Jun 2025 11:49:20 +0800 (CST)
+From: luoqing <l1138897701@163.com>
+To: huangjunxian6@hisilicon.com
+Cc: tangchengchang@huawei.com,
+	jgg@ziepe.ca,
+	leon@kernel.org,
+	linux-rdma@vger.kernel.org,
+	luoqing@kylinos.cn
+Subject: [PATCH v2] RDMA/hns: ZERO_OR_NULL_PTR macro overdetection
+Date: Thu,  5 Jun 2025 11:49:18 +0800
+Message-Id: <20250605034918.242682-1-l1138897701@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -53,354 +55,80 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
- kwepemf100018.china.huawei.com (7.202.181.17)
+X-CM-TRANSID:_____wDXzb6+E0FoSZkuGQ--.16347S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7AF1ktr4kCFWDCr45tr47Jwb_yoW8KFWxpF
+	sxK3WYkFW5GF1jvw47Kr4IyrW3tas7Kay7GrWq9asxZwsIvw4UtFn7try7XFykAr95Ga1a
+	qr40gr4DWa1xuw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UQBMiUUUUU=
+X-CM-SenderInfo: jorrjmiyzxliqr6rljoofrz/1tbiEARiRGhAMMu2UgABsE
 
-MW is no longer supported in hns. Delete relevant codes.
+From: luoqing <luoqing@kylinos.cn>
 
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+sizeof(xx) these variable values' return values cannot be 0.
+For memory allocation requests of non-zero length,
+there is no need to check other return values;
+it is sufficient to only verify that it is not null.
+
+Signed-off-by: luoqing <luoqing@kylinos.cn>
+Reviewed-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 6 +++---
+ drivers/infiniband/hw/hns/hns_roce_qp.c    | 4 ++--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-The corresponding rdma-core PR is:
-https://github.com/linux-rdma/rdma-core/pull/1613
-
----
- drivers/infiniband/hw/hns/hns_roce_device.h |  19 ----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  41 +------
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |   8 --
- drivers/infiniband/hw/hns/hns_roce_main.c   |  10 --
- drivers/infiniband/hw/hns/hns_roce_mr.c     | 114 --------------------
- 5 files changed, 1 insertion(+), 191 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 1dcc9cbb4678..40dcf77e2d92 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -316,16 +316,6 @@ struct hns_roce_mtr {
- 	struct hns_roce_hem_cfg  hem_cfg; /* config for hardware addressing */
- };
-
--struct hns_roce_mw {
--	struct ib_mw		ibmw;
--	u32			pdn;
--	u32			rkey;
--	int			enabled; /* MW's active status */
--	u32			pbl_hop_num;
--	u32			pbl_ba_pg_sz;
--	u32			pbl_buf_pg_sz;
--};
--
- struct hns_roce_mr {
- 	struct ib_mr		ibmr;
- 	u64			iova; /* MR's virtual original addr */
-@@ -933,7 +923,6 @@ struct hns_roce_hw {
- 				struct hns_roce_mr *mr, int flags,
- 				void *mb_buf);
- 	int (*frmr_write_mtpt)(void *mb_buf, struct hns_roce_mr *mr);
--	int (*mw_write_mtpt)(void *mb_buf, struct hns_roce_mw *mw);
- 	void (*write_cqc)(struct hns_roce_dev *hr_dev,
- 			  struct hns_roce_cq *hr_cq, void *mb_buf, u64 *mtts,
- 			  dma_addr_t dma_handle);
-@@ -1078,11 +1067,6 @@ static inline struct hns_roce_mr *to_hr_mr(struct ib_mr *ibmr)
- 	return container_of(ibmr, struct hns_roce_mr, ibmr);
- }
-
--static inline struct hns_roce_mw *to_hr_mw(struct ib_mw *ibmw)
--{
--	return container_of(ibmw, struct hns_roce_mw, ibmw);
--}
--
- static inline struct hns_roce_qp *to_hr_qp(struct ib_qp *ibqp)
- {
- 	return container_of(ibqp, struct hns_roce_qp, ibqp);
-@@ -1246,9 +1230,6 @@ int hns_roce_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
- int hns_roce_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
- unsigned long key_to_hw_index(u32 key);
-
--int hns_roce_alloc_mw(struct ib_mw *mw, struct ib_udata *udata);
--int hns_roce_dealloc_mw(struct ib_mw *ibmw);
--
- void hns_roce_buf_free(struct hns_roce_dev *hr_dev, struct hns_roce_buf *buf);
- struct hns_roce_buf *hns_roce_buf_alloc(struct hns_roce_dev *hr_dev, u32 size,
- 					u32 page_shift, u32 flags);
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index fa8747656f25..761c184727a2 100644
+index 160e8927d364..65884f63fc7c 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -144,7 +144,7 @@ static void set_frmr_seg(struct hns_roce_v2_rc_send_wqe *rc_sq_wqe,
- 	u64 pbl_ba;
-
- 	/* use ib_access_flags */
--	hr_reg_write_bool(fseg, FRMR_BIND_EN, wr->access & IB_ACCESS_MW_BIND);
-+	hr_reg_write_bool(fseg, FRMR_BIND_EN, 0);
- 	hr_reg_write_bool(fseg, FRMR_ATOMIC,
- 			  wr->access & IB_ACCESS_REMOTE_ATOMIC);
- 	hr_reg_write_bool(fseg, FRMR_RR, wr->access & IB_ACCESS_REMOTE_READ);
-@@ -3313,8 +3313,6 @@ static int hns_roce_v2_write_mtpt(struct hns_roce_dev *hr_dev,
- 	hr_reg_write(mpt_entry, MPT_ST, V2_MPT_ST_VALID);
- 	hr_reg_write(mpt_entry, MPT_PD, mr->pd);
-
--	hr_reg_write_bool(mpt_entry, MPT_BIND_EN,
--			  mr->access & IB_ACCESS_MW_BIND);
- 	hr_reg_write_bool(mpt_entry, MPT_ATOMIC_EN,
- 			  mr->access & IB_ACCESS_REMOTE_ATOMIC);
- 	hr_reg_write_bool(mpt_entry, MPT_RR_EN,
-@@ -3358,8 +3356,6 @@ static int hns_roce_v2_rereg_write_mtpt(struct hns_roce_dev *hr_dev,
- 	hr_reg_write(mpt_entry, MPT_PD, mr->pd);
-
- 	if (flags & IB_MR_REREG_ACCESS) {
--		hr_reg_write(mpt_entry, MPT_BIND_EN,
--			     (mr_access_flags & IB_ACCESS_MW_BIND ? 1 : 0));
- 		hr_reg_write(mpt_entry, MPT_ATOMIC_EN,
- 			     mr_access_flags & IB_ACCESS_REMOTE_ATOMIC ? 1 : 0);
- 		hr_reg_write(mpt_entry, MPT_RR_EN,
-@@ -3397,7 +3393,6 @@ static int hns_roce_v2_frmr_write_mtpt(void *mb_buf, struct hns_roce_mr *mr)
- 	hr_reg_enable(mpt_entry, MPT_R_INV_EN);
-
- 	hr_reg_enable(mpt_entry, MPT_FRE);
--	hr_reg_clear(mpt_entry, MPT_MR_MW);
- 	hr_reg_enable(mpt_entry, MPT_BPD);
- 	hr_reg_clear(mpt_entry, MPT_PA);
-
-@@ -3417,38 +3412,6 @@ static int hns_roce_v2_frmr_write_mtpt(void *mb_buf, struct hns_roce_mr *mr)
- 	return 0;
- }
-
--static int hns_roce_v2_mw_write_mtpt(void *mb_buf, struct hns_roce_mw *mw)
--{
--	struct hns_roce_v2_mpt_entry *mpt_entry;
--
--	mpt_entry = mb_buf;
--	memset(mpt_entry, 0, sizeof(*mpt_entry));
--
--	hr_reg_write(mpt_entry, MPT_ST, V2_MPT_ST_FREE);
--	hr_reg_write(mpt_entry, MPT_PD, mw->pdn);
--
--	hr_reg_enable(mpt_entry, MPT_R_INV_EN);
--	hr_reg_enable(mpt_entry, MPT_LW_EN);
--
--	hr_reg_enable(mpt_entry, MPT_MR_MW);
--	hr_reg_enable(mpt_entry, MPT_BPD);
--	hr_reg_clear(mpt_entry, MPT_PA);
--	hr_reg_write(mpt_entry, MPT_BQP,
--		     mw->ibmw.type == IB_MW_TYPE_1 ? 0 : 1);
--
--	mpt_entry->lkey = cpu_to_le32(mw->rkey);
--
--	hr_reg_write(mpt_entry, MPT_PBL_HOP_NUM,
--		     mw->pbl_hop_num == HNS_ROCE_HOP_NUM_0 ? 0 :
--							     mw->pbl_hop_num);
--	hr_reg_write(mpt_entry, MPT_PBL_BA_PG_SZ,
--		     mw->pbl_ba_pg_sz + PG_SHIFT_OFFSET);
--	hr_reg_write(mpt_entry, MPT_PBL_BUF_PG_SZ,
--		     mw->pbl_buf_pg_sz + PG_SHIFT_OFFSET);
--
--	return 0;
--}
--
- static int free_mr_post_send_lp_wqe(struct hns_roce_qp *hr_qp)
- {
- 	struct hns_roce_dev *hr_dev = to_hr_dev(hr_qp->ibqp.device);
-@@ -3849,7 +3812,6 @@ static const u32 wc_send_op_map[] = {
- 	HR_WC_OP_MAP(ATOM_MSK_CMP_AND_SWAP,	MASKED_COMP_SWAP),
- 	HR_WC_OP_MAP(ATOM_MSK_FETCH_AND_ADD,	MASKED_FETCH_ADD),
- 	HR_WC_OP_MAP(FAST_REG_PMR,		REG_MR),
--	HR_WC_OP_MAP(BIND_MW,			REG_MR),
- };
-
- static int to_ib_wc_send_op(u32 hr_opcode)
-@@ -6948,7 +6910,6 @@ static const struct hns_roce_hw hns_roce_hw_v2 = {
- 	.write_mtpt = hns_roce_v2_write_mtpt,
- 	.rereg_write_mtpt = hns_roce_v2_rereg_write_mtpt,
- 	.frmr_write_mtpt = hns_roce_v2_frmr_write_mtpt,
--	.mw_write_mtpt = hns_roce_v2_mw_write_mtpt,
- 	.write_cqc = hns_roce_v2_write_cqc,
- 	.set_hem = hns_roce_v2_set_hem,
- 	.clear_hem = hns_roce_v2_clear_hem,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index bc7466830eaf..be8ef8ddd422 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -814,24 +814,16 @@ struct hns_roce_v2_mpt_entry {
-
- #define V2_MPT_BYTE_8_LW_EN_S 7
-
--#define V2_MPT_BYTE_8_MW_CNT_S 8
--#define V2_MPT_BYTE_8_MW_CNT_M GENMASK(31, 8)
--
- #define V2_MPT_BYTE_12_FRE_S 0
-
- #define V2_MPT_BYTE_12_PA_S 1
-
--#define V2_MPT_BYTE_12_MR_MW_S 4
--
- #define V2_MPT_BYTE_12_BPD_S 5
-
- #define V2_MPT_BYTE_12_BQP_S 6
-
- #define V2_MPT_BYTE_12_INNER_PA_VLD_S 7
-
--#define V2_MPT_BYTE_12_MW_BIND_QPN_S 8
--#define V2_MPT_BYTE_12_MW_BIND_QPN_M GENMASK(31, 8)
--
- #define V2_MPT_BYTE_48_PBL_BA_H_S 0
- #define V2_MPT_BYTE_48_PBL_BA_H_M GENMASK(28, 0)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index e7a497cc125c..55962653f214 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -672,13 +672,6 @@ static const struct ib_device_ops hns_roce_dev_mr_ops = {
- 	.rereg_user_mr = hns_roce_rereg_user_mr,
- };
-
--static const struct ib_device_ops hns_roce_dev_mw_ops = {
--	.alloc_mw = hns_roce_alloc_mw,
--	.dealloc_mw = hns_roce_dealloc_mw,
--
--	INIT_RDMA_OBJ_SIZE(ib_mw, hns_roce_mw, ibmw),
--};
--
- static const struct ib_device_ops hns_roce_dev_frmr_ops = {
- 	.alloc_mr = hns_roce_alloc_mr,
- 	.map_mr_sg = hns_roce_map_mr_sg,
-@@ -732,9 +725,6 @@ static int hns_roce_register_device(struct hns_roce_dev *hr_dev)
- 	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_REREG_MR)
- 		ib_set_device_ops(ib_dev, &hns_roce_dev_mr_ops);
-
--	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_MW)
--		ib_set_device_ops(ib_dev, &hns_roce_dev_mw_ops);
--
- 	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_FRMR)
- 		ib_set_device_ops(ib_dev, &hns_roce_dev_frmr_ops);
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
-index 93a48b41955b..ebef93559225 100644
---- a/drivers/infiniband/hw/hns/hns_roce_mr.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
-@@ -483,120 +483,6 @@ int hns_roce_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
- 	return sg_num;
- }
-
--static void hns_roce_mw_free(struct hns_roce_dev *hr_dev,
--			     struct hns_roce_mw *mw)
--{
--	struct device *dev = hr_dev->dev;
--	int ret;
--
--	if (mw->enabled) {
--		ret = hns_roce_destroy_hw_ctx(hr_dev, HNS_ROCE_CMD_DESTROY_MPT,
--					      key_to_hw_index(mw->rkey) &
--					      (hr_dev->caps.num_mtpts - 1));
--		if (ret)
--			dev_warn(dev, "MW DESTROY_MPT failed (%d)\n", ret);
--
--		hns_roce_table_put(hr_dev, &hr_dev->mr_table.mtpt_table,
--				   key_to_hw_index(mw->rkey));
--	}
--
--	ida_free(&hr_dev->mr_table.mtpt_ida.ida,
--		 (int)key_to_hw_index(mw->rkey));
--}
--
--static int hns_roce_mw_enable(struct hns_roce_dev *hr_dev,
--			      struct hns_roce_mw *mw)
--{
--	struct hns_roce_mr_table *mr_table = &hr_dev->mr_table;
--	struct hns_roce_cmd_mailbox *mailbox;
--	struct device *dev = hr_dev->dev;
--	unsigned long mtpt_idx = key_to_hw_index(mw->rkey);
--	int ret;
--
--	/* prepare HEM entry memory */
--	ret = hns_roce_table_get(hr_dev, &mr_table->mtpt_table, mtpt_idx);
--	if (ret)
--		return ret;
--
--	mailbox = hns_roce_alloc_cmd_mailbox(hr_dev);
--	if (IS_ERR(mailbox)) {
--		ret = PTR_ERR(mailbox);
--		goto err_table;
--	}
--
--	ret = hr_dev->hw->mw_write_mtpt(mailbox->buf, mw);
--	if (ret) {
--		dev_err(dev, "MW write mtpt fail!\n");
--		goto err_page;
--	}
--
--	ret = hns_roce_create_hw_ctx(hr_dev, mailbox, HNS_ROCE_CMD_CREATE_MPT,
--				     mtpt_idx & (hr_dev->caps.num_mtpts - 1));
--	if (ret) {
--		dev_err(dev, "MW CREATE_MPT failed (%d)\n", ret);
--		goto err_page;
--	}
--
--	mw->enabled = 1;
--
--	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
--
--	return 0;
--
--err_page:
--	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
--
--err_table:
--	hns_roce_table_put(hr_dev, &mr_table->mtpt_table, mtpt_idx);
--
--	return ret;
--}
--
--int hns_roce_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata)
--{
--	struct hns_roce_dev *hr_dev = to_hr_dev(ibmw->device);
--	struct hns_roce_ida *mtpt_ida = &hr_dev->mr_table.mtpt_ida;
--	struct ib_device *ibdev = &hr_dev->ib_dev;
--	struct hns_roce_mw *mw = to_hr_mw(ibmw);
--	int ret;
--	int id;
--
--	/* Allocate a key for mw from mr_table */
--	id = ida_alloc_range(&mtpt_ida->ida, mtpt_ida->min, mtpt_ida->max,
--			     GFP_KERNEL);
--	if (id < 0) {
--		ibdev_err(ibdev, "failed to alloc id for MW key, id(%d)\n", id);
--		return -ENOMEM;
--	}
--
--	mw->rkey = hw_index_to_key(id);
--
--	ibmw->rkey = mw->rkey;
--	mw->pdn = to_hr_pd(ibmw->pd)->pdn;
--	mw->pbl_hop_num = hr_dev->caps.pbl_hop_num;
--	mw->pbl_ba_pg_sz = hr_dev->caps.pbl_ba_pg_sz;
--	mw->pbl_buf_pg_sz = hr_dev->caps.pbl_buf_pg_sz;
--
--	ret = hns_roce_mw_enable(hr_dev, mw);
--	if (ret)
--		goto err_mw;
--
--	return 0;
--
--err_mw:
--	hns_roce_mw_free(hr_dev, mw);
--	return ret;
--}
--
--int hns_roce_dealloc_mw(struct ib_mw *ibmw)
--{
--	struct hns_roce_dev *hr_dev = to_hr_dev(ibmw->device);
--	struct hns_roce_mw *mw = to_hr_mw(ibmw);
--
--	hns_roce_mw_free(hr_dev, mw);
--	return 0;
--}
--
- static int mtr_map_region(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
- 			  struct hns_roce_buf_region *region, dma_addr_t *pages,
- 			  int max_count)
---
-2.33.0
+@@ -2613,7 +2613,7 @@ static struct ib_pd *free_mr_init_pd(struct hns_roce_dev *hr_dev)
+ 	struct ib_pd *pd;
+ 
+ 	hr_pd = kzalloc(sizeof(*hr_pd), GFP_KERNEL);
+-	if (ZERO_OR_NULL_PTR(hr_pd))
++	if (!hr_pd)
+ 		return NULL;
+ 	pd = &hr_pd->ibpd;
+ 	pd->device = ibdev;
+@@ -2644,7 +2644,7 @@ static struct ib_cq *free_mr_init_cq(struct hns_roce_dev *hr_dev)
+ 	cq_init_attr.cqe = HNS_ROCE_FREE_MR_USED_CQE_NUM;
+ 
+ 	hr_cq = kzalloc(sizeof(*hr_cq), GFP_KERNEL);
+-	if (ZERO_OR_NULL_PTR(hr_cq))
++	if (!hr_cq)
+ 		return NULL;
+ 
+ 	cq = &hr_cq->ib_cq;
+@@ -2677,7 +2677,7 @@ static int free_mr_init_qp(struct hns_roce_dev *hr_dev, struct ib_cq *cq,
+ 	int ret;
+ 
+ 	hr_qp = kzalloc(sizeof(*hr_qp), GFP_KERNEL);
+-	if (ZERO_OR_NULL_PTR(hr_qp))
++	if (!hr_qp)
+ 		return -ENOMEM;
+ 
+ 	qp = &hr_qp->ibqp;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 9f376a2232b0..6ff1b8ce580c 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -1003,14 +1003,14 @@ static int alloc_kernel_wrid(struct hns_roce_dev *hr_dev,
+ 	int ret;
+ 
+ 	sq_wrid = kcalloc(hr_qp->sq.wqe_cnt, sizeof(u64), GFP_KERNEL);
+-	if (ZERO_OR_NULL_PTR(sq_wrid)) {
++	if (!sq_wrid) {
+ 		ibdev_err(ibdev, "failed to alloc SQ wrid.\n");
+ 		return -ENOMEM;
+ 	}
+ 
+ 	if (hr_qp->rq.wqe_cnt) {
+ 		rq_wrid = kcalloc(hr_qp->rq.wqe_cnt, sizeof(u64), GFP_KERNEL);
+-		if (ZERO_OR_NULL_PTR(rq_wrid)) {
++		if (!rq_wrid) {
+ 			ibdev_err(ibdev, "failed to alloc RQ wrid.\n");
+ 			ret = -ENOMEM;
+ 			goto err_sq;
+-- 
+2.25.1
 
 
