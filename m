@@ -1,82 +1,86 @@
-Return-Path: <linux-rdma+bounces-11012-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11013-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8582ACEB90
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Jun 2025 10:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 66C3EACECB5
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Jun 2025 11:19:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33B943AB049
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Jun 2025 08:14:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D966D3ABDCD
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Jun 2025 09:19:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D46A4204C36;
-	Thu,  5 Jun 2025 08:15:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F26A0207A0C;
+	Thu,  5 Jun 2025 09:19:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ZNlaKBMP"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OHWeiys4"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2088.outbound.protection.outlook.com [40.107.94.88])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F08B119D8AC;
-	Thu,  5 Jun 2025 08:15:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.88
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749111312; cv=fail; b=XfPWhjLWdfMF8oVwYf5wn/LPClGEkn0sVBRjml8Iv6aeA2+E0QiiSKeWGDJHCFPO3Q/3d90jf0TPTbT34Z6IaTQNPysB102RAEr+NARtUfAb7gFFylAWOtDOMtPMeM90KK89fyaAnaf6M/5E6+QrxU4LnGyfAyiUJHa94WlQZhY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749111312; c=relaxed/simple;
-	bh=ZxpXuqoYtTcXh9Kpif/BSCGTiBD5iTFdoby58JepUf8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=o5LW4vA7m60zhiQxV7eg3F+q6GauH5CRHxEzartiNWWolTiOuZ8FtF9RCsorq8FrE+RoT1nucfWzzFTEC++kpIVOkW0Skt9eKVqarUiy+pMA2bQEfWvCCa3kBPGp44jEvPEOx/JhbM6qQ0kl/Sf23TtWQrrj+1BYxCiVbjBjqbs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ZNlaKBMP; arc=fail smtp.client-ip=40.107.94.88
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=tbLkMj6fHcw4EzC7ONEWQx+vZfo2LtKNNExWzjHFBJVJXvZhdrhU0dhqZgmLE+NxqxQ78LrkYSevan9uZdOb0VBR4rZzui+cXcKGvFtCvsWlD+vleD+VDM9/r5eD5DMSMY0rlPtlqq2thvJ/X8jEqTQHoY444lFU0+atbixWxcG45Mcoz0wEI1b2Auql3f46sN1LfIUHVeEAVaNQ785hxqlF4tVh8VQQohdj8JCq6n3514gTICl5CGQA9aeLXXy28Wbt/EwVuJvhgsTnqH1nKMZ0dT5fOJ7papFmZ4HSvSyURSLqKh798b6ZQ4u5TCi/HivgtBAlXo9WkDO73lq/Ig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5dULvnWEPrY2DPIKLC3kjozI4Holn+3hnQBJIVNSGUE=;
- b=kTibtrWfMliB+tUkw4F1QW3dZ1/++j5pEEPuJhxGhMnCJJCJoCorLjYcenQr/6rRf67HBcEhy0acsj7aPnwCqTb2leA1f2qyZUnZ78LkRB3dgy8S+1LtgLb/Xf5FjTUPzQQBS89vn9UfNS9KJJ2jit2EAbDh0a1UBwoqNfpSrnjue0NEqRSmwUW5jcOBNz7bt6eXJg4r9viV9GAIr28CamgS1S1wL1p36/rU8rGyHwKb0jyhW7JW9OJ3J3x3a1Nvh21xEyxvwPZ5eiTNZ4Cvuv6Y8vtVhA5fDmotUQsS8MqnZ3CM8uKK4OXjVKwdmAS75X67R0JQYxk7qmuqrAP5hw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=kylinos.cn smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5dULvnWEPrY2DPIKLC3kjozI4Holn+3hnQBJIVNSGUE=;
- b=ZNlaKBMPe+QTdNSkeRWxWDaZgQBouyuw0PLVqfoleAlIW0wPBvgSaJ4Xq78WkAtcRl/dUUTlB+nqou+N4VLvBxUU4Yi2PzXj5MK8Q3jnmRpgQFwHPq4flcLigtcaMkkZ4ud3POXmUMPjrjGexBcaVmsZMpn0SLmYiCCZOmRXwS0Nno1waxOa9gUbDq73jiEK7fy5ORPVE/mUOwuEjfXNPjukpbSGY2fMU1hTX6FCuPxRHhbXtl+8CfDDQMQJVMuofZLrFDetXx6yHseBJvaN8oZDGV/hVruoZ8hgIZAYjKCNLlMX5/gV5PrnoMt9fMnmhz8itkYIn1v8mCqhrz74TA==
-Received: from PH8P221CA0033.NAMP221.PROD.OUTLOOK.COM (2603:10b6:510:346::10)
- by CH1PR12MB9621.namprd12.prod.outlook.com (2603:10b6:610:2b2::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8792.34; Thu, 5 Jun
- 2025 08:15:08 +0000
-Received: from SN1PEPF000252A1.namprd05.prod.outlook.com
- (2603:10b6:510:346:cafe::93) by PH8P221CA0033.outlook.office365.com
- (2603:10b6:510:346::10) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8769.24 via Frontend Transport; Thu,
- 5 Jun 2025 08:15:07 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SN1PEPF000252A1.mail.protection.outlook.com (10.167.242.8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8792.29 via Frontend Transport; Thu, 5 Jun 2025 08:15:06 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 5 Jun 2025
- 01:14:50 -0700
-Received: from [172.27.33.54] (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Thu, 5 Jun
- 2025 01:14:47 -0700
-Message-ID: <7a8e85ea-7ce3-4da4-bb0b-819fe9f7d54b@nvidia.com>
-Date: Thu, 5 Jun 2025 11:14:46 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1538E7E792
+	for <linux-rdma@vger.kernel.org>; Thu,  5 Jun 2025 09:19:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1749115183; cv=none; b=uBdAQKoMdZj7hTd4GVyAkL7jmsJiLw96/n0WlWHK+aNkrTSYebeuxPtiIIBHqPJ7DucxN63CfvczsZqiBdfV4vGzAo5AjcYnZBmveIxG80EoOaA6itKugFI7KB9Ps9E1CGhKw7mJsuvV83k9Qv+X26M3CkjRm2jKsSCLnD3mPQ8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1749115183; c=relaxed/simple;
+	bh=Jna34DJuIz4lYrqaZp7xKG5CCFB0I/HmBOSFfw1c+x4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tkYk1jvN7Fe6hdM13mB0yd8kNMMHNMjm+WW3A5jcqtvQKVEa3XxFMRUl+cPq5MSF1IHtctnIkPFXPJFO1hxUqzufLUesUEnD16nrP/JPu5anVUDZF+VieJtEcPYSWCY6C35M+6r55kHX7wYtbzkkpKwnLYpt/jHL3xgXpwIF1+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OHWeiys4; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1749115180;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QbvOWE1CNUocL1BEc3ljc1g1zxTrUZmYCXxonJr+pKM=;
+	b=OHWeiys4UL2OxcL/yza/XpmoI4Ne407yQz2rLz4kBWA7B8jsrZ0xWnH0BSAbsXetQjlWHM
+	M4d85hviY4xrw2ckGLb9NBxmhXOiiet0s+PZsOarmzN8rC1hiGi/mnMI/kRYL51E1B9BNf
+	yTOc+0Ua4LMc6d2qxkxisyLQS1tVmP8=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-693-zcv0FoPiMA68dGw-KRH_nQ-1; Thu, 05 Jun 2025 05:19:39 -0400
+X-MC-Unique: zcv0FoPiMA68dGw-KRH_nQ-1
+X-Mimecast-MFC-AGG-ID: zcv0FoPiMA68dGw-KRH_nQ_1749115178
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3a5232c6ae8so320682f8f.3
+        for <linux-rdma@vger.kernel.org>; Thu, 05 Jun 2025 02:19:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749115178; x=1749719978;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QbvOWE1CNUocL1BEc3ljc1g1zxTrUZmYCXxonJr+pKM=;
+        b=gUOKzcuJpiv4elEBwHv0pxBrFX1Sosf6zZdPzxSzILk0kpWofXlctqr8SxsDqgotr+
+         2We912Cu2MPRVXVfU0uRAUy+BGVJhpcmXOYa0YLmRdPzeHPre2JWqPtJyXJEF4TEoKVU
+         Et61QU2MT89Eh3cBT8N8WhYSunHq/uJ0Jyf6nBrRBJbu4P630XNiYNkkpyzR0oMFIK7r
+         J//LD5RWmnb7qQ2fn33hTJWygdK8M20CF32wlpP0d04eDFcl+0sbZ5zPFKBEC/4tXJAZ
+         S9nQhKu3yfWydnnPwMS/W1hEfTUnewrlXveZWMdxRdBxubbLF+Boh4blWbt3OgOQWfWs
+         BPHg==
+X-Forwarded-Encrypted: i=1; AJvYcCVxBrsT5Emfh2HmLbrq0xb9lwP/Hds0TUA55db3vwGJxuddqOyvPQunEKNcVr45x8MMZgYBaP7zZnCt@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy89A8ExYMP/Nq1dG4KA24v/RMP4FMFsW6Md/ynAs8glotM+Vjs
+	bF6TUi8ky6+0nObW6agJAtkd3TmIUjBKcPMhphv1VayyiReUH/mlE7ahPYQN6xh3hv1Z0X/AJDi
+	wWvRyrbi9gO8iBMHZ1ass3ewQeEIQynVH9tLXVlkZD1FgSdVan3tYnTL7J40sF2Q=
+X-Gm-Gg: ASbGnct21f4kVdXzpwA9GGdQgRJ4JvcNsGkf9lEMFNuRen8FeSLvCEUXQkdST1I3Opl
+	u8HT7wNFqqA4jN6Yj3OAZ2GwImcKGdrwgdIO/wISE3ahxtRjSN/4hzAp90DbRPAKVjqaWSVEYqk
+	17DzsM8TkSJcU9a++Y5NfHha3dQkXkCYsEysprMUE/OvkiWGmU38BIF2KElHtaX+7Md/eUIp3CX
+	lmuVcu/w3PmogKhHChEetS70AJ15jEjf3ozHOjG1PKzULM9m/r7t+hDDJlZmgubXIZqhgHueIFT
+	PUo25NQgW6L5FEa8kko=
+X-Received: by 2002:a05:6000:2901:b0:3a4:d6aa:1277 with SMTP id ffacd0b85a97d-3a51d96cfdcmr4632402f8f.37.1749115178505;
+        Thu, 05 Jun 2025 02:19:38 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEiVIWKhvMhdKbM6hBmvDr6wXdqFF9eZ53YO8jtw/IL68kmldCR4ynqhTKRPPASOlhqnJbzTw==
+X-Received: by 2002:a05:6000:2901:b0:3a4:d6aa:1277 with SMTP id ffacd0b85a97d-3a51d96cfdcmr4632374f8f.37.1749115178007;
+        Thu, 05 Jun 2025 02:19:38 -0700 (PDT)
+Received: from ?IPV6:2a0d:3341:cced:ed10::f39? ([2a0d:3341:cced:ed10::f39])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a4f0097210sm23909436f8f.73.2025.06.05.02.19.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Jun 2025 02:19:37 -0700 (PDT)
+Message-ID: <0d96b03a-e0a6-4277-b8e7-a6d9373539f6@redhat.com>
+Date: Thu, 5 Jun 2025 11:19:36 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -85,98 +89,78 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v3] net/mlx5: Flag state up only after cmdif is ready
-To: =?UTF-8?B?6LW15pmo5YWJ?= <zhaochenguang@kylinos.cn>, Saeed Mahameed
-	<saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan
-	<tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
-	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-CC: netdev <netdev@vger.kernel.org>, linux-rdma <linux-rdma@vger.kernel.org>
-References: <1l92ogj6wlz-1l96i9zg23c@nsmail7.0.0--kylin--1>
+To: Chenguang Zhao <zhaochenguang@kylinos.cn>,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Moshe Shemesh <moshe@nvidia.com>
+Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <20250603061433.82155-1-zhaochenguang@kylinos.cn>
 Content-Language: en-US
-From: Moshe Shemesh <moshe@nvidia.com>
-In-Reply-To: <1l92ogj6wlz-1l96i9zg23c@nsmail7.0.0--kylin--1>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20250603061433.82155-1-zhaochenguang@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF000252A1:EE_|CH1PR12MB9621:EE_
-X-MS-Office365-Filtering-Correlation-Id: aeb8413a-f56e-4017-3efb-08dda40914cf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|82310400026|36860700013|376014|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?V25yeDFqMVJwSHhmRkVVaDV4bzEwYklMNDIxSGRybDA5d29NaFVmcDBjajhU?=
- =?utf-8?B?VnMydUFNUmFVUFFmeHNIM0taa2dGL2VNZkt4cXJ4aWZBYTRKZDJZRXJ2eGp6?=
- =?utf-8?B?dDllUyswbTRRTm9ScGRqY0ZZRk8vbkVES0hRSmF2MjB1M3ZZVnFMcXhyNzU0?=
- =?utf-8?B?cy9kTmw1ek5URmg5eFErWklNMHMraTlFaWFVTlZLaHAvNG1oMXgzck9EUTQ2?=
- =?utf-8?B?U01JRFNyR2FTcTdqczVFL0d6T2ovcjdja2RzVEtJcDh3dVNCU2hBak1VWEZ3?=
- =?utf-8?B?d1NiK0J2cHRNbjBMdTcwZUVPRncwcHZxV3JVaEVNQS9kKzZseXExd04vcGhh?=
- =?utf-8?B?WFRXZlFHalRZU0t0UUFDVzN4NmNyR1R6cmUwajBpN0hlWUVvNG9LLzc0WU1p?=
- =?utf-8?B?SjU0VGI3cVByNHA4THhhc1dHOHVIZVJxaUdDUjdMOXlpajFrVHh6cmlrc0Mz?=
- =?utf-8?B?aGx5OGlhMUVsNENSNG93NUFHQ00zQWZUQ3FzSlJjQmltWDd6T0JiL0xqNHdt?=
- =?utf-8?B?MFZtZTV6TUsxVDFwcEJ0d2ZCa1NNU2gwNW5sYkQ5TUFHM0xtRFRkR2UyMk9U?=
- =?utf-8?B?S3NPa0RGNnBYQnJkMTdNVE93OUp3YkZ2eGhzRDVwN2Z1dkJSdnh1Z0RJSFhm?=
- =?utf-8?B?NVFlRUgzdTE0TDVCT3JhMTM4MDFtSlI0WVRLWmxHcEFWd080OGlkdUU3am1R?=
- =?utf-8?B?S2NKTFJsNGlWVFU3YzhQdjRTSFlVcm8xQ2ZFS09POFlKUnhwVFhET0Uzb3dq?=
- =?utf-8?B?OVk2cks3MWpTUUxvcDZvTk5TVTF5cUY4NnJnZEJqV0VUYzExdm5aYWlhdzRm?=
- =?utf-8?B?a2ZYam9uV3g1aGJsNkZ4a21rK254ZGptS3pMSUdpVnpIZ01td29ieDBwT1lm?=
- =?utf-8?B?b2pNQnJPdzFFNXZ3ZVZrRURjZ1l2c0o5OVpzbE94SzdkUStqcUF6MlZVQUFF?=
- =?utf-8?B?bGFYMjJVQ1ZGbUljYm5DUUVodE1KTGdia3UzVEI4WmZyTzNFVklHWVI4WjhX?=
- =?utf-8?B?Rnp1Q0MzODRaRWdTNzFJanJXMXFFNVRUdHB4UEhKdGt3RGpsdjV0ck0zOEFj?=
- =?utf-8?B?UTM1N0dWcklISTF3MlpaMmh0Q1laTjA1b2pXWEdvTmh3dHV6NTYvOHMrWFgx?=
- =?utf-8?B?V0lNbGtHWHVqcEwwZlU2Q1NaR3RjVTRXWmExeFA4Rlg1bUZ6M1U4Y1NxZU9R?=
- =?utf-8?B?bGp5a1BqME1IWjc5NFkvb2l6TExqakRibGtvUlNzcVB3NWdkYmhGLyttbng5?=
- =?utf-8?B?V3NkOG5HVVhBalNOcXc3OFI3STRPcVBuYUd3dTZMN1FPN2FDalR2U0hjaHZ6?=
- =?utf-8?B?dmx1dTdaRUhsN2xJOXBqam80WmpqcHBxazZQeEcyNHZBYktQV3ZlMDI4aFVC?=
- =?utf-8?B?cjNjOTlPcERiY29lYi9lYTg4NFIzQ2lKQnlJdkttbzk1QVhieUpZdVBTTFZr?=
- =?utf-8?B?NmFpOU9qbkswZ212NjJoTFRaYkYxcExyb2V3MURwcVJ0cmJ2TlJ1cm43UzVm?=
- =?utf-8?B?TWtzRnFmSDZMZ2xQSFRGd3pmNVlaaVo5M09XcTViQWZCUEdBUFJodk9Lbkty?=
- =?utf-8?B?S3VTanRCbVhyczBjYTZ4SXVPV0pJaklUTG55Uk9Ba0ZXOEMvR2ZVVkdFUGZt?=
- =?utf-8?B?UnBRaG9uWUZianVxMG1YODhtaCtqYXBjUjhPTDh6cTVQUVlCb2ZVZlF2OWdv?=
- =?utf-8?B?cWFKZ25BdHkwK3pCbzFDUlc2TVA3VDRrSmRPdm1WZXppMGlrUGhJakZFN21Q?=
- =?utf-8?B?QlNmbDZuQWpYSFVzOEZERjVoZWdYOEVqQllTcFBYMTRJT3ptcjVNM3ZYc21x?=
- =?utf-8?B?T3QwNlRyb0dHZTZPUW8zN0JJOFlwWjR6ZlRFWGlRNjBacWhjUG4wblQ4cWFC?=
- =?utf-8?B?RGpSVHJOdTlIWnJ0MGNBTjI5T2h4c0VxSDlyUFA2cGczeXFNRXRSeVJ5bjRI?=
- =?utf-8?B?NkVRZDgwWmxUYmxyOXhkSlpIcms0NmxJMGV6VGk0c2pVNTJlNnZYLzlZbFM3?=
- =?utf-8?B?cDFvNE93cmExM0oyWmk2dnJTaDU0bEJjY21YbDFzMlNJZEEzR3hDL2NueThY?=
- =?utf-8?Q?JhixQ1?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(36860700013)(376014)(1800799024);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jun 2025 08:15:06.5820
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: aeb8413a-f56e-4017-3efb-08dda40914cf
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF000252A1.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH1PR12MB9621
 
-
-
-On 6/4/2025 6:07 AM, 赵晨光 wrote:
+On 6/3/25 8:14 AM, Chenguang Zhao wrote:
+> When driver is reloading during recovery flow, it can't get new commands
+> till command interface is up again. Otherwise we may get to null pointer
+> trying to access non initialized command structures.
 > 
-> The trace points to cmdif, that's why we better handle it there.
-> I couldn't reproduce it using the scripts above, what is the
-> reproduction frequency ? can you send me the whole log of reproduction ?
-> See the attachment for all logs.
-> Thanks!
+> The issue can be reproduced using the following script:
+> 
+> 1)Use following script to trigger PCI error.
+> 
+> for((i=1;i<1000;i++));
+> do
+> echo 1 > /sys/bus/pci/devices/0000\:01\:00.0/reset
+> echo “pci reset test $i times”
+> done
+> 
+> 2) Use following script to read speed.
+> 
+> while true; do cat /sys/class/net/eth0/speed &> /dev/null; done
+> 
+> task: ffff885f42820fd0 ti: ffff88603f758000 task.ti: ffff88603f758000
+> RIP: 0010:[] [] dma_pool_alloc+0x1ab/0×290
+> RSP: 0018:ffff88603f75baf0 EFLAGS: 00010046
+> RAX: 0000000000000246 RBX: ffff882f77d90c80 RCX: 0000000000000000
+> RDX: 0000000000000000 RSI: 00000000000080d0 RDI: ffff882f77d90d10
+> RBP: ffff88603f75bb20 R08: 0000000000019ba0 R09: ffff88017fc07c00
+> R10: ffffffffc0a9c384 R11: 0000000000000246 R12: ffff882f77d90d00
+> R13: 00000000000080d0 R14: ffff882f77d90d10 R15: ffff88340b6c5ea8
+> FS: 00007efce8330740(0000) GS:ffff885f4da00000(0000) knlGS:0000000000000000
+> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000000 CR3: 0000003454fc6000 CR4: 00000000003407e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call trace:
+>  mlx5_alloc_cmd_msg+0xb4/0×2a0 [mlx5_core]
+>  mlx5_alloc_cmd_msg+0xd3/0×2a0 [mlx5_core]
+>  cmd_exec+0xcf/0×8a0 [mlx5_core]
+>  mlx5_cmd_exec+0x33/0×50 [mlx5_core]
+>  mlx5_core_access_reg+0xf1/0×170 [mlx5_core]
+>  mlx5_query_port_ptys+0x64/0×70 [mlx5_core]
+>  mlx5e_get_link_ksettings+0x5c/0×360 [mlx5_core]
+>  __ethtool_get_link_ksettings+0xa6/0×210
+>  speed_show+0x78/0xb0
+>  dev_attr_show+0x23/0×60
+>  sysfs_read_file+0x99/0×190
+>  vfs_read+0x9f/0×170
+>  SyS_read+0x7f/0xe0
+>  tracesys+0xe3/0xe8
+> 
+> Fixes: a80d1b68c8b7a0 ("net/mlx5: Break load_one into three stages")
+> Signed-off-by: Chenguang Zhao <zhaochenguang@kylinos.cn>
 
-Thanks for the logs and the data.
+Minor nit: the 'net' tag should be in the subj prefix, alike:
 
-As I see, this is a reproduction on old OFED 4.7-3.2.9 driver, while on 
-new upstream driver we have mlx5_cmdif_state checked in cmd_exec() which 
-means to avoid such trace by setting mlx5_cmdif_state down on 
-mlx5_function_teardown() and up only after mlx5_cmd_enable() which do 
-create_msg_cache(). You can also check on latest OFED and if issue 
-reproduced there, please take it with Nvidia support. If you have 
-reproduction on latest upstream kernel driver, please send the 
-reproduction log and we can continue here till resolved upstream.
+[PATCH net v<n>] mlx5: #...
 
+More importantly, please deal with Moshe feedback.
+
+Thanks,
+
+Paolo
 
 
