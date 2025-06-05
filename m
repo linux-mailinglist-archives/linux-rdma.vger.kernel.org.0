@@ -1,434 +1,191 @@
-Return-Path: <linux-rdma+bounces-11036-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11037-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86337ACF0D1
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Jun 2025 15:36:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F513ACF12A
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Jun 2025 15:46:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 453683AE380
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Jun 2025 13:34:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0E841890240
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Jun 2025 13:46:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4465B2586EE;
-	Thu,  5 Jun 2025 13:34:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28AAB25EFBC;
+	Thu,  5 Jun 2025 13:44:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Kr9Id81S"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com [209.85.221.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60DF8256C83
-	for <linux-rdma@vger.kernel.org>; Thu,  5 Jun 2025 13:34:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8829E23C4FC
+	for <linux-rdma@vger.kernel.org>; Thu,  5 Jun 2025 13:44:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749130472; cv=none; b=QSudwKU7OATqy1ChptEFy17+puL9CDs5LhJfI5RCtAhW76mziadhenYgxVhIOXYgU+nS+lG1s60+2bAUslnG5/ed6VF/MIif4KfXK28nUnrn/tAa3NhuhKlqcMhUDlqnp05kTc/9kmPOKmSb+ecQPJhOCtnx3+Ov7qoDdc7+aU0=
+	t=1749131069; cv=none; b=X4q85T+M8RLbXxdw9/s6IfdHXMQl+YbJ9Xa2c1WCuZjwJgMuy3czO3iX9+94kozbo4ksDPncmwuHU09p60QTgbYnm9cnsVZJnhB+HrLqY0zD5nvFcuIHntmjylY+IQnJG4b1kn4w8wwJWF9os9YfTefCI6ShO18Dp9NppjX866o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749130472; c=relaxed/simple;
-	bh=Gxhezc5DM0E7Ck1FaukCQ04MBQv01ZCGYapj2hwmQYQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=KhiUAjmZQUUitD9djTgOvFWlLT60sVuAdwbauqmKWbUPOp5I6zsHmWUId14sgSXbpDTpx8cajUoRJIg6uuU3BOnm0SJ44VoEHXhXjFjtC/NMUbQV8qtwt2SK5qSEMw1xyc2l8sg4y8FEIbeWPdTm3l2ZZAF7CsuS4LafI6CD+7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4bClgw3xNczGpx3;
-	Thu,  5 Jun 2025 21:30:36 +0800 (CST)
-Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 61EF718046F;
-	Thu,  5 Jun 2025 21:34:25 +0800 (CST)
-Received: from [10.67.120.168] (10.67.120.168) by
- kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 5 Jun 2025 21:34:24 +0800
-Message-ID: <e83bc4d9-930a-341a-c6b8-7ced92a61c90@hisilicon.com>
-Date: Thu, 5 Jun 2025 21:34:24 +0800
+	s=arc-20240116; t=1749131069; c=relaxed/simple;
+	bh=rCO97t5tY3E5x9tBF5MM51T7nX5k5kOJxQqu9YByUYc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=F+BnKUcxPWWQ5JU1UuZu59I1HW0TdhdRSFtexG35SdOoWZS5yt8/1n5YVQhvfwDdjyC77pIMw+IyzcW7Yg3y0GNCs7VR5DjxIVfoLjN8dewy9snO1MKrE3M7wmFnjhUh+04tchUguZgAwxFafF5NvRmauwmGvavY/qiRkvPJu0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Kr9Id81S; arc=none smtp.client-ip=209.85.221.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f66.google.com with SMTP id ffacd0b85a97d-3a4fb9c2436so508757f8f.1
+        for <linux-rdma@vger.kernel.org>; Thu, 05 Jun 2025 06:44:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1749131065; x=1749735865; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kQdIuSTATuzb/lH9GWsSgTLyKRDQtpfdIWX4HXG5tVQ=;
+        b=Kr9Id81Sb1GR3sMZ3YtsKIYQhLqsGiDv5tZqVbu/cb74ByVLmEwaOyjMeG2DM95QaA
+         XK1IjD4wa5jCqTLwqEFuEJfceyBX56DM34xzwhUAx9m9O+cqQb0R1aDeKQInzXWHbA3a
+         dGVpq7tmG/nXAshI9IBQrcp5+b8WlF43evlFmWdxV97Y/k9Io20JaF3VT6GCTJi/Mcv+
+         AbMsQLaa8tajF+n80XD7UV/bLO/oc6LQhwtGcT+PkPzcNcPxh7ijhco6mBSbO24MWsfF
+         djkPdjMkU5jtuJyttk7z7aufJ2XrtuGW61D9ToOIf2Le7bM5MlNGP+QVLPVyPx+m1Gmw
+         Pguw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749131065; x=1749735865;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kQdIuSTATuzb/lH9GWsSgTLyKRDQtpfdIWX4HXG5tVQ=;
+        b=W21c5bByX62CZwkczAa1Zv04HCZAV2S/QQiCMUDeXE/Pw0fAFOpremm7FK//y/Vk8S
+         RqRgciOvj5vq4HKi/ocN0QlG8xN44nqbwhtWq/x62kUhlIXosOewVEFRedMvBcsCOhjW
+         Oe1QBAfcVJzCigwCclv24MzUPzEPcP4KGloblLxbSex8Ggm8Ca1rf8ysuwSr8+IaA5zd
+         O2wFiSdRFYzeWczwQIXBkuTHZNqWQIw58tXvmm1ZjPXwvM+xAk42BYLClr9seo7/5vZ/
+         0SmtaUc1LVal7KSRilu7sLAPJDsz01S9QYzmHmxwXbmcSd/wNr/xDyaEgt+kO6EIS0xs
+         qmOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW8DSwpxg3BcG5CADVdF7P5wVI/xQzjEyVSKI+Ouv28G+omLqnAcIsuz9R5PQNzNhUf6Qxo6GlnZAlY@vger.kernel.org
+X-Gm-Message-State: AOJu0YyAi6vPwaIdYjVRoKC2KzaivJ4HfocBr/cEAq1a7nuZfpr8rx/k
+	UCQk5SFDVKkFTm3+Mo9lqafj4B7HOfJ0Mejl8pbfctX1cPDPrGr2l3+Bxo/iJ8mP0Dg=
+X-Gm-Gg: ASbGncuQMKwHsHZuDXeKkAeq6nDtS8y2bz0Id355tAvXnkmmGHn+f2o98PtnfPICY0w
+	aTbSfAmv8qic+Q7pickXpQaM4rwchv1HgXn6bWH0juUco7Jzxn3YY4MkbucD5ZW8d7PYOX36I7g
+	IqjwgOFpJ53SLMYZk1fVLnpuS6RBkZ8zLQ7kSLRIffNWYFoy+BryejMYqREu2/nAWO8DXP+d9oe
+	gDttGoW0BNiQnN+Vx9QSc3fZPOgsu/ZvPfH++q9lbkw5+o3HNi88xV/Xf+OcYa5CcJSfpEwzIm8
+	Ii3sazXDwgxj5U5krM6V3GHTVGWlTYJJ3zAnlC9o16WZIBHSqOQFVOUeaROXguWGhqCrtMY/cgC
+	klyrG
+X-Google-Smtp-Source: AGHT+IEZBXkNJsZax09ksMSFFsYVIlL2lvRHaY0jmuIMadt7kKvrCMXnThYERvTqZ4mq0dgdqgi/bQ==
+X-Received: by 2002:a05:6000:25ca:b0:3a5:1c71:432a with SMTP id ffacd0b85a97d-3a51d91c1f0mr5935337f8f.14.1749131064750;
+        Thu, 05 Jun 2025 06:44:24 -0700 (PDT)
+Received: from [10.0.1.22] (109-81-1-248.rct.o2.cz. [109.81.1.248])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3a4efe6ca46sm25077312f8f.31.2025.06.05.06.44.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Jun 2025 06:44:24 -0700 (PDT)
+Message-ID: <beb343ec-6349-4f9c-9fea-588b04eb49ee@suse.com>
+Date: Thu, 5 Jun 2025 15:44:23 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH for-next] RDMA/hns: Remove MW support
-To: Zhu Yanjun <yanjun.zhu@linux.dev>, <jgg@ziepe.ca>, <leon@kernel.org>
-CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<tangchengchang@huawei.com>
-References: <20250605024917.1132393-1-huangjunxian6@hisilicon.com>
- <f0397a5c-aacf-4261-8eb7-f32dab43d3a0@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] module: Make sure relocations are applied to the
+ per-CPU section
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: linux-modules@vger.kernel.org, oe-lkp@lists.linux.dev, lkp@intel.com,
+ linux-kernel@vger.kernel.org, kernel test robot <oliver.sang@intel.com>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Allison Henderson <allison.henderson@oracle.com>, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+ Luis Chamberlain <mcgrof@kernel.org>, Sami Tolvanen
+ <samitolvanen@google.com>, Daniel Gomez <da.gomez@samsung.com>,
+ Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
+References: <202506041623.e45e4f7d-lkp@intel.com>
+ <20250604152707.CieD9tN0@linutronix.de>
+ <20250605060738.SzA3UESe@linutronix.de>
 Content-Language: en-US
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <f0397a5c-aacf-4261-8eb7-f32dab43d3a0@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
+From: Petr Pavlu <petr.pavlu@suse.com>
+In-Reply-To: <20250605060738.SzA3UESe@linutronix.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
- kwepemf100018.china.huawei.com (7.202.181.17)
 
-
-
-On 2025/6/5 19:10, Zhu Yanjun wrote:
-> On 05.06.25 04:49, Junxian Huang wrote:
->> MW is no longer supported in hns. Delete relevant codes.
+On 6/5/25 8:07 AM, Sebastian Andrzej Siewior wrote:
+> The per-CPU data section is handled differently than the other sections.
+> The memory allocations requires a special __percpu pointer and then the
+> section is copied into the view of each CPU. Therefore the SHF_ALLOC
+> flag is removed to ensure move_module() skips it.
 > 
-> Is MW referring to "Memory Window"? A sub-concept of memory range in RDMA?
-
-Yes.
-
-> If so, why is MW no longer supported in HNS?
-
-Our HW doesn't fully implement MW, and we do not plan to improve it
-for now. To avoid unnecessary problems, we decided to remove it from
-driver.
-
-Junxian
-
-> I'm just curious about this—I don’t mean to question the commit.
+> Later, relocations are applied and apply_relocations() skips sections
+> without SHF_ALLOC because they have not been copied. This also skips the
+> per-CPU data section.
+> The missing relocations result in a NULL pointer on x86-64 and very
+> small values on x86-32. This results in a crash because it is not
+> skipped like NULL pointer would and can't be dereferenced.
 > 
-> Zhu Yanjun
+> Such an assignment happens during static per-CPU lock initialisation
+> with lockdep enabled.
 > 
->>
->> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
->> ---
->>
->> The corresponding rdma-core PR is:
->> https://github.com/linux-rdma/rdma-core/pull/1613
->>
->> ---
->>   drivers/infiniband/hw/hns/hns_roce_device.h |  19 ----
->>   drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  41 +------
->>   drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |   8 --
->>   drivers/infiniband/hw/hns/hns_roce_main.c   |  10 --
->>   drivers/infiniband/hw/hns/hns_roce_mr.c     | 114 --------------------
->>   5 files changed, 1 insertion(+), 191 deletions(-)
->>
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
->> index 1dcc9cbb4678..40dcf77e2d92 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_device.h
->> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
->> @@ -316,16 +316,6 @@ struct hns_roce_mtr {
->>       struct hns_roce_hem_cfg  hem_cfg; /* config for hardware addressing */
->>   };
->>
->> -struct hns_roce_mw {
->> -    struct ib_mw        ibmw;
->> -    u32            pdn;
->> -    u32            rkey;
->> -    int            enabled; /* MW's active status */
->> -    u32            pbl_hop_num;
->> -    u32            pbl_ba_pg_sz;
->> -    u32            pbl_buf_pg_sz;
->> -};
->> -
->>   struct hns_roce_mr {
->>       struct ib_mr        ibmr;
->>       u64            iova; /* MR's virtual original addr */
->> @@ -933,7 +923,6 @@ struct hns_roce_hw {
->>                   struct hns_roce_mr *mr, int flags,
->>                   void *mb_buf);
->>       int (*frmr_write_mtpt)(void *mb_buf, struct hns_roce_mr *mr);
->> -    int (*mw_write_mtpt)(void *mb_buf, struct hns_roce_mw *mw);
->>       void (*write_cqc)(struct hns_roce_dev *hr_dev,
->>                 struct hns_roce_cq *hr_cq, void *mb_buf, u64 *mtts,
->>                 dma_addr_t dma_handle);
->> @@ -1078,11 +1067,6 @@ static inline struct hns_roce_mr *to_hr_mr(struct ib_mr *ibmr)
->>       return container_of(ibmr, struct hns_roce_mr, ibmr);
->>   }
->>
->> -static inline struct hns_roce_mw *to_hr_mw(struct ib_mw *ibmw)
->> -{
->> -    return container_of(ibmw, struct hns_roce_mw, ibmw);
->> -}
->> -
->>   static inline struct hns_roce_qp *to_hr_qp(struct ib_qp *ibqp)
->>   {
->>       return container_of(ibqp, struct hns_roce_qp, ibqp);
->> @@ -1246,9 +1230,6 @@ int hns_roce_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
->>   int hns_roce_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
->>   unsigned long key_to_hw_index(u32 key);
->>
->> -int hns_roce_alloc_mw(struct ib_mw *mw, struct ib_udata *udata);
->> -int hns_roce_dealloc_mw(struct ib_mw *ibmw);
->> -
->>   void hns_roce_buf_free(struct hns_roce_dev *hr_dev, struct hns_roce_buf *buf);
->>   struct hns_roce_buf *hns_roce_buf_alloc(struct hns_roce_dev *hr_dev, u32 size,
->>                       u32 page_shift, u32 flags);
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> index fa8747656f25..761c184727a2 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> @@ -144,7 +144,7 @@ static void set_frmr_seg(struct hns_roce_v2_rc_send_wqe *rc_sq_wqe,
->>       u64 pbl_ba;
->>
->>       /* use ib_access_flags */
->> -    hr_reg_write_bool(fseg, FRMR_BIND_EN, wr->access & IB_ACCESS_MW_BIND);
->> +    hr_reg_write_bool(fseg, FRMR_BIND_EN, 0);
->>       hr_reg_write_bool(fseg, FRMR_ATOMIC,
->>                 wr->access & IB_ACCESS_REMOTE_ATOMIC);
->>       hr_reg_write_bool(fseg, FRMR_RR, wr->access & IB_ACCESS_REMOTE_READ);
->> @@ -3313,8 +3313,6 @@ static int hns_roce_v2_write_mtpt(struct hns_roce_dev *hr_dev,
->>       hr_reg_write(mpt_entry, MPT_ST, V2_MPT_ST_VALID);
->>       hr_reg_write(mpt_entry, MPT_PD, mr->pd);
->>
->> -    hr_reg_write_bool(mpt_entry, MPT_BIND_EN,
->> -              mr->access & IB_ACCESS_MW_BIND);
->>       hr_reg_write_bool(mpt_entry, MPT_ATOMIC_EN,
->>                 mr->access & IB_ACCESS_REMOTE_ATOMIC);
->>       hr_reg_write_bool(mpt_entry, MPT_RR_EN,
->> @@ -3358,8 +3356,6 @@ static int hns_roce_v2_rereg_write_mtpt(struct hns_roce_dev *hr_dev,
->>       hr_reg_write(mpt_entry, MPT_PD, mr->pd);
->>
->>       if (flags & IB_MR_REREG_ACCESS) {
->> -        hr_reg_write(mpt_entry, MPT_BIND_EN,
->> -                 (mr_access_flags & IB_ACCESS_MW_BIND ? 1 : 0));
->>           hr_reg_write(mpt_entry, MPT_ATOMIC_EN,
->>                    mr_access_flags & IB_ACCESS_REMOTE_ATOMIC ? 1 : 0);
->>           hr_reg_write(mpt_entry, MPT_RR_EN,
->> @@ -3397,7 +3393,6 @@ static int hns_roce_v2_frmr_write_mtpt(void *mb_buf, struct hns_roce_mr *mr)
->>       hr_reg_enable(mpt_entry, MPT_R_INV_EN);
->>
->>       hr_reg_enable(mpt_entry, MPT_FRE);
->> -    hr_reg_clear(mpt_entry, MPT_MR_MW);
->>       hr_reg_enable(mpt_entry, MPT_BPD);
->>       hr_reg_clear(mpt_entry, MPT_PA);
->>
->> @@ -3417,38 +3412,6 @@ static int hns_roce_v2_frmr_write_mtpt(void *mb_buf, struct hns_roce_mr *mr)
->>       return 0;
->>   }
->>
->> -static int hns_roce_v2_mw_write_mtpt(void *mb_buf, struct hns_roce_mw *mw)
->> -{
->> -    struct hns_roce_v2_mpt_entry *mpt_entry;
->> -
->> -    mpt_entry = mb_buf;
->> -    memset(mpt_entry, 0, sizeof(*mpt_entry));
->> -
->> -    hr_reg_write(mpt_entry, MPT_ST, V2_MPT_ST_FREE);
->> -    hr_reg_write(mpt_entry, MPT_PD, mw->pdn);
->> -
->> -    hr_reg_enable(mpt_entry, MPT_R_INV_EN);
->> -    hr_reg_enable(mpt_entry, MPT_LW_EN);
->> -
->> -    hr_reg_enable(mpt_entry, MPT_MR_MW);
->> -    hr_reg_enable(mpt_entry, MPT_BPD);
->> -    hr_reg_clear(mpt_entry, MPT_PA);
->> -    hr_reg_write(mpt_entry, MPT_BQP,
->> -             mw->ibmw.type == IB_MW_TYPE_1 ? 0 : 1);
->> -
->> -    mpt_entry->lkey = cpu_to_le32(mw->rkey);
->> -
->> -    hr_reg_write(mpt_entry, MPT_PBL_HOP_NUM,
->> -             mw->pbl_hop_num == HNS_ROCE_HOP_NUM_0 ? 0 :
->> -                                 mw->pbl_hop_num);
->> -    hr_reg_write(mpt_entry, MPT_PBL_BA_PG_SZ,
->> -             mw->pbl_ba_pg_sz + PG_SHIFT_OFFSET);
->> -    hr_reg_write(mpt_entry, MPT_PBL_BUF_PG_SZ,
->> -             mw->pbl_buf_pg_sz + PG_SHIFT_OFFSET);
->> -
->> -    return 0;
->> -}
->> -
->>   static int free_mr_post_send_lp_wqe(struct hns_roce_qp *hr_qp)
->>   {
->>       struct hns_roce_dev *hr_dev = to_hr_dev(hr_qp->ibqp.device);
->> @@ -3849,7 +3812,6 @@ static const u32 wc_send_op_map[] = {
->>       HR_WC_OP_MAP(ATOM_MSK_CMP_AND_SWAP,    MASKED_COMP_SWAP),
->>       HR_WC_OP_MAP(ATOM_MSK_FETCH_AND_ADD,    MASKED_FETCH_ADD),
->>       HR_WC_OP_MAP(FAST_REG_PMR,        REG_MR),
->> -    HR_WC_OP_MAP(BIND_MW,            REG_MR),
->>   };
->>
->>   static int to_ib_wc_send_op(u32 hr_opcode)
->> @@ -6948,7 +6910,6 @@ static const struct hns_roce_hw hns_roce_hw_v2 = {
->>       .write_mtpt = hns_roce_v2_write_mtpt,
->>       .rereg_write_mtpt = hns_roce_v2_rereg_write_mtpt,
->>       .frmr_write_mtpt = hns_roce_v2_frmr_write_mtpt,
->> -    .mw_write_mtpt = hns_roce_v2_mw_write_mtpt,
->>       .write_cqc = hns_roce_v2_write_cqc,
->>       .set_hem = hns_roce_v2_set_hem,
->>       .clear_hem = hns_roce_v2_clear_hem,
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
->> index bc7466830eaf..be8ef8ddd422 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
->> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
->> @@ -814,24 +814,16 @@ struct hns_roce_v2_mpt_entry {
->>
->>   #define V2_MPT_BYTE_8_LW_EN_S 7
->>
->> -#define V2_MPT_BYTE_8_MW_CNT_S 8
->> -#define V2_MPT_BYTE_8_MW_CNT_M GENMASK(31, 8)
->> -
->>   #define V2_MPT_BYTE_12_FRE_S 0
->>
->>   #define V2_MPT_BYTE_12_PA_S 1
->>
->> -#define V2_MPT_BYTE_12_MR_MW_S 4
->> -
->>   #define V2_MPT_BYTE_12_BPD_S 5
->>
->>   #define V2_MPT_BYTE_12_BQP_S 6
->>
->>   #define V2_MPT_BYTE_12_INNER_PA_VLD_S 7
->>
->> -#define V2_MPT_BYTE_12_MW_BIND_QPN_S 8
->> -#define V2_MPT_BYTE_12_MW_BIND_QPN_M GENMASK(31, 8)
->> -
->>   #define V2_MPT_BYTE_48_PBL_BA_H_S 0
->>   #define V2_MPT_BYTE_48_PBL_BA_H_M GENMASK(28, 0)
->>
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
->> index e7a497cc125c..55962653f214 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_main.c
->> +++ b/drivers/infiniband/hw/hns/hns_roce_main.c
->> @@ -672,13 +672,6 @@ static const struct ib_device_ops hns_roce_dev_mr_ops = {
->>       .rereg_user_mr = hns_roce_rereg_user_mr,
->>   };
->>
->> -static const struct ib_device_ops hns_roce_dev_mw_ops = {
->> -    .alloc_mw = hns_roce_alloc_mw,
->> -    .dealloc_mw = hns_roce_dealloc_mw,
->> -
->> -    INIT_RDMA_OBJ_SIZE(ib_mw, hns_roce_mw, ibmw),
->> -};
->> -
->>   static const struct ib_device_ops hns_roce_dev_frmr_ops = {
->>       .alloc_mr = hns_roce_alloc_mr,
->>       .map_mr_sg = hns_roce_map_mr_sg,
->> @@ -732,9 +725,6 @@ static int hns_roce_register_device(struct hns_roce_dev *hr_dev)
->>       if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_REREG_MR)
->>           ib_set_device_ops(ib_dev, &hns_roce_dev_mr_ops);
->>
->> -    if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_MW)
->> -        ib_set_device_ops(ib_dev, &hns_roce_dev_mw_ops);
->> -
->>       if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_FRMR)
->>           ib_set_device_ops(ib_dev, &hns_roce_dev_frmr_ops);
->>
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
->> index 93a48b41955b..ebef93559225 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_mr.c
->> +++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
->> @@ -483,120 +483,6 @@ int hns_roce_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
->>       return sg_num;
->>   }
->>
->> -static void hns_roce_mw_free(struct hns_roce_dev *hr_dev,
->> -                 struct hns_roce_mw *mw)
->> -{
->> -    struct device *dev = hr_dev->dev;
->> -    int ret;
->> -
->> -    if (mw->enabled) {
->> -        ret = hns_roce_destroy_hw_ctx(hr_dev, HNS_ROCE_CMD_DESTROY_MPT,
->> -                          key_to_hw_index(mw->rkey) &
->> -                          (hr_dev->caps.num_mtpts - 1));
->> -        if (ret)
->> -            dev_warn(dev, "MW DESTROY_MPT failed (%d)\n", ret);
->> -
->> -        hns_roce_table_put(hr_dev, &hr_dev->mr_table.mtpt_table,
->> -                   key_to_hw_index(mw->rkey));
->> -    }
->> -
->> -    ida_free(&hr_dev->mr_table.mtpt_ida.ida,
->> -         (int)key_to_hw_index(mw->rkey));
->> -}
->> -
->> -static int hns_roce_mw_enable(struct hns_roce_dev *hr_dev,
->> -                  struct hns_roce_mw *mw)
->> -{
->> -    struct hns_roce_mr_table *mr_table = &hr_dev->mr_table;
->> -    struct hns_roce_cmd_mailbox *mailbox;
->> -    struct device *dev = hr_dev->dev;
->> -    unsigned long mtpt_idx = key_to_hw_index(mw->rkey);
->> -    int ret;
->> -
->> -    /* prepare HEM entry memory */
->> -    ret = hns_roce_table_get(hr_dev, &mr_table->mtpt_table, mtpt_idx);
->> -    if (ret)
->> -        return ret;
->> -
->> -    mailbox = hns_roce_alloc_cmd_mailbox(hr_dev);
->> -    if (IS_ERR(mailbox)) {
->> -        ret = PTR_ERR(mailbox);
->> -        goto err_table;
->> -    }
->> -
->> -    ret = hr_dev->hw->mw_write_mtpt(mailbox->buf, mw);
->> -    if (ret) {
->> -        dev_err(dev, "MW write mtpt fail!\n");
->> -        goto err_page;
->> -    }
->> -
->> -    ret = hns_roce_create_hw_ctx(hr_dev, mailbox, HNS_ROCE_CMD_CREATE_MPT,
->> -                     mtpt_idx & (hr_dev->caps.num_mtpts - 1));
->> -    if (ret) {
->> -        dev_err(dev, "MW CREATE_MPT failed (%d)\n", ret);
->> -        goto err_page;
->> -    }
->> -
->> -    mw->enabled = 1;
->> -
->> -    hns_roce_free_cmd_mailbox(hr_dev, mailbox);
->> -
->> -    return 0;
->> -
->> -err_page:
->> -    hns_roce_free_cmd_mailbox(hr_dev, mailbox);
->> -
->> -err_table:
->> -    hns_roce_table_put(hr_dev, &mr_table->mtpt_table, mtpt_idx);
->> -
->> -    return ret;
->> -}
->> -
->> -int hns_roce_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata)
->> -{
->> -    struct hns_roce_dev *hr_dev = to_hr_dev(ibmw->device);
->> -    struct hns_roce_ida *mtpt_ida = &hr_dev->mr_table.mtpt_ida;
->> -    struct ib_device *ibdev = &hr_dev->ib_dev;
->> -    struct hns_roce_mw *mw = to_hr_mw(ibmw);
->> -    int ret;
->> -    int id;
->> -
->> -    /* Allocate a key for mw from mr_table */
->> -    id = ida_alloc_range(&mtpt_ida->ida, mtpt_ida->min, mtpt_ida->max,
->> -                 GFP_KERNEL);
->> -    if (id < 0) {
->> -        ibdev_err(ibdev, "failed to alloc id for MW key, id(%d)\n", id);
->> -        return -ENOMEM;
->> -    }
->> -
->> -    mw->rkey = hw_index_to_key(id);
->> -
->> -    ibmw->rkey = mw->rkey;
->> -    mw->pdn = to_hr_pd(ibmw->pd)->pdn;
->> -    mw->pbl_hop_num = hr_dev->caps.pbl_hop_num;
->> -    mw->pbl_ba_pg_sz = hr_dev->caps.pbl_ba_pg_sz;
->> -    mw->pbl_buf_pg_sz = hr_dev->caps.pbl_buf_pg_sz;
->> -
->> -    ret = hns_roce_mw_enable(hr_dev, mw);
->> -    if (ret)
->> -        goto err_mw;
->> -
->> -    return 0;
->> -
->> -err_mw:
->> -    hns_roce_mw_free(hr_dev, mw);
->> -    return ret;
->> -}
->> -
->> -int hns_roce_dealloc_mw(struct ib_mw *ibmw)
->> -{
->> -    struct hns_roce_dev *hr_dev = to_hr_dev(ibmw->device);
->> -    struct hns_roce_mw *mw = to_hr_mw(ibmw);
->> -
->> -    hns_roce_mw_free(hr_dev, mw);
->> -    return 0;
->> -}
->> -
->>   static int mtr_map_region(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
->>                 struct hns_roce_buf_region *region, dma_addr_t *pages,
->>                 int max_count)
->> -- 
->> 2.33.0
->>
+> Add the SHF_ALLOC flag back for the per-CPU section (if found) after
+> move_module().
 > 
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202506041623.e45e4f7d-lkp@intel.com
+> Fixes: 8d8022e8aba85 ("module: do percpu allocation after uniqueness check.  No, really!")
+
+Isn't this broken earlier by "Don't relocate non-allocated regions in modules."
+(pre-Git, [1])?
+
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> ---
+> v1…v2: https://lore.kernel.org/all/20250604152707.CieD9tN0@linutronix.de/
+>   - Add the flag back only on SMP if the per-CPU section was found.
+> 
+>  kernel/module/main.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/kernel/module/main.c b/kernel/module/main.c
+> index 5c6ab20240a6d..4f6554dedf8ea 100644
+> --- a/kernel/module/main.c
+> +++ b/kernel/module/main.c
+> @@ -2816,6 +2816,10 @@ static struct module *layout_and_allocate(struct load_info *info, int flags)
+>  	if (err)
+>  		return ERR_PTR(err);
+>  
+> +	/* Add SHF_ALLOC back so that relocations are applied. */
+> +	if (IS_ENABLED(CONFIG_SMP) && info->index.pcpu)
+> +		info->sechdrs[info->index.pcpu].sh_flags |= SHF_ALLOC;
+> +
+>  	/* Module has been copied to its final place now: return it. */
+>  	mod = (void *)info->sechdrs[info->index.mod].sh_addr;
+>  	kmemleak_load_module(mod, info);
+
+This looks like a valid fix. The info->sechdrs[info->index.pcpu].sh_addr
+is set by rewrite_section_headers() to point to the percpu data in the
+userspace-passed ELF copy. The section has SHF_ALLOC reset, so it
+doesn't move and the sh_addr isn't adjusted by move_module(). The
+function apply_relocations() then applies the relocations in the initial
+ELF copy. Finally, post_relocation() copies the relocated percpu data to
+their final per-CPU destinations.
+
+However, I'm not sure if it is best to manipulate the SHF_ALLOC flag in
+this way. It is ok to reset it once, but if we need to set it back again
+then I would reconsider this.
+
+An alternative approach could be to teach apply_relocations() that the
+percpu section is special and should be relocated even though it doesn't
+have SHF_ALLOC set. This would also allow adding a comment explaining
+that we're relocating the data in the original ELF copy, which I find
+useful to mention as it is different to other relocation processing.
+
+For instance:
+
+	/*
+	 * Don't bother with non-allocated sections.
+	 *
+	 * An exception is the percpu section, which has separate allocations
+	 * for individual CPUs. We relocate the percpu section in the initial
+	 * ELF template and subsequently copy it to the per-CPU destinations.
+	 */
+	if (!(info->sechdrs[infosec].sh_flags & SHF_ALLOC) &&
+	    infosec != info->index.pcpu)
+		continue;
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/mpe/linux-fullhistory.git/commit/?id=b3b91325f3c77ace041f769ada7039ebc7aab8de
+
+-- 
+Thanks,
+Petr
 
