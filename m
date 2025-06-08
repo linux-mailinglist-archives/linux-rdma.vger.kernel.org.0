@@ -1,144 +1,82 @@
-Return-Path: <linux-rdma+bounces-11062-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11063-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFD69AD11EB
-	for <lists+linux-rdma@lfdr.de>; Sun,  8 Jun 2025 13:23:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD43FAD14C6
+	for <lists+linux-rdma@lfdr.de>; Sun,  8 Jun 2025 23:34:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B487F169D89
-	for <lists+linux-rdma@lfdr.de>; Sun,  8 Jun 2025 11:23:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C26223A8BB7
+	for <lists+linux-rdma@lfdr.de>; Sun,  8 Jun 2025 21:34:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27990202C5C;
-	Sun,  8 Jun 2025 11:23:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="e2mA5F9H"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC94211A00;
+	Sun,  8 Jun 2025 21:34:29 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1DAB3D544
-	for <linux-rdma@vger.kernel.org>; Sun,  8 Jun 2025 11:23:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF331E0E14
+	for <linux-rdma@vger.kernel.org>; Sun,  8 Jun 2025 21:34:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749381810; cv=none; b=N5HKgBE0N04KG8rP0SCbNYYuiMHvSWo/GFWoyQzMF5Px5ktYbDsmPERKlNBA0jDDnCFCcuBEbIgM286tKM8Evi4Zvb3CnxCGtAah67W0o26gUD6k1+w4zzFnPT/m3mueSUih7mi3os+9qR10WPDJmTrlLY1Osq6kXV1R7Mj0bvg=
+	t=1749418469; cv=none; b=XATrzFk3anPHIPdxcQoblT2mxvwDfMRg1eZv7XmqmdaytN3FnKTqDbgvGKt+0CZRm85bMVKBGg0aqV/uFUWaTa4psM5DJ/Pk0WEsM8/BnkSN0YvQXIG9FVkP6klwL/j5R+Yiulm+m/9HdSlHW56z+x9QkQO1RbX1w+PqKQuq9dQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749381810; c=relaxed/simple;
-	bh=vBmVa7+HT3ViIIYGboa8Z7ZUcGoENSu0gRQmBGL1pBU=;
+	s=arc-20240116; t=1749418469; c=relaxed/simple;
+	bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Rk2JHmIDpc9EVSeHdr2p1P5bngl1WFJdtOZmY6TU1ubR/eTpWmrw/KcGWfbsV51TpAMaiXvkKAMUNKXwlDNi12mA0sC3ObpA6U/F0Ijlv2vJpzIOJl3fK1TYsSdE8XCkBvaGXF76IFNNCIwiH2PSrdGl2te00dHeFTc5HA2HZpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=e2mA5F9H; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <c63d3202-8a5d-448d-b802-f8a7e0275265@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1749381805;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oV/g9IcWkYk25U7TyFCt/av8AbniaH2IFDp1/9aw+TQ=;
-	b=e2mA5F9HSorfB/NsPDyc/ilcbaVo0SUniYatRyTNlS2nSvgGIgiqg9U9BRHSkjACrnXxSY
-	waQiCR8FiFytxDrAob8ggh4MbtZvScsF9GT9WUJ7wBi4b8hQgZX8+q6LEyYsjhoLm+kGlj
-	cY4WN4pITv2DOiS1hl/8d1wTx3KPlI8=
-Date: Sun, 8 Jun 2025 13:23:19 +0200
+	 In-Reply-To:Content-Type; b=d/DFU7FFhG+5dNZKN8mr5o1BdqUt78O44YqUaTCfeqVnmQnxTFLWTEB91UK+gH0QYTvFTSvzBMp8KXOgLcMygPetV/P5t/d14IK2NOMQy1/jpjFGEXUdWYZi53Y0US0mJsbKLGXJoZ1WaaFzHGFwHNNIWTaCRi1pcJ9SLufVGO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3a54700a46eso337990f8f.1
+        for <linux-rdma@vger.kernel.org>; Sun, 08 Jun 2025 14:34:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749418466; x=1750023266;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
+        b=kLjlhI9VFH81AVbWx7uQGxgrlEFkn2PR+mA53L1OazogW2Vko7MjcwYQB8TBoF5k32
+         RJk/mak2n2iuI1m2qpaLd65jJ9yD9SNiYYQe98yFu9WkHLTIZb+PNOuAuKdVmAWhWtt2
+         MzqagKv0xxI5FBiyY4vRjldIIHgRHdCuP78QekxLPRIthXpp9jlQ3S+8xHLku6UZi4cz
+         DoS48g0Xm0sP3nlxDEgxSqkkIrikLhsqT1iwk6+XfpyZmJzyov6G6RQPu6fn0RZC4fM3
+         uijhnUyZXTN+uRV3/8dTNRHpcH+Ss8HBavV3JImSUl4IJG0FgSKDzJpf+UNVUPjHTs1x
+         GIaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXKA5HfvbPYls55gEXC5WJg5cBo6UJEU2JBPVbHmxCo09mKcud3LfhRQFTWQ8qMtN0S+ylauJrJpgtU@vger.kernel.org
+X-Gm-Message-State: AOJu0YxG66SNXvILURmBWq8VWsU37iqEgpIwApjLrcmYzB7H0vUM2WBV
+	olC2UkBc34SIBfutdu8TkQVL7i8k9ZPFprRXqvaIB0yV2JIXbhmRbCJq
+X-Gm-Gg: ASbGncvfh8PigiXbc/qyf2NY3DiC+b+WPuzYm4Md7S35HXzUwM1ZQfFr/tztQKvye4e
+	Yaxjw3aCdN5DgZqZdQ+D7zc57ueRLZ2xbfL7iK12EwUnREn4Mho3g2K4zjAz+FsWiCNdFWNEMRU
+	XE6bdkjUhJx82MK3VMHFDJ26y3dh7YYGDaqRnzPxUrNtGnOMHOY3BxMRYdr+OtyUpJ1ln1+L/0Q
+	Rd/DzLWB6eERcjEpNTqrB8j1kpsoaiYki3avH7URQLATH6Sxi9NoifJy5KYuD059zyyOARfYbGs
+	ru/mNpvGjivhpJgx47sHyNewDWm6hRAM4matCgemaTZ0xI7DPNWqTJ295Uv/EA1gXpGNDJv5JgI
+	NW2+LPnxvgy4bTSdKLzo=
+X-Google-Smtp-Source: AGHT+IFQ7LrQQhs0Mfh2A8NNn2zoasRikazjODgnwUoC3pc0Gs/NCRbJPIfq344ZAHBzR6B5yWN5wQ==
+X-Received: by 2002:a5d:58f9:0:b0:3a5:3b03:3bc6 with SMTP id ffacd0b85a97d-3a53b033bd0mr3988155f8f.28.1749418465646;
+        Sun, 08 Jun 2025 14:34:25 -0700 (PDT)
+Received: from [10.100.102.74] (89-138-68-29.bb.netvision.net.il. [89.138.68.29])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45306b01d77sm45721265e9.31.2025.06.08.14.34.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 08 Jun 2025 14:34:25 -0700 (PDT)
+Message-ID: <4ffc247d-a59c-43dc-8ea0-84b85f0e1045@grimberg.me>
+Date: Mon, 9 Jun 2025 00:34:23 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH for-next v2] RDMA/rxe: Remove redundant page presence
- check
-To: Daisuke Matsuda <dskmtsd@gmail.com>, linux-rdma@vger.kernel.org,
- leon@kernel.org, jgg@ziepe.ca, zyjzyj2000@gmail.com
-References: <20250608095916.6313-1-dskmtsd@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20250608095916.6313-1-dskmtsd@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] IB/iser: remove unnecessary local variable
+To: Li Jun <lijun01@kylinos.cn>, mgurtovoy@nvidia.com, jgg@ziepe.ca,
+ leon@kernel.org, linux-rdma@vger.kernel.org
+References: <20250604102049.130039-1-lijun01@kylinos.cn>
+Content-Language: en-US
+From: Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <20250604102049.130039-1-lijun01@kylinos.cn>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 7bit
 
-在 2025/6/8 11:59, Daisuke Matsuda 写道:
-> hmm_pfn_to_page() does not return NULL. ib_umem_odp_map_dma_and_lock()
-> should return an error in case the target pages cannot be mapped until
-> timeout, so these checks can safely be removed.
-> 
-> Signed-off-by: Daisuke Matsuda <dskmtsd@gmail.com>
-> ---
->   drivers/infiniband/sw/rxe/rxe_odp.c | 13 +------------
->   1 file changed, 1 insertion(+), 12 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
-> index dbc5a5600eb7..02841346e30c 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_odp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
-> @@ -203,8 +203,6 @@ static int __rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
->   
->   		page = hmm_pfn_to_page(umem_odp->map.pfn_list[idx]);
->   		user_va = kmap_local_page(page);
-> -		if (!user_va)
-> -			return -EFAULT;
->   
->   		src = (dir == RXE_TO_MR_OBJ) ? addr : user_va;
->   		dest = (dir == RXE_TO_MR_OBJ) ? user_va : addr;
-> @@ -286,8 +284,6 @@ static enum resp_states rxe_odp_do_atomic_op(struct rxe_mr *mr, u64 iova,
->   	idx = rxe_odp_iova_to_index(umem_odp, iova);
->   	page_offset = rxe_odp_iova_to_page_offset(umem_odp, iova);
->   	page = hmm_pfn_to_page(umem_odp->map.pfn_list[idx]);
-
-The function hmm_pfn_to_page will finally be "(mem_map + ((pfn) - 
-ARCH_PFN_OFFSET))"
-
-The procedure is as below:
-
-hmm_pfn_to_page -- > pfn_to_page -- > __pfn_to_page -- > (mem_map + 
-((pfn) - ARCH_PFN_OFFSET))
-
-Thus, I am fine with it.
-
-> -	if (!page)
-> -		return RESPST_ERR_RKEY_VIOLATION;
->   
->   	if (unlikely(page_offset & 0x7)) {
-
-Normally page_offset error handler should be after this line 
-"page_offset = rxe_odp_iova_to_page_offset(umem_odp, iova);"
-
-Why is this error handler after hmm_pfn_to_page?
-
->   		rxe_dbg_mr(mr, "iova not aligned\n");
-> @@ -352,10 +348,6 @@ int rxe_odp_flush_pmem_iova(struct rxe_mr *mr, u64 iova,
->   		page_offset = rxe_odp_iova_to_page_offset(umem_odp, iova);
->   
->   		page = hmm_pfn_to_page(umem_odp->map.pfn_list[index]);
-> -		if (!page) {
-> -			mutex_unlock(&umem_odp->umem_mutex);
-> -			return -EFAULT;
-> -		}
->   
->   		bytes = min_t(unsigned int, length,
->   			      mr_page_size(mr) - page_offset);
-> @@ -398,10 +390,7 @@ enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
->   	page_offset = rxe_odp_iova_to_page_offset(umem_odp, iova);
->   	index = rxe_odp_iova_to_index(umem_odp, iova);
->   	page = hmm_pfn_to_page(umem_odp->map.pfn_list[index]);
-> -	if (!page) {
-> -		mutex_unlock(&umem_odp->umem_mutex);
-> -		return RESPST_ERR_RKEY_VIOLATION;
-> -	}
-> +
->   	/* See IBA A19.4.2 */
->   	if (unlikely(page_offset & 0x7)) {
-
-Ditto, page_offset error handler is not after the line "page_offset = 
-rxe_odp_iova_to_page_offset(umem_odp, iova);" ?
-
-Thanks
-Yanjun.Zhu
-
->   		mutex_unlock(&umem_odp->umem_mutex);
-
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
 
