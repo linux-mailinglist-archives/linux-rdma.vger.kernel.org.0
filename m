@@ -1,145 +1,99 @@
-Return-Path: <linux-rdma+bounces-11060-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11061-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7426DAD11C5
-	for <lists+linux-rdma@lfdr.de>; Sun,  8 Jun 2025 12:09:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D310AD11D0
+	for <lists+linux-rdma@lfdr.de>; Sun,  8 Jun 2025 12:28:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 389973AAC83
-	for <lists+linux-rdma@lfdr.de>; Sun,  8 Jun 2025 10:09:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1ED8188C373
+	for <lists+linux-rdma@lfdr.de>; Sun,  8 Jun 2025 10:28:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1CE520A5DD;
-	Sun,  8 Jun 2025 10:09:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECA8320E32B;
+	Sun,  8 Jun 2025 10:28:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O3yi5PhF"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="i02e8sQt"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17AE2A927;
-	Sun,  8 Jun 2025 10:09:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 887651D9A54
+	for <linux-rdma@vger.kernel.org>; Sun,  8 Jun 2025 10:28:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749377367; cv=none; b=N1NmVCEeYG+YcCGxUrCDTX10FWOucHPMIiSJIdSQjp1Xi+msgqDSDByxmATkyKywOLYLMNqaRCNWNr+ks9o1DkR/BvZVcmj/suwcPAO/yAr9aB6Cdrjrzto8rrQ7a7BuAInbQCgjHW7c0lwQrvn9opVWG0WJYt229tZ6N91Sfts=
+	t=1749378491; cv=none; b=qCjUYG83/hx6Urqmw8pOoUDWdWNr68WHtgiuWrMOGLcc0VdBuV8xqQj2H33kn07Domq3d42DJYflk/AQryw5FnVRc+wectd/PpZGszbUSxh4dMjsLDlP5KNnfLJQdTGNThaHHz46bFuzQ55mZvDrvOYRDD8I0M+uhYSexf6T3Tk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749377367; c=relaxed/simple;
-	bh=mw52m+pDqfoXz3jkWtw7E4/3TvjKzk+8qk4ny2CFayo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hVO/z0gXJ4QH1NjYe2aUruHdmqlgy2sNBd7MXQy1z5LyKnRWSIjn53gKdlfspL2EmsIKS8Ruu0wtSYnGy9loStbV+m09U/DguXSPPtLe2/wtZeHj/NSUCn5FWucHcu9n6RgqTsnPgoiKjsii3wrEWxradFMAcTyPDP39q6eWUxk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O3yi5PhF; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-45310223677so1367945e9.0;
-        Sun, 08 Jun 2025 03:09:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749377364; x=1749982164; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5+2LvGJ+RQAGkJd/RVuC75PuOLPGNzsYlk9uL8LVulU=;
-        b=O3yi5PhFlp5GRCB0HENFVwih6GehBBBtUQGXHmYy9FdKLXRWdT2KHcYN1S5VpzTpsS
-         Hq8hSXhXyGVvx5nLBkVMnQSTDtvHX9pEO68ZEGzXuUgWvC2FuhCsvbam42GEood+yIMr
-         gpnZzBei+5AyPZ9VZ1tw1W9v15iWs8vsoFpTayldQcRF9pvWW1Vpdyec+h7OM7R9KyS6
-         rf/dpF2XmVWtSupRW/xg4ySun6Jm0VgbDsMytt1XDWjfAOtj4NQLGUfMDEQ+usCxY7Zp
-         bAZTi4Jn+kU9/HluGRriPkzYJfhoX8J0HznROqmzmULy8Q7QGBkxzAarthDc/+pdG6Fn
-         FDtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749377364; x=1749982164;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5+2LvGJ+RQAGkJd/RVuC75PuOLPGNzsYlk9uL8LVulU=;
-        b=E/e85kpJn3iPPd+URNyWWyZ4H+Qjf8wcf6hvUYKlqFMLVqKwenr8CHU1JW32Kd4dkj
-         hsTVTBLAMzQTI4DxDrlxvFz+rFmjGYMwquQL/ZpEzZCTxCmAwWoQCjefxnAxu5rSBkHt
-         8BNX2vEMWwFhLMJa7V4Ke5ZzYVxeT7fDLLyVF2ewPzUnaqFxWWDoVWNoAMUHqBHN2N2b
-         9p+w0L4/q0iNUqVDCYpPFQ8bV2LM6X7oSkrRvSAZe13jTmPPKve6cOuLQx0VwCN1gSMD
-         7pYvwm2QLPGcsxukguUZDEOBGBSHugBG2f2fpz7mKW5yGScCbxhIUyBum62x5rITWzk/
-         yMPA==
-X-Forwarded-Encrypted: i=1; AJvYcCURdqc4yzKMuDI9Rsz4ylYNdJvz8Ept+RuX+/cChoYSe+HARew8YCjXQmLlG3n31gVah5Ha1OWs@vger.kernel.org, AJvYcCVIYnBpz71PnFBXu1mb1W/Nt0qIuQ+VFovhVEpI6cemV9lvPiW3oqiWSCDLDEbSu3/28xI=@vger.kernel.org, AJvYcCXsMB0gpnevmA2RAN8P0+g8zBaIvR0B2jhMVwEL2bibJNXKBoVhD5C9p3nZS8ZXkM6QdgN8p/IxvgvCxTEm@vger.kernel.org, AJvYcCXxSB33xDVQi8ZIOgDN9c9o83Rclak5ACzcug7lJHGQtA7sMx/Dbg2pL7ByeaNMvm+Nvtpf+sGcGdCSIA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwZ13xXhnMpadFETN7MLtNlTXC0wCtkKDilyLXTOEzYaBMBMK7S
-	DLAJv4qLon2A3uU/1pXtxjjgi1vBhCHnBWKzkmT91XNEOBpCM0W5Bpml
-X-Gm-Gg: ASbGncvz+Ule7EFCjs1YY1CxR4hnIK5o5Rxje0EsRc47HcVJl4rq4JYBYAuzX0rFUNw
-	5HRtMmMJqOMaF9+RNjTxYKDBgb7E0vOsViq5CWMS1JD9Yz5zYFQ2PtXws7KBS5KBoVllg2xmh3V
-	EEjX3xTt3bLtN/jcUJr2q3q2eosTTOhQP0e2roNAz1q2xS5HO7FOtwaYET+6jfX1LS8I/NaeAAL
-	jKLg7MaW+7xxgA6O8SBEqBK/TzKxrevQMD8ck8oSeI372wvoMTwxJ4n6WZV0u8Pd/UBj62HNZM5
-	4dOarLgWbjrh/j142kdj2Ukjh85NqHyOsMuZPEroyLjCuzxuaSMoAIgMKiZeEDZFtbnV7pyrz4T
-	44B79uQY=
-X-Google-Smtp-Source: AGHT+IHbeHUTLV+ijJ93umxha7U3N+Doc5TIXNx5qFgkM9Xzh1vqFqFHHXuDnm01fTZ3xIh2LwMSAg==
-X-Received: by 2002:a05:600c:5396:b0:43c:f44c:72a6 with SMTP id 5b1f17b1804b1-45201364c47mr99899725e9.2.1749377364074;
-        Sun, 08 Jun 2025 03:09:24 -0700 (PDT)
-Received: from [172.27.58.200] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4526e05636dsm80089865e9.4.2025.06.08.03.09.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Jun 2025 03:09:23 -0700 (PDT)
-Message-ID: <c8196bc9-ea3d-4171-b99b-b38898081681@gmail.com>
-Date: Sun, 8 Jun 2025 13:09:16 +0300
+	s=arc-20240116; t=1749378491; c=relaxed/simple;
+	bh=5XmXYyPP+Qgj3KAzI5TCizU+1tR97vPgTh7ogxJMr9Y=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc; b=o3RRqDCcj8zjTsMMCpHi2X8VXw5aSBagw7DX0t1aU+GTAaxTApcFJYS8EPYJZK3Ip5l17sIi35+d/XcQmqDMtkuXlDJy65OFyPiM+OmLGO9/hoDkfd/BjGDAp+G+Cssr3D/3sgS4pxxXfj+OHWB5hF7V57x1TfcGgCl8kFotlWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=i02e8sQt; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next V2 07/11] net/mlx5e: SHAMPO: Headers page pool
- stats
-To: Cosmin Ratiu <cratiu@nvidia.com>, "kuba@kernel.org" <kuba@kernel.org>,
- "saeed@kernel.org" <saeed@kernel.org>
-Cc: "andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>,
- "hawk@kernel.org" <hawk@kernel.org>,
- "davem@davemloft.net" <davem@davemloft.net>,
- "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
- "leon@kernel.org" <leon@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "edumazet@google.com" <edumazet@google.com>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- "ast@kernel.org" <ast@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
- "richardcochran@gmail.com" <richardcochran@gmail.com>,
- Dragos Tatulea <dtatulea@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>, Tariq Toukan
- <tariqt@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- Gal Pressman <gal@nvidia.com>, "daniel@iogearbox.net"
- <daniel@iogearbox.net>, Moshe Shemesh <moshe@nvidia.com>
-References: <1747950086-1246773-1-git-send-email-tariqt@nvidia.com>
- <1747950086-1246773-8-git-send-email-tariqt@nvidia.com>
- <20250522153142.11f329d3@kernel.org> <aC-sIWriYzWbQSxc@x130>
- <2c0dbde8d0e65678eeb0847db1710aaef3a8ce91.camel@nvidia.com>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <2c0dbde8d0e65678eeb0847db1710aaef3a8ce91.camel@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1749378486;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=B/HT30XtNYPWprYJg7+tfUoLJlqF4TDkJ7I/aq5zsBk=;
+	b=i02e8sQtj/TAeha5PdFa2AzTnpxrjujmg5VC83CxtMJx/0YhoOVgGWd1EhcDIT7t+B+d7r
+	NeD8ogw/I6kCq3hRaensONbJgYX6Uh9+EFS7dpJfvBQEyxyimLr+OrJrjv5f0xGgsrTqpJ
+	vlDk723/imcUuK1R1vvsS6A1MEtE51w=
+Date: Sun, 08 Jun 2025 10:28:04 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "zhenwei pi" <zhenwei.pi@linux.dev>
+Message-ID: <f1cdcb41eb6939ccd12905391f473e74337c0391@linux.dev>
+TLS-Required: No
+Subject: Github RXE CI support
+To: linux-rdma@vger.kernel.org
+Cc: zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org
+X-Migadu-Flow: FLOW_OUT
 
+Hi,
 
+On July 2024, I attempted to contribute the new feature of Valkey Over RD=
+MA to the Valkey community, which allows Valkey to communicate using RDMA=
+ and achieved significant performance improvements and latency reductions=
+. Valkey is a popular KV database with a large number of users, so releva=
+nt CI testing is necessary. However, the virtual machine used by GitHub d=
+oes not support RXE (compilation option is not turned on), so we need to =
+compile an out of tree RXE driver in a timely manner and install it into =
+CI's virtual machine, and then run the automated testing program. At that=
+ time, in order to support this feature as soon as possible, I copied the=
+ RXE code from Linux based on the kernel version of GitHub virtual machin=
+e and successfully ran it. Later, with the upgrade of the GitHub virtual =
+machine kernel version, it was also upgraded once.
 
-On 06/06/2025 13:43, Cosmin Ratiu wrote:
-> On Thu, 2025-05-22 at 15:58 -0700, Saeed Mahameed wrote:
->> On 22 May 15:31, Jakub Kicinski wrote:
->>> On Fri, 23 May 2025 00:41:22 +0300 Tariq Toukan wrote:
->>>> Expose the stats of the new headers page pool.
->>>
->>> Nope. We have a netlink API for page pool stats.
->>>
->>
->> We already expose the stats of the main pool in ethtool.
->> So it will be an inconvenience to keep exposing half of the stats.
->> So either we delete both or keep both. Some of us rely on this for
->> debug
->>
-> 
-> What is the conclusion here?
-> Do we keep this patch, to have all the stats in the same place?
-> Or do we remove it, and then half of the stats will be accessible
-> through both ethtool and netlink, and the other half only via netlink?
-> 
-> Cosmin.
+Link of my RXE: https://github.com/pizhenwei/rxe.git
+Github CI steps example(Valkey: https://github.com/valkey-io/valkey.git, =
+CI config: .github/workflows/ci.yml):
+    steps:
+      - name: clone-rxe-kmod
+        run: |
+          mkdir -p tests/rdma/rxe
+          git clone https://github.com/pizhenwei/rxe.git tests/rdma/rxe
+          make -C tests/rdma/rxe
+      - name: clear-kernel-log
+        run: sudo dmesg -c > /dev/null
+      - name: test
+        run: sudo ./runtest-rdma --install-rxe
 
-IIRC, the netlink API shows only the overall/sum, right?
+Because Github CI virtual machine does not allow to run 'insmod -f tests/=
+rdma/rxe/rdma_rxe.ko' directly, it's installed by 'sudo ./runtest-rdma --=
+install-rxe'.=20
 
-ethtool stats show you per-ring numbers, this is very helpful for system 
-monitoring and perf debug.
+With=20the increasing popularity of RDMA, more and more services may requ=
+ire automated testing based on RXE. I hope to have community support for =
+the corresponding official version, rather than using multiple personally=
+ supported versions(like my RXE).
 
-
+Looking forward to the response from the RXE community!
 
