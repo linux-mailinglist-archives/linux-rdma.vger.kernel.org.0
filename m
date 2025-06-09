@@ -1,134 +1,102 @@
-Return-Path: <linux-rdma+bounces-11099-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11100-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D67BAD21FC
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jun 2025 17:12:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51ED7AD2243
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jun 2025 17:21:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77C123B1DCB
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jun 2025 15:07:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B038A1882A7B
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jun 2025 15:21:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F7BF21B192;
-	Mon,  9 Jun 2025 15:03:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C42F320E6F9;
+	Mon,  9 Jun 2025 15:20:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="TAGz925s"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W7nVh0kV"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 206EA1A2C0B
-	for <linux-rdma@vger.kernel.org>; Mon,  9 Jun 2025 15:03:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 756921FF5F9;
+	Mon,  9 Jun 2025 15:20:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749481426; cv=none; b=WSDUhptA3b7PsolhH6DgXF9xyKNR80xHSnvhacu5JoZ4hiiFpPSxRVKL+wRlWe4GTjq8QNg5HbtxPwt2CakFVwh1bBYq560Dvb6gMUBogsnmY5klRcDBCPQno707zkoreounKoy2IlQZnz3MGok3kj+jSttf7uAGX7/uiEkJHWI=
+	t=1749482424; cv=none; b=ANKSRhay2Z8egt6nmZIRT6lmJ5hXfPblGYf0c2NjXZswMtmx1zGQoJGY8+UjGwYRS3zdu+VW1YJTK3gUNQqRmvs0TQpYPapqbUtvlgNcBy2fK/7rmHVc3h/kCJdITveBhr7gW3nJhFSPhrWtr7Jariy5ya7bdiCbbOrVY4iZ31E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749481426; c=relaxed/simple;
-	bh=jZD9YF/rqj0sE4oZrg1j6Tte0F5iZ9HdpG9ZM4zA0EI=;
-	h=Subject:Message-ID:Date:MIME-Version:From:To:CC:References:
-	 In-Reply-To:Content-Type; b=cEwqrHciWK+p0JLqM7yZL/vFS4PRYywb8qhju+lviHKRlA4mKHvxdCyyMmjzNSvKHx3reuQTbe6CKJqPH+6TSxFrt2CSUdHCJVnPl83cINgfLOocH5m4mKFW6m8gCCS1x0X1NTkOT4EluL5/GiL216+LLZIKT15gCcEOW8ZWHpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=TAGz925s; arc=none smtp.client-ip=99.78.197.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1749481425; x=1781017425;
-  h=message-id:date:mime-version:from:to:cc:references:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=YUShQivZ4+5u2RwsGUd2cBSMBmaaHPLaJvCFz3PlBkU=;
-  b=TAGz925sdRQuCI3OszkM6mmSih62k+G0Xm6/SlbheYR5t7G6F5P+nK6V
-   Unv3/0lb2d6qT8np5IaQIideh4HwhSZKQ0WICfAoqIZPqaNtWCc/Niz9B
-   Z96jrx0EzBdaPPJvoG38Kz4rqtfvns21ON+rWvW30B7gAf8WXswOPdFCC
-   9nzJwKR8bVROyLcjMxabj/MevyxMiUJvfnLW/jPoe+hUL+Pt9YgXqoi96
-   NIxSo+PC51p19zDpKQ41iZO0tseXt0NYnwpbA7ZM3IjXLvPmKPhGHq93W
-   FzXLFPpVZWf5hy+i455MyGlqlWw/M1410waogOkSKH2A6aDUwsld+oG8E
-   g==;
-X-IronPort-AV: E=Sophos;i="6.16,222,1744070400"; 
-   d="scan'208";a="59412295"
-Subject: Re: [PATCH for-next] RDMA/efa: Add CQ with external memory support
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
-  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2025 15:03:42 +0000
-Received: from EX19MTAEUC001.ant.amazon.com [10.0.17.79:16496]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.4.164:2525] with esmtp (Farcaster)
- id 3999e068-e7b3-4b0b-b08b-9519c48900fc; Mon, 9 Jun 2025 15:03:41 +0000 (UTC)
-X-Farcaster-Flow-ID: 3999e068-e7b3-4b0b-b08b-9519c48900fc
-Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
- EX19MTAEUC001.ant.amazon.com (10.252.51.155) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Mon, 9 Jun 2025 15:03:41 +0000
-Received: from [192.168.122.212] (10.85.143.175) by
- EX19D031EUB003.ant.amazon.com (10.252.61.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Mon, 9 Jun 2025 15:03:37 +0000
-Message-ID: <83eb7ecd-ac1e-4472-a688-bc3f22900546@amazon.com>
-Date: Mon, 9 Jun 2025 18:03:32 +0300
+	s=arc-20240116; t=1749482424; c=relaxed/simple;
+	bh=sUaUR4iSXz3vBAGFwkg3IlGWXLi6RP/yU+4D3g+9NZk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=GTy4DTQ9r3nJMtkNqLDtV8vhmvcHBDjoGZyYGWa4xGTixvfbSNJTKH4UP9uLdpLoqkuYDpBz9ohIlAUTUd+X8IhicGroYupZ1M7v25h4GS6farzX2b0wnyBUepzFGqoc+mZKfatxyAcgIc2OB2/pN0elpNxGpXjP4itzpcgW9kk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W7nVh0kV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 657C9C4CEF0;
+	Mon,  9 Jun 2025 15:20:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749482424;
+	bh=sUaUR4iSXz3vBAGFwkg3IlGWXLi6RP/yU+4D3g+9NZk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=W7nVh0kVizSkOEZ3nC7Hqdj053DIZFgYMyFad7S6tGsZrRXqitqx2lUUbvzorqaU3
+	 +Kq4gyqsqsarbYPzB8DUktJmAFZOA2B9EfVbk6Id2tH2Ndj9UkC8haUxkl2fM0VeZl
+	 PSjHpa6y/Y30m4xlFD6fnM0bTWaU+JeXUsjoGvbwAeT9Hl2wyBrSxGrdGyVozkaG0n
+	 y4cEUGs69A8hUc/eOv4QpQlcILkA8EO3VUaILaTIKyP5PA2Gj+7+at5iTno7fdTOTB
+	 4pXAIiPa14/mvlJI3XAtHilSHX4EGIEQ4TOpBGpq/BkpMSzNSV5wK7YAkmRTV+SVPq
+	 EPYBpFQed9POg==
+Date: Mon, 9 Jun 2025 08:20:22 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Tariq Toukan <ttoukan.linux@gmail.com>
+Cc: Cosmin Ratiu <cratiu@nvidia.com>, "saeed@kernel.org" <saeed@kernel.org>,
+ "andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>, "hawk@kernel.org"
+ <hawk@kernel.org>, "davem@davemloft.net" <davem@davemloft.net>,
+ "john.fastabend@gmail.com" <john.fastabend@gmail.com>, "leon@kernel.org"
+ <leon@kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "edumazet@google.com"
+ <edumazet@google.com>, "linux-rdma@vger.kernel.org"
+ <linux-rdma@vger.kernel.org>, "ast@kernel.org" <ast@kernel.org>,
+ "pabeni@redhat.com" <pabeni@redhat.com>, "richardcochran@gmail.com"
+ <richardcochran@gmail.com>, Dragos Tatulea <dtatulea@nvidia.com>, Mark
+ Bloch <mbloch@nvidia.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Gal Pressman
+ <gal@nvidia.com>, "daniel@iogearbox.net" <daniel@iogearbox.net>, Moshe
+ Shemesh <moshe@nvidia.com>
+Subject: Re: [PATCH net-next V2 07/11] net/mlx5e: SHAMPO: Headers page pool
+ stats
+Message-ID: <20250609082022.5ef0c44a@kernel.org>
+In-Reply-To: <c8196bc9-ea3d-4171-b99b-b38898081681@gmail.com>
+References: <1747950086-1246773-1-git-send-email-tariqt@nvidia.com>
+	<1747950086-1246773-8-git-send-email-tariqt@nvidia.com>
+	<20250522153142.11f329d3@kernel.org>
+	<aC-sIWriYzWbQSxc@x130>
+	<2c0dbde8d0e65678eeb0847db1710aaef3a8ce91.camel@nvidia.com>
+	<c8196bc9-ea3d-4171-b99b-b38898081681@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: "Margolin, Michael" <mrgolin@amazon.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-CC: Leon Romanovsky <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-	<sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>, "Daniel
- Kranzdorf" <dkkranzd@amazon.com>, Yonatan Nachum <ynachum@amazon.com>
-References: <20250515145040.6862-1-mrgolin@amazon.com>
- <20250518064241.GC7435@unreal>
- <985b77cc-63bb-4cf9-885e-c2d6aca95551@amazon.com>
- <20250520091638.GF7435@unreal>
- <9ae80a03-e31b-4f33-8900-541a27e30eac@amazon.com>
- <20250525175210.GA9786@nvidia.com>
- <5a2c3ffd-bdcb-4ad2-b163-3c1db7b3b671@amazon.com>
- <20250526160816.GA61950@nvidia.com>
- <cb06d3d2-a8c2-459a-af32-bcbbdaa297b6@amazon.com>
-Content-Language: en-US
-In-Reply-To: <cb06d3d2-a8c2-459a-af32-bcbbdaa297b6@amazon.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EX19D035UWB001.ant.amazon.com (10.13.138.33) To
- EX19D031EUB003.ant.amazon.com (10.252.61.88)
 
+On Sun, 8 Jun 2025 13:09:16 +0300 Tariq Toukan wrote:
+> >> We already expose the stats of the main pool in ethtool.
+> >> So it will be an inconvenience to keep exposing half of the stats.
+> >> So either we delete both or keep both. Some of us rely on this for
+> >> debug
+> >>  
+> > 
+> > What is the conclusion here?
+> > Do we keep this patch, to have all the stats in the same place?
+> > Or do we remove it, and then half of the stats will be accessible
+> > through both ethtool and netlink, and the other half only via netlink?
 
-On 5/26/2025 7:17 PM, Margolin, Michael wrote:
->
-> On 5/26/2025 7:08 PM, Jason Gunthorpe wrote:
->> CAUTION: This email originated from outside of the organization. Do 
->> not click links or open attachments unless you can confirm the sender 
->> and know the content is safe.
->>
->>
->>
->> On Mon, May 26, 2025 at 06:45:59PM +0300, Margolin, Michael wrote:
->>
->>> Are you suggesting turning mlx5dv_devx_umem_reg into a common verb 
->>> including
->>> the kernel part or some kind of rdma-core level abstraction for passing
->>> dmabuf+offset+length / address+length to a create CQ/QP function?
->> I think Leon was, but I'm not sure that is so worthwhile.
->>
->> I was thinking more of having the ioctls for things like QP/CQ/MR
->> accept a more standard common set of attributes to describe the buffer
->> memory and then making it simpler for the driver to get a umem from
->> those common attributes.
->>
->> But EFA is alread sort of different because it normally uses a kernel
->> allocated buffer, right?
->>
->> Jason
->
-> Yes, EFA is an example for a driver that doesn't need this on the 
-> "standard" flow.
->
-> Michael
->
-How can we move forward with this patch? It's possible to add additional 
-attributes to the common create CQ ioctl and use it for EFA direct verbs 
-but it won't be easy to move existing drivers to use it.
+Unfortunately by that logic we would never be able to move away from
+deprecated APIs.
 
+> IIRC, the netlink API shows only the overall/sum, right?
 
-Michael
+Wrong.
 
+> ethtool stats show you per-ring numbers, this is very helpful for system 
+> monitoring and perf debug.
 
