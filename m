@@ -1,265 +1,196 @@
-Return-Path: <linux-rdma+bounces-11108-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11109-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3776AD23E1
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jun 2025 18:27:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35CD8AD2519
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jun 2025 19:39:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 372F318868BD
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jun 2025 16:27:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA4423B08D6
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jun 2025 17:39:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1406521CFE0;
-	Mon,  9 Jun 2025 16:25:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1F8321C189;
+	Mon,  9 Jun 2025 17:39:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gcG75G4N"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UxFchhEB"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C74121C19C;
-	Mon,  9 Jun 2025 16:25:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FBE821A931
+	for <linux-rdma@vger.kernel.org>; Mon,  9 Jun 2025 17:39:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749486351; cv=none; b=jtr0VRmbm9niXowKbT2RwQVzSKynxpNUu15wsuuDZMCE7Qc8vPuoHvpIfEZMi7tHMwq717EdG2YrHuhE85wvUYrwhfec/eyX+UOsKIxDTOEKTfWRK2KAwCvg1Rh6Q/sfZhYQEw8RVwyVkBX8776hOJX/tiWkbGVdGq2mmyVRmAI=
+	t=1749490761; cv=none; b=GEbBNXOwAQ8J9yW+hqOL4IpUkd0gcwByLVFht2LuDwLsukQqZkJwzFjbQZe0HeJeRPZ1MTYsTQKHvUNh9C5kc72/mXAIvdr8txx0VYWSJLJsTI6G9x3IhzL5hPUgwFrs/5312CkbeSJRIsijaxQeA7aMIiGmD32KP00M5FzSuqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749486351; c=relaxed/simple;
-	bh=u8r2Q+UtHJ4Nd9Z2cHIyBuA8VSeH+waJg4MzAJzv7o8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hpsANtuBtOeQr3FO5gvppNRwzr+YtytZBe+99a7z5U+zTsjVoM3xPaxSieJFTaL3WjEjEs6MI22J6up99WWEpWJFXLVz9b0EUX/1ztc06MiFRSuNTQv5eoOxzfkzlXg1bhQnMNISc+tFnoFJcwcySxe9C33Kd1UCMDpxKTb4F5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gcG75G4N; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-747fc77bb2aso3474288b3a.3;
-        Mon, 09 Jun 2025 09:25:50 -0700 (PDT)
+	s=arc-20240116; t=1749490761; c=relaxed/simple;
+	bh=vDEZLmFiWUgAEhhMnpPxC2x5ptegpxqcBtIXF4EgUvw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sTt2fEwU9ZtuxdgJnCZAnA83f9BZuE6SBYXJUCwdtGEwtdtFsYAuW6HyIRwcS+dk9U4C8QUcy9aKuvzXfYDCj/prWg4NwC04EhUP4Qn9Gxrsai+/yzZjIi214lkojGtRlGSJ9yfex1nDx1fzx1hPqExZRfYV3R+Sz31bDpVH3o0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UxFchhEB; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2357c61cda7so13145ad.1
+        for <linux-rdma@vger.kernel.org>; Mon, 09 Jun 2025 10:39:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749486349; x=1750091149; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1749490759; x=1750095559; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rIrnh6Y6z0RsAszSzJMckGXGP+N0IS1GPSV62LbBz1M=;
-        b=gcG75G4Nf09QWzPIdG32NyX6gnNqq18Mq9ifc+BIYuEZD5S7gNNDohTp2ui4V7YPT0
-         Hi7/Iqo/YRy1Y9cLS+QOqeo7+dA1PtJTWFQNAqf4Y+VTJczxwaccTddx9rijDB2xWcWd
-         NcIRR2tnSXOgJsNUjUYB4Odlo5X4d0l42EjnR2Fl21SLidQI5joiPe1T2XsfA+e9E9mQ
-         oUaka6lm9TyY93wI0XC0IEwx6Jp3dPMFq+YQdE4Nz7eU0oxbMMsELA5LyrokvDOBJlwH
-         xsi7Z94wh0rC7aKnGabngIqcAcPnPXuP0XDYDbVWLJDx6PSlwqMneMo3sMJhOfW71utF
-         8l4A==
+        bh=9RRpRkvuNJy3cXkOhH8biChoDOFuxh8lZ/u2fpQqLzg=;
+        b=UxFchhEB/EOTc0w70KhZaY15W09uYu6jXZOdr2ase+hIfTCPnYc/ZCm8tpKuJPWiOY
+         xZJfxn+61Ida+6G3EvB/BAOPBOyt9hI4GgbeyzuBG9TCxdpv0yWiNx+10mK38OG8e0YT
+         njTgmMc4zguYLqaxNenGblIq6z0Z8wqh9hm59Kfbjy+dkQUMe6KED7usY9RvlBxgF+3i
+         pCE1id1SQeHxgEQygp3chDNtfyiTg+MIK2RFk9nxvVh6TbdJiCQv8iz16M15ZPipF32q
+         Gs6Q9ysEJjPpaVmI39FOiyCGGRz2hKEMgb7wWg+9x67ahJ6X0DcMqFebPc/FxvZhcJM1
+         zfTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749486349; x=1750091149;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1749490759; x=1750095559;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rIrnh6Y6z0RsAszSzJMckGXGP+N0IS1GPSV62LbBz1M=;
-        b=gzlYJoPbNKirj3JNf1CKoU62/Y4vv8+NdkfVhglHCprIQhPFPKRxwnIl0KY7szUvnJ
-         PsnwHQbzvf5i4bYFA84Lm8i7pBx8lfmYzWcCHdpgT1qz3RjeQc/4sf8z1wcBMwCxpvqf
-         OasTmlzwT9NR2t1KEEdyLUNjWGnHvNN0y1F7vmWTQqE+lXktP2v9lmkCVm5gJfmQYO7l
-         iIu6dxWJ4oO13JezuW9xnHavsfu2e9em4c477BjeETf0hGLkjZUANHFBHOd6GTPI8j53
-         Z0jSZ0Rims4NmTj2bey/BEB30CaNvlgk/Uo4WWKwEDEkNe/UoTRYsbaojR5qg8wjW5AB
-         gFsg==
-X-Forwarded-Encrypted: i=1; AJvYcCU62juxx5aIL8F8YIGIqSietfW5dOl5PhMYMn5GeajL0PyibLKcQCAw4tVeiImJj3iZvEMtqZjYkV9j1H2qv5Yc@vger.kernel.org, AJvYcCUDuvl8fey9387k8Jmedki9WHszDSEYKR/blwd/Tffgms6d8jwsUJGoV/+PeSERTyTLUxG7Ez8bkvBaiA==@vger.kernel.org, AJvYcCVvWo2lqQRwZqfAXjZy4ILqNA3ryt6pc6jLccBkf4sihJU8dFAHEuNKz4YQKCTBEOETFBRVQ/g3bmrS8NE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyCL0q/MuCxwRHPv9l3XX8IhYlzOXJuHQ1v2RbC6u5RdVZWGCop
-	8ZzL2gfI2lCwacC4ph8O9bkMu1BPjcK6A0D7yIMVX+M55w3VSaMyWWHsZS5Y
-X-Gm-Gg: ASbGncuf3eDyb+eTdZbphAZ/YihpI0mTYmWQDlPh897nCnbmmgypSzNTEp7JZaJpYb1
-	wkCdtSvL5ANRQLKWnJhlUBJ5JjSgTEH+bJUFjWmmZhTDOhNZuXpIENU/B6+Ou27/ky/qLRHZSEQ
-	lAdgWShzJOomwyaouWumGI9SrnosvLhGlyZw7rs//c3pODhnO6BF/K+U6m2KCH9guueIejBKmKo
-	bK6FYlffnQtFIuR+UPeky5iKujEYdoaik9t9V3R/MhvTBPeSMaSPTFD322JsoHAO7VivQ0qV3or
-	naJ4WNF90uonBW1EpILY2rLgxnssD7zvoo8hi9+JKgxYpamZaavONcNhoJkcuK7eUjRCgYTGWm/
-	Osk47Dnh6oevK
-X-Google-Smtp-Source: AGHT+IHWJwEpttKcOYtxUVS3ky2ehdeYMgNt9I8XWQyiwY2W97FEQfM0AyDBiEXIyrcRZ6JMgZ6g5w==
-X-Received: by 2002:a05:6a21:1fc5:b0:1f5:7ba7:69d8 with SMTP id adf61e73a8af0-21ee25321f3mr19247516637.15.1749486349275;
-        Mon, 09 Jun 2025 09:25:49 -0700 (PDT)
-Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
-        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-7482b0ea2b2sm5915308b3a.161.2025.06.09.09.25.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Jun 2025 09:25:48 -0700 (PDT)
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	skalluru@marvell.com,
-	manishc@marvell.com,
-	andrew+netdev@lunn.ch,
-	michael.chan@broadcom.com,
-	pavan.chebbi@broadcom.com,
-	ajit.khaparde@broadcom.com,
-	sriharsha.basavapatna@broadcom.com,
-	somnath.kotur@broadcom.com,
-	anthony.l.nguyen@intel.com,
-	przemyslaw.kitszel@intel.com,
-	tariqt@nvidia.com,
-	saeedm@nvidia.com,
-	louis.peens@corigine.com,
-	shshaikh@marvell.com,
-	GR-Linux-NIC-Dev@marvell.com,
-	ecree.xilinx@gmail.com,
-	horms@kernel.org,
-	dsahern@kernel.org,
-	shuah@kernel.org,
-	mheib@redhat.com,
-	ruanjinjie@huawei.com,
-	stfomichev@gmail.com,
-	linux-kernel@vger.kernel.org,
-	intel-wired-lan@lists.osuosl.org,
-	linux-rdma@vger.kernel.org,
-	oss-drivers@corigine.com,
-	linux-net-drivers@amd.com,
-	linux-kselftest@vger.kernel.org,
-	leon@kernel.org,
-	Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Subject: [PATCH net-next v2 4/4] Revert "bnxt_en: bring back rtnl_lock() in the bnxt_open() path"
-Date: Mon,  9 Jun 2025 09:25:41 -0700
-Message-ID: <20250609162541.1230022-5-stfomichev@gmail.com>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250609162541.1230022-1-stfomichev@gmail.com>
-References: <20250609162541.1230022-1-stfomichev@gmail.com>
+        bh=9RRpRkvuNJy3cXkOhH8biChoDOFuxh8lZ/u2fpQqLzg=;
+        b=A+I925GELBwmlfpDnvHjf50PcN0CICLBb2jWN3Ynem6/l2/NtC8i8z4+FgzKLyxqs1
+         XEtJ01B7TXJXUoxRt+c+7O9+nY4sQu2mOgt/KnfZNAXlWBFyFMDxE4I5AIhrjVZuxxNh
+         2X9wHAihtrPiwjWAZmiXthwIgqmzlzfAx0EBfrkq8ijqHuXQkq++wQk03bYCulw3pAH0
+         WdC6Gk2m5m2xeMHBza1QYnf0SdzLcv3iuNoBfITnO9qh/+7qx4ECdIzt0pJoBlky1KN0
+         YgMysU2rw0C3Yry/s4IfLHyZ1x3kErQocKnbDEfhXzzB07H2tyxWZpz6+jekTtr0V/Nx
+         lhig==
+X-Forwarded-Encrypted: i=1; AJvYcCUXEbIxe3n0FbaHCi+pfADV1agSNzl5aVSzK234IOTX2zu/79ePIQrSN3Bko87uZbdpLhUBg4L+f2m1@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzf7HK5QG5CWHZm361DmQ/nBFS8BaQGGS6g/PSpG4+0sUw44k45
+	oRFGUyyq8l8kXTR8IGdKHY0Ey7qxndeDv7IXN42/1cG2yNSeIt/jdmXM1yo1JF7N63PivcZqX+A
+	ELXZqWMOW46wclhumvDL1RrS8pd8FvwUdTuZ/h4pJ
+X-Gm-Gg: ASbGncsjIqxC8IC07mjQIaVMohA5Khs+vGpPhLrL3Q3yUiEek7Kw3341517k9n44s2h
+	p5Vppq/lVZJxd4hJBDQLIWyEAzTw9Mqrh94Aua+w9sOJbS04F9jSy4kSuIj5rDblvdd5caRcjis
+	Okb3n+Rojj4jpl5THcPu8c58JabG72vsy6lnj7z+GB0lC7noEIdZcseK6VTvH9l8hnwzHMqkF6v
+	Q==
+X-Google-Smtp-Source: AGHT+IEvrq24XpltBFWvdSIlKpCIc8JCZdMNJ6F/M800m9IOuRhKavTYagOECC3DsNK5G3lKUSM8nYe/B6o3T3jdn9Q=
+X-Received: by 2002:a17:902:e745:b0:231:ed22:e230 with SMTP id
+ d9443c01a7336-23613de3742mr5147245ad.15.1749490759104; Mon, 09 Jun 2025
+ 10:39:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250609043225.77229-1-byungchul@sk.com> <20250609043225.77229-10-byungchul@sk.com>
+In-Reply-To: <20250609043225.77229-10-byungchul@sk.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Mon, 9 Jun 2025 10:39:06 -0700
+X-Gm-Features: AX0GCFuAdxMyfuOpDJOl1NBEK5X2zXvXF5ManUgjd3SO6IAFQ752DFSmiJ8__HE
+Message-ID: <CAHS8izMLnyJNnK-K-kR1cSt0LOaZ5iGSYsM2R=QhTQDSjCm8pg@mail.gmail.com>
+Subject: Re: [PATCH net-next 9/9] page_pool: access ->pp_magic through struct
+ netmem_desc in page_pool_page_is_pp()
+To: Byungchul Park <byungchul@sk.com>
+Cc: willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org, 
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org, 
+	akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com, 
+	andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com, 
+	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, 
+	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net, david@redhat.com, 
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz, 
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org, 
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This reverts commit 325eb217e41fa14f307c7cc702bd18d0bb38fe84.
+On Sun, Jun 8, 2025 at 9:32=E2=80=AFPM Byungchul Park <byungchul@sk.com> wr=
+ote:
+>
+> To simplify struct page, the effort to separate its own descriptor from
+> struct page is required and the work for page pool is on going.
+>
+> To achieve that, all the code should avoid directly accessing page pool
+> members of struct page.
+>
+> Access ->pp_magic through struct netmem_desc instead of directly
+> accessing it through struct page in page_pool_page_is_pp().  Plus, move
+> page_pool_page_is_pp() from mm.h to netmem.h to use struct netmem_desc
+> without header dependency issue.
+>
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
+>  include/linux/mm.h   | 12 ------------
+>  include/net/netmem.h | 14 ++++++++++++++
+>  mm/page_alloc.c      |  1 +
+>  3 files changed, 15 insertions(+), 12 deletions(-)
+>
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index e51dba8398f7..f23560853447 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -4311,16 +4311,4 @@ int arch_lock_shadow_stack_status(struct task_stru=
+ct *t, unsigned long status);
+>   */
+>  #define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
+>
+> -#ifdef CONFIG_PAGE_POOL
+> -static inline bool page_pool_page_is_pp(struct page *page)
+> -{
+> -       return (page->pp_magic & PP_MAGIC_MASK) =3D=3D PP_SIGNATURE;
+> -}
+> -#else
+> -static inline bool page_pool_page_is_pp(struct page *page)
+> -{
+> -       return false;
+> -}
+> -#endif
+> -
+>  #endif /* _LINUX_MM_H */
+> diff --git a/include/net/netmem.h b/include/net/netmem.h
+> index d84ab624b489..8f354ae7d5c3 100644
+> --- a/include/net/netmem.h
+> +++ b/include/net/netmem.h
+> @@ -56,6 +56,20 @@ NETMEM_DESC_ASSERT_OFFSET(pp_ref_count, pp_ref_count);
+>   */
+>  static_assert(sizeof(struct netmem_desc) <=3D offsetof(struct page, _ref=
+count));
+>
+> +#ifdef CONFIG_PAGE_POOL
+> +static inline bool page_pool_page_is_pp(struct page *page)
+> +{
+> +       struct netmem_desc *desc =3D (struct netmem_desc *)page;
+> +
+> +       return (desc->pp_magic & PP_MAGIC_MASK) =3D=3D PP_SIGNATURE;
+> +}
+> +#else
+> +static inline bool page_pool_page_is_pp(struct page *page)
+> +{
+> +       return false;
+> +}
+> +#endif
+> +
+>  /* net_iov */
+>
+>  DECLARE_STATIC_KEY_FALSE(page_pool_mem_providers);
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 4f29e393f6af..be0752c0ac92 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -55,6 +55,7 @@
+>  #include <linux/delayacct.h>
+>  #include <linux/cacheinfo.h>
+>  #include <linux/pgalloc_tag.h>
+> +#include <net/netmem.h>
 
-udp_tunnel infra doesn't need RTNL, should be safe to get back
-to only netdev instance lock.
+mm files starting to include netmem.h is a bit interesting. I did not
+expect/want dependencies outside of net. If anything the netmem stuff
+include linux/mm.h
 
-Cc: Michael Chan <michael.chan@broadcom.com>
-Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Signed-off-by: Stanislav Fomichev <stfomichev@gmail.com>
----
- drivers/net/ethernet/broadcom/bnxt/bnxt.c | 36 +++++------------------
- 1 file changed, 7 insertions(+), 29 deletions(-)
+But I don't have a butter suggestion here and I don't see any huge
+problems with this off the top of my head, so
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index a3dadde65b8d..1da208c36572 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -14055,28 +14055,13 @@ static void bnxt_unlock_sp(struct bnxt *bp)
- 	netdev_unlock(bp->dev);
- }
- 
--/* Same as bnxt_lock_sp() with additional rtnl_lock */
--static void bnxt_rtnl_lock_sp(struct bnxt *bp)
--{
--	clear_bit(BNXT_STATE_IN_SP_TASK, &bp->state);
--	rtnl_lock();
--	netdev_lock(bp->dev);
--}
--
--static void bnxt_rtnl_unlock_sp(struct bnxt *bp)
--{
--	set_bit(BNXT_STATE_IN_SP_TASK, &bp->state);
--	netdev_unlock(bp->dev);
--	rtnl_unlock();
--}
--
- /* Only called from bnxt_sp_task() */
- static void bnxt_reset(struct bnxt *bp, bool silent)
- {
--	bnxt_rtnl_lock_sp(bp);
-+	bnxt_lock_sp(bp);
- 	if (test_bit(BNXT_STATE_OPEN, &bp->state))
- 		bnxt_reset_task(bp, silent);
--	bnxt_rtnl_unlock_sp(bp);
-+	bnxt_unlock_sp(bp);
- }
- 
- /* Only called from bnxt_sp_task() */
-@@ -14084,9 +14069,9 @@ static void bnxt_rx_ring_reset(struct bnxt *bp)
- {
- 	int i;
- 
--	bnxt_rtnl_lock_sp(bp);
-+	bnxt_lock_sp(bp);
- 	if (!test_bit(BNXT_STATE_OPEN, &bp->state)) {
--		bnxt_rtnl_unlock_sp(bp);
-+		bnxt_unlock_sp(bp);
- 		return;
- 	}
- 	/* Disable and flush TPA before resetting the RX ring */
-@@ -14125,7 +14110,7 @@ static void bnxt_rx_ring_reset(struct bnxt *bp)
- 	}
- 	if (bp->flags & BNXT_FLAG_TPA)
- 		bnxt_set_tpa(bp, true);
--	bnxt_rtnl_unlock_sp(bp);
-+	bnxt_unlock_sp(bp);
- }
- 
- static void bnxt_fw_fatal_close(struct bnxt *bp)
-@@ -15017,17 +15002,15 @@ static void bnxt_fw_reset_task(struct work_struct *work)
- 		bp->fw_reset_state = BNXT_FW_RESET_STATE_OPENING;
- 		fallthrough;
- 	case BNXT_FW_RESET_STATE_OPENING:
--		while (!rtnl_trylock()) {
-+		while (!netdev_trylock(bp->dev)) {
- 			bnxt_queue_fw_reset_work(bp, HZ / 10);
- 			return;
- 		}
--		netdev_lock(bp->dev);
- 		rc = bnxt_open(bp->dev);
- 		if (rc) {
- 			netdev_err(bp->dev, "bnxt_open() failed during FW reset\n");
- 			bnxt_fw_reset_abort(bp, rc);
- 			netdev_unlock(bp->dev);
--			rtnl_unlock();
- 			goto ulp_start;
- 		}
- 
-@@ -15047,7 +15030,6 @@ static void bnxt_fw_reset_task(struct work_struct *work)
- 			bnxt_dl_health_fw_status_update(bp, true);
- 		}
- 		netdev_unlock(bp->dev);
--		rtnl_unlock();
- 		bnxt_ulp_start(bp, 0);
- 		bnxt_reenable_sriov(bp);
- 		netdev_lock(bp->dev);
-@@ -15996,7 +15978,7 @@ static int bnxt_queue_start(struct net_device *dev, void *qmem, int idx)
- 		   rc);
- 	napi_enable_locked(&bnapi->napi);
- 	bnxt_db_nq_arm(bp, &cpr->cp_db, cpr->cp_raw_cons);
--	netif_close(dev);
-+	bnxt_reset_task(bp, true);
- 	return rc;
- }
- 
-@@ -16812,7 +16794,6 @@ static int bnxt_resume(struct device *device)
- 	struct bnxt *bp = netdev_priv(dev);
- 	int rc = 0;
- 
--	rtnl_lock();
- 	netdev_lock(dev);
- 	rc = pci_enable_device(bp->pdev);
- 	if (rc) {
-@@ -16857,7 +16838,6 @@ static int bnxt_resume(struct device *device)
- 
- resume_exit:
- 	netdev_unlock(bp->dev);
--	rtnl_unlock();
- 	bnxt_ulp_start(bp, rc);
- 	if (!rc)
- 		bnxt_reenable_sriov(bp);
-@@ -17023,7 +17003,6 @@ static void bnxt_io_resume(struct pci_dev *pdev)
- 	int err;
- 
- 	netdev_info(bp->dev, "PCI Slot Resume\n");
--	rtnl_lock();
- 	netdev_lock(netdev);
- 
- 	err = bnxt_hwrm_func_qcaps(bp);
-@@ -17041,7 +17020,6 @@ static void bnxt_io_resume(struct pci_dev *pdev)
- 		netif_device_attach(netdev);
- 
- 	netdev_unlock(netdev);
--	rtnl_unlock();
- 	bnxt_ulp_start(bp, err);
- 	if (!err)
- 		bnxt_reenable_sriov(bp);
--- 
-2.49.0
+Reviewed-by: Mina Almasry <almasrymina@google.com>
 
+Lets see if Jakub objects though. To be fair, we did put the netmem
+private stuff in net/core/netmem_priv.h, so technically
+include/net/netmem.h should be exportable indeed.
+
+--=20
+Thanks,
+Mina
 
