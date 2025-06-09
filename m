@@ -1,82 +1,98 @@
-Return-Path: <linux-rdma+bounces-11113-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11114-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D80C8AD2974
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jun 2025 00:38:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59326AD2A4D
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jun 2025 01:10:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F36A1891C25
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jun 2025 22:38:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2340F170DF6
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jun 2025 23:10:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B0AD224AF6;
-	Mon,  9 Jun 2025 22:38:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02312227E82;
+	Mon,  9 Jun 2025 23:09:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AxifVN7F"
+	dkim=pass (1024-bit key) header.d=linuxonhyperv.com header.i=@linuxonhyperv.com header.b="ZH1AqCgd"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4E951FECC3;
-	Mon,  9 Jun 2025 22:38:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A2AD226D09;
+	Mon,  9 Jun 2025 23:09:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749508699; cv=none; b=Jva16E6POSNdyIEzazbxinSgejY1iaUkUI3II0hAQdb8VNt2lZZmwK8KJoaM2CaTjefStdMNQ/e090Mlk/gbMze923D+uCG0rLvmcGXjwvTXg6L/O2kjWkRNS+tTssuSdAa6wqWKw8x4JTNDZsokKS1m/RpekCdXFgHk6gObziQ=
+	t=1749510597; cv=none; b=AizPRPhifN2kJ+ptVjR9j8HhHUdiiCqKJBw/9+3Fiao4AaAhGHSrcu2M4atB2BE20jvkcdtyJvIu0O6r6WULxkUJ7JAto/H7xHG6OF/131lQv9kOLetfwKLSyRBOBqDvYRxKO7eNwseVyOGUbFIhPP9PWIWOuG29xDpdJ7nWt1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749508699; c=relaxed/simple;
-	bh=JBXmNJeT/xZX3RurxwwkpLVdwAYpNQhCQiA1mKMKOUs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kFeY6yxTfGIPhnPYRvbD6kQjxqhmYTRhvUY3Pv8sT9Kbwta4DBrk3f2B5F/nPX6RG+/43XQgZtuXUTq+24YmeEdJpoxNQ9uBxZKi8bnSBW2bVKeRgZVwo378u7HtbdWHPT5nKSj3kKSNkNJ7fmP96SNdtTmDddZuHrVGaLmqT0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AxifVN7F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19131C4CEEB;
-	Mon,  9 Jun 2025 22:38:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749508699;
-	bh=JBXmNJeT/xZX3RurxwwkpLVdwAYpNQhCQiA1mKMKOUs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=AxifVN7FeC65QCVf7TUYkIjnE/rIZ52inY/Wee1YAJ7ODWu66fPTScZ/3VoyrdBMm
-	 Upw846Twc/EGGPQSKiwLiME9e2F7IaHSVtpwNlvIAhOSgNfk+NTI7xtpHmJzuolqC8
-	 HVkTxCvhR5A5wEh3eoMUqg0zNDUx7L3L3NDeuLfFLzCRpGTsgek0eGEUJ9WZewwxF4
-	 xlbzpl6iNxR3OcduOF+Wqzotm6AyXM3v1OEg/MPHN6FSvPedw2Y1527H4G0VS+r3W1
-	 VUJNtPtDPN1hRI8W+MyuR5AFTmAoQ9ybpBhcd1EBdYrjaxXnrajNr8m6kyaQY9hv44
-	 XNHBAk/TtwWwg==
-Date: Mon, 9 Jun 2025 15:38:17 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
- pabeni@redhat.com, skalluru@marvell.com, manishc@marvell.com,
- andrew+netdev@lunn.ch, michael.chan@broadcom.com,
- pavan.chebbi@broadcom.com, ajit.khaparde@broadcom.com,
- sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
- anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com,
- tariqt@nvidia.com, saeedm@nvidia.com, louis.peens@corigine.com,
- shshaikh@marvell.com, GR-Linux-NIC-Dev@marvell.com, ecree.xilinx@gmail.com,
- horms@kernel.org, dsahern@kernel.org, shuah@kernel.org, mheib@redhat.com,
- ruanjinjie@huawei.com, linux-kernel@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
- oss-drivers@corigine.com, linux-net-drivers@amd.com,
- linux-kselftest@vger.kernel.org, leon@kernel.org
-Subject: Re: [PATCH net-next v2 0/4] udp_tunnel: remove rtnl_lock dependency
-Message-ID: <20250609153817.14d7e762@kernel.org>
-In-Reply-To: <20250609162541.1230022-1-stfomichev@gmail.com>
-References: <20250609162541.1230022-1-stfomichev@gmail.com>
+	s=arc-20240116; t=1749510597; c=relaxed/simple;
+	bh=TJHn+xrGIoG5X5uuAIOvVOsYlBHH6Fh+hKmZRMoOHF4=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=r8BXqIXPKCKmJXS4r0lDtgT7sQLgnlITPK7o4uGJKkqdeDnvsp+GUagx8ggD/rcmdcZswO5AGrz/+dZZ+1gdQv8mdYa6lC//rAJb7VQ1bHnhCG9/kYeW5eQ2Z9wlRXjgacLDinMkIl91LHb9kZg7PH1VmWzG35bGsa+8Ji8Q8aI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxonhyperv.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linuxonhyperv.com header.i=@linuxonhyperv.com header.b=ZH1AqCgd; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxonhyperv.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1202)
+	id BF4582117585; Mon,  9 Jun 2025 16:09:55 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BF4582117585
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
+	s=default; t=1749510595;
+	bh=o4TJdFyGSavIpC6NVIXpJYvJt9fYZsYcucpFDPtb1k0=;
+	h=From:To:Cc:Subject:Date:Reply-To:From;
+	b=ZH1AqCgdgKQQpNUXcLrN9QnH6K6JjugB2TUsOFvP53brqkxVV1jcxJbadsbAxvbfW
+	 l/zGRCD+hts4sDWr+hs/WbdqpHSIpT4kJ9HrSaSzrXyo0pmL7fw9pJJfoLspD6LhRd
+	 UPDogOP8n1N4ao8PhmyaZtpmrWt2gn0ZD1NPtomc=
+From: longli@linuxonhyperv.com
+To: "K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Simon Horman <horms@kernel.org>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+	Erick Archer <erick.archer@outlook.com>,
+	linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: Long Li <longli@microsoft.com>
+Subject: [PATCH net-next] net: mana: Record doorbell physical address in PF mode
+Date: Mon,  9 Jun 2025 16:09:40 -0700
+Message-Id: <1749510580-21011-1-git-send-email-longli@linuxonhyperv.com>
+X-Mailer: git-send-email 1.8.3.1
+Reply-To: longli@microsoft.com
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 
-On Mon,  9 Jun 2025 09:25:37 -0700 Stanislav Fomichev wrote:
-> Recently bnxt had to grow back a bunch of rtnl dependencies because
-> of udp_tunnel's infra. Add separate (global) mutext to protect
-> udp_tunnel state.
+From: Long Li <longli@microsoft.com>
 
-Appears to break the selftest, unfortunately:
-https://netdev.bots.linux.dev/contest.html?test=udp-tunnel-nic-sh&branch=net-next-2025-06-09--21-00
+MANA supports RDMA in PF mode. The driver should record the doorbell
+physical address when in PF mode.
+
+Signed-off-by: Long Li <longli@microsoft.com>
+---
+ drivers/net/ethernet/microsoft/mana/gdma_main.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index 3504507477c6..52cf7112762c 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -31,6 +31,9 @@ static void mana_gd_init_pf_regs(struct pci_dev *pdev)
+ 	gc->db_page_base = gc->bar0_va +
+ 				mana_gd_r64(gc, GDMA_PF_REG_DB_PAGE_OFF);
+ 
++	gc->phys_db_page_base = gc->bar0_pa +
++				mana_gd_r64(gc, GDMA_PF_REG_DB_PAGE_OFF);
++
+ 	sriov_base_off = mana_gd_r64(gc, GDMA_SRIOV_REG_CFG_BASE_OFF);
+ 
+ 	sriov_base_va = gc->bar0_va + sriov_base_off;
 -- 
-pw-bot: cr
+2.25.1
+
 
