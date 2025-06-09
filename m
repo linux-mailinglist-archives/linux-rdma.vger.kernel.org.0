@@ -1,67 +1,68 @@
-Return-Path: <linux-rdma+bounces-11116-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11117-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7032DAD2A6A
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jun 2025 01:22:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 988D9AD2A87
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jun 2025 01:28:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 643067A4908
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jun 2025 23:21:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62FEA17066E
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jun 2025 23:28:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29C6C22A7E9;
-	Mon,  9 Jun 2025 23:22:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1296922B8B1;
+	Mon,  9 Jun 2025 23:28:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FMENuWgd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="snNA452v"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3110207DF7;
-	Mon,  9 Jun 2025 23:22:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9FFB22A4CC;
+	Mon,  9 Jun 2025 23:28:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749511348; cv=none; b=RAeBZ/dSVuc2hHafk8+QJmyAljMenssy8Y/0stghC1c0et/PaemrYYgWExeCrX1grqbEnWEPlEu6wDRVgzVJ+Yc1s7Bwupicucu2hf9d0hQm1dZUMfOb9pq4ABVQ8ZPnGQjpuUAyIcKG2zpnENcIRY3wTFDHM9EwPE+XG5LYFak=
+	t=1749511693; cv=none; b=HxfN2XUi38tjH4uoSmPu8Pde+JUpfYXxcN0BTy0dNwFZ0at59i+7uaexjcJTR+mNsevegjleWZQryDckuzcqZxoRxN9QRJNyO4omCCGjGC//0eDO7Sc3+HYmDszJb8mDyj3t2CebEIIR0n/w2HimDw0Lb0MgGqAEFxHuomZ4jVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749511348; c=relaxed/simple;
-	bh=2pZxcvn9dwYkFHGMysoejb290t6liiYtHhqJiwoIRTM=;
+	s=arc-20240116; t=1749511693; c=relaxed/simple;
+	bh=s81oEcid/OEGvazYHy8C4bU29ApBKyS/u//Zxdr+YSI=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Nz+3252wGAaEeuCLcPBXeFw+aYtaCWgx7PfRdCN5eJknaNYkjq6xkV81eTbTx++k08pqeRiBs44o5pfBx+b2/luklGrBot1w30EW+IKlBwlTX1NgHzvIgeHSrSL1GA/iinJ9C1NvZNAujDuIKZlb5vgfltpr3LH84X913WB5ieo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FMENuWgd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE114C4CEEB;
-	Mon,  9 Jun 2025 23:22:27 +0000 (UTC)
+	 MIME-Version:Content-Type; b=bSfMTAvaQO2e8HlLvSIh30HuhR6PLmwwPAYWDdWk6AeKMDNNZBLhFyitvrQ+muGsIO39zaUZLJi99ZJysrsraI/CK95fcBEx6HIdm/vPNG7gLwmNosgmjJlI2teIlJ8mX1XwYuVpg4Bu6F06V2DWRY/Y1JiyA6R3yg87jdXSgBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=snNA452v; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93BB6C4CEEB;
+	Mon,  9 Jun 2025 23:28:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749511348;
-	bh=2pZxcvn9dwYkFHGMysoejb290t6liiYtHhqJiwoIRTM=;
+	s=k20201202; t=1749511693;
+	bh=s81oEcid/OEGvazYHy8C4bU29ApBKyS/u//Zxdr+YSI=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=FMENuWgdVh5N9AGnA4Cay0jv2l4LoCTgQ2WK8s8FqufjyvvLPMcg8qeiQOTcaQo6y
-	 MVXoTRrdjjYX4V6lfGBwTUXE89Yp2EgW9bmHMogmwvUNrf6VWBJPyf1LWpTlOptb58
-	 jOshZF/xQnZ7d3G+CKejlA2NCV+xxzCwosNMuYqdtoy4ER5i/6v5WVyfSdKmiSgYYi
-	 dtbHIGyaoabEOP53ZmDHC61khVerdrVRIoL7GPxTsxmABBlzQAdl6tQwWYJ3mtvX7G
-	 NW5go0rXT7cNtXCvU/ei5OcqaAK2HehATJ0ljHmASmnzkF/UhHJ5J+js0AtYOWsQG2
-	 ei7HxGNRaOyeA==
-Date: Mon, 9 Jun 2025 16:22:26 -0700
+	b=snNA452vJDcTsUcu6tEaoLgPVCt5nY/vTJEtQEddO3eHDykMbeJw2wQvLi84lceNF
+	 LeyMPxzhW8qOwCBhYaKI9qdpZswIS0yTdwPro/JldTQV/cif9J7s7jqmfnNo5oYXAW
+	 GyH36l/5SQl28xlVrVUQXuLfNldnP2JZb5hwMckmHSqC/p9IYgRc7b1qFReOrOs+/8
+	 4EP2xZu0gtto4+wRinGw+mgt+c4CzX6XvjmMCsVuKIN9aXrlpc+tB0OM3tmtsqA0Z6
+	 8Imiiv4wJ7xsMvgh1bfErer6kopdZAv29VUuiowYmio8vdGm8AfbOSxYLzYhCdQ2YX
+	 rhqAXX1auWhFw==
+Date: Mon, 9 Jun 2025 16:28:11 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: Mark Bloch <mbloch@nvidia.com>, "David S. Miller" <davem@davemloft.net>,
- Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, Andrew
- Lunn <andrew+netdev@lunn.ch>, saeedm@nvidia.com, gal@nvidia.com,
- leonro@nvidia.com, tariqt@nvidia.com, Leon Romanovsky <leon@kernel.org>,
- Simon Horman <horms@kernel.org>, Richard Cochran
- <richardcochran@gmail.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, Cosmin Ratiu <cratiu@nvidia.com>
-Subject: Re: [PATCH net-next v3 07/12] net/mlx5e: SHAMPO: Headers page pool
- stats
-Message-ID: <20250609162226.2da77646@kernel.org>
-In-Reply-To: <ga65ehnqozlkoh5hjuujdv5m5yetmena7qpt22evtqgwq7tzdw@c26wfwrc3hkx>
-References: <20250609145833.990793-1-mbloch@nvidia.com>
-	<20250609145833.990793-8-mbloch@nvidia.com>
-	<20250609082152.29244fca@kernel.org>
-	<ga65ehnqozlkoh5hjuujdv5m5yetmena7qpt22evtqgwq7tzdw@c26wfwrc3hkx>
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+ pabeni@redhat.com, skalluru@marvell.com, manishc@marvell.com,
+ andrew+netdev@lunn.ch, michael.chan@broadcom.com,
+ pavan.chebbi@broadcom.com, ajit.khaparde@broadcom.com,
+ sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
+ anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com,
+ tariqt@nvidia.com, saeedm@nvidia.com, louis.peens@corigine.com,
+ shshaikh@marvell.com, GR-Linux-NIC-Dev@marvell.com, ecree.xilinx@gmail.com,
+ horms@kernel.org, dsahern@kernel.org, shuah@kernel.org, mheib@redhat.com,
+ ruanjinjie@huawei.com, linux-kernel@vger.kernel.org,
+ intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
+ oss-drivers@corigine.com, linux-net-drivers@amd.com,
+ linux-kselftest@vger.kernel.org, leon@kernel.org
+Subject: Re: [PATCH net-next v2 0/4] udp_tunnel: remove rtnl_lock dependency
+Message-ID: <20250609162811.020322be@kernel.org>
+In-Reply-To: <aEdsBhZ4C--0ohYj@mini-arch>
+References: <20250609162541.1230022-1-stfomichev@gmail.com>
+	<20250609153817.14d7e762@kernel.org>
+	<aEdsBhZ4C--0ohYj@mini-arch>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -71,15 +72,25 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Mon, 9 Jun 2025 15:31:00 +0000 Dragos Tatulea wrote:
-> On Mon, Jun 09, 2025 at 08:21:52AM -0700, Jakub Kicinski wrote:
-> > On Mon, 9 Jun 2025 17:58:28 +0300 Mark Bloch wrote:  
-> > > Expose the stats of the new headers page pool.  
+On Mon, 9 Jun 2025 16:19:34 -0700 Stanislav Fomichev wrote:
+> On 06/09, Jakub Kicinski wrote:
+> > On Mon,  9 Jun 2025 09:25:37 -0700 Stanislav Fomichev wrote:  
+> > > Recently bnxt had to grow back a bunch of rtnl dependencies because
+> > > of udp_tunnel's infra. Add separate (global) mutext to protect
+> > > udp_tunnel state.  
 > > 
-> > Y'all asked for clarifications on this patch 2 weeks after v2 was
-> > posted and then reposted v3 before I could answer. This patch must go.  
-> Ack. Sorry about the too short window of response. Patch will be dropped
-> in v4.
+> > Appears to break the selftest, unfortunately:
+> > https://netdev.bots.linux.dev/contest.html?test=udp-tunnel-nic-sh&branch=net-next-2025-06-09--21-00  
+> 
+> Argh, should have run it locally first :-(
+> Looks like there is a test that sets up pretty high sleep time (1 sec)
+> and expects entry to not appear during next 'ethtool --show-tunnels' run.
+> 
+> Gonna double check and remove the case if my understanding is correct.
+> Don't think there is much value in keeping the debugfs knob just for the
+> sake of this test? LMK if you disagree; otherwise gonna repost tomorrow.
 
-Thanks! FWIW the rest indeed LGTM.
+Hm, I see you partially deleted the sleep support in patch 3.
+Maybe it's easier to keep it since we now always sleep?
+No strong preference, tho.
 
