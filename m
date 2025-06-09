@@ -1,98 +1,122 @@
-Return-Path: <linux-rdma+bounces-11114-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11115-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59326AD2A4D
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jun 2025 01:10:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D97AAD2A65
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jun 2025 01:19:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2340F170DF6
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jun 2025 23:10:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C21B03B244B
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Jun 2025 23:19:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02312227E82;
-	Mon,  9 Jun 2025 23:09:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0711222A7E1;
+	Mon,  9 Jun 2025 23:19:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxonhyperv.com header.i=@linuxonhyperv.com header.b="ZH1AqCgd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jmat6F0E"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A2AD226D09;
-	Mon,  9 Jun 2025 23:09:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6531522A4D2;
+	Mon,  9 Jun 2025 23:19:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749510597; cv=none; b=AizPRPhifN2kJ+ptVjR9j8HhHUdiiCqKJBw/9+3Fiao4AaAhGHSrcu2M4atB2BE20jvkcdtyJvIu0O6r6WULxkUJ7JAto/H7xHG6OF/131lQv9kOLetfwKLSyRBOBqDvYRxKO7eNwseVyOGUbFIhPP9PWIWOuG29xDpdJ7nWt1o=
+	t=1749511179; cv=none; b=fA46qJrAF63shap1rR52vNfb6QUfN593EZWeEPdjapLznH8eO6PSadu7+Uz96aaUjiwmO/tbjDLnrZBxtzsCSiALw/x//KyjhVcJuXZeNW0iGZJqRjNKmpFfVFLjTC4a/KOR1TaX0OF96zOqx7ufXEGtl4ihLvculz1XAqfzfZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749510597; c=relaxed/simple;
-	bh=TJHn+xrGIoG5X5uuAIOvVOsYlBHH6Fh+hKmZRMoOHF4=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=r8BXqIXPKCKmJXS4r0lDtgT7sQLgnlITPK7o4uGJKkqdeDnvsp+GUagx8ggD/rcmdcZswO5AGrz/+dZZ+1gdQv8mdYa6lC//rAJb7VQ1bHnhCG9/kYeW5eQ2Z9wlRXjgacLDinMkIl91LHb9kZg7PH1VmWzG35bGsa+8Ji8Q8aI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxonhyperv.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linuxonhyperv.com header.i=@linuxonhyperv.com header.b=ZH1AqCgd; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxonhyperv.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1202)
-	id BF4582117585; Mon,  9 Jun 2025 16:09:55 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BF4582117585
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-	s=default; t=1749510595;
-	bh=o4TJdFyGSavIpC6NVIXpJYvJt9fYZsYcucpFDPtb1k0=;
-	h=From:To:Cc:Subject:Date:Reply-To:From;
-	b=ZH1AqCgdgKQQpNUXcLrN9QnH6K6JjugB2TUsOFvP53brqkxVV1jcxJbadsbAxvbfW
-	 l/zGRCD+hts4sDWr+hs/WbdqpHSIpT4kJ9HrSaSzrXyo0pmL7fw9pJJfoLspD6LhRd
-	 UPDogOP8n1N4ao8PhmyaZtpmrWt2gn0ZD1NPtomc=
-From: longli@linuxonhyperv.com
-To: "K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Shradha Gupta <shradhagupta@linux.microsoft.com>,
-	Simon Horman <horms@kernel.org>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
-	Erick Archer <erick.archer@outlook.com>,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Cc: Long Li <longli@microsoft.com>
-Subject: [PATCH net-next] net: mana: Record doorbell physical address in PF mode
-Date: Mon,  9 Jun 2025 16:09:40 -0700
-Message-Id: <1749510580-21011-1-git-send-email-longli@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-Reply-To: longli@microsoft.com
+	s=arc-20240116; t=1749511179; c=relaxed/simple;
+	bh=6CFXk/D4tnr1yc6KzyuxGLm3bBJFXFB4G4mdk5f9TfI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JC6B33+5euKs8yTy1BBg8iL6PcLdY4HEKBX1H3fZa8X+eTeWs3EDpSidR7O8vQRSLr3+fmW+oFvcids2IapOSPETMvIWw/aHfL1k9wocBgOTKu72D4RDdk8o+VOm7pZxNhRDWUooBkhMtQfpjafuA7boXhp64dqocqkF4qxka7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jmat6F0E; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-234b9dfb842so42696175ad.1;
+        Mon, 09 Jun 2025 16:19:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749511175; x=1750115975; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WuMn2eerhCidgiefO3mm6DZg/epTXqNO4m++hNzNzoE=;
+        b=jmat6F0ET7VBh1CUDPK1OH4r6FDErpWnfHzDvUYnFO1aL3WN8bCRXT9Varbwm0DiXq
+         PL5PohCCjMODuqU8dhRFtIjVEwnU7p3nSfflSeDPGyU0XmskBVugQwaqEOtUzF4q2IPs
+         PBhTtmIcjrLxa2jbDgxv4slFarBoRQvxfFVonkZuJb9PxsZ6f+EBOd5/UmchVrI7//Sq
+         oaqDERNmcpLpxtgU/EekK6v5+93CwQ7KEmnKX3/7lYPEBXfCSiGGn/6OodyiubuP7QQs
+         Juu4EZJM5TWPTd3fy0pFTccCG4cLPoXeEQjqOBEPsPW2qrV1vSoVQfs2eD1JWdZBw6hu
+         Fiow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749511175; x=1750115975;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WuMn2eerhCidgiefO3mm6DZg/epTXqNO4m++hNzNzoE=;
+        b=J/ABf1ZkJDtR448AoaaIs4K6vU9FdK4WBP2roUDFIoykq0GK+zMiG/yjdZz7CR+XfX
+         dAjNSvkSV85tL2bBybi7zE0T5vKSJabysS3Xs8b2/ZbqEAN54NjmC12reswGOgGsCv+m
+         /RfloduwuzHPUUQt6IOD5XNtjY4ajUWS26TSjw6gPH90DGcJFrzdw05HMCMh15ImadAU
+         2GI024WnjRM2j5aUH1rLqXswQ8S6R3bW2xttbiPqNcQnQCgu7gnY1TC44jcUq0FSsseb
+         fZRgVk9JGLLznzJgY2eSMViZlSxJ2nUS9UFpkQy5pALQoUKTjGACnzAluQBmIKlEAw79
+         E/EA==
+X-Forwarded-Encrypted: i=1; AJvYcCUWH6edEfPG7tuJUghErMo01lRG05SgacgDlHDen2Xq7m1FRekrSRPHwqbKeJVI8Wv/pdEC/c1/Ezc8KVzBnbBU@vger.kernel.org, AJvYcCV4oZxdb0ABCJFMFoJ6DUNLz0KTMuvRl03XnhCSfHwC7QYrv6sdcJxCZuS7EaNkdImsI7cvqSGZcvCMWA==@vger.kernel.org, AJvYcCVaXnzSCq1NWY9V3jASoimySse9BOnElS9nDDO+Wssq2qYdCZ/N9yH/Kbx3fUSyHlRhJu5qg3m68ltUOCY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw815ZonRIPF774nIDkft7BGRqrUcFnYYxXiafd3Fz9BkhUpPBp
+	5hQhtH5Lmv2e7qvgToCke9xVrqumXr5H6qBnSf+SzwBoqekSKDcOk2I=
+X-Gm-Gg: ASbGncuci/ak43ecATG/m4cXA0m5fsBEXP1q7DOLglmJqbgdWA1UUn6L6XaW8BDAOJB
+	eZF/dI1Byjaa7DMU+J5xrS87O5s5c4ApxDZUuxZ7f3TQLznl2efHhmwNZpy7plWrt/p/p00GoCM
+	9sW1U0cq9xYIuKgVS3kC0UbFhIc9c/StkLKBpiFutEJekeSmViOLKeCwqTbv+u1vTZBA7N2VX/e
+	BU1TNnEaQVC4t8Pkz64vDmgnrXes/JRSZXX7O3iIo5feRmd0M1IUWolsdWVbipjMMukB5MtQQlB
+	G/fKoa0soYGuC8l0PyFxbKdbz1QA/dB8XHTOYcujjlP9rPeek/PItQM29mVMytvAEJe+Zj9QmfT
+	hvQkwGNIcq8RslwIgNT0A90MgpEC7mLiUgQ==
+X-Google-Smtp-Source: AGHT+IEV8CpYnlOB2YnfAeL9gQJAXPfboUO10GUHaeUTiTj5LkmkPPvpLnBpPyH1TV/VU7MOCFUvRA==
+X-Received: by 2002:a17:902:d2c6:b0:235:efbb:9539 with SMTP id d9443c01a7336-23601cfebb3mr204848925ad.17.1749511175460;
+        Mon, 09 Jun 2025 16:19:35 -0700 (PDT)
+Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-23603405fcdsm59911355ad.159.2025.06.09.16.19.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Jun 2025 16:19:35 -0700 (PDT)
+Date: Mon, 9 Jun 2025 16:19:34 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+	pabeni@redhat.com, skalluru@marvell.com, manishc@marvell.com,
+	andrew+netdev@lunn.ch, michael.chan@broadcom.com,
+	pavan.chebbi@broadcom.com, ajit.khaparde@broadcom.com,
+	sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
+	anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com,
+	tariqt@nvidia.com, saeedm@nvidia.com, louis.peens@corigine.com,
+	shshaikh@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+	ecree.xilinx@gmail.com, horms@kernel.org, dsahern@kernel.org,
+	shuah@kernel.org, mheib@redhat.com, ruanjinjie@huawei.com,
+	linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+	linux-rdma@vger.kernel.org, oss-drivers@corigine.com,
+	linux-net-drivers@amd.com, linux-kselftest@vger.kernel.org,
+	leon@kernel.org
+Subject: Re: [PATCH net-next v2 0/4] udp_tunnel: remove rtnl_lock dependency
+Message-ID: <aEdsBhZ4C--0ohYj@mini-arch>
+References: <20250609162541.1230022-1-stfomichev@gmail.com>
+ <20250609153817.14d7e762@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250609153817.14d7e762@kernel.org>
 
-From: Long Li <longli@microsoft.com>
+On 06/09, Jakub Kicinski wrote:
+> On Mon,  9 Jun 2025 09:25:37 -0700 Stanislav Fomichev wrote:
+> > Recently bnxt had to grow back a bunch of rtnl dependencies because
+> > of udp_tunnel's infra. Add separate (global) mutext to protect
+> > udp_tunnel state.
+> 
+> Appears to break the selftest, unfortunately:
+> https://netdev.bots.linux.dev/contest.html?test=udp-tunnel-nic-sh&branch=net-next-2025-06-09--21-00
 
-MANA supports RDMA in PF mode. The driver should record the doorbell
-physical address when in PF mode.
+Argh, should have run it locally first :-(
+Looks like there is a test that sets up pretty high sleep time (1 sec)
+and expects entry to not appear during next 'ethtool --show-tunnels' run.
 
-Signed-off-by: Long Li <longli@microsoft.com>
----
- drivers/net/ethernet/microsoft/mana/gdma_main.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 3504507477c6..52cf7112762c 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -31,6 +31,9 @@ static void mana_gd_init_pf_regs(struct pci_dev *pdev)
- 	gc->db_page_base = gc->bar0_va +
- 				mana_gd_r64(gc, GDMA_PF_REG_DB_PAGE_OFF);
- 
-+	gc->phys_db_page_base = gc->bar0_pa +
-+				mana_gd_r64(gc, GDMA_PF_REG_DB_PAGE_OFF);
-+
- 	sriov_base_off = mana_gd_r64(gc, GDMA_SRIOV_REG_CFG_BASE_OFF);
- 
- 	sriov_base_va = gc->bar0_va + sriov_base_off;
--- 
-2.25.1
-
+Gonna double check and remove the case if my understanding is correct.
+Don't think there is much value in keeping the debugfs knob just for the
+sake of this test? LMK if you disagree; otherwise gonna repost tomorrow.
 
