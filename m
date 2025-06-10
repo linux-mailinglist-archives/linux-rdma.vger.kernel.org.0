@@ -1,94 +1,104 @@
-Return-Path: <linux-rdma+bounces-11177-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11178-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CC59AD44D2
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jun 2025 23:32:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4610DAD44E8
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jun 2025 23:40:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8B233A4027
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jun 2025 21:32:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 816A53A699F
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jun 2025 21:39:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A31D284691;
-	Tue, 10 Jun 2025 21:32:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A152E28688A;
+	Tue, 10 Jun 2025 21:40:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T0fkz9sh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CrwyZMfD"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41C6F2367CC;
-	Tue, 10 Jun 2025 21:32:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53E5D2857DE;
+	Tue, 10 Jun 2025 21:40:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749591163; cv=none; b=YPQ9C8qdgnSl+GunPDlX02w9r8bOONpS7rE1o97830oOOO8/aDfe/5pZazO9LJ0kgJr+kR5J+gZM1d0cWd56Su1PNpaXzzrR9tWHNb1BUNxEaHF+2aLcoNEgn+LAJJdl83MOMRyPaAg3FLQES9cou0JtCcHSHjZarAUQeDhGkdk=
+	t=1749591606; cv=none; b=IfEJcE7KthMccbkOijmfDOq1muZ5/8nPxalsQ8imZMTVEVMhLPDMM4BbnSmV3jzZVt7RJFJs9UwewrcAVFdCMV0lNbvBusqeI+b1ohToNrVZiEqstsaDIYG57SW1eBgBY/eUx/YY4alBnkqRmMqm1YQHVblkQ+osRTTav4OeXQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749591163; c=relaxed/simple;
-	bh=rjr9cM49i4vCMHdMM7EGrQ95pSKm7uGYIzxiHNuz4yc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gRUfudXg+q/TQR3w9hwUP/5x5S4JrmJ55pQ0y6xy+p7DTOXi+0BK1BgQU0T6TGl/mw29qx0Rw1MYAROfVtuW8peqEyu4UCshmQoP7eGlTNa2L5pSBvUtRkRZM2qyOGbZfInECyZYHuPTWcu+fT1BGXXQCrjAnnCL7EaRyf+/WUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T0fkz9sh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FCD8C4CEED;
-	Tue, 10 Jun 2025 21:32:41 +0000 (UTC)
+	s=arc-20240116; t=1749591606; c=relaxed/simple;
+	bh=OQ5TxnygLvYZ+w90EqVsIGmUrF7BUzDsm+GgA7XgVQA=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=U+Wso/uH8OwmXvpeByzXT6s8EFyIWT9Rn7PaSXaqkJ3X9DK6btywIComlJbgs3Yt0wiFtvprzOx0zH2TG9K3uIJK5WaUNSQFDpLfvjKVOfGe6HZMSqRnXIGt1KJF+T5DCZ72qhyoRVx6mvUYaamfv1Cq+1iDHGILd9qZY5YjA/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CrwyZMfD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCFAAC4CEED;
+	Tue, 10 Jun 2025 21:40:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749591161;
-	bh=rjr9cM49i4vCMHdMM7EGrQ95pSKm7uGYIzxiHNuz4yc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=T0fkz9shwcoeuBHGhswMirDO8AzsTFHmpENs0C8g7alFf/hG700aJABUkfK0FPZnf
-	 y2tM3MdnGAAW6+YoTbdGvpRf+lLZGTk19r2qZ9rpR45xmX8BUrPWqH5AWGH3Zvyhqm
-	 7pYlnSuiosJ0ISCw+g0pOjibLcfq8XV/yJ5qoN0jC3KgDf/nzx6Nc84yp51ohitCTE
-	 YzL+SxdI3RxNwE7rlOuXoAV42mIF1YVMpTVvJM17AZgTf9BTlHdXp9lYnZ8wKF7ffw
-	 EceS0L8jsfVDf3XEFEolUlcwuho23S6dE+Ri6v4A4NVGKHvfSN+FX/icJuGbcpvfs4
-	 kvBVx/2irIXFA==
-Date: Tue, 10 Jun 2025 11:32:40 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc: allison.henderson@oracle.com, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, guro@fb.com,
-	kernel-team@fb.com, surenb@google.com, peterz@infradead.org,
-	hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org,
-	andrew@lunn.ch
-Subject: Re: [rds-devel] [PATCH RFC v1] Feature reporting of RDS driver.
-Message-ID: <aEikeOlAjvbqm_7v@slm.duckdns.org>
-References: <20250610191144.422161-1-konrad.wilk@oracle.com>
- <aEiZ212HZo3-zpMc@char.us.oracle.com>
+	s=k20201202; t=1749591605;
+	bh=OQ5TxnygLvYZ+w90EqVsIGmUrF7BUzDsm+GgA7XgVQA=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=CrwyZMfDv5WiI/r/RyCtx7u+z7wUxJ+GgfZFhh+qm+IjMD76jfDksXA41aItKfUeC
+	 u7ge6jJcHpkhYVjwUdY3CkzdKU9h1N6Jdf8nMDR2VZpO3Nd7e2civNYLytbTXlm2OB
+	 jVBDXNfAtYoAFudpTUPY/n5GF/fU37IkkINQjx+iPJ1czMmY00er9mbnsA8NGeTq/T
+	 gxBMvGBDK+qBBddGkTZVpsl5hasVqUR8BktvvxVtTnwRWB6yyifQTq7GatSYXwBULv
+	 VdI9hupDPAPkds/vgTAD05CuNQ869r4AJaagCoBwMWLZLdYCAL/ghVdbCaRycJlsqy
+	 8DW9mCa7dRs9Q==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70EAC38111E3;
+	Tue, 10 Jun 2025 21:40:37 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aEiZ212HZo3-zpMc@char.us.oracle.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: mana: Expose additional hardware counters for drop
+ and
+ TC via ethtool.
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <174959163599.2619474.1037436501592107542.git-patchwork-notify@kernel.org>
+Date: Tue, 10 Jun 2025 21:40:35 +0000
+References: 
+ <20250609100103.GA7102@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+In-Reply-To: 
+ <20250609100103.GA7102@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+To: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+Cc: andrew+net@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, kys@microsoft.com,
+ haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+ longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+ mhklinux@outlook.com, ernis@linux.microsoft.com, dipayanroy@microsoft.com,
+ schakrabarti@linux.microsoft.com, rosenp@gmail.com,
+ linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
 
-Hello,
+Hello:
 
-On Tue, Jun 10, 2025 at 04:47:23PM -0400, Konrad Rzeszutek Wilk wrote:
-> On Tue, Jun 10, 2025 at 12:27:24PM -0400, Konrad Rzeszutek Wilk via rds-devel wrote:
-> > Hi folks,
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Mon, 9 Jun 2025 03:01:03 -0700 you wrote:
+> Add support for reporting additional hardware counters for drop and
+> TC using the ethtool -S interface.
 > 
-> Hi cgroup folks,
+> These counters include:
 > 
-> Andrew suggested that I reach out to you all since you had implemented
-> something very similar via:
+> - Aggregate Rx/Tx drop counters
+> - Per-TC Rx/Tx packet counters
+> - Per-TC Rx/Tx byte counters
+> - Per-TC Rx/Tx pause frame counters
 > 
-> 3958e2d0c34e1
-> 01ee6cfb1483f
-> 
-> And I was wondering if you have have feedback on what worked for you,
-> best practices, etc.
+> [...]
 
-I don't know RDS at all, so please take what I say with a big grain of salt.
-That said, the sysfs approach is pretty straightforward and has worked well
-for us. One thing which we didn't do (yet) but maybe useful is defining some
-conventions to tell whether a given feature or option should be enabled by
-default so that most users don't have to know which features to use and
-follow whatever the kernel release thinks is the best default combination.
+Here is the summary with links:
+  - net: mana: Expose additional hardware counters for drop and TC via ethtool.
+    https://git.kernel.org/netdev/net-next/c/c09ef59e17c6
 
-Thanks.
-
+You are awesome, thank you!
 -- 
-tejun
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
