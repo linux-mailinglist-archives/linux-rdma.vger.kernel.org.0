@@ -1,90 +1,110 @@
-Return-Path: <linux-rdma+bounces-11124-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11125-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7B4FAD2C7D
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jun 2025 06:11:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C85EAD2E37
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jun 2025 09:00:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 335653B103A
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jun 2025 04:11:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBA87170A0F
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Jun 2025 07:00:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443BC25DB10;
-	Tue, 10 Jun 2025 04:10:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 034C027A934;
+	Tue, 10 Jun 2025 07:00:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="huycedxl"
+	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="dtGcd7wR"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47DD125DB09;
-	Tue, 10 Jun 2025 04:10:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52552215F72
+	for <linux-rdma@vger.kernel.org>; Tue, 10 Jun 2025 07:00:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749528649; cv=none; b=GTRkMcl5GuSgrxc9PsfTrYo40agcY1gncsT0li46d4qt6+/BHROyqDQE0n17KjQRvq5YHIXZ/GEGJLOtYCPR/LqbAVc8dlArpaeBTo7NTt7f1xYwjBOVzg76nAKUfMcVzCnb4Y58WmR6kqtOKyTzRCJjtGRSpcChg3+EtAlYhD8=
+	t=1749538851; cv=none; b=PBRrn3W6z9lz46fqBJw6vVtd9/Lxskyg3a3Y6sAT7vjgoElxZ7EON405GxWWD0PuUeCydBapl7mkY7dqPYhu+4cHqdMMciZDqJCOEkKD550GQ8gC5CBUBDBI2FZd+p0CyufBdf679EeWrDTX/IxmTw/Xds3k1/q1O0kHAZs63Bg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749528649; c=relaxed/simple;
-	bh=batHVKMV99We/wInSNyLZ7hZD0DLlHrA4bGXYHgB/J8=;
+	s=arc-20240116; t=1749538851; c=relaxed/simple;
+	bh=nxzPfqmfptUSQtLazHsiK0dcb5LFkkFm+nAYN/C+p7s=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=n4lZ1L50t8rPE613driwdaONmWoES7uXTF5nzu4uqcUh4eBwG9m5HYSXB6Fdu4/6sAW5C2v4XaCEOt1ivVKtIcAGmLzXxnEHky4f5QK1jJQHEhYmc0WuO3wbi7rf9VDJ+u2tosn6Ks2stRclFCP2EzNUISKDEGXdN+Ziw0qJi0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=huycedxl; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1749528647; x=1781064647;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=batHVKMV99We/wInSNyLZ7hZD0DLlHrA4bGXYHgB/J8=;
-  b=huycedxl5HCvGcS74Siej+YJdnOM0npqigsrk5I1SuVN7l/4A9bZNz3p
-   nQ4D5RLALEoZe9DoWrdcaXmEOfbC1Yo1mamjlV8LasFIQuSYErJT6FCrl
-   TK7Mbaa2XeqmWFA25+pPBXglDdi12q7Q3tlOAIXQDPA6nawLeWVFhjuRB
-   hTZXXTb0xffPsBdBa30vTNFvvfEMhahAy1kxQDAqI/l0AguZnFP71grad
-   eAFOJoJpIFQfrMyHbnULq/x1fWic9fi2LPAnxTyoXjRoplgWjZt9q3pRd
-   1/0DpzimRkD4bOMFvYGHGYSpdxJzq+PgV+GY0bF2WPlF5z+7mqJpkzl/q
-   A==;
-X-CSE-ConnectionGUID: Y6i+/X5VTTml88Z79191eA==
-X-CSE-MsgGUID: 7+hLtiHPQ3GmfhgTut0zlA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11459"; a="51613216"
-X-IronPort-AV: E=Sophos;i="6.16,224,1744095600"; 
-   d="scan'208";a="51613216"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2025 21:10:47 -0700
-X-CSE-ConnectionGUID: UN0J4MucT0SuRvbmZlcIOw==
-X-CSE-MsgGUID: xCJEsukUSXuWAQdx2kCIgA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,224,1744095600"; 
-   d="scan'208";a="177646795"
-Received: from amlin-018-114.igk.intel.com ([10.102.18.114])
-  by orviesa002.jf.intel.com with ESMTP; 09 Jun 2025 21:10:43 -0700
-From: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
-To: donald.hunter@gmail.com,
-	kuba@kernel.org,
+	 MIME-Version; b=tKaOG0vS/9lh6UF5HhXg06IMNjLb9/Qm8D7HA/RD0BVGrutx+lSl9Dzh2fwb+2tach9o0PTOq5px740fuHY/MW4dtpD8+lJNyifSp9LoBrR1jniM9Q32dLKXCWP/VlOF7Qoa+TssGQBpStChIzBhZam5xQMgWvKu27QG/NoP8/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=dtGcd7wR; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-742caef5896so4183732b3a.3
+        for <linux-rdma@vger.kernel.org>; Tue, 10 Jun 2025 00:00:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1749538849; x=1750143649; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JUJitp02dLbwyW6XXbPMt7kAqtrb2lpqnpotbucX9CA=;
+        b=dtGcd7wRQWbYXVW4cPdjrFKOIBrbFi3WDWaK7NW2K73TdOc4KAlxMd2EVnHR22IX3H
+         nkJUmm2LohJQzU8ZT9d3DqS0+HPANe0dMuy5WDAIgVlRLtu7JHS/LPOisEIF1s+vKMh6
+         +MAxwRlMf1HO6mSCZJffHi+1YqBjSrNnoeMxkykBPZvZvBxtjkcLq36m1RsaQfUpcc3i
+         H+Znmjj8POkJWaKy4KoEokiYSrC3su5AWljkfHoC/axQ0xVjyvOPDGMxTF44XvKlcgE8
+         iud94qfA9k7FXCKOXvZBDlO0mtHnP3DhcXLNFAOe/w65cCnm6JJvMipnjdKK49steX5s
+         KRAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749538849; x=1750143649;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JUJitp02dLbwyW6XXbPMt7kAqtrb2lpqnpotbucX9CA=;
+        b=lRI4RMUbIXWzU/FVVjWZFphP6BKP4FujBWD8CSvsxxkmyxtaQS0bTq2OC8XumIEwl/
+         TQRyzEB8u6u43My5BCU7FKOT+4IuNjGrjgUj52qQoZif5Qt3qTJivWZO73Kw7cMuBUkj
+         bHhNTCFWhmBb1G6XM4k4wllZbfjsS5EQR1kcLdVtc14ni44XEmY/IwTNTnee0S74GOHB
+         IE5BskxDJ+B1fKor6U+AuTTpxW09C6vGKVtFMAB+oJUZMgwQDr/RnolDBxhQYXVWvrlc
+         S1cli8dvrzzsxG6L38SIdNqV0sGO4F472SbrGRsdDGjSUZTV+rkMxEFNxK3699HK0Phx
+         806Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV3AejfNvkzScSXRDGAXl0/XHSTpkxG4vK5DVMTQeAH/wrySckogPsvbrwzCPdLbU+9yHYDioT/zLaD@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx0gtDEVJm5ZSWL+PmY4Lm2S3ILudWkBmI3fdKQlXoGys16b06C
+	IeLHC6IcMR0MZaWH1nwVDgN5Xo4laLP018F/NY3+6s5enjTqouyAVybCyHIQyUF8EN8=
+X-Gm-Gg: ASbGnctxpPs463nOtLmkAVydHV12wvl4xTo4mqRFy/PL1uUUfOeIy7kakCw4u2SsguY
+	jCtVm/MzG9mA8HVwjxnk6Io3H+pQpBfmQbM6fplUwBiprkZzNQU0Rvq86J97jsw/47PlXK2ZCvB
+	9QaMc2Pm51NLF4eblZSnljqd7bHzouSl7jWR/TGJYmf++mIqiGaqKj+hledkb9SaTSK3R7Z0IPx
+	1fs22M/sLfhhzNCcYOPPD458NQ28eEu+WtEIJi0SzovfD4D4l2MnB/NEnz1wYACMhaap//Wxx66
+	3oAC7p+ajzb3PuNd+lzg/ZKdmQKUnngo0arQFWcy+9HnYcg3Ve/atCCZq5P1QAlu/6wel7cx4Iz
+	sEHaU+UkrR7zq8J0XJwCQVYI=
+X-Google-Smtp-Source: AGHT+IF8uzdNqEI314pocfYYQWBeowDkb4F+LwQ50ySlNHswx1qiGOLWHPFnpEwYjMluBjhKg3WXFg==
+X-Received: by 2002:aa7:88c1:0:b0:748:1bac:aff9 with SMTP id d2e1a72fcca58-74861888babmr2307166b3a.18.1749538849387;
+        Tue, 10 Jun 2025 00:00:49 -0700 (PDT)
+Received: from mattc--Mac15.purestorage.com ([165.225.242.245])
+        by smtp.googlemail.com with ESMTPSA id d2e1a72fcca58-7482af7af0csm7038483b3a.62.2025.06.10.00.00.47
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Tue, 10 Jun 2025 00:00:48 -0700 (PDT)
+From: Matthew W Carlis <mattc@purestorage.com>
+To: macro@orcam.me.uk
+Cc: alex.williamson@redhat.com,
+	bhelgaas@google.com,
 	davem@davemloft.net,
+	david.abdurachmanov@gmail.com,
 	edumazet@google.com,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	vadim.fedorenko@linux.dev,
-	jiri@resnulli.us,
-	anthony.l.nguyen@intel.com,
-	przemyslaw.kitszel@intel.com,
-	andrew+netdev@lunn.ch,
-	aleksandr.loktionov@intel.com,
-	corbet@lwn.net
-Cc: netdev@vger.kernel.org,
+	helgaas@kernel.org,
+	kuba@kernel.org,
+	leon@kernel.org,
 	linux-kernel@vger.kernel.org,
-	intel-wired-lan@lists.osuosl.org,
+	linux-pci@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
-	Milena Olech <milena.olech@intel.com>
-Subject: [PATCH net-next v5 3/3] ice: add ref-sync dpll pins
-Date: Tue, 10 Jun 2025 06:04:36 +0200
-Message-Id: <20250610040436.1669826-4-arkadiusz.kubalewski@intel.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20250610040436.1669826-1-arkadiusz.kubalewski@intel.com>
-References: <20250610040436.1669826-1-arkadiusz.kubalewski@intel.com>
+	linuxppc-dev@lists.ozlabs.org,
+	lukas@wunner.de,
+	mahesh@linux.ibm.com,
+	mattc@purestorage.com,
+	mika.westerberg@linux.intel.com,
+	netdev@vger.kernel.org,
+	npiggin@gmail.com,
+	oohall@gmail.com,
+	pabeni@redhat.com,
+	pali@kernel.org,
+	saeedm@nvidia.com,
+	sr@denx.de,
+	wilson@tuliptree.org
+Subject: PCI: Work around PCIe link training failures
+Date: Tue, 10 Jun 2025 00:00:44 -0700
+Message-Id: <20250610070044.92057-1-mattc@purestorage.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+In-Reply-To: <alpine.DEB.2.21.2410031135250.45128@angie.orcam.me.uk>
+References: <alpine.DEB.2.21.2410031135250.45128@angie.orcam.me.uk>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -93,258 +113,39 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Implement reference sync input pin get/set callbacks, allow user space
-control over dpll pin pairs capable of reference sync support.
+Hello again.. It looks like there are specific system configurations that are
+extremely likely to have issues with this patch & result in undesirable
+system behavior..
 
-Reviewed-by: Milena Olech <milena.olech@intel.com>
-Signed-off-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
----
-v5:
-- rebase.
----
- .../net/ethernet/intel/ice/ice_adminq_cmd.h   |   2 +
- drivers/net/ethernet/intel/ice/ice_dpll.c     | 186 ++++++++++++++++++
- 2 files changed, 188 insertions(+)
+  Specifically hot-plug systems with side-band presence detection & without
+Power Controls (i.e PwrCtrl-) given to config space. It may also be related
+to presence on U.2 connectors being first-to-mate/last-to-break, but
+I don't have much experience with the different connectors. The main
+issue is that the quirk is invoked in at least two common cases when
+it is not expected that the link would train. 
+  For example, if I power off the slot via an out-of-band vendor specific
+mechanism we see the kernel decide that the link should be training,
+presumable because it will see PresDet+ in Slot Status. In this case it
+decides the link failed to train, writes the Gen1 speed value into TLS
+(target link speed) & returns after waiting for the link one more time.
+The next time the slot is powered on the link will train to Gen1 due to TLS.
+  Another problematic case is when we physically insert a device. In my case
+I am using nvme drives with U.2 connectors from several different vendors.
+The presence event is often generated before the device is fully powered on
+due to U.2 assigning presence as a first-to-mate & power being last-to-mate.
+I believe in this case that the kernel is expecting the link to train too
+soon & therefore we find that the quirk often applies the Gen1 TLS speed.
+Later, when the link comes up it is frequently observed at Gen1. I tried
+to unset bit 3 in Slot Control (Presence Detect Changed Enable), but we
+still hit the first case I described with powering off slots.
+  I should be clear and say that we are able to see devices forced to Gen1
+extremely often in the side-band presence configuration. We would really like
+to see this "quirk" removed or put behind an opt-in config since it causes
+significant regression in common configurations of pcie-hotplug. I have tried
+to come up with ideas to modify/improve the quirk, but I am not very
+confident that there is a good solution if the kernel cannot know for certain
+whether the link is expected to train.
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h b/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h
-index bdee499f991a..7fd0f0091d36 100644
---- a/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h
-+++ b/drivers/net/ethernet/intel/ice/ice_adminq_cmd.h
-@@ -2288,6 +2288,8 @@ struct ice_aqc_get_cgu_abilities {
- 	u8 rsvd[3];
- };
- 
-+#define ICE_AQC_CGU_IN_CFG_FLG2_REFSYNC_EN		BIT(7)
-+
- /* Set CGU input config (direct 0x0C62) */
- struct ice_aqc_set_cgu_input_config {
- 	u8 input_idx;
-diff --git a/drivers/net/ethernet/intel/ice/ice_dpll.c b/drivers/net/ethernet/intel/ice/ice_dpll.c
-index bce3ad6ca2a6..98f0c86f41fc 100644
---- a/drivers/net/ethernet/intel/ice/ice_dpll.c
-+++ b/drivers/net/ethernet/intel/ice/ice_dpll.c
-@@ -12,6 +12,19 @@
- #define ICE_DPLL_PIN_ESYNC_PULSE_HIGH_PERCENT	25
- #define ICE_DPLL_PIN_GEN_RCLK_FREQ		1953125
- 
-+#define ICE_SR_PFA_DPLL_DEFAULTS		0x152
-+#define ICE_DPLL_PFA_REF_SYNC_TYPE		0x2420
-+#define ICE_DPLL_PFA_REF_SYNC_TYPE2		0x2424
-+#define ICE_DPLL_PFA_END			0xFFFF
-+#define ICE_DPLL_PFA_HEADER_LEN			4
-+#define ICE_DPLL_PFA_ENTRY_LEN			3
-+#define ICE_DPLL_PFA_MAILBOX_REF_SYNC_PIN_S	4
-+#define ICE_DPLL_PFA_MASK_OFFSET		1
-+#define ICE_DPLL_PFA_VALUE_OFFSET		2
-+
-+#define ICE_DPLL_E810C_SFP_NC_PINS		2
-+#define ICE_DPLL_E810C_SFP_NC_START		4
-+
- /**
-  * enum ice_dpll_pin_type - enumerate ice pin types:
-  * @ICE_DPLL_PIN_INVALID: invalid pin type
-@@ -1314,6 +1327,89 @@ ice_dpll_input_esync_get(const struct dpll_pin *pin, void *pin_priv,
- 	return 0;
- }
- 
-+/**
-+ * ice_dpll_input_ref_sync_set - callback for setting reference sync feature
-+ * @pin: pointer to a pin
-+ * @pin_priv: private data pointer passed on pin registration
-+ * @ref_pin: pin pointer for reference sync pair
-+ * @ref_pin_priv: private data pointer of ref_pin
-+ * @state: requested state for reference sync for pin pair
-+ * @extack: error reporting
-+ *
-+ * Dpll subsystem callback. Handler for setting reference sync frequency
-+ * feature for input pin.
-+ *
-+ * Context: Acquires and releases pf->dplls.lock
-+ * Return:
-+ * * 0 - success
-+ * * negative - error
-+ */
-+static int
-+ice_dpll_input_ref_sync_set(const struct dpll_pin *pin, void *pin_priv,
-+			    const struct dpll_pin *ref_pin, void *ref_pin_priv,
-+			    const enum dpll_pin_state state,
-+			    struct netlink_ext_ack *extack)
-+{
-+	struct ice_dpll_pin *p = pin_priv;
-+	struct ice_pf *pf = p->pf;
-+	u8 flags_en = 0;
-+	int ret;
-+
-+	if (ice_dpll_is_reset(pf, extack))
-+		return -EBUSY;
-+	mutex_lock(&pf->dplls.lock);
-+
-+	if (p->flags[0] & ICE_AQC_GET_CGU_IN_CFG_FLG2_INPUT_EN)
-+		flags_en = ICE_AQC_SET_CGU_IN_CFG_FLG2_INPUT_EN;
-+	if (state == DPLL_PIN_STATE_CONNECTED)
-+		flags_en |= ICE_AQC_CGU_IN_CFG_FLG2_REFSYNC_EN;
-+	ret = ice_aq_set_input_pin_cfg(&pf->hw, p->idx, 0, flags_en, 0, 0);
-+	if (!ret)
-+		ret = ice_dpll_pin_state_update(pf, p, ICE_DPLL_PIN_TYPE_INPUT,
-+						extack);
-+	mutex_unlock(&pf->dplls.lock);
-+
-+	return ret;
-+}
-+
-+/**
-+ * ice_dpll_input_ref_sync_get - callback for getting reference sync config
-+ * @pin: pointer to a pin
-+ * @pin_priv: private data pointer passed on pin registration
-+ * @ref_pin: pin pointer for reference sync pair
-+ * @ref_pin_priv: private data pointer of ref_pin
-+ * @state: on success holds reference sync state for pin pair
-+ * @extack: error reporting
-+ *
-+ * Dpll subsystem callback. Handler for setting reference sync frequency
-+ * feature for input pin.
-+ *
-+ * Context: Acquires and releases pf->dplls.lock
-+ * Return:
-+ * * 0 - success
-+ * * negative - error
-+ */
-+static int
-+ice_dpll_input_ref_sync_get(const struct dpll_pin *pin, void *pin_priv,
-+			    const struct dpll_pin *ref_pin, void *ref_pin_priv,
-+			    enum dpll_pin_state *state,
-+			    struct netlink_ext_ack *extack)
-+{
-+	struct ice_dpll_pin *p = pin_priv;
-+	struct ice_pf *pf = p->pf;
-+
-+	if (ice_dpll_is_reset(pf, extack))
-+		return -EBUSY;
-+	mutex_lock(&pf->dplls.lock);
-+	if (p->flags[0] & ICE_AQC_CGU_IN_CFG_FLG2_REFSYNC_EN)
-+		*state = DPLL_PIN_STATE_CONNECTED;
-+	else
-+		*state = DPLL_PIN_STATE_DISCONNECTED;
-+	mutex_unlock(&pf->dplls.lock);
-+
-+	return 0;
-+}
-+
- /**
-  * ice_dpll_rclk_state_on_pin_set - set a state on rclk pin
-  * @pin: pointer to a pin
-@@ -1440,6 +1536,8 @@ static const struct dpll_pin_ops ice_dpll_input_ops = {
- 	.phase_offset_get = ice_dpll_phase_offset_get,
- 	.esync_set = ice_dpll_input_esync_set,
- 	.esync_get = ice_dpll_input_esync_get,
-+	.ref_sync_set = ice_dpll_input_ref_sync_set,
-+	.ref_sync_get = ice_dpll_input_ref_sync_get,
- };
- 
- static const struct dpll_pin_ops ice_dpll_output_ops = {
-@@ -1619,6 +1717,91 @@ static void ice_dpll_periodic_work(struct kthread_work *work)
- 				   msecs_to_jiffies(500));
- }
- 
-+/**
-+ * ice_dpll_init_ref_sync_inputs - initialize reference sync pin pairs
-+ * @pf: pf private structure
-+ *
-+ * Read DPLL TLV capabilities and initialize reference sync pin pairs in
-+ * dpll subsystem.
-+ *
-+ * Return:
-+ * * 0 - success or nothing to do (no ref-sync tlv are present)
-+ * * negative - AQ failure
-+ */
-+static int ice_dpll_init_ref_sync_inputs(struct ice_pf *pf)
-+{
-+	struct ice_dpll_pin *inputs = pf->dplls.inputs;
-+	struct ice_hw *hw = &pf->hw;
-+	u16 addr, len, end, hdr;
-+	int ret;
-+
-+	ret = ice_get_pfa_module_tlv(hw, &hdr, &len, ICE_SR_PFA_DPLL_DEFAULTS);
-+	if (ret) {
-+		dev_err(ice_pf_to_dev(pf),
-+			"Failed to read PFA dpll defaults TLV ret=%d\n", ret);
-+		return ret;
-+	}
-+	end = hdr + len;
-+
-+	for (addr = hdr + ICE_DPLL_PFA_HEADER_LEN; addr < end;
-+	     addr += ICE_DPLL_PFA_ENTRY_LEN) {
-+		unsigned long bit, ul_mask, offset;
-+		u16 pin, mask, buf;
-+		bool valid = false;
-+
-+		ret = ice_read_sr_word(hw, addr, &buf);
-+		if (ret)
-+			return ret;
-+
-+		switch (buf) {
-+		case ICE_DPLL_PFA_REF_SYNC_TYPE:
-+		case ICE_DPLL_PFA_REF_SYNC_TYPE2:
-+		{
-+			u16 mask_addr = addr + ICE_DPLL_PFA_MASK_OFFSET;
-+			u16 val_addr = addr + ICE_DPLL_PFA_VALUE_OFFSET;
-+
-+			ret = ice_read_sr_word(hw, mask_addr, &mask);
-+			if (ret)
-+				return ret;
-+			ret = ice_read_sr_word(hw, val_addr, &pin);
-+			if (ret)
-+				return ret;
-+			if (buf == ICE_DPLL_PFA_REF_SYNC_TYPE)
-+				pin >>= ICE_DPLL_PFA_MAILBOX_REF_SYNC_PIN_S;
-+			valid = true;
-+			break;
-+		}
-+		case ICE_DPLL_PFA_END:
-+			addr = end;
-+			break;
-+		default:
-+			continue;
-+		}
-+		if (!valid)
-+			continue;
-+
-+		ul_mask = mask;
-+		offset = 0;
-+		for_each_set_bit(bit, &ul_mask, BITS_PER_TYPE(u16)) {
-+			int i, j;
-+
-+			if (hw->device_id == ICE_DEV_ID_E810C_SFP &&
-+			    pin > ICE_DPLL_E810C_SFP_NC_START)
-+				offset = -ICE_DPLL_E810C_SFP_NC_PINS;
-+			i = pin + offset;
-+			j = bit + offset;
-+			if (i < 0 || j < 0)
-+				return -ERANGE;
-+			ret = dpll_pin_ref_sync_pair_add(inputs[i].pin,
-+							 inputs[j].pin);
-+			if (ret)
-+				return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * ice_dpll_release_pins - release pins resources from dpll subsystem
-  * @pins: pointer to pins array
-@@ -1936,6 +2119,9 @@ static int ice_dpll_init_pins(struct ice_pf *pf, bool cgu)
- 	if (ret)
- 		return ret;
- 	if (cgu) {
-+		ret = ice_dpll_init_ref_sync_inputs(pf);
-+		if (ret)
-+			goto deinit_inputs;
- 		ret = ice_dpll_init_direct_pins(pf, cgu, pf->dplls.outputs,
- 						pf->dplls.num_inputs,
- 						pf->dplls.num_outputs,
--- 
-2.38.1
-
+Thanks,
+-Matt
 
