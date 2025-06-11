@@ -1,208 +1,165 @@
-Return-Path: <linux-rdma+bounces-11203-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11204-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58FEAAD58BB
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 16:29:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B6CBAD596D
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 17:00:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C3AE3A3B9B
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 14:28:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E5601892AED
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 15:00:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22E7029ACC8;
-	Wed, 11 Jun 2025 14:29:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 112982BDC1B;
+	Wed, 11 Jun 2025 14:59:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FpiEgkrj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YVOA0Npf"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B432882DD;
-	Wed, 11 Jun 2025 14:29:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A2B2BD5BB;
+	Wed, 11 Jun 2025 14:59:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749652151; cv=none; b=Q3gRHeCOGomykeYkcloBWvFl62v0D7cnu+7wK9UTO+fLe9NiwnhC2MbVkvBjdD1Al0ejY/tAGDWqXOCPIygPNWem2w7tLVOUet4dBvjRw/2ffPybzFsVuHUmA/K3qbNxb2g5dLz8yA7xd8KhJa1lf1UcwxZNCF8l68CdO8AIums=
+	t=1749653995; cv=none; b=HBDLP3e8AGC1i99TdA6qBLK2nrZnMOjaw5wXrHBWmYILMXHe2qz3evtA3/Y09tcHKnJ0iZziRf8MW2pFWYomeMVFuLdRDPL33eEQ7k/3xfS4UoNrhd79e/Vi3ORbSLg2baMX1TT2i1K0w+SzO5c1Ved1HfoaegXoFyhN5GuG0DQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749652151; c=relaxed/simple;
-	bh=UxNA7j6sLsgsrjFV1dPxluvU1vzmXNZ8ByJQsQehtIk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Txw1qEhTFG/8TBDsCetIBvx9BO7sJyk/eEvVNy5oLzcj9o60yXCd1hEZVmgQigvAswEFeilmaR3ev8LVoou1Do3K4M+mS8HX6gytiRORsZHCo66dR0Pn5Pb16AINrtaVfGAHk6JaFyDudYSHWxDbDS4HQGXxBzQrSvHXZwX416Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FpiEgkrj; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3a35c894313so5940635f8f.2;
-        Wed, 11 Jun 2025 07:29:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749652148; x=1750256948; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5y5kfhj5cbce1cwVnaZbUHmhhz08gC5FIwyfzGaoaCo=;
-        b=FpiEgkrjkQZxgF5ZBMdy+Pm4xBj24jIVJ1v4wBER/tsxezVwimJP81S/LCXf64UhML
-         NP/muKQlHw7VfrBmAYsUw3cyP105+ICBL/kP7/kBQAgOUIv6/FDbPAs8uu8kbxiqH/Ip
-         siC4Bny3SXOXa2xhK+YAZscWJO9DLC7FMmJJdCyUKaLyZs2/HLgMJ2WYAnf5aJnJpmLJ
-         FCgYqp1c3z8UWJvUuF7aGBvetO0zn6NvbOeA7L/qiqW/AeecY8b5uBZJp/5fK3+3Nsu7
-         gRIoyhwPBV3ydvMOsCI7/zbGXq78ldGdd9wHD4i2r/J1Ict/Kln1QK5MGIyx1L/MC2kI
-         sG9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749652148; x=1750256948;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5y5kfhj5cbce1cwVnaZbUHmhhz08gC5FIwyfzGaoaCo=;
-        b=YIOGJs9nO/IcWbKY+Y5ZRgofEP25YLijGqY8y9IGGOXdkLnF6QCRQgUS7sXRG8xk3u
-         Wl/L91FXZX22+7UtE7p6EESaI1nxVKjsP5SXpZyUB83baUtxV9axkLGnWM7/haKL7Zi+
-         vHbH2UoEWfTwjaPwJs0QsCzZQGlJPyO7g97wJUP8dULYw5GAei3liYwrYAaLnzJ66X5E
-         XyPP0UwMHG4x4vwJL+jABhtYxdwBar7gMTHj1nEyisqa05QdDYVIY13OkT37sz8I08U5
-         snfYSg9uV81y1OPBEh74GhO96WvJQZroISlu7XAxIuO3Q0xt+RdiWm6d5JwVabfeR/Fj
-         46Qg==
-X-Forwarded-Encrypted: i=1; AJvYcCU3xB4BDgbcmyb7XKOrp3qEbqXhV8o8dFl9De2fir/2qOwFioouUfdI6dNw7DbdiIkbfaSdeCSA6+/Vfw==@vger.kernel.org, AJvYcCUzZRFonfet7t2F4wc3/XkQNlobpgUdirluW0sNQozIgXrdXiqA9voyBxcRKAlC4zvkrBTlvoi3wPGWGFBl@vger.kernel.org, AJvYcCXTe80VQKDn2/3f0dWZ3vMN0hdLXIXE59vsYrrp7ElNz4gBw2jUNGEJf9Z9Ii36ZOqAguU=@vger.kernel.org, AJvYcCXUmeB2DrnKASDcO76jug7cx8r46cWxTPYsYQjsxlLDcZEMd3JA8OxoOh2HzCUcYA2y7JESh2Wt@vger.kernel.org
-X-Gm-Message-State: AOJu0YzLR0gAB1MlTJAQLZDAfcA96fML+VC49CO1D2S6qRgsiaS88sx6
-	oMzij8gkftiBFaRJMRm4EtK+Uo/4UpnfocUd4RIpQlvpsUwjtys97ENN
-X-Gm-Gg: ASbGncsiTq+l/KvGChIvtKxKICuQH2Etk61bhtQS9PcVQE46u2Hxit+8FNCSSXxtKvx
-	27CdkUxipAl7Ss1Eck7V7e6O5IOHd9vxeHoc+I422zJF6v20TR3czE8c1JlsYuRrnqYd0e5v3N/
-	3cFyxxUjdvfJeilVOOCobrEnh/z0AEFkAWY+63lieA1dfKpGBKnrPlJeAIEPLS+2Uh/xKkHGOwu
-	/y0/CrXcgTe1OGJV3TF9ba1RjWKNsoS2STZNOW45NF/Wo5BZn/RHpKMklJZRAo/6OjtcnmKwgNR
-	oykq1xF+q7J+1vuTyv0zZxVPvK9SG55t2abdSxUZZh/A1ih99vBGvEx3cPUEISwALoPhSnA=
-X-Google-Smtp-Source: AGHT+IHmkB8/NBjZkYtctHG9v624zEnD1N4W2D/2KDPOKG11BkanIXfCpmFC/D77CHTnUyMvt0ZpaQ==
-X-Received: by 2002:a05:6000:250e:b0:3a3:727d:10e8 with SMTP id ffacd0b85a97d-3a558a1e2a2mr2708910f8f.50.1749652147978;
-        Wed, 11 Jun 2025 07:29:07 -0700 (PDT)
-Received: from [192.168.8.100] ([148.252.145.22])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45320562afbsm35319785e9.1.2025.06.11.07.29.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Jun 2025 07:29:07 -0700 (PDT)
-Message-ID: <937e62c5-0d12-4bea-b0c1-a267c491cf72@gmail.com>
-Date: Wed, 11 Jun 2025 15:30:28 +0100
+	s=arc-20240116; t=1749653995; c=relaxed/simple;
+	bh=k7uvwDoCQy7WbgbdbUpZHePfkgjqcUTHAu2jnYCKAZQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=bhJVGF5HdjUalzadGrMsLPJrulk48Kx4GeWBpRvFHXSwLwUUxqww9YIGcojHEl2iOl6Sr8+5oqIFAnxMoVdzsqyKLUKzqjWGj2fN2SDFxmE7XcFo/OGmSNEFgBXXm6+N3O0n+O1v1QlU5boNZPixiSg7kDJ+7ogbqXsD6D+1w6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YVOA0Npf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44075C4CEF1;
+	Wed, 11 Jun 2025 14:59:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749653995;
+	bh=k7uvwDoCQy7WbgbdbUpZHePfkgjqcUTHAu2jnYCKAZQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=YVOA0NpfLjZiLMFXJeoYffEhJgjY3b4BNlsk7AJMEnBHH2LBJHGemvVuowAqEA/q8
+	 J+NsGzW9fG3XkylwLjzJXrcvKaalqgDHmCVJL+aQl56tupQA7G0qDbDyTQ4JsBI7ns
+	 bKc1Xl9gfh+3CjQXC7DaQdmM6xoanRxVpij4gh8gZ2KTvNEGHRjXByV3u7XUFDEPVn
+	 jVBFQZVY9CdSZ74SHdEQvJe4tIfaNrAGP0P4fWyTpkupE6kUv4bw3TGUA5aYd9L185
+	 ou5bxjqsh8t83oBB/MMAyfXcGComu2Pyk7Y5QxBNMGeG8cA39fbT1DfR72lnlauoQT
+	 zkXddDVf8h8oA==
+From: Jakub Kicinski <kuba@kernel.org>
+To: davem@davemloft.net
+Cc: netdev@vger.kernel.org,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	andrew+netdev@lunn.ch,
+	horms@kernel.org,
+	ecree.xilinx@gmail.com,
+	Jakub Kicinski <kuba@kernel.org>,
+	saeedm@nvidia.com,
+	tariqt@nvidia.com,
+	leon@kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-net-drivers@amd.com
+Subject: [PATCH net-next 3/9] net: ethtool: require drivers to opt into the per-RSS ctx RXFH
+Date: Wed, 11 Jun 2025 07:59:43 -0700
+Message-ID: <20250611145949.2674086-4-kuba@kernel.org>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <20250611145949.2674086-1-kuba@kernel.org>
+References: <20250611145949.2674086-1-kuba@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 9/9] page_pool: access ->pp_magic through struct
- netmem_desc in page_pool_page_is_pp()
-To: Byungchul Park <byungchul@sk.com>, Mina Almasry <almasrymina@google.com>
-Cc: willy@infradead.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, kernel_team@skhynix.com,
- kuba@kernel.org, ilias.apalodimas@linaro.org, harry.yoo@oracle.com,
- hawk@kernel.org, akpm@linux-foundation.org, davem@davemloft.net,
- john.fastabend@gmail.com, andrew+netdev@lunn.ch, toke@redhat.com,
- tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
- saeedm@nvidia.com, leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
- david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
- vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com,
- horms@kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
- vishal.moola@gmail.com
-References: <20250609043225.77229-1-byungchul@sk.com>
- <20250609043225.77229-10-byungchul@sk.com>
- <CAHS8izMLnyJNnK-K-kR1cSt0LOaZ5iGSYsM2R=QhTQDSjCm8pg@mail.gmail.com>
- <20250610014500.GB65598@system.software.com>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <20250610014500.GB65598@system.software.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 6/10/25 02:45, Byungchul Park wrote:
-> On Mon, Jun 09, 2025 at 10:39:06AM -0700, Mina Almasry wrote:
->> On Sun, Jun 8, 2025 at 9:32 PM Byungchul Park <byungchul@sk.com> wrote:
->>>
->>> To simplify struct page, the effort to separate its own descriptor from
->>> struct page is required and the work for page pool is on going.
->>>
->>> To achieve that, all the code should avoid directly accessing page pool
->>> members of struct page.
->>>
->>> Access ->pp_magic through struct netmem_desc instead of directly
->>> accessing it through struct page in page_pool_page_is_pp().  Plus, move
->>> page_pool_page_is_pp() from mm.h to netmem.h to use struct netmem_desc
->>> without header dependency issue.
->>>
->>> Signed-off-by: Byungchul Park <byungchul@sk.com>
->>> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
->>> ---
->>>   include/linux/mm.h   | 12 ------------
->>>   include/net/netmem.h | 14 ++++++++++++++
->>>   mm/page_alloc.c      |  1 +
->>>   3 files changed, 15 insertions(+), 12 deletions(-)
->>>
->>> diff --git a/include/linux/mm.h b/include/linux/mm.h
->>> index e51dba8398f7..f23560853447 100644
->>> --- a/include/linux/mm.h
->>> +++ b/include/linux/mm.h
->>> @@ -4311,16 +4311,4 @@ int arch_lock_shadow_stack_status(struct task_struct *t, unsigned long status);
->>>    */
->>>   #define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
->>>
->>> -#ifdef CONFIG_PAGE_POOL
->>> -static inline bool page_pool_page_is_pp(struct page *page)
->>> -{
->>> -       return (page->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
->>> -}
->>> -#else
->>> -static inline bool page_pool_page_is_pp(struct page *page)
->>> -{
->>> -       return false;
->>> -}
->>> -#endif
->>> -
->>>   #endif /* _LINUX_MM_H */
->>> diff --git a/include/net/netmem.h b/include/net/netmem.h
->>> index d84ab624b489..8f354ae7d5c3 100644
->>> --- a/include/net/netmem.h
->>> +++ b/include/net/netmem.h
->>> @@ -56,6 +56,20 @@ NETMEM_DESC_ASSERT_OFFSET(pp_ref_count, pp_ref_count);
->>>    */
->>>   static_assert(sizeof(struct netmem_desc) <= offsetof(struct page, _refcount));
->>>
->>> +#ifdef CONFIG_PAGE_POOL
->>> +static inline bool page_pool_page_is_pp(struct page *page)
->>> +{
->>> +       struct netmem_desc *desc = (struct netmem_desc *)page;
->>> +
->>> +       return (desc->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
->>> +}
->>> +#else
->>> +static inline bool page_pool_page_is_pp(struct page *page)
->>> +{
->>> +       return false;
->>> +}
->>> +#endif
->>> +
->>>   /* net_iov */
->>>
->>>   DECLARE_STATIC_KEY_FALSE(page_pool_mem_providers);
->>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->>> index 4f29e393f6af..be0752c0ac92 100644
->>> --- a/mm/page_alloc.c
->>> +++ b/mm/page_alloc.c
->>> @@ -55,6 +55,7 @@
->>>   #include <linux/delayacct.h>
->>>   #include <linux/cacheinfo.h>
->>>   #include <linux/pgalloc_tag.h>
->>> +#include <net/netmem.h>
->>
->> mm files starting to include netmem.h is a bit interesting. I did not
->> expect/want dependencies outside of net. If anything the netmem stuff
->> include linux/mm.h
-> 
-> That's what I also concerned.  However, now that there are no way to
-> check the type of memory in a general way but require to use one of pp
-> fields, page_pool_page_is_pp() should be served by pp code e.i. network
-> subsystem.
-> 
-> This should be changed once either 1) mm provides a general way to check
-> the type or 2) pp code is moved to mm code.  I think this approach
-> should acceptable until then.
+RX Flow Hashing supports using different configuration for different
+RSS contexts. Only two drivers seem to support it. Make sure we
+uniformly error out for drivers which don't.
 
-I'd argue in the end the helper should be in mm.h as mm is going to
-dictate how to check the type and keep them enumerated.
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+---
+CC: saeedm@nvidia.com
+CC: tariqt@nvidia.com
+CC: leon@kernel.org
+CC: ecree.xilinx@gmail.com
+CC: linux-rdma@vger.kernel.org
+CC: linux-net-drivers@amd.com
+---
+ include/linux/ethtool.h                              | 3 +++
+ drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c | 1 +
+ drivers/net/ethernet/sfc/ethtool.c                   | 1 +
+ net/ethtool/ioctl.c                                  | 8 ++++++++
+ 4 files changed, 13 insertions(+)
 
-Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
-
+diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
+index 5e0dd333ad1f..fc1c2379e7ff 100644
+--- a/include/linux/ethtool.h
++++ b/include/linux/ethtool.h
+@@ -855,6 +855,8 @@ struct kernel_ethtool_ts_info {
+  * @cap_rss_ctx_supported: indicates if the driver supports RSS
+  *	contexts via legacy API, drivers implementing @create_rxfh_context
+  *	do not have to set this bit.
++ * @rxfh_per_ctx_fields: device supports selecting different header fields
++ *	for Rx hash calculation and RSS for each additional context.
+  * @rxfh_per_ctx_key: device supports setting different RSS key for each
+  *	additional context. Netlink API should report hfunc, key, and input_xfrm
+  *	for every context, not just context 0.
+@@ -1084,6 +1086,7 @@ struct ethtool_ops {
+ 	u32     supported_input_xfrm:8;
+ 	u32     cap_link_lanes_supported:1;
+ 	u32     cap_rss_ctx_supported:1;
++	u32	rxfh_per_ctx_fields:1;
+ 	u32	rxfh_per_ctx_key:1;
+ 	u32	cap_rss_rxnfc_adds:1;
+ 	u32	rxfh_indir_space;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+index ea078c9f5d15..90c760057bb6 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+@@ -2619,6 +2619,7 @@ static void mlx5e_get_ts_stats(struct net_device *netdev,
+ const struct ethtool_ops mlx5e_ethtool_ops = {
+ 	.cap_link_lanes_supported = true,
+ 	.cap_rss_ctx_supported	= true,
++	.rxfh_per_ctx_fields	= true,
+ 	.rxfh_per_ctx_key	= true,
+ 	.supported_coalesce_params = ETHTOOL_COALESCE_USECS |
+ 				     ETHTOOL_COALESCE_MAX_FRAMES |
+diff --git a/drivers/net/ethernet/sfc/ethtool.c b/drivers/net/ethernet/sfc/ethtool.c
+index 83d715544f7f..afbedca63b29 100644
+--- a/drivers/net/ethernet/sfc/ethtool.c
++++ b/drivers/net/ethernet/sfc/ethtool.c
+@@ -262,6 +262,7 @@ const struct ethtool_ops efx_ethtool_ops = {
+ 	.set_rxnfc		= efx_ethtool_set_rxnfc,
+ 	.get_rxfh_indir_size	= efx_ethtool_get_rxfh_indir_size,
+ 	.get_rxfh_key_size	= efx_ethtool_get_rxfh_key_size,
++	.rxfh_per_ctx_fields	= true,
+ 	.rxfh_per_ctx_key	= true,
+ 	.cap_rss_rxnfc_adds	= true,
+ 	.rxfh_priv_size		= sizeof(struct efx_rss_context_priv),
+diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
+index 330ca99800ce..bd9fd95bb82f 100644
+--- a/net/ethtool/ioctl.c
++++ b/net/ethtool/ioctl.c
+@@ -1075,6 +1075,10 @@ ethtool_set_rxfh_fields(struct net_device *dev, u32 cmd, void __user *useraddr)
+ 	if (rc)
+ 		return rc;
+ 
++	if (info.flow_type & FLOW_RSS && info.rss_context &&
++	    !ops->rxfh_per_ctx_fields)
++		return -EINVAL;
++
+ 	if (ops->get_rxfh) {
+ 		struct ethtool_rxfh_param rxfh = {};
+ 
+@@ -1105,6 +1109,10 @@ ethtool_get_rxfh_fields(struct net_device *dev, u32 cmd, void __user *useraddr)
+ 	if (ret)
+ 		return ret;
+ 
++	if (info.flow_type & FLOW_RSS && info.rss_context &&
++	    !ops->rxfh_per_ctx_fields)
++		return -EINVAL;
++
+ 	ret = ops->get_rxnfc(dev, &info, NULL);
+ 	if (ret < 0)
+ 		return ret;
 -- 
-Pavel Begunkov
+2.49.0
 
 
