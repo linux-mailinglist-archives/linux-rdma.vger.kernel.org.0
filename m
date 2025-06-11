@@ -1,79 +1,170 @@
-Return-Path: <linux-rdma+bounces-11195-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11196-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96D87AD56EE
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 15:27:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42855AD5819
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 16:10:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0AF817E01F
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 13:27:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72620166F61
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 14:09:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86CA6288CAC;
-	Wed, 11 Jun 2025 13:26:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3D7B28C5CF;
+	Wed, 11 Jun 2025 14:09:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e9ddoPFR"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="BsL1rm0l"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C5121E485;
-	Wed, 11 Jun 2025 13:26:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C76E127E7F0;
+	Wed, 11 Jun 2025 14:09:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749648416; cv=none; b=IsbCzJXSay9xPlAn1u7xoTk0YsyoP9+/256pVedACSzgU/pDP1y7whPDCBmUkySI8dW2Ikfg0dGibF6V9Pbp26+v+OwB0YIHOslhTaFkfMG1PzzHmwu579UsOiB9+tJqZJbdFdAAp4TPkZffTtvtPDik99H0hfDKKhaJF0INnfo=
+	t=1749650988; cv=none; b=g8BVUNEE7nE7QuI29Plgp9ow8uVafyESZygDGv8tkaRCQgxZBuRIbSW+qdGE7TASfb5yHdXL8n7Y8XGQp18uWESPeC8hOPaFUCF4ERk0+xT6Dr9BMygqd4gFWQT60IxFskuLdERH4Cr0RKpBUJ+q1o06jEtmZftrxhoGH+9zUys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749648416; c=relaxed/simple;
-	bh=vbwcuWtgss35ajrLrHboTtuHCKz3So3tZuLGqqgzqxg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LEO5gBILa5SkaGdym82y4fVLFb5l/I2IAsexEyp3L2Oy6CVAfcSbf+/lOblAiaD/RfyU35vBBmbY/hGFhsCwU5wRuTkz2eGxjbJ+0NAceOOQUjvH81gnRCch73YzijGPnW2tjWWI6X4QT7s6bwnZL3xr7i2s1h4G9f19bPqWSbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e9ddoPFR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43654C4CEEE;
-	Wed, 11 Jun 2025 13:26:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749648415;
-	bh=vbwcuWtgss35ajrLrHboTtuHCKz3So3tZuLGqqgzqxg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=e9ddoPFR/62sJ9VNWweEfQqnVjz3CpbLj+bvFc2SdYnWdlnov6I6J1AhB9rTatYv4
-	 damu10gthPC8BqmorY4pXnsScsut0Uy5e+wQbe3cBRsKHPGq+5LKsksNC1R1qDMe3h
-	 EeBGVnisaXHNHmAyUi4bIWTS9yvmVFU0zpg6cKHoR31LkRfvNWjAzdMS2WPncyvgt+
-	 dciuLCKCB8/Os9ZTQTX4aV3YKL1nEzDH5OzXEAnUcEzkXmMdaoUrg4BA/mx9dOmuPx
-	 20WwMbgFeKocBim/wYVONCKxrOWGo2kU9WPHInKAnHeT8sy9QHjoBkHilrNpPUaDfh
-	 1X5iv0LmvKboA==
-Date: Wed, 11 Jun 2025 06:26:54 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Mark Bloch <mbloch@nvidia.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Paolo Abeni
- <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew Lunn"
- <andrew+netdev@lunn.ch>, <saeedm@nvidia.com>, <gal@nvidia.com>,
- <leonro@nvidia.com>, <tariqt@nvidia.com>, Leon Romanovsky
- <leon@kernel.org>, <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, Dragos Tatulea <dtatulea@nvidia.com>,
- "Cosmin Ratiu" <cratiu@nvidia.com>
-Subject: Re: [PATCH net-next v4 09/11] net/mlx5e: Implement queue mgmt ops
- and single channel swap
-Message-ID: <20250611062654.5121229b@kernel.org>
-In-Reply-To: <20250610150950.1094376-10-mbloch@nvidia.com>
-References: <20250610150950.1094376-1-mbloch@nvidia.com>
-	<20250610150950.1094376-10-mbloch@nvidia.com>
+	s=arc-20240116; t=1749650988; c=relaxed/simple;
+	bh=AK8EHYOYCq+SXbAg7Z3/UJ2hTdChIAXHjEBP1cncQwc=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=H9Jwxj6BFY33HERdMXY4Hr8Kf0BEApZ9TsAVs44zXx8Ly1005HI5KhCvFDb1t7uAmIcHhyO+xfkddRnOyi0Ynn+9+oAH9U+CH8eH10pYM0G56oxUB9uTktG1Va8exP8zFQU5zL1+5tnxAx+KJLjMvhu4FnQVTclefavJ/tavDwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=BsL1rm0l; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id 17C582115191; Wed, 11 Jun 2025 07:09:46 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 17C582115191
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1749650986;
+	bh=11QiVZcZI7HpQy9zTwvvYDXhgBE3dYR024Si5/zihXI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=BsL1rm0lRBhLTVe8xwSQsnjJN3OAptJKwkNoU+LcAPvFp0UQcwr9aE4CbvB+1YfUw
+	 5Do84Mgv9/w1ewysOpHypiSiBacjohIaaRGYkzJ1nf3a9183LZAfNgO9K6yJO/idRj
+	 gom2c5DcaDfk0JpguLKUABzpU0zcYlTsalbDlgO4=
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: 
+Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	linux-hyperv@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Nipun Gupta <nipun.gupta@amd.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Jonathan Cameron <Jonathan.Cameron@huwei.com>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Long Li <longli@microsoft.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Rob Herring <robh@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	=?UTF-8?q?Krzysztof=20Wilczy=EF=BF=BD=7EDski?= <kw@linux.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Simon Horman <horms@kernel.org>,
+	Leon Romanovsky <leon@kernel.org>,
+	Maxim Levitsky <mlevitsk@redhat.com>,
+	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	Paul Rosswurm <paulros@microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: [PATCH v6 0/5] Allow dyn MSI-X vector allocation of MANA
+Date: Wed, 11 Jun 2025 07:09:44 -0700
+Message-Id: <1749650984-9193-1-git-send-email-shradhagupta@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 
-On Tue, 10 Jun 2025 18:09:48 +0300 Mark Bloch wrote:
-> +	mdev = mlx5_sd_ch_ix_get_dev(priv->mdev, queue_index);
-> +	err = mlx5e_build_channel_param(mdev, &params, &new->cparam);
-> +	if (err) {
-> +		return err;
-> +		goto unlock;
+In this patchset we want to enable the MANA driver to be able to
+allocate MSI-X vectors in PCI dynamically.
 
-missed this nugget yesterday, sorry..
+The first patch exports pci_msix_prepare_desc() in PCI to be able to
+correctly prepare descriptors for dynamically added MSI-X vectors.
 
-> +	}
+The second patch adds the support of dynamic vector allocation in
+pci-hyperv PCI controller by enabling the MSI_FLAG_PCI_MSIX_ALLOC_DYN
+flag and using the pci_msix_prepare_desc() exported in first patch.
+
+The third patch adds a detailed description of the irq_setup(), to
+help understand the function design better.
+
+The fourth patch is a preparation patch for mana changes to support
+dynamic IRQ allocation. It contains changes in irq_setup() to allow
+skipping first sibling CPU sets, in case certain IRQs are already
+affinitized to them.
+
+The fifth patch has the changes in MANA driver to be able to allocate
+MSI-X vectors dynamically. If the support does not exist it defaults to
+older behavior.
+
+Since this patchset has patches from PCI and net tree, I am not entirely
+sure what should be the target tree. Any suggestions/recommendations on
+the same are welcomed.
+
+---
+Changes in v6
+ * rebased to linux-next's v6.16-rc1 as per Jakub's suggestion
+---
+Changes in v5
+ * Added Yury as Author of the 3rd patch
+ * Fixed base commit information in the cover letter
+ * Correctly initialized start_irqs, so that it is cleaned properly
+ * rearranged the cpu_lock to minimize the critical section
+---
+ Change in v4
+ * add a patch describing the functionality of irq_setup() through a 
+   comment
+ * In irq_setup(), avoid using a label next_cpumask:
+ * modify the changes in MANA patch about restructuring the error
+   handling path in mana_gd_setup_dyn_irqs()
+ * modify the mana_gd_setup_irqs() to simplify handling around
+   start_irq_index
+ * add warning if an invalid gic is returned
+ * place the xa_destroy() cleanup in mana_gd_remove
+---
+ Changes in v3
+ * split the 3rd patch into preparation patch around irq_setup() and
+   changes in mana driver to allow dynamic IRQ allocation
+ * Add arm64 support for dynamic MSI-X allocation in pci_hyperv
+   controller
+---
+ Changes in v2
+ * split the first patch into two(exporting the preapre_desc
+   func and using the function and flag in pci-hyperv)
+ * replace 'pci vectors' by 'MSI-X vectors'
+ * Change the cover letter description to align with changes made
+---
+
+Shradha Gupta (4):
+  PCI/MSI: Export pci_msix_prepare_desc() for dynamic MSI-X allocations
+  PCI: hv: Allow dynamic MSI-X vector allocation
+  net: mana: Allow irq_setup() to skip cpus for affinity
+  net: mana: Allocate MSI-X vectors dynamically
+
+Yury Norov (1):
+  net: mana: explain irq_setup() algorithm
+
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 366 ++++++++++++++----
+ drivers/pci/controller/pci-hyperv.c           |   3 +-
+ drivers/pci/msi/irqdomain.c                   |   5 +-
+ include/linux/msi.h                           |   2 +
+ include/net/mana/gdma.h                       |   8 +-
+ 5 files changed, 294 insertions(+), 90 deletions(-)
+
+
+base-commit: 19a60293b9925080d97f22f122aca3fc46dadaf9
+-- 
+2.34.1
+
 
