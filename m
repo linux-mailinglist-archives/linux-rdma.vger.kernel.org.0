@@ -1,144 +1,131 @@
-Return-Path: <linux-rdma+bounces-11189-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11190-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 626E3AD4EC9
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 10:47:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5C4CAD5361
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 13:13:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC69E17E5A1
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 08:47:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33A001C2378D
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 11:07:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6808A248893;
-	Wed, 11 Jun 2025 08:46:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2504277006;
+	Wed, 11 Jun 2025 11:03:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="IT9XsNVh"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="UMo9AtHj"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE020246BB3;
-	Wed, 11 Jun 2025 08:46:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C3C2528F3;
+	Wed, 11 Jun 2025 11:03:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749631601; cv=none; b=WZtNA6cRmjI6fS2DzBLfGgG90x7wC1SJENUazuIDm+9SbDJnyDwuFD4LoLJvU2TPCEV7/CqV5lubiTSNVAekdl9HtSv8RhOTBVeTMw8TBVXu28s4Ts4KQL485xKte/B1ilqxM9hmBXKsN+uw/n61ip8ZV5mgiX9/WpB8Mj90YMo=
+	t=1749639834; cv=none; b=OCf88kY1uvjOItNSlw40x4iEZmiUctBHWAQpo615fXOwgXjsz057dSxsqrfJhZKgpnznIcfSsyVqmKAXD/gdNlTS2lKo8CPVPJsIdEGLq7weqKEQcH+sQFN/i3nxxoMoSUioqR+OM7tviov9ITKacpIVAgZvAZ6lzK9MxGN2TsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749631601; c=relaxed/simple;
-	bh=oaCZKffoKTRaYLQaOQmKEatR6VZNaajk+LZ5gGTX9/I=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References; b=aVxYI37RXmB84U0pzqXqSK5LOOK9UENkTt1nRcFfuskrg/eub+hjA7D0CeIbhlRqsEKDtAnNgzs/FMXosCeKuaGWn43ctE/J/+6Kc9VQIQyxF0kG+061hIDCp/4rex6YxYkdUBG5otukUH2WOw7GSy1z2f/wlNA4dwzJSXrUK+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=IT9XsNVh; arc=none smtp.client-ip=13.77.154.182
+	s=arc-20240116; t=1749639834; c=relaxed/simple;
+	bh=nTdr2YuMMa9V0HwwyZrdkmee+oPqvCIbhsYJD8YpNCc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GSj3prEMYR8K8+nFYjtilP8gq5HTBp98aH0b5vuUZe7NqTYQvBu+cbleeeLS4OIECzfUNM/e7C9FpiHvP2EufjXLlJWR79k1766tB2B9S4UBQYLLQ91CH47aDpp582XwVt8OKf9vA9YLV9mqeD/5lzq1I9EU+s8ztWfQWP56134=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=UMo9AtHj; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1173)
-	id 8AA74203EE33; Wed, 11 Jun 2025 01:46:39 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8AA74203EE33
+Received: by linux.microsoft.com (Postfix, from userid 1127)
+	id BDB112115190; Wed, 11 Jun 2025 04:03:52 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BDB112115190
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1749631599;
-	bh=OGSFbFWlvID5n+uvvpGHPCf0P298GMnuBGj103nsKgk=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=IT9XsNVhUdwOhullceh//stg/VTqX6hASTpbI6H/bYh53wBAZ9z0PlXQlROx5B6ko
-	 ckffP9CydkxFrl+/Dshg0Bpi5jz9a1B44dMeZfN9ObP4tWaYG9vOCofAi9FIU5hWqW
-	 mWfHwNHT9rDhGISusRjINYwvkiioQw/wiqlzpjzg=
-From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-To: kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	kotaranov@microsoft.com,
-	longli@microsoft.com,
-	horms@kernel.org,
-	shirazsaleem@microsoft.com,
-	leon@kernel.org,
-	ernis@linux.microsoft.com,
-	shradhagupta@linux.microsoft.com,
-	schakrabarti@linux.microsoft.com,
-	rosenp@gmail.com,
-	sdf@fomichev.me,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
+	s=default; t=1749639832;
+	bh=2AMfXxOQB+XCP0ckN4VqEkyDLcKkN5LJc6Z0NVpoSTA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UMo9AtHji3Jd8ZjOC5cnzWJLB4OJdOfQAfsk66I39FJiMYpPLiOKcWXa0LwjlPy+X
+	 sOOjO6FrPsD81XWVT4M/cu8CQQ6hjbgSdqgUQf9k0Uh9mL5X9DExAn4euEY0Qw47lV
+	 YXQFTRjrR7EpqTzhblnZzn5YUM1oc995+nz1Lb0M=
+Date: Wed, 11 Jun 2025 04:03:52 -0700
+From: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	kotaranov@microsoft.com, longli@microsoft.com, horms@kernel.org,
+	shirazsaleem@microsoft.com, leon@kernel.org,
+	shradhagupta@linux.microsoft.com, schakrabarti@linux.microsoft.com,
+	rosenp@gmail.com, sdf@fomichev.me, linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH net-next 4/4] net: mana: Handle unsupported HWC commands
-Date: Wed, 11 Jun 2025 01:46:16 -0700
-Message-Id: <1749631576-2517-5-git-send-email-ernis@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1749631576-2517-1-git-send-email-ernis@linux.microsoft.com>
+Subject: Re: [PATCH net-next 1/4] net: mana: Fix potential deadlocks in mana
+ napi ops
+Message-ID: <20250611110352.GA31913@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 References: <1749631576-2517-1-git-send-email-ernis@linux.microsoft.com>
+ <1749631576-2517-2-git-send-email-ernis@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1749631576-2517-2-git-send-email-ernis@linux.microsoft.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-If any of the HWC commands are not recognized by the
-underlying hardware, the hardware returns the response
-header status of -1. Log the information using
-netdev_info_once to avoid multiple error logs in dmesg.
+On Wed, Jun 11, 2025 at 01:46:13AM -0700, Erni Sri Satya Vennela wrote:
+> When net_shaper_ops are enabled for MANA, netdev_ops_lock
+> becomes active.
+> 
+> The netvsc sets up MANA VF via following call chain:
+> 
+> netvsc_vf_setup()
+>         dev_change_flags()
+> 		...
+>          __dev_open() OR __dev_close()
+> 
+> dev_change_flags() holds the netdev mutex via netdev_lock_ops.
+> 
+> During this process, mana_create_txq() and mana_create_rxq()
+> invoke netif_napi_add_tx(), netif_napi_add_weight(), and napi_enable(),
+> all of which attempt to acquire the same lock,
+> leading to a potential deadlock.
 
-Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Reviewed-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
----
- drivers/net/ethernet/microsoft/mana/hw_channel.c |  4 ++++
- drivers/net/ethernet/microsoft/mana/mana_en.c    | 11 +++++++++++
- 2 files changed, 15 insertions(+)
+commit message could be better oriented.
 
-diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-index a8c4d8db75a5..70c3b57b1e75 100644
---- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
-+++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-@@ -890,6 +890,10 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
- 	}
- 
- 	if (ctx->status_code && ctx->status_code != GDMA_STATUS_MORE_ENTRIES) {
-+		if (ctx->status_code == -1) {
-+			err = -EOPNOTSUPP;
-+			goto out;
-+		}
- 		dev_err(hwc->dev, "HWC: Failed hw_channel req: 0x%x\n",
- 			ctx->status_code);
- 		err = -EPROTO;
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index d5644400e71f..10e766c73fca 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -847,6 +847,9 @@ static int mana_send_request(struct mana_context *ac, void *in_buf,
- 	err = mana_gd_send_request(gc, in_len, in_buf, out_len,
- 				   out_buf);
- 	if (err || resp->status) {
-+		if (err == -EOPNOTSUPP)
-+			return err;
-+
- 		dev_err(dev, "Failed to send mana message: %d, 0x%x\n",
- 			err, resp->status);
- 		return err ? err : -EPROTO;
-@@ -1251,6 +1254,10 @@ int mana_query_link_cfg(struct mana_port_context *apc)
- 				sizeof(resp));
- 
- 	if (err) {
-+		if (err == -EOPNOTSUPP) {
-+			netdev_info_once(ndev, "MANA_QUERY_LINK_CONFIG not supported\n");
-+			return err;
-+		}
- 		netdev_err(ndev, "Failed to query link config: %d\n", err);
- 		return err;
- 	}
-@@ -1293,6 +1300,10 @@ int mana_set_bw_clamp(struct mana_port_context *apc, u32 speed,
- 				sizeof(resp));
- 
- 	if (err) {
-+		if (err == -EOPNOTSUPP) {
-+			netdev_info_once(ndev, "MANA_SET_BW_CLAMP not supported\n");
-+			return err;
-+		}
- 		netdev_err(ndev, "Failed to set bandwidth clamp for speed %u, err = %d",
- 			   speed, err);
- 		return err;
--- 
-2.34.1
+> 
+> Similarly, mana_destroy_txq() and mana_destroy_rxq() call
+> netif_napi_disable() and netif_napi_del(), which also contend
+> for the same lock.
+> 
+> Switch to the _locked variants of these APIs to avoid deadlocks
+> when the netdev_ops_lock is held.
+> 
+> Fixes: d4c22ec680c8 ("net: hold netdev instance lock during ndo_open/ndo_stop")
+> Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+> Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+> Reviewed-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> ---
+>  drivers/net/ethernet/microsoft/mana/mana_en.c | 39 ++++++++++++++-----
+>  1 file changed, 30 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> index ccd2885c939e..3c879d8a39e3 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> @@ -1911,8 +1911,13 @@ static void mana_destroy_txq(struct mana_port_context *apc)
+>  		napi = &apc->tx_qp[i].tx_cq.napi;
+>  		if (apc->tx_qp[i].txq.napi_initialized) {
+>  			napi_synchronize(napi);
+> -			napi_disable(napi);
+> -			netif_napi_del(napi);
+> +			if (netdev_need_ops_lock(napi->dev)) {
+> +				napi_disable_locked(napi);
+> +				netif_napi_del_locked(napi);
+> +			} else {
+> +				napi_disable(napi);
+> +				netif_napi_del(napi);
+> +			}
+
+Instead of using if-else, we can used netdev_lock_ops(), followed by *_locked api-s.
+Same for rest of the patch.
+
+Reviewed-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+
+- Saurabh
 
 
