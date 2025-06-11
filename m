@@ -1,165 +1,147 @@
-Return-Path: <linux-rdma+bounces-11204-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11205-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B6CBAD596D
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 17:00:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC310AD5A14
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 17:17:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E5601892AED
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 15:00:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 412BC1E371B
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 15:14:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 112982BDC1B;
-	Wed, 11 Jun 2025 14:59:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6EF11E835D;
+	Wed, 11 Jun 2025 15:12:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YVOA0Npf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dlt1KK01"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A2B2BD5BB;
-	Wed, 11 Jun 2025 14:59:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0321D1E47C5
+	for <linux-rdma@vger.kernel.org>; Wed, 11 Jun 2025 15:12:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749653995; cv=none; b=HBDLP3e8AGC1i99TdA6qBLK2nrZnMOjaw5wXrHBWmYILMXHe2qz3evtA3/Y09tcHKnJ0iZziRf8MW2pFWYomeMVFuLdRDPL33eEQ7k/3xfS4UoNrhd79e/Vi3ORbSLg2baMX1TT2i1K0w+SzO5c1Ved1HfoaegXoFyhN5GuG0DQ=
+	t=1749654767; cv=none; b=mzGInYs0HMLnD0MwLXwaMeeXzl9mX+x8KYq7z+x43erJ7aUsp5gEUgPbodXZlZMmG810Z+wOtrOrY84vLMn3Q+PfGVmzPADqpIFmw3n1hUzsldeDNdsjHy2AgkySfbEhAJ0w73Yq2nQ6pyO0udVtRZTcttV9kF5I0ODykj5Izhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749653995; c=relaxed/simple;
-	bh=k7uvwDoCQy7WbgbdbUpZHePfkgjqcUTHAu2jnYCKAZQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bhJVGF5HdjUalzadGrMsLPJrulk48Kx4GeWBpRvFHXSwLwUUxqww9YIGcojHEl2iOl6Sr8+5oqIFAnxMoVdzsqyKLUKzqjWGj2fN2SDFxmE7XcFo/OGmSNEFgBXXm6+N3O0n+O1v1QlU5boNZPixiSg7kDJ+7ogbqXsD6D+1w6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YVOA0Npf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44075C4CEF1;
-	Wed, 11 Jun 2025 14:59:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749653995;
-	bh=k7uvwDoCQy7WbgbdbUpZHePfkgjqcUTHAu2jnYCKAZQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YVOA0NpfLjZiLMFXJeoYffEhJgjY3b4BNlsk7AJMEnBHH2LBJHGemvVuowAqEA/q8
-	 J+NsGzW9fG3XkylwLjzJXrcvKaalqgDHmCVJL+aQl56tupQA7G0qDbDyTQ4JsBI7ns
-	 bKc1Xl9gfh+3CjQXC7DaQdmM6xoanRxVpij4gh8gZ2KTvNEGHRjXByV3u7XUFDEPVn
-	 jVBFQZVY9CdSZ74SHdEQvJe4tIfaNrAGP0P4fWyTpkupE6kUv4bw3TGUA5aYd9L185
-	 ou5bxjqsh8t83oBB/MMAyfXcGComu2Pyk7Y5QxBNMGeG8cA39fbT1DfR72lnlauoQT
-	 zkXddDVf8h8oA==
-From: Jakub Kicinski <kuba@kernel.org>
-To: davem@davemloft.net
-Cc: netdev@vger.kernel.org,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	andrew+netdev@lunn.ch,
-	horms@kernel.org,
-	ecree.xilinx@gmail.com,
-	Jakub Kicinski <kuba@kernel.org>,
-	saeedm@nvidia.com,
-	tariqt@nvidia.com,
-	leon@kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-net-drivers@amd.com
-Subject: [PATCH net-next 3/9] net: ethtool: require drivers to opt into the per-RSS ctx RXFH
-Date: Wed, 11 Jun 2025 07:59:43 -0700
-Message-ID: <20250611145949.2674086-4-kuba@kernel.org>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250611145949.2674086-1-kuba@kernel.org>
-References: <20250611145949.2674086-1-kuba@kernel.org>
+	s=arc-20240116; t=1749654767; c=relaxed/simple;
+	bh=UiGf0/paT8J/PGxt72ywXwOPlAojUSGsdDvbJCCGcYE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=D83KzzKpNEsH88hmTV+flhgvi6SOpFGnMlJ01HTkr7qwPEmInevuYYVLIwH1XZ7YDT8Ex/K0QJ95gd3bxTvKGr2M0EBCeL4AqaVfy3kE9weIjCRKe4KJ2B1LLLfCLM/HwjixEXELOIsma69ApGyhyKBGHtcHAFx2aOlNd9ZXShc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dlt1KK01; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-236377f00easo27547325ad.1
+        for <linux-rdma@vger.kernel.org>; Wed, 11 Jun 2025 08:12:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1749654765; x=1750259565; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=C6WMcoQ6Gtb1F+D1bxferHuBStlLHTLjDOwq5/Sz5ME=;
+        b=Dlt1KK01rH9HrII4d/uRqv/sBVvepfoGpxv6NisDDgOOdIQuMs5obSVP4rYBj+uSzG
+         c/nxk39ZIh4chkT1eea9DZNuivK8fRoK/Pe9ZDS1MuNJQ7FIec6FmtwUmlVJfbY2E+bX
+         uxzLG3aXYr1YQfF38u6ojH+SSdU+tkxQFOL+ZJJZsWktZyT/wBsuB6GAmgtQJm8qIX04
+         9lfsnSHqbYwCk2NWtUZucrJDRY7/QUQc03KkNGvrRyISjq2ctyhcI6Tn/ZRzQCFhAOHg
+         SRIToaSHAfmXGwGD6hZVJw1yo6v/nQOAzW5BEOAnKPHsENy5/f/cA4z1ifEM7UdBmVl6
+         k6lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1749654765; x=1750259565;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=C6WMcoQ6Gtb1F+D1bxferHuBStlLHTLjDOwq5/Sz5ME=;
+        b=TaHq8/dUez65g6YzaJpnVN5aEhoIUBSK9cecU7xy19lusP60M2kWM5UbO6YUcz5nzI
+         Yztf744QfEdFJb7T2Fz8bGHpj3UU1FXnrvIoCq83KOrz3BdMcxl4qAF6trAsWZgf20yT
+         A4v4HdhispmHY5v4l00Q5A3uDoRwlfvg8g3zcocumRx8LIJ/cFVwArh0jNb1joZMCJjp
+         3tNwjj9gpGY38G9SlH/H0bGQIZObfpgmEGK/0nIAu8/+BLBTXsE9zs/8zJ4LanQOf4Hd
+         dMbwjgF5KzFNEL/oUKw/Yom8A18Y8/Xkhgn7KOSgvhlgBG7OFheU0VBesmJYFx2iC7Tv
+         8hXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVp2FpJjXBSelAmTfwcZZGA74M2mXktRWQ7OQntCkGapUkXYJCv6LVOkc3900ChSYUwQGLVhgqaGQCj@vger.kernel.org
+X-Gm-Message-State: AOJu0YwjW+KnbGjkeNTtXppZiUxdZA/p/BWW/jaYh1IQHo8HWkDSxKcG
+	qkRZhD3mFORHSvzR/xelXp6LewGw0bPBdg0aYa+7Ls8wvvOYcjK+45RO
+X-Gm-Gg: ASbGncvFKRXvLHtQfb3vRS+7iKAkkNi2H7gXtxJwPHfuxRkYgD0KAeZzl46yPnFCCUZ
+	f4u8W3IlMmI+VCZAbzpOWFaaNMft8ptj3CXrQEqunRMGRK5KY2g9ZgtOTnWw3nQlZ4WuZ0UlD1m
+	YE8IBsbzjTroQ3GCDy1yx0qJJmkf/S+J9MW1vSlsNPJpSDBVx00ooMa/VaiUF0ZsQaSCJkw2kGa
+	NgJSP66Ahvsh3mDSL6A2PtR7egxDWdG6dEII3hJ4DFjHucYgY793WxRNN7iaWaM3w/7M+hH5uMq
+	DVW6ojL6vgU4QF2pJPdKuL8fETRojCNA9WKdPoPQcdOGeY1uHKBS8nDaoyv3INCKXpMrW/pMymm
+	jPtLWcUSL58JGSMjvwVTHy6M8H+kNesRjd8RP0A==
+X-Google-Smtp-Source: AGHT+IEf9lf/nBfwvSe68olFSWVmaesDlxkGRgWjhutrHxydKPNpSJyjTFVGjpeyy59beGNrvn2yKQ==
+X-Received: by 2002:a17:903:2984:b0:235:ecf2:393 with SMTP id d9443c01a7336-236426d679bmr42654955ad.53.1749654764890;
+        Wed, 11 Jun 2025 08:12:44 -0700 (PDT)
+Received: from [192.168.11.2] (FL1-119-244-79-106.tky.mesh.ad.jp. [119.244.79.106])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-236032fc747sm88821415ad.121.2025.06.11.08.12.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Jun 2025 08:12:44 -0700 (PDT)
+Message-ID: <cfb31dfc-723c-4faf-9b71-9aa32be2f173@gmail.com>
+Date: Thu, 12 Jun 2025 00:12:41 +0900
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH for-next v2] RDMA/rxe: Remove redundant page presence
+ check
+To: Zhu Yanjun <yanjun.zhu@linux.dev>, linux-rdma@vger.kernel.org,
+ leon@kernel.org, jgg@ziepe.ca, zyjzyj2000@gmail.com
+References: <20250608095916.6313-1-dskmtsd@gmail.com>
+ <c63d3202-8a5d-448d-b802-f8a7e0275265@linux.dev>
+Content-Language: en-US
+From: Daisuke Matsuda <dskmtsd@gmail.com>
+In-Reply-To: <c63d3202-8a5d-448d-b802-f8a7e0275265@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-RX Flow Hashing supports using different configuration for different
-RSS contexts. Only two drivers seem to support it. Make sure we
-uniformly error out for drivers which don't.
+On 2025/06/08 20:23, Zhu Yanjun wrote:
+> 在 2025/6/8 11:59, Daisuke Matsuda 写道:
+>> hmm_pfn_to_page() does not return NULL. ib_umem_odp_map_dma_and_lock()
+>> should return an error in case the target pages cannot be mapped until
+>> timeout, so these checks can safely be removed.
+>>
+>> Signed-off-by: Daisuke Matsuda <dskmtsd@gmail.com>
+>> ---
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
-CC: saeedm@nvidia.com
-CC: tariqt@nvidia.com
-CC: leon@kernel.org
-CC: ecree.xilinx@gmail.com
-CC: linux-rdma@vger.kernel.org
-CC: linux-net-drivers@amd.com
----
- include/linux/ethtool.h                              | 3 +++
- drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c | 1 +
- drivers/net/ethernet/sfc/ethtool.c                   | 1 +
- net/ethtool/ioctl.c                                  | 8 ++++++++
- 4 files changed, 13 insertions(+)
+<...>
 
-diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
-index 5e0dd333ad1f..fc1c2379e7ff 100644
---- a/include/linux/ethtool.h
-+++ b/include/linux/ethtool.h
-@@ -855,6 +855,8 @@ struct kernel_ethtool_ts_info {
-  * @cap_rss_ctx_supported: indicates if the driver supports RSS
-  *	contexts via legacy API, drivers implementing @create_rxfh_context
-  *	do not have to set this bit.
-+ * @rxfh_per_ctx_fields: device supports selecting different header fields
-+ *	for Rx hash calculation and RSS for each additional context.
-  * @rxfh_per_ctx_key: device supports setting different RSS key for each
-  *	additional context. Netlink API should report hfunc, key, and input_xfrm
-  *	for every context, not just context 0.
-@@ -1084,6 +1086,7 @@ struct ethtool_ops {
- 	u32     supported_input_xfrm:8;
- 	u32     cap_link_lanes_supported:1;
- 	u32     cap_rss_ctx_supported:1;
-+	u32	rxfh_per_ctx_fields:1;
- 	u32	rxfh_per_ctx_key:1;
- 	u32	cap_rss_rxnfc_adds:1;
- 	u32	rxfh_indir_space;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-index ea078c9f5d15..90c760057bb6 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-@@ -2619,6 +2619,7 @@ static void mlx5e_get_ts_stats(struct net_device *netdev,
- const struct ethtool_ops mlx5e_ethtool_ops = {
- 	.cap_link_lanes_supported = true,
- 	.cap_rss_ctx_supported	= true,
-+	.rxfh_per_ctx_fields	= true,
- 	.rxfh_per_ctx_key	= true,
- 	.supported_coalesce_params = ETHTOOL_COALESCE_USECS |
- 				     ETHTOOL_COALESCE_MAX_FRAMES |
-diff --git a/drivers/net/ethernet/sfc/ethtool.c b/drivers/net/ethernet/sfc/ethtool.c
-index 83d715544f7f..afbedca63b29 100644
---- a/drivers/net/ethernet/sfc/ethtool.c
-+++ b/drivers/net/ethernet/sfc/ethtool.c
-@@ -262,6 +262,7 @@ const struct ethtool_ops efx_ethtool_ops = {
- 	.set_rxnfc		= efx_ethtool_set_rxnfc,
- 	.get_rxfh_indir_size	= efx_ethtool_get_rxfh_indir_size,
- 	.get_rxfh_key_size	= efx_ethtool_get_rxfh_key_size,
-+	.rxfh_per_ctx_fields	= true,
- 	.rxfh_per_ctx_key	= true,
- 	.cap_rss_rxnfc_adds	= true,
- 	.rxfh_priv_size		= sizeof(struct efx_rss_context_priv),
-diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
-index 330ca99800ce..bd9fd95bb82f 100644
---- a/net/ethtool/ioctl.c
-+++ b/net/ethtool/ioctl.c
-@@ -1075,6 +1075,10 @@ ethtool_set_rxfh_fields(struct net_device *dev, u32 cmd, void __user *useraddr)
- 	if (rc)
- 		return rc;
- 
-+	if (info.flow_type & FLOW_RSS && info.rss_context &&
-+	    !ops->rxfh_per_ctx_fields)
-+		return -EINVAL;
-+
- 	if (ops->get_rxfh) {
- 		struct ethtool_rxfh_param rxfh = {};
- 
-@@ -1105,6 +1109,10 @@ ethtool_get_rxfh_fields(struct net_device *dev, u32 cmd, void __user *useraddr)
- 	if (ret)
- 		return ret;
- 
-+	if (info.flow_type & FLOW_RSS && info.rss_context &&
-+	    !ops->rxfh_per_ctx_fields)
-+		return -EINVAL;
-+
- 	ret = ops->get_rxnfc(dev, &info, NULL);
- 	if (ret < 0)
- 		return ret;
--- 
-2.49.0
+> 
+>> -    if (!page)
+>> -        return RESPST_ERR_RKEY_VIOLATION;
+>>       if (unlikely(page_offset & 0x7)) {
+> 
+> Normally page_offset error handler should be after this line "page_offset = rxe_odp_iova_to_page_offset(umem_odp, iova);"
+> 
+> Why is this error handler after hmm_pfn_to_page?
+> 
+>>           rxe_dbg_mr(mr, "iova not aligned\n");
+>> @@ -352,10 +348,6 @@ int rxe_odp_flush_pmem_iova(struct rxe_mr *mr, u64 iova,
+>>           page_offset = rxe_odp_iova_to_page_offset(umem_odp, iova);
+>>           page = hmm_pfn_to_page(umem_odp->map.pfn_list[index]);
+>> -        if (!page) {
+>> -            mutex_unlock(&umem_odp->umem_mutex);
+>> -            return -EFAULT;
+>> -        }
+>>           bytes = min_t(unsigned int, length,
+>>                     mr_page_size(mr) - page_offset);
+>> @@ -398,10 +390,7 @@ enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
+>>       page_offset = rxe_odp_iova_to_page_offset(umem_odp, iova);
+>>       index = rxe_odp_iova_to_index(umem_odp, iova);
+>>       page = hmm_pfn_to_page(umem_odp->map.pfn_list[index]);
+>> -    if (!page) {
+>> -        mutex_unlock(&umem_odp->umem_mutex);
+>> -        return RESPST_ERR_RKEY_VIOLATION;
+>> -    }
+>> +
+>>       /* See IBA A19.4.2 */
+>>       if (unlikely(page_offset & 0x7)) {
+> 
+> Ditto, page_offset error handler is not after the line "page_offset = rxe_odp_iova_to_page_offset(umem_odp, iova);" ?
+
+That is a sensible question.
+I will submit v3 patch to move the error checks.
+
+Thank you,
+Daisuke
 
 
