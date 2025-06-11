@@ -1,177 +1,108 @@
-Return-Path: <linux-rdma+bounces-11207-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11208-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4534DAD5C20
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 18:28:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1DE2AD5C6A
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 18:38:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36CFD189C8B5
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 16:29:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9B951BC59A4
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Jun 2025 16:36:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82A881EB5D0;
-	Wed, 11 Jun 2025 16:28:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J6zzHJdT"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 965991F5846;
+	Wed, 11 Jun 2025 16:35:52 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DADC81B0421
-	for <linux-rdma@vger.kernel.org>; Wed, 11 Jun 2025 16:28:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCB4518D63A;
+	Wed, 11 Jun 2025 16:35:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749659332; cv=none; b=cncfIxsmi2/x1wuCxJcmNafCRBZS2pJ8wxO3rdnrMjDrjVpQFLTQXMo6FYeNExzAIOJtjKg7tamkeGjGs24p6dqKGZxFZBAge4iDG4k2e+S97ZYEC8TAvF5Jv1ib7lLOAzTwt/e6MNtlE0x5m4vI6jXLi/9vsd5+NaxzWiQY0xU=
+	t=1749659752; cv=none; b=m6fP9LGxw0yxhsNOPJtKB0SAMQpoioS/5Z3Kdf4k3AzrMqKqmz7tCS3XV0XQM/SJE5tKEHZXn3aojjst22Vec/gryASTwRgc+G4NtzUheVifuRoAUtijx0hZHSKlvgRGcRsKZN/4+3G2cCiftm8IIVFcioR0aGeK9dpqRVhorN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749659332; c=relaxed/simple;
-	bh=+cNbzIgDhMeuwAkNzi/3fc6nZoO14RYP9J4c34j0cgc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MsRg7Zl4SbxT7+mBLsLtKL26hOtV/zJGw9bQuETC/6QMGScjYzse/j5j4xZMzHMhNp+8hn6MwfD0G7nzwjdlR8e7ZekPt1duJWkrLpSrpsGjfBAM8FA9QK7vW494iEcwbsisX/UoXWIniRO1MkVlg3Y4TjzD1BOvNL8zejVw/PA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J6zzHJdT; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1749659752; c=relaxed/simple;
+	bh=yRWiyKzTZIwYVSICMOESJzF/0ezgw16gZI784NSkC9c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mhmLnkxNCTpwOGYEPYo3YqNo/1qKuwyKCttmYcDHyvciKMA6Cw90fEgbzgcoRitWR8t59GlnjWtFj8xAPC19stGBW1ER5TzEd4k1G4O4R9EgrZQfQbYAmwhfQC1s5ExLwwWyJrUyvRbAYdTQluI9YfmC1m+3iiuBRCvLgGjeMQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-234fcadde3eso245455ad.0
-        for <linux-rdma@vger.kernel.org>; Wed, 11 Jun 2025 09:28:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1749659330; x=1750264130; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tOxwJfbTjd0nhVHGDbSIDsq+dRe9mSGmkQlhPsH6Fqw=;
-        b=J6zzHJdT3L/Mlk6mhQvsDgOyUu6+/4/LlruFKhRQAT2d/rKt7y9ZLtmxe8YF27zvvo
-         WLnw66XSFoPJVXePUAKKl4/mUkFJ/27GS7caAjcTE/9wbmtXxAH1tphkFUEvItqksrud
-         6btIBjIlhPXsQf6A0tk1Fh0uBqmWNlIx2ql2aKD6/osDE5yvYGbjZgJlUU4XmwFVE8LM
-         rc6zyBtDoRw5d8iIX0vohu0njPID8z4NQxlCtKlkAdSJ3fGABxJYykNE8hWotZ59yrp7
-         2rn28j1L5bhgwsaK0SN0LyoVozZ6TV8sGPAfSUqZ+MY5BQgoZEJztZeqJQsuVgtbc9G9
-         W5Lw==
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-ad8a8da2376so1524266b.3;
+        Wed, 11 Jun 2025 09:35:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749659330; x=1750264130;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tOxwJfbTjd0nhVHGDbSIDsq+dRe9mSGmkQlhPsH6Fqw=;
-        b=hfuZoGUqjUvRKXrjoy1gszSX6A2nn4HVXqUlcP/mnvlU7jKXL7KWTxaMxCob5WTAxJ
-         giPuiKGpoJ3FFKiHVsqApOYM0TPLSx1g4x2JN4m1PzhbGHXiFTa462x1IphJR9o52+tN
-         Dkm6eQCzLfrrNmIwAIFjQ142mUL0Vt+aII1JF7Itvj7RxO9TZh+S+tTKptFmLRCFotxU
-         zvLAy6mwKuje/opSY0ewSrTpTxrSmHqUvzxk0oBj3urLN7TH1NbRZtIK/LqK7wYA8qxk
-         fcuO/hpjIailMUp7WYoTiHy5q77QO3YzU+bg7MPpuCIEowZfGPrqT9mlnuU6gPTFU1DX
-         uDUQ==
-X-Gm-Message-State: AOJu0YzCs3DICAmH0o618hDwjiipvUDORxqgTUB2DlLiWUy6j0WW0xnW
-	aQgQaNen4UOevG3WxgbH6IUYqze3EjsXmlrqvonzzCZ/Z0i/C0+vD+cQKXcJiA==
-X-Gm-Gg: ASbGncsfMHTTZGqwKJ+XGHZQvkg45rFL13mnT0E1c2GxEY0eA6cenAA0DRGxQkbuOaQ
-	o5t54msjAnTZiydj6TH/umuACbnI/zbXuBRFyWqEtao5BcDFMJmyoxhmeOHFb7Ux8Wa4EMxcxjc
-	4z+URzP3WfO3W9uvtJk7hA8qto8oOM+4DKOyGjXpDStqLTyybO+H+L7WNV71EQp6SUOaLd8s5R+
-	fGtYBI0wrZZn9wyNcU1kdGmDPywDKaIHPMwbM7/Zs+V3ekgoM/t3lJe2ROMuywIdBGjwHAL52mz
-	2b9HYxUZIf2TzqGLmt3PVUcvfBkA+2YL1iKu3Z+DEKXb+HuxmwM+qtHBBcR+zrXX8UIjhq96BL0
-	ynQnSkuiI8U4QrxgtrA==
-X-Google-Smtp-Source: AGHT+IG8NYUM4M2OFle2MllOfekS+tOoMbl7qKrnwgk0/VZuKTF8iBufeRINmR7fgjNSPAHrSEIYVw==
-X-Received: by 2002:a17:902:f709:b0:234:c7e6:8459 with SMTP id d9443c01a7336-23641a9c9c6mr59451155ad.20.1749659329606;
-        Wed, 11 Jun 2025 09:28:49 -0700 (PDT)
-Received: from trigkey.. (FL1-119-244-79-106.tky.mesh.ad.jp. [119.244.79.106])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-236030968c9sm89871125ad.87.2025.06.11.09.28.47
+        d=1e100.net; s=20230601; t=1749659749; x=1750264549;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yRWiyKzTZIwYVSICMOESJzF/0ezgw16gZI784NSkC9c=;
+        b=ok4DBTMHEXjbEJlkG9z9IzBXKRiZVFmRyLw3B6hTB+RzfUFhCgfkTBB2Mwp5Aia++2
+         lgLICZYLjm0ROja7umFaGuCx6n7TDQnzhg35HapHOOhUydx7+E2E6ArDiTo1T3pxLxnt
+         XNUsWf/2GkXWS25qWvVJHepMFuh8zSWY/aHM5JEfVRg61hVrvoawfBTSrN3CiAv2ul+9
+         aZbjLNi0kC3GtU4bub3f1wSO/t89ThEnEPhiJN36vceAQSdBR/RlutdBTUAVjm2KrHg3
+         ICbTutWhmc4W986qnH3w3/Sum/Ze45fk+o2Vhn2tI3lWGRZvKYxPal2doNRbj9ModiV1
+         mF4g==
+X-Forwarded-Encrypted: i=1; AJvYcCUsqPoYqQa3bVlf8ePplX3oHEYa2j/hUHrQ6toXJxWIiLyREiLlQxMzU029YUkGg+yJI1Q=@vger.kernel.org, AJvYcCVUaQkO0oxLG+okw6YilhrAh+Tt8og598ngmIjWO7OjOryIjXpl9HqG8WbfJr5Q5rA3DN8nrWUzrMWWBQ==@vger.kernel.org, AJvYcCVxZMQUpxknwaGFoyqqVWBar4eZjBUfuI1AwPtmflNGrQTUfUU3XiYn4CaX+XlKJcV3qUgYORv5@vger.kernel.org
+X-Gm-Message-State: AOJu0YzcastT6IjGVTSC485Bt5/Iqp3J82KqwOiNv/N0ETqImbf5nYu2
+	ipCfrZUci8neOwK7F0kNE0qEiQJyR+GgWGeecPKA1E9JtAhwtOt2I9BI
+X-Gm-Gg: ASbGncvJ3EXidBI8eeKHARpM9qizLwGTSzqRxuaiqa6zurkJGxfsDBCGowKg9l9WrQE
+	AyhTxes5cARgk6mtHWl7sNsYtMLF+uOdMaf+C25s4mHqKmxyOGZwGCGTAHl2afLitf8FpdZPDZn
+	rxQkEUoUE74KGPiqx9R3Wo7iqSSITIEcMQupCYk7MTW7cgLLjc4WiwMuEXB+ymv/UpCoQbeqrQ0
+	m40dxYRlGcNN4H9g6DWoMMu5mAgb7r0nlKIIIcIfKCsucI9FuRYXOykJJwU0O4+WpOf+3RXiqvr
+	Edv0YBHS20NQsU2B+yJwCsnbRSTc7kXxxNV2SW0MjA3u3KcX2axx
+X-Google-Smtp-Source: AGHT+IH8800fbrEqV/iLLY12BMrBiMpvGEluYR//L52df8OeajstZoqRP5d+Y/gWnB/DDPCfo8cCXw==
+X-Received: by 2002:a17:907:6d08:b0:add:ee2c:7313 with SMTP id a640c23a62f3a-ade894c18edmr316262166b.22.1749659748826;
+        Wed, 11 Jun 2025 09:35:48 -0700 (PDT)
+Received: from gmail.com ([2a03:2880:30ff:8::])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ade1dc1c788sm923016766b.101.2025.06.11.09.35.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Jun 2025 09:28:49 -0700 (PDT)
-From: Daisuke Matsuda <dskmtsd@gmail.com>
-To: linux-rdma@vger.kernel.org,
-	leon@kernel.org,
-	jgg@ziepe.ca,
-	zyjzyj2000@gmail.com
-Cc: Daisuke Matsuda <dskmtsd@gmail.com>,
-	Zhu Yanjun <yanjun.zhu@linux.dev>
-Subject: [PATCH for-next v3] RDMA/rxe: Remove redundant page presence check
-Date: Wed, 11 Jun 2025 16:27:58 +0000
-Message-ID: <20250611162758.10000-1-dskmtsd@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        Wed, 11 Jun 2025 09:35:48 -0700 (PDT)
+Date: Wed, 11 Jun 2025 09:35:45 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Simon Horman <horms@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Mina Almasry <almasrymina@google.com>,
+	Yonglong Liu <liuyonglong@huawei.com>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	Matthew Wilcox <willy@infradead.org>, netdev@vger.kernel.org,
+	bpf@vger.kernel.org, linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+	Qiuling Ren <qren@redhat.com>, Yuying Ma <yuma@redhat.com>,
+	gregkh@linuxfoundation.org, sashal@kernel.org
+Subject: Re: [PATCH net-next v9 2/2] page_pool: Track DMA-mapped pages and
+ unmap them when destroying the pool
+Message-ID: <aEmwYU/V/9/Ul04P@gmail.com>
+References: <20250409-page-pool-track-dma-v9-0-6a9ef2e0cba8@redhat.com>
+ <20250409-page-pool-track-dma-v9-2-6a9ef2e0cba8@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250409-page-pool-track-dma-v9-2-6a9ef2e0cba8@redhat.com>
 
-hmm_pfn_to_page() does not return NULL. ib_umem_odp_map_dma_and_lock()
-should return an error in case the target pages cannot be mapped until
-timeout, so these checks can safely be removed.
+Hello Toke,
 
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-Signed-off-by: Daisuke Matsuda <dskmtsd@gmail.com>
+On Wed, Apr 09, 2025 at 12:41:37PM +0200, Toke Høiland-Jørgensen wrote:
+> Fixes: ff7d6b27f894 ("page_pool: refurbish version of page_pool code")
 
-v2->v3:
-  - Move page_offset error check before hmm_pfn_to_page(), as suggested by Zhu
+Do you have plan to backport this fix to LTS kernels? I am getting some
+of these crashes on older kernel, and I am curious if there are plans to
+backport this to LTS kernels.
 
----
- drivers/infiniband/sw/rxe/rxe_odp.c | 23 ++++++-----------------
- 1 file changed, 6 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
-index dbc5a5600eb7..0846bd972e15 100644
---- a/drivers/infiniband/sw/rxe/rxe_odp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_odp.c
-@@ -203,8 +203,6 @@ static int __rxe_odp_mr_copy(struct rxe_mr *mr, u64 iova, void *addr,
- 
- 		page = hmm_pfn_to_page(umem_odp->map.pfn_list[idx]);
- 		user_va = kmap_local_page(page);
--		if (!user_va)
--			return -EFAULT;
- 
- 		src = (dir == RXE_TO_MR_OBJ) ? addr : user_va;
- 		dest = (dir == RXE_TO_MR_OBJ) ? user_va : addr;
-@@ -283,17 +281,15 @@ static enum resp_states rxe_odp_do_atomic_op(struct rxe_mr *mr, u64 iova,
- 		return RESPST_ERR_RKEY_VIOLATION;
- 	}
- 
--	idx = rxe_odp_iova_to_index(umem_odp, iova);
- 	page_offset = rxe_odp_iova_to_page_offset(umem_odp, iova);
--	page = hmm_pfn_to_page(umem_odp->map.pfn_list[idx]);
--	if (!page)
--		return RESPST_ERR_RKEY_VIOLATION;
--
- 	if (unlikely(page_offset & 0x7)) {
- 		rxe_dbg_mr(mr, "iova not aligned\n");
- 		return RESPST_ERR_MISALIGNED_ATOMIC;
- 	}
- 
-+	idx = rxe_odp_iova_to_index(umem_odp, iova);
-+	page = hmm_pfn_to_page(umem_odp->map.pfn_list[idx]);
-+
- 	va = kmap_local_page(page);
- 
- 	spin_lock_bh(&atomic_ops_lock);
-@@ -352,10 +348,6 @@ int rxe_odp_flush_pmem_iova(struct rxe_mr *mr, u64 iova,
- 		page_offset = rxe_odp_iova_to_page_offset(umem_odp, iova);
- 
- 		page = hmm_pfn_to_page(umem_odp->map.pfn_list[index]);
--		if (!page) {
--			mutex_unlock(&umem_odp->umem_mutex);
--			return -EFAULT;
--		}
- 
- 		bytes = min_t(unsigned int, length,
- 			      mr_page_size(mr) - page_offset);
-@@ -396,12 +388,6 @@ enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
- 		return RESPST_ERR_RKEY_VIOLATION;
- 
- 	page_offset = rxe_odp_iova_to_page_offset(umem_odp, iova);
--	index = rxe_odp_iova_to_index(umem_odp, iova);
--	page = hmm_pfn_to_page(umem_odp->map.pfn_list[index]);
--	if (!page) {
--		mutex_unlock(&umem_odp->umem_mutex);
--		return RESPST_ERR_RKEY_VIOLATION;
--	}
- 	/* See IBA A19.4.2 */
- 	if (unlikely(page_offset & 0x7)) {
- 		mutex_unlock(&umem_odp->umem_mutex);
-@@ -409,6 +395,9 @@ enum resp_states rxe_odp_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
- 		return RESPST_ERR_MISALIGNED_ATOMIC;
- 	}
- 
-+	index = rxe_odp_iova_to_index(umem_odp, iova);
-+	page = hmm_pfn_to_page(umem_odp->map.pfn_list[index]);
-+
- 	va = kmap_local_page(page);
- 	/* Do atomic write after all prior operations have completed */
- 	smp_store_release(&va[page_offset >> 3], value);
--- 
-2.43.0
-
+--breno
 
