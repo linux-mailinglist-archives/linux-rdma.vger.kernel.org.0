@@ -1,93 +1,85 @@
-Return-Path: <linux-rdma+bounces-11256-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11257-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFF8BAD6F14
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 13:32:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A26AAAD7348
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 16:12:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A6E87A7DAB
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 11:31:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FD6F3B6C1A
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 14:07:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C02CC2F430C;
-	Thu, 12 Jun 2025 11:32:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86EC8248166;
+	Thu, 12 Jun 2025 14:05:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="BXTPeEGQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eR0aFfUm"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25026EC2
-	for <linux-rdma@vger.kernel.org>; Thu, 12 Jun 2025 11:32:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.251
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE6718A6AD;
+	Thu, 12 Jun 2025 14:05:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749727964; cv=none; b=Q4mdOV8fF3cQiGZ8I8F1CM0xgzyu+bFJlORKy6HmrywEDbfV3cMfhe3UpA1elqR9/2rBMzTSvlsB5wy2eHTdAQLSIE+L/BaU51xzcE68DpXcSda+xYBsmadWOpjz/LJMBKXwCCFFhiHar0NArVeJgjLX4tJ6NVcuCzZ+W1czAE8=
+	t=1749737121; cv=none; b=X1fPIwmbwCHLHubxJqhYXOMK3g01Y1ebIEODFJMcf35SRxvo24WrqQzoNxX71RSoyhJkye/qWupSkZAqXR2BQEqVbuKaTeuCZAxom7FBDeAwUmSEmnH7mC9zne+Z+/yBNVgfAgu2Gugu+hNuerO67YtDS6vRxQnkmzU9EvFb+80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749727964; c=relaxed/simple;
-	bh=a2ynJNEYpEHNeIUGKaZylk4dys23lGq6Bo8Rd18w7ss=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=lpJrO/Xr7wakRdgpqmJSZZB1dVizDhWji6ENveLmigxoXOzBzk8HvXsMHKwScvKwz3ZRk2mPJGruCbvso5pEF+0JrVldeITe4qbbeehZOR5CnAzjI9WSXFecGgCaZ6vZDdXmQxFajltVL8GI9hMoA+2+V/NW9dte7k5bQL6xMsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=BXTPeEGQ; arc=none smtp.client-ip=185.125.188.251
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
-Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id 68C4E3FBF5
-	for <linux-rdma@vger.kernel.org>; Thu, 12 Jun 2025 11:32:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-	s=20210803; t=1749727954;
-	bh=a2ynJNEYpEHNeIUGKaZylk4dys23lGq6Bo8Rd18w7ss=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
-	 Reply-To;
-	b=BXTPeEGQqqFUaxrNaQRnDMLg7oosmkgfSRDuKS5bueErOaPxn46MZ6u+jn10pam1A
-	 8PtgwHmG/ahfvNKL4RL8VTFbt3K6YZe9h+AupH/dosMqIXYairJSLPqiXrzaUrImS/
-	 YbbCpcH2xQ3msTzHn3EIDlddQnNECl/nBZUXGaHstzghkTlBoUV7+sWe4N2iU44AFa
-	 PyMwPwPV5J92vw8cfrlWUKdNOEP2oZbqUvgAnaUEhglrr+y3dKbWxtXJdzE5vZMSXj
-	 rMxOtuQs3Ei03id8xJMSOQi/QyMVQSxjxzYNJy4J6c2yUeX+1XkQBP83bZ7j70kAv9
-	 2RfXrFh/sps6g==
-Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
-	by buildd-manager.lp.internal (Postfix) with ESMTP id 4DC4F7E24B
-	for <linux-rdma@vger.kernel.org>; Thu, 12 Jun 2025 11:32:34 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1749737121; c=relaxed/simple;
+	bh=D+ukWm9CNFxSBTlUZVNF0wIvs0CoEpG0xs9KpKTy9KQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=L5Nj3Qziibs1y6av02eUWrOeNPJ/iiRZkKro0jNPBYgizioXuvcc9UWH9hYKHqm4g007vKnEiL2xsX7O++i/VcR/6zwakCEX0VrKFKnahwmTjbZnog/+bKK+RZaFfusBm/YVrqJnVklEZxKaimX5FNbG0D5z0ljN76D0AKRj1WQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eR0aFfUm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9944C4CEEA;
+	Thu, 12 Jun 2025 14:05:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1749737120;
+	bh=D+ukWm9CNFxSBTlUZVNF0wIvs0CoEpG0xs9KpKTy9KQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=eR0aFfUmKoD4JNmSHuMj1DvfwBcFXu/5Z4iuX40Ipfj8dYXLNenDqefB817WtDBP1
+	 6Zuz9ZSoXj4rEgsclqUroR719YMhkU8qsbgEh6Ahm9Rzr2clvbgLx+xWfYHZOZV4Vs
+	 hmAl+GEvwQzjAllL4RIKmkQL3loC1NaBuCPEeCdLn7ODLwmeSPO2Ba6flhTrEmPBsB
+	 edQ8WWcbnYIpARAvJYeM7FBUlA2X8NaURP07au1QmIoEScIRix8pmermR4DxRl0KZ1
+	 8Fgv3snc4AR645TjgAUFLaOgzoawBqkegM3IMixd+/J3hHTU1E8FOC555K0KbeEUXj
+	 sPEIz7GNsHTGw==
+Date: Thu, 12 Jun 2025 07:05:18 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Cc: Breno Leitao <leitao@debian.org>, "David S. Miller"
+ <davem@davemloft.net>, Jesper Dangaard Brouer <hawk@kernel.org>, Saeed
+ Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq
+ Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Ilias
+ Apalodimas <ilias.apalodimas@linaro.org>, Simon Horman <horms@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Mina Almasry
+ <almasrymina@google.com>, Yonglong Liu <liuyonglong@huawei.com>, Yunsheng
+ Lin <linyunsheng@huawei.com>, Pavel Begunkov <asml.silence@gmail.com>,
+ Matthew Wilcox <willy@infradead.org>, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+ Qiuling Ren <qren@redhat.com>, Yuying Ma <yuma@redhat.com>,
+ gregkh@linuxfoundation.org, sashal@kernel.org
+Subject: Re: [PATCH net-next v9 2/2] page_pool: Track DMA-mapped pages and
+ unmap them when destroying the pool
+Message-ID: <20250612070518.69518466@kernel.org>
+In-Reply-To: <87jz5hbevp.fsf@toke.dk>
+References: <20250409-page-pool-track-dma-v9-0-6a9ef2e0cba8@redhat.com>
+	<20250409-page-pool-track-dma-v9-2-6a9ef2e0cba8@redhat.com>
+	<aEmwYU/V/9/Ul04P@gmail.com>
+	<20250611131241.6ff7cf5d@kernel.org>
+	<87jz5hbevp.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Launchpad-Message-Rationale: Requester @linux-rdma
-X-Launchpad-Message-For: linux-rdma
-X-Launchpad-Notification-Type: recipe-build-status
-X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
-X-Launchpad-Build-State: MANUALDEPWAIT
-To: Linux RDMA <linux-rdma@vger.kernel.org>
-From: noreply@launchpad.net
-Subject: [recipe build #3908803] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
-Message-Id: <174972795428.1008304.14045564623822925660.launchpad@buildd-manager.lp.internal>
-Date: Thu, 12 Jun 2025 11:32:34 -0000
-Reply-To: noreply@launchpad.net
-Sender: noreply@launchpad.net
-Errors-To: noreply@launchpad.net
-Precedence: bulk
-X-Generated-By: Launchpad (canonical.com); Revision="2f3e2deec61796d4ee775e1cf25403fcfe2e4659"; Instance="launchpad-buildd-manager"
-X-Launchpad-Hash: 1ae42de10a238b6ff6a855a0daefa68f600d9754
 
- * State: Dependency wait
- * Recipe: linux-rdma/rdma-core-daily
- * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Distroseries: xenial
- * Duration: 2 minutes
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+recipebuild/3908803/+files/buildlog.txt.gz
- * Upload Log:=20
- * Builder: https://launchpad.net/builders/lcy02-amd64-088
+On Thu, 12 Jun 2025 09:25:30 +0200 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> Hmm, okay, guess we should ask Sasha to drop these, then?
+>=20
+> https://lore.kernel.org/r/20250610122811.1567780-1-sashal@kernel.org
+> https://lore.kernel.org/r/20250610120306.1543986-1-sashal@kernel.org
 
---=20
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
-ild/3908803
-Your team Linux RDMA is the requester of the build.
-
+These links don't work for me?
 
