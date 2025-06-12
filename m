@@ -1,85 +1,78 @@
-Return-Path: <linux-rdma+bounces-11257-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11258-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A26AAAD7348
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 16:12:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66DE0AD73A4
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 16:22:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FD6F3B6C1A
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 14:07:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9C4A7A5A72
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 14:21:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86EC8248166;
-	Thu, 12 Jun 2025 14:05:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D5161AA1FF;
+	Thu, 12 Jun 2025 14:22:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eR0aFfUm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pmXCOEmM"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE6718A6AD;
-	Thu, 12 Jun 2025 14:05:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D63F146593;
+	Thu, 12 Jun 2025 14:22:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749737121; cv=none; b=X1fPIwmbwCHLHubxJqhYXOMK3g01Y1ebIEODFJMcf35SRxvo24WrqQzoNxX71RSoyhJkye/qWupSkZAqXR2BQEqVbuKaTeuCZAxom7FBDeAwUmSEmnH7mC9zne+Z+/yBNVgfAgu2Gugu+hNuerO67YtDS6vRxQnkmzU9EvFb+80=
+	t=1749738142; cv=none; b=C6O5+aye5QgUj+DooZ9dXoYZ0p4jKwAb1GUjysvec/J+H/wkw2dnouFEe2Gb5V4LD3BYxnhCEmgPLOO6nrUWh5/kkOHmkSbE5HZ50Vemc1gpqtUnsZW496IQf0gkFdyxbSgelB93Lm9kDZ1HPZsWsU8FS8i4QTKJopkvc+8M0PA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749737121; c=relaxed/simple;
-	bh=D+ukWm9CNFxSBTlUZVNF0wIvs0CoEpG0xs9KpKTy9KQ=;
+	s=arc-20240116; t=1749738142; c=relaxed/simple;
+	bh=TKeuNZ9kN5+bA+xcCfKcZcGurNnPgj25mlIXAv5jxU8=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=L5Nj3Qziibs1y6av02eUWrOeNPJ/iiRZkKro0jNPBYgizioXuvcc9UWH9hYKHqm4g007vKnEiL2xsX7O++i/VcR/6zwakCEX0VrKFKnahwmTjbZnog/+bKK+RZaFfusBm/YVrqJnVklEZxKaimX5FNbG0D5z0ljN76D0AKRj1WQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eR0aFfUm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9944C4CEEA;
-	Thu, 12 Jun 2025 14:05:19 +0000 (UTC)
+	 MIME-Version:Content-Type; b=t3N1QF1z38Mz6/cZuiVvGKxNTPMqo1YtrxnZPDok9re3gYbn43ijZW6J8mCtiXk0RodQ9FAJqB5ukh7pBgf/lDRH2xwQolAak8tlkYHYPXYeP40tEV0R9FYNkVjvxKLcJ6eKCMGZnsWy+SjbIPeIug56sS2vaK2tGT+Y14a8sxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pmXCOEmM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FA48C4CEEA;
+	Thu, 12 Jun 2025 14:22:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749737120;
-	bh=D+ukWm9CNFxSBTlUZVNF0wIvs0CoEpG0xs9KpKTy9KQ=;
+	s=k20201202; t=1749738139;
+	bh=TKeuNZ9kN5+bA+xcCfKcZcGurNnPgj25mlIXAv5jxU8=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=eR0aFfUmKoD4JNmSHuMj1DvfwBcFXu/5Z4iuX40Ipfj8dYXLNenDqefB817WtDBP1
-	 6Zuz9ZSoXj4rEgsclqUroR719YMhkU8qsbgEh6Ahm9Rzr2clvbgLx+xWfYHZOZV4Vs
-	 hmAl+GEvwQzjAllL4RIKmkQL3loC1NaBuCPEeCdLn7ODLwmeSPO2Ba6flhTrEmPBsB
-	 edQ8WWcbnYIpARAvJYeM7FBUlA2X8NaURP07au1QmIoEScIRix8pmermR4DxRl0KZ1
-	 8Fgv3snc4AR645TjgAUFLaOgzoawBqkegM3IMixd+/J3hHTU1E8FOC555K0KbeEUXj
-	 sPEIz7GNsHTGw==
-Date: Thu, 12 Jun 2025 07:05:18 -0700
+	b=pmXCOEmMDFLNdrTN0LESQ7c+5TfJdSxWZGFysFgsfKKlf1QymLA4rdJsCHGOzcX7B
+	 0hkR0yUuu/2NVL3YgUyiuWwvXbzKvAc1Iua92HUQymO3+XmyvYvkFiks9kHWTvLo7V
+	 azIhcW3SBwQZBEpYb0nXs4BgBwpuQ/kdTb5u0Kfvc2DK7eTLfe/r5vbbB+0ZGpjxrm
+	 ECwDWuSQ2yb6WZXdYiMA5iULsGgoLPcxQn5n8KUhlDBsr2hjCM3DKHy+I/xM4+Yjg+
+	 sYEM93CzZqH8ONX7N9wdI5gOwnpYk0PwlJVbnsWfdZVsJYXAoQGyBvFP1kqHprY5zl
+	 QTCH/UEVdONEA==
+Date: Thu, 12 Jun 2025 07:22:18 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc: Breno Leitao <leitao@debian.org>, "David S. Miller"
- <davem@davemloft.net>, Jesper Dangaard Brouer <hawk@kernel.org>, Saeed
- Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq
- Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Ilias
- Apalodimas <ilias.apalodimas@linaro.org>, Simon Horman <horms@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Mina Almasry
- <almasrymina@google.com>, Yonglong Liu <liuyonglong@huawei.com>, Yunsheng
- Lin <linyunsheng@huawei.com>, Pavel Begunkov <asml.silence@gmail.com>,
- Matthew Wilcox <willy@infradead.org>, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-rdma@vger.kernel.org, linux-mm@kvack.org,
- Qiuling Ren <qren@redhat.com>, Yuying Ma <yuma@redhat.com>,
- gregkh@linuxfoundation.org, sashal@kernel.org
-Subject: Re: [PATCH net-next v9 2/2] page_pool: Track DMA-mapped pages and
- unmap them when destroying the pool
-Message-ID: <20250612070518.69518466@kernel.org>
-In-Reply-To: <87jz5hbevp.fsf@toke.dk>
-References: <20250409-page-pool-track-dma-v9-0-6a9ef2e0cba8@redhat.com>
-	<20250409-page-pool-track-dma-v9-2-6a9ef2e0cba8@redhat.com>
-	<aEmwYU/V/9/Ul04P@gmail.com>
-	<20250611131241.6ff7cf5d@kernel.org>
-	<87jz5hbevp.fsf@toke.dk>
+To: Mark Bloch <mbloch@nvidia.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Paolo Abeni
+ <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, Andrew Lunn
+ <andrew+netdev@lunn.ch>, Simon Horman <horms@kernel.org>,
+ saeedm@nvidia.com, gal@nvidia.com, leonro@nvidia.com, tariqt@nvidia.com,
+ Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net 7/9] net/mlx5e: Properly access RCU protected
+ qdisc_sleeping variable
+Message-ID: <20250612072218.6be4547f@kernel.org>
+In-Reply-To: <bdfe62f4-8b70-4284-b06d-e50ea6ae2d88@nvidia.com>
+References: <20250610151514.1094735-1-mbloch@nvidia.com>
+	<20250610151514.1094735-8-mbloch@nvidia.com>
+	<20250611144013.300c79ea@kernel.org>
+	<bdfe62f4-8b70-4284-b06d-e50ea6ae2d88@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, 12 Jun 2025 09:25:30 +0200 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> Hmm, okay, guess we should ask Sasha to drop these, then?
->=20
-> https://lore.kernel.org/r/20250610122811.1567780-1-sashal@kernel.org
-> https://lore.kernel.org/r/20250610120306.1543986-1-sashal@kernel.org
+On Thu, 12 Jun 2025 10:31:45 +0300 Mark Bloch wrote:
+> > I don't think this is a functional change? We don't treat silencing
+> > compiler warnings as fixes, not for sparse or W=1 warnings.  
+> 
+> Well Eric's commit: d636fc5dd692c8f4e00ae6e0359c0eceeb5d9bdb
+> that added this annotation was because of a syzbot report.
 
-These links don't work for me?
+And your point is?
 
