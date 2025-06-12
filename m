@@ -1,68 +1,68 @@
-Return-Path: <linux-rdma+bounces-11225-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11226-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0531AD6537
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 03:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AB496AD654B
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 03:55:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 757DC3AC92E
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 01:43:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5014C3ACE0E
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 01:55:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B71214A60F;
-	Thu, 12 Jun 2025 01:43:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 371531922D3;
+	Thu, 12 Jun 2025 01:55:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lSaj5qBT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hr4N25lZ"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1B61487E9;
-	Thu, 12 Jun 2025 01:43:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD6752A1C9;
+	Thu, 12 Jun 2025 01:55:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749692628; cv=none; b=e9gD/BbEcz4R5loXdasz8p+4MDoiPgPbWBu9KHhxflJX7DfX9m7y7i2CxsqD6Fk1uYS+ZjaCDav9xEF6NezRnfSzbuo08KjQ5kMa3PkenWR+9uHC67qQlEFoOy6tD0P9m/ExVWB1/+a0Y7G09eLfjDlpf9Bk2aXDJ2Ug8InlZNE=
+	t=1749693345; cv=none; b=kgOKQK1zJ2zJd9E5942NYfOYRfqKi4CNq+/63Abe4U68LTxTLzmufsnVXgVywBvHZVn32B7VLTCVCCKyM/wWLpZLufOFwQn62VXFxg3cP4v2LLpzFjCOaWFtQggORDUPUFO9w8pys58Xj5rZYhapFQvWe5C870pQrVcRNHC1s9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749692628; c=relaxed/simple;
-	bh=LjwFAIBoJN2DFCOZK3YQK/MaS7Ur4DjiuLDzXfrUQhU=;
+	s=arc-20240116; t=1749693345; c=relaxed/simple;
+	bh=/Z9gnkbErpmzSSGG757Uw928GIcAdBgrdkNeI0TZYYE=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=W1eQFkbZc8S13BwFdHDmKVZPwZ50njS4mNY13ZuXMMpuq46/yrHJMz+UQ8sQO4tXFhmMOLfyIDOts9/gvoKNzLKbFkd6ndapssolgwDRB9JU+jf4DJtAoatrmGOjRUcsHwKISx1yuBAefqH8HB4diGHpbCMRO68nd8nudNsqRQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lSaj5qBT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F823C4CEE3;
-	Thu, 12 Jun 2025 01:43:46 +0000 (UTC)
+	 MIME-Version:Content-Type; b=C5BblGH6e08/bjHkdexl6rHbYSZZ6rC4jpEbTPS7znfeWPi644ah2vzu8QH3goJob1ESd3X5qwLfdrU1YjiXxHywE8k4jdghRe/xHkKFS4zWpyara0OnaflHMxt07lzgTOEjOfJGY87eTIWDWDiFEB3qqW5CBiv17gKNlF2rRfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hr4N25lZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97CB6C4CEE3;
+	Thu, 12 Jun 2025 01:55:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749692627;
-	bh=LjwFAIBoJN2DFCOZK3YQK/MaS7Ur4DjiuLDzXfrUQhU=;
+	s=k20201202; t=1749693344;
+	bh=/Z9gnkbErpmzSSGG757Uw928GIcAdBgrdkNeI0TZYYE=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=lSaj5qBTgjvlHyd9hDez5o6TNERrsmupKiHUlCAhlKg4ETATeVKt5W/jmAYbkfOEw
-	 3CHzvNrBX5+udhVCa+fZNmW6GQPQ8s7XGYLVBxqUo598mZSUE4zwADcDKP3txgZgMT
-	 2zKvnAgkHWpVmKlhNcJ95NhyE/PSNUCWbLV2tjKpqjxwWwmZAPazpmfU6+T8K3whlj
-	 4RwgvEi3Rqmb0VuiPl1gcIeZIf+F2/0/sVIhLyPM/pEay/LGrVb0uNCJivCCoZzfPB
-	 87UlI+Pudwnx66ZybIKu8CYxC+Bo0raVTtijIOO0susUCCJBT5DwX0NA9g+ekbiSwB
-	 DtCzRXJhnIzvw==
-Date: Wed, 11 Jun 2025 18:43:45 -0700
+	b=Hr4N25lZ/oEeSGftkotNZkm8IvShXojbQQmt4vAiXiQ6w28OzyeM6PqUEl+TOvoEx
+	 PqyNWIQXe0nf1UeMJwUbf9+HKHR1+Km1mhH7/QYsModYvu+ECP1UIz53D8NbYgkjNE
+	 7gWA5xhFlHJWPHcPTYgmpJCObUcrOag0oOexDt2l9p3RHa5f1pElBJ9NJ48TdSjaIb
+	 mFRaFWelGov5E1gRsshY6RdQ/31ecBkrueieMBNJqS/Mh8mVsyhh9xHxBJ8Y2KXElK
+	 ANIHzv8NUJKt0zao7kX0RYWqkgjnsJtZGqR4uOZhJEs4GCdRfqKqJ8bijflblv1kvp
+	 GNkiV+itjUEkw==
+Date: Wed, 11 Jun 2025 18:55:42 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
- pabeni@redhat.com, skalluru@marvell.com, manishc@marvell.com,
- andrew+netdev@lunn.ch, michael.chan@broadcom.com,
- pavan.chebbi@broadcom.com, ajit.khaparde@broadcom.com,
- sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
- anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com,
- tariqt@nvidia.com, saeedm@nvidia.com, louis.peens@corigine.com,
- shshaikh@marvell.com, GR-Linux-NIC-Dev@marvell.com, ecree.xilinx@gmail.com,
- horms@kernel.org, dsahern@kernel.org, shuah@kernel.org,
- ruanjinjie@huawei.com, mheib@redhat.com, linux-kernel@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
- oss-drivers@corigine.com, linux-net-drivers@amd.com,
- linux-kselftest@vger.kernel.org, leon@kernel.org, Cosmin Ratiu
- <cratiu@nvidia.com>
-Subject: Re: [PATCH net-next v3 1/4] udp_tunnel: remove rtnl_lock dependency
-Message-ID: <20250611184345.3b403ad0@kernel.org>
-In-Reply-To: <20250610171522.2119030-2-stfomichev@gmail.com>
-References: <20250610171522.2119030-1-stfomichev@gmail.com>
-	<20250610171522.2119030-2-stfomichev@gmail.com>
+To: Byungchul Park <byungchul@sk.com>
+Cc: willy@infradead.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, kernel_team@skhynix.com,
+ almasrymina@google.com, ilias.apalodimas@linaro.org, harry.yoo@oracle.com,
+ hawk@kernel.org, akpm@linux-foundation.org, davem@davemloft.net,
+ john.fastabend@gmail.com, andrew+netdev@lunn.ch, asml.silence@gmail.com,
+ toke@redhat.com, tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
+ saeedm@nvidia.com, leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+ vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+ horms@kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+ vishal.moola@gmail.com
+Subject: Re: [PATCH net-next 1/9] netmem: introduce struct netmem_desc
+ mirroring struct page
+Message-ID: <20250611185542.118230c1@kernel.org>
+In-Reply-To: <20250610013001.GA65598@system.software.com>
+References: <20250609043225.77229-1-byungchul@sk.com>
+	<20250609043225.77229-2-byungchul@sk.com>
+	<20250609123255.18f14000@kernel.org>
+	<20250610013001.GA65598@system.software.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -72,16 +72,38 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue, 10 Jun 2025 10:15:19 -0700 Stanislav Fomichev wrote:
-> Drivers that are using ops lock and don't depend on RTNL lock
-> still need to manage it because udp_tunnel's RTNL dependency.
-> Introduce new udp_tunnel_nic_lock and use it instead of
-> rtnl_lock. Drop non-UDP_TUNNEL_NIC_INFO_MAY_SLEEP mode from
-> udp_tunnel infra (udp_tunnel_nic_device_sync_work needs to
-> grab udp_tunnel_nic_lock mutex and might sleep).
+On Tue, 10 Jun 2025 10:30:01 +0900 Byungchul Park wrote:
+> > What's the intended relation between the types?  
+> 
+> One thing I'm trying to achieve is to remove pp fields from struct page,
+> and make network code use struct netmem_desc { pp fields; } instead of
+> sturc page for that purpose.
+> 
+> The reason why I union'ed it with the existing pp fields in struct
+> net_iov *temporarily* for now is, to fade out the existing pp fields
+> from struct net_iov so as to make the final form like:
 
-There are multiple entry points to this code, basically each member of
-struct udp_tunnel_nic_ops and the netdev notifiers. In this patch only
-reset and work are locked. I'm a bit confused as to what is the new
-lock protecting :S
+I see, I may have mixed up the complaints there. I thought the effort
+was also about removing the need for the ref count. And Rx is
+relatively light on use of ref counting. 
+
+> > netmem_ref exists to clearly indicate that memory may not be readable.
+> > Majority of memory we expect to allocate from page pool must be
+> > kernel-readable. What's the plan for reading the "single pointer"
+> > memory within the kernel?
+> > 
+> > I think you're approaching this problem from the easiest and least  
+> 
+> No, I've never looked for the easiest way.  My bad if there are a better
+> way to achieve it.  What would you recommend?
+
+Sorry, I don't mean that the approach you took is the easiest way out.
+I meant that between Rx and Tx handling Rx is the easier part because 
+we already have the suitable abstraction. It's true that we use more
+fields in page struct on Rx, but I thought Tx is also more urgent
+as there are open reports for networking taking references on slab
+pages.
+
+In any case, please make sure you maintain clear separation between
+readable and unreadable memory in the code you produce.
 
