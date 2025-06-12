@@ -1,87 +1,81 @@
-Return-Path: <linux-rdma+bounces-11241-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11242-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B850AAD6A0A
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 10:12:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F6FFAD6A12
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 10:14:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 590787A23CF
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 08:11:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 944553AE66C
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 08:13:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BCB6220F51;
-	Thu, 12 Jun 2025 08:12:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C1CD1A3172;
+	Thu, 12 Jun 2025 08:14:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s40N/Rfq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WhGU+v7d"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 292C921B8F8;
-	Thu, 12 Jun 2025 08:12:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB0D15573F
+	for <linux-rdma@vger.kernel.org>; Thu, 12 Jun 2025 08:14:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749715959; cv=none; b=KdQWPbEUAtxTOSUIoWgwhs9k9C1JH0p23Fs7Rj38FnheFyeS351V70pHqe9VXTON2o8YHE/crsFgHbt7tgcuJXXiKUqx5VMeZTHrD8Pc3oNOgEWEWBJXzYsIivwg4rl9e2dQ072Ee+URnpl1WFL3FB07JpnW19nKp3Ni30NzPJo=
+	t=1749716056; cv=none; b=YftEayDpxhr+VDRw3rHrsrfW9AnGLaCv7hO6kg+c2vZLqGcLk6zis9ocCbhy4ysB27GJLrWP04Cn9sf5/sdwHDX+Cfg0UeAnuN67RfBdjp5hHpXWBycyzpHcb9n5rFw2VE3QA181xt1sZbAefRqfoOECWeWugL+vA9ynQ7q6X7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749715959; c=relaxed/simple;
-	bh=og6MGYj8SAOK1ijRemfH4oo2vU3F01Nt5qZ30o+z09c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L7sOsDalHjROlA7U+8vbxj1W7DQpX2FQX20iR9wgH1luW/hJlGJ80mK/jQaX/DbnA/M91/JSdFneXrTFU6L6sS+pIeAkfzOgEoaeLqq7CfhhTIJsM0q1URaIPVpqLtgL5s886OqTXaxW+Z6KHDPRoWhGT7Kb5AL/w8vV7e4Zwr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s40N/Rfq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA8BCC4CEEA;
-	Thu, 12 Jun 2025 08:12:34 +0000 (UTC)
+	s=arc-20240116; t=1749716056; c=relaxed/simple;
+	bh=P1snybCflsNdN9nG3w2eUzaTJCu9aSscnSyPse00Sec=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=Itc3xTf+WN3+R+TbOdVrG9P78IW/scWF4tdwXoe2Y2KByalE4IGeA5XMVeGxBKhNmzwRXo3LR+th27y671E03/GulA0FSOJS8ZFfFiWwMX6UwZv0m1iBUJ9ARdrHo9nfBAVTdls50ArteUYS3CwS7QCYc1anZ0jyTTN5Etsdda0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WhGU+v7d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16EA0C4CEEE;
+	Thu, 12 Jun 2025 08:14:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749715955;
-	bh=og6MGYj8SAOK1ijRemfH4oo2vU3F01Nt5qZ30o+z09c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=s40N/RfqsHHEhYBC1KRtuoUo+wVWJ4md/UGfgjR9amUs37f7I3U1XByCb3OCcLy3I
-	 v++49VzgqJCFmO+hq5/a8I6PxcyDW9itvqEXyXcWB3UbKzmSh2ZS4K8t2QBEn6UWxY
-	 n85rDeN8p/vqXjEnnPzuUsG+0BTG7lDYpdwc1J9XkrJzjs/wCqxiQHB0UVq0SWBJyX
-	 lq2HZl7x/ImsMK3qC9u7phy1m2nVhZLpAhPyXYIuxwMC7PBM5yO3fYji8R4J0G8Wrv
-	 MNAwySbaJxtqo2WWx/CxV3PmVjjTTJ9vY9M+mBa3PL797jOA3UmnBb0qSwimNiiG8/
-	 11iQo0hE3ZpbQ==
-Date: Thu, 12 Jun 2025 11:12:29 +0300
+	s=k20201202; t=1749716055;
+	bh=P1snybCflsNdN9nG3w2eUzaTJCu9aSscnSyPse00Sec=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=WhGU+v7di04MLa19nUC7T+SgKXY4lcAgwBuDfZ6yCNZ4/ReBHAzndOyYvL6mVAY+T
+	 lDeIh3+N0P/wL58qnlL+csdbLT2fmOaNNfNDvzC4yWpxirKvWyHY4jIAXBuHv0YuKU
+	 UZBZS614Ek+j2i7vkCIymG1c3T32AjhQBnAV2O47DjBCdqdMVj2rzH50iErclxuBdc
+	 tjGhpB9xVWGnzyRrPgNNmGTTY5wJCB10FRvQMg/Ad8lgitEe+48+Lfn9fKZPeHJ7np
+	 dcgGslIm9EjNLnF94pvsXShueN4SzMPwuRBSAdF/pNHHgaKLG8fCMZiByByarcFVqv
+	 8hjlMfhZT/S1w==
 From: Leon Romanovsky <leon@kernel.org>
-To: Yury Norov <yury.norov@gmail.com>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/7] RDMA: hfi1: cpumasks usage fixes
-Message-ID: <20250612081229.GQ10669@unreal>
-References: <20250604193947.11834-1-yury.norov@gmail.com>
+To: huangjunxian6@hisilicon.com, luoqing <l1138897701@163.com>
+Cc: tangchengchang@huawei.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org, 
+ luoqing@kylinos.cn
+In-Reply-To: <20250605034918.242682-1-l1138897701@163.com>
+References: <20250605034918.242682-1-l1138897701@163.com>
+Subject: Re: [PATCH v2] RDMA/hns: ZERO_OR_NULL_PTR macro overdetection
+Message-Id: <174971605183.3643588.9028124185083393557.b4-ty@kernel.org>
+Date: Thu, 12 Jun 2025 04:14:11 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250604193947.11834-1-yury.norov@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-37811
 
-On Wed, Jun 04, 2025 at 03:39:36PM -0400, Yury Norov wrote:
-> The driver uses cpumasks API in a non-optimal way; partially because of
-> absence of proper functions. Fix this and nearby logic.
-> 
-> Yury Norov [NVIDIA] (7):
->   cpumask: add cpumask_clear_cpus()
->   RDMA: hfi1: fix possible divide-by-zero in find_hw_thread_mask()
->   RDMA: hfi1: simplify find_hw_thread_mask()
->   RDMA: hfi1: simplify init_real_cpu_mask()
->   RDMA: hfi1: use rounddown in find_hw_thread_mask()
->   RDMA: hfi1: simplify hfi1_get_proc_affinity()
->   RDMI: hfi1: drop cpumask_empty() call in hfi1/affinity.c
-> 
->  drivers/infiniband/hw/hfi1/affinity.c | 96 +++++++++++----------------
->  include/linux/cpumask.h               | 12 ++++
->  2 files changed, 49 insertions(+), 59 deletions(-)
 
-Dennis?
+On Thu, 05 Jun 2025 11:49:18 +0800, luoqing wrote:
+> sizeof(xx) these variable values' return values cannot be 0.
+> For memory allocation requests of non-zero length,
+> there is no need to check other return values;
+> it is sufficient to only verify that it is not null.
+> 
+> 
 
-> 
-> -- 
-> 2.43.0
-> 
+Applied, thanks!
+
+[1/1] RDMA/hns: ZERO_OR_NULL_PTR macro overdetection
+      https://git.kernel.org/rdma/rdma/c/1f505a4a425079
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
