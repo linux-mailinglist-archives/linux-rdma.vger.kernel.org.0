@@ -1,116 +1,148 @@
-Return-Path: <linux-rdma+bounces-11275-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11276-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E26D3AD7AB4
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 21:05:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FB83AD7C9A
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 22:45:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABD65189687C
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 19:05:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7B59176DBF
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 20:45:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C942D8DC4;
-	Thu, 12 Jun 2025 19:01:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B4D82D877C;
+	Thu, 12 Jun 2025 20:44:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="A4L79eJ5"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="I2iLAhFz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09F342D8DB7
-	for <linux-rdma@vger.kernel.org>; Thu, 12 Jun 2025 19:01:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8CEC2D660E
+	for <linux-rdma@vger.kernel.org>; Thu, 12 Jun 2025 20:44:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749754862; cv=none; b=b3Q9tSbVqOL1mKI/OFW+j0vQky1jMx7sC3zFOSMFc5IhN2lsYRYBJ6dUEPPQjVLhhKTrjuvwBYJo2yS3AOJRbbc5Ee8nXdE1B62KyYo3OjwFPnlMHXW9vrvn3YfSXwBJvDiGLnoWb7rN1JbrDi/TVIw9AiCH+wweLZ24oUaggOU=
+	t=1749761099; cv=none; b=dtQFR/bhD/ivQLunX+e2gK718EHOEJIc7bdfInsABORrvg6uOln2to19BcM1C/Tq/SGRkLP9xSpwNr8EpB5DTj+cOBYxfZQmJxpsMcTLU5YX0qzP9B8x9oyJDv9DK0LAY+Jkbbf6nS2P7cQCusdEixsK1X3WRiMEWmZjdjnQra0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749754862; c=relaxed/simple;
-	bh=ZwlMsaTHjZOtEXv/YqtnnEPbYBwwh6k+wD4c3F2kUr0=;
+	s=arc-20240116; t=1749761099; c=relaxed/simple;
+	bh=0shdeU3Nmns13gIvSpekGMtrKZaAuIpc2PTkyCP2Tbc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ba5XxZpDFgmhb8OfdG+ZoidbDUe43wxP/wQzr93g1lJU99McyT9AjT12qQDxfsSHCbNHZi9ml44Ux/Iig32zPZ82TUw3zz8qARdRypxuaaDVRPyKSOHE05n4nRqgWsDVen1qJrkhOazlyHJOahv6zNb+Hf99iUmM3wAQNBisyHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=A4L79eJ5; arc=none smtp.client-ip=209.85.214.170
+	 To:Cc:Content-Type; b=jRlNRXm5RX6dJ2LwP3i/gnq/XBoE0HMT7ynmhLJgP/gXWmcGdwCwNeLdYUOsnUFC2eNT3EdOVuRBhYhSHfhknZjou9Ow2U6mZQjea2osx9XTzyFr+u4a0dZ0bRFjass39Hct8hCyk2MBhHunApjmC8209zXEFAHYr0MT8ukP3iU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=I2iLAhFz; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2357c61cda7so30775ad.1
-        for <linux-rdma@vger.kernel.org>; Thu, 12 Jun 2025 12:01:00 -0700 (PDT)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-235ca5eba8cso56945ad.0
+        for <linux-rdma@vger.kernel.org>; Thu, 12 Jun 2025 13:44:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1749754860; x=1750359660; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1749761097; x=1750365897; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZwlMsaTHjZOtEXv/YqtnnEPbYBwwh6k+wD4c3F2kUr0=;
-        b=A4L79eJ54S8X/R6hdBRCGJERy7H+zrEjPyMVVBDEq73jX4tDGzH3TXGyFFeViSYU5x
-         IGzAXqwuH26ZZPVqh2BTD5c3EpOFjYyeo1I9HO28R5rcfjJlc2TAXXEdCVOvI8HMDWfp
-         M7wJn59bo/R0KEjXzu89S81WRPMoZVOOhkc21AJp4jsxBc+Z1Ovope1S+Euh07I4obrz
-         XE0AA8khB6StZ406/4PRkf1tmhWHpT5xPcwwyRiaVgrHj8YsHyvkoiansK9tWjlLAHxI
-         FYIg/BMQu0jDDqJ66Tbft8Y7n2iHJ/TnY54dW18edX+W/DKljg8uhbbwI+IRKCUqSyD8
-         Ja2Q==
+        bh=0shdeU3Nmns13gIvSpekGMtrKZaAuIpc2PTkyCP2Tbc=;
+        b=I2iLAhFzijgdQ1YNvUeyvqvftSrEFW1ueLbsQMK8NMgetrYBJj7Fs12MvPJ7zbLifs
+         yq0SZMlQb66p/GwBtC96c2S/vj+n/byGC/IwccATCNzh3ECLtciyKj+5tVyn/TePniAb
+         R52oTb2kv0+g3xSj3bL1ANoWy1SFuhWqTi7ISqoArdOjj0I9pH8A+izFsDGdvhE6JEHn
+         9VbBRTuGnjqfK23IPzFhmuNgtxCyzw75erN4u18qqlrQraVBNIsnzFgTBYg6oke6I9lB
+         6hqiGgR8nCGG9NZU7zwDzKG4NDYaBt9nPoPJnwTCHEJ9Cry7Xe1VuDmfs4DW1a6Hf1zh
+         oB9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1749754860; x=1750359660;
+        d=1e100.net; s=20230601; t=1749761097; x=1750365897;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZwlMsaTHjZOtEXv/YqtnnEPbYBwwh6k+wD4c3F2kUr0=;
-        b=RKsFsMRL0Cka3vcBDY1Xx5/Ki4YkYxIF+IvTautDykBZ6/PJ0UlV8irmyPh4pV1Mdq
-         YoDyYKYVwxRF18ZNbdiH8/i7NCrpvJyCjvxSmjgYC3NJDGhC1RJgePhnZtJ2GMzIwm/m
-         PLHYv4sx7eH7vs0coEx0fXf1/x2rN0JN1JdeRr8yV/v+whNNsHvRs0nDSX3V4uWIDyt9
-         zE+AqMcTYm5H5YcS8A9+RYqa5KB0U/yrUf3qafp5Xc8h1Z/dBg0F1Jp5nS3ggjEhkmdo
-         +CJzxqr2H7zEXlTiSrGNKqgR5ZHrOyj348IqSUMgBsCvv97+jYbRNk2UW7kawSUVpqSO
-         6HxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUCfuqSfYy03bh3u6pwjKLRgMLXeFzeeJ/5rf2pID3pXQ0sU8xxFXK4ZTyOkzfONEm/roY4LxrdvTw/@vger.kernel.org
-X-Gm-Message-State: AOJu0YxS22/FWTCYwlM0ta71tjMFq7SxzXKZYt2KvPjrthzK+WnrFjec
-	Hg0M7i9QiPKOEnoYst7quwy0ZP5gmtN8Ie478l42pD8I0Kn9XPDgUmdFv7OAdpJSez3jvMr3x2I
-	GmUDYyn/br9Ru1QonBxeNyZE3Pzf0qnR8WUeYWVIE
-X-Gm-Gg: ASbGncv45tR6gXU1sE/NX7jLJWaP0JtU0gcg2Xu9X0LtWPZ60lOeLUYz9tEm5OU3sBn
-	gWCiVRsU26eAPLlNSoGEYq1l5m3DdKo0HF/u70TwSJ/t9mJLEfieqSpTzYgVitaVLWr0NVQfpJI
-	/1fBvfSlZFaR7x2HG/4hoGolYPiBVJv3WPGQIumOkwTE8eiHDAEcyUepj1Idcfe5Av/rb9AvGc4
-	A==
-X-Google-Smtp-Source: AGHT+IF+DrhTdw1EVP33Lsxs8pEmeKyxPiFeWCjxcFQq5i+dtpZuy+WTSh+WvsQ3zeAWf1tAffKMVahMPLgaOisNCFA=
-X-Received: by 2002:a17:902:d54a:b0:235:e1d6:5339 with SMTP id
- d9443c01a7336-2365e950001mr97625ad.26.1749754859927; Thu, 12 Jun 2025
- 12:00:59 -0700 (PDT)
+        bh=0shdeU3Nmns13gIvSpekGMtrKZaAuIpc2PTkyCP2Tbc=;
+        b=CUi1hf6c3rjCb4VMyizOntx/G+XKsJDt21kJ3NF9G4yeHzqRkGr0nzXjTzNh6Rk7KY
+         EAtYQGnmtpu/MZFgmY7ylm9JgqAgOSvXh5Jp2I+30ykwoHGEKjypaQTcbfe3QGp7weZZ
+         /ozo9xirTEj5h+F+y/KVzGx8inblqgiO6d7RPhYQ0Md/+F767Yiyd33mqwYwzRk63klG
+         H610U8G07i+0rtbamhTZpidsdcJOpQrfsaoIPHmq03OZcoDGxVwfwN4MqiFiPQoLNGOF
+         LY9f2UQDi1jt/lWFrt5Ilrz0d5YapEcmrqqddkmTMEvozW9OBcZ11KdOn9woZ1dSFqyL
+         4Xqg==
+X-Forwarded-Encrypted: i=1; AJvYcCVm5mIczeSMk6pD5M1lNkhtlVLX39QaSh91m6pCEvtQs41xORaYWFdr0nx5sl4CYN8ylJgLE+oi1Oqx@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz9Mush+YrBeZO/OzxVQaDe951uHGcfCEbOxuwUnMkxeOUHNq/d
+	TlNTqjYjGEx712An99jCEbHiaNA0JJsxhmAnqhNkVc7jkkzKz6FTQ0Yvvbp/kl9I0wwZtdJYKxB
+	Eeu4MriD0FC1OU/o5B912jXUwQJJP8lT1VkZAu0Mq
+X-Gm-Gg: ASbGnctYinAw+nHY9VGo+SdNlgsHDul/A42SfetsHKYpOHcxPARaBGHDIfjnezd7Dlc
+	/gXiS51j3F8ZO5QqrBqxiRdKbK7DvY1iGdDusH0HcKVRmyEm8wdiFrTi4876Ub7wVhlw4Gzsv99
+	qJRKFZu/8LnR8/9xE4f4H0CAPYb/ImKkETtu1rq57io+5HzSI8TFEa6Bf6siaG3Kdub8H5vHuG7
+	g==
+X-Google-Smtp-Source: AGHT+IFQpp/hgcePI2xWrpQ53G9VWOawnMErUaqEJq2tPNn7M+/QfKB23VjAX85ytCeOgogiZvSGZYySA5m/hlCuyso=
+X-Received: by 2002:a17:902:d48d:b0:223:ff93:322f with SMTP id
+ d9443c01a7336-2365e8c8cf4mr545805ad.2.1749761096753; Thu, 12 Jun 2025
+ 13:44:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250612154648.1161201-1-mbloch@nvidia.com> <20250612154648.1161201-4-mbloch@nvidia.com>
-In-Reply-To: <20250612154648.1161201-4-mbloch@nvidia.com>
+References: <20250609145833.990793-1-mbloch@nvidia.com> <20250609145833.990793-11-mbloch@nvidia.com>
+ <CAHS8izOX8t-Xu+mseiRBvLDYmk6G+iH=tX6t4SWY2TKBau7r-Q@mail.gmail.com> <9107e96e488a741c79e0f5de33dd73261056c033.camel@nvidia.com>
+In-Reply-To: <9107e96e488a741c79e0f5de33dd73261056c033.camel@nvidia.com>
 From: Mina Almasry <almasrymina@google.com>
-Date: Thu, 12 Jun 2025 12:00:45 -0700
-X-Gm-Features: AX0GCFs8bIh3dxPetT87B5xeJSISXmwVqrXxvRLSdCTJ2AOZNbM701RU8f8TtdA
-Message-ID: <CAHS8izNe_g9o92C0RbOe6vtbSfBMbJJJc4K1HubpozN4xwrcuA@mail.gmail.com>
-Subject: Re: [PATCH net-next v5 03/12] page_pool: Add page_pool_dev_alloc_netmems
- helper
-To: Mark Bloch <mbloch@nvidia.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, Simon Horman <horms@kernel.org>, saeedm@nvidia.com, 
-	gal@nvidia.com, leonro@nvidia.com, tariqt@nvidia.com, 
-	Leon Romanovsky <leon@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Richard Cochran <richardcochran@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	Dragos Tatulea <dtatulea@nvidia.com>
+Date: Thu, 12 Jun 2025 13:44:44 -0700
+X-Gm-Features: AX0GCFsbgTfnHYCyryWuORz2W8YB0hxZo0nQDPNGkYposr4yQdjwdikAQJMpVe0
+Message-ID: <CAHS8izOG+LoJ-GvyRu6zSVCUvoW4VzYX5CEdDhCdVLimOSP0KQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 10/12] net/mlx5e: Implement queue mgmt ops and
+ single channel swap
+To: Cosmin Ratiu <cratiu@nvidia.com>
+Cc: Mark Bloch <mbloch@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, 
+	"andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>, "hawk@kernel.org" <hawk@kernel.org>, 
+	"davem@davemloft.net" <davem@davemloft.net>, "john.fastabend@gmail.com" <john.fastabend@gmail.com>, 
+	"leon@kernel.org" <leon@kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>, 
+	"ast@kernel.org" <ast@kernel.org>, "richardcochran@gmail.com" <richardcochran@gmail.com>, 
+	Leon Romanovsky <leonro@nvidia.com>, 
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "edumazet@google.com" <edumazet@google.com>, 
+	"horms@kernel.org" <horms@kernel.org>, "kuba@kernel.org" <kuba@kernel.org>, 
+	"daniel@iogearbox.net" <daniel@iogearbox.net>, Tariq Toukan <tariqt@nvidia.com>, 
+	Saeed Mahameed <saeedm@nvidia.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+	Gal Pressman <gal@nvidia.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 12, 2025 at 8:52=E2=80=AFAM Mark Bloch <mbloch@nvidia.com> wrot=
-e:
+On Thu, Jun 12, 2025 at 2:05=E2=80=AFAM Cosmin Ratiu <cratiu@nvidia.com> wr=
+ote:
 >
-> From: Dragos Tatulea <dtatulea@nvidia.com>
+> On Wed, 2025-06-11 at 22:33 -0700, Mina Almasry wrote:
+> > Is this really better than maintaining uniformity of behavior between
+> > the drivers that support the queue mgmt api and just doing the
+> > mlx5e_deactivate_priv_channels and mlx5e_close_channel in the stop
+> > like core sorta expects?
+> >
+> > We currently use the ndos to restart a queue, but I'm imagining in
+> > the
+> > future we can expand it to create queues on behalf of the queues. The
+> > stop queue API may be reused in other contexts, like maybe to kill a
+> > dynamically created devmem queue or something, and this specific
+> > driver may stop working because stop actually doesn't do anything?
+> >
 >
-> This is the netmem counterpart of page_pool_dev_alloc_pages() which
-> uses the default GFP flags for RX.
+> The .ndo_queue_stop operation doesn't make sense by itself for mlx5,
+> because the current mlx5 architecture is to atomically swap in all of
+> the channels.
+> The scenario you are describing, with a hypothetical ndo_queue_stop for
+> dynamically created devmem queues would leave all of the queues stopped
+> and the old channel deallocated in the channel array. Worse problems
+> would happen in that state than with today's approach, which leaves the
+> driver in functional state.
 >
-> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
-> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+> Perhaps Saeed can add more details to this?
 
-Thank you!
+I see, so essentially mlx5 supports restarting a queue but not
+necessarily stopping and starting a queue as separate actions?
 
-Reviewed-by: Mina Almasry <almasrymina@google.com>
+If so, can maybe the comment on the function be reworded to more
+strongly indicate that this is a limitation? Just asking because
+future driver authors interested in implementing the queue API will
+probably look at one of mlx5/gve/bnxt to see what an existing
+implementation looks like, and I would rather them follow bnxt/gve
+that is more in line with core's expectations if possible. But that's
+a minor concern; I'm fine with this patch.
+
+FWIW this may break in the future if core decides to add code that
+actually uses the stop operation as a 'stop', not as a stepping stone
+to 'restart', but I'm not sure we can do anything about that if it's a
+driver limitation.
 
 --=20
 Thanks,
