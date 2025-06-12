@@ -1,63 +1,63 @@
-Return-Path: <linux-rdma+bounces-11281-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11282-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5F0EAD7E0D
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jun 2025 00:00:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BF49AD7E0F
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jun 2025 00:00:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5641B178230
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 22:00:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B49C43B3358
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 22:00:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 934532DFA33;
-	Thu, 12 Jun 2025 22:00:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37C5B2E0B53;
+	Thu, 12 Jun 2025 22:00:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WPwtQ+I7"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SQ+MAdgA"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 584262D8780;
-	Thu, 12 Jun 2025 22:00:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 333D82DECCA;
+	Thu, 12 Jun 2025 22:00:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749765623; cv=none; b=ZVbIzZeX92C5p4Dq67C3W2MLFLY5yc7Ckk4QRjGBMe9JevVoaNSrHdmBwRK7Psg3xrKcIQ866rOjyY2LN/XsBqDl/S7uG/70F1L9FjP4K9sSi1ufAVAfEeHuJKNUYCEIlTk9fIUBeZ3pGZhHjlYJnZGWBPcGsB7QsWjS1OcrNRc=
+	t=1749765624; cv=none; b=ouCLe2z4HoibRh5f+0C6D1AC/g7LriLUIC7FliG4pmiTRtdCOZ2HDMqOXuRpeedjcF4LXrVkwwihnV/xtrrFek2eBK+23dgrnsV10kAUkImGKL6VsA7pwb9xBWbQBpg6iD/LYEGFHdeazxEcVpVIKnYMrEP1LYd2bhkPY8pUa2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749765623; c=relaxed/simple;
-	bh=IwSntRbNryz4S95cnMnsz8rMCR9aG3ztXQdrUZRmu+E=;
+	s=arc-20240116; t=1749765624; c=relaxed/simple;
+	bh=KD52Zs6F09C8NKVh+caoN49yy56vUAQix6UrfeLtG7s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Oj70UKD4NjBUmHv+HT4iAeF/0n7W7v/ez9He0zg0OXgsTaTXmmrIiZJii6G2MWJH3OXyP3uzGX/BAh5L0tuzB1hRuSTAdhRJB4lJK9uOCJHCke4XkgmIa9m1JZm//rG4GWFOnL6JoCbuEFCrQNVt8njs4xto1qZlXmo6eHbyduc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WPwtQ+I7; arc=none smtp.client-ip=192.198.163.19
+	 MIME-Version; b=O4KuCcu4TR0vamXZkThx3HPXvFE4a8+4XOrfo7kgTSxYXttnCRa7JJ40i1ycOOOZPm4FrxwIr+eKofuy9Uq9OeOP+HgZDUbfKvtg0i1mZxIJCMAC+p54KQe1IoHxUf7xf8Fc6IXmrCMWW8ZtOSVt4HmKboxmBJ3KDEdWj5YoX40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SQ+MAdgA; arc=none smtp.client-ip=192.198.163.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1749765620; x=1781301620;
+  t=1749765622; x=1781301622;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=IwSntRbNryz4S95cnMnsz8rMCR9aG3ztXQdrUZRmu+E=;
-  b=WPwtQ+I76imiCRdhy/scfLViUN7YeM6Y2g5URT/HpXsDw816XmMzPHHV
-   qqsyaFe9pGJjW0dJei8Mw33qcs/v/mAE3MGw/0LNPLwUXkStg7eKW1feB
-   IQvfvlEknKs2N81bfoEkFh1eI252lAfCydNU83B5gWAFMZHwumlinHDZL
-   8p7Kyr03kafbSpbgaDxX756zby6JtNb2z0QFOysEvyS+nRbwdabGMB9PW
-   UuJ3W0hQ5ZVKfb15CcwH2onJkWkSWKh0kY4hEZBnxWBIDFydwmLlMJtAe
-   D4asx1WE5vQo8UI2b0WPXOCfadJI9qOSpSp4yTPVSms+YsMOZOI3OSj/X
-   g==;
-X-CSE-ConnectionGUID: vwO0HRYpRe+XAqybusllDw==
-X-CSE-MsgGUID: EIIyf9qUSr68ekLMd36F1Q==
-X-IronPort-AV: E=McAfee;i="6800,10657,11462"; a="51078260"
+  bh=KD52Zs6F09C8NKVh+caoN49yy56vUAQix6UrfeLtG7s=;
+  b=SQ+MAdgAfzJ6SuqP7i57x+cn8AQTcS8eFN4oYGDV4pUFGU6HHv4hS+jC
+   9IgboJfuOQ6KPw773kVhZzZtvX4eSleVtwX1SxAAsAvTOLQ4D8UCTwZDJ
+   RI8uCfoHM9a+kSBYotmrPUo1aMfM4phFNhaTv1T8v1zF+dS0b8lkMYZ/R
+   jR5yq12qe6Wl6Qc601geWFN+Um9yTCyR6WgI6jyRNRhspO33aHKj+rCLs
+   XgCMruMW1U8NvTD/2ja3p6xPduXDXPmkxDfLPZ3nw8btHNxIbSaMo9uBZ
+   6ibn/aQTU7PuPzIEmfRrN8v8CAX21djf+C8LEQv6hX/vQoJyOYMnSKe2N
+   A==;
+X-CSE-ConnectionGUID: Q/kpbmGrQ4SWpHL9AIZC3Q==
+X-CSE-MsgGUID: VEcoZgTTSgiV2CA3yRSHcQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11462"; a="51078266"
 X-IronPort-AV: E=Sophos;i="6.16,231,1744095600"; 
-   d="scan'208";a="51078260"
+   d="scan'208";a="51078266"
 Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2025 15:00:19 -0700
-X-CSE-ConnectionGUID: 0jwVULveRviCgQhli1iFIw==
-X-CSE-MsgGUID: gS3pRr9ySb2C/vC8z088qQ==
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2025 15:00:20 -0700
+X-CSE-ConnectionGUID: NSnTGCwfTLKclzkzlpQgHg==
+X-CSE-MsgGUID: fXc+F+9uQkG3IXK3XodB5Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.16,231,1744095600"; 
-   d="scan'208";a="148004206"
+   d="scan'208";a="148004211"
 Received: from pthorat-mobl.amr.corp.intel.com (HELO soc-PF51RAGT.clients.intel.com) ([10.246.116.180])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2025 15:00:18 -0700
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jun 2025 15:00:19 -0700
 From: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
 To: intel-wired-lan@lists.osuosl.org
 Cc: jgg@nvidia.com,
@@ -67,9 +67,9 @@ Cc: jgg@nvidia.com,
 	kuba@kernel.org,
 	Joshua Hay <joshua.a.hay@intel.com>,
 	Tatyana Nikolova <tatyana.e.nikolova@intel.com>
-Subject: [iwl-next v2 2/6] idpf: implement core RDMA auxiliary dev create, init, and destroy
-Date: Thu, 12 Jun 2025 16:59:58 -0500
-Message-ID: <20250612220002.1120-3-tatyana.e.nikolova@intel.com>
+Subject: [iwl-next v2 3/6] idpf: implement RDMA vport auxiliary dev create, init, and destroy
+Date: Thu, 12 Jun 2025 16:59:59 -0500
+Message-ID: <20250612220002.1120-4-tatyana.e.nikolova@intel.com>
 X-Mailer: git-send-email 2.45.1
 In-Reply-To: <20250612220002.1120-1-tatyana.e.nikolova@intel.com>
 References: <20250612220002.1120-1-tatyana.e.nikolova@intel.com>
@@ -83,206 +83,103 @@ Content-Transfer-Encoding: 8bit
 
 From: Joshua Hay <joshua.a.hay@intel.com>
 
-Add the initial idpf_idc.c file with the functions to kick off the IDC
-initialization, create and initialize a core RDMA auxiliary device, and
-destroy said device.
+Implement the functions to create, initialize, and destroy an RDMA vport
+auxiliary device. The vport aux dev creation is dependent on the
+core aux device to call idpf_idc_vport_dev_ctrl to signal that it is
+ready for vport aux devices. Implement that core callback to either
+create and initialize the vport aux dev or deinitialize.
 
-The RDMA core has a dependency on the vports being created by the
-control plane before it can be initialized. Therefore, once all the
-vports are up after a hard reset (either during driver load a function
-level reset), the core RDMA device info will be created. It is populated
-with the function type (as distinguished by the IDC initialization
-function pointer), the core idc_ops function points (just stubs for
-now), the reserved RDMA MSIX table, and various other info the core RDMA
-auxiliary driver will need. It is then plugged on to the bus.
-
-During a function level reset or driver unload, the device will be
-unplugged from the bus and destroyed.
+RDMA vport aux dev creation is also dependent on the control plane to
+tell us the vport is RDMA enabled. Add a flag in the create vport
+message to signal individual vport RDMA capabilities.
 
 Reviewed-by: Madhu Chittim <madhu.chittim@intel.com>
 Signed-off-by: Joshua Hay <joshua.a.hay@intel.com>
 Signed-off-by: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
 ---
 
-v2:
-- initialize cdev_info earlier to properly free it in error path
-
-Changes since split (v1):
-- replace core dev_ops with exported symbols
-- align with new header split scheme (idc_rdma->iidc_rdma and
-  iidc_rdma_idpf specific header)
-
-[3]:
+Changes since split:
+- align with new header naming and split
 - use signed ret value from ida_alloc and only assign
   unsigned id if no err
 - capitalize some abbreviations
 - add missing field descriptions
+- remove unnecessary casts
 
- drivers/net/ethernet/intel/idpf/Makefile      |   1 +
- drivers/net/ethernet/intel/idpf/idpf.h        |  11 +
- drivers/net/ethernet/intel/idpf/idpf_dev.c    |  13 +
- drivers/net/ethernet/intel/idpf/idpf_idc.c    | 223 ++++++++++++++++++
- drivers/net/ethernet/intel/idpf/idpf_lib.c    |   4 +
- drivers/net/ethernet/intel/idpf/idpf_vf_dev.c |  13 +
- .../net/ethernet/intel/idpf/idpf_virtchnl.c   |  20 ++
- .../net/ethernet/intel/idpf/idpf_virtchnl.h   |   3 +
- include/linux/net/intel/iidc_rdma_idpf.h      |  28 +++
- 9 files changed, 316 insertions(+)
- create mode 100644 drivers/net/ethernet/intel/idpf/idpf_idc.c
- create mode 100644 include/linux/net/intel/iidc_rdma_idpf.h
+[2]:
+- Guard against unplugging vport aux dev twice. This is possible if
+irdma is unloaded and then idpf is unloaded. irdma calls
+idpf_idc_vport_dev_down during its unload which calls unplug. Set the
+adev to NULL in dev_down, so that the following call to
+deinit_vport_aux_device during idpf unload will return early from
+unplug.
 
-diff --git a/drivers/net/ethernet/intel/idpf/Makefile b/drivers/net/ethernet/intel/idpf/Makefile
-index 83ac5e296382..4ef4b2b5e37a 100644
---- a/drivers/net/ethernet/intel/idpf/Makefile
-+++ b/drivers/net/ethernet/intel/idpf/Makefile
-@@ -10,6 +10,7 @@ idpf-y := \
- 	idpf_controlq_setup.o	\
- 	idpf_dev.o		\
- 	idpf_ethtool.o		\
-+	idpf_idc.o		\
- 	idpf_lib.o		\
- 	idpf_main.o		\
- 	idpf_txrx.o		\
+ drivers/net/ethernet/intel/idpf/idpf.h      |   4 +
+ drivers/net/ethernet/intel/idpf/idpf_idc.c  | 178 +++++++++++++++++++-
+ drivers/net/ethernet/intel/idpf/idpf_lib.c  |   2 +
+ drivers/net/ethernet/intel/idpf/virtchnl2.h |   3 +
+ include/linux/net/intel/iidc_rdma_idpf.h    |  19 +++
+ 5 files changed, 205 insertions(+), 1 deletion(-)
+
 diff --git a/drivers/net/ethernet/intel/idpf/idpf.h b/drivers/net/ethernet/intel/idpf/idpf.h
-index d9f06764aba0..6b1cc55e34a3 100644
+index 6b1cc55e34a3..52a3ec88e615 100644
 --- a/drivers/net/ethernet/intel/idpf/idpf.h
 +++ b/drivers/net/ethernet/intel/idpf/idpf.h
-@@ -17,6 +17,8 @@ struct idpf_vport_max_q;
- #include <linux/sctp.h>
- #include <linux/ethtool_netlink.h>
- #include <net/gro.h>
-+#include <linux/net/intel/iidc_rdma.h>
-+#include <linux/net/intel/iidc_rdma_idpf.h>
+@@ -280,6 +280,7 @@ struct idpf_port_stats {
+  *	      group will yield total number of RX queues.
+  * @rxq_model: Splitq queue or single queue queuing model
+  * @rx_ptype_lkup: Lookup table for ptypes on RX
++ * @vdev_info: IDC vport device info pointer
+  * @adapter: back pointer to associated adapter
+  * @netdev: Associated net_device. Each vport should have one and only one
+  *	    associated netdev.
+@@ -325,6 +326,8 @@ struct idpf_vport {
+ 	u32 rxq_model;
+ 	struct libeth_rx_pt *rx_ptype_lkup;
  
- #include "virtchnl2.h"
- #include "idpf_txrx.h"
-@@ -206,9 +208,12 @@ struct idpf_reg_ops {
- /**
-  * struct idpf_dev_ops - Device specific operations
-  * @reg_ops: Register operations
-+ * @idc_init: IDC initialization
-  */
- struct idpf_dev_ops {
- 	struct idpf_reg_ops reg_ops;
++	struct iidc_rdma_vport_dev_info *vdev_info;
 +
-+	int (*idc_init)(struct idpf_adapter *adapter);
- };
- 
- /**
-@@ -540,6 +545,7 @@ struct idpf_vc_xn_manager;
-  * @caps: Negotiated capabilities with device
-  * @vcxn_mngr: Virtchnl transaction manager
-  * @dev_ops: See idpf_dev_ops
-+ * @cdev_info: IDC core device info pointer
-  * @num_vfs: Number of allocated VFs through sysfs. PF does not directly talk
-  *	     to VFs but is used to initialize them
-  * @crc_enable: Enable CRC insertion offload
-@@ -599,6 +605,7 @@ struct idpf_adapter {
- 	struct idpf_vc_xn_manager *vcxn_mngr;
- 
- 	struct idpf_dev_ops dev_ops;
-+	struct iidc_rdma_core_dev_info *cdev_info;
- 	int num_vfs;
- 	bool crc_enable;
- 	bool req_tx_splitq;
-@@ -877,5 +884,9 @@ int idpf_sriov_configure(struct pci_dev *pdev, int num_vfs);
- 
- u8 idpf_vport_get_hsplit(const struct idpf_vport *vport);
- bool idpf_vport_set_hsplit(const struct idpf_vport *vport, u8 val);
-+int idpf_idc_init(struct idpf_adapter *adapter);
-+int idpf_idc_init_aux_core_dev(struct idpf_adapter *adapter,
-+			       enum iidc_function_type ftype);
-+void idpf_idc_deinit_core_aux_device(struct iidc_rdma_core_dev_info *cdev_info);
+ 	struct idpf_adapter *adapter;
+ 	struct net_device *netdev;
+ 	DECLARE_BITMAP(flags, IDPF_VPORT_FLAGS_NBITS);
+@@ -888,5 +891,6 @@ int idpf_idc_init(struct idpf_adapter *adapter);
+ int idpf_idc_init_aux_core_dev(struct idpf_adapter *adapter,
+ 			       enum iidc_function_type ftype);
+ void idpf_idc_deinit_core_aux_device(struct iidc_rdma_core_dev_info *cdev_info);
++void idpf_idc_deinit_vport_aux_device(struct iidc_rdma_vport_dev_info *vdev_info);
  
  #endif /* !_IDPF_H_ */
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_dev.c b/drivers/net/ethernet/intel/idpf/idpf_dev.c
-index 3fae81f1f988..dd227a4368fb 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_dev.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_dev.c
-@@ -161,6 +161,17 @@ static void idpf_ptp_reg_init(const struct idpf_adapter *adapter)
- 	adapter->ptp->cmd.exec_cmd_mask = PF_GLTSYN_CMD_SYNC_EXEC_CMD_M;
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_idc.c b/drivers/net/ethernet/intel/idpf/idpf_idc.c
+index 5550802a3a7d..dfdf4fa287ab 100644
+--- a/drivers/net/ethernet/intel/idpf/idpf_idc.c
++++ b/drivers/net/ethernet/intel/idpf/idpf_idc.c
+@@ -30,6 +30,113 @@ int idpf_idc_init(struct idpf_adapter *adapter)
+ 	return err;
  }
  
 +/**
-+ * idpf_idc_register - register for IDC callbacks
-+ * @adapter: Driver specific private structure
-+ *
-+ * Return: 0 on success or error code on failure.
-+ */
-+static int idpf_idc_register(struct idpf_adapter *adapter)
-+{
-+	return idpf_idc_init_aux_core_dev(adapter, IIDC_FUNCTION_TYPE_PF);
-+}
-+
- /**
-  * idpf_reg_ops_init - Initialize register API function pointers
-  * @adapter: Driver specific private structure
-@@ -182,4 +193,6 @@ static void idpf_reg_ops_init(struct idpf_adapter *adapter)
- void idpf_dev_ops_init(struct idpf_adapter *adapter)
- {
- 	idpf_reg_ops_init(adapter);
-+
-+	adapter->dev_ops.idc_init = idpf_idc_register;
- }
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_idc.c b/drivers/net/ethernet/intel/idpf/idpf_idc.c
-new file mode 100644
-index 000000000000..5550802a3a7d
---- /dev/null
-+++ b/drivers/net/ethernet/intel/idpf/idpf_idc.c
-@@ -0,0 +1,223 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (C) 2025 Intel Corporation */
-+
-+#include "idpf.h"
-+#include "idpf_virtchnl.h"
-+
-+static DEFINE_IDA(idpf_idc_ida);
-+
-+#define IDPF_IDC_MAX_ADEV_NAME_LEN	15
-+
-+/**
-+ * idpf_idc_init - Called to initialize IDC
-+ * @adapter: driver private data structure
-+ *
-+ * Return: 0 on success or cap not enabled, error code on failure.
-+ */
-+int idpf_idc_init(struct idpf_adapter *adapter)
-+{
-+	int err;
-+
-+	if (!idpf_is_rdma_cap_ena(adapter) ||
-+	    !adapter->dev_ops.idc_init)
-+		return 0;
-+
-+	err = adapter->dev_ops.idc_init(adapter);
-+	if (err)
-+		dev_err(&adapter->pdev->dev, "failed to initialize idc: %d\n",
-+			err);
-+
-+	return err;
-+}
-+
-+/**
-+ * idpf_core_adev_release - function to be mapped to aux dev's release op
++ * idpf_vport_adev_release - function to be mapped to aux dev's release op
 + * @dev: pointer to device to free
 + */
-+static void idpf_core_adev_release(struct device *dev)
++static void idpf_vport_adev_release(struct device *dev)
 +{
-+	struct iidc_rdma_core_auxiliary_dev *iadev;
++	struct iidc_rdma_vport_auxiliary_dev *iadev;
 +
-+	iadev = container_of(dev, struct iidc_rdma_core_auxiliary_dev, adev.dev);
++	iadev = container_of(dev, struct iidc_rdma_vport_auxiliary_dev, adev.dev);
 +	kfree(iadev);
 +	iadev = NULL;
 +}
 +
-+/* idpf_plug_core_aux_dev - allocate and register an Auxiliary device
++/* idpf_plug_vport_aux_dev - allocate and register a vport Auxiliary device
 + * @cdev_info: IDC core device info pointer
++ * @vdev_info: IDC vport device info pointer
 + *
 + * Return: 0 on success or error code on failure.
 + */
-+static int idpf_plug_core_aux_dev(struct iidc_rdma_core_dev_info *cdev_info)
++static int idpf_plug_vport_aux_dev(struct iidc_rdma_core_dev_info *cdev_info,
++				   struct iidc_rdma_vport_dev_info *vdev_info)
 +{
-+	struct iidc_rdma_core_auxiliary_dev *iadev;
++	struct iidc_rdma_vport_auxiliary_dev *iadev;
 +	char name[IDPF_IDC_MAX_ADEV_NAME_LEN];
 +	struct auxiliary_device *adev;
 +	int ret;
@@ -292,8 +189,8 @@ index 000000000000..5550802a3a7d
 +		return -ENOMEM;
 +
 +	adev = &iadev->adev;
-+	cdev_info->adev = adev;
-+	iadev->cdev_info = cdev_info;
++	vdev_info->adev = &iadev->adev;
++	iadev->vdev_info = vdev_info;
 +
 +	ret = ida_alloc(&idpf_idc_ida, GFP_KERNEL);
 +	if (ret < 0) {
@@ -301,9 +198,9 @@ index 000000000000..5550802a3a7d
 +		goto err_ida_alloc;
 +	}
 +	adev->id = ret;
-+	adev->dev.release = idpf_core_adev_release;
++	adev->dev.release = idpf_vport_adev_release;
 +	adev->dev.parent = &cdev_info->pdev->dev;
-+	sprintf(name, "%04x.rdma.core", cdev_info->pdev->vendor);
++	sprintf(name, "%04x.rdma.vdev", cdev_info->pdev->vendor);
 +	adev->name = name;
 +
 +	ret = auxiliary_device_init(adev);
@@ -317,7 +214,7 @@ index 000000000000..5550802a3a7d
 +	return 0;
 +
 +err_aux_dev_add:
-+	cdev_info->adev = NULL;
++	vdev_info->adev = NULL;
 +	auxiliary_device_uninit(adev);
 +err_aux_dev_init:
 +	ida_free(&idpf_idc_ida, adev->id);
@@ -327,265 +224,204 @@ index 000000000000..5550802a3a7d
 +	return ret;
 +}
 +
-+/* idpf_unplug_aux_dev - unregister and free an Auxiliary device
-+ * @adev: auxiliary device struct
-+ */
-+static void idpf_unplug_aux_dev(struct auxiliary_device *adev)
-+{
-+	auxiliary_device_delete(adev);
-+	auxiliary_device_uninit(adev);
-+
-+	ida_free(&idpf_idc_ida, adev->id);
-+}
-+
 +/**
-+ * idpf_idc_vport_dev_ctrl - Called by an Auxiliary Driver
-+ * @cdev_info: IDC core device info pointer
-+ * @up: RDMA core driver status
-+ *
-+ * This callback function is accessed by an Auxiliary Driver to indicate
-+ * whether core driver is ready to support vport driver load or if vport
-+ * drivers need to be taken down.
++ * idpf_idc_init_aux_vport_dev - initialize vport Auxiliary Device(s)
++ * @vport: virtual port data struct
 + *
 + * Return: 0 on success or error code on failure.
 + */
-+int idpf_idc_vport_dev_ctrl(struct iidc_rdma_core_dev_info *cdev_info, bool up)
++static int idpf_idc_init_aux_vport_dev(struct idpf_vport *vport)
 +{
-+	return -EOPNOTSUPP;
-+}
-+EXPORT_SYMBOL_GPL(idpf_idc_vport_dev_ctrl);
-+
-+/**
-+ * idpf_idc_request_reset - Called by an Auxiliary Driver
-+ * @cdev_info: IDC core device info pointer
-+ * @reset_type: function, core or other
-+ *
-+ * This callback function is accessed by an Auxiliary Driver to request a reset
-+ * on the Auxiliary Device.
-+ *
-+ * Return: 0 on success or error code on failure.
-+ */
-+int idpf_idc_request_reset(struct iidc_rdma_core_dev_info *cdev_info,
-+			   enum iidc_rdma_reset_type __always_unused reset_type)
-+{
-+	return -EOPNOTSUPP;
-+}
-+EXPORT_SYMBOL_GPL(idpf_idc_request_reset);
-+
-+/**
-+ * idpf_idc_init_msix_data - initialize MSIX data for the cdev_info structure
-+ * @adapter: driver private data structure
-+ */
-+static void
-+idpf_idc_init_msix_data(struct idpf_adapter *adapter)
-+{
++	struct idpf_adapter *adapter = vport->adapter;
++	struct iidc_rdma_vport_dev_info *vdev_info;
 +	struct iidc_rdma_core_dev_info *cdev_info;
-+	struct iidc_rdma_priv_dev_info *privd;
-+
-+	if (!adapter->rdma_msix_entries)
-+		return;
-+
-+	cdev_info = adapter->cdev_info;
-+	privd = cdev_info->iidc_priv;
-+
-+	privd->msix_entries = adapter->rdma_msix_entries;
-+	privd->msix_count = adapter->num_rdma_msix_entries;
-+}
-+
-+/**
-+ * idpf_idc_init_aux_core_dev - initialize Auxiliary Device(s)
-+ * @adapter: driver private data structure
-+ * @ftype: PF or VF
-+ *
-+ * Return: 0 on success or error code on failure.
-+ */
-+int idpf_idc_init_aux_core_dev(struct idpf_adapter *adapter,
-+			       enum iidc_function_type ftype)
-+{
-+	struct iidc_rdma_core_dev_info *cdev_info;
-+	struct iidc_rdma_priv_dev_info *privd;
++	struct virtchnl2_create_vport *vport_msg;
 +	int err;
 +
-+	adapter->cdev_info = kzalloc(sizeof(*cdev_info), GFP_KERNEL);
-+	if (!adapter->cdev_info)
-+		return -ENOMEM;
-+	cdev_info = adapter->cdev_info;
++	vport_msg = (struct virtchnl2_create_vport *)
++				adapter->vport_params_recvd[vport->idx];
 +
-+	privd = kzalloc(sizeof(*privd), GFP_KERNEL);
-+	if (!privd) {
-+		err = -ENOMEM;
-+		goto err_privd_alloc;
++	if (!(le16_to_cpu(vport_msg->vport_flags) & VIRTCHNL2_VPORT_ENABLE_RDMA))
++		return 0;
++
++	vport->vdev_info = kzalloc(sizeof(*vdev_info), GFP_KERNEL);
++	if (!vport->vdev_info)
++		return -ENOMEM;
++
++	cdev_info = vport->adapter->cdev_info;
++
++	vdev_info = vport->vdev_info;
++	vdev_info->vport_id = vport->vport_id;
++	vdev_info->netdev = vport->netdev;
++	vdev_info->core_adev = cdev_info->adev;
++
++	err = idpf_plug_vport_aux_dev(cdev_info, vdev_info);
++	if (err) {
++		kfree(vdev_info);
++		return err;
 +	}
 +
-+	cdev_info->iidc_priv = privd;
-+	cdev_info->pdev = adapter->pdev;
-+	cdev_info->rdma_protocol = IIDC_RDMA_PROTOCOL_ROCEV2;
-+	privd->ftype = ftype;
-+
-+	idpf_idc_init_msix_data(adapter);
-+
-+	err = idpf_plug_core_aux_dev(cdev_info);
-+	if (err)
-+		goto err_plug_aux_dev;
-+
 +	return 0;
++}
 +
-+err_plug_aux_dev:
-+	kfree(privd);
-+err_privd_alloc:
-+	kfree(cdev_info);
-+	adapter->cdev_info = NULL;
+ /**
+  * idpf_core_adev_release - function to be mapped to aux dev's release op
+  * @dev: pointer to device to free
+@@ -100,12 +207,60 @@ static int idpf_plug_core_aux_dev(struct iidc_rdma_core_dev_info *cdev_info)
+  */
+ static void idpf_unplug_aux_dev(struct auxiliary_device *adev)
+ {
++	if (!adev)
++		return;
++
+ 	auxiliary_device_delete(adev);
+ 	auxiliary_device_uninit(adev);
+ 
+ 	ida_free(&idpf_idc_ida, adev->id);
+ }
+ 
++/**
++ * idpf_idc_vport_dev_up - called when CORE is ready for vport aux devs
++ * @adapter: private data struct
++ *
++ * Return: 0 on success or error code on failure.
++ */
++static int idpf_idc_vport_dev_up(struct idpf_adapter *adapter)
++{
++	int i, err = 0;
++
++	for (i = 0; i < adapter->num_alloc_vports; i++) {
++		struct idpf_vport *vport = adapter->vports[i];
++
++		if (!vport)
++			continue;
++
++		if (!vport->vdev_info)
++			err = idpf_idc_init_aux_vport_dev(vport);
++		else
++			err = idpf_plug_vport_aux_dev(vport->adapter->cdev_info,
++						      vport->vdev_info);
++	}
 +
 +	return err;
 +}
 +
 +/**
-+ * idpf_idc_deinit_core_aux_device - de-initialize Auxiliary Device(s)
-+ * @cdev_info: IDC core device info pointer
++ * idpf_idc_vport_dev_down - called CORE is leaving vport aux dev support state
++ * @adapter: private data struct
 + */
-+void idpf_idc_deinit_core_aux_device(struct iidc_rdma_core_dev_info *cdev_info)
++static void idpf_idc_vport_dev_down(struct idpf_adapter *adapter)
 +{
-+	if (!cdev_info)
-+		return;
++	int i;
 +
-+	idpf_unplug_aux_dev(cdev_info->adev);
++	for (i = 0; i < adapter->num_alloc_vports; i++) {
++		struct idpf_vport *vport = adapter->vports[i];
 +
-+	kfree(cdev_info->iidc_priv);
-+	kfree(cdev_info);
-+}
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_lib.c b/drivers/net/ethernet/intel/idpf/idpf_lib.c
-index 71d1577ca9e4..2c9fda5783f8 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_lib.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_lib.c
-@@ -1834,6 +1834,10 @@ static int idpf_init_hard_reset(struct idpf_adapter *adapter)
- unlock_mutex:
- 	mutex_unlock(&adapter->vport_ctrl_lock);
- 
-+	/* Wait until all vports are created to init RDMA CORE AUX */
-+	if (!err)
-+		err = idpf_idc_init(adapter);
++		if (!vport)
++			continue;
 +
- 	return err;
- }
- 
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_vf_dev.c b/drivers/net/ethernet/intel/idpf/idpf_vf_dev.c
-index aba828abcb17..2f84bd596ae4 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_vf_dev.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_vf_dev.c
-@@ -147,6 +147,17 @@ static void idpf_vf_trigger_reset(struct idpf_adapter *adapter,
- 		idpf_send_mb_msg(adapter, VIRTCHNL2_OP_RESET_VF, 0, NULL, 0);
- }
- 
-+/**
-+ * idpf_idc_vf_register - register for IDC callbacks
-+ * @adapter: Driver specific private structure
-+ *
-+ * Return: 0 on success or error code on failure.
-+ */
-+static int idpf_idc_vf_register(struct idpf_adapter *adapter)
-+{
-+	return idpf_idc_init_aux_core_dev(adapter, IIDC_FUNCTION_TYPE_VF);
++		idpf_unplug_aux_dev(vport->vdev_info->adev);
++		vport->vdev_info->adev = NULL;
++	}
 +}
 +
  /**
-  * idpf_vf_reg_ops_init - Initialize register API function pointers
-  * @adapter: Driver specific private structure
-@@ -167,4 +178,6 @@ static void idpf_vf_reg_ops_init(struct idpf_adapter *adapter)
- void idpf_vf_dev_ops_init(struct idpf_adapter *adapter)
+  * idpf_idc_vport_dev_ctrl - Called by an Auxiliary Driver
+  * @cdev_info: IDC core device info pointer
+@@ -119,7 +274,14 @@ static void idpf_unplug_aux_dev(struct auxiliary_device *adev)
+  */
+ int idpf_idc_vport_dev_ctrl(struct iidc_rdma_core_dev_info *cdev_info, bool up)
  {
- 	idpf_vf_reg_ops_init(adapter);
+-	return -EOPNOTSUPP;
++	struct idpf_adapter *adapter = pci_get_drvdata(cdev_info->pdev);
 +
-+	adapter->dev_ops.idc_init = idpf_idc_vf_register;
++	if (up)
++		return idpf_idc_vport_dev_up(adapter);
++
++	idpf_idc_vport_dev_down(adapter);
++
++	return 0;
  }
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_virtchnl.c b/drivers/net/ethernet/intel/idpf/idpf_virtchnl.c
-index 24febaaa8fbb..c6fa4644fd3c 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_virtchnl.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_virtchnl.c
-@@ -868,6 +868,7 @@ static int idpf_send_get_caps_msg(struct idpf_adapter *adapter)
+ EXPORT_SYMBOL_GPL(idpf_idc_vport_dev_ctrl);
  
- 	caps.other_caps =
- 		cpu_to_le64(VIRTCHNL2_CAP_SRIOV			|
-+			    VIRTCHNL2_CAP_RDMA                  |
- 			    VIRTCHNL2_CAP_MACFILTER		|
- 			    VIRTCHNL2_CAP_SPLITQ_QSCHED		|
- 			    VIRTCHNL2_CAP_PROMISC		|
-@@ -3070,6 +3071,7 @@ void idpf_vc_core_deinit(struct idpf_adapter *adapter)
- 
- 	idpf_ptp_release(adapter);
- 	idpf_deinit_task(adapter);
-+	idpf_idc_deinit_core_aux_device(adapter->cdev_info);
- 	idpf_intr_rel(adapter);
- 
- 	if (remove_in_prog)
-@@ -3728,3 +3730,21 @@ int idpf_set_promiscuous(struct idpf_adapter *adapter,
- 
- 	return reply_sz < 0 ? reply_sz : 0;
+@@ -221,3 +383,17 @@ void idpf_idc_deinit_core_aux_device(struct iidc_rdma_core_dev_info *cdev_info)
+ 	kfree(cdev_info->iidc_priv);
+ 	kfree(cdev_info);
  }
 +
 +/**
-+ * idpf_idc_rdma_vc_send_sync - virtchnl send callback for IDC registered drivers
-+ * @cdev_info: IDC core device info pointer
-+ * @send_msg: message to send
-+ * @msg_size: size of message to send
-+ * @recv_msg: message to populate on reception of response
-+ * @recv_len: length of message copied into recv_msg or 0 on error
-+ *
-+ * Return: 0 on success or error code on failure.
++ * idpf_idc_deinit_vport_aux_device - de-initialize Auxiliary Device(s)
++ * @vdev_info: IDC vport device info pointer
 + */
-+int idpf_idc_rdma_vc_send_sync(struct iidc_rdma_core_dev_info *cdev_info,
-+			       u8 *send_msg, u16 msg_size,
-+			       u8 *recv_msg, u16 *recv_len)
++void idpf_idc_deinit_vport_aux_device(struct iidc_rdma_vport_dev_info *vdev_info)
 +{
-+	return -EOPNOTSUPP;
++	if (!vdev_info)
++		return;
++
++	idpf_unplug_aux_dev(vdev_info->adev);
++
++	kfree(vdev_info);
 +}
-+EXPORT_SYMBOL_GPL(idpf_idc_rdma_vc_send_sync);
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_virtchnl.h b/drivers/net/ethernet/intel/idpf/idpf_virtchnl.h
-index 77578206bada..7bae09483aed 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_virtchnl.h
-+++ b/drivers/net/ethernet/intel/idpf/idpf_virtchnl.h
-@@ -151,5 +151,8 @@ int idpf_send_set_sriov_vfs_msg(struct idpf_adapter *adapter, u16 num_vfs);
- int idpf_send_get_set_rss_key_msg(struct idpf_vport *vport, bool get);
- int idpf_send_get_set_rss_lut_msg(struct idpf_vport *vport, bool get);
- void idpf_vc_xn_shutdown(struct idpf_vc_xn_manager *vcxn_mngr);
-+int idpf_idc_rdma_vc_send_sync(struct iidc_rdma_core_dev_info *cdev_info,
-+			       u8 *send_msg, u16 msg_size,
-+			       u8 *recv_msg, u16 *recv_len);
+diff --git a/drivers/net/ethernet/intel/idpf/idpf_lib.c b/drivers/net/ethernet/intel/idpf/idpf_lib.c
+index 2c9fda5783f8..b0efd763a7e0 100644
+--- a/drivers/net/ethernet/intel/idpf/idpf_lib.c
++++ b/drivers/net/ethernet/intel/idpf/idpf_lib.c
+@@ -1021,6 +1021,8 @@ static void idpf_vport_dealloc(struct idpf_vport *vport)
+ 	struct idpf_adapter *adapter = vport->adapter;
+ 	unsigned int i = vport->idx;
  
- #endif /* _IDPF_VIRTCHNL_H_ */
++	idpf_idc_deinit_vport_aux_device(vport->vdev_info);
++
+ 	idpf_deinit_mac_addr(vport);
+ 	idpf_vport_stop(vport);
+ 
+diff --git a/drivers/net/ethernet/intel/idpf/virtchnl2.h b/drivers/net/ethernet/intel/idpf/virtchnl2.h
+index a2881979c7f8..82a3c307307e 100644
+--- a/drivers/net/ethernet/intel/idpf/virtchnl2.h
++++ b/drivers/net/ethernet/intel/idpf/virtchnl2.h
+@@ -575,9 +575,12 @@ VIRTCHNL2_CHECK_STRUCT_LEN(8, virtchnl2_queue_reg_chunks);
+ /**
+  * enum virtchnl2_vport_flags - Vport flags that indicate vport capabilities.
+  * @VIRTCHNL2_VPORT_UPLINK_PORT: Representatives of underlying physical ports
++ * @VIRTCHNL2_VPORT_ENABLE_RDMA: RDMA is enabled for this vport
+  */
+ enum virtchnl2_vport_flags {
+ 	VIRTCHNL2_VPORT_UPLINK_PORT	= BIT(0),
++	/* VIRTCHNL2_VPORT_* bits [1:3] rsvd */
++	VIRTCHNL2_VPORT_ENABLE_RDMA             = BIT(4),
+ };
+ 
+ /**
 diff --git a/include/linux/net/intel/iidc_rdma_idpf.h b/include/linux/net/intel/iidc_rdma_idpf.h
-new file mode 100644
-index 000000000000..f2fe1844f660
---- /dev/null
+index f2fe1844f660..16c970dd4c6e 100644
+--- a/include/linux/net/intel/iidc_rdma_idpf.h
 +++ b/include/linux/net/intel/iidc_rdma_idpf.h
-@@ -0,0 +1,28 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (C) 2025 Intel Corporation. */
-+
-+#ifndef _IIDC_RDMA_IDPF_H_
-+#define _IIDC_RDMA_IDPF_H_
-+
-+#include <linux/auxiliary_bus.h>
-+
+@@ -6,6 +6,25 @@
+ 
+ #include <linux/auxiliary_bus.h>
+ 
 +/* struct to be populated by core LAN PCI driver */
-+enum iidc_function_type {
-+	IIDC_FUNCTION_TYPE_PF,
-+	IIDC_FUNCTION_TYPE_VF,
++struct iidc_rdma_vport_dev_info {
++	struct auxiliary_device *adev;
++	struct auxiliary_device *core_adev;
++	struct net_device *netdev;
++	u16 vport_id;
 +};
 +
-+struct iidc_rdma_priv_dev_info {
-+	struct msix_entry *msix_entries;
-+	u16 msix_count; /* How many vectors are reserved for this device */
-+	enum iidc_function_type ftype;
++struct iidc_rdma_vport_auxiliary_dev {
++	struct auxiliary_device adev;
++	struct iidc_rdma_vport_dev_info *vdev_info;
 +};
 +
-+int idpf_idc_vport_dev_ctrl(struct iidc_rdma_core_dev_info *cdev_info, bool up);
-+int idpf_idc_request_reset(struct iidc_rdma_core_dev_info *cdev_info,
-+			   enum iidc_rdma_reset_type __always_unused reset_type);
-+int idpf_idc_rdma_vc_send_sync(struct iidc_rdma_core_dev_info *cdev_info,
-+			       u8 *send_msg, u16 msg_size,
-+			       u8 *recv_msg, u16 *recv_len);
++struct iidc_rdma_vport_auxiliary_drv {
++	struct auxiliary_driver adrv;
++	void (*event_handler)(struct iidc_rdma_vport_dev_info *vdev,
++			      struct iidc_rdma_event *event);
++};
 +
-+#endif /* _IIDC_RDMA_IDPF_H_ */
+ /* struct to be populated by core LAN PCI driver */
+ enum iidc_function_type {
+ 	IIDC_FUNCTION_TYPE_PF,
 -- 
 2.31.1
 
