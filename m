@@ -1,109 +1,119 @@
-Return-Path: <linux-rdma+bounces-11299-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11300-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEBFCAD90A7
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jun 2025 17:03:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C55E8AD9117
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jun 2025 17:21:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8EE618868FA
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jun 2025 15:02:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5747A7B113C
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jun 2025 15:20:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 081911E0489;
-	Fri, 13 Jun 2025 15:02:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 966371E871;
+	Fri, 13 Jun 2025 15:21:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XbVKHHcY"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="FDbTjOBm"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E731AA1DA;
-	Fri, 13 Jun 2025 15:02:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEF401C5F35;
+	Fri, 13 Jun 2025 15:21:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749826924; cv=none; b=pbAcJdrzAx+kcsq3iHoQ0VmVG0Bxe144uIraH9wqCbSEG9HSstibU/9FxTbscpC9SVlV1MrXj+tt2aTXStaFyrsyKcyFT0Vpi5grI7OhUZKLV9kLdTS1S7K481fid8SY4xbUf+fBd80sPCRGAgtX9Yc8BQNPGJGKSKpcpoJY+sc=
+	t=1749828085; cv=none; b=ipsFcOPRrgZZChrrvrWophZ+1dck9WaWV6iEz3JQm2ZxzoHFndfV3oAVpWyaxMr84bvlRsXICFU+vJCRGcxWozNbIYEo9vMA4ARVDsgAiQRP/uCqGHQ6KthsnoBzTI+ERcIAHD85OwhQnlghRqIeXNlp5ZzQiMVJ2JXphZFQV2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749826924; c=relaxed/simple;
-	bh=lob9a/rX2zwMnk7MdQZvnP3dVbVbnvB5IIsgo3k2oTU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=g/tb4BLALc6umXuCH/eTMWZZQ+OvYQEiC4oSTsKh7gjBvvyiOd27owlvHLumvTzGYdZo0M4Nk4wym8Eo9DXgCbnPJa2CMKAO9fLLUJL3lSRowXZYvBuTO6KdOLSUQzsmcbQPwgXjSb7afovoPMW+CRjmS2c5kUvET9FZB3rpcJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XbVKHHcY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46D49C4CEF1;
-	Fri, 13 Jun 2025 15:02:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749826924;
-	bh=lob9a/rX2zwMnk7MdQZvnP3dVbVbnvB5IIsgo3k2oTU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=XbVKHHcYbWjQFPgfcHDfQUknwEZ2cdrEVDoTGz4IxmKoPUuVL8hcGiX3j881sSXXL
-	 6pBmArM20WrE8BPW5goFMp9o0PjDO49LbuWKjfSih/Lc52+/DzCdrn9ve7PiXBKfUX
-	 ipWpDsx5S5O566AJx+R7tq7NB7mgX/5B3mfVh0REc0uPkyWkgfPy0IATiOFW8Rvdyb
-	 FgiMLbQ+27rnCljyzryF2VwJ47J5RxezB820m7qt9uffyrz3jp6MnTQ94s+5QdSWK6
-	 8rOlQ9o7XHXe87mOoESjMr9z/fDxNOrgZJKY1ckS5CYpoDAf6+/xHQ6OnSaYddsryk
-	 BXEVCncYa7SMg==
-Date: Fri, 13 Jun 2025 08:02:02 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: sashal@kernel.org
-Cc: Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>, Breno
- Leitao <leitao@debian.org>, "David S. Miller" <davem@davemloft.net>, Jesper
- Dangaard Brouer <hawk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, Leon
- Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn
- <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Simon
- Horman <horms@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Mina
- Almasry <almasrymina@google.com>, Yonglong Liu <liuyonglong@huawei.com>,
- Yunsheng Lin <linyunsheng@huawei.com>, Pavel Begunkov
- <asml.silence@gmail.com>, Matthew Wilcox <willy@infradead.org>,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-mm@kvack.org, Qiuling Ren <qren@redhat.com>, Yuying Ma
- <yuma@redhat.com>, gregkh@linuxfoundation.org, stable@vger.kernel.org
-Subject: Re: [PATCH net-next v9 2/2] page_pool: Track DMA-mapped pages and
- unmap them when destroying the pool
-Message-ID: <20250613080202.28d25763@kernel.org>
-In-Reply-To: <87zfecrq3d.fsf@toke.dk>
-References: <20250409-page-pool-track-dma-v9-0-6a9ef2e0cba8@redhat.com>
-	<20250409-page-pool-track-dma-v9-2-6a9ef2e0cba8@redhat.com>
-	<aEmwYU/V/9/Ul04P@gmail.com>
-	<20250611131241.6ff7cf5d@kernel.org>
-	<87jz5hbevp.fsf@toke.dk>
-	<20250612070518.69518466@kernel.org>
-	<87zfecrq3d.fsf@toke.dk>
+	s=arc-20240116; t=1749828085; c=relaxed/simple;
+	bh=8sJjFWPMSLC+qodY0LblnKFoZqyEo+d0EIpXPR1ArDQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S8lvfqPFM1qFrp6YXZ2TTixL66vLB3lt3/y19cjLpA4cxZ7OCDv5C858hNSYFcG0KLSKt/g8CChkcsW1/EE+6i1NFBqfb5FfklAzIF6XIE8C7lzZiVXvbHsUCgtRxKaEtBdq6Y/kP21Du6jwNnuAjpcf4pgWc4Lid1cRviXlCQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=FDbTjOBm; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=HBFJcgqfJ2Wrz52AH0HmBBmtGo2Dy9oUkdqK/ph6rYI=; b=FDbTjOBmd33GRB1rYSuPHTeJ1S
+	GUyHm3F+sXqiRHsOczF9ACUREmmX3hkSodEq8w2k1WnYwQUtKA2u4nqpG0L/XeakiXy+50wd8yfK7
+	Af50gAPDQEHkufBKtkAku5bJsLCs97LADSVIbJALD/gwdjbnpK7C7uB45OQU0kQE2zSE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1uQ6DT-00FjbM-7Y; Fri, 13 Jun 2025 17:21:15 +0200
+Date: Fri, 13 Jun 2025 17:21:15 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc: allison.henderson@oracle.com, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, tj@kernel.org,
+	hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2] rds: Expose feature parameters via sysfs
+Message-ID: <05ac7bdf-999c-487c-beb2-74153d03f6b1@lunn.ch>
+References: <20250611224020.318684-1-konrad.wilk@oracle.com>
+ <20250611224020.318684-2-konrad.wilk@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250611224020.318684-2-konrad.wilk@oracle.com>
 
-On Fri, 13 Jun 2025 10:41:10 +0200 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> Jakub Kicinski <kuba@kernel.org> writes:
->=20
-> > On Thu, 12 Jun 2025 09:25:30 +0200 Toke H=C3=B8iland-J=C3=B8rgensen wro=
-te: =20
-> >> Hmm, okay, guess we should ask Sasha to drop these, then?
-> >>=20
-> >> https://lore.kernel.org/r/20250610122811.1567780-1-sashal@kernel.org
-> >> https://lore.kernel.org/r/20250610120306.1543986-1-sashal@kernel.org =
-=20
-> >
-> > These links don't work for me? =20
->=20
-> Oh, sorry, didn't realise the stable notifications are not archived on
-> lore. Here are the patches in the stable queue:
->=20
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/t=
-ree/queue-6.12/page_pool-move-pp_magic-check-into-helper-functions.patch
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/t=
-ree/queue-6.12/page_pool-track-dma-mapped-pages-and-unmap-them-when.patch
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/t=
-ree/queue-6.15/page_pool-move-pp_magic-check-into-helper-functions.patch
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/t=
-ree/queue-6.15/page_pool-track-dma-mapped-pages-and-unmap-them-when.patch
+On Wed, Jun 11, 2025 at 06:39:19PM -0400, Konrad Rzeszutek Wilk wrote:
+> We would like to have a programatic way for applications
+> to query which of the features defined in include/uapi/linux/rds.h
+> are actually implemented by the kernel.
+> 
+> The problem is that applications can be built against newer
+> kernel (or older) and they may have the feature implemented or not.
+> 
+> The lack of a certain feature would signify that the kernel
+> does not support it. The presence of it signifies the existence
+> of it.
+> 
+> This would provide the application to query the sysfs and figure
+> out what is supported.
+> 
+> This patch would expose this extra sysfs file:
+> 
+> /sys/kernel/rds/features
 
-Thanks!
+This should probably be documented somewhere under
+Documentation/ABI/stable.
 
-Sasha, could we drop these please? They need more mileage before we
-send them to LTS.
+> which would contain string values of what the RDS driver supports.
+> 
+> Signed-off-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+> ---
+>  net/rds/af_rds.c | 37 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+> 
+> diff --git a/net/rds/af_rds.c b/net/rds/af_rds.c
+> index 8435a20968ef..46cb8655df20 100644
+> --- a/net/rds/af_rds.c
+> +++ b/net/rds/af_rds.c
+> @@ -33,6 +33,7 @@
+>  #include <linux/module.h>
+>  #include <linux/errno.h>
+>  #include <linux/kernel.h>
+> +#include <linux/kobject.h>
+>  #include <linux/gfp.h>
+>  #include <linux/in.h>
+>  #include <linux/ipv6.h>
+> @@ -871,6 +872,33 @@ static void rds6_sock_info(struct socket *sock, unsigned int len,
+>  }
+>  #endif
+>  
+> +#ifdef CONFIG_SYSFS
+
+include/linux/sysfs.h has a stub for when SYSFS is not enabled. So you
+should not need any #ifdefs
+
+    Andrew
+
+---
+pw-bot: cr
 
