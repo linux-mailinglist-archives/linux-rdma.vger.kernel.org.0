@@ -1,128 +1,140 @@
-Return-Path: <linux-rdma+bounces-11286-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11287-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3008AD7E9D
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jun 2025 00:52:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFEA0AD8023
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jun 2025 03:14:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCC403A0AA3
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Jun 2025 22:52:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67A6918845FA
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jun 2025 01:14:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC5442E1723;
-	Thu, 12 Jun 2025 22:52:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lD0A/v97"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C03D1D61BC;
+	Fri, 13 Jun 2025 01:13:25 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7052E153BD9;
-	Thu, 12 Jun 2025 22:52:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6537F1D5175;
+	Fri, 13 Jun 2025 01:13:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749768748; cv=none; b=jVo2ocwLNbqlTp2SpCTxrHiFDfA1gwNGM18pjK2VYjmiRwsfvPdShjC29WGHy+8Qqan4KHNKsdL9b4g8eUgY6+b5o1qY8/TZ6FsD4DGgSktfsUDtdXaxRVCP8T5k6P/I457kaC7D9/Pgz2wy25tr5zeNEbvb+76Xzzwm0a898VQ=
+	t=1749777205; cv=none; b=qPkVOtyyjtOMtlk8TCl5kn0EwspoFm0whWeFvVJ4+Yp6h9SSjcQDFFddNXc5v+zVW4RxW6TPRtl9rlhkVuHE3KNA/ezR1cVfHU09R/LcJV48KO6MgFVTIVa/BS0IjDahXjf3THxf4BDXGSePK94qLVF3K7Tot61To8Z855YHVhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749768748; c=relaxed/simple;
-	bh=jMlxmZZTo6rTWsBUudaRKPlf+d5/G0AfKjYQwml7YHc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BR9nx8qrCxiclZsv6oJChAHkO0QDwa6PFqbNoS12lbnu6Xap152DIQYrv2DHJ+a80i4rzMjTivl135OPT3buUysX3YYOOCsXNepo9g1sZKBNUk85IeoJ7MJH9+QZ+IBjXOxZDLG41RCutl/nqH5a6/e+hY1vx1QxGoCkf2/X63k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lD0A/v97; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 014C8C4CEEA;
-	Thu, 12 Jun 2025 22:52:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1749768748;
-	bh=jMlxmZZTo6rTWsBUudaRKPlf+d5/G0AfKjYQwml7YHc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=lD0A/v97SwM7Ga6ASEYxETAyNTwLSdN9s3YarAstt4LKd3yaRfck6VrPAmTsB1fCJ
-	 7ngZQ/kF6eslIdK8f1HF4+o1Jofu7ii0hMbI17a3FGvvxqwgPIsgD4e+9jM6jsf7g3
-	 UceH90Za5OPGojj1WUxg+hALC5Np95bcXQ3NJ73PNS0n+lZHr2XDxHdpTOtEY+9u9u
-	 DHzzIyj0fXgkemhBSFp1HpglGlxbmHRAkpESftpqd4wMHfVqqY6phJRLPrDuuOmRNs
-	 ygTAkQkpCdhUirmI4qmoboVN2wPS4c7tJyOC3k2fdM5CM9a/LuYw06T6m+aPX+uMFs
-	 QDhbVW8dmozgg==
-Date: Thu, 12 Jun 2025 15:52:26 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: Cosmin Ratiu <cratiu@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Dragos
- Tatulea <dtatulea@nvidia.com>, "andrew+netdev@lunn.ch"
- <andrew+netdev@lunn.ch>, "hawk@kernel.org" <hawk@kernel.org>,
- "davem@davemloft.net" <davem@davemloft.net>, "john.fastabend@gmail.com"
- <john.fastabend@gmail.com>, "leon@kernel.org" <leon@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "pabeni@redhat.com" <pabeni@redhat.com>, "ast@kernel.org" <ast@kernel.org>,
- "richardcochran@gmail.com" <richardcochran@gmail.com>, Leon Romanovsky
- <leonro@nvidia.com>, "linux-rdma@vger.kernel.org"
- <linux-rdma@vger.kernel.org>, "edumazet@google.com" <edumazet@google.com>,
- "horms@kernel.org" <horms@kernel.org>, "daniel@iogearbox.net"
- <daniel@iogearbox.net>, Tariq Toukan <tariqt@nvidia.com>, Saeed Mahameed
- <saeedm@nvidia.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Gal
- Pressman <gal@nvidia.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH net-next v3 10/12] net/mlx5e: Implement queue mgmt ops
- and single channel swap
-Message-ID: <20250612155226.770f0676@kernel.org>
-In-Reply-To: <CAHS8izOG+LoJ-GvyRu6zSVCUvoW4VzYX5CEdDhCdVLimOSP0KQ@mail.gmail.com>
-References: <20250609145833.990793-1-mbloch@nvidia.com>
-	<20250609145833.990793-11-mbloch@nvidia.com>
-	<CAHS8izOX8t-Xu+mseiRBvLDYmk6G+iH=tX6t4SWY2TKBau7r-Q@mail.gmail.com>
-	<9107e96e488a741c79e0f5de33dd73261056c033.camel@nvidia.com>
-	<CAHS8izOG+LoJ-GvyRu6zSVCUvoW4VzYX5CEdDhCdVLimOSP0KQ@mail.gmail.com>
+	s=arc-20240116; t=1749777205; c=relaxed/simple;
+	bh=8TekB/D+4/8UhrQsSM7eVVZa5ko+rsGTZDp4E3X4Ssk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QB3OXdatwUHr8wpE/U3JqXUGQd8urjprXeKABfaTRiOfsz21FJklOZZ8J+qOpU2nMMqacuAYRUOPlHBBM6yq5Ip2QNd9RXgYX/HkuIZM7P7jDlOdS1xBcINEfssWt1u7gzuAkYlP/y8bq1n6RkUdA6hhvGFKoB24je+eyw/fqjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-669ff7000002311f-cc-684b7b275ae5
+Date: Fri, 13 Jun 2025 10:13:05 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: willy@infradead.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, almasrymina@google.com,
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
+	akpm@linux-foundation.org, davem@davemloft.net,
+	john.fastabend@gmail.com, andrew+netdev@lunn.ch,
+	asml.silence@gmail.com, toke@redhat.com, tariqt@nvidia.com,
+	edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com,
+	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	david@redhat.com, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, horms@kernel.org,
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+	vishal.moola@gmail.com
+Subject: Re: [PATCH net-next 1/9] netmem: introduce struct netmem_desc
+ mirroring struct page
+Message-ID: <20250613011305.GA18998@system.software.com>
+References: <20250609043225.77229-1-byungchul@sk.com>
+ <20250609043225.77229-2-byungchul@sk.com>
+ <20250609123255.18f14000@kernel.org>
+ <20250610013001.GA65598@system.software.com>
+ <20250611185542.118230c1@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250611185542.118230c1@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SfUzMcRzH9/093a9bx88JX1o2pxaNSOHzhxkb23dYy5hZVtz0W3dTycXp
+	YSZk5ug8lIc7x66ZHq7s7EpdLQ+dQ5HRAztKl9A8JHS5HoWrGf+99n6/9977jzdPy3XsLF6d
+	slfUpCiTFJyUkX7xL1gYmrVetVh3dBKYrGUclA6mQ1GnnQWTpRJB/1CbBDzOhxxcLfDSYHqa
+	w8AP6zAN7x90ScBd2M1A7bEqGrpO1XOQmzNCw2F7MQXPKvUs5A9fo6Equ1MCLTUmDjrKfrHQ
+	7chloMFYwoBbvwoemKeD93EPAqe1igLvycsc5DWbOXib40bQfK+LgUuH9Aist10sjAyauFVz
+	SEXJS4pUG19LiNm2j5QXhxGdq5kmNstxjtj6zkpI+4tajtRfHGFItd1DkdwjvRz5/v4VQ77e
+	fs4Ra8VzhjSanRLisc2OEWKlKxLEJLVW1CxauUOqGiu8yaR2TE5vu3OMykYmfx3ieSxE4fyK
+	WB3yG8f2/CbWx4wQgmv1n2kfc0IodrmGxjlACMY55QZGh6Q8LXSz+MnZUspnTBXisaVtYJxl
+	AuCu4WLWF5ILHQifOPRBMmFMwQ2Gd4yPaSEMu8Y+Ur4RtBCIi8Z4n+wnROCnrobxyDRhLr5b
+	+ZCaGFfA41Zr+gTPxHXFLuY0Eoz/tRr/azX+azUj2oLk6hRtslKdFBWuykhRp4fv3J1sQ38e
+	UnhgdJsd9T3b5EACjxT+MqhZp5KzSm1aRrIDYZ5WBMhQ6x9JlqDMyBQ1u7dr9iWJaQ4UyDOK
+	GbIl3v0JciFRuVfcJYqpouavS/F+s7KRuU87smJP7sL5G4ZvmtvWZskHNvZG0MnaJbfYhqH+
+	oLhza781LdiapzdEnwuwZUfD6nhDUL/zzckbQe77hvPmC2eu+NW/iwzxdL+e/nOLe5luaeZc
+	deNO+5qBPP082fqmzXHx1x+R+5blCcGjLTFT6/T1kQcDLYneQLq/59MPT0WrgklTKSPCaE2a
+	8jdXI5EfHQMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRyG+Z+7w9FxWR2LPrjKQMosMn5llETQQcuMiKgPtZWHNjanbCra
+	BWYONEszU9A1YzHyWo2mqZldWEMdZaZmLe+tlKLQLLU5Q3NG5LeH932fby+DS8aIlYxSkyxo
+	NXK1lBIRotjIzI0h52IU4ff7IsBkvUNBtScNyocaSDBV1SGYmO6l4aejhQLLrSkcTO0GAiat
+	XhyGm900DJaNENCUVY+D+2orBbmGGRwuNlRg8LzUScLrujwSCr23cajXD9HQ1WiiYODOHAkj
+	9lwCnMZKAgbzoqDZvBymXnxD4LDWYzB1pZSC651mCj4aBhF0PncTcCMjD4H1iYuEGY+JipLy
+	tZXvMf6hsZ/mzbYUvqYilM9xdeK8reoSxdt+FNB839smim8tniH4hw0/MT43c5Tix4d7CH7s
+	STfFWz5/x3hrbTfBvzQ76LiA46Kd8YJamSpoN+2SiRSzZQ+IpIElab1PszA9MvnnID+GY7dy
+	fYUdpI8Jdh3XlPcV9zHFrudcrukFDmTXcoaaEiIHiRicHSG5toJqzFcsZU9wVb2/FljMAuf2
+	VpC+kYQdQNzljM/03yKAc5Z8InyMs6Gca/bLvMDM8yqufJbxxX7sZq7d5VyYLGPXcM/qWrB8
+	JDYuso2LbON/24zwKhSo1KQmyJXqiDCdSpGuUaaFnU5MsKH5G5Rd+H2tAU107bMjlkFSfzE0
+	RiskpDxVl55gRxyDSwPF6M18JI6Xp58VtIkntSlqQWdHqxhCukIcfVSQSdgz8mRBJQhJgvZf
+	izF+K/XohOPeoWBvWwYdvv1D0YCt27zt/paEwJaD6rjTx+L39K32RH2ynJeVvOtWRQblFIe/
+	apnTZ+radvYET3ovDHlqxy1ZNUdKA2RhG+r25g9leLJPxcVoQg47ow/k2nWNvzZij2Odo/07
+	PCw9elP0aHr/3SI6eC4z6FVXtko+mN+xe1hK6BTyzaG4Vif/A7IqLGUCAwAA
+X-CFilter-Loop: Reflected
 
-On Thu, 12 Jun 2025 13:44:44 -0700 Mina Almasry wrote:
-> > On Wed, 2025-06-11 at 22:33 -0700, Mina Almasry wrote:  
-> > > Is this really better than maintaining uniformity of behavior between
-> > > the drivers that support the queue mgmt api and just doing the
-> > > mlx5e_deactivate_priv_channels and mlx5e_close_channel in the stop
-> > > like core sorta expects?
-> > >
-> > > We currently use the ndos to restart a queue, but I'm imagining in
-> > > the
-> > > future we can expand it to create queues on behalf of the queues. The
-> > > stop queue API may be reused in other contexts, like maybe to kill a
-> > > dynamically created devmem queue or something, and this specific
-> > > driver may stop working because stop actually doesn't do anything?
-> > >  
-> >
-> > The .ndo_queue_stop operation doesn't make sense by itself for mlx5,
-> > because the current mlx5 architecture is to atomically swap in all of
-> > the channels.
-> > The scenario you are describing, with a hypothetical ndo_queue_stop for
-> > dynamically created devmem queues would leave all of the queues stopped
-> > and the old channel deallocated in the channel array. Worse problems
-> > would happen in that state than with today's approach, which leaves the
-> > driver in functional state.
-> >
-> > Perhaps Saeed can add more details to this?  
+On Wed, Jun 11, 2025 at 06:55:42PM -0700, Jakub Kicinski wrote:
+> On Tue, 10 Jun 2025 10:30:01 +0900 Byungchul Park wrote:
+> > > What's the intended relation between the types?  
+> > 
+> > One thing I'm trying to achieve is to remove pp fields from struct page,
+> > and make network code use struct netmem_desc { pp fields; } instead of
+> > sturc page for that purpose.
+> > 
+> > The reason why I union'ed it with the existing pp fields in struct
+> > net_iov *temporarily* for now is, to fade out the existing pp fields
+> > from struct net_iov so as to make the final form like:
 > 
-> I see, so essentially mlx5 supports restarting a queue but not
-> necessarily stopping and starting a queue as separate actions?
+> I see, I may have mixed up the complaints there. I thought the effort
+> was also about removing the need for the ref count. And Rx is
+> relatively light on use of ref counting. 
 > 
-> If so, can maybe the comment on the function be reworded to more
-> strongly indicate that this is a limitation? Just asking because
-> future driver authors interested in implementing the queue API will
-> probably look at one of mlx5/gve/bnxt to see what an existing
-> implementation looks like, and I would rather them follow bnxt/gve
-> that is more in line with core's expectations if possible. But that's
-> a minor concern; I'm fine with this patch.
+> > > netmem_ref exists to clearly indicate that memory may not be readable.
+> > > Majority of memory we expect to allocate from page pool must be
+> > > kernel-readable. What's the plan for reading the "single pointer"
+> > > memory within the kernel?
+> > > 
+> > > I think you're approaching this problem from the easiest and least  
+> > 
+> > No, I've never looked for the easiest way.  My bad if there are a better
+> > way to achieve it.  What would you recommend?
 > 
-> FWIW this may break in the future if core decides to add code that
-> actually uses the stop operation as a 'stop', not as a stepping stone
-> to 'restart', but I'm not sure we can do anything about that if it's a
-> driver limitation.
+> Sorry, I don't mean that the approach you took is the easiest way out.
+> I meant that between Rx and Tx handling Rx is the easier part because 
+> we already have the suitable abstraction. It's true that we use more
+> fields in page struct on Rx, but I thought Tx is also more urgent
+> as there are open reports for networking taking references on slab
+> pages.
+> 
+> In any case, please make sure you maintain clear separation between
+> readable and unreadable memory in the code you produce.
 
-Agreed, would be good to add a TODO and follow up on this.
-It will bite us sooner or later. I suppose state_lock may
-need to be dropped in favor of the netdev instance lock first?
+Do you mean the current patches do not?  If yes, please point out one
+as example, which would be helpful to extract action items.
 
-I'm disappointed that mlx5 once again disrupts all rings to restart 
-a single one. But all existing drivers seem to do this, so I guess
-it'd be unfair to push back based on just that :|
+If no, are there things I should do further for this series including
+non-controversial patches only?
+
+	Byungchul
 
