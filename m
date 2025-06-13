@@ -1,99 +1,127 @@
-Return-Path: <linux-rdma+bounces-11293-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11294-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 887F5AD88F7
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jun 2025 12:12:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63C88AD8A38
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jun 2025 13:20:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 471C7163319
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jun 2025 10:12:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D30A57AD8B3
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jun 2025 11:19:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0E0D2D1F5F;
-	Fri, 13 Jun 2025 10:12:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DA6A2D5C7F;
+	Fri, 13 Jun 2025 11:20:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="c+8hRoK/"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="nmZYjc+2"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3210E2DA77C;
-	Fri, 13 Jun 2025 10:12:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD43E1DF258;
+	Fri, 13 Jun 2025 11:20:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749809533; cv=none; b=SuybMGeF9IxqrTrYd4TVjI+3SVtqbzkGcdqQGumb9iQK22PWbm22Bbq08iRJXFbKqcWw/CKehtxNt2RjH06Hli0D3W4ip9cOhB6tprDgrJtm0DBZgRb83QO7gMSKMfWRPub00aGtRO7T2Q03++UEibmPJN8S6TkcR9IdVLbXmo4=
+	t=1749813631; cv=none; b=LwEEaEqexKTSwUINe1KIrZ9rhyy+y6cP9iM4KG9vXuGIhCp9WDF+cs+oQHkY9A03OM8ui8y2Vv7Diz4zu+oQOqWYJIY+GnYEpmwrvSOKPmFWc7mvp39hnFLH1JZFYeygRz/L7jkQ9WA12Dsz43NMdi6mhQhzDx8r7cm/QFeEEmU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749809533; c=relaxed/simple;
-	bh=RIRZzZgUWVrR2mMxKzbxRCWGhM59XIUzyjz4rJYDNyg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XKMZupcLGKREL9DJGtrOkWW72xqKR3B1kC7HRKmit2DQQ66DfNUPlz0INiSx4HeWicmyxb2W8uqiBug+aE8ann1xwI6kvKQYfXTuYs+cpHYytX8WApt3Z0ZDGP+svQtsrfQzsbrwhWZWKbQ3AeeuZkJ4z0sPJ/I5j4TOd5VkGkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=c+8hRoK/; arc=none smtp.client-ip=13.77.154.182
+	s=arc-20240116; t=1749813631; c=relaxed/simple;
+	bh=YFL0KvvYSxPtW6cWPQRbh9UKr+0LsCtTqDFE29TqjiM=;
+	h=From:To:Subject:Date:Message-Id; b=aU16USjymsp/iZTZTcbSpGkJIyX7jPa3N2OmnUREqLgkHCgBvAVJkCEafT+xSvGv1z540IoRtO1aZrBt6Fugoo9DTn1w36VY/TD7lj7acehbU3YnpXinyjVe1ZKp3HEiDcYMa+swFbb8lbavBsjFxlVa/shNCdlCqqBhbWE4RzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=nmZYjc+2; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: by linux.microsoft.com (Postfix, from userid 1173)
-	id BB3B8201C76D; Fri, 13 Jun 2025 03:12:11 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BB3B8201C76D
+	id 35C52203EE35; Fri, 13 Jun 2025 04:20:29 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 35C52203EE35
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1749809531;
-	bh=tezciobQ9ZNV1mFHszlpXD4UW+kRz9/XZRey1omT/HE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=c+8hRoK/9Kt+znXrTryH7KH21fYg+C11I2nsdeZrpNGaJnL2Ct61sLutG5GvrIdFV
-	 lSUJBX7kW8inSTM3GwElL06ATlZyYKhfqeXZeLl7beYY5OU2BPALDcWI6YWXVpX3tc
-	 lN+etYM9UlMKcuFToyOHvuOf7odanUnmxK0Qcbbw=
-Date: Fri, 13 Jun 2025 03:12:11 -0700
+	s=default; t=1749813629;
+	bh=3a1gAuEbwTI+8JwlIvaZK19uNGJ1iK1P1/Xir104Ikk=;
+	h=From:To:Subject:Date:From;
+	b=nmZYjc+2xeMeGixVvs92OpjPM90ypwqEHxdSYk4oiImjXfNqhgJm6F1u4g5X+kv9m
+	 OLYZwyCyIj9yX2//xGO8II41QHSKN1cZE/Pv1hom8/8bmkR7xy6rBBIcU4AXQZsh+p
+	 sj2qbDM1NfebhSXqsAEIChEoY97JTos2rhCTlX/Q=
 From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-To: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	kotaranov@microsoft.com, longli@microsoft.com, horms@kernel.org,
-	shirazsaleem@microsoft.com, leon@kernel.org,
-	shradhagupta@linux.microsoft.com, schakrabarti@linux.microsoft.com,
-	rosenp@gmail.com, sdf@fomichev.me, linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+To: kys@microsoft.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	longli@microsoft.com,
+	kotaranov@microsoft.com,
+	horms@kernel.org,
+	shirazsaleem@microsoft.com,
+	leon@kernel.org,
+	ernis@linux.microsoft.com,
+	shradhagupta@linux.microsoft.com,
+	schakrabarti@linux.microsoft.com,
+	gerhard@engleder-embedded.com,
+	rosenp@gmail.com,
+	sdf@fomichev.me,
+	linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
 	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next 4/4] net: mana: Handle unsupported HWC commands
-Message-ID: <20250613101211.GB23310@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1749631576-2517-1-git-send-email-ernis@linux.microsoft.com>
- <1749631576-2517-5-git-send-email-ernis@linux.microsoft.com>
- <20250611113539.GB4690@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Subject: [PATCH net-next v2 0/4] Support bandwidth clamping in mana using net shapers
+Date: Fri, 13 Jun 2025 04:20:23 -0700
+Message-Id: <1749813627-8377-1-git-send-email-ernis@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250611113539.GB4690@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Wed, Jun 11, 2025 at 04:35:39AM -0700, Dipayaan Roy wrote:
-> On Wed, Jun 11, 2025 at 01:46:16AM -0700, Erni Sri Satya Vennela wrote:
-> > If any of the HWC commands are not recognized by the
-> > underlying hardware, the hardware returns the response
-> > header status of -1. Log the information using
-> > netdev_info_once to avoid multiple error logs in dmesg.
-> > 
-> > Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-> > Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-> > Reviewed-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> > ---
-> >  drivers/net/ethernet/microsoft/mana/hw_channel.c |  4 ++++
-> >  drivers/net/ethernet/microsoft/mana/mana_en.c    | 11 +++++++++++
-> >  2 files changed, 15 insertions(+)
-> > 
-> > diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-> > index a8c4d8db75a5..70c3b57b1e75 100644
-> > --- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
-> > @@ -890,6 +890,10 @@ int mana_hwc_send_request(struct hw_channel_context *hwc, u32 req_len,
-> >  	}
-> >  
-> >  	if (ctx->status_code && ctx->status_code != GDMA_STATUS_MORE_ENTRIES) {
-> > +		if (ctx->status_code == -1) {
-> Minor comment: instead of == -1 could use some macro like GDMA_STATUS_CMD_UNSUPPORTED, rest LGTM.
-Thankyou Dipayaan.
-I'll define this macro and us it for the next version.
-> 
-> Reviewed-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+This patchset introduces hardware-backed bandwidth rate limiting
+for MANA NICs via the net_shaper_ops interface, enabling efficient and
+fine-grained traffic shaping directly on the device.
+
+Previously, MANA lacked a mechanism for user-configurable bandwidth
+control. With this addition, users can now configure shaping parameters,
+allowing better traffic management and performance isolation.
+
+The implementation includes the net_shaper_ops callbacks in the MANA
+driver and supports one shaper per vport. Add shaping support via
+mana_set_bw_clamp(), allowing the configuration of bandwidth rates
+in 100 Mbps increments (minimum 100 Mbps). The driver validates input
+and rejects unsupported values. On failure, it restores the previous
+configuration which is queried using mana_query_link_cfg() or
+retains the current state.
+
+To prevent potential deadlocks introduced by net_shaper_ops, switch to
+_locked variants of NAPI APIs when netdevops_lock is held during
+VF setup and teardown.
+
+Also, Add support for ethtool get_link_ksettings to report the maximum
+link speed supported by the SKU in mbps.
+
+These APIs when invoked on hardware that are older or that do
+not support these APIs, the speed would be reported as UNKNOWN and
+the net-shaper calls to set speed would fail.
+---
+Changes in v2:
+* Rebase to latest net-next branch.
+* Edit commit message in 
+  "net: mana: Fix potential deadlocks in mana napi ops".
+* Use netdev_lock_ops_to_full() instead of explicit if..else statements
+  for napi APIs.
+* Define GDMA_STATUS_CMD_UNSUPPORTED for unsupported HWC status code.
+---
+Erni Sri Satya Vennela (4):
+  net: mana: Fix potential deadlocks in mana napi ops
+  net: mana: Add support for net_shaper_ops
+  net: mana: Add speed support in mana_get_link_ksettings
+  net: mana: Handle unsupported HWC commands
+
+ .../net/ethernet/microsoft/mana/hw_channel.c  |   4 +
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 197 +++++++++++++++++-
+ .../ethernet/microsoft/mana/mana_ethtool.c    |   6 +
+ include/net/mana/gdma.h                       |   1 +
+ include/net/mana/mana.h                       |  42 ++++
+ 5 files changed, 241 insertions(+), 9 deletions(-)
+
+-- 
+2.34.1
+
 
