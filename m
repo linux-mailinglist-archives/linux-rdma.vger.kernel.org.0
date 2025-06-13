@@ -1,107 +1,169 @@
-Return-Path: <linux-rdma+bounces-11306-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11307-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85B3BAD93EB
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jun 2025 19:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5412BAD95F8
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jun 2025 22:13:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F04123B9DB3
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jun 2025 17:45:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17BBF3BADBD
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Jun 2025 20:12:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0319B22DA17;
-	Fri, 13 Jun 2025 17:46:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBE11246774;
+	Fri, 13 Jun 2025 20:13:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxonhyperv.com header.i=@linuxonhyperv.com header.b="kLU+ljCi"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iCtdbqq6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D429229B1F;
-	Fri, 13 Jun 2025 17:46:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C77C72343B6;
+	Fri, 13 Jun 2025 20:13:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749836768; cv=none; b=U8pFZX2ZeMVzfDPkzA4Zuqf9jS97sVFyAB9XwE6xJaxOL43A0HlbUwyOf5EajaEd6ohFt0wPxeFp4WKF5mZFPN3vXyvLBTrDVNCChzZdTV1qsW6u2ektaBFwtP5vs7m1EFALjyAdinm3AEDQR8uWuCnQu0jwa9pRsCf+RIhuBgc=
+	t=1749845583; cv=none; b=eX/+chosiQxGfX6pnBTXNRwloztWZGd7wSoFOZ6W3ced9nTd50DcLxp210xI3uKqUNJzg1rag6ksZHFPIb9qMu26MiWaN2TZIA+Qn7QTlob6lbLvipqzPcKrTkGsn1eMhcVtQ4ZL2ivfZalmLkJRkDyqGZZzFIKcM8fGPmvbUGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749836768; c=relaxed/simple;
-	bh=9/OROHOU0d5H6AaQmhQJwXfenk0HE8Iz8C97u9uaoas=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=UPBMLhsIrBLLDJE9Tr1jgD04cZjcBbEM4e1aSWmBDVEr++pFE+TcyubjK+rssn6kgg/3+mQayDpg6cM+d+RDCm7rQvYEyaUjDgoLIglYB2ezHrv+6Vd8/HSyX1VN0cx7LUWcIJOdR+FWn8iVycsUIsvTbKAH8Vk+epPIB2H3XwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxonhyperv.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linuxonhyperv.com header.i=@linuxonhyperv.com header.b=kLU+ljCi; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxonhyperv.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1202)
-	id D3E812115198; Fri, 13 Jun 2025 10:46:06 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D3E812115198
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-	s=default; t=1749836766;
-	bh=rodYPJvZe1E9/OuzpNcjCvCD37LtJfgG2pZAezDxKpM=;
-	h=From:To:Cc:Subject:Date:Reply-To:From;
-	b=kLU+ljCiwonkzBrHYoXeiCJwBuGj0s1P8xJ/qmSpqywUW3C/olx+FdemyGspFjfWc
-	 AQmKX8Kllsc39Lpg4l+1EC654WsJueo9c85WxBDti/Q9cFFplxTj/3wPb5nkYQWhrn
-	 wDSU/Vo1Dy0ZN/cEQWNWFrXj8oIeLiP9Vmjc8pI0=
-From: longli@linuxonhyperv.com
-To: "K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Shradha Gupta <shradhagupta@linux.microsoft.com>,
-	Simon Horman <horms@kernel.org>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
-	Erick Archer <erick.archer@outlook.com>,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
+	s=arc-20240116; t=1749845583; c=relaxed/simple;
+	bh=kD2ynVceQcdQa7T8ECS2SFeAwaNQpSN34BKH9Gb6w4Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ljoaBQrxQ0nJ6jtTpgkvzxWRc4gd/bBeKwIgmiTg291ALIVhuJ5UNtMk/AVgh81d5MBLZj0eTY4gpkipkFYSj/LFKHmSAqtoqVauFL1rUIPRJvzrSQ2JlOCEon2dXC2jOZlZ8ArQV52YhdKfpODCjqSDsj3whDFQnHRh8zkLpUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iCtdbqq6; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1749845582; x=1781381582;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=kD2ynVceQcdQa7T8ECS2SFeAwaNQpSN34BKH9Gb6w4Q=;
+  b=iCtdbqq6EDT+33VTE5R8i30vEAMwsDu1vuYNsEePH2EM27XR+5x1JOLg
+   WOlMrwY23bDLeZZpQ7/Md/BoY/oUWmyS20RzazGkwwe3n+gdKBbFsJDf0
+   u/obkquMH9Fv0oNgq3oxgqq8RQtC7wwtOr923JoaEmVAGV7EOzI1z3rrL
+   UjA/R9zsbNguUEX/PMw9vVKjpsuDz5FXkMkunnueTp5DYAenPcGwqboPa
+   fiE6OaVJL4zRUxoCAiazzTklgzXCKC1pMeoLKhMiWMxnnRcdBkWMYacxU
+   bVLDVjXRo6Q17dolnckMoiYAcZy/wi7mOW5KVtDTM2kvONiYZEuEWbvpf
+   g==;
+X-CSE-ConnectionGUID: z+OmUUhmTMmc+GNKRZg55Q==
+X-CSE-MsgGUID: srKTznbiT9aohxIpD8g2Nw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11463"; a="51300341"
+X-IronPort-AV: E=Sophos;i="6.16,234,1744095600"; 
+   d="scan'208";a="51300341"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jun 2025 13:13:01 -0700
+X-CSE-ConnectionGUID: 7Rh7IRO2T12iXHL5n4lJng==
+X-CSE-MsgGUID: Civ3vyrtQKiNN7pquM/9PA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,234,1744095600"; 
+   d="scan'208";a="148456793"
+Received: from amlin-018-114.igk.intel.com ([10.102.18.114])
+  by orviesa007.jf.intel.com with ESMTP; 13 Jun 2025 13:12:56 -0700
+From: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+To: donald.hunter@gmail.com,
+	kuba@kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	vadim.fedorenko@linux.dev,
+	jiri@resnulli.us,
+	anthony.l.nguyen@intel.com,
+	przemyslaw.kitszel@intel.com,
+	andrew+netdev@lunn.ch,
+	aleksandr.loktionov@intel.com,
+	corbet@lwn.net
+Cc: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Cc: Long Li <longli@microsoft.com>
-Subject: [Patch net-next v2] net: mana: Record doorbell physical address in PF mode
-Date: Fri, 13 Jun 2025 10:46:05 -0700
-Message-Id: <1749836765-28886-1-git-send-email-longli@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-Reply-To: longli@microsoft.com
+	intel-wired-lan@lists.osuosl.org,
+	linux-rdma@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+Subject: [PATCH net-next v6 0/3] dpll: add Reference SYNC feature
+Date: Fri, 13 Jun 2025 22:06:52 +0200
+Message-Id: <20250613200655.1712561-1-arkadiusz.kubalewski@intel.com>
+X-Mailer: git-send-email 2.38.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-From: Long Li <longli@microsoft.com>
+The device may support the Reference SYNC feature, which allows the
+combination of two inputs into a input pair. In this configuration,
+clock signals from both inputs are used to synchronize the DPLL device.
+The higher frequency signal is utilized for the loop bandwidth of the DPLL,
+while the lower frequency signal is used to syntonize the output signal of
+the DPLL device. This feature enables the provision of a high-quality loop
+bandwidth signal from an external source.
 
-MANA supports RDMA in PF mode. The driver should record the doorbell
-physical address when in PF mode.
+A capable input provides a list of inputs that can be bound with to create
+Reference SYNC. To control this feature, the user must request a
+desired state for a target pin: use ``DPLL_PIN_STATE_CONNECTED`` to
+enable or ``DPLL_PIN_STATE_DISCONNECTED`` to disable the feature. An input
+pin can be bound to only one other pin at any given time.
 
-The doorbell physical address is used by the RDMA driver to map
-doorbell pages of the device to user-mode applications through RDMA
-verbs interface. In the past, they have been mapped to user-mode while
-the device is in VF mode. With the support for PF mode implemented,
-also expose those pages in PF mode.
+Verify pins bind state/capabilities:
+$ ./tools/net/ynl/pyynl/cli.py \
+ --spec Documentation/netlink/specs/dpll.yaml \
+ --do pin-get \
+ --json '{"id":0}'
+{'board-label': 'CVL-SDP22',
+ 'id': 0,
+ [...]
+ 'reference-sync': [{'id': 1, 'state': 'disconnected'}],
+ [...]}
 
-Signed-off-by: Long Li <longli@microsoft.com>
----
-Changes
-v2: add more details in commit message on how the doorbell physical address is used
+Bind the pins by setting connected state between them:
+$ ./tools/net/ynl/pyynl/cli.py \
+ --spec Documentation/netlink/specs/dpll.yaml \
+ --do pin-set \
+ --json '{"id":0, "reference-sync":{"id":1, "state":"connected"}}'
 
- drivers/net/ethernet/microsoft/mana/gdma_main.c | 3 +++
- 1 file changed, 3 insertions(+)
+Verify pins bind state:
+$ ./tools/net/ynl/pyynl/cli.py \
+ --spec Documentation/netlink/specs/dpll.yaml \
+ --do pin-get \
+ --json '{"id":0}'
+{'board-label': 'CVL-SDP22',
+ 'id': 0,
+ [...]
+ 'reference-sync': [{'id': 1, 'state': 'connected'}],
+ [...]}
 
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 3504507477c6..52cf7112762c 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -31,6 +31,9 @@ static void mana_gd_init_pf_regs(struct pci_dev *pdev)
- 	gc->db_page_base = gc->bar0_va +
- 				mana_gd_r64(gc, GDMA_PF_REG_DB_PAGE_OFF);
- 
-+	gc->phys_db_page_base = gc->bar0_pa +
-+				mana_gd_r64(gc, GDMA_PF_REG_DB_PAGE_OFF);
-+
- 	sriov_base_off = mana_gd_r64(gc, GDMA_SRIOV_REG_CFG_BASE_OFF);
- 
- 	sriov_base_va = gc->bar0_va + sriov_base_off;
+Unbind the pins by setting disconnected state between them:
+$ ./tools/net/ynl/pyynl/cli.py \
+ --spec Documentation/netlink/specs/dpll.yaml \
+ --do pin-set \
+ --json '{"id":0, "reference-sync":{"id":1, "state":"disconnected"}}'
+
+v6:
+- rebase,
+- 'dpll' -> 'DPLL'.
+
+Arkadiusz Kubalewski (3):
+  dpll: add reference-sync netlink attribute
+  dpll: add reference sync get/set
+  ice: add ref-sync dpll pins
+
+ Documentation/driver-api/dpll.rst             |  25 ++
+ Documentation/netlink/specs/dpll.yaml         |  19 ++
+ drivers/dpll/dpll_core.c                      |  45 +++
+ drivers/dpll/dpll_core.h                      |   2 +
+ drivers/dpll/dpll_netlink.c                   | 190 ++++++++++--
+ drivers/dpll/dpll_netlink.h                   |   2 +
+ drivers/dpll/dpll_nl.c                        |  10 +-
+ drivers/dpll/dpll_nl.h                        |   1 +
+ .../net/ethernet/intel/ice/ice_adminq_cmd.h   |   2 +
+ drivers/net/ethernet/intel/ice/ice_dpll.c     | 284 ++++++++++++++++++
+ drivers/net/ethernet/intel/ice/ice_dpll.h     |   2 +
+ include/linux/dpll.h                          |  13 +
+ include/uapi/linux/dpll.h                     |   1 +
+ 13 files changed, 575 insertions(+), 21 deletions(-)
+
+
+base-commit: 08207f42d3ffee43c97f16baf03d7426a3c353ca
 -- 
-2.25.1
+2.38.1
 
 
