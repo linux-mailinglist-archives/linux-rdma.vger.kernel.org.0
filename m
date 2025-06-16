@@ -1,169 +1,125 @@
-Return-Path: <linux-rdma+bounces-11325-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11326-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67EBAADA224
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Jun 2025 16:45:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1106BADA75A
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Jun 2025 07:06:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEACB3A92E2
-	for <lists+linux-rdma@lfdr.de>; Sun, 15 Jun 2025 14:44:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 390157A1876
+	for <lists+linux-rdma@lfdr.de>; Mon, 16 Jun 2025 05:05:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9032A189F56;
-	Sun, 15 Jun 2025 14:45:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24AA51AB52D;
+	Mon, 16 Jun 2025 05:06:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hg7SUhYe"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=crpt.ru header.i=@crpt.ru header.b="XhHhVosD"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+Received: from mail.crpt.ru (mx03.crpt.ru [91.230.251.117])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECD05176ADE;
-	Sun, 15 Jun 2025 14:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ABF51863E;
+	Mon, 16 Jun 2025 05:06:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.230.251.117
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749998708; cv=none; b=RIhucHwvpe4hphaCE5+YchQqKI9Qn8N/ES70jjzhJa1uVW7tKgsViL5kJSAGdVLbtu4l1A08ol4wrlB9EI/ffFOElbceJitUllIg+alHKr1OtpPCMFFAx6HUMWRfnntRuSLRkLtc/lXIRVfh3MPf211uMxJEFD7m1Eftr4DxRds=
+	t=1750050400; cv=none; b=N6rj87M5aGY9y5i6gSTIIqpWTsNc4Ppw3kzt9TT3pe0/PaVX08ZLrOAVsnH+9FUNf7YbBtkKlqrfwbPzAnngM6329cD6xy2HRDZLSGjp/JDZk44BheUmvNEAaP/20ju83LZ3HWg9wpGZzqKeHgCQ9mOQFVLPfF/ywfkZyk8FeCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749998708; c=relaxed/simple;
-	bh=yns/HdK/KDP3W8qk7tnplSuGwOShe1QOJEKByBbubuk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=vDLqNoxocuqRsBmSSBM2GG5VxY+bnWoWgfI+pFfQUZFHvOfrKnxEuhv9SAS70UT7JpmSEhBSnnuvDRA4wM5XBRdwyU+fNY+ZK7oHNJY4JtZ6dymAc90naxEfUXQlxRGQJ47JKBQtcB9XaqH8CAo0ftWtoh8zoZgSYgwYkRqocUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hg7SUhYe; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <fb6c6cc5-aa19-4f10-baf7-e20f021553ab@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1749998691;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kxUQCc0gvo7bthO+iU82/CFSIOIRFWx8jjfAItn3Hks=;
-	b=hg7SUhYe2InS7a+5i/3VIomSWd88ohx/jPKsoHh8kbPN00wFHfzO/IIHS8dzy3Xb21oHUR
-	x8fCC3Ykzok8WPbunz8lx3+7a2iQI3peMohvw+PrhAXl8ofsyV6BXAWLqDCHYsiFFeqbpp
-	i8pY2nqp6Jc2Wj1BC52fMcyB5FQpyks=
-Date: Sun, 15 Jun 2025 07:44:20 -0700
+	s=arc-20240116; t=1750050400; c=relaxed/simple;
+	bh=Bc+zA+sHr92wmJmoKBYrXr1MsDN1MT+rlsejLa9BpY4=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=DvZda3r/SlGhs5fA+197y8Tly77vJ62q8yAgBSkxt4eKlbdtGBXryWcYSIrlPlPI1RlajcfnWKZaB9E3g+9/zxjqxd7xmg1IbedyJ77KgmctLd5so977hoHCtfdZfTXBXKv88YGIUJM8KiSQ8Zaq/axOON1pkg9pWGGcaaw/SAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=crpt.ru; spf=pass smtp.mailfrom=crpt.ru; dkim=fail (0-bit key) header.d=crpt.ru header.i=@crpt.ru header.b=XhHhVosD reason="key not found in DNS"; arc=none smtp.client-ip=91.230.251.117
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=crpt.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crpt.ru
+Received: from mail.crpt.ru ([192.168.60.4])
+	by mail.crpt.ru  with ESMTPS id 55G4oj26030341-55G4oj28030341
+	(version=TLSv1.2 cipher=AES256-SHA256 bits=256 verify=OK);
+	Mon, 16 Jun 2025 07:50:45 +0300
+Received: from EX2.crpt.local (192.168.60.4) by ex2.crpt.local (192.168.60.4)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.44; Mon, 16 Jun
+ 2025 07:50:44 +0300
+Received: from EX2.crpt.local ([192.168.60.4]) by EX2.crpt.local
+ ([192.168.60.4]) with mapi id 15.01.2507.044; Mon, 16 Jun 2025 07:50:44 +0300
+From: =?koi8-r?B?98HUz9LP0MnOIOHOxNLFyg==?= <a.vatoropin@crpt.ru>
+To: Tariq Toukan <tariqt@nvidia.com>
+CC: =?koi8-r?B?98HUz9LP0MnOIOHOxNLFyg==?= <a.vatoropin@crpt.ru>, Andrew Lunn
+	<andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, "Eric
+ Dumazet" <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
+Subject: [PATCH net-next] net/mlx4_en: Remove the redundant NULL check for the
+ 'my_ets' object
+Thread-Topic: [PATCH net-next] net/mlx4_en: Remove the redundant NULL check
+ for the 'my_ets' object
+Thread-Index: AQHb3no3cJA/FSbAVkSNIYVzsV0iVw==
+Date: Mon, 16 Jun 2025 04:50:44 +0000
+Message-ID: <20250616045034.26000-1-a.vatoropin@crpt.ru>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-kse-serverinfo: EX2.crpt.local, 9
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: Clean, bases: 6/15/2025 9:22:00 PM
+x-kse-attachment-filter-triggered-rules: Clean
+x-kse-attachment-filter-triggered-filters: Clean
+x-kse-bulkmessagesfiltering-scan-result: protection disabled
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net 1/9] net/mlx5: Ensure fw pages are always allocated on
- same NUMA
-To: Moshe Shemesh <moshe@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, Simon Horman <horms@kernel.org>
-Cc: saeedm@nvidia.com, gal@nvidia.com, leonro@nvidia.com, tariqt@nvidia.com,
- Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250610151514.1094735-1-mbloch@nvidia.com>
- <20250610151514.1094735-2-mbloch@nvidia.com>
- <1688e772-3067-4277-ad45-6564b4fbbddf@linux.dev>
- <524cf976-a734-4d30-915b-2480a6139e27@nvidia.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <524cf976-a734-4d30-915b-2480a6139e27@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-FEAS-BEC-Info: WlpIGw0aAQkEARIJHAEHBlJSCRoLAAEeDUhZUEhYSFhIWUhZXkguLVxYWC48UVpaWFhYWFtRSFlRSAlGHgkcBxoHGAEGKAsaGBxGGh1IWUhZX0gcCRoBGRwoBh4BDAEJRgsHBUhYSFpIWVpIWVFaRlleUEZeWEZcSFBIWEhYSFBIWEhYSFhIWllICQYMGg0fQwYNHAwNHigEHQYGRgsASFhIWVFIDAkeDQUoDAkeDQUEBw4cRgYNHEhYSFlRSA0MHQUJEg0cKA8HBw8EDUYLBwVIWEhZXUgDHQoJKAMNGgYNBEYHGg9IWEhaUEgEAQYdEEUDDRoGDQQoHg8NGkYDDRoGDQRGBxoPSFhIWlBIBB4LRRgaBwINCxwoBAEGHRAcDRscAQYPRgcaD0hYSFlfSBgJCg0GASgaDQwACRxGCwcFSFhIWV9IHAkaARkcKAYeAQwBCUYLBwVIWA==
+X-FEAS-Client-IP: 192.168.60.4
+X-FE-Policy-ID: 2:2:0:SYSTEM
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; d=crpt.ru; s=ud.crpt.ru; c=relaxed/relaxed;
+ h=from:to:cc:subject:date:message-id:content-type:mime-version;
+ bh=cgljj/Kunki6TqOGaVTTv0LJ3MX0FK/HJaxIZV2Kyag=;
+ b=XhHhVosDHFpa6LLLpWv1gcimFJpW3+aw2ct9p+ok3/U6ldQD9ZWeQtqziglmaQzN2CgO9MxizLQH
+	Uq5zMH5MUPHg/fAE496b1/ZjWZ2eLo4bzwo+p1/oOZ1vFFzyNVTqtQXu+mPAPL0wSD9AsJhEHg8j
+	Sk+fw9FGxX8swe8tw77YUhX6L0mDQxK66/K/8Av4BwxZbCJ/CAuxQbEctyueXonWaLn3LmSx/nu4
+	1WYOwQsrjgVhJlLwOy/lmiMSfCCHb09vBsNFLqeNeR7S4FM2W4aPawxfZxj5jdxI2ncU+a1jdPf6
+	pSKjO8KfIRZAjutwyl9YoH7TwDjfF+xWyEUVcg==
 
+From: Andrey Vatoropin <a.vatoropin@crpt.ru>
 
-在 2025/6/14 22:55, Moshe Shemesh 写道:
->
->
-> On 6/13/2025 7:22 PM, Zhu Yanjun wrote:
->> 在 2025/6/10 8:15, Mark Bloch 写道:
->>> From: Moshe Shemesh <moshe@nvidia.com>
->>>
->>> When firmware asks the driver to allocate more pages, using event of
->>> give_pages, the driver should always allocate it from same NUMA, the
->>> original device NUMA. Current code uses dev_to_node() which can result
->>> in different NUMA as it is changed by other driver flows, such as
->>> mlx5_dma_zalloc_coherent_node(). Instead, use saved numa node for
->>> allocating firmware pages.
->>
->> I'm not sure whether NUMA balancing is currently being considered or 
->> not.
->>
->> If I understand correctly, after this commit is applied, all pages will
->> be allocated from the same NUMA node — specifically, the original
->> device's NUMA node. This seems like it could lead to NUMA imbalance.
->
-> The change is applied only on pages allocated for FW use. Pages which 
-> are allocated for driver use as SQ/RQ/CQ/EQ etc, are not affected by 
-> this change.
->
-> As for FW pages (allocated for FW use), we did mean to use only the 
-> device close NUMA, we are not looking for balance here. Even before 
-> the change, in most cases, FW pages are allocated from device close 
-> NUMA, the fix only ensures it.
+Static analysis shows that pointer "my_ets" cannot be NULL because it=20
+points to the object "struct ieee_ets".
 
-Thanks a lot. I’m fine with your explanations.
+Remove the extra NULL check. It is meaningless and harms the readability
+of the code.
 
-In the past, I encountered a NUMA-balancing issue where memory 
-allocations were dependent on the mlx5 device. Specifically, memory was 
-allocated only from the NUMA node closest to the mlx5 device. As a 
-result, during the lifetime of the process, more than 100GB of memory 
-was allocated from that single NUMA node, while other NUMA nodes saw no 
-significant allocations. This led to a NUMA imbalance problem.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-According to your commit, SQ/RQ/CQ/EQ are not affected—only the firmware 
-(FW) pages are. These FW pages include Memory Region (MR) and On-Demand 
-Paging (ODP) pages. ODP pages are freed after use, and the amount of MR 
-pages remains fixed throughout the process lifecycle. Therefore, in 
-theory, this commit should not cause any NUMA imbalance. However, since 
-production environments can be complex, I’ll monitor for any NUMA 
-balancing issues after this commit is deployed in production.
+Signed-off-by: Andrey Vatoropin <a.vatoropin@crpt.ru>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+---
+Resend for net-next. Link to initial thread:
+https://lore.kernel.org/netdev/20250401061439.9978-1-a.vatoropin@crpt.ru/
+ drivers/net/ethernet/mellanox/mlx4/en_dcb_nl.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-In short, I’m fine with both this commit and your explanations.
-
-Thanks,
-
-Yanjun.Zhu
-
->
->>
->> By using dev_to_node, it appears that pages could be allocated from
->> other NUMA nodes, which might help maintain better NUMA balance.
->>
->> In the past, I encountered a NUMA balancing issue caused by the mlx5
->> NIC, so using dev_to_node might be beneficial in addressing similar
->> problems.
->>
->> Thanks,
->> Zhu Yanjun
->>
->>>
->>> Fixes: 311c7c71c9bb ("net/mlx5e: Allocate DMA coherent memory on 
->>> reader NUMA node")
->>> Signed-off-by: Moshe Shemesh <moshe@nvidia.com>
->>> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
->>> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
->>> ---
->>>   drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c b/ 
->>> drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
->>> index 972e8e9df585..9bc9bd83c232 100644
->>> --- a/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
->>> +++ b/drivers/net/ethernet/mellanox/mlx5/core/pagealloc.c
->>> @@ -291,7 +291,7 @@ static void free_4k(struct mlx5_core_dev *dev, 
->>> u64 addr, u32 function)
->>>   static int alloc_system_page(struct mlx5_core_dev *dev, u32 function)
->>>   {
->>>       struct device *device = mlx5_core_dma_dev(dev);
->>> -     int nid = dev_to_node(device);
->>> +     int nid = dev->priv.numa_node;
->>>       struct page *page;
->>>       u64 zero_addr = 1;
->>>       u64 addr;
->>
->
--- 
-Best Regards,
-Yanjun.Zhu
-
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_dcb_nl.c b/drivers/net/e=
+thernet/mellanox/mlx4/en_dcb_nl.c
+index 752a72499b4f..be80da03a594 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_dcb_nl.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_dcb_nl.c
+@@ -290,9 +290,6 @@ static int mlx4_en_dcbnl_ieee_getets(struct net_device =
+*dev,
+ 	struct mlx4_en_priv *priv =3D netdev_priv(dev);
+ 	struct ieee_ets *my_ets =3D &priv->ets;
+=20
+-	if (!my_ets)
+-		return -EINVAL;
+-
+ 	ets->ets_cap =3D IEEE_8021QAZ_MAX_TCS;
+ 	ets->cbs =3D my_ets->cbs;
+ 	memcpy(ets->tc_tx_bw, my_ets->tc_tx_bw, sizeof(ets->tc_tx_bw));
+--=20
+2.43.0
 
