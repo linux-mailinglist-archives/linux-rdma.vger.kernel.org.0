@@ -1,761 +1,302 @@
-Return-Path: <linux-rdma+bounces-11401-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11402-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D07BADCCE3
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 15:20:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D861ADD3E9
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 18:04:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF93B7A42B3
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 13:18:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C3532168EB7
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 15:58:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E149528ECE8;
-	Tue, 17 Jun 2025 13:19:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E8AC2DFF2D;
+	Tue, 17 Jun 2025 15:54:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="CtOADqSR"
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="adZxpdz9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from CY4PR02CU008.outbound.protection.outlook.com (mail-westcentralusazon11021119.outbound.protection.outlook.com [40.93.199.119])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D11AB2E7182
-	for <linux-rdma@vger.kernel.org>; Tue, 17 Jun 2025 13:19:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750166359; cv=none; b=OHNNDImCMdCzlJm5iRGb1Q9Vx4JTIuMaqQWLjroaYe+tXhJBtNI77AcokZSSr8/tvnOsMDJSUqpRzkstJYmyEEjCJeaiyHKUO/AkqgEr5TsRXjVjnzb+pwzVhDwHaB4DAmHi833URF9TiWWPpbJvvqsBaTSK4BRn2+uaI8jLrHI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750166359; c=relaxed/simple;
-	bh=QrwsNECPRlsCb/8lSV0yXcv266Be5RPMH/fjtJ8FgSI=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type; b=lcnxTNFx8bShETIP7D9gBW8BndqOahxPXM4lpmmR/TB2XJ/lvCKZOBqfUKOho26rvCqqO6/VwIxaZDWERXZ4jyxIklH8vn+KaCXeGfmWe5Rucq2Bubl7AhyhJEpoMcFlp93o/E0XMHHfPdsO+b9zo6TLT6Ye1McjsI9f9TJ3VuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=CtOADqSR; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-450828af36aso4463685e9.1
-        for <linux-rdma@vger.kernel.org>; Tue, 17 Jun 2025 06:19:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1750166354; x=1750771154; darn=vger.kernel.org;
-        h=content-transfer-encoding:autocrypt:content-language:to:subject
-         :from:user-agent:mime-version:date:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=WJQXJpzSL7oSd17Eqbb8fCEHCHrLPrZu/I12v95sxIs=;
-        b=CtOADqSRc6vXjUgBmBCw9Ido4o3+F5EsyLXdepHrVYAoqPKGIxawC+z8drJ5rgtA4i
-         bt+rc1mvyV+37L24QLk3cvBIJTCKrU+kKtzV7nzUJRCAlNeAcZTtAxwdyltGfZ1Eke4+
-         Ap2akR3cH0+1+os7fOQxoYX0eg+vqFmnU4c1xzGjQyf0wEvCevcVpjj/lkBiE3vsIGhf
-         XueiRVq92KSsBOaPfboOtZ90+/IAJutAeeyZ/CFbBsC3Kaeo1JQvF9Orh+yRn1mXdKbW
-         oaYoqH1AssStvpACQd5089In1D+f2Btm5TtEiLUnLKfmAhq9wBTsQadTQ00Hs3mUnGiT
-         hwTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750166354; x=1750771154;
-        h=content-transfer-encoding:autocrypt:content-language:to:subject
-         :from:user-agent:mime-version:date:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WJQXJpzSL7oSd17Eqbb8fCEHCHrLPrZu/I12v95sxIs=;
-        b=LavNmpQAfSsYdNXbGzd1vYzh0HvBvyYhHrlaU3+yJs0/Uvunk/xMn7yIPKZLxY3IeS
-         IOOC+RdH+CbmGrgQ7XV61+mmzKvMBXbKNjkmasHNYvmMt5CPykPvzbHEQgupcXp9/lS/
-         VdA/aAlFHwtsTDPtVYdFphDgfyhZEW29LuYaP7rqitgwRtT61rP4zg7+lQ8/ayVLaFPv
-         BjYjxyFXT67D24Cfom8KoM4jmdXRVezO44TalJoXCpxtCTMNCZUlFGC5ObOI6IRPXCEB
-         PVJTT+AZuCcYAiVfJPEa9Mek+HBoQegF2bDEgWPoHjfgBsMjGfoVDGsr9UIkIuqtluDL
-         eqIA==
-X-Gm-Message-State: AOJu0YzJ0GjpInxciB7EfsbnJbSIqLeex/Clbn0P4mbpLuknixCcEe1e
-	sFqhf6hcm91AkiXvElbO2obP5W9H7zs32qASs4x3g3bsh/eTFgpAgMzoUNAFPTFhh/BGk1DYEyB
-	pYbnv
-X-Gm-Gg: ASbGncvpDw3EvtXmCiQZe/map0dSexnUUPvFy5BS2uxO3s6PLRVPe7gNT9tvzemVtMF
-	wEwHI+DYVTAL8Ih+uxYB5K2Nw6icddUxDPR9oirP57Aed4VREE65Hn3lZp1aUmRUa0PhVbXW3+W
-	TRoX4/XPM3HBpbapuVoK6f8+WVAR5WK38koX6wFTk4hYKfq9SUbm7CkDx91ysynrRi3MBLvKyTs
-	E95SXl6PJIQksqcZBEYo32uFiAHfj3ru51K6/1fXsyMo+jkV5AnumNq0Y+d2lbrqDV1aPWL9a9n
-	Pf3cMgJfy6tmyyZtWF0QnJxgGkMGCdG1DRHhze/6QYAzChZBTmdguaOGGCDxi3CC76gHQk4Np2U
-	vRjiqNgqBhDROyOdSyLNFQlbALA==
-X-Google-Smtp-Source: AGHT+IGLmrj6TyCLz0UPUWUVeRjLcA/Qd54Iv4JLDgpeG9BkUyLqByVMUAGz4nnE/VRRMaa/FUFhqA==
-X-Received: by 2002:a05:600c:840f:b0:450:d4b4:92d0 with SMTP id 5b1f17b1804b1-453523818a1mr11736255e9.3.1750166353893;
-        Tue, 17 Jun 2025 06:19:13 -0700 (PDT)
-Received: from [10.0.2.128] (lfbn-ann-1-288-66.w86-200.abo.wanadoo.fr. [86.200.241.66])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4532e24155bsm173923665e9.17.2025.06.17.06.19.13
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Jun 2025 06:19:13 -0700 (PDT)
-Message-ID: <73b4fd1d-3744-4c32-a4bc-7028d2254980@suse.com>
-Date: Tue, 17 Jun 2025 15:19:12 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88B942F234A;
+	Tue, 17 Jun 2025 15:54:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.199.119
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1750175695; cv=fail; b=E9A37hZYHL9kXvRVYYuCgqi4e0iTwajc7mfOV6uieDpFVugPiWcDJPKCypcjpo7NNCxZNPeG3CxebZ3SVSj/fTt4RDuaMr+njtoVgBaSvbgsJwsOH7BW5DwO99z5RV1JeFb7zipoeu0y0h9O2yujFXqhpw+yYkkud26uEa5Vz2k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1750175695; c=relaxed/simple;
+	bh=1w5xGHlouqvbCHA1pByANf0BbMKoQMlF0muA1GISNPY=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=tHa4VaonNLl5jV29E6kgnH6L6locPwdDbe3KQ3AO3e8ws8j9kshJoWYRYlNEIM88il5IYLNzRXS2Q7HQep4NK/rHhqEDLgKkraJycZ1tTEJjO+kXZUwxOHWX5aj+1pzzxGO+WzMdhNfmL8LmbpeZeA8kOwKAA/17jk+F5hCFl5Y=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=adZxpdz9; arc=fail smtp.client-ip=40.93.199.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Ks5/LSGsXAvo5mdFFQPqHvnptEmau7Sep66oe8PQCrSHWNix3GOBA5k69brwMYzSvk2IanoiIy9DCb8qnfp8/LsC3+NCPSA8HdX/jw5FO5FxUMp4TwuImNZeV9swaVEUnfZQxG1/RM9VsWniVIjsF2ceH5K43pfh3A7IuvdTpOfG9tomL/AO+Jbg1PS1sCO/IzJotm6sgLEZIrbEadrDYgIeXu1Gvm+P6Q1Zuc3gin9g+qr07btPTHa8j99el/IU9flvea3E95FtHUFoDON0AbyhhS/bf858ZdhXxQcDiP+DSYKtt9FtL+vHA8QmCdSQ73aVp1bGV4BHHObYKuPQkg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=U8G9mD8BPdKNIjowEnopKzxsO+IxzE+1xDei1yuQ72M=;
+ b=cobtHKJ7NuZ4SGDQUeRciQzUhp+mK5rRB6kmgXCS2/uwwVw6enxyvRw3mFwoQ9wqUHZLcA7SjJEdR3qJdPQzA/f5BNw8ITyzFun+kM7kYqYuPgeACr3WR6Y1pR7APChuhFtnj0wEzHEf9lYXbTMQyTGji8+YaIymcohcbsn1u57c0S4YK3xjZAaCujIhAexgb+y2MgKJSAA66BsSc00Lgr0GAQozr1W124L51Vcd6Ui6Rpmz0ofQkZhNFjqz//LsYC4OxyevkpbJSsTulCc2uhKV2V96Gd6vhVg2W8EOeqjm/wOT635/Vk/fSg0qKwMgAv4/tm2F7YgzANZ25aIGIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U8G9mD8BPdKNIjowEnopKzxsO+IxzE+1xDei1yuQ72M=;
+ b=adZxpdz9B/GLVl6xCzoXlJigT0lPRWs0fGy0lFgR5G435bTnjpBScjaAB1sCJhj54GnkYsmC/536Y9JBiKMFnLBRCy19uFuZ3G6hOlotBQDrYtRo9XgKrXagmGLmBSSDH2oUSzp6H02DRARG2BX4DpY7FdgWN01AxBo3xCdjONs=
+Received: from DS7PR21MB3102.namprd21.prod.outlook.com (2603:10b6:8:76::17) by
+ DS7PR21MB3428.namprd21.prod.outlook.com (2603:10b6:8:93::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8857.17; Tue, 17 Jun 2025 15:54:47 +0000
+Received: from DS7PR21MB3102.namprd21.prod.outlook.com
+ ([fe80::b029:2ac5:d92c:504f]) by DS7PR21MB3102.namprd21.prod.outlook.com
+ ([fe80::b029:2ac5:d92c:504f%3]) with mapi id 15.20.8880.004; Tue, 17 Jun 2025
+ 15:54:47 +0000
+From: Long Li <longli@microsoft.com>
+To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>, KY Srinivasan
+	<kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
+	"wei.liu@kernel.org" <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	"andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>, "davem@davemloft.net"
+	<davem@davemloft.net>, "edumazet@google.com" <edumazet@google.com>,
+	"kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>, "horms@kernel.org"
+	<horms@kernel.org>, Shiraz Saleem <shirazsaleem@microsoft.com>,
+	"leon@kernel.org" <leon@kernel.org>, "shradhagupta@linux.microsoft.com"
+	<shradhagupta@linux.microsoft.com>, "schakrabarti@linux.microsoft.com"
+	<schakrabarti@linux.microsoft.com>, "gerhard@engleder-embedded.com"
+	<gerhard@engleder-embedded.com>, "rosenp@gmail.com" <rosenp@gmail.com>,
+	"sdf@fomichev.me" <sdf@fomichev.me>, "linux-hyperv@vger.kernel.org"
+	<linux-hyperv@vger.kernel.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-rdma@vger.kernel.org"
+	<linux-rdma@vger.kernel.org>
+Subject: RE: [EXTERNAL] [PATCH net-next v3 3/4] net: mana: Add speed support
+ in mana_get_link_ksettings
+Thread-Topic: [EXTERNAL] [PATCH net-next v3 3/4] net: mana: Add speed support
+ in mana_get_link_ksettings
+Thread-Index: AQHb31fuhL95mOtqekCQtB34Vu5SILQHgXcg
+Date: Tue, 17 Jun 2025 15:54:47 +0000
+Message-ID:
+ <DS7PR21MB31024C9BF35A681628CC1DB5CE73A@DS7PR21MB3102.namprd21.prod.outlook.com>
+References: <1750144656-2021-1-git-send-email-ernis@linux.microsoft.com>
+ <1750144656-2021-4-git-send-email-ernis@linux.microsoft.com>
+In-Reply-To: <1750144656-2021-4-git-send-email-ernis@linux.microsoft.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=75c59bb2-d076-4c11-81cb-e186013c36a1;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2025-06-17T15:54:15Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
+ 3, 0, 1;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DS7PR21MB3102:EE_|DS7PR21MB3428:EE_
+x-ms-office365-filtering-correlation-id: 3d5c5b2e-c4d2-4767-7a29-08ddadb7495b
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|1800799024|376014|7416014|366016|38070700018|921020;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?EMBw2zKdqT1XSc1gVxDsoWsM7gGcCt3+v2EqZkXIiGIiSubcjN7FH3lrzXdC?=
+ =?us-ascii?Q?XSpGrPDy33h6BTKpg4zG3SqWqN0GKm0ZquofVe1OgrNQviyxmiG7TsBtIekY?=
+ =?us-ascii?Q?W3Pv3x7BFMhV8tbhNHWADTYYzNgxrLQy+gpomNYylFa+th2GMLXsjsUhf4M7?=
+ =?us-ascii?Q?j0IB9GlrzXKw8tEi6mSGSUcnuMowaaoHBIvGaSGV7NUA57slC2wSRfqoUcqP?=
+ =?us-ascii?Q?RDaQ0qXPaF4zzktfVYfkAG+jfg9YIFvAJKfhfl+jYOAxble76xiySqDdlcNv?=
+ =?us-ascii?Q?UlYWn0D1leeF2H3QGGWG+WWUAYjUg9MenWIzO2yVHc5yr5/+5P6XsrS4BbKR?=
+ =?us-ascii?Q?ZaUOBzBZme6O6NtRbspJKm54+2BaZBRTGF/4L7TeEldQWa2ZBvYoWaTX6vNu?=
+ =?us-ascii?Q?sKSIkR0seNt08nCTJKXnGnv5Vrv4l43OD4Acrr3S9yrzxX3AJbE4AEqK5+st?=
+ =?us-ascii?Q?k2F0WMtFL+G2RcrXVN6+VQUtinkIc5OZoiLe/f92+Rnzjjp4fwYpZO0uEa5C?=
+ =?us-ascii?Q?2gim7//0o7/QmrJow5UUJjepFodAt/WQOwj+wlMN9XVwZqTwJVn8bB5v2ro8?=
+ =?us-ascii?Q?RKqi3wGdJ5ZwcJ0khssuE0+FdxyR7yZQKJGxiGX91ISE4VqMuPIJSFFgmHPc?=
+ =?us-ascii?Q?s15Q2lEnsPxTghqez7SvnCXUy8Kgy+cJvH10IO6bAJSojPl8sbRHzBSs9w38?=
+ =?us-ascii?Q?ERo8aCXIVzs0wrFyaAq6KIcXvJc2SaN7H+/bWcW+/24uN7lGDHYxikpluiyO?=
+ =?us-ascii?Q?eXm4kCmhUhw9+o0j2DzRwZ6bRQvjsI27FtpSNHL2mNtvWVOJlagSuBcsl6gh?=
+ =?us-ascii?Q?1/Ci/Ck7ctycfMcCwoPGAA3NJHXR18F16IKFBYm8zszzCH5xF7K9BRfEQT+X?=
+ =?us-ascii?Q?IR1M1I5owLNOyQ/E/EjpC/yBVn/be1KyVRWdrZZpdI7s9454Fq87WGY3hmE9?=
+ =?us-ascii?Q?0QPlKP8Ui84dBJa/Cf8o5ytL9gy983xph8sHaptUo2plSRYbsVo62BV2zz8x?=
+ =?us-ascii?Q?6iNU61CFstdM5o/n8LFFnkKpAJX0iJnG+WA8fpiRPSXYwb49ytEJeur6KXSt?=
+ =?us-ascii?Q?sSV7zzy96JLbkVmA06DakLTrhvqi8NzWQeTGgIWbYHA+JzfOdNTbx2HjFE62?=
+ =?us-ascii?Q?VajI6EdUZp+JHg3POZLeyljClirN3h0Cc7kHsoAVYIAzD1c903UmOiRTCsth?=
+ =?us-ascii?Q?/vb48bwTcrgAJ409xn6ukfQflOgZCYUyOA2b6aFzxITHzJ2PrRSFZo6vxtVe?=
+ =?us-ascii?Q?4qHNCLz1rTtDC4xDnZ4DiHER1/qeq61W2U+18gmbyRhpHMo7jGKBW+lsFlu7?=
+ =?us-ascii?Q?5ji6gzhXaEkDJWPOLX3dooldwwuuPsOggtsu3j9/tSVVgfedOxOLXvrvbqBc?=
+ =?us-ascii?Q?0cApwXEu9YyFpqlSoXV0UUuO0Tgew9YF5p0Th3N2A4N1hx+TvgGXC5Nahsa0?=
+ =?us-ascii?Q?YFwowB2JHdVvO1SQoxYyqATr6uoD+w/MzO86K0u3dcYKLsWRB/+YyrgJwap/?=
+ =?us-ascii?Q?lQf+Nrd+DngaCbw=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR21MB3102.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016)(38070700018)(921020);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?XafIgBsoUTgLhKhgIQuf/SsfWCZTPQlWqeleGlSh5fYkP6LLB1Ys2yrGC1wX?=
+ =?us-ascii?Q?L8lbI42Uv8nGdHE/jdvVzLBkXd69iV1euYfYUQ5N2AdnQ+HbKv8e0rcjYAZR?=
+ =?us-ascii?Q?lGNY+2deL0R/tC3vaLLPnL5Di1gloKIlU7W84ZE1AHdW75T8Fd6ryPoT2lrD?=
+ =?us-ascii?Q?uD1O6zTrJQbz/Kohm1ZMSvFn4L7uHC3jP4Es+Z4jeQCxYiUUBq5HlRAFckzz?=
+ =?us-ascii?Q?zWGssmwBvQsrc65bylh3Ix1JToRDZkx/NXiSodBYFj2UthD795XsDe9U0Sdu?=
+ =?us-ascii?Q?SeR5rQjnoMyRCpTwbZweHM4lhY8plR7kqHZIg6fVubnsNK2LFRbdt1Hns/H0?=
+ =?us-ascii?Q?t8MCLRbOvzEjlyRYTPVTbiy1nie/bjjST40N1TaUdVsCwMzJ9ow6Gi/rntJQ?=
+ =?us-ascii?Q?udo6QLHSMbRydILAM4rsWQQZWV3jauhqUxCxWg+15rrG7zdVs64m89XUT1Yx?=
+ =?us-ascii?Q?oCQOGIiCOiGtNxehpDuwSXtUo/wR2N5e40JXPweOmHXuMhHA9UPFBKWdReqv?=
+ =?us-ascii?Q?NUCFbBbEh5wxWYMfEouWf9NhFQsM8hvG329uYKluc+YJ0BnV1kj+CgHYFCTI?=
+ =?us-ascii?Q?4KK6GVwTrsDEZJNLwEE8TXgGoXqQXpsP7lLKTzASRc99J8Q06jmvej1C19BN?=
+ =?us-ascii?Q?uFAeXvMZzWzDdc+7dn+j0ospMTFjzFyCYE9gnbrFTcgWZU2xOp7gOEF76Mw1?=
+ =?us-ascii?Q?HYM2fhsP3BSyBVNXQl5zY90MM/6Y+E8mMlRdjIrz43sDUXjpNlZrMKp5Y+Mi?=
+ =?us-ascii?Q?ssvrlD2NDmYerFRqKy9aXcAw4vzHIJ/e7V2y/33DD/6Pr15fodvR23vihbMn?=
+ =?us-ascii?Q?qAzTYeRYDgBo/9NtrIzDVpjYuhfOIDB2x2VJX7O4ZIktlMjeUeO81dd8TgZk?=
+ =?us-ascii?Q?OCrhWImNAbzQTdtWoxIpxgx/Ng4d85yM45OBuSgRuzo2BZTEo5kBgHdqbZ5I?=
+ =?us-ascii?Q?cxHph9MbJwMWrBFeKdpg1RwrfI/OIBmSHpTMkNNxtjBJ0vfKjfOQh7JCUH/r?=
+ =?us-ascii?Q?Afn2nusPwP/+A2e/6iyVGR+1cEzvyG8Bq70E2ubS6j/kc8nI1iEHaHt3K1In?=
+ =?us-ascii?Q?6zeMtav7Gc/IsDcQ1Zxh2gYaZO1CZz0J8H6QM8o+E30elgNfEpJR6U0/BWA7?=
+ =?us-ascii?Q?EoZz0yVKVLZhY6hTE3OzJtQHOjfMyfNsTE6fZiYLN/TtvZ0vwmzdD+wOi0sO?=
+ =?us-ascii?Q?0ujIh34S+47LTZsZP50f5iYaF+Xtc0NrQBVpw4wK6uyuvQM76QSPaoRU44It?=
+ =?us-ascii?Q?WoTEsygk8lF5oxlfq9ScDf+DPDbFwClJ3czZNZh/z3yqo5EQ+UhN2aj4Sh33?=
+ =?us-ascii?Q?Nk46q+0Trma/0clzMkzU7AJzg79G1a4pZDYBdx8trnuJUJ+OGGMS6AgSQOxu?=
+ =?us-ascii?Q?wOP6fMI+weflH41SsVQtdV8BgpDroz6RKrFIeutYlMnAPPRkRzwkVide5bGL?=
+ =?us-ascii?Q?6jUOkT8KrR7iO6NALDBDpuerYFdDOgoeqA1q+pOmpCGA4NzmFNijjMQbWQaV?=
+ =?us-ascii?Q?yauf0s/2X0+tRb7Q0WyjvyPmWpKbil9iwryufP39Hds261XH3oPTLq89fckf?=
+ =?us-ascii?Q?QZWkXkv+1svMHc+yGM+1LNCzo5iwlwznIt6JpsL1?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Nicolas Morey <nmorey@suse.com>
-Subject: [ANNOUNCE] rdma-core: new stable releases
-To: linux-rdma@vger.kernel.org
-Content-Language: fr
-Autocrypt: addr=nmorey@suse.com; keydata=
- xsBNBFjZETwBCADEkoe7QWAXzd9xpSiPbQK6P2F4wKdxyTp6r0aN4I0O+4fc8xWXvmwOrCjF
- UsuoGZ3CxJaHgdB/3ueW/IhMO5Ldz7pylhKVlG/moUh4CBK2eRUdaG7mHID01GyJMtR3VQqu
- 22hJhHPYy0erpYViyr+I4MzQA9QZLoQhSxn4imjZOZPcj20JE+lRfXppNv9g7vQiRLMcXjTi
- KcnrqG5owOi6Cn1sZ201YfdeztGxKA+jvjWO+6absTTlorIlZNGUf85s2+caGDsqa31u2DPs
- hVv5UUTy1g/5aP2wacSWI3Qm4n2MWl1aCnHN2h737PCXXfBk5iGJsgBUnSQULgdgEAt1ABEB
- AAHNH05pY29sYXMgTW9yZXkgPG5tb3JleUBzdXNlLmNvbT7CwI4EEwEIADgWIQRC0lOFwaHA
- K4sbHG+AG924JZiPZAUCY5G8SAIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAKCRCAG924
- JZiPZMZiB/9QkcGfH248qvFUWZig3jssK5IgijfOFDKB0YK4e844M5C8LVSuWpu7Z+lM+cql
- 3mbrikW6mlZjPEusrQ/KGvT6TdfOM9VCQWjlshMzt7uiRDdzufHGtE5hhk/67UnkEVjmplpD
- k8cb1O0VsBfGym7e0nySHTlDWqr++9EcwgV3uo4psYYEqm6Aon1yKqjbmj+vfl/C5iW3V4lq
- DhBk8w21AvNS+tdEqJzhruxuXkEDZZ07wYFS7m8OxLNb4sMzn/Nz9x/NXeweBWx2ujIERtAq
- 1e/hh0ZAcoPVR3CfO2QTmfTfrzVdpZrZ8F54337ze3+BUNnrFGObQhlNe26NqNYWzsBNBFjZ
- ETwBCAC9zAzCRlTgzyO9siVLQYwbRUhcL1TUJU/FiOQWQTmL3uDdBc6MgVBs+hp82RwPbbXT
- v4W4rghBYPKdmFXvRN+jvGDLq1f2hsuCSiE1ckTMzFV+sKoWRIEC12tEpw5ncEFGm+1k/rJR
- Lk9eHxuqn+yRjPryN8CK6tK4+b4tZ2urKlP29XG+T3l/mbUSoqfjqvyeKaW6xw7ku89EX2Xo
- QWP/pm92RxUd6VDU9vpVW/T7qPZRl0wtUnDnO2wePoZmvUfEr5Osh3MNvm1myG+v4EV2Hgva
- NT6pa27IptrUq06cA6dDsIKwPtMuThJQp8/xumgl5Q9A/ErQoJTrB9rclIm7ABEBAAHCwF8E
- GAECAAkFAljZETwCGwwACgkQgBvduCWYj2QwNwf/eOIpFB67cKoUJvcm3JWcvnagZOuyasCw
- xwH9a0o9jORcq+nsJoynS/DpjUKGyZagy7+F7sBrF7Xx0cXF2f5Bo42XNNiQDE5P/VLwvgn9
- 62AJ3q0dp4O7oQI8UgNmdsocQhNaBHHCoOabLGrgNobDTaLBeb9zaOZqz8CBuAiZ0bVABEpg
- 50hDEYTHp4jCgWpadhAsp/eCgm93Tc+Y+e1fqtE3FmoOLxyhFa6evhn0Q1iX0kCasMZwlzse
- zqLZjTM1Koqn6+UIHXE3QaULyFKD1GDhisXxyolOB6P2TXsyfvitYdIZ3CCtI7PVDxzmX2Xk
- kvEz9bMtStoMpse9qAsmHQ==
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-These version were tagged/released:
- * v34.17  (last stable release for v34.x)
- * v35.15  (last stable release for v35.x)
- * v36.15
- * v37.14
- * v38.13
- * v39.12
- * v40.11
- * v41.11
- * v42.11
- * v43.10
- * v44.10
- * v45.9
- * v46.8
- * v47.7
- * v48.6
- * v49.6
- * v50.5
- * v51.5
- * v52.4
- * v53.4
- * v54.3
- * v55.2
- * v56.2
- * v57.1
-
-It's available at the normal places:
-
-git://github.com/linux-rdma/rdma-core
-https://github.com/linux-rdma/rdma-core/releases
-
----
-
-Here's the information from the tags:
-tag v34.17
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 16:59:55 2025 +0200
-
-rdma-core-34.17:
-
-Updates from version 34.16
- * Backport fixes:
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMWsQHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZGfvCAC1AMIAT+mftWbk7e+dDmCoBfKpYcgmrEtJ
-ScMoBS07CrO1ZomoVLZnUgMZEevcELkXiG7ucnbr1OCCkghdhzHamBaxW/kiFiAH
-f/Lv/pfccSflNzEoDs5mmZX4D/bFDCeXtgh0ftXI06htxwgUkMoj/NMETcH2xgWD
-+dp0GEmzdq3b+pGQDf2xwnMa0mcAajScKDFYnuB6Xsn4yGuFhCBFC6MCi22WckSV
-uoZi2VdXY04ouQz1BufQkV/iBx1Pd61S2n7oNIn9bMirE1M/AZJgkXcJ0znycx31
-TpNAgPddr/qysepdcLxleIrSd4Nd+UpF5UKdMQd8NM6AU+HovyO6
-=7Mak
------END PGP SIGNATURE-----
-
-tag v35.15
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:04 2025 +0200
-
-rdma-core-35.15:
-
-Updates from version 35.14
- * Backport fixes:
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMXQQHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZAdiB/0dzBZ5Hm8W9VTX4QAxo9/1qOlazMKhWw1P
-N8x4J/45iGqvn1CPDJfq2Mw+tpb1iNYH9k4AZy74SA2XVDPae5ZCrHgIM6E5m4Sq
-frAespf6JHrnwVgl91ePxZE3IkkYnaf+Cszv7rTkx4x+ADQMC8Mf3NfLbfEJAfJO
-ey17+TRHev6yY1jF4mqGHBaV1jZHtx2ZGVouiO7rZ63ULinpVgM2UBo1dJwBClXS
-hYmTZXHSn1uiDUlM4RDXcMeqUgwXOppGBJ3ALCGj07eNlOUa3deOA8v14y4dvTqB
-VJ1EWg/t4vPUkweY8ToRSy9KIWHJNJBWs/2gGX16t4jswMC/p6cw
-=EH8F
------END PGP SIGNATURE-----
-
-tag v36.15
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:06 2025 +0200
-
-rdma-core-36.15:
-
-Updates from version 36.14
- * Backport fixes:
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMXYQHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZPCbCADC/QhyZnKP9NLKyLmw3B7LUtyFPWU+g5Wy
-5VfkZX1GQ0IN2rZQmdAaGmAbZObz9HSOxRn2mLhXjK4n7lW/+nYkI6AXkKmcL8Ki
-29GBnlAfVtdfJ2oOuHBJq0TBh+aOmrlcpyX/920pOVu/DhX9u8O1MMwAC/skQIZu
-m6IkrisJnhcDqeEqAgfwIjKGM/dVi942RtmAcZZkezOq/uEyZ5dqDN0Zyk57EAbG
-Ql2sQkKOj20/8+2S1R+OKzsdKlTS7pLIi+ekpwgyo/aQvkEa27052AeAmCEsUXab
-sSb/y6pV5CWDEl8xt+qNkqFcVv5NyH1GLYhijgICVWD5RwzdD7GD
-=aKKF
------END PGP SIGNATURE-----
-
-tag v37.14
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:07 2025 +0200
-
-rdma-core-37.14:
-
-Updates from version 37.13
- * Backport fixes:
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMXcQHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZKopB/9qHsEbT9g9KN9QD/9ZlZPbs2T7+QUz0mcW
-aiW/8ji4UUVzND7LlqXFRD+3Btea5PYvWITkDBEhi3lKN/+xxo8NK0LVrb90oVTh
-g1BKT3ngfuRNrroiqTNT28uKuXKGBjlGdcxs0B8DTY9puPX++hcGIv9REMCyA/pn
-c1REtPQyvNbnHfPwLOSXCgRSa5pYAVTi8XZ3FGgFd4Q5ZRlfMzkyGEbzMLXk9cRP
-xA8zkG4ONMdjABYbogQ0PC3NNCGRVhg5Gluq1+DaJlv7WmKYib0HkOCgZCb2qQ+A
-r5+BIGAL0JUj41VKaoJbHy9bouClrQehHynCjL0eprI6whPFJuCi
-=k2SD
------END PGP SIGNATURE-----
-
-tag v38.13
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:08 2025 +0200
-
-rdma-core-38.13:
-
-Updates from version 38.12
- * Backport fixes:
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMXgQHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZH7yB/9NpUXFKzKR6/2EI5zxOeViEodpMc/C3KNG
-v/XLlvN26u+luW1ZxDQW318iZxQ3rVUKlY2CR+diuZYOEKwMOs+EyOCXRgGRNJ+p
-j0/ixd0VNVt7LpLpqN98rY28vZ5dZbwD8Y5w6dNaoajTEzp8EhyzYmQgSnTR7NGP
-3qmq9jYtlyXaaibTaAyUADdWrBOeGaG1nQgOfwaLXYPL5hp/yMVFy1CRLs8rT8P1
-15Jibb0WjToZoSY1XRAHs+ZChhtjRlCFunERUC7bBG9h2ojABwJuKoIUguVKThMr
-vY5QqU9hVc0eoi3+4lLF++RdTQDRDgbP9/hcnvIPHSN2pKZx8gSd
-=U4fX
------END PGP SIGNATURE-----
-
-tag v39.12
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:09 2025 +0200
-
-rdma-core-39.12:
-
-Updates from version 39.11
- * Backport fixes:
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMXkQHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZCdhCADAAfAOmkORbitHI3VaRmBXj9zLSjCCAUBZ
-se8WAMy3TAjzIiq2cx3tkQ0cZ1O5lXlPrJwP0ajL+OeowIn9Tz/4Dd6DnC0Fdjs6
-Dd0AExLd1Ti6AjBnk3mCNzZioynV2yYkbLCUj011r/PXxxRuwdJSL43ynALpJSlc
-8rPSjluZanzvXuQopnqbLwQlJifp8wpx3drkCzsTifzrb5sUjjbm0yNYOxgwzuly
-hZRAn9er2nrseq6L8u/XXQUZ69pLxxfnAAvikYlW26WX6c6LUdZN7SkynIKRuJP9
-8nygwfFlaCdHTz4wZoseWEq7Q5NSyLBbx4ntKXASloiS++Yav5nY
-=mNx7
------END PGP SIGNATURE-----
-
-tag v40.11
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:24 2025 +0200
-
-rdma-core-40.11:
-
-Updates from version 40.10
- * Backport fixes:
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMYgQHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZHPNB/0TIArBJvlhzLwIiPnWXxHd5dDOWI0Dh+bD
-Nwv2jibm8hJkdgweG3S6NBLVHijJ98w7J3KE+vqWxaWuKFFPwZHRCiMA3Y0TXemi
-DvawVLPUfa3U6ocD32AVCExGdOGx5vk3M2SQP8d2we3UVTujFe48st5NKppr8Jri
-T9ICzWAzIEKPyUmpSrvrBt4IlUZovxK91N0iCLHU+ujy/71pWty2x9qYHLd6v9q8
-r7EXvPFXE9AiqKvnAR4CoSdiUX2Rhwdiiwicr4UE5gdG5e5XexKeD0Ny7jybCurL
-MzpGEMEgdZAGeykbDcSYFMZy5QGCsq/Np1GiyeEBbZXlRuabgz9O
-=0zKV
------END PGP SIGNATURE-----
-
-tag v41.11
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:25 2025 +0200
-
-rdma-core-41.11:
-
-Updates from version 41.10
- * Backport fixes:
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
-   * libhns: Fix wrong max inline data value
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMYkQHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZGyoB/9FeFwBNFXyO2pXVWvqB21jYpHN8EXb3Pst
-XFQVnOhqpx7zi9APyc70YxOmIzL1jZ7ZpbwfxNVc5OII1Qp26hroYLNSaJ/XwgWz
-+PssYUBo3O0fyNgfiT3DzAVPx3cpqGjA8tNS9VZkmOeeKhPiWxMVacrk+FYCuAcV
-d00xfbi+bmAxmtHP/inZom1kgC+54E+EAvMh1++zVKBPVtBJAYkqsbYGC+Hy52dK
-4Bln2oE2s7yEzNodRQVyctYqv95Dt9KZvadD/Guci1RWIp5Zwjz3UNw8sCa3vsXD
-Ek84JrRGxL+1jbsX8fgOTHpddxh81u4oVHmDd+QjUEDQv058Tsb9
-=+j4T
------END PGP SIGNATURE-----
-
-tag v42.11
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:25 2025 +0200
-
-rdma-core-42.11:
-
-Updates from version 42.10
- * Backport fixes:
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
-   * libhns: Fix wrong max inline data value
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMYkQHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZCbECACrV1+jwi9eTndNFAeTPlXsywRgAfwige5O
-A7PH+TQWpafaS8jwJkuEf0fNjmGefiKKBWFn4/XXfkmQbqU/AkgXvWBKfJf+uCbI
-MwrtI3loLXGz7K3ilOvITUmacQrdZUjZuPrytPKfUROCbGCMhlpcAhTGtjQEtJgF
-hoJHJgDMFncxJBE7VPcefGKApnuDvb4wyy9NympLR/Ot3j4dYv6PZ6LfTYCFK6Bt
-EPbmEFjh4ZbAPTVvgHduMZZP9C0QRy3X0dC4NO3da0SZcF3xNnFg6b21QjskJHx3
-iYujbjay2TQdiADvSJGR73pDOdkXwp8f+1bjZGmFJZ2Vb0U7EoVT
-=tqNT
------END PGP SIGNATURE-----
-
-tag v43.10
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:26 2025 +0200
-
-rdma-core-43.10:
-
-Updates from version 43.9
- * Backport fixes:
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
-   * libhns: Fix wrong max inline data value
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMYoQHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZPo7B/wMXhMEjksPWKb3i0YMmwgmvfdnL8GUGobg
-Vw52gCDOc8tjmBLjGSqu064tFdw/oMDsDFz8zClk87ApnChNixEWMuEo7CRfZtbb
-pWQp0fEKbQkYfeJtzkHD7y3AXucUn65Cr0udr42KEDYAIHTxHBbQ8yKEt3hdhJk6
-f978PP9vkkchQ16BjcMjdkakSByc3hYK8uy1qeFebF0oW+jFOROw01dZ+41npplV
-wrICfw52TjtXH/1fxv+pE9YUFUaHtXywxpJhYyxOJadW4SVoZAUxJEjegaDzxRdU
-vkD35xceVQ7PHBSC7hbKuT1hdvpZSkzymJGnfpJji3WnjYvGW/40
-=HWOB
------END PGP SIGNATURE-----
-
-tag v44.10
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:27 2025 +0200
-
-rdma-core-44.10:
-
-Updates from version 44.9
- * Backport fixes:
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
-   * libhns: Fix wrong max inline data value
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMYsQHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZPqVB/sFvCDALNG+wsIpXAd0rCpb9Hnt51omNcFu
-UrQHRCfo0Ewypx3lhBansr8tJqtATxrZoTWm6DDAtd8Mf+qBeCTzpG46bRPIkXQV
-udS44RH7FuPuViaSp48NNS+C/GCA0WjGHPMJ4aZ/W20/WaJOxX+m4NrkDumKfjPb
-IRbxBlEdpW/VUJLx+xJ4/KqFIvXCoz/fcfvM3PuVS6/x6iHejeBrBUOoRqhUk6Dw
-6n1JJoN5dUs2rSTJLeu0974AwBjYPJce3iqyr3iodxEyPS11EEl8/FWBxD7Cp2Vy
-vMW4tfFc3mzch53GxPzGB+VR/ElGcWRe0YWbSNPumHVbGq2Okj2c
-=mXtW
------END PGP SIGNATURE-----
-
-tag v45.9
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:27 2025 +0200
-
-rdma-core-45.9:
-
-Updates from version 45.8
- * Backport fixes:
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
-   * libhns: Fix wrong max inline data value
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMYsQHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZHyTCAC1yfgCbcr7ZQI4YJ5let7cKrwtkM6JBWEa
-9xYGxHmVY7etkaBiB5r+Wer3PhyK8Od1da30VYg8Crl0nse0wnBhkeMEMiPztIBM
-LIGuK4nyqDrE3SeUNd155tbCU1EjwScEBcYeOzUGvlXrfUiSFwl4q07n6eMYflOg
-dITY86uZCP765Yy1mH8I/7ujlqNuBUgaEeUy9UmSp7vPJbWsTBqYwJDlsc9NHGVV
-fnjN+uuoUX/9JX8jmp6psSHm8C1LltjbY1Kk4hGBRDLQqefUiVhYUFNXNjU7Zjhh
-Y8AHwvbf0DmfueD3I4H7alNz++TXvF2zRt73ocASCJC0MuY5IccV
-=b7wf
------END PGP SIGNATURE-----
-
-tag v46.8
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:28 2025 +0200
-
-rdma-core-46.8:
-
-Updates from version 46.7
- * Backport fixes:
-   * libhns: Fix double-free of rinl buf->wqe list
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
-   * libhns: Fix wrong max inline data value
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMYwQHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZKMWB/9nzhpVNkZn3X5zrJkkEIO8U6MhRYcpl5PT
-9wU2HVlTwv3TI1U2u40qW0lLyKwU4gF/tHBCtIuckdZzwM1MsYf3t5NtmOcApVDh
-3IRkmGsAssWjjxT2WgNODKDSTfBBUX09Nhg0e8XBUHMRUpddROs41yhqTHITn3mU
-+o4vV2RfkbS04MXE91PE7Kj03SuEgCHwATfx2mQegwwkV0arIVxHzsbPOHReYZBh
-hgdXo2lzz/8pcpeAqI58wBQL7gX8GM0cJfKTWN+G9XqVV9FVNHeXxqPiphe7ir52
-gEbiQ/Kitfv46iFHzmzliq9LnIRY7VjudDuzU4F2oIi8uRjJwhz/
-=HCvG
------END PGP SIGNATURE-----
-
-tag v47.7
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:29 2025 +0200
-
-rdma-core-47.7:
-
-Updates from version 47.6
- * Backport fixes:
-   * libhns: Fix double-free of rinl buf->wqe list
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
-   * libhns: Fix wrong max inline data value
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMY0QHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZEgDB/9k4NWYQhhJq6HVSVJyCWw2dLIAMJwyl3Wd
-2RwFP1Ogy7WZqpmHmxjpULXZIn0Kw8EqPySE4JSjda4VGJ0nyjVRsYNLIfVEVuX7
-2hCRO1r8/7ujIDPQYnd6pag0xp4H97jfSnUshNovK4ckirgCC9aEGx0y2gDFqj7t
-XVHQDAJ5fnOvDfIECypSs+U6R+TNrq+YqdgwbElLIBk8srBC8nvKPYGuFRgQ3w2F
-SRNuCDmmF0bR5SyUJ4fc3Y67J2AFE5pN9QthQwEhiUGgDKvqLkW3o6nHfSeG3+Hn
-VY0UrSt3nqWlCucq6yOZUMVB5DuV8DfPNK+OswTkz2yajByv15Ja
-=74bk
------END PGP SIGNATURE-----
-
-tag v48.6
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:29 2025 +0200
-
-rdma-core-48.6:
-
-Updates from version 48.5
- * Backport fixes:
-   * libhns: Fix double-free of rinl buf->wqe list
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
-   * libhns: Fix wrong max inline data value
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMY0QHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZBA1CAC0vayYJgxHd3t5TW2DlDFr9k3RQe+yG84S
-2oqS8dGunYtvgG1nHUGi1WcQFHe6WhNAAo/oo3G/UyWz6+bOR0HZXJku5zPp3C3L
-RcK3uGmylza8VFfmrM3f4kCw1OEtvgDBL9P5KX9PXM+QRmW4YnUZF51DHuxojBLn
-QLrMPW/RnxnV++bwJVkiBZNnXzOE+WlSbNOZXocAXopDBGUr8BdUC63nwrt4OCA4
-4ZGXmJ857aR838VxoM0ELMPyyItGRmndMloMdWyvUTpb63As/2FqW0lGS4t1gFSJ
-Yr7qoQbT0Pl6HvuisZNTcur7PK9Mvx6ekGoZpja+gp4G/ATUQtdp
-=GOU9
------END PGP SIGNATURE-----
-
-tag v49.6
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:30 2025 +0200
-
-rdma-core-49.6:
-
-Updates from version 49.5
- * Backport fixes:
-   * libhns: Fix double-free of rinl buf->wqe list
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
-   * libhns: Fix wrong max inline data value
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMY4QHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZNsXB/9Ec1RTRW7kFUBqy7nzAFOb/9reikDhMXHq
-D/Hbr+WBcxJ6S9yMiVk8Qdz9tqWravDCp64pQFa33Iuxke4C5ZVp6bCUAGoVpvLC
-cWler6KZ2clh7vjyF3HglrbNqxoY8bGjHSQBFZ7+sJoC7HXqRgZ/LWfvCazQFT26
-blEa/zVKijKNH/8JJzi4zf+YXuI8shSiZR3IxeHmd2/d0i0kGkVarhhcpYPT7qu+
-hrp4BIjxfWqXGtE5CHLtDRlN3hLTvyao7uRIzJ+1NCheB/nsXfocLVDneG1dEgIK
-4kyaIj19GnAxVrfxv6OWpku/yDpRlIo4Kq5TtJglaTDY/YbIidRf
-=XujU
------END PGP SIGNATURE-----
-
-tag v50.5
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:31 2025 +0200
-
-rdma-core-50.5:
-
-Updates from version 50.4
- * Backport fixes:
-   * libhns: Fix double-free of rinl buf->wqe list
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
-   * libhns: Fix wrong max inline data value
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMY8QHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZJHpB/9RulCT0KmZRYaKKCOwzB4B7ae3YEAQZcYk
-lYY8gsmsE6t6ejtsIRY+qSRbOnP2H+RAvm3W9iJSW0fhV6iWdupEKgdYMa6V8Umd
-asVzCRFRtAjgtD6gpoJOkRMCI1gw60L5Js7aXvSuYaPoKMhyrowm99CpGWcOXzdC
-8D2oZDki++LRoZ44Tj18TUrysYb5Hnun/hiIecowtkwWgQkHycC4LQJF806W1lQx
-1OiyMAoS315McTWqSyU/0V85jxRZTz+aVFHO3702rgfCFcWWE2yKlV9dh61ZvGXB
-NmY8W03opzrCqm2jXMRE54046ChImpqlGRZlMM1TOybaMIdYhNXz
-=se3G
------END PGP SIGNATURE-----
-
-tag v51.5
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:31 2025 +0200
-
-rdma-core-51.5:
-
-Updates from version 51.4
- * Backport fixes:
-   * libhns: Fix double-free of rinl buf->wqe list
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
-   * libhns: Fix wrong max inline data value
-   * libhns: Clean up data type issues
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMY8QHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZL2xB/0dMy7wW0VbR4gS1w8A768AwHRQVjskib/U
-t3kAeKpNEFFcZaZeylga/VHT/DFPmvFAiBeP+tC1BrNt+lF6eldqk1H9GnoIuCea
-jPP79YE7JODFYt2bwCiWeZKwPtt4bw0zzUOvBF8L4FYF3LgT8R1xwq4zHgR8b2Tu
-BSA2OQR3YBBd8tZ3QJliWrQ3gjJY/CNKm2I6BXhWqBeIByDmPXnDiWQEVpPprUpZ
-PHJnptu6GzQcL7PfbyRRhCqxtmSbhmCK2MP7MQssNuU0Widf/fSjTOxWRBvuu+8o
-WQaaOiWc8ea4gaps2G/e6FguwsrBtohsMbGNvrS3cUkNzLz6RcOD
-=Fqub
------END PGP SIGNATURE-----
-
-tag v52.4
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:32 2025 +0200
-
-rdma-core-52.4:
-
-Updates from version 52.3
- * Backport fixes:
-   * efa: Fix work request index double use
-   * libhns: Fix double-free of rinl buf->wqe list
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
-   * libhns: Fix wrong max inline data value
-   * libhns: Clean up data type issues
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMZAQHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZG8uCACbukK1hHPzyvWoXsO9CnCp4Kw8lcSF8xTH
-iARtRlJwB0HB0sokNeWGekcQO6Gwq9+h1X1HRmaVS9C3uvTySk75hDsicLNYZpOc
-qTQu9q8hmgxs4EQH/bRI83BAVXFTu99rXd5FBwBExLhZtxWfWhquazIMVSXbmbFA
-JemcqmCXeBxBtDgoBjEYCakFTqWdZJWMigaxSrJQFYSy5DcpiJJ9mWKR5/xvrvFW
-B+mPj0nY3+gd9+nogXkSsiO3G27DpqXgtuQILLN1cOVunZ3qg0PK/H0DUCTp155L
-V3XST4vvs65rubq+PFYksNdwc19IjFbFqyQ4KpsmAenO3eo2kUzI
-=SbGW
------END PGP SIGNATURE-----
-
-tag v53.4
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:34 2025 +0200
-
-rdma-core-53.4:
-
-Updates from version 53.3
- * Backport fixes:
-   * efa: Fix work request index double use
-   * libhns: Fix double-free of rinl buf->wqe list
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * libhns: Fix freeing pad without checking refcnt
-   * libhns: Fix pad refcnt leaking in error flow of create qp/cq/srq
-   * libhns: Fix ret not assigned in create srq()
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
-   * libhns: Fix wrong order of spin unlock in modify qp
-   * libhns: Fix wrong max inline data value
-   * libhns: Clean up data type issues
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMZIQHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZPR6CACix8CSSBUfYPjEr65MT3wjywGK7bPN4wt1
-/rRLpHT3atHGDDp7JfzmP2u1fDbxEW3/nxcqPZP+Hmwgj3+awGB1NNN9DiPmxMD8
-QFommlTuwKY/KTLEzQxlP+n/LF/aYAdYFeOGT8Lyw/lMgtx8YxQXqQrYWZ278IiK
-OWVqUhrDHMSMeLsrchZ46av8lUOD7T7sUPB766srp688c5ShFbCYTeGBiHYfEamC
-/wVZ+WEhEfk62d+ylLyEPecdVunz7JFXk99uojbNOCWytI/IcF7NMmkj6nzNxtoP
-aKKgl4MW7USYX5Pd0k78qMojeeFTTPV7Sqvx5TZZ5DLWU1uy9lkG
-=p/Rt
------END PGP SIGNATURE-----
-
-tag v54.3
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:34 2025 +0200
-
-rdma-core-54.3:
-
-Updates from version 54.2
- * Backport fixes:
-   * efa: Fix work request index double use
-   * libhns: Fix double-free of rinl buf->wqe list
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * libhns: Fix freeing pad without checking refcnt
-   * libhns: Fix pad refcnt leaking in error flow of create qp/cq/srq
-   * libhns: Fix ret not assigned in create srq()
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
-   * libhns: Fix wrong order of spin unlock in modify qp
-   * libhns: Fix wrong max inline data value
-   * libhns: Clean up data type issues
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMZIQHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZOKUB/0SYgoCaxnsUzUHcjp7F+Hig/gYU3lXOJKR
-pTzmgrsn60pdYVDqaUiZzaipYktOon7OxDZ9CmrbwICb2V5HeUgLH++fk1mfB/gB
-2+8SsAcIaoa7YC9YfRFXLDhqQGH48lAyDh7eSyD074zjwlQDFH8Q5FGM18Ez1RFS
-ox9pKQWZKRB8quVSBGwRVeMGKEUlLakgmhxAazBBIvbg8UT8bZlt05JPbjn37LKV
-pCb4HhekdV3QRiFtzsRA1Vqn8fa/fdhTthvn88lYgRxYgZSkGhgiY2GASeVSDkRN
-90a4WSZm8A63YKQ3jbIy8f2pKFNaBf2QyfsLrfjTeJRfVL+fPPJL
-=icLq
------END PGP SIGNATURE-----
-
-tag v55.2
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:36 2025 +0200
-
-rdma-core-55.2:
-
-Updates from version 55.1
- * Backport fixes:
-   * efa: Fix work request index double use
-   * libhns: Fix double-free of rinl buf->wqe list
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * libhns: Fix freeing pad without checking refcnt
-   * libhns: Fix pad refcnt leaking in error flow of create qp/cq/srq
-   * libhns: Fix ret not assigned in create srq()
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
-   * libhns: Fix wrong order of spin unlock in modify qp
-   * libhns: Fix wrong max inline data value
-   * libhns: Clean up data type issues
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMZQQHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZLg9B/0QV2ru28f+QOP0vjS0Ux86wWoWL/8jf7GW
-PI59SVyDxo42r37POTemL1PUGPFeY+XmoHsMcrm/OI3sc+C5phxiGYQzVdeVhMMx
-oOWhp2W8L54lfnzka88JeHgI/6O7HHiu9c+QgMEhIz/CplGLjVkHFOLY5Dl2jOkS
-HpnBGPUhN6el5IT8H+7hUFTUqvOuVsjVhyeYHB15X4oSBJChu5m+BFCMQRpf9hnC
-9a7mtnIvsEyymeKYg+x38ETUBCRuVZHxVvCWmRheBI/wRRy3LiszXtCAvrCrD9mR
-4oFooHRQWDVd1cFBVItSj84RDCKeP33UXwxfk3eVD4R7gzrXIRfw
-=Fgi7
------END PGP SIGNATURE-----
-
-tag v56.2
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:37 2025 +0200
-
-rdma-core-56.2:
-
-Updates from version 56.1
- * Backport fixes:
-   * efa: Fix work request index double use
-   * libhns: Fix double-free of rinl buf->wqe list
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * libhns: Fix freeing pad without checking refcnt
-   * libhns: Fix pad refcnt leaking in error flow of create qp/cq/srq
-   * libhns: Fix ret not assigned in create srq()
-   * util: Fix mmio read on ARM
-   * azp: Overcome kernel.org AI protection check
-   * libhns: Fix wrong order of spin unlock in modify qp
-   * libhns: Fix wrong max inline data value
-   * libhns: Clean up data type issues
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMZUQHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZFR5B/4/L2QuVYydKuuRuX+IhTQExooM/dzMuaOw
-hAe+VaUS1BAwQ1+y2GgS7epGDLoMrwx3s8LoG5ROxG8y1FxHuYm/e0vm2x1CtDmt
-YRbELaqW5El0lyHxsLPvQjlTPOHgv4MmXhKUSkRVnI3CAoaBDws8eGOwYYqZSxZR
-ts/Pz3jqzdPAaoA/+lL7FXGtxa+8Gj0+j8fl+iaoO7/yx1rFGEy0MKCsrIxyBQkD
-mU6TieZotZjadrdtAU9VPd7bOAZOY6RZbpv+s3SzYmbW529njxssch+GXeFC0eX5
-N29XMgVV0z3ejut5DER/j77DLy0r7iLTN+GVkxM7eZF6kowhyxfT
-=/2qI
------END PGP SIGNATURE-----
-
-tag v57.1
-Tagger: Nicolas Morey <nmorey@suse.com>
-Date:   Mon Jun 16 17:00:41 2025 +0200
-
-rdma-core-57.1:
-
-Updates from version 57.0
- * Backport fixes:
-   * efa: Fix work request index double use
-   * libhns: Fix double-free of rinl buf->wqe list
-   * verbs: Assign ibv srq->pd when creating SRQ
-   * libhns: Fix freeing pad without checking refcnt
-   * libhns: Fix pad refcnt leaking in error flow of create qp/cq/srq
-   * libhns: Fix ret not assigned in create srq()
-   * util: Fix mmio read on ARM
-   * stable branch creation
------BEGIN PGP SIGNATURE-----
-
-iQFEBAABCAAuFiEEQtJThcGhwCuLGxxvgBvduCWYj2QFAmhQMZkQHG5tb3JleUBz
-dXNlLmNvbQAKCRCAG924JZiPZMxBB/9mp+iBXmk8PQgDSVHreUEffx79Zx240F//
-bVzTXN7hm0fNACKo36XSEcIE7yVWKdW1izeEcfTFV+RH7yX4R3bkjHfeGsKSQ7RE
-u2SjH0yq4HlXELsw5F/RN236vYZRgNHEKb4YH7NpUVGSx9zsOgWfZe5ZuqE8ZMeg
-jsetWQ3PJma6Mlcihh5Sl9MadDpjo3bix9xITbq7AP1BdgZiuuPMsg6MoMQgPxTk
-pXi/LanwQa7y57PjCTRLeYQfsx72/HOkZSIKeB42fwRsm0Z7HiMgTuMdTmGiJXgf
-j959YpoB8NPyHil2+XmRBcmZVvpfGJmWuFOITy1SgVQAT25XbRPd
-=NQli
------END PGP SIGNATURE-----
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR21MB3102.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d5c5b2e-c4d2-4767-7a29-08ddadb7495b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jun 2025 15:54:47.7426
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: y83DuE1drWfoA8FATK+4CmBe4cDK6LvXkiIgriISBJ5m+Phy7oxaHo9cGoOB0VDTk0SP3mL5NsvnOcx9hGabCA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR21MB3428
+
+> Subject: [PATCH net-next v3 3/4] net: mana: Add speed support in
+> mana_get_link_ksettings
+>=20
+> Allow mana ethtool get_link_ksettings operation to report the maximum spe=
+ed
+> supported by the SKU in mbps.
+>=20
+> The driver retrieves this information by issuing a HWC command to the har=
+dware
+> via mana_query_link_cfg(), which retrieves the SKU's maximum supported sp=
+eed.
+>=20
+> These APIs when invoked on hardware that are older/do not support these A=
+PIs,
+> the speed would be reported as UNKNOWN.
+>=20
+> Before:
+> $ethtool enP30832s1
+> > Settings for enP30832s1:
+>         Supported ports: [  ]
+>         Supported link modes:   Not reported
+>         Supported pause frame use: No
+>         Supports auto-negotiation: No
+>         Supported FEC modes: Not reported
+>         Advertised link modes:  Not reported
+>         Advertised pause frame use: No
+>         Advertised auto-negotiation: No
+>         Advertised FEC modes: Not reported
+>         Speed: Unknown!
+>         Duplex: Full
+>         Auto-negotiation: off
+>         Port: Other
+>         PHYAD: 0
+>         Transceiver: internal
+>         Link detected: yes
+>=20
+> After:
+> $ethtool enP30832s1
+> > Settings for enP30832s1:
+>         Supported ports: [  ]
+>         Supported link modes:   Not reported
+>         Supported pause frame use: No
+>         Supports auto-negotiation: No
+>         Supported FEC modes: Not reported
+>         Advertised link modes:  Not reported
+>         Advertised pause frame use: No
+>         Advertised auto-negotiation: No
+>         Advertised FEC modes: Not reported
+>         Speed: 16000Mb/s
+>         Duplex: Full
+>         Auto-negotiation: off
+>         Port: Other
+>         PHYAD: 0
+>         Transceiver: internal
+>         Link detected: yes
+>=20
+> Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+> Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+> Reviewed-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> Reviewed-by: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+
+Reviewed-by: Long Li <longli@microsoft.com>
+
+> ---
+> Changes in v3:
+> * Rebase to latest net-next branch.
+> Changes in v2:
+> * No change.
+> ---
+>  drivers/net/ethernet/microsoft/mana/mana_en.c      | 1 +
+>  drivers/net/ethernet/microsoft/mana/mana_ethtool.c | 6 ++++++
+>  include/net/mana/mana.h                            | 2 ++
+>  3 files changed, 9 insertions(+)
+>=20
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> index 547dff450b6d..d7079e05dfb8 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> @@ -1272,6 +1272,7 @@ int mana_query_link_cfg(struct mana_port_context
+> *apc)
+>  		return err;
+>  	}
+>  	apc->speed =3D resp.link_speed_mbps;
+> +	apc->max_speed =3D resp.qos_speed_mbps;
+>  	return 0;
+>  }
+>=20
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> index 4fb3a04994a2..a1afa75a9463 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> @@ -495,6 +495,12 @@ static int mana_set_ringparam(struct net_device *nde=
+v,
+> static int mana_get_link_ksettings(struct net_device *ndev,
+>  				   struct ethtool_link_ksettings *cmd)  {
+> +	struct mana_port_context *apc =3D netdev_priv(ndev);
+> +	int err;
+> +
+> +	err =3D mana_query_link_cfg(apc);
+> +	cmd->base.speed =3D (err) ? SPEED_UNKNOWN : apc->max_speed;
+> +
+>  	cmd->base.duplex =3D DUPLEX_FULL;
+>  	cmd->base.port =3D PORT_OTHER;
+>=20
+> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h index
+> 038b18340e51..e1030a7d2daa 100644
+> --- a/include/net/mana/mana.h
+> +++ b/include/net/mana/mana.h
+> @@ -533,6 +533,8 @@ struct mana_port_context {
+>  	u16 port_idx;
+>  	/* Currently configured speed (mbps) */
+>  	u32 speed;
+> +	/* Maximum speed supported by the SKU (mbps) */
+> +	u32 max_speed;
+>=20
+>  	bool port_is_up;
+>  	bool port_st_save; /* Saved port state */
+> --
+> 2.34.1
 
 
