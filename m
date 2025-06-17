@@ -1,55 +1,55 @@
-Return-Path: <linux-rdma+bounces-11389-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11388-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14242ADC524
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 10:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 55B2AADC522
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 10:36:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8264C188D636
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 08:36:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3658E1887BF1
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 08:36:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10E9F28F527;
-	Tue, 17 Jun 2025 08:36:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE40328FFE5;
+	Tue, 17 Jun 2025 08:36:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hYMZPVmt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cj+m4V9+"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C578419DF6A
-	for <linux-rdma@vger.kernel.org>; Tue, 17 Jun 2025 08:36:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E81A28FABE
+	for <linux-rdma@vger.kernel.org>; Tue, 17 Jun 2025 08:36:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750149368; cv=none; b=H6fu6QD1AoTp/URLR1a7XwFImdE7C6j4XAdTF+KWMpDVlcuObQfXlieDf3PRMedNOmSTH+Mvc8lkRGUsVWHq6FigcL6b63fR/c23DH6FZQHwknotN9bfHbUBCKO84SHaOmhhPyhCSnp036FkDYdO0jjxltAuM2oWqKt9rFD8ePM=
+	t=1750149364; cv=none; b=aBwsuYRpcqleZEvbHpsooMijV74EbETYe50Kf3uZdnhiyOMCwKYRzubBjhn/08NrmqThKN4S6WQT6hfO/5wKek/2r9c+emSnG8WobhwTgFwYtaeZv/1aO+NsXd6hj++sq5Bso5f+WmSnl+EkTTkH1dmgv6VZ0/Vx26CdwqXRiQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750149368; c=relaxed/simple;
-	bh=hSMSiZb3PGlfN5vxPVmRZjLI9TI+XWBxFYYuG/YWIPM=;
+	s=arc-20240116; t=1750149364; c=relaxed/simple;
+	bh=a1kEFaEZ/yywk/TZOJ44qo859jl8kLNWfJfkXbM8TdU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=g8O6xZF5p9DNkflroKHVb2+zu0xXTplZDVoFkqCtcJ88G3OEAbxmTxtQQTs0XYtUNkwliLZaELNNUO666PDYwobxkcoDIQrmuuKy7Cea5cOCNVKNzey4+ivITiqjWKBkfHnlpOm0kSIuJfT3zq+gweyYIyHtCzxkcDWzu20KxjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hYMZPVmt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8A4AC4CEE3;
-	Tue, 17 Jun 2025 08:36:07 +0000 (UTC)
+	 MIME-Version; b=G60Y8K7tnCURpy1RVWHVQLxNsKTX6uMHCYL4iis+ZyPGijMF6kJYtrIjfrWvfI0B4hqShLzFTKhSv/lkqOmiKM/0d5wdTkk9ao+CdRwRKN9RA7+Zbmcw3HbG0lg9q8xaEVGLRF5xRlsmAsS/Gesayctd+KeeOTjjEGtNWrYtViM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cj+m4V9+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDF6FC4CEED;
+	Tue, 17 Jun 2025 08:36:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750149368;
-	bh=hSMSiZb3PGlfN5vxPVmRZjLI9TI+XWBxFYYuG/YWIPM=;
+	s=k20201202; t=1750149364;
+	bh=a1kEFaEZ/yywk/TZOJ44qo859jl8kLNWfJfkXbM8TdU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hYMZPVmtYYYvmUdYYswf5GC7ql6VFMB0KiiLG/pGTdGnXraY7OkGPtdZuzI/zqwcH
-	 hFV10R+Z4kVcbw7YK5TfdbA2KbBRdbI/DsbL96fD7XSkjF7TP+YqhwQT4IWl7eAEc8
-	 4FIw7MUqUaEyadkMfoAacunr6Qwtd8Owdogn+7Q0Fo5uJIdusFzZvwhB2+jjJJcSbl
-	 X+N75Cm9zsoPTjK/UkGezO+75EJDSFn32WkEuukG5BG5himKNBguwZVhjab25/GTfC
-	 NWwSwncmPsHRWgycEQzZXGv729f0mGAb/eKl+aHhzAQcivNqw1UNv1zbwRc+FFGcUx
-	 OOWXYEv2z30ew==
+	b=Cj+m4V9+fyO/zrxWqr7keyfKVXMgAuHBYE3pruZchEX9IdHac5UlsTgsedhwYbFir
+	 zFxyyn7zgcWuu9zHZVZtgo0T9wfPsLrZ9Dop03IWGzrqqw7BUSQtzkFQwe857/l0p7
+	 nKZxRRcTi2m4DAU0FAojuOCdGVBURWaPm79Lg4sYFgltQQTuzfIAZFjhqq3O1tdeLy
+	 SFrWegNJ2RAG0MFu8xY9/GFHHGA5mybMzRl7EiwtPTUbGHCd+Dvws4rkZLhXINnBLY
+	 RcyN9yd3S9rBbOfWoc8vH6rLNQEpzCnXgfYGhi53ykHht6osFAfz98K/Ow/mhVYfhu
+	 pw5nxI6yw6G3A==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Parav Pandit <parav@nvidia.com>,
 	"Eric W . Biederman" <ebiederm@xmission.com>,
 	linux-rdma@vger.kernel.org,
 	Mark Bloch <mbloch@nvidia.com>
-Subject: [PATCH rdma-next 1/7] RDMA/uverbs: Check CAP_NET_RAW in user namespace for flow create
-Date: Tue, 17 Jun 2025 11:35:45 +0300
-Message-ID: <2507c8db067e0e983c4ff9a76bf82ce8cb7256aa.1750148509.git.leon@kernel.org>
+Subject: [PATCH rdma-next 2/7] RDMA/uverbs: Check CAP_NET_RAW in user namespace for QP create
+Date: Tue, 17 Jun 2025 11:35:46 +0300
+Message-ID: <1845d577e9b09caad3af28474aa2498390587db3.1750148509.git.leon@kernel.org>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1750148509.git.leon@kernel.org>
 References: <cover.1750148509.git.leon@kernel.org>
@@ -67,99 +67,70 @@ Currently, the capability check is done in the default
 init_user_ns user namespace. When a process runs in a
 non default user namespace, such check fails. Due to this
 when a process is running using podman, it fails to create
-the flow resource.
+the QP.
 
 Since the RDMA device is a resource within a network namespace,
 use the network namespace associated with the RDMA device to
 determine its owning user namespace.
 
-Fixes: 436f2ad05a0b ("IB/core: Export ib_create/destroy_flow through uverbs")
+Fixes: 2dee0e545894 ("IB/uverbs: Enable QP creation with a given source QP number")
+Fixes: 6d1e7ba241e9 ("IB/uverbs: Introduce create/destroy QP commands over ioctl")
 Signed-off-by: Parav Pandit <parav@nvidia.com>
-Suggested-by: Eric W. Biederman <ebiederm@xmission.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/device.c     | 27 +++++++++++++++++++++++++++
- drivers/infiniband/core/uverbs_cmd.c |  8 +++++---
- include/rdma/ib_verbs.h              |  2 ++
- 3 files changed, 34 insertions(+), 3 deletions(-)
+ drivers/infiniband/core/uverbs_cmd.c          | 11 +++++++----
+ drivers/infiniband/core/uverbs_std_types_qp.c |  2 +-
+ 2 files changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 468ed6bd4722..79d8e6fce487 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -145,6 +145,33 @@ bool rdma_dev_access_netns(const struct ib_device *dev, const struct net *net)
- }
- EXPORT_SYMBOL(rdma_dev_access_netns);
- 
-+/**
-+ * rdma_dev_has_raw_cap() - Returns whether a specified rdma device has
-+ *			    CAP_NET_RAW capability or not.
-+ *
-+ * @dev:	Pointer to rdma device whose capability to be checked
-+ *
-+ * Returns true if a rdma device's owning user namespace has CAP_NET_RAW
-+ * capability, otherwise false. When rdma subsystem is in legacy shared network,
-+ * namespace mode, the default net namespace is considered.
-+ */
-+bool rdma_dev_has_raw_cap(const struct ib_device *dev)
-+{
-+	const struct net *net;
-+
-+	/* Network namespace is the resource whose user namespace
-+	 * to be considered. When in shared mode, there is no reliable
-+	 * network namespace resource, so consider the default net namespace.
-+	 */
-+	if (ib_devices_shared_netns)
-+		net = &init_net;
-+	else
-+		net = read_pnet(&dev->coredev.rdma_net);
-+
-+	return ns_capable(net->user_ns, CAP_NET_RAW);
-+}
-+EXPORT_SYMBOL(rdma_dev_has_raw_cap);
-+
- /*
-  * xarray has this behavior where it won't iterate over NULL values stored in
-  * allocated arrays.  So we need our own iterator to see all values stored in
 diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index bc9fe3ceca4d..08a738a2a1ff 100644
+index 08a738a2a1ff..84f9bbc781d3 100644
 --- a/drivers/infiniband/core/uverbs_cmd.c
 +++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -3225,9 +3225,6 @@ static int ib_uverbs_ex_create_flow(struct uverbs_attr_bundle *attrs)
- 	if (cmd.comp_mask)
- 		return -EINVAL;
+@@ -1312,9 +1312,6 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
  
--	if (!capable(CAP_NET_RAW))
--		return -EPERM;
--
- 	if (cmd.flow_attr.flags >= IB_FLOW_ATTR_FLAGS_RESERVED)
- 		return -EINVAL;
- 
-@@ -3272,6 +3269,11 @@ static int ib_uverbs_ex_create_flow(struct uverbs_attr_bundle *attrs)
- 		goto err_free_attr;
- 	}
- 
-+	if (!rdma_dev_has_raw_cap(uobj->context->device)) {
-+		err = -EPERM;
-+		goto err_uobj;
+ 	switch (cmd->qp_type) {
+ 	case IB_QPT_RAW_PACKET:
+-		if (!capable(CAP_NET_RAW))
+-			return -EPERM;
+-		break;
+ 	case IB_QPT_RC:
+ 	case IB_QPT_UC:
+ 	case IB_QPT_UD:
+@@ -1330,6 +1327,12 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
+ 						 &ib_dev);
+ 	if (IS_ERR(obj))
+ 		return PTR_ERR(obj);
++
++	if (cmd->qp_type == IB_QPT_RAW_PACKET) {
++		if (!rdma_dev_has_raw_cap(ib_dev))
++			return -EPERM;
 +	}
 +
- 	if (!rdma_is_port_valid(uobj->context->device, cmd.flow_attr.port)) {
- 		err = -EINVAL;
- 		goto err_uobj;
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 38f68d245fa6..5e70a5cf35c3 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -4864,6 +4864,8 @@ static inline int ibdev_to_node(struct ib_device *ibdev)
- bool rdma_dev_access_netns(const struct ib_device *device,
- 			   const struct net *net);
+ 	obj->uxrcd = NULL;
+ 	obj->uevent.uobject.user_handle = cmd->user_handle;
+ 	mutex_init(&obj->mcast_lock);
+@@ -1451,7 +1454,7 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
+ 	}
  
-+bool rdma_dev_has_raw_cap(const struct ib_device *dev);
-+
- #define IB_ROCE_UDP_ENCAP_VALID_PORT_MIN (0xC000)
- #define IB_ROCE_UDP_ENCAP_VALID_PORT_MAX (0xFFFF)
- #define IB_GRH_FLOWLABEL_MASK (0x000FFFFF)
+ 	if (attr.create_flags & IB_QP_CREATE_SOURCE_QPN) {
+-		if (!capable(CAP_NET_RAW)) {
++		if (!rdma_dev_has_raw_cap(device)) {
+ 			ret = -EPERM;
+ 			goto err_put;
+ 		}
+diff --git a/drivers/infiniband/core/uverbs_std_types_qp.c b/drivers/infiniband/core/uverbs_std_types_qp.c
+index 7b4773fa4bc0..3f7bd5702fe4 100644
+--- a/drivers/infiniband/core/uverbs_std_types_qp.c
++++ b/drivers/infiniband/core/uverbs_std_types_qp.c
+@@ -133,7 +133,7 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
+ 		device = xrcd->device;
+ 		break;
+ 	case IB_UVERBS_QPT_RAW_PACKET:
+-		if (!capable(CAP_NET_RAW))
++		if (!rdma_dev_has_raw_cap(attrs->context->device))
+ 			return -EPERM;
+ 		fallthrough;
+ 	case IB_UVERBS_QPT_RC:
 -- 
 2.49.0
 
