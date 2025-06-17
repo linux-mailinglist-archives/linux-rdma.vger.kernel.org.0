@@ -1,114 +1,134 @@
-Return-Path: <linux-rdma+bounces-11397-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11399-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E834CADC536
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 10:44:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47FDBADC8BB
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 12:53:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBB233B343E
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 08:44:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42A697A1786
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 10:52:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96B6128FAB7;
-	Tue, 17 Jun 2025 08:44:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91C0C2D12FF;
+	Tue, 17 Jun 2025 10:53:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aaEaDK3G"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="S8y3ONei"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56C0F28DB57
-	for <linux-rdma@vger.kernel.org>; Tue, 17 Jun 2025 08:44:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4CA52192EA;
+	Tue, 17 Jun 2025 10:53:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750149865; cv=none; b=LSc3CYmWlQRR18cyejjhQiPN2R/+R5feJPFyQHI9YR0mvOFUgub1W02O7oL4PsTqPgyAqna1iYoLApmRbUfQoA4GYe9xHKHoJxVxyI3i2SXSmXcEJ1E1o2z2yuKh/+Juw939MLWRAv76Qw+fTFCGpprN1rjT40OTyjGNyQiLvO8=
+	t=1750157616; cv=none; b=G0iYiQEljZvKcLDiPvgzgxr4y9veBhp9hJStPxCAZd6b78R3mlF+kOwyvnP6uyX1OYv4bWjsBHKH4qlFS7EwYOXglM2vYquS7QlL4rMx/XO4PTAdM+Z1tc9PXPHM8Ntx+llZHHGn9C+kkFkx9Io7K46wuYx6HOQjQ2x10qtMIAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750149865; c=relaxed/simple;
-	bh=ZRUcx1fV7TAMTpOarJGOtJ98OvlVKSARIuQbqTtpWP4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BhAOnMOogs9ojeIpp/Cz0bj1kQwHBODmoeXdGQXoujHOGhowcSI08SBbOnsQANBdZUSBaF2PkDNHeVlm2TnekjeRrYHvMgkUClcnwGZxHKXLo075SUutWVKqKdrxgySjvDFBeNjOoQ6XRitKvdeEjviKgBA1VOfJwJ7SA/FOmUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aaEaDK3G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB381C4CEE3;
-	Tue, 17 Jun 2025 08:44:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750149864;
-	bh=ZRUcx1fV7TAMTpOarJGOtJ98OvlVKSARIuQbqTtpWP4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aaEaDK3G2PyTT+Mq07ambSWnNZj/7qLTJ0XFHqUlKWt0ZXXorXSez4naeRR9LDFlz
-	 GU/uB6GA699d73fVJOaXBnMtRLtc7CcKJerqJJv4bwwLvQonQ3C5JzF5Vwmvxsn5Zf
-	 diUPZBNZ01pxejZsAYxBX0gfubERvK+gEuC8u2heEkTZIFIbLRL4UqGhS0JkJk+V54
-	 FWeMXdGHvw1klGwkzJIrDfJXAyUqgcC5O4vFAcqtKPKdN7JPAZ5IdTA7fFMLyHTmfW
-	 05nApVaQ++65CtPYM9kAOxDRbX8wEaGiGcD+BHUQ6Nm6IXvxTZ5XECFPgazIzrIWE+
-	 15PmzUmUVKGyw==
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Mark Bloch <mbloch@nvidia.com>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	linux-rdma@vger.kernel.org,
-	Parav Pandit <parav@nvidia.com>
-Subject: [PATCH rdma-next 3/3] RDMA/ipoib: Use parent rdma device net namespace
-Date: Tue, 17 Jun 2025 11:44:03 +0300
-Message-ID: <df4fcdc38f5bd0348aa0d9a49ce4253dda074ed8.1750149405.git.leon@kernel.org>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <cover.1750149405.git.leon@kernel.org>
-References: <cover.1750149405.git.leon@kernel.org>
+	s=arc-20240116; t=1750157616; c=relaxed/simple;
+	bh=LXzxy9GJIJvOZ6hEU8LpqCZKVoKFWaP9J0LdMqIm7TU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X9/e3hQGOP0Y0h7RWhN5MHuIUtmsLm0LgwErQjLz1qVS1Zk/y/EV8cISknWOC653t7lT2EV3hjYPA2BpMZEj1LZHW01S9uFRIuOnROWrr9mG2SLqYqQgDO0sF3st7XsELxQq9K5WCpPtbzbl6abrw2dHSSa7oK7/j84Y/RZkm2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=S8y3ONei; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id 28DA321176D6; Tue, 17 Jun 2025 03:53:34 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 28DA321176D6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1750157614;
+	bh=xsFfvfMOhD513ZWl589KLiqfUEOcBNPPyV+LjOiXiLI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=S8y3ONeiQr4oBJBn8VMHAJxLV/eWmSHN6tWd+UG5WGdZTb6TB5cRHkJp2t9T/SqCM
+	 geCh8p2qHCfvb3IginFivGq4/3ftZUOs8vXnFtzF+xkYzx+MDLXIJU9sMPtVBEaBrN
+	 ueF3s+jFbMuwsHyOr2GOOw7R6QPYFnhbUoElCDP4=
+Date: Tue, 17 Jun 2025 03:53:34 -0700
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Nipun Gupta <nipun.gupta@amd.com>,
+	Yury Norov <yury.norov@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Jonathan Cameron <Jonathan.Cameron@huwei.com>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Kevin Tian <kevin.tian@intel.com>, Long Li <longli@microsoft.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Krzysztof Wilczy???~Dski <kw@linux.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Simon Horman <horms@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+	Maxim Levitsky <mlevitsk@redhat.com>,
+	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
+	Peter Zijlstra <peterz@infradead.org>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, Paul Rosswurm <paulros@microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: Re: [PATCH v6 0/5] Allow dyn MSI-X vector allocation of MANA
+Message-ID: <20250617105334.GC23702@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1749650984-9193-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <20250611085416.2e09b8cd@kernel.org>
+ <20250612061055.GA20126@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20250616181148.2aed5dfe@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250616181148.2aed5dfe@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-From: Mark Bloch <mbloch@nvidia.com>
+On Mon, Jun 16, 2025 at 06:11:48PM -0700, Jakub Kicinski wrote:
+> On Wed, 11 Jun 2025 23:10:55 -0700 Shradha Gupta wrote:
+> > On Wed, Jun 11, 2025 at 08:54:16AM -0700, Jakub Kicinski wrote:
+> > > On Wed, 11 Jun 2025 07:09:44 -0700 Shradha Gupta wrote:  
+> > > > Changes in v6
+> > > >  * rebased to linux-next's v6.16-rc1 as per Jakub's suggestion  
+> > > 
+> > > I meant a branch, basically apply the patches on the v6.16-rc1 tag
+> > > and push it out to GitHub, kernel.org or somewhere else public.
+> > > Then we can pull it in and maintain the stable commit IDs.
+> > > No need to repost the patches, FWIW, just share the branch here
+> > > once you pushed it out..  
+> > 
+> > Oh, understood. Thanks for the clarity. Here is a github repo branch
+> > with the changes on v6.16-rc1 tag
+> > https://github.com/shradhagupta6/linux/tree/shradha_v6.16-rc1
+> 
+> The tag was good, but when I pulled it my check scripts complained:
+> 
+> Commit a19036b86845 ("net: mana: Allocate MSI-X vectors dynamically")
+> 	committer Signed-off-by missing
+> 	author email:    shradhagupta@linux.microsoft.com
+> 	committer email: shradhagupta@microsoft.com
+> 	Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> 
+> etc. You seem to have committed the patches with a slightly different
+> email address. Not a huge deal but better to fix it if we can.
+> 
+> So please base the tag. The code can stay the same just adjust the
+> committer or author/signoff email addrs. We can use this as an
+> opportunity to add Bjorn's email.
+> 
+> No need to repost the code just ping here once you updated the tag.
 
-Use the net namespace of the underlying rdma device.
-After honoring the rdma device's namespace, the ipoib
-netdev now also runs in the same net namespace of the
-rdma device.
+Hi Jakub,
 
-Add an API to read the net namespace of the rdma device
-so that ULP such as IPoIB can use it to initialize its
-netdev.
+I have updated the tag with the corrected author and committer details
+and added Bjorn's ack:
+https://github.com/shradhagupta6/linux/tree/shradha_v6.16-rc1
 
-Signed-off-by: Parav Pandit <parav@nvidia.com>
-Signed-off-by: Mark Bloch <mbloch@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/ulp/ipoib/ipoib_main.c | 2 ++
- include/rdma/ib_verbs.h                   | 4 ++++
- 2 files changed, 6 insertions(+)
+By 'please base the tag', did you mean we rebase the changes with rc2?
+If so, I have also created a rc2 tag branch, JFYI
+https://github.com/shradhagupta6/linux/tree/shradha_v6.16-rc2
 
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-index f2f5465f2a90..7acafc5c0e09 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-@@ -2577,6 +2577,8 @@ static struct net_device *ipoib_add_port(const char *format,
- 
- 	ndev->rtnl_link_ops = ipoib_get_link_ops();
- 
-+	dev_net_set(ndev, rdma_dev_net(hca));
-+
- 	result = register_netdev(ndev);
- 	if (result) {
- 		pr_warn("%s: couldn't register ipoib port %d; error %d\n",
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 77cea846eb2d..2288387089cd 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -4872,6 +4872,10 @@ bool rdma_dev_access_netns(const struct ib_device *device,
- 			   const struct net *net);
- 
- bool rdma_dev_has_raw_cap(const struct ib_device *dev);
-+static inline struct net *rdma_dev_net(struct ib_device *device)
-+{
-+	return read_pnet(&device->coredev.rdma_net);
-+}
- 
- #define IB_ROCE_UDP_ENCAP_VALID_PORT_MIN (0xC000)
- #define IB_ROCE_UDP_ENCAP_VALID_PORT_MAX (0xFFFF)
--- 
-2.49.0
+Hope this helps.
 
+Thanks,
+Shradha.
 
