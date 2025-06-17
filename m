@@ -1,302 +1,267 @@
-Return-Path: <linux-rdma+bounces-11402-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11403-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D861ADD3E9
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 18:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B9480ADD58F
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 18:22:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C3532168EB7
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 15:58:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EA0C16346D
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 16:14:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E8AC2DFF2D;
-	Tue, 17 Jun 2025 15:54:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A9972F5462;
+	Tue, 17 Jun 2025 16:09:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="adZxpdz9"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ukenucw7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CY4PR02CU008.outbound.protection.outlook.com (mail-westcentralusazon11021119.outbound.protection.outlook.com [40.93.199.119])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88B942F234A;
-	Tue, 17 Jun 2025 15:54:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.199.119
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750175695; cv=fail; b=E9A37hZYHL9kXvRVYYuCgqi4e0iTwajc7mfOV6uieDpFVugPiWcDJPKCypcjpo7NNCxZNPeG3CxebZ3SVSj/fTt4RDuaMr+njtoVgBaSvbgsJwsOH7BW5DwO99z5RV1JeFb7zipoeu0y0h9O2yujFXqhpw+yYkkud26uEa5Vz2k=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750175695; c=relaxed/simple;
-	bh=1w5xGHlouqvbCHA1pByANf0BbMKoQMlF0muA1GISNPY=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=tHa4VaonNLl5jV29E6kgnH6L6locPwdDbe3KQ3AO3e8ws8j9kshJoWYRYlNEIM88il5IYLNzRXS2Q7HQep4NK/rHhqEDLgKkraJycZ1tTEJjO+kXZUwxOHWX5aj+1pzzxGO+WzMdhNfmL8LmbpeZeA8kOwKAA/17jk+F5hCFl5Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=adZxpdz9; arc=fail smtp.client-ip=40.93.199.119
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Ks5/LSGsXAvo5mdFFQPqHvnptEmau7Sep66oe8PQCrSHWNix3GOBA5k69brwMYzSvk2IanoiIy9DCb8qnfp8/LsC3+NCPSA8HdX/jw5FO5FxUMp4TwuImNZeV9swaVEUnfZQxG1/RM9VsWniVIjsF2ceH5K43pfh3A7IuvdTpOfG9tomL/AO+Jbg1PS1sCO/IzJotm6sgLEZIrbEadrDYgIeXu1Gvm+P6Q1Zuc3gin9g+qr07btPTHa8j99el/IU9flvea3E95FtHUFoDON0AbyhhS/bf858ZdhXxQcDiP+DSYKtt9FtL+vHA8QmCdSQ73aVp1bGV4BHHObYKuPQkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=U8G9mD8BPdKNIjowEnopKzxsO+IxzE+1xDei1yuQ72M=;
- b=cobtHKJ7NuZ4SGDQUeRciQzUhp+mK5rRB6kmgXCS2/uwwVw6enxyvRw3mFwoQ9wqUHZLcA7SjJEdR3qJdPQzA/f5BNw8ITyzFun+kM7kYqYuPgeACr3WR6Y1pR7APChuhFtnj0wEzHEf9lYXbTMQyTGji8+YaIymcohcbsn1u57c0S4YK3xjZAaCujIhAexgb+y2MgKJSAA66BsSc00Lgr0GAQozr1W124L51Vcd6Ui6Rpmz0ofQkZhNFjqz//LsYC4OxyevkpbJSsTulCc2uhKV2V96Gd6vhVg2W8EOeqjm/wOT635/Vk/fSg0qKwMgAv4/tm2F7YgzANZ25aIGIg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U8G9mD8BPdKNIjowEnopKzxsO+IxzE+1xDei1yuQ72M=;
- b=adZxpdz9B/GLVl6xCzoXlJigT0lPRWs0fGy0lFgR5G435bTnjpBScjaAB1sCJhj54GnkYsmC/536Y9JBiKMFnLBRCy19uFuZ3G6hOlotBQDrYtRo9XgKrXagmGLmBSSDH2oUSzp6H02DRARG2BX4DpY7FdgWN01AxBo3xCdjONs=
-Received: from DS7PR21MB3102.namprd21.prod.outlook.com (2603:10b6:8:76::17) by
- DS7PR21MB3428.namprd21.prod.outlook.com (2603:10b6:8:93::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8857.17; Tue, 17 Jun 2025 15:54:47 +0000
-Received: from DS7PR21MB3102.namprd21.prod.outlook.com
- ([fe80::b029:2ac5:d92c:504f]) by DS7PR21MB3102.namprd21.prod.outlook.com
- ([fe80::b029:2ac5:d92c:504f%3]) with mapi id 15.20.8880.004; Tue, 17 Jun 2025
- 15:54:47 +0000
-From: Long Li <longli@microsoft.com>
-To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>, KY Srinivasan
-	<kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	"andrew+netdev@lunn.ch" <andrew+netdev@lunn.ch>, "davem@davemloft.net"
-	<davem@davemloft.net>, "edumazet@google.com" <edumazet@google.com>,
-	"kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>, "horms@kernel.org"
-	<horms@kernel.org>, Shiraz Saleem <shirazsaleem@microsoft.com>,
-	"leon@kernel.org" <leon@kernel.org>, "shradhagupta@linux.microsoft.com"
-	<shradhagupta@linux.microsoft.com>, "schakrabarti@linux.microsoft.com"
-	<schakrabarti@linux.microsoft.com>, "gerhard@engleder-embedded.com"
-	<gerhard@engleder-embedded.com>, "rosenp@gmail.com" <rosenp@gmail.com>,
-	"sdf@fomichev.me" <sdf@fomichev.me>, "linux-hyperv@vger.kernel.org"
-	<linux-hyperv@vger.kernel.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>
-Subject: RE: [EXTERNAL] [PATCH net-next v3 3/4] net: mana: Add speed support
- in mana_get_link_ksettings
-Thread-Topic: [EXTERNAL] [PATCH net-next v3 3/4] net: mana: Add speed support
- in mana_get_link_ksettings
-Thread-Index: AQHb31fuhL95mOtqekCQtB34Vu5SILQHgXcg
-Date: Tue, 17 Jun 2025 15:54:47 +0000
-Message-ID:
- <DS7PR21MB31024C9BF35A681628CC1DB5CE73A@DS7PR21MB3102.namprd21.prod.outlook.com>
-References: <1750144656-2021-1-git-send-email-ernis@linux.microsoft.com>
- <1750144656-2021-4-git-send-email-ernis@linux.microsoft.com>
-In-Reply-To: <1750144656-2021-4-git-send-email-ernis@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=75c59bb2-d076-4c11-81cb-e186013c36a1;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2025-06-17T15:54:15Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
- 3, 0, 1;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DS7PR21MB3102:EE_|DS7PR21MB3428:EE_
-x-ms-office365-filtering-correlation-id: 3d5c5b2e-c4d2-4767-7a29-08ddadb7495b
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|1800799024|376014|7416014|366016|38070700018|921020;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?EMBw2zKdqT1XSc1gVxDsoWsM7gGcCt3+v2EqZkXIiGIiSubcjN7FH3lrzXdC?=
- =?us-ascii?Q?XSpGrPDy33h6BTKpg4zG3SqWqN0GKm0ZquofVe1OgrNQviyxmiG7TsBtIekY?=
- =?us-ascii?Q?W3Pv3x7BFMhV8tbhNHWADTYYzNgxrLQy+gpomNYylFa+th2GMLXsjsUhf4M7?=
- =?us-ascii?Q?j0IB9GlrzXKw8tEi6mSGSUcnuMowaaoHBIvGaSGV7NUA57slC2wSRfqoUcqP?=
- =?us-ascii?Q?RDaQ0qXPaF4zzktfVYfkAG+jfg9YIFvAJKfhfl+jYOAxble76xiySqDdlcNv?=
- =?us-ascii?Q?UlYWn0D1leeF2H3QGGWG+WWUAYjUg9MenWIzO2yVHc5yr5/+5P6XsrS4BbKR?=
- =?us-ascii?Q?ZaUOBzBZme6O6NtRbspJKm54+2BaZBRTGF/4L7TeEldQWa2ZBvYoWaTX6vNu?=
- =?us-ascii?Q?sKSIkR0seNt08nCTJKXnGnv5Vrv4l43OD4Acrr3S9yrzxX3AJbE4AEqK5+st?=
- =?us-ascii?Q?k2F0WMtFL+G2RcrXVN6+VQUtinkIc5OZoiLe/f92+Rnzjjp4fwYpZO0uEa5C?=
- =?us-ascii?Q?2gim7//0o7/QmrJow5UUJjepFodAt/WQOwj+wlMN9XVwZqTwJVn8bB5v2ro8?=
- =?us-ascii?Q?RKqi3wGdJ5ZwcJ0khssuE0+FdxyR7yZQKJGxiGX91ISE4VqMuPIJSFFgmHPc?=
- =?us-ascii?Q?s15Q2lEnsPxTghqez7SvnCXUy8Kgy+cJvH10IO6bAJSojPl8sbRHzBSs9w38?=
- =?us-ascii?Q?ERo8aCXIVzs0wrFyaAq6KIcXvJc2SaN7H+/bWcW+/24uN7lGDHYxikpluiyO?=
- =?us-ascii?Q?eXm4kCmhUhw9+o0j2DzRwZ6bRQvjsI27FtpSNHL2mNtvWVOJlagSuBcsl6gh?=
- =?us-ascii?Q?1/Ci/Ck7ctycfMcCwoPGAA3NJHXR18F16IKFBYm8zszzCH5xF7K9BRfEQT+X?=
- =?us-ascii?Q?IR1M1I5owLNOyQ/E/EjpC/yBVn/be1KyVRWdrZZpdI7s9454Fq87WGY3hmE9?=
- =?us-ascii?Q?0QPlKP8Ui84dBJa/Cf8o5ytL9gy983xph8sHaptUo2plSRYbsVo62BV2zz8x?=
- =?us-ascii?Q?6iNU61CFstdM5o/n8LFFnkKpAJX0iJnG+WA8fpiRPSXYwb49ytEJeur6KXSt?=
- =?us-ascii?Q?sSV7zzy96JLbkVmA06DakLTrhvqi8NzWQeTGgIWbYHA+JzfOdNTbx2HjFE62?=
- =?us-ascii?Q?VajI6EdUZp+JHg3POZLeyljClirN3h0Cc7kHsoAVYIAzD1c903UmOiRTCsth?=
- =?us-ascii?Q?/vb48bwTcrgAJ409xn6ukfQflOgZCYUyOA2b6aFzxITHzJ2PrRSFZo6vxtVe?=
- =?us-ascii?Q?4qHNCLz1rTtDC4xDnZ4DiHER1/qeq61W2U+18gmbyRhpHMo7jGKBW+lsFlu7?=
- =?us-ascii?Q?5ji6gzhXaEkDJWPOLX3dooldwwuuPsOggtsu3j9/tSVVgfedOxOLXvrvbqBc?=
- =?us-ascii?Q?0cApwXEu9YyFpqlSoXV0UUuO0Tgew9YF5p0Th3N2A4N1hx+TvgGXC5Nahsa0?=
- =?us-ascii?Q?YFwowB2JHdVvO1SQoxYyqATr6uoD+w/MzO86K0u3dcYKLsWRB/+YyrgJwap/?=
- =?us-ascii?Q?lQf+Nrd+DngaCbw=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR21MB3102.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016)(38070700018)(921020);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?XafIgBsoUTgLhKhgIQuf/SsfWCZTPQlWqeleGlSh5fYkP6LLB1Ys2yrGC1wX?=
- =?us-ascii?Q?L8lbI42Uv8nGdHE/jdvVzLBkXd69iV1euYfYUQ5N2AdnQ+HbKv8e0rcjYAZR?=
- =?us-ascii?Q?lGNY+2deL0R/tC3vaLLPnL5Di1gloKIlU7W84ZE1AHdW75T8Fd6ryPoT2lrD?=
- =?us-ascii?Q?uD1O6zTrJQbz/Kohm1ZMSvFn4L7uHC3jP4Es+Z4jeQCxYiUUBq5HlRAFckzz?=
- =?us-ascii?Q?zWGssmwBvQsrc65bylh3Ix1JToRDZkx/NXiSodBYFj2UthD795XsDe9U0Sdu?=
- =?us-ascii?Q?SeR5rQjnoMyRCpTwbZweHM4lhY8plR7kqHZIg6fVubnsNK2LFRbdt1Hns/H0?=
- =?us-ascii?Q?t8MCLRbOvzEjlyRYTPVTbiy1nie/bjjST40N1TaUdVsCwMzJ9ow6Gi/rntJQ?=
- =?us-ascii?Q?udo6QLHSMbRydILAM4rsWQQZWV3jauhqUxCxWg+15rrG7zdVs64m89XUT1Yx?=
- =?us-ascii?Q?oCQOGIiCOiGtNxehpDuwSXtUo/wR2N5e40JXPweOmHXuMhHA9UPFBKWdReqv?=
- =?us-ascii?Q?NUCFbBbEh5wxWYMfEouWf9NhFQsM8hvG329uYKluc+YJ0BnV1kj+CgHYFCTI?=
- =?us-ascii?Q?4KK6GVwTrsDEZJNLwEE8TXgGoXqQXpsP7lLKTzASRc99J8Q06jmvej1C19BN?=
- =?us-ascii?Q?uFAeXvMZzWzDdc+7dn+j0ospMTFjzFyCYE9gnbrFTcgWZU2xOp7gOEF76Mw1?=
- =?us-ascii?Q?HYM2fhsP3BSyBVNXQl5zY90MM/6Y+E8mMlRdjIrz43sDUXjpNlZrMKp5Y+Mi?=
- =?us-ascii?Q?ssvrlD2NDmYerFRqKy9aXcAw4vzHIJ/e7V2y/33DD/6Pr15fodvR23vihbMn?=
- =?us-ascii?Q?qAzTYeRYDgBo/9NtrIzDVpjYuhfOIDB2x2VJX7O4ZIktlMjeUeO81dd8TgZk?=
- =?us-ascii?Q?OCrhWImNAbzQTdtWoxIpxgx/Ng4d85yM45OBuSgRuzo2BZTEo5kBgHdqbZ5I?=
- =?us-ascii?Q?cxHph9MbJwMWrBFeKdpg1RwrfI/OIBmSHpTMkNNxtjBJ0vfKjfOQh7JCUH/r?=
- =?us-ascii?Q?Afn2nusPwP/+A2e/6iyVGR+1cEzvyG8Bq70E2ubS6j/kc8nI1iEHaHt3K1In?=
- =?us-ascii?Q?6zeMtav7Gc/IsDcQ1Zxh2gYaZO1CZz0J8H6QM8o+E30elgNfEpJR6U0/BWA7?=
- =?us-ascii?Q?EoZz0yVKVLZhY6hTE3OzJtQHOjfMyfNsTE6fZiYLN/TtvZ0vwmzdD+wOi0sO?=
- =?us-ascii?Q?0ujIh34S+47LTZsZP50f5iYaF+Xtc0NrQBVpw4wK6uyuvQM76QSPaoRU44It?=
- =?us-ascii?Q?WoTEsygk8lF5oxlfq9ScDf+DPDbFwClJ3czZNZh/z3yqo5EQ+UhN2aj4Sh33?=
- =?us-ascii?Q?Nk46q+0Trma/0clzMkzU7AJzg79G1a4pZDYBdx8trnuJUJ+OGGMS6AgSQOxu?=
- =?us-ascii?Q?wOP6fMI+weflH41SsVQtdV8BgpDroz6RKrFIeutYlMnAPPRkRzwkVide5bGL?=
- =?us-ascii?Q?6jUOkT8KrR7iO6NALDBDpuerYFdDOgoeqA1q+pOmpCGA4NzmFNijjMQbWQaV?=
- =?us-ascii?Q?yauf0s/2X0+tRb7Q0WyjvyPmWpKbil9iwryufP39Hds261XH3oPTLq89fckf?=
- =?us-ascii?Q?QZWkXkv+1svMHc+yGM+1LNCzo5iwlwznIt6JpsL1?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 301512F365D
+	for <linux-rdma@vger.kernel.org>; Tue, 17 Jun 2025 16:09:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1750176585; cv=none; b=u9V05d+mN/y5lLNZbpurBChjfVvJOpuzDJFltu8MfxkCTUdDo4yiR6L5lPqG1jbAcO28UVMFko7VYVHMSoFX7dvdfHDJ28bQlkJBu2nKV5fUACMSmcQEsqd5MAGQGCamxxyYPM3bqPwtVLzB1p2XdAN5f4f2ulPeu1fAakHFFKY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1750176585; c=relaxed/simple;
+	bh=e8cEPTs82N3ebqQiWLlW0aqmQmVoF7FWyUqDl32gkhg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TNsrcsosPGHIWEAz08hAZFGjQW1gHqRh14iCRCDDy5aDW5LmP7ekqLcdqhWawOIpCAn1zWpwPwnFbhwqXoRk0FIaOI31kyQ5IDHPWUcKVM+9HIZ6xqqvE6YQXDzw9aonSLDZ1k7nmNji6slKEyDaEnRalROBYJ7JvP4sgNs/3QI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ukenucw7; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1750176583;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=RY437T66zUTU85w+ZMnXlHoih95/8VsrgB9XXy3i00M=;
+	b=Ukenucw7fkbsZCA/fkEorZ5xbPvoKfolu6FkH6I5ttD5FRrE8I2jihIcY8zg60GmYLWH4F
+	9WBVkyGST4UnpEzEfratAmcq5+BHxtHhKRLefQDaL/5Jnbms45Kz2o+uZB9AgeKyzd/NiF
+	ljwSlDbvgWpzj+ytRr6yrKszY96d4JE=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-101-QOf4jUQtNpK9XjRJvCHJxQ-1; Tue, 17 Jun 2025 12:09:41 -0400
+X-MC-Unique: QOf4jUQtNpK9XjRJvCHJxQ-1
+X-Mimecast-MFC-AGG-ID: QOf4jUQtNpK9XjRJvCHJxQ_1750176581
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-ad89a3bcc62so441320266b.0
+        for <linux-rdma@vger.kernel.org>; Tue, 17 Jun 2025 09:09:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750176580; x=1750781380;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=RY437T66zUTU85w+ZMnXlHoih95/8VsrgB9XXy3i00M=;
+        b=K8X5ncytujZY5n99/dOBfh8JNZCeJgnzTW4r2Kz10csYrK+KE3SWQV3kdWRs5IXpOv
+         MAPamd0yv1V+mQxhx8QOziEAQ32YAI9jLOxgQzWGsJllFivTn35/W8qTgQAuqZhi8HEi
+         yhGihuX2oQZREkYpyBMgNG2vsbKll8qwbDaVb1FbdHj6CaEpjW5YsN2fcYgYewjxFc6Z
+         KPVV3GqaiJvtspQ3T+cYrGKHP8jPS3VrC3qH5Re7XCjKeiuUhXRpB+0+k7K1Kx1MTzBF
+         QcmKmqZmihcmTShmhHxnsq2/nOwR7p+2Du9OAbPrn7T/nDcQsN7IaAHR0dtXVNGCwReb
+         QFAw==
+X-Forwarded-Encrypted: i=1; AJvYcCWycT+BmJA9Zse6MI4ik4+zx9CrgNy5XbZtBSUEFSCD3McC/w/Hfm7vdKzOes+vNEhbF+9e34WqFYYl@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx4n6UqK8H5+b0LfxaHU5x5W61lLni4AlrSTVrOTlnvytZ+FlMc
+	gx7o3GT0cr45lcGYg7w9SGyCTbI0dmygTEGydz/4Sp1wiWfjg6z8Z+a4vjs5xrMRlo1BdhWP1l0
+	CMuLMjNDNB82gEsRT0Eyq19FNsPHhJepqpuKP83Fojg9zkrkqnFbgBXPMcFymH5A=
+X-Gm-Gg: ASbGncvL3x13M6Ila/xBUPsLZ5RpGmpC29ioWAHxQ282k4Uzq+qL9yHZ3557RE+JNST
+	j/GMVJgqv7YPGHbWwnSIl/dsORUrfYtWXB0j4ah3CmjpGbIkn0wvDP5x02sbqAYHO63Ax2gUvg/
+	NEjZ7zNqrDpwzuCv0lsWg58XmMd29AZahV7Foa2NZ8fPIziRmbacn1kUIFMiELTzmRTBcOQAMss
+	ZEmjtdZ+KyNmJohTzYGi+GT2i1zaOSra7tUXndUqX2+MAoMfrR4+VI+vPGbvsJf4p9tkNu8Twae
+	gUpPsJ1j4W1Y/6qiLlOcy1kFUkOe/LrZDCqZrjXCrqCm9R5BQZgQXuvWNyWChPnK3/tJbAzAT0y
+	f7J8RSmrrSIjVTxDVbkvksO8E5DlF84qKMN5FYLHhPeMCtm4=
+X-Received: by 2002:a17:907:3f1f:b0:ad2:417b:2ab5 with SMTP id a640c23a62f3a-adfad4f5a5amr1126324966b.60.1750176580466;
+        Tue, 17 Jun 2025 09:09:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF6u1NV6QXYpbyorqCmZBn41Wz+ATHHrC4a871mog3qYJ+wSPRBCHfMyBrTpWHRiApiZ+6vfg==
+X-Received: by 2002:a17:907:3f1f:b0:ad2:417b:2ab5 with SMTP id a640c23a62f3a-adfad4f5a5amr1126321166b.60.1750176579921;
+        Tue, 17 Jun 2025 09:09:39 -0700 (PDT)
+Received: from ?IPV6:2003:d8:2f31:700:3851:c66a:b6b9:3490? (p200300d82f3107003851c66ab6b93490.dip0.t-ipconnect.de. [2003:d8:2f31:700:3851:c66a:b6b9:3490])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-adec897ac25sm890207966b.157.2025.06.17.09.09.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Jun 2025 09:09:39 -0700 (PDT)
+Message-ID: <129fe808-4285-48fe-95b6-00ea19bd87af@redhat.com>
+Date: Tue, 17 Jun 2025 18:09:36 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR21MB3102.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3d5c5b2e-c4d2-4767-7a29-08ddadb7495b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Jun 2025 15:54:47.7426
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: y83DuE1drWfoA8FATK+4CmBe4cDK6LvXkiIgriISBJ5m+Phy7oxaHo9cGoOB0VDTk0SP3mL5NsvnOcx9hGabCA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR21MB3428
+User-Agent: Mozilla Thunderbird
+Subject: Re: netmem series needs some love and Acks from MM folks
+To: Harry Yoo <harry.yoo@oracle.com>, Mina Almasry <almasrymina@google.com>,
+ willy@infradead.org
+Cc: Byungchul Park <byungchul@sk.com>, Jakub Kicinski <kuba@kernel.org>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ kernel_team@skhynix.com, ilias.apalodimas@linaro.org, hawk@kernel.org,
+ akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com,
+ andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com,
+ tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
+ saeedm@nvidia.com, leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+ rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org,
+ linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com
+References: <20250609043225.77229-1-byungchul@sk.com>
+ <20250609043225.77229-2-byungchul@sk.com>
+ <20250609123255.18f14000@kernel.org>
+ <20250610013001.GA65598@system.software.com>
+ <20250611185542.118230c1@kernel.org>
+ <20250613011305.GA18998@system.software.com>
+ <CAHS8izMsKaP66A1peCHEMxaqf0SV-O6uRQ9Q6MDNpnMbJ+XLUA@mail.gmail.com>
+ <aFDTikg1W3Bz_s5E@hyeyoo>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <aFDTikg1W3Bz_s5E@hyeyoo>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-> Subject: [PATCH net-next v3 3/4] net: mana: Add speed support in
-> mana_get_link_ksettings
->=20
-> Allow mana ethtool get_link_ksettings operation to report the maximum spe=
-ed
-> supported by the SKU in mbps.
->=20
-> The driver retrieves this information by issuing a HWC command to the har=
-dware
-> via mana_query_link_cfg(), which retrieves the SKU's maximum supported sp=
-eed.
->=20
-> These APIs when invoked on hardware that are older/do not support these A=
-PIs,
-> the speed would be reported as UNKNOWN.
->=20
-> Before:
-> $ethtool enP30832s1
-> > Settings for enP30832s1:
->         Supported ports: [  ]
->         Supported link modes:   Not reported
->         Supported pause frame use: No
->         Supports auto-negotiation: No
->         Supported FEC modes: Not reported
->         Advertised link modes:  Not reported
->         Advertised pause frame use: No
->         Advertised auto-negotiation: No
->         Advertised FEC modes: Not reported
->         Speed: Unknown!
->         Duplex: Full
->         Auto-negotiation: off
->         Port: Other
->         PHYAD: 0
->         Transceiver: internal
->         Link detected: yes
->=20
-> After:
-> $ethtool enP30832s1
-> > Settings for enP30832s1:
->         Supported ports: [  ]
->         Supported link modes:   Not reported
->         Supported pause frame use: No
->         Supports auto-negotiation: No
->         Supported FEC modes: Not reported
->         Advertised link modes:  Not reported
->         Advertised pause frame use: No
->         Advertised auto-negotiation: No
->         Advertised FEC modes: Not reported
->         Speed: 16000Mb/s
->         Duplex: Full
->         Auto-negotiation: off
->         Port: Other
->         PHYAD: 0
->         Transceiver: internal
->         Link detected: yes
->=20
-> Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-> Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-> Reviewed-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> Reviewed-by: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+On 17.06.25 04:31, Harry Yoo wrote:
+> On Fri, Jun 13, 2025 at 07:19:07PM -0700, Mina Almasry wrote:
+>> On Thu, Jun 12, 2025 at 6:13 PM Byungchul Park <byungchul@sk.com> wrote:
+>>>
+>>> On Wed, Jun 11, 2025 at 06:55:42PM -0700, Jakub Kicinski wrote:
+>>>> On Tue, 10 Jun 2025 10:30:01 +0900 Byungchul Park wrote:
+>>>>>> What's the intended relation between the types?
+>>>>>
+>>>>> One thing I'm trying to achieve is to remove pp fields from struct page,
+>>>>> and make network code use struct netmem_desc { pp fields; } instead of
+>>>>> sturc page for that purpose.
+>>>>>
+>>>>> The reason why I union'ed it with the existing pp fields in struct
+>>>>> net_iov *temporarily* for now is, to fade out the existing pp fields
+>>>>> from struct net_iov so as to make the final form like:
+>>>>
+>>>> I see, I may have mixed up the complaints there. I thought the effort
+>>>> was also about removing the need for the ref count. And Rx is
+>>>> relatively light on use of ref counting.
+>>>>
+>>>>>> netmem_ref exists to clearly indicate that memory may not be readable.
+>>>>>> Majority of memory we expect to allocate from page pool must be
+>>>>>> kernel-readable. What's the plan for reading the "single pointer"
+>>>>>> memory within the kernel?
+>>>>>>
+>>>>>> I think you're approaching this problem from the easiest and least
+>>>>>
+>>>>> No, I've never looked for the easiest way.  My bad if there are a better
+>>>>> way to achieve it.  What would you recommend?
+>>>>
+>>>> Sorry, I don't mean that the approach you took is the easiest way out.
+>>>> I meant that between Rx and Tx handling Rx is the easier part because
+>>>> we already have the suitable abstraction. It's true that we use more
+>>>> fields in page struct on Rx, but I thought Tx is also more urgent
+>>>> as there are open reports for networking taking references on slab
+>>>> pages.
+>>>>
+>>>> In any case, please make sure you maintain clear separation between
+>>>> readable and unreadable memory in the code you produce.
+>>>
+>>> Do you mean the current patches do not?  If yes, please point out one
+>>> as example, which would be helpful to extract action items.
+>>>
+>>
+>> I think one thing we could do to improve separation between readable
+>> (pages/netmem_desc) and unreadable (net_iov) is to remove the struct
+>> netmem_desc field inside the net_iov, and instead just duplicate the
+>> pp/pp_ref_count/etc fields. The current code gives off the impression
+>> that net_iov may be a container of netmem_desc which is not really
+>> accurate.
+>>
+>> But I don't think that's a major blocker. I think maybe the real issue
+>> is that there are no reviews from any mm maintainers?
+> 
+> Let's try changing the subject to draw some attention from MM people :)
 
-Reviewed-by: Long Li <longli@microsoft.com>
+Hi, it worked! :P
 
-> ---
-> Changes in v3:
-> * Rebase to latest net-next branch.
-> Changes in v2:
-> * No change.
-> ---
->  drivers/net/ethernet/microsoft/mana/mana_en.c      | 1 +
->  drivers/net/ethernet/microsoft/mana/mana_ethtool.c | 6 ++++++
->  include/net/mana/mana.h                            | 2 ++
->  3 files changed, 9 insertions(+)
->=20
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> index 547dff450b6d..d7079e05dfb8 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> @@ -1272,6 +1272,7 @@ int mana_query_link_cfg(struct mana_port_context
-> *apc)
->  		return err;
->  	}
->  	apc->speed =3D resp.link_speed_mbps;
-> +	apc->max_speed =3D resp.qos_speed_mbps;
->  	return 0;
->  }
->=20
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> index 4fb3a04994a2..a1afa75a9463 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> @@ -495,6 +495,12 @@ static int mana_set_ringparam(struct net_device *nde=
-v,
-> static int mana_get_link_ksettings(struct net_device *ndev,
->  				   struct ethtool_link_ksettings *cmd)  {
-> +	struct mana_port_context *apc =3D netdev_priv(ndev);
-> +	int err;
-> +
-> +	err =3D mana_query_link_cfg(apc);
-> +	cmd->base.speed =3D (err) ? SPEED_UNKNOWN : apc->max_speed;
-> +
->  	cmd->base.duplex =3D DUPLEX_FULL;
->  	cmd->base.port =3D PORT_OTHER;
->=20
-> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h index
-> 038b18340e51..e1030a7d2daa 100644
-> --- a/include/net/mana/mana.h
-> +++ b/include/net/mana/mana.h
-> @@ -533,6 +533,8 @@ struct mana_port_context {
->  	u16 port_idx;
->  	/* Currently configured speed (mbps) */
->  	u32 speed;
-> +	/* Maximum speed supported by the SKU (mbps) */
-> +	u32 max_speed;
->=20
->  	bool port_is_up;
->  	bool port_st_save; /* Saved port state */
-> --
-> 2.34.1
+I hope Willy will find his way to this thread as well.
+
+> 
+>> So I'm not 100%
+>> sure this is in line with their memdesc plans. I think probably
+>> patches 2->8 are generic netmem-ifications that are good to merge
+>> anyway, but I would say patch 1 and 9 need a reviewed by from someone
+>> on the mm side. Just my 2 cents.
+> 
+> As someone who worked on the zpdesc series, I think it is pretty much
+> in line with the memdesc plans.
+> 
+> I mean, it does differ a bit from the initial idea of generalizing it as
+> "bump" allocator, but overall, it's still aligned with the memdesc
+> plans, and looks like a starting point, IMHO.
+
+Just to summarize (not that there is any misunderstanding), the first 
+step of the memdesc plan is simple:
+
+1) have a dedicated data-structure we will allocate alter dynamically.
+
+2) Make it overlay "struct page" for now in a way that doesn't break things
+
+3) Convert all users of "struct page" to the new data-structure
+
+Later, the memdesc data-structure will then actually come be allocated 
+dynamically, so "struct page" content will not apply anymore, and we can 
+shrink "struct page".
+
+
+What I see in this patch is exactly 1) and 2).
+
+I am not 100% sure about existing "struct net_iov" and how that 
+interacts with "struct page" overlay. I suspects it's just a dynamically 
+allocated structure?
+
+Because this patch changes the layout of "struct net_iov", which is a 
+bit confusing at first sight?
+
+-- 
+Cheers,
+
+David / dhildenb
 
 
