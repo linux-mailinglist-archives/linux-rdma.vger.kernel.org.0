@@ -1,55 +1,55 @@
-Return-Path: <linux-rdma+bounces-11396-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11398-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83A36ADC535
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 10:44:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06FB1ADC537
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 10:44:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CBA8188E4AF
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 08:44:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADA9F170F7D
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 Jun 2025 08:44:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 467DA28FFD0;
-	Tue, 17 Jun 2025 08:44:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5A728FAB7;
+	Tue, 17 Jun 2025 08:44:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tgr0flCi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dhyQLG38"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 058798528E
-	for <linux-rdma@vger.kernel.org>; Tue, 17 Jun 2025 08:44:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F0628DB57
+	for <linux-rdma@vger.kernel.org>; Tue, 17 Jun 2025 08:44:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750149860; cv=none; b=NJZ1gcUfoV44a6cBTRiWU+MpYFfs7bxaY4RpYMcyNTNimqkgIHS54Wh817DVwOxLbmkdiy+khdO9j0xp5/U7OP+kEUyNb+9RjFlreFW9KVhxsgNa7z8OP2BvrzDZZuxlea2UM0xD1qzwIpv6qOm8y3ymhSjeE3QOEyvkkbzlh84=
+	t=1750149870; cv=none; b=nvmxQjZTsBRwKQn38RzkPPVJhGklb5/4Dnu883+Fw7YjWI8CtcNbMVUXS4uX4ez75rJvNmu29tUhFiuepr9D4OqnKd7R6lYlGfTqsDp3Auugjdw/N0VJ7dhOYM1DJTt3XCkb677IvZCbJc+7YNGLCg8m9EjDf10i0gN5g4vMARU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750149860; c=relaxed/simple;
-	bh=uO9sF8mtbGcXtQWFce4oUHEEMNOhL5QqkiArmVoQ/Wc=;
+	s=arc-20240116; t=1750149870; c=relaxed/simple;
+	bh=ROlC50yg2Q9PgOp9dkutdlRAGUF7RN/ajySi5/oFquo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JJS31QUVVml3dqaV2IPJGo645KtSXA4STdcZ3O//b7wV7dL1xxc7Oq2k1jJn3Jq417WgCI+90U26wblGRmj+yW+yOXjNea3jBXPf7pn7grcEd/EyqkSK0PR+4JGEAdJQCCKvXxMDXdcfO3QPyPc9Ih6NtpOJubd48eLtM+HxE1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tgr0flCi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25147C4CEE3;
-	Tue, 17 Jun 2025 08:44:18 +0000 (UTC)
+	 MIME-Version; b=Mt+5Mu8wjXVKZ96fl3b8Tf0ukvk7cU87NpE0sM0mX1EvFZ4h1FmEfKhaluCJTlTyUiEt0KXv6+Q2bI4jZ46SdvCyno9i3O0+CQWiJLWE8wPXtJC0/idctLQ4PESNkrmly17hrLf6x7Zh3e1QmdlMSHDXkfMf+AidJDqhLvgTz4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dhyQLG38; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31124C4CEE3;
+	Tue, 17 Jun 2025 08:44:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750149859;
-	bh=uO9sF8mtbGcXtQWFce4oUHEEMNOhL5QqkiArmVoQ/Wc=;
+	s=k20201202; t=1750149869;
+	bh=ROlC50yg2Q9PgOp9dkutdlRAGUF7RN/ajySi5/oFquo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Tgr0flCiVTVFwQJF1wpWFCVDHrOQEHtvxJnbUazc1KnycY2n8efdkQR7dB7fZfb1D
-	 UhN1U0DxYt16lvoyqHC7ItGTWmupiisO0dbVcQitWcI0JsJweDL+D1rgD4NqRGdue4
-	 bdKbRtSA/WXk2Q9cJ855mrYLlT90PK/Ee37FV2fdiCMYFN2VVtMftoAPwDaRPvoSdh
-	 nGL4CYRWT759MF+es4cXpzWjvbvwghrWzuRdZvnqgN7HloN65Fo2k6UIlAnVP4EOfh
-	 5pgUnAutyAZNDqCZ/doLhoJ7fLNRsIUcVOCuh4pgpJUuTbh2I939GCNga9hYPJ0OcL
-	 qsnX6SXd+U5cQ==
+	b=dhyQLG38T/DbBJnsR73+qF/ZsT1myReHw7azRnTFJwi0w80mbyn6ounkMt/vpiQaW
+	 spoFLTkIj4w6hgpisEqDR8J0Jdx55cVaflhGjLHENN2U6K4lzJg67rJ5t86iI1QLcp
+	 YUUuSvVhP/IEMenKZPxY3ZivXm+DBthUQwDCxcy5GOF0JOKuv1yD+LnIqNQrXqhlVl
+	 ehIu9wUvgoeR7eL174Qq89OC2G4Ha9HS1gnNH6V0hLN25TVg3PxdEppFvYqnlxWiqt
+	 0pL9WgHPq+Rh/z+XfhHjRyF6mOR3vdsKV7i/PKwcypq/58plxc0GEpJQaKUSXAXEQl
+	 d3bBffpDjv46Q==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Mark Bloch <mbloch@nvidia.com>,
 	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
 	linux-rdma@vger.kernel.org,
 	Parav Pandit <parav@nvidia.com>
-Subject: [PATCH rdma-next 1/3] RDMA/core: Extend RDMA device registration to be net namespace aware
-Date: Tue, 17 Jun 2025 11:44:01 +0300
-Message-ID: <e383de8cd1df118e6cc4a0a5c0d27c0118611fe4.1750149405.git.leon@kernel.org>
+Subject: [PATCH rdma-next 2/3] RDMA/mlx5: Allocate IB device with net namespace supplied from core dev
+Date: Tue, 17 Jun 2025 11:44:02 +0300
+Message-ID: <bc5112ad4def0b2732edf778f43cd31570ba9ed4.1750149405.git.leon@kernel.org>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1750149405.git.leon@kernel.org>
 References: <cover.1750149405.git.leon@kernel.org>
@@ -63,107 +63,92 @@ Content-Transfer-Encoding: 8bit
 
 From: Mark Bloch <mbloch@nvidia.com>
 
-Presently, RDMA devices are always registered within the init network
-namespace, even if the associated devlink device's namespace was
-changed via a devlink reload. This mismatch leads to discrepancies
-between the network namespace of the devlink device and that of the
-RDMA device.
+Use the new ib_alloc_device_with_net() API to allocate the IB device
+so that it is properly bound to the network namespace obtained via
+mlx5_core_net(). This change ensures correct namespace association
+(e.g., for containerized setups).
 
-Therefore, extend the RDMA device allocation API to optionally take
-the net namespace. This isn't limited to devices that support devlink
-but allows all users to provide the network namespace if they need to
-do so.
-
-If a network namespace is provided during device allocation, it's up
-to the caller to make sure the namespace stays valid until
-ib_register_device() is called.
+Additionally, expose mlx5_core_net so that RDMA driver can use it.
 
 Signed-off-by: Shay Drory <shayd@nvidia.com>
 Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+Reviewed-by: Parav Pandit <parav@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/device.c  | 14 ++++++++++++--
- drivers/infiniband/sw/rdmavt/vt.c |  2 +-
- include/rdma/ib_verbs.h           | 11 +++++++++--
- 3 files changed, 22 insertions(+), 5 deletions(-)
+ drivers/infiniband/hw/mlx5/ib_rep.c                | 3 ++-
+ drivers/infiniband/hw/mlx5/main.c                  | 6 ++++--
+ drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h | 5 -----
+ include/linux/mlx5/driver.h                        | 5 +++++
+ 4 files changed, 11 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 79d8e6fce487..1ca6a9b7ba1a 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -584,6 +584,8 @@ static void rdma_init_coredev(struct ib_core_device *coredev,
- /**
-  * _ib_alloc_device - allocate an IB device struct
-  * @size:size of structure to allocate
-+ * @net: network namespace device should be located in, namespace
-+ *       must stay valid until ib_register_device() is completed.
-  *
-  * Low-level drivers should use ib_alloc_device() to allocate &struct
-  * ib_device.  @size is the size of the structure to be allocated,
-@@ -591,7 +593,7 @@ static void rdma_init_coredev(struct ib_core_device *coredev,
-  * ib_dealloc_device() must be used to free structures allocated with
-  * ib_alloc_device().
-  */
--struct ib_device *_ib_alloc_device(size_t size)
-+struct ib_device *_ib_alloc_device(size_t size, struct net *net)
+diff --git a/drivers/infiniband/hw/mlx5/ib_rep.c b/drivers/infiniband/hw/mlx5/ib_rep.c
+index 49af1cfbe6d1..cc8859d3c2f5 100644
+--- a/drivers/infiniband/hw/mlx5/ib_rep.c
++++ b/drivers/infiniband/hw/mlx5/ib_rep.c
+@@ -88,7 +88,8 @@ mlx5_ib_vport_rep_load(struct mlx5_core_dev *dev, struct mlx5_eswitch_rep *rep)
+ 	else
+ 		return mlx5_ib_set_vport_rep(lag_master, rep, vport_index);
+ 
+-	ibdev = ib_alloc_device(mlx5_ib_dev, ib_dev);
++	ibdev = ib_alloc_device_with_net(mlx5_ib_dev, ib_dev,
++					 mlx5_core_net(lag_master));
+ 	if (!ibdev)
+ 		return -ENOMEM;
+ 
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index b0aa6c8f218c..d0ddb24aeb64 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -4826,7 +4826,8 @@ static struct ib_device *mlx5_ib_add_sub_dev(struct ib_device *parent,
+ 	    !MLX5_CAP_GEN_2(mparent->mdev, multiplane_qp_ud))
+ 		return ERR_PTR(-EOPNOTSUPP);
+ 
+-	mplane = ib_alloc_device(mlx5_ib_dev, ib_dev);
++	mplane = ib_alloc_device_with_net(mlx5_ib_dev, ib_dev,
++					  mlx5_core_net(mparent->mdev));
+ 	if (!mplane)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -4940,7 +4941,8 @@ static int mlx5r_probe(struct auxiliary_device *adev,
+ 
+ 	num_ports = max(MLX5_CAP_GEN(mdev, num_ports),
+ 			MLX5_CAP_GEN(mdev, num_vhca_ports));
+-	dev = ib_alloc_device(mlx5_ib_dev, ib_dev);
++	dev = ib_alloc_device_with_net(mlx5_ib_dev, ib_dev,
++				       mlx5_core_net(mdev));
+ 	if (!dev)
+ 		return -ENOMEM;
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h b/drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h
+index 37d5f445598c..b111ccd03b02 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h
+@@ -45,11 +45,6 @@ int mlx5_crdump_enable(struct mlx5_core_dev *dev);
+ void mlx5_crdump_disable(struct mlx5_core_dev *dev);
+ int mlx5_crdump_collect(struct mlx5_core_dev *dev, u32 *cr_data);
+ 
+-static inline struct net *mlx5_core_net(struct mlx5_core_dev *dev)
+-{
+-	return devlink_net(priv_to_devlink(dev));
+-}
+-
+ static inline struct net_device *mlx5_uplink_netdev_get(struct mlx5_core_dev *mdev)
  {
- 	struct ib_device *device;
- 	unsigned int i;
-@@ -608,7 +610,15 @@ struct ib_device *_ib_alloc_device(size_t size)
- 		return NULL;
- 	}
- 
--	rdma_init_coredev(&device->coredev, device, &init_net);
-+	/* ib_devices_shared_netns can't change while we have active namespaces
-+	 * in the system which means either init_net is passed or the user has
-+	 * no idea what they are doing.
-+	 *
-+	 * To avoid breaking backward compatibility, when in shared mode,
-+	 * force to init the device in the init_net.
-+	 */
-+	net = ib_devices_shared_netns ? &init_net : net;
-+	rdma_init_coredev(&device->coredev, device, net);
- 
- 	INIT_LIST_HEAD(&device->event_handler_list);
- 	spin_lock_init(&device->qp_open_list_lock);
-diff --git a/drivers/infiniband/sw/rdmavt/vt.c b/drivers/infiniband/sw/rdmavt/vt.c
-index 5499025e8a0a..d22d610c2696 100644
---- a/drivers/infiniband/sw/rdmavt/vt.c
-+++ b/drivers/infiniband/sw/rdmavt/vt.c
-@@ -49,7 +49,7 @@ struct rvt_dev_info *rvt_alloc_device(size_t size, int nports)
- {
- 	struct rvt_dev_info *rdi;
- 
--	rdi = container_of(_ib_alloc_device(size), struct rvt_dev_info, ibdev);
-+	rdi = container_of(_ib_alloc_device(size, &init_net), struct rvt_dev_info, ibdev);
- 	if (!rdi)
- 		return rdi;
- 
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 5e70a5cf35c3..77cea846eb2d 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2914,11 +2914,18 @@ struct ib_block_iter {
- 	unsigned int __pg_bit;		/* alignment of current block */
+ 	return mdev->mlx5e_res.uplink_netdev;
+diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
+index e6ba8f4f4bd1..3475d33c75f4 100644
+--- a/include/linux/mlx5/driver.h
++++ b/include/linux/mlx5/driver.h
+@@ -1349,4 +1349,9 @@ enum {
  };
  
--struct ib_device *_ib_alloc_device(size_t size);
-+struct ib_device *_ib_alloc_device(size_t size, struct net *net);
- #define ib_alloc_device(drv_struct, member)                                    \
- 	container_of(_ib_alloc_device(sizeof(struct drv_struct) +              \
- 				      BUILD_BUG_ON_ZERO(offsetof(              \
--					      struct drv_struct, member))),    \
-+					      struct drv_struct, member)),     \
-+				      &init_net),			       \
-+		     struct drv_struct, member)
+ bool mlx5_wc_support_get(struct mlx5_core_dev *mdev);
 +
-+#define ib_alloc_device_with_net(drv_struct, member, net)		       \
-+	container_of(_ib_alloc_device(sizeof(struct drv_struct) +              \
-+				      BUILD_BUG_ON_ZERO(offsetof(              \
-+					struct drv_struct, member)), net),     \
- 		     struct drv_struct, member)
- 
- void ib_dealloc_device(struct ib_device *device);
++static inline struct net *mlx5_core_net(struct mlx5_core_dev *dev)
++{
++	return devlink_net(priv_to_devlink(dev));
++}
+ #endif /* MLX5_DRIVER_H */
 -- 
 2.49.0
 
