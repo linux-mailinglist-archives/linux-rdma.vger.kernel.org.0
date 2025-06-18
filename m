@@ -1,214 +1,217 @@
-Return-Path: <linux-rdma+bounces-11418-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11419-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35263ADE310
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Jun 2025 07:33:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36169ADE364
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Jun 2025 08:07:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ADCA37A25BB
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Jun 2025 05:31:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9161816AA23
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Jun 2025 06:07:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5FAC13B5B3;
-	Wed, 18 Jun 2025 05:33:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C3F41E573F;
+	Wed, 18 Jun 2025 06:07:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="YNxlc8IL"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aw9b2FQ7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2069.outbound.protection.outlook.com [40.107.220.69])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1447714F98
-	for <linux-rdma@vger.kernel.org>; Wed, 18 Jun 2025 05:33:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.69
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750224787; cv=fail; b=BRB/K32De6Z73KPNKSFJ715zXNOpyZQJuy0bhSPLlfgRbTnEFyAefMGtPJFLjfNBWYm9UhxLK4snzcaHHfpARRgWI+7esV7Qu9Q2AJMqWKAGQFv7HzzpXLLs9axb8XvNnksk4gbqyuLuZDgW/067QNx8Z0iOA5xQDdhATqysXLk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750224787; c=relaxed/simple;
-	bh=NFb65rGP2BO57xdhRWrk/k+IG39SNyXJVjXjo7Hqpyk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=F3m8oxiZ2IDOZ0efD0tg81CwMtik7qiZB8Hp0VZTMdl/rAEnxwoZOyXuhKqkL1xibsNzufFiIKiN9nsiR3/XW9xrofg9nVb0aLZ9ZW72puSJMEZ48jncJ0bZQrJl+juc+DhYua1dXQFNmWaZxI9oMjMhWQKUp915vnEfaeEmFms=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=YNxlc8IL; arc=fail smtp.client-ip=40.107.220.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=NK0J2gUURYt6kaqEqICFlbjGFosVI5UNgjueREduVqjo9HN5dBAtE8AVX8NPXesJ7TZj/3/pnhh+4z6RgnjkQbP5BShUFYXNcb11Vebrpc3P5ULczazdpJ2o0A0Lr4E8Aw+rH8nTaKZx81bTnyTGvc2JohE1FANbfnh9FSNpa++7WiUSO9LoKvw47+2x/G0apehSIFFEzKiF6E5e/k09v1UwN/os6QijK6nHVPhFBJGHmzVHnAzVeZZr2g1dgMbuFIf058e4M9M1KrPUL57N6fJ5l/SeujoW6AR8A1s4xY8tXodVH7uBhvS7xleCgBoIk/ULeP6du5LAJr2V3dRlRw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ww2ki9EehwmhQ/2TGLgacxQo668wM756XPQeEBB1l9s=;
- b=QGplIqx+fqaT6tP6qZ5n4g6HJBfEPLv6olFwXH9EegjhR+NxVBjeqItuVZ6YnxnmzUDZoh7ufRpRKnkV3TmgQKCDRe4Ufd+WBQzRTA/QdeLiBMbuJaqU/C6qthm61JQMEWNRHgLm5ou4wU03QBP1choptvfTUJKup/Se+sTJa4aqW27JqA73wwhWsixxwFeiGdCmjmpz6CwqV0msi+WdANVwyy8eO2LEiL3bZs+GurCXJM9Gy+IBcJe7wth6nmYxLIkNRLoaavXRDrWi+A9CQ9dfEEHUHWaFWBrk82Uv4+RA47nTDQKYu74Z4wgbwM0TjRVj1+X7n6OO6l7PtbThGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ww2ki9EehwmhQ/2TGLgacxQo668wM756XPQeEBB1l9s=;
- b=YNxlc8ILnYtjgqUnHfmIURYPOT2e5ed0+BFSPei2z15TRoTU1jcs/5TlZC63Q1Mp5njd5dLEn92GJwDkAM/TzixdlVVRD0O6x9jh3zRPGVVdv1u+deHF3XNnzWWHY7TLrrKpYbXc4ehHTw2YsJaofWGgokrAVq/waI8X2aweNBBCek4FgCtHr7vKArISYrJYO8NXFfV7CVlVTUYUO1jllT6gYAghH/ZZsb8gj+h6hBQIEQHIPXEaJwoj6JKm9gYRsu8kRfvwmFnjFJt1k5hfof3wKB/qa/4Nf9PDJTdDJTTFJPA4GIqNHfeHi/viatist/tu4c2StReQrbFI8Mc32g==
-Received: from CY8PR12MB7195.namprd12.prod.outlook.com (2603:10b6:930:59::11)
- by LV8PR12MB9335.namprd12.prod.outlook.com (2603:10b6:408:1fc::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8835.29; Wed, 18 Jun
- 2025 05:33:03 +0000
-Received: from CY8PR12MB7195.namprd12.prod.outlook.com
- ([fe80::c06c:905a:63f8:9cd]) by CY8PR12MB7195.namprd12.prod.outlook.com
- ([fe80::c06c:905a:63f8:9cd%5]) with mapi id 15.20.8792.033; Wed, 18 Jun 2025
- 05:33:03 +0000
-From: Parav Pandit <parav@nvidia.com>
-To: Jason Gunthorpe <jgg@nvidia.com>, Leon Romanovsky <leon@kernel.org>
-CC: "Eric W . Biederman" <ebiederm@xmission.com>, "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>, Mark Bloch <mbloch@nvidia.com>
-Subject: RE: [PATCH rdma-next 2/7] RDMA/uverbs: Check CAP_NET_RAW in user
- namespace for QP create
-Thread-Topic: [PATCH rdma-next 2/7] RDMA/uverbs: Check CAP_NET_RAW in user
- namespace for QP create
-Thread-Index: AQHb32LfPGwSA3Z5jECsbQmr5u2NlrQHomyAgADDiqA=
-Date: Wed, 18 Jun 2025 05:33:03 +0000
-Message-ID:
- <CY8PR12MB71958E977F7C4FECB286BD48DC72A@CY8PR12MB7195.namprd12.prod.outlook.com>
-References: <cover.1750148509.git.leon@kernel.org>
- <1845d577e9b09caad3af28474aa2498390587db3.1750148509.git.leon@kernel.org>
- <20250617175231.GZ1174925@nvidia.com>
-In-Reply-To: <20250617175231.GZ1174925@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CY8PR12MB7195:EE_|LV8PR12MB9335:EE_
-x-ms-office365-filtering-correlation-id: 3149304a-f107-48c7-cd0a-08ddae29989c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|376014|1800799024|366016|38070700018;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?2DqzO6YApYxBFNIzty+Cr5jjU1FdukqKrVHgZOx9GE+xcNjcqjXeFoYuH9AJ?=
- =?us-ascii?Q?d0522rapIozZZB5Is2XRwsXiaZlIgKZfLiwoz/PbNGUHiOhS2I5YAHR1LFNV?=
- =?us-ascii?Q?WtCJ0Ax4x5zHdnZ9SXAiFsFJkQsvGU7CFJmrqzgUowC1JoQ4f5dscNZW7K1u?=
- =?us-ascii?Q?EvUOMJOfXgispom0uMeWzzqI0K6EspapQd4peqLO5QvD853BGeXVOh+Sbv5K?=
- =?us-ascii?Q?7sFGpynyfLEQST+/XX7X7nY0UPq+CLdN5WxKN7V3DKvvjudMBmFrptXLNO1I?=
- =?us-ascii?Q?RH3kn8WWyfv4xozuAxs/3OFXCkfLSxq1VPlRHjhFDu55yEfqDlOQsP+CT5Gf?=
- =?us-ascii?Q?asAK8TTtX6ngYmPyuhL/mS2NgOZJPt+Y8dCC8I18cWS46ol4Z/CZnBN2vU2O?=
- =?us-ascii?Q?aZDzhp2maQ5OvVRYookcOLtiuomt7wn+Hqvz8FoTM4u2JUNRcOj8beLx4jST?=
- =?us-ascii?Q?SFAfHxD/Hqr1AP5nyBwbrsdMoFUvkf+qnayxAvsQvK4uiWssGm9V8RPNXDIT?=
- =?us-ascii?Q?8uTIRlRC6Z0LIQC5P4YWRlxPPGAGjqT6ojTGlArbjA/M4yFi/KSF/q3e0fHJ?=
- =?us-ascii?Q?rw3LwXsBGh68krvJFJqkzQ6adqJi+w8N4e1GlUxQRC0g6OajUrePeF+r3OIX?=
- =?us-ascii?Q?R7juFvHnHbmXDv0pjCFvvlYFXWb8N8X/oHhJhmfGw1auwnwBE74Sqf+hR0X8?=
- =?us-ascii?Q?j/5dKXDS8X2/ScYEeQKa+n3YSfbjmW1/363pvvyDIxkWJIWK/vWewnrfZ79w?=
- =?us-ascii?Q?W5lVGbkj6ppn8lBqnXKH55qG8s7LEYv4rDjSV911GoigsPXoB/iuDde6p2ji?=
- =?us-ascii?Q?BpmFReKSHvfj4W8GzCA3rJ+Vh+4lC7aWSwXEIg8JO5gS/iIfMqvH4yLvrBfc?=
- =?us-ascii?Q?Za41XsNqT3HkgjobjpvEWySrh0/N3nw7+aJ2EHh4521A1x+PXKZH2vOZEyH2?=
- =?us-ascii?Q?rnhzwDvtHEXFJlaEYOrs0ocKzklxguQmeZ217RpFk49GiaMENTbu4je00EYN?=
- =?us-ascii?Q?6aXYhlJe1i7gvU/kZ/ruFwGiImXwbuuC62Fdywafm/056NINHK7c+yZUOmUU?=
- =?us-ascii?Q?O3MZ3OyfYdgXpxkXFb35AF9E885ZgxFFyCJe9vwjumx6rHdLhcwOhJZXg/Cr?=
- =?us-ascii?Q?3qOa9Af1o9YTVZBIvx11ODF9LJ0W48fp4ljFLSFSGVXgnPiXZ2MD6UrlUDVU?=
- =?us-ascii?Q?+8vBsXa2K6oOxH4A/UaNGnYu1XfbSqqcixmJrmVxfJAIKLLOMVUpNvM54Qax?=
- =?us-ascii?Q?pUjwxNJtFb/eY/rIMeoUmhTz7W+NkutnfdLy+yTl9v4X6Q361x7ZOIpJIpum?=
- =?us-ascii?Q?p4cO5XrlYq+wDz8KdEN3rHplMO2ri77yQNzPtVWenppeGQ8xFGp9u6pfRtLC?=
- =?us-ascii?Q?xfFG0j8dh3BJDRLyvOsGZw31ouFeRejDSCf6fwRZi81DQfPDi1A5F9ul5nzO?=
- =?us-ascii?Q?21HojfaijTQU28WLZVS+n8pN5qEI84Xe+lPA9LAoQozRb6iWuSuygw=3D=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY8PR12MB7195.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?/+xb1o+LHyow+hQpreJjMhmNNhj911gBqa6O/avDRYSbYBq9kGgsYcA1noNO?=
- =?us-ascii?Q?1K5zQdNKW2WEex+WvmOuM/98hJ0CuXFbexBLLanwZTMpX7ev4fyNxZ+dDEmG?=
- =?us-ascii?Q?nGfvippjV+wHWM//Nu/k2wPyvnzOGoPKyxxelEkJ46BEYfz9HZdaSuyi3Iv3?=
- =?us-ascii?Q?dPnLXd7SvTXQ7wtUj1p7QxeCi7khVJwQVWZCn87Cga/aCWwu0SU0hRtXi2pq?=
- =?us-ascii?Q?+bW3o6D0ESzhEigRdnVMrraSF0onF+c9iItGOay0OXAhcjjltYrkvwIgLs0T?=
- =?us-ascii?Q?Q2ZN2zhisKY28rh4ROUpMuJ8jQuqEFu7pwLP1jvePsDar9wOAMX9LmjyUXUQ?=
- =?us-ascii?Q?yecN+vZhSrbO0AzTyzk/3DywqI9FurvkTMvSBb2Wc8NSFD5WHkQUOFOpVi6I?=
- =?us-ascii?Q?yIfwLSk9RF3iCyOMb3Zf4qXn0lfD8weyzmKDPP6iu+yOMRkM5Wan2q7A13Hl?=
- =?us-ascii?Q?z6qErVE2HWhqlYHQGneN8o9PiM2zMBDzS7qn5kDnT04BIYR9sS4SjyZvQv/n?=
- =?us-ascii?Q?/lZKqVxUcqZj4QJYc4/bZ06m4/bnKy5iN4mQCJJEd5ZX7mrtI6fjV1VN8gyf?=
- =?us-ascii?Q?1hgkGxHwZcK40yuKhJheTV2vHXs9AfN2ToU8HafP7oZQgv7wFYQ/lfoz0/mt?=
- =?us-ascii?Q?aHHGJehtpMK6IK42Ow3N1B9PD7+zZJnA2bGcKPDt975ouChrPbTi712YAT2z?=
- =?us-ascii?Q?7H/fiqfHdV+TuagwjGrGCjMLIP/Pu+2w/yahl9NTQ9V1OH8lwgIH5boFXv7x?=
- =?us-ascii?Q?iXf5w+2w3XTFMF6KVG30yANa0oUviZH+u+BSufg8kaZsqmZ8MJx441o4U2Nq?=
- =?us-ascii?Q?m0Rwe46BQfVvVuN/bhta/V3li2cCrL1eQy6i3dPizyIaUWmz8hwqHabuTrJe?=
- =?us-ascii?Q?mCFcWh5BWOvvgWGkGgzUs5DoJM7EZ1GBZdlyeDg4VIAaDB1uSDR/cg8KWlyZ?=
- =?us-ascii?Q?hRb1JhEqAaNN+ctVVJYR39N5KftGbk6SLqnU5cv/NaaRfGg3Yd8nQPd/MAZ4?=
- =?us-ascii?Q?ag7V3npNSR+E+TR/XhMhdHt+WfxqqQIj2qH6rxvU+cwfPWo/4q/uNz6lfkSk?=
- =?us-ascii?Q?zLGECtncpYWeBGSCDlXoDgUHe10b+WNA0Alu4G3FxiYWxOvhgcjgP9HBU/QE?=
- =?us-ascii?Q?riFbaVuiI3Z+p2mXqBGyLO3QVaicZJmGzWkPInjbOQ81Dk1a098bg5yQi7K8?=
- =?us-ascii?Q?NexHgK/gcD9Iv3IiMkJs0HOAZlJjRljLPHTnUIVXXOR/pxa1dfdMC5qHRuH4?=
- =?us-ascii?Q?LxgoVDix2lBYBYaYnHwoASihM4kp1TyUF7I89fFuv9JQCGDOb1fvJiZBaTTY?=
- =?us-ascii?Q?cgUm65pn3H/kp8GTFzOuNtq6ZzINg3rgH3DYEwAbVOzXtl1ykcDKP9mS68Uk?=
- =?us-ascii?Q?B4CYGkkxWrr947Q/8PHMF0LP+UNY7KyNwn0Fqe2IQMaTOCOc6rarXANVlLRC?=
- =?us-ascii?Q?1bfHMlC3fFWLLJE0MoVuJCZwAmGy9MgjrpkB3Vx4ez6EEUZkCYbTfJJE1Vwx?=
- =?us-ascii?Q?eGT/EtuGV1d/GBizUTwoNxLvQwyE39o3wfiUOHYILZc5L5deqLLcsjdQ7bVo?=
- =?us-ascii?Q?2vRMM1oYT4IYYnUANiU=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AF611F3FED
+	for <linux-rdma@vger.kernel.org>; Wed, 18 Jun 2025 06:07:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1750226843; cv=none; b=u3K9GnOWqcl0xeHE1B6+fIxz84WTsA0RZcoPDyINMt01wiKR5nKbku7YCddalK640qvWz+CGs5twXw9a2flyXgbRKt1naHUkpVmZsakSeS0eQ6kOasIL/prJHNZJu/WJnRJJpy3YT74gGXAjBb+Eh9AJr4WcQoKv0U75bm6k+qw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1750226843; c=relaxed/simple;
+	bh=gVpRGpWbvK2l2EgWkUdriQt0Z8wJ5SQFwm0/UlJCZCQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Q+WiJ/+/sNZ3H2kLOw//4ar1VUMl162YIcPnqiofI3euPYGzv67kvJnWXLnV4ZeQcIsryJ0W4CljlEBwVnBFBXwJZN03sj31fjzNYw3Bf2ho1ehJ6DZnub0BNZrKRX7URyKiVXiYqIl46OuAEkEsIRFPoG14nctHG3NUOawmgcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aw9b2FQ7; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <325ab9a0-44d1-44a2-aefe-9cd49dcd12f5@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1750226827;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NkuFePhrx7gFmJOrw5AAMhKELjMHQfD+AdCkLnFiRGI=;
+	b=aw9b2FQ7pNugXJV0VcM6mLYbw5VWRu7wvN+6UUWbwbPdlWLsDYLiwI6KgDtMGuzIpy8nW3
+	2NBbXpHvUFxO9U7iE2frkLEYATSmZ6ODBNCYhLpOUIlXQmYLj2uJ34QHWIA4wSucCXacT0
+	nZWvDmjbsLGMme3pBGyRInNwmZuxNTk=
+Date: Tue, 17 Jun 2025 23:06:52 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY8PR12MB7195.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3149304a-f107-48c7-cd0a-08ddae29989c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jun 2025 05:33:03.3734
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 58H6BUJy6GmLLVLwUPQEi/JUtctRkgVuDfcKOEyOuWJpmsEHmhvdu3u5K7N6jyI6SMDSKgonF77NyQ/zHKd8kw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9335
+Subject: Re: [PATCH net-next v6 10/12] net/mlx5e: Implement queue mgmt ops and
+ single channel swap
+To: Mark Bloch <mbloch@nvidia.com>, "David S. Miller" <davem@davemloft.net>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Simon Horman <horms@kernel.org>
+Cc: saeedm@nvidia.com, gal@nvidia.com, leonro@nvidia.com, tariqt@nvidia.com,
+ Leon Romanovsky <leon@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, Dragos Tatulea <dtatulea@nvidia.com>
+References: <20250616141441.1243044-1-mbloch@nvidia.com>
+ <20250616141441.1243044-11-mbloch@nvidia.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20250616141441.1243044-11-mbloch@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
+在 2025/6/16 7:14, Mark Bloch 写道:
+> From: Saeed Mahameed <saeedm@nvidia.com>
+> 
+> The bulk of the work is done in mlx5e_queue_mem_alloc, where we allocate
+> and create the new channel resources, similar to
+> mlx5e_safe_switch_params, but here we do it for a single channel using
+> existing params, sort of a clone channel.
+> To swap the old channel with the new one, we deactivate and close the
+> old channel then replace it with the new one, since the swap procedure
+> doesn't fail in mlx5, we do it all in one place (mlx5e_queue_start).
+> 
+> Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+> ---
+>   .../net/ethernet/mellanox/mlx5/core/en_main.c | 98 +++++++++++++++++++
+>   1 file changed, 98 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> index a51e204bd364..873a42b4a82d 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> @@ -5494,6 +5494,103 @@ static const struct netdev_stat_ops mlx5e_stat_ops = {
+>   	.get_base_stats      = mlx5e_get_base_stats,
+>   };
+>   
+> +struct mlx5_qmgmt_data {
+> +	struct mlx5e_channel *c;
+> +	struct mlx5e_channel_param cparam;
+> +};
+> +
+> +static int mlx5e_queue_mem_alloc(struct net_device *dev, void *newq,
+> +				 int queue_index)
+> +{
+> +	struct mlx5_qmgmt_data *new = (struct mlx5_qmgmt_data *)newq;
+> +	struct mlx5e_priv *priv = netdev_priv(dev);
+> +	struct mlx5e_channels *chs = &priv->channels;
+> +	struct mlx5e_params params = chs->params;
 
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> Sent: 17 June 2025 23:23
->=20
-> On Tue, Jun 17, 2025 at 11:35:46AM +0300, Leon Romanovsky wrote:
-> > From: Parav Pandit <parav@nvidia.com>
-> >
-> > Currently, the capability check is done in the default init_user_ns
-> > user namespace. When a process runs in a non default user namespace,
-> > such check fails. Due to this when a process is running using podman,
-> > it fails to create the QP.
-> >
-> > Since the RDMA device is a resource within a network namespace, use
-> > the network namespace associated with the RDMA device to determine its
-> > owning user namespace.
-> >
-> > Fixes: 2dee0e545894 ("IB/uverbs: Enable QP creation with a given
-> > source QP number")
-> > Fixes: 6d1e7ba241e9 ("IB/uverbs: Introduce create/destroy QP commands
-> > over ioctl")
-> > Signed-off-by: Parav Pandit <parav@nvidia.com>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> >  drivers/infiniband/core/uverbs_cmd.c          | 11 +++++++----
-> >  drivers/infiniband/core/uverbs_std_types_qp.c |  2 +-
-> >  2 files changed, 8 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/infiniband/core/uverbs_cmd.c
-> > b/drivers/infiniband/core/uverbs_cmd.c
-> > index 08a738a2a1ff..84f9bbc781d3 100644
-> > --- a/drivers/infiniband/core/uverbs_cmd.c
-> > +++ b/drivers/infiniband/core/uverbs_cmd.c
-> > @@ -1312,9 +1312,6 @@ static int create_qp(struct uverbs_attr_bundle
-> > *attrs,
-> >
-> >  	switch (cmd->qp_type) {
-> >  	case IB_QPT_RAW_PACKET:
-> > -		if (!capable(CAP_NET_RAW))
-> > -			return -EPERM;
-> > -		break;
->=20
-> I don't think we should do these code movements, I'm not sure we won't
-> create a security problem by actually creating the object and then
-> immediately destroying it.
->=20
-> Add a rdma_uattrs_has_raw_cap() and call ib_uverbs_get_ucontext_file() to
-> get the ->ib_device
->=20
-Ok. Sending v1 with the suggested change.
+RCT (Reverse Christmas Tree) ?
 
-> Jason
+Yanjun.Zhu
+
+> +	struct mlx5_core_dev *mdev;
+> +	int err;
+> +
+> +	mutex_lock(&priv->state_lock);
+> +	if (!test_bit(MLX5E_STATE_OPENED, &priv->state)) {
+> +		err = -ENODEV;
+> +		goto unlock;
+> +	}
+> +
+> +	if (queue_index >= chs->num) {
+> +		err = -ERANGE;
+> +		goto unlock;
+> +	}
+> +
+> +	if (MLX5E_GET_PFLAG(&chs->params, MLX5E_PFLAG_TX_PORT_TS) ||
+> +	    chs->params.ptp_rx   ||
+> +	    chs->params.xdp_prog ||
+> +	    priv->htb) {
+> +		netdev_err(priv->netdev,
+> +			   "Cloning channels with Port/rx PTP, XDP or HTB is not supported\n");
+> +		err = -EOPNOTSUPP;
+> +		goto unlock;
+> +	}
+> +
+> +	mdev = mlx5_sd_ch_ix_get_dev(priv->mdev, queue_index);
+> +	err = mlx5e_build_channel_param(mdev, &params, &new->cparam);
+> +	if (err)
+> +		goto unlock;
+> +
+> +	err = mlx5e_open_channel(priv, queue_index, &params, NULL, &new->c);
+> +unlock:
+> +	mutex_unlock(&priv->state_lock);
+> +	return err;
+> +}
+> +
+> +static void mlx5e_queue_mem_free(struct net_device *dev, void *mem)
+> +{
+> +	struct mlx5_qmgmt_data *data = (struct mlx5_qmgmt_data *)mem;
+> +
+> +	/* not supposed to happen since mlx5e_queue_start never fails
+> +	 * but this is how this should be implemented just in case
+> +	 */
+> +	if (data->c)
+> +		mlx5e_close_channel(data->c);
+> +}
+> +
+> +static int mlx5e_queue_stop(struct net_device *dev, void *oldq, int queue_index)
+> +{
+> +	/* In mlx5 a txq cannot be simply stopped in isolation, only restarted.
+> +	 * mlx5e_queue_start does not fail, we stop the old queue there.
+> +	 * TODO: Improve this.
+> +	 */
+> +	return 0;
+> +}
+> +
+> +static int mlx5e_queue_start(struct net_device *dev, void *newq,
+> +			     int queue_index)
+> +{
+> +	struct mlx5_qmgmt_data *new = (struct mlx5_qmgmt_data *)newq;
+> +	struct mlx5e_priv *priv = netdev_priv(dev);
+> +	struct mlx5e_channel *old;
+> +
+> +	mutex_lock(&priv->state_lock);
+> +
+> +	/* stop and close the old */
+> +	old = priv->channels.c[queue_index];
+> +	mlx5e_deactivate_priv_channels(priv);
+> +	/* close old before activating new, to avoid napi conflict */
+> +	mlx5e_close_channel(old);
+> +
+> +	/* start the new */
+> +	priv->channels.c[queue_index] = new->c;
+> +	mlx5e_activate_priv_channels(priv);
+> +	mutex_unlock(&priv->state_lock);
+> +	return 0;
+> +}
+> +
+> +static const struct netdev_queue_mgmt_ops mlx5e_queue_mgmt_ops = {
+> +	.ndo_queue_mem_size	=	sizeof(struct mlx5_qmgmt_data),
+> +	.ndo_queue_mem_alloc	=	mlx5e_queue_mem_alloc,
+> +	.ndo_queue_mem_free	=	mlx5e_queue_mem_free,
+> +	.ndo_queue_start	=	mlx5e_queue_start,
+> +	.ndo_queue_stop		=	mlx5e_queue_stop,
+> +};
+> +
+>   static void mlx5e_build_nic_netdev(struct net_device *netdev)
+>   {
+>   	struct mlx5e_priv *priv = netdev_priv(netdev);
+> @@ -5504,6 +5601,7 @@ static void mlx5e_build_nic_netdev(struct net_device *netdev)
+>   	SET_NETDEV_DEV(netdev, mdev->device);
+>   
+>   	netdev->netdev_ops = &mlx5e_netdev_ops;
+> +	netdev->queue_mgmt_ops = &mlx5e_queue_mgmt_ops;
+>   	netdev->xdp_metadata_ops = &mlx5e_xdp_metadata_ops;
+>   	netdev->xsk_tx_metadata_ops = &mlx5e_xsk_tx_metadata_ops;
+>   	netdev->request_ops_lock = true;
+
 
