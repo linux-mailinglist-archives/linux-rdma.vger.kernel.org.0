@@ -1,217 +1,129 @@
-Return-Path: <linux-rdma+bounces-11419-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11420-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36169ADE364
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Jun 2025 08:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 92BEDADE446
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Jun 2025 09:08:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9161816AA23
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Jun 2025 06:07:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 418AB17B00F
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Jun 2025 07:08:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C3F41E573F;
-	Wed, 18 Jun 2025 06:07:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48D7F27E1AC;
+	Wed, 18 Jun 2025 07:08:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aw9b2FQ7"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="I2EZxJXs";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="BbgFDKDY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AF611F3FED
-	for <linux-rdma@vger.kernel.org>; Wed, 18 Jun 2025 06:07:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9632E27816E;
+	Wed, 18 Jun 2025 07:08:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750226843; cv=none; b=u3K9GnOWqcl0xeHE1B6+fIxz84WTsA0RZcoPDyINMt01wiKR5nKbku7YCddalK640qvWz+CGs5twXw9a2flyXgbRKt1naHUkpVmZsakSeS0eQ6kOasIL/prJHNZJu/WJnRJJpy3YT74gGXAjBb+Eh9AJr4WcQoKv0U75bm6k+qw=
+	t=1750230500; cv=none; b=ekNVla0Zo7NcqlIKiZYLJ9FQAijI5gh7bxej/MA15XfAs5w94qBaOgTj6YG2nVRuWEQtLVeBbMLyHDIesnYmdVovTRWGyENylRGKTi0b2YHQgr2CkAJopkuLgjt7OLXVfMxRB18+EX6ag87dZf0surpZV9UimSd3zDESySE4IEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750226843; c=relaxed/simple;
-	bh=gVpRGpWbvK2l2EgWkUdriQt0Z8wJ5SQFwm0/UlJCZCQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Q+WiJ/+/sNZ3H2kLOw//4ar1VUMl162YIcPnqiofI3euPYGzv67kvJnWXLnV4ZeQcIsryJ0W4CljlEBwVnBFBXwJZN03sj31fjzNYw3Bf2ho1ehJ6DZnub0BNZrKRX7URyKiVXiYqIl46OuAEkEsIRFPoG14nctHG3NUOawmgcs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aw9b2FQ7; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <325ab9a0-44d1-44a2-aefe-9cd49dcd12f5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750226827;
+	s=arc-20240116; t=1750230500; c=relaxed/simple;
+	bh=HQUhUUMz1hwkIw0H+WnoEWZYfkvGVKwDKzojTFzI74U=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=UdjKcgBirfvUfRmRS4w32XIcPJhtWW5X3X41jZeAPVnFPP1S7R9TCBVFWSOxUEwBHhvNVFWfp3feF7lVyY/BaYH/qKTiMf5B3jRmXEYySm3mqy0kUqzUo7AdOi9u5uQWvK11OuuVhOT2jBb8nfI3Wj39J3vpzuHfeSh8d0n2Wmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=I2EZxJXs; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=BbgFDKDY; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1750230496;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NkuFePhrx7gFmJOrw5AAMhKELjMHQfD+AdCkLnFiRGI=;
-	b=aw9b2FQ7pNugXJV0VcM6mLYbw5VWRu7wvN+6UUWbwbPdlWLsDYLiwI6KgDtMGuzIpy8nW3
-	2NBbXpHvUFxO9U7iE2frkLEYATSmZ6ODBNCYhLpOUIlXQmYLj2uJ34QHWIA4wSucCXacT0
-	nZWvDmjbsLGMme3pBGyRInNwmZuxNTk=
-Date: Tue, 17 Jun 2025 23:06:52 -0700
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=AthrdE03eMT6iyFsW/vA3bdClID4lHYN+YmePk1prAg=;
+	b=I2EZxJXsMG2CTO7g5gZZf1qltdHNLqFjmsBKmGggS50/UZiRsCFPdz5DhOb9RGxWls8eHc
+	bYP7KbbfUGQmtJ+Ee8tXBgYXe1lQVNuX15Uf2dX3uS+JM41tqXajUfALR7RqZvU689ESES
+	sma/nVhg/68/CO3nsc42B36La6pHvxaHub9NC5pkh/nwRcUhvxnuZFRwECywBr0I2pCYb6
+	Em7GDPpRqTjKla2tOiCnr1m3gzHky/MkqTz6qqck8DKGjyEffqZvt6pNnhzAIOYKM4MbKy
+	icNyrZ3X8jBpzLnamNQ3388eI438j5sNT0JP7DL31r166XhFFWFTGy4iKB3x7Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1750230496;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=AthrdE03eMT6iyFsW/vA3bdClID4lHYN+YmePk1prAg=;
+	b=BbgFDKDY3M2uyykrupOKp2zK1iwQwdxSS5saBGNgSDiVEZPEd+V2WAEzhndjPyjbxNOD1t
+	ipt47VuIseiY7GDA==
+Subject: [PATCH net-next v3 0/2] net: Don't use %pK through printk
+Date: Wed, 18 Jun 2025 09:08:05 +0200
+Message-Id: <20250618-restricted-pointers-net-v3-0-3b7a531e58bb@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v6 10/12] net/mlx5e: Implement queue mgmt ops and
- single channel swap
-To: Mark Bloch <mbloch@nvidia.com>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Simon Horman <horms@kernel.org>
-Cc: saeedm@nvidia.com, gal@nvidia.com, leonro@nvidia.com, tariqt@nvidia.com,
- Leon Romanovsky <leon@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Richard Cochran <richardcochran@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, Dragos Tatulea <dtatulea@nvidia.com>
-References: <20250616141441.1243044-1-mbloch@nvidia.com>
- <20250616141441.1243044-11-mbloch@nvidia.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20250616141441.1243044-11-mbloch@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-B4-Tracking: v=1; b=H4sIANVlUmgC/3XNTQ7CIBAF4Ks0rMUApT+68h7GBYHBTmKgASQ1T
+ e8u4saYdPnyZr63kggBIZJzs5IAGSN6V0J7aIielLsDRVMyEUx0TDJJA8QUUCcwdPboEoRIHSS
+ qRm2MYS10hpPyPQewuFT5Sj4HDpZEbqWZMCYfXnUy89p/db6vZ04Z5UJZpkH2ZenyQPdMwTtcj
+ gaqm8WvNexbolgnqe0AdoRewb+1bdsbHhNJuxgBAAA=
+X-Change-ID: 20250404-restricted-pointers-net-a8cddd03e5d1
+To: Tony Nguyen <anthony.l.nguyen@intel.com>, 
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+ Andrew Lunn <andrew+netdev@lunn.ch>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
+ Tariq Toukan <tariqt@nvidia.com>
+Cc: intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
+ Aleksandr Loktionov <aleksandr.loktionov@intel.com>, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1750230493; l=1640;
+ i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
+ bh=HQUhUUMz1hwkIw0H+WnoEWZYfkvGVKwDKzojTFzI74U=;
+ b=QlTPnkpsoB7IxMXFtb6EQuaKpoYFy/ecQsJwnFfe1wgZEQyKZKKJ6NznpDduSF+m9engtl6GI
+ i8njRl6iDk7CynbKVDiatPcDnpR0+yna592iCmay7YDBYaG/O14khee
+X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
+ pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 
-在 2025/6/16 7:14, Mark Bloch 写道:
-> From: Saeed Mahameed <saeedm@nvidia.com>
-> 
-> The bulk of the work is done in mlx5e_queue_mem_alloc, where we allocate
-> and create the new channel resources, similar to
-> mlx5e_safe_switch_params, but here we do it for a single channel using
-> existing params, sort of a clone channel.
-> To swap the old channel with the new one, we deactivate and close the
-> old channel then replace it with the new one, since the swap procedure
-> doesn't fail in mlx5, we do it all in one place (mlx5e_queue_start).
-> 
-> Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
-> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
-> ---
->   .../net/ethernet/mellanox/mlx5/core/en_main.c | 98 +++++++++++++++++++
->   1 file changed, 98 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> index a51e204bd364..873a42b4a82d 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> @@ -5494,6 +5494,103 @@ static const struct netdev_stat_ops mlx5e_stat_ops = {
->   	.get_base_stats      = mlx5e_get_base_stats,
->   };
->   
-> +struct mlx5_qmgmt_data {
-> +	struct mlx5e_channel *c;
-> +	struct mlx5e_channel_param cparam;
-> +};
-> +
-> +static int mlx5e_queue_mem_alloc(struct net_device *dev, void *newq,
-> +				 int queue_index)
-> +{
-> +	struct mlx5_qmgmt_data *new = (struct mlx5_qmgmt_data *)newq;
-> +	struct mlx5e_priv *priv = netdev_priv(dev);
-> +	struct mlx5e_channels *chs = &priv->channels;
-> +	struct mlx5e_params params = chs->params;
+In the past %pK was preferable to %p as it would not leak raw pointer
+values into the kernel log.
+Since commit ad67b74d2469 ("printk: hash addresses printed with %p")
+the regular %p has been improved to avoid this issue.
+Furthermore, restricted pointers ("%pK") were never meant to be used
+through printk(). They can still unintentionally leak raw pointers or
+acquire sleeping locks in atomic contexts.
 
-RCT (Reverse Christmas Tree) ?
+Switch to the regular pointer formatting which is safer and
+easier to reason about.
+There are still a few users of %pK left, but these use it through seq_file,
+for which its usage is safe.
 
-Yanjun.Zhu
+Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+---
+Changes in v3:
+- Fix typo in commit messages
+- Link to v2: https://lore.kernel.org/r/20250417-restricted-pointers-net-v2-0-94cf7ef8e6ae@linutronix.de
 
-> +	struct mlx5_core_dev *mdev;
-> +	int err;
-> +
-> +	mutex_lock(&priv->state_lock);
-> +	if (!test_bit(MLX5E_STATE_OPENED, &priv->state)) {
-> +		err = -ENODEV;
-> +		goto unlock;
-> +	}
-> +
-> +	if (queue_index >= chs->num) {
-> +		err = -ERANGE;
-> +		goto unlock;
-> +	}
-> +
-> +	if (MLX5E_GET_PFLAG(&chs->params, MLX5E_PFLAG_TX_PORT_TS) ||
-> +	    chs->params.ptp_rx   ||
-> +	    chs->params.xdp_prog ||
-> +	    priv->htb) {
-> +		netdev_err(priv->netdev,
-> +			   "Cloning channels with Port/rx PTP, XDP or HTB is not supported\n");
-> +		err = -EOPNOTSUPP;
-> +		goto unlock;
-> +	}
-> +
-> +	mdev = mlx5_sd_ch_ix_get_dev(priv->mdev, queue_index);
-> +	err = mlx5e_build_channel_param(mdev, &params, &new->cparam);
-> +	if (err)
-> +		goto unlock;
-> +
-> +	err = mlx5e_open_channel(priv, queue_index, &params, NULL, &new->c);
-> +unlock:
-> +	mutex_unlock(&priv->state_lock);
-> +	return err;
-> +}
-> +
-> +static void mlx5e_queue_mem_free(struct net_device *dev, void *mem)
-> +{
-> +	struct mlx5_qmgmt_data *data = (struct mlx5_qmgmt_data *)mem;
-> +
-> +	/* not supposed to happen since mlx5e_queue_start never fails
-> +	 * but this is how this should be implemented just in case
-> +	 */
-> +	if (data->c)
-> +		mlx5e_close_channel(data->c);
-> +}
-> +
-> +static int mlx5e_queue_stop(struct net_device *dev, void *oldq, int queue_index)
-> +{
-> +	/* In mlx5 a txq cannot be simply stopped in isolation, only restarted.
-> +	 * mlx5e_queue_start does not fail, we stop the old queue there.
-> +	 * TODO: Improve this.
-> +	 */
-> +	return 0;
-> +}
-> +
-> +static int mlx5e_queue_start(struct net_device *dev, void *newq,
-> +			     int queue_index)
-> +{
-> +	struct mlx5_qmgmt_data *new = (struct mlx5_qmgmt_data *)newq;
-> +	struct mlx5e_priv *priv = netdev_priv(dev);
-> +	struct mlx5e_channel *old;
-> +
-> +	mutex_lock(&priv->state_lock);
-> +
-> +	/* stop and close the old */
-> +	old = priv->channels.c[queue_index];
-> +	mlx5e_deactivate_priv_channels(priv);
-> +	/* close old before activating new, to avoid napi conflict */
-> +	mlx5e_close_channel(old);
-> +
-> +	/* start the new */
-> +	priv->channels.c[queue_index] = new->c;
-> +	mlx5e_activate_priv_channels(priv);
-> +	mutex_unlock(&priv->state_lock);
-> +	return 0;
-> +}
-> +
-> +static const struct netdev_queue_mgmt_ops mlx5e_queue_mgmt_ops = {
-> +	.ndo_queue_mem_size	=	sizeof(struct mlx5_qmgmt_data),
-> +	.ndo_queue_mem_alloc	=	mlx5e_queue_mem_alloc,
-> +	.ndo_queue_mem_free	=	mlx5e_queue_mem_free,
-> +	.ndo_queue_start	=	mlx5e_queue_start,
-> +	.ndo_queue_stop		=	mlx5e_queue_stop,
-> +};
-> +
->   static void mlx5e_build_nic_netdev(struct net_device *netdev)
->   {
->   	struct mlx5e_priv *priv = netdev_priv(netdev);
-> @@ -5504,6 +5601,7 @@ static void mlx5e_build_nic_netdev(struct net_device *netdev)
->   	SET_NETDEV_DEV(netdev, mdev->device);
->   
->   	netdev->netdev_ops = &mlx5e_netdev_ops;
-> +	netdev->queue_mgmt_ops = &mlx5e_queue_mgmt_ops;
->   	netdev->xdp_metadata_ops = &mlx5e_xdp_metadata_ops;
->   	netdev->xsk_tx_metadata_ops = &mlx5e_xsk_tx_metadata_ops;
->   	netdev->request_ops_lock = true;
+Changes in v2:
+- Drop wifi/ath patches, they are submitted on their own now
+- Link to v1: https://lore.kernel.org/r/20250414-restricted-pointers-net-v1-0-12af0ce46cdd@linutronix.de
+
+---
+Thomas Weißschuh (2):
+      ice: Don't use %pK through printk or tracepoints
+      net/mlx5: Don't use %pK through printk or tracepoints
+
+ drivers/net/ethernet/intel/ice/ice_main.c                      |  2 +-
+ drivers/net/ethernet/intel/ice/ice_trace.h                     | 10 +++++-----
+ .../ethernet/mellanox/mlx5/core/sf/dev/diag/dev_tracepoint.h   |  2 +-
+ 3 files changed, 7 insertions(+), 7 deletions(-)
+---
+base-commit: 52da431bf03b5506203bca27fe14a97895c80faf
+change-id: 20250404-restricted-pointers-net-a8cddd03e5d1
+
+Best regards,
+-- 
+Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 
 
