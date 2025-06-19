@@ -1,158 +1,113 @@
-Return-Path: <linux-rdma+bounces-11438-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11439-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3684ADF93A
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Jun 2025 00:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 77133ADFB12
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Jun 2025 04:00:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 151B21BC28E2
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Jun 2025 22:16:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BE1A189E0DE
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Jun 2025 02:00:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E002C27E041;
-	Wed, 18 Jun 2025 22:16:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68AA121C9F2;
+	Thu, 19 Jun 2025 01:59:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mpPaG3Hj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CwK+zBVW"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45A233085CE;
-	Wed, 18 Jun 2025 22:16:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12A6E137932;
+	Thu, 19 Jun 2025 01:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750284978; cv=none; b=VxWhe+oCT9yc8v3OAkUKPSPnvCVOnyYV4Eo+fZhIzo3DVsGuUDGbOjBvzAd1hSLijuoUSuR0rqNplcoD7UWoXGFVA/v57MecQqBaX8TNZoNyXFQQdVjX+LgW8ZLZm8Gvfni+tDPm1trVl7Z5yHoyMXUOuk4h7BbcAH0rO7JN3R4=
+	t=1750298391; cv=none; b=iP/bFYE8qaNj+Pavs8fu3sAL7Cp6ogDM+qVx3HuGwpd4CVV5sqsgpvG87C9W+ZmefUHJ5m4VOfxLyPEz5HVTZEyFfLvQmJ29vyslK7dDu0+qbLluk+zgRDAhMvwCUA04LIg1dadr7qBTbkvBJTdxIM01YXatmYVnLhZ/PdV1Ra0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750284978; c=relaxed/simple;
-	bh=Vo7VYqC9atPmpKK5GIJvwBLcV8TQc0xjKdO4cIBRMSc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hSGXZjNiDAY9iVanzt32ga8q3LGhN+mwDcX+ig0Kqnz8crKtBwMPoWGWx3XlsFUVlTEgVyX966Xoo2/4BDwRGDvpdTtShuRP9FZf/UELqRCyQTMyfURF7YOlCJaHAGD0QAxugpRJsGtAcuShme3bOhrGhYndSknKOHJUNW9T3RU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mpPaG3Hj; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-747fc7506d4so105511b3a.0;
-        Wed, 18 Jun 2025 15:16:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1750284976; x=1750889776; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bXXyW8YyKFcv52VvbZL/IMJUOoJuNpl+uHasmSoiSoQ=;
-        b=mpPaG3HjbEKB0s6EqV9tLXXGcx15rx5Irckub94+fKeB/4EeInxcIvqZLXpi4wOuHs
-         G5Qg5uFvtzLo2w8Rf6KgzEBLRn9I3n907jCMb13+vGiImjo96+e2RNulfpr/smnSTFxg
-         OVDREVcprS9qsTbnfROxeCqy/t2Et92wOh3A8+8k/YiBNvQxRpH40+zTrlOMRBJb8g8p
-         JVwwEd87gyPLjBCr7+Vw0w+tI126lH4N5xv/P5pTN96gQJGzshbEKUcAv2h9n8TBHecZ
-         Ol+jfMtad+AeN3yfb0pJ8SJJrLbSCrsMhMkVeY9vW+G9zO3vcS+XSjlndUHIdxEE34NL
-         uyxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1750284976; x=1750889776;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bXXyW8YyKFcv52VvbZL/IMJUOoJuNpl+uHasmSoiSoQ=;
-        b=X48f9bDhycuHyd0FNfDzRuK9edEp1O7s+I+a2fhYqvY7psKg09BFDPGcDCBG6A1SgR
-         5dfwcsayhQYQSArq1Dx1XUWG+npJtoyXhaAPy2l6oQxJrf689C2qwV4XxY/Id08HaW/u
-         NGzKgeRcVtd1BLweXHixietWsG3ZfBag682w+LD8Ppry+Vr5M76eaSsuERcMQ8BYg8Op
-         +7q6IdZYVtYgRPcr8Qc8mgLoQTmEP/pysKZIUym/n+Ddr0L+t6hfh6tn3ju27tsG8ltD
-         hxnWMQHp06QKwDj+CVCp3IROjFvKbcehhgYAp5TZuyoYLY8x6DVda4l+o/XapyPfEnzk
-         mckg==
-X-Forwarded-Encrypted: i=1; AJvYcCVKUXaYqjuE6I2ryW++TPlXJJTrKQW38LB5/K2Pw3HKLPNsusnVf+GaL5SU5QqrQzX3Tc2G1Zq4m8laTg==@vger.kernel.org, AJvYcCVMpa9YtxKUanB+NFaB8mDIknh4PeAFY4VLTo8aYyy/R2ZFR9acGVAy/dF0JY7Zp2m025Y=@vger.kernel.org, AJvYcCVw4rSA3P7l2mekqHvl+GPL67eAPqJfTwEybvZJ2+AzxIrJdFaOcBFEOiT6dwHRdVCPqPDzrqktxNwfA9+o@vger.kernel.org, AJvYcCW+vkiV4csyfFNh3gsawXNOuY/vpPAHeiVwZOzFn/IS2EGuFFyEZb0cOaNnF3Q7EpUPRFbET6RZ@vger.kernel.org
-X-Gm-Message-State: AOJu0YzeM1piEU4upEFX3f3qQPQ6Z9xlNoFrNjGAENFoCy6X/ptUdqng
-	0clJfgoYSwNBDYiG5KReRYWm+xGONRgVxUv47uobJZqYq5QLKRReRcs=
-X-Gm-Gg: ASbGncvw2fLt5HFCdEHlJmDeqjERroSjcOZ6XN8VFhmDQ2/HZ7v3Nkks7zOdNSsetW4
-	4QLEj7XnLl+W4UeVEkJczbObau55WRE1Z62fxHvTbTNtWzbDjKJAWnFFGoD9FLtQ1h/o6iAoPj9
-	1cU1f+Uy2i54S7jcS0CY4zOk+A4oqtcRVFGfHu+0wG1uWPPaXUR8+A1WTuVO5Pm6K0y1NB6FGkO
-	PdytVl1NcHC7neT+Si5RexroVcv48gnhOd/L4BbBUJFBLThMZCFgUAwe6Tk3n+wVhkyPGlqlX9Q
-	2yMob3N5Ee5yqz2xJXX8N6/m/YVqd3VT82dHrnrSD95SLggc2OWbxyAn87WKn4QtJf2wNxMFmsv
-	eoYzDvZrzfqLjEj996FTbunQ=
-X-Google-Smtp-Source: AGHT+IExSMfGb5fUayBdf0peRgvJAdEA/VgzwPukDOR/vhSvbbVTtarNLjFlaHdPhkauF08P1jVFfQ==
-X-Received: by 2002:a05:6a21:8cc6:b0:20f:94bd:eecf with SMTP id adf61e73a8af0-21fbd7ffb6bmr27695976637.42.1750284976452;
-        Wed, 18 Jun 2025 15:16:16 -0700 (PDT)
-Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
-        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-7489000519bsm11673996b3a.38.2025.06.18.15.16.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Jun 2025 15:16:16 -0700 (PDT)
-Date: Wed, 18 Jun 2025 15:16:15 -0700
-From: Stanislav Fomichev <stfomichev@gmail.com>
-To: Mark Bloch <mbloch@nvidia.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Simon Horman <horms@kernel.org>, saeedm@nvidia.com, gal@nvidia.com,
-	leonro@nvidia.com, tariqt@nvidia.com,
-	Leon Romanovsky <leon@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Stanislav Fomichev <sdf@fomichev.me>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, Dragos Tatulea <dtatulea@nvidia.com>,
-	Mina Almasry <almasrymina@google.com>
-Subject: Re: [PATCH net-next v6 12/12] net/mlx5e: Add TX support for netmems
-Message-ID: <aFM6r9kFHeTdj-25@mini-arch>
-References: <20250616141441.1243044-1-mbloch@nvidia.com>
- <20250616141441.1243044-13-mbloch@nvidia.com>
+	s=arc-20240116; t=1750298391; c=relaxed/simple;
+	bh=94mN+2+g5h25MlO4Cl08JCW2RHY0uDyNmsYiIn2eS/0=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=cs5Lu45UHPtL7kgJkGX4MgOWPUjuXTsMSS2uR4kB4Jk/qwmlan9vw4yvQwUs806qpVBGWC4kNIHs6uiVvqwQCJCUGNjaZ+i3+T5U1zFw7HQewPpYeQxk45KPMVbDcxL8fawatdPNYt8+wpl2SbaV8L66vIZLxY9ov/jQRvoumVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CwK+zBVW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AB1AC4CEE7;
+	Thu, 19 Jun 2025 01:59:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1750298390;
+	bh=94mN+2+g5h25MlO4Cl08JCW2RHY0uDyNmsYiIn2eS/0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=CwK+zBVWd9Vt8zSivCtzR8ekuuA7p+dsyureeXvVPF4+kzM0iB0o/1GUz0svw6kVI
+	 ecIlNmV1yyU5D5c0ki3TBJZLgv4RvqL+M0MsMr20qQwj+mTQefW2ApQaGR8OiwZcCz
+	 J2225Ho4HJbQ7u/NeBzUI36iMMG6yJP56aLaYT9QJ4cI+KuAKoLT2LQmbysUD2FNre
+	 s8CNyHzFdJj7y6G74TxZclFFncO/ucFxgHG5HzljGsgtNNOca9D0/YkAuESlXpSZ4X
+	 S6ZuexGLDGU9jkptP+FYSEE9A0U7tA4xDX2/XYYNZkujBjuPGusUvkdX2hG/CqA1lS
+	 EOHj4+ALl+LbQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAEDF3806649;
+	Thu, 19 Jun 2025 02:00:19 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250616141441.1243044-13-mbloch@nvidia.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v5 0/6] udp_tunnel: remove rtnl_lock dependency
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175029841848.320658.9308379649509683113.git-patchwork-notify@kernel.org>
+Date: Thu, 19 Jun 2025 02:00:18 +0000
+References: <20250616162117.287806-1-stfomichev@gmail.com>
+In-Reply-To: <20250616162117.287806-1-stfomichev@gmail.com>
+To: Stanislav Fomichev <stfomichev@gmail.com>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, skalluru@marvell.com,
+ manishc@marvell.com, andrew+netdev@lunn.ch, michael.chan@broadcom.com,
+ pavan.chebbi@broadcom.com, ajit.khaparde@broadcom.com,
+ sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
+ anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com, tariqt@nvidia.com,
+ saeedm@nvidia.com, louis.peens@corigine.com, shshaikh@marvell.com,
+ GR-Linux-NIC-Dev@marvell.com, ecree.xilinx@gmail.com, horms@kernel.org,
+ dsahern@kernel.org, shuah@kernel.org, tglx@linutronix.de, mingo@kernel.org,
+ ruanjinjie@huawei.com, idosch@nvidia.com, razor@blackwall.org,
+ petrm@nvidia.com, kuniyu@google.com, sdf@fomichev.me,
+ linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+ linux-rdma@vger.kernel.org, oss-drivers@corigine.com,
+ linux-net-drivers@amd.com, linux-kselftest@vger.kernel.org, leon@kernel.org
 
-On 06/16, Mark Bloch wrote:
-> From: Dragos Tatulea <dtatulea@nvidia.com>
-> 
-> Declare netmem TX support in netdev.
-> 
-> As required, use the netmem aware dma unmapping APIs
-> for unmapping netmems in tx completion path.
-> 
-> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
-> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-> Reviewed-by: Mina Almasry <almasrymina@google.com>
-> Signed-off-by: Mark Bloch <mbloch@nvidia.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h | 3 ++-
->  drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 2 ++
->  2 files changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h b/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
-> index e837c21d3d21..6501252359b0 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
-> @@ -362,7 +362,8 @@ mlx5e_tx_dma_unmap(struct device *pdev, struct mlx5e_sq_dma *dma)
->  		dma_unmap_single(pdev, dma->addr, dma->size, DMA_TO_DEVICE);
->  		break;
->  	case MLX5E_DMA_MAP_PAGE:
-> -		dma_unmap_page(pdev, dma->addr, dma->size, DMA_TO_DEVICE);
-> +		netmem_dma_unmap_page_attrs(pdev, dma->addr, dma->size,
-> +					    DMA_TO_DEVICE, 0);
+Hello:
 
-For this to work, the dma->addr needs to be 0, so the callers of the
-dma_map() need to be adjusted as well, or am I missing something?
-There is netmem_dma_unmap_addr_set to handle that, but I don't see
-anybody calling it. Do we need to add the following (untested)?
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-index 55a8629f0792..fb6465210aed 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-@@ -210,7 +210,9 @@ mlx5e_txwqe_build_dsegs(struct mlx5e_txqsq *sq, struct sk_buff *skb,
- 		if (unlikely(dma_mapping_error(sq->pdev, dma_addr)))
- 			goto dma_unmap_wqe_err;
- 
--		dseg->addr       = cpu_to_be64(dma_addr);
-+		dseg->addr = 0;
-+		if (!netmem_is_net_iov(skb_frag_netmem(frag)))
-+			dseg->addr = cpu_to_be64(dma_addr);
- 		dseg->lkey       = sq->mkey_be;
- 		dseg->byte_count = cpu_to_be32(fsz);
- 
+On Mon, 16 Jun 2025 09:21:11 -0700 you wrote:
+> Recently bnxt had to grow back a bunch of rtnl dependencies because
+> of udp_tunnel's infra. Add separate (global) mutext to protect
+> udp_tunnel state.
+> 
+> v5:
+> - remove unused variable (lkp@intel.com)
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v5,1/6] geneve: rely on rtnl lock in geneve_offload_rx_ports
+    https://git.kernel.org/netdev/net-next/c/3e14960f3bd2
+  - [net-next,v5,2/6] vxlan: drop sock_lock
+    https://git.kernel.org/netdev/net-next/c/df5425b3bd85
+  - [net-next,v5,3/6] udp_tunnel: remove rtnl_lock dependency
+    https://git.kernel.org/netdev/net-next/c/1ead7501094c
+  - [net-next,v5,4/6] net: remove redundant ASSERT_RTNL() in queue setup functions
+    https://git.kernel.org/netdev/net-next/c/3a321b6b1f76
+  - [net-next,v5,5/6] netdevsim: remove udp_ports_sleep
+    https://git.kernel.org/netdev/net-next/c/e054c8ba3bce
+  - [net-next,v5,6/6] Revert "bnxt_en: bring back rtnl_lock() in the bnxt_open() path"
+    https://git.kernel.org/netdev/net-next/c/850d9248d2ea
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
