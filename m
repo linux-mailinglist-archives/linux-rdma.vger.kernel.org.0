@@ -1,50 +1,55 @@
-Return-Path: <linux-rdma+bounces-11439-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11440-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77133ADFB12
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Jun 2025 04:00:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CB79ADFB6F
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Jun 2025 04:51:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BE1A189E0DE
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Jun 2025 02:00:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A8581BC144E
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Jun 2025 02:51:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68AA121C9F2;
-	Thu, 19 Jun 2025 01:59:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CwK+zBVW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C927214232;
+	Thu, 19 Jun 2025 02:51:22 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12A6E137932;
-	Thu, 19 Jun 2025 01:59:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B392113B5AE;
+	Thu, 19 Jun 2025 02:51:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750298391; cv=none; b=iP/bFYE8qaNj+Pavs8fu3sAL7Cp6ogDM+qVx3HuGwpd4CVV5sqsgpvG87C9W+ZmefUHJ5m4VOfxLyPEz5HVTZEyFfLvQmJ29vyslK7dDu0+qbLluk+zgRDAhMvwCUA04LIg1dadr7qBTbkvBJTdxIM01YXatmYVnLhZ/PdV1Ra0=
+	t=1750301482; cv=none; b=rR249z6gjX8cIbc6fW9MWJ1V18WGERKUPlEuNPSZP74pCI939dOHPnJ4ZJ0tiVdnR0kcaAMlYxboxIyCV9oETQ85gCXIW5vTD87sls0AZbZoovFOgsWHMknzjhHPEwaSsvmoNvQw1UuGtAMJBZGTL0tuUXNprtmm1DLiKbFnMzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750298391; c=relaxed/simple;
-	bh=94mN+2+g5h25MlO4Cl08JCW2RHY0uDyNmsYiIn2eS/0=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=cs5Lu45UHPtL7kgJkGX4MgOWPUjuXTsMSS2uR4kB4Jk/qwmlan9vw4yvQwUs806qpVBGWC4kNIHs6uiVvqwQCJCUGNjaZ+i3+T5U1zFw7HQewPpYeQxk45KPMVbDcxL8fawatdPNYt8+wpl2SbaV8L66vIZLxY9ov/jQRvoumVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CwK+zBVW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AB1AC4CEE7;
-	Thu, 19 Jun 2025 01:59:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750298390;
-	bh=94mN+2+g5h25MlO4Cl08JCW2RHY0uDyNmsYiIn2eS/0=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=CwK+zBVWd9Vt8zSivCtzR8ekuuA7p+dsyureeXvVPF4+kzM0iB0o/1GUz0svw6kVI
-	 ecIlNmV1yyU5D5c0ki3TBJZLgv4RvqL+M0MsMr20qQwj+mTQefW2ApQaGR8OiwZcCz
-	 J2225Ho4HJbQ7u/NeBzUI36iMMG6yJP56aLaYT9QJ4cI+KuAKoLT2LQmbysUD2FNre
-	 s8CNyHzFdJj7y6G74TxZclFFncO/ucFxgHG5HzljGsgtNNOca9D0/YkAuESlXpSZ4X
-	 S6ZuexGLDGU9jkptP+FYSEE9A0U7tA4xDX2/XYYNZkujBjuPGusUvkdX2hG/CqA1lS
-	 EOHj4+ALl+LbQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAEDF3806649;
-	Thu, 19 Jun 2025 02:00:19 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1750301482; c=relaxed/simple;
+	bh=jyRflxAFHZroptj2sNJ+CcplE3Wd/GyADtBwSwXDZcQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Aqrsrv9eu3XenIYJ2bpyedSCaLtvohPoDq+essX2UQuS1Y3hVpl/VZDFOng6z0QhwTSM2qQCBM4YO6ZHyuLMKk7JeN+qTNjd3vpiT2pd2t+KZemkFZMnP3dkqfF2M+PYDDFNOLl8vaGXx9Tax7WhTP+kUXCc5aWfofCgCRLbPms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4bN4rm4lzrz2QVJY;
+	Thu, 19 Jun 2025 10:52:08 +0800 (CST)
+Received: from dggpemf500016.china.huawei.com (unknown [7.185.36.197])
+	by mail.maildlp.com (Postfix) with ESMTPS id A80B81800B2;
+	Thu, 19 Jun 2025 10:51:14 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by dggpemf500016.china.huawei.com
+ (7.185.36.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 19 Jun
+ 2025 10:51:13 +0800
+From: Wang Liang <wangliang74@huawei.com>
+To: <wenjia@linux.ibm.com>, <jaka@linux.ibm.com>, <alibuda@linux.alibaba.com>,
+	<tonylu@linux.alibaba.com>, <guwen@linux.alibaba.com>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<horms@kernel.org>
+CC: <yuehaibing@huawei.com>, <zhangchangzhong@huawei.com>,
+	<linux-rdma@vger.kernel.org>, <linux-s390@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next] net/smc: remove unused function smc_lo_supports_v2
+Date: Thu, 19 Jun 2025 11:08:54 +0800
+Message-ID: <20250619030854.1536676-1-wangliang74@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -52,62 +57,44 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v5 0/6] udp_tunnel: remove rtnl_lock dependency
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175029841848.320658.9308379649509683113.git-patchwork-notify@kernel.org>
-Date: Thu, 19 Jun 2025 02:00:18 +0000
-References: <20250616162117.287806-1-stfomichev@gmail.com>
-In-Reply-To: <20250616162117.287806-1-stfomichev@gmail.com>
-To: Stanislav Fomichev <stfomichev@gmail.com>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, skalluru@marvell.com,
- manishc@marvell.com, andrew+netdev@lunn.ch, michael.chan@broadcom.com,
- pavan.chebbi@broadcom.com, ajit.khaparde@broadcom.com,
- sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
- anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com, tariqt@nvidia.com,
- saeedm@nvidia.com, louis.peens@corigine.com, shshaikh@marvell.com,
- GR-Linux-NIC-Dev@marvell.com, ecree.xilinx@gmail.com, horms@kernel.org,
- dsahern@kernel.org, shuah@kernel.org, tglx@linutronix.de, mingo@kernel.org,
- ruanjinjie@huawei.com, idosch@nvidia.com, razor@blackwall.org,
- petrm@nvidia.com, kuniyu@google.com, sdf@fomichev.me,
- linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
- linux-rdma@vger.kernel.org, oss-drivers@corigine.com,
- linux-net-drivers@amd.com, linux-kselftest@vger.kernel.org, leon@kernel.org
+Content-Type: text/plain
+X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
+ dggpemf500016.china.huawei.com (7.185.36.197)
 
-Hello:
+The smcd_ops->supports_v2 is only called in smcd_register_dev(), which
+calls function smcd_supports_v2 for ism. For loopback-ism, function
+smc_lo_supports_v2 is unused, remove it.
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Signed-off-by: Wang Liang <wangliang74@huawei.com>
+---
+ net/smc/smc_loopback.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-On Mon, 16 Jun 2025 09:21:11 -0700 you wrote:
-> Recently bnxt had to grow back a bunch of rtnl dependencies because
-> of udp_tunnel's infra. Add separate (global) mutext to protect
-> udp_tunnel state.
-> 
-> v5:
-> - remove unused variable (lkp@intel.com)
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,v5,1/6] geneve: rely on rtnl lock in geneve_offload_rx_ports
-    https://git.kernel.org/netdev/net-next/c/3e14960f3bd2
-  - [net-next,v5,2/6] vxlan: drop sock_lock
-    https://git.kernel.org/netdev/net-next/c/df5425b3bd85
-  - [net-next,v5,3/6] udp_tunnel: remove rtnl_lock dependency
-    https://git.kernel.org/netdev/net-next/c/1ead7501094c
-  - [net-next,v5,4/6] net: remove redundant ASSERT_RTNL() in queue setup functions
-    https://git.kernel.org/netdev/net-next/c/3a321b6b1f76
-  - [net-next,v5,5/6] netdevsim: remove udp_ports_sleep
-    https://git.kernel.org/netdev/net-next/c/e054c8ba3bce
-  - [net-next,v5,6/6] Revert "bnxt_en: bring back rtnl_lock() in the bnxt_open() path"
-    https://git.kernel.org/netdev/net-next/c/850d9248d2ea
-
-You are awesome, thank you!
+diff --git a/net/smc/smc_loopback.c b/net/smc/smc_loopback.c
+index 3c5f64ca4115..0eb00bbefd17 100644
+--- a/net/smc/smc_loopback.c
++++ b/net/smc/smc_loopback.c
+@@ -251,11 +251,6 @@ static int smc_lo_move_data(struct smcd_dev *smcd, u64 dmb_tok,
+ 	return 0;
+ }
+ 
+-static int smc_lo_supports_v2(void)
+-{
+-	return SMC_LO_V2_CAPABLE;
+-}
+-
+ static void smc_lo_get_local_gid(struct smcd_dev *smcd,
+ 				 struct smcd_gid *smcd_gid)
+ {
+@@ -288,7 +283,6 @@ static const struct smcd_ops lo_ops = {
+ 	.reset_vlan_required	= NULL,
+ 	.signal_event		= NULL,
+ 	.move_data = smc_lo_move_data,
+-	.supports_v2 = smc_lo_supports_v2,
+ 	.get_local_gid = smc_lo_get_local_gid,
+ 	.get_chid = smc_lo_get_chid,
+ 	.get_dev = smc_lo_get_dev,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.1
 
 
