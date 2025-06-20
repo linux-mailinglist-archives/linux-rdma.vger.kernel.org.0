@@ -1,199 +1,105 @@
-Return-Path: <linux-rdma+bounces-11493-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11495-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD54BAE1242
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Jun 2025 06:15:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71FCBAE1795
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Jun 2025 11:32:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8AAC5A3C96
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Jun 2025 04:14:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAAC1189D5AC
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Jun 2025 09:33:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A671722578D;
-	Fri, 20 Jun 2025 04:12:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 834ED283FD0;
+	Fri, 20 Jun 2025 09:32:33 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74ECE20F091;
-	Fri, 20 Jun 2025 04:12:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2C72283C82
+	for <linux-rdma@vger.kernel.org>; Fri, 20 Jun 2025 09:32:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750392762; cv=none; b=eGym4RdicnyaCY9e88M/bprBUQmVCTGnwqiJLQ4GrXx6LPleTFNgB0dCscUl+Arq5csZO+N3YWUd3JHlYrNXCCFM6QoQw566Ev5XWphsynTufKK8mP9QC+GF21mX3plikiWl521r7FyBWtOU0unN1udAboOuN67tQoZPnH/kljE=
+	t=1750411953; cv=none; b=gbdKGxhyimC5T0JT7RSUmiGwuezRNGmWDs73oy+mmfvb/avLD91JuF0OW4mnctQSTuSOF0fuAxmabZV1iZWAeBwhzu+pHVlsxBOUTVFOKsYaPZB2tOq8GEg3IjDHNaOl9VaizDOTcp7haiR+HlJzaD6a3F1CYIu/nmytMcTLLtU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750392762; c=relaxed/simple;
-	bh=U9kNZ4KQWukp+r3D0S/rVCQsFQLd6WWxLM0MODxbwtw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=M48wa7GeoMjU/7cMKWc69W1l0QqyyPMudYeZ5C7TrxtVI4kT1+JioalruLFpAS2ulzNR5khuB/OWeNcVx9kAHATc2QCtanfsYIpKxtS8ru5wgPc//7w/uSxoVLuC+wEdC+ce+NgGhfVKbBOaefMIKYGgt9LS3ngj1JbZC2HelMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-669ff7000002311f-ad-6854dfb3dbab
-From: Byungchul Park <byungchul@sk.com>
-To: willy@infradead.org,
-	netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	kernel_team@skhynix.com,
-	kuba@kernel.org,
-	almasrymina@google.com,
-	ilias.apalodimas@linaro.org,
-	harry.yoo@oracle.com,
-	hawk@kernel.org,
-	akpm@linux-foundation.org,
-	davem@davemloft.net,
-	john.fastabend@gmail.com,
-	andrew+netdev@lunn.ch,
-	asml.silence@gmail.com,
-	toke@redhat.com,
-	tariqt@nvidia.com,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	saeedm@nvidia.com,
-	leon@kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	david@redhat.com,
-	lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com,
-	vbabka@suse.cz,
-	rppt@kernel.org,
-	surenb@google.com,
-	mhocko@suse.com,
-	horms@kernel.org,
-	linux-rdma@vger.kernel.org,
-	bpf@vger.kernel.org,
-	vishal.moola@gmail.com,
-	hannes@cmpxchg.org,
-	ziy@nvidia.com,
-	jackmanb@google.com
-Subject: [PATCH net-next v6 9/9] page_pool: access ->pp_magic through struct netmem_desc in page_pool_page_is_pp()
-Date: Fri, 20 Jun 2025 13:12:24 +0900
-Message-Id: <20250620041224.46646-10-byungchul@sk.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20250620041224.46646-1-byungchul@sk.com>
-References: <20250620041224.46646-1-byungchul@sk.com>
+	s=arc-20240116; t=1750411953; c=relaxed/simple;
+	bh=+DS0SwWGVhQpF7xks0fNEy+VbOQ73ZppUW78S1YUBSQ=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=R3QDOcGMzlsLAdXNlQ+nzZmQG1El95JvvW22n61F67vxpsBTFwQjbOhbPvcmaWv0cq5l2kocA0HcoC+TKepmPF5dqahSa29+9KUBkc2wK0er7lPM4BmCvyBO1zj5MTrs4HcgCpZSp6Y/mepTsm9kyfDdL+I+FX9ibHPgjLI7288=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3ddc6d66787so24044225ab.3
+        for <linux-rdma@vger.kernel.org>; Fri, 20 Jun 2025 02:32:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750411951; x=1751016751;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hfVCfYID8ynNoAhHJetYJjFvlI7W95iRFPmmIzEobSE=;
+        b=XM2VJ/RWVsW0vrnVhvhRh/taoMCM6FwwnFDDEGFbsuWIvMVzlJJ3p9YP7F0QtDcN9e
+         SbkwRpJ8gtrkAdU5CFhsww4pHM7lDgBnl2FQev9ftN7BVaFPkgkLkdGfTismdwKkEvwy
+         jiP0D+bPc27QvFJpFm0oQ2JHBoPhdk53gLl7wl2b7LknRauufu4ozQ4rwu77NsWDxGcJ
+         e2UCcMfE7oDsqsZl5JHiYbSN4zH9vWcMB8simHiqU22n42cLcYXuDKGjw5TOU8qThDaP
+         OC6Mgo4FMxHKhiDQxNdB+c6SvAd33E4md4e4B/z4qkALG3nygudLwvy4ODicxleGsENR
+         81WQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUQv4tI3gbw6rpar6SCjsxhdiP4ro7NQ65ykBzZTWS3osMx23c7U/LCyou86HzvRKvzMaTc9uMSGZpP@vger.kernel.org
+X-Gm-Message-State: AOJu0YyE0pUZEEUQR3a7bU7qiyy7lfkDYNcKi06yfblY76iWjxlErsrm
+	1efjtn5K/G4KJuTyeuhewqi8covOICq2xNdf8yWaJJi41lOt5QMEqB3X2J483OkjAOcYc4aovHk
+	uqt+CyESqtj+I+QAw23knXe8EKDtMT/Al8EyKMT+EcJn3gBubvwYRg6hVoSY=
+X-Google-Smtp-Source: AGHT+IGstLq5VANh65+Gc1YZ63Lb/J4GcN486TU1d/5UDaj2NwXT+37gbrQyZYU3p0tWbq526CIxLzOfT9Hq+MXgpbHqRUdj3xTI
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SWUwTURiFvb3TmaFaHSrRER+IdYsSUYzLnwiG6Mto1GgwavQBG5nQhlKw
-	ZdUYyxKNFVBxQdtiisgiYGrq0qJASq3IopFA1CqrRfRBxEARy2K0hRh5+3LuOd99+WksKRQG
-	0wpVMq9WyZRSUkSIvs8rXvew96B8Q7dpKRjN1SRUedOhvM8mBGPlEwSj450UeJwvSSgpHsNg
-	fJNDwE/zBIaBRjcFVZa90Fv2hYDa81YM7ktNJOTlTGKoGx+iIMtWIYC2J/lCuDZRisGq7aOg
-	46mRhJ7qP0L44sgjoFl/j4De/ChoNC2CsdZBBE6zVQBjuUUkXG03kdCf04ug/bmbAENmPgJz
-	vUsIk16fw/Cih4pawT0f/IG5R/c+CLgafTfFmSwp3MOKtZzO1Y45S+UFkrOMFFBc17takmu6
-	OUlwNTaPgMvLHiK54YGPBPej/i3JmR+9JbhXJie1P/CoKCKWVypSefX67cdF8rpugyCpPSjd
-	entUoEUNgToUQLPMJvbrt0mBDtHT3Dq00R+TzGrW5RrHfg5iwlmP+yWhQyIaM/dJ1lndSfn7
-	Cxk1a7kb5e8QzErWXJpF+lnMbGGvDOcKZ/QhbNUD+7QnwJcPZz2b7kiYzaz3To5wph/INt/6
-	TPiV2Pev+bbEH2PfNPuxAc9obDRbbA+a4SVsQ4WLuIwY/ay1/v9aP2ttQrgSSRSq1ASZQrkp
-	TJ6hUqSHnUhMsCDfuZSdmTpmQyNt0Q7E0Eg6T2wbjZZLhLJUTUaCA7E0lgaJS5r2ySXiWFnG
-	KV6dGKNOUfIaB1pKE9LF4o1jabESJk6WzMfzfBKv/vcqoAOCtehGw/XDBx1dpbvPFDrH6bsn
-	awqZ+Z5uaWLoyDbPr/PHO1t+2qSHj1xcZt/BstaYNb+LaudPWcvrDnlCIjKrF8RFHugoiH+3
-	TjW3hQ79RMX3998pDR1MuzRhjNl1YjiSfG1PWa7Dq4rSzu3M3Er1NK72hu15v+Y0bZhD/VqS
-	++JsuFZKaOSy8LVYrZH9Bc2mjzMqAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SXUhTYRjHe897ds5xODitUQe7EAYiRVlGxhN9IHTRQVCCgj5uauWxjXTK
-	pjKzD3NCZGlZXdicMpvVmspkmpumYmrqiKgm1bLlRGtUyPxa6rSyzYi8+/N/fs/vuXkYLF0k
-	YxiVOlfQqBWZckpMitP26Lc2+44ot3sD0WC0NVBQv6CDR6NOERitrQiCoY80zPYNUGCuncNg
-	fFVCwg/bIoYv/WM01NtTwffQT0LHVQeGsZuDFJSVLGHoDAVoKHZaCOitdongdWu5CO4uPsDg
-	KBqlYajdSMFIw7II/D1lJLgMj0nwlSdDv2k9zL2YQNBncxAwd6OagjtuEwXjJT4E7t4xEqqu
-	lCOwdXlEsLQQdlQ9H6GT4/jeiUnMtzz+QPBthk80b7Ln8c2WzXypx415u/UaxdtnbtO8910H
-	xQ9WLpF8m3OW4Mv0AYqf/jJM8pNdbyne/HWK4G0tb8lD0hPivelCpipf0Gzbf0qs7PxUReS4
-	ZTpHTZAoQs/WliKG4did3IvAjlIUxVBsPOfxhHAky9hEbnZsgCxFYgazjRTX1/CRjvDrWA1n
-	r0uOMCQbx9keFFORLGF3cRXTN0SRzLGxXH1T94onKtxPFz9dYaRsErdwv0T0l1/Lue59JiNK
-	HL5rq5FGahxe1T+pwreQxLCKMvynDKsoE8JWJFOp87MUqsykBO05ZYFapUs4k51lR+GPeHjx
-	Z4UTBYcO9iCWQfJoiTN4WCkVKfK1BVk9iGOwXCYxD6YppZJ0RcF5QZN9UpOXKWh70EaGlG+Q
-	pBwVTknZs4pc4Zwg5Aiaf1OCiYopQluGB2Inm87mdY/7cH8tUdhYV9d80NL6ilO97LpwWRfr
-	+nyMXvM9ND/yq3tPhtm7+8r937XsLWPM+4YM86VN8pT3w/EZ/sKt9IDXf7z25IRpKmmdbka4
-	8O3NSOsJSm9NfbTcP2UYN/4irp8mi7+lWKj278aa+W2y+MoDbV7/Pquc1CoViZuxRqv4A/Ra
-	oSoNAwAA
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a05:6e02:1985:b0:3dd:b706:b7d3 with SMTP id
+ e9e14a558f8ab-3de38c5c97fmr21209505ab.7.1750411950892; Fri, 20 Jun 2025
+ 02:32:30 -0700 (PDT)
+Date: Fri, 20 Jun 2025 02:32:30 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <68552aae.a00a0220.137b3.003f.GAE@google.com>
+Subject: [syzbot] Monthly rdma report (Jun 2025)
+From: syzbot <syzbot+list130c9052d10c27bfc9e9@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-To simplify struct page, the effort to separate its own descriptor from
-struct page is required and the work for page pool is on going.
+Hello rdma maintainers/developers,
 
-To achieve that, all the code should avoid directly accessing page pool
-members of struct page.
+This is a 31-day syzbot report for the rdma subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/rdma
 
-Access ->pp_magic through struct netmem_desc instead of directly
-accessing it through struct page in page_pool_page_is_pp().  Plus, move
-page_pool_page_is_pp() from mm.h to netmem.h to use struct netmem_desc
-without header dependency issue.
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 8 issues are still open and 65 have already been fixed.
 
-Signed-off-by: Byungchul Park <byungchul@sk.com>
-Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Reviewed-by: Mina Almasry <almasrymina@google.com>
-Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-Acked-by: Harry Yoo <harry.yoo@oracle.com>
+Some of the still happening issues:
+
+Ref Crashes Repro Title
+<1> 462     No    INFO: task hung in rdma_dev_change_netns
+                  https://syzkaller.appspot.com/bug?extid=73c5eab674c7e1e7012e
+<2> 338     Yes   WARNING in rxe_pool_cleanup
+                  https://syzkaller.appspot.com/bug?extid=221e213bf17f17e0d6cd
+<3> 72      No    INFO: task hung in add_one_compat_dev (3)
+                  https://syzkaller.appspot.com/bug?extid=6dee15fdb0606ef7b6ba
+<4> 50      No    INFO: task hung in rdma_dev_exit_net (6)
+                  https://syzkaller.appspot.com/bug?extid=3658758f38a2f0f062e7
+<5> 28      Yes   WARNING in gid_table_release_one (3)
+                  https://syzkaller.appspot.com/bug?extid=b0da83a6c0e2e2bddbd4
+<6> 5       No    WARNING in rxe_skb_tx_dtor
+                  https://syzkaller.appspot.com/bug?extid=8425ccfb599521edb153
+
 ---
- include/linux/mm.h   | 12 ------------
- include/net/netmem.h | 14 ++++++++++++++
- mm/page_alloc.c      |  1 +
- 3 files changed, 15 insertions(+), 12 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 0ef2ba0c667a..0b7f7f998085 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -4172,16 +4172,4 @@ int arch_lock_shadow_stack_status(struct task_struct *t, unsigned long status);
-  */
- #define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
- 
--#ifdef CONFIG_PAGE_POOL
--static inline bool page_pool_page_is_pp(struct page *page)
--{
--	return (page->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
--}
--#else
--static inline bool page_pool_page_is_pp(struct page *page)
--{
--	return false;
--}
--#endif
--
- #endif /* _LINUX_MM_H */
-diff --git a/include/net/netmem.h b/include/net/netmem.h
-index d49ed49d250b..3d1b1dfc9ba5 100644
---- a/include/net/netmem.h
-+++ b/include/net/netmem.h
-@@ -56,6 +56,20 @@ NETMEM_DESC_ASSERT_OFFSET(pp_ref_count, pp_ref_count);
-  */
- static_assert(sizeof(struct netmem_desc) <= offsetof(struct page, _refcount));
- 
-+#ifdef CONFIG_PAGE_POOL
-+static inline bool page_pool_page_is_pp(struct page *page)
-+{
-+	struct netmem_desc *desc = (struct netmem_desc *)page;
-+
-+	return (desc->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
-+}
-+#else
-+static inline bool page_pool_page_is_pp(struct page *page)
-+{
-+	return false;
-+}
-+#endif
-+
- /* net_iov */
- 
- DECLARE_STATIC_KEY_FALSE(page_pool_mem_providers);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 2ef3c07266b3..cc1d169853e8 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -55,6 +55,7 @@
- #include <linux/delayacct.h>
- #include <linux/cacheinfo.h>
- #include <linux/pgalloc_tag.h>
-+#include <net/netmem.h>
- #include <asm/div64.h>
- #include "internal.h"
- #include "shuffle.h"
--- 
-2.17.1
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
