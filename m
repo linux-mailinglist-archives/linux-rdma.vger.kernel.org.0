@@ -1,176 +1,171 @@
-Return-Path: <linux-rdma+bounces-11510-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11511-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EFC9AE2750
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 Jun 2025 06:13:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA119AE280E
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 Jun 2025 10:43:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19E693BF192
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 Jun 2025 04:12:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49A11189B494
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 Jun 2025 08:43:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 686921586C8;
-	Sat, 21 Jun 2025 04:13:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5D91531E3;
+	Sat, 21 Jun 2025 08:43:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bhJQytKc"
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="P09la/GL";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YvWVns99"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from fout-b8-smtp.messagingengine.com (fout-b8-smtp.messagingengine.com [202.12.124.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7FEE54918
-	for <linux-rdma@vger.kernel.org>; Sat, 21 Jun 2025 04:13:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 572E742A96;
+	Sat, 21 Jun 2025 08:43:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750479195; cv=none; b=o3vS3qpc+CQMR9lkSwNWd1SOViOsb/nPW3la8E5nrwGRybO4SG5TrnCrgRfvpXNyIDiDx726lT8jlMhjDh3ucbC+kRuoshlJ1Au/rjzAbVlt9j+xLqvW6iX+udoGcP9+L0IGraTpxGda/maYN8A3Oomd6Q6hKK1OYwggxmrukPk=
+	t=1750495418; cv=none; b=aJPM8K/v10/l/i2NOrG5RrZ2+NrPBHIMKlRx80RTkvWt5Eoej1an7jja1PYNLsQBOUGxR707dtB1BzYUHMF1JobzvhwEigrJcdj5wuXIomauBtokvcaiHPQb2ZTjcy5HlSxj7HkcQfGLRGJLSTsFJ8YLKe4Y5m7lrqYVwCyrWL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750479195; c=relaxed/simple;
-	bh=iNBqdvzRqvmlcLnFyD/xAgbAkKbUplPAdShitn7Qiow=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RHYlyTnmPSilQUUkpJi5FFkLnwQ+yLpTnxyn5nVUmtxvlx7z32PGlfHW8/Krb9W3SQqF8pnviD+tXVU1B3MaaeIvT0dqxx0pRIZcmrZ50pN+ZCt2LKBIxMspnkbvVIRaNyinP3zRGkA47SFNOROxluYXZ03CS3vVdio24iTaees=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bhJQytKc; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2d04fee6-5d95-4c50-b2b1-ee67f42932e2@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1750479180;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jcR9MO+hlXNQyGNXtt8eel8mEQz/tmmVsCpo4bl1TuM=;
-	b=bhJQytKcmXzZHfXkKScUGun4ArSRk5pFSwjbO7AGNiThQclcGPOq3XPM+KL7q78BpOIgUK
-	CNaTy6mWdzeoS6+QWpkC1dSBUC+t57/HF+dCDjp/3kMjGG2pX7A9aBaqORPmKZp+Gfdf4/
-	0wZk5mkoTqN2DirLqB3OSe9VNX7DvCY=
-Date: Fri, 20 Jun 2025 21:12:40 -0700
+	s=arc-20240116; t=1750495418; c=relaxed/simple;
+	bh=4rZ2ZnoUrbKDGr/2GBdIO1GUEN5PVZkrr7x6icSvihQ=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=WnSkw3zw/VEZ+kMt5MlOONVzhnuuGd2HU01V8mI2559SJdFVhnECrBBW+Db0nakobvJUUs+pSG/rbtloGnsVA743jOyA8x81oI70e8pv5tUY+OYpIfFcPfETJWCH7uCl7YVC9tn+16Q4r3H60KTzLd7uQF5E+IiveT0TNiGdkwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=P09la/GL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=YvWVns99; arc=none smtp.client-ip=202.12.124.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
+	by mailfout.stl.internal (Postfix) with ESMTP id EE2261140170;
+	Sat, 21 Jun 2025 04:43:34 -0400 (EDT)
+Received: from phl-imap-02 ([10.202.2.81])
+  by phl-compute-05.internal (MEProxy); Sat, 21 Jun 2025 04:43:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1750495414;
+	 x=1750581814; bh=hOBt8DyvRAQ/Oc15WkOTB7b3qi20b8aOYJt2sH34Xjo=; b=
+	P09la/GLSwtmAnFivcRAl35u7n35/5oOGFpvAJxwwMNUmTQ+ixzlKb51b+Az7ZmR
+	fG8uIxihtph8FIdrN4s9RHuXI9PhYIgFJCMPMXEJ+sUHQe60YRPqB0HcV7Cv1I+1
+	oMepQkkzsSu6QeGSi8TEdFjSUSzE+jPwK+KCT0oQD/VNvCdUkiOyGCZcSkRgdyy+
+	ihrIi5kBzBzub2XlIjyfma+8X3ef0JPL/ACfEOrISuzj6q8aiNcMMbwlFCEhKPL2
+	5AHG8dbyiYiFo9Sat8PyueEcamC/t66E1bqZOQXtFP0x/DPOVVOSYTxpYVk9xwM/
+	0FLnpZ5NUCMo2x3+lZpv7g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1750495414; x=
+	1750581814; bh=hOBt8DyvRAQ/Oc15WkOTB7b3qi20b8aOYJt2sH34Xjo=; b=Y
+	vWVns99GN4o9HSFIbP1+z69sNblzaFOvLCc+3Nj532w1TV8zjaWjPNkmkQcIKAw7
+	V6jawYxHYNOocsoBaiL5H+0lrigIIGyoH/0MqmUJBQsuqkBtxIVILvcPI4qVrMoM
+	DNcHWs5hwvszJlN86k0i8l2OQIU656vVzpHCO44XDYppVBjv9iQWtJdF4Gq10oD2
+	oO9jKeOeL4Oji9S1EdnbFpjzudVVrnz2ck91wtUSLI46VpsX3n7NB26y5RVdpFXn
+	8LPwOm3O23rxuW8zFxJ7+82zmmpFFZdMCkWGJWutCZYP5nhQofnXaOXJ07uOzJF3
+	f1PB2KsDYlsAec9pY5Ihw==
+X-ME-Sender: <xms:tnBWaER4YLzMf5xi1Z203mxC3ZmFhB9kWqcxfh8btFkWhuLEzGuiMg>
+    <xme:tnBWaBxpxv-Hu22BkZmFaOcu3CaVKb1Aw3YSTpDujnvfTvJDMB027snpKkl7t_lX0
+    Ya-DXOJ42I7YzbPxXw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtddvgddutdekfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefoggffhffvvefkjghfufgtgfesthhqredtredtjeenucfhrhhomhepfdetrhhnugcu
+    uegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtthgvrh
+    hnpedvhfdvkeeuudevfffftefgvdevfedvleehvddvgeejvdefhedtgeegveehfeeljeen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnug
+    esrghrnhgusgdruggvpdhnsggprhgtphhtthhopeduhedpmhhouggvpehsmhhtphhouhht
+    pdhrtghpthhtohepsghhrghrrghtsegthhgvlhhsihhordgtohhmpdhrtghpthhtohepsh
+    hhohifrhihrgestghhvghlshhiohdrtghomhdprhgtphhtthhopehnihgtkhdruggvshgr
+    uhhlnhhivghrshdolhhkmhhlsehgmhgrihhlrdgtohhmpdhrtghpthhtohepvggsihhggh
+    gvrhhssehgohhoghhlvgdrtghomhdprhgtphhtthhopehjuhhsthhinhhsthhithhtsehg
+    ohhoghhlvgdrtghomhdprhgtphhtthhopehmohhrsghosehgohhoghhlvgdrtghomhdprh
+    gtphhtthhopegrrhhnugeskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhgvohhnsehk
+    vghrnhgvlhdrohhrghdprhgtphhtthhopehnrghthhgrnheskhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:tnBWaB1BGk8sCxo4cR8ptzpQrBlMmeFvfJ6JGxxKmxHj5T9wNty-Bw>
+    <xmx:tnBWaIAzTbaxNHP_ZUECuEkeT4Lmi1N0z4_RPKjyolIXdIvyu4_zeA>
+    <xmx:tnBWaNixZ7FpObsDwab5XzJSFVeb-5VWHxlFmbK-yN_31aGPP4LuFA>
+    <xmx:tnBWaEpl9Xauk4k1QQg4lWesnbl9djMv_sXnnRs_q7C8d8gvWLjO4Q>
+    <xmx:tnBWaBs718JWZYIXtKYvFNjsiypan0SKgMdlXEwhEJru0Ul1U7FjYW72>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id EF5A7700063; Sat, 21 Jun 2025 04:43:33 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] RDMA/siw: work around clang stack size warning
-To: Arnd Bergmann <arnd@kernel.org>, Bernard Metzler <bmt@zurich.ibm.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
- Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- Potnuri Bharat Teja <bharat@chelsio.com>, Showrya M N <showrya@chelsio.com>,
- Eric Biggers <ebiggers@google.com>, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+X-ThreadId: T72ae95e6125674c9
+Date: Sat, 21 Jun 2025 10:43:03 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Zhu Yanjun" <yanjun.zhu@linux.dev>, "Arnd Bergmann" <arnd@kernel.org>,
+ "Bernard Metzler" <bmt@zurich.ibm.com>, "Jason Gunthorpe" <jgg@ziepe.ca>,
+ "Leon Romanovsky" <leon@kernel.org>, "Nathan Chancellor" <nathan@kernel.org>
+Cc: "Nick Desaulniers" <nick.desaulniers+lkml@gmail.com>,
+ "Bill Wendling" <morbo@google.com>, "Justin Stitt" <justinstitt@google.com>,
+ "Potnuri Bharat Teja" <bharat@chelsio.com>,
+ "Showrya M N" <showrya@chelsio.com>, "Eric Biggers" <ebiggers@google.com>,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ llvm@lists.linux.dev
+Message-Id: <ca2eaa50-c3ed-491d-ab38-65a7c1dc2820@app.fastmail.com>
+In-Reply-To: <2d04fee6-5d95-4c50-b2b1-ee67f42932e2@linux.dev>
 References: <20250620114332.4072051-1-arnd@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20250620114332.4072051-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+ <2d04fee6-5d95-4c50-b2b1-ee67f42932e2@linux.dev>
+Subject: Re: [PATCH] RDMA/siw: work around clang stack size warning
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-在 2025/6/20 4:43, Arnd Bergmann 写道:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> clang inlines a lot of functions into siw_qp_sq_process(), with the
-> aggregate stack frame blowing the warning limit in some configurations:
-> 
-> drivers/infiniband/sw/siw/siw_qp_tx.c:1014:5: error: stack frame size (1544) exceeds limit (1280) in 'siw_qp_sq_process' [-Werror,-Wframe-larger-than]
-> 
-> The real problem here is the array of kvec structures in siw_tx_hdt that
-> makes up the majority of the consumed stack space.
+On Sat, Jun 21, 2025, at 06:12, Zhu Yanjun wrote:
+> =E5=9C=A8 2025/6/20 4:43, Arnd Bergmann =E5=86=99=E9=81=93:
+>
+> Because the array of kvec structures in siw_tx_hdt consumes the majori=
+ty=20
+> of the stack space, would it be possible to use kmalloc or a similar=20
+> dynamic memory allocation function instead of allocating this memory o=
+n=20
+> the stack?
+>
+> Would using kmalloc (or an equivalent) also effectively resolve the=20
+> stack usage issue?
 
-Because the array of kvec structures in siw_tx_hdt consumes the majority 
-of the stack space, would it be possible to use kmalloc or a similar 
-dynamic memory allocation function instead of allocating this memory on 
-the stack?
+Yes, moving the allocation somewhere else (kmalloc, static variable,
+per siw_sge, per siw_wqe) would avoid the high stack usage effectively,
+it's a tradeoff and I picked the solution that made the most sense
+to me, but there is a good chance another alternative is better here.
 
-Would using kmalloc (or an equivalent) also effectively resolve the 
-stack usage issue?
-Please note that I’m not questioning the value of this commit—I’m simply 
-curious whether there might be an alternative solution to the problem.
+The main differences are:
 
-Thanks,
-Yanjun.Zhu
+- kmalloc() adds runtime overhead that may be expensive in a
+  fast path
 
-> 
-> Ideally there would be a way to avoid allocating the array on the
-> stack, but that would require a larger rework. Add a noinline_for_stack
-> annotation to avoid the warning for now, and make clang behave the same
-> way as gcc here. The combined stack usage is still similar, but is spread
-> over multiple functions now.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   drivers/infiniband/sw/siw/siw_qp_tx.c | 22 ++++++++++++++++------
->   1 file changed, 16 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
-> index 6432bce7d083..3a08f57d2211 100644
-> --- a/drivers/infiniband/sw/siw/siw_qp_tx.c
-> +++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
-> @@ -277,6 +277,15 @@ static int siw_qp_prepare_tx(struct siw_iwarp_tx *c_tx)
->   	return PKT_FRAGMENTED;
->   }
->   
-> +static noinline_for_stack int
-> +siw_sendmsg(struct socket *sock, unsigned int msg_flags,
-> +	    struct kvec *vec, size_t num, size_t len)
-> +{
-> +	struct msghdr msg = { .msg_flags = msg_flags };
-> +
-> +	return kernel_sendmsg(sock, &msg, vec, num, len);
-> +}
-> +
->   /*
->    * Send out one complete control type FPDU, or header of FPDU carrying
->    * data. Used for fixed sized packets like Read.Requests or zero length
-> @@ -285,12 +294,11 @@ static int siw_qp_prepare_tx(struct siw_iwarp_tx *c_tx)
->   static int siw_tx_ctrl(struct siw_iwarp_tx *c_tx, struct socket *s,
->   			      int flags)
->   {
-> -	struct msghdr msg = { .msg_flags = flags };
->   	struct kvec iov = { .iov_base =
->   				    (char *)&c_tx->pkt.ctrl + c_tx->ctrl_sent,
->   			    .iov_len = c_tx->ctrl_len - c_tx->ctrl_sent };
->   
-> -	int rv = kernel_sendmsg(s, &msg, &iov, 1, iov.iov_len);
-> +	int rv = siw_sendmsg(s, flags, &iov, 1, iov.iov_len);
->   
->   	if (rv >= 0) {
->   		c_tx->ctrl_sent += rv;
-> @@ -427,13 +435,13 @@ static void siw_unmap_pages(struct kvec *iov, unsigned long kmap_mask, int len)
->    * Write out iov referencing hdr, data and trailer of current FPDU.
->    * Update transmit state dependent on write return status
->    */
-> -static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
-> +static noinline_for_stack int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
-> +					 struct socket *s)
->   {
->   	struct siw_wqe *wqe = &c_tx->wqe_active;
->   	struct siw_sge *sge = &wqe->sqe.sge[c_tx->sge_idx];
->   	struct kvec iov[MAX_ARRAY];
->   	struct page *page_array[MAX_ARRAY];
-> -	struct msghdr msg = { .msg_flags = MSG_DONTWAIT | MSG_EOR };
->   
->   	int seg = 0, do_crc = c_tx->do_crc, is_kva = 0, rv;
->   	unsigned int data_len = c_tx->bytes_unsent, hdr_len = 0, trl_len = 0,
-> @@ -586,14 +594,16 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
->   		rv = siw_0copy_tx(s, page_array, &wqe->sqe.sge[c_tx->sge_idx],
->   				  c_tx->sge_off, data_len);
->   		if (rv == data_len) {
-> -			rv = kernel_sendmsg(s, &msg, &iov[seg], 1, trl_len);
-> +
-> +			rv = siw_sendmsg(s, MSG_DONTWAIT | MSG_EOR, &iov[seg],
-> +					 1, trl_len);
->   			if (rv > 0)
->   				rv += data_len;
->   			else
->   				rv = data_len;
->   		}
->   	} else {
-> -		rv = kernel_sendmsg(s, &msg, iov, seg + 1,
-> +		rv = siw_sendmsg(s, MSG_DONTWAIT | MSG_EOR, iov, seg + 1,
->   				    hdr_len + data_len + trl_len);
->   		siw_unmap_pages(iov, kmap_mask, seg);
->   	}
+- kmalloc() can fail, which adds complexity from error handling.
+  Note that small allocations with GFP_KERNEL do not fail but instead
+  wait for memory to become available
 
+- If kmalloc() runs into a low-memory situation, it can go through
+  writeback, which in turn can use more stack space than the
+  on-stack allocation it was replacing
+
+- static allocations bloat the kernel image and require locking that
+  may be expensive
+
+- per-object preallocations can be wasteful if a lot of objects
+  are created, and can still require locking if the object is used
+  from multiple threads
+
+As I wrote, I mainly picked the 'noinline_for_stack' approach
+here since that is how the code is known to work with gcc, so
+there is little risk of my patch causing problems.
+
+Moving the both the kvec array and the page array into
+the siw_wqe is likely better here, I'm not familiar enough
+with the driver to tell whether that is an overall improvement.
+
+A related change I would like to see is to remove the
+kmap_local_page() in this driver and instead make it
+depend on 64BIT or !CONFIG_HIGHMEM, to slowly chip away
+at the code that is highmem aware throughout the kernel.
+I'm not sure if that that would also help drop the array
+here.
+
+     Arnd
 
