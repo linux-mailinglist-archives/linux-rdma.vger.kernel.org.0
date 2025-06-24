@@ -1,143 +1,186 @@
-Return-Path: <linux-rdma+bounces-11563-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11564-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61818AE596F
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Jun 2025 03:55:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38411AE5C37
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Jun 2025 07:57:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73F1E4420FD
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Jun 2025 01:54:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81C917AE694
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Jun 2025 05:56:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45E341DE2CD;
-	Tue, 24 Jun 2025 01:55:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CCF32367AD;
+	Tue, 24 Jun 2025 05:57:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="b43uv2/H";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="U0xAvH2c";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="yDW7BEbV";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="hEyMtFRo"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD2D223741;
-	Tue, 24 Jun 2025 01:55:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EAAC2343CF
+	for <linux-rdma@vger.kernel.org>; Tue, 24 Jun 2025 05:57:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750730113; cv=none; b=oNlFcLLWT3q3GZ0vq3dJVjBqWeoVmhWkqrBSfQxX2DeHrMoxPyVSzEKNczCvWQFWiJ9mfQlGWRr5/XRmuOjm5qz8eRZaNb6DVz8vxhLBcA7+gR91MNDJnh6mjKSG/B4vcbdYpx7FGiHypzG2GmpApmR3uZUsB6f2X+7DZ2h0tdk=
+	t=1750744650; cv=none; b=AsoeBb/ivQ/sb3UMqH4HVur9tOf+g1TG0B0AkdnJmjk2s5hWb7lX0g4wt+PX4ez5axq88ruC+H32CDRsJ4LIguEkl395aZgFqRKvZ+kYwhJMb4ZQYDvNKjbPq4ezU67z7yE01xo9R7j7v7HPEG7o/U5OwVwfPbosaTpaPtXHRNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750730113; c=relaxed/simple;
-	bh=2ISrvwIgX3jixWuefaXZJkNIcgEtijnZyZas0qVkkuw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cUk68mWCNce9XpoOec/0LevIYtlG81eAKanwLqp7TOpwPcteFecGh+hD3VqlW6nmI5tVQjtQ1UUHvB6Fs2OWC7/Yd4oUmM6d+kgUFDlKcc+jvlcDb/ymTFHnyUSKurdZo7eqEqEOQC1jbG7e11WCswyDY2vNp2xYgTJAyTJ1WGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-0d-685a05782dd9
-Date: Tue, 24 Jun 2025 10:54:58 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Mina Almasry <almasrymina@google.com>,
-	David Hildenbrand <david@redhat.com>, Zi Yan <ziy@nvidia.com>,
-	willy@infradead.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, kuba@kernel.org,
-	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
-	akpm@linux-foundation.org, davem@davemloft.net,
-	john.fastabend@gmail.com, andrew+netdev@lunn.ch, toke@redhat.com,
-	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
-	saeedm@nvidia.com, leon@kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, horms@kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	vishal.moola@gmail.com, hannes@cmpxchg.org, jackmanb@google.com
-Subject: Re: [PATCH net-next v6 9/9] page_pool: access ->pp_magic through
- struct netmem_desc in page_pool_page_is_pp()
-Message-ID: <20250624015458.GD5820@system.software.com>
-References: <20250620041224.46646-1-byungchul@sk.com>
- <20250620041224.46646-10-byungchul@sk.com>
- <ce5b4b18-9934-41e3-af04-c34653b4b5fa@redhat.com>
- <20250623101622.GB3199@system.software.com>
- <460ACE40-9E99-42B8-90F0-2B18D2D8C72C@nvidia.com>
- <a8d40a05-db4c-400f-839b-3c6159a1feab@redhat.com>
- <41e68e52-5747-4b18-810d-4b20ada01c9a@gmail.com>
- <CAHS8izPRVBhz+55DJQw1yjBdWqAUo7y4T6StsyD_dkL3X1wcGQ@mail.gmail.com>
- <69762ce3-ead1-4324-ba33-9839efbe31e7@gmail.com>
+	s=arc-20240116; t=1750744650; c=relaxed/simple;
+	bh=ZCEaHHbvGFmHlhEgMB1oY0uHtx1+FRxydCL277Vh1yk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bgd7Ta1KnXbe2dAzXwUMJBqLZBk1baZZfb7rzvanJcaNDwXqdLX9U7nhvvmLUTAj2aZf1EIUGAJdjrs7UVwThg7dcynWJyi5Ay3gvQbVi06t9ZFpxoF7Jr+vmAXeUSnUWpG8Ce5oSxvmGl9m8FA6b4EPzVlMb1FiO2ZD8htg/Yw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=b43uv2/H; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=U0xAvH2c; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=yDW7BEbV; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=hEyMtFRo; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id DB084211AC;
+	Tue, 24 Jun 2025 05:57:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1750744646; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=maxTRfu8agyldfpH8NN8W68ZTiSlasbnmecpZeLiTuc=;
+	b=b43uv2/HFTDU5U6EpLO1KaO/tAd0PGXx8cWvAwJioEIugRvTqwNm+eNu1svO8056zKClh+
+	RHYD80WJLpgB1L6zCzUoD6/aL7VIxmBAqeGrHsak1AzglHrsoTSsqYh0AMf0mMF0LGUmwR
+	4ZleTVQWq3EKoaAVLuwWYYMtSrS0O1A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1750744646;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=maxTRfu8agyldfpH8NN8W68ZTiSlasbnmecpZeLiTuc=;
+	b=U0xAvH2cXdAusgaGwCnJYSdDf8q29EG+LRPXvJl/Idm7DdTniGyjH9r2GzDcDQwrmeQscL
+	0X+li8cEKsvwYCDA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=yDW7BEbV;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=hEyMtFRo
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1750744645; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=maxTRfu8agyldfpH8NN8W68ZTiSlasbnmecpZeLiTuc=;
+	b=yDW7BEbVYhnsdAklK8dyNF6MYgZ9JAYUcsPfMVowYIISHTvDe57IujR4e0snKTX/uidmSm
+	hjmO+zQiz99vLKo/mmVIwmWa1xeJUGMGPF6H+AdoVKnDoUNWaHX/4rJV/UbmIRabqMV6t3
+	n7WtoosnFEtS90CjSqu0nVsLPCkoNSQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1750744645;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=maxTRfu8agyldfpH8NN8W68ZTiSlasbnmecpZeLiTuc=;
+	b=hEyMtFRoe3MZv6Q7gB43VbKGco/8jsAGLbpeaWEWBAZj4c9DF4RroITQb1RbrJkxvKAJaR
+	j0gyTqjFLamPMwAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6CCBD13751;
+	Tue, 24 Jun 2025 05:57:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id g1ZJF0U+WmhbXAAAD6G6ig
+	(envelope-from <hare@suse.de>); Tue, 24 Jun 2025 05:57:25 +0000
+Message-ID: <00e46f70-0976-43be-a8c7-ffe690c5d677@suse.de>
+Date: Tue, 24 Jun 2025 07:57:24 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] RDMA/srp: don't set a max_segment_size when
+ virt_boundary_mask is set
+To: Christoph Hellwig <hch@lst.de>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: Bart Van Assche <bvanassche@acm.org>, Ming Lei <ming.lei@redhat.com>,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ "Ewan D. Milne" <emilne@redhat.com>, Laurence Oberman <loberman@redhat.com>,
+ linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-block@vger.kernel.org
+References: <20250623080326.48714-1-hch@lst.de>
+ <20250623080326.48714-2-hch@lst.de>
+Content-Language: en-US
+From: Hannes Reinecke <hare@suse.de>
+In-Reply-To: <20250623080326.48714-2-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <69762ce3-ead1-4324-ba33-9839efbe31e7@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG/e+cnXMcDY7L8p8S0SpKS62QerMLIwgO3VQMSftgKw9t5SVm
-	2SwKLSGSvNAFalpNIp0XWE2ds0zqaF7ooqysmeZslthNS8ums8s2ifz243mf93neDy9DyKrF
-	gYw69QivSVUmyykJKfkyqyRUK05QrfwxwkKxsYqCSqcWyvotYiiuMCP4PtFDw1hzKwU3S8YJ
-	KO7IIeGHcZKA9y0OGipNO8BeOkhCw9k6AhwFbRTk5bgIuD8xTMNpi0EEneZ8MVyavEVAXVY/
-	Dc/vFlPQV/VHDINCHgntunIS7PkKaNHPhfHHnxE0G+tEMH7+GgUXrXoKBnLsCKxNDhKKsvMR
-	GBttYnA53RlFj/poxWKu6fMIwdWUd4u4et0bmtObjnLVhhAu12YlOFPFOYozjV6gud6XDRTX
-	dsVFcvWWMRGXd2aY4r69f01yI41dFGes6SK5J/pmOtovQbIhiU9WZ/Ca8E17JaoJ4TZ1+INU
-	25PbgbLQJ0ku8mUwG4ELv+aI/3FrVj3pYZJdgvVD/bSHKXYpttkmCA/7s8vxp1eCW5cwBNtC
-	4a/vnnkXZrNa7HIMek1Sdi3OuygQHpOM7SZw+806enrgh9uvvvMuEO7UqetWt4lxcxAu+81M
-	ywvwmdoib44vuxE/sL322uewi/ADc6vIk4nZNgYbDW+p6avn4YcGG1mI/HQzKnQzKnT/K3Qz
-	KvSIrEAydWpGilKdHBGmykxVa8P2p6WYkPuVSk9O7bGg0c5YAbEMks+SWiLjVTKxMiM9M0VA
-	mCHk/lJhc5xKJk1SZh7nNWmJmqPJfLqAghhSHiBdPX4sScYeUB7hD/H8YV7zbypifAOzULjk
-	LaxQCNk3Ohevjd4+0B1sdvgEnFBHj8X0x7tMRYnOW0PYfqo3csuL+LL566IUDcfu9ah+BR+0
-	S3f+DImMPI47nLu3VY+OmrcGvDJoG1cve3pPUbBu12WfNSsHohbWD/eGJnxMCbRmHuq606d2
-	7k+relgbsa8k0ScuODdmfW9grJxMVylXhRCadOVfzLhcDUYDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+e+cnXMcrY5Hy4MFwiqspBsUvd3EROokFHa1IqhRhzZ0KlvZ
-	LCpr0kXSLgrVnDUTc85itdbcwjSOpVmSsdKmVg7TaRh5ycRb2ZxEfnt43t/z+/RSGJMrDqWU
-	SUd5dZI8UUZIcMnWtbrFWvE+xbKqBWCw3CegdEgLxR6HGAxmO4KB4RYSfr6oIaCwYBADQ30G
-	Dr8sIxh0VLeRUGrdAq33vDiUXyjDoO3KKwKyMkYxeDb8g4RzDpMIqvJrxfDOni2G3JEiDMrS
-	PSS8f2og4Mv9cTF4hSwcavUlOLRmR0G1cRYMvvmO4IWlTASDl/MJyHEZCfia0YrAVdWGQ97Z
-	bASWCrcYRod8jryXX8io+VzV9x6Ms5U0iTin/jPJGa3HuMemRVym24VxVvMlgrP2Xye5T43l
-	BPfq5ijOOR0/RVyW7gfB9XU041xPRQPBFXb1ijiLrQGPY/ZJ1h3mE5WpvHpp5EGJYlh4SKR8
-	k2pbMutROuqWZKIAiqVXsDXpTnwi4/R81tjlIScyQYezbvcwNpGD6Qi2+6Pg6yUURlcTbG/7
-	W/8giNayo21ePySlV7FZOQI2ATF0E8bWFpaRk4dAtvZWu3+A+axjt10+iPLl2WzxH2qyDmN1
-	T/L8ngB6Pfvc3ezHZ9Jz2ef2GtFVNF0/xaSfYtL/N+mnmIwIN6NgZVKqSq5MXLlEk6BIS1Jq
-	lxxKVlmR71funRq75kAD7zcJiKaQbJrUsWavghHLUzVpKgGxFCYLlgrRuxWM9LA87QSvTj6g
-	PpbIawQ0m8JlIdLYeP4gQx+RH+UTeD6FV/+7iqiA0HTUWHJa+eGSe7wAizcVfZon7HRqTTfs
-	21K3n+QLHlzcHaSb8duQvOHuFV2LPD8u7lHrnJNPwpxDzMLje5r6YhvGVLuQJZzqrKhf76nz
-	hpy5Y4+S2s7sjwlU1TFmBcGf37w6NmZxtMadELFhR29d5Jbiyv5K2+sV1tz+zojAjd+UIzJc
-	o5AvX4SpNfK/8tmQEicDAAA=
-X-CFilter-Loop: Reflected
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,lst.de:email];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: DB084211AC
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -4.51
 
-On Mon, Jun 23, 2025 at 07:14:41PM +0100, Pavel Begunkov wrote:
-> On 6/23/25 18:28, Mina Almasry wrote:
-> > On Mon, Jun 23, 2025 at 10:05 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
-> ...>> As you said, it's just a sanity check, all page pool pages should
-> > > be freed by the networking code. It checks the ownership with
-> > > netmem_is_pp(), which is basically the same as page_pool_page_is_pp()
-> > > but done though some aliasing.
-> > > 
-> > > static inline bool netmem_is_pp(netmem_ref netmem)
-> > > {
-> > >          return (netmem_get_pp_magic(netmem) & PP_MAGIC_MASK) == PP_SIGNATURE;
-> > > }
-> > > 
-> > > I assume there is no point in moving the check to skbuff.c as it
-> > > already does exactly same test, but we can probably just kill it.
-> > > 
-> > 
-> > Even if we do kill it, maybe lets do that in a separate patch, and
-> > maybe a separate series. I would recommend not complicating this one?
-> FWIW, the discussion somewhat mentioned "long term", but I'm not
-> suggesting actually removing it, it serves the purpose. And in
-> long term the helper will be converted to use page->type / etc.
-> without touching pp fields, that should reduce the degree of
-> ugliness and make it more acceptable for keeping in mm.
-
-Agree.
-
-	Byungchul
+On 6/23/25 10:02, Christoph Hellwig wrote:
+> virt_boundary_mask implies an unlimited max_segment_size.  Setting both
+> can lead to data corruption, and we're going to check for this in the
+> SCSI midlayer soon.
 > 
-> > Also, AFAIU, this is about removing/moving the checks in
-> > bad_page_reason() and page_expected_state()? I think this check does
-> > fire sometimes. I saw at least 1 report in the last year of a
-> > bad_page_reason() check firing because the page_pool got its
-> > accounting wrong and released a page to the buddy allocator early, so
-> > maybe that new patch that removes that check should explain why this
-> > check is no longer necessary.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   drivers/infiniband/ulp/srp/ib_srp.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> --
-> Pavel Begunkov
+> diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
+> index 1378651735f6..23ed2fc688f0 100644
+> --- a/drivers/infiniband/ulp/srp/ib_srp.c
+> +++ b/drivers/infiniband/ulp/srp/ib_srp.c
+> @@ -3705,9 +3705,10 @@ static ssize_t add_target_store(struct device *dev,
+>   	target_host->max_id      = 1;
+>   	target_host->max_lun     = -1LL;
+>   	target_host->max_cmd_len = sizeof ((struct srp_cmd *) (void *) 0L)->cdb;
+> -	target_host->max_segment_size = ib_dma_max_seg_size(ibdev);
+>   
+> -	if (!(ibdev->attrs.kernel_cap_flags & IBK_SG_GAPS_REG))
+> +	if (ibdev->attrs.kernel_cap_flags & IBK_SG_GAPS_REG)
+> +		target_host->max_segment_size = ib_dma_max_seg_size(ibdev);
+> +	else
+>   		target_host->virt_boundary_mask = ~srp_dev->mr_page_mask;
+>   
+>   	target = host_to_target(target_host);
+
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+
+Cheers,
+
+Hannes
+-- 
+Dr. Hannes Reinecke                  Kernel Storage Architect
+hare@suse.de                                +49 911 74053 688
+SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
+HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
 
