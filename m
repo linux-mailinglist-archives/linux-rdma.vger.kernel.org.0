@@ -1,88 +1,97 @@
-Return-Path: <linux-rdma+bounces-11620-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11621-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51E15AE790B
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jun 2025 09:50:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8673AE7DDE
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jun 2025 11:48:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A739C17A6D0
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jun 2025 07:50:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D45D7A35BD
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jun 2025 09:47:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87266204C1A;
-	Wed, 25 Jun 2025 07:50:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D6BC29B21D;
+	Wed, 25 Jun 2025 09:45:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AmYkYGLR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IRxrJZhz"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406681DE4E1
-	for <linux-rdma@vger.kernel.org>; Wed, 25 Jun 2025 07:50:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 536AC25A352;
+	Wed, 25 Jun 2025 09:45:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750837825; cv=none; b=HowzaqepugkSw5NHTtxv3C5dgW7X/5HOg4Y8nzcYfyipQfQCBx3G7/BjEfOUPdNO8HfxwbIxbwfFJHkcXzS9ZXl3X6WR+YBszkXWYiJrXPmkTDA+fQiYZmUpB8RWMA4gmetx+d0jTslASW5O7rsWhT93iEbRXu5UB1d0fAMy1C0=
+	t=1750844730; cv=none; b=nqU/ddi04/wLIkCTevxNqmhCUeDGwEwmX6Pbk+LBvMK2xbdawWAQlZ8HqQewNheA9fEy/Gc5nfuSEwCrKE2G37/zkFSE7hH9+4ua4t8MPKMwSxqnmhGnHcCC7FN6R0X1Pu3UJ/oMk7XT4UuvfLmW7bmFfeAAHVq3NmzvZpLtNFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750837825; c=relaxed/simple;
-	bh=9NZyrMxaEElpMlb85SbErekkzyfbalXm8j3gpY+BF/A=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=UVkctyjYjwIPKRIncfKTB3LFAOkvG/em0w9oV4ENxcPrB54dXVeXKEwJCTAj80IRDTK502gzydd3K5JmSVzZTNDgxXZzvBm969bipyacmQniw4mo+AmCPETqQkMvgDlg8Fz/UymmP1Bd0cdKePxpOybnKeMLVryIK0BdI/jNei4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AmYkYGLR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66BF8C4CEEA;
-	Wed, 25 Jun 2025 07:50:24 +0000 (UTC)
+	s=arc-20240116; t=1750844730; c=relaxed/simple;
+	bh=DCpaCQv0mu/4Es5IpdSqOmpjx089qY7Khtf3V+uJceY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=loDnbD9b9kE/GJsFZCsorxi90WF8sq6ao0mTa1YIvtGflLZt/y6jiNxDdl+lU/QZyWyjs1Lqp/H/OwldpWXHx0cS1CGNFCuGiucwa5T5qu4jYzJThMZJZDBKBcCGQEdAG7KPl7+5iLyTCLV89G+6pf3CGgeV02vju33IhdwHVPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IRxrJZhz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD5D8C4CEEA;
+	Wed, 25 Jun 2025 09:45:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750837824;
-	bh=9NZyrMxaEElpMlb85SbErekkzyfbalXm8j3gpY+BF/A=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=AmYkYGLRuDwWQQ58UDPriYPczBAQtjwKHdjfNcyjxy3JoU+n81YTdd1BWb21B5+2t
-	 wBHKGIF5DAkSeL405U/zsL2ua6aEFQClwjCKELQF8nzyozcVlVwhU/k+3jL3PcoLFt
-	 lqEo77Sfk+mqGnqJtJjn/F34ABw/FjUnivQ6DDzZMh9suC4YkNu45NBWvv3+ccQ4X0
-	 G4O7KPR8zWmU6TcIt5Ptv6m2mW904rg7lqP30hsUWtDtZmChyM06n3J9rZ2182Valg
-	 +XJl99eFuqab89HAn4BQPk5LZTfOukNQNgjon2HjBJl5ejLESvomXdc2jc62rn8ukx
-	 vUH2gqf03TDmw==
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc: Mark Zhang <markzhang@nvidia.com>, linux-rdma@vger.kernel.org
-In-Reply-To: <b5f7ae3d75f44a3e15ff3f4eb2bbdea13e06b97f.1750062328.git.leon@kernel.org>
-References: <b5f7ae3d75f44a3e15ff3f4eb2bbdea13e06b97f.1750062328.git.leon@kernel.org>
-Subject: Re: [PATCH rdma-next] RDMA/core: Add driver APIs pre_destroy_cq()
- and post_destroy_cq()
-Message-Id: <175083782150.552920.13979353677932073548.b4-ty@kernel.org>
-Date: Wed, 25 Jun 2025 03:50:21 -0400
+	s=k20201202; t=1750844729;
+	bh=DCpaCQv0mu/4Es5IpdSqOmpjx089qY7Khtf3V+uJceY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IRxrJZhz/8jHPEpX740mPyKpGNn20/MK38du80BD5NlPbWT6RwKASOGNow/pqJn2Z
+	 Q0mjVeclhQctsmos18i+WT1NyvNMgessHVXY324ukowupt0xgcsp90vaJichGx6715
+	 nasLqYHGxPn79ImwNr60QqntJSOuisvARJ9XVyJy2EzqvnFE9KD6U2KsV/NMTkOwni
+	 KTqaB5JYo9+pkRgwjrFhbMjHSUyAuWOssGiRml3OqMIsoHPOyw7cz7/O6gbXrGG6ib
+	 nGHpkYEqfBhr/UWlD3EWcVzxtpugx2kPTCVuF9VxsprQ/++XJaJgq//to5kLGFAuz5
+	 QRgCUBnHtL3kw==
+Date: Wed, 25 Jun 2025 10:45:24 +0100
+From: Simon Horman <horms@kernel.org>
+To: Yevgeny Kliteynik <kliteyn@nvidia.com>
+Cc: Mark Bloch <mbloch@nvidia.com>, "David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>, saeedm@nvidia.com,
+	gal@nvidia.com, leonro@nvidia.com, tariqt@nvidia.com,
+	Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	moshe@nvidia.com, Vlad Dogaru <vdogaru@nvidia.com>
+Subject: Re: [PATCH net-next v2 3/8] net/mlx5: HWS, Refactor and export rule
+ skip logic
+Message-ID: <20250625094524.GN1562@horms.kernel.org>
+References: <20250622172226.4174-1-mbloch@nvidia.com>
+ <20250622172226.4174-4-mbloch@nvidia.com>
+ <20250624183832.GF1562@horms.kernel.org>
+ <dff4ea02-4adc-4044-a18a-ee884abc0053@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dff4ea02-4adc-4044-a18a-ee884abc0053@nvidia.com>
 
-
-On Mon, 16 Jun 2025 11:26:20 +0300, Leon Romanovsky wrote:
-> Currently in ib_free_cq, it disables IRQ or cancel the CQ work before
-> driver destroy_cq. This isn't good as a new IRQ or a CQ work can be
-> submitted immediately after disabling IRQ or canceling CQ work, which
-> may run concurrently with destroy_cq and cause crashes.
-> The right flow should be:
->  1. Driver disables CQ to make sure no new CQ event will be submitted;
->  2. Disables IRQ or Cancels CQ work in core layer, to make sure no CQ
->     polling work is running;
->  3. Free all resources to destroy the CQ.
+On Wed, Jun 25, 2025 at 03:35:52AM +0300, Yevgeny Kliteynik wrote:
+> Hi Simon,
+> Thanks for reviewing the patches!
 > 
-> [...]
+> On 24-Jun-25 21:38, Simon Horman wrote:
+> > On Sun, Jun 22, 2025 at 08:22:21PM +0300, Mark Bloch wrote:
+> > > From: Vlad Dogaru <vdogaru@nvidia.com>
+> > > 
+> > > The bwc layer will use `mlx5hws_rule_skip` to keep track of numbers of
+> > > RX and TX rules individually, so export this function for future usage.
+> > > 
+> > > While we're in there, reduce nesting by adding a couple of early return
+> > > statements.
+> > 
+> > I'm all for reducing nesting. But this patch has two distinct changes.
+> > Please consider splitting it into two patches.
+> 
+> Not sure I'd send the refactor thing alone - it isn't worth the effort
+> IMHO... But since I'm already in here - sure, will sent it in a separate
+> patch.
 
-Applied, thanks!
+FWIIW, I think the refactor is fine in the context of this patchset.
+But I do feel that it being a separate patch within the patchset is best.
 
-[1/1] RDMA/core: Add driver APIs pre_destroy_cq() and post_destroy_cq()
-      https://git.kernel.org/rdma/rdma/c/5a2a5b65d5d672
-[1/1] RDMA/mlx5: Support driver APIs pre_destroy_cq and post_destroy_cq
-      https://git.kernel.org/rdma/rdma/c/b5eeb8365d196c
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+...
 
