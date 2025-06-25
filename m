@@ -1,56 +1,55 @@
-Return-Path: <linux-rdma+bounces-11619-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11620-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3732AE78FD
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jun 2025 09:45:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51E15AE790B
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jun 2025 09:50:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9720F3AB5BF
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jun 2025 07:45:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A739C17A6D0
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jun 2025 07:50:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DFAA1F463C;
-	Wed, 25 Jun 2025 07:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87266204C1A;
+	Wed, 25 Jun 2025 07:50:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NGTXROoT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AmYkYGLR"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A951E47CC
-	for <linux-rdma@vger.kernel.org>; Wed, 25 Jun 2025 07:45:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406681DE4E1
+	for <linux-rdma@vger.kernel.org>; Wed, 25 Jun 2025 07:50:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750837526; cv=none; b=B4UOxPEcu7Bhx18VCbWNw12ugl0AQ0uuDTf1C2NPCWaCpgFlLHvOcoPUvHXwWaTKKLsc0J2goUFJWrMFNMYxi2/A7Vzz6cUgWfuBIww7Upou1HaD6wuGZ1e48kTO0guKSoAXaiwbPVEe3tatlgFBX4gsUkQFr446S4RjYca20ks=
+	t=1750837825; cv=none; b=HowzaqepugkSw5NHTtxv3C5dgW7X/5HOg4Y8nzcYfyipQfQCBx3G7/BjEfOUPdNO8HfxwbIxbwfFJHkcXzS9ZXl3X6WR+YBszkXWYiJrXPmkTDA+fQiYZmUpB8RWMA4gmetx+d0jTslASW5O7rsWhT93iEbRXu5UB1d0fAMy1C0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750837526; c=relaxed/simple;
-	bh=cK5OvEL9YsieUd/4deew+VvPmfXaBeySmUShg9onF1Q=;
+	s=arc-20240116; t=1750837825; c=relaxed/simple;
+	bh=9NZyrMxaEElpMlb85SbErekkzyfbalXm8j3gpY+BF/A=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=nu/aLbeylFOXRQryrNgrbcIAeEdhtN3kZiqDKo7HHr+eIwyKP7oqPGU6Is6wU03z0hYO9G1a7eESOzR2wuHGzgoM9xmwgmoDom8coAjbhSLiiSiX2ynaMws3t7LeVTH4Z81Im1Sgn2WT/TyH/G1gmHj8ATlxokOyXAj7yP4KMGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NGTXROoT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2065C4CEEA;
-	Wed, 25 Jun 2025 07:45:25 +0000 (UTC)
+	 MIME-Version:Content-Type; b=UVkctyjYjwIPKRIncfKTB3LFAOkvG/em0w9oV4ENxcPrB54dXVeXKEwJCTAj80IRDTK502gzydd3K5JmSVzZTNDgxXZzvBm969bipyacmQniw4mo+AmCPETqQkMvgDlg8Fz/UymmP1Bd0cdKePxpOybnKeMLVryIK0BdI/jNei4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AmYkYGLR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66BF8C4CEEA;
+	Wed, 25 Jun 2025 07:50:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750837526;
-	bh=cK5OvEL9YsieUd/4deew+VvPmfXaBeySmUShg9onF1Q=;
+	s=k20201202; t=1750837824;
+	bh=9NZyrMxaEElpMlb85SbErekkzyfbalXm8j3gpY+BF/A=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=NGTXROoTe8O/YfB3UzWScQR6mROpTEsZ1Pnumrv3uqAliC1HC2xknItaJklbiAAKJ
-	 G8NrGr7WBdPckeBDlzBb7JXS5EyRJ9E8Ip17mR7eOJ9ydvfCyAV3O9q9Rixno+Z1Sb
-	 /L2oC9efQMYNsnIv+iBfoMqlIGlFCqRaPVbDKGF9KRbbCHNInaK3yIG66GE+QPZZVh
-	 s0aguGJ/FyYagiFp3NliN5H5xxQBtfsXLs0qQGoXEdmp/GKU2vwvckwtSs5X1BSVYl
-	 aTjS9wqj8Hw/Pv0bn/13H8mIj4hJVMVQSupUUkqocmrkticzyfyV2+RzG9VcyhI1hL
-	 u2hD0CcEYFknA==
+	b=AmYkYGLRuDwWQQ58UDPriYPczBAQtjwKHdjfNcyjxy3JoU+n81YTdd1BWb21B5+2t
+	 wBHKGIF5DAkSeL405U/zsL2ua6aEFQClwjCKELQF8nzyozcVlVwhU/k+3jL3PcoLFt
+	 lqEo77Sfk+mqGnqJtJjn/F34ABw/FjUnivQ6DDzZMh9suC4YkNu45NBWvv3+ccQ4X0
+	 G4O7KPR8zWmU6TcIt5Ptv6m2mW904rg7lqP30hsUWtDtZmChyM06n3J9rZ2182Valg
+	 +XJl99eFuqab89HAn4BQPk5LZTfOukNQNgjon2HjBJl5ejLESvomXdc2jc62rn8ukx
+	 vUH2gqf03TDmw==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc: linux-rdma@vger.kernel.org, Maher Sanalla <msanalla@nvidia.com>, 
- Mark Bloch <mbloch@nvidia.com>, Michael Guralnik <michaelgur@nvidia.com>, 
- Parav Pandit <parav@mellanox.com>, Patrisious Haddad <phaddad@nvidia.com>
-In-Reply-To: <cover.1750064969.git.leon@kernel.org>
-References: <cover.1750064969.git.leon@kernel.org>
-Subject: Re: [PATCH rdma-rc 0/3] Batch of mlx5_ib fixes
-Message-Id: <175083752341.552151.14414008626199300882.b4-ty@kernel.org>
-Date: Wed, 25 Jun 2025 03:45:23 -0400
+Cc: Mark Zhang <markzhang@nvidia.com>, linux-rdma@vger.kernel.org
+In-Reply-To: <b5f7ae3d75f44a3e15ff3f4eb2bbdea13e06b97f.1750062328.git.leon@kernel.org>
+References: <b5f7ae3d75f44a3e15ff3f4eb2bbdea13e06b97f.1750062328.git.leon@kernel.org>
+Subject: Re: [PATCH rdma-next] RDMA/core: Add driver APIs pre_destroy_cq()
+ and post_destroy_cq()
+Message-Id: <175083782150.552920.13979353677932073548.b4-ty@kernel.org>
+Date: Wed, 25 Jun 2025 03:50:21 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,24 +61,25 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
 
 
-On Mon, 16 Jun 2025 12:14:51 +0300, Leon Romanovsky wrote:
-> The batch of different mlx5_ib fixes from Patrisious.
-> 
-> Patrisious Haddad (3):
->   RDMA/mlx5: Fix HW counters query for non-representor devices
->   RDMA/mlx5: Fix CC counters query for MPV
->   RDMA/mlx5: Fix vport loopback for MPV device
+On Mon, 16 Jun 2025 11:26:20 +0300, Leon Romanovsky wrote:
+> Currently in ib_free_cq, it disables IRQ or cancel the CQ work before
+> driver destroy_cq. This isn't good as a new IRQ or a CQ work can be
+> submitted immediately after disabling IRQ or canceling CQ work, which
+> may run concurrently with destroy_cq and cause crashes.
+> The right flow should be:
+>  1. Driver disables CQ to make sure no new CQ event will be submitted;
+>  2. Disables IRQ or Cancels CQ work in core layer, to make sure no CQ
+>     polling work is running;
+>  3. Free all resources to destroy the CQ.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/3] RDMA/mlx5: Fix HW counters query for non-representor devices
-      https://git.kernel.org/rdma/rdma/c/3cc1dbfddf88dc
-[2/3] RDMA/mlx5: Fix CC counters query for MPV
-      https://git.kernel.org/rdma/rdma/c/acd245b1e33fc4
-[3/3] RDMA/mlx5: Fix vport loopback for MPV device
-      https://git.kernel.org/rdma/rdma/c/a9a9e68954f29b
+[1/1] RDMA/core: Add driver APIs pre_destroy_cq() and post_destroy_cq()
+      https://git.kernel.org/rdma/rdma/c/5a2a5b65d5d672
+[1/1] RDMA/mlx5: Support driver APIs pre_destroy_cq and post_destroy_cq
+      https://git.kernel.org/rdma/rdma/c/b5eeb8365d196c
 
 Best regards,
 -- 
