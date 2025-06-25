@@ -1,124 +1,287 @@
-Return-Path: <linux-rdma+bounces-11607-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11608-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E428AE7475
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jun 2025 03:48:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0CD4AE75E1
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jun 2025 06:34:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8DCA17B00E
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jun 2025 01:48:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E8BE1BC38D0
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jun 2025 04:34:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40F0118A6C4;
-	Wed, 25 Jun 2025 01:48:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="VicK1ch9"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D1B51DF267;
+	Wed, 25 Jun 2025 04:34:07 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AAC72E630;
-	Wed, 25 Jun 2025 01:48:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53B2515A86B;
+	Wed, 25 Jun 2025 04:34:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750816099; cv=none; b=Cv/ah+oUz7qLyTAQqVEpZ8Wvb0GMFFlSBii7+yjsvIql16D578xpjvelqPqP70Utjxl/PUX4hgRwcAVTVziB7JhwG+JSKACfwWyxdb+ZMaFjrRTmNRjweiXlqQmb+QoBWVj+eY1Un2J4Vxrz6PbZ9qe1iOu7eH+p5Ktp1eqJxYQ=
+	t=1750826046; cv=none; b=bHJxGOytUt+n2SiLk2KgJDvcvayIMy57dXy4Rug+tVQPTBD/aUwf0K6Ry2plg00NLIOMrswNENx0jAZfopdKdyBwsaivdkPULwKpokFi8ZRd4b58LjD9Gi9asqddb1U7qU0pd1NK8m5jlQxtOHg/zEZ4hoN5MSq6U5uMpmbB5K8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750816099; c=relaxed/simple;
-	bh=El93fx7f3JKcXtm5iRmabWXGm+3VxAjWT8rWFVMqtCA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZqZyfrNha6ySlUQua4DHz2PF241AHpiztC3EOysxLfsgsb7aFlNLDj3PK41VlzDv51SvHRViFGGyvXvs80SYSje7FPs9yePiKFcQ6RuFK7zsrisKzkKOU2BfF51zLGyosIAcbSGhrTyPTxM3taldXngIB/h4174wqRWsLJwx1zY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=VicK1ch9; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 55OMifNW027078;
-	Wed, 25 Jun 2025 01:47:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=oqSnbLDjzi3NFx8s2S5ELE7rxuIsv/ajHUIFTwTo2Mw=; b=
-	VicK1ch9oj0FeI3CBrkCfd3pq72snKO7fLCtclQECUO1PqKnTH+XBFf01XaRvZdL
-	CDDd1LYd6K2mbKsAwRMSQo35Qwy0G7Pxc4sHkxkYebrQoZPPpmSdMsl2PMwSuCXb
-	t4p62qvzgA+sAgPcl+DXhG313K/OF7sBPrOZWvdw9nrejk80/eNfU0iFMl+IptQt
-	3oQtSzg5nYkfYltCngpqMFRIEY6+meShP/hi6bdb5d1orC9ML2R0mAO2YDlnztoS
-	90BgwxrirnJUj1hm0IuHeLdcN+KtO2m4DJ7M80RRJdeDQEEd4XyWUK5WS3RYwIKV
-	Poi8/lTCc0YiTXAmkgsyFw==
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 47egt1d7vv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 25 Jun 2025 01:47:55 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 55P0cBP5024408;
-	Wed, 25 Jun 2025 01:47:55 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 47ehkre6ku-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 25 Jun 2025 01:47:55 +0000
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 55P1lr8d038193;
-	Wed, 25 Jun 2025 01:47:54 GMT
-Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 47ehkre6k4-3;
-	Wed, 25 Jun 2025 01:47:54 +0000
-From: "Martin K. Petersen" <martin.petersen@oracle.com>
-To: Christoph Hellwig <hch@lst.de>
-Cc: "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Bart Van Assche <bvanassche@acm.org>, Ming Lei <ming.lei@redhat.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        "Ewan D. Milne" <emilne@redhat.com>,
-        Laurence Oberman <loberman@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: fix virt_boundary_mask handling in SCSI v2
-Date: Tue, 24 Jun 2025 21:47:33 -0400
-Message-ID: <175081602599.2445192.10779450904820173704.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250624125233.219635-1-hch@lst.de>
-References: <20250624125233.219635-1-hch@lst.de>
+	s=arc-20240116; t=1750826046; c=relaxed/simple;
+	bh=iwwuyvONXr1evv+EmIIgn8DacwbjxouYfYpkh2hqk/c=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=QLVUaqN9XrmNnjNkfxtmJF+j64rmFUTUu+V2sdsQguS5IPNY2UYRhP4WbP7R0lIkksMuhvmibaEmsHDuY7v8XQdJNnSPkEc68bjPUXzlOhIrd5YMHyAWLEyI7CMjh7RcCYKLko5zf8+p9m0bGBdZHE5dleHl79aEnp+JQ1b638M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-669ff7000002311f-e2-685b7c38181d
+From: Byungchul Park <byungchul@sk.com>
+To: willy@infradead.org,
+	netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	kernel_team@skhynix.com,
+	kuba@kernel.org,
+	almasrymina@google.com,
+	ilias.apalodimas@linaro.org,
+	harry.yoo@oracle.com,
+	hawk@kernel.org,
+	akpm@linux-foundation.org,
+	davem@davemloft.net,
+	john.fastabend@gmail.com,
+	andrew+netdev@lunn.ch,
+	asml.silence@gmail.com,
+	toke@redhat.com,
+	tariqt@nvidia.com,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	saeedm@nvidia.com,
+	leon@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	david@redhat.com,
+	lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com,
+	vbabka@suse.cz,
+	rppt@kernel.org,
+	surenb@google.com,
+	mhocko@suse.com,
+	horms@kernel.org,
+	linux-rdma@vger.kernel.org,
+	bpf@vger.kernel.org,
+	vishal.moola@gmail.com,
+	hannes@cmpxchg.org,
+	ziy@nvidia.com,
+	jackmanb@google.com
+Subject: [PATCH net-next v7 0/7] Split netmem from struct page
+Date: Wed, 25 Jun 2025 13:33:43 +0900
+Message-Id: <20250625043350.7939-1-byungchul@sk.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWRXUhTcRjG/e+cnXNcro7L7GRBNDJDyrREXypEKOh/UaTkTXpRSw9tNT/a
+	1FSUzBal5XcNUYNZqfMjVlPcFBO/mmZWZqkzS8VQupjKtIYfUW1Jdz/e53l+Ny9DSNpIH0aR
+	kMyrEmRKKSUiRfMejw9CZow8cN4SApWGRgoaVtKgdtoshMr6FgQ/VidoWO7to+BJlYOAyvca
+	En4a1giYtczQ0GA8A1M1cyS03zERMFPYT0G+Zp2Al6sLNOSY9QIYaikQwoO1agJM2dM0fGyr
+	pGCy8Y8Q5rrzSXhdXkfCVEE4WHTe4HhjQ9BrMAnAcf8RBaXDOgq+aaYQDPfMkFBxswCBocMq
+	hPUVp6Pi1SQdvhf32BYJ3Fw3LsCt5V9prDOm4Ca9P86zDhPYWJ9LYeNSCY2/jLZTuL9sncSt
+	5mUBzr+1QGH77GcSL3aMUNjQPELiQV0vHeEZLToexysVqbzqUNhFkbzk4aAgKSc07d1kC5mN
+	7h7IQwzDscFctQXnIfd/OOooplxMsX6c1bpKuNiLDeKWZ/rIPCRiCPYZxfU2TtCu7VY2jLPN
+	S1wdkvXlBl5YhC4WOz05hla04dzNNTzvJFxbjrXTnGZqjNoIdnBdeitZhDbpkFs9kigSUuNl
+	CmVwgDw9QZEWEJsYb0TOj9Zk/Yoxo6Whc92IZZDUQxx4O1ouEcpS1enx3YhjCKmXWBvqPInj
+	ZOkZvCrxgipFyau70U6GlG4XH3Zcj5Owl2XJ/FWeT+JV/1MB4+6TjXZpWVlweL+iMCv2g5s9
+	qlyqNYZEjtI2vV9ExkjLjQX70Opi5tl74/uLtx0LqsK5OCrjhAnVQgBzylb1fd/JujH9mpvX
+	o9rzisjZMP/TgJo6R5uLPPf4vh24pnFvzTjq7dis/fR0izq87Ldm2mQ+cilCmbuyoL+S2BVV
+	quhkpaRaLgvyJ1Rq2V/oAZR0zQIAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAAwGwAk/9CAMSnQQaCGludGVybmFsIgYKBApOO4MtOHxbaDCoqSQ4nK+sBjir
+	+Hg4p+C4BTicqrYBOPT52wc488THBjijofYDOJzPhAQ49a/6AzjlxuIHOKuyTTjfpuYEOLyH
+	twM44o/IBjiNhPsDOL357gc4grioAjjDnckFONC2jgU4lPqlAzi3gOAHONO6nAY43qz/BTjm
+	wo0EOMmaqQQ4345AOMagFjj2y+wBOMSvtwI49oydBjiT0qAGOOOE3wE40sPiBDibgY4BOK++
+	2AU4+/icBjibxd4HQCVIw+zvA0i0qdkCSLma3QdIoLJ1SLOoKkiK2NIDSLKqiQZIsvKSB0jc
+	1rwGSMiY+wRIubjzAkiNg+4GSPHl2gRI777VBkij6PACSK+01QRQEloKPGRlbGl2ZXIvPmAK
+	aJKVzAJwgjd4zt62BIABiCyKAQkIGBA0GNb2kQaKAQkIBhAnGNjY+QOKAQkIFBAxGPPixwSK
+	AQoIAxCtBhjErNsHigEICBMQPhjs7RKKAQkIBBAlGMqxxgWKAQkIDRA0GIKvuQGKAQkIGBAf
+	GKuwwAOQAQigAQCqARRpbnZtYWlsNS5za2h5bml4LmNvbbIBBgoEpn38kbgB9NNHwgEQCAEi
+	DA0whVpoEgVhdnN5bcIBGAgDIhQNljdaaBINZGF5emVyb19ydWxlc8IBGwgEIhcNSldlYBIQ
+	Z2F0ZWtlZXBlcl9ydWxlc8IBAggJGoABzpp6BUwS9WLgA39HjaNWVbzfDDRjjVF5nJTtLfXN
+	dm4yu9RmQoNPytWHzejMz1+m8E9j7tT+gdVfJGddNgMsrdIk7XE5IEFCYEfnfcVvGWC5wn/g
+	3dZHZxPbTMSV3Wkjk6nXU+RQ8JzU1HM9xjXiTv02FCnPbUe+nOPgG/UX+n4iBHNoYTEqA3Jz
+	YU4YI1qwAgAA
+X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.7,FMLib:17.12.80.40
- definitions=2025-06-24_06,2025-06-23_07,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
- suspectscore=0 adultscore=0 malwarescore=0 mlxscore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2505160000 definitions=main-2506250012
-X-Proofpoint-GUID: ldCMXiF-PIMyYCCSI0Z9jf1me1BDNs_W
-X-Proofpoint-ORIG-GUID: ldCMXiF-PIMyYCCSI0Z9jf1me1BDNs_W
-X-Authority-Analysis: v=2.4 cv=cpebk04i c=1 sm=1 tr=0 ts=685b554b b=1 cx=c_pps a=qoll8+KPOyaMroiJ2sR5sw==:117 a=qoll8+KPOyaMroiJ2sR5sw==:17 a=IkcTkHD0fZMA:10 a=6IFa9wvqVegA:10 a=VwQbUJbxAAAA:8 a=2kHY24pOABEqYHhHmQ8A:9 a=QEXdDO2ut3YA:10 cc=ntf
- awl=host:13207
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwNjI1MDAxMiBTYWx0ZWRfX5O397ZDxfzVb ntwsQk7ecbbBXrME/QktoY/VoF0vVgOhTNeiK/u85Yazp6B4u17UcWOXkl+Bt4lpfFzDqVBWo0k UAk/MaWngvdhiCbKoPQiliIvkfEUKCs76HouFgbzaOW7IcDSaxAxmXPr6j9b+CebijY7hqf4tlf
- IhLt/zalxd/q4/LG3o0vkinrLVjxKn+0b2vB4BXuOHNr+Ic/fSuQUxI52uAFAX9Mcim+A2CRLkM rkmKfjZqvtNdaSMSlSN/C+Al9GInXYfq0X0ABU4aWD1f4iAo2e8s9pu02QppVmbo2930j18neeL 8H8afQ/Cy7ZMGlIRk7bUX+zh4jM+gMgUKeFcdmDlZdRj65ozZ/K09DshI8CoY6dLsLFEbFAw4W8
- YYUz+tS7lgi5hxk3o8jDDJ5Te9MHB3GCA6vj3+wgQu+/PlcwRLtaoh0X/+S1s30z9wQjfBlO
 
-On Tue, 24 Jun 2025 14:52:26 +0200, Christoph Hellwig wrote:
+Hi all,
 
-> this series fixes a corruption when drivers using virt_boundary_mask set
-> a limited max_segment_size by accident, which Red Hat reported as causing
-> data corruption with storvsc.  I did audit the tree and also found that
-> this can affect SRP and iSER as well.
-> 
-> Changes since v1:
->  - improve the srp commit log
->  - slightly simplify the limits assignment in hosts.c
-> 
-> [...]
+In this version, I'm posting non-controversial patches first since there
+are pending works that should be based on this series so that those can
+be started shortly.  I will post the rest later.
 
-Applied to 6.16/scsi-fixes, thanks!
+The MM subsystem is trying to reduce struct page to a single pointer.
+The first step towards that is splitting struct page by its individual
+users, as has already been done with folio and slab.  This patchset does
+that for netmem which is used for page pools.
 
-[1/2] RDMA/srp: don't set a max_segment_size when virt_boundary_mask is set
-      https://git.kernel.org/mkp/scsi/c/844c6a160e69
-[2/2] scsi: enforce unlimited max_segment_size when virt_boundary_mask is set
-      https://git.kernel.org/mkp/scsi/c/4937e604ca24
+Matthew Wilcox tried and stopped the same work, you can see in:
 
+   https://lore.kernel.org/linux-mm/20230111042214.907030-1-willy@infradead.org/
+
+Mina Almasry already has done a lot fo prerequisite works by luck.  I
+stacked my patches on the top of his work e.i. netmem.
+
+I focused on removing the page pool members in struct page this time,
+not moving the allocation code of page pool from net to mm.  It can be
+done later if needed.
+
+The final patch removing the page pool fields will be submitted once
+all the converting work of page to netmem are done:
+
+   1. converting of libeth_fqe by Tony Nguyen.
+   2. converting of mlx5 by Tariq Toukan.
+   3. converting of prueth_swdata.
+   4. converting of freescale driver.
+
+For our discussion, I'm sharing what the final patch looks like the
+following.
+
+	Byungchul
+--8<--
+commit 1847d9890f798456b21ccb27aac7545303048492
+Author: Byungchul Park <byungchul@sk.com>
+Date:   Wed May 28 20:44:55 2025 +0900
+
+    mm, netmem: remove the page pool members in struct page
+    
+    Now that all the users of the page pool members in struct page have been
+    gone, the members can be removed from struct page.
+    
+    However, since struct netmem_desc still uses the space in struct page,
+    the important offsets should be checked properly, until struct
+    netmem_desc has its own instance from slab.
+    
+    Remove the page pool members in struct page and modify static checkers
+    for the offsets.
+    
+    Signed-off-by: Byungchul Park <byungchul@sk.com>
+
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 32ba5126e221..db2fe0d0ebbf 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -120,17 +120,6 @@ struct page {
+ 			 */
+ 			unsigned long private;
+ 		};
+-		struct {	/* page_pool used by netstack */
+-			/**
+-			 * @pp_magic: magic value to avoid recycling non
+-			 * page_pool allocated pages.
+-			 */
+-			unsigned long pp_magic;
+-			struct page_pool *pp;
+-			unsigned long _pp_mapping_pad;
+-			unsigned long dma_addr;
+-			atomic_long_t pp_ref_count;
+-		};
+ 		struct {	/* Tail pages of compound page */
+ 			unsigned long compound_head;	/* Bit zero is set */
+ 		};
+diff --git a/include/net/netmem.h b/include/net/netmem.h
+index 8f354ae7d5c3..3414f184d018 100644
+--- a/include/net/netmem.h
++++ b/include/net/netmem.h
+@@ -42,11 +42,8 @@ struct netmem_desc {
+ 	static_assert(offsetof(struct page, pg) == \
+ 		      offsetof(struct netmem_desc, desc))
+ NETMEM_DESC_ASSERT_OFFSET(flags, _flags);
+-NETMEM_DESC_ASSERT_OFFSET(pp_magic, pp_magic);
+-NETMEM_DESC_ASSERT_OFFSET(pp, pp);
+-NETMEM_DESC_ASSERT_OFFSET(_pp_mapping_pad, _pp_mapping_pad);
+-NETMEM_DESC_ASSERT_OFFSET(dma_addr, dma_addr);
+-NETMEM_DESC_ASSERT_OFFSET(pp_ref_count, pp_ref_count);
++NETMEM_DESC_ASSERT_OFFSET(lru, pp_magic);
++NETMEM_DESC_ASSERT_OFFSET(mapping, _pp_mapping_pad);
+ #undef NETMEM_DESC_ASSERT_OFFSET
+ 
+ /*
+---
+Changes from v5 (no actual updates):
+	1. Rebase on net-next/main as of Jun 25.
+	2. Supplement a comment describing struct net_iov.
+	3. Exclude a controversial patch, "page_pool: access ->pp_magic
+	   through struct netmem_desc in page_pool_page_is_pp()".
+	4. Exclude "netmem: remove __netmem_get_pp()" since the API
+	   started to be used again by libeth.
+
+Changes from v5 (no actual updates):
+	1. Rebase on net-next/main as of Jun 20.
+	2. Add given 'Reviewed-by's and 'Acked-by's, thanks to all.
+	3. Add missing cc's.
+
+Changes from v4:
+	1. Add given 'Reviewed-by's, thanks to all.
+	2. Exclude potentially controversial patches.
+
+Changes from v3:
+	1. Relocates ->owner and ->type of net_iov out of netmem_desc
+	   and make them be net_iov specific.
+	2. Remove __force when casting struct page to struct netmem_desc.
+
+Changes from v2:
+	1. Introduce a netmem API, virt_to_head_netmem(), and use it
+	   when it's needed.
+	2. Introduce struct netmem_desc as a new struct and union'ed
+	   with the existing fields in struct net_iov.
+	3. Make page_pool_page_is_pp() access ->pp_magic through struct
+	   netmem_desc instead of struct page.
+	4. Move netmem alloc APIs from include/net/netmem.h to
+	   net/core/netmem_priv.h.
+	5. Apply trivial feedbacks, thanks to Mina, Pavel, and Toke.
+	6. Add given 'Reviewed-by's, thanks to Mina.
+
+Changes from v1:
+	1. Rebase on net-next's main as of May 26.
+	2. Check checkpatch.pl, feedbacked by SJ Park.
+	3. Add converting of page to netmem in mt76.
+	4. Revert 'mlx5: use netmem descriptor and APIs for page pool'
+	   since it's on-going by Tariq Toukan.  I will wait for his
+	   work to be done.
+	5. Revert 'page_pool: use netmem APIs to access page->pp_magic
+	   in page_pool_page_is_pp()' since we need more discussion.
+	6. Revert 'mm, netmem: remove the page pool members in struct
+	   page' since there are some prerequisite works to remove the
+	   page pool fields from struct page.  I can submit this patch
+	   separatedly later.
+	7. Cancel relocating a page pool member in struct page.
+	8. Modify static assert for offests and size of struct
+	   netmem_desc.
+
+Changes from rfc:
+	1. Rebase on net-next's main branch.
+	   https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/
+	2. Fix a build error reported by kernel test robot.
+	   https://lore.kernel.org/all/202505100932.uzAMBW1y-lkp@intel.com/
+	3. Add given 'Reviewed-by's, thanks to Mina and Ilias.
+	4. Do static_assert() on the size of struct netmem_desc instead
+	   of placing place-holder in struct page, feedbacked by
+	   Matthew.
+	5. Do struct_group_tagged(netmem_desc) on struct net_iov instead
+	   of wholly renaming it to strcut netmem_desc, feedbacked by
+	   Mina and Pavel.
+
+Byungchul Park (7):
+  netmem: introduce struct netmem_desc mirroring struct page
+  page_pool: rename page_pool_return_page() to page_pool_return_netmem()
+  page_pool: rename __page_pool_release_page_dma() to
+    __page_pool_release_netmem_dma()
+  page_pool: rename __page_pool_alloc_pages_slow() to
+    __page_pool_alloc_netmems_slow()
+  netmem: use _Generic to cover const casting for page_to_netmem()
+  page_pool: make page_pool_get_dma_addr() just wrap
+    page_pool_get_dma_addr_netmem()
+  netmem: introduce a netmem API, virt_to_head_netmem()
+
+ include/net/netmem.h            | 130 ++++++++++++++++++++++++++------
+ include/net/page_pool/helpers.h |   7 +-
+ net/core/page_pool.c            |  36 ++++-----
+ 3 files changed, 124 insertions(+), 49 deletions(-)
+
+
+base-commit: 8dacfd92dbefee829ca555a860e86108fdd1d55b
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.17.1
+
 
