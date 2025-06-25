@@ -1,89 +1,86 @@
-Return-Path: <linux-rdma+bounces-11627-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11628-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B7A5AE80BC
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jun 2025 13:15:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 312F5AE81B3
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jun 2025 13:42:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7C9B1791A5
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jun 2025 11:15:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65AFB5A145C
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Jun 2025 11:38:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC6D12D321A;
-	Wed, 25 Jun 2025 11:14:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06D0625C70F;
+	Wed, 25 Jun 2025 11:38:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OBgDXICU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iPzpbQqo"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7323E2BF009;
-	Wed, 25 Jun 2025 11:14:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC29255E23;
+	Wed, 25 Jun 2025 11:38:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750850085; cv=none; b=LVoe+q7FQhzs1M8w8vraqiQixQwgJVTXUpxCh9mEB/2hgQpUw55l4NSJceZmQl3F5UVJlh2u1ihvAH3/XXeRpynwE+4R3xRL17H6NN31Xwu2MWKWmUU0Cjzt0oivxPSmbjm6gHZtWqb+sHwIBv4S84Dhu6BI3GINEukuxCZI6dU=
+	t=1750851483; cv=none; b=qN1fJld6q3I1OF9TIyqIn7oMwIxLVfDEIoZum8U36EuEwEDCUCBlv+TZElY61t//wGxli4x3c/nw25TuIs3j9gb9dLUsbeO/dvjiItYuZGOWtsVrbGlJ8Y0+vGkgUeeEnu68EYeQm6WWD1ISD7wV2SmW27tpUbF09nLaWRyxj/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750850085; c=relaxed/simple;
-	bh=LEf3scgWM8D2DC2IyWffDgVkoeaYoLwiJWBONY7kkTw=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=hobRI+S5FyVM+TxwrICeXjDEvk/gx14ItSeIKwFMmXZ5ZFGg6N0d41Y3IJLRpdXgfozKaHLHH+It7ZfWCfcrNmDVEMbIB3AOu4xFOcTtUp8WDqjlfQdsqzusjiU5RQR2aAQb9RT6dx6qRGf4AVXh7fVZ4it7+gZfKeQM6CktocQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OBgDXICU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 539DBC4CEEF;
-	Wed, 25 Jun 2025 11:14:43 +0000 (UTC)
+	s=arc-20240116; t=1750851483; c=relaxed/simple;
+	bh=BtRKAJIlcJxb927rW2Z7+ZRhdms+50Dftb4cK00J1ck=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g95ixHwCumh0/GdUWCKxeOabjLg8UXz9bAt3LbYJhEN/EDRO2ptrhNSzuc/9oAEQ+6BysV2Tp0dkSwE6MzXQSvu3DkfECwI71kw20jnbuwNxxmAtXg8mOQCbG1T2AJ0BHtGFMKPMLYEFR1rQgn5QymKxXb/8R1NbYaCelywnBJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iPzpbQqo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AA68C4CEEA;
+	Wed, 25 Jun 2025 11:38:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750850084;
-	bh=LEf3scgWM8D2DC2IyWffDgVkoeaYoLwiJWBONY7kkTw=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=OBgDXICUoc93HD17zL89gISojCojniKzH9sdpv+kbmMQ1MFYjvOiteW3dXeVrbWr5
-	 A+U0J4kvoDMLxbl+dC0zGGaQYlqsPh+ASwWl/lYv+6puECBDFWBUzM7UVcYPvd3rZW
-	 I3aqqRdZSktWTpP4Up5fBRo5q9KDp1DHdiKJ3I5kvTPRdBfhw05cu73/Rq4oJNPcTi
-	 Z1QNjbDw4kYDkXPAbWpqP46nvUJzAOBWteMvyWCuYSYc15hdhe5TCSeNCVBG2jC8B6
-	 48LwPYRgd5Asf1/G8xbMNCC5lCIsZnAcXOiLUa538DlMFVz2jelDU9QKrKQkkKrJXo
-	 2MZEgFGI6JlCA==
+	s=k20201202; t=1750851483;
+	bh=BtRKAJIlcJxb927rW2Z7+ZRhdms+50Dftb4cK00J1ck=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iPzpbQqojFsV3ivsfPREuSXlhf1PNbg7WIj2wuf4PxwPYTNeYAoEs8GxP6TrZz6Fv
+	 bQsVwdojSeei2yXiZz+V710lPeUwS5KoNRvooJfke0SYx9zZUQSVp5GXqh3P5+i+1r
+	 DCc1+gkyFMvE6WfgA9AwQmCTRoTYdk4D3ITLC3BIUaYj2tbHh+7st+jZeyd/aPKYQn
+	 TQF9xDOR8TKBagGbXNsqAdKTiodL35WPtGnkuc3kbMZOBJNUu2CiCkXKcL1vwn3v2M
+	 b6pcnt4XHQUc2Mqa7ZJuySk+2v71zk6z0SNIDAXvJypnCagOpd5CZRw30u2jlu0DLG
+	 lv+PW/2ECL6Ng==
+Date: Wed, 25 Jun 2025 14:37:56 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Bernard Metzler <bmt@zurich.ibm.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
- Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, 
- Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, 
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
- Potnuri Bharat Teja <bharat@chelsio.com>, Showrya M N <showrya@chelsio.com>, 
- Eric Biggers <ebiggers@google.com>, linux-rdma@vger.kernel.org, 
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-In-Reply-To: <20250620114332.4072051-1-arnd@kernel.org>
-References: <20250620114332.4072051-1-arnd@kernel.org>
-Subject: Re: [PATCH] RDMA/siw: work around clang stack size warning
-Message-Id: <175085008000.620753.10902476513418461854.b4-ty@kernel.org>
-Date: Wed, 25 Jun 2025 07:14:40 -0400
+To: Mark Bloch <mbloch@nvidia.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Simon Horman <horms@kernel.org>, saeedm@nvidia.com, gal@nvidia.com,
+	tariqt@nvidia.com, Jonathan Corbet <corbet@lwn.net>,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 0/5] net/mlx5e: Add support for PCIe congestion
+ events
+Message-ID: <20250625113756.GA727865@unreal>
+References: <20250619113721.60201-1-mbloch@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250619113721.60201-1-mbloch@nvidia.com>
 
+On Thu, Jun 19, 2025 at 02:37:16PM +0300, Mark Bloch wrote:
+> PCIe congestion events are events generated by the firmware when the
+> device side has sustained PCIe inbound or outbound traffic above
+> certain thresholds. The high and low threshold are hysteresis thresholds
+> to prevent flapping: once the high threshold has been reached, a low
+> threshold event will be triggered only after the bandwidth usage went
+> below the low threshold.
 
-On Fri, 20 Jun 2025 13:43:28 +0200, Arnd Bergmann wrote:
-> clang inlines a lot of functions into siw_qp_sq_process(), with the
-> aggregate stack frame blowing the warning limit in some configurations:
-> 
-> drivers/infiniband/sw/siw/siw_qp_tx.c:1014:5: error: stack frame size (1544) exceeds limit (1280) in 'siw_qp_sq_process' [-Werror,-Wframe-larger-than]
-> 
-> The real problem here is the array of kvec structures in siw_tx_hdt that
-> makes up the majority of the consumed stack space.
-> 
-> [...]
+<...>
 
-Applied, thanks!
+> Dragos Tatulea (5):
+>   net/mlx5: Small refactor for general object capabilities
+>   net/mlx5: Add IFC bits for PCIe Congestion Event object
 
-[1/1] RDMA/siw: work around clang stack size warning
-      https://git.kernel.org/rdma/rdma/c/842cf5a6e35656
+Applied these patches to mlx5-next.
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+Thanks
 
