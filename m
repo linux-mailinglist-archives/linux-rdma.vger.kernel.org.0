@@ -1,90 +1,72 @@
-Return-Path: <linux-rdma+bounces-11680-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11681-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BB12AE9D4C
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Jun 2025 14:14:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65EC3AE9D59
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Jun 2025 14:20:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E55EF7B5CAA
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Jun 2025 12:13:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B25571768EC
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Jun 2025 12:20:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 963FC2750EC;
-	Thu, 26 Jun 2025 12:14:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91542214A6A;
+	Thu, 26 Jun 2025 12:20:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g8QD50c8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kf0qAKMg"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5799B20FABC
-	for <linux-rdma@vger.kernel.org>; Thu, 26 Jun 2025 12:14:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 526B633F9
+	for <linux-rdma@vger.kernel.org>; Thu, 26 Jun 2025 12:20:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750940070; cv=none; b=mRKxYHG9ZyJsSnihhfahsYYXuuzrTyghd0IagNBFfX792KVukDGuyjmAC+A8EFjd2jXujOxZMlPBGgKPr3AZV5u2YeYfPPx9MA0p07AHTiq9N50UpbOw5BV0qQNgctImxBeQ2EJSZ7Y0ViK5U7C4Hu2404kjIU28GRfNZ7SDG7U=
+	t=1750940420; cv=none; b=rpJL3k62MewY1YWFDItYDnLYBkq5AYKg/atvF5qQDK2PD50/vcE852D31MEgwwlQlBCBkf+pgT3Z6Ft6deZr0QsOl2p3uumnhRTPkq50O38W6U55i5OgE0R949+P1OrpO/IVx5DFaCpYjM01WCOJY8NQh2OWHsnbZq1NK+Ip3Mc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750940070; c=relaxed/simple;
-	bh=PWXkwh2+emJR+KPJRBn0KdEgOhDidqcXLoJZ6yBy5ew=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=TlMRxrCRzPanrRzqcIGUlyBb9PgEX2+baUrFhA6CNfchUYlwGuvgJvx806z3KU/LC8Iy1QhHToeUEsAY3pCaZnxlId75aLLitOmp24G0FxeJG+3aXCKuwrtwdutWJeHAlyaCQeJkI2TvWUSBy7W73MXYOzUOLK1AZIBbH/otNYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g8QD50c8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8491DC4CEEE;
-	Thu, 26 Jun 2025 12:14:29 +0000 (UTC)
+	s=arc-20240116; t=1750940420; c=relaxed/simple;
+	bh=VSlk57NRSA0Jk1IOY+MEs0AxeNrQQ9lgtVPGjrIk/O4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Cfd7fOqDUdK0X2TNsMGvN0TYeAL9NUV+D7N71vuC+9Pd2Bld/Rx1GjYymsRNgQpRc0ZHNZxdybj9JhDAvu5X9cerQAdVlfyFIBp61I6+Kxxy7C1wnDKaWKODYC4XwnKNuRD/unI6NG3glR8nKeu3QO3GtRdgU04iSbclko01hsM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kf0qAKMg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47F40C4CEEB;
+	Thu, 26 Jun 2025 12:20:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750940069;
-	bh=PWXkwh2+emJR+KPJRBn0KdEgOhDidqcXLoJZ6yBy5ew=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=g8QD50c8odJscuqd3MCEbFw9w+RW6+wIThHsCdsFHVIdD7qKA/2ofgWcqMZjf4qYh
-	 UEATYj6Yin88hLPbibDLE/1Eyh5SOnHJswEh0RWsQGOF9eLJ5O2GBUJaf9KIY0rT4K
-	 w/ik/USKwoctzxEF80CUbK53e2UHhYxSG8Lk/TbooUqehZMy+/81QJTnnmmrBzqJdz
-	 gDh+Vx2OvKZynEzxMKfgmt9j4wfVWKpFCgLQW7hOvcz/JMJkveCfJECuhFMXL4KeS+
-	 Q5kyUa7RucE2lJiKiC3bkvQ2YZquSdwgFDwG/8RyJPOiOfwDdWOH0UXyzB1Tro6ex6
-	 K5Ah4xlSN1VUw==
+	s=k20201202; t=1750940419;
+	bh=VSlk57NRSA0Jk1IOY+MEs0AxeNrQQ9lgtVPGjrIk/O4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kf0qAKMgXpx+6oCS3rkDCd9JOsJZYtQM8OGbHxEs0Cr3uSdjUxz2YSlON3/FwBz3l
+	 VCA9tqwYbsdBegtvUjfC/BozGnGqtS9jANHRGvUWKJCrEJlSapUmREE45OqjvaHYxD
+	 r9VGroBpA5eBEN5/k+POu5OZz7WEMzSZ63piwRXbCbaC18AgVSvH+bQ2lj4AjY/XOH
+	 LUZXGAsOUbNsaO6esM23vTlpmQ3QzHVIab9BVQvhyC40WxD/3d25q27EivHwCTtfA+
+	 LKqJJ3x0oygVZi1xoarvMCk43fao3NqoshdN/AUt6vGSyccljj7cmVDNuumXy+JABg
+	 AazCtk5VgIzRg==
+Date: Thu, 26 Jun 2025 15:20:15 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, 
- linux-rdma@vger.kernel.org, Mark Bloch <mbloch@nvidia.com>, 
- Parav Pandit <parav@nvidia.com>
-In-Reply-To: <cover.1750149405.git.leon@kernel.org>
-References: <cover.1750149405.git.leon@kernel.org>
-Subject: Re: [PATCH rdma-next 0/3] Add net namespace awareness to device
- registration
-Message-Id: <175094006703.824609.16848118654001479272.b4-ty@kernel.org>
-Date: Thu, 26 Jun 2025 08:14:27 -0400
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: "Eric W . Biederman" <ebiederm@xmission.com>,
+	linux-rdma@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
+	Mark Bloch <mbloch@nvidia.com>
+Subject: Re: [PATCH rdma-next v1 0/7] Check CAP_NET_RAW in right namespace
+Message-ID: <20250626122015.GJ17401@unreal>
+References: <cover.1750938869.git.leon@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1750938869.git.leon@kernel.org>
 
+On Thu, Jun 26, 2025 at 03:05:51PM +0300, Leon Romanovsky wrote:
+> Changelog:
+> v1: 
+>  * Moved QP checks to be earlier. 
+> v0: https://lore.kernel.org/all/cover.1750148509.git.leon@kernel.org
 
-On Tue, 17 Jun 2025 11:44:00 +0300, Leon Romanovsky wrote:
-> >From Mark:
-> Introduces net namespace awareness to RDMA device registration and update
-> relevant users accordingly.
-> 
-> Currently, RDMA devices are always registered in the initial network namespace,
-> for example even when their associated devlink devices have been moved to
-> a different namespace via devlink reload.
-> 
-> [...]
+Please discard this version, it is wrong one.
 
-Applied, thanks!
-
-[1/3] RDMA/core: Extend RDMA device registration to be net namespace aware
-      https://git.kernel.org/rdma/rdma/c/8cffca866ba86c
-[2/3] RDMA/mlx5: Allocate IB device with net namespace supplied from core dev
-      https://git.kernel.org/rdma/rdma/c/611d08207d3135
-[3/3] RDMA/ipoib: Use parent rdma device net namespace
-      https://git.kernel.org/rdma/rdma/c/f1208b05574f63
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+Thanks
 
