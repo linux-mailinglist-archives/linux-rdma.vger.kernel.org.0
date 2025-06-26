@@ -1,99 +1,81 @@
-Return-Path: <linux-rdma+bounces-11675-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11679-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47174AE9D3F
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Jun 2025 14:09:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87AD7AE9D49
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Jun 2025 14:14:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C7321C435F1
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Jun 2025 12:06:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 536E918977F9
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Jun 2025 12:14:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55238E55B;
-	Thu, 26 Jun 2025 12:06:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FA2B218EB7;
+	Thu, 26 Jun 2025 12:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ijH+1dgk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RcfrZAhW"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1463E17BA1
-	for <linux-rdma@vger.kernel.org>; Thu, 26 Jun 2025 12:06:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08EF520FABC;
+	Thu, 26 Jun 2025 12:14:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750939598; cv=none; b=QFZIgK7LqV0cdLiZGL8QwnJLMlz4+iEF4mUiVDkKS2PjazI7812/1s1cGlj3Eq9Ra4MYZpyYeecckOlklIo8DbW6AKCcXI0LiZjN5ymlvD1W4fOxYVq06/9f0PMVwlld1KYHVjH0vwEyM+lBeA5LqiRkp4qS34d8xJJZoq6VA5Q=
+	t=1750940067; cv=none; b=UlQYePpCtagB3LvEeVxX6rFkvPgTJljClcTi2aJzoESf9RoRWGu7PXv/+uivnqE+3Gg+EijB66ie5/nvIffUtFp4hyj1epu2Lp7X6CEOUr5JgNiStrdD6XWuklXJU9/EGlqTzOprDLxj43AyX85428Q3PPAAQSsOuQBj8vXt8tU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750939598; c=relaxed/simple;
-	bh=AcinQbaI/052kyFiQJevWZC97XUo0S/Tc2WZ6+5uJTs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fjiYJTEE6InbpozdR70nT62fcAYfI3aOHV7lGc8c2cLdkxoaTWLfIHxTqTRHy1qEp36K76ZUJLqEme8cqHDmS4jT4QTe8RhFZEW4esa0QA9wLZCixx4n9oaJZJ/muLfdqtnD6ZOwhDdqvHj+mkBmxQzZpXV6JF8pN4zd5QR6ZIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ijH+1dgk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36F3DC4CEEB;
-	Thu, 26 Jun 2025 12:06:36 +0000 (UTC)
+	s=arc-20240116; t=1750940067; c=relaxed/simple;
+	bh=cYyYCDjMKo1YFR4zdTqShC1KN41JtZ+W5+ZKJ2+q91M=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=JYi/PtyaeZzoLalwkmPt/9Y4kkPwaD/e+3B/ZBUx3iRxf7s3uVNTFABDVXmjo/8vSDKp8LjDgJ5KkEhqOHTytmSVobwzPGt6skWA7415EL0S7SlaYwcmZgCxLExSGhoQjWP/Nl3WcRsKtLJ7UranPztcVKhikIHoHJ9oWqQ5E/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RcfrZAhW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39F2EC4CEEB;
+	Thu, 26 Jun 2025 12:14:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750939597;
-	bh=AcinQbaI/052kyFiQJevWZC97XUo0S/Tc2WZ6+5uJTs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ijH+1dgkJWVhyQpSQz/zQ1UlL1sM3WIVSNleUnNVBisgtW9rOrdkVhCh+NPi5NlL+
-	 Re5W+W61j1bNWDVLqL+PlRljcmDpCQl6FPqIWxeGiduRUOfeykGQHgUDgKQSb7gExN
-	 0/mEsEzWCiN3yrhjq1S4xh6POYP17e4wvzosECoVMmuTnqpE/VcVTrGj7GSa4eMMmF
-	 9cwmFCA5agItOaRE2oylEkT598GH7DVq/JCRPWRfcC9F1YffAzfqPUAEhvsXfmeClB
-	 YZ4hTP1riJAMX5aBQ+euLPp8Bt0sUp0Ewx/pip9oX8oEnEzfE5Ulex6SY8gtygjvC3
-	 JB103wMlL0Vgw==
+	s=k20201202; t=1750940066;
+	bh=cYyYCDjMKo1YFR4zdTqShC1KN41JtZ+W5+ZKJ2+q91M=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=RcfrZAhW4RNTimmfr+W3NqCrIUMFTAZBNJoivl4cZs3hiQqCt6+Hi7PNbPpX+ypvL
+	 oedNJxKj9Ltc1MMBQWVLUe74FsUNDre6hwFmSejQ1eirw1v1l+vQb9hknDmfuJi+Lq
+	 yf352DZk+9IyarvY6N2gcxxpxJ0pbtarV0A4c/ETJaU3bzzMrBczddEaJVTiv63gNG
+	 DDUWO2LjfaphBr/0q7DImM1DvKVDDV4EMWWyErP3eBee8AiISsDLzLwlIT3GBcx0qR
+	 y5KU/sStgz4YxjtEfBsioAiqUUlKpFSyMIku8wnLLdx14s5n3roKjjUzYzSX7+1YVO
+	 WQNu7TBf1e5Sw==
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Parav Pandit <parav@nvidia.com>,
-	"Eric W . Biederman" <ebiederm@xmission.com>,
-	linux-rdma@vger.kernel.org,
-	Mark Bloch <mbloch@nvidia.com>
-Subject: [PATCH rdma-next v1 5/7] RDMA/mlx5: Check CAP_NET_RAW in user namespace for devx create
-Date: Thu, 26 Jun 2025 15:05:56 +0300
-Message-ID: <7a1f2295de05e62274be997632f508259e2eee41.1750938869.git.leon@kernel.org>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <cover.1750938869.git.leon@kernel.org>
-References: <cover.1750938869.git.leon@kernel.org>
+To: Zhu Yanjun <zyjzyj2000@gmail.com>, 
+ Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Daisuke Matsuda <dskmtsd@gmail.com>, 
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ kernel-janitors@vger.kernel.org
+In-Reply-To: <685c1430.050a0220.18b0ef.da83@mx.google.com>
+References: <685c1430.050a0220.18b0ef.da83@mx.google.com>
+Subject: Re: [PATCH] RDMA/rxe: Fix a couple IS_ERR() vs NULL bugs
+Message-Id: <175094006339.824609.2290263451460503052.b4-ty@kernel.org>
+Date: Thu, 26 Jun 2025 08:14:23 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-37811
 
-From: Parav Pandit <parav@nvidia.com>
 
-Currently, the capability check is done in the default
-init_user_ns user namespace. When a process runs in a
-non default user namespace, such check fails. Due to this
-when a process is running using podman, it fails to create
-the devx object.
+On Wed, 25 Jun 2025 10:22:23 -0500, Dan Carpenter wrote:
+> The lookup_mr() function returns NULL on error.  It never returns error
+> pointers.
+> 
+> 
 
-Since the RDMA device is a resource within a network namespace,
-use the network namespace associated with the RDMA device to
-determine its owning user namespace.
+Applied, thanks!
 
-Fixes: a8b92ca1b0e5 ("IB/mlx5: Introduce DEVX")
-Signed-off-by: Parav Pandit <parav@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/devx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[1/1] RDMA/rxe: Fix a couple IS_ERR() vs NULL bugs
+      https://git.kernel.org/rdma/rdma/c/19564a8576ac84
 
-diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
-index e5551736ee14..44b4521619c4 100644
---- a/drivers/infiniband/hw/mlx5/devx.c
-+++ b/drivers/infiniband/hw/mlx5/devx.c
-@@ -159,7 +159,7 @@ int mlx5_ib_devx_create(struct mlx5_ib_dev *dev, bool is_user, u64 req_ucaps)
- 	uctx = MLX5_ADDR_OF(create_uctx_in, in, uctx);
- 	if (is_user &&
- 	    (MLX5_CAP_GEN(dev->mdev, uctx_cap) & MLX5_UCTX_CAP_RAW_TX) &&
--	    capable(CAP_NET_RAW))
-+	    rdma_dev_has_raw_cap(&dev->ib_dev))
- 		cap |= MLX5_UCTX_CAP_RAW_TX;
- 	if (is_user &&
- 	    (MLX5_CAP_GEN(dev->mdev, uctx_cap) &
+Best regards,
 -- 
-2.49.0
+Leon Romanovsky <leon@kernel.org>
 
 
