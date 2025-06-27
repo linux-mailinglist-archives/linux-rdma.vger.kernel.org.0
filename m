@@ -1,80 +1,94 @@
-Return-Path: <linux-rdma+bounces-11726-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11727-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B03B2AEC312
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Jun 2025 01:40:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A4F0AEC348
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Jun 2025 01:44:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45ABB3AE3F7
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Jun 2025 23:40:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B118116D3FD
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Jun 2025 23:44:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D919291C0C;
-	Fri, 27 Jun 2025 23:40:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A44292B41;
+	Fri, 27 Jun 2025 23:42:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hzwrB48l"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="io6B7POp"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2AE3290095;
-	Fri, 27 Jun 2025 23:40:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DEE3291C0C
+	for <linux-rdma@vger.kernel.org>; Fri, 27 Jun 2025 23:42:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751067637; cv=none; b=HD2uXHYRL26EchGb0guoNNzWxJgpSt+sfSQ5GcdC9k8jtYPRG+e9HxpVSXB/upbE6GVPUYFS2oLU2PHrc5/SrVnpQEHpwlKzs8UYypR/66kX2Qcw494R7vSqKQPOsHR3Y+EGhE6Nkdu1vQp/uW41lal5mrohkRupe++awqe6BdI=
+	t=1751067770; cv=none; b=qdeTST5r/zn3bgKEKF7EOmnYxQI1e6hJ0jVmJgsuNNMAqgPy3G5eq0+jo2gVDMNoXcb+ERIvSM9IERRrgNM2eOqePIoB++B7AZ4IOamMpVZxfx+yH6+osl0dAcHYCC1uKbfRRGf7DAsEGPQFFRp0MsRbcSlCxxDHsBrRrb/oFBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751067637; c=relaxed/simple;
-	bh=GU/MMqTCtY/mnSC6TIWLdAKtJvLTP40P40z3oOY8SQE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=daPaJ/B/5l/rfyYwdagh1Z1XKwVP9yzSkkENQednIIJpGKxYsJVPsqqOi8Ld3Y/ZXpdbYHe1mkKvYnFXJUWGgDadxR+RAXbkgg6XcooDuldB6uCVadVHax1SG5hkvN939RqKuB0J5GbXeC0eD/ri8AirBq5358SnCxFhbLCDqRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hzwrB48l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49EE9C4CEED;
-	Fri, 27 Jun 2025 23:40:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751067637;
-	bh=GU/MMqTCtY/mnSC6TIWLdAKtJvLTP40P40z3oOY8SQE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=hzwrB48lhOcycXueIFvKgHl5QoouUY1QfWmnu+sgvtro69ETwlVWxQzHLLnIz9Pdb
-	 MTjDFFSNLmXauKa8mDxByXqNz2jCGQGgBkC/dvEatLaa1Hl4zYVBFSo/Aly3dcSMG0
-	 L1ki0YSDtP8Zy64UR3ve9bZ5SmvO53B+KKWZOpfX9Z7OFPmb5Y6uS8GEkTh1IFtLOU
-	 /nAxE/r38soP8s3pLwbueI6dyQ20n5rpTBYJUmj4nqdKO9jk/qmAFBCuHjKTwA2gYO
-	 FIE+fTVEl0m35fMypRH1lC277ZPVXkFeXBXXDtm0tCpWM6LmZFe+goVU4rH3PvYI6b
-	 SBuz4e5Y9qbLw==
-Date: Fri, 27 Jun 2025 16:40:35 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
-Cc: donald.hunter@gmail.com, davem@davemloft.net, edumazet@google.com,
- pabeni@redhat.com, horms@kernel.org, vadim.fedorenko@linux.dev,
- jiri@resnulli.us, anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com,
- andrew+netdev@lunn.ch, aleksandr.loktionov@intel.com, corbet@lwn.net,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
- linux-doc@vger.kernel.org
-Subject: Re: [PATCH net-next v7 0/3] dpll: add Reference SYNC feature
-Message-ID: <20250627164035.3ef705fa@kernel.org>
-In-Reply-To: <20250626135219.1769350-1-arkadiusz.kubalewski@intel.com>
-References: <20250626135219.1769350-1-arkadiusz.kubalewski@intel.com>
+	s=arc-20240116; t=1751067770; c=relaxed/simple;
+	bh=EXVZrWdeK08gDTT2gx0Qlq6xUB8FimH0zKu9T6MTZEU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=YETX4Hm2tkRQjoAZXr3D2gGpQ3wCfsS+azzPmgCvVdh76FzyW+C1sCf/nJuCGoPp2ACPXGFHiyynVfTwOgQmFcoCAqyLsPDPrsKiRGDV/g1Nt0nu/Jn76P7429humNJkGWU/8OAuW4Q+ijxA1PTK0R6j/JV1IDTLlvAgDuvEUiY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=io6B7POp; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <382ffa5e-41bc-4632-9ff0-789e7d47158c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1751067765;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CkjB4ZKuREl223wiqo2m7uxwq9VOLlBeeYY6Aq2JiDw=;
+	b=io6B7POpBuozOF3YUj++6fivErAopYfkzh/0LGxiJA2C6lj2AV+0oZ0iREwRngI0DkWJS2
+	KPounk2SQXdkfFeFKOBNY0QNaj0Y33lIPEjJevOXY1AV12Z0spBDb73Y/b7subHBfsXQOJ
+	goBVqi7K69BsH4QwJvXjen6HaOKvEcA=
+Date: Fri, 27 Jun 2025 16:42:39 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [syzbot] [rdma?] WARNING in rxe_skb_tx_dtor
+To: syzbot <syzbot+8425ccfb599521edb153@syzkaller.appspotmail.com>,
+ linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+ Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+ linux-rdma@vger.kernel.org
+References: <685f29f2.a00a0220.274b5f.0003.GAE@google.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Yanjun.Zhu" <yanjun.zhu@linux.dev>
+In-Reply-To: <685f29f2.a00a0220.274b5f.0003.GAE@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, 26 Jun 2025 15:52:16 +0200 Arkadiusz Kubalewski wrote:
-> $ ./tools/net/ynl/pyynl/cli.py \
->  --spec Documentation/netlink/specs/dpll.yaml \
-> --do pin-get \
-> --json '{"id":0}'
+Thanks a lot.
 
-For future patches -- I think we should switch to using ynl as the CLI
-name, and the --family shorthand, since the good folks at Red Hat
-RPM-packaged YNL (kernel-tools).
+I will organize the code, add a commit log, and then send the commit to 
+the RDMA mailing list for review.
 
-IOW instead of the above we can say:
+Best Regards,
 
- $ ynl --family dpll --do pin-get --json '{"id":0}'
+Yanjun.Zhu
+
+On 6/27/25 4:32 PM, syzbot wrote:
+> Hello,
+>
+> syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+>
+> Reported-by: syzbot+8425ccfb599521edb153@syzkaller.appspotmail.com
+> Tested-by: syzbot+8425ccfb599521edb153@syzkaller.appspotmail.com
+>
+> Tested on:
+>
+> commit:         fac5dcad RDMA/rxe: Fix rxe_skb_tx_dtor problem
+> git tree:       https://github.com/zhuyj/linux.git v6.16_fix_rxe_skb_tx_dtor
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17db0982580000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=79da270cec5ffd65
+> dashboard link: https://syzkaller.appspot.com/bug?extid=8425ccfb599521edb153
+> compiler:       Debian clang version 20.1.6 (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 20.1.6
+>
+> Note: no patches were applied.
+> Note: testing is done by a robot and is best-effort only.
 
