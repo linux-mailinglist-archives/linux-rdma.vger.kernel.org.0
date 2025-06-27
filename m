@@ -1,92 +1,107 @@
-Return-Path: <linux-rdma+bounces-11706-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11707-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C5EBAEAC1D
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Jun 2025 03:01:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F459AEACFE
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Jun 2025 04:50:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92431564B5A
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Jun 2025 01:00:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2D194A6A18
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Jun 2025 02:50:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ECD12F852;
-	Fri, 27 Jun 2025 01:01:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31A3318BBB9;
+	Fri, 27 Jun 2025 02:50:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VGshnAdb"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MkewNYvj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E62892F1FC7;
-	Fri, 27 Jun 2025 01:01:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C74BE26281
+	for <linux-rdma@vger.kernel.org>; Fri, 27 Jun 2025 02:50:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750986065; cv=none; b=dFRuVECNmhEE+92BnhyAwo94L+7/ZMO8Su5l8e6BpEArqKZZRxAvxgpgVNE4N/f7WSrs4DGpoNqK2epwfa4oHR4mgGNEgkTucTOhG7IE5H+d4kD2cFZ6aDKz5HI/rX9UFDL8lkn2K36/fttnFSwXP1tHuvBy4M3WXkEWyD8GuZg=
+	t=1750992623; cv=none; b=MFfdO80VW6+wyPMckTBmgcr3/4r50ZAAsrYYEM7duBxhusHxKgE+hR04/c+l3sUrrZCoqhOJKyiMqRY333gqbkR+cqkYXOaLwVpnSR0Pn28Y2YMeNUOqjUI32hlNBNbFZntZlmQMSHIxWSUqMSKhtVC8DIjyetGNZ2es/dj7vhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750986065; c=relaxed/simple;
-	bh=EzNtq1CBfE6D5XU7fFWpxazdWNZ6B3o/QCCjb21UIF0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=prVb+e5cyprr8Hj/KFhrToqd6ywhWcK1ZZhKVRgceu1rYts55RPRDWPij4FBMq+S+rZkIcb/o395rl3/wCm1sxa0mBgrtYQwXYh2HngNZEVhuNgR1Kw/YRR2tgYelCIi2gPGOP1QMFVDGayXqzmBLLWIOjX5XIjRlWNyPk0JXHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VGshnAdb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96A67C4CEEB;
-	Fri, 27 Jun 2025 01:01:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750986064;
-	bh=EzNtq1CBfE6D5XU7fFWpxazdWNZ6B3o/QCCjb21UIF0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=VGshnAdbpQtUmshrVAsTLVnHviXXGbAWSKHEzbkgWJqG5biezICvDrDoDp6ivq7nR
-	 Kt7oKW6t5CDMUCN0P5RwRyO6ldbabAwELZs/8EuBQIHKxcTiv3+1wR9N2JtpH/XK+P
-	 b5m1cMJmrXk3L4Rj+lpW7FN51RkEid/PnmNyvIwOeup20TQdCsh6gfKeqc10xgR31z
-	 Sjzjx+Od8Vt14TIcly1w50TSqOa7LlhMcOvhMH50RjHIR/h98VjWvj0mCX8CkwVnDS
-	 jkoGRYT7UxP77oRu4fxEo1zB1qcTqgiJgmc83qdmbqDU8/0GlaDn7tFiuwAd+TeNfn
-	 VRFMmfg3WQHaA==
-Date: Thu, 26 Jun 2025 18:01:02 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Mark Bloch <mbloch@nvidia.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Paolo Abeni
- <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew Lunn"
- <andrew+netdev@lunn.ch>, Simon Horman <horms@kernel.org>,
- <saeedm@nvidia.com>, <gal@nvidia.com>, <leonro@nvidia.com>,
- <tariqt@nvidia.com>, Donald Hunter <donald.hunter@gmail.com>, Jiri Pirko
- <jiri@resnulli.us>, Jonathan Corbet <corbet@lwn.net>, Leon Romanovsky
- <leon@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, Jeff Layton
- <jlayton@kernel.org>, NeilBrown <neil@brown.name>, Olga Kornievskaia
- <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
- <tom@talpey.com>, Shuah Khan <shuah@kernel.org>, <netdev@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
- <linux-rdma@vger.kernel.org>, <linux-nfs@vger.kernel.org>,
- <linux-kselftest@vger.kernel.org>, Carolina Jubran <cjubran@nvidia.com>,
- Cosmin Ratiu <cratiu@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
-Subject: Re: [PATCH net-next v11 2/8] devlink: Extend devlink rate API with
- traffic classes bandwidth management
-Message-ID: <20250626180102.497e35a2@kernel.org>
-In-Reply-To: <20250625183018.87065-3-mbloch@nvidia.com>
-References: <20250625183018.87065-1-mbloch@nvidia.com>
-	<20250625183018.87065-3-mbloch@nvidia.com>
+	s=arc-20240116; t=1750992623; c=relaxed/simple;
+	bh=p1HW6zv8mlHJrlMRWQzDXxmWMCYCO0Q4SFXTfOBRo0k=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=RXHK9AwSmHWdmkE0ZQtICuW0TodM0EcUl/KB/6Brw0pRFO15HqGM9V28t5JGpwoNbsSL0jOF+wLPB++2sFCtFqbBKxpuggP5alp/Dcr3nnT4KNp4REzivdNSoxXo4xjL/+TGfGWhnbdOTc8RTgWa9pBaW9AkwOIZrA4UYN2cbj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MkewNYvj; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <850c0f71-ae74-4a06-bf40-fc44c6ceede7@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1750992605;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KX8z8Y7YX8y7KbEgdhFOB6RdeuuZTaBG2L/6FgdDGsc=;
+	b=MkewNYvj+gjKySw0n6q59iY+d590vYvOLdKEUZ69gnJ7QHolf8+3aSTCBCmOVQFTj39Lda
+	kwCPdPqA+DXFu6jhNXLAKQKdboNCbOCRNLiqS2Rp837OkgM/qzYaqS4o4GoWbjgDOFihlV
+	k++czY+e4kUxTR1ILVQQ/jVzyoLHZrM=
+Date: Thu, 26 Jun 2025 19:49:46 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Subject: Re: [syzbot] [rdma?] WARNING in rxe_skb_tx_dtor
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+To: syzbot <syzbot+8425ccfb599521edb153@syzkaller.appspotmail.com>,
+ jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+ zyjzyj2000@gmail.com
+References: <685dc8bd.a00a0220.2e5631.0382.GAE@google.com>
+ <f59b4048-a4e3-4d7d-8aa9-5a3ad42db8b7@linux.dev>
+In-Reply-To: <f59b4048-a4e3-4d7d-8aa9-5a3ad42db8b7@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 25 Jun 2025 21:30:12 +0300 Mark Bloch wrote:
-> Introduce support for specifying relative bandwidth shares between
-> traffic classes (TC) in the devlink-rate API. This new option allows
-> users to allocate bandwidth across multiple traffic classes in a
-> single command.
+#syz test: https://github.com/zhuyj/linux.git v6.16_fix_rxe_skb_tx_dtor
 
-net/devlink/rate.c:390:33: warning: variable 'total' set but not used [-Wunused-but-set-variable]
-  390 |         int rem, err = -EOPNOTSUPP, i, total = 0;
-      |                                        ^
+在 2025/6/26 15:38, Yanjun.Zhu 写道:
+> #syz test: https://github.com/zhuyj/linux.git 
+> linux-6.15-rc4-fix-rxe_skb_tx_dtor
+>
+> On 6/26/25 3:25 PM, syzbot wrote:
+>> Hello,
+>>
+>> syzbot tried to test the proposed patch but the build/boot failed:
+>>
+>> failed to checkout kernel repo 
+>> git@github.com:zhuyj/linux.git/linux-6.15-rc4-fix-rxe_skb_tx_dtor: 
+>> failed to run ["git" "fetch" "--force" 
+>> "9a778a5fe5e4b8c26d97f27ad3305a963b60aef0" 
+>> "linux-6.15-rc4-fix-rxe_skb_tx_dtor"]: exit status 128
+>> Host key verification failed.
+>> fatal: Could not read from remote repository.
+>>
+>> Please make sure you have the correct access rights
+>> and the repository exists.
+>>
+>>
+>>
+>> Tested on:
+>>
+>> commit:         [unknown
+>> git tree:       git@github.com:zhuyj/linux.git 
+>> linux-6.15-rc4-fix-rxe_skb_tx_dtor
+>> kernel config: 
+>> https://syzkaller.appspot.com/x/.config?x=79da270cec5ffd65
+>> dashboard link: 
+>> https://syzkaller.appspot.com/bug?extid=8425ccfb599521edb153
+>> compiler:
+>>
+>> Note: no patches were applied.
 
-
-Documentation/netlink/specs/devlink.yaml
-  1277:8    error    wrong indentation: expected 8 but found 7  (indentation)
-  1279:8    error    wrong indentation: expected 8 but found 7  (indentation)
 -- 
-pw-bot: cr
+Best Regards,
+Yanjun.Zhu
+
 
