@@ -1,66 +1,69 @@
-Return-Path: <linux-rdma+bounces-11705-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11706-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36607AEABFF
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Jun 2025 02:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C5EBAEAC1D
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Jun 2025 03:01:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6187A3BA80C
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Jun 2025 00:50:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92431564B5A
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Jun 2025 01:00:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F357219EB;
-	Fri, 27 Jun 2025 00:50:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ECD12F852;
+	Fri, 27 Jun 2025 01:01:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vsa1MWQx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VGshnAdb"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45B2012E5D;
-	Fri, 27 Jun 2025 00:50:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E62892F1FC7;
+	Fri, 27 Jun 2025 01:01:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750985443; cv=none; b=Mu9IePAuYrhN9dztfyVQzGKCRXEITlB0kpVDKXfHNQiyTIyb7HRlqZr/U17EypsN/zNmrD2FCdwP3bEWOq6pVA5eEg6DSX1us0sh7HgLGndGqCQlpoTs4P56J3AciFj3JSxdTfTANvzV/9PmVcYeR1u6AU49JY6pHKrEiWzeyz4=
+	t=1750986065; cv=none; b=dFRuVECNmhEE+92BnhyAwo94L+7/ZMO8Su5l8e6BpEArqKZZRxAvxgpgVNE4N/f7WSrs4DGpoNqK2epwfa4oHR4mgGNEgkTucTOhG7IE5H+d4kD2cFZ6aDKz5HI/rX9UFDL8lkn2K36/fttnFSwXP1tHuvBy4M3WXkEWyD8GuZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750985443; c=relaxed/simple;
-	bh=SCTbdzkuj2fHsB3J8DC5cHHKjk2G20HmWFOE3rkHuRA=;
+	s=arc-20240116; t=1750986065; c=relaxed/simple;
+	bh=EzNtq1CBfE6D5XU7fFWpxazdWNZ6B3o/QCCjb21UIF0=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fd+op+Wx6xHw8voJCt/hsKFA9kdneRH6RRQQl1hDp8T0oHWMni5vQdsiYNiPwnbxXQCIEtDhehA1aHX9zH64O2lafZ3psYJAB1CD1i+OeyZ8pPJZ0jh+Bn1dHYwubxeLhcCyzJZYwlrfSpeIGyQv6U9fGKGg+fWIGnFMfqIDmdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vsa1MWQx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80F90C4CEEB;
-	Fri, 27 Jun 2025 00:50:41 +0000 (UTC)
+	 MIME-Version:Content-Type; b=prVb+e5cyprr8Hj/KFhrToqd6ywhWcK1ZZhKVRgceu1rYts55RPRDWPij4FBMq+S+rZkIcb/o395rl3/wCm1sxa0mBgrtYQwXYh2HngNZEVhuNgR1Kw/YRR2tgYelCIi2gPGOP1QMFVDGayXqzmBLLWIOjX5XIjRlWNyPk0JXHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VGshnAdb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96A67C4CEEB;
+	Fri, 27 Jun 2025 01:01:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1750985442;
-	bh=SCTbdzkuj2fHsB3J8DC5cHHKjk2G20HmWFOE3rkHuRA=;
+	s=k20201202; t=1750986064;
+	bh=EzNtq1CBfE6D5XU7fFWpxazdWNZ6B3o/QCCjb21UIF0=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Vsa1MWQxqKAyxE2vASroJIq67pMWozebzG0n3jyy7Wy9e8G+sC8WDhykBzALiwfTQ
-	 SauODA78m48pxnXG1yiAPX5CabsFy4xc3SMqX+Qu9MRDGs3+Xh/5dHWIWnnUPf370e
-	 /xXS36tXayiS2gahkIw93Fr+wJLEEzx6rEDJrXdF+TLXFQniSnzRC9RH5SnHfgZIL5
-	 jRxx4SXX3gHP/P62/ykgd6YIM/ecL9ahZHz1BUP9FXpzIhKulUuqsjI7WGn3Ijjr2I
-	 GFAOxRxmU586XTdx6G/oI5utSIisvPley4D+CzYvD2EzvBKqZ2zvXa6aQYTvp128ls
-	 qv5ZR0ncW9u9w==
-Date: Thu, 26 Jun 2025 17:50:40 -0700
+	b=VGshnAdbpQtUmshrVAsTLVnHviXXGbAWSKHEzbkgWJqG5biezICvDrDoDp6ivq7nR
+	 Kt7oKW6t5CDMUCN0P5RwRyO6ldbabAwELZs/8EuBQIHKxcTiv3+1wR9N2JtpH/XK+P
+	 b5m1cMJmrXk3L4Rj+lpW7FN51RkEid/PnmNyvIwOeup20TQdCsh6gfKeqc10xgR31z
+	 Sjzjx+Od8Vt14TIcly1w50TSqOa7LlhMcOvhMH50RjHIR/h98VjWvj0mCX8CkwVnDS
+	 jkoGRYT7UxP77oRu4fxEo1zB1qcTqgiJgmc83qdmbqDU8/0GlaDn7tFiuwAd+TeNfn
+	 VRFMmfg3WQHaA==
+Date: Thu, 26 Jun 2025 18:01:02 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Byungchul Park <byungchul@sk.com>
-Cc: willy@infradead.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, kernel_team@skhynix.com,
- almasrymina@google.com, ilias.apalodimas@linaro.org, harry.yoo@oracle.com,
- hawk@kernel.org, akpm@linux-foundation.org, davem@davemloft.net,
- john.fastabend@gmail.com, andrew+netdev@lunn.ch, asml.silence@gmail.com,
- toke@redhat.com, tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
- saeedm@nvidia.com, leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
- david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
- vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com,
- horms@kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
- vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
- jackmanb@google.com
-Subject: Re: [PATCH net-next v7 0/7] Split netmem from struct page
-Message-ID: <20250626175040.585ce57e@kernel.org>
-In-Reply-To: <20250626064119.GB28653@system.software.com>
-References: <20250625043350.7939-1-byungchul@sk.com>
-	<20250626064119.GB28653@system.software.com>
+To: Mark Bloch <mbloch@nvidia.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Paolo Abeni
+ <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew Lunn"
+ <andrew+netdev@lunn.ch>, Simon Horman <horms@kernel.org>,
+ <saeedm@nvidia.com>, <gal@nvidia.com>, <leonro@nvidia.com>,
+ <tariqt@nvidia.com>, Donald Hunter <donald.hunter@gmail.com>, Jiri Pirko
+ <jiri@resnulli.us>, Jonathan Corbet <corbet@lwn.net>, Leon Romanovsky
+ <leon@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, Jeff Layton
+ <jlayton@kernel.org>, NeilBrown <neil@brown.name>, Olga Kornievskaia
+ <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
+ <tom@talpey.com>, Shuah Khan <shuah@kernel.org>, <netdev@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+ <linux-rdma@vger.kernel.org>, <linux-nfs@vger.kernel.org>,
+ <linux-kselftest@vger.kernel.org>, Carolina Jubran <cjubran@nvidia.com>,
+ Cosmin Ratiu <cratiu@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
+Subject: Re: [PATCH net-next v11 2/8] devlink: Extend devlink rate API with
+ traffic classes bandwidth management
+Message-ID: <20250626180102.497e35a2@kernel.org>
+In-Reply-To: <20250625183018.87065-3-mbloch@nvidia.com>
+References: <20250625183018.87065-1-mbloch@nvidia.com>
+	<20250625183018.87065-3-mbloch@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -70,12 +73,20 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 26 Jun 2025 15:41:19 +0900 Byungchul Park wrote:
-> To Jakub and net folks,
-> 
-> I believe v7 doesn't include any controversial patches.  It'd be
-> appreciated to lemme know if any.
+On Wed, 25 Jun 2025 21:30:12 +0300 Mark Bloch wrote:
+> Introduce support for specifying relative bandwidth shares between
+> traffic classes (TC) in the devlink-rate API. This new option allows
+> users to allocate bandwidth across multiple traffic classes in a
+> single command.
 
-I'm still a bit lost. But indeed patches 2-6 look fine.
-If you were to repost those 5 they'll go right in.
+net/devlink/rate.c:390:33: warning: variable 'total' set but not used [-Wunused-but-set-variable]
+  390 |         int rem, err = -EOPNOTSUPP, i, total = 0;
+      |                                        ^
+
+
+Documentation/netlink/specs/devlink.yaml
+  1277:8    error    wrong indentation: expected 8 but found 7  (indentation)
+  1279:8    error    wrong indentation: expected 8 but found 7  (indentation)
+-- 
+pw-bot: cr
 
