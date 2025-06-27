@@ -1,78 +1,79 @@
-Return-Path: <linux-rdma+bounces-11724-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11725-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E66C7AEC222
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Jun 2025 23:36:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8A07AEC29E
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Jun 2025 00:32:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A1991698E4
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Jun 2025 21:36:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E75C91C46378
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Jun 2025 22:32:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFCB428A1D5;
-	Fri, 27 Jun 2025 21:35:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3409F27BF79;
+	Fri, 27 Jun 2025 22:31:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YvNQNS6I"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XTQoQVUR"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C5E225D906;
-	Fri, 27 Jun 2025 21:35:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C0828C5D2;
+	Fri, 27 Jun 2025 22:31:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751060152; cv=none; b=JxDfTdkB7iUTZE5oIeW+RWhPCRfVW77YW3Qil6nb1B6Y12u7rNKO/+DJf0Van6nB5YyJDj+q4BllEVYWwH8zk0MppofHJWBnXORmihw5NZNAp+XuE56l6zx7u0C3tsxnCBDhgczz6DbE3rCyEUqJEqUk8rQGOKX8hAq8Yc4TVWA=
+	t=1751063518; cv=none; b=SJo02UoL+mLq65pXxlx+IHHhReOrzsPBuVAs4xMeGtp8CoGGG4/rR8fJmUnXRr9DevxjFId2pTcOzaDPIRkQMkztmHfkxeKC1bQxS5FNypcwlODApzOHFuCFlqdszIPi9cjCg4A4pYt8+7rBtT4IQATNrH3edY5o98EPM8pozmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751060152; c=relaxed/simple;
-	bh=dDiJZ0vgG3S+6SnN32VF9/i/0mO2k4wbUUU+DGN3xDQ=;
+	s=arc-20240116; t=1751063518; c=relaxed/simple;
+	bh=t148kyXLdbbYR5pY/4YRGD/alwYNyE9YPF79U/ZCXyg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YV8nvffUNIy6ltj1LfzmaeEQzDB0tuKwYduw5Ry7dkeWGCaK0/CJXX9f65TIKh4Xh3goYCo3KM3cUKmwhWp+S94ecIKa5oMpB8XUIPBBhHpatiVY1uPJFy4nUXoelAbRCB7RXWFsH9YAsMdmIIQnhz5yY9kyoGG37DnZ//PuXG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YvNQNS6I; arc=none smtp.client-ip=192.198.163.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=opWUqHus4oirG2v9A6ZmaAVbOF0/UWNrlxstGd0M0BauLMQyDIr18IjSf52bQZLZIu4evhpCCQvsRkY0UZDxgjyOF0UMbTzabT5lO1sKNmOUvqtnC3U57jzcG55ohDBjbodNOXiGnH09aIfcbY/ncHPQ7LFyINBUg2dIe8iadZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XTQoQVUR; arc=none smtp.client-ip=192.198.163.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1751060151; x=1782596151;
+  t=1751063516; x=1782599516;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=dDiJZ0vgG3S+6SnN32VF9/i/0mO2k4wbUUU+DGN3xDQ=;
-  b=YvNQNS6IHxakANVjSZE6D9+PygXYKzEz8Ow5lJclu3kShkjn2ixUOxDM
-   iUlNdW4VYLkESp4Q3lmscYhga2Bb+swYmxIms/oYdR8Cbzn+6VuE+UCsC
-   CvR7pJaS1BraXCBUnSDBf0LKOAPOlYrR3elIY6KXeGnGVlTe1VTSb9elk
-   ka0keMNcas8uj7w4V/YLi/kqxqQ1D6Wn3u/HUYBshFBl1ZCcVeCKWmjfW
-   bcPuRInlGVaBybXnvAW1fRAsIy+8yWEzJf2bFbG2bbklYn732cQU8G5XA
-   eCB6kn1tocvkYXbr8V45Yl/StoAEQ2Bd4huNfpquE3XNu9XVBhDrwzK8a
+  bh=t148kyXLdbbYR5pY/4YRGD/alwYNyE9YPF79U/ZCXyg=;
+  b=XTQoQVURaRr9LGlR3HDYV9kpOoObGJucE6xd6kijG6nDJ1g363jo9mXr
+   sYC1tpvnhZmOeN7a+2YKd+xqwcxEjLJ0AjGJAXuB591pHERZmL71ZL6iq
+   +Kro0hSSV0nLAklL2mhzFrak8n8H3JPhHZPFgM7MMrSMgCoBjeoSkllr8
+   MKOr1cSpohwHMpR1mp2XxUFwNXyYYFgyCTe9plWsQDXkY1HaEOu/vLUbW
+   YdVKI5l4aXS9LM2EGAtLaslRjYoxWjy+F9ecc6ab2Rp4j87MAh3hZTRvu
+   btphov6mVPYKbjlTYcahl76hSOWiUkkYa2uJnCiRgSckEDWFwp2iiliEi
    A==;
-X-CSE-ConnectionGUID: yxSJHAK3TTWTtMSpqBKUfA==
-X-CSE-MsgGUID: A83W81qiR7SzdtzxYDTjCA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11477"; a="52610801"
+X-CSE-ConnectionGUID: /S4uu9HVQ8GbzCcfFS2USw==
+X-CSE-MsgGUID: D3A5fVtQQMaqruFdpxiZVw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11477"; a="53469204"
 X-IronPort-AV: E=Sophos;i="6.16,271,1744095600"; 
-   d="scan'208";a="52610801"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2025 14:35:50 -0700
-X-CSE-ConnectionGUID: yDugyF5VQfy8pIYLYHd3ng==
-X-CSE-MsgGUID: LjXKLAZTTRSfjtvYI4GxsQ==
+   d="scan'208";a="53469204"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jun 2025 15:31:55 -0700
+X-CSE-ConnectionGUID: yfca7EjtR3WZ8gs4milOHQ==
+X-CSE-MsgGUID: Pb1xzmifTV+W/Ou1tjgGFA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.16,271,1744095600"; 
-   d="scan'208";a="153451742"
+   d="scan'208";a="157460774"
 Received: from lkp-server01.sh.intel.com (HELO e8142ee1dce2) ([10.239.97.150])
-  by fmviesa008.fm.intel.com with ESMTP; 27 Jun 2025 14:35:47 -0700
+  by orviesa004.jf.intel.com with ESMTP; 27 Jun 2025 15:31:52 -0700
 Received: from kbuild by e8142ee1dce2 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1uVGjZ-000WYo-0i;
-	Fri, 27 Jun 2025 21:35:45 +0000
-Date: Sat, 28 Jun 2025 05:35:28 +0800
+	id 1uVHbp-000Wag-1o;
+	Fri, 27 Jun 2025 22:31:49 +0000
+Date: Sat, 28 Jun 2025 06:31:37 +0800
 From: kernel test robot <lkp@intel.com>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Leon Romanovsky <leon@kernel.org>,
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Leon Romanovsky <leon@kernel.org>,
 	Saeed Mahameed <saeedm@nvidia.com>,
 	Tariq Toukan <tariqt@nvidia.com>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Subject: Re: [PATCH net-next v1 1/1] net/mlx5: Don't use "proxy" headers
-Message-ID: <202506280551.g3Yi6Vuw-lkp@intel.com>
+Message-ID: <202506280652.RR3QbdqN-lkp@intel.com>
 References: <20250626164509.327410-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -86,317 +87,421 @@ In-Reply-To: <20250626164509.327410-1-andriy.shevchenko@linux.intel.com>
 
 Hi Andy,
 
-kernel test robot noticed the following build errors:
+kernel test robot noticed the following build warnings:
 
-[auto build test ERROR on net-next/main]
+[auto build test WARNING on net-next/main]
 
 url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/net-mlx5-Don-t-use-proxy-headers/20250627-004605
 base:   net-next/main
 patch link:    https://lore.kernel.org/r/20250626164509.327410-1-andriy.shevchenko%40linux.intel.com
 patch subject: [PATCH net-next v1 1/1] net/mlx5: Don't use "proxy" headers
-config: arm64-randconfig-001-20250628 (https://download.01.org/0day-ci/archive/20250628/202506280551.g3Yi6Vuw-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 14.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250628/202506280551.g3Yi6Vuw-lkp@intel.com/reproduce)
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20250628/202506280652.RR3QbdqN-lkp@intel.com/config)
+compiler: clang version 20.1.7 (https://github.com/llvm/llvm-project 6146a88f60492b520a36f8f8f3231e15f3cc6082)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250628/202506280652.RR3QbdqN-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202506280551.g3Yi6Vuw-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202506280652.RR3QbdqN-lkp@intel.com/
 
-All errors (new ones prefixed by >>):
+All warnings (new ones prefixed by >>):
 
-   In file included from drivers/infiniband/hw/mlx5/dm.h:9,
-                    from drivers/infiniband/hw/mlx5/dm.c:7:
->> drivers/infiniband/hw/mlx5/mlx5_ib.h:1125:9: error: unknown type name 'mempool_t'
-    1125 |         mempool_t *pool;
-         |         ^~~~~~~~~
---
-   In file included from drivers/net/ethernet/mellanox/mlx5/core/lib/gid.c:37:
-   drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h: In function 'mlx5_core_net':
-   drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h:50:16: error: implicit declaration of function 'devlink_net'; did you mean 'dev_net'? [-Wimplicit-function-declaration]
-      50 |         return devlink_net(priv_to_devlink(dev));
-         |                ^~~~~~~~~~~
-         |                dev_net
-   drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h:50:28: error: implicit declaration of function 'priv_to_devlink' [-Wimplicit-function-declaration]
-      50 |         return devlink_net(priv_to_devlink(dev));
-         |                            ^~~~~~~~~~~~~~~
->> drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h:50:16: error: returning 'int' from a function with return type 'struct net *' makes pointer from integer without a cast [-Wint-conversion]
-      50 |         return devlink_net(priv_to_devlink(dev));
-         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
---
    In file included from drivers/net/ethernet/mellanox/mlx5/core/health.c:41:
-   drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h: In function 'mlx5_core_net':
-   drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h:50:16: error: implicit declaration of function 'devlink_net'; did you mean 'dev_net'? [-Wimplicit-function-declaration]
+   drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h:50:9: error: call to undeclared function 'devlink_net'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
       50 |         return devlink_net(priv_to_devlink(dev));
-         |                ^~~~~~~~~~~
-         |                dev_net
-   drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h:50:28: error: implicit declaration of function 'priv_to_devlink' [-Wimplicit-function-declaration]
+         |                ^
+   drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h:50:21: error: call to undeclared function 'priv_to_devlink'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
       50 |         return devlink_net(priv_to_devlink(dev));
-         |                            ^~~~~~~~~~~~~~~
->> drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h:50:16: error: returning 'int' from a function with return type 'struct net *' makes pointer from integer without a cast [-Wint-conversion]
+         |                            ^
+   drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h:50:9: error: incompatible integer to pointer conversion returning 'int' from a function with result type 'struct net *' [-Wint-conversion]
       50 |         return devlink_net(priv_to_devlink(dev));
          |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    In file included from drivers/net/ethernet/mellanox/mlx5/core/health.c:45:
-   drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.h: At top level:
-   drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.h:202:52: warning: 'struct devlink_fmsg' declared inside parameter list will not be visible outside of this definition or declaration
+>> drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.h:202:17: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
      202 |                                             struct devlink_fmsg *fmsg);
-         |                                                    ^~~~~~~~~~~~
+         |                                                    ^
    In file included from drivers/net/ethernet/mellanox/mlx5/core/health.c:46:
-   drivers/net/ethernet/mellanox/mlx5/core/diag/reporter_vnic.h:13:50: warning: 'struct devlink_fmsg' declared inside parameter list will not be visible outside of this definition or declaration
+>> drivers/net/ethernet/mellanox/mlx5/core/diag/reporter_vnic.h:13:15: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
       13 |                                           struct devlink_fmsg *fmsg,
-         |                                                  ^~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:465:34: warning: 'struct devlink_fmsg' declared inside parameter list will not be visible outside of this definition or declaration
+         |                                                  ^
+>> drivers/net/ethernet/mellanox/mlx5/core/health.c:465:13: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
      465 |                           struct devlink_fmsg *fmsg,
-         |                                  ^~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c: In function 'mlx5_fw_reporter_diagnose':
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:468:37: error: implicit declaration of function 'devlink_health_reporter_priv' [-Wimplicit-function-declaration]
+         |                                  ^
+   drivers/net/ethernet/mellanox/mlx5/core/health.c:468:30: error: call to undeclared function 'devlink_health_reporter_priv'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
      468 |         struct mlx5_core_dev *dev = devlink_health_reporter_priv(reporter);
-         |                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/net/ethernet/mellanox/mlx5/core/health.c:468:37: error: initialization of 'struct mlx5_core_dev *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:473:9: error: implicit declaration of function 'devlink_fmsg_u8_pair_put' [-Wimplicit-function-declaration]
+         |                                     ^
+   drivers/net/ethernet/mellanox/mlx5/core/health.c:468:24: error: incompatible integer to pointer conversion initializing 'struct mlx5_core_dev *' with an expression of type 'int' [-Wint-conversion]
+     468 |         struct mlx5_core_dev *dev = devlink_health_reporter_priv(reporter);
+         |                               ^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/mellanox/mlx5/core/health.c:473:2: error: call to undeclared function 'devlink_fmsg_u8_pair_put'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
      473 |         devlink_fmsg_u8_pair_put(fmsg, "Syndrome", synd);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:477:9: error: implicit declaration of function 'devlink_fmsg_string_pair_put' [-Wimplicit-function-declaration]
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/health.c:477:2: error: call to undeclared function 'devlink_fmsg_string_pair_put'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
      477 |         devlink_fmsg_string_pair_put(fmsg, "Description", hsynd_str(synd));
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c: At top level:
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:488:39: warning: 'struct devlink_fmsg' declared inside parameter list will not be visible outside of this definition or declaration
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/health.c:488:39: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
      488 | mlx5_fw_reporter_ctx_pairs_put(struct devlink_fmsg *fmsg,
-         |                                       ^~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c: In function 'mlx5_fw_reporter_ctx_pairs_put':
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:492:9: error: implicit declaration of function 'devlink_fmsg_u32_pair_put' [-Wimplicit-function-declaration]
+         |                                       ^
+   drivers/net/ethernet/mellanox/mlx5/core/health.c:491:2: error: call to undeclared function 'devlink_fmsg_u8_pair_put'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     491 |         devlink_fmsg_u8_pair_put(fmsg, "syndrome", fw_reporter_ctx->err_synd);
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/health.c:492:2: error: call to undeclared function 'devlink_fmsg_u32_pair_put'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
      492 |         devlink_fmsg_u32_pair_put(fmsg, "fw_miss_counter", fw_reporter_ctx->miss_counter);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c: At top level:
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:497:47: warning: 'struct devlink_fmsg' declared inside parameter list will not be visible outside of this definition or declaration
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/health.c:497:19: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
      497 |                                        struct devlink_fmsg *fmsg)
-         |                                               ^~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c: In function 'mlx5_fw_reporter_heath_buffer_data_put':
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:507:9: error: implicit declaration of function 'devlink_fmsg_pair_nest_start' [-Wimplicit-function-declaration]
+         |                                               ^
+   drivers/net/ethernet/mellanox/mlx5/core/health.c:507:2: error: call to undeclared function 'devlink_fmsg_pair_nest_start'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
      507 |         devlink_fmsg_pair_nest_start(fmsg, "health buffer");
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:508:9: error: implicit declaration of function 'devlink_fmsg_obj_nest_start' [-Wimplicit-function-declaration]
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/health.c:508:2: error: call to undeclared function 'devlink_fmsg_obj_nest_start'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
      508 |         devlink_fmsg_obj_nest_start(fmsg);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:509:9: error: implicit declaration of function 'devlink_fmsg_arr_pair_nest_start' [-Wimplicit-function-declaration]
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/health.c:509:2: error: call to undeclared function 'devlink_fmsg_arr_pair_nest_start'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
      509 |         devlink_fmsg_arr_pair_nest_start(fmsg, "assert_var");
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:511:17: error: implicit declaration of function 'devlink_fmsg_u32_put' [-Wimplicit-function-declaration]
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/health.c:511:3: error: call to undeclared function 'devlink_fmsg_u32_put'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
      511 |                 devlink_fmsg_u32_put(fmsg, ioread32be(h->assert_var + i));
-         |                 ^~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:512:9: error: implicit declaration of function 'devlink_fmsg_arr_pair_nest_end' [-Wimplicit-function-declaration]
-     512 |         devlink_fmsg_arr_pair_nest_end(fmsg);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:526:9: error: implicit declaration of function 'devlink_fmsg_obj_nest_end' [-Wimplicit-function-declaration]
-     526 |         devlink_fmsg_obj_nest_end(fmsg);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:527:9: error: implicit declaration of function 'devlink_fmsg_pair_nest_end' [-Wimplicit-function-declaration]
-     527 |         devlink_fmsg_pair_nest_end(fmsg);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c: At top level:
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:532:30: warning: 'struct devlink_fmsg' declared inside parameter list will not be visible outside of this definition or declaration
-     532 |                       struct devlink_fmsg *fmsg, void *priv_ctx,
-         |                              ^~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c: In function 'mlx5_fw_reporter_dump':
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:535:37: error: initialization of 'struct mlx5_core_dev *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     535 |         struct mlx5_core_dev *dev = devlink_health_reporter_priv(reporter);
-         |                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:545:48: error: passing argument 1 of 'mlx5_fw_reporter_ctx_pairs_put' from incompatible pointer type [-Wincompatible-pointer-types]
-     545 |                 mlx5_fw_reporter_ctx_pairs_put(fmsg, fw_reporter_ctx);
-         |                                                ^~~~
-         |                                                |
-         |                                                struct devlink_fmsg *
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:488:53: note: expected 'struct devlink_fmsg *' but argument is of type 'struct devlink_fmsg *'
-     488 | mlx5_fw_reporter_ctx_pairs_put(struct devlink_fmsg *fmsg,
-         |                                ~~~~~~~~~~~~~~~~~~~~~^~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:548:53: error: passing argument 2 of 'mlx5_fw_reporter_heath_buffer_data_put' from incompatible pointer type [-Wincompatible-pointer-types]
-     548 |         mlx5_fw_reporter_heath_buffer_data_put(dev, fmsg);
-         |                                                     ^~~~
-         |                                                     |
-         |                                                     struct devlink_fmsg *
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:497:61: note: expected 'struct devlink_fmsg *' but argument is of type 'struct devlink_fmsg *'
-     497 |                                        struct devlink_fmsg *fmsg)
-         |                                        ~~~~~~~~~~~~~~~~~~~~~^~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:550:69: error: passing argument 2 of 'mlx5_fw_tracer_get_saved_traces_objects' from incompatible pointer type [-Wincompatible-pointer-types]
-     550 |         return mlx5_fw_tracer_get_saved_traces_objects(dev->tracer, fmsg);
-         |                                                                     ^~~~
-         |                                                                     |
-         |                                                                     struct devlink_fmsg *
-   drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.h:202:66: note: expected 'struct devlink_fmsg *' but argument is of type 'struct devlink_fmsg *'
-     202 |                                             struct devlink_fmsg *fmsg);
-         |                                             ~~~~~~~~~~~~~~~~~~~~~^~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c: In function 'mlx5_fw_reporter_err_work':
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:566:17: error: implicit declaration of function 'devlink_health_report' [-Wimplicit-function-declaration]
-     566 |                 devlink_health_report(health->fw_reporter,
-         |                 ^~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c: At top level:
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:576:21: error: variable 'mlx5_fw_reporter_pf_ops' has initializer but incomplete type
-     576 | static const struct devlink_health_reporter_ops mlx5_fw_reporter_pf_ops = {
-         |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:577:18: error: 'const struct devlink_health_reporter_ops' has no member named 'name'
-     577 |                 .name = "fw",
-         |                  ^~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:577:25: warning: excess elements in struct initializer
-     577 |                 .name = "fw",
-         |                         ^~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:577:25: note: (near initialization for 'mlx5_fw_reporter_pf_ops')
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:578:18: error: 'const struct devlink_health_reporter_ops' has no member named 'diagnose'
-     578 |                 .diagnose = mlx5_fw_reporter_diagnose,
-         |                  ^~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:578:29: warning: excess elements in struct initializer
-     578 |                 .diagnose = mlx5_fw_reporter_diagnose,
-         |                             ^~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:578:29: note: (near initialization for 'mlx5_fw_reporter_pf_ops')
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:579:18: error: 'const struct devlink_health_reporter_ops' has no member named 'dump'
-     579 |                 .dump = mlx5_fw_reporter_dump,
-         |                  ^~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:579:25: warning: excess elements in struct initializer
-     579 |                 .dump = mlx5_fw_reporter_dump,
-         |                         ^~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:579:25: note: (near initialization for 'mlx5_fw_reporter_pf_ops')
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:582:21: error: variable 'mlx5_fw_reporter_ops' has initializer but incomplete type
-     582 | static const struct devlink_health_reporter_ops mlx5_fw_reporter_ops = {
-         |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:583:18: error: 'const struct devlink_health_reporter_ops' has no member named 'name'
-     583 |                 .name = "fw",
-         |                  ^~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:583:25: warning: excess elements in struct initializer
-     583 |                 .name = "fw",
-         |                         ^~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:583:25: note: (near initialization for 'mlx5_fw_reporter_ops')
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:584:18: error: 'const struct devlink_health_reporter_ops' has no member named 'diagnose'
-     584 |                 .diagnose = mlx5_fw_reporter_diagnose,
-         |                  ^~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:584:29: warning: excess elements in struct initializer
-     584 |                 .diagnose = mlx5_fw_reporter_diagnose,
-         |                             ^~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:584:29: note: (near initialization for 'mlx5_fw_reporter_ops')
-   drivers/net/ethernet/mellanox/mlx5/core/health.c: In function 'mlx5_fw_fatal_reporter_recover':
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:592:37: error: initialization of 'struct mlx5_core_dev *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     592 |         struct mlx5_core_dev *dev = devlink_health_reporter_priv(reporter);
-         |                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c: At top level:
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:599:36: warning: 'struct devlink_fmsg' declared inside parameter list will not be visible outside of this definition or declaration
-     599 |                             struct devlink_fmsg *fmsg, void *priv_ctx,
-         |                                    ^~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c: In function 'mlx5_fw_fatal_reporter_dump':
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:602:37: error: initialization of 'struct mlx5_core_dev *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     602 |         struct mlx5_core_dev *dev = devlink_health_reporter_priv(reporter);
-         |                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:620:48: error: passing argument 1 of 'mlx5_fw_reporter_ctx_pairs_put' from incompatible pointer type [-Wincompatible-pointer-types]
-     620 |                 mlx5_fw_reporter_ctx_pairs_put(fmsg, fw_reporter_ctx);
-         |                                                ^~~~
-         |                                                |
-         |                                                struct devlink_fmsg *
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:488:53: note: expected 'struct devlink_fmsg *' but argument is of type 'struct devlink_fmsg *'
-     488 | mlx5_fw_reporter_ctx_pairs_put(struct devlink_fmsg *fmsg,
-         |                                ~~~~~~~~~~~~~~~~~~~~~^~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:623:9: error: implicit declaration of function 'devlink_fmsg_binary_pair_put' [-Wimplicit-function-declaration]
-     623 |         devlink_fmsg_binary_pair_put(fmsg, "crdump_data", cr_data, crdump_size);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c: In function 'mlx5_fw_fatal_reporter_err_work':
->> drivers/net/ethernet/mellanox/mlx5/core/health.c:641:17: error: assignment to 'struct devlink *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     641 |         devlink = priv_to_devlink(dev);
          |                 ^
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:652:17: error: implicit declaration of function 'devl_lock'; did you mean 'rtnl_lock'? [-Wimplicit-function-declaration]
-     652 |                 devl_lock(devlink);
-         |                 ^~~~~~~~~
-         |                 rtnl_lock
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:655:17: error: implicit declaration of function 'devl_unlock'; did you mean 'rtnl_unlock'? [-Wimplicit-function-declaration]
-     655 |                 devl_unlock(devlink);
-         |                 ^~~~~~~~~~~
-         |                 rtnl_unlock
-   drivers/net/ethernet/mellanox/mlx5/core/health.c: At top level:
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:672:21: error: variable 'mlx5_fw_fatal_reporter_pf_ops' has initializer but incomplete type
-     672 | static const struct devlink_health_reporter_ops mlx5_fw_fatal_reporter_pf_ops = {
-         |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:673:18: error: 'const struct devlink_health_reporter_ops' has no member named 'name'
-     673 |                 .name = "fw_fatal",
-         |                  ^~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:673:25: warning: excess elements in struct initializer
-     673 |                 .name = "fw_fatal",
-         |                         ^~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:673:25: note: (near initialization for 'mlx5_fw_fatal_reporter_pf_ops')
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:674:18: error: 'const struct devlink_health_reporter_ops' has no member named 'recover'
-     674 |                 .recover = mlx5_fw_fatal_reporter_recover,
-         |                  ^~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:674:28: warning: excess elements in struct initializer
-     674 |                 .recover = mlx5_fw_fatal_reporter_recover,
-         |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:674:28: note: (near initialization for 'mlx5_fw_fatal_reporter_pf_ops')
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:675:18: error: 'const struct devlink_health_reporter_ops' has no member named 'dump'
-     675 |                 .dump = mlx5_fw_fatal_reporter_dump,
-         |                  ^~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:675:25: warning: excess elements in struct initializer
-     675 |                 .dump = mlx5_fw_fatal_reporter_dump,
-         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:675:25: note: (near initialization for 'mlx5_fw_fatal_reporter_pf_ops')
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:678:21: error: variable 'mlx5_fw_fatal_reporter_ops' has initializer but incomplete type
-     678 | static const struct devlink_health_reporter_ops mlx5_fw_fatal_reporter_ops = {
-         |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:679:18: error: 'const struct devlink_health_reporter_ops' has no member named 'name'
-     679 |                 .name = "fw_fatal",
-         |                  ^~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:679:25: warning: excess elements in struct initializer
-     679 |                 .name = "fw_fatal",
-         |                         ^~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:679:25: note: (near initialization for 'mlx5_fw_fatal_reporter_ops')
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:680:18: error: 'const struct devlink_health_reporter_ops' has no member named 'recover'
-     680 |                 .recover = mlx5_fw_fatal_reporter_recover,
-         |                  ^~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:680:28: warning: excess elements in struct initializer
-     680 |                 .recover = mlx5_fw_fatal_reporter_recover,
-         |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:680:28: note: (near initialization for 'mlx5_fw_fatal_reporter_ops')
-   drivers/net/ethernet/mellanox/mlx5/core/health.c: In function 'mlx5_fw_reporters_create':
->> drivers/net/ethernet/mellanox/mlx5/core/health.c:693:35: error: initialization of 'struct devlink *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     693 |         struct devlink *devlink = priv_to_devlink(dev);
-         |                                   ^~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:710:17: error: implicit declaration of function 'devl_health_reporter_create' [-Wimplicit-function-declaration]
-     710 |                 devl_health_reporter_create(devlink, fw_ops, 0, dev);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/net/ethernet/mellanox/mlx5/core/health.c:709:29: error: assignment to 'struct devlink_health_reporter *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     709 |         health->fw_reporter =
+   drivers/net/ethernet/mellanox/mlx5/core/health.c:512:2: error: call to undeclared function 'devlink_fmsg_arr_pair_nest_end'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     512 |         devlink_fmsg_arr_pair_nest_end(fmsg);
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/health.c:513:2: error: call to undeclared function 'devlink_fmsg_u32_pair_put'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     513 |         devlink_fmsg_u32_pair_put(fmsg, "assert_exit_ptr",
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/health.c:520:2: error: call to undeclared function 'devlink_fmsg_u8_pair_put'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     520 |         devlink_fmsg_u8_pair_put(fmsg, "rfr", mlx5_health_get_rfr(rfr_severity));
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/health.c:526:2: error: call to undeclared function 'devlink_fmsg_obj_nest_end'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     526 |         devlink_fmsg_obj_nest_end(fmsg);
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/health.c:527:2: error: call to undeclared function 'devlink_fmsg_pair_nest_end'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     527 |         devlink_fmsg_pair_nest_end(fmsg);
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/health.c:532:16: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+     532 |                       struct devlink_fmsg *fmsg, void *priv_ctx,
+         |                              ^
+   drivers/net/ethernet/mellanox/mlx5/core/health.c:535:30: error: call to undeclared function 'devlink_health_reporter_priv'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     535 |         struct mlx5_core_dev *dev = devlink_health_reporter_priv(reporter);
+         |                                     ^
+   fatal error: too many errors emitted, stopping now [-ferror-limit=]
+   6 warnings and 20 errors generated.
+--
+   In file included from drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:34:
+>> drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.h:202:17: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+     202 |                                             struct devlink_fmsg *fmsg);
+         |                                                    ^
+>> drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:893:37: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+     893 | mlx5_devlink_fmsg_fill_trace(struct devlink_fmsg *fmsg,
+         |                                     ^
+   drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:896:2: error: call to undeclared function 'devlink_fmsg_obj_nest_start'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     896 |         devlink_fmsg_obj_nest_start(fmsg);
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:897:2: error: call to undeclared function 'devlink_fmsg_u64_pair_put'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     897 |         devlink_fmsg_u64_pair_put(fmsg, "timestamp", trace_data->timestamp);
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:898:2: error: call to undeclared function 'devlink_fmsg_bool_pair_put'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     898 |         devlink_fmsg_bool_pair_put(fmsg, "lost", trace_data->lost);
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:899:2: error: call to undeclared function 'devlink_fmsg_u8_pair_put'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     899 |         devlink_fmsg_u8_pair_put(fmsg, "event_id", trace_data->event_id);
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:900:2: error: call to undeclared function 'devlink_fmsg_string_pair_put'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     900 |         devlink_fmsg_string_pair_put(fmsg, "msg", trace_data->msg);
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:901:2: error: call to undeclared function 'devlink_fmsg_obj_nest_end'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     901 |         devlink_fmsg_obj_nest_end(fmsg);
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:905:17: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+     905 |                                             struct devlink_fmsg *fmsg)
+         |                                                    ^
+   drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:904:5: error: conflicting types for 'mlx5_fw_tracer_get_saved_traces_objects'
+     904 | int mlx5_fw_tracer_get_saved_traces_objects(struct mlx5_fw_tracer *tracer,
+         |     ^
+   drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.h:201:5: note: previous declaration is here
+     201 | int mlx5_fw_tracer_get_saved_traces_objects(struct mlx5_fw_tracer *tracer,
+         |     ^
+   drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:922:2: error: call to undeclared function 'devlink_fmsg_arr_pair_nest_start'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     922 |         devlink_fmsg_arr_pair_nest_start(fmsg, "dump fw traces");
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:925:32: error: incompatible pointer types passing 'struct devlink_fmsg *' to parameter of type 'struct devlink_fmsg *' [-Werror,-Wincompatible-pointer-types]
+     925 |                 mlx5_devlink_fmsg_fill_trace(fmsg, &straces[index]);
+         |                                              ^~~~
+   drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:893:51: note: passing argument to parameter 'fmsg' here
+     893 | mlx5_devlink_fmsg_fill_trace(struct devlink_fmsg *fmsg,
+         |                                                   ^
+   drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c:930:2: error: call to undeclared function 'devlink_fmsg_arr_pair_nest_end'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     930 |         devlink_fmsg_arr_pair_nest_end(fmsg);
+         |         ^
+   3 warnings and 10 errors generated.
+--
+   In file included from drivers/net/ethernet/mellanox/mlx5/core/diag/reporter_vnic.c:4:
+>> drivers/net/ethernet/mellanox/mlx5/core/diag/reporter_vnic.h:13:15: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      13 |                                           struct devlink_fmsg *fmsg,
+         |                                                  ^
+   drivers/net/ethernet/mellanox/mlx5/core/diag/reporter_vnic.c:60:6: error: conflicting types for 'mlx5_reporter_vnic_diagnose_counters'
+      60 | void mlx5_reporter_vnic_diagnose_counters(struct mlx5_core_dev *dev,
+         |      ^
+   drivers/net/ethernet/mellanox/mlx5/core/diag/reporter_vnic.h:12:6: note: previous declaration is here
+      12 | void mlx5_reporter_vnic_diagnose_counters(struct mlx5_core_dev *dev,
+         |      ^
+   drivers/net/ethernet/mellanox/mlx5/core/diag/reporter_vnic.c:119:44: error: incompatible pointer types passing 'struct devlink_fmsg *' to parameter of type 'struct devlink_fmsg *' [-Werror,-Wincompatible-pointer-types]
+     119 |         mlx5_reporter_vnic_diagnose_counters(dev, fmsg, 0, false);
+         |                                                   ^~~~
+   drivers/net/ethernet/mellanox/mlx5/core/diag/reporter_vnic.h:13:29: note: passing argument to parameter 'fmsg' here
+      13 |                                           struct devlink_fmsg *fmsg,
+         |                                                                ^
+   1 warning and 2 errors generated.
+--
+   In file included from drivers/net/ethernet/mellanox/mlx5/core/en/health.c:4:
+   In file included from drivers/net/ethernet/mellanox/mlx5/core/en/health.h:7:
+   drivers/net/ethernet/mellanox/mlx5/core/en.h:955:22: error: field has incomplete type 'struct devlink_port'
+     955 |         struct devlink_port dl_port;
          |                             ^
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:715:35: error: assignment to 'struct devlink_health_reporter *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     715 |         health->fw_fatal_reporter =
-         |                                   ^
-   drivers/net/ethernet/mellanox/mlx5/core/health.c: In function 'mlx5_fw_reporters_destroy':
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:730:17: error: implicit declaration of function 'devlink_health_reporter_destroy' [-Wimplicit-function-declaration]
-     730 |                 devlink_health_reporter_destroy(health->fw_reporter);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c: In function 'mlx5_health_init':
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:884:35: error: initialization of 'struct devlink *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     884 |         struct devlink *devlink = priv_to_devlink(dev);
-         |                                   ^~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c: At top level:
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:576:49: error: storage size of 'mlx5_fw_reporter_pf_ops' isn't known
-     576 | static const struct devlink_health_reporter_ops mlx5_fw_reporter_pf_ops = {
-         |                                                 ^~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:582:49: error: storage size of 'mlx5_fw_reporter_ops' isn't known
-     582 | static const struct devlink_health_reporter_ops mlx5_fw_reporter_ops = {
-         |                                                 ^~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:672:49: error: storage size of 'mlx5_fw_fatal_reporter_pf_ops' isn't known
-     672 | static const struct devlink_health_reporter_ops mlx5_fw_fatal_reporter_pf_ops = {
-         |                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/ethernet/mellanox/mlx5/core/health.c:678:49: error: storage size of 'mlx5_fw_fatal_reporter_ops' isn't known
-     678 | static const struct devlink_health_reporter_ops mlx5_fw_fatal_reporter_ops = {
-         |                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/netdevice.h:2468:9: note: forward declaration of 'struct devlink_port'
+    2468 |         struct devlink_port     *devlink_port;
+         |                ^
+   In file included from drivers/net/ethernet/mellanox/mlx5/core/en/health.c:4:
+>> drivers/net/ethernet/mellanox/mlx5/core/en/health.h:23:60: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      23 | void mlx5e_health_cq_diag_fmsg(struct mlx5e_cq *cq, struct devlink_fmsg *fmsg);
+         |                                                            ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:24:67: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      24 | void mlx5e_health_cq_common_diag_fmsg(struct mlx5e_cq *cq, struct devlink_fmsg *fmsg);
+         |                                                                   ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:25:64: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      25 | void mlx5e_health_eq_diag_fmsg(struct mlx5_eq_comp *eq, struct devlink_fmsg *fmsg);
+         |                                                                ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:26:52: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      26 | void mlx5e_health_fmsg_named_obj_nest_start(struct devlink_fmsg *fmsg, char *name);
+         |                                                    ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:27:50: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      27 | void mlx5e_health_fmsg_named_obj_nest_end(struct devlink_fmsg *fmsg);
+         |                                                  ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:41:46: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      41 |         int (*dump)(struct mlx5e_priv *priv, struct devlink_fmsg *fmsg, void *ctx);
+         |                                                     ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:56:18: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      56 |                                struct devlink_fmsg *fmsg);
+         |                                       ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:57:62: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      57 | void mlx5e_health_queue_dump(struct mlx5e_priv *priv, struct devlink_fmsg *fmsg,
+         |                                                              ^
+   In file included from drivers/net/ethernet/mellanox/mlx5/core/en/health.c:6:
+   drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h:50:9: error: call to undeclared function 'devlink_net'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      50 |         return devlink_net(priv_to_devlink(dev));
+         |                ^
+   drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h:50:21: error: call to undeclared function 'priv_to_devlink'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      50 |         return devlink_net(priv_to_devlink(dev));
+         |                            ^
+   drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h:50:9: error: incompatible integer to pointer conversion returning 'int' from a function with result type 'struct net *' [-Wint-conversion]
+      50 |         return devlink_net(priv_to_devlink(dev));
+         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/net/ethernet/mellanox/mlx5/core/en/health.c:8:52: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+       8 | void mlx5e_health_fmsg_named_obj_nest_start(struct devlink_fmsg *fmsg, char *name)
+         |                                                    ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.c:8:6: error: conflicting types for 'mlx5e_health_fmsg_named_obj_nest_start'
+       8 | void mlx5e_health_fmsg_named_obj_nest_start(struct devlink_fmsg *fmsg, char *name)
+         |      ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:26:6: note: previous declaration is here
+      26 | void mlx5e_health_fmsg_named_obj_nest_start(struct devlink_fmsg *fmsg, char *name);
+         |      ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.c:10:2: error: call to undeclared function 'devlink_fmsg_pair_nest_start'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      10 |         devlink_fmsg_pair_nest_start(fmsg, name);
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.c:11:2: error: call to undeclared function 'devlink_fmsg_obj_nest_start'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      11 |         devlink_fmsg_obj_nest_start(fmsg);
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.c:14:50: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      14 | void mlx5e_health_fmsg_named_obj_nest_end(struct devlink_fmsg *fmsg)
+         |                                                  ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.c:14:6: error: conflicting types for 'mlx5e_health_fmsg_named_obj_nest_end'
+      14 | void mlx5e_health_fmsg_named_obj_nest_end(struct devlink_fmsg *fmsg)
+         |      ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:27:6: note: previous declaration is here
+      27 | void mlx5e_health_fmsg_named_obj_nest_end(struct devlink_fmsg *fmsg);
+         |      ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.c:16:2: error: call to undeclared function 'devlink_fmsg_obj_nest_end'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      16 |         devlink_fmsg_obj_nest_end(fmsg);
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.c:17:2: error: call to undeclared function 'devlink_fmsg_pair_nest_end'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      17 |         devlink_fmsg_pair_nest_end(fmsg);
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.c:20:60: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      20 | void mlx5e_health_cq_diag_fmsg(struct mlx5e_cq *cq, struct devlink_fmsg *fmsg)
+         |                                                            ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.c:20:6: error: conflicting types for 'mlx5e_health_cq_diag_fmsg'
+      20 | void mlx5e_health_cq_diag_fmsg(struct mlx5e_cq *cq, struct devlink_fmsg *fmsg)
+         |      ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:23:6: note: previous declaration is here
+      23 | void mlx5e_health_cq_diag_fmsg(struct mlx5e_cq *cq, struct devlink_fmsg *fmsg);
+         |      ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.c:30:41: error: incompatible pointer types passing 'struct devlink_fmsg *' to parameter of type 'struct devlink_fmsg *' [-Werror,-Wincompatible-pointer-types]
+      30 |         mlx5e_health_fmsg_named_obj_nest_start(fmsg, "CQ");
+         |                                                ^~~~
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:26:66: note: passing argument to parameter 'fmsg' here
+      26 | void mlx5e_health_fmsg_named_obj_nest_start(struct devlink_fmsg *fmsg, char *name);
+         |                                                                  ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.c:31:2: error: call to undeclared function 'devlink_fmsg_u32_pair_put'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      31 |         devlink_fmsg_u32_pair_put(fmsg, "cqn", cq->mcq.cqn);
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.c:32:2: error: call to undeclared function 'devlink_fmsg_u8_pair_put'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      32 |         devlink_fmsg_u8_pair_put(fmsg, "HW status", hw_status);
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.c:35:39: error: incompatible pointer types passing 'struct devlink_fmsg *' to parameter of type 'struct devlink_fmsg *' [-Werror,-Wincompatible-pointer-types]
+      35 |         mlx5e_health_fmsg_named_obj_nest_end(fmsg);
+         |                                              ^~~~
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:27:64: note: passing argument to parameter 'fmsg' here
+      27 | void mlx5e_health_fmsg_named_obj_nest_end(struct devlink_fmsg *fmsg);
+         |                                                                ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.c:38:67: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      38 | void mlx5e_health_cq_common_diag_fmsg(struct mlx5e_cq *cq, struct devlink_fmsg *fmsg)
+         |                                                                   ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.c:38:6: error: conflicting types for 'mlx5e_health_cq_common_diag_fmsg'
+      38 | void mlx5e_health_cq_common_diag_fmsg(struct mlx5e_cq *cq, struct devlink_fmsg *fmsg)
+         |      ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:24:6: note: previous declaration is here
+      24 | void mlx5e_health_cq_common_diag_fmsg(struct mlx5e_cq *cq, struct devlink_fmsg *fmsg);
+         |      ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.c:46:41: error: incompatible pointer types passing 'struct devlink_fmsg *' to parameter of type 'struct devlink_fmsg *' [-Werror,-Wincompatible-pointer-types]
+      46 |         mlx5e_health_fmsg_named_obj_nest_start(fmsg, "CQ");
+         |                                                ^~~~
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:26:66: note: passing argument to parameter 'fmsg' here
+      26 | void mlx5e_health_fmsg_named_obj_nest_start(struct devlink_fmsg *fmsg, char *name);
+         |                                                                  ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.c:47:2: error: call to undeclared function 'devlink_fmsg_u64_pair_put'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      47 |         devlink_fmsg_u64_pair_put(fmsg, "stride size", BIT(cq_log_stride));
+         |         ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.c:48:2: error: call to undeclared function 'devlink_fmsg_u32_pair_put'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      48 |         devlink_fmsg_u32_pair_put(fmsg, "size", cq_sz);
+         |         ^
+   fatal error: too many errors emitted, stopping now [-ferror-limit=]
+   12 warnings and 20 errors generated.
+--
+   In file included from drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c:4:
+   In file included from drivers/net/ethernet/mellanox/mlx5/core/en/health.h:7:
+   drivers/net/ethernet/mellanox/mlx5/core/en.h:955:22: error: field has incomplete type 'struct devlink_port'
+     955 |         struct devlink_port dl_port;
+         |                             ^
+   include/linux/netdevice.h:2468:9: note: forward declaration of 'struct devlink_port'
+    2468 |         struct devlink_port     *devlink_port;
+         |                ^
+   In file included from drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c:4:
+>> drivers/net/ethernet/mellanox/mlx5/core/en/health.h:23:60: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      23 | void mlx5e_health_cq_diag_fmsg(struct mlx5e_cq *cq, struct devlink_fmsg *fmsg);
+         |                                                            ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:24:67: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      24 | void mlx5e_health_cq_common_diag_fmsg(struct mlx5e_cq *cq, struct devlink_fmsg *fmsg);
+         |                                                                   ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:25:64: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      25 | void mlx5e_health_eq_diag_fmsg(struct mlx5_eq_comp *eq, struct devlink_fmsg *fmsg);
+         |                                                                ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:26:52: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      26 | void mlx5e_health_fmsg_named_obj_nest_start(struct devlink_fmsg *fmsg, char *name);
+         |                                                    ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:27:50: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      27 | void mlx5e_health_fmsg_named_obj_nest_end(struct devlink_fmsg *fmsg);
+         |                                                  ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:41:46: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      41 |         int (*dump)(struct mlx5e_priv *priv, struct devlink_fmsg *fmsg, void *ctx);
+         |                                                     ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:56:18: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      56 |                                struct devlink_fmsg *fmsg);
+         |                                       ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:57:62: warning: declaration of 'struct devlink_fmsg' will not be visible outside of this function [-Wvisibility]
+      57 | void mlx5e_health_queue_dump(struct mlx5e_priv *priv, struct devlink_fmsg *fmsg,
+         |                                                              ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c:58:41: error: incompatible pointer types passing 'struct devlink_fmsg *' to parameter of type 'struct devlink_fmsg *' [-Werror,-Wincompatible-pointer-types]
+      58 |         mlx5e_health_fmsg_named_obj_nest_start(fmsg, "SW State");
+         |                                                ^~~~
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:26:66: note: passing argument to parameter 'fmsg' here
+      26 | void mlx5e_health_fmsg_named_obj_nest_start(struct devlink_fmsg *fmsg, char *name);
+         |                                                                  ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c:64:39: error: incompatible pointer types passing 'struct devlink_fmsg *' to parameter of type 'struct devlink_fmsg *' [-Werror,-Wincompatible-pointer-types]
+      64 |         mlx5e_health_fmsg_named_obj_nest_end(fmsg);
+         |                                              ^~~~
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:27:64: note: passing argument to parameter 'fmsg' here
+      27 | void mlx5e_health_fmsg_named_obj_nest_end(struct devlink_fmsg *fmsg);
+         |                                                                ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c:239:37: error: incompatible pointer types passing 'struct devlink_fmsg *' to parameter of type 'struct devlink_fmsg *' [-Werror,-Wincompatible-pointer-types]
+     239 |         mlx5e_health_cq_diag_fmsg(&sq->cq, fmsg);
+         |                                            ^~~~
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:23:74: note: passing argument to parameter 'fmsg' here
+      23 | void mlx5e_health_cq_diag_fmsg(struct mlx5e_cq *cq, struct devlink_fmsg *fmsg);
+         |                                                                          ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c:240:43: error: incompatible pointer types passing 'struct devlink_fmsg *' to parameter of type 'struct devlink_fmsg *' [-Werror,-Wincompatible-pointer-types]
+     240 |         mlx5e_health_eq_diag_fmsg(sq->cq.mcq.eq, fmsg);
+         |                                                  ^~~~
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:25:78: note: passing argument to parameter 'fmsg' here
+      25 | void mlx5e_health_eq_diag_fmsg(struct mlx5_eq_comp *eq, struct devlink_fmsg *fmsg);
+         |                                                                              ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c:260:41: error: incompatible pointer types passing 'struct devlink_fmsg *' to parameter of type 'struct devlink_fmsg *' [-Werror,-Wincompatible-pointer-types]
+     260 |         mlx5e_health_fmsg_named_obj_nest_start(fmsg, "Port TS");
+         |                                                ^~~~
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:26:66: note: passing argument to parameter 'fmsg' here
+      26 | void mlx5e_health_fmsg_named_obj_nest_start(struct devlink_fmsg *fmsg, char *name);
+         |                                                                  ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c:261:43: error: incompatible pointer types passing 'struct devlink_fmsg *' to parameter of type 'struct devlink_fmsg *' [-Werror,-Wincompatible-pointer-types]
+     261 |         mlx5e_health_cq_diag_fmsg(&ptpsq->ts_cq, fmsg);
+         |                                                  ^~~~
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:23:74: note: passing argument to parameter 'fmsg' here
+      23 | void mlx5e_health_cq_diag_fmsg(struct mlx5e_cq *cq, struct devlink_fmsg *fmsg);
+         |                                                                          ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c:262:39: error: incompatible pointer types passing 'struct devlink_fmsg *' to parameter of type 'struct devlink_fmsg *' [-Werror,-Wincompatible-pointer-types]
+     262 |         mlx5e_health_fmsg_named_obj_nest_end(fmsg);
+         |                                              ^~~~
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:27:64: note: passing argument to parameter 'fmsg' here
+      27 | void mlx5e_health_fmsg_named_obj_nest_end(struct devlink_fmsg *fmsg);
+         |                                                                ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c:274:41: error: incompatible pointer types passing 'struct devlink_fmsg *' to parameter of type 'struct devlink_fmsg *' [-Werror,-Wincompatible-pointer-types]
+     274 |         mlx5e_health_fmsg_named_obj_nest_start(fmsg, "SQ");
+         |                                                ^~~~
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:26:66: note: passing argument to parameter 'fmsg' here
+      26 | void mlx5e_health_fmsg_named_obj_nest_start(struct devlink_fmsg *fmsg, char *name);
+         |                                                                  ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c:278:47: error: incompatible pointer types passing 'struct devlink_fmsg *' to parameter of type 'struct devlink_fmsg *' [-Werror,-Wincompatible-pointer-types]
+     278 |         mlx5e_health_cq_common_diag_fmsg(&txqsq->cq, fmsg);
+         |                                                      ^~~~
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:24:81: note: passing argument to parameter 'fmsg' here
+      24 | void mlx5e_health_cq_common_diag_fmsg(struct mlx5e_cq *cq, struct devlink_fmsg *fmsg);
+         |                                                                                 ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c:279:39: error: incompatible pointer types passing 'struct devlink_fmsg *' to parameter of type 'struct devlink_fmsg *' [-Werror,-Wincompatible-pointer-types]
+     279 |         mlx5e_health_fmsg_named_obj_nest_end(fmsg);
+         |                                              ^~~~
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:27:64: note: passing argument to parameter 'fmsg' here
+      27 | void mlx5e_health_fmsg_named_obj_nest_end(struct devlink_fmsg *fmsg);
+         |                                                                ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c:286:41: error: incompatible pointer types passing 'struct devlink_fmsg *' to parameter of type 'struct devlink_fmsg *' [-Werror,-Wincompatible-pointer-types]
+     286 |         mlx5e_health_fmsg_named_obj_nest_start(fmsg, "Port TS");
+         |                                                ^~~~
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:26:66: note: passing argument to parameter 'fmsg' here
+      26 | void mlx5e_health_fmsg_named_obj_nest_start(struct devlink_fmsg *fmsg, char *name);
+         |                                                                  ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c:287:50: error: incompatible pointer types passing 'struct devlink_fmsg *' to parameter of type 'struct devlink_fmsg *' [-Werror,-Wincompatible-pointer-types]
+     287 |         mlx5e_health_cq_common_diag_fmsg(&ptpsq->ts_cq, fmsg);
+         |                                                         ^~~~
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:24:81: note: passing argument to parameter 'fmsg' here
+      24 | void mlx5e_health_cq_common_diag_fmsg(struct mlx5e_cq *cq, struct devlink_fmsg *fmsg);
+         |                                                                                 ^
+   drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c:288:39: error: incompatible pointer types passing 'struct devlink_fmsg *' to parameter of type 'struct devlink_fmsg *' [-Werror,-Wincompatible-pointer-types]
+     288 |         mlx5e_health_fmsg_named_obj_nest_end(fmsg);
+         |                                              ^~~~
+   drivers/net/ethernet/mellanox/mlx5/core/en/health.h:27:64: note: passing argument to parameter 'fmsg' here
+      27 | void mlx5e_health_fmsg_named_obj_nest_end(struct devlink_fmsg *fmsg);
+..
 
 
-vim +/mempool_t +1125 drivers/infiniband/hw/mlx5/mlx5_ib.h
+vim +202 drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.h
 
-a560f1d9af4be84 Mark Bloch     2018-09-17  1117  
-d5d284b829a6eb7 Saeed Mahameed 2018-11-19  1118  struct mlx5_ib_pf_eq {
-ca390799c2aa036 Yuval Avnery   2019-06-10  1119  	struct notifier_block irq_nb;
-d5d284b829a6eb7 Saeed Mahameed 2018-11-19  1120  	struct mlx5_ib_dev *dev;
-d5d284b829a6eb7 Saeed Mahameed 2018-11-19  1121  	struct mlx5_eq *core;
-d5d284b829a6eb7 Saeed Mahameed 2018-11-19  1122  	struct work_struct work;
-d5d284b829a6eb7 Saeed Mahameed 2018-11-19  1123  	spinlock_t lock; /* Pagefaults spinlock */
-d5d284b829a6eb7 Saeed Mahameed 2018-11-19  1124  	struct workqueue_struct *wq;
-d5d284b829a6eb7 Saeed Mahameed 2018-11-19 @1125  	mempool_t *pool;
-d5d284b829a6eb7 Saeed Mahameed 2018-11-19  1126  };
-d5d284b829a6eb7 Saeed Mahameed 2018-11-19  1127  
+c71ad41ccb0c29 Feras Daoud   2018-02-07  195  
+f53aaa31cce7b5 Feras Daoud   2018-07-16  196  struct mlx5_fw_tracer *mlx5_fw_tracer_create(struct mlx5_core_dev *dev);
+c71ad41ccb0c29 Feras Daoud   2018-02-07  197  int mlx5_fw_tracer_init(struct mlx5_fw_tracer *tracer);
+c71ad41ccb0c29 Feras Daoud   2018-02-07  198  void mlx5_fw_tracer_cleanup(struct mlx5_fw_tracer *tracer);
+f53aaa31cce7b5 Feras Daoud   2018-07-16  199  void mlx5_fw_tracer_destroy(struct mlx5_fw_tracer *tracer);
+fd1483fe1f9fd4 Moshe Shemesh 2018-12-11  200  int mlx5_fw_tracer_trigger_core_dump_general(struct mlx5_core_dev *dev);
+fd1483fe1f9fd4 Moshe Shemesh 2018-12-11  201  int mlx5_fw_tracer_get_saved_traces_objects(struct mlx5_fw_tracer *tracer,
+fd1483fe1f9fd4 Moshe Shemesh 2018-12-11 @202  					    struct devlink_fmsg *fmsg);
+2d69356752ff86 Moshe Shemesh 2020-10-07  203  int mlx5_fw_tracer_reload(struct mlx5_fw_tracer *tracer);
+f53aaa31cce7b5 Feras Daoud   2018-07-16  204  
 
 -- 
 0-DAY CI Kernel Test Service
