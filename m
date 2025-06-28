@@ -1,101 +1,148 @@
-Return-Path: <linux-rdma+bounces-11728-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11729-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF0F4AEC34E
-	for <lists+linux-rdma@lfdr.de>; Sat, 28 Jun 2025 01:49:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D6D2AEC38A
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Jun 2025 02:37:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A42147A39C6
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Jun 2025 23:48:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 138D94A2696
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Jun 2025 00:37:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633482900BA;
-	Fri, 27 Jun 2025 23:49:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81B5C7346F;
+	Sat, 28 Jun 2025 00:37:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yh1yIhKf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="is9ZQW5S"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 031982F1FCB;
-	Fri, 27 Jun 2025 23:49:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3109210E4;
+	Sat, 28 Jun 2025 00:37:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751068185; cv=none; b=VnbmGti5dA9Pnl1UF7JswaUdfCFu5JC4fSeYvHi9Th3NQiPjLS/OCC3zKDIgQYHLRAOuzv/eGtFv4bpxYFvCU4XISeEzjg5hcPtjEwZk7tZdpTsYZfg+Mc3A2aKJR7y4lGH/Tx27kPZB/NOi7MmYIzebAh3QcXjUiRUF4ZuF74Q=
+	t=1751071052; cv=none; b=YXWSVwVwgR2W1s9ngP7Cet83q4pMaULSvRcqi+gWlfuNpT7CyTtfJ+r/6JQJfVcah1+uC95KgRh1PQp/70OJ6gl8d8RY0+ZmA/PvJNK9w1qJCvBnosoVJQQhHakNkYW8e7pF+IWR3b2nNTEwLr7CcFIfRq61vlmKFYSJiFt9PQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751068185; c=relaxed/simple;
-	bh=mlmZEjXG7JbeCyDnmaOEUzGlG9f+Aalt/BuH5agK3xQ=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=AeQF+hs0mdyewIA71cG8leO0guP4ENcg1p6ctwLPIxEEP3HWn2c50/FOQxw99U1hyGmRMrZfCmXk7t7b2PF2d/pwZ5t3ctdysSC23VlcJjLTe1sdqWJ9RF9dpiBPanh1cAveaGSLocNH5i0G3eireXW0PNgYGh6DbE8DT3T95Uo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yh1yIhKf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47CCCC4CEE3;
-	Fri, 27 Jun 2025 23:49:44 +0000 (UTC)
+	s=arc-20240116; t=1751071052; c=relaxed/simple;
+	bh=tBZzo3Vernjc/RqLkt5V8ZGDjHbDEERaWaQdG3x/eHc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RZi6cATxXkRTIAHzsB0vTNWzQP13cABP+uh2IL6vLJAiy8VRQ8EGHDlpGTyYdXcx0WHMD5T2v+9S4burBAPh4oJlgyhg6KZ0Y7PhIhaNWqutnHVTHrBbzKsdmK5nyfE2YuvX6oVWgs4YSPcVunU42GxK8hfQtHpuR+QQ2iHYgBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=is9ZQW5S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C330AC4CEE3;
+	Sat, 28 Jun 2025 00:37:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751068184;
-	bh=mlmZEjXG7JbeCyDnmaOEUzGlG9f+Aalt/BuH5agK3xQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Yh1yIhKfhuWBncSI/r9zubrT7sZsms2KKYD0++g4aSKqVLr4cb6akeoC7FSShF+/u
-	 pz/bmqgsZt4hjyClp0S4ysIstnMCgxmJXc49gcN9RAjJN1AgRSt+lxLcxNEi+ravfo
-	 PpvWVyTUI/QfpLZtFTCk2JAQOyx2GcRPdz9DTY6Y7LKx9JGlK/nQz9IRM7jjQYKECy
-	 ol0e0ByVk6SjtvTKVPLEGUn/KPFskSCRg9cuDVNzJQ/yuQHiW2fXNSI5mx4l7hWbXn
-	 eTmutLw4H3DmPxHeCmWhWgUvWQBrDmdM0tplcgtbRjlyhnxYcSBAd+/2r+ZjmZ8Ah+
-	 RLVF4Fb3h1j+A==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70E9938111CE;
-	Fri, 27 Jun 2025 23:50:11 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1751071051;
+	bh=tBZzo3Vernjc/RqLkt5V8ZGDjHbDEERaWaQdG3x/eHc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=is9ZQW5S9yroLWwxDcQ2Vxz+Dg5Y50/NyQBvJwjq5cDM1u51Bvk5Cs9/lFSIE85jJ
+	 EV1+RIIonsc367dy6yP/idPDFgr6//xfQlVccl7agu2V2Q3+nSw0HqSQzJy/Ws4x85
+	 XyV9cF86Q+a0q6WEyplKPawW8vsbH54tVyMecukC+IqEIzYXn75h/C1Lcvf4Is4uDr
+	 lJ52UeZLlgHJ6/I7fuqzz8U430UyFRX7eVcTMu+FL7v+mHAR9q6aM7DA4cUV6pl0o7
+	 w3UqoSNnFp0wIsJSzfYwHB6ye62zLTsYGZaMEGE7CW6jC4fdVac34dRgfi1QCh0Dzu
+	 /15NohvMHz1dA==
+Date: Fri, 27 Jun 2025 17:37:30 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Byungchul Park <byungchul@sk.com>
+Cc: willy@infradead.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, kernel_team@skhynix.com,
+ almasrymina@google.com, ilias.apalodimas@linaro.org, harry.yoo@oracle.com,
+ hawk@kernel.org, akpm@linux-foundation.org, davem@davemloft.net,
+ john.fastabend@gmail.com, andrew+netdev@lunn.ch, asml.silence@gmail.com,
+ toke@redhat.com, tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
+ saeedm@nvidia.com, leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+ vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+ horms@kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+ vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
+ jackmanb@google.com
+Subject: Re: [PATCH net-next v7 1/7] netmem: introduce struct netmem_desc
+ mirroring struct page
+Message-ID: <20250627173730.15b25a8c@kernel.org>
+In-Reply-To: <20250627035405.GA4276@system.software.com>
+References: <20250625043350.7939-1-byungchul@sk.com>
+	<20250625043350.7939-2-byungchul@sk.com>
+	<20250626174904.4a6125c9@kernel.org>
+	<20250627035405.GA4276@system.software.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v7 0/3] dpll: add Reference SYNC feature
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175106821026.2091805.3166945763972558199.git-patchwork-notify@kernel.org>
-Date: Fri, 27 Jun 2025 23:50:10 +0000
-References: <20250626135219.1769350-1-arkadiusz.kubalewski@intel.com>
-In-Reply-To: <20250626135219.1769350-1-arkadiusz.kubalewski@intel.com>
-To: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
-Cc: donald.hunter@gmail.com, kuba@kernel.org, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, horms@kernel.org,
- vadim.fedorenko@linux.dev, jiri@resnulli.us, anthony.l.nguyen@intel.com,
- przemyslaw.kitszel@intel.com, andrew+netdev@lunn.ch,
- aleksandr.loktionov@intel.com, corbet@lwn.net, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
- linux-rdma@vger.kernel.org, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Thu, 26 Jun 2025 15:52:16 +0200 you wrote:
-> The device may support the Reference SYNC feature, which allows the
-> combination of two inputs into a input pair. In this configuration,
-> clock signals from both inputs are used to synchronize the DPLL device.
-> The higher frequency signal is utilized for the loop bandwidth of the DPLL,
-> while the lower frequency signal is used to syntonize the output signal of
-> the DPLL device. This feature enables the provision of a high-quality loop
-> bandwidth signal from an external source.
+On Fri, 27 Jun 2025 12:54:05 +0900 Byungchul Park wrote:
+> On Thu, Jun 26, 2025 at 05:49:04PM -0700, Jakub Kicinski wrote:
+> > On Wed, 25 Jun 2025 13:33:44 +0900 Byungchul Park wrote:  
+> > > +/* A memory descriptor representing abstract networking I/O vectors,
+> > > + * generally for non-pages memory that doesn't have its corresponding
+> > > + * struct page and needs to be explicitly allocated through slab.  
+> > 
+> > I still don't get what your final object set is going to be.  
 > 
-> [...]
+> The ultimate goal is:
+> 
+>    Remove the pp fields from struct page
+> 
+> The second important goal is:
+> 
+>    Introduce a network pp descriptor, netmem_desc
+> 
+> While working on these two goals, I added some extra patches too, to
+> clean up related code if it's obvious e.g. patches for renaming and so
+> on.
 
-Here is the summary with links:
-  - [net-next,v7,1/3] dpll: add reference-sync netlink attribute
-    https://git.kernel.org/netdev/net-next/c/7f15ee35972d
-  - [net-next,v7,2/3] dpll: add reference sync get/set
-    https://git.kernel.org/netdev/net-next/c/58256a26bfb3
-  - [net-next,v7,3/3] ice: add ref-sync dpll pins
-    https://git.kernel.org/netdev/net-next/c/5bcea241335b
+Object set. Not objective.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> > We have
+> >  - CPU-readable buffers (struct page)
+> >  - un-readable buffers (struct net_iov)
+> >  - abstract reference which can be a pointer to either of the
+> >    above two (bitwise netmem_ref)
+> > 
+> > You say you want to evacuate page pool state from struct page
+> > so I'd expect you to add a type which can always be fed into
+> > some form of $type_to_virt(). A type which can always be cast
+> > to net_iov, but not vice versa. So why are you putting things
+> > inside net_iov, not outside.  
+> 
+> The type, struct netmem_desc, is declared outside.  Even though it's
+> used overlaying on struct page *for now*, it will be dynamically
+> allocated through slab shortly - it's also one of mm's plan.
+> 
+> As you know, net_iov is working with the assumption that it overlays on
+> struct page *for now* indeed, when it comes to netmem_ref.  See the
+> following APIs as example:
+> 
+> static inline struct net_iov *__netmem_clear_lsb(netmem_ref netmem)
+> {
+> 	return (struct net_iov *)((__force unsigned long)netmem & ~NET_IOV);
+> }
+> 
+> static inline void netmem_set_pp(netmem_ref netmem, struct page_pool *pool)
+> {
+> 	__netmem_clear_lsb(netmem)->pp = pool;
+> }
+> 
+> I'd say, I replaced the overlaying (on struct page) part with a
+> well-defined struct, netmem_desc that will play the role of struct page
+> for pp usage, instead of a set of the current overlaying fields of
+> net_iov.
+> 
+> This 'introduction of netmem_desc' patch can be the base for network
+> code to use netmem_desc as pp descriptor instead of struct page.  That's
+> what I meant.
+> 
+> Am I missing something or got you wrong?  If yes, please explain in more
+> detail then I will get back with the answer.
 
+Ugh, you keep explaining the mechanics to me. Our goal here is not
+just to move fields around and make it still compile :/
 
+Let me ask you this way: you said "netmem_desc" will be allocated
+thru slab "shortly". How will calling the equivalent of page_address()
+on netmem_desc work at that stage? Feel free to refer me to the existing
+docs if its covered..
 
