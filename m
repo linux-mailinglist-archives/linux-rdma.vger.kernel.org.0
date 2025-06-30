@@ -1,59 +1,61 @@
-Return-Path: <linux-rdma+bounces-11753-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11755-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96F85AED992
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 12:17:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8824AED9F1
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 12:36:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2B5F1775AB
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 10:17:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 248101896B29
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 10:36:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDCF0257427;
-	Mon, 30 Jun 2025 10:17:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D26323B60B;
+	Mon, 30 Jun 2025 10:36:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="apzfGpIG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="shzjZHNy"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C81F25A351
-	for <linux-rdma@vger.kernel.org>; Mon, 30 Jun 2025 10:17:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 441311D6AA;
+	Mon, 30 Jun 2025 10:35:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751278624; cv=none; b=dkZr2CnRYS8WNvTxFoj1v92KWFM3Ydqpl8xGkuvRgp8UYGRryqfebGzbUI+TxX6YU4IXNGiJ3W6Dm594GlM6xa8e1zzBpJTrq0z9Pv91Q3KiEtAXrCWGGEiYBj1o/3LjC600eX6zznYbjxlyiocmeZXX32EhXTq76KZy/C6yp5s=
+	t=1751279760; cv=none; b=roS3uNKUn2v8tFBbkP1hT06tk9n+Ql6QgpArLhQbnMlRYwsiIi+5fORjNXrRBynyNTPAZn8XOf9cpEAdarrER1hvWYydvQONhwFNoI0SWXEeGa944CGV1FtYsQrTuA/sq+flzocgooa+DZHUSDemImoo9olJnR6quL85wEoZ1Io=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751278624; c=relaxed/simple;
-	bh=AnCLuERYeg2vETry5Eqjtpa0TO5qw1pSYuNDFfNeoqc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gfUC3VUzSJnno0beFdcGVoLbpqQ0ZUcZ8z0bRwbYZFh+Dqi641I99HDe6WmI/Am4lwbiYEWNfbLfwZjPhy1TlGzYJK/ulqZzKN0iBF50nT0zi+eUmzk7pnSrMOU2vFc3my7N3HKF0ls/qsAKjmenyZAqgL7pB2ZUjl3ZL0TQTEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=apzfGpIG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6AA9C4CEEB;
-	Mon, 30 Jun 2025 10:17:03 +0000 (UTC)
+	s=arc-20240116; t=1751279760; c=relaxed/simple;
+	bh=D6reJ6Ipd9xg1Em6f7tXtzdoIcj9ApvrMUd8XDhNz7Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ezmFiv+CjEc/HxS/VxCxUXQuRsHsCRY68mrEQO1eGZyS+BjUPkxChMJ1N2rD4nNareyo6GpjGXouZpdmo9YWXCEhSM8Fwq0NyCwqMlITgWv+fE0jcWRj3yEy8XVIDXlVRgHLdyhUN6rcxF6rnIJJdItoJpvyQKNFmhP1SOrMiyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=shzjZHNy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35D6AC4CEEB;
+	Mon, 30 Jun 2025 10:35:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751278624;
-	bh=AnCLuERYeg2vETry5Eqjtpa0TO5qw1pSYuNDFfNeoqc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=apzfGpIGuThMi1Gk0q4xJfBMY6Qg0ffDrHyF3NffW3LMeEyZPLKUeOWZLGKxTCHgS
-	 LY2fMVSc6q+M6RjnSB6AKVVxzRKPm+EJJuqD15L+mvM2YInr/hNsZb+y5qWSWbyTYv
-	 +m37/PNFH58nVk+TZZl5oX1VcKz/sYR7Jnjk6GbFIK78PYQuJvrnJeogferpaguFlT
-	 ovCyxINtKoaa5HGPiFVhjuCXm+Q5RL75af27voQumKN4oitHTjYSYpKWcfHwUoQLQE
-	 +6d/lDhzRCsew4/bH3HBhDxGJ5is6WfVT0fe5x1G+tzzAepljfWMzKxCy3BTKEsZt/
-	 si6dR+gJpuIbA==
+	s=k20201202; t=1751279759;
+	bh=D6reJ6Ipd9xg1Em6f7tXtzdoIcj9ApvrMUd8XDhNz7Q=;
+	h=From:To:Cc:Subject:Date:From;
+	b=shzjZHNy9TAszHe7GWEIeSqNEMawWONJGj3wvybp7sz/Mt1hggBXjBiS96xRr6+55
+	 qF0IiyPCRRXkqBp2lOzPPFkdvyVR0e/ktCnE/Mp3xyeiwIt+s52J3NaJp5XVIobsfQ
+	 D2iggqascF0dd0MJ0Py3r9X9XwaIAU+oCcAlY9Spxn1RcQWcBwfOQdu64INQXLil6B
+	 XtXtF2Ls6/1+3btGbdAEDO86P+hbDp9tNfT8/G8gmwPNyC+pydXdSykkPvsp924neL
+	 AYG9UcTKZjdvhi4Ry8NHH5W3oAAnVCXD1hQgrf0uhLoqTwFlsDQSBPWVPpBCXvj5wc
+	 wctI16aYkXjUg==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Vlad Dumitrescu <vdumitrescu@nvidia.com>,
+Cc: Stav Aviram <saviram@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
 	linux-rdma@vger.kernel.org,
-	Maher Sanalla <msanalla@nvidia.com>,
-	Or Har-Toov <ohartoov@nvidia.com>,
-	Sean Hefty <shefty@nvidia.com>
-Subject: [PATCH rdma-next v2 3/3] IB/cm: Use separate agent w/o flow control for REP
-Date: Mon, 30 Jun 2025 13:16:44 +0300
-Message-ID: <9ac12d0842b849e2c8537d6e291ee0af9f79855c.1751278420.git.leon@kernel.org>
+	Mark Bloch <markb@mellanox.com>,
+	netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>
+Subject: [PATCH mlx5-next] net/mlx5: Check device memory pointer before usage
+Date: Mon, 30 Jun 2025 13:35:53 +0300
+Message-ID: <e389fa6ef075af1049cd7026b912d736ebe3ad23.1751279408.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.50.0
-In-Reply-To: <cover.1751278420.git.leon@kernel.org>
-References: <cover.1751278420.git.leon@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,216 +64,54 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Vlad Dumitrescu <vdumitrescu@nvidia.com>
+From: Stav Aviram <saviram@nvidia.com>
 
-Most responses (e.g., RTU) are not subject to flow control, as there is
-no further response expected.  However, REPs are both requests (waiting
-for RTUs) and responses (being waited by REQs).
+Add a NULL check before accessing device memory to prevent a crash if
+dev->dm allocation in mlx5_init_once() fails.
 
-With agent-level flow control added to the MAD layer, REPs can get
-delayed by outstanding REQs.  This can cause a problem in a scenario
-such as 2 hosts connecting to each other at the same time.  Both hosts
-fill the flow control outstanding slots with REQs.  The corresponding
-REPs are now blocked behind those REQs, and neither side can make
-progress until REQs time out.
-
-Add a separate MAD agent which is only used to send REPs.  This agent
-does not have a recv_handler as it doesn't process responses nor does it
-register to receive requests.  Disable flow control for agents w/o a
-recv_handler, as they aren't waiting for responses.  This allows the
-newly added REP agent to send even when clients are slow to generate
-RTU, which would be needed to unblock flow control outstanding slots.
-
-Relax check in ib_post_send_mad to allow retries for this agent.  REPs
-will be retried by the MAD layer until CM layer receives a response
-(e.g., RTU) on the normal agent and cancels them.
-
-Suggested-by: Sean Hefty <shefty@nvidia.com>
-Reviewed-by: Maher Sanalla <msanalla@nvidia.com>
-Reviewed-by: Sean Hefty <shefty@nvidia.com>
-Signed-off-by: Vlad Dumitrescu <vdumitrescu@nvidia.com>
-Signed-off-by: Or Har-Toov <ohartoov@nvidia.com>
+Fixes: c9b9dcb430b3 ("net/mlx5: Move device memory management to mlx5_core")
+Signed-off-by: Stav Aviram <saviram@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/cm.c  | 47 ++++++++++++++++++++++++++++++-----
- drivers/infiniband/core/mad.c |  7 +++---
- 2 files changed, 44 insertions(+), 10 deletions(-)
+ drivers/infiniband/hw/mlx5/dm.c                  | 2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/lib/dm.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index 8670e58675c6..92678e438ff4 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -161,6 +161,7 @@ struct cm_counter_attribute {
- struct cm_port {
- 	struct cm_device *cm_dev;
- 	struct ib_mad_agent *mad_agent;
-+	struct ib_mad_agent *rep_agent;
- 	u32 port_num;
- 	atomic_long_t counters[CM_COUNTER_GROUPS][CM_ATTR_COUNT];
- };
-@@ -274,7 +275,8 @@ static inline void cm_deref_id(struct cm_id_private *cm_id_priv)
- 		complete(&cm_id_priv->comp);
+diff --git a/drivers/infiniband/hw/mlx5/dm.c b/drivers/infiniband/hw/mlx5/dm.c
+index b4c97fb62abf..9ded2b7c1e31 100644
+--- a/drivers/infiniband/hw/mlx5/dm.c
++++ b/drivers/infiniband/hw/mlx5/dm.c
+@@ -282,7 +282,7 @@ static struct ib_dm *handle_alloc_dm_memic(struct ib_ucontext *ctx,
+ 	int err;
+ 	u64 address;
+ 
+-	if (!MLX5_CAP_DEV_MEM(dm_db->dev, memic))
++	if (!dm_db || !MLX5_CAP_DEV_MEM(dm_db->dev, memic))
+ 		return ERR_PTR(-EOPNOTSUPP);
+ 
+ 	dm = kzalloc(sizeof(*dm), GFP_KERNEL);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/dm.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/dm.c
+index 7c5516b0a844..8115071c34a4 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/dm.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/dm.c
+@@ -30,7 +30,7 @@ struct mlx5_dm *mlx5_dm_create(struct mlx5_core_dev *dev)
+ 
+ 	dm = kzalloc(sizeof(*dm), GFP_KERNEL);
+ 	if (!dm)
+-		return ERR_PTR(-ENOMEM);
++		return NULL;
+ 
+ 	spin_lock_init(&dm->lock);
+ 
+@@ -96,7 +96,7 @@ struct mlx5_dm *mlx5_dm_create(struct mlx5_core_dev *dev)
+ err_steering:
+ 	kfree(dm);
+ 
+-	return ERR_PTR(-ENOMEM);
++	return NULL;
  }
  
--static struct ib_mad_send_buf *cm_alloc_msg(struct cm_id_private *cm_id_priv)
-+static struct ib_mad_send_buf *
-+cm_alloc_msg_agent(struct cm_id_private *cm_id_priv, bool rep_agent)
- {
- 	struct ib_mad_agent *mad_agent;
- 	struct ib_mad_send_buf *m;
-@@ -286,7 +288,8 @@ static struct ib_mad_send_buf *cm_alloc_msg(struct cm_id_private *cm_id_priv)
- 		return ERR_PTR(-EINVAL);
- 
- 	read_lock(&cm_id_priv->av.port->cm_dev->mad_agent_lock);
--	mad_agent = cm_id_priv->av.port->mad_agent;
-+	mad_agent = rep_agent ? cm_id_priv->av.port->rep_agent :
-+				cm_id_priv->av.port->mad_agent;
- 	if (!mad_agent) {
- 		m = ERR_PTR(-EINVAL);
- 		goto out;
-@@ -315,6 +318,11 @@ static struct ib_mad_send_buf *cm_alloc_msg(struct cm_id_private *cm_id_priv)
- 	return m;
- }
- 
-+static struct ib_mad_send_buf *cm_alloc_msg(struct cm_id_private *cm_id_priv)
-+{
-+	return cm_alloc_msg_agent(cm_id_priv, false);
-+}
-+
- static void cm_free_msg(struct ib_mad_send_buf *msg)
- {
- 	if (msg->ah)
-@@ -323,13 +331,14 @@ static void cm_free_msg(struct ib_mad_send_buf *msg)
- }
- 
- static struct ib_mad_send_buf *
--cm_alloc_priv_msg(struct cm_id_private *cm_id_priv, enum ib_cm_state state)
-+cm_alloc_priv_msg_rep(struct cm_id_private *cm_id_priv, enum ib_cm_state state,
-+		      bool rep_agent)
- {
- 	struct ib_mad_send_buf *msg;
- 
- 	lockdep_assert_held(&cm_id_priv->lock);
- 
--	msg = cm_alloc_msg(cm_id_priv);
-+	msg = cm_alloc_msg_agent(cm_id_priv, rep_agent);
- 	if (IS_ERR(msg))
- 		return msg;
- 
-@@ -344,6 +353,12 @@ cm_alloc_priv_msg(struct cm_id_private *cm_id_priv, enum ib_cm_state state)
- 	return msg;
- }
- 
-+static struct ib_mad_send_buf *
-+cm_alloc_priv_msg(struct cm_id_private *cm_id_priv, enum ib_cm_state state)
-+{
-+	return cm_alloc_priv_msg_rep(cm_id_priv, state, false);
-+}
-+
- static void cm_free_priv_msg(struct ib_mad_send_buf *msg)
- {
- 	struct cm_id_private *cm_id_priv = msg->context[0];
-@@ -2295,7 +2310,7 @@ int ib_send_cm_rep(struct ib_cm_id *cm_id,
- 		goto out;
- 	}
- 
--	msg = cm_alloc_priv_msg(cm_id_priv, IB_CM_REP_SENT);
-+	msg = cm_alloc_priv_msg_rep(cm_id_priv, IB_CM_REP_SENT, true);
- 	if (IS_ERR(msg)) {
- 		ret = PTR_ERR(msg);
- 		goto out;
-@@ -4380,9 +4395,22 @@ static int cm_add_one(struct ib_device *ib_device)
- 			goto error2;
- 		}
- 
-+		port->rep_agent = ib_register_mad_agent(ib_device, i,
-+							IB_QPT_GSI,
-+							NULL,
-+							0,
-+							cm_send_handler,
-+							NULL,
-+							port,
-+							0);
-+		if (IS_ERR(port->rep_agent)) {
-+			ret = PTR_ERR(port->rep_agent);
-+			goto error3;
-+		}
-+
- 		ret = ib_modify_port(ib_device, i, 0, &port_modify);
- 		if (ret)
--			goto error3;
-+			goto error4;
- 
- 		count++;
- 	}
-@@ -4397,6 +4425,8 @@ static int cm_add_one(struct ib_device *ib_device)
- 	write_unlock_irqrestore(&cm.device_lock, flags);
- 	return 0;
- 
-+error4:
-+	ib_unregister_mad_agent(port->rep_agent);
- error3:
- 	ib_unregister_mad_agent(port->mad_agent);
- error2:
-@@ -4410,6 +4440,7 @@ static int cm_add_one(struct ib_device *ib_device)
- 
- 		port = cm_dev->port[i-1];
- 		ib_modify_port(ib_device, port->port_num, 0, &port_modify);
-+		ib_unregister_mad_agent(port->rep_agent);
- 		ib_unregister_mad_agent(port->mad_agent);
- 		ib_port_unregister_client_groups(ib_device, i,
- 						 cm_counter_groups);
-@@ -4439,12 +4470,14 @@ static void cm_remove_one(struct ib_device *ib_device, void *client_data)
- 
- 	rdma_for_each_port (ib_device, i) {
- 		struct ib_mad_agent *mad_agent;
-+		struct ib_mad_agent *rep_agent;
- 
- 		if (!rdma_cap_ib_cm(ib_device, i))
- 			continue;
- 
- 		port = cm_dev->port[i-1];
- 		mad_agent = port->mad_agent;
-+		rep_agent = port->rep_agent;
- 		ib_modify_port(ib_device, port->port_num, 0, &port_modify);
- 		/*
- 		 * We flush the queue here after the going_down set, this
-@@ -4458,8 +4491,10 @@ static void cm_remove_one(struct ib_device *ib_device, void *client_data)
- 		 */
- 		write_lock(&cm_dev->mad_agent_lock);
- 		port->mad_agent = NULL;
-+		port->rep_agent = NULL;
- 		write_unlock(&cm_dev->mad_agent_lock);
- 		ib_unregister_mad_agent(mad_agent);
-+		ib_unregister_mad_agent(rep_agent);
- 		ib_port_unregister_client_groups(ib_device, i,
- 						 cm_counter_groups);
- 	}
-diff --git a/drivers/infiniband/core/mad.c b/drivers/infiniband/core/mad.c
-index 183667038cf2..8f26bfb69586 100644
---- a/drivers/infiniband/core/mad.c
-+++ b/drivers/infiniband/core/mad.c
-@@ -424,7 +424,8 @@ struct ib_mad_agent *ib_register_mad_agent(struct ib_device *device,
- 	mad_agent_priv->sol_fc_send_count = 0;
- 	mad_agent_priv->sol_fc_wait_count = 0;
- 	mad_agent_priv->sol_fc_max =
--		get_sol_fc_max_outstanding(mad_reg_req);
-+		recv_handler ? get_sol_fc_max_outstanding(mad_reg_req) : 0;
-+
- 	ret2 = ib_mad_agent_security_setup(&mad_agent_priv->agent, qp_type);
- 	if (ret2) {
- 		ret = ERR_PTR(ret2);
-@@ -1280,9 +1281,7 @@ int ib_post_send_mad(struct ib_mad_send_buf *send_buf,
- 		if (ret)
- 			goto error;
- 
--		if (!send_buf->mad_agent->send_handler ||
--		    (send_buf->timeout_ms &&
--		     !send_buf->mad_agent->recv_handler)) {
-+		if (!send_buf->mad_agent->send_handler) {
- 			ret = -EINVAL;
- 			goto error;
- 		}
+ void mlx5_dm_cleanup(struct mlx5_core_dev *dev)
 -- 
 2.50.0
 
