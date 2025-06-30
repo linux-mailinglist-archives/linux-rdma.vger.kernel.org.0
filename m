@@ -1,43 +1,43 @@
-Return-Path: <linux-rdma+bounces-11767-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11766-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 006EFAEE631
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 19:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DBA3EAEE62F
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 19:58:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEE1A17966E
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 17:58:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E7A0178963
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 17:58:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 758362E54DF;
-	Mon, 30 Jun 2025 17:58:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C11452E54AC;
+	Mon, 30 Jun 2025 17:58:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="FUIQ+HM/"
+	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="X/AV7EXC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2093.outbound.protection.outlook.com [40.107.93.93])
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2122.outbound.protection.outlook.com [40.107.92.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88E4C29827B
-	for <linux-rdma@vger.kernel.org>; Mon, 30 Jun 2025 17:58:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B607B292B44
+	for <linux-rdma@vger.kernel.org>; Mon, 30 Jun 2025 17:58:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.122
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751306295; cv=fail; b=p4QZGP+ikDhJ8dd1x4IVhshsiSBoVwW+oaUPcJsAi5Wx5hewqcsoQY/k4UPfx6WpQB03hg8NacY5LBl1g+VFz6bK0ysFt+lGpIPcpMRbP7SuwRodKjDCNmnSmLixj1TNOYo5sPQ1xSd0Azh9uLvHMJg4GQExsdExFFZcPgHOfLE=
+	t=1751306294; cv=fail; b=Lz5kjIASzcuZ49o/TEQVaF8tpPLEioDuP4MMiKf5OBiXnvgDT2EcP3TWzZNBhupG1ZhK/K9lF6bxcT9dopq2JJZ/4myWp5hXLpugFQkrHtUaS+0rclz25Q4f44EUcWot2fw6zGx9UbnOf/qgovuPAKnkR0GiPU6HIbOeHhPpjoc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751306295; c=relaxed/simple;
-	bh=lVDroHVbHpSjzk8KvWuPl6d6PNK7W/C0sr2IavoFFPY=;
+	s=arc-20240116; t=1751306294; c=relaxed/simple;
+	bh=snUem20C/qkiPjhh+V6iaPfRxAqBt4vGkMKhddF0fp0=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=l+0OhlW4Z986zvOlVcZInfciY+fHJEiz5zyRPUU2ItV+3nVlycyKOcZ1c94Eq+sL73YZC3n4sRdhRno297DxADvNOrBusHfk5V3MYB8c21TNKUHTdIwRFOOuDEcitfjT4DkeI4PT09m7MjzTaarMB3dUBjG1F7pK40q7X+56kn0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=FUIQ+HM/; arc=fail smtp.client-ip=40.107.93.93
+	 MIME-Version:Content-Type; b=XSgNEiNVsif6A3NWf0BOqxo0oZ1ymWf0XdBR2dxK/IAHUtU6Dg/x7K/op3LTweYURQoRfk4Bc5fKPcedXjm0jq89DucfqEsGDuF5NQKuqRzuUR5FQyY38x9BcvWGoQSL4mqooPXq65soZNxzrGbdG8WwNU8A+Ilw5kwR1+0RA/c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=X/AV7EXC; arc=fail smtp.client-ip=40.107.92.122
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cornelisnetworks.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=aYItHdwLzhFTynHHgtwtQRk2bQsGFLApeLbN2UF13X2r9guFk9n+vH+KBC0HU1Jo0FVaK438wP2G65c54+Zt34FzOjYerg3EnueqfC/2N7MkjgJ7VMJ3G1FJ0QFRecEW6ErWPjVPV7NeZDd8f71scbL2BKC6mALRqLMl1LhThaFxySPP3e2bZS5+HFm8Nbzuu+JWyoWOvfCwGHkIV6RoiOdPHej7Pk0jARurlPLNWdeCBd5mPA++JH22N6JhDWvzt6+3YGpL2fNxdhfSWxwkJeyLY5Dtl8IbR23EKY/8g6pBZJ1LOphClI8QmdhzV0os0N1/HKYq9hE8ojLkNK9rLQ==
+ b=J0NAQnu6IlEjAirpKQmFrU6SS+yiXQIemOt6zTNrzlfEOhfFYiu8ILElJD5oGm5PkU5yMSVZ++RrIN+Nap5OPWidvHYOuKUf/m9k/kTmk5mZWVWwST3H3DuR9HdVUZ7s5qzAhVH+q7qVAm+DDHJXoQsy+l0KQV05bOWQcTlwdoCWc6k3KZKQZmIFiTpbDETsHwqwl4+aiTKlWn2F/EokOzlnjQa7zDtqGEyaNOKuyI9Bshqy0awQFTlawPxQHDCrf1zHoOXXIMgvPJoA1L4QLrEPLR5il3Tmfcf7sQ3m5nYr3JWG33milCVYe2ezugGUITXuxSwRo3ckmLwYc4JRIg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=p/1dPXp+3Ia7VS4Lprro8klfLVswwFWt4Xm45hZMYrQ=;
- b=eAHsn4ijsUCo3E8R3stfjrdFfrIOYrc3/15DSewn6nPbkVuQBwK5W1vqEKTQuhhmDc3Oh/fWzXAY5J7KwS+iX0wTGgNEeDI+Avs78N7ApxSursMbfU4WtLk4noXfK2OEpv2SSn+YAz2v7noE1EORQn9JmXZLiZWnrwsFyeUEiMMdIjLZuu+Ow2wmMN6Zs6rZy9bY58W0hHqJld02xKtGRzMNGQSKhkfHn45/4H4NNvEjEKUIpLVenbg/I+8hGktGXb1u9EKFCQCv+1wp9QuwiGYlMy/95pASxpnIkmIG81x4fu7F8gXyRs7AKijEgDG/5cuOMx0T9OcXwnqCfiAXaA==
+ bh=OxtI5nAMUedrp8PHeIoWkWtv43LW6UIyy4VTd10NJFQ=;
+ b=gU6MQkSfBmUepiNtGwXyxCtWthG3QUOA2FG54zYVda0qKV+m5se1A6hlxrTZTr0M/6Xuz2eKdIYb8OcUK9wup9M0JPliBJdI9QTT2ZBq1hVarb3NgEu7X985yZQh15ozX7txpnxHf7yBrSwSv/cz8qBtcJ2PYuYxsegAi9XZyLQjc6/zoZjxNONiNh9xHkNfs1DufRtgQYkceiSX/7PA9umhgaVWF5CVgIQVuN1HGolYsjgzsRxIz0YsMXseBRy3ohRpnJQokRg0XKn59gdDOvhEGhOEFEukseqFqtlBhlIacLmT4NIvjdteouM7bRNE7K7ojeL5AkgdNigV7mlaNw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  208.255.156.42) smtp.rcpttodomain=cornelisnetworks.com
  smtp.mailfrom=cornelisnetworks.com; dmarc=pass (p=none sp=none pct=100)
@@ -46,17 +46,17 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p/1dPXp+3Ia7VS4Lprro8klfLVswwFWt4Xm45hZMYrQ=;
- b=FUIQ+HM/9MoiBbNWa2shMl5F3xEudufG1VueehiMni0XMEkQwhktgJOuHqRyzqUOFNJV19ov9mVvBHavzNzl2o4Nk3PqFv5kINmuhas35ZFSu86c0ORo57QNh/++xNjJnijenla7VEWGPNI2Qevh/nKlT0jc/TUJwLD8/l7b7n6CDX+f+BkOqi4hsgicxEhepcQbM7iJIXGdjP9xiIKB2birT+7Y8bSxSXNMTCxTWCWXFhPzGnCOGXg6JKMbrpustFFufhnZMuE3D1kDQTn3n1GXXwqWLJzeAEXdtTzMUogHf3kt/hOltyvLhOt/RVtz8EzvpkZBlcnk/1Pxy+6ijA==
-Received: from MN0P221CA0007.NAMP221.PROD.OUTLOOK.COM (2603:10b6:208:52a::10)
- by DS4PR01MB9385.prod.exchangelabs.com (2603:10b6:8:2a6::14) with Microsoft
+ bh=OxtI5nAMUedrp8PHeIoWkWtv43LW6UIyy4VTd10NJFQ=;
+ b=X/AV7EXCooplJe8X5jUt9qEXyjIjVGB6SJNMnaqHa0nco18m0YizCNJmBzyAtAct+FjIUBFsl3T5dIHJlBAzg4cSF0W2c/zit6FMRAIkWKJB/gcAVC2+mzBf+7uUFyPooeFCAOIqjN4A/cxEllyn0UTVssS+u3A2fP9GIm030XZme7MkjLIFJmyPDHKriM7RruIgHZcMcZ2g677BQYrQwoP60BvbByuO3qBgHwpPr7wtHyY+d2Bio+xUvEUJ6uI2mThDP2YAfPuARpQ5SRvflN+izWwRfx9W5RHV1n8NAmgrjipLRR5fqQFQ6JTzkZjABkfAQNKAZIjYum8JHBWuDA==
+Received: from SA0PR11CA0192.namprd11.prod.outlook.com (2603:10b6:806:1bc::17)
+ by SA1PR01MB8624.prod.exchangelabs.com (2603:10b6:806:38e::12) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8880.26; Mon, 30 Jun 2025 17:58:10 +0000
-Received: from BN1PEPF0000468B.namprd05.prod.outlook.com
- (2603:10b6:208:52a:cafe::23) by MN0P221CA0007.outlook.office365.com
- (2603:10b6:208:52a::10) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8880.29 via Frontend Transport; Mon,
- 30 Jun 2025 17:58:10 +0000
+ 15.20.8880.30; Mon, 30 Jun 2025 17:58:08 +0000
+Received: from SN1PEPF00036F41.namprd05.prod.outlook.com
+ (2603:10b6:806:1bc:cafe::c0) by SA0PR11CA0192.outlook.office365.com
+ (2603:10b6:806:1bc::17) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8880.31 via Frontend Transport; Mon,
+ 30 Jun 2025 17:58:08 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
  smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=cornelisnetworks.com;
@@ -65,22 +65,22 @@ Received-SPF: Pass (protection.outlook.com: domain of cornelisnetworks.com
  receiver=protection.outlook.com; client-ip=208.255.156.42;
  helo=cn-mailer-00.localdomain; pr=C
 Received: from cn-mailer-00.localdomain (208.255.156.42) by
- BN1PEPF0000468B.mail.protection.outlook.com (10.167.243.136) with Microsoft
+ SN1PEPF00036F41.mail.protection.outlook.com (10.167.248.25) with Microsoft
  SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.8901.15
- via Frontend Transport; Mon, 30 Jun 2025 17:58:09 +0000
+ via Frontend Transport; Mon, 30 Jun 2025 17:58:08 +0000
 Received: from awdrv-04.localdomain (awdrv-04.cornelisnetworks.com [10.228.212.218])
-	by cn-mailer-00.localdomain (Postfix) with ESMTPS id CF48214D726;
+	by cn-mailer-00.localdomain (Postfix) with ESMTPS id C0BA314D71F;
 	Mon, 30 Jun 2025 13:58:06 -0400 (EDT)
 Received: from awdrv-04.cornelisnetworks.com (localhost [IPv6:::1])
-	by awdrv-04.localdomain (Postfix) with ESMTP id B64BB1811CE6C;
-	Mon, 30 Jun 2025 11:30:02 -0400 (EDT)
-Subject: [PATCH for-next 03/23] RDMA/rdmavt: Correct multi-port QP iteration
+	by awdrv-04.localdomain (Postfix) with ESMTP id C50E71811CE6E;
+	Mon, 30 Jun 2025 11:30:07 -0400 (EDT)
+Subject: [PATCH for-next 04/23] RDMA/rdmavt: Add driver mmap callback
 From: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 To: jgg@ziepe.ca, leon@kernel.org
 Cc: Dean Luick <dean.luick@cornelisnetworks.com>, linux-rdma@vger.kernel.org
-Date: Mon, 30 Jun 2025 11:30:02 -0400
+Date: Mon, 30 Jun 2025 11:30:07 -0400
 Message-ID:
- <175129740268.1859400.1068067040264442447.stgit@awdrv-04.cornelisnetworks.com>
+ <175129740775.1859400.14288398945361388150.stgit@awdrv-04.cornelisnetworks.com>
 In-Reply-To:
  <175129726945.1859400.4492277779101226937.stgit@awdrv-04.cornelisnetworks.com>
 References:
@@ -96,87 +96,156 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF0000468B:EE_|DS4PR01MB9385:EE_
-X-MS-Office365-Filtering-Correlation-Id: 667f31c8-2e8b-4807-c58f-08ddb7ffac7f
+X-MS-TrafficTypeDiagnostic: SN1PEPF00036F41:EE_|SA1PR01MB8624:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4ef9284b-7722-4929-d109-08ddb7ffabe9
 X-MS-Exchange-AtpMessageProperties: SA
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|82310400026|36860700013|1800799024|376014;
+	BCL:0;ARA:13230040|82310400026|376014|1800799024|36860700013;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?YzNuVFpFTzlzUFhoaTFRb1kxR3RISEFmbGJVbmI4ZXQzem4zWEFoVDBTaEha?=
- =?utf-8?B?QTBsTTNoTTNVY1pwRFY1SGNjeE1jdm54Q3Y2Q05RcC9QSnc1Y1lzbEJUczdo?=
- =?utf-8?B?WDJCTXd2SnAzZXZvbEU4VFh6SlVsYzFVNFNkbFc0M2dCM2xWMGJmVGpaZmZH?=
- =?utf-8?B?MUFnSms0ekc0M1F6dWhONndtcWMvK3FpYjFzVElZVXl4WC9XS1RvQnVpcmQ1?=
- =?utf-8?B?TjlFV1hITzNWWm4rNXBjdmNoVzJhSWJKYnlPQ0JMVmtGcUdMWXFXWm5ESU5P?=
- =?utf-8?B?bjF2U1laVHNsZk81WlhZME16V1JENjkrVG9YeEVLUzl1VTZxT0plZXZTc0Ev?=
- =?utf-8?B?NFg1Q0hJU216WXc5MmhVMGU5dy9CLzhQajlQSXRpeTJjWFFSSmJwMGRTYTRU?=
- =?utf-8?B?SjM5bmtvVUZnVlJQWndnZHJYazlHbzRScExpdVJXcm1EMWpYM1lrTUhpUi9M?=
- =?utf-8?B?N2J3OE9vSEkxV2k0SVhIQjBsdGZJWkZvUEY2WWc1SUtPSFM3eU9UU2JlZGxI?=
- =?utf-8?B?dmg2cHF2YmxYblZsdiswRVVaYVVHOEhCUlY0ZE91enlYOXpnRCtpZmtJeUhZ?=
- =?utf-8?B?dTBhL21Mb2ZQbFJjK3IrZ1NBYkRlNlpYakZzYzYrR2EyMUM0bnhkZjBwZHVW?=
- =?utf-8?B?TTVyMmZtVlg0QVBWQ0wwL3BTaklCWTlTd2FGOHMyUldHU082L2QyWGxGQzRk?=
- =?utf-8?B?OTB3SE4xKzBacTg1Z01FRVJWUGxQV0x4ZjRQbzhoSWtyRmVJVUxqWmNlMUhT?=
- =?utf-8?B?UjJkdFBHNDc0YzFtMDljNm9ERDMvWHBqRGR4VzhicXpwcGVUaGFOUHUyV0NT?=
- =?utf-8?B?eWJmakZYajZCMU8wWk53UHJINGRNL1ZtWmpkaWwvRGUyUkJYNnRUNlM1K3lQ?=
- =?utf-8?B?aWhzNDhhbzRZZUFaeERDYWxKNlU3VyswRFJIcG94MGJjdS9tZ2FOdW5WNDht?=
- =?utf-8?B?VmJoL1RSMHNyakNqenhHRjNkck83eWJpSnIveGQwaG50blNiS3VGcEE5Q0lo?=
- =?utf-8?B?SkNDemxOSXU0SEU1bVluWHJMVElWbks0Um5rR3U5RE9scGFtWFhHckJGcnpp?=
- =?utf-8?B?UEZqemc0Y2FDcFBUUk0wYjdrQTR5YXczVzl4d2l0UDRac1F1Q2F0VENsczBW?=
- =?utf-8?B?RW9UNDV5a0YwbU5EM3RwaFBpU0EvWUlKZkpqdGU3TFhOMDFqc05IYnlQN2xP?=
- =?utf-8?B?NnBvTzV0aVNjb2JrWFpYMkhWNHJ1MHllN1BYVzA3ODBuTGFLb0FraEFpRDJ0?=
- =?utf-8?B?L0JwN0g5NEhXeGN3QThia3llNzJmU3Fkdk1zQzVGMk0zK2txaWJaV2VCNVh2?=
- =?utf-8?B?dGVBWlQzcjd0bTZIVWpsZWxrWlN0Y2xqTlk1WVpzZlNTR2RDQ3JMUzZMNzZl?=
- =?utf-8?B?blV4Zk1sQm1ZbmZVT2xDRURUQlFKWjkwQVlxTEJEMy9ZcEhZOUJtaU5IVEoy?=
- =?utf-8?B?WTlBd2p1RjAwNmU1Y3lVWm5yVWxnWG9jNXFPb1BJeGloSm1maE4zTjFUdHFO?=
- =?utf-8?B?ekdnVUJDV3lQRk9RMXpDM1JoNjV3UkVCWU1tRzR0eVQzRVdyWDJPUks4Q0dy?=
- =?utf-8?B?NVl6czVlTmFyZUs1K050UUNSYm8wWlhiejQ4a01PcGlBS0RXU3JkM0RhTlIx?=
- =?utf-8?B?azNoc3hIWDJiVkxkNzY1RTlWb1NUNE5vemlSUXRCTXJFTGVmN2VFblVsZDha?=
- =?utf-8?B?Y2Z3aTlGaEd2TFNOS2VCeGhyNHI0by9YbG9RcjZwOHo5S3owNHFqYWhtTXFP?=
- =?utf-8?B?VDRHZDVDeElHd1cyMTVPWXhseHZvNmsyeDluYmRRTFZmWVlDM2Rqc0JsbHRM?=
- =?utf-8?B?L0dHVkN0TzB4Z2NUai9OVzJBZ3VQRXlVRkNrbjRtVWlQdVdpMXdNYkFnNE1o?=
- =?utf-8?B?SFN4ZXlqV1NxcklEdDhQUDFzYllMUENIVXl4L0J3RkdWTVNQKzNtNHBiK1Nv?=
- =?utf-8?B?dkQvamE1M1p0NnlRekRHVlR0b3ZnMzdrMmswYVh4WmswRnhYNmZzZ0p6WURN?=
- =?utf-8?B?dFZKVWhOY1ZMcVBlSlJUai92R1BXSVRPeStaeDZNRXgrYmlNY0xFcmZxbWw3?=
- =?utf-8?Q?OE9UB3?=
+	=?utf-8?B?RFpteVgweWRpOE9xVm9tQW9WNnU2L1dzSURDaHhpVEQzQzJMQmxYSnJ3dHRM?=
+ =?utf-8?B?My9TbHhuUzF1YWVYRC96RktxTVBmdjY0M1UwOEZkRTJ1eWdDMzErTUZmdDE4?=
+ =?utf-8?B?bUNxWmhLNU5PbFY2WHl4QWJYRDZ6bHNSVlQyd3c4STFwdnRNS3ZJUmphRkkz?=
+ =?utf-8?B?MVhud0pvZjZ3RUNMNmRVTFRTNW02QVBhRVlLU1pZRnpFczdjdWQ5bWxpaTVk?=
+ =?utf-8?B?N0pIVTlTL0RKSzh4T3F4aUtkMG5yc1NTclArOFlZMUJ0WHZ3U0YzVy83dC9n?=
+ =?utf-8?B?aC9obUVUb1BqNTc4U2hsVTJveXZtb2hibnZ6RGlVTVFjOXE3eU1obHZodkgz?=
+ =?utf-8?B?cGc2QTc1dURuZDFCVXI3OHU3YkFTc09SRTRqb09tYVd6MmlLMDI1eVpJaFpU?=
+ =?utf-8?B?NzAxcEMwUHVyTWpvV1RRRmpTMzRNemg5NnhKYVQ2RWd6c1hJTjIzVitZZUY2?=
+ =?utf-8?B?U3BDZGRLVkoxTGgvY3U1L3pxM09PcFRBc01XOUFLaVUzbWFheGFoNzM4NkY5?=
+ =?utf-8?B?K09xa3Rwd1lSZWlwRVNNd2FZcEJFQWRnN2lYMytKTXBKVnNRUURLYS9FbHNx?=
+ =?utf-8?B?TjJNSFhrZkp6aXV3UDBRZWVhN2pnNGdlYzNuVE50NGpGNG4yTmVTQ3FCcFVs?=
+ =?utf-8?B?b3piWERDZ1hNaGhDWmJVemtJZkNDQ3c5ZDJGeXlmRkZZY04weFdPK3VPeGl2?=
+ =?utf-8?B?UzVMZ2ZNTzk0dUorUFYrYWZDR1FtVTRtMm9JcFE5ekprYUpRc3h0YWdFOFdM?=
+ =?utf-8?B?TlVJazFLTWxIRkdTUTRtRng5dmtzT2E2dmtsNy9BUk1zK0pORlpLeU1EUy9M?=
+ =?utf-8?B?K1UxSFBZRGkvRDFXWlpSTTVEbjhkekY1L0pYT1RtU1NCS3VEcm1wYnlsOEZQ?=
+ =?utf-8?B?aXBZNXV3eFZ0Q1VvK2twRkdQZWM4RHl3QjZUYy9sQU0vMDN4NTRyVkMyS0kw?=
+ =?utf-8?B?VVNsNW1Ta3BQT1NMZzlJcTZDR2R3aVRtR01IRHM3RzhUU2kwajkwbVBIS3JT?=
+ =?utf-8?B?c3cxbkJ2ejc2blhKZnNranVLRUZwQnA5SVRiTE9FSjV5cmtzWUJqUythNTJS?=
+ =?utf-8?B?MnlFQjZRbnVhN0dEU3lGdHRLbStRZmtRUnpNZHpFNjlYUVlpUXFJY2xFcUlr?=
+ =?utf-8?B?NFZlMEdXQVB2NzdiRGFycWtoZ2k0bVpjbmZtUzJZVjIrYXVBanJCQ2Q0SEJQ?=
+ =?utf-8?B?bnJOdisxeDEyeGMwbXJmR294T3BkdzdLMmx6alZNQlpzVnJFd0h4anVpeE5U?=
+ =?utf-8?B?dDhoQVJQUVk5S0dHSEo1WVpuMktyTUY0Z0FZd2p5Mk5xWWdqaHFqQzRTUS9h?=
+ =?utf-8?B?Rm0xbHpoZWpLUk5uTSt3T3pOQ0xRcFJORlh0NnF0SHI1WGhLNU4ya3VGMlFo?=
+ =?utf-8?B?ZG15Q0QvOE1iMEsvNlFpbTU1bHo1eUhVeFNrTXZTWVF4R1RhSzNaQ0g1cmZB?=
+ =?utf-8?B?aEQwMDVtd3BLR2RZc2hhN3ZrSldKUEdOVWdIOTlOMG5QTnR0anIwQkhRZGd2?=
+ =?utf-8?B?NW1JQit1L25BYTRyRHM1TWhHUVlCb2NzeDVQUGMxMUdMRmNRNlRRZzVzRElN?=
+ =?utf-8?B?MXVtdmN5WVFoazcxeDlyMURCNnlYenBGMnU4US9ncEFXRHB2bDVoUUdRNWtM?=
+ =?utf-8?B?SVZvS3Exck1FSE1ZWEtpUGNsbzV1ZXgwUW1qZlhEUVQvTjAweDJEaFV6cjFE?=
+ =?utf-8?B?ZkxsMjU3Sm9QWDVkckpaRUlpYnpseE9WR0FnVnFpamtkdDhEbllxYkg4a1Nh?=
+ =?utf-8?B?Q3JrNlo3bW9uZFhjTkdaSGVwOERXN05MSzJNTUZPR0ZhaHhRSG10NUxkVWZ0?=
+ =?utf-8?B?bkFrSHRMdkp2dHZoeS9EMVVMS01rK2NoQ0Iwa2RJcjVZOWxLSTI2b1ArRFpS?=
+ =?utf-8?B?ZHJ0aFVIcXR0YS9RRFZmZEZ1c0hkVTFZQXdwWHJnU01VU0c3VFFpY3hFU3Zv?=
+ =?utf-8?B?NmRNT3l3UDNrbFRZSU1wY0tPSmFmNHp1SCsySG56eFJZdlhzSUNpMzgxWHh0?=
+ =?utf-8?B?dTB4bXNUV1RJL05FOEd5b0t2Z3JNWHVPRTR4OXc0SklJRFZHR3huTzljK0lD?=
+ =?utf-8?Q?E+kGpO?=
 X-Forefront-Antispam-Report:
-	CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:cn-mailer-00.localdomain;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(36860700013)(1800799024)(376014);DIR:OUT;SFP:1102;
+	CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:cn-mailer-00.localdomain;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(376014)(1800799024)(36860700013);DIR:OUT;SFP:1102;
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2025 17:58:09.4341
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2025 17:58:08.3958
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 667f31c8-2e8b-4807-c58f-08ddb7ffac7f
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4ef9284b-7722-4929-d109-08ddb7ffabe9
 X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[cn-mailer-00.localdomain]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BN1PEPF0000468B.namprd05.prod.outlook.com
+	SN1PEPF00036F41.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS4PR01MB9385
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR01MB8624
 
 From: Dean Luick <dean.luick@cornelisnetworks.com>
 
-When finding special QPs, the iterator makes an incorrect port
-index calculation.  Fix the calculation.
+Add a reserved range and a driver callback to allow the driver to
+have custom mmaps.
+
+Generated mmap offsets are cookies and are not related to the size of
+the mmap.  Advance the mmap offset by the minimum, PAGE_SIZE, rather
+than the size of the mmap.
 
 Signed-off-by: Dean Luick <dean.luick@cornelisnetworks.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 ---
- drivers/infiniband/sw/rdmavt/qp.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/sw/rdmavt/mmap.c |   22 +++++++++++++++++-----
+ include/rdma/rdma_vt.h              |    3 +++
+ 2 files changed, 20 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
-index 583debe4b9a2..464005c74750 100644
---- a/drivers/infiniband/sw/rdmavt/qp.c
-+++ b/drivers/infiniband/sw/rdmavt/qp.c
-@@ -2708,7 +2708,7 @@ int rvt_qp_iter_next(struct rvt_qp_iter *iter)
- 				struct rvt_ibport *rvp;
- 				int pidx;
+diff --git a/drivers/infiniband/sw/rdmavt/mmap.c b/drivers/infiniband/sw/rdmavt/mmap.c
+index 46e3b3e0643a..473f464f33fa 100644
+--- a/drivers/infiniband/sw/rdmavt/mmap.c
++++ b/drivers/infiniband/sw/rdmavt/mmap.c
+@@ -9,6 +9,11 @@
+ #include <rdma/uverbs_ioctl.h>
+ #include "mmap.h"
  
--				pidx = n % rdi->ibdev.phys_port_cnt;
-+				pidx = n / 2; /* QP0 and QP1 */
- 				rvp = rdi->ports[pidx];
- 				qp = rcu_dereference(rvp->qp[n & 1]);
- 			} else {
++/* number of reserved mmaps for the driver */
++#define MMAP_RESERVED 256
++/* start point for dynamic offsets */
++#define MMAP_OFFSET_START (MMAP_RESERVED * PAGE_SIZE)
++
+ /**
+  * rvt_mmap_init - init link list and lock for mem map
+  * @rdi: rvt dev struct
+@@ -17,7 +22,7 @@ void rvt_mmap_init(struct rvt_dev_info *rdi)
+ {
+ 	INIT_LIST_HEAD(&rdi->pending_mmaps);
+ 	spin_lock_init(&rdi->pending_lock);
+-	rdi->mmap_offset = PAGE_SIZE;
++	rdi->mmap_offset = MMAP_OFFSET_START;
+ 	spin_lock_init(&rdi->mmap_offset_lock);
+ }
+ 
+@@ -73,6 +78,13 @@ int rvt_mmap(struct ib_ucontext *context, struct vm_area_struct *vma)
+ 	struct rvt_mmap_info *ip, *pp;
+ 	int ret = -EINVAL;
+ 
++	/* call driver if in reserved range */
++	if (offset < MMAP_OFFSET_START) {
++		if (rdi->driver_f.mmap)
++			return rdi->driver_f.mmap(context, vma);
++		return -EINVAL;
++	}
++
+ 	/*
+ 	 * Search the device's list of objects waiting for a mmap call.
+ 	 * Normally, this list is very short since a call to create a
+@@ -129,9 +141,9 @@ struct rvt_mmap_info *rvt_create_mmap_info(struct rvt_dev_info *rdi, u32 size,
+ 
+ 	spin_lock_irq(&rdi->mmap_offset_lock);
+ 	if (rdi->mmap_offset == 0)
+-		rdi->mmap_offset = ALIGN(PAGE_SIZE, SHMLBA);
++		rdi->mmap_offset = MMAP_OFFSET_START;
+ 	ip->offset = rdi->mmap_offset;
+-	rdi->mmap_offset += ALIGN(size, SHMLBA);
++	rdi->mmap_offset += PAGE_SIZE;
+ 	spin_unlock_irq(&rdi->mmap_offset_lock);
+ 
+ 	INIT_LIST_HEAD(&ip->pending_mmaps);
+@@ -159,9 +171,9 @@ void rvt_update_mmap_info(struct rvt_dev_info *rdi, struct rvt_mmap_info *ip,
+ 
+ 	spin_lock_irq(&rdi->mmap_offset_lock);
+ 	if (rdi->mmap_offset == 0)
+-		rdi->mmap_offset = PAGE_SIZE;
++		rdi->mmap_offset = MMAP_OFFSET_START;
+ 	ip->offset = rdi->mmap_offset;
+-	rdi->mmap_offset += size;
++	rdi->mmap_offset += PAGE_SIZE;
+ 	spin_unlock_irq(&rdi->mmap_offset_lock);
+ 
+ 	ip->size = size;
+diff --git a/include/rdma/rdma_vt.h b/include/rdma/rdma_vt.h
+index 8671c6da16bb..7d8de561f71b 100644
+--- a/include/rdma/rdma_vt.h
++++ b/include/rdma/rdma_vt.h
+@@ -366,6 +366,9 @@ struct rvt_driver_provided {
+ 
+ 	/* deallocate a ucontext */
+ 	void (*dealloc_ucontext)(struct ib_ucontext *context);
++
++	/* driver mmap */
++	int (*mmap)(struct ib_ucontext *context, struct vm_area_struct *vma);
+ };
+ 
+ struct rvt_dev_info {
 
 
 
