@@ -1,43 +1,43 @@
-Return-Path: <linux-rdma+bounces-11768-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11770-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CF1DAEE630
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 19:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BF0EAAEE633
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 19:58:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B0253A6DB9
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 17:58:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B71213A3306
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 17:58:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 755F1292B44;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E47CE2E62AF;
 	Mon, 30 Jun 2025 17:58:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="VLGEG1un"
+	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="L6N2j4is"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2133.outbound.protection.outlook.com [40.107.243.133])
+Received: from CH5PR02CU005.outbound.protection.outlook.com (mail-northcentralusazon11022119.outbound.protection.outlook.com [40.107.200.119])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88EE1299957
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4F192D130C
 	for <linux-rdma@vger.kernel.org>; Mon, 30 Jun 2025 17:58:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.133
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.200.119
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751306295; cv=fail; b=tPkh2YeebhhcePq7TY/M8l2P9HJYg+q7OB5zNjvWvwsIIe+zBl34/ncHtyks1LKc4HVMDONOUepflRKpxz0nzs4Kch2uv6SqUCQGKM9F8aneYI+8NyDAyjUUvriTqkxs/uJMfUhsSE4DJRAOqdg3V7jHfwhVU4rvxlnMX8t0h1o=
+	t=1751306295; cv=fail; b=rOP2+t/MQIYvpuLOfp7AhlReFZOM/dXTVSgN4fT1OJl8Rkbqh5q0LrjZMAP+wZ74rX9X6lU7y6kCJKt0hLGU1eOLgUbOGngsN/bftkplBP4pyuybPhXn/yuyiG+a4exYzLknQDQkub/YC6g0QED0BjBIFWayBUdQY/5AoRO6Pgw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1751306295; c=relaxed/simple;
-	bh=wvyaxoJVPp2qNnlfjcrXhtko/VKSn92Y8Zuo2KtPLVw=;
+	bh=TVvETOObqXLc80Zb1+1wFWiQ3aXnrz7Y2upts/+Xxbo=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Q1nwsnKYLkn+QCtnrW1ii6Md2rcJkRI4sv1qhNm09dngg7UoVnhSHgLZjKSgSQizrMLhfQmIlIk0JDT6rE93mOyZMLSQgwlzStdXeO4OqAJWGrvU2JH/o0spE7jpdD6K9ZJGSrVE4HNVZWAaGGl6Q3urGw7rA5XdHfTymmS7WrM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=VLGEG1un; arc=fail smtp.client-ip=40.107.243.133
+	 MIME-Version:Content-Type; b=RkfxRdPh2g5Nu4ku0gV/tlw/IlTbut8MLbkvAifnTlvQeUxCJJ/ySqKNx0NXwKGIBsC5UGqJEb7+3y1X3ukGe7RhXmsw1eeHREoOkHMgpoiEiRZ3QrSFX88HJmyG2PX/+PBhS3PjxwGthv1vdJMzwQIBBfcNWpb3XZIDAhGq2f8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=L6N2j4is; arc=fail smtp.client-ip=40.107.200.119
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cornelisnetworks.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=zUjqTjrV532mDVh3rbCEizQzhqE8YyhkocG0BVwHd6ywZU2nRg87xGU1QoZ7pUvBCfmO/ZIsfy/3vFavwJ3HXmq0EmaqGMRgyUghsjJP+7kBBFqJjxR3IZN8LssiiiyMJih/aAgNqH5MEHwgHWzkDjmMGMwCr4s/TlsV4fJd2Z4bvcM+oxBp9mlzkBchxMvDS5EjZbAgNFgQ/o7gx3+BbnRQl6Fdq+dWJPiEBZAoWmrxxm82+CowobYzHTOHLs4g5Wt1AseoSTBN0bQ/HFOcXsER1kq3MmF93xF1RX2Nuw6eVAY/N4A5XdDCqbcM8Z/ilnpttdLPfo5W0NAsy+hyNg==
+ b=xoIPdXPt7damskfhdzzjPGY6YlE06r3GAZC7r8VNuRu8OKadP2hyZwRyQedkH2n05i6vSsK4GmQWGG2aKcrCnN+H4Rmk0Dffcr+Eg84DMXPB5MDYV6qMVZ7tiHr1lh9ybHfBBHvn8bwB2aEQNeg7+irEenbcEAgKLwIUDWCUiHvstPyPfecrBprZD3QlWTw8ruKxXPnPtc8X0b7W3nFdXiHxA9JkzxeF4Zy38N6qScTgPly/r8uZeImxeEqJZtwzV0GJZvVU4PigN7F23BKakHq8BGGAZZi+znYd/7cSGlBOxaT7WFhNkTro7+mQel3gEfnjNp0PNlzNn5WKPnMpaQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lmmXrvjnRFWlfrGM5+Gjh/rqqMouk9c1GJGLuQY2tWY=;
- b=qqLgYk7V1Umyfd3PIYneM08UV9+7PLdZt73D1+EKDAAY75JP5aDOVnxNdEifUX49bjbttpwXL8IVNsNMxwP+7k+0ytQP1/ItXCdtFpN8LVULf7KyGK5kL2vlaOJRmLszgEUb91dzr6y9sqzFDYMcJHJi3mVmwuPOiPeANF+CP048LlgphEXvLs9P/yhTfX+ZLafaWTr11ZOXrGvST7HIEHECbzufrwQGRbD7z35KmvAk0D0WcPpGta5dqibZZqwa3nKqG6T3W4ml0h2SLf4PB1JtzheyOnC6xfTyRfVBR+XdN+fs9gflFJj9fPo+IStVfqq3ESKfZR63yqqIkR3OnA==
+ bh=pCBW0W8bjir9iHaD+qsLv5nNvZ6J9RfqB1gBHL96FM8=;
+ b=ZgNjoY72CPyfq/JsCH/NNaCXHlrm/6CmpjwMkksqTxfZ4w8y4+2Q8H+jn6xwF3DNSCNFyZ1vKV8gHxc59PbPF4GwQhXPQep1qsyhxvzthID9AQzFEtk5PRTQH3bcsGyVfM95wsOBH6A+q9/u54U4X2WnCXF6FZTLXzoOGGgGC2pVPrYV7uEb9f7T13AAJ4SBDrVsVV//RFdB7UPtgqnTWN5oiN25l5gHhQEcedAedSvuDkgS20bXG1ZOuT7pJlsDPKf6t1E4Blcf2dZE0DxDFtLvAGNEG225wPsHIadU1bHC9z8E1LYjx7+iinMBOxNIQV6h/PHHvh3SqAqOxUOxzg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  208.255.156.42) smtp.rcpttodomain=cornelisnetworks.com
  smtp.mailfrom=cornelisnetworks.com; dmarc=pass (p=none sp=none pct=100)
@@ -46,16 +46,16 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lmmXrvjnRFWlfrGM5+Gjh/rqqMouk9c1GJGLuQY2tWY=;
- b=VLGEG1untdYJ3QewVeSQwczeWJvbbyO9mClZknH9uANXllIhhHCYKdroQD0DyLLa3qWnUN4pV5+S1FwJXKOXv1KAzbZtiQByrnTwSqgbR6MIKlIETIin/J2InZTOvYv/xyIC0GSTSi9NXTrabVZnXSZ3TA8cqDvGA3ZDioFTQ2MoI63QOslGKBhtzTvaAoiJdCReRvAyhHXfOctNtjQspAXcsUtZd1y9mqxeJWwLB88Ug7QTWOU1Ewu0TQbB3zUtXEsjYg+6fPShGXct34l4jJh/XGzOmrPrHzKw+gqZg14Xo/bYyawTfE+G8l6T7mkeG76i+dey+D3r9PPDnOU1dg==
-Received: from BN0PR02CA0036.namprd02.prod.outlook.com (2603:10b6:408:e5::11)
- by BY1PR01MB9090.prod.exchangelabs.com (2603:10b6:a03:5b1::6) with Microsoft
+ bh=pCBW0W8bjir9iHaD+qsLv5nNvZ6J9RfqB1gBHL96FM8=;
+ b=L6N2j4isMbdCTDLwPKcdnhBoD/HM7a1Y4DFjlV8Rrq0quObnswoV/umUQeIbouibzXuG5s6iaTHceXAdyGALPM0/vkUoAWsVqY7CsluI8Hc/m6oyVaMjz4JDnRxxEFuayDXNN+4ckA9krBRp8JGw1dGOisj+fcv2wS56aa9x3yecU1Q6dmg0MCROShuAVYRpJV2YFP1+wH9Lc0AA4ka21UoZEZKNwhK1uuOWOViG0WBUU+0uTRCosB+d5ojNOI2irWRiFDDP79kc8x2wXls+GxO9uRonOxTUNj4tuc+be/ilkZfULLjmzbYJoM/TCA6saDyAZChvfuUmS3ALLKI8Jw==
+Received: from BN0PR02CA0053.namprd02.prod.outlook.com (2603:10b6:408:e5::28)
+ by CY1PR01MB9200.prod.exchangelabs.com (2603:10b6:930:fd::10) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8857.29; Mon, 30 Jun 2025 17:58:10 +0000
+ 15.20.8880.29; Mon, 30 Jun 2025 17:58:10 +0000
 Received: from BN1PEPF0000468D.namprd05.prod.outlook.com
- (2603:10b6:408:e5:cafe::8f) by BN0PR02CA0036.outlook.office365.com
- (2603:10b6:408:e5::11) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8880.30 via Frontend Transport; Mon,
+ (2603:10b6:408:e5:cafe::7d) by BN0PR02CA0053.outlook.office365.com
+ (2603:10b6:408:e5::28) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8880.29 via Frontend Transport; Mon,
  30 Jun 2025 17:58:10 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
  smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
@@ -69,18 +69,19 @@ Received: from cn-mailer-00.localdomain (208.255.156.42) by
  SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.8901.15
  via Frontend Transport; Mon, 30 Jun 2025 17:58:10 +0000
 Received: from awdrv-04.localdomain (awdrv-04.cornelisnetworks.com [10.228.212.218])
-	by cn-mailer-00.localdomain (Postfix) with ESMTPS id D809714D72B;
+	by cn-mailer-00.localdomain (Postfix) with ESMTPS id E277914D732;
 	Mon, 30 Jun 2025 13:58:06 -0400 (EDT)
 Received: from awdrv-04.cornelisnetworks.com (localhost [IPv6:::1])
-	by awdrv-04.localdomain (Postfix) with ESMTP id 9BBF41811AA4A;
-	Mon, 30 Jun 2025 11:29:52 -0400 (EDT)
-Subject: [PATCH for-next 01/23] RDMA/OPA: Update OPA link speed list
+	by awdrv-04.localdomain (Postfix) with ESMTP id A503E1811CE67;
+	Mon, 30 Jun 2025 11:29:57 -0400 (EDT)
+Subject: [PATCH for-next 02/23] RDMA/rdmavt: Add ucontext alloc/dealloc
+ passthrough
 From: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 To: jgg@ziepe.ca, leon@kernel.org
 Cc: Dean Luick <dean.luick@cornelisnetworks.com>, linux-rdma@vger.kernel.org
-Date: Mon, 30 Jun 2025 11:29:52 -0400
+Date: Mon, 30 Jun 2025 11:29:57 -0400
 Message-ID:
- <175129739240.1859400.12244684198572711947.stgit@awdrv-04.cornelisnetworks.com>
+ <175129739764.1859400.4204183223785461584.stgit@awdrv-04.cornelisnetworks.com>
 In-Reply-To:
  <175129726945.1859400.4492277779101226937.stgit@awdrv-04.cornelisnetworks.com>
 References:
@@ -96,92 +97,126 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF0000468D:EE_|BY1PR01MB9090:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4aa30d0c-efb9-4e72-60bc-08ddb7ffacfd
+X-MS-TrafficTypeDiagnostic: BN1PEPF0000468D:EE_|CY1PR01MB9200:EE_
+X-MS-Office365-Filtering-Correlation-Id: 94953d6d-0af7-461e-0c0c-08ddb7ffad21
 X-MS-Exchange-AtpMessageProperties: SA
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|82310400026|376014|36860700013;
+	BCL:0;ARA:13230040|1800799024|36860700013|82310400026|376014;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?YUpYWWFqcmlyYTZPK2YxQ091L1dkUG9QN0RuaS9iNlR5OEJLdVU1T29Yd2Y3?=
- =?utf-8?B?ZlRiSHhVVU0rcUtNbjBWOE5QMXBHb3kxaXp4bTdqQ0c3bXhhcFZUZWlmWHFi?=
- =?utf-8?B?SWVBMXM1emFiM1U0d3ZGSDBCUUJhRTJzeFhpYTBuUGRtbm8vOWUyaVJydTdU?=
- =?utf-8?B?WW5Ra2ZWRHU2aUtlemkrRlVMeUlwbm9UbmRTcmxwTjJnVTUwZGJuNDZzaUpQ?=
- =?utf-8?B?ZzlISnJycUtSWTNFS01iaSs3Q203KzNDelVKcVhpUVpzK3ljWmFMWWR6bzla?=
- =?utf-8?B?WStsWitya1NTWjVscXptSmdvdnh0TEdYdFdlY3BrZXRiN3krYW55akdJa21v?=
- =?utf-8?B?Q25mcnBhME9UcWVRZnNZWUFvOGJzOENCTnJCWDBTTmkrRnRHZ2VTVnNlTGN2?=
- =?utf-8?B?WEhvTlpCQUV2VXM1OHYreTBvRkNDbFB4VHVmQmdmamV1blVHeFluTkZnWmV2?=
- =?utf-8?B?VjYwcko4Vy83QnF1dkF2ZGthT2I2d0ovckxKNG1TakR5ZzNoOEhoQ1ZENXk3?=
- =?utf-8?B?bkRrTjNWRkJodWRpOHdyKy9MTWJIVEhIRG1sMXNlSThiaGRaT3RDcHZaVkhN?=
- =?utf-8?B?ZlZnQlRLbVBKR2MxN0E4N3o2enVoQXBHaklTTkhGUHZjalhGTTY2TVFhai9n?=
- =?utf-8?B?Zlc5a3lhcjJ1VTVnZXZYL3FLT3haVWgyY3oxQnNKTExzNTkvYld4SGR1Vk9p?=
- =?utf-8?B?dHR3U2RlVHI5N2ZKWktEeFVkUDFXZU9KakpxVThNcmg3U0F4VW15Vk8zdWt3?=
- =?utf-8?B?RDRSV29UVTlXMVkzc0lXYnhzOFZvaTlDeDBWbmxtZlIrZjBWR0tOY2Fvak8r?=
- =?utf-8?B?cGFmKzNtdTdxbjZrWUFuMC95VUFFVkFqUEg5NjVZU0k5VDZ2bndBb1JwVWZI?=
- =?utf-8?B?dWtKWkl4eC83NUcvU0ViL1dQSENEczMrbUZBT3BOQjY4eVUvVVRtWDU3TG4v?=
- =?utf-8?B?TjVUa3NuaW1QZ1dMSHc5eWJXb2g0eHdZU2pTaW9qRkVYL29Bd0NWRU1xaGky?=
- =?utf-8?B?TUtjcmdaUEIrNzl1a2hFS3VFMjZHQ3hzNUo1K01OK1lYeDdNL3FGdDBPVktH?=
- =?utf-8?B?MWRpVENUandzT3NMa1NuaHloQVZpMEdiTXRVYldQNHY0a2xVQmVOWDVhdmhx?=
- =?utf-8?B?Z2FjRmJXYkJNVHF0TFk0TXN6U0oxa20wN1NlYzZ3U1RhYnVmUzJ3dFZITlFk?=
- =?utf-8?B?ZnZuV09ZZ1ljL2gvWmk3MHZkanphM0YxbU5oQnowU0ZTQXQvdjJuVFJQTDVP?=
- =?utf-8?B?dmpneitacFdDc1dMK2tmSUtsOTUwdFdqcEdCcXVzcTlBajYvU2FmbVlFY2pP?=
- =?utf-8?B?MHRwWWR4bnprQTc2TkY4M2dwUnJBd2pjUE5LY2RoOHZRZHFQVGlHQzdONUxG?=
- =?utf-8?B?TThiVHJLZEpCSHFJbXdseW11RG5KNWxwdnRWdUxLOWo5RmxGRnNaRENnV2c5?=
- =?utf-8?B?d2haSjQ5aUtzUEZNTEhKMzdWaUl3Y1k1Mkk0Z1VQQXR3eCtkR2JPMTZ2UWxJ?=
- =?utf-8?B?czlia2s1M1FxbVgwRlQzZjJ6WkF5ZVRnVWgrK0JGbngwb3UzaGRxSHlGdGdP?=
- =?utf-8?B?Wm8ralR6MHY0eU1udkpYRnlWYXZnZzE3eHlBdS9xeE50b3M3cEJBcWZJVGxu?=
- =?utf-8?B?YnNEVFd4NWEzMzJaTkdXYVVrdEdqTnkzazV2aDRvUkZvYUJEYUhvSlhOK0c2?=
- =?utf-8?B?M3NNTlVBUHhUQkFMaVNhTnpQTEJzWWI4NnB4cXN2MnY3N2s3TklDYlJDZ0Fk?=
- =?utf-8?B?QkFFYURZdlpMSnhTK25FeHNaaVN6MFpkUURna2xtMCthZnBWNUJpS3dOWFpZ?=
- =?utf-8?B?bEpYWDJZaE8xaEl4QlFXc3hFK1VSeUhtVFpxR2ZFS3I0WnhDS0tqZEk4cmJt?=
- =?utf-8?B?eVJXK0JNMHc3djNjWFNjeDFRNFh0MFBYQU12cTI0dU9kbVMwaENNODVyYVNx?=
- =?utf-8?B?VXUyUXNNdDdGMG5KQXUzckxwZjZJSEZLUXp2M0hGb3VkNUxRMmI0QkJvWnZG?=
- =?utf-8?B?SDBRYXA5bXMxWWZWcWRaaWdmbmtXczZUUnExQWZrWmp3RDRkbXlEcHFVQkYw?=
- =?utf-8?Q?pKSbKa?=
+	=?utf-8?B?VzFHVHRISUJTQUdtTWNvVHJuaGh4UlZMM2g5Lzg0UlozU3hOcEI2YzkyRUFt?=
+ =?utf-8?B?TDBjNk9vQUYvR2ttYm9qZGl4RUxZTVVlY2JqdWlHNGZzalY5bUFvZUVFZXBR?=
+ =?utf-8?B?NFMrTGZId3dTUWZyQ0VEcEJSRjhWS3ZQS29pUVRBZnpnRW1xU1VFTUxnakNP?=
+ =?utf-8?B?S0ZuWVJLMjV5SjBkUFBBRldmLzI4NlZ5ZmNTSU9PUzBuQnRlUzJjOHBNZksz?=
+ =?utf-8?B?V1JRK2lwNWszL2FxZCtVSXBscStrL1Brb01JNE0xcjU2UUhsRnVvVSs0ZFJw?=
+ =?utf-8?B?aEpGdjIxeFVpOGxjRHNiVzBVZWF6NEQ0VEpZSHJqZVU1ZnZOeWNQbnAvbHVN?=
+ =?utf-8?B?ZVpHc0w0QjIwUHM0UU16dzVyWlBGUi9Ub3VxTis2c0llTnY5UjF5ZG5hNGg3?=
+ =?utf-8?B?OXZaOCttQXhqZVRucDJEdVpTU0VtWTNoUDhydkNXM0I0aGd4Z0FkVzJkRC8w?=
+ =?utf-8?B?QjhuczJXQXB5ZWNyMDZkNGY4SURUVjJ0UlFYVm81UUlnL3l3Y0pwb1BsU0dz?=
+ =?utf-8?B?Z1NmYTdGc0xBMEFCM1FjckRvUGtNTzArbTFjT04wOVZ6MlJhZU1oZ2lNMUd3?=
+ =?utf-8?B?QS8rOW1NMS91Z09sOGRsOUlKMnBaRlI4OG1vWGVWZi8zVWdISU1jdFZJdE9Q?=
+ =?utf-8?B?ZXhsYU1uSDlGb3JRUUdBZnVCR0RNeTBvSjh0WnlwazdzalBnZG05ZWJQOW5G?=
+ =?utf-8?B?eW12anh6SWQ2L1VUSHBWbW1EZFVSZmVGdkd5TjNsUzRJdHIwQ1Z4aDhuRWlp?=
+ =?utf-8?B?clpvL1VkQUJ0NnhxQmFicE5FTnZ0N0UwcFhXdEZLRm9aR3p1dU5HZDljR1NL?=
+ =?utf-8?B?Qy83bUpOSHNZN2Q1ZnVCT3RDSGQ5Y252aTFHSFM5V3VFVGhMR1g2Q1RPRTNN?=
+ =?utf-8?B?Z1dZa1dPU2VJQzAvekdScUxncFlCd2ZnWmxoT0x0MzlIZm9sMjdNalVTZ0Ja?=
+ =?utf-8?B?NFMySjZYc0hwamY1eStRRi9rZG80OU9ycVI2QURrQlRjbkdsUWhhbjVJMkNl?=
+ =?utf-8?B?TG9qUTA4Z1l3Q3lIc1pFK0JlU1BCN0NiT1FaeENxTEZRM3VucFgydWlVUDJV?=
+ =?utf-8?B?VUVDN25SZFhPUTZ1Y2N1cVpnK0gyTmpDQ01oa3BhUGVEbUNOZkhKWTVzSFFD?=
+ =?utf-8?B?TTNQWjRxQS9MUlhTZ3BQMENnZGgrNDVoOEFYSkpsWDNHL1NaSHBwMm9ZdmtF?=
+ =?utf-8?B?amcxTisvRFg3NlZqbmpra0NnaDN5ZjhWeVB4NGZYUStzbyt5enI5eE5jRDVr?=
+ =?utf-8?B?aUhJaFpWRHJQdDhxNmlmZkdKQUhWbWVydVpuWDU0S2FMS0xBWGRjNDd2SVZF?=
+ =?utf-8?B?NHZ4ZFRCb0s2M1FwZm9ESjlOOWJtMTllbkdYa1l3cGVYWW1WaGpzejhNbzkz?=
+ =?utf-8?B?a2JzbTBDdkJ0aGJ6NW5HS0tVdkVLNzlWMms0NGp0eXRBMlhHZ1RyMUpra2cw?=
+ =?utf-8?B?SExEYmw5aTYreVdOTzdVQllpT3p4RHN6ZHZML2FXVFhHeEh2Zi93R0h0dHJO?=
+ =?utf-8?B?V0lvUnJ0eGVjc3JBODVoWndmTG9NQVZvR21jVTJMR2cyVlpnWkpnYVowakdI?=
+ =?utf-8?B?SHFOWXVtdUZYL3dMRERzV1BTMjQwUGdzNStUR3pkYkZ6Vk9PTWU4cjRYY1Zk?=
+ =?utf-8?B?ZVBqa1ZpQ1VOYlAvbTlXa0VsRkthRkFhOHhtV3Eyd2VqVTB4WU43SUNGNWpL?=
+ =?utf-8?B?N1g2YjRsZWxVeU1hNkRiSEVvdys0ZFlIUjc0aW90ajRCYzNISkh4MFdFeTRK?=
+ =?utf-8?B?MGJhUjdzL2R1Nm5qbWY1dGoyZHFkQVFiRVZRemZTeWV6azRJSTJlekpkWU5o?=
+ =?utf-8?B?d3cvRFRTNVBJSms2eDFDYzR0aGNZQVdtK3dVemwxMy9CTUcxZkhnM21aR3Bz?=
+ =?utf-8?B?U0xhNHZMYXpOQ3V5TFk4ZVpvZEt0VGFwSXNES0VUd0NDMmozdWJVUFNEeDRX?=
+ =?utf-8?B?angycGlaYmhxQ2E3UW4wUERIUllmWklFeUZneVJRZGxHT3FrNVl5OG5PVDYv?=
+ =?utf-8?B?d2pOT2JBMHNseTJ6Skt5a1puZUYyU1pCZzhJK09yZGJLSUFNUUhzVG42cVJU?=
+ =?utf-8?Q?O48cfe?=
 X-Forefront-Antispam-Report:
-	CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:cn-mailer-00.localdomain;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(376014)(36860700013);DIR:OUT;SFP:1102;
+	CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:cn-mailer-00.localdomain;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(36860700013)(82310400026)(376014);DIR:OUT;SFP:1102;
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2025 17:58:10.2632
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2025 17:58:10.4972
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4aa30d0c-efb9-4e72-60bc-08ddb7ffacfd
+X-MS-Exchange-CrossTenant-Network-Message-Id: 94953d6d-0af7-461e-0c0c-08ddb7ffad21
 X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[cn-mailer-00.localdomain]
 X-MS-Exchange-CrossTenant-AuthSource:
 	BN1PEPF0000468D.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY1PR01MB9090
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY1PR01MB9200
 
 From: Dean Luick <dean.luick@cornelisnetworks.com>
 
-Update the list of available link speeds.  Fix comments.
+Add a private data pointer to the ucontext structure and add
+per-client pass-throughs.
 
 Signed-off-by: Dean Luick <dean.luick@cornelisnetworks.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 ---
- include/rdma/opa_port_info.h |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/infiniband/sw/rdmavt/vt.c |    8 ++++++++
+ include/rdma/rdma_vt.h            |    7 +++++++
+ 2 files changed, 15 insertions(+)
 
-diff --git a/include/rdma/opa_port_info.h b/include/rdma/opa_port_info.h
-index 73bcac90a048..fb66d3a1dfa9 100644
---- a/include/rdma/opa_port_info.h
-+++ b/include/rdma/opa_port_info.h
-@@ -93,9 +93,11 @@
- #define OPA_LINKINIT_QUARANTINED                (9 << 4)
- #define OPA_LINKINIT_INSUFIC_CAPABILITY         (10 << 4)
+diff --git a/drivers/infiniband/sw/rdmavt/vt.c b/drivers/infiniband/sw/rdmavt/vt.c
+index 5499025e8a0a..d25b970d2891 100644
+--- a/drivers/infiniband/sw/rdmavt/vt.c
++++ b/drivers/infiniband/sw/rdmavt/vt.c
+@@ -244,6 +244,10 @@ static int rvt_query_gid(struct ib_device *ibdev, u32 port_num,
+  */
+ static int rvt_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
+ {
++	struct rvt_dev_info *rdi = ib_to_rvt(uctx->device);
++
++	if (rdi->driver_f.alloc_ucontext)
++		return rdi->driver_f.alloc_ucontext(uctx, udata);
+ 	return 0;
+ }
  
--#define OPA_LINK_SPEED_NOP              0x0000  /*  Reserved (1-5 Gbps) */
--#define OPA_LINK_SPEED_12_5G            0x0001  /*  12.5 Gbps */
--#define OPA_LINK_SPEED_25G              0x0002  /*  25.78125?  Gbps (EDR) */
-+#define OPA_LINK_SPEED_NOP           0x0000  /* no change */
-+#define OPA_LINK_SPEED_12_5G         0x0001  /* 12.5 Gbps */
-+#define OPA_LINK_SPEED_25G           0x0002  /* 25.78125 Gbps */
-+#define OPA_LINK_SPEED_50G           0x0004  /* 53.125 Gbps */
-+#define OPA_LINK_SPEED_100G          0x0008  /* 106.25 Gbps */
+@@ -253,6 +257,10 @@ static int rvt_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata)
+  */
+ static void rvt_dealloc_ucontext(struct ib_ucontext *context)
+ {
++	struct rvt_dev_info *rdi = ib_to_rvt(context->device);
++
++	if (rdi->driver_f.dealloc_ucontext)
++		rdi->driver_f.dealloc_ucontext(context);
+ 	return;
+ }
  
- #define OPA_LINK_WIDTH_1X            0x0001
- #define OPA_LINK_WIDTH_2X            0x0002
+diff --git a/include/rdma/rdma_vt.h b/include/rdma/rdma_vt.h
+index c429d6ddb129..8671c6da16bb 100644
+--- a/include/rdma/rdma_vt.h
++++ b/include/rdma/rdma_vt.h
+@@ -149,6 +149,7 @@ struct rvt_driver_params {
+ /* User context */
+ struct rvt_ucontext {
+ 	struct ib_ucontext ibucontext;
++	void *priv;
+ };
+ 
+ /* Protection domain */
+@@ -359,6 +360,12 @@ struct rvt_driver_provided {
+ 
+ 	/* Get and return CPU to pin CQ processing thread */
+ 	int (*comp_vect_cpu_lookup)(struct rvt_dev_info *rdi, int comp_vect);
++
++	/* allocate a ucontext */
++	int (*alloc_ucontext)(struct ib_ucontext *uctx, struct ib_udata *udata);
++
++	/* deallocate a ucontext */
++	void (*dealloc_ucontext)(struct ib_ucontext *context);
+ };
+ 
+ struct rvt_dev_info {
 
 
 
