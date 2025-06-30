@@ -1,55 +1,55 @@
-Return-Path: <linux-rdma+bounces-11757-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11758-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E10CAEDA47
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 12:52:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96E6BAEDA48
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 12:52:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 457E23B2C2E
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 10:52:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0DDB17406B
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 10:52:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5688E248F55;
-	Mon, 30 Jun 2025 10:52:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B4962580E1;
+	Mon, 30 Jun 2025 10:52:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F7tH87e9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PXTyGr70"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16DC884A2B
-	for <linux-rdma@vger.kernel.org>; Mon, 30 Jun 2025 10:52:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA86E239E7C
+	for <linux-rdma@vger.kernel.org>; Mon, 30 Jun 2025 10:52:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751280766; cv=none; b=q4FODp0vCbWFDCDQC3xA8zK4YvSoAcpU3ODxVBUJldMRS8c8qfqnKHk8WA2TvAy6vKABzHNLwMYnuqzk0tKE9flO53+WADHH1gusvcMhptXpaQia4d2OcGt7PfVmbjKZMS1qEsgKrpi4C3wlYd6pEpZbNchjmBi6Nn4RrQcKFPM=
+	t=1751280770; cv=none; b=CqtQXTTci/ob7qqlXKVJ8WoVAhbmvK7WaVDdD9kWvgk/Vl1m6GgAeQLfqV4oRNip1f1GOwZpabaoZf6PrrzocU8g7easJLIUXi/UjoT7J5MgTwKwgRKqbWxT1lKu4Bk4xEUTCzZEY3gknEHVzPKMuXgeDSsAayCmeNeIdFDV928=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751280766; c=relaxed/simple;
-	bh=B6ehNfPVrYCNCvx+3xfnJY7sAvgX72HBX9l/sj2fk2g=;
+	s=arc-20240116; t=1751280770; c=relaxed/simple;
+	bh=H8UB6LetajtjxyMXvFhBLOX8boksPMUrlBe8IBU5tBk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iRENFkPYXPyTdapnn9B+JY+gALXnLFRzYXhKHzvaxcq3XsHAOn9wfX3muEWmwAdWyXM0AohWhW7ZehVB7weRsVSrDGNTLCVuQdz8WP1z1llaper/qXguqMx3R4G6IIhR5Se/lc9EFoKDEfDHOkVNgsju+5aZTVzoaEuwxYJ2A6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F7tH87e9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AC5DC4CEE3;
-	Mon, 30 Jun 2025 10:52:45 +0000 (UTC)
+	 MIME-Version; b=KqnTLz6XzHUJKE/g4Z9Hm7lj6eFf9WqXYUwP4LUaVKLD9u31eXhv6GHeo8U7HIRtOb0nlivHukmskcR3UkugqjTxJ1HKi5+20u5s97HSN4GeHPbw7BgSUAiI53gAhHX/ZnZrGk7aAMZzRBHYRUWCVRPS/b7Bc61oJH/2/rfCcLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PXTyGr70; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6DA9C4CEE3;
+	Mon, 30 Jun 2025 10:52:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751280765;
-	bh=B6ehNfPVrYCNCvx+3xfnJY7sAvgX72HBX9l/sj2fk2g=;
+	s=k20201202; t=1751280769;
+	bh=H8UB6LetajtjxyMXvFhBLOX8boksPMUrlBe8IBU5tBk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=F7tH87e98/h7e9zuDWrhLGR/qDLh2pGaaW6sWgReifisiEqrqe3lWi54uy6Apx87w
-	 1uRtyxDZsEzfIvGt7lp5q/psywvWDHQwXpr2delssyGyLsFXsWjiVJ1sbinGZlNih/
-	 PgkaBlVDCgaSw+wBioSFnvho7SFBHC7pcxwcaqrtv37EBfdZYkTTE7pOeyFom0opdk
-	 gkvQaPNXAjuFk7po9c5Kym8GligW+kSsY2rfXHjV6RSZLxMAafbu3SFwNdzSLNSLyi
-	 Poc7qeSo8xll8LsIIczGgJ0K07Pg4g/oMY7ZCR37nE6vKu1MpneQdvtlwo7ZmlVGUG
-	 ISAYlSnb2RQzQ==
+	b=PXTyGr70JRjknG/Tb2oqTgZIHF69649oy+00PAC70NxDpB9PBw5GHfL9TL7PMLE10
+	 ywgFh//SIuylnfva2dqxOoKlgt+ZcelRbsIhbtF1DAv8NkvPTtQ94qL8AwxKlQcb+O
+	 sUjT4mYDl0m01bqGyTI4JVzlEePVWa3mCwxOvtXrd07msCb4/p0QxvTIA1vKH96qOM
+	 ez5xR3WZccaafZjUw1s10Aa6V0a1pPreHtMyIUVSB7ckM7nQsS/oAKbbDk9v+N0GnH
+	 E5coALirwjAebZSl6aHKgD/LbCw/92gMdRBKtupaKADBDC8TA9PEXogYpgZnnDu8Iw
+	 Amu3Ts5auZrqw==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Mark Zhang <markzhang@nvidia.com>,
 	linux-rdma@vger.kernel.org,
 	Or Har-Toov <ohartoov@nvidia.com>,
 	Vlad Dumitrescu <vdumitrescu@nvidia.com>
-Subject: [PATCH rdma-next 2/5] RDMA/sa_query: Support IB service records resolution
-Date: Mon, 30 Jun 2025 13:52:32 +0300
-Message-ID: <9af6c82f3a3a9d975115a33235fb4ffc7c8edb21.1751279793.git.leonro@nvidia.com>
+Subject: [PATCH rdma-next 3/5] RDMA/cma: Support IB service record resolution
+Date: Mon, 30 Jun 2025 13:52:33 +0300
+Message-ID: <b6e82ad75522a13b5efe4ff86da0e465aab04cc2.1751279794.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.50.0
 In-Reply-To: <cover.1751279793.git.leonro@nvidia.com>
 References: <cover.1751279793.git.leonro@nvidia.com>
@@ -63,378 +63,380 @@ Content-Transfer-Encoding: 8bit
 
 From: Mark Zhang <markzhang@nvidia.com>
 
-Add an SA query API ib_sa_service_rec_get() to support building and
-sending SA query MADs that ask for service records with a specific
-name or ID, and receiving and parsing responses from the SM.
+Add new UCMA command and the corresponding CMA implementation. Userspace
+can send this command to request service resolution based on service
+name or ID.
+
+On a successful resolution, one or multiple service records are
+returned, the first one will be used as destination address by default.
+
+Two new CM events are added and returned to caller accordingly:
+  - RDMA_CM_EVENT_ADDRINFO_RESOLVED: Resolve succeeded;
+  - RDMA_CM_EVENT_ADDRINFO_ERROR:  Resolve failed.
+
+Internally two new CM states are added:
+  - RDMA_CM_ADDRINFO_QUERY: CM is in the process of IB service
+    resolution;
+  - RDMA_CM_ADDRINFO_RESOLVED: CM has finished the resolve process.
+
+With these new states, beside existing state transfer processes, 2 new
+processes are supported:
+ 1. The default address is used:
+    RDMA_CM_ADDR_BOUND ->
+      RDMA_CM_ADDRINFO_QUERY ->
+        RDMA_CM_ADDRINFO_RESOLVED ->
+          RDMA_CM_ROUTE_QUERY
+
+ 2. To use a different address:
+    RDMA_CM_ADDR_BOUND ->
+      RDMA_CM_ADDRINFO_QUERY->
+        RDMA_CM_ADDRINFO_RESOLVED ->
+          RDMA_CM_ADDR_QUERY ->
+            RDMA_CM_ADDR_RESOLVED ->
+              RDMA_CM_ROUTE_QUERY
+
+In the 2nd case, resolve_addrinfo returns multiple records, a user
+could call rdma_resolve_addr() with the one that is not the first.
 
 Signed-off-by: Or Har-Toov <ohartoov@nvidia.com>
 Signed-off-by: Mark Zhang <markzhang@nvidia.com>
 Reviewed-by: Vlad Dumitrescu <vdumitrescu@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/sa_query.c | 238 +++++++++++++++++++++++++++++
- include/rdma/ib_mad.h              |   1 +
- include/rdma/ib_sa.h               |  37 +++++
- 3 files changed, 276 insertions(+)
+ drivers/infiniband/core/cma.c      | 136 ++++++++++++++++++++++++++++-
+ drivers/infiniband/core/cma_priv.h |   4 +-
+ drivers/infiniband/core/ucma.c     |  30 ++++++-
+ include/rdma/rdma_cm.h             |  18 +++-
+ include/uapi/rdma/rdma_user_cm.h   |  20 ++++-
+ 5 files changed, 202 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
-index 770e9f18349b..c0a7af1b4fe4 100644
---- a/drivers/infiniband/core/sa_query.c
-+++ b/drivers/infiniband/core/sa_query.c
-@@ -152,6 +152,13 @@ struct ib_sa_mcmember_query {
- 	struct ib_sa_query sa_query;
- };
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 9b471548e7ae..5b2d3ae3f9fc 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -2076,6 +2076,7 @@ static void _destroy_id(struct rdma_id_private *id_priv,
+ 	kfree(id_priv->id.route.path_rec);
+ 	kfree(id_priv->id.route.path_rec_inbound);
+ 	kfree(id_priv->id.route.path_rec_outbound);
++	kfree(id_priv->id.route.service_recs);
  
-+struct ib_sa_service_query {
-+	void (*callback)(int status, struct sa_service_rec *rec,
-+			 unsigned int num_services, void *context);
-+	void *context;
-+	struct ib_sa_query sa_query;
-+};
-+
- static LIST_HEAD(ib_nl_request_list);
- static DEFINE_SPINLOCK(ib_nl_request_lock);
- static atomic_t ib_nl_sa_request_seq;
-@@ -686,6 +693,58 @@ static const struct ib_field guidinfo_rec_table[] = {
- 	  .size_bits    = 512 },
- };
- 
-+#define SERVICE_REC_FIELD(field) \
-+	.struct_offset_bytes = offsetof(struct sa_service_rec, field),     \
-+	.struct_size_bytes   = sizeof_field(struct sa_service_rec, field), \
-+	.field_name          = "sa_service_rec:" #field
-+
-+static const struct ib_field service_rec_table[] = {
-+	{ SERVICE_REC_FIELD(id),
-+	  .offset_words = 0,
-+	  .offset_bits  = 0,
-+	  .size_bits    = 64 },
-+	{ SERVICE_REC_FIELD(gid),
-+	  .offset_words = 2,
-+	  .offset_bits  = 0,
-+	  .size_bits    = 128 },
-+	{ SERVICE_REC_FIELD(pkey),
-+	  .offset_words = 6,
-+	  .offset_bits  = 0,
-+	  .size_bits    = 16 },
-+	{ RESERVED,
-+	  .offset_words = 6,
-+	  .offset_bits  = 16,
-+	  .size_bits    = 16 },
-+	{ SERVICE_REC_FIELD(lease),
-+	  .offset_words = 7,
-+	  .offset_bits  = 0,
-+	  .size_bits    = 32 },
-+	{ SERVICE_REC_FIELD(key),
-+	  .offset_words = 8,
-+	  .offset_bits  = 0,
-+	  .size_bits    = 128 },
-+	{ SERVICE_REC_FIELD(name),
-+	  .offset_words = 12,
-+	  .offset_bits  = 0,
-+	  .size_bits    = 512 },
-+	{ SERVICE_REC_FIELD(data_8),
-+	  .offset_words = 28,
-+	  .offset_bits  = 0,
-+	  .size_bits    = 128 },
-+	{ SERVICE_REC_FIELD(data_16),
-+	  .offset_words = 32,
-+	  .offset_bits  = 0,
-+	  .size_bits    = 128 },
-+	{ SERVICE_REC_FIELD(data_32),
-+	  .offset_words = 36,
-+	  .offset_bits  = 0,
-+	  .size_bits    = 128 },
-+	{ SERVICE_REC_FIELD(data_64),
-+	  .offset_words = 40,
-+	  .offset_bits  = 0,
-+	  .size_bits    = 128 },
-+};
-+
- #define RDMA_PRIMARY_PATH_MAX_REC_NUM 3
- 
- static inline void ib_sa_disable_local_svc(struct ib_sa_query *query)
-@@ -1392,6 +1451,20 @@ void ib_sa_pack_path(struct sa_path_rec *rec, void *attribute)
- }
- EXPORT_SYMBOL(ib_sa_pack_path);
- 
-+void ib_sa_pack_service(struct sa_service_rec *rec, void *attribute)
-+{
-+	ib_pack(service_rec_table, ARRAY_SIZE(service_rec_table), rec,
-+		attribute);
-+}
-+EXPORT_SYMBOL(ib_sa_pack_service);
-+
-+void ib_sa_unpack_service(void *attribute, struct sa_service_rec *rec)
-+{
-+	ib_unpack(service_rec_table, ARRAY_SIZE(service_rec_table), attribute,
-+		  rec);
-+}
-+EXPORT_SYMBOL(ib_sa_unpack_service);
-+
- static bool ib_sa_opa_pathrecord_support(struct ib_sa_client *client,
- 					 struct ib_sa_device *sa_dev,
- 					 u32 port_num)
-@@ -1481,6 +1554,68 @@ static void ib_sa_path_rec_callback(struct ib_sa_query *sa_query,
- 	}
- }
- 
-+#define IB_SA_DATA_OFFS 56
-+#define IB_SERVICE_REC_SZ 176
-+
-+static void ib_unpack_service_rmpp(struct sa_service_rec *rec,
-+				   struct ib_mad_recv_wc *mad_wc,
-+				   int num_services)
-+{
-+	unsigned int cp_sz, data_i, data_size, rec_i = 0, buf_i = 0;
-+	struct ib_mad_recv_buf *mad_buf;
-+	u8 buf[IB_SERVICE_REC_SZ];
-+	u8 *data;
-+
-+	data_size = sizeof(((struct ib_sa_mad *) mad_buf->mad)->data);
-+
-+	list_for_each_entry(mad_buf, &mad_wc->rmpp_list, list) {
-+		data = ((struct ib_sa_mad *) mad_buf->mad)->data;
-+		data_i = 0;
-+		while (data_i < data_size && rec_i < num_services) {
-+			cp_sz = min(IB_SERVICE_REC_SZ - buf_i,
-+				    data_size - data_i);
-+			memcpy(buf + buf_i, data + data_i, cp_sz);
-+			data_i += cp_sz;
-+			buf_i += cp_sz;
-+			if (buf_i == IB_SERVICE_REC_SZ) {
-+				ib_sa_unpack_service(buf, rec + rec_i);
-+				buf_i = 0;
-+				rec_i++;
-+			}
-+		}
-+	}
-+}
-+
-+static void ib_sa_service_rec_callback(struct ib_sa_query *sa_query, int status,
-+				       struct ib_mad_recv_wc *mad_wc)
-+{
-+	struct ib_sa_service_query *query =
-+		container_of(sa_query, struct ib_sa_service_query, sa_query);
-+	struct sa_service_rec *rec;
-+	int num_services;
-+
-+	if (!mad_wc || !mad_wc->recv_buf.mad) {
-+		query->callback(status, NULL, 0, query->context);
-+		return;
-+	}
-+
-+	num_services = (mad_wc->mad_len - IB_SA_DATA_OFFS) / IB_SERVICE_REC_SZ;
-+	if (!num_services) {
-+		query->callback(-ENODATA, NULL, 0, query->context);
-+		return;
-+	}
-+
-+	rec = kmalloc_array(num_services, sizeof(*rec), GFP_KERNEL);
-+	if (!rec) {
-+		query->callback(-ENOMEM, NULL, 0, query->context);
-+		return;
-+	}
-+
-+	ib_unpack_service_rmpp(rec, mad_wc, num_services);
-+	query->callback(status, rec, num_services, query->context);
-+	kfree(rec);
-+}
-+
- static void ib_sa_path_rec_release(struct ib_sa_query *sa_query)
+ 	put_net(id_priv->id.route.addr.dev_addr.net);
+ 	kfree(id_priv);
+@@ -3382,13 +3383,18 @@ static int cma_resolve_iboe_route(struct rdma_id_private *id_priv)
+ int rdma_resolve_route(struct rdma_cm_id *id, unsigned long timeout_ms)
  {
- 	struct ib_sa_path_query *query =
-@@ -1490,6 +1625,14 @@ static void ib_sa_path_rec_release(struct ib_sa_query *sa_query)
- 	kfree(query);
- }
+ 	struct rdma_id_private *id_priv;
++	enum rdma_cm_state state;
+ 	int ret;
  
-+static void ib_sa_service_rec_release(struct ib_sa_query *sa_query)
-+{
-+	struct ib_sa_service_query *query =
-+		container_of(sa_query, struct ib_sa_service_query, sa_query);
+ 	if (!timeout_ms)
+ 		return -EINVAL;
+ 
+ 	id_priv = container_of(id, struct rdma_id_private, id);
+-	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_RESOLVED, RDMA_CM_ROUTE_QUERY))
++	state = id_priv->state;
++	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_RESOLVED,
++			   RDMA_CM_ROUTE_QUERY) &&
++	    !cma_comp_exch(id_priv, RDMA_CM_ADDRINFO_RESOLVED,
++			   RDMA_CM_ROUTE_QUERY))
+ 		return -EINVAL;
+ 
+ 	cma_id_get(id_priv);
+@@ -3409,7 +3415,7 @@ int rdma_resolve_route(struct rdma_cm_id *id, unsigned long timeout_ms)
+ 
+ 	return 0;
+ err:
+-	cma_comp_exch(id_priv, RDMA_CM_ROUTE_QUERY, RDMA_CM_ADDR_RESOLVED);
++	cma_comp_exch(id_priv, RDMA_CM_ROUTE_QUERY, state);
+ 	cma_id_put(id_priv);
+ 	return ret;
+ }
+@@ -5506,3 +5512,129 @@ static void __exit cma_cleanup(void)
+ 
+ module_init(cma_init);
+ module_exit(cma_cleanup);
 +
-+	kfree(query);
++static void cma_query_ib_service_handler(int status,
++					 struct sa_service_rec *recs,
++					 unsigned int num_recs, void *context)
++{
++	struct cma_work *work = context;
++	struct rdma_id_private *id_priv = work->id;
++	struct sockaddr_ib *addr;
++
++	if (status)
++		goto fail;
++
++	if (!num_recs) {
++		status = -ENOENT;
++		goto fail;
++	}
++
++	if (id_priv->id.route.service_recs) {
++		status = -EALREADY;
++		goto fail;
++	}
++
++	id_priv->id.route.service_recs =
++		kmalloc_array(num_recs, sizeof(*recs), GFP_KERNEL);
++	if (!id_priv->id.route.service_recs) {
++		status = -ENOMEM;
++		goto fail;
++	}
++
++	id_priv->id.route.num_service_recs = num_recs;
++	memcpy(id_priv->id.route.service_recs, recs, sizeof(*recs) * num_recs);
++
++	addr = (struct sockaddr_ib *)&id_priv->id.route.addr.dst_addr;
++	addr->sib_family = AF_IB;
++	addr->sib_addr = *(struct ib_addr *)&recs->gid;
++	addr->sib_pkey = recs->pkey;
++	addr->sib_sid = recs->id;
++	rdma_addr_set_dgid(&id_priv->id.route.addr.dev_addr,
++			   (union ib_gid *)&addr->sib_addr);
++	ib_addr_set_pkey(&id_priv->id.route.addr.dev_addr,
++			 ntohs(addr->sib_pkey));
++
++	queue_work(cma_wq, &work->work);
++	return;
++
++fail:
++	work->old_state = RDMA_CM_ADDRINFO_QUERY;
++	work->new_state = RDMA_CM_ADDR_BOUND;
++	work->event.event = RDMA_CM_EVENT_ADDRINFO_ERROR;
++	work->event.status = status;
++	pr_debug_ratelimited(
++		"RDMA CM: SERVICE_ERROR: failed to query service record. status %d\n",
++		status);
++	queue_work(cma_wq, &work->work);
 +}
 +
- /**
-  * ib_sa_path_rec_get - Start a Path get query
-  * @client:SA client
-@@ -1620,6 +1763,101 @@ int ib_sa_path_rec_get(struct ib_sa_client *client,
- }
- EXPORT_SYMBOL(ib_sa_path_rec_get);
- 
-+/**
-+ * ib_sa_service_rec_get - Start a Service get query
-+ * @client: SA client
-+ * @device: device to send query on
-+ * @port_num: port number to send query on
-+ * @rec: Service Record to send in query
-+ * @comp_mask: component mask to send in query
-+ * @timeout_ms: time to wait for response
-+ * @gfp_mask: GFP mask to use for internal allocations
-+ * @callback: function called when query completes, times out or is
-+ * canceled
-+ * @context: opaque user context passed to callback
-+ * @sa_query: query context, used to cancel query
-+ *
-+ * Send a Service Record Get query to the SA to look up a path.  The
-+ * callback function will be called when the query completes (or
-+ * fails); status is 0 for a successful response, -EINTR if the query
-+ * is canceled, -ETIMEDOUT is the query timed out, or -EIO if an error
-+ * occurred sending the query.  The resp parameter of the callback is
-+ * only valid if status is 0.
-+ *
-+ * If the return value of ib_sa_service_rec_get() is negative, it is an
-+ * error code. Otherwise it is a query ID that can be used to cancel
-+ * the query.
-+ */
-+int ib_sa_service_rec_get(struct ib_sa_client *client,
-+			  struct ib_device *device, u32 port_num,
-+			  struct sa_service_rec *rec,
-+			  ib_sa_comp_mask comp_mask,
-+			  unsigned long timeout_ms, gfp_t gfp_mask,
-+			  void (*callback)(int status,
-+					   struct sa_service_rec *resp,
-+					   unsigned int num_services,
-+					   void *context),
-+			  void *context, struct ib_sa_query **sa_query)
++static int cma_resolve_ib_service(struct rdma_id_private *id_priv,
++				  struct rdma_ucm_ib_service *ibs)
 +{
-+	struct ib_sa_device *sa_dev = ib_get_client_data(device, &sa_client);
-+	struct ib_sa_service_query *query;
-+	struct ib_mad_agent *agent;
-+	struct ib_sa_port   *port;
-+	struct ib_sa_mad *mad;
-+	int ret;
++	struct sa_service_rec sr = {};
++	ib_sa_comp_mask mask = 0;
++	struct cma_work *work;
 +
-+	if (!sa_dev)
-+		return -ENODEV;
-+
-+	port = &sa_dev->port[port_num - sa_dev->start_port];
-+	agent = port->agent;
-+
-+	query = kzalloc(sizeof(*query), gfp_mask);
-+	if (!query)
++	work = kzalloc(sizeof(*work), GFP_KERNEL);
++	if (!work)
 +		return -ENOMEM;
 +
-+	query->sa_query.port = port;
++	cma_id_get(id_priv);
 +
-+	ret = alloc_mad(&query->sa_query, gfp_mask);
++	work->id = id_priv;
++	INIT_WORK(&work->work, cma_work_handler);
++	work->old_state = RDMA_CM_ADDRINFO_QUERY;
++	work->new_state = RDMA_CM_ADDRINFO_RESOLVED;
++	work->event.event = RDMA_CM_EVENT_ADDRINFO_RESOLVED;
++
++	if (ibs->flags & RDMA_USER_CM_IB_SERVICE_FLAG_ID) {
++		sr.id = cpu_to_be64(ibs->service_id);
++		mask |= IB_SA_SERVICE_REC_SERVICE_ID;
++	}
++	if (ibs->flags & RDMA_USER_CM_IB_SERVICE_FLAG_NAME) {
++		strscpy(sr.name, ibs->service_name, sizeof(sr.name));
++		mask |= IB_SA_SERVICE_REC_SERVICE_NAME;
++	}
++
++	id_priv->query_id = ib_sa_service_rec_get(&sa_client,
++						  id_priv->id.device,
++						  id_priv->id.port_num,
++						  &sr, mask,
++						  2000, GFP_KERNEL,
++						  cma_query_ib_service_handler,
++						  work, &id_priv->query);
++
++	if (id_priv->query_id < 0) {
++		cma_id_put(id_priv);
++		kfree(work);
++		return id_priv->query_id;
++	}
++
++	return 0;
++}
++
++int rdma_resolve_ib_service(struct rdma_cm_id *id,
++			    struct rdma_ucm_ib_service *ibs)
++{
++	struct rdma_id_private *id_priv;
++	int ret;
++
++	id_priv = container_of(id, struct rdma_id_private, id);
++	if (!id_priv->cma_dev ||
++	    !cma_comp_exch(id_priv, RDMA_CM_ADDR_BOUND, RDMA_CM_ADDRINFO_QUERY))
++		return -EINVAL;
++
++	if (rdma_cap_ib_sa(id->device, id->port_num))
++		ret = cma_resolve_ib_service(id_priv, ibs);
++	else
++		ret = -EOPNOTSUPP;
++
 +	if (ret)
-+		goto err1;
++		goto err;
 +
-+	ib_sa_client_get(client);
-+	query->sa_query.client = client;
-+	query->callback        = callback;
-+	query->context         = context;
-+
-+	mad = query->sa_query.mad_buf->mad;
-+	init_mad(&query->sa_query, agent);
-+
-+	query->sa_query.rmpp_callback = callback ? ib_sa_service_rec_callback :
-+		NULL;
-+	query->sa_query.release = ib_sa_service_rec_release;
-+	mad->mad_hdr.method	= IB_MGMT_METHOD_GET_TABLE;
-+	mad->mad_hdr.attr_id	= cpu_to_be16(IB_SA_ATTR_SERVICE_REC);
-+	mad->sa_hdr.comp_mask	= comp_mask;
-+
-+	ib_sa_pack_service(rec, mad->data);
-+
-+	*sa_query = &query->sa_query;
-+	query->sa_query.mad_buf->context[1] = rec;
-+
-+	ret = send_mad(&query->sa_query, timeout_ms, gfp_mask);
-+	if (ret < 0)
-+		goto err2;
-+
-+	return ret;
-+
-+err2:
-+	*sa_query = NULL;
-+	ib_sa_client_put(query->sa_query.client);
-+	free_mad(&query->sa_query);
-+err1:
-+	kfree(query);
++	return 0;
++err:
++	cma_comp_exch(id_priv, RDMA_CM_ADDRINFO_QUERY, RDMA_CM_ADDR_BOUND);
 +	return ret;
 +}
-+EXPORT_SYMBOL(ib_sa_service_rec_get);
-+
- static void ib_sa_mcmember_rec_callback(struct ib_sa_query *sa_query,
- 					int status, struct ib_sa_mad *mad)
- {
-diff --git a/include/rdma/ib_mad.h b/include/rdma/ib_mad.h
-index 3f1b58d8b4bf..8bd0e1eb393b 100644
---- a/include/rdma/ib_mad.h
-+++ b/include/rdma/ib_mad.h
-@@ -48,6 +48,7 @@
- #define IB_MGMT_METHOD_REPORT			0x06
- #define IB_MGMT_METHOD_REPORT_RESP		0x86
- #define IB_MGMT_METHOD_TRAP_REPRESS		0x07
-+#define IB_MGMT_METHOD_GET_TABLE		0x12
- 
- #define IB_MGMT_METHOD_RESP			0x80
- #define IB_BM_ATTR_MOD_RESP			cpu_to_be32(1)
-diff --git a/include/rdma/ib_sa.h b/include/rdma/ib_sa.h
-index b46353fc53bf..95e8924ad563 100644
---- a/include/rdma/ib_sa.h
-+++ b/include/rdma/ib_sa.h
-@@ -189,6 +189,20 @@ struct sa_path_rec {
- 	u32 flags;
++EXPORT_SYMBOL(rdma_resolve_ib_service);
+diff --git a/drivers/infiniband/core/cma_priv.h b/drivers/infiniband/core/cma_priv.h
+index b7354c94cf1b..c604b601f4d9 100644
+--- a/drivers/infiniband/core/cma_priv.h
++++ b/drivers/infiniband/core/cma_priv.h
+@@ -47,7 +47,9 @@ enum rdma_cm_state {
+ 	RDMA_CM_ADDR_BOUND,
+ 	RDMA_CM_LISTEN,
+ 	RDMA_CM_DEVICE_REMOVAL,
+-	RDMA_CM_DESTROYING
++	RDMA_CM_DESTROYING,
++	RDMA_CM_ADDRINFO_QUERY,
++	RDMA_CM_ADDRINFO_RESOLVED
  };
  
-+struct sa_service_rec {
-+	__be64 id;
-+	__u8 gid[16];
-+	__be16 pkey;
-+	__u8 reserved[2];
-+	__be32 lease;
-+	__u8 key[16];
-+	__u8 name[64];
-+	__u8 data_8[16];
-+	__be16 data_16[8];
-+	__be32 data_32[4];
-+	__be64 data_64[2];
-+};
+ struct rdma_id_private {
+diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
+index 6e700b974033..1915f4e68308 100644
+--- a/drivers/infiniband/core/ucma.c
++++ b/drivers/infiniband/core/ucma.c
+@@ -282,6 +282,10 @@ static struct ucma_event *ucma_create_uevent(struct ucma_context *ctx,
+ 	}
+ 	uevent->resp.event = event->event;
+ 	uevent->resp.status = event->status;
 +
- static inline enum ib_gid_type
- 		sa_conv_pathrec_to_gid_type(struct sa_path_rec *rec)
- {
-@@ -417,6 +431,17 @@ int ib_sa_path_rec_get(struct ib_sa_client *client, struct ib_device *device,
- 					unsigned int num_prs, void *context),
- 		       void *context, struct ib_sa_query **query);
++	if (event->event == RDMA_CM_EVENT_ADDRINFO_RESOLVED)
++		goto out;
++
+ 	if (ctx->cm_id->qp_type == IB_QPT_UD)
+ 		ucma_copy_ud_event(ctx->cm_id->device, &uevent->resp.param.ud,
+ 				   &event->param.ud);
+@@ -289,6 +293,7 @@ static struct ucma_event *ucma_create_uevent(struct ucma_context *ctx,
+ 		ucma_copy_conn_event(&uevent->resp.param.conn,
+ 				     &event->param.conn);
  
-+int ib_sa_service_rec_get(struct ib_sa_client *client,
-+			  struct ib_device *device, u32 port_num,
-+			  struct sa_service_rec *rec,
-+			  ib_sa_comp_mask comp_mask,
-+			  unsigned long timeout_ms, gfp_t gfp_mask,
-+			  void (*callback)(int status,
-+					   struct sa_service_rec *resp,
-+					   unsigned int num_services,
-+					   void *context),
-+			  void *context, struct ib_sa_query **sa_query);
++out:
+ 	uevent->resp.ece.vendor_id = event->ece.vendor_id;
+ 	uevent->resp.ece.attr_mod = event->ece.attr_mod;
+ 	return uevent;
+@@ -728,6 +733,28 @@ static ssize_t ucma_resolve_addr(struct ucma_file *file,
+ 	return ret;
+ }
+ 
++static ssize_t ucma_resolve_ib_service(struct ucma_file *file,
++				       const char __user *inbuf, int in_len,
++				       int out_len)
++{
++	struct rdma_ucm_resolve_ib_service cmd;
++	struct ucma_context *ctx;
++	int ret;
 +
- struct ib_sa_multicast {
- 	struct ib_sa_mcmember_rec rec;
- 	ib_sa_comp_mask		comp_mask;
-@@ -508,6 +533,18 @@ int ib_init_ah_attr_from_path(struct ib_device *device, u32 port_num,
++	if (copy_from_user(&cmd, inbuf, sizeof(cmd)))
++		return -EFAULT;
++
++	ctx = ucma_get_ctx(file, cmd.id);
++	if (IS_ERR(ctx))
++		return PTR_ERR(ctx);
++
++	mutex_lock(&ctx->mutex);
++	ret = rdma_resolve_ib_service(ctx->cm_id, &cmd.ibs);
++	mutex_unlock(&ctx->mutex);
++	ucma_put_ctx(ctx);
++	return ret;
++}
++
+ static ssize_t ucma_resolve_route(struct ucma_file *file,
+ 				  const char __user *inbuf,
+ 				  int in_len, int out_len)
+@@ -1703,7 +1730,8 @@ static ssize_t (*ucma_cmd_table[])(struct ucma_file *file,
+ 	[RDMA_USER_CM_CMD_QUERY]	 = ucma_query,
+ 	[RDMA_USER_CM_CMD_BIND]		 = ucma_bind,
+ 	[RDMA_USER_CM_CMD_RESOLVE_ADDR]	 = ucma_resolve_addr,
+-	[RDMA_USER_CM_CMD_JOIN_MCAST]	 = ucma_join_multicast
++	[RDMA_USER_CM_CMD_JOIN_MCAST]	 = ucma_join_multicast,
++	[RDMA_USER_CM_CMD_RESOLVE_IB_SERVICE] = ucma_resolve_ib_service
+ };
+ 
+ static ssize_t ucma_write(struct file *filp, const char __user *buf,
+diff --git a/include/rdma/rdma_cm.h b/include/rdma/rdma_cm.h
+index d1593ad47e28..72d1568e4cfb 100644
+--- a/include/rdma/rdma_cm.h
++++ b/include/rdma/rdma_cm.h
+@@ -33,7 +33,9 @@ enum rdma_cm_event_type {
+ 	RDMA_CM_EVENT_MULTICAST_JOIN,
+ 	RDMA_CM_EVENT_MULTICAST_ERROR,
+ 	RDMA_CM_EVENT_ADDR_CHANGE,
+-	RDMA_CM_EVENT_TIMEWAIT_EXIT
++	RDMA_CM_EVENT_TIMEWAIT_EXIT,
++	RDMA_CM_EVENT_ADDRINFO_RESOLVED,
++	RDMA_CM_EVENT_ADDRINFO_ERROR
+ };
+ 
+ const char *__attribute_const__ rdma_event_msg(enum rdma_cm_event_type event);
+@@ -63,6 +65,9 @@ struct rdma_route {
+ 	 * 2 - Both primary and alternate path are available
+ 	 */
+ 	int num_pri_alt_paths;
++
++	unsigned int num_service_recs;
++	struct sa_service_rec *service_recs;
+ };
+ 
+ struct rdma_conn_param {
+@@ -197,6 +202,17 @@ int rdma_resolve_addr(struct rdma_cm_id *id, struct sockaddr *src_addr,
   */
- void ib_sa_pack_path(struct sa_path_rec *rec, void *attribute);
+ int rdma_resolve_route(struct rdma_cm_id *id, unsigned long timeout_ms);
  
 +/**
-+ * ib_sa_pack_service - Convert a service record from struct ib_sa_service_rec
-+ * to IB MAD wire format.
++ * rdma_resolve_ib_service - Resolve the IB service record of the
++ *   service with the given service ID or name.
++ *
++ * This function is optional in the rdma cm flow. It is called on the client
++ * side of a connection, before calling rdma_resolve_route. The resolution
++ * can be done once per rdma_cm_id.
 + */
-+void ib_sa_pack_service(struct sa_service_rec *rec, void *attribute);
-+
-+/**
-+ * ib_sa_unpack_service - Convert a service record from MAD format to struct
-+ * ib_sa_service_rec.
-+ */
-+void ib_sa_unpack_service(void *attribute, struct sa_service_rec *rec);
++int rdma_resolve_ib_service(struct rdma_cm_id *id,
++			    struct rdma_ucm_ib_service *ibs);
 +
  /**
-  * ib_sa_unpack_path - Convert a path record from MAD format to struct
-  * ib_sa_path_rec.
+  * rdma_create_qp - Allocate a QP and associate it with the specified RDMA
+  * identifier.
+diff --git a/include/uapi/rdma/rdma_user_cm.h b/include/uapi/rdma/rdma_user_cm.h
+index 7cea03581f79..8799623bcba0 100644
+--- a/include/uapi/rdma/rdma_user_cm.h
++++ b/include/uapi/rdma/rdma_user_cm.h
+@@ -67,7 +67,8 @@ enum {
+ 	RDMA_USER_CM_CMD_QUERY,
+ 	RDMA_USER_CM_CMD_BIND,
+ 	RDMA_USER_CM_CMD_RESOLVE_ADDR,
+-	RDMA_USER_CM_CMD_JOIN_MCAST
++	RDMA_USER_CM_CMD_JOIN_MCAST,
++	RDMA_USER_CM_CMD_RESOLVE_IB_SERVICE
+ };
+ 
+ /* See IBTA Annex A11, servies ID bytes 4 & 5 */
+@@ -338,4 +339,21 @@ struct rdma_ucm_migrate_resp {
+ 	__u32 events_reported;
+ };
+ 
++enum {
++	RDMA_USER_CM_IB_SERVICE_FLAG_ID = 1 << 0,
++	RDMA_USER_CM_IB_SERVICE_FLAG_NAME = 1 << 1,
++};
++
++#define RDMA_USER_CM_IB_SERVICE_NAME_SIZE 64
++struct rdma_ucm_ib_service {
++	__u64 service_id;
++	__u8  service_name[RDMA_USER_CM_IB_SERVICE_NAME_SIZE];
++	__u32 flags;
++	__u32 reserved;
++};
++
++struct rdma_ucm_resolve_ib_service {
++	__u32 id;
++	struct rdma_ucm_ib_service ibs;
++};
+ #endif /* RDMA_USER_CM_H */
 -- 
 2.50.0
 
