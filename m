@@ -1,55 +1,55 @@
-Return-Path: <linux-rdma+bounces-11759-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11760-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04295AEDA4C
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 12:53:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3BB6AEDA4B
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 12:53:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A58E7A9694
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 10:51:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEA9E3B22DC
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 10:52:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DD7F2586C8;
-	Mon, 30 Jun 2025 10:52:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB83A246766;
+	Mon, 30 Jun 2025 10:52:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QqIkmwa9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yhl5Vfsi"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E15425A655
-	for <linux-rdma@vger.kernel.org>; Mon, 30 Jun 2025 10:52:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B12884A2B
+	for <linux-rdma@vger.kernel.org>; Mon, 30 Jun 2025 10:52:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751280774; cv=none; b=lsiaFgakByNfUPmyeIGLhe46fgEeEsLpnhQVgCg5rf0pbrZiyzrl6uRt/OI8K9aVTnjq0tP03v2HeEuVMgGD9Oa9eGDD6XW6sSD4VceFDv3urmCQIRHz3BAPA0Gc+qIJKMRbgZUYeoJYyEXkO81MJ8U2xEwWwNosK7dcEVw2l78=
+	t=1751280778; cv=none; b=oHQnS9c79S2EZyGxQYOsBNKbnHxVKhQpKfZQH8KaVQgX9DWemU7U/viQGjZbRPZz+2PmasznONItqGSbQjj4Q+N7wX5EiE9sovJJfUo+EMum4V9WYt0tMddTYokCf+h1uwVKBbgLmhFST4yjCc0IJUxYLburuBlnE632HQX2BA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751280774; c=relaxed/simple;
-	bh=XEuHXlk60GFEVErQ3WIdITG8HphrCLNAXp/UTfaFdTk=;
+	s=arc-20240116; t=1751280778; c=relaxed/simple;
+	bh=8lONfLY7XhWyXjxZJfQ6w+rmtSlSoWHnj6Iyz+rQ5Rw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=O7lxKIZedXl9vdzU9afbVGQh7hc+Fxbtab0FdOIne08oLtP1xnOoaNGU9g+HlMNVEsYdoqL0v0d1FHVMo5H1bAxDhBUj8l3CtsmT79MUII7XpQBAm7Zq7eEkeNca+xtBii661x2hg7dGnsxvYrLKOY1KKDPOBMFp3tuyGU18YzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QqIkmwa9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E743C4CEE3;
-	Mon, 30 Jun 2025 10:52:53 +0000 (UTC)
+	 MIME-Version; b=tw4y3lt92MOgYR3J4zIOMdHP0u6xJnoR+f3fxwCWPs/qOjhKX4agNIkOPZcP23tmJcSNh/w6MWp33Ds2JondtBAPKU3uEDCQqiz9+bSqw2t7zCF2xyoFAP0lJF2sTKLwFDYtBNK0QRnBGuGUQUArSIDtf6QwF5dAS7H2HRkrcbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yhl5Vfsi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E38AC4CEE3;
+	Mon, 30 Jun 2025 10:52:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751280773;
-	bh=XEuHXlk60GFEVErQ3WIdITG8HphrCLNAXp/UTfaFdTk=;
+	s=k20201202; t=1751280778;
+	bh=8lONfLY7XhWyXjxZJfQ6w+rmtSlSoWHnj6Iyz+rQ5Rw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QqIkmwa9/8IENxlKhYOZPoMn797o4MEbb8cR1AACt/TSPUqHn2rgqzmSvhN1J6V9F
-	 sCzxOspo6ZJh5EGrEfu2FW+Wm9mXbyj3T8uk9X2CtzyTwdhk9phgv32oC68xuKNAYu
-	 1lqxyp2+tJI4/B+yoFWTkOqTMVwKWLPuuz3Jx1PH+encgu6Btcca3WzkpjOJfhnAcg
-	 ajJk3FMr89rlgPiglRzrEnASNU1xORzD0/rMh4c1I6ssKzWFnOKnBSGZe8huYMcS1p
-	 3JJ4Ug92zXw7r08v7eKRtIatQsXWme889AOmfvoEtDr2X9r0zmnw5N+hCdVHlg1tjm
-	 Bs1y63KjqiCkw==
+	b=Yhl5VfsiMOEOPPyqRV0179yfMbXQEYpdf0BqB96jamBxQWRl9QbxeKlbdYUtEstU+
+	 vUkzVHqRe041jJB6McyYts8gV33WBG8yllgulC/xXlYh2sW/EUz7NLYFjPHCNT51iw
+	 DhJ67sJkw4K1ChcyIFSiXSQZoFwTnWZkb9EpfGCP5A3U+/pE+0HHkNPkx1EIvPdOcP
+	 YtqBgpS1w+6oNHnZZogsop0s0YcPTZ7R9MUgkDEobWbjfCcz+KLO9GIoXchabWOTQq
+	 SoKxQv3UFcXRVUlXgDavn37NZl+hPAIGFaL3rkCi7vd5KLZmmJvC7Qj04EhmYdIGik
+	 u9b+6/GGNVLfA==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Mark Zhang <markzhang@nvidia.com>,
 	linux-rdma@vger.kernel.org,
 	Or Har-Toov <ohartoov@nvidia.com>,
 	Vlad Dumitrescu <vdumitrescu@nvidia.com>
-Subject: [PATCH rdma-next 4/5] RDMA/ucma: Support query resolved service records
-Date: Mon, 30 Jun 2025 13:52:34 +0300
-Message-ID: <1090ee7c00c3f8058c4f9e7557de983504a16715.1751279794.git.leonro@nvidia.com>
+Subject: [PATCH rdma-next 5/5] RDMA/ucma: Support write an event into a CM
+Date: Mon, 30 Jun 2025 13:52:35 +0300
+Message-ID: <fdf49d0b17a45933c5d8c1d90605c9447d9a3c73.1751279794.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.50.0
 In-Reply-To: <cover.1751279793.git.leonro@nvidia.com>
 References: <cover.1751279793.git.leonro@nvidia.com>
@@ -63,126 +63,158 @@ Content-Transfer-Encoding: 8bit
 
 From: Mark Zhang <markzhang@nvidia.com>
 
-Enable user-space to query resolved service records through a ucma
-command when a RDMA_CM_EVENT_ADDRINFO_RESOLVED event is received.
+Enable user-space to inject an event into a CM through it's event
+channel. Two new events are added and supported: RDMA_CM_EVENT_USER and
+RDMA_CM_EVENT_INTERNAL. With these 2 events a new event parameter "arg"
+is supported, which is passed from sender to receiver transparently.
 
-Signed-off-by: Or Har-Toov <ohartoov@nvidia.com>
+With this feature an application is able to write an event into a CM
+channel with a new user-space rdmacm API. For example thread T1 could
+write an event with the API:
+    rdma_write_cm_event(cm_id, RDMA_CM_EVENT_USER, status, arg);
+and thread T2 could receive the event with rdma_get_cm_event().
+
 Signed-off-by: Mark Zhang <markzhang@nvidia.com>
 Reviewed-by: Vlad Dumitrescu <vdumitrescu@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/ucma.c   | 40 ++++++++++++++++++++++++++++++++
- include/uapi/rdma/ib_user_sa.h   | 14 +++++++++++
- include/uapi/rdma/rdma_user_cm.h |  8 ++++++-
- 3 files changed, 61 insertions(+), 1 deletion(-)
+ drivers/infiniband/core/ucma.c   | 52 +++++++++++++++++++++++++++++++-
+ include/rdma/rdma_cm.h           |  5 ++-
+ include/uapi/rdma/rdma_user_cm.h | 16 +++++++++-
+ 3 files changed, 70 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
-index 1915f4e68308..3b9ca6d7a21b 100644
+index 3b9ca6d7a21b..f86ece701db6 100644
 --- a/drivers/infiniband/core/ucma.c
 +++ b/drivers/infiniband/core/ucma.c
-@@ -1021,6 +1021,43 @@ static ssize_t ucma_query_gid(struct ucma_context *ctx,
+@@ -1745,6 +1745,55 @@ static ssize_t ucma_migrate_id(struct ucma_file *new_file,
  	return ret;
  }
  
-+static ssize_t ucma_query_ib_service(struct ucma_context *ctx,
-+				     void __user *response, int out_len)
++static ssize_t ucma_write_cm_event(struct ucma_file *file,
++				   const char __user *inbuf, int in_len,
++				   int out_len)
 +{
-+	struct rdma_ucm_query_ib_service_resp *resp;
-+	int n, ret = 0;
++	struct rdma_ucm_write_cm_event cmd;
++	struct rdma_cm_event event = {};
++	struct ucma_event *uevent;
++	struct ucma_context *ctx;
++	int ret = 0;
 +
-+	if (out_len < sizeof(struct rdma_ucm_query_ib_service_resp))
-+		return -ENOSPC;
++	if (copy_from_user(&cmd, inbuf, sizeof(cmd)))
++		return -EFAULT;
 +
-+	if (!ctx->cm_id->route.service_recs)
-+		return -ENODATA;
++	if ((cmd.event != RDMA_CM_EVENT_USER) &&
++	    (cmd.event != RDMA_CM_EVENT_INTERNAL))
++		return -EINVAL;
 +
-+	resp = kzalloc(out_len, GFP_KERNEL);
-+	if (!resp)
-+		return -ENOMEM;
++	ctx = ucma_get_ctx(file, cmd.id);
++	if (IS_ERR(ctx))
++		return PTR_ERR(ctx);
 +
-+	resp->num_service_recs = ctx->cm_id->route.num_service_recs;
++	event.event = cmd.event;
++	event.status = cmd.status;
++	event.param.arg = cmd.param.arg;
 +
-+	n = (out_len - sizeof(struct rdma_ucm_query_ib_service_resp)) /
-+		sizeof(struct ib_user_service_rec);
-+
-+	if (!n)
++	uevent = kzalloc(sizeof(*uevent), GFP_KERNEL);
++	if (!uevent) {
++		ret = -ENOMEM;
 +		goto out;
++	}
 +
-+	if (n > ctx->cm_id->route.num_service_recs)
-+		n = ctx->cm_id->route.num_service_recs;
++	uevent->ctx = ctx;
++	uevent->resp.uid = ctx->uid;
++	uevent->resp.id = ctx->id;
++	uevent->resp.event = event.event;
++	uevent->resp.status = event.status;
++	memcpy(uevent->resp.param.arg32, &event.param.arg,
++	       sizeof(event.param.arg));
 +
-+	memcpy(resp->recs, ctx->cm_id->route.service_recs,
-+	       sizeof(*resp->recs) * n);
-+	if (copy_to_user(response, resp, struct_size(resp, recs, n)))
-+		ret = -EFAULT;
++	mutex_lock(&ctx->file->mut);
++	list_add_tail(&uevent->list, &ctx->file->event_list);
++	mutex_unlock(&ctx->file->mut);
++	wake_up_interruptible(&ctx->file->poll_wait);
 +
 +out:
-+	kfree(resp);
++	ucma_put_ctx(ctx);
 +	return ret;
 +}
 +
- static ssize_t ucma_query(struct ucma_file *file,
- 			  const char __user *inbuf,
- 			  int in_len, int out_len)
-@@ -1049,6 +1086,9 @@ static ssize_t ucma_query(struct ucma_file *file,
- 	case RDMA_USER_CM_QUERY_GID:
- 		ret = ucma_query_gid(ctx, response, out_len);
- 		break;
-+	case RDMA_USER_CM_QUERY_IB_SERVICE:
-+		ret = ucma_query_ib_service(ctx, response, out_len);
-+		break;
- 	default:
- 		ret = -ENOSYS;
- 		break;
-diff --git a/include/uapi/rdma/ib_user_sa.h b/include/uapi/rdma/ib_user_sa.h
-index 435155d6e1c6..acfa20816bc6 100644
---- a/include/uapi/rdma/ib_user_sa.h
-+++ b/include/uapi/rdma/ib_user_sa.h
-@@ -74,4 +74,18 @@ struct ib_user_path_rec {
- 	__u8	preference;
+ static ssize_t (*ucma_cmd_table[])(struct ucma_file *file,
+ 				   const char __user *inbuf,
+ 				   int in_len, int out_len) = {
+@@ -1771,7 +1820,8 @@ static ssize_t (*ucma_cmd_table[])(struct ucma_file *file,
+ 	[RDMA_USER_CM_CMD_BIND]		 = ucma_bind,
+ 	[RDMA_USER_CM_CMD_RESOLVE_ADDR]	 = ucma_resolve_addr,
+ 	[RDMA_USER_CM_CMD_JOIN_MCAST]	 = ucma_join_multicast,
+-	[RDMA_USER_CM_CMD_RESOLVE_IB_SERVICE] = ucma_resolve_ib_service
++	[RDMA_USER_CM_CMD_RESOLVE_IB_SERVICE] = ucma_resolve_ib_service,
++	[RDMA_USER_CM_CMD_WRITE_CM_EVENT] = ucma_write_cm_event,
  };
  
-+struct ib_user_service_rec {
-+	__be64	id;
-+	__u8	gid[16];
-+	__be16	pkey;
-+	__u8	reserved[2];
-+	__be32	lease;
-+	__u8	key[16];
-+	__u8	name[64];
-+	__u8	data_8[16];
-+	__be16	data_16[8];
-+	__be32	data_32[4];
-+	__be64	data_64[2];
-+};
-+
- #endif /* IB_USER_SA_H */
+ static ssize_t ucma_write(struct file *filp, const char __user *buf,
+diff --git a/include/rdma/rdma_cm.h b/include/rdma/rdma_cm.h
+index 72d1568e4cfb..9bd930a83e6e 100644
+--- a/include/rdma/rdma_cm.h
++++ b/include/rdma/rdma_cm.h
+@@ -35,7 +35,9 @@ enum rdma_cm_event_type {
+ 	RDMA_CM_EVENT_ADDR_CHANGE,
+ 	RDMA_CM_EVENT_TIMEWAIT_EXIT,
+ 	RDMA_CM_EVENT_ADDRINFO_RESOLVED,
+-	RDMA_CM_EVENT_ADDRINFO_ERROR
++	RDMA_CM_EVENT_ADDRINFO_ERROR,
++	RDMA_CM_EVENT_USER,
++	RDMA_CM_EVENT_INTERNAL,
+ };
+ 
+ const char *__attribute_const__ rdma_event_msg(enum rdma_cm_event_type event);
+@@ -98,6 +100,7 @@ struct rdma_cm_event {
+ 	union {
+ 		struct rdma_conn_param	conn;
+ 		struct rdma_ud_param	ud;
++		u64			arg;
+ 	} param;
+ 	struct rdma_ucm_ece ece;
+ };
 diff --git a/include/uapi/rdma/rdma_user_cm.h b/include/uapi/rdma/rdma_user_cm.h
-index 8799623bcba0..00501da0567e 100644
+index 00501da0567e..5ded174687ee 100644
 --- a/include/uapi/rdma/rdma_user_cm.h
 +++ b/include/uapi/rdma/rdma_user_cm.h
-@@ -148,7 +148,8 @@ struct rdma_ucm_resolve_route {
- enum {
- 	RDMA_USER_CM_QUERY_ADDR,
- 	RDMA_USER_CM_QUERY_PATH,
--	RDMA_USER_CM_QUERY_GID
-+	RDMA_USER_CM_QUERY_GID,
-+	RDMA_USER_CM_QUERY_IB_SERVICE
+@@ -68,7 +68,8 @@ enum {
+ 	RDMA_USER_CM_CMD_BIND,
+ 	RDMA_USER_CM_CMD_RESOLVE_ADDR,
+ 	RDMA_USER_CM_CMD_JOIN_MCAST,
+-	RDMA_USER_CM_CMD_RESOLVE_IB_SERVICE
++	RDMA_USER_CM_CMD_RESOLVE_IB_SERVICE,
++	RDMA_USER_CM_CMD_WRITE_CM_EVENT,
  };
  
- struct rdma_ucm_query {
-@@ -188,6 +189,11 @@ struct rdma_ucm_query_path_resp {
- 	struct ib_path_rec_data path_data[];
+ /* See IBTA Annex A11, servies ID bytes 4 & 5 */
+@@ -304,6 +305,7 @@ struct rdma_ucm_event_resp {
+ 	union {
+ 		struct rdma_ucm_conn_param conn;
+ 		struct rdma_ucm_ud_param   ud;
++		__u32 arg32[2];
+ 	} param;
+ 	__u32 reserved;
+ 	struct rdma_ucm_ece ece;
+@@ -362,4 +364,16 @@ struct rdma_ucm_resolve_ib_service {
+ 	__u32 id;
+ 	struct rdma_ucm_ib_service ibs;
  };
- 
-+struct rdma_ucm_query_ib_service_resp {
-+	__u32 num_service_recs;
-+	struct ib_user_service_rec recs[];
-+};
 +
- struct rdma_ucm_conn_param {
- 	__u32 qp_num;
- 	__u32 qkey;
++struct rdma_ucm_write_cm_event {
++	__u32 id;
++	__u32 reserved;
++	__u32 event;
++	__u32 status;
++	union {
++		struct rdma_ucm_conn_param conn;
++		struct rdma_ucm_ud_param ud;
++		__u64 arg;
++	} param;
++};
+ #endif /* RDMA_USER_CM_H */
 -- 
 2.50.0
 
