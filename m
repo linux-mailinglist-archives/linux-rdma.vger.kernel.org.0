@@ -1,43 +1,43 @@
-Return-Path: <linux-rdma+bounces-11783-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11780-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C316CAEE645
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 19:59:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39AFCAEE640
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 19:59:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A83A417311A
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 17:59:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2EEAA7A1D1B
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Jun 2025 17:57:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E8ED2E88BD;
-	Mon, 30 Jun 2025 17:58:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 601922BE7D1;
+	Mon, 30 Jun 2025 17:58:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="gR/NfXXJ"
+	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="bC5WFfni"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2114.outbound.protection.outlook.com [40.107.223.114])
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2100.outbound.protection.outlook.com [40.107.223.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C13F2E6D2C
-	for <linux-rdma@vger.kernel.org>; Mon, 30 Jun 2025 17:58:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.114
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B0F92E54B3
+	for <linux-rdma@vger.kernel.org>; Mon, 30 Jun 2025 17:58:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.100
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751306307; cv=fail; b=R2qaupAUExmCNT+NKozk2jjF4g6Stp/uWhZBoyx0WpgalTmBLY5maLQw2EwB7l5OjF5ybb5cr4Nkc3Dvi1oE2V7rxyn5m+c7MY+Qxqdf5+UvUof66AAZ0fHOSXvETmWOuYLyiwQEN5j0sGNJGNU225bjqAHdifdcHEfpYxqiqmY=
+	t=1751306303; cv=fail; b=M0yIlJml6jS5y3GxlYqZ8G75olMsONtbH5PmQUqteB2x83SFH5sG8ZKLHNQO13v4YCSPFBYSzfZF/QlUyDc3QVjjisSeA9IoQUg4f+hdFlfHvrF9kgvVBZ0JJM9d3ya8lUPUg6PWNnBjcoGc9WL1DC1v2Zy1C1Qftdil4cyj+wo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751306307; c=relaxed/simple;
-	bh=PTik6weB87fky4cjn6VztT6v6KJaeWgVse0D0kNzpE4=;
+	s=arc-20240116; t=1751306303; c=relaxed/simple;
+	bh=9wV2ssvc4qipCqZptwaKUqEfg1USVGL1aM6XUQo9TQM=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WJ/wQ/gUNOdibK3+xYHo9Q9NnVmH8U48gq1bafIFQEJh8CgOvdjVsTC+WKcEntTaWge6J6tbgD9gUetL+45ZffHGL/oEEYLveyl2GQgcsgQpLHifKTPRoDBncnao3WMSswReFDJr5O8DP+ybxqcp3sIwq2reKlmFwBAwb+pzH3I=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=gR/NfXXJ; arc=fail smtp.client-ip=40.107.223.114
+	 MIME-Version:Content-Type; b=sM7yEahslGkI/QCXio6SwTxQnJJ+JtsWyiqBFDa4zj5bjGl+GsppATAUBwRwSGV7i3zMJP6kBPTN61SOKPzKqyr+mZcU/Vv8L2WLbdzw+7Wj434LV+iE3epH51a0hSOy0tdvjGqO4hmsxzg+t5acxFJmxOxp7qPbsLxTYAijVQ8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=bC5WFfni; arc=fail smtp.client-ip=40.107.223.100
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cornelisnetworks.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cornelisnetworks.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=OamELLu9G/6mP1qAUv3tBtSIDQBkBWcm5U042+AD2k7gPVudWyRaVGo52jZytWFr/577HI8Yrfhfm/+8Ma5Fzyo9Qz74cZYA6TC6F48I8Wm5tvZx6NrLQVKEEfJtwKDTFX4KzzsyysZZrkplYruK16SqMOREGiky1bs+ZM4Re8nWHULNDq3GjgbQ5o/wxOCovW/5jt0q4MiotMIwaOSP8KcZyD+CsaAfu9/mUg4j3Nh70m5IDxrfmz8LPzWxJJDVRZQZz80A5RjOGofFqxpD7Nfc7SLybIz7mPQI38ZOY/FywAsDFNLDQZqhn5rksiChsD5yVNyC1463rXg5nKUdiA==
+ b=FqMieHLYYJ210QeMcoBUumlN6dcmip9iojJYNEFCfrPHU/4MvsnMB+Gq9SrIhH+ArEFWfaK+ClBRtb5wAn5hF99bbWIi39I+nG0zvbiCn7xzVnssrcEBIr2hQVj8T0sP5PIOTaUT+QV/MOExonh8cJV9xdm914tjKpqOO+vwxbbsQjhm0yJutnZQr6zdpwBySX7Tjy7VZKw+kgYIKEaohDoXovgUJOY/rmBNnrA3Wr2n0pEXqvYAQiIbRuhXrCY+c7sgtM+2Z/bm8JhR5EBO7cFKgy3wBfCAVWB8eR4PnoQSTEDuiXkfRtohPXknexUIFBmwlx4Km+5hfFtJfB2FQg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=p7pMpzrAQjb4aywJZeJal+nI4kMlLsw6u9aJ6/6D3Co=;
- b=cgk0jjmqkHF4CR/BEKqxttgTWDOunxyvZt84q84712I9vUij83fdZfe9CC7KmXu6TtO/zqeC3OVTDzCCLgRstaChtah2kT2bTx/yoOLzXkn4LtVwOnIFobPjA56xjVoimn8/iAAv55exSJL0kuE36CThFkAJSuWDlryCkNKLXPTAF6O7Cfg6cXwhD7NlFcjI+mBuRsqfPzDSeEzu4bCC1+58oUvipqq0tYyywxRBOiYdzuPbHWQ0u0S051iET3oYBQkZHc7bQ5vny+dNZsu7IRm+9XlNt4uV4yjlQAeVy99Mu+JIvkR6Yig5WMpWeCgNjB9K6/6jRU7z3h21JMicAw==
+ bh=PSAxS6tDMgUK4r6YCO+827TG2NeRQxRzmAyHALx1n1g=;
+ b=tP81WTEpAsqqsMFWR3MQ0rD/tEMoChrPg5RxMzk9ly0M3eYnNYo6YC1jqgKV+T/uiOfEKnrnLQ9AT7ZoDgKbVzn9pK+Sodfe61stmJmO7CzoFTjj+CO11s63pk3trKbZWZt29mwolTmp/FwuZiI/O7EQzDFTP332igw91w0S6SAZi9/an/WsFMRfOceyie9SsMbNo4D3Xid72N8ZgJcs3S2K1p2RSbM6GGtBMsRcud+8SwYkN9u5Tbop9OEaISy8oiH9p60PL46f1B0oUUrAunRxr0LjsN3pn6SQ85edvyH1boYTved7FBTKzUmo5GvBqL2nmb1hS/SxbdxEpZtB7g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  208.255.156.42) smtp.rcpttodomain=cornelisnetworks.com
  smtp.mailfrom=cornelisnetworks.com; dmarc=pass (p=none sp=none pct=100)
@@ -46,17 +46,17 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p7pMpzrAQjb4aywJZeJal+nI4kMlLsw6u9aJ6/6D3Co=;
- b=gR/NfXXJryc9ZAB6ud3hTDQfbEvEsODc3Ih2ECGTmeUyEeqczahVwgbbwjQULg5pg6L1I8v1zfWxIVVvsfG148ZvRXr9VW3dsaGtFABRFZVWSo7FnHiqtrlzGPTwfkY/mnz0lE/rhT77Mk2dpJfvQznoQFfo2k6fGiEACDg/Z5dB9MO0HVz1UfDJN+ZFm6Zvzc63zh9cwHNHTFljM9nSMDvWuflTNBvDLyyIbMekIu3ZaQEaXX/OpvzbZK/bVFvPXDbQ/RdgetlqPGiPfJ/t/ojwqS4rOPwz1R/SbjW0ffOZDcJLcOY7y+g59UdQI6dGsSDu2Sm/Sba9zCRANgjqNQ==
-Received: from BL0PR05CA0005.namprd05.prod.outlook.com (2603:10b6:208:91::15)
- by SJ2PR01MB8052.prod.exchangelabs.com (2603:10b6:a03:4c7::7) with Microsoft
+ bh=PSAxS6tDMgUK4r6YCO+827TG2NeRQxRzmAyHALx1n1g=;
+ b=bC5WFfnizflE9oNzFa6TEQFkzbsixKS3BZT67m8KaMPahGjMPVYSzVeg9rvaUICZvpTUrWwq1dw9Pqi4ODFXmtOcvO6aLRMG6BFPZKjTMVWdQLdOQ254BMtENNrjTOzRPO1XX/g5lbK88aolRKMse1gR/smUtb4NI1PhAuc6MzcRDZ9KhZ8UZIidr99MAwf2iJn5174vRRl3BRUC7H5f6wdUghWryx0kFxPSgBnkJdexHq/n/n0ue8DNyLD/jqn3FgxkLeiMkGSCuzJaHry845j3RXumsrjbwbgH8aKbaDQo2abUpxbon1qvdsFb1NOjt5uDjqwPDIk6PcLvK8B4XA==
+Received: from SN1PR12CA0088.namprd12.prod.outlook.com (2603:10b6:802:21::23)
+ by SA1PR01MB8670.prod.exchangelabs.com (2603:10b6:806:3a7::10) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8880.21; Mon, 30 Jun 2025 17:58:12 +0000
-Received: from BN1PEPF0000468A.namprd05.prod.outlook.com
- (2603:10b6:208:91:cafe::46) by BL0PR05CA0005.outlook.office365.com
- (2603:10b6:208:91::15) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8901.18 via Frontend Transport; Mon,
- 30 Jun 2025 17:58:10 +0000
+ 15.20.8880.17; Mon, 30 Jun 2025 17:58:11 +0000
+Received: from SN1PEPF000252A2.namprd05.prod.outlook.com
+ (2603:10b6:802:21:cafe::4f) by SN1PR12CA0088.outlook.office365.com
+ (2603:10b6:802:21::23) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8880.31 via Frontend Transport; Mon,
+ 30 Jun 2025 17:58:11 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
  smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=cornelisnetworks.com;
@@ -65,23 +65,24 @@ Received-SPF: Pass (protection.outlook.com: domain of cornelisnetworks.com
  receiver=protection.outlook.com; client-ip=208.255.156.42;
  helo=cn-mailer-00.localdomain; pr=C
 Received: from cn-mailer-00.localdomain (208.255.156.42) by
- BN1PEPF0000468A.mail.protection.outlook.com (10.167.243.135) with Microsoft
+ SN1PEPF000252A2.mail.protection.outlook.com (10.167.242.9) with Microsoft
  SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.20.8901.15
  via Frontend Transport; Mon, 30 Jun 2025 17:58:10 +0000
 Received: from awdrv-04.localdomain (awdrv-04.cornelisnetworks.com [10.228.212.218])
-	by cn-mailer-00.localdomain (Postfix) with ESMTPS id D9A3514D72D;
+	by cn-mailer-00.localdomain (Postfix) with ESMTPS id E189B14D731;
 	Mon, 30 Jun 2025 13:58:06 -0400 (EDT)
 Received: from awdrv-04.cornelisnetworks.com (localhost [IPv6:::1])
-	by awdrv-04.localdomain (Postfix) with ESMTP id 9C86E1848B5DA;
-	Mon, 30 Jun 2025 11:31:08 -0400 (EDT)
-Subject: [PATCH for-next 16/23] RDMA/hfi2: Implement MAD handling
+	by awdrv-04.localdomain (Postfix) with ESMTP id ACAD71848B5DB;
+	Mon, 30 Jun 2025 11:31:13 -0400 (EDT)
+Subject: [PATCH for-next 17/23] RDMA/hfi2: Add IO related headers
 From: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 To: jgg@ziepe.ca, leon@kernel.org
 Cc: Dean Luick <dean.luick@cornelisnetworks.com>,
+ Breandan Cunningham <brendan.cunningham@cornelisnetworks.com>,
  Douglas Miller <doug.miller@cornelisnetworks.com>, linux-rdma@vger.kernel.org
-Date: Mon, 30 Jun 2025 11:31:08 -0400
+Date: Mon, 30 Jun 2025 11:31:13 -0400
 Message-ID:
- <175129746858.1859400.1938866052847807284.stgit@awdrv-04.cornelisnetworks.com>
+ <175129747365.1859400.10435766274074444526.stgit@awdrv-04.cornelisnetworks.com>
 In-Reply-To:
  <175129726945.1859400.4492277779101226937.stgit@awdrv-04.cornelisnetworks.com>
 References:
@@ -97,6891 +98,4718 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF0000468A:EE_|SJ2PR01MB8052:EE_
-X-MS-Office365-Filtering-Correlation-Id: 01bb3c94-645d-42c2-7d56-08ddb7ffad18
+X-MS-TrafficTypeDiagnostic: SN1PEPF000252A2:EE_|SA1PR01MB8670:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1a68ae43-196a-4bd7-fb29-08ddb7ffad70
 X-MS-Exchange-AtpMessageProperties: SA
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|82310400026|376014|36860700013|1800799024;
+	BCL:0;ARA:13230040|376014|82310400026|36860700013|1800799024;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?RjdCcTJWVkhlT3RPaWcwdGNTaU8wNG9HZXpERkxkTng0ejI4UXNBcTNkSitq?=
- =?utf-8?B?WE9FS0tCQkhqbVdTblRSa0wrS2doMjh3cXZLVFpRRGJ3WkVZZWRKd3ZOVXEr?=
- =?utf-8?B?b2hOTnJueFlMT0JMeGtOejExUXFSRVVlV0x5aUlpWU1UL3UzeUVQeFA5QmVu?=
- =?utf-8?B?VFdsbHU1Ny9aVjB3dTREdm1tby9ML0RFbFRDNjNLcVFZY0wxc2lFQXV2eUpQ?=
- =?utf-8?B?TG4zaVU2WW4zQjRNWkxxTVI1ait5RktoelMxK2VWZlloeDFEbkJoc1RHYUdK?=
- =?utf-8?B?MG03ZW5kb05yZzQ1Mzh5QmRYZXoreW5iMFJ6c1QyUXBQWkhmeGFVSGtJQmZp?=
- =?utf-8?B?NkhVZjV5eTFWRjhyWEMzb3hqNURldE5TbTZZdmZ6K0owSXZWNm5RUkRLdFcy?=
- =?utf-8?B?OVlXalM1YlpoWWZGL1hoMEVCN3NLVnRheHRNYW9iTkp6cGdRcnFIdGpVYjdF?=
- =?utf-8?B?TzZkcFFydkpVc25SblhyWUhtbnVsOXl0enNzSkJYSGlPayt4M09qbU9oQVNN?=
- =?utf-8?B?N1VFWjBxQUNDTWMyZjFhbXo3TXJySVdDNFNKU2pxL29UYUFTeStHcTBid09M?=
- =?utf-8?B?U2czTnZyRjJEd3pCbmtJSkpralhHVnVqSTllYi9KejZVcmczZFBhWTBrQTRY?=
- =?utf-8?B?NzNhV2t2a3llZGF5cEZ5WmVCdjV0R1RXOXhIN2FzV05mZDU0bmRhN2RWY2Z4?=
- =?utf-8?B?TmVSdVJvdWFON0VLL25oeUZGMWR6azZpcTQ4bzNJbVdXVXlBT3FrbWorYkpq?=
- =?utf-8?B?MVJiZ0VjQ2kreGVJdisrU0VlSEt4UXJOUC8rNWd0Zm5iL09zbW9URnJOaDVP?=
- =?utf-8?B?clhZeG9oUzh2czVYczFzU2Z2R1M2dlZzSHBSc0dGUGpzZ2NyUnE4b2xmTktx?=
- =?utf-8?B?RVNnQjZVdjZweUJQaWRmYWNPejB2UG9ZTUpxV0RYYWQzdU9UV2ZCdHN6eHo2?=
- =?utf-8?B?empxTEJJbEpib1FObUpNVnZPK1IyendNMldoK0lIT3lFYmdmMG96NVFvQ1dn?=
- =?utf-8?B?eFIxaW5wdThZRlBNbTBHRFlXMWtDU1hSbVBicmNjcGdCL0hzeVJxVy9FVzV0?=
- =?utf-8?B?ZnpuYTJraWl5dkVNZklXaFMySUtaN2pWc3FNU0RjdWJ6cXU2dGpCeGJML3d3?=
- =?utf-8?B?UlVTKzBsMnRMaW54VG5sbXhMb3N0Q0lENVErZy8vZVhCNis3RGIyTnVkSWNs?=
- =?utf-8?B?dXpRcmxTRjQwNUdJa2xNV0FuWnVQT0VuVmF2QXlzSEdOa2U3amxwUWpxRGgv?=
- =?utf-8?B?ek56RWJyQzRFcHBkVlljdVUrdnRYWUdESHZjV0hPM3oxOUxidnJsSStkZk4v?=
- =?utf-8?B?QndNeTdWSU5LVGl3VGpvRkpLMHEzQkp1UlpVMWYyV2RoVXJiTjJ2Q3lrbjFL?=
- =?utf-8?B?OHdvdjVvTTA4bkVZMTc5TDBqbW5aMFltOFcwdUFGNTU3eXhMdGRmYUN5TFVz?=
- =?utf-8?B?alBjaU12cWcxNjlKUGx5TFliV1hlOGdkMzNRUWJ1bmpKWXJyRElQZ3BKcnJH?=
- =?utf-8?B?QVljbnNicVhWMDVNS3praU55STQrUFdXdHBmdnFHa0tKNWo0TlMzbHhFdTFT?=
- =?utf-8?B?Q1pZV0wyeENlZThFK3hNT2VRMHZuWWVWb3o2NDVSVmFkTFhMV1M3dkk3L1Ft?=
- =?utf-8?B?aUUzUnM3WmtlSlltMnJjekxlTXlRQnJ4bG5ONG9SQS85YmZWK3BDUmlIUVdj?=
- =?utf-8?B?eDhlc3dwaUxBeThEbSttR3NwOUhlQ0VNVENaaGN4d0hRSEx5T3JEaWxhcEo1?=
- =?utf-8?B?U2hGL04wLzBFYkZGT0VHcjNqY3ZBV0tnanNNeHhGZ0VIekhWUTl1b0RqcTN6?=
- =?utf-8?B?SUQrcDFNQTNJalVycm1qb1IreDE1TzdxZ3NhRVludVBFNHhFU1E5cjZhZ1pG?=
- =?utf-8?B?ZjdpOCs3azVzSlV0VlpsNVl5Qm15VERuSVU3SlYxTmM0MS8vUGVSSldCMUNO?=
- =?utf-8?B?Rnp5SUozVWZBZm9aWnNwOHlsQWVyY21MRDhVSkdJSVRsWkhySVBXUU5TdUtt?=
- =?utf-8?B?a0dhZEhNbGJZeStFVlBKTmZzSzFma2tVVHBWMFBMMFN6a3hMNmx4cHlOaUxT?=
- =?utf-8?Q?FF7r/B?=
+	=?utf-8?B?eDV5VCtheGcyQUoydFp0UzVUZ1lpLzBOV3hNT3hOUVVnQ3VMZ056cWdxenVi?=
+ =?utf-8?B?OVkwUmpaSTIxaTNSblN1UlBEdnhCY3RJK3V3M081MjFUamhpaWFXYk5GRUxm?=
+ =?utf-8?B?am96bXBCQUR3NWpYa0s5L3R5UGZib1FxZzFtZG5jRmNBaDlRQjRuUXZBMDNt?=
+ =?utf-8?B?UGhvUlJSMERRdEtQdTY1RUh0Zlk4NThha2w0ZUxENjBJejgyQ1ZIOVFvN3Zn?=
+ =?utf-8?B?d1FhQ2xGdHR0Vm1EeGE0Q0dGVHJrcXF5ZHRzSjQwSUx2aTdtZ1pIWHhhTkRU?=
+ =?utf-8?B?b0NWMW9QMDhaVlZuaWI2bVZ3MkZHRHprNFpGajNjYlQyL3hSbUZqNlFobGxB?=
+ =?utf-8?B?b0tYd1U1NnVyalpCSjB3S0lPWklxTk5MdlBkSk1CMVNsRHBZMWZQNlNuT0ha?=
+ =?utf-8?B?eldtTlpFaFRuT0xjQUFwMHRsSmJhVzkxNStZSDRqUXJsVEp1MDY3dEpNcXE1?=
+ =?utf-8?B?MzVGd1FZNk9paGVjcXlGZ1pPYXVVNjJzaXBydVVEV3d1RlVHelhQbTBpUlV6?=
+ =?utf-8?B?MUw2MlBWbjdjMVpoVjI2b0NkTVpEMTMzQzBtRUtrc2JxeFJlVnNPSGhMdnZR?=
+ =?utf-8?B?eWFtZUIraTQ0K21sK0pyYTBQZ0Y3K1FSUVJGK0o0Y2FybjlnUGRRM1hWRlFJ?=
+ =?utf-8?B?dnJac0hKelZoblNSUnJJcWh3VmtFR3pKUGsyVEpwNm1FV3VuK3h1cEJ4LzZH?=
+ =?utf-8?B?K1c3YkloRmU2VlpqSTM0anJlb3JUQ1pDaStyV2RybXdKRkFmcStBMmpEVWVX?=
+ =?utf-8?B?b0h5T0dkVUNrcTJmaWl4N2E5czV1Ri9pQXFycEV0M0ZqQTY0TG9KQ2x0RVdk?=
+ =?utf-8?B?Zngzczl3WmFGbUlkTGVPTVUrVlN5TW8xSzVVTittMFdxWGNIMm5YZTIwenNy?=
+ =?utf-8?B?SVFqaVpESkV4Y0pFMmVaMjhMd05od0taS3QvWWZWbDlOMzJhT0lBUHp1d0R3?=
+ =?utf-8?B?V3FKU3A0dDdCL1lLblNicjZaZmw5djB4MU54MkZaR21hZERrSFJvWjkxeStl?=
+ =?utf-8?B?bUxZb2UzNWpTRTlNYWJmd0ErRUxBMUJOS01uS2h2Ym90YWFqV2RCeDl1cmRJ?=
+ =?utf-8?B?WWlTZ0NLZVNUekVlV29FL3Z5MG1vQnBlanZkTUVuS2dEVTl6ZHNvVWEwcjRi?=
+ =?utf-8?B?MGpkaXNUclNOZ3cxZ21VMUFiOVJWNmVvcHJocllZTm1GVmpQVG5YM2VJUEdH?=
+ =?utf-8?B?ZHZmR2Y1WG9ObExsSk1mNlFZOG9CSEtzQVBvMGR2Z1ZGVGVEWnRTcnhMbDYr?=
+ =?utf-8?B?N3ozS2JTNElDSXk1NGhsd3VkaGt1a1ZndC81WWZTSklrTjJCN1Uyd1pNRjJL?=
+ =?utf-8?B?NXI3blNYTTc0U3VUK0VwQXpqY3FJQjhpNHRwbG1jSWN5OU5xRmxkdi8ya2ps?=
+ =?utf-8?B?VkhwY1V5dDhQQy8xS0VqbEhyOVhqR0FuQVgrV0JJSUkrRnNYUzRVS05wOWIy?=
+ =?utf-8?B?U3dOdEZtemNVMEVia0Mwa1BwQ25KVXRYV012RTA1OTh6RHNVRGtWdGl5NUg1?=
+ =?utf-8?B?S09yK2hwTjQxOWJWUUFZelg5VHVBcythenFmVVBESzZac2VNaWtuaStIZ3RD?=
+ =?utf-8?B?dG1tWDliME5DalVXV3RsOW1OMHZoR1VnSmFBWFEwUnR3a1djcC85T2N1QmZx?=
+ =?utf-8?B?VXV4ZGE1Wlp5aGx4MFV0bmxXUTVYcFVwTlRMUGp5d29KL3d0d21hdmhCQ2Na?=
+ =?utf-8?B?VTNWQlB2eml6Mk5uTkRzTWtMUHpYdWhpV09EMVZmRy8yVzQ4YjBCaXlsTFNW?=
+ =?utf-8?B?MndFeXNMcy9iMWhwQXNMVjZCOGNaREpTemw3OG03NEF2U1VlYnF2cTZVVU9U?=
+ =?utf-8?B?ckFRUnpJT0Y1cFpFWmtQdmgxTnJQSU5zNW5icFQ3WWlXKzVXRXRoU2ZQTk1x?=
+ =?utf-8?B?QUVsbG1oaUhtT3gxNXUzZ0VoazY3MmZnZVRmSVZBSDE2TUROZElkRHByemww?=
+ =?utf-8?B?ZE9wQmJ0bGV3Yzl1eHk1cHpRY1FlUWVxRmV5SGF2T00ydGNxNFl5SExBL3Er?=
+ =?utf-8?B?aXBPVXBneTZOMS80ZGlOQ3Q4TkJrWnJMS1BuY04vTG0yR0FUNDNTNGp3Zmxt?=
+ =?utf-8?Q?6/3JSd?=
 X-Forefront-Antispam-Report:
-	CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:cn-mailer-00.localdomain;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(376014)(36860700013)(1800799024);DIR:OUT;SFP:1102;
+	CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:cn-mailer-00.localdomain;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(82310400026)(36860700013)(1800799024);DIR:OUT;SFP:1102;
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2025 17:58:10.4460
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2025 17:58:10.9177
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 01bb3c94-645d-42c2-7d56-08ddb7ffad18
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a68ae43-196a-4bd7-fb29-08ddb7ffad70
 X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[cn-mailer-00.localdomain]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BN1PEPF0000468A.namprd05.prod.outlook.com
+	SN1PEPF000252A2.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR01MB8052
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR01MB8670
 
-Add the handling for MAD processing and communicating with the embedded
-micro on the new chip.
+The hfi2 driver will continue to support verbs, and libfabric. However
+unlike hfi1 there is no private cdev and user operations are managed
+through the ib core cdev and passed to the driver.
 
 Co-developed-by: Dean Luick <dean.luick@cornelisnetworks.com>
 Signed-off-by: Dean Luick <dean.luick@cornelisnetworks.com>
+Co-developed-by: Bendan Cunningham <brendan.cunningham@cornelisnetworks.com>
+Signed-off-by: Breandan Cunningham <brendan.cunningham@cornelisnetworks.com>
 Co-developed-by: Douglas Miller <doug.miller@cornelisnetworks.com>
 Signed-off-by: Douglas Miller <doug.miller@cornelisnetworks.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 ---
- drivers/infiniband/hw/hfi2/cport.c |  746 ++++
- drivers/infiniband/hw/hfi2/mad.c   | 6055 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 6801 insertions(+)
- create mode 100644 drivers/infiniband/hw/hfi2/cport.c
- create mode 100644 drivers/infiniband/hw/hfi2/mad.c
+ drivers/infiniband/hw/hfi2/exp_rcv.h      |  156 ++++
+ drivers/infiniband/hw/hfi2/file_ops.h     |   46 +
+ drivers/infiniband/hw/hfi2/iowait.h       |  457 +++++++++++
+ drivers/infiniband/hw/hfi2/ipoib.h        |  172 ++++
+ drivers/infiniband/hw/hfi2/netdev.h       |   99 ++
+ drivers/infiniband/hw/hfi2/pinning.h      |   74 ++
+ drivers/infiniband/hw/hfi2/pio.h          |  305 +++++++
+ drivers/infiniband/hw/hfi2/qp.h           |  107 +++
+ drivers/infiniband/hw/hfi2/rc.h           |   59 +
+ drivers/infiniband/hw/hfi2/sdma.h         | 1212 +++++++++++++++++++++++++++++
+ drivers/infiniband/hw/hfi2/sdma_defs.h    |  116 +++
+ drivers/infiniband/hw/hfi2/sdma_txreq.h   |  104 ++
+ drivers/infiniband/hw/hfi2/tid_rdma.h     |  320 ++++++++
+ drivers/infiniband/hw/hfi2/user_exp_rcv.h |  404 ++++++++++
+ drivers/infiniband/hw/hfi2/user_sdma.h    |  262 ++++++
+ drivers/infiniband/hw/hfi2/uverbs.h       |   19 
+ drivers/infiniband/hw/hfi2/verbs.h        |  488 ++++++++++++
+ drivers/infiniband/hw/hfi2/verbs_txreq.h  |   97 ++
+ 18 files changed, 4497 insertions(+)
+ create mode 100644 drivers/infiniband/hw/hfi2/exp_rcv.h
+ create mode 100644 drivers/infiniband/hw/hfi2/file_ops.h
+ create mode 100644 drivers/infiniband/hw/hfi2/iowait.h
+ create mode 100644 drivers/infiniband/hw/hfi2/ipoib.h
+ create mode 100644 drivers/infiniband/hw/hfi2/netdev.h
+ create mode 100644 drivers/infiniband/hw/hfi2/pinning.h
+ create mode 100644 drivers/infiniband/hw/hfi2/pio.h
+ create mode 100644 drivers/infiniband/hw/hfi2/qp.h
+ create mode 100644 drivers/infiniband/hw/hfi2/rc.h
+ create mode 100644 drivers/infiniband/hw/hfi2/sdma.h
+ create mode 100644 drivers/infiniband/hw/hfi2/sdma_defs.h
+ create mode 100644 drivers/infiniband/hw/hfi2/sdma_txreq.h
+ create mode 100644 drivers/infiniband/hw/hfi2/tid_rdma.h
+ create mode 100644 drivers/infiniband/hw/hfi2/user_exp_rcv.h
+ create mode 100644 drivers/infiniband/hw/hfi2/user_sdma.h
+ create mode 100644 drivers/infiniband/hw/hfi2/uverbs.h
+ create mode 100644 drivers/infiniband/hw/hfi2/verbs.h
+ create mode 100644 drivers/infiniband/hw/hfi2/verbs_txreq.h
 
-diff --git a/drivers/infiniband/hw/hfi2/cport.c b/drivers/infiniband/hw/hfi2/cport.c
+diff --git a/drivers/infiniband/hw/hfi2/exp_rcv.h b/drivers/infiniband/hw/hfi2/exp_rcv.h
 new file mode 100644
-index 000000000000..918476c39847
+index 000000000000..76c422646626
 --- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/cport.c
-@@ -0,0 +1,746 @@
-+// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
++++ b/drivers/infiniband/hw/hfi2/exp_rcv.h
+@@ -0,0 +1,156 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
 +/*
-+ * Copyright(c) 2023 Cornelis Networks.
++ * Copyright(c) 2017 Intel Corporation.
 + */
 +
-+/*
-+ * Implementation details of CPORT communications.
-+ */
-+
-+#include <linux/semaphore.h>
-+#include <linux/io.h>
-+
++#ifndef _HFI2_EXP_RCV_H
++#define _HFI2_EXP_RCV_H
 +#include "hfi2.h"
-+#include "chip_jkr.h"
-+#include "cport.h"
 +
-+static void cport_send_req_fn(struct work_struct *work);
-+static void cport_send_rsp_fn(struct work_struct *work);
++#define EXP_TID_SET_EMPTY(set) (set.count == 0 && list_empty(&set.list))
 +
-+/*
-+ * This limit needs to balance memory consuption against
-+ * the need to ensure tids don't repeat during periods of
-+ * CPORT stall and message timeout.
-+ *
-+ * Also note that the limit parameter passed to xa_alloc*()
-+ * gets modified, so we cannot use a static structure here.
-+ */
-+#define cport_tid_limit	XA_LIMIT(0, 255)
++#define EXP_TID_TIDLEN_MASK   0x7FFULL
++#define EXP_TID_TIDLEN_SHIFT  0
++#define EXP_TID_TIDCTRL_MASK  0x3ULL
++#define EXP_TID_TIDCTRL_SHIFT 20
++#define EXP_TID_TIDIDX_MASK   0x3FFULL
++#define EXP_TID_TIDIDX_SHIFT  22
 +
-+/*
-+ * The "header" (first qword) of a message to/from CPORT.
-+ */
-+union cport_header {
-+	struct {
-+		u64 len:15;
-+		u64 _resv1:1;
-+		u64 is_req:1;
-+		u64 no_rsp:1;
-+		u64 seq_no:6;
-+		u64 sts:8;
-+		u64 tid:16;
-+		u64 sideband:8;
-+		u64 op_code:8;
-+	};
-+	u64 qw;
-+};
++/* Expected buffer entry (TID) addressing supported by the hardware */
++#define EXP_TID_ADDR_SHIFT    12
++#define EXP_TID_ADDR_SIZE     BIT(EXP_TID_ADDR_SHIFT)
 +
-+#define CPORT_SEQNO_MASK 0x3f
++#define EXP_TID_GET(tid, field)	\
++	(((tid) >> EXP_TID_TID##field##_SHIFT) & EXP_TID_TID##field##_MASK)
 +
-+#define CPORT_HDR_DEF	0x0000007ec0000000ul
-+#define CPORT_HDR_LEN	48	/* bit position of length in CPORT_HDR_DEF */
-+
-+#define CPORT_IN_SCRATCH	(JKR_ASIC_CFG_SCRATCH + 0)
-+#define CPORT_OUT_SCRATCH	(JKR_ASIC_CFG_SCRATCH + sizeof(u64))
++#define EXP_TID_SET(field, value)			\
++	(((value) & EXP_TID_TID##field##_MASK) <<	\
++	 EXP_TID_TID##field##_SHIFT)
++#define EXP_TID_CLEAR(tid, field) ({					\
++		(tid) &= ~(EXP_TID_TID##field##_MASK <<			\
++			   EXP_TID_TID##field##_SHIFT);			\
++		})
++#define EXP_TID_RESET(tid, field, value) do {				\
++		EXP_TID_CLEAR(tid, field);				\
++		(tid) |= EXP_TID_SET(field, (value));			\
++	} while (0)
 +
 +/*
-+ * Assignment of bits in JKR_MCTXT_CPORT_INT_STATUS and
-+ * JKR_MCTXT_PF0_INT_STATUS.
++ * Define fields in the KDETH header so we can update the header
++ * template.
 + */
-+#define JKR_MCTXT_INT_OUTBOX_EMPTY	0b00000001
-+#define JKR_MCTXT_INT_INBOX_FULL	0b00000010
-+
-+/*
-+ * The remainder is private to the host driver.
-+ * CPORT firmware has no need of this interface.
-+ */
-+
-+/*
-+ * How the MCTXT CSRs are interpreted.
-+ */
-+union mctxt_mem {
-+	union cport_header hdr;
-+	u64 qw[JKR_C_MCTXT_MEM_SIZE_IN_QWORDS];
-+};
-+
-+/*
-+ * The maximum length of a CPORT message payload (cport_header.len).
-+ * The MCTXT is 2K each direction, and payload length excludes header.
-+ */
-+#define CH_LEN_MAX	(sizeof(union mctxt_mem) - sizeof(union cport_header))
-+
-+/*
-+ * The common structure used to implement CPORT messages in hfi2.
-+ */
-+struct cport_work {
-+	struct work_struct work;
-+	struct kref kref;
-+	int flags;
-+	long timeout;
-+	struct semaphore *sem; /* only valid in send, if request w/response */
-+	struct hfi2_devdata *dd; /* only valid in recv context */
-+	union mctxt_mem req;
-+	union mctxt_mem rsp;	/* only used for request w/response */
-+};
-+
-+#define CW_FLAG_SEND		0x01	/* struct originated in send */
-+#define CW_FLAG_RECV		0x02	/* struct originated in receive */
-+#define CW_FLAG_RQ_ALLOC	0x04	/* request payload was kalloc'ed */
-+#define CW_FLAG_RS_ALLOC	0x08	/* response payload was kalloc'ed */
-+
-+/*
-+ * Acquire a reference to the message structure
-+ */
-+static inline void cwget(struct cport_work *cw)
-+{
-+	kref_get(&cw->kref);
-+}
-+
-+/*
-+ * Locate and remove the 'id' message in the xarray and atomically
-+ * acquire a reference to the message structure.
-+ */
-+static inline struct cport_work *cwget_xa(struct hfi2_devdata *dd, u32 id)
-+{
-+	struct cport_work *cw;
-+
-+	xa_lock(&dd->cport->tid_xa);
-+	cw = __xa_erase(&dd->cport->tid_xa, id);
-+	if (cw)
-+		cwget(cw);
-+	xa_unlock(&dd->cport->tid_xa);
-+	return cw;
-+}
-+
-+static void cwrelease(struct kref *kref)
-+{
-+	struct cport_work *cw = container_of(kref, struct cport_work, kref);
-+
-+	kfree(cw);
-+}
-+
-+static void cwput(struct cport_work *cw)
-+{
-+	kref_put(&cw->kref, cwrelease);
-+}
-+
-+static struct cport_work *cwalloc(int flag)
-+{
-+	struct cport_work *cw = kzalloc(sizeof(*cw), GFP_KERNEL);
-+
-+	if (!cw)
-+		return NULL;
-+	cw->flags = flag;
-+	kref_init(&cw->kref);
-+	return cw;
-+}
-+
-+/* set "external" (non-alloc) response payload */
-+static void pld_rsp_set(struct cport_work *cw, void *pld, int len)
-+{
-+	if (len > CH_LEN_MAX)
-+		len = CH_LEN_MAX;
-+	memcpy(&cw->rsp.qw[1], pld, len);
-+	cw->rsp.hdr.len = len + sizeof(cw->rsp.hdr);
-+}
-+
-+/*
-+ * Send request, non-blocking, with timeout for OUTBOX_EMPTY wait.
-+ * Caller must watch 'wait' semaphore for completion, and
-+ * then call cport_send_comp() or cport_send_cancel() to finalize everything.
-+ * Returns handle for cport_send_comp()/_cancel(), or ERR_PTR().
-+ *
-+ * See cport_send_req() for example usage.
-+ */
-+void *cport_send_req_nb(struct hfi2_devdata *dd, u8 op, u8 sideband, void *payload,
-+			int len, struct semaphore *wait, long timeout)
-+{
-+	int ret;
-+	struct cport_work *msg;
-+	u32 idx;
-+
-+	if (!dd->cport || len > CH_LEN_MAX)
-+		return ERR_PTR(-EINVAL);
-+
-+	msg = cwalloc(CW_FLAG_SEND);
-+	if (!msg)
-+		return ERR_PTR(-ENOMEM);
-+	msg->dd = dd;
-+	msg->timeout = timeout;
-+	memcpy(&msg->req.qw[1], payload, len);
-+	ret = xa_alloc_cyclic(&dd->cport->tid_xa, &idx, msg, cport_tid_limit,
-+			      &dd->cport->tid_next, GFP_KERNEL);
-+	if (ret < 0) {
-+		cwput(msg);
-+		return ERR_PTR(ret);
-+	}
-+	msg->req.hdr.op_code = op;
-+	msg->req.hdr.sideband = sideband;
-+	msg->req.hdr.is_req = 1;
-+	msg->req.hdr.no_rsp = 0;
-+	msg->req.hdr.tid = idx;
-+	msg->req.hdr.len = len + sizeof(msg->req.hdr);
-+	msg->sem = wait;
-+	cwget(msg);	/* extra ref so not freed after send */
-+	INIT_WORK(&msg->work, cport_send_req_fn);
-+	queue_work(dd->hfi2_wq, &msg->work);
-+	return msg;
-+}
-+
-+/*
-+ * Extract results from response and drop (last) reference to structure.
-+ * Returns status from response header.
-+ * Must never be called twice for the same message (message has been freed).
-+ * Must never be called on a message that has not received response (up'ed wait).
-+ */
-+int cport_send_comp(struct hfi2_devdata *dd, void *handle,
-+		    void **rsp_pld, int *rsp_len)
-+{
-+	struct cport_work *msg = handle;
-+	void *ptr;
-+	int ret;
-+	int len;
-+
-+	*rsp_len = len = msg->rsp.hdr.len - sizeof(msg->rsp.hdr);
-+	if (rsp_pld) {
-+		ptr = kzalloc(len, GFP_KERNEL);
-+		if (!ptr)
-+			return -ENOMEM;
-+		memcpy(ptr, &msg->rsp.qw[1], len);
-+		*rsp_pld = ptr;
-+	}
-+	ret = msg->rsp.hdr.sts;
-+	cwput(msg);
-+	return ret;
-+}
-+
-+/*
-+ * Cleanup aborted wait for response.
-+ * Only called for requests w/responses.
-+ * Must never be called twice for the same message (message has been freed).
-+ */
-+void cport_send_cancel(struct hfi2_devdata *dd, void *handle)
-+{
-+	struct cport_work *msg = handle;
-+
-+	cancel_work(&msg->work);	/* cport_send() drops ref on all paths */
-+	xa_erase(&dd->cport->tid_xa, msg->req.hdr.tid);
-+	cwput(msg);
-+}
-+
-+/*
-+ * Send request and wait for response, with timeout.
-+ * Caller must be able to sleep.
-+ * Returns status from response header, and response payload data, on success.
-+ * Response payload was from k[z]alloc() and caller must kfree().
-+ * On error, returns -errno (response status is always 0-15).
-+ */
-+int cport_send_req(struct hfi2_devdata *dd, u8 op, u8 sideband, void *payload, int len,
-+		   void **rsp_pld, int *rsp_len, long timeout)
-+{
-+	int ret;
-+	struct cport_work *msg;
-+	DEFINE_SEMAPHORE(comp, 0);
-+
-+	might_sleep();
-+
-+	msg = cport_send_req_nb(dd, op, sideband, payload, len, &comp, timeout);
-+	if (IS_ERR(msg))
-+		return PTR_ERR(msg);
-+	if (timeout > 0 && timeout != MAX_SCHEDULE_TIMEOUT)
-+		ret = down_timeout(&comp, timeout);
-+	else
-+		ret = down_killable(&comp);
-+	if (ret) {
-+		dd_dev_err(dd, "CPORT request wait interrupted %016llx (%d)\n",
-+			   msg->req.hdr.qw, ret);
-+		cport_send_cancel(dd, msg);
-+		return ret;
-+	}
-+	return cport_send_comp(dd, msg, rsp_pld, rsp_len);
-+}
-+
-+int cport_send_notif(struct hfi2_devdata *dd, u8 op, u8 sideband, void *payload, int len)
-+{
-+	struct cport_work *msg;
-+
-+	if (!dd->cport || len > CH_LEN_MAX)
-+		return -EINVAL;
-+
-+	msg = cwalloc(CW_FLAG_SEND);
-+	if (!msg)
-+		return -ENOMEM;
-+	msg->dd = dd;
-+	memcpy(&msg->req.qw[1], payload, len);
-+	msg->req.hdr.len = len + sizeof(msg->req.hdr);
-+	msg->req.hdr.op_code = op;
-+	msg->req.hdr.sideband = sideband;
-+	msg->req.hdr.is_req = 1;
-+	msg->req.hdr.no_rsp = 1;
-+	INIT_WORK(&msg->work, cport_send_req_fn);
-+	queue_work(dd->hfi2_wq, &msg->work);
-+	return 0;
-+}
-+
-+/*
-+ ********************************************************************
-+ * Internal routines.
-+ */
-+
-+/*
-+ * Send a response to CPORT's request.
-+ *
-+ * Re-uses message structure from request. Queues to send workqueue.
-+ */
-+static int cport_send_rsp(struct cport_work *msg, int sts)
-+{
-+	struct hfi2_devdata *dd = msg->dd;
-+
-+	/* rsp.hdr.len and rsp.qw[1..] already setup, also rsp.op_code/rsp.tid */
-+	msg->rsp.hdr.is_req = 0;
-+	msg->rsp.hdr.sts = sts;
-+	INIT_WORK(&msg->work, cport_send_rsp_fn);
-+	queue_work(dd->hfi2_wq, &msg->work);
-+	return 0;
-+}
-+
-+static void cport_send(struct cport_work *msg, bool req)
-+{
-+	int len;
-+	u64 *ptr;
-+	u32 i;
-+	int ret;
-+	struct hfi2_devdata *dd = msg->dd;
-+	union mctxt_mem *mc = req ? &msg->req : &msg->rsp;
-+
-+	/* sleep until OutboxEmpty... */
-+	if (msg->timeout > 0 && msg->timeout != MAX_SCHEDULE_TIMEOUT)
-+		ret = down_timeout(&dd->cport->outbox, msg->timeout);
-+	else
-+		ret = down_killable(&dd->cport->outbox);
-+	if (ret) {
-+		dd_dev_err(dd, "CPORT Send OUTBOX_EMPTY killed %016llx (%d)\n",
-+			   msg->req.hdr.qw, ret);
-+		cwput(msg);
-+		return;	/* no way to report error to caller */
-+	}
-+	mc->hdr.seq_no = atomic_fetch_inc(&dd->cport->seqno);
-+	len = mc->hdr.len; /* msg len == pkt len, >= sizeof(u64) */
-+	ptr = &mc->qw[0];
-+	/* NOTE: "CPORT IN" is our output */
-+	i = JKR_MCTXT_CPORT_IN;
-+	write_csr(dd, CPORT_IN_SCRATCH, CPORT_HDR_DEF | ((u64)len << CPORT_HDR_LEN));
-+	/* since buffer is full MCTXT, last bytes can be sent as qword. */
-+	while (len > 0) {
-+		write_csr(dd, i, *ptr++);
-+		i += sizeof(u64);
-+		len -= sizeof(u64);
-+	}
-+	write_csr(dd, JKR_MCTXT_CPORT_INT_STATUS, JKR_MCTXT_INT_INBOX_FULL);
-+	cwput(msg); /* may or may not free memory */
-+}
-+
-+/*
-+ * Low-level send to CPORT via MCTXT.
-+ *
-+ * Interfaces with MCTXT.
-+ */
-+static void cport_send_req_fn(struct work_struct *work)
-+{
-+	struct cport_work *msg = container_of(work, struct cport_work, work);
-+
-+	cport_send(msg, true);
-+}
-+
-+static void cport_send_rsp_fn(struct work_struct *work)
-+{
-+	struct cport_work *msg = container_of(work, struct cport_work, work);
-+
-+	cport_send(msg, false);
-+}
-+
-+static int echo_req(struct hfi2_devdata *dd, u8 op, u8 sideband,
-+		    void *pld, int pll, void *handle)
-+{
-+	struct cport_work *msg = handle;
-+
-+	dd_dev_info(msg->dd, "cport ping %02x (%d)\n", sideband, pll);
-+	/* Leave payload in-tact (echo). */
-+	pld_rsp_set(msg, pld, pll);
-+	return MSG_RSP_STATUS_OK;
-+}
-+
-+static int inval_req(struct hfi2_devdata *dd, u8 op, u8 sideband,
-+		     void *pld, int pll, void *handle)
-+{
-+	return MSG_RSP_STATUS_OPCODE_UNSUPPORTED;
-+}
-+
-+/*
-+ * Process a request from CPORT.
-+ *
-+ * May be dispatched to external function from handlers[].
-+ */
-+static void cport_req_fn(struct work_struct *work)
-+{
-+	struct cport_work *msg = container_of(work, struct cport_work, work);
-+	cport_handler func;
-+	int ret = MSG_RSP_STATUS_OK;
-+	void *pld;
-+	int pll;
-+
-+	pll = msg->req.hdr.len - sizeof(msg->req.hdr);
-+	pld = &msg->req.qw[1];
-+	msg->rsp.hdr.qw = msg->req.hdr.qw;
-+	/* default to no payload in response (if any) */
-+	msg->rsp.hdr.len = sizeof(msg->req.hdr);
-+	func = msg->dd->cport->handlers[msg->req.hdr.op_code];
-+	if (func)
-+		ret = func(msg->dd, msg->req.hdr.op_code, msg->req.hdr.sideband,
-+			   pld, pll, msg);
-+	else
-+		ret = inval_req(msg->dd, msg->req.hdr.op_code, msg->req.hdr.sideband,
-+				pld, pll, msg);
-+	if (msg->req.hdr.no_rsp) {
-+		cwput(msg);
-+		if (ret)
-+			dd_dev_err(msg->dd, "Op %d %02x failed (%d)\n",
-+				   msg->req.hdr.op_code, msg->req.hdr.sideband, ret);
-+	} else {
-+		/* msg->rsp.qw[*] and msg->rsp.hdr.len have been updated */
-+		ret = cport_send_rsp(msg, ret);
-+		if (ret)
-+			dd_dev_err(msg->dd, "Response send failed (%d)\n", ret);
-+	}
-+}
-+
-+/*
-+ * Handler for MCTXT Inbox Full interrupt.
-+ *
-+ * Only one can be queued/run until JKR_MCTXT_INT_OUTBOX_EMPTY is cleared.
-+ * Run in a workqueue (not interrupt context).
-+ */
-+static void cport_mctxt_fn(struct work_struct *work)
-+{
-+	struct hfi2_cport *cport = container_of(work, struct hfi2_cport, mctxt_work);
-+	struct hfi2_devdata *dd = cport->dd;
-+	int ret = 0;
-+	int len;
-+	u64 *ptr;
-+	u32 i;
-+	struct cport_work *msg;
-+	union cport_header hdr;
-+
-+	/*
-+	 * CPORT output MCTXT is our input.
-+	 */
-+	i = JKR_MCTXT_CPORT_OUT;
-+	/*
-+	 * This header ignored:
-+	 * mhdr = read_csr(dd, CPORT_OUT_SCRATCH);
-+	 * assert(mhdr.PKT_LEN_BYTES == hdr.len);
-+	 */
-+	hdr.qw = read_csr(dd, i);
-+	i += sizeof(u64);
-+	/* No need for atomics here, we are single threaded */
-+	if (hdr.seq_no != cport->rseqno) {
-+		dd_dev_info(dd, "Recv out of sequence: %d -> %d\n", cport->rseqno, hdr.seq_no);
-+		cport->rseqno = hdr.seq_no;
-+	}
-+	cport->rseqno = (cport->rseqno + 1) & CPORT_SEQNO_MASK;
-+	if (hdr.is_req) {
-+		/* Request from CPORT, has no existing message context */
-+		msg = cwalloc(CW_FLAG_RECV);
-+		if (!msg) {
-+			ret = -ENOMEM;
-+			goto fail; /* drop message, with error */
-+		}
-+		ptr = &msg->req.qw[0];
-+	} else {
-+		/*
-+		 * Responses already have a 'msg', extra ref was already taken.
-+		 * Take an additional ref against possible race with timeout
-+		 * (cport_send_cancel()) between here and the up().
-+		 */
-+		msg = cwget_xa(dd, hdr.tid);
-+		if (!msg) {
-+			ret = -ESRCH;
-+			goto fail; /* drop message, with error */
-+		}
-+		ptr = &msg->rsp.qw[0];
-+		/* assert msg->req.hdr ~= hdr */
-+	}
-+	*ptr++ = hdr.qw;
-+	/* now copy payload into chosen buffer */
-+	len = hdr.len - sizeof(hdr);
-+	while (len > 0) {
-+		*ptr++ = read_csr(dd, i);
-+		i += sizeof(u64);
-+		len -= sizeof(u64);
-+	}
-+	/*
-+	 * We are finished with the dd->cport->mctxt_work struct,
-+	 * and the MCTXT, so it can all be re-used now.
-+	 */
-+	write_csr(dd, JKR_MCTXT_CPORT_INT_STATUS, JKR_MCTXT_INT_OUTBOX_EMPTY);
-+
-+	/* responses don't require any more work here - just wakeup requester */
-+	if (!hdr.is_req) {
-+		up(msg->sem);
-+		cwput(msg);
-+		return;
-+	}
-+	msg->dd = dd;
-+	/* dispatch 'msg' request */
-+	INIT_WORK(&msg->work, cport_req_fn);
-+	/* don't care about locality */
-+	queue_work(dd->hfi2_wq, &msg->work);
-+	return;
-+fail:
-+	write_csr(dd, JKR_MCTXT_CPORT_INT_STATUS, JKR_MCTXT_INT_OUTBOX_EMPTY);
-+	dd_dev_err(dd, "Dropping incoming CPORT message %016llx (%d)\n", hdr.qw, ret);
-+}
-+
-+/*
-+ * Handler for PF0 MCTXT interrupts.
-+ *
-+ * Called when one of the enabled MCTXT_PF0 conditions occurs.
-+ * 'source' is always 0. Called in interrupt context.
-+ *
-+ * Since this interrupt is exclusive to MCTXT, there is no doubt
-+ * about which transport to use (always is MCTXT).
-+ */
-+void is_cport_int(struct hfi2_devdata *dd, unsigned int source)
-+{
-+	u64 ints;
-+
-+	if (!dd->cport)
-+		return;
-+
-+#ifdef CONFIG_HFI_CPORT_POLLING
-+	ints = read_csr(dd, JKR_MCTXT_PF0_INT_STATUS);
-+#else
-+	ints = read_csr(dd, JKR_MCTXT_PF0_INT_STATUS_ENABLED);
-+#endif
-+	if (!ints) {
-+		dd_dev_warn(dd, "MCTXT interrupt, but no status bits set\n");
-+		return;
-+	}
-+	write_csr(dd, JKR_MCTXT_PF0_INT_ACK, ints);
-+	if (ints & JKR_MCTXT_INT_INBOX_FULL)
-+		queue_work(dd->hfi2_wq, &dd->cport->mctxt_work);
-+	if (ints & JKR_MCTXT_INT_OUTBOX_EMPTY)
-+		up(&dd->cport->outbox);
-+}
-+
-+/***************************************************
-+ * API for handling notifications from CPORT
-+ */
-+
-+void *cport_resp_alloc(void *handle, int len)
-+{
-+	struct cport_work *msg = handle;
-+
-+	if (!msg || len <= 0 || len > CH_LEN_MAX)
-+		return NULL;
-+	msg->rsp.hdr.len = len + sizeof(msg->rsp.hdr);
-+	return &msg->rsp.qw[1];
-+}
-+
-+int cport_resp_set(void *handle, void *payload, int len)
-+{
-+	struct cport_work *msg = handle;
-+
-+	if (!msg || !payload || len <= 0 || len > CH_LEN_MAX)
-+		return -EINVAL;
-+	msg->rsp.hdr.len = len + sizeof(msg->rsp.hdr);
-+	memcpy(&msg->rsp.qw[1], payload, len);
-+	return 0;
-+}
-+
-+int cport_register_cb(struct hfi2_devdata *dd, u8 op_start, u8 op_end, cport_handler func)
-+{
-+	int x;
-+
-+	if (op_start > op_end || op_start < 0 || op_end >= 256)
-+		return -ERANGE;
-+	if (!dd->cport)
-+		return -EINVAL;
-+
-+	/* 'func' may be NULL, to unregister */
-+	for (x = op_start; x <= op_end; ++x) {
-+		dd->cport->handlers[x] = func;
-+	}
-+	return 0;
-+}
-+
-+static int cport_ping(void *data)
-+{
-+	struct hfi2_devdata *dd = data;
-+	char buf[16];
-+	int len;
-+	unsigned int num;
-+	void *rspbuf;
-+	int rsplen;
-+	int rc;
-+
-+	while (!kthread_should_stop() && (num = atomic_read(&dd->cport->nping)) > 0) {
-+		len = snprintf(buf, sizeof(buf), "ping %u", num);
-+		rspbuf = NULL;
-+		rc = cport_send_req(dd, CH_OP_PING, 0, buf, len,
-+				    &rspbuf, &rsplen, MAX_SCHEDULE_TIMEOUT);
-+		if (rc < 0) {
-+			dd_dev_info(dd, "CPORT \"%s\" error %d\n", buf, rc);
-+			break;
-+		}
-+		dd_dev_info(dd, "CPORT \"%s\" -> %d \"%.*s\"\n",
-+			    buf, rc, rsplen, (char *)rspbuf);
-+		kfree(rspbuf);
-+		atomic_dec(&dd->cport->nping);
-+	}
-+	dd->cport->ping_th = NULL;
-+	atomic_set(&dd->cport->nping, 0);
-+	return 0;
-+}
-+
-+int cport_ping_start(struct hfi2_devdata *dd, unsigned int count)
-+{
-+	int rc;
-+
-+	if (!count) {
-+		if (dd->cport->ping_th)
-+			kthread_stop(dd->cport->ping_th);
-+			/* kthread will zero count when exiting */
-+		else
-+			atomic_set(&dd->cport->nping, 0);
-+		return 0;
-+	}
-+	atomic_set(&dd->cport->nping, count);
-+	if (dd->cport->ping_th)
-+		return 0;
-+
-+	dd->cport->ping_th = kthread_create_on_node(cport_ping, dd, dd->node, "cport_ping");
-+	if (IS_ERR(dd->cport->ping_th)) {
-+		rc = PTR_ERR(dd->cport->ping_th);
-+		dd->cport->ping_th = NULL;
-+		dd_dev_err(dd, "Failed to create CPORT ping thread %d\n", rc);
-+		return rc;
-+	}
-+	wake_up_process(dd->cport->ping_th);
-+	return 0;
-+}
-+
-+#ifdef CONFIG_HFI_CPORT_POLLING
-+static int cport_poll(void *data)
-+{
-+	struct hfi2_devdata *dd = data;
-+	u64 v;
-+
-+	while (!kthread_should_stop()) {
-+		v = read_csr(dd, JKR_MCTXT_PF0_INT_STATUS);
-+		if (v & 0xff)
-+			is_cport_int(dd, 0);
-+		fsleep(30);
-+	}
-+	return 0;
-+}
-+#endif
-+
-+/*
-+ * Initialization/setup of MCTXT CPORT communications channel.
-+ */
-+int cport_init(struct hfi2_devdata *dd)
-+{
-+	struct hfi2_cport *cport;
-+
-+	if (dd->params->chip_type == CHIP_WFR)
-+		return 0;
-+
-+	cport = kzalloc(sizeof(*cport), GFP_KERNEL);
-+	if (!cport)
-+		goto err1;
-+
-+	INIT_WORK(&cport->mctxt_work, cport_mctxt_fn);
-+	xa_init_flags(&cport->tid_xa, XA_FLAGS_ALLOC);
-+	xa_init_flags(&cport->trap_xa, XA_FLAGS_ALLOC);
-+
-+	/*
-+	 * Setting initial state can be problematic.
-+	 * We require that CPORT set JKR_MCTXT_INT_OUTBOX_EMPTY in
-+	 * JKR_MCTXT_PF0_INT_STATUS or we will never start sending.
-+	 * We also require that CPORT never set JKR_MCTXT_INT_OUTBOX_EMPTY
-+	 * gratuitously, or we get a semaphore count > 1 and will
-+	 * start overrunning MCTXT. Essentially, CPORT must set this
-+	 * exactly once when entering the "ready to receive" state
-+	 * (initially and after processing each message).
-+	 */
-+	sema_init(&cport->outbox, 0);
-+
-+	cport->dd = dd;
-+	dd->cport = cport;
-+
-+	cport_register_cb(dd, CH_OP_PING, CH_OP_PING, echo_req);
-+
-+#ifdef CONFIG_HFI_CPORT_POLLING
-+	cport->poll_th = kthread_create_on_node(cport_poll, dd, dd->node, "cport_poll");
-+	if (!cport->poll_th)
-+		dd_dev_err(dd, "Failed to create CPORT polling thread\n");
-+	else
-+		wake_up_process(dd->cport->poll_th);
-+#else
-+	/* Enable intr source for MCTXT from CPORT (to PF0) */
-+	write_csr(dd, JKR_MCTXT_PF0_INT_ENABLE,
-+		  JKR_MCTXT_INT_INBOX_FULL | JKR_MCTXT_INT_OUTBOX_EMPTY);
-+	set_intr_bits(dd, JKR_MCTXT_CPORT_TO_PCIE_INT, JKR_MCTXT_CPORT_TO_PCIE_INT, true);
-+#endif
-+
-+	/*
-+	 * Must reset/resync sequence numbers as CPORT is strictly enforcing
-+	 * sequence number order.
-+	 */
-+	cport_send_notif(dd, CH_OP_PING, 0, NULL, 0);
-+	return 0;
-+
-+err1:
-+	return -ENOMEM;
-+}
-+
-+/*
-+ * Deinitialization of MCTXT CPORT communications channel.
-+ */
-+int cport_exit(struct hfi2_devdata *dd)
-+{
-+	if (!dd->cport)
-+		return 0;
-+
-+	/* Disable intr source for MCTXT from CPORT (to PF0) */
-+	set_intr_bits(dd, JKR_MCTXT_CPORT_TO_PCIE_INT, JKR_MCTXT_CPORT_TO_PCIE_INT, false);
-+	write_csr(dd, JKR_MCTXT_PF0_INT_ENABLE, 0);
-+	/* leave JKR_MCTXT_INT_OUTBOX_EMPTY set so that future users are ready-to-go */
-+	write_csr(dd, JKR_MCTXT_PF0_INT_STATUS, JKR_MCTXT_INT_OUTBOX_EMPTY);
-+#ifdef CONFIG_HFI_CPORT_POLLING
-+	if (dd->cport->poll_th)
-+		kthread_stop(dd->cport->poll_th);
-+#endif
-+	if (dd->cport->ping_th)
-+		kthread_stop(dd->cport->ping_th);
-+
-+	cancel_work(&dd->cport->mctxt_work);
-+
-+	xa_destroy(&dd->cport->tid_xa);
-+	xa_destroy(&dd->cport->trap_xa);
-+	kfree(dd->cport);
-+	dd->cport = NULL;
-+
-+	return 0;
-+}
-diff --git a/drivers/infiniband/hw/hfi2/mad.c b/drivers/infiniband/hw/hfi2/mad.c
-new file mode 100644
-index 000000000000..1a43c624429d
---- /dev/null
-+++ b/drivers/infiniband/hw/hfi2/mad.c
-@@ -0,0 +1,6055 @@
-+// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-+/*
-+ * Copyright(c) 2015-2018 Intel Corporation.
-+ */
-+
-+#include <linux/net.h>
-+#include <rdma/opa_addr.h>
-+#define OPA_NUM_PKEY_BLOCKS_PER_SMP (OPA_SMP_DR_DATA_SIZE \
-+			/ (OPA_PARTITION_TABLE_BLK_SIZE * sizeof(u16)))
-+
-+#include "hfi2.h"
-+#include "file_ops.h"
-+#include "chip_gen.h"
-+#include "mad.h"
-+#include "trace.h"
-+#include "qp.h"
-+#include "rdma/ib_sa.h"
-+
-+int cport_mad_to = 1;
-+module_param_named(cport_mad_to, cport_mad_to, int, 0644);
-+MODULE_PARM_DESC(cport_mad_to, "Timout for MADs to CPORT, seconds, default 1 (-1 = infinite)");
-+
-+/* offset from start of packet for the MAD header */
-+#define MAD_9B_OFFSET		(8 + 12 + 8)	/* 9B LRH, BTH, DETH */
-+#define MAD_16B_FM_OFFSET	(16 + 8)	/* 16B LRH, Mgmt L4 */
-+#define MAD_16B_IB_OFFSET	(16 + 12 + 8)	/* 16B LRH, BTH, DETH */
-+
-+/* the reset value from the FM is supposed to be 0xffff, handle both */
-+#define OPA_LINK_WIDTH_RESET_OLD 0x0fff
-+#define OPA_LINK_WIDTH_RESET 0xffff
-+
-+struct trap_node {
++#define KDETH_OFFSET_SHIFT        0
++#define KDETH_OFFSET_MASK         0x7fff
++#define KDETH_OM_SHIFT            15
++#define KDETH_OM_MASK             0x1
++#define KDETH_TID_SHIFT           16
++#define KDETH_TID_MASK            0x3ff
++#define KDETH_TIDCTRL_SHIFT       26
++#define KDETH_TIDCTRL_MASK        0x3
++#define KDETH_INTR_SHIFT          28
++#define KDETH_INTR_MASK           0x1
++#define KDETH_SH_SHIFT            29
++#define KDETH_SH_MASK             0x1
++#define KDETH_KVER_SHIFT          30
++#define KDETH_KVER_MASK           0x3
++#define KDETH_JKEY_SHIFT          0x0
++#define KDETH_JKEY_MASK           0xff
++#define KDETH_HCRC_UPPER_SHIFT    16
++#define KDETH_HCRC_UPPER_MASK     0xff
++#define KDETH_HCRC_LOWER_SHIFT    24
++#define KDETH_HCRC_LOWER_MASK     0xff
++
++#define KDETH_GET(val, field)						\
++	(((le32_to_cpu((val))) >> KDETH_##field##_SHIFT) & KDETH_##field##_MASK)
++#define KDETH_SET(dw, field, val) do {					\
++		u32 dwval = le32_to_cpu(dw);				\
++		dwval &= ~(KDETH_##field##_MASK << KDETH_##field##_SHIFT); \
++		dwval |= (((val) & KDETH_##field##_MASK) << \
++			  KDETH_##field##_SHIFT);			\
++		dw = cpu_to_le32(dwval);				\
++	} while (0)
++
++#define KDETH_RESET(dw, field, val) ({ dw = 0; KDETH_SET(dw, field, val); })
++
++/* KDETH OM multipliers and switch over point */
++#define KDETH_OM_SMALL     4
++#define KDETH_OM_SMALL_SHIFT     2
++#define KDETH_OM_LARGE     64
++#define KDETH_OM_LARGE_SHIFT     6
++#define KDETH_OM_MAX_SIZE  (1 << ((KDETH_OM_LARGE / KDETH_OM_SMALL) + 1))
++
++struct tid_group {
 +	struct list_head list;
-+	struct opa_mad_notice_attr data;
-+	__be64 tid;
-+	int len;
-+	u32 retry;
-+	u8 in_use;
-+	u8 repress;
++	u32 base;
++	u8 size;
++	u8 used;
++	u8 map;
 +};
 +
-+static int smp_length_check(u32 data_size, u32 request_len)
++static inline void tid_group_add_tail(struct tid_group *grp,
++				      struct exp_tid_set *set)
 +{
-+	if (unlikely(request_len < data_size))
-+		return -EINVAL;
-+
-+	return 0;
++	list_add_tail(&grp->list, &set->list);
++	set->count++;
 +}
 +
-+static int reply(struct ib_mad_hdr *smp)
++static inline void tid_group_remove(struct tid_group *grp,
++				    struct exp_tid_set *set)
++{
++	list_del_init(&grp->list);
++	set->count--;
++}
++
++static inline void tid_group_move(struct tid_group *group,
++				  struct exp_tid_set *s1,
++				  struct exp_tid_set *s2)
++{
++	tid_group_remove(group, s1);
++	tid_group_add_tail(group, s2);
++}
++
++static inline struct tid_group *tid_group_pop(struct exp_tid_set *set)
++{
++	struct tid_group *grp =
++		list_first_entry(&set->list, struct tid_group, list);
++	list_del_init(&grp->list);
++	set->count--;
++	return grp;
++}
++
++static inline u32 create_tid(u32 rcventry, u32 npages)
++{
++	u32 pair = rcventry & ~0x1;
++
++	return EXP_TID_SET(IDX, pair >> 1) |
++		EXP_TID_SET(CTRL, 1 << (rcventry - pair)) |
++		EXP_TID_SET(LEN, npages);
++}
++
++/**
++ * hfi2_tid_group_to_idx - convert an index to a group
++ * @rcd - the receive context
++ * @grp - the group pointer
++ */
++static inline u16
++hfi2_tid_group_to_idx(struct hfi2_ctxtdata *rcd, struct tid_group *grp)
++{
++	return grp - &rcd->groups[0];
++}
++
++/**
++ * hfi2_idx_to_tid_group - convert a group to an index
++ * @rcd - the receive context
++ * @idx - the index
++ */
++static inline struct tid_group *
++hfi2_idx_to_tid_group(struct hfi2_ctxtdata *rcd, u16 idx)
++{
++	return &rcd->groups[idx];
++}
++
++int hfi2_alloc_ctxt_rcv_groups(struct hfi2_ctxtdata *rcd);
++void hfi2_free_ctxt_rcv_groups(struct hfi2_ctxtdata *rcd);
++void hfi2_exp_tid_group_init(struct hfi2_ctxtdata *rcd);
++
++#endif /* _HFI2_EXP_RCV_H */
+diff --git a/drivers/infiniband/hw/hfi2/file_ops.h b/drivers/infiniband/hw/hfi2/file_ops.h
+new file mode 100644
+index 000000000000..f03ea6d21ad0
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/file_ops.h
+@@ -0,0 +1,46 @@
++/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/*
++ * Copyright(c) 2024 Cornelis Networks, Inc.
++ */
++
++#ifndef _HFI2_FILE_OPS_H
++#define _HFI2_FILE_OPS_H
++
++#include "hfi2.h"
++
++int hfi2_set_uevent_bits(struct hfi2_pportdata *ppd, const int evtbit);
++struct hfi2_filedata *hfi2_alloc_filedata(struct hfi2_devdata *dd);
++void hfi2_dealloc_filedata(struct hfi2_filedata *fdata);
++int hfi2_do_assign_ctxt(struct hfi2_filedata *fd,
++			const struct hfi2_assign_ctxt_cmd *uinfo);
++int manage_rcvq(struct hfi2_ctxtdata *uctxt, u16 subctxt, int start_stop);
++int user_event_ack(struct hfi2_ctxtdata *uctxt, u16 subctxt,
++		   unsigned long events);
++int set_ctxt_pkey(struct hfi2_ctxtdata *uctxt, u16 pkey);
++int ctxt_reset(struct hfi2_ctxtdata *uctxt);
++int hfi2_get_pinning_stats(struct hfi2_filedata *fd,
++			   struct hfi2_pin_stats *stats);
++int hfi2_do_mmap(struct hfi2_filedata *fd, u8 type, struct vm_area_struct *vma);
++ssize_t hfi2_do_write_iter(struct hfi2_filedata *fd, struct iov_iter *from);
++
++/*
++ * Types of memories mapped into user processes' space
++ */
++enum mmap_types {
++	PIO_BUFS = 1,
++	PIO_BUFS_SOP,
++	PIO_CRED,
++	RCV_HDRQ,
++	RCV_EGRBUF,
++	UREGS,
++	EVENTS,
++	STATUS,
++	RTAIL,
++	SUBCTXT_UREGS,
++	SUBCTXT_RCV_HDRQ,
++	SUBCTXT_EGRBUF,
++	SDMA_COMP,
++	RCV_RHEQ,
++};
++
++#endif /* _HFI2_FILE_OPS_H */
+diff --git a/drivers/infiniband/hw/hfi2/iowait.h b/drivers/infiniband/hw/hfi2/iowait.h
+new file mode 100644
+index 000000000000..23e5d6600064
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/iowait.h
+@@ -0,0 +1,457 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2015 - 2018 Intel Corporation.
++ */
++
++#ifndef _HFI2_IOWAIT_H
++#define _HFI2_IOWAIT_H
++
++#include <linux/list.h>
++#include <linux/workqueue.h>
++#include <linux/wait.h>
++#include <linux/sched.h>
++
++#include "sdma_txreq.h"
++
++/*
++ * typedef (*restart_t)() - restart callback
++ * @work: pointer to work structure
++ */
++typedef void (*restart_t)(struct work_struct *work);
++
++#define IOWAIT_PENDING_IB  0x0
++#define IOWAIT_PENDING_TID 0x1
++
++/*
++ * A QP can have multiple Send Engines (SEs).
++ *
++ * The current use case is for supporting a TID RDMA
++ * packet build/xmit mechanism independent from verbs.
++ */
++#define IOWAIT_SES 2
++#define IOWAIT_IB_SE 0
++#define IOWAIT_TID_SE 1
++
++struct sdma_txreq;
++struct sdma_engine;
++/**
++ * @iowork: the work struct
++ * @tx_head: list of prebuilt packets
++ * @iow: the parent iowait structure
++ *
++ * This structure is the work item (process) specific
++ * details associated with the each of the two SEs of the
++ * QP.
++ *
++ * The workstruct and the queued TXs are unique to each
++ * SE.
++ */
++struct iowait;
++struct iowait_work {
++	struct work_struct iowork;
++	struct list_head tx_head;
++	struct iowait *iow;
++};
++
++/**
++ * @list: used to add/insert into QP/PQ wait lists
++ * @tx_head: overflow list of sdma_txreq's
++ * @sleep: no space callback
++ * @wakeup: space callback wakeup
++ * @sdma_drained: sdma count drained
++ * @init_priority: callback to manipulate priority
++ * @lock: lock protected head of wait queue
++ * @iowork: workqueue overhead
++ * @wait_dma: wait for sdma_busy == 0
++ * @wait_pio: wait for pio_busy == 0
++ * @sdma_busy: # of packets in flight
++ * @count: total number of descriptors in tx_head'ed list
++ * @tx_limit: limit for overflow queuing
++ * @tx_count: number of tx entry's in tx_head'ed list
++ * @flags: wait flags (one per QP)
++ * @wait: SE array for multiple legs
++ *
++ * This is to be embedded in user's state structure
++ * (QP or PQ).
++ *
++ * The sleep and wakeup members are a
++ * bit misnamed.   They do not strictly
++ * speaking sleep or wake up, but they
++ * are callbacks for the ULP to implement
++ * what ever queuing/dequeuing of
++ * the embedded iowait and its containing struct
++ * when a resource shortage like SDMA ring space
++ * or PIO credit space is seen.
++ *
++ * Both potentially have locks help
++ * so sleeping is not allowed and it is not
++ * supported to submit txreqs from the wakeup
++ * call directly because of lock conflicts.
++ *
++ * The wait_dma member along with the iow
++ *
++ * The lock field is used by waiters to record
++ * the seqlock_t that guards the list head.
++ * Waiters explicitly know that, but the destroy
++ * code that unwaits QPs does not.
++ */
++struct iowait {
++	struct list_head list;
++	int (*sleep)(
++		struct sdma_engine *sde,
++		struct iowait_work *wait,
++		struct sdma_txreq *tx,
++		uint seq,
++		bool pkts_sent
++		);
++	void (*wakeup)(struct iowait *wait, int reason);
++	void (*sdma_drained)(struct iowait *wait);
++	void (*init_priority)(struct iowait *wait);
++	seqlock_t *lock;
++	wait_queue_head_t wait_dma;
++	wait_queue_head_t wait_pio;
++	atomic_t sdma_busy;
++	atomic_t pio_busy;
++	u32 count;
++	u32 tx_limit;
++	u32 tx_count;
++	u8 starved_cnt;
++	u8 priority;
++	unsigned long flags;
++	struct iowait_work wait[IOWAIT_SES];
++};
++
++#define SDMA_AVAIL_REASON 0
++
++void iowait_set_flag(struct iowait *wait, u32 flag);
++bool iowait_flag_set(struct iowait *wait, u32 flag);
++void iowait_clear_flag(struct iowait *wait, u32 flag);
++
++void iowait_init(struct iowait *wait, u32 tx_limit,
++		 void (*func)(struct work_struct *work),
++		 void (*tidfunc)(struct work_struct *work),
++		 int (*sleep)(struct sdma_engine *sde,
++			      struct iowait_work *wait,
++			      struct sdma_txreq *tx,
++			      uint seq,
++			      bool pkts_sent),
++		 void (*wakeup)(struct iowait *wait, int reason),
++		 void (*sdma_drained)(struct iowait *wait),
++		 void (*init_priority)(struct iowait *wait));
++
++/**
++ * iowait_schedule() - schedule the default send engine work
++ * @wait: wait struct to schedule
++ * @wq: workqueue for schedule
++ * @cpu: cpu
++ */
++static inline bool iowait_schedule(struct iowait *wait,
++				   struct workqueue_struct *wq, int cpu)
++{
++	return !!queue_work_on(cpu, wq, &wait->wait[IOWAIT_IB_SE].iowork);
++}
++
++/**
++ * iowait_tid_schedule - schedule the tid SE
++ * @wait: the iowait structure
++ * @wq: the work queue
++ * @cpu: the cpu
++ */
++static inline bool iowait_tid_schedule(struct iowait *wait,
++				       struct workqueue_struct *wq, int cpu)
++{
++	return !!queue_work_on(cpu, wq, &wait->wait[IOWAIT_TID_SE].iowork);
++}
++
++/**
++ * iowait_sdma_drain() - wait for DMAs to drain
++ *
++ * @wait: iowait structure
++ *
++ * This will delay until the iowait sdmas have
++ * completed.
++ */
++static inline void iowait_sdma_drain(struct iowait *wait)
++{
++	wait_event(wait->wait_dma, !atomic_read(&wait->sdma_busy));
++}
++
++/**
++ * iowait_sdma_pending() - return sdma pending count
++ *
++ * @wait: iowait structure
++ *
++ */
++static inline int iowait_sdma_pending(struct iowait *wait)
++{
++	return atomic_read(&wait->sdma_busy);
++}
++
++/**
++ * iowait_sdma_inc - note sdma io pending
++ * @wait: iowait structure
++ */
++static inline void iowait_sdma_inc(struct iowait *wait)
++{
++	atomic_inc(&wait->sdma_busy);
++}
++
++/**
++ * iowait_sdma_add - add count to pending
++ * @wait: iowait structure
++ */
++static inline void iowait_sdma_add(struct iowait *wait, int count)
++{
++	atomic_add(count, &wait->sdma_busy);
++}
++
++/**
++ * iowait_sdma_dec - note sdma complete
++ * @wait: iowait structure
++ */
++static inline int iowait_sdma_dec(struct iowait *wait)
++{
++	if (!wait)
++		return 0;
++	return atomic_dec_and_test(&wait->sdma_busy);
++}
++
++/**
++ * iowait_pio_drain() - wait for pios to drain
++ *
++ * @wait: iowait structure
++ *
++ * This will delay until the iowait pios have
++ * completed.
++ */
++static inline void iowait_pio_drain(struct iowait *wait)
++{
++	wait_event_timeout(wait->wait_pio,
++			   !atomic_read(&wait->pio_busy),
++			   HZ);
++}
++
++/**
++ * iowait_pio_pending() - return pio pending count
++ *
++ * @wait: iowait structure
++ *
++ */
++static inline int iowait_pio_pending(struct iowait *wait)
++{
++	return atomic_read(&wait->pio_busy);
++}
++
++/**
++ * iowait_pio_inc - note pio pending
++ * @wait: iowait structure
++ */
++static inline void iowait_pio_inc(struct iowait *wait)
++{
++	atomic_inc(&wait->pio_busy);
++}
++
++/**
++ * iowait_pio_dec - note pio complete
++ * @wait: iowait structure
++ */
++static inline int iowait_pio_dec(struct iowait *wait)
++{
++	if (!wait)
++		return 0;
++	return atomic_dec_and_test(&wait->pio_busy);
++}
++
++/**
++ * iowait_drain_wakeup() - trigger iowait_drain() waiter
++ *
++ * @wait: iowait structure
++ *
++ * This will trigger any waiters.
++ */
++static inline void iowait_drain_wakeup(struct iowait *wait)
++{
++	wake_up(&wait->wait_dma);
++	wake_up(&wait->wait_pio);
++	if (wait->sdma_drained)
++		wait->sdma_drained(wait);
++}
++
++/**
++ * iowait_get_txhead() - get packet off of iowait list
++ *
++ * @wait: iowait_work structure
++ */
++static inline struct sdma_txreq *iowait_get_txhead(struct iowait_work *wait)
++{
++	struct sdma_txreq *tx = NULL;
++
++	if (!list_empty(&wait->tx_head)) {
++		tx = list_first_entry(
++			&wait->tx_head,
++			struct sdma_txreq,
++			list);
++		list_del_init(&tx->list);
++	}
++	return tx;
++}
++
++static inline u16 iowait_get_desc(struct iowait_work *w)
++{
++	u16 num_desc = 0;
++	struct sdma_txreq *tx = NULL;
++
++	if (!list_empty(&w->tx_head)) {
++		tx = list_first_entry(&w->tx_head, struct sdma_txreq,
++				      list);
++		num_desc = tx->num_desc;
++		if (tx->flags & SDMA_TXREQ_F_VIP)
++			w->iow->priority++;
++	}
++	return num_desc;
++}
++
++static inline u32 iowait_get_all_desc(struct iowait *w)
++{
++	u32 num_desc = 0;
++
++	num_desc = iowait_get_desc(&w->wait[IOWAIT_IB_SE]);
++	num_desc += iowait_get_desc(&w->wait[IOWAIT_TID_SE]);
++	return num_desc;
++}
++
++static inline void iowait_update_priority(struct iowait_work *w)
++{
++	struct sdma_txreq *tx = NULL;
++
++	if (!list_empty(&w->tx_head)) {
++		tx = list_first_entry(&w->tx_head, struct sdma_txreq,
++				      list);
++		if (tx->flags & SDMA_TXREQ_F_VIP)
++			w->iow->priority++;
++	}
++}
++
++static inline void iowait_update_all_priority(struct iowait *w)
++{
++	iowait_update_priority(&w->wait[IOWAIT_IB_SE]);
++	iowait_update_priority(&w->wait[IOWAIT_TID_SE]);
++}
++
++static inline void iowait_init_priority(struct iowait *w)
++{
++	w->priority = 0;
++	if (w->init_priority)
++		w->init_priority(w);
++}
++
++static inline void iowait_get_priority(struct iowait *w)
++{
++	iowait_init_priority(w);
++	iowait_update_all_priority(w);
++}
++
++/**
++ * iowait_queue - Put the iowait on a wait queue
++ * @pkts_sent: have some packets been sent before queuing?
++ * @w: the iowait struct
++ * @wait_head: the wait queue
++ *
++ * This function is called to insert an iowait struct into a
++ * wait queue after a resource (eg, sdma descriptor or pio
++ * buffer) is run out.
++ */
++static inline void iowait_queue(bool pkts_sent, struct iowait *w,
++				struct list_head *wait_head)
 +{
 +	/*
-+	 * The verbs framework will handle the directed/LID route
-+	 * packet changes.
++	 * To play fair, insert the iowait at the tail of the wait queue if it
++	 * has already sent some packets; Otherwise, put it at the head.
++	 * However, if it has priority packets to send, also put it at the
++	 * head.
 +	 */
-+	smp->method = IB_MGMT_METHOD_GET_RESP;
-+	if (smp->mgmt_class == IB_MGMT_CLASS_SUBN_DIRECTED_ROUTE)
-+		smp->status |= IB_SMP_DIRECTION;
-+	return IB_MAD_RESULT_SUCCESS | IB_MAD_RESULT_REPLY;
++	if (pkts_sent)
++		w->starved_cnt = 0;
++	else
++		w->starved_cnt++;
++
++	if (w->priority > 0 || !pkts_sent)
++		list_add(&w->list, wait_head);
++	else
++		list_add_tail(&w->list, wait_head);
 +}
 +
-+static inline void clear_opa_smp_data(struct opa_smp *smp)
++/**
++ * iowait_starve_clear - clear the wait queue's starve count
++ * @pkts_sent: have some packets been sent?
++ * @w: the iowait struct
++ *
++ * This function is called to clear the starve count. If no
++ * packets have been sent, the starve count will not be cleared.
++ */
++static inline void iowait_starve_clear(bool pkts_sent, struct iowait *w)
 +{
-+	void *data = opa_get_smp_data(smp);
-+	size_t size = opa_get_smp_data_size(smp);
-+
-+	memset(data, 0, size);
++	if (pkts_sent)
++		w->starved_cnt = 0;
 +}
 +
-+static u16 hfi2_lookup_pkey_value(struct hfi2_ibport *ibp, int pkey_idx)
++/* Update the top priority index */
++uint iowait_priority_update_top(struct iowait *w,
++				struct iowait *top,
++				uint idx, uint top_idx);
++
++/**
++ * iowait_packet_queued() - determine if a packet is queued
++ * @wait: the iowait_work structure
++ */
++static inline bool iowait_packet_queued(struct iowait_work *wait)
 +{
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(ibp);
-+
-+	if (pkey_idx < ppd->dd->params->pkey_table_size)
-+		return ppd->pkeys[pkey_idx];
-+
-+	return 0;
++	return !list_empty(&wait->tx_head);
 +}
 +
-+void hfi2_event_pkey_change(struct hfi2_devdata *dd, u32 port)
++/**
++ * inc_wait_count - increment wait counts
++ * @w: the log work struct
++ * @n: the count
++ */
++static inline void iowait_inc_wait_count(struct iowait_work *w, u16 n)
 +{
-+	struct ib_event event;
-+
-+	event.event = IB_EVENT_PKEY_CHANGE;
-+	event.device = &dd->verbs_dev.rdi.ibdev;
-+	event.element.port_num = port;
-+	ib_dispatch_event(&event);
++	if (!w)
++		return;
++	w->iow->tx_count++;
++	w->iow->count += n;
 +}
++
++/**
++ * iowait_get_tid_work - return iowait_work for tid SE
++ * @w: the iowait struct
++ */
++static inline struct iowait_work *iowait_get_tid_work(struct iowait *w)
++{
++	return &w->wait[IOWAIT_TID_SE];
++}
++
++/**
++ * iowait_get_ib_work - return iowait_work for ib SE
++ * @w: the iowait struct
++ */
++static inline struct iowait_work *iowait_get_ib_work(struct iowait *w)
++{
++	return &w->wait[IOWAIT_IB_SE];
++}
++
++/**
++ * iowait_ioww_to_iow - return iowait given iowait_work
++ * @w: the iowait_work struct
++ */
++static inline struct iowait *iowait_ioww_to_iow(struct iowait_work *w)
++{
++	if (likely(w))
++		return w->iow;
++	return NULL;
++}
++
++void iowait_cancel_work(struct iowait *w);
++int iowait_set_work_flag(struct iowait_work *w);
++
++#endif
+diff --git a/drivers/infiniband/hw/hfi2/ipoib.h b/drivers/infiniband/hw/hfi2/ipoib.h
+new file mode 100644
+index 000000000000..ad62b223fa9b
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/ipoib.h
+@@ -0,0 +1,172 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++/*
++ * Copyright(c) 2020 Intel Corporation.
++ *
++ */
 +
 +/*
-+ * If the port is down, clean up all pending traps.  We need to be careful
-+ * with the given trap, because it may be queued.
++ * This file contains HFI2 support for IPOIB functionality
 + */
-+static void cleanup_traps(struct hfi2_ibport *ibp, struct trap_node *trap)
-+{
-+	struct trap_node *node, *q;
-+	unsigned long flags;
-+	struct list_head trap_list;
-+	int i;
 +
-+	for (i = 0; i < RVT_MAX_TRAP_LISTS; i++) {
-+		spin_lock_irqsave(&ibp->rvp.lock, flags);
-+		list_replace_init(&ibp->rvp.trap_lists[i].list, &trap_list);
-+		ibp->rvp.trap_lists[i].list_len = 0;
-+		spin_unlock_irqrestore(&ibp->rvp.lock, flags);
++#ifndef HFI2_IPOIB_H
++#define HFI2_IPOIB_H
 +
-+		/*
-+		 * Remove all items from the list, freeing all the non-given
-+		 * traps.
-+		 */
-+		list_for_each_entry_safe(node, q, &trap_list, list) {
-+			list_del(&node->list);
-+			if (node != trap)
-+				kfree(node);
-+		}
-+	}
++#include <linux/types.h>
++#include <linux/stddef.h>
++#include <linux/atomic.h>
++#include <linux/netdevice.h>
++#include <linux/slab.h>
++#include <linux/skbuff.h>
++#include <linux/list.h>
++#include <linux/if_infiniband.h>
 +
-+	/*
-+	 * If this wasn't on one of the lists it would not be freed.  If it
-+	 * was on the list, it is now safe to free.
-+	 */
-+	kfree(trap);
-+}
++#include "hfi2.h"
++#include "iowait.h"
++#include "netdev.h"
 +
-+static struct trap_node *check_and_add_trap(struct hfi2_ibport *ibp,
-+					    struct trap_node *trap)
-+{
-+	struct trap_node *node;
-+	struct trap_list *trap_list;
-+	unsigned long flags;
-+	unsigned long timeout;
-+	int found = 0;
-+	unsigned int queue_id;
-+	static int trap_count;
++#include <rdma/ib_verbs.h>
 +
-+	queue_id = trap->data.generic_type & 0x0F;
-+	if (queue_id >= RVT_MAX_TRAP_LISTS) {
-+		trap_count++;
-+		pr_err_ratelimited("hfi2: Invalid trap 0x%0x dropped. Total dropped: %d\n",
-+				   trap->data.generic_type, trap_count);
-+		kfree(trap);
-+		return NULL;
-+	}
++#define HFI2_IPOIB_ENTROPY_SHIFT   24
 +
-+	/*
-+	 * Since the retry (handle timeout) does not remove a trap request
-+	 * from the list, all we have to do is compare the node.
-+	 */
-+	spin_lock_irqsave(&ibp->rvp.lock, flags);
-+	trap_list = &ibp->rvp.trap_lists[queue_id];
++#define HFI2_IPOIB_TXREQ_NAME_LEN   32
 +
-+	list_for_each_entry(node, &trap_list->list, list) {
-+		if (node == trap) {
-+			node->retry++;
-+			found = 1;
-+			break;
-+		}
-+	}
++#define HFI2_IPOIB_PSEUDO_LEN 20
++#define HFI2_IPOIB_ENCAP_LEN 4
 +
-+	/* If it is not on the list, add it, limited to RVT-MAX_TRAP_LEN. */
-+	if (!found) {
-+		if (trap_list->list_len < RVT_MAX_TRAP_LEN) {
-+			trap_list->list_len++;
-+			list_add_tail(&trap->list, &trap_list->list);
-+		} else {
-+			pr_warn_ratelimited("hfi2: Maximum trap limit reached for 0x%0x traps\n",
-+					    trap->data.generic_type);
-+			kfree(trap);
-+		}
-+	}
++struct hfi2_ipoib_dev_priv;
 +
-+	/*
-+	 * Next check to see if there is a timer pending.  If not, set it up
-+	 * and get the first trap from the list.
-+	 */
-+	node = NULL;
-+	if (!timer_pending(&ibp->rvp.trap_timer)) {
-+		/*
-+		 * o14-2
-+		 * If the time out is set we have to wait until it expires
-+		 * before the trap can be sent.
-+		 * This should be > RVT_TRAP_TIMEOUT
-+		 */
-+		timeout = (RVT_TRAP_TIMEOUT *
-+			   (1UL << ibp->rvp.subnet_timeout)) / 1000;
-+		mod_timer(&ibp->rvp.trap_timer,
-+			  jiffies + usecs_to_jiffies(timeout));
-+		node = list_first_entry(&trap_list->list, struct trap_node,
-+					list);
-+		node->in_use = 1;
-+	}
-+	spin_unlock_irqrestore(&ibp->rvp.lock, flags);
++union hfi2_ipoib_flow {
++	u16 as_int;
++	struct {
++		u8 tx_queue;
++		u8 sc5;
++	} __attribute__((__packed__));
++};
 +
-+	return node;
-+}
-+
-+static void subn_handle_opa_trap_repress(struct hfi2_ibport *ibp,
-+					 struct opa_smp *smp)
-+{
-+	struct trap_list *trap_list;
-+	struct trap_node *trap;
-+	unsigned long flags;
-+	int i;
-+
-+	if (smp->attr_id != IB_SMP_ATTR_NOTICE)
-+		return;
-+
-+	spin_lock_irqsave(&ibp->rvp.lock, flags);
-+	for (i = 0; i < RVT_MAX_TRAP_LISTS; i++) {
-+		trap_list = &ibp->rvp.trap_lists[i];
-+		trap = list_first_entry_or_null(&trap_list->list,
-+						struct trap_node, list);
-+		if (trap && trap->tid == smp->tid) {
-+			if (trap->in_use) {
-+				trap->repress = 1;
-+			} else {
-+				trap_list->list_len--;
-+				list_del(&trap->list);
-+				kfree(trap);
-+			}
-+			break;
-+		}
-+	}
-+	spin_unlock_irqrestore(&ibp->rvp.lock, flags);
-+}
-+
-+static void hfi2_update_sm_ah_attr(struct hfi2_ibport *ibp,
-+				   struct rdma_ah_attr *attr, u32 dlid)
-+{
-+	rdma_ah_set_dlid(attr, dlid);
-+	rdma_ah_set_port_num(attr, ppd_from_ibp(ibp)->port);
-+	if (dlid >= be16_to_cpu(IB_MULTICAST_LID_BASE)) {
-+		struct ib_global_route *grh = rdma_ah_retrieve_grh(attr);
-+
-+		rdma_ah_set_ah_flags(attr, IB_AH_GRH);
-+		grh->sgid_index = 0;
-+		grh->hop_limit = 1;
-+		grh->dgid.global.subnet_prefix =
-+			ibp->rvp.gid_prefix;
-+		grh->dgid.global.interface_id = OPA_MAKE_ID(dlid);
-+	}
-+}
-+
-+static int hfi2_modify_qp0_ah(struct hfi2_ibport *ibp,
-+			      struct rvt_ah *ah, u32 dlid)
-+{
-+	struct rdma_ah_attr attr;
-+	struct rvt_qp *qp0;
-+	int ret = -EINVAL;
-+
-+	memset(&attr, 0, sizeof(attr));
-+	attr.type = ah->ibah.type;
-+	hfi2_update_sm_ah_attr(ibp, &attr, dlid);
-+	rcu_read_lock();
-+	qp0 = rcu_dereference(ibp->rvp.qp[0]);
-+	if (qp0)
-+		ret = rdma_modify_ah(&ah->ibah, &attr);
-+	rcu_read_unlock();
-+	return ret;
-+}
-+
-+static struct ib_ah *hfi2_create_qp0_ah(struct hfi2_ibport *ibp, u32 dlid)
-+{
-+	struct rdma_ah_attr attr;
-+	struct ib_ah *ah = ERR_PTR(-EINVAL);
-+	struct rvt_qp *qp0;
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(ibp);
-+	struct hfi2_devdata *dd = dd_from_ppd(ppd);
-+	u32 port_num = ppd->port;
-+
-+	memset(&attr, 0, sizeof(attr));
-+	attr.type = rdma_ah_find_type(&dd->verbs_dev.rdi.ibdev, port_num);
-+	hfi2_update_sm_ah_attr(ibp, &attr, dlid);
-+	rcu_read_lock();
-+	qp0 = rcu_dereference(ibp->rvp.qp[0]);
-+	if (qp0)
-+		ah = rdma_create_ah(qp0->ibqp.pd, &attr, 0);
-+	rcu_read_unlock();
-+	return ah;
-+}
-+
-+static void send_trap(struct hfi2_ibport *ibp, struct trap_node *trap)
-+{
-+	struct ib_mad_send_buf *send_buf;
-+	struct ib_mad_agent *agent;
-+	struct opa_smp *smp;
-+	unsigned long flags;
-+	int pkey_idx;
-+	u32 qpn = ppd_from_ibp(ibp)->sm_trap_qp;
-+
-+	agent = ibp->rvp.send_agent;
-+	if (!agent) {
-+		cleanup_traps(ibp, trap);
-+		return;
-+	}
-+
-+	/* o14-3.2.1 */
-+	if (driver_lstate(ppd_from_ibp(ibp)) != IB_PORT_ACTIVE) {
-+		cleanup_traps(ibp, trap);
-+		return;
-+	}
-+
-+	/* Add the trap to the list if necessary and see if we can send it */
-+	trap = check_and_add_trap(ibp, trap);
-+	if (!trap)
-+		return;
-+
-+	pkey_idx = hfi2_lookup_pkey_idx(ibp, LIM_MGMT_P_KEY);
-+	if (pkey_idx < 0) {
-+		pr_warn("%s: failed to find limited mgmt pkey, defaulting 0x%x\n",
-+			__func__, hfi2_get_pkey(ibp, 1));
-+		pkey_idx = 1;
-+	}
-+
-+	send_buf = ib_create_send_mad(agent, qpn, pkey_idx, 0,
-+				      IB_MGMT_MAD_HDR, IB_MGMT_MAD_DATA,
-+				      GFP_ATOMIC, IB_MGMT_BASE_VERSION);
-+	if (IS_ERR(send_buf))
-+		return;
-+
-+	smp = send_buf->mad;
-+	smp->base_version = OPA_MGMT_BASE_VERSION;
-+	smp->mgmt_class = IB_MGMT_CLASS_SUBN_LID_ROUTED;
-+	smp->class_version = OPA_SM_CLASS_VERSION;
-+	smp->method = IB_MGMT_METHOD_TRAP;
-+
-+	/* Only update the transaction ID for new traps (o13-5). */
-+	if (trap->tid == 0) {
-+		ibp->rvp.tid++;
-+		/* make sure that tid != 0 */
-+		if (ibp->rvp.tid == 0)
-+			ibp->rvp.tid++;
-+		trap->tid = cpu_to_be64(ibp->rvp.tid);
-+	}
-+	smp->tid = trap->tid;
-+
-+	smp->attr_id = IB_SMP_ATTR_NOTICE;
-+	/* o14-1: smp->mkey = 0; */
-+
-+	memcpy(smp->route.lid.data, &trap->data, trap->len);
-+
-+	spin_lock_irqsave(&ibp->rvp.lock, flags);
-+	if (!ibp->rvp.sm_ah) {
-+		if (ibp->rvp.sm_lid != be16_to_cpu(IB_LID_PERMISSIVE)) {
-+			struct ib_ah *ah;
-+
-+			ah = hfi2_create_qp0_ah(ibp, ibp->rvp.sm_lid);
-+			if (IS_ERR(ah)) {
-+				spin_unlock_irqrestore(&ibp->rvp.lock, flags);
-+				return;
-+			}
-+			send_buf->ah = ah;
-+			ibp->rvp.sm_ah = ibah_to_rvtah(ah);
-+		} else {
-+			spin_unlock_irqrestore(&ibp->rvp.lock, flags);
-+			return;
-+		}
-+	} else {
-+		send_buf->ah = &ibp->rvp.sm_ah->ibah;
-+	}
-+
-+	/*
-+	 * If the trap was repressed while things were getting set up, don't
-+	 * bother sending it. This could happen for a retry.
-+	 */
-+	if (trap->repress) {
-+		list_del(&trap->list);
-+		spin_unlock_irqrestore(&ibp->rvp.lock, flags);
-+		kfree(trap);
-+		ib_free_send_mad(send_buf);
-+		return;
-+	}
-+
-+	trap->in_use = 0;
-+	spin_unlock_irqrestore(&ibp->rvp.lock, flags);
-+
-+	if (ib_post_send_mad(send_buf, NULL))
-+		ib_free_send_mad(send_buf);
-+}
-+
-+void hfi2_handle_trap_timer(struct timer_list *t)
-+{
-+	struct hfi2_ibport *ibp = from_timer(ibp, t, rvp.trap_timer);
-+	struct trap_node *trap = NULL;
-+	unsigned long flags;
-+	int i;
-+
-+	/* Find the trap with the highest priority */
-+	spin_lock_irqsave(&ibp->rvp.lock, flags);
-+	for (i = 0; !trap && i < RVT_MAX_TRAP_LISTS; i++) {
-+		trap = list_first_entry_or_null(&ibp->rvp.trap_lists[i].list,
-+						struct trap_node, list);
-+	}
-+	spin_unlock_irqrestore(&ibp->rvp.lock, flags);
-+
-+	if (trap)
-+		send_trap(ibp, trap);
-+}
-+
-+static struct trap_node *create_trap_node(u8 type, __be16 trap_num, u32 lid)
-+{
-+	struct trap_node *trap;
-+
-+	trap = kzalloc(sizeof(*trap), GFP_ATOMIC);
-+	if (!trap)
-+		return NULL;
-+
-+	INIT_LIST_HEAD(&trap->list);
-+	trap->data.generic_type = type;
-+	trap->data.prod_type_lsb = IB_NOTICE_PROD_CA;
-+	trap->data.trap_num = trap_num;
-+	trap->data.issuer_lid = cpu_to_be32(lid);
-+
-+	return trap;
-+}
-+
-+/*
-+ * Send a bad P_Key trap (ch. 14.3.8).
++/**
++ * struct ipoib_txreq - IPOIB transmit descriptor
++ * @txreq: sdma transmit request
++ * @sdma_hdr: 9b ib headers
++ * @sdma_status: status returned by sdma engine
++ * @complete: non-zero implies complete
++ * @priv: ipoib netdev private data
++ * @txq: txq on which skb was output
++ * @skb: skb to send
 + */
-+void hfi2_bad_pkey(struct hfi2_ibport *ibp, u32 key, u32 sl,
-+		   u32 qp1, u32 qp2, u32 lid1, u32 lid2)
-+{
-+	struct trap_node *trap;
-+	u32 lid = ppd_from_ibp(ibp)->lid;
++struct ipoib_txreq {
++	struct sdma_txreq           txreq;
++	struct hfi2_sdma_header     *sdma_hdr;
++	int                         sdma_status;
++	int                         complete;
++	struct hfi2_ipoib_dev_priv *priv;
++	struct hfi2_ipoib_txq      *txq;
++	struct sk_buff             *skb;
++};
 +
-+	ibp->rvp.n_pkt_drops++;
-+	ibp->rvp.pkey_violations++;
-+
-+	trap = create_trap_node(IB_NOTICE_TYPE_SECURITY, OPA_TRAP_BAD_P_KEY,
-+				lid);
-+	if (!trap)
-+		return;
-+
-+	/* Send violation trap */
-+	trap->data.ntc_257_258.lid1 = cpu_to_be32(lid1);
-+	trap->data.ntc_257_258.lid2 = cpu_to_be32(lid2);
-+	trap->data.ntc_257_258.key = cpu_to_be32(key);
-+	trap->data.ntc_257_258.sl = sl << 3;
-+	trap->data.ntc_257_258.qp1 = cpu_to_be32(qp1);
-+	trap->data.ntc_257_258.qp2 = cpu_to_be32(qp2);
-+
-+	trap->len = sizeof(trap->data);
-+	send_trap(ibp, trap);
-+}
-+
-+/*
-+ * Send a bad M_Key trap (ch. 14.3.9).
++/**
++ * struct hfi2_ipoib_circ_buf - List of items to be processed
++ * @items: ring of items each a power of two size
++ * @max_items: max items + 1 that the ring can contain
++ * @shift: log2 of size for getting txreq
++ * @sent_txreqs: count of txreqs posted to sdma
++ * @tail: ring tail
++ * @stops: count of stops of queue
++ * @ring_full: ring has been filled
++ * @no_desc: descriptor shortage seen
++ * @complete_txreqs: count of txreqs completed by sdma
++ * @head: ring head
 + */
-+static void bad_mkey(struct hfi2_ibport *ibp, struct ib_mad_hdr *mad,
-+		     __be64 mkey, __be32 dr_slid, u8 return_path[], u8 hop_cnt)
-+{
-+	struct trap_node *trap;
-+	u32 lid = ppd_from_ibp(ibp)->lid;
++struct hfi2_ipoib_circ_buf {
++	void *items;
++	u32 max_items;
++	u32 shift;
++	/* consumer cache line */
++	u64 ____cacheline_aligned_in_smp sent_txreqs;
++	u32 avail;
++	u32 tail;
++	atomic_t stops;
++	atomic_t ring_full;
++	atomic_t no_desc;
++	/* producer cache line */
++	u64 ____cacheline_aligned_in_smp complete_txreqs;
++	u32 head;
++};
 +
-+	trap = create_trap_node(IB_NOTICE_TYPE_SECURITY, OPA_TRAP_BAD_M_KEY,
-+				lid);
-+	if (!trap)
-+		return;
-+
-+	/* Send violation trap */
-+	trap->data.ntc_256.lid = trap->data.issuer_lid;
-+	trap->data.ntc_256.method = mad->method;
-+	trap->data.ntc_256.attr_id = mad->attr_id;
-+	trap->data.ntc_256.attr_mod = mad->attr_mod;
-+	trap->data.ntc_256.mkey = mkey;
-+	if (mad->mgmt_class == IB_MGMT_CLASS_SUBN_DIRECTED_ROUTE) {
-+		trap->data.ntc_256.dr_slid = dr_slid;
-+		trap->data.ntc_256.dr_trunc_hop = IB_NOTICE_TRAP_DR_NOTICE;
-+		if (hop_cnt > ARRAY_SIZE(trap->data.ntc_256.dr_rtn_path)) {
-+			trap->data.ntc_256.dr_trunc_hop |=
-+				IB_NOTICE_TRAP_DR_TRUNC;
-+			hop_cnt = ARRAY_SIZE(trap->data.ntc_256.dr_rtn_path);
-+		}
-+		trap->data.ntc_256.dr_trunc_hop |= hop_cnt;
-+		memcpy(trap->data.ntc_256.dr_rtn_path, return_path,
-+		       hop_cnt);
-+	}
-+
-+	trap->len = sizeof(trap->data);
-+
-+	send_trap(ibp, trap);
-+}
-+
-+/*
-+ * Send a Port Capability Mask Changed trap (ch. 14.3.11).
++/**
++ * struct hfi2_ipoib_txq - IPOIB per Tx queue information
++ * @priv: private pointer
++ * @sde: sdma engine
++ * @tx_list: tx request list
++ * @sent_txreqs: count of txreqs posted to sdma
++ * @flow: tracks when list needs to be flushed for a flow change
++ * @q_idx: ipoib Tx queue index
++ * @pkts_sent: indicator packets have been sent from this queue
++ * @wait: iowait structure
++ * @napi: pointer to tx napi interface
++ * @tx_ring: ring of ipoib txreqs to be reaped by napi callback
 + */
-+void hfi2_cap_mask_chg(struct rvt_dev_info *rdi, u32 port_num)
-+{
-+	struct trap_node *trap;
-+	struct hfi2_ibdev *verbs_dev = dev_from_rdi(rdi);
-+	struct hfi2_devdata *dd = dd_from_dev(verbs_dev);
-+	struct hfi2_ibport *ibp = &dd->pport[port_num - 1].ibport_data;
-+	u32 lid = ppd_from_ibp(ibp)->lid;
++struct hfi2_ipoib_txq {
++	struct napi_struct napi;
++	struct hfi2_ipoib_dev_priv *priv;
++	struct sdma_engine *sde;
++	struct list_head tx_list;
++	union hfi2_ipoib_flow flow;
++	u8 q_idx;
++	bool pkts_sent;
++	struct iowait wait;
 +
-+	trap = create_trap_node(IB_NOTICE_TYPE_INFO,
-+				OPA_TRAP_CHANGE_CAPABILITY,
-+				lid);
-+	if (!trap)
-+		return;
++	struct hfi2_ipoib_circ_buf ____cacheline_aligned_in_smp tx_ring;
++};
 +
-+	trap->data.ntc_144.lid = trap->data.issuer_lid;
-+	trap->data.ntc_144.new_cap_mask = cpu_to_be32(ibp->rvp.port_cap_flags);
-+	trap->data.ntc_144.cap_mask3 = cpu_to_be16(ibp->rvp.port_cap3_flags);
-+
-+	trap->len = sizeof(trap->data);
-+	send_trap(ibp, trap);
-+}
-+
-+/*
-+ * Send a System Image GUID Changed trap (ch. 14.3.12).
-+ */
-+void hfi2_sys_guid_chg(struct hfi2_ibport *ibp)
-+{
-+	struct trap_node *trap;
-+	u32 lid = ppd_from_ibp(ibp)->lid;
-+
-+	trap = create_trap_node(IB_NOTICE_TYPE_INFO, OPA_TRAP_CHANGE_SYSGUID,
-+				lid);
-+	if (!trap)
-+		return;
-+
-+	trap->data.ntc_145.new_sys_guid = ib_hfi2_sys_image_guid;
-+	trap->data.ntc_145.lid = trap->data.issuer_lid;
-+
-+	trap->len = sizeof(trap->data);
-+	send_trap(ibp, trap);
-+}
-+
-+/*
-+ * Send a Node Description Changed trap (ch. 14.3.13).
-+ */
-+void hfi2_node_desc_chg(struct hfi2_ibport *ibp)
-+{
-+	struct trap_node *trap;
-+	u32 lid = ppd_from_ibp(ibp)->lid;
-+
-+	trap = create_trap_node(IB_NOTICE_TYPE_INFO,
-+				OPA_TRAP_CHANGE_CAPABILITY,
-+				lid);
-+	if (!trap)
-+		return;
-+
-+	trap->data.ntc_144.lid = trap->data.issuer_lid;
-+	trap->data.ntc_144.change_flags =
-+		cpu_to_be16(OPA_NOTICE_TRAP_NODE_DESC_CHG);
-+
-+	trap->len = sizeof(trap->data);
-+	send_trap(ibp, trap);
-+}
-+
-+static int __subn_get_opa_nodedesc(struct opa_smp *smp, u32 am,
-+				   u8 *data, struct ib_device *ibdev,
-+				   u32 port, u32 *resp_len, u32 max_len)
-+{
-+	struct opa_node_description *nd;
-+
-+	if (am || smp_length_check(sizeof(*nd), max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	nd = (struct opa_node_description *)data;
-+
-+	memcpy(nd->data, ibdev->node_desc, sizeof(nd->data));
-+
-+	if (resp_len)
-+		*resp_len += sizeof(*nd);
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+static int __subn_get_opa_nodeinfo(struct opa_smp *smp, u32 am, u8 *data,
-+				   struct ib_device *ibdev, u32 port,
-+				   u32 *resp_len, u32 max_len)
-+{
-+	struct opa_node_info *ni;
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	u32 pidx = port - 1; /* IB number port from 1, hw from 0 */
-+
-+	ni = (struct opa_node_info *)data;
-+
-+	/* GUID 0 is illegal */
-+	if (am || pidx >= dd->num_pports || ibdev->node_guid == 0 ||
-+	    smp_length_check(sizeof(*ni), max_len) ||
-+	    get_sguid(to_iport(ibdev, port), HFI2_PORT_GUID_INDEX) == 0) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	ni->port_guid = get_sguid(to_iport(ibdev, port), HFI2_PORT_GUID_INDEX);
-+	ni->base_version = OPA_MGMT_BASE_VERSION;
-+	ni->class_version = OPA_SM_CLASS_VERSION;
-+	ni->node_type = 1;     /* channel adapter */
-+	ni->num_ports = ibdev->phys_port_cnt;
-+	/* This is already in network order */
-+	ni->system_image_guid = ib_hfi2_sys_image_guid;
-+	ni->node_guid = ibdev->node_guid;
-+	ni->partition_cap = cpu_to_be16(hfi2_get_npkeys(dd));
-+	ni->device_id = cpu_to_be16(dd->pcidev->device);
-+	ni->revision = cpu_to_be32(dd->minrev);
-+	ni->local_port_num = port;
-+	ni->vendor_id[0] = dd->oui1;
-+	ni->vendor_id[1] = dd->oui2;
-+	ni->vendor_id[2] = dd->oui3;
-+
-+	if (resp_len)
-+		*resp_len += sizeof(*ni);
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+static int subn_get_nodeinfo(struct ib_smp *smp, struct ib_device *ibdev,
-+			     u32 port)
-+{
-+	struct ib_node_info *nip = (struct ib_node_info *)&smp->data;
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	u32 pidx = port - 1; /* IB number port from 1, hw from 0 */
-+
-+	/* GUID 0 is illegal */
-+	if (smp->attr_mod || pidx >= dd->num_pports ||
-+	    ibdev->node_guid == 0 ||
-+	    get_sguid(to_iport(ibdev, port), HFI2_PORT_GUID_INDEX) == 0) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	nip->port_guid = get_sguid(to_iport(ibdev, port), HFI2_PORT_GUID_INDEX);
-+	nip->base_version = OPA_MGMT_BASE_VERSION;
-+	nip->class_version = OPA_SM_CLASS_VERSION;
-+	nip->node_type = 1;     /* channel adapter */
-+	nip->num_ports = ibdev->phys_port_cnt;
-+	/* This is already in network order */
-+	nip->sys_guid = ib_hfi2_sys_image_guid;
-+	nip->node_guid = ibdev->node_guid;
-+	nip->partition_cap = cpu_to_be16(hfi2_get_npkeys(dd));
-+	nip->device_id = cpu_to_be16(dd->pcidev->device);
-+	nip->revision = cpu_to_be32(dd->minrev);
-+	nip->local_port_num = port;
-+	nip->vendor_id[0] = dd->oui1;
-+	nip->vendor_id[1] = dd->oui2;
-+	nip->vendor_id[2] = dd->oui3;
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+static void set_link_width_enabled(struct hfi2_pportdata *ppd, u32 w)
-+{
-+	(void)hfi2_set_ib_cfg(ppd, HFI2_IB_CFG_LWID_ENB, w);
-+}
-+
-+static void set_link_width_downgrade_enabled(struct hfi2_pportdata *ppd, u32 w)
-+{
-+	(void)hfi2_set_ib_cfg(ppd, HFI2_IB_CFG_LWID_DG_ENB, w);
-+}
-+
-+static void set_link_speed_enabled(struct hfi2_pportdata *ppd, u32 s)
-+{
-+	(void)hfi2_set_ib_cfg(ppd, HFI2_IB_CFG_SPD_ENB, s);
-+}
-+
-+static int check_mkey(struct hfi2_ibport *ibp, struct ib_mad_hdr *mad,
-+		      int mad_flags, __be64 mkey, __be32 dr_slid,
-+		      u8 return_path[], u8 hop_cnt)
-+{
-+	int valid_mkey = 0;
-+	int ret = 0;
-+
-+	/* Is the mkey in the process of expiring? */
-+	if (ibp->rvp.mkey_lease_timeout &&
-+	    time_after_eq(jiffies, ibp->rvp.mkey_lease_timeout)) {
-+		/* Clear timeout and mkey protection field. */
-+		ibp->rvp.mkey_lease_timeout = 0;
-+		ibp->rvp.mkeyprot = 0;
-+	}
-+
-+	if ((mad_flags & IB_MAD_IGNORE_MKEY) ||  ibp->rvp.mkey == 0 ||
-+	    ibp->rvp.mkey == mkey)
-+		valid_mkey = 1;
-+
-+	/* Unset lease timeout on any valid Get/Set/TrapRepress */
-+	if (valid_mkey && ibp->rvp.mkey_lease_timeout &&
-+	    (mad->method == IB_MGMT_METHOD_GET ||
-+	     mad->method == IB_MGMT_METHOD_SET ||
-+	     mad->method == IB_MGMT_METHOD_TRAP_REPRESS))
-+		ibp->rvp.mkey_lease_timeout = 0;
-+
-+	if (!valid_mkey) {
-+		switch (mad->method) {
-+		case IB_MGMT_METHOD_GET:
-+			/* Bad mkey not a violation below level 2 */
-+			if (ibp->rvp.mkeyprot < 2)
-+				break;
-+			fallthrough;
-+		case IB_MGMT_METHOD_SET:
-+		case IB_MGMT_METHOD_TRAP_REPRESS:
-+			if (ibp->rvp.mkey_violations != 0xFFFF)
-+				++ibp->rvp.mkey_violations;
-+			if (!ibp->rvp.mkey_lease_timeout &&
-+			    ibp->rvp.mkey_lease_period)
-+				ibp->rvp.mkey_lease_timeout = jiffies +
-+					ibp->rvp.mkey_lease_period * HZ;
-+			/* Generate a trap notice. */
-+			bad_mkey(ibp, mad, mkey, dr_slid, return_path,
-+				 hop_cnt);
-+			ret = 1;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+static int __subn_get_opa_portinfo(struct opa_smp *smp, u32 am, u8 *data,
-+				   struct ib_device *ibdev, u32 port,
-+				   u32 *resp_len, u32 max_len)
-+{
-+	int i;
++struct hfi2_ipoib_dev_priv {
 +	struct hfi2_devdata *dd;
 +	struct hfi2_pportdata *ppd;
-+	struct hfi2_ibport *ibp;
-+	struct opa_port_info *pi = (struct opa_port_info *)data;
-+	u8 mtu;
-+	u8 credit_rate;
-+	u8 is_beaconing_active;
-+	u32 state;
-+	u32 num_ports = OPA_AM_NPORT(am);
-+	u32 start_of_sm_config = OPA_AM_START_SM_CFG(am);
-+	u32 buffer_units;
-+	u64 tmp = 0;
-+
-+	if (num_ports != 1 || smp_length_check(sizeof(*pi), max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	dd = dd_from_ibdev(ibdev);
-+	/* IB numbers ports from 1, hw from 0 */
-+	ppd = dd->pport + (port - 1);
-+	ibp = &ppd->ibport_data;
-+
-+	if (ppd->vls_supported / 2 > ARRAY_SIZE(pi->neigh_mtu.pvlx_to_mtu) ||
-+	    ppd->vls_supported > ARRAY_SIZE(ppd->vld)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	pi->lid = cpu_to_be32(ppd->lid);
-+
-+	/* Only return the mkey if the protection field allows it. */
-+	if (!(smp->method == IB_MGMT_METHOD_GET &&
-+	      ibp->rvp.mkey != smp->mkey &&
-+	      ibp->rvp.mkeyprot == 1))
-+		pi->mkey = ibp->rvp.mkey;
-+
-+	pi->subnet_prefix = ibp->rvp.gid_prefix;
-+	pi->sm_lid = cpu_to_be32(ibp->rvp.sm_lid);
-+	pi->ib_cap_mask = cpu_to_be32(ibp->rvp.port_cap_flags);
-+	pi->mkey_lease_period = cpu_to_be16(ibp->rvp.mkey_lease_period);
-+	pi->sm_trap_qp = cpu_to_be32(ppd->sm_trap_qp);
-+	pi->sa_qp = cpu_to_be32(ppd->sa_qp);
-+
-+	pi->link_width.enabled = cpu_to_be16(ppd->link_width_enabled);
-+	pi->link_width.supported = cpu_to_be16(ppd->link_width_supported);
-+	pi->link_width.active = cpu_to_be16(ppd->link_width_active);
-+
-+	pi->link_width_downgrade.supported =
-+			cpu_to_be16(ppd->link_width_downgrade_supported);
-+	pi->link_width_downgrade.enabled =
-+			cpu_to_be16(ppd->link_width_downgrade_enabled);
-+	pi->link_width_downgrade.tx_active =
-+			cpu_to_be16(ppd->link_width_downgrade_tx_active);
-+	pi->link_width_downgrade.rx_active =
-+			cpu_to_be16(ppd->link_width_downgrade_rx_active);
-+
-+	pi->link_speed.supported = cpu_to_be16(ppd->link_speed_supported);
-+	pi->link_speed.active = cpu_to_be16(ppd->link_speed_active);
-+	pi->link_speed.enabled = cpu_to_be16(ppd->link_speed_enabled);
-+
-+	state = driver_lstate(ppd);
-+
-+	if (start_of_sm_config && (state == IB_PORT_INIT))
-+		ppd->is_sm_config_started = 1;
-+
-+	pi->port_phys_conf = (ppd->port_type & 0xf);
-+
-+	pi->port_states.ledenable_offlinereason = ppd->neighbor_normal << 4;
-+	pi->port_states.ledenable_offlinereason |=
-+		ppd->is_sm_config_started << 5;
-+	/*
-+	 * This pairs with the memory barrier in hfi2_start_led_override to
-+	 * ensure that we read the correct state of LED beaconing represented
-+	 * by led_override_timer_active
-+	 */
-+	smp_rmb();
-+	is_beaconing_active = !!atomic_read(&ppd->led_override_timer_active);
-+	pi->port_states.ledenable_offlinereason |= is_beaconing_active << 6;
-+	pi->port_states.ledenable_offlinereason |=
-+		ppd->offline_disabled_reason;
-+
-+	pi->port_states.portphysstate_portstate =
-+		(driver_pstate(ppd) << 4) | state;
-+
-+	pi->mkeyprotect_lmc = (ibp->rvp.mkeyprot << 6) | ppd->lmc;
-+
-+	memset(pi->neigh_mtu.pvlx_to_mtu, 0, sizeof(pi->neigh_mtu.pvlx_to_mtu));
-+	for (i = 0; i < ppd->vls_supported; i++) {
-+		mtu = mtu_to_enum(ppd->vld[i].mtu, HFI2_DEFAULT_ACTIVE_MTU);
-+		if ((i % 2) == 0)
-+			pi->neigh_mtu.pvlx_to_mtu[i / 2] |= (mtu << 4);
-+		else
-+			pi->neigh_mtu.pvlx_to_mtu[i / 2] |= mtu;
-+	}
-+	/* don't forget VL 15 */
-+	mtu = mtu_to_enum(ppd->vld[15].mtu, 2048);
-+	pi->neigh_mtu.pvlx_to_mtu[15 / 2] |= mtu;
-+	pi->smsl = ibp->rvp.sm_sl & OPA_PI_MASK_SMSL;
-+	pi->operational_vls = hfi2_get_ib_cfg(ppd, HFI2_IB_CFG_OP_VLS);
-+	pi->partenforce_filterraw |=
-+		(ppd->linkinit_reason & OPA_PI_MASK_LINKINIT_REASON);
-+	if (ppd->part_enforce & HFI2_PART_ENFORCE_IN)
-+		pi->partenforce_filterraw |= OPA_PI_MASK_PARTITION_ENFORCE_IN;
-+	if (ppd->part_enforce & HFI2_PART_ENFORCE_OUT)
-+		pi->partenforce_filterraw |= OPA_PI_MASK_PARTITION_ENFORCE_OUT;
-+	pi->mkey_violations = cpu_to_be16(ibp->rvp.mkey_violations);
-+	/* P_KeyViolations are counted by hardware. */
-+	pi->pkey_violations = cpu_to_be16(ibp->rvp.pkey_violations);
-+	pi->qkey_violations = cpu_to_be16(ibp->rvp.qkey_violations);
-+
-+	pi->vl.cap = ppd->vls_supported;
-+	pi->vl.high_limit = cpu_to_be16(ibp->rvp.vl_high_limit);
-+	pi->vl.arb_high_cap = (u8)hfi2_get_ib_cfg(ppd, HFI2_IB_CFG_VL_HIGH_CAP);
-+	pi->vl.arb_low_cap = (u8)hfi2_get_ib_cfg(ppd, HFI2_IB_CFG_VL_LOW_CAP);
-+
-+	pi->clientrereg_subnettimeout = ibp->rvp.subnet_timeout;
-+
-+	pi->port_link_mode  = cpu_to_be16(OPA_PORT_LINK_MODE_OPA << 10 |
-+					  OPA_PORT_LINK_MODE_OPA << 5 |
-+					  OPA_PORT_LINK_MODE_OPA);
-+
-+	pi->port_ltp_crc_mode = cpu_to_be16(ppd->port_ltp_crc_mode);
-+
-+	pi->port_mode = cpu_to_be16(
-+				ppd->is_active_optimize_enabled ?
-+					OPA_PI_MASK_PORT_ACTIVE_OPTOMIZE : 0);
-+
-+	pi->port_packet_format.supported =
-+		cpu_to_be16(OPA_PORT_PACKET_FORMAT_9B |
-+			    OPA_PORT_PACKET_FORMAT_16B);
-+	pi->port_packet_format.enabled =
-+		cpu_to_be16(OPA_PORT_PACKET_FORMAT_9B |
-+			    OPA_PORT_PACKET_FORMAT_16B);
-+
-+	/* flit_control.interleave is (OPA V1, version .76):
-+	 * bits		use
-+	 * ----		---
-+	 * 2		res
-+	 * 2		DistanceSupported
-+	 * 2		DistanceEnabled
-+	 * 5		MaxNextLevelTxEnabled
-+	 * 5		MaxNestLevelRxSupported
-+	 *
-+	 * HFI supports only "distance mode 1" (see OPA V1, version .76,
-+	 * section 9.6.2), so set DistanceSupported, DistanceEnabled
-+	 * to 0x1.
-+	 */
-+	pi->flit_control.interleave = cpu_to_be16(0x1400);
-+
-+	pi->link_down_reason = ppd->local_link_down_reason.sma;
-+	pi->neigh_link_down_reason = ppd->neigh_link_down_reason.sma;
-+	pi->port_error_action = cpu_to_be32(ppd->port_error_action);
-+	pi->mtucap = mtu_to_enum(hfi2_max_mtu, IB_MTU_4096);
-+
-+	/* 32.768 usec. response time (guessing) */
-+	pi->resptimevalue = 3;
-+
-+	pi->local_port_num = port;
-+
-+	/* buffer info for FM */
-+	pi->overall_buffer_space = cpu_to_be16(dd->link_credits);
-+
-+	pi->neigh_node_guid = cpu_to_be64(ppd->neighbor_guid);
-+	pi->neigh_port_num = ppd->neighbor_port_number;
-+	pi->port_neigh_mode =
-+		(ppd->neighbor_type & OPA_PI_MASK_NEIGH_NODE_TYPE) |
-+		(ppd->mgmt_allowed ? OPA_PI_MASK_NEIGH_MGMT_ALLOWED : 0) |
-+		(ppd->neighbor_fm_security ?
-+			OPA_PI_MASK_NEIGH_FW_AUTH_BYPASS : 0);
-+
-+	/* HFIs shall always return VL15 credits to their
-+	 * neighbor in a timely manner, without any credit return pacing.
-+	 */
-+	credit_rate = 0;
-+	buffer_units  = (dd->vau) & OPA_PI_MASK_BUF_UNIT_BUF_ALLOC;
-+	buffer_units |= (dd->vcu << 3) & OPA_PI_MASK_BUF_UNIT_CREDIT_ACK;
-+	buffer_units |= (credit_rate << 6) &
-+				OPA_PI_MASK_BUF_UNIT_VL15_CREDIT_RATE;
-+	buffer_units |= (dd->vl15_init << 11) & OPA_PI_MASK_BUF_UNIT_VL15_INIT;
-+	pi->buffer_units = cpu_to_be32(buffer_units);
-+
-+	pi->opa_cap_mask = cpu_to_be16(ibp->rvp.port_cap3_flags);
-+	pi->collectivemask_multicastmask = ((OPA_COLLECTIVE_NR & 0x7)
-+					    << 3 | (OPA_MCAST_NR & 0x7));
-+
-+	/* HFI supports a replay buffer 128 LTPs in size */
-+	pi->replay_depth.buffer = 0x80;
-+	/* use the cached round trip count */
-+	tmp = ppd->link_ltp_rtt;
-+
-+	/*
-+	 * this counter is 16 bits wide, but the replay_depth.wire
-+	 * variable is only 8 bits
-+	 */
-+	if (tmp > 0xff)
-+		tmp = 0xff;
-+	pi->replay_depth.wire = tmp;
-+
-+	if (resp_len)
-+		*resp_len += sizeof(struct opa_port_info);
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+/**
-+ * get_pkeys - return the PKEY table for any block
-+ * @dd: the hfi2_ib device
-+ * @port: the IB port number
-+ * @start_block: starting block to read
-+ * @num_blocks: number of blocks to read
-+ * @pkeys: the pkey table is placed here
-+ *
-+ * Copy out the pkeys - the keys are endianized for the host.
-+ */
-+static int get_pkeys(struct hfi2_devdata *dd, u32 port, u32 start_block,
-+		     u32 num_blocks, u16 *pkeys)
-+{
-+	struct hfi2_pportdata *ppd = dd->pport + (port - 1);
-+	u32 start_index;
-+	u32 end_index;
-+
-+	/* calculate the indices affected */
-+	start_index = start_block * OPA_PARTITION_TABLE_BLK_SIZE;
-+	end_index = min_t(u32, dd->params->pkey_table_size,
-+			  start_index + (num_blocks * OPA_PARTITION_TABLE_BLK_SIZE));
-+
-+	memcpy(pkeys, &ppd->pkeys[start_index],
-+	       (end_index - start_index) * sizeof(ppd->pkeys[0]));
-+
-+	return 0;
-+}
-+
-+static int __subn_get_opa_pkeytable(struct opa_smp *smp, u32 am, u8 *data,
-+				    struct ib_device *ibdev, u32 port,
-+				    u32 *resp_len, u32 max_len)
-+{
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	u32 n_blocks_req = OPA_AM_NBLK(am);
-+	u32 start_block = am & 0x7ff;
-+	__be16 *p;
-+	u16 *q;
-+	int i;
-+	u32 n_blocks_avail;
-+	u32 npkeys = hfi2_get_npkeys(dd);
-+	u32 num_req_keys;
-+	size_t size;
-+
-+	if (n_blocks_req == 0) {
-+		pr_warn("OPA Get PKey AM Invalid : P = %d; B = 0x%x; N = 0x%x\n",
-+			port, start_block, n_blocks_req);
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	n_blocks_avail = DIV_ROUND_UP(npkeys, OPA_PARTITION_TABLE_BLK_SIZE);
-+
-+	num_req_keys = n_blocks_req * OPA_PARTITION_TABLE_BLK_SIZE;
-+	size = num_req_keys * sizeof(u16);
-+
-+	if (smp_length_check(size, max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	if (start_block + n_blocks_req > n_blocks_avail ||
-+	    n_blocks_req > OPA_NUM_PKEY_BLOCKS_PER_SMP) {
-+		pr_warn("OPA Get PKey AM Invalid : s 0x%x; req 0x%x; "
-+			"avail 0x%x; blk/smp 0x%lx\n",
-+			start_block, n_blocks_req, n_blocks_avail,
-+			OPA_NUM_PKEY_BLOCKS_PER_SMP);
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	p = (__be16 *)data;
-+	q = (u16 *)data;
-+	/* get the current pkeys */
-+	get_pkeys(dd, port, start_block, n_blocks_req, q);
-+	/* make keys big endian */
-+	for (i = 0; i < num_req_keys; i++)
-+		p[i] = cpu_to_be16(q[i]);
-+	if (resp_len)
-+		*resp_len += size;
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+enum {
-+	HFI_TRANSITION_DISALLOWED,
-+	HFI_TRANSITION_IGNORED,
-+	HFI_TRANSITION_ALLOWED,
-+	HFI_TRANSITION_UNDEFINED,
-+};
-+
-+/*
-+ * Use shortened names to improve readability of
-+ * {logical,physical}_state_transitions
-+ */
-+enum {
-+	__D = HFI_TRANSITION_DISALLOWED,
-+	__I = HFI_TRANSITION_IGNORED,
-+	__A = HFI_TRANSITION_ALLOWED,
-+	__U = HFI_TRANSITION_UNDEFINED,
-+};
-+
-+/*
-+ * IB_PORTPHYSSTATE_POLLING (2) through OPA_PORTPHYSSTATE_MAX (11) are
-+ * represented in physical_state_transitions.
-+ */
-+#define __N_PHYSTATES (OPA_PORTPHYSSTATE_MAX - IB_PORTPHYSSTATE_POLLING + 1)
-+
-+/*
-+ * Within physical_state_transitions, rows represent "old" states,
-+ * columns "new" states, and physical_state_transitions.allowed[old][new]
-+ * indicates if the transition from old state to new state is legal (see
-+ * OPAg1v1, Table 6-4).
-+ */
-+static const struct {
-+	u8 allowed[__N_PHYSTATES][__N_PHYSTATES];
-+} physical_state_transitions = {
-+	{
-+		/* 2    3    4    5    6    7    8    9   10   11 */
-+	/* 2 */	{ __A, __A, __D, __D, __D, __D, __D, __D, __D, __D },
-+	/* 3 */	{ __A, __I, __D, __D, __D, __D, __D, __D, __D, __A },
-+	/* 4 */	{ __U, __U, __U, __U, __U, __U, __U, __U, __U, __U },
-+	/* 5 */	{ __A, __A, __D, __I, __D, __D, __D, __D, __D, __D },
-+	/* 6 */	{ __U, __U, __U, __U, __U, __U, __U, __U, __U, __U },
-+	/* 7 */	{ __D, __A, __D, __D, __D, __I, __D, __D, __D, __D },
-+	/* 8 */	{ __U, __U, __U, __U, __U, __U, __U, __U, __U, __U },
-+	/* 9 */	{ __I, __A, __D, __D, __D, __D, __D, __I, __D, __D },
-+	/*10 */	{ __U, __U, __U, __U, __U, __U, __U, __U, __U, __U },
-+	/*11 */	{ __D, __A, __D, __D, __D, __D, __D, __D, __D, __I },
-+	}
-+};
-+
-+/*
-+ * IB_PORT_DOWN (1) through IB_PORT_ACTIVE_DEFER (5) are represented
-+ * logical_state_transitions
-+ */
-+
-+#define __N_LOGICAL_STATES (IB_PORT_ACTIVE_DEFER - IB_PORT_DOWN + 1)
-+
-+/*
-+ * Within logical_state_transitions rows represent "old" states,
-+ * columns "new" states, and logical_state_transitions.allowed[old][new]
-+ * indicates if the transition from old state to new state is legal (see
-+ * OPAg1v1, Table 9-12).
-+ */
-+static const struct {
-+	u8 allowed[__N_LOGICAL_STATES][__N_LOGICAL_STATES];
-+} logical_state_transitions = {
-+	{
-+		/* 1    2    3    4    5 */
-+	/* 1 */	{ __I, __D, __D, __D, __U},
-+	/* 2 */	{ __D, __I, __A, __D, __U},
-+	/* 3 */	{ __D, __D, __I, __A, __U},
-+	/* 4 */	{ __D, __D, __I, __I, __U},
-+	/* 5 */	{ __U, __U, __U, __U, __U},
-+	}
-+};
-+
-+static int logical_transition_allowed(int old, int new)
-+{
-+	if (old < IB_PORT_NOP || old > IB_PORT_ACTIVE_DEFER ||
-+	    new < IB_PORT_NOP || new > IB_PORT_ACTIVE_DEFER) {
-+		pr_warn("invalid logical state(s) (old %d new %d)\n",
-+			old, new);
-+		return HFI_TRANSITION_UNDEFINED;
-+	}
-+
-+	if (new == IB_PORT_NOP)
-+		return HFI_TRANSITION_ALLOWED; /* always allowed */
-+
-+	/* adjust states for indexing into logical_state_transitions */
-+	old -= IB_PORT_DOWN;
-+	new -= IB_PORT_DOWN;
-+
-+	if (old < 0 || new < 0)
-+		return HFI_TRANSITION_UNDEFINED;
-+	return logical_state_transitions.allowed[old][new];
-+}
-+
-+static int physical_transition_allowed(int old, int new)
-+{
-+	if (old < IB_PORTPHYSSTATE_NOP || old > OPA_PORTPHYSSTATE_MAX ||
-+	    new < IB_PORTPHYSSTATE_NOP || new > OPA_PORTPHYSSTATE_MAX) {
-+		pr_warn("invalid physical state(s) (old %d new %d)\n",
-+			old, new);
-+		return HFI_TRANSITION_UNDEFINED;
-+	}
-+
-+	if (new == IB_PORTPHYSSTATE_NOP)
-+		return HFI_TRANSITION_ALLOWED; /* always allowed */
-+
-+	/* adjust states for indexing into physical_state_transitions */
-+	old -= IB_PORTPHYSSTATE_POLLING;
-+	new -= IB_PORTPHYSSTATE_POLLING;
-+
-+	if (old < 0 || new < 0)
-+		return HFI_TRANSITION_UNDEFINED;
-+	return physical_state_transitions.allowed[old][new];
-+}
-+
-+static int port_states_transition_allowed(struct hfi2_pportdata *ppd,
-+					  u32 logical_new, u32 physical_new)
-+{
-+	u32 physical_old = driver_pstate(ppd);
-+	u32 logical_old = driver_lstate(ppd);
-+	int ret, logical_allowed, physical_allowed;
-+
-+	ret = logical_transition_allowed(logical_old, logical_new);
-+	logical_allowed = ret;
-+
-+	if (ret == HFI_TRANSITION_DISALLOWED ||
-+	    ret == HFI_TRANSITION_UNDEFINED) {
-+		ppd_dev_warn(ppd, "invalid logical state transition %s -> %s\n",
-+			     ib_port_state_to_str(logical_old),
-+			     ib_port_state_to_str(logical_new));
-+		return ret;
-+	}
-+
-+	ret = physical_transition_allowed(physical_old, physical_new);
-+	physical_allowed = ret;
-+
-+	if (ret == HFI_TRANSITION_DISALLOWED ||
-+	    ret == HFI_TRANSITION_UNDEFINED) {
-+		ppd_dev_warn(ppd, "invalid physical state transition %s -> %s\n",
-+			     opa_pstate_name(physical_old),
-+			     opa_pstate_name(physical_new));
-+		return ret;
-+	}
-+
-+	if (logical_allowed == HFI_TRANSITION_IGNORED &&
-+	    physical_allowed == HFI_TRANSITION_IGNORED)
-+		return HFI_TRANSITION_IGNORED;
-+
-+	/*
-+	 * A change request of Physical Port State from
-+	 * 'Offline' to 'Polling' should be ignored.
-+	 */
-+	if ((physical_old == OPA_PORTPHYSSTATE_OFFLINE) &&
-+	    (physical_new == IB_PORTPHYSSTATE_POLLING))
-+		return HFI_TRANSITION_IGNORED;
-+
-+	/*
-+	 * Either physical_allowed or logical_allowed is
-+	 * HFI_TRANSITION_ALLOWED.
-+	 */
-+	return HFI_TRANSITION_ALLOWED;
-+}
-+
-+static int set_port_states(struct hfi2_pportdata *ppd, struct opa_smp *smp,
-+			   u32 logical_state, u32 phys_state, int local_mad)
-+{
-+	struct hfi2_devdata *dd = ppd->dd;
-+	u32 link_state;
-+	int ret;
-+
-+	ret = port_states_transition_allowed(ppd, logical_state, phys_state);
-+	if (ret == HFI_TRANSITION_DISALLOWED ||
-+	    ret == HFI_TRANSITION_UNDEFINED) {
-+		/* error message emitted above */
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return 0;
-+	}
-+
-+	if (ret == HFI_TRANSITION_IGNORED)
-+		return 0;
-+
-+	if ((phys_state != IB_PORTPHYSSTATE_NOP) &&
-+	    !(logical_state == IB_PORT_DOWN ||
-+	      logical_state == IB_PORT_NOP)){
-+		ppd_dev_warn(ppd, "SubnSet(OPA_PortInfo) port state invalid: logical_state 0x%x physical_state 0x%x\n",
-+			     logical_state, phys_state);
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+	}
-+
-+	/*
-+	 * Logical state changes are summarized in OPAv1g1 spec.,
-+	 * Table 9-12; physical state changes are summarized in
-+	 * OPAv1g1 spec., Table 6.4.
-+	 */
-+	switch (logical_state) {
-+	case IB_PORT_NOP:
-+		if (phys_state == IB_PORTPHYSSTATE_NOP)
-+			break;
-+		fallthrough;
-+	case IB_PORT_DOWN:
-+		if (phys_state == IB_PORTPHYSSTATE_NOP) {
-+			link_state = HLS_DN_DOWNDEF;
-+		} else if (phys_state == IB_PORTPHYSSTATE_POLLING) {
-+			link_state = HLS_DN_POLL;
-+			set_link_down_reason(ppd, OPA_LINKDOWN_REASON_FM_BOUNCE,
-+					     0, OPA_LINKDOWN_REASON_FM_BOUNCE);
-+		} else if (phys_state == IB_PORTPHYSSTATE_DISABLED) {
-+			link_state = HLS_DN_DISABLE;
-+		} else {
-+			ppd_dev_warn(ppd, "SubnSet(OPA_PortInfo) invalid physical state 0x%x\n",
-+				     phys_state);
-+			smp->status |= IB_SMP_INVALID_FIELD;
-+			break;
-+		}
-+
-+		if ((link_state == HLS_DN_POLL ||
-+		     link_state == HLS_DN_DOWNDEF)) {
-+			/*
-+			 * Going to poll.  No matter what the current state,
-+			 * always move offline first, then tune and start the
-+			 * link.  This correctly handles a FM link bounce and
-+			 * a link enable.  Going offline is a no-op if already
-+			 * offline.
-+			 */
-+			set_link_state(ppd, HLS_DN_OFFLINE);
-+			start_link(ppd);
-+		} else {
-+			set_link_state(ppd, link_state);
-+		}
-+		if (link_state == HLS_DN_DISABLE &&
-+		    (ppd->offline_disabled_reason >
-+		     HFI2_ODR_MASK(OPA_LINKDOWN_REASON_SMA_DISABLED) ||
-+		     ppd->offline_disabled_reason ==
-+		     HFI2_ODR_MASK(OPA_LINKDOWN_REASON_NONE)))
-+			ppd->offline_disabled_reason =
-+			HFI2_ODR_MASK(OPA_LINKDOWN_REASON_SMA_DISABLED);
-+		/*
-+		 * Don't send a reply if the response would be sent
-+		 * through the disabled port.
-+		 */
-+		if (link_state == HLS_DN_DISABLE && !local_mad)
-+			return IB_MAD_RESULT_SUCCESS | IB_MAD_RESULT_CONSUMED;
-+		break;
-+	case IB_PORT_ARMED:
-+		ret = set_link_state(ppd, HLS_UP_ARMED);
-+		if (!ret)
-+			send_idle_sma(dd, SMA_IDLE_ARM);
-+		break;
-+	case IB_PORT_ACTIVE:
-+		if (ppd->neighbor_normal) {
-+			ret = set_link_state(ppd, HLS_UP_ACTIVE);
-+			if (ret == 0)
-+				send_idle_sma(dd, SMA_IDLE_ACTIVE);
-+		} else {
-+			ppd_dev_warn(ppd, "SubnSet(OPA_PortInfo) Cannot move to Active with NeighborNormal 0\n");
-+			smp->status |= IB_SMP_INVALID_FIELD;
-+		}
-+		break;
-+	default:
-+		ppd_dev_warn(ppd, "SubnSet(OPA_PortInfo) invalid logical state 0x%x\n",
-+			     logical_state);
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * Clone of set_port_states() that only updates device structures, does
-+ * not touch hardware. For adapters with a CPORT that handles the hardware.
-+ * The CPORT is never expected to send bad information.
-+ *
-+ * Note that intermediate states may be skipped, depending on how/when CPORT
-+ * notifies the driver.
-+ */
-+static void cport_set_port_states(struct hfi2_pportdata *ppd, struct opa_port_info *pi,
-+				  u32 logical_state, u32 phys_state)
-+{
-+	u32 link_state;
-+	int ret;
-+	u32 cur_lstate;
-+
-+	ret = port_states_transition_allowed(ppd, logical_state, phys_state);
-+
-+	/*
-+	 * Logical state changes are summarized in OPAv1g1 spec.,
-+	 * Table 9-12; physical state changes are summarized in
-+	 * OPAv1g1 spec., Table 6.4.
-+	 */
-+	if (logical_state < IB_PORT_INIT) {
-+		/* this must be the new state, so do not ever skip processing */
-+		if (logical_state == IB_PORT_NOP && phys_state == IB_PORTPHYSSTATE_NOP) {
-+			link_state = HLS_DN_OFFLINE;
-+		} else if (phys_state == IB_PORTPHYSSTATE_NOP) {
-+			link_state = HLS_DN_DOWNDEF;
-+		} else if (phys_state == IB_PORTPHYSSTATE_POLLING) {
-+			link_state = HLS_DN_POLL;
-+			set_link_down_reason(ppd, OPA_LINKDOWN_REASON_FM_BOUNCE,
-+					     0, OPA_LINKDOWN_REASON_FM_BOUNCE);
-+		} else if (phys_state == IB_PORTPHYSSTATE_DISABLED) {
-+			link_state = HLS_DN_DISABLE;
-+		} else {
-+			/* invalid - not possible? pick something */
-+			link_state = HLS_DN_DOWNDEF;
-+		}
-+
-+		if ((link_state == HLS_DN_POLL ||
-+		     link_state == HLS_DN_DOWNDEF)) {
-+			/*
-+			 * Going to poll.  No matter what the current state,
-+			 * always move offline first, then tune and start the
-+			 * link.  This correctly handles a FM link bounce and
-+			 * a link enable.  Going offline is a no-op if already
-+			 * offline.
-+			 */
-+			cport_set_link_state(ppd, pi, HLS_DN_OFFLINE);
-+			cport_start_link(ppd, pi);
-+		} else {
-+			cport_set_link_state(ppd, pi, link_state);
-+		}
-+		if (link_state == HLS_DN_DISABLE &&
-+		    (ppd->offline_disabled_reason >
-+		     HFI2_ODR_MASK(OPA_LINKDOWN_REASON_SMA_DISABLED) ||
-+		     ppd->offline_disabled_reason ==
-+		     HFI2_ODR_MASK(OPA_LINKDOWN_REASON_NONE)))
-+			ppd->offline_disabled_reason =
-+				HFI2_ODR_MASK(OPA_LINKDOWN_REASON_SMA_DISABLED);
-+		goto done;
-+	}
-+	cur_lstate = driver_lstate(ppd);
-+	if (logical_state > IB_PORT_ACTIVE) {
-+		ppd_dev_warn(ppd, "%s: SubnSet(OPA_PortInfo) invalid logical state 0x%x\n",
-+			     __func__, logical_state);
-+		goto done;
-+	}
-+	/* make certain all intermediate states are executed */
-+	if (logical_state < cur_lstate) {
-+		ppd_dev_warn(ppd, "%s: attempted move to lower LinkUp state\n", __func__);
-+		goto done;
-+	}
-+	if (logical_state >= IB_PORT_INIT && cur_lstate < IB_PORT_INIT) {
-+		ret = cport_set_link_state(ppd, pi, HLS_UP_INIT);
-+		if (ret)
-+			ppd_dev_warn(ppd, "%s: cport_set_link_state INIT failed %d\n", __func__, ret);
-+	}
-+	if (logical_state >= IB_PORT_ARMED && cur_lstate < IB_PORT_ARMED) {
-+		ret = cport_set_link_state(ppd, pi, HLS_UP_ARMED);
-+		if (ret)
-+			ppd_dev_warn(ppd, "%s: cport_set_link_state ARMED failed %d\n", __func__, ret);
-+	}
-+	if (logical_state >= IB_PORT_ACTIVE && cur_lstate < IB_PORT_ACTIVE) {
-+		if (!ppd->neighbor_normal)
-+			ppd_dev_warn(ppd, "%s: Should not move to Active with NeighborNormal 0?\n",
-+				__func__);
-+		ret = cport_set_link_state(ppd, pi, HLS_UP_ACTIVE);
-+		if (ret)
-+			ppd_dev_warn(ppd, "%s: cport_set_link_state ACTIVE failed %d\n", __func__, ret);
-+	}
-+done:
-+	;
-+}
-+
-+/*
-+ * subn_set_opa_portinfo - set port information
-+ * @smp: the incoming SM packet
-+ * @ibdev: the infiniband device
-+ * @port: the port on the device
-+ *
-+ */
-+static int __subn_set_opa_portinfo(struct opa_smp *smp, u32 am, u8 *data,
-+				   struct ib_device *ibdev, u32 port,
-+				   u32 *resp_len, u32 max_len, int local_mad)
-+{
-+	struct opa_port_info *pi = (struct opa_port_info *)data;
-+	struct ib_event event;
-+	struct hfi2_devdata *dd;
-+	struct hfi2_pportdata *ppd;
-+	struct hfi2_ibport *ibp;
-+	u8 clientrereg;
-+	unsigned long flags;
-+	u32 smlid;
-+	u32 lid;
-+	u8 ls_old, ls_new, ps_new;
-+	u8 vls;
-+	u8 msl;
-+	u8 crc_enabled;
-+	u16 lse, lwe, mtu;
-+	u32 num_ports = OPA_AM_NPORT(am);
-+	u32 start_of_sm_config = OPA_AM_START_SM_CFG(am);
-+	int ret, i, invalid = 0, call_set_mtu = 0;
-+	int call_link_downgrade_policy = 0;
-+
-+	if (num_ports != 1 ||
-+	    smp_length_check(sizeof(*pi), max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	lid = be32_to_cpu(pi->lid);
-+	if (lid & 0xFF000000) {
-+		pr_warn("OPA_PortInfo lid out of range: %X\n", lid);
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		goto get_only;
-+	}
-+
-+
-+	smlid = be32_to_cpu(pi->sm_lid);
-+	if (smlid & 0xFF000000) {
-+		pr_warn("OPA_PortInfo SM lid out of range: %X\n", smlid);
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		goto get_only;
-+	}
-+
-+	clientrereg = (pi->clientrereg_subnettimeout &
-+			OPA_PI_MASK_CLIENT_REREGISTER);
-+
-+	dd = dd_from_ibdev(ibdev);
-+	/* IB numbers ports from 1, hw from 0 */
-+	ppd = dd->pport + (port - 1);
-+	ibp = &ppd->ibport_data;
-+	event.device = ibdev;
-+	event.element.port_num = port;
-+
-+	ls_old = driver_lstate(ppd);
-+
-+	ibp->rvp.mkey = pi->mkey;
-+	if (ibp->rvp.gid_prefix != pi->subnet_prefix) {
-+		ibp->rvp.gid_prefix = pi->subnet_prefix;
-+		event.event = IB_EVENT_GID_CHANGE;
-+		ib_dispatch_event(&event);
-+	}
-+	ibp->rvp.mkey_lease_period = be16_to_cpu(pi->mkey_lease_period);
-+
-+	/* Must be a valid unicast LID address. */
-+	if ((lid == 0 && ls_old > IB_PORT_INIT) ||
-+	     (hfi2_is_16B_mcast(lid))) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		ppd_dev_warn(ppd, "SubnSet(OPA_PortInfo) lid invalid 0x%x\n", lid);
-+	} else if (ppd->lid != lid ||
-+		 ppd->lmc != (pi->mkeyprotect_lmc & OPA_PI_MASK_LMC)) {
-+		if (ppd->lid != lid)
-+			hfi2_set_uevent_bits(ppd, _HFI2_EVENT_LID_CHANGE_BIT);
-+		if (ppd->lmc != (pi->mkeyprotect_lmc & OPA_PI_MASK_LMC))
-+			hfi2_set_uevent_bits(ppd, _HFI2_EVENT_LMC_CHANGE_BIT);
-+		hfi2_set_lid(ppd, lid, pi->mkeyprotect_lmc & OPA_PI_MASK_LMC);
-+		event.event = IB_EVENT_LID_CHANGE;
-+		ib_dispatch_event(&event);
-+
-+		if (HFI2_PORT_GUID_INDEX + 1 < HFI2_GUIDS_PER_PORT) {
-+			/* Manufacture GID from LID to support extended
-+			 * addresses
-+			 */
-+			ppd->guids[HFI2_PORT_GUID_INDEX + 1] =
-+				be64_to_cpu(OPA_MAKE_ID(lid));
-+			event.event = IB_EVENT_GID_CHANGE;
-+			ib_dispatch_event(&event);
-+		}
-+	}
-+
-+	msl = pi->smsl & OPA_PI_MASK_SMSL;
-+	if (pi->partenforce_filterraw & OPA_PI_MASK_LINKINIT_REASON)
-+		ppd->linkinit_reason =
-+			(pi->partenforce_filterraw &
-+			 OPA_PI_MASK_LINKINIT_REASON);
-+
-+	/* Must be a valid unicast LID address. */
-+	if ((smlid == 0 && ls_old > IB_PORT_INIT) ||
-+	     (hfi2_is_16B_mcast(smlid))) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		ppd_dev_warn(ppd, "SubnSet(OPA_PortInfo) smlid invalid 0x%x\n", smlid);
-+	} else if (smlid != ibp->rvp.sm_lid || msl != ibp->rvp.sm_sl) {
-+		ppd_dev_warn(ppd, "SubnSet(OPA_PortInfo) smlid 0x%x\n", smlid);
-+		spin_lock_irqsave(&ibp->rvp.lock, flags);
-+		if (ibp->rvp.sm_ah) {
-+			if (smlid != ibp->rvp.sm_lid)
-+				hfi2_modify_qp0_ah(ibp, ibp->rvp.sm_ah, smlid);
-+			if (msl != ibp->rvp.sm_sl)
-+				rdma_ah_set_sl(&ibp->rvp.sm_ah->attr, msl);
-+		}
-+		spin_unlock_irqrestore(&ibp->rvp.lock, flags);
-+		if (smlid != ibp->rvp.sm_lid)
-+			ibp->rvp.sm_lid = smlid;
-+		if (msl != ibp->rvp.sm_sl)
-+			ibp->rvp.sm_sl = msl;
-+		event.event = IB_EVENT_SM_CHANGE;
-+		ib_dispatch_event(&event);
-+	}
-+
-+	if (pi->link_down_reason == 0) {
-+		ppd->local_link_down_reason.sma = 0;
-+		ppd->local_link_down_reason.latest = 0;
-+	}
-+
-+	if (pi->neigh_link_down_reason == 0) {
-+		ppd->neigh_link_down_reason.sma = 0;
-+		ppd->neigh_link_down_reason.latest = 0;
-+	}
-+
-+	ppd->sm_trap_qp = be32_to_cpu(pi->sm_trap_qp);
-+	ppd->sa_qp = be32_to_cpu(pi->sa_qp);
-+
-+	ppd->port_error_action = be32_to_cpu(pi->port_error_action);
-+	lwe = be16_to_cpu(pi->link_width.enabled);
-+	if (lwe) {
-+		if (lwe == OPA_LINK_WIDTH_RESET ||
-+		    lwe == OPA_LINK_WIDTH_RESET_OLD)
-+			set_link_width_enabled(ppd, ppd->link_width_supported);
-+		else if ((lwe & ~ppd->link_width_supported) == 0)
-+			set_link_width_enabled(ppd, lwe);
-+		else
-+			smp->status |= IB_SMP_INVALID_FIELD;
-+	}
-+	lwe = be16_to_cpu(pi->link_width_downgrade.enabled);
-+	/* LWD.E is always applied - 0 means "disabled" */
-+	if (lwe == OPA_LINK_WIDTH_RESET ||
-+	    lwe == OPA_LINK_WIDTH_RESET_OLD) {
-+		set_link_width_downgrade_enabled(ppd,
-+						 ppd->
-+						 link_width_downgrade_supported
-+						 );
-+	} else if ((lwe & ~ppd->link_width_downgrade_supported) == 0) {
-+		/* only set and apply if something changed */
-+		if (lwe != ppd->link_width_downgrade_enabled) {
-+			set_link_width_downgrade_enabled(ppd, lwe);
-+			call_link_downgrade_policy = 1;
-+		}
-+	} else {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+	}
-+	lse = be16_to_cpu(pi->link_speed.enabled);
-+	if (lse) {
-+		if (lse & be16_to_cpu(pi->link_speed.supported))
-+			set_link_speed_enabled(ppd, lse);
-+		else
-+			smp->status |= IB_SMP_INVALID_FIELD;
-+	}
-+
-+	ibp->rvp.mkeyprot =
-+		(pi->mkeyprotect_lmc & OPA_PI_MASK_MKEY_PROT_BIT) >> 6;
-+	ibp->rvp.vl_high_limit = be16_to_cpu(pi->vl.high_limit) & 0xFF;
-+	(void)hfi2_set_ib_cfg(ppd, HFI2_IB_CFG_VL_HIGH_LIMIT,
-+				    ibp->rvp.vl_high_limit);
-+
-+	if (ppd->vls_supported / 2 > ARRAY_SIZE(pi->neigh_mtu.pvlx_to_mtu) ||
-+	    ppd->vls_supported > ARRAY_SIZE(ppd->vld)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+	for (i = 0; i < ppd->vls_supported; i++) {
-+		if ((i % 2) == 0)
-+			mtu = enum_to_mtu((pi->neigh_mtu.pvlx_to_mtu[i / 2] >>
-+					   4) & 0xF);
-+		else
-+			mtu = enum_to_mtu(pi->neigh_mtu.pvlx_to_mtu[i / 2] &
-+					  0xF);
-+		if (mtu == 0xffff) {
-+			ppd_dev_warn(ppd, "SubnSet(OPA_PortInfo) mtu invalid %d (0x%x)\n",
-+				mtu,
-+				(pi->neigh_mtu.pvlx_to_mtu[0] >> 4) & 0xF);
-+			smp->status |= IB_SMP_INVALID_FIELD;
-+			mtu = hfi2_max_mtu; /* use a valid MTU */
-+		}
-+		if (ppd->vld[i].mtu != mtu) {
-+			ppd_dev_info(ppd,
-+				     "MTU change on vl %d from %d to %d\n",
-+				     i, ppd->vld[i].mtu, mtu);
-+			ppd->vld[i].mtu = mtu;
-+			call_set_mtu++;
-+		}
-+	}
-+	/* As per OPAV1 spec: VL15 must support and be configured
-+	 * for operation with a 2048 or larger MTU.
-+	 */
-+	mtu = enum_to_mtu(pi->neigh_mtu.pvlx_to_mtu[15 / 2] & 0xF);
-+	if (mtu < 2048 || mtu == 0xffff)
-+		mtu = 2048;
-+	if (ppd->vld[15].mtu != mtu) {
-+		dd_dev_info(dd,
-+			    "MTU change on vl 15 from %d to %d\n",
-+			    ppd->vld[15].mtu, mtu);
-+		ppd->vld[15].mtu = mtu;
-+		call_set_mtu++;
-+	}
-+	if (call_set_mtu)
-+		set_mtu(ppd);
-+
-+	/* Set operational VLs */
-+	vls = pi->operational_vls & OPA_PI_MASK_OPERATIONAL_VL;
-+	if (vls) {
-+		if (vls > ppd->vls_supported) {
-+			ppd_dev_warn(ppd, "SubnSet(OPA_PortInfo) VL's supported invalid %d\n",
-+				pi->operational_vls);
-+			smp->status |= IB_SMP_INVALID_FIELD;
-+		} else {
-+			if (hfi2_set_ib_cfg(ppd, HFI2_IB_CFG_OP_VLS,
-+					    vls) == -EINVAL)
-+				smp->status |= IB_SMP_INVALID_FIELD;
-+		}
-+	}
-+
-+	if (pi->mkey_violations == 0)
-+		ibp->rvp.mkey_violations = 0;
-+
-+	if (pi->pkey_violations == 0)
-+		ibp->rvp.pkey_violations = 0;
-+
-+	if (pi->qkey_violations == 0)
-+		ibp->rvp.qkey_violations = 0;
-+
-+	ibp->rvp.subnet_timeout =
-+		pi->clientrereg_subnettimeout & OPA_PI_MASK_SUBNET_TIMEOUT;
-+
-+	crc_enabled = be16_to_cpu(pi->port_ltp_crc_mode);
-+	crc_enabled >>= 4;
-+	crc_enabled &= 0xf;
-+
-+	if (crc_enabled != 0)
-+		ppd->port_crc_mode_enabled = port_ltp_to_cap(crc_enabled);
-+
-+	ppd->is_active_optimize_enabled =
-+			!!(be16_to_cpu(pi->port_mode)
-+					& OPA_PI_MASK_PORT_ACTIVE_OPTOMIZE);
-+
-+	ls_new = pi->port_states.portphysstate_portstate &
-+			OPA_PI_MASK_PORT_STATE;
-+	ps_new = (pi->port_states.portphysstate_portstate &
-+			OPA_PI_MASK_PORT_PHYSICAL_STATE) >> 4;
-+
-+	if (ls_old == IB_PORT_INIT) {
-+		if (start_of_sm_config) {
-+			if (ls_new == ls_old || (ls_new == IB_PORT_ARMED))
-+				ppd->is_sm_config_started = 1;
-+		} else if (ls_new == IB_PORT_ARMED) {
-+			if (ppd->is_sm_config_started == 0) {
-+				invalid = 1;
-+				smp->status |= IB_SMP_INVALID_FIELD;
-+			}
-+		}
-+	}
-+
-+	/* Handle CLIENT_REREGISTER event b/c SM asked us for it */
-+	if (clientrereg) {
-+		event.event = IB_EVENT_CLIENT_REREGISTER;
-+		ib_dispatch_event(&event);
-+	}
-+
-+	/*
-+	 * Do the port state change now that the other link parameters
-+	 * have been set.
-+	 * Changing the port physical state only makes sense if the link
-+	 * is down or is being set to down.
-+	 */
-+
-+	if (!invalid) {
-+		ret = set_port_states(ppd, smp, ls_new, ps_new, local_mad);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	ret = __subn_get_opa_portinfo(smp, am, data, ibdev, port, resp_len,
-+				      max_len);
-+
-+	/* restore re-reg bit per o14-12.2.1 */
-+	pi->clientrereg_subnettimeout |= clientrereg;
-+
-+	/*
-+	 * Apply the new link downgrade policy.  This may result in a link
-+	 * bounce.  Do this after everything else so things are settled.
-+	 * Possible problem: if setting the port state above fails, then
-+	 * the policy change is not applied.
-+	 */
-+	if (call_link_downgrade_policy)
-+		apply_link_downgrade_policy(ppd, 0);
-+
-+	return ret;
-+
-+get_only:
-+	return __subn_get_opa_portinfo(smp, am, data, ibdev, port, resp_len,
-+				       max_len);
-+}
-+
-+/**
-+ * set_pkeys - set the PKEY table for any block
-+ * @dd: the hfi2_ib device
-+ * @port: the IB port number
-+ * @start_block: starting block to modify
-+ * @num_blocks: number of blocks to modify
-+ * @pkeys: the PKEY table
-+ *
-+ * It is expected that the incoming pkeys are endianized for the host.
-+ * Return 0 on success, non-zero on error.
-+ */
-+static int set_pkeys(struct hfi2_devdata *dd, u32 port, u32 start_block,
-+		     u32 num_blocks, u16 *pkeys)
-+{
-+	struct hfi2_pportdata *ppd = dd->pport + (port - 1);
-+	int i;
-+	int changed = 0;
-+	int update_includes_mgmt_partition = 0;
-+	u32 start_index;
-+	u32 end_index;
-+
-+	/* calculate the indices affected */
-+	start_index = start_block * OPA_PARTITION_TABLE_BLK_SIZE;
-+	end_index = min_t(u32, dd->params->pkey_table_size,
-+			  start_index + (num_blocks * OPA_PARTITION_TABLE_BLK_SIZE));
-+
-+	/*
-+	 * Block 0 must always contain the limited management key.
-+	 */
-+	if (start_block == 0) {
-+		int b0_end_index = min_t(int, OPA_PARTITION_TABLE_BLK_SIZE,
-+					 dd->params->pkey_table_size);
-+
-+		for (i = 0; i < b0_end_index; i++) {
-+			if (pkeys[i] == LIM_MGMT_P_KEY) {
-+				update_includes_mgmt_partition = 1;
-+				break;
-+			}
-+		}
-+
-+		if (!update_includes_mgmt_partition)
-+			return 1;
-+	}
-+
-+	for (i = start_index; i < end_index; i++) {
-+		u16 key = pkeys[i - start_index];
-+		u16 okey = ppd->pkeys[i];
-+
-+		if (key == okey)
-+			continue;
-+		/*
-+		 * The SM gives us the complete PKey table. We have
-+		 * to ensure that we put the PKeys in the matching
-+		 * slots.
-+		 */
-+		ppd->pkeys[i] = key;
-+		changed = 1;
-+	}
-+
-+	if (changed) {
-+		(void)hfi2_set_ib_cfg(ppd, HFI2_IB_CFG_PKEYS, 0);
-+		hfi2_event_pkey_change(dd, port);
-+	}
-+
-+	return 0;
-+}
-+
-+static int __subn_set_opa_pkeytable(struct opa_smp *smp, u32 am, u8 *data,
-+				    struct ib_device *ibdev, u32 port,
-+				    u32 *resp_len, u32 max_len)
-+{
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	u32 n_blocks_sent = OPA_AM_NBLK(am);
-+	u32 start_block = am & 0x7ff;
-+	u16 *p = (u16 *)data;
-+	__be16 *q = (__be16 *)data;
-+	int i;
-+	u32 n_blocks_avail;
-+	u32 npkeys = hfi2_get_npkeys(dd);
-+	u32 size = 0;
-+
-+	if (n_blocks_sent == 0) {
-+		pr_warn("OPA Get PKey AM Invalid : P = %u; B = 0x%x; N = 0x%x\n",
-+			port, start_block, n_blocks_sent);
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	n_blocks_avail = DIV_ROUND_UP(npkeys, OPA_PARTITION_TABLE_BLK_SIZE);
-+
-+	size = sizeof(u16) * (n_blocks_sent * OPA_PARTITION_TABLE_BLK_SIZE);
-+
-+	if (smp_length_check(size, max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	if (start_block + n_blocks_sent > n_blocks_avail ||
-+	    n_blocks_sent > OPA_NUM_PKEY_BLOCKS_PER_SMP) {
-+		pr_warn("OPA Set PKey AM Invalid : s 0x%x; req 0x%x; avail 0x%x; blk/smp 0x%lx\n",
-+			start_block, n_blocks_sent, n_blocks_avail,
-+			OPA_NUM_PKEY_BLOCKS_PER_SMP);
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	for (i = 0; i < n_blocks_sent * OPA_PARTITION_TABLE_BLK_SIZE; i++)
-+		p[i] = be16_to_cpu(q[i]);
-+
-+	if (set_pkeys(dd, port, start_block, n_blocks_sent, p) != 0) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	return __subn_get_opa_pkeytable(smp, am, data, ibdev, port, resp_len,
-+					max_len);
-+}
-+
-+#define ILLEGAL_VL 12
-+/*
-+ * filter_sc2vlt changes mappings to VL15 to ILLEGAL_VL (except
-+ * for SC15, which must map to VL15). If we don't remap things this
-+ * way it is possible for VL15 counters to increment when we try to
-+ * send on a SC which is mapped to an invalid VL.
-+ * When getting the table convert ILLEGAL_VL back to VL15.
-+ */
-+static void filter_sc2vlt(void *data, bool set)
-+{
-+	int i;
-+	u8 *pd = data;
-+
-+	for (i = 0; i < OPA_MAX_SCS; i++) {
-+		if (i == 15)
-+			continue;
-+
-+		if (set) {
-+			if ((pd[i] & 0x1f) == 0xf)
-+				pd[i] = ILLEGAL_VL;
-+		} else {
-+			if ((pd[i] & 0x1f) == ILLEGAL_VL)
-+				pd[i] = 0xf;
-+		}
-+	}
-+}
-+
-+static int set_sc2vlt_tables(struct hfi2_pportdata *ppd, void *data)
-+{
-+	struct hfi2_devdata *dd = ppd->dd;
-+	u64 *val = data;
-+	int pidx = ppd->hw_pidx;
-+
-+	filter_sc2vlt(data, true);
-+
-+	write_eport_csr(dd, pidx, dd->params->send_sc2vlt0_reg, *val++);
-+	write_eport_csr(dd, pidx, dd->params->send_sc2vlt1_reg, *val++);
-+	write_eport_csr(dd, pidx, dd->params->send_sc2vlt2_reg, *val++);
-+	write_eport_csr(dd, pidx, dd->params->send_sc2vlt3_reg, *val++);
-+	write_seqlock_irq(&ppd->sc2vl_lock);
-+	memcpy(ppd->sc2vl, data, sizeof(ppd->sc2vl));
-+	write_sequnlock_irq(&ppd->sc2vl_lock);
-+	return 0;
-+}
-+
-+int get_sc2vlt_tables(struct hfi2_pportdata *ppd, void *data)
-+{
-+	struct hfi2_devdata *dd = ppd->dd;
-+	u64 *val = (u64 *)data;
-+	int pidx = ppd->hw_pidx;
-+
-+	*val++ = read_eport_csr(dd, pidx, dd->params->send_sc2vlt0_reg);
-+	*val++ = read_eport_csr(dd, pidx, dd->params->send_sc2vlt1_reg);
-+	*val++ = read_eport_csr(dd, pidx, dd->params->send_sc2vlt2_reg);
-+	*val++ = read_eport_csr(dd, pidx, dd->params->send_sc2vlt3_reg);
-+
-+	filter_sc2vlt((u64 *)data, false);
-+	return 0;
-+}
-+
-+static int __subn_get_opa_sl_to_sc(struct opa_smp *smp, u32 am, u8 *data,
-+				   struct ib_device *ibdev, u32 port,
-+				   u32 *resp_len, u32 max_len)
-+{
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+	u8 *p = data;
-+	size_t size = ARRAY_SIZE(ibp->sl_to_sc); /* == 32 */
-+	unsigned i;
-+
-+	if (am || smp_length_check(size, max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(ibp->sl_to_sc); i++)
-+		*p++ = ibp->sl_to_sc[i];
-+
-+	if (resp_len)
-+		*resp_len += size;
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+static int __subn_set_opa_sl_to_sc(struct opa_smp *smp, u32 am, u8 *data,
-+				   struct ib_device *ibdev, u32 port,
-+				   u32 *resp_len, u32 max_len)
-+{
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+	u8 *p = data;
-+	size_t size = ARRAY_SIZE(ibp->sl_to_sc);
-+	int i;
-+	u8 sc;
-+
-+	if (am || smp_length_check(size, max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	for (i = 0; i <  ARRAY_SIZE(ibp->sl_to_sc); i++) {
-+		sc = *p++;
-+		if (ibp->sl_to_sc[i] != sc) {
-+			ibp->sl_to_sc[i] = sc;
-+
-+			/* Put all stale qps into error state */
-+			hfi2_error_port_qps(ibp, i);
-+		}
-+	}
-+
-+	return __subn_get_opa_sl_to_sc(smp, am, data, ibdev, port, resp_len,
-+				       max_len);
-+}
-+
-+static int __subn_get_opa_sc_to_sl(struct opa_smp *smp, u32 am, u8 *data,
-+				   struct ib_device *ibdev, u32 port,
-+				   u32 *resp_len, u32 max_len)
-+{
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+	u8 *p = data;
-+	size_t size = ARRAY_SIZE(ibp->sc_to_sl); /* == 32 */
-+	unsigned i;
-+
-+	if (am || smp_length_check(size, max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(ibp->sc_to_sl); i++)
-+		*p++ = ibp->sc_to_sl[i];
-+
-+	if (resp_len)
-+		*resp_len += size;
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+static int __subn_set_opa_sc_to_sl(struct opa_smp *smp, u32 am, u8 *data,
-+				   struct ib_device *ibdev, u32 port,
-+				   u32 *resp_len, u32 max_len)
-+{
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+	size_t size = ARRAY_SIZE(ibp->sc_to_sl);
-+	u8 *p = data;
-+	int i;
-+
-+	if (am || smp_length_check(size, max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(ibp->sc_to_sl); i++)
-+		ibp->sc_to_sl[i] = *p++;
-+
-+	return __subn_get_opa_sc_to_sl(smp, am, data, ibdev, port, resp_len,
-+				       max_len);
-+}
-+
-+static int __subn_get_opa_sc_to_vlt(struct opa_smp *smp, u32 am, u8 *data,
-+				    struct ib_device *ibdev, u32 port,
-+				    u32 *resp_len, u32 max_len)
-+{
-+	u32 n_blocks = OPA_AM_NBLK(am);
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	struct hfi2_pportdata *ppd = &dd->pport[port - 1];
-+	void *vp = (void *)data;
-+	size_t size = 4 * sizeof(u64);
-+
-+	if (n_blocks != 1 || smp_length_check(size, max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	get_sc2vlt_tables(ppd, vp);
-+
-+	if (resp_len)
-+		*resp_len += size;
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+static int __subn_set_opa_sc_to_vlt(struct opa_smp *smp, u32 am, u8 *data,
-+				    struct ib_device *ibdev, u32 port,
-+				    u32 *resp_len, u32 max_len)
-+{
-+	u32 n_blocks = OPA_AM_NBLK(am);
-+	int async_update = OPA_AM_ASYNC(am);
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	void *vp = (void *)data;
-+	struct hfi2_pportdata *ppd;
-+	int lstate;
-+	/*
-+	 * set_sc2vlt_tables writes the information contained in *data
-+	 * to four 64-bit registers SendSC2VLt[0-3]. We need to make
-+	 * sure *max_len is not greater than the total size of the four
-+	 * SendSC2VLt[0-3] registers.
-+	 */
-+	size_t size = 4 * sizeof(u64);
-+
-+	if (n_blocks != 1 || async_update || smp_length_check(size, max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	/* IB numbers ports from 1, hw from 0 */
-+	ppd = dd->pport + (port - 1);
-+	lstate = driver_lstate(ppd);
-+	/*
-+	 * it's known that async_update is 0 by this point, but include
-+	 * the explicit check for clarity
-+	 */
-+	if (!async_update &&
-+	    (lstate == IB_PORT_ARMED || lstate == IB_PORT_ACTIVE)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	set_sc2vlt_tables(ppd, vp);
-+
-+	return __subn_get_opa_sc_to_vlt(smp, am, data, ibdev, port, resp_len,
-+					max_len);
-+}
-+
-+static int __subn_get_opa_sc_to_vlnt(struct opa_smp *smp, u32 am, u8 *data,
-+				     struct ib_device *ibdev, u32 port,
-+				     u32 *resp_len, u32 max_len)
-+{
-+	u32 n_blocks = OPA_AM_NPORT(am);
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	struct hfi2_pportdata *ppd;
-+	void *vp = (void *)data;
-+	int size = sizeof(struct sc2vlnt);
-+
-+	if (n_blocks != 1 || smp_length_check(size, max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	ppd = dd->pport + (port - 1);
-+
-+	fm_get_table(ppd, FM_TBL_SC2VLNT, vp);
-+
-+	if (resp_len)
-+		*resp_len += size;
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+static int __subn_set_opa_sc_to_vlnt(struct opa_smp *smp, u32 am, u8 *data,
-+				     struct ib_device *ibdev, u32 port,
-+				     u32 *resp_len, u32 max_len)
-+{
-+	u32 n_blocks = OPA_AM_NPORT(am);
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	struct hfi2_pportdata *ppd;
-+	void *vp = (void *)data;
-+	int lstate;
-+	int size = sizeof(struct sc2vlnt);
-+
-+	if (n_blocks != 1 || smp_length_check(size, max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	/* IB numbers ports from 1, hw from 0 */
-+	ppd = dd->pport + (port - 1);
-+	lstate = driver_lstate(ppd);
-+	if (lstate == IB_PORT_ARMED || lstate == IB_PORT_ACTIVE) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	ppd = dd->pport + (port - 1);
-+
-+	fm_set_table(ppd, FM_TBL_SC2VLNT, vp);
-+
-+	return __subn_get_opa_sc_to_vlnt(smp, am, data, ibdev, port,
-+					 resp_len, max_len);
-+}
-+
-+static int __subn_get_opa_psi(struct opa_smp *smp, u32 am, u8 *data,
-+			      struct ib_device *ibdev, u32 port,
-+			      u32 *resp_len, u32 max_len)
-+{
-+	u32 nports = OPA_AM_NPORT(am);
-+	u32 start_of_sm_config = OPA_AM_START_SM_CFG(am);
-+	u32 lstate;
-+	struct hfi2_ibport *ibp;
-+	struct hfi2_pportdata *ppd;
-+	struct opa_port_state_info *psi = (struct opa_port_state_info *)data;
-+
-+	if (nports != 1 || smp_length_check(sizeof(*psi), max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	ibp = to_iport(ibdev, port);
-+	ppd = ppd_from_ibp(ibp);
-+
-+	lstate = driver_lstate(ppd);
-+
-+	if (start_of_sm_config && (lstate == IB_PORT_INIT))
-+		ppd->is_sm_config_started = 1;
-+
-+	psi->port_states.ledenable_offlinereason = ppd->neighbor_normal << 4;
-+	psi->port_states.ledenable_offlinereason |=
-+		ppd->is_sm_config_started << 5;
-+	psi->port_states.ledenable_offlinereason |=
-+		ppd->offline_disabled_reason;
-+
-+	psi->port_states.portphysstate_portstate =
-+		(driver_pstate(ppd) << 4) | (lstate & 0xf);
-+	psi->link_width_downgrade_tx_active =
-+		cpu_to_be16(ppd->link_width_downgrade_tx_active);
-+	psi->link_width_downgrade_rx_active =
-+		cpu_to_be16(ppd->link_width_downgrade_rx_active);
-+	if (resp_len)
-+		*resp_len += sizeof(struct opa_port_state_info);
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+static int __subn_set_opa_psi(struct opa_smp *smp, u32 am, u8 *data,
-+			      struct ib_device *ibdev, u32 port,
-+			      u32 *resp_len, u32 max_len, int local_mad)
-+{
-+	u32 nports = OPA_AM_NPORT(am);
-+	u32 start_of_sm_config = OPA_AM_START_SM_CFG(am);
-+	u32 ls_old;
-+	u8 ls_new, ps_new;
-+	struct hfi2_ibport *ibp;
-+	struct hfi2_pportdata *ppd;
-+	struct opa_port_state_info *psi = (struct opa_port_state_info *)data;
-+	int ret, invalid = 0;
-+
-+	if (nports != 1 || smp_length_check(sizeof(*psi), max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	ibp = to_iport(ibdev, port);
-+	ppd = ppd_from_ibp(ibp);
-+
-+	ls_old = driver_lstate(ppd);
-+
-+	ls_new = port_states_to_logical_state(&psi->port_states);
-+	ps_new = port_states_to_phys_state(&psi->port_states);
-+
-+	if (ls_old == IB_PORT_INIT) {
-+		if (start_of_sm_config) {
-+			if (ls_new == ls_old || (ls_new == IB_PORT_ARMED))
-+				ppd->is_sm_config_started = 1;
-+		} else if (ls_new == IB_PORT_ARMED) {
-+			if (ppd->is_sm_config_started == 0) {
-+				invalid = 1;
-+				smp->status |= IB_SMP_INVALID_FIELD;
-+			}
-+		}
-+	}
-+
-+	if (!invalid) {
-+		ret = set_port_states(ppd, smp, ls_new, ps_new, local_mad);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return __subn_get_opa_psi(smp, am, data, ibdev, port, resp_len,
-+				  max_len);
-+}
-+
-+static int __subn_get_opa_cable_info(struct opa_smp *smp, u32 am, u8 *data,
-+				     struct ib_device *ibdev, u32 port,
-+				     u32 *resp_len, u32 max_len)
-+{
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	struct hfi2_pportdata *ppd = dd->pport + (port - 1);
-+	u32 addr = OPA_AM_CI_ADDR(am);
-+	u32 len = OPA_AM_CI_LEN(am) + 1;
-+	int ret;
-+
-+	if (ppd->port_type != PORT_TYPE_QSFP ||
-+	    smp_length_check(len, max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+#define __CI_PAGE_SIZE BIT(7) /* 128 bytes */
-+#define __CI_PAGE_MASK ~(__CI_PAGE_SIZE - 1)
-+#define __CI_PAGE_NUM(a) ((a) & __CI_PAGE_MASK)
-+
-+	/*
-+	 * check that addr is within spec, and
-+	 * addr and (addr + len - 1) are on the same "page"
-+	 */
-+	if (addr >= 4096 ||
-+	    (__CI_PAGE_NUM(addr) != __CI_PAGE_NUM(addr + len - 1))) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	ret = get_cable_info(ppd, addr, len, data);
-+
-+	if (ret == -ENODEV) {
-+		smp->status |= IB_SMP_UNSUP_METH_ATTR;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	/* The address range for the CableInfo SMA query is wider than the
-+	 * memory available on the QSFP cable. We want to return a valid
-+	 * response, albeit zeroed out, for address ranges beyond available
-+	 * memory but that are within the CableInfo query spec
-+	 */
-+	if (ret < 0 && ret != -ERANGE) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	if (resp_len)
-+		*resp_len += len;
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+static int __subn_get_opa_bct(struct opa_smp *smp, u32 am, u8 *data,
-+			      struct ib_device *ibdev, u32 port, u32 *resp_len,
-+			      u32 max_len)
-+{
-+	u32 num_ports = OPA_AM_NPORT(am);
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	struct hfi2_pportdata *ppd;
-+	struct buffer_control *p = (struct buffer_control *)data;
-+	int size = sizeof(struct buffer_control);
-+
-+	if (num_ports != 1 || smp_length_check(size, max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	ppd = dd->pport + (port - 1);
-+	fm_get_table(ppd, FM_TBL_BUFFER_CONTROL, p);
-+	trace_bct_get(dd, p);
-+	if (resp_len)
-+		*resp_len += size;
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+static int __subn_set_opa_bct(struct opa_smp *smp, u32 am, u8 *data,
-+			      struct ib_device *ibdev, u32 port, u32 *resp_len,
-+			      u32 max_len)
-+{
-+	u32 num_ports = OPA_AM_NPORT(am);
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	struct hfi2_pportdata *ppd;
-+	struct buffer_control *p = (struct buffer_control *)data;
-+
-+	if (num_ports != 1 || smp_length_check(sizeof(*p), max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+	ppd = dd->pport + (port - 1);
-+	trace_bct_set(dd, p);
-+	if (fm_set_table(ppd, FM_TBL_BUFFER_CONTROL, p) < 0) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	return __subn_get_opa_bct(smp, am, data, ibdev, port, resp_len,
-+				  max_len);
-+}
-+
-+static int __subn_get_opa_vl_arb(struct opa_smp *smp, u32 am, u8 *data,
-+				 struct ib_device *ibdev, u32 port,
-+				 u32 *resp_len, u32 max_len)
-+{
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(to_iport(ibdev, port));
-+	u32 num_ports = OPA_AM_NPORT(am);
-+	u8 section = (am & 0x00ff0000) >> 16;
-+	u8 *p = data;
-+	int size = 256;
-+
-+	if (num_ports != 1 || smp_length_check(size, max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	switch (section) {
-+	case OPA_VLARB_LOW_ELEMENTS:
-+		fm_get_table(ppd, FM_TBL_VL_LOW_ARB, p);
-+		break;
-+	case OPA_VLARB_HIGH_ELEMENTS:
-+		fm_get_table(ppd, FM_TBL_VL_HIGH_ARB, p);
-+		break;
-+	case OPA_VLARB_PREEMPT_ELEMENTS:
-+		fm_get_table(ppd, FM_TBL_VL_PREEMPT_ELEMS, p);
-+		break;
-+	case OPA_VLARB_PREEMPT_MATRIX:
-+		fm_get_table(ppd, FM_TBL_VL_PREEMPT_MATRIX, p);
-+		break;
-+	default:
-+		ppd_dev_warn(ppd, "OPA SubnGet(VL Arb) AM Invalid : 0x%x\n",
-+			     be32_to_cpu(smp->attr_mod));
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		size = 0;
-+		break;
-+	}
-+
-+	if (size > 0 && resp_len)
-+		*resp_len += size;
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+static int __subn_set_opa_vl_arb(struct opa_smp *smp, u32 am, u8 *data,
-+				 struct ib_device *ibdev, u32 port,
-+				 u32 *resp_len, u32 max_len)
-+{
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(to_iport(ibdev, port));
-+	u32 num_ports = OPA_AM_NPORT(am);
-+	u8 section = (am & 0x00ff0000) >> 16;
-+	u8 *p = data;
-+	int size = 256;
-+
-+	if (num_ports != 1 || smp_length_check(size, max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	switch (section) {
-+	case OPA_VLARB_LOW_ELEMENTS:
-+		(void)fm_set_table(ppd, FM_TBL_VL_LOW_ARB, p);
-+		break;
-+	case OPA_VLARB_HIGH_ELEMENTS:
-+		(void)fm_set_table(ppd, FM_TBL_VL_HIGH_ARB, p);
-+		break;
-+	/*
-+	 * neither OPA_VLARB_PREEMPT_ELEMENTS, or OPA_VLARB_PREEMPT_MATRIX
-+	 * can be changed from the default values
-+	 */
-+	case OPA_VLARB_PREEMPT_ELEMENTS:
-+	case OPA_VLARB_PREEMPT_MATRIX:
-+		smp->status |= IB_SMP_UNSUP_METH_ATTR;
-+		break;
-+	default:
-+		ppd_dev_warn(ppd, "OPA SubnSet(VL Arb) AM Invalid : 0x%x\n",
-+			     be32_to_cpu(smp->attr_mod));
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		break;
-+	}
-+
-+	return __subn_get_opa_vl_arb(smp, am, data, ibdev, port, resp_len,
-+				     max_len);
-+}
-+
-+struct opa_pma_mad {
-+	struct ib_mad_hdr mad_hdr;
-+	u8 data[2024];
-+} __packed;
-+
-+struct opa_port_status_req {
-+	__u8 port_num;
-+	__u8 reserved[3];
-+	__be32 vl_select_mask;
-+};
-+
-+#define VL_MASK_ALL		0x00000000000080ffUL
-+
-+struct opa_port_status_rsp {
-+	__u8 port_num;
-+	__u8 reserved[3];
-+	__be32  vl_select_mask;
-+
-+	/* Data counters */
-+	__be64 port_xmit_data;
-+	__be64 port_rcv_data;
-+	__be64 port_xmit_pkts;
-+	__be64 port_rcv_pkts;
-+	__be64 port_multicast_xmit_pkts;
-+	__be64 port_multicast_rcv_pkts;
-+	__be64 port_xmit_wait;
-+	__be64 sw_port_congestion;
-+	__be64 port_rcv_fecn;
-+	__be64 port_rcv_becn;
-+	__be64 port_xmit_time_cong;
-+	__be64 port_xmit_wasted_bw;
-+	__be64 port_xmit_wait_data;
-+	__be64 port_rcv_bubble;
-+	__be64 port_mark_fecn;
-+	/* Error counters */
-+	__be64 port_rcv_constraint_errors;
-+	__be64 port_rcv_switch_relay_errors;
-+	__be64 port_xmit_discards;
-+	__be64 port_xmit_constraint_errors;
-+	__be64 port_rcv_remote_physical_errors;
-+	__be64 local_link_integrity_errors;
-+	__be64 port_rcv_errors;
-+	__be64 excessive_buffer_overruns;
-+	__be64 fm_config_errors;
-+	__be32 link_error_recovery;
-+	__be32 link_downed;
-+	u8 uncorrectable_errors;
-+
-+	u8 link_quality_indicator; /* 5res, 3bit */
-+	u8 res2[6];
-+	struct _vls_pctrs {
-+		/* per-VL Data counters */
-+		__be64 port_vl_xmit_data;
-+		__be64 port_vl_rcv_data;
-+		__be64 port_vl_xmit_pkts;
-+		__be64 port_vl_rcv_pkts;
-+		__be64 port_vl_xmit_wait;
-+		__be64 sw_port_vl_congestion;
-+		__be64 port_vl_rcv_fecn;
-+		__be64 port_vl_rcv_becn;
-+		__be64 port_xmit_time_cong;
-+		__be64 port_vl_xmit_wasted_bw;
-+		__be64 port_vl_xmit_wait_data;
-+		__be64 port_vl_rcv_bubble;
-+		__be64 port_vl_mark_fecn;
-+		__be64 port_vl_xmit_discards;
-+	} vls[]; /* real array size defined by # bits set in vl_select_mask */
-+};
-+
-+enum counter_selects {
-+	CS_PORT_XMIT_DATA			= (1 << 31),
-+	CS_PORT_RCV_DATA			= (1 << 30),
-+	CS_PORT_XMIT_PKTS			= (1 << 29),
-+	CS_PORT_RCV_PKTS			= (1 << 28),
-+	CS_PORT_MCAST_XMIT_PKTS			= (1 << 27),
-+	CS_PORT_MCAST_RCV_PKTS			= (1 << 26),
-+	CS_PORT_XMIT_WAIT			= (1 << 25),
-+	CS_SW_PORT_CONGESTION			= (1 << 24),
-+	CS_PORT_RCV_FECN			= (1 << 23),
-+	CS_PORT_RCV_BECN			= (1 << 22),
-+	CS_PORT_XMIT_TIME_CONG			= (1 << 21),
-+	CS_PORT_XMIT_WASTED_BW			= (1 << 20),
-+	CS_PORT_XMIT_WAIT_DATA			= (1 << 19),
-+	CS_PORT_RCV_BUBBLE			= (1 << 18),
-+	CS_PORT_MARK_FECN			= (1 << 17),
-+	CS_PORT_RCV_CONSTRAINT_ERRORS		= (1 << 16),
-+	CS_PORT_RCV_SWITCH_RELAY_ERRORS		= (1 << 15),
-+	CS_PORT_XMIT_DISCARDS			= (1 << 14),
-+	CS_PORT_XMIT_CONSTRAINT_ERRORS		= (1 << 13),
-+	CS_PORT_RCV_REMOTE_PHYSICAL_ERRORS	= (1 << 12),
-+	CS_LOCAL_LINK_INTEGRITY_ERRORS		= (1 << 11),
-+	CS_PORT_RCV_ERRORS			= (1 << 10),
-+	CS_EXCESSIVE_BUFFER_OVERRUNS		= (1 << 9),
-+	CS_FM_CONFIG_ERRORS			= (1 << 8),
-+	CS_LINK_ERROR_RECOVERY			= (1 << 7),
-+	CS_LINK_DOWNED				= (1 << 6),
-+	CS_UNCORRECTABLE_ERRORS			= (1 << 5),
-+};
-+
-+struct opa_clear_port_status {
-+	__be64 port_select_mask[4];
-+	__be32 counter_select_mask;
-+};
-+
-+struct opa_aggregate {
-+	__be16 attr_id;
-+	__be16 err_reqlength;	/* 1 bit, 8 res, 7 bit */
-+	__be32 attr_mod;
-+	u8 data[];
-+};
-+
-+#define MSK_LLI 0x000000f0
-+#define MSK_LLI_SFT 4
-+#define MSK_LER 0x0000000f
-+#define MSK_LER_SFT 0
-+#define ADD_LLI 8
-+#define ADD_LER 2
-+
-+/* Request contains first three fields, response contains those plus the rest */
-+struct opa_port_data_counters_msg {
-+	__be64 port_select_mask[4];
-+	__be32 vl_select_mask;
-+	__be32 resolution;
-+
-+	/* Response fields follow */
-+	struct _port_dctrs {
-+		u8 port_number;
-+		u8 reserved2[3];
-+		__be32 link_quality_indicator; /* 29res, 3bit */
-+
-+		/* Data counters */
-+		__be64 port_xmit_data;
-+		__be64 port_rcv_data;
-+		__be64 port_xmit_pkts;
-+		__be64 port_rcv_pkts;
-+		__be64 port_multicast_xmit_pkts;
-+		__be64 port_multicast_rcv_pkts;
-+		__be64 port_xmit_wait;
-+		__be64 sw_port_congestion;
-+		__be64 port_rcv_fecn;
-+		__be64 port_rcv_becn;
-+		__be64 port_xmit_time_cong;
-+		__be64 port_xmit_wasted_bw;
-+		__be64 port_xmit_wait_data;
-+		__be64 port_rcv_bubble;
-+		__be64 port_mark_fecn;
-+
-+		__be64 port_error_counter_summary;
-+		/* Sum of error counts/port */
-+
-+		struct _vls_dctrs {
-+			/* per-VL Data counters */
-+			__be64 port_vl_xmit_data;
-+			__be64 port_vl_rcv_data;
-+			__be64 port_vl_xmit_pkts;
-+			__be64 port_vl_rcv_pkts;
-+			__be64 port_vl_xmit_wait;
-+			__be64 sw_port_vl_congestion;
-+			__be64 port_vl_rcv_fecn;
-+			__be64 port_vl_rcv_becn;
-+			__be64 port_xmit_time_cong;
-+			__be64 port_vl_xmit_wasted_bw;
-+			__be64 port_vl_xmit_wait_data;
-+			__be64 port_vl_rcv_bubble;
-+			__be64 port_vl_mark_fecn;
-+		} vls[];
-+		/* array size defined by #bits set in vl_select_mask*/
-+	} port;
-+};
-+
-+struct opa_port_error_counters64_msg {
-+	/*
-+	 * Request contains first two fields, response contains the
-+	 * whole magilla
-+	 */
-+	__be64 port_select_mask[4];
-+	__be32 vl_select_mask;
-+
-+	/* Response-only fields follow */
-+	__be32 reserved1;
-+	struct _port_ectrs {
-+		u8 port_number;
-+		u8 reserved2[7];
-+		__be64 port_rcv_constraint_errors;
-+		__be64 port_rcv_switch_relay_errors;
-+		__be64 port_xmit_discards;
-+		__be64 port_xmit_constraint_errors;
-+		__be64 port_rcv_remote_physical_errors;
-+		__be64 local_link_integrity_errors;
-+		__be64 port_rcv_errors;
-+		__be64 excessive_buffer_overruns;
-+		__be64 fm_config_errors;
-+		__be32 link_error_recovery;
-+		__be32 link_downed;
-+		u8 uncorrectable_errors;
-+		u8 reserved3[7];
-+		struct _vls_ectrs {
-+			__be64 port_vl_xmit_discards;
-+		} vls[];
-+		/* array size defined by #bits set in vl_select_mask */
-+	} port;
-+};
-+
-+struct opa_port_error_info_msg {
-+	__be64 port_select_mask[4];
-+	__be32 error_info_select_mask;
-+	__be32 reserved1;
-+	struct _port_ei {
-+		u8 port_number;
-+		u8 reserved2[7];
-+
-+		/* PortRcvErrorInfo */
-+		struct {
-+			u8 status_and_code;
-+			union {
-+				u8 raw[17];
-+				struct {
-+					/* EI1to12 format */
-+					u8 packet_flit1[8];
-+					u8 packet_flit2[8];
-+					u8 remaining_flit_bits12;
-+				} ei1to12;
-+				struct {
-+					u8 packet_bytes[8];
-+					u8 remaining_flit_bits;
-+				} ei13;
-+			} ei;
-+			u8 reserved3[6];
-+		} __packed port_rcv_ei;
-+
-+		/* ExcessiveBufferOverrunInfo */
-+		struct {
-+			u8 status_and_sc;
-+			u8 reserved4[7];
-+		} __packed excessive_buffer_overrun_ei;
-+
-+		/* PortXmitConstraintErrorInfo */
-+		struct {
-+			u8 status;
-+			u8 reserved5;
-+			__be16 pkey;
-+			__be32 slid;
-+		} __packed port_xmit_constraint_ei;
-+
-+		/* PortRcvConstraintErrorInfo */
-+		struct {
-+			u8 status;
-+			u8 reserved6;
-+			__be16 pkey;
-+			__be32 slid;
-+		} __packed port_rcv_constraint_ei;
-+
-+		/* PortRcvSwitchRelayErrorInfo */
-+		struct {
-+			u8 status_and_code;
-+			u8 reserved7[3];
-+			__u32 error_info;
-+		} __packed port_rcv_switch_relay_ei;
-+
-+		/* UncorrectableErrorInfo */
-+		struct {
-+			u8 status_and_code;
-+			u8 reserved8;
-+		} __packed uncorrectable_ei;
-+
-+		/* FMConfigErrorInfo */
-+		struct {
-+			u8 status_and_code;
-+			u8 error_info;
-+		} __packed fm_config_ei;
-+		__u32 reserved9;
-+	} port;
-+};
-+
-+/* opa_port_error_info_msg error_info_select_mask bit definitions */
-+enum error_info_selects {
-+	ES_PORT_RCV_ERROR_INFO			= (1 << 31),
-+	ES_EXCESSIVE_BUFFER_OVERRUN_INFO	= (1 << 30),
-+	ES_PORT_XMIT_CONSTRAINT_ERROR_INFO	= (1 << 29),
-+	ES_PORT_RCV_CONSTRAINT_ERROR_INFO	= (1 << 28),
-+	ES_PORT_RCV_SWITCH_RELAY_ERROR_INFO	= (1 << 27),
-+	ES_UNCORRECTABLE_ERROR_INFO		= (1 << 26),
-+	ES_FM_CONFIG_ERROR_INFO			= (1 << 25)
-+};
-+
-+static int pma_get_opa_classportinfo(struct opa_pma_mad *pmp,
-+				     struct ib_device *ibdev, u32 *resp_len)
-+{
-+	struct opa_class_port_info *p =
-+		(struct opa_class_port_info *)pmp->data;
-+
-+	memset(pmp->data, 0, sizeof(pmp->data));
-+
-+	if (pmp->mad_hdr.attr_mod != 0)
-+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
-+
-+	p->base_version = OPA_MGMT_BASE_VERSION;
-+	p->class_version = OPA_SM_CLASS_VERSION;
-+	/*
-+	 * Expected response time is 4.096 usec. * 2^18 == 1.073741824 sec.
-+	 */
-+	p->cap_mask2_resp_time = cpu_to_be32(18);
-+
-+	if (resp_len)
-+		*resp_len += sizeof(*p);
-+
-+	return reply((struct ib_mad_hdr *)pmp);
-+}
-+
-+static void a0_portstatus(struct hfi2_pportdata *ppd,
-+			  struct opa_port_status_rsp *rsp)
-+{
-+	if (!is_bx(ppd->dd)) {
-+		unsigned long vl;
-+		u64 sum_vl_xmit_wait = 0;
-+		unsigned long vl_all_mask = VL_MASK_ALL;
-+
-+		for_each_set_bit(vl, &vl_all_mask, BITS_PER_LONG) {
-+			u64 tmp = sum_vl_xmit_wait +
-+				  read_port_cntr(ppd, C_TX_WAIT_VL,
-+						 idx_from_vl(vl));
-+			if (tmp < sum_vl_xmit_wait) {
-+				/* we wrapped */
-+				sum_vl_xmit_wait = (u64)~0;
-+				break;
-+			}
-+			sum_vl_xmit_wait = tmp;
-+		}
-+		if (be64_to_cpu(rsp->port_xmit_wait) > sum_vl_xmit_wait)
-+			rsp->port_xmit_wait = cpu_to_be64(sum_vl_xmit_wait);
-+	}
-+}
-+
-+/**
-+ * tx_link_width - convert link width bitmask to integer
-+ * value representing actual link width.
-+ * @link_width: width of active link
-+ * @return: return index of the bit set in link_width var
-+ *
-+ * The function convert and return the index of bit set
-+ * that indicate the current link width.
-+ */
-+u16 tx_link_width(u16 link_width)
-+{
-+	int n = LINK_WIDTH_DEFAULT;
-+	u16 tx_width = n;
-+
-+	while (link_width && n) {
-+		if (link_width & (1 << (n - 1))) {
-+			tx_width = n;
-+			break;
-+		}
-+		n--;
-+	}
-+
-+	return tx_width;
-+}
-+
-+/**
-+ * get_xmit_wait_counters - Convert HFI 's SendWaitCnt/SendWaitVlCnt
-+ * counter in unit of TXE cycle times to flit times.
-+ * @ppd: info of physical Hfi port
-+ * @link_width: width of active link
-+ * @link_speed: speed of active link
-+ * @vl: represent VL0-VL7, VL15 for PortVLXmitWait counters request
-+ * and if vl value is C_VL_COUNT, it represent SendWaitCnt
-+ * counter request
-+ * @return: return SendWaitCnt/SendWaitVlCnt counter value per vl.
-+ *
-+ * Convert SendWaitCnt/SendWaitVlCnt counter from TXE cycle times to
-+ * flit times. Call this function to samples these counters. This
-+ * function will calculate for previous state transition and update
-+ * current state at end of function using ppd->prev_link_width and
-+ * ppd->port_vl_xmit_wait_last to port_vl_xmit_wait_curr and link_width.
-+ */
-+u64 get_xmit_wait_counters(struct hfi2_pportdata *ppd,
-+			   u16 link_width, u16 link_speed, int vl)
-+{
-+	u64 port_vl_xmit_wait_curr;
-+	u64 delta_vl_xmit_wait;
-+	u64 xmit_wait_val;
-+
-+	if (vl > C_VL_COUNT)
-+		return  0;
-+	if (vl < C_VL_COUNT)
-+		port_vl_xmit_wait_curr =
-+			read_port_cntr(ppd, C_TX_WAIT_VL, vl);
-+	else
-+		port_vl_xmit_wait_curr =
-+			read_port_cntr(ppd, C_TX_WAIT, CNTR_INVALID_VL);
-+
-+	xmit_wait_val =
-+		port_vl_xmit_wait_curr -
-+		ppd->port_vl_xmit_wait_last[vl];
-+	delta_vl_xmit_wait =
-+		convert_xmit_counter(xmit_wait_val,
-+				     ppd->prev_link_width,
-+				     link_speed);
-+
-+	ppd->vl_xmit_flit_cnt[vl] += delta_vl_xmit_wait;
-+	ppd->port_vl_xmit_wait_last[vl] = port_vl_xmit_wait_curr;
-+	ppd->prev_link_width = link_width;
-+
-+	return ppd->vl_xmit_flit_cnt[vl];
-+}
-+
-+static int pma_get_opa_portstatus(struct opa_pma_mad *pmp,
-+				  struct ib_device *ibdev,
-+				  u32 port, u32 *resp_len)
-+{
-+	struct opa_port_status_req *req =
-+		(struct opa_port_status_req *)pmp->data;
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	struct opa_port_status_rsp *rsp;
-+	unsigned long vl_select_mask = be32_to_cpu(req->vl_select_mask);
-+	unsigned long vl;
-+	size_t response_data_size;
-+	u32 nports = be32_to_cpu(pmp->mad_hdr.attr_mod) >> 24;
-+	u32 port_num = req->port_num;
-+	u8 num_vls = hweight64(vl_select_mask);
-+	struct _vls_pctrs *vlinfo;
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(ibp);
-+	int vfi;
-+	u64 tmp, tmp2;
-+	u16 link_width;
-+	u16 link_speed;
-+
-+	response_data_size = struct_size(rsp, vls, num_vls);
-+	if (response_data_size > sizeof(pmp->data)) {
-+		pmp->mad_hdr.status |= OPA_PM_STATUS_REQUEST_TOO_LARGE;
-+		return reply((struct ib_mad_hdr *)pmp);
-+	}
-+
-+	if (nports != 1 || (port_num && port_num != port) ||
-+	    num_vls > OPA_MAX_VLS || (vl_select_mask & ~VL_MASK_ALL)) {
-+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)pmp);
-+	}
-+
-+	memset(pmp->data, 0, sizeof(pmp->data));
-+
-+	rsp = (struct opa_port_status_rsp *)pmp->data;
-+	if (port_num)
-+		rsp->port_num = port_num;
-+	else
-+		rsp->port_num = port;
-+
-+	rsp->port_rcv_constraint_errors =
-+		cpu_to_be64(read_port_cntr(ppd, C_SW_RCV_CSTR_ERR,
-+					   CNTR_INVALID_VL));
-+
-+	dd->params->read_link_quality(ppd, &rsp->link_quality_indicator);
-+
-+	rsp->vl_select_mask = cpu_to_be32((u32)vl_select_mask);
-+	rsp->port_xmit_data = cpu_to_be64(read_dev_cntr(dd, C_DC_XMIT_FLITS,
-+					  CNTR_INVALID_VL));
-+	rsp->port_rcv_data = cpu_to_be64(read_dev_cntr(dd, C_DC_RCV_FLITS,
-+					 CNTR_INVALID_VL));
-+	rsp->port_xmit_pkts = cpu_to_be64(read_dev_cntr(dd, C_DC_XMIT_PKTS,
-+					  CNTR_INVALID_VL));
-+	rsp->port_rcv_pkts = cpu_to_be64(read_dev_cntr(dd, C_DC_RCV_PKTS,
-+					 CNTR_INVALID_VL));
-+	rsp->port_multicast_xmit_pkts =
-+		cpu_to_be64(read_dev_cntr(dd, C_DC_MC_XMIT_PKTS,
-+					  CNTR_INVALID_VL));
-+	rsp->port_multicast_rcv_pkts =
-+		cpu_to_be64(read_dev_cntr(dd, C_DC_MC_RCV_PKTS,
-+					  CNTR_INVALID_VL));
-+	/*
-+	 * Convert PortXmitWait counter from TXE cycle times
-+	 * to flit times.
-+	 */
-+	link_width =
-+		tx_link_width(ppd->link_width_downgrade_tx_active);
-+	link_speed = get_link_speed(ppd->link_speed_active);
-+	rsp->port_xmit_wait =
-+		cpu_to_be64(get_xmit_wait_counters(ppd, link_width,
-+						   link_speed, C_VL_COUNT));
-+	rsp->port_rcv_fecn =
-+		cpu_to_be64(read_dev_cntr(dd, C_DC_RCV_FCN, CNTR_INVALID_VL));
-+	rsp->port_rcv_becn =
-+		cpu_to_be64(read_dev_cntr(dd, C_DC_RCV_BCN, CNTR_INVALID_VL));
-+	rsp->port_xmit_discards =
-+		cpu_to_be64(read_port_cntr(ppd, C_SW_XMIT_DSCD,
-+					   CNTR_INVALID_VL));
-+	rsp->port_xmit_constraint_errors =
-+		cpu_to_be64(read_port_cntr(ppd, C_SW_XMIT_CSTR_ERR,
-+					   CNTR_INVALID_VL));
-+	rsp->port_rcv_remote_physical_errors =
-+		cpu_to_be64(read_dev_cntr(dd, C_DC_RMT_PHY_ERR,
-+					  CNTR_INVALID_VL));
-+	rsp->local_link_integrity_errors =
-+		cpu_to_be64(read_dev_cntr(dd, C_DC_RX_REPLAY,
-+					  CNTR_INVALID_VL));
-+	tmp = read_dev_cntr(dd, C_DC_SEQ_CRC_CNT, CNTR_INVALID_VL);
-+	tmp2 = tmp + read_dev_cntr(dd, C_DC_REINIT_FROM_PEER_CNT,
-+				   CNTR_INVALID_VL);
-+	if (tmp2 > (u32)UINT_MAX || tmp2 < tmp) {
-+		/* overflow/wrapped */
-+		rsp->link_error_recovery = cpu_to_be32(~0);
-+	} else {
-+		rsp->link_error_recovery = cpu_to_be32(tmp2);
-+	}
-+	rsp->port_rcv_errors =
-+		cpu_to_be64(read_dev_cntr(dd, C_DC_RCV_ERR, CNTR_INVALID_VL));
-+	rsp->excessive_buffer_overruns =
-+		cpu_to_be64(read_port_cntr(ppd, C_RCV_OVF, CNTR_INVALID_VL));
-+	rsp->fm_config_errors =
-+		cpu_to_be64(read_dev_cntr(dd, C_DC_FM_CFG_ERR,
-+					  CNTR_INVALID_VL));
-+	rsp->link_downed = cpu_to_be32(read_port_cntr(ppd, C_SW_LINK_DOWN,
-+						      CNTR_INVALID_VL));
-+
-+	/* rsp->uncorrectable_errors is 8 bits wide, and it pegs at 0xff */
-+	tmp = read_dev_cntr(dd, C_DC_UNC_ERR, CNTR_INVALID_VL);
-+	rsp->uncorrectable_errors = tmp < 0x100 ? (tmp & 0xff) : 0xff;
-+
-+	vlinfo = &rsp->vls[0];
-+	vfi = 0;
-+	/* The vl_select_mask has been checked above, and we know
-+	 * that it contains only entries which represent valid VLs.
-+	 * So in the for_each_set_bit() loop below, we don't need
-+	 * any additional checks for vl.
-+	 */
-+	for_each_set_bit(vl, &vl_select_mask, BITS_PER_LONG) {
-+		memset(vlinfo, 0, sizeof(*vlinfo));
-+
-+		tmp = read_dev_cntr(dd, C_DC_RX_FLIT_VL, idx_from_vl(vl));
-+		rsp->vls[vfi].port_vl_rcv_data = cpu_to_be64(tmp);
-+
-+		rsp->vls[vfi].port_vl_rcv_pkts =
-+			cpu_to_be64(read_dev_cntr(dd, C_DC_RX_PKT_VL,
-+						  idx_from_vl(vl)));
-+
-+		rsp->vls[vfi].port_vl_xmit_data =
-+			cpu_to_be64(read_port_cntr(ppd, C_TX_FLIT_VL,
-+						   idx_from_vl(vl)));
-+
-+		rsp->vls[vfi].port_vl_xmit_pkts =
-+			cpu_to_be64(read_port_cntr(ppd, C_TX_PKT_VL,
-+						   idx_from_vl(vl)));
-+		/*
-+		 * Convert PortVlXmitWait counter from TXE cycle
-+		 * times to flit times.
-+		 */
-+		rsp->vls[vfi].port_vl_xmit_wait =
-+			cpu_to_be64(get_xmit_wait_counters(ppd, link_width,
-+							   link_speed,
-+							   idx_from_vl(vl)));
-+
-+		rsp->vls[vfi].port_vl_rcv_fecn =
-+			cpu_to_be64(read_dev_cntr(dd, C_DC_RCV_FCN_VL,
-+						  idx_from_vl(vl)));
-+
-+		rsp->vls[vfi].port_vl_rcv_becn =
-+			cpu_to_be64(read_dev_cntr(dd, C_DC_RCV_BCN_VL,
-+						  idx_from_vl(vl)));
-+
-+		rsp->vls[vfi].port_vl_xmit_discards =
-+			cpu_to_be64(read_port_cntr(ppd, C_SW_XMIT_DSCD_VL,
-+						   idx_from_vl(vl)));
-+		vlinfo++;
-+		vfi++;
-+	}
-+
-+	a0_portstatus(ppd, rsp);
-+
-+	if (resp_len)
-+		*resp_len += response_data_size;
-+
-+	return reply((struct ib_mad_hdr *)pmp);
-+}
-+
-+static u64 get_error_counter_summary(struct ib_device *ibdev, u32 port,
-+				     u8 res_lli, u8 res_ler)
-+{
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(ibp);
-+	u64 error_counter_summary = 0, tmp;
-+
-+	error_counter_summary += read_port_cntr(ppd, C_SW_RCV_CSTR_ERR,
-+						CNTR_INVALID_VL);
-+	/* port_rcv_switch_relay_errors is 0 for HFIs */
-+	error_counter_summary += read_port_cntr(ppd, C_SW_XMIT_DSCD,
-+						CNTR_INVALID_VL);
-+	error_counter_summary += read_port_cntr(ppd, C_SW_XMIT_CSTR_ERR,
-+						CNTR_INVALID_VL);
-+	error_counter_summary += read_dev_cntr(dd, C_DC_RMT_PHY_ERR,
-+					       CNTR_INVALID_VL);
-+	/* local link integrity must be right-shifted by the lli resolution */
-+	error_counter_summary += (read_dev_cntr(dd, C_DC_RX_REPLAY,
-+						CNTR_INVALID_VL) >> res_lli);
-+	/* link error recovery must b right-shifted by the ler resolution */
-+	tmp = read_dev_cntr(dd, C_DC_SEQ_CRC_CNT, CNTR_INVALID_VL);
-+	tmp += read_dev_cntr(dd, C_DC_REINIT_FROM_PEER_CNT, CNTR_INVALID_VL);
-+	error_counter_summary += (tmp >> res_ler);
-+	error_counter_summary += read_dev_cntr(dd, C_DC_RCV_ERR,
-+					       CNTR_INVALID_VL);
-+	error_counter_summary += read_port_cntr(ppd, C_RCV_OVF, CNTR_INVALID_VL);
-+	error_counter_summary += read_dev_cntr(dd, C_DC_FM_CFG_ERR,
-+					       CNTR_INVALID_VL);
-+	/* ppd->link_downed is a 32-bit value */
-+	error_counter_summary += read_port_cntr(ppd, C_SW_LINK_DOWN,
-+						CNTR_INVALID_VL);
-+	tmp = read_dev_cntr(dd, C_DC_UNC_ERR, CNTR_INVALID_VL);
-+	/* this is an 8-bit quantity */
-+	error_counter_summary += tmp < 0x100 ? (tmp & 0xff) : 0xff;
-+
-+	return error_counter_summary;
-+}
-+
-+static void a0_datacounters(struct hfi2_pportdata *ppd, struct _port_dctrs *rsp)
-+{
-+	if (!is_bx(ppd->dd)) {
-+		unsigned long vl;
-+		u64 sum_vl_xmit_wait = 0;
-+		unsigned long vl_all_mask = VL_MASK_ALL;
-+
-+		for_each_set_bit(vl, &vl_all_mask, BITS_PER_LONG) {
-+			u64 tmp = sum_vl_xmit_wait +
-+				  read_port_cntr(ppd, C_TX_WAIT_VL,
-+						 idx_from_vl(vl));
-+			if (tmp < sum_vl_xmit_wait) {
-+				/* we wrapped */
-+				sum_vl_xmit_wait = (u64)~0;
-+				break;
-+			}
-+			sum_vl_xmit_wait = tmp;
-+		}
-+		if (be64_to_cpu(rsp->port_xmit_wait) > sum_vl_xmit_wait)
-+			rsp->port_xmit_wait = cpu_to_be64(sum_vl_xmit_wait);
-+	}
-+}
-+
-+static void pma_get_opa_port_dctrs(struct ib_device *ibdev,
-+				   struct _port_dctrs *rsp)
-+{
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+
-+	rsp->port_xmit_data = cpu_to_be64(read_dev_cntr(dd, C_DC_XMIT_FLITS,
-+						CNTR_INVALID_VL));
-+	rsp->port_rcv_data = cpu_to_be64(read_dev_cntr(dd, C_DC_RCV_FLITS,
-+						CNTR_INVALID_VL));
-+	rsp->port_xmit_pkts = cpu_to_be64(read_dev_cntr(dd, C_DC_XMIT_PKTS,
-+						CNTR_INVALID_VL));
-+	rsp->port_rcv_pkts = cpu_to_be64(read_dev_cntr(dd, C_DC_RCV_PKTS,
-+						CNTR_INVALID_VL));
-+	rsp->port_multicast_xmit_pkts =
-+		cpu_to_be64(read_dev_cntr(dd, C_DC_MC_XMIT_PKTS,
-+					  CNTR_INVALID_VL));
-+	rsp->port_multicast_rcv_pkts =
-+		cpu_to_be64(read_dev_cntr(dd, C_DC_MC_RCV_PKTS,
-+					  CNTR_INVALID_VL));
-+}
-+
-+static int pma_get_opa_datacounters(struct opa_pma_mad *pmp,
-+				    struct ib_device *ibdev,
-+				    u32 port, u32 *resp_len)
-+{
-+	struct opa_port_data_counters_msg *req =
-+		(struct opa_port_data_counters_msg *)pmp->data;
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(ibp);
-+	struct _port_dctrs *rsp;
-+	struct _vls_dctrs *vlinfo;
-+	size_t response_data_size;
-+	u32 num_ports;
-+	u8 lq, num_vls;
-+	u8 res_lli, res_ler;
-+	u64 port_mask;
-+	u32 port_num;
-+	unsigned long vl;
-+	unsigned long vl_select_mask;
-+	int vfi;
-+	u16 link_width;
-+	u16 link_speed;
-+
-+	num_ports = be32_to_cpu(pmp->mad_hdr.attr_mod) >> 24;
-+	num_vls = hweight32(be32_to_cpu(req->vl_select_mask));
-+	vl_select_mask = be32_to_cpu(req->vl_select_mask);
-+	res_lli = (u8)(be32_to_cpu(req->resolution) & MSK_LLI) >> MSK_LLI_SFT;
-+	res_lli = res_lli ? res_lli + ADD_LLI : 0;
-+	res_ler = (u8)(be32_to_cpu(req->resolution) & MSK_LER) >> MSK_LER_SFT;
-+	res_ler = res_ler ? res_ler + ADD_LER : 0;
-+
-+	if (num_ports != 1 || (vl_select_mask & ~VL_MASK_ALL)) {
-+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)pmp);
-+	}
-+
-+	/* Sanity check */
-+	response_data_size = struct_size(req, port.vls, num_vls);
-+
-+	if (response_data_size > sizeof(pmp->data)) {
-+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)pmp);
-+	}
-+
-+	/*
-+	 * The bit set in the mask needs to be consistent with the
-+	 * port the request came in on.
-+	 */
-+	port_mask = be64_to_cpu(req->port_select_mask[3]);
-+	port_num = find_first_bit((unsigned long *)&port_mask,
-+				  sizeof(port_mask) * 8);
-+
-+	if (port_num != port) {
-+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)pmp);
-+	}
-+
-+	rsp = &req->port;
-+	memset(rsp, 0, sizeof(*rsp));
-+
-+	rsp->port_number = port;
-+	/*
-+	 * Note that link_quality_indicator is a 32 bit quantity in
-+	 * 'datacounters' queries (as opposed to 'portinfo' queries,
-+	 * where it's a byte).
-+	 */
-+	dd->params->read_link_quality(ppd, &lq);
-+	rsp->link_quality_indicator = cpu_to_be32((u32)lq);
-+	pma_get_opa_port_dctrs(ibdev, rsp);
-+
-+	/*
-+	 * Convert PortXmitWait counter from TXE
-+	 * cycle times to flit times.
-+	 */
-+	link_width =
-+		tx_link_width(ppd->link_width_downgrade_tx_active);
-+	link_speed = get_link_speed(ppd->link_speed_active);
-+	rsp->port_xmit_wait =
-+		cpu_to_be64(get_xmit_wait_counters(ppd, link_width,
-+						   link_speed, C_VL_COUNT));
-+	rsp->port_rcv_fecn =
-+		cpu_to_be64(read_dev_cntr(dd, C_DC_RCV_FCN, CNTR_INVALID_VL));
-+	rsp->port_rcv_becn =
-+		cpu_to_be64(read_dev_cntr(dd, C_DC_RCV_BCN, CNTR_INVALID_VL));
-+	rsp->port_error_counter_summary =
-+		cpu_to_be64(get_error_counter_summary(ibdev, port,
-+						      res_lli, res_ler));
-+
-+	vlinfo = &rsp->vls[0];
-+	vfi = 0;
-+	/* The vl_select_mask has been checked above, and we know
-+	 * that it contains only entries which represent valid VLs.
-+	 * So in the for_each_set_bit() loop below, we don't need
-+	 * any additional checks for vl.
-+	 */
-+	for_each_set_bit(vl, &vl_select_mask, BITS_PER_LONG) {
-+		memset(vlinfo, 0, sizeof(*vlinfo));
-+
-+		rsp->vls[vfi].port_vl_xmit_data =
-+			cpu_to_be64(read_port_cntr(ppd, C_TX_FLIT_VL,
-+						   idx_from_vl(vl)));
-+
-+		rsp->vls[vfi].port_vl_rcv_data =
-+			cpu_to_be64(read_dev_cntr(dd, C_DC_RX_FLIT_VL,
-+						  idx_from_vl(vl)));
-+
-+		rsp->vls[vfi].port_vl_xmit_pkts =
-+			cpu_to_be64(read_port_cntr(ppd, C_TX_PKT_VL,
-+						   idx_from_vl(vl)));
-+
-+		rsp->vls[vfi].port_vl_rcv_pkts =
-+			cpu_to_be64(read_dev_cntr(dd, C_DC_RX_PKT_VL,
-+						  idx_from_vl(vl)));
-+
-+		/*
-+		 * Convert PortVlXmitWait counter from TXE
-+		 * cycle times to flit times.
-+		 */
-+		rsp->vls[vfi].port_vl_xmit_wait =
-+			cpu_to_be64(get_xmit_wait_counters(ppd, link_width,
-+							   link_speed,
-+							   idx_from_vl(vl)));
-+
-+		rsp->vls[vfi].port_vl_rcv_fecn =
-+			cpu_to_be64(read_dev_cntr(dd, C_DC_RCV_FCN_VL,
-+						  idx_from_vl(vl)));
-+		rsp->vls[vfi].port_vl_rcv_becn =
-+			cpu_to_be64(read_dev_cntr(dd, C_DC_RCV_BCN_VL,
-+						  idx_from_vl(vl)));
-+
-+		/* rsp->port_vl_xmit_time_cong is 0 for HFIs */
-+		/* rsp->port_vl_xmit_wasted_bw ??? */
-+		/* port_vl_xmit_wait_data - TXE (table 13-9 HFI spec) ???
-+		 * does this differ from rsp->vls[vfi].port_vl_xmit_wait
-+		 */
-+		/*rsp->vls[vfi].port_vl_mark_fecn =
-+		 *	cpu_to_be64(read_csr(dd, DCC_PRF_PORT_VL_MARK_FECN_CNT
-+		 *		+ offset));
-+		 */
-+		vlinfo++;
-+		vfi++;
-+	}
-+
-+	a0_datacounters(ppd, rsp);
-+
-+	if (resp_len)
-+		*resp_len += response_data_size;
-+
-+	return reply((struct ib_mad_hdr *)pmp);
-+}
-+
-+static int pma_get_ib_portcounters_ext(struct ib_pma_mad *pmp,
-+				       struct ib_device *ibdev, u32 port)
-+{
-+	struct ib_pma_portcounters_ext *p = (struct ib_pma_portcounters_ext *)
-+						pmp->data;
-+	struct _port_dctrs rsp;
-+
-+	if (pmp->mad_hdr.attr_mod != 0 || p->port_select != port) {
-+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
-+		goto bail;
-+	}
-+
-+	memset(&rsp, 0, sizeof(rsp));
-+	pma_get_opa_port_dctrs(ibdev, &rsp);
-+
-+	p->port_xmit_data = rsp.port_xmit_data;
-+	p->port_rcv_data = rsp.port_rcv_data;
-+	p->port_xmit_packets = rsp.port_xmit_pkts;
-+	p->port_rcv_packets = rsp.port_rcv_pkts;
-+	p->port_unicast_xmit_packets = 0;
-+	p->port_unicast_rcv_packets =  0;
-+	p->port_multicast_xmit_packets = rsp.port_multicast_xmit_pkts;
-+	p->port_multicast_rcv_packets = rsp.port_multicast_rcv_pkts;
-+
-+bail:
-+	return reply((struct ib_mad_hdr *)pmp);
-+}
-+
-+static void pma_get_opa_port_ectrs(struct ib_device *ibdev,
-+				   struct _port_ectrs *rsp, u32 port)
-+{
-+	u64 tmp, tmp2;
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(ibp);
-+
-+	tmp = read_dev_cntr(dd, C_DC_SEQ_CRC_CNT, CNTR_INVALID_VL);
-+	tmp2 = tmp + read_dev_cntr(dd, C_DC_REINIT_FROM_PEER_CNT,
-+					CNTR_INVALID_VL);
-+	if (tmp2 > (u32)UINT_MAX || tmp2 < tmp) {
-+		/* overflow/wrapped */
-+		rsp->link_error_recovery = cpu_to_be32(~0);
-+	} else {
-+		rsp->link_error_recovery = cpu_to_be32(tmp2);
-+	}
-+
-+	rsp->link_downed = cpu_to_be32(read_port_cntr(ppd, C_SW_LINK_DOWN,
-+						CNTR_INVALID_VL));
-+	rsp->port_rcv_errors =
-+		cpu_to_be64(read_dev_cntr(dd, C_DC_RCV_ERR, CNTR_INVALID_VL));
-+	rsp->port_rcv_remote_physical_errors =
-+		cpu_to_be64(read_dev_cntr(dd, C_DC_RMT_PHY_ERR,
-+					  CNTR_INVALID_VL));
-+	rsp->port_rcv_switch_relay_errors = 0;
-+	rsp->port_xmit_discards =
-+		cpu_to_be64(read_port_cntr(ppd, C_SW_XMIT_DSCD,
-+					   CNTR_INVALID_VL));
-+	rsp->port_xmit_constraint_errors =
-+		cpu_to_be64(read_port_cntr(ppd, C_SW_XMIT_CSTR_ERR,
-+					   CNTR_INVALID_VL));
-+	rsp->port_rcv_constraint_errors =
-+		cpu_to_be64(read_port_cntr(ppd, C_SW_RCV_CSTR_ERR,
-+					   CNTR_INVALID_VL));
-+	rsp->local_link_integrity_errors =
-+		cpu_to_be64(read_dev_cntr(dd, C_DC_RX_REPLAY,
-+					  CNTR_INVALID_VL));
-+	rsp->excessive_buffer_overruns =
-+		cpu_to_be64(read_port_cntr(ppd, C_RCV_OVF, CNTR_INVALID_VL));
-+}
-+
-+static int pma_get_opa_porterrors(struct opa_pma_mad *pmp,
-+				  struct ib_device *ibdev,
-+				  u32 port, u32 *resp_len)
-+{
-+	size_t response_data_size;
-+	struct _port_ectrs *rsp;
-+	u32 port_num;
-+	struct opa_port_error_counters64_msg *req;
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	u32 num_ports;
-+	u8 num_pslm;
-+	u8 num_vls;
-+	struct hfi2_ibport *ibp;
-+	struct hfi2_pportdata *ppd;
-+	struct _vls_ectrs *vlinfo;
-+	unsigned long vl;
-+	u64 port_mask, tmp;
-+	unsigned long vl_select_mask;
-+	int vfi;
-+
-+	req = (struct opa_port_error_counters64_msg *)pmp->data;
-+
-+	num_ports = be32_to_cpu(pmp->mad_hdr.attr_mod) >> 24;
-+
-+	num_pslm = hweight64(be64_to_cpu(req->port_select_mask[3]));
-+	num_vls = hweight32(be32_to_cpu(req->vl_select_mask));
-+
-+	if (num_ports != 1 || num_ports != num_pslm) {
-+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)pmp);
-+	}
-+
-+	response_data_size = struct_size(req, port.vls, num_vls);
-+
-+	if (response_data_size > sizeof(pmp->data)) {
-+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)pmp);
-+	}
-+	/*
-+	 * The bit set in the mask needs to be consistent with the
-+	 * port the request came in on.
-+	 */
-+	port_mask = be64_to_cpu(req->port_select_mask[3]);
-+	port_num = find_first_bit((unsigned long *)&port_mask,
-+				  sizeof(port_mask) * 8);
-+
-+	if (port_num != port) {
-+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)pmp);
-+	}
-+
-+	rsp = &req->port;
-+
-+	ibp = to_iport(ibdev, port_num);
-+	ppd = ppd_from_ibp(ibp);
-+
-+	memset(rsp, 0, sizeof(*rsp));
-+	rsp->port_number = port_num;
-+
-+	pma_get_opa_port_ectrs(ibdev, rsp, port_num);
-+
-+	rsp->port_rcv_remote_physical_errors =
-+		cpu_to_be64(read_dev_cntr(dd, C_DC_RMT_PHY_ERR,
-+					  CNTR_INVALID_VL));
-+	rsp->fm_config_errors =
-+		cpu_to_be64(read_dev_cntr(dd, C_DC_FM_CFG_ERR,
-+					  CNTR_INVALID_VL));
-+	tmp = read_dev_cntr(dd, C_DC_UNC_ERR, CNTR_INVALID_VL);
-+
-+	rsp->uncorrectable_errors = tmp < 0x100 ? (tmp & 0xff) : 0xff;
-+	rsp->port_rcv_errors =
-+		cpu_to_be64(read_dev_cntr(dd, C_DC_RCV_ERR, CNTR_INVALID_VL));
-+	vlinfo = &rsp->vls[0];
-+	vfi = 0;
-+	vl_select_mask = be32_to_cpu(req->vl_select_mask);
-+	for_each_set_bit(vl, &vl_select_mask, BITS_PER_LONG) {
-+		memset(vlinfo, 0, sizeof(*vlinfo));
-+		rsp->vls[vfi].port_vl_xmit_discards =
-+			cpu_to_be64(read_port_cntr(ppd, C_SW_XMIT_DSCD_VL,
-+						   idx_from_vl(vl)));
-+		vlinfo += 1;
-+		vfi++;
-+	}
-+
-+	if (resp_len)
-+		*resp_len += response_data_size;
-+
-+	return reply((struct ib_mad_hdr *)pmp);
-+}
-+
-+static int pma_get_ib_portcounters(struct ib_pma_mad *pmp,
-+				   struct ib_device *ibdev, u32 port)
-+{
-+	struct ib_pma_portcounters *p = (struct ib_pma_portcounters *)
-+		pmp->data;
-+	struct _port_ectrs rsp;
-+	u64 temp_link_overrun_errors;
-+	u64 temp_64;
-+	u32 temp_32;
-+
-+	memset(&rsp, 0, sizeof(rsp));
-+	pma_get_opa_port_ectrs(ibdev, &rsp, port);
-+
-+	if (pmp->mad_hdr.attr_mod != 0 || p->port_select != port) {
-+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
-+		goto bail;
-+	}
-+
-+	p->symbol_error_counter = 0; /* N/A for OPA */
-+
-+	temp_32 = be32_to_cpu(rsp.link_error_recovery);
-+	if (temp_32 > 0xFFUL)
-+		p->link_error_recovery_counter = 0xFF;
-+	else
-+		p->link_error_recovery_counter = (u8)temp_32;
-+
-+	temp_32 = be32_to_cpu(rsp.link_downed);
-+	if (temp_32 > 0xFFUL)
-+		p->link_downed_counter = 0xFF;
-+	else
-+		p->link_downed_counter = (u8)temp_32;
-+
-+	temp_64 = be64_to_cpu(rsp.port_rcv_errors);
-+	if (temp_64 > 0xFFFFUL)
-+		p->port_rcv_errors = cpu_to_be16(0xFFFF);
-+	else
-+		p->port_rcv_errors = cpu_to_be16((u16)temp_64);
-+
-+	temp_64 = be64_to_cpu(rsp.port_rcv_remote_physical_errors);
-+	if (temp_64 > 0xFFFFUL)
-+		p->port_rcv_remphys_errors = cpu_to_be16(0xFFFF);
-+	else
-+		p->port_rcv_remphys_errors = cpu_to_be16((u16)temp_64);
-+
-+	temp_64 = be64_to_cpu(rsp.port_rcv_switch_relay_errors);
-+	p->port_rcv_switch_relay_errors = cpu_to_be16((u16)temp_64);
-+
-+	temp_64 = be64_to_cpu(rsp.port_xmit_discards);
-+	if (temp_64 > 0xFFFFUL)
-+		p->port_xmit_discards = cpu_to_be16(0xFFFF);
-+	else
-+		p->port_xmit_discards = cpu_to_be16((u16)temp_64);
-+
-+	temp_64 = be64_to_cpu(rsp.port_xmit_constraint_errors);
-+	if (temp_64 > 0xFFUL)
-+		p->port_xmit_constraint_errors = 0xFF;
-+	else
-+		p->port_xmit_constraint_errors = (u8)temp_64;
-+
-+	temp_64 = be64_to_cpu(rsp.port_rcv_constraint_errors);
-+	if (temp_64 > 0xFFUL)
-+		p->port_rcv_constraint_errors = 0xFFUL;
-+	else
-+		p->port_rcv_constraint_errors = (u8)temp_64;
-+
-+	/* LocalLink: 7:4, BufferOverrun: 3:0 */
-+	temp_64 = be64_to_cpu(rsp.local_link_integrity_errors);
-+	if (temp_64 > 0xFUL)
-+		temp_64 = 0xFUL;
-+
-+	temp_link_overrun_errors = temp_64 << 4;
-+
-+	temp_64 = be64_to_cpu(rsp.excessive_buffer_overruns);
-+	if (temp_64 > 0xFUL)
-+		temp_64 = 0xFUL;
-+	temp_link_overrun_errors |= temp_64;
-+
-+	p->link_overrun_errors = (u8)temp_link_overrun_errors;
-+
-+	p->vl15_dropped = 0; /* N/A for OPA */
-+
-+bail:
-+	return reply((struct ib_mad_hdr *)pmp);
-+}
-+
-+static int pma_get_opa_errorinfo(struct opa_pma_mad *pmp,
-+				 struct ib_device *ibdev,
-+				 u32 port, u32 *resp_len)
-+{
-+	size_t response_data_size;
-+	struct _port_ei *rsp;
-+	struct opa_port_error_info_msg *req;
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(ibp);
-+	u64 port_mask;
-+	u32 num_ports;
-+	u32 port_num;
-+	u8 num_pslm;
-+	u64 reg;
-+
-+	req = (struct opa_port_error_info_msg *)pmp->data;
-+	rsp = &req->port;
-+
-+	num_ports = OPA_AM_NPORT(be32_to_cpu(pmp->mad_hdr.attr_mod));
-+	num_pslm = hweight64(be64_to_cpu(req->port_select_mask[3]));
-+
-+	memset(rsp, 0, sizeof(*rsp));
-+
-+	if (num_ports != 1 || num_ports != num_pslm) {
-+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)pmp);
-+	}
-+
-+	/* Sanity check */
-+	response_data_size = sizeof(struct opa_port_error_info_msg);
-+
-+	if (response_data_size > sizeof(pmp->data)) {
-+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)pmp);
-+	}
-+
-+	/*
-+	 * The bit set in the mask needs to be consistent with the port
-+	 * the request came in on.
-+	 */
-+	port_mask = be64_to_cpu(req->port_select_mask[3]);
-+	port_num = find_first_bit((unsigned long *)&port_mask,
-+				  sizeof(port_mask) * 8);
-+
-+	if (port_num != port) {
-+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)pmp);
-+	}
-+	rsp->port_number = port;
-+
-+	/* PortRcvErrorInfo */
-+	rsp->port_rcv_ei.status_and_code =
-+		dd->err_info_rcvport.status_and_code;
-+	memcpy(&rsp->port_rcv_ei.ei.ei1to12.packet_flit1,
-+	       &dd->err_info_rcvport.packet_flit1, sizeof(u64));
-+	memcpy(&rsp->port_rcv_ei.ei.ei1to12.packet_flit2,
-+	       &dd->err_info_rcvport.packet_flit2, sizeof(u64));
-+
-+	/* ExcessiverBufferOverrunInfo */
-+	reg = read_iport_csr(dd, ppd->hw_pidx, dd->params->rcv_err_info_reg);
-+	if (reg & RCV_ERR_INFO_RCV_EXCESS_BUFFER_OVERRUN_SMASK) {
-+		/*
-+		 * if the RcvExcessBufferOverrun bit is set, save SC of
-+		 * first pkt that encountered an excess buffer overrun
-+		 */
-+		u8 tmp = (u8)reg;
-+
-+		tmp &=  RCV_ERR_INFO_RCV_EXCESS_BUFFER_OVERRUN_SC_SMASK;
-+		tmp <<= 2;
-+		rsp->excessive_buffer_overrun_ei.status_and_sc = tmp;
-+		/* set the status bit */
-+		rsp->excessive_buffer_overrun_ei.status_and_sc |= 0x80;
-+	}
-+
-+	rsp->port_xmit_constraint_ei.status =
-+		dd->err_info_xmit_constraint.status;
-+	rsp->port_xmit_constraint_ei.pkey =
-+		cpu_to_be16(dd->err_info_xmit_constraint.pkey);
-+	rsp->port_xmit_constraint_ei.slid =
-+		cpu_to_be32(dd->err_info_xmit_constraint.slid);
-+
-+	rsp->port_rcv_constraint_ei.status =
-+		dd->err_info_rcv_constraint.status;
-+	rsp->port_rcv_constraint_ei.pkey =
-+		cpu_to_be16(dd->err_info_rcv_constraint.pkey);
-+	rsp->port_rcv_constraint_ei.slid =
-+		cpu_to_be32(dd->err_info_rcv_constraint.slid);
-+
-+	/* UncorrectableErrorInfo */
-+	rsp->uncorrectable_ei.status_and_code = dd->err_info_uncorrectable;
-+
-+	/* FMConfigErrorInfo */
-+	rsp->fm_config_ei.status_and_code = dd->err_info_fmconfig;
-+
-+	if (resp_len)
-+		*resp_len += response_data_size;
-+
-+	return reply((struct ib_mad_hdr *)pmp);
-+}
-+
-+static int pma_set_opa_portstatus(struct opa_pma_mad *pmp,
-+				  struct ib_device *ibdev,
-+				  u32 port, u32 *resp_len)
-+{
-+	struct opa_clear_port_status *req =
-+		(struct opa_clear_port_status *)pmp->data;
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(ibp);
-+	u32 nports = be32_to_cpu(pmp->mad_hdr.attr_mod) >> 24;
-+	u64 portn = be64_to_cpu(req->port_select_mask[3]);
-+	u32 counter_select = be32_to_cpu(req->counter_select_mask);
-+	unsigned long vl_select_mask = VL_MASK_ALL; /* clear all per-vl cnts */
-+	unsigned long vl;
-+
-+	if ((nports != 1) || (portn != 1 << port)) {
-+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)pmp);
-+	}
-+	/*
-+	 * only counters returned by pma_get_opa_portstatus() are
-+	 * handled, so when pma_get_opa_portstatus() gets a fix,
-+	 * the corresponding change should be made here as well.
-+	 */
-+
-+	if (counter_select & CS_PORT_XMIT_DATA)
-+		write_dev_cntr(dd, C_DC_XMIT_FLITS, CNTR_INVALID_VL, 0);
-+
-+	if (counter_select & CS_PORT_RCV_DATA)
-+		write_dev_cntr(dd, C_DC_RCV_FLITS, CNTR_INVALID_VL, 0);
-+
-+	if (counter_select & CS_PORT_XMIT_PKTS)
-+		write_dev_cntr(dd, C_DC_XMIT_PKTS, CNTR_INVALID_VL, 0);
-+
-+	if (counter_select & CS_PORT_RCV_PKTS)
-+		write_dev_cntr(dd, C_DC_RCV_PKTS, CNTR_INVALID_VL, 0);
-+
-+	if (counter_select & CS_PORT_MCAST_XMIT_PKTS)
-+		write_dev_cntr(dd, C_DC_MC_XMIT_PKTS, CNTR_INVALID_VL, 0);
-+
-+	if (counter_select & CS_PORT_MCAST_RCV_PKTS)
-+		write_dev_cntr(dd, C_DC_MC_RCV_PKTS, CNTR_INVALID_VL, 0);
-+
-+	if (counter_select & CS_PORT_XMIT_WAIT) {
-+		write_port_cntr(ppd, C_TX_WAIT, CNTR_INVALID_VL, 0);
-+		ppd->port_vl_xmit_wait_last[C_VL_COUNT] = 0;
-+		ppd->vl_xmit_flit_cnt[C_VL_COUNT] = 0;
-+	}
-+	/* ignore cs_sw_portCongestion for HFIs */
-+
-+	if (counter_select & CS_PORT_RCV_FECN)
-+		write_dev_cntr(dd, C_DC_RCV_FCN, CNTR_INVALID_VL, 0);
-+
-+	if (counter_select & CS_PORT_RCV_BECN)
-+		write_dev_cntr(dd, C_DC_RCV_BCN, CNTR_INVALID_VL, 0);
-+
-+	/* ignore cs_port_xmit_time_cong for HFIs */
-+	/* ignore cs_port_xmit_wasted_bw for now */
-+	/* ignore cs_port_xmit_wait_data for now */
-+	if (counter_select & CS_PORT_RCV_BUBBLE)
-+		write_dev_cntr(dd, C_DC_RCV_BBL, CNTR_INVALID_VL, 0);
-+
-+	/* Only applicable for switch */
-+	/* if (counter_select & CS_PORT_MARK_FECN)
-+	 *	write_csr(dd, DCC_PRF_PORT_MARK_FECN_CNT, 0);
-+	 */
-+
-+	if (counter_select & CS_PORT_RCV_CONSTRAINT_ERRORS)
-+		write_port_cntr(ppd, C_SW_RCV_CSTR_ERR, CNTR_INVALID_VL, 0);
-+
-+	/* ignore cs_port_rcv_switch_relay_errors for HFIs */
-+	if (counter_select & CS_PORT_XMIT_DISCARDS)
-+		write_port_cntr(ppd, C_SW_XMIT_DSCD, CNTR_INVALID_VL, 0);
-+
-+	if (counter_select & CS_PORT_XMIT_CONSTRAINT_ERRORS)
-+		write_port_cntr(ppd, C_SW_XMIT_CSTR_ERR, CNTR_INVALID_VL, 0);
-+
-+	if (counter_select & CS_PORT_RCV_REMOTE_PHYSICAL_ERRORS)
-+		write_dev_cntr(dd, C_DC_RMT_PHY_ERR, CNTR_INVALID_VL, 0);
-+
-+	if (counter_select & CS_LOCAL_LINK_INTEGRITY_ERRORS)
-+		write_dev_cntr(dd, C_DC_RX_REPLAY, CNTR_INVALID_VL, 0);
-+
-+	if (counter_select & CS_LINK_ERROR_RECOVERY) {
-+		write_dev_cntr(dd, C_DC_SEQ_CRC_CNT, CNTR_INVALID_VL, 0);
-+		write_dev_cntr(dd, C_DC_REINIT_FROM_PEER_CNT,
-+			       CNTR_INVALID_VL, 0);
-+	}
-+
-+	if (counter_select & CS_PORT_RCV_ERRORS)
-+		write_dev_cntr(dd, C_DC_RCV_ERR, CNTR_INVALID_VL, 0);
-+
-+	if (counter_select & CS_EXCESSIVE_BUFFER_OVERRUNS) {
-+		write_port_cntr(ppd, C_RCV_OVF, CNTR_INVALID_VL, 0);
-+		ppd->rcv_ovfl_cnt = 0;
-+	}
-+
-+	if (counter_select & CS_FM_CONFIG_ERRORS)
-+		write_dev_cntr(dd, C_DC_FM_CFG_ERR, CNTR_INVALID_VL, 0);
-+
-+	if (counter_select & CS_LINK_DOWNED)
-+		write_port_cntr(ppd, C_SW_LINK_DOWN, CNTR_INVALID_VL, 0);
-+
-+	if (counter_select & CS_UNCORRECTABLE_ERRORS)
-+		write_dev_cntr(dd, C_DC_UNC_ERR, CNTR_INVALID_VL, 0);
-+
-+	for_each_set_bit(vl, &vl_select_mask, BITS_PER_LONG) {
-+		if (counter_select & CS_PORT_XMIT_DATA)
-+			write_port_cntr(ppd, C_TX_FLIT_VL, idx_from_vl(vl), 0);
-+
-+		if (counter_select & CS_PORT_RCV_DATA)
-+			write_dev_cntr(dd, C_DC_RX_FLIT_VL, idx_from_vl(vl), 0);
-+
-+		if (counter_select & CS_PORT_XMIT_PKTS)
-+			write_port_cntr(ppd, C_TX_PKT_VL, idx_from_vl(vl), 0);
-+
-+		if (counter_select & CS_PORT_RCV_PKTS)
-+			write_dev_cntr(dd, C_DC_RX_PKT_VL, idx_from_vl(vl), 0);
-+
-+		if (counter_select & CS_PORT_XMIT_WAIT) {
-+			write_port_cntr(ppd, C_TX_WAIT_VL, idx_from_vl(vl), 0);
-+			ppd->port_vl_xmit_wait_last[idx_from_vl(vl)] = 0;
-+			ppd->vl_xmit_flit_cnt[idx_from_vl(vl)] = 0;
-+		}
-+
-+		/* sw_port_vl_congestion is 0 for HFIs */
-+		if (counter_select & CS_PORT_RCV_FECN)
-+			write_dev_cntr(dd, C_DC_RCV_FCN_VL, idx_from_vl(vl), 0);
-+
-+		if (counter_select & CS_PORT_RCV_BECN)
-+			write_dev_cntr(dd, C_DC_RCV_BCN_VL, idx_from_vl(vl), 0);
-+
-+		/* port_vl_xmit_time_cong is 0 for HFIs */
-+		/* port_vl_xmit_wasted_bw ??? */
-+		/* port_vl_xmit_wait_data - TXE (table 13-9 HFI spec) ??? */
-+		if (counter_select & CS_PORT_RCV_BUBBLE)
-+			write_dev_cntr(dd, C_DC_RCV_BBL_VL, idx_from_vl(vl), 0);
-+
-+		/* if (counter_select & CS_PORT_MARK_FECN)
-+		 *     write_csr(dd, DCC_PRF_PORT_VL_MARK_FECN_CNT + offset, 0);
-+		 */
-+		if (counter_select & C_SW_XMIT_DSCD_VL)
-+			write_port_cntr(ppd, C_SW_XMIT_DSCD_VL,
-+					idx_from_vl(vl), 0);
-+	}
-+
-+	if (resp_len)
-+		*resp_len += sizeof(*req);
-+
-+	return reply((struct ib_mad_hdr *)pmp);
-+}
-+
-+static int pma_set_opa_errorinfo(struct opa_pma_mad *pmp,
-+				 struct ib_device *ibdev,
-+				 u32 port, u32 *resp_len)
-+{
-+	struct _port_ei *rsp;
-+	struct opa_port_error_info_msg *req;
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(ibp);
-+	u64 port_mask;
-+	u32 num_ports;
-+	u32 port_num;
-+	u8 num_pslm;
-+	u32 error_info_select;
-+
-+	req = (struct opa_port_error_info_msg *)pmp->data;
-+	rsp = &req->port;
-+
-+	num_ports = OPA_AM_NPORT(be32_to_cpu(pmp->mad_hdr.attr_mod));
-+	num_pslm = hweight64(be64_to_cpu(req->port_select_mask[3]));
-+
-+	memset(rsp, 0, sizeof(*rsp));
-+
-+	if (num_ports != 1 || num_ports != num_pslm) {
-+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)pmp);
-+	}
-+
-+	/*
-+	 * The bit set in the mask needs to be consistent with the port
-+	 * the request came in on.
-+	 */
-+	port_mask = be64_to_cpu(req->port_select_mask[3]);
-+	port_num = find_first_bit((unsigned long *)&port_mask,
-+				  sizeof(port_mask) * 8);
-+
-+	if (port_num != port) {
-+		pmp->mad_hdr.status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)pmp);
-+	}
-+
-+	error_info_select = be32_to_cpu(req->error_info_select_mask);
-+
-+	/* PortRcvErrorInfo */
-+	if (error_info_select & ES_PORT_RCV_ERROR_INFO)
-+		/* turn off status bit */
-+		dd->err_info_rcvport.status_and_code &= ~OPA_EI_STATUS_SMASK;
-+
-+	/* ExcessiverBufferOverrunInfo */
-+	if (error_info_select & ES_EXCESSIVE_BUFFER_OVERRUN_INFO)
-+		/*
-+		 * status bit is essentially kept in the h/w - bit 5 of
-+		 * RCV_ERR_INFO
-+		 */
-+		write_iport_csr(dd, ppd->hw_pidx, dd->params->rcv_err_info_reg,
-+				RCV_ERR_INFO_RCV_EXCESS_BUFFER_OVERRUN_SMASK);
-+
-+	if (error_info_select & ES_PORT_XMIT_CONSTRAINT_ERROR_INFO)
-+		dd->err_info_xmit_constraint.status &= ~OPA_EI_STATUS_SMASK;
-+
-+	if (error_info_select & ES_PORT_RCV_CONSTRAINT_ERROR_INFO)
-+		dd->err_info_rcv_constraint.status &= ~OPA_EI_STATUS_SMASK;
-+
-+	/* UncorrectableErrorInfo */
-+	if (error_info_select & ES_UNCORRECTABLE_ERROR_INFO)
-+		/* turn off status bit */
-+		dd->err_info_uncorrectable &= ~OPA_EI_STATUS_SMASK;
-+
-+	/* FMConfigErrorInfo */
-+	if (error_info_select & ES_FM_CONFIG_ERROR_INFO)
-+		/* turn off status bit */
-+		dd->err_info_fmconfig &= ~OPA_EI_STATUS_SMASK;
-+
-+	if (resp_len)
-+		*resp_len += sizeof(*req);
-+
-+	return reply((struct ib_mad_hdr *)pmp);
-+}
-+
-+struct opa_congestion_info_attr {
-+	__be16 congestion_info;
-+	u8 control_table_cap;	/* Multiple of 64 entry unit CCTs */
-+	u8 congestion_log_length;
-+} __packed;
-+
-+static int __subn_get_opa_cong_info(struct opa_smp *smp, u32 am, u8 *data,
-+				    struct ib_device *ibdev, u32 port,
-+				    u32 *resp_len, u32 max_len)
-+{
-+	struct opa_congestion_info_attr *p =
-+		(struct opa_congestion_info_attr *)data;
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(ibp);
-+
-+	if (smp_length_check(sizeof(*p), max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	p->congestion_info = 0;
-+	p->control_table_cap = ppd->cc_max_table_entries;
-+	p->congestion_log_length = OPA_CONG_LOG_ELEMS;
-+
-+	if (resp_len)
-+		*resp_len += sizeof(*p);
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+static int __subn_get_opa_cong_setting(struct opa_smp *smp, u32 am,
-+				       u8 *data, struct ib_device *ibdev,
-+				       u32 port, u32 *resp_len, u32 max_len)
-+{
-+	int i;
-+	struct opa_congestion_setting_attr *p =
-+		(struct opa_congestion_setting_attr *)data;
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(ibp);
-+	struct opa_congestion_setting_entry_shadow *entries;
-+	struct cc_state *cc_state;
-+
-+	if (smp_length_check(sizeof(*p), max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	rcu_read_lock();
-+
-+	cc_state = get_cc_state(ppd);
-+
-+	if (!cc_state) {
-+		rcu_read_unlock();
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	entries = cc_state->cong_setting.entries;
-+	p->port_control = cpu_to_be16(cc_state->cong_setting.port_control);
-+	p->control_map = cpu_to_be32(cc_state->cong_setting.control_map);
-+	for (i = 0; i < OPA_MAX_SLS; i++) {
-+		p->entries[i].ccti_increase = entries[i].ccti_increase;
-+		p->entries[i].ccti_timer = cpu_to_be16(entries[i].ccti_timer);
-+		p->entries[i].trigger_threshold =
-+			entries[i].trigger_threshold;
-+		p->entries[i].ccti_min = entries[i].ccti_min;
-+	}
-+
-+	rcu_read_unlock();
-+
-+	if (resp_len)
-+		*resp_len += sizeof(*p);
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+/*
-+ * Apply congestion control information stored in the ppd to the
-+ * active structure.
-+ */
-+static void apply_cc_state(struct hfi2_pportdata *ppd)
-+{
-+	struct cc_state *old_cc_state, *new_cc_state;
-+
-+	new_cc_state = kzalloc(sizeof(*new_cc_state), GFP_KERNEL);
-+	if (!new_cc_state)
-+		return;
-+
-+	/*
-+	 * Hold the lock for updating *and* to prevent ppd information
-+	 * from changing during the update.
-+	 */
-+	spin_lock(&ppd->cc_state_lock);
-+
-+	old_cc_state = get_cc_state_protected(ppd);
-+	if (!old_cc_state) {
-+		/* never active, or shutting down */
-+		spin_unlock(&ppd->cc_state_lock);
-+		kfree(new_cc_state);
-+		return;
-+	}
-+
-+	*new_cc_state = *old_cc_state;
-+
-+	if (ppd->total_cct_entry)
-+		new_cc_state->cct.ccti_limit = ppd->total_cct_entry - 1;
-+	else
-+		new_cc_state->cct.ccti_limit = 0;
-+
-+	memcpy(new_cc_state->cct.entries, ppd->ccti_entries,
-+	       ppd->total_cct_entry * sizeof(struct ib_cc_table_entry));
-+
-+	new_cc_state->cong_setting.port_control = IB_CC_CCS_PC_SL_BASED;
-+	new_cc_state->cong_setting.control_map = ppd->cc_sl_control_map;
-+	memcpy(new_cc_state->cong_setting.entries, ppd->congestion_entries,
-+	       OPA_MAX_SLS * sizeof(struct opa_congestion_setting_entry));
-+
-+	rcu_assign_pointer(ppd->cc_state, new_cc_state);
-+
-+	spin_unlock(&ppd->cc_state_lock);
-+
-+	kfree_rcu(old_cc_state, rcu);
-+}
-+
-+static int __subn_set_opa_cong_setting(struct opa_smp *smp, u32 am, u8 *data,
-+				       struct ib_device *ibdev, u32 port,
-+				       u32 *resp_len, u32 max_len)
-+{
-+	struct opa_congestion_setting_attr *p =
-+		(struct opa_congestion_setting_attr *)data;
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(ibp);
-+	struct opa_congestion_setting_entry_shadow *entries;
-+	int i;
-+
-+	if (smp_length_check(sizeof(*p), max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	/*
-+	 * Save details from packet into the ppd.  Hold the cc_state_lock so
-+	 * our information is consistent with anyone trying to apply the state.
-+	 */
-+	spin_lock(&ppd->cc_state_lock);
-+	ppd->cc_sl_control_map = be32_to_cpu(p->control_map);
-+
-+	entries = ppd->congestion_entries;
-+	for (i = 0; i < OPA_MAX_SLS; i++) {
-+		entries[i].ccti_increase = p->entries[i].ccti_increase;
-+		entries[i].ccti_timer = be16_to_cpu(p->entries[i].ccti_timer);
-+		entries[i].trigger_threshold =
-+			p->entries[i].trigger_threshold;
-+		entries[i].ccti_min = p->entries[i].ccti_min;
-+	}
-+	spin_unlock(&ppd->cc_state_lock);
-+
-+	/* now apply the information */
-+	apply_cc_state(ppd);
-+
-+	return __subn_get_opa_cong_setting(smp, am, data, ibdev, port,
-+					   resp_len, max_len);
-+}
-+
-+static int __subn_get_opa_hfi2_cong_log(struct opa_smp *smp, u32 am,
-+					u8 *data, struct ib_device *ibdev,
-+					u32 port, u32 *resp_len, u32 max_len)
-+{
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(ibp);
-+	struct opa_hfi2_cong_log *cong_log = (struct opa_hfi2_cong_log *)data;
-+	u64 ts;
-+	int i;
-+
-+	if (am || smp_length_check(sizeof(*cong_log), max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	spin_lock_irq(&ppd->cc_log_lock);
-+
-+	cong_log->log_type = OPA_CC_LOG_TYPE_HFI;
-+	cong_log->congestion_flags = 0;
-+	cong_log->threshold_event_counter =
-+		cpu_to_be16(ppd->threshold_event_counter);
-+	memcpy(cong_log->threshold_cong_event_map,
-+	       ppd->threshold_cong_event_map,
-+	       sizeof(cong_log->threshold_cong_event_map));
-+	/* keep timestamp in units of 1.024 usec */
-+	ts = ktime_get_ns() / 1024;
-+	cong_log->current_time_stamp = cpu_to_be32(ts);
-+	for (i = 0; i < OPA_CONG_LOG_ELEMS; i++) {
-+		struct opa_hfi2_cong_log_event_internal *cce =
-+			&ppd->cc_events[ppd->cc_mad_idx++];
-+		if (ppd->cc_mad_idx == OPA_CONG_LOG_ELEMS)
-+			ppd->cc_mad_idx = 0;
-+		/*
-+		 * Entries which are older than twice the time
-+		 * required to wrap the counter are supposed to
-+		 * be zeroed (CA10-49 IBTA, release 1.2.1, V1).
-+		 */
-+		if ((ts - cce->timestamp) / 2 > U32_MAX)
-+			continue;
-+		memcpy(cong_log->events[i].local_qp_cn_entry, &cce->lqpn, 3);
-+		memcpy(cong_log->events[i].remote_qp_number_cn_entry,
-+		       &cce->rqpn, 3);
-+		cong_log->events[i].sl_svc_type_cn_entry =
-+			((cce->sl & 0x1f) << 3) | (cce->svc_type & 0x7);
-+		cong_log->events[i].remote_lid_cn_entry =
-+			cpu_to_be32(cce->rlid);
-+		cong_log->events[i].timestamp_cn_entry =
-+			cpu_to_be32(cce->timestamp);
-+	}
-+
-+	/*
-+	 * Reset threshold_cong_event_map, and threshold_event_counter
-+	 * to 0 when log is read.
-+	 */
-+	memset(ppd->threshold_cong_event_map, 0x0,
-+	       sizeof(ppd->threshold_cong_event_map));
-+	ppd->threshold_event_counter = 0;
-+
-+	spin_unlock_irq(&ppd->cc_log_lock);
-+
-+	if (resp_len)
-+		*resp_len += sizeof(struct opa_hfi2_cong_log);
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+static int __subn_get_opa_cc_table(struct opa_smp *smp, u32 am, u8 *data,
-+				   struct ib_device *ibdev, u32 port,
-+				   u32 *resp_len, u32 max_len)
-+{
-+	struct ib_cc_table_attr *cc_table_attr =
-+		(struct ib_cc_table_attr *)data;
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(ibp);
-+	u32 start_block = OPA_AM_START_BLK(am);
-+	u32 n_blocks = OPA_AM_NBLK(am);
-+	struct ib_cc_table_entry_shadow *entries;
-+	int i, j;
-+	u32 sentry, eentry;
-+	struct cc_state *cc_state;
-+	u32 size = sizeof(u16) * (IB_CCT_ENTRIES * n_blocks + 1);
-+
-+	/* sanity check n_blocks, start_block */
-+	if (n_blocks == 0 || smp_length_check(size, max_len) ||
-+	    start_block + n_blocks > ppd->cc_max_table_entries) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	rcu_read_lock();
-+
-+	cc_state = get_cc_state(ppd);
-+
-+	if (!cc_state) {
-+		rcu_read_unlock();
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	sentry = start_block * IB_CCT_ENTRIES;
-+	eentry = sentry + (IB_CCT_ENTRIES * n_blocks);
-+
-+	cc_table_attr->ccti_limit = cpu_to_be16(cc_state->cct.ccti_limit);
-+
-+	entries = cc_state->cct.entries;
-+
-+	/* return n_blocks, though the last block may not be full */
-+	for (j = 0, i = sentry; i < eentry; j++, i++)
-+		cc_table_attr->ccti_entries[j].entry =
-+			cpu_to_be16(entries[i].entry);
-+
-+	rcu_read_unlock();
-+
-+	if (resp_len)
-+		*resp_len += size;
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+static int __subn_set_opa_cc_table(struct opa_smp *smp, u32 am, u8 *data,
-+				   struct ib_device *ibdev, u32 port,
-+				   u32 *resp_len, u32 max_len)
-+{
-+	struct ib_cc_table_attr *p = (struct ib_cc_table_attr *)data;
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(ibp);
-+	u32 start_block = OPA_AM_START_BLK(am);
-+	u32 n_blocks = OPA_AM_NBLK(am);
-+	struct ib_cc_table_entry_shadow *entries;
-+	int i, j;
-+	u32 sentry, eentry;
-+	u16 ccti_limit;
-+	u32 size = sizeof(u16) * (IB_CCT_ENTRIES * n_blocks + 1);
-+
-+	/* sanity check n_blocks, start_block */
-+	if (n_blocks == 0 || smp_length_check(size, max_len) ||
-+	    start_block + n_blocks > ppd->cc_max_table_entries) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	sentry = start_block * IB_CCT_ENTRIES;
-+	eentry = sentry + ((n_blocks - 1) * IB_CCT_ENTRIES) +
-+		 (be16_to_cpu(p->ccti_limit)) % IB_CCT_ENTRIES + 1;
-+
-+	/* sanity check ccti_limit */
-+	ccti_limit = be16_to_cpu(p->ccti_limit);
-+	if (ccti_limit + 1 > eentry) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	/*
-+	 * Save details from packet into the ppd.  Hold the cc_state_lock so
-+	 * our information is consistent with anyone trying to apply the state.
-+	 */
-+	spin_lock(&ppd->cc_state_lock);
-+	ppd->total_cct_entry = ccti_limit + 1;
-+	entries = ppd->ccti_entries;
-+	for (j = 0, i = sentry; i < eentry; j++, i++)
-+		entries[i].entry = be16_to_cpu(p->ccti_entries[j].entry);
-+	spin_unlock(&ppd->cc_state_lock);
-+
-+	/* now apply the information */
-+	apply_cc_state(ppd);
-+
-+	return __subn_get_opa_cc_table(smp, am, data, ibdev, port, resp_len,
-+				       max_len);
-+}
-+
-+struct opa_led_info {
-+	__be32 rsvd_led_mask;
-+	__be32 rsvd;
-+};
-+
-+#define OPA_LED_SHIFT	31
-+#define OPA_LED_MASK	BIT(OPA_LED_SHIFT)
-+
-+static int __subn_get_opa_led_info(struct opa_smp *smp, u32 am, u8 *data,
-+				   struct ib_device *ibdev, u32 port,
-+				   u32 *resp_len, u32 max_len)
-+{
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	struct hfi2_pportdata *ppd = &dd->pport[port - 1];
-+	struct opa_led_info *p = (struct opa_led_info *)data;
-+	u32 nport = OPA_AM_NPORT(am);
-+	u32 is_beaconing_active;
-+
-+	if (nport != 1 || smp_length_check(sizeof(*p), max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	/*
-+	 * This pairs with the memory barrier in hfi2_start_led_override to
-+	 * ensure that we read the correct state of LED beaconing represented
-+	 * by led_override_timer_active
-+	 */
-+	smp_rmb();
-+	is_beaconing_active = !!atomic_read(&ppd->led_override_timer_active);
-+	p->rsvd_led_mask = cpu_to_be32(is_beaconing_active << OPA_LED_SHIFT);
-+
-+	if (resp_len)
-+		*resp_len += sizeof(struct opa_led_info);
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+static int __subn_set_opa_led_info(struct opa_smp *smp, u32 am, u8 *data,
-+				   struct ib_device *ibdev, u32 port,
-+				   u32 *resp_len, u32 max_len)
-+{
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	struct hfi2_pportdata *ppd = &dd->pport[port - 1];
-+	struct opa_led_info *p = (struct opa_led_info *)data;
-+	u32 nport = OPA_AM_NPORT(am);
-+	int on = !!(be32_to_cpu(p->rsvd_led_mask) & OPA_LED_MASK);
-+
-+	if (nport != 1 || smp_length_check(sizeof(*p), max_len)) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	if (on)
-+		dd->params->start_led_override(ppd, 2000, 1500);
-+	else
-+		dd->params->shutdown_led_override(ppd);
-+
-+	return __subn_get_opa_led_info(smp, am, data, ibdev, port, resp_len,
-+				       max_len);
-+}
-+
-+static int subn_get_opa_sma(__be16 attr_id, struct opa_smp *smp, u32 am,
-+			    u8 *data, struct ib_device *ibdev, u32 port,
-+			    u32 *resp_len, u32 max_len)
-+{
-+	int ret;
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+
-+	switch (attr_id) {
-+	case IB_SMP_ATTR_NODE_DESC:
-+		ret = __subn_get_opa_nodedesc(smp, am, data, ibdev, port,
-+					      resp_len, max_len);
-+		break;
-+	case IB_SMP_ATTR_NODE_INFO:
-+		ret = __subn_get_opa_nodeinfo(smp, am, data, ibdev, port,
-+					      resp_len, max_len);
-+		break;
-+	case IB_SMP_ATTR_PORT_INFO:
-+		ret = __subn_get_opa_portinfo(smp, am, data, ibdev, port,
-+					      resp_len, max_len);
-+		break;
-+	case IB_SMP_ATTR_PKEY_TABLE:
-+		ret = __subn_get_opa_pkeytable(smp, am, data, ibdev, port,
-+					       resp_len, max_len);
-+		break;
-+	case OPA_ATTRIB_ID_SL_TO_SC_MAP:
-+		ret = __subn_get_opa_sl_to_sc(smp, am, data, ibdev, port,
-+					      resp_len, max_len);
-+		break;
-+	case OPA_ATTRIB_ID_SC_TO_SL_MAP:
-+		ret = __subn_get_opa_sc_to_sl(smp, am, data, ibdev, port,
-+					      resp_len, max_len);
-+		break;
-+	case OPA_ATTRIB_ID_SC_TO_VLT_MAP:
-+		ret = __subn_get_opa_sc_to_vlt(smp, am, data, ibdev, port,
-+					       resp_len, max_len);
-+		break;
-+	case OPA_ATTRIB_ID_SC_TO_VLNT_MAP:
-+		ret = __subn_get_opa_sc_to_vlnt(smp, am, data, ibdev, port,
-+						resp_len, max_len);
-+		break;
-+	case OPA_ATTRIB_ID_PORT_STATE_INFO:
-+		ret = __subn_get_opa_psi(smp, am, data, ibdev, port,
-+					 resp_len, max_len);
-+		break;
-+	case OPA_ATTRIB_ID_BUFFER_CONTROL_TABLE:
-+		ret = __subn_get_opa_bct(smp, am, data, ibdev, port,
-+					 resp_len, max_len);
-+		break;
-+	case OPA_ATTRIB_ID_CABLE_INFO:
-+		ret = __subn_get_opa_cable_info(smp, am, data, ibdev, port,
-+						resp_len, max_len);
-+		break;
-+	case IB_SMP_ATTR_VL_ARB_TABLE:
-+		ret = __subn_get_opa_vl_arb(smp, am, data, ibdev, port,
-+					    resp_len, max_len);
-+		break;
-+	case OPA_ATTRIB_ID_CONGESTION_INFO:
-+		ret = __subn_get_opa_cong_info(smp, am, data, ibdev, port,
-+					       resp_len, max_len);
-+		break;
-+	case OPA_ATTRIB_ID_HFI_CONGESTION_SETTING:
-+		ret = __subn_get_opa_cong_setting(smp, am, data, ibdev,
-+						  port, resp_len, max_len);
-+		break;
-+	case OPA_ATTRIB_ID_HFI_CONGESTION_LOG:
-+		ret = __subn_get_opa_hfi2_cong_log(smp, am, data, ibdev,
-+						   port, resp_len, max_len);
-+		break;
-+	case OPA_ATTRIB_ID_CONGESTION_CONTROL_TABLE:
-+		ret = __subn_get_opa_cc_table(smp, am, data, ibdev, port,
-+					      resp_len, max_len);
-+		break;
-+	case IB_SMP_ATTR_LED_INFO:
-+		ret = __subn_get_opa_led_info(smp, am, data, ibdev, port,
-+					      resp_len, max_len);
-+		break;
-+	case IB_SMP_ATTR_SM_INFO:
-+		if (ibp->rvp.port_cap_flags & IB_PORT_SM_DISABLED)
-+			return IB_MAD_RESULT_SUCCESS | IB_MAD_RESULT_CONSUMED;
-+		if (ibp->rvp.port_cap_flags & IB_PORT_SM)
-+			return IB_MAD_RESULT_SUCCESS;
-+		fallthrough;
-+	default:
-+		smp->status |= IB_SMP_UNSUP_METH_ATTR;
-+		ret = reply((struct ib_mad_hdr *)smp);
-+		break;
-+	}
-+	return ret;
-+}
-+
-+static int subn_set_opa_sma(__be16 attr_id, struct opa_smp *smp, u32 am,
-+			    u8 *data, struct ib_device *ibdev, u32 port,
-+			    u32 *resp_len, u32 max_len, int local_mad)
-+{
-+	int ret;
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+
-+	switch (attr_id) {
-+	case IB_SMP_ATTR_PORT_INFO:
-+		ret = __subn_set_opa_portinfo(smp, am, data, ibdev, port,
-+					      resp_len, max_len, local_mad);
-+		break;
-+	case IB_SMP_ATTR_PKEY_TABLE:
-+		ret = __subn_set_opa_pkeytable(smp, am, data, ibdev, port,
-+					       resp_len, max_len);
-+		break;
-+	case OPA_ATTRIB_ID_SL_TO_SC_MAP:
-+		ret = __subn_set_opa_sl_to_sc(smp, am, data, ibdev, port,
-+					      resp_len, max_len);
-+		break;
-+	case OPA_ATTRIB_ID_SC_TO_SL_MAP:
-+		ret = __subn_set_opa_sc_to_sl(smp, am, data, ibdev, port,
-+					      resp_len, max_len);
-+		break;
-+	case OPA_ATTRIB_ID_SC_TO_VLT_MAP:
-+		ret = __subn_set_opa_sc_to_vlt(smp, am, data, ibdev, port,
-+					       resp_len, max_len);
-+		break;
-+	case OPA_ATTRIB_ID_SC_TO_VLNT_MAP:
-+		ret = __subn_set_opa_sc_to_vlnt(smp, am, data, ibdev, port,
-+						resp_len, max_len);
-+		break;
-+	case OPA_ATTRIB_ID_PORT_STATE_INFO:
-+		ret = __subn_set_opa_psi(smp, am, data, ibdev, port,
-+					 resp_len, max_len, local_mad);
-+		break;
-+	case OPA_ATTRIB_ID_BUFFER_CONTROL_TABLE:
-+		ret = __subn_set_opa_bct(smp, am, data, ibdev, port,
-+					 resp_len, max_len);
-+		break;
-+	case IB_SMP_ATTR_VL_ARB_TABLE:
-+		ret = __subn_set_opa_vl_arb(smp, am, data, ibdev, port,
-+					    resp_len, max_len);
-+		break;
-+	case OPA_ATTRIB_ID_HFI_CONGESTION_SETTING:
-+		ret = __subn_set_opa_cong_setting(smp, am, data, ibdev,
-+						  port, resp_len, max_len);
-+		break;
-+	case OPA_ATTRIB_ID_CONGESTION_CONTROL_TABLE:
-+		ret = __subn_set_opa_cc_table(smp, am, data, ibdev, port,
-+					      resp_len, max_len);
-+		break;
-+	case IB_SMP_ATTR_LED_INFO:
-+		ret = __subn_set_opa_led_info(smp, am, data, ibdev, port,
-+					      resp_len, max_len);
-+		break;
-+	case IB_SMP_ATTR_SM_INFO:
-+		if (ibp->rvp.port_cap_flags & IB_PORT_SM_DISABLED)
-+			return IB_MAD_RESULT_SUCCESS | IB_MAD_RESULT_CONSUMED;
-+		if (ibp->rvp.port_cap_flags & IB_PORT_SM)
-+			return IB_MAD_RESULT_SUCCESS;
-+		fallthrough;
-+	default:
-+		smp->status |= IB_SMP_UNSUP_METH_ATTR;
-+		ret = reply((struct ib_mad_hdr *)smp);
-+		break;
-+	}
-+	return ret;
-+}
-+
-+static inline void set_aggr_error(struct opa_aggregate *ag)
-+{
-+	ag->err_reqlength |= cpu_to_be16(0x8000);
-+}
-+
-+static int subn_get_opa_aggregate(struct opa_smp *smp,
-+				  struct ib_device *ibdev, u32 port,
-+				  u32 *resp_len)
-+{
-+	int i;
-+	u32 num_attr = be32_to_cpu(smp->attr_mod) & 0x000000ff;
-+	u8 *next_smp = opa_get_smp_data(smp);
-+
-+	if (num_attr < 1 || num_attr > 117) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	for (i = 0; i < num_attr; i++) {
-+		struct opa_aggregate *agg;
-+		size_t agg_data_len;
-+		size_t agg_size;
-+		u32 am;
-+
-+		agg = (struct opa_aggregate *)next_smp;
-+		agg_data_len = (be16_to_cpu(agg->err_reqlength) & 0x007f) * 8;
-+		agg_size = sizeof(*agg) + agg_data_len;
-+		am = be32_to_cpu(agg->attr_mod);
-+
-+		*resp_len += agg_size;
-+
-+		if (next_smp + agg_size > ((u8 *)smp) + sizeof(*smp)) {
-+			smp->status |= IB_SMP_INVALID_FIELD;
-+			return reply((struct ib_mad_hdr *)smp);
-+		}
-+
-+		/* zero the payload for this segment */
-+		memset(next_smp + sizeof(*agg), 0, agg_data_len);
-+
-+		(void)subn_get_opa_sma(agg->attr_id, smp, am, agg->data,
-+				       ibdev, port, NULL, (u32)agg_data_len);
-+
-+		if (smp->status & IB_SMP_INVALID_FIELD)
-+			break;
-+		if (smp->status & ~IB_SMP_DIRECTION) {
-+			set_aggr_error(agg);
-+			return reply((struct ib_mad_hdr *)smp);
-+		}
-+		next_smp += agg_size;
-+	}
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+static int subn_set_opa_aggregate(struct opa_smp *smp,
-+				  struct ib_device *ibdev, u32 port,
-+				  u32 *resp_len, int local_mad)
-+{
-+	int i;
-+	u32 num_attr = be32_to_cpu(smp->attr_mod) & 0x000000ff;
-+	u8 *next_smp = opa_get_smp_data(smp);
-+
-+	if (num_attr < 1 || num_attr > 117) {
-+		smp->status |= IB_SMP_INVALID_FIELD;
-+		return reply((struct ib_mad_hdr *)smp);
-+	}
-+
-+	for (i = 0; i < num_attr; i++) {
-+		struct opa_aggregate *agg;
-+		size_t agg_data_len;
-+		size_t agg_size;
-+		u32 am;
-+
-+		agg = (struct opa_aggregate *)next_smp;
-+		agg_data_len = (be16_to_cpu(agg->err_reqlength) & 0x007f) * 8;
-+		agg_size = sizeof(*agg) + agg_data_len;
-+		am = be32_to_cpu(agg->attr_mod);
-+
-+		*resp_len += agg_size;
-+
-+		if (next_smp + agg_size > ((u8 *)smp) + sizeof(*smp)) {
-+			smp->status |= IB_SMP_INVALID_FIELD;
-+			return reply((struct ib_mad_hdr *)smp);
-+		}
-+
-+		(void)subn_set_opa_sma(agg->attr_id, smp, am, agg->data,
-+				       ibdev, port, NULL, (u32)agg_data_len,
-+				       local_mad);
-+
-+		if (smp->status & IB_SMP_INVALID_FIELD)
-+			break;
-+		if (smp->status & ~IB_SMP_DIRECTION) {
-+			set_aggr_error(agg);
-+			return reply((struct ib_mad_hdr *)smp);
-+		}
-+		next_smp += agg_size;
-+	}
-+
-+	return reply((struct ib_mad_hdr *)smp);
-+}
-+
-+/*
-+ * OPAv1 specifies that, on the transition to link up, these counters
-+ * are cleared:
-+ *   PortRcvErrors [*]
-+ *   LinkErrorRecovery
-+ *   LocalLinkIntegrityErrors
-+ *   ExcessiveBufferOverruns [*]
-+ *
-+ * [*] Error info associated with these counters is retained, but the
-+ * error info status is reset to 0.
-+ */
-+void clear_linkup_counters(struct hfi2_pportdata *ppd)
-+{
-+	struct hfi2_devdata *dd = ppd->dd;
-+
-+	/* PortRcvErrors */
-+	write_dev_cntr(dd, C_DC_RCV_ERR, CNTR_INVALID_VL, 0);
-+	dd->err_info_rcvport.status_and_code &= ~OPA_EI_STATUS_SMASK;
-+	/* LinkErrorRecovery */
-+	write_dev_cntr(dd, C_DC_SEQ_CRC_CNT, CNTR_INVALID_VL, 0);
-+	write_dev_cntr(dd, C_DC_REINIT_FROM_PEER_CNT, CNTR_INVALID_VL, 0);
-+	/* LocalLinkIntegrityErrors */
-+	write_dev_cntr(dd, C_DC_RX_REPLAY, CNTR_INVALID_VL, 0);
-+	/* ExcessiveBufferOverruns */
-+	write_port_cntr(ppd, C_RCV_OVF, CNTR_INVALID_VL, 0);
-+	ppd->rcv_ovfl_cnt = 0;
-+	dd->err_info_xmit_constraint.status &= ~OPA_EI_STATUS_SMASK;
-+}
-+
-+static int is_full_mgmt_pkey_in_table(struct hfi2_ibport *ibp)
-+{
-+	unsigned int i;
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(ibp);
-+
-+	for (i = 0; i < ppd->dd->params->pkey_table_size; ++i)
-+		if (ppd->pkeys[i] == FULL_MGMT_P_KEY)
-+			return 1;
-+
-+	return 0;
-+}
-+
-+/*
-+ * is_local_mad() returns 1 if 'mad' is sent from, and destined to the
-+ * local node, 0 otherwise.
-+ */
-+static int is_local_mad(struct hfi2_ibport *ibp, const struct opa_mad *mad,
-+			const struct ib_wc *in_wc)
-+{
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(ibp);
-+	const struct opa_smp *smp = (const struct opa_smp *)mad;
-+
-+	if (smp->mgmt_class == IB_MGMT_CLASS_SUBN_DIRECTED_ROUTE) {
-+		return (smp->hop_cnt == 0 &&
-+			smp->route.dr.dr_slid == OPA_LID_PERMISSIVE &&
-+			smp->route.dr.dr_dlid == OPA_LID_PERMISSIVE);
-+	}
-+
-+	return (in_wc->slid == ppd->lid);
-+}
-+
-+/*
-+ * opa_local_smp_check() should only be called on MADs for which
-+ * is_local_mad() returns true. It applies the SMP checks that are
-+ * specific to SMPs which are sent from, and destined to this node.
-+ * opa_local_smp_check() returns 0 if the SMP passes its checks, 1
-+ * otherwise.
-+ *
-+ * SMPs which arrive from other nodes are instead checked by
-+ * opa_smp_check().
-+ */
-+static int opa_local_smp_check(struct hfi2_ibport *ibp,
-+			       const struct ib_wc *in_wc)
-+{
-+	struct hfi2_pportdata *ppd = ppd_from_ibp(ibp);
++	struct net_device   *netdev;
++	struct ib_device    *device;
++	struct hfi2_ipoib_txq *txqs;
++	const struct net_device_ops *netdev_ops;
++	struct rvt_qp *qp;
++	u32 qkey;
 +	u16 pkey;
++	u16 pkey_index;
++	u8 port_num;
++};
 +
-+	if (in_wc->pkey_index >= ppd->dd->params->pkey_table_size)
-+		return 1;
++/* hfi2 ipoib rdma netdev's private data structure */
++struct hfi2_ipoib_rdma_netdev {
++	struct rdma_netdev rn;  /* keep this first */
++	/* followed by device private data */
++	struct hfi2_ipoib_dev_priv dev_priv;
++};
 +
-+	pkey = ppd->pkeys[in_wc->pkey_index];
++static inline struct hfi2_ipoib_dev_priv *
++hfi2_ipoib_priv(const struct net_device *dev)
++{
++	return &((struct hfi2_ipoib_rdma_netdev *)netdev_priv(dev))->dev_priv;
++}
++
++int hfi2_ipoib_send(struct net_device *dev,
++		    struct sk_buff *skb,
++		    struct ib_ah *address,
++		    u32 dqpn);
++
++int hfi2_ipoib_txreq_init(struct hfi2_ipoib_dev_priv *priv);
++void hfi2_ipoib_txreq_deinit(struct hfi2_ipoib_dev_priv *priv);
++
++int hfi2_ipoib_rxq_init(struct net_device *dev);
++void hfi2_ipoib_rxq_deinit(struct net_device *dev);
++
++void hfi2_ipoib_napi_tx_enable(struct net_device *dev);
++void hfi2_ipoib_napi_tx_disable(struct net_device *dev);
++
++struct sk_buff *hfi2_ipoib_prepare_skb(struct hfi2_netdev_rxq *rxq,
++				       int size, void *data);
++
++int hfi2_ipoib_rn_get_params(struct ib_device *device,
++			     u32 port_num,
++			     enum rdma_netdev_t type,
++			     struct rdma_netdev_alloc_params *params);
++
++void hfi2_ipoib_tx_timeout(struct net_device *dev, unsigned int q);
++
++#endif /* _IPOIB_H */
+diff --git a/drivers/infiniband/hw/hfi2/netdev.h b/drivers/infiniband/hw/hfi2/netdev.h
+new file mode 100644
+index 000000000000..f5b698eafa5c
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/netdev.h
+@@ -0,0 +1,99 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++/*
++ * Copyright(c) 2020 Intel Corporation.
++ *
++ */
++
++#ifndef HFI2_NETDEV_H
++#define HFI2_NETDEV_H
++
++#include "hfi2.h"
++
++#include <linux/netdevice.h>
++#include <linux/xarray.h>
++
++/**
++ * struct hfi2_netdev_rxq - Receive Queue for HFI
++ * IPoIB netdevices will be working on the rx abstraction.
++ * @napi: napi object
++ * @rx: ptr to netdev_rx
++ * @rcd:  ptr to receive context data
++ */
++struct hfi2_netdev_rxq {
++	struct napi_struct napi;
++	struct hfi2_netdev_rx *rx;
++	struct hfi2_ctxtdata *rcd;
++};
++
++/*
++ * Number of netdev contexts used. Ensure it is less than or equal to
++ * max queues supported.
++ */
++#define HFI2_MAX_NETDEV_CTXTS   8
++
++/* Number of NETDEV RSM entries */
++#define NUM_NETDEV_MAP_ENTRIES HFI2_MAX_NETDEV_CTXTS
++
++/**
++ * struct hfi2_netdev_rx: data required to setup and run HFI netdev.
++ * @rx_napi:	the dummy netdevice to support "polling" the receive contexts
++ * @dd:		hfi2_devdata
++ * @ppd:	hfi2_pportdata
++ * @rxq:	pointer to dummy netdev receive queues.
++ * @num_rx_q:	number of receive queues
++ * @rmt_start:	first allocated index in the RMT
++ * @dev_tbl:	netdev table for unique identifier IPoIb VLANs.
++ * @enabled:	atomic counter of netdevs enabling receive queues.
++ *		When 0 NAPI will be disabled.
++ * @netdevs:	count of netdev_rx users, protected by hfi2_mutex.
++ *		When 0 receive queues will be freed.
++ */
++struct hfi2_netdev_rx {
++	struct net_device *rx_napi;
++	struct hfi2_devdata *dd;
++	struct hfi2_pportdata *ppd;
++	struct hfi2_netdev_rxq *rxq;
++	int num_rx_q;
++	int rmt_start;
++	struct xarray dev_tbl;
++	/* count of enabled napi polls */
++	atomic_t enabled;
++	int netdevs;
++};
++
++static inline
++int hfi2_netdev_ctxt_count(struct hfi2_pportdata *ppd)
++{
++	return ppd->netdev_rx->num_rx_q;
++}
++
++static inline
++struct hfi2_ctxtdata *hfi2_netdev_get_ctxt(struct hfi2_pportdata *ppd, int ctxt)
++{
++	return ppd->netdev_rx->rxq[ctxt].rcd;
++}
++
++static inline
++int hfi2_netdev_get_free_rmt_idx(struct hfi2_pportdata *ppd)
++{
++	return ppd->netdev_rx->rmt_start;
++}
++
++u32 hfi2_num_netdev_contexts(struct hfi2_devdata *dd, u32 available_contexts,
++			     struct cpumask *cpu_mask);
++
++void hfi2_netdev_enable_queues(struct hfi2_pportdata *ppd);
++void hfi2_netdev_disable_queues(struct hfi2_pportdata *ppd);
++int hfi2_netdev_rx_init(struct hfi2_pportdata *ppd);
++int hfi2_netdev_rx_destroy(struct hfi2_pportdata *ppd);
++int hfi2_alloc_rx(struct hfi2_devdata *dd);
++void hfi2_free_rx(struct hfi2_devdata *dd);
++int hfi2_netdev_add_data(struct hfi2_pportdata *ppd, int id, void *data);
++void *hfi2_netdev_remove_data(struct hfi2_pportdata *ppd, int id);
++void *hfi2_netdev_get_data(struct hfi2_pportdata *ppd, int id);
++void *hfi2_netdev_get_first_data(struct hfi2_pportdata *ppd, int *start_id);
++
++/* chip.c  */
++int hfi2_netdev_rx_napi(struct napi_struct *napi, int budget);
++
++#endif /* HFI2_NETDEV_H */
+diff --git a/drivers/infiniband/hw/hfi2/pinning.h b/drivers/infiniband/hw/hfi2/pinning.h
+new file mode 100644
+index 000000000000..f924cc2d67ad
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/pinning.h
+@@ -0,0 +1,74 @@
++/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/*
++ * Copyright(c) 2023 Cornelis Networks, Inc.
++ */
++#ifndef _HFI2_PINNING_H
++#define _HFI2_PINNING_H
++
++#include <rdma/hfi2-abi.h>
++
++struct hfi2_user_sdma_pkt_q;
++struct user_sdma_request;
++struct user_sdma_txreq;
++struct user_sdma_iovec;
++
++struct pinning_interface {
++	int (*init)(struct hfi2_user_sdma_pkt_q *pq);
++	void (*free)(struct hfi2_user_sdma_pkt_q *pq);
++
 +	/*
-+	 * We need to do the "node-local" checks specified in OPAv1,
-+	 * rev 0.90, section 9.10.26, which are:
-+	 *   - pkey is 0x7fff, or 0xffff
-+	 *   - Source QPN == 0 || Destination QPN == 0
-+	 *   - the MAD header's management class is either
-+	 *     IB_MGMT_CLASS_SUBN_DIRECTED_ROUTE or
-+	 *     IB_MGMT_CLASS_SUBN_LID_ROUTED
-+	 *   - SLID != 0
-+	 *
-+	 * However, we know (and so don't need to check again) that,
-+	 * for local SMPs, the MAD stack passes MADs with:
-+	 *   - Source QPN of 0
-+	 *   - MAD mgmt_class is IB_MGMT_CLASS_SUBN_DIRECTED_ROUTE
-+	 *   - SLID is either: OPA_LID_PERMISSIVE (0xFFFFFFFF), or
-+	 *     our own port's lid
-+	 *
++	 * Add up to pkt_data_remaining bytes to the txreq, starting at the
++	 * current offset in the given iovec entry and continuing until all
++	 * data has been added to the iovec or the iovec entry type changes.
++	 * On success, prior to returning, the implementation must adjust
++	 * pkt_data_remaining, req->iov_idx, and the offset value in
++	 * req->iov[req->iov_idx] to reflect the data that has been
++	 * consumed.
 +	 */
-+	if (pkey == LIM_MGMT_P_KEY || pkey == FULL_MGMT_P_KEY)
-+		return 0;
-+	ingress_pkey_table_fail(ppd, pkey, in_wc->slid);
-+	return 1;
++	int (*add_to_sdma_packet)(struct user_sdma_request *req,
++				  struct user_sdma_txreq *tx,
++				  struct user_sdma_iovec *iovec,
++				  u32 *pkt_data_remaining);
++
++	int (*get_stats)(struct hfi2_user_sdma_pkt_q *pq, int index,
++			 struct hfi2_pin_stats *stats);
++	void (*put)(void *ptr);
++};
++
++#define PINNING_MAX_INTERFACES BIT(HFI2_MEMINFO_TYPE_ENTRY_BITS)
++
++struct pinning_state {
++	void *interface[PINNING_MAX_INTERFACES];
++};
++
++#define PINNING_STATE(pq, i) ((pq)->pinning_state.interface[(i)])
++
++extern struct pinning_interface pinning_interfaces[PINNING_MAX_INTERFACES];
++
++void register_pinning_interface(unsigned int type,
++				struct pinning_interface *interface);
++void deregister_pinning_interface(unsigned int type);
++
++void register_system_pinning_interface(void);
++void deregister_system_pinning_interface(void);
++
++int init_pinning_interfaces(struct hfi2_user_sdma_pkt_q *pq);
++void free_pinning_interfaces(struct hfi2_user_sdma_pkt_q *pq);
++
++static inline bool pinning_type_supported(unsigned int type)
++{
++	return (type < PINNING_MAX_INTERFACES &&
++		pinning_interfaces[type].add_to_sdma_packet);
++}
++
++static inline int add_to_sdma_packet(unsigned int type,
++				     struct user_sdma_request *req,
++				     struct user_sdma_txreq *tx,
++				     struct user_sdma_iovec *iovec,
++				     u32 *rem)
++{
++	return pinning_interfaces[type].add_to_sdma_packet(req, tx, iovec,
++							   rem);
++}
++
++#endif /* _HFI2_PINNING_H */
+diff --git a/drivers/infiniband/hw/hfi2/pio.h b/drivers/infiniband/hw/hfi2/pio.h
+new file mode 100644
+index 000000000000..43636e02ffee
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/pio.h
+@@ -0,0 +1,305 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2015-2017 Intel Corporation.
++ */
++
++#ifndef _PIO_H
++#define _PIO_H
++/* send context types */
++#define SC_KERNEL 0
++#define SC_VL15   1
++#define SC_ACK    2
++#define SC_USER   3	/* must be the last one: it may take all left */
++#define SC_MAX    4	/* count of send context types */
++
++/* invalid send context index */
++#define INVALID_SCI 0xff
++
++/* PIO buffer release callback function */
++typedef void (*pio_release_cb)(void *arg, int code);
++
++/* PIO release codes - in bits, as there could more than one that apply */
++#define PRC_OK		0	/* no known error */
++#define PRC_STATUS_ERR	0x01	/* credit return due to status error */
++#define PRC_PBC		0x02	/* credit return due to PBC */
++#define PRC_THRESHOLD	0x04	/* credit return due to threshold */
++#define PRC_FILL_ERR	0x08	/* credit return due fill error */
++#define PRC_FORCE	0x10	/* credit return due credit force */
++#define PRC_SC_DISABLE	0x20	/* clean-up after a context disable */
++
++/* byte helper */
++union mix {
++	u64 val64;
++	u32 val32[2];
++	u8  val8[8];
++};
++
++/* an allocated PIO buffer */
++struct pio_buf {
++	struct send_context *sc;/* back pointer to owning send context */
++	pio_release_cb cb;	/* called when the buffer is released */
++	void *arg;		/* argument for cb */
++	void __iomem *start;	/* buffer start address */
++	void __iomem *end;	/* context end address */
++	unsigned long sent_at;	/* buffer is sent when <= free */
++	union mix carry;	/* pending unwritten bytes */
++	u16 qw_written;		/* QW written so far */
++	u8 carry_bytes;	/* number of valid bytes in carry */
++};
++
++/* cache line aligned pio buffer array */
++union pio_shadow_ring {
++	struct pio_buf pbuf;
++} ____cacheline_aligned;
++
++/* per-NUMA send context */
++struct send_context {
++	/* read-only after init */
++	struct hfi2_devdata *dd;	/* device */
++	struct hfi2_pportdata *ppd;	/* port */
++	union pio_shadow_ring *sr;	/* shadow ring */
++	void __iomem *base_addr;	/* start of PIO memory */
++	u32 __percpu *buffers_allocated;/* count of buffers allocated */
++	u32 size;			/* context size, in bytes */
++
++	int node;			/* context home node */
++	u32 sr_size;			/* size of the shadow ring */
++	u16 flags;			/* flags */
++	u16 sw_index;			/* software index number */
++	u16 hw_context;			/* hardware context number */
++	u8  type;			/* context type */
++	u8  group;			/* credit return group */
++
++	/* allocator fields */
++	spinlock_t alloc_lock ____cacheline_aligned_in_smp;
++	u32 sr_head;			/* shadow ring head */
++	unsigned long fill;		/* official alloc count */
++	unsigned long alloc_free;	/* copy of free (less cache thrash) */
++	u32 fill_wrap;			/* tracks fill within ring */
++	u32 credits;			/* number of blocks in context */
++	/* adding a new field here would make it part of this cacheline */
++
++	/* releaser fields */
++	spinlock_t release_lock ____cacheline_aligned_in_smp;
++	u32 sr_tail;			/* shadow ring tail */
++	unsigned long free;		/* official free count */
++	volatile __le64 *hw_free;	/* HW free counter */
++	/* list for PIO waiters */
++	struct list_head piowait  ____cacheline_aligned_in_smp;
++	seqlock_t waitlock;
++
++	spinlock_t credit_ctrl_lock ____cacheline_aligned_in_smp;
++	u32 credit_intr_count;		/* count of credit intr users */
++	u64 credit_ctrl;		/* cache for credit control */
++	wait_queue_head_t halt_wait;    /* wait until kernel sees interrupt */
++	struct work_struct halt_work;	/* halted context work queue entry */
++};
++
++/* send context flags */
++#define SCF_ENABLED 0x01
++#define SCF_IN_FREE 0x02
++#define SCF_HALTED  0x04
++#define SCF_FROZEN  0x08
++#define SCF_LINK_DOWN 0x10
++
++struct send_context_info {
++	struct send_context *sc;	/* allocated working context */
++	u16 allocated;			/* has this been allocated? */
++	u16 type;			/* context type */
++	u16 base;			/* base in PIO array */
++	u16 credits;			/* size in PIO array */
++};
++
++/* DMA credit return, index is always (context & 0x7) */
++struct credit_return {
++	volatile __le64 cr[8];
++};
++
++/* NUMA indexed credit return array */
++struct credit_return_base {
++	struct credit_return *va;
++	dma_addr_t dma;
++};
++
++/* send context configuration sizes (one per type) */
++struct sc_config_sizes {
++	short int size;
++	short int count;
++};
++
++/*
++ * The diagram below details layout of pio_map, which is used to quickly select
++ * a kernel send context given a vl and a selector (fuzz).
++ *
++ * sc = pio_map->map[vl & map_mask]->ksc[selector & elem_mask]
++ *
++ * The map allows for non-uniform send contexts per vl.
++ *
++ * Where:
++ * nactual = num_kernel_send_contexts / num_vls
++ * vl_scontexts[vl] = nactual + extra
++ *
++ *	Extra is an evenly distributed modulo of remaining send contexts.
++ *
++ * svl[vl] = 1 + sum vl_scontexts[0..vl-1]
++ *
++ * n = roundup to next highest power of 2 of vl_scontexts[vl]
++ *
++ * When n > vl_scontexts[vl], the send contexts are assigned in a round robin
++ * fashion wrapping back to the first send context for a particular vl.
++ *
++ *              ppd->pio_map
++ *                    |                                  pio_map_elem[0]
++ *                    |                               +------------------------+
++ *                    v                               |       mask             |
++ *               pio_vl_map                           |------------------------|
++ *      +--------------------------+                  | ksc[0] -> svl[0]       |
++ *      |    list (RCU)            |                  |------------------------|
++ *      |--------------------------|                ->| ksc[1] -> svl[0]+1     |
++ *      |    mask                  |              -/  |------------------------|
++ *      |--------------------------|            -/    |        *               |
++ *      |    actual_vls (max 8)    |          -/      |------------------------|
++ *      |--------------------------|       --/        | ksc[n-1] -> svl[0]+n-1 |
++ *      |    vls (max 8)           |     -/           +------------------------+
++ *      |--------------------------|  --/
++ *      |    map[0]                |-/
++ *      |--------------------------|                  +------------------------+
++ *      |    map[1]                |---               |       mask             |
++ *      |--------------------------|   \----          |------------------------|
++ *      |           *              |        \--       | ksc[0] -> svl[1]       |
++ *      |           *              |           \---   |------------------------|
++ *      |           *              |               \->| ksc[1] -> svl[1]+1     |
++ *      |--------------------------|                  |------------------------|
++ *      |   map[vls - 1]           |-                 |         *              |
++ *      +--------------------------+ \-               |------------------------|
++ *                                     \-             | ksc[n-1] -> svl[1]+n-1 |
++ *                                       \            +------------------------+
++ *                                        \-
++ *                                          \
++ *                                           \-       +------------------------+
++ *                                             \-     |       mask             |
++ *                                               \    |------------------------|
++ *                                                \-  | ksc[x] -> svl[x]       |
++ *                                                  \ |------------------------|
++ *                                                   >| ksc[x] -> svl[x]+1     |
++ *                                                    |------------------------|
++ *                                                    |         *              |
++ *                                                    |------------------------|
++ *                                                    | ksc[n-1] -> svl[x]+n-1 |
++ *                                                    +------------------------+
++ *
++ */
++
++/* Initial number of send contexts per VL */
++#define INIT_SC_PER_VL 2
++
++/*
++ * struct pio_map_elem - mapping for a vl
++ * @mask - selector mask
++ * @ksc - array of kernel send contexts for this vl
++ *
++ * The mask is used to "mod" the selector to
++ * produce index into the trailing array of
++ * kscs
++ */
++struct pio_map_elem {
++	u32 mask;
++	struct send_context *ksc[];
++};
++
++/*
++ * struct pio_vl_map - mapping for a vl
++ * @list - rcu head for free callback
++ * @mask - vl mask to "mod" the vl to produce an index to map array
++ * @actual_vls - number of vls
++ * @vls - numbers of vls rounded to next power of 2
++ * @map - array of pio_map_elem entries
++ *
++ * This is the parent mapping structure. The trailing members of the
++ * struct point to pio_map_elem entries, which in turn point to an
++ * array of kscs for that vl.
++ */
++struct pio_vl_map {
++	struct rcu_head list;
++	u32 mask;
++	u8 actual_vls;
++	u8 vls;
++	struct pio_map_elem *map[];
++};
++
++int pio_map_init(struct hfi2_pportdata *ppd, u8 num_vls);
++void free_pio_map(struct hfi2_devdata *dd);
++struct send_context *pio_select_send_context_vl(struct hfi2_pportdata *ppd,
++						u32 selector, u8 vl);
++struct send_context *pio_select_send_context_sc(struct hfi2_pportdata *ppd,
++						u32 selector, u8 sc5);
++
++/* send context functions */
++int init_credit_return(struct hfi2_devdata *dd);
++void free_credit_return(struct hfi2_devdata *dd);
++int init_sc_pools_and_sizes(struct hfi2_devdata *dd);
++int init_send_contexts(struct hfi2_devdata *dd);
++int init_pervl_scs(struct hfi2_pportdata *ppd);
++struct send_context *sc_alloc(struct hfi2_pportdata *ppd, int type,
++			      uint hdrqentsize, int numa);
++void sc_free(struct send_context *sc);
++int sc_enable(struct send_context *sc);
++void sc_disable(struct send_context *sc);
++int sc_restart(struct send_context *sc);
++void sc_return_credits(struct send_context *sc);
++void sc_flush(struct send_context *sc);
++void sc_drop(struct send_context *sc);
++void sc_stop(struct send_context *sc, int bit);
++struct pio_buf *sc_buffer_alloc(struct send_context *sc, u32 dw_len,
++				pio_release_cb cb, void *arg);
++void sc_release_update(struct send_context *sc);
++void sc_group_release_update(struct hfi2_devdata *dd, u32 hw_context);
++void sc_add_credit_return_intr(struct send_context *sc);
++void sc_del_credit_return_intr(struct send_context *sc);
++void sc_set_cr_threshold(struct send_context *sc, u32 new_threshold);
++u32 sc_percent_to_threshold(struct send_context *sc, u32 percent);
++u32 sc_mtu_to_threshold(struct send_context *sc, u32 mtu, u32 hdrqentsize);
++void hfi2_sc_wantpiobuf_intr(struct send_context *sc, u32 needint);
++void sc_wait(struct hfi2_devdata *dd);
++
++/* commands for set_pio_integrity() */
++enum spi_cmds {
++	SPI_DEFAULT,
++	SPI_INIT,
++	SPI_SET_JKEY,
++	SPI_CLEAR_JKEY,
++	SPI_SET_PKEY,
++	SPI_CLEAR_PKEY,
++};
++void wfr_set_pio_integrity(struct send_context *sc, enum spi_cmds cmd);
++
++/* support functions */
++void pio_reset_all(struct hfi2_devdata *dd);
++void pio_freeze(struct hfi2_devdata *dd);
++void pio_kernel_unfreeze(struct hfi2_devdata *dd);
++void pio_kernel_linkup(struct hfi2_pportdata *ppd);
++
++/* global PIO send control operations */
++#define PSC_GLOBAL_ENABLE 0
++#define PSC_GLOBAL_DISABLE 1
++#define PSC_GLOBAL_VLARB_ENABLE 2
++#define PSC_GLOBAL_VLARB_DISABLE 3
++#define PSC_CM_RESET 4
++#define PSC_DATA_VL_ENABLE 5
++#define PSC_DATA_VL_DISABLE 6
++
++void __cm_reset(struct hfi2_pportdata *ppd, u64 sendctrl);
++void pio_send_control(struct hfi2_pportdata *ppd, int op);
++
++/* PIO copy routines */
++void pio_copy(struct hfi2_devdata *dd, struct pio_buf *pbuf, u64 pbc,
++	      const void *from, size_t count);
++void seg_pio_copy_start(struct pio_buf *pbuf, u64 pbc,
++			const void *from, size_t nbytes);
++void seg_pio_copy_mid(struct pio_buf *pbuf, const void *from, size_t nbytes);
++void seg_pio_copy_end(struct pio_buf *pbuf);
++
++void seqfile_dump_sci(struct seq_file *s, u32 i,
++		      struct send_context_info *sci);
++
++#endif /* _PIO_H */
+diff --git a/drivers/infiniband/hw/hfi2/qp.h b/drivers/infiniband/hw/hfi2/qp.h
+new file mode 100644
+index 000000000000..5e5b275e4e64
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/qp.h
+@@ -0,0 +1,107 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2015 - 2018 Intel Corporation.
++ */
++
++#ifndef _QP_H
++#define _QP_H
++#include <linux/hash.h>
++#include <rdma/rdmavt_qp.h>
++#include "verbs.h"
++#include "sdma.h"
++#include "verbs_txreq.h"
++
++extern unsigned int hfi2_qp_table_size;
++
++extern const struct rvt_operation_params hfi2_post_parms[];
++
++/*
++ * Driver specific s_flags starting at bit 31 down to HFI2_S_MIN_BIT_MASK
++ *
++ * HFI2_S_AHG_VALID - ahg header valid on chip
++ * HFI2_S_AHG_CLEAR - have send engine clear ahg state
++ * HFI2_S_WAIT_PIO_DRAIN - qp waiting for PIOs to drain
++ * HFI2_S_WAIT_TID_SPACE - a QP is waiting for TID resource
++ * HFI2_S_WAIT_TID_RESP - waiting for a TID RDMA WRITE response
++ * HFI2_S_WAIT_HALT - halt the first leg send engine
++ * HFI2_S_MIN_BIT_MASK - the lowest bit that can be used by hfi2
++ */
++#define HFI2_S_AHG_VALID         0x80000000
++#define HFI2_S_AHG_CLEAR         0x40000000
++#define HFI2_S_WAIT_PIO_DRAIN    0x20000000
++#define HFI2_S_WAIT_TID_SPACE    0x10000000
++#define HFI2_S_WAIT_TID_RESP     0x08000000
++#define HFI2_S_WAIT_HALT         0x04000000
++#define HFI2_S_MIN_BIT_MASK      0x01000000
++
++/*
++ * overload wait defines
++ */
++
++#define HFI2_S_ANY_WAIT_IO (RVT_S_ANY_WAIT_IO | HFI2_S_WAIT_PIO_DRAIN)
++#define HFI2_S_ANY_WAIT (HFI2_S_ANY_WAIT_IO | RVT_S_ANY_WAIT_SEND)
++#define HFI2_S_ANY_TID_WAIT_SEND (RVT_S_WAIT_SSN_CREDIT | RVT_S_WAIT_DMA)
++
++/*
++ * Send if not busy or waiting for I/O and either
++ * a RC response is pending or we can process send work requests.
++ */
++static inline int hfi2_send_ok(struct rvt_qp *qp)
++{
++	struct hfi2_qp_priv *priv = qp->priv;
++
++	return !(qp->s_flags & (RVT_S_BUSY | HFI2_S_ANY_WAIT_IO)) &&
++		(verbs_txreq_queued(iowait_get_ib_work(&priv->s_iowait)) ||
++		(qp->s_flags & RVT_S_RESP_PENDING) ||
++		 !(qp->s_flags & RVT_S_ANY_WAIT_SEND));
++}
++
++/*
++ * free_ahg - clear ahg from QP
++ */
++static inline void clear_ahg(struct rvt_qp *qp)
++{
++	struct hfi2_qp_priv *priv = qp->priv;
++
++	priv->s_ahg->ahgcount = 0;
++	qp->s_flags &= ~(HFI2_S_AHG_VALID | HFI2_S_AHG_CLEAR);
++	if (priv->s_sde && qp->s_ahgidx >= 0)
++		sdma_ahg_free(priv->s_sde, qp->s_ahgidx);
++	qp->s_ahgidx = -1;
 +}
 +
 +/**
-+ * hfi2_pkey_validation_pma - It validates PKEYs for incoming PMA MAD packets.
-+ * @ibp: IB port data
-+ * @in_mad: MAD packet with header and data
-+ * @in_wc: Work completion data such as source LID, port number, etc.
++ * hfi2_qp_wakeup - wake up on the indicated event
++ * @qp: the QP
++ * @flag: flag the qp on which the qp is stalled
++ */
++void hfi2_qp_wakeup(struct rvt_qp *qp, u32 flag);
++
++struct sdma_engine *qp_to_sdma_engine(struct rvt_qp *qp, u8 sc5);
++struct send_context *qp_to_send_context(struct rvt_qp *qp, u8 sc5);
++
++void qp_iter_print(struct seq_file *s, struct rvt_qp_iter *iter);
++
++bool _hfi2_schedule_send(struct rvt_qp *qp);
++bool hfi2_schedule_send(struct rvt_qp *qp);
++
++void hfi2_migrate_qp(struct rvt_qp *qp);
++
++/*
++ * Functions provided by hfi2 driver for rdmavt to use
++ */
++void *qp_priv_alloc(struct rvt_dev_info *rdi, struct rvt_qp *qp);
++void qp_priv_free(struct rvt_dev_info *rdi, struct rvt_qp *qp);
++unsigned free_all_qps(struct rvt_dev_info *rdi);
++void notify_qp_reset(struct rvt_qp *qp);
++int get_pmtu_from_attr(struct rvt_dev_info *rdi, struct rvt_qp *qp,
++		       struct ib_qp_attr *attr);
++void flush_qp_waiters(struct rvt_qp *qp);
++void notify_error_qp(struct rvt_qp *qp);
++void stop_send_queue(struct rvt_qp *qp);
++void quiesce_qp(struct rvt_qp *qp);
++u32 mtu_from_qp(struct rvt_dev_info *rdi, struct rvt_qp *qp, u32 pmtu);
++int mtu_to_path_mtu(u32 mtu);
++void hfi2_error_port_qps(struct hfi2_ibport *ibp, u8 sl);
++void hfi2_qp_unbusy(struct rvt_qp *qp, struct iowait_work *wait);
++#endif /* _QP_H */
+diff --git a/drivers/infiniband/hw/hfi2/rc.h b/drivers/infiniband/hw/hfi2/rc.h
+new file mode 100644
+index 000000000000..0291e36e5f57
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/rc.h
+@@ -0,0 +1,59 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++/*
++ * Copyright(c) 2018 Intel Corporation.
 + *
-+ * These are all the possible logic rules for validating a pkey:
++ */
++
++#ifndef HFI2_RC_H
++#define HFI2_RC_H
++
++/* cut down ridiculously long IB macro names */
++#define OP(x) IB_OPCODE_RC_##x
++
++static inline void update_ack_queue(struct rvt_qp *qp, unsigned int n)
++{
++	unsigned int next;
++
++	next = n + 1;
++	if (next > rvt_size_atomic(ib_to_rvt(qp->ibqp.device)))
++		next = 0;
++	qp->s_tail_ack_queue = next;
++	qp->s_acked_ack_queue = next;
++	qp->s_ack_state = OP(ACKNOWLEDGE);
++}
++
++static inline void rc_defered_ack(struct hfi2_ctxtdata *rcd,
++				  struct rvt_qp *qp)
++{
++	if (list_empty(&qp->rspwait)) {
++		qp->r_flags |= RVT_R_RSP_NAK;
++		rvt_get_qp(qp);
++		list_add_tail(&qp->rspwait, &rcd->qp_wait_list);
++	}
++}
++
++static inline u32 restart_sge(struct rvt_sge_state *ss, struct rvt_swqe *wqe,
++			      u32 psn, u32 pmtu)
++{
++	u32 len;
++
++	len = delta_psn(psn, wqe->psn) * pmtu;
++	return rvt_restart_sge(ss, wqe, len);
++}
++
++static inline void release_rdma_sge_mr(struct rvt_ack_entry *e)
++{
++	if (e->rdma_sge.mr) {
++		rvt_put_mr(e->rdma_sge.mr);
++		e->rdma_sge.mr = NULL;
++	}
++}
++
++struct rvt_ack_entry *find_prev_entry(struct rvt_qp *qp, u32 psn, u8 *prev,
++				      u8 *prev_ack, bool *scheduled);
++int do_rc_ack(struct rvt_qp *qp, u32 aeth, u32 psn, int opcode, u64 val,
++	      struct hfi2_ctxtdata *rcd);
++struct rvt_swqe *do_rc_completion(struct rvt_qp *qp, struct rvt_swqe *wqe,
++				  struct hfi2_ibport *ibp);
++
++#endif /* HFI2_RC_H */
+diff --git a/drivers/infiniband/hw/hfi2/sdma.h b/drivers/infiniband/hw/hfi2/sdma.h
+new file mode 100644
+index 000000000000..77d285283cb9
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/sdma.h
+@@ -0,0 +1,1212 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2015 - 2018 Intel Corporation.
++ */
++
++#ifndef _HFI2_SDMA_H
++#define _HFI2_SDMA_H
++
++#include <linux/types.h>
++#include <linux/list.h>
++#include <asm/byteorder.h>
++#include <linux/workqueue.h>
++#include <linux/rculist.h>
++
++#include "sdma_defs.h"
++#include "hfi2.h"
++#include "verbs.h"
++#include "sdma_txreq.h"
++
++static inline bool wfr_sdma_qw_get_first_desc(u64 *qw)
++{
++	return !!(qw[0] & WFR_SDMA_DESC0_FIRST_DESC_FLAG);
++}
++
++static inline void wfr_sdma_qw_set_first_desc(u64 *qw)
++{
++	qw[0] |= WFR_SDMA_DESC0_FIRST_DESC_FLAG;
++}
++
++static inline bool wfr_sdma_qw_get_last_desc(u64 *qw)
++{
++	return !!(qw[0] & WFR_SDMA_DESC0_LAST_DESC_FLAG);
++}
++
++static inline void wfr_sdma_qw_set_last_desc(u64 *qw)
++{
++	qw[0] |= WFR_SDMA_DESC0_LAST_DESC_FLAG;
++}
++
++static inline u32 wfr_sdma_qw_get_byte_count(u64 *qw)
++{
++	return (qw[0] >> WFR_SDMA_DESC0_BYTE_COUNT_SHIFT) &
++		WFR_SDMA_DESC0_BYTE_COUNT_MASK;
++}
++
++/* assumes starting field is zero */
++static inline void wfr_sdma_qw_set_byte_count(u64 *qw, u32 bytes)
++{
++	qw[0] |= ((u64)bytes & WFR_SDMA_DESC0_BYTE_COUNT_MASK) <<
++			WFR_SDMA_DESC0_BYTE_COUNT_SHIFT;
++}
++
++static inline u64 wfr_sdma_qw_get_phy_addr(u64 *qw)
++{
++	return (qw[0] >> WFR_SDMA_DESC0_PHY_ADDR_SHIFT) &
++		WFR_SDMA_DESC0_PHY_ADDR_MASK;
++}
++
++/* assumes starting field is zero */
++static inline void wfr_sdma_qw_set_phy_addr(u64 *qw, u64 phy_addr)
++{
++	qw[0] |= (phy_addr & WFR_SDMA_DESC0_PHY_ADDR_MASK) <<
++			WFR_SDMA_DESC0_PHY_ADDR_SHIFT;
++}
++
++static inline bool jkr_sdma_qw_get_first_desc(u64 *qw)
++{
++	return !!(qw[1] & JKR_SDMA_DESC1_FIRST_DESC_FLAG);
++}
++
++static inline void jkr_sdma_qw_set_first_desc(u64 *qw)
++{
++	qw[1] |= JKR_SDMA_DESC1_FIRST_DESC_FLAG;
++}
++
++static inline bool jkr_sdma_qw_get_last_desc(u64 *qw)
++{
++	return !!(qw[1] & JKR_SDMA_DESC1_LAST_DESC_FLAG);
++}
++
++static inline void jkr_sdma_qw_set_last_desc(u64 *qw)
++{
++	qw[1] |= JKR_SDMA_DESC1_LAST_DESC_FLAG;
++}
++
++static inline u32 jkr_sdma_qw_get_byte_count(u64 *qw)
++{
++	return (qw[1] >> JKR_SDMA_DESC1_BYTE_COUNT_SHIFT) &
++		JKR_SDMA_DESC1_BYTE_COUNT_MASK;
++}
++
++/* assumes starting field is zero */
++static inline void jkr_sdma_qw_set_byte_count(u64 *qw, u32 bytes)
++{
++	qw[1] |= ((u64)bytes & JKR_SDMA_DESC1_BYTE_COUNT_MASK) <<
++			JKR_SDMA_DESC1_BYTE_COUNT_SHIFT;
++}
++
++static inline u64 jkr_sdma_qw_get_phy_addr(u64 *qw)
++{
++	return (qw[0] >> JKR_SDMA_DESC0_PHY_ADDR_SHIFT) &
++		JKR_SDMA_DESC0_PHY_ADDR_MASK;
++}
++
++/* assumes starting field is zero */
++static inline void jkr_sdma_qw_set_phy_addr(u64 *qw, u64 phy_addr)
++{
++	qw[0] |= (phy_addr & JKR_SDMA_DESC0_PHY_ADDR_MASK) <<
++			JKR_SDMA_DESC0_PHY_ADDR_SHIFT;
++}
++
++/* Per-chip setter inlining wrapper */
++#define sdma_qw_set(dd, field, ...) do { \
++	if ((dd)->params->chip_type == CHIP_WFR) \
++		wfr_sdma_qw_set_##field(__VA_ARGS__); \
++	else if ((dd)->params->chip_type == CHIP_JKR) \
++		jkr_sdma_qw_set_##field(__VA_ARGS__); \
++	else \
++		WARN_ONCE(1, "Unsupported chip type %u", \
++			  (dd)->params->chip_type); \
++} while (0)
++
++/* Per-chip getter inlining wrapper */
++#define sdma_qw_get(dd, fn, p) \
++	((dd)->params->chip_type == CHIP_WFR ?  wfr_sdma_qw_get_##fn((p)) : \
++	 ((dd)->params->chip_type == CHIP_JKR ? jkr_sdma_qw_get_##fn((p)) : 0))
++
++enum sdma_states {
++	sdma_state_s00_hw_down,
++	sdma_state_s10_hw_start_up_halt_wait,
++	sdma_state_s15_hw_start_up_clean_wait,
++	sdma_state_s20_idle,
++	sdma_state_s30_sw_clean_up_wait,
++	sdma_state_s40_hw_clean_up_wait,
++	sdma_state_s50_hw_halt_wait,
++	sdma_state_s60_idle_halt_wait,
++	sdma_state_s80_hw_freeze,
++	sdma_state_s82_freeze_sw_clean,
++	sdma_state_s99_running,
++};
++
++enum sdma_events {
++	sdma_event_e00_go_hw_down,
++	sdma_event_e10_go_hw_start,
++	sdma_event_e15_hw_halt_done,
++	sdma_event_e25_hw_clean_up_done,
++	sdma_event_e30_go_running,
++	sdma_event_e40_sw_cleaned,
++	sdma_event_e50_hw_cleaned,
++	sdma_event_e60_hw_halted,
++	sdma_event_e70_go_idle,
++	sdma_event_e80_hw_freeze,
++	sdma_event_e81_hw_frozen,
++	sdma_event_e82_hw_unfreeze,
++	sdma_event_e85_link_down,
++	sdma_event_e90_sw_halted,
++};
++
++struct sdma_set_state_action {
++	unsigned op_enable:1;
++	unsigned op_intenable:1;
++	unsigned op_halt:1;
++	unsigned op_cleanup:1;
++	unsigned go_s99_running_tofalse:1;
++	unsigned go_s99_running_totrue:1;
++};
++
++struct sdma_state {
++	struct kref          kref;
++	struct completion    comp;
++	enum sdma_states current_state;
++	unsigned             current_op;
++	unsigned             go_s99_running;
++	/* debugging/development */
++	enum sdma_states previous_state;
++	unsigned             previous_op;
++	enum sdma_events last_event;
++};
++
++/**
++ * DOC: sdma exported routines
 + *
-+ * a) If pkey neither FULL_MGMT_P_KEY nor LIM_MGMT_P_KEY,
-+ *    and NOT self-originated packet:
-+ *     Drop MAD packet as it should always be part of the
-+ *     management partition unless it's a self-originated packet.
++ * These sdma routines fit into three categories:
++ * - The SDMA API for building and submitting packets
++ *   to the ring
 + *
-+ * b) If pkey_index -> FULL_MGMT_P_KEY, and LIM_MGMT_P_KEY in pkey table:
-+ *     The packet is coming from a management node and the receiving node
-+ *     is also a management node, so it is safe for the packet to go through.
++ * - Initialization and tear down routines to buildup
++ *   and tear down SDMA
 + *
-+ * c) If pkey_index -> FULL_MGMT_P_KEY, and LIM_MGMT_P_KEY is NOT in pkey table:
-+ *     Drop the packet as LIM_MGMT_P_KEY should always be in the pkey table.
-+ *     It could be an FM misconfiguration.
++ * - ISR entrances to handle interrupts, state changes
++ *   and errors
++ */
++
++/**
++ * DOC: sdma PSM/verbs API
 + *
-+ * d) If pkey_index -> LIM_MGMT_P_KEY and FULL_MGMT_P_KEY is NOT in pkey table:
-+ *     It is safe for the packet to go through since a non-management node is
-+ *     talking to another non-management node.
++ * The sdma API is designed to be used by both PSM
++ * and verbs to supply packets to the SDMA ring.
 + *
-+ * e) If pkey_index -> LIM_MGMT_P_KEY and FULL_MGMT_P_KEY in pkey table:
-+ *     Drop the packet because a non-management node is talking to a
-+ *     management node, and it could be an attack.
++ * The usage of the API is as follows:
 + *
-+ * For the implementation, these rules can be simplied to only checking
-+ * for (a) and (e). There's no need to check for rule (b) as
-+ * the packet doesn't need to be dropped. Rule (c) is not possible in
-+ * the driver as LIM_MGMT_P_KEY is always in the pkey table.
++ * Embed a struct iowait in the QP or
++ * PQ.  The iowait should be initialized with a
++ * call to iowait_init().
++ *
++ * The user of the API should create an allocation method
++ * for their version of the txreq. slabs, pre-allocated lists,
++ * and dma pools can be used.  Once the user's overload of
++ * the sdma_txreq has been allocated, the sdma_txreq member
++ * must be initialized with sdma_txinit() or sdma_txinit_ahg().
++ *
++ * The txreq must be declared with the sdma_txreq first.
++ *
++ * The tx request, once initialized,  is manipulated with calls to
++ * sdma_txadd_daddr(), sdma_txadd_page(), or sdma_txadd_kvaddr()
++ * for each disjoint memory location.  It is the user's responsibility
++ * to understand the packet boundaries and page boundaries to do the
++ * appropriate number of sdma_txadd_* calls..  The user
++ * must be prepared to deal with failures from these routines due to
++ * either memory allocation or dma_mapping failures.
++ *
++ * The mapping specifics for each memory location are recorded
++ * in the tx. Memory locations added with sdma_txadd_page()
++ * and sdma_txadd_kvaddr() are automatically mapped when added
++ * to the tx and nmapped as part of the progress processing in the
++ * SDMA interrupt handling.
++ *
++ * sdma_txadd_daddr() is used to add an dma_addr_t memory to the
++ * tx.   An example of a use case would be a pre-allocated
++ * set of headers allocated via dma_pool_alloc() or
++ * dma_alloc_coherent().  For these memory locations, it
++ * is the responsibility of the user to handle that unmapping.
++ * (This would usually be at an unload or job termination.)
++ *
++ * The routine sdma_send_txreq() is used to submit
++ * a tx to the ring after the appropriate number of
++ * sdma_txadd_* have been done.
++ *
++ * If it is desired to send a burst of sdma_txreqs, sdma_send_txlist()
++ * can be used to submit a list of packets.
++ *
++ * The user is free to use the link overhead in the struct sdma_txreq as
++ * long as the tx isn't in flight.
++ *
++ * The extreme degenerate case of the number of descriptors
++ * exceeding the ring size is automatically handled as
++ * memory locations are added.  An overflow of the descriptor
++ * array that is part of the sdma_txreq is also automatically
++ * handled.
++ *
++ */
++
++/**
++ * DOC: Infrastructure calls
++ *
++ * sdma_init() is used to initialize data structures and
++ * CSRs for the desired number of SDMA engines.
++ *
++ * sdma_start() is used to kick the SDMA engines initialized
++ * with sdma_init().   Interrupts must be enabled at this
++ * point since aspects of the state machine are interrupt
++ * driven.
++ *
++ * sdma_engine_error() and sdma_engine_interrupt() are
++ * entrances for interrupts.
++ *
++ * sdma_map_init() is for the management of the mapping
++ * table when the number of vls is changed.
++ *
++ */
++
++/*
++ * struct hw_sdma_desc - raw 128 bit SDMA descriptor
++ *
++ * This is the raw descriptor in the SDMA ring
++ */
++struct hw_sdma_desc {
++	/* private:  don't use directly */
++	__le64 qw[2];
++};
++
++/**
++ * struct sdma_engine - Data pertaining to each SDMA engine.
++ * @dd: a back-pointer to the device data
++ * @ppd: per port back-pointer
++ * @imask: mask for irq manipulation
++ * @idle_mask: mask for determining if an interrupt is due to sdma_idle
++ *
++ * This structure has the state for each sdma_engine.
++ *
++ * Accessing to non public fields are not supported
++ * since the private members are subject to change.
++ */
++struct sdma_engine {
++	/* read mostly */
++	struct hfi2_devdata *dd;
++	/* private: */
++	void __iomem *tail_csr;
++	u64 imask;			/* clear interrupt mask */
++	u64 idle_mask;
++	u64 progress_mask;
++	u64 int_mask;
++	/* private: */
++	volatile __le64      *head_dma; /* DMA'ed by chip */
++	/* private: */
++	dma_addr_t            head_phys;
++	/* private: */
++	struct hw_sdma_desc *descq;
++	/* private: */
++	unsigned descq_full_count;
++	struct sdma_txreq **tx_ring;
++	/* private: */
++	dma_addr_t            descq_phys;
++	/* private */
++	u32 sdma_mask;
++	/* private */
++	struct sdma_state state;
++	/* private */
++	int cpu;
++	/* private: */
++	u8 sdma_shift;
++	/* private: */
++	u8 this_idx; /* zero relative engine */
++	/* protect changes to senddmactrl shadow */
++	spinlock_t senddmactrl_lock;
++	/* private: */
++	u64 p_senddmactrl;		/* shadow per-engine SendDmaCtrl */
++
++	/* read/write using tail_lock */
++	spinlock_t            tail_lock ____cacheline_aligned_in_smp;
++#ifdef CONFIG_HFI2_DEBUG_SDMA_ORDER
++	/* private: */
++	u64                   tail_sn;
++#endif
++	/* private: */
++	u32                   descq_tail;
++	/* private: */
++	unsigned long         ahg_bits;
++	/* private: */
++	u16                   desc_avail;
++	/* private: */
++	u16                   tx_tail;
++	/* private: */
++	u16 descq_cnt;
++
++	/* read/write using head_lock */
++	/* private: */
++	seqlock_t            head_lock ____cacheline_aligned_in_smp;
++#ifdef CONFIG_HFI2_DEBUG_SDMA_ORDER
++	/* private: */
++	u64                   head_sn;
++#endif
++	/* private: */
++	u32                   descq_head;
++	/* private: */
++	u16                   tx_head;
++	/* private: */
++	u64                   last_status;
++	/* private */
++	u64                     err_cnt;
++	/* private */
++	u64                     sdma_int_cnt;
++	u64                     idle_int_cnt;
++	u64                     progress_int_cnt;
++
++	/* private: */
++	seqlock_t            waitlock;
++	struct list_head      dmawait;
++
++	/* CONFIG SDMA for now, just blindly duplicate */
++	/* private: */
++	struct work_struct sdma_hw_clean_up_work;
++	struct work_struct sdma_sw_clean_up_work;
++
++	/* private: */
++	struct work_struct err_halt_worker;
++	/* private */
++	struct timer_list     err_progress_check_timer;
++	u32                   progress_check_head;
++	/* private: */
++	struct work_struct flush_worker;
++	/* protect flush list */
++	spinlock_t flushlist_lock;
++	/* private: */
++	struct list_head flushlist;
++	struct cpumask cpu_mask;
++	struct kobject kobj;
++	u32 msix_intr;
++};
++
++int sdma_init(struct hfi2_devdata *dd);
++void sdma_start(struct hfi2_devdata *dd);
++void sdma_exit(struct hfi2_devdata *dd);
++void sdma_clean(struct hfi2_devdata *dd, size_t num_engines);
++void sdma_all_running(struct hfi2_devdata *dd);
++void sdma_all_idle(struct hfi2_devdata *dd);
++void sdma_freeze_notify(struct hfi2_devdata *dd, int go_idle);
++void sdma_freeze(struct hfi2_devdata *dd);
++void sdma_unfreeze(struct hfi2_devdata *dd);
++void sdma_wait(struct hfi2_devdata *dd);
++
++/**
++ * sdma_empty() - idle engine test
++ * @engine: sdma engine
++ *
++ * Currently used by verbs as a latency optimization.
 + *
 + * Return:
-+ * 0 - pkey is okay, -EINVAL it's a bad pkey
++ * 1 - empty, 0 - non-empty
 + */
-+static int hfi2_pkey_validation_pma(struct hfi2_ibport *ibp,
-+				    const struct opa_mad *in_mad,
-+				    const struct ib_wc *in_wc)
++static inline int sdma_empty(struct sdma_engine *sde)
 +{
-+	u16 pkey_value = hfi2_lookup_pkey_value(ibp, in_wc->pkey_index);
++	return sde->descq_tail == sde->descq_head;
++}
 +
-+	/* Rule (a) from above */
-+	if (!is_local_mad(ibp, in_mad, in_wc) &&
-+	    pkey_value != LIM_MGMT_P_KEY &&
-+	    pkey_value != FULL_MGMT_P_KEY)
-+		return -EINVAL;
++/*
++ * Return the number of descriptors in use.  Expects descq_cnt is a
++ * power-of-two.  See sdma_get_descq_cnt().
++ */
++static inline u16 sdma_descq_inprocess(struct sdma_engine *sde)
++{
++	return (sde->descq_cnt + sde->descq_tail - READ_ONCE(sde->descq_head))
++		& (sde->descq_cnt - 1);
++}
 +
-+	/* Rule (e) from above */
-+	if (pkey_value == LIM_MGMT_P_KEY &&
-+	    is_full_mgmt_pkey_in_table(ibp))
-+		return -EINVAL;
++/* return the number of descriptors available */
++static inline u16 sdma_descq_freecnt(struct sdma_engine *sde)
++{
++	return sde->descq_cnt - 1 - sdma_descq_inprocess(sde);
++}
 +
++/*
++ * Either head_lock or tail lock required to see
++ * a steady state.
++ */
++static inline int __sdma_running(struct sdma_engine *engine)
++{
++	return engine->state.current_state == sdma_state_s99_running;
++}
++
++/**
++ * sdma_running() - state suitability test
++ * @engine: sdma engine
++ *
++ * sdma_running probes the internal state to determine if it is suitable
++ * for submitting packets.
++ *
++ * Return:
++ * 1 - ok to submit, 0 - not ok to submit
++ *
++ */
++static inline int sdma_running(struct sdma_engine *engine)
++{
++	unsigned long flags;
++	int ret;
++
++	spin_lock_irqsave(&engine->tail_lock, flags);
++	ret = __sdma_running(engine);
++	spin_unlock_irqrestore(&engine->tail_lock, flags);
++	return ret;
++}
++
++void _sdma_txreq_ahgadd(
++	struct sdma_txreq *tx,
++	u8 num_ahg,
++	u8 ahg_entry,
++	u32 *ahg,
++	u8 ahg_hlen);
++
++/*
++ * Padding is needed if the data is not a multiple of 4 bytes.  This will
++ * only possibly be true for 9B packets.  The packet_len for 16B packets will
++ * already be padded to a multiple of 8 bytes.
++ */
++static inline int needs_pad(u16 packet_len)
++{
++	return (packet_len & 0x3) != 0;
++}
++
++/* return the number of bytes needed to pad to a multiple of 4 */
++static inline int pad_length(struct sdma_txreq *tx)
++{
++	return (4 - (tx->packet_len & 0x3)) & 0x3;
++}
++
++#define ALIGN_NONE          0
++#define ALIGN_256_ALL       1
++#define ALIGN_256_HEAD_TAIL 2
++#define ALIGN_256_TAIL      3
++
++/* return the max number of descriptors a segment might need */
++static inline int calc_num_desc(struct hfi2_devdata *dd, u16 packet_len)
++{
++	if (dd->sdma_align == ALIGN_256_HEAD_TAIL)
++		return 3; /* head, mid, tail */
++	if (dd->sdma_align == ALIGN_NONE)
++		return 1; /* all */
++	if (dd->sdma_align == ALIGN_256_TAIL)
++		return 2; /* head+mid, tail */
++	/*
++	 * Conservative ALIGN_ALL case - split on every 256 byte fetch
++	 * boundary.  The returned number must be the same for the whole
++	 * packet - not just the current segment.
++	 *
++	 * A 10240 sized packet could have at most 41 descriptors.
++	 */
++	return (round_up(packet_len, 256) >> 8) + 1;
++}
++
++/**
++ * sdma_txinit_ahg() - initialize an sdma_txreq struct with AHG
++ * @dd: device data
++ * @tx: tx request to initialize
++ * @flags: flags to key last descriptor additions
++ * @tlen: total packet length (pbc + headers + data)
++ * @ahg_entry: ahg entry to use  (0 - 31)
++ * @num_ahg: ahg descriptor for first descriptor (0 - 9)
++ * @ahg: array of AHG descriptors (up to 9 entries)
++ * @ahg_hlen: number of bytes from ASIC entry to use
++ * @cb: callback
++ *
++ * The allocation of the sdma_txreq and it enclosing structure is user
++ * dependent.  This routine must be called to initialize the user independent
++ * fields.
++ *
++ * The currently supported flags are SDMA_TXREQ_F_URGENT,
++ * SDMA_TXREQ_F_AHG_COPY, and SDMA_TXREQ_F_USE_AHG.
++ *
++ * SDMA_TXREQ_F_URGENT is used for latency sensitive situations where the
++ * completion is desired as soon as possible.
++ *
++ * SDMA_TXREQ_F_AHG_COPY causes the header in the first descriptor to be
++ * copied to chip entry. SDMA_TXREQ_F_USE_AHG causes the code to add in
++ * the AHG descriptors into the first 1 to 3 descriptors.
++ *
++ * Completions of submitted requests can be gotten on selected
++ * txreqs by giving a completion routine callback to sdma_txinit() or
++ * sdma_txinit_ahg().  The environment in which the callback runs
++ * can be from an ISR, a tasklet, or a thread, so no sleeping
++ * kernel routines can be used.   Aspects of the sdma ring may
++ * be locked so care should be taken with locking.
++ *
++ * The callback pointer can be NULL to avoid any callback for the packet
++ * being submitted. The callback will be provided this tx, a status, and a flag.
++ *
++ * The status will be one of SDMA_TXREQ_S_OK, SDMA_TXREQ_S_SENDERROR,
++ * SDMA_TXREQ_S_ABORTED, or SDMA_TXREQ_S_SHUTDOWN.
++ *
++ * The flag, if the is the iowait had been used, indicates the iowait
++ * sdma_busy count has reached zero.
++ *
++ * user data portion of tlen should be precise.   The sdma_txadd_* entrances
++ * will pad with a descriptor references 1 - 3 bytes when the number of bytes
++ * specified in tlen have been supplied to the sdma_txreq.
++ *
++ * ahg_hlen is used to determine the number of on-chip entry bytes to
++ * use as the header.   This is for cases where the stored header is
++ * larger than the header to be used in a packet.  This is typical
++ * for verbs where an RDMA_WRITE_FIRST is larger than the packet in
++ * and RDMA_WRITE_MIDDLE.
++ *
++ */
++static inline int sdma_txinit_ahg(struct hfi2_devdata *dd,
++				  struct sdma_txreq *tx,
++				  u16 flags,
++				  u16 tlen,
++				  u8 ahg_entry,
++				  u8 num_ahg,
++				  u32 *ahg,
++				  u8 ahg_hlen,
++				  void (*cb)(struct sdma_txreq *, int))
++{
++	if (tlen == 0)
++		return -ENODATA;
++	if (tlen > MAX_SDMA_PKT_SIZE)
++		return -EMSGSIZE;
++	tx->desc_limit = ARRAY_SIZE(tx->descs);
++	tx->descp = &tx->descs[0];
++	INIT_LIST_HEAD(&tx->list);
++	tx->num_desc = 0;
++	tx->flags = flags;
++	tx->complete = cb;
++	tx->coalesce_buf = NULL;
++	tx->wait = NULL;
++	tx->packet_len = tlen;
++	tx->tlen = tx->packet_len;
++	tx->desc_margin = calc_num_desc(dd, tx->packet_len) + needs_pad(tx->packet_len);
++	tx->descs[0].qw[0] = 0;
++	tx->descs[0].qw[1] = 0;
++	/*
++	 * Do not bother with initializing .map_type; sdma_set_map_type()
++	 * should overwrite per-desc bits. sdma_get_map_type() should not be
++	 * called for per-desc bits that haven't been set with
++	 * sdma_set_map_type().
++	 */
++	sdma_qw_set(dd, first_desc, tx->descs[0].qw);
++	if (flags & SDMA_TXREQ_F_AHG_COPY)
++		tx->descs[0].qw[1] |=
++			(((u64)ahg_entry & SDMA_DESC1_HEADER_INDEX_MASK)
++				<< SDMA_DESC1_HEADER_INDEX_SHIFT) |
++			(((u64)SDMA_AHG_COPY & SDMA_DESC1_HEADER_MODE_MASK)
++				<< SDMA_DESC1_HEADER_MODE_SHIFT);
++	else if (flags & SDMA_TXREQ_F_USE_AHG && num_ahg)
++		_sdma_txreq_ahgadd(tx, num_ahg, ahg_entry, ahg, ahg_hlen);
 +	return 0;
 +}
 +
-+static int process_subn_opa(struct ib_device *ibdev, int mad_flags,
-+			    u32 port, const struct opa_mad *in_mad,
-+			    struct opa_mad *out_mad,
-+			    u32 *resp_len, int local_mad)
-+{
-+	struct opa_smp *smp = (struct opa_smp *)out_mad;
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+	u8 *data;
-+	u32 am, data_size;
-+	__be16 attr_id;
-+	int ret;
-+
-+	*out_mad = *in_mad;
-+	data = opa_get_smp_data(smp);
-+	data_size = (u32)opa_get_smp_data_size(smp);
-+
-+	am = be32_to_cpu(smp->attr_mod);
-+	attr_id = smp->attr_id;
-+	if (smp->class_version != OPA_SM_CLASS_VERSION) {
-+		smp->status |= IB_SMP_UNSUP_VERSION;
-+		ret = reply((struct ib_mad_hdr *)smp);
-+		return ret;
-+	}
-+	ret = check_mkey(ibp, (struct ib_mad_hdr *)smp, mad_flags, smp->mkey,
-+			 smp->route.dr.dr_slid, smp->route.dr.return_path,
-+			 smp->hop_cnt);
-+	if (ret) {
-+		u32 port_num = be32_to_cpu(smp->attr_mod);
-+
-+		/*
-+		 * If this is a get/set portinfo, we already check the
-+		 * M_Key if the MAD is for another port and the M_Key
-+		 * is OK on the receiving port. This check is needed
-+		 * to increment the error counters when the M_Key
-+		 * fails to match on *both* ports.
-+		 */
-+		if (attr_id == IB_SMP_ATTR_PORT_INFO &&
-+		    (smp->method == IB_MGMT_METHOD_GET ||
-+		     smp->method == IB_MGMT_METHOD_SET) &&
-+		    port_num && port_num <= ibdev->phys_port_cnt &&
-+		    port != port_num)
-+			(void)check_mkey(to_iport(ibdev, port_num),
-+					  (struct ib_mad_hdr *)smp, 0,
-+					  smp->mkey, smp->route.dr.dr_slid,
-+					  smp->route.dr.return_path,
-+					  smp->hop_cnt);
-+		ret = IB_MAD_RESULT_FAILURE;
-+		return ret;
-+	}
-+
-+	*resp_len = opa_get_smp_header_size(smp);
-+
-+	switch (smp->method) {
-+	case IB_MGMT_METHOD_GET:
-+		switch (attr_id) {
-+		default:
-+			clear_opa_smp_data(smp);
-+			ret = subn_get_opa_sma(attr_id, smp, am, data,
-+					       ibdev, port, resp_len,
-+					       data_size);
-+			break;
-+		case OPA_ATTRIB_ID_AGGREGATE:
-+			ret = subn_get_opa_aggregate(smp, ibdev, port,
-+						     resp_len);
-+			break;
-+		}
-+		break;
-+	case IB_MGMT_METHOD_SET:
-+		switch (attr_id) {
-+		default:
-+			ret = subn_set_opa_sma(attr_id, smp, am, data,
-+					       ibdev, port, resp_len,
-+					       data_size, local_mad);
-+			break;
-+		case OPA_ATTRIB_ID_AGGREGATE:
-+			ret = subn_set_opa_aggregate(smp, ibdev, port,
-+						     resp_len, local_mad);
-+			break;
-+		}
-+		break;
-+	case IB_MGMT_METHOD_TRAP:
-+	case IB_MGMT_METHOD_REPORT:
-+	case IB_MGMT_METHOD_REPORT_RESP:
-+	case IB_MGMT_METHOD_GET_RESP:
-+		/*
-+		 * The ib_mad module will call us to process responses
-+		 * before checking for other consumers.
-+		 * Just tell the caller to process it normally.
-+		 */
-+		ret = IB_MAD_RESULT_SUCCESS;
-+		break;
-+	case IB_MGMT_METHOD_TRAP_REPRESS:
-+		subn_handle_opa_trap_repress(ibp, smp);
-+		/* Always successful */
-+		ret = IB_MAD_RESULT_SUCCESS;
-+		break;
-+	default:
-+		smp->status |= IB_SMP_UNSUP_METHOD;
-+		ret = reply((struct ib_mad_hdr *)smp);
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int process_subn(struct ib_device *ibdev, int mad_flags,
-+			u32 port, const struct ib_mad *in_mad,
-+			struct ib_mad *out_mad)
-+{
-+	struct ib_smp *smp = (struct ib_smp *)out_mad;
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+	int ret;
-+
-+	*out_mad = *in_mad;
-+	if (smp->class_version != 1) {
-+		smp->status |= IB_SMP_UNSUP_VERSION;
-+		ret = reply((struct ib_mad_hdr *)smp);
-+		return ret;
-+	}
-+
-+	ret = check_mkey(ibp, (struct ib_mad_hdr *)smp, mad_flags,
-+			 smp->mkey, (__force __be32)smp->dr_slid,
-+			 smp->return_path, smp->hop_cnt);
-+	if (ret) {
-+		u32 port_num = be32_to_cpu(smp->attr_mod);
-+
-+		/*
-+		 * If this is a get/set portinfo, we already check the
-+		 * M_Key if the MAD is for another port and the M_Key
-+		 * is OK on the receiving port. This check is needed
-+		 * to increment the error counters when the M_Key
-+		 * fails to match on *both* ports.
-+		 */
-+		if (in_mad->mad_hdr.attr_id == IB_SMP_ATTR_PORT_INFO &&
-+		    (smp->method == IB_MGMT_METHOD_GET ||
-+		     smp->method == IB_MGMT_METHOD_SET) &&
-+		    port_num && port_num <= ibdev->phys_port_cnt &&
-+		    port != port_num)
-+			(void)check_mkey(to_iport(ibdev, port_num),
-+					 (struct ib_mad_hdr *)smp, 0,
-+					 smp->mkey,
-+					 (__force __be32)smp->dr_slid,
-+					 smp->return_path, smp->hop_cnt);
-+		ret = IB_MAD_RESULT_FAILURE;
-+		return ret;
-+	}
-+
-+	switch (smp->method) {
-+	case IB_MGMT_METHOD_GET:
-+		switch (smp->attr_id) {
-+		case IB_SMP_ATTR_NODE_INFO:
-+			ret = subn_get_nodeinfo(smp, ibdev, port);
-+			break;
-+		default:
-+			smp->status |= IB_SMP_UNSUP_METH_ATTR;
-+			ret = reply((struct ib_mad_hdr *)smp);
-+			break;
-+		}
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int process_perf(struct ib_device *ibdev, u32 port,
-+			const struct ib_mad *in_mad,
-+			struct ib_mad *out_mad)
-+{
-+	struct ib_pma_mad *pmp = (struct ib_pma_mad *)out_mad;
-+	struct ib_class_port_info *cpi = (struct ib_class_port_info *)
-+						&pmp->data;
-+	int ret = IB_MAD_RESULT_FAILURE;
-+
-+	*out_mad = *in_mad;
-+	if (pmp->mad_hdr.class_version != 1) {
-+		pmp->mad_hdr.status |= IB_SMP_UNSUP_VERSION;
-+		ret = reply((struct ib_mad_hdr *)pmp);
-+		return ret;
-+	}
-+
-+	switch (pmp->mad_hdr.method) {
-+	case IB_MGMT_METHOD_GET:
-+		switch (pmp->mad_hdr.attr_id) {
-+		case IB_PMA_PORT_COUNTERS:
-+			ret = pma_get_ib_portcounters(pmp, ibdev, port);
-+			break;
-+		case IB_PMA_PORT_COUNTERS_EXT:
-+			ret = pma_get_ib_portcounters_ext(pmp, ibdev, port);
-+			break;
-+		case IB_PMA_CLASS_PORT_INFO:
-+			cpi->capability_mask = IB_PMA_CLASS_CAP_EXT_WIDTH;
-+			ret = reply((struct ib_mad_hdr *)pmp);
-+			break;
-+		default:
-+			pmp->mad_hdr.status |= IB_SMP_UNSUP_METH_ATTR;
-+			ret = reply((struct ib_mad_hdr *)pmp);
-+			break;
-+		}
-+		break;
-+
-+	case IB_MGMT_METHOD_SET:
-+		if (pmp->mad_hdr.attr_id) {
-+			pmp->mad_hdr.status |= IB_SMP_UNSUP_METH_ATTR;
-+			ret = reply((struct ib_mad_hdr *)pmp);
-+		}
-+		break;
-+
-+	case IB_MGMT_METHOD_TRAP:
-+	case IB_MGMT_METHOD_GET_RESP:
-+		/*
-+		 * The ib_mad module will call us to process responses
-+		 * before checking for other consumers.
-+		 * Just tell the caller to process it normally.
-+		 */
-+		ret = IB_MAD_RESULT_SUCCESS;
-+		break;
-+
-+	default:
-+		pmp->mad_hdr.status |= IB_SMP_UNSUP_METHOD;
-+		ret = reply((struct ib_mad_hdr *)pmp);
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int process_perf_opa(struct ib_device *ibdev, u32 port,
-+			    const struct opa_mad *in_mad,
-+			    struct opa_mad *out_mad, u32 *resp_len)
-+{
-+	struct opa_pma_mad *pmp = (struct opa_pma_mad *)out_mad;
-+	int ret;
-+
-+	*out_mad = *in_mad;
-+
-+	if (pmp->mad_hdr.class_version != OPA_SM_CLASS_VERSION) {
-+		pmp->mad_hdr.status |= IB_SMP_UNSUP_VERSION;
-+		return reply((struct ib_mad_hdr *)pmp);
-+	}
-+
-+	*resp_len = sizeof(pmp->mad_hdr);
-+
-+	switch (pmp->mad_hdr.method) {
-+	case IB_MGMT_METHOD_GET:
-+		switch (pmp->mad_hdr.attr_id) {
-+		case IB_PMA_CLASS_PORT_INFO:
-+			ret = pma_get_opa_classportinfo(pmp, ibdev, resp_len);
-+			break;
-+		case OPA_PM_ATTRIB_ID_PORT_STATUS:
-+			ret = pma_get_opa_portstatus(pmp, ibdev, port,
-+						     resp_len);
-+			break;
-+		case OPA_PM_ATTRIB_ID_DATA_PORT_COUNTERS:
-+			ret = pma_get_opa_datacounters(pmp, ibdev, port,
-+						       resp_len);
-+			break;
-+		case OPA_PM_ATTRIB_ID_ERROR_PORT_COUNTERS:
-+			ret = pma_get_opa_porterrors(pmp, ibdev, port,
-+						     resp_len);
-+			break;
-+		case OPA_PM_ATTRIB_ID_ERROR_INFO:
-+			ret = pma_get_opa_errorinfo(pmp, ibdev, port,
-+						    resp_len);
-+			break;
-+		default:
-+			pmp->mad_hdr.status |= IB_SMP_UNSUP_METH_ATTR;
-+			ret = reply((struct ib_mad_hdr *)pmp);
-+			break;
-+		}
-+		break;
-+
-+	case IB_MGMT_METHOD_SET:
-+		switch (pmp->mad_hdr.attr_id) {
-+		case OPA_PM_ATTRIB_ID_CLEAR_PORT_STATUS:
-+			ret = pma_set_opa_portstatus(pmp, ibdev, port,
-+						     resp_len);
-+			break;
-+		case OPA_PM_ATTRIB_ID_ERROR_INFO:
-+			ret = pma_set_opa_errorinfo(pmp, ibdev, port,
-+						    resp_len);
-+			break;
-+		default:
-+			pmp->mad_hdr.status |= IB_SMP_UNSUP_METH_ATTR;
-+			ret = reply((struct ib_mad_hdr *)pmp);
-+			break;
-+		}
-+		break;
-+
-+	case IB_MGMT_METHOD_TRAP:
-+	case IB_MGMT_METHOD_GET_RESP:
-+		/*
-+		 * The ib_mad module will call us to process responses
-+		 * before checking for other consumers.
-+		 * Just tell the caller to process it normally.
-+		 */
-+		ret = IB_MAD_RESULT_SUCCESS;
-+		break;
-+
-+	default:
-+		pmp->mad_hdr.status |= IB_SMP_UNSUP_METHOD;
-+		ret = reply((struct ib_mad_hdr *)pmp);
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int hfi2_process_opa_mad(struct ib_device *ibdev, int mad_flags,
-+				u32 port, const struct ib_wc *in_wc,
-+				const struct ib_grh *in_grh,
-+				const struct opa_mad *in_mad,
-+				struct opa_mad *out_mad, size_t *out_mad_size,
-+				u16 *out_mad_pkey_index)
-+{
-+	int ret;
-+	int pkey_idx;
-+	int local_mad = 0;
-+	u32 resp_len = in_wc->byte_len - sizeof(*in_grh);
-+	struct hfi2_ibport *ibp = to_iport(ibdev, port);
-+
-+	pkey_idx = hfi2_lookup_pkey_idx(ibp, LIM_MGMT_P_KEY);
-+	if (pkey_idx < 0) {
-+		pr_warn("failed to find limited mgmt pkey, defaulting 0x%x\n",
-+			hfi2_get_pkey(ibp, 1));
-+		pkey_idx = 1;
-+	}
-+	*out_mad_pkey_index = (u16)pkey_idx;
-+
-+	switch (in_mad->mad_hdr.mgmt_class) {
-+	case IB_MGMT_CLASS_SUBN_DIRECTED_ROUTE:
-+	case IB_MGMT_CLASS_SUBN_LID_ROUTED:
-+		local_mad = is_local_mad(ibp, in_mad, in_wc);
-+		if (local_mad) {
-+			ret = opa_local_smp_check(ibp, in_wc);
-+			if (ret)
-+				return IB_MAD_RESULT_FAILURE;
-+		}
-+		ret = process_subn_opa(ibdev, mad_flags, port, in_mad,
-+				       out_mad, &resp_len, local_mad);
-+		goto bail;
-+	case IB_MGMT_CLASS_PERF_MGMT:
-+		ret = hfi2_pkey_validation_pma(ibp, in_mad, in_wc);
-+		if (ret)
-+			return IB_MAD_RESULT_FAILURE;
-+
-+		ret = process_perf_opa(ibdev, port, in_mad, out_mad, &resp_len);
-+		goto bail;
-+
-+	default:
-+		ret = IB_MAD_RESULT_SUCCESS;
-+	}
-+
-+bail:
-+	if (ret & IB_MAD_RESULT_REPLY)
-+		*out_mad_size = round_up(resp_len, 8);
-+	else if (ret & IB_MAD_RESULT_SUCCESS)
-+		*out_mad_size = in_wc->byte_len - sizeof(struct ib_grh);
-+
-+	return ret;
-+}
-+
-+static int hfi2_process_ib_mad(struct ib_device *ibdev, int mad_flags, u32 port,
-+			       const struct ib_wc *in_wc,
-+			       const struct ib_grh *in_grh,
-+			       const struct ib_mad *in_mad,
-+			       struct ib_mad *out_mad)
-+{
-+	int ret;
-+
-+	switch (in_mad->mad_hdr.mgmt_class) {
-+	case IB_MGMT_CLASS_SUBN_DIRECTED_ROUTE:
-+	case IB_MGMT_CLASS_SUBN_LID_ROUTED:
-+		ret = process_subn(ibdev, mad_flags, port, in_mad, out_mad);
-+		break;
-+	case IB_MGMT_CLASS_PERF_MGMT:
-+		ret = process_perf(ibdev, port, in_mad, out_mad);
-+		break;
-+	default:
-+		ret = IB_MAD_RESULT_SUCCESS;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+
-+#define OPA_ATTRIB_ID_MCTP_OVER_MAD	cpu_to_be16(0xff30)
-+#define OPA_ATTRIB_MOD_MCTP_INCOMING	cpu_to_be32(0x0001)
-+#define CH_LEN_MAX (2048 - 8) 
-+/*
-+ * Send a MAD to CPORT over MCTXT as a pass-through.
-+ * We always use 9B for now.
-+ */
-+static int cport_send_only_mad(struct hfi2_devdata *dd, u8 sb, const void *mad, int len)
-+{
-+	u8 *buf;
-+	int size = len + MAD_9B_OFFSET;
-+	int ret;
-+
-+	if (size > CH_LEN_MAX) {
-+		/* too big for MCTXT - truncate */
-+		return -EFBIG;
-+	}
-+	buf = kzalloc(size, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+	memcpy(buf + MAD_9B_OFFSET, mad, size - MAD_9B_OFFSET);
-+	((struct ib_header *)buf)->u.oth.u.ud.deth[1] = cpu_to_be32(2);
-+	ret = cport_send_notif(dd, CH_OP_MAD_9B, sb, buf, size);
-+	kfree(buf);
-+	return ret;
-+}
-+
-+/*
-+ * Send a MAD to CPORT over MCTXT and wait for response.
-+ * We always use 9B.
-+ */
-+int cport_send_recv_mad(struct hfi2_devdata *dd, u8 sb,
-+			const void *mad, int len,
-+			void *omad, size_t *omad_len)
-+{
-+	u8 *buf;
-+	int size = len + MAD_9B_OFFSET;
-+	int ret;
-+	void *rsp = NULL;
-+	int rsp_len = 0;
-+	long to;
-+
-+	to = cport_mad_to <= 0 ? MAX_SCHEDULE_TIMEOUT : cport_mad_to * HZ;
-+	if (size > CH_LEN_MAX) {
-+		/* too big for MCTXT - truncate */
-+		size = CH_LEN_MAX;
-+	}
-+
-+	buf = kzalloc(size, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+	memcpy(buf + MAD_9B_OFFSET, mad, size - MAD_9B_OFFSET);
-+	((struct ib_header *)buf)->u.oth.u.ud.deth[1] = cpu_to_be32(2);
-+
-+	ret = cport_send_req(dd, CH_OP_MAD_9B, sb, buf, size, &rsp, &rsp_len, to);
-+	kfree(buf);
-+	if (ret)
-+		goto out;
-+	if (rsp_len < MAD_9B_OFFSET) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+	rsp_len -= MAD_9B_OFFSET;
-+	if (rsp_len > *omad_len) {
-+		dd_dev_warn(dd, "CPORT response length 0x%x > 0x%lx, truncating\n",
-+			    rsp_len, *omad_len);
-+		rsp_len = *omad_len;
-+	}
-+	memcpy(omad, rsp + MAD_9B_OFFSET, rsp_len);
-+	*omad_len = rsp_len;
-+out:
-+	kfree(rsp);
-+	return ret;
-+}
-+
 +/**
-+ * cport_process_mad - redirect an incoming MAD packet to CPORT for processing
-+ * @ibdev: the infiniband device this packet came in on
-+ * @mad_flags: MAD flags
-+ * @port: the port number this packet came in on
-+ * @in_wc: the work completion entry for this packet
-+ * @in_grh: the global route header for this packet
-+ * @in_mad: the incoming MAD
-+ * @out_mad: any outgoing MAD reply
-+ * @out_mad_size: size of the outgoing MAD reply
-+ * @out_mad_pkey_index: used to apss back the packet key index
++ * sdma_txinit() - initialize an sdma_txreq struct (no AHG)
++ * @dd: device data
++ * @tx: tx request to initialize
++ * @flags: flags to key last descriptor additions
++ * @tlen: total packet length (pbc + headers + data)
++ * @cb: callback pointer
++ *
++ * The allocation of the sdma_txreq and it enclosing structure is user
++ * dependent.  This routine must be called to initialize the user
++ * independent fields.
++ *
++ * The currently supported flags is SDMA_TXREQ_F_URGENT.
++ *
++ * SDMA_TXREQ_F_URGENT is used for latency sensitive situations where the
++ * completion is desired as soon as possible.
++ *
++ * Completions of submitted requests can be gotten on selected
++ * txreqs by giving a completion routine callback to sdma_txinit() or
++ * sdma_txinit_ahg().  The environment in which the callback runs
++ * can be from an ISR, a tasklet, or a thread, so no sleeping
++ * kernel routines can be used.   The head size of the sdma ring may
++ * be locked so care should be taken with locking.
++ *
++ * The callback pointer can be NULL to avoid any callback for the packet
++ * being submitted.
++ *
++ * The callback, if non-NULL,  will be provided this tx and a status.  The
++ * status will be one of SDMA_TXREQ_S_OK, SDMA_TXREQ_S_SENDERROR,
++ * SDMA_TXREQ_S_ABORTED, or SDMA_TXREQ_S_SHUTDOWN.
++ *
 + */
-+int cport_process_mad(struct ib_device *ibdev, int mad_flags, u32 port,
-+		      const struct ib_wc *in_wc, const struct ib_grh *in_grh,
-+		      const struct ib_mad *in_mad, struct ib_mad *out_mad,
-+		      size_t *out_mad_size, u16 *out_mad_pkey_index)
++static inline int sdma_txinit(struct hfi2_devdata *dd,
++			      struct sdma_txreq *tx,
++			      u16 flags,
++			      u16 tlen,
++			      void (*cb)(struct sdma_txreq *, int))
 +{
-+	struct hfi2_devdata *dd = dd_from_ibdev(ibdev);
-+	u8 sb = port; /* 1.. */
-+	int mad_len;
-+	int ret;
-+	bool pass = false;
-+	int mad_result;
++	return sdma_txinit_ahg(dd, tx, flags, tlen, 0, 0, NULL, 0, cb);
++}
 +
-+	switch (in_mad->mad_hdr.mgmt_class) {
-+	case IB_MGMT_CLASS_SUBN_LID_ROUTED:
-+	case IB_MGMT_CLASS_SUBN_DIRECTED_ROUTE:
-+		if (in_mad->mad_hdr.base_version == OPA_MGMT_BASE_VERSION) {
-+			if (in_mad->mad_hdr.attr_id == OPA_ATTRIB_ID_MCTP_OVER_MAD) {
-+				if (in_mad->mad_hdr.attr_mod & OPA_ATTRIB_MOD_MCTP_INCOMING) {
-+					mad_result = IB_MAD_RESULT_SUCCESS;
-+					goto done;
-+				}
-+				pass = (in_mad->mad_hdr.method == IB_MGMT_METHOD_GET_RESP);
-+				goto pass_thru;
-+			}
-+			if (in_mad->mad_hdr.method == IB_MGMT_METHOD_TRAP ||
-+			    in_mad->mad_hdr.method == IB_MGMT_METHOD_REPORT ||
-+			    in_mad->mad_hdr.method == IB_MGMT_METHOD_REPORT_RESP ||
-+			    in_mad->mad_hdr.method == IB_MGMT_METHOD_GET_RESP) {
-+				mad_result = IB_MAD_RESULT_SUCCESS;
-+				goto done;
-+			}
-+			if (in_mad->mad_hdr.method == IB_MGMT_METHOD_TRAP_REPRESS) {
-+				/* Need this to prevent TRAP storms */
-+				return hfi2_process_mad(ibdev, mad_flags, port,
-+							in_wc, in_grh,
-+							in_mad, out_mad, out_mad_size,
-+							out_mad_pkey_index);
-+			}
-+		}
-+		break;	/* pass to CPORT */
-+	case IB_MGMT_CLASS_PERF_MGMT:
-+		break; /* pass to CPORT */
-+	default:
-+		mad_result = IB_MAD_RESULT_SUCCESS;
-+		goto done;
-+	}
-+	/* short-circuit all responses - no processing needed */
-+	if (ib_response_mad(&in_mad->mad_hdr)) {
-+		/*
-+		 * The ib_mad module will call us to process responses before
-+		 * checking for other consumers.  Tell the caller to process
-+		 * it normally.
-+		 */
-+		mad_result = IB_MAD_RESULT_SUCCESS;
-+		goto done;
-+	}
-+pass_thru:
-+	/*
-+	 * in order to pass a MAD over MCTXT, we will need to
-+	 * construct a "fake" header. We don't know what minimal
-+	 * data is required by CPORT, if any, in this header. See
-+	 * DN0823 sections 3.8 and 3.9.
-+	 *
-+	 * The alternative is to pass the MAD to CPORT using a loopback
-+	 * port.
-+	 *
-+	 * Can this routine sleep? Regardless of which method passes
-+	 * the MAD to CPORT, we need to wait for the response.
-+	 */
-+	if (in_mad->mad_hdr.base_version == OPA_MGMT_BASE_VERSION)
-+		mad_len = in_wc ? in_wc->byte_len : sizeof(struct opa_mad);
-+	else
-+		mad_len = sizeof(struct ib_mad);
++static inline size_t sdma_mapping_len(struct hfi2_devdata *dd,
++				      struct sdma_desc *d)
++{
++	return sdma_qw_get(dd, byte_count, d->qw);
++}
 +
-+	if (pass) {
-+		mad_result = IB_MAD_RESULT_SUCCESS;
-+		ret = cport_send_only_mad(dd, sb, in_mad, mad_len);
-+		if (ret)
-+			mad_result = IB_MAD_RESULT_FAILURE;
-+		return mad_result;
-+	}
-+	ret = cport_send_recv_mad(dd, sb, in_mad, mad_len, out_mad, out_mad_size);
-+	if (ret) {
-+		mad_result = IB_MAD_RESULT_FAILURE;
-+		goto done;
-+	}
-+	if (*out_mad_size > 0) {
-+		mad_result = IB_MAD_RESULT_SUCCESS | IB_MAD_RESULT_REPLY;
++static inline dma_addr_t sdma_mapping_addr(struct hfi2_devdata *dd,
++					   struct sdma_desc *d)
++{
++	return sdma_qw_get(dd, phy_addr, d->qw);
++}
++
++static inline void sdma_set_map_type(struct sdma_txreq *tx,
++				     u8 i, u8 type)
++{
++	int w = BIT_WORD(i * SDMA_MAP_BITS);
++	int offset = (i * SDMA_MAP_BITS) % BITS_PER_LONG;
++	unsigned long shftmask = SDMA_MAP_MASK << offset;
++	unsigned long *mw = &tx->map_type[w];
++	unsigned long new = type << offset;
++
++	/* Per-desc SDMA_MAP_BITS-sized field must never cross word boundary */
++	static_assert(BITS_PER_LONG % SDMA_MAP_BITS == 0);
++	bitmap_replace(mw, mw, &new, &shftmask, SDMA_MAP_BITS);
++}
++
++static inline u8 sdma_get_map_type(struct sdma_txreq *tx, u8 i)
++{
++	int idx = i * SDMA_MAP_BITS;
++
++	/* Per-desc field must always fit in u8 */
++	static_assert(SDMA_MAP_BITS <= 8);
++	return bitmap_get_value8(tx->map_type, idx) & SDMA_MAP_MASK;
++}
++
++/* do the work, caller is responsible for all checking */
++static inline void _make_tx_sdma_desc(struct hfi2_devdata *dd,
++				      struct sdma_txreq *tx,
++				      int type,
++				      dma_addr_t addr,
++				      size_t len)
++{
++	struct sdma_desc *desc = &tx->descp[tx->num_desc];
++
++	sdma_set_map_type(tx, tx->num_desc, type);
++	if (!tx->num_desc) {
++		/* qw[0] zero; qw[1] first, ahg mode already in from init */
 +	} else {
-+		mad_result = IB_MAD_RESULT_SUCCESS;
++		desc->qw[0] = 0;
++		desc->qw[1] = 0;
 +	}
-+done:
-+	return mad_result;
++
++	sdma_qw_set(dd, phy_addr, desc->qw, addr);
++	sdma_qw_set(dd, byte_count, desc->qw, len);
++	tx->num_desc++;
++}
++
++
++/*
++ * Create one or more descriptors to fetch len bytes.  Enough descriptor room
++ * is guaranteed by the time this function is called.
++ */
++static inline void make_tx_sdma_desc(struct hfi2_devdata *dd,
++				     struct sdma_txreq *tx,
++				     int type,
++				     dma_addr_t addr,
++				     size_t len)
++{
++#define ALIGN_SIZE 256
++#define ALIGN_MASK (ALIGN_SIZE - 1)
++	switch (dd->sdma_align) {
++	case ALIGN_256_ALL:
++		/* align head */
++		if (addr & ALIGN_MASK) {
++			size_t clen = ALIGN_SIZE - (addr & ALIGN_MASK);
++
++			if (clen > len)
++				clen = len;
++			_make_tx_sdma_desc(dd, tx, type, addr, clen);
++			len -= clen;
++			addr += clen;
++		}
++		/* now aligned, split into full sized chunks */
++		while (len >= ALIGN_SIZE) {
++			_make_tx_sdma_desc(dd, tx, type, addr, ALIGN_SIZE);
++			len -= ALIGN_SIZE;
++			addr += ALIGN_SIZE;
++		}
++		/* tail overhang */
++		if (len) {
++			_make_tx_sdma_desc(dd, tx, type, addr, len);
++		}
++		break;
++
++	case ALIGN_256_HEAD_TAIL: {
++		size_t clen;
++
++		/* align head */
++		if (addr & ALIGN_MASK) {
++			clen = ALIGN_SIZE - (addr & ALIGN_MASK);
++			if (clen > len)
++				clen = len;
++			_make_tx_sdma_desc(dd, tx, type, addr, clen);
++			len -= clen;
++			addr += clen;
++		}
++		/* aligned start to aligned tail */
++		clen = len & ~ALIGN_MASK;
++		if (clen) {
++			_make_tx_sdma_desc(dd, tx, type, addr, clen);
++			len -= clen;
++			addr += clen;
++		}
++		/* tail overhang */
++		if (len) {
++			_make_tx_sdma_desc(dd, tx, type, addr, len);
++		}
++		break;
++	}
++
++	case ALIGN_256_TAIL: {
++		dma_addr_t end = addr + len;
++		bool same = (addr & ~ALIGN_MASK) == (end & ~ALIGN_MASK);
++		size_t tail_len = end & ALIGN_MASK;
++		size_t clen = len - tail_len;
++
++		/* start to aligned tail */
++		if (clen && !same) {
++			_make_tx_sdma_desc(dd, tx, type, addr, clen);
++			len -= clen;
++			addr += clen;
++		}
++		/* tail overhang */
++		if (len) {
++			_make_tx_sdma_desc(dd, tx, type, addr, len);
++		}
++		break;
++	}
++
++	default:
++		_make_tx_sdma_desc(dd, tx, type, addr, len);
++		break;
++	}
++#undef ALIGN_SIZE
++#undef ALIGN_MASK
++}
++
++void __sdma_txclean(struct hfi2_devdata *, struct sdma_txreq *);
++
++static inline void sdma_txclean(struct hfi2_devdata *dd, struct sdma_txreq *tx)
++{
++	if (tx->num_desc)
++		__sdma_txclean(dd, tx);
++}
++
++/* calculate the number of no-op descriptors to add */
++static inline int sdma_desc_pad_count(struct hfi2_devdata *dd,
++				      struct sdma_txreq *tx)
++{
++	if (dd->pad_sdma_desc)
++		return round_up(tx->num_desc, dd->pad_sdma_desc) - tx->num_desc;
++	return 0;
++}
++
++/* helpers used by public routines */
++static inline void _sdma_close_tx(struct hfi2_devdata *dd,
++				  struct sdma_txreq *tx)
++{
++	u16 last_desc = tx->num_desc - 1;
++
++	sdma_qw_set(dd, last_desc, tx->descp[last_desc].qw);
++	tx->descp[last_desc].qw[1] |= dd->default_desc1;
++	if (tx->flags & SDMA_TXREQ_F_URGENT)
++		tx->descp[last_desc].qw[1] |= (SDMA_DESC1_HEAD_TO_HOST_FLAG |
++					       SDMA_DESC1_INT_REQ_FLAG);
++	tx->num_pad = sdma_desc_pad_count(dd, tx);
++}
++
++/* return true if the current buffer must coalesce */
++static inline bool must_coalesce(struct sdma_txreq *tx)
++{
++	return tx->num_desc + tx->desc_margin >= MAX_DESC;
++}
++
++/* return true if the current buffer forces an extension */
++static inline bool need_desc_extension(struct sdma_txreq *tx)
++{
++	return (tx->desc_limit == ARRAY_SIZE(tx->descs)) &&
++	       (tx->num_desc + tx->desc_margin >= ARRAY_SIZE(tx->descs));
++}
++int _extend_sdma_tx_descs(struct hfi2_devdata *dd, struct sdma_txreq *tx);
++
++static inline int _sdma_txadd_daddr(struct hfi2_devdata *dd,
++				    int type,
++				    struct sdma_txreq *tx,
++				    dma_addr_t addr,
++				    u16 len)
++{
++	int rval;
++
++	WARN_ON(len > tx->tlen);
++	if (need_desc_extension(tx)) {
++		rval = _extend_sdma_tx_descs(dd, tx);
++		if (rval)
++			return rval;
++	}
++
++	make_tx_sdma_desc(dd, tx, type, addr, len);
++	tx->tlen -= len;
++
++	/* special case for last */
++	if (!tx->tlen) {
++		int pad_len = pad_length(tx);
++
++		if (pad_len) {
++			make_tx_sdma_desc(dd, tx, SDMA_MAP_NONE,
++					  dd->sdma_pad_phys, pad_len);
++		}
++		_sdma_close_tx(dd, tx);
++	}
++	return 0;
++}
++
++int do_coalesce(struct hfi2_devdata *dd, struct sdma_txreq *tx,
++		int type, void *kvaddr, struct page *page,
++		unsigned long offset, u16 len);
++
++/**
++ * sdma_txadd_page() - add a page to the sdma_txreq
++ * @dd: the device to use for mapping
++ * @tx: tx request to which the page is added
++ * @page: page to map
++ * @offset: offset within the page
++ * @len: length in bytes
++ *
++ * This is used to add a page/offset/length descriptor.
++ *
++ * The mapping/unmapping of the page/offset/len is automatically handled.
++ *
++ * Return:
++ * 0 - success, -ENOSPC - mapping fail, -ENOMEM - couldn't
++ * extend/coalesce descriptor array
++ */
++static inline int sdma_txadd_page(
++	struct hfi2_devdata *dd,
++	struct sdma_txreq *tx,
++	struct page *page,
++	unsigned long offset,
++	u16 len)
++{
++	dma_addr_t addr;
++
++	if (unlikely(must_coalesce(tx)))
++		return do_coalesce(dd, tx, SDMA_MAP_PAGE,
++				   NULL, page, offset, len);
++
++	addr = dma_map_page(
++		       &dd->pcidev->dev,
++		       page,
++		       offset,
++		       len,
++		       DMA_TO_DEVICE);
++
++	if (unlikely(dma_mapping_error(&dd->pcidev->dev, addr))) {
++		__sdma_txclean(dd, tx);
++		return -ENOSPC;
++	}
++
++	return _sdma_txadd_daddr(dd, SDMA_MAP_PAGE, tx, addr, len);
 +}
 +
 +/**
-+ * hfi2_process_mad - process an incoming MAD packet
-+ * @ibdev: the infiniband device this packet came in on
-+ * @mad_flags: MAD flags
-+ * @port: the port number this packet came in on
-+ * @in_wc: the work completion entry for this packet
-+ * @in_grh: the global route header for this packet
-+ * @in_mad: the incoming MAD
-+ * @out_mad: any outgoing MAD reply
-+ * @out_mad_size: size of the outgoing MAD reply
-+ * @out_mad_pkey_index: used to apss back the packet key index
++ * sdma_txadd_daddr() - add a dma address to the sdma_txreq
++ * @dd: the device to use for mapping
++ * @tx: sdma_txreq to which the page is added
++ * @addr: dma address mapped by caller
++ * @len: length in bytes
 + *
-+ * Returns IB_MAD_RESULT_SUCCESS if this is a MAD that we are not
-+ * interested in processing.
++ * This is used to add a descriptor for memory that is already dma mapped.
 + *
-+ * Note that the verbs framework has already done the MAD sanity checks,
-+ * and hop count/pointer updating for IB_MGMT_CLASS_SUBN_DIRECTED_ROUTE
-+ * MADs.
++ * In this case, there is no unmapping as part of the progress processing for
++ * this memory location.
 + *
-+ * This is called by the ib_mad module.
++ * Return:
++ * 0 - success, -ENOMEM - couldn't extend descriptor array
 + */
++
++static inline int sdma_txadd_daddr(
++	struct hfi2_devdata *dd,
++	struct sdma_txreq *tx,
++	dma_addr_t addr,
++	u16 len)
++{
++	if (unlikely(must_coalesce(tx)))
++		return do_coalesce(dd, tx, SDMA_MAP_NONE,
++				   NULL, NULL, 0, 0);
++
++	return _sdma_txadd_daddr(dd, SDMA_MAP_NONE, tx, addr, len);
++}
++
++/**
++ * sdma_txadd_kvaddr() - add a kernel virtual address to sdma_txreq
++ * @dd: the device to use for mapping
++ * @tx: sdma_txreq to which the page is added
++ * @kvaddr: the kernel virtual address
++ * @len: length in bytes
++ *
++ * This is used to add a descriptor referenced by the indicated kvaddr and
++ * len.
++ *
++ * The mapping/unmapping of the kvaddr and len is automatically handled.
++ *
++ * Return:
++ * 0 - success, -ENOSPC - mapping fail, -ENOMEM - couldn't extend/coalesce
++ * descriptor array
++ */
++static inline int sdma_txadd_kvaddr(
++	struct hfi2_devdata *dd,
++	struct sdma_txreq *tx,
++	void *kvaddr,
++	u16 len)
++{
++	dma_addr_t addr;
++
++	if (unlikely(must_coalesce(tx)))
++		return do_coalesce(dd, tx, SDMA_MAP_SINGLE,
++				   kvaddr, NULL, 0, len);
++
++	addr = dma_map_single(
++		       &dd->pcidev->dev,
++		       kvaddr,
++		       len,
++		       DMA_TO_DEVICE);
++
++	if (unlikely(dma_mapping_error(&dd->pcidev->dev, addr))) {
++		__sdma_txclean(dd, tx);
++		return -ENOSPC;
++	}
++
++	return _sdma_txadd_daddr(dd, SDMA_MAP_SINGLE, tx, addr, len);
++}
++
++struct iowait_work;
++
++int sdma_send_txreq(struct sdma_engine *sde,
++		    struct iowait_work *wait,
++		    struct sdma_txreq *tx,
++		    bool pkts_sent);
++int sdma_send_txlist(struct sdma_engine *sde,
++		     struct iowait_work *wait,
++		     struct list_head *tx_list,
++		     u16 *count_out);
++
++int sdma_ahg_alloc(struct sdma_engine *sde);
++void sdma_ahg_free(struct sdma_engine *sde, int ahg_index);
++
++/**
++ * sdma_build_ahg - build ahg descriptor
++ * @data
++ * @dwindex
++ * @startbit
++ * @bits
++ *
++ * Build and return a 32 bit descriptor.
++ */
++static inline u32 sdma_build_ahg_descriptor(
++	u16 data,
++	u8 dwindex,
++	u8 startbit,
++	u8 bits)
++{
++	return (u32)(1UL << SDMA_AHG_UPDATE_ENABLE_SHIFT |
++		((startbit & SDMA_AHG_FIELD_START_MASK) <<
++		SDMA_AHG_FIELD_START_SHIFT) |
++		((bits & SDMA_AHG_FIELD_LEN_MASK) <<
++		SDMA_AHG_FIELD_LEN_SHIFT) |
++		((dwindex & SDMA_AHG_INDEX_MASK) <<
++		SDMA_AHG_INDEX_SHIFT) |
++		((data & SDMA_AHG_VALUE_MASK) <<
++		SDMA_AHG_VALUE_SHIFT));
++}
++
++/**
++ * sdma_progress - use seq number of detect head progress
++ * @sde: sdma_engine to check
++ * @seq: base seq count
++ * @tx: txreq for which we need to check descriptor availability
++ *
++ * This is used in the appropriate spot in the sleep routine
++ * to check for potential ring progress.  This routine gets the
++ * seqcount before queuing the iowait structure for progress.
++ *
++ * If the seqcount indicates that progress needs to be checked,
++ * re-submission is detected by checking whether the descriptor
++ * queue has enough descriptor for the txreq.
++ */
++static inline unsigned sdma_progress(struct sdma_engine *sde, unsigned seq,
++				     struct sdma_txreq *tx)
++{
++	if (read_seqretry(&sde->head_lock, seq)) {
++		sde->desc_avail = sdma_descq_freecnt(sde);
++		if (tx->num_desc + tx->num_pad > sde->desc_avail)
++			return 0;
++		return 1;
++	}
++	return 0;
++}
++
++/* for use by interrupt handling */
++void sdma_engine_error(struct sdma_engine *sde, u64 status);
++void sdma_engine_interrupt(struct sdma_engine *sde, u64 status);
++bool sdma_work_pending(struct sdma_engine *sde);
++
++/*
++ *
++ * The diagram below details the relationship of the mapping structures
++ *
++ * Since the mapping now allows for non-uniform engines per vl, the
++ * number of engines for a vl is either the vl_engines[vl] or
++ * a computation based on num_sdma/num_vls:
++ *
++ * For example:
++ * nactual = vl_engines ? vl_engines[vl] : num_sdma/num_vls
++ *
++ * n = roundup to next highest power of 2 using nactual
++ *
++ * In the case where there are num_sdma/num_vls doesn't divide
++ * evenly, the extras are added from the last vl downward.
++ *
++ * For the case where n > nactual, the engines are assigned
++ * in a round robin fashion wrapping back to the first engine
++ * for a particular vl.
++ *
++ *               dd->sdma_map
++ *                    |                                   sdma_map_elem[0]
++ *                    |                                +--------------------+
++ *                    v                                |       mask         |
++ *               sdma_vl_map                           |--------------------|
++ *      +--------------------------+                   | sde[0] -> eng 1    |
++ *      |    list (RCU)            |                   |--------------------|
++ *      |--------------------------|                 ->| sde[1] -> eng 2    |
++ *      |    mask                  |              --/  |--------------------|
++ *      |--------------------------|            -/     |        *           |
++ *      |    actual_vls (max 8)    |          -/       |--------------------|
++ *      |--------------------------|       --/         | sde[n-1] -> eng n  |
++ *      |    vls (max 8)           |     -/            +--------------------+
++ *      |--------------------------|  --/
++ *      |    map[0]                |-/
++ *      |--------------------------|                   +---------------------+
++ *      |    map[1]                |---                |       mask          |
++ *      |--------------------------|   \----           |---------------------|
++ *      |           *              |        \--        | sde[0] -> eng 1+n   |
++ *      |           *              |           \----   |---------------------|
++ *      |           *              |                \->| sde[1] -> eng 2+n   |
++ *      |--------------------------|                   |---------------------|
++ *      |   map[vls - 1]           |-                  |         *           |
++ *      +--------------------------+ \-                |---------------------|
++ *                                     \-              | sde[m-1] -> eng m+n |
++ *                                       \             +---------------------+
++ *                                        \-
++ *                                          \
++ *                                           \-        +----------------------+
++ *                                             \-      |       mask           |
++ *                                               \     |----------------------|
++ *                                                \-   | sde[0] -> eng 1+m+n  |
++ *                                                  \- |----------------------|
++ *                                                    >| sde[1] -> eng 2+m+n  |
++ *                                                     |----------------------|
++ *                                                     |         *            |
++ *                                                     |----------------------|
++ *                                                     | sde[o-1] -> eng o+m+n|
++ *                                                     +----------------------+
++ *
++ */
++
++/**
++ * struct sdma_map_elem - mapping for a vl
++ * @mask - selector mask
++ * @sde - array of engines for this vl
++ *
++ * The mask is used to "mod" the selector
++ * to produce index into the trailing
++ * array of sdes.
++ */
++struct sdma_map_elem {
++	u32 mask;
++	struct sdma_engine *sde[];
++};
++
++/**
++ * struct sdma_map_el - mapping for a vl
++ * @engine_to_vl - map of an engine to a vl
++ * @list - rcu head for free callback
++ * @mask - vl mask to "mod" the vl to produce an index to map array
++ * @actual_vls - number of vls
++ * @vls - number of vls rounded to next power of 2
++ * @map - array of sdma_map_elem entries
++ *
++ * This is the parent mapping structure.  The trailing
++ * members of the struct point to sdma_map_elem entries, which
++ * in turn point to an array of sde's for that vl.
++ */
++struct sdma_vl_map {
++	s8 engine_to_vl[TXE_NUM_SDMA_ENGINES];
++	struct rcu_head list;
++	u32 mask;
++	u8 actual_vls;
++	u8 vls;
++	struct sdma_map_elem *map[];
++};
++
++int sdma_map_init(struct hfi2_pportdata *ppd, u8 num_vls, u8 *vl_engines);
++
++/* slow path */
++void _sdma_engine_progress_schedule(struct sdma_engine *sde);
++
++/**
++ * sdma_engine_progress_schedule() - schedule progress on engine
++ * @sde: sdma_engine to schedule progress
++ *
++ * This is the fast path.
++ *
++ */
++static inline void sdma_engine_progress_schedule(
++	struct sdma_engine *sde)
++{
++	if (!sde || sdma_descq_inprocess(sde) < (sde->descq_cnt / 8))
++		return;
++	_sdma_engine_progress_schedule(sde);
++}
++
++struct sdma_engine *sdma_select_engine_sc(struct hfi2_pportdata *ppd,
++					  u32 selector, u8 sc5);
++struct sdma_engine *sdma_select_engine_vl(struct hfi2_pportdata *ppd,
++					  u32 selector, u8 vl);
++struct sdma_engine *sdma_select_user_engine(struct hfi2_pportdata *ppd,
++					    u32 selector, u8 vl);
++ssize_t sdma_get_cpu_to_sde_map(struct sdma_engine *sde, char *buf);
++ssize_t sdma_set_cpu_to_sde_map(struct sdma_engine *sde, const char *buf,
++				size_t count);
++int sdma_engine_get_vl(struct hfi2_pportdata *ppd, struct sdma_engine *sde);
++void sdma_seqfile_dump_sde(struct seq_file *s, struct sdma_engine *);
++void sdma_seqfile_dump_cpu_list(struct seq_file *s, struct hfi2_devdata *dd,
++				unsigned long cpuid);
++
++#ifdef CONFIG_SDMA_VERBOSITY
++void sdma_dumpstate(struct sdma_engine *);
++#endif
++static inline char *slashstrip(char *s)
++{
++	char *r = s;
++
++	while (*s)
++		if (*s++ == '/')
++			r = s;
++	return r;
++}
++
++u16 sdma_get_descq_cnt(void);
++
++extern uint mod_num_sdma;
++
++void sdma_update_lmc(struct hfi2_devdata *dd, u64 mask, u32 lid);
++#endif
+diff --git a/drivers/infiniband/hw/hfi2/sdma_defs.h b/drivers/infiniband/hw/hfi2/sdma_defs.h
+new file mode 100644
+index 000000000000..4e1c7d23851a
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/sdma_defs.h
+@@ -0,0 +1,116 @@
++/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/*
++ * Copyright(c) 2025 Cornelis Networks, Inc.
++ * Copyright(c) 2015 - 2018 Intel Corporation.
++ */
++
++#ifndef _HFI2_SDMA_DEFS_H
++#define _HFI2_SMDA_DEFS_H
++
++/* Hardware limit */
++#define MAX_DESC 64
++/* Hardware limit for SDMA packet size */
++#define MAX_SDMA_PKT_SIZE ((16 * 1024) - 1)
++
++#define SDMA_MAP_NONE          0
++#define SDMA_MAP_SINGLE        1
++#define SDMA_MAP_PAGE          2
++
++#define SDMA_MAP_BITS          2
++#define SDMA_MAP_MASK          ((1ull << SDMA_MAP_BITS) - 1)
++
++#define SDMA_AHG_VALUE_MASK          0xffff
++#define SDMA_AHG_VALUE_SHIFT         0
++#define SDMA_AHG_INDEX_MASK          0xf
++#define SDMA_AHG_INDEX_SHIFT         16
++#define SDMA_AHG_FIELD_LEN_MASK      0xf
++#define SDMA_AHG_FIELD_LEN_SHIFT     20
++#define SDMA_AHG_FIELD_START_MASK    0x1f
++#define SDMA_AHG_FIELD_START_SHIFT   24
++#define SDMA_AHG_UPDATE_ENABLE_MASK  0x1
++#define SDMA_AHG_UPDATE_ENABLE_SHIFT 31
++
++/* AHG modes */
++
++/*
++ * Be aware the ordering and values
++ * for SDMA_AHG_APPLY_UPDATE[123]
++ * are assumed in generating a skip
++ * count in submit_tx() in sdma.c
++ */
++#define SDMA_AHG_NO_AHG              0
++#define SDMA_AHG_COPY                1
++#define SDMA_AHG_APPLY_UPDATE1       2
++#define SDMA_AHG_APPLY_UPDATE2       3
++#define SDMA_AHG_APPLY_UPDATE3       4
++
++/*
++ * Bits defined in the send DMA descriptor.
++ */
++/* WFR SDMA header fields */
++#define WFR_SDMA_DESC0_FIRST_DESC_FLAG      BIT_ULL(63)
++#define WFR_SDMA_DESC0_LAST_DESC_FLAG       BIT_ULL(62)
++#define WFR_SDMA_DESC0_BYTE_COUNT_SHIFT     48
++#define WFR_SDMA_DESC0_BYTE_COUNT_WIDTH     14
++#define WFR_SDMA_DESC0_BYTE_COUNT_MASK \
++	((1ULL << WFR_SDMA_DESC0_BYTE_COUNT_WIDTH) - 1)
++#define WFR_SDMA_DESC0_BYTE_COUNT_SMASK \
++	(WFR_SDMA_DESC0_BYTE_COUNT_MASK << WFR_SDMA_DESC0_BYTE_COUNT_SHIFT)
++#define WFR_SDMA_DESC0_PHY_ADDR_SHIFT       0
++#define WFR_SDMA_DESC0_PHY_ADDR_WIDTH       48
++#define WFR_SDMA_DESC0_PHY_ADDR_MASK \
++	((1ULL << WFR_SDMA_DESC0_PHY_ADDR_WIDTH) - 1)
++#define WFR_SDMA_DESC0_PHY_ADDR_SMASK \
++	(WFR_SDMA_DESC0_PHY_ADDR_MASK << WFR_SDMA_DESC0_PHY_ADDR_SHIFT)
++
++/* JKR SDMA header fields */
++#define JKR_SDMA_DESC0_PHY_ADDR_SHIFT       0
++#define JKR_SDMA_DESC0_PHY_ADDR_WIDTH       58
++#define JKR_SDMA_DESC0_PHY_ADDR_MASK \
++	((1ULL << JKR_SDMA_DESC0_PHY_ADDR_WIDTH) - 1)
++#define JKR_SDMA_DESC0_PHY_ADDR_SMASK \
++	(JKR_SDMA_DESC0_PHY_ADDR_MASK << JKR_SDMA_DESC0_PHY_ADDR_SHIFT)
++
++#define JKR_SDMA_DESC1_FIRST_DESC_FLAG      BIT_ULL(31)
++#define JKR_SDMA_DESC1_LAST_DESC_FLAG       BIT_ULL(30)
++#define JKR_SDMA_DESC1_BYTE_COUNT_SHIFT     16
++#define JKR_SDMA_DESC1_BYTE_COUNT_WIDTH     14
++#define JKR_SDMA_DESC1_BYTE_COUNT_MASK \
++	((1ULL << JKR_SDMA_DESC1_BYTE_COUNT_WIDTH) - 1)
++#define JKR_SDMA_DESC1_BYTE_COUNT_SMASK \
++	(JKR_SDMA_DESC1_BYTE_COUNT_MASK << JKR_SDMA_DESC1_BYTE_COUNT_SHIFT)
++
++/* common SDMA header fields */
++#define SDMA_DESC1_HEADER_UPDATE1_SHIFT 32
++#define SDMA_DESC1_HEADER_UPDATE1_WIDTH 32
++#define SDMA_DESC1_HEADER_UPDATE1_MASK \
++	((1ULL << SDMA_DESC1_HEADER_UPDATE1_WIDTH) - 1)
++#define SDMA_DESC1_HEADER_UPDATE1_SMASK \
++	(SDMA_DESC1_HEADER_UPDATE1_MASK << SDMA_DESC1_HEADER_UPDATE1_SHIFT)
++#define SDMA_DESC1_HEADER_MODE_SHIFT    13
++#define SDMA_DESC1_HEADER_MODE_WIDTH    3
++#define SDMA_DESC1_HEADER_MODE_MASK \
++	((1ULL << SDMA_DESC1_HEADER_MODE_WIDTH) - 1)
++#define SDMA_DESC1_HEADER_MODE_SMASK \
++	(SDMA_DESC1_HEADER_MODE_MASK << SDMA_DESC1_HEADER_MODE_SHIFT)
++#define SDMA_DESC1_HEADER_INDEX_SHIFT   8
++#define SDMA_DESC1_HEADER_INDEX_WIDTH   5
++#define SDMA_DESC1_HEADER_INDEX_MASK \
++	((1ULL << SDMA_DESC1_HEADER_INDEX_WIDTH) - 1)
++#define SDMA_DESC1_HEADER_INDEX_SMASK \
++	(SDMA_DESC1_HEADER_INDEX_MASK << SDMA_DESC1_HEADER_INDEX_SHIFT)
++#define SDMA_DESC1_HEADER_DWS_SHIFT     4
++#define SDMA_DESC1_HEADER_DWS_WIDTH     4
++#define SDMA_DESC1_HEADER_DWS_MASK \
++	((1ULL << SDMA_DESC1_HEADER_DWS_WIDTH) - 1)
++#define SDMA_DESC1_HEADER_DWS_SMASK \
++	(SDMA_DESC1_HEADER_DWS_MASK << SDMA_DESC1_HEADER_DWS_SHIFT)
++#define SDMA_DESC1_GENERATION_SHIFT     2
++#define SDMA_DESC1_GENERATION_WIDTH     2
++#define SDMA_DESC1_GENERATION_MASK \
++	((1ULL << SDMA_DESC1_GENERATION_WIDTH) - 1)
++#define SDMA_DESC1_GENERATION_SMASK \
++	(SDMA_DESC1_GENERATION_MASK << SDMA_DESC1_GENERATION_SHIFT)
++#define SDMA_DESC1_INT_REQ_FLAG         BIT_ULL(1)
++#define SDMA_DESC1_HEAD_TO_HOST_FLAG    BIT_ULL(0)
++#endif /* _HFI2_SDMA_H */
+diff --git a/drivers/infiniband/hw/hfi2/sdma_txreq.h b/drivers/infiniband/hw/hfi2/sdma_txreq.h
+new file mode 100644
+index 000000000000..8e56d94eead5
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/sdma_txreq.h
+@@ -0,0 +1,104 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2016 Intel Corporation.
++ */
++
++#ifndef HFI2_SDMA_TXREQ_H
++#define HFI2_SDMA_TXREQ_H
++
++#include "sdma_defs.h"
++
++/* nominal descriptor count with expected padding */
++#define NUM_DESC 6
++
++/*
++ * struct sdma_desc - canonical fragment descriptor
++ *
++ * This is the descriptor carried in the tx request
++ * corresponding to each fragment.
++ *
++ */
++struct sdma_desc {
++	/* private:  don't use directly */
++	u64 qw[2];
++};
++
++/**
++ * struct sdma_txreq - the sdma_txreq structure (one per packet)
++ * @list: for use by user and by queuing for wait
++ *
++ * This is the representation of a packet which consists of some
++ * number of fragments.   Storage is provided to within the structure.
++ * for all fragments.
++ *
++ * The storage for the descriptors are automatically extended as needed
++ * when the currently allocation is exceeded.
++ *
++ * The user (Verbs or PSM) may overload this structure with fields
++ * specific to their use by putting this struct first in their struct.
++ * The method of allocation of the overloaded structure is user dependent
++ *
++ * The list is the only public field in the structure.
++ *
++ */
++
++#define SDMA_TXREQ_S_OK        0
++#define SDMA_TXREQ_S_SENDERROR 1
++#define SDMA_TXREQ_S_ABORTED   2
++#define SDMA_TXREQ_S_SHUTDOWN  3
++
++/* flags bits */
++#define SDMA_TXREQ_F_URGENT       0x0001
++#define SDMA_TXREQ_F_AHG_COPY     0x0002
++#define SDMA_TXREQ_F_USE_AHG      0x0004
++#define SDMA_TXREQ_F_VIP          0x0010
++
++struct sdma_txreq;
++typedef void (*callback_t)(struct sdma_txreq *, int);
++
++struct iowait;
++struct sdma_txreq {
++	struct list_head list;
++	/* private: */
++	struct sdma_desc *descp;
++	/* private: */
++	void *coalesce_buf;
++	/* private: */
++	struct iowait *wait;
++	/* private: */
++	callback_t                  complete;
++#ifdef CONFIG_HFI2_DEBUG_SDMA_ORDER
++	u64 sn;
++#endif
++	/* private: - used in coalesce/pad processing */
++	u16                         packet_len;
++	/* private: - down-counted to trigger last */
++	u16                         tlen;
++	/* private: */
++	u16                         num_desc;
++	/* private: */
++	u16                         desc_limit;
++	/* private: */
++	u16                         next_descq_idx;
++	/* private: */
++	u16 coalesce_idx;
++	/* private: flags */
++	u16                         flags;
++	/* number of no-op descriptors to add */
++	u8 num_pad;
++	/* number avail descriptors needed before coalesce or expansion */
++	u8 desc_margin;
++	/* packed bitfield with enough space for SDMA_MAP_* values
++	 * for up to 64 descriptors at 2 bits per descriptor
++	 */
++	DECLARE_BITMAP(map_type, SDMA_MAP_BITS * MAX_DESC);
++	/* private: */
++	struct sdma_desc descs[NUM_DESC];
++};
++
++static inline int sdma_txreq_built(struct sdma_txreq *tx)
++{
++	return tx->num_desc;
++}
++
++#endif                          /* HFI2_SDMA_TXREQ_H */
+diff --git a/drivers/infiniband/hw/hfi2/tid_rdma.h b/drivers/infiniband/hw/hfi2/tid_rdma.h
+new file mode 100644
+index 000000000000..f3d55faa0277
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/tid_rdma.h
+@@ -0,0 +1,320 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++/*
++ * Copyright(c) 2018 Intel Corporation.
++ *
++ */
++#ifndef HFI2_TID_RDMA_H
++#define HFI2_TID_RDMA_H
++
++#include <linux/circ_buf.h>
++#include "common.h"
++
++/* Add a convenience helper */
++#define CIRC_ADD(val, add, size) (((val) + (add)) & ((size) - 1))
++#define CIRC_NEXT(val, size) CIRC_ADD(val, 1, size)
++#define CIRC_PREV(val, size) CIRC_ADD(val, -1, size)
++
++#define TID_RDMA_MIN_SEGMENT_SIZE       BIT(18)   /* 256 KiB (for now) */
++#define TID_RDMA_MAX_SEGMENT_SIZE       BIT(18)   /* 256 KiB (for now) */
++#define TID_RDMA_MAX_PAGES              (BIT(18) >> PAGE_SHIFT)
++#define TID_RDMA_SEGMENT_SHIFT		18
++
++/*
++ * Bit definitions for priv->s_flags.
++ * These bit flags overload the bit flags defined for the QP's s_flags.
++ * Due to the fact that these bit fields are used only for the QP priv
++ * s_flags, there are no collisions.
++ *
++ * HFI2_S_TID_WAIT_INTERLCK - QP is waiting for requester interlock
++ * HFI2_R_TID_WAIT_INTERLCK - QP is waiting for responder interlock
++ */
++#define HFI2_S_TID_BUSY_SET       BIT(0)
++/* BIT(1) reserved for RVT_S_BUSY. */
++#define HFI2_R_TID_RSC_TIMER      BIT(2)
++/* BIT(3) reserved for RVT_S_RESP_PENDING. */
++/* BIT(4) reserved for RVT_S_ACK_PENDING. */
++#define HFI2_S_TID_WAIT_INTERLCK  BIT(5)
++#define HFI2_R_TID_WAIT_INTERLCK  BIT(6)
++/* BIT(7) - BIT(15) reserved for RVT_S_WAIT_*. */
++/* BIT(16) reserved for RVT_S_SEND_ONE */
++#define HFI2_S_TID_RETRY_TIMER    BIT(17)
++/* BIT(18) reserved for RVT_S_ECN. */
++#define HFI2_R_TID_SW_PSN         BIT(19)
++/* BIT(26) reserved for HFI2_S_WAIT_HALT */
++/* BIT(27) reserved for HFI2_S_WAIT_TID_RESP */
++/* BIT(28) reserved for HFI2_S_WAIT_TID_SPACE */
++
++/*
++ * Unlike regular IB RDMA VERBS, which do not require an entry
++ * in the s_ack_queue, TID RDMA WRITE requests do because they
++ * generate responses.
++ * Therefore, the s_ack_queue needs to be extended by a certain
++ * amount. The key point is that the queue needs to be extended
++ * without letting the "user" know so they user doesn't end up
++ * using these extra entries.
++ */
++#define HFI2_TID_RDMA_WRITE_CNT 8
++
++struct tid_rdma_params {
++	struct rcu_head rcu_head;
++	u32 qp;
++	u32 max_len;
++	u16 jkey;
++	u8 max_read;
++	u8 max_write;
++	u8 timeout;
++	u8 urg;
++	u8 version;
++};
++
++struct tid_rdma_qp_params {
++	struct work_struct trigger_work;
++	struct tid_rdma_params local;
++	struct tid_rdma_params __rcu *remote;
++};
++
++/* Track state for each hardware flow */
++struct tid_flow_state {
++	u32 generation;
++	u32 psn;
++	u8 index;
++	u8 last_index;
++};
++
++enum tid_rdma_req_state {
++	TID_REQUEST_INACTIVE = 0,
++	TID_REQUEST_INIT,
++	TID_REQUEST_INIT_RESEND,
++	TID_REQUEST_ACTIVE,
++	TID_REQUEST_RESEND,
++	TID_REQUEST_RESEND_ACTIVE,
++	TID_REQUEST_QUEUED,
++	TID_REQUEST_SYNC,
++	TID_REQUEST_RNR_NAK,
++	TID_REQUEST_COMPLETE,
++};
++
++struct tid_rdma_request {
++	struct rvt_qp *qp;
++	struct hfi2_ctxtdata *rcd;
++	union {
++		struct rvt_swqe *swqe;
++		struct rvt_ack_entry *ack;
++	} e;
++
++	struct tid_rdma_flow *flows;	/* array of tid flows */
++	struct rvt_sge_state ss; /* SGE state for TID RDMA requests */
++	u16 n_flows;		/* size of the flow buffer window */
++	u16 setup_head;		/* flow index we are setting up */
++	u16 clear_tail;		/* flow index we are clearing */
++	u16 flow_idx;		/* flow index most recently set up */
++	u16 acked_tail;
++
++	u32 seg_len;
++	u32 total_len;
++	u32 r_ack_psn;          /* next expected ack PSN */
++	u32 r_flow_psn;         /* IB PSN of next segment start */
++	u32 r_last_acked;       /* IB PSN of last ACK'ed packet */
++	u32 s_next_psn;		/* IB PSN of next segment start for read */
++
++	u32 total_segs;		/* segments required to complete a request */
++	u32 cur_seg;		/* index of current segment */
++	u32 comp_seg;           /* index of last completed segment */
++	u32 ack_seg;            /* index of last ack'ed segment */
++	u32 alloc_seg;          /* index of next segment to be allocated */
++	u32 isge;		/* index of "current" sge */
++	u32 ack_pending;        /* num acks pending for this request */
++
++	enum tid_rdma_req_state state;
++};
++
++/*
++ * When header suppression is used, PSNs associated with a "flow" are
++ * relevant (and not the PSNs maintained by verbs). Track per-flow
++ * PSNs here for a TID RDMA segment.
++ *
++ */
++struct flow_state {
++	u32 flags;
++	u32 resp_ib_psn;     /* The IB PSN of the response for this flow */
++	u32 generation;      /* generation of flow */
++	u32 spsn;            /* starting PSN in TID space */
++	u32 lpsn;            /* last PSN in TID space */
++	u32 r_next_psn;      /* next PSN to be received (in TID space) */
++
++	/* For tid rdma read */
++	u32 ib_spsn;         /* starting PSN in Verbs space */
++	u32 ib_lpsn;         /* last PSn in Verbs space */
++};
++
++struct tid_rdma_pageset {
++	dma_addr_t addr : 48; /* Only needed for the first page */
++	u8 idx: 8;
++	u8 count : 7;
++	u8 mapped: 1;
++};
++
++/**
++ * kern_tid_node - used for managing TID's in TID groups
++ *
++ * @grp_idx: rcd relative index to tid_group
++ * @map: grp->map captured prior to programming this TID group in HW
++ * @cnt: Only @cnt of available group entries are actually programmed
++ */
++struct kern_tid_node {
++	struct tid_group *grp;
++	u8 map;
++	u8 cnt;
++};
++
++/* Overall info for a TID RDMA segment */
++struct tid_rdma_flow {
++	/*
++	 * While a TID RDMA segment is being transferred, it uses a QP number
++	 * from the "KDETH section of QP numbers" (which is different from the
++	 * QP number that originated the request). Bits 11-15 of these QP
++	 * numbers identify the "TID flow" for the segment.
++	 */
++	struct flow_state flow_state;
++	struct tid_rdma_request *req;
++	u32 tid_qpn;
++	u32 tid_offset;
++	u32 length;
++	u32 sent;
++	u8 tnode_cnt;
++	u8 tidcnt;
++	u8 tid_idx;
++	u8 idx;
++	u8 npagesets;
++	u8 npkts;
++	u8 pkt;
++	u8 resync_npkts;
++	struct kern_tid_node tnode[TID_RDMA_MAX_PAGES];
++	struct tid_rdma_pageset pagesets[TID_RDMA_MAX_PAGES];
++	u32 tid_entry[TID_RDMA_MAX_PAGES];
++};
++
++enum tid_rnr_nak_state {
++	TID_RNR_NAK_INIT = 0,
++	TID_RNR_NAK_SEND,
++	TID_RNR_NAK_SENT,
++};
++
++bool tid_rdma_conn_req(struct rvt_qp *qp, u64 *data);
++bool tid_rdma_conn_reply(struct rvt_qp *qp, u64 data);
++bool tid_rdma_conn_resp(struct rvt_qp *qp, u64 *data);
++void tid_rdma_conn_error(struct rvt_qp *qp);
++void tid_rdma_opfn_init(struct rvt_qp *qp, struct tid_rdma_params *p);
++
++int hfi2_kern_exp_rcv_init(struct hfi2_ctxtdata *rcd, int reinit);
++int hfi2_kern_exp_rcv_setup(struct tid_rdma_request *req,
++			    struct rvt_sge_state *ss, bool *last);
++int hfi2_kern_exp_rcv_clear(struct tid_rdma_request *req);
++void hfi2_kern_exp_rcv_clear_all(struct tid_rdma_request *req);
++void __trdma_clean_swqe(struct rvt_qp *qp, struct rvt_swqe *wqe);
++
++/**
++ * trdma_clean_swqe - clean flows for swqe if large send queue
++ * @qp: the qp
++ * @wqe: the send wqe
++ */
++static inline void trdma_clean_swqe(struct rvt_qp *qp, struct rvt_swqe *wqe)
++{
++	if (!wqe->priv)
++		return;
++	__trdma_clean_swqe(qp, wqe);
++}
++
++void hfi2_kern_read_tid_flow_free(struct rvt_qp *qp);
++
++struct hfi2_ctxtdata *qp_to_rcd(struct rvt_qp *qp);
++int hfi2_qp_priv_init(struct rvt_dev_info *rdi, struct rvt_qp *qp,
++		      struct ib_qp_init_attr *init_attr);
++void hfi2_qp_priv_tid_free(struct rvt_dev_info *rdi, struct rvt_qp *qp);
++
++void hfi2_tid_rdma_flush_wait(struct rvt_qp *qp);
++
++int hfi2_kern_setup_hw_flow(struct hfi2_ctxtdata *rcd, struct rvt_qp *qp);
++void hfi2_kern_clear_hw_flow(struct hfi2_ctxtdata *rcd, struct rvt_qp *qp);
++void hfi2_kern_init_ctxt_generations(struct hfi2_ctxtdata *rcd);
++
++struct cntr_entry;
++u64 hfi2_access_sw_tid_wait(const struct cntr_entry *entry,
++			    void *context, int vl, int mode, u64 data);
++
++u32 hfi2_build_tid_rdma_read_packet(struct rvt_swqe *wqe,
++				    struct ib_other_headers *ohdr,
++				    u32 *bth1, u32 *bth2, u32 *len);
++u32 hfi2_build_tid_rdma_read_req(struct rvt_qp *qp, struct rvt_swqe *wqe,
++				 struct ib_other_headers *ohdr, u32 *bth1,
++				 u32 *bth2, u32 *len);
++void hfi2_rc_rcv_tid_rdma_read_req(struct hfi2_packet *packet);
++u32 hfi2_build_tid_rdma_read_resp(struct rvt_qp *qp, struct rvt_ack_entry *e,
++				  struct ib_other_headers *ohdr, u32 *bth0,
++				  u32 *bth1, u32 *bth2, u32 *len, bool *last);
++void hfi2_rc_rcv_tid_rdma_read_resp(struct hfi2_packet *packet);
++bool hfi2_handle_kdeth_eflags(struct hfi2_ctxtdata *rcd,
++			      struct hfi2_pportdata *ppd,
++			      struct hfi2_packet *packet);
++void hfi2_tid_rdma_restart_req(struct rvt_qp *qp, struct rvt_swqe *wqe,
++			       u32 *bth2);
++void hfi2_qp_kern_exp_rcv_clear_all(struct rvt_qp *qp);
++bool hfi2_tid_rdma_wqe_interlock(struct rvt_qp *qp, struct rvt_swqe *wqe);
++
++void setup_tid_rdma_wqe(struct rvt_qp *qp, struct rvt_swqe *wqe);
++static inline void hfi2_setup_tid_rdma_wqe(struct rvt_qp *qp,
++					   struct rvt_swqe *wqe)
++{
++	if (wqe->priv &&
++	    (wqe->wr.opcode == IB_WR_RDMA_READ ||
++	     wqe->wr.opcode == IB_WR_RDMA_WRITE) &&
++	    wqe->length >= TID_RDMA_MIN_SEGMENT_SIZE)
++		setup_tid_rdma_wqe(qp, wqe);
++}
++
++u32 hfi2_build_tid_rdma_write_req(struct rvt_qp *qp, struct rvt_swqe *wqe,
++				  struct ib_other_headers *ohdr,
++				  u32 *bth1, u32 *bth2, u32 *len);
++
++void hfi2_rc_rcv_tid_rdma_write_req(struct hfi2_packet *packet);
++
++u32 hfi2_build_tid_rdma_write_resp(struct rvt_qp *qp, struct rvt_ack_entry *e,
++				   struct ib_other_headers *ohdr, u32 *bth1,
++				   u32 bth2, u32 *len,
++				   struct rvt_sge_state **ss);
++
++void hfi2_del_tid_reap_timer(struct rvt_qp *qp);
++
++void hfi2_rc_rcv_tid_rdma_write_resp(struct hfi2_packet *packet);
++
++bool hfi2_build_tid_rdma_packet(struct rvt_swqe *wqe,
++				struct ib_other_headers *ohdr,
++				u32 *bth1, u32 *bth2, u32 *len);
++
++void hfi2_rc_rcv_tid_rdma_write_data(struct hfi2_packet *packet);
++
++u32 hfi2_build_tid_rdma_write_ack(struct rvt_qp *qp, struct rvt_ack_entry *e,
++				  struct ib_other_headers *ohdr, u16 iflow,
++				  u32 *bth1, u32 *bth2);
++
++void hfi2_rc_rcv_tid_rdma_ack(struct hfi2_packet *packet);
++
++void hfi2_add_tid_retry_timer(struct rvt_qp *qp);
++void hfi2_del_tid_retry_timer(struct rvt_qp *qp);
++
++u32 hfi2_build_tid_rdma_resync(struct rvt_qp *qp, struct rvt_swqe *wqe,
++			       struct ib_other_headers *ohdr, u32 *bth1,
++			       u32 *bth2, u16 fidx);
++
++void hfi2_rc_rcv_tid_rdma_resync(struct hfi2_packet *packet);
++
++struct hfi2_pkt_state;
++int hfi2_make_tid_rdma_pkt(struct rvt_qp *qp, struct hfi2_pkt_state *ps);
++
++void _hfi2_do_tid_send(struct work_struct *work);
++
++bool hfi2_schedule_tid_send(struct rvt_qp *qp);
++
++bool hfi2_tid_rdma_ack_interlock(struct rvt_qp *qp, struct rvt_ack_entry *e);
++
++#endif /* HFI2_TID_RDMA_H */
+diff --git a/drivers/infiniband/hw/hfi2/user_exp_rcv.h b/drivers/infiniband/hw/hfi2/user_exp_rcv.h
+new file mode 100644
+index 000000000000..c4f0dab6e7b6
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/user_exp_rcv.h
+@@ -0,0 +1,404 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2020-2024 Cornelis Networks, Inc.
++ * Copyright(c) 2015 - 2017 Intel Corporation.
++ */
++
++#ifndef _HFI2_USER_EXP_RCV_H
++#define _HFI2_USER_EXP_RCV_H
++
++#include "hfi2.h"
++#include "exp_rcv.h"
++
++struct hfi2_page_iter_ops;
++
++/**
++ * Base type for iterating over sets of pinned-page ranges (pagesets).
++ *
++ * Depending on implementation, pages may also already be DMA-mapped.
++ */
++struct hfi2_page_iter {
++	struct hfi2_page_iter_ops *ops;
++};
++
++struct hfi2_page_iter_ops {
++	/**
++	 * Advance iterator to next pageset.
++	 *
++	 * Implementation must construct TID-compatible pagesets. TID-compatible means:
++	 * - starting address is 4KiB-aligned.
++	 * - size in range of [4KiB,2MiB].
++	 * - size is a power-of-two.
++	 *
++	 * @return > 0 on successful advancement, 0 when iterator is at last
++	 * element, < 0 on error. It is an error to call .next() after it
++	 * returns 0.
++	 */
++	int (*next)(struct hfi2_page_iter *iter);
++
++	void (*free)(struct hfi2_page_iter *iter);
++};
++
++struct tid_user_buf;
++
++/*
++ * hfi2_page_iter implementation for tid_system.
++ *
++ * Built around struct tid_user_buf->{psets,n_psets}.
++ */
++struct page_array_iter {
++	struct hfi2_page_iter common;
++	struct tid_user_buf *tbuf;
++	unsigned int setidx;
++};
++
++/*
++ * structs tid_pageset, tid_user_buf, tid_rb_node, tid_user_buf_ops,
++ * tid_node_ops - Generic memory-pinning and DMA-mapping datastructures and
++ * interfaces for user expected receive.
++ *
++ * Here's a high-level flow of how generic device user expected receive works:
++ * 1. Available memory implementations are registered at driver load.
++ * 2. When TID_UPDATE with memory type information is received,
++ *    struct tid_user_buf_ops* for memory type is looked up.
++ * 3. struct tid_user_buf 'tbuf' is created using tid_user_buf_ops.init(),
++ *    passing in the virtual address range from userspace.
++ * 4. Pages are pinned using tid_user_buf_ops.pin_pages(tbuf).
++ * 5. tid_user_buf_ops.find_phys_blocks() produces an array of sets
++ *    (struct tid_pageset[]) of physically contiguous pages.
++ * 6. struct tid_node_ops* for memory type is looked up.
++ * 7. For each set of physically contiguous pinned pages:
++ *    7.1 A struct tid_rb_node is created using tid_node_ops.init(). It stores
++ *        its memory type for later lookup.
++ *    7.2 tid_node_ops.init() DMA-maps the physically-contiguous page range.
++ *    7.3 An expected RcvArray entry (TID) is programmed with the DMA address.
++ *    7.4 The tid_rb_node* is stored in struct hfi2_filedata.entry_to_rb[].
++ * 8. The tid_user_buf is no longer needed and is destroyed.
++ * 9. When a TID is to be unmapped or the receive memory the TID is programmed
++ *    for is invalidated, the struct tid_rb_node* for the TID or receive memory
++ *    is found, the struct tid_node_ops looked up, and
++ *    tid_node_ops.dma_unmap(node) and tid_node_ops.free(node) called.
++ *
++ * This is an overview. See struct tid_user_buf_ops and struct tid_node_ops for
++ * the methods and their semantics that an implementation must provide.
++ */
++
++struct tid_pageset {
++	u16 idx;
++	u16 count;
++};
++
++struct tid_node_ops;
++struct tid_user_buf_ops;
++
++struct tid_user_buf {
++	unsigned long vaddr;
++	unsigned long length;
++	struct tid_pageset *psets;
++	struct tid_user_buf_ops *ops;
++	unsigned int n_psets;
++	bool use_mn;
++	u16 type; /* Implementation must set to HFI2_MEMINFO_TYPE* in tid_user_buf_ops.init() */
++};
++
++int tid_user_buf_init(u16 pset_size, unsigned long vaddr, unsigned long length, bool notify,
++		      struct tid_user_buf_ops *ops, u16 type, struct tid_user_buf *tbuf);
++void tid_user_buf_free(struct tid_user_buf *tbuf);
++
++struct tid_rb_node {
++	struct hfi2_filedata *fdata;
++	struct mutex invalidate_mutex; /* covers hw removal */
++	/* Only used for debug and tracing */
++	unsigned long phys;
++	struct tid_group *grp;
++	struct tid_node_ops *ops;
++	dma_addr_t dma_addr;
++	/* Starting virtual address for this node's page range */
++	unsigned long vaddr;
++	/* Number of pages, implementation-sized */
++	unsigned int npages;
++	/* Implementation page-size shift */
++	unsigned int page_shift;
++	u32 rcventry;
++	bool use_mn;
++	bool freed;
++	/* Implementation must set to HFI2_MEMINFO_TYPE* in tid_node_ops.init() */
++	u16 type;
++};
++
++/**
++ * User expected receive requires @vaddr from userspace be aligned on a page
++ * boundary.
++ *
++ * User expected receive requires this because it cannot communicate the offset
++ * between @vaddr and the page start.
++ *
++ * TID memory implementation must check that @vaddr is aligned on a page
++ * boundary but may delay this check until as late as .pin_pages().
++ *
++ * This allows for implementations where the page size is not known until the
++ * pages are pinned.
++ */
++struct tid_user_buf_ops {
++	/**
++	 * Allocate and initialize @*tbuf.
++	 *
++	 * Implementation must initialize:
++	 *   - vaddr
++	 *   - length
++	 *   - psets
++	 *   - ops
++	 *   - type
++	 *
++	 * @expected_count
++	 * @notify when false, implementation may use invalidation callback
++	 *   underneath.
++	 *
++	 *   When true, implementation must use invalidation callback
++	 *   underneath.
++	 *
++	 *   If true and implementation does not have an invalidation callback,
++	 *   must return an error.
++	 * @vaddr
++	 * @length
++	 * @allow_unaligned when true, implementation may, but is not required
++	 *   to, handle unaligned @vaddr. When false, implementation must return
++	 *   -EINVAL for unaligned @vaddr.
++	 * @tbuf [out] allocated tid_user_buf
++	 *
++	 * @return 0 on success, non-zero on error.
++	 *
++	 * Errors including but not limited to:
++	 * - Number of pages based on @length too long for @expected_count
++	 * - @vaddr is not suitably aligned
++	 * - @length invalid for implementation
++	 * - @notify is true but implementation does not support
++	 *   memory-invalidation notification
++	 */
++	int (*init)(u16 expected_count,
++		    bool notify,
++		    unsigned long vaddr,
++		    unsigned long length,
++		    bool allow_unaligned,
++		    struct tid_user_buf **tbuf);
++
++	/**
++	 * Free @tbuf.
++	 */
++	void (*free)(struct tid_user_buf *tbuf);
++
++	/**
++	 * Pin pages for @tbuf based on (@vaddr,@length) passed into
++	 * @tid_user_buf_ops.init().
++	 *
++	 * Implementation may also DMA-map pages at this time.
++	 *
++	 * Implementation may store @fd at this time.
++	 *
++	 * @fd
++	 * @tbuf
++	 *
++	 * @return > 0 number of pages pinned on success, < 0 error value on
++	 *   failure. 0 is treated as a failure but not an error value.
++	 */
++	int (*pin_pages)(struct hfi2_filedata *fd, struct tid_user_buf *tbuf);
++
++	/**
++	 * Get page size of @tbuf's pinned pages.
++	 *
++	 * Caller should not assume that page size is known until after
++	 * pin_pages(fd, @tbuf).
++	 *
++	 * @tbuf
++	 *
++	 * @return page size. No way to tell if error.
++	 */
++	unsigned int (*page_size)(struct tid_user_buf *tbuf);
++
++	/**
++	 * Unpin only @npages starting at @idx.
++	 *
++	 * Implementation may implement partial unpinning.
++	 *
++	 * If not, implementation must ensure that pages are unmapped and
++	 * unpinned when last reference to them is released.
++	 *
++	 * @fd Same fd as given in tid_user_buf_ops.pin_pages() call
++	 * @tbuf
++	 * @idx
++	 * @npages
++	 */
++	void (*unpin_pages)(struct hfi2_filedata *fd,
++			    struct tid_user_buf *tbuf,
++			    unsigned int idx,
++			    unsigned int npages);
++
++	/**
++	 * Optional; implementation must either implement find_phys_blocks() or
++	 * ensure that iter_begin() will return a valid iterator after
++	 * .pin_pages().
++	 *
++	 * Implementation must program @tbuf->psets elements such that:
++	 * 1. All pages in a pageset are physically contiguous
++	 * 2. All pages in all pagesets have the same page size
++	 * 3. The total size of a pageset is a power-of-two in the range
++	 *    [4KiB, 2MiB]
++	 *
++	 * Implementation must set @tbuf->n_psets to number of page sets
++	 * programmed.
++	 *
++	 * @tbuf TID user buf to set (@tbuf->psets,@tbuf->n_psets) on.
++	 * @npages limit on number of pages to process into page sets before
++	 *         stopping.
++	 *
++	 * @return 0 on success, non-zero on error
++	 */
++	int (*find_phys_blocks)(struct tid_user_buf *tbuf,
++				unsigned int npages);
++
++	/**
++	 * @return true when:
++	 * - @tbuf's virtual->physical mapping has been invalidated
++	 * - @tbuf's physical pages have been released
++	 */
++	bool (*invalidated)(struct tid_user_buf *tbuf);
++
++	/**
++	 * Unregister memory-invalidation callback registered in struct
++	 * tid_user_buf_ops.init() implementation.
++	 */
++	void (*unnotify)(struct tid_user_buf *tbuf);
++
++	/**
++	 * Optional. Get pageset iterator. Pages in pageset must be pinned and
++	 * physically-contiguous. Whether pages are also DMA-mapped at the time
++	 * this method is called is implementation-dependent.
++	 *
++	 * Implementation must return iterator only if there is at least one
++	 * pageset to iterate over. I.e. it is an error if implementation
++	 * cannot return an iterator over at least one pageset.
++	 *
++	 * Returned iterator must be freed with @hfi2_page_iter->ops->free().
++	 *
++	 * @return pointer on success, ERR_PTR() on error.
++	 */
++	struct hfi2_page_iter *(*iter_begin)(struct tid_user_buf *tbuf);
++};
++
++struct tid_node_ops {
++	/**
++	 * Create tid_rb_node for pageset given by @iter.
++	 *
++	 * .init() implementation must initialize the following
++	 *   - fdata
++	 *   - invalidate_mutex
++	 *   - phys
++	 *   - grp
++	 *   - ops
++	 *   - dma_addr
++	 *   - vaddr
++	 *   - npages
++	 *   - page_shift: may not be less than EXP_TID_ADDR_SHIFT
++	 *   - rcventry
++	 *   - use_mn
++	 *   - freed
++	 *   - type: one of the HFI2_MEMINFO_TYPE* defines
++	 *
++	 * Pages in pageset given by @iter must be TID-ready: pinned, physically contiguous,
++	 * 4KiB <= size <= 2MiB, starting address is power-of-two.
++	 *
++	 * Implementation must DMA-map the pages given by @iter if they are not DMA-mapped
++	 * already.
++	 *
++	 * If @fd->use_mn is true and memory implementation does not support
++	 * invalidation callbacks, .init() must return an error.
++	 *
++	 * @fd
++	 * @tbuf Contains larger memory pinning to create TID entry from
++	 * @rcventry
++	 * @grp
++	 * @iter
++	 *
++	 * @return allocated node on success, ERR_PTR() on error.
++	 */
++	struct tid_rb_node *(*init)(struct hfi2_filedata *fd,
++				    struct tid_user_buf *tbuf,
++				    u32 rcventry,
++				    struct tid_group *grp,
++				    struct hfi2_page_iter *iter);
++
++	/**
++	 * Free @node.
++	 */
++	void (*free)(struct tid_rb_node *node);
++
++	/**
++	 * Register for memory invalidation callback. Implementation should
++	 * only register for notification on @node's page-range.
++	 *
++	 * When @node->fdata->use_mn is true, invalidation callback must call
++	 * hfi2_user_exp_rcv_invalidate(@node).
++	 *
++	 * When @node->fdata->use_mn is false, invalidation callback may call
++	 * hfi2_user_exp_rcv_invalidate(@node).
++	 *
++	 * Should be no-op when implementation does not support partial
++	 * unpinning.
++	 *
++	 * @return 0 on success, non-zero on failure.
++	 */
++	int (*register_notify)(struct tid_rb_node *node);
++
++	/**
++	 * Unregister from memory-invalidation callback in anticipation of
++	 * unprogramming TID.
++	 *
++	 * Should be no-op when implementation does not support partial
++	 * unpinning.
++	 *
++	 * Not safe to call more than once per register_notify() call.
++	 */
++	void (*unregister_notify)(struct tid_rb_node *node);
++
++	/**
++	 * DMA-unmap mapped memory for @node.
++	 *
++	 * Should be no-op when implementation does not support partial
++	 * unmapping.
++	 */
++	void (*dma_unmap)(struct tid_rb_node *node);
++
++	/**
++	 * Unpin pages covered by @node.
++	 *
++	 * user_exp_rcv will call this function under node->invalidate_mutex.
++	 * user_exp_rcv will only call this function once per node.
++	 *
++	 * Should be no-op when implementation does not support partial
++	 * unpinning.
++	 */
++	void (*unpin_pages)(struct hfi2_filedata *fd, struct tid_rb_node *node);
++};
++
++int register_tid_ops(u16 type, struct tid_user_buf_ops *op, struct tid_node_ops *nops);
++void deregister_tid_ops(u16 type);
++
++int register_system_tid_ops(void);
++void deregister_system_tid_ops(void);
++
++void hfi2_user_exp_rcv_invalidate(struct tid_rb_node *node);
++
++int hfi2_user_exp_rcv_init(struct hfi2_filedata *fd,
++			   struct hfi2_ctxtdata *uctxt);
++void hfi2_user_exp_rcv_free(struct hfi2_filedata *fd);
++int hfi2_user_exp_rcv_setup(struct hfi2_filedata *fd,
++			    struct hfi2_tid_info *tinfo,
++			    bool allow_unaligned,
++			    bool do_tidcnt_check);
++int hfi2_user_exp_rcv_clear(struct hfi2_filedata *fd,
++			    struct hfi1_tid_info *tinfo);
++int hfi2_user_exp_rcv_invalid(struct hfi2_filedata *fd,
++			      struct hfi1_tid_info *tinfo,
++			      bool do_tidcnt_check);
++
++#endif /* _HFI2_USER_EXP_RCV_H */
+diff --git a/drivers/infiniband/hw/hfi2/user_sdma.h b/drivers/infiniband/hw/hfi2/user_sdma.h
+new file mode 100644
+index 000000000000..971b574a0b47
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/user_sdma.h
+@@ -0,0 +1,262 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2023 - Cornelis Networks, Inc.
++ * Copyright(c) 2015 - 2018 Intel Corporation.
++ */
++#ifndef _HFI2_USER_SDMA_H
++#define _HFI2_USER_SDMA_H
++
++#include <linux/device.h>
++#include <linux/wait.h>
++
++#include "common.h"
++#include "iowait.h"
++#include "user_exp_rcv.h"
++#include "mmu_rb.h"
++#include "pinning.h"
++#include "sdma.h"
++
++/* The maximum number of Data io vectors per message/request */
++#define MAX_VECTORS_PER_REQ 8
++static_assert(MAX_VECTORS_PER_REQ <= HFI2_MAX_MEMINFO_ENTRIES);
++
++/*
++ * Maximum number of packet to send from each message/request
++ * before moving to the next one.
++ */
++#define MAX_PKTS_PER_QUEUE 16
++
++#define num_pages(x) (1 + ((((x) - 1) & PAGE_MASK) >> PAGE_SHIFT))
++
++#define req_opcode(x) \
++	(((x) >> HFI2_SDMA_REQ_OPCODE_SHIFT) & HFI2_SDMA_REQ_OPCODE_MASK)
++#define req_version(x) \
++	(((x) >> HFI2_SDMA_REQ_VERSION_SHIFT) & HFI2_SDMA_REQ_OPCODE_MASK)
++#define req_iovcnt(x) \
++	(((x) >> HFI2_SDMA_REQ_IOVCNT_SHIFT) & HFI2_SDMA_REQ_IOVCNT_MASK)
++#define req_has_meminfo(x) \
++	(((x) >> HFI2_SDMA_REQ_MEMINFO_SHIFT) & HFI2_SDMA_REQ_MEMINFO_MASK)
++
++/* Number of BTH.PSN bits used for sequence number in expected rcvs */
++#define BTH_SEQ_MASK 0x7ffull
++
++#define AHG_KDETH_INTR_SHIFT 12
++#define AHG_KDETH_SH_SHIFT   13
++#define AHG_KDETH_ARRAY_SIZE  9
++
++/**
++ * Build an SDMA AHG header update descriptor and save it to an array.
++ * @arr        - Array to save the descriptor to.
++ * @idx        - Index of the array at which the descriptor will be saved.
++ * @array_size - Size of the array arr.
++ * @dw         - Update index into the header in DWs.
++ * @bit        - Start bit.
++ * @width      - Field width.
++ * @value      - 16 bits of immediate data to write into the field.
++ * Returns -ERANGE if idx is invalid. If successful, returns the next index
++ * (idx + 1) of the array to be used for the next descriptor.
++ */
++static inline int ahg_header_set(u32 *arr, int idx, size_t array_size,
++				 u8 dw, u8 bit, u8 width, u16 value)
++{
++	if ((size_t)idx >= array_size)
++		return -ERANGE;
++	arr[idx++] = sdma_build_ahg_descriptor(value, dw, bit, width);
++	return idx;
++}
++
++/* Tx request flag bits */
++#define TXREQ_FLAGS_REQ_ACK   BIT(0)      /* Set the ACK bit in the header */
++#define TXREQ_FLAGS_REQ_DISABLE_SH BIT(1) /* Disable header suppression */
++
++enum pkt_q_sdma_state {
++	SDMA_PKT_Q_ACTIVE,
++	SDMA_PKT_Q_DEFERRED,
++};
++
++#define SDMA_IOWAIT_TIMEOUT 1000 /* in milliseconds */
++
++#define SDMA_DBG(req, fmt, ...)				     \
++	hfi2_cdbg(SDMA, "[%u:%u:%u:%u] " fmt, (req)->pq->dd->unit, \
++		 (req)->pq->ctxt, (req)->pq->subctxt, (req)->info.comp_idx, \
++		 ##__VA_ARGS__)
++
++struct hfi2_user_sdma_pkt_q {
++	u16 ctxt;
++	u16 subctxt;
++	u16 n_max_reqs;
++	atomic_t n_reqs;
++	struct hfi2_devdata *dd;
++	struct kmem_cache *txreq_cache;
++	struct user_sdma_request *reqs;
++	unsigned long *req_in_use;
++	struct iowait busy;
++	enum pkt_q_sdma_state state;
++	wait_queue_head_t wait;
++	unsigned long unpinned;
++	struct pinning_state pinning_state;
++	atomic_t n_locked;
++};
++
++struct hfi2_user_sdma_comp_q {
++	u16 nentries;
++	struct hfi2_sdma_comp_entry *comps;
++};
++
++struct user_sdma_iovec {
++	struct iovec iov;
++	/* memory type for this vector */
++	unsigned int type;
++	/* memory type context for this vector */
++	u64 context;
++	/*
++	 * offset into the virtual address space of the vector at
++	 * which we last left off.
++	 */
++	u64 offset;
++};
++
++/* evict operation argument */
++struct evict_data {
++	u32 cleared;	/* count evicted so far */
++	u32 target;	/* target count to evict */
++};
++
++/*
++ * User 16B header.  Differences between this and struct hfi2_pkt_hdr:
++ * o LRH size: 16 bytes vs 8 bytes
++ * o LRH byte ordering: LE vs BE
++ * o LRH units: 32 bits vs 16 bits
++ */
++struct hfi2_pkt_header16b {
++	__le16 pbc[4];
++	__le32 lrh[4];
++	__be32 bth[3];
++	struct hfi2_kdeth_header kdeth;
++} __packed;
++
++union user_pkt_header {
++	__le16 pbc[4];
++	struct hfi2_pkt_header hdr9b;
++	struct hfi2_pkt_header16b hdr16b;
++};
++
++/* Pinning-cache entry reference type */
++struct user_sdma_pinref {
++	void *ptr;
++	u16 memtype;
++	/** Used for determining eviction eligibility; set from &user_sdma_request.seqnum */
++	u16 req_seqnum;
++	/** Used for determining most-recently used; set from &user_sdma_request.pinrefs_seqnum */
++	u16 pinref_seqnum;
++};
++
++#define PINREF_ENTRIES 7
++
++struct user_sdma_request {
++	/* This is the original header from user space */
++	union user_pkt_header h;
++	unsigned long hsize;
++	u32 lrh_len_bytes;
++	u32 pad_mask;
++
++	/* Memory type information for each data iovec entry. */
++	struct sdma_req_meminfo meminfo;
++
++	/* Read mostly fields */
++	struct hfi2_user_sdma_pkt_q *pq ____cacheline_aligned_in_smp;
++	struct hfi2_user_sdma_comp_q *cq;
++	/*
++	 * Pointer to the SDMA engine for this request.
++	 * Since different request could be on different VLs,
++	 * each request will need it's own engine pointer.
++	 */
++	struct sdma_engine *sde;
++	struct sdma_req_info info;
++	/* TID array values copied from the tid_iov vector */
++	u32 *tids;
++	/* total length of the data in the request */
++	u32 data_len;
++	/* number of elements copied to the tids array */
++	u16 n_tids;
++	/*
++	 * We copy the iovs for this request (based on
++	 * info.iovcnt). These are only the data vectors
++	 */
++	u8 data_iovs;
++	s8 ahg_idx;
++
++	/* Writeable fields shared with interrupt */
++	u16 seqcomp ____cacheline_aligned_in_smp;
++	u16 seqsubmitted;
++
++	/* Send side fields */
++	struct list_head txps ____cacheline_aligned_in_smp;
++	u16 seqnum;
++	/*
++	 * KDETH.OFFSET (TID) field
++	 * The offset can cover multiple packets, depending on the
++	 * size of the TID entry.
++	 */
++	u32 tidoffset;
++	/*
++	 * KDETH.Offset (Eager) field
++	 * We need to remember the initial value so the headers
++	 * can be updated properly.
++	 */
++	u32 koffset;
++	u32 sent;
++	/* TID index copied from the tid_iov vector */
++	u16 tididx;
++	/* progress index moving along the iovs array */
++	u8 iov_idx;
++	u8 has_error;
++	/* possible appended bytes (16B ICRC QW) */
++	u8 tailsize;
++	/* true if this is a 16B request */
++	bool is16b;
++
++	u16 n_pinrefs;
++	/*
++	 * Since regular .seqnum is only incremented per-txreq, need separate
++	 * .pinref_seqnum to distinguish age of pinrefs within a txreq.
++	 */
++	u32 pinref_seqnum;
++	/* Shared space for storing pin_* cacherefs */
++	struct user_sdma_pinref pinrefs[PINREF_ENTRIES];
++
++	struct user_sdma_iovec iovs[MAX_VECTORS_PER_REQ];
++} ____cacheline_aligned_in_smp;
++
++/*
++ * A single txreq could span up to 3 physical pages when the MTU
++ * is sufficiently large (> 4K). Each of the IOV pointers also
++ * needs it's own set of flags so the vector has been handled
++ * independently of each other.
++ */
++struct user_sdma_txreq {
++	/* Packet header for the txreq */
++	union user_pkt_header h;
++	struct sdma_txreq txreq;
++	struct user_sdma_request *req;
++	struct user_sdma_pinref *pinrefs;
++	u16 n_pinrefs;
++	u16 flags;
++	u16 seqnum;
++};
++
++int hfi2_user_sdma_add_ref(struct user_sdma_txreq *tx, void *ptr,
++			   u16 memtype);
++struct user_sdma_pinref *hfi2_user_sdma_mru_ref(struct user_sdma_txreq *tx,
++						u16 memtype);
++void hfi2_user_sdma_touch_ref(struct user_sdma_txreq *tx,
++			      struct user_sdma_pinref *d);
++
++int hfi2_user_sdma_alloc_queues(struct hfi2_ctxtdata *uctxt,
++				struct hfi2_filedata *fd);
++int hfi2_user_sdma_free_queues(struct hfi2_filedata *fd,
++			       struct hfi2_ctxtdata *uctxt);
++int hfi2_user_sdma_process_request(struct hfi2_filedata *fd,
++				   struct iovec *iovec, unsigned long dim,
++				   unsigned long *count);
++#endif /* _HFI2_USER_SDMA_H */
+diff --git a/drivers/infiniband/hw/hfi2/uverbs.h b/drivers/infiniband/hw/hfi2/uverbs.h
+new file mode 100644
+index 000000000000..684a0b311420
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/uverbs.h
+@@ -0,0 +1,19 @@
++/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
++/*
++ * Copyright(c) 2024 Cornelis Networks, Inc.
++ */
++
++#ifndef HFI2_UVERBS_H
++#define HFI2_UVERBS_H
++
++#include <rdma/uverbs_ioctl.h>
++
++int hfi2_alloc_ucontext(struct ib_ucontext *ucontext, struct ib_udata *udata);
++void hfi2_dealloc_ucontext(struct ib_ucontext *ucontext);
++int hfi2_rdma_mmap(struct ib_ucontext *ucontext, struct vm_area_struct *vma);
++ssize_t hfi2_uverbs_write_iter(struct ib_ucontext *ucontext,
++			       struct iov_iter *from);
++
++extern const struct uapi_definition hfi2_ib_defs[];
++
++#endif /* HFI2_UVERBS_H */
+diff --git a/drivers/infiniband/hw/hfi2/verbs.h b/drivers/infiniband/hw/hfi2/verbs.h
+new file mode 100644
+index 000000000000..b94d8c70377d
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/verbs.h
+@@ -0,0 +1,488 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2015 - 2018 Intel Corporation.
++ */
++
++#ifndef HFI2_VERBS_H
++#define HFI2_VERBS_H
++
++#include <linux/types.h>
++#include <linux/seqlock.h>
++#include <linux/kernel.h>
++#include <linux/interrupt.h>
++#include <linux/kref.h>
++#include <linux/workqueue.h>
++#include <linux/kthread.h>
++#include <linux/completion.h>
++#include <linux/slab.h>
++#include <rdma/ib_pack.h>
++#include <rdma/ib_user_verbs.h>
++#include <rdma/ib_mad.h>
++#include <rdma/ib_hdrs.h>
++#include <rdma/rdma_vt.h>
++#include <rdma/rdmavt_qp.h>
++#include <rdma/rdmavt_cq.h>
++
++struct hfi2_ctxtdata;
++struct hfi2_pportdata;
++struct hfi2_devdata;
++struct hfi2_packet;
++
++#include "iowait.h"
++#include "tid_rdma.h"
++#include "opfn.h"
++
++#define HFI2_MAX_RDMA_ATOMIC     16
++
++/*
++ * Increment this value if any changes that break userspace ABI
++ * compatibility are made.
++ */
++#define HFI2_UVERBS_ABI_VERSION       2
++
++/* IB Performance Manager status values */
++#define IB_PMA_SAMPLE_STATUS_DONE       0x00
++#define IB_PMA_SAMPLE_STATUS_STARTED    0x01
++#define IB_PMA_SAMPLE_STATUS_RUNNING    0x02
++
++/* Mandatory IB performance counter select values. */
++#define IB_PMA_PORT_XMIT_DATA   cpu_to_be16(0x0001)
++#define IB_PMA_PORT_RCV_DATA    cpu_to_be16(0x0002)
++#define IB_PMA_PORT_XMIT_PKTS   cpu_to_be16(0x0003)
++#define IB_PMA_PORT_RCV_PKTS    cpu_to_be16(0x0004)
++#define IB_PMA_PORT_XMIT_WAIT   cpu_to_be16(0x0005)
++
++#define HFI2_VENDOR_IPG		cpu_to_be16(0xFFA0)
++
++#define IB_DEFAULT_GID_PREFIX	cpu_to_be64(0xfe80000000000000ULL)
++#define OPA_BTH_MIG_REQ		BIT(31)
++
++#define RC_OP(x) IB_OPCODE_RC_##x
++#define UC_OP(x) IB_OPCODE_UC_##x
++
++/* flags passed by hfi2_ib_rcv() */
++enum {
++	HFI2_HAS_GRH = (1 << 0),
++};
++
++#define LRH_16B_BYTES (sizeof_field(struct hfi2_16b_header, lrh))
++#define LRH_16B_DWORDS (LRH_16B_BYTES / sizeof(u32))
++#define LRH_9B_BYTES (sizeof_field(struct ib_header, lrh))
++#define LRH_9B_DWORDS (LRH_9B_BYTES / sizeof(u32))
++
++/* 24Bits for qpn, upper 8Bits reserved */
++struct opa_16b_mgmt {
++	__be32 dest_qpn;
++	__be32 src_qpn;
++};
++
++struct hfi2_16b_header {
++	u32 lrh[4];
++	union {
++		struct {
++			struct ib_grh grh;
++			struct ib_other_headers oth;
++		} l;
++		struct ib_other_headers oth;
++		struct opa_16b_mgmt mgmt;
++	} u;
++} __packed;
++
++struct hfi2_opa_header {
++	union {
++		struct ib_header ibh; /* 9B header */
++		struct hfi2_16b_header opah; /* 16B header */
++	};
++	u8 hdr_type; /* 9B or 16B */
++} __packed;
++
++struct hfi2_ahg_info {
++	u32 ahgdesc[2];
++	u16 tx_flags;
++	u8 ahgcount;
++	u8 ahgidx;
++};
++
++struct hfi2_sdma_header {
++	__le64 pbc;
++	struct hfi2_opa_header hdr;
++} __packed;
++
++/*
++ * hfi2 specific data structures that will be hidden from rvt after the queue
++ * pair is made common
++ */
++struct hfi2_qp_priv {
++	struct hfi2_ahg_info *s_ahg;              /* ahg info for next header */
++	struct sdma_engine *s_sde;                /* current sde */
++	struct send_context *s_sendcontext;       /* current sendcontext */
++	struct hfi2_ctxtdata *rcd;                /* QP's receive context */
++	struct page **pages;                      /* for TID page scan */
++	u32 tid_enqueue;                          /* saved when tid waited */
++	u8 s_sc;		                  /* SC[0..4] for next packet */
++	struct iowait s_iowait;
++	struct timer_list s_tid_timer;            /* for timing tid wait */
++	struct timer_list s_tid_retry_timer;      /* for timing tid ack */
++	struct list_head tid_wait;                /* for queueing tid space */
++	struct hfi2_opfn_data opfn;
++	struct tid_flow_state flow_state;
++	struct tid_rdma_qp_params tid_rdma;
++	struct rvt_qp *owner;
++	u16 s_running_pkt_size;
++	u8 hdr_type; /* 9B or 16B */
++	struct rvt_sge_state tid_ss;       /* SGE state pointer for 2nd leg */
++	atomic_t n_requests;               /* # of TID RDMA requests in the */
++					   /* queue */
++	atomic_t n_tid_requests;            /* # of sent TID RDMA requests */
++	unsigned long tid_timer_timeout_jiffies;
++	unsigned long tid_retry_timeout_jiffies;
++
++	/* variables for the TID RDMA SE state machine */
++	u8 s_state;
++	u8 s_retry;
++	u8 rnr_nak_state;       /* RNR NAK state */
++	u8 s_nak_state;
++	u32 s_nak_psn;
++	u32 s_flags;
++	u32 s_tid_cur;
++	u32 s_tid_head;
++	u32 s_tid_tail;
++	u32 r_tid_head;     /* Most recently added TID RDMA request */
++	u32 r_tid_tail;     /* the last completed TID RDMA request */
++	u32 r_tid_ack;      /* the TID RDMA request to be ACK'ed */
++	u32 r_tid_alloc;    /* Request for which we are allocating resources */
++	u32 pending_tid_w_segs; /* Num of pending tid write segments */
++	u32 pending_tid_w_resp; /* Num of pending tid write responses */
++	u32 alloc_w_segs;       /* Number of segments for which write */
++			       /* resources have been allocated for this QP */
++
++	/* For TID RDMA READ */
++	u32 tid_r_reqs;         /* Num of tid reads requested */
++	u32 tid_r_comp;         /* Num of tid reads completed */
++	u32 pending_tid_r_segs; /* Num of pending tid read segments */
++	u16 pkts_ps;            /* packets per segment */
++	u8 timeout_shift;       /* account for number of packets per segment */
++
++	u32 r_next_psn_kdeth;
++	u32 r_next_psn_kdeth_save;
++	u32 s_resync_psn;
++	u8 sync_pt;           /* Set when QP reaches sync point */
++	u8 resync;
++};
++
++#define HFI2_QP_WQE_INVALID   ((u32)-1)
++
++struct hfi2_swqe_priv {
++	struct tid_rdma_request tid_req;
++	struct rvt_sge_state ss;  /* Used for TID RDMA READ Request */
++};
++
++struct hfi2_ack_priv {
++	struct rvt_sge_state ss;               /* used for TID WRITE RESP */
++	struct tid_rdma_request tid_req;
++};
++
++/*
++ * This structure is used to hold commonly lookedup and computed values during
++ * the send engine progress.
++ */
++struct iowait_work;
++struct hfi2_pkt_state {
++	struct hfi2_ibdev *dev;
++	struct hfi2_ibport *ibp;
++	struct hfi2_pportdata *ppd;
++	struct verbs_txreq *s_txreq;
++	struct iowait_work *wait;
++	unsigned long flags;
++	unsigned long timeout;
++	unsigned long timeout_int;
++	int cpu;
++	u8 opcode;
++	bool in_thread;
++	bool pkts_sent;
++};
++
++#define HFI2_PSN_CREDIT  16
++
++struct hfi2_opcode_stats {
++	u64 n_packets;          /* number of packets */
++	u64 n_bytes;            /* total number of bytes */
++};
++
++struct hfi2_opcode_stats_perctx {
++	struct hfi2_opcode_stats stats[256];
++};
++
++static inline void inc_opstats(
++	u32 tlen,
++	struct hfi2_opcode_stats *stats)
++{
++#ifdef CONFIG_DEBUG_FS
++	stats->n_bytes += tlen;
++	stats->n_packets++;
++#endif
++}
++
++struct hfi2_ibport {
++	struct rvt_qp __rcu *qp[2];
++	struct rvt_ibport rvp;
++
++	/* the first 16 entries are sl_to_vl for !OPA */
++	u8 sl_to_sc[32];
++	u8 sc_to_sl[32];
++};
++
++struct hfi2_ibdev {
++	struct rvt_dev_info rdi; /* Must be first */
++
++	/* QP numbers are shared by all IB ports */
++	/* protect txwait list */
++	seqlock_t txwait_lock ____cacheline_aligned_in_smp;
++	struct list_head txwait;        /* list for wait verbs_txreq */
++	struct list_head memwait;       /* list for wait kernel memory */
++	struct kmem_cache *verbs_txreq_cache;
++	u64 n_txwait;
++	u64 n_kmem_wait;
++	u64 n_tidwait;
++
++	/* protect iowait lists */
++	seqlock_t iowait_lock ____cacheline_aligned_in_smp;
++	u64 n_piowait;
++	u64 n_piodrain;
++	struct timer_list mem_timer;
++
++#ifdef CONFIG_DEBUG_FS
++	/* per HFI debugfs */
++	struct dentry *hfi2_ibdev_dbg;
++	/* per HFI symlinks to above */
++	struct dentry *hfi2_ibdev_link;
++#ifdef CONFIG_FAULT_INJECTION
++	struct fault *fault;
++#endif
++#endif
++};
++
++static inline struct hfi2_ibdev *to_idev(struct ib_device *ibdev)
++{
++	struct rvt_dev_info *rdi;
++
++	rdi = container_of(ibdev, struct rvt_dev_info, ibdev);
++	return container_of(rdi, struct hfi2_ibdev, rdi);
++}
++
++static inline struct rvt_qp *iowait_to_qp(struct iowait *s_iowait)
++{
++	struct hfi2_qp_priv *priv;
++
++	priv = container_of(s_iowait, struct hfi2_qp_priv, s_iowait);
++	return priv->owner;
++}
++
++/*
++ * This must be called with s_lock held.
++ */
++void hfi2_bad_pkey(struct hfi2_ibport *ibp, u32 key, u32 sl,
++		   u32 qp1, u32 qp2, u32 lid1, u32 lid2);
++void hfi2_cap_mask_chg(struct rvt_dev_info *rdi, u32 port_num);
++void hfi2_sys_guid_chg(struct hfi2_ibport *ibp);
++void hfi2_node_desc_chg(struct hfi2_ibport *ibp);
 +int hfi2_process_mad(struct ib_device *ibdev, int mad_flags, u32 port,
 +		     const struct ib_wc *in_wc, const struct ib_grh *in_grh,
 +		     const struct ib_mad *in_mad, struct ib_mad *out_mad,
-+		     size_t *out_mad_size, u16 *out_mad_pkey_index)
-+{
-+	int ret;
-+
-+	switch (in_mad->mad_hdr.base_version) {
-+	case OPA_MGMT_BASE_VERSION:
-+		ret = hfi2_process_opa_mad(ibdev, mad_flags, port,
-+					   in_wc, in_grh,
-+					   (struct opa_mad *)in_mad,
-+					   (struct opa_mad *)out_mad,
-+					   out_mad_size,
-+					   out_mad_pkey_index);
-+		break;
-+	case IB_MGMT_BASE_VERSION:
-+		ret = hfi2_process_ib_mad(ibdev, mad_flags, port, in_wc,
-+					  in_grh, in_mad, out_mad);
-+		break;
-+	default:
-+		ret = IB_MAD_RESULT_FAILURE;
-+		break;
-+	}
-+
-+	return ret;
-+}
++		     size_t *out_mad_size, u16 *out_mad_pkey_index);
++int cport_process_mad(struct ib_device *ibdev, int mad_flags, u32 port,
++		      const struct ib_wc *in_wc, const struct ib_grh *in_grh,
++		      const struct ib_mad *in_mad, struct ib_mad *out_mad,
++		      size_t *out_mad_size, u16 *out_mad_pkey_index);
 +
 +/*
-+ * The driver received a GET or SET NODE_DESC from CPORT.
-+ * Currently, we only tell CPORT what the NodedDescription should be,
-+ * according to the IB device. We don't allow anyone to change that.
-+ */
-+static int cport_do_opa_nodedesc(struct hfi2_pportdata *ppd,
-+				 struct opa_smp *smp,
-+				 u8 *data)
-+{
-+	struct hfi2_devdata *dd = ppd->dd;
-+	struct opa_node_description *nd = (struct opa_node_description *)data;
-+	struct hfi2_ibdev *dev = &dd->verbs_dev;
-+	struct ib_device *ibdev = &dev->rdi.ibdev;
-+
-+	memcpy(nd->data, ibdev->node_desc, sizeof(nd->data));
-+	return 0;
-+}
-+
-+static int cport_set_opa_nodeinfo(struct hfi2_pportdata *ppd,
-+				  struct opa_smp *smp,
-+				  u8 *data)
-+{
-+	struct opa_node_info *ni = (struct opa_node_info *)data;
-+
-+	ni->system_image_guid = ib_hfi2_sys_image_guid;
-+	return 0;
-+}
-+
-+/*
-+ * Take a GET_RESP PORT_INFO MAD and use it to update the hfi2 device data structures.
-+ * The entire MAD is referenced through 'smp'.
-+ */
-+int update_from_opa_portinfo(struct hfi2_pportdata *ppd,
-+			     struct opa_smp *smp,
-+			     struct opa_port_info *pi)
-+{
-+	struct hfi2_devdata *dd = ppd->dd;
-+	struct ib_device *ibdev = &dd->verbs_dev.rdi.ibdev;
-+	struct ib_event event;
-+	struct hfi2_ibport *ibp = &ppd->ibport_data;
-+	u32 smlid;
-+	u32 lid;
-+	u8 ls_old, ls_new, ps_new;
-+	u8 lmc;
-+	u8 clientrereg;
-+	u8 vls;
-+	u8 msl;
-+	u8 crc_enabled;
-+	unsigned long flags;
-+	int i;
-+	u16 lse, lwe, mtu;
-+	u32 am = be32_to_cpu(smp->attr_mod);
-+	u32 start_of_sm_config = OPA_AM_START_SM_CFG(am);
-+
-+	/*
-+	 * This code is modeled after __subn_set_opa_portinfo(), eliminating
-+	 * things that attempt to manipulate hardware or are otherwise handled
-+	 * by CPORT now. This routine DOES NOT change the port state in
-+	 * hardware or on the fabric, it simply makes the driver "view"
-+	 * match what CPORT tells us via an OPA_ATTRIB_ID_PORT_INFO MAD.
-+	 * It also implicitly trusts the information provided by CPORT.
-+	 */
-+
-+	lid = be32_to_cpu(pi->lid);
-+	smlid = be32_to_cpu(pi->sm_lid);
-+	ls_old = driver_lstate(ppd);
-+	clientrereg = (pi->clientrereg_subnettimeout &
-+			OPA_PI_MASK_CLIENT_REREGISTER);
-+
-+	event.device = ibdev;
-+	event.element.port_num = ppd->port;
-+
-+	ibp->rvp.mkey = pi->mkey;
-+	if (ibp->rvp.gid_prefix != pi->subnet_prefix) {
-+		ibp->rvp.gid_prefix = pi->subnet_prefix;
-+		event.event = IB_EVENT_GID_CHANGE;
-+		ib_dispatch_event(&event);
-+
-+		/* Refresh ipoib with new subnet prefixes from updated ib_gid_table */
-+		event.event = IB_EVENT_CLIENT_REREGISTER;
-+		ib_dispatch_event(&event);
-+	}
-+	ibp->rvp.mkey_lease_period = be16_to_cpu(pi->mkey_lease_period);
-+
-+	lmc = pi->mkeyprotect_lmc & OPA_PI_MASK_LMC;
-+	if (ppd->lid != lid || ppd->lmc != lmc) {
-+		ppd_dev_info(ppd, "port %d: setting LID/LMC 0x%x/0x%x\n",
-+			     ppd->port, lid, lmc);
-+		if (ppd->lid != lid)
-+			hfi2_set_uevent_bits(ppd, _HFI2_EVENT_LID_CHANGE_BIT);
-+		if (ppd->lmc != (pi->mkeyprotect_lmc & OPA_PI_MASK_LMC))
-+			hfi2_set_uevent_bits(ppd, _HFI2_EVENT_LMC_CHANGE_BIT);
-+		/* relevant parts of hfi2_set_lid() */
-+		ppd->lid = lid;
-+		ppd->lmc = lmc;
-+		sdma_update_lmc(dd, ~((1U << lmc) - 1),
-+				lid >= be16_to_cpu(IB_MULTICAST_LID_BASE) ? 0 : lid);
-+		/* ppd_dev_info(ppd, "got a lid: 0x%x\n", lid); */
-+		event.event = IB_EVENT_LID_CHANGE;
-+		ib_dispatch_event(&event);
-+
-+		if (HFI2_PORT_GUID_INDEX + 1 < HFI2_GUIDS_PER_PORT) {
-+			/* Manufacture GID from LID to support extended
-+			 * addresses
-+			 */
-+			ppd->guids[HFI2_PORT_GUID_INDEX + 1] =
-+				be64_to_cpu(OPA_MAKE_ID(lid));
-+			event.event = IB_EVENT_GID_CHANGE;
-+			ib_dispatch_event(&event);
-+		}
-+	}
-+
-+	msl = pi->smsl & OPA_PI_MASK_SMSL;
-+	if (pi->partenforce_filterraw & OPA_PI_MASK_LINKINIT_REASON)
-+		ppd->linkinit_reason =
-+			(pi->partenforce_filterraw & OPA_PI_MASK_LINKINIT_REASON);
-+
-+	if (smlid != ibp->rvp.sm_lid || msl != ibp->rvp.sm_sl) {
-+		ppd_dev_warn(ppd, "SubnSet(OPA_PortInfo cport) smlid 0x%x\n",
-+			     smlid);
-+		spin_lock_irqsave(&ibp->rvp.lock, flags);
-+		if (ibp->rvp.sm_ah) {
-+			if (smlid != ibp->rvp.sm_lid)
-+				hfi2_modify_qp0_ah(ibp, ibp->rvp.sm_ah, smlid);
-+			if (msl != ibp->rvp.sm_sl)
-+				rdma_ah_set_sl(&ibp->rvp.sm_ah->attr, msl);
-+		}
-+		spin_unlock_irqrestore(&ibp->rvp.lock, flags);
-+		if (smlid != ibp->rvp.sm_lid)
-+			ibp->rvp.sm_lid = smlid;
-+		if (msl != ibp->rvp.sm_sl)
-+			ibp->rvp.sm_sl = msl;
-+		event.event = IB_EVENT_SM_CHANGE;
-+		ib_dispatch_event(&event);
-+	}
-+
-+	if (pi->link_down_reason == 0) {
-+		ppd->local_link_down_reason.sma = 0;
-+		ppd->local_link_down_reason.latest = 0;
-+	}
-+
-+	if (pi->neigh_link_down_reason == 0) {
-+		ppd->neigh_link_down_reason.sma = 0;
-+		ppd->neigh_link_down_reason.latest = 0;
-+	}
-+
-+	ppd->sm_trap_qp = be32_to_cpu(pi->sm_trap_qp);
-+	ppd->sa_qp = be32_to_cpu(pi->sa_qp);
-+
-+	ppd->port_error_action = be32_to_cpu(pi->port_error_action);
-+
-+	lwe = be16_to_cpu(pi->link_width.enabled);
-+	if (lwe) {
-+		if (lwe == OPA_LINK_WIDTH_RESET ||
-+		    lwe == OPA_LINK_WIDTH_RESET_OLD)
-+			set_link_width_enabled(ppd, ppd->link_width_supported);
-+		else if ((lwe & ~ppd->link_width_supported) == 0)
-+			set_link_width_enabled(ppd, lwe);
-+	}
-+	lwe = be16_to_cpu(pi->link_width_downgrade.enabled);
-+	if (lwe == OPA_LINK_WIDTH_RESET ||
-+	    lwe == OPA_LINK_WIDTH_RESET_OLD) {
-+		set_link_width_downgrade_enabled(ppd,
-+						 ppd->link_width_downgrade_supported);
-+	} else if ((lwe & ~ppd->link_width_downgrade_supported) == 0) {
-+		if (lwe != ppd->link_width_downgrade_enabled)
-+			set_link_width_downgrade_enabled(ppd, lwe);
-+	}
-+	lse = be16_to_cpu(pi->link_speed.enabled);
-+	if (lse)
-+		set_link_speed_enabled(ppd, lse);
-+
-+	ibp->rvp.mkeyprot =
-+		(pi->mkeyprotect_lmc & OPA_PI_MASK_MKEY_PROT_BIT) >> 6;
-+	ibp->rvp.vl_high_limit = be16_to_cpu(pi->vl.high_limit) & 0xFF;
-+
-+	/*
-+	 * The only part of set_mtu() that's required here is to
-+	 * determine the maximum MTU (ppd->ibmtu) and resulting maximum length
-+	 * (ppd->ibmaxlen). Do that here as we check every MTU.
-+	 */
-+	ppd->ibmtu = 0;
-+	for (i = 0; i < ppd->vls_supported; i++) {
-+		mtu = pi->neigh_mtu.pvlx_to_mtu[i / 2];
-+		if ((i % 2) == 0)
-+			mtu >>= 4;
-+		mtu = enum_to_mtu(mtu & 0xF);
-+		if (mtu == 0xffff) {
-+			ppd_dev_warn(ppd, "%s: mtu invalid %d (0x%x)\n",
-+				     __func__, mtu,
-+				     (pi->neigh_mtu.pvlx_to_mtu[0] >> 4) & 0xF);
-+			mtu = hfi2_max_mtu; /* use a valid MTU */
-+		}
-+		if (ppd->ibmtu < mtu)
-+			ppd->ibmtu = mtu;
-+		if (ppd->vld[i].mtu != mtu) {
-+			ppd_dev_info(ppd, "MTU change on vl %d from %d to %d\n",
-+				     i, ppd->vld[i].mtu, mtu);
-+			ppd->vld[i].mtu = mtu;
-+		}
-+	}
-+	/* As per OPAV1 spec: VL15 must support and be configured
-+	 * for operation with a 2048 or larger MTU.
-+	 */
-+	mtu = enum_to_mtu(pi->neigh_mtu.pvlx_to_mtu[15 / 2] & 0xF);
-+	if (mtu < 2048 || mtu == 0xffff)
-+		mtu = 2048;
-+	if (ppd->ibmtu < mtu)
-+		ppd->ibmtu = mtu;
-+	if (ppd->vld[15].mtu != mtu) {
-+		ppd_dev_info(ppd, "MTU change on vl 15 from %d to %d\n",
-+			     ppd->vld[15].mtu, mtu);
-+		ppd->vld[15].mtu = mtu;
-+	}
-+	ppd->ibmaxlen = ppd->ibmtu + lrh_max_header_bytes(ppd);
-+
-+	vls = pi->operational_vls & OPA_PI_MASK_OPERATIONAL_VL;
-+	/* hfi2_set_ib_cfg(HFI2_IB_CFG_OP_VLS) is hardware-neutral */
-+	if (vls)
-+		hfi2_set_ib_cfg(ppd, HFI2_IB_CFG_OP_VLS, vls);
-+
-+	if (pi->mkey_violations == 0)
-+		ibp->rvp.mkey_violations = 0;
-+
-+	if (pi->pkey_violations == 0)
-+		ibp->rvp.pkey_violations = 0;
-+
-+	if (pi->qkey_violations == 0)
-+		ibp->rvp.qkey_violations = 0;
-+
-+	ibp->rvp.subnet_timeout =
-+		pi->clientrereg_subnettimeout & OPA_PI_MASK_SUBNET_TIMEOUT;
-+
-+	crc_enabled = be16_to_cpu(pi->port_ltp_crc_mode);
-+	crc_enabled >>= 4;
-+	crc_enabled &= 0xf;
-+	if (crc_enabled)
-+		ppd->port_crc_mode_enabled = port_ltp_to_cap(crc_enabled);
-+
-+	ppd->is_active_optimize_enabled =
-+		!!(be16_to_cpu(pi->port_mode) & OPA_PI_MASK_PORT_ACTIVE_OPTOMIZE);
-+
-+	ls_new = port_states_to_logical_state(&pi->port_states);
-+	ps_new = port_states_to_phys_state(&pi->port_states);
-+	if (ls_old == IB_PORT_INIT) {
-+		if (start_of_sm_config) {
-+			if (ls_new == ls_old || ls_new == IB_PORT_ARMED)
-+				ppd->is_sm_config_started = 1;
-+		}
-+	}
-+
-+	if (clientrereg) {
-+		event.event = IB_EVENT_CLIENT_REREGISTER;
-+		ib_dispatch_event(&event);
-+	}
-+
-+	ppd->neighbor_normal = (pi->port_states.ledenable_offlinereason >> 4) & 1;
-+
-+	/* Finally, perform "safe" version of set_port_states() */
-+	cport_set_port_states(ppd, pi, ls_new, ps_new);
-+
-+	return 0;
-+}
-+
-+/*
-+ * When snooping MADs between FM and CPORT, the following will be seen:
-+ * (FM typically observes the port in INIT when it starts)
-+ * FM sends a SET PortInfo MAD with the designated state. The driver
-+ * sees the GET response generated by the CPORT, and the state in this
-+ * response is not necessarily the state requested by the FM (if the
-+ * transition takes time, it may not be reflected in the MAD response).
-+ * The following focuses on the logical port state, with the physical
-+ * port state when applicable.
++ * The PSN_MASK and PSN_SHIFT allow for
++ * 1) comparing two PSNs
++ * 2) returning the PSN with any upper bits masked
++ * 3) returning the difference between to PSNs
 + *
-+ * current   FM sends    driver sees    new state
-+ * -------   --------    -----------    ---------
-+ * INIT      ARMED       ???            ARMED
-+ * ARMED     ACTIVE      ???            ACTIVE
-+ * ACTIVE    (nothing sent)             ACTIVE
-+ *
-+ * (*FM bounces port*)
-+ * (prev)    NOP/POLL    (prev)         INIT (eventually)
-+ *
-+ * (*FM changes LID*)
-+ * (prev)    ---?        (prev)         (prev)
++ * The number of significant bits in the PSN must
++ * necessarily be at least one bit less than
++ * the container holding the PSN.
 + */
-+static int cport_set_opa_portinfo(struct hfi2_pportdata *ppd,
-+				  struct opa_smp *smp,
-+				  u8 *data)
++#define PSN_MASK 0x7FFFFFFF
++#define PSN_SHIFT 1
++#define PSN_MODIFY_MASK 0xFFFFFF
++
++/*
++ * Compare two PSNs
++ * Returns an integer <, ==, or > than zero.
++ */
++static inline int cmp_psn(u32 a, u32 b)
 +{
-+	struct opa_port_info *pi = (struct opa_port_info *)data;
-+	int ret = 0;
-+
-+	/* Note: what we have here is actually a GET_RESP, in spite of
-+	 * appearing to be a SET.
-+	 */
-+	ret = update_from_opa_portinfo(ppd, smp, pi);
-+	return ret;
-+}
-+
-+static int cport_set_opa_pkeytbl(struct hfi2_pportdata *ppd,
-+				 struct opa_smp *smp,
-+				 u8 *data)
-+{
-+	struct hfi2_devdata *dd = ppd->dd;
-+	u32 am = be32_to_cpu(smp->attr_mod);
-+	u32 n_blocks_sent = OPA_AM_NBLK(am);
-+	int npk_sent = n_blocks_sent * OPA_PARTITION_TABLE_BLK_SIZE;
-+	u32 start_block = am & 0x7ff;
-+	u16 *p = (u16 *)data;
-+	__be16 *q = (__be16 *)data;
-+	int i;
-+	u32 n_blocks_avail;
-+	u32 npkeys = hfi2_get_npkeys(dd);
-+	u32 size = 0;
-+	u32 max_len = (u32)opa_get_smp_data_size(smp);
-+	int sts = MSG_RSP_STATUS_INVALID_STATE;
-+
-+	if (n_blocks_sent == 0)
-+		goto out;
-+	n_blocks_avail = DIV_ROUND_UP(npkeys, OPA_PARTITION_TABLE_BLK_SIZE);
-+	size = sizeof(u16) * npk_sent;
-+	if (smp_length_check(size, max_len))
-+		goto out;
-+	if (start_block + n_blocks_sent > n_blocks_avail ||
-+	    n_blocks_sent > OPA_NUM_PKEY_BLOCKS_PER_SMP)
-+		goto out;
-+
-+	/* must convert to little-endian for set_pkeys() */
-+	for (i = 0; i < npk_sent; i++)
-+		p[i] = be16_to_cpu(q[i]);
-+	if (set_pkeys(dd, ppd->port, start_block, n_blocks_sent, p) == 0)
-+		sts = 0;
-+	/* must convert back to big-endian for response */
-+	for (i = 0; i < npk_sent; i++)
-+		q[i] = cpu_to_be16(p[i]);
-+out:
-+	return sts;
-+}
-+
-+static int cport_set_opa_slsc(struct hfi2_pportdata *ppd, struct opa_smp *smp,
-+			      u8 *data)
-+{
-+	struct hfi2_ibport *ibp = &ppd->ibport_data;
-+	u8 *p = data;
-+	int i;
-+
-+	/* always update driver tables with CPORT contents */
-+	for (i = 0; i < ARRAY_SIZE(ibp->sl_to_sc); i++)
-+		ibp->sl_to_sc[i] = *p++;
-+
-+	return 0;
-+}
-+
-+static int cport_set_opa_vlarb(struct hfi2_pportdata *ppd, struct opa_smp *smp,
-+			       u8 *data)
-+{
-+	u32 am = be32_to_cpu(smp->attr_mod);
-+	u32 num_ports = OPA_AM_NPORT(am);
-+	u8 section = (am & 0x00ff0000) >> 16;
-+	u8 *p = data;
-+	u32 max_len = (u32)opa_get_smp_data_size(smp);
-+	int size = 256;
-+	int sts = MSG_RSP_STATUS_INVALID_STATE;
-+
-+	if (num_ports != 1 || smp_length_check(size, max_len))
-+		goto out;
-+
-+	switch (section) {
-+	case OPA_VLARB_LOW_ELEMENTS:
-+		(void)fm_set_table(ppd, FM_TBL_VL_LOW_ARB, p);
-+		sts = 0;
-+		break;
-+	case OPA_VLARB_HIGH_ELEMENTS:
-+		(void)fm_set_table(ppd, FM_TBL_VL_HIGH_ARB, p);
-+		sts = 0;
-+		break;
-+	case OPA_VLARB_PREEMPT_ELEMENTS:
-+	case OPA_VLARB_PREEMPT_MATRIX:
-+	default:
-+		break;
-+	}
-+out:
-+	return sts;
-+}
-+
-+static int cport_set_opa_scsl(struct hfi2_pportdata *ppd, struct opa_smp *smp,
-+			      u8 *data)
-+{
-+	struct hfi2_ibport *ibp = &ppd->ibport_data;
-+	u8 *p = data;
-+	int i;
-+
-+	/* always update driver tables with CPORT contents */
-+	for (i = 0; i < ARRAY_SIZE(ibp->sc_to_sl); i++)
-+		ibp->sc_to_sl[i] = *p++;
-+
-+	return 0;
-+}
-+
-+static int cport_set_opa_scvlr(struct hfi2_pportdata *ppd, struct opa_smp *smp,
-+			       u8 *data)
-+{
-+	int sts = MSG_RSP_STATUS_INVALID_STATE;
-+
-+	sts = 0;
-+	return sts;
-+}
-+
-+static int cport_set_opa_scvlt(struct hfi2_pportdata *ppd, struct opa_smp *smp,
-+			       u8 *data)
-+{
-+	u32 am = be32_to_cpu(smp->attr_mod);
-+	u32 n_blocks = OPA_AM_NBLK(am);
-+	int async_update = OPA_AM_ASYNC(am);
-+	int lstate;
-+	size_t size = 4 * sizeof(u64);	/* see __subn_set_opa_sc_to_vlt() */
-+	u32 max_len = (u32)opa_get_smp_data_size(smp);
-+	int sts = MSG_RSP_STATUS_INVALID_STATE;
-+
-+	if (n_blocks != 1 || async_update || smp_length_check(size, max_len))
-+		goto out;
-+	lstate = driver_lstate(ppd);
-+	if (!async_update &&
-+	    (lstate == IB_PORT_ARMED || lstate == IB_PORT_ACTIVE))
-+		goto out;
-+
-+	/*
-+	 * set_sc2vlt_tables() writes CSRs, and CPORT now maintains those.
-+	 * Also, need to avoid altering (filter_sc2vlt()) the MAD data since
-+	 * it needs to be sent back to requesting node.
-+	 */
-+	write_seqlock_irq(&ppd->sc2vl_lock);
-+	memcpy(ppd->sc2vl, data, sizeof(ppd->sc2vl));
-+	filter_sc2vlt(ppd->sc2vl, true);
-+	write_sequnlock_irq(&ppd->sc2vl_lock);
-+	sts = 0;
-+out:
-+	return sts;
-+}
-+
-+static int cport_set_opa_scvlnt(struct hfi2_pportdata *ppd, struct opa_smp *smp,
-+				u8 *data)
-+{
-+	u32 am = be32_to_cpu(smp->attr_mod);
-+	u32 n_blocks = OPA_AM_NPORT(am);
-+	int lstate;
-+	int size = sizeof(struct sc2vlnt);
-+	u32 max_len = (u32)opa_get_smp_data_size(smp);
-+	int sts = MSG_RSP_STATUS_INVALID_STATE;
-+
-+	if (n_blocks != 1 || smp_length_check(size, max_len))
-+		goto out;
-+	lstate = driver_lstate(ppd);
-+	if (lstate == IB_PORT_ARMED || lstate == IB_PORT_ACTIVE)
-+		goto out;
-+
-+	/* CPORT controls sc2vlnt */
-+	sts = 0;
-+
-+out:
-+	return sts;
-+}
-+
-+static int cport_set_opa_bufctl(struct hfi2_pportdata *ppd, struct opa_smp *smp,
-+				u8 *data)
-+{
-+	u32 am = be32_to_cpu(smp->attr_mod);
-+	u32 num_ports = OPA_AM_NPORT(am);
-+	u32 max_len = (u32)opa_get_smp_data_size(smp);
-+	struct buffer_control *p = (struct buffer_control *)data;
-+	int sts = MSG_RSP_STATUS_INVALID_STATE;
-+
-+	if (num_ports != 1 || smp_length_check(sizeof(*p), max_len))
-+		goto out;
-+
-+	sts = 0;
-+out:
-+	return sts;
-+}
-+
-+static int cport_set_opa_aggr(struct hfi2_pportdata *ppd, struct opa_smp *smp)
-+{
-+	return 0;
-+}
-+
-+static int cport_subn_set_opa(struct hfi2_pportdata *ppd, struct opa_smp *smp)
-+{
-+	int sts = MSG_RSP_STATUS_INVALID_STATE;
-+	u8 *data = opa_get_smp_data(smp);
-+
-+	switch (smp->attr_id) {
-+	case IB_SMP_ATTR_NODE_DESC:
-+		sts = cport_do_opa_nodedesc(ppd, smp, data);
-+		break;
-+	case IB_SMP_ATTR_NODE_INFO:
-+		sts = cport_set_opa_nodeinfo(ppd, smp, data);
-+		break;
-+	case OPA_ATTRIB_ID_PORT_INFO:
-+		sts = cport_set_opa_portinfo(ppd, smp, data);
-+		break;
-+	case IB_SMP_ATTR_PKEY_TABLE:
-+		sts = cport_set_opa_pkeytbl(ppd, smp, data);
-+		break;
-+	case OPA_ATTRIB_ID_SL_TO_SC_MAP:
-+		sts = cport_set_opa_slsc(ppd, smp, data);
-+		break;
-+	case IB_SMP_ATTR_VL_ARB_TABLE:
-+		sts = cport_set_opa_vlarb(ppd, smp, data);
-+		break;
-+	case OPA_ATTRIB_ID_SC_TO_SL_MAP:
-+		sts = cport_set_opa_scsl(ppd, smp, data);
-+		break;
-+	case OPA_ATTRIB_ID_SC_TO_VLR_MAP:
-+		sts = cport_set_opa_scvlr(ppd, smp, data);
-+		break;
-+	case OPA_ATTRIB_ID_SC_TO_VLT_MAP:
-+		sts = cport_set_opa_scvlt(ppd, smp, data);
-+		break;
-+	case OPA_ATTRIB_ID_SC_TO_VLNT_MAP:
-+		sts = cport_set_opa_scvlnt(ppd, smp, data);
-+		break;
-+	case OPA_ATTRIB_ID_BUFFER_CONTROL_TABLE:
-+		sts = cport_set_opa_bufctl(ppd, smp, data);
-+		break;
-+	case OPA_ATTRIB_ID_CONGESTION_INFO:
-+		break;
-+	case OPA_ATTRIB_ID_HFI_CONGESTION_LOG:
-+		break;
-+	case OPA_ATTRIB_ID_HFI_CONGESTION_SETTING:
-+		sts = 0; /* accept, nothing to do */
-+		break;
-+	case OPA_ATTRIB_ID_CONGESTION_CONTROL_TABLE:
-+		break;
-+	case IB_SMP_ATTR_NOTICE:
-+		break;
-+	case IB_SMP_ATTR_SM_INFO:
-+		break;
-+	case IB_SMP_ATTR_LED_INFO:
-+		break;
-+	case OPA_ATTRIB_ID_CABLE_INFO:
-+		break;
-+	case OPA_ATTRIB_ID_AGGREGATE:
-+		sts = cport_set_opa_aggr(ppd, smp);
-+		break;
-+	default:
-+		break;
-+	}
-+	return sts;
-+}
-+
-+static int cport_subn_opa(struct hfi2_pportdata *ppd, struct opa_mad *mad)
-+{
-+	struct opa_smp *smp = (struct opa_smp *)mad;
-+	int sts = MSG_RSP_STATUS_INVALID_STATE;
-+
-+	if (smp->class_version != OPA_SM_CLASS_VERSION) {
-+		smp->status |= IB_SMP_UNSUP_VERSION;
-+		goto out;
-+	}
-+	switch (smp->method) {
-+	case IB_MGMT_METHOD_SET:
-+		sts = cport_subn_set_opa(ppd, smp);
-+		break;
-+	case IB_MGMT_METHOD_GET:
-+		if (smp->attr_id == IB_SMP_ATTR_NODE_DESC) {
-+			sts = cport_do_opa_nodedesc(ppd, smp, opa_get_smp_data(smp));
-+			break;
-+		}
-+		sts = 0;
-+		break;
-+	default:
-+		break;
-+	}
-+out:
-+	return sts;
-+}
-+
-+static int hfi2_opa_mad_cport(struct hfi2_pportdata *ppd, struct opa_mad *mad)
-+{
-+	int sts = MSG_RSP_STATUS_INVALID_STATE;
-+
-+	switch (mad->mad_hdr.mgmt_class) {
-+	case IB_MGMT_CLASS_SUBN_DIRECTED_ROUTE:
-+	case IB_MGMT_CLASS_SUBN_LID_ROUTED:
-+		sts = cport_subn_opa(ppd, mad);
-+		break;
-+	case IB_MGMT_CLASS_PERF_MGMT:
-+		sts = 0; /* accept, nothing to do */
-+		break;
-+	default:
-+		break;
-+	}
-+	return sts;
-+}
-+
-+static int cport_get_ib_nodeinfo(struct hfi2_pportdata *ppd, struct ib_smp *smp)
-+{
-+	return 0;
-+}
-+
-+static int cport_subn_get_ib(struct hfi2_pportdata *ppd, struct ib_smp *smp)
-+{
-+	int sts = MSG_RSP_STATUS_INVALID_STATE;
-+
-+	switch (smp->attr_id) {
-+	case IB_SMP_ATTR_NODE_INFO:
-+		sts = cport_get_ib_nodeinfo(ppd, smp);
-+		break;
-+	default:
-+		smp->status |= IB_SMP_UNSUP_METH_ATTR;
-+		break;
-+	}
-+	if (sts)
-+		ppd_dev_err(ppd, "%s: ret %d\n", __func__, sts);
-+	return sts;
-+}
-+
-+static int cport_subn_ib(struct hfi2_pportdata *ppd, struct ib_mad *mad)
-+{
-+	struct ib_smp *smp = (struct ib_smp *)mad;
-+	int sts = MSG_RSP_STATUS_INVALID_STATE;
-+
-+	if (smp->class_version != 1) {
-+		smp->status |= IB_SMP_UNSUP_VERSION;
-+		goto out;
-+	}
-+	switch (smp->method) {
-+	case IB_MGMT_METHOD_GET:
-+		sts = cport_subn_get_ib(ppd, smp);
-+		break;
-+	default:
-+		smp->status |= IB_SMP_UNSUP_METHOD;
-+		break;
-+	}
-+out:
-+	if (sts)
-+		ppd_dev_err(ppd, "%s: ret %d\n", __func__, sts);
-+	return sts;
-+}
-+
-+static int hfi2_ib_mad_cport(struct hfi2_pportdata *ppd, struct ib_mad *mad)
-+{
-+	int sts = MSG_RSP_STATUS_INVALID_STATE;
-+
-+	switch (mad->mad_hdr.mgmt_class) {
-+	case IB_MGMT_CLASS_SUBN_DIRECTED_ROUTE:
-+	case IB_MGMT_CLASS_SUBN_LID_ROUTED:
-+		sts = cport_subn_ib(ppd, mad);
-+		break;
-+	case IB_MGMT_CLASS_PERF_MGMT:
-+		sts = 0; /* accept, nothing to do */
-+		break;
-+	}
-+	if (sts)
-+		ppd_dev_err(ppd, "%s: ret %d\n", __func__, sts);
-+	return sts;
-+}
-+
-+static inline int get_mad_offset(void *hdr, bool is16B)
-+{
-+	if (is16B) {
-+		/* 16B header - look at the L4 type */
-+		switch (hfi2_16B_get_l4(hdr)) {
-+		case OPA_16B_L4_FM:
-+			return MAD_16B_FM_OFFSET;
-+		case OPA_16B_L4_IB_LOCAL:
-+			return MAD_16B_IB_OFFSET;
-+		default:
-+			/* can't determine MAD header offset */
-+			return -1;
-+		}
-+
-+	} else {
-+		/* expect 9B */
-+		return MAD_9B_OFFSET;
-+	}
++	return (((int)a) - ((int)b)) << PSN_SHIFT;
 +}
 +
 +/*
-+ * CPORT is communicating with some user-space application using MADs.
-+ * We simply forward these MADs to IB verbs to handle as for normal
-+ * receives.
++ * Return masked PSN
 + */
-+static int cport_umad_handler(struct hfi2_devdata *dd, u8 op, u8 sideband,
-+			      void *payload, int len, void *handle)
++static inline u32 mask_psn(u32 a)
 +{
-+	struct ib_smp *mad;
-+	struct hfi2_pportdata *ppd;
-+	struct rvt_qp *qp0;
-+	struct ib_wc wc;
-+	int mad_offset;
-+	u32 tlen;
-+	int port;
-+	int ret = 0;
-+	int rc;
-+
-+	mad_offset = get_mad_offset(payload, op == CH_OP_UMAD_16B);
-+	if (mad_offset < 0)
-+		return MSG_RSP_STATUS_INVALID_STATE;
-+	mad = payload + mad_offset;
-+
-+	/* This MAD really must be IB_MGMT_CLASS_SUBN_DIRECTED_ROUTE,
-+	 * but this routine doesn't care.
-+	 */
-+
-+	port = sideband & 0x7;
-+	if (!port)
-+		port = 1;
-+	if (port > dd->num_pports) {
-+		port -= dd->num_pports;
-+		if (port > dd->num_pports)
-+			port = 1;
-+	}
-+	ppd = &dd->pport[port - 1];
-+	rcu_read_lock();
-+	qp0 = rcu_dereference(ppd->ibport_data.rvp.qp[0]);
-+	if (!qp0) {
-+		ppd_dev_err(ppd, "QP0 is NULL\n");
-+		ret = MSG_RSP_STATUS_INVALID_STATE;
-+		goto out;
-+	}
-+
-+	tlen = len - mad_offset;
-+
-+	wc.ex.imm_data = 0;
-+	wc.wc_flags = IB_WC_IP_CSUM_OK;
-+	wc.byte_len = tlen + sizeof(struct ib_grh);
-+	/* Ignore RVT_R_REUSE_SGE here, as done by hfi2_rc_rcv and hfi2_uc_rcv */
-+	rc = rvt_get_rwqe(qp0, false);
-+	if (rc <= 0) {
-+		if (rc < 0)
-+			rvt_rc_error(qp0, IB_WC_LOC_QP_OP_ERR);
-+		else
-+			ppd->ibport_data.rvp.n_vl15_dropped++;
-+		ret = MSG_RSP_STATUS_INVALID_STATE;
-+		goto out;
-+	}
-+	rvt_skip_sge(&qp0->r_sge, sizeof(struct ib_grh), true);
-+	rvt_copy_sge(qp0, &qp0->r_sge, payload + mad_offset,
-+		     wc.byte_len - sizeof(struct ib_grh), true, false);
-+	rvt_put_ss(&qp0->r_sge);
-+	if (!test_and_clear_bit(RVT_R_WRID_VALID, &qp0->r_aflags)) {
-+		/* Something went wrong since rvt_get_rwqe, assume it was transient */
-+		ret = MSG_RSP_STATUS_RETRY;
-+		goto out;
-+	}
-+
-+	wc.wr_id = qp0->r_wr_id;
-+	wc.status = IB_WC_SUCCESS;
-+	wc.opcode = IB_WC_RECV;
-+	wc.vendor_err = 0;
-+	wc.qp = &qp0->ibqp;
-+	wc.src_qp = 0;	/* MCTXT has no QP, so just use 0 */
-+	wc.pkey_index = 0;
-+	wc.slid = be16_to_cpu(mad->dr_slid);
-+	wc.sl = ppd->ibport_data.sc_to_sl[15];
-+	wc.dlid_path_bits = be16_to_cpu(mad->dr_dlid) & ((1 << ppd->lmc) - 1);
-+	wc.port_num = qp0->port_num;
-+
-+	rvt_recv_cq(qp0, &wc, false);
-+out:
-+	rcu_read_unlock();
-+	return ret;
++	return a & PSN_MASK;
 +}
 +
 +/*
-+ * CPORT sends us the MAD response, so our only actions are to
-+ * modify the response to add more data and/or take note of any
-+ * implications of the MAD.
++ * Return delta between two PSNs
 + */
-+static int cport_mad_handler(struct hfi2_devdata *dd, u8 op, u8 sideband,
-+			     void *payload, int len, void *handle)
++static inline u32 delta_psn(u32 a, u32 b)
 +{
-+	struct ib_mad *mad = NULL;
-+	struct hfi2_pportdata *ppd = NULL;
-+	int sts = MSG_RSP_STATUS_INVALID_STATE;
-+	int mad_offset;
-+	int port;
-+
-+	mad_offset = get_mad_offset(payload, op == CH_OP_MAD_16B);
-+	if (mad_offset < 0)
-+		goto done;
-+	mad = (struct ib_mad *)(payload + mad_offset);
-+
-+	port = sideband & 0x7;
-+	if (!port) {
-+		dd_dev_info(dd, "Fudging zero port to 1\n");
-+		port = 1;
-+	}
-+	if (port > 2) {
-+		dd_dev_info(dd, "Fudging loopback port %d -> %d\n",
-+			    port, port - 2);
-+		port = port - 2;
-+	}
-+	if (!port || port > dd->num_pports)
-+		goto done;
-+	ppd = &dd->pport[port - 1];
-+
-+	switch (mad->mad_hdr.base_version) {
-+	case OPA_MGMT_BASE_VERSION:
-+		sts = hfi2_opa_mad_cport(ppd, (struct opa_mad *)mad);
-+		break;
-+	case IB_MGMT_BASE_VERSION:
-+		sts = hfi2_ib_mad_cport(ppd, mad);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+done:
-+	/* print mad and error before mad_hdr.method is overwritten */
-+	if (mad && (sts || (mad->mad_hdr.status & ~IB_SMP_DIRECTION))) {
-+
-+		if (ppd)
-+			ppd_dev_info(ppd, "CPORT MAD error: [%02x] %02x %02x %02x %02x - %04x %04x %08x (%d)\n",
-+				     sideband, mad->mad_hdr.base_version,
-+				     mad->mad_hdr.mgmt_class,
-+				     mad->mad_hdr.class_version,
-+				     mad->mad_hdr.method,
-+				     be16_to_cpu(mad->mad_hdr.status),
-+				     be16_to_cpu(mad->mad_hdr.attr_id),
-+				     be32_to_cpu(mad->mad_hdr.attr_mod),
-+				     sts);
-+		else
-+			dd_dev_info(dd, "CPORT MAD error: [%02x] %02x %02x %02x %02x - %04x %04x %08x (%d)\n",
-+				    sideband, mad->mad_hdr.base_version,
-+				    mad->mad_hdr.mgmt_class,
-+				    mad->mad_hdr.class_version,
-+				    mad->mad_hdr.method,
-+				    be16_to_cpu(mad->mad_hdr.status),
-+				    be16_to_cpu(mad->mad_hdr.attr_id),
-+				    be32_to_cpu(mad->mad_hdr.attr_mod),
-+				    sts);
-+	} else if (sts) {
-+		if (ppd)
-+			ppd_dev_info(ppd, "CPORT MAD error: [%02x] (%d)\n",
-+				     sideband, sts);
-+		else
-+			dd_dev_info(dd, "CPORT MAD error: [%02x] (%d)\n",
-+				    sideband, sts);
-+	}
-+	/*
-+	 * Last step before returning MAD to cport: If this was a Get or Set,
-+	 * change the MgmtMethod value to a Get Response.
-+	 */
-+	if (mad && (mad->mad_hdr.method == IB_MGMT_METHOD_GET ||
-+		    mad->mad_hdr.method == IB_MGMT_METHOD_SET))
-+		mad->mad_hdr.method = IB_MGMT_METHOD_GET_RESP;
-+	/*
-+	 * Copy (MAD response) payload back into MCTXT response.
-+	 * This is done even if sts != 0.
-+	 */
-+	cport_resp_set(handle, payload, len);
-+	return sts;
++	return (((int)a - (int)b) << PSN_SHIFT) >> PSN_SHIFT;
 +}
 +
-+int hfi2_mad_init(struct hfi2_devdata *dd)
++static inline struct tid_rdma_request *wqe_to_tid_req(struct rvt_swqe *wqe)
 +{
-+	int ret;
-+
-+	if (!dd->cport)
-+		return 0;
-+	ret = cport_register_cb(dd, CH_OP_MAD_9B, CH_OP_MAD_16B, cport_mad_handler);
-+	if (ret)
-+		dd_dev_warn(dd, "Failed to register for MCTXT MADs (%d)\n", ret);
-+	ret = cport_register_cb(dd, CH_OP_UMAD_9B, CH_OP_UMAD_16B, cport_umad_handler);
-+	if (ret)
-+		dd_dev_warn(dd, "Failed to register for MCTXT UMADs (%d)\n", ret);
-+	return ret;
++	return &((struct hfi2_swqe_priv *)wqe->priv)->tid_req;
 +}
 +
-+int hfi2_mad_deinit(struct hfi2_devdata *dd)
++static inline struct tid_rdma_request *ack_to_tid_req(struct rvt_ack_entry *e)
 +{
-+	if (!dd->cport)
-+		return 0;
-+	deinit_cport_trap128(dd);
-+	cport_register_cb(dd, CH_OP_MAD_9B, CH_OP_MAD_16B, NULL);
-+	cport_register_cb(dd, CH_OP_UMAD_9B, CH_OP_UMAD_16B, NULL);
-+	return 0;
++	return &((struct hfi2_ack_priv *)e->priv)->tid_req;
 +}
++
++/*
++ * Look through all the active flows for a TID RDMA request and find
++ * the one (if it exists) that contains the specified PSN.
++ */
++static inline u32 __full_flow_psn(struct flow_state *state, u32 psn)
++{
++	return mask_psn((state->generation << HFI2_KDETH_BTH_SEQ_SHIFT) |
++			(psn & HFI2_KDETH_BTH_SEQ_MASK));
++}
++
++static inline u32 full_flow_psn(struct tid_rdma_flow *flow, u32 psn)
++{
++	return __full_flow_psn(&flow->flow_state, psn);
++}
++
++int hfi2_verbs_send(struct rvt_qp *qp, struct hfi2_pkt_state *ps);
++
++void hfi2_cnp_rcv(struct hfi2_packet *packet);
++
++void hfi2_uc_rcv(struct hfi2_packet *packet);
++
++void hfi2_rc_rcv(struct hfi2_packet *packet);
++
++void hfi2_rc_hdrerr(
++	struct hfi2_ctxtdata *rcd,
++	struct hfi2_packet *packet,
++	struct rvt_qp *qp);
++
++u8 ah_to_sc(struct ib_device *ibdev, struct rdma_ah_attr *ah_attr);
++
++void hfi2_rc_verbs_aborted(struct rvt_qp *qp, struct hfi2_opa_header *opah);
++void hfi2_rc_send_complete(struct rvt_qp *qp, struct hfi2_opa_header *opah);
++
++void hfi2_ud_rcv(struct hfi2_packet *packet);
++
++int hfi2_lookup_pkey_idx(struct hfi2_ibport *ibp, u16 pkey);
++
++void hfi2_migrate_qp(struct rvt_qp *qp);
++
++int hfi2_check_modify_qp(struct rvt_qp *qp, struct ib_qp_attr *attr,
++			 int attr_mask, struct ib_udata *udata);
++
++void hfi2_modify_qp(struct rvt_qp *qp, struct ib_qp_attr *attr,
++		    int attr_mask, struct ib_udata *udata);
++void hfi2_restart_rc(struct rvt_qp *qp, u32 psn, int wait);
++int hfi2_setup_wqe(struct rvt_qp *qp, struct rvt_swqe *wqe,
++		   bool *call_send);
++
++int hfi2_ruc_check_hdr(struct hfi2_ibport *ibp, struct hfi2_packet *packet);
++
++u32 hfi2_make_grh(struct hfi2_ibport *ibp, struct ib_grh *hdr,
++		  const struct ib_global_route *grh, u32 hwords, u32 nwords);
++
++void hfi2_make_ruc_header(struct rvt_qp *qp, struct ib_other_headers *ohdr,
++			  u32 bth0, u32 bth1, u32 bth2, int middle,
++			  struct hfi2_pkt_state *ps);
++
++bool hfi2_schedule_send_yield(struct rvt_qp *qp, struct hfi2_pkt_state *ps,
++			      bool tid);
++
++void _hfi2_do_send(struct work_struct *work);
++
++void hfi2_do_send_from_rvt(struct rvt_qp *qp);
++
++void hfi2_do_send(struct rvt_qp *qp, bool in_thread);
++
++void hfi2_send_rc_ack(struct hfi2_packet *packet, bool is_fecn);
++
++int hfi2_make_rc_req(struct rvt_qp *qp, struct hfi2_pkt_state *ps);
++
++int hfi2_make_uc_req(struct rvt_qp *qp, struct hfi2_pkt_state *ps);
++
++int hfi2_make_ud_req(struct rvt_qp *qp, struct hfi2_pkt_state *ps);
++
++int hfi2_register_ib_device(struct hfi2_devdata *);
++
++void hfi2_unregister_ib_device(struct hfi2_devdata *);
++
++void hfi2_kdeth_eager_rcv(struct hfi2_packet *packet);
++
++void hfi2_kdeth_expected_rcv(struct hfi2_packet *packet);
++
++void hfi2_ib_rcv(struct hfi2_packet *packet);
++
++void hfi2_16B_rcv(struct hfi2_packet *packet);
++
++unsigned int hfi2_get_npkeys(struct hfi2_devdata *);
++
++int hfi2_verbs_send_dma(struct rvt_qp *qp, struct hfi2_pkt_state *ps,
++			u64 pbc);
++
++int hfi2_verbs_send_pio(struct rvt_qp *qp, struct hfi2_pkt_state *ps,
++			u64 pbc);
++
++static inline bool opa_bth_is_migration(struct ib_other_headers *ohdr)
++{
++	return ohdr->bth[1] & cpu_to_be32(OPA_BTH_MIG_REQ);
++}
++
++void hfi2_wait_kmem(struct rvt_qp *qp);
++
++static inline void hfi2_trdma_send_complete(struct rvt_qp *qp,
++					    struct rvt_swqe *wqe,
++					    enum ib_wc_status status)
++{
++	trdma_clean_swqe(qp, wqe);
++	rvt_send_complete(qp, wqe, status);
++}
++
++extern const enum ib_wc_opcode ib_hfi2_wc_opcode[];
++
++extern const u8 hdr_len_by_opcode[];
++
++extern const int ib_rvt_state_ops[];
++
++extern __be64 ib_hfi2_sys_image_guid;    /* in network order */
++
++extern unsigned int hfi2_max_cqes;
++
++extern unsigned int hfi2_max_cqs;
++
++extern unsigned int hfi2_max_qp_wrs;
++
++extern unsigned int hfi2_max_qps;
++
++extern unsigned int hfi2_max_sges;
++
++extern unsigned int hfi2_max_mcast_grps;
++
++extern unsigned int hfi2_max_mcast_qp_attached;
++
++extern unsigned int hfi2_max_srqs;
++
++extern unsigned int hfi2_max_srq_sges;
++
++extern unsigned int hfi2_max_srq_wrs;
++
++extern unsigned short piothreshold;
++
++extern const u32 ib_hfi2_rnr_table[];
++
++#endif                          /* HFI2_VERBS_H */
+diff --git a/drivers/infiniband/hw/hfi2/verbs_txreq.h b/drivers/infiniband/hw/hfi2/verbs_txreq.h
+new file mode 100644
+index 000000000000..b267771b643a
+--- /dev/null
++++ b/drivers/infiniband/hw/hfi2/verbs_txreq.h
+@@ -0,0 +1,97 @@
++/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/*
++ * Copyright(c) 2016 - 2018 Intel Corporation.
++ */
++
++#ifndef HFI2_VERBS_TXREQ_H
++#define HFI2_VERBS_TXREQ_H
++
++#include <linux/types.h>
++#include <linux/slab.h>
++
++#include "verbs.h"
++#include "sdma_txreq.h"
++#include "iowait.h"
++
++struct verbs_txreq {
++	struct hfi2_sdma_header	phdr;
++	struct sdma_txreq       txreq;
++	struct rvt_qp           *qp;
++	struct rvt_swqe         *wqe;
++	struct rvt_mregion	*mr;
++	struct rvt_sge_state    *ss;
++	struct sdma_engine     *sde;
++	struct send_context     *psc;
++	struct kref		ref;
++	u16                     hdr_dwords;
++	u16			s_cur_size;
++};
++
++struct hfi2_ibdev;
++struct verbs_txreq *__get_txreq(struct hfi2_ibdev *dev,
++				struct rvt_qp *qp);
++
++#define VERBS_TXREQ_GFP (GFP_ATOMIC | __GFP_NOWARN)
++static inline struct verbs_txreq *alloc_txreq(struct hfi2_ibdev *dev,
++					      struct rvt_qp *qp)
++	__must_hold(&qp->slock)
++{
++	struct verbs_txreq *tx;
++	struct hfi2_qp_priv *priv = qp->priv;
++
++	tx = kmem_cache_alloc(dev->verbs_txreq_cache, VERBS_TXREQ_GFP);
++	if (unlikely(!tx)) {
++		/* call slow path to get the lock */
++		tx = __get_txreq(dev, qp);
++		if (!tx)
++			return tx;
++	}
++	tx->qp = qp;
++	tx->mr = NULL;
++	tx->sde = priv->s_sde;
++	tx->psc = priv->s_sendcontext;
++	/* so that we can test if the sdma descriptors are there */
++	tx->txreq.num_desc = 0;
++	/* Set the header type */
++	tx->phdr.hdr.hdr_type = priv->hdr_type;
++	tx->txreq.flags = 0;
++	kref_init(&tx->ref);
++	return tx;
++}
++
++static inline struct verbs_txreq *get_waiting_verbs_txreq(struct iowait_work *w)
++{
++	struct sdma_txreq *stx;
++
++	stx = iowait_get_txhead(w);
++	if (stx)
++		return container_of(stx, struct verbs_txreq, txreq);
++	return NULL;
++}
++
++static inline bool verbs_txreq_queued(struct iowait_work *w)
++{
++	return iowait_packet_queued(w);
++}
++
++void dealloc_txreq(struct kref *ref);
++
++/*
++ * There are no locks to enforce ordering between hfi2_get_txreq() and
++ * hfi2_put_txreq().  The caller of hfi2_get_txreq() must be currently
++ * holding a reference to avoid any race with hfi2_put_txreq().
++ */
++static inline void hfi2_get_txreq(struct verbs_txreq *tx)
++{
++	kref_get(&tx->ref);
++}
++
++static inline void hfi2_put_txreq(struct verbs_txreq *tx)
++{
++	kref_put(&tx->ref, dealloc_txreq);
++}
++
++int verbs_txreq_init(struct hfi2_ibdev *dev);
++void verbs_txreq_exit(struct hfi2_ibdev *dev);
++
++#endif                         /* HFI2_VERBS_TXREQ_H */
 
 
 
