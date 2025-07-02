@@ -1,130 +1,79 @@
-Return-Path: <linux-rdma+bounces-11839-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11840-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16313AF5CBD
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Jul 2025 17:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E499AF5F6E
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Jul 2025 19:07:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C82531C459DF
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Jul 2025 15:22:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EA871BC3426
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Jul 2025 17:07:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B11E2F198A;
-	Wed,  2 Jul 2025 15:20:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18361301144;
+	Wed,  2 Jul 2025 17:06:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="n6DsOzZ1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZDPOMqno"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 484AE2D949F
-	for <linux-rdma@vger.kernel.org>; Wed,  2 Jul 2025 15:20:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C640730113F;
+	Wed,  2 Jul 2025 17:06:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751469644; cv=none; b=VONTblDXoY0EbKtpQ3fR2zo8yWllioESmnHCrW0CjOxuUDuAt0zpr2teF1JtCWdd5l4QS7Je0xz9FPWeTZ6Zg+P9E45stuVoUTYnsQ0xoMS7c8bwDmCuuFZtZfggm3EMMLbfMDhuNRhHjCmmcn0tvkJXIPVrXhgGpizXPMNsuKg=
+	t=1751475989; cv=none; b=N6RzmCIIAo9njrSYot7t51UaEmpQGYrNpJhumPsS0k8PJp/27226vATdEGZe/EVy9D9vfRMGfpV2pUOn7IxCY5ufw//gNFV85rIwYIgOdU8sd5K8PuFfwXfiA6N915/DB8vH6+w2sybjDoDsodDMwa4p4ZE7SJl46UXp71r6PJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751469644; c=relaxed/simple;
-	bh=iDI7vlPNxDzCvkBaqmMglBDyQgmN73kgbJEDfVYkjzk=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OoFDI0w5GTALkM6UALY1leI/5ZNuQeu3TkNvgl0mo1pZPA8MWhMWr9oivHwZ7Cy91fg4p/Uy7lZToJwe8msbEMDa8EPg3V4RUpoVzJWtbVD4msGMsBWO+z7u4SpGTP240WSM5QHotvPLHjZ4hPQLUMflt1ks8jI6ziPP2F/aml8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=n6DsOzZ1; arc=none smtp.client-ip=52.119.213.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1751469644; x=1783005644;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=5sPGyVzfDMa+iVqjCVbwm+BMwKeYb7zlNEH7nGf/2jM=;
-  b=n6DsOzZ1vPKCsUYyiUzpJvt6jTSNLUT5Dcg9y9hstzTkxxWziBeD9O6x
-   y7cJHlNfzLiKYNd97u0PetqBYrDW2RXpcPhwme4PQfiGzK8v3OFg7aenp
-   e4rg6dFS6hRDlFuJg6/smtVNfoK8OIv2Ou6o6SLc+CT6L1YvLJPwp6T/E
-   9D5TYavpaOZoLkwL07/yrcABeEPpG9cCfSC6tTPKaj60UqkAuosR3RBO6
-   p+gBQejpglkfHbPOHqTfRRLTK50i+RBHdvGH/nin37FE7LQIraZRl6gVT
-   L84kkF46arf7r/soetLgnd9+M/zm+0R6PTQm3MZyXR/q5iN54A/mizcpu
-   w==;
-X-IronPort-AV: E=Sophos;i="6.16,281,1744070400"; 
-   d="scan'208";a="760554662"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2025 15:20:41 +0000
-Received: from EX19MTAEUA002.ant.amazon.com [10.0.10.100:4820]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.23.90:2525] with esmtp (Farcaster)
- id c7917501-1346-4ff0-8cc5-f7a822fae2d6; Wed, 2 Jul 2025 15:20:39 +0000 (UTC)
-X-Farcaster-Flow-ID: c7917501-1346-4ff0-8cc5-f7a822fae2d6
-Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
- EX19MTAEUA002.ant.amazon.com (10.252.50.124) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Wed, 2 Jul 2025 15:20:38 +0000
-Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
- (10.253.103.172) by EX19D031EUB003.ant.amazon.com (10.252.61.88) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14; Wed, 2 Jul 2025
- 15:20:36 +0000
-From: Michael Margolin <mrgolin@amazon.com>
-To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
-CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>,
-	"Yonatan Nachum" <ynachum@amazon.com>
-Subject: [PATCH for-next] RDMA/efa: Extend admin timeout error print
-Date: Wed, 2 Jul 2025 15:20:28 +0000
-Message-ID: <20250702152028.2812-1-mrgolin@amazon.com>
-X-Mailer: git-send-email 2.47.1
+	s=arc-20240116; t=1751475989; c=relaxed/simple;
+	bh=j0Y9Rzt8Pk0k4sGGgpJKmRk0g2LI2/oDGyPS78hhwtE=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=GaPUSXe89EjdukYS8fvsOwz3YceZvasvUv3J6oJ8l5kFqpm5EWbcDQOIxO/npszUEgNXikgix4PvIFcFJ1/2mMbvKrRdxWXOx2sgfQdSJ3NjKO8ErfHDL7uhu0HTWV62+R6U8oZLQSgy1YGWohe2rSaz890vm/1k5HTXTAfqjr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZDPOMqno; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A41CCC4CEE7;
+	Wed,  2 Jul 2025 17:06:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751475989;
+	bh=j0Y9Rzt8Pk0k4sGGgpJKmRk0g2LI2/oDGyPS78hhwtE=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=ZDPOMqno4yyQTiuiTm/834ZxQRKlCTVrna4mYiCCPRrhJfeD2rv1PG/Hu4BRjdqCI
+	 g6Wmg56IqoEz7Y443Q8UCH2BP0Q/yHMXf8K+dwwrc9H93TG1OHTVGq6Pq35xeMRvYz
+	 I9BoWI3t0u0tbgOQFEWSM0S4IjycEMTq9Gixaq4dh6HTvZ2bz16p97X7y9IzoixvJ7
+	 yE5fBM3QXKdwZQ6LInWPYyVEe+kbwjcnFu81/wzeiG4g617u10kSCch/xI0+pscChd
+	 8zJ34Lb1376HjRA9Bqe0XUwZ1ULj4N4LAJf7ToXMGDOD+STfRvWjOofZ4BokQajESe
+	 TnfhyeAdyaBGg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70B2A383B273;
+	Wed,  2 Jul 2025 17:06:55 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20250702143616.GA1163046@nvidia.com>
+References: <20250702143616.GA1163046@nvidia.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20250702143616.GA1163046@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: a9a9e68954f29b1e197663f76289db4879fd51bb
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7e4a6b57dd7f55cce9ece0778c111905e73db7b1
+Message-Id: <175147601412.796050.2826621785795235077.pr-tracker-bot@kernel.org>
+Date: Wed, 02 Jul 2025 17:06:54 +0000
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D033UWA004.ant.amazon.com (10.13.139.85) To
- EX19D031EUB003.ant.amazon.com (10.252.61.88)
 
-Add command context index to the printed message for additional debug
-information.
+The pull request you sent on Wed, 2 Jul 2025 11:36:16 -0300:
 
-Reviewed-by: Yonatan Nachum <ynachum@amazon.com>
-Signed-off-by: Michael Margolin <mrgolin@amazon.com>
----
- drivers/infiniband/hw/efa/efa_com.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-diff --git a/drivers/infiniband/hw/efa/efa_com.c b/drivers/infiniband/hw/efa/efa_com.c
-index bafd210dd43e..f1e88ee89bb8 100644
---- a/drivers/infiniband/hw/efa/efa_com.c
-+++ b/drivers/infiniband/hw/efa/efa_com.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
- /*
-- * Copyright 2018-2024 Amazon.com, Inc. or its affiliates. All rights reserved.
-+ * Copyright 2018-2025 Amazon.com, Inc. or its affiliates. All rights reserved.
-  */
- 
- #include "efa_com.h"
-@@ -557,17 +557,19 @@ static int efa_com_wait_and_process_admin_cq_interrupts(struct efa_comp_ctx *com
- 		if (comp_ctx->status == EFA_CMD_COMPLETED)
- 			ibdev_err_ratelimited(
- 				aq->efa_dev,
--				"The device sent a completion but the driver didn't receive any MSI-X interrupt for admin cmd %s(%d) status %d (ctx: 0x%p, sq producer: %d, sq consumer: %d, cq consumer: %d)\n",
-+				"The device sent a completion but the driver didn't receive any MSI-X interrupt for admin cmd %s(%d) status %d (ctx[%d]: 0x%p, sq producer: %d, sq consumer: %d, cq consumer: %d)\n",
- 				efa_com_cmd_str(comp_ctx->cmd_opcode),
- 				comp_ctx->cmd_opcode, comp_ctx->status,
--				comp_ctx, aq->sq.pc, aq->sq.cc, aq->cq.cc);
-+				comp_ctx - aq->comp_ctx, comp_ctx, aq->sq.pc,
-+				aq->sq.cc, aq->cq.cc);
- 		else
- 			ibdev_err_ratelimited(
- 				aq->efa_dev,
--				"The device didn't send any completion for admin cmd %s(%d) status %d (ctx 0x%p, sq producer: %d, sq consumer: %d, cq consumer: %d)\n",
-+				"The device didn't send any completion for admin cmd %s(%d) status %d (ctx[%d]: 0x%p, sq producer: %d, sq consumer: %d, cq consumer: %d)\n",
- 				efa_com_cmd_str(comp_ctx->cmd_opcode),
- 				comp_ctx->cmd_opcode, comp_ctx->status,
--				comp_ctx, aq->sq.pc, aq->sq.cc, aq->cq.cc);
-+				comp_ctx - aq->comp_ctx, comp_ctx, aq->sq.pc,
-+				aq->sq.cc, aq->cq.cc);
- 
- 		clear_bit(EFA_AQ_STATE_RUNNING_BIT, &aq->state);
- 		err = -ETIME;
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7e4a6b57dd7f55cce9ece0778c111905e73db7b1
+
+Thank you!
+
 -- 
-2.47.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
