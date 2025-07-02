@@ -1,60 +1,60 @@
-Return-Path: <linux-rdma+bounces-11829-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11828-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E65AAF598B
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Jul 2025 15:39:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8C28AF5997
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Jul 2025 15:40:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4546216C34B
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Jul 2025 13:39:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9E12188930B
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Jul 2025 13:39:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B58C7280A51;
-	Wed,  2 Jul 2025 13:38:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6E0228313F;
+	Wed,  2 Jul 2025 13:38:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="uOsqb9wO"
+	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="IkbAyxGU"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mailtransmit05.runbox.com (mailtransmit05.runbox.com [185.226.149.38])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC56F280025;
-	Wed,  2 Jul 2025 13:38:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1400F280A51;
+	Wed,  2 Jul 2025 13:38:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751463527; cv=none; b=sP7La/pv4CdMEQbo67jpwonHzm+f91m0XZuBmXk0XVy7LAodAfeBdXq3tVts7+ldnPCUdLoyNgnKUD6iNPVRfo3D875rMelPQdaKD6/EV0OYmhPj7iwDAU4jbEWgaF3VmFF7B4oIRJ18w0+TrzGi5b297DWdyKxVenSNUZ7afFE=
+	t=1751463527; cv=none; b=b8EPDpGr0VCbENwmjVIPEZq6HW89tnABAH2rwNvldJuGBCm5I55iFwLqbBzL8fiMtNq4xrLdp/+9JS0nq6MN4vsK3cO6FaZz1L/x5XkEzE4AIPkL8Zkg4QYOs2qkymsmaJ3BG15BmlL7deD84Z6YyneRJWrH5WriBpUsmQKdI1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1751463527; c=relaxed/simple;
-	bh=9UXv6Lv8Mgx5xwLb6Alh24jufOJ2+q7DhT8Nl4HXuvY=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=eL8mvjIBO/pT8ugQEzO2fKX4IurUqRJXTucp6EKWK1yTWaVKj1J+KvpeUZJ9MNsrDzKoVAzswRgI9ptM/YgXEjP+QRVE0WDd6wsdY5anXp/5nEX6GFRwJlbhyH8n9mufuYUq8XzGBOQKZtkoE5+D5/vR53WhZJO78PmwyOh6vEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=uOsqb9wO; arc=none smtp.client-ip=185.226.149.38
+	bh=I5NwMU/UkVWamqyeUyAIs0m2ELLcQVTl3pqCth/6nic=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=PrxnwqNgquYzjr3pLZOohQfl7zULSLezTUK4pEcr7tpDWiDC5Z7BOL+Ep9eTNl9krCGV6IVcerWFJT5kPg7ONGuw7SoJsS8qCa9XUEuiuTh5tGPw5amEeXl2berMmzVl/h5EofGbhQbN78nIbttBmwKAUT4f5rhQTSStN1Knfr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=IkbAyxGU; arc=none smtp.client-ip=185.226.149.38
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
-Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
+Received: from mailtransmit03.runbox ([10.9.9.163] helo=aibo.runbox.com)
 	by mailtransmit05.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
 	(Exim 4.93)
 	(envelope-from <mhal@rbox.co>)
-	id 1uWxfV-00GxOo-Ac; Wed, 02 Jul 2025 15:38:33 +0200
+	id 1uWxfZ-00GxPT-Mj; Wed, 02 Jul 2025 15:38:37 +0200
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-	s=selector2; h=Cc:To:Content-Transfer-Encoding:Content-Type:MIME-Version:
-	Message-Id:Date:Subject:From; bh=rLI/a9ECryxZRQ9J4BCJbHJwt0Oclm9wiohMCVJ1XXA=
-	; b=uOsqb9wOvgHeZuau00vHqMtqAy75L00axpt98nL9aqznLT7tk/UllZTTi8Vx4Rcz1+oPLzxVs
-	fcP7sVuf77kt4ektZYfHpFoXJ3u98QpDFVZJjT0egF0xzhusweqXBoMUDRqtK6XTLzTp3o6ZgC4jK
-	ihLtc6Jt5ReVmJ/ktfEH/wUFUhVqalFfhO2/xynWTdNwQN6mQ2kE5As6MCPBdqfpaau3thNFuOAWp
-	g/jHEkaI8rgC4R9cHXlnEnEmOygn7QzbL+WFmlbb7VAq76GS7pndcPvL1oJ0s+6wO3Om5LuKcEUoo
-	v2ZoioVJq1Wy6WRsAPmVM65aio0kR06jgVUT/A==;
+	s=selector2; h=Cc:To:In-Reply-To:References:Message-Id:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From;
+	bh=PfnmbZl5iKr6rFeTS80a4NnfW2jlSVKr3NNDNbGzVI0=; b=IkbAyxGUjd7jXvlmFAItytXDdn
+	s+jsvj17ly2lUQBwkk4zXoqkDzTfgSR19GLz+yiDd4I/o/7uEw9MjhjkKaIffz8N/hwqJhj+eHNGF
+	LEkp1n3gObJXZZ64k6DMwXSuNCeY15c1drHNRb3r0IieqhKLDPea6D7+nK81bMGeNZEuVSwcjJuAd
+	DBP6GcoQ9e0A3k9nflTPlvOmycqFKI7Cfxd1It79d3zCHLiRuBXbErXx7Dbb7j6EurC0+t6rN4CSv
+	UbcyUNU6LtH8dl9E7bq8lDs+uYSTpbJN7534f/UWAvEg/F1bnR/L+cJbQZyMbfXXw4JR0GkRHA5xb
+	oLq+IZ6g==;
 Received: from [10.9.9.73] (helo=submission02.runbox)
-	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
+	by mailtransmit03.runbox with esmtp (Exim 4.86_2)
 	(envelope-from <mhal@rbox.co>)
-	id 1uWxfT-0006EX-TZ; Wed, 02 Jul 2025 15:38:32 +0200
+	id 1uWxfZ-0005H0-A7; Wed, 02 Jul 2025 15:38:37 +0200
 Received: by submission02.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.93)
-	id 1uWxfC-009LCR-Li; Wed, 02 Jul 2025 15:38:14 +0200
+	id 1uWxfD-009LCR-GI; Wed, 02 Jul 2025 15:38:15 +0200
 From: Michal Luczaj <mhal@rbox.co>
-Subject: [PATCH net-next v3 0/6] net: Remove unused function parameters in
- skbuff.c
-Date: Wed, 02 Jul 2025 15:38:06 +0200
-Message-Id: <20250702-splice-drop-unused-v3-0-55f68b60d2b7@rbox.co>
+Date: Wed, 02 Jul 2025 15:38:07 +0200
+Subject: [PATCH net-next v3 1/6] net: splice: Drop unused @pipe
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -63,11 +63,9 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAD82ZWgC/23OQQ7CIBAF0KuYWYsBioiuvIdxgTBYEgMNtKSm6
- d0luNBFlz8/8/4skDF5zHDZLZCw+OxjqKHb78D0OjyReFszcMqPVDJF8vDyBolNcSBTmDJaQlG
- gVppxqRjUwyGh83NDbxBwJAHnEe616X0eY3q3tcJa/4W52IILI5QYJwXT8iQtFdf0iPPBxIYV/
- g/ITYBXoKt/OW2Ydur8A9Z1/QB6xmzK/QAAAA==
-X-Change-ID: 20250618-splice-drop-unused-0e4ea8a12681
+Message-Id: <20250702-splice-drop-unused-v3-1-55f68b60d2b7@rbox.co>
+References: <20250702-splice-drop-unused-v3-0-55f68b60d2b7@rbox.co>
+In-Reply-To: <20250702-splice-drop-unused-v3-0-55f68b60d2b7@rbox.co>
 To: "David S. Miller" <davem@davemloft.net>, 
  Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
  Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
@@ -78,56 +76,91 @@ To: "David S. Miller" <davem@davemloft.net>,
  Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>
 Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
  linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org, 
- Michal Luczaj <mhal@rbox.co>, Sidraya Jayagond <sidraya@linux.ibm.com>, 
- Dust Li <dust.li@linux.alibaba.com>
+ Michal Luczaj <mhal@rbox.co>
 X-Mailer: b4 0.14.2
 
-Couple of cleanup patches to get rid of unused function parameters around
-skbuff.c, plus little things spotted along the way.
+Since commit 41c73a0d44c9 ("net: speedup skb_splice_bits()"),
+__splice_segment() and spd_fill_page() do not use the @pipe argument. Drop
+it.
 
-Offshoot of my question in [1], but way more contained. Found by adding
-"-Wunused-parameter -Wno-error" to KBUILD_CFLAGS and grepping for specific
-skbuff.c warnings.
+While adapting the callers, move one line to enforce reverse xmas tree
+order.
 
-[1]: https://lore.kernel.org/netdev/972af569-0c90-4585-9e1f-f2266dab6ec6@rbox.co/
+No functional change intended.
 
+Reviewed-by: Simon Horman <horms@kernel.org>
 Signed-off-by: Michal Luczaj <mhal@rbox.co>
 ---
-Changes in v3:
-- Keep skb_splice_bits() @flags [Jakub, Paolo]
-- Link to v2: https://lore.kernel.org/r/20250626-splice-drop-unused-v2-0-3268fac1af89@rbox.co
+ net/core/skbuff.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
-Changes in v2:
-- Fix typos in commit messages
-- Remove one more unused parameter in skbuff.c (patch 9)
-- Collect R-b, add a one-line cleanup of smc_rx_splice() (patch 7) [Simon]
-- Link to v1: https://lore.kernel.org/r/20250624-splice-drop-unused-v1-0-cf641a676d04@rbox.co
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index d6420b74ea9c6a9c53a7c16634cce82a1cd1bbd3..ae0f1aae3c91d914020c64e0703732b9c6cd8511 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -3060,10 +3060,8 @@ static bool spd_can_coalesce(const struct splice_pipe_desc *spd,
+ /*
+  * Fill page/offset/length into spd, if it can hold more pages.
+  */
+-static bool spd_fill_page(struct splice_pipe_desc *spd,
+-			  struct pipe_inode_info *pipe, struct page *page,
+-			  unsigned int *len, unsigned int offset,
+-			  bool linear,
++static bool spd_fill_page(struct splice_pipe_desc *spd, struct page *page,
++			  unsigned int *len, unsigned int offset, bool linear,
+ 			  struct sock *sk)
+ {
+ 	if (unlikely(spd->nr_pages == MAX_SKB_FRAGS))
+@@ -3091,8 +3089,7 @@ static bool __splice_segment(struct page *page, unsigned int poff,
+ 			     unsigned int plen, unsigned int *off,
+ 			     unsigned int *len,
+ 			     struct splice_pipe_desc *spd, bool linear,
+-			     struct sock *sk,
+-			     struct pipe_inode_info *pipe)
++			     struct sock *sk)
+ {
+ 	if (!*len)
+ 		return true;
+@@ -3111,8 +3108,7 @@ static bool __splice_segment(struct page *page, unsigned int poff,
+ 	do {
+ 		unsigned int flen = min(*len, plen);
+ 
+-		if (spd_fill_page(spd, pipe, page, &flen, poff,
+-				  linear, sk))
++		if (spd_fill_page(spd, page, &flen, poff, linear, sk))
+ 			return true;
+ 		poff += flen;
+ 		plen -= flen;
+@@ -3130,8 +3126,8 @@ static bool __skb_splice_bits(struct sk_buff *skb, struct pipe_inode_info *pipe,
+ 			      unsigned int *offset, unsigned int *len,
+ 			      struct splice_pipe_desc *spd, struct sock *sk)
+ {
+-	int seg;
+ 	struct sk_buff *iter;
++	int seg;
+ 
+ 	/* map the linear part :
+ 	 * If skb->head_frag is set, this 'linear' part is backed by a
+@@ -3143,7 +3139,7 @@ static bool __skb_splice_bits(struct sk_buff *skb, struct pipe_inode_info *pipe,
+ 			     skb_headlen(skb),
+ 			     offset, len, spd,
+ 			     skb_head_is_locked(skb),
+-			     sk, pipe))
++			     sk))
+ 		return true;
+ 
+ 	/*
+@@ -3160,7 +3156,7 @@ static bool __skb_splice_bits(struct sk_buff *skb, struct pipe_inode_info *pipe,
+ 
+ 		if (__splice_segment(skb_frag_page(f),
+ 				     skb_frag_off(f), skb_frag_size(f),
+-				     offset, len, spd, false, sk, pipe))
++				     offset, len, spd, false, sk))
+ 			return true;
+ 	}
+ 
 
----
-Michal Luczaj (6):
-      net: splice: Drop unused @pipe
-      net: splice: Drop unused @gfp
-      net: splice: Drop nr_pages_max initialization
-      net/smc: Drop nr_pages_max initialization
-      net: skbuff: Drop unused @skb
-      net: skbuff: Drop unused @skb
-
- .../chelsio/inline_crypto/chtls/chtls_io.c         |  3 +-
- include/linux/skbuff.h                             |  2 +-
- net/core/skbuff.c                                  | 34 +++++++++-------------
- net/ipv4/ip_output.c                               |  3 +-
- net/ipv4/tcp.c                                     |  3 +-
- net/ipv6/ip6_output.c                              |  3 +-
- net/kcm/kcmsock.c                                  |  3 +-
- net/smc/smc_rx.c                                   |  1 -
- net/unix/af_unix.c                                 |  3 +-
- 9 files changed, 20 insertions(+), 35 deletions(-)
----
-base-commit: e96ee511c906c59b7c4e6efd9d9b33917730e000
-change-id: 20250618-splice-drop-unused-0e4ea8a12681
-
-Best regards,
 -- 
-Michal Luczaj <mhal@rbox.co>
+2.49.0
 
 
