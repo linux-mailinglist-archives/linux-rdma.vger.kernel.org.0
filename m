@@ -1,118 +1,102 @@
-Return-Path: <linux-rdma+bounces-11863-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11867-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA380AF72A6
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jul 2025 13:41:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1F43AF73F5
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jul 2025 14:26:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 703C9170090
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jul 2025 11:39:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03CA91C23A14
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jul 2025 12:25:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6596A2E3B18;
-	Thu,  3 Jul 2025 11:39:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADB9D299A94;
+	Thu,  3 Jul 2025 12:21:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="A+v7jTah"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7CAD2874E1
-	for <linux-rdma@vger.kernel.org>; Thu,  3 Jul 2025 11:39:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EADAD2F42
+	for <linux-rdma@vger.kernel.org>; Thu,  3 Jul 2025 12:21:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.95.48.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751542753; cv=none; b=OsBNNkm8pgEVD/hN5hqh7Ar36HtNohaBbQYZTGYRoiP4NNbg8phVBMDXAWZSkxNiERApluq6Caa9iR7h7Mux1DDVSxeNIakKqGX9GHazmxFgYHoLyu+aDJT8WxY/2NknmbExAJRUiDonLEcctV0j/IxP86TbdWkAxPk98KhA1/o=
+	t=1751545270; cv=none; b=hfrwsVvdcwazx6pfPCPFIGVnKV1AQt+6pTL1UNjTNmlgMS8OmWHrG9IET3NF+HLcj8KSve1swcz25ogwNcorfaP6RBenY+rARzSp6OR4A4iore237H5Txb3iUrYdulN6W9d+NTCmUV8ngG22nWp/XelRrdT8T8UmGNdrwt/OKN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751542753; c=relaxed/simple;
-	bh=9obxsBG+3Fl55aDK1e56d1viuxd3ly3Ok1Lghw7RSCY=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GiKLwCDn9bfunx2lbuH3u5/a0tmZDtoG9xNm4R8esedWObH9K7JUUw3VkBfa50gxhHSjUIaFSUKp2ybPCwWDBw7vWXpp8oH2eTqxgT1r/cP79L+tdKBDm4tHgEbGuI5gIj3ykOvGjqnc97LyBYnew/S+8fEhl2/XfnLCNNadgwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4bXvnK5zKRzWfxS;
-	Thu,  3 Jul 2025 19:34:45 +0800 (CST)
-Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id ED0B7180482;
-	Thu,  3 Jul 2025 19:39:08 +0800 (CST)
-Received: from localhost.localdomain (10.50.165.33) by
- kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 3 Jul 2025 19:39:08 +0800
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-To: <jgg@ziepe.ca>, <leon@kernel.org>
-CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<huangjunxian6@hisilicon.com>, <tangchengchang@huawei.com>
-Subject: [PATCH for-rc 6/6] RDMA/hns: Fix -Wframe-larger-than issue
-Date: Thu, 3 Jul 2025 19:39:05 +0800
-Message-ID: <20250703113905.3597124-7-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20250703113905.3597124-1-huangjunxian6@hisilicon.com>
-References: <20250703113905.3597124-1-huangjunxian6@hisilicon.com>
+	s=arc-20240116; t=1751545270; c=relaxed/simple;
+	bh=plNRRfepUxCKBpEREYAuzDZHIj+eMC7isU+HWM9vRUA=;
+	h=Subject:Message-ID:Date:MIME-Version:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=iMxcaGGOt9v5GWfnacuWidvT3zX5CfDnDIBWPELDjiPKL6zZfolEE0qsEQ92iAucoVwUMcX72RY+FAUozEropw70x9YDQLnr7JccFhMli0hY/4HsBtB9iZQjKGrMe/dweiQb3Fscn90cZMo3TBsPqI9f47OmaAREDWyZLMz+f4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=A+v7jTah; arc=none smtp.client-ip=52.95.48.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1751545269; x=1783081269;
+  h=message-id:date:mime-version:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=plNRRfepUxCKBpEREYAuzDZHIj+eMC7isU+HWM9vRUA=;
+  b=A+v7jTahc8qGPVmfyipqWeaDB9AjqyOS5bjgl2S8qw8LebsI5Pp+Pc8E
+   DQKmj3F1/NDiiTMZ1NM4IORi+G322z0RFzRO4glxdGKgKm7qYxVa/F9Zh
+   MoEheNTiopDsnq35WnDwwc++FEoKHqJwjeoOCvmDePDVtFVVZkxjCFheJ
+   ysFeGYzKbXMer0GDVkiXFbSqxwYA4ERsiqhfbiyitHwhBEiaYLWONeoUc
+   wR8D1oBlKNTsJkuKX3jwnBGwy/US35EGKR8KpRlFi5uHdKUIahvTHlyKt
+   8HjOEUqnh0QeWVXmuw6H4BAk651X9ZWzTR4YkPdHVydCYOk6nObIejtMl
+   A==;
+X-IronPort-AV: E=Sophos;i="6.16,284,1744070400"; 
+   d="scan'208";a="507509298"
+Subject: Re: [PATCH for-next] RDMA/efa: Extend admin timeout error print
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.2])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2025 12:21:05 +0000
+Received: from EX19MTAEUB001.ant.amazon.com [10.0.43.254:7034]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.23.111:2525] with esmtp (Farcaster)
+ id 6db36715-1c90-4426-b719-aeb9fc660d94; Thu, 3 Jul 2025 12:21:03 +0000 (UTC)
+X-Farcaster-Flow-ID: 6db36715-1c90-4426-b719-aeb9fc660d94
+Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
+ EX19MTAEUB001.ant.amazon.com (10.252.51.28) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
+ Thu, 3 Jul 2025 12:21:03 +0000
+Received: from [192.168.138.241] (10.85.143.179) by
+ EX19D031EUB003.ant.amazon.com (10.252.61.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
+ Thu, 3 Jul 2025 12:20:59 +0000
+Message-ID: <73bc57f6-a791-4852-9fde-b82021e98372@amazon.com>
+Date: Thu, 3 Jul 2025 15:20:53 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
- kwepemf100018.china.huawei.com (7.202.181.17)
+User-Agent: Mozilla Thunderbird
+To: Gal Pressman <gal.pressman@linux.dev>, <jgg@nvidia.com>,
+	<leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC: <sleybo@amazon.com>, <matua@amazon.com>, Yonatan Nachum
+	<ynachum@amazon.com>
+References: <20250702152028.2812-1-mrgolin@amazon.com>
+ <bdbb1205-d940-434a-a102-b233562a1429@linux.dev>
+Content-Language: en-US
+From: "Margolin, Michael" <mrgolin@amazon.com>
+In-Reply-To: <bdbb1205-d940-434a-a102-b233562a1429@linux.dev>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EX19D045UWA003.ant.amazon.com (10.13.139.46) To
+ EX19D031EUB003.ant.amazon.com (10.252.61.88)
 
-Fix -Wframe-larger-than issue by allocating memory for qpc struct
-with kzalloc() instead of using stack memory.
 
-Fixes: 606bf89e98ef ("RDMA/hns: Refactor for hns_roce_v2_modify_qp function")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202506240032.CSgIyFct-lkp@intel.com/
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+On 7/3/2025 9:46 AM, Gal Pressman wrote:
+> Arguably, there is no point in keeping the comp_ctx pointer print, as
+> you have nothing to compare the hashed pointer to. It could've been
+> useful if the pointer was also printed when the command is submitted,
+> but it isn't, so it's probably better to just remove it and keep the
+> index you added.
+>
+> A better alternative might be storing the cmd_id inside the comp_ctx and
+> printing it instead, it contains more information.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index f15eb6204959..103aea0f51a8 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -5349,11 +5349,10 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- {
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
- 	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
--	struct hns_roce_v2_qp_context ctx[2];
--	struct hns_roce_v2_qp_context *context = ctx;
--	struct hns_roce_v2_qp_context *qpc_mask = ctx + 1;
-+	struct hns_roce_v2_qp_context *context;
-+	struct hns_roce_v2_qp_context *qpc_mask;
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
--	int ret;
-+	int ret = -ENOMEM;
- 
- 	if (attr_mask & ~IB_QP_ATTR_STANDARD_BITS)
- 		return -EOPNOTSUPP;
-@@ -5364,7 +5363,11 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 	 * we should set all bits of the relevant fields in context mask to
- 	 * 0 at the same time, else set them to 0x1.
- 	 */
--	memset(context, 0, hr_dev->caps.qpc_sz);
-+	context = kvzalloc(sizeof(*context), GFP_KERNEL);
-+	qpc_mask = kvzalloc(sizeof(*qpc_mask), GFP_KERNEL);
-+	if (!context || !qpc_mask)
-+		goto out;
-+
- 	memset(qpc_mask, 0xff, hr_dev->caps.qpc_sz);
- 
- 	ret = hns_roce_v2_set_abs_fields(ibqp, attr, attr_mask, cur_state,
-@@ -5406,6 +5409,8 @@ static int hns_roce_v2_modify_qp(struct ib_qp *ibqp,
- 		clear_qp(hr_qp);
- 
- out:
-+	kvfree(qpc_mask);
-+	kvfree(context);
- 	return ret;
- }
- 
--- 
-2.33.0
+Nice idea, doing that. Thanks.
+
+Michael
 
 
