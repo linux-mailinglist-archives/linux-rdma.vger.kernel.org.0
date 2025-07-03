@@ -1,118 +1,104 @@
-Return-Path: <linux-rdma+bounces-11851-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11852-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D670AF65A5
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jul 2025 00:50:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 480F2AF66D4
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jul 2025 02:36:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F9687A7963
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Jul 2025 22:48:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4ED851C44F03
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jul 2025 00:36:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E5DE24BBF0;
-	Wed,  2 Jul 2025 22:50:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E30C718C00;
+	Thu,  3 Jul 2025 00:36:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jVrQyKke"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dcUc46tT"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5ED515624B;
-	Wed,  2 Jul 2025 22:50:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F6EB38F9C
+	for <linux-rdma@vger.kernel.org>; Thu,  3 Jul 2025 00:36:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751496601; cv=none; b=CHe4ieK5MskB12CiqQnwRgUImdR5AosrQVXpyff/TdwbB9//qLZ3ce4zNsxlCVOp0hxy7JblRsegr1t/MaeRy/wsmcr4f/7Ml9wuvhuZflE2r4EUQcKfNu0QISE4rmPp8XRCuhfieRiW3v0XXqh1aOq5RESGRoKrNUT4nGWhFKQ=
+	t=1751502983; cv=none; b=F3CT+XpcaFktGDZiUB6yJV4Jnk2FCKzADyeTj+Tf33IzjJlY05Hp5CUc7zB5MlwL/LQgfYwWW5owJXR2Z8+B9VwcTXiauJDSWuWLTS1f7aQlyFE5SW0o9LxQV8/rdqteD1UuACtUMpi7MVXS4efBufkhzM9V3C9VbiL/dQwFE9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751496601; c=relaxed/simple;
-	bh=wU8Zhraeh1yNzCGp2EgiAgwWtGMVkPgxeEnPDkPMUmQ=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=FtbGFh1pWWnY/3TXC57UB0MQpn/j9+tOUigkzE7C/pTKEddKeFCMRQm259Y1Fup9VqzFCJ3lXMFD8gCco9GoPrGXhzp2HbvNXItYJZQZ22expYU4pgNV32CQEv71Kwqr1q71fyZfN2dhnEIRAHLhJagOynq3fWu/3iISWnjLVtg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jVrQyKke; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A7A4C4CEE7;
-	Wed,  2 Jul 2025 22:50:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751496601;
-	bh=wU8Zhraeh1yNzCGp2EgiAgwWtGMVkPgxeEnPDkPMUmQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=jVrQyKke7z/XJrrGX4841VHebRnBXnTnWdXEQ/R+A7DGSSWvUUOgZWC3bSto1/8Tm
-	 K/1NV62e4vEE5Tc86WqGxfGaqm+ngndIi19aVgFJhoIXiX9qXu35xeg47vqYB2O3tb
-	 NzICAZPxprMVXUQuH/lURQmVCFJ/URxLk02DJsoHh78u+aqt28RUivbvUVTQlNsWJd
-	 gp+E2rLhc0xW5StqAKPyOO3tDGfOYS9YEuE4o/mog+IwwfUHBDGj2eXYZoX4eZ+qEp
-	 1vB8e4kTExtVgqEKPsizDwSRhPevYRwJjGoqm1TrhkdA+P1ibgZnCgfKqPch+COtAu
-	 riLWeU4TbXHkg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB06A383B273;
-	Wed,  2 Jul 2025 22:50:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1751502983; c=relaxed/simple;
+	bh=D5MN3WPH1A1Y5S65bqPub19oRChrNFC7MTekEE4s2YM=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=QS9g+r+S1KeYVQPtYPRfb6PQgs6AELJTcsDdPjz4Y8xUJ3px3a+hLMF2+9Gk57s1j4XfbFhLRtmLegZVfwLGNGoubl1zuUBTYSgdGta+x+ki32CyQLlPyRYtDvX8I8zVR+e1B9TnPc2wUYdDW1FYLlUkCZRrAsfrVsrAYckby6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dcUc46tT; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ca69d915-5a8f-4396-b35e-319ed7f0b8ad@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1751502965;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wvRXOP4YlcYmWEOCCJQXOKEFhj3fz6ARzQFiS5FnhLc=;
+	b=dcUc46tTBXXoEUoI2HNnlwTo8cGCrHilsHX4aJinpFaoPPJ7ip4iVd/+8DB4hL0QXERZzj
+	EXfPnlKHKMhINiSDw72HoIrk5k7VSotYhdzn6GlbeXVcODk+hrf74CTDyqBlob8jmRdIE3
+	sxamOZ33HpyaGD3L6Jd6MlcQIdL/xhU=
+Date: Wed, 2 Jul 2025 17:36:01 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [syzbot] [rdma?] WARNING in rxe_skb_tx_dtor
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Yanjun.Zhu" <yanjun.zhu@linux.dev>
+To: syzbot <syzbot+8425ccfb599521edb153@syzkaller.appspotmail.com>,
+ linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+ Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+ linux-rdma@vger.kernel.org
+References: <685f29f2.a00a0220.274b5f.0003.GAE@google.com>
+ <382ffa5e-41bc-4632-9ff0-789e7d47158c@linux.dev>
+Content-Language: en-US
+In-Reply-To: <382ffa5e-41bc-4632-9ff0-789e7d47158c@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v12 0/8] Support rate management on traffic
- classes
- in devlink and mlx5
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175149662576.890932.9074896205205825131.git-patchwork-notify@kernel.org>
-Date: Wed, 02 Jul 2025 22:50:25 +0000
-References: <20250629142138.361537-1-mbloch@nvidia.com>
-In-Reply-To: <20250629142138.361537-1-mbloch@nvidia.com>
-To: Mark Bloch <mbloch@nvidia.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
- edumazet@google.com, andrew+netdev@lunn.ch, horms@kernel.org,
- saeedm@nvidia.com, gal@nvidia.com, leonro@nvidia.com, tariqt@nvidia.com,
- donald.hunter@gmail.com, jiri@resnulli.us, corbet@lwn.net, leon@kernel.org,
- chuck.lever@oracle.com, jlayton@kernel.org, neil@brown.name,
- okorniev@redhat.com, Dai.Ngo@oracle.com, tom@talpey.com, shuah@kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-nfs@vger.kernel.org, linux-kselftest@vger.kernel.org
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
+#syz test: https://github.com/zhuyj/linux.git v6.16_fix_rxe_skb_tx_dtor
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Sun, 29 Jun 2025 17:21:30 +0300 you wrote:
-> V12:
-> - Fixed YAML indentation in devlink.yaml.
-> - Removed unused total variable from devlink_nl_rate_tc_bw_set().
-> - Quoted shell variables in devlink.sh and split declarations to fix
->   shellcheck warnings.
-> - Added missing DevlinkFamily imports in selftests to fix pylint
->   warnings.
-> - Pulled changes from net-next to enable these adjustments:
->    Inclusion of DevlinkFamily in YNL test libs.
->    Introduction of nlmsg_for_each_attr_type() macro and its use in nfsd.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,v12,1/8] netlink: introduce type-checking attribute iteration for nlmsg
-    https://git.kernel.org/netdev/net-next/c/42401c423896
-  - [net-next,v12,2/8] devlink: Extend devlink rate API with traffic classes bandwidth management
-    https://git.kernel.org/netdev/net-next/c/566e8f108fc7
-  - [net-next,v12,3/8] selftest: netdevsim: Add devlink rate tc-bw test
-    https://git.kernel.org/netdev/net-next/c/236156d80d5e
-  - [net-next,v12,4/8] net/mlx5: Add no-op implementation for setting tc-bw on rate objects
-    https://git.kernel.org/netdev/net-next/c/71092821244a
-  - [net-next,v12,5/8] net/mlx5: Add support for setting tc-bw on nodes
-    https://git.kernel.org/netdev/net-next/c/96619c485fa6
-  - [net-next,v12,6/8] net/mlx5: Add traffic class scheduling support for vport QoS
-    https://git.kernel.org/netdev/net-next/c/97733d1e00a0
-  - [net-next,v12,7/8] net/mlx5: Manage TC arbiter nodes and implement full support for tc-bw
-    https://git.kernel.org/netdev/net-next/c/cf7e73770d1b
-  - [net-next,v12,8/8] selftests: drv-net: Add test for devlink-rate traffic class bandwidth distribution
-    https://git.kernel.org/netdev/net-next/c/23ca32e4ead4
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+On 6/27/25 4:42 PM, Yanjun.Zhu wrote:
+> Thanks a lot.
+>
+> I will organize the code, add a commit log, and then send the commit 
+> to the RDMA mailing list for review.
+>
+> Best Regards,
+>
+> Yanjun.Zhu
+>
+> On 6/27/25 4:32 PM, syzbot wrote:
+>> Hello,
+>>
+>> syzbot has tested the proposed patch and the reproducer did not 
+>> trigger any issue:
+>>
+>> Reported-by: syzbot+8425ccfb599521edb153@syzkaller.appspotmail.com
+>> Tested-by: syzbot+8425ccfb599521edb153@syzkaller.appspotmail.com
+>>
+>> Tested on:
+>>
+>> commit:         fac5dcad RDMA/rxe: Fix rxe_skb_tx_dtor problem
+>> git tree:       https://github.com/zhuyj/linux.git 
+>> v6.16_fix_rxe_skb_tx_dtor
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=17db0982580000
+>> kernel config: 
+>> https://syzkaller.appspot.com/x/.config?x=79da270cec5ffd65
+>> dashboard link: 
+>> https://syzkaller.appspot.com/bug?extid=8425ccfb599521edb153
+>> compiler:       Debian clang version 20.1.6 
+>> (++20250514063057+1e4d39e07757-1~exp1~20250514183223.118), Debian LLD 
+>> 20.1.6
+>>
+>> Note: no patches were applied.
+>> Note: testing is done by a robot and is best-effort only.
 
