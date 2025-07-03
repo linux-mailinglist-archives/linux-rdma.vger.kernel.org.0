@@ -1,83 +1,83 @@
-Return-Path: <linux-rdma+bounces-11886-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11888-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9D91AF80FA
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jul 2025 21:01:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29BFDAF80FD
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jul 2025 21:01:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 572737BADEF
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jul 2025 19:00:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EEFE3B0910
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jul 2025 19:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 925D02FF46B;
-	Thu,  3 Jul 2025 18:56:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 959E42FF47F;
+	Thu,  3 Jul 2025 18:57:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="dBc8SekD"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="QWZMHOIU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2048.outbound.protection.outlook.com [40.107.236.48])
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2083.outbound.protection.outlook.com [40.107.244.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E4032FEE3D;
-	Thu,  3 Jul 2025 18:56:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C2AF2FA653;
+	Thu,  3 Jul 2025 18:56:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.83
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751569015; cv=fail; b=WrGOQTgjaQDfCy1OWL4kNVnUuj2U2uAaA5B6UFj7LWwWGB2yZucug9fHUPemAndlYFo88g0ZeqiKuEPyPJn767K0BGnNFl8QMrFwGW8HIQ/xOS/01g+ehdV5MiwOXXZ0tcPWUzStLNrQw3ULE+TZ7jXhlO114m4uNIwqUndQZT8=
+	t=1751569021; cv=fail; b=N7JPwQ2qlZ9ZxTkolwBn9mUUv5ZFgGVkuL3hv6eNIfp5TQgNEI/YWDSx/TKtzVjqrB14iBTRQaA5aoofyRPiQuXcTx1ZiD4IYR+AYKJBYjrMfgzto6NG/Tueah98G+1cWdiXlb3TgSFlSHts48QTtXfySUcKCuamaAWoG0YcBBg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751569015; c=relaxed/simple;
-	bh=0q7GQsVCR/TeGA/R7PcDnTuIdzXH5ZaFtaAn5gmZmoM=;
+	s=arc-20240116; t=1751569021; c=relaxed/simple;
+	bh=3XtL9PEMQ2QLlLetwfxQNuI/WqgGNukNRhBMW+TgLgg=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gm4Ffk130XDi4l1QbUBuVZq1gxa9qFEYPxUymGv/nBLTP1pv1yYUpu3iekvCQw/1JhY/JDWR4ME9vt5LCeUwyPw4+77dENG1QWSuuE8/9BmY2zoPzyoHo2Pr69PxnELGUCiKHVEVV7sFK+d6dmmLgFo7b7jC7nUQC9+y8eOxegI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=dBc8SekD; arc=fail smtp.client-ip=40.107.236.48
+	 MIME-Version:Content-Type; b=nGW5EbsBK4+e+rhoo4cIA41LNZWP20KNYf2I9+NBtTzWz3kbp07O3ecO/jby8SnLSzITc5ldHo4X9NhZutbMhh6Z937wLI4MFdKEeP84y/PidLMhKtTt+KhZdm28j5u1uaNXlWUkpC6/ebuu42TuuRFIWR3eJWgXw06rvqu2ik8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=QWZMHOIU; arc=fail smtp.client-ip=40.107.244.83
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=KDvB3K7SVdVXyEmkAvv5nSETRaGBY09jtcJYxpD6yCfr++lZhxmhlmG7McXRtYILfODItdrvxVJLOojWFk0LwYds5csZx9Eha/I6FDr7VTLtP3SWd4uA9GhQD1bzMgN8f+N822Cp1g9fOCk/5x9Aw8mSihyw5enT4MKi+T1T83OwrCgMIKD7N13fovFj8e5Ue6UIE7ZkL48PfHT6gjqn9Drw4O/S0QxtX28NHUBCKMFTwVboyNBEif+2EGtz9Vk/GRhz4xlduhmOin5RmxBFYiYLl/Plc01BgpgjhmMxhFGaco46Rco/ywX/HuFaVrLk3N8MZK7tfRgR5D9EMr2c/w==
+ b=Kar3J2FQBFTzd1Gl6Ca5dp4+eDhEpQlV4qnhP0Jzi+JYhKF7jVPDDmPEm/KmCTMHNwbNDBD7vwJGkPtgle+WMkfsz09bqgjFH6coom1TpRKTyGCKGP3HVScamgaiDZZsxrhd54Z26Dz7b7WO1oDiqxp7T5IMYfb387SPqTXFDbCIAggKLHCGoeOD9mxvrPrv6TPxEh0AKFxLFH1yIy/Iw9FJk8FhE8eoZrIidlOuSHi84SDfit6gcNBJe05sRYwH9Ud5+Nac7dq9wzt4F4tyRLpyXYxMhHAeHaKFvN8EXcViWm8n9cIwrrlNvbKCq90vmUU/LjkWiW+6utGs6x/OUg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SI8Eu84OAc+/+TRSzabkt01SHe1uXGQBITpgZ9lPZ7I=;
- b=OMjIFmoUeSurlCt3hYQ+df40+bUChbFpLEcYFNvGA3DbKNvjw9V03yIWsA0rEOIRG6zwan7shCwJ1gyvDdgkZCJF4/C5Sn10LRa/waS6CcSfpEkQpLWkxMlWfOz5wzXLqTZhlPRvhugZWQU5EE7kLmB2/aeL/a5aGSVxBqUyxyOexTj/RFevxXQpGuriKwmjoiwaOP3XJqmhLt5oQYPaBTPPrZhnYlvSOWosObQ046SwzON5MeFAUi5DEAqdvo6SE3fRBKyPP/v5XVb8UKsyfNMZj44pK4Y9xllWVZaayvePxMfbKmxscbMCRTymc70YWCMb7dPbxj2ccjJpAa2ZhA==
+ bh=HZcxiea41geubKpbAkjUQmFiNMzR/zC7y97hxibXy88=;
+ b=v8Lpo8u8XIR5l/wFkCySBQmEjM8TARWuztpvxambGFcs32tjutpwzWpfhYUbiXlQmHJAwT0U8xtx66btna/VUjS3LB4ik+7yRdmtwY9FUsSaS12oitn53QWOtIy6tISbh5tczFSzkf6HsT/YKwHqfgKsNgBvnXN7JniWC/zYB3XyuiqrEkg8Q9frWl/z/0zscNK4JzaYvO5PLhLMuCn5bEKW4VTVSdh7uID2xjNbwmpvXmHs3M+KnWGLWdp7iyCBNdM3oupDdOiQKgZUaFYXKtsRm6uwHkU2NJR0LaL8XDdvZA30Yu4cPC799oHdBsQR9LJT6TJOicVpLBWK/WlWYw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
+ 216.228.117.160) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SI8Eu84OAc+/+TRSzabkt01SHe1uXGQBITpgZ9lPZ7I=;
- b=dBc8SekD81swTv0DyOGp48sUlhIPaU0a9XdGU27NUMULKpck0S4x39aNu7Tm+JfWa8cZevzJWqtExrrkgYPWlFFTXUNWXBtlcmoj3UdbSgWcO6HYlJDz3uN/A8Pdqr+Zyyp6HRkfcbmZFA1INPIN0Gb7KEBe9+SyizTEkRGT0X/5xFA3m8nnFJfzWKWIBBENhnK/em1n5pwrsObFHp5FOoXRl3SjdZ63n/i1Xf1bSHgPIVfLYa1d1rDkvtzL7ZnladwVEJkOTHt2EnRHbm3md2m7OGbf+f/gaSz7G7DtpbqfFfqyITxg/WVcaaKJreEGdCgJGeDLrXdB2YDQWfQhEA==
-Received: from BN9PR03CA0656.namprd03.prod.outlook.com (2603:10b6:408:13b::31)
- by SJ0PR12MB6784.namprd12.prod.outlook.com (2603:10b6:a03:44f::20) with
+ bh=HZcxiea41geubKpbAkjUQmFiNMzR/zC7y97hxibXy88=;
+ b=QWZMHOIUa0XIdHHZy/OkoHi2yiZHLGMRtZec5ylJUFReyYhnLFEd6YXp6VRp6tYJYO6f6CgYpqr8v4vACUAYlgjCtVvmRXrTR3GWhA4Q7DAUu42deVbCSEG9SEccpJW2fuiBfsm+ubsE6pYMaSol/f85h0xzwGUZ/3tFsCdbUWRUPRQEieBpAmrWrz04d5idttmflHvL0UUqn7EWXcEicxd99/VoudgfAsW4z88yzhbXAOJQ5OyG6up0piqjLtSV5oTgm2eOCenKxNOzuOUdJk/YzY9Lm8J0cNwwURL2iBHyAOWThIBghh7JA7FhY/9Wd6i37p1gMC6di9TgwYKnAg==
+Received: from BN9PR03CA0560.namprd03.prod.outlook.com (2603:10b6:408:138::25)
+ by IA1PR12MB7544.namprd12.prod.outlook.com (2603:10b6:208:42c::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8880.27; Thu, 3 Jul
- 2025 18:56:46 +0000
-Received: from BN1PEPF0000467F.namprd03.prod.outlook.com
- (2603:10b6:408:13b:cafe::db) by BN9PR03CA0656.outlook.office365.com
- (2603:10b6:408:13b::31) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8901.21 via Frontend Transport; Thu,
- 3 Jul 2025 18:56:45 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8857.37; Thu, 3 Jul
+ 2025 18:56:50 +0000
+Received: from MN1PEPF0000F0E5.namprd04.prod.outlook.com
+ (2603:10b6:408:138:cafe::fe) by BN9PR03CA0560.outlook.office365.com
+ (2603:10b6:408:138::25) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8901.20 via Frontend Transport; Thu,
+ 3 Jul 2025 18:56:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- BN1PEPF0000467F.mail.protection.outlook.com (10.167.243.84) with Microsoft
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ MN1PEPF0000F0E5.mail.protection.outlook.com (10.167.242.43) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8901.15 via Frontend Transport; Thu, 3 Jul 2025 18:56:45 +0000
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.8901.15 via Frontend Transport; Thu, 3 Jul 2025 18:56:50 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 3 Jul 2025
- 11:56:28 -0700
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail205.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ 11:56:33 -0700
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Thu, 3 Jul
- 2025 11:56:28 -0700
+ 2025 11:56:32 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.9)
  with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Thu, 3 Jul
- 2025 11:56:23 -0700
+ 2025 11:56:28 -0700
 From: Mark Bloch <mbloch@nvidia.com>
 To: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, "Andrew
@@ -87,9 +87,9 @@ CC: <saeedm@nvidia.com>, <gal@nvidia.com>, <leonro@nvidia.com>,
 	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, Vlad Dogaru <vdogaru@nvidia.com>, "Yevgeny
  Kliteynik" <kliteyn@nvidia.com>, Mark Bloch <mbloch@nvidia.com>
-Subject: [PATCH net-next v3 06/10] net/mlx5: HWS, Decouple matcher RX and TX sizes
-Date: Thu, 3 Jul 2025 21:54:27 +0300
-Message-ID: <20250703185431.445571-7-mbloch@nvidia.com>
+Subject: [PATCH net-next v3 07/10] net/mlx5: HWS, Track matcher sizes individually
+Date: Thu, 3 Jul 2025 21:54:28 +0300
+Message-ID: <20250703185431.445571-8-mbloch@nvidia.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250703185431.445571-1-mbloch@nvidia.com>
 References: <20250703185431.445571-1-mbloch@nvidia.com>
@@ -104,403 +104,510 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: AnonymousSubmission
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF0000467F:EE_|SJ0PR12MB6784:EE_
-X-MS-Office365-Filtering-Correlation-Id: c426485a-ca37-493e-906d-08ddba635b5e
+X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0E5:EE_|IA1PR12MB7544:EE_
+X-MS-Office365-Filtering-Correlation-Id: f3b0f56d-d630-4344-71ca-08ddba635e3c
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|82310400026|36860700013|7416014|376014;
+	BCL:0;ARA:13230040|7416014|376014|82310400026|36860700013|1800799024;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?puKb0QP4GIAahgftDiXppDwfn3AOPrInCuppHLMVPOMQjYA42B3qkHzUI0PJ?=
- =?us-ascii?Q?0438+5vOR+lOJaJ5g+1YnwdE7XWejmE3Dh43p2ZPNMY9t7V/WWqAKZskNhzk?=
- =?us-ascii?Q?RutvFXbGoIRWi2ZPLu16J1Qk8QdPybAD/ND+1lfBsQ9JiVzI6F4fndfs1hl2?=
- =?us-ascii?Q?aoWvNDCcKYmrvHlxkmjFT9vtluhPPEnNIOFb1G/OcHixC/frzosZ6xfvXDY8?=
- =?us-ascii?Q?KKSeJQT5CACPufc8b9kJxyvOgdJLraSaCGjFvGihF+g8S2juLnbcA+jj1eZL?=
- =?us-ascii?Q?T9G3GjoqsQP4oH6JAw+twyY6CFzD0h4JciRsa4+TiFHQYbppQdoIfnuYGWPe?=
- =?us-ascii?Q?r76/X98piA1iVdKY7qTmwlvCJzbqNy5YkRqrYn+Pyi+Z+tzpx0LXVkbk/e3T?=
- =?us-ascii?Q?WpEPJ4/Id5bQBx7s/fWbXJw1ete5Rj6CYLA8JZ19yYBhLASMH4OGh63wYjoD?=
- =?us-ascii?Q?m+RHHOqDe8FK849gEnorj3iVdWz5BcPjEWJm54qtwDl54amOF0ux1MwDurv3?=
- =?us-ascii?Q?ASyDt/bue9jZukZuy8734EsHUCBTucB7Y1QjJGQffXowAWK+UABpQF3opBW1?=
- =?us-ascii?Q?47NOTMAPWvmEaspCNnRQ5v70aR8Nl1EWycBRh9jtkHsc0VoLYc0AHqSfdwWk?=
- =?us-ascii?Q?2CEG38cxVOFI8WaQzEG6c55N1wmybq3Ni2+b0OnhBvE3jPDDSItvfOmigG+o?=
- =?us-ascii?Q?WQr6EQnKab/f+pgfsy7wNDGbzOcIpss7hQo/Wqi1qXqdUlFxJMvbxnGmtAZf?=
- =?us-ascii?Q?KA4vWfeZ12hqF5HJCvv1du+yPRRZa/aR3+UfGHitWVlTD0NoseEqw1lHVyEU?=
- =?us-ascii?Q?OJa2O1ogorG0wDIdeYYm57+P5AdWKc1VT8W5ibUs/fKI88v7269fS0InoaeX?=
- =?us-ascii?Q?wKIDEVPku05hJKtpFLxjXj1HgelMtpm8fh69inVDSw6WaNDgbbm3gj1vW22b?=
- =?us-ascii?Q?1fd7c4MH9WT6iQD1JvtiNO/vg6IZf4FkurJU5/NWafATBnzLMExRdD/8TcEC?=
- =?us-ascii?Q?6m2hGZJ1OsqzX1Yxx7CivBNLbiTwnMDxRzOJ0ccTbXDil35IIwpL89R1vLny?=
- =?us-ascii?Q?w/7Ndecnm/71nhk5uQbiiS0amsxnVO4WFNkmr+7cMPPJJ92Jh5E2yHcFBg8z?=
- =?us-ascii?Q?6H1mpXJGABbNi/8cQUnmqdcMJzQu2cDe+qeGd/2HvlEhN9cwvLaU4B2BHrb8?=
- =?us-ascii?Q?C4816kHdNs6Jdfg8aHUqZW1AcqxAFPcKSleHEid8H7Fx+M1Exm92pvQIt/Fd?=
- =?us-ascii?Q?NQ2oNORXGQfCipoi1zl7qMjd2fv2/P7lugp5oagmRWBhYd95u1FhxbvSWEUd?=
- =?us-ascii?Q?OEF7GKQa+8Hk/XN/W/Nw6Cpgp2eAuE0KdD/mAgZ3NHQqP69DlDPnG+9Geejh?=
- =?us-ascii?Q?7hn1fkE2hQ3RwaxqqdMMqdiW+VWHJJU8Tlt3DKlCKA3UXJUVjoBrcRLR2/50?=
- =?us-ascii?Q?yyOudIh+GQ1nYeh4f7OYYbfENfg+P8eYTYTm+T6prOFhbI6JmGGKqRojisgi?=
- =?us-ascii?Q?OLmtYrp22argSKjgTXliUCWPk3/+S45aGdFJ?=
+	=?us-ascii?Q?7FSTZ0C8Il4miw8rPPVA43IyTQgKGDQUH++AmrfRJNqIgTcOeHbAoB3HDY7P?=
+ =?us-ascii?Q?aKZzdnNaTXZaX3CMacaLtf4MmWf1BmsFCkc9iNqFQUheXLNY0WdgiBnrBX76?=
+ =?us-ascii?Q?Zc4W3LedG5EvfmYiMBYiNTjTERekqLK3KspYU2++jrnGTd0PNtx7UVpjky6O?=
+ =?us-ascii?Q?tH66PsZ38U8Vdp9j92939TubrH14snn+80Pro9i8Xfq5XCswZdK3E+KifghL?=
+ =?us-ascii?Q?Sn9emYdeZyzl2jMqW1+4Gv7jyARSzf2AxY5qAx/i8MjHjtXilEFq8NArtV2B?=
+ =?us-ascii?Q?MNmax3E6O2WshEsSBxVZpZ01h4NVDEJ/zcOv26Uk6ihbHVodwGgSu8M/BooA?=
+ =?us-ascii?Q?L3psRMLB0EqcYLQojzlR8R/gdUIJ+IBjzsKnvyFQbezs6DsyR9t9xNJGPVi1?=
+ =?us-ascii?Q?M5IhVfazxrLSxmbLXnA+0/BCwbAXDi1gFiTG0WCGcQBaiyhDNC53PCgXuxpi?=
+ =?us-ascii?Q?QbYbLGBroHYa2/cDtLrleWbs1igxLd7UO8L0hHsLFtya+eXOg3xdzHAEVgVx?=
+ =?us-ascii?Q?meVkwVgc0ujHwjJsBrdzP6jll7fPxI8+B1gHDCWkGEwxwLplb+KbWb8aNf/h?=
+ =?us-ascii?Q?wlsQJ2sojM5RSkaaX2ZsS+R6Q82cnkYaVZc/zAvHv24KJ4UB9vGUpEDZgwP2?=
+ =?us-ascii?Q?uzTFuVeY1ZHT5ZznbPlLiFY7/vFLgA9Z0SxUsidxEq+Om5C+5TRiY0qFiklo?=
+ =?us-ascii?Q?MHn9eMLifjsVErOYNlCIXLVDTCTT/XHT+tjCuVDxsWVgKB64GblgeEhSOE5w?=
+ =?us-ascii?Q?BXaD3Eisu4pYhCoQgcj+SOuvjWOwwWseGAOf5zUdOxLRAbzgEdxGOecTLpxo?=
+ =?us-ascii?Q?zE+Sl6txNVEpwflPk4uogGfYiYJc7oXBN54mdBBPTOtDZRiUR5aRmjXiFcTu?=
+ =?us-ascii?Q?0vQ2/JfpHEU929mWCSH6TY2Q+pLpV4xEN6rb2toLVVx9AkI6lMKbGiF4Y7o0?=
+ =?us-ascii?Q?5iaZ3gSbagDnCnSedx7bRgxYABolVwlsRZE5zUWrZAV65xmmuS0VTfumARTD?=
+ =?us-ascii?Q?RgrV3ToIvz94JheFBNoDI0UKCUNGDuSlZL3g7I5m3o3qI2MwhUzmSdFqkAer?=
+ =?us-ascii?Q?PQScfozwybWY7CR0c7foVEtW6eXozgWEA0J9fX+0026pR44nY02C+J3RRj+p?=
+ =?us-ascii?Q?sUnfOFp8f/wr3r4lRpZwdrbdk8YVTT8nqvBuy8Se3BDAueGo000qe5Y7tuk4?=
+ =?us-ascii?Q?vXy0jHMzTWwuiPGAAON5Di+ScyO5iy4PZCOLK9kSFK914iPZr9/i8vnjBD7D?=
+ =?us-ascii?Q?It4d3LuEGVA4doJrG6ZFU1+aqJhnPjBIw653gzUTgRWTxcUixt++VM5OVV6n?=
+ =?us-ascii?Q?LtPxui/ePd3cd8J09bFA82wzUjG/NkbWBTI4kxUVzZybPBznmNKibmSH7D0A?=
+ =?us-ascii?Q?Dybhk8e9BpapcXy6a6toPgLf9XDole8oGQTMIMQMSyBMrPvSFt0X/LjCFOpw?=
+ =?us-ascii?Q?odJgrf2vorC5XwYZpSqqaQwKzo3xAmt5sJDvxABEw7IHV15fzu5GE+MRSJMX?=
+ =?us-ascii?Q?KF5UoGG9xRSYAznYNDKAPutdAOoImuM/XYwg?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(36860700013)(7416014)(376014);DIR:OUT;SFP:1101;
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(7416014)(376014)(82310400026)(36860700013)(1800799024);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jul 2025 18:56:45.2106
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jul 2025 18:56:50.0053
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c426485a-ca37-493e-906d-08ddba635b5e
+X-MS-Exchange-CrossTenant-Network-Message-Id: f3b0f56d-d630-4344-71ca-08ddba635e3c
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BN1PEPF0000467F.namprd03.prod.outlook.com
+	MN1PEPF0000F0E5.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6784
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7544
 
 From: Vlad Dogaru <vdogaru@nvidia.com>
 
-Kernel HWS only uses FDB tables and, as such, creates two lower level
-containers (RTCs) for each matcher: one for RX and one for TX. Allow
-these RTCs to differ in size by converting the size part of the matcher
-attribute to a two element array.
+Track and grow matcher sizes individually for RX and TX RTCs. This
+allows RX-only or TX-only use cases to effectively halve the device
+resources they use.
+
+For testing we used a simple module that inserts 1M RX-only rules and
+measured the number of pages the device requests, and memory usage as
+reported by `free -h`.
+
+			Pages		Memory
+Before this patch:	300k		1.5GiB
+After this patch:	160k		900MiB
 
 Signed-off-by: Vlad Dogaru <vdogaru@nvidia.com>
 Reviewed-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
 Signed-off-by: Mark Bloch <mbloch@nvidia.com>
 ---
- .../mellanox/mlx5/core/steering/hws/bwc.c     |   7 +-
- .../mellanox/mlx5/core/steering/hws/debug.c   |  10 +-
- .../mellanox/mlx5/core/steering/hws/matcher.c | 107 ++++++++++++------
- .../mellanox/mlx5/core/steering/hws/mlx5hws.h |  28 +++--
- 4 files changed, 104 insertions(+), 48 deletions(-)
+ .../mellanox/mlx5/core/steering/hws/bwc.c     | 217 +++++++++++++-----
+ .../mellanox/mlx5/core/steering/hws/bwc.h     |  15 +-
+ 2 files changed, 171 insertions(+), 61 deletions(-)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.c
-index 665e6e285db5..009641e6c874 100644
+index 009641e6c874..516634237cb8 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.c
-@@ -48,7 +48,7 @@ static void hws_bwc_unlock_all_queues(struct mlx5hws_context *ctx)
+@@ -93,12 +93,11 @@ int mlx5hws_bwc_matcher_create_simple(struct mlx5hws_bwc_matcher *bwc_matcher,
  
- static void hws_bwc_matcher_init_attr(struct mlx5hws_bwc_matcher *bwc_matcher,
- 				      u32 priority,
--				      u8 size_log,
-+				      u8 size_log_rx, u8 size_log_tx,
- 				      struct mlx5hws_matcher_attr *attr)
- {
- 	struct mlx5hws_bwc_matcher *first_matcher =
-@@ -62,7 +62,8 @@ static void hws_bwc_matcher_init_attr(struct mlx5hws_bwc_matcher *bwc_matcher,
- 	attr->optimize_flow_src = MLX5HWS_MATCHER_FLOW_SRC_ANY;
- 	attr->insert_mode = MLX5HWS_MATCHER_INSERT_BY_HASH;
- 	attr->distribute_mode = MLX5HWS_MATCHER_DISTRIBUTE_BY_HASH;
--	attr->rule.num_log = size_log;
-+	attr->size[MLX5HWS_MATCHER_SIZE_TYPE_RX].rule.num_log = size_log_rx;
-+	attr->size[MLX5HWS_MATCHER_SIZE_TYPE_TX].rule.num_log = size_log_tx;
- 	attr->resizable = true;
- 	attr->max_num_of_at_attach = MLX5HWS_BWC_MATCHER_ATTACH_AT_NUM;
- 
-@@ -93,6 +94,7 @@ int mlx5hws_bwc_matcher_create_simple(struct mlx5hws_bwc_matcher *bwc_matcher,
  	hws_bwc_matcher_init_attr(bwc_matcher,
  				  priority,
- 				  MLX5HWS_BWC_MATCHER_INIT_SIZE_LOG,
-+				  MLX5HWS_BWC_MATCHER_INIT_SIZE_LOG,
+-				  MLX5HWS_BWC_MATCHER_INIT_SIZE_LOG,
+-				  MLX5HWS_BWC_MATCHER_INIT_SIZE_LOG,
++				  bwc_matcher->rx_size.size_log,
++				  bwc_matcher->tx_size.size_log,
  				  &attr);
  
  	bwc_matcher->priority = priority;
-@@ -696,6 +698,7 @@ static int hws_bwc_matcher_move(struct mlx5hws_bwc_matcher *bwc_matcher)
- 	hws_bwc_matcher_init_attr(bwc_matcher,
- 				  bwc_matcher->priority,
- 				  bwc_matcher->size_log,
-+				  bwc_matcher->size_log,
- 				  &matcher_attr);
+-	bwc_matcher->size_log = MLX5HWS_BWC_MATCHER_INIT_SIZE_LOG;
  
- 	old_matcher = bwc_matcher->matcher;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/debug.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/debug.c
-index f9b75aefcaa7..2ec8cb10139a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/debug.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/debug.c
-@@ -99,17 +99,19 @@ hws_debug_dump_matcher_attr(struct seq_file *f, struct mlx5hws_matcher *matcher)
+ 	bwc_matcher->size_of_at_array = MLX5HWS_BWC_MATCHER_ATTACH_AT_NUM;
+ 	bwc_matcher->at = kcalloc(bwc_matcher->size_of_at_array,
+@@ -150,6 +149,20 @@ int mlx5hws_bwc_matcher_create_simple(struct mlx5hws_bwc_matcher *bwc_matcher,
+ 	return -EINVAL;
+ }
+ 
++static void
++hws_bwc_matcher_init_size_rxtx(struct mlx5hws_bwc_matcher_size *size)
++{
++	size->size_log = MLX5HWS_BWC_MATCHER_INIT_SIZE_LOG;
++	atomic_set(&size->num_of_rules, 0);
++	atomic_set(&size->rehash_required, false);
++}
++
++static void hws_bwc_matcher_init_size(struct mlx5hws_bwc_matcher *bwc_matcher)
++{
++	hws_bwc_matcher_init_size_rxtx(&bwc_matcher->rx_size);
++	hws_bwc_matcher_init_size_rxtx(&bwc_matcher->tx_size);
++}
++
+ struct mlx5hws_bwc_matcher *
+ mlx5hws_bwc_matcher_create(struct mlx5hws_table *table,
+ 			   u32 priority,
+@@ -170,8 +183,7 @@ mlx5hws_bwc_matcher_create(struct mlx5hws_table *table,
+ 	if (!bwc_matcher)
+ 		return NULL;
+ 
+-	atomic_set(&bwc_matcher->num_of_rules, 0);
+-	atomic_set(&bwc_matcher->rehash_required, false);
++	hws_bwc_matcher_init_size(bwc_matcher);
+ 
+ 	/* Check if the required match params can be all matched
+ 	 * in single STE, otherwise complex matcher is needed.
+@@ -221,12 +233,13 @@ int mlx5hws_bwc_matcher_destroy_simple(struct mlx5hws_bwc_matcher *bwc_matcher)
+ 
+ int mlx5hws_bwc_matcher_destroy(struct mlx5hws_bwc_matcher *bwc_matcher)
  {
- 	struct mlx5hws_matcher_attr *attr = &matcher->attr;
+-	u32 num_of_rules = atomic_read(&bwc_matcher->num_of_rules);
++	u32 rx_rules = atomic_read(&bwc_matcher->rx_size.num_of_rules);
++	u32 tx_rules = atomic_read(&bwc_matcher->tx_size.num_of_rules);
  
--	seq_printf(f, "%d,0x%llx,%d,%d,%d,%d,%d,%d,%d,%d\n",
-+	seq_printf(f, "%d,0x%llx,%d,%d,%d,%d,%d,%d,%d,%d,-1,-1,%d,%d\n",
- 		   MLX5HWS_DEBUG_RES_TYPE_MATCHER_ATTR,
- 		   HWS_PTR_TO_ID(matcher),
- 		   attr->priority,
- 		   attr->mode,
--		   attr->table.sz_row_log,
--		   attr->table.sz_col_log,
-+		   attr->size[MLX5HWS_MATCHER_SIZE_TYPE_RX].table.sz_row_log,
-+		   attr->size[MLX5HWS_MATCHER_SIZE_TYPE_RX].table.sz_col_log,
- 		   attr->optimize_using_rule_idx,
- 		   attr->optimize_flow_src,
- 		   attr->insert_mode,
--		   attr->distribute_mode);
-+		   attr->distribute_mode,
-+		   attr->size[MLX5HWS_MATCHER_SIZE_TYPE_TX].table.sz_row_log,
-+		   attr->size[MLX5HWS_MATCHER_SIZE_TYPE_TX].table.sz_col_log);
+-	if (num_of_rules)
++	if (rx_rules || tx_rules)
+ 		mlx5hws_err(bwc_matcher->matcher->tbl->ctx,
+-			    "BWC matcher destroy: matcher still has %d rules\n",
+-			    num_of_rules);
++			    "BWC matcher destroy: matcher still has %u RX and %u TX rules\n",
++			    rx_rules, tx_rules);
+ 
+ 	if (bwc_matcher->complex)
+ 		mlx5hws_bwc_matcher_destroy_complex(bwc_matcher);
+@@ -386,6 +399,16 @@ hws_bwc_rule_destroy_hws_sync(struct mlx5hws_bwc_rule *bwc_rule,
+ 	return 0;
+ }
+ 
++static void hws_bwc_rule_cnt_dec(struct mlx5hws_bwc_rule *bwc_rule)
++{
++	struct mlx5hws_bwc_matcher *bwc_matcher = bwc_rule->bwc_matcher;
++
++	if (!bwc_rule->skip_rx)
++		atomic_dec(&bwc_matcher->rx_size.num_of_rules);
++	if (!bwc_rule->skip_tx)
++		atomic_dec(&bwc_matcher->tx_size.num_of_rules);
++}
++
+ int mlx5hws_bwc_rule_destroy_simple(struct mlx5hws_bwc_rule *bwc_rule)
+ {
+ 	struct mlx5hws_bwc_matcher *bwc_matcher = bwc_rule->bwc_matcher;
+@@ -402,7 +425,7 @@ int mlx5hws_bwc_rule_destroy_simple(struct mlx5hws_bwc_rule *bwc_rule)
+ 	mutex_lock(queue_lock);
+ 
+ 	ret = hws_bwc_rule_destroy_hws_sync(bwc_rule, &attr);
+-	atomic_dec(&bwc_matcher->num_of_rules);
++	hws_bwc_rule_cnt_dec(bwc_rule);
+ 	hws_bwc_rule_list_remove(bwc_rule);
+ 
+ 	mutex_unlock(queue_lock);
+@@ -489,25 +512,27 @@ hws_bwc_rule_update_sync(struct mlx5hws_bwc_rule *bwc_rule,
+ }
+ 
+ static bool
+-hws_bwc_matcher_size_maxed_out(struct mlx5hws_bwc_matcher *bwc_matcher)
++hws_bwc_matcher_size_maxed_out(struct mlx5hws_bwc_matcher *bwc_matcher,
++			       struct mlx5hws_bwc_matcher_size *size)
+ {
+ 	struct mlx5hws_cmd_query_caps *caps = bwc_matcher->matcher->tbl->ctx->caps;
+ 
+ 	/* check the match RTC size */
+-	return (bwc_matcher->size_log + MLX5HWS_MATCHER_ASSURED_MAIN_TBL_DEPTH +
++	return (size->size_log + MLX5HWS_MATCHER_ASSURED_MAIN_TBL_DEPTH +
+ 		MLX5HWS_BWC_MATCHER_SIZE_LOG_STEP) >
+ 	       (caps->ste_alloc_log_max - 1);
+ }
+ 
+ static bool
+ hws_bwc_matcher_rehash_size_needed(struct mlx5hws_bwc_matcher *bwc_matcher,
++				   struct mlx5hws_bwc_matcher_size *size,
+ 				   u32 num_of_rules)
+ {
+-	if (unlikely(hws_bwc_matcher_size_maxed_out(bwc_matcher)))
++	if (unlikely(hws_bwc_matcher_size_maxed_out(bwc_matcher, size)))
+ 		return false;
+ 
+ 	if (unlikely((num_of_rules * 100 / MLX5HWS_BWC_MATCHER_REHASH_PERCENT_TH) >=
+-		     (1UL << bwc_matcher->size_log)))
++		     (1UL << size->size_log)))
+ 		return true;
+ 
+ 	return false;
+@@ -564,20 +589,21 @@ hws_bwc_matcher_extend_at(struct mlx5hws_bwc_matcher *bwc_matcher,
+ }
+ 
+ static int
+-hws_bwc_matcher_extend_size(struct mlx5hws_bwc_matcher *bwc_matcher)
++hws_bwc_matcher_extend_size(struct mlx5hws_bwc_matcher *bwc_matcher,
++			    struct mlx5hws_bwc_matcher_size *size)
+ {
+ 	struct mlx5hws_context *ctx = bwc_matcher->matcher->tbl->ctx;
+ 	struct mlx5hws_cmd_query_caps *caps = ctx->caps;
+ 
+-	if (unlikely(hws_bwc_matcher_size_maxed_out(bwc_matcher))) {
++	if (unlikely(hws_bwc_matcher_size_maxed_out(bwc_matcher, size))) {
+ 		mlx5hws_err(ctx, "Can't resize matcher: depth exceeds limit %d\n",
+ 			    caps->rtc_log_depth_max);
+ 		return -ENOMEM;
+ 	}
+ 
+-	bwc_matcher->size_log =
+-		min(bwc_matcher->size_log + MLX5HWS_BWC_MATCHER_SIZE_LOG_STEP,
+-		    caps->ste_alloc_log_max - MLX5HWS_MATCHER_ASSURED_MAIN_TBL_DEPTH);
++	size->size_log = min(size->size_log + MLX5HWS_BWC_MATCHER_SIZE_LOG_STEP,
++			     caps->ste_alloc_log_max -
++				     MLX5HWS_MATCHER_ASSURED_MAIN_TBL_DEPTH);
  
  	return 0;
  }
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/matcher.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/matcher.c
-index b0fcaf508e06..f3ea09caba2b 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/matcher.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/matcher.c
-@@ -468,12 +468,16 @@ static int hws_matcher_create_rtc(struct mlx5hws_matcher *matcher)
- 	struct mlx5hws_cmd_rtc_create_attr rtc_attr = {0};
- 	struct mlx5hws_match_template *mt = matcher->mt;
- 	struct mlx5hws_context *ctx = matcher->tbl->ctx;
-+	union mlx5hws_matcher_size *size_rx, *size_tx;
- 	struct mlx5hws_table *tbl = matcher->tbl;
- 	u32 obj_id;
+@@ -697,8 +723,8 @@ static int hws_bwc_matcher_move(struct mlx5hws_bwc_matcher *bwc_matcher)
+ 
+ 	hws_bwc_matcher_init_attr(bwc_matcher,
+ 				  bwc_matcher->priority,
+-				  bwc_matcher->size_log,
+-				  bwc_matcher->size_log,
++				  bwc_matcher->rx_size.size_log,
++				  bwc_matcher->tx_size.size_log,
+ 				  &matcher_attr);
+ 
+ 	old_matcher = bwc_matcher->matcher;
+@@ -736,21 +762,39 @@ static int hws_bwc_matcher_move(struct mlx5hws_bwc_matcher *bwc_matcher)
+ static int
+ hws_bwc_matcher_rehash_size(struct mlx5hws_bwc_matcher *bwc_matcher)
+ {
++	bool need_rx_rehash, need_tx_rehash;
  	int ret;
  
--	rtc_attr.log_size = attr->table.sz_row_log;
--	rtc_attr.log_depth = attr->table.sz_col_log;
-+	size_rx = &attr->size[MLX5HWS_MATCHER_SIZE_TYPE_RX];
-+	size_tx = &attr->size[MLX5HWS_MATCHER_SIZE_TYPE_TX];
+-	/* If the current matcher size is already at its max size, we can't
+-	 * do the rehash. Skip it and try adding the rule again - perhaps
+-	 * there was some change.
++	need_rx_rehash = atomic_read(&bwc_matcher->rx_size.rehash_required);
++	need_tx_rehash = atomic_read(&bwc_matcher->tx_size.rehash_required);
 +
-+	rtc_attr.log_size = size_rx->table.sz_row_log;
-+	rtc_attr.log_depth = size_rx->table.sz_col_log;
- 	rtc_attr.is_frst_jumbo = mlx5hws_matcher_mt_is_jumbo(mt);
- 	rtc_attr.is_scnd_range = 0;
- 	rtc_attr.miss_ft_id = matcher->end_ft_id;
-@@ -525,6 +529,8 @@ static int hws_matcher_create_rtc(struct mlx5hws_matcher *matcher)
- 	}
- 
- 	if (tbl->type == MLX5HWS_TABLE_TYPE_FDB) {
-+		rtc_attr.log_size = size_tx->table.sz_row_log;
-+		rtc_attr.log_depth = size_tx->table.sz_col_log;
- 		rtc_attr.ste_base = matcher->match_ste.ste_1_base;
- 		rtc_attr.table_type = mlx5hws_table_get_res_fw_ft_type(tbl->type, true);
- 
-@@ -562,23 +568,33 @@ hws_matcher_check_attr_sz(struct mlx5hws_cmd_query_caps *caps,
- 			  struct mlx5hws_matcher *matcher)
- {
- 	struct mlx5hws_matcher_attr *attr = &matcher->attr;
-+	struct mlx5hws_context *ctx = matcher->tbl->ctx;
-+	union mlx5hws_matcher_size *size;
-+	int i;
- 
--	if (attr->table.sz_col_log > caps->rtc_log_depth_max) {
--		mlx5hws_err(matcher->tbl->ctx, "Matcher depth exceeds limit %d\n",
--			    caps->rtc_log_depth_max);
--		return -EOPNOTSUPP;
--	}
-+	for (i = 0; i < 2; i++) {
-+		size = &attr->size[i];
- 
--	if (attr->table.sz_col_log + attr->table.sz_row_log > caps->ste_alloc_log_max) {
--		mlx5hws_err(matcher->tbl->ctx, "Total matcher size exceeds limit %d\n",
--			    caps->ste_alloc_log_max);
--		return -EOPNOTSUPP;
--	}
-+		if (size->table.sz_col_log > caps->rtc_log_depth_max) {
-+			mlx5hws_err(ctx, "Matcher depth exceeds limit %d\n",
-+				    caps->rtc_log_depth_max);
-+			return -EOPNOTSUPP;
-+		}
- 
--	if (attr->table.sz_col_log + attr->table.sz_row_log < caps->ste_alloc_log_gran) {
--		mlx5hws_err(matcher->tbl->ctx, "Total matcher size below limit %d\n",
--			    caps->ste_alloc_log_gran);
--		return -EOPNOTSUPP;
-+		if (size->table.sz_col_log + size->table.sz_row_log >
-+		    caps->ste_alloc_log_max) {
-+			mlx5hws_err(ctx,
-+				    "Total matcher size exceeds limit %d\n",
-+				    caps->ste_alloc_log_max);
-+			return -EOPNOTSUPP;
-+		}
-+
-+		if (size->table.sz_col_log + size->table.sz_row_log <
-+		    caps->ste_alloc_log_gran) {
-+			mlx5hws_err(ctx, "Total matcher size below limit %d\n",
-+				    caps->ste_alloc_log_gran);
-+			return -EOPNOTSUPP;
-+		}
- 	}
- 
- 	return 0;
-@@ -666,6 +682,7 @@ static int hws_matcher_bind_mt(struct mlx5hws_matcher *matcher)
- {
- 	struct mlx5hws_cmd_ste_create_attr ste_attr = {};
- 	struct mlx5hws_context *ctx = matcher->tbl->ctx;
-+	union mlx5hws_matcher_size *size;
- 	int ret;
- 
- 	/* Calculate match, range and hash definers */
-@@ -682,11 +699,11 @@ static int hws_matcher_bind_mt(struct mlx5hws_matcher *matcher)
- 
- 	/* Create an STE range each for RX and TX. */
- 	ste_attr.table_type = FS_FT_FDB_RX;
-+	size = &matcher->attr.size[MLX5HWS_MATCHER_SIZE_TYPE_RX];
- 	ste_attr.log_obj_range =
- 		matcher->attr.optimize_flow_src ==
--				MLX5HWS_MATCHER_FLOW_SRC_VPORT ?
--				0 : matcher->attr.table.sz_col_log +
--				    matcher->attr.table.sz_row_log;
-+			MLX5HWS_MATCHER_FLOW_SRC_VPORT ?
-+			0 : size->table.sz_col_log + size->table.sz_row_log;
- 
- 	ret = mlx5hws_cmd_ste_create(ctx->mdev, &ste_attr,
- 				     &matcher->match_ste.ste_0_base);
-@@ -696,11 +713,11 @@ static int hws_matcher_bind_mt(struct mlx5hws_matcher *matcher)
- 	}
- 
- 	ste_attr.table_type = FS_FT_FDB_TX;
-+	size = &matcher->attr.size[MLX5HWS_MATCHER_SIZE_TYPE_TX];
- 	ste_attr.log_obj_range =
- 		matcher->attr.optimize_flow_src ==
--				MLX5HWS_MATCHER_FLOW_SRC_WIRE ?
--				0 : matcher->attr.table.sz_col_log +
--				    matcher->attr.table.sz_row_log;
-+			MLX5HWS_MATCHER_FLOW_SRC_WIRE ?
-+			0 : size->table.sz_col_log + size->table.sz_row_log;
- 
- 	ret = mlx5hws_cmd_ste_create(ctx->mdev, &ste_attr,
- 				     &matcher->match_ste.ste_1_base);
-@@ -735,6 +752,10 @@ hws_matcher_validate_insert_mode(struct mlx5hws_cmd_query_caps *caps,
- {
- 	struct mlx5hws_matcher_attr *attr = &matcher->attr;
- 	struct mlx5hws_context *ctx = matcher->tbl->ctx;
-+	union mlx5hws_matcher_size *size_rx, *size_tx;
-+
-+	size_rx = &matcher->attr.size[MLX5HWS_MATCHER_SIZE_TYPE_RX];
-+	size_tx = &matcher->attr.size[MLX5HWS_MATCHER_SIZE_TYPE_TX];
- 
- 	switch (attr->insert_mode) {
- 	case MLX5HWS_MATCHER_INSERT_BY_HASH:
-@@ -745,7 +766,7 @@ hws_matcher_validate_insert_mode(struct mlx5hws_cmd_query_caps *caps,
- 		break;
- 
- 	case MLX5HWS_MATCHER_INSERT_BY_INDEX:
--		if (attr->table.sz_col_log) {
-+		if (size_rx->table.sz_col_log || size_tx->table.sz_col_log) {
- 			mlx5hws_err(ctx, "Matcher with INSERT_BY_INDEX supports only Nx1 table size\n");
- 			return -EOPNOTSUPP;
- 		}
-@@ -765,7 +786,10 @@ hws_matcher_validate_insert_mode(struct mlx5hws_cmd_query_caps *caps,
- 				return -EOPNOTSUPP;
- 			}
- 
--			if (attr->table.sz_row_log > MLX5_IFC_RTC_LINEAR_LOOKUP_TBL_LOG_MAX) {
-+			if (size_rx->table.sz_row_log >
-+				MLX5_IFC_RTC_LINEAR_LOOKUP_TBL_LOG_MAX ||
-+			    size_tx->table.sz_row_log >
-+				MLX5_IFC_RTC_LINEAR_LOOKUP_TBL_LOG_MAX) {
- 				mlx5hws_err(ctx, "Matcher with linear distribute: rows exceed limit %d",
- 					    MLX5_IFC_RTC_LINEAR_LOOKUP_TBL_LOG_MAX);
- 				return -EOPNOTSUPP;
-@@ -789,6 +813,10 @@ hws_matcher_process_attr(struct mlx5hws_cmd_query_caps *caps,
- 			 struct mlx5hws_matcher *matcher)
- {
- 	struct mlx5hws_matcher_attr *attr = &matcher->attr;
-+	union mlx5hws_matcher_size *size_rx, *size_tx;
-+
-+	size_rx = &attr->size[MLX5HWS_MATCHER_SIZE_TYPE_RX];
-+	size_tx = &attr->size[MLX5HWS_MATCHER_SIZE_TYPE_TX];
- 
- 	if (hws_matcher_validate_insert_mode(caps, matcher))
- 		return -EOPNOTSUPP;
-@@ -800,8 +828,12 @@ hws_matcher_process_attr(struct mlx5hws_cmd_query_caps *caps,
- 
- 	/* Convert number of rules to the required depth */
- 	if (attr->mode == MLX5HWS_MATCHER_RESOURCE_MODE_RULE &&
--	    attr->insert_mode == MLX5HWS_MATCHER_INSERT_BY_HASH)
--		attr->table.sz_col_log = hws_matcher_rules_to_tbl_depth(attr->rule.num_log);
-+	    attr->insert_mode == MLX5HWS_MATCHER_INSERT_BY_HASH) {
-+		size_rx->table.sz_col_log =
-+			hws_matcher_rules_to_tbl_depth(size_rx->rule.num_log);
-+		size_tx->table.sz_col_log =
-+			hws_matcher_rules_to_tbl_depth(size_tx->rule.num_log);
-+	}
- 
- 	matcher->flags |= attr->resizable ? MLX5HWS_MATCHER_FLAGS_RESIZABLE : 0;
- 	matcher->flags |= attr->isolated_matcher_end_ft_id ?
-@@ -862,14 +894,19 @@ static int
- hws_matcher_create_col_matcher(struct mlx5hws_matcher *matcher)
- {
- 	struct mlx5hws_context *ctx = matcher->tbl->ctx;
-+	union mlx5hws_matcher_size *size_rx, *size_tx;
- 	struct mlx5hws_matcher *col_matcher;
--	int ret;
-+	int i, ret;
-+
-+	size_rx = &matcher->attr.size[MLX5HWS_MATCHER_SIZE_TYPE_RX];
-+	size_tx = &matcher->attr.size[MLX5HWS_MATCHER_SIZE_TYPE_TX];
- 
- 	if (matcher->attr.mode != MLX5HWS_MATCHER_RESOURCE_MODE_RULE ||
- 	    matcher->attr.insert_mode == MLX5HWS_MATCHER_INSERT_BY_INDEX)
++	/* It is possible that another rule has already performed rehash.
++	 * Need to check again if we really need rehash.
+ 	 */
+-	if (hws_bwc_matcher_size_maxed_out(bwc_matcher))
++	if (!need_rx_rehash && !need_tx_rehash)
  		return 0;
  
--	if (!hws_matcher_requires_col_tbl(matcher->attr.rule.num_log))
-+	if (!hws_matcher_requires_col_tbl(size_rx->rule.num_log) &&
-+	    !hws_matcher_requires_col_tbl(size_tx->rule.num_log))
+-	/* It is possible that other rule has already performed rehash.
+-	 * Need to check again if we really need rehash.
++	/* If the current matcher RX/TX size is already at its max size,
++	 * it can't be rehashed.
+ 	 */
+-	if (!atomic_read(&bwc_matcher->rehash_required) &&
+-	    !hws_bwc_matcher_rehash_size_needed(bwc_matcher,
+-						atomic_read(&bwc_matcher->num_of_rules)))
++	if (need_rx_rehash &&
++	    hws_bwc_matcher_size_maxed_out(bwc_matcher,
++					   &bwc_matcher->rx_size)) {
++		atomic_set(&bwc_matcher->rx_size.rehash_required, false);
++		need_rx_rehash = false;
++	}
++	if (need_tx_rehash &&
++	    hws_bwc_matcher_size_maxed_out(bwc_matcher,
++					   &bwc_matcher->tx_size)) {
++		atomic_set(&bwc_matcher->tx_size.rehash_required, false);
++		need_tx_rehash = false;
++	}
++
++	/* If both RX and TX rehash flags are now off, it means that whatever
++	 * we wanted to rehash is now at its max size - no rehash can be done.
++	 * Return and try adding the rule again - perhaps there was some change.
++	 */
++	if (!need_rx_rehash && !need_tx_rehash)
  		return 0;
  
- 	col_matcher = kzalloc(sizeof(*matcher), GFP_KERNEL);
-@@ -886,10 +923,16 @@ hws_matcher_create_col_matcher(struct mlx5hws_matcher *matcher)
- 	col_matcher->flags |= MLX5HWS_MATCHER_FLAGS_COLLISION;
- 	col_matcher->attr.mode = MLX5HWS_MATCHER_RESOURCE_MODE_HTABLE;
- 	col_matcher->attr.optimize_flow_src = matcher->attr.optimize_flow_src;
--	col_matcher->attr.table.sz_row_log = matcher->attr.rule.num_log;
--	col_matcher->attr.table.sz_col_log = MLX5HWS_MATCHER_ASSURED_COL_TBL_DEPTH;
--	if (col_matcher->attr.table.sz_row_log > MLX5HWS_MATCHER_ASSURED_ROW_RATIO)
--		col_matcher->attr.table.sz_row_log -= MLX5HWS_MATCHER_ASSURED_ROW_RATIO;
-+	for (i = 0; i < 2; i++) {
-+		union mlx5hws_matcher_size *dst = &col_matcher->attr.size[i];
-+		union mlx5hws_matcher_size *src = &matcher->attr.size[i];
-+
-+		dst->table.sz_row_log = src->rule.num_log;
-+		dst->table.sz_col_log = MLX5HWS_MATCHER_ASSURED_COL_TBL_DEPTH;
-+		if (dst->table.sz_row_log > MLX5HWS_MATCHER_ASSURED_ROW_RATIO)
-+			dst->table.sz_row_log -=
-+				MLX5HWS_MATCHER_ASSURED_ROW_RATIO;
+ 	/* Now we're done all the checking - do the rehash:
+@@ -759,12 +803,22 @@ hws_bwc_matcher_rehash_size(struct mlx5hws_bwc_matcher *bwc_matcher)
+ 	 *  - move all the rules to the new matcher
+ 	 *  - destroy the old matcher
+ 	 */
++	atomic_set(&bwc_matcher->rx_size.rehash_required, false);
++	atomic_set(&bwc_matcher->tx_size.rehash_required, false);
+ 
+-	atomic_set(&bwc_matcher->rehash_required, false);
++	if (need_rx_rehash) {
++		ret = hws_bwc_matcher_extend_size(bwc_matcher,
++						  &bwc_matcher->rx_size);
++		if (ret)
++			return ret;
 +	}
  
- 	col_matcher->attr.max_num_of_at_attach = matcher->attr.max_num_of_at_attach;
- 	col_matcher->attr.isolated_matcher_end_ft_id =
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/mlx5hws.h b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/mlx5hws.h
-index a1295a311b70..59c14745ed0c 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/mlx5hws.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/mlx5hws.h
-@@ -93,6 +93,23 @@ enum mlx5hws_matcher_distribute_mode {
- 	MLX5HWS_MATCHER_DISTRIBUTE_BY_LINEAR = 0x1,
+-	ret = hws_bwc_matcher_extend_size(bwc_matcher);
+-	if (ret)
+-		return ret;
++	if (need_tx_rehash) {
++		ret = hws_bwc_matcher_extend_size(bwc_matcher,
++						  &bwc_matcher->tx_size);
++		if (ret)
++			return ret;
++	}
+ 
+ 	return hws_bwc_matcher_move(bwc_matcher);
+ }
+@@ -816,6 +870,62 @@ static int hws_bwc_rule_get_at_idx(struct mlx5hws_bwc_rule *bwc_rule,
+ 	return at_idx;
+ }
+ 
++static void hws_bwc_rule_cnt_inc_rxtx(struct mlx5hws_bwc_rule *bwc_rule,
++				      struct mlx5hws_bwc_matcher_size *size)
++{
++	u32 num_of_rules = atomic_inc_return(&size->num_of_rules);
++
++	if (unlikely(hws_bwc_matcher_rehash_size_needed(bwc_rule->bwc_matcher,
++							size, num_of_rules)))
++		atomic_set(&size->rehash_required, true);
++}
++
++static void hws_bwc_rule_cnt_inc(struct mlx5hws_bwc_rule *bwc_rule)
++{
++	struct mlx5hws_bwc_matcher *bwc_matcher = bwc_rule->bwc_matcher;
++
++	if (!bwc_rule->skip_rx)
++		hws_bwc_rule_cnt_inc_rxtx(bwc_rule, &bwc_matcher->rx_size);
++	if (!bwc_rule->skip_tx)
++		hws_bwc_rule_cnt_inc_rxtx(bwc_rule, &bwc_matcher->tx_size);
++}
++
++static int hws_bwc_rule_cnt_inc_with_rehash(struct mlx5hws_bwc_rule *bwc_rule,
++					    u16 bwc_queue_idx)
++{
++	struct mlx5hws_bwc_matcher *bwc_matcher = bwc_rule->bwc_matcher;
++	struct mlx5hws_context *ctx = bwc_matcher->matcher->tbl->ctx;
++	struct mutex *queue_lock; /* Protect the queue */
++	int ret;
++
++	hws_bwc_rule_cnt_inc(bwc_rule);
++
++	if (!atomic_read(&bwc_matcher->rx_size.rehash_required) &&
++	    !atomic_read(&bwc_matcher->tx_size.rehash_required))
++		return 0;
++
++	queue_lock = hws_bwc_get_queue_lock(ctx, bwc_queue_idx);
++	mutex_unlock(queue_lock);
++
++	hws_bwc_lock_all_queues(ctx);
++	ret = hws_bwc_matcher_rehash_size(bwc_matcher);
++	hws_bwc_unlock_all_queues(ctx);
++
++	mutex_lock(queue_lock);
++
++	if (likely(!ret))
++		return 0;
++
++	/* Failed to rehash. Print a diagnostic and rollback the counters. */
++	mlx5hws_err(ctx,
++		    "BWC rule insertion: rehash to sizes [%d, %d] failed (%d)\n",
++		    bwc_matcher->rx_size.size_log,
++		    bwc_matcher->tx_size.size_log, ret);
++	hws_bwc_rule_cnt_dec(bwc_rule);
++
++	return ret;
++}
++
+ int mlx5hws_bwc_rule_create_simple(struct mlx5hws_bwc_rule *bwc_rule,
+ 				   u32 *match_param,
+ 				   struct mlx5hws_rule_action rule_actions[],
+@@ -826,7 +936,6 @@ int mlx5hws_bwc_rule_create_simple(struct mlx5hws_bwc_rule *bwc_rule,
+ 	struct mlx5hws_context *ctx = bwc_matcher->matcher->tbl->ctx;
+ 	struct mlx5hws_rule_attr rule_attr;
+ 	struct mutex *queue_lock; /* Protect the queue */
+-	u32 num_of_rules;
+ 	int ret = 0;
+ 	int at_idx;
+ 
+@@ -844,26 +953,10 @@ int mlx5hws_bwc_rule_create_simple(struct mlx5hws_bwc_rule *bwc_rule,
+ 		return -EINVAL;
+ 	}
+ 
+-	/* check if number of rules require rehash */
+-	num_of_rules = atomic_inc_return(&bwc_matcher->num_of_rules);
+-
+-	if (unlikely(hws_bwc_matcher_rehash_size_needed(bwc_matcher, num_of_rules))) {
++	ret = hws_bwc_rule_cnt_inc_with_rehash(bwc_rule, bwc_queue_idx);
++	if (unlikely(ret)) {
+ 		mutex_unlock(queue_lock);
+-
+-		hws_bwc_lock_all_queues(ctx);
+-		ret = hws_bwc_matcher_rehash_size(bwc_matcher);
+-		hws_bwc_unlock_all_queues(ctx);
+-
+-		if (ret) {
+-			mlx5hws_err(ctx, "BWC rule insertion: rehash size [%d -> %d] failed (%d)\n",
+-				    bwc_matcher->size_log - MLX5HWS_BWC_MATCHER_SIZE_LOG_STEP,
+-				    bwc_matcher->size_log,
+-				    ret);
+-			atomic_dec(&bwc_matcher->num_of_rules);
+-			return ret;
+-		}
+-
+-		mutex_lock(queue_lock);
++		return ret;
+ 	}
+ 
+ 	ret = hws_bwc_rule_create_sync(bwc_rule,
+@@ -881,8 +974,11 @@ int mlx5hws_bwc_rule_create_simple(struct mlx5hws_bwc_rule *bwc_rule,
+ 	 * It could be because there was collision, or some other problem.
+ 	 * Try rehash by size and insert rule again - last chance.
+ 	 */
++	if (!bwc_rule->skip_rx)
++		atomic_set(&bwc_matcher->rx_size.rehash_required, true);
++	if (!bwc_rule->skip_tx)
++		atomic_set(&bwc_matcher->tx_size.rehash_required, true);
+ 
+-	atomic_set(&bwc_matcher->rehash_required, true);
+ 	mutex_unlock(queue_lock);
+ 
+ 	hws_bwc_lock_all_queues(ctx);
+@@ -891,7 +987,7 @@ int mlx5hws_bwc_rule_create_simple(struct mlx5hws_bwc_rule *bwc_rule,
+ 
+ 	if (ret) {
+ 		mlx5hws_err(ctx, "BWC rule insertion: rehash failed (%d)\n", ret);
+-		atomic_dec(&bwc_matcher->num_of_rules);
++		hws_bwc_rule_cnt_dec(bwc_rule);
+ 		return ret;
+ 	}
+ 
+@@ -907,7 +1003,7 @@ int mlx5hws_bwc_rule_create_simple(struct mlx5hws_bwc_rule *bwc_rule,
+ 	if (unlikely(ret)) {
+ 		mutex_unlock(queue_lock);
+ 		mlx5hws_err(ctx, "BWC rule insertion failed (%d)\n", ret);
+-		atomic_dec(&bwc_matcher->num_of_rules);
++		hws_bwc_rule_cnt_dec(bwc_rule);
+ 		return ret;
+ 	}
+ 
+@@ -937,6 +1033,10 @@ mlx5hws_bwc_rule_create(struct mlx5hws_bwc_matcher *bwc_matcher,
+ 	if (unlikely(!bwc_rule))
+ 		return NULL;
+ 
++	bwc_rule->flow_source = flow_source;
++	mlx5hws_rule_skip(bwc_matcher->matcher, flow_source,
++			  &bwc_rule->skip_rx, &bwc_rule->skip_tx);
++
+ 	bwc_queue_idx = hws_bwc_gen_queue_idx(ctx);
+ 
+ 	if (bwc_matcher->complex)
+@@ -972,7 +1072,8 @@ hws_bwc_rule_action_update(struct mlx5hws_bwc_rule *bwc_rule,
+ 
+ 	idx = bwc_rule->bwc_queue_idx;
+ 
+-	mlx5hws_bwc_rule_fill_attr(bwc_matcher, idx, 0, &rule_attr);
++	mlx5hws_bwc_rule_fill_attr(bwc_matcher, idx, bwc_rule->flow_source,
++				   &rule_attr);
+ 	queue_lock = hws_bwc_get_queue_lock(ctx, idx);
+ 
+ 	mutex_lock(queue_lock);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.h b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.h
+index d21fc247a510..af391d70c14f 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/bwc.h
+@@ -19,6 +19,13 @@
+ #define MLX5HWS_BWC_POLLING_TIMEOUT 60
+ 
+ struct mlx5hws_bwc_matcher_complex_data;
++
++struct mlx5hws_bwc_matcher_size {
++	u8 size_log;
++	atomic_t num_of_rules;
++	atomic_t rehash_required;
++};
++
+ struct mlx5hws_bwc_matcher {
+ 	struct mlx5hws_matcher *matcher;
+ 	struct mlx5hws_match_template *mt;
+@@ -27,10 +34,9 @@ struct mlx5hws_bwc_matcher {
+ 	struct mlx5hws_bwc_matcher *complex_first_bwc_matcher;
+ 	u8 num_of_at;
+ 	u8 size_of_at_array;
+-	u8 size_log;
+ 	u32 priority;
+-	atomic_t num_of_rules;
+-	atomic_t rehash_required;
++	struct mlx5hws_bwc_matcher_size rx_size;
++	struct mlx5hws_bwc_matcher_size tx_size;
+ 	struct list_head *rules;
  };
  
-+enum mlx5hws_matcher_size_type {
-+	MLX5HWS_MATCHER_SIZE_TYPE_RX,
-+	MLX5HWS_MATCHER_SIZE_TYPE_TX,
-+	MLX5HWS_MATCHER_SIZE_TYPE_MAX,
-+};
-+
-+union mlx5hws_matcher_size {
-+	struct {
-+		u8 sz_row_log;
-+		u8 sz_col_log;
-+	} table;
-+
-+	struct {
-+		u8 num_log;
-+	} rule;
-+};
-+
- struct mlx5hws_matcher_attr {
- 	/* Processing priority inside table */
- 	u32 priority;
-@@ -107,16 +124,7 @@ struct mlx5hws_matcher_attr {
- 	enum mlx5hws_matcher_distribute_mode distribute_mode;
- 	/* Define whether the created matcher supports resizing into a bigger matcher */
- 	bool resizable;
--	union {
--		struct {
--			u8 sz_row_log;
--			u8 sz_col_log;
--		} table;
--
--		struct {
--			u8 num_log;
--		} rule;
--	};
-+	union mlx5hws_matcher_size size[MLX5HWS_MATCHER_SIZE_TYPE_MAX];
- 	/* Optional AT attach configuration - Max number of additional AT */
- 	u8 max_num_of_at_attach;
- 	/* Optional end FT (miss FT ID) for match RTC (for isolated matcher) */
+@@ -39,7 +45,10 @@ struct mlx5hws_bwc_rule {
+ 	struct mlx5hws_rule *rule;
+ 	struct mlx5hws_bwc_rule *isolated_bwc_rule;
+ 	struct mlx5hws_bwc_complex_rule_hash_node *complex_hash_node;
++	u32 flow_source;
+ 	u16 bwc_queue_idx;
++	bool skip_rx;
++	bool skip_tx;
+ 	struct list_head list_node;
+ };
+ 
 -- 
 2.34.1
 
