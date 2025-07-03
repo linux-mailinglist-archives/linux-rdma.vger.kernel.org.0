@@ -1,106 +1,119 @@
-Return-Path: <linux-rdma+bounces-11869-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11870-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 904C2AF75A2
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jul 2025 15:29:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2002AF7ED1
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jul 2025 19:27:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2EC21C81C6D
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jul 2025 13:29:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5796A1C46EDE
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Jul 2025 17:27:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88ADE2D4B75;
-	Thu,  3 Jul 2025 13:29:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEBC3288C9C;
+	Thu,  3 Jul 2025 17:26:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dqrVxygz"
+	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="Gvub6eNy"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EEC718DB1A;
-	Thu,  3 Jul 2025 13:29:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31F5D288C8E
+	for <linux-rdma@vger.kernel.org>; Thu,  3 Jul 2025 17:26:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751549370; cv=none; b=BUPPfC4vL/LUrnGD4CLsOjtu/ibtTlU9P3ufGf3rhV+g07cPBbiOYvO/HAL7A+gIF0Nht2N1tZlmOWT/eWuk1KLiOjH5P/V0QlTz5aIrjTw9RqAkbn+lB4K8n+CaP4ASSnKZaavLBdK5VhIBAVrMNn0XyI/AWjcSOGDoDDu4lw8=
+	t=1751563606; cv=none; b=Tkf7TfPF0mpAWnqMWs2R5Aun954SvdemwG/0LZM0cZddfqpOHJ5xla1+CXYctAD7P8pFd0yL00nYYGBev1+La2FtHxg2DSkIjyCAG/wBrXKIybFI7Cvtqu77W5+F2InA3IUJmf+ulMA/exmDmzpBfGsY5XU//tleED+utYreDuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751549370; c=relaxed/simple;
-	bh=mE7KxLntyokwKS18EvuW2I0xC9Lqd58vJ5T1ZYoF/Gg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L6pK6MjBJ5OR6hUBglhLaDh8TJx53giCGz3kLP4UcA7dX+D34+UewuPBZFCfPmbyLdJnPVgdrfSoLQCkihoz/QMpXAZ4lvKux5T3oWpilmK3HqdV7cyeEscUQwfLQpkCHZmYg1e2mWj05i06XMfQfp88pCU32SIqYR0FdEPB8qM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dqrVxygz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4601C4CEE3;
-	Thu,  3 Jul 2025 13:29:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751549369;
-	bh=mE7KxLntyokwKS18EvuW2I0xC9Lqd58vJ5T1ZYoF/Gg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=dqrVxygzJn9L13hv02/ZfP+LcmYFGietL2GWQ3HobiiKUzzGrIC6Yp7g8wzbTCLZ7
-	 Kt1D9W8NX+EFwtyCARdizDjCQk+CMRqA6xQCudmWzEwraA+IfCEIZdL8NEkPL03QlY
-	 VV2QVhqYiwvadcPT7EZPqtFG5CXr2rww2zL00V9hxbq4Ca2GKILgeJ6/mABoJ7o1uC
-	 9elBCeiSi0WlBfacIUn4+ztPTQTW4c3BxsFxlr5oHiphUiJBeZug+0hyC22D6mQufZ
-	 2qJpGV39IgB189+jkIx9bC3yjuUDkhAidwIxn9SS1QZH2TaEJwYf1ZiuD32/IvM4OB
-	 pQV9hv5gd+wgQ==
-Message-ID: <27363482-efa5-49bf-94e4-6d93a662ecaa@kernel.org>
-Date: Thu, 3 Jul 2025 15:29:19 +0200
+	s=arc-20240116; t=1751563606; c=relaxed/simple;
+	bh=lTjFmTektsvhaNYZJWaAaII/0KyhBqDEJb/cGnc4jKk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=q2WkENkDEBxR73Oc57H/tU2t/9t+j8PSl3N2IEVhyhQj3RSRZ1/jnlOJRsz2yAO3nscyvMChQeMUNNhSm9ZH0ZRXLANHVGtQBo5ZY/ntqkScy+87EbV+/wgobogV7RcPde6hrQRm7eOx/y6Pz4TgblPROEPpBj+EtwkF4onmByI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=Gvub6eNy; arc=none smtp.client-ip=144.76.82.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+	s=42; h=Message-Id:Date:Cc:To:From;
+	bh=Tmf9aGoW6DPkvpnNmK7IPmq1OTaQgNk6b0qaASJMNzY=; b=Gvub6eNy+daP/dVOugtVE1AGyl
+	bbLjIjIPubfov7PSFDyxiBQmSD8ndUKyjkFH7au2fqQ6dVgJw+b3RhHBgVi+vdF//U02PtYqUuU1l
+	5+QyCanGoJhrbC4E84HobIYxwgB/lKk9g+MdilmZGNENEpED/WhhKnvJzzKo1zA4eSml27hU1Bf01
+	QcGAvaqut7ozUVNmJ2l613uQwQCVNlpkTw+sLM9W/XXr17McZHBgfW/qVHOLzR6+9bvZJ/89kL8TT
+	7CBXRTOn5WyvibiXUBXJhOwARsQxJJ0Ruajp2v+A+o2aX4MnxSeHCgp3Gi6RoCv/5S8V3Psuld2Kc
+	uNkZyu/PGSRP3cQyB0xeAW8wywYSdl9QV25v2nntm1Un2mOep7RS4VjEbbu4kGjBNlt2Sy+f8pJoq
+	hpX0bXUjQdzDp8ULlRJiUJ9SOutWa8tTH5VaKgzRdGxXVczNrKvQ712vdq1XxPqy5mv9J5RyXAGG5
+	sMhDqYA/AnPdNO+s6I3mQPGx;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__CHACHA20_POLY1305:256)
+	(Exim)
+	id 1uXNhp-00Dp24-1P;
+	Thu, 03 Jul 2025 17:26:41 +0000
+From: Stefan Metzmacher <metze@samba.org>
+To: linux-rdma@vger.kernel.org
+Cc: metze@samba.org,
+	Bernard Metzler <bmt@zurich.ibm.com>
+Subject: [PATCH 0/8] RDMA/siw: [re-]introduce module parameters and add MPA V1
+Date: Thu,  3 Jul 2025 19:26:11 +0200
+Message-Id: <cover.1751561826.git.metze@samba.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v8 0/5] Split netmem from struct page
-To: Byungchul Park <byungchul@sk.com>, willy@infradead.org,
- netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- kernel_team@skhynix.com, kuba@kernel.org, almasrymina@google.com,
- ilias.apalodimas@linaro.org, harry.yoo@oracle.com,
- akpm@linux-foundation.org, davem@davemloft.net, john.fastabend@gmail.com,
- andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com,
- tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
- saeedm@nvidia.com, leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
- david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
- vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com,
- horms@kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
- vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
- jackmanb@google.com
-References: <20250702053256.4594-1-byungchul@sk.com>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <20250702053256.4594-1-byungchul@sk.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+While working on smbdirect cleanup I'm using siw.ko for
+testing against Windows using Chelsio T404-BT (only supporting MPA V1)
+and T520-BT (supporting MPA V2) cards.
 
-On 02/07/2025 07.32, Byungchul Park wrote:
-> Hi all,
-> 
-> In this version, I'm posting non-controversial patches first since there
-> are pending works that should be based on this series so that those can
-> be started shortly.  I will post the rest later.
-> 
-> The MM subsystem is trying to reduce struct page to a single pointer.
-> The first step towards that is splitting struct page by its individual
-> users, as has already been done with folio and slab.  This patchset does
-> that for netmem which is used for page pools.
-> 
-[...]
-> 
-> Byungchul Park (5):
->    page_pool: rename page_pool_return_page() to page_pool_return_netmem()
->    page_pool: rename __page_pool_release_page_dma() to
->      __page_pool_release_netmem_dma()
->    page_pool: rename __page_pool_alloc_pages_slow() to
->      __page_pool_alloc_netmems_slow()
->    netmem: use _Generic to cover const casting for page_to_netmem()
->    page_pool: make page_pool_get_dma_addr() just wrap
->      page_pool_get_dma_addr_netmem()
-> 
->   include/net/netmem.h            |  7 +++----
->   include/net/page_pool/helpers.h |  7 +------
->   net/core/page_pool.c            | 36 ++++++++++++++++-----------------
->   3 files changed, 22 insertions(+), 28 deletions(-)
+Up to now I used old patches to add MPA V1 support
+to siw.ko and compiled against the running kernel
+each time. I don't want to do that forever, so
+I re-introduced module parameters in order to
+avoid patching and compiling.
 
-Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
+For my testing I'm using something like this:
+
+  echo 1 > /sys/module/siw/parameters/mpa_crc_required
+  echo 1 > /sys/module/siw/parameters/mpa_crc_strict
+  echo 0 > /sys/module/siw/parameters/mpa_rdma_write_rtr
+  echo 1 > /sys/module/siw/parameters/mpa_peer_to_peer
+
+  echo 1 > /sys/module/siw/parameters/mpa_version
+  rdma link add siw_v1_eth0 type siw netdev eth0
+
+  echo 2 > /sys/module/siw/parameters/mpa_version
+  rdma link add siw_v2_eth1 type siw netdev eth1
+
+The global parameters are copied at 'rdma link add' time
+and will stay as is for the lifetime of the specific device.
+
+So I can testing against the T520-BT card using siw_v2_eth1
+and against the T404-BT card using siw_v1_eth0.
+
+It would be great if this can go upstream.
+
+Stefan Metzmacher (8):
+  RDMA/siw: make mpa_version = MPA_REVISION_2 const
+  RDMA/siw: remove unused loopback_enabled = true
+  RDMA/siw: add and remember siw_device_options per device.
+  RDMA/siw: make use of sdev->options.* and avoid globals
+  RDMA/siw: combine global options into siw_default_options
+  RDMA/siw: move rtr_type to siw_device_options
+  RDMA/siw: [re-]introduce module parameters to alter the behavior at
+    runtime
+  RDMA/siw: add support for MPA V1 and IRD/ORD negotiation based on
+    [MS-SMBD]
+
+ drivers/infiniband/sw/siw/iwarp.h     |   8 +
+ drivers/infiniband/sw/siw/siw.h       |  21 +-
+ drivers/infiniband/sw/siw/siw_cm.c    | 268 +++++++++++++++++++++-----
+ drivers/infiniband/sw/siw/siw_cm.h    |   2 +
+ drivers/infiniband/sw/siw/siw_main.c  | 173 ++++++++++++++---
+ drivers/infiniband/sw/siw/siw_qp_tx.c |   3 +-
+ drivers/infiniband/sw/siw/siw_verbs.c |   2 +-
+ 7 files changed, 395 insertions(+), 82 deletions(-)
+
+-- 
+2.34.1
+
 
