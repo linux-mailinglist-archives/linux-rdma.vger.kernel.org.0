@@ -1,81 +1,88 @@
-Return-Path: <linux-rdma+bounces-11909-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11910-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AD56AFA37C
-	for <lists+linux-rdma@lfdr.de>; Sun,  6 Jul 2025 09:37:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFD70AFA37D
+	for <lists+linux-rdma@lfdr.de>; Sun,  6 Jul 2025 09:38:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B75A6189A572
-	for <lists+linux-rdma@lfdr.de>; Sun,  6 Jul 2025 07:37:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E4CF16B8CA
+	for <lists+linux-rdma@lfdr.de>; Sun,  6 Jul 2025 07:38:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6501219DFAB;
-	Sun,  6 Jul 2025 07:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A266D1CF5C6;
+	Sun,  6 Jul 2025 07:38:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qELWBM7C"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UaKADS8I"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2503343159
-	for <linux-rdma@vger.kernel.org>; Sun,  6 Jul 2025 07:37:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 635B71CAA6C
+	for <linux-rdma@vger.kernel.org>; Sun,  6 Jul 2025 07:38:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751787456; cv=none; b=mhoCWIGY6JNuHpLY0UTn6dOAe99wkLA/MEdjdcK5CUtRG26asyqSWdU0U+3SYbPIkTe9BJF4KVgFincNkZoh47y1KPZXg8H0/3WXazhBCmWT1AgWFgsfv060hBPhbhvhoS2Vo28uF6Fo95s9Z5a54GKZOPq6UZvU56dl/jW+c9M=
+	t=1751787484; cv=none; b=Sl3wEooPdd5r11iBV6wIRiD46qa/aSgp6TTuWhiDVjKc2datSxmJvWEI+03kdAEPGQuXH8oA1uk7Qpgk+1NwZWkWU7mYgx7w+6U8GiHe1TJtot7r7K9UCp8uY0pUWMBWKi3x0737JhkPwk0VpXM5FqWip29eZH48Q+pOxM/Y/V4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751787456; c=relaxed/simple;
-	bh=GtptPjErZW/0ydkdlaJujyJcdrgTujs+pGprdKSBFGo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OyiHxZiHuBL0vWs9LcnCBDP965CK75DjTEoBIzLlvrXk+xwJAbUrubVEfydZYESuFPv+InqNIGGwP4eda//jInSuet02c1RRxIXdzyyp3u6wpYyNEzNk3X1tlP8Wz9YcybsTtPBXf0/IlyFBEQzYo6L/NolEfkzhYd53DP20/z8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qELWBM7C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEA3DC4CEED;
-	Sun,  6 Jul 2025 07:37:33 +0000 (UTC)
+	s=arc-20240116; t=1751787484; c=relaxed/simple;
+	bh=pX7DMTvoFF9POBNvBE8MuFyTvMe0XmNXOu2e5gho7qU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=cNKMjo5bDD8LwRibx+5aEwG2dI2cTMbDkJB6WWX/ZeP6KTnx5jnwsyWEvpHEmxAhKzYaRMUqlr/cLgGLDb0j3FdU4JdcuQI+GrDiIceQO3SQ2ZJzHphD/ZfPvoni7PXKK8kU2qvfPJscWLV/vQ8CzrJ50tuOiE2StCvzGJ9F8o4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UaKADS8I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D6BDC4CEED;
+	Sun,  6 Jul 2025 07:38:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751787455;
-	bh=GtptPjErZW/0ydkdlaJujyJcdrgTujs+pGprdKSBFGo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qELWBM7C5VXN9goVfBmef1dBUmfH0qcRhGkCvhdADIKd0m1NFOaVMCSzCnc+OE1io
-	 mQl9GrRjHCp9RjCLscXdhbOUZ5tBdyGUA9OhBtq3fjSljQdfLw8NtGUKSGdbsUHp9c
-	 vKMj3Vzl8AdWCXUt6OTYsPcBYhJxNMdLpyTEgEhfD+PMlxymYLBVgcLAKtIJA4aZok
-	 gySQJoPPIO7o4UMm39CDUnP1a/b2ddBtQ/eGdwB5tjWYhDXr7pDdul3JNHDTu2FwgD
-	 9MaE2rxGwiZibE623RnMFPGof3cH+WzifVlAzantzcQAb0crJxix1ysAtDX+G9wE3P
-	 TPdQlRQLagvzw==
-Date: Sun, 6 Jul 2025 10:37:29 +0300
+	s=k20201202; t=1751787484;
+	bh=pX7DMTvoFF9POBNvBE8MuFyTvMe0XmNXOu2e5gho7qU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=UaKADS8I6146dHnY/57HsveFyy2BPYE1G3bnj5x0fpSbJIeRd5E/fe7+hqxwOpEbX
+	 VtBdcnydoZcTxgrGqWW0993qy/TIZvq0luRLzyOLJ1o9hkwButv7zj/m0LC7r57pa+
+	 Fzn0wmO+VgOnTJagVjDHLxnraMs4Jaxb3SWUwHLrA49/dC+zWUzviPmb2ObGM0dhZ3
+	 mL9EpTVGzPQQxsbPxAzyQDPo0Y2EuC3xUYeeFHoFmtXgs57fe62YIo84jQH8VkcJkJ
+	 jEV5tVKVJhl9urbxJK0KHES9Y9S+LjtLUrZKK53fkhIEBvRS1D5WsuuWDY62tpcvt7
+	 z51xJ7DBXxw5w==
 From: Leon Romanovsky <leon@kernel.org>
-To: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
-	Shravya KN <shravya.k-n@broadcom.com>,
-	Saravanan Vajravel <saravanan.vajravel@broadcom.com>
-Subject: Re: [PATCH rdma-next 2/3] RDMA/bnxt_re: Support 2G message size
-Message-ID: <20250706073729.GR6278@unreal>
+To: jgg@ziepe.ca, Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Cc: linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com, 
+ selvin.xavier@broadcom.com
+In-Reply-To: <20250704043857.19158-1-kalesh-anakkur.purayil@broadcom.com>
 References: <20250704043857.19158-1-kalesh-anakkur.purayil@broadcom.com>
- <20250704043857.19158-3-kalesh-anakkur.purayil@broadcom.com>
+Subject: Re: [PATCH rdma-next 0/3] bnxt_re driver update
+Message-Id: <175178748069.897826.12893471590441976308.b4-ty@kernel.org>
+Date: Sun, 06 Jul 2025 03:38:00 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250704043857.19158-3-kalesh-anakkur.purayil@broadcom.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-37811
 
-On Fri, Jul 04, 2025 at 10:08:56AM +0530, Kalesh AP wrote:
-> From: Selvin Xavier <selvin.xavier@broadcom.com>
+
+On Fri, 04 Jul 2025 10:08:54 +0530, Kalesh AP wrote:
+> This patchset adds support for 2G page size in the bnxt_re driver.
+> There are couple of cosmetic changes as well.
 > 
-> bnxt_qplib_put_sges is calculating the length in
-> a signed int. So handling the 2G message size
-> is not working since it is considered as negative.
+> Kalesh AP (2):
+>   RDMA/bnxt_re: Fix size of uverbs_copy_to() in
+>     BNXT_RE_METHOD_GET_TOGGLE_MEM
+>   RDMA/bnxt_re: Use macro instead of hard coded value
 > 
-> Use a unsigned number to calculate the total message
-> length. As per the spec, IB message size shall be
-> between zero and 2^31 bytes (inclusive). So adding
-> a check for 2G message size.
+> [...]
 
-You can easily use opto 80 chars per-line in commit messages, there is
-no need to limit yourself to 50 chars.
+Applied, thanks!
 
-Thanks
+[1/3] RDMA/bnxt_re: Fix size of uverbs_copy_to() in BNXT_RE_METHOD_GET_TOGGLE_MEM
+      https://git.kernel.org/rdma/rdma/c/8ba2e1eb6b3ec2
+[2/3] RDMA/bnxt_re: Support 2G message size
+      https://git.kernel.org/rdma/rdma/c/c6acd006f110a0
+[3/3] RDMA/bnxt_re: Use macro instead of hard coded value
+      https://git.kernel.org/rdma/rdma/c/bdc5726cdd454f
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
