@@ -1,54 +1,54 @@
-Return-Path: <linux-rdma+bounces-11935-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11936-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A8D2AFB96D
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jul 2025 19:04:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0200AAFB981
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jul 2025 19:05:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 288C21746BE
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jul 2025 17:04:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB0A91AA6293
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jul 2025 17:04:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D57B72E7F27;
-	Mon,  7 Jul 2025 17:04:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B96629ACE6;
+	Mon,  7 Jul 2025 17:04:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uKU+8C18"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jTC3PcUE"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 952242264A0
-	for <linux-rdma@vger.kernel.org>; Mon,  7 Jul 2025 17:04:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFF832264A0
+	for <linux-rdma@vger.kernel.org>; Mon,  7 Jul 2025 17:04:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751907861; cv=none; b=MDFnb/94jQ2Opwlm16rrXR2pp7j/ojGyddQqjM49HEe8btnuHKBJL114l4k+acOIbtaMY9t6DYNqjVVSURVbkqkfMzHRtqGgHyEhjZECF5B2fVBXGoDwmzfgy/Fi4egUlUacx/SUNCHrJmMYaEs6MfrhNRj3oeZWZ2DtsedwaiU=
+	t=1751907865; cv=none; b=TULO0GJ7iy8mpa1arihEIFY3hPdSv3+q48h9gFnTqHPMFaFF630yn22asgR3PeGz8alrFEnlu4+VVz4eSDBgYkJWJtEHU4Lyr2ygXGP0XXUAwvmBbVMwgoMo2CIm666cUMuBpxoHZT5oz/K6NHgzQ/W8k2xHk0HgY8mEiVKkLhA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751907861; c=relaxed/simple;
-	bh=g8+tJpGE2l12HAMwW05qy1Zath2zhQvZdADEi4m9Xpo=;
+	s=arc-20240116; t=1751907865; c=relaxed/simple;
+	bh=BeG26SyESsyanuseEsG4wdki2hi1fntXrB9Dr41Ux3E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pZAlL+sL+F37IiyK/gblz37JFkndZGEhcIpYkWE7pCfX7/M1kOudCE5+ZgsISxXDVoEQR5GNeRUshLQb4L38Jq0UwWY1Fk0ZPwd575ehUYw5sltqMtC9lz5yVwxw/A+jRQt8hq3mcUkEsBpg8nmzlpUF0ybZAjh81x7fqumkXMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uKU+8C18; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4795C4CEF5;
-	Mon,  7 Jul 2025 17:04:20 +0000 (UTC)
+	 MIME-Version; b=TWdSE5WBQkYQRic5cMrV/7AR07U4EwSIjHEzZPcwEPykpFtxoYV28W+H/rhvmGwY2Anu6W+rXnZI1NIk4xFIPgyR1LgdR9omapu4VRapQaacw1oSKs0uyuQom7kRpJAUf4oFIpag0ceCSzhmLYzano5ArifRm3dl1CPij40wSkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jTC3PcUE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9264EC4CEE3;
+	Mon,  7 Jul 2025 17:04:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751907861;
-	bh=g8+tJpGE2l12HAMwW05qy1Zath2zhQvZdADEi4m9Xpo=;
+	s=k20201202; t=1751907865;
+	bh=BeG26SyESsyanuseEsG4wdki2hi1fntXrB9Dr41Ux3E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uKU+8C18YfZW5/NETRY8so0pI0/CjeIizsHvpdLpKFKRYtszg7Q59BMfCqjanwI5e
-	 cqPqWsnT3UEA14hbWCldjv0jbFGG07FLhjjbueopjig1gCwdjjVin45So1UyPgveo3
-	 Prl4JVwZp/tnq+E3JmHbXzEI22/gV0KHoX3yWMa8AxnGg7Gd+30ISxMVtZqXImmLzb
-	 lz6vpWACVoMnpZAy4XabIOStafhkmnRZ4zIhkq6YmBos8u1uSZODbgnR2FaVgpKydy
-	 cn4PtlJic9L7OpYv9SR2pszOD9AqZ0oLTzDTuFUs+Dbt16NxdpuqzQ5jeBohDi4TSb
-	 SGibaazUFgQ/Q==
+	b=jTC3PcUE1uj+/lar+XFigkIkhfFFyWifdWDheFLjeZxYUGZ79rk94xHt01PXthnEx
+	 O1+IIg6hMmvmUf0u2su5MB9y4hoCubppGkWFgQ5+1ar/KQ5xN8uQnXYPh+xgNuq9y1
+	 N52dU2kdn2yyhHgeCChvPk2GDKSrR2U4pSL+sSUwLXPkB6ylq0TzEwNNJS/1/0MCt4
+	 8gNTJiA37ow0IqvCi2qhEettbB61aRn0aq6ddDdlq07TnMguPF2Z6ZRoc56i635wRr
+	 RZJKi/Z34LQOkUibOuwWoSGRxVxqlg8Bi+Q12S+huqH/fEq4CmZ47YLhy2E0VG7dm0
+	 PYN+ESf9wUS+w==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Yishai Hadas <yishaih@nvidia.com>,
 	Edward Srouji <edwards@nvidia.com>,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next 5/8] RDMA/core: Introduce a DMAH object and its alloc/free APIs
-Date: Mon,  7 Jul 2025 20:03:05 +0300
-Message-ID: <9dfe1176f0c3637e1795331e6253013c84f7e168.1751907231.git.leon@kernel.org>
+Subject: [PATCH rdma-next 6/8] RDMA/mlx5: Add DMAH object support
+Date: Mon,  7 Jul 2025 20:03:06 +0300
+Message-ID: <53bd5a8bf373311ef1eaee0d2da45cd74d888945.1751907231.git.leon@kernel.org>
 X-Mailer: git-send-email 2.50.0
 In-Reply-To: <cover.1751907231.git.leon@kernel.org>
 References: <cover.1751907231.git.leon@kernel.org>
@@ -62,387 +62,166 @@ Content-Transfer-Encoding: 8bit
 
 From: Yishai Hadas <yishaih@nvidia.com>
 
-Introduce a new DMA handle (DMAH) object along with its corresponding
-allocation and deallocation APIs.
-
-This DMAH object encapsulates attributes intended for use in DMA
-transactions.
-
-While its initial purpose is to support TPH functionality, it is
-designed to be extensible for future features such as DMA PCI multipath,
-PCI UIO configurations, PCI traffic class selection, and more.
+This patch introduces support for allocating and deallocating the DMAH
+object.
 
 Further details:
 ----------------
-We ensure that a caller requesting a DMA handle for a specific CPU ID is
-permitted to be scheduled on it. This prevent a potential security issue
-where a non privileged user may trigger DMA operations toward a CPU that
-it's not allowed to run on.
+The DMAH API is exposed to upper layers only if the underlying device
+supports TPH.
 
-We manage reference counting for the DMAH object and its consumers
-(e.g., memory regions) as will be detailed in subsequent patches in the
-series.
+It uses the mlx5_core steering tag (ST) APIs to get a steering tag index
+based on the provided input.
+
+The obtained index is stored in the device-specific mlx5_dmah structure
+for future use.
+
+Upcoming patches in the series will integrate the allocated DMAH into
+the memory region (MR) registration process.
 
 Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
 Reviewed-by: Edward Srouji <edwards@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/Makefile              |   1 +
- drivers/infiniband/core/device.c              |   3 +
- drivers/infiniband/core/rdma_core.h           |   1 +
- drivers/infiniband/core/restrack.c            |   2 +
- .../infiniband/core/uverbs_std_types_dmah.c   | 151 ++++++++++++++++++
- drivers/infiniband/core/uverbs_uapi.c         |   1 +
- include/rdma/ib_verbs.h                       |  28 ++++
- include/rdma/restrack.h                       |   4 +
- include/uapi/rdma/ib_user_ioctl_cmds.h        |  17 ++
- 9 files changed, 208 insertions(+)
- create mode 100644 drivers/infiniband/core/uverbs_std_types_dmah.c
+ drivers/infiniband/hw/mlx5/Makefile |  1 +
+ drivers/infiniband/hw/mlx5/dmah.c   | 54 +++++++++++++++++++++++++++++
+ drivers/infiniband/hw/mlx5/dmah.h   | 23 ++++++++++++
+ drivers/infiniband/hw/mlx5/main.c   |  5 +++
+ 4 files changed, 83 insertions(+)
+ create mode 100644 drivers/infiniband/hw/mlx5/dmah.c
+ create mode 100644 drivers/infiniband/hw/mlx5/dmah.h
 
-diff --git a/drivers/infiniband/core/Makefile b/drivers/infiniband/core/Makefile
-index d49ded7e95f0..f483e0c12444 100644
---- a/drivers/infiniband/core/Makefile
-+++ b/drivers/infiniband/core/Makefile
-@@ -33,6 +33,7 @@ ib_umad-y :=			user_mad.o
- ib_uverbs-y :=			uverbs_main.o uverbs_cmd.o uverbs_marshall.o \
- 				rdma_core.o uverbs_std_types.o uverbs_ioctl.o \
- 				uverbs_std_types_cq.o \
-+				uverbs_std_types_dmah.o \
- 				uverbs_std_types_flow_action.o uverbs_std_types_dm.o \
- 				uverbs_std_types_mr.o uverbs_std_types_counters.o \
- 				uverbs_uapi.o uverbs_std_types_device.o \
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 1ca6a9b7ba1a..4a98afbf8430 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -2708,6 +2708,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
- 	SET_DEVICE_OP(dev_ops, add_sub_dev);
- 	SET_DEVICE_OP(dev_ops, advise_mr);
- 	SET_DEVICE_OP(dev_ops, alloc_dm);
-+	SET_DEVICE_OP(dev_ops, alloc_dmah);
- 	SET_DEVICE_OP(dev_ops, alloc_hw_device_stats);
- 	SET_DEVICE_OP(dev_ops, alloc_hw_port_stats);
- 	SET_DEVICE_OP(dev_ops, alloc_mr);
-@@ -2735,6 +2736,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
- 	SET_DEVICE_OP(dev_ops, create_user_ah);
- 	SET_DEVICE_OP(dev_ops, create_wq);
- 	SET_DEVICE_OP(dev_ops, dealloc_dm);
-+	SET_DEVICE_OP(dev_ops, dealloc_dmah);
- 	SET_DEVICE_OP(dev_ops, dealloc_driver);
- 	SET_DEVICE_OP(dev_ops, dealloc_mw);
- 	SET_DEVICE_OP(dev_ops, dealloc_pd);
-@@ -2832,6 +2834,7 @@ void ib_set_device_ops(struct ib_device *dev, const struct ib_device_ops *ops)
- 	SET_OBJ_SIZE(dev_ops, ib_ah);
- 	SET_OBJ_SIZE(dev_ops, ib_counters);
- 	SET_OBJ_SIZE(dev_ops, ib_cq);
-+	SET_OBJ_SIZE(dev_ops, ib_dmah);
- 	SET_OBJ_SIZE(dev_ops, ib_mw);
- 	SET_OBJ_SIZE(dev_ops, ib_pd);
- 	SET_OBJ_SIZE(dev_ops, ib_qp);
-diff --git a/drivers/infiniband/core/rdma_core.h b/drivers/infiniband/core/rdma_core.h
-index 33706dad6c0f..a59b087611cb 100644
---- a/drivers/infiniband/core/rdma_core.h
-+++ b/drivers/infiniband/core/rdma_core.h
-@@ -156,6 +156,7 @@ extern const struct uapi_definition uverbs_def_obj_counters[];
- extern const struct uapi_definition uverbs_def_obj_cq[];
- extern const struct uapi_definition uverbs_def_obj_device[];
- extern const struct uapi_definition uverbs_def_obj_dm[];
-+extern const struct uapi_definition uverbs_def_obj_dmah[];
- extern const struct uapi_definition uverbs_def_obj_flow_action[];
- extern const struct uapi_definition uverbs_def_obj_intf[];
- extern const struct uapi_definition uverbs_def_obj_mr[];
-diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
-index 3313410014cd..a7de6f403fca 100644
---- a/drivers/infiniband/core/restrack.c
-+++ b/drivers/infiniband/core/restrack.c
-@@ -100,6 +100,8 @@ static struct ib_device *res_to_dev(struct rdma_restrack_entry *res)
- 		return container_of(res, struct rdma_counter, res)->device;
- 	case RDMA_RESTRACK_SRQ:
- 		return container_of(res, struct ib_srq, res)->device;
-+	case RDMA_RESTRACK_DMAH:
-+		return container_of(res, struct ib_dmah, res)->device;
- 	default:
- 		WARN_ONCE(true, "Wrong resource tracking type %u\n", res->type);
- 		return NULL;
-diff --git a/drivers/infiniband/core/uverbs_std_types_dmah.c b/drivers/infiniband/core/uverbs_std_types_dmah.c
+diff --git a/drivers/infiniband/hw/mlx5/Makefile b/drivers/infiniband/hw/mlx5/Makefile
+index 11878ddf7cc7..dd7bb377f491 100644
+--- a/drivers/infiniband/hw/mlx5/Makefile
++++ b/drivers/infiniband/hw/mlx5/Makefile
+@@ -8,6 +8,7 @@ mlx5_ib-y := ah.o \
+ 	     cq.o \
+ 	     data_direct.o \
+ 	     dm.o \
++	     dmah.o \
+ 	     doorbell.o \
+ 	     fs.o \
+ 	     gsi.o \
+diff --git a/drivers/infiniband/hw/mlx5/dmah.c b/drivers/infiniband/hw/mlx5/dmah.c
 new file mode 100644
-index 000000000000..760c43438b70
+index 000000000000..362a88992ffa
 --- /dev/null
-+++ b/drivers/infiniband/core/uverbs_std_types_dmah.c
-@@ -0,0 +1,151 @@
++++ b/drivers/infiniband/hw/mlx5/dmah.c
+@@ -0,0 +1,54 @@
 +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
 +/*
 + * Copyright (c) 2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved
 + */
 +
-+#include "rdma_core.h"
-+#include "uverbs.h"
 +#include <rdma/uverbs_std_types.h>
-+#include "restrack.h"
-+
-+static int uverbs_free_dmah(struct ib_uobject *uobject,
-+			    enum rdma_remove_reason why,
-+			    struct uverbs_attr_bundle *attrs)
-+{
-+	struct ib_dmah *dmah = uobject->object;
-+	int ret;
-+
-+	if (atomic_read(&dmah->usecnt))
-+		return -EBUSY;
-+
-+	ret = dmah->device->ops.dealloc_dmah(dmah, attrs);
-+	if (ret)
-+		return ret;
-+
-+	rdma_restrack_del(&dmah->res);
-+	kfree(dmah);
-+	return 0;
-+}
-+
-+static int UVERBS_HANDLER(UVERBS_METHOD_DMAH_ALLOC)(
-+	struct uverbs_attr_bundle *attrs)
-+{
-+	struct ib_uobject *uobj =
-+		uverbs_attr_get(attrs, UVERBS_ATTR_ALLOC_DMAH_HANDLE)
-+			->obj_attr.uobject;
-+	struct ib_device *ib_dev = attrs->context->device;
-+	struct ib_dmah *dmah;
-+	int ret;
-+
-+	if (!ib_dev->ops.alloc_dmah || !ib_dev->ops.dealloc_dmah)
-+		return -EOPNOTSUPP;
-+
-+	dmah = rdma_zalloc_drv_obj(ib_dev, ib_dmah);
-+	if (!dmah)
-+		return -ENOMEM;
-+
-+	if (uverbs_attr_is_valid(attrs, UVERBS_ATTR_ALLOC_DMAH_CPU_ID)) {
-+		ret = uverbs_copy_from(&dmah->cpu_id, attrs,
-+				       UVERBS_ATTR_ALLOC_DMAH_CPU_ID);
-+		if (ret)
-+			goto err;
-+
-+		if (!cpumask_test_cpu(dmah->cpu_id, current->cpus_ptr)) {
-+			ret = -EPERM;
-+			goto err;
-+		}
-+
-+		dmah->valid_fields |= BIT(IB_DMAH_CPU_ID_EXISTS);
-+	}
-+
-+	if (uverbs_attr_is_valid(attrs, UVERBS_ATTR_ALLOC_DMAH_TPH_MEM_TYPE)) {
-+		dmah->mem_type = uverbs_attr_get_enum_id(attrs,
-+					UVERBS_ATTR_ALLOC_DMAH_TPH_MEM_TYPE);
-+		if (dmah->mem_type < 0) {
-+			ret = dmah->mem_type;
-+			goto err;
-+		}
-+		dmah->valid_fields |= BIT(IB_DMAH_MEM_TYPE_EXISTS);
-+	}
-+
-+	if (uverbs_attr_is_valid(attrs, UVERBS_ATTR_ALLOC_DMAH_PH)) {
-+		ret = uverbs_copy_from(&dmah->ph, attrs,
-+				       UVERBS_ATTR_ALLOC_DMAH_PH);
-+		if (ret)
-+			goto err;
-+
-+		/* Per PCIe spec 6.2-1.0, only the lowest two bits are applicable */
-+		if (dmah->ph & 0xFC) {
-+			ret = -EINVAL;
-+			goto err;
-+		}
-+
-+		dmah->valid_fields |= BIT(IB_DMAH_PH_EXISTS);
-+	}
-+
-+	dmah->device = ib_dev;
-+	dmah->uobject = uobj;
-+	atomic_set(&dmah->usecnt, 0);
-+
-+	rdma_restrack_new(&dmah->res, RDMA_RESTRACK_DMAH);
-+	rdma_restrack_set_name(&dmah->res, NULL);
-+
-+	ret = ib_dev->ops.alloc_dmah(dmah, attrs);
-+	if (ret) {
-+		rdma_restrack_put(&dmah->res);
-+		goto err;
-+	}
-+
-+	uobj->object = dmah;
-+	rdma_restrack_add(&dmah->res);
-+	uverbs_finalize_uobj_create(attrs, UVERBS_ATTR_ALLOC_DMAH_HANDLE);
-+	return 0;
-+err:
-+	kfree(dmah);
-+	return ret;
-+}
-+
-+static const struct uverbs_attr_spec uverbs_dmah_mem_type[] = {
-+	[TPH_MEM_TYPE_VM] = {
-+		.type = UVERBS_ATTR_TYPE_PTR_IN,
-+		UVERBS_ATTR_NO_DATA(),
-+	},
-+	[TPH_MEM_TYPE_PM] = {
-+		.type = UVERBS_ATTR_TYPE_PTR_IN,
-+		UVERBS_ATTR_NO_DATA(),
-+	},
-+};
-+
-+DECLARE_UVERBS_NAMED_METHOD(
-+	UVERBS_METHOD_DMAH_ALLOC,
-+	UVERBS_ATTR_IDR(UVERBS_ATTR_ALLOC_DMAH_HANDLE,
-+			UVERBS_OBJECT_DMAH,
-+			UVERBS_ACCESS_NEW,
-+			UA_MANDATORY),
-+	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_ALLOC_DMAH_CPU_ID,
-+			   UVERBS_ATTR_TYPE(u32),
-+			   UA_OPTIONAL),
-+	UVERBS_ATTR_ENUM_IN(UVERBS_ATTR_ALLOC_DMAH_TPH_MEM_TYPE,
-+			    uverbs_dmah_mem_type,
-+			    UA_OPTIONAL),
-+	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_ALLOC_DMAH_PH,
-+			   UVERBS_ATTR_TYPE(u8),
-+			   UA_OPTIONAL));
-+
-+DECLARE_UVERBS_NAMED_METHOD_DESTROY(
-+	UVERBS_METHOD_DMAH_FREE,
-+	UVERBS_ATTR_IDR(UVERBS_ATTR_FREE_DMA_HANDLE,
-+			UVERBS_OBJECT_DMAH,
-+			UVERBS_ACCESS_DESTROY,
-+			UA_MANDATORY));
-+
-+DECLARE_UVERBS_NAMED_OBJECT(UVERBS_OBJECT_DMAH,
-+			    UVERBS_TYPE_ALLOC_IDR(uverbs_free_dmah),
-+			    &UVERBS_METHOD(UVERBS_METHOD_DMAH_ALLOC),
-+			    &UVERBS_METHOD(UVERBS_METHOD_DMAH_FREE));
-+
-+const struct uapi_definition uverbs_def_obj_dmah[] = {
-+	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(UVERBS_OBJECT_DMAH,
-+				      UAPI_DEF_OBJ_NEEDS_FN(dealloc_dmah)),
-+	{}
-+};
-diff --git a/drivers/infiniband/core/uverbs_uapi.c b/drivers/infiniband/core/uverbs_uapi.c
-index a02916a3a79c..e00ea63175bd 100644
---- a/drivers/infiniband/core/uverbs_uapi.c
-+++ b/drivers/infiniband/core/uverbs_uapi.c
-@@ -631,6 +631,7 @@ static const struct uapi_definition uverbs_core_api[] = {
- 	UAPI_DEF_CHAIN(uverbs_def_obj_cq),
- 	UAPI_DEF_CHAIN(uverbs_def_obj_device),
- 	UAPI_DEF_CHAIN(uverbs_def_obj_dm),
-+	UAPI_DEF_CHAIN(uverbs_def_obj_dmah),
- 	UAPI_DEF_CHAIN(uverbs_def_obj_flow_action),
- 	UAPI_DEF_CHAIN(uverbs_def_obj_intf),
- 	UAPI_DEF_CHAIN(uverbs_def_obj_mr),
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 010594dc755b..d7ee762b87e9 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -42,6 +42,7 @@
- #include <rdma/signature.h>
- #include <uapi/rdma/rdma_user_ioctl.h>
- #include <uapi/rdma/ib_user_ioctl_verbs.h>
 +#include <linux/pci-tph.h>
- 
- #define IB_FW_VERSION_NAME_MAX	ETHTOOL_FWVERS_LEN
- 
-@@ -1846,6 +1847,29 @@ struct ib_dm {
- 	atomic_t	   usecnt;
- };
- 
-+/* bit values to mark existence of ib_dmah fields */
-+enum {
-+	IB_DMAH_CPU_ID_EXISTS,
-+	IB_DMAH_MEM_TYPE_EXISTS,
-+	IB_DMAH_PH_EXISTS,
++#include "dmah.h"
++
++#define UVERBS_MODULE_NAME mlx5_ib
++#include <rdma/uverbs_named_ioctl.h>
++
++static int mlx5_ib_alloc_dmah(struct ib_dmah *ibdmah,
++			      struct uverbs_attr_bundle *attrs)
++{
++	struct mlx5_core_dev *mdev = to_mdev(ibdmah->device)->mdev;
++	struct mlx5_ib_dmah *dmah = to_mdmah(ibdmah);
++	u16 st_bits = BIT(IB_DMAH_CPU_ID_EXISTS) |
++		      BIT(IB_DMAH_MEM_TYPE_EXISTS);
++	int err;
++
++	/* PH is a must for TPH following PCIe spec 6.2-1.0 */
++	if (!(ibdmah->valid_fields & BIT(IB_DMAH_PH_EXISTS)))
++		return -EINVAL;
++
++	/* ST is optional; however, partial data for it is not allowed */
++	if (ibdmah->valid_fields & st_bits) {
++		if ((ibdmah->valid_fields & st_bits) != st_bits)
++			return -EINVAL;
++		err = mlx5_st_alloc_index(mdev, ibdmah->mem_type,
++					  ibdmah->cpu_id, &dmah->st_index);
++		if (err)
++			return err;
++	}
++
++	return 0;
++}
++
++static int mlx5_ib_dealloc_dmah(struct ib_dmah *ibdmah,
++				struct uverbs_attr_bundle *attrs)
++{
++	struct mlx5_ib_dmah *dmah = to_mdmah(ibdmah);
++	struct mlx5_core_dev *mdev = to_mdev(ibdmah->device)->mdev;
++
++	if (ibdmah->valid_fields & BIT(IB_DMAH_CPU_ID_EXISTS))
++		return mlx5_st_dealloc_index(mdev, dmah->st_index);
++
++	return 0;
++}
++
++const struct ib_device_ops mlx5_ib_dev_dmah_ops = {
++	.alloc_dmah = mlx5_ib_alloc_dmah,
++	.dealloc_dmah = mlx5_ib_dealloc_dmah,
++};
+diff --git a/drivers/infiniband/hw/mlx5/dmah.h b/drivers/infiniband/hw/mlx5/dmah.h
+new file mode 100644
+index 000000000000..68de72b4744a
+--- /dev/null
++++ b/drivers/infiniband/hw/mlx5/dmah.h
+@@ -0,0 +1,23 @@
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
++/*
++ * Copyright (c) 2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved
++ */
++
++#ifndef _MLX5_IB_DMAH_H
++#define _MLX5_IB_DMAH_H
++
++#include "mlx5_ib.h"
++
++extern const struct ib_device_ops mlx5_ib_dev_dmah_ops;
++
++struct mlx5_ib_dmah {
++	struct ib_dmah ibdmah;
++	u16 st_index;
 +};
 +
-+struct ib_dmah {
-+	struct ib_device *device;
-+	u32 cpu_id;
-+	enum tph_mem_type mem_type;
-+	u8 ph;
-+	struct ib_uobject *uobject;
++static inline struct mlx5_ib_dmah *to_mdmah(struct ib_dmah *ibdmah)
++{
++	return container_of(ibdmah, struct mlx5_ib_dmah, ibdmah);
++}
 +
-+	u8 valid_fields; /* use IB_DMAH_XXX_EXISTS */
-+	atomic_t usecnt;
-+
-+	/*
-+	 * Implementation details of the RDMA core, don't use in drivers:
-+	 */
-+	struct rdma_restrack_entry res;
-+};
-+
- struct ib_mr {
- 	struct ib_device  *device;
- 	struct ib_pd	  *pd;
-@@ -2569,6 +2593,9 @@ struct ib_device_ops {
- 				  struct ib_dm_alloc_attr *attr,
- 				  struct uverbs_attr_bundle *attrs);
- 	int (*dealloc_dm)(struct ib_dm *dm, struct uverbs_attr_bundle *attrs);
-+	int (*alloc_dmah)(struct ib_dmah *ibdmah,
-+			  struct uverbs_attr_bundle *attrs);
-+	int (*dealloc_dmah)(struct ib_dmah *dmah, struct uverbs_attr_bundle *attrs);
- 	struct ib_mr *(*reg_dm_mr)(struct ib_pd *pd, struct ib_dm *dm,
- 				   struct ib_dm_mr_attr *attr,
- 				   struct uverbs_attr_bundle *attrs);
-@@ -2726,6 +2753,7 @@ struct ib_device_ops {
- 	DECLARE_RDMA_OBJ_SIZE(ib_ah);
- 	DECLARE_RDMA_OBJ_SIZE(ib_counters);
- 	DECLARE_RDMA_OBJ_SIZE(ib_cq);
-+	DECLARE_RDMA_OBJ_SIZE(ib_dmah);
- 	DECLARE_RDMA_OBJ_SIZE(ib_mw);
- 	DECLARE_RDMA_OBJ_SIZE(ib_pd);
- 	DECLARE_RDMA_OBJ_SIZE(ib_qp);
-diff --git a/include/rdma/restrack.h b/include/rdma/restrack.h
-index 0d69ded73bf2..8a9bcf77dace 100644
---- a/include/rdma/restrack.h
-+++ b/include/rdma/restrack.h
-@@ -56,6 +56,10 @@ enum rdma_restrack_type {
- 	 * @RDMA_RESTRACK_SRQ: Shared receive queue (SRQ)
- 	 */
- 	RDMA_RESTRACK_SRQ,
-+	/**
-+	 * @RDMA_RESTRACK_DMAH: DMA handle
-+	 */
-+	RDMA_RESTRACK_DMAH,
- 	/**
- 	 * @RDMA_RESTRACK_MAX: Last entry, used for array dclarations
- 	 */
-diff --git a/include/uapi/rdma/ib_user_ioctl_cmds.h b/include/uapi/rdma/ib_user_ioctl_cmds.h
-index e7b827e281d1..a0b1130423f0 100644
---- a/include/uapi/rdma/ib_user_ioctl_cmds.h
-+++ b/include/uapi/rdma/ib_user_ioctl_cmds.h
-@@ -55,6 +55,7 @@ enum uverbs_default_objects {
- 	UVERBS_OBJECT_DM,
- 	UVERBS_OBJECT_COUNTERS,
- 	UVERBS_OBJECT_ASYNC_EVENT,
-+	UVERBS_OBJECT_DMAH,
- };
++#endif /* _MLX5_IB_DMAH_H */
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index c521bce2eeff..dbe66894b224 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -50,6 +50,7 @@
+ #include <rdma/ib_ucaps.h>
+ #include "macsec.h"
+ #include "data_direct.h"
++#include "dmah.h"
  
- enum {
-@@ -236,6 +237,22 @@ enum uverbs_methods_dm {
- 	UVERBS_METHOD_DM_FREE,
- };
+ #define UVERBS_MODULE_NAME mlx5_ib
+ #include <rdma/uverbs_named_ioctl.h>
+@@ -4181,6 +4182,7 @@ static const struct ib_device_ops mlx5_ib_dev_ops = {
+ 	INIT_RDMA_OBJ_SIZE(ib_ah, mlx5_ib_ah, ibah),
+ 	INIT_RDMA_OBJ_SIZE(ib_counters, mlx5_ib_mcounters, ibcntrs),
+ 	INIT_RDMA_OBJ_SIZE(ib_cq, mlx5_ib_cq, ibcq),
++	INIT_RDMA_OBJ_SIZE(ib_dmah, mlx5_ib_dmah, ibdmah),
+ 	INIT_RDMA_OBJ_SIZE(ib_pd, mlx5_ib_pd, ibpd),
+ 	INIT_RDMA_OBJ_SIZE(ib_qp, mlx5_ib_qp, ibqp),
+ 	INIT_RDMA_OBJ_SIZE(ib_srq, mlx5_ib_srq, ibsrq),
+@@ -4308,6 +4310,9 @@ static int mlx5_ib_stage_caps_init(struct mlx5_ib_dev *dev)
+ 	    MLX5_GENERAL_OBJ_TYPES_CAP_SW_ICM)
+ 		ib_set_device_ops(&dev->ib_dev, &mlx5_ib_dev_dm_ops);
  
-+enum uverbs_attrs_alloc_dmah_cmd_attr_ids {
-+	UVERBS_ATTR_ALLOC_DMAH_HANDLE,
-+	UVERBS_ATTR_ALLOC_DMAH_CPU_ID,
-+	UVERBS_ATTR_ALLOC_DMAH_TPH_MEM_TYPE,
-+	UVERBS_ATTR_ALLOC_DMAH_PH,
-+};
++	if (mdev->st)
++		ib_set_device_ops(&dev->ib_dev, &mlx5_ib_dev_dmah_ops);
 +
-+enum uverbs_attrs_free_dmah_cmd_attr_ids {
-+	UVERBS_ATTR_FREE_DMA_HANDLE,
-+};
-+
-+enum uverbs_methods_dmah {
-+	UVERBS_METHOD_DMAH_ALLOC,
-+	UVERBS_METHOD_DMAH_FREE,
-+};
-+
- enum uverbs_attrs_reg_dm_mr_cmd_attr_ids {
- 	UVERBS_ATTR_REG_DM_MR_HANDLE,
- 	UVERBS_ATTR_REG_DM_MR_OFFSET,
+ 	ib_set_device_ops(&dev->ib_dev, &mlx5_ib_dev_ops);
+ 
+ 	if (IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS))
 -- 
 2.50.0
 
