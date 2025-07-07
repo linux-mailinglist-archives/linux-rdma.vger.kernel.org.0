@@ -1,48 +1,48 @@
-Return-Path: <linux-rdma+bounces-11943-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11945-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25A74AFBE10
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jul 2025 00:03:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA2BFAFBE17
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jul 2025 00:04:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8554E3B5ED2
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jul 2025 22:03:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEC361884151
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jul 2025 22:04:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C0B328CF68;
-	Mon,  7 Jul 2025 22:03:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B6A22951CB;
+	Mon,  7 Jul 2025 22:03:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="MVEbWS8O"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="iUJy5S40"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6B36944F;
-	Mon,  7 Jul 2025 22:03:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F3A328BAB9;
+	Mon,  7 Jul 2025 22:03:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751925824; cv=none; b=n/kZNRXN++tVB9v0whe5RAj0jJTEF1D69SvoAuPQJAQ214htgEwqb8+khSVPLhuQ1/RfhChAkKra3Lqsmpf/3qlnANqI78Mo3gmANmRt17/pyxW/v3ZFhs6KbEZhTlmImXIoc8a4a9G72qdZSHK6veVVVvvbmBD3xZYLJsPOOfM=
+	t=1751925824; cv=none; b=S9dmOj+61dR/iEG0XycSbr+GasP2RcvcPkQlu1EnmmbMaScIsdTjghTaaxwZtFG/ftw2FKYb1h1Sa4GXSeW+5PHjuXb5C81yDGNLqzGjld+IEohhVLZ9hkMxtLUT3TCxeGEhXsewP+eKBYazPTArdHpyTFMDZjslnAXGCZAQ/v4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1751925824; c=relaxed/simple;
-	bh=+SAM8PoZovijHVxvPUIPN/YnxqQxec5IiQv7Me7VaVQ=;
+	bh=VIoB7qiTLaV7Z1JX5PmXLYanxXX/r8BMP27IJazNm84=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=DXSVOD8KrjWh8AMqx9Xb0v+znB3SozC82QeqGf2/uyExj+020ne79FrjiLsE2yPitxi0xUw3fsC0QeSGBY3CAzQkHMaSJ/r6HqbiGXLbfXa9K3hZ605dHFFlf4AQXSNpnkxNfGs2B/4yoRxI6bruHqQUQupkTXPgVU7crxmcNNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=MVEbWS8O; arc=none smtp.client-ip=13.77.154.182
+	 In-Reply-To:To:Cc; b=T0JkALTgE9JtJo4+zsayPQEDgE7IERPaKn+L7esIgeRbGUTDiZ/in83m8PO8EhYCfJxJDevmgJIcEX0QU9QAVfeXMYiRYfslU9y6H1T2s4NmGJctYTeGRVfCHCYsDqUnALxmoxw/A/BXUTnGh+ZVHO1JjXl9KPYvcY8xZzlunIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=iUJy5S40; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from easwarh-mobl2. (unknown [20.29.225.195])
-	by linux.microsoft.com (Postfix) with ESMTPSA id DBFCC2033420;
-	Mon,  7 Jul 2025 15:03:41 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DBFCC2033420
+	by linux.microsoft.com (Postfix) with ESMTPSA id 80DEF2054689;
+	Mon,  7 Jul 2025 15:03:42 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 80DEF2054689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1751925822;
-	bh=AlFM+M+KNW9QL9luNsE6t5ZUXlN1KrLG3+QvxKi/qa0=;
+	s=default; t=1751925823;
+	bh=ZQBUkjDtvUw42acvYUgd6vDbgxWPxXM2A3fBzrkCpHM=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=MVEbWS8OfHuek8rLDdwjP3h5le0g25JP4KEB5179+1a6QX91oJ23DhYThK4l+ttnQ
-	 ZHL4egp/hodlrrssCxfGIaha1Bi3DNsZGnDrtlF8SRydl6KF0iNs6EnqyMh/CkRymP
-	 DfGb96IqNs/3Xc1DElP/1fe4KqH0q/H9rUMCQAJs=
+	b=iUJy5S402vW9QcG4yGSfhRWs8qDBqFXFp3IkaUFVFzW5hQOyEWnpgi4tW1UbfLlj+
+	 +boa03gPqNmBv5uvN7aWJNvIaDZLz9Hv1+CzGVEk89Jxl+duextke1Xz8uKTQbZ1HS
+	 8foQuORd+bKXJB85V9fjNiD+GRWt+jOvD5OqUNV8=
 From: Easwar Hariharan <eahariha@linux.microsoft.com>
-Date: Mon, 07 Jul 2025 15:03:32 -0700
-Subject: [PATCH net-next v2 1/2] net/smc: convert timeouts to
+Date: Mon, 07 Jul 2025 15:03:33 -0700
+Subject: [PATCH net-next v2 2/2] net: ipconfig: convert timeouts to
  secs_to_jiffies()
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -52,7 +52,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250707-netdev-secs-to-jiffies-part-2-v2-1-b7817036342f@linux.microsoft.com>
+Message-Id: <20250707-netdev-secs-to-jiffies-part-2-v2-2-b7817036342f@linux.microsoft.com>
 References: <20250707-netdev-secs-to-jiffies-part-2-v2-0-b7817036342f@linux.microsoft.com>
 In-Reply-To: <20250707-netdev-secs-to-jiffies-part-2-v2-0-b7817036342f@linux.microsoft.com>
 To: "D. Wythe" <alibuda@linux.alibaba.com>, 
@@ -87,24 +87,37 @@ expression E;
 -msecs_to_jiffies(E * MSEC_PER_SEC)
 +secs_to_jiffies(E)
 
+While here, manually convert a couple timeouts denominated in seconds
+
 Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
 ---
- net/smc/af_smc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ net/ipv4/ipconfig.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 8d56e4db63e041724f156aa3ab30bab745a15bad..bdbaad17f98012c10d0bbc721c80d4c5ae4fb220 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -2735,8 +2735,7 @@ int smc_accept(struct socket *sock, struct socket *new_sock,
+diff --git a/net/ipv4/ipconfig.c b/net/ipv4/ipconfig.c
+index c56b6fe6f0d771e9275bb66c159d9abb330bdf4c..22a7889876c1cf7d5233fe8a0ee12e134b20c1cd 100644
+--- a/net/ipv4/ipconfig.c
++++ b/net/ipv4/ipconfig.c
+@@ -274,9 +274,9 @@ static int __init ic_open_devs(void)
  
- 	if (lsmc->sockopt_defer_accept && !(arg->flags & O_NONBLOCK)) {
- 		/* wait till data arrives on the socket */
--		timeo = msecs_to_jiffies(lsmc->sockopt_defer_accept *
--								MSEC_PER_SEC);
-+		timeo = secs_to_jiffies(lsmc->sockopt_defer_accept);
- 		if (smc_sk(nsk)->use_fallback) {
- 			struct sock *clcsk = smc_sk(nsk)->clcsock->sk;
+ 	/* wait for a carrier on at least one device */
+ 	start = jiffies;
+-	next_msg = start + msecs_to_jiffies(20000);
++	next_msg = start + secs_to_jiffies(20);
+ 	while (time_before(jiffies, start +
+-			   msecs_to_jiffies(carrier_timeout * 1000))) {
++			   secs_to_jiffies(carrier_timeout))) {
+ 		int wait, elapsed;
+ 
+ 		rtnl_lock();
+@@ -295,7 +295,7 @@ static int __init ic_open_devs(void)
+ 		elapsed = jiffies_to_msecs(jiffies - start);
+ 		wait = (carrier_timeout * 1000 - elapsed + 500) / 1000;
+ 		pr_info("Waiting up to %d more seconds for network.\n", wait);
+-		next_msg = jiffies + msecs_to_jiffies(20000);
++		next_msg = jiffies + secs_to_jiffies(20);
+ 	}
+ have_carrier:
  
 
 -- 
