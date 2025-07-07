@@ -1,93 +1,115 @@
-Return-Path: <linux-rdma+bounces-11942-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11944-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20C64AFBAF6
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jul 2025 20:43:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3237AFBE15
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jul 2025 00:04:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08C713B9526
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jul 2025 18:41:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC0367A32F2
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jul 2025 22:02:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1490E264F96;
-	Mon,  7 Jul 2025 18:42:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D029828F955;
+	Mon,  7 Jul 2025 22:03:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ayy6TpDX"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Fkg3HJpF"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBF5A25D535;
-	Mon,  7 Jul 2025 18:42:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6BAC28BA9D;
+	Mon,  7 Jul 2025 22:03:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751913738; cv=none; b=XbIxP0/Xb9IpW1STfx/4YJ+iy3FplBO9DblQQxK+6HidA0Nbsgn9RenB8GtEJJFTbjndLYNrviu6pipt8gyIbuB5izTa0BKGo0N/mMV2ZFv1SOBnoT+f1M0lIJjsXkdkMyROXfKd1AeN6D/pK2y00QxpoKtBVHErCnsWYWYc4js=
+	t=1751925824; cv=none; b=SXlFd9MN71KObhiixZCQL050Vek5tB8hFGmqsgRoA4LzNIhd/3heNHTUkxkW8998LuwrKyZ4JFzH4AEGjB8dFZ52YYxYijCRJYXU8GxGyREC2bUyo2ON2iRAUL77vRG71OLiIY5dxIvruJOfIGbRfyDHxq++IJtPghA6IgdjLFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751913738; c=relaxed/simple;
-	bh=svufrlSg5VMPdiC2WbZRbSi05zkjM8GgF5LVVHLvPAw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=M3NE5O9AAnEFQYe35x6If4XKp+FA17tG9DY/C+Y8e85a7Uw8kiBzigzBMGiSlkm6glE0b7EfkVCaLhb6KlBp0TL85otd1n8T4pBvuv3SoKJQf2uBo6wH54/a3ohwiTdd48B7Mf64e6bQbbTeTxkoV26DC8sxYa8NK3qNZk8/lB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ayy6TpDX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C836C4CEE3;
-	Mon,  7 Jul 2025 18:42:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751913738;
-	bh=svufrlSg5VMPdiC2WbZRbSi05zkjM8GgF5LVVHLvPAw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Ayy6TpDXykOXrx9tClyfIoyZblPccvqwQPng1ukaWyYHy7VdrA1h6eTkTX7c5i4RO
-	 4llVxMwpmCENDLtT7l+n6i/e3RKzjMn6JoGyzNX0Zw7Shy8Z1ZNqPrk/JEOjOxkUsv
-	 zpWbSMJyRlVw7s/z0DQ1NoS3qipR5O0XDIihbpyG9zcRtE/VGl7x38TiBCE7dtJ5Ee
-	 5v59IIGw/zPJj17TzZ2qX74Kmkcan652SQJF3pOAeFfQEurULwp2PZiRTjv+7MaHPm
-	 Gztp9/wexVu3FKMI2hOe+fQ5gPIbgPhgE1/gj7HUR+6+TUe4QgDdNtc8P6KrVa8grr
-	 WTOLxBSt6YCDQ==
-Date: Mon, 7 Jul 2025 11:42:16 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Byungchul Park <byungchul@sk.com>
-Cc: Harry Yoo <harry.yoo@oracle.com>, willy@infradead.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- kernel_team@skhynix.com, almasrymina@google.com,
- ilias.apalodimas@linaro.org, hawk@kernel.org, akpm@linux-foundation.org,
- davem@davemloft.net, john.fastabend@gmail.com, andrew+netdev@lunn.ch,
- asml.silence@gmail.com, toke@redhat.com, tariqt@nvidia.com,
- edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, leon@kernel.org,
- ast@kernel.org, daniel@iogearbox.net, david@redhat.com,
- lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
- rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org,
- linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com,
- hannes@cmpxchg.org, ziy@nvidia.com, jackmanb@google.com
-Subject: Re: [PATCH net-next v7 1/7] netmem: introduce struct netmem_desc
- mirroring struct page
-Message-ID: <20250707114216.20c24489@kernel.org>
-In-Reply-To: <20250707002141.GA3379@system.software.com>
-References: <20250625043350.7939-1-byungchul@sk.com>
-	<20250625043350.7939-2-byungchul@sk.com>
-	<20250626174904.4a6125c9@kernel.org>
-	<20250627035405.GA4276@system.software.com>
-	<20250627173730.15b25a8c@kernel.org>
-	<aGHNmKRng9H6kTqz@hyeyoo>
-	<20250701164508.0738f00f@kernel.org>
-	<20250707002141.GA3379@system.software.com>
+	s=arc-20240116; t=1751925824; c=relaxed/simple;
+	bh=Pv3cdtRYR+8RAzNhg8UHDBTC+Z9xW3JmWHc0M2qgHMs=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=WC+pDqXsZ2NqK0hKCJagaO9NPIhKqM28eJhjYcjtknOiC3Hjh8dNbTe7FyM8NsGY61sOwcIEqiiWP5hvO11oJE68P6cVZCMNjJhhDWz3zncmH5swB9Qcoh6C3TsHhBdhgkZMdm0h4Mvd6Y3i8JLKwD0MF8IM0oXeyQHTrmKgfQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Fkg3HJpF; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from easwarh-mobl2. (unknown [20.29.225.195])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 4D9B22054680;
+	Mon,  7 Jul 2025 15:03:41 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4D9B22054680
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1751925821;
+	bh=xNWC/0DZp7yoXd0DedMxkG7j3oORN78XzbDIgm9XdK8=;
+	h=From:Subject:Date:To:Cc:From;
+	b=Fkg3HJpFQ+oDhLroLbYUEW9qEZwFbYxy7oALwDyhqNw1CuuIltqHEMrQqLCyTbbn1
+	 WWu4Gak8okrtXC9vo/7XmN2kWZEj7hTp5J41T3wGJft04dM70+IrwyG58vWSym84jl
+	 A7eUzam1ws+s/b8AtADkPkWdwnnHpyVg6vxxi6OY=
+From: Easwar Hariharan <eahariha@linux.microsoft.com>
+Subject: [PATCH net-next v2 0/2] Converge on using secs_to_jiffies() part
+ two
+Date: Mon, 07 Jul 2025 15:03:31 -0700
+Message-Id: <20250707-netdev-secs-to-jiffies-part-2-v2-0-b7817036342f@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADNEbGgC/4WNTQ6CMBBGr0Jm7ZC2/ARceQ/DAstUxgglbW0wh
+ Lvb9AIuv3x57x3gyTF5uBYHOIrs2a5pqEsBeh7XJyFPaYMSqhFSdbhSmCiiJ+0xWHyxMYnHbXQ
+ BFXZGTKqpGtG3IyTH5sjwnv13SGjC9wBDemb2wbpvDkeZ/9xQsv/TiBIF6rqrtW6rVsrH7c3rZ
+ y8X1s56a0Kp7QLDeZ4/OSsimt4AAAA=
+X-Change-ID: 20250128-netdev-secs-to-jiffies-part-2-8f0d2535096a
+To: "D. Wythe" <alibuda@linux.alibaba.com>, 
+ Dust Li <dust.li@linux.alibaba.com>, 
+ Sidraya Jayagond <sidraya@linux.ibm.com>, 
+ Wenjia Zhang <wenjia@linux.ibm.com>, 
+ Mahanta Jambigi <mjambigi@linux.ibm.com>, 
+ Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Simon Horman <horms@kernel.org>, David Ahern <dsahern@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-rdma@vger.kernel.org, 
+ linux-s390@vger.kernel.org, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Easwar Hariharan <eahariha@linux.microsoft.com>
+X-Mailer: b4 0.14.2
 
-On Mon, 7 Jul 2025 09:21:41 +0900 Byungchul Park wrote:
-> > Thanks a lot, this clarifies things for me.
-> > 
-> > Unfortunately, I still think that it's hard to judge patches 1 and 7
-> > in context limited to this series, so let's proceed to reposting just
-> > the "middle 5" patches.  
-> 
-> Just in case, I sent v8 with the "middle 5" last week as you requested.
-> I'm convinced they are non-controversial but lemme know if any.
+This is the second series (part 1*) that converts users of msecs_to_jiffies() that
+either use the multiply pattern of either of:
+- msecs_to_jiffies(N*1000) or
+- msecs_to_jiffies(N*MSEC_PER_SEC)
 
-Please don't ping maintainers like this.
-It was 4th of July weekend in the US.
-We'll get to your patches when we do.
+where N is a constant or an expression, to avoid the multiplication.
+
+The conversion is made with Coccinelle with the secs_to_jiffies() script
+in scripts/coccinelle/misc. Attention is paid to what the best change
+can be rather than restricting to what the tool provides.
+
+This series is based on net-next.
+
+Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
+
+* https://lore.kernel.org/all/20241212-netdev-converge-secs-to-jiffies-v4-0-6dac97a6d6ab@linux.microsoft.com/
+
+---
+Changes in v2:
+- Implemented report mode for the secs_to_jiffies coccicheck script (Jakub), patch has been queued by Andrew Morton in mm-nonmm-unstable
+  - Link: https://web.git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git/commit/?h=mm-nonmm-unstable&id=a01189aaf16e8d8d619067939ea21ea97a279864
+- Drop change to netfilter already merged upstream: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f4293c2baf6faa5f1a1638bcce698ed88d0d396e
+- Link to v1: https://lore.kernel.org/r/20250219-netdev-secs-to-jiffies-part-2-v1-0-c484cc63611b@linux.microsoft.com
+
+---
+Easwar Hariharan (2):
+      net/smc: convert timeouts to secs_to_jiffies()
+      net: ipconfig: convert timeouts to secs_to_jiffies()
+
+ net/ipv4/ipconfig.c | 6 +++---
+ net/smc/af_smc.c    | 3 +--
+ 2 files changed, 4 insertions(+), 5 deletions(-)
+---
+base-commit: 6b9fd8857b9fc4dd62e7cd300327f0e48dd76642
+change-id: 20250128-netdev-secs-to-jiffies-part-2-8f0d2535096a
+
+Best regards,
+-- 
+Easwar Hariharan <eahariha@linux.microsoft.com>
+
 
