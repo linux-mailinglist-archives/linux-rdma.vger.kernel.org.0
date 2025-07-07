@@ -1,126 +1,94 @@
-Return-Path: <linux-rdma+bounces-11945-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11946-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA2BFAFBE17
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jul 2025 00:04:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7203AFBED6
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jul 2025 02:00:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEC361884151
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jul 2025 22:04:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AC2A07A9F58
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jul 2025 23:58:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B6A22951CB;
-	Mon,  7 Jul 2025 22:03:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5088928C025;
+	Mon,  7 Jul 2025 23:59:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="iUJy5S40"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H9A1+Z4g"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F3A328BAB9;
-	Mon,  7 Jul 2025 22:03:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED09A28A704;
+	Mon,  7 Jul 2025 23:59:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751925824; cv=none; b=S9dmOj+61dR/iEG0XycSbr+GasP2RcvcPkQlu1EnmmbMaScIsdTjghTaaxwZtFG/ftw2FKYb1h1Sa4GXSeW+5PHjuXb5C81yDGNLqzGjld+IEohhVLZ9hkMxtLUT3TCxeGEhXsewP+eKBYazPTArdHpyTFMDZjslnAXGCZAQ/v4=
+	t=1751932798; cv=none; b=R1625FhQhvtzhe7Zz5tjIks3MWsh07iextNvzbRYgfArYj9r6u7YJe8vPVL/FoV4dVUYPArHAOI8keuQlmfPYMbaTROYCCbNJnGcVhmd3AAcIj0oisQotduETN6HDkw7n1kYtvC+yp0DK6tN5uC8q0NsNEcrA+IuASRqEaSo0Gk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751925824; c=relaxed/simple;
-	bh=VIoB7qiTLaV7Z1JX5PmXLYanxXX/r8BMP27IJazNm84=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=T0JkALTgE9JtJo4+zsayPQEDgE7IERPaKn+L7esIgeRbGUTDiZ/in83m8PO8EhYCfJxJDevmgJIcEX0QU9QAVfeXMYiRYfslU9y6H1T2s4NmGJctYTeGRVfCHCYsDqUnALxmoxw/A/BXUTnGh+ZVHO1JjXl9KPYvcY8xZzlunIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=iUJy5S40; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from easwarh-mobl2. (unknown [20.29.225.195])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 80DEF2054689;
-	Mon,  7 Jul 2025 15:03:42 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 80DEF2054689
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1751925823;
-	bh=ZQBUkjDtvUw42acvYUgd6vDbgxWPxXM2A3fBzrkCpHM=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=iUJy5S402vW9QcG4yGSfhRWs8qDBqFXFp3IkaUFVFzW5hQOyEWnpgi4tW1UbfLlj+
-	 +boa03gPqNmBv5uvN7aWJNvIaDZLz9Hv1+CzGVEk89Jxl+duextke1Xz8uKTQbZ1HS
-	 8foQuORd+bKXJB85V9fjNiD+GRWt+jOvD5OqUNV8=
-From: Easwar Hariharan <eahariha@linux.microsoft.com>
-Date: Mon, 07 Jul 2025 15:03:33 -0700
-Subject: [PATCH net-next v2 2/2] net: ipconfig: convert timeouts to
- secs_to_jiffies()
+	s=arc-20240116; t=1751932798; c=relaxed/simple;
+	bh=vVQAswP6Isaud9swQz92zL9tG6ep0AClXvMhgT4UBe0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=vEbJzsBsY0OtsPptTVYbfAB7RX9Z5BvG/2Jkw1wb8gn678CBRDLokk8qPP1hH12S3M8AhdMXqKq0HgftRaLez4WG1VjlVpkykrZWkMAdPwafsocf29SeIoKAyoMrL6iN8L+BNgXO6E8WK0QzsqZVu34XOrRzQfz0MH0JxQhHmsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H9A1+Z4g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43172C4CEE3;
+	Mon,  7 Jul 2025 23:59:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1751932797;
+	bh=vVQAswP6Isaud9swQz92zL9tG6ep0AClXvMhgT4UBe0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=H9A1+Z4gROOCKkURpF3ESL/NkvX52UgyKI1DxVIl1MHC5/K4fOHH6Dg5tds9XQKa4
+	 5ybdggPqD5cemF4U+Iyi6nufTnGhjQP8Fh3KDc/l6Dmc+lkzE7MPbwnzMu/pbuy7aV
+	 /O22nJ4rZfkbp2Wjo9Q9gBvg4/7aokgjdcnJHZ5i5hRbqaA+6EbHk7vaxcskV+Ul7l
+	 dX7I7aNC8IOO4gtghbnNWHTQIYlnvKn2BkI+jj9hwetkZIGiW0O4zTh7LuhF+HwtGx
+	 Dtr3dVgPhWVqoAzJU4Zl59zjFXIvAR95IiGoJiZtWxbk6UVDwsbarvKbIGL/Ax6+NB
+	 TiX2lqI/pZ71g==
+Date: Mon, 7 Jul 2025 16:59:56 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
+ <leon@kernel.org>, <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [pull-request] mlx5-next updates 2025-07-03
+Message-ID: <20250707165956.4f6f96df@kernel.org>
+In-Reply-To: <1751574385-24672-1-git-send-email-tariqt@nvidia.com>
+References: <1751574385-24672-1-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250707-netdev-secs-to-jiffies-part-2-v2-2-b7817036342f@linux.microsoft.com>
-References: <20250707-netdev-secs-to-jiffies-part-2-v2-0-b7817036342f@linux.microsoft.com>
-In-Reply-To: <20250707-netdev-secs-to-jiffies-part-2-v2-0-b7817036342f@linux.microsoft.com>
-To: "D. Wythe" <alibuda@linux.alibaba.com>, 
- Dust Li <dust.li@linux.alibaba.com>, 
- Sidraya Jayagond <sidraya@linux.ibm.com>, 
- Wenjia Zhang <wenjia@linux.ibm.com>, 
- Mahanta Jambigi <mjambigi@linux.ibm.com>, 
- Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Simon Horman <horms@kernel.org>, David Ahern <dsahern@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-rdma@vger.kernel.org, 
- linux-s390@vger.kernel.org, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Easwar Hariharan <eahariha@linux.microsoft.com>
-X-Mailer: b4 0.14.2
 
-Commit b35108a51cf7 ("jiffies: Define secs_to_jiffies()") introduced
-secs_to_jiffies().  As the value here is a multiple of 1000, use
-secs_to_jiffies() instead of msecs_to_jiffies to avoid the multiplication.
+On Thu, 3 Jul 2025 23:26:25 +0300 Tariq Toukan wrote:
+> Hi,
+> 
+> The following pull-request contains common mlx5 updates
+> for your *net-next* tree.
+> Please pull and let me know of any problem.
+> 
+> Regards,
+> Tariq
+> 
+> ----------------------------------------------------------------
+> 
+> The following changes since commit e04c78d86a9699d136910cfc0bdcf01087e3267e:
+> 
+>   Linux 6.16-rc2 (2025-06-15 13:49:41 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git 02943ac2f6fb
+> 
+> for you to fetch changes up to 02943ac2f6fbba8fc5e57c57e7cbc2d7c67ebf0d:
+> 
+>   net/mlx5: fs, fix RDMA TRANSPORT init cleanup flow (2025-07-02 14:08:18 -0400)
 
-This is converted using scripts/coccinelle/misc/secs_to_jiffies.cocci with
-the following Coccinelle rules:
+Doesn't work:
 
-@depends on patch@
-expression E;
-@@
+fatal: couldn't find remote ref 02943ac2f6fb
 
--msecs_to_jiffies(E * 1000)
-+secs_to_jiffies(E)
-
--msecs_to_jiffies(E * MSEC_PER_SEC)
-+secs_to_jiffies(E)
-
-While here, manually convert a couple timeouts denominated in seconds
-
-Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
----
- net/ipv4/ipconfig.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/net/ipv4/ipconfig.c b/net/ipv4/ipconfig.c
-index c56b6fe6f0d771e9275bb66c159d9abb330bdf4c..22a7889876c1cf7d5233fe8a0ee12e134b20c1cd 100644
---- a/net/ipv4/ipconfig.c
-+++ b/net/ipv4/ipconfig.c
-@@ -274,9 +274,9 @@ static int __init ic_open_devs(void)
- 
- 	/* wait for a carrier on at least one device */
- 	start = jiffies;
--	next_msg = start + msecs_to_jiffies(20000);
-+	next_msg = start + secs_to_jiffies(20);
- 	while (time_before(jiffies, start +
--			   msecs_to_jiffies(carrier_timeout * 1000))) {
-+			   secs_to_jiffies(carrier_timeout))) {
- 		int wait, elapsed;
- 
- 		rtnl_lock();
-@@ -295,7 +295,7 @@ static int __init ic_open_devs(void)
- 		elapsed = jiffies_to_msecs(jiffies - start);
- 		wait = (carrier_timeout * 1000 - elapsed + 500) / 1000;
- 		pr_info("Waiting up to %d more seconds for network.\n", wait);
--		next_msg = jiffies + msecs_to_jiffies(20000);
-+		next_msg = jiffies + secs_to_jiffies(20);
- 	}
- have_carrier:
- 
-
--- 
-2.43.0
-
+In general a named tag would be better.
 
