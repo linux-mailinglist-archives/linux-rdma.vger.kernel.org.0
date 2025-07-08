@@ -1,94 +1,113 @@
-Return-Path: <linux-rdma+bounces-11946-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11947-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7203AFBED6
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jul 2025 02:00:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DA08AFC045
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jul 2025 04:00:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AC2A07A9F58
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Jul 2025 23:58:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0113B16D9F4
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jul 2025 02:00:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5088928C025;
-	Mon,  7 Jul 2025 23:59:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 465DD207669;
+	Tue,  8 Jul 2025 01:59:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H9A1+Z4g"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZsAamLvc"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED09A28A704;
-	Mon,  7 Jul 2025 23:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA99E3594C;
+	Tue,  8 Jul 2025 01:59:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1751932798; cv=none; b=R1625FhQhvtzhe7Zz5tjIks3MWsh07iextNvzbRYgfArYj9r6u7YJe8vPVL/FoV4dVUYPArHAOI8keuQlmfPYMbaTROYCCbNJnGcVhmd3AAcIj0oisQotduETN6HDkw7n1kYtvC+yp0DK6tN5uC8q0NsNEcrA+IuASRqEaSo0Gk=
+	t=1751939995; cv=none; b=FpG8q/gyxCNYNJ+/umUrNsozNcvCpNYAFTKmxP87b9vQpDunW2+XMHUpAjXjoTl3TjzALdDHZxhnX1y1ZJyaQCDGi12DaZz+keh97YeJ8MeIH6zt8mwhcYQSCE9oxUAhGTPtUnvNi91koc4ybD8K0v4hQyRY7M/j4A4BnzyOzUI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1751932798; c=relaxed/simple;
-	bh=vVQAswP6Isaud9swQz92zL9tG6ep0AClXvMhgT4UBe0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=vEbJzsBsY0OtsPptTVYbfAB7RX9Z5BvG/2Jkw1wb8gn678CBRDLokk8qPP1hH12S3M8AhdMXqKq0HgftRaLez4WG1VjlVpkykrZWkMAdPwafsocf29SeIoKAyoMrL6iN8L+BNgXO6E8WK0QzsqZVu34XOrRzQfz0MH0JxQhHmsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H9A1+Z4g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43172C4CEE3;
-	Mon,  7 Jul 2025 23:59:57 +0000 (UTC)
+	s=arc-20240116; t=1751939995; c=relaxed/simple;
+	bh=TLhs202vwW3I0YpG4doGK9MRpmuivZxpyIVJScs2RT0=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=dosWSpKPAanpE1uI2GM7hKUqEi4VTBuwrasl1TszQOTzD9AAFqV1vdWkX4IZ9O/dN1+HIkUL+6jI2qNZNhIwOD2IGcX4/EI3tPUBgvavKk7iEakiLpFK2s1gA/H1G3trw14KyHtrzblamfyAdRXJU8V+LgyN5g1itdEICgC8skA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZsAamLvc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC140C4CEE3;
+	Tue,  8 Jul 2025 01:59:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1751932797;
-	bh=vVQAswP6Isaud9swQz92zL9tG6ep0AClXvMhgT4UBe0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=H9A1+Z4gROOCKkURpF3ESL/NkvX52UgyKI1DxVIl1MHC5/K4fOHH6Dg5tds9XQKa4
-	 5ybdggPqD5cemF4U+Iyi6nufTnGhjQP8Fh3KDc/l6Dmc+lkzE7MPbwnzMu/pbuy7aV
-	 /O22nJ4rZfkbp2Wjo9Q9gBvg4/7aokgjdcnJHZ5i5hRbqaA+6EbHk7vaxcskV+Ul7l
-	 dX7I7aNC8IOO4gtghbnNWHTQIYlnvKn2BkI+jj9hwetkZIGiW0O4zTh7LuhF+HwtGx
-	 Dtr3dVgPhWVqoAzJU4Zl59zjFXIvAR95IiGoJiZtWxbk6UVDwsbarvKbIGL/Ax6+NB
-	 TiX2lqI/pZ71g==
-Date: Mon, 7 Jul 2025 16:59:56 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
- <leon@kernel.org>, <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [pull-request] mlx5-next updates 2025-07-03
-Message-ID: <20250707165956.4f6f96df@kernel.org>
-In-Reply-To: <1751574385-24672-1-git-send-email-tariqt@nvidia.com>
-References: <1751574385-24672-1-git-send-email-tariqt@nvidia.com>
+	s=k20201202; t=1751939994;
+	bh=TLhs202vwW3I0YpG4doGK9MRpmuivZxpyIVJScs2RT0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=ZsAamLvcaUMQYGokEQv/ZInSF2PSJ6/kZyz1+rORI37AQ7uvqlRDo8LNCwXG6pcV/
+	 gVdMad93iwCbuOKNoPCFL+fVbdq7Hkt+wYOlfMgzGnOzZ3bkGw7payS+OtAjiNGIo8
+	 ziRTQVAwyIIMbDA+l7rR4IH1leKyxlNcfmbobA6wZNbFveHbin4svklkqM39o+MMZo
+	 L7tUt850Y3676YEK3caR6fwoQVvPVI33Za6lJ9TS9xwOlz453+7f07eg2s/CxSgI0I
+	 ITgzKWTi/+ZGscYq4M4+eWOg6tPZt6oaxktLLEnZQAalCuMyfMP9yfj1JHDvJpwx1E
+	 zSQpVHepwVr9w==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAD9438111DD;
+	Tue,  8 Jul 2025 02:00:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v8 1/5] page_pool: rename page_pool_return_page()
+ to
+ page_pool_return_netmem()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175194001750.3541197.1637775374767479874.git-patchwork-notify@kernel.org>
+Date: Tue, 08 Jul 2025 02:00:17 +0000
+References: <20250702053256.4594-2-byungchul@sk.com>
+In-Reply-To: <20250702053256.4594-2-byungchul@sk.com>
+To: Byungchul Park <byungchul@sk.com>
+Cc: willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org,
+ almasrymina@google.com, ilias.apalodimas@linaro.org, harry.yoo@oracle.com,
+ hawk@kernel.org, akpm@linux-foundation.org, davem@davemloft.net,
+ john.fastabend@gmail.com, andrew+netdev@lunn.ch, asml.silence@gmail.com,
+ toke@redhat.com, tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
+ saeedm@nvidia.com, leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+ vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+ horms@kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+ vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
+ jackmanb@google.com
 
-On Thu, 3 Jul 2025 23:26:25 +0300 Tariq Toukan wrote:
-> Hi,
-> 
-> The following pull-request contains common mlx5 updates
-> for your *net-next* tree.
-> Please pull and let me know of any problem.
-> 
-> Regards,
-> Tariq
-> 
-> ----------------------------------------------------------------
-> 
-> The following changes since commit e04c78d86a9699d136910cfc0bdcf01087e3267e:
-> 
->   Linux 6.16-rc2 (2025-06-15 13:49:41 -0700)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git 02943ac2f6fb
-> 
-> for you to fetch changes up to 02943ac2f6fbba8fc5e57c57e7cbc2d7c67ebf0d:
-> 
->   net/mlx5: fs, fix RDMA TRANSPORT init cleanup flow (2025-07-02 14:08:18 -0400)
+Hello:
 
-Doesn't work:
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-fatal: couldn't find remote ref 02943ac2f6fb
+On Wed,  2 Jul 2025 14:32:52 +0900 you wrote:
+> Now that page_pool_return_page() is for returning netmem, not struct
+> page, rename it to page_pool_return_netmem() to reflect what it does.
+> 
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> Reviewed-by: Mina Almasry <almasrymina@google.com>
+> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
+> Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> 
+> [...]
 
-In general a named tag would be better.
+Here is the summary with links:
+  - [net-next,v8,1/5] page_pool: rename page_pool_return_page() to page_pool_return_netmem()
+    https://git.kernel.org/netdev/net-next/c/61a332475334
+  - [net-next,v8,2/5] page_pool: rename __page_pool_release_page_dma() to __page_pool_release_netmem_dma()
+    https://git.kernel.org/netdev/net-next/c/4ad125ae380b
+  - [net-next,v8,3/5] page_pool: rename __page_pool_alloc_pages_slow() to __page_pool_alloc_netmems_slow()
+    https://git.kernel.org/netdev/net-next/c/b56ce8684622
+  - [net-next,v8,4/5] netmem: use _Generic to cover const casting for page_to_netmem()
+    https://git.kernel.org/netdev/net-next/c/4369d40da2f2
+  - [net-next,v8,5/5] page_pool: make page_pool_get_dma_addr() just wrap page_pool_get_dma_addr_netmem()
+    https://git.kernel.org/netdev/net-next/c/d8bf56a0ca10
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
