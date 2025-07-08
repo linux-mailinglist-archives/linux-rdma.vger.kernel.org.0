@@ -1,918 +1,189 @@
-Return-Path: <linux-rdma+bounces-11981-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11982-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71F4BAFD941
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jul 2025 23:07:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0104AFD981
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jul 2025 23:17:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49BAA1BC83E0
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jul 2025 21:08:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DF2F4A8693
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jul 2025 21:17:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 819DB24BD04;
-	Tue,  8 Jul 2025 21:07:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B6F7242D64;
+	Tue,  8 Jul 2025 21:17:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GpQzSnIW"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ayKMqGnj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2044.outbound.protection.outlook.com [40.107.92.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D72A924728B;
-	Tue,  8 Jul 2025 21:06:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752008820; cv=none; b=cTY4AnMRp5t+Iq2HvbmTiWW774+aOhpRnGOjCZAauuHKkQAVxSxYqBzdAaQ7PgBUidK5NMCvjC+L3wGE3oOvHCDsZAWHENIPt8kOpyYq05HW99SfZPRysiLGh7Xq63e4NxEjSnWXGI/3/dpIb50PR8F+EBV4FtzB+E/7tvKMsPY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752008820; c=relaxed/simple;
-	bh=9/1DYxk/SPsNxVAFT2mzUgfbgR/7yZwwtnxExsR5Jz8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AvrD6Tdu5kmXQsEYabAfUiffaEccQXbMSW/mKly6c65kXxV1G1xLi8vcJED+hdGkk7LLq0k6bXNLTFfPVqyqyTJQuhk5Ea14MmdSSRH+MSZMgvZXCl6kv7vYnS5J06oPwbXPyeQUbAXXQ67CV2XYvDSGUTMkAKBd9KVnxZOerUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GpQzSnIW; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1752008818; x=1783544818;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=9/1DYxk/SPsNxVAFT2mzUgfbgR/7yZwwtnxExsR5Jz8=;
-  b=GpQzSnIWdq+BA9WTyaNl9wc1TsiW+UJHLRiK7xavjsYjDuxrEAa7H+Ci
-   fQxPhLvGjxnJaZewy7XoqmRPkE4q0EsPkce2JwlCRRilLxHXqcYeY4drw
-   sVzAWFU4AqX8kvuIgCD6WL3QWCkA9DeUVpMDjDK9UkOpSl+kpoLSH+42D
-   ibdHL8UfAy1DZsvkz4SCBb4Vq6ZHMJgYN7UYb1eVcOSJPau3NlNhA8TeY
-   bvJ9jt6qA7QxbM4IpOQkPsmSGyWgslj3yLM4PBYo+t21tyEUYA55jlufg
-   a43joORy5o+3Ow2h2JKaeIzW4cAKHecpNZ7eI3wKAesGomMUweiFshiN2
-   A==;
-X-CSE-ConnectionGUID: /9fG+1NcS/K8H3zr0hzJ+A==
-X-CSE-MsgGUID: jlCl00ZbTo+VqYWMPmMpwA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11487"; a="54391730"
-X-IronPort-AV: E=Sophos;i="6.16,298,1744095600"; 
-   d="scan'208";a="54391730"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2025 14:06:57 -0700
-X-CSE-ConnectionGUID: 55l3q/+OSJCS49rCdmcYlw==
-X-CSE-MsgGUID: hg70wwo/Sr6Ny0M1UF5Dbw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,298,1744095600"; 
-   d="scan'208";a="179276563"
-Received: from pthorat-mobl.amr.corp.intel.com (HELO soc-PF51RAGT.clients.intel.com) ([10.246.116.180])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2025 14:06:56 -0700
-From: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
-To: intel-wired-lan@lists.osuosl.org
-Cc: jgg@nvidia.com,
-	leon@kernel.org,
-	linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org,
-	kuba@kernel.org,
-	Joshua Hay <joshua.a.hay@intel.com>,
-	Tatyana Nikolova <tatyana.e.nikolova@intel.com>
-Subject: [iwl-next v3 6/6] idpf: implement get LAN MMIO memory regions
-Date: Tue,  8 Jul 2025 16:05:54 -0500
-Message-ID: <20250708210554.1662-7-tatyana.e.nikolova@intel.com>
-X-Mailer: git-send-email 2.45.1
-In-Reply-To: <20250708210554.1662-1-tatyana.e.nikolova@intel.com>
-References: <20250708210554.1662-1-tatyana.e.nikolova@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83CC423C8B3;
+	Tue,  8 Jul 2025 21:16:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.44
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1752009420; cv=fail; b=RqPmvKjIicHNcJS10C/MGJlZdjnCR2zKSUnIcX5nMJ7ygVEbDgAdQN3ZC4sl9ZP5ole5Krz0amyiEKeDM9X0Hp7NrkglCaQEv+IG7JhWvtu4BidLIgZmXvbebiFx+rEq486zak9pSALkmRiyKUNGyobOhAiWz29Halxh/TPJTjw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1752009420; c=relaxed/simple;
+	bh=uy18lxTnbIj/c5ly/HD9QjUsso4mzqWoN5P/vwA6kjU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UGUIv0cwNMA1RnybllhJlwJv/CnijhUlS6j970DeyCYScWSnM+jRMfIJuNs6K1vG/evXASRnJEALFRiGgxmt9GklfxM7LMd4Vv+9W5h9ve1T5tbg4Ta8i5A32tbG+WkWAUtwfCuWov9G7PglUTXpbSfKP46BnQ1ABSU0gUUtqNk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ayKMqGnj; arc=fail smtp.client-ip=40.107.92.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=F083UGUa/NjXwg37V+uQsrK93lZbanwYOkUnhSfe2o4xb176iWInts+eRED3ejsYY+sjsa4wit220rvm3MUexM5jWBVnEFKMtzyIzohu4P5AfMdKR+fpt2UTNZHniyjeB6xfxbMc6UiJmmmTxxybJ193GBRGj7y+nrLbglLB+Ac3yc5XEAOiHbIyPmcVu0lW2QuN9AyRvt7MZz0+bVNvhfiDEQ3EfxW0hGrXTyAhzFySIiCD7HCFFJSdkgJtxiPIP8FSW8hVOzv3Uxfpabk4+RIV8OVwXBMg1rlHd63TOm6i30qo0bqTHtuX52gvpFfX9LC1QVqEZ5n/Gqf7j+H75A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nf4YHhVOxfRWQgAvLdvVil/pRlX2kEQC32z+zLlk0bY=;
+ b=y1Z0yQOwzcCJsk7EjiOgwtzw66K9XOl5A6q0h7YXV5P85YToSn8BKMtCRPsK7v7uyY6bv7IhB3r1z77vNr8irTy52x1LDmFBSw3LaulVAs7CgFYDLLKlyEKoBxvvOcBdwq6Jr43+FHouNy4kPvE+2IxtCWG15JVlNVFQQ8YCSKznxVB5AjbDzzK1LZ0XXx8OmFmkesrwUR+Lkx/jb5sxNwfOHZDR0XJNEbcN3HPn8CEglcQIoHnWGa0YkDATGTwtabuL/3jDSuVgk6v8Bbg25qgQHzQN/18Ch6BnCj2yG3c37Rd+Uz1ruFn9PZhKlXpQky4eAuCtmWQhBzDpwTiEqw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nf4YHhVOxfRWQgAvLdvVil/pRlX2kEQC32z+zLlk0bY=;
+ b=ayKMqGnj9UCr1y1GIijao+QvKe3kpWOw8z+5+oR6XpyMyOiRXvnEQyXdDvTIVf40y8s7nb/W2vdVlLWqJrJy597yEGg9e/yI6lkonEhCeBKyF1iQi2Z6LQpkLXxr1GSFCeLVq5OM0hDS98qj76UN+cKxZsJeLJxs3nh8YipaXZfoUZYJ9H0jByRELWtFVLA4Df8jMk3RTQNdkb0VeoTF/DKu35Qabhmj/geVUoqAq7D2iBd+9JVMb5psFwY9q+8swxZSn6nYmkA5jYRO6iKIRkys1vTc0ZkxqFh9v+vvvlLzGlG4LaaTzV1J0WSDWKp2zmjpVz9LwEPTXjOaRJkCZw==
+Received: from PH7P220CA0129.NAMP220.PROD.OUTLOOK.COM (2603:10b6:510:327::23)
+ by DS0PR12MB9274.namprd12.prod.outlook.com (2603:10b6:8:1a9::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8901.23; Tue, 8 Jul
+ 2025 21:16:54 +0000
+Received: from SN1PEPF000397B0.namprd05.prod.outlook.com
+ (2603:10b6:510:327:cafe::f7) by PH7P220CA0129.outlook.office365.com
+ (2603:10b6:510:327::23) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8922.21 via Frontend Transport; Tue,
+ 8 Jul 2025 21:16:54 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ SN1PEPF000397B0.mail.protection.outlook.com (10.167.248.54) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8901.20 via Frontend Transport; Tue, 8 Jul 2025 21:16:53 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 8 Jul 2025
+ 14:16:37 -0700
+Received: from drhqmail201.nvidia.com (10.126.190.180) by
+ drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14; Tue, 8 Jul 2025 14:16:37 -0700
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
+ (10.126.190.180) with Microsoft SMTP Server id 15.2.1544.14 via Frontend
+ Transport; Tue, 8 Jul 2025 14:16:34 -0700
+From: Tariq Toukan <tariqt@nvidia.com>
+To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>
+CC: Saeed Mahameed <saeed@kernel.org>, Gal Pressman <gal@nvidia.com>, "Leon
+ Romanovsky" <leon@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, "Tariq
+ Toukan" <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next 0/5] net/mlx5: misc changes 2025-07-09
+Date: Wed, 9 Jul 2025 00:16:22 +0300
+Message-ID: <1752009387-13300-1-git-send-email-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.8.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: AnonymousSubmission
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF000397B0:EE_|DS0PR12MB9274:EE_
+X-MS-Office365-Filtering-Correlation-Id: ebd5e596-2fef-445b-6216-08ddbe64c354
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|36860700013|1800799024|376014|7416014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?1gZDsfEUKuqIYL6sM1sedF3a0UwIDiKETwQ3rDodS6WpBZ4NLvfdy0Uyux7p?=
+ =?us-ascii?Q?3bHLerBuZxPGMaewrg8j3mbuO5232ENa2BCjlZjdMhQOfKvimj/iXA8sQmhT?=
+ =?us-ascii?Q?uP4TNlnyIUxrjAiLRpXtmGH/KhMSzvinpalX6iEMyO7slBd7qANAVBeGJ/rR?=
+ =?us-ascii?Q?QKM1Oj92zF8yEvUKXJfzr53sj9Z6+dvhKT4MSSrKPmp1jCtUNwpG55zbR5cF?=
+ =?us-ascii?Q?aLnaSPh8zncaXKV7c8pCNmU5BMT2wBWq1RIeQtWsBXm41lhLmNziU+T02fqu?=
+ =?us-ascii?Q?6YXRo+g4PTq7QFN2CZ3dvOGb/1vgzsKJubXvTx4Qco8vGtVQZZKPqDcLB7tv?=
+ =?us-ascii?Q?P8o4LjlJo/9g9sIoSG3J/huQfdLoKcX2mVsHI7477NrtUk/wHtFqna/VeNFQ?=
+ =?us-ascii?Q?bhUWd8lF0h+o2wUFajbj1HvBJhC0XEvx4RAOWVxFZ2jS4F5P/91dqXjJUp/3?=
+ =?us-ascii?Q?uyTpq5Nxx9IhD5wlSxqpA1zxoJbtPAKpOrqz0P75ni8dAh6FXR/wsYceTiVK?=
+ =?us-ascii?Q?1srUJNnoDa2LZ26FruTEWb8J+qtoTHRihKSNjoJ6gtV7xTWwSZMJ1hU0EBjX?=
+ =?us-ascii?Q?IxI1fgd20GGIyewyKZKFguSF5817MMS+4jKwfdSaDMAPPH39LTesMqjM6cWm?=
+ =?us-ascii?Q?ZvO5Xdpux01DL5ZKjGzH5KJHKXKYOmXNdVlqupI6eNmEi3fbEAJyXf7YSLnb?=
+ =?us-ascii?Q?4PNCwbRhtxmfZfTz6///uFmmgauxbqwE+H9bDL1XuMplMwRnD0R0UBpSUo9E?=
+ =?us-ascii?Q?r6Ge7L7AUvmz5fVROJGGRpf3xXmGD4MUyN6REQ7N0HeXJ8A8zRPi50qSnnCY?=
+ =?us-ascii?Q?NUj+HoUBoFQ3HTUDUm9BveO8tTbod9fDCblRNmXk6nzujZktOACeEgBiCcHH?=
+ =?us-ascii?Q?8ZougdeWAjvkhoymoZHjat3pRO0/VbJCaBQw4VlAm7kKLnaKXpGy6bDexIGK?=
+ =?us-ascii?Q?CRcojQjt7DJqTOpZ7kMSY1Jo3RJCZErSd27OKt51dNwjucL6cpAIvK+9mq63?=
+ =?us-ascii?Q?xs3AGmjeRe29bOi4ZOZAjo6DZ1/TxBlTzmU8DQz5WOnv2h4fjjskG1Fp4JfM?=
+ =?us-ascii?Q?bw+C/h8X2tp8vELPmSrqxAewKFiJ75+PBESsXWrVk+0A3STCwwefahTvKbw0?=
+ =?us-ascii?Q?q5o6Cwrm4TzITiPfhPMfa8snQM7nlJuTUnatGdGVrLUVzN8Mm/JVCYkNKm8g?=
+ =?us-ascii?Q?GvkzUPbeiX+jEBVQc/RqELOGtO/Cyq61FVPHej8C7VZITT3F2Am94REkVgQx?=
+ =?us-ascii?Q?9UyJz0BoDqH+DnTpWPPknj2xnkBSeh1XXxd/2AWSb1yIfSCXlZ0626GfUUBR?=
+ =?us-ascii?Q?f55RAyQAt0tIKmMqvQSVAyNGKGol9tcHCZscdQ0VPPVgvrKRJ17hB8C8mrN4?=
+ =?us-ascii?Q?Kb60REqWY6xLvT9dMd+U2R4RDNwi/3PSFwK0usRNlzl4S/etuqHUXLOx00Bx?=
+ =?us-ascii?Q?piz3D53WfrQ/0gjh106wYaGUMWxluZ6abh7TR51mhhB644LRPYUB/Jy9SBie?=
+ =?us-ascii?Q?jvKvQP3C3Gz3DSzWk709f6fI7chnLhgDAp2x?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(36860700013)(1800799024)(376014)(7416014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2025 21:16:53.8270
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ebd5e596-2fef-445b-6216-08ddbe64c354
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SN1PEPF000397B0.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB9274
 
-From: Joshua Hay <joshua.a.hay@intel.com>
+Hi,
 
-The RDMA driver needs to map its own MMIO regions for the sake of
-performance, meaning the IDPF needs to avoid mapping portions of the BAR
-space. However, to be HW agnostic, the IDPF cannot assume where
-these are and must avoid mapping hard coded regions as much as possible.
+This series contains misc enhancements to the mlx5 driver.
 
-The IDPF maps the bare minimum to load and communicate with the
-control plane, i.e., the mailbox registers and the reset state
-registers. Because of how and when mailbox reigster offsets are
-initialized, it is easier to adjust the existing defines to be relative
-to the mailbox region starting address. Use a specific mailbox register
-write function that uses these relative offsets. The reset state
-register addresses are calculated the same way as for other registers,
-described below.
+Regards,
+Tariq
 
-The IDPF then calls a new virtchnl op to fetch a list of MMIO regions
-that it should map. The addresses for the registers in these regions are
-calculated by determining what region the register resides in, adjusting
-the offset to be relative to that region, and then adding the
-register's offset to that region's mapped address.
 
-If the new virtchnl op is not supported, the IDPF will fallback to
-mapping the whole bar. However, it will still map them as separate
-regions outside the mailbox and reset state registers. This way we can
-use the same logic in both cases to access the MMIO space.
+Carolina Jubran (1):
+  net/mlx5e: Remove unused VLAN insertion logic in TX path
 
-Reviewed-by: Madhu Chittim <madhu.chittim@intel.com>
-Signed-off-by: Joshua Hay <joshua.a.hay@intel.com>
-Signed-off-by: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
----
+Cosmin Ratiu (1):
+  net/mlx5e: CT: extract a memcmp from a spinlock section
 
-v3:
-- Use managed version of pci_request_region API
+Gal Pressman (1):
+  net/mlx5e: Replace recursive VLAN push handling with an iterative loop
 
-v2:
-- Don't dereference cdev_info before NULL check in deinit_core_aux_device
+Maor Gottlieb (1):
+  net/mlx5: Warn when write combining is not supported
 
-Changes since split (v1):
-- use struct resource to track mbx and rstat offsets
-- minor cleanup, added more comments, and more explanation in commit
-  msg, s/addr/vaddr
-- align with header naming, add idpf specific memory region support to
-  idpf specific header
+Tariq Toukan (1):
+  net/mlx5e: RX, Remove unnecessary RQT redirects
 
-[3]:
-- header cleanup
+ drivers/net/ethernet/mellanox/mlx5/core/en.h  |  1 -
+ .../net/ethernet/mellanox/mlx5/core/en/ptp.c  |  2 -
+ .../mellanox/mlx5/core/en/reporter_tx.c       |  1 -
+ .../ethernet/mellanox/mlx5/core/en/rx_res.c   |  4 +-
+ .../mellanox/mlx5/core/en/tc/act/vlan.c       | 43 ++++++++++---------
+ .../ethernet/mellanox/mlx5/core/en/tc_ct.c    |  5 ++-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |  2 -
+ .../net/ethernet/mellanox/mlx5/core/en_tx.c   |  9 +---
+ drivers/net/ethernet/mellanox/mlx5/core/wc.c  |  3 ++
+ 9 files changed, 31 insertions(+), 39 deletions(-)
 
- drivers/net/ethernet/intel/idpf/idpf.h        |  71 ++++++++-
- .../net/ethernet/intel/idpf/idpf_controlq.c   |  14 +-
- .../net/ethernet/intel/idpf/idpf_controlq.h   |  19 ++-
- drivers/net/ethernet/intel/idpf/idpf_dev.c    |  36 +++--
- drivers/net/ethernet/intel/idpf/idpf_idc.c    |  32 +++-
- drivers/net/ethernet/intel/idpf/idpf_main.c   |  32 +++-
- drivers/net/ethernet/intel/idpf/idpf_mem.h    |   8 +-
- drivers/net/ethernet/intel/idpf/idpf_vf_dev.c |  32 ++--
- .../net/ethernet/intel/idpf/idpf_virtchnl.c   | 149 +++++++++++++++++-
- drivers/net/ethernet/intel/idpf/virtchnl2.h   |  31 +++-
- include/linux/net/intel/iidc_rdma_idpf.h      |   8 +
- 11 files changed, 380 insertions(+), 52 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/idpf/idpf.h b/drivers/net/ethernet/intel/idpf/idpf.h
-index f1bb10ae34b3..8c93fbcb41bb 100644
---- a/drivers/net/ethernet/intel/idpf/idpf.h
-+++ b/drivers/net/ethernet/intel/idpf/idpf.h
-@@ -17,6 +17,7 @@ struct idpf_vport_max_q;
- #include <linux/sctp.h>
- #include <linux/ethtool_netlink.h>
- #include <net/gro.h>
-+#include <linux/ioport.h>
- #include <linux/net/intel/iidc_rdma.h>
- #include <linux/net/intel/iidc_rdma_idpf.h>
- 
-@@ -196,7 +197,8 @@ struct idpf_vport_max_q {
-  * @ptp_reg_init: PTP register initialization
-  */
- struct idpf_reg_ops {
--	void (*ctlq_reg_init)(struct idpf_ctlq_create_info *cq);
-+	void (*ctlq_reg_init)(struct idpf_adapter *adapter,
-+			      struct idpf_ctlq_create_info *cq);
- 	int (*intr_reg_init)(struct idpf_vport *vport);
- 	void (*mb_intr_reg_init)(struct idpf_adapter *adapter);
- 	void (*reset_reg_init)(struct idpf_adapter *adapter);
-@@ -205,15 +207,25 @@ struct idpf_reg_ops {
- 	void (*ptp_reg_init)(const struct idpf_adapter *adapter);
- };
- 
-+#define IDPF_MMIO_REG_NUM_STATIC	2
-+#define IDPF_PF_MBX_REGION_SZ		4096
-+#define IDPF_PF_RSTAT_REGION_SZ		2048
-+#define IDPF_VF_MBX_REGION_SZ		10240
-+#define IDPF_VF_RSTAT_REGION_SZ		2048
-+
- /**
-  * struct idpf_dev_ops - Device specific operations
-  * @reg_ops: Register operations
-  * @idc_init: IDC initialization
-+ * @static_reg_info: array of mailbox and rstat register info
-  */
- struct idpf_dev_ops {
- 	struct idpf_reg_ops reg_ops;
- 
- 	int (*idc_init)(struct idpf_adapter *adapter);
-+
-+	/* static_reg_info[0] is mailbox region, static_reg_info[1] is rstat */
-+	struct resource static_reg_info[IDPF_MMIO_REG_NUM_STATIC];
- };
- 
- /**
-@@ -754,6 +766,35 @@ static inline u8 idpf_get_min_tx_pkt_len(struct idpf_adapter *adapter)
- 	return pkt_len ? pkt_len : IDPF_TX_MIN_PKT_LEN;
- }
- 
-+/**
-+ * idpf_get_mbx_reg_addr - Get BAR0 mailbox register address
-+ * @adapter: private data struct
-+ * @reg_offset: register offset value
-+ *
-+ * Return: BAR0 mailbox register address based on register offset.
-+ */
-+static inline void __iomem *idpf_get_mbx_reg_addr(struct idpf_adapter *adapter,
-+						  resource_size_t reg_offset)
-+{
-+	return adapter->hw.mbx.vaddr + reg_offset;
-+}
-+
-+/**
-+ * idpf_get_rstat_reg_addr - Get BAR0 rstat register address
-+ * @adapter: private data struct
-+ * @reg_offset: register offset value
-+ *
-+ * Return: BAR0 rstat register address based on register offset.
-+ */
-+static inline
-+void __iomem *idpf_get_rstat_reg_addr(struct idpf_adapter *adapter,
-+				      resource_size_t reg_offset)
-+{
-+	reg_offset -= adapter->dev_ops.static_reg_info[1].start;
-+
-+	return adapter->hw.rstat.vaddr + reg_offset;
-+}
-+
- /**
-  * idpf_get_reg_addr - Get BAR0 register address
-  * @adapter: private data struct
-@@ -764,7 +805,31 @@ static inline u8 idpf_get_min_tx_pkt_len(struct idpf_adapter *adapter)
- static inline void __iomem *idpf_get_reg_addr(struct idpf_adapter *adapter,
- 					      resource_size_t reg_offset)
- {
--	return (void __iomem *)(adapter->hw.hw_addr + reg_offset);
-+	struct idpf_hw *hw = &adapter->hw;
-+
-+	for (int i = 0; i < hw->num_lan_regs; i++) {
-+		struct idpf_mmio_reg *region = &hw->lan_regs[i];
-+
-+		if (reg_offset >= region->addr_start &&
-+		    reg_offset < (region->addr_start + region->addr_len)) {
-+			/*
-+			 * Convert the offset so that it is relative to the
-+			 * start of the region.  Then add the base address of
-+			 * the region to get the final address.
-+			 */
-+			reg_offset -= region->addr_start;
-+
-+			return region->vaddr + reg_offset;
-+		}
-+	}
-+
-+	/* It's impossible to hit this case with offsets from the CP. But if we
-+	 * do for any other reason, the kernel will panic on that register
-+	 * access. Might as well do it here to make it clear what's happening.
-+	 */
-+	BUG();
-+
-+	return NULL;
- }
- 
- /**
-@@ -778,7 +843,7 @@ static inline bool idpf_is_reset_detected(struct idpf_adapter *adapter)
- 	if (!adapter->hw.arq)
- 		return true;
- 
--	return !(readl(idpf_get_reg_addr(adapter, adapter->hw.arq->reg.len)) &
-+	return !(readl(idpf_get_mbx_reg_addr(adapter, adapter->hw.arq->reg.len)) &
- 		 adapter->hw.arq->reg.len_mask);
- }
- 
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_controlq.c b/drivers/net/ethernet/intel/idpf/idpf_controlq.c
-index b28991dd1870..9c5c628eb469 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_controlq.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_controlq.c
-@@ -36,19 +36,19 @@ static void idpf_ctlq_init_regs(struct idpf_hw *hw, struct idpf_ctlq_info *cq,
- {
- 	/* Update tail to post pre-allocated buffers for rx queues */
- 	if (is_rxq)
--		wr32(hw, cq->reg.tail, (u32)(cq->ring_size - 1));
-+		idpf_mbx_wr32(hw, cq->reg.tail, (u32)(cq->ring_size - 1));
- 
- 	/* For non-Mailbox control queues only TAIL need to be set */
- 	if (cq->q_id != -1)
- 		return;
- 
- 	/* Clear Head for both send or receive */
--	wr32(hw, cq->reg.head, 0);
-+	idpf_mbx_wr32(hw, cq->reg.head, 0);
- 
- 	/* set starting point */
--	wr32(hw, cq->reg.bal, lower_32_bits(cq->desc_ring.pa));
--	wr32(hw, cq->reg.bah, upper_32_bits(cq->desc_ring.pa));
--	wr32(hw, cq->reg.len, (cq->ring_size | cq->reg.len_ena_mask));
-+	idpf_mbx_wr32(hw, cq->reg.bal, lower_32_bits(cq->desc_ring.pa));
-+	idpf_mbx_wr32(hw, cq->reg.bah, upper_32_bits(cq->desc_ring.pa));
-+	idpf_mbx_wr32(hw, cq->reg.len, (cq->ring_size | cq->reg.len_ena_mask));
- }
- 
- /**
-@@ -329,7 +329,7 @@ int idpf_ctlq_send(struct idpf_hw *hw, struct idpf_ctlq_info *cq,
- 	 */
- 	dma_wmb();
- 
--	wr32(hw, cq->reg.tail, cq->next_to_use);
-+	idpf_mbx_wr32(hw, cq->reg.tail, cq->next_to_use);
- 
- err_unlock:
- 	mutex_unlock(&cq->cq_lock);
-@@ -521,7 +521,7 @@ int idpf_ctlq_post_rx_buffs(struct idpf_hw *hw, struct idpf_ctlq_info *cq,
- 
- 		dma_wmb();
- 
--		wr32(hw, cq->reg.tail, cq->next_to_post);
-+		idpf_mbx_wr32(hw, cq->reg.tail, cq->next_to_post);
- 	}
- 
- 	mutex_unlock(&cq->cq_lock);
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_controlq.h b/drivers/net/ethernet/intel/idpf/idpf_controlq.h
-index c1aba09e9856..c882428edc24 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_controlq.h
-+++ b/drivers/net/ethernet/intel/idpf/idpf_controlq.h
-@@ -94,12 +94,27 @@ struct idpf_mbxq_desc {
- 	u32 pf_vf_id;		/* used by CP when sending to PF */
- };
- 
-+/*
-+ * Max number of MMIO regions not including the mailbox and rstat regions in
-+ * the fallback case when the whole bar is mapped.
-+ */
-+#define IDPF_MMIO_MAP_FALLBACK_MAX_REMAINING		3
-+
-+struct idpf_mmio_reg {
-+	void __iomem *vaddr;
-+	resource_size_t addr_start;
-+	resource_size_t addr_len;
-+};
-+
- /* Define the driver hardware struct to replace other control structs as needed
-  * Align to ctlq_hw_info
-  */
- struct idpf_hw {
--	void __iomem *hw_addr;
--	resource_size_t hw_addr_len;
-+	struct idpf_mmio_reg mbx;
-+	struct idpf_mmio_reg rstat;
-+	/* Array of remaining LAN BAR regions */
-+	int num_lan_regs;
-+	struct idpf_mmio_reg *lan_regs;
- 
- 	struct idpf_adapter *back;
- 
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_dev.c b/drivers/net/ethernet/intel/idpf/idpf_dev.c
-index dd227a4368fb..bfa60f7d43de 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_dev.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_dev.c
-@@ -10,10 +10,13 @@
- 
- /**
-  * idpf_ctlq_reg_init - initialize default mailbox registers
-+ * @adapter: adapter structure
-  * @cq: pointer to the array of create control queues
-  */
--static void idpf_ctlq_reg_init(struct idpf_ctlq_create_info *cq)
-+static void idpf_ctlq_reg_init(struct idpf_adapter *adapter,
-+			       struct idpf_ctlq_create_info *cq)
- {
-+	resource_size_t mbx_start = adapter->dev_ops.static_reg_info[0].start;
- 	int i;
- 
- 	for (i = 0; i < IDPF_NUM_DFLT_MBX_Q; i++) {
-@@ -22,22 +25,22 @@ static void idpf_ctlq_reg_init(struct idpf_ctlq_create_info *cq)
- 		switch (ccq->type) {
- 		case IDPF_CTLQ_TYPE_MAILBOX_TX:
- 			/* set head and tail registers in our local struct */
--			ccq->reg.head = PF_FW_ATQH;
--			ccq->reg.tail = PF_FW_ATQT;
--			ccq->reg.len = PF_FW_ATQLEN;
--			ccq->reg.bah = PF_FW_ATQBAH;
--			ccq->reg.bal = PF_FW_ATQBAL;
-+			ccq->reg.head = PF_FW_ATQH - mbx_start;
-+			ccq->reg.tail = PF_FW_ATQT - mbx_start;
-+			ccq->reg.len = PF_FW_ATQLEN - mbx_start;
-+			ccq->reg.bah = PF_FW_ATQBAH - mbx_start;
-+			ccq->reg.bal = PF_FW_ATQBAL - mbx_start;
- 			ccq->reg.len_mask = PF_FW_ATQLEN_ATQLEN_M;
- 			ccq->reg.len_ena_mask = PF_FW_ATQLEN_ATQENABLE_M;
- 			ccq->reg.head_mask = PF_FW_ATQH_ATQH_M;
- 			break;
- 		case IDPF_CTLQ_TYPE_MAILBOX_RX:
- 			/* set head and tail registers in our local struct */
--			ccq->reg.head = PF_FW_ARQH;
--			ccq->reg.tail = PF_FW_ARQT;
--			ccq->reg.len = PF_FW_ARQLEN;
--			ccq->reg.bah = PF_FW_ARQBAH;
--			ccq->reg.bal = PF_FW_ARQBAL;
-+			ccq->reg.head = PF_FW_ARQH - mbx_start;
-+			ccq->reg.tail = PF_FW_ARQT - mbx_start;
-+			ccq->reg.len = PF_FW_ARQLEN - mbx_start;
-+			ccq->reg.bah = PF_FW_ARQBAH - mbx_start;
-+			ccq->reg.bal = PF_FW_ARQBAL - mbx_start;
- 			ccq->reg.len_mask = PF_FW_ARQLEN_ARQLEN_M;
- 			ccq->reg.len_ena_mask = PF_FW_ARQLEN_ARQENABLE_M;
- 			ccq->reg.head_mask = PF_FW_ARQH_ARQH_M;
-@@ -130,7 +133,7 @@ static int idpf_intr_reg_init(struct idpf_vport *vport)
-  */
- static void idpf_reset_reg_init(struct idpf_adapter *adapter)
- {
--	adapter->reset_reg.rstat = idpf_get_reg_addr(adapter, PFGEN_RSTAT);
-+	adapter->reset_reg.rstat = idpf_get_rstat_reg_addr(adapter, PFGEN_RSTAT);
- 	adapter->reset_reg.rstat_m = PFGEN_RSTAT_PFR_STATE_M;
- }
- 
-@@ -144,9 +147,9 @@ static void idpf_trigger_reset(struct idpf_adapter *adapter,
- {
- 	u32 reset_reg;
- 
--	reset_reg = readl(idpf_get_reg_addr(adapter, PFGEN_CTRL));
-+	reset_reg = readl(idpf_get_rstat_reg_addr(adapter, PFGEN_CTRL));
- 	writel(reset_reg | PFGEN_CTRL_PFSWR,
--	       idpf_get_reg_addr(adapter, PFGEN_CTRL));
-+	       idpf_get_rstat_reg_addr(adapter, PFGEN_CTRL));
- }
- 
- /**
-@@ -195,4 +198,9 @@ void idpf_dev_ops_init(struct idpf_adapter *adapter)
- 	idpf_reg_ops_init(adapter);
- 
- 	adapter->dev_ops.idc_init = idpf_idc_register;
-+
-+	resource_set_range(&adapter->dev_ops.static_reg_info[0],
-+			   PF_FW_BASE, IDPF_PF_MBX_REGION_SZ);
-+	resource_set_range(&adapter->dev_ops.static_reg_info[1],
-+			   PFGEN_RTRIG, IDPF_PF_RSTAT_REGION_SZ);
- }
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_idc.c b/drivers/net/ethernet/intel/idpf/idpf_idc.c
-index eff9ba204f5f..c03869791eed 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_idc.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_idc.c
-@@ -408,7 +408,7 @@ int idpf_idc_init_aux_core_dev(struct idpf_adapter *adapter,
- {
- 	struct iidc_rdma_core_dev_info *cdev_info;
- 	struct iidc_rdma_priv_dev_info *privd;
--	int err;
-+	int err, i;
- 
- 	adapter->cdev_info = kzalloc(sizeof(*cdev_info), GFP_KERNEL);
- 	if (!adapter->cdev_info)
-@@ -426,14 +426,36 @@ int idpf_idc_init_aux_core_dev(struct idpf_adapter *adapter,
- 	cdev_info->rdma_protocol = IIDC_RDMA_PROTOCOL_ROCEV2;
- 	privd->ftype = ftype;
- 
-+	privd->mapped_mem_regions =
-+		kcalloc(adapter->hw.num_lan_regs,
-+			sizeof(struct iidc_rdma_lan_mapped_mem_region),
-+			GFP_KERNEL);
-+	if (!privd->mapped_mem_regions) {
-+		err = -ENOMEM;
-+		goto err_plug_aux_dev;
-+	}
-+
-+	privd->num_memory_regions = cpu_to_le16(adapter->hw.num_lan_regs);
-+	for (i = 0; i < adapter->hw.num_lan_regs; i++) {
-+		privd->mapped_mem_regions[i].region_addr =
-+			adapter->hw.lan_regs[i].vaddr;
-+		privd->mapped_mem_regions[i].size =
-+			cpu_to_le64(adapter->hw.lan_regs[i].addr_len);
-+		privd->mapped_mem_regions[i].start_offset =
-+			cpu_to_le64(adapter->hw.lan_regs[i].addr_start);
-+	}
-+
- 	idpf_idc_init_msix_data(adapter);
- 
- 	err = idpf_plug_core_aux_dev(cdev_info);
- 	if (err)
--		goto err_plug_aux_dev;
-+		goto err_free_mem_regions;
- 
- 	return 0;
- 
-+err_free_mem_regions:
-+	kfree(privd->mapped_mem_regions);
-+	privd->mapped_mem_regions = NULL;
- err_plug_aux_dev:
- 	kfree(privd);
- err_privd_alloc:
-@@ -449,12 +471,16 @@ int idpf_idc_init_aux_core_dev(struct idpf_adapter *adapter,
-  */
- void idpf_idc_deinit_core_aux_device(struct iidc_rdma_core_dev_info *cdev_info)
- {
-+	struct iidc_rdma_priv_dev_info *privd;
-+
- 	if (!cdev_info)
- 		return;
- 
- 	idpf_unplug_aux_dev(cdev_info->adev);
- 
--	kfree(cdev_info->iidc_priv);
-+	privd = cdev_info->iidc_priv;
-+	kfree(privd->mapped_mem_regions);
-+	kfree(privd);
- 	kfree(cdev_info);
- }
- 
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_main.c b/drivers/net/ethernet/intel/idpf/idpf_main.c
-index 0efd9c0c7a90..b7422be3e967 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_main.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_main.c
-@@ -106,15 +106,37 @@ static void idpf_shutdown(struct pci_dev *pdev)
-  */
- static int idpf_cfg_hw(struct idpf_adapter *adapter)
- {
-+	resource_size_t res_start, mbx_start, rstat_start;
- 	struct pci_dev *pdev = adapter->pdev;
- 	struct idpf_hw *hw = &adapter->hw;
-+	struct device *dev = &pdev->dev;
-+	long len;
-+
-+	res_start = pci_resource_start(pdev, 0);
-+
-+	/* Map mailbox space for virtchnl communication */
-+	mbx_start = res_start + adapter->dev_ops.static_reg_info[0].start;
-+	len = resource_size(&adapter->dev_ops.static_reg_info[0]);
-+	hw->mbx.vaddr = devm_ioremap(dev, mbx_start, len);
-+	if (!hw->mbx.vaddr) {
-+		pci_err(pdev, "failed to allocate BAR0 mbx region\n");
-+
-+		return -ENOMEM;
-+	}
-+	hw->mbx.addr_start = adapter->dev_ops.static_reg_info[0].start;
-+	hw->mbx.addr_len = len;
- 
--	hw->hw_addr = pcim_iomap_table(pdev)[0];
--	if (!hw->hw_addr) {
--		pci_err(pdev, "failed to allocate PCI iomap table\n");
-+	/* Map rstat space for resets */
-+	rstat_start = res_start + adapter->dev_ops.static_reg_info[1].start;
-+	len = resource_size(&adapter->dev_ops.static_reg_info[1]);
-+	hw->rstat.vaddr = devm_ioremap(dev, rstat_start, len);
-+	if (!hw->rstat.vaddr) {
-+		pci_err(pdev, "failed to allocate BAR0 rstat region\n");
- 
- 		return -ENOMEM;
- 	}
-+	hw->rstat.addr_start = adapter->dev_ops.static_reg_info[1].start;
-+	hw->rstat.addr_len = len;
- 
- 	hw->back = adapter;
- 
-@@ -161,9 +183,9 @@ static int idpf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (err)
- 		goto err_free;
- 
--	err = pcim_iomap_regions(pdev, BIT(0), pci_name(pdev));
-+	err = pcim_request_region(pdev, 0, pci_name(pdev));
- 	if (err) {
--		pci_err(pdev, "pcim_iomap_regions failed %pe\n", ERR_PTR(err));
-+		pci_err(pdev, "pcim_request_region failed %pe\n", ERR_PTR(err));
- 
- 		goto err_free;
- 	}
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_mem.h b/drivers/net/ethernet/intel/idpf/idpf_mem.h
-index b21a04fccf0f..2aaabdc02dd2 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_mem.h
-+++ b/drivers/net/ethernet/intel/idpf/idpf_mem.h
-@@ -12,9 +12,9 @@ struct idpf_dma_mem {
- 	size_t size;
- };
- 
--#define wr32(a, reg, value)	writel((value), ((a)->hw_addr + (reg)))
--#define rd32(a, reg)		readl((a)->hw_addr + (reg))
--#define wr64(a, reg, value)	writeq((value), ((a)->hw_addr + (reg)))
--#define rd64(a, reg)		readq((a)->hw_addr + (reg))
-+#define idpf_mbx_wr32(a, reg, value)	writel((value), ((a)->mbx.vaddr + (reg)))
-+#define idpf_mbx_rd32(a, reg)		readl((a)->mbx.vaddr + (reg))
-+#define idpf_mbx_wr64(a, reg, value)	writeq((value), ((a)->mbx.vaddr + (reg)))
-+#define idpf_mbx_rd64(a, reg)		readq((a)->mbx.vaddr + (reg))
- 
- #endif /* _IDPF_MEM_H_ */
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_vf_dev.c b/drivers/net/ethernet/intel/idpf/idpf_vf_dev.c
-index 2f84bd596ae4..259d50fded67 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_vf_dev.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_vf_dev.c
-@@ -9,10 +9,13 @@
- 
- /**
-  * idpf_vf_ctlq_reg_init - initialize default mailbox registers
-+ * @adapter: adapter structure
-  * @cq: pointer to the array of create control queues
-  */
--static void idpf_vf_ctlq_reg_init(struct idpf_ctlq_create_info *cq)
-+static void idpf_vf_ctlq_reg_init(struct idpf_adapter *adapter,
-+				  struct idpf_ctlq_create_info *cq)
- {
-+	resource_size_t mbx_start = adapter->dev_ops.static_reg_info[0].start;
- 	int i;
- 
- 	for (i = 0; i < IDPF_NUM_DFLT_MBX_Q; i++) {
-@@ -21,22 +24,22 @@ static void idpf_vf_ctlq_reg_init(struct idpf_ctlq_create_info *cq)
- 		switch (ccq->type) {
- 		case IDPF_CTLQ_TYPE_MAILBOX_TX:
- 			/* set head and tail registers in our local struct */
--			ccq->reg.head = VF_ATQH;
--			ccq->reg.tail = VF_ATQT;
--			ccq->reg.len = VF_ATQLEN;
--			ccq->reg.bah = VF_ATQBAH;
--			ccq->reg.bal = VF_ATQBAL;
-+			ccq->reg.head = VF_ATQH - mbx_start;
-+			ccq->reg.tail = VF_ATQT - mbx_start;
-+			ccq->reg.len = VF_ATQLEN - mbx_start;
-+			ccq->reg.bah = VF_ATQBAH - mbx_start;
-+			ccq->reg.bal = VF_ATQBAL - mbx_start;
- 			ccq->reg.len_mask = VF_ATQLEN_ATQLEN_M;
- 			ccq->reg.len_ena_mask = VF_ATQLEN_ATQENABLE_M;
- 			ccq->reg.head_mask = VF_ATQH_ATQH_M;
- 			break;
- 		case IDPF_CTLQ_TYPE_MAILBOX_RX:
- 			/* set head and tail registers in our local struct */
--			ccq->reg.head = VF_ARQH;
--			ccq->reg.tail = VF_ARQT;
--			ccq->reg.len = VF_ARQLEN;
--			ccq->reg.bah = VF_ARQBAH;
--			ccq->reg.bal = VF_ARQBAL;
-+			ccq->reg.head = VF_ARQH - mbx_start;
-+			ccq->reg.tail = VF_ARQT - mbx_start;
-+			ccq->reg.len = VF_ARQLEN - mbx_start;
-+			ccq->reg.bah = VF_ARQBAH - mbx_start;
-+			ccq->reg.bal = VF_ARQBAL - mbx_start;
- 			ccq->reg.len_mask = VF_ARQLEN_ARQLEN_M;
- 			ccq->reg.len_ena_mask = VF_ARQLEN_ARQENABLE_M;
- 			ccq->reg.head_mask = VF_ARQH_ARQH_M;
-@@ -129,7 +132,7 @@ static int idpf_vf_intr_reg_init(struct idpf_vport *vport)
-  */
- static void idpf_vf_reset_reg_init(struct idpf_adapter *adapter)
- {
--	adapter->reset_reg.rstat = idpf_get_reg_addr(adapter, VFGEN_RSTAT);
-+	adapter->reset_reg.rstat = idpf_get_rstat_reg_addr(adapter, VFGEN_RSTAT);
- 	adapter->reset_reg.rstat_m = VFGEN_RSTAT_VFR_STATE_M;
- }
- 
-@@ -180,4 +183,9 @@ void idpf_vf_dev_ops_init(struct idpf_adapter *adapter)
- 	idpf_vf_reg_ops_init(adapter);
- 
- 	adapter->dev_ops.idc_init = idpf_idc_vf_register;
-+
-+	resource_set_range(&adapter->dev_ops.static_reg_info[0],
-+			   VF_BASE, IDPF_VF_MBX_REGION_SZ);
-+	resource_set_range(&adapter->dev_ops.static_reg_info[1],
-+			   VFGEN_RSTAT, IDPF_VF_RSTAT_REGION_SZ);
- }
-diff --git a/drivers/net/ethernet/intel/idpf/idpf_virtchnl.c b/drivers/net/ethernet/intel/idpf/idpf_virtchnl.c
-index 957b3b77700a..0d2199ac5c3e 100644
---- a/drivers/net/ethernet/intel/idpf/idpf_virtchnl.c
-+++ b/drivers/net/ethernet/intel/idpf/idpf_virtchnl.c
-@@ -870,6 +870,7 @@ static int idpf_send_get_caps_msg(struct idpf_adapter *adapter)
- 	caps.other_caps =
- 		cpu_to_le64(VIRTCHNL2_CAP_SRIOV			|
- 			    VIRTCHNL2_CAP_RDMA                  |
-+			    VIRTCHNL2_CAP_LAN_MEMORY_REGIONS	|
- 			    VIRTCHNL2_CAP_MACFILTER		|
- 			    VIRTCHNL2_CAP_SPLITQ_QSCHED		|
- 			    VIRTCHNL2_CAP_PROMISC		|
-@@ -892,6 +893,128 @@ static int idpf_send_get_caps_msg(struct idpf_adapter *adapter)
- 	return 0;
- }
- 
-+/**
-+ * idpf_send_get_lan_memory_regions - Send virtchnl get LAN memory regions msg
-+ * @adapter: Driver specific private struct
-+ *
-+ * Return: 0 on success or error code on failure.
-+ */
-+static int idpf_send_get_lan_memory_regions(struct idpf_adapter *adapter)
-+{
-+	struct virtchnl2_get_lan_memory_regions *rcvd_regions __free(kfree);
-+	struct idpf_vc_xn_params xn_params = {
-+		.vc_op = VIRTCHNL2_OP_GET_LAN_MEMORY_REGIONS,
-+		.recv_buf.iov_len = IDPF_CTLQ_MAX_BUF_LEN,
-+		.timeout_ms = IDPF_VC_XN_DEFAULT_TIMEOUT_MSEC,
-+	};
-+	int num_regions, size;
-+	struct idpf_hw *hw;
-+	ssize_t reply_sz;
-+	int err = 0;
-+
-+	rcvd_regions = kzalloc(IDPF_CTLQ_MAX_BUF_LEN, GFP_KERNEL);
-+	if (!rcvd_regions)
-+		return -ENOMEM;
-+
-+	xn_params.recv_buf.iov_base = rcvd_regions;
-+	reply_sz = idpf_vc_xn_exec(adapter, &xn_params);
-+	if (reply_sz < 0)
-+		return reply_sz;
-+
-+	num_regions = le16_to_cpu(rcvd_regions->num_memory_regions);
-+	size = struct_size(rcvd_regions, mem_reg, num_regions);
-+	if (reply_sz < size)
-+		return -EIO;
-+
-+	if (size > IDPF_CTLQ_MAX_BUF_LEN)
-+		return -EINVAL;
-+
-+	hw = &adapter->hw;
-+	hw->lan_regs = kcalloc(num_regions, sizeof(*hw->lan_regs), GFP_KERNEL);
-+	if (!hw->lan_regs)
-+		return -ENOMEM;
-+
-+	for (int i = 0; i < num_regions; i++) {
-+		hw->lan_regs[i].addr_len =
-+			le64_to_cpu(rcvd_regions->mem_reg[i].size);
-+		hw->lan_regs[i].addr_start =
-+			le64_to_cpu(rcvd_regions->mem_reg[i].start_offset);
-+	}
-+	hw->num_lan_regs = num_regions;
-+
-+	return err;
-+}
-+
-+/**
-+ * idpf_calc_remaining_mmio_regs - calculate MMIO regions outside mbx and rstat
-+ * @adapter: Driver specific private structure
-+ *
-+ * Called when idpf_send_get_lan_memory_regions is not supported. This will
-+ * calculate the offsets and sizes for the regions before, in between, and
-+ * after the mailbox and rstat MMIO mappings.
-+ *
-+ * Return: 0 on success or error code on failure.
-+ */
-+static int idpf_calc_remaining_mmio_regs(struct idpf_adapter *adapter)
-+{
-+	struct resource *rstat_reg = &adapter->dev_ops.static_reg_info[1];
-+	struct resource *mbx_reg = &adapter->dev_ops.static_reg_info[0];
-+	struct idpf_hw *hw = &adapter->hw;
-+
-+	hw->num_lan_regs = IDPF_MMIO_MAP_FALLBACK_MAX_REMAINING;
-+	hw->lan_regs = kcalloc(hw->num_lan_regs, sizeof(*hw->lan_regs),
-+			       GFP_KERNEL);
-+	if (!hw->lan_regs)
-+		return -ENOMEM;
-+
-+	/* Region preceding mailbox */
-+	hw->lan_regs[0].addr_start = 0;
-+	hw->lan_regs[0].addr_len = mbx_reg->start;
-+	/* Region between mailbox and rstat */
-+	hw->lan_regs[1].addr_start = mbx_reg->end + 1;
-+	hw->lan_regs[1].addr_len = rstat_reg->start -
-+					hw->lan_regs[1].addr_start;
-+	/* Region after rstat */
-+	hw->lan_regs[2].addr_start = rstat_reg->end + 1;
-+	hw->lan_regs[2].addr_len = pci_resource_len(adapter->pdev, 0) -
-+					hw->lan_regs[2].addr_start;
-+
-+	return 0;
-+}
-+
-+/**
-+ * idpf_map_lan_mmio_regs - map remaining LAN BAR regions
-+ * @adapter: Driver specific private structure
-+ *
-+ * Return: 0 on success or error code on failure.
-+ */
-+static int idpf_map_lan_mmio_regs(struct idpf_adapter *adapter)
-+{
-+	struct pci_dev *pdev = adapter->pdev;
-+	struct idpf_hw *hw = &adapter->hw;
-+	resource_size_t res_start;
-+
-+	res_start = pci_resource_start(pdev, 0);
-+
-+	for (int i = 0; i < hw->num_lan_regs; i++) {
-+		resource_size_t start;
-+		long len;
-+
-+		len = hw->lan_regs[i].addr_len;
-+		if (!len)
-+			continue;
-+		start = hw->lan_regs[i].addr_start + res_start;
-+
-+		hw->lan_regs[i].vaddr = devm_ioremap(&pdev->dev, start, len);
-+		if (!hw->lan_regs[i].vaddr) {
-+			pci_err(pdev, "failed to allocate BAR0 region\n");
-+			return -ENOMEM;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * idpf_vport_alloc_max_qs - Allocate max queues for a vport
-  * @adapter: Driver specific private structure
-@@ -2803,7 +2926,7 @@ int idpf_init_dflt_mbx(struct idpf_adapter *adapter)
- 	struct idpf_hw *hw = &adapter->hw;
- 	int err;
- 
--	adapter->dev_ops.reg_ops.ctlq_reg_init(ctlq_info);
-+	adapter->dev_ops.reg_ops.ctlq_reg_init(adapter, ctlq_info);
- 
- 	err = idpf_ctlq_init(hw, IDPF_NUM_DFLT_MBX_Q, ctlq_info);
- 	if (err)
-@@ -2963,6 +3086,30 @@ int idpf_vc_core_init(struct idpf_adapter *adapter)
- 		msleep(task_delay);
- 	}
- 
-+	if (idpf_is_cap_ena(adapter, IDPF_OTHER_CAPS, VIRTCHNL2_CAP_LAN_MEMORY_REGIONS)) {
-+		err = idpf_send_get_lan_memory_regions(adapter);
-+		if (err) {
-+			dev_err(&adapter->pdev->dev, "Failed to get LAN memory regions: %d\n",
-+				err);
-+			return -EINVAL;
-+		}
-+	} else {
-+		/* Fallback to mapping the remaining regions of the entire BAR */
-+		err = idpf_calc_remaining_mmio_regs(adapter);
-+		if (err) {
-+			dev_err(&adapter->pdev->dev, "Failed to allocate BAR0 region(s): %d\n",
-+				err);
-+			return -ENOMEM;
-+		}
-+	}
-+
-+	err = idpf_map_lan_mmio_regs(adapter);
-+	if (err) {
-+		dev_err(&adapter->pdev->dev, "Failed to map BAR0 region(s): %d\n",
-+			err);
-+		return -ENOMEM;
-+	}
-+
- 	pci_sriov_set_totalvfs(adapter->pdev, idpf_get_max_vfs(adapter));
- 	num_max_vports = idpf_get_max_vports(adapter);
- 	adapter->max_vports = num_max_vports;
-diff --git a/drivers/net/ethernet/intel/idpf/virtchnl2.h b/drivers/net/ethernet/intel/idpf/virtchnl2.h
-index b82218d20909..870e1de5755f 100644
---- a/drivers/net/ethernet/intel/idpf/virtchnl2.h
-+++ b/drivers/net/ethernet/intel/idpf/virtchnl2.h
-@@ -69,6 +69,7 @@ enum virtchnl2_op {
- 	VIRTCHNL2_OP_ADD_MAC_ADDR		= 535,
- 	VIRTCHNL2_OP_DEL_MAC_ADDR		= 536,
- 	VIRTCHNL2_OP_CONFIG_PROMISCUOUS_MODE	= 537,
-+	/* Opcodes 538 through 540 are reserved. */
- 
- 	/* TimeSync opcodes */
- 	VIRTCHNL2_OP_PTP_GET_CAPS			= 541,
-@@ -79,6 +80,7 @@ enum virtchnl2_op {
- 	VIRTCHNL2_OP_PTP_ADJ_DEV_CLK_FINE		= 546,
- 	VIRTCHNL2_OP_PTP_ADJ_DEV_CLK_TIME		= 547,
- 	VIRTCHNL2_OP_PTP_GET_VPORT_TX_TSTAMP_CAPS	= 548,
-+	VIRTCHNL2_OP_GET_LAN_MEMORY_REGIONS		= 549,
- };
- 
- /**
-@@ -212,7 +214,8 @@ enum virtchnl2_cap_other {
- 	VIRTCHNL2_CAP_RX_FLEX_DESC		= BIT_ULL(17),
- 	VIRTCHNL2_CAP_PTYPE			= BIT_ULL(18),
- 	VIRTCHNL2_CAP_LOOPBACK			= BIT_ULL(19),
--	/* Other capability 20 is reserved */
-+	/* Other capability 20-21 is reserved */
-+	VIRTCHNL2_CAP_LAN_MEMORY_REGIONS	= BIT_ULL(22),
- 
- 	/* this must be the last capability */
- 	VIRTCHNL2_CAP_OEM			= BIT_ULL(63),
-@@ -1587,4 +1590,30 @@ struct virtchnl2_ptp_adj_dev_clk_time {
- };
- VIRTCHNL2_CHECK_STRUCT_LEN(8, virtchnl2_ptp_adj_dev_clk_time);
- 
-+/**
-+ * struct virtchnl2_mem_region - MMIO memory region
-+ * @start_offset: starting offset of the MMIO memory region
-+ * @size: size of the MMIO memory region
-+ */
-+struct virtchnl2_mem_region {
-+	__le64 start_offset;
-+	__le64 size;
-+};
-+VIRTCHNL2_CHECK_STRUCT_LEN(16, virtchnl2_mem_region);
-+
-+/**
-+ * struct virtchnl2_get_lan_memory_regions - List of LAN MMIO memory regions
-+ * @num_memory_regions: number of memory regions
-+ * @pad: Padding
-+ * @mem_reg: List with memory region info
-+ *
-+ * PF/VF sends this message to learn what LAN MMIO memory regions it should map.
-+ */
-+struct virtchnl2_get_lan_memory_regions {
-+	__le16 num_memory_regions;
-+	u8 pad[6];
-+	struct virtchnl2_mem_region mem_reg[];
-+};
-+VIRTCHNL2_CHECK_STRUCT_LEN(8, virtchnl2_get_lan_memory_regions);
-+
- #endif /* _VIRTCHNL_2_H_ */
-diff --git a/include/linux/net/intel/iidc_rdma_idpf.h b/include/linux/net/intel/iidc_rdma_idpf.h
-index 16c970dd4c6e..bab697e18fd6 100644
---- a/include/linux/net/intel/iidc_rdma_idpf.h
-+++ b/include/linux/net/intel/iidc_rdma_idpf.h
-@@ -31,10 +31,18 @@ enum iidc_function_type {
- 	IIDC_FUNCTION_TYPE_VF,
- };
- 
-+struct iidc_rdma_lan_mapped_mem_region {
-+	u8 __iomem *region_addr;
-+	__le64 size;
-+	__le64 start_offset;
-+};
-+
- struct iidc_rdma_priv_dev_info {
- 	struct msix_entry *msix_entries;
- 	u16 msix_count; /* How many vectors are reserved for this device */
- 	enum iidc_function_type ftype;
-+	__le16 num_memory_regions;
-+	struct iidc_rdma_lan_mapped_mem_region *mapped_mem_regions;
- };
- 
- int idpf_idc_vport_dev_ctrl(struct iidc_rdma_core_dev_info *cdev_info, bool up);
+base-commit: 19c066f940666bf6c0982635e4441100ca8d75bc
 -- 
-2.37.3
+2.31.1
 
 
