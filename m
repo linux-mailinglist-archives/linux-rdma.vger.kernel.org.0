@@ -1,205 +1,137 @@
-Return-Path: <linux-rdma+bounces-11987-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-11988-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C433AFD995
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jul 2025 23:18:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBE0CAFDC00
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Jul 2025 01:58:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0810E580A96
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jul 2025 21:18:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F67F1C23A17
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Jul 2025 23:58:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58979253F1B;
-	Tue,  8 Jul 2025 21:17:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1544223A563;
+	Tue,  8 Jul 2025 23:58:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="TWcmRgMC"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nL1cry+1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2054.outbound.protection.outlook.com [40.107.237.54])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C7EB251792;
-	Tue,  8 Jul 2025 21:17:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.54
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752009437; cv=fail; b=EIdOhDXn0AwV/WxjwdrBibjt53mOBNoKlhcZ2q84rqHAV+OKw0b2v6k+VWIsKxFMM4/TQwrPs4/ddtTxgHJ7GZ48euRdbzdBqvAfb++svRq9HQ+OJn7FbhB/IPo80EFaIxqce0Hjn2RGSGpALRLwX9rKAuwHwbBzY7JyDX650yo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752009437; c=relaxed/simple;
-	bh=M7gic7/nVeVa8CPTx/GVnTPTpA/kvQobUY0MX4+g8dE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cVFkrd9rHJEeLfMkD8fBZ/V80ArWhgkiroeF6LuJ+YnuF00bQB2iGVd9c0JvCyJQSqnL30tvD5QM/XLAWOcf9Z/3KTMDOyL8T0LleR4azXyqSysZ2cyf+wRKQUvv9AHy/aGSSkH/txoWgyR18gldpgHjzHdKLT1yJtc18aNljlM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=TWcmRgMC; arc=fail smtp.client-ip=40.107.237.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Wi/opI3ENvWGxA+MdhP1/OCYbLUsDLDPcGtW/THSYtPmz1Jmz7//fTCLrO54E/ld+r7if8SqEyn65PAfIVf3X0pUr3vGMsBuCNCafkGtElhgrBp+q/RhmrynqVq/34nqsohIjE12Kl/ZPpS2tL7JtPdNfCEAPBDphr9TxowKgUCj6dND7/QBCTbTiQuAeZqLBUDK21VGV3AU80VmIw/JhGQ0AXjH7F+ub7RFvXamEdHeH8wqEFmupw3hpR6n+Lj7pz5CfWsfEv+8gs7kZwGyLkN11AcjCWa7fV3t0Eu1RvKSzjpzvJIv/CBS/c2wf8QrXzT664I+clZV1JZLtSg/mw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dnxD2vJQ1xpim/Ofed8TCDALx6YRmKyfch4XJFCvv/8=;
- b=u8BQqllUcK41CiDRaDcatQhgj+hJplsXkQmeCnOTG/pKUcMg6CAc7ClpUxxZ+DuK9JKwSXBW0m7YjR2hwVmoInuPhsQl7xXKs0qCQ3u/b9jnQvTS1FBWqzgKcNSLK06dKs2DuKiAnOqZENzAGTA6NYQsqAiqVjKVTFixGH8Tc80MXGLe8X85gva6ToGC/rT0j7YMWmhz2CSYgEcg4bR48YCZov1A7XVai4Qd00xTxE29KW1AlLN7RSqDjUb6jDmxe3oDysJTGfMfOX+KEiLlDTpmyvDUyrdYcqfBQi1o6aKHYq+VrP5/teoT6JJ8dOf5O7bMYrU/fZzGJ4Jqjrt+NA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dnxD2vJQ1xpim/Ofed8TCDALx6YRmKyfch4XJFCvv/8=;
- b=TWcmRgMCctIiRhKYWW6Brfc/fvEF5xu09k69mr0z69P9U9mG1mLE4+2WBlU2+begt/0jSxEPVa5YTpYIK71TmNfbybaMUrL0gcYSjrIazRnp1g2fOZ7Fdw07a4+4zT0f20iUQU500nRnhbScaYUFgDd6/pkYkfitmOYnEqYJxgOQM8Rmc6uWAFSJXVD8uIX5En29n3qDp1uboPUGseYEPCRKytHgRhg9ep2ZqXNLX7yrGnrVdS7Q25ezbNt6mSyK+CmEYy/G2Cxc0eFFn8Nncq4CCRzIwm5TLZdguMJeror9GHCeuqu4D8QS2uvzy8s5bOQoeHZIK9jHF5xWq5d7ug==
-Received: from BN9P223CA0018.NAMP223.PROD.OUTLOOK.COM (2603:10b6:408:10b::23)
- by CH1PR12MB9647.namprd12.prod.outlook.com (2603:10b6:610:2b0::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8880.23; Tue, 8 Jul
- 2025 21:17:12 +0000
-Received: from MN1PEPF0000F0DF.namprd04.prod.outlook.com
- (2603:10b6:408:10b:cafe::8f) by BN9P223CA0018.outlook.office365.com
- (2603:10b6:408:10b::23) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8922.20 via Frontend Transport; Tue,
- 8 Jul 2025 21:17:12 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- MN1PEPF0000F0DF.mail.protection.outlook.com (10.167.242.37) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8901.20 via Frontend Transport; Tue, 8 Jul 2025 21:17:12 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 8 Jul 2025
- 14:16:57 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14; Tue, 8 Jul 2025 14:16:56 -0700
-Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server id 15.2.1544.14 via Frontend
- Transport; Tue, 8 Jul 2025 14:16:53 -0700
-From: Tariq Toukan <tariqt@nvidia.com>
-To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
- S. Miller" <davem@davemloft.net>
-CC: Saeed Mahameed <saeed@kernel.org>, Gal Pressman <gal@nvidia.com>, "Leon
- Romanovsky" <leon@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, "Tariq
- Toukan" <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
-	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next 5/5] net/mlx5e: RX, Remove unnecessary RQT redirects
-Date: Wed, 9 Jul 2025 00:16:27 +0300
-Message-ID: <1752009387-13300-6-git-send-email-tariqt@nvidia.com>
-X-Mailer: git-send-email 2.8.0
-In-Reply-To: <1752009387-13300-1-git-send-email-tariqt@nvidia.com>
-References: <1752009387-13300-1-git-send-email-tariqt@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CEB221CA02
+	for <linux-rdma@vger.kernel.org>; Tue,  8 Jul 2025 23:58:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1752019092; cv=none; b=rq7xDJD5gd9jq/50o3NbbPd7EHX9KW5NiPJZ2arLkEgTQTBqYPnBpHCqUVajVl7hRPFnQU+o75H/LvmeBzqzULvZHE6dzzx6kqEe+0FDEgTcglAJldWnl71Gq8qB5zosEdYf2Y/B2Jzb4MbmZ/SPh6+YnIjetjnX6rN7ElZM7vw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1752019092; c=relaxed/simple;
+	bh=9361ghef/eDTTsJjWoy6HRS6XIQpk5gBomddJa6zPNg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=A3mIjLTdN3FhauF7H2vQPFHe+I59nwngdwXhW4Ev+/ZNyA/HKeee1RNHMTwF2/JpSCxEW/FGGHwVnKEWpk3gL/2+G0KT1Fco8I/8NktkS6XPlcqJITtLttfBIgaaaYdCjG9txDGmEF27d4W4w++PbEo8D14AEo7JnA//0AzntFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nL1cry+1; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <b202d1f7-7d73-430a-b725-58ca91a21b3f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1752019084;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l1FORc+tGKcauxUwXqeLOTIToMi+Az2I12s5bhJezkI=;
+	b=nL1cry+1xzHAg86acLWSDnPg9ra1AwFzTa8yIzWdiWRr7iGKL/m6lgswhDhPmFEpymSYS5
+	0azb93C3wKs5UmmMubI8+6NmRJI86GTzMi3tZTGS+/GRGDu9+01zsz5tE3x8H4kCJLADsO
+	QBwPLYHGhhOCwbwJ7+wWP7gxNYYdSx4=
+Date: Tue, 8 Jul 2025 16:57:55 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: AnonymousSubmission
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0DF:EE_|CH1PR12MB9647:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2438859b-4462-44e7-1012-08ddbe64ce88
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|82310400026|36860700013|376014|7416014|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?ymSnPN5Ke3LjpCk0KbNS8zg5pLuxdBTIBpnEhX4hWTH5WuINLYouzCOaphqt?=
- =?us-ascii?Q?RsG0lUr6JmHAtVC4hijOXGtgUuH3UokVb3I7k1cEV9BLTMbHSjkO5mqWzZ0I?=
- =?us-ascii?Q?rDA28MLqcTdgD7u/4d4NlXxARxNvBci3jnD1VfxsHctu5BlL03iHp0+JMj4U?=
- =?us-ascii?Q?wVxO51wKDfZsxigtVc9vdJikrgNl2/wUYnimhtnIE9C9JgK4bFU4v6umP2I6?=
- =?us-ascii?Q?keQ7Lj/JGp4uGwYY1nWTZ0ar1iDVUZ9RDRa4vo+DpRQOI/wCk9QGRe/sEpSL?=
- =?us-ascii?Q?23Sf4jDFG/485eoHggXSAZeG/o+iHzgmOBaHti1ELgYdZoP+FE7n6cgs3Pck?=
- =?us-ascii?Q?BF6TVLCOXuxINzks8ftuxVNLINuIn0lqkmBvY0jrdTclPNRrMtVPRrw0xcck?=
- =?us-ascii?Q?yWKSjpdQ5EcdRv7b2GqoI+QY2ofzwlor5oyQNws9nVGV4MlTgNBujiy3dbMV?=
- =?us-ascii?Q?SeXZBMAb9VzG5ZhiyYF5wM0hdA+Dj2MbNtdazpvFGagT5CuX87IYGYD8vpLG?=
- =?us-ascii?Q?7q8sREAZMLaCXUyo9EqV2BAv9Dw+X71+OIxK9b6BSEHRa6jooB0STwXXYoaa?=
- =?us-ascii?Q?hA9j+zQNKOyyOUUVwmDHxTrRdmJr5sieL4YjOOrIqS56OR/NCQTxiqqkazvO?=
- =?us-ascii?Q?HbauvkK6mHXGbin/ViXzKFNlBpO/eTVLtp3DQJG0idPCsUcUexr3k+eojXpy?=
- =?us-ascii?Q?qC2tjBZ1D7FGv0Rl6Ro0STEn9LH/fpIiE21D8QGsbgye70yHGCumQ58oj5Mj?=
- =?us-ascii?Q?XX3xCfw0XxSN4vVTuPRodhSsa756kou67+JIlsdvwRCK1KHYGVRcPGDv4etk?=
- =?us-ascii?Q?92QBgHz95dcbZR/FVTbOmznUv/4YViaiTfrJdDPs87UBKCYTQNJSFlm5BPs/?=
- =?us-ascii?Q?h09D3q29eObfHTFB1jc6w5UaUx3OfZCMXjLkLK/7c6cDDcVpCn43EsNm/RR7?=
- =?us-ascii?Q?ct07o5E/xdsFA925No1ymEOMtLy7Fpe7SLzzbV6er604bO9yvFTZ2eBfwxcS?=
- =?us-ascii?Q?YRw5hP99wn0DFTEc2x3ENpV4F4eP+0MMQAbZLXZWPyJcisxlZBByNdHWlR6f?=
- =?us-ascii?Q?9hT1Rzs6vdqRgzLn7TYR+cT9JCf3dWlTprrlhkxMyN6BK8ZJNLnPkKQiqKc2?=
- =?us-ascii?Q?Q1ymwuTQJxL58HJ0NrmOhDgJrD4Y6mhiBI+jNPnnb7kOKKGnkGaiuWPgIqjC?=
- =?us-ascii?Q?4ATk/oNwS984Y7RVNPhXJBzfQx+a2g5n2iz0GhRPKWQWfxDcAT+tR6vqvLCx?=
- =?us-ascii?Q?rwxJoiKRrtUmPy/RsMlW53ihOaBS6tM+wMbs0FZvB43MqJCU/94xGxeQTmDB?=
- =?us-ascii?Q?9cBwpEtenRq4gzKeSfR0G4RYgd3Ht8k0WrMlC28/X5F7fye68FX9SrJQHW7u?=
- =?us-ascii?Q?q10nsvDEPl3wZjAoTGlE5R42tLwjZ9ZaQNkpbg/H1JjREK0bkGNIISmfIWaE?=
- =?us-ascii?Q?z861XdySKZ5cTWAxG97VtuDLc17O9JlcuWO5wwkocU74mR7WqGwws4mGJEGL?=
- =?us-ascii?Q?C5NF359DsdD+RUWDpBT4VVggEuo6vAwc8c9N?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(36860700013)(376014)(7416014)(1800799024);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2025 21:17:12.5644
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2438859b-4462-44e7-1012-08ddbe64ce88
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MN1PEPF0000F0DF.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH1PR12MB9647
+Subject: Re: [PATCH rdma-next] RDMA/uverbs: Add empty
+ rdma_uattrs_has_raw_cap() declaration
+To: Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
+Cc: Leon Romanovsky <leonro@nvidia.com>, kernel test robot <lkp@intel.com>,
+ linux-rdma@vger.kernel.org, Parav Pandit <parav@nvidia.com>
+References: <72dee6b379bd709255a5d8e8010b576d50e47170.1751967071.git.leon@kernel.org>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "yanjun.zhu" <yanjun.zhu@linux.dev>
+In-Reply-To: <72dee6b379bd709255a5d8e8010b576d50e47170.1751967071.git.leon@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-RQTs (Receive Queue Table) should redirect traffic to the channels' RQs
-when they're active.  Otherwise, redirect to the designated "drop RQ".
+On 7/8/25 2:31 AM, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> The call to rdma_uattrs_has_raw_cap() is placed in mlx5 fs.c file,
+> which is compiled without relation to CONFIG_INFINIBAND_USER_ACCESS.
+> 
+> Despite the check is used only in flows with CONFIG_INFINIBAND_USER_ACCESS=y|m,
+> the compilers generate the following error for CONFIG_INFINIBAND_USER_ACCESS=n
+> builds.
+> 
+>>> ERROR: modpost: "rdma_uattrs_has_raw_cap" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
+> 
+> Fixes: f458ccd2aa2c ("RDMA/uverbs: Check CAP_NET_RAW in user namespace for flow create")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202507080725.bh7xrhpg-lkp@intel.com/
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>   include/rdma/ib_verbs.h | 8 ++++++--
+>   1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+> index c263327a0205..ce4180c4db14 100644
+> --- a/include/rdma/ib_verbs.h
+> +++ b/include/rdma/ib_verbs.h
+> @@ -4841,15 +4841,19 @@ struct ib_ucontext *ib_uverbs_get_ucontext_file(struct ib_uverbs_file *ufile);
+>   
+>   #if IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS)
+>   int uverbs_destroy_def_handler(struct uverbs_attr_bundle *attrs);
+> +bool rdma_uattrs_has_raw_cap(const struct uverbs_attr_bundle *attrs);
+>   #else
+>   static inline int uverbs_destroy_def_handler(struct uverbs_attr_bundle *attrs)
+>   {
+>   	return 0;
+>   }
+> +static inline bool
+> +rdma_uattrs_has_raw_cap(const struct uverbs_attr_bundle *attrs)
+> +{
+> +	return false;
+> +}
+>   #endif
 
-RQTs are created in "inactive" state, pointing to the "drop RQ".
-In activate and de-activate flows, do not "deactivate" the rest of RQTs
-(beyond the num of channels), as they are already inactive.
+The function rdma_uattrs_has_raw_cap is implemented in the file 
+rdma_core.c. This file is included in the build via the Makefile:
 
-This cuts down unnecessary execution of FW commands (MODIFY_RQT), and
-improves the latency of open/close channels or configuration change.
+"
+...
+ib_uverbs-y := uverbs_main.o uverbs_cmd.o uverbs_marshall.o \
+                rdma_core.o uverbs_std_types.o uverbs_ioctl.o \
+                ...
+"
+As a result, rdma_core.o is compiled only when 
+CONFIG_INFINIBAND_USER_ACCESS is enabled.
 
-Perf:
-NIC: Connect-X7.
-Configuration: 1 combined channel, max num channels 248.
-Measure time for "interface up + interface down".
+In other words, the implementation of the rdma_uattrs_has_raw_cap 
+function is guarded by CONFIG_INFINIBAND_USER_ACCESS.
 
-Before: 0.313 sec
-After:  0.057 sec (5.5x faster)
+Given this, it is reasonable to move the declaration of 
+rdma_uattrs_has_raw_cap into the scope of CONFIG_INFINIBAND_USER_ACCESS 
+in ib_verbs.h.
 
-247 MODIFY_RQT commands saved in interface up.
-247 MODIFY_RQT commands saved in interface down.
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en/rx_res.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Zhu Yanjun
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/rx_res.c b/drivers/net/ethernet/mellanox/mlx5/core/en/rx_res.c
-index 5fcbe47337b0..b3fdb1afa1e6 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/rx_res.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/rx_res.c
-@@ -579,8 +579,6 @@ void mlx5e_rx_res_channels_activate(struct mlx5e_rx_res *res, struct mlx5e_chann
- 
- 	for (ix = 0; ix < nch; ix++)
- 		mlx5e_rx_res_channel_activate_direct(res, chs, ix);
--	for (ix = nch; ix < res->max_nch; ix++)
--		mlx5e_rx_res_channel_deactivate_direct(res, ix);
- 
- 	if (res->features & MLX5E_RX_RES_FEATURE_PTP) {
- 		u32 rqn;
-@@ -603,7 +601,7 @@ void mlx5e_rx_res_channels_deactivate(struct mlx5e_rx_res *res)
- 
- 	mlx5e_rx_res_rss_disable(res);
- 
--	for (ix = 0; ix < res->max_nch; ix++)
-+	for (ix = 0; ix < res->rss_nch; ix++)
- 		mlx5e_rx_res_channel_deactivate_direct(res, ix);
- 
- 	if (res->features & MLX5E_RX_RES_FEATURE_PTP) {
--- 
-2.31.1
+>   
+> -bool rdma_uattrs_has_raw_cap(const struct uverbs_attr_bundle *attrs);
+> -
+>   struct net_device *rdma_alloc_netdev(struct ib_device *device, u32 port_num,
+>   				     enum rdma_netdev_t type, const char *name,
+>   				     unsigned char name_assign_type,
 
 
