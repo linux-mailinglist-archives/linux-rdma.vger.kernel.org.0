@@ -1,87 +1,87 @@
-Return-Path: <linux-rdma+bounces-12042-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12043-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 067EEB00B4A
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Jul 2025 20:25:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FBBCB00B4D
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Jul 2025 20:26:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D342A4E2212
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Jul 2025 18:25:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34D9C3A5B11
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Jul 2025 18:26:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7B682F50B6;
-	Thu, 10 Jul 2025 18:25:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98C5E2F50B6;
+	Thu, 10 Jul 2025 18:26:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qT+Gzrgf"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qObU1zue"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0CF12F0C4A
-	for <linux-rdma@vger.kernel.org>; Thu, 10 Jul 2025 18:25:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE1FC2F2C74
+	for <linux-rdma@vger.kernel.org>; Thu, 10 Jul 2025 18:26:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752171930; cv=none; b=CcomUtdDX4VGtQUZzlrstbDK15mY//PMBjXKAI/zc9rQxvqPQBl1lVAuy023wDMm2M/enbv30tOzqH+lJ4Etze8ia7xdFV3xaGbd/GbADy3/OASMNZKAjW/RgFZpN81fbW/YX1uXp/v4JX801ovh2pVj8KF3zu6CQtuznGfMw9E=
+	t=1752171986; cv=none; b=En6s0+ReucmWdE9nMFR0nJY1z98Lm1v6OcVLKRhsnUfPjNCzBQeMN/+qEK8ysuR2x1V6t264nCNR05pkeUapTfr07fRfmWdTAdRmjwOD/kWClGe89ANy16Dj3e6iTPqLCn7mdDL4LIBFXIU9ZKcyRKwmOP7LppImg/swV7Ka3hI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752171930; c=relaxed/simple;
-	bh=lzOg863td9wmwIzdOW1a8mSXM5R7uBGHNR/Wq8C+XKA=;
+	s=arc-20240116; t=1752171986; c=relaxed/simple;
+	bh=DQ/y57eCcvCivMqXieykxCIkDza/1dPM5uPabJRz16o=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uS9VJ3+mdpHEqaXbToB90hMl8X6Z+ZNrz0+YUZWr71zIeg2aNNJSltvKoBN6D13OP8ELPnEI2hqw6FiJYSf26iRO/tGOmbEHRpEYcC/K/Ka9Yw10mLRIpa0WkLZKrtGb5aMRqDq8oH+qXp5JVBHw1hLVkFBKBbhbC3SHG5YIrMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qT+Gzrgf; arc=none smtp.client-ip=209.85.208.47
+	 To:Cc:Content-Type; b=t5vmrD6cQHVE58occKxLcoPIJOTMyhyX22LCshyZYKzxiPn0XcH43++sUeAE6U2opVYRtGzzODtqBkTNCeYAf7IPR1AInUOZZhqkvOnoiShPEq7kUixpds3srTZ6fFv/b+o/zPM2Xf8E5Vi0WuS6MuaLmGBP7BzV7HFjK8BDQdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qObU1zue; arc=none smtp.client-ip=209.85.208.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-609b169834cso1975a12.0
-        for <linux-rdma@vger.kernel.org>; Thu, 10 Jul 2025 11:25:28 -0700 (PDT)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5f438523d6fso1518a12.1
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Jul 2025 11:26:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1752171927; x=1752776727; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1752171983; x=1752776783; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MGttGecOUfnj2vDKboTFLlNArn06kYu+jY7WB+vGDSo=;
-        b=qT+GzrgfFbv7TNCyvI1nwQhemlew7h2QPaGYd69Kqi499zFAgpcsA9L6Ql8C2UR+2b
-         z67/WVydCFIO9AGIyO1OsXS/QNtLnHPNtzbW4xhg/W7vGQqQ0v819gJlOeguSiYqoazk
-         yMTfvUrnnPivCdLvSRZcCBY1l6MvszfzuWVhO4rcMWA7DWJFMF0dFW5zKB2ae7KxMgpZ
-         fQsioD+YvOSbxnDPApSnChHOEQ7WgMczdqaCs+9KmDuuYoiQI34SRzh8O3sJQLGt4fOc
-         +b1hMmPhnAM2GtRhbfsEDW1nlV0Dlnerr9J/1xLuLVglKv5j2qYJvI6pA9uC1oWpWxyH
-         6ceA==
+        bh=YpVeUDzlloshth7hyY4uUrRygX8GK+L0hY7EdHxCTWk=;
+        b=qObU1zuerGhbYWlfulILtsMApJEO572cb99Ey657M5ZIW5FJn9qSNnybTUmZwPXmoo
+         6P1pcpOL17ZItstd3CjuuSqb+erRZa4J7rQHM4ORASF5f11JNxKu0xDSlD/J1YA71gHW
+         fRONoNj2vmMzTagcuqJ8ulV5PLMfLTdVZdq9OlnKV82aY69cKtL9CZ7kzUANxH271wGA
+         P/Hks07foD1XCHZENTyruReqQLmOfQkLM1ii2gdSVPyMb9nohjNE0lRXOR4A/JvkN58F
+         LwP+GaUG6r4NOEEdxPUCvO054zG9vCYleh3rFncue61UmbDCdFOBqnJEfIScIY/iHIC5
+         JcDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752171927; x=1752776727;
+        d=1e100.net; s=20230601; t=1752171983; x=1752776783;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MGttGecOUfnj2vDKboTFLlNArn06kYu+jY7WB+vGDSo=;
-        b=p++i3g1lVXkoFg2+tB3GgbOzfdWwLLG5r18cE0PfPzQFicpSlsUHdUWhPOWQ0L5pbS
-         aGQAE3gsfvPz2/wA/RIxjqdaObV9k5NRqYECMRWQYlGeMbsg3JyMvqyQ5ePuL+rdpj9L
-         GGKzD/VcJAvWuZuDyB8+Y22gC2I3Eut5/DGPCAPGL7/7KjNlQyahXJQHPqeMTqFTWB6G
-         f5sUoc6zd/Y+wzIxZbRPWmw5Ab1SyJhKqKqU5X+zYLIM0dQEQ5Cb5W9giiwl1AHZEd6z
-         HIYnkRTMj01nkpUSESiqzTKUEPL8CMByD+yZJ5bwp7+i9zV9WtlTm48yy48QkDBIMBSc
-         LdGg==
-X-Forwarded-Encrypted: i=1; AJvYcCXETCUE8KVTTccOg7l+JcWiLgV0rESOZDiKL4eViFC/SGB3jZCKWruoCmVL1tywZTed26s4J5foGR2m@vger.kernel.org
-X-Gm-Message-State: AOJu0YzlxoikHkOKabjIc0kg3VdQSyBP52CxiLwkq8cguruKhuD2jwAN
-	zIKe6R0Ia/VAbn5tI2qCddmPFyjhf5xFOiVplilOHOGHXNX5/YJhm8sK5TUgG9NpZ1U0saaS3oQ
-	osSVqtyvAIxsoqfw6XqCUEA00++wSnvlfsdif3kMh
-X-Gm-Gg: ASbGncugA606tB8s+PqqwAV04Rv57NR45KkSLF6CpFwkDswzMJv0pGHBDFKnCTlyqwi
-	UtKjS31XipkCLBDckabAS21AijlDqr5GwsLW3RzCCD1QTdt7Wvk68WC+5N/8BnuvQ4RZbtTt2m7
-	zoFppkwfMW1OPK6D9MF0TTtPBGF7stKrm7D57OYhtqcKy4McT1rstJegH30Z6EPbfL8WI053E=
-X-Google-Smtp-Source: AGHT+IFYbu4F77iXBeAnMl5OLLUNqSyy6NKKa5nSrUrX3MSMLO1UBBwllp1ZZ2m2gbUJ8CJrAGBesZolk6+61YYGeCs=
-X-Received: by 2002:a05:6402:30a6:b0:606:b6da:5028 with SMTP id
- 4fb4d7f45d1cf-611e66aa77bmr9269a12.0.1752171927040; Thu, 10 Jul 2025 11:25:27
- -0700 (PDT)
+        bh=YpVeUDzlloshth7hyY4uUrRygX8GK+L0hY7EdHxCTWk=;
+        b=SkDTdYylonC4xmju4nZZ6FB6Qm7uuffGkpzdTKqL54iMwE2Z5EH6NGXTbzFFl6tJ3l
+         fW6tWVeIBadVVfM7op/5LuGLe0pBvOKj65sxcpM59qWTPBJWpFs4wzv2YO7NDcXKxeS6
+         TUeCoJ86OLKX/rUKo0sovaY5nc0d3gYG6/r1mQNDBxMNI2+PsekFDV7fK2r+he+n4FPW
+         X0UAEVzaZ1lgwErx+TP5KCn6AYsu+B3EXKBp1DBGddGAGeRImeAjLGc2sjS0zYKoWmZr
+         Ia2hDPQ/XvhYVKAsxEdUlMLyiKPmMQsF1noE8WJz34z9pLnrSlJdxtgB4yXrqTy1sn0U
+         tfNg==
+X-Forwarded-Encrypted: i=1; AJvYcCXDNlFXrYfr1pYpHULURsoQ30FAfSkWKsm+HJyRQrQJPu6QlqQUFTEwY3oW7JpNoJk1jPCZdA+/4cef@vger.kernel.org
+X-Gm-Message-State: AOJu0YwEe3hKiVulczwJcIdvI9o00sT+C1L3oFo373ojQJA/jCkCKGOb
+	DOdfVbASiw3aDOrkyxQkLgpV7U+HNOEbAO5RHPkUVVBu+vfTW975ZgzC4lvnxUV0a/AUuMCHL9W
+	JlpAaOQszV/MqhyNphs2yOYgdTmFco4ZHKkwMcrym
+X-Gm-Gg: ASbGncvGhSBufVNDA23aj2FxQtPzTKflDzwtw9BbzkCg1dTxagZI9KC535KvLJzTUJ2
+	81Ee78V5ecuAch285aUU0us/Bmu6oOi67X0+ZF0aCi5RDVkoEJDS9yDs1z1MJIBYjdtWTEFxJ9w
+	ZIjbenRNTUfukoMMmywzdC8hjNjw4bVuj0IKn1d9jsmREC+xpAkN/YYA/r+2sGVhnkqfoO1sk=
+X-Google-Smtp-Source: AGHT+IFt7W8JAheHiVqwt4ZBR3CQtXpumX/T7A5/rBmH2QebswkJBxnWs6YN36d9U3n7K42s+O7r2vNQ3sha7Qd9AVA=
+X-Received: by 2002:a05:6402:24d3:b0:607:d206:7657 with SMTP id
+ 4fb4d7f45d1cf-611e687e614mr10195a12.2.1752171982710; Thu, 10 Jul 2025
+ 11:26:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250710082807.27402-1-byungchul@sk.com> <20250710082807.27402-5-byungchul@sk.com>
-In-Reply-To: <20250710082807.27402-5-byungchul@sk.com>
+References: <20250710082807.27402-1-byungchul@sk.com> <20250710082807.27402-8-byungchul@sk.com>
+In-Reply-To: <20250710082807.27402-8-byungchul@sk.com>
 From: Mina Almasry <almasrymina@google.com>
-Date: Thu, 10 Jul 2025 11:25:12 -0700
-X-Gm-Features: Ac12FXxKh5TJZHgIcSqvUZXVnJGYFBLJKrIZOv19NnRAZsweNKYOtzi0atTHg_c
-Message-ID: <CAHS8izM8a-1k=q6bJAXuien1w6Zr+HAJ=XFo-3mbgM3=YBBtog@mail.gmail.com>
-Subject: Re: [PATCH net-next v9 4/8] netmem: use netmem_desc instead of page
- to access ->pp in __netmem_get_pp()
+Date: Thu, 10 Jul 2025 11:26:05 -0700
+X-Gm-Features: Ac12FXyyC8r-KEBOBjPhKMa8MrPinEu-RU7EeVBu--QTlNg-z0ciuFeVDRS6Ldc
+Message-ID: <CAHS8izMo5QLb5CrrdfBnaG_1kWd=D7iQM+2vB0Gm-pbH9tmk1g@mail.gmail.com>
+Subject: Re: [PATCH net-next v9 7/8] netdevsim: use netmem descriptor and APIs
+ for page pool
 To: Byungchul Park <byungchul@sk.com>
 Cc: willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	linux-mm@kvack.org, kernel_team@skhynix.com, kuba@kernel.org, 
@@ -100,37 +100,53 @@ Content-Transfer-Encoding: quoted-printable
 On Thu, Jul 10, 2025 at 1:28=E2=80=AFAM Byungchul Park <byungchul@sk.com> w=
 rote:
 >
-> To eliminate the use of the page pool fields in struct page, the page
-> pool code should use netmem descriptor and APIs instead.
+> To simplify struct page, the effort to separate its own descriptor from
+> struct page is required and the work for page pool is on going.
 >
-> However, __netmem_get_pp() still accesses ->pp via struct page.  So
-> change it to use struct netmem_desc instead, since ->pp no longer will
-> be available in struct page.
+> Use netmem descriptor and APIs for page pool in netdevsim code.
 >
 > Signed-off-by: Byungchul Park <byungchul@sk.com>
 > ---
->  include/net/netmem.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/net/netdevsim/netdev.c    | 19 ++++++++++---------
+>  drivers/net/netdevsim/netdevsim.h |  2 +-
+>  2 files changed, 11 insertions(+), 10 deletions(-)
 >
-> diff --git a/include/net/netmem.h b/include/net/netmem.h
-> index 11e9de45efcb..283b4a997fbc 100644
-> --- a/include/net/netmem.h
-> +++ b/include/net/netmem.h
-> @@ -306,7 +306,7 @@ static inline struct net_iov *__netmem_clear_lsb(netm=
-em_ref netmem)
->   */
->  static inline struct page_pool *__netmem_get_pp(netmem_ref netmem)
->  {
-> -       return __netmem_to_page(netmem)->pp;
-> +       return __netmem_to_nmdesc(netmem)->pp;
->  }
+> diff --git a/drivers/net/netdevsim/netdev.c b/drivers/net/netdevsim/netde=
+v.c
+> index e36d3e846c2d..ba19870524c5 100644
+> --- a/drivers/net/netdevsim/netdev.c
+> +++ b/drivers/net/netdevsim/netdev.c
+> @@ -812,7 +812,7 @@ nsim_pp_hold_read(struct file *file, char __user *dat=
+a,
+>         struct netdevsim *ns =3D file->private_data;
+>         char buf[3] =3D "n\n";
 >
+> -       if (ns->page)
+> +       if (ns->netmem)
+>                 buf[0] =3D 'y';
+>
+>         return simple_read_from_buffer(data, count, ppos, buf, 2);
+> @@ -832,18 +832,19 @@ nsim_pp_hold_write(struct file *file, const char __=
+user *data,
+>
+>         rtnl_lock();
+>         ret =3D count;
+> -       if (val =3D=3D !!ns->page)
+> +       if (val =3D=3D !!ns->netmem)
+>                 goto exit;
+>
+>         if (!netif_running(ns->netdev) && val) {
+>                 ret =3D -ENETDOWN;
+>         } else if (val) {
+> -               ns->page =3D page_pool_dev_alloc_pages(ns->rq[0]->page_po=
+ol);
+> -               if (!ns->page)
+> +               ns->netmem =3D page_pool_alloc_netmems(ns->rq[0]->page_po=
+ol,
+> +                                                    GFP_ATOMIC | __GFP_N=
+OWARN);
 
-__netmem_to_nmdesc should introduced with this patch.
-
-But also, I wonder why not modify all the callsites of
-__netmem_to_page to the new __netmem_to_nmdesc and delete the
-__nemem_to_page helper?
+Add page_pool_dev_alloc_netmems helper.
 
 
 --=20
