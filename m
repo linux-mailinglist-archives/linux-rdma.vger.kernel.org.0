@@ -1,279 +1,204 @@
-Return-Path: <linux-rdma+bounces-12015-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12016-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0F27AFF828
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Jul 2025 06:45:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FD65AFFA28
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Jul 2025 08:52:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3E9F1C44F1C
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Jul 2025 04:45:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 156DA4E4245
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Jul 2025 06:52:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D926218E96;
-	Thu, 10 Jul 2025 04:45:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FEA628725D;
+	Thu, 10 Jul 2025 06:52:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AsI1XZWb"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="pJKcGmpI"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2062.outbound.protection.outlook.com [40.107.223.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53534748F;
-	Thu, 10 Jul 2025 04:45:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752122717; cv=none; b=rrdiP2wCc/HizqvAnf20jGOieG6CZLzC6QnarQOPL0Y60xp9jbvHUq2lY6p7T85J/4FTI3Nx+VoXXsopuv5nBWne3eJ2rraaUvewEqsfSLbUiSTQMOLdG6aRC6NhjBIPAaQQAtKwQvhb8Q5v2BuZqFNcG/zk5/VXCXaUUNszRx4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752122717; c=relaxed/simple;
-	bh=L4zt4GKHw1IXFF18J+kJzI+p0dvnSmo2E3bIwxpiiAI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=C86VS3CRIWxOHt7E2ZhpFXtsaiEp6jVz6WcQz786KAcxJZxKbxJ/HdUf5ZDlqitUG4NyMg6jWgDmCHqldTkeaiD/CXrN8lSUbvQE2YVnEiilUI4T0KoG84c986DTwb2OV4BdHmeE1Ls7Nj16u1LYX9fMUvaqi3IJenA30NT59CQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AsI1XZWb; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2f147207-fca7-460f-92b9-10b220f026b6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752122706;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BNnHfl6FcQ99JfZ8muMQ59CJSF2r93JQSTBRpe65T7Y=;
-	b=AsI1XZWbtSInOe2pkBHCd5v97UIzDkpWa0XbTFyqRLW7rrlUvXPbpAlND7UWEN4K30Cuk2
-	DcLxussoKUEGdJwb4gZfjLwtV7SqXV3Cg51DjjSpfsQwgBioWXWgwaAx+v51ei6KVezzLQ
-	jsL2x1kvEnp3VVrV8EEmALUSwwv4XPY=
-Date: Wed, 9 Jul 2025 21:44:50 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81C3A22AE75;
+	Thu, 10 Jul 2025 06:52:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.62
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1752130345; cv=fail; b=UYlmq4/rJv0k45gLMRrtrECovu9bqetwiAs65TpL5NVc/BGwxmNtzXlu7tJXsUdEB97+hRe4kho+LK52jC7YBHkHbvwNCzbeeOYR0wf8muRYr1fHBtwpbVWs02ruc2DFG6PyicG9psihFe0T4q4CLSBlvppqv0oWwc9pmXdx2ZA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1752130345; c=relaxed/simple;
+	bh=UbVnQYw8e5Vnyd6Q3VcCcxwIH0+zlAweDYEJuK3UweI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=YIZLum3gUxGlBAokO9dRN1YlP7OVFXjQ/oo8+ghTsveaLt+xGyWciLBtsZc/8i9FkSKy5nHtL4UnSpHG69fJVg2luR4o5feuX4l9xNvoo1ajLyP9ixQsxmGrQr1S4CltrEZnKrLEQvDpumIIm0+fxoMBtKkH7IHJvmVwpPxdkXs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=pJKcGmpI; arc=fail smtp.client-ip=40.107.223.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=uS3zhaopcocZyNrpXvOxd+Ca9Gkl5Sim4cqqkA0guHeFQF9EAgApfXU9S722k8Vu3rd3T/ymVS4cztsU+3MntQjrjNeMG020/LxIGgrot5j49MM9FBE71BM4rp7uHQs5g0V0xFaIcCZgA9DcB7M9wZYH3tNDD72D2yrIenkcUz5hgqkCzFe7liPan6HfpIaDfFCJSZStp/fMP/DuHdL8SuXVr9Ukd0POt/0pTEz5K1Im1p2QpomYGMrRXPK1atfzuoMnf3D4jI2pTNy3K4XTAvltjBY3knyaJdSFNgpN2W6yqZ114sjr5YEyI8QGZxhZwuiZNUMe7lPv0GSxUG1ZWQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cZKVyVNiVyFb3+5k1AN3s8UfPvIfDLRgxAmOAtgEJRA=;
+ b=UCBx8p6GmUOIYLyo4pTyhlhCHVZq7fQUC/PVZMfSV3GQ8eZPQkcrFoVJIA7eOBIAY/1/VXk7iBxx9fsFpVJbmMlkv4qBNCZlY2SdMDnNz8D5zvp9xTQJRGPDlH5pWj7VsuTc+S4Wj1s9eldP6fUSWnVpzm4L463LmJNMhLBqDnRIDMlhf8O8FAZmqWe+PieMdOnGQuyZwRU8s5AOs05NdwN/eVntKJxxCtxLSgRP+F9eqJV2BH9Ew8MOCCWHnkj19QbdaRhBXZRwaJQtYSeostmM6R8EC3A+I2Vu8KRjpPhRvFDtlO5lZ7r7AFYCjmdm/QUKaqdbVOYZAA9xZNeYqw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cZKVyVNiVyFb3+5k1AN3s8UfPvIfDLRgxAmOAtgEJRA=;
+ b=pJKcGmpI4kKaUal/PHOnvKyTXWiw05pDhyP9FsGJUiC4HsJ8Bc9qK+crs+hmMYz+hCtJKsuPAdk+bpC+M29D+TTcsU0J5BsWfWaktJJ0YRFt9kDCzFT/G+HSC05F8ICrnpDOpEyerVaEkC7yYKueICaVIz6cp0FLegeFa6vX3luxt/CnWFWA92ZAw7RmBFp4PKnQ+2SRMkB5k+NLWJHMct2zzS8JPB3lW2RgTrB+RomkrHmTXYJIdDE5fOc+RoqImUyQV23gLTdarDlzgsAw7zYbnS0inJE4mA9zzw2mk5i1uTaj20KEATRW0qk4O1GIkghgWb7f61TnLuN34dC/qA==
+Received: from CH2PR18CA0024.namprd18.prod.outlook.com (2603:10b6:610:4f::34)
+ by BY5PR12MB4066.namprd12.prod.outlook.com (2603:10b6:a03:207::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8901.27; Thu, 10 Jul
+ 2025 06:52:20 +0000
+Received: from CH2PEPF0000009F.namprd02.prod.outlook.com
+ (2603:10b6:610:4f:cafe::32) by CH2PR18CA0024.outlook.office365.com
+ (2603:10b6:610:4f::34) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8922.21 via Frontend Transport; Thu,
+ 10 Jul 2025 06:52:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CH2PEPF0000009F.mail.protection.outlook.com (10.167.244.21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8922.22 via Frontend Transport; Thu, 10 Jul 2025 06:52:19 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 9 Jul 2025
+ 23:52:06 -0700
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 9 Jul
+ 2025 23:52:06 -0700
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.6)
+ with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Wed, 9 Jul
+ 2025 23:52:02 -0700
+From: Tariq Toukan <tariqt@nvidia.com>
+To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>
+CC: Saeed Mahameed <saeed@kernel.org>, Gal Pressman <gal@nvidia.com>, "Leon
+ Romanovsky" <leon@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, "Tariq
+ Toukan" <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Jonathan Corbet
+	<corbet@lwn.net>, <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next V2 0/3] net/mlx5e: Add support for PCIe congestion events
+Date: Thu, 10 Jul 2025 09:51:29 +0300
+Message-ID: <1752130292-22249-1-git-send-email-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.8.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH rdma-next 1/1] net/mlx5: Fix build -Wframe-larger-than
- warnings
-To: Junxian Huang <huangjunxian6@hisilicon.com>, saeedm@nvidia.com,
- leon@kernel.org, tariqt@nvidia.com, andrew+netdev@lunn.ch,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <20250710034948.34179-1-yanjun.zhu@linux.dev>
- <844e996e-09dd-7f1e-cc21-25be65137152@hisilicon.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <844e996e-09dd-7f1e-cc21-25be65137152@hisilicon.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
+X-NV-OnPremToCloud: AnonymousSubmission
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH2PEPF0000009F:EE_|BY5PR12MB4066:EE_
+X-MS-Office365-Filtering-Correlation-Id: 56a45f5d-bf32-43bc-398a-08ddbf7e50e6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|36860700013|1800799024|7416014|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?Y3ccTdSRPssmh7UC9L0qpIFiSGdgbsqhOgweNqL9/VZMfbKcpb3f3+tvnppE?=
+ =?us-ascii?Q?uu/WeZnfy+AxREQJAD3UP9WXd/WDcknrCSBc/hQ4bE8NwOfl+cXrbRBqjJZm?=
+ =?us-ascii?Q?pH2zpQXVq1oP/6re0LjSieOB7JlI90uUMfHJIgFvbID53Ic+dn0wLR6vdhad?=
+ =?us-ascii?Q?arTY3xr/83fvdAl1Q7SvfdH+I2xPPEEgc7K18HKATUzZT86Z+hqHJTV4bA6X?=
+ =?us-ascii?Q?iTJcEAWkriVVuA9i30nQnVWr2g8RE8IaBVebbY/9X/c+pBs/FItlsj0XmZm5?=
+ =?us-ascii?Q?5jCBUj8/NH62WgFBj20YRKw3hJZETB7H1cjp3YmjTT78vFoxwKSE+LWujbYE?=
+ =?us-ascii?Q?DsNfkvGJDjsDadX97Dcyax+3SzLDzGzd+7gCllNjnYuFq4D6+rRuS4jcOVaZ?=
+ =?us-ascii?Q?B1ay9Mh+RducwJk4z5ZxcVsUZ2ez+dLU+SGgLja9QTUZZLGoVmjK5xFRyB9D?=
+ =?us-ascii?Q?8YX7Mh7SnkNpD67kDEmZe3xQeinczhOCVegIUB2UQpEjD0AcSyvTnU/v7NYA?=
+ =?us-ascii?Q?bz0wW3bUJxsfcyXn83Ef6wjDhn8l/LUM3E3phHA1icijNNaJjTc/gRwdsPrj?=
+ =?us-ascii?Q?Yb7AOOmf6ksDY2uPunbFm24BK42WFJsg5G6pU7EkI+TCdM/+oCRb8Ythv732?=
+ =?us-ascii?Q?wkB3tfko7qa329VRLhf56MyfOKG6+YvUoKSlFaxO2cRH/A1l8qvJrNxi9ASA?=
+ =?us-ascii?Q?qBUVftidX8zNP/UEt3vDECWgp82ZL/xBUquwhM4hgm3kr05+iegJhSWGxRnC?=
+ =?us-ascii?Q?jd50UJRZxygwpeaHUHdpVKjTH8iFbo/w/Sq8HxxoCMS+9MkV2Bvg5oPsOyls?=
+ =?us-ascii?Q?lz1PhML7SE2VSq1EMj6tqnB50v4hbVp5PHqzP+2kkFzuYQHEhe7JVm46rD0E?=
+ =?us-ascii?Q?yv+t2/dWFBSoQKemgw1BcoJPfKXvyC9gmO50CJnl6bY0uaqazG+FOPugSNO4?=
+ =?us-ascii?Q?++OXpMsmW5ttcj1qFDBuyefBqhuoJgy7WqE9NHhM2JfhR50A7jNVJJH3LBAf?=
+ =?us-ascii?Q?a5AeuDK6iM4hIgKjpiJDu0F8l0B/D0MoiE6agquwaLJIbyPxAaaRrYDPBBnT?=
+ =?us-ascii?Q?Czy5wTGz4+ddau1yRqaHHCQmFOQql+4pGdF4nVGizfFzNOf2A3mD+tuwpHXR?=
+ =?us-ascii?Q?FqVfTQ8bXCmqLuhV7cJAEr44DoMCSZl0KrzVy8qB25cOVOkTL+wL/xCdwWtz?=
+ =?us-ascii?Q?uEe1128mrLRPcyKAeoeUhRWzZzOxTZ9CwFo0tDDfraC9IR078oqVsWfS9b2I?=
+ =?us-ascii?Q?XdWnsm+Dv1pj47xqV8jllVW8L0JVmp9EctKYPaNStvPVbuhKvrNYaTZmpKtm?=
+ =?us-ascii?Q?jtVy7jx64TG0rqmmdTSPx1EZP69MpiMoioYQjjt9XCdF2+LWb3LM41VF9SFr?=
+ =?us-ascii?Q?q5BIiiUZ7tWHt6vXwzzbKNl6BnYP6ApB7gTxovPKmhzXktwY56D8opWMATrx?=
+ =?us-ascii?Q?IGdDDj+YLShNCLsOCl8lYVK/pn4/RlKpb7qp7xntXB5Qj344EdFHMSOHdO4x?=
+ =?us-ascii?Q?utENJ1qPD8xWcNgl4WdR+d2+FHg3K2mon2BlqxkKcKEqBlv5bwSR9FXOWQ?=
+ =?us-ascii?Q?=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(36860700013)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2025 06:52:19.8942
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56a45f5d-bf32-43bc-398a-08ddbf7e50e6
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CH2PEPF0000009F.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4066
+
+Hi,
+
+This is V2. Previous one submitted by Mark.
+Find it here:
+https://lore.kernel.org/all/20250619113721.60201-1-mbloch@nvidia.com/
+
+Find detailed feature description by Dragos below [1].
+
+Regards,
+Tariq
+
+V2:
+- Rebase on top of the IFC patches, they got pulled through mlx5-next.
 
 
-在 2025/7/9 21:09, Junxian Huang 写道:
->
-> On 2025/7/10 11:49, Zhu Yanjun wrote:
->> When building, the following warnings will appear.
->> "
->> pci_irq.c: In function ‘mlx5_ctrl_irq_request’:
->> pci_irq.c:494:1: warning: the frame size of 1040 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->>
->> pci_irq.c: In function ‘mlx5_irq_request_vector’:
->> pci_irq.c:561:1: warning: the frame size of 1040 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->>
->> eq.c: In function ‘comp_irq_request_sf’:
->> eq.c:897:1: warning: the frame size of 1080 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->>
->> irq_affinity.c: In function ‘irq_pool_request_irq’:
->> irq_affinity.c:74:1: warning: the frame size of 1048 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->> "
->>
->> These warnings indicate that the stack frame size exceeds 1024 bytes in
->> these functions.
->>
->> To resolve this, instead of allocating large memory buffers on the stack,
->> it is better to use kvzalloc to allocate memory dynamically on the heap.
->> This approach reduces stack usage and eliminates these frame size warnings.
->>
->> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
->> ---
->> 1. Only build tests;
->> 2. It is not a bug fix. Thus no Fixes tag;
->> ---
->>   drivers/net/ethernet/mellanox/mlx5/core/eq.c  | 16 +++++---
->>   .../mellanox/mlx5/core/irq_affinity.c         | 15 +++++--
->>   .../net/ethernet/mellanox/mlx5/core/pci_irq.c | 40 +++++++++++++------
->>   3 files changed, 51 insertions(+), 20 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
->> index dfb079e59d85..66ce61eee804 100644
->> --- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
->> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
->> @@ -873,20 +873,26 @@ static int comp_irq_request_sf(struct mlx5_core_dev *dev, u16 vecidx)
->>   {
->>   	struct mlx5_irq_pool *pool = mlx5_irq_table_get_comp_irq_pool(dev);
->>   	struct mlx5_eq_table *table = dev->priv.eq_table;
->> -	struct irq_affinity_desc af_desc = {};
->> +	struct irq_affinity_desc *af_desc;
->>   	struct mlx5_irq *irq;
->>   
->> +	af_desc = kvzalloc(sizeof(*af_desc), GFP_KERNEL);
->> +	if (!af_desc)
->> +		return -ENOMEM;
->> +
->>   	/* In case SF irq pool does not exist, fallback to the PF irqs*/
->>   	if (!mlx5_irq_pool_is_sf_pool(pool))
->>   		return comp_irq_request_pci(dev, vecidx);
-> ...
->
->>   
->> -	af_desc.is_managed = false;
->> -	cpumask_copy(&af_desc.mask, cpu_online_mask);
->> -	cpumask_andnot(&af_desc.mask, &af_desc.mask, &table->used_cpus);
->> -	irq = mlx5_irq_affinity_request(dev, pool, &af_desc);
->> +	af_desc->is_managed = false;
->> +	cpumask_copy(&af_desc->mask, cpu_online_mask);
->> +	cpumask_andnot(&af_desc->mask, &af_desc->mask, &table->used_cpus);
->> +	irq = mlx5_irq_affinity_request(dev, pool, af_desc);
->>   	if (IS_ERR(irq))
->>   		return PTR_ERR(irq);
-> ...
->
->>   
->> +	kvfree(af_desc);
->> +
->>   	cpumask_or(&table->used_cpus, &table->used_cpus, mlx5_irq_get_affinity_mask(irq));
->>   	mlx5_core_dbg(pool->dev, "IRQ %u mapped to cpu %*pbl, %u EQs on this irq\n",
->>   		      pci_irq_vector(dev->pdev, mlx5_irq_get_index(irq)),
->> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
->> index 2691d88cdee1..929f93853843 100644
->> --- a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
->> +++ b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
->> @@ -47,29 +47,38 @@ static int cpu_get_least_loaded(struct mlx5_irq_pool *pool,
->>   static struct mlx5_irq *
->>   irq_pool_request_irq(struct mlx5_irq_pool *pool, struct irq_affinity_desc *af_desc)
->>   {
->> -	struct irq_affinity_desc auto_desc = {};
->> +	struct irq_affinity_desc *auto_desc;
->>   	struct mlx5_irq *irq;
->>   	u32 irq_index;
->>   	int err;
->>   
->> +	auto_desc = kvzalloc(sizeof(*auto_desc), GFP_KERNEL);
->> +	if (!auto_desc)
->> +		return ERR_PTR(-ENOMEM);
->> +
->>   	err = xa_alloc(&pool->irqs, &irq_index, NULL, pool->xa_num_irqs, GFP_KERNEL);
->>   	if (err)
->>   		return ERR_PTR(err);
-> You forgot to free the kvzalloc() memory in these error branches
+[1]
+PCIe congestion events are events generated by the firmware when the
+device side has sustained PCIe inbound or outbound traffic above
+certain thresholds. The high and low threshold are hysteresis thresholds
+to prevent flapping: once the high threshold has been reached, a low
+threshold event will be triggered only after the bandwidth usage went
+below the low threshold.
 
-Thanks a lot. I will fix it ASAP.
+This series adds support for receiving and exposing such events as
+ethtool counters.
 
-Yanjun.Zhu
+2 new pairs of counters are exposed: pci_bw_in/outbound_high/low. These
+should help the user understand if the device PCI is under pressure.
+The thresholds are configurable via sysfs when the feature is supported.
 
->
-> Junxian
->
->> +
->>   	if (pool->irqs_per_cpu) {
->>   		if (cpumask_weight(&af_desc->mask) > 1)
->>   			/* if req_mask contain more then one CPU, set the least loadad CPU
->>   			 * of req_mask
->>   			 */
->>   			cpumask_set_cpu(cpu_get_least_loaded(pool, &af_desc->mask),
->> -					&auto_desc.mask);
->> +					&auto_desc->mask);
->>   		else
->>   			cpu_get(pool, cpumask_first(&af_desc->mask));
->>   	}
->> +
->>   	irq = mlx5_irq_alloc(pool, irq_index,
->> -			     cpumask_empty(&auto_desc.mask) ? af_desc : &auto_desc,
->> +			     cpumask_empty(&auto_desc->mask) ? af_desc : auto_desc,
->>   			     NULL);
->>   	if (IS_ERR(irq))
->>   		xa_erase(&pool->irqs, irq_index);
->> +
->> +	kvfree(auto_desc);
->> +
->>   	return irq;
->>   }
->>   
->> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
->> index 40024cfa3099..48aad94b0a5d 100644
->> --- a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
->> +++ b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
->> @@ -470,26 +470,32 @@ void mlx5_ctrl_irq_release(struct mlx5_core_dev *dev, struct mlx5_irq *ctrl_irq)
->>   struct mlx5_irq *mlx5_ctrl_irq_request(struct mlx5_core_dev *dev)
->>   {
->>   	struct mlx5_irq_pool *pool = ctrl_irq_pool_get(dev);
->> -	struct irq_affinity_desc af_desc;
->> +	struct irq_affinity_desc *af_desc;
->>   	struct mlx5_irq *irq;
->>   
->> -	cpumask_copy(&af_desc.mask, cpu_online_mask);
->> -	af_desc.is_managed = false;
->> +	af_desc = kvzalloc(sizeof(*af_desc), GFP_KERNEL);
->> +	if (!af_desc)
->> +		return ERR_PTR(-ENOMEM);
->> +
->> +	cpumask_copy(&af_desc->mask, cpu_online_mask);
->> +	af_desc->is_managed = false;
->>   	if (!mlx5_irq_pool_is_sf_pool(pool)) {
->>   		/* In case we are allocating a control IRQ from a pci device's pool.
->>   		 * This can happen also for a SF if the SFs pool is empty.
->>   		 */
->>   		if (!pool->xa_num_irqs.max) {
->> -			cpumask_clear(&af_desc.mask);
->> +			cpumask_clear(&af_desc->mask);
->>   			/* In case we only have a single IRQ for PF/VF */
->> -			cpumask_set_cpu(cpumask_first(cpu_online_mask), &af_desc.mask);
->> +			cpumask_set_cpu(cpumask_first(cpu_online_mask), &af_desc->mask);
->>   		}
->>   		/* Allocate the IRQ in index 0. The vector was already allocated */
->> -		irq = irq_pool_request_vector(pool, 0, &af_desc, NULL);
->> +		irq = irq_pool_request_vector(pool, 0, af_desc, NULL);
->>   	} else {
->> -		irq = mlx5_irq_affinity_request(dev, pool, &af_desc);
->> +		irq = mlx5_irq_affinity_request(dev, pool, af_desc);
->>   	}
->>   
->> +	kvfree(af_desc);
->> +
->>   	return irq;
->>   }
->>   
->> @@ -548,16 +554,26 @@ struct mlx5_irq *mlx5_irq_request_vector(struct mlx5_core_dev *dev, u16 cpu,
->>   {
->>   	struct mlx5_irq_table *table = mlx5_irq_table_get(dev);
->>   	struct mlx5_irq_pool *pool = table->pcif_pool;
->> -	struct irq_affinity_desc af_desc;
->> +	struct irq_affinity_desc *af_desc;
->>   	int offset = MLX5_IRQ_VEC_COMP_BASE;
->> +	struct mlx5_irq *irq;
->> +
->> +	af_desc = kvzalloc(sizeof(*af_desc), GFP_KERNEL);
->> +	if (!af_desc)
->> +		return ERR_PTR(-ENOMEM);
->>   
->>   	if (!pool->xa_num_irqs.max)
->>   		offset = 0;
->>   
->> -	af_desc.is_managed = false;
->> -	cpumask_clear(&af_desc.mask);
->> -	cpumask_set_cpu(cpu, &af_desc.mask);
->> -	return mlx5_irq_request(dev, vecidx + offset, &af_desc, rmap);
->> +	af_desc->is_managed = false;
->> +	cpumask_clear(&af_desc->mask);
->> +	cpumask_set_cpu(cpu, &af_desc->mask);
->> +
->> +	irq = mlx5_irq_request(dev, vecidx + offset, af_desc, rmap);
->> +
->> +	kvfree(af_desc);
->> +
->> +	return irq;
->>   }
->>   
->>   static struct mlx5_irq_pool *
+Dragos Tatulea (3):
+  net/mlx5e: Create/destroy PCIe Congestion Event object
+  net/mlx5e: Add device PCIe congestion ethtool stats
+  net/mlx5e: Make PCIe congestion event thresholds configurable
 
+ .../ethernet/mellanox/mlx5/counters.rst       |  32 ++
+ .../net/ethernet/mellanox/mlx5/core/Makefile  |   2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en.h  |   2 +
+ .../mellanox/mlx5/core/en/pcie_cong_event.c   | 464 ++++++++++++++++++
+ .../mellanox/mlx5/core/en/pcie_cong_event.h   |  11 +
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |   3 +
+ .../ethernet/mellanox/mlx5/core/en_stats.c    |   1 +
+ .../ethernet/mellanox/mlx5/core/en_stats.h    |   1 +
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c  |   4 +
+ 9 files changed, 519 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/pcie_cong_event.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/pcie_cong_event.h
+
+
+base-commit: c65d34296b2252897e37835d6007bbd01b255742
 -- 
-Best Regards,
-Yanjun.Zhu
+2.31.1
 
 
