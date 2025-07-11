@@ -1,304 +1,99 @@
-Return-Path: <linux-rdma+bounces-12059-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12060-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53C5CB01350
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Jul 2025 08:08:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0BBBB01F53
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Jul 2025 16:40:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06D5C1CA12EA
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Jul 2025 06:08:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A7B3766DD2
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Jul 2025 14:39:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E8741D618C;
-	Fri, 11 Jul 2025 06:08:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7AF02E7BB9;
+	Fri, 11 Jul 2025 14:39:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wzGbmC+J"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L/RF5Ui9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2DC81A2632
-	for <linux-rdma@vger.kernel.org>; Fri, 11 Jul 2025 06:08:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 603A72DFA2D;
+	Fri, 11 Jul 2025 14:39:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752214094; cv=none; b=ITOzPgR8GNYcKy4UCmumrc0z8Z2PQDVPldPF6cgKQPlNQaLmNBRfDZ01sy66lmEPOBqL7Wfm+9afLAUyZH9uIi0gCt5XUx2SSPL2ZbY0cyLJ+z8AeYNngstZbbTEy/e+qbgIh79Ji7G69Wx+vwkU2GRgBlop3miRXHJKot1bBlY=
+	t=1752244799; cv=none; b=BUhrmkhEJJsR9oaLNS8fB55M3alDIzvcS1HZlnz3WqCeb4OGkA1bNCDtCr/ET62CXm9cKYrtBmPJzTReTZn+Z7IhwXOiQYJUi+xJZ6Y3CR8BPHDGiMHgR7e25gXuhNaHy45tiPmJ9ajGx1FMV0djRm5EUr5qIqzNJAY6b5LPtNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752214094; c=relaxed/simple;
-	bh=gNpih8xnCGQu+jdA+AvUDEylqB16lTu84yaWKyKEg74=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=MTnf2kOLx29bvwlfzNDswo566qZIy2IjoWP+mzkPmZsGg/Hm73kkCDfubmTHUbV8mz8NGEjnngpmzqEfRcLfBcQcb+fm2R9YAqaqvNIWX7mTijgXEs528cAHNzlgEIcJv2KsxWxvk/ewNv2Usz9yZEl2nmCyfQwWBnETZ2UwWWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wzGbmC+J; arc=none smtp.client-ip=209.85.216.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kuniyu.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-3122368d82bso2730108a91.0
-        for <linux-rdma@vger.kernel.org>; Thu, 10 Jul 2025 23:08:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1752214091; x=1752818891; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=HOCCIU1Dxti53uyBexUi4fVJk3Iwlf50sIMO8h+C3FI=;
-        b=wzGbmC+J6pvPg1nwdNCJjWuSttPnvhobFboU+BXaau6jFmINsY039v29fAYcuwXTKD
-         LYK59S6Tsgh2JLCOpIS4xTcd0XluyeMm/erKtj+Q2+8yf5BVa5AZfqI1fdUWkxNwtghR
-         /XQmdoCbaynenFbv93BUFqoFQC6N9X0I/6qdxUZlWw5z/YhIG+ypydYmsKofRuNYhMJV
-         dYbwS5m6OVoozlBVJ482d/UX4Dvk6Mz3HtMpcfSLEridYdjGIiYqTQld9ftiI5MIUi2q
-         WfkV5KgOqCSEE9P204x1E2eCPSDGKdYBFARbehndSFhkiy4EfECRjgoetrjvoIZ0EBc2
-         CutA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752214091; x=1752818891;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HOCCIU1Dxti53uyBexUi4fVJk3Iwlf50sIMO8h+C3FI=;
-        b=TD1w5kBSM8XmSvEmOHoNVhc0km8wZWuCCuW1SAXkQsvhJmPzkhE+LvqM0y8pFQCR/5
-         7eGvCT8JX62sH2D9MSd2QsCF8LQITCNTp+6iWwqiB6KQbdeRdzUmC60VGmOcNIGCJm5Y
-         pyDw29CzBzLxrIluPB0weOd9vLMr7TSAhmwcy+FdOj3MKjRZWnbqT7sPu7TcUmbNmcvb
-         2CbjEV5HDJ0OwX5aw7EnHSE75m46f83eFEAeor6S32fI3UdmCNUV4xM1NaX7VkeFDMTS
-         ggvpqDKj+N35rgKXCdzAJJg9WatpdekeFf/HxUHvP04phgaAV2wGavSt+q/1O0ag2eBO
-         OxoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWNri71cHGP41fjVmGFQ09YEL0D/yF4ckKdFFHn+b6w0Yv994feYTWAZIrnAQ1exhPOoqXQfgYlvgmK@vger.kernel.org
-X-Gm-Message-State: AOJu0YxT06ELjNzfGz5KS1c1wi3e6vX6rT+AJHX1nAFRHnkaVem8FPYM
-	HwWHlrYVxJYFLV0FHDrva9GSono+qw72c7kEpwb/6cXlT6FwRneTnMwF+Pk+N5cq6WzrFpJr+lJ
-	5h5P6nA==
-X-Google-Smtp-Source: AGHT+IHBnhk857mznsVRtZ1LhvG8NmTW9v1reo6FosSdstl+x90K1TdQYfY6yvbBDBcLJ8YfIbf5Eax50aQ=
-X-Received: from pjf12.prod.google.com ([2002:a17:90b:3f0c:b0:312:3b05:5f44])
- (user=kuniyu job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:1c07:b0:311:9e59:7aba
- with SMTP id 98e67ed59e1d1-31c4ca64db7mr3337736a91.2.1752214090989; Thu, 10
- Jul 2025 23:08:10 -0700 (PDT)
-Date: Fri, 11 Jul 2025 06:07:52 +0000
+	s=arc-20240116; t=1752244799; c=relaxed/simple;
+	bh=pbBx0BTrgfM3YrBbgUaFthDxIg7U7WUmoyVer8F0jf0=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=srLrP22yZB3jAzoAqg4M0jQOyYyqtZHNk/5xPmxXX7S5lZ250dVYhaXC8Seq/W4nrWg477S+aungCN049/YeztI3JVSEm8xIzr9XL4B0C29i5VfXypP4NPjz5+PIZ40C32MXf1NoJo9CFHXpNEEnpnm02FIZD3qmK70+N1/oTvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L/RF5Ui9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E5C9C4CEED;
+	Fri, 11 Jul 2025 14:39:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752244799;
+	bh=pbBx0BTrgfM3YrBbgUaFthDxIg7U7WUmoyVer8F0jf0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=L/RF5Ui9LxCNYe+vCbMbXs+us3CFwSrpTNyQGCMYL2sjAPCgYCWw6DHhtOwmdNv3Q
+	 g6FE9K1sZVhFNQm10RW+6N87s5PtI8EukOTjYbJ4UjGG9BHtXLj/yWbklGf9fb2/1W
+	 rFvTLk1m85epNdIIPOLU4r2Zv7nP2lMS4GJ96xmuIFhzy4j+5xs0H70Pp9uYVwfMT1
+	 MYFp6cd5WNzfEaKd8Ux8Pohh6J/W7RwS0ZoeQQNLQRzC8bntz6K7Bo/oZOylKEMEKL
+	 t9BvEeo3fCCvZu/wr3pBw49wcokPhbZd5td4jx01C3jP4OJsxlsauTvsOK6b5QpcLY
+	 C8Vzpfz1mw6Ew==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70B18383B275;
+	Fri, 11 Jul 2025 14:40:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.50.0.727.gbf7dc18ff4-goog
-Message-ID: <20250711060808.2977529-1-kuniyu@google.com>
-Subject: [PATCH v1 net] smc: Fix various oops due to inet_sock type confusion.
-From: Kuniyuki Iwashima <kuniyu@google.com>
-To: "D. Wythe" <alibuda@linux.alibaba.com>, Dust Li <dust.li@linux.alibaba.com>, 
-	Sidraya Jayagond <sidraya@linux.ibm.com>, Wenjia Zhang <wenjia@linux.ibm.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: Mahanta Jambigi <mjambigi@linux.ibm.com>, Tony Lu <tonylu@linux.alibaba.com>, 
-	Wen Gu <guwen@linux.alibaba.com>, Simon Horman <horms@kernel.org>, 
-	Kuniyuki Iwashima <kuniyu@google.com>, Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org, 
-	syzbot+40bf00346c3fe40f90f2@syzkaller.appspotmail.com, 
-	syzbot+f22031fad6cbe52c70e7@syzkaller.appspotmail.com, 
-	syzbot+271fed3ed6f24600c364@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 0/3] mlx5 misc fixes 2025-07-10
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175224482124.2294782.15289070298034532895.git-patchwork-notify@kernel.org>
+Date: Fri, 11 Jul 2025 14:40:21 +0000
+References: <1752155624-24095-1-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1752155624-24095-1-git-send-email-tariqt@nvidia.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, saeed@kernel.org, gal@nvidia.com,
+ leon@kernel.org, saeedm@nvidia.com, mbloch@nvidia.com,
+ netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
-syzbot reported weird splats [0][1] in cipso_v4_sock_setattr() while
-freeing inet_sk(sk)->inet_opt.
+Hello:
 
-The address was freed multiple times even though it was read-only memory.
+This series was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-cipso_v4_sock_setattr() did nothing wrong, and the root cause was type
-confusion.
+On Thu, 10 Jul 2025 16:53:41 +0300 you wrote:
+> Hi,
+> 
+> This small patchset provides misc bug fixes from the team to the mlx5
+> core and EN drivers.
+> 
+> Thanks,
+> Tariq.
+> 
+> [...]
 
-The cited commit made it possible to create smc_sock as an INET socket.
+Here is the summary with links:
+  - [net,1/3] net/mlx5: Reset bw_share field when changing a node's parent
+    https://git.kernel.org/netdev/net/c/f7b764668940
+  - [net,2/3] net/mlx5e: Fix race between DIM disable and net_dim()
+    https://git.kernel.org/netdev/net/c/eb41a264a3a5
+  - [net,3/3] net/mlx5e: Add new prio for promiscuous mode
+    https://git.kernel.org/netdev/net/c/4c9fce56fa70
 
-The issue is that struct smc_sock does not have struct inet_sock as the
-first member but hijacks AF_INET and AF_INET6 sk_family, which confuses
-various places.
-
-In this case, inet_sock.inet_opt was actually smc_sock.clcsk_data_ready(),
-which is an address of a function in the text segment.
-
-  $ pahole -C inet_sock vmlinux
-  struct inet_sock {
-  ...
-          struct ip_options_rcu *    inet_opt;             /*   784     8 */
-
-  $ pahole -C smc_sock vmlinux
-  struct smc_sock {
-  ...
-          void                       (*clcsk_data_ready)(struct sock *); /*   784     8 */
-
-The same issue for another field was reported before. [2][3]
-
-At that time, an ugly hack was suggested [4], but it makes both INET
-and SMC code error-prone and hard to change.
-
-Also, yet another variant was fixed by a hacky commit 98d4435efcbf3
-("net/smc: prevent NULL pointer dereference in txopt_get").
-
-Instead of papering over the root cause by such hacks, we should not
-allow non-INET socket to reuse the INET infra.
-
-Let's add inet_sock as the first member of smc_sock.
-
-[0]:
-kvfree_call_rcu(): Double-freed call. rcu_head 000000006921da73
-WARNING: CPU: 0 PID: 6718 at mm/slab_common.c:1956 kvfree_call_rcu+0x94/0x3f0 mm/slab_common.c:1955
-Modules linked in:
-CPU: 0 UID: 0 PID: 6718 Comm: syz.0.17 Tainted: G        W           6.16.0-rc4-syzkaller-g7482bb149b9f #0 PREEMPT
-Tainted: [W]=WARN
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : kvfree_call_rcu+0x94/0x3f0 mm/slab_common.c:1955
-lr : kvfree_call_rcu+0x94/0x3f0 mm/slab_common.c:1955
-sp : ffff8000a03a7730
-x29: ffff8000a03a7730 x28: 00000000fffffff5 x27: 1fffe000184823d3
-x26: dfff800000000000 x25: ffff0000c2411e9e x24: ffff0000dd88da00
-x23: ffff8000891ac9a0 x22: 00000000ffffffea x21: ffff8000891ac9a0
-x20: ffff8000891ac9a0 x19: ffff80008afc2480 x18: 00000000ffffffff
-x17: 0000000000000000 x16: ffff80008ae642c8 x15: ffff700011ede14c
-x14: 1ffff00011ede14c x13: 0000000000000004 x12: ffffffffffffffff
-x11: ffff700011ede14c x10: 0000000000ff0100 x9 : 5fa3c1ffaf0ff000
-x8 : 5fa3c1ffaf0ff000 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : ffff8000a03a7078 x4 : ffff80008f766c20 x3 : ffff80008054d360
-x2 : 0000000000000000 x1 : 0000000000000201 x0 : 0000000000000000
-Call trace:
- kvfree_call_rcu+0x94/0x3f0 mm/slab_common.c:1955 (P)
- cipso_v4_sock_setattr+0x2f0/0x3f4 net/ipv4/cipso_ipv4.c:1914
- netlbl_sock_setattr+0x240/0x334 net/netlabel/netlabel_kapi.c:1000
- smack_netlbl_add+0xa8/0x158 security/smack/smack_lsm.c:2581
- smack_inode_setsecurity+0x378/0x430 security/smack/smack_lsm.c:2912
- security_inode_setsecurity+0x118/0x3c0 security/security.c:2706
- __vfs_setxattr_noperm+0x174/0x5c4 fs/xattr.c:251
- __vfs_setxattr_locked+0x1ec/0x218 fs/xattr.c:295
- vfs_setxattr+0x158/0x2ac fs/xattr.c:321
- do_setxattr fs/xattr.c:636 [inline]
- file_setxattr+0x1b8/0x294 fs/xattr.c:646
- path_setxattrat+0x2ac/0x320 fs/xattr.c:711
- __do_sys_fsetxattr fs/xattr.c:761 [inline]
- __se_sys_fsetxattr fs/xattr.c:758 [inline]
- __arm64_sys_fsetxattr+0xc0/0xdc fs/xattr.c:758
- __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
- el0_svc+0x58/0x180 arch/arm64/kernel/entry-common.c:879
- el0t_64_sync_handler+0x84/0x12c arch/arm64/kernel/entry-common.c:898
- el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
-
-[1]:
-Unable to handle kernel write to read-only memory at virtual address ffff8000891ac9a8
-KASAN: probably user-memory-access in range [0x0000000448d64d40-0x0000000448d64d47]
-Mem abort info:
-  ESR = 0x000000009600004e
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x0e: level 2 permission fault
-Data abort info:
-  ISV = 0, ISS = 0x0000004e, ISS2 = 0x00000000
-  CM = 0, WnR = 1, TnD = 0, TagAccess = 0
-  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000207144000
-[ffff8000891ac9a8] pgd=0000000000000000, p4d=100000020f950003, pud=100000020f951003, pmd=0040000201000781
-Internal error: Oops: 000000009600004e [#1]  SMP
-Modules linked in:
-CPU: 0 UID: 0 PID: 6946 Comm: syz.0.69 Not tainted 6.16.0-rc4-syzkaller-g7482bb149b9f #0 PREEMPT
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/07/2025
-pstate: 604000c5 (nZCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : kvfree_call_rcu+0x31c/0x3f0 mm/slab_common.c:1971
-lr : add_ptr_to_bulk_krc_lock mm/slab_common.c:1838 [inline]
-lr : kvfree_call_rcu+0xfc/0x3f0 mm/slab_common.c:1963
-sp : ffff8000a28a7730
-x29: ffff8000a28a7730 x28: 00000000fffffff5 x27: 1fffe00018b09bb3
-x26: 0000000000000001 x25: ffff80008f66e000 x24: ffff00019beaf498
-x23: ffff00019beaf4c0 x22: 0000000000000000 x21: ffff8000891ac9a0
-x20: ffff8000891ac9a0 x19: 0000000000000000 x18: 00000000ffffffff
-x17: ffff800093363000 x16: ffff80008052c6e4 x15: ffff700014514ecc
-x14: 1ffff00014514ecc x13: 0000000000000004 x12: ffffffffffffffff
-x11: ffff700014514ecc x10: 0000000000000001 x9 : 0000000000000001
-x8 : ffff00019beaf7b4 x7 : ffff800080a94154 x6 : 0000000000000000
-x5 : ffff8000935efa60 x4 : 0000000000000008 x3 : ffff80008052c7fc
-x2 : 0000000000000001 x1 : ffff8000891ac9a0 x0 : 0000000000000001
-Call trace:
- kvfree_call_rcu+0x31c/0x3f0 mm/slab_common.c:1967 (P)
- cipso_v4_sock_setattr+0x2f0/0x3f4 net/ipv4/cipso_ipv4.c:1914
- netlbl_sock_setattr+0x240/0x334 net/netlabel/netlabel_kapi.c:1000
- smack_netlbl_add+0xa8/0x158 security/smack/smack_lsm.c:2581
- smack_inode_setsecurity+0x378/0x430 security/smack/smack_lsm.c:2912
- security_inode_setsecurity+0x118/0x3c0 security/security.c:2706
- __vfs_setxattr_noperm+0x174/0x5c4 fs/xattr.c:251
- __vfs_setxattr_locked+0x1ec/0x218 fs/xattr.c:295
- vfs_setxattr+0x158/0x2ac fs/xattr.c:321
- do_setxattr fs/xattr.c:636 [inline]
- file_setxattr+0x1b8/0x294 fs/xattr.c:646
- path_setxattrat+0x2ac/0x320 fs/xattr.c:711
- __do_sys_fsetxattr fs/xattr.c:761 [inline]
- __se_sys_fsetxattr fs/xattr.c:758 [inline]
- __arm64_sys_fsetxattr+0xc0/0xdc fs/xattr.c:758
- __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
- el0_svc+0x58/0x180 arch/arm64/kernel/entry-common.c:879
- el0t_64_sync_handler+0x84/0x12c arch/arm64/kernel/entry-common.c:898
- el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
-Code: aa1f03e2 52800023 97ee1e8d b4000195 (f90006b4)
-
-Fixes: d25a92ccae6b ("net/smc: Introduce IPPROTO_SMC")
-Reported-by: syzbot+40bf00346c3fe40f90f2@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/all/686d9b50.050a0220.1ffab7.0020.GAE@google.com/
-Tested-by: syzbot+40bf00346c3fe40f90f2@syzkaller.appspotmail.com
-Reported-by: syzbot+f22031fad6cbe52c70e7@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/all/686da0f3.050a0220.1ffab7.0022.GAE@google.com/
-Reported-by: syzbot+271fed3ed6f24600c364@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=271fed3ed6f24600c364 # [2]
-Link: https://lore.kernel.org/netdev/99f284be-bf1d-4bc4-a629-77b268522fff@huawei.com/ # [3]
-Link: https://lore.kernel.org/netdev/20250331081003.1503211-1-wangliang74@huawei.com/ # [4]
-Signed-off-by: Kuniyuki Iwashima <kuniyu@google.com>
----
- net/smc/af_smc.c | 14 ++++++++++++++
- net/smc/smc.h    |  8 ++++----
- 2 files changed, 18 insertions(+), 4 deletions(-)
-
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 3760131f14845..1882bab8e00e7 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -30,6 +30,10 @@
- #include <linux/splice.h>
- 
- #include <net/sock.h>
-+#include <net/inet_common.h>
-+#if IS_ENABLED(CONFIG_IPV6)
-+#include <net/ipv6.h>
-+#endif
- #include <net/tcp.h>
- #include <net/smc.h>
- #include <asm/ioctls.h>
-@@ -360,6 +364,16 @@ static void smc_destruct(struct sock *sk)
- 		return;
- 	if (!sock_flag(sk, SOCK_DEAD))
- 		return;
-+	switch (sk->sk_family) {
-+	case AF_INET:
-+		inet_sock_destruct(sk);
-+		break;
-+#if IS_ENABLED(CONFIG_IPV6)
-+	case AF_INET6:
-+		inet6_sock_destruct(sk);
-+		break;
-+#endif
-+	}
- }
- 
- static struct lock_class_key smc_key;
-diff --git a/net/smc/smc.h b/net/smc/smc.h
-index 78ae10d06ed2e..2c90849637398 100644
---- a/net/smc/smc.h
-+++ b/net/smc/smc.h
-@@ -283,10 +283,10 @@ struct smc_connection {
- };
- 
- struct smc_sock {				/* smc sock container */
--	struct sock		sk;
--#if IS_ENABLED(CONFIG_IPV6)
--	struct ipv6_pinfo	*pinet6;
--#endif
-+	union {
-+		struct sock		sk;
-+		struct inet_sock	icsk_inet;
-+	};
- 	struct socket		*clcsock;	/* internal tcp socket */
- 	void			(*clcsk_state_change)(struct sock *sk);
- 						/* original stat_change fct. */
+You are awesome, thank you!
 -- 
-2.50.0.727.gbf7dc18ff4-goog
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
