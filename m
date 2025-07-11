@@ -1,118 +1,273 @@
-Return-Path: <linux-rdma+bounces-12055-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12056-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E95EB01118
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Jul 2025 04:07:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 210D8B0117F
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Jul 2025 05:04:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEA034A82F9
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Jul 2025 02:07:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFFC81C85BCA
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Jul 2025 03:04:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 976361487C3;
-	Fri, 11 Jul 2025 02:07:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1046A1991B2;
+	Fri, 11 Jul 2025 03:04:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b0o1sq+f"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="R0Ogts9F"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB75347DD;
-	Fri, 11 Jul 2025 02:07:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C97D91953BB
+	for <linux-rdma@vger.kernel.org>; Fri, 11 Jul 2025 03:04:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752199652; cv=none; b=G9RN1TDJkTsBN3N4fbDV0asVYt5URBZL/ivVJvG8ZAaynGV4nMQjsvIJrA8OVRFSF+0rqzwa1rt5NrKF8jvYSbk9glItGO9H7wEntrJuxdxRjmRoJEpPA8nq+d2PHkMRFzHHwXOz+wdYYK3hIhskXuEHlrL7Zmp8x8pnOufkWU4=
+	t=1752203073; cv=none; b=qmcg3JpgI+to/0dYKF7UFHPsd33Od0dG2XK5e5Bg1aymWIpTYgKwIV5bAIh1n+FdNZaQcqljzgR7cuMmxLsdOEMXBF6+xYnyUPbdlXn0Hue1Q/fH5D0NQ6xNyXE/BNeuNTUjOlqW14FlGNVQila4nN812WVkClhfdAgvhL5YrPo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752199652; c=relaxed/simple;
-	bh=PvjSKPyD0gXbh2bB6YpiAqsa881j4RTXn+Ts3T8ihPM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xte4W+9m/6bPNl3PQAdmGl1l6KofGvP6aC909kGj2aIkH9Yhq3USBVjufNuZSR3TfQkR5gsyn/Rh93oth9pS1PHGmAPevpFvclCQla/psQNDcGiKDa3Hjd9czMY1ccKGu5eEEQV/nfG3cNkdt42CyRTTupOQjLrIY/mtX8TUDPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b0o1sq+f; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1752199649; x=1783735649;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=PvjSKPyD0gXbh2bB6YpiAqsa881j4RTXn+Ts3T8ihPM=;
-  b=b0o1sq+fiQ9oUkAwWKvaPFjoh6Jgx9TcAEHn0kT3jiUI0W4le81yjwCs
-   WBUSZR5VqUVu2a14xyQN/JQbwBRrutUBPGFRzwVoVpi83Dv0pwqWXUhgK
-   wmsjmlR1DLsmxJHqT4QrYfvjM5gmucyQ0LMk/5qilbqmHBMrVNZbtxGvT
-   jTqkFQWnGw97I0kP+szuYdmP7IdPuzD9XcdkJ+M2VSjyyJdvNQ8CnDrr2
-   cJmJ1aoKC9jBaIfqiXnJtoyhdThpsBzfjKHOIamyF8fPKzZJHDDnd5sDb
-   6BZMfAV0u/Cw7pX4Nm5OkwfcuPFLUitxXymm395cFfwA3kH64/RHkp4un
-   g==;
-X-CSE-ConnectionGUID: SxJy35KLRX+crdHurMv2CA==
-X-CSE-MsgGUID: UR7Y/F2TSGG2EcY+mgmv9Q==
-X-IronPort-AV: E=McAfee;i="6800,10657,11490"; a="77040273"
-X-IronPort-AV: E=Sophos;i="6.16,302,1744095600"; 
-   d="scan'208";a="77040273"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2025 19:07:29 -0700
-X-CSE-ConnectionGUID: ezwbokgsSPCaJxheSsnC4A==
-X-CSE-MsgGUID: 56D/N/8bSouThmQuhjJlFg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.16,302,1744095600"; 
-   d="scan'208";a="160583219"
-Received: from lkp-server01.sh.intel.com (HELO 9ee84586c615) ([10.239.97.150])
-  by orviesa003.jf.intel.com with ESMTP; 10 Jul 2025 19:07:24 -0700
-Received: from kbuild by 9ee84586c615 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ua3AY-0005jj-1k;
-	Fri, 11 Jul 2025 02:07:22 +0000
-Date: Fri, 11 Jul 2025 10:06:59 +0800
-From: kernel test robot <lkp@intel.com>
-To: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	netdev@vger.kernel.org, Saeed Mahameed <saeed@kernel.org>,
-	Gal Pressman <gal@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
-	Jonathan Corbet <corbet@lwn.net>, linux-rdma@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Dragos Tatulea <dtatulea@nvidia.com>
-Subject: Re: [PATCH net-next V2 2/3] net/mlx5e: Add device PCIe congestion
- ethtool stats
-Message-ID: <202507110932.iOkSE74e-lkp@intel.com>
-References: <1752130292-22249-3-git-send-email-tariqt@nvidia.com>
+	s=arc-20240116; t=1752203073; c=relaxed/simple;
+	bh=2lhR/0QS/KLDiZdiYJvpvWV107Zr2G88K+F/JT+soCY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=bXiRKUhxqxipQ6hvC6EAiqntBZUWUP2hYn5Kn+MWGzEU6TlErRjehx9gl8PE5JhA5XA00whXzAFgsN0TmYH6rIuFCITi04Mn37NZP0eJhgPGF7SzDhMqnPNE2Epjp1o15eDlzkNKw9o1vrUPr2UzXUWSc0KUQc4UWIZU+sWFdqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=R0Ogts9F; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1752203059;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=2/OjjK3XleyyM1jw+ax9Au8Br5H0qTI4QS0qPMcf268=;
+	b=R0Ogts9FLwLJ1ytyXg7YccrB7x5i1+ggo4+pPmi3MTsrWFyqZWyPc73Ot/OVvp2FVe2lUb
+	66kJCkAXfLv3me3i0b61CsLix7uoQoe56Hn2ZYg90p/SHfs4XO8Az++Y9jBTCKJxVFu81/
+	5KXmfYmwSllWXRBRz9hwiIXU+0u5V78=
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+To: saeedm@nvidia.com,
+	leon@kernel.org,
+	tariqt@nvidia.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: Zhu Yanjun <yanjun.zhu@linux.dev>
+Subject: [PATCHv2 rdma-next 1/1] net/mlx5: Fix build -Wframe-larger-than warnings
+Date: Fri, 11 Jul 2025 05:03:59 +0200
+Message-Id: <20250711030359.4419-1-yanjun.zhu@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1752130292-22249-3-git-send-email-tariqt@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Tariq,
+When building, the following warnings will appear.
+"
+pci_irq.c: In function ‘mlx5_ctrl_irq_request’:
+pci_irq.c:494:1: warning: the frame size of 1040 bytes is larger than 1024 bytes [-Wframe-larger-than=]
 
-kernel test robot noticed the following build errors:
+pci_irq.c: In function ‘mlx5_irq_request_vector’:
+pci_irq.c:561:1: warning: the frame size of 1040 bytes is larger than 1024 bytes [-Wframe-larger-than=]
 
-[auto build test ERROR on c65d34296b2252897e37835d6007bbd01b255742]
+eq.c: In function ‘comp_irq_request_sf’:
+eq.c:897:1: warning: the frame size of 1080 bytes is larger than 1024 bytes [-Wframe-larger-than=]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Tariq-Toukan/net-mlx5e-Create-destroy-PCIe-Congestion-Event-object/20250710-145940
-base:   c65d34296b2252897e37835d6007bbd01b255742
-patch link:    https://lore.kernel.org/r/1752130292-22249-3-git-send-email-tariqt%40nvidia.com
-patch subject: [PATCH net-next V2 2/3] net/mlx5e: Add device PCIe congestion ethtool stats
-config: powerpc-randconfig-003-20250711 (https://download.01.org/0day-ci/archive/20250711/202507110932.iOkSE74e-lkp@intel.com/config)
-compiler: clang version 21.0.0git (https://github.com/llvm/llvm-project 01c97b4953e87ae455bd4c41e3de3f0f0f29c61c)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250711/202507110932.iOkSE74e-lkp@intel.com/reproduce)
+irq_affinity.c: In function ‘irq_pool_request_irq’:
+irq_affinity.c:74:1: warning: the frame size of 1048 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+"
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202507110932.iOkSE74e-lkp@intel.com/
+These warnings indicate that the stack frame size exceeds 1024 bytes in
+these functions.
 
-All errors (new ones prefixed by >>, old ones prefixed by <<):
+To resolve this, instead of allocating large memory buffers on the stack,
+it is better to use kvzalloc to allocate memory dynamically on the heap.
+This approach reduces stack usage and eliminates these frame size warnings.
 
->> ERROR: modpost: "mlx5e_pcie_cong_event_supported" [drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko] undefined!
+Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+---
+v1 -> v2: Add kvfree to error handler;
 
+1. This commit only build tests;
+2. All the changes are on configuration path, will not make difference
+on the performance;
+3. This commit is just to fix build warnings, not error or bug fixes. So
+not Fixes tag.
+---
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c  | 24 +++++++----
+ .../mellanox/mlx5/core/irq_affinity.c         | 19 +++++++--
+ .../net/ethernet/mellanox/mlx5/core/pci_irq.c | 40 +++++++++++++------
+ 3 files changed, 60 insertions(+), 23 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+index dfb079e59d85..4938dd7c3a09 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+@@ -873,19 +873,29 @@ static int comp_irq_request_sf(struct mlx5_core_dev *dev, u16 vecidx)
+ {
+ 	struct mlx5_irq_pool *pool = mlx5_irq_table_get_comp_irq_pool(dev);
+ 	struct mlx5_eq_table *table = dev->priv.eq_table;
+-	struct irq_affinity_desc af_desc = {};
++	struct irq_affinity_desc *af_desc;
+ 	struct mlx5_irq *irq;
+ 
++	af_desc = kvzalloc(sizeof(*af_desc), GFP_KERNEL);
++	if (!af_desc)
++		return -ENOMEM;
++
+ 	/* In case SF irq pool does not exist, fallback to the PF irqs*/
+-	if (!mlx5_irq_pool_is_sf_pool(pool))
++	if (!mlx5_irq_pool_is_sf_pool(pool)) {
++		kvfree(af_desc);
+ 		return comp_irq_request_pci(dev, vecidx);
++	}
+ 
+-	af_desc.is_managed = false;
+-	cpumask_copy(&af_desc.mask, cpu_online_mask);
+-	cpumask_andnot(&af_desc.mask, &af_desc.mask, &table->used_cpus);
+-	irq = mlx5_irq_affinity_request(dev, pool, &af_desc);
+-	if (IS_ERR(irq))
++	af_desc->is_managed = false;
++	cpumask_copy(&af_desc->mask, cpu_online_mask);
++	cpumask_andnot(&af_desc->mask, &af_desc->mask, &table->used_cpus);
++	irq = mlx5_irq_affinity_request(dev, pool, af_desc);
++	if (IS_ERR(irq)) {
++		kvfree(af_desc);
+ 		return PTR_ERR(irq);
++	}
++
++	kvfree(af_desc);
+ 
+ 	cpumask_or(&table->used_cpus, &table->used_cpus, mlx5_irq_get_affinity_mask(irq));
+ 	mlx5_core_dbg(pool->dev, "IRQ %u mapped to cpu %*pbl, %u EQs on this irq\n",
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
+index 2691d88cdee1..82d3c2568244 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
+@@ -47,29 +47,40 @@ static int cpu_get_least_loaded(struct mlx5_irq_pool *pool,
+ static struct mlx5_irq *
+ irq_pool_request_irq(struct mlx5_irq_pool *pool, struct irq_affinity_desc *af_desc)
+ {
+-	struct irq_affinity_desc auto_desc = {};
++	struct irq_affinity_desc *auto_desc;
+ 	struct mlx5_irq *irq;
+ 	u32 irq_index;
+ 	int err;
+ 
++	auto_desc = kvzalloc(sizeof(*auto_desc), GFP_KERNEL);
++	if (!auto_desc)
++		return ERR_PTR(-ENOMEM);
++
+ 	err = xa_alloc(&pool->irqs, &irq_index, NULL, pool->xa_num_irqs, GFP_KERNEL);
+-	if (err)
++	if (err) {
++		kvfree(auto_desc);
+ 		return ERR_PTR(err);
++	}
++
+ 	if (pool->irqs_per_cpu) {
+ 		if (cpumask_weight(&af_desc->mask) > 1)
+ 			/* if req_mask contain more then one CPU, set the least loadad CPU
+ 			 * of req_mask
+ 			 */
+ 			cpumask_set_cpu(cpu_get_least_loaded(pool, &af_desc->mask),
+-					&auto_desc.mask);
++					&auto_desc->mask);
+ 		else
+ 			cpu_get(pool, cpumask_first(&af_desc->mask));
+ 	}
++
+ 	irq = mlx5_irq_alloc(pool, irq_index,
+-			     cpumask_empty(&auto_desc.mask) ? af_desc : &auto_desc,
++			     cpumask_empty(&auto_desc->mask) ? af_desc : auto_desc,
+ 			     NULL);
+ 	if (IS_ERR(irq))
+ 		xa_erase(&pool->irqs, irq_index);
++
++	kvfree(auto_desc);
++
+ 	return irq;
+ }
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
+index 40024cfa3099..48aad94b0a5d 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
+@@ -470,26 +470,32 @@ void mlx5_ctrl_irq_release(struct mlx5_core_dev *dev, struct mlx5_irq *ctrl_irq)
+ struct mlx5_irq *mlx5_ctrl_irq_request(struct mlx5_core_dev *dev)
+ {
+ 	struct mlx5_irq_pool *pool = ctrl_irq_pool_get(dev);
+-	struct irq_affinity_desc af_desc;
++	struct irq_affinity_desc *af_desc;
+ 	struct mlx5_irq *irq;
+ 
+-	cpumask_copy(&af_desc.mask, cpu_online_mask);
+-	af_desc.is_managed = false;
++	af_desc = kvzalloc(sizeof(*af_desc), GFP_KERNEL);
++	if (!af_desc)
++		return ERR_PTR(-ENOMEM);
++
++	cpumask_copy(&af_desc->mask, cpu_online_mask);
++	af_desc->is_managed = false;
+ 	if (!mlx5_irq_pool_is_sf_pool(pool)) {
+ 		/* In case we are allocating a control IRQ from a pci device's pool.
+ 		 * This can happen also for a SF if the SFs pool is empty.
+ 		 */
+ 		if (!pool->xa_num_irqs.max) {
+-			cpumask_clear(&af_desc.mask);
++			cpumask_clear(&af_desc->mask);
+ 			/* In case we only have a single IRQ for PF/VF */
+-			cpumask_set_cpu(cpumask_first(cpu_online_mask), &af_desc.mask);
++			cpumask_set_cpu(cpumask_first(cpu_online_mask), &af_desc->mask);
+ 		}
+ 		/* Allocate the IRQ in index 0. The vector was already allocated */
+-		irq = irq_pool_request_vector(pool, 0, &af_desc, NULL);
++		irq = irq_pool_request_vector(pool, 0, af_desc, NULL);
+ 	} else {
+-		irq = mlx5_irq_affinity_request(dev, pool, &af_desc);
++		irq = mlx5_irq_affinity_request(dev, pool, af_desc);
+ 	}
+ 
++	kvfree(af_desc);
++
+ 	return irq;
+ }
+ 
+@@ -548,16 +554,26 @@ struct mlx5_irq *mlx5_irq_request_vector(struct mlx5_core_dev *dev, u16 cpu,
+ {
+ 	struct mlx5_irq_table *table = mlx5_irq_table_get(dev);
+ 	struct mlx5_irq_pool *pool = table->pcif_pool;
+-	struct irq_affinity_desc af_desc;
++	struct irq_affinity_desc *af_desc;
+ 	int offset = MLX5_IRQ_VEC_COMP_BASE;
++	struct mlx5_irq *irq;
++
++	af_desc = kvzalloc(sizeof(*af_desc), GFP_KERNEL);
++	if (!af_desc)
++		return ERR_PTR(-ENOMEM);
+ 
+ 	if (!pool->xa_num_irqs.max)
+ 		offset = 0;
+ 
+-	af_desc.is_managed = false;
+-	cpumask_clear(&af_desc.mask);
+-	cpumask_set_cpu(cpu, &af_desc.mask);
+-	return mlx5_irq_request(dev, vecidx + offset, &af_desc, rmap);
++	af_desc->is_managed = false;
++	cpumask_clear(&af_desc->mask);
++	cpumask_set_cpu(cpu, &af_desc->mask);
++
++	irq = mlx5_irq_request(dev, vecidx + offset, af_desc, rmap);
++
++	kvfree(af_desc);
++
++	return irq;
+ }
+ 
+ static struct mlx5_irq_pool *
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.49.0
+
 
