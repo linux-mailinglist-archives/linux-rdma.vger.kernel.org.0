@@ -1,118 +1,199 @@
-Return-Path: <linux-rdma+bounces-12049-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12050-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 596ACB00CE6
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Jul 2025 22:18:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A654B01053
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Jul 2025 02:42:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7930AB4066F
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Jul 2025 20:15:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E50C35471FE
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Jul 2025 00:42:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E22FD2FE37B;
-	Thu, 10 Jul 2025 20:13:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HBhLjKoR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A6E1BC4E;
+	Fri, 11 Jul 2025 00:42:23 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC8912FD59B
-	for <linux-rdma@vger.kernel.org>; Thu, 10 Jul 2025 20:13:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13E23320F;
+	Fri, 11 Jul 2025 00:42:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752178390; cv=none; b=C8Okn4CmtRROwwYALgCw6bfG/oAXB0W33iEFiF/8KUoF6LEEBmJrhnNYLasmWGh/9G0/l99AYzrzM/qbFfPLWMwTOu4wPtYSqO09c+0ViKSnKY+TA5RIW5ttZcT3dFIzyYyzZFdHEvdGlSPCrfyYha7R+VSDG23mt6N/BwTO2hw=
+	t=1752194543; cv=none; b=hBW1BfOJySI6iFPerpO0zrpn7T8hFPAK6GzUs3ILuI1Pn6BJuV6d/43/nrHGz5Wr6rSEt/sa4XuBUsyIDMWyPhYdp5hRNfelwMAh50tnXoBYoSMnwV85D/yJcPwaswRVp0U3UCemBfwHfGkjwzLqWbLs5efSYVr9p6IfFqjjIpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752178390; c=relaxed/simple;
-	bh=QCPVg61VylJXSuOMu9ZsxYQ07cmHN5/YuDlXLVOQtMQ=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=QszbfbipAKUQUy5+rBdu/PDhzIFZlDw+vfVigxru/+6kXVmFETe7rAxCzP0hfeGBLxDVac0XFHaOO7uosJ3Ub7P5/xO8x2UZLU4ptOC10VDnyJOFJB712MrezCh3/ougBYl2DgVdCSJU1qtqqZKq4T9qb9zQiN0p54oEddZAOww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HBhLjKoR; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <94e50246-5182-4b73-be59-9ce8e9afcfbb@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1752178377;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LMIXZWRDryeb5XrtMvENUKhI8DusK3gp45x6ISsgw14=;
-	b=HBhLjKoRBc0StGL3Mt+MLswKCg4OuIXp/T9z+rXzDnaXp1HF4xV6ufxE3FnGqCZBqSTyPV
-	HmUsvWp5IWjRXcXo/IsDzIkf3hZf+/XB61OTKUIysI+cuJBbDqqD1BBlxRz1cbXYr2wefz
-	/lPXB8Yukao5pVW/JRkGPPEnWnq5Iq4=
-Date: Thu, 10 Jul 2025 13:12:52 -0700
+	s=arc-20240116; t=1752194543; c=relaxed/simple;
+	bh=d5lIANhVIUBZuKKmajGnYSo/dPQpGs0dd0nRVA3ev00=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hOcSAt+FvI9dgkDUkUneUX+r6ywhQd560xCWr0VNLyGb9kQHGvhBLxpcIfE8IUJ+OQTOK3XHu62QBFuPdORmv+aUCYDYj2igI3xA2G3Jhje/aSxlYF4eqPLHofFKGEHGZQR82ghSp37ELTESPPwTq2HkZVjVymacYjYnBvZc8YM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-669ff7000002311f-a5-68705de5e4c6
+Date: Fri, 11 Jul 2025 09:42:08 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Mina Almasry <almasrymina@google.com>
+Cc: willy@infradead.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, kuba@kernel.org,
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
+	akpm@linux-foundation.org, davem@davemloft.net,
+	john.fastabend@gmail.com, andrew+netdev@lunn.ch,
+	asml.silence@gmail.com, toke@redhat.com, tariqt@nvidia.com,
+	edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com,
+	leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	david@redhat.com, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, horms@kernel.org,
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+	vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
+	jackmanb@google.com
+Subject: Re: [PATCH net-next v9 0/8] Split netmem from struct page
+Message-ID: <20250711004208.GA40145@system.software.com>
+References: <20250710082807.27402-1-byungchul@sk.com>
+ <CAHS8izMie=XQcVUhW9CmydTqYEscp5soeOT4nwvFj2T+8X1ypA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "yanjun.zhu" <yanjun.zhu@linux.dev>
-Subject: Re: [PATCH] RDMA/mlx5: fix linking with
- CONFIG_INFINIBAND_USER_ACCESS=n
-To: Arnd Bergmann <arnd@kernel.org>, Leon Romanovsky <leon@kernel.org>,
- Jason Gunthorpe <jgg@ziepe.ca>, Parav Pandit <parav@nvidia.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Mark Bloch <mbloch@nvidia.com>,
- Patrisious Haddad <phaddad@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250710080955.2517331-1-arnd@kernel.org>
-Content-Language: en-US
-In-Reply-To: <20250710080955.2517331-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHS8izMie=XQcVUhW9CmydTqYEscp5soeOT4nwvFj2T+8X1ypA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0jTYRTGefe/Ohr8Xbc3DYp1w65WRudDhQXB+8XQ/FB0s5F/22hOm7pU
+	TMyMaKbdlHRabFpuqbRaXqaZlFlqGuXKXJkZSweRGeWlTLs4JfLbc57z8PzOh8NT8tuMH6/W
+	xos6rVKjYKW09PMM8yrP/lhVYFMlA4W2chbKfiSC5b1jYiqtQjA02sXBYGMTC8XmEQoKn2XQ
+	MGz7SUHfYzcHZfYQ6Cnx0FB3upoC97lmFrIyxii4NzrAQbrDKoHnVdkM5Py8TkF12nsOXtQW
+	svCu/A8DnoYsGlqMN2joyQ6Gx6Y5MNLaj6DRVi2BkbNXWLjkNLHwIaMHgfOhm4aCE9kIbPUu
+	BsZ+THQUPHrHBS8mD/u/UKTixmsJqTF2c8RkTyB3rMuJweWkiL30DEvs3y5y5O2rOpY0543R
+	pMYxKCFZJwdY8rXvDU2+1HewxFbRQZM2UyMX6rtHuilS1Kj1om7NloNSlbkph4ntX5hoqbtD
+	p6GauQbkw2MhCPfe6mD/6bKqj8iAeJ4WluDs0we8Nisswy7XKOXVs4QAfK3+AmNAUp4SjCzu
+	qHXT3sVMYRvO/9Q5GZIJgLvbLZxXy4UU7Ll2nZnyfXFLfu9knpooHb/qpLwsSvDHlt/8lL0A
+	n6wsmKzxEcJwbe74ZHy2sAjfr2qSeLlYaOZxp/MSN3XzPPzA6qLPI1/jNIRxGsL4H2GchjAh
+	uhTJ1Vp9tFKtCVqtStKqE1cfiom2o4lHKjk+vteBvj0Pb0ACjxQzZMFlMSo5o9THJUU3IMxT
+	ilmymyGxKrksUpmULOpiInQJGjGuAfnztGKubN3IsUi5cFgZLx4RxVhR928r4X380lBm6t6D
+	zZuPWlOHksS+9Znm222elVmXT2zVRX1wa5eGMclRh7QRna9nf0/fUBnvKFDtVhTxO8jdUxu3
+	K3fdxCXqiieBeUXDetu5t7769p37UvEzeOMXnpAJUZUpwzMtmq7W/tJbIej8irCAwxFuq9nw
+	9GVvhulXqD2omNuaOz9aQceplGuXU7o45V+UuleFRAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0iTYRiGefcdXa2+luWLFsZCRCErSHqgCDtQH0WRfzqSOfKjzdyUTU2j
+	SJsmrZxadnAeMs9OcTLNU2qiK5OgcrE0ywOmUmSaWaJOLGdE/ru574vr+fOwhPQO5c4q1ZGC
+	Ri0Pk9FiUnxkh27T8JkIxZanVj/IMpfTUDYdA8UDdRRkmWoQ/Jz5wMCktZ2G/EdTBGS9TiDh
+	l3mWgOHngwyUWQ5Df9EICY1JtQQMprygITnBQUDTzBgD1+pKRNCW3UHBmxoDBemzhQTUxg0w
+	8LYhi4a+8t8UjLQmk9BhLCWh3xAAz3PXwtTLUQRWc60Ipm5l03DHlkvDp4R+BLa2QRIy4w0I
+	zM3dFDimFxyZz/qYAC++bXSc4KtL34v4emMvw+daoviqEl9e320jeIvpBs1bftxm+I/vGmn+
+	xQMHydfXTYr4ZN0YzU8M95D8eLOd5vM/fxfx5mo7eVR6SrwzRAhTRguazbuCxYpH7elUxOiG
+	mOLGKjIO1bvpkQuLuW24rOYL0iOWJTkvbEgKctY05427u2cIZ3blfHBBcxqlR2KW4Iw0tjcM
+	ks5hNbcHZ3ztWoQkHODezmLGmaXcZTxSUEj97VfhjoyhRZ5YkM7l2AjnLYLzwMXz7N/aE+se
+	Zy5qXLhA3HB3bhFfw23ELTXtolS0wrjEZFxiMv43GZeYchFpQq5KdbRKrgzz99NeUMSqlTF+
+	58JVFrTwKkVX5tLq0M+3B1oRxyLZcklAWbhCSsmjtbGqVoRZQuYqqTgcoZBKQuSxlwRN+FlN
+	VJigbUUeLClzkxw8LgRLufPySOGCIEQImn+riHVxj0Om3q7OipWp/oFMUZru4lB03lBTetXr
+	68nHrPaJ6RzHsup1haYTqpX7HAa1Zj6lqGq9refJQKK1NFQ/sTcQ++fZxo5P3K9sdlvuftKz
+	c/er4P0uswdP15eHx5e76SQ3r4ZaMkbvjVe+8f700L5TkdjHVW/XDbQEfQs9pPdV4RYfm4zU
+	KuRbfQmNVv4H/fhXyyYDAAA=
+X-CFilter-Loop: Reflected
 
-On 7/10/25 1:09 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Thu, Jul 10, 2025 at 11:35:33AM -0700, Mina Almasry wrote:
+> On Thu, Jul 10, 2025 at 1:28 AM Byungchul Park <byungchul@sk.com> wrote:
+> >
+> > Hi all,
+> >
+> > The MM subsystem is trying to reduce struct page to a single pointer.
+> > See the following link for your information:
+> >
+> >    https://kernelnewbies.org/MatthewWilcox/Memdescs/Path
+> >
+> > The first step towards that is splitting struct page by its individual
+> > users, as has already been done with folio and slab.  This patchset does
+> > that for page pool.
+> >
+> > Matthew Wilcox tried and stopped the same work, you can see in:
+> >
+> >    https://lore.kernel.org/linux-mm/20230111042214.907030-1-willy@infradead.org/
+> >
+> > I focused on removing the page pool members in struct page this time,
+> > not moving the allocation code of page pool from net to mm.  It can be
+> > done later if needed.
+> >
+> > The final patch removing the page pool fields will be posted once all
+> > the converting of page to netmem are done:
+> >
+> >    1. converting use of the pp fields in struct page in prueth_swdata.
+> >    2. converting use of the pp fields in struct page in freescale driver.
+> >
+> > For our discussion, I'm sharing what the final patch looks like, in this
+> > cover letter.
+> >
+> >         Byungchul
+> > --8<--
+> > commit 1847d9890f798456b21ccb27aac7545303048492
+> > Author: Byungchul Park <byungchul@sk.com>
+> > Date:   Wed May 28 20:44:55 2025 +0900
+> >
+> >     mm, netmem: remove the page pool members in struct page
+> >
+> >     Now that all the users of the page pool members in struct page have been
+> >     gone, the members can be removed from struct page.
+> >
+> >     However, since struct netmem_desc still uses the space in struct page,
+> >     the important offsets should be checked properly, until struct
+> >     netmem_desc has its own instance from slab.
+> >
+> >     Remove the page pool members in struct page and modify static checkers
+> >     for the offsets.
+> >
+> >     Signed-off-by: Byungchul Park <byungchul@sk.com>
+> >
+> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> > index 32ba5126e221..db2fe0d0ebbf 100644
+> > --- a/include/linux/mm_types.h
+> > +++ b/include/linux/mm_types.h
+> > @@ -120,17 +120,6 @@ struct page {
+> >                          */
+> >                         unsigned long private;
+> >                 };
+> > -               struct {        /* page_pool used by netstack */
+> > -                       /**
+> > -                        * @pp_magic: magic value to avoid recycling non
+> > -                        * page_pool allocated pages.
+> > -                        */
+> > -                       unsigned long pp_magic;
+> > -                       struct page_pool *pp;
+> > -                       unsigned long _pp_mapping_pad;
+> > -                       unsigned long dma_addr;
+> > -                       atomic_long_t pp_ref_count;
+> > -               };
+> >                 struct {        /* Tail pages of compound page */
+> >                         unsigned long compound_head;    /* Bit zero is set */
+> >                 };
+> > diff --git a/include/net/netmem.h b/include/net/netmem.h
+> > index 8f354ae7d5c3..3414f184d018 100644
+> > --- a/include/net/netmem.h
+> > +++ b/include/net/netmem.h
+> > @@ -42,11 +42,8 @@ struct netmem_desc {
+> >         static_assert(offsetof(struct page, pg) == \
+> >                       offsetof(struct netmem_desc, desc))
+> >  NETMEM_DESC_ASSERT_OFFSET(flags, _flags);
+> > -NETMEM_DESC_ASSERT_OFFSET(pp_magic, pp_magic);
+> > -NETMEM_DESC_ASSERT_OFFSET(pp, pp);
+> > -NETMEM_DESC_ASSERT_OFFSET(_pp_mapping_pad, _pp_mapping_pad);
+> > -NETMEM_DESC_ASSERT_OFFSET(dma_addr, dma_addr);
+> > -NETMEM_DESC_ASSERT_OFFSET(pp_ref_count, pp_ref_count);
+> > +NETMEM_DESC_ASSERT_OFFSET(lru, pp_magic);
+> > +NETMEM_DESC_ASSERT_OFFSET(mapping, _pp_mapping_pad);
+> >  #undef NETMEM_DESC_ASSERT_OFFSET
+> >
+> >  /*
 > 
-> The check for rdma_uattrs_has_raw_cap() is not possible if user
-> access is disabled:
 > 
-> ERROR: modpost: "rdma_uattrs_has_raw_cap" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
+> Can you remove the above patch/diff from the cover letter?
 
-https://patchwork.kernel.org/project/linux-rdma/patch/72dee6b379bd709255a5d8e8010b576d50e47170.1751967071.git.leon@kernel.org/
+I added the diff for those who might get lost due to the lack of the
+final patch.  However, sure, I will remove it.
 
-The issue you described seems to be the same as the one discussed in the 
-link above. Could you try applying the commit from that link and see if 
-the problem still persists?
+	Byungchul
 
-Yanjun.Zhu
-
-> 
-> Limit the check to configurations that have the option enabled
-> and instead assume the capability is not there otherwise.
-> 
->  From what I can tell, the UVERBS code in fs.c is not actually called
-> when INFINIBAND_USER_ACCESS is turned off, so this haz no effect
-> other than fixing the link error. A better change might be to not
-> build the code at all in that configuration, but I did not see
-> an obvious way to do that.
-> 
-> Fixes: 95a89ec304c3 ("RDMA/mlx5: Check CAP_NET_RAW in user namespace for flow create")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> If there is a better way of addressing the link failure, please just
-> treat this as a bug report
-> ---
->   drivers/infiniband/hw/mlx5/fs.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/hw/mlx5/fs.c b/drivers/infiniband/hw/mlx5/fs.c
-> index bab2f58240c9..c1ec9aa1dfd3 100644
-> --- a/drivers/infiniband/hw/mlx5/fs.c
-> +++ b/drivers/infiniband/hw/mlx5/fs.c
-> @@ -2459,7 +2459,8 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_CREATE_FLOW)(
->   	struct mlx5_ib_dev *dev;
->   	u32 flags;
->   
-> -	if (!rdma_uattrs_has_raw_cap(attrs))
-> +	if (!IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS) ||
-> +	    !rdma_uattrs_has_raw_cap(attrs))
->   		return -EPERM;
->   
->   	fs_matcher = uverbs_attr_get_obj(attrs,
-
+> --
+> Thanks,
+> Mina
 
