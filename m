@@ -1,205 +1,178 @@
-Return-Path: <linux-rdma+bounces-12094-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12095-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20E21B03379
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Jul 2025 01:34:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C338CB03380
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Jul 2025 01:39:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62E703B7D37
-	for <lists+linux-rdma@lfdr.de>; Sun, 13 Jul 2025 23:33:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F25A1892CB4
+	for <lists+linux-rdma@lfdr.de>; Sun, 13 Jul 2025 23:40:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E80720E31C;
-	Sun, 13 Jul 2025 23:34:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T++XEX8F"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E748620F076;
+	Sun, 13 Jul 2025 23:39:48 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37F8820C038;
-	Sun, 13 Jul 2025 23:33:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6673C20297E;
+	Sun, 13 Jul 2025 23:39:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752449640; cv=none; b=JGb4rJdsrOzJ/H3/uOxTSO8ur7cYvsKLVwSjRV8ehDGEJR9hxCf9uRczPtPHMwGxSQ2M54nvA3U6atTxopkUBvOXU6hcgyKcSy1YpGHR7EcpwlWKXBjUdvOky95igLlZdi+IT4PFwS00NyVwGDB0e9aIvuYqiri1JaPCQCyB28M=
+	t=1752449988; cv=none; b=i5iOgbbzSEqUV6cOzsDIrOT14d6ow5T1zO0loJV+HXwbMcK+hjA/EpFA8ht9K3OAYXIpOFXTCElu5wPxyfPXnOdPN98rU679LFKIXMGEk+Erno9ii9DDiQWOEIo9a9l/ZBmfuyGV/7Uc7BIdKRCfHH/2+ssjJtY8qtWC3L0MVes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752449640; c=relaxed/simple;
-	bh=rZx1SkMZveDxpFokWjq4zHyNKfaAGFrKGY/aCfWh3Rw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=TXL3QLP7PdU132dBLDIOdeE1j2Kw7HP2FKNLkHvi1Axpp9TBkVwGhrOgk7MKxvKoq7jF5l1ZztblJQlotITmCTQrRwwdVmWQ1q8n/mwYYQY/b0Hqr0h57MIOcGVe3g1+TcpGr2FCj2WlPLwJTSwgGs1b9Rdk2JQUYPVpSjdIRyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T++XEX8F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A0E52C4CEE3;
-	Sun, 13 Jul 2025 23:33:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752449639;
-	bh=rZx1SkMZveDxpFokWjq4zHyNKfaAGFrKGY/aCfWh3Rw=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=T++XEX8FlZS3xxKooXEKyUrARt/DhR4lePd7U4kYLPFbDZyc9eWc95fL9TQj9iVvS
-	 Fs0JYPBJ+LwNpbwCfwPar6Hw4wZF8WnH+xFzvMVPPYJrGf1R40cPGcF/r7+B1kussb
-	 v7gteguZUhVsZfzqWWgm7L6lhlhrFdDPDopCvtglDT4kuAidnUFP75osOchWTWZTVN
-	 cG/ygYpqQ+Rvq+ADldyuLsEAQe1dFjseJaDBmYzfpMsSIxbN/+9JOkaB6y3r/flSUi
-	 EPb/0Qmngk2oOSoixjS3ODoSh8YkN11LQy838IWOZV7OrmfjL/gES59dnkWTJO3yIO
-	 G+R7t8c/+6anw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91F76C83F20;
-	Sun, 13 Jul 2025 23:33:59 +0000 (UTC)
-From: Christoph Paasch via B4 Relay <devnull+cpaasch.openai.com@kernel.org>
-Date: Sun, 13 Jul 2025 16:33:07 -0700
-Subject: [PATCH net-next 2/2] net/mlx5: Avoid copying payload to the skb's
- linear part
+	s=arc-20240116; t=1752449988; c=relaxed/simple;
+	bh=gyYuYe+DpoRdgHiDNrkMOVuB7pT4GV9+kdEyHHfrxGs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fYPveJvEMnwL2paSADbH2dIKLgHzXJMO1QgbUdpdsQRcg9/1mbhsCG8UZVeqSTTcX61u9QQzmzRYNcEN+ZY5F8uhOUBsCs+9+FyOgINYUfqbRkf1LYMt1Jt8EZvE38tpBkfp3Jsig65uisCzBVTpWQOJWhEnJ39LZHV//EYe0Iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-669ff7000002311f-8f-687443bb3d56
+Date: Mon, 14 Jul 2025 08:39:34 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: willy@infradead.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, kuba@kernel.org, almasrymina@google.com,
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
+	akpm@linux-foundation.org, davem@davemloft.net,
+	john.fastabend@gmail.com, andrew+netdev@lunn.ch, toke@redhat.com,
+	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
+	saeedm@nvidia.com, leon@kernel.org, ast@kernel.org,
+	daniel@iogearbox.net, david@redhat.com, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, horms@kernel.org,
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+	vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
+	jackmanb@google.com
+Subject: Re: [PATCH net-next v9 2/8] netmem: introduce utility APIs to use
+ struct netmem_desc
+Message-ID: <20250713233934.GA26068@system.software.com>
+References: <20250710082807.27402-1-byungchul@sk.com>
+ <20250710082807.27402-3-byungchul@sk.com>
+ <4a8b0a45-b829-462c-a655-af0bda10a246@gmail.com>
+ <20250713230752.GA7758@system.software.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250713-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v1-2-ecaed8c2844e@openai.com>
-References: <20250713-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v1-0-ecaed8c2844e@openai.com>
-In-Reply-To: <20250713-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v1-0-ecaed8c2844e@openai.com>
-To: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
- Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
- Andrew Lunn <andrew+netdev@lunn.ch>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
- Christoph Paasch <cpaasch@openai.com>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1752449639; l=4505;
- i=cpaasch@openai.com; s=20250712; h=from:subject:message-id;
- bh=3eoDYR0mKHyF/8ZXKHLXmSDgpOtYhWd87w/vzV9U0ug=;
- b=TfxPnRtIqMqcg8MpgRH9G8tq/ps0qMu4H5Tg50NXLlhGNWisYuE69UZBKKW0CRTHgWQ1F4kOQ
- ezVyJhW6W8WBcd96TsG6gsR8fK4fVU1bXBip3ixCpRUZaxJjVRy/n3x
-X-Developer-Key: i=cpaasch@openai.com; a=ed25519;
- pk=1HRHZlVUZPziMZvsAQFvP7n5+uEosTDAjXmNXykdxdg=
-X-Endpoint-Received: by B4 Relay for cpaasch@openai.com/20250712 with
- auth_id=459
-X-Original-From: Christoph Paasch <cpaasch@openai.com>
-Reply-To: cpaasch@openai.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250713230752.GA7758@system.software.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SW0hTcRzH+59zds5xbHGcVv/sIVtJoF3Fh18YFd04FVEQ9lAPNfLQRtNi
+	M9PA0rKbeQmL1LVkdpnmpMVabmWFrs0LCtnEXBfzloKlzryVrazNkHz78Lt8ft+HH0vKikRh
+	rCoxSdAkKtRyWkyJByV3VlZtSVKuKWmMBb25ggbTjxQo7bSLQF9eiWBs8gMDo846Gu6WTJCg
+	f51Jwbj5Jwm9td0MmCy7ocPYR8HzSzYSuvPqacjJ9JHwYnKIgXP2MgKaK3NFcOPnfRJs6Z0M
+	tDzT0/Cp4o8I+hw5FDToHlDQkbsJag3zYaJxAIHTbCNgIvs2DdfdBhp6MjsQuF91U3ArIxeB
+	+aVHBL4ffsct1ydm0zL+1YCX5K0P3hH8U107wxssJ/nHZZF8lsdN8pbyKzRvGcln+I9vn9N8
+	faGP4p/aRwk+5/wQzX/rfU/x3petNG+2tlJ8k8HJ7A0+IF4fL6hVyYJm9YbDYmVm+13RieKw
+	FHdLDZOO2kKzUBCLuRjcWmGlZ9iqN4kCTHER2FucQwWY5pZjj2eSDHAoF4W/tjmYLCRmSa6Q
+	xg+7jNPLIdwhPFxQSQRYygGuepY/zTLOgfDN7Lh/9WDcUPR5Wkpykdgz1e+fYf28CJdOsQEM
+	8q8Od3OBiXncUlxdWUcETmHOyuIXV8uJfzkX4poyD3UNcbpZVt0sq+6/1YDIciRTJSYnKFTq
+	mFXK1ERVyqojxxMsyP8wxrRfB+1opHmfA3EskkukHqtWKRMpkrWpCf7cLCkPlX5p1yhl0nhF
+	6mlBc/yQ5qRa0DrQIpaSL5BGT5yKl3FHFUnCMUE4IWhmugQbFJaOQqrVsfsv+4TiqsGRcCoj
+	unbPh4jxt0Yi+pFtzliB7/L9U0u2zh3OKy2JjHpzwSyBus7fQZvrJeMrTKE9rm1TIbtMqj97
+	L7VtlPWTOy7GxRQ3Nnh717nCC3GHCwYj2vQShZDdJD4Y0jX5ffviJ0390fdi3Gd37xzLd0bN
+	70rbeEZOaZWKtZGkRqv4C3CGuQAsAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0iTcRSH+7/3jUava9WLfWphpdHFSjrQBSGrt6DoQxGUYaO9a6M5bVOb
+	kWA5KIeuvJC1liwk77RYY85LYltpEpRNrGmZujK6OrtJurA2I/Lbwzm/58f5cBhcGiZiGY0u
+	S9DrFFo5JSbEezcVrGrdlqVe29YYDzZHIwUNP41QM+whwVbvRvB98gUN3+53UVB1YwIH2xMT
+	AT8cUziMdgZpaHDugaHqtwS0nW/CIXjxIQXFpjAOdyfHaDjnqcXAd72bhB63hYTyqZs4NOUP
+	09DbYqPgVeNvEt56iwnottYRMGRJhk77Qph49AnBfUcTBhNF1yko89speG0aQuD3BQm4dtaC
+	wNEeICH8M9Jx7cErOjmO930K4byrrh/jm62DNG93ZvN3ahN4c8CP8876Qop3fi2l+ZfP2ij+
+	4ZUwwTd7vmF8ccEYxX8ZHSD4UHsfxVe9G8d4h6uP2Cc9JN6sFLSaHEG/ZutRsdo0WEVmVsYa
+	/b336Hz0XGZGIoZjN3AuWwMZZYKN40KVxUSUKXY5FwhM4lGWsSu5j8+9tBmJGZy9QnG3Rqqp
+	6GI+m8aNV7ixKEtY4FpbSmdYynoRd7nowN95DNd99c1MKc4mcIHp95EME+HFXM00E0VRRB0P
+	stHEAnYp1+Huwi4hiXWWbJ0lW//LdoTXI5lGl5Ou0GiTVhtOqHN1GuPqYxnpThR5ieq8XyUe
+	9L13pxexDJLPlQRcBrWUVOQYctMjBzK4XCb5MKhXSyVKRe5pQZ+Rps/WCgYvWswQ8kWS3QeF
+	o1L2uCJLOCEImYL+3xZjRLH5SDBViHpSYMT8GLuqJMMxAU1o8HP8kZU+12jH+pMXahOTtm9c
+	z7W8vKG6V35Yl122cZ25yLjfFDOwZocqfupLiiov7ylezrT3y0w6asG+FYUdqT1zXJWJqcqt
+	sGVbxpm0/d6xAVew71SpaHpXakqSalnNba8FfqCSgkeSD/OWyAmDWpGYgOsNij9Wp7R+DgMA
+	AA==
+X-CFilter-Loop: Reflected
 
-From: Christoph Paasch <cpaasch@openai.com>
+On Mon, Jul 14, 2025 at 08:07:52AM +0900, Byungchul Park wrote:
+> On Sat, Jul 12, 2025 at 12:59:34PM +0100, Pavel Begunkov wrote:
+> > On 7/10/25 09:28, Byungchul Park wrote:
+> > ...> +
+> > >   static inline struct net_iov *netmem_to_net_iov(netmem_ref netmem)
+> > >   {
+> > >       if (netmem_is_net_iov(netmem))
+> > > @@ -314,6 +340,21 @@ static inline netmem_ref netmem_compound_head(netmem_ref netmem)
+> > >       return page_to_netmem(compound_head(netmem_to_page(netmem)));
+> > >   }
+> > > 
+> > > +#define nmdesc_to_page(nmdesc)               (_Generic((nmdesc),             \
+> > > +     const struct netmem_desc * :    (const struct page *)(nmdesc),  \
+> > > +     struct netmem_desc * :          (struct page *)(nmdesc)))
+> > 
+> > Considering that nmdesc is going to be separated from pages and
+> > accessed through indirection, and back reference to the page is
+> > not needed (at least for net/), this helper shouldn't even exist.
+> > And in fact, you don't really use it ...
+> > > +static inline struct netmem_desc *page_to_nmdesc(struct page *page)
+> > > +{
+> > > +     VM_BUG_ON_PAGE(PageTail(page), page);
+> > > +     return (struct netmem_desc *)page;
+> > > +}
+> > > +
+> > > +static inline void *nmdesc_address(struct netmem_desc *nmdesc)
+> > > +{
+> > > +     return page_address(nmdesc_to_page(nmdesc));
+> > > +}
+> > 
+> > ... That's the only caller, and nmdesc_address() is not used, so
+> > just nuke both of them. This helper doesn't even make sense.
+> > 
+> > Please avoid introducing functions that you don't use as a general
+> > rule.
+> 
+> I'm sorry about making you confused.  I should've included another patch
+> using the helper like the following.
 
-mlx5e_skb_from_cqe_mpwrq_nonlinear() copies MLX5E_RX_MAX_HEAD (256)
-bytes from the page-pool to the skb's linear part. Those 256 bytes
-include part of the payload.
+As Mina suggested, I will add this helper along with the patch using it.
+	Byungchul
 
-When attempting to do GRO in skb_gro_receive, if headlen > data_offset
-(and skb->head_frag is not set), we end up aggregating packets in the
-frag_list.
-
-This is of course not good when we are CPU-limited. Also causes a worse
-skb->len/truesize ratio,...
-
-So, let's avoid copying parts of the payload to the linear part. The
-goal here is to err on the side of caution and prefer to copy too little
-instead of copying too much (because once it has been copied over, we
-trigger the above described behavior in skb_gro_receive).
-
-So, we can do a rough estimate of the header-space by looking at
-cqe_l3/l4_hdr_type and kind of do a lower-bound estimate. This is now
-done in mlx5e_cqe_get_min_hdr_len(). We always assume that TCP timestamps
-are present, as that's the most common use-case.
-
-That header-len is then used in mlx5e_skb_from_cqe_mpwrq_nonlinear for
-the headlen (which defines what is being copied over). We still
-allocate MLX5E_RX_MAX_HEAD for the skb so that if the networking stack
-needs to call pskb_may_pull() later on, we don't need to reallocate
-memory.
-
-This gives a nice throughput increase (ARM Neoverse-V2 with CX-7 NIC and
-LRO enabled):
-
-BEFORE:
-=======
-(netserver pinned to core receiving interrupts)
-$ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
- 87380  16384 262144    60.01    32547.82
-
-(netserver pinned to adjacent core receiving interrupts)
-$ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
- 87380  16384 262144    60.00    52531.67
-
-AFTER:
-======
-(netserver pinned to core receiving interrupts)
-$ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
- 87380  16384 262144    60.00    52896.06
-
-(netserver pinned to adjacent core receiving interrupts)
- $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
- 87380  16384 262144    60.00    85094.90
-
-Signed-off-by: Christoph Paasch <cpaasch@openai.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 33 ++++++++++++++++++++++++-
- 1 file changed, 32 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index 2bb32082bfccdc85d26987f792eb8c1047e44dd0..2de669707623882058e3e77f82d74893e5d6fefe 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -1986,13 +1986,40 @@ mlx5e_shampo_fill_skb_data(struct sk_buff *skb, struct mlx5e_rq *rq,
- 	} while (data_bcnt);
- }
- 
-+static u16
-+mlx5e_cqe_get_min_hdr_len(const struct mlx5_cqe64 *cqe)
-+{
-+	u16 min_hdr_len = sizeof(struct ethhdr);
-+	u8 l3_type = get_cqe_l3_hdr_type(cqe);
-+	u8 l4_type = get_cqe_l4_hdr_type(cqe);
-+
-+	if (cqe_has_vlan(cqe))
-+		min_hdr_len += VLAN_HLEN;
-+
-+	if (l3_type == CQE_L3_HDR_TYPE_IPV4)
-+		min_hdr_len += sizeof(struct iphdr);
-+	else if (l3_type == CQE_L3_HDR_TYPE_IPV6)
-+		min_hdr_len += sizeof(struct ipv6hdr);
-+
-+	if (l4_type == CQE_L4_HDR_TYPE_UDP)
-+		min_hdr_len += sizeof(struct udphdr);
-+	else if (l4_type & (CQE_L4_HDR_TYPE_TCP_NO_ACK |
-+			    CQE_L4_HDR_TYPE_TCP_ACK_NO_DATA |
-+			    CQE_L4_HDR_TYPE_TCP_ACK_AND_DATA))
-+		/* Previous condition works because we know that
-+		 * l4_type != 0x2 (CQE_L4_HDR_TYPE_UDP)
-+		 */
-+		min_hdr_len += sizeof(struct tcphdr) + TCPOLEN_TSTAMP_ALIGNED;
-+
-+	return min_hdr_len;
-+}
-+
- static struct sk_buff *
- mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *wi,
- 				   struct mlx5_cqe64 *cqe, u16 cqe_bcnt, u32 head_offset,
- 				   u32 page_idx)
- {
- 	struct mlx5e_frag_page *frag_page = &wi->alloc_units.frag_pages[page_idx];
--	u16 headlen = min_t(u16, MLX5E_RX_MAX_HEAD, cqe_bcnt);
- 	struct mlx5e_frag_page *head_page = frag_page;
- 	struct mlx5e_xdp_buff *mxbuf = &rq->mxbuf;
- 	u32 frag_offset    = head_offset;
-@@ -2004,10 +2031,14 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
- 	u32 linear_frame_sz;
- 	u16 linear_data_len;
- 	u16 linear_hr;
-+	u16 headlen;
- 	void *va;
- 
- 	prog = rcu_dereference(rq->xdp_prog);
- 
-+	headlen = min3(mlx5e_cqe_get_min_hdr_len(cqe), cqe_bcnt,
-+		       (u16)MLX5E_RX_MAX_HEAD);
-+
- 	if (prog) {
- 		/* area for bpf_xdp_[store|load]_bytes */
- 		net_prefetchw(netmem_address(frag_page->netmem) + frag_offset);
-
--- 
-2.49.0
-
-
+> 	Byungchul
+> 
+> ---8<---
+> diff --git a/drivers/net/ethernet/intel/idpf/idpf_txrx.c b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+> index cef9dfb877e8..adccc7c8e68f 100644
+> --- a/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+> +++ b/drivers/net/ethernet/intel/idpf/idpf_txrx.c
+> @@ -3266,7 +3266,7 @@ static u32 idpf_rx_hsplit_wa(const struct libeth_fqe *hdr,
+>  			     struct libeth_fqe *buf, u32 data_len)
+>  {
+>  	u32 copy = data_len <= L1_CACHE_BYTES ? data_len : ETH_HLEN;
+> -	struct page *hdr_page, *buf_page;
+> +	struct netmem_desc *hdr_nmdesc, *buf_nmdesc;
+>  	const void *src;
+>  	void *dst;
+>  
+> @@ -3274,10 +3274,10 @@ static u32 idpf_rx_hsplit_wa(const struct libeth_fqe *hdr,
+>  	    !libeth_rx_sync_for_cpu(buf, copy))
+>  		return 0;
+>  
+> -	hdr_page = __netmem_to_page(hdr->netmem);
+> -	buf_page = __netmem_to_page(buf->netmem);
+> -	dst = page_address(hdr_page) + hdr->offset + hdr_page->pp->p.offset;
+> -	src = page_address(buf_page) + buf->offset + buf_page->pp->p.offset;
+> +	hdr_nmdesc = __netmem_to_nmdesc(hdr->netmem);
+> +	buf_nmdesc = __netmem_to_nmdesc(buf->netmem);
+> +	dst = nmdesc_address(hdr_nmdesc) + hdr->offset + hdr_nmdesc->pp->p.offset;
+> +	src = nmdesc_address(buf_nmdesc) + buf->offset + buf_nmdesc->pp->p.offset;
+>  
+>  	memcpy(dst, src, LARGEST_ALIGN(copy));
+>  	buf->offset += copy;
+> --
+> > > +
+> > >   /**
+> > >    * __netmem_address - unsafely get pointer to the memory backing @netmem
+> > >    * @netmem: netmem reference to get the pointer for
+> > 
+> > --
+> > Pavel Begunkov
 
