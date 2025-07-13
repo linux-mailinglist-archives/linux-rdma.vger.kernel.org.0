@@ -1,148 +1,269 @@
-Return-Path: <linux-rdma+bounces-12075-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12076-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3543CB02EE5
-	for <lists+linux-rdma@lfdr.de>; Sun, 13 Jul 2025 08:28:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17D3AB02EEE
+	for <lists+linux-rdma@lfdr.de>; Sun, 13 Jul 2025 08:37:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F56118976BB
-	for <lists+linux-rdma@lfdr.de>; Sun, 13 Jul 2025 06:28:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60C3B167EF6
+	for <lists+linux-rdma@lfdr.de>; Sun, 13 Jul 2025 06:37:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FABE1A5B8C;
-	Sun, 13 Jul 2025 06:27:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 467641A5BA9;
+	Sun, 13 Jul 2025 06:37:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hMN5H3W5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VOMAQHgI"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20101C13B;
-	Sun, 13 Jul 2025 06:27:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE4227263D;
+	Sun, 13 Jul 2025 06:37:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752388079; cv=none; b=XnrZF7mA84f1ECr11lqZu79miRB9dGZ9NnB4V/T1gpe/mUw5dRXFwZHygIrRARvw7xZiQdv9O+/QOIw60iGle2V95pxJSQs2Abr/pcQZdq+5Lh5/vkb4XPyPHGElDMnHVUIWkugN6OkZ4DrxIA4hzRSe3DXccp2LeLpt6u4RP/g=
+	t=1752388662; cv=none; b=DUOSUwaEMyD2eDSH+D8+Tx6lGBuMF1h0gANigQl0wmgma8dRqG9c36HGl8VF5MzLsMMa0juRMsEEx61cTXPSTn21Qxm1SQG/zEQ5EYYYBcYG8vM8eAU63rUFGecROqiZSlkaFZMUA+2dejdrIDlOgf23167kEiigssZnX8uqoc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752388079; c=relaxed/simple;
-	bh=qF+yqTT0HCWnjzsAyIFmpCxLqFDSF1VJG0Ed4wgYZqQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aa3S/WYwETVzAS8akurmaHFWfftRYItbPSk0Tg1AEFUV3ewgwYhfxIZaF7Nj5xt5WMggFtJAX4YiVfYEXlopjGmMITiCB2HyjVNQqvpK2nxfeo0dvlUGa5SlEn23Cpc+D1BztBLLMeeo0Lr4hPKjVnYqIFAM5/7YbY2mieBkacI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hMN5H3W5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EEBFC4CEE3;
-	Sun, 13 Jul 2025 06:27:57 +0000 (UTC)
+	s=arc-20240116; t=1752388662; c=relaxed/simple;
+	bh=K/jdvvnM3kVXj7DotsvBGNuKdg+Ec6UqOXxIsHfUCAE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sUEexnl+n7Qz9gwng7xs6ICf4ohahOxjHFNrwtxBHrX8dfCelzInayAtXmSxKizI/wGR4M/OevH299bkhqLIPR1FcDUXO4/F/sBFLEWLkJ/ecFJcy+eCF79etI5eNwPXvxOdC6L7nyGHx9ZtCR2GIKGMIlnsbh/IPg+S6zuA79o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VOMAQHgI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CE49C4CEE3;
+	Sun, 13 Jul 2025 06:37:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752388078;
-	bh=qF+yqTT0HCWnjzsAyIFmpCxLqFDSF1VJG0Ed4wgYZqQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hMN5H3W5iWCKvfUgKGA2ygFP5hshzZTL6YS+w1uosKChce7z7evpEkCPdo73fIXYd
-	 Rh5XAGNCD/poP+d08lY2zZZEywbNv2pErfxtqsnL0T+ciagerbkMRv0/ajgACfBQnP
-	 sKzJHzQlH2Wu+Cq/Z11SAu3TO7dRT6w/quvZaZswMIRMQPsI29AKZOJLwTMm4QUG9C
-	 qd6e0D6xEFySOLXYKknRgT+WzUykjzmeuX475ig4ofZEUU2we07sC05FAfgjie84Gp
-	 c+g2CGGFNIJ3LgHE/ad+UKCO41rENHdSP1plW1d0YdCL8FnlM7n6YCY6LAPUiw9DrM
-	 B9lDHn94B0n+g==
-Date: Sun, 13 Jul 2025 09:27:53 +0300
+	s=k20201202; t=1752388661;
+	bh=K/jdvvnM3kVXj7DotsvBGNuKdg+Ec6UqOXxIsHfUCAE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=VOMAQHgIWIftyycbrFTftOl7dwcadgTTyoUL1P1TDucHvA5nnA7z6XPmjzJlZ6ojW
+	 ZdsSoK/9JWMHMz495D+o0sH8Wucc3jBCiHos4vFq6j8xrbd4sY65900V/T7aPbzNxb
+	 flpa1DA1SHRj8UotF9hUdpNUaHAIANxqP/wTHLr5COUFVHjWtwsRe2hyDzv8/TWmKE
+	 cfYPRKfp67icBi9DQtldvdm72zVDYnAQWAQiyoD7B3ogYK9vKD1rSaWxdHZvm2xfrk
+	 3K2dB4dx916RYwjr+F7ltMdVGLB44OXE92099yo1QtFtobV4e3qZ7kmKG0fsyygC2r
+	 L6cuXd4YgRAsQ==
 From: Leon Romanovsky <leon@kernel.org>
-To: Abhijit Gangurde <abhijit.gangurde@amd.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, shannon.nelson@amd.com,
-	brett.creeley@amd.com, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, corbet@lwn.net,
-	andrew+netdev@lunn.ch, allen.hubbe@amd.com, nikhil.agarwal@amd.com,
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Andrew Boyer <andrew.boyer@amd.com>
-Subject: Re: [PATCH v3 10/14] RDMA/ionic: Register device ops for control path
-Message-ID: <20250713062753.GA5882@unreal>
-References: <20250701103844.GB118736@unreal>
- <20250702131803.GB904431@ziepe.ca>
- <20250702180007.GK6278@unreal>
- <bb0ac425-2f01-b8c7-2fd7-4ecf9e9ef8b1@amd.com>
- <20250704170807.GO6278@unreal>
- <15b773a4-424b-4aa9-2aa4-457fbbee8ec7@amd.com>
- <20250707072137.GU6278@unreal>
- <1a7190d4-f3ef-744c-4e46-8cb255dee6cf@amd.com>
- <20250707164609.GA592765@unreal>
- <76a68f62-1f73-cc81-0f5b-48a6982a54c7@amd.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>,
+	Bernard Metzler <bmt@zurich.ibm.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Bryan Tan <bryan-bt.tan@broadcom.com>,
+	Chengchang Tang <tangchengchang@huawei.com>,
+	Cheng Xu <chengyou@linux.alibaba.com>,
+	Christian Benvenuti <benve@cisco.com>,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Edward Srouji <edwards@nvidia.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Junxian Huang <huangjunxian6@hisilicon.com>,
+	Kai Shen <kaishen@linux.alibaba.com>,
+	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	linux-pci@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	Long Li <longli@microsoft.com>,
+	Michael Margolin <mrgolin@amazon.com>,
+	Michal Kalderon <mkalderon@marvell.com>,
+	Moshe Shemesh <moshe@nvidia.com>,
+	Mustafa Ismail <mustafa.ismail@intel.com>,
+	Nelson Escobar <neescoba@cisco.com>,
+	netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>,
+	Potnuri Bharat Teja <bharat@chelsio.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Selvin Xavier <selvin.xavier@broadcom.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
+	Vishnu Dasa <vishnu.dasa@broadcom.com>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: [PATCH rdma-next v1 0/8] RDMA support for DMA handle
+Date: Sun, 13 Jul 2025 09:37:21 +0300
+Message-ID: <cover.1752388126.git.leon@kernel.org>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <76a68f62-1f73-cc81-0f5b-48a6982a54c7@amd.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jul 08, 2025 at 03:35:52PM +0530, Abhijit Gangurde wrote:
-> 
-> On 7/7/25 22:16, Leon Romanovsky wrote:
-> > On Mon, Jul 07, 2025 at 08:26:20PM +0530, Abhijit Gangurde wrote:
-> > > On 7/7/25 12:51, Leon Romanovsky wrote:
-> > > > On Mon, Jul 07, 2025 at 10:57:13AM +0530, Abhijit Gangurde wrote:
-> > > > > On 7/4/25 22:38, Leon Romanovsky wrote:
-> > > > > > On Thu, Jul 03, 2025 at 12:49:30PM +0530, Abhijit Gangurde wrote:
-> > > > > > > On 7/2/25 23:30, Leon Romanovsky wrote:
-> > > > > > > > On Wed, Jul 02, 2025 at 10:18:03AM -0300, Jason Gunthorpe wrote:
-> > > > > > > > > On Tue, Jul 01, 2025 at 01:38:44PM +0300, Leon Romanovsky wrote:
-> > > > > > > > > > > +static void ionic_flush_qs(struct ionic_ibdev *dev)
-> > > > > > > > > > > +{
-> > > > > > > > > > > +	struct ionic_qp *qp, *qp_tmp;
-> > > > > > > > > > > +	struct ionic_cq *cq, *cq_tmp;
-> > > > > > > > > > > +	LIST_HEAD(flush_list);
-> > > > > > > > > > > +	unsigned long index;
-> > > > > > > > > > > +
-> > > > > > > > > > > +	/* Flush qp send and recv */
-> > > > > > > > > > > +	rcu_read_lock();
-> > > > > > > > > > > +	xa_for_each(&dev->qp_tbl, index, qp) {
-> > > > > > > > > > > +		kref_get(&qp->qp_kref);
-> > > > > > > > > > > +		list_add_tail(&qp->ibkill_flush_ent, &flush_list);
-> > > > > > > > > > > +	}
-> > > > > > > > > > > +	rcu_read_unlock();
-> > > > > > > > > > Same question as for CQ. What does RCU lock protect here?
-> > > > > > > > > It should protect the kref_get against free of qp. The qp memory must
-> > > > > > > > > be RCU freed.
-> > > > > > > > I'm not sure that this was intension here. Let's wait for an answer from the author.
-> > > > > > > As Jason mentioned, It was intended to protect the kref_get against free of
-> > > > > > > cq and qp
-> > > > > > > in the destroy path.
-> > > > > > How is it possible? IB/core is supposed to protect from accessing verbs
-> > > > > > resources post their release/destroy.
-> > > > > > 
-> > > > > > After you answered what RCU is protecting, I don't see why you would
-> > > > > > have custom kref over QP/CQ/e.t.c objects.
-> > > > > > 
-> > > > > > Thanks
-> > > > > The RCU protected kref here is making sure that all the hw events are
-> > > > > processed before destroy callback returns. Similarly, when driver is
-> > > > > going for ib_unregister_device, it is draining the pending WRs and events.
-> > > > I asked why do you have kref in first place? When ib_unregister_device
-> > > > is called all "pending MR" already supposed to be destroyed.
-> > > > 
-> > > > Thansk
-> > > The custom kref on QP/CQ object is holding the completion for the destroy
-> > > callback.
-> > > If any pending async hw events are being processed, destroy would wait on
-> > > this completion
-> > > before it returns.
-> > Please see how other drivers avoid such situation. There is no need in
-> > custom kref.
-> > 
-> > Thanks
-> 
-> As per your suggestion, I looked some of the other RDMA drivers. While many
-> are using locks, that approach would negate the lockless lookup we gain from
-> the xarray.
-> The MANA RDMA driver, for instance, uses a similar refcount and completion
-> mechanism to handle asynchronous events.
+Changelog:
+v1:
+ * Added Bjorn's Acked-by on PCI patch.
+ * Changed title of first PCI patch.
+ * Changed hns and efa to count not-supported commands.
+ * Slightly changed protection of mlx5 SF parent_mdev access.
+ * Moved SIW debug print to be before dmah check.
+v0:https://lore.kernel.org/all/cover.1751907231.git.leon@kernel.org
+--------------------------------------------------------------------
 
-Let's do what all other drivers do, please. I prefer simplest solution
-and objects that can potentially be around after verbs objects were
-cleaned doesn't sound right.
+From Yishai,
 
-Thanks
+This patch series introduces a new DMA Handle (DMAH) object, along with
+corresponding APIs for its allocation and deallocation.
 
-> 
-> Thanks
-> 
-> 
+The DMAH object encapsulates attributes relevant for DMA transactions.
+
+While initially intended to support TLP Processing Hints (TPH) [1], the
+design is extensible to accommodate future features such as PCI
+multipath for DMA, PCI UIO configurations, traffic class selection, and
+more.
+
+Additionally, we introduce a new ioctl method on the MR object:
+UVERBS_METHOD_REG_MR.
+
+This method consolidates multiple reg_mr variants under a single
+user-space ioctl interface, supporting: ibv_reg_mr(), ibv_reg_mr_iova(),
+ibv_reg_mr_iova2() and ibv_reg_dmabuf_mr(). It also enables passing a
+DMA handle as part of the registration process.
+
+Throughout the patch series, the following DMAH-related stuff can also
+be observed in the IB layer:
+
+- Association with a CPU ID and its memory type, for use with Steering
+  Tags [2].
+
+- Inclusion of Processing Hints (PH) data for TPH functionality [3].
+
+- Enforces security by ensuring that only tasks allowed to run on a
+  given CPU may request a DMA handle for it.
+
+- Reference counting for DMAH life cycle management and safe usage
+  across memory regions.
+
+mlx5 driver implementation:
+--------------------------
+The series includes implementation of the above functionality in the
+mlx5 driver.
+
+In mlx5_core:
+- Enables TPH over PCIe when both firmware and OS support it.
+
+- Manages Steering Tags and corresponding indices by writing tag values
+  to the PCI configuration space.
+
+- Exposes APIs to upper layers (e.g., mlx5_ib) to enable the PCIe TPH
+  functionality.
+
+In mlx5_ib:
+- Adds full support for DMAH operations.
+
+- Utilizes mlx5_core's Steering Tag APIs to derive tag indices from
+  input.
+
+- Stores the resulting index in a mlx5_dmah structure for use during
+  MKEY creation with a DMA handle.
+
+- Adds support for allowing MKEYs to be created in conjunction with DMA
+  handles.
+
+Additional details are provided in the commit messages.
+
+[1] Background, from PCIe specification 6.2.
+TLP Processing Hints (TPH)
+--------------------------
+TLP Processing Hints is an optional feature that provides hints in
+Request TLP headers to facilitate optimized processing of Requests that
+target Memory Space.  These Processing Hints enable the system hardware
+(e.g., the Root Complex and/ or Endpoints) to optimize platform
+resources such as system and memory interconnect on a per TLP basis.
+Steering Tags are system-specific values used to identify a processing
+resource that a Requester explicitly targets. System software discovers
+and identifies TPH capabilities to determine the Steering Tag allocation
+for each Function that supports TPH
+
+[2] Steering Tags
+Functions that intend to target a TLP towards a specific processing
+resource such as a host processor or system cache hierarchy require
+topological information of the target cache (e.g., which host cache).
+Steering Tags are system-specific values that provide information about
+the host or cache structure in the system cache hierarchy. These values
+are used to associate processing elements within the platform with the
+processing of Requests.
+
+[3] Processing Hints
+The Requester provides hints to the Root Complex or other targets about
+the intended use of data and data structures by the host and/or device.
+The hints are provided by the Requester, which has knowledge of upcoming
+Request patterns, and which the Completer would not be able to deduce
+autonomously (with good accuracy)
+
+Yishai
+
+Yishai Hadas (8):
+  PCI/TPH: Expose pcie_tph_get_st_table_size()
+  net/mlx5: Expose IFC bits for TPH
+  net/mlx5: Add support for device steering tag
+  IB/core: Add UVERBS_METHOD_REG_MR on the MR object
+  RDMA/core: Introduce a DMAH object and its alloc/free APIs
+  RDMA/mlx5: Add DMAH object support
+  IB: Extend UVERBS_METHOD_REG_MR to get DMAH
+  RDMA/mlx5: Add DMAH support for reg_user_mr/reg_user_dmabuf_mr
+
+ drivers/infiniband/core/Makefile              |   1 +
+ drivers/infiniband/core/device.c              |   3 +
+ drivers/infiniband/core/rdma_core.h           |   1 +
+ drivers/infiniband/core/restrack.c            |   2 +
+ drivers/infiniband/core/uverbs_cmd.c          |   2 +-
+ .../infiniband/core/uverbs_std_types_dmah.c   | 147 +++++++++++++++
+ drivers/infiniband/core/uverbs_std_types_mr.c | 172 +++++++++++++++++-
+ drivers/infiniband/core/uverbs_uapi.c         |   1 +
+ drivers/infiniband/core/verbs.c               |   5 +-
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c      |   8 +
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h      |   2 +
+ drivers/infiniband/hw/cxgb4/iw_cxgb4.h        |   1 +
+ drivers/infiniband/hw/cxgb4/mem.c             |   6 +-
+ drivers/infiniband/hw/efa/efa.h               |   2 +
+ drivers/infiniband/hw/efa/efa_verbs.c         |  12 ++
+ drivers/infiniband/hw/erdma/erdma_verbs.c     |   6 +-
+ drivers/infiniband/hw/erdma/erdma_verbs.h     |   3 +-
+ drivers/infiniband/hw/hns/hns_roce_device.h   |   1 +
+ drivers/infiniband/hw/hns/hns_roce_mr.c       |   6 +
+ drivers/infiniband/hw/irdma/verbs.c           |   9 +
+ drivers/infiniband/hw/mana/mana_ib.h          |   2 +
+ drivers/infiniband/hw/mana/mr.c               |   8 +
+ drivers/infiniband/hw/mlx4/mlx4_ib.h          |   1 +
+ drivers/infiniband/hw/mlx4/mr.c               |   4 +
+ drivers/infiniband/hw/mlx5/Makefile           |   1 +
+ drivers/infiniband/hw/mlx5/devx.c             |   4 +
+ drivers/infiniband/hw/mlx5/dmah.c             |  54 ++++++
+ drivers/infiniband/hw/mlx5/dmah.h             |  23 +++
+ drivers/infiniband/hw/mlx5/main.c             |   5 +
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |   7 +
+ drivers/infiniband/hw/mlx5/mr.c               | 103 +++++++++--
+ drivers/infiniband/hw/mlx5/odp.c              |   1 +
+ drivers/infiniband/hw/mthca/mthca_provider.c  |   6 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c   |   6 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.h   |   3 +-
+ drivers/infiniband/hw/qedr/verbs.c            |   6 +-
+ drivers/infiniband/hw/qedr/verbs.h            |   3 +-
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.c  |   4 +
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.h  |   1 +
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c  |   5 +
+ .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.h   |   1 +
+ drivers/infiniband/sw/rdmavt/mr.c             |   5 +
+ drivers/infiniband/sw/rdmavt/mr.h             |   1 +
+ drivers/infiniband/sw/rxe/rxe_verbs.c         |   4 +
+ drivers/infiniband/sw/siw/siw_verbs.c         |   7 +-
+ drivers/infiniband/sw/siw/siw_verbs.h         |   3 +-
+ .../net/ethernet/mellanox/mlx5/core/Makefile  |   5 +
+ .../net/ethernet/mellanox/mlx5/core/lib/st.c  | 164 +++++++++++++++++
+ .../net/ethernet/mellanox/mlx5/core/main.c    |   2 +
+ .../ethernet/mellanox/mlx5/core/mlx5_core.h   |   9 +
+ drivers/pci/tph.c                             |  11 +-
+ include/linux/mlx5/driver.h                   |  20 ++
+ include/linux/mlx5/mlx5_ifc.h                 |  14 +-
+ include/linux/pci-tph.h                       |   1 +
+ include/rdma/ib_verbs.h                       |  31 ++++
+ include/rdma/restrack.h                       |   4 +
+ include/uapi/rdma/ib_user_ioctl_cmds.h        |  32 ++++
+ 57 files changed, 911 insertions(+), 40 deletions(-)
+ create mode 100644 drivers/infiniband/core/uverbs_std_types_dmah.c
+ create mode 100644 drivers/infiniband/hw/mlx5/dmah.c
+ create mode 100644 drivers/infiniband/hw/mlx5/dmah.h
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/lib/st.c
+
+-- 
+2.50.1
+
 
