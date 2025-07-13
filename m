@@ -1,54 +1,74 @@
-Return-Path: <linux-rdma+bounces-12080-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12083-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EE14B02EF6
-	for <lists+linux-rdma@lfdr.de>; Sun, 13 Jul 2025 08:38:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7385CB02EF8
+	for <lists+linux-rdma@lfdr.de>; Sun, 13 Jul 2025 08:38:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7D6A166463
-	for <lists+linux-rdma@lfdr.de>; Sun, 13 Jul 2025 06:38:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2AA5F16BB87
+	for <lists+linux-rdma@lfdr.de>; Sun, 13 Jul 2025 06:38:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26EAB19E96A;
-	Sun, 13 Jul 2025 06:38:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0131178F51;
+	Sun, 13 Jul 2025 06:38:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CKWam5gf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jSI+Bil1"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC504197A6C
-	for <linux-rdma@vger.kernel.org>; Sun, 13 Jul 2025 06:38:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B368419E96A
+	for <linux-rdma@vger.kernel.org>; Sun, 13 Jul 2025 06:38:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752388682; cv=none; b=HvVYd9Hs+HkeSKQJ56Mv/l66HlM1ZIfbhMjPGuWlU3uuGZ+WnOVzqZMbPxul/B0AX7pSLqH5Xupr3pJLj6T8ALQ8CvNxIL/KL30vj/BsbFyn/ZYdr2/b5WoQSCldgRyqGlZhgytBXzNmKGM42iueEeeDDH9rcKpvti5dxpInuMA=
+	t=1752388695; cv=none; b=JENNvE31nyYq+uFNE3lOfmEQjwxzzZicDd42oZh3Ah/p9NtBA0gTotWAVACln0S7DYiflD4jM/Qc6orRqeNOS731kEFcnTCWovmaCaLPjwJc9fBqBhZW/DIdJNk3A7oGtAwIFDarQYzTCLlpRgJCme6eAMpyEtJP95z6gMsP1z4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752388682; c=relaxed/simple;
-	bh=DYwVd7n+2m5nXrf/LfckNG1IMpv5V11pwX6vriNAkWU=;
+	s=arc-20240116; t=1752388695; c=relaxed/simple;
+	bh=DwtxueOafch3jhb8P7Eju++sv6lypcwIDtDiLLFOdYE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tLyovMcHmD68qd2mb4S4Biob/a0ov99V9o3r6I+fhGPRFWDvXsXUlREe4BAVpCVd/LjwAkZODUgi25RBk2Lk//RH7e5AH6MJz6Ahs0D9gZz6PuubFYVZzSa8PXMWF+J5rt6FhvH22QxSM/S3Dmc68isyI+gYm9s/5v1XSYZynuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CKWam5gf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5E2AC4CEE3;
-	Sun, 13 Jul 2025 06:38:01 +0000 (UTC)
+	 MIME-Version; b=fu6UB+BqQEjNXWFDaxrePNvHlDWfBX39vMA4p9dH8Z+Vg4R1YUBZSMfH1UOqJ/FmkAu5o8Rwxh6nvGuCOcPgWYxF/WgaJTyAwhDtPhY9uB7nhtUs58d/FkJNuZgKKlueN3KnCu8hwiYTowF86yGSdBUpXmEtCKYTNRT1Hayp+zA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jSI+Bil1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AB9CC4CEE3;
+	Sun, 13 Jul 2025 06:38:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752388682;
-	bh=DYwVd7n+2m5nXrf/LfckNG1IMpv5V11pwX6vriNAkWU=;
+	s=k20201202; t=1752388695;
+	bh=DwtxueOafch3jhb8P7Eju++sv6lypcwIDtDiLLFOdYE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CKWam5gf2g04OpCgffyflmBmmP4LXezQPyxmTUS/tW0D/S0bAzHPAglC2JO4saFP/
-	 H7Wvyh3qC+1JlIXI2WW/mPBJbTTajSqqVFW+60XOdqLh0kU5fHUG4iffMjmqxMTApE
-	 hO/dUbJgSLHKtNvhwAiKPvF18vfGNuE1Bbb8wJynBZ9agO1zTZB0K3AKdj5NQzDtcO
-	 qViwxphu1JqP1SbPbvZ2SmV908r7I1A5gHcevZr4NMgO8X5HF/dYeTpDB3rph+87Al
-	 7ggdk6C12HHs+bZd8zEJKI6S0Ezb+LIoxxQNdWO60kBtybSKusv+qFiAL+grgwsQWi
-	 SMNc6QZCPl4BQ==
+	b=jSI+Bil1EzPn97uHHm6QsmAY46fiRCdVOPJDaePsusBsRoU9yK2aEqK7Bph3W+o3Y
+	 1PX9YF0Ax+m2AlDGxhr1Kqs6q8GFZd6r9ZqhKeNtXLfMd8dYvTvqe8SY4Mx0hrUSXY
+	 uWJAoPKdpWWPn6LUhQg1znFZN3+ivexy8lUzEDQBgJvtPcDo3DLBqdOVTgBioX52Sz
+	 Ve7dQX/rliTFdX1B7OFNODEv/afNq4gaMQo+u6+IVN56tZzfJhzEjraRVqZsxbQOQc
+	 hMvc2EerDX82Tsz0r7h/OGpHr1l1KQ4yk+gmK84Fa9Rd4/aStN1I1etHV5+BUBtrNF
+	 DVpt59yjjbncg==
 From: Leon Romanovsky <leon@kernel.org>
 To: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Yishai Hadas <yishaih@nvidia.com>,
+	Bernard Metzler <bmt@zurich.ibm.com>,
+	Bryan Tan <bryan-bt.tan@broadcom.com>,
+	Chengchang Tang <tangchengchang@huawei.com>,
+	Cheng Xu <chengyou@linux.alibaba.com>,
+	Christian Benvenuti <benve@cisco.com>,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
 	Edward Srouji <edwards@nvidia.com>,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v1 6/8] RDMA/mlx5: Add DMAH object support
-Date: Sun, 13 Jul 2025 09:37:27 +0300
-Message-ID: <ce0a44b2eb00ae67ddd14e2f54b94c07c09f02b6.1752388126.git.leon@kernel.org>
+	Junxian Huang <huangjunxian6@hisilicon.com>,
+	Kai Shen <kaishen@linux.alibaba.com>,
+	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	linux-rdma@vger.kernel.org,
+	Long Li <longli@microsoft.com>,
+	Michael Margolin <mrgolin@amazon.com>,
+	Michal Kalderon <mkalderon@marvell.com>,
+	Mustafa Ismail <mustafa.ismail@intel.com>,
+	Nelson Escobar <neescoba@cisco.com>,
+	Potnuri Bharat Teja <bharat@chelsio.com>,
+	Selvin Xavier <selvin.xavier@broadcom.com>,
+	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
+	Vishnu Dasa <vishnu.dasa@broadcom.com>,
+	Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: [PATCH rdma-next v1 7/8] IB: Extend UVERBS_METHOD_REG_MR to get DMAH
+Date: Sun, 13 Jul 2025 09:37:28 +0300
+Message-ID: <ea27b78b82e06b4de87af8bc12be49221a085c4f.1752388126.git.leon@kernel.org>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <cover.1752388126.git.leon@kernel.org>
 References: <cover.1752388126.git.leon@kernel.org>
@@ -62,166 +82,911 @@ Content-Transfer-Encoding: 8bit
 
 From: Yishai Hadas <yishaih@nvidia.com>
 
-This patch introduces support for allocating and deallocating the DMAH
-object.
+Extend UVERBS_METHOD_REG_MR to get DMAH and pass it to all drivers.
 
-Further details:
-----------------
-The DMAH API is exposed to upper layers only if the underlying device
-supports TPH.
-
-It uses the mlx5_core steering tag (ST) APIs to get a steering tag index
-based on the provided input.
-
-The obtained index is stored in the device-specific mlx5_dmah structure
-for future use.
-
-Upcoming patches in the series will integrate the allocated DMAH into
-the memory region (MR) registration process.
+It will be used in mlx5 driver as part of the next patch from the
+series.
 
 Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
 Reviewed-by: Edward Srouji <edwards@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/Makefile |  1 +
- drivers/infiniband/hw/mlx5/dmah.c   | 54 +++++++++++++++++++++++++++++
- drivers/infiniband/hw/mlx5/dmah.h   | 23 ++++++++++++
- drivers/infiniband/hw/mlx5/main.c   |  5 +++
- 4 files changed, 83 insertions(+)
- create mode 100644 drivers/infiniband/hw/mlx5/dmah.c
- create mode 100644 drivers/infiniband/hw/mlx5/dmah.h
+ drivers/infiniband/core/uverbs_cmd.c          |  2 +-
+ drivers/infiniband/core/uverbs_std_types_mr.c | 27 +++++++++++++++----
+ drivers/infiniband/core/verbs.c               |  5 +++-
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c      |  8 ++++++
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h      |  2 ++
+ drivers/infiniband/hw/cxgb4/iw_cxgb4.h        |  1 +
+ drivers/infiniband/hw/cxgb4/mem.c             |  6 ++++-
+ drivers/infiniband/hw/efa/efa.h               |  2 ++
+ drivers/infiniband/hw/efa/efa_verbs.c         | 12 +++++++++
+ drivers/infiniband/hw/erdma/erdma_verbs.c     |  6 ++++-
+ drivers/infiniband/hw/erdma/erdma_verbs.h     |  3 ++-
+ drivers/infiniband/hw/hns/hns_roce_device.h   |  1 +
+ drivers/infiniband/hw/hns/hns_roce_mr.c       |  6 +++++
+ drivers/infiniband/hw/irdma/verbs.c           |  9 +++++++
+ drivers/infiniband/hw/mana/mana_ib.h          |  2 ++
+ drivers/infiniband/hw/mana/mr.c               |  8 ++++++
+ drivers/infiniband/hw/mlx4/mlx4_ib.h          |  1 +
+ drivers/infiniband/hw/mlx4/mr.c               |  4 +++
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |  2 ++
+ drivers/infiniband/hw/mlx5/mr.c               |  8 +++---
+ drivers/infiniband/hw/mthca/mthca_provider.c  |  6 ++++-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c   |  6 ++++-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.h   |  3 ++-
+ drivers/infiniband/hw/qedr/verbs.c            |  6 ++++-
+ drivers/infiniband/hw/qedr/verbs.h            |  3 ++-
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.c  |  4 +++
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.h  |  1 +
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c  |  5 ++++
+ .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.h   |  1 +
+ drivers/infiniband/sw/rdmavt/mr.c             |  5 ++++
+ drivers/infiniband/sw/rdmavt/mr.h             |  1 +
+ drivers/infiniband/sw/rxe/rxe_verbs.c         |  4 +++
+ drivers/infiniband/sw/siw/siw_verbs.c         |  7 ++++-
+ drivers/infiniband/sw/siw/siw_verbs.h         |  3 ++-
+ include/rdma/ib_verbs.h                       |  3 +++
+ include/uapi/rdma/ib_user_ioctl_cmds.h        |  1 +
+ 36 files changed, 154 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/Makefile b/drivers/infiniband/hw/mlx5/Makefile
-index 11878ddf7cc7..dd7bb377f491 100644
---- a/drivers/infiniband/hw/mlx5/Makefile
-+++ b/drivers/infiniband/hw/mlx5/Makefile
-@@ -8,6 +8,7 @@ mlx5_ib-y := ah.o \
- 	     cq.o \
- 	     data_direct.o \
- 	     dm.o \
-+	     dmah.o \
- 	     doorbell.o \
- 	     fs.o \
- 	     gsi.o \
-diff --git a/drivers/infiniband/hw/mlx5/dmah.c b/drivers/infiniband/hw/mlx5/dmah.c
-new file mode 100644
-index 000000000000..362a88992ffa
---- /dev/null
-+++ b/drivers/infiniband/hw/mlx5/dmah.c
-@@ -0,0 +1,54 @@
-+// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-+/*
-+ * Copyright (c) 2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved
-+ */
-+
-+#include <rdma/uverbs_std_types.h>
-+#include <linux/pci-tph.h>
-+#include "dmah.h"
-+
-+#define UVERBS_MODULE_NAME mlx5_ib
-+#include <rdma/uverbs_named_ioctl.h>
-+
-+static int mlx5_ib_alloc_dmah(struct ib_dmah *ibdmah,
-+			      struct uverbs_attr_bundle *attrs)
-+{
-+	struct mlx5_core_dev *mdev = to_mdev(ibdmah->device)->mdev;
-+	struct mlx5_ib_dmah *dmah = to_mdmah(ibdmah);
-+	u16 st_bits = BIT(IB_DMAH_CPU_ID_EXISTS) |
-+		      BIT(IB_DMAH_MEM_TYPE_EXISTS);
-+	int err;
-+
-+	/* PH is a must for TPH following PCIe spec 6.2-1.0 */
-+	if (!(ibdmah->valid_fields & BIT(IB_DMAH_PH_EXISTS)))
-+		return -EINVAL;
-+
-+	/* ST is optional; however, partial data for it is not allowed */
-+	if (ibdmah->valid_fields & st_bits) {
-+		if ((ibdmah->valid_fields & st_bits) != st_bits)
-+			return -EINVAL;
-+		err = mlx5_st_alloc_index(mdev, ibdmah->mem_type,
-+					  ibdmah->cpu_id, &dmah->st_index);
-+		if (err)
-+			return err;
+diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+index 88aa8d4599df..ce16404cdfb8 100644
+--- a/drivers/infiniband/core/uverbs_cmd.c
++++ b/drivers/infiniband/core/uverbs_cmd.c
+@@ -741,7 +741,7 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
+ 	}
+ 
+ 	mr = pd->device->ops.reg_user_mr(pd, cmd.start, cmd.length, cmd.hca_va,
+-					 cmd.access_flags,
++					 cmd.access_flags, NULL,
+ 					 &attrs->driver_udata);
+ 	if (IS_ERR(mr)) {
+ 		ret = PTR_ERR(mr);
+diff --git a/drivers/infiniband/core/uverbs_std_types_mr.c b/drivers/infiniband/core/uverbs_std_types_mr.c
+index 1bd4b17b5515..570b9656801d 100644
+--- a/drivers/infiniband/core/uverbs_std_types_mr.c
++++ b/drivers/infiniband/core/uverbs_std_types_mr.c
+@@ -238,7 +238,7 @@ static int UVERBS_HANDLER(UVERBS_METHOD_REG_DMABUF_MR)(
+ 		return ret;
+ 
+ 	mr = pd->device->ops.reg_user_mr_dmabuf(pd, offset, length, iova, fd,
+-						access_flags,
++						access_flags, NULL,
+ 						attrs);
+ 	if (IS_ERR(mr))
+ 		return PTR_ERR(mr);
+@@ -276,6 +276,7 @@ static int UVERBS_HANDLER(UVERBS_METHOD_REG_MR)(
+ 	u32 valid_access_flags = IB_ACCESS_SUPPORTED;
+ 	u64 length, iova, fd_offset = 0, addr = 0;
+ 	struct ib_device *ib_dev = pd->device;
++	struct ib_dmah *dmah = NULL;
+ 	bool has_fd_offset = false;
+ 	bool has_addr = false;
+ 	bool has_fd = false;
+@@ -340,6 +341,13 @@ static int UVERBS_HANDLER(UVERBS_METHOD_REG_MR)(
+ 			return -EINVAL;
+ 	}
+ 
++	if (uverbs_attr_is_valid(attrs, UVERBS_ATTR_REG_MR_DMA_HANDLE)) {
++		dmah = uverbs_attr_get_obj(attrs,
++					   UVERBS_ATTR_REG_MR_DMA_HANDLE);
++		if (IS_ERR(dmah))
++			return PTR_ERR(dmah);
 +	}
 +
-+	return 0;
-+}
-+
-+static int mlx5_ib_dealloc_dmah(struct ib_dmah *ibdmah,
-+				struct uverbs_attr_bundle *attrs)
-+{
-+	struct mlx5_ib_dmah *dmah = to_mdmah(ibdmah);
-+	struct mlx5_core_dev *mdev = to_mdev(ibdmah->device)->mdev;
-+
-+	if (ibdmah->valid_fields & BIT(IB_DMAH_CPU_ID_EXISTS))
-+		return mlx5_st_dealloc_index(mdev, dmah->st_index);
-+
-+	return 0;
-+}
-+
-+const struct ib_device_ops mlx5_ib_dev_dmah_ops = {
-+	.alloc_dmah = mlx5_ib_alloc_dmah,
-+	.dealloc_dmah = mlx5_ib_dealloc_dmah,
-+};
-diff --git a/drivers/infiniband/hw/mlx5/dmah.h b/drivers/infiniband/hw/mlx5/dmah.h
-new file mode 100644
-index 000000000000..68de72b4744a
---- /dev/null
-+++ b/drivers/infiniband/hw/mlx5/dmah.h
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
-+/*
-+ * Copyright (c) 2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved
-+ */
-+
-+#ifndef _MLX5_IB_DMAH_H
-+#define _MLX5_IB_DMAH_H
-+
-+#include "mlx5_ib.h"
-+
-+extern const struct ib_device_ops mlx5_ib_dev_dmah_ops;
-+
-+struct mlx5_ib_dmah {
-+	struct ib_dmah ibdmah;
-+	u16 st_index;
-+};
-+
-+static inline struct mlx5_ib_dmah *to_mdmah(struct ib_dmah *ibdmah)
-+{
-+	return container_of(ibdmah, struct mlx5_ib_dmah, ibdmah);
-+}
-+
-+#endif /* _MLX5_IB_DMAH_H */
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index c521bce2eeff..dbe66894b224 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -50,6 +50,7 @@
- #include <rdma/ib_ucaps.h>
- #include "macsec.h"
- #include "data_direct.h"
-+#include "dmah.h"
+ 	ret = uverbs_get_flags32(&access_flags, attrs,
+ 				 UVERBS_ATTR_REG_MR_ACCESS_FLAGS,
+ 				 valid_access_flags);
+@@ -351,11 +359,12 @@ static int UVERBS_HANDLER(UVERBS_METHOD_REG_MR)(
+ 		return ret;
  
- #define UVERBS_MODULE_NAME mlx5_ib
- #include <rdma/uverbs_named_ioctl.h>
-@@ -4181,6 +4182,7 @@ static const struct ib_device_ops mlx5_ib_dev_ops = {
- 	INIT_RDMA_OBJ_SIZE(ib_ah, mlx5_ib_ah, ibah),
- 	INIT_RDMA_OBJ_SIZE(ib_counters, mlx5_ib_mcounters, ibcntrs),
- 	INIT_RDMA_OBJ_SIZE(ib_cq, mlx5_ib_cq, ibcq),
-+	INIT_RDMA_OBJ_SIZE(ib_dmah, mlx5_ib_dmah, ibdmah),
- 	INIT_RDMA_OBJ_SIZE(ib_pd, mlx5_ib_pd, ibpd),
- 	INIT_RDMA_OBJ_SIZE(ib_qp, mlx5_ib_qp, ibqp),
- 	INIT_RDMA_OBJ_SIZE(ib_srq, mlx5_ib_srq, ibsrq),
-@@ -4308,6 +4310,9 @@ static int mlx5_ib_stage_caps_init(struct mlx5_ib_dev *dev)
- 	    MLX5_GENERAL_OBJ_TYPES_CAP_SW_ICM)
- 		ib_set_device_ops(&dev->ib_dev, &mlx5_ib_dev_dm_ops);
+ 	if (has_fd)
+-		mr = pd->device->ops.reg_user_mr_dmabuf(pd, fd_offset, length, iova,
+-							fd, access_flags, attrs);
++		mr = pd->device->ops.reg_user_mr_dmabuf(pd, fd_offset, length,
++							iova, fd, access_flags,
++							dmah, attrs);
+ 	else
+-		mr = pd->device->ops.reg_user_mr(pd, addr, length,
+-						 iova, access_flags, NULL);
++		mr = pd->device->ops.reg_user_mr(pd, addr, length, iova,
++						 access_flags, dmah, NULL);
  
-+	if (mdev->st)
-+		ib_set_device_ops(&dev->ib_dev, &mlx5_ib_dev_dmah_ops);
+ 	if (IS_ERR(mr))
+ 		return PTR_ERR(mr);
+@@ -365,6 +374,10 @@ static int UVERBS_HANDLER(UVERBS_METHOD_REG_MR)(
+ 	mr->type = IB_MR_TYPE_USER;
+ 	mr->uobject = uobj;
+ 	atomic_inc(&pd->usecnt);
++	if (dmah) {
++		mr->dmah = dmah;
++		atomic_inc(&dmah->usecnt);
++	}
+ 	rdma_restrack_new(&mr->res, RDMA_RESTRACK_MR);
+ 	rdma_restrack_set_name(&mr->res, NULL);
+ 	rdma_restrack_add(&mr->res);
+@@ -488,6 +501,10 @@ DECLARE_UVERBS_NAMED_METHOD(
+ 			UVERBS_OBJECT_PD,
+ 			UVERBS_ACCESS_READ,
+ 			UA_MANDATORY),
++	UVERBS_ATTR_IDR(UVERBS_ATTR_REG_MR_DMA_HANDLE,
++			UVERBS_OBJECT_DMAH,
++			UVERBS_ACCESS_READ,
++			UA_OPTIONAL),
+ 	UVERBS_ATTR_PTR_IN(UVERBS_ATTR_REG_MR_IOVA,
+ 			   UVERBS_ATTR_TYPE(u64),
+ 			   UA_MANDATORY),
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 75fde0fe9989..3a5f81402d2f 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -2223,7 +2223,7 @@ struct ib_mr *ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 	}
+ 
+ 	mr = pd->device->ops.reg_user_mr(pd, start, length, virt_addr,
+-					 access_flags, NULL);
++					 access_flags, NULL, NULL);
+ 
+ 	if (IS_ERR(mr))
+ 		return mr;
+@@ -2262,6 +2262,7 @@ int ib_dereg_mr_user(struct ib_mr *mr, struct ib_udata *udata)
+ {
+ 	struct ib_pd *pd = mr->pd;
+ 	struct ib_dm *dm = mr->dm;
++	struct ib_dmah *dmah = mr->dmah;
+ 	struct ib_sig_attrs *sig_attrs = mr->sig_attrs;
+ 	int ret;
+ 
+@@ -2272,6 +2273,8 @@ int ib_dereg_mr_user(struct ib_mr *mr, struct ib_udata *udata)
+ 		atomic_dec(&pd->usecnt);
+ 		if (dm)
+ 			atomic_dec(&dm->usecnt);
++		if (dmah)
++			atomic_dec(&dmah->usecnt);
+ 		kfree(sig_attrs);
+ 	}
+ 
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index 3a627acb82ce..37c2bc3bdba5 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -4235,6 +4235,7 @@ static struct ib_mr *__bnxt_re_user_reg_mr(struct ib_pd *ib_pd, u64 length, u64
+ 
+ struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *ib_pd, u64 start, u64 length,
+ 				  u64 virt_addr, int mr_access_flags,
++				  struct ib_dmah *dmah,
+ 				  struct ib_udata *udata)
+ {
+ 	struct bnxt_re_pd *pd = container_of(ib_pd, struct bnxt_re_pd, ib_pd);
+@@ -4242,6 +4243,9 @@ struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *ib_pd, u64 start, u64 length,
+ 	struct ib_umem *umem;
+ 	struct ib_mr *ib_mr;
+ 
++	if (dmah)
++		return ERR_PTR(-EOPNOTSUPP);
 +
- 	ib_set_device_ops(&dev->ib_dev, &mlx5_ib_dev_ops);
+ 	umem = ib_umem_get(&rdev->ibdev, start, length, mr_access_flags);
+ 	if (IS_ERR(umem))
+ 		return ERR_CAST(umem);
+@@ -4255,6 +4259,7 @@ struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *ib_pd, u64 start, u64 length,
+ struct ib_mr *bnxt_re_reg_user_mr_dmabuf(struct ib_pd *ib_pd, u64 start,
+ 					 u64 length, u64 virt_addr, int fd,
+ 					 int mr_access_flags,
++					 struct ib_dmah *dmah,
+ 					 struct uverbs_attr_bundle *attrs)
+ {
+ 	struct bnxt_re_pd *pd = container_of(ib_pd, struct bnxt_re_pd, ib_pd);
+@@ -4263,6 +4268,9 @@ struct ib_mr *bnxt_re_reg_user_mr_dmabuf(struct ib_pd *ib_pd, u64 start,
+ 	struct ib_umem *umem;
+ 	struct ib_mr *ib_mr;
  
- 	if (IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS))
++	if (dmah)
++		return ERR_PTR(-EOPNOTSUPP);
++
+ 	umem_dmabuf = ib_umem_dmabuf_get_pinned(&rdev->ibdev, start, length,
+ 						fd, mr_access_flags);
+ 	if (IS_ERR(umem_dmabuf))
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+index 22c9eb8e9cfc..fe00ab691a51 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+@@ -258,10 +258,12 @@ struct ib_mw *bnxt_re_alloc_mw(struct ib_pd *ib_pd, enum ib_mw_type type,
+ int bnxt_re_dealloc_mw(struct ib_mw *mw);
+ struct ib_mr *bnxt_re_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 				  u64 virt_addr, int mr_access_flags,
++				  struct ib_dmah *dmah,
+ 				  struct ib_udata *udata);
+ struct ib_mr *bnxt_re_reg_user_mr_dmabuf(struct ib_pd *ib_pd, u64 start,
+ 					 u64 length, u64 virt_addr,
+ 					 int fd, int mr_access_flags,
++					 struct ib_dmah *dmah,
+ 					 struct uverbs_attr_bundle *attrs);
+ int bnxt_re_alloc_ucontext(struct ib_ucontext *ctx, struct ib_udata *udata);
+ void bnxt_re_dealloc_ucontext(struct ib_ucontext *context);
+diff --git a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+index 5b3007acaa1f..e17c1252536b 100644
+--- a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
++++ b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
+@@ -1006,6 +1006,7 @@ int c4iw_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
+ void c4iw_dealloc(struct uld_ctx *ctx);
+ struct ib_mr *c4iw_reg_user_mr(struct ib_pd *pd, u64 start,
+ 					   u64 length, u64 virt, int acc,
++					   struct ib_dmah *dmah,
+ 					   struct ib_udata *udata);
+ struct ib_mr *c4iw_get_dma_mr(struct ib_pd *pd, int acc);
+ int c4iw_dereg_mr(struct ib_mr *ib_mr, struct ib_udata *udata);
+diff --git a/drivers/infiniband/hw/cxgb4/mem.c b/drivers/infiniband/hw/cxgb4/mem.c
+index a2c71a1d93d5..dcdfe250bdbe 100644
+--- a/drivers/infiniband/hw/cxgb4/mem.c
++++ b/drivers/infiniband/hw/cxgb4/mem.c
+@@ -489,7 +489,8 @@ struct ib_mr *c4iw_get_dma_mr(struct ib_pd *pd, int acc)
+ }
+ 
+ struct ib_mr *c4iw_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+-			       u64 virt, int acc, struct ib_udata *udata)
++			       u64 virt, int acc, struct ib_dmah *dmah,
++			       struct ib_udata *udata)
+ {
+ 	__be64 *pages;
+ 	int shift, n, i;
+@@ -501,6 +502,9 @@ struct ib_mr *c4iw_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 
+ 	pr_debug("ib_pd %p\n", pd);
+ 
++	if (dmah)
++		return ERR_PTR(-EOPNOTSUPP);
++
+ 	if (length == ~0ULL)
+ 		return ERR_PTR(-EINVAL);
+ 
+diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
+index 838182d0409c..15cfca04fab8 100644
+--- a/drivers/infiniband/hw/efa/efa.h
++++ b/drivers/infiniband/hw/efa/efa.h
+@@ -164,10 +164,12 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 		  struct uverbs_attr_bundle *attrs);
+ struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
+ 			 u64 virt_addr, int access_flags,
++			 struct ib_dmah *dmah,
+ 			 struct ib_udata *udata);
+ struct ib_mr *efa_reg_user_mr_dmabuf(struct ib_pd *ibpd, u64 start,
+ 				     u64 length, u64 virt_addr,
+ 				     int fd, int access_flags,
++				     struct ib_dmah *dmah,
+ 				     struct uverbs_attr_bundle *attrs);
+ int efa_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
+ int efa_get_port_immutable(struct ib_device *ibdev, u32 port_num,
+diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+index 7c708029b4b4..bf630e1320ec 100644
+--- a/drivers/infiniband/hw/efa/efa_verbs.c
++++ b/drivers/infiniband/hw/efa/efa_verbs.c
+@@ -1732,6 +1732,7 @@ static int efa_register_mr(struct ib_pd *ibpd, struct efa_mr *mr, u64 start,
+ struct ib_mr *efa_reg_user_mr_dmabuf(struct ib_pd *ibpd, u64 start,
+ 				     u64 length, u64 virt_addr,
+ 				     int fd, int access_flags,
++				     struct ib_dmah *dmah,
+ 				     struct uverbs_attr_bundle *attrs)
+ {
+ 	struct efa_dev *dev = to_edev(ibpd->device);
+@@ -1739,6 +1740,11 @@ struct ib_mr *efa_reg_user_mr_dmabuf(struct ib_pd *ibpd, u64 start,
+ 	struct efa_mr *mr;
+ 	int err;
+ 
++	if (dmah) {
++		err = -EOPNOTSUPP;
++		goto err_out;
++	}
++
+ 	mr = efa_alloc_mr(ibpd, access_flags, &attrs->driver_udata);
+ 	if (IS_ERR(mr)) {
+ 		err = PTR_ERR(mr);
+@@ -1771,12 +1777,18 @@ struct ib_mr *efa_reg_user_mr_dmabuf(struct ib_pd *ibpd, u64 start,
+ 
+ struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
+ 			 u64 virt_addr, int access_flags,
++			 struct ib_dmah *dmah,
+ 			 struct ib_udata *udata)
+ {
+ 	struct efa_dev *dev = to_edev(ibpd->device);
+ 	struct efa_mr *mr;
+ 	int err;
+ 
++	if (dmah) {
++		err = -EOPNOTSUPP;
++		goto err_out;
++	}
++
+ 	mr = efa_alloc_mr(ibpd, access_flags, udata);
+ 	if (IS_ERR(mr)) {
+ 		err = PTR_ERR(mr);
+diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.c b/drivers/infiniband/hw/erdma/erdma_verbs.c
+index ec0ad4086066..94c211df09d8 100644
+--- a/drivers/infiniband/hw/erdma/erdma_verbs.c
++++ b/drivers/infiniband/hw/erdma/erdma_verbs.c
+@@ -1200,13 +1200,17 @@ int erdma_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
+ }
+ 
+ struct ib_mr *erdma_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 len,
+-				u64 virt, int access, struct ib_udata *udata)
++				u64 virt, int access, struct ib_dmah *dmah,
++				struct ib_udata *udata)
+ {
+ 	struct erdma_mr *mr = NULL;
+ 	struct erdma_dev *dev = to_edev(ibpd->device);
+ 	u32 stag;
+ 	int ret;
+ 
++	if (dmah)
++		return ERR_PTR(-EOPNOTSUPP);
++
+ 	if (!len || len > dev->attrs.max_mr_size)
+ 		return ERR_PTR(-EINVAL);
+ 
+diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.h b/drivers/infiniband/hw/erdma/erdma_verbs.h
+index f9408ccc8bad..ef411b81fbd7 100644
+--- a/drivers/infiniband/hw/erdma/erdma_verbs.h
++++ b/drivers/infiniband/hw/erdma/erdma_verbs.h
+@@ -452,7 +452,8 @@ int erdma_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata);
+ void erdma_disassociate_ucontext(struct ib_ucontext *ibcontext);
+ int erdma_req_notify_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags);
+ struct ib_mr *erdma_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 len,
+-				u64 virt, int access, struct ib_udata *udata);
++				u64 virt, int access, struct ib_dmah *dmah,
++				struct ib_udata *udata);
+ struct ib_mr *erdma_get_dma_mr(struct ib_pd *ibpd, int rights);
+ int erdma_dereg_mr(struct ib_mr *ibmr, struct ib_udata *data);
+ int erdma_mmap(struct ib_ucontext *ctx, struct vm_area_struct *vma);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 25f77b1fa773..78ee04a48a74 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -1219,6 +1219,7 @@ int hns_roce_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata);
+ struct ib_mr *hns_roce_get_dma_mr(struct ib_pd *pd, int acc);
+ struct ib_mr *hns_roce_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 				   u64 virt_addr, int access_flags,
++				   struct ib_dmah *dmah,
+ 				   struct ib_udata *udata);
+ struct ib_mr *hns_roce_rereg_user_mr(struct ib_mr *mr, int flags, u64 start,
+ 				     u64 length, u64 virt_addr,
+diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
+index ebef93559225..0f037e545520 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_mr.c
++++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
+@@ -231,12 +231,18 @@ struct ib_mr *hns_roce_get_dma_mr(struct ib_pd *pd, int acc)
+ 
+ struct ib_mr *hns_roce_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 				   u64 virt_addr, int access_flags,
++				   struct ib_dmah *dmah,
+ 				   struct ib_udata *udata)
+ {
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(pd->device);
+ 	struct hns_roce_mr *mr;
+ 	int ret;
+ 
++	if (dmah) {
++		ret = -EOPNOTSUPP;
++		goto err_out;
++	}
++
+ 	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
+ 	if (!mr) {
+ 		ret = -ENOMEM;
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 1e8c92826de2..da5a41b275d8 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -3013,10 +3013,12 @@ static int irdma_reg_user_mr_type_cq(struct irdma_mem_reg_req req,
+  * @len: length of mr
+  * @virt: virtual address
+  * @access: access of mr
++ * @dmah: dma handle
+  * @udata: user data
+  */
+ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
+ 				       u64 virt, int access,
++				       struct ib_dmah *dmah,
+ 				       struct ib_udata *udata)
+ {
+ #define IRDMA_MEM_REG_MIN_REQ_LEN offsetofend(struct irdma_mem_reg_req, sq_pages)
+@@ -3026,6 +3028,9 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
+ 	struct irdma_mr *iwmr = NULL;
+ 	int err;
+ 
++	if (dmah)
++		return ERR_PTR(-EOPNOTSUPP);
++
+ 	if (len > iwdev->rf->sc_dev.hw_attrs.max_mr_size)
+ 		return ERR_PTR(-EINVAL);
+ 
+@@ -3085,6 +3090,7 @@ static struct ib_mr *irdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
+ static struct ib_mr *irdma_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
+ 					      u64 len, u64 virt,
+ 					      int fd, int access,
++					      struct ib_dmah *dmah,
+ 					      struct uverbs_attr_bundle *attrs)
+ {
+ 	struct irdma_device *iwdev = to_iwdev(pd->device);
+@@ -3092,6 +3098,9 @@ static struct ib_mr *irdma_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
+ 	struct irdma_mr *iwmr;
+ 	int err;
+ 
++	if (dmah)
++		return ERR_PTR(-EOPNOTSUPP);
++
+ 	if (len > iwdev->rf->sc_dev.hw_attrs.max_mr_size)
+ 		return ERR_PTR(-EINVAL);
+ 
+diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
+index eddd0a83b97e..03a1cb039343 100644
+--- a/drivers/infiniband/hw/mana/mana_ib.h
++++ b/drivers/infiniband/hw/mana/mana_ib.h
+@@ -624,6 +624,7 @@ struct ib_mr *mana_ib_get_dma_mr(struct ib_pd *ibpd, int access_flags);
+ 
+ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 				  u64 iova, int access_flags,
++				  struct ib_dmah *dmah,
+ 				  struct ib_udata *udata);
+ 
+ int mana_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
+@@ -713,5 +714,6 @@ int mana_ib_arm_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags);
+ 
+ struct ib_mr *mana_ib_reg_user_mr_dmabuf(struct ib_pd *ibpd, u64 start, u64 length,
+ 					 u64 iova, int fd, int mr_access_flags,
++					 struct ib_dmah *dmah,
+ 					 struct uverbs_attr_bundle *attrs);
+ #endif
+diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
+index 6d974d0a8400..55701046ffba 100644
+--- a/drivers/infiniband/hw/mana/mr.c
++++ b/drivers/infiniband/hw/mana/mr.c
+@@ -106,6 +106,7 @@ static int mana_ib_gd_destroy_mr(struct mana_ib_dev *dev, u64 mr_handle)
+ 
+ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 length,
+ 				  u64 iova, int access_flags,
++				  struct ib_dmah *dmah,
+ 				  struct ib_udata *udata)
+ {
+ 	struct mana_ib_pd *pd = container_of(ibpd, struct mana_ib_pd, ibpd);
+@@ -116,6 +117,9 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 length,
+ 	u64 dma_region_handle;
+ 	int err;
+ 
++	if (dmah)
++		return ERR_PTR(-EOPNOTSUPP);
++
+ 	dev = container_of(ibdev, struct mana_ib_dev, ib_dev);
+ 
+ 	ibdev_dbg(ibdev,
+@@ -188,6 +192,7 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 length,
+ 
+ struct ib_mr *mana_ib_reg_user_mr_dmabuf(struct ib_pd *ibpd, u64 start, u64 length,
+ 					 u64 iova, int fd, int access_flags,
++					 struct ib_dmah *dmah,
+ 					 struct uverbs_attr_bundle *attrs)
+ {
+ 	struct mana_ib_pd *pd = container_of(ibpd, struct mana_ib_pd, ibpd);
+@@ -199,6 +204,9 @@ struct ib_mr *mana_ib_reg_user_mr_dmabuf(struct ib_pd *ibpd, u64 start, u64 leng
+ 	u64 dma_region_handle;
+ 	int err;
+ 
++	if (dmah)
++		return ERR_PTR(-EOPNOTSUPP);
++
+ 	dev = container_of(ibdev, struct mana_ib_dev, ib_dev);
+ 
+ 	access_flags &= ~IB_ACCESS_OPTIONAL;
+diff --git a/drivers/infiniband/hw/mlx4/mlx4_ib.h b/drivers/infiniband/hw/mlx4/mlx4_ib.h
+index f53b1846594c..5df5b955114e 100644
+--- a/drivers/infiniband/hw/mlx4/mlx4_ib.h
++++ b/drivers/infiniband/hw/mlx4/mlx4_ib.h
+@@ -759,6 +759,7 @@ int mlx4_ib_umem_write_mtt(struct mlx4_ib_dev *dev, struct mlx4_mtt *mtt,
+ 			   struct ib_umem *umem);
+ struct ib_mr *mlx4_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 				  u64 virt_addr, int access_flags,
++				  struct ib_dmah *dmah,
+ 				  struct ib_udata *udata);
+ int mlx4_ib_dereg_mr(struct ib_mr *mr, struct ib_udata *udata);
+ int mlx4_ib_alloc_mw(struct ib_mw *mw, struct ib_udata *udata);
+diff --git a/drivers/infiniband/hw/mlx4/mr.c b/drivers/infiniband/hw/mlx4/mr.c
+index e77645a673fb..94464f1694d9 100644
+--- a/drivers/infiniband/hw/mlx4/mr.c
++++ b/drivers/infiniband/hw/mlx4/mr.c
+@@ -139,6 +139,7 @@ static struct ib_umem *mlx4_get_umem_mr(struct ib_device *device, u64 start,
+ 
+ struct ib_mr *mlx4_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 				  u64 virt_addr, int access_flags,
++				  struct ib_dmah *dmah,
+ 				  struct ib_udata *udata)
+ {
+ 	struct mlx4_ib_dev *dev = to_mdev(pd->device);
+@@ -147,6 +148,9 @@ struct ib_mr *mlx4_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 	int err;
+ 	int n;
+ 
++	if (dmah)
++		return ERR_PTR(-EOPNOTSUPP);
++
+ 	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
+ 	if (!mr)
+ 		return ERR_PTR(-ENOMEM);
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index a012e24d3afe..71916d730be0 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -1380,10 +1380,12 @@ int mlx5_ib_resize_cq(struct ib_cq *ibcq, int entries, struct ib_udata *udata);
+ struct ib_mr *mlx5_ib_get_dma_mr(struct ib_pd *pd, int acc);
+ struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 				  u64 virt_addr, int access_flags,
++				  struct ib_dmah *dmah,
+ 				  struct ib_udata *udata);
+ struct ib_mr *mlx5_ib_reg_user_mr_dmabuf(struct ib_pd *pd, u64 start,
+ 					 u64 length, u64 virt_addr,
+ 					 int fd, int access_flags,
++					 struct ib_dmah *dmah,
+ 					 struct uverbs_attr_bundle *attrs);
+ int mlx5_ib_advise_mr(struct ib_pd *pd,
+ 		      enum ib_uverbs_advise_mr_advice advice,
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index 41e897a7e652..8deff7cdf048 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -1564,13 +1564,14 @@ static struct ib_mr *create_user_odp_mr(struct ib_pd *pd, u64 start, u64 length,
+ 
+ struct ib_mr *mlx5_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 				  u64 iova, int access_flags,
++				  struct ib_dmah *dmah,
+ 				  struct ib_udata *udata)
+ {
+ 	struct mlx5_ib_dev *dev = to_mdev(pd->device);
+ 	struct ib_umem *umem;
+ 	int err;
+ 
+-	if (!IS_ENABLED(CONFIG_INFINIBAND_USER_MEM))
++	if (!IS_ENABLED(CONFIG_INFINIBAND_USER_MEM) || dmah)
+ 		return ERR_PTR(-EOPNOTSUPP);
+ 
+ 	mlx5_ib_dbg(dev, "start 0x%llx, iova 0x%llx, length 0x%llx, access_flags 0x%x\n",
+@@ -1724,6 +1725,7 @@ reg_user_mr_dmabuf_by_data_direct(struct ib_pd *pd, u64 offset,
+ struct ib_mr *mlx5_ib_reg_user_mr_dmabuf(struct ib_pd *pd, u64 offset,
+ 					 u64 length, u64 virt_addr,
+ 					 int fd, int access_flags,
++					 struct ib_dmah *dmah,
+ 					 struct uverbs_attr_bundle *attrs)
+ {
+ 	struct mlx5_ib_dev *dev = to_mdev(pd->device);
+@@ -1731,7 +1733,7 @@ struct ib_mr *mlx5_ib_reg_user_mr_dmabuf(struct ib_pd *pd, u64 offset,
+ 	int err;
+ 
+ 	if (!IS_ENABLED(CONFIG_INFINIBAND_USER_MEM) ||
+-	    !IS_ENABLED(CONFIG_INFINIBAND_ON_DEMAND_PAGING))
++	    !IS_ENABLED(CONFIG_INFINIBAND_ON_DEMAND_PAGING) || dmah)
+ 		return ERR_PTR(-EOPNOTSUPP);
+ 
+ 	if (uverbs_attr_is_valid(attrs, MLX5_IB_ATTR_REG_DMABUF_MR_ACCESS_FLAGS)) {
+@@ -1937,7 +1939,7 @@ struct ib_mr *mlx5_ib_rereg_user_mr(struct ib_mr *ib_mr, int flags, u64 start,
+ 	 */
+ recreate:
+ 	return mlx5_ib_reg_user_mr(new_pd, start, length, iova,
+-				   new_access_flags, udata);
++				   new_access_flags, NULL, udata);
+ }
+ 
+ static int
+diff --git a/drivers/infiniband/hw/mthca/mthca_provider.c b/drivers/infiniband/hw/mthca/mthca_provider.c
+index 6a1e2e79ddc3..dd572d76866c 100644
+--- a/drivers/infiniband/hw/mthca/mthca_provider.c
++++ b/drivers/infiniband/hw/mthca/mthca_provider.c
+@@ -825,7 +825,8 @@ static struct ib_mr *mthca_get_dma_mr(struct ib_pd *pd, int acc)
+ }
+ 
+ static struct ib_mr *mthca_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+-				       u64 virt, int acc, struct ib_udata *udata)
++				       u64 virt, int acc, struct ib_dmah *dmah,
++				       struct ib_udata *udata)
+ {
+ 	struct mthca_dev *dev = to_mdev(pd->device);
+ 	struct ib_block_iter biter;
+@@ -838,6 +839,9 @@ static struct ib_mr *mthca_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 	int err = 0;
+ 	int write_mtt_size;
+ 
++	if (dmah)
++		return ERR_PTR(-EOPNOTSUPP);
++
+ 	if (udata->inlen < sizeof ucmd) {
+ 		if (!context->reg_mr_warned) {
+ 			mthca_warn(dev, "Process '%s' did not pass in MR attrs.\n",
+diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+index 979de8f8df14..46d911fd38de 100644
+--- a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
++++ b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+@@ -847,13 +847,17 @@ static void build_user_pbes(struct ocrdma_dev *dev, struct ocrdma_mr *mr)
+ }
+ 
+ struct ib_mr *ocrdma_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 len,
+-				 u64 usr_addr, int acc, struct ib_udata *udata)
++				 u64 usr_addr, int acc, struct ib_dmah *dmah,
++				 struct ib_udata *udata)
+ {
+ 	int status = -ENOMEM;
+ 	struct ocrdma_dev *dev = get_ocrdma_dev(ibpd->device);
+ 	struct ocrdma_mr *mr;
+ 	struct ocrdma_pd *pd;
+ 
++	if (dmah)
++		return ERR_PTR(-EOPNOTSUPP);
++
+ 	pd = get_ocrdma_pd(ibpd);
+ 
+ 	if (acc & IB_ACCESS_REMOTE_WRITE && !(acc & IB_ACCESS_LOCAL_WRITE))
+diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h
+index 0644346d8d98..6c5c3755b8a9 100644
+--- a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h
++++ b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h
+@@ -98,7 +98,8 @@ int ocrdma_post_srq_recv(struct ib_srq *, const struct ib_recv_wr *,
+ int ocrdma_dereg_mr(struct ib_mr *ib_mr, struct ib_udata *udata);
+ struct ib_mr *ocrdma_get_dma_mr(struct ib_pd *, int acc);
+ struct ib_mr *ocrdma_reg_user_mr(struct ib_pd *, u64 start, u64 length,
+-				 u64 virt, int acc, struct ib_udata *);
++				 u64 virt, int acc, struct ib_dmah *dmah,
++				 struct ib_udata *);
+ struct ib_mr *ocrdma_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+ 			      u32 max_num_sg);
+ int ocrdma_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
+diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
+index 568a5b18803f..ab9bf0922979 100644
+--- a/drivers/infiniband/hw/qedr/verbs.c
++++ b/drivers/infiniband/hw/qedr/verbs.c
+@@ -2953,13 +2953,17 @@ static int init_mr_info(struct qedr_dev *dev, struct mr_info *info,
+ }
+ 
+ struct ib_mr *qedr_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 len,
+-			       u64 usr_addr, int acc, struct ib_udata *udata)
++			       u64 usr_addr, int acc, struct ib_dmah *dmah,
++			       struct ib_udata *udata)
+ {
+ 	struct qedr_dev *dev = get_qedr_dev(ibpd->device);
+ 	struct qedr_mr *mr;
+ 	struct qedr_pd *pd;
+ 	int rc = -ENOMEM;
+ 
++	if (dmah)
++		return ERR_PTR(-EOPNOTSUPP);
++
+ 	pd = get_qedr_pd(ibpd);
+ 	DP_DEBUG(dev, QEDR_MSG_MR,
+ 		 "qedr_register user mr pd = %d start = %lld, len = %lld, usr_addr = %lld, acc = %d\n",
+diff --git a/drivers/infiniband/hw/qedr/verbs.h b/drivers/infiniband/hw/qedr/verbs.h
+index 5731458abb06..62420a15101b 100644
+--- a/drivers/infiniband/hw/qedr/verbs.h
++++ b/drivers/infiniband/hw/qedr/verbs.h
+@@ -79,7 +79,8 @@ int qedr_dereg_mr(struct ib_mr *ib_mr, struct ib_udata *udata);
+ struct ib_mr *qedr_get_dma_mr(struct ib_pd *, int acc);
+ 
+ struct ib_mr *qedr_reg_user_mr(struct ib_pd *, u64 start, u64 length,
+-			       u64 virt, int acc, struct ib_udata *);
++			       u64 virt, int acc, struct ib_dmah *dmah,
++			       struct ib_udata *);
+ 
+ int qedr_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg,
+ 		   int sg_nents, unsigned int *sg_offset);
+diff --git a/drivers/infiniband/hw/usnic/usnic_ib_verbs.c b/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
+index 217af34e82b3..ae5df96589d9 100644
+--- a/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
++++ b/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
+@@ -592,6 +592,7 @@ int usnic_ib_destroy_cq(struct ib_cq *cq, struct ib_udata *udata)
+ 
+ struct ib_mr *usnic_ib_reg_mr(struct ib_pd *pd, u64 start, u64 length,
+ 					u64 virt_addr, int access_flags,
++					struct ib_dmah *dmah,
+ 					struct ib_udata *udata)
+ {
+ 	struct usnic_ib_mr *mr;
+@@ -600,6 +601,9 @@ struct ib_mr *usnic_ib_reg_mr(struct ib_pd *pd, u64 start, u64 length,
+ 	usnic_dbg("start 0x%llx va 0x%llx length 0x%llx\n", start,
+ 			virt_addr, length);
+ 
++	if (dmah)
++		return ERR_PTR(-EOPNOTSUPP);
++
+ 	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
+ 	if (!mr)
+ 		return ERR_PTR(-ENOMEM);
+diff --git a/drivers/infiniband/hw/usnic/usnic_ib_verbs.h b/drivers/infiniband/hw/usnic/usnic_ib_verbs.h
+index 53f53f2d53be..e3031ac32488 100644
+--- a/drivers/infiniband/hw/usnic/usnic_ib_verbs.h
++++ b/drivers/infiniband/hw/usnic/usnic_ib_verbs.h
+@@ -60,6 +60,7 @@ int usnic_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ int usnic_ib_destroy_cq(struct ib_cq *cq, struct ib_udata *udata);
+ struct ib_mr *usnic_ib_reg_mr(struct ib_pd *pd, u64 start, u64 length,
+ 				u64 virt_addr, int access_flags,
++				struct ib_dmah *dmah,
+ 				struct ib_udata *udata);
+ int usnic_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
+ int usnic_ib_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata);
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c
+index e80848bfb3bd..ec7a00c8285b 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_mr.c
+@@ -104,12 +104,14 @@ struct ib_mr *pvrdma_get_dma_mr(struct ib_pd *pd, int acc)
+  * @length: length of region
+  * @virt_addr: I/O virtual address
+  * @access_flags: access flags for memory region
++ * @dmah: dma handle
+  * @udata: user data
+  *
+  * @return: ib_mr pointer on success, otherwise returns an errno.
+  */
+ struct ib_mr *pvrdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 				 u64 virt_addr, int access_flags,
++				 struct ib_dmah *dmah,
+ 				 struct ib_udata *udata)
+ {
+ 	struct pvrdma_dev *dev = to_vdev(pd->device);
+@@ -121,6 +123,9 @@ struct ib_mr *pvrdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 	struct pvrdma_cmd_create_mr_resp *resp = &rsp.create_mr_resp;
+ 	int ret, npages;
+ 
++	if (dmah)
++		return ERR_PTR(-EOPNOTSUPP);
++
+ 	if (length == 0 || length > dev->dsr->caps.max_mr_size) {
+ 		dev_warn(&dev->pdev->dev, "invalid mem region length\n");
+ 		return ERR_PTR(-EINVAL);
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
+index fd47b0b1df5c..603e5a9311eb 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_verbs.h
+@@ -366,6 +366,7 @@ int pvrdma_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata);
+ struct ib_mr *pvrdma_get_dma_mr(struct ib_pd *pd, int acc);
+ struct ib_mr *pvrdma_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 				 u64 virt_addr, int access_flags,
++				 struct ib_dmah *dmah,
+ 				 struct ib_udata *udata);
+ int pvrdma_dereg_mr(struct ib_mr *mr, struct ib_udata *udata);
+ struct ib_mr *pvrdma_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+diff --git a/drivers/infiniband/sw/rdmavt/mr.c b/drivers/infiniband/sw/rdmavt/mr.c
+index 5ed5cfc2b280..86e482593a85 100644
+--- a/drivers/infiniband/sw/rdmavt/mr.c
++++ b/drivers/infiniband/sw/rdmavt/mr.c
+@@ -329,12 +329,14 @@ struct ib_mr *rvt_get_dma_mr(struct ib_pd *pd, int acc)
+  * @length: length of region to register
+  * @virt_addr: associated virtual address
+  * @mr_access_flags: access flags for this memory region
++ * @dmah: dma handle
+  * @udata: unused by the driver
+  *
+  * Return: the memory region on success, otherwise returns an errno.
+  */
+ struct ib_mr *rvt_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 			      u64 virt_addr, int mr_access_flags,
++			      struct ib_dmah *dmah,
+ 			      struct ib_udata *udata)
+ {
+ 	struct rvt_mr *mr;
+@@ -343,6 +345,9 @@ struct ib_mr *rvt_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 	int n, m;
+ 	struct ib_mr *ret;
+ 
++	if (dmah)
++		return ERR_PTR(-EOPNOTSUPP);
++
+ 	if (length == 0)
+ 		return ERR_PTR(-EINVAL);
+ 
+diff --git a/drivers/infiniband/sw/rdmavt/mr.h b/drivers/infiniband/sw/rdmavt/mr.h
+index 44afe2731741..72dab48307b7 100644
+--- a/drivers/infiniband/sw/rdmavt/mr.h
++++ b/drivers/infiniband/sw/rdmavt/mr.h
+@@ -26,6 +26,7 @@ void rvt_mr_exit(struct rvt_dev_info *rdi);
+ struct ib_mr *rvt_get_dma_mr(struct ib_pd *pd, int acc);
+ struct ib_mr *rvt_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 			      u64 virt_addr, int mr_access_flags,
++			      struct ib_dmah *dmah,
+ 			      struct ib_udata *udata);
+ int rvt_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
+ struct ib_mr *rvt_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index 2331e698a65b..f48d6e132954 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -1271,6 +1271,7 @@ static struct ib_mr *rxe_get_dma_mr(struct ib_pd *ibpd, int access)
+ 
+ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd, u64 start,
+ 				     u64 length, u64 iova, int access,
++				     struct ib_dmah *dmah,
+ 				     struct ib_udata *udata)
+ {
+ 	struct rxe_dev *rxe = to_rdev(ibpd->device);
+@@ -1278,6 +1279,9 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd, u64 start,
+ 	struct rxe_mr *mr;
+ 	int err, cleanup_err;
+ 
++	if (dmah)
++		return ERR_PTR(-EOPNOTSUPP);
++
+ 	if (access & ~RXE_ACCESS_SUPPORTED_MR) {
+ 		rxe_err_pd(pd, "access = %#x not supported (%#x)\n", access,
+ 				RXE_ACCESS_SUPPORTED_MR);
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+index 2b2a7b8e93b0..35c3bde0d00a 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.c
++++ b/drivers/infiniband/sw/siw/siw_verbs.c
+@@ -1321,10 +1321,12 @@ int siw_dereg_mr(struct ib_mr *base_mr, struct ib_udata *udata)
+  * @len:	len of MR
+  * @rnic_va:	not used by siw
+  * @rights:	MR access rights
++ * @dmah:	dma handle
+  * @udata:	user buffer to communicate STag and Key.
+  */
+ struct ib_mr *siw_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
+-			      u64 rnic_va, int rights, struct ib_udata *udata)
++			      u64 rnic_va, int rights,  struct ib_dmah *dmah,
++			      struct ib_udata *udata)
+ {
+ 	struct siw_mr *mr = NULL;
+ 	struct siw_umem *umem = NULL;
+@@ -1336,6 +1338,9 @@ struct ib_mr *siw_reg_user_mr(struct ib_pd *pd, u64 start, u64 len,
+ 		   (void *)(uintptr_t)start, (void *)(uintptr_t)rnic_va,
+ 		   (unsigned long long)len);
+ 
++	if (dmah)
++		return ERR_PTR(-EOPNOTSUPP);
++
+ 	if (atomic_inc_return(&sdev->num_mr) > SIW_MAX_MR) {
+ 		siw_dbg_pd(pd, "too many mr's\n");
+ 		rv = -ENOMEM;
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.h b/drivers/infiniband/sw/siw/siw_verbs.h
+index 1f1a305540af..e9f4463aecdc 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.h
++++ b/drivers/infiniband/sw/siw/siw_verbs.h
+@@ -65,7 +65,8 @@ int siw_destroy_cq(struct ib_cq *base_cq, struct ib_udata *udata);
+ int siw_poll_cq(struct ib_cq *base_cq, int num_entries, struct ib_wc *wc);
+ int siw_req_notify_cq(struct ib_cq *base_cq, enum ib_cq_notify_flags flags);
+ struct ib_mr *siw_reg_user_mr(struct ib_pd *base_pd, u64 start, u64 len,
+-			      u64 rnic_va, int rights, struct ib_udata *udata);
++			      u64 rnic_va, int rights, struct ib_dmah *dmah,
++			      struct ib_udata *udata);
+ struct ib_mr *siw_alloc_mr(struct ib_pd *base_pd, enum ib_mr_type mr_type,
+ 			   u32 max_sge);
+ struct ib_mr *siw_get_dma_mr(struct ib_pd *base_pd, int rights);
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 3be9aa04ac07..ce4180c4db14 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -1887,6 +1887,7 @@ struct ib_mr {
+ 
+ 	struct ib_dm      *dm;
+ 	struct ib_sig_attrs *sig_attrs; /* only for IB_MR_TYPE_INTEGRITY MRs */
++	struct ib_dmah *dmah;
+ 	/*
+ 	 * Implementation details of the RDMA core, don't use in drivers:
+ 	 */
+@@ -2525,10 +2526,12 @@ struct ib_device_ops {
+ 	struct ib_mr *(*get_dma_mr)(struct ib_pd *pd, int mr_access_flags);
+ 	struct ib_mr *(*reg_user_mr)(struct ib_pd *pd, u64 start, u64 length,
+ 				     u64 virt_addr, int mr_access_flags,
++				     struct ib_dmah *dmah,
+ 				     struct ib_udata *udata);
+ 	struct ib_mr *(*reg_user_mr_dmabuf)(struct ib_pd *pd, u64 offset,
+ 					    u64 length, u64 virt_addr, int fd,
+ 					    int mr_access_flags,
++					    struct ib_dmah *dmah,
+ 					    struct uverbs_attr_bundle *attrs);
+ 	struct ib_mr *(*rereg_user_mr)(struct ib_mr *mr, int flags, u64 start,
+ 				       u64 length, u64 virt_addr,
+diff --git a/include/uapi/rdma/ib_user_ioctl_cmds.h b/include/uapi/rdma/ib_user_ioctl_cmds.h
+index a0b1130423f0..17f963014eca 100644
+--- a/include/uapi/rdma/ib_user_ioctl_cmds.h
++++ b/include/uapi/rdma/ib_user_ioctl_cmds.h
+@@ -307,6 +307,7 @@ enum uverbs_attrs_reg_dmabuf_mr_cmd_attr_ids {
+ enum uverbs_attrs_reg_mr_cmd_attr_ids {
+ 	UVERBS_ATTR_REG_MR_HANDLE,
+ 	UVERBS_ATTR_REG_MR_PD_HANDLE,
++	UVERBS_ATTR_REG_MR_DMA_HANDLE,
+ 	UVERBS_ATTR_REG_MR_IOVA,
+ 	UVERBS_ATTR_REG_MR_ADDR,
+ 	UVERBS_ATTR_REG_MR_LENGTH,
 -- 
 2.50.1
 
