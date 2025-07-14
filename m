@@ -1,170 +1,171 @@
-Return-Path: <linux-rdma+bounces-12135-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12136-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2383FB03E31
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Jul 2025 14:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 86F94B03E4E
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Jul 2025 14:09:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55AF14A1474
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Jul 2025 12:05:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F30916B00D
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Jul 2025 12:09:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D452D25DAFC;
-	Mon, 14 Jul 2025 12:01:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF07D25487B;
+	Mon, 14 Jul 2025 12:06:30 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61472255E26;
-	Mon, 14 Jul 2025 12:01:05 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7747C248F56;
+	Mon, 14 Jul 2025 12:06:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752494468; cv=none; b=kS3AO+NZoRjiOyKtsytQ0AwdGAyjhWd8wtdknv3OVvWYfst2PDC4Wxp1wdnDiwhsl6XRFZahnC2NB4uhJk5ZjqlDAVUL7gzV42fGmT4KBDPUW+Hw0rcH0po/JJxSHbz/11jV2rsOUgFL5AQkTqVln9UO70/yUT77Gt8ARSkfiVw=
+	t=1752494790; cv=none; b=qa0ylw7aU5XSCh+0pszopbQX9eeNJHRiUjewr9i+wM+0iY1W171hxQMgZjV99HXYoDfSzNA+NPWi8btoSYaztzo9bcn0i9hDhFhhi8rJreKJnwnNX1PH8SOoxCBfNgB8xi9yzuOo4e1BT6yZpFCbfM5p+GkIbCGHl7APbIuA96c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752494468; c=relaxed/simple;
-	bh=L+RgS7V7Au6Ri2a8QuAHoPOcLqT0mibOxx0N+Vk0UOU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=LXbvWAvg/ArjWPifaHKnNqUcONWkjUkiOQC+ZQbn0oEzw21nQxXKiTPSA5MRAbukej6K7jOb3CjX0pPbj+LehRtcKJYbGZTLC73qhssYOX5hyevQeT84gGQkmDpxs2+mkboKqXh7VCidTw8fsqD/J3BSBiqjSxMb0sFlwDLd37Q=
+	s=arc-20240116; t=1752494790; c=relaxed/simple;
+	bh=Bw5K9Z6DSYdTf3NBvOviPDx7IVtplNK1PwEYeKD7k74=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AF7pq1HHAEd5DPB3BQLQVZFmA2FNfshGvfmZ2iZ7Z5CtiQIf6NQciAjwX/VHDm2ShPwdRWrQ9zr5jTnkl+sldq7da1k2R8A7ucg5YWY2fXEzyECYg+Z5fXcouAfbYvLFdIfUVGMrmy47t0JQuv1BR8RUG7O9tUtqZwC25eV4c3k=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-c5-6874f17a137d
+X-AuditID: a67dfc5b-681ff7000002311f-a8-6874f2bee77b
+Date: Mon, 14 Jul 2025 21:06:17 +0900
 From: Byungchul Park <byungchul@sk.com>
-To: willy@infradead.org,
-	netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	kernel_team@skhynix.com,
-	almasrymina@google.com,
-	ilias.apalodimas@linaro.org,
-	harry.yoo@oracle.com,
-	akpm@linux-foundation.org,
-	andrew+netdev@lunn.ch,
-	asml.silence@gmail.com,
-	toke@redhat.com,
-	david@redhat.com,
-	Liam.Howlett@oracle.com,
-	vbabka@suse.cz,
-	rppt@kernel.org,
-	surenb@google.com,
-	mhocko@suse.com,
-	linux-rdma@vger.kernel.org,
-	bpf@vger.kernel.org,
-	vishal.moola@gmail.com,
-	hannes@cmpxchg.org,
-	ziy@nvidia.com,
-	jackmanb@google.com,
-	wei.fang@nxp.com,
-	shenwei.wang@nxp.com,
-	xiaoning.wang@nxp.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	anthony.l.nguyen@intel.com,
-	przemyslaw.kitszel@intel.com,
-	sgoutham@marvell.com,
-	gakula@marvell.com,
-	sbhatta@marvell.com,
-	hkelam@marvell.com,
-	bbhushan2@marvell.com,
-	tariqt@nvidia.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	sdf@fomichev.me,
-	saeedm@nvidia.com,
-	leon@kernel.org,
-	mbloch@nvidia.com,
-	danishanwar@ti.com,
-	rogerq@kernel.org,
-	nbd@nbd.name,
-	lorenzo@kernel.org,
-	ryder.lee@mediatek.com,
-	shayne.chen@mediatek.com,
-	sean.wang@mediatek.com,
-	matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	aleksander.lobakin@intel.com,
-	horms@kernel.org,
-	m-malladi@ti.com,
-	krzysztof.kozlowski@linaro.org,
-	matthias.schiffer@ew.tq-group.com,
-	robh@kernel.org,
-	imx@lists.linux.dev,
-	intel-wired-lan@lists.osuosl.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-wireless@vger.kernel.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH net-next v10 12/12] libeth: xdp: access ->pp through netmem_desc instead of page
-Date: Mon, 14 Jul 2025 21:00:47 +0900
-Message-Id: <20250714120047.35901-13-byungchul@sk.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20250714120047.35901-1-byungchul@sk.com>
-References: <20250714120047.35901-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWSe2xTZRjG/c53bq2rOakLHEeMSZVIFp1uIrwxaoh/fQlRMfznJa5hJ7Rx
-	F9J2Y8VQBs4QKqzIJemgzVq7jW6dtmlh62q3YbeMCU53Yzmzu5ZAEIduDOpK52o74n+/vE+e
-	53nf5OWxWmYKeH2lSTJUass1rJJW3s/77tUvl026150LT4PD38HC6IqbAd9qLVyaDzMw1ibC
-	jyOrFDjaOxE8TMU5CJ6YxrAycI0FjzuJIRU4RYPjt3oaHvkfY7g9mOBgKPYvDb7g+zDXeoeG
-	6PEuDP2PtkLCNsTCqfo0hsbZr1nI/J5moCf1FwfHwl4Kev68wsFIZwMD5x63YOiqm8923Zpk
-	YDziYGH8q1EEsx0ZBu7EsoWL3mkOGnwXEMT62lg4Vv8GLF55yMHS+QEMcw27YN1eA4OuTZC8
-	sYgg3nKTgkw0zMGvsz8wMODvomBiIYUhedLJgvW+DcHNxggFvzgDDDTfmKCye+yFycwaBWfH
-	XCzcqp9DMNafoOHi0QYE/l6ZgeVo9uT0qoPd9R7pX/wbk/BMMyKX26Yocvf0OkXk3usU6b4w
-	wxFXsJqEvIXEE/2DIlZ5DJNg+wmWBB+c4cj0ZJQlQ/Y0TULNR8jdUCPa8/zHyrfLpHJ9jWR4
-	7d1Spe5qQjgwzNZ2D59h6tAgY0U8LwrbxW/dVVak2MDAkI/LMSu8LMpyCuc4XygWVxLXaCtS
-	8lgYzhN7QnYqJzwrlIq3nZENpoWt4np8ecOsEnaINvcE9ST0BdEXuLoRpMjOm5wLKMdq4U2x
-	19qMc6Gi4FOIE5k1/MTwnPiTV6ZPI5ULPdWO1PrKmgqtvnx7kc5cqa8t2ldVEUTZf2s9vPZJ
-	GD0Y2RtDAo80eSq4Z9KpGW2N0VwRQyKPNfmqezMGnVpVpjUfkgxVnxuqyyVjDG3hac1mVUny
-	YJla2K81SV9I0gHJ8L9K8YqCOrS7r9hOlO8sHT771p44tdLHF+10060H5aaXzo1MXTd7jTta
-	CjXThyIznf/073yRjS41hbZUX5z/+fsFj23bBx9+9tH8M47L3enNm5JHVUfi5uOlNsNAqT+j
-	tJhHSyxF+efN7KcFa56OVqdLEzDulk9a6hTrpsj4fss3U5ZXPPYSDW3UaYsLscGo/Q8+Q2Wh
-	awMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWSfUxTZxTGfe97v2iouamoN34mTdSIChLFnEUjZjN61eggJhqN0Va5sY1t
-	NS0SIFsGUrfQSEHFCNo6iKhAjZAitGJFUhDZED/4so5CoUbDpJtiAa0oWDD+9zvnyXme54/D
-	YlktNY9V61JEvU6pkdMSUrJrffaqjOEU1eqyhqVgqbxJw7NgCQW2j2lwo99JQXs5D3effiTA
-	UlGLYCTUw4A9x4sh2PSQhqslYxhCVbkkWJ4YSRit/IThVbOfgRb3FxJs9p3gu/6aBNcfDgyN
-	o0vAn9dCQ65xHENR32kaJv8Zp+Be6H8GTjnLCGi0/hUeh2oYeFprpqDg0zUMjsz+cODLbgo6
-	6iw0dGQ/Q9B3c5KC1+5waqDMy4DZdgmB+345DaeMayBQM8LAuwtNGHzmTTBRmArNxXNgrDWA
-	oOdaFwGTLicDj/tuUdBU6SCgcyCEYeyMlQbTf3kIuorqCHhkraKgtLWTCPfYDd2Tnwk4315M
-	w0ujD0F7o5+Ey1lmBJX1HgqGXUZy009CY+AtFpy9pUi4Xf6CEAbzJwjBU/83Idy51MsIxfaT
-	QnVZtHDV9S8hmDztWLBX5NCC/f05RvB2u2ihpXCcFKpLfxMGq4tQ4qL9kg3JokadKupjNyok
-	qgY/d6KNTrvTdo7KRM2UCUWwPLeWr2qxMVNMc8t4jyeEpziKi+OD/oekCUlYzLVF8veqC4kp
-	YRan4F9Z66aZ5JbwEz3D08dSbh2fV9JJfDNdzNuqGqaNIsL7P60DaIplXDxfbyrF+UhSjGZU
-	oCi1LlWrVGviYwzHVOk6dVrMkeNaOwp/0/VfP591opGOrW7EsUgeKYU3KSoZpUw1pGvdiGex
-	PEr6plevkkmTlekZov74If1JjWhwo/ksKZ8r3b5XVMi4o8oU8ZgonhD131WCjZiXiWocWa2x
-	K4YsiR9ykxIy1htmbslIO/T7tuWKNUcMi8+uZOP6Y7I/aAcKzkc/j8/fU+graN3oXWVPn/3j
-	DsZ8d+VQ3YM+PmvGwltdmtD8XRdzkgLJhzu0jgNa38EfBueMJu2L9CRg1dI4RcIvur0LgiOx
-	0otbrwQ3W342Ghf0eKUbkvvlpEGljIvGeoPyK23aEZJJAwAA
-X-CFilter-Loop: Reflected
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: willy@infradead.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, kuba@kernel.org, almasrymina@google.com,
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
+	akpm@linux-foundation.org, davem@davemloft.net,
+	john.fastabend@gmail.com, andrew+netdev@lunn.ch, toke@redhat.com,
+	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
+	saeedm@nvidia.com, leon@kernel.org, ast@kernel.org,
+	daniel@iogearbox.net, david@redhat.com, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, horms@kernel.org,
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+	vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
+	jackmanb@google.com
+Subject: Re: [PATCH net-next v9 2/8] netmem: introduce utility APIs to use
+ struct netmem_desc
+Message-ID: <20250714120617.GA36228@system.software.com>
+References: <20250710082807.27402-1-byungchul@sk.com>
+ <20250710082807.27402-3-byungchul@sk.com>
+ <4a8b0a45-b829-462c-a655-af0bda10a246@gmail.com>
+ <20250713230752.GA7758@system.software.com>
+ <5ee839d6-2734-41c5-b34c-8d686c910bc8@gmail.com>
+ <20250714100551.GA44803@system.software.com>
+ <ac59fba9-4f39-4691-afae-aa7a0b1270af@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ac59fba9-4f39-4691-afae-aa7a0b1270af@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+Z//2TnH5eK4zP5pQawrVnb98EIXqk/HsntRFKQjD221rZiX
+	XFCsEqyRKyrI5oIt0bzlYto8iVkt80JSYVrLrJWZdLFZZqYuNNeF+vbwPA+/9/3wcFh5URbN
+	aQ2potGg1qkYOS3/FO6cW9ObqpnfUzUV7K5SBkoGMuDKK0kG9mIPgr7B5yx8ra1nIM/Zj8H+
+	MJOGb64hDG/rOlgoca8Ff0EXDdVZlRg6TjcwkJ0ZxHBzMMDCMamQgkceqwzOD+VjqDS/YuFx
+	lZ2Bl6UjMujyZtPQaCuiwW9dAXWOKOi/342g1lVJQf+pSwyca3Yw8CbTj6D5bgcNuUetCFw1
+	PhkEB0YZufdesiumCXe7e7BQUfSMEm7YXrCCw50mlBfGChZfMxbcxScZwd17lhXan1QzQkNO
+	kBZuSF8pIft4gBG+vG2jhZ6aVkZwVbTSQpOjlt0QsUO+NFnUadNF47zlSXJNXyV34AnJ6Mux
+	YzPKVVpQGEf4xaTlug3/1beul9EWxHE0P51cNZtCNsPPJD7f4K9KJD+bfHzqZS1IzmE+hyFl
+	rwuYUDCOTySfL3iokFbwQL55mlCopOSfUuTB2at/ggjSeLGTDmnMxxLf8HsqdAzzMeTKMBey
+	w/hlRKo7+qsynp9KbnvqqRCH8BJH3P4A9fvRieROoY8+g3jbf1jbf1jbP6wD4WKk1BrS9Wqt
+	bnGcxmTQZsTt3q93o9HBFBz+sVNCvY82exHPIVW4Aj6kapQydXqKSe9FhMOqSMWHF0aNUpGs
+	Nh0SjfsTjWk6McWLYjhaNUGxsP9gspLfo04V94niAdH4N6W4sGgzmrD6sf/EWByYY94VmKge
+	Kmtrz08KVsePkTpjjqyJnT3jUEJWfMW1vFXNEZP36jaF6ZfEXFpqSthqbciL2vLdGOHUz5mS
+	dKct2BLv7J1xkxRFr/NLs6zTT04q735TNm69tMhi6OgMpCnj30WO+OpHug6fLky4vDEvzukq
+	Lrdt2x61UkWnaNQLYrExRf0Tfe6G0SwDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHe897ds5xNDguqxcNhEkERlcKHioloegtKaoPRRboqFNbqck2
+	RYtIU6lWalmQzQWLSs1yg1VzdjGd5bI7iroyL5lKTTOzZepCc1HUtx//y/N8+QtY6WdDBW2y
+	QdIlqxNVnJyVb1qZvaB62KBZnHtKBLPtJgc3RtOhtMspA3O5A4FvrI2Hb4/cHFy5PILB/CqH
+	he+2cQy99d083LBvhM6SPhbuH6/E0F3whIO8HD+GB2ODPBxzljFQd6lBBq8d+TI4P34NQ2Vm
+	Fw9Nd80cdNyclEGfK4+FBtN1FjrzV0O9ZRaMPBtA8MhWycDI6UscnGu0cPAhpxNBY103C8VZ
+	+Qhs1R4Z+EenbhQ/7uBXz6V1A18wvX39DUOrTO08tdhT6a2ySGr0NGJqLz/JUftwIU/ftdzn
+	6JMiP0urnN8Ympc9yNGvvW9Z+qW6maNXPg4x1Ha7md2sjJOv2iMlatMk3aLoBLnGVymktJB0
+	X5EZZ6JipREFCURcRh7esbJGJAisOJdUZGYEZE6cRzyeMRzgEHE+6W918UYkF7BYxBHr+xIu
+	YMwQ48nQBQcTYIUI5LvjOQqElGIrQ14WVvwxgknDxR42wFiMJJ6JT0zgGRbDSOmEEJCDxCji
+	rM/6HZkpRpAah5s5gxSm/9qm/9qmf20LwuUoRJuclqTWJi5fqD+gyUjWpi/cfTDJjqYmUXLk
+	51kn8jWtcyFRQKrpCvAaNEqZOk2fkeRCRMCqEIW3XadRKvaoMw5JuoPxutRESe9CYQKrmq3Y
+	sF1KUIr71AbpgCSlSLq/LiMEhWaiGvtnt3uXbH9KkJ+KWU+37A2PuzrAmwd9R0+UhG9tk3U0
+	5a5J6ZqcsOYfjogwLi2oNW8uHOohxwzRsVGvOoP7Y3KaOdy2zTvjbtGncO/j0dTYhmBv74va
+	ndZ77m37z4aNKTw7qqdVpc2Jsf7YuQJGZo6GbJK3IP16y0RwwtpQn4rVa9RLIrFOr/4F5NvG
+	lA4DAAA=
+X-CFilter-Loop: Reflected
 
-To eliminate the use of struct page in page pool, the page pool users
-should use netmem descriptor and APIs instead.
+On Mon, Jul 14, 2025 at 12:45:17PM +0100, Pavel Begunkov wrote:
+> On 7/14/25 11:05, Byungchul Park wrote:
+> > On Mon, Jul 14, 2025 at 10:43:35AM +0100, Pavel Begunkov wrote:
+> > > On 7/14/25 00:07, Byungchul Park wrote:
+> > > > On Sat, Jul 12, 2025 at 12:59:34PM +0100, Pavel Begunkov wrote:
+> > > > > On 7/10/25 09:28, Byungchul Park wrote:
+> > > > > ...> +
+> > > > > >     static inline struct net_iov *netmem_to_net_iov(netmem_ref netmem)
+> > > > > >     {
+> > > > > >         if (netmem_is_net_iov(netmem))
+> > > > > > @@ -314,6 +340,21 @@ static inline netmem_ref netmem_compound_head(netmem_ref netmem)
+> > > > > >         return page_to_netmem(compound_head(netmem_to_page(netmem)));
+> > > > > >     }
+> > > > > > 
+> > > > > > +#define nmdesc_to_page(nmdesc)               (_Generic((nmdesc),             \
+> > > > > > +     const struct netmem_desc * :    (const struct page *)(nmdesc),  \
+> > > > > > +     struct netmem_desc * :          (struct page *)(nmdesc)))
+> > > > > 
+> > > > > Considering that nmdesc is going to be separated from pages and
+> > > > > accessed through indirection, and back reference to the page is
+> > > > > not needed (at least for net/), this helper shouldn't even exist.
+> > > > > And in fact, you don't really use it ...
+> > > > > > +static inline struct netmem_desc *page_to_nmdesc(struct page *page)
+> > > > > > +{
+> > > > > > +     VM_BUG_ON_PAGE(PageTail(page), page);
+> > > > > > +     return (struct netmem_desc *)page;
+> > > > > > +}
+> > > > > > +
+> > > > > > +static inline void *nmdesc_address(struct netmem_desc *nmdesc)
+> > > > > > +{
+> > > > > > +     return page_address(nmdesc_to_page(nmdesc));
+> > > > > > +}
+> > > > > 
+> > > > > ... That's the only caller, and nmdesc_address() is not used, so
+> > > > > just nuke both of them. This helper doesn't even make sense.
+> > > > > 
+> > > > > Please avoid introducing functions that you don't use as a general
+> > > > > rule.
+> > > > 
+> > > > I'm sorry about making you confused.  I should've included another patch
+> > > > using the helper like the following.
+> > > 
+> > > Ah, I see. And still, it's not a great function. There should be
+> > > no way to extract a page or a page address from a nmdesc.
+> > > 
+> > > For the diff below it's same as with the mt76 patch, it's allocating
+> > > a page, expects it to be a page, using it as a page, but for no reason
+> > > keeps it wrapped into netmem. It only adds confusion and overhead.
+> > > A rule of thumb would be only converting to netmem if the new code
+> > > would be able to work with a netmem-wrapped net_iovs.
+> > 
+> > Thanks.  I'm now working on this job, avoiding your concern.
+> > 
+> > By the way, am I supposed to wait for you to complete the work about
+> > extracting type from page e.g. page pool (or bump) type?
+> 
+> 1/8 doesn't depend on it, if you're sending it separately. As for
 
-Make xdp access ->pp through netmem_desc instead of page.
+Right.
 
-Signed-off-by: Byungchul Park <byungchul@sk.com>
----
- include/net/libeth/xdp.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> the rest, it might need to wait for the PGTY change, which is more
 
-diff --git a/include/net/libeth/xdp.h b/include/net/libeth/xdp.h
-index 6ce6aec6884c..f4880b50e804 100644
---- a/include/net/libeth/xdp.h
-+++ b/include/net/libeth/xdp.h
-@@ -1292,7 +1292,7 @@ static inline void libeth_xdp_prepare_buff(struct libeth_xdp_buff *xdp,
- 	xdp_init_buff(&xdp->base, fqe->truesize, xdp->base.rxq);
- #endif
- 	xdp_prepare_buff(&xdp->base, page_address(page) + fqe->offset,
--			 page->pp->p.offset, len, true);
-+			 pp_page_to_nmdesc(page)->pp->p.offset, len, true);
- }
- 
- /**
--- 
-2.17.1
+Only 3/8 needs to wait for the PGTY change.  The rest can be merged
+regardless of it if acceptable.
 
+	Byungchul
+
+> likely to be for 6.18
+> 
+> --
+> Pavel Begunkov
 
