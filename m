@@ -1,171 +1,220 @@
-Return-Path: <linux-rdma+bounces-12136-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12137-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86F94B03E4E
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Jul 2025 14:09:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 089B0B03FD9
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Jul 2025 15:28:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F30916B00D
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Jul 2025 12:09:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D52D04A6520
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Jul 2025 13:24:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF07D25487B;
-	Mon, 14 Jul 2025 12:06:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9066324EF7F;
+	Mon, 14 Jul 2025 13:24:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AWpvA5Mn";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MORvkYEK";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AWpvA5Mn";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MORvkYEK"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7747C248F56;
-	Mon, 14 Jul 2025 12:06:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AF3424729A
+	for <linux-rdma@vger.kernel.org>; Mon, 14 Jul 2025 13:24:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752494790; cv=none; b=qa0ylw7aU5XSCh+0pszopbQX9eeNJHRiUjewr9i+wM+0iY1W171hxQMgZjV99HXYoDfSzNA+NPWi8btoSYaztzo9bcn0i9hDhFhhi8rJreKJnwnNX1PH8SOoxCBfNgB8xi9yzuOo4e1BT6yZpFCbfM5p+GkIbCGHl7APbIuA96c=
+	t=1752499447; cv=none; b=LBjotD37Xw6LejB2/abD7xuhmqKG9d3Yk59CL+EBPRyhZ/JUHJcPu1ikpI3w1+lztgBYz9ZH0Vw/j1ogImce1+QZNbI9ibK2J0ZawqAxIz5wcR0nRF/aMLVlwLmsdtHc7rl44mJ5EeWliP5FO339QgzaZj2Ft8rVpb+K1p1da8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752494790; c=relaxed/simple;
-	bh=Bw5K9Z6DSYdTf3NBvOviPDx7IVtplNK1PwEYeKD7k74=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AF7pq1HHAEd5DPB3BQLQVZFmA2FNfshGvfmZ2iZ7Z5CtiQIf6NQciAjwX/VHDm2ShPwdRWrQ9zr5jTnkl+sldq7da1k2R8A7ucg5YWY2fXEzyECYg+Z5fXcouAfbYvLFdIfUVGMrmy47t0JQuv1BR8RUG7O9tUtqZwC25eV4c3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-a8-6874f2bee77b
-Date: Mon, 14 Jul 2025 21:06:17 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: willy@infradead.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, kuba@kernel.org, almasrymina@google.com,
-	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
-	akpm@linux-foundation.org, davem@davemloft.net,
-	john.fastabend@gmail.com, andrew+netdev@lunn.ch, toke@redhat.com,
-	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
-	saeedm@nvidia.com, leon@kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, david@redhat.com, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, horms@kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
-	jackmanb@google.com
-Subject: Re: [PATCH net-next v9 2/8] netmem: introduce utility APIs to use
- struct netmem_desc
-Message-ID: <20250714120617.GA36228@system.software.com>
-References: <20250710082807.27402-1-byungchul@sk.com>
- <20250710082807.27402-3-byungchul@sk.com>
- <4a8b0a45-b829-462c-a655-af0bda10a246@gmail.com>
- <20250713230752.GA7758@system.software.com>
- <5ee839d6-2734-41c5-b34c-8d686c910bc8@gmail.com>
- <20250714100551.GA44803@system.software.com>
- <ac59fba9-4f39-4691-afae-aa7a0b1270af@gmail.com>
+	s=arc-20240116; t=1752499447; c=relaxed/simple;
+	bh=iUFYrjPTWaorjo8hMNDtqJKBDwwwnfzk4l5oqmb0t8E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=r7YVd0xaZD0Fgk65pIx25TPDUqjhChUDEkIg3TMzjiS1k9F9Otn/RBve+OkztBmnCxRmxzh0zi0ywcWgC6+H8xFfKjumvf0+Ym7A+0/xUmKPgoqrgbJXSmPt1jYUiybHaveORbIi35gznE5Wt1Myz1XASILaUZ+spWxefrLCY7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AWpvA5Mn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MORvkYEK; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AWpvA5Mn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MORvkYEK; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6CEB51F387;
+	Mon, 14 Jul 2025 13:24:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1752499443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=tKznGN/QHd573gll6YXfcW05c/8J5n9Vq6ijHudJWMI=;
+	b=AWpvA5MnJzaZ9xL1d1wNIVk8DSXFqmfyNWrntuHiRs5SmKxbxDAGyl8YDixporR06ItzOi
+	JqFs+214inopKojRublon68rK4ibwBnoeiCUPTZfUSUX2tG5ORIe9lWNDlroo2CtA4CeHE
+	xNHGjyY+01wPfubV09jQazHiUM793HE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1752499443;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=tKznGN/QHd573gll6YXfcW05c/8J5n9Vq6ijHudJWMI=;
+	b=MORvkYEKhrO5sQZFpofVuk7aeGpJk5GVvpgzIII2yylgtLgr9OQ28bPUFEWAzgG1Nh5znX
+	M7m7v5CwQ1Kv0UDA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=AWpvA5Mn;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=MORvkYEK
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1752499443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=tKznGN/QHd573gll6YXfcW05c/8J5n9Vq6ijHudJWMI=;
+	b=AWpvA5MnJzaZ9xL1d1wNIVk8DSXFqmfyNWrntuHiRs5SmKxbxDAGyl8YDixporR06ItzOi
+	JqFs+214inopKojRublon68rK4ibwBnoeiCUPTZfUSUX2tG5ORIe9lWNDlroo2CtA4CeHE
+	xNHGjyY+01wPfubV09jQazHiUM793HE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1752499443;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=tKznGN/QHd573gll6YXfcW05c/8J5n9Vq6ijHudJWMI=;
+	b=MORvkYEKhrO5sQZFpofVuk7aeGpJk5GVvpgzIII2yylgtLgr9OQ28bPUFEWAzgG1Nh5znX
+	M7m7v5CwQ1Kv0UDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2C0D8138A1;
+	Mon, 14 Jul 2025 13:24:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id qk5dCvMEdWixDQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 14 Jul 2025 13:24:03 +0000
+Message-ID: <92073822-ab60-40ca-9ff5-a41119c0ad3d@suse.cz>
+Date: Mon, 14 Jul 2025 15:24:02 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ac59fba9-4f39-4691-afae-aa7a0b1270af@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+Z//2TnH5eK4zP5pQawrVnb98EIXqk/HsntRFKQjD221rZiX
-	XFCsEqyRKyrI5oIt0bzlYto8iVkt80JSYVrLrJWZdLFZZqYuNNeF+vbwPA+/9/3wcFh5URbN
-	aQ2potGg1qkYOS3/FO6cW9ObqpnfUzUV7K5SBkoGMuDKK0kG9mIPgr7B5yx8ra1nIM/Zj8H+
-	MJOGb64hDG/rOlgoca8Ff0EXDdVZlRg6TjcwkJ0ZxHBzMMDCMamQgkceqwzOD+VjqDS/YuFx
-	lZ2Bl6UjMujyZtPQaCuiwW9dAXWOKOi/342g1lVJQf+pSwyca3Yw8CbTj6D5bgcNuUetCFw1
-	PhkEB0YZufdesiumCXe7e7BQUfSMEm7YXrCCw50mlBfGChZfMxbcxScZwd17lhXan1QzQkNO
-	kBZuSF8pIft4gBG+vG2jhZ6aVkZwVbTSQpOjlt0QsUO+NFnUadNF47zlSXJNXyV34AnJ6Mux
-	YzPKVVpQGEf4xaTlug3/1beul9EWxHE0P51cNZtCNsPPJD7f4K9KJD+bfHzqZS1IzmE+hyFl
-	rwuYUDCOTySfL3iokFbwQL55mlCopOSfUuTB2at/ggjSeLGTDmnMxxLf8HsqdAzzMeTKMBey
-	w/hlRKo7+qsynp9KbnvqqRCH8BJH3P4A9fvRieROoY8+g3jbf1jbf1jbP6wD4WKk1BrS9Wqt
-	bnGcxmTQZsTt3q93o9HBFBz+sVNCvY82exHPIVW4Aj6kapQydXqKSe9FhMOqSMWHF0aNUpGs
-	Nh0SjfsTjWk6McWLYjhaNUGxsP9gspLfo04V94niAdH4N6W4sGgzmrD6sf/EWByYY94VmKge
-	Kmtrz08KVsePkTpjjqyJnT3jUEJWfMW1vFXNEZP36jaF6ZfEXFpqSthqbciL2vLdGOHUz5mS
-	dKct2BLv7J1xkxRFr/NLs6zTT04q735TNm69tMhi6OgMpCnj30WO+OpHug6fLky4vDEvzukq
-	Lrdt2x61UkWnaNQLYrExRf0Tfe6G0SwDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHe897ds5xNDguqxcNhEkERlcKHioloegtKaoPRRboqFNbqck2
-	RYtIU6lWalmQzQWLSs1yg1VzdjGd5bI7iroyL5lKTTOzZepCc1HUtx//y/N8+QtY6WdDBW2y
-	QdIlqxNVnJyVb1qZvaB62KBZnHtKBLPtJgc3RtOhtMspA3O5A4FvrI2Hb4/cHFy5PILB/CqH
-	he+2cQy99d083LBvhM6SPhbuH6/E0F3whIO8HD+GB2ODPBxzljFQd6lBBq8d+TI4P34NQ2Vm
-	Fw9Nd80cdNyclEGfK4+FBtN1FjrzV0O9ZRaMPBtA8MhWycDI6UscnGu0cPAhpxNBY103C8VZ
-	+Qhs1R4Z+EenbhQ/7uBXz6V1A18wvX39DUOrTO08tdhT6a2ySGr0NGJqLz/JUftwIU/ftdzn
-	6JMiP0urnN8Ympc9yNGvvW9Z+qW6maNXPg4x1Ha7md2sjJOv2iMlatMk3aLoBLnGVymktJB0
-	X5EZZ6JipREFCURcRh7esbJGJAisOJdUZGYEZE6cRzyeMRzgEHE+6W918UYkF7BYxBHr+xIu
-	YMwQ48nQBQcTYIUI5LvjOQqElGIrQ14WVvwxgknDxR42wFiMJJ6JT0zgGRbDSOmEEJCDxCji
-	rM/6HZkpRpAah5s5gxSm/9qm/9qmf20LwuUoRJuclqTWJi5fqD+gyUjWpi/cfTDJjqYmUXLk
-	51kn8jWtcyFRQKrpCvAaNEqZOk2fkeRCRMCqEIW3XadRKvaoMw5JuoPxutRESe9CYQKrmq3Y
-	sF1KUIr71AbpgCSlSLq/LiMEhWaiGvtnt3uXbH9KkJ+KWU+37A2PuzrAmwd9R0+UhG9tk3U0
-	5a5J6ZqcsOYfjogwLi2oNW8uHOohxwzRsVGvOoP7Y3KaOdy2zTvjbtGncO/j0dTYhmBv74va
-	ndZ77m37z4aNKTw7qqdVpc2Jsf7YuQJGZo6GbJK3IP16y0RwwtpQn4rVa9RLIrFOr/4F5NvG
-	lA4DAAA=
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v7 1/7] netmem: introduce struct netmem_desc
+ mirroring struct page
+Content-Language: en-US
+To: Harry Yoo <harry.yoo@oracle.com>, Jakub Kicinski <kuba@kernel.org>
+Cc: Byungchul Park <byungchul@sk.com>, willy@infradead.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ kernel_team@skhynix.com, almasrymina@google.com,
+ ilias.apalodimas@linaro.org, hawk@kernel.org, akpm@linux-foundation.org,
+ davem@davemloft.net, john.fastabend@gmail.com, andrew+netdev@lunn.ch,
+ asml.silence@gmail.com, toke@redhat.com, tariqt@nvidia.com,
+ edumazet@google.com, pabeni@redhat.com, saeedm@nvidia.com, leon@kernel.org,
+ ast@kernel.org, daniel@iogearbox.net, david@redhat.com,
+ lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, rppt@kernel.org,
+ surenb@google.com, mhocko@suse.com, horms@kernel.org,
+ linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com,
+ hannes@cmpxchg.org, ziy@nvidia.com, jackmanb@google.com
+References: <20250625043350.7939-1-byungchul@sk.com>
+ <20250625043350.7939-2-byungchul@sk.com> <20250626174904.4a6125c9@kernel.org>
+ <20250627035405.GA4276@system.software.com>
+ <20250627173730.15b25a8c@kernel.org> <aGHNmKRng9H6kTqz@hyeyoo>
+ <20250701164508.0738f00f@kernel.org> <aHTQrso2Klvcwasf@hyeyoo>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ m6M14QORSWTLRg==
+In-Reply-To: <aHTQrso2Klvcwasf@hyeyoo>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 6CEB51F387
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCPT_COUNT_TWELVE(0.00)[37];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[sk.com,infradead.org,vger.kernel.org,kvack.org,skhynix.com,google.com,linaro.org,kernel.org,linux-foundation.org,davemloft.net,gmail.com,lunn.ch,redhat.com,nvidia.com,iogearbox.net,oracle.com,suse.com,cmpxchg.org];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[netdev];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	R_RATELIMIT(0.00)[to_ip_from(RLduzbn1medsdpg3i8igc4rk67)];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:dkim,suse.cz:mid]
+X-Spam-Score: -3.01
 
-On Mon, Jul 14, 2025 at 12:45:17PM +0100, Pavel Begunkov wrote:
-> On 7/14/25 11:05, Byungchul Park wrote:
-> > On Mon, Jul 14, 2025 at 10:43:35AM +0100, Pavel Begunkov wrote:
-> > > On 7/14/25 00:07, Byungchul Park wrote:
-> > > > On Sat, Jul 12, 2025 at 12:59:34PM +0100, Pavel Begunkov wrote:
-> > > > > On 7/10/25 09:28, Byungchul Park wrote:
-> > > > > ...> +
-> > > > > >     static inline struct net_iov *netmem_to_net_iov(netmem_ref netmem)
-> > > > > >     {
-> > > > > >         if (netmem_is_net_iov(netmem))
-> > > > > > @@ -314,6 +340,21 @@ static inline netmem_ref netmem_compound_head(netmem_ref netmem)
-> > > > > >         return page_to_netmem(compound_head(netmem_to_page(netmem)));
-> > > > > >     }
-> > > > > > 
-> > > > > > +#define nmdesc_to_page(nmdesc)               (_Generic((nmdesc),             \
-> > > > > > +     const struct netmem_desc * :    (const struct page *)(nmdesc),  \
-> > > > > > +     struct netmem_desc * :          (struct page *)(nmdesc)))
-> > > > > 
-> > > > > Considering that nmdesc is going to be separated from pages and
-> > > > > accessed through indirection, and back reference to the page is
-> > > > > not needed (at least for net/), this helper shouldn't even exist.
-> > > > > And in fact, you don't really use it ...
-> > > > > > +static inline struct netmem_desc *page_to_nmdesc(struct page *page)
-> > > > > > +{
-> > > > > > +     VM_BUG_ON_PAGE(PageTail(page), page);
-> > > > > > +     return (struct netmem_desc *)page;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static inline void *nmdesc_address(struct netmem_desc *nmdesc)
-> > > > > > +{
-> > > > > > +     return page_address(nmdesc_to_page(nmdesc));
-> > > > > > +}
-> > > > > 
-> > > > > ... That's the only caller, and nmdesc_address() is not used, so
-> > > > > just nuke both of them. This helper doesn't even make sense.
-> > > > > 
-> > > > > Please avoid introducing functions that you don't use as a general
-> > > > > rule.
-> > > > 
-> > > > I'm sorry about making you confused.  I should've included another patch
-> > > > using the helper like the following.
-> > > 
-> > > Ah, I see. And still, it's not a great function. There should be
-> > > no way to extract a page or a page address from a nmdesc.
-> > > 
-> > > For the diff below it's same as with the mt76 patch, it's allocating
-> > > a page, expects it to be a page, using it as a page, but for no reason
-> > > keeps it wrapped into netmem. It only adds confusion and overhead.
-> > > A rule of thumb would be only converting to netmem if the new code
-> > > would be able to work with a netmem-wrapped net_iovs.
-> > 
-> > Thanks.  I'm now working on this job, avoiding your concern.
-> > 
-> > By the way, am I supposed to wait for you to complete the work about
-> > extracting type from page e.g. page pool (or bump) type?
+On 7/14/25 11:42, Harry Yoo wrote:
+> On Tue, Jul 01, 2025 at 04:45:08PM -0700, Jakub Kicinski wrote:
+>> Thanks a lot, this clarifies things for me.
 > 
-> 1/8 doesn't depend on it, if you're sending it separately. As for
-
-Right.
-
-> the rest, it might need to wait for the PGTY change, which is more
-
-Only 3/8 needs to wait for the PGTY change.  The rest can be merged
-regardless of it if acceptable.
-
-	Byungchul
-
-> likely to be for 6.18
+> You're welcome :)
 > 
-> --
-> Pavel Begunkov
+>> Unfortunately, I still think that it's hard to judge patches 1 and 7 
+>> in context limited to this series, so let's proceed to reposting just
+>> the "middle 5" patches.
+> 
+> Could you please share your thoughts on why it's hard to judge them and
+> what's missing from the series, such as in the comments, changelog, or
+> the cover letter?
+
+I think we moved on in the discussion since then? "middle 5" patches are now
+merged, and 1+7 was, along with more patches (that make the context less
+limited hopefully), posted as v9/v10 now?
+
+
 
