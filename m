@@ -1,139 +1,142 @@
-Return-Path: <linux-rdma+bounces-12186-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12187-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F6BFB05791
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 12:15:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EFA0B057AA
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 12:22:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AAE2561CA5
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 10:15:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C34347AC5F9
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 10:21:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEA962D63F4;
-	Tue, 15 Jul 2025 10:15:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C8492D7806;
+	Tue, 15 Jul 2025 10:22:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FztlJ1OF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I9Ovq6zU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 864CF19DF6A;
-	Tue, 15 Jul 2025 10:15:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 728972D661D;
+	Tue, 15 Jul 2025 10:22:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752574535; cv=none; b=kiAYg2MpLvE7LBUaY04B8p+rYWTMjfBuAmwgqpvRQTm9pE2nSsJEu9rXEChHz1Dq39QDdX1knnLokWcdD9qBFBID5fQDVaLl3nDmxI/DLssa8rQaLUUb1Hq5Pq6h0oJikGbmYLNVAim/VyWLVzpKO6HPKyGFH5qSGGKiYgQTmxk=
+	t=1752574944; cv=none; b=rmZomX8n2gbOuN8oMnLp63kl7x2l6PFkrxTU+wFGjPNBw9Bnm77sUsjcBYhcgkpVZcWXSglpn8+XVNEro/z9Jh6xRWzWKRRRhfVJnwNtXKw4gzxEuGhuC9p2uSuM+o2/JnveAZQ1NpyRtXYx4HUhOMh92x8ooSB7oF6/lulyo2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752574535; c=relaxed/simple;
-	bh=IBYVlI+orIMPRgYFaIqphL4RshTJzkbjmDni9IWE3vI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i9wBC96AnWHFHeISRa0spUnaZedyx4fzGTPcG8R9koKsnPWxcs4jmOoXIDp+8uqEez8kHJdlBA7J3aYLwx+xZUMd6+qMUMobOfkj1uro9Kpmh4KpExEtQywP7lzxKFOUqUskx7eOfvUKOsYFl/YGzMvbkxsbmWnJhVhJ4HA/dkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FztlJ1OF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1BDCC4CEE3;
-	Tue, 15 Jul 2025 10:15:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752574535;
-	bh=IBYVlI+orIMPRgYFaIqphL4RshTJzkbjmDni9IWE3vI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FztlJ1OFq4eDjn612gnPl+YVBf7o63I7kavAKkN6NFFz2JarOIQLE/JFJXeCg6HIL
-	 z4ZOGtGZqr2hPQKCDh6IFKndGWXk3RHqqyPPB3czhiyvHdDfjkLQATIl9Lfl8M5gID
-	 0HJtGGxF+rGCtt710YXgmyHq4m4s6ORR7QRXexgQRC8ZUNIjSNQXBlfwaF88VnHy5Q
-	 DAeqFE4EsBQdtOCEvZ/PIaHSEYH78SR85B5+0dobS6Zx5s4O7OpqEuvklCOv/kkzQZ
-	 i3ZfJH1M7EPMLX9i6abuLL0sl0GpzfeP8svATD4gLx1MMmUlMd7S/CH7JSvW9yWmk3
-	 gd5aHtoOobY1A==
-Date: Tue, 15 Jul 2025 11:15:25 +0100
-From: Will Deacon <will@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>,
-	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-	llvm@lists.linux.dev, Ingo Molnar <mingo@redhat.com>,
-	Bill Wendling <morbo@google.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>, netdev@vger.kernel.org,
-	Paolo Abeni <pabeni@redhat.com>,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-	Yisen Zhuang <yisen.zhuang@huawei.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Leon Romanovsky <leonro@mellanox.com>, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Mark Rutland <mark.rutland@arm.com>,
-	Michael Guralnik <michaelgur@mellanox.com>, patches@lists.linux.dev,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Jijie Shao <shaojijie@huawei.com>
-Subject: Re: [PATCH v3 6/6] IB/mlx5: Use __iowrite64_copy() for write
- combining stores
-Message-ID: <aHYqPRqgcl5DQOpq@willie-the-truck>
-References: <0-v3-1893cd8b9369+1925-mlx5_arm_wc_jgg@nvidia.com>
- <6-v3-1893cd8b9369+1925-mlx5_arm_wc_jgg@nvidia.com>
- <20250714215504.GA2083014@nvidia.com>
+	s=arc-20240116; t=1752574944; c=relaxed/simple;
+	bh=yEBbCY9oUZbDlS3ZBBT7sSaX45VBbabpp8PPuahDIIU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ae6/9vhWNpioF8pBVldo3h4oVm+N5fiVqjtuioqBplAATSmHaxUlilCUDsSlTT4H/s9JC1xznpI8pWaRwQbEzSjUcsVewkSLV0jFE6fgdbYiBchI1mvBmxS2EUK4is7KCpyJfJoob/kA8Wm6O+3/xX51LbCVswzqBoaTmB3Rqps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I9Ovq6zU; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-60c6fea6742so10323969a12.1;
+        Tue, 15 Jul 2025 03:22:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1752574941; x=1753179741; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2crJGfvy9Jnr87YgMI4zA0rz0NIO2gRU/WUVx+zJOAU=;
+        b=I9Ovq6zU8PyywlNtcZKeu522Iq4CSqvOamQ6l0+9ymjytS01NS3H5ZP7lmOn3AoL8A
+         gFYRyPySLzCDTtaG52g8vKYq0bpIsAHnMYoWQldeEzyZauZ13hLwPrOYWBjO2YuFFcdb
+         PQLnXZ09jvzz15QktraKLiFqJ4xbmbAbnQsKA8oDDDmrCdeU2TplDWjHzuRMED+U8YEp
+         BeHqqR7JXCYAJMiA7fGpHkNFdO5nPeHJgXYguBt5vxLLH1l/hWRHzliQ/iXDRGVtmZUX
+         D4KdLtcss+YDJiD7h42AHo9SQNGactBX+4T8aZAWUERsbDnCRaNcM1iqcK9SZxudfAmx
+         fK+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752574941; x=1753179741;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2crJGfvy9Jnr87YgMI4zA0rz0NIO2gRU/WUVx+zJOAU=;
+        b=D8aPLHaNojJKBjWZo+Tk56CjH5H3gCIfB0tiPzCXWxIIxKoGC70aQHpGuAbLF4Swpz
+         c+pjQzf1WR91EOQBQL7XPFyfKH5itaT1FI5MEwgv1bLHriF72zboEGVOD2TpA5ToDeJ9
+         pqN/fwRFd70lo6M8X7c/0gEHUtAjkg8TV7kWqeierENcHUMSxgUwEflJBKdLfiacCctR
+         YJwo/GZv3/JUeZ8DWYQ8lcvHy/RgLh39XLWvjspJJ2ZJ+N6Ol4QPHtNwm1v9hml2hU+o
+         SH3CbV9cAO72zpwpGcJ7D/zj3MSKyB+47BNHagX2ugHtdplBGAWaNslyiJvAfoFDi2T7
+         4Ang==
+X-Forwarded-Encrypted: i=1; AJvYcCUDWI8toIMszEGriUcVM03KbOtrocl47NVA3la+ybXIPWfVFvHzbXWzV5EAmFWXLEEvz2k=@vger.kernel.org, AJvYcCUaQMO8pWpai8r8clDNoiU8vxvk7utW2WzBV6p7uEaXgrDfFFde9eIG+W0a1PF072RfJkg/KsV4@vger.kernel.org, AJvYcCVKp+DuoxI2YDALvIy8i9GQCtYhZDPIqPtFASbmPxrghebiYOJF6k+OZ4K7kZr3bKXIataQpibtpn+N7ZVU@vger.kernel.org, AJvYcCXrofpzRYgeG8NkQmXqFLf8sI/vLDqdeYUIb+FulTHQloOITypmbhP8kDTAuDsH2noS2NtPuGG52flBMA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzXs8CfVM6qduixTYQpJLtCIBeFCXA837cCrcL4n64Ci4HfSpjY
+	fzkgKxNrvJB8y/jrY4jBaWYbEC3xMV3Hh5RzW6scJ9ZFqeecwXx3BWwL
+X-Gm-Gg: ASbGncu/DNidOI1z9OgZm7X7Hs/Uq2cbzEv8aJniynWKmYqfbxZixgeWxvRcgukdypO
+	yvdiTaIAfNKq7XHEI4nmSsiDFeMzPc1wjy992GjPzXweN8SV9Ve6KPzWjO+X+5m8knlL8oSb5b3
+	0ywRBEGh2dIg/GH8M/kxMw9HbmGxS3PdO9YbUq3YMhcKukjmJp9aOpO1AXMLRANSO+TUXLVWUw3
+	ndbNQQazPI0mXWLC0R1fbQ9pflOqEakRuz1BhlN/O3/rZI6Etxi5GvW2OD32TaBMhd9nHzBNnYE
+	U1qxCY1ugni8jCMlzt5kADY/YtblFQdGuLOI262Ms+yTLqvCu0Wby7/Fzvs7+5ruMnZYcjVVvxX
+	AUTR29dBf3h49Nnj/wVMVyXqzrZld0nyqBmw=
+X-Google-Smtp-Source: AGHT+IH2Fp/Hb7ISJckZNbpE6kxbt03ub1njSzKQw/Kjz/TN3XGfF0/RC3z3jw0kIXpvnI8LNZUctg==
+X-Received: by 2002:a05:6402:3485:b0:608:64ff:c9b5 with SMTP id 4fb4d7f45d1cf-611e76580bbmr14606034a12.8.1752574940393;
+        Tue, 15 Jul 2025 03:22:20 -0700 (PDT)
+Received: from ?IPV6:2620:10d:c096:325::1ac? ([2620:10d:c092:600::1:a4c1])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-611d8d54112sm6292085a12.1.2025.07.15.03.22.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jul 2025 03:22:19 -0700 (PDT)
+Message-ID: <839d5486-a92a-4ae8-a536-b4a0e3d595ea@gmail.com>
+Date: Tue, 15 Jul 2025 11:23:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250714215504.GA2083014@nvidia.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v7 1/7] netmem: introduce struct netmem_desc
+ mirroring struct page
+To: Jakub Kicinski <kuba@kernel.org>, Harry Yoo <harry.yoo@oracle.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>, Byungchul Park <byungchul@sk.com>,
+ willy@infradead.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, kernel_team@skhynix.com, almasrymina@google.com,
+ ilias.apalodimas@linaro.org, hawk@kernel.org, akpm@linux-foundation.org,
+ davem@davemloft.net, john.fastabend@gmail.com, andrew+netdev@lunn.ch,
+ toke@redhat.com, tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
+ saeedm@nvidia.com, leon@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+ rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org,
+ linux-rdma@vger.kernel.org, bpf@vger.kernel.org, vishal.moola@gmail.com,
+ hannes@cmpxchg.org, ziy@nvidia.com, jackmanb@google.com
+References: <20250625043350.7939-1-byungchul@sk.com>
+ <20250625043350.7939-2-byungchul@sk.com> <20250626174904.4a6125c9@kernel.org>
+ <20250627035405.GA4276@system.software.com>
+ <20250627173730.15b25a8c@kernel.org> <aGHNmKRng9H6kTqz@hyeyoo>
+ <20250701164508.0738f00f@kernel.org> <aHTQrso2Klvcwasf@hyeyoo>
+ <92073822-ab60-40ca-9ff5-a41119c0ad3d@suse.cz> <aHUMwHft71cB8PFY@hyeyoo>
+ <20250714184743.4acd7ead@kernel.org>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <20250714184743.4acd7ead@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jul 14, 2025 at 06:55:04PM -0300, Jason Gunthorpe wrote:
-> On Thu, Apr 11, 2024 at 01:46:19PM -0300, Jason Gunthorpe wrote:
-> > mlx5 has a built in self-test at driver startup to evaluate if the
-> > platform supports write combining to generate a 64 byte PCIe TLP or
-> > not. This has proven necessary because a lot of common scenarios end up
-> > with broken write combining (especially inside virtual machines) and there
-> > is other way to learn this information.
-> > 
-> > This self test has been consistently failing on new ARM64 CPU
-> > designs (specifically with NVIDIA Grace's implementation of Neoverse
-> > V2). The C loop around writeq() generates some pretty terrible ARM64
-> > assembly, but historically this has worked on a lot of existing ARM64 CPUs
-> > till now.
-> > 
-> > We see it succeed about 1 time in 10,000 on the worst effected
-> > systems. The CPU architects speculate that the load instructions
-> > interspersed with the stores makes the WC buffers statistically flush too
-> > often and thus the generation of large TLPs becomes infrequent. This makes
-> > the boot up test unreliable in that it indicates no write-combining,
-> > however userspace would be fine since it uses a ST4 instruction.
+On 7/15/25 02:47, Jakub Kicinski wrote:
+> On Mon, 14 Jul 2025 22:58:31 +0900 Harry Yoo wrote:
+>>>> Could you please share your thoughts on why it's hard to judge them and
+>>>> what's missing from the series, such as in the comments, changelog, or
+>>>> the cover letter?
 > 
-> After a year of testing this in real systems it turns out that still
-> some systems are not good enough with the unrolled 8 byte store loop.
-> In my view the CPUs are quite bad here and this WC performance
-> optimization is not working very well.
-> 
-> There are only two more options to work around this issue, use the
-> unrolled 16 byte STP or the single Neon instruction 64 byte store.
-> 
-> Since STP was rejected alread we've only tested the Neon version. It
-> does make a huge improvement, but it still somehow fails to combine
-> rarely sometimes. The CPU is really bad at this :(
+> My main concern (as shared on earlier revisions) is the type hierarchy
 
-I think the thread was from last year so I've forgotten most of the
-details, but wasn't STP rejected because it wasn't virtualisable? In
-which case, doesn't NEON suffer from exactly the same (or possibly
-worse) problem?
+Quick overview. struct netmem_desc is a common denominator b/w pp pages
+and net_iov, and contains fields used by the pp generic path, e.g.
+refcount, dma_addr. Before, pp was using type casting hacks to keep
+code generic with some overhead on bit masking, now it'll be able to
+look up netmem_desc from a netmem and use it directly.
 
-Also, have you managed to investigate why the CPU tends not to get this
-right? Do we e.g. end up taking interrupts/exceptions while the self
-test is running or something like that?
+That's pretty much what I was suggesting niov / page aliasing to be
+1+ years ago, but unfortunately that didn't happen. It definitely
+removes some type casting hackiness.
 
-Sorry for the wall of questions!
+> exposed to the drivers. 
 
-Will
+v10 adds a bunch of "pp_page_to_nmdesc(page)->pp" in the drivers,
+Not sure I have a strong opinion, but it can be turned into a helper.
+
+Converting things back and forth or blindly
+> downcasting to netmem and upcasting back to the CPU-readable type is
+> no good.
+
+-- 
+Pavel Begunkov
+
 
