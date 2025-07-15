@@ -1,84 +1,84 @@
-Return-Path: <linux-rdma+bounces-12176-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12177-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41616B0515A
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 07:57:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 057DBB05223
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 08:47:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91F6A1AA30E9
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 05:57:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B98C71AA754D
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 06:47:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 328DB2D3737;
-	Tue, 15 Jul 2025 05:57:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93E34263F36;
+	Tue, 15 Jul 2025 06:47:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jJ0kddfR"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MzRKpzk+"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0135255F24;
-	Tue, 15 Jul 2025 05:57:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A216623BCF7;
+	Tue, 15 Jul 2025 06:47:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752559032; cv=none; b=H/oRjwtXmXAJvia2cdLs9Ogn9n7mnBOXx/hLTkV5e5KArztjHqE9nqBF40C1pfw9xS6tS7BalVsXh2uWoG9bJCul/VkPC3tWL/dAaExUMSZPe9EfBSAl/0A3JtakHhPndiB+PWiteG9TSGVIvLCKADOin+Gd8jj0ghB6fmRbm0Q=
+	t=1752562039; cv=none; b=uID7oms6JiZ6lQ5fq/64q5RReGDA5IEGHBo+RxjLAwfV210spRviMCqIzVgae83aPxim4OnH9Vp87F4D22m9xejlTyMV71Jf5MikssBSoTPrgncYVtLuwCS6nob94q3Y4CwIpmOgmy3dVnfNOBwe5ZzAh1aOySxU98TjsQjy73M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752559032; c=relaxed/simple;
-	bh=wmvN79kkI2uY89k/rrcdVS6059/8dQL8TezMZWnf+rM=;
+	s=arc-20240116; t=1752562039; c=relaxed/simple;
+	bh=CcEr+yxzjUP7rrvl1n/6Ya71JSibRPTajrQn80BBuio=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UuwIH4MM45hCUNMHgWeG49I8VJJPNO+tDblhdMsyAS6SLXsvums274nez4bdkmBpRHmgcQVvy+dcvx/U8TpauUDIrGNZH5I666NUa6m4PMYmWs+EuE6gjCwhU9KOTjL1dqgjLfgt2v/lRyFze5eGQvRWAwEOexHm9oLHVTKbEs4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jJ0kddfR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8964C4CEE3;
-	Tue, 15 Jul 2025 05:57:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752559031;
-	bh=wmvN79kkI2uY89k/rrcdVS6059/8dQL8TezMZWnf+rM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jJ0kddfRq/wi2cczPvscCBtaQBOvPPubaZPv3FhypEw+5UKK0WhctGzJqakUE47mj
-	 0hgvMUtevpezIfVJrccsqdtSYPd2sjN0nRb9tN0vghFJ+c05Vt5+gWGqNDdNJk7p6H
-	 Sh8oWOAYHvlvgAcM5ZwOV2KbvC/4LCYKyIt/WgUJb5b0ER0EaKLDgyQwMcQxcdZpWG
-	 yRZoRdLWkXFBN0aAu91ZYkfbMxd4cRB9BrlHetz/bw9JgY4rGuKT9x+znMMEXCi7ry
-	 xSs/2RLQ/Ed9IUoMZM+nwW7VQ7Wh00EVvhINdsIUSq31XrazAB7+UGLadWmjzYO5wH
-	 BcbPsbS4HX8Vw==
-Date: Tue, 15 Jul 2025 08:57:07 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=GD36MJkYNhgqn7xXYx29hdlbIQTNVgO6lIpUP/GBIAmaf468Lod2Ig5AvpMHVjRVXZJuE/MiV3Lzkz1Mcaq9eY5vK7jl5xesVaP1KeZK2KKMVBq2WwTD9U7M4qHVzGLGVvES+LeB8ScK8+flbBwMdCQiSDQTjs1MgrCppZI9TLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MzRKpzk+; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1752562038; x=1784098038;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CcEr+yxzjUP7rrvl1n/6Ya71JSibRPTajrQn80BBuio=;
+  b=MzRKpzk+hGjJoMPymBYLKIPkf0NbHI2sKYYRczpFV7N9YEcuvAtZt6vd
+   sFHWbGlFPOoyjSOER7ZYQ+9FXPH2nZMIDk0b8KPIxD4LUr4E0BIwbIb5u
+   GvLHejg2ryWhiguonn4pAR9Xkq7Djyn+lARlDWjgCoLX83BtKtUqjQWjl
+   Tkp5CzcPEWyON9SqFnO3pzjnQBJhoxGFkoZIJD117vx1rsmj3ntbPyxmL
+   FKoAAVTz7yaXH91W7CrO/JNwvUujZKk8vEZURLUBthOSoU873W8eu40F8
+   ud+ruD4wTlkZx1oBbjmQzVvB4p0aWcK9CsmwfEt5p9KuigeTx5lqZyLQP
+   w==;
+X-CSE-ConnectionGUID: cO8vUQQVQ3eTXUfPNISf0A==
+X-CSE-MsgGUID: vtmbnHHCStqXYUT+9xhXsA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11491"; a="54641610"
+X-IronPort-AV: E=Sophos;i="6.16,313,1744095600"; 
+   d="scan'208";a="54641610"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2025 23:47:15 -0700
+X-CSE-ConnectionGUID: uKHbWTDLR3WAvdXNGLfsPQ==
+X-CSE-MsgGUID: oGB91pAPQhayXPnaXyzTnw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,313,1744095600"; 
+   d="scan'208";a="156551176"
+Received: from mev-dev.igk.intel.com ([10.237.112.144])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2025 23:47:11 -0700
+Date: Tue, 15 Jul 2025 08:46:06 +0200
+From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+To: Jianbo Liu <jianbol@nvidia.com>
+Cc: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
 	Eric Dumazet <edumazet@google.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org, llvm@lists.linux.dev,
-	Ingo Molnar <mingo@redhat.com>, Bill Wendling <morbo@google.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>, netdev@vger.kernel.org,
-	Paolo Abeni <pabeni@redhat.com>,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-	Yisen Zhuang <yisen.zhuang@huawei.com>,
-	Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Mark Rutland <mark.rutland@arm.com>,
-	Michael Guralnik <michaelgur@mellanox.com>, patches@lists.linux.dev,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Jijie Shao <shaojijie@huawei.com>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v3 6/6] IB/mlx5: Use __iowrite64_copy() for write
- combining stores
-Message-ID: <20250715055707.GC5882@unreal>
-References: <0-v3-1893cd8b9369+1925-mlx5_arm_wc_jgg@nvidia.com>
- <6-v3-1893cd8b9369+1925-mlx5_arm_wc_jgg@nvidia.com>
- <20250714215504.GA2083014@nvidia.com>
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Saeed Mahameed <saeed@kernel.org>, Gal Pressman <gal@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Saeed Mahameed <saeedm@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Lama Kayal <lkayal@nvidia.com>
+Subject: Re: [PATCH net-next 1/6] net/mlx5: HWS, Enable IPSec hardware
+ offload in legacy mode
+Message-ID: <aHX5Lu6Ef4/gLwDS@mev-dev.igk.intel.com>
+References: <1752471585-18053-1-git-send-email-tariqt@nvidia.com>
+ <1752471585-18053-2-git-send-email-tariqt@nvidia.com>
+ <aHSm7SHg1xTMNE0F@mev-dev.igk.intel.com>
+ <d03d6fd7-b86e-4c1f-92ef-ffc26339bf97@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -87,59 +87,81 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250714215504.GA2083014@nvidia.com>
+In-Reply-To: <d03d6fd7-b86e-4c1f-92ef-ffc26339bf97@nvidia.com>
 
-On Mon, Jul 14, 2025 at 06:55:04PM -0300, Jason Gunthorpe wrote:
-> On Thu, Apr 11, 2024 at 01:46:19PM -0300, Jason Gunthorpe wrote:
-> > mlx5 has a built in self-test at driver startup to evaluate if the
-> > platform supports write combining to generate a 64 byte PCIe TLP or
-> > not. This has proven necessary because a lot of common scenarios end up
-> > with broken write combining (especially inside virtual machines) and there
-> > is other way to learn this information.
+On Mon, Jul 14, 2025 at 11:04:54PM +0800, Jianbo Liu wrote:
+> 
+> 
+> On 7/14/2025 2:43 PM, Michal Swiatkowski wrote:
+> > On Mon, Jul 14, 2025 at 08:39:40AM +0300, Tariq Toukan wrote:
+> > > From: Lama Kayal <lkayal@nvidia.com>
+> > > 
+> > > IPSec hardware offload in legacy mode should not be affected by the
+> > > steering mode, hence it should also work properly with hmfs mode.
 > > 
-> > This self test has been consistently failing on new ARM64 CPU
-> > designs (specifically with NVIDIA Grace's implementation of Neoverse
-> > V2). The C loop around writeq() generates some pretty terrible ARM64
-> > assembly, but historically this has worked on a lot of existing ARM64 CPUs
-> > till now.
+> > What about dmfs mode? I am not sure, if you didn't remove it because it
+> > is still needed or just forgot about removing it.
 > > 
-> > We see it succeed about 1 time in 10,000 on the worst effected
-> > systems. The CPU architects speculate that the load instructions
-> > interspersed with the stores makes the WC buffers statistically flush too
-> > often and thus the generation of large TLPs becomes infrequent. This makes
-> > the boot up test unreliable in that it indicates no write-combining,
-> > however userspace would be fine since it uses a ST4 instruction.
 > 
-> Hi Catalin,
+> It is still needed.
+> We support packet offload for all steering modes in legacy, and only dmfs in
+> switchdev. This is the logic we added before:
 > 
-> After a year of testing this in real systems it turns out that still
-> some systems are not good enough with the unrolled 8 byte store loop.
-> In my view the CPUs are quite bad here and this WC performance
-> optimization is not working very well.
+>             dmfs    smfs
+> legacy       Y       Y
+> switchdev    Y       N
 > 
-> There are only two more options to work around this issue, use the
-> unrolled 16 byte STP or the single Neon instruction 64 byte store.
+> Now we support hmfs. It is the same as smfs. So the table becomes:
+>             dmfs    smfs   hmfs
+> legacy       Y       Y      Y
+> switchdev    Y       N      N
 > 
-> Since STP was rejected alread we've only tested the Neon version. It
-> does make a huge improvement, but it still somehow fails to combine
-> rarely sometimes. The CPU is really bad at this :(
+> Instead of adding "mdev->priv.steering->mode ==
+> MLX5_FLOW_STEERING_MODE_HMFS", We removed "mdev->priv.steering->mode ==
+> MLX5_FLOW_STEERING_MODE_SMFS", and the code is simpler and clean.
 > 
-> So we want to make mlx5 use the single 64 byte neon store instruction
-> like userspace has been using for a long time for this testing
-> algorithm.
-> 
-> It is simple enough, but the question has come up where to put the
-> code.  Do you want to somehow see the neon option to be in the
-> arch/arm64 code or should we stick it in the driver under a #ifdef?
-> 
-> The entry/exit from neon is slow enough I don't think any driver doing
-> performance work would want to use neon instead of __iowrite64_copy(),
-> so I do not think it should be hidden inside __iowrite64_copy(). Nor
-> have I thought of a name for an arch generic function..
 
-__iowrite64_slow_copy() ????
+Ok, got it, thanks.
 
 > 
-> Thanks,
-> Jason
+> > In case it is ok as it is:
+> > Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+> > 
+> 
+> Yes, it's ok. Thanks for the review.
+> 
+> Jianbo
+> 
+> > Thanks
+> > 
+> > > 
+> > > Remove steering mode validation when calculating the cap for packet
+> > > offload, this will also enable the missing cap MLX5_IPSEC_CAP_PRIO
+> > > needed for crypto offload.
+> > > 
+> > > Signed-off-by: Lama Kayal <lkayal@nvidia.com>
+> > > Reviewed-by: Jianbo Liu <jianbol@nvidia.com>
+> > > Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> > > ---
+> > >   .../net/ethernet/mellanox/mlx5/core/en_accel/ipsec_offload.c   | 3 +--
+> > >   1 file changed, 1 insertion(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_offload.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_offload.c
+> > > index 820debf3fbbf..ef7322d381af 100644
+> > > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_offload.c
+> > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_offload.c
+> > > @@ -42,8 +42,7 @@ u32 mlx5_ipsec_device_caps(struct mlx5_core_dev *mdev)
+> > >   	if (MLX5_CAP_IPSEC(mdev, ipsec_full_offload) &&
+> > >   	    (mdev->priv.steering->mode == MLX5_FLOW_STEERING_MODE_DMFS ||
+> > > -	     (mdev->priv.steering->mode == MLX5_FLOW_STEERING_MODE_SMFS &&
+> > > -	     is_mdev_legacy_mode(mdev)))) {
+> > > +	     is_mdev_legacy_mode(mdev))) {
+> > >   		if (MLX5_CAP_FLOWTABLE_NIC_TX(mdev,
+> > >   					      reformat_add_esp_trasport) &&
+> > >   		    MLX5_CAP_FLOWTABLE_NIC_RX(mdev,
+> > > -- 
+> > > 2.40.1
+> > > 
+> > 
+> 
 
