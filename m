@@ -1,43 +1,43 @@
-Return-Path: <linux-rdma+bounces-12195-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12196-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B5E6B06173
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 16:40:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2366EB0617B
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 16:42:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 091541C468EE
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 14:34:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8CD85C2081
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 14:34:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB41244693;
-	Tue, 15 Jul 2025 14:31:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB6324A078;
+	Tue, 15 Jul 2025 14:31:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="qsd25gt9"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="OpYoQjBD"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2088.outbound.protection.outlook.com [40.107.236.88])
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2069.outbound.protection.outlook.com [40.107.237.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4910923A9AC;
-	Tue, 15 Jul 2025 14:31:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.88
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C1123A9AC;
+	Tue, 15 Jul 2025 14:31:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.69
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752589870; cv=fail; b=T0nObOFIq/QE3yj0wxsqR86gJkuGoP/YGeUGWM65MarDuicFXTLBS3cFSe0pNX9LrCD3xhSjgAQribBYirY7KbJ4T7IVI6zBucqxRKyZrNBQF5TQgJE8hY3tfKsGk0Qn5vKL3DVW1SN/S/ZoIm1nRAI7MLkT5tgQ6eW2smV5Zf4=
+	t=1752589881; cv=fail; b=NT+jgx8aQ10yH08cTyTX7PWThKPrAQUkKFF65PpO8dtwbX//urANMxW+KoVNEcj270MPs3j7LqOk+iEGCUZQ0Ql9a0+3tkjyVMwCWUAxicoN8o/OrkWwDZaO5vRTRUp3e+m7DKT6ns3TfJuugrBaQbzA+8QIh+PFHaqfcjdtOHI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752589870; c=relaxed/simple;
-	bh=ESCyo8mWqeAAvNsZF+zLiIusuFPVN4mBWOyd/OsD2ew=;
+	s=arc-20240116; t=1752589881; c=relaxed/simple;
+	bh=e7I7Zc9rclO87F+AM9apCOn32rhH0XpgNIRGhyMYtes=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GX/HLaQCNxwzw3RBamiB+vUzy6/JXLGklaV0ae1hm4m4BQ5nJkwoulW9d1MJSnzs3EnS+x7mLZFOLtqfw8Sh8PRnHuC/8anJ8pEmxX1d2R1J7593EsIavLqnS/+P7gQ0ZosK2njIHZA8pFYF3l7AX/Qv0Ho+ugc0PZL5DEKuI4Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=qsd25gt9; arc=fail smtp.client-ip=40.107.236.88
+	 MIME-Version:Content-Type; b=PXFsEpFgArMsJQe0O5xm05nf78w58FfMe9oTLsN4KLIcWqOavXQsn5Q4h3Vj/8Ip2F+ANyv05oIfylImvFhFmV2UD/vtwcoVQ6rACvmveH+1Z7IkE3QI4s0AIrdcGAlIOtc8f0fTVdpuBuZhjvXk3NxEX4G0n+n06KSQ1gyfcfA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=OpYoQjBD; arc=fail smtp.client-ip=40.107.237.69
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=WuZtAFjXBk6psoi5yU5grNOgh+nJgWsFhWuthcHyewoY7bl/pN5UdxYj+0bOV6ZlYGDYBPxXyoAimzYPbzLvfXso1bhm/QOUZ+rr72GnTbGtEfFPHnx/3hb7d3Pw6jmhqZqHigBIIZdDnOPvEgzKlcquU+sueDefRNCpgeekGAxOL/b+LPYMcQqn56xpZ3Z6Bn5T/11Vo4MIld5D25zfAIna1GVxKfR8Xce/KUsEIJA1AJJcj4iq0uOwQ1FbLBRw4q+nJU/EA+HctGl1X0J/yACUh+Pcnu94xwZ1Ur+iC2Ewp24mpwgt55VhVdyvbaNxOMJiK1IoYnTTkFJtXi09bA==
+ b=k3z6LbRTT80YRJdcG1bpEOjl4B++p3s36gBCvbDkdoqmxQsTGlGb2t9gtvOEqPNmoXuuYtAwiHNUaRiegJpwu4tTK4n3K2lGOL6dTRStwf54UKQ8FHMmJNcLIu7xWhAwD21K31WuZxSDPXpF8AKA6TqENHqSrbqO6lPV8I1pCMUYTBWJNn4Wzv31voTDLZ5Rs1PdVcM6qS96xTcYYuJ+1QymYnxXObPi1K6WiL1zbVY4GboAggvvtxGjG4Vn37Zxobp7K7zncCXVnA0C+Jjq8W1ZxqHzBty8pMqa6qa/URhgtavx2b7Se4iNOSsYcFu0W7y2gnZ3WazgUAtgR4GnsA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4eW5licDAKTa/56qLFH2wzItHkOFnnCJmBMxuDnBkoU=;
- b=NQriQiMq8vmzyp1+XpUk1bgmKh3WS3a9FustjbtsQzOqM9DTsP50NehFEPEA+RohhyKwjt3qoeUfpecvkdM+z9HM9ybILN9auJfcJeIbOWOBIUmhvbQHwhAAiKqFSUY1SPfe6QabNBqVyMOdPu7ytHsg0DEko2BaRmk9kf3Iq/5eS8G7xZzhYlrmc6cHjoYXrE6QaevnmeaAB7n2WHgJJeKzZ2ALX4+uJ/aXyLX51U6SZrQrox3LiNKJJZ7CDGosCPzOtFiaYcsBg3xWIPwlTcnDOqDKS4W+8l7BwOQnHapuZFnAPKgX72iq1FTFNATMsdDcCidH2CwIjH6VUEwmLQ==
+ bh=iC+BXbgVqtjgCGfv0jCgeDw+PXMvRNFw91ta0eW3BKU=;
+ b=r2gqEHPeL7sZfHZOqaBaQzw55QV08ER9lk0mReDyphRxHqyHS/3rQOUMUryMv8FXw27xUWPCx659wfP8gObmccLj4s5sSD+3kuf2fAVNCBIO02x6nHHG5gWoH4QCX1/QJNQLTNdyIzgFxEtlBMEBNfJtb/dYa1/5+f/gn8fMTGIGLzTCvP1aYrEoVsgDSQplpKfWuU8AhwqJlUgJOLfGXTyYwUiHhT3LTjnbSFLUxEWET9dNssVvfF6KbrgAbIj/asFKw0W5vFXKA8/YOqflx2RUttSxB5lTTAUmvLOTSuU6D4/I8xy+1gxJYWlfM5MgzoR2rDcRNhtpIUnRRNnfEQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.118.233) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -45,18 +45,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4eW5licDAKTa/56qLFH2wzItHkOFnnCJmBMxuDnBkoU=;
- b=qsd25gt9HQO6zInoschw//uYNBSK3kZ916fR3M1df5qQeEJr4zBeNilhqIfPjnp3HfhgwFQELg4BblsoxpqmEdU1E/aeHqV1phphLoKrbGlZMR8C3zMCyj1SvVkAC7qX7TlYO3xrr6ABfX84DIfPfPuW0hJTFKHFAqJGx6gIA3esUta8eyLBemSHkAX+vJbBkoPyJL3x2dhX8mTOcl0dlqLrID0l1oGJKpBj0zcBb2L26XsGJMQIS2JglHKwEGTU1Hl+0fYrFC+hY9WWuKAcBiSXCJEmMM7MAiphALoJplZ7c+KPbso45nl5WyqRodcelAbIVgqzXCgDn3KgnRHvSQ==
-Received: from SA0PR12CA0001.namprd12.prod.outlook.com (2603:10b6:806:6f::6)
- by IA0PR12MB8373.namprd12.prod.outlook.com (2603:10b6:208:40d::11) with
+ bh=iC+BXbgVqtjgCGfv0jCgeDw+PXMvRNFw91ta0eW3BKU=;
+ b=OpYoQjBDGLBS7e6vOAF0XBXxuD2BTstozLCxeISu1Pzq3jdK6Yibc2jz7GRS5sJhnp14MZJW6yQIF5+wArdYm/kTLEHIBX5Q0qvY7XpmzGD96/2+Ugg3sLgj4GhZJ5khWcrEYJdI8LD/vnq3YwVEyfxJTdFybID77ZZpN56lc+HfuWgzlLeWuk/W+iNZYBMjsVJoR0oRpTT5F0uZcjHBAILhdDpcGTdo1f/+cVHWG0Diyg1M7vY/7hGDYR/Wfhl6SUABBbzt7Z2AWUVUNCg3kHun0gPtQEcedod6pgkcvPZkAp+sMPvkZS8mmTViAuuFRBpuLSpR/BTFord1/hpXNg==
+Received: from SA0PR11CA0076.namprd11.prod.outlook.com (2603:10b6:806:d2::21)
+ by PH8PR12MB7256.namprd12.prod.outlook.com (2603:10b6:510:223::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8901.35; Tue, 15 Jul
- 2025 14:31:04 +0000
-Received: from SN1PEPF0002636B.namprd02.prod.outlook.com
- (2603:10b6:806:6f:cafe::d5) by SA0PR12CA0001.outlook.office365.com
- (2603:10b6:806:6f::6) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8943.17 via Frontend Transport; Tue,
- 15 Jul 2025 14:31:03 +0000
+ 2025 14:31:07 +0000
+Received: from SN1PEPF0002636D.namprd02.prod.outlook.com
+ (2603:10b6:806:d2:cafe::ef) by SA0PR11CA0076.outlook.office365.com
+ (2603:10b6:806:d2::21) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8943.19 via Frontend Transport; Tue,
+ 15 Jul 2025 14:31:06 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -64,20 +64,20 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.118.233 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.118.233) by
- SN1PEPF0002636B.mail.protection.outlook.com (10.167.241.136) with Microsoft
+ SN1PEPF0002636D.mail.protection.outlook.com (10.167.241.138) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8922.22 via Frontend Transport; Tue, 15 Jul 2025 14:31:03 +0000
+ 15.20.8922.22 via Frontend Transport; Tue, 15 Jul 2025 14:31:06 +0000
 Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
  (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 15 Jul
- 2025 07:30:43 -0700
+ 2025 07:30:46 -0700
 Received: from drhqmail203.nvidia.com (10.126.190.182) by
  drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14; Tue, 15 Jul 2025 07:30:42 -0700
+ 15.2.1544.14; Tue, 15 Jul 2025 07:30:46 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
  (10.126.190.182) with Microsoft SMTP Server id 15.2.1544.14 via Frontend
- Transport; Tue, 15 Jul 2025 07:30:38 -0700
+ Transport; Tue, 15 Jul 2025 07:30:42 -0700
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -87,9 +87,9 @@ CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
  Corbet" <corbet@lwn.net>, <netdev@vger.kernel.org>,
 	<linux-rdma@vger.kernel.org>, <linux-doc@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, Dragos Tatulea <dtatulea@nvidia.com>
-Subject: [PATCH net-next V3 1/2] net/mlx5e: Create/destroy PCIe Congestion Event object
-Date: Tue, 15 Jul 2025 17:30:20 +0300
-Message-ID: <1752589821-145787-2-git-send-email-tariqt@nvidia.com>
+Subject: [PATCH net-next V3 2/2] net/mlx5e: Add device PCIe congestion ethtool stats
+Date: Tue, 15 Jul 2025 17:30:21 +0300
+Message-ID: <1752589821-145787-3-git-send-email-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.8.0
 In-Reply-To: <1752589821-145787-1-git-send-email-tariqt@nvidia.com>
 References: <1752589821-145787-1-git-send-email-tariqt@nvidia.com>
@@ -103,316 +103,402 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: AnonymousSubmission
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002636B:EE_|IA0PR12MB8373:EE_
-X-MS-Office365-Filtering-Correlation-Id: 14526464-3674-46be-28c7-08ddc3ac3a09
+X-MS-TrafficTypeDiagnostic: SN1PEPF0002636D:EE_|PH8PR12MB7256:EE_
+X-MS-Office365-Filtering-Correlation-Id: 07e18120-25e8-483e-e6df-08ddc3ac3c46
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|1800799024|7416014|376014|82310400026;
+	BCL:0;ARA:13230040|82310400026|1800799024|36860700013|7416014|376014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?YEoWcOvffcbx1yQncQhcGtxCxag4MGbI5ne+cIseRtyxBAL3oLp9NsssQ1Cj?=
- =?us-ascii?Q?kaY6GqE0VtSxokg5kUN6UxZ04mPs8+RHgh7uDhm0CvnWrz9/eJvjx1QjLtTQ?=
- =?us-ascii?Q?awVdESmOoJFmILtGk4ajQPreF3mTpriect7N+/W8HuKfN4O73ysYlu3e4v16?=
- =?us-ascii?Q?crY2f/xxgc0MNVY3tQLlE/KuIKpRuZNeBgtx05mRrqfZWwpGO/DjmOZmIrXO?=
- =?us-ascii?Q?s1N+My9J+GvsKXWuK5RX6yRd2tKHCi8Dg91xmDir1dL+35lE0lxFUOtbGpM2?=
- =?us-ascii?Q?oxVI1Xznr4wPT3x1iavcP901wmvuUpRSXdx4CKdBXOVTKhbVQsCM0B6IOm8V?=
- =?us-ascii?Q?MWKsvGWeI/DtezN4CVY0/p6Qdt2BTpsc9kpZ5ZQFZ3WRwY3g1VDrEPPtiPXp?=
- =?us-ascii?Q?SuCE9eN8Lxk0VhmOt6lBqVybMV+riPSFtnrEfUbKexhKOJALBVrIwrOisTrV?=
- =?us-ascii?Q?wnnYC12luFzucGy9W/zJ9Uczzyf74tO6YFKMV8KTU3B8D0vypjEUcaOEroP0?=
- =?us-ascii?Q?bktiStNmeNgFE5EuVhC+KXH1Z9mlztkagR/EIZACCoX4zeLeAXbxFwwqa3S3?=
- =?us-ascii?Q?eTzb7Da8emTawvASG//UyGk9xh41rkaNhbfTR+p7QjnS3AR6cjC0wcvxO3j4?=
- =?us-ascii?Q?LT3hrHzDjKx0/gUvbZriYMrgwPRBlIjRYAMjbd1FJsvag67VR/7Ck7ADECd7?=
- =?us-ascii?Q?KDW3cEFxDUoSn6DUVAq8UERX+Fz22OngeBMntTByND3S3uds84Ibi12GQxxV?=
- =?us-ascii?Q?xld9y2+Cv68pR2UXCkQkL54VihJVPr3Yaxxri7mRa9jzkM1rx2Mk9o4ZTSU8?=
- =?us-ascii?Q?jxRx1YVHr52UVGN4owASM6bobG3VgvJ1sOFDkQA8m1OZYlu9Bft9tn7YjAsu?=
- =?us-ascii?Q?IS4Xwzc4uvMOW1tUSr2niDkhHRPKNW5gvoI/jjvj5ThPPeJtrOqhvONkwAhE?=
- =?us-ascii?Q?vSIhCfFnqnsyfGYg43ST1tpKM2++OtoU4y2FqwpZV5WQMY70O7Qs9+rkPdFE?=
- =?us-ascii?Q?Jv+irubx1l8AVQmgtNcOLxESwoxaIcgdszjlvYVMD4udusGFR/30Xqtl/npt?=
- =?us-ascii?Q?kjKoFuzBrT4AX1ZEv8lMjIveweKyBH0hoQVJW+IcjA1+1fru0ecRJyzH8iQW?=
- =?us-ascii?Q?AZXk3nyedDdIP2ppPIhp/2Nvd8Xy81QmSG6nmu0UfchvWtYLgdz7EUeuiNit?=
- =?us-ascii?Q?vHYs1lpkvmxiB5k9aBvhA5k0o0Ekgs82PkFvL5qFVPKmew699Jao8OKf6j88?=
- =?us-ascii?Q?iY9u+bZC3JemELHPRJALxAAcZud67FwxdzdMKIhHSgBIP7CGQREsbuGhyY64?=
- =?us-ascii?Q?CgzYwiEkm3llDCPvFyz71qGyvea+BQqaffqtSHE2vMX90p++fK7/XwrYhfmg?=
- =?us-ascii?Q?hntEjlwWZ0ODVCPf5JNNxtHo09UVZDabviG0zpjnzrQSVVZoXLUVP+5qM+h6?=
- =?us-ascii?Q?8+KNsO+q8GfVuGgk5AUntYTwabn46j1mCLMi62YKu9SMIR81nkJ2VLkF/GXJ?=
- =?us-ascii?Q?jjdEVkbHIcrOI0YmjPndoyi0C/CyJpA8n+HY?=
+	=?us-ascii?Q?yDdgQQPgykZ3nGeDoJ9hI4dFjBIM9ZMdxOY3aZbTPH4yfx+MMs8P9ufGP1lF?=
+ =?us-ascii?Q?K5DWkhaemm3P+aOtY4npLu35H5Z0cf7fiaDpVNrAQP89yjXo5ZZR+CJ3NZm2?=
+ =?us-ascii?Q?ECiozlp8F5fhExDlXFRfoMzZoh1P5j5rqzqBYAlQXukYIOT4xVEjILn1AyIA?=
+ =?us-ascii?Q?4TDTxlEGHjJfXy1Hc7qJVtQjpLGDemiHcPwdmV3bHE3smklH2xnc+RJ+fkmZ?=
+ =?us-ascii?Q?J6oN+WYnOABB86RbrqdmAtxn/Wb9oFLKht8/8BgfMt1SBKVChkd+w6zaNejP?=
+ =?us-ascii?Q?RPaIITxYIvTC6087jLlcMJWWJZWxt88JntUh6SB4Ldr9UDm9wsi9LtBbQMO3?=
+ =?us-ascii?Q?7GSSVnhdQMUhj7BSEybhLrqm8qRZNcVoGLgyITcUDwTX4xP8r0qAeqwOdZXx?=
+ =?us-ascii?Q?Kb58CoiFckpSBKqTHqqf7siJOFg7aX6wlfFrVuxWs7ALjz9bBvYBbrT4H5aX?=
+ =?us-ascii?Q?Q0bsasw5yfu6yhFrri2h3Ef2U2o79nxwOYCP0eT3ILDY0ctvZWCaaBZAiCiW?=
+ =?us-ascii?Q?wzCFf2NSWboVMvfYFef10XBq0i6W3bfDOgU61yXnmtIbGuteFusT76/NxVRD?=
+ =?us-ascii?Q?lZLwyLIwSI40FaojSh6dwKAkevTF9qKSo7FpLIpp2grXs3eV4Q9mZSoXO5gX?=
+ =?us-ascii?Q?ZiNjQ6H9b1R2cpwI/RyBNLMCehEXm/moBrmb9e8a3wgmfkKNcyofQpa/Qhqg?=
+ =?us-ascii?Q?yXoHT/H2aZPxxG5Pq0SCBr+gdVXn/IK2clVm78lrY0aq93RZrai+rI+f9NU3?=
+ =?us-ascii?Q?02G59FtH8/MZmkI2iIHST1Sp0iYLydptYIfo/uXghH2tcN/ynMhqes9Vqpo0?=
+ =?us-ascii?Q?cVZ+8AneP3U3aC2zjZ9DcAXyZ5JE3Y+7m7FOcanDJW2OPwD3J/tA/dUZBszR?=
+ =?us-ascii?Q?egOs7Zddpq3HP59fCnIiCuRkM3pT0Y8lPG3w1hDsHRSzttD+z5ohyAgJ/uz/?=
+ =?us-ascii?Q?WdumUB+EQgfIQxqP+nI86uj6I8ilePBtmdf2fBiQm86CXPprQCMCM6+quUek?=
+ =?us-ascii?Q?sRfnbgMO8q1PkuIyEq0Tzg66g5HqEHT5XLQGYLxY1P1EGPIGF9GkYuKRPMvY?=
+ =?us-ascii?Q?AJEdqGMu5jUC1N7Hfk7SscUyJrIzRw48qf1zn5PuyCkWlynArM/XDymr4y0q?=
+ =?us-ascii?Q?XOcwHl6ouvWaJ7YxxcL9ZXioKmub1Fetzqlb0DN1IsDJRcWJlU+DVvG+2Fqa?=
+ =?us-ascii?Q?edqezGpGMkCwpurDyllLbq+yycYEqQssKmfxiGEq51fhgBuTotzAkXzLSbCd?=
+ =?us-ascii?Q?8m5qIQcvUZWnvarBvhy48ar50R3sEi37VFj5oKqs38DSwk0ek8AEZKl1Gdkj?=
+ =?us-ascii?Q?qYg3PZZzdichM/2BjmmrAbboHqXemmDSjS8MSej7ygMnlYH/wlO/NrNVmf1j?=
+ =?us-ascii?Q?2secLm/RPvXGuzl0hk2dNWp4D+8ZgKZw6DiisC9ig5nLb9UrAcbln6Yxutlb?=
+ =?us-ascii?Q?zT/+9I/R17zZZO7iolOwZlptg39+GetNANEgL4Jy3w1JcZNQy2WkCAN7A7jt?=
+ =?us-ascii?Q?ZbFT5Cba+zePJYKgxOuCFYeACLsDN/7YO0sS?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(7416014)(376014)(82310400026);DIR:OUT;SFP:1101;
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(36860700013)(7416014)(376014);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2025 14:31:03.0672
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2025 14:31:06.8217
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 14526464-3674-46be-28c7-08ddc3ac3a09
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07e18120-25e8-483e-e6df-08ddc3ac3c46
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF0002636B.namprd02.prod.outlook.com
+	SN1PEPF0002636D.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8373
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7256
 
 From: Dragos Tatulea <dtatulea@nvidia.com>
 
-Add initial infrastructure to create and destroy the PCIe Congestion
-Event object if the object is supported.
+Implement the PCIe Congestion Event notifier which triggers a work item
+to query the PCIe Congestion Event object. The result of the congestion
+state is reflected in the new ethtool stats:
 
-The verb for the object creation function is "set" instead of
-"create" because the function will accommodate the modify operation
-as well in a subsequent patch.
+* pci_bw_inbound_high: the device has crossed the high threshold for
+  inbound PCIe traffic.
+* pci_bw_inbound_low: the device has crossed the low threshold for
+  inbound PCIe traffic
+* pci_bw_outbound_high: the device has crossed the high threshold for
+  outbound PCIe traffic.
+* pci_bw_outbound_low: the device has crossed the low threshold for
+  outbound PCIe traffic
 
-The next patches will hook it up to the event handler and will add
-actual functionality.
+The high and low thresholds are currently configured at 90% and 75%.
+These are hysteresis thresholds which help to check if the
+PCI bus on the device side is in a congested state.
+
+If low + 1 = high then the device is in a congested state. If low == high
+then the device is not in a congested state.
+
+The counters are also documented.
+
+A follow-up patch will make the thresholds configurable.
 
 Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- .../net/ethernet/mellanox/mlx5/core/Makefile  |   2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en.h  |   2 +
- .../mellanox/mlx5/core/en/pcie_cong_event.c   | 140 ++++++++++++++++++
- .../mellanox/mlx5/core/en/pcie_cong_event.h   |  10 ++
- .../net/ethernet/mellanox/mlx5/core/en_main.c |   3 +
- .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  13 ++
- 6 files changed, 169 insertions(+), 1 deletion(-)
- create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/pcie_cong_event.c
- create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/pcie_cong_event.h
+ .../ethernet/mellanox/mlx5/counters.rst       |  32 ++++
+ .../mellanox/mlx5/core/en/pcie_cong_event.c   | 175 ++++++++++++++++++
+ .../ethernet/mellanox/mlx5/core/en_stats.c    |   1 +
+ .../ethernet/mellanox/mlx5/core/en_stats.h    |   1 +
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c  |   3 +
+ 5 files changed, 212 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/Makefile
-index d292e6a9e22c..650df18a9216 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/Makefile
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/Makefile
-@@ -29,7 +29,7 @@ mlx5_core-$(CONFIG_MLX5_CORE_EN) += en/rqt.o en/tir.o en/rss.o en/rx_res.o \
- 		en/reporter_tx.o en/reporter_rx.o en/params.o en/xsk/pool.o \
- 		en/xsk/setup.o en/xsk/rx.o en/xsk/tx.o en/devlink.o en/ptp.o \
- 		en/qos.o en/htb.o en/trap.o en/fs_tt_redirect.o en/selq.o \
--		lib/crypto.o lib/sd.o
-+		lib/crypto.o lib/sd.o en/pcie_cong_event.o
- 
- #
- # Netdev extra
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-index 64e69e616b1f..b6340e9453c0 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-@@ -920,6 +920,8 @@ struct mlx5e_priv {
- 	struct notifier_block      events_nb;
- 	struct notifier_block      blocking_events_nb;
- 
-+	struct mlx5e_pcie_cong_event *cong_event;
+diff --git a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/counters.rst b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/counters.rst
+index 43d72c8b713b..754c81436408 100644
+--- a/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/counters.rst
++++ b/Documentation/networking/device_drivers/ethernet/mellanox/mlx5/counters.rst
+@@ -1341,3 +1341,35 @@ Device Counters
+      - The number of times the device owned queue had not enough buffers
+        allocated.
+      - Error
 +
- 	struct udp_tunnel_nic_info nic_info;
- #ifdef CONFIG_MLX5_CORE_EN_DCB
- 	struct mlx5e_dcbx          dcbx;
++   * - `pci_bw_inbound_high`
++     - The number of times the device crossed the high inbound pcie bandwidth
++       threshold. To be compared to pci_bw_inbound_low to check if the device
++       is in a congested state.
++       If pci_bw_inbound_high == pci_bw_inbound_low then the device is not congested.
++       If pci_bw_inbound_high > pci_bw_inbound_low then the device is congested.
++     - Tnformative
++
++   * - `pci_bw_inbound_low`
++     - The number of times the device crossed the low inbound PCIe bandwidth
++       threshold. To be compared to pci_bw_inbound_high to check if the device
++       is in a congested state.
++       If pci_bw_inbound_high == pci_bw_inbound_low then the device is not congested.
++       If pci_bw_inbound_high > pci_bw_inbound_low then the device is congested.
++     - Informative
++
++   * - `pci_bw_outbound_high`
++     - The number of times the device crossed the high outbound pcie bandwidth
++       threshold. To be compared to pci_bw_outbound_low to check if the device
++       is in a congested state.
++       If pci_bw_outbound_high == pci_bw_outbound_low then the device is not congested.
++       If pci_bw_outbound_high > pci_bw_outbound_low then the device is congested.
++     - Informative
++
++   * - `pci_bw_outbound_low`
++     - The number of times the device crossed the low outbound PCIe bandwidth
++       threshold. To be compared to pci_bw_outbound_high to check if the device
++       is in a congested state.
++       If pci_bw_outbound_high == pci_bw_outbound_low then the device is not congested.
++       If pci_bw_outbound_high > pci_bw_outbound_low then the device is congested.
++     - Informative
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/pcie_cong_event.c b/drivers/net/ethernet/mellanox/mlx5/core/en/pcie_cong_event.c
-new file mode 100644
-index 000000000000..9595f8f9a94d
---- /dev/null
+index 9595f8f9a94d..0ed017569a19 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/pcie_cong_event.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/pcie_cong_event.c
-@@ -0,0 +1,140 @@
-+// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-+// Copyright (c) 2025, NVIDIA CORPORATION & AFFILIATES.
+@@ -4,6 +4,13 @@
+ #include "en.h"
+ #include "pcie_cong_event.h"
+ 
++#define MLX5E_CONG_HIGH_STATE 0x7
 +
-+#include "en.h"
-+#include "pcie_cong_event.h"
-+
-+struct mlx5e_pcie_cong_thresh {
-+	u16 inbound_high;
-+	u16 inbound_low;
-+	u16 outbound_high;
-+	u16 outbound_low;
++enum {
++	MLX5E_INBOUND_CONG  = BIT(0),
++	MLX5E_OUTBOUND_CONG = BIT(1),
 +};
 +
-+struct mlx5e_pcie_cong_event {
-+	u64 obj_id;
-+
-+	struct mlx5e_priv *priv;
+ struct mlx5e_pcie_cong_thresh {
+ 	u16 inbound_high;
+ 	u16 inbound_low;
+@@ -11,10 +18,27 @@ struct mlx5e_pcie_cong_thresh {
+ 	u16 outbound_low;
+ };
+ 
++struct mlx5e_pcie_cong_stats {
++	u32 pci_bw_inbound_high;
++	u32 pci_bw_inbound_low;
++	u32 pci_bw_outbound_high;
++	u32 pci_bw_outbound_low;
 +};
 +
-+/* In units of 0.01 % */
-+static const struct mlx5e_pcie_cong_thresh default_thresh_config = {
-+	.inbound_high = 9000,
-+	.inbound_low = 7500,
-+	.outbound_high = 9000,
-+	.outbound_low = 7500,
+ struct mlx5e_pcie_cong_event {
+ 	u64 obj_id;
+ 
+ 	struct mlx5e_priv *priv;
++
++	/* For event notifier and workqueue. */
++	struct work_struct work;
++	struct mlx5_nb nb;
++
++	/* Stores last read state. */
++	u8 state;
++
++	/* For ethtool stats group. */
++	struct mlx5e_pcie_cong_stats stats;
+ };
+ 
+ /* In units of 0.01 % */
+@@ -25,6 +49,51 @@ static const struct mlx5e_pcie_cong_thresh default_thresh_config = {
+ 	.outbound_low = 7500,
+ };
+ 
++static const struct counter_desc mlx5e_pcie_cong_stats_desc[] = {
++	{ MLX5E_DECLARE_STAT(struct mlx5e_pcie_cong_stats,
++			     pci_bw_inbound_high) },
++	{ MLX5E_DECLARE_STAT(struct mlx5e_pcie_cong_stats,
++			     pci_bw_inbound_low) },
++	{ MLX5E_DECLARE_STAT(struct mlx5e_pcie_cong_stats,
++			     pci_bw_outbound_high) },
++	{ MLX5E_DECLARE_STAT(struct mlx5e_pcie_cong_stats,
++			     pci_bw_outbound_low) },
 +};
 +
-+static int
-+mlx5_cmd_pcie_cong_event_set(struct mlx5_core_dev *dev,
-+			     const struct mlx5e_pcie_cong_thresh *config,
-+			     u64 *obj_id)
++#define NUM_PCIE_CONG_COUNTERS ARRAY_SIZE(mlx5e_pcie_cong_stats_desc)
++
++static MLX5E_DECLARE_STATS_GRP_OP_NUM_STATS(pcie_cong)
++{
++	return priv->cong_event ? NUM_PCIE_CONG_COUNTERS : 0;
++}
++
++static MLX5E_DECLARE_STATS_GRP_OP_UPDATE_STATS(pcie_cong) {}
++
++static MLX5E_DECLARE_STATS_GRP_OP_FILL_STRS(pcie_cong)
++{
++	if (!priv->cong_event)
++		return;
++
++	for (int i = 0; i < NUM_PCIE_CONG_COUNTERS; i++)
++		ethtool_puts(data, mlx5e_pcie_cong_stats_desc[i].format);
++}
++
++static MLX5E_DECLARE_STATS_GRP_OP_FILL_STATS(pcie_cong)
++{
++	if (!priv->cong_event)
++		return;
++
++	for (int i = 0; i < NUM_PCIE_CONG_COUNTERS; i++) {
++		u32 ctr = MLX5E_READ_CTR32_CPU(&priv->cong_event->stats,
++					       mlx5e_pcie_cong_stats_desc,
++					       i);
++
++		mlx5e_ethtool_put_stat(data, ctr);
++	}
++}
++
++MLX5E_DEFINE_STATS_GRP(pcie_cong, 0);
++
+ static int
+ mlx5_cmd_pcie_cong_event_set(struct mlx5_core_dev *dev,
+ 			     const struct mlx5e_pcie_cong_thresh *config,
+@@ -89,6 +158,97 @@ static int mlx5_cmd_pcie_cong_event_destroy(struct mlx5_core_dev *dev,
+ 	return mlx5_cmd_exec(dev, in, sizeof(in), out, sizeof(out));
+ }
+ 
++static int mlx5_cmd_pcie_cong_event_query(struct mlx5_core_dev *dev,
++					  u64 obj_id,
++					  u32 *state)
 +{
 +	u32 in[MLX5_ST_SZ_DW(pcie_cong_event_cmd_in)] = {};
-+	u32 out[MLX5_ST_SZ_DW(general_obj_out_cmd_hdr)];
-+	void *cong_obj;
++	u32 out[MLX5_ST_SZ_DW(pcie_cong_event_cmd_out)];
++	void *obj;
 +	void *hdr;
++	u8 cong;
 +	int err;
 +
 +	hdr = MLX5_ADDR_OF(pcie_cong_event_cmd_in, in, hdr);
-+	cong_obj = MLX5_ADDR_OF(pcie_cong_event_cmd_in, in, cong_obj);
 +
 +	MLX5_SET(general_obj_in_cmd_hdr, hdr, opcode,
-+		 MLX5_CMD_OP_CREATE_GENERAL_OBJECT);
-+
++		 MLX5_CMD_OP_QUERY_GENERAL_OBJECT);
 +	MLX5_SET(general_obj_in_cmd_hdr, hdr, obj_type,
 +		 MLX5_GENERAL_OBJECT_TYPES_PCIE_CONG_EVENT);
-+
-+	MLX5_SET(pcie_cong_event_obj, cong_obj, inbound_event_en, 1);
-+	MLX5_SET(pcie_cong_event_obj, cong_obj, outbound_event_en, 1);
-+
-+	MLX5_SET(pcie_cong_event_obj, cong_obj,
-+		 inbound_cong_high_threshold, config->inbound_high);
-+	MLX5_SET(pcie_cong_event_obj, cong_obj,
-+		 inbound_cong_low_threshold, config->inbound_low);
-+
-+	MLX5_SET(pcie_cong_event_obj, cong_obj,
-+		 outbound_cong_high_threshold, config->outbound_high);
-+	MLX5_SET(pcie_cong_event_obj, cong_obj,
-+		 outbound_cong_low_threshold, config->outbound_low);
++	MLX5_SET(general_obj_in_cmd_hdr, hdr, obj_id, obj_id);
 +
 +	err = mlx5_cmd_exec(dev, in, sizeof(in), out, sizeof(out));
 +	if (err)
 +		return err;
 +
-+	*obj_id = MLX5_GET(general_obj_out_cmd_hdr, out, obj_id);
++	obj = MLX5_ADDR_OF(pcie_cong_event_cmd_out, out, cong_obj);
 +
-+	mlx5_core_dbg(dev, "PCIe congestion event (obj_id=%llu) created. Config: in: [%u, %u], out: [%u, %u]\n",
-+		      *obj_id,
-+		      config->inbound_high, config->inbound_low,
-+		      config->outbound_high, config->outbound_low);
++	if (state) {
++		cong = MLX5_GET(pcie_cong_event_obj, obj, inbound_cong_state);
++		if (cong == MLX5E_CONG_HIGH_STATE)
++			*state |= MLX5E_INBOUND_CONG;
 +
-+	return 0;
-+}
-+
-+static int mlx5_cmd_pcie_cong_event_destroy(struct mlx5_core_dev *dev,
-+					    u64 obj_id)
-+{
-+	u32 in[MLX5_ST_SZ_DW(pcie_cong_event_cmd_in)] = {};
-+	u32 out[MLX5_ST_SZ_DW(general_obj_out_cmd_hdr)];
-+	void *hdr;
-+
-+	hdr = MLX5_ADDR_OF(pcie_cong_event_cmd_in, in, hdr);
-+	MLX5_SET(general_obj_in_cmd_hdr, hdr, opcode,
-+		 MLX5_CMD_OP_DESTROY_GENERAL_OBJECT);
-+	MLX5_SET(general_obj_in_cmd_hdr, hdr, obj_type,
-+		 MLX5_GENERAL_OBJECT_TYPES_PCIE_CONG_EVENT);
-+	MLX5_SET(general_obj_in_cmd_hdr, hdr, obj_id, obj_id);
-+
-+	return mlx5_cmd_exec(dev, in, sizeof(in), out, sizeof(out));
-+}
-+
-+int mlx5e_pcie_cong_event_init(struct mlx5e_priv *priv)
-+{
-+	struct mlx5e_pcie_cong_event *cong_event;
-+	struct mlx5_core_dev *mdev = priv->mdev;
-+	int err;
-+
-+	if (!mlx5_pcie_cong_event_supported(mdev))
-+		return 0;
-+
-+	cong_event = kvzalloc_node(sizeof(*cong_event), GFP_KERNEL,
-+				   mdev->priv.numa_node);
-+	if (!cong_event)
-+		return -ENOMEM;
-+
-+	cong_event->priv = priv;
-+
-+	err = mlx5_cmd_pcie_cong_event_set(mdev, &default_thresh_config,
-+					   &cong_event->obj_id);
-+	if (err) {
-+		mlx5_core_warn(mdev, "Error creating a PCIe congestion event object\n");
-+		goto err_free;
++		cong = MLX5_GET(pcie_cong_event_obj, obj, outbound_cong_state);
++		if (cong == MLX5E_CONG_HIGH_STATE)
++			*state |= MLX5E_OUTBOUND_CONG;
 +	}
 +
-+	priv->cong_event = cong_event;
-+
 +	return 0;
-+
-+err_free:
-+	kvfree(cong_event);
-+
-+	return err;
 +}
 +
-+void mlx5e_pcie_cong_event_cleanup(struct mlx5e_priv *priv)
++static void mlx5e_pcie_cong_event_work(struct work_struct *work)
 +{
-+	struct mlx5e_pcie_cong_event *cong_event = priv->cong_event;
-+	struct mlx5_core_dev *mdev = priv->mdev;
++	struct mlx5e_pcie_cong_event *cong_event;
++	struct mlx5_core_dev *dev;
++	struct mlx5e_priv *priv;
++	u32 new_cong_state = 0;
++	u32 changes;
++	int err;
 +
-+	if (!cong_event)
++	cong_event = container_of(work, struct mlx5e_pcie_cong_event, work);
++	priv = cong_event->priv;
++	dev = priv->mdev;
++
++	err = mlx5_cmd_pcie_cong_event_query(dev, cong_event->obj_id,
++					     &new_cong_state);
++	if (err) {
++		mlx5_core_warn(dev, "Error %d when querying PCIe cong event object (obj_id=%llu).\n",
++			       err, cong_event->obj_id);
++		return;
++	}
++
++	changes = cong_event->state ^ new_cong_state;
++	if (!changes)
 +		return;
 +
-+	priv->cong_event = NULL;
++	cong_event->state = new_cong_state;
 +
-+	if (mlx5_cmd_pcie_cong_event_destroy(mdev, cong_event->obj_id))
-+		mlx5_core_warn(mdev, "Error destroying PCIe congestion event (obj_id=%llu)\n",
-+			       cong_event->obj_id);
++	if (changes & MLX5E_INBOUND_CONG) {
++		if (new_cong_state & MLX5E_INBOUND_CONG)
++			cong_event->stats.pci_bw_inbound_high++;
++		else
++			cong_event->stats.pci_bw_inbound_low++;
++	}
 +
-+	kvfree(cong_event);
++	if (changes & MLX5E_OUTBOUND_CONG) {
++		if (new_cong_state & MLX5E_OUTBOUND_CONG)
++			cong_event->stats.pci_bw_outbound_high++;
++		else
++			cong_event->stats.pci_bw_outbound_low++;
++	}
 +}
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/pcie_cong_event.h b/drivers/net/ethernet/mellanox/mlx5/core/en/pcie_cong_event.h
-new file mode 100644
-index 000000000000..b1ea46bf648a
---- /dev/null
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/pcie_cong_event.h
-@@ -0,0 +1,10 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
-+/* Copyright (c) 2025, NVIDIA CORPORATION & AFFILIATES. */
 +
-+#ifndef __MLX5_PCIE_CONG_EVENT_H__
-+#define __MLX5_PCIE_CONG_EVENT_H__
-+
-+int mlx5e_pcie_cong_event_init(struct mlx5e_priv *priv);
-+void mlx5e_pcie_cong_event_cleanup(struct mlx5e_priv *priv);
-+
-+#endif /* __MLX5_PCIE_CONG_EVENT_H__ */
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index fee323ade522..bd481f3384d0 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -76,6 +76,7 @@
- #include "en/trap.h"
- #include "lib/devcom.h"
- #include "lib/sd.h"
-+#include "en/pcie_cong_event.h"
- 
- static bool mlx5e_hw_gro_supported(struct mlx5_core_dev *mdev)
- {
-@@ -5989,6 +5990,7 @@ static void mlx5e_nic_enable(struct mlx5e_priv *priv)
- 	if (mlx5e_monitor_counter_supported(priv))
- 		mlx5e_monitor_counter_init(priv);
- 
-+	mlx5e_pcie_cong_event_init(priv);
- 	mlx5e_hv_vhca_stats_create(priv);
- 	if (netdev->reg_state != NETREG_REGISTERED)
- 		return;
-@@ -6028,6 +6030,7 @@ static void mlx5e_nic_disable(struct mlx5e_priv *priv)
- 
- 	mlx5e_nic_set_rx_mode(priv);
- 
-+	mlx5e_pcie_cong_event_cleanup(priv);
- 	mlx5e_hv_vhca_stats_destroy(priv);
- 	if (mlx5e_monitor_counter_supported(priv))
- 		mlx5e_monitor_counter_cleanup(priv);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-index 2e02bdea8361..c518380c4ce7 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-@@ -495,4 +495,17 @@ static inline int mlx5_max_eq_cap_get(const struct mlx5_core_dev *dev)
- 
- 	return 1 << MLX5_CAP_GEN(dev, log_max_eq);
- }
-+
-+static inline bool mlx5_pcie_cong_event_supported(struct mlx5_core_dev *dev)
++static int mlx5e_pcie_cong_event_handler(struct notifier_block *nb,
++					 unsigned long event, void *eqe)
 +{
-+	u64 features = MLX5_CAP_GEN_2_64(dev, general_obj_types_127_64);
++	struct mlx5e_pcie_cong_event *cong_event;
 +
-+	if (!(features & MLX5_HCA_CAP_2_GENERAL_OBJECT_TYPES_PCIE_CONG_EVENT))
-+		return false;
++	cong_event = mlx5_nb_cof(nb, struct mlx5e_pcie_cong_event, nb);
++	queue_work(cong_event->priv->wq, &cong_event->work);
 +
-+	if (dev->sd)
-+		return false;
-+
-+	return true;
++	return NOTIFY_OK;
 +}
- #endif /* __MLX5_CORE_H__ */
++
+ int mlx5e_pcie_cong_event_init(struct mlx5e_priv *priv)
+ {
+ 	struct mlx5e_pcie_cong_event *cong_event;
+@@ -103,6 +263,10 @@ int mlx5e_pcie_cong_event_init(struct mlx5e_priv *priv)
+ 	if (!cong_event)
+ 		return -ENOMEM;
+ 
++	INIT_WORK(&cong_event->work, mlx5e_pcie_cong_event_work);
++	MLX5_NB_INIT(&cong_event->nb, mlx5e_pcie_cong_event_handler,
++		     OBJECT_CHANGE);
++
+ 	cong_event->priv = priv;
+ 
+ 	err = mlx5_cmd_pcie_cong_event_set(mdev, &default_thresh_config,
+@@ -112,10 +276,18 @@ int mlx5e_pcie_cong_event_init(struct mlx5e_priv *priv)
+ 		goto err_free;
+ 	}
+ 
++	err = mlx5_eq_notifier_register(mdev, &cong_event->nb);
++	if (err) {
++		mlx5_core_warn(mdev, "Error registering notifier for the PCIe congestion event\n");
++		goto err_obj_destroy;
++	}
++
+ 	priv->cong_event = cong_event;
+ 
+ 	return 0;
+ 
++err_obj_destroy:
++	mlx5_cmd_pcie_cong_event_destroy(mdev, cong_event->obj_id);
+ err_free:
+ 	kvfree(cong_event);
+ 
+@@ -132,6 +304,9 @@ void mlx5e_pcie_cong_event_cleanup(struct mlx5e_priv *priv)
+ 
+ 	priv->cong_event = NULL;
+ 
++	mlx5_eq_notifier_unregister(mdev, &cong_event->nb);
++	cancel_work_sync(&cong_event->work);
++
+ 	if (mlx5_cmd_pcie_cong_event_destroy(mdev, cong_event->obj_id))
+ 		mlx5_core_warn(mdev, "Error destroying PCIe congestion event (obj_id=%llu)\n",
+ 			       cong_event->obj_id);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
+index 19664fa7f217..87536f158d07 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
+@@ -2612,6 +2612,7 @@ mlx5e_stats_grp_t mlx5e_nic_stats_grps[] = {
+ #ifdef CONFIG_MLX5_MACSEC
+ 	&MLX5E_STATS_GRP(macsec_hw),
+ #endif
++	&MLX5E_STATS_GRP(pcie_cong),
+ };
+ 
+ unsigned int mlx5e_nic_stats_grps_num(struct mlx5e_priv *priv)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.h b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.h
+index def5dea1463d..72dbcc1928ef 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.h
+@@ -535,5 +535,6 @@ extern MLX5E_DECLARE_STATS_GRP(ipsec_hw);
+ extern MLX5E_DECLARE_STATS_GRP(ipsec_sw);
+ extern MLX5E_DECLARE_STATS_GRP(ptp);
+ extern MLX5E_DECLARE_STATS_GRP(macsec_hw);
++extern MLX5E_DECLARE_STATS_GRP(pcie_cong);
+ 
+ #endif /* __MLX5_EN_STATS_H__ */
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+index dfb079e59d85..66dce17219a6 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+@@ -585,6 +585,9 @@ static void gather_async_events_mask(struct mlx5_core_dev *dev, u64 mask[4])
+ 		async_event_mask |=
+ 			(1ull << MLX5_EVENT_TYPE_OBJECT_CHANGE);
+ 
++	if (mlx5_pcie_cong_event_supported(dev))
++		async_event_mask |= (1ull << MLX5_EVENT_TYPE_OBJECT_CHANGE);
++
+ 	mask[0] = async_event_mask;
+ 
+ 	if (MLX5_CAP_GEN(dev, event_cap))
 -- 
 2.31.1
 
