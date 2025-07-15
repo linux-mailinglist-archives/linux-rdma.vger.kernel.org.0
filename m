@@ -1,162 +1,128 @@
-Return-Path: <linux-rdma+bounces-12203-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12204-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBD71B067AD
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 22:21:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB909B069B0
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Jul 2025 01:02:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0686B563E53
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 20:21:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 137E21AA5235
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 23:02:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11396271440;
-	Tue, 15 Jul 2025 20:21:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEB732D3EDD;
+	Tue, 15 Jul 2025 23:01:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ViRfJpet"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Aq0P36/V"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE92A17BA1;
-	Tue, 15 Jul 2025 20:21:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 135262D29C2
+	for <linux-rdma@vger.kernel.org>; Tue, 15 Jul 2025 23:01:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752610868; cv=none; b=LFpKquydPb4mvQ9EANkRvR1JYXaJaZZ2lUXE8uMa7l79eiq8+en1MtIzqgqlKkL/RTkAEthES9WQ/X2474VM2DQZlsKBy6xHP2iBnQc8i4fNZqQPZH4gJsHQdZc+dbkpnhLMYtvv16WjXBaAeA+QDKCQ77IvXBUjQFMp4BiURTk=
+	t=1752620496; cv=none; b=bR2pgavnUkPg+BOmWTNV6qhBxJ//JVCyPWZ7ZYUpCRIGKSbmQxJDQCzW6KIi9tAO/nbWBWuRew8bj2kw5guItHW3Jo/60MDTREkceH+W9SoMJJTwLaeBLKf40P0q+d6sY3DqxEfE4+J6h41S4sn4O47hFmJfIgT9DfG/SN1i7+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752610868; c=relaxed/simple;
-	bh=RMXg9EKZ89w9cSfutCV0PjCQjBsYREV1Sowlx6zCVFw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=R9kYRt2J57NgOHDOGQ0emsYboWVhmuSAhlKTMfttt8vWhHLhmXQBSghvKAJLuFK7uq8huH7ztzIQaO1/nV5a7b1N+PNjNu5w45yJBLImTortQdz2NpLJnyPE6gEE9tvDtXS2LJWKqQRMUB9MWtJB7j4k3LF/EOHxnXZF7C4pr2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ViRfJpet; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3597BC4CEE3;
-	Tue, 15 Jul 2025 20:21:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1752610868;
-	bh=RMXg9EKZ89w9cSfutCV0PjCQjBsYREV1Sowlx6zCVFw=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=ViRfJpetBd4FYAL9SdBFbhFTTRm7Z5lpfaNgRmdrRFCe7sLtk94KTH9+qhy7iT6zz
-	 opMLkQGu0fR7pHWrHcv1iqZ/dPtihpZJdYi0STMQbcV/VybVauW4Nm4OURAKDJOkhq
-	 pbwvPwymVU749j89HUcHsETgA4xNnLVSrghdK07A4KBI33s9AyiI+bml8FZqDo7Anx
-	 X07T1BcG67DR9FGssKYgZtU7mewDTL3XEdRaSgqCqRzvfS1hdFeWDiX0wxRuBnx3R9
-	 sz+54fzUqNmZj+EFZTORJHLWksiqoNLiJnHIROqC9jxHDNjoF6kiIuAFCbBf4XeI1z
-	 yBBtzESVbbSNw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29675C83F27;
-	Tue, 15 Jul 2025 20:21:08 +0000 (UTC)
-From: Christoph Paasch via B4 Relay <devnull+cpaasch.openai.com@kernel.org>
-Date: Tue, 15 Jul 2025 13:20:53 -0700
-Subject: [PATCH net v2] net/mlx5: Correctly set gso_size when LRO is used
+	s=arc-20240116; t=1752620496; c=relaxed/simple;
+	bh=C0yIBGjgQuUwh2cILUg4KfKwRH5Zo3VTXMZAiLB5IzM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=uTcddxpPF0nykLJQZ5f4hGoSdWyAo4fc9Gs3bCNrj8h030VyK/SENU4cd6ULDOwNnE4sGE1qq9ZxI2BJm7vZujOFR4rXrSfdTNei+m1M7BjBh5fMVHQdk1mVLw+vZdhOtdrfrW59OLNQHkbuqNOsfAaEnDA3DdnJqjaGGL/OTz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Aq0P36/V; arc=none smtp.client-ip=209.85.210.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-73cddf31d10so2769430a34.0
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Jul 2025 16:01:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1752620492; x=1753225292; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B4SWITf8rdF2+7Tku3l2OCdj3WOMyrXJ2wvElW7xvwI=;
+        b=Aq0P36/Vw14ZTOSZP7VIoVXi0jFTCXxSroHDH9b1wV7v8QYZs64zqWi1W1JNVwADNZ
+         tzJKbkbCaG2wczXIw7esS3v9YoRn1c+XrXrH578lawGjfqxViYMUlqv8aTuVmctyw0pN
+         3hbX7LBqwQ2sXTiX3HiqKDQjOZIOS5I1q5+EgdKDizdV0HnM6Te5jiiw0ouhUAXT16bM
+         uJT0EUXj8I9LkO+6k6KTxe/2eo3WHRSloo37tZ7qUyVwzUmmPDR/ekiERhxn8nUF46BA
+         ix5d3m0XAx8s7bqczDZ/0AlMX9oe4NZxfO4ph1bRKC8GkeDPG6M1hXLP1ECisprPC/hP
+         xR4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1752620492; x=1753225292;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=B4SWITf8rdF2+7Tku3l2OCdj3WOMyrXJ2wvElW7xvwI=;
+        b=VCEcsdAB7w48/h3M52k159shAaLPWkeQvm+VqSiP+QF/Ru/VrdN1B5rhCzCGLhNL38
+         EiNnxlgo7aVZdL71gO73hbUUGYb9B3+owaeRBrBSPclCcaA6NIwmtj1CYT0U3x5CcUs7
+         bYxWiYoCwkz9HJ7CfnZjspVKkno60+foSLnyV6NFDxmgSSST2v1VtC+3wDzeu2HmvRBo
+         zBNcqILLRXc1Sdo0iR4AKQ/1N6c5K5Utl9Q2TD+zgwCYcHIZgocPfxZWnJ8kWnkPImjC
+         TnM0mUTcCIjwWOJl7lvo6BecdPqOtdfGeyzfumdPl17+6YcVKzj6JfUPwjB/5GgvcEoB
+         +6lA==
+X-Forwarded-Encrypted: i=1; AJvYcCWVQkJosNS44OglOFtNrl7JnBiSh/eqe1BW9lny9r6fiRqVUbcRn7IDbAGRNUhjUFfPjQ6QFc4a+yzI@vger.kernel.org
+X-Gm-Message-State: AOJu0YzxUh41IY9lEQbxQWW4LyBxcrZ19ER+9KBGwt2amz+JEO5pKATi
+	YOss+JPI7fTIiB61ZyfGhtPhz6dFpTXwtzXn3eaBDaOqRTWi1+7D80mIOd7OiMrVJv0=
+X-Gm-Gg: ASbGncvsX4gR9A0CvWBE8dvqs/dKr0JgwAyemcozP/QrfTd1/CXG4tjB8K351f05rPZ
+	p0cConzEVf5/OH8XlMG/tbtRk9My5GpJDhZkJmvtsbhhNRBcuhI7jWjO+Fuf6X9w0w46vLDi9on
+	GWR6rZAfzl6V0OxS/GinM3NiQN2IGKnnh0+boSq5l3gosEg+N3NI4bOjA1linl0c7PLomtucFHD
+	rBIw3giyzVL5o+6MlesQpvi95yPe5AmbUOcXxi2M1rH0V6mBlWQ03iVNy/b8ujoRWV8w/3vnSxL
+	xlMGd7wtr4nzIYy2IuDSSwQ0eHfGfooPlydCQtRzIJ5ddke32W1SqerB9lSWbtMnwqdiYaIk59K
+	fjaZ97BIaOLnbtzhuFSkvmokh0ShEFFs83hzarqE=
+X-Google-Smtp-Source: AGHT+IE8Nfeo8scY90CqHg5efo6nAkc64loFfqqe2YK8azM++ugsfehXsqpsTS6+ghhEcDe7uWrOaQ==
+X-Received: by 2002:a05:6808:3c49:b0:401:e721:8b48 with SMTP id 5614622812f47-41d031f1f01mr437628b6e.8.1752620492132;
+        Tue, 15 Jul 2025 16:01:32 -0700 (PDT)
+Received: from localhost ([2603:8080:b800:f700:9b4e:9dd8:875d:d59])
+        by smtp.gmail.com with UTF8SMTPSA id 5614622812f47-41c267defd7sm558510b6e.11.2025.07.15.16.01.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Jul 2025 16:01:31 -0700 (PDT)
+Date: Tue, 15 Jul 2025 18:01:30 -0500
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Carolina Jubran <cjubran@nvidia.com>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Cosmin Ratiu <cratiu@nvidia.com>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH net-next] net/mlx5: Fix an IS_ERR() vs NULL bug in
+ esw_qos_move_node()
+Message-ID: <0ce4ec2a-2b5d-4652-9638-e715a99902a7@sabinyo.mountain>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250715-cpaasch-pf-925-investigate-incorrect-gso_size-on-cx-7-nic-v2-1-e06c3475f3ac@openai.com>
-X-B4-Tracking: v=1; b=H4sIACS4dmgC/x2N0QqDMAwAf0XyvIArFt1+ZQzpYqx5SUtTRCb++
- 8oeD467E4yLsMGzO6HwLiZJG7hbB7QFjYyyNAbXO9+P9wEph2C0YV7x4TyK7mxVYqjNVEqlMFW
- MlmaTL2NSpANHVCGcvPsMvg/TEhZo/Vx4leP/foFyhfd1/QDj4EQQkAAAAA==
-X-Change-ID: 20250714-cpaasch-pf-925-investigate-incorrect-gso_size-on-cx-7-nic-852b450a8dad
-To: Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, 
- Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
- Andrew Lunn <andrew+netdev@lunn.ch>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Gal Pressman <gal@nvidia.com>
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
- Christoph Paasch <cpaasch@openai.com>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1752610867; l=3259;
- i=cpaasch@openai.com; s=20250712; h=from:subject:message-id;
- bh=+zux3SKfHs3vKZon0w9riKpNcRAgFX0sLiVki6c1lMw=;
- b=yhoowKJGwpVa5ITYjE0xwLhyxs8867DSSeKO3J423J8X0y7cPV8oOTJZ/r6H/GXg9HhtTT4eN
- ljKX+BSfcQgCu/OsWUgDx2za891lZgCPk5MF7coVRhZ6rMm+sHf0Wq0
-X-Developer-Key: i=cpaasch@openai.com; a=ed25519;
- pk=1HRHZlVUZPziMZvsAQFvP7n5+uEosTDAjXmNXykdxdg=
-X-Endpoint-Received: by B4 Relay for cpaasch@openai.com/20250712 with
- auth_id=459
-X-Original-From: Christoph Paasch <cpaasch@openai.com>
-Reply-To: cpaasch@openai.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
-From: Christoph Paasch <cpaasch@openai.com>
+The __esw_qos_alloc_node() function returns NULL on error.  It doesn't
+return error pointers.  Update the error checking to match.
 
-gso_size is expected by the networking stack to be the size of the
-payload (thus, not including ethernet/IP/TCP-headers). However, cqe_bcnt
-is the full sized frame (including the headers). Dividing cqe_bcnt by
-lro_num_seg will then give incorrect results.
-
-For example, running a bpftrace higher up in the TCP-stack
-(tcp_event_data_recv), we commonly have gso_size set to 1450 or 1451 even
-though in reality the payload was only 1448 bytes.
-
-This can have unintended consequences:
-- In tcp_measure_rcv_mss() len will be for example 1450, but. rcv_mss
-will be 1448 (because tp->advmss is 1448). Thus, we will always
-recompute scaling_ratio each time an LRO-packet is received.
-- In tcp_gro_receive(), it will interfere with the decision whether or
-not to flush and thus potentially result in less gro'ed packets.
-
-So, we need to discount the protocol headers from cqe_bcnt so we can
-actually divide the payload by lro_num_seg to get the real gso_size.
-
-v2:
- - Use "(unsigned char *)tcp + tcp->doff * 4 - skb->data)" to compute header-len
-   (Tariq Toukan <tariqt@nvidia.com>)
- - Improve commit-message (Gal Pressman <gal@nvidia.com>)
-
-Fixes: e586b3b0baee ("net/mlx5: Ethernet Datapath files")
-Signed-off-by: Christoph Paasch <cpaasch@openai.com>
+Fixes: 96619c485fa6 ("net/mlx5: Add support for setting tc-bw on nodes")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index 84b1ab8233b8107f0d954ea29c33601b279a2c27..7462514c7f3d1606339ede13a6207c1629ab65a3 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -1154,8 +1154,9 @@ static void mlx5e_lro_update_tcp_hdr(struct mlx5_cqe64 *cqe, struct tcphdr *tcp)
- 	}
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c
+index e1cef8dd3b4d..91d863c8c152 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c
+@@ -1405,9 +1405,10 @@ esw_qos_move_node(struct mlx5_esw_sched_node *curr_node)
+ 
+ 	new_node = __esw_qos_alloc_node(curr_node->esw, curr_node->ix,
+ 					curr_node->type, NULL);
+-	if (!IS_ERR(new_node))
+-		esw_qos_nodes_set_parent(&curr_node->children, new_node);
++	if (!new_node)
++		return ERR_PTR(-ENOMEM);
+ 
++	esw_qos_nodes_set_parent(&curr_node->children, new_node);
+ 	return new_node;
  }
  
--static void mlx5e_lro_update_hdr(struct sk_buff *skb, struct mlx5_cqe64 *cqe,
--				 u32 cqe_bcnt)
-+static unsigned int mlx5e_lro_update_hdr(struct sk_buff *skb,
-+					 struct mlx5_cqe64 *cqe,
-+					 u32 cqe_bcnt)
- {
- 	struct ethhdr	*eth = (struct ethhdr *)(skb->data);
- 	struct tcphdr	*tcp;
-@@ -1205,6 +1206,8 @@ static void mlx5e_lro_update_hdr(struct sk_buff *skb, struct mlx5_cqe64 *cqe,
- 		tcp->check = tcp_v6_check(payload_len, &ipv6->saddr,
- 					  &ipv6->daddr, check);
- 	}
-+
-+	return (unsigned int)((unsigned char *)tcp + tcp->doff * 4 - skb->data);
- }
- 
- static void *mlx5e_shampo_get_packet_hd(struct mlx5e_rq *rq, u16 header_index)
-@@ -1561,8 +1564,9 @@ static inline void mlx5e_build_rx_skb(struct mlx5_cqe64 *cqe,
- 		mlx5e_macsec_offload_handle_rx_skb(netdev, skb, cqe);
- 
- 	if (lro_num_seg > 1) {
--		mlx5e_lro_update_hdr(skb, cqe, cqe_bcnt);
--		skb_shinfo(skb)->gso_size = DIV_ROUND_UP(cqe_bcnt, lro_num_seg);
-+		unsigned int hdrlen = mlx5e_lro_update_hdr(skb, cqe, cqe_bcnt);
-+
-+		skb_shinfo(skb)->gso_size = DIV_ROUND_UP(cqe_bcnt - hdrlen, lro_num_seg);
- 		/* Subtract one since we already counted this as one
- 		 * "regular" packet in mlx5e_complete_rx_cqe()
- 		 */
-
----
-base-commit: 0e9418961f897be59b1fab6e31ae1b09a0bae902
-change-id: 20250714-cpaasch-pf-925-investigate-incorrect-gso_size-on-cx-7-nic-852b450a8dad
-
-Best regards,
 -- 
-Christoph Paasch <cpaasch@openai.com>
-
+2.47.2
 
 
