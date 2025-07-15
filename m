@@ -1,43 +1,43 @@
-Return-Path: <linux-rdma+bounces-12173-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12174-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1151B050B9
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 07:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B4A4B050C0
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 07:17:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26F6E4A6E56
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 05:17:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E2744A74F3
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 05:17:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C8A12D3734;
-	Tue, 15 Jul 2025 05:16:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F9192D4B7C;
+	Tue, 15 Jul 2025 05:16:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="DjAm0m9C"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="nEby7V0E"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2057.outbound.protection.outlook.com [40.107.243.57])
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2040.outbound.protection.outlook.com [40.107.94.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 112061B85FD;
-	Tue, 15 Jul 2025 05:16:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.57
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523672D46DD;
+	Tue, 15 Jul 2025 05:16:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.40
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752556614; cv=fail; b=GBEaJdeLK9qhuQp+4fezEMOKRgy7JXUzm0RbytoHEwGj7/FLtnQY5D4iy9z28+b+3QUrgLZEdvdtCNn3hxeVwQFzIuqpf4UTF4OPZ8LFo8cfWcZxmqbHnH0cMnNYX6/109GMvVz2ispCA4WUuGPZBf523cwlmhBtp6Qgr1vmwfw=
+	t=1752556618; cv=fail; b=b2BXHBX0W2p+e3F9jqSLQea72tImSQSSnAFE5EHTC4hEAy7ByF9OuUmk6CI6orNpplCHb96CH1TvqZaMspVcrSESnc3iEFtFtj6tqNWY634ZyHI9vJG7GcYaEuyVoBLZatrOtrWXkui+FyKBuekcKhDf9pNr7O/fH1yFBZchIgg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752556614; c=relaxed/simple;
-	bh=fm9aDgODGoBHEOMKX/5sxSKrMdy3XWourhfKI+5oyu0=;
+	s=arc-20240116; t=1752556618; c=relaxed/simple;
+	bh=Byc7mxjKK4n+Uv3YR1HTZQU6oRzqnn3crajc8mkNeeQ=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=drt/Z+xXx6uGHCAYk3dPbLQ+RFJfRCwajCRxZ/edV7FMghrvoNOQHSaXom6x0kUMMjJX5bNkGbEoXaEEmXMBGTlUEXAOr5+U2uy5Cic/szMPGmV8VX79Kdg9y2UCQQZWXkD67dFXjiscGSCdjOO0wJV5FxZSh+zKm8Ld6dERINc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=DjAm0m9C; arc=fail smtp.client-ip=40.107.243.57
+	 MIME-Version:Content-Type; b=rTDNqQg7sQD6uHU5hUX5Cb4yIgeHWRhO8qbZpuH07LyFEuG+uykty8GWvhpd3zzjWZaB+ZPnfepTVD8fDk/xaEYdebUkPMEbYWQLaM0oO4+GN7YSzTXfDTx9z66sB+dDp9VYUibnMSBGtTBwKdVAp7XcONI1YzDIJ/x3gsDfyeg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=nEby7V0E; arc=fail smtp.client-ip=40.107.94.40
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=wo/CCK3WCjQL0Zjg4q2w9+ceHFj4CSOpQo8jsZXqV32gbSfpuyc5t6i8Ftbg3XZGd7reHH2q7CMTC5aIO62NclItp0Q+HUTbzdrDFQk8n9i9ek/Jrxdv2x8oSbR6WFa0DujAJh9FQz4KFZuN4MNHYeoIdr+G//ZxmBa894MGKdDcD/eT3AaerE8jvJjGywAucLmAm+y0Mhay6MY8x60nVvMjIXylsODOkwDubYwWd1I+sxAbFk2vpOQYksUNK5ESHJf/6fhv5Fihk/tRMh618xSmLvtkjcAIGjXOiiUJejKny4jfw4pK4McolrS7KwuHbKmUerTaLPGSI2bb9kio9A==
+ b=oHeuPLVqK0Co4nNLlx65gQdwuym+O9ZzUcdNFK4oKZM8ZzraN0Nhb+f8M4XEoR2d2NKxJwuiLeLgDtXezOFT0wHaWjgNQxfjy0BZzoqR7vpyla1gOdPnEvFvexXOVMfEy5sU1GHsKdHA3Q4oJWP+0j7qJVviFH5sjoQWqqHptYovhpnJHmw+QB2fLvZ7rifOmJcOT+83OsLpS/WPW//ZPjtDGY0LF7HgbLW0jp5wVXwEE+bLd59hfmNI9hyzBfPLWLVg0davtXppr1ZvpyO/VNPQvFc3opBEyMrpslPF34YIWjRQyKun+kXlA/IlyRB90E2CMMxMTOxv41NThAFvjA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3Bqf4OYCmRwnkgtTilA4+7vuX61Mb20IffwZRDIMMpk=;
- b=qVvXTs0VDk/6w+f+9YAOA1t84ge8vkHN0Tvj/p7hYfy8Ec5ujR74snl7K9W7IpOFUFuJBIhYZihFcgx9IvI23NT/gGRp7cxegvJNUCBr1m9ziHAvzkqBOhvytHLJnLVqQCsADrsO4Dhd4glj9vQ/g9iVAi8OuON4eY1xHbK8TfnRjr+2zTweisa6mF5bkHHLHbO6aNCYfgRAgpADCVjSCTi5sklfMp39V+UvvnHYsW+oNey5gdmrnYaE5ggjBDHhonot1IOXlVoVZ4H2rvJNpw7bSC/b+vxMIEljHSI9052Vl9sBx4zlx6dG5ZhgPBn8kRDwWt52SVj1enP0pNe31Q==
+ bh=WJg9BA6ED2ApamlcG/+c09jf61kbBpvU6Hakao2bL38=;
+ b=GiP9919ySX9e5b036N2BubmLEnhLXbqtIhVKOU5za8DcGIB0/u5ctBMLuXIvzq1ddYajZ2JvSi2X7wHufiAfr1ZtgD73YIHdYdeDypiWQe6YUAHgo/mh9owxbweQHJBnvSojWcG/e85XiqFqpAobHdUhqIYJVC0KZXQdnyV04iJzDKdD1/WJHqwqxhpjaZHKsR+IOYMuon2qIpTef080kSf5Lxowgz7pdoxH5CcLUXRx5450bwFrm67iKoNdErN1fCX56GG1+NdmcOb7CLcw+OvWoeAO8If8kct++VHIKKx7mub+msYccdXKUSraLqvEJ6WJqPng4htMyUXJahzrZQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -45,18 +45,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3Bqf4OYCmRwnkgtTilA4+7vuX61Mb20IffwZRDIMMpk=;
- b=DjAm0m9CEwEQ0fCV/2fiWAs6Okm9BBfgFklOC9H2pxWhsKmejCYplVU/VjYrnu97P8/YMJr3+0HKl3iJScatGGGufdaVY5+cYkFTSdMv96pMPC2GOGndQEM9GNDcVFQw0NyyoHMVneWLJtz4HcSo5O+a1/yRqMrIyUaDgL1iJH6cJUZYUAaLOjGmYTxlWXVUYvboFqyg+NqL/Y42vNQJ6/f3hBlIJMcqlpbtKVKrz3zc7bU8jafDHxal+J07zdVxU7w09O/x4w7S6xuwH7gOXpUX0f8oVOrrwwynAss+ilTGkFESHIHjehUvJqQRsED0xuOL9YZGGZwqiPQVN1QSLw==
-Received: from MW4PR03CA0066.namprd03.prod.outlook.com (2603:10b6:303:b6::11)
- by PH8PR12MB7181.namprd12.prod.outlook.com (2603:10b6:510:22a::17) with
+ bh=WJg9BA6ED2ApamlcG/+c09jf61kbBpvU6Hakao2bL38=;
+ b=nEby7V0E2MM7mWE83L4mGjMMlW4hpyE8iROvl4oeL36cT96Vw/GBq2h7za5BkTTomm21lZ8vm3I0vRAYOmHc6jbDCrOfdRiAnqLedfSkKyQm7BvcrjZiSAOGpc08TGiMoKWK+czuHloTZHNKwIhy1o3Uc925dDV5qarpv44cIH6gl0diF+wKPyIdxlhnr0RaNM3WMpF85cviZ2fC4EjOx3SwBMx3bATgs8jfg963/ofIWj3aYzVXBoCUdC7qQ8h2eS978L0KFcWGNTZd3IELTXERlMQRwam3T7rPviiKdsjs8Py/z1vgUE1H41Dr67QEdJTUPzHfe7GoQfQ5Xhin1g==
+Received: from YQZPR01CA0155.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01:8c::8)
+ by DM4PR12MB7600.namprd12.prod.outlook.com (2603:10b6:8:108::5) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8922.32; Tue, 15 Jul
- 2025 05:16:48 +0000
-Received: from SN1PEPF0002529F.namprd05.prod.outlook.com
- (2603:10b6:303:b6:cafe::b0) by MW4PR03CA0066.outlook.office365.com
- (2603:10b6:303:b6::11) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8922.28 via Frontend Transport; Tue,
- 15 Jul 2025 05:16:47 +0000
+ 2025 05:16:53 +0000
+Received: from SN1PEPF000252A2.namprd05.prod.outlook.com
+ (2603:10b6:c01:8c:cafe::da) by YQZPR01CA0155.outlook.office365.com
+ (2603:10b6:c01:8c::8) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8943.17 via Frontend Transport; Tue,
+ 15 Jul 2025 05:16:52 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -64,20 +64,20 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.117.160 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.117.160) by
- SN1PEPF0002529F.mail.protection.outlook.com (10.167.242.6) with Microsoft
+ SN1PEPF000252A2.mail.protection.outlook.com (10.167.242.9) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8922.22 via Frontend Transport; Tue, 15 Jul 2025 05:16:47 +0000
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ 15.20.8922.22 via Frontend Transport; Tue, 15 Jul 2025 05:16:52 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
  (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 14 Jul
- 2025 22:16:33 -0700
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail205.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ 2025 22:16:37 -0700
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Mon, 14 Jul
- 2025 22:16:32 -0700
+ 2025 22:16:36 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.9)
  with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Mon, 14
- Jul 2025 22:16:29 -0700
+ Jul 2025 22:16:33 -0700
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -87,9 +87,9 @@ CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
  Cochran" <richardcochran@gmail.com>, <netdev@vger.kernel.org>,
 	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Carolina Jubran
 	<cjubran@nvidia.com>
-Subject: [PATCH net-next 1/3] ptp: Add ioctl commands to expose raw cycle counter values
-Date: Tue, 15 Jul 2025 08:15:31 +0300
-Message-ID: <1752556533-39218-2-git-send-email-tariqt@nvidia.com>
+Subject: [PATCH net-next 2/3] net/mlx5: Extract MTCTR register read logic into helper function
+Date: Tue, 15 Jul 2025 08:15:32 +0300
+Message-ID: <1752556533-39218-3-git-send-email-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.8.0
 In-Reply-To: <1752556533-39218-1-git-send-email-tariqt@nvidia.com>
 References: <1752556533-39218-1-git-send-email-tariqt@nvidia.com>
@@ -103,174 +103,133 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: AnonymousSubmission
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002529F:EE_|PH8PR12MB7181:EE_
-X-MS-Office365-Filtering-Correlation-Id: ffc6299f-26a5-4073-54cc-08ddc35ecc49
+X-MS-TrafficTypeDiagnostic: SN1PEPF000252A2:EE_|DM4PR12MB7600:EE_
+X-MS-Office365-Filtering-Correlation-Id: dabf11e1-bd8a-4015-3728-08ddc35ecf36
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|82310400026|36860700013|7416014|376014;
+	BCL:0;ARA:13230040|7416014|36860700013|376014|82310400026|1800799024;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?WAHyvlxQ8toKHMFnXHAyRIquYcqIcFGkO+byLORh6P5UtgVCENm2WnbR0BUT?=
- =?us-ascii?Q?yYX5lFfJO2YfF86r9JXUSBGykbZ0kPinL0hNZwoAlQDr5Y5UFwt22Bs58V0W?=
- =?us-ascii?Q?euY9lMCqP29kTkVBCcQjaDGsw4t+mLnHj5YeI9CJbdhdTG0+15MqqYmXivFB?=
- =?us-ascii?Q?n/Sp+TB3b+abmofYko3lwIpG6C8k+4qyUrBZJdqQLSS983bzXEaqZfIn0SVX?=
- =?us-ascii?Q?T5tlKf8nlm0KZHomBUh6H3p/cd87PErBYsW8OTE2SOBty2DzatMgsnmi48bx?=
- =?us-ascii?Q?2qr4dRblSRMIgntfubqk1uair3XbCwKH9JwclH9/jlemGFG2FDukUezK1yFT?=
- =?us-ascii?Q?XGVCcVE+wGhnHa9ca2Y5EfqXhnLk/eig4xB0Ht1TNKCASdiqmyY7Kv0/OQxE?=
- =?us-ascii?Q?jYShzk2I4eb2HgO8i4yiFcAPdn3n4sx40lsNP1TPle6uiNbntC/S4HST+DbN?=
- =?us-ascii?Q?xOEC59iiJ0nVz6yTXrHuEDDJG8PaMbXBhzLiCV8DbuGmubjqkvOg6deyEWRg?=
- =?us-ascii?Q?uxAEII6VjlFPt2uR5aM60SB9NeAR8YwYVhFIeMlivfRhj5a83LNRL/c3GnPL?=
- =?us-ascii?Q?/sIh6iEeH/opDcGdIm2D5elCzzJJup6UiqN9go3VmFR0Nooum9csc1BaVq3J?=
- =?us-ascii?Q?vtxPnaMyX5jxZkC420CMQQvNXWGbakB9dXYiMR6xzODYioYzUPR7lsnSvnrY?=
- =?us-ascii?Q?E8qA7vSozscblxtyD8LdF0rWMv2bbwIS861qkZeamNUfjNN16hF/hVhz42DS?=
- =?us-ascii?Q?Mf+RAgsdorp9k9u++F7XFujPzFTvRtLCtu2uxEz5gwwcgNy9jvIZ3NmfJW+s?=
- =?us-ascii?Q?9NgliP34duDVi+HARKsiekDw3CtW1o2eaEZwDYX3GgLKE8FuCiQl6aRIn3Ll?=
- =?us-ascii?Q?QyALCBVtXdCBisM5XwdmObqRvXmes6CUX+l6JTLMnxI4H//p/Cp5EUdKmaIl?=
- =?us-ascii?Q?gddDT2uCq0BD9Y7E5/HB2rxSzCoUEv76zNmSzemOJddjxU+8BX22VYGDH1ek?=
- =?us-ascii?Q?1VDfhK7O3kFawGYU0pNS0GCdoaF52qC6Ma1jKoC4Ybzu9Fse2fAhU9Q1gy1a?=
- =?us-ascii?Q?4Eu4cE2xXsDsBoQKRbB65iySxCE1Kzq3vbCFZmIeDqgs378BIvIWyov9hDzg?=
- =?us-ascii?Q?D/tVp1FUUt+YmiS/VsZ1PYkKHOmkgOvjCdMG9NiViA3ISoHDlHhV4ILriK8v?=
- =?us-ascii?Q?rcFyl+FNX9B8JfSNaNJ0K8N2H3by4wfLS8vAxi7TE4+ZtOupJ59Ryyx91nLv?=
- =?us-ascii?Q?OZQLvr4zv3Gglo9ud27NjZST2UNL/74t7txMhlKVF0aYV8C6BEwHN8/i1eTT?=
- =?us-ascii?Q?nKqHBy6y2HisxdV2EnQzKlNUToNj26wOxfElUMorZXJZI0dQvCYdB/AdyAT3?=
- =?us-ascii?Q?e0IkoWaWXASupUgFEh5RGTT1/dJUO3AkQVQ6fdsvOHEMu9h/GZLL9uH8BxGg?=
- =?us-ascii?Q?TtZpdWfHR7w3xpnMKu93BGJDub0EvBU2kKRKosaNsuOCJtECO8WCoq+p/Myr?=
- =?us-ascii?Q?179ax7io7N08CiPZtNTqrDNu0G8tb0wJ/7gs?=
+	=?us-ascii?Q?pYaYwgmpXpVZB8pu0xRyT+U/FQR2tccHkfCYfBu2hlTEL4vRyGA4tibnd70x?=
+ =?us-ascii?Q?43nxhkYo3Hodz/9/LEtt8tbm0JAK5LAoub1pMQMbgt7zw5JKm2jgbLqFAfv4?=
+ =?us-ascii?Q?qLIhJVyBJGxZzmVuMs1jB5oMkjnNKVYUH6FbaItyvdlIA4KrrMDcTASjrY7C?=
+ =?us-ascii?Q?Ym17QkMFMjabYgwLQmQScRXLPzAxieYKXOWvNJcgkr3Dr0QDPuwQGN6b+hu6?=
+ =?us-ascii?Q?CKSZE7LrNiFLGlP7z2jLbl5fMHXK+9qaFvbryWjDpeTRoq0ah37NOCWyDnN5?=
+ =?us-ascii?Q?h1spyYP13RU2IKCfRn7egVMyAcvSkfA1Suwh1URIFmZIznAHxKfG1zJEQltH?=
+ =?us-ascii?Q?bIsxth0+uIjDZhLtzJ+4RbY3zgaCq620Gk1orUKOaWstWvoygm165AN32SI9?=
+ =?us-ascii?Q?4Q7o2IFo2AE212tPZWvutCUoeazIMy2jx/h0PqDyxSALYWsnENu5lfmFGWR7?=
+ =?us-ascii?Q?qXtwEvZqowbURfe1X/xq4GEZfeNgEt4kVSGaCurqOjWW4qVme0Kz5qzL5gix?=
+ =?us-ascii?Q?wlzI47sn4mCVMTe8uQmxyzcuK/kQD1aHbQVkiUyhg1CRmqzQQ2aS0YJubNKC?=
+ =?us-ascii?Q?WAcJpWyfj3HFbSIBNLVprQVaBkAowSQcEK8gOdvY8y0OEQjXjSXKtH/u3pvi?=
+ =?us-ascii?Q?+JjVHeTrjkCyQo7sYe4ipn/mURtBOWbI3RJ0ynTsu56Ne7tVVLSoKTXvx96t?=
+ =?us-ascii?Q?SR67B7CUFlMmMDEnd97vdpKSfGUY2R6yes949lb3y4DnC9sfzjYXC5FWVVbL?=
+ =?us-ascii?Q?T2A6SXWhJliqzfvdtPmU3nf0tXAECWunQg9s9ZfT6SdWR/BJAnLdW0AyMc0J?=
+ =?us-ascii?Q?+Q7bu60/Skvt2oWHppsbbkpbLDMhSG0rkP2DjNuJQ84OyZ0gTe1PxlO3/nzs?=
+ =?us-ascii?Q?sBOl8nhF7pFkYufXhMGQOQQwuSLTcnYzfeXH/vXGd4vWyR3HrFUqLm0Xb2T6?=
+ =?us-ascii?Q?jEBJikhkZppz2cHoxwymx+a0kpCLsyuRb27zrV5eaW8FNSBQusm7qGirKI24?=
+ =?us-ascii?Q?JI4WOaklGgXP9H/GGm4Ab6wzubWZ81D5UFfNJjRAp4GpPWd6QzJ7VXOkUfFY?=
+ =?us-ascii?Q?83enUfjNK40n7kY+hNQmpXVjsSgdQnTXAUmY8+BBtKvCc78XD2n+cDohsW5v?=
+ =?us-ascii?Q?Y7Wg3p/gSvlOisUSRtRhANOnOvGCODfW0yvtJZL5buGmPWjccP6xSLzTFUzd?=
+ =?us-ascii?Q?dKMbESTFCU3ig3R+9X4kyK53pRwg6iu8eGq0OFD0AeJNRxk7CRNtVyDYHD7D?=
+ =?us-ascii?Q?cHDXtUdydUFZIhWQpW6MnJY/Yr6epQb8mCFD1KRuMl5Gz2O9wkWOfckmFGRg?=
+ =?us-ascii?Q?jbZtMkfe/L+ErHsLWlimhvpeeDLMcmqrbfFqpZa/kMtr1h0PeYXXNGseojM9?=
+ =?us-ascii?Q?o02eNjmSMPS3QNER/BfMj6r5+4y7AAxDTLHHLCP3Bv97f5nRgl0eYC9JISFe?=
+ =?us-ascii?Q?+9rP62NCAkgOhMHqGuSNH5k/T8nrW5MyNt/U2tF0EbdosYjorwSHotUb4Usu?=
+ =?us-ascii?Q?C8fq0nGRX6v6AOYNQAkMoE4NQJ+8NTvVcxtV?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(36860700013)(7416014)(376014);DIR:OUT;SFP:1101;
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(7416014)(36860700013)(376014)(82310400026)(1800799024);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2025 05:16:47.6688
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2025 05:16:52.5754
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ffc6299f-26a5-4073-54cc-08ddc35ecc49
+X-MS-Exchange-CrossTenant-Network-Message-Id: dabf11e1-bd8a-4015-3728-08ddc35ecf36
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF0002529F.namprd05.prod.outlook.com
+	SN1PEPF000252A2.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7181
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7600
 
 From: Carolina Jubran <cjubran@nvidia.com>
 
-Introduce two new ioctl commands, PTP_SYS_OFFSET_PRECISE_CYCLES and
-PTP_SYS_OFFSET_EXTENDED_CYCLES, to allow user space to access the
-raw free-running cycle counter from PTP devices.
-
-These ioctls are variants of the existing PRECISE and EXTENDED
-offset queries, but instead of returning device time in realtime,
-they return the raw cycle counter value.
+Refactor the MTCTR register reading logic into a dedicated helper to
+lay the groundwork for the next patch.
 
 Signed-off-by: Carolina Jubran <cjubran@nvidia.com>
 Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- drivers/ptp/ptp_chardev.c      | 34 ++++++++++++++++++++++++++--------
- include/uapi/linux/ptp_clock.h |  4 ++++
- 2 files changed, 30 insertions(+), 8 deletions(-)
+ .../ethernet/mellanox/mlx5/core/lib/clock.c   | 39 +++++++++++++------
+ 1 file changed, 27 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/ptp/ptp_chardev.c b/drivers/ptp/ptp_chardev.c
-index 4ca5a464a46a..e9719f365aab 100644
---- a/drivers/ptp/ptp_chardev.c
-+++ b/drivers/ptp/ptp_chardev.c
-@@ -285,17 +285,21 @@ static long ptp_enable_pps(struct ptp_clock *ptp, bool enable)
- 		return ops->enable(ops, &req, enable);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
+index cec18efadc73..b1e2deeefc0c 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
+@@ -247,27 +247,24 @@ static bool mlx5_is_ptm_source_time_available(struct mlx5_core_dev *dev)
+ 	return !!MLX5_GET(mtptm_reg, out, psta);
  }
  
--static long ptp_sys_offset_precise(struct ptp_clock *ptp, void __user *arg)
-+typedef int (*ptp_crosststamp_fn)(struct ptp_clock_info *,
-+				  struct system_device_crosststamp *);
-+
-+static long ptp_sys_offset_precise(struct ptp_clock *ptp, void __user *arg,
-+				   ptp_crosststamp_fn crosststamp_fn)
+-static int mlx5_mtctr_syncdevicetime(ktime_t *device_time,
+-				     struct system_counterval_t *sys_counterval,
+-				     void *ctx)
++static int mlx5_mtctr_read(struct mlx5_core_dev *mdev,
++			   bool real_time_mode,
++			   struct system_counterval_t *sys_counterval,
++			   u64 *device)
  {
- 	struct ptp_sys_offset_precise precise_offset;
- 	struct system_device_crosststamp xtstamp;
- 	struct timespec64 ts;
+ 	u32 out[MLX5_ST_SZ_DW(mtctr_reg)] = {0};
+ 	u32 in[MLX5_ST_SZ_DW(mtctr_reg)] = {0};
+-	struct mlx5_core_dev *mdev = ctx;
+-	bool real_time_mode;
+-	u64 host, device;
++	u64 host;
  	int err;
  
--	if (!ptp->info->getcrosststamp)
-+	if (!crosststamp_fn)
- 		return -EOPNOTSUPP;
+-	real_time_mode = mlx5_real_time_mode(mdev);
+-
+ 	MLX5_SET(mtctr_reg, in, first_clock_timestamp_request,
+ 		 MLX5_MTCTR_REQUEST_PTM_ROOT_CLOCK);
+ 	MLX5_SET(mtctr_reg, in, second_clock_timestamp_request,
+ 		 real_time_mode ? MLX5_MTCTR_REQUEST_REAL_TIME_CLOCK :
+-		 MLX5_MTCTR_REQUEST_FREE_RUNNING_COUNTER);
++				  MLX5_MTCTR_REQUEST_FREE_RUNNING_COUNTER);
  
--	err = ptp->info->getcrosststamp(ptp->info, &xtstamp);
-+	err = crosststamp_fn(ptp->info, &xtstamp);
+-	err = mlx5_core_access_reg(mdev, in, sizeof(in), out, sizeof(out), MLX5_REG_MTCTR,
+-				   0, 0);
++	err = mlx5_core_access_reg(mdev, in, sizeof(in), out, sizeof(out),
++				   MLX5_REG_MTCTR, 0, 0);
  	if (err)
  		return err;
  
-@@ -313,12 +317,17 @@ static long ptp_sys_offset_precise(struct ptp_clock *ptp, void __user *arg)
- 	return copy_to_user(arg, &precise_offset, sizeof(precise_offset)) ? -EFAULT : 0;
- }
- 
--static long ptp_sys_offset_extended(struct ptp_clock *ptp, void __user *arg)
-+typedef int (*ptp_gettimex_fn)(struct ptp_clock_info *,
-+			       struct timespec64 *,
-+			       struct ptp_system_timestamp *);
+@@ -281,8 +278,26 @@ static int mlx5_mtctr_syncdevicetime(ktime_t *device_time,
+ 			.cs_id = CSID_X86_ART,
+ 			.use_nsecs = true,
+ 	};
++	*device = MLX5_GET64(mtctr_reg, out, second_clock_timestamp);
 +
-+static long ptp_sys_offset_extended(struct ptp_clock *ptp, void __user *arg,
-+				    ptp_gettimex_fn gettimex_fn)
- {
- 	struct ptp_sys_offset_extended *extoff __free(kfree) = NULL;
- 	struct ptp_system_timestamp sts;
- 
--	if (!ptp->info->gettimex64)
-+	if (!gettimex_fn)
- 		return -EOPNOTSUPP;
- 
- 	extoff = memdup_user(arg, sizeof(*extoff));
-@@ -346,7 +355,7 @@ static long ptp_sys_offset_extended(struct ptp_clock *ptp, void __user *arg)
- 		struct timespec64 ts;
- 		int err;
- 
--		err = ptp->info->gettimex64(ptp->info, &ts, &sts);
-+		err = gettimex_fn(ptp->info, &ts, &sts);
- 		if (err)
- 			return err;
- 
-@@ -497,11 +506,13 @@ long ptp_ioctl(struct posix_clock_context *pccontext, unsigned int cmd,
- 
- 	case PTP_SYS_OFFSET_PRECISE:
- 	case PTP_SYS_OFFSET_PRECISE2:
--		return ptp_sys_offset_precise(ptp, argptr);
-+		return ptp_sys_offset_precise(ptp, argptr,
-+					      ptp->info->getcrosststamp);
- 
- 	case PTP_SYS_OFFSET_EXTENDED:
- 	case PTP_SYS_OFFSET_EXTENDED2:
--		return ptp_sys_offset_extended(ptp, argptr);
-+		return ptp_sys_offset_extended(ptp, argptr,
-+					       ptp->info->gettimex64);
- 
- 	case PTP_SYS_OFFSET:
- 	case PTP_SYS_OFFSET2:
-@@ -523,6 +534,13 @@ long ptp_ioctl(struct posix_clock_context *pccontext, unsigned int cmd,
- 	case PTP_MASK_EN_SINGLE:
- 		return ptp_mask_en_single(pccontext->private_clkdata, argptr);
- 
-+	case PTP_SYS_OFFSET_PRECISE_CYCLES:
-+		return ptp_sys_offset_precise(ptp, argptr,
-+					      ptp->info->getcrosscycles);
++	return 0;
++}
 +
-+	case PTP_SYS_OFFSET_EXTENDED_CYCLES:
-+		return ptp_sys_offset_extended(ptp, argptr,
-+					       ptp->info->getcyclesx64);
- 	default:
- 		return -ENOTTY;
- 	}
-diff --git a/include/uapi/linux/ptp_clock.h b/include/uapi/linux/ptp_clock.h
-index 18eefa6d93d6..65f187b5f0d0 100644
---- a/include/uapi/linux/ptp_clock.h
-+++ b/include/uapi/linux/ptp_clock.h
-@@ -245,6 +245,10 @@ struct ptp_pin_desc {
- 	_IOWR(PTP_CLK_MAGIC, 18, struct ptp_sys_offset_extended)
- #define PTP_MASK_CLEAR_ALL  _IO(PTP_CLK_MAGIC, 19)
- #define PTP_MASK_EN_SINGLE  _IOW(PTP_CLK_MAGIC, 20, unsigned int)
-+#define PTP_SYS_OFFSET_PRECISE_CYCLES \
-+	_IOWR(PTP_CLK_MAGIC, 21, struct ptp_sys_offset_precise)
-+#define PTP_SYS_OFFSET_EXTENDED_CYCLES \
-+	_IOWR(PTP_CLK_MAGIC, 22, struct ptp_sys_offset_extended)
++static int mlx5_mtctr_syncdevicetime(ktime_t *device_time,
++				     struct system_counterval_t *sys_counterval,
++				     void *ctx)
++{
++	struct mlx5_core_dev *mdev = ctx;
++	bool real_time_mode;
++	u64 device;
++	int err;
++
++	real_time_mode = mlx5_real_time_mode(mdev);
++
++	err = mlx5_mtctr_read(mdev, real_time_mode, sys_counterval, &device);
++	if (err)
++		return err;
  
- struct ptp_extts_event {
- 	struct ptp_clock_time t; /* Time event occurred. */
+-	device = MLX5_GET64(mtctr_reg, out, second_clock_timestamp);
+ 	if (real_time_mode)
+ 		*device_time = ns_to_ktime(REAL_TIME_TO_NS(device >> 32, device & U32_MAX));
+ 	else
 -- 
 2.31.1
 
