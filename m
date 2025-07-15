@@ -1,165 +1,178 @@
-Return-Path: <linux-rdma+bounces-12199-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12200-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B718BB064EB
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 19:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EC9CBB06679
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 21:07:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09A0B567534
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 17:07:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BCF4564A13
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jul 2025 19:07:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CE2C28507B;
-	Tue, 15 Jul 2025 17:07:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F7672BEFF5;
+	Tue, 15 Jul 2025 19:06:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SfRqkZjG"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Fk8z4fdz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDF1E27A455
-	for <linux-rdma@vger.kernel.org>; Tue, 15 Jul 2025 17:07:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 632712BDC3E
+	for <linux-rdma@vger.kernel.org>; Tue, 15 Jul 2025 19:06:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752599240; cv=none; b=AqdJvPASMe3VgWkho1rOkxKWWU3dTKJ+w3xuDuE7i6STOywIsf1b0cQ2v+37zPKpR4AH+EOLbLpsOmXjubvn8TfLtnOj/JSqu3/2C7iacxYbnBr5NjXugzldDKyKEBQRwDWTxujKVJaqW39WtGC0L06QjSiHqlG7vtiZ9O1Ik6Q=
+	t=1752606413; cv=none; b=iesZIaNMg1MARFQAhQmK1Vu7KwfK9S0cJ6+kCcOp+nZU2BySXizfEndBgT5DCf16h4SBT4apXC+vkVlV7NlMRnUsFU7gPAC1MkSaLjr4Cplsf5SHbaRpUq/CAu2VaF6OtTCr2BbaxYPrW7ro9hFOaW+aJ4LSsMlmhYbxI7YB7As=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752599240; c=relaxed/simple;
-	bh=D5iNuzhutabTsgyHNmq5UmAbTLz86s43oSR1uhCMj50=;
+	s=arc-20240116; t=1752606413; c=relaxed/simple;
+	bh=sN4QN3SKsFD89oM64C8vf3kZbJolgxRcrqdfdWWS2SU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tu/pjfMyrwlVEGytHtmSzUEZ30+53WmobI/a59fs6KRp+LInLJIkmyjwMqcYbDpo1AVHIAJ1CbawEizrYRzJ+UpB/gYAwj0bdbh0ke0bwFxpsxbWGX5YFXsF2bErbxqf8iwhixM2+mxj9wf184GFF1D2/kOwnvFD9RUsFPWLHLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SfRqkZjG; arc=none smtp.client-ip=209.85.215.182
+	 To:Cc:Content-Type; b=kI1JPNniUWq9dFFFCprr8KK5S6OqRFE222vC2LXeA06blQNwZ0lvh78+ulvgFDe9WxDMzfHaso0foAdED3cRZQdCpM8DdGNvnp4e1tD7BaglKN3g+V7kR/qu/TRuIJ/oziYZd09jQp46DJOMUTV6Zw10rp05euYE6xjx/j8bUXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Fk8z4fdz; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-b350704f506so90221a12.0
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Jul 2025 10:07:17 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-237f18108d2so46315ad.0
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Jul 2025 12:06:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1752599237; x=1753204037; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1752606411; x=1753211211; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=D5iNuzhutabTsgyHNmq5UmAbTLz86s43oSR1uhCMj50=;
-        b=SfRqkZjGk4xLkiKRPkic45WPKXaunL6NYZ24h/zXDjXDzVm4ku84fp4z7wFl5/gT/o
-         RO6VUrqjGgUqCgv11XHDFwX/RXJi6jdpIzJ/Egn3oy3gd4uWtNb9YDgk2RNu4YiT/s8+
-         ieb5H1s1tn8Q4K4o1pTRHw5hsLHncT4J2Wf0S2hUXP+tDsX7KOzQ7Sfi6xNYHdyFUzwN
-         /+zg0zJDgJsfKcDCSQ6rdvbZdUu1xVWK6NkTIrocbAeqszZCU1iaAGC5vwXdns35Lv+b
-         7RtAceJEbs34p7AF5aUCyvRXEWT/pIQNgCZ0Bz43VMepOiDH5PDya6ERuVPSyRaYaT/v
-         FNOw==
+        bh=YzQixld7pSKyZ/Q/HfBpbSkDP1wbVsZogbStCOaFhmk=;
+        b=Fk8z4fdzie74innj7D79z4BbhEvHGRuB1AHDlsTBByDHH0KNTWCoC4qhYasoLNxbHF
+         XTWZo11HpXYIweZnSxbNiqUSjT7JcrAzglobEvdX/oeKEPoqIvq2UzcmOeAB/S2M/Ti+
+         e5FPyUwzsNW6UkGsxVGnjJvL9osjGKmwnNEUJFahgwffrzNnZdmu604N04mYO+3AImpx
+         mo8s5j65R94/oJNjlUcXNtGT97VuKi7tq+ndEhvZCIC8rFz4I9RDAzMEhXH6x3tpFCfX
+         cirpjfF0CveXPdB8ReKX3OUU0zAafDeef17Kb4N4jD561W4luksmdvpoLKp11JBeKtGv
+         R5Ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752599237; x=1753204037;
+        d=1e100.net; s=20230601; t=1752606411; x=1753211211;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=D5iNuzhutabTsgyHNmq5UmAbTLz86s43oSR1uhCMj50=;
-        b=XIPe+XlGja1dvV8eEd4AyDjmVPYg+kDw8fPxZVfUXbhkqjEHDojIF/DshCWEqVyO5s
-         dzLxEebnn4yi/iZUTx9NFsCJhfcIYp74SFHyRmHsrrtYTjXqKtFJRd8t/Q/bybhR1NVk
-         boK5BXH3rxoS7sGPmJqhmjQXrxeziNAKe2U6QUXnlOPI35/7kGTtYaKpWtrNIAH0yzvW
-         vAdjnCpaqdmebMVjNMJPNlolcOSrSM+n6MvHpyyqGb3Wvq3rAWN8Xe9uCjS0zCFY/Fbv
-         DoW5VXDqmFUH+nuWK63AHsYRX7tjO1WE+WDiPY2K/n1v63GtMJHSe9jp5aBBD2NCEZDN
-         O7Fg==
-X-Forwarded-Encrypted: i=1; AJvYcCVzsR+gWczKHghYoJ6IWQuXaCLZfOFMSSoK3ifq8ySer8CgP02te4tlu/h9gCxzvJvKX/IN922dAhEf@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxn/1moIcjiWs674lYNkGXjNtcI3mOYDY5ncLCAfUND3wK3lduQ
-	CNjlcRhEaaKByMxUq4Cl+xuOhIOnR68KdtiSCdUehP3l9KYZOCRBKm9dc9VOo31LQzA8Tp0A50r
-	SAHmmo6ghXwlCrvAm87CRI8wtKTDMTsJBZVkGF6cZ
-X-Gm-Gg: ASbGnculsK3qP0sh/j34PiNu9ZJg/LLfD4/qdj+JfTpxG5V9fb8UR/9l8S/Wq3Wl73r
-	Xzte3mwfvUqmnHd8m4jkuf5bRgyXH7Gp1FLLXxkkKfx79bezF+br7+MC8P2+0iEY+yh4squnvO0
-	JRpAEbfItkVjM464Y2AHnSY2nvPx36K8L2HIZELlUn3h42j/MVmOE5GO7U/wBxOgqfY+rsG6592
-	SObLDTIgaam2LQKFI7bmt86teWE+/HhO6NVMQ==
-X-Google-Smtp-Source: AGHT+IHLAGTn1Emeu5qzmFf+v0WLOm0wkpMjlKYOjirs6Jes9LhingmeqRFWoO0Ayq2Sf39BciZkEOn0fxvO6vjDMnk=
-X-Received: by 2002:a17:90b:4e83:b0:311:a5ab:3d47 with SMTP id
- 98e67ed59e1d1-31c8f7dbf49mr7146720a91.1.1752599236745; Tue, 15 Jul 2025
- 10:07:16 -0700 (PDT)
+        bh=YzQixld7pSKyZ/Q/HfBpbSkDP1wbVsZogbStCOaFhmk=;
+        b=n2PZSFfNswCODmL6PdP/2BK8RPxlRCsCXZIDvmgK8/NCOD6sn7YxxI0qN9FmofxlDe
+         IcUh2PM5UGNSVzw+cruRVSa29tQNNVCl6GgEMzHrwSZ8p5aOKcSfOz1pvBZlHy2H9VI4
+         bM5m1jiMGCvH66hjo90Q0Vlw9ckqfSJPbCCf1CtwaRCVJAwWpmNi0kLxdP0ET0xXL+kR
+         kq+RImv1HtYcMZRvN2HBovQ2lprMzzyifLsn8bv2PasexJthFQmXEDRyDUCGShReD3a1
+         gE+oEk/5wcDsWVK8iHS8XsERzK6v5bPGk7KwvlodLQ4DSyMJ60tz4hEalyMnAJC+Qm10
+         geww==
+X-Forwarded-Encrypted: i=1; AJvYcCVmjSUj06wny5ON9QZ5zk/FRXhZH5OFmrB5Z1S4jVPu0dEhfXa3X4UTQE+I8HW8eaXs3pzNAEAACoM+@vger.kernel.org
+X-Gm-Message-State: AOJu0YxHat6Pj99paIAyvJu4GjFmuE1P3Fn5LCPKc9qBiaSjVm/gZqkL
+	fCm0e9xEMrM46Aqq3s9pVcSWT9BJVZpMrhxI3FF7/UMhhxwRfSbxx3jD4LS72JecUyx6Xm/z5dC
+	x7xs54On4Vslt5KB3eXBZy0Tn8oEjRhJIqhQBYEPZ
+X-Gm-Gg: ASbGncsv23WaEfyUG+IUluqGAKbaAxMMF7hIXqxFmEDDASJ/C2Y/2ly54bwj3SWsywC
+	t2lLHkADIoRau9Nnb0Wkx0eVw8s9/sfBjpwXGDV5N9GkyaAScHQY2Qo/Bk8qC8E7MXfOxON9t9i
+	yo2NGxoLHpTU85fjmqvTowXU/D2Itx8x9RAH6TJLaThe1/IOgV9MhTJ/1FLG4GmvkAyp60m3jC/
+	CgbmKYHg+WNgUCT3zqod1MIRoFsHkvHTwHjBQ==
+X-Google-Smtp-Source: AGHT+IERW8BNAcLICEi0xDHHwbh6I9mZCyIk3Mt306+jQnPwqHCieheEaqBVCmnvb9hqZyStUnuqxe9DuyWkdC9x3QM=
+X-Received: by 2002:a17:902:cec3:b0:235:f298:cbbb with SMTP id
+ d9443c01a7336-23e24c6e119mr315625ad.26.1752606409905; Tue, 15 Jul 2025
+ 12:06:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250711060808.2977529-1-kuniyu@google.com> <965af724-c3b4-4e47-97d6-8591ca9790db@linux.ibm.com>
- <20250715115852.GA20773@j66a10360.sqa.eu95>
-In-Reply-To: <20250715115852.GA20773@j66a10360.sqa.eu95>
-From: Kuniyuki Iwashima <kuniyu@google.com>
-Date: Tue, 15 Jul 2025 10:07:05 -0700
-X-Gm-Features: Ac12FXyF2RRGFRlApZSFjNa_0BZUMnhfS-C-PutTrPe_apQKn2nYMlszR-omJEs
-Message-ID: <CAAVpQUDrtvVadYGG1ZfL=usU11jbN-bZ=FQ4n5+1Ammry-w1yQ@mail.gmail.com>
-Subject: Re: [PATCH v1 net] smc: Fix various oops due to inet_sock type confusion.
-To: "D. Wythe" <alibuda@linux.alibaba.com>
-Cc: Alexandra Winter <wintera@linux.ibm.com>, Dust Li <dust.li@linux.alibaba.com>, 
-	Sidraya Jayagond <sidraya@linux.ibm.com>, Wenjia Zhang <wenjia@linux.ibm.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Mahanta Jambigi <mjambigi@linux.ibm.com>, Tony Lu <tonylu@linux.alibaba.com>, 
-	Wen Gu <guwen@linux.alibaba.com>, Simon Horman <horms@kernel.org>, 
-	Kuniyuki Iwashima <kuni1840@gmail.com>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-s390@vger.kernel.org, 
-	syzbot+40bf00346c3fe40f90f2@syzkaller.appspotmail.com, 
-	syzbot+f22031fad6cbe52c70e7@syzkaller.appspotmail.com, 
-	syzbot+271fed3ed6f24600c364@syzkaller.appspotmail.com
+References: <20250714120047.35901-1-byungchul@sk.com> <20250714120047.35901-3-byungchul@sk.com>
+ <CAHS8izO393X_BDJxnX2d-auhTwrUZK5wYdoAh_tJc0GBf0AqcQ@mail.gmail.com> <9bed2f6e-6251-4d0c-ad1e-f1b8625a0a10@gmail.com>
+In-Reply-To: <9bed2f6e-6251-4d0c-ad1e-f1b8625a0a10@gmail.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Tue, 15 Jul 2025 12:06:36 -0700
+X-Gm-Features: Ac12FXwyUUoU8xGdECWjpzai5Qr9bPwFw8HDcAUKWZbO5pnAVYeauYEt5y8_8Qs
+Message-ID: <CAHS8izMYLw3JfonoQ7n4ZaWivdBVKqZejgyRiAku5j1rx7gBPQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v10 02/12] netmem: use netmem_desc instead of
+ page to access ->pp in __netmem_get_pp()
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Byungchul Park <byungchul@sk.com>, willy@infradead.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, kernel_team@skhynix.com, 
+	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, akpm@linux-foundation.org, 
+	andrew+netdev@lunn.ch, toke@redhat.com, david@redhat.com, 
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com, 
+	mhocko@suse.com, linux-rdma@vger.kernel.org, bpf@vger.kernel.org, 
+	vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com, 
+	jackmanb@google.com, wei.fang@nxp.com, shenwei.wang@nxp.com, 
+	xiaoning.wang@nxp.com, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, anthony.l.nguyen@intel.com, 
+	przemyslaw.kitszel@intel.com, sgoutham@marvell.com, gakula@marvell.com, 
+	sbhatta@marvell.com, hkelam@marvell.com, bbhushan2@marvell.com, 
+	tariqt@nvidia.com, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org, 
+	john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org, 
+	mbloch@nvidia.com, danishanwar@ti.com, rogerq@kernel.org, nbd@nbd.name, 
+	lorenzo@kernel.org, ryder.lee@mediatek.com, shayne.chen@mediatek.com, 
+	sean.wang@mediatek.com, matthias.bgg@gmail.com, 
+	angelogioacchino.delregno@collabora.com, aleksander.lobakin@intel.com, 
+	horms@kernel.org, m-malladi@ti.com, krzysztof.kozlowski@linaro.org, 
+	matthias.schiffer@ew.tq-group.com, robh@kernel.org, imx@lists.linux.dev, 
+	intel-wired-lan@lists.osuosl.org, linux-arm-kernel@lists.infradead.org, 
+	linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 15, 2025 at 4:59=E2=80=AFAM D. Wythe <alibuda@linux.alibaba.com=
-> wrote:
+On Tue, Jul 15, 2025 at 3:36=E2=80=AFAM Pavel Begunkov <asml.silence@gmail.=
+com> wrote:
 >
-> On Mon, Jul 14, 2025 at 09:42:22AM +0200, Alexandra Winter wrote:
+> On 7/14/25 20:37, Mina Almasry wrote:
+> > On Mon, Jul 14, 2025 at 5:01=E2=80=AFAM Byungchul Park <byungchul@sk.co=
+m> wrote:
+> ...>> +static inline struct netmem_desc *pp_page_to_nmdesc(struct page *p=
+age)
+> >> +{
+> >> +       DEBUG_NET_WARN_ON_ONCE(!page_pool_page_is_pp(page));
+> >> +
+> >> +       /* XXX: How to extract netmem_desc from page must be changed,
+> >> +        * once netmem_desc no longer overlays on page and will be
+> >> +        * allocated through slab.
+> >> +        */
+> >> +       return (struct netmem_desc *)page;
+> >> +}
+> >> +
 > >
+> > Same thing. Do not create a generic looking pp_page_to_nmdesc helper
+> > which does not check that the page is the correct type. The
+> > DEBUG_NET... is not good enough.
 > >
-> > On 11.07.25 08:07, Kuniyuki Iwashima wrote:
-> > > syzbot reported weird splats [0][1] in cipso_v4_sock_setattr() while
-> > > freeing inet_sk(sk)->inet_opt.
-> > >
-> > > The address was freed multiple times even though it was read-only mem=
-ory.
-> > >
-> > > cipso_v4_sock_setattr() did nothing wrong, and the root cause was typ=
-e
-> > > confusion.
-> > >
-> > > The cited commit made it possible to create smc_sock as an INET socke=
-t.
-> > >
-> > > The issue is that struct smc_sock does not have struct inet_sock as t=
-he
-> > > first member but hijacks AF_INET and AF_INET6 sk_family, which confus=
-es
-> > > various places.
-> > >
-> > > In this case, inet_sock.inet_opt was actually smc_sock.clcsk_data_rea=
-dy(),
+> > You don't need to add a generic helper here. There is only one call
+> > site. Open code this in the callsite. The one callsite is marked as
+> > unsafe, only called by code that knows that the netmem is specifically
+> > a pp page. Open code this in the unsafe callsite, instead of creating
+> > a generic looking unsafe helper and not even documenting it's unsafe.
 > >
-> > I would like to remind us of the discussions August 2024 around a patch=
-set
-> > called "net/smc: prevent NULL pointer dereference in txopt_get".
-> > That discussion eventually ended up in the reduced (?)
-> > commit 98d4435efcbf ("net/smc: prevent NULL pointer dereference in txop=
-t_get")
-> > without a union.
+> >>   /**
+> >>    * __netmem_get_pp - unsafely get pointer to the &page_pool backing =
+@netmem
+> >>    * @netmem: netmem reference to get the pointer from
+> >> @@ -280,7 +291,7 @@ static inline struct net_iov *__netmem_clear_lsb(n=
+etmem_ref netmem)
+> >>    */
+> >>   static inline struct page_pool *__netmem_get_pp(netmem_ref netmem)
+> >>   {
+> >> -       return __netmem_to_page(netmem)->pp;
+> >> +       return pp_page_to_nmdesc(__netmem_to_page(netmem))->pp;
+> >>   }
 > >
-> > I still think this union looks dangerous, but don't understand the code=
- well enough to
-> > propose an alternative.
-> >
-> > Maybe incorporate inet_sock in smc_sock? Like Paoplo suggested in
-> > https://lore.kernel.org/lkml/20240815043714.38772-1-aha310510@gmail.com=
-/T/#maf6ee926f782736cb6accd2ba162dea0a34e02f9
-> >
-> > He also asked for at least some explanatory comments in the union. Whic=
-h would help me as well.
-> >
+> > This makes me very sad. Casting from netmem -> page -> nmdesc...
 >
-> Just caught this suggestion... The primary risk with using a union is the
-> potential for the sk member's offset within the inet_sock structure to
-> change in the future, although this is highly improbable.
-
-Right, and this only happens when we start using inet_sock in the union.
-
-
-> But in any
-> case, directly using inet_sock is certainly a safer approach.
+> The function is not used, and I don't think the series adds any
+> new users? It can be killed then. It's a horrible function anyway,
+> would be much better to have a variant taking struct page * if
+> necessary.
 >
-> Uncertain if @Kuniyuki will still get to revise a version, If there's no =
-further
-> follow-up, I'll make the changes when I get a change.
+> > Instead, we should be able to go from netmem directly to nmdesc. I
+> > would suggest rename __netmem_clear_lsb to netmem_to_nmdesc and have
+> > it return netmem_desc instead of net_iov. Then use it here.
+>
+> Glad you liked the diff I suggested :) In either case, seems
+> like it's not strictly necessary for this iteration as
+> __netmem_get_pp() should be killed, and the rest of patches work
+> directly with pages.
 
-I'll post a follow-up once net.git is merged to net-next.
+Good catch, in that case lets just delete __netmem_get_pp and there is
+no need to add a netmem_nmdesc unless we find some other call site
+that needs it.
+
+--=20
+Thanks,
+Mina
 
