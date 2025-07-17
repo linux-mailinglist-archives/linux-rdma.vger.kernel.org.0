@@ -1,34 +1,34 @@
-Return-Path: <linux-rdma+bounces-12229-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12230-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C3C6B083B5
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jul 2025 06:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 43AE2B084F3
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jul 2025 08:32:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F69F567C02
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jul 2025 04:19:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 842385659E8
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jul 2025 06:32:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0BF21FFC41;
-	Thu, 17 Jul 2025 04:19:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF7E1215766;
+	Thu, 17 Jul 2025 06:32:38 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C692F1F9EC0;
-	Thu, 17 Jul 2025 04:18:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 473881A841F;
+	Thu, 17 Jul 2025 06:32:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752725943; cv=none; b=ehIgIxLA1ooydtsqChU3+DlOI0NQ/bKBUBwvUZSA3X2AqmeVgDZSILXSa4WWNOqc9LgOyuy4zhuvwrKdMQqGrgwvYPMQU5B68baEQ8PYV6SUYLJvfpcfH6/FXs1zQj7k5fMcH0C/J1jnIPU3h3FFRYbnWDt7KeoBQ0aN25yIbgU=
+	t=1752733958; cv=none; b=L9mAYTWt3+KDxucCIpXNTWzRjUh2WL+4E1XWzOqtA2pafmNcW9QBzKSqLjXmu9igheRjIH4XbdJmH0bmIlSrtLrMBcfZfMYDkmQ1kdKQOeEkrG5cmVZyNSltS00RafOATEbUSt+2BgvJ/j9Gp8NginLJ5MUvUZq00MCWXawpQtA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752725943; c=relaxed/simple;
-	bh=SxsC0AtvePv5O9c8hnEMPH618+dNqauOpb3UqFCqOU4=;
+	s=arc-20240116; t=1752733958; c=relaxed/simple;
+	bh=4TMBl1ezB8kszm0sZIN26Bt/jSN0MsvU0gKuNks4fqs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YXM11VmI9qYbT8ZrQCAFOc1CGavi9SKCpmLr74xAFTOJuFQU4AS8fxFTHgh6NzWXRgjNw7Tyw7Do7MQL2AyCIYUfzm3Mx9BHsz85SNit2pkxN+RWcO7frvGL83j5CaMt1Tvuh/utbv3eZuQcBUjRcgGDcxTNbbQO+8KSw5otTtw=
+	 Content-Type:Content-Disposition:In-Reply-To; b=AzRIzzcbpw7vzs1W90DAR5jnKprmzn+G44rxQwD7euFSbiinP+zoYCg6PUYUkLRvyW0KOv2DwRbl4pSA7A6FwlPNVX9rsY9Qkja6AlDmvL0IOhojmJDxMa95vKg8ykJamGJ58WxiMH5kxA2kXoncOkb7JHwCLnvQWOtms3OzUMg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-f3-687879af9283
-Date: Thu, 17 Jul 2025 13:18:50 +0900
+X-AuditID: a67dfc5b-681ff7000002311f-f3-687898feb6e6
+Date: Thu, 17 Jul 2025 15:32:25 +0900
 From: Byungchul Park <byungchul@sk.com>
 To: Mina Almasry <almasrymina@google.com>
 Cc: "Lobakin, Aleksander" <aleksander.lobakin@intel.com>,
@@ -60,7 +60,7 @@ Cc: "Lobakin, Aleksander" <aleksander.lobakin@intel.com>,
 	linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org
 Subject: Re: [PATCH net-next v10 02/12] netmem: use netmem_desc instead of
  page to access ->pp in __netmem_get_pp()
-Message-ID: <20250717041850.GA70234@system.software.com>
+Message-ID: <20250717063225.GA28772@system.software.com>
 References: <20250714120047.35901-1-byungchul@sk.com>
  <20250714120047.35901-3-byungchul@sk.com>
  <CAHS8izO393X_BDJxnX2d-auhTwrUZK5wYdoAh_tJc0GBf0AqcQ@mail.gmail.com>
@@ -80,41 +80,40 @@ Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 In-Reply-To: <CAHS8izMK2JA4rGNMRMqQbZtJVEP8b_QPLXzoKNeVgQFzAmdv3g@mail.gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUybVRiGd97vVmreVdSzzWVJceqWgKhonsRlIVOT18QZzf7o9sNV+8ZW
-	+VgK7crU2DEU1zg2xjS0KwY2thU6KSkCpXa4FRzVfUEHWAe0g7lljLIPBg2lldqWLPLvyrmf
-	c1/PSQ5Hyl3Mak5TVCpqi5QFCkZKSaczjmW3lhnUueXhx8HqOM3AwMMGGuzzBjh13UWDvwnD
-	r/3zBFibOxDMRkdYcO4fJeFhbx8DxxsiJERbD1BgvVJBwZxjgYSb5ydY8Hn/pcDu3Aqhk7co
-	8FR2ktAztx4mDvoYOFARI8Ec/IaBxLUYDWeid1kod9kIODPVzkJ/RxUNRxZOkNBpvJ503Rim
-	4arbysDVfQMIgqcTNNzyJoVh2ygLVXYLAu9vTQyUV7wC4fZZFu7/0EtCqCofFmv1cL7+KYhc
-	CCMYOTFEQMLjYuFysIWGXkcnAYPjURIi39cxYJo+iGDI7CbgYl0rDY0XBonkHttgOBEnoMZf
-	z8CNihACf88EBUf3ViFwdAdoeOBJPjk2b2Xytwg94Xuk4BprRMIvTX8Twu1Di4QQ6P6TELos
-	Y6xQ79QJbbaNwnHPJCGYAn5ScDbvZwTnzGFWGB32MIKvNkYJbY1fC7fbzOi9tdulm1RigUYv
-	al/cvFOqDk6qd02/ZZirOYuM6GaeCUk4zOfhvTEz+4i/vXefSjHFr8d3r1jJFDP88zgQiKY5
-	k9+AG7uraROSciTfkoHHp66hVPAEr8PHxgPpyzIesD14CaWG5PwIiX+Mm5ilYCX+w/xPeohM
-	tsZ/8idbuSSvwacWuaXjdXhf+9G0TMK/j4OD7Wl+ks/CZzv6iFQn5iMSHLfMEUtbr8LnbAHq
-	EFppWaawLFNY/ldYlinqEdWM5JoifaFSU5CXoy4r0hhyPikudKLkfz75VXyHC830b/MinkOK
-	DNnO1t1qOa3Ul5QVehHmSEWmrMavV8tlKmXZHlFb/JFWVyCWeNEajlI8LXs5slsl5z9Vloqf
-	i+IuUfsoJTjJaiNS1m7fkm3dY7yTsUmX+Kwroh89/OxY1+89b1+MziRKFereygdf+mo+9PVl
-	tby6Oftj3+tbK2fXybOKE5eOTH7wwip3abX7NdWAPpb/XMvPqFr5zLvyFQZdZk5oqCFoXGux
-	77AFc1Wmuu8WFCty/trwzpuOcwsTmW88dsf9heRybt/4VEhBlaiVL20ktSXK/wCz2PrZywMA
-	AA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SfUxbVRiHPffcLxpq7iq661hYUjONNeIWMb7qtiyZH0eSGc1mFheNVLna
-	BijYjg5MjDjqlIYBG2JGVwy4jq+OlbQDuq1jpEVWRAcrDOuAMsAtI+sGbkDWgdTSxch/zzm/
-	9zy/94/DY0UVu47X6vZJep06W8nKaNk7rxU/7ygs0Gyyj24Gq+MkC5fv1TFgv18ADdfcDASa
-	RDg3cJ8Ca3M7grnICAfOklEM97ovsnC8bgFDpPUQDdZ+Ew3zjgcYrvdMcuD3/kOD3bkTxutv
-	0OD5rgODb34jTJb7WThkWsRQHfqWhejVRQbOR+5wcMDdSIGvpjd2vNXGwUB7GQM/PDiBoaPo
-	WqxwapiBwbNWFgaLLyMInYwycMMbaw03jnJQZrcg8F5oYuGA6UUIt81xMFvVjWG8bDssHzVC
-	T+0TsNAXRjBy4goFUY+bg0uhUwx0OzooGJqIYFgorWHBfLscwZXqsxT8VtPKgK1viIrtsQuG
-	o0sUVAZqWZgyjSMI+CZpOPZNGQJHZ5CBvz0mevsO4gvPYOIesyFyuulPitysWKZIsPNXipyx
-	jHGk1plPXI0qctwzTRFzMICJs7mEJc67RzgyOuxhif/oIk1ctq/JTVc1ejdlr2xLppStNUr6
-	F7ZlyDShaU3e7TcK5iu7UBG6nmZGCbwopIkHZ2bpFaaFjeKdfiteYVZ4RgwGI3FOEp4VbZ2H
-	GTOS8Vg4lShO3LqKVoLHhHzx54lg/LFcANEe+h2tDCmEESz+uGRmHwZrxN7qv+JDOGZd+ikQ
-	s/IxThYblvmH1xvE4rZj8bIE4T0xNNQW58eFp8Su9otUBXrUsspkWWWy/G+yrDLVIroZJWl1
-	xhy1NvulVEOWplCnLUj9NDfHiWKftf6rpcNuNDf4lhcJPFImyjNa92sUjNpoKMzxIpHHyiR5
-	ZcCoUcgz1YVfSvrcj/X52ZLBi5J5WrlWnr5HylAIn6v3SVmSlCfp/0spPmFdETpPzTds2TOr
-	Gh5gNyX58/DIm96+c/YzL7soopp5xfT0jqro9GKdN1L63KCtIqWnqqV9/yNpH6b3n349+f26
-	4vXOveNHvtj2SYe7NPHSqx/t2vDBk7tbVL/84W+pv7AzTbe193tqq843fbB8ytiVyn6Wtdb1
-	dtHdzJJ0bef6XHPKGJbCStqgUW9WYb1B/S+S5G2AqAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0yTdxTG83/vNNS8VLf9p1tcuonRRNyULSfZJUa/vF9cNC5ZolFo5J1t
+	BkhaqUCyjWmXzWZUho7QUhSlaLmMYhGoWjptkbK5bLRSrHIrOI2biMxLR7mUvS0x49uT5zl5
+	fuckhyMVLmYlp8k/JGrzVblKRkbJHqWe3RCvKlK/fbXxfbA6mhkIPD1DQ9N0EZyPuGgINmC4
+	0jdNgLWxA8Gz2CALzmNDJDzt9jNQdyZKQqy1jALrHwYKnjtmSLjXM85Cr3eegibndhg9d58C
+	97edJPier4Hx470MlBlmSTCPfMPAwp1ZGrpikywccdkJ6HrYzkJfh4mGkzP1JHSWRiTW3QEa
+	bl62MnDzaADBSPMCDfe9EnDCPsSCqcmCwPtzAwNHDJthov0ZC1M/dpMwatoC8So99NS+DNEb
+	EwgG60MELLhdLPw+0kJDt6OTgP6xGAnR72sYMD46jiBkvkzAbzWtNNhu9BPSHrtgYGGOgBPB
+	WgbuGkYRBH3jFFR/bULg8IRp+MctnTw7bWW2bBV8E49JwTVsQ8LFhtuE8KA8Tghhz6+EcMky
+	zAq1zkKhzb5eqHP/RQjGcJAUnI3HGMH5pIIVhgbcjNBbNUsJbbavhAdtZrTj9d2yD3LEXI1e
+	1G78KFum7g+U0QXhbUUXfOmlKL7JiFI4zGdiv7WKeqHtxttkQlP8Gnyh20MnNMOvxeFwLOmv
+	4Ndhm+cHyZdxJN+Sisce3kGJYDlfiM+OhZNFch7wTw1xlBhS8IMkrpwzMotBGv7F/GdyiJRa
+	504FpVZO0qvw+Ti3aK/GR9urk7AUfice6W9P6pf4N/HVDj+R6MR8NAVfujaGFrd+FV+zh6ly
+	lGZZgrAsQVj+R1iWIGoR1YgUmnx9nkqTm5mhLs7XFGXsP5jnRNI/n/tibo8LPenb5UU8h5Sp
+	8uzWw2oFrdLrivO8CHOkcoX8RFCvVshzVMUlovZglrYwV9R50SqOUr4i3xQ9nKPgD6gOiZ+L
+	YoGofZESXMrKUiQ3zWTU1L+2J572HrE9csWnK0/v+24Hf2pS8FdsSO9xTm+OOPZmRajTusrh
+	f7NQKNtQ0fKpedI29aW/efBeRhOxr+Bk17vBkg/fmnrj+q2ZbeLfmfV7W8wHQuO3qudV2ouV
+	8/C4zvFZ4PTHZKXnk5rJoZK1y1zxUF0osGzf6p3rtiopnVr1znpSq1P9B9AI6bPLAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUxTdxTG87//+0ZHl7uObTeaOVPiyDBzsjlzli0LiVl2x+Je4hYzPkwK
+	3KydUKS1HSwaO6hZbGytAgtU0DJQS0HAdkDVjm0tEZx7kYKk8lIEHXMBpw5EK6XsFrOMb895
+	npPfcz4cFiuq6FWsRrtb1GlVBUpaRsree738xXh1iXqj3aSE2rYWGvpn6yloflACp675KAg1
+	8XD+8gMCat2dCOaiIwx4DoximO3ppaGhfh5DtN1KQu3vZhLutT3E8MeFSQb6AoskNHu2wvjJ
+	KRL8X3dhCN5bB5OH+miwmhcw1ET207A0vEDB99G/GSjzuQgI1l2UxukOBi532iiofHgCQ5fp
+	mlR4fYiCgXO1NAyU9yOItCxRMBWQWmdcowzYmh0IAj800VBmfgVmOuYYuFPVg2HclgnxaiNc
+	cD4N85dmEIycuELAkt/HwG+RVgp62roIGJyIYpg/WEeD5dYhBFdqzhHwS107BY2XBgnpjm0w
+	tBQjoCLkpOG6eRxBKDhJwtGvbAjausMU3PWbycwtQnDmNhZ8Y41I+K7pKiHctMcJIdz9MyGc
+	dYwxgtNjELyudKHB/xchWMIhLHjcB2jB888RRhgd8tNCX/UCKXgb9wk3vTXogzXZsjfyxQKN
+	UdS99GaOTD3Yb6V2hbeUnAk+b0Lxly0oieW5TbzLchUnNMmt48/0dFMJTXNpfDgcXfZTuBf4
+	xu7Dki9jMdeazE9MD6NE8CRn4L+dCJMJLeeAP90UR4klBTeC+W9iFvpR8AR/sebG8hKWqLFj
+	IYnKSno1fyrOPrKf48s7ji6XJXEf8pHBjmX9FJfK/9jZS9jR444VJMcKkuN/kmMFyYlIN0rR
+	aI2FKk3Bqxv0O9WlWk3JhryiQg+SnvXk3thhH5obeDuAOBYpk+U57V+oFZTKqC8tDCCexcoU
+	eUXIqFbI81WlX4q6oh06Q4GoD6DVLKl8Rp61XcxRcJ+pdos7RXGXqPsvJdikVSaUGtnYWlyf
+	nzwQW6/NWHz2RmY8Y7OtYr3BuiYNu/233M25VWPFn6Qzn37cmfvO5m2f75jatG/y/vkG5s5Q
+	XtnZd+++76z80zCWFrFPn05d6+4q/mjeNew9+Gt21tbsrP25ssrje3RrZ4/DT9Yj44/d33N7
+	wWR5y753e16L7bVe72JdUVRJ6tWqjHSs06v+BSardbOoAwAA
 X-CFilter-Loop: Reflected
 
 On Wed, Jul 16, 2025 at 12:41:04PM -0700, Mina Almasry wrote:
@@ -288,17 +287,9 @@ On Wed, Jul 16, 2025 at 12:41:04PM -0700, Mina Almasry wrote:
 > 
 > Yes. netmem_nmdesc should replace __netmem_clear_lsb.
 
-Trivial concern.  I don't think the contraint that the nmdesc must be
-the first field in struct net_iov is __unnecessary__.  Thus, I think
-netmem_nmdesc() should be something like:
-
-	if (netmem_is_net_iov(netmem))
-		return &(struct net_iov *)((__force unsigned long)netmem &
-			~NET_IOV)->desc;
-	return __netmem_to_nmdesc(netmem);
-
-Do you want to keep the current contraint so that the just casting to
-struct netmem_desc after the clearing, can work in netmem_nmdesc()?
+Even though the unsafe version is required in this series, on second
+though, the safe version, netmem_nmdesc() doesn't have to be a part of
+this series.  Let's do adding the safe version on top after.
 
 	Byungchul
 
