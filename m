@@ -1,80 +1,87 @@
-Return-Path: <linux-rdma+bounces-12249-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12250-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 886E8B0892F
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jul 2025 11:22:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F495B08A84
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jul 2025 12:29:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7725566DCC
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jul 2025 09:22:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 598DA58347D
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jul 2025 10:29:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C19328934D;
-	Thu, 17 Jul 2025 09:22:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2166129992B;
+	Thu, 17 Jul 2025 10:28:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IYmTJz/A"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RS7OKs89"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98301288525;
-	Thu, 17 Jul 2025 09:22:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E75D28BAB6
+	for <linux-rdma@vger.kernel.org>; Thu, 17 Jul 2025 10:28:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752744126; cv=none; b=aYPu5EqJXvrJQHiUw9TUlalKXO3h66qgCUoVMAY5cg/jCWOH3Gh5KDKUPkdI9mqG2u6dIqbdMndtGLMdWCUHsx8qzqZmAPr7/PgP3VNJCoXnRVWuFodZiVb8IRBdQsi7sVAcmOdjWE5HTi932G4E3qPHa527RfkPn+LT1p8H5m4=
+	t=1752748125; cv=none; b=WL/GmolXEqQveCpnt9V21JnAtmRhEuUPD1Yt35Sv/rGpof/sbJduObFtlUIEmNr6IAMf4xlizX5vU1AEPYOl17Gh0m44NwdZDZaNBRaMaMb9+k3a+6wkWzIOe+DksuhwvQHjEZEpgWFL12ebQpC8N4w4EZTSKlkxHz2ca6lOOP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752744126; c=relaxed/simple;
-	bh=Y8vcLPseK/UXuwRNAw+Cg504FHOBMlHLrWxVdz5/NHU=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ioArmCaanBXW2hyH1ItYtstux/sqKmho5370mh8CfRTbcaUSRMQtPkhIwfneJBGVdjMikyKkpRSpWhPt2spn4dMMZRsUOOB2zgFRV1r4w3uRkh5TvYrzW5yp+OpzvklUGv5JjmbZsR0/8hC0LJh1SLLoZacEoQac3EQk46N9SNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IYmTJz/A; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-60707b740a6so996630a12.0;
-        Thu, 17 Jul 2025 02:22:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1752744123; x=1753348923; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=i00DCL7LArMdrcvWGazqRQUXotNFwoxDDFzCPluiP0Y=;
-        b=IYmTJz/A5Kz6o5+KcC8NCdjg1C37ewDcCv5ici1kBzNYiSf+k9PerHemVgbNpfOuDT
-         RQYbFVzUO+ZK9E1akMqj0QMJAaOCEhseAPS7BVdvYuIAp4a7elzcP+Tl64AJ0UvghHe1
-         Abq2HxZ6HivRnyAUU1e7jt4fw4Tj3Lzaau5G7YxunVddP4RiEu3QpKdfVNWkANdf/SAk
-         7w4uGgU48iURlM+cYS2lbNxT50+sg2M7dHgtWWog0hu4u0JHiUFvRL52KwRuhwVV943n
-         CY5eOZIXkP8h3PU/iJAqyagD5wprojomQpp/Crx38H/zAXCtVoYqR36N1kr3Ve0a+5Bi
-         a48g==
+	s=arc-20240116; t=1752748125; c=relaxed/simple;
+	bh=jUdhsdYpTt1d6dMYdauSDmb89Vp8/6bJZpeXdUWuSsI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ffuu6lUvXBa5s1dOsssBc8JikAnrqTv/x9kwYPrsJlD2MPOdW9pCPEnAz5/v6h6v5U2i46ZjKV6bo5JFy8XliGIbwiiwLJ4bkOIxv1vO22Q3qpN03tBfp0uo37oAeeCm3xSptawm14wDqqHJ2ynzwBtwsZH76BFRGUiYpFAM4v4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RS7OKs89; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1752748122;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C7gVITUafWmvL5PweD1Qd+07vmGN3UO2X3r0tdcxJLc=;
+	b=RS7OKs89s+FtDGmsPmbuHsWBePCB94adjnMi64VZveCThnfNpfmBEHPbXNzBcIBf7ROLsv
+	0i8sLtT/xGxXGTrDTRHbbzh2f9nAIyThirB9IdzW7cUi4MO1C+EnjykLCvE2F9exFl8QeN
+	gznWB5lbuAy/6Thi6lCyjfshzMmrq5k=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-144-sPJ-ekf8MvGMJn6yTOiOIQ-1; Thu, 17 Jul 2025 06:28:41 -0400
+X-MC-Unique: sPJ-ekf8MvGMJn6yTOiOIQ-1
+X-Mimecast-MFC-AGG-ID: sPJ-ekf8MvGMJn6yTOiOIQ_1752748120
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-45626532e27so5277825e9.1
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Jul 2025 03:28:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752744123; x=1753348923;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1752748120; x=1753352920;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i00DCL7LArMdrcvWGazqRQUXotNFwoxDDFzCPluiP0Y=;
-        b=dc8qsagzR0Pl6jY+RdEKw+lziB5vq5zPZKUSnjAgU1Ypzm8ftvRdXqTWvO0JxVMeKq
-         dSbOhSal+5ISlH1fJE6DGOUf0InXn37c/Puj2ZKnqc0Sc63fjb15Amgz+sMwOhpjePo3
-         hoPSIabqs8t/rR8k/LGjrmsrCrnovrOj62pYnWO0iuqA3v2LyAhH/Aa8dDuC4AfZ4lUy
-         rrbj1cJOLPz9kZ445p8arYfDQCxAsXsMCp+0ZiOE93PIKncJLvP9BsML3RjzbywC5WN1
-         xSg7IwNNhdgoWDBBD2r99Of+RRJZZKtOC9p/1bx4SEmIF6w9MVXrc4GsNRVehoCHXUQf
-         wHJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVBR5dsezav3s66SVS+08Jiz8dMgExrwI7s1wYPn9S2tYq0Pfyyj1DNrQg/iaxTK+hgvPp9a8KklA9Zbg==@vger.kernel.org, AJvYcCW5KtPVe4LRsTWhmuu2fRlVpLW95GhxbK+ic7ccOWK1wTvX+Ltq5EcAJghhCde4d3XTTY0wtma9E48Mm807@vger.kernel.org, AJvYcCX7/1P4mnZLaoPQzKWGYcrjsPwvqCPyXhoM9JgW24rluMOJ76RlSj/J5PApHc2RWs2Yv+XYTw7K@vger.kernel.org, AJvYcCXRplMlmutO9nCPeCGRwvgLW+MV9p6LlxaxcS7fis/iQ5s9/TwONa9raYOqsLLcaYauQwVnKTa4CQnzJx18ASc=@vger.kernel.org, AJvYcCXtfJc5srVYq5S/RbiUL9rSv43tfMPT7bTEMp0Bu34RfiYEjtfy8EcM6GOq0IQkmAFz2qU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwE06uKxhs4loibTCIdyBW7IWrKUTAEzAHXWnudAvprBchFY0kY
-	sNTWUDTeFR8CSl0hftpM0IDAZwYu/rgJAFme955MDWpYWtM/DJL8fFk9
-X-Gm-Gg: ASbGncvmRB/bn+CvWTaDW7JnIqGiiI2jEMTTnifTnfRCWgEuHRnTcFcsY3NV/cCILgP
-	Q5dzK8QDEXu+0KoF3F3KMnJ01SVvjLOiUcebsdF87aiJ+RRIAI2p8rYldFi8NiK4k13HqWC4VPH
-	B4MmtUkm+aTjVdMP188skGgPMOzBcfW9MpAyVpOeOqkbQv/XcwI6md7PXH2vzPE4nZyxAq8dVlY
-	2I7GjCREOS4ukR5IyqzRahgSirsWnPajBokWex/3cWituowlIFlXd9aYJsiB/BlTkiF49F36ZrC
-	oyaGOK8q2PSBDHPCPMYx8c1lD9fkhAnnYdc47BBXF1YHOQONBcWgz0G3pXKfVGvG0jIfM3TnITC
-	S6rN2i+jyKNYNL7W76nSeEBBXyL4ll8CoUiRYA1rKb+bk7A==
-X-Google-Smtp-Source: AGHT+IEm/CZVfnHKhdEovv47xnxQCwkLFXlL7R6Fz8Q/9sjCF0i+Wwcn8Nmka6MicAHPOBghKdtX1Q==
-X-Received: by 2002:a17:907:3e9c:b0:ae3:c968:370 with SMTP id a640c23a62f3a-ae9ce1e8c11mr471633566b.59.1752744122539;
-        Thu, 17 Jul 2025 02:22:02 -0700 (PDT)
-Received: from ?IPV6:2620:10d:c096:325::1ac? ([2620:10d:c092:600::1:72cc])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-ae6e7eec2a0sm1338371766b.67.2025.07.17.02.21.59
+        bh=C7gVITUafWmvL5PweD1Qd+07vmGN3UO2X3r0tdcxJLc=;
+        b=UHsjrNATWs2fWq53hzedMQ974RwRARBYTZbYLlmKp2jz8l6KR+0+sp64dtDbgrqd7L
+         Rr5IlqllFlL+uzo6J+FAAtI3Jb421lqT3Jghy2mhHtY35YXt0Cot5HDxHdJhtxBLru5y
+         n17DgSMwrKW6oYmact23P4HQ2gshYoWtdKTLabWGhddIju3hNglSEwdg8jyPyi4jCmop
+         7oiZfgDXnsTjqK7mysRkFuJYrA2M+KOBF6qIlRmTeLGpebo3VS9DxD72bKRVgLEqf//M
+         mutnxtJGUQrZ5kFVAu/W2SGYH38jsZMoBJhT+ybBas4p2N0BzuyS9ObO6P5BvRbfrZCx
+         lHKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW7vLlsUQspUCqaSk9PlTpGe8KsPtr6OdV2AYFaZ5qShEONC7DKo2LqPckac7nikHzJA84ZgDErbp1b@vger.kernel.org
+X-Gm-Message-State: AOJu0YwgdjzNOiGJVxuK5OS3a9e5OU2IYMEzIDBasFoRzX2fq1pAWTuk
+	bVnj5iPYkyJqEd7vKHO64d6kyj63wgITmltfvWx0N6ySaBgMBylzQafRBsgoqpy2VacIn6eMV3o
+	iwHQUX2/wCbNDkXrFs6h0JL/KUPfGUDdmthFEq8x05O86MkFW5uRlepmgHmGgSZc=
+X-Gm-Gg: ASbGnctVklvDsGlL0jnsiASljV8bbjQWwFroWQe6Z51l/lVBePQnJ5OWsnP/y+fYzZD
+	FguKswtRmhBO2BcI3lQGR9zyewKFRRDWBwgWmBO+V53AZU0eon1psjMs1ZrNUEnJzXgOF6rG8l6
+	zHF0pEaezZtT4Z/P0muEArX1VFdRY9RQIv2JQSGCNsJgqfND1+RcOtc1ugZgGQmdNx9hDIOt7lV
+	RWyAwF2t/k5E6HK2Di7hz6L63xM/hw2LwOoQI+s7giZYNuNJO7oA2W9Q7i5usCSy+5lO2LAH/sZ
+	pHBaW6GAlGET3jNFDiUaIJ0h9k3JjY8GaRE9Z23C7xbn76x1lV/Te6tnlGULifz4jpIDKpHa2Om
+	9TTXi7TYiOLo=
+X-Received: by 2002:a05:600c:699a:b0:43c:ec4c:25b4 with SMTP id 5b1f17b1804b1-45636ba6679mr19417635e9.10.1752748120046;
+        Thu, 17 Jul 2025 03:28:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFOgkOEHOyVE2SiI81qsIVA8HiJTkl922ofyx4dAQycRB8e33j49uQgyInv7ji80BkcgiT9JA==
+X-Received: by 2002:a05:600c:699a:b0:43c:ec4c:25b4 with SMTP id 5b1f17b1804b1-45636ba6679mr19417235e9.10.1752748119597;
+        Thu, 17 Jul 2025 03:28:39 -0700 (PDT)
+Received: from ?IPV6:2a0d:3344:2712:7e10:4d59:d956:544f:d65c? ([2a0d:3344:2712:7e10:4d59:d956:544f:d65c])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b5e8bd180fsm20192295f8f.2.2025.07.17.03.28.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jul 2025 02:22:01 -0700 (PDT)
-Message-ID: <325c6297-b47f-43ad-8d2f-276cf70f3d57@gmail.com>
-Date: Thu, 17 Jul 2025 10:23:25 +0100
+        Thu, 17 Jul 2025 03:28:39 -0700 (PDT)
+Message-ID: <245a03a1-a2a0-4975-a68b-c70d22d01d97@redhat.com>
+Date: Thu, 17 Jul 2025 12:28:37 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -82,82 +89,73 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v10 02/12] netmem: use netmem_desc instead of
- page to access ->pp in __netmem_get_pp()
-From: Pavel Begunkov <asml.silence@gmail.com>
-To: Mina Almasry <almasrymina@google.com>, Byungchul Park <byungchul@sk.com>,
- "Lobakin, Aleksander" <aleksander.lobakin@intel.com>
-Cc: willy@infradead.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, kernel_team@skhynix.com,
- ilias.apalodimas@linaro.org, harry.yoo@oracle.com,
- akpm@linux-foundation.org, andrew+netdev@lunn.ch, toke@redhat.com,
- david@redhat.com, Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
- surenb@google.com, mhocko@suse.com, linux-rdma@vger.kernel.org,
- bpf@vger.kernel.org, vishal.moola@gmail.com, hannes@cmpxchg.org,
- ziy@nvidia.com, jackmanb@google.com, wei.fang@nxp.com, shenwei.wang@nxp.com,
- xiaoning.wang@nxp.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, anthony.l.nguyen@intel.com,
- przemyslaw.kitszel@intel.com, sgoutham@marvell.com, gakula@marvell.com,
- sbhatta@marvell.com, hkelam@marvell.com, bbhushan2@marvell.com,
- tariqt@nvidia.com, ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
- leon@kernel.org, mbloch@nvidia.com, danishanwar@ti.com, rogerq@kernel.org,
- nbd@nbd.name, lorenzo@kernel.org, ryder.lee@mediatek.com,
- shayne.chen@mediatek.com, sean.wang@mediatek.com, matthias.bgg@gmail.com,
- angelogioacchino.delregno@collabora.com, horms@kernel.org, m-malladi@ti.com,
- krzysztof.kozlowski@linaro.org, matthias.schiffer@ew.tq-group.com,
- robh@kernel.org, imx@lists.linux.dev, intel-wired-lan@lists.osuosl.org,
- linux-arm-kernel@lists.infradead.org, linux-wireless@vger.kernel.org,
- linux-mediatek@lists.infradead.org
-References: <20250714120047.35901-1-byungchul@sk.com>
- <20250714120047.35901-3-byungchul@sk.com>
- <CAHS8izO393X_BDJxnX2d-auhTwrUZK5wYdoAh_tJc0GBf0AqcQ@mail.gmail.com>
- <CAHS8izNh7aCJOb1WKTx7CXNDPv_UBqFyq2XEHHhqHH=5JPmJCQ@mail.gmail.com>
- <20250715013626.GA49874@system.software.com>
- <CAHS8izNgfrN-MimH1uv349AqNudvQJoeOsyHpoBT_QokF3Zv=w@mail.gmail.com>
- <20250716045124.GB12760@system.software.com>
- <CAHS8izMK2JA4rGNMRMqQbZtJVEP8b_QPLXzoKNeVgQFzAmdv3g@mail.gmail.com>
- <6e4a4ae7-b84e-470d-81e9-a58ecf9c9157@gmail.com>
+Subject: Re: [PATCH net-next,rdma-next 0/6][pull request] Add RDMA support for
+ Intel IPU E2000 in idpf
+To: Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc: tatyana.e.nikolova@intel.com, joshua.a.hay@intel.com,
+ davem@davemloft.net, kuba@kernel.org, edumazet@google.com, jgg@ziepe.ca,
+ andrew+netdev@lunn.ch, leon@kernel.org, linux-rdma@vger.kernel.org,
+ netdev@vger.kernel.org
+References: <20250714181002.2865694-1-anthony.l.nguyen@intel.com>
 Content-Language: en-US
-In-Reply-To: <6e4a4ae7-b84e-470d-81e9-a58ecf9c9157@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20250714181002.2865694-1-anthony.l.nguyen@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 7/17/25 10:17, Pavel Begunkov wrote:
-> On 7/16/25 20:41, Mina Almasry wrote:
-> ...>> I will kill __netmem_get_pp() as you and I prefer.  However,
->>> __netmem_get_pp() users e.i. libeth_xdp_return_va() and
->>> libeth_xdp_tx_fill_buf() should be altered.  I will modify the code like:
->>>
->>> as is: __netmem_get_pp(netmem)
->>> to be: __netmem_nmdesc(netmem)->pp
->>>
->>> Is it okay with you?
->>>
->>
->> When Pavel and I were saying 'remove __netmem_get_pp', I think we
->> meant to remove the entire concept of unsafe netmem -> page
->> conversions. I think we both don't like them. From this perspective,
->> __netmem_nmdesc(netmem)->pp is just as bad as __netmem_get_pp(netmem).
+On 7/14/25 8:09 PM, Tony Nguyen wrote:
+> This is part two in adding RDMA support for idpf.
+> This shared pull request targets both net-next and rdma-next branches
+> and is based on tag v6.16-rc1.
 > 
-> Yes. It'd great to have all of them gone. IMHO it's much better
-> to let the caller do the casting so at least it's explicit and
-> assumptions are not hidden. E.g. instead of
+> IWL reviews:
+> v3: https://lore.kernel.org/all/20250708210554.1662-1-tatyana.e.nikolova@intel.com/
+> v2: https://lore.kernel.org/all/20250612220002.1120-1-tatyana.e.nikolova@intel.com/
+> v1 (split from previous series):
+>     https://lore.kernel.org/all/20250523170435.668-1-tatyana.e.nikolova@intel.com/
 > 
-> pp = __netmem_nmdesc(netmem)->pp;
+> v3: https://lore.kernel.org/all/20250207194931.1569-1-tatyana.e.nikolova@intel.com/
+> RFC v2: https://lore.kernel.org/all/20240824031924.421-1-tatyana.e.nikolova@intel.com/
+> RFC: https://lore.kernel.org/all/20240724233917.704-1-tatyana.e.nikolova@intel.com/
 > 
-> It'd be
+> ----------------------------------------------------------------
+> Tatyana Nikolova says:
 > 
-> struct page *page = __netmem_to_page(netmem);
+> This idpf patch series is the second part of the staged submission for
+> introducing RDMA RoCEv2 support for the IPU E2000 line of products,
+> referred to as GEN3.
 > 
-> page_to_nmdesc(page)->pp;
-> // or page_get_pp(page), or whatever the helper is
+> To support RDMA GEN3 devices, the idpf driver uses common definitions
+> of the IIDC interface and implements specific device functionality in
+> iidc_rdma_idpf.h.
 > 
-> That might be easier as well.
+> The IPU model can host one or more logical network endpoints called
+> vPorts per PCI function that are flexibly associated with a physical
+> port or an internal communication port.
+> 
+> Other features as it pertains to GEN3 devices include:
+> * MMIO learning
+> * RDMA capability negotiation
+> * RDMA vectors discovery between idpf and control plane
+> 
+> These patches are split from the submission "Add RDMA support for Intel
+> IPU E2000 (GEN3)" [1]. The patches have been tested on a range of hosts
+> and platforms with a variety of general RDMA applications which include
+> standalone verbs (rping, perftest, etc.), storage and HPC applications.
+> 
+> Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+> 
+> [1] https://lore.kernel.org/all/20240724233917.704-1-tatyana.e.nikolova@intel.com/
+> 
+> ----------------------------------------------------------------
 
-FWIW, no need to respin a v12 for that
+I had some conflict while pulling; the automatic resolution looked
+correct, but could you please have a look?
 
--- 
-Pavel Begunkov
+Thanks,
+
+Paolo
+
+Thanks
 
 
