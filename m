@@ -1,163 +1,216 @@
-Return-Path: <linux-rdma+bounces-12225-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12226-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94F81B080CE
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jul 2025 01:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 867FCB081F0
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jul 2025 02:54:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD7F64A2F95
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Jul 2025 23:04:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5B39174344
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jul 2025 00:54:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68842C327E;
-	Wed, 16 Jul 2025 23:04:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="qj3UplHr"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABA7118FC80;
+	Thu, 17 Jul 2025 00:54:40 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12olkn2024.outbound.protection.outlook.com [40.92.21.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD9F33FE7
-	for <linux-rdma@vger.kernel.org>; Wed, 16 Jul 2025 23:04:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.21.24
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752707084; cv=fail; b=pZnfl76TRemqVWPMPgbL6v6upxQKs8e9QWUQj5iZGScCvYdaqxptwBwblPmmWTeVCuTJhKSn5IHMkStzODVD4GTmUdUZ58gXft45sL88asfqgy55DtuD0Tuwm97n+Ex4qEpwIkHFZIqo+toCA6Ny4vHwEpzQ02+qNS65A57BC0U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752707084; c=relaxed/simple;
-	bh=4X2zSaDBKNrEZYSm7ywxaysEIW/1CSyWwIYiiQumWFg=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=kweWL/7y0A87tyBqGoZmkKHi0/leoMmh5yG9IgiixE3to0WswYgO0ILe63FvlpKVpyY/183OyX8Lg7uADPT4p3ONkJbmevAYVh1/tntUedeh0+YiQUkVJCIH1jgcP1mb8xjS1U7NIe221KmMPQQVsejNPcJtiu5CWBnyGXe/CLs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=qj3UplHr; arc=fail smtp.client-ip=40.92.21.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=MUHXynHow+FGgw+Rxw3//3BxvMhWRJfIUmAgW4mECKJSZL313m7g811RVgYZi1GgCcIBfe4ObwZ8j36B6EIpma8fc0+CkrBsw0cv1iQIomTPAZ5bGv9ovpXQiTmDX91AZJXDGgTSwwb5P0rmJkZKupVDPPYjd2p1r4R4ZNrTlwqCDpImBWLFeWh6N+/8Ycc77UwIJzvrevXlq57iFZ5N3zDW0Wrd+NilOdqP+PtUp4YKtIT0x8Thi9gtOQrpPgR9R0ZoqUkGMCPVgYCqP/gk/qiPGnvTnv7ZbS0gHZEpVQOEAIvSdqmXw/jzdcltukUnQm14WpXF1wEIgED1njbXtQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4X2zSaDBKNrEZYSm7ywxaysEIW/1CSyWwIYiiQumWFg=;
- b=FFZdy9p659wPnE/HUQuDJ2uGPrKNicFMy7YFFJNg6+VCm06beoJD8jekH4htWORtGxP/4H+lIff1ujO1zs73Lu7nG/1bDdGfX6mn9353b1/NSAPLmjLThzq6bG/OWTDpzz3hXuz3uUXFcNpzSpZY9s1xyocUp/7H7VHYfpqQ3OxCPb/g3+awItETwV8bRA+0arzT48iDja0QXhDMTBQomn3TTaBCmui7LR8IMUEBy5s8gC7uG3LvOBCX8zYsn+pAeKbgBFRHNMJrJQ+sTOYkSn93I9ft4axgUN0WrdTu/MkkLRyHfiwVCpE3IeopEYd5MKjpV/IdeZLX1CfVvz0rAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4X2zSaDBKNrEZYSm7ywxaysEIW/1CSyWwIYiiQumWFg=;
- b=qj3UplHrNxfTCtfjm0Vtox5OYeNFpy08tdivfx5WfsvCUz2KqwWqWqny7Rgzo6dHh80EmY98zV26QTBAJpYXX/2DJrLMqGgv4D3Cm52yfQHjGv2oovCZuAcckyS9kX26wS4OajhE3IChX+EYSdH0fdb3JDQDGN7aq+0xbkWubwuOwxG15aLLRMATnat9BP2iegzL6NchpqzXYqyPM/sOS9L9wjT2ZVkLEJDjSnjTZyetnXv7jgoEHmjymEe0qvGzIAwrOUJorX5OnlhwZ3g/qY0oqSI1+togLNao47NOwWyCLUgIsqHWMeMfUWaWL+rzMb7NjFbFanO3KaU4ogY9KA==
-Received: from PH7PR04MB8924.namprd04.prod.outlook.com (2603:10b6:510:2f8::6)
- by CO1PR04MB9580.namprd04.prod.outlook.com (2603:10b6:303:26e::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8901.23; Wed, 16 Jul
- 2025 23:04:39 +0000
-Received: from PH7PR04MB8924.namprd04.prod.outlook.com
- ([fe80::9f76:763d:22ce:b166]) by PH7PR04MB8924.namprd04.prod.outlook.com
- ([fe80::9f76:763d:22ce:b166%2]) with mapi id 15.20.8922.037; Wed, 16 Jul 2025
- 23:04:39 +0000
-From: Brenda Wilson <brenda.prospecttechconnect@outlook.com>
-To: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Build Stronger Sales Campaigns with Verified Data from GSX 2025
-Thread-Topic: Build Stronger Sales Campaigns with Verified Data from GSX 2025
-Thread-Index: Adv1DPj5S9EsERUnSJSVkmvSaVGDiw==
-Disposition-Notification-To: Brenda Wilson
-	<brenda.prospecttechconnect@outlook.com>
-Date: Wed, 16 Jul 2025 23:04:39 +0000
-Message-ID:
- <PH7PR04MB89241CCB972F5D832806E48F9456A@PH7PR04MB8924.namprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR04MB8924:EE_|CO1PR04MB9580:EE_
-x-ms-office365-filtering-correlation-id: 2e077f7f-484a-487d-4862-08ddc4bd2450
-x-microsoft-antispam:
- BCL:0;ARA:14566002|41001999006|461199028|15080799012|39105399003|440099028|40105399003|51005399003|3412199025|19111999003|102099032;
-x-microsoft-antispam-message-info:
- =?iso-8859-1?Q?QipGlm6h3NfasUwr5SCIgfH6UEtqjghvwaLjciZHL0p1xZVjjdiz9Cdrzt?=
- =?iso-8859-1?Q?50iVH5SKx4ZBPt2mzB97YkhguVfqbdUf4fRrCD/ezTbSlIfqceWj1Z2CyW?=
- =?iso-8859-1?Q?U+glep5wpYvOUZ7vuZcB3nxKPMwnxhtAN+PhXcomto4whtwbnh0nzFXyv1?=
- =?iso-8859-1?Q?S58CdwoEW5lj2SeueKmHfdNHXibV/biTh/6IE2FRDA969bH+VaiMMIT4da?=
- =?iso-8859-1?Q?QoIFR1Kk6CbWpRLDYZF5WM8qkR628kaEgczYQwlYK1+xadgJqiopmQkL7Q?=
- =?iso-8859-1?Q?id2bufeXfSM41UraSEsU1dsZcsgGIjpbJdvOI/+65UlwftUt3M2N9AbBZ8?=
- =?iso-8859-1?Q?xd/E+mhb5AQcegooWUCV0zLgnFwV4lf1LrudmFQEYGGvrC06ijNC+WRRBS?=
- =?iso-8859-1?Q?IUP53lmg3gp1S/kS8yU6eak4jCMOlJMZzyvWCdVdkDWLfWNnWx29sS6eCj?=
- =?iso-8859-1?Q?FSX+ADPc/ZIAHfm0Gkb47GZd7CXihipUwwOudje6GZwOkfvepCuzgLSFFX?=
- =?iso-8859-1?Q?Q0USLQpUGOxZnE1PwaG7o7S74GBErNILVGp9IieZpPnozW2b4qrV7glUuU?=
- =?iso-8859-1?Q?2vZ4r2IaxOx2zyF8I7eF6PNZbfJukMd2vA1u/NzTUoXWjA9cGuiY/AAojm?=
- =?iso-8859-1?Q?ulScrtC63uHDUzhybic4JbGyWY2HLHTNO+Upciw6WfHWawdPj3C4E4BIgO?=
- =?iso-8859-1?Q?ClFD7ZP/Q9UheCVoItCb9eSzn0x6U9fDybzF5q/Z3boif4dX1feFGy9057?=
- =?iso-8859-1?Q?/owvgCT/cobKF7if4I2EKC6AtauLo+XybaIqprURuuXZX6Px5e+/lM7Uzz?=
- =?iso-8859-1?Q?vP7HCQ3RRwQ1v3J0B9uI9+zBeBlHPanYq4u+XXtyR12WmedX+94rg9aqXP?=
- =?iso-8859-1?Q?QEfP2VjMd30Q0g6UOfzqtHjKnkaEw/toyQU+ry/RA2Pc0Rn868p1CCWfWc?=
- =?iso-8859-1?Q?f2KfyRAz/73BkakTALaqQuJnx9zbNgu38WQXUq9ixmVazOOe4YQdqPn87C?=
- =?iso-8859-1?Q?OvkvKl6O5yWx/t34+V2AbDrhjN3N2ns7jrbQSWepfXnBuEMWepf+GX8BY6?=
- =?iso-8859-1?Q?aCACixcpy41w18Z+SPjbsLI3ypwMk3bkSyygo2e+baPVp1sKWrxw1uD3Hq?=
- =?iso-8859-1?Q?Ro8sOEk6of/+5i3AQgFT+Msff7uvfwM+GYBhXWLqzqN2qBHoTit4/Ik1zj?=
- =?iso-8859-1?Q?XU3ZVzdVBiOfFA=3D=3D?=
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?CMtE6a9ZdRq45XC5LyB67ZRS0iW1EA6OdTzc4nRRIosFFZIEQdKPU8EdfD?=
- =?iso-8859-1?Q?IHAL5nu7PQ4WHsQo3p+lOdjMUCasMnHqU4pXes31tY1+oeLgFgcEqWPMU9?=
- =?iso-8859-1?Q?NcOasF9/aemMsBp505nxye8+CgTAa2Zu/3i99q/RBZR0XO7guUNm6zduo/?=
- =?iso-8859-1?Q?3lKfjAk8qW324RXAPogwU3Yq7WYiowpWoa9SzVXsP0o1bFTEli1QJaRO3u?=
- =?iso-8859-1?Q?BrVyISi2N1/fO1XfKJipxuh3nI1KkjQCryipYxVtkZasefxF/P+DElT86l?=
- =?iso-8859-1?Q?R2jh5pk9B8xLtOQKNa46klzbpVaoNjvqdpJIEUDEsF2/5JP5v6IZ5Nog/D?=
- =?iso-8859-1?Q?rRm89xwsaunwv3mRDCcxtsQLTGue2pn4BVcAq3wHG93An4KjJtfLg5f9dB?=
- =?iso-8859-1?Q?isUXHSJDt3hi2QWlmM8F8MRLsGhaYlBL6KPpzRzEmsPnzn+yWTr2QZ0x5u?=
- =?iso-8859-1?Q?b7v57+nCPgg3ZhV0tJ5A6clBQRrl/RnE/OKXAkaD9P1aSH5ek/3aAN+VwR?=
- =?iso-8859-1?Q?PWb+Mi0qZDQIrW1SHt9O2DPoKX+YV24yk7Yj9NTPumnfZoqxHWiyVn1LOn?=
- =?iso-8859-1?Q?A+BveBw30QIGhZkrm2k1fN4ERbqTOarYFHIDGiu+gRtAIiHdmee4gStmxV?=
- =?iso-8859-1?Q?z66HOqshgahtm+ErYEqeziq3FwBLZV6rzoY8+g9tQies0j/xVViNsfLDA/?=
- =?iso-8859-1?Q?UeE+Lnix0a6+F351K5DA2Pn+U7uEX4pKQY42I/5foGi3WV9CLfEIpVWDEu?=
- =?iso-8859-1?Q?NgodZ1IVDRJ/N5tVsZCnSWsqLPqeUl9xUUIuSJPFSwwhAbNfJ1QH+M3TP8?=
- =?iso-8859-1?Q?qpKBBf8sAnBYAuZ4GxT5V3SoiF1agL9QCU5atlod0OVzQudln5lu4B0Cvj?=
- =?iso-8859-1?Q?jiS1YJVZU2/vn3WG9WSaF+1tWeamEUckZ2wxNXn67Mp0wPjBy5JQYa6Ab3?=
- =?iso-8859-1?Q?y5FsLqq6xJannJKBbbfqB+pi3g2E63Au1jZIIhdVcBauKFPkLLk42rjjNn?=
- =?iso-8859-1?Q?JwFUcDsu3roJuqXg5jxfqwLWiE94wnmM2qwwoZu0UNNzbIT6Ll/36YQowp?=
- =?iso-8859-1?Q?g6LaBy033VVGgZqm1kn7yYf23h+RVtMIudbCuu3je31ngM3vbNsLbKockn?=
- =?iso-8859-1?Q?rTmQVV6Rn93VDs/N/KmWRXVGwjaLCCXKC15oWy72cGMxHS4caZRSZa0MM0?=
- =?iso-8859-1?Q?ax3WsPzZJj6qlDD2DC0sXsB+VQFzQqcxy2svbEia+92JGa9Q4M5bmJRldr?=
- =?iso-8859-1?Q?akEmT/TLb5NxVSpezRL/JXoeyacMdTqsceaEJS7eIua09gZ8U9rEnHOZcs?=
- =?iso-8859-1?Q?Ej6ZXxbimDCvEQ2S2njcOS7sQefqIThvlLbUXM6CGZ3tFV9TBH1kriux8W?=
- =?iso-8859-1?Q?12NnMkJa8w9UJ1GZNS6cSBX6da7+DYpA=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0F067E9;
+	Thu, 17 Jul 2025 00:54:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1752713680; cv=none; b=gFGMpzOh4gHDG1UvFRBV4Zk4BhRw/K6nsvn8D9SaJMPsemwNPKulRLt7eVOYavrpATcUTDoIp4PtqsUuCSorbqhB46LKHvCeejmgYz0JkxaG+WCFEN4vblXEJlIQ1HI9gAk9Z/K6/Idcv9peeCIJrLLxm3nSpvLHNgOe3M5CseE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1752713680; c=relaxed/simple;
+	bh=A2DD8Kp5SJAvz1LO0Hqg/Tb8UDBjXzfSy1t6d20YrE0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PrJqr4sxl/5RUhVvPEfIPGt0uz5yngLcvJLbH0k+E9owW5aavihhm+XqaBvsMwSG84/kxUKzPYd5oucamVaFiXQbf0kODP5e5dtCxiuaZ8VOLXpfEOEuK4Gs7WhR65Gi9njufb4Z1x74S6QuHY51ozGYUWKSB5ghlK0ZMrrzCO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-681ff7000002311f-47-687849c8d648
+Date: Thu, 17 Jul 2025 09:54:27 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Mina Almasry <almasrymina@google.com>
+Cc: "Lobakin, Aleksander" <aleksander.lobakin@intel.com>,
+	willy@infradead.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, ilias.apalodimas@linaro.org,
+	harry.yoo@oracle.com, akpm@linux-foundation.org,
+	andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com,
+	david@redhat.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+	vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
+	jackmanb@google.com, wei.fang@nxp.com, shenwei.wang@nxp.com,
+	xiaoning.wang@nxp.com, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, anthony.l.nguyen@intel.com,
+	przemyslaw.kitszel@intel.com, sgoutham@marvell.com,
+	gakula@marvell.com, sbhatta@marvell.com, hkelam@marvell.com,
+	bbhushan2@marvell.com, tariqt@nvidia.com, ast@kernel.org,
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+	sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org,
+	mbloch@nvidia.com, danishanwar@ti.com, rogerq@kernel.org,
+	nbd@nbd.name, lorenzo@kernel.org, ryder.lee@mediatek.com,
+	shayne.chen@mediatek.com, sean.wang@mediatek.com,
+	matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+	horms@kernel.org, m-malladi@ti.com, krzysztof.kozlowski@linaro.org,
+	matthias.schiffer@ew.tq-group.com, robh@kernel.org,
+	imx@lists.linux.dev, intel-wired-lan@lists.osuosl.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next v10 02/12] netmem: use netmem_desc instead of
+ page to access ->pp in __netmem_get_pp()
+Message-ID: <20250717005427.GA58539@system.software.com>
+References: <20250714120047.35901-1-byungchul@sk.com>
+ <20250714120047.35901-3-byungchul@sk.com>
+ <CAHS8izO393X_BDJxnX2d-auhTwrUZK5wYdoAh_tJc0GBf0AqcQ@mail.gmail.com>
+ <CAHS8izNh7aCJOb1WKTx7CXNDPv_UBqFyq2XEHHhqHH=5JPmJCQ@mail.gmail.com>
+ <20250715013626.GA49874@system.software.com>
+ <CAHS8izNgfrN-MimH1uv349AqNudvQJoeOsyHpoBT_QokF3Zv=w@mail.gmail.com>
+ <20250716045124.GB12760@system.software.com>
+ <CAHS8izMK2JA4rGNMRMqQbZtJVEP8b_QPLXzoKNeVgQFzAmdv3g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR04MB8924.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e077f7f-484a-487d-4862-08ddc4bd2450
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jul 2025 23:04:39.3394
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR04MB9580
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHS8izMK2JA4rGNMRMqQbZtJVEP8b_QPLXzoKNeVgQFzAmdv3g@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUyTZxSG87zfbWj20jH2iCFbuphlJrK5ke0kk+lIFt4l27KFmOzjhzbj
+	je2ASgoUMC4yQBcQqwM3pFZXtfI9qYVCxcpGIVjn5rAgqYKtwEpg1I8pNNQWWAsx49+V59y5
+	r3OShyPll5gkTq0pELUaZY6CkVLS+3Fnt1z7sFj1RqCfBmN7GwM3n5yhoXWxGBrv2WlwN2O4
+	PLRIgLGlC8F8aIwFa+U4CU8GrjJw7kyQhJDlCAXGvyooWGh/SoJ/cJIFl3OJglbrx+BrmKbA
+	8X03Cf0Lm2DyqIuBIxVhEuq9BxlYuROm4UroAQtl9iYCrszZWBjq0tNw/Ol5ErpL70VdU6M0
+	DPcYGRguv4nA27ZCw7QzKgw0jbOgbzUgcP7azEBZxVsQsM2z8OjHARJ8+h2wfEIHg6ZECF4P
+	IBg7f4uAFYedhRveCzQMtHcTMDIRIiFYfYqBqvtHEdyq7yHgj1MWGszXR4joHpkwuhIhoNZt
+	YmCqwofA3T9Jwcnv9Ajaez00/OuInhxeNDI70oX+wENSsN81I6Gz+TYhzBxbJgRP7++EcMlw
+	lxVM1kKho2mzcM4xSwhVHjcpWFsqGcH6uIYVxkcdjOA6EaaEDvMBYaajHn2a/KV0W5aYo9aJ
+	2tff2y1VLfSVo7xDycW+BitRinyJVUjCYT4Vl/5ioZ/x7epaNsYUvwlfbPSTMWb4V7HHE1rl
+	BP41bO79IZqXciR/IQ5PzN1BscHzfCE+O+GhYizjAXsv1qFYSM6PkfinSBWzNojH1+r/Xg2R
+	0dbIaXe0lYvyRty4zK09v4TLbSdXZRL+M+wdsa3yC/wr+Leuq0SsE/NBCe4z+Zm1rTfgviYP
+	dQzFG9YpDOsUhv8VhnUKE6JakFyt0eUq1TmpKaoSjbo45eu9uVYU/dAN30a+sqPHQ5lOxHNI
+	ESfbbSlSyWmlLr8k14kwRyoSZLVunUouy1KW7BO1e3dpC3PEfCfayFGKF2VvBouy5PweZYGY
+	LYp5ovbZlOAkSaVo+9ZKTXg53nwjbf+05DnC1eZOm03fWZZ0eFb2cN6X7M9Y+jzy0csZ2ZGU
+	vLe3JRUFtg8SB1WXC2rcu4ZPv//N4Xcs2s5U058G10CC0OLc0Fwu1vVkdNq+qBbSJh8M1c3s
+	kT2aSwRSL/1gekt25tL+fVPH0w/VVM+/e2DiZ/8/EP5EQeWrlFs3k9p85X9lTB/3zAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0xbZRjH95733OioOZa6nWy6zZpFJRFGxPgkc4bNLBxMXLb4wXiZo5GT
+	tRs3W6hgXGRt1awBBuJwdFSZY1BgQikWKlamLdk652UrjHS0a7kIwQ3dlEsoVFjLYuTb73n+
+	T37/98PLYlktvYlV5xeJmnxlroKWkJJ9Ow3PeLNKVDs8/q1Q33GBhuszZyloWyiB5hEnBb4W
+	Hr67tkBAfWs3gtlIgAH7iSCGmf7LNJw7O48hYqsgof43IwlzHYsYJi6NMeB1/0tCm/0VCDdN
+	kuD6pAeDZ247jJ300lBhXMJQF/qIhpXhJQq+j/zFgN5pJcBjuRIb7zgYuNZdScFni+cx9JSN
+	xArHhygY6K2nYcBwHUHowgoFk+5Y67Q1yEBlmxmB+2ILDXrjszDtmGXg3ql+DOHKDFg+rYNL
+	DRtg/uo0gsD5GwSsuJwM/Bpqp6C/o4eAwdEIhvlyCw2mP08iuFHXS8DPFhsFjVcHidg7XoWh
+	lSgBNb4GGsaNYQQ+zxgJZ45XIujo81Pwt8tIZrwkeKbvYsF5qxEJ37TcJISpqmVC8Pf9RAjf
+	mm8xQoO9WOiyJgvnXH8Qgsnvw4K99QQt2P/5lBGCQy5a8J5eIoWuxg+Fqa46tH/LG5IXcsRc
+	tU7UpL6YLVHN/WhAhR8/VhJushNlKLzBhBJYnkvnb5bXMHEmue18Z/MEjjPNPcn7/ZFVlnNP
+	84191ZQJSVjMtSfyo3eGUTxI4or5r0b9ZJylHPChzs9R/EjGBTBfGzXRD4KH+St1v68e4Zg1
+	+oUvZmVjvJlvXmYfrLfyBseZ1bIE7gAfGnSs8iPcE/wP3ZeJKvSQeY3JvMZk/t9kXmNqQGQr
+	kqvzdXlKde5zKdqjqtJ8dUnKOwV5dhT7rU3HotVONDuQ6UYcixSJ0mzbeyoZpdRpS/PciGex
+	Qi6t8elUMmmOsvR9UVNwSFOcK2rdaDNLKjZKX35NzJZxh5VF4lFRLBQ1/6UEm7CpDFVFA7qN
+	u2y/FO78MqPz0GLwrZHJpFP9T70pV08Eds8Yvt4mLV83mpWJXqdqLYb9qDrgPWLPsZK+g0VT
+	VfqDexL08t3r0psOUPf2Zr29Pn1qvXMy0Zb2aFJqT+ptZdqOtt6gLOvw8HjKwgfstmprRN9u
+	uRjQVxQcf/eIo+/5x5MzlxSkVqVMS8YarfI+rd0rxKkDAAA=
+X-CFilter-Loop: Reflected
 
-Hi ,=20
-=A0
-Are you interested in obtaining the GSX 2025 attendees list?=20
-=A0
-Expo Name: =A0Global Security Exchange (GSX) 2025=20
-Total Number of records: 17,000 records=20
-List includes: Company Name, Contact Name, Job Title, Mailing Address, Phon=
-e, Emails, etc.=20
-=A0
-Do you want to proceed with buying these leads? I can send you the pricing =
-details.=20
-=A0
-Can't wait for your reply=20
-=A0
-Regards
-Brenda
-Marketing Manager
-Prospect Tech Connect.,
-=A0
-Please reply with REMOVE if you don't wish to receive further emails
+On Wed, Jul 16, 2025 at 12:41:04PM -0700, Mina Almasry wrote:
+> On Tue, Jul 15, 2025 at 9:51 PM Byungchul Park <byungchul@sk.com> wrote:
+> >
+> > On Tue, Jul 15, 2025 at 12:09:34PM -0700, Mina Almasry wrote:
+> > > On Mon, Jul 14, 2025 at 6:36 PM Byungchul Park <byungchul@sk.com> wrote:
+> > > >
+> > > > On Mon, Jul 14, 2025 at 12:58:15PM -0700, Mina Almasry wrote:
+> > > > > On Mon, Jul 14, 2025 at 12:37 PM Mina Almasry <almasrymina@google.com> wrote:
+> > > >    2) Introduce the unsafe version, __netmem_to_nmdesc(), and use it in
+> > > >       __netmem_get_pp().
+> > > >
+> > >
+> > > No need following Pavel's feedback. We can just delete
+> > > __netmem_get_pp. If we do find a need in the future to extract the
+> > > netmem_desc from a netmem_ref, I would rather we do a straight cast
+> > > from netmem_ref to netmem_desc rather than netmem_ref -> pages/net_iov
+> > > -> netmem_desc.
+> > >
+> > > But that seems unnecessary for this series.
+> >
+> > No.  The series should remove accessing ->pp through page.
+> >
+> > I will kill __netmem_get_pp() as you and I prefer.  However,
+> > __netmem_get_pp() users e.i. libeth_xdp_return_va() and
+> > libeth_xdp_tx_fill_buf() should be altered.  I will modify the code like:
+> >
+> > as is: __netmem_get_pp(netmem)
+> > to be: __netmem_nmdesc(netmem)->pp
+> >
+> > Is it okay with you?
+> >
+> 
+> When Pavel and I were saying 'remove __netmem_get_pp', I think we
+> meant to remove the entire concept of unsafe netmem -> page
+> conversions. I think we both don't like them. From this perspective,
+> __netmem_nmdesc(netmem)->pp is just as bad as __netmem_get_pp(netmem).
+> 
+> I think since the unsafe netmem-to-page casts are already in mainline,
+> lets assume they should stay there until someone feels strongly enough
+> to remove them. The logic in Olek's patch is sound:
+> 
+> https://lore.kernel.org/all/20241203173733.3181246-8-aleksander.lobakin@intel.com/
+> 
+> Header buffer page pools do always use pages and will likely remain so
+> for a long time, so I guess lets continue to support them rather than
+> try to remove them in this series. A followup series could try to
+> remove them.
+
+At the beginning of this work, I was unconfortable to see the network
+code keeps the unsafe version maybe for optimization(?).  I decided to
+accept it, thinking there must be some reason.
+
+However, it'd be good that a followup series would try to remove them as
+you said.
+
+> > > >    3) Rename __netmem_clear_lsb() to netmem_to_nmdesc(), and return
+> > > >       netmem_desc, and use it in all users of __netmem_clear_lsb().
+> > > >
+> > >
+> > > Following Pavel's comment, this I think also is not necessary for this
+> > > series. Cleaning up the return value of __netmem_clear_lsb is good
+> > > work I think, but we're already on v10 of this and I think it would
+> > > unnecessary to ask for added cleanups. We can do the cleanup on top.
+> >
+> > However, I still need to include 'introduce __netmem_nmdesc() helper'
+> 
+> Yes.
+> 
+> > in this series since it should be used to remove __netmem_get_pp() as I
+> 
+> lets keep __netmem_get_pp, which does a `return
+
+Okay.  I will.
+
+	Byungchul
+
+> __netmem_nmdesc(netmem)->pp;` In general we avoid allowing the driver
+> to do any netmem casts in the driver code, and we do any casting in
+> core.
+> 
+> > described above.  I think I'd better add netmem_nmdesc() too while at it.
+> >
+> 
+> Yes. netmem_nmdesc should replace __netmem_clear_lsb.
+> 
+> > I assume __netmem_nmdesc() is an unsafe version not clearing lsb.  The
+> 
+> Yes.
+> 
+> > safe version, netmem_nmdesc() needs an additional operation clearing lsb.
+> 
+> Yes.
+> 
+> 
+> --
+> Thanks,
+> Mina
 
