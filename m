@@ -1,229 +1,305 @@
-Return-Path: <linux-rdma+bounces-12234-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12238-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3D99B08567
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jul 2025 08:50:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36AC6B085DF
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jul 2025 09:02:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F84F583D46
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jul 2025 06:50:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8649E188EF3B
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jul 2025 07:02:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EE4621C192;
-	Thu, 17 Jul 2025 06:49:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="QMSQrik3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05F49221550;
+	Thu, 17 Jul 2025 07:01:14 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2072.outbound.protection.outlook.com [40.107.94.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 938F921B9CE;
-	Thu, 17 Jul 2025 06:49:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.72
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752734961; cv=fail; b=JHl3g//0c1OzCZGWDzUlh7wkrn8hFEpwO1bDOe5DXiF7mBTwa2aLecpXKbR7TN7dzBHicWL9TFKca9nzJpeJOWTNkKSjyN0AC5F/SGbjnZEUB4mzxpS6S0eLzPyKT8vM2Fr2hvVISMEBSGyZFhkYk5Nb/w9PV0/NkJHADHgJw4E=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752734961; c=relaxed/simple;
-	bh=ju12GB3fjXAgxc1VOwCTlqilVfI6Fd1MAI0e1ax9yt4=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Sk3jznS0H1eWqplbRnAR8SDEf45R9RfC+LsXYcKh81pGoVUqUMtuAaWKOvf4K6VYMmuR4uk4X7oA9/37UlJkWO+OjOCtbzVD87b9RrJQjFswar20AgbbrtAwm/LlazgL3SHtloJR0Gi4/LCInmj/pthSmrbY1ghIpNai32aJcn8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=QMSQrik3; arc=fail smtp.client-ip=40.107.94.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=b+zCnPW5qoxjaKJijdMljZUslxcD+RWY6vlvF2xDUkiBfa0ZYPnMnUEIyYWW/URtCnADu7YG1XY+Wfuk9K98TkrdYJh2zQDDBA5XpWZMhh1cSpXHdO5uNCqCAvXCWIeeqn1NdoHvUVx3pG8CsyMjAH92Frhr7b4Hzu+Au4XtMNsAOIHpBZSALsxll7kxWtoYlex0HcN1AsKt7VL0bVZcINIGI4AoEcHEaGxcP9HFpTcc4Kah4NCAYM7geFoz+S4ZQAan6BHvNKyyzs4+VkHg49T89kYea9feJXWmHRgdDwXdMl44rfMyGFb3JpjmenF8lfQM5OMoY9KprJ0rq+LU2A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=W9dTr8rDEcg+xspgNQrAjemL/+BblZVnEs5JwAFx7WQ=;
- b=vLaiK7E4JJaCECtILS2nyoA3MnVLAC9aNfkdYS0bNgOwdJ9A9SE2enUMHo9RcO6W+CzjMEb7xXOE8Uc94zARv7X3Ar+DMC1TaGhSJYrasGDhon2qrbzssWJZOEkdFq4XWyOm58NsDegqXT14GQfoXTGz9e0xZHDMm0KoGwQxgYThIZK4wLKTJFxauLoxItbqUJgoZ1m17u6ZS1uifZKedRIpYw/2Owc//41/XZeuwzv1/ssESuJAwAMCaGwwR7IKpQu2VJFZGY35u/KThd5InjgL2FSMIrTVwk2NxaYYsIALNk5T/rbV74DAr623ZkSFMLCKOOztmNe/8w4pzZcC1A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W9dTr8rDEcg+xspgNQrAjemL/+BblZVnEs5JwAFx7WQ=;
- b=QMSQrik3WRtztujZSA6CcXv2/Cfaejzr7MM+XKdi5nEXNb724CG31V+puDUMj3xLxmxq+1FWHgj8fgFpyWuklQ2uS3T7H8OgDuQrxHDaEBQsaMGJyoM7uDWXXvvZWd7nKERYIMAplT3FLwjxyNgq8T/umXVqeOi0s6Y3anizsvm71W8jLc2mqEGtqB3pm4XYTewMNon39RXlS9GTeOihCWBnaCs6VtKFcLiaL6MJTWOfj+e4QacSGvqT7HjXbc+fct1QIPs3AP5ADBNOc8FKwcZOwtuJI398UC8iGRvnu1bQx+NGYwruRSOI3mrTbPLTUjmoHllh0jPUdA8y+1XOcA==
-Received: from PH7PR03CA0020.namprd03.prod.outlook.com (2603:10b6:510:339::29)
- by BY5PR12MB4177.namprd12.prod.outlook.com (2603:10b6:a03:201::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8922.39; Thu, 17 Jul
- 2025 06:49:14 +0000
-Received: from CY4PEPF0000EE37.namprd05.prod.outlook.com
- (2603:10b6:510:339:cafe::e7) by PH7PR03CA0020.outlook.office365.com
- (2603:10b6:510:339::29) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8943.23 via Frontend Transport; Thu,
- 17 Jul 2025 06:49:13 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CY4PEPF0000EE37.mail.protection.outlook.com (10.167.242.43) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8922.22 via Frontend Transport; Thu, 17 Jul 2025 06:49:13 +0000
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 16 Jul
- 2025 23:48:54 -0700
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail205.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 16 Jul
- 2025 23:48:53 -0700
-Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.7)
- with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Wed, 16
- Jul 2025 23:48:50 -0700
-From: Tariq Toukan <tariqt@nvidia.com>
-To: Saeed Mahameed <saeed@kernel.org>, Leon Romanovsky <leon@kernel.org>
-CC: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
- S. Miller" <davem@davemloft.net>, Gal Pressman <gal@nvidia.com>, "Saeed
- Mahameed" <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch
-	<mbloch@nvidia.com>, <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Oren Sidi <osidi@nvidia.com>
-Subject: [PATCH mlx5-next 3/3] net/mlx5: Expose cable_length field in PFCC register
-Date: Thu, 17 Jul 2025 09:48:15 +0300
-Message-ID: <1752734895-257735-4-git-send-email-tariqt@nvidia.com>
-X-Mailer: git-send-email 2.8.0
-In-Reply-To: <1752734895-257735-1-git-send-email-tariqt@nvidia.com>
-References: <1752734895-257735-1-git-send-email-tariqt@nvidia.com>
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 572A11DDC2A;
+	Thu, 17 Jul 2025 07:01:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1752735673; cv=none; b=u+JYWMUY05zN8ZsvGjjkcjYA3FcJhZaIe/KOaNjNAw1kX1IsyxO9JgFsPjc/hRSMl6wwEcBHBKrMul4us2uBsin7Hs35oStg3C5I+t/T/xr+BpwueDLlYBdLrTgwGLjuHZPkT+pxY108yDkTh3HjDrft2tLIopBuYE9iqveWqyU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1752735673; c=relaxed/simple;
+	bh=BVyviliQIyStLmHDy3EdTYcZUrGXmYB6sHwHlAHH4GQ=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=qLI01PfyNz8utGY0Pmtn+8yjwmiu00C56hujPW8kTVvJWq35a3J4L16erZDfeaHIjdf7Sc+EG1qLDqTNYq50TdYY2DAt7Exy0YyHPDnex7Mk+EVfXYltRKKy4uf88sIHeewOG69ifJ4Z0G5FkOO9S8RJFdokEyb1sFjUCwnN+TY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-669ff7000002311f-b7-68789fb2baf4
+From: Byungchul Park <byungchul@sk.com>
+To: willy@infradead.org,
+	netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	kernel_team@skhynix.com,
+	almasrymina@google.com,
+	ilias.apalodimas@linaro.org,
+	harry.yoo@oracle.com,
+	akpm@linux-foundation.org,
+	andrew+netdev@lunn.ch,
+	asml.silence@gmail.com,
+	toke@redhat.com,
+	david@redhat.com,
+	Liam.Howlett@oracle.com,
+	vbabka@suse.cz,
+	rppt@kernel.org,
+	surenb@google.com,
+	mhocko@suse.com,
+	linux-rdma@vger.kernel.org,
+	bpf@vger.kernel.org,
+	vishal.moola@gmail.com,
+	hannes@cmpxchg.org,
+	ziy@nvidia.com,
+	jackmanb@google.com,
+	wei.fang@nxp.com,
+	shenwei.wang@nxp.com,
+	xiaoning.wang@nxp.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	anthony.l.nguyen@intel.com,
+	przemyslaw.kitszel@intel.com,
+	sgoutham@marvell.com,
+	gakula@marvell.com,
+	sbhatta@marvell.com,
+	hkelam@marvell.com,
+	bbhushan2@marvell.com,
+	tariqt@nvidia.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	sdf@fomichev.me,
+	saeedm@nvidia.com,
+	leon@kernel.org,
+	mbloch@nvidia.com,
+	danishanwar@ti.com,
+	rogerq@kernel.org,
+	nbd@nbd.name,
+	lorenzo@kernel.org,
+	ryder.lee@mediatek.com,
+	shayne.chen@mediatek.com,
+	sean.wang@mediatek.com,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	aleksander.lobakin@intel.com,
+	horms@kernel.org,
+	m-malladi@ti.com,
+	krzysztof.kozlowski@linaro.org,
+	matthias.schiffer@ew.tq-group.com,
+	robh@kernel.org,
+	imx@lists.linux.dev,
+	intel-wired-lan@lists.osuosl.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-wireless@vger.kernel.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH net-next v11 00/12] Split netmem from struct page
+Date: Thu, 17 Jul 2025 16:00:40 +0900
+Message-Id: <20250717070052.6358-1-byungchul@sk.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWSa0xTdxjG/Z//udG1ybFz25nX2MyYgTfAudfojKgfzhcToyZG/DA6ObGN
+	XEzB2joX0TEY5SJBMaAlgBTGzUHaAQWLQumEqGgtlNRxc+iYl7ILCKG2o2u9fPvlffI+z/sk
+	L4vldmopq05JFzUpyiQFLSElU9LK9ZZynWrTg7yPwNjUSMPDmUoKGuZ18NNjKwWuOh5uOOcJ
+	MNa3InjlG2bAnDOCYcbRS0NV5RwGX3M+CcYHmSTMNr3G8MftCQb67P+R0GDeC+M1kyTYstsw
+	9MyugYkLfTTkZ/oxlI79QEPwNz8Fnb6/GDhvrSWg82ULA87WAgouva7G0JbxOJT1ZIiCgQ4j
+	DQPfP0Qw1hikYNIeCvTWjjBQ0HAFgf1WHQ3nM2PB2/KKgX+KHRjGC3bCQokWbld8DHN3vQiG
+	q90EBG1WBu6P/UyBo6mNgMHffRjm8spoMExdQOAu7SDgXlkzBaa7g0TojgMwFAwQcNFVQcOT
+	zHEErp4JEq6eK0DQdNNDwb+2UGX/vJHeuUvo8f6NBeuoCQm/1D0ihGeFC4TguXmHENqvjDJC
+	hfmkYKmNFKpszwnB4HFhwVyfQwvm6SJGGBmy0UJfiZ8ULKazwjNLKdq3Il6yPVFMUmtFzcYd
+	CRJVv8NEnhjdostqm2QykDHKgCJYntvMG7qr6fdcXP6CDDPNreU9Hh8O8xIump+Z6A3NJSzm
+	+qV8p6WECAsfcnH85Ud2Kswkt4bvyHn6xkgWMsoymMm3pqv4huYuHF7muasRfFVh4J3wKd9d
+	6yEL0QcVaFE9kqtTtMlKddLmDSp9ilq34WhqshmFPqvmu8ARK5p2HrAjjkUKqSyh+ZRKTim1
+	afpkO+JZrFgiu+jSquSyRKX+tKhJ/VpzMklMs6NlLKn4RBYzdypRzh1TpovHRfGEqHmvEmzE
+	0gzEH8zX9njjEg6fCwwm71bGtR8z/Hh2Xfz27ulf89xFe3DsyPIO9eXDEfqu4n0tRanfkqu7
+	vqrZ2h644c/O7n2ZPxAri1rsLmd0UZQTWLeiU/YN92Wr84szMVulvD534Ezu1J/7HdciV674
+	nFr/2fX+YMm2xcMBacaW4KYYdPCQKVZBpqmU0ZFYk6b8HwCH6iBVAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWSe0yTZxjFfb/3u1GpaZDMb5ho0sSYuMxpJvPRLQtOo++MGhNNTOZ0NONj
+	bQSqLVZYQgApLBQpKGoKFkFBubm1K5N2UATbKnhBoSipchUnwmRzWEAKKGuz7L/fc05yzvnj
+	4XFEGRPFq5KSRU2SIkHOSmjJns+zPraVpSjXNb+MBrPlGgtd/ksM1M2kQNWQgwFvjQBNnTMU
+	mGsbEEwGejmw5fZh8HvaWKi4NI0hYM2nwfxQT8OUZRbDi9vDHLS73tFQZ9sNg1dHaHD+ZMfg
+	nloFwwXtLOTr5zAUD2SzsPB0joHmwN8cnHRUU+AuvRM8X13noLPByMDZ2SsY7BlDwcLnPQx0
+	N5pZ6M7qQjBwbYGBEVewdby6jwNjXQkCV0sNCyf1n8L49UkO/jnnwTBojIH3Jh3cLv8Apu+N
+	I+i98piCBaeDgwcDvzDgsdgpePQsgGH6VCkLhr8KEDwubqTgfqmVgcp7j6jgjn3QszBPQZG3
+	nIXn+kEEXvcwDRcyjQgsN3wMTDj1dMxW4h5/jYmjvxKR32qeUGS08D1FfDfuUuT3kn6OlNuO
+	k/rqNaTCOUYRg8+Lia02lyW2N2c40tfjZEm7aY4m9ZXpZLS+GO1d8Y3kizgxQaUTNZ98GStR
+	dngq6aP9n6Xk2Ee4DGT+yIDCeEG2QThX9icdYla2WvD5AjjEkbL1gn+4LahLeCzrCBea601U
+	yFgq2yKcf+JiQkzLVgmNuX+wIZYGg3IMNvq/0JVCnbUVFyK+HC2qRZGqJF2iQpUQvVZ7RJma
+	pEpZ+7060YaCb3M1bf60A01273AhGY/k4dJY6wllBKPQaVMTXUjgsTxSWuTVKSOkcYrUH0WN
+	+jvN8QRR60LLeVq+TLrzgBgbIftBkSweEcWjouZ/l+LDojJQQ/72Kn/ZUsu2qCUZY2GbN51V
+	mzYUnja1PXjrSe0Y20fZWw9He781FO06xLVMdFgrNja1vM4jabfyZxLjcfbPJYH99uRf0+I+
+	dG91lXqfZb29/OrN0MS6zN4tl+PTO9VdB7mLeXNTi+2o1aC+ua0v/WBOgb/7TMGmr47Zz/uN
+	2Qe+ltNapWL9GqzRKv4FRv03hjIDAAA=
+X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: AnonymousSubmission
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE37:EE_|BY5PR12MB4177:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5fdc8e9e-4222-466c-ca3e-08ddc4fe0ab3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|82310400026|7416014|36860700013|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?1c5o7+hchViZrKVskxrImqvTgcdSdxhB5imLvrlzJEASI1mZpSSfi7Mq094u?=
- =?us-ascii?Q?5zDbhrBY8kB70994NGb7TjCP1eMQPegKJqbGHLGbousecfUVQwwMqhDugaEo?=
- =?us-ascii?Q?ZxiaNt24PI9naWGnNE8hXJh1lewU8Td6/Yi7Y9Wu6IGBq3GPwjO9BNgZoQEH?=
- =?us-ascii?Q?WfTPtdF+gf5Z4Unvn5fJKKVzNU/hb0yeDx4H5Zq7RqgIrNsgrE948PwQjWHK?=
- =?us-ascii?Q?fkNhPJbyC/E5mhot5uebN8ljkxzYJJalPgNSTvemC5FC+8DJJng/0+go1rT9?=
- =?us-ascii?Q?CofbKaD6fyJJmQtFl6BijmklSkpn+pcsjuG2BwZZQgVrEacO2Sji+a/Q0x19?=
- =?us-ascii?Q?S/gmS0g9hQK8/T9Eltg6/zheK7RswACf3xMpae8P9n4e5e5h2+BZAuk942+s?=
- =?us-ascii?Q?nvJ7FI4aG6NeCdnSWEt5H8Ku4ZFMJ3dgmQyklfZvcyRhle/Y5G4KKpeaS+Jc?=
- =?us-ascii?Q?Dt2mctEJ6eD2krFhGIC9hvRqhEWe9FS/rZr/f3LjUCEMXaVfUS5VVcgHdbt3?=
- =?us-ascii?Q?R8FNWk+mgMv0fP7voCcmq/KQP1U1TxKSMxVB948X/4m4aCRESGOqifz/3Nq7?=
- =?us-ascii?Q?azOjrvCtOObmVPCr9jazF0z941Ud8zfn/kiOYGhG9L9cre2ITN3XyVRwYEbP?=
- =?us-ascii?Q?8v3TiUxXf1Ms/mxMJ2JLKGbJLkRoQanDpCazLXcOm1e5yeTPFksNo9ABkyED?=
- =?us-ascii?Q?GCc+1ia8tj/e9fbFb0jt5cw21LoEWoFvW05I9ZfHuGMZcm32u2zOtDx9dqkS?=
- =?us-ascii?Q?od/ckX89fB6cFSAKQmCAdZ5ey0s8rnSTduy9ouq+XMYYHtg0AlbpI6Fx6Dz7?=
- =?us-ascii?Q?Mifp6mSs+8cMdqPFCvFY0O9tYTtaX7NtQkadDkrddJGVkTT5mMTnj2WBXCDn?=
- =?us-ascii?Q?TcSUEMIBHcQOPNb4jkGD/3fe2GZb7vBVHAiozE5BlWTHWZuWysbJbDU/VCWP?=
- =?us-ascii?Q?h0uBwgqgwvJwjtFTenJWdClB3N4hWTM3qJcE1bEl52bNgNCVPGjCxlTcBO8Y?=
- =?us-ascii?Q?C5RhHQooO3NY0jS4MLNd36fiIz7FRAPKp5HAXcby84CQPJ/megwHC21u99o0?=
- =?us-ascii?Q?b7YAFQ+iJjUWLDLs7ZgMp+GaHqxNJ/VOtaOKQv4JhbADhwDF+LLt0dqmUmMZ?=
- =?us-ascii?Q?mkPiq836MwGPaEWej5ulYmWdWUu4wZMi6gGq8rzfxS/bvPhWgzloDD/+WgXz?=
- =?us-ascii?Q?sa0LCG0/0ZuA4QXEDqCKDV6uH7VLKGIXfkql9+41PS9Wly7cAzuVoXsK68rT?=
- =?us-ascii?Q?Lc/mpLqxHzAqwl90jJbFxAJcnlrxURqrjiS260dcYCfdiSrhHJnyPJFRrIZe?=
- =?us-ascii?Q?nlbNpEkcTjfpbOm56xc2fAz4MbXa5yoeZMaWlyr2xJ8lVHyKRUucKIfAcXl8?=
- =?us-ascii?Q?1rml8w1lkrS8i/jj05P9XTKSEO60wevc4NTqC5HiA3V4qxJGrz0EmLfoTHzi?=
- =?us-ascii?Q?A/vkJ2dRNjT3qT8nB1Rc5uX3bGb9xPGe8nw+JFYaBgqRPHkWoU8uAQipARkn?=
- =?us-ascii?Q?HkBONNowSfm2rPSGJOWVOhggVaw4RT7+36VK?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(82310400026)(7416014)(36860700013)(1800799024);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2025 06:49:13.5433
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5fdc8e9e-4222-466c-ca3e-08ddc4fe0ab3
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000EE37.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4177
 
-From: Oren Sidi <osidi@nvidia.com>
+Hi all,
 
-Introduce new "cable_length" field in PFCC register and related fields
-to enhance rx buffer configuration management:
-1. cable_length: Shifts cable length handling to fw by storing a
-   manually entered length from user in PFCC.cable_length
-2. lane_rate_oper: In a case where PFCC.cable_length is not supported,
-   helps compute a default cable length
+The MM subsystem is trying to reduce struct page to a single pointer.
+See the following link for your information:
 
-Signed-off-by: Oren Sidi <osidi@nvidia.com>
-Reviewed-by: Alex Lazar <alazar@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+   https://kernelnewbies.org/MatthewWilcox/Memdescs/Path
+
+The first step towards that is splitting struct page by its individual
+users, as has already been done with folio and slab.  This patchset does
+that for page pool.
+
+Matthew Wilcox tried and stopped the same work, you can see in:
+
+   https://lore.kernel.org/linux-mm/20230111042214.907030-1-willy@infradead.org/
+
+I focused on removing the page pool members in struct page this time,
+not moving the allocation code of page pool from net to mm.  It can be
+done later if needed.
+
+The final patch that removes the page pool fields will be posted once
+all the conversions are completed.
+
+	Byungchul
 ---
- include/linux/mlx5/mlx5_ifc.h | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+Changes from v10:
+	1. Introduce __netmem_to_nmdesc() and use it in
+	   __netmem_get_pp(). (feedbacked by Mina)
+	2. Fix a bug that fails on casting 'const page -> const
+	   netmem_desc', by using macros and _Generic. (feedbacked by
+	   test robot)
+	3. Add comment on pp_page_to_nmdesc() to ask for more attention
+	   before using the helper. (feedbacked by Mina)
 
-diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
-index e1220aa1e7dc..ed4130e49c27 100644
---- a/include/linux/mlx5/mlx5_ifc.h
-+++ b/include/linux/mlx5/mlx5_ifc.h
-@@ -9994,6 +9994,10 @@ struct mlx5_ifc_pude_reg_bits {
- 	u8         reserved_at_20[0x60];
- };
- 
-+enum {
-+	MLX5_PTYS_CONNECTOR_TYPE_PORT_DA = 0x7,
-+};
-+
- struct mlx5_ifc_ptys_reg_bits {
- 	u8         reserved_at_0[0x1];
- 	u8         an_disable_admin[0x1];
-@@ -10030,7 +10034,8 @@ struct mlx5_ifc_ptys_reg_bits {
- 	u8         ib_link_width_oper[0x10];
- 	u8         ib_proto_oper[0x10];
- 
--	u8         reserved_at_160[0x1c];
-+	u8         reserved_at_160[0x8];
-+	u8         lane_rate_oper[0x14];
- 	u8         connector_type[0x4];
- 
- 	u8         eth_proto_lp_advertise[0x20];
-@@ -10485,7 +10490,8 @@ struct mlx5_ifc_pfcc_reg_bits {
- 	u8	   buf_ownership[0x2];
- 	u8	   reserved_at_6[0x2];
- 	u8         local_port[0x8];
--	u8         reserved_at_10[0xb];
-+	u8         reserved_at_10[0xa];
-+	u8	   cable_length_mask[0x1];
- 	u8         ppan_mask_n[0x1];
- 	u8         minor_stall_mask[0x1];
- 	u8         critical_stall_mask[0x1];
-@@ -10514,7 +10520,10 @@ struct mlx5_ifc_pfcc_reg_bits {
- 	u8         device_stall_minor_watermark[0x10];
- 	u8         device_stall_critical_watermark[0x10];
- 
--	u8         reserved_at_a0[0x60];
-+	u8	   reserved_at_a0[0x18];
-+	u8	   cable_length[0x8];
-+
-+	u8         reserved_at_c0[0x40];
- };
- 
- struct mlx5_ifc_pelc_reg_bits {
-@@ -10615,7 +10624,9 @@ struct mlx5_ifc_mtutc_reg_bits {
- struct mlx5_ifc_pcam_enhanced_features_bits {
- 	u8         reserved_at_0[0x10];
- 	u8         ppcnt_recovery_counters[0x1];
--	u8         reserved_at_11[0xc];
-+	u8         reserved_at_11[0x7];
-+	u8	   cable_length[0x1];
-+	u8	   reserved_at_19[0x4];
- 	u8         fec_200G_per_lane_in_pplm[0x1];
- 	u8         reserved_at_1e[0x2a];
- 	u8         fec_100G_per_lane_in_pplm[0x1];
+Changes from v9:
+	1. Remove the patch 'page_pool: access ->pp_magic through
+	   netmem_desc in page_pool_page_is_pp()' and decide to wait for
+	   Pavel's work of PageNetpp() to identify page type for page
+	   pool, that doesn't need to access ->pp_magic.
+	2. Rename page_to_nmdesc() to pp_page_to_nmdesc() and add
+	   DEBUG_NET_WARN_ON_ONCE(!page_pool_page_is_pp(page)) in it,
+	   just in case. (feedbacked by Pavel)
+	3. Apply just simple casting from page to netmem_desc for
+	   accessing ->pp and ->pp_ref_count, instead of full converting
+	   page to netmem_ref for network drivers e.g. mlx4, netdevsim,
+	   and mt76.
+	4. Expand the support for drivers to access ->pp and
+	   ->pp_ref_count to fec, octeontx2-pf, iavf, idpf, mlx5, ti,
+	   and xdp.
+	5. Squash each helper with its first user. (feedbacked by Mina)
+
+Changes from v8:
+	1. Rebase on net-next/main as of Jul 10.
+	2. Exclude non-controversial patches that have already been
+	   merged to net-next.
+	3. Re-add the patches that focus on removing accessing the page
+	   pool fields in struct page.
+	4. Add utility APIs e.g. casting, to use struct netmem_desc as
+	   descriptor, to support __netmem_get_pp() that has started to
+	   be used again e.g. by libeth.
+
+Changes from v7 (no actual updates):
+	1. Exclude "netmem: introduce struct netmem_desc mirroring
+	   struct page" that might be controversial.
+	2. Exclude "netmem: introduce a netmem API,
+	   virt_to_head_netmem()" since there are no users.
+
+Changes from v6 (no actual updates):
+	1. Rebase on net-next/main as of Jun 25.
+	2. Supplement a comment describing struct net_iov.
+	3. Exclude a controversial patch, "page_pool: access ->pp_magic
+	   through struct netmem_desc in page_pool_page_is_pp()".
+	4. Exclude "netmem: remove __netmem_get_pp()" since the API
+	   started to be used again by libeth.
+
+Changes from v5 (no actual updates):
+	1. Rebase on net-next/main as of Jun 20.
+	2. Add given 'Reviewed-by's and 'Acked-by's, thanks to all.
+	3. Add missing cc's.
+
+Changes from v4:
+	1. Add given 'Reviewed-by's, thanks to all.
+	2. Exclude potentially controversial patches.
+
+Changes from v3:
+	1. Relocates ->owner and ->type of net_iov out of netmem_desc
+	   and make them be net_iov specific.
+	2. Remove __force when casting struct page to struct netmem_desc.
+
+Changes from v2:
+	1. Introduce a netmem API, virt_to_head_netmem(), and use it
+	   when it's needed.
+	2. Introduce struct netmem_desc as a new struct and union'ed
+	   with the existing fields in struct net_iov.
+	3. Make page_pool_page_is_pp() access ->pp_magic through struct
+	   netmem_desc instead of struct page.
+	4. Move netmem alloc APIs from include/net/netmem.h to
+	   net/core/netmem_priv.h.
+	5. Apply trivial feedbacks, thanks to Mina, Pavel, and Toke.
+	6. Add given 'Reviewed-by's, thanks to Mina.
+
+Changes from v1:
+	1. Rebase on net-next's main as of May 26.
+	2. Check checkpatch.pl, feedbacked by SJ Park.
+	3. Add converting of page to netmem in mt76.
+	4. Revert 'mlx5: use netmem descriptor and APIs for page pool'
+	   since it's on-going by Tariq Toukan.  I will wait for his
+	   work to be done.
+	5. Revert 'page_pool: use netmem APIs to access page->pp_magic
+	   in page_pool_page_is_pp()' since we need more discussion.
+	6. Revert 'mm, netmem: remove the page pool members in struct
+	   page' since there are some prerequisite works to remove the
+	   page pool fields from struct page.  I can submit this patch
+	   separatedly later.
+	7. Cancel relocating a page pool member in struct page.
+	8. Modify static assert for offests and size of struct
+	   netmem_desc.
+
+Changes from rfc:
+	1. Rebase on net-next's main branch.
+	   https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/
+	2. Fix a build error reported by kernel test robot.
+	   https://lore.kernel.org/all/202505100932.uzAMBW1y-lkp@intel.com/
+	3. Add given 'Reviewed-by's, thanks to Mina and Ilias.
+	4. Do static_assert() on the size of struct netmem_desc instead
+	   of placing place-holder in struct page, feedbacked by
+	   Matthew.
+	5. Do struct_group_tagged(netmem_desc) on struct net_iov instead
+	   of wholly renaming it to strcut netmem_desc, feedbacked by
+	   Mina and Pavel.
+
+Byungchul Park (12):
+  netmem: introduce struct netmem_desc mirroring struct page
+  netmem: use netmem_desc instead of page to access ->pp in
+    __netmem_get_pp()
+  netmem, mlx4: access ->pp_ref_count through netmem_desc instead of
+    page
+  netdevsim: access ->pp through netmem_desc instead of page
+  mt76: access ->pp through netmem_desc instead of page
+  net: fec: access ->pp through netmem_desc instead of page
+  octeontx2-pf: access ->pp through netmem_desc instead of page
+  iavf: access ->pp through netmem_desc instead of page
+  idpf: access ->pp through netmem_desc instead of page
+  mlx5: access ->pp through netmem_desc instead of page
+  net: ti: icssg-prueth: access ->pp through netmem_desc instead of page
+  libeth: xdp: access ->pp through netmem_desc instead of page
+
+ drivers/net/ethernet/freescale/fec_main.c     |  10 +-
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c   |   2 +-
+ drivers/net/ethernet/intel/idpf/idpf_txrx.c   |   8 +-
+ .../marvell/octeontx2/nic/otx2_txrx.c         |   2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |   4 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |   3 +-
+ .../net/ethernet/ti/icssg/icssg_prueth_sr1.c  |   4 +-
+ drivers/net/netdevsim/netdev.c                |   6 +-
+ drivers/net/wireless/mediatek/mt76/mt76.h     |   3 +-
+ include/net/libeth/xdp.h                      |   2 +-
+ include/net/netmem.h                          | 153 +++++++++++++++---
+ 11 files changed, 159 insertions(+), 38 deletions(-)
+
+
+base-commit: c65d34296b2252897e37835d6007bbd01b255742
 -- 
-2.31.1
+2.17.1
 
 
