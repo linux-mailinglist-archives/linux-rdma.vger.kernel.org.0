@@ -1,308 +1,174 @@
-Return-Path: <linux-rdma+bounces-12230-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12231-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43AE2B084F3
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jul 2025 08:32:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C94CB0855C
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jul 2025 08:49:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 842385659E8
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jul 2025 06:32:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A77AF16FAC9
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jul 2025 06:49:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF7E1215766;
-	Thu, 17 Jul 2025 06:32:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86EBA21772D;
+	Thu, 17 Jul 2025 06:49:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="QYEdiZs1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 473881A841F;
-	Thu, 17 Jul 2025 06:32:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752733958; cv=none; b=L9mAYTWt3+KDxucCIpXNTWzRjUh2WL+4E1XWzOqtA2pafmNcW9QBzKSqLjXmu9igheRjIH4XbdJmH0bmIlSrtLrMBcfZfMYDkmQ1kdKQOeEkrG5cmVZyNSltS00RafOATEbUSt+2BgvJ/j9Gp8NginLJ5MUvUZq00MCWXawpQtA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752733958; c=relaxed/simple;
-	bh=4TMBl1ezB8kszm0sZIN26Bt/jSN0MsvU0gKuNks4fqs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AzRIzzcbpw7vzs1W90DAR5jnKprmzn+G44rxQwD7euFSbiinP+zoYCg6PUYUkLRvyW0KOv2DwRbl4pSA7A6FwlPNVX9rsY9Qkja6AlDmvL0IOhojmJDxMa95vKg8ykJamGJ58WxiMH5kxA2kXoncOkb7JHwCLnvQWOtms3OzUMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-f3-687898feb6e6
-Date: Thu, 17 Jul 2025 15:32:25 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Mina Almasry <almasrymina@google.com>
-Cc: "Lobakin, Aleksander" <aleksander.lobakin@intel.com>,
-	willy@infradead.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, ilias.apalodimas@linaro.org,
-	harry.yoo@oracle.com, akpm@linux-foundation.org,
-	andrew+netdev@lunn.ch, asml.silence@gmail.com, toke@redhat.com,
-	david@redhat.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
-	jackmanb@google.com, wei.fang@nxp.com, shenwei.wang@nxp.com,
-	xiaoning.wang@nxp.com, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, anthony.l.nguyen@intel.com,
-	przemyslaw.kitszel@intel.com, sgoutham@marvell.com,
-	gakula@marvell.com, sbhatta@marvell.com, hkelam@marvell.com,
-	bbhushan2@marvell.com, tariqt@nvidia.com, ast@kernel.org,
-	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-	sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org,
-	mbloch@nvidia.com, danishanwar@ti.com, rogerq@kernel.org,
-	nbd@nbd.name, lorenzo@kernel.org, ryder.lee@mediatek.com,
-	shayne.chen@mediatek.com, sean.wang@mediatek.com,
-	matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-	horms@kernel.org, m-malladi@ti.com, krzysztof.kozlowski@linaro.org,
-	matthias.schiffer@ew.tq-group.com, robh@kernel.org,
-	imx@lists.linux.dev, intel-wired-lan@lists.osuosl.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next v10 02/12] netmem: use netmem_desc instead of
- page to access ->pp in __netmem_get_pp()
-Message-ID: <20250717063225.GA28772@system.software.com>
-References: <20250714120047.35901-1-byungchul@sk.com>
- <20250714120047.35901-3-byungchul@sk.com>
- <CAHS8izO393X_BDJxnX2d-auhTwrUZK5wYdoAh_tJc0GBf0AqcQ@mail.gmail.com>
- <CAHS8izNh7aCJOb1WKTx7CXNDPv_UBqFyq2XEHHhqHH=5JPmJCQ@mail.gmail.com>
- <20250715013626.GA49874@system.software.com>
- <CAHS8izNgfrN-MimH1uv349AqNudvQJoeOsyHpoBT_QokF3Zv=w@mail.gmail.com>
- <20250716045124.GB12760@system.software.com>
- <CAHS8izMK2JA4rGNMRMqQbZtJVEP8b_QPLXzoKNeVgQFzAmdv3g@mail.gmail.com>
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2087.outbound.protection.outlook.com [40.107.243.87])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAEE717B425;
+	Thu, 17 Jul 2025 06:49:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.87
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1752734948; cv=fail; b=gUPIVZb7HP0WE1if3+W5KP5TS1Q6Wb9OPIzLbfARYV6ekrazK+CHHW1jOYHJHlxB5KXTpVtR4zcpBRRc/TopG0owEKMxNGSL2VFUhytgq28afMOEgUIGYQdJTfi9k3IfZOqiTra5TA0fNDF0DWFMSXN4y1UoWkBZep+SyKQsB6I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1752734948; c=relaxed/simple;
+	bh=7+7ZYHpM3eDpUNG7j0M9E6wQrCw3QStS/SszMvOh3Rw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AqTUh3e31DxPIqMELmKTR+UqP+hi2lCx0fPuWMEF+i4+nIep63U4cn8Q9/5xyyI/EVoYxQSw1t+9lcS6jAgbUheabJiUyWW8rXMLPHLBejQkUgBKDrC08zcOjt9HGAGfP+byIIGkmqkrivdMRo4inM0pJHmahDUcpCvOKq0Wfvc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=QYEdiZs1; arc=fail smtp.client-ip=40.107.243.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=ZsqS3Ptgh3/wtXv4AkX8HZiutUx1RInG9HYv3qU74crQqpwHaspY+QfhpM0S13WUn464Hgt5Mk9aTGSfhxlvsNUFg/Hdttn0qY/UqKWkTJ867nLfDOAAXk0fOXYF6yEKPMCxIMtsDbYMpEENicXjEOLm6dgP6K8bij5l3k21MKgjLQx4v2vqN+7kQf0jiZ9ACYen/AlESpBH+NzkcByz9G2wFL849tNUWApReipyBoyk2LyL3/+fpcNgc2+qUGVQPtJSuoS4xmRBKkXh08XEwBBdZXGQ/pObUn9JXvEQVQU5I6YQCFnIqmzmUrz6+qlo78HTPpvcrHpcD/yKBwvIbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=juQxD3G6CYOUToyQHQeTDqbR/JUZsHM0T3QEskU/jOA=;
+ b=o8I5+TBaD/cQvTu0dqykBUxai6KNPIjHABr+EH7ym6Kc7Q6lA+eB3pA+9HgHrLD5IqiOiIZXjNiFM6+XWuvDfykEFLwC7tfLz4xDdTB3uJOTnzeJq+qGI8f3ZhPyoVEjO5QnOstdZqiyzodQXjAd8iEVyIabM+bn/Kuj4ScHlEGktOrdYoHzzxQgZZ5b5F8wtwzsvR01OylcBjiNclDDFJJpZpfpUprn04gT9NjloSmmmni07fCnuGgQImm4s3KD9KbW+XGU7jq72e4NDzrQP/foOmTQfDO/1QuzJ5yh4WOgSCMKqayg1y5XSh8ztCGFroAL8kzkPSX7pnO95B/Kiw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=juQxD3G6CYOUToyQHQeTDqbR/JUZsHM0T3QEskU/jOA=;
+ b=QYEdiZs1Hzgv1mZPs4+qFCVQSxb1egqUIGneY5PcdGmZjhqFNW8tL+NXLNfsmhuxSk+a8hSpIbJN75hb9NXToYsRaLNY3o7TzRAse3Lp+hA4GU5oef0hRbBe55Bsf5AVAtaKTcsZFdxbG9ez5NwXWL0PSU1/GdDTTcws8shZqTGwPrGj8znZyQxGYlF+Ntc+AOLdNjssoydOHdJ1gyE6G2Cc+M8OHPoAwmQnDa9hbMXfcpgPPkM+5qZhsn91lrYqozvwtQhD6Xk8hX/kc99mk9+x/eEQzTUngD2sS+xJzTIn4WfL3j8jrj+exq5zGhjfbFFHVkrGRcqlx3qNQr6lTg==
+Received: from MW4PR03CA0017.namprd03.prod.outlook.com (2603:10b6:303:8f::22)
+ by BL3PR12MB6548.namprd12.prod.outlook.com (2603:10b6:208:38f::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8901.24; Thu, 17 Jul
+ 2025 06:49:01 +0000
+Received: from CY4PEPF0000E9DB.namprd05.prod.outlook.com
+ (2603:10b6:303:8f:cafe::8c) by MW4PR03CA0017.outlook.office365.com
+ (2603:10b6:303:8f::22) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8922.23 via Frontend Transport; Thu,
+ 17 Jul 2025 06:49:00 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CY4PEPF0000E9DB.mail.protection.outlook.com (10.167.241.74) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8943.21 via Frontend Transport; Thu, 17 Jul 2025 06:49:00 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 16 Jul
+ 2025 23:48:41 -0700
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 16 Jul
+ 2025 23:48:41 -0700
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.7)
+ with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Wed, 16
+ Jul 2025 23:48:37 -0700
+From: Tariq Toukan <tariqt@nvidia.com>
+To: Saeed Mahameed <saeed@kernel.org>, Leon Romanovsky <leon@kernel.org>
+CC: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>, Gal Pressman <gal@nvidia.com>, "Saeed
+ Mahameed" <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch
+	<mbloch@nvidia.com>, <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH mlx5-next 0/3] mlx5-next updates 2025-07-17
+Date: Thu, 17 Jul 2025 09:48:12 +0300
+Message-ID: <1752734895-257735-1-git-send-email-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.8.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHS8izMK2JA4rGNMRMqQbZtJVEP8b_QPLXzoKNeVgQFzAmdv3g@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0yTdxTG83/vNNS8VLf9p1tcuonRRNyULSfZJUa/vF9cNC5ZolFo5J1t
-	BkhaqUCyjWmXzWZUho7QUhSlaLmMYhGoWjptkbK5bLRSrHIrOI2biMxLR7mUvS0x49uT5zl5
-	fuckhyMVLmYlp8k/JGrzVblKRkbJHqWe3RCvKlK/fbXxfbA6mhkIPD1DQ9N0EZyPuGgINmC4
-	0jdNgLWxA8Gz2CALzmNDJDzt9jNQdyZKQqy1jALrHwYKnjtmSLjXM85Cr3eegibndhg9d58C
-	97edJPier4Hx470MlBlmSTCPfMPAwp1ZGrpikywccdkJ6HrYzkJfh4mGkzP1JHSWRiTW3QEa
-	bl62MnDzaADBSPMCDfe9EnDCPsSCqcmCwPtzAwNHDJthov0ZC1M/dpMwatoC8So99NS+DNEb
-	EwgG60MELLhdLPw+0kJDt6OTgP6xGAnR72sYMD46jiBkvkzAbzWtNNhu9BPSHrtgYGGOgBPB
-	WgbuGkYRBH3jFFR/bULg8IRp+MctnTw7bWW2bBV8E49JwTVsQ8LFhtuE8KA8Tghhz6+EcMky
-	zAq1zkKhzb5eqHP/RQjGcJAUnI3HGMH5pIIVhgbcjNBbNUsJbbavhAdtZrTj9d2yD3LEXI1e
-	1G78KFum7g+U0QXhbUUXfOmlKL7JiFI4zGdiv7WKeqHtxttkQlP8Gnyh20MnNMOvxeFwLOmv
-	4Ndhm+cHyZdxJN+Sisce3kGJYDlfiM+OhZNFch7wTw1xlBhS8IMkrpwzMotBGv7F/GdyiJRa
-	504FpVZO0qvw+Ti3aK/GR9urk7AUfice6W9P6pf4N/HVDj+R6MR8NAVfujaGFrd+FV+zh6ly
-	lGZZgrAsQVj+R1iWIGoR1YgUmnx9nkqTm5mhLs7XFGXsP5jnRNI/n/tibo8LPenb5UU8h5Sp
-	8uzWw2oFrdLrivO8CHOkcoX8RFCvVshzVMUlovZglrYwV9R50SqOUr4i3xQ9nKPgD6gOiZ+L
-	YoGofZESXMrKUiQ3zWTU1L+2J572HrE9csWnK0/v+24Hf2pS8FdsSO9xTm+OOPZmRajTusrh
-	f7NQKNtQ0fKpedI29aW/efBeRhOxr+Bk17vBkg/fmnrj+q2ZbeLfmfV7W8wHQuO3qudV2ouV
-	8/C4zvFZ4PTHZKXnk5rJoZK1y1zxUF0osGzf6p3rtiopnVr1znpSq1P9B9AI6bPLAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUxTdxTG87//+0ZHl7uObTeaOVPiyDBzsjlzli0LiVl2x+Je4hYzPkwK
-	3KydUKS1HSwaO6hZbGytAgtU0DJQS0HAdkDVjm0tEZx7kYKk8lIEHXMBpw5EK6XsFrOMb895
-	npPfcz4cFiuq6FWsRrtb1GlVBUpaRsree738xXh1iXqj3aSE2rYWGvpn6yloflACp675KAg1
-	8XD+8gMCat2dCOaiIwx4DoximO3ppaGhfh5DtN1KQu3vZhLutT3E8MeFSQb6AoskNHu2wvjJ
-	KRL8X3dhCN5bB5OH+miwmhcw1ET207A0vEDB99G/GSjzuQgI1l2UxukOBi532iiofHgCQ5fp
-	mlR4fYiCgXO1NAyU9yOItCxRMBWQWmdcowzYmh0IAj800VBmfgVmOuYYuFPVg2HclgnxaiNc
-	cD4N85dmEIycuELAkt/HwG+RVgp62roIGJyIYpg/WEeD5dYhBFdqzhHwS107BY2XBgnpjm0w
-	tBQjoCLkpOG6eRxBKDhJwtGvbAjausMU3PWbycwtQnDmNhZ8Y41I+K7pKiHctMcJIdz9MyGc
-	dYwxgtNjELyudKHB/xchWMIhLHjcB2jB888RRhgd8tNCX/UCKXgb9wk3vTXogzXZsjfyxQKN
-	UdS99GaOTD3Yb6V2hbeUnAk+b0Lxly0oieW5TbzLchUnNMmt48/0dFMJTXNpfDgcXfZTuBf4
-	xu7Dki9jMdeazE9MD6NE8CRn4L+dCJMJLeeAP90UR4klBTeC+W9iFvpR8AR/sebG8hKWqLFj
-	IYnKSno1fyrOPrKf48s7ji6XJXEf8pHBjmX9FJfK/9jZS9jR444VJMcKkuN/kmMFyYlIN0rR
-	aI2FKk3Bqxv0O9WlWk3JhryiQg+SnvXk3thhH5obeDuAOBYpk+U57V+oFZTKqC8tDCCexcoU
-	eUXIqFbI81WlX4q6oh06Q4GoD6DVLKl8Rp61XcxRcJ+pdos7RXGXqPsvJdikVSaUGtnYWlyf
-	nzwQW6/NWHz2RmY8Y7OtYr3BuiYNu/233M25VWPFn6Qzn37cmfvO5m2f75jatG/y/vkG5s5Q
-	XtnZd+++76z80zCWFrFPn05d6+4q/mjeNew9+Gt21tbsrP25ssrje3RrZ4/DT9Yj44/d33N7
-	wWR5y753e16L7bVe72JdUVRJ6tWqjHSs06v+BSardbOoAwAA
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-NV-OnPremToCloud: AnonymousSubmission
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9DB:EE_|BL3PR12MB6548:EE_
+X-MS-Office365-Filtering-Correlation-Id: 556207a8-0f32-4d48-8862-08ddc4fe02e4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|7416014|82310400026|1800799024|36860700013;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?MtLWhc2CN/YYe7BHXEaN4IFW2f+oaMj+hRlJWGyCV04mrymZbFYL8e4b65c8?=
+ =?us-ascii?Q?c+PPVoLCF4mHARufVn8O78FOQveG57hZWrFY+J3iwEGuUahpKwZMwqefRKR3?=
+ =?us-ascii?Q?7Vb0EwIe22oHL1ncqzVNslVjKZOqfKjBm/UXYx+BjKpyn5cFACocOf9kJVtP?=
+ =?us-ascii?Q?bogOHZjv3DPR/Et5oGxnuQpr4pl+2Ve5EoJeSGftMEVkfKH+KM9jAjeO8blU?=
+ =?us-ascii?Q?BmXW5IZn0bo+GQ7gt441QdDISh2CILjgshBNW8LUtjZ6b4/hc46cmw28IezU?=
+ =?us-ascii?Q?fzv4dkdC0ysgAt5oNyiybAUo860pQ43vSvZePzi7DYo5WdMm5cAOQguI449t?=
+ =?us-ascii?Q?u0+jXyGtYczixCQt0Pe2O0lRfRlC7rVPa4bVYgCnbxXUonuYlFDMcxWvlz2A?=
+ =?us-ascii?Q?gSrVPZ2SXIr037Uyigj7jKTqTl+RzX71RNZkXjAPhk3CLhNG/gjnf5ISHpeF?=
+ =?us-ascii?Q?IdCiRnVCJYdJAzZ4qa4LAKS3s1KhB22nd8J6jNHIu5Ml7TZKxyEoiP6p8QeW?=
+ =?us-ascii?Q?szv1G5ulQAQ7iC2CdicyLT29AWJDb0ha9MzF7BSkNNq/owDLjWELsb9Odlar?=
+ =?us-ascii?Q?xXAtgj1khlkaJiLSSWF0+vRWbbnyJT3CAA/K1SS6hs5NCMHqXArJ/I+FL2iN?=
+ =?us-ascii?Q?xaqM4aY2vOCNtVu3M7O31vtS0BEPlSStc/wfPx0qFBQvYSPWUPw2z32G562S?=
+ =?us-ascii?Q?A89oPgNyNeWujtSaYsLVwLS9NLmiLFdGc3zFk13uTyMqhe+euvqG1JKtZ2db?=
+ =?us-ascii?Q?08FnRl1t3KM7+LlWuYBwbiNaFNUl9dLzd+SPl82Prfl40l7YuR1Qq7A+uEbR?=
+ =?us-ascii?Q?XPVllcNstHa8kcXbsS1kurGnI3PQBaMzXlO1Y2zEhXdJCtuqeIMB2DBPG7hH?=
+ =?us-ascii?Q?WCbZSHU/WjvvT1CAx2vooieu314pByz0NkBeiCxmEqP0Arr/nbgpkc+WHOMJ?=
+ =?us-ascii?Q?J59NNa1Iag8LLfYAMYhpajlW5375LyDO9EbMvSz/9Q2GtbZ3PKR9vfYq6o9I?=
+ =?us-ascii?Q?y0SGZ0WTdjR3EcWfTOueSCr/1oawp6YuoFJXetOPRK4Oo67wCdbz71i75Crk?=
+ =?us-ascii?Q?FXMtweOM0R14n2E+8bUafW7OxRtexmf6psxHFvE4hfluYqNcJzMHNSFb0BIc?=
+ =?us-ascii?Q?1DnQJISexu9SJG7v6jo1Faf46XQGwnHJfBGA+uK1qzDVtmVoVjqk33PhE9Aj?=
+ =?us-ascii?Q?TvBNiGWgAoeCN8TiF7ELEnscJTfIa4NRgzRiNiUrpnzvHXL/PUIRa/mEdv5Y?=
+ =?us-ascii?Q?BMt9sO59R74QOjqgB/PdqSFo5ySGizeiXxptKPN7Ql1IsLaY35ak8gs5zPEr?=
+ =?us-ascii?Q?qAsEb0Cz5dV7ZzDueSbf89SaW00Qh7RqMLmVsClxQ8luMMDdrzDIywG+xXAy?=
+ =?us-ascii?Q?/yc8MH2kMV4n9lEc/ILWJ9lnVV2xwHJeUajb2njYhVOigGNbL/dQOD+qCX/1?=
+ =?us-ascii?Q?pTv21n+37+GMTVGZKzWR3VHgN6KSHeYYAavMVbTP+Ks9lsdeqe5bA+lZNi9x?=
+ =?us-ascii?Q?8rE0ztkQ1HbA+mZ7hPksfpVW7ocXEk/X1XG9?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(7416014)(82310400026)(1800799024)(36860700013);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2025 06:49:00.4707
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 556207a8-0f32-4d48-8862-08ddc4fe02e4
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000E9DB.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6548
 
-On Wed, Jul 16, 2025 at 12:41:04PM -0700, Mina Almasry wrote:
-> On Tue, Jul 15, 2025 at 9:51 PM Byungchul Park <byungchul@sk.com> wrote:
-> >
-> > On Tue, Jul 15, 2025 at 12:09:34PM -0700, Mina Almasry wrote:
-> > > On Mon, Jul 14, 2025 at 6:36 PM Byungchul Park <byungchul@sk.com> wrote:
-> > > >
-> > > > On Mon, Jul 14, 2025 at 12:58:15PM -0700, Mina Almasry wrote:
-> > > > > On Mon, Jul 14, 2025 at 12:37 PM Mina Almasry <almasrymina@google.com> wrote:
-> > > > > >
-> > > > > > On Mon, Jul 14, 2025 at 5:01 AM Byungchul Park <byungchul@sk.com> wrote:
-> > > > > > >
-> > > > > > > To eliminate the use of the page pool fields in struct page, the page
-> > > > > > > pool code should use netmem descriptor and APIs instead.
-> > > > > > >
-> > > > > > > However, __netmem_get_pp() still accesses ->pp via struct page.  So
-> > > > > > > change it to use struct netmem_desc instead, since ->pp no longer will
-> > > > > > > be available in struct page.
-> > > > > > >
-> > > > > > > While at it, add a helper, pp_page_to_nmdesc(), that can be used to
-> > > > > > > extract netmem_desc from page only if it's pp page.  For now that
-> > > > > > > netmem_desc overlays on page, it can be achieved by just casting.
-> > > > > > >
-> > > > > > > Signed-off-by: Byungchul Park <byungchul@sk.com>
-> > > > > > > ---
-> > > > > > >  include/net/netmem.h | 13 ++++++++++++-
-> > > > > > >  1 file changed, 12 insertions(+), 1 deletion(-)
-> > > > > > >
-> > > > > > > diff --git a/include/net/netmem.h b/include/net/netmem.h
-> > > > > > > index 535cf17b9134..2b8a7b51ac99 100644
-> > > > > > > --- a/include/net/netmem.h
-> > > > > > > +++ b/include/net/netmem.h
-> > > > > > > @@ -267,6 +267,17 @@ static inline struct net_iov *__netmem_clear_lsb(netmem_ref netmem)
-> > > > > > >         return (struct net_iov *)((__force unsigned long)netmem & ~NET_IOV);
-> > > > > > >  }
-> > > > > > >
-> > > > > > > +static inline struct netmem_desc *pp_page_to_nmdesc(struct page *page)
-> > > > > > > +{
-> > > > > > > +       DEBUG_NET_WARN_ON_ONCE(!page_pool_page_is_pp(page));
-> > > > > > > +
-> > > > > > > +       /* XXX: How to extract netmem_desc from page must be changed,
-> > > > > > > +        * once netmem_desc no longer overlays on page and will be
-> > > > > > > +        * allocated through slab.
-> > > > > > > +        */
-> > > > > > > +       return (struct netmem_desc *)page;
-> > > > > > > +}
-> > > > > > > +
-> > > > > >
-> > > > > > Same thing. Do not create a generic looking pp_page_to_nmdesc helper
-> > > > > > which does not check that the page is the correct type. The
-> > > > > > DEBUG_NET... is not good enough.
-> > > > > >
-> > > > > > You don't need to add a generic helper here. There is only one call
-> > > > > > site. Open code this in the callsite. The one callsite is marked as
-> > > > > > unsafe, only called by code that knows that the netmem is specifically
-> > > > > > a pp page. Open code this in the unsafe callsite, instead of creating
-> > > > > > a generic looking unsafe helper and not even documenting it's unsafe.
-> > > > > >
-> > > > >
-> > > > > On second read through the series, I actually now think this is a
-> > > > > great idea :-) Adding this helper has simplified the series greatly. I
-> > > > > did not realize you were converting entire drivers to netmem just to
-> > > > > get rid of page->pp accesses. Adding a pp_page_to_nmdesc helper makes
-> > > > > the entire series simpler.
-> > > > >
-> > > > > You're also calling it only from code paths like drivers that already
-> > > > > assumed that the page is a pp page and did page->pp deference without
-> > > > > a check, so this should be safe.
-> > > > >
-> > > > > Only thing I would change is add a comment explaining that the calling
-> > > > > code needs to check the page is pp page or know it's a pp page (like a
-> > > > > driver that supports pp).
-> > > > >
-> > > > >
-> > > > > > >  /**
-> > > > > > >   * __netmem_get_pp - unsafely get pointer to the &page_pool backing @netmem
-> > > > > > >   * @netmem: netmem reference to get the pointer from
-> > > > > > > @@ -280,7 +291,7 @@ static inline struct net_iov *__netmem_clear_lsb(netmem_ref netmem)
-> > > > > > >   */
-> > > > > > >  static inline struct page_pool *__netmem_get_pp(netmem_ref netmem)
-> > > > > > >  {
-> > > > > > > -       return __netmem_to_page(netmem)->pp;
-> > > > > > > +       return pp_page_to_nmdesc(__netmem_to_page(netmem))->pp;
-> > > > > > >  }
-> > > > > >
-> > > > > > This makes me very sad. Casting from netmem -> page -> nmdesc...
-> > > > > >
-> > > > > > Instead, we should be able to go from netmem directly to nmdesc. I
-> > > > > > would suggest rename __netmem_clear_lsb to netmem_to_nmdesc and have
-> > > > > > it return netmem_desc instead of net_iov. Then use it here.
-> > > > > >
-> > > > > > We could have an unsafe version of netmem_to_nmdesc which converts the
-> > > > > > netmem to netmem_desc without clearing the lsb and mark it unsafe.
-> > > > > >
-> > > > >
-> > > > > This, I think, we should address to keep some sanity in the code and
-> > > > > reduce the casts and make it a bit more maintainable.
-> > > >
-> > > > I will reflect your suggestions.  To summarize:
-> > > >
-> > > >    1) The current implementation of pp_page_to_nmdesc() is good enough
-> > > >       to keep, but add a comment on it like "Check if the page is a pp
-> > > >       page before calling this function or know it's a pp page.".
-> > > >
-> > >
-> > > Yes please.
-> > >
-> > > >    2) Introduce the unsafe version, __netmem_to_nmdesc(), and use it in
-> > > >       __netmem_get_pp().
-> > > >
-> > >
-> > > No need following Pavel's feedback. We can just delete
-> > > __netmem_get_pp. If we do find a need in the future to extract the
-> > > netmem_desc from a netmem_ref, I would rather we do a straight cast
-> > > from netmem_ref to netmem_desc rather than netmem_ref -> pages/net_iov
-> > > -> netmem_desc.
-> > >
-> > > But that seems unnecessary for this series.
-> >
-> > No.  The series should remove accessing ->pp through page.
-> >
-> > I will kill __netmem_get_pp() as you and I prefer.  However,
-> > __netmem_get_pp() users e.i. libeth_xdp_return_va() and
-> > libeth_xdp_tx_fill_buf() should be altered.  I will modify the code like:
-> >
-> > as is: __netmem_get_pp(netmem)
-> > to be: __netmem_nmdesc(netmem)->pp
-> >
-> > Is it okay with you?
-> >
-> 
-> When Pavel and I were saying 'remove __netmem_get_pp', I think we
-> meant to remove the entire concept of unsafe netmem -> page
-> conversions. I think we both don't like them. From this perspective,
-> __netmem_nmdesc(netmem)->pp is just as bad as __netmem_get_pp(netmem).
-> 
-> I think since the unsafe netmem-to-page casts are already in mainline,
-> lets assume they should stay there until someone feels strongly enough
-> to remove them. The logic in Olek's patch is sound:
-> 
-> https://lore.kernel.org/all/20241203173733.3181246-8-aleksander.lobakin@intel.com/
-> 
-> Header buffer page pools do always use pages and will likely remain so
-> for a long time, so I guess lets continue to support them rather than
-> try to remove them in this series. A followup series could try to
-> remove them.
-> 
-> > > >    3) Rename __netmem_clear_lsb() to netmem_to_nmdesc(), and return
-> > > >       netmem_desc, and use it in all users of __netmem_clear_lsb().
-> > > >
-> > >
-> > > Following Pavel's comment, this I think also is not necessary for this
-> > > series. Cleaning up the return value of __netmem_clear_lsb is good
-> > > work I think, but we're already on v10 of this and I think it would
-> > > unnecessary to ask for added cleanups. We can do the cleanup on top.
-> >
-> > However, I still need to include 'introduce __netmem_nmdesc() helper'
-> 
-> Yes.
-> 
-> > in this series since it should be used to remove __netmem_get_pp() as I
-> 
-> lets keep __netmem_get_pp, which does a `return
-> __netmem_nmdesc(netmem)->pp;` In general we avoid allowing the driver
-> to do any netmem casts in the driver code, and we do any casting in
-> core.
-> 
-> > described above.  I think I'd better add netmem_nmdesc() too while at it.
-> >
-> 
-> Yes. netmem_nmdesc should replace __netmem_clear_lsb.
+Hi,
 
-Even though the unsafe version is required in this series, on second
-though, the safe version, netmem_nmdesc() doesn't have to be a part of
-this series.  Let's do adding the safe version on top after.
+This series contains mlx5 shared updates as preparation for upcoming
+features.
 
-	Byungchul
+Regards,
+Tariq
 
-> > I assume __netmem_nmdesc() is an unsafe version not clearing lsb.  The
-> 
-> Yes.
-> 
-> > safe version, netmem_nmdesc() needs an additional operation clearing lsb.
-> 
-> Yes.
-> 
-> 
-> --
-> Thanks,
-> Mina
+
+Jianbo Liu (1):
+  net/mlx5: Add IFC bits to support RSS for IPSec offload
+
+Oren Sidi (2):
+  net/mlx5: Add IFC bits and enums for buf_ownership
+  net/mlx5: Expose cable_length field in PFCC register
+
+ .../mellanox/mlx5/core/steering/hws/definer.c | 13 +++--
+ include/linux/mlx5/mlx5_ifc.h                 | 58 ++++++++++++++-----
+ 2 files changed, 53 insertions(+), 18 deletions(-)
+
+
+base-commit: cd1746cb6555a2238c4aae9f9d60b637a61bf177
+-- 
+2.31.1
+
 
