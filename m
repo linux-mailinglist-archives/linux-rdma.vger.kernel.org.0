@@ -1,120 +1,89 @@
-Return-Path: <linux-rdma+bounces-12305-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12306-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 754A3B0A571
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jul 2025 15:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3843EB0A5B2
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jul 2025 15:59:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1EACA4388B
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jul 2025 13:43:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9730A46C2F
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jul 2025 13:58:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78B582DBF46;
-	Fri, 18 Jul 2025 13:43:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E4892DAFCC;
+	Fri, 18 Jul 2025 13:58:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oELb7qDn"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F174D225419;
-	Fri, 18 Jul 2025 13:43:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B54352D97A0;
+	Fri, 18 Jul 2025 13:58:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752846222; cv=none; b=R4fqHhZdMJKzXvBW12anCpCkx/Y/lxbZDZzBy5rtMhibORjarkjtExtpWfmUQsA/twN8aRMsGPaTBpAsqiqrlbs0rMEmFc2+hB+Zr3xYodo77+I6WAbTwIG+CoOol5MlzQr7VSBzaflcbB2AdWCMN/bCdnEbB2AJkuOimQPk1nY=
+	t=1752847137; cv=none; b=GpQS/cFgv+O4XiHlw2lHR0+qR4onJ88DyGYDEAvckbSGLL+erltloTQiVhamPcpvCUXNZxtxOujmwjD9koBGB4wTSIT2+Y9bajxQRyP4h2J/bbpzzW3GreB6qCi8demYqijdpMIuAO3b9i88/OKK7MnSyOAK2v/NtBQb0ZLSmWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752846222; c=relaxed/simple;
-	bh=rqXIbI16Vq7q98ICmOoxXGuuvhmIdSpHppPaWNRQulI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VWucqPi7Rgy/mmNksOm9P6pUd7ir5tr4EYPHC3dFvEtOCk3JubFiCH3IWrfj4ZOh9Q0PYvua7tpe+Cs1pJENfqYgjuUKbIzG4Oll8/JuLHyqyT7aS8gVXpmAe7i9IRQ4onniBcb5X62+1fI50RiyQaDHk4Q4X6gT2t6Gdbd3qBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from [141.14.220.42] (g42.guest.molgen.mpg.de [141.14.220.42])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 360CF61E647AC;
-	Fri, 18 Jul 2025 15:43:09 +0200 (CEST)
-Message-ID: <970196ee-9610-453a-aaec-52ffeb3c3115@molgen.mpg.de>
-Date: Fri, 18 Jul 2025 15:43:08 +0200
+	s=arc-20240116; t=1752847137; c=relaxed/simple;
+	bh=ejALsTYqcC3Oq7etIoGhF93z4H2r8FDbc6/F65/dGj8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s5kRfw6pwPy3xPoIneDslWoCvmJfF4LKXhQ3KA5n4/9oeA2Arin04+gyTRyR08krG9lSXiYShvIPA7db0NOqAUS/rR82zKVX5xxi5qKmHB/jHnYaAN9MRbFNf+D/J4nDJVFAv7nhneuXt1nGmr/Met5mA9/+E8nO8//4SF6YEQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oELb7qDn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B171C4CEEB;
+	Fri, 18 Jul 2025 13:58:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1752847137;
+	bh=ejALsTYqcC3Oq7etIoGhF93z4H2r8FDbc6/F65/dGj8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oELb7qDnM6NJZPhFyB1z763l+rezpFZ7jAANf1Fqzk4IhXlTxt1sfftHQrlNfhB12
+	 lBz3enqlcr4c3DYlZbCrqKCpDD9Yr8nDCYvwcojOOMgee3BPqCfa86lxsB54hjmL6B
+	 40S41jIfu0K78aRbL8OngCxNBPypGcgV6SHp2XZWX65PH9x8Gcjta3h775OGiWP8js
+	 uZScCRTgf0KuOMZ2VmRIYPOSG5q4p6tj/oUdxXVuQOMnXZzD6SUO3ezJzg+2QzHpLn
+	 z8TFV8dP8mYfWWsj8pYDWk5K9Jgz2njtt3v1KHphoJ/AiPPaetLUupDxm6+1mQmhIM
+	 NFLjU9rM/05hA==
+Date: Fri, 18 Jul 2025 14:58:51 +0100
+From: Simon Horman <horms@kernel.org>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Saeed Mahameed <saeed@kernel.org>, Gal Pressman <gal@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Saeed Mahameed <saeedm@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Chiara Meiohas <cmeiohas@nvidia.com>,
+	Vlad Dumitrescu <vdumitrescu@nvidia.com>
+Subject: Re: [PATCH net 1/2] net/mlx5: Fix memory leak in cmd_exec()
+Message-ID: <20250718135851.GA2459@horms.kernel.org>
+References: <1752753970-261832-1-git-send-email-tariqt@nvidia.com>
+ <1752753970-261832-2-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Intel-wired-lan] [PATCH net-next v4 2/2] net/mlx5: Don't use %pK
- through printk or tracepoints
-To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
-Cc: Tony Nguyen <anthony.l.nguyen@intel.com>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
- intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
- Simon Horman <horms@kernel.org>
-References: <20250718-restricted-pointers-net-v4-0-4baa64e40658@linutronix.de>
- <20250718-restricted-pointers-net-v4-2-4baa64e40658@linutronix.de>
-Content-Language: en-US
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20250718-restricted-pointers-net-v4-2-4baa64e40658@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1752753970-261832-2-git-send-email-tariqt@nvidia.com>
 
-Dear Thomas,
-
-
-Thank you for the patch.
-
-Am 18.07.25 um 15:23 schrieb Thomas Weißschuh:
-> In the past %pK was preferable to %p as it would not leak raw pointer
-> values into the kernel log.
-> Since commit ad67b74d2469 ("printk: hash addresses printed with %p")
-> the regular %p has been improved to avoid this issue.
-> Furthermore, restricted pointers ("%pK") were never meant to be used
-> through tracepoints. They can still unintentionally leak raw pointers or
-> acquire sleeping locks in atomic contexts.
+On Thu, Jul 17, 2025 at 03:06:09PM +0300, Tariq Toukan wrote:
+> From: Chiara Meiohas <cmeiohas@nvidia.com>
 > 
-> Switch to the regular pointer formatting which is safer and
-> easier to reason about.
-> There are still a few users of %pK left, but these use it through seq_file,
-> for which its usage is safe.
-
-The line lengt look a little uneven.
-
-> Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
-> Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-> Reviewed-by: Simon Horman <horms@kernel.org>
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/sf/dev/diag/dev_tracepoint.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> If cmd_exec() is called with callback and mlx5_cmd_invoke() returns an
+> error, resources allocated in cmd_exec() will not be freed.
 > 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/sf/dev/diag/dev_tracepoint.h b/drivers/net/ethernet/mellanox/mlx5/core/sf/dev/diag/dev_tracepoint.h
-> index 0537de86f9817dc80bd897688c539135b1ad37ac..9b0f44253f332aa602a84a1f6d7532a500dd4f55 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/sf/dev/diag/dev_tracepoint.h
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/sf/dev/diag/dev_tracepoint.h
-> @@ -28,7 +28,7 @@ DECLARE_EVENT_CLASS(mlx5_sf_dev_template,
->   				   __entry->hw_fn_id = sfdev->fn_id;
->   				   __entry->sfnum = sfdev->sfnum;
->   		    ),
-> -		    TP_printk("(%s) sfdev=%pK aux_id=%d hw_id=0x%x sfnum=%u\n",
-> +		    TP_printk("(%s) sfdev=%p aux_id=%d hw_id=0x%x sfnum=%u\n",
->   			      __get_str(devname), __entry->sfdev,
->   			      __entry->aux_id, __entry->hw_fn_id,
->   			      __entry->sfnum)
+> Fix the code to release the resources if mlx5_cmd_invoke() returns an
+> error.
 > 
+> Fixes: f086470122d5 ("net/mlx5: cmdif, Return value improvements")
+> Reported-by: Alex Tereshkin <atereshkin@nvidia.com>
+> Signed-off-by: Chiara Meiohas <cmeiohas@nvidia.com>
+> Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+> Signed-off-by: Vlad Dumitrescu <vdumitrescu@nvidia.com>
+> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 
-Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-
-Kind regards,
-
-Paul
 
