@@ -1,105 +1,76 @@
-Return-Path: <linux-rdma+bounces-12309-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12310-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 445EBB0A687
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jul 2025 16:45:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27B1CB0A9FD
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jul 2025 20:10:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29E0E16E1CB
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jul 2025 14:44:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D63383AC746
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jul 2025 18:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFF7A86352;
-	Fri, 18 Jul 2025 14:44:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="pPPMGymw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1B2C2E7BDB;
+	Fri, 18 Jul 2025 18:10:15 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDF712DCF63
-	for <linux-rdma@vger.kernel.org>; Fri, 18 Jul 2025 14:44:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF86880C1C;
+	Fri, 18 Jul 2025 18:10:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752849886; cv=none; b=WJ3JtmRwv/8ocWGbkqngMjrt3QuMH6GSv3FeG0tdtryD10srElMkneXVAPsdnQxK0q8sj/o2VFF/RcBd9fXoLc09vTxDyCXjLvYsmFWd41NWl9Ya7F8iKSDHCnDe92MD7E84YxV/AdjXtWdgeERYcqBssAmNw4r8mYl04cdax+g=
+	t=1752862215; cv=none; b=Ilv2rSSg4FEjYZ9LEuBLF/CQKizIrFz09aavJiZ3DLJ76CJ8OiX0pW2mNfOljh8tYhSveitu9Gbilrw9WmRhyle5x6I8J8Tpp8DJCXboThLZCJh2BEEBWnEFK8S02d86OHODTv0cZv9PPreIMmBlHQtIbqKqzQKYPx49c8HaYnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752849886; c=relaxed/simple;
-	bh=57t08D0XBLsuBYTQTILMObpKWZEYbrXmLfmK6g9BlPE=;
+	s=arc-20240116; t=1752862215; c=relaxed/simple;
+	bh=WgxSzovmY/3HN+EA7KrCAS/u+NXYud7/dmBnI4yWUAo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cEQoO2G817Jqofo/ys5C/YqMKinIEvEqHcB07lcgaDw21l30c64C4DiWdiCC8bvgoag/wLs/StDImW7smu9LiqX4NHiLBWfyqItzMkCfcbbx2AwKGCXea2cZPkE33CiYMRU0AYFRHfnsYe3h7bg3X8J6J+lOLWCHTVzodldqq8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=pPPMGymw; arc=none smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-4ab61ecc1e8so16374881cf.1
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Jul 2025 07:44:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1752849884; x=1753454684; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/JlY6wrS7xoiZAd1n9VylKL/5klHKuhmeV2q/x+jhjE=;
-        b=pPPMGymwc8e4r7k4uixWz7VYtNrmEiCVnyG+fczy3nEPwPa/qOXlkLt1SNpG94Gjw4
-         GGRWX426hSxyxk7uP/DtWeLq0YBRuh+poB84TDeqcJp6JNFIxfjkTuUNIPsobxuBEIzy
-         3EG/5cxeXjT+xQyrNgXDpn2oczMq7CfP37DF/bHViZXVSEsaSjAwQPmvDLaPUr2N+xsi
-         eIHgsBzfm7MpIas9e2ZlIUKXkOIRL1O0X+k5EehkQSlKSVN4KBJJc6X00/aSDWoivsvV
-         /mGt5nGl8fH+jCLJ7dCBt+06AuVwFXJ4Y87uYG1VuhNRuqHZLVWOOGXxQEeyFLwHZB/c
-         hCVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752849884; x=1753454684;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/JlY6wrS7xoiZAd1n9VylKL/5klHKuhmeV2q/x+jhjE=;
-        b=Wb7vxAt6bd7lU8zzTMghZW9h4aJJI0zQNBreGVErpdqJ1E7DOiN96GeBfpNzmW0wnh
-         UdcsQdz4GTBwBlKxMy4q6XalgfKB9XmmPkR2h7teNhF/HaNkGBVXFE9SV5phgbm8dnh5
-         R/Pg072t57Uwa7defiiKmCYqNVGaq8Y0qaIHbLYkh4uZN3FIwbqDRds7DEvLB/qQp9XM
-         igPfB4lzji6O9N1jwqrWRwnig6xmGJauaFOv1GXgfvqBv0CIiQqYjycInuEd0ZQdRpFt
-         /hhrQ3CcgMTJNluKGnEM1mLGG0aPRiMXhejnlFZlwqKaTjkxdX0uyk4Gs97QObaVE29A
-         7xGA==
-X-Forwarded-Encrypted: i=1; AJvYcCWWcgg716d2UYfXFYFD75Qb04uCgg9Hjxs5o/KJhxizmdTJrkoYVaqGmcPVMqawUPvhr+td1EXEUDgP@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx39jVO+P7GXdIO4IDeuVPOuEusiZpXWfdP+ejbFOytBtAIorSM
-	VOSEZErNzmF9ULowmgMpmmioip6QiIvMQniG2a5/2qe0QHDORU4SFkvPHrMqFTsb2lE=
-X-Gm-Gg: ASbGncv30NJ5LCapRwVxJG3ChK7HFHm0LQeRRHMJMyExi9VReIJSS3CDFukYLqqOOmq
-	f2MTegXX6AoIdaGVDqdL5LZJKmUo+1+WjdRpCV/sheGmcr0CBwdxartD7srBNXDlUCTQ543+BJt
-	9SFul5kbZaRDTzaPf0zSLrIS/CJ/f+YjeazgcL9Z7HN9BWOFwiYCgSOW0a5AHMHRxyYlyyohj1f
-	P16DJNEHjGvR+AjQe93glO0D0gtpNycTwo7mzVHmEEvgIEz862fTl7dYWZUNZVd8q8bumNKCPwW
-	k1Ep3a9L9bq9Ed0X7+QqNBZ8Fy2nFjqMpQ0VGLIV5t8C+PRbqiL5nfCuVDpf9prxJYQUvEuArVk
-	jMX3RLtTOmuDKUOXCghf6mh7hALjbv1Fv/up+8HpZ2GbdW1Hd+AZXyiJ1/YW1jDTfGKbvwfjYJF
-	B/qeLwfDnE
-X-Google-Smtp-Source: AGHT+IEYd5qGIZ9KDhfEstxE616f9xXLY8QoZsrjUpURE5IRjE2GiKRGVckhayOKGta9pjoTuDB7PQ==
-X-Received: by 2002:a05:622a:1448:b0:4a9:cff3:68a2 with SMTP id d75a77b69052e-4ab93d88915mr157868681cf.37.1752849883674;
-        Fri, 18 Jul 2025 07:44:43 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-167-56-70.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.167.56.70])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-7051b8c04fdsm8211446d6.15.2025.07.18.07.44.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jul 2025 07:44:43 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1ucmKI-00000009zcK-2UVK;
-	Fri, 18 Jul 2025 11:44:42 -0300
-Date: Fri, 18 Jul 2025 11:44:42 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Yonatan Maman <ymaman@nvidia.com>,
-	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=sgl0V3YWtA2LIs5L9aJr0yVfvOHwNkzkuK1gTcE/8T2X5HX7c2R2AzmuO+PAhTaNT69g/laofiovUvh0wY9W4DrMNh7uVesPqX0yoOK1chgtzfCsysQhNVlFEVdAiEVxOaMGnclQGwyd/sRO2lnh4DVfazEWPOa6J7hMZlPzy3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EA27C4CEEB;
+	Fri, 18 Jul 2025 18:10:09 +0000 (UTC)
+Date: Fri, 18 Jul 2025 19:10:06 +0100
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Will Deacon <will@kernel.org>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	Leon Romanovsky <leon@kernel.org>, Lyude Paul <lyude@redhat.com>,
-	Danilo Krummrich <dakr@kernel.org>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Alistair Popple <apopple@nvidia.com>,
-	Ben Skeggs <bskeggs@nvidia.com>,
-	Michael Guralnik <michaelgur@nvidia.com>,
-	Or Har-Toov <ohartoov@nvidia.com>,
-	Daisuke Matsuda <dskmtsd@gmail.com>, Shay Drory <shayd@nvidia.com>,
-	linux-mm@kvack.org, linux-rdma@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, Gal Shalom <GalShalom@nvidia.com>
-Subject: Re: [PATCH v2 1/5] mm/hmm: HMM API to enable P2P DMA for device
- private pages
-Message-ID: <20250718144442.GG2206214@ziepe.ca>
-References: <20250718115112.3881129-1-ymaman@nvidia.com>
- <20250718115112.3881129-2-ymaman@nvidia.com>
- <aHpXXKTaqp8FUhmq@casper.infradead.org>
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+	llvm@lists.linux.dev, Ingo Molnar <mingo@redhat.com>,
+	Bill Wendling <morbo@google.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>, netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+	Yisen Zhuang <yisen.zhuang@huawei.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Leon Romanovsky <leonro@mellanox.com>, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Mark Rutland <mark.rutland@arm.com>,
+	Michael Guralnik <michaelgur@mellanox.com>, patches@lists.linux.dev,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	Jijie Shao <shaojijie@huawei.com>
+Subject: Re: [PATCH v3 6/6] IB/mlx5: Use __iowrite64_copy() for write
+ combining stores
+Message-ID: <aHqN_hpJl84T1Usi@arm.com>
+References: <0-v3-1893cd8b9369+1925-mlx5_arm_wc_jgg@nvidia.com>
+ <6-v3-1893cd8b9369+1925-mlx5_arm_wc_jgg@nvidia.com>
+ <20250714215504.GA2083014@nvidia.com>
+ <aHYqPRqgcl5DQOpq@willie-the-truck>
+ <20250715115200.GJ2067380@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -108,33 +79,53 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aHpXXKTaqp8FUhmq@casper.infradead.org>
+In-Reply-To: <20250715115200.GJ2067380@nvidia.com>
 
-On Fri, Jul 18, 2025 at 03:17:00PM +0100, Matthew Wilcox wrote:
-> On Fri, Jul 18, 2025 at 02:51:08PM +0300, Yonatan Maman wrote:
-> > +++ b/include/linux/memremap.h
-> > @@ -89,6 +89,14 @@ struct dev_pagemap_ops {
-> >  	 */
-> >  	vm_fault_t (*migrate_to_ram)(struct vm_fault *vmf);
-> >  
-> > +	/*
-> > +	 * Used for private (un-addressable) device memory only. Return a
-> > +	 * corresponding PFN for a page that can be mapped to device
-> > +	 * (e.g using dma_map_page)
-> > +	 */
-> > +	int (*get_dma_pfn_for_device)(struct page *private_page,
-> > +				      unsigned long *dma_pfn);
+On Tue, Jul 15, 2025 at 08:52:00AM -0300, Jason Gunthorpe wrote:
+> On Tue, Jul 15, 2025 at 11:15:25AM +0100, Will Deacon wrote:
+> > > Since STP was rejected alread we've only tested the Neon version. It
+> > > does make a huge improvement, but it still somehow fails to combine
+> > > rarely sometimes. The CPU is really bad at this :(
+> > 
+> > I think the thread was from last year so I've forgotten most of the
+> > details, but wasn't STP rejected because it wasn't virtualisable? 
 > 
-> This makes no sense.  If a page is addressable then it has a PFN.
-> If a page is not addressable then it doesn't have a PFN.
+> Yes, that was the claim.
+> 
+> > In which case, doesn't NEON suffer from exactly the same (or possibly
+> > worse) problem?
+> 
+> In general yes, in specific no.
 
-The DEVICE_PRIVATE pages have a PFN, but it is not usable for
-anything.
+For a generic iowrite function, I wouldn't use STP or Neon since it may
+end up being used on emulated MMIO.
 
-This is effectively converting from a DEVICE_PRIVATE page to an actual
-DMA'able address of some kind. The DEVICE_PRIVATE is just a non-usable
-proxy, like a swap entry, for where the real data is sitting.
+BTW, for Neon, don't you need kernel_neon_begin/end()? This may have its
+own overhead and also BUG_ON for different contexts. Again, not suitable
+for a generic function.
 
-Jason
+Unfortunately, there's no way to know what this function is called on.
+We might try to infer that the kernel started at EL2 but even that is
+not entirely correct with nested virt. Or the OS may start at EL1 but
+have direct access to mlx5 where we'd want the faster option.
 
+> mlx5 (and other RDMA devices) have long used Neon for MMIO in
+> userspace, so any VMM assigning mlx5 devices simply must make this
+> work - it is already not optional. So we know that all VMs out there
+> with mlx5 support neon for mlx5, and it is safe for mlx5 to use.
+
+I can't think of any generic solution here, it may have to be a hack
+specific to mlx5. We can also add add support for ST64B and have some
+condition on system_supports_st64b() for future systems.
+
+Even if we could handle virtualisation, I wonder whether
+__iowrite64_copy() is the right function to implement 128-bit stores or
+the larger 64-byte atomic stores. At least the comment for the generic
+function suggests that it writes in 64-bit quantities. Some MMIO may
+only handle such writes. A function like memcpy_toio() is more generic,
+it doesn't imply any restrictions on the size of the writes (though I
+think it guarantees natural alignment for the stores).
+
+-- 
+Catalin
 
