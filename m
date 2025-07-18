@@ -1,300 +1,213 @@
-Return-Path: <linux-rdma+bounces-12294-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12295-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB6AEB0A080
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jul 2025 12:20:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76EC5B0A380
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jul 2025 13:52:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B04E5A544B
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jul 2025 10:20:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D69641C25160
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jul 2025 11:52:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 405C6299A96;
-	Fri, 18 Jul 2025 10:20:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B76A32D877C;
+	Fri, 18 Jul 2025 11:52:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Zk6oHOd0"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="bdptE/iF"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 620F7218EA8;
-	Fri, 18 Jul 2025 10:20:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752834051; cv=none; b=oiHdHpjSOyX7ts5/eJnUUbR+lURxjR1A026KlkDGkXfLGdQj577CqeKmzCHW4xtY+xM2d93kv/KjtTJcIZaKSqavpyC8wCQo3wQLiEYM7qn+BBtJBldGmkrkxAn4xen0lvsSL+FBY86tZvu3JCR51tZF3X4pAwHYhHi5t8YnQwQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752834051; c=relaxed/simple;
-	bh=Fc4HWWcuM5AGQrRuqZHDXysN7AmEvHaXRYlOpCWP8ss=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=N8OKiY5GnKCLwEH0BpzX4YuEaBkrMaz29RmJ69kxlDnySLGIM6hbDHTds6npvl/uG4cTE2wOjL6BVXqJc5PT5yn7OoUMyP2q9FidsfY43iW8Zo4ojvvA6i5P9LX9a5PtOGlDQGSMyg4J4+iYqqXKbjWORX1ZnVs5NYLDSurDwMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Zk6oHOd0; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1186)
-	id AD0702114253; Fri, 18 Jul 2025 03:20:48 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AD0702114253
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1752834048;
-	bh=2yZL1sxeUy5FJOB8LH1hmtT4+28g4InGn+OK2WmQz40=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Zk6oHOd0k8kM4QYYpDS0FXJd0sC6AedDd/BF/Zqtbw4i0vdc41q824H6+MYNufEwE
-	 xL9QKfA/9W5g4rcEJV/Xj1/tHpK4UTGyLDLWGWbQOY4p0oZD8td37zKMwLyYQY5BjT
-	 HogGqwA2Y2DiDiI8lIUO4vgipseTF4+eZQYJ8cXw=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next 1/1] RDMA/mana_ib: add support of multiple ports
-Date: Fri, 18 Jul 2025 03:20:48 -0700
-Message-Id: <1752834048-31696-1-git-send-email-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2059.outbound.protection.outlook.com [40.107.220.59])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C0041DED49;
+	Fri, 18 Jul 2025 11:51:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.59
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1752839520; cv=fail; b=kkG2HTuBgAO+efamCJEQ3K1gViGD6KeA9VAvzOUz/BobBY6xUXdd9jAa4gHhZkUg/2J6VeEB7xDmcnHlU1PuDLMeNjI8kwrRlvSZ6kM9wLXLjQxlIXCYJ+kPR5n5EsN7wE3GUP8iry9R9KdAu8fm7Wy8U+PMCECwHQxokET2CJ0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1752839520; c=relaxed/simple;
+	bh=Np7MuS/huJaVhiGpDU3BvQJWE2+EDuFNuDAUYAN4geU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MIFPaJMBdDUh8CrT0bGkZH1J3fU8l/JmuwYq+RpInVe1Ek/xTLLQc3ynfz9GuLiJ1yiVfXSmWQoQ3B7a1fYIoeUImxnR4shLbItM4vnwcDVoha1fzruH8NEM1frzqxhJO2AdCa2U4RB2etfPyhb/itAGXC0wiG1dayFrJTlLf8I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=bdptE/iF; arc=fail smtp.client-ip=40.107.220.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=EFbv+ioVmcuP0zdqJazqnhWrqX+jelRL9iCf2ZZnA0yNYlyv3TL51ttX9krUYOortD4rM+Cn83ig2ECUGy4s0Vs0eaH6ZqpuqgeKS/JgdJwLCuidCh3DiAueU66UAmeHtP+XkKj1xermn+1NF+iCIkQQqwKqze3FwizJKblXWvT+tBL9vNGwU/Og2PFWOSlOAL5/saqA39Tv9erOBsmvKo4wweYgWerkHEH4wEbVjZjo9XPTDcGQIh4Vy4r712HLzUGh7Mj3xS7kdLgH/sxhb6v0rtsMWEFAHwKFWWhF9zmOJKqQGRim+/EHms7UjOhDvjT2jLip4pR5tD2ATjoYzw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xpNyWn/Y9z++tqDbRoF9uJkiN0p+t/J0r5lqKcU8ZTE=;
+ b=Wu3EnNuSdNGs5/DB4RbhnfYduntIppYKB00fFVJnV4oQmFJ4EOgXgUbfu1VMwB30tlU97iUXLn+VH8L9RRHAq0j3BFgQoBJnzZe2uroU+/Ufyo1uESkKV0hNASEfO8iHCAPPtpH8zDbkPUD3enc4+lCAoWL3pvFNpLu5Z44+2DPIAe7pbPPD6hpbw0DzPFTEePoDonPXQzFx+Yw8oK7PGMuiUTGoSrgzPcIkdCd/c4F2vM7LDIk/FZMkWbv1UJOXdRoJcBJqRDEqjJmvOpLxa0dmXikuiepp6rcY4QiQ/1OnEXz354rh8aBWl+co1pznzh29XGbYpS4l8/M+bYpUjw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xpNyWn/Y9z++tqDbRoF9uJkiN0p+t/J0r5lqKcU8ZTE=;
+ b=bdptE/iF1C8yicGVzZr/RR5IQUSuEfrm1epwHIiDpJJlPUuDyxu+e7MtrxZr/tCXY9caXm9PkeftHUIhb3nScpVd/zfvLnKr0o8nYMZMVKMjoJv+xEWiP1tIzo+i0omHICo/C6fTPiCbmpYlz4jWSkE9AbR9G+LTJK8FB7lLvvv+0kOLlBzpLFNX1fAN6zEDbz0WNGgxWidw/GuH4a1iAklbunyHUZXhpX2GD6KjYC54rpoi9tejV64DTqRBZ/ujh0rbFuD1H32ORECEd+DU8yu+8rD8ht0EUUU3a1oLasz1R39ipc51lCbIuItsdDnyJJgDm2l7AO6Phf+yq9tqGw==
+Received: from SA1P222CA0098.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:35e::8)
+ by DM4PR12MB6328.namprd12.prod.outlook.com (2603:10b6:8:a0::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8901.35; Fri, 18 Jul
+ 2025 11:51:56 +0000
+Received: from SN1PEPF0002636C.namprd02.prod.outlook.com
+ (2603:10b6:806:35e:cafe::5b) by SA1P222CA0098.outlook.office365.com
+ (2603:10b6:806:35e::8) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.8943.20 via Frontend Transport; Fri,
+ 18 Jul 2025 11:51:56 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ SN1PEPF0002636C.mail.protection.outlook.com (10.167.241.137) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8943.21 via Frontend Transport; Fri, 18 Jul 2025 11:51:56 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 18 Jul
+ 2025 04:51:38 -0700
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Fri, 18 Jul
+ 2025 04:51:37 -0700
+Received: from vdi.nvidia.com (10.127.8.9) by mail.nvidia.com (10.129.68.7)
+ with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Fri, 18
+ Jul 2025 04:51:32 -0700
+From: Yonatan Maman <ymaman@nvidia.com>
+To: =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>, Andrew Morton
+	<akpm@linux-foundation.org>, Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky
+	<leon@kernel.org>
+CC: Lyude Paul <lyude@redhat.com>, Danilo Krummrich <dakr@kernel.org>, "David
+ Airlie" <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Alistair Popple
+	<apopple@nvidia.com>, Ben Skeggs <bskeggs@nvidia.com>, Michael Guralnik
+	<michaelgur@nvidia.com>, Or Har-Toov <ohartoov@nvidia.com>, Daisuke Matsuda
+	<dskmtsd@gmail.com>, Shay Drory <shayd@nvidia.com>, <linux-mm@kvack.org>,
+	<linux-rdma@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+	<nouveau@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>, "Yonatan
+ Maman" <Ymaman@Nvidia.com>
+Subject: [PATCH v2 0/5] *** GPU Direct RDMA (P2P DMA) for Device Private Pages ***
+Date: Fri, 18 Jul 2025 14:51:07 +0300
+Message-ID: <20250718115112.3881129-1-ymaman@nvidia.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: AnonymousSubmission
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF0002636C:EE_|DM4PR12MB6328:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3a6f0fb2-4aa0-4115-0f00-08ddc5f17edb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|36860700013|1800799024|376014|7416014|82310400026;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?x73bhzORsKHwN8kXXZZM5SgBabPz2TDJrZF6ZGXWWv46AyglE5s+CYWQoUhd?=
+ =?us-ascii?Q?qFK7CWi8GbjF6AtL00dcYhsb5no5vfRPNXZwnfNflHfSpunDVmvPw0aOgcYF?=
+ =?us-ascii?Q?3pWCSoM36DW5sChqhx/WYYb9YhFSCQSCV8YcjY2SLfeW/KSAx5Cfb/AmUayG?=
+ =?us-ascii?Q?SZfQDZaNs9DDT+EJMUKo/aNATJqTlr5rRRvS03NI2zC/sBXUF7almE+W/ueO?=
+ =?us-ascii?Q?ou7f6avrJhW+oyAuta6is+yxjLZ0koFgsUQQvzr04PQbE0vT1Y9VfSash71V?=
+ =?us-ascii?Q?9CprB877w54S3ez0zcV4Vn0+Rs50wDuYhyevx3I5b5aBkgWtpJ6gp29VJN+8?=
+ =?us-ascii?Q?G9/07Ywq2xI8V1KF8MYpQ3PUlIq6WKraA3aC/d8Oj4d73wDGhu3LoPoJvMu1?=
+ =?us-ascii?Q?Abyz2ct1EDkkpY0VAtftg8orWIGOYAXAmXHpwzsVSAw5LqkTSXuRydIrjnru?=
+ =?us-ascii?Q?CvRopdsPEISuGW8F/BgOSA+3TrsKQAGctRLnZDbme3Gu+YPVJYWsJXuosw1l?=
+ =?us-ascii?Q?/rn0nyN6GjSxlVoXpXoUfi/wg/dG9pccuuooAIZ6vXGhjGeeQswg02YkCKJK?=
+ =?us-ascii?Q?RPPo/ctq0AgQ6gVpYN1+ZwRpktqJLpg4mdmKXkbD08/S/Eqjgf7IG6/QJmV+?=
+ =?us-ascii?Q?XxPFPxJ4PovyJwi+I0kHlqU85WNblSLNYPHxEsXm3qEWkqtU5Ld+b+5nabd8?=
+ =?us-ascii?Q?u91x5g4ViUXeG5nOBYpWgFlyfcEhkrY5QYU/Bf/dVqjxgkWp++sc9m7P9grE?=
+ =?us-ascii?Q?Z4LhrPWdw97jZpfLjG1J/X9bo9kdqzZspgkAwlUBV7FjABu4ppYTv/zXlR/8?=
+ =?us-ascii?Q?BzuChUWSx0VOrmdPrmiYqGO+r43WsWyClCSGSu8Rtb220aEsrRbg5OfV2CyA?=
+ =?us-ascii?Q?njoK8FVdE0bJiwIrcw1ci56vGfTqjbNy/5vPYPACHd6KT6O9hXHPdpE0craM?=
+ =?us-ascii?Q?qk2uX0KCdkn9x54wYzXt7QEbSKSINderq23+k4nH30NHqk+X/qiTYxpWiGib?=
+ =?us-ascii?Q?cV4AVZcf5aZBW+D3PvGpAdYypK1i5PoRKimaGqH6q/EQSep9oaVX6v8j4QQ3?=
+ =?us-ascii?Q?eO9EEwaeMi4qZ4XDa+sLl4Qn5S0bWnTdJ1wA2nZGGH0kibmJkItvLWzWX/C1?=
+ =?us-ascii?Q?TfICbBNeLd+8otrAAUrq/3BoGiLf3CeWRjmZgVkXrpokwj7OPEOBvXSkYlYv?=
+ =?us-ascii?Q?GTTFcoLyScltgBOX4AxnRljKNZ1bKNPpYTsxOlNSBkVBgpqNOKNOKK7CDdN2?=
+ =?us-ascii?Q?MCCn4v1tZhighcaGv0CJf8Pxxvt3aTvNItXSiBjIIAOhepffmF8JDYXJUIHw?=
+ =?us-ascii?Q?dA0J0vy4YpwggIUg8Xa+3+IeA3etCeVjbb9Glg0ILz6S20OLE0Q5bem6o49P?=
+ =?us-ascii?Q?60BIot6nSroDONTOmVo5NrVBmWsReM4KPDk4PbjU2nTWsxqIb+uS81joKClQ?=
+ =?us-ascii?Q?OffQnU0oxcc54Nr/AFwfrR5tu8qh7MiRXkmM5o7oz7n60QCTmvHATmFjhQcg?=
+ =?us-ascii?Q?X8kbVwTbd4CRUS+PMRDfbWl3yEazpB16Tjm0qiAqY7M4ecS0kJt8nZ+x/w?=
+ =?us-ascii?Q?=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(376014)(7416014)(82310400026);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2025 11:51:56.1149
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3a6f0fb2-4aa0-4115-0f00-08ddc5f17edb
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SN1PEPF0002636C.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6328
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
+From: Yonatan Maman <Ymaman@Nvidia.com>
 
-If the HW indicates support of multiple ports for rdma, create an IB device
-with a port per netdev in the ethernet mana driver.
+This patch series aims to enable Peer-to-Peer (P2P) DMA access in
+GPU-centric applications that utilize RDMA and private device pages. This
+enhancement reduces data transfer overhead by allowing the GPU to directly
+expose device private page data to devices such as NICs, eliminating the
+need to traverse system RAM, which is the native method for exposing
+device private page data.
 
-CM is only available on port 1, but RC QPs are supported on all
-ports.
+To fully support Peer-to-Peer for device private pages, the following
+changes are proposed:
 
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
----
- drivers/infiniband/hw/mana/device.c  | 107 +++++++++++++--------------
- drivers/infiniband/hw/mana/main.c    |  13 +++-
- drivers/infiniband/hw/mana/mana_ib.h |   1 +
- 3 files changed, 64 insertions(+), 57 deletions(-)
+`Memory Management (MM)`
+ * Leverage struct pagemap_ops to support P2P page operations: This
+modification ensures that the GPU can directly map device private pages
+for P2P DMA.
+ * Utilize hmm_range_fault to support P2P connections for device private
+pages (instead of Page fault)
 
-diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-index 65d0af740..f322f0d17 100644
---- a/drivers/infiniband/hw/mana/device.c
-+++ b/drivers/infiniband/hw/mana/device.c
-@@ -77,28 +77,30 @@ static int mana_ib_netdev_event(struct notifier_block *this,
- 	struct gdma_context *gc = dev->gdma_dev->gdma_context;
- 	struct mana_context *mc = gc->mana.driver_data;
- 	struct net_device *ndev;
-+	int i;
- 
- 	/* Only process events from our parent device */
--	if (event_dev != mc->ports[0])
--		return NOTIFY_DONE;
--
--	switch (event) {
--	case NETDEV_CHANGEUPPER:
--		ndev = mana_get_primary_netdev(mc, 0, &dev->dev_tracker);
--		/*
--		 * RDMA core will setup GID based on updated netdev.
--		 * It's not possible to race with the core as rtnl lock is being
--		 * held.
--		 */
--		ib_device_set_netdev(&dev->ib_dev, ndev, 1);
--
--		/* mana_get_primary_netdev() returns ndev with refcount held */
--		netdev_put(ndev, &dev->dev_tracker);
--
--		return NOTIFY_OK;
--	default:
--		return NOTIFY_DONE;
--	}
-+	for (i = 0; i < dev->ib_dev.phys_port_cnt; i++)
-+		if (event_dev == mc->ports[i]) {
-+			switch (event) {
-+			case NETDEV_CHANGEUPPER:
-+				ndev = mana_get_primary_netdev(mc, i, &dev->dev_tracker);
-+				/*
-+				 * RDMA core will setup GID based on updated netdev.
-+				 * It's not possible to race with the core as rtnl lock is being
-+				 * held.
-+				 */
-+				ib_device_set_netdev(&dev->ib_dev, ndev, i + 1);
-+
-+				/* mana_get_primary_netdev() returns ndev with refcount held */
-+				netdev_put(ndev, &dev->dev_tracker);
-+
-+				return NOTIFY_OK;
-+			default:
-+				return NOTIFY_DONE;
-+			}
-+		}
-+	return NOTIFY_DONE;
- }
- 
- static int mana_ib_probe(struct auxiliary_device *adev,
-@@ -111,7 +113,7 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 	struct net_device *ndev;
- 	struct mana_ib_dev *dev;
- 	u8 mac_addr[ETH_ALEN];
--	int ret;
-+	int ret, i;
- 
- 	dev = ib_alloc_device(mana_ib_dev, ib_dev);
- 	if (!dev)
-@@ -126,34 +128,11 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 
- 	if (mana_ib_is_rnic(dev)) {
- 		dev->ib_dev.phys_port_cnt = 1;
--		ndev = mana_get_primary_netdev(mc, 0, &dev->dev_tracker);
--		if (!ndev) {
--			ret = -ENODEV;
--			ibdev_err(&dev->ib_dev, "Failed to get netdev for IB port 1");
--			goto free_ib_device;
--		}
--		ether_addr_copy(mac_addr, ndev->dev_addr);
--		addrconf_addr_eui48((u8 *)&dev->ib_dev.node_guid, ndev->dev_addr);
--		ret = ib_device_set_netdev(&dev->ib_dev, ndev, 1);
--		/* mana_get_primary_netdev() returns ndev with refcount held */
--		netdev_put(ndev, &dev->dev_tracker);
--		if (ret) {
--			ibdev_err(&dev->ib_dev, "Failed to set ib netdev, ret %d", ret);
--			goto free_ib_device;
--		}
--
--		dev->nb.notifier_call = mana_ib_netdev_event;
--		ret = register_netdevice_notifier(&dev->nb);
--		if (ret) {
--			ibdev_err(&dev->ib_dev, "Failed to register net notifier, %d",
--				  ret);
--			goto free_ib_device;
--		}
--
-+		addrconf_addr_eui48((u8 *)&dev->ib_dev.node_guid, mc->ports[0]->dev_addr);
- 		ret = mana_ib_gd_query_adapter_caps(dev);
- 		if (ret) {
- 			ibdev_err(&dev->ib_dev, "Failed to query device caps, ret %d", ret);
--			goto deregister_net_notifier;
-+			goto free_ib_device;
- 		}
- 
- 		ib_set_device_ops(&dev->ib_dev, &mana_ib_stats_ops);
-@@ -163,16 +142,36 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 		ret = mana_ib_create_eqs(dev);
- 		if (ret) {
- 			ibdev_err(&dev->ib_dev, "Failed to create EQs, ret %d", ret);
--			goto deregister_net_notifier;
-+			goto free_ib_device;
- 		}
- 
- 		ret = mana_ib_gd_create_rnic_adapter(dev);
- 		if (ret)
- 			goto destroy_eqs;
- 
--		ret = mana_ib_gd_config_mac(dev, ADDR_OP_ADD, mac_addr);
-+		if (dev->adapter_caps.feature_flags & MANA_IB_FEATURE_MULTI_PORTS_SUPPORT)
-+			dev->ib_dev.phys_port_cnt = mc->num_ports;
-+
-+		for (i = 0; i < dev->ib_dev.phys_port_cnt; i++) {
-+			ndev = mana_get_primary_netdev(mc, i, &dev->dev_tracker);
-+			ether_addr_copy(mac_addr, ndev->dev_addr);
-+			ret = ib_device_set_netdev(&dev->ib_dev, ndev, i + 1);
-+			/* mana_get_primary_netdev() returns ndev with refcount held */
-+			netdev_put(ndev, &dev->dev_tracker);
-+			if (ret) {
-+				ibdev_err(&dev->ib_dev, "Failed to set ib netdev, ret %d", ret);
-+				goto destroy_rnic;
-+			}
-+			ret = mana_ib_gd_config_mac(dev, ADDR_OP_ADD, mac_addr);
-+			if (ret) {
-+				ibdev_err(&dev->ib_dev, "Failed to add Mac address, ret %d", ret);
-+				goto destroy_rnic;
-+			}
-+		}
-+		dev->nb.notifier_call = mana_ib_netdev_event;
-+		ret = register_netdevice_notifier(&dev->nb);
- 		if (ret) {
--			ibdev_err(&dev->ib_dev, "Failed to add Mac address, ret %d", ret);
-+			ibdev_err(&dev->ib_dev, "Failed to register net notifier, %d", ret);
- 			goto destroy_rnic;
- 		}
- 	} else {
-@@ -188,7 +187,7 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 				       MANA_AV_BUFFER_SIZE, 0);
- 	if (!dev->av_pool) {
- 		ret = -ENOMEM;
--		goto destroy_rnic;
-+		goto deregister_net_notifier;
- 	}
- 
- 	ibdev_dbg(&dev->ib_dev, "mdev=%p id=%d num_ports=%d\n", mdev,
-@@ -205,15 +204,15 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 
- deallocate_pool:
- 	dma_pool_destroy(dev->av_pool);
-+deregister_net_notifier:
-+	if (mana_ib_is_rnic(dev))
-+		unregister_netdevice_notifier(&dev->nb);
- destroy_rnic:
- 	if (mana_ib_is_rnic(dev))
- 		mana_ib_gd_destroy_rnic_adapter(dev);
- destroy_eqs:
- 	if (mana_ib_is_rnic(dev))
- 		mana_ib_destroy_eqs(dev);
--deregister_net_notifier:
--	if (mana_ib_is_rnic(dev))
--		unregister_netdevice_notifier(&dev->nb);
- free_ib_device:
- 	xa_destroy(&dev->qp_table_wq);
- 	ib_dealloc_device(&dev->ib_dev);
-@@ -227,9 +226,9 @@ static void mana_ib_remove(struct auxiliary_device *adev)
- 	ib_unregister_device(&dev->ib_dev);
- 	dma_pool_destroy(dev->av_pool);
- 	if (mana_ib_is_rnic(dev)) {
-+		unregister_netdevice_notifier(&dev->nb);
- 		mana_ib_gd_destroy_rnic_adapter(dev);
- 		mana_ib_destroy_eqs(dev);
--		unregister_netdevice_notifier(&dev->nb);
- 	}
- 	xa_destroy(&dev->qp_table_wq);
- 	ib_dealloc_device(&dev->ib_dev);
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index 41a24a186..6a2471f2e 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -563,8 +563,14 @@ int mana_ib_get_port_immutable(struct ib_device *ibdev, u32 port_num,
- 	immutable->gid_tbl_len = attr.gid_tbl_len;
- 
- 	if (mana_ib_is_rnic(dev)) {
--		immutable->core_cap_flags = RDMA_CORE_PORT_IBA_ROCE_UDP_ENCAP;
--		immutable->max_mad_size = IB_MGMT_MAD_SIZE;
-+		if (port_num == 1) {
-+			immutable->core_cap_flags = RDMA_CORE_PORT_IBA_ROCE_UDP_ENCAP;
-+			immutable->max_mad_size = IB_MGMT_MAD_SIZE;
-+		} else {
-+			immutable->core_cap_flags = RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP
-+						    | RDMA_CORE_CAP_ETH_AH;
-+			immutable->max_mad_size = 0;
-+		}
- 	} else {
- 		immutable->core_cap_flags = RDMA_CORE_PORT_RAW_PACKET;
- 	}
-@@ -633,8 +639,9 @@ int mana_ib_query_port(struct ib_device *ibdev, u32 port,
- 	props->pkey_tbl_len = 1;
- 	if (mana_ib_is_rnic(dev)) {
- 		props->gid_tbl_len = 16;
--		props->port_cap_flags = IB_PORT_CM_SUP;
- 		props->ip_gids = true;
-+		if (port == 1)
-+			props->port_cap_flags = IB_PORT_CM_SUP;
- 	}
- 
- 	return 0;
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index 369825fde..e782dc7f1 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -220,6 +220,7 @@ struct mana_ib_query_adapter_caps_req {
- enum mana_ib_adapter_features {
- 	MANA_IB_FEATURE_CLIENT_ERROR_CQE_SUPPORT = BIT(4),
- 	MANA_IB_FEATURE_DEV_COUNTERS_SUPPORT = BIT(5),
-+	MANA_IB_FEATURE_MULTI_PORTS_SUPPORT = BIT(6),
- };
- 
- struct mana_ib_query_adapter_caps_resp {
+`IB Drivers`
+Add TRY_P2P_REQ flag for the hmm_range_fault call: This flag indicates the
+need for P2P mapping, enabling IB drivers to efficiently handle P2P DMA
+requests.
+
+`Nouveau driver`
+Add support for the Nouveau p2p_page callback function: This update
+integrates P2P DMA support into the Nouveau driver, allowing it to handle
+P2P page operations seamlessly.
+
+`MLX5 Driver`
+Utilize NIC Address Translation Service (ATS) for ODP memory, to optimize
+DMA P2P for private device pages. Also, when P2P DMA mapping fails due to
+inaccessible bridges, the system falls back to standard DMA, which uses host
+memory, for the affected PFNs
+
+Previous version:
+https://lore.kernel.org/linux-mm/20241201103659.420677-1-ymaman@nvidia.com/
+https://lore.kernel.org/linux-mm/20241015152348.3055360-1-ymaman@nvidia.com/
+
+Yonatan Maman (5):
+  mm/hmm: HMM API to enable P2P DMA for device private pages
+  nouveau/dmem: HMM P2P DMA for private dev pages
+  IB/core: P2P DMA for device private pages
+  RDMA/mlx5: Enable P2P DMA with fallback mechanism
+  RDMA/mlx5: Enabling ATS for ODP memory
+
+ drivers/gpu/drm/nouveau/nouveau_dmem.c | 110 +++++++++++++++++++++++++
+ drivers/infiniband/core/umem_odp.c     |   4 +
+ drivers/infiniband/hw/mlx5/mlx5_ib.h   |   6 +-
+ drivers/infiniband/hw/mlx5/odp.c       |  24 +++++-
+ include/linux/hmm.h                    |   3 +-
+ include/linux/memremap.h               |   8 ++
+ mm/hmm.c                               |  57 ++++++++++---
+ 7 files changed, 195 insertions(+), 17 deletions(-)
+
 -- 
-2.43.0
+2.34.1
 
 
