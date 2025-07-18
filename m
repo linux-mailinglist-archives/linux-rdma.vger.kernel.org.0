@@ -1,190 +1,134 @@
-Return-Path: <linux-rdma+bounces-12300-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12301-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 654FDB0A3A0
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jul 2025 13:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 91229B0A504
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jul 2025 15:23:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E95A9189E141
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jul 2025 11:55:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2ACC5189FDFA
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jul 2025 13:24:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 642B52DE6E8;
-	Fri, 18 Jul 2025 11:52:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1AA32DC332;
+	Fri, 18 Jul 2025 13:23:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="IS5d/OYq"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="F/w5LVRb";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="J7nloz6c"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2049.outbound.protection.outlook.com [40.107.93.49])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE39B2D97A9;
-	Fri, 18 Jul 2025 11:52:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.49
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752839560; cv=fail; b=MA46rD9li6CUyCWLX1deT4jxZPt9SobRiQ4R98gtpz7TAtAyfPV59JPaVjh2alhI7+hC/FlCIeWyXM++NQJr2q1l3w1u6y+dghAbUJJ3YaC0WozN7eZoYpMaIODGX0phyAYT98iOSYOAnFNGaa8dMS5UeukkkF7FMsS860lV7JU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752839560; c=relaxed/simple;
-	bh=sKKT2viJAuDx0/yGJlJgPaFhIyB1fKx9k4eKNVg5ZY0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pQRaDEt0M6BXAuPqWgI+FWjj5gWSObj75ygdcdHhDnU8KRAvzkBSbLr37fRzA+iMqDdQzAOQIjuG0z2CC5ynkjpkydDgdwOgFX1kLf8Buq15ySFN8oSceKs1ppYFZcvPX0EXJf7rM4f3jevebh+tcjyqAXy01vMaJfRIX9Ay/Oc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=IS5d/OYq; arc=fail smtp.client-ip=40.107.93.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Nox+gIgjZsuhB0fzxHPAesEBZ7uhPb6tu91AQkCMabShuRym5RSdZDiJG2YZRTXkRhtcr26I0QYC2BrQ38rlf4ZehRlUDyVTWQmAjudVThN4MRHJMHrwpQKX18S3Tg+Q5BrwaXTReDLcxsehy3uNI26bqQD9mSeBQcG/dEy9kWcG9UTSc6J1teITW72Isx/s38ax/+UF/ePhyBHpIwSVCwOy0SENY2Lw6K7gQ9Q6HMvJNXlHzbna/U/m0I93jsZqAUcJibT7SHYWKHdjjDOdT8EUFoMJHp5K5koZ8pwsQm2N9FUHD0yXZ4Nw4ewMCKfwSrAN0FN9XiUCq4eSAUnfaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JJK1Qb7GFsD9TqJmyw7UxdYE1kG7BmOSavNaiR/sUF8=;
- b=gyabsGvmd7wUFCWe0APkanV6fgkOzxWDNi4VYdtmtllXQu0jpmRishXglAiEMvmq6OK9Deej5KR0kIe90shGikMf7iZtAPXtsETz4jBnXB6Pxogb4xFa5q6UgtjzYujRVrQxgy79Uypxs+zWaayY5AAvx3arcDj5MQo/wf2aJwESg1AOjs+tf3tA1A+GO7smTy9oKivgTu4NyaoM4mOSvIVmYEjSf5BBiQPlf4eXDYUk8xSqhTlbCu2Q9RdPjjJRKkiiYh7e3SUsNKDwFD/EezCQBYYNXAzSNHiSQ7CVnANSKAZtoGM6aI5YOn4Cr4UopXvRCYkuj30U4ffcw9AlfQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JJK1Qb7GFsD9TqJmyw7UxdYE1kG7BmOSavNaiR/sUF8=;
- b=IS5d/OYqG2aGN022r/DgIHFr95rI4Y1bAEAhS3+ECeueLrPV37SEsbu6o0d53+Ed048lXardELw7brL/AMoYRhn8QnXk7ASF6JTzF/a2VOFZQtP16W5a1OKnQ8haGFP0oPjavtVnbk0Bii0amc5zuMXoVOGg64y3zzWvQE2hm3XRvy5wqGkzCwn0edt1TkOI9hOGoxvx4LuBEq4lUbA1celu8f8Nx8MCOQn9P0ysquV8JFyzGhCa89VLxs3+fBezdD+go3LKlLaYI3FP8Pxw+6HgBUo5rBLCFe616+kChRwGQGcLZBM35vzPtvq0KXunzHUJWhiydTMCr8keV2A6SA==
-Received: from SA1P222CA0083.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:35e::21)
- by SJ0PR12MB7460.namprd12.prod.outlook.com (2603:10b6:a03:48d::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8922.39; Fri, 18 Jul
- 2025 11:52:35 +0000
-Received: from SN1PEPF0002636C.namprd02.prod.outlook.com
- (2603:10b6:806:35e:cafe::f9) by SA1P222CA0083.outlook.office365.com
- (2603:10b6:806:35e::21) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8943.23 via Frontend Transport; Fri,
- 18 Jul 2025 11:52:35 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SN1PEPF0002636C.mail.protection.outlook.com (10.167.241.137) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8943.21 via Frontend Transport; Fri, 18 Jul 2025 11:52:35 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 18 Jul
- 2025 04:52:17 -0700
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Fri, 18 Jul
- 2025 04:52:17 -0700
-Received: from vdi.nvidia.com (10.127.8.9) by mail.nvidia.com (10.129.68.7)
- with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Fri, 18
- Jul 2025 04:52:12 -0700
-From: Yonatan Maman <ymaman@nvidia.com>
-To: =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>, Andrew Morton
-	<akpm@linux-foundation.org>, Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky
-	<leon@kernel.org>
-CC: Lyude Paul <lyude@redhat.com>, Danilo Krummrich <dakr@kernel.org>, "David
- Airlie" <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Alistair Popple
-	<apopple@nvidia.com>, Ben Skeggs <bskeggs@nvidia.com>, Michael Guralnik
-	<michaelgur@nvidia.com>, Or Har-Toov <ohartoov@nvidia.com>, Daisuke Matsuda
-	<dskmtsd@gmail.com>, Shay Drory <shayd@nvidia.com>, <linux-mm@kvack.org>,
-	<linux-rdma@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-	<nouveau@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>, "Yonatan
- Maman" <Ymaman@Nvidia.com>, Gal Shalom <GalShalom@Nvidia.com>
-Subject: [PATCH v2 5/5] RDMA/mlx5: Enabling ATS for ODP memory
-Date: Fri, 18 Jul 2025 14:51:12 +0300
-Message-ID: <20250718115112.3881129-6-ymaman@nvidia.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250718115112.3881129-1-ymaman@nvidia.com>
-References: <20250718115112.3881129-1-ymaman@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01C042E370B;
+	Fri, 18 Jul 2025 13:23:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1752845031; cv=none; b=hRto10fcJLqR0eetwzOpbI4tPu383sd2Nu9ZCm4/dpb6kpxxqva5Jb9s85sgczPKgpstSqTVbjTzE15PjdHG6eJchjQ9j3kO9vmOkm7HVrF85TblwcwwONGJM/BJx1kNKOqH42FR1+uxuBWukiWnmgj9YnfsAvLVgd4UzCTIJgA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1752845031; c=relaxed/simple;
+	bh=3Gj5w5HsItXOBNki2riEbc69tNDXQwN6DrDF+HRXaSQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=t/mSPtYy4FrZrKInjnCeWpCeojc4VvPeZwVu0RTDahsRtj4zUIt14lIOe6gY/8eJbphSzFFJ1fUsQPW2V4TFCZ98oz6JzTsZp7A/hlCuDNfoPbIrlDYXgh+2N+UfFMDOnGuXZ+jT1xOPDBz2osrj0rAvg9MlvIRQWApnlOQEL2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=F/w5LVRb; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=J7nloz6c; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1752845028;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=iE7hw9+bZACRqLCE5oK6anYds6V+tWE0n5Y1ZwoRR1M=;
+	b=F/w5LVRbDSebIic/4Y0Fr0thO5Uv7WpT55/AIK/GzmnkxlvMy7c9ThpvuvCR64mGN35mj+
+	IHqX0+BEuu+v8EXbUxLdoX9EmGvLQzjweRMIVX5JSWNWwx6UIqnakE47soxm3/zH10JFc+
+	+j2mlAfwiQnb6+j5PgjNMPDXesocGEfQhqlY+WIa/jzBgTn40xVkb46SaixhyZonZPApYB
+	qb+VNCOgfOi6a+/iNabXlFO0kgAJ9LxZGPcOIX21m0trgX8OhXTzjP2EVnMcmccEBjBZZw
+	WfGlhV/Ejr2K/EMAS8oy4UGmTHp8JpC6mQApdvx32DqEywk4ghpGcOk/k5WY5Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1752845028;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=iE7hw9+bZACRqLCE5oK6anYds6V+tWE0n5Y1ZwoRR1M=;
+	b=J7nloz6c1uwBPmOsvHuHIjNrJDgNV6BNkq7pz0gJXDOHjEQxUfHpCxKzjg9Si49GAqSnMf
+	j7kah6zkbakXKdDw==
+Subject: [PATCH net-next v4 0/2] net: Don't use %pK through printk
+Date: Fri, 18 Jul 2025 15:23:41 +0200
+Message-Id: <20250718-restricted-pointers-net-v4-0-4baa64e40658@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: AnonymousSubmission
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002636C:EE_|SJ0PR12MB7460:EE_
-X-MS-Office365-Filtering-Correlation-Id: e54f7cd4-055e-45db-d1cd-08ddc5f1962c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|36860700013|7416014|376014|82310400026;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?+biFyDegrfRiNf/HlXYPNvVGRtM54in/6aog1xbFCPJ0hdopYeztHIIyzDBh?=
- =?us-ascii?Q?5AQuoLYVDD35TnI8pgU4G/4QVxeD3o1HFac9sFVpT1nXfz3ujQpHoYW6b7Bn?=
- =?us-ascii?Q?a8LhiedPNhkBCVMCvfC15piZTScDUYrmZYj02pXYaUsUUIC5oe7nIBFHkTy2?=
- =?us-ascii?Q?PUc2Ro1in9C/SDvc669eZZLChsXuTtALDgjEiFoivIcjTQgyF9nTBzLgpHJy?=
- =?us-ascii?Q?SN1q86XlAWrD40/8N6P2IQxvd2dRYmohCQ3OjauHdVhgIdnxOCq8js4UVw1c?=
- =?us-ascii?Q?6+P3Ag4Z0x4r/dhqaGrT1OaBbxTfW8N/04Oh/JKQrCOqbryRLkP7tmneB99m?=
- =?us-ascii?Q?7k5zRoyRO8f9rMf9rNYFYyM1SvViHLb2HENEfQn1LVP2WXjDahgkYj/nVDU5?=
- =?us-ascii?Q?2S/CPD0Zjn2uu8Fz2zdgRPbaXU2QKnDYu6yZA/aGLbGLUiLf8R/64eea7rXA?=
- =?us-ascii?Q?WYGya6Wz+NmzZqSf3eKNAdjfAcFq0wFFJp6TXCHCJA4UjLS4VVijbJj1LyJU?=
- =?us-ascii?Q?D/wk/vZ9dr24eLZZKZRsGMd7jeGwLsKRW0KLflL1LPNM+S78lXVydj8hnZyE?=
- =?us-ascii?Q?BhgCttDfB1qm08Bty+P9KITwOsbwlVOlP0gH8m0Le1qtjOkhv3B1Co5dLykh?=
- =?us-ascii?Q?7rBSWB7O3rcKSIA2SFhO63o1h/4xILPJfithSN+2UMWBB4I0pdHzwW1Pz825?=
- =?us-ascii?Q?Bk0XYGX5ui/E0uEoAfeTrymen8SGPw8IhKdWPBLn/RF7JzV62snLBddz6qgu?=
- =?us-ascii?Q?B6PzME8F9dkdoaKsPWQBcn7p+9l2F2ak0pKfTm9HBH4mwax614R/fyKkIJhy?=
- =?us-ascii?Q?3nsK5/YQD9EBaQlItHvPlqdfKe+A7vWlQUB/+PrUdijV7ZxrKK62kzMsSuQM?=
- =?us-ascii?Q?fQxvPnbGEajT8yrKe6NTA8lLC10sECvDlZedW+xcgDynl9bPgVNgoq/E6BRY?=
- =?us-ascii?Q?9VHOvk1nF7F+zScGQWlAPJtZUq+tLnEYNmA4M64BOup6k0RKffcE6QSGjAL3?=
- =?us-ascii?Q?0Wj4h8v+Kvg5zn671xR6o+SKlTS+/mhL78aw5h+pJj6Tn1RTysZ/8vStZ2vu?=
- =?us-ascii?Q?GRhtJ3GK/9F97Xr3aHa9LJzkmFFr9algtnAItG80cyanmlpjRro4vQxqw8bX?=
- =?us-ascii?Q?/nYPlWfJjoR+sC1gMhkxlSkM4vm0aZMg2JeBXoNckwR1aCta7oKR2PwF0EWX?=
- =?us-ascii?Q?nMN3c7MEcWlQz4z6P5jbo3hJfOmAGZEMSL63mYJy/ru2j1bqQ9eLAGhWNHKV?=
- =?us-ascii?Q?ZwYSwGd7C85YGgKUMM3/OHBVEjow5QomeQjlwVy83DOGpv4yr8NG8NUwYn77?=
- =?us-ascii?Q?coQBTSNAe2av3kRDuyWt3BgV8RoPkqcDHotzalod4EaWSv72dLV15dmUVFZo?=
- =?us-ascii?Q?K6H7y2RcIie3Qrjug12a9rrEfiF1Q0PYtLvAmsuCprVaRh33xKK87I6IQiVf?=
- =?us-ascii?Q?n8Aw9Hsy81o6kltsqRU2eSRCqe8YVfd0GKpQ6JieAx2GY7+AUXdWA42T7HXf?=
- =?us-ascii?Q?I1nbp3zVELA3D1krEzivdFenn+rlhbAn4jv/?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(36860700013)(7416014)(376014)(82310400026);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2025 11:52:35.2142
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e54f7cd4-055e-45db-d1cd-08ddc5f1962c
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF0002636C.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB7460
+X-B4-Tracking: v=1; b=H4sIAN5KemgC/3XNS47CMBAE0KsgrzHyLx9mNfdALBy7Ai0hB9kmC
+ kK5OyYsQKPJslTdrx4sIRIS+9k8WMRIiYZQgtlumDvbcAInXzJTQlXCCMMjUo7kMjy/DhQyYuI
+ BmdvWee+FRuUlK9/XiJ6mRT6w10HAlNmxNGdKeYj3ZXKUS//W5bo+Si64VLYXDqYuS78XCrcch
+ 0DTzmNxR/VtNeuWKtbeuL5B36K2+M/SH6uW7bqli6W7xlZaomq77q81z/MT130swGQBAAA=
+X-Change-ID: 20250404-restricted-pointers-net-a8cddd03e5d1
+To: Tony Nguyen <anthony.l.nguyen@intel.com>, 
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+ Andrew Lunn <andrew+netdev@lunn.ch>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
+ Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>
+Cc: intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
+ Aleksandr Loktionov <aleksandr.loktionov@intel.com>, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, 
+ Simon Horman <horms@kernel.org>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1752845027; l=1796;
+ i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
+ bh=3Gj5w5HsItXOBNki2riEbc69tNDXQwN6DrDF+HRXaSQ=;
+ b=DWaPcDFUr2/N2fYXMgVEmheOtBa9OQXB8VHbff97i8usZ/cxn4dmeEsP68M/YKkJiWq1Z+H1c
+ FPEwYW7yHA9DIGq5iZK0JE0MCO7A8B3773+7aVeQ69bQMJjF6fLB3Te
+X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
+ pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 
-From: Yonatan Maman <Ymaman@Nvidia.com>
+In the past %pK was preferable to %p as it would not leak raw pointer
+values into the kernel log.
+Since commit ad67b74d2469 ("printk: hash addresses printed with %p")
+the regular %p has been improved to avoid this issue.
+Furthermore, restricted pointers ("%pK") were never meant to be used
+through printk(). They can still unintentionally leak raw pointers or
+acquire sleeping locks in atomic contexts.
 
-ATS (Address Translation Services) mainly utilized to optimize PCI
-Peer-to-Peer transfers and prevent bus failures. This change employed
-ATS usage for ODP memory, to optimize DMA P2P for ODP memory. (e.g DMA
-P2P for private device pages - ODP memory).
+Switch to the regular pointer formatting which is safer and
+easier to reason about.
+There are still a few users of %pK left, but these use it through seq_file,
+for which its usage is safe.
 
-Signed-off-by: Yonatan Maman <Ymaman@Nvidia.com>
-Signed-off-by: Gal Shalom <GalShalom@Nvidia.com>
+Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 ---
- drivers/infiniband/hw/mlx5/mlx5_ib.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Changes in v4:
+- Pick up Review-by from Simon
+- Link to v3: https://lore.kernel.org/r/20250618-restricted-pointers-net-v3-0-3b7a531e58bb@linutronix.de
 
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index fde859d207ae..a7b7a565b7e8 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1734,9 +1734,9 @@ static inline bool rt_supported(int ts_cap)
- static inline bool mlx5_umem_needs_ats(struct mlx5_ib_dev *dev,
- 				       struct ib_umem *umem, int access_flags)
- {
--	if (!MLX5_CAP_GEN(dev->mdev, ats) || !umem->is_dmabuf)
--		return false;
--	return access_flags & IB_ACCESS_RELAXED_ORDERING;
-+	if (MLX5_CAP_GEN(dev->mdev, ats) && (umem->is_dmabuf || umem->is_odp))
-+		return access_flags & IB_ACCESS_RELAXED_ORDERING;
-+	return false;
- }
- 
- int set_roce_addr(struct mlx5_ib_dev *dev, u32 port_num,
+Changes in v3:
+- Fix typo in commit messages
+- Link to v2: https://lore.kernel.org/r/20250417-restricted-pointers-net-v2-0-94cf7ef8e6ae@linutronix.de
+
+Changes in v2:
+- Drop wifi/ath patches, they are submitted on their own now
+- Link to v1: https://lore.kernel.org/r/20250414-restricted-pointers-net-v1-0-12af0ce46cdd@linutronix.de
+
+---
+Thomas Weißschuh (2):
+      ice: Don't use %pK through printk or tracepoints
+      net/mlx5: Don't use %pK through printk or tracepoints
+
+ drivers/net/ethernet/intel/ice/ice_main.c                      |  2 +-
+ drivers/net/ethernet/intel/ice/ice_trace.h                     | 10 +++++-----
+ .../ethernet/mellanox/mlx5/core/sf/dev/diag/dev_tracepoint.h   |  2 +-
+ 3 files changed, 7 insertions(+), 7 deletions(-)
+---
+base-commit: d086c886ceb9f59dea6c3a9dae7eb89e780a20c9
+change-id: 20250404-restricted-pointers-net-a8cddd03e5d1
+
+Best regards,
 -- 
-2.34.1
+Thomas Weißschuh <thomas.weissschuh@linutronix.de>
 
 
