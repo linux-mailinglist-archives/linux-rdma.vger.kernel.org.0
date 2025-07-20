@@ -1,278 +1,188 @@
-Return-Path: <linux-rdma+bounces-12332-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12333-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDC24B0B8EE
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Jul 2025 00:42:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13896B0B903
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Jul 2025 01:01:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2507F168109
-	for <lists+linux-rdma@lfdr.de>; Sun, 20 Jul 2025 22:42:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EF623B6EBE
+	for <lists+linux-rdma@lfdr.de>; Sun, 20 Jul 2025 23:00:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51296221273;
-	Sun, 20 Jul 2025 22:41:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 099B33A1CD;
+	Sun, 20 Jul 2025 23:01:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PpJQzdT+"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="S7n5WoR6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCC5818FDAF
-	for <linux-rdma@vger.kernel.org>; Sun, 20 Jul 2025 22:41:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BF5242AA9
+	for <linux-rdma@vger.kernel.org>; Sun, 20 Jul 2025 23:01:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753051317; cv=none; b=J7MXhz6yyL82WwRO8HBwDn5qhJs/uiTM44ElU92QkwV6d/9PatKb/YLx9i9dhIr5P21x4zl5vNuWezZV7fdNhSIqUk16AfvdPIKBjbvpc2dD0wh12roS3sywd8k4U6gKM6kCTLw16St57md+Ol8dSxZMr0+1UQ/dyNIxapdN678=
+	t=1753052471; cv=none; b=ELafx2bR/5Xto7ZgWNieWPkFVQdzI4RTWPM2Elj87sJauNN45VUDTLm1FSSag4mvqn0vwZpl84S8G1cOlV6xAZGTt108xZza8N56ABZSZyP9mgJ0PlGsLSCP1eg+hcUOBgcnOgplkbhPpWXPvE9BsEQRXTVBbgdaGMvLZL7eSBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753051317; c=relaxed/simple;
-	bh=1cxaJIbBbtj3ourT0u3mMHk65E3IKf89BfkWcFvPdxU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=SpPhLqRNaFxy0rJZkteITo54sYum6MG4spJOTt/xGaJaoP+BZZ96ArElR2y03NrA3VJDCiPJCdRzYqDhP9EfMXwbh9L0m5dV4rkLSAlJVU3v8zHWQ+ZVbRgoE+yiXhorvSKDJziuWLLr7wuHz4Ga/WdKhZasfOHcqIKIEOwHJVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PpJQzdT+; arc=none smtp.client-ip=95.215.58.181
+	s=arc-20240116; t=1753052471; c=relaxed/simple;
+	bh=OluhjT6olmlyw3OujUX80Anu8tjhSxcK+0d3MbvZr6E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KTEhST6EBIzxFnruQF70nLuSp3bRMhvcMYsE2fsCVf0oJ1Uo1SPhgTwpVGKB1JR4eD3KBH9wTktZEGF/I3uK31S/8DrpJlbsVPie8yJcXrkWF5NLFjaTHkBV+m5S1XMZHPX1gGQqDwlIoA9sallHRJQ6j1ZnL7hwkpglUwl75Fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=S7n5WoR6; arc=none smtp.client-ip=95.215.58.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <48c13c2c-56f2-42f7-9a03-d5bdfd8e8dfb@linux.dev>
+Message-ID: <8791d040-cb5b-4633-82f5-7ee090557a92@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1753051312;
+	t=1753052467;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=d6vOFSOSZWrPmn9yjc0x19f0VotRKph1uZHa3Yvk2+Y=;
-	b=PpJQzdT+PvRfcuAJyPSAVOnuUiwoVN1b7pTO4h2xOMlrg3ZuEPBCJHCWy9yCpb9Cgl4VPo
-	LPlF88BN9TaV1IGqwVOUkD4F882bGf4ASBT4YORDTpfWuk2NKz5mU9WnyOJs+OhEFtMI5Y
-	VyjlArCjV7kLau7oeT5SwMyZtPiCB9w=
-Date: Sun, 20 Jul 2025 15:41:27 -0700
+	bh=KDr8y0789q0IT4nUO9DOdWBVA0XzFh2CyeFWlzHpTEc=;
+	b=S7n5WoR6n2kuXHZ73QTtnqTzvXrVNRm2/By2hD7aEYmfxWY65n6HGdtepP1rViIj1NFZ6R
+	aY/tW3BvpvNtI14mLwJ5pIF7cmPA1bXK2akBxs4iqB9URabV5AM1pfUHYqxUH5O5tUCw7j
+	sx4eOY2hVDTkD4TgOeb4Ujpu3VBjnlU=
+Date: Sun, 20 Jul 2025 16:00:48 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCHv3 next-next 1/1] net/mlx5: Fix build -Wframe-larger-than
- warnings
-To: saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <20250720160849.508014-1-yanjun.zhu@linux.dev>
+Subject: Re: [PATCH rdma-next 1/2] RDMA/mlx5: Fix returned type from
+ _mlx5r_umr_zap_mkey()
+To: Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
+Cc: Leon Romanovsky <leonro@nvidia.com>,
+ "Colin King (gmail)" <colin.i.king@gmail.com>,
+ Edward Srouji <edwards@nvidia.com>, linux-rdma@vger.kernel.org,
+ Michael Guralnik <michaelgur@nvidia.com>
+References: <71d8ea208ac7eaa4438af683b9afaed78625e419.1753003467.git.leon@kernel.org>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20250720160849.508014-1-yanjun.zhu@linux.dev>
+In-Reply-To: <71d8ea208ac7eaa4438af683b9afaed78625e419.1753003467.git.leon@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-在 2025/7/20 9:08, Zhu Yanjun 写道:
-> When building, the following warnings will appear.
-> "
-> pci_irq.c: In function ‘mlx5_ctrl_irq_request’:
-> pci_irq.c:494:1: warning: the frame size of 1040 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+在 2025/7/20 2:25, Leon Romanovsky 写道:
+> From: Leon Romanovsky <leonro@nvidia.com>
 > 
-> pci_irq.c: In function ‘mlx5_irq_request_vector’:
-> pci_irq.c:561:1: warning: the frame size of 1040 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+> As Colin reported:
+>   "The variable zapped_blocks is a size_t type and is being assigned a int
+>    return value from the call to _mlx5r_umr_zap_mkey. Since zapped_blocks is an
+>    unsigned type, the error check for zapped_blocks < 0 will never be true."
 > 
-> eq.c: In function ‘comp_irq_request_sf’:
-> eq.c:897:1: warning: the frame size of 1080 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-> 
-> irq_affinity.c: In function ‘irq_pool_request_irq’:
-> irq_affinity.c:74:1: warning: the frame size of 1048 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-> "
-> 
-> These warnings indicate that the stack frame size exceeds 1024 bytes in
-> these functions.
-> 
-> To resolve this, instead of allocating large memory buffers on the stack,
-> it is better to use kvzalloc to allocate memory dynamically on the heap.
-> This approach reduces stack usage and eliminates these frame size warnings.
-> 
-> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> So separate return error and nblocks assignment.
 
-Sorry. Missing the following Acked-by.
+size_t is an unsigned type, used to represent the size of objects while 
+int is a signed 32-bit integer (on most platforms).
 
-Acked-by: Junxian Huang <huangjunxian6@hisilicon.com>
+Assign an int value to a size_t causes an implicit conversion from 
+signed to unsigned.
+
+It may seem harmless, but it can cause subtle and serious bugs depending 
+on the scenarios.
+
+Many CVEs in the kernel result from misuse of signed/unsigned types.
+
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 
 Zhu Yanjun
-
+  >
+> Fixes: e73242aa14d2 ("RDMA/mlx5: Optimize DMABUF mkey page size")
+> Reported-by: "Colin King (gmail)" <colin.i.king@gmail.com>
+> Closes: https://lore.kernel.org/all/79166fb1-3b73-4d37-af02-a17b22eb8e64@gmail.com
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 > ---
-> v2 -> v3: No changes, just send out target net-next;
-> v1 -> v2: Add kvfree to error handler;
+>   drivers/infiniband/hw/mlx5/umr.c | 28 ++++++++++++++--------------
+>   1 file changed, 14 insertions(+), 14 deletions(-)
 > 
-> 1. This commit only build tests;
-> 2. All the changes are on configuration path, will not make difference
-> on the performance;
-> 3. This commit is just to fix build warnings, not error or bug fixes. So
-> not Fixes tag.
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/eq.c  | 24 +++++++----
->   .../mellanox/mlx5/core/irq_affinity.c         | 19 +++++++--
->   .../net/ethernet/mellanox/mlx5/core/pci_irq.c | 40 +++++++++++++------
->   3 files changed, 60 insertions(+), 23 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-> index dfb079e59d85..4938dd7c3a09 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-> @@ -873,19 +873,29 @@ static int comp_irq_request_sf(struct mlx5_core_dev *dev, u16 vecidx)
+> diff --git a/drivers/infiniband/hw/mlx5/umr.c b/drivers/infiniband/hw/mlx5/umr.c
+> index fa5c4ea685b9d..054f6dae24151 100644
+> --- a/drivers/infiniband/hw/mlx5/umr.c
+> +++ b/drivers/infiniband/hw/mlx5/umr.c
+> @@ -992,6 +992,7 @@ _mlx5r_dmabuf_umr_update_pas(struct mlx5_ib_mr *mr, unsigned int flags,
+>   static int _mlx5r_umr_zap_mkey(struct mlx5_ib_mr *mr,
+>   			       unsigned int flags,
+>   			       unsigned int page_shift,
+> +			       size_t *nblocks,
+>   			       bool dd)
 >   {
->   	struct mlx5_irq_pool *pool = mlx5_irq_table_get_comp_irq_pool(dev);
->   	struct mlx5_eq_table *table = dev->priv.eq_table;
-> -	struct irq_affinity_desc af_desc = {};
-> +	struct irq_affinity_desc *af_desc;
->   	struct mlx5_irq *irq;
->   
-> +	af_desc = kvzalloc(sizeof(*af_desc), GFP_KERNEL);
-> +	if (!af_desc)
-> +		return -ENOMEM;
-> +
->   	/* In case SF irq pool does not exist, fallback to the PF irqs*/
-> -	if (!mlx5_irq_pool_is_sf_pool(pool))
-> +	if (!mlx5_irq_pool_is_sf_pool(pool)) {
-> +		kvfree(af_desc);
->   		return comp_irq_request_pci(dev, vecidx);
-> +	}
->   
-> -	af_desc.is_managed = false;
-> -	cpumask_copy(&af_desc.mask, cpu_online_mask);
-> -	cpumask_andnot(&af_desc.mask, &af_desc.mask, &table->used_cpus);
-> -	irq = mlx5_irq_affinity_request(dev, pool, &af_desc);
-> -	if (IS_ERR(irq))
-> +	af_desc->is_managed = false;
-> +	cpumask_copy(&af_desc->mask, cpu_online_mask);
-> +	cpumask_andnot(&af_desc->mask, &af_desc->mask, &table->used_cpus);
-> +	irq = mlx5_irq_affinity_request(dev, pool, af_desc);
-> +	if (IS_ERR(irq)) {
-> +		kvfree(af_desc);
->   		return PTR_ERR(irq);
-> +	}
-> +
-> +	kvfree(af_desc);
->   
->   	cpumask_or(&table->used_cpus, &table->used_cpus, mlx5_irq_get_affinity_mask(irq));
->   	mlx5_core_dbg(pool->dev, "IRQ %u mapped to cpu %*pbl, %u EQs on this irq\n",
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
-> index 2691d88cdee1..82d3c2568244 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
-> @@ -47,29 +47,40 @@ static int cpu_get_least_loaded(struct mlx5_irq_pool *pool,
->   static struct mlx5_irq *
->   irq_pool_request_irq(struct mlx5_irq_pool *pool, struct irq_affinity_desc *af_desc)
->   {
-> -	struct irq_affinity_desc auto_desc = {};
-> +	struct irq_affinity_desc *auto_desc;
->   	struct mlx5_irq *irq;
->   	u32 irq_index;
+>   	unsigned int old_page_shift = mr->page_shift;
+> @@ -1000,7 +1001,6 @@ static int _mlx5r_umr_zap_mkey(struct mlx5_ib_mr *mr,
+>   	size_t page_shift_nblocks;
+>   	unsigned int max_log_size;
+>   	int access_mode;
+> -	size_t nblocks;
 >   	int err;
 >   
-> +	auto_desc = kvzalloc(sizeof(*auto_desc), GFP_KERNEL);
-> +	if (!auto_desc)
-> +		return ERR_PTR(-ENOMEM);
-> +
->   	err = xa_alloc(&pool->irqs, &irq_index, NULL, pool->xa_num_irqs, GFP_KERNEL);
-> -	if (err)
-> +	if (err) {
-> +		kvfree(auto_desc);
->   		return ERR_PTR(err);
-> +	}
-> +
->   	if (pool->irqs_per_cpu) {
->   		if (cpumask_weight(&af_desc->mask) > 1)
->   			/* if req_mask contain more then one CPU, set the least loadad CPU
->   			 * of req_mask
->   			 */
->   			cpumask_set_cpu(cpu_get_least_loaded(pool, &af_desc->mask),
-> -					&auto_desc.mask);
-> +					&auto_desc->mask);
->   		else
->   			cpu_get(pool, cpumask_first(&af_desc->mask));
->   	}
-> +
->   	irq = mlx5_irq_alloc(pool, irq_index,
-> -			     cpumask_empty(&auto_desc.mask) ? af_desc : &auto_desc,
-> +			     cpumask_empty(&auto_desc->mask) ? af_desc : auto_desc,
->   			     NULL);
->   	if (IS_ERR(irq))
->   		xa_erase(&pool->irqs, irq_index);
-> +
-> +	kvfree(auto_desc);
-> +
->   	return irq;
->   }
+>   	access_mode = dd ? MLX5_MKC_ACCESS_MODE_KSM : MLX5_MKC_ACCESS_MODE_MTT;
+> @@ -1014,26 +1014,26 @@ static int _mlx5r_umr_zap_mkey(struct mlx5_ib_mr *mr,
+>   	 * Block size must be aligned to MLX5_UMR_FLEX_ALIGNMENT since it may
+>   	 * be used as offset into the XLT later on.
+>   	 */
+> -	nblocks = ib_umem_num_dma_blocks(mr->umem, 1UL << max_page_shift);
+> +	*nblocks = ib_umem_num_dma_blocks(mr->umem, 1UL << max_page_shift);
+>   	if (dd)
+> -		nblocks = ALIGN(nblocks, MLX5_UMR_KSM_NUM_ENTRIES_ALIGNMENT);
+> +		*nblocks = ALIGN(*nblocks, MLX5_UMR_KSM_NUM_ENTRIES_ALIGNMENT);
+>   	else
+> -		nblocks = ALIGN(nblocks, MLX5_UMR_MTT_NUM_ENTRIES_ALIGNMENT);
+> +		*nblocks = ALIGN(*nblocks, MLX5_UMR_MTT_NUM_ENTRIES_ALIGNMENT);
+>   	page_shift_nblocks = ib_umem_num_dma_blocks(mr->umem,
+>   						    1UL << page_shift);
+>   	/* If the number of blocks at max possible page shift is greater than
+>   	 * the number of blocks at the new page size, we should just go over the
+>   	 * whole mkey entries.
+>   	 */
+> -	if (nblocks >= page_shift_nblocks)
+> -		nblocks = 0;
+> +	if (*nblocks >= page_shift_nblocks)
+> +		*nblocks = 0;
 >   
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-> index 40024cfa3099..48aad94b0a5d 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-> @@ -470,26 +470,32 @@ void mlx5_ctrl_irq_release(struct mlx5_core_dev *dev, struct mlx5_irq *ctrl_irq)
->   struct mlx5_irq *mlx5_ctrl_irq_request(struct mlx5_core_dev *dev)
->   {
->   	struct mlx5_irq_pool *pool = ctrl_irq_pool_get(dev);
-> -	struct irq_affinity_desc af_desc;
-> +	struct irq_affinity_desc *af_desc;
->   	struct mlx5_irq *irq;
->   
-> -	cpumask_copy(&af_desc.mask, cpu_online_mask);
-> -	af_desc.is_managed = false;
-> +	af_desc = kvzalloc(sizeof(*af_desc), GFP_KERNEL);
-> +	if (!af_desc)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	cpumask_copy(&af_desc->mask, cpu_online_mask);
-> +	af_desc->is_managed = false;
->   	if (!mlx5_irq_pool_is_sf_pool(pool)) {
->   		/* In case we are allocating a control IRQ from a pci device's pool.
->   		 * This can happen also for a SF if the SFs pool is empty.
->   		 */
->   		if (!pool->xa_num_irqs.max) {
-> -			cpumask_clear(&af_desc.mask);
-> +			cpumask_clear(&af_desc->mask);
->   			/* In case we only have a single IRQ for PF/VF */
-> -			cpumask_set_cpu(cpumask_first(cpu_online_mask), &af_desc.mask);
-> +			cpumask_set_cpu(cpumask_first(cpu_online_mask), &af_desc->mask);
+>   	/* Make the first nblocks entries non-present without changing
+>   	 * page size yet.
+>   	 */
+> -	if (nblocks)
+> +	if (*nblocks)
+>   		mr->page_shift = max_page_shift;
+> -	err = _mlx5r_dmabuf_umr_update_pas(mr, flags, 0, nblocks, dd);
+> +	err = _mlx5r_dmabuf_umr_update_pas(mr, flags, 0, *nblocks, dd);
+>   	if (err) {
+>   		mr->page_shift = old_page_shift;
+>   		return err;
+> @@ -1042,7 +1042,7 @@ static int _mlx5r_umr_zap_mkey(struct mlx5_ib_mr *mr,
+>   	/* Change page size to the max page size now that the MR is completely
+>   	 * non-present.
+>   	 */
+> -	if (nblocks) {
+> +	if (*nblocks) {
+>   		err = mlx5r_umr_update_mr_page_shift(mr, max_page_shift, dd);
+>   		if (err) {
+>   			mr->page_shift = old_page_shift;
+> @@ -1050,7 +1050,7 @@ static int _mlx5r_umr_zap_mkey(struct mlx5_ib_mr *mr,
 >   		}
->   		/* Allocate the IRQ in index 0. The vector was already allocated */
-> -		irq = irq_pool_request_vector(pool, 0, &af_desc, NULL);
-> +		irq = irq_pool_request_vector(pool, 0, af_desc, NULL);
->   	} else {
-> -		irq = mlx5_irq_affinity_request(dev, pool, &af_desc);
-> +		irq = mlx5_irq_affinity_request(dev, pool, af_desc);
 >   	}
 >   
-> +	kvfree(af_desc);
-> +
->   	return irq;
+> -	return nblocks;
+> +	return 0;
 >   }
 >   
-> @@ -548,16 +554,26 @@ struct mlx5_irq *mlx5_irq_request_vector(struct mlx5_core_dev *dev, u16 cpu,
->   {
->   	struct mlx5_irq_table *table = mlx5_irq_table_get(dev);
->   	struct mlx5_irq_pool *pool = table->pcif_pool;
-> -	struct irq_affinity_desc af_desc;
-> +	struct irq_affinity_desc *af_desc;
->   	int offset = MLX5_IRQ_VEC_COMP_BASE;
-> +	struct mlx5_irq *irq;
-> +
-> +	af_desc = kvzalloc(sizeof(*af_desc), GFP_KERNEL);
-> +	if (!af_desc)
-> +		return ERR_PTR(-ENOMEM);
+>   /**
+> @@ -1085,10 +1085,10 @@ int mlx5r_umr_dmabuf_update_pgsz(struct mlx5_ib_mr *mr, u32 xlt_flags,
+>   	size_t total_blocks;
+>   	int err;
 >   
->   	if (!pool->xa_num_irqs.max)
->   		offset = 0;
+> -	zapped_blocks = _mlx5r_umr_zap_mkey(mr, xlt_flags, page_shift,
+> -					    mr->data_direct);
+> -	if (zapped_blocks < 0)
+> -		return zapped_blocks;
+> +	err = _mlx5r_umr_zap_mkey(mr, xlt_flags, page_shift, &zapped_blocks,
+> +				  mr->data_direct);
+> +	if (err)
+> +		return err;
 >   
-> -	af_desc.is_managed = false;
-> -	cpumask_clear(&af_desc.mask);
-> -	cpumask_set_cpu(cpu, &af_desc.mask);
-> -	return mlx5_irq_request(dev, vecidx + offset, &af_desc, rmap);
-> +	af_desc->is_managed = false;
-> +	cpumask_clear(&af_desc->mask);
-> +	cpumask_set_cpu(cpu, &af_desc->mask);
-> +
-> +	irq = mlx5_irq_request(dev, vecidx + offset, af_desc, rmap);
-> +
-> +	kvfree(af_desc);
-> +
-> +	return irq;
->   }
->   
->   static struct mlx5_irq_pool *
+>   	/* _mlx5r_umr_zap_mkey already enables the mkey */
+>   	xlt_flags &= ~MLX5_IB_UPD_XLT_ENABLE;
 
 
