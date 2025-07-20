@@ -1,80 +1,55 @@
-Return-Path: <linux-rdma+bounces-12327-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12328-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8A5BB0B4F9
-	for <lists+linux-rdma@lfdr.de>; Sun, 20 Jul 2025 12:47:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DE08B0B5CA
+	for <lists+linux-rdma@lfdr.de>; Sun, 20 Jul 2025 14:15:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E289A17B6E4
-	for <lists+linux-rdma@lfdr.de>; Sun, 20 Jul 2025 10:47:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E35DA7A71B0
+	for <lists+linux-rdma@lfdr.de>; Sun, 20 Jul 2025 12:14:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B3581F3D56;
-	Sun, 20 Jul 2025 10:47:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D57EB20103A;
+	Sun, 20 Jul 2025 12:15:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g0i56vIc"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="cYGpw+Mj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6FAD23DE;
-	Sun, 20 Jul 2025 10:47:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D72419007D;
+	Sun, 20 Jul 2025 12:15:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753008462; cv=none; b=mDK3SSJwvKeOtpFVw1q/SYMRwGQz4kyhqXyum97jn8hVRVbFx6D2XDhkk1lOziFT1/XuF8kaLK8OVSFMV1GGqDH9cNybvKl5hmGIhuRubrLY/tgj9de4Rz4F8SGZ1EzIcYf4eq6FPara5vqDE38zS+q5Yhl4ES8n2p/sIlcKDo8=
+	t=1753013731; cv=none; b=QtOwmN83j4atq6NNpR3NoM9Q6ut87zGhbRz2UAa4BNG/+v58t/HhgyMcBm0wZ8lz6VMKbCdZasL1GNzFuLO+m23TcjghI2juhWSB0svuWcxwPb+/XFnZjW7BNtH3Ck+DqGNfO+ikOEUhITXRW6wBOM50iCtzIE/bFE3deWce3h4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753008462; c=relaxed/simple;
-	bh=WnmhAU+QbPNFjea0UMVWxGtAMHliXlZC4xHwI8GmgVo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OAZH33iIgZladuGOvK2Ogyt4CmbiZKcJRn3ULaUakVGhg+dQpf5RwIF7cJRu3VKcF6eTHRMXbG5hfz0gyWCHzG+93jOw2qWuDbtEhLh3XSZA5VdN/l/44+Lo3Qj9eNR52PycSKOHH5F919VlnFH2js/PwKD97QCu9fcJgNmEdVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g0i56vIc; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-45629702e52so14271205e9.2;
-        Sun, 20 Jul 2025 03:47:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753008459; x=1753613259; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jXppDYkB/CLtGMSTjlPO5sKSjzJTwa5EEMJH+XUJYU8=;
-        b=g0i56vIcXL6LmIr14PG0GsCQQoeqD3rnG7lnbjUdyKdLJ6PeNQ3AnQIycwKfydd1eF
-         qm0uguO2UYw00nlsrNqrvSr9yzCkk6RgW5eoJWSNrJjrbE+aICZYm4kHwj6N+4uC/WqT
-         BCfbRgifd4YijNmMesLhvUm7Gp3ksFBwSs/DAGeI6jNxnq8VSpmqcNlbpXZrqIulYsES
-         Mr121OeK4/r7LcKICM+iaYYO39oztaN5j0AYg5MKo4QfbzYRHwZei2ZIA5B4aM6Hh989
-         +PhofYoayM/XmNEweBXDGc6X5JZ3cHfceR1BpOehdzfI+/9LOgC9QEk2gNTZQwZ8JfgC
-         k0SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753008459; x=1753613259;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jXppDYkB/CLtGMSTjlPO5sKSjzJTwa5EEMJH+XUJYU8=;
-        b=tQjZnDzq4qFxwkuK/DG9DWDjB6Em/JIk9Nhf/GLBBmmcpr4+MoazLgW8QNJDi6NkmD
-         FkG4FUVc8/obTSq3w2vyDHhgxZg/RmWNTa9hvL22XzrRLDEiY0ukZdA9JF7abqNflYLs
-         Mm2zzufmdSbyGcUuhNEPjDAfGNT5igA1qQRcetnQs1QcaoPZy1ZHWHe7P9Z99pOq/qJ/
-         vLODzKnNU81EiqZhDlOnkq7M6UZ9ePwkwY3ZkVV46wdf5ZKlo9+GvP3G8/wLl+UBGs+I
-         jRQxRWr31EKinA70nDsXnNZ8M8vN0XXZz4oDALNhHOp9YodC2udaPbypeR8J08pMmGNz
-         jALw==
-X-Forwarded-Encrypted: i=1; AJvYcCUPzMFtZ4/DNoaIGwtDTvMO7+xdvRAnf/Ex3Iymo929S+4q4lMVsta17yDd/GgUZeR5RlC9hJiIoGoHsfFV@vger.kernel.org, AJvYcCV257mT0Vq+0yQ5Gq9Qk9ycDSnvFmv5i2GUcukL8/ZD3xI9e918cmQI6u52HZkZ8HK3j8cYqeT5nj8y1A==@vger.kernel.org, AJvYcCVR/1H4jasD+huwR+O8jbOvTtoC1PZaSTyg/3/N61lxSv+02Z/XnJzOetVYDRb5uzJjRv5wuTO9J6k=@vger.kernel.org, AJvYcCWnvUlAavvjPu2KBkFn2Ls0Iq2x4yQHQTqgrt7fNgge8gSLnejbc4zcbuFhRRPY4Ja+x+acpKRI@vger.kernel.org
-X-Gm-Message-State: AOJu0YyNu8ydWl5HgzQxgeJB35IvZWAgGU8eiH2HbyVkXc0hUMOznX7I
-	TxBErTK8T53DhWK4mZIdMUbxAXCwNKEW9X+MiDgN1ioMbXpfi59YHzFJ
-X-Gm-Gg: ASbGncv19a+ybKptSUu49qFe36VfXHiYVzrrNsDQgvAd551X54cipsRLXVkHAjmP7Lp
-	i+rUW2GG3NogI99nAvl4CnZRZxlsANCaAITpecKXi1X0ij+yxmt7MQjrX5vHrQEXCXPaaGwizMA
-	AsLC6J2fb/Nkf2M0OaJ6meVDaCVTsINx21dkC51sK9ljqTPj+lUDZUeKnX6J0Dl2DgGwuKy+opb
-	NwTXFaIBJOyZ1Ll3aBL5Ay3HMFS+mSXQPOQ1XE5/iFpPOr9+3on/z3U0M68WfBm7Ajnrgt5eoZ0
-	JBHxX9I0O9PPtSs0NoovUCIPe+7lUoUED3EiDnZ9WUdZBXNx9w7OWDh+F1dHhfw57EPMwY5AAHJ
-	vtLd6x+GjwQ6RiGUNr67qmkumrzc3P7TYuZaeeh1eh+JvjP/p95pqeFutfQ==
-X-Google-Smtp-Source: AGHT+IGFX2jZ4V6/iEd8Ara4dWX6b93jNPyhb58hgpz2fHfo6DiHF+DpKuDmcFkoxMPT94DFoU2yDw==
-X-Received: by 2002:a05:600c:4ed3:b0:456:1a69:94fb with SMTP id 5b1f17b1804b1-4562e33d914mr159581915e9.13.1753008458288;
-        Sun, 20 Jul 2025 03:47:38 -0700 (PDT)
-Received: from [172.27.57.153] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b61ca486edsm7329869f8f.56.2025.07.20.03.47.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Jul 2025 03:47:37 -0700 (PDT)
-Message-ID: <8933092f-c178-4207-acce-107c471d606e@gmail.com>
-Date: Sun, 20 Jul 2025 13:47:33 +0300
+	s=arc-20240116; t=1753013731; c=relaxed/simple;
+	bh=x2iZBtIvWYNXyrQ9Bm7K4a65qF79I+OMoMaad/OwQzg=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=XzHJ9RhWbJZ7X+qjPZRBs5BL1xu7vhaKnCDJlvt1BzjHH6ZzGvBHRncojX/UsPme7nVeKNw7uPl/PBl7qFyULR2F+dIqFZFRyJ9aNn/PG+2Z54gh7b2Mwp3IKl8yzXQpJ6fq/odShuHaJwmaCqXG5tV8OHT1W4GSkOUpoG002tQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=cYGpw+Mj; arc=none smtp.client-ip=212.227.15.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1753013709; x=1753618509; i=markus.elfring@web.de;
+	bh=4WVBF0l/axi+Lbmya1dhCg8yeNQ7jPqJOrdKJ4drUkA=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=cYGpw+MjbuCrD5NWa368zJMixKGdtScRH3UM013YUN96wgaEc6yK/zjsb3DzhAwB
+	 FuyBFLDwXdjMSKPRT6nIyvtmpVIPjgfDlHWi3yoMujMrSHfbteatw+aRjDCiNAAha
+	 daaF+vz7rhq1HSfNz61xT2sp2rknzkLoznK7+eAqHr2NeBxfsj/Bi7T3UkazDLV1D
+	 ybnmefqew8nwNlZ8lYLSBg7v4TIr8RVE/huDeGCrZty6tx94b7NY20YS3doQT7ojv
+	 agIW8YsMIQTAkOFiOwVvAsGFAxB6sd8N8b9s0Y2TreAzRAO6NsBRHSRPy0ntb1FDL
+	 bLSRU2S4vS3BVhgFHQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.29] ([94.31.69.216]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MdfCH-1vCnd73bCT-00pQdE; Sun, 20
+ Jul 2025 14:15:08 +0200
+Message-ID: <73bede3e-c00e-4a55-9095-b9a3dc8765a6@web.de>
+Date: Sun, 20 Jul 2025 14:15:05 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -82,60 +57,105 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 4/5] devlink: Make health reporter grace period
- delay configurable
-To: Jakub Kicinski <kuba@kernel.org>, Tariq Toukan <tariqt@nvidia.com>
-Cc: Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Jiri Pirko <jiri@resnulli.us>,
- Jiri Pirko <jiri@nvidia.com>, Saeed Mahameed <saeed@kernel.org>,
- Gal Pressman <gal@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Shahar Shitrit <shshitrit@nvidia.com>,
- Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- Brett Creeley <brett.creeley@amd.com>,
- Michael Chan <michael.chan@broadcom.com>,
- Pavan Chebbi <pavan.chebbi@broadcom.com>, Cai Huoqing
- <cai.huoqing@linux.dev>, Tony Nguyen <anthony.l.nguyen@intel.com>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Sunil Goutham <sgoutham@marvell.com>, Linu Cherian <lcherian@marvell.com>,
- Geetha sowjanya <gakula@marvell.com>, Jerin Jacob <jerinj@marvell.com>,
- hariprasad <hkelam@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>,
- Saeed Mahameed <saeedm@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
- Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
- Manish Chopra <manishc@marvell.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org
-References: <1752768442-264413-1-git-send-email-tariqt@nvidia.com>
- <1752768442-264413-5-git-send-email-tariqt@nvidia.com>
- <20250718175136.265a64aa@kernel.org>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20250718175136.265a64aa@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To: Chiara Meiohas <cmeiohas@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
+ Vlad Dumitrescu <vdumitrescu@nvidia.com>, linux-rdma@vger.kernel.org,
+ netdev@vger.kernel.org, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+ Moshe Shemesh <moshe@nvidia.com>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>,
+ Mark Bloch <mbloch@nvidia.com>, Saeed Mahameed <saeed@kernel.org>,
+ Saeed Mahameed <saeedm@nvidia.com>
+References: <1752753970-261832-2-git-send-email-tariqt@nvidia.com>
+Subject: Re: [PATCH net 1/2] net/mlx5: Fix memory leak in cmd_exec()
+Content-Language: en-GB, de-DE
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <1752753970-261832-2-git-send-email-tariqt@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:7m+Q03+HMt5kNyOVFrgXKK3x2oUrZQS/hcSzyIuTkYj+J22Y3dD
+ r/cmpVM+NQENwoegO7aRDqRQoPzwckivAzPwYQsjT4DX2c2AKHQOBV2HUIKSwUJnbk+abWo
+ UcV/lw47i6CyPOY5H6jzSquQH9mFUUrhmjc+TwSrXcJWKAa65P7U2h7r4NYoBUw9M+t1s3E
+ e48m7+0d7Z028aoxcggzQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:8F5/SDBC7Lw=;ztSNi9asc4sMpzE2IVThzK8Mu8n
+ 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
+ Nem1IAgjyvucoiM28
+
+=E2=80=A6
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+> @@ -1947,8 +1947,8 @@ static int cmd_exec(struct mlx5_core_dev *dev, voi=
+d *in, int in_size, void *out,
+> =20
+>  	err =3D mlx5_cmd_invoke(dev, inb, outb, out, out_size, callback, conte=
+xt,
+>  			      pages_queue, token, force_polling);
+> -	if (callback)
+> -		return err;
+> +	if (callback && !err)
+
+Can an other order become more appropriate for the items of this condition=
+ check?
 
 
+> +		return 0;
+> =20
+>  	if (err > 0) /* Failed in FW, command didn't execute */
+>  		err =3D deliv_status_to_err(err);
 
-On 19/07/2025 3:51, Jakub Kicinski wrote:
-> On Thu, 17 Jul 2025 19:07:21 +0300 Tariq Toukan wrote:
->> diff --git a/include/uapi/linux/devlink.h b/include/uapi/linux/devlink.h
->> index e72bcc239afd..42a11b7e4a70 100644
->> --- a/include/uapi/linux/devlink.h
->> +++ b/include/uapi/linux/devlink.h
->> @@ -634,6 +634,8 @@ enum devlink_attr {
->>   
->>   	DEVLINK_ATTR_REGION_DIRECT,		/* flag */
->>   
->> +	DEVLINK_ATTR_HEALTH_REPORTER_GRACEFUL_PERIOD_DELAY,	/* u64 */
->> +
->>   	DEVLINK_ATTR_RATE_TC_BWS,		/* nested */
->>   	DEVLINK_ATTR_RATE_TC_INDEX,		/* u8 */
->>   	DEVLINK_ATTR_RATE_TC_BW,		/* u32 */
-> 
-> BTW the patch from Carolina to cut the TC attributes from the main enum
-> is higher prio that this.
-> 
 
-WIP. We'll send it soon.
-
+Regards,
+Markus
 
