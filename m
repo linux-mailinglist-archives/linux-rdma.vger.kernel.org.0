@@ -1,148 +1,118 @@
-Return-Path: <linux-rdma+bounces-12368-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12369-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33356B0C251
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Jul 2025 13:11:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9611BB0C516
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Jul 2025 15:23:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B98E3BDD21
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Jul 2025 11:10:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B14823B79A7
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Jul 2025 13:23:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA102295516;
-	Mon, 21 Jul 2025 11:11:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DA692D8767;
+	Mon, 21 Jul 2025 13:23:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LHb8qXEc"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="T3eT+XSs"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA615293C6A;
-	Mon, 21 Jul 2025 11:11:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B18D829E118;
+	Mon, 21 Jul 2025 13:23:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753096275; cv=none; b=Z+50s1MP5EcoaePIoBMKhuhs7PXnDZDwf85YvNhzTvd0izV10fr3cu9SYKxk8qmn1671QVMaQ+jdoqTCsn6z2nJK1L7ezz7qpsrO0UoRLAM21H/WczcTCj6BIm92V7dlcDOrzI6PCnfBUdETeN0anyo2VYp8wMgj3Mwu6OdthgA=
+	t=1753104207; cv=none; b=rbtiaM+xw+KanNAq15SSSX1r2huYcPUyHdHgCt7NwqoInfygLAbT+tcD923APpllikUIDSFLE8pHKAxxJQkyOFmcBdKYM2PIcjMehFa6rGZbqgjY25rUhR79trvriOptddco8qg/blntriG+9l/MpLtAWp5Qk2BFF2gHzudiyHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753096275; c=relaxed/simple;
-	bh=JcNSWwvJTwhT64Y0/KqSF1ww+wIie45ZsLTs8CIlKao=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=J9ifJ9JxMrm/igRnsSK1TvUKxmdoEAow+dMuqJvw1vXLzQNLQ8jZSikX186/JhQ7Hvw5KZ9PmnFE4WhbRIUSVzgqDV6qJ/m4KMNrqsCzoLyRlalMq3AO2GrpZPy5gH79GLYF69WNx61XZILYesKejY4F1vCs2CwP4MOvDksAOU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LHb8qXEc; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-60bfcada295so6734298a12.1;
-        Mon, 21 Jul 2025 04:11:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753096272; x=1753701072; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DnIbqCqg7JUChrhPkDwkGlZxQxz27HWtx39eq2JQF6U=;
-        b=LHb8qXEc699j7ANv/nV2+jdueCE5Xs8hiuBrQysDQ4uI1EMDxa2KmA0zph08Rj+lht
-         9gsS5absPvgookIua7oq12cKkRrOKSmfNribKiPF7u5/iNEGO5wuD9Ssm5OXxlDTIBbV
-         EvypjEYGeCM81JN39IUo9+yrU3fv2jeSov66zkbX48IBqFrW+64rttfdTk5J068w4vp3
-         RBQz7ABNbqbCNW6s1umlwH7ZdX+VuOug/m7PwadtYgH5bVKXbTguzW7TORxTMnq/6D+3
-         0pN8NS7l2deMFrjTUqdLft8KuwCkk8CVSS8jC2Hu6vNempqvIruPfNdo4gMCuoUQrbIE
-         RgeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753096272; x=1753701072;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DnIbqCqg7JUChrhPkDwkGlZxQxz27HWtx39eq2JQF6U=;
-        b=llU87+Nwvc3zxWYeUBJFqSFKdvWBohw1iaYbZT0yXGgJSJBnPoCF0CvQN2dqalX0yB
-         2CW8maLT1Vj6JSnzWUZRh808vQK4bdA8j0dWJTXvIyOsZ2YEuBAckSNWjbAYkEWeu9fE
-         a946sGCshK9bJRxGK9dkKsF5QANdPeity04UrDQD32SUC0bUabtoZcmtqbMA94QmGAOn
-         cvzltbQ/kdavdggN7HmjSy+JtLWo3I6yWGBq5MkoGj4+vwqWJBuNkLeeOQm2qtzjD0uS
-         tqjUBz5DRnZIrHkpo11B2tICh0Q6mlJHv8I+qESowERe43nNcC17nU9DToujUOtpsi+n
-         rm0A==
-X-Forwarded-Encrypted: i=1; AJvYcCWFEQvWhbh5rJ2ti8arfPxMXgYQZw4Y28tB4asjW65g91gNyvQNAm5ku5oSEhhxSSZVU+T7SoQF@vger.kernel.org, AJvYcCWYri5qv0K8WVrZ4r8d9sKHau0b6fRj97zxYlE33Z2sw+FO9X64b4naHamAsYC3f3jf0ED2sexe7obxWg==@vger.kernel.org, AJvYcCX9aiUblRWsqginD0dplou9GBnwbvjF/PSTWFVnecUm+5RxH+OhD/qZ7N2aU2NXVlIekAU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwJ/aeDHO6FjruMohZYDY20NRv0ZU50HxCSQycZAEVMznFqFbFO
-	bSQUCPWksZJ0hfxQNsvbLvwIm2yuJLPdh0GRNpPMNYJ5dwu1cwh6US1p
-X-Gm-Gg: ASbGnct7nf+nFytWMs8FB9A2obf2t2CkCe8cmPp2joSOwC4zSbVW04n+XpcPVH2Vz0M
-	spj5rQGONsq0z/IGNUiOyFtoXvGtsjkiRgIV5/MZpbfBpo6iwdYoMomrcmOYvja7qDUOtnJrINx
-	MJIwyjqgxu76fJer2AYqxWWiJ74YDhwQPhSXoKzfc7w+v0Xyfi4y8um3w3N+z8e69DECOKUO/ZO
-	fcfrktpxjOcUy27Uc7a2c6y88NAxmuST67DeA0KdsKDsEOkFmeyysNYlQyChiO4ONrXRjFRkAMe
-	Bw2hJc6eZ5CmbUrjt56PliNHbhVbkeh5HucctfMEtyv8qN3L9Dj6Ib0z2D+ETflTPCUIUhR84B/
-	UY6Fkmd0Rk/j/vb2KaGfW1WI4rgDpxe0WUW4=
-X-Google-Smtp-Source: AGHT+IHZCiqaXpmflAtItwVaPlH3VjQHk/jBIB6Bq5oI/tEB5I4tXMP1diqfcZBAAFQiHufovShJUw==
-X-Received: by 2002:a05:6402:524e:b0:607:425c:3c23 with SMTP id 4fb4d7f45d1cf-6128590ba42mr17312482a12.5.1753096271896;
-        Mon, 21 Jul 2025 04:11:11 -0700 (PDT)
-Received: from ?IPV6:2620:10d:c096:325::1ac? ([2620:10d:c092:600::1:23d3])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-612c907a5b1sm5274092a12.53.2025.07.21.04.11.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jul 2025 04:11:11 -0700 (PDT)
-Message-ID: <77ee68c4-f265-4e55-9889-43ab08f26efd@gmail.com>
-Date: Mon, 21 Jul 2025 12:12:39 +0100
+	s=arc-20240116; t=1753104207; c=relaxed/simple;
+	bh=owv97BZV9UmEKfh3hGiomBUmsYTO6yyYbzIdUmq8zts=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fcx/j2KahsgJQcUo4R5a6+Xjq2v1a03Xx0LleufaiOzBH/U5S2MonFxp/UN0DvXTgIKQidgxzEuugs80sR/yPzbrDDmY+k0MPwei2ykKsYv3JsNDx30W5+goHJzAxVHVXih0+GqqUltzaRJdgQPIhyLgRLaiIklP5JxSUZOgiU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=T3eT+XSs; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=6M2lfrqiVCmiF0Wc9FAkpPta+B8beY73GHDzTT0mJuM=; b=T3eT+XSsrzwbV1XqZcbUbrh7LZ
+	H776ohxzo3FqBHlR9iUOMKsWSekI3pZ2M4Q7fI3qVGcz8XFiL3A0Yco+hW77J4VJd3rKMznaLp8yp
+	MhkgVuYw+ssT8lWfZ9qJ5xN1I2wjh7NvJujhQpqfQm5ICcjwsvs0nSZJrBnvpAO6PuAGQZcA87TEN
+	UPVibCOP1YOVHX5l2Zwpe0VC6AATkYZ4hZKzd70J5wAi2Nm0jXmh5tW/s8Uk1NdxUopZSV1scRPsx
+	g0lzFIdaw3LFkEtZ3C62ZL7TK8ZXrnvYG7yTpAuzxv+1TZqlQkkSpJdv1B8ROa/69QRxMtWJapMgs
+	ky127NWw==;
+Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1udqU5-0000000D9wk-1SEe;
+	Mon, 21 Jul 2025 13:23:13 +0000
+Date: Mon, 21 Jul 2025 14:23:13 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Yonatan Maman <ymaman@nvidia.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Leon Romanovsky <leon@kernel.org>, Lyude Paul <lyude@redhat.com>,
+	Danilo Krummrich <dakr@kernel.org>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Alistair Popple <apopple@nvidia.com>,
+	Ben Skeggs <bskeggs@nvidia.com>,
+	Michael Guralnik <michaelgur@nvidia.com>,
+	Or Har-Toov <ohartoov@nvidia.com>,
+	Daisuke Matsuda <dskmtsd@gmail.com>, Shay Drory <shayd@nvidia.com>,
+	linux-mm@kvack.org, linux-rdma@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org, Gal Shalom <GalShalom@nvidia.com>
+Subject: Re: [PATCH v2 1/5] mm/hmm: HMM API to enable P2P DMA for device
+ private pages
+Message-ID: <aH4_QaNtIJMrPqOw@casper.infradead.org>
+References: <20250718115112.3881129-1-ymaman@nvidia.com>
+ <20250718115112.3881129-2-ymaman@nvidia.com>
+ <aHpXXKTaqp8FUhmq@casper.infradead.org>
+ <20250718144442.GG2206214@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm, page_pool: introduce a new page type for page pool in
- page type
-To: Byungchul Park <byungchul@sk.com>, linux-mm@kvack.org,
- netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
- harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
- davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
- john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
- leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
- andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
- akpm@linux-foundation.org, david@redhat.com, lorenzo.stoakes@oracle.com,
- Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com,
- mhocko@suse.com, horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org,
- ziy@nvidia.com, ilias.apalodimas@linaro.org, willy@infradead.org,
- brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
- usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
- almasrymina@google.com, toke@redhat.com, bpf@vger.kernel.org,
- linux-rdma@vger.kernel.org
-References: <20250721054903.39833-1-byungchul@sk.com>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <20250721054903.39833-1-byungchul@sk.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250718144442.GG2206214@ziepe.ca>
 
-On 7/21/25 06:49, Byungchul Park wrote:
-> Hi,
+On Fri, Jul 18, 2025 at 11:44:42AM -0300, Jason Gunthorpe wrote:
+> On Fri, Jul 18, 2025 at 03:17:00PM +0100, Matthew Wilcox wrote:
+> > On Fri, Jul 18, 2025 at 02:51:08PM +0300, Yonatan Maman wrote:
+> > > +++ b/include/linux/memremap.h
+> > > @@ -89,6 +89,14 @@ struct dev_pagemap_ops {
+> > >  	 */
+> > >  	vm_fault_t (*migrate_to_ram)(struct vm_fault *vmf);
+> > >  
+> > > +	/*
+> > > +	 * Used for private (un-addressable) device memory only. Return a
+> > > +	 * corresponding PFN for a page that can be mapped to device
+> > > +	 * (e.g using dma_map_page)
+> > > +	 */
+> > > +	int (*get_dma_pfn_for_device)(struct page *private_page,
+> > > +				      unsigned long *dma_pfn);
+> > 
+> > This makes no sense.  If a page is addressable then it has a PFN.
+> > If a page is not addressable then it doesn't have a PFN.
 > 
-> I focused on converting the existing APIs accessing ->pp_magic field to
-> page type APIs.  However, yes.  Additional works would better be
-> considered on top like:
+> The DEVICE_PRIVATE pages have a PFN, but it is not usable for
+> anything.
+
+OK, then I don't understand what DEVICE PRIVATE means.
+
+I thought it was for memory on a PCIe device that isn't even visible
+through a BAR and so the CPU has no way of addressing it directly.
+But now you say that it has a PFN, which means it has a physical
+address, which means it's accessible to the CPU.
+
+So what is it?
+
+> This is effectively converting from a DEVICE_PRIVATE page to an actual
+> DMA'able address of some kind. The DEVICE_PRIVATE is just a non-usable
+> proxy, like a swap entry, for where the real data is sitting.
 > 
->     1. Adjust how to store and retrieve dma index.  Maybe network guys
->        can work better on top.
+> Jason
 > 
->     2. Move the sanity check for page pool in mm/page_alloc.c to on free.
-
-Don't be in a hurry, I've got a branch, but as mentioned before,
-it'll be for-6.18. And there will also be more time for testing.
-
-> This work was inspired by the following link by Pavel:
-
-The idea came from David, let's add
-
-Suggested-by: David Hildenbrand <david@redhat.com>
-
-...> -
->   static inline bool netmem_is_pp(netmem_ref netmem)
->   {
-> -	return (netmem_get_pp_magic(netmem) & PP_MAGIC_MASK) == PP_SIGNATURE;
-> +	if (netmem_is_net_iov(netmem))
-
-This needs to return false for tx niovs. Seems like all callers are
-gated on ->pp_recycle, so maybe it's fine, but we can at least
-check pp. Mina, you've been checking tx doesn't mix with rx, any
-opinion on that?
-
-Question to net maintainers, can a ->pp_recycle marked skb contain
-not page pool originated pages or a mix?
-
--- 
-Pavel Begunkov
-
 
