@@ -1,103 +1,346 @@
-Return-Path: <linux-rdma+bounces-12363-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12364-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF945B0BE50
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Jul 2025 09:58:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFEE3B0BE68
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Jul 2025 10:05:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B368016BFE5
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Jul 2025 07:58:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04B7D17C646
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Jul 2025 08:05:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD1BD284B50;
-	Mon, 21 Jul 2025 07:58:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71662285C93;
+	Mon, 21 Jul 2025 08:05:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="R5YW/cJ3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F8C019AD89
-	for <linux-rdma@vger.kernel.org>; Mon, 21 Jul 2025 07:58:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4634527FD7F
+	for <linux-rdma@vger.kernel.org>; Mon, 21 Jul 2025 08:05:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753084716; cv=none; b=f1VDVYjMNUzzWyLsVYvRjkNq+1G+4WXeeWWakqkk17PbD8ZzR0QYGDvF62d+G0jtVwTWcNaWjTeY0O2uQIJSVHKIw2EmV0NEsqtTxdGcYG6k19pd2P+FR5j4tkB0UL0GNL4ooNX6BvAEJTh6yr8WP6hFNEQw5v/Kb27AKxF6x7c=
+	t=1753085135; cv=none; b=PPrjhXFYHC/8v4kPQ2umrrtN9lFjIdZLpeW5UclEDLvYT05AadDAv8F3ZBYz248ub4CBpFJ3SXGekJWPCKYkpeExuhzW3FYC32J31FCjKF0hhDrYHv/dD3GLmg7sxx8KeKTVddsodJGIUyQ9/4/BQgfmcxg5OnjxQ08PpP0T43g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753084716; c=relaxed/simple;
-	bh=vWoc6vkEMUZ8tSt7qmyI5v7WgtN0mWOUlxC4Ce5T7ps=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=rUb5OaS7NONOliaN+7FXaBcjOQr8h98ar/sCvH8lv+e8BO1ltLkLUjPtY80wZp2QjCkcirYt6M54EKtwBx7TEIzRYGDzvibgC1FMbv3bAKj/8Fs/MSfczYfeyR+amQbaqLeB0OFPRWyrWeCESRenlcS3agha2nU04xRRvsfI724=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-86cc7cdb86fso366641339f.1
-        for <linux-rdma@vger.kernel.org>; Mon, 21 Jul 2025 00:58:35 -0700 (PDT)
+	s=arc-20240116; t=1753085135; c=relaxed/simple;
+	bh=OmacDHOgisi4/R/uJWi3N1yuxQnUS7GhOJDuFiXyVLA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b5P8HPbKnF8JtLndMaMwPqIumZSuqcQSHiVjLlAuzM5AAO+/pj2qfdZ/dd/35lnAq5oT4DFxF0rFTsf1Y6PuDANaGTaHwBPIkkPhbu2v8TRg149va9d9Ss1rqzQSVPlLNx4uNlnIxYMWxV6rLdYkpd6PAGwa7npBaCi8rLlQGGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=R5YW/cJ3; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1753085132;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=YZwimYc/XbFaUcGJkln+p9HtaqBU8QoZiA7E2Ky46WU=;
+	b=R5YW/cJ3a/PSn8GXIFL8YY9QyV74ji0ruqvf+zxSW2YwlNvuC6kD34j2n/aVk8bZjjKckA
+	oW4PQpA11YvZLNMvGLWePsMtRLkqVDgtTrTPx33DGlUnGQsMFYcY9SBwPCoinwIu1e3lyJ
+	4ojZDc82YLbgOE/TiwDnAL8dJT+9IDk=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-35-oVy2PtMvO9O3q1hh367Ztg-1; Mon, 21 Jul 2025 04:05:30 -0400
+X-MC-Unique: oVy2PtMvO9O3q1hh367Ztg-1
+X-Mimecast-MFC-AGG-ID: oVy2PtMvO9O3q1hh367Ztg_1753085129
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-456106b7c4aso21296065e9.0
+        for <linux-rdma@vger.kernel.org>; Mon, 21 Jul 2025 01:05:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753084714; x=1753689514;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0qWsH7gI2IrsNAjvn+IJGgtDqsL30WdsMqCwe8OFr7E=;
-        b=a7Z+RSgyIVWid3xM3NujhUPT93/n5lXu5WYFC/1Zok/uabfexdrLyC6GGtgDZFQeAF
-         NaMsWJHpTrSZnYTwy78N6Vlv3LZb0rYM56cLmC5lyL5KbTTGoGd5FWzruME+2qyijXfD
-         8061LAaXtkJlPjfdz4S/KWCNXrQrv5sPcBe+LE1jRctQkJPt7dGTMJ4cB5omzlIndkGj
-         w7w7v+SPA0eujTmgynnQQ4SGI7xCUS5+PV7qebWXnIV0Za3vZ4RCec2Bp/LSbrQ9znHd
-         D7h6+EXjSn9QikcEs74ssFrG2HxKLAvWn8jpRIZGJ2x3dAcYU+HgQaDwIlkMkSQDKAvz
-         lMBw==
-X-Forwarded-Encrypted: i=1; AJvYcCXg7EAga7xudbI6nBC9rpFE5ZXHpgBT/H7gQN/bltaufk6HHdHGCNGnmxtUwh5QSOsa/EnfYf1S15Wv@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw/hS9lskdQhOberhhTaY7Flp3bpRP4voFY/4hJghYLxI5f5jnt
-	epv3Tx2RW5nfbkOKd1O2Koo/owegNTzG8BjPlRbnZp117AVMe8TEjVVzZm1DMEk23c9uXcvgzwv
-	fTgNKYnxkCVLORLF2W8qB2BtjsRylh+xfSf0r38lXCnjly//jOFdkF61FVI0=
-X-Google-Smtp-Source: AGHT+IFs4koPgAH1a6/fQqINc1P2RFkey8F9mJltws+a0M1nOFV9A0+p6DC2S6cAkOEUom3pFAg1TXFnwLTvvuOgFLHrq6rh094z
+        d=1e100.net; s=20230601; t=1753085129; x=1753689929;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=YZwimYc/XbFaUcGJkln+p9HtaqBU8QoZiA7E2Ky46WU=;
+        b=UFYP8YgQXBziyknaQBcs2rbUC9zoQ9g1V+3I3e3y2Woz+HXd4zXYdaX2pTn5Y0i7+u
+         ofcHNjt6VQEhhlb65iqIA6n/hAj5pX/KDAJeXaPainJHMG2++jYG4mbd2eKdaty+IhQB
+         HqQsg9PvEwU+Kha2oMUjMW6dOqKeP5w0iKDnhEWwsI0K1phyiWQMWzQbn0f0Ct99P+3G
+         lox4RpQkyW8KOS9thqgyMH6Lm3Tj0bs7Kdp+X6vceO/n1bTMx8R14OYXnQ/AprYxKczw
+         SgcbLIChT27bQiOYWCAAO+urRSsJbDE0OdQ7tfA+P/Pw++5qy45F/2AropJCGj5Dzb4x
+         EQ2w==
+X-Forwarded-Encrypted: i=1; AJvYcCU4L2U3mX4VwYrd1eSfnWS0+qc0rZ4ME3ep68vptXZMfZ2xqZJvhKjEraC90Ch4atxFifNAZ/LeAMog@vger.kernel.org
+X-Gm-Message-State: AOJu0YzG3PjkG5SU5tUtaEBWGgkKXYGnwm4kqWX9JkE4kN4hk0Q/keq8
+	ODV6c7kCy8MjTljmxsg4aETIp9idULhm+OQALcfTu5Voq1HBh5cfLp+dwUBXTJ7q0bd2J+cSE6W
+	+IPdIMJIZUm45PLr0r2IZMrGPSf5eY48dq50FXDNHG2m4MI6S0LvhzSoJGkzqfp4=
+X-Gm-Gg: ASbGncs3Gyan6lZUAxv0FpjAVVep33e1kkS7AJ03F7pW5LUgOHw9FCsmt/+dVv4cakz
+	9S046LTa6JIbsYZZo7CpyaoxUX0sP2t+zH+T2nHDaEYaRIbTJZKc3ki4KOnXDYSNYf/JQ6EcILe
+	H71MhPMnSUM3lu66JOzhu/AeZtzX1pguY3Z/Ogx0/ToGY7DC8rdYJlKLU63fh0Y6GRKBwJxnH4z
+	ifccPUQquJkkr2JTtY6oLN5in3KwtC/N3Sc+LnZEPgNHsUoO2/F5mod2IQzBGAt/Ykix17/m8Zo
+	WMFDSElbc4NOE2n8fRkrT7IDkiMDzSvjJwdn18SU880c+TJQaD2cPRUcFaodKrDdvjLvFRrB+Sx
+	1MLoFMmzFiNDKrO5xLcUTWWtDryZ7kz6a5UyxA+G3axYSUFrohs3H3HDLUes75JHw
+X-Received: by 2002:a05:600c:6610:b0:456:942:b162 with SMTP id 5b1f17b1804b1-45637bc1e8fmr147848755e9.11.1753085128960;
+        Mon, 21 Jul 2025 01:05:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEaqPaRa97Ws7y+SPufWF2ofN23cpKrkKJ1mE+QB0PaxxEWaWruM697N59u6maQfQXxXtGBSA==
+X-Received: by 2002:a05:600c:6610:b0:456:942:b162 with SMTP id 5b1f17b1804b1-45637bc1e8fmr147847785e9.11.1753085128261;
+        Mon, 21 Jul 2025 01:05:28 -0700 (PDT)
+Received: from ?IPV6:2003:d8:2f4c:df00:a9f5:b75b:33c:a17f? (p200300d82f4cdf00a9f5b75b033ca17f.dip0.t-ipconnect.de. [2003:d8:2f4c:df00:a9f5:b75b:33c:a17f])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45635fe6a92sm84696565e9.2.2025.07.21.01.05.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jul 2025 01:05:27 -0700 (PDT)
+Message-ID: <e897e784-4403-467c-b3e4-4ac4dc7b2e25@redhat.com>
+Date: Mon, 21 Jul 2025 10:05:25 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:4144:b0:879:49e9:5156 with SMTP id
- ca18e2360f4ac-879c293fbf9mr2405562239f.9.1753084714382; Mon, 21 Jul 2025
- 00:58:34 -0700 (PDT)
-Date: Mon, 21 Jul 2025 00:58:34 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <687df32a.a70a0220.693ce.00e6.GAE@google.com>
-Subject: [syzbot] Monthly rdma report (Jul 2025)
-From: syzbot <syzbot+liste30f0bbb947a4c7635ee@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm, page_pool: introduce a new page type for page pool in
+ page type
+To: Byungchul Park <byungchul@sk.com>, linux-mm@kvack.org,
+ netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+ harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
+ davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+ john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
+ leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
+ andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
+ akpm@linux-foundation.org, lorenzo.stoakes@oracle.com,
+ Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com,
+ mhocko@suse.com, horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org,
+ ziy@nvidia.com, ilias.apalodimas@linaro.org, willy@infradead.org,
+ brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
+ usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
+ almasrymina@google.com, toke@redhat.com, asml.silence@gmail.com,
+ bpf@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <20250721054903.39833-1-byungchul@sk.com>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
+ dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
+ QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
+ XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
+ Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
+ PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
+ WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
+ UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
+ jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
+ B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
+ ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
+ AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAmgsLPQFCRvGjuMACgkQTd4Q
+ 9wD/g1o0bxAAqYC7gTyGj5rZwvy1VesF6YoQncH0yI79lvXUYOX+Nngko4v4dTlOQvrd/vhb
+ 02e9FtpA1CxgwdgIPFKIuXvdSyXAp0xXuIuRPQYbgNriQFkaBlHe9mSf8O09J3SCVa/5ezKM
+ OLW/OONSV/Fr2VI1wxAYj3/Rb+U6rpzqIQ3Uh/5Rjmla6pTl7Z9/o1zKlVOX1SxVGSrlXhqt
+ kwdbjdj/csSzoAbUF/duDuhyEl11/xStm/lBMzVuf3ZhV5SSgLAflLBo4l6mR5RolpPv5wad
+ GpYS/hm7HsmEA0PBAPNb5DvZQ7vNaX23FlgylSXyv72UVsObHsu6pT4sfoxvJ5nJxvzGi69U
+ s1uryvlAfS6E+D5ULrV35taTwSpcBAh0/RqRbV0mTc57vvAoXofBDcs3Z30IReFS34QSpjvl
+ Hxbe7itHGuuhEVM1qmq2U72ezOQ7MzADbwCtn+yGeISQqeFn9QMAZVAkXsc9Wp0SW/WQKb76
+ FkSRalBZcc2vXM0VqhFVzTb6iNqYXqVKyuPKwhBunhTt6XnIfhpRgqveCPNIasSX05VQR6/a
+ OBHZX3seTikp7A1z9iZIsdtJxB88dGkpeMj6qJ5RLzUsPUVPodEcz1B5aTEbYK6428H8MeLq
+ NFPwmknOlDzQNC6RND8Ez7YEhzqvw7263MojcmmPcLelYbfOwU0EVcufkQEQAOfX3n0g0fZz
+ Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
+ T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
+ 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
+ CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
+ NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
+ 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
+ 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
+ lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
+ AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
+ N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
+ AP+DWgUCaCwtJQUJG8aPFAAKCRBN3hD3AP+DWlDnD/4k2TW+HyOOOePVm23F5HOhNNd7nNv3
+ Vq2cLcW1DteHUdxMO0X+zqrKDHI5hgnE/E2QH9jyV8mB8l/ndElobciaJcbl1cM43vVzPIWn
+ 01vW62oxUNtEvzLLxGLPTrnMxWdZgxr7ACCWKUnMGE2E8eca0cT2pnIJoQRz242xqe/nYxBB
+ /BAK+dsxHIfcQzl88G83oaO7vb7s/cWMYRKOg+WIgp0MJ8DO2IU5JmUtyJB+V3YzzM4cMic3
+ bNn8nHjTWw/9+QQ5vg3TXHZ5XMu9mtfw2La3bHJ6AybL0DvEkdGxk6YHqJVEukciLMWDWqQQ
+ RtbBhqcprgUxipNvdn9KwNpGciM+hNtM9kf9gt0fjv79l/FiSw6KbCPX9b636GzgNy0Ev2UV
+ m00EtcpRXXMlEpbP4V947ufWVK2Mz7RFUfU4+ETDd1scMQDHzrXItryHLZWhopPI4Z+ps0rB
+ CQHfSpl+wG4XbJJu1D8/Ww3FsO42TMFrNr2/cmqwuUZ0a0uxrpkNYrsGjkEu7a+9MheyTzcm
+ vyU2knz5/stkTN2LKz5REqOe24oRnypjpAfaoxRYXs+F8wml519InWlwCra49IUSxD1hXPxO
+ WBe5lqcozu9LpNDH/brVSzHCSb7vjNGvvSVESDuoiHK8gNlf0v+epy5WYd7CGAgODPvDShGN
+ g3eXuA==
+Organization: Red Hat
+In-Reply-To: <20250721054903.39833-1-byungchul@sk.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello rdma maintainers/developers,
+On 21.07.25 07:49, Byungchul Park wrote:
+> Hi,
+> 
+> I focused on converting the existing APIs accessing ->pp_magic field to
+> page type APIs.  However, yes.  Additional works would better be
+> considered on top like:
+> 
+>     1. Adjust how to store and retrieve dma index.  Maybe network guys
+>        can work better on top.
+> 
+>     2. Move the sanity check for page pool in mm/page_alloc.c to on free.
+> 
+>     Byungchul
+> 
+> ---8<---
+>  From 7d207a1b3e9f4ff2a72f5b54b09e3ed0c4aaaca3 Mon Sep 17 00:00:00 2001
+> From: Byungchul Park <byungchul@sk.com>
+> Date: Mon, 21 Jul 2025 14:05:20 +0900
+> Subject: [PATCH] mm, page_pool: introduce a new page type for page pool in page type
+> 
+> ->pp_magic field in struct page is current used to identify if a page
+> belongs to a page pool.  However, page type e.i. PGTY_netpp can be used
+> for that purpose.
+> 
+> Use the page type APIs e.g. PageNetpp(), __SetPageNetpp(), and
+> __ClearPageNetpp() instead, and remove the existing APIs accessing
+> ->pp_magic e.g. page_pool_page_is_pp(), netmem_or_pp_magic(), and
+> netmem_clear_pp_magic() since they are totally replaced.
+> 
+> This work was inspired by the following link by Pavel:
+> 
+> [1] https://lore.kernel.org/all/582f41c0-2742-4400-9c81-0d46bf4e8314@gmail.com/
 
-This is a 31-day syzbot report for the rdma subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/rdma
+I'm, sure you saw my comment (including my earlier suggestion for using 
+a page type), in particular around ...
 
-During the period, 1 new issues were detected and 0 were fixed.
-In total, 8 issues are still open and 65 have already been fixed.
+> ---
+>   .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  2 +-
+>   include/linux/mm.h                            | 28 ++-----------------
+>   include/linux/page-flags.h                    |  6 ++++
+>   include/net/netmem.h                          |  2 +-
+>   mm/page_alloc.c                               |  4 +--
+>   net/core/netmem_priv.h                        | 16 ++---------
+>   net/core/page_pool.c                          | 10 +++++--
+>   7 files changed, 24 insertions(+), 44 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> index 5d51600935a6..def274f5c1ca 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> @@ -707,7 +707,7 @@ static void mlx5e_free_xdpsq_desc(struct mlx5e_xdpsq *sq,
+>   				xdpi = mlx5e_xdpi_fifo_pop(xdpi_fifo);
+>   				page = xdpi.page.page;
+>   
+> -				/* No need to check page_pool_page_is_pp() as we
+> +				/* No need to check PageNetpp() as we
+>   				 * know this is a page_pool page.
+>   				 */
+>   				page_pool_recycle_direct(pp_page_to_nmdesc(page)->pp,
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index ae50c1641bed..736061749535 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -4135,10 +4135,9 @@ int arch_lock_shadow_stack_status(struct task_struct *t, unsigned long status);
+>    * DMA mapping IDs for page_pool
+>    *
+>    * When DMA-mapping a page, page_pool allocates an ID (from an xarray) and
+> - * stashes it in the upper bits of page->pp_magic. We always want to be able to
+> - * unambiguously identify page pool pages (using page_pool_page_is_pp()). Non-PP
+> - * pages can have arbitrary kernel pointers stored in the same field as pp_magic
+> - * (since it overlaps with page->lru.next), so we must ensure that we cannot
+> + * stashes it in the upper bits of page->pp_magic. Non-PP pages can have
+> + * arbitrary kernel pointers stored in the same field as pp_magic (since
+> + * it overlaps with page->lru.next), so we must ensure that we cannot
+>    * mistake a valid kernel pointer with any of the values we write into this
+>    * field.
+>    *
+> @@ -4168,25 +4167,4 @@ int arch_lock_shadow_stack_status(struct task_struct *t, unsigned long status);
+>   
+>   #define PP_DMA_INDEX_MASK GENMASK(PP_DMA_INDEX_BITS + PP_DMA_INDEX_SHIFT - 1, \
+>   				  PP_DMA_INDEX_SHIFT)
+> -
+> -/* Mask used for checking in page_pool_page_is_pp() below. page->pp_magic is
+> - * OR'ed with PP_SIGNATURE after the allocation in order to preserve bit 0 for
+> - * the head page of compound page and bit 1 for pfmemalloc page, as well as the
+> - * bits used for the DMA index. page_is_pfmemalloc() is checked in
+> - * __page_pool_put_page() to avoid recycling the pfmemalloc page.
+> - */
+> -#define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
+> -
+> -#ifdef CONFIG_PAGE_POOL
+> -static inline bool page_pool_page_is_pp(const struct page *page)
+> -{
+> -	return (page->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
+> -}
+> -#else
+> -static inline bool page_pool_page_is_pp(const struct page *page)
+> -{
+> -	return false;
+> -}
+> -#endif
+> -
+>   #endif /* _LINUX_MM_H */
+> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> index 4fe5ee67535b..906ba7c9e372 100644
+> --- a/include/linux/page-flags.h
+> +++ b/include/linux/page-flags.h
+> @@ -957,6 +957,7 @@ enum pagetype {
+>   	PGTY_zsmalloc		= 0xf6,
+>   	PGTY_unaccepted		= 0xf7,
+>   	PGTY_large_kmalloc	= 0xf8,
+> +	PGTY_netpp		= 0xf9,
+>   
+>   	PGTY_mapcount_underflow = 0xff
+>   };
+> @@ -1101,6 +1102,11 @@ PAGE_TYPE_OPS(Zsmalloc, zsmalloc, zsmalloc)
+>   PAGE_TYPE_OPS(Unaccepted, unaccepted, unaccepted)
+>   FOLIO_TYPE_OPS(large_kmalloc, large_kmalloc)
+>   
+> +/*
+> + * Marks page_pool allocated pages.
+> + */
+> +PAGE_TYPE_OPS(Netpp, netpp, netpp)
+> +
+>   /**
+>    * PageHuge - Determine if the page belongs to hugetlbfs
+>    * @page: The page to test.
+> diff --git a/include/net/netmem.h b/include/net/netmem.h
+> index f7dacc9e75fd..3667334e16e7 100644
+> --- a/include/net/netmem.h
+> +++ b/include/net/netmem.h
+> @@ -298,7 +298,7 @@ static inline struct net_iov *__netmem_clear_lsb(netmem_ref netmem)
+>    */
+>   #define pp_page_to_nmdesc(p)						\
+>   ({									\
+> -	DEBUG_NET_WARN_ON_ONCE(!page_pool_page_is_pp(p));		\
+> +	DEBUG_NET_WARN_ON_ONCE(!PageNetpp(p));				\
+>   	__pp_page_to_nmdesc(p);						\
+>   })
+>   
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 2ef3c07266b3..71c7666e48a9 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -898,7 +898,7 @@ static inline bool page_expected_state(struct page *page,
+>   #ifdef CONFIG_MEMCG
+>   			page->memcg_data |
+>   #endif
+> -			page_pool_page_is_pp(page) |
+> +			PageNetpp(page) |
+>   			(page->flags & check_flags)))
+>   		return false;
+>   
+> @@ -925,7 +925,7 @@ static const char *page_bad_reason(struct page *page, unsigned long flags)
+>   	if (unlikely(page->memcg_data))
+>   		bad_reason = "page still charged to cgroup";
+>   #endif
+> -	if (unlikely(page_pool_page_is_pp(page)))
+> +	if (unlikely(PageNetpp(page)))
+>   		bad_reason = "page_pool leak";
+>   	return bad_reason;
+>   }
 
-Some of the still happening issues:
+^ this
 
-Ref Crashes Repro Title
-<1> 536     No    INFO: task hung in rdma_dev_change_netns
-                  https://syzkaller.appspot.com/bug?extid=73c5eab674c7e1e7012e
-<2> 369     Yes   WARNING in rxe_pool_cleanup
-                  https://syzkaller.appspot.com/bug?extid=221e213bf17f17e0d6cd
-<3> 75      No    INFO: task hung in add_one_compat_dev (3)
-                  https://syzkaller.appspot.com/bug?extid=6dee15fdb0606ef7b6ba
-<4> 43      Yes   WARNING in gid_table_release_one (3)
-                  https://syzkaller.appspot.com/bug?extid=b0da83a6c0e2e2bddbd4
-<5> 10      Yes   WARNING in rxe_skb_tx_dtor
-                  https://syzkaller.appspot.com/bug?extid=8425ccfb599521edb153
+This will not work they way you want it once you rebase on top of 
+linux-next, where we have (from mm/mm-stable)
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+commit 2dfcd1608f3a96364f10de7fcfe28727c0292e5d
+Author: David Hildenbrand <david@redhat.com>
+Date:   Fri Jul 4 12:24:58 2025 +0200
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+     mm/page_alloc: let page freeing clear any set page type
 
-You may send multiple commands in a single email message.
+
+I commented what to do already.
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
