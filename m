@@ -1,337 +1,221 @@
-Return-Path: <linux-rdma+bounces-12372-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12373-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D894B0CCD2
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Jul 2025 23:44:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAACFB0CD26
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jul 2025 00:06:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1526C1AA4FCF
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Jul 2025 21:44:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83C4E1896C8A
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Jul 2025 22:06:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AB9824166C;
-	Mon, 21 Jul 2025 21:44:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DBE12367B9;
+	Mon, 21 Jul 2025 22:06:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=openai.com header.i=@openai.com header.b="dxtVD5+Y"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="djAA2n5v"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7EED172BB9
-	for <linux-rdma@vger.kernel.org>; Mon, 21 Jul 2025 21:44:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A83A71917F1
+	for <linux-rdma@vger.kernel.org>; Mon, 21 Jul 2025 22:06:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753134273; cv=none; b=tgQ/bSTHCh0s+WiXBkau2H7hJ9fHAdORCiwFp6MZkV5ducCBwEvTZcEdURcBRR6oAKPRUEcZ6Yv71kcQrr2s/fW9M2Pp3NuCA7Rbc4eO+TDL06xDr0Gvfn/UIR3oEQ3gUFmItibYUPMbaOTrpZ/TXDBikwG/kUZzm4jdQO0uBo4=
+	t=1753135587; cv=none; b=ZqLm5uAsxQ4U2OtGybZ1AQOJbl6qAVF55JJmpXMj4xgrdkRuVpSRZE/QTWCCnXugsriMZeicA4ToGFMDQrLYhQOH0glx+3d6rWjMldBgtJKdIsy8QUD/iwZelDE/wn3coD3f30uf8OAfWUhhn2KUbrv5VH984kclAMdxlGdJXSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753134273; c=relaxed/simple;
-	bh=xj1YyEfkHgBd8Ct/L8B6Hf+DQ/ewdy2Kb5+tgH9/9xY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EwdYqBHqHqaoI+hAqUTn7ttoD+T9CuBOXyxXcqCQ/sGUJ9Xb+wLawX/Hm1mfn2buaBUowwwVsPEJKmVUQRoqn+qwJISK7NekFIu0SyN5F03QDHat0OVX5nyHT+fJLVxk/Z7+aUj1cb3Ri2RlzSrM6s3j7bI+o/+Jr0pnpd8BtQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=openai.com; spf=pass smtp.mailfrom=openai.com; dkim=pass (1024-bit key) header.d=openai.com header.i=@openai.com header.b=dxtVD5+Y; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=openai.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openai.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-553dceb342fso4282483e87.0
-        for <linux-rdma@vger.kernel.org>; Mon, 21 Jul 2025 14:44:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=openai.com; s=google; t=1753134269; x=1753739069; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jED/IH2okMQBhZCF5xmT+94Tr+oj/M/1ra8B1IJxlvo=;
-        b=dxtVD5+YCi5BqazOXIVRPMhJFPOB/k3c5QJcS1Mr244O3LWRgTPjJb+nsX2s3cTWtG
-         6kHsGQRVLfZimEjRPTs0tz8dQN4a/fxEo0GV1hQ7ASjGkHJHwCeaR3XRXk1IiEPl71dq
-         w3nYG/Uf0zWEiS+kEzelKfNN8xCFJq7dMnuYM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753134269; x=1753739069;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jED/IH2okMQBhZCF5xmT+94Tr+oj/M/1ra8B1IJxlvo=;
-        b=tpfkn2Dv8tEaZG40umkPSwdHitGCBG/ooH5xPtYH8myF5AvPohvYUETALCf9QVf8qu
-         P+UithKnmamX0Oz1KT5r6QO1h3+uoF4egSoMGJxhnZAQWf1JojL2GbJ0E0BARMrXo7md
-         2sWeqNsGvJ39rMLZoFgLWe+pCQLmW/zl92uv/uOYRpu9Q2M9RFrxv4kHzUorLvU8JHFq
-         ZeAZZjqG3LBVW0qY0QP5lJ1cRW1qXYTZv7mifjN2vy/pgCMt76VYIfJw8rDNOSYSco03
-         hgfUajZUROaPujaMHDsRZm8WEdoH7MHw9Cb7J889YJq1XBAtj4KQXuS3lhx6OBVgwKce
-         j42w==
-X-Forwarded-Encrypted: i=1; AJvYcCUWthKHH8NzRZ6gP494btBTZwoXD76ZIeUWJkQWVkOINY+s9Xeuhrk8eB2h3Z1o8S/moHOKhvXjUPU0@vger.kernel.org
-X-Gm-Message-State: AOJu0YyCQaLyR0vJIfPhs3YWI7mrIdTistBygYUxaD8CfFVl7KtHfYeF
-	WrRhFKlLl+ZRptF0cU2wF2akasvvKBSjQmBQVWSVRIYV1B2bdAbi/HNTvrf85hnWrUoU6ELN+s6
-	hWVZxEc5jZsg5b513xJBrOwmvITVce93czqED4Hojeg==
-X-Gm-Gg: ASbGncvYCviz5RzJt5kSJ4yR7jrYO9IkDn/EL2BoI3uTNqJejujHYq2vWY1mYIPppi7
-	sB2BrCBuCFXurSdfQXg5qEn+1NUnYy7PwKlDrx0wyCqorS3VjnUO2Z8a21C1A8VJqt7/JMDoHMq
-	i+7Wl1GY0xgzzJqLEZtzOuR1DyG2sXloCuwoOr4t+FIsp7OlKTixFXaO9NiTwG6PizTwrcqTxrU
-	rGkzfi0
-X-Google-Smtp-Source: AGHT+IF1Ol7BKzqchQQ+Ra+jf/HGcte/MBFPJxD1DcjbCbR0vFmNQkZF+jTYansB4MR7YQ8V/RMQmElFZmTg59uy7VI=
-X-Received: by 2002:a05:6512:2391:b0:553:ac4e:c41 with SMTP id
- 2adb3069b0e04-55a296fd1ebmr5815783e87.28.1753134268954; Mon, 21 Jul 2025
- 14:44:28 -0700 (PDT)
+	s=arc-20240116; t=1753135587; c=relaxed/simple;
+	bh=bzkvDk6eMBsi+6DxPRS1hLMnaeh29j4OLWnVlqmpVkA=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=kgzIPR5+rah3IqqvfXiYl+yAO5Dt7waXYPBZs8V8a/YV5E9fL5rDXBUGPmjN1tGF5DkbrZs2gP9xyGDB4eOesKzEGAhAt5BiIK9711wolL2x2Bznr/LFrI6bHPUGWh+NUYjqD64ZtRr0hJai08h1dntWfxEeIhqLYcv0ANDRNhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=djAA2n5v; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1753135586; x=1784671586;
+  h=date:from:to:cc:subject:message-id;
+  bh=bzkvDk6eMBsi+6DxPRS1hLMnaeh29j4OLWnVlqmpVkA=;
+  b=djAA2n5vJyBPM2XiW9HiSGq01I3SyEfwQLS0eLY5x38NJrZy3oS2L7qy
+   farBn1b6143LSot+IDQWEOJjjcyj34QXW7FbpbOTpaUdsmgxNI59Q3y86
+   5nsNSfE360UdpHNaTdVcwJ8d15AGn0K61OGEYEcRxKYg+9hhSP6PTqxJV
+   HoDIs7lSfBZ3J3UA3FN/lCNnPBzR3i4hMbWq9LSr92i8ZPf35rK2G+FJP
+   MjMJhbTOp5Ru3MdsLzC+jVD/Mcwh631CsO7epo6Cg15Vs1sTFMqaOURxO
+   5ZC3bo91/ebR/4UXQUuZYxzdVgzXHEiKiMJEfO7bM8KlAMqoO6A3CnS95
+   w==;
+X-CSE-ConnectionGUID: 7j72D7B7Tm2yXQnOd7ShAA==
+X-CSE-MsgGUID: 6OQbYx45Rpyd6H+dxVGCpQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11499"; a="59165506"
+X-IronPort-AV: E=Sophos;i="6.16,330,1744095600"; 
+   d="scan'208";a="59165506"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2025 15:06:25 -0700
+X-CSE-ConnectionGUID: IVAGSBJ/RwK85ZiP+pvdcw==
+X-CSE-MsgGUID: 7q2Ya3x/QMuQho8rOXxZNg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,330,1744095600"; 
+   d="scan'208";a="196042374"
+Received: from lkp-server01.sh.intel.com (HELO 9ee84586c615) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 21 Jul 2025 15:06:24 -0700
+Received: from kbuild by 9ee84586c615 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1udyeL-000HBh-2d;
+	Mon, 21 Jul 2025 22:06:21 +0000
+Date: Tue, 22 Jul 2025 06:06:12 +0800
+From: kernel test robot <lkp@intel.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Doug Ledford <dledford@redhat.com>,
+ Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ b83440736864ad96f863666fea49bd14ab17547d
+Message-ID: <202507220659.r0AXqa1E-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20250713-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v1-0-ecaed8c2844e@openai.com>
- <20250713-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v1-2-ecaed8c2844e@openai.com>
- <befdca60-f9e5-486d-8df4-eafe4f338d79@gmail.com>
-In-Reply-To: <befdca60-f9e5-486d-8df4-eafe4f338d79@gmail.com>
-From: Christoph Paasch <cpaasch@openai.com>
-Date: Mon, 21 Jul 2025 14:44:17 -0700
-X-Gm-Features: Ac12FXwSzjDW53mNA7ER5nj9SREiZSplWFyLA2ehkv_ZfndALm1pIGsjbEbWfXc
-Message-ID: <CADg4-L9XoY_dwqicTLb62xbiy3+b3Wwf__qX97WSA9S8tuNjjQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 2/2] net/mlx5: Avoid copying payload to the skb's
- linear part
-To: Tariq Toukan <ttoukan.linux@gmail.com>
-Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, 
-	Mark Bloch <mbloch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, linux-rdma@vger.kernel.org, 
-	netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hello!
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: b83440736864ad96f863666fea49bd14ab17547d  RDMA/mlx5: Fix incorrect MKEY masking
 
-On Mon, Jul 14, 2025 at 12:29=E2=80=AFAM Tariq Toukan <ttoukan.linux@gmail.=
-com> wrote:
->
->
->
-> On 14/07/2025 2:33, Christoph Paasch via B4 Relay wrote:
-> > From: Christoph Paasch <cpaasch@openai.com>
-> >
-> > mlx5e_skb_from_cqe_mpwrq_nonlinear() copies MLX5E_RX_MAX_HEAD (256)
-> > bytes from the page-pool to the skb's linear part. Those 256 bytes
-> > include part of the payload.
-> >
-> > When attempting to do GRO in skb_gro_receive, if headlen > data_offset
-> > (and skb->head_frag is not set), we end up aggregating packets in the
-> > frag_list.
-> >
-> > This is of course not good when we are CPU-limited. Also causes a worse
-> > skb->len/truesize ratio,...
-> >
-> > So, let's avoid copying parts of the payload to the linear part. The
-> > goal here is to err on the side of caution and prefer to copy too littl=
-e
-> > instead of copying too much (because once it has been copied over, we
-> > trigger the above described behavior in skb_gro_receive).
-> >
-> > So, we can do a rough estimate of the header-space by looking at
-> > cqe_l3/l4_hdr_type and kind of do a lower-bound estimate. This is now
-> > done in mlx5e_cqe_get_min_hdr_len(). We always assume that TCP timestam=
-ps
-> > are present, as that's the most common use-case.
-> >
-> > That header-len is then used in mlx5e_skb_from_cqe_mpwrq_nonlinear for
-> > the headlen (which defines what is being copied over). We still
-> > allocate MLX5E_RX_MAX_HEAD for the skb so that if the networking stack
-> > needs to call pskb_may_pull() later on, we don't need to reallocate
-> > memory.
-> >
-> > This gives a nice throughput increase (ARM Neoverse-V2 with CX-7 NIC an=
-d
-> > LRO enabled):
-> >
-> > BEFORE:
-> > =3D=3D=3D=3D=3D=3D=3D
-> > (netserver pinned to core receiving interrupts)
-> > $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
-> >   87380  16384 262144    60.01    32547.82
-> >
-> > (netserver pinned to adjacent core receiving interrupts)
-> > $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
-> >   87380  16384 262144    60.00    52531.67
-> >
-> > AFTER:
-> > =3D=3D=3D=3D=3D=3D
-> > (netserver pinned to core receiving interrupts)
-> > $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
-> >   87380  16384 262144    60.00    52896.06
-> >
-> > (netserver pinned to adjacent core receiving interrupts)
-> >   $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
-> >   87380  16384 262144    60.00    85094.90
-> >
->
-> Nice improvement.
->
-> Did you test impact on other archs?
->
-> Did you test impact on non-LRO flows?
-> Specifically:
-> a. Large MTU, tcp stream.
-> b. Large MTU, small UDP packets.
+elapsed time: 921m
 
-took a minute, but I have extended my benchmarks to a much larger test matr=
-ix:
+configs tested: 127
+configs skipped: 4
 
-With / Without LRO
-With / Without IPv6 encap
-MTU: 1500, 4096, 9000
-IRQs on same core as the app / IRQs on adjacent core as the app
-TCP with write/read-size 64KB and 512KB
-UDP with 64B and 1400B
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-A full matrix across all of the above for a total of 96 tests.
+tested configs:
+alpha                             allnoconfig    gcc-15.1.0
+alpha                            allyesconfig    gcc-15.1.0
+arc                              allmodconfig    gcc-15.1.0
+arc                               allnoconfig    gcc-15.1.0
+arc                              allyesconfig    gcc-15.1.0
+arc                   randconfig-001-20250721    gcc-11.5.0
+arc                   randconfig-002-20250721    gcc-12.5.0
+arm                              allmodconfig    gcc-15.1.0
+arm                               allnoconfig    clang-22
+arm                              allyesconfig    gcc-15.1.0
+arm                            dove_defconfig    gcc-15.1.0
+arm                          gemini_defconfig    clang-20
+arm                       imx_v6_v7_defconfig    clang-16
+arm                        mvebu_v5_defconfig    gcc-15.1.0
+arm                   randconfig-001-20250721    clang-22
+arm                   randconfig-002-20250721    gcc-13.4.0
+arm                   randconfig-003-20250721    gcc-15.1.0
+arm                   randconfig-004-20250721    clang-22
+arm64                            allmodconfig    clang-19
+arm64                             allnoconfig    gcc-15.1.0
+arm64                 randconfig-001-20250721    clang-22
+arm64                 randconfig-002-20250721    clang-20
+arm64                 randconfig-003-20250721    gcc-13.4.0
+arm64                 randconfig-004-20250721    clang-22
+csky                              allnoconfig    gcc-15.1.0
+csky                  randconfig-001-20250721    gcc-15.1.0
+csky                  randconfig-002-20250721    gcc-15.1.0
+hexagon                          allmodconfig    clang-17
+hexagon                           allnoconfig    clang-22
+hexagon                          allyesconfig    clang-22
+hexagon               randconfig-001-20250721    clang-22
+hexagon               randconfig-002-20250721    clang-22
+i386                              allnoconfig    gcc-12
+i386                             allyesconfig    gcc-12
+i386        buildonly-randconfig-001-20250721    clang-20
+i386        buildonly-randconfig-002-20250721    clang-20
+i386        buildonly-randconfig-003-20250721    gcc-12
+i386        buildonly-randconfig-004-20250721    gcc-12
+i386        buildonly-randconfig-005-20250721    clang-20
+i386        buildonly-randconfig-006-20250721    clang-20
+i386                                defconfig    clang-20
+loongarch                        allmodconfig    clang-19
+loongarch                         allnoconfig    clang-22
+loongarch             randconfig-001-20250721    clang-18
+loongarch             randconfig-002-20250721    gcc-12.5.0
+m68k                             allmodconfig    gcc-15.1.0
+m68k                              allnoconfig    gcc-15.1.0
+m68k                             allyesconfig    gcc-15.1.0
+microblaze                       allmodconfig    gcc-15.1.0
+microblaze                        allnoconfig    gcc-15.1.0
+microblaze                       allyesconfig    gcc-15.1.0
+microblaze                          defconfig    gcc-15.1.0
+mips                              allnoconfig    gcc-15.1.0
+mips                          rb532_defconfig    clang-18
+nios2                             allnoconfig    gcc-11.5.0
+nios2                               defconfig    gcc-11.5.0
+nios2                 randconfig-001-20250721    gcc-8.5.0
+nios2                 randconfig-002-20250721    gcc-9.5.0
+openrisc                          allnoconfig    gcc-15.1.0
+openrisc                         allyesconfig    gcc-15.1.0
+openrisc                            defconfig    gcc-15.1.0
+parisc                           allmodconfig    gcc-15.1.0
+parisc                            allnoconfig    gcc-15.1.0
+parisc                           allyesconfig    gcc-15.1.0
+parisc                              defconfig    gcc-15.1.0
+parisc                randconfig-001-20250721    gcc-15.1.0
+parisc                randconfig-002-20250721    gcc-15.1.0
+parisc64                            defconfig    gcc-15.1.0
+powerpc                          allmodconfig    gcc-15.1.0
+powerpc                           allnoconfig    gcc-15.1.0
+powerpc                          allyesconfig    clang-22
+powerpc               randconfig-001-20250721    gcc-12.5.0
+powerpc               randconfig-002-20250721    gcc-10.5.0
+powerpc               randconfig-003-20250721    gcc-11.5.0
+powerpc64             randconfig-001-20250721    clang-22
+powerpc64             randconfig-002-20250721    clang-22
+powerpc64             randconfig-003-20250721    clang-19
+riscv                            allmodconfig    clang-22
+riscv                             allnoconfig    gcc-15.1.0
+riscv                            allyesconfig    clang-16
+riscv                               defconfig    clang-22
+riscv                 randconfig-001-20250721    clang-22
+riscv                 randconfig-002-20250721    gcc-8.5.0
+s390                             allmodconfig    clang-18
+s390                              allnoconfig    clang-22
+s390                             allyesconfig    gcc-15.1.0
+s390                          debug_defconfig    gcc-15.1.0
+s390                                defconfig    clang-22
+s390                  randconfig-001-20250721    clang-22
+s390                  randconfig-002-20250721    clang-20
+sh                               allmodconfig    gcc-15.1.0
+sh                                allnoconfig    gcc-15.1.0
+sh                               allyesconfig    gcc-15.1.0
+sh                                  defconfig    gcc-15.1.0
+sh                    randconfig-001-20250721    gcc-15.1.0
+sh                    randconfig-002-20250721    gcc-14.3.0
+sh                      rts7751r2d1_defconfig    gcc-15.1.0
+sh                            shmin_defconfig    gcc-15.1.0
+sparc                            allmodconfig    gcc-15.1.0
+sparc                             allnoconfig    gcc-15.1.0
+sparc                               defconfig    gcc-15.1.0
+sparc                 randconfig-001-20250721    gcc-15.1.0
+sparc                 randconfig-002-20250721    gcc-13.4.0
+sparc64                             defconfig    clang-20
+sparc64               randconfig-001-20250721    clang-20
+sparc64               randconfig-002-20250721    clang-22
+um                               allmodconfig    clang-19
+um                                allnoconfig    clang-22
+um                               allyesconfig    gcc-12
+um                                  defconfig    clang-22
+um                             i386_defconfig    gcc-12
+um                    randconfig-001-20250721    gcc-12
+um                    randconfig-002-20250721    clang-17
+um                           x86_64_defconfig    clang-22
+x86_64                            allnoconfig    clang-20
+x86_64                           allyesconfig    clang-20
+x86_64      buildonly-randconfig-001-20250721    clang-20
+x86_64      buildonly-randconfig-002-20250721    gcc-12
+x86_64      buildonly-randconfig-003-20250721    gcc-12
+x86_64      buildonly-randconfig-004-20250721    gcc-12
+x86_64      buildonly-randconfig-005-20250721    clang-20
+x86_64      buildonly-randconfig-006-20250721    gcc-12
+x86_64                              defconfig    gcc-11
+x86_64                          rhel-9.4-rust    clang-20
+xtensa                            allnoconfig    gcc-15.1.0
+xtensa                randconfig-001-20250721    gcc-11.5.0
+xtensa                randconfig-002-20250721    gcc-8.5.0
 
-No measurable significant regressions (10% threshold).
-
-Numerous improvements (above 10% threshold) in the TCP workloads:
-
-  TCP 512-Kbyte, core 8, MTU 1500, LRO on, tunnel off     49810.51  ->
-   61924.39  ( +24.3% =E2=86=91)
-  TCP 512-Kbyte, core 8, MTU 1500, LRO on, tunnel on      24897.29  ->
-   42404.18  ( +70.3% =E2=86=91)
-  TCP 512-Kbyte, core 8, MTU 4096, LRO off, tunnel on     35218.00  ->
-   41608.82  ( +18.1% =E2=86=91)
-  TCP 512-Kbyte, core 8, MTU 4096, LRO on, tunnel on      25056.58  ->
-   42231.90  ( +68.5% =E2=86=91)
-  TCP 512-Kbyte, core 8, MTU 9000, LRO off, tunnel off    38688.81  ->
-   50152.49  ( +29.6% =E2=86=91)
-  TCP 512-Kbyte, core 8, MTU 9000, LRO off, tunnel on     23067.36  ->
-   42593.14  ( +84.6% =E2=86=91)
-  TCP 512-Kbyte, core 8, MTU 9000, LRO on, tunnel on      24671.25  ->
-   41276.60  ( +67.3% =E2=86=91)
-  TCP 512-Kbyte, core 9, MTU 1500, LRO on, tunnel on      25078.41  ->
-   42473.55  ( +69.4% =E2=86=91)
-  TCP 512-Kbyte, core 9, MTU 4096, LRO off, tunnel off    36962.68  ->
-   40727.38  ( +10.2% =E2=86=91)
-  TCP 512-Kbyte, core 9, MTU 4096, LRO on, tunnel on      24890.12  ->
-   42248.13  ( +69.7% =E2=86=91)
-  TCP 512-Kbyte, core 9, MTU 9000, LRO off, tunnel off    45620.36  ->
-   58454.83  ( +28.1% =E2=86=91)
-  TCP 512-Kbyte, core 9, MTU 9000, LRO off, tunnel on     23006.81  ->
-   42985.67  ( +86.8% =E2=86=91)
-  TCP 512-Kbyte, core 9, MTU 9000, LRO on, tunnel on      24539.75  ->
-   42295.60  ( +72.4% =E2=86=91)
-  TCP 64-Kbyte, core 8, MTU 1500, LRO on, tunnel off      38187.87  ->
-   45568.38  ( +19.3% =E2=86=91)
-  TCP 64-Kbyte, core 8, MTU 1500, LRO on, tunnel on       22683.89  ->
-   43351.23  ( +91.1% =E2=86=91)
-  TCP 64-Kbyte, core 8, MTU 4096, LRO on, tunnel on       23653.41  ->
-   43988.30  ( +86.0% =E2=86=91)
-  TCP 64-Kbyte, core 8, MTU 9000, LRO off, tunnel off     37677.10  ->
-   48778.02  ( +29.5% =E2=86=91)
-  TCP 64-Kbyte, core 8, MTU 9000, LRO off, tunnel on      23960.71  ->
-   41828.04  ( +74.6% =E2=86=91)
-  TCP 64-Kbyte, core 8, MTU 9000, LRO on, tunnel off      57001.62  ->
-   68577.28  ( +20.3% =E2=86=91)
-  TCP 64-Kbyte, core 8, MTU 9000, LRO on, tunnel on       24068.93  ->
-   43836.63  ( +82.1% =E2=86=91)
-  TCP 64-Kbyte, core 9, MTU 1500, LRO on, tunnel off      60887.66  ->
-   68647.38  ( +12.7% =E2=86=91)
-  TCP 64-Kbyte, core 9, MTU 1500, LRO on, tunnel on       22463.53  ->
-   34560.19  ( +53.9% =E2=86=91)
-  TCP 64-Kbyte, core 9, MTU 4096, LRO on, tunnel on       23253.21  ->
-   43358.30  ( +86.5% =E2=86=91)
-  TCP 64-Kbyte, core 9, MTU 9000, LRO off, tunnel off     40471.13  ->
-   55189.89  ( +36.4% =E2=86=91)
-  TCP 64-Kbyte, core 9, MTU 9000, LRO off, tunnel on      23880.19  ->
-   42457.94  ( +77.8% =E2=86=91)
-  TCP 64-Kbyte, core 9, MTU 9000, LRO on, tunnel on       22040.72  ->
-   30249.36  ( +37.2% =E2=86=91)
-
-(and I learned that even when LRO is off,
-mlx5e_skb_from_cqe_mpwrq_nonlinear() is being used when MTU is large,
-which is why we see improvements above even when LRO is off)
-
-(I will include the additional benchmark data in a resubmission)
-
-The primary remaining question is how to handle the IB-case. If
-get_cqe_l3_hdr_type() will be 0x0 in case of IB, I can key off of
-that.
-
-Thoughts ?
-
-
-Thanks,
-Christoph
-
-
-
->
->
-> > Signed-off-by: Christoph Paasch <cpaasch@openai.com>
-> > ---
-> >   drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 33 ++++++++++++++++=
-++++++++-
-> >   1 file changed, 32 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/=
-net/ethernet/mellanox/mlx5/core/en_rx.c
-> > index 2bb32082bfccdc85d26987f792eb8c1047e44dd0..2de669707623882058e3e77=
-f82d74893e5d6fefe 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> > @@ -1986,13 +1986,40 @@ mlx5e_shampo_fill_skb_data(struct sk_buff *skb,=
- struct mlx5e_rq *rq,
-> >       } while (data_bcnt);
-> >   }
-> >
-> > +static u16
-> > +mlx5e_cqe_get_min_hdr_len(const struct mlx5_cqe64 *cqe)
-> > +{
-> > +     u16 min_hdr_len =3D sizeof(struct ethhdr);
-> > +     u8 l3_type =3D get_cqe_l3_hdr_type(cqe);
-> > +     u8 l4_type =3D get_cqe_l4_hdr_type(cqe);
-> > +
-> > +     if (cqe_has_vlan(cqe))
-> > +             min_hdr_len +=3D VLAN_HLEN;
-> > +
-> > +     if (l3_type =3D=3D CQE_L3_HDR_TYPE_IPV4)
-> > +             min_hdr_len +=3D sizeof(struct iphdr);
-> > +     else if (l3_type =3D=3D CQE_L3_HDR_TYPE_IPV6)
-> > +             min_hdr_len +=3D sizeof(struct ipv6hdr);
-> > +
-> > +     if (l4_type =3D=3D CQE_L4_HDR_TYPE_UDP)
-> > +             min_hdr_len +=3D sizeof(struct udphdr);
-> > +     else if (l4_type & (CQE_L4_HDR_TYPE_TCP_NO_ACK |
-> > +                         CQE_L4_HDR_TYPE_TCP_ACK_NO_DATA |
-> > +                         CQE_L4_HDR_TYPE_TCP_ACK_AND_DATA))
-> > +             /* Previous condition works because we know that
-> > +              * l4_type !=3D 0x2 (CQE_L4_HDR_TYPE_UDP)
-> > +              */
-> > +             min_hdr_len +=3D sizeof(struct tcphdr) + TCPOLEN_TSTAMP_A=
-LIGNED;
-> > +
-> > +     return min_hdr_len;
-> > +}
-> > +
-> >   static struct sk_buff *
-> >   mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_=
-mpw_info *wi,
-> >                                  struct mlx5_cqe64 *cqe, u16 cqe_bcnt, =
-u32 head_offset,
-> >                                  u32 page_idx)
->
-> BTW, this function handles IPoIB as well, not only Eth.
->
-> >   {
-> >       struct mlx5e_frag_page *frag_page =3D &wi->alloc_units.frag_pages=
-[page_idx];
-> > -     u16 headlen =3D min_t(u16, MLX5E_RX_MAX_HEAD, cqe_bcnt);
-> >       struct mlx5e_frag_page *head_page =3D frag_page;
-> >       struct mlx5e_xdp_buff *mxbuf =3D &rq->mxbuf;
-> >       u32 frag_offset    =3D head_offset;
-> > @@ -2004,10 +2031,14 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e=
-_rq *rq, struct mlx5e_mpw_info *w
-> >       u32 linear_frame_sz;
-> >       u16 linear_data_len;
-> >       u16 linear_hr;
-> > +     u16 headlen;
-> >       void *va;
-> >
-> >       prog =3D rcu_dereference(rq->xdp_prog);
-> >
-> > +     headlen =3D min3(mlx5e_cqe_get_min_hdr_len(cqe), cqe_bcnt,
-> > +                    (u16)MLX5E_RX_MAX_HEAD);
-> > +
-> >       if (prog) {
-> >               /* area for bpf_xdp_[store|load]_bytes */
-> >               net_prefetchw(netmem_address(frag_page->netmem) + frag_of=
-fset);
-> >
->
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
