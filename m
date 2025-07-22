@@ -1,305 +1,279 @@
-Return-Path: <linux-rdma+bounces-12382-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12383-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AEAFB0CF3E
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jul 2025 03:43:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D5A7B0D015
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jul 2025 05:13:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0913A3A5D9F
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jul 2025 01:43:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44AB16C6871
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jul 2025 03:13:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 142E01AC44D;
-	Tue, 22 Jul 2025 01:43:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F303528C005;
+	Tue, 22 Jul 2025 03:13:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Jwtz/xi6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24CAD136352;
-	Tue, 22 Jul 2025 01:43:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 814632E36FD
+	for <linux-rdma@vger.kernel.org>; Tue, 22 Jul 2025 03:13:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753148618; cv=none; b=OKPsSGjLuCq9NDM2OJx6/5dex5EV2v/qAtGTMZH7UAwHV9Jzi0BgMrj3NR6oUxoYX3El2hD1YdJIqK4y44pO7ttj/8KO7gBPUUlQcTY26hE/vQyN/ypwZ3jmBH2hAwQQbXtTdWuyAIeJ9wQGDdn+VcOEMXRxlcu2xrNmIQ4ElFE=
+	t=1753154013; cv=none; b=u2e3rdGsfMuzJ8FHpgiCudVsl13dHVA5ZafTGDHOxAExQuJh/bM48i1+oGNQo5fx8znBsXrPYhohttzp8LiGShNFYeKc/GvkZBrrcSEi1LmsUQVHmUr7DWJEt5hiZV7t2h39owU5iBOtZEqu9wGyqHqApKto98Z5+9H/STQdkfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753148618; c=relaxed/simple;
-	bh=O0f72AeS2+d8kuid8fIMbCgnJiDK2N8K0JsBhWYe+/8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SR1e7yTfo3Dl7LMFLxFwhnQMndTAR9CUJGY6lzdITfl8PVxsYbHGsLMmfHjJOKdnBceHdMJSSCeIhoj5wXzpCn9X/YrNzzRQw6yc8y2f9pvKBUZrfMhqX+6tdoaoaoJh2xmS7rwkV6efB69HmlB8eaS/1kSNSOu+uJkJy6ci8DA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-c0-687ee811fc6c
-Date: Tue, 22 Jul 2025 10:23:24 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Mina Almasry <almasrymina@google.com>,
-	David Hildenbrand <david@redhat.com>,
-	"willy@infradead.org" <willy@infradead.org>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, kuba@kernel.org,
-	ilias.apalodimas@linaro.org, harry.yoo@oracle.com, hawk@kernel.org,
-	akpm@linux-foundation.org, davem@davemloft.net,
-	john.fastabend@gmail.com, andrew+netdev@lunn.ch, toke@redhat.com,
-	tariqt@nvidia.com, edumazet@google.com, pabeni@redhat.com,
-	saeedm@nvidia.com, leon@kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, horms@kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	vishal.moola@gmail.com, hannes@cmpxchg.org, ziy@nvidia.com,
-	jackmanb@google.com
-Subject: Re: [PATCH net-next v9 3/8] page_pool: access ->pp_magic through
- struct netmem_desc in page_pool_page_is_pp()
-Message-ID: <20250722012324.GA63367@system.software.com>
-References: <20250710082807.27402-1-byungchul@sk.com>
- <20250710082807.27402-4-byungchul@sk.com>
- <CAHS8izMXkyGvYmf1u6r_kMY_QGSOoSCECkF0QJC4pdKx+DOq0A@mail.gmail.com>
- <20250711011435.GC40145@system.software.com>
- <582f41c0-2742-4400-9c81-0d46bf4e8314@gmail.com>
- <20250717030858.GA26168@system.software.com>
+	s=arc-20240116; t=1753154013; c=relaxed/simple;
+	bh=NLWciPiMUnrQ4O/30DAf+txtBR39dyQDsd/yAfrHndU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=qnwyPK+WdRawf+OisZIceaHd7xcwZH2U7VlglA27swFyF/eXH0dFwGi5vOrpb+jPjtUbMjF0qK7cYDkZnzbEf740ExvVuHwDFZW66rr6SmJjnU96FQep2LbcjmHPpqDJT1vINyT6DLzwUyXX1BDaP8RmcZArRBTG9I6h/vVmdhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Jwtz/xi6; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1753153999;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=RB24NAxEEpJKONQU9tOChSZbmzVzdlg/amZVa6lWQ+Y=;
+	b=Jwtz/xi6fr+RIklq8OlldBpHxtwKZ/BPaG9H0YLUK2fHCpER4Qqn97+Vm9NEjPw0Dlt885
+	NAjXexFEUV2umPfZY8JQ1Rlh0Got7FoPhlWGeZLOQwHqXiw8OSxC/FNTTmt+d+nNYsvdjb
+	13srxZZmlz3vZYrJg7MZYcDbmYfIs/Q=
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+To: saeedm@nvidia.com,
+	leon@kernel.org,
+	tariqt@nvidia.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: Zhu Yanjun <yanjun.zhu@linux.dev>,
+	Junxian Huang <huangjunxian6@hisilicon.com>
+Subject: [PATCHv4 net-next 1/1] net/mlx5: Fix build -Wframe-larger-than warnings
+Date: Tue, 22 Jul 2025 05:13:04 +0200
+Message-Id: <20250722031304.32225-1-yanjun.zhu@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250717030858.GA26168@system.software.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHe897ds5xOTqt25t9iWVURmUR8RQlSRQnQgqCsKLLIQ9tNJds
-	zktlrDQqzRUZpHPBKvIyq8UUnWWWy7xkkBnmSs3Q1OwyTW14Kc0pUd/+/B7+P/4fHg4rs2RB
-	nEYXK+l1olbFyGn598CbK5SfT6tDe67TYHXcZaBgKAFyP7pkYLUXIxgcbmZhoLKagds3fRis
-	r1Jo+OkYwdBZ1c5CgTMC2nK6aCg7X4Kh/XINA+kpoxgeD3tZOOvKo6C+2CyDayN3MJSYPrLw
-	5qGVgQ93x2XQ5U6nodaST0ObeTNU2eaCr+4bgkpHCQW+SzcYyGiwMdCR0oag4Vk7DdlnzAgc
-	5R4ZjA5NOLKff2A3BwvPvvVioSj/HSWUWlpZweY0CoV5IUKqpwELTvtFRnD2X2WFlrdljFCT
-	OUoLpa4BSkhP9jLCj873tNBb3sgIjqJGWnhpq2R3zdwn3xglaTVxkn5V2GG5+ndWD46p2JIw
-	ONyNTah/TSoK4Ai/llwoq2P/5suWC8ifaX4x6fRmTHKGX0I8nmHsz7P55eRrk3uSY76JITnO
-	sFTEcbP4BGKvY/xYwQO5cm+QSkVyTsmXUsTUNUZNHWaS2qxP9FQ3hHjGeih/F/MLSO4Y58cB
-	/HrS2uydnDCHX0SeFldPeghfxpGe5GQ8tXM+qcjz0FcQb/lPa/lPa/mntSFsR0qNLi5a1GjX
-	rlQn6jQJK48cj3aiiYfJSfq134X663e7Ec8hVaBioem0WikT4wyJ0W5EOKyarfA9mkCKKDHx
-	hKQ/fkhv1EoGN1rA0ap5ijW++Cglf1SMlY5JUoyk/3uluIAgEwoPI2JaZH2n+eQXh3jgYPrL
-	dTr9/T7vtIubHgRuUMSEu3b4moL3J41at32PtG7a87oNFf7O39u+s7wwfvv0oWUd+XWatODe
-	s1Wv+rZ2Zxorbp2ruT9irql9YYwNHV/9qSU87UmjQTnmTDSff2y0Tn9duHCFprv5lNYekYR7
-	l86oKlLRBrW4OgTrDeIf+ikpuSwDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+Z//2dlxODgus0NG1LpiaSUJbyZmiHgQzC4fggpy6KEt54xt
-	6pYZq4RqeSsjcmmsLKtpjJbpNBWb9/xgLKpVlqJ5K9Eua6gryxlR3x5+D7+H98NLY4mXXEor
-	VFperZIppZSIFO3afiY0YOykfLP72TIos1ZTUDWtgzsDdgGUWWoRuGfeCuFbWycFFTc8GMp6
-	80j4bp3FMNwxKIQqWyL0V46Q0Hi2DsNgURcFBXleDE0zk0I4bb9LQGt5twCe1RYK4PLsbQx1
-	hgEhPG8oo+B99S8BjDgKSOg23SOhvzAGOsxB4OmZQNBmrSPAk19OQYnTTMFQXj8CZ+sgCddO
-	FSKwNrsE4J2e37jW/l4Ys4ZrnZjCXM291wRXb3on5My2TO7h3RDO6HJizmY5T3G2r5eEXN/L
-	RorruuoluXr7N4IrODNJcV+G35DcVPMLiqsY+0xw1poX5G7JAVFUKq9UZPHqTdHJIvnP0nF8
-	7Emszj0zig3oa7gR+dEss5UtMp1Dvkwya9jhyRKhL1PMOtblmsG+HMhsYD+9cixwzLyi2Epb
-	tBHR9CJGx1p6KB8WM8AW33cTRiSiJUw9wRpG5og/RQDbXfqB/OOGsK65ccLnYiaYvTNH+7Af
-	s41993Zy4YTFzCq2pbaTKEZi03+26T/b9M82I2xBgQpVVrpMoYwI06TJ9SqFLiwlI92G5l+i
-	MvfHRTtyP493IIZGUn/xCsNJuUQgy9Lo0x2IpbE0UOx5PI/EqTL9cV6dcVidqeQ1DhRMk9Il
-	4oT9fLKEOSLT8mk8f4xX/20J2m+pAQX2xo/lSx9pG77soFN2XpDGmde3ez5GHtw1pcxpSQmK
-	OpTB74vXX99bHj6bO5bgbexOXPnAnfRUs8qQfSppKKm603mz1Ju91qHbbo3Fe66PXmm1xFWs
-	PkEmRIaOZxst7vJm87S+aXnOLWf48q6ACEKbqN14dJ9xSXvoFf8+byWWkhq5bEsIVmtkvwGE
-	lkgtDgMAAA==
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jul 17, 2025 at 12:08:58PM +0900, Byungchul Park wrote:
-> On Sat, Jul 12, 2025 at 02:58:14PM +0100, Pavel Begunkov wrote:
-> > On 7/11/25 02:14, Byungchul Park wrote:
-> > ...>>> +#ifdef CONFIG_PAGE_POOL
-> > > > > +/* XXX: This would better be moved to mm, once mm gets its way to
-> > > > > + * identify the type of page for page pool.
-> > > > > + */
-> > > > > +static inline bool page_pool_page_is_pp(struct page *page)
-> > > > > +{
-> > > > > +       struct netmem_desc *desc = page_to_nmdesc(page);
-> > > > > +
-> > > > > +       return (desc->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
-> > > > > +}
-> > > > 
-> > > > pages can be pp pages (where they have pp fields inside of them) or
-> > > > non-pp pages (where they don't have pp fields inside them, because
-> > > > they were never allocated from the page_pool).
-> > > > 
-> > > > Casting a page to a netmem_desc, and then checking if the page was a
-> > > > pp page doesn't makes sense to me on a fundamental level. The
-> > > > netmem_desc is only valid if the page was a pp page in the first
-> > > > place. Maybe page_to_nmdesc should reject the cast if the page is not
-> > > > a pp page or something.
-> > > 
-> > > Right, as you already know, the current mainline code already has the
-> > > same problem but we've been using the werid way so far, in other words,
-> > > mm code is checking if it's a pp page or not by using ->pp_magic, but
-> > > it's ->lur, ->buddy_list, or ->pcp_list if it's not a pp page.
-> > > 
-> > > Both the mainline code and this patch can make sense *only if* it's
-> > > actually a pp page.  It's unevitable until mm provides a way to identify
-> > > the type of page for page pool.  Thoughts?
-> > Question to mm folks, can we add a new PGTY for page pool and use
-> > that to filter page pool originated pages? Like in the incomplete
-> > and untested diff below?
-> > 
-> > 
-> > commit 8fc2347fb3ff4a3fc7929c70a5a21e1128935d4a
-> > Author: Pavel Begunkov <asml.silence@gmail.com>
-> > Date:   Sat Jul 12 14:29:52 2025 +0100
-> > 
-> >     net/mm: use PGTY for tracking page pool pages
-> > 
-> >     Currently, we use page->pp_magic to determine whether a page belongs to
-> >     a page pool. It's not ideal as the field is aliased with other page
-> >     types, and thus needs to to rely on elaborated rules to work. Add a new
-> >     page type for page pool.
-> 
-> Hi Pavel,
-> 
-> I need this work to be done to remove ->pp_magic in struct page.  Will
-> you let me work on this work?  Or can you please refine and post this
+When building, the following warnings will appear.
+"
+pci_irq.c: In function ‘mlx5_ctrl_irq_request’:
+pci_irq.c:494:1: warning: the frame size of 1040 bytes is larger than 1024 bytes [-Wframe-larger-than=]
 
-No response I got.  Thus, I started.  I hope you understand.
+pci_irq.c: In function ‘mlx5_irq_request_vector’:
+pci_irq.c:561:1: warning: the frame size of 1040 bytes is larger than 1024 bytes [-Wframe-larger-than=]
 
-	Byungchul
+eq.c: In function ‘comp_irq_request_sf’:
+eq.c:897:1: warning: the frame size of 1080 bytes is larger than 1024 bytes [-Wframe-larger-than=]
 
-> work?  If you let me, I will go for this as a separate patch from this
-> series.
-> 
-> 	Byungchul
-> 
-> > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > index 0ef2ba0c667a..975a013f1f17 100644
-> > --- a/include/linux/mm.h
-> > +++ b/include/linux/mm.h
-> > @@ -4175,7 +4175,7 @@ int arch_lock_shadow_stack_status(struct task_struct *t, unsigned long status);
-> >  #ifdef CONFIG_PAGE_POOL
-> >  static inline bool page_pool_page_is_pp(struct page *page)
-> >  {
-> > -       return (page->pp_magic & PP_MAGIC_MASK) == PP_SIGNATURE;
-> > +       return PageNetpp(page);
-> >  }
-> >  #else
-> >  static inline bool page_pool_page_is_pp(struct page *page)
-> > diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-> > index 4fe5ee67535b..9bd1dfded2fc 100644
-> > --- a/include/linux/page-flags.h
-> > +++ b/include/linux/page-flags.h
-> > @@ -957,6 +957,7 @@ enum pagetype {
-> >        PGTY_zsmalloc           = 0xf6,
-> >        PGTY_unaccepted         = 0xf7,
-> >        PGTY_large_kmalloc      = 0xf8,
-> > +       PGTY_netpp              = 0xf9,
-> > 
-> >        PGTY_mapcount_underflow = 0xff
-> >  };
-> > @@ -1101,6 +1102,11 @@ PAGE_TYPE_OPS(Zsmalloc, zsmalloc, zsmalloc)
-> >  PAGE_TYPE_OPS(Unaccepted, unaccepted, unaccepted)
-> >  FOLIO_TYPE_OPS(large_kmalloc, large_kmalloc)
-> > 
-> > +/*
-> > + * Marks page_pool allocated pages
-> > + */
-> > +PAGE_TYPE_OPS(Netpp, netpp, netpp)
-> > +
-> >  /**
-> >   * PageHuge - Determine if the page belongs to hugetlbfs
-> >   * @page: The page to test.
-> > diff --git a/include/net/netmem.h b/include/net/netmem.h
-> > index de1d95f04076..20f5dbb08149 100644
-> > --- a/include/net/netmem.h
-> > +++ b/include/net/netmem.h
-> > @@ -113,6 +113,8 @@ static inline bool netmem_is_net_iov(const netmem_ref netmem)
-> >   */
-> >  static inline struct page *__netmem_to_page(netmem_ref netmem)
-> >  {
-> > +       DEBUG_NET_WARN_ON_ONCE(netmem_is_net_iov(netmem));
-> > +
-> >        return (__force struct page *)netmem;
-> >  }
-> > 
-> > diff --git a/net/core/netmem_priv.h b/net/core/netmem_priv.h
-> > index cd95394399b4..e38c64da1a78 100644
-> > --- a/net/core/netmem_priv.h
-> > +++ b/net/core/netmem_priv.h
-> > @@ -13,16 +13,11 @@ static inline void netmem_or_pp_magic(netmem_ref netmem, unsigned long pp_magic)
-> >        __netmem_clear_lsb(netmem)->pp_magic |= pp_magic;
-> >  }
-> > 
-> > -static inline void netmem_clear_pp_magic(netmem_ref netmem)
-> > -{
-> > -       WARN_ON_ONCE(__netmem_clear_lsb(netmem)->pp_magic & PP_DMA_INDEX_MASK);
-> > -
-> > -       __netmem_clear_lsb(netmem)->pp_magic = 0;
-> > -}
-> > -
-> >  static inline bool netmem_is_pp(netmem_ref netmem)
-> >  {
-> > -       return (netmem_get_pp_magic(netmem) & PP_MAGIC_MASK) == PP_SIGNATURE;
-> > +       if (netmem_is_net_iov(netmem))
-> > +               return true;
-> > +       return page_pool_page_is_pp(netmem_to_page(netmem));
-> >  }
-> > 
-> >  static inline void netmem_set_pp(netmem_ref netmem, struct page_pool *pool)
-> > diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> > index 05e2e22a8f7c..52120e2912a6 100644
-> > --- a/net/core/page_pool.c
-> > +++ b/net/core/page_pool.c
-> > @@ -371,6 +371,13 @@ struct page_pool *page_pool_create(const struct page_pool_params *params)
-> >  }
-> >  EXPORT_SYMBOL(page_pool_create);
-> > 
-> > +static void page_pool_set_page_pp_info(struct page_pool *pool,
-> > +                                      struct page *page)
-> > +{
-> > +       __SetPageNetpp(page);
-> > +       page_pool_set_pp_info(page_to_netmem(page));
-> > +}
-> > +
-> >  static void page_pool_return_netmem(struct page_pool *pool, netmem_ref netmem);
-> > 
-> >  static noinline netmem_ref page_pool_refill_alloc_cache(struct page_pool *pool)
-> > @@ -534,7 +541,7 @@ static struct page *__page_pool_alloc_page_order(struct page_pool *pool,
-> >        }
-> > 
-> >        alloc_stat_inc(pool, slow_high_order);
-> > -       page_pool_set_pp_info(pool, page_to_netmem(page));
-> > +       page_pool_set_page_pp_info(pool, page);
-> > 
-> >        /* Track how many pages are held 'in-flight' */
-> >        pool->pages_state_hold_cnt++;
-> > @@ -579,7 +586,7 @@ static noinline netmem_ref __page_pool_alloc_netmems_slow(struct page_pool *pool
-> >                        continue;
-> >                }
-> > 
-> > -               page_pool_set_pp_info(pool, netmem);
-> > +               page_pool_set_page_pp_info(pool, __netmem_to_page(netmem));
-> >                pool->alloc.cache[pool->alloc.count++] = netmem;
-> >                /* Track how many pages are held 'in-flight' */
-> >                pool->pages_state_hold_cnt++;
-> > @@ -654,7 +661,6 @@ s32 page_pool_inflight(const struct page_pool *pool, bool strict)
-> >  void page_pool_set_pp_info(struct page_pool *pool, netmem_ref netmem)
-> >  {
-> >        netmem_set_pp(netmem, pool);
-> > -       netmem_or_pp_magic(netmem, PP_SIGNATURE);
-> > 
-> >        /* Ensuring all pages have been split into one fragment initially:
-> >         * page_pool_set_pp_info() is only called once for every page when it
-> > @@ -669,7 +675,6 @@ void page_pool_set_pp_info(struct page_pool *pool, netmem_ref netmem)
-> > 
-> >  void page_pool_clear_pp_info(netmem_ref netmem)
-> >  {
-> > -       netmem_clear_pp_magic(netmem);
-> >        netmem_set_pp(netmem, NULL);
-> >  }
-> > 
-> > @@ -730,8 +735,11 @@ static void page_pool_return_netmem(struct page_pool *pool, netmem_ref netmem)
-> >        trace_page_pool_state_release(pool, netmem, count);
-> > 
-> >        if (put) {
-> > +               struct page *page = netmem_to_page(netmem);
-> > +
-> >                page_pool_clear_pp_info(netmem);
-> > -               put_page(netmem_to_page(netmem));
-> > +               __ClearPageNetpp(page);
-> > +               put_page(page);
-> >        }
-> >        /* An optimization would be to call __free_pages(page, pool->p.order)
-> >         * knowing page is not part of page-cache (thus avoiding a
-> > 
-> > --
-> > Pavel Begunkov
+irq_affinity.c: In function ‘irq_pool_request_irq’:
+irq_affinity.c:74:1: warning: the frame size of 1048 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+"
+
+These warnings indicate that the stack frame size exceeds 1024 bytes in
+these functions.
+
+To resolve this, instead of allocating large memory buffers on the stack,
+it is better to use kvzalloc to allocate memory dynamically on the heap.
+This approach reduces stack usage and eliminates these frame size warnings.
+
+Acked-by: Junxian Huang <huangjunxian6@hisilicon.com>
+Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+---
+v3 -> v4: Relocate the kvzalloc call to a more appropriate place following Tariq's advice.
+v2 -> v3: No changes, just send out target net-next;
+v1 -> v2: Add kvfree to error handler;
+
+1. This commit only build tests;
+2. All the changes are on configuration path, will not make difference
+on the performance;
+3. This commit is just to fix build warnings, not error or bug fixes. So
+not Fixes tag.
+---
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c  | 22 ++++++----
+ .../mellanox/mlx5/core/irq_affinity.c         | 15 +++++--
+ .../net/ethernet/mellanox/mlx5/core/pci_irq.c | 40 +++++++++++++------
+ 3 files changed, 55 insertions(+), 22 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+index 66dce17219a6..1ab77159409d 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+@@ -876,19 +876,25 @@ static int comp_irq_request_sf(struct mlx5_core_dev *dev, u16 vecidx)
+ {
+ 	struct mlx5_irq_pool *pool = mlx5_irq_table_get_comp_irq_pool(dev);
+ 	struct mlx5_eq_table *table = dev->priv.eq_table;
+-	struct irq_affinity_desc af_desc = {};
++	struct irq_affinity_desc *af_desc;
+ 	struct mlx5_irq *irq;
+ 
+-	/* In case SF irq pool does not exist, fallback to the PF irqs*/
++	/* In case SF irq pool does not exist, fallback to the PF irqs */
+ 	if (!mlx5_irq_pool_is_sf_pool(pool))
+ 		return comp_irq_request_pci(dev, vecidx);
+ 
+-	af_desc.is_managed = false;
+-	cpumask_copy(&af_desc.mask, cpu_online_mask);
+-	cpumask_andnot(&af_desc.mask, &af_desc.mask, &table->used_cpus);
+-	irq = mlx5_irq_affinity_request(dev, pool, &af_desc);
+-	if (IS_ERR(irq))
++	af_desc = kvzalloc(sizeof(*af_desc), GFP_KERNEL);
++	if (!af_desc)
++		return -ENOMEM;
++
++	af_desc->is_managed = false;
++	cpumask_copy(&af_desc->mask, cpu_online_mask);
++	cpumask_andnot(&af_desc->mask, &af_desc->mask, &table->used_cpus);
++	irq = mlx5_irq_affinity_request(dev, pool, af_desc);
++	if (IS_ERR(irq)) {
++		kvfree(af_desc);
+ 		return PTR_ERR(irq);
++	}
+ 
+ 	cpumask_or(&table->used_cpus, &table->used_cpus, mlx5_irq_get_affinity_mask(irq));
+ 	mlx5_core_dbg(pool->dev, "IRQ %u mapped to cpu %*pbl, %u EQs on this irq\n",
+@@ -896,6 +902,8 @@ static int comp_irq_request_sf(struct mlx5_core_dev *dev, u16 vecidx)
+ 		      cpumask_pr_args(mlx5_irq_get_affinity_mask(irq)),
+ 		      mlx5_irq_read_locked(irq) / MLX5_EQ_REFS_PER_IRQ);
+ 
++	kvfree(af_desc);
++
+ 	return xa_err(xa_store(&table->comp_irqs, vecidx, irq, GFP_KERNEL));
+ }
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
+index 2691d88cdee1..03a6b86d1444 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
+@@ -47,7 +47,7 @@ static int cpu_get_least_loaded(struct mlx5_irq_pool *pool,
+ static struct mlx5_irq *
+ irq_pool_request_irq(struct mlx5_irq_pool *pool, struct irq_affinity_desc *af_desc)
+ {
+-	struct irq_affinity_desc auto_desc = {};
++	struct irq_affinity_desc *auto_desc;
+ 	struct mlx5_irq *irq;
+ 	u32 irq_index;
+ 	int err;
+@@ -55,21 +55,30 @@ irq_pool_request_irq(struct mlx5_irq_pool *pool, struct irq_affinity_desc *af_de
+ 	err = xa_alloc(&pool->irqs, &irq_index, NULL, pool->xa_num_irqs, GFP_KERNEL);
+ 	if (err)
+ 		return ERR_PTR(err);
++
++	auto_desc = kvzalloc(sizeof(*auto_desc), GFP_KERNEL);
++	if (!auto_desc)
++		return ERR_PTR(-ENOMEM);
++
+ 	if (pool->irqs_per_cpu) {
+ 		if (cpumask_weight(&af_desc->mask) > 1)
+ 			/* if req_mask contain more then one CPU, set the least loadad CPU
+ 			 * of req_mask
+ 			 */
+ 			cpumask_set_cpu(cpu_get_least_loaded(pool, &af_desc->mask),
+-					&auto_desc.mask);
++					&auto_desc->mask);
+ 		else
+ 			cpu_get(pool, cpumask_first(&af_desc->mask));
+ 	}
++
+ 	irq = mlx5_irq_alloc(pool, irq_index,
+-			     cpumask_empty(&auto_desc.mask) ? af_desc : &auto_desc,
++			     cpumask_empty(&auto_desc->mask) ? af_desc : auto_desc,
+ 			     NULL);
+ 	if (IS_ERR(irq))
+ 		xa_erase(&pool->irqs, irq_index);
++
++	kvfree(auto_desc);
++
+ 	return irq;
+ }
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
+index 40024cfa3099..692ef9c2f729 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
+@@ -470,26 +470,32 @@ void mlx5_ctrl_irq_release(struct mlx5_core_dev *dev, struct mlx5_irq *ctrl_irq)
+ struct mlx5_irq *mlx5_ctrl_irq_request(struct mlx5_core_dev *dev)
+ {
+ 	struct mlx5_irq_pool *pool = ctrl_irq_pool_get(dev);
+-	struct irq_affinity_desc af_desc;
++	struct irq_affinity_desc *af_desc;
+ 	struct mlx5_irq *irq;
+ 
+-	cpumask_copy(&af_desc.mask, cpu_online_mask);
+-	af_desc.is_managed = false;
++	af_desc = kvzalloc(sizeof(*af_desc), GFP_KERNEL);
++	if (!af_desc)
++		return ERR_PTR(-ENOMEM);
++
++	cpumask_copy(&af_desc->mask, cpu_online_mask);
++	af_desc->is_managed = false;
+ 	if (!mlx5_irq_pool_is_sf_pool(pool)) {
+ 		/* In case we are allocating a control IRQ from a pci device's pool.
+ 		 * This can happen also for a SF if the SFs pool is empty.
+ 		 */
+ 		if (!pool->xa_num_irqs.max) {
+-			cpumask_clear(&af_desc.mask);
++			cpumask_clear(&af_desc->mask);
+ 			/* In case we only have a single IRQ for PF/VF */
+-			cpumask_set_cpu(cpumask_first(cpu_online_mask), &af_desc.mask);
++			cpumask_set_cpu(cpumask_first(cpu_online_mask), &af_desc->mask);
+ 		}
+ 		/* Allocate the IRQ in index 0. The vector was already allocated */
+-		irq = irq_pool_request_vector(pool, 0, &af_desc, NULL);
++		irq = irq_pool_request_vector(pool, 0, af_desc, NULL);
+ 	} else {
+-		irq = mlx5_irq_affinity_request(dev, pool, &af_desc);
++		irq = mlx5_irq_affinity_request(dev, pool, af_desc);
+ 	}
+ 
++	kvfree(af_desc);
++
+ 	return irq;
+ }
+ 
+@@ -548,16 +554,26 @@ struct mlx5_irq *mlx5_irq_request_vector(struct mlx5_core_dev *dev, u16 cpu,
+ {
+ 	struct mlx5_irq_table *table = mlx5_irq_table_get(dev);
+ 	struct mlx5_irq_pool *pool = table->pcif_pool;
+-	struct irq_affinity_desc af_desc;
+ 	int offset = MLX5_IRQ_VEC_COMP_BASE;
++	struct irq_affinity_desc *af_desc;
++	struct mlx5_irq *irq;
++
++	af_desc = kvzalloc(sizeof(*af_desc), GFP_KERNEL);
++	if (!af_desc)
++		return ERR_PTR(-ENOMEM);
+ 
+ 	if (!pool->xa_num_irqs.max)
+ 		offset = 0;
+ 
+-	af_desc.is_managed = false;
+-	cpumask_clear(&af_desc.mask);
+-	cpumask_set_cpu(cpu, &af_desc.mask);
+-	return mlx5_irq_request(dev, vecidx + offset, &af_desc, rmap);
++	af_desc->is_managed = false;
++	cpumask_clear(&af_desc->mask);
++	cpumask_set_cpu(cpu, &af_desc->mask);
++
++	irq = mlx5_irq_request(dev, vecidx + offset, af_desc, rmap);
++
++	kvfree(af_desc);
++
++	return irq;
+ }
+ 
+ static struct mlx5_irq_pool *
+-- 
+2.34.1
+
 
