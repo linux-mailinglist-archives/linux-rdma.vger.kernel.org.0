@@ -1,183 +1,242 @@
-Return-Path: <linux-rdma+bounces-12409-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12410-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 115FCB0EA30
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jul 2025 07:53:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81ADCB0EB03
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jul 2025 08:53:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 215644E57DD
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jul 2025 05:52:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 439371AA8001
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jul 2025 06:53:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F180C2472B5;
-	Wed, 23 Jul 2025 05:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DB3E23E355;
+	Wed, 23 Jul 2025 06:53:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IokmkRya"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OmbkbPrR"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19564182D3
-	for <linux-rdma@vger.kernel.org>; Wed, 23 Jul 2025 05:53:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 988B41DF725;
+	Wed, 23 Jul 2025 06:53:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753250001; cv=none; b=Jv3yZUTjXMj8466YRVVr5ko9FWqwoQ5vznHgKBrsZZuuRcmqCT403S6F1CGKJN0GsqYrIsR2QrBEcehxcXEkjofsVEmF+WhVJRWyFxzLYR7e7b5Dzdg43cbjVO8DZAapqEzHQGQLY9AdnHJsDp8qBNhuwbS++6enfMdwiqRVD3E=
+	t=1753253604; cv=none; b=FnmS7Ig0OZ+qeS+wMXuJPu3MMlB9AT4des9TjTCmqBwJHd1EUEC6AT4D+/zKckT8ieRUx9DhAJTGjmGg2VWyeRSWmL4VT29zpQUnSkRhSBxvUN+/yI0pwQbFXE2bToN8ipuin3YhglQVO0zgBVxyEwN8yIxxtee1n4TImS7+dWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753250001; c=relaxed/simple;
-	bh=s4+FuOI4siPdnLr5uWM5sWaAVjDBRyXNC3Ep8lfp5RA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Mixe+NUWdlDPwVaIxE6b5bghkowUw8J/M57lJn4vla+9A7XUzzEwW4jGEG0xeB/chZ8OUgnWZxiIZ/Qrk6aWN8uDA5f3Z0y3CeKFgkwkPY34k36wKKT5/vouFaXlEZEQ9o1f7Zm+nGGIQOyO4L3Li61KXSADpBV4cuZr/XE8q7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IokmkRya; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a7f7d147-b401-4964-bec5-37786538fe11@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1753249997;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=76aBVI/j/HBXiHUQ9BAybwDxsNF7a3NeAHh4w+bZ6K8=;
-	b=IokmkRyaOhy+vJjnwVK2joIEId1GGFfx/WzJeIKF2/wNVlo/odRIh+XVHLJn5O45+sKX7b
-	mhZZZCdzGIMkoE2Z20fFOdYqOGQ5Fw5AccITZA8Hn9fxFPTVaRr0BE0xHxxzilHUHMxH4E
-	ZzEuEyAcIQKK7OYYN5867JvPSSeZOMg=
-Date: Tue, 22 Jul 2025 22:53:00 -0700
+	s=arc-20240116; t=1753253604; c=relaxed/simple;
+	bh=vz2E0FW4xCQTolD++PHtUgPfw65t6dNIfiDrgAyBAxo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BBORWolHicQXBRm55rIi0a2oi5kOTbWwqbGg3JPu62XzP/Lj0qs+KDD8xodIDdHBQpW7hIMPlDOUhxC354Oq21G+ZQe10HEByWd06IKTX4Vmzn1uymaV3BdcYLX8xkVRy3L9NoX3rBMRLQXW+R5sFZJ76qfyO6zkTJpjyoMCgp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OmbkbPrR; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1753253602; x=1784789602;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vz2E0FW4xCQTolD++PHtUgPfw65t6dNIfiDrgAyBAxo=;
+  b=OmbkbPrR7ckTvu+smN9QnnmJM2hnzvPn78FcfFfJ1P/UYl7LeOyf5qgF
+   Bpaaeyw/N9FlTj6rsNu9exwV67DDE2U5SpZ6w5u9oiZEjHyhDhsbza45k
+   y79l0hmmwSJHuN0edB6FY/9j8rrCpwCWvGchdTJ0d0tvFNzih9l5Is8Tl
+   ktMJQotbk6AnEyY4F84osV+DT8J+yFeys4oC8C6AaZkDTppAs4zeW12Wd
+   N3Xh16NzVTKWs6DCwkqCJnkNGF2bzTUDbVoYs3mINmGF678fD2MkrcZUP
+   QhrBYjtLdaxw8Sw8mz5ZJt/Hq91HBV4F+O2MI48WRo/ornNnbmxBl4Lng
+   A==;
+X-CSE-ConnectionGUID: wyJJ1DBbRnifsn5aPgKy1g==
+X-CSE-MsgGUID: AyXEwjdtS1KFjkz17qhbIg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11500"; a="54743418"
+X-IronPort-AV: E=Sophos;i="6.16,333,1744095600"; 
+   d="scan'208";a="54743418"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2025 23:53:21 -0700
+X-CSE-ConnectionGUID: H6/jiKkESpi07lLwQV0Bsw==
+X-CSE-MsgGUID: z6kjFawRQXCD54aSDerS8A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.16,333,1744095600"; 
+   d="scan'208";a="196439786"
+Received: from mev-dev.igk.intel.com ([10.237.112.144])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2025 23:53:18 -0700
+Date: Wed, 23 Jul 2025 08:52:09 +0200
+From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Saeed Mahameed <saeed@kernel.org>, Gal Pressman <gal@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Saeed Mahameed <saeedm@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Alexandre Cassen <acassen@corp.free.fr>,
+	Leon Romanovsky <leonro@nvidia.com>
+Subject: Re: [PATCH net-next V2 1/2] net/mlx5e: Support routed networks
+ during IPsec MACs initialization
+Message-ID: <aICGmVC06H+WTy6s@mev-dev.igk.intel.com>
+References: <1753194228-333722-1-git-send-email-tariqt@nvidia.com>
+ <1753194228-333722-2-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCHv4 net-next 1/1] net/mlx5: Fix build -Wframe-larger-than
- warnings
-To: Tariq Toukan <ttoukan.linux@gmail.com>, saeedm@nvidia.com,
- leon@kernel.org, tariqt@nvidia.com, andrew+netdev@lunn.ch,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Cc: Junxian Huang <huangjunxian6@hisilicon.com>
-References: <20250722031304.32225-1-yanjun.zhu@linux.dev>
- <3fb3a939-4e4c-4fb1-8bb8-d0affe06a92c@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <3fb3a939-4e4c-4fb1-8bb8-d0affe06a92c@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1753194228-333722-2-git-send-email-tariqt@nvidia.com>
 
-在 2025/7/22 6:08, Tariq Toukan 写道:
->> +    auto_desc = kvzalloc(sizeof(*auto_desc), GFP_KERNEL);
->> +    if (!auto_desc)
->> +        return ERR_PTR(-ENOMEM);
+On Tue, Jul 22, 2025 at 05:23:47PM +0300, Tariq Toukan wrote:
+> From: Alexandre Cassen <acassen@corp.free.fr>
 > 
-> Missing xa_erase.
-
-It's a minor oversight. I will address it and resend the patch without 
-incrementing the version number.
-
-Zhu Yanjun>
->> +
->>       if (pool->irqs_per_cpu) {
->>           if (cpumask_weight(&af_desc->mask) > 1)
->>               /* if req_mask contain more then one CPU, set the least 
->> loadad CPU
->>                * of req_mask
->>                */
->>               cpumask_set_cpu(cpu_get_least_loaded(pool, &af_desc->mask),
->> -                    &auto_desc.mask);
->> +                    &auto_desc->mask);
->>           else
->>               cpu_get(pool, cpumask_first(&af_desc->mask));
->>       }
->> +
->>       irq = mlx5_irq_alloc(pool, irq_index,
->> -                 cpumask_empty(&auto_desc.mask) ? af_desc : &auto_desc,
->> +                 cpumask_empty(&auto_desc->mask) ? af_desc : auto_desc,
->>                    NULL);
->>       if (IS_ERR(irq))
->>           xa_erase(&pool->irqs, irq_index);
->> +
->> +    kvfree(auto_desc);
->> +
->>       return irq;
->>   }
->> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c b/ 
->> drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
->> index 40024cfa3099..692ef9c2f729 100644
->> --- a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
->> +++ b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
->> @@ -470,26 +470,32 @@ void mlx5_ctrl_irq_release(struct mlx5_core_dev 
->> *dev, struct mlx5_irq *ctrl_irq)
->>   struct mlx5_irq *mlx5_ctrl_irq_request(struct mlx5_core_dev *dev)
->>   {
->>       struct mlx5_irq_pool *pool = ctrl_irq_pool_get(dev);
->> -    struct irq_affinity_desc af_desc;
->> +    struct irq_affinity_desc *af_desc;
->>       struct mlx5_irq *irq;
->> -    cpumask_copy(&af_desc.mask, cpu_online_mask);
->> -    af_desc.is_managed = false;
->> +    af_desc = kvzalloc(sizeof(*af_desc), GFP_KERNEL);
->> +    if (!af_desc)
->> +        return ERR_PTR(-ENOMEM);
->> +
->> +    cpumask_copy(&af_desc->mask, cpu_online_mask);
->> +    af_desc->is_managed = false;
->>       if (!mlx5_irq_pool_is_sf_pool(pool)) {
->>           /* In case we are allocating a control IRQ from a pci 
->> device's pool.
->>            * This can happen also for a SF if the SFs pool is empty.
->>            */
->>           if (!pool->xa_num_irqs.max) {
->> -            cpumask_clear(&af_desc.mask);
->> +            cpumask_clear(&af_desc->mask);
->>               /* In case we only have a single IRQ for PF/VF */
->> -            cpumask_set_cpu(cpumask_first(cpu_online_mask), 
->> &af_desc.mask);
->> +            cpumask_set_cpu(cpumask_first(cpu_online_mask), &af_desc- 
->> >mask);
->>           }
->>           /* Allocate the IRQ in index 0. The vector was already 
->> allocated */
->> -        irq = irq_pool_request_vector(pool, 0, &af_desc, NULL);
->> +        irq = irq_pool_request_vector(pool, 0, af_desc, NULL);
->>       } else {
->> -        irq = mlx5_irq_affinity_request(dev, pool, &af_desc);
->> +        irq = mlx5_irq_affinity_request(dev, pool, af_desc);
->>       }
->> +    kvfree(af_desc);
->> +
->>       return irq;
->>   }
->> @@ -548,16 +554,26 @@ struct mlx5_irq *mlx5_irq_request_vector(struct 
->> mlx5_core_dev *dev, u16 cpu,
->>   {
->>       struct mlx5_irq_table *table = mlx5_irq_table_get(dev);
->>       struct mlx5_irq_pool *pool = table->pcif_pool;
->> -    struct irq_affinity_desc af_desc;
->>       int offset = MLX5_IRQ_VEC_COMP_BASE;
->> +    struct irq_affinity_desc *af_desc;
->> +    struct mlx5_irq *irq;
->> +
->> +    af_desc = kvzalloc(sizeof(*af_desc), GFP_KERNEL);
->> +    if (!af_desc)
->> +        return ERR_PTR(-ENOMEM);
->>       if (!pool->xa_num_irqs.max)
->>           offset = 0;
->> -    af_desc.is_managed = false;
->> -    cpumask_clear(&af_desc.mask);
->> -    cpumask_set_cpu(cpu, &af_desc.mask);
->> -    return mlx5_irq_request(dev, vecidx + offset, &af_desc, rmap);
->> +    af_desc->is_managed = false;
->> +    cpumask_clear(&af_desc->mask);
->> +    cpumask_set_cpu(cpu, &af_desc->mask);
->> +
->> +    irq = mlx5_irq_request(dev, vecidx + offset, af_desc, rmap);
->> +
->> +    kvfree(af_desc);
->> +
->> +    return irq;
->>   }
->>   static struct mlx5_irq_pool *
+> Remote IPsec tunnel endpoint may refer to a network segment that is
+> not directly connected to the host. In such a case, IPsec tunnel
+> endpoints are connected to a router and reachable via a routing path.
+> In IPsec packet offload mode, HW is initialized with the MAC address
+> of both IPsec tunnel endpoints.
 > 
+> Extend the current IPsec init MACs procedure to resolve nexthop for
+> routed networks. Direct neighbour lookup and probe is still used
+> for directly connected networks and as a fallback mechanism if fib
+> lookup fails.
+> 
+> Signed-off-by: Alexandre Cassen <acassen@corp.free.fr>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> Reviewed-by: Cosmin Ratiu <cratiu@nvidia.com>
+> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> ---
+>  .../mellanox/mlx5/core/en_accel/ipsec.c       | 82 ++++++++++++++++++-
+>  1 file changed, 80 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
+> index 77f61cd28a79..00e77c71e201 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
+> @@ -36,6 +36,7 @@
+>  #include <linux/inetdevice.h>
+>  #include <linux/netdevice.h>
+>  #include <net/netevent.h>
+> +#include <net/ipv6_stubs.h>
+>  
+>  #include "en.h"
+>  #include "eswitch.h"
+> @@ -259,9 +260,15 @@ static void mlx5e_ipsec_init_macs(struct mlx5e_ipsec_sa_entry *sa_entry,
+>  				  struct mlx5_accel_esp_xfrm_attrs *attrs)
+>  {
+>  	struct mlx5_core_dev *mdev = mlx5e_ipsec_sa2dev(sa_entry);
+> +	struct mlx5e_ipsec_addr *addrs = &attrs->addrs;
+>  	struct net_device *netdev = sa_entry->dev;
+> +	struct xfrm_state *x = sa_entry->x;
+> +	struct dst_entry *rt_dst_entry;
+> +	struct flowi4 fl4 = {};
+> +	struct flowi6 fl6 = {};
+>  	struct neighbour *n;
+>  	u8 addr[ETH_ALEN];
+> +	struct rtable *rt;
+>  	const void *pkey;
+>  	u8 *dst, *src;
+>  
+> @@ -274,18 +281,89 @@ static void mlx5e_ipsec_init_macs(struct mlx5e_ipsec_sa_entry *sa_entry,
+>  	case XFRM_DEV_OFFLOAD_IN:
+>  		src = attrs->dmac;
+>  		dst = attrs->smac;
+> -		pkey = &attrs->addrs.saddr.a4;
+> +
+> +		switch (addrs->family) {
+> +		case AF_INET:
+> +			fl4.flowi4_proto = x->sel.proto;
+> +			fl4.daddr = addrs->saddr.a4;
+> +			fl4.saddr = addrs->daddr.a4;
+> +			pkey = &addrs->saddr.a4;
+> +			break;
+> +		case AF_INET6:
+> +			fl6.flowi6_proto = x->sel.proto;
+> +			memcpy(fl6.daddr.s6_addr32, addrs->saddr.a6, 16);
+> +			memcpy(fl6.saddr.s6_addr32, addrs->daddr.a6, 16);
+> +			pkey = &addrs->saddr.a6;
+> +			break;
+> +		default:
+> +			return;
+> +		}
+>  		break;
+>  	case XFRM_DEV_OFFLOAD_OUT:
+>  		src = attrs->smac;
+>  		dst = attrs->dmac;
+> -		pkey = &attrs->addrs.daddr.a4;
 
+Isn't it worth to move getting pkey to separate function? The switch is
+the same with OFFLOAD_IN and OFFLOAD_OUT.
+
+> +		switch (addrs->family) {
+> +		case AF_INET:
+> +			fl4.flowi4_proto = x->sel.proto;
+> +			fl4.daddr = addrs->daddr.a4;
+> +			fl4.saddr = addrs->saddr.a4;
+> +			pkey = &addrs->daddr.a4;
+> +			break;
+> +		case AF_INET6:
+> +			fl6.flowi6_proto = x->sel.proto;
+> +			memcpy(fl6.daddr.s6_addr32, addrs->daddr.a6, 16);
+> +			memcpy(fl6.saddr.s6_addr32, addrs->saddr.a6, 16);
+> +			pkey = &addrs->daddr.a6;
+> +			break;
+> +		default:
+> +			return;
+> +		}
+>  		break;
+>  	default:
+>  		return;
+>  	}
+>  
+>  	ether_addr_copy(src, addr);
+> +
+> +	/* Destination can refer to a routed network, so perform FIB lookup
+> +	 * to resolve nexthop and get its MAC. Neighbour resolution is used as
+> +	 * fallback.
+> +	 */
+> +	switch (addrs->family) {
+> +	case AF_INET:
+> +		rt = ip_route_output_key(dev_net(netdev), &fl4);
+> +		if (IS_ERR(rt))
+> +			goto neigh;
+> +
+> +		if (rt->rt_type != RTN_UNICAST) {
+> +			ip_rt_put(rt);
+> +			goto neigh;
+> +		}
+> +		rt_dst_entry = &rt->dst;
+> +		break;
+> +	case AF_INET6:
+> +		rt_dst_entry = ipv6_stub->ipv6_dst_lookup_flow(
+> +			dev_net(netdev), NULL, &fl6, NULL);
+> +		if (IS_ERR(rt_dst_entry))
+> +			goto neigh;
+> +		break;
+> +	default:
+> +		return;
+> +	}
+> +
+> +	n = dst_neigh_lookup(rt_dst_entry, pkey);
+> +	if (!n) {
+> +		dst_release(rt_dst_entry);
+> +		goto neigh;
+> +	}
+> +
+> +	neigh_ha_snapshot(addr, n, netdev);
+> +	ether_addr_copy(dst, addr);
+> +	dst_release(rt_dst_entry);
+> +	neigh_release(n);
+> +	return;
+> +
+> +neigh:
+>  	n = neigh_lookup(&arp_tbl, pkey, netdev);
+>  	if (!n) {
+>  		n = neigh_create(&arp_tbl, pkey, netdev);
+
+Code looks fine,
+Reviewed-by: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
+
+> -- 
+> 2.31.1
 
