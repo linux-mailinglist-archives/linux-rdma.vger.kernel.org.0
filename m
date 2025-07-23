@@ -1,286 +1,146 @@
-Return-Path: <linux-rdma+bounces-12407-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12408-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF816B0E9CF
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jul 2025 06:49:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0863CB0E9F9
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jul 2025 07:13:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72A5C1C243C4
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jul 2025 04:50:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 447BF160297
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jul 2025 05:13:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C8FF21ABAD;
-	Wed, 23 Jul 2025 04:49:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72D4D242D97;
+	Wed, 23 Jul 2025 05:13:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JB3p/PlO"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1872C1FC8;
-	Wed, 23 Jul 2025 04:49:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E3CD13A265;
+	Wed, 23 Jul 2025 05:13:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753246185; cv=none; b=a06sRUdPJ0ELclh7VgKAr0eu+n1ba6tJy/eTF1uO7otFveEgndG5dPoksAAm/DMWHYtUC2IfLQK5qJXXQQtcrzLpyIvhz8lyvO+BtoazkPAAaf0wFTrWt9uOKE4hiMJKl38OUvcRSOUikZqz9IF5QgQnnB4tJMpeQ3XUwMUWisY=
+	t=1753247594; cv=none; b=rHebC5jRSHyJVUwBpo4mbrry4y9PGOnMJQMMGeSOG+erNhgwGo94pumrBuNFlgOwqDJ/B04T5wQOWVCsDGuSCWtfhQdIuWqesqDZJ366low4LIkKj6XZ1yyPlWPf1muIjmiHyEPCIDCtXmmqLBLeCVP73lFlqqaXycDjpkE49KY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753246185; c=relaxed/simple;
-	bh=26EE2xjoIICOObnyz/2jnRgqEmWOtW4bbfbTz6qa83o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VLYGdRZUYJ2B0x0Ih7FJheCBOnxB/oFjOUBPuY5AFYrgFjmU9e533oI6cpSTVVKuNG0INDaLUkYQNVry0IukP/KPfwzapNNe8og7h0MLNw5tpyucXElrACnhQ4qfgo/jDJj41dIYKXsZc2CLnrJQ4ikFZ3Z87+KPu15lhrG2ARA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-ec-688069e2743d
-Date: Wed, 23 Jul 2025 13:49:33 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: willy@infradead.org, netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, almasrymina@google.com,
-	ilias.apalodimas@linaro.org, harry.yoo@oracle.com,
-	akpm@linux-foundation.org, andrew+netdev@lunn.ch,
-	asml.silence@gmail.com, toke@redhat.com, david@redhat.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, linux-rdma@vger.kernel.org,
-	bpf@vger.kernel.org, vishal.moola@gmail.com, hannes@cmpxchg.org,
-	ziy@nvidia.com, jackmanb@google.com, wei.fang@nxp.com,
-	shenwei.wang@nxp.com, xiaoning.wang@nxp.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com,
-	sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
-	hkelam@marvell.com, bbhushan2@marvell.com, tariqt@nvidia.com,
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-	john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
-	leon@kernel.org, mbloch@nvidia.com, danishanwar@ti.com,
-	rogerq@kernel.org, nbd@nbd.name, lorenzo@kernel.org,
-	ryder.lee@mediatek.com, shayne.chen@mediatek.com,
-	sean.wang@mediatek.com, matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	aleksander.lobakin@intel.com, horms@kernel.org, m-malladi@ti.com,
-	krzysztof.kozlowski@linaro.org, matthias.schiffer@ew.tq-group.com,
-	robh@kernel.org, imx@lists.linux.dev,
-	intel-wired-lan@lists.osuosl.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next v12 00/12] Split netmem from struct page
-Message-ID: <20250723044933.GA8691@system.software.com>
-References: <20250721021835.63939-1-byungchul@sk.com>
+	s=arc-20240116; t=1753247594; c=relaxed/simple;
+	bh=BbpAI5hMND9SVUkOBsOlvkpudPTkU9pgxy330nfWcwQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=crCC1QnFNGzfcza4+TlwZTzBq5g4a7BxzfzK6TgCyXnihp2YSRq7ijbzDRIh9kODa0zA0VEMCLlBlcJ6+vQuqhMolT5+b1+VUcd3hyXQANRa7UPImadV8elHf9J3M7AbwWrS+yahdXh1b/yDY5WmJmV+FnYiBxsumM8JYozYTLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JB3p/PlO; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3a53359dea5so2975048f8f.0;
+        Tue, 22 Jul 2025 22:13:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1753247590; x=1753852390; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DE32jbDd/HioTLS9+9HLoYHJ9pucJMqlemZ36gAqlqE=;
+        b=JB3p/PlOEKtaI+7b12lrkaAMQ7kQKPup8kIF/GSmioiG9LX5E+RL8lYpyr6pfZf0u7
+         vlQqdt4y0D8rU3/zf3kKB0c27LSwlN1bDFpJwHzC72HzVESnnUcXLX1ACiZjGx5wKXna
+         sB/Uf4IWlMcfB4pgKvOXwf2BeaiVVkXqTLu7JD15QuuYDc4j4dz2TXMf/9bCFddjScPE
+         iFXoRWP+zkstDcOJGE5Dx2pG2giHb0i5XoYgsRixlaWmIyCclM92xbgqTUcBhVPEKwFx
+         IEslLME+u3vvh1SVKSn3DaX0iHzxiiRe4Th8k+0qPrWwkPioZwt7dSO15s5lQCYebhoZ
+         H36Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753247590; x=1753852390;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DE32jbDd/HioTLS9+9HLoYHJ9pucJMqlemZ36gAqlqE=;
+        b=PqWXE48s4OLk3CfkvhYl5yBpqgjQLMkTNKp0vS2M1OTm7Ukrbanz7/pAchBOOYJNVr
+         uouzQJv61fFd6glCK0z3sotUubraF3BFD72IQi8lYUYUa9XaxY2S70wgorUbaAHR3nzp
+         QYNne9epoVdk+V15Pj4Fm1902n4m7UwxRGxqJD9AvtVUqfeELL/Nbo2mAbzlcN/gQoP/
+         iSkOGwA7F4i16WFWepEsDskuO3n4SkyV1/yWU1YE+quJLH64r7CXnIy5grbt5S8Eg3ak
+         4vRyhMKGLr9S4s9KGf69NJY6+ylrdw0h2MCOqZ3+3IHKkMGbefFMMHZ/3anR9iDGbdqe
+         9UhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVapH3YwkwCXuDEuUjNoo774CsWRBkFe2Cw7q4EOEhDfTWMbhUerd2OqW1BQnKoNDwlAnrNLKAF@vger.kernel.org, AJvYcCXGCTRiUl7LmY5iTPlrvR2VFBk6BZc1jEB5DYBQP5f+zCXSuq7QimH/GRMH3hWQmb+qtbQ2Yui2YZwd@vger.kernel.org
+X-Gm-Message-State: AOJu0YzyL99T6OPefdWiHG3N2iPbDPRPMjxMX4edhWFvlNkQkJft0HgN
+	lw3dA8hKXE1x35I9ok2DNipAPyR5JoO3867JxE6klOLyrsPIVMDq24ml
+X-Gm-Gg: ASbGnct6VjIVqOG/EQyZwgLYPy00L/9NCZpbBthnDrbpdKtv8qkD6EVwh+YR+Rl6MAU
+	VsZ/8zJVmCrf4KqDUrxJBf9SF4hUMYUQ4rmMd6yPk+h5/KGx713IJLFTTsdz4wSg1HUY6VY/ORg
+	rwlqlbZBTQGqWOpvmqfLTsHb6YLdjsqpgMEoP0ODVZot6FvS77/vicAap3TO+H7IeYOQdu+95VY
+	Km1LkWtkcyOVPlsZCopymrjStxW8/fQP6nvkTZ3S9/sQ9WXUwxkQxdSa9J/YU6cj1PvCZ30EpMw
+	VDeMPeG3udZczz9ZPrrUKWE8oi64p3MiQGacuP0T7PLCNDIEWd+Btp/gC8FDuAiuIznbfqSPQDQ
+	55VhYtarZV8KN4dSU9X2XL7gK3NEaSYj1DL8QLW2Qpfos5h66x6UUYcz5
+X-Google-Smtp-Source: AGHT+IEJdmVWNNE0+UDh+k0mmesJ/bJRnK8686ssOI2JDovuehYP5oxZCBAoMPK0qP2PjTktqX9Bng==
+X-Received: by 2002:a05:6000:4382:b0:3a5:2b1d:7889 with SMTP id ffacd0b85a97d-3b768f026b5mr1144918f8f.43.1753247590103;
+        Tue, 22 Jul 2025 22:13:10 -0700 (PDT)
+Received: from [172.27.60.70] ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45869183cb2sm10424415e9.1.2025.07.22.22.13.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Jul 2025 22:13:09 -0700 (PDT)
+Message-ID: <bd54a7d5-c0bb-4116-93eb-ea2cff8cfe32@gmail.com>
+Date: Wed, 23 Jul 2025 08:13:08 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250721021835.63939-1-byungchul@sk.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SfUxTZxTG8973frWjyV0n7p2ELOlmlpEA6tSdkfkRN+Pd4jIjicnc4mzG
-	zdoI1RRtgWSjIszZrUjAZbYrGU4sn4opAzqsbBaCnZrxJVj5KA42glpErVQqrqzXzMz/njzn
-	ye85Jzk8Vleyy3i9Yb9kNGizNaySVs4k/JQ6qbfoVnh3g7OpkYW+8AkGGubzoOaGh4H+OgLn
-	eucpcNa3IngQHeHAfWQUQ7jrIgsnT0QwRM/aaHD2FNMw1/QIw9/dExz4ff/Q0OD+AMZdUzR4
-	D7dh6JxbDhNH/SzYihcw2IMlLCwOLzBwPnqHgyJPLQXnb7dw0NtaysCxR6cwtFluxLsmhxgY
-	aHeyMHCoD0GwcZGBKV+8MFQ7ykFpgwOB79c6FoqK34BQywMO7n7XhWG8dCPEjpugu2opRC6H
-	EIycGqRg0evh4I/gGQa6mtoouPpnFEPk20oWrDNHEQza2ym4UnmWgerLV6n4HpkwtPiYgor+
-	KhYmi8cR9HdO0PDDwVIETR0BBu554ycvzDvZjZvEztAsFj1j1Uj8ue46JU6XxSgx0HGJEn9x
-	jHFilfuA2FybIp703qREa6Afi+76I6zovl/OiaNDXlb0H1+gxebqQnG62Y62Je9Uvp0lZetN
-	kjF9/W6lzve9ndpXti4veK0CW1BNuhUpeCKsJm1fVaCneup0JS1rWlhOHn5dwciaFV4jgUAU
-	WxHPLxHSyVD5R1ak5LFwMIFMh2xYzrwgbCYufzsrZ1TCm8QSTpZttbCGhG55nmBUwvPkd/tf
-	T/BYSCGB2E1KjmMhidTEeNlWCGvJRPw/ZJ0ovEJ+a71IyVVEmFKQMxdm/1vzJXKhNkCXIcHx
-	DNbxDNbxP7YK4Xqk1htMOVp99uo0Xb5Bn5f22d4cN4o/reuLxx970P3eTB8SeKRJUFlaCnVq
-	RmvKzc/xIcJjzRJV5NyXOrUqS5tfIBn3fmo8kC3l+lAST2teVK2KmLPUwufa/dIeSdonGZ9O
-	KV6xzIKoolt7fFvL3hteqcw4vYGkHrs3IjWGt3U0JJpnMt9PchUGDyfv2pGyvUSlNy/tDpk+
-	2ZThV8x5pkXbZqvd9m7XW3fuftg6vMJV9GOB25oa3rJr+3ODW8fKC2LmxENrHloMO+Gdktdd
-	PePeb3ZkZM2aS7g0tGVV5OWeAYNkeLUv47qGztVpV6ZgY672X7cHPHiwAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Se0xTdxTO7/7ui4Yb7yrDG3FL1sUZSZQtvk6iGybGcLPExYUZnfFBgze2
-	A6procKSYdGazWZUlI3ZUhJQ5K0lRaBCRVeYgJqpFLAqFq0bAVfng4KWsmJrssz/vnPO9zh/
-	fCyWh6mFrFqTK2k1ymwFLSNlX6w9vMyvNqg+vl7yAdjsTTTcmqyioPFVPtQ+cFIwUC9A581X
-	BNga2hAEQ/cYcBwdwTDZ00vD6appDKHmYhJsN4wkTNlnMPx1xc9An/tfEhodm2C0ZowE1w/t
-	GLqnFoP/WB8NxcYwBovvCA1zd8MUXAz9w8AhZx0B3RX90fHvVgZutpkp+HnmDIZ2w4No4KNh
-	CjwdNho8h28h8DXNUTDmjqYG6kYYMDdaEbgv1dNwyLgCAq1BBp790oNh1LweIif1cKUyEaav
-	BRDcOzNEwJzLycAfvnMU9NjbCRh8GMIw/VMFDaYnxxAMWToIuF7RTEH1tUEi+kc6DM/NElA6
-	UEnDI+MogoFuPwnlRWYE9i4vBc9dRnL9BrE78BSLzvvVSDxff4cQx0sihOjtukqIF6z3GbHS
-	kSe21CWLp10ThGjyDmDR0XCUFh0vTjDiyLCLFvtOhkmxpfqgON5iQZvf3y5bt0fKVuslbcpn
-	GTKV+1cLsb/k03zf7VJsQLUpJhTHCvxKYexsBRnDJL9YePljKRXDNL9E8HpD2IRYNoFPEYZP
-	fG1CMhbzRfHCeKAYxzjz+Y1CTV8HHeNw/BrBMPlebC3nVwmBx843Nhz/jtBv+fONPeaTBW9k
-	gojRMZ8k1EbY2DqOXy34o52I4Xf5D4XLbb1ECeKsb6mtb6mt/6srEW5ACWqNPkepzl61XJel
-	KtCo85dn7stxoGgla76fPe5EQU+aG/EsUsRzhtaDKjml1OsKctxIYLEigZvuLFTJuT3Kgu8k
-	7b7d2rxsSedGSSypWMB9vlXKkPN7lblSliTtl7T/XQk2bqEBpS7b9HLBXfztog1lEfNmQ5DD
-	X5Vn2TqbS6fsHbNLf0trMj7ZSeWdO1B28XjeN5nBVI/nam2z/EhNfvnMjR31iUVdZ8eTuLKq
-	das1232ndqf9vmhbYa4ulO5cUljOFMxLjcDjXRnz5Dk7Mh1beqvCienJXw7F09sI/dBlV9nE
-	R/2DClKnUn6SjLU65WsqBJKsjgMAAA==
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv4 net-next 1/1] net/mlx5: Fix build -Wframe-larger-than
+ warnings
+To: Zhu Yanjun <yanjun.zhu@linux.dev>, saeedm@nvidia.com, leon@kernel.org,
+ tariqt@nvidia.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+Cc: Junxian Huang <huangjunxian6@hisilicon.com>
+References: <20250722212023.244296-1-yanjun.zhu@linux.dev>
+Content-Language: en-US
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20250722212023.244296-1-yanjun.zhu@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jul 21, 2025 at 11:18:23AM +0900, Byungchul Park wrote:
-> Hi all,
+
+
+On 23/07/2025 0:20, Zhu Yanjun wrote:
+> When building, the following warnings will appear.
+> "
+> pci_irq.c: In function ‘mlx5_ctrl_irq_request’:
+> pci_irq.c:494:1: warning: the frame size of 1040 bytes is larger than 1024 bytes [-Wframe-larger-than=]
 > 
-> The MM subsystem is trying to reduce struct page to a single pointer.
-> See the following link for your information:
+> pci_irq.c: In function ‘mlx5_irq_request_vector’:
+> pci_irq.c:561:1: warning: the frame size of 1040 bytes is larger than 1024 bytes [-Wframe-larger-than=]
 > 
->    https://kernelnewbies.org/MatthewWilcox/Memdescs/Path
+> eq.c: In function ‘comp_irq_request_sf’:
+> eq.c:897:1: warning: the frame size of 1080 bytes is larger than 1024 bytes [-Wframe-larger-than=]
 > 
-> The first step towards that is splitting struct page by its individual
-> users, as has already been done with folio and slab.  This patchset does
-> that for page pool.
+> irq_affinity.c: In function ‘irq_pool_request_irq’:
+> irq_affinity.c:74:1: warning: the frame size of 1048 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+> "
 > 
-> Matthew Wilcox tried and stopped the same work, you can see in:
+> These warnings indicate that the stack frame size exceeds 1024 bytes in
+> these functions.
 > 
->    https://lore.kernel.org/linux-mm/20230111042214.907030-1-willy@infradead.org/
+> To resolve this, instead of allocating large memory buffers on the stack,
+> it is better to use kvzalloc to allocate memory dynamically on the heap.
+> This approach reduces stack usage and eliminates these frame size warnings.
 > 
-> I focused on removing the page pool members in struct page this time,
-> not moving the allocation code of page pool from net to mm.  It can be
-> done later if needed.
-> 
-> The final patch that removes the page pool fields will be posted once
-> all the conversions are completed.
-> 
-> 	Byungchul
+> Acked-by: Junxian Huang <huangjunxian6@hisilicon.com>
+> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 > ---
-> Changes from v11:
-> 	1. Rebase on net-next/main as of Jul 21.
-> 	2. Change page_pool_page_is_pp() to check for const type of
-> 	   page.  For now that it's called along with every
-> 	   pp_page_to_nmdesc() call as Pavel suggested,
-> 	   page_pool_page_is_pp() should also cover const type of page.
+> v3 -> v4: Relocate the kvzalloc call to a more appropriate place following Tariq's advice.
+> v2 -> v3: No changes, just send out target net-next;
+> v1 -> v2: Add kvfree to error handler;
+> 
+> 1. This commit only build tests;
+> 2. All the changes are on configuration path, will not make difference
+> on the performance;
+> 3. This commit is just to fix build warnings, not error or bug fixes. So
+> not Fixes tag.
+> ---
+>   drivers/net/ethernet/mellanox/mlx5/core/eq.c  | 22 ++++++----
+>   .../mellanox/mlx5/core/irq_affinity.c         | 19 +++++++--
+>   .../net/ethernet/mellanox/mlx5/core/pci_irq.c | 40 +++++++++++++------
+>   3 files changed, 58 insertions(+), 23 deletions(-)
+> 
 
-I believe the curretn version is good enough.
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 
-	Byungchul
-
-> Changes from v10:
-> 	1. Introduce __netmem_to_nmdesc() and use it in
-> 	   __netmem_get_pp(). (feedbacked by Mina)
-> 	2. Fix a bug that fails on casting 'const page -> const
-> 	   netmem_desc', by using macros and _Generic. (feedbacked by
-> 	   test robot)
-> 	3. Add comment on pp_page_to_nmdesc() to ask for more attention
-> 	   before using the helper. (feedbacked by Mina)
-> 
-> Changes from v9:
-> 	1. Remove the patch 'page_pool: access ->pp_magic through
-> 	   netmem_desc in page_pool_page_is_pp()' and decide to wait for
-> 	   Pavel's work of PageNetpp() to identify page type for page
-> 	   pool, that doesn't need to access ->pp_magic.
-> 	2. Rename page_to_nmdesc() to pp_page_to_nmdesc() and add
-> 	   DEBUG_NET_WARN_ON_ONCE(!page_pool_page_is_pp(page)) in it,
-> 	   just in case. (feedbacked by Pavel)
-> 	3. Apply just simple casting from page to netmem_desc for
-> 	   accessing ->pp and ->pp_ref_count, instead of full converting
-> 	   page to netmem_ref for network drivers e.g. mlx4, netdevsim,
-> 	   and mt76.
-> 	4. Expand the support for drivers to access ->pp and
-> 	   ->pp_ref_count to fec, octeontx2-pf, iavf, idpf, mlx5, ti,
-> 	   and xdp.
-> 	5. Squash each helper with its first user. (feedbacked by Mina)
-> 
-> Changes from v8:
-> 	1. Rebase on net-next/main as of Jul 10.
-> 	2. Exclude non-controversial patches that have already been
-> 	   merged to net-next.
-> 	3. Re-add the patches that focus on removing accessing the page
-> 	   pool fields in struct page.
-> 	4. Add utility APIs e.g. casting, to use struct netmem_desc as
-> 	   descriptor, to support __netmem_get_pp() that has started to
-> 	   be used again e.g. by libeth.
-> 
-> Changes from v7 (no actual updates):
-> 	1. Exclude "netmem: introduce struct netmem_desc mirroring
-> 	   struct page" that might be controversial.
-> 	2. Exclude "netmem: introduce a netmem API,
-> 	   virt_to_head_netmem()" since there are no users.
-> 
-> Changes from v6 (no actual updates):
-> 	1. Rebase on net-next/main as of Jun 25.
-> 	2. Supplement a comment describing struct net_iov.
-> 	3. Exclude a controversial patch, "page_pool: access ->pp_magic
-> 	   through struct netmem_desc in page_pool_page_is_pp()".
-> 	4. Exclude "netmem: remove __netmem_get_pp()" since the API
-> 	   started to be used again by libeth.
-> 
-> Changes from v5 (no actual updates):
-> 	1. Rebase on net-next/main as of Jun 20.
-> 	2. Add given 'Reviewed-by's and 'Acked-by's, thanks to all.
-> 	3. Add missing cc's.
-> 
-> Changes from v4:
-> 	1. Add given 'Reviewed-by's, thanks to all.
-> 	2. Exclude potentially controversial patches.
-> 
-> Changes from v3:
-> 	1. Relocates ->owner and ->type of net_iov out of netmem_desc
-> 	   and make them be net_iov specific.
-> 	2. Remove __force when casting struct page to struct netmem_desc.
-> 
-> Changes from v2:
-> 	1. Introduce a netmem API, virt_to_head_netmem(), and use it
-> 	   when it's needed.
-> 	2. Introduce struct netmem_desc as a new struct and union'ed
-> 	   with the existing fields in struct net_iov.
-> 	3. Make page_pool_page_is_pp() access ->pp_magic through struct
-> 	   netmem_desc instead of struct page.
-> 	4. Move netmem alloc APIs from include/net/netmem.h to
-> 	   net/core/netmem_priv.h.
-> 	5. Apply trivial feedbacks, thanks to Mina, Pavel, and Toke.
-> 	6. Add given 'Reviewed-by's, thanks to Mina.
-> 
-> Changes from v1:
-> 	1. Rebase on net-next's main as of May 26.
-> 	2. Check checkpatch.pl, feedbacked by SJ Park.
-> 	3. Add converting of page to netmem in mt76.
-> 	4. Revert 'mlx5: use netmem descriptor and APIs for page pool'
-> 	   since it's on-going by Tariq Toukan.  I will wait for his
-> 	   work to be done.
-> 	5. Revert 'page_pool: use netmem APIs to access page->pp_magic
-> 	   in page_pool_page_is_pp()' since we need more discussion.
-> 	6. Revert 'mm, netmem: remove the page pool members in struct
-> 	   page' since there are some prerequisite works to remove the
-> 	   page pool fields from struct page.  I can submit this patch
-> 	   separatedly later.
-> 	7. Cancel relocating a page pool member in struct page.
-> 	8. Modify static assert for offests and size of struct
-> 	   netmem_desc.
-> 
-> Changes from rfc:
-> 	1. Rebase on net-next's main branch.
-> 	   https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/
-> 	2. Fix a build error reported by kernel test robot.
-> 	   https://lore.kernel.org/all/202505100932.uzAMBW1y-lkp@intel.com/
-> 	3. Add given 'Reviewed-by's, thanks to Mina and Ilias.
-> 	4. Do static_assert() on the size of struct netmem_desc instead
-> 	   of placing place-holder in struct page, feedbacked by
-> 	   Matthew.
-> 	5. Do struct_group_tagged(netmem_desc) on struct net_iov instead
-> 	   of wholly renaming it to strcut netmem_desc, feedbacked by
-> 	   Mina and Pavel.
-> 
-> Byungchul Park (12):
->   netmem: introduce struct netmem_desc mirroring struct page
->   netmem: use netmem_desc instead of page to access ->pp in
->     __netmem_get_pp()
->   netmem, mlx4: access ->pp_ref_count through netmem_desc instead of
->     page
->   netdevsim: access ->pp through netmem_desc instead of page
->   mt76: access ->pp through netmem_desc instead of page
->   net: fec: access ->pp through netmem_desc instead of page
->   octeontx2-pf: access ->pp through netmem_desc instead of page
->   iavf: access ->pp through netmem_desc instead of page
->   idpf: access ->pp through netmem_desc instead of page
->   mlx5: access ->pp through netmem_desc instead of page
->   net: ti: icssg-prueth: access ->pp through netmem_desc instead of page
->   libeth: xdp: access ->pp through netmem_desc instead of page
-> 
->  drivers/net/ethernet/freescale/fec_main.c     |  10 +-
->  drivers/net/ethernet/intel/iavf/iavf_txrx.c   |   2 +-
->  drivers/net/ethernet/intel/idpf/idpf_txrx.c   |   8 +-
->  .../marvell/octeontx2/nic/otx2_txrx.c         |   2 +-
->  drivers/net/ethernet/mellanox/mlx4/en_rx.c    |   4 +-
->  .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |   3 +-
->  .../net/ethernet/ti/icssg/icssg_prueth_sr1.c  |   4 +-
->  drivers/net/netdevsim/netdev.c                |   6 +-
->  drivers/net/wireless/mediatek/mt76/mt76.h     |   3 +-
->  include/linux/mm.h                            |   4 +-
->  include/net/libeth/xdp.h                      |   2 +-
->  include/net/netmem.h                          | 153 +++++++++++++++---
->  12 files changed, 161 insertions(+), 40 deletions(-)
-> 
-> 
-> base-commit: 4701ee5044fb3992f1c910630a9673c2dc600ce5
-> -- 
-> 2.17.1
+Thanks for your patch.
 
