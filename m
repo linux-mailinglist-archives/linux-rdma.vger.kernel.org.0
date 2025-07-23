@@ -1,82 +1,82 @@
-Return-Path: <linux-rdma+bounces-12440-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12441-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49906B0F940
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jul 2025 19:36:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BC93B0F945
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jul 2025 19:37:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B19A5848CC
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jul 2025 17:35:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49CA11CC422D
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jul 2025 17:36:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E86C23D291;
-	Wed, 23 Jul 2025 17:33:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75B9D2405F8;
+	Wed, 23 Jul 2025 17:33:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="WNleRev6"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="v9UB7IHn"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2042.outbound.protection.outlook.com [40.107.102.42])
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2063.outbound.protection.outlook.com [40.107.94.63])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 362A123B636;
-	Wed, 23 Jul 2025 17:32:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF64523F295;
+	Wed, 23 Jul 2025 17:33:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.63
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753291982; cv=fail; b=X9khp+WsUSc89NtvI32u/hI7MMR4QH8ZjyBziZb/xv/UMlBrftGwowgeskbtZ11V+aIP3ux/xK25Ets6elGKUOhjUDkB2ZWkIKYI3Z+eJxJoXb/RVsowKo72RJjSDR5VgeG2DNwxVGC8YWo77t8P2yKuTgwvvgfcxp80o+FvVIQ=
+	t=1753291987; cv=fail; b=H4IOEkjizuCoF0oEJzoXU0/uh8D4Fu9+qXzuOJOaHXsUgjQNplsXthkxi0HBbzm0XMKdO1vFHSx5XEdwQBs/RgxqLz63tVUJ38Wex73t9oCXqHW+d8xeaJ4M5OFVRRYOYi9Feoi+EaKSkDcpt1Jx+KcpU1/iLRFpeoYD12Q/Uek=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753291982; c=relaxed/simple;
-	bh=ZBlcUtpR6D07RjAX9txMRoXGLB+7fqMd2uqbmoBX6FA=;
+	s=arc-20240116; t=1753291987; c=relaxed/simple;
+	bh=Cs9x42X1/rkFnmN2izPH+bWBRPAThmt/94TW4oqidSY=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=a394yxPikRsKszlZrWT78wlnA/lr37mWrzb3cX7aSIND8j6fX1qMiXNya46UPT0onXPDToxr8CeP4CGKDOtw/icnDOUdX2tDIqKZyaBlS8zndhdFmJ6C35ll5FlPzx4k0YWsbI3oCIkkM3vRekG8QdtYVBRqUqS0uZRPgFSkEMI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=WNleRev6; arc=fail smtp.client-ip=40.107.102.42
+	 MIME-Version:Content-Type; b=c0Opdxu1WktBlIsq+SL7IatW9fCn+ueh/Qp/Bh+S4wX+/HvcB3focBIS/ILaygBXN0DItLHa+/7eglNSfsXgtDW2JHXdzLIKc1zzW3RYLHTOcIOI/cgXB8kiSCgiWW1AmET9TrELUm+xwkD7Xwq6VoBbfdrZsdI4BoEHdfO9HNg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=v9UB7IHn; arc=fail smtp.client-ip=40.107.94.63
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Mr/NY7enBmLVUUgzEZfAzIB9v3wVWNVs5G4n/PPT4GeMUO3QdwMpUkN4VwPi1OuIV0OBYKcGHV7/SNmbiCV6c6zEyghrlAVBS5MjlgVpG6J3nuUM9yozoh2t7bnuxKmXSqYrb7dbV5blAS5+JtJuW5kJTsY7DYjsM2Ri025mhQWdSPUdQ89K87udGgO5kfsbjNRIl6PQ2hRTxBre7XY2eTe5iEVDj5oPaLGWJQH1PPxAReXuK5YZwGS73IExyA8phrknxiKuZ5d1Mj8bdG9AE4F0kfL+r//D0Up53p0W6DvOdJbEtjgoBM2hZEc6puQf3Ks4UC8OztMUxLvsEw2mjw==
+ b=XTdLsTbE9h9Elunj0n8wyHnjPZoAxurwHyDcxrVqk5G4UWUT/WhPtrZ11YhfyGon4cwnxdOrKOp+APPU3V7R83Ty92jyrj6hxuf+PxRJwGtw86h/U79dfswH+8qRExz4OVF0TcXuPphu5CaxWLFiB0Lsfmj+anYgSKZPSPY3qP5C4SELBGuwZ1H4sS74Qtf1dGLHMwk3oVJCi7GuCE0QfIanoScMfhszEt8kxsLTDouuG2uW4BXHBSACXNghiB5SsyO68lRyJI8s8fIO9ocPSeIzWzHxF8WjCwRlFy+o0XJdLYL0QHNRBm0A0GIJMGu1/Tqh5yMCXHnitgy5UeDGSg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9HugzHnngS7QUUkVIZnV+vVgBVUNR77XJ+O5fwLTuq4=;
- b=x5f27SEWcniPTrw97VTzPyLlTqMdo4pXmr+OT0iHucxXsXFTs7Uc3N3gDHaFBQEbJmsjARAq+l7hmxF/20BAM+qs2CwXsMXDZgjzTpSYYpr5CVSgdfxW5lwmZxk0ACm8c+WhllcKgl7Lnr52JynMwiM36lAqH7ULEAwF/oSFwcDeMBl54YMbFr/nFSPuFZ1Cx74CRG5QNe/dOC16OB8qapLy1k6Uw15ZL8AHC1OhGtJlXOTFVa+HWE/QolR97nrTfp6iI/84/cr2bE0ifRPLsGLdnDlIeErU1nqg8fWMO2PsT3DWlp78uACV8hVAs6GQBer0LVi8+xF7isA8AX7iuw==
+ bh=Gc1i36iy1Vg41xAQePM2ehWZstorRFU72rYgZkltkMw=;
+ b=OfaREGoicgrP9IkJHJJ4ESbFYPkRUQEgJAOG6MyZekgr9lQo6R8m4n7l6T19rX8vakm/wYB0FGIOGcaUTw8npc07TvbUzjYu73WciQQUZJ1hGec7ZhM7GnRNZaXYBUkAcqtknTwUDm4R10Vt6wBSH5uLUYxVb9M2O0lvCu3ETYfoeB1zdsk6XeY8UIvIZvpo0U2aH57KRJ5qK9j6Vh/FHd6ZIWRtcepdUm1l8LAYVAIEgfBXeFKdyZxDXpfcLoM41DtGKxA1B+FCKgDugx/3hEwO8tJwIv8eNFIqC48AnREc3p1JyJ9hN7R5E98BWfmyxnNezWJV8Hx6cftIqWgbUA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=davemloft.net smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9HugzHnngS7QUUkVIZnV+vVgBVUNR77XJ+O5fwLTuq4=;
- b=WNleRev6qglfjNcDzdG8vA8eRsz/2c2DzmADWoKhAlG1yovXPboWuVpUOVXUBTZ0xtWiVRShzAJeC9z7faQG7ayBXKuh78mW8nZSJkEf/f6YBAANGYd5BIpQd53ymuyIq46KYCTWdllohpzXxG9qPl4xsiY+hSZZqXQaMiz029U=
-Received: from CH2PR19CA0015.namprd19.prod.outlook.com (2603:10b6:610:4d::25)
- by LV8PR12MB9083.namprd12.prod.outlook.com (2603:10b6:408:18c::16) with
+ bh=Gc1i36iy1Vg41xAQePM2ehWZstorRFU72rYgZkltkMw=;
+ b=v9UB7IHnSYkZ3aqoDIJaCfgDGWz8Lmqb0cVdPQV3kKw+NwK9dYKto2ViO+Gp+vCUBnjRdY9bQJ3FGq9mvdDskiRvgT9Ys9J8SGfPreGjQCOMmWTPBw7Q91V9rqeLmvmHbG4JGbUmq/yvFpVpphyOWwAJkFUehuDzFB2eEHka1EE=
+Received: from CH5PR04CA0002.namprd04.prod.outlook.com (2603:10b6:610:1f4::20)
+ by PH7PR12MB6737.namprd12.prod.outlook.com (2603:10b6:510:1a8::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8943.30; Wed, 23 Jul
- 2025 17:32:56 +0000
-Received: from CH2PEPF00000141.namprd02.prod.outlook.com
- (2603:10b6:610:4d:cafe::24) by CH2PR19CA0015.outlook.office365.com
- (2603:10b6:610:4d::25) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8880.27; Wed, 23 Jul
+ 2025 17:33:02 +0000
+Received: from CY4PEPF0000EE39.namprd03.prod.outlook.com
+ (2603:10b6:610:1f4:cafe::b3) by CH5PR04CA0002.outlook.office365.com
+ (2603:10b6:610:1f4::20) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.20.8964.21 via Frontend Transport; Wed,
- 23 Jul 2025 17:32:56 +0000
+ 23 Jul 2025 17:33:02 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CH2PEPF00000141.mail.protection.outlook.com (10.167.244.74) with Microsoft
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ CY4PEPF0000EE39.mail.protection.outlook.com (10.167.242.11) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.8964.20 via Frontend Transport; Wed, 23 Jul 2025 17:32:56 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.8964.20 via Frontend Transport; Wed, 23 Jul 2025 17:33:01 +0000
+Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Wed, 23 Jul
- 2025 12:32:56 -0500
+ 2025 12:33:00 -0500
 Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
  (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Wed, 23 Jul
- 2025 12:32:55 -0500
+ 2025 12:33:00 -0500
 Received: from xhdabhijitg41x.xilinx.com (10.180.168.240) by
  SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.39
- via Frontend Transport; Wed, 23 Jul 2025 12:32:51 -0500
+ via Frontend Transport; Wed, 23 Jul 2025 12:32:56 -0500
 From: Abhijit Gangurde <abhijit.gangurde@amd.com>
 To: <shannon.nelson@amd.com>, <brett.creeley@amd.com>, <davem@davemloft.net>,
 	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
@@ -84,10 +84,10 @@ To: <shannon.nelson@amd.com>, <brett.creeley@amd.com>, <davem@davemloft.net>,
 CC: <allen.hubbe@amd.com>, <nikhil.agarwal@amd.com>,
 	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
 	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Abhijit Gangurde
-	<abhijit.gangurde@amd.com>, Andrew Boyer <andrew.boyer@amd.com>
-Subject: [PATCH v4 12/14] RDMA/ionic: Register device ops for miscellaneous functionality
-Date: Wed, 23 Jul 2025 23:01:47 +0530
-Message-ID: <20250723173149.2568776-13-abhijit.gangurde@amd.com>
+	<abhijit.gangurde@amd.com>
+Subject: [PATCH v4 13/14] RDMA/ionic: Implement device stats ops
+Date: Wed, 23 Jul 2025 23:01:48 +0530
+Message-ID: <20250723173149.2568776-14-abhijit.gangurde@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250723173149.2568776-1-abhijit.gangurde@amd.com>
 References: <20250723173149.2568776-1-abhijit.gangurde@amd.com>
@@ -103,356 +103,710 @@ Received-SPF: None (SATLEXMB05.amd.com: abhijit.gangurde@amd.com does not
  designate permitted sender hosts)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH2PEPF00000141:EE_|LV8PR12MB9083:EE_
-X-MS-Office365-Filtering-Correlation-Id: 428cc9de-1aea-48b8-7644-08ddca0ef62e
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE39:EE_|PH7PR12MB6737:EE_
+X-MS-Office365-Filtering-Correlation-Id: 799637c0-6302-40d3-c564-08ddca0ef974
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|82310400026|1800799024|376014|36860700013|921020;
+	BCL:0;ARA:13230040|376014|82310400026|36860700013|1800799024|7416014|921020;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?Lrpqy8s7nxNhJq5iqnIdUxUzWF7srXxDPmxUFBfvhEk3qvHa8Jxk8LownCFN?=
- =?us-ascii?Q?hE8Qlt2Mc1VUFG3IxJX1+2AtRzz8s32e6AZWlR55atqW0H4j01lwffNL7S1z?=
- =?us-ascii?Q?5WY1Eb7YYPQTyPngXBg4vn2cjQVsdyW/smtb1a4yXKwWLFbS6jy+CjQpt9TN?=
- =?us-ascii?Q?2by7jZcS5T8wprgC+9De8SbmIBUMzFYAexsffenXALBg3GWcR08qxigtMyRX?=
- =?us-ascii?Q?3K9SgkV6KL2OxkMt0T6plGpWPb/Fu5qBUgVIgUY3TzUboCioP5LuJuhFcKcW?=
- =?us-ascii?Q?pQFqIqFdxdzbosiKYpkuM/CJeaAGR5kNj66BrG93QhiqLzlIq0QK8qKNPAUL?=
- =?us-ascii?Q?nQ65RmB7xa2XnPstPVdWisMCFzkHe72SV/G1OXoneMEyd8eNIhqpG4+kKyJA?=
- =?us-ascii?Q?A+Z/E8MWkrUE/vS5Ewg26qmTPFe/DwDHm4iOH5//qh/iFnkhfB2xsvvLEt6t?=
- =?us-ascii?Q?UwdC42XgCtLri4vbkAWTfBj3GM4D3fymbmbjblQK4RNYemnBdq/UPxJTdtWQ?=
- =?us-ascii?Q?of/PmVQoEP/E1GCep/wko5qvENJI3gooRHKs8mGTls/FDE/136fwjCj+e/D5?=
- =?us-ascii?Q?y1C/+QNnzgc+6lC/inNB0tiNKxS9Po3eIAhnCqdqZi0KYOHkoenO1GFNg9pj?=
- =?us-ascii?Q?3dI+ZIZROBo2Hwu01+TNMXp1a0JhXrvnh1cULz+z47lgkW7f8v19jmRV2ynd?=
- =?us-ascii?Q?KnSWkT1mJD/SrxxPkf/kVfAQghiWQNANkfeJJvqPe2BvzrPlxQ62oyPdt2cj?=
- =?us-ascii?Q?c4MdSr10YCixqx4OTLkE2BgZR8uxgWeK26lUlrZHewh0Bmsb5CrxUXIAGhS7?=
- =?us-ascii?Q?oSQF8LTPWR7GMoSD4vIT9zyyfBJRgbJwiV+7dFjSVBm0zCHlPxD/F3maPVCM?=
- =?us-ascii?Q?KRKTxDN6I9zQX87/Atnc3Gy0imhiu2tNbt84c1zlSrwicewGY6GSK+8Ip985?=
- =?us-ascii?Q?aGHj9RFCsjaxc2oTL64AQTzU0U+ZpplMVs0HwT/eChaFR7MnddAeTfprAhwZ?=
- =?us-ascii?Q?ZvSsDFgCU2RNwDOmxbQP7GGoBPLAplO9EU+TDeupJt7ymyFRF5nS7YtRXTHA?=
- =?us-ascii?Q?a8UC0ywk49ZVxbi5shebR5piCa4xtbOYH2yDkDtCJP7HHn1dfslZeCqkhPk4?=
- =?us-ascii?Q?g51ctJZUWf4T1/gQDmFTRcUHj8Iu+FNVXxC3UkpQ0ETw9ABXVK2w3aML3H3B?=
- =?us-ascii?Q?vMfyP+zBPqpoa3IKjNtxK+Sl1xmFXgg1KYUUHu52XTVw8138NwMG3xG/1sWY?=
- =?us-ascii?Q?YSlyq7MGQ+BV1B/wji5dn1i6UFLt4D5s5squTcI01vfhF/P/0jYtBKcUbXe3?=
- =?us-ascii?Q?HBVfMqmZNyMWmAKpmhSe/nxAVfS1D06zEv3avMDLvNV2d2h2VEZA4vYHAC9e?=
- =?us-ascii?Q?KEN/0Cx+kzEU9LZ0vcwj9N0ycvvH3qt2Ph0iuab1cryYoGY7AGXJlVnG8eKV?=
- =?us-ascii?Q?b3K+41Xd/zoXWhLPRa9Wn/1b5GFHsmeQ2flbtSpZ0A9Ny8XwtQ2wqL3gzgtX?=
- =?us-ascii?Q?RwWffNXcE/6mgy1148BCWoRa86VECS/SJTDlJXzaTA85D1KtKGbbE8pbbw?=
+	=?us-ascii?Q?QBO6qgM/NxNZPVq6hyWQ0CMgA1w4cGv1oNNRULJ3R7qu5V2sOyNMzbLwvihR?=
+ =?us-ascii?Q?lGxLCsnvWpC9drc3qHmlTRvvP9etVC9IRMqD8HIRPCst2z3exMUxnANLxA9W?=
+ =?us-ascii?Q?8ANHvrzFv6Zrz7ECVi0efaIOahz2TOv9E1HPw8CvUTI+0CkN6lFvcGuK2hqR?=
+ =?us-ascii?Q?h7VPfE34F1uIJQdDMkH4TNIKseo/baPNcczji9HqK4zgv/WNCJRsFNruZMgs?=
+ =?us-ascii?Q?1n3kq4FWMR0oJ0aHhq3QCAkmS2qINLKhMyU2MHviLYXHPLgQ1DSWpGqjWkR0?=
+ =?us-ascii?Q?I4cq29KBNA0Y0lhW9s+21+PGEzOcbONHDucj49pdFJOdkn78O/qiAOxTGBEB?=
+ =?us-ascii?Q?ToQLKIdpSJOuMY0hOVf/BvmIq3NEG3o3FTDXADmg7h02kRbY447kMNaN7HuA?=
+ =?us-ascii?Q?0M/Z3ryKvho2Y/tR6v0EOhyTlMnadozj4RZ4eqPgU3569g47JSjJ6bFsrgk0?=
+ =?us-ascii?Q?GHVPVd4VW+smrQYWEKMjOk0/iZ+rj/9xOxndMnnDM16ZuFZtUN890d18OI9R?=
+ =?us-ascii?Q?wRZVzMKWAn2fmpnvRpzfelcfybssfT3g1wNWGxJOjnaSULjYaqir+ndEUnr6?=
+ =?us-ascii?Q?571IEjYk5KA5BMXvI8RWokINyKv808QxbUWnEoenWgk+MDjbkJUmfGvolYrp?=
+ =?us-ascii?Q?p8iAB75D8JPb5u3JWJjkwUUU/Khp1KTPieT9mtvdz1vv/2V9f2wuAVnW2jgP?=
+ =?us-ascii?Q?f00Y5PVst60FRPi5maKmMDogyNr7UDvwnqEmqxOlWSTEAw4F14SRMAsuiiBJ?=
+ =?us-ascii?Q?dlrsle6HSPvVU/BOqDslTs2XYIow+Mms9VqNUJKD5nmRgDKXCaM3ALpiylev?=
+ =?us-ascii?Q?oCLBGA+sZ1jMcovw/gwG/uKzRK+WroUZ36cRkX36VTVZoQP+qQHeFVPlcv7/?=
+ =?us-ascii?Q?UQ/xVixVNZRiH2F5OHQP9XwxGrNj4L644l+cdlGvYlOulbC0qCnGtKMHPYzM?=
+ =?us-ascii?Q?VECvOBsEF1cS44GkvMfJzuLPsiLF0/SBtbMB56ZrtrB7fCwP5TJ2Ggarl0Q5?=
+ =?us-ascii?Q?nqomNcDgfhNpPdmZszj5lU5tMuYlqodGHadKEhZKNO2ar3c2hw6viUQUoKkx?=
+ =?us-ascii?Q?nm18goF0TLhwbkb9icQZjJrK6WoHlJZ6pqusm/3j02qw6YZj6S/l3ixH0kwa?=
+ =?us-ascii?Q?MP0PdcUjXfGUD7d2G8/1rFXhEmP0CHAQkIzC1s3PXeRRphdGLiv0uH82ycqW?=
+ =?us-ascii?Q?v3NcpaYPeIhc30QunH2Ccvab4W7R1lSxzGg7D3dtKEGHKqzhyFlld36b+M60?=
+ =?us-ascii?Q?H+OMl5ShzsyrsA87H6vSnTeq5PR1Z9Ojky6vi1jnTem0EPill21eOYcFGEr8?=
+ =?us-ascii?Q?SxCs3uosvbSVXtg9kk4C2XZLlKkJU6qJ4fQC+GOgzOdVAV3DZ+esOmLoWQ9f?=
+ =?us-ascii?Q?nk7QVy8j2qJxd743b97fXNJ5IdDuh3zP06ahzV8XJydsQqSislUoE0kXvypZ?=
+ =?us-ascii?Q?2biHM6oSos0UNwbZxzrv+X0glQO8Vyrd6IHtf9nJY/NPaH+ELJTXCH4dASLQ?=
+ =?us-ascii?Q?WQFx2aGQS7mSZVzNSzpaTPzaFzDlVrI68IdW3jUD3AQqRAKutikBZnFLzw?=
  =?us-ascii?Q?=3D=3D?=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(7416014)(82310400026)(1800799024)(376014)(36860700013)(921020);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(82310400026)(36860700013)(1800799024)(7416014)(921020);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jul 2025 17:32:56.4545
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jul 2025 17:33:01.9122
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 428cc9de-1aea-48b8-7644-08ddca0ef62e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 799637c0-6302-40d3-c564-08ddca0ef974
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	CH2PEPF00000141.namprd02.prod.outlook.com
+	CY4PEPF0000EE39.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9083
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6737
 
-Implement idbdev ops for device and port information.
+Implement device stats operations for hw stats and qp stats.
 
-Co-developed-by: Andrew Boyer <andrew.boyer@amd.com>
-Signed-off-by: Andrew Boyer <andrew.boyer@amd.com>
 Co-developed-by: Allen Hubbe <allen.hubbe@amd.com>
 Signed-off-by: Allen Hubbe <allen.hubbe@amd.com>
 Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
 ---
 v2->v3
-  - Registered main ib ops at once
-  - Removed uverbs_cmd_mask
+  - Fixed sparse checks
 
- drivers/infiniband/hw/ionic/ionic_ibdev.c   | 212 ++++++++++++++++++++
- drivers/infiniband/hw/ionic/ionic_ibdev.h   |   5 +
- drivers/infiniband/hw/ionic/ionic_lif_cfg.c |  10 +
- drivers/infiniband/hw/ionic/ionic_lif_cfg.h |   2 +
- 4 files changed, 229 insertions(+)
+ drivers/infiniband/hw/ionic/ionic_fw.h       |  43 ++
+ drivers/infiniband/hw/ionic/ionic_hw_stats.c | 484 +++++++++++++++++++
+ drivers/infiniband/hw/ionic/ionic_ibdev.c    |   4 +
+ drivers/infiniband/hw/ionic/ionic_ibdev.h    |  23 +
+ 4 files changed, 554 insertions(+)
+ create mode 100644 drivers/infiniband/hw/ionic/ionic_hw_stats.c
 
-diff --git a/drivers/infiniband/hw/ionic/ionic_ibdev.c b/drivers/infiniband/hw/ionic/ionic_ibdev.c
-index ab080d945a13..84db48ba357f 100644
---- a/drivers/infiniband/hw/ionic/ionic_ibdev.c
-+++ b/drivers/infiniband/hw/ionic/ionic_ibdev.c
-@@ -3,7 +3,11 @@
+diff --git a/drivers/infiniband/hw/ionic/ionic_fw.h b/drivers/infiniband/hw/ionic/ionic_fw.h
+index d48ee000f334..8575a374808d 100644
+--- a/drivers/infiniband/hw/ionic/ionic_fw.h
++++ b/drivers/infiniband/hw/ionic/ionic_fw.h
+@@ -659,6 +659,17 @@ static inline int ionic_v1_use_spec_sge(int min_sge, int spec)
+ 	return spec;
+ }
  
- #include <linux/module.h>
- #include <linux/printk.h>
-+#include <linux/pci.h>
-+#include <linux/irq.h>
- #include <net/addrconf.h>
-+#include <rdma/ib_addr.h>
-+#include <rdma/ib_mad.h>
++struct ionic_admin_stats_hdr {
++	__le64		dma_addr;
++	__le32		length;
++	__le32		id_ver;
++	__u8		type_state;
++} __packed;
++
++#define IONIC_ADMIN_STATS_HDRS_IN_V1_LEN 17
++static_assert(sizeof(struct ionic_admin_stats_hdr) ==
++	       IONIC_ADMIN_STATS_HDRS_IN_V1_LEN);
++
+ struct ionic_admin_create_ah {
+ 	__le64		dma_addr;
+ 	__le32		length;
+@@ -837,6 +848,7 @@ struct ionic_v1_admin_wqe {
+ 	__le16				len;
  
- #include "ionic_ibdev.h"
+ 	union {
++		struct ionic_admin_stats_hdr stats;
+ 		struct ionic_admin_create_ah create_ah;
+ 		struct ionic_admin_destroy_ah destroy_ah;
+ 		struct ionic_admin_query_ah query_ah;
+@@ -983,4 +995,35 @@ static inline u32 ionic_v1_eqe_evt_qid(u32 evt)
+ 	return evt >> IONIC_V1_EQE_QID_SHIFT;
+ }
  
-@@ -15,6 +19,203 @@ MODULE_DESCRIPTION(DRIVER_DESCRIPTION);
- MODULE_LICENSE("GPL");
- MODULE_IMPORT_NS("NET_IONIC");
- 
-+static int ionic_query_device(struct ib_device *ibdev,
-+			      struct ib_device_attr *attr,
-+			      struct ib_udata *udata)
++enum ionic_v1_stat_bits {
++	IONIC_V1_STAT_TYPE_SHIFT	= 28,
++	IONIC_V1_STAT_TYPE_NONE		= 0,
++	IONIC_V1_STAT_TYPE_8		= 1,
++	IONIC_V1_STAT_TYPE_LE16		= 2,
++	IONIC_V1_STAT_TYPE_LE32		= 3,
++	IONIC_V1_STAT_TYPE_LE64		= 4,
++	IONIC_V1_STAT_TYPE_BE16		= 5,
++	IONIC_V1_STAT_TYPE_BE32		= 6,
++	IONIC_V1_STAT_TYPE_BE64		= 7,
++	IONIC_V1_STAT_OFF_MASK		= BIT(IONIC_V1_STAT_TYPE_SHIFT) - 1,
++};
++
++struct ionic_v1_stat {
++	union {
++		__be32		be_type_off;
++		u32		type_off;
++	};
++	char			name[28];
++};
++
++static inline int ionic_v1_stat_type(struct ionic_v1_stat *hdr)
 +{
-+	struct ionic_ibdev *dev = to_ionic_ibdev(ibdev);
-+	struct net_device *ndev;
-+
-+	ndev = ib_device_get_netdev(ibdev, 1);
-+	addrconf_ifid_eui48((u8 *)&attr->sys_image_guid, ndev);
-+	dev_put(ndev);
-+	attr->max_mr_size = dev->lif_cfg.npts_per_lif * PAGE_SIZE / 2;
-+	attr->page_size_cap = dev->lif_cfg.page_size_supported;
-+
-+	attr->vendor_id = to_pci_dev(dev->lif_cfg.hwdev)->vendor;
-+	attr->vendor_part_id = to_pci_dev(dev->lif_cfg.hwdev)->device;
-+
-+	attr->hw_ver = ionic_lif_asic_rev(dev->lif_cfg.lif);
-+	attr->fw_ver = 0;
-+	attr->max_qp = dev->lif_cfg.qp_count;
-+	attr->max_qp_wr = IONIC_MAX_DEPTH;
-+	attr->device_cap_flags =
-+		IB_DEVICE_MEM_WINDOW |
-+		IB_DEVICE_MEM_MGT_EXTENSIONS |
-+		IB_DEVICE_MEM_WINDOW_TYPE_2B |
-+		0;
-+	attr->max_send_sge =
-+		min(ionic_v1_send_wqe_max_sge(dev->lif_cfg.max_stride, 0, false),
-+		    IONIC_SPEC_HIGH);
-+	attr->max_recv_sge =
-+		min(ionic_v1_recv_wqe_max_sge(dev->lif_cfg.max_stride, 0, false),
-+		    IONIC_SPEC_HIGH);
-+	attr->max_sge_rd = attr->max_send_sge;
-+	attr->max_cq = dev->lif_cfg.cq_count / dev->lif_cfg.udma_count;
-+	attr->max_cqe = IONIC_MAX_CQ_DEPTH - IONIC_CQ_GRACE;
-+	attr->max_mr = dev->lif_cfg.nmrs_per_lif;
-+	attr->max_pd = IONIC_MAX_PD;
-+	attr->max_qp_rd_atom = IONIC_MAX_RD_ATOM;
-+	attr->max_ee_rd_atom = 0;
-+	attr->max_res_rd_atom = IONIC_MAX_RD_ATOM;
-+	attr->max_qp_init_rd_atom = IONIC_MAX_RD_ATOM;
-+	attr->max_ee_init_rd_atom = 0;
-+	attr->atomic_cap = IB_ATOMIC_GLOB;
-+	attr->masked_atomic_cap = IB_ATOMIC_GLOB;
-+	attr->max_mw = dev->lif_cfg.nmrs_per_lif;
-+	attr->max_mcast_grp = 0;
-+	attr->max_mcast_qp_attach = 0;
-+	attr->max_ah = dev->lif_cfg.nahs_per_lif;
-+	attr->max_fast_reg_page_list_len = dev->lif_cfg.npts_per_lif / 2;
-+	attr->max_pkeys = IONIC_PKEY_TBL_LEN;
-+
-+	return 0;
++	return hdr->type_off >> IONIC_V1_STAT_TYPE_SHIFT;
 +}
 +
-+static int ionic_query_port(struct ib_device *ibdev, u32 port,
-+			    struct ib_port_attr *attr)
++static inline unsigned int ionic_v1_stat_off(struct ionic_v1_stat *hdr)
 +{
-+	struct net_device *ndev;
++	return hdr->type_off & IONIC_V1_STAT_OFF_MASK;
++}
 +
-+	if (port != 1)
-+		return -EINVAL;
+ #endif /* _IONIC_FW_H_ */
+diff --git a/drivers/infiniband/hw/ionic/ionic_hw_stats.c b/drivers/infiniband/hw/ionic/ionic_hw_stats.c
+new file mode 100644
+index 000000000000..244a80dde08f
+--- /dev/null
++++ b/drivers/infiniband/hw/ionic/ionic_hw_stats.c
+@@ -0,0 +1,484 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2018-2025, Advanced Micro Devices, Inc. */
 +
-+	ndev = ib_device_get_netdev(ibdev, port);
++#include <linux/dma-mapping.h>
 +
-+	if (netif_running(ndev) && netif_carrier_ok(ndev)) {
-+		attr->state = IB_PORT_ACTIVE;
-+		attr->phys_state = IB_PORT_PHYS_STATE_LINK_UP;
-+	} else if (netif_running(ndev)) {
-+		attr->state = IB_PORT_DOWN;
-+		attr->phys_state = IB_PORT_PHYS_STATE_POLLING;
-+	} else {
-+		attr->state = IB_PORT_DOWN;
-+		attr->phys_state = IB_PORT_PHYS_STATE_DISABLED;
++#include "ionic_fw.h"
++#include "ionic_ibdev.h"
++
++static int ionic_v1_stat_normalize(struct ionic_v1_stat *hw_stats,
++				   int hw_stats_count)
++{
++	int hw_stat_i;
++
++	for (hw_stat_i = 0; hw_stat_i < hw_stats_count; ++hw_stat_i) {
++		struct ionic_v1_stat *stat = &hw_stats[hw_stat_i];
++
++		stat->type_off = be32_to_cpu(stat->be_type_off);
++		stat->name[sizeof(stat->name) - 1] = 0;
++		if (ionic_v1_stat_type(stat) == IONIC_V1_STAT_TYPE_NONE)
++			break;
 +	}
 +
-+	attr->max_mtu = iboe_get_mtu(ndev->max_mtu);
-+	attr->active_mtu = min(attr->max_mtu, iboe_get_mtu(ndev->mtu));
-+	attr->gid_tbl_len = IONIC_GID_TBL_LEN;
-+	attr->ip_gids = true;
-+	attr->port_cap_flags = 0;
-+	attr->max_msg_sz = 0x80000000;
-+	attr->pkey_tbl_len = IONIC_PKEY_TBL_LEN;
-+	attr->max_vl_num = 1;
-+	attr->subnet_prefix = 0xfe80000000000000ull;
-+
-+	dev_put(ndev);
-+
-+	return ib_get_eth_speed(ibdev, port,
-+				&attr->active_speed,
-+				&attr->active_width);
++	return hw_stat_i;
 +}
 +
-+static enum rdma_link_layer ionic_get_link_layer(struct ib_device *ibdev,
-+						 u32 port)
++static void ionic_fill_stats_desc(struct rdma_stat_desc *hw_stats_hdrs,
++				  struct ionic_v1_stat *hw_stats,
++				  int hw_stats_count)
 +{
-+	return IB_LINK_LAYER_ETHERNET;
++	int hw_stat_i;
++
++	for (hw_stat_i = 0; hw_stat_i < hw_stats_count; ++hw_stat_i) {
++		struct ionic_v1_stat *stat = &hw_stats[hw_stat_i];
++
++		hw_stats_hdrs[hw_stat_i].name = stat->name;
++	}
 +}
 +
-+static int ionic_query_pkey(struct ib_device *ibdev, u32 port, u16 index,
-+			    u16 *pkey)
++static u64 ionic_v1_stat_val(struct ionic_v1_stat *stat,
++			     void *vals_buf, size_t vals_len)
 +{
++	unsigned int off = ionic_v1_stat_off(stat);
++	int type = ionic_v1_stat_type(stat);
++
++#define __ionic_v1_stat_validate(__type)		\
++	((off + sizeof(__type) <= vals_len) &&		\
++	 (IS_ALIGNED(off, sizeof(__type))))
++
++	switch (type) {
++	case IONIC_V1_STAT_TYPE_8:
++		if (__ionic_v1_stat_validate(u8))
++			return *(u8 *)(vals_buf + off);
++		break;
++	case IONIC_V1_STAT_TYPE_LE16:
++		if (__ionic_v1_stat_validate(__le16))
++			return le16_to_cpu(*(__le16 *)(vals_buf + off));
++		break;
++	case IONIC_V1_STAT_TYPE_LE32:
++		if (__ionic_v1_stat_validate(__le32))
++			return le32_to_cpu(*(__le32 *)(vals_buf + off));
++		break;
++	case IONIC_V1_STAT_TYPE_LE64:
++		if (__ionic_v1_stat_validate(__le64))
++			return le64_to_cpu(*(__le64 *)(vals_buf + off));
++		break;
++	case IONIC_V1_STAT_TYPE_BE16:
++		if (__ionic_v1_stat_validate(__be16))
++			return be16_to_cpu(*(__be16 *)(vals_buf + off));
++		break;
++	case IONIC_V1_STAT_TYPE_BE32:
++		if (__ionic_v1_stat_validate(__be32))
++			return be32_to_cpu(*(__be32 *)(vals_buf + off));
++		break;
++	case IONIC_V1_STAT_TYPE_BE64:
++		if (__ionic_v1_stat_validate(__be64))
++			return be64_to_cpu(*(__be64 *)(vals_buf + off));
++		break;
++	}
++
++	return ~0ull;
++#undef __ionic_v1_stat_validate
++}
++
++static int ionic_hw_stats_cmd(struct ionic_ibdev *dev,
++			      dma_addr_t dma, size_t len, int qid, int op)
++{
++	struct ionic_admin_wr wr = {
++		.work = COMPLETION_INITIALIZER_ONSTACK(wr.work),
++		.wqe = {
++			.op = op,
++			.len = cpu_to_le16(IONIC_ADMIN_STATS_HDRS_IN_V1_LEN),
++			.cmd.stats = {
++				.dma_addr = cpu_to_le64(dma),
++				.length = cpu_to_le32(len),
++				.id_ver = cpu_to_le32(qid),
++			},
++		}
++	};
++
++	if (dev->lif_cfg.admin_opcodes <= op)
++		return -EBADRQC;
++
++	ionic_admin_post(dev, &wr);
++
++	return ionic_admin_wait(dev, &wr, IONIC_ADMIN_F_INTERRUPT);
++}
++
++static int ionic_init_hw_stats(struct ionic_ibdev *dev)
++{
++	dma_addr_t hw_stats_dma;
++	int rc, hw_stats_count;
++
++	if (dev->hw_stats_hdrs)
++		return 0;
++
++	dev->hw_stats_count = 0;
++
++	/* buffer for current values from the device */
++	dev->hw_stats_buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
++	if (!dev->hw_stats_buf) {
++		rc = -ENOMEM;
++		goto err_buf;
++	}
++
++	/* buffer for names, sizes, offsets of values */
++	dev->hw_stats = kzalloc(PAGE_SIZE, GFP_KERNEL);
++	if (!dev->hw_stats) {
++		rc = -ENOMEM;
++		goto err_hw_stats;
++	}
++
++	/* request the names, sizes, offsets */
++	hw_stats_dma = dma_map_single(dev->lif_cfg.hwdev, dev->hw_stats,
++				      PAGE_SIZE, DMA_FROM_DEVICE);
++	rc = dma_mapping_error(dev->lif_cfg.hwdev, hw_stats_dma);
++	if (rc)
++		goto err_dma;
++
++	rc = ionic_hw_stats_cmd(dev, hw_stats_dma, PAGE_SIZE, 0,
++				IONIC_V1_ADMIN_STATS_HDRS);
++	if (rc)
++		goto err_cmd;
++
++	dma_unmap_single(dev->lif_cfg.hwdev, hw_stats_dma, PAGE_SIZE, DMA_FROM_DEVICE);
++
++	/* normalize and count the number of hw_stats */
++	hw_stats_count =
++		ionic_v1_stat_normalize(dev->hw_stats,
++					PAGE_SIZE / sizeof(*dev->hw_stats));
++	if (!hw_stats_count) {
++		rc = -ENODATA;
++		goto err_dma;
++	}
++
++	dev->hw_stats_count = hw_stats_count;
++
++	/* alloc and init array of names, for alloc_hw_stats */
++	dev->hw_stats_hdrs = kcalloc(hw_stats_count,
++				     sizeof(*dev->hw_stats_hdrs),
++				     GFP_KERNEL);
++	if (!dev->hw_stats_hdrs) {
++		rc = -ENOMEM;
++		goto err_dma;
++	}
++
++	ionic_fill_stats_desc(dev->hw_stats_hdrs, dev->hw_stats,
++			      hw_stats_count);
++
++	return 0;
++
++err_cmd:
++	dma_unmap_single(dev->lif_cfg.hwdev, hw_stats_dma, PAGE_SIZE, DMA_FROM_DEVICE);
++err_dma:
++	kfree(dev->hw_stats);
++err_hw_stats:
++	kfree(dev->hw_stats_buf);
++err_buf:
++	dev->hw_stats_count = 0;
++	dev->hw_stats = NULL;
++	dev->hw_stats_buf = NULL;
++	dev->hw_stats_hdrs = NULL;
++	return rc;
++}
++
++static struct rdma_hw_stats *ionic_alloc_hw_stats(struct ib_device *ibdev,
++						  u32 port)
++{
++	struct ionic_ibdev *dev = to_ionic_ibdev(ibdev);
++
 +	if (port != 1)
-+		return -EINVAL;
-+
-+	if (index != 0)
-+		return -EINVAL;
-+
-+	*pkey = IB_DEFAULT_PKEY_FULL;
-+
-+	return 0;
-+}
-+
-+static int ionic_modify_device(struct ib_device *ibdev, int mask,
-+			       struct ib_device_modify *attr)
-+{
-+	struct ionic_ibdev *dev = to_ionic_ibdev(ibdev);
-+
-+	if (mask & ~IB_DEVICE_MODIFY_NODE_DESC)
-+		return -EOPNOTSUPP;
-+
-+	if (mask & IB_DEVICE_MODIFY_NODE_DESC)
-+		memcpy(dev->ibdev.node_desc, attr->node_desc,
-+		       IB_DEVICE_NODE_DESC_MAX);
-+
-+	return 0;
-+}
-+
-+static int ionic_get_port_immutable(struct ib_device *ibdev, u32 port,
-+				    struct ib_port_immutable *attr)
-+{
-+	if (port != 1)
-+		return -EINVAL;
-+
-+	attr->core_cap_flags = RDMA_CORE_PORT_IBA_ROCE_UDP_ENCAP;
-+
-+	attr->pkey_tbl_len = IONIC_PKEY_TBL_LEN;
-+	attr->gid_tbl_len = IONIC_GID_TBL_LEN;
-+	attr->max_mad_size = IB_MGMT_MAD_SIZE;
-+
-+	return 0;
-+}
-+
-+static void ionic_get_dev_fw_str(struct ib_device *ibdev, char *str)
-+{
-+	struct ionic_ibdev *dev = to_ionic_ibdev(ibdev);
-+
-+	ionic_lif_fw_version(dev->lif_cfg.lif, str, IB_FW_VERSION_NAME_MAX);
-+}
-+
-+static const struct cpumask *ionic_get_vector_affinity(struct ib_device *ibdev,
-+						       int comp_vector)
-+{
-+	struct ionic_ibdev *dev = to_ionic_ibdev(ibdev);
-+
-+	if (comp_vector < 0 || comp_vector >= dev->lif_cfg.eq_count)
 +		return NULL;
 +
-+	return irq_get_affinity_mask(dev->eq_vec[comp_vector]->irq);
++	return rdma_alloc_hw_stats_struct(dev->hw_stats_hdrs,
++					  dev->hw_stats_count,
++					  RDMA_HW_STATS_DEFAULT_LIFESPAN);
 +}
 +
-+static ssize_t hw_rev_show(struct device *device, struct device_attribute *attr,
-+			   char *buf)
++static int ionic_get_hw_stats(struct ib_device *ibdev,
++			      struct rdma_hw_stats *hw_stats,
++			      u32 port, int index)
 +{
-+	struct ionic_ibdev *dev =
-+		rdma_device_to_drv_device(device, struct ionic_ibdev, ibdev);
++	struct ionic_ibdev *dev = to_ionic_ibdev(ibdev);
++	dma_addr_t hw_stats_dma;
++	int rc, hw_stat_i;
 +
-+	return sysfs_emit(buf, "0x%x\n", ionic_lif_asic_rev(dev->lif_cfg.lif));
++	if (port != 1)
++		return -EINVAL;
++
++	hw_stats_dma = dma_map_single(dev->lif_cfg.hwdev, dev->hw_stats_buf,
++				      PAGE_SIZE, DMA_FROM_DEVICE);
++	rc = dma_mapping_error(dev->lif_cfg.hwdev, hw_stats_dma);
++	if (rc)
++		goto err_dma;
++
++	rc = ionic_hw_stats_cmd(dev, hw_stats_dma, PAGE_SIZE,
++				0, IONIC_V1_ADMIN_STATS_VALS);
++	if (rc)
++		goto err_cmd;
++
++	dma_unmap_single(dev->lif_cfg.hwdev, hw_stats_dma,
++			 PAGE_SIZE, DMA_FROM_DEVICE);
++
++	for (hw_stat_i = 0; hw_stat_i < dev->hw_stats_count; ++hw_stat_i)
++		hw_stats->value[hw_stat_i] =
++			ionic_v1_stat_val(&dev->hw_stats[hw_stat_i],
++					  dev->hw_stats_buf, PAGE_SIZE);
++
++	return hw_stat_i;
++
++err_cmd:
++	dma_unmap_single(dev->lif_cfg.hwdev, hw_stats_dma,
++			 PAGE_SIZE, DMA_FROM_DEVICE);
++err_dma:
++	return rc;
 +}
-+static DEVICE_ATTR_RO(hw_rev);
 +
-+static ssize_t hca_type_show(struct device *device,
-+			     struct device_attribute *attr, char *buf)
++static struct rdma_hw_stats *
++ionic_counter_alloc_stats(struct rdma_counter *counter)
 +{
-+	struct ionic_ibdev *dev =
-+		rdma_device_to_drv_device(device, struct ionic_ibdev, ibdev);
++	struct ionic_ibdev *dev = to_ionic_ibdev(counter->device);
++	struct ionic_counter *cntr;
++	int err;
 +
-+	return sysfs_emit(buf, "%s\n", dev->ibdev.node_desc);
++	cntr = kzalloc(sizeof(*cntr), GFP_KERNEL);
++	if (!cntr)
++		return NULL;
++
++	/* buffer for current values from the device */
++	cntr->vals = kzalloc(PAGE_SIZE, GFP_KERNEL);
++	if (!cntr->vals)
++		goto err_vals;
++
++	err = xa_alloc(&dev->counter_stats->xa_counters, &counter->id,
++		       cntr,
++		       XA_LIMIT(0, IONIC_MAX_QPID),
++		       GFP_KERNEL);
++	if (err)
++		goto err_xa;
++
++	INIT_LIST_HEAD(&cntr->qp_list);
++
++	return rdma_alloc_hw_stats_struct(dev->counter_stats->stats_hdrs,
++					 dev->counter_stats->queue_stats_count,
++					 RDMA_HW_STATS_DEFAULT_LIFESPAN);
++err_xa:
++	kfree(cntr->vals);
++err_vals:
++	kfree(cntr);
++
++	return NULL;
 +}
-+static DEVICE_ATTR_RO(hca_type);
 +
-+static struct attribute *ionic_rdma_attributes[] = {
-+	&dev_attr_hw_rev.attr,
-+	&dev_attr_hca_type.attr,
-+	NULL
++static int ionic_counter_dealloc(struct rdma_counter *counter)
++{
++	struct ionic_ibdev *dev = to_ionic_ibdev(counter->device);
++	struct ionic_counter *cntr;
++
++	cntr = xa_erase(&dev->counter_stats->xa_counters, counter->id);
++	if (!cntr)
++		return -EINVAL;
++
++	kfree(cntr->vals);
++	kfree(cntr);
++
++	return 0;
++}
++
++static int ionic_counter_bind_qp(struct rdma_counter *counter,
++				 struct ib_qp *ibqp,
++				 u32 port)
++{
++	struct ionic_ibdev *dev = to_ionic_ibdev(counter->device);
++	struct ionic_qp *qp = to_ionic_qp(ibqp);
++	struct ionic_counter *cntr;
++
++	cntr = xa_load(&dev->counter_stats->xa_counters, counter->id);
++	if (!cntr)
++		return -EINVAL;
++
++	list_add_tail(&qp->qp_list_counter, &cntr->qp_list);
++	ibqp->counter = counter;
++
++	return 0;
++}
++
++static int ionic_counter_unbind_qp(struct ib_qp *ibqp, u32 port)
++{
++	struct ionic_qp *qp = to_ionic_qp(ibqp);
++
++	if (ibqp->counter) {
++		list_del(&qp->qp_list_counter);
++		ibqp->counter = NULL;
++	}
++
++	return 0;
++}
++
++static int ionic_get_qp_stats(struct ib_device *ibdev,
++			      struct rdma_hw_stats *hw_stats,
++			      u32 counter_id)
++{
++	struct ionic_ibdev *dev = to_ionic_ibdev(ibdev);
++	struct ionic_counter_stats *cs;
++	struct ionic_counter *cntr;
++	dma_addr_t hw_stats_dma;
++	struct ionic_qp *qp;
++	int rc, stat_i = 0;
++
++	cs = dev->counter_stats;
++	cntr = xa_load(&cs->xa_counters, counter_id);
++	if (!cntr)
++		return -EINVAL;
++
++	hw_stats_dma = dma_map_single(dev->lif_cfg.hwdev, cntr->vals,
++				      PAGE_SIZE, DMA_FROM_DEVICE);
++	rc = dma_mapping_error(dev->lif_cfg.hwdev, hw_stats_dma);
++	if (rc)
++		return rc;
++
++	memset(hw_stats->value, 0, sizeof(u64) * hw_stats->num_counters);
++
++	list_for_each_entry(qp, &cntr->qp_list, qp_list_counter) {
++		rc = ionic_hw_stats_cmd(dev, hw_stats_dma, PAGE_SIZE,
++					qp->qpid,
++					IONIC_V1_ADMIN_QP_STATS_VALS);
++		if (rc)
++			goto err_cmd;
++
++		for (stat_i = 0; stat_i < cs->queue_stats_count; ++stat_i)
++			hw_stats->value[stat_i] +=
++				ionic_v1_stat_val(&cs->hdr[stat_i],
++						  cntr->vals,
++						  PAGE_SIZE);
++	}
++
++	dma_unmap_single(dev->lif_cfg.hwdev, hw_stats_dma, PAGE_SIZE, DMA_FROM_DEVICE);
++	return stat_i;
++
++err_cmd:
++	dma_unmap_single(dev->lif_cfg.hwdev, hw_stats_dma, PAGE_SIZE, DMA_FROM_DEVICE);
++
++	return rc;
++}
++
++static int ionic_counter_update_stats(struct rdma_counter *counter)
++{
++	return ionic_get_qp_stats(counter->device, counter->stats, counter->id);
++}
++
++static int ionic_alloc_counters(struct ionic_ibdev *dev)
++{
++	struct ionic_counter_stats *cs = dev->counter_stats;
++	int rc, hw_stats_count;
++	dma_addr_t hdr_dma;
++
++	/* buffer for names, sizes, offsets of values */
++	cs->hdr = kzalloc(PAGE_SIZE, GFP_KERNEL);
++	if (!cs->hdr)
++		return -ENOMEM;
++
++	hdr_dma = dma_map_single(dev->lif_cfg.hwdev, cs->hdr,
++				 PAGE_SIZE, DMA_FROM_DEVICE);
++	rc = dma_mapping_error(dev->lif_cfg.hwdev, hdr_dma);
++	if (rc)
++		goto err_dma;
++
++	rc = ionic_hw_stats_cmd(dev, hdr_dma, PAGE_SIZE, 0,
++				IONIC_V1_ADMIN_QP_STATS_HDRS);
++	if (rc)
++		goto err_cmd;
++
++	dma_unmap_single(dev->lif_cfg.hwdev, hdr_dma, PAGE_SIZE, DMA_FROM_DEVICE);
++
++	/* normalize and count the number of hw_stats */
++	hw_stats_count = ionic_v1_stat_normalize(cs->hdr,
++						 PAGE_SIZE / sizeof(*cs->hdr));
++	if (!hw_stats_count) {
++		rc = -ENODATA;
++		goto err_dma;
++	}
++
++	cs->queue_stats_count = hw_stats_count;
++
++	/* alloc and init array of names */
++	cs->stats_hdrs = kcalloc(hw_stats_count, sizeof(*cs->stats_hdrs),
++				 GFP_KERNEL);
++	if (!cs->stats_hdrs) {
++		rc = -ENOMEM;
++		goto err_dma;
++	}
++
++	ionic_fill_stats_desc(cs->stats_hdrs, cs->hdr, hw_stats_count);
++
++	return 0;
++
++err_cmd:
++	dma_unmap_single(dev->lif_cfg.hwdev, hdr_dma, PAGE_SIZE, DMA_FROM_DEVICE);
++err_dma:
++	kfree(cs->hdr);
++
++	return rc;
++}
++
++static const struct ib_device_ops ionic_hw_stats_ops = {
++	.driver_id = RDMA_DRIVER_IONIC,
++	.alloc_hw_port_stats = ionic_alloc_hw_stats,
++	.get_hw_stats = ionic_get_hw_stats,
 +};
 +
-+static const struct attribute_group ionic_rdma_attr_group = {
-+	.attrs = ionic_rdma_attributes,
++static const struct ib_device_ops ionic_counter_stats_ops = {
++	.counter_alloc_stats = ionic_counter_alloc_stats,
++	.counter_dealloc = ionic_counter_dealloc,
++	.counter_bind_qp = ionic_counter_bind_qp,
++	.counter_unbind_qp = ionic_counter_unbind_qp,
++	.counter_update_stats = ionic_counter_update_stats,
 +};
 +
-+static void ionic_disassociate_ucontext(struct ib_ucontext *ibcontext)
++void ionic_stats_init(struct ionic_ibdev *dev)
 +{
-+	/*
-+	 * Dummy define disassociate_ucontext so that it does not
-+	 * wait for user context before cleaning up hw resources.
-+	 */
++	u16 stats_type = dev->lif_cfg.stats_type;
++	int rc;
++
++	if (stats_type & IONIC_LIF_RDMA_STAT_GLOBAL) {
++		rc = ionic_init_hw_stats(dev);
++		if (rc)
++			ibdev_dbg(&dev->ibdev, "Failed to init hw stats\n");
++		else
++			ib_set_device_ops(&dev->ibdev, &ionic_hw_stats_ops);
++	}
++
++	if (stats_type & IONIC_LIF_RDMA_STAT_QP) {
++		dev->counter_stats = kzalloc(sizeof(*dev->counter_stats),
++					     GFP_KERNEL);
++		if (!dev->counter_stats)
++			return;
++
++		rc = ionic_alloc_counters(dev);
++		if (rc) {
++			ibdev_dbg(&dev->ibdev, "Failed to init counter stats\n");
++			kfree(dev->counter_stats);
++			dev->counter_stats = NULL;
++			return;
++		}
++
++		xa_init_flags(&dev->counter_stats->xa_counters, XA_FLAGS_ALLOC);
++
++		ib_set_device_ops(&dev->ibdev, &ionic_counter_stats_ops);
++	}
 +}
 +
- static const struct ib_device_ops ionic_dev_ops = {
- 	.owner = THIS_MODULE,
- 	.driver_id = RDMA_DRIVER_IONIC,
-@@ -50,6 +251,17 @@ static const struct ib_device_ops ionic_dev_ops = {
- 	.poll_cq = ionic_poll_cq,
- 	.req_notify_cq = ionic_req_notify_cq,
++void ionic_stats_cleanup(struct ionic_ibdev *dev)
++{
++	if (dev->counter_stats) {
++		xa_destroy(&dev->counter_stats->xa_counters);
++		kfree(dev->counter_stats->hdr);
++		kfree(dev->counter_stats->stats_hdrs);
++		kfree(dev->counter_stats);
++		dev->counter_stats = NULL;
++	}
++
++	kfree(dev->hw_stats);
++	kfree(dev->hw_stats_buf);
++	kfree(dev->hw_stats_hdrs);
++}
+diff --git a/drivers/infiniband/hw/ionic/ionic_ibdev.c b/drivers/infiniband/hw/ionic/ionic_ibdev.c
+index 84db48ba357f..90ae29e7989c 100644
+--- a/drivers/infiniband/hw/ionic/ionic_ibdev.c
++++ b/drivers/infiniband/hw/ionic/ionic_ibdev.c
+@@ -301,6 +301,7 @@ static void ionic_destroy_ibdev(struct ionic_ibdev *dev)
+ {
+ 	ionic_kill_rdma_admin(dev, false);
+ 	ib_unregister_device(&dev->ibdev);
++	ionic_stats_cleanup(dev);
+ 	ionic_destroy_rdma_admin(dev);
+ 	ionic_destroy_resids(dev);
+ 	WARN_ON(!xa_empty(&dev->qp_tbl));
+@@ -358,6 +359,8 @@ static struct ionic_ibdev *ionic_create_ibdev(struct ionic_aux_dev *ionic_adev)
  
-+	.query_device = ionic_query_device,
-+	.query_port = ionic_query_port,
-+	.get_link_layer = ionic_get_link_layer,
-+	.query_pkey = ionic_query_pkey,
-+	.modify_device = ionic_modify_device,
-+	.get_port_immutable = ionic_get_port_immutable,
-+	.get_dev_fw_str = ionic_get_dev_fw_str,
-+	.get_vector_affinity = ionic_get_vector_affinity,
-+	.device_group = &ionic_rdma_attr_group,
-+	.disassociate_ucontext = ionic_disassociate_ucontext,
+ 	ib_set_device_ops(&dev->ibdev, &ionic_dev_ops);
+ 
++	ionic_stats_init(dev);
 +
- 	INIT_RDMA_OBJ_SIZE(ib_ucontext, ionic_ctx, ibctx),
- 	INIT_RDMA_OBJ_SIZE(ib_pd, ionic_pd, ibpd),
- 	INIT_RDMA_OBJ_SIZE(ib_ah, ionic_ah, ibah),
+ 	rc = ib_register_device(ibdev, "ionic_%d", ibdev->dev.parent);
+ 	if (rc)
+ 		goto err_register;
+@@ -365,6 +368,7 @@ static struct ionic_ibdev *ionic_create_ibdev(struct ionic_aux_dev *ionic_adev)
+ 	return dev;
+ 
+ err_register:
++	ionic_stats_cleanup(dev);
+ err_admin:
+ 	ionic_kill_rdma_admin(dev, false);
+ 	ionic_destroy_rdma_admin(dev);
 diff --git a/drivers/infiniband/hw/ionic/ionic_ibdev.h b/drivers/infiniband/hw/ionic/ionic_ibdev.h
-index dc30fecd9646..1a2c81490c5c 100644
+index 1a2c81490c5c..8e45ade19b19 100644
 --- a/drivers/infiniband/hw/ionic/ionic_ibdev.h
 +++ b/drivers/infiniband/hw/ionic/ionic_ibdev.h
-@@ -26,6 +26,11 @@
- #define IONIC_AQ_COUNT 4
- #define IONIC_EQ_ISR_BUDGET 10
- #define IONIC_EQ_WORK_BUDGET 1000
-+#define IONIC_MAX_RD_ATOM 16
-+#define IONIC_PKEY_TBL_LEN 1
-+#define IONIC_GID_TBL_LEN 256
-+
-+#define IONIC_SPEC_HIGH 8
+@@ -30,6 +30,7 @@
+ #define IONIC_PKEY_TBL_LEN 1
+ #define IONIC_GID_TBL_LEN 256
+ 
++#define IONIC_MAX_QPID 0xffffff
+ #define IONIC_SPEC_HIGH 8
  #define IONIC_MAX_PD 1024
  #define IONIC_SPEC_HIGH 8
- #define IONIC_SQCMB_ORDER 5
-diff --git a/drivers/infiniband/hw/ionic/ionic_lif_cfg.c b/drivers/infiniband/hw/ionic/ionic_lif_cfg.c
-index 8d0d209227e9..f3cd281c3a2f 100644
---- a/drivers/infiniband/hw/ionic/ionic_lif_cfg.c
-+++ b/drivers/infiniband/hw/ionic/ionic_lif_cfg.c
-@@ -99,3 +99,13 @@ struct net_device *ionic_lif_netdev(struct ionic_lif *lif)
- 	dev_hold(netdev);
- 	return netdev;
- }
-+
-+void ionic_lif_fw_version(struct ionic_lif *lif, char *str, size_t len)
-+{
-+	strscpy(str, lif->ionic->idev.dev_info.fw_version, len);
-+}
-+
-+u8 ionic_lif_asic_rev(struct ionic_lif *lif)
-+{
-+	return lif->ionic->idev.dev_info.asic_rev;
-+}
-diff --git a/drivers/infiniband/hw/ionic/ionic_lif_cfg.h b/drivers/infiniband/hw/ionic/ionic_lif_cfg.h
-index 5b04b8a9937e..20853429f623 100644
---- a/drivers/infiniband/hw/ionic/ionic_lif_cfg.h
-+++ b/drivers/infiniband/hw/ionic/ionic_lif_cfg.h
-@@ -60,5 +60,7 @@ struct ionic_lif_cfg {
+@@ -109,6 +110,12 @@ struct ionic_ibdev {
+ 	atomic_t		admin_state;
  
- void ionic_fill_lif_cfg(struct ionic_lif *lif, struct ionic_lif_cfg *cfg);
- struct net_device *ionic_lif_netdev(struct ionic_lif *lif);
-+void ionic_lif_fw_version(struct ionic_lif *lif, char *str, size_t len);
-+u8 ionic_lif_asic_rev(struct ionic_lif *lif);
+ 	struct ionic_eq		**eq_vec;
++
++	struct ionic_v1_stat	*hw_stats;
++	void			*hw_stats_buf;
++	struct rdma_stat_desc	*hw_stats_hdrs;
++	struct ionic_counter_stats *counter_stats;
++	int			hw_stats_count;
+ };
  
- #endif /* _IONIC_LIF_CFG_H_ */
+ struct ionic_eq {
+@@ -320,6 +327,18 @@ struct ionic_mr {
+ 	bool			created;
+ };
+ 
++struct ionic_counter_stats {
++	int queue_stats_count;
++	struct ionic_v1_stat *hdr;
++	struct rdma_stat_desc *stats_hdrs;
++	struct xarray xa_counters;
++};
++
++struct ionic_counter {
++	void *vals;
++	struct list_head qp_list;
++};
++
+ static inline struct ionic_ibdev *to_ionic_ibdev(struct ib_device *ibdev)
+ {
+ 	return container_of(ibdev, struct ionic_ibdev, ibdev);
+@@ -478,6 +497,10 @@ int ionic_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
+ int ionic_poll_cq(struct ib_cq *ibcq, int nwc, struct ib_wc *wc);
+ int ionic_req_notify_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags);
+ 
++/* ionic_hw_stats.c */
++void ionic_stats_init(struct ionic_ibdev *dev);
++void ionic_stats_cleanup(struct ionic_ibdev *dev);
++
+ /* ionic_pgtbl.c */
+ __le64 ionic_pgtbl_dma(struct ionic_tbl_buf *buf, u64 va);
+ __be64 ionic_pgtbl_off(struct ionic_tbl_buf *buf, u64 va);
 -- 
 2.43.0
 
