@@ -1,153 +1,97 @@
-Return-Path: <linux-rdma+bounces-12399-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12400-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30DB0B0E65D
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jul 2025 00:20:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 170DEB0E818
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jul 2025 03:30:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3AB697B07BE
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jul 2025 22:19:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CF7E1C886D4
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jul 2025 01:30:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93195289340;
-	Tue, 22 Jul 2025 22:20:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F9261991DD;
+	Wed, 23 Jul 2025 01:30:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KASwnnT1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V/mO1gft"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F02B82882AD
-	for <linux-rdma@vger.kernel.org>; Tue, 22 Jul 2025 22:20:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B71E814AD2B;
+	Wed, 23 Jul 2025 01:30:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753222821; cv=none; b=L9qtOSGxOS8xU0JU+1Nqn9h3BSqPraMwM0ghZBxe7ZatYcXvi7yaLD7Cb/cQEDSOVao0h1jlzHud7saRdrlV4lRT0kJQ4AnY1ocJpHY+x25GoFhHCzRBuITkaZ5/TxDO6XBHCcapTIJ3GFKMgMmuMnUA6FaYTyj0e1Noz6ih974=
+	t=1753234217; cv=none; b=u230dnD3FnVAOJJ7Hw2NirkFlh6fZSxO9aqhkn54ux4ZiJ6jQjfE4ZJqbRyLnzdOdleg/k9MNn038D8xH2eKAWa2ufaPNohpp97KxE9i/M48JDxHJGvChob+zzMBgdzpF6jn+1u/xzbVoC9rUh9Se4qxiLmfDmYZe376srJh8jA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753222821; c=relaxed/simple;
-	bh=KocGrJA2Ps6aJTENvIIuem9ofzkRJ4o80JKPBVLHtCc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LFu76KsvU5YOgw82VS3wEhX0egXOFZ5hFT9ATGUyqhzuhVSqtKGT2FsN1ZJZ4+YDXtlLe9i5UHbqDHYJdn7JvUu9L24cBSyJY6anEMmu/LY+dPiZMDX3ZMJ+0AVIJhj9QgVRrCFe+3RryelnZBd2TNdeJgFhql6oSkv22F8yejs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KASwnnT1; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-235e389599fso88115ad.0
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Jul 2025 15:20:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1753222818; x=1753827618; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EUgAXknrynl1PVAEbmko9jsFy37xoKt232CbGC5xnSo=;
-        b=KASwnnT1IM0bapm3dBB3dF81HbyN89veE00MpoJJ1OtroNdUXXJNGsBi64zmjp9V5F
-         n7pRoAUpB9JIyIW5H561rHqf7vGcun47h3TWHAXxI1/Y6+ulYnkDKvb/cTz3a/HPzxu8
-         ztUXgEUurG+RGd7KItrM3N8W0bkzekWWQCvy90jYqdrqAJf0GWg4XE48S61rwDJO9QvY
-         pWjilfx+wPYllh12cIMMpOGIYGJuJLk9KJRAfp4ifIGH1GcsbiAPETOjpO56vefNt0Gj
-         GCRfwpz523C4/1jCnCCcIAQPWisXUNBFI8cV4msd1RZm99kerwe7kokTUNJb6efKRShi
-         SKgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753222818; x=1753827618;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EUgAXknrynl1PVAEbmko9jsFy37xoKt232CbGC5xnSo=;
-        b=chz4q+Om5MSTYFigJd1SfpUApr3rJioFqscFS8EHiA3Ws5yj2d+eMO/qn+Qs6zyx6E
-         ObI0c9JauCCEZSOEhaVufccl3h04bDSJJHFOxF1Qt7Lkxxyr/eN7toIE/+d4sVg8KfbB
-         12SllrFYFqcrr4yx/yJsSKz848A08U8emD5kE6SIQWNgHVqqBIjc3ciCT/e9ZspFxmdX
-         7U0MPHUSaBQjqzOHgu532zhluODx3BcJ4PS5uOF90xnQ3doyKVzOE0LCagzk1dgQiZMP
-         hTujkNG2zx3zIq3ZH0koVBAqmI4SvNF1GOn20Mqtn8K+g39KX1PlNG+rhn8H9AFYZJsk
-         tR/w==
-X-Forwarded-Encrypted: i=1; AJvYcCV32Ne30GoUyEuta4hwEph1BBGSFa3/UQ7dbZ5w/iKHWD1PKNJXWu/AjvFUAuiB8lIRMEtNkaDIjNok@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxs2MX78vuZULZH2iTpwP9Kr+roRK/J6dSZqw9USM/+dhCwOeau
-	LX34cn1QFuKuoqz6+0B5xcHR/ug3+S1wopns6tTTTRogf0IKB2Kxp2/PmUSBMexl7vEzjeX3Br6
-	sf7uTYkUBZ77xi7yPX6GTKAaqHSIwxWgGQIw4v3KW
-X-Gm-Gg: ASbGncuqsLtxX4UMIMqxsQWmBle9E2VYEJsPrUwVwpxgCl1PFcqQqKzVa24IhF2ESK+
-	AP9FcPUVwQCn1H2ln1Vgw4qeE+39awILF/pTW7bDVdDmw4NtLt44O3kR/FV7JZe5ZLJr2P95jhq
-	gBfX5Qt2vpXuOmnyTcX+uQhvc/tOHDF/knbl8FGTH1Eiuhf9ccPNKKqtiEEUNkPL1UyjKfHW6mO
-	iJQVO45xaQLFPDc2JaqD24R9J1Lr5LNtAoaWvGF99+3hSca
-X-Google-Smtp-Source: AGHT+IEJT44DyruhFdmOQYM4W96ZZ3Rqdwh8/66PV5JlsG3oxzJ17BtYsAJ9a8lIS9JPty9YbWXGIDpfJrmGPSXLLK4=
-X-Received: by 2002:a17:903:b4f:b0:234:bca7:2934 with SMTP id
- d9443c01a7336-23f9774a735mr1113195ad.6.1753222817810; Tue, 22 Jul 2025
- 15:20:17 -0700 (PDT)
+	s=arc-20240116; t=1753234217; c=relaxed/simple;
+	bh=4838LBuED1RKEU44f3tZgp9qmR8UcWkI2E2Kz7DrVPI=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=UF1LcehOMnqsMKZxp1OM2jJoYcil1FAvUQQCOhc3RcoxcbeuMsWkCrV2UTKloCM88CYeZWi2aR7deGOqKaj/PuQvGQHvYbIRlX3HxoVxGmVqXeNaj9lfjnpNdehlW9ElopD8qMzXdJ4iuy9w1nKLARr1XDiBlOncnEhN8vohZkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V/mO1gft; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DF4EC4CEEB;
+	Wed, 23 Jul 2025 01:30:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1753234217;
+	bh=4838LBuED1RKEU44f3tZgp9qmR8UcWkI2E2Kz7DrVPI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=V/mO1gftrXtijsCG7jFJR136aYuVy+tWFMUsvrGkhfZxiQ/VvtC+l/zREkccFLt38
+	 mVTjVaGhtEngjSVgRgUGeMp86FPDYP4n1xzKE5Kda8rIabbBPZpsNw69Qdc+3Jr9K2
+	 5GpTyXFC+3F7xtgoHGosCN722kAMxg/F0ZH0UTvrStZJ3t0jgBm7EpzkhrpabM5EY6
+	 VKCWheLSVA/W6e0TMp5RU6tMzRgHkwNiTjfv9gVg6blQ6bYRk+ZOgJQp7h0rRYLBo+
+	 Eam4gFmW7Rp49T3H8Sj9XJLwykQjaUVx2wPA/As69NF8MMy/GKOixs8UQpDVXo/oOW
+	 HMWCbjLR9j9PQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAD5F383BF5D;
+	Wed, 23 Jul 2025 01:30:36 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250721054903.39833-1-byungchul@sk.com> <77ee68c4-f265-4e55-9889-43ab08f26efd@gmail.com>
-In-Reply-To: <77ee68c4-f265-4e55-9889-43ab08f26efd@gmail.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Tue, 22 Jul 2025 15:20:04 -0700
-X-Gm-Features: Ac12FXzc1yuJwF_iFb86CzQvJ9VHTzSRxkDhmv6GFozlbXOI8GKQHpDpguZKYVU
-Message-ID: <CAHS8izM6h1_qoPnWDHmPiiFj5e_mcJqQFTTLJT9dgBymJuk8rw@mail.gmail.com>
-Subject: Re: [PATCH] mm, page_pool: introduce a new page type for page pool in
- page type
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Byungchul Park <byungchul@sk.com>, linux-mm@kvack.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel_team@skhynix.com, harry.yoo@oracle.com, 
-	ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org, 
-	hawk@kernel.org, john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com, 
-	leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com, andrew+netdev@lunn.ch, 
-	edumazet@google.com, pabeni@redhat.com, akpm@linux-foundation.org, 
-	david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, 
-	vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com, 
-	horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com, 
-	ilias.apalodimas@linaro.org, willy@infradead.org, brauner@kernel.org, 
-	kas@kernel.org, yuzhao@google.com, usamaarif642@gmail.com, 
-	baolin.wang@linux.alibaba.com, toke@redhat.com, bpf@vger.kernel.org, 
-	linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next V3 0/3] net/mlx5: misc changes 2025-07-21
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175323423556.1016544.17877785294390139794.git-patchwork-notify@kernel.org>
+Date: Wed, 23 Jul 2025 01:30:35 +0000
+References: <1753081999-326247-1-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1753081999-326247-1-git-send-email-tariqt@nvidia.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
+ leon@kernel.org, mbloch@nvidia.com, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, lkayal@nvidia.com
 
-On Mon, Jul 21, 2025 at 4:11=E2=80=AFAM Pavel Begunkov <asml.silence@gmail.=
-com> wrote:
->
-> On 7/21/25 06:49, Byungchul Park wrote:
-> > Hi,
-> >
-> > I focused on converting the existing APIs accessing ->pp_magic field to
-> > page type APIs.  However, yes.  Additional works would better be
-> > considered on top like:
-> >
-> >     1. Adjust how to store and retrieve dma index.  Maybe network guys
-> >        can work better on top.
-> >
-> >     2. Move the sanity check for page pool in mm/page_alloc.c to on fre=
-e.
->
-> Don't be in a hurry, I've got a branch, but as mentioned before,
-> it'll be for-6.18. And there will also be more time for testing.
->
-> > This work was inspired by the following link by Pavel:
->
-> The idea came from David, let's add
->
-> Suggested-by: David Hildenbrand <david@redhat.com>
->
-> ...> -
-> >   static inline bool netmem_is_pp(netmem_ref netmem)
-> >   {
-> > -     return (netmem_get_pp_magic(netmem) & PP_MAGIC_MASK) =3D=3D PP_SI=
-GNATURE;
-> > +     if (netmem_is_net_iov(netmem))
->
-> This needs to return false for tx niovs. Seems like all callers are
-> gated on ->pp_recycle, so maybe it's fine, but we can at least
-> check pp. Mina, you've been checking tx doesn't mix with rx, any
-> opinion on that?
->
-> Question to net maintainers, can a ->pp_recycle marked skb contain
-> not page pool originated pages or a mix?
->
+Hello:
 
-IIRC last I looked at the code ->pp_recycle technically means it could
-be a mix. Technically it means "consider this netmem for pp recycling
-when the skb is freed." and non-pp netmems don't get recycled to the
-pp obviously, because napi_pp_put_page rejects recycling them.
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Mon, 21 Jul 2025 10:13:16 +0300 you wrote:
+> Hi,
+> 
+> This series by Lama contains misc enhancements to the SHAMPO parameters.
+> 
+> Find V2 here:
+> https://lore.kernel.org/all/1752675472-201445-1-git-send-email-tariqt@nvidia.com/
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,V3,1/3] net/mlx5e: SHAMPO, Cleanup reservation size formula
+    https://git.kernel.org/netdev/net-next/c/bc2d44b83f2b
+  - [net-next,V3,2/3] net/mlx5e: SHAMPO, Remove mlx5e_shampo_get_log_hd_entry_size()
+    https://git.kernel.org/netdev/net-next/c/eee529c0044e
+  - [net-next,V3,3/3] net/mlx5e: Remove duplicate mkey from SHAMPO header
+    https://git.kernel.org/netdev/net-next/c/eeaf11464f38
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
---=20
-Thanks,
-Mina
 
