@@ -1,93 +1,99 @@
-Return-Path: <linux-rdma+bounces-12424-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12425-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB850B0F26D
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jul 2025 14:42:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71ECFB0F3D7
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jul 2025 15:22:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C156758261C
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jul 2025 12:42:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A31DF3AEB6E
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jul 2025 13:21:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B18712E6114;
-	Wed, 23 Jul 2025 12:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A51F28C86D;
+	Wed, 23 Jul 2025 13:21:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="b1POsCyt"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wpNOZwsm"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD58128C2BC
-	for <linux-rdma@vger.kernel.org>; Wed, 23 Jul 2025 12:42:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.251
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D35B24EF7F
+	for <linux-rdma@vger.kernel.org>; Wed, 23 Jul 2025 13:21:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753274528; cv=none; b=SpouYNIm8u3cKSf2y2NcAJe40ykxAzvRtJ0KFtMMMjwKQC7yQrI4Fnd2hqgImRofpNtzdXK97qU4HlQF8fFBEd1kA6MMGLGnfg+v3DCfJxfjOaDdJsxjkcKBjg+nd5FaUxsnwHGMQ1WiykhrzYzhY4qVyOEhzwwNgjirSxJeTBk=
+	t=1753276884; cv=none; b=ZQV/f6jRyGg/08ehjeIonyV7UIGPSeEbmOaBu/HRDoenFEJ8rT1z693zl0OEplTlTVeaXVx9MTJob6cEclf57EuSSj30RM8aLlLt1KNpoCHsE66PvmBSreCt8UwmoBJBwxaAXUYuv5w8B3xA8NP2RLwTLnNvl6mKn3hoX0/ou5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753274528; c=relaxed/simple;
-	bh=d/yF1ysUwVJXzAALy2HUQYUz49zlM020sEirSbnSNaM=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=g5+tk+/se8mp8h5Egs3DB7gIqEmrmFA4hOyvMx9eWxxZHkjoKDJHTzTJRrvCco6uEiP+I0uoDGorU40mrgin/4dN46uGubH66enDrqsv9xJZdqi4VtKkzlrzqoMpnpNr3qE9GsfnWQ5Xi2QHSsU/nSmURFBzPzeVNRU+s4JX3JY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=b1POsCyt; arc=none smtp.client-ip=185.125.188.251
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
-Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id 2F2BC3F27C
-	for <linux-rdma@vger.kernel.org>; Wed, 23 Jul 2025 12:32:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-	s=20210803; t=1753273948;
-	bh=d/yF1ysUwVJXzAALy2HUQYUz49zlM020sEirSbnSNaM=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
-	 Reply-To;
-	b=b1POsCytYJfzAQHbGfk1p2gWQDq49ACJXxz344wWNUNzRUFGdCUKO+3UVsUcFbTEK
-	 iPZvI8coonaEss1t6JnKGSACYxBBEs9VhLma0ne6C6BrrSZ+Z+VGLRnOOZGSphSSke
-	 tDAqGk9KMyr70aMRQEegkxa+HpZ1jnSiSyQG0CxegX2IZyW2aC1pa6y75u7Xsk2eZp
-	 CktGA7xi6X9emqHnK6S6JegO8nJjlNYSD2bFFTdOVxJBr4ySe5uFXaHI7K83yjRCdJ
-	 w1qBOusprBNVgJ9eZZLpoVIlrONFrT1Vy768a+pKL/g1f8PhY35X+FIn7a7QJ2pkhU
-	 hMcZRxws0DtKg==
-Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
-	by buildd-manager.lp.internal (Postfix) with ESMTP id 170D77E6EB
-	for <linux-rdma@vger.kernel.org>; Wed, 23 Jul 2025 12:32:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1753276884; c=relaxed/simple;
+	bh=S1JJ3oZahCd669eF5kOGIpV0YN4/CSb04jTR/fJPgp8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TqfC+Q2Fv1gHM2xWRai2OFfs8vxsik7OAD+PdNC0vOTswmltFp2lIBDzLBExazSBPK/4uOqOYxY4eKhgIe55rt3/qyGJGnz7w2ePEfFC4ArIFpeZ6uKW/n9IvGK9f5tKlLzvuGUGlx782EG3KfutUYuyXikxxSrYlUZhkCcqLSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wpNOZwsm; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1753276878;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=D5OI2DYeRa5WRjON6ljfvAKfOZnthoTeI6wkjizuMWM=;
+	b=wpNOZwsmKaxon6SSqZV4gF6jcjP7YDgDpy3yvHcW7Kp4YcYBEuzxInNqtMw+M77jIyXfQp
+	sOuzeqKASWHuYxOGCpmPhIZbAHfo01PphffRxZIbMU2sPOmgNRv4mvrgC57z583j1si1Mv
+	OAhdSvkWBM5CLUgMvm4OKr1hLHK13b0=
+From: bernard.metzler@linux.dev
+To: jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	Bernard Metzler <bernard.metzler@linux.dev>
+Subject: [PATCH RESEND] RDMA/siw: Change maintainer email address
+Date: Wed, 23 Jul 2025 15:21:07 +0200
+Message-ID: <20250723132107.2188-1-bernard.metzler@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Launchpad-Message-Rationale: Requester @linux-rdma
-X-Launchpad-Message-For: linux-rdma
-X-Launchpad-Notification-Type: recipe-build-status
-X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
-X-Launchpad-Build-State: MANUALDEPWAIT
-To: Linux RDMA <linux-rdma@vger.kernel.org>
-From: noreply@launchpad.net
-Subject: [recipe build #3925294] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
-Message-Id: <175327394809.2830458.11646967763408509349.launchpad@buildd-manager.lp.internal>
-Date: Wed, 23 Jul 2025 12:32:28 -0000
-Reply-To: noreply@launchpad.net
-Sender: noreply@launchpad.net
-Errors-To: noreply@launchpad.net
-Precedence: bulk
-X-Generated-By: Launchpad (canonical.com); Revision="4a935a27f849d9e76af17c154eb3e276e860afb7"; Instance="launchpad-buildd-manager"
-X-Launchpad-Hash: 86e85afab5afceac085249647599f2d2362c0eba
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
- * State: Dependency wait
- * Recipe: linux-rdma/rdma-core-daily
- * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Distroseries: xenial
- * Duration: 2 minutes
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+recipebuild/3925294/+files/buildlog.txt.gz
- * Upload Log:=20
- * Builder: https://launchpad.net/builders/lcy02-amd64-112
+From: Bernard Metzler <bernard.metzler@linux.dev>
 
---=20
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
-ild/3925294
-Your team Linux RDMA is the requester of the build.
+Change siw maintainer email address since old address
+will become disfunctional. Also add info to .mailmap
+
+Signed-off-by: Bernard Metzler <bernard.metzler@linux.dev>
+---
+ .mailmap    | 1 +
+ MAINTAINERS | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/.mailmap b/.mailmap
+index 85ad46d20220..1abf57830425 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -138,6 +138,7 @@ Benjamin Poirier <benjamin.poirier@gmail.com> <bpoirier@suse.de>
+ Benjamin Tissoires <bentiss@kernel.org> <benjamin.tissoires@gmail.com>
+ Benjamin Tissoires <bentiss@kernel.org> <benjamin.tissoires@redhat.com>
+ Benno Lossin <lossin@kernel.org> <benno.lossin@proton.me>
++Bernard Metzler <bernard.metzler@linux.dev> <bmt@zurich.ibm.com>
+ Bingwu Zhang <xtex@aosc.io> <xtexchooser@duck.com>
+ Bingwu Zhang <xtex@aosc.io> <xtex@xtexx.eu.org>
+ Bjorn Andersson <andersson@kernel.org> <bjorn@kryo.se>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 10850512c118..84bce0f7aee7 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -22994,7 +22994,7 @@ S:	Maintained
+ F:	drivers/leds/leds-net48xx.c
+ 
+ SOFT-IWARP DRIVER (siw)
+-M:	Bernard Metzler <bmt@zurich.ibm.com>
++M:	Bernard Metzler <bernard.metzler@linux.dev>
+ L:	linux-rdma@vger.kernel.org
+ S:	Supported
+ F:	drivers/infiniband/sw/siw/
+-- 
+2.50.0
 
 
