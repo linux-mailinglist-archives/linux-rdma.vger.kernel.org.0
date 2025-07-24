@@ -1,245 +1,383 @@
-Return-Path: <linux-rdma+bounces-12466-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12467-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F50BB112AF
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Jul 2025 22:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DC690B11306
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Jul 2025 23:23:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEAD81C25233
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Jul 2025 20:52:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B89B71CE4D77
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Jul 2025 21:23:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B54282EF9AA;
-	Thu, 24 Jul 2025 20:51:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD8E2EE5F0;
+	Thu, 24 Jul 2025 21:23:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="fH3HSOAI"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jZ5Qi4LG"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2070.outbound.protection.outlook.com [40.107.92.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF8C32EE61D;
-	Thu, 24 Jul 2025 20:51:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.70
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753390275; cv=fail; b=CBS+UjVW8EpMjATcBClUKRLPZdcwuxQhccdzX5Ziq0abnPTkAbKdjYIqCXVGrnhOovg7SL7E1BEjTo5fhGvpobyJtqgcgRijTI6PIdb89VhXQQFX+himFgGhpseRj2jFhdBZVPM6XGNZcK9rQsPxEYG2XO0qNEUttC/7q9eVqIc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753390275; c=relaxed/simple;
-	bh=oK9huO71GVBFPTzg+7HUwEJ6PSx/zgEhF42TvI/9wHw=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GIG3SYTPpg/0/C8POsm3xE58YzJCl1G/93RqqqkMZg946KOrJV6F40THIci0yy9dcPU/8oHF21qtpfigxyekLs1V7tAJWrwlLi1IjbQrnD9fBI4G2/QEYsG3Zn2rJ0R584aZy5Z78tnNGhnXOKjlGxGWPcGwWXIlOmjrvaG3too=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=fH3HSOAI; arc=fail smtp.client-ip=40.107.92.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Jtjiima+MgEyChngK/1U/ZtJn0OMndzIZWvRbsTwvBGFizPq2FcF+Xb4aOyZh7Dhl0qxXZPN9dr1Hs2eqTo1LVF09V5kd0Ox3dbFTiFTulFEFjnNeFIvVDjo5fZBBwEF/8ztcHmcBKP1x+fD/0qJ1b2mR0Ee4KIt3mVTWQf6emgz6RDi6fmuqP1oLRP9yQZdRSTSgbVLqq6niLLU5nhgzI/wVU1M85MYJSF58q+PfDaGwj3IhYaHRdr7HFRw/SaTDPvyOU6erwZAz54e7i+8G6l3c1hL1t/Zl28C7z8312chPI35QL1iSBPV9UC34M4VSxp79l3TWLRuub7CQCimZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Xt3kHktPKRSnrcenZBz2XPWcf7NMVPM90QGFthmoE+g=;
- b=omrzr27xRFCBs8q9kIull6JTcNn9HQVfXBf6HMEc/gfYZnWwQYQnI/TvLW/naSQNjAEyULTtagJDk/nP0jO304sDjAMKCq5oLVJ7qTtchssDINtRe/nK3eeeXrI4j536nP5jUyJMMfZkz3+UU+vuUpl4/MixFZvAB5J3XMf+9zO9vzExReY1fGSILq4XtCHepNHS81bQ7cHGmiANzjbAVnaGU6x14Qz9am/WQpPwvf8fEV3lKb5eCUlJhwmRZmzlC0qvikLX7ntwWCMsI0pRCNSKjg+JmH2g11SvIyQbSwe+PfdNCXqAM8oux/KzI7pZfEYvg2qbrG9MbAcROvh/+g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Xt3kHktPKRSnrcenZBz2XPWcf7NMVPM90QGFthmoE+g=;
- b=fH3HSOAIEdT5W7QG6KnwvgsDDAQo5wW5HUp75UJo0CmOuiFE3Jk8X02lpZo2/uiLcdX7FKYa3F9ZMA/vzSu1NCgWvtnJWKs/dXRpgMGsMxH3FsndNyGXkozwwbQoKAVsxlxXeZCZKDjqij/2rjc+31XSvRh/2/9m9M0V4NyuHujrV+ZTxRnqVE71NK+Z/apoBETZefqSORh6YudyIuEdx4EoiBQHvNnXY9MEd+DsjFW+XpbCV+RVJT6X2xvn4fU5fwTn/fzcc97Bu6kw/zQPvjilfpYkDisRr17nXc82DyfFShc7i4//XUI1X9E2HXhOvi18WLD2w9fXYp6vtt82sw==
-Received: from CH0PR13CA0039.namprd13.prod.outlook.com (2603:10b6:610:b2::14)
- by SA5PPF0EB7D076B.namprd12.prod.outlook.com (2603:10b6:80f:fc04::8c5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8943.30; Thu, 24 Jul
- 2025 20:51:11 +0000
-Received: from DS3PEPF0000C37A.namprd04.prod.outlook.com
- (2603:10b6:610:b2:cafe::dc) by CH0PR13CA0039.outlook.office365.com
- (2603:10b6:610:b2::14) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.8964.21 via Frontend Transport; Thu,
- 24 Jul 2025 20:51:10 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- DS3PEPF0000C37A.mail.protection.outlook.com (10.167.23.4) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.8964.20 via Frontend Transport; Thu, 24 Jul 2025 20:51:10 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Thu, 24 Jul
- 2025 13:51:00 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.14; Thu, 24 Jul 2025 13:50:59 -0700
-Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server id 15.2.1544.14 via Frontend
- Transport; Thu, 24 Jul 2025 13:50:52 -0700
-From: Tariq Toukan <tariqt@nvidia.com>
-To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
- S. Miller" <davem@davemloft.net>, Jiri Pirko <jiri@nvidia.com>, Jiri Pirko
-	<jiri@resnulli.us>
-CC: Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
-	Brett Creeley <brett.creeley@amd.com>, Michael Chan
-	<michael.chan@broadcom.com>, Pavan Chebbi <pavan.chebbi@broadcom.com>, "Cai
- Huoqing" <cai.huoqing@linux.dev>, Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Sunil Goutham
-	<sgoutham@marvell.com>, Linu Cherian <lcherian@marvell.com>, Geetha sowjanya
-	<gakula@marvell.com>, Jerin Jacob <jerinj@marvell.com>, hariprasad
-	<hkelam@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>, Saeed Mahameed
-	<saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan
-	<tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Ido Schimmel
-	<idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>, Manish Chopra
-	<manishc@marvell.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<intel-wired-lan@lists.osuosl.org>, <linux-rdma@vger.kernel.org>, "Shahar
- Shitrit" <shshitrit@nvidia.com>, Gal Pressman <gal@nvidia.com>
-Subject: [PATCH net-next V2 5/5] net/mlx5e: Set default grace period delay for TX and RX reporters
-Date: Thu, 24 Jul 2025 23:48:54 +0300
-Message-ID: <1753390134-345154-6-git-send-email-tariqt@nvidia.com>
-X-Mailer: git-send-email 2.8.0
-In-Reply-To: <1753390134-345154-1-git-send-email-tariqt@nvidia.com>
-References: <1753390134-345154-1-git-send-email-tariqt@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF6CBB661
+	for <linux-rdma@vger.kernel.org>; Thu, 24 Jul 2025 21:23:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1753392201; cv=none; b=n4DtIu/a3ert8YvjBVMl1PdQEbb8hKG2E4hYsE96iA1FJSX+IsABSGb7imzJd0ln3Jx38Ar8kpzFmZEVvv1cKLc7XieHStsjbipV4agQeYDpeq97wwc7267Wv/WzMeWoZXtdRTo7ak9pgBPsLLs8cJb512R2QVEKxhhqYUT5Cj0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1753392201; c=relaxed/simple;
+	bh=AWa3QljlTQI2w6CzFs/GJMnKM1od+dLR+KMOmwq2NRg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gEmizUu915HNO8th4w4LqdiKNKM9eFZWmnJsfwZZPGYYp+7JELY32Xi4hn2gW2jZbdy3Qcb1pr96C1Jv1eD6xZJbuqB2k74tN5KK7QZHsCphXKdHgBPSfssJvaKbBzWrbzcFWi+qp49aMIq/p/MFsarBWvbH7bmWHAn+H5mv/4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jZ5Qi4LG; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-237f18108d2so65205ad.0
+        for <linux-rdma@vger.kernel.org>; Thu, 24 Jul 2025 14:23:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1753392199; x=1753996999; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TNnTJ5darf1pQDB2vsYeV7FJpreNa9uOT82oPg1Gxp8=;
+        b=jZ5Qi4LG9byWLV2CFlBI6eNDIxXIsnTNhRI/EvwTF56DPpWAT5cLUQooVsFfJG+NjX
+         AU31WoPK2QdXqz/QcjdAU6WFnzSLCs2yzmzxvNEEgu9Ug4MigGnJVpQ/lqPNehQnmQ6a
+         XCvRJ+M33c4fpO9p6CwJ0lLP83gQd26UtGNCBFzSzrT5G2Dkn5iE+5WB8ae/iOjFdSBS
+         jL4aEjekadOsZSumx9HbPlePhuPt9AbAVqZyIbl6RjNZmPgAwyatykA/lRWwyAkAcm/M
+         NvWtElxtpZ2p164pQFy36ym7oj1/yGG0owJRf0v+nml2HAopav+vJjUkNzzGq0iUriLI
+         /BsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753392199; x=1753996999;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TNnTJ5darf1pQDB2vsYeV7FJpreNa9uOT82oPg1Gxp8=;
+        b=YOynOYrx9bCw22UhyzJQB2X6tP5km9Cbb/OUzNepz90tuYQwcXv06xa8ka9TqzrSdZ
+         JH+MK8SNM2iT3/EaVNAOIarDo3Jv5KAKsePpBWnfz8z4dh4+ykbrOxugMVZzIlY9PFFP
+         3RkgLEaSbyOTsl5Uvb+GLFdPeBKZKfkUYXs5ugziRR8gXmYYPvqosXpEZlwTKcZo6eEY
+         IOWCWqj64LhCA+DjsIqjWZIzLEWDjez7Q/pH0f8RWsSKOO/oJZ4w9ftLOSL/nwi7oD2e
+         9WdJggH/Zs4pgC/jwcA8BhQ4QPod4pGwD/I2xuet3oXcuMb11ksoslC4rVTjDz3SP2v6
+         P3Cg==
+X-Forwarded-Encrypted: i=1; AJvYcCVjcAmMrluvngNNi+ui7SQltkWwDN3r9C7n9r26E0pG0HBJSQSbV0GlLTRg2w1Z3MsQlBF48L/NXPB9@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+9I6FQSbRXR7ol4J0n7kqdULcZmcg1TBCY+GL3gzwQNm/8aJD
+	DUNpETd0UQwg/P/sIgNG7sp7D8k0kMyMR058Y3XR1q1O+5QsxG9r6Z0qi5CFlpK4qThAyosRmCu
+	mYokypQJIAoVQmqnW6aYq/wWVMYafOD07pge4svw4
+X-Gm-Gg: ASbGncun+sWjkVfZMRNri+v8UDcnx9k5I/2/eyb5sZ91y/giyAPetTQnx7ViE5QmeeB
+	3EGC8DbttoVvpcB05BA9oElcXuYfALa+/KfOpKZ5ZSViIl9LH903oCpA6yS9fqw9oGPjrM86Skk
+	BpHo0yrSf0nFmLJk+/SOMgvwZdBRf+BSyUp4szQpuXJQRKuLduGlbCCSzAOuCU/d8f3RiCAnE6R
+	9ssAvZ1aNmLXol4SAucYLud1RxbP5Trwbixr7pvwgRyYGSv
+X-Google-Smtp-Source: AGHT+IHP4CcY56s6tdK30PaY3+VQezaoZk4lvk+rDg73ia56t/qWWvkH19hG/XzNRK1ErwjJSSAFdSL4fYDkuZlCRh0=
+X-Received: by 2002:a17:903:32ce:b0:231:f6bc:5c84 with SMTP id
+ d9443c01a7336-23fada5b364mr924205ad.8.1753392198670; Thu, 24 Jul 2025
+ 14:23:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: AnonymousSubmission
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF0000C37A:EE_|SA5PPF0EB7D076B:EE_
-X-MS-Office365-Filtering-Correlation-Id: bd2d78c7-bf00-476e-3a7e-08ddcaf3d226
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|1800799024|82310400026|376014|7416014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?DUa/9RRbvj4Nolugb0FkEI4xI3YAFHaxq1U4f8fTrcx7wqg5EAsJ+K+Vp6HZ?=
- =?us-ascii?Q?KJeN+DmzglNnU+xFv8Q2kHju2F0meS6JDhvCGmn+iOSW9qlm6TuU7AwehkmP?=
- =?us-ascii?Q?u3hY5ioytz4ilQVcx2c1ONHf0k3Xtan16DCafUSO/xWQk+uTt6rWlk2XcmYa?=
- =?us-ascii?Q?dfoXQJf3Wcyzk0i2x8K7RjH0+vCa9S3ah1mBumPErh9QWYk+vd+Mw4dn429d?=
- =?us-ascii?Q?AuJn4TAA2PjELbUdzYKEnSpt6Yss+bOQIcSEQfGfutq0n75QiscAmGjz2+iu?=
- =?us-ascii?Q?45NnlhK+okIVZ2R6PB1M9AImQYwaq8pIdSApjzG4U9SXiKY1FhWSVxgxVcMj?=
- =?us-ascii?Q?DXKhWOGo7icjhis77EQ7RFey37UfAdmm3q2RrJgUfJiDu5qsXRCQ/lUv/b3k?=
- =?us-ascii?Q?r8LszQhtjAlZVHMTNO7yRcJV0NKY2mZkGw4YWVpKRlU5/2QSC52l748T/l/r?=
- =?us-ascii?Q?xmQcn57G/0Ch9M7hdGiIFq7Q4o8ClzmraybzcQ/5yFRNpyY75okvOfibmwZd?=
- =?us-ascii?Q?2Jyi+o2RxLQTfaZuyNaI1TqaipGDaOfRSJhIQjoXxVykNrzT0wPYgUzBSSHH?=
- =?us-ascii?Q?suxh5NckilDngu01s3ik9aFKw8mzlI4X3JTnfgU16vRn0cnX9hatrBUh3Zum?=
- =?us-ascii?Q?VsVxPdB43RaW2KdqbX58d3213juiCp2pGBEeXqX/q+pdYv+HQhPcpbs3QYTo?=
- =?us-ascii?Q?Efqnkrq+xLIpk/gIjkZsyJjyw3UwFWQe7ssrT9an43kUAoMCBofYvaxdY6ib?=
- =?us-ascii?Q?wHfwAs6xjNM6uR/US0VVb3GhVCJSwG6JguYOmZDer43OYBWmoNteVUm25apf?=
- =?us-ascii?Q?cOr7UCliVO6221UB8Jj6/jOiSRjCVFHKEw4jPuWyUM4qb0jgXfJYFEELv+Qb?=
- =?us-ascii?Q?ypO8J5Z9w2n7U2BRv/tcvTatfleMtlc128icK8yBPS5M7/39TuW5QjqSpvw9?=
- =?us-ascii?Q?SBqPlWszIHPsxuaY7ppBfb7ISoubzIxttng53SrbuqZir8SH7713roB6j0cO?=
- =?us-ascii?Q?7o1SC0EUiO/Vp1ac9xZzO7rS0FAIz1a6ScS6nBdPP/FUMJCEgDr3UnAZC+cA?=
- =?us-ascii?Q?4dTez081dtMaWmt6FtZBzmrFYai7u+Zt1bo/G23apRJIjVW/kGdycKPe2Oie?=
- =?us-ascii?Q?7x1+VLkCGvpN7PZyuqoo458NxwTRgtAib1icj3IvfDBXWIA1Zr0jQT68YrHs?=
- =?us-ascii?Q?XZwlAughDCBxK2iVTON8fY6lsWvqsezdlhB9HRnDNMd7d7Phfuk+4E2iJFDw?=
- =?us-ascii?Q?zx+hEqAGi+CaqGALP/PFK09fhqmj1oDnTRfoHkuRNnkNQLST/W5RddXW8SjM?=
- =?us-ascii?Q?ODYlY83jTwK6bQfo57dOXV/asLeJ2vE0CeIOMW8pXw4Qgpl5X8qfDlWUoD/v?=
- =?us-ascii?Q?9vqsUJQ3TTXOD8Al9ud3A0RAQRVK+nrRNr0p0+N620PtaG6h/njPRAQi0TRM?=
- =?us-ascii?Q?ofU9sO8dXTdpPi++1J/XwrSU0jJpTBxdLpmfcbsc9Y8srqGMdEaOoTv7gbNX?=
- =?us-ascii?Q?+z+mhRUxPNfPDUFvpDPUeGxdl8F4WQM5gE7j?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(82310400026)(376014)(7416014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2025 20:51:10.7477
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd2d78c7-bf00-476e-3a7e-08ddcaf3d226
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF0000C37A.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA5PPF0EB7D076B
+References: <20250721054903.39833-1-byungchul@sk.com> <CAHS8izM11fxu6jHZw5VJsHXeZ+Tk+6ZBGDk0vHiOoHyXZoOvOg@mail.gmail.com>
+ <20250723044610.GA80428@system.software.com>
+In-Reply-To: <20250723044610.GA80428@system.software.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Thu, 24 Jul 2025 14:23:05 -0700
+X-Gm-Features: Ac12FXz-gExQLTDVuATyXHwkSGv0B-njaHRD7KrjKadlfvJJk-4Hay1UO-wB7MU
+Message-ID: <CAHS8izMO0LO1uKu0peSAC8Sixes06KLfKJvyQnAOiLfDqZd5+Q@mail.gmail.com>
+Subject: Re: [PATCH] mm, page_pool: introduce a new page type for page pool in
+ page type
+To: Byungchul Park <byungchul@sk.com>
+Cc: linux-mm@kvack.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel_team@skhynix.com, harry.yoo@oracle.com, ast@kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org, hawk@kernel.org, 
+	john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org, 
+	tariqt@nvidia.com, mbloch@nvidia.com, andrew+netdev@lunn.ch, 
+	edumazet@google.com, pabeni@redhat.com, akpm@linux-foundation.org, 
+	david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, 
+	vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com, 
+	horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com, 
+	ilias.apalodimas@linaro.org, willy@infradead.org, brauner@kernel.org, 
+	kas@kernel.org, yuzhao@google.com, usamaarif642@gmail.com, 
+	baolin.wang@linux.alibaba.com, toke@redhat.com, asml.silence@gmail.com, 
+	bpf@vger.kernel.org, linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Shahar Shitrit <shshitrit@nvidia.com>
+On Tue, Jul 22, 2025 at 9:46=E2=80=AFPM Byungchul Park <byungchul@sk.com> w=
+rote:
+>
+> On Tue, Jul 22, 2025 at 03:17:15PM -0700, Mina Almasry wrote:
+> > On Sun, Jul 20, 2025 at 10:49=E2=80=AFPM Byungchul Park <byungchul@sk.c=
+om> wrote:
+> > >
+> > > Hi,
+> > >
+> > > I focused on converting the existing APIs accessing ->pp_magic field =
+to
+> > > page type APIs.  However, yes.  Additional works would better be
+> > > considered on top like:
+> > >
+> > >    1. Adjust how to store and retrieve dma index.  Maybe network guys
+> > >       can work better on top.
+> > >
+> > >    2. Move the sanity check for page pool in mm/page_alloc.c to on fr=
+ee.
+> > >
+> > >    Byungchul
+> > >
+> > > ---8<---
+> > > From 7d207a1b3e9f4ff2a72f5b54b09e3ed0c4aaaca3 Mon Sep 17 00:00:00 200=
+1
+> > > From: Byungchul Park <byungchul@sk.com>
+> > > Date: Mon, 21 Jul 2025 14:05:20 +0900
+> > > Subject: [PATCH] mm, page_pool: introduce a new page type for page po=
+ol in page type
+> > >
+> > > ->pp_magic field in struct page is current used to identify if a page
+> > > belongs to a page pool.  However, page type e.i. PGTY_netpp can be us=
+ed
+> > > for that purpose.
+> > >
+> > > Use the page type APIs e.g. PageNetpp(), __SetPageNetpp(), and
+> > > __ClearPageNetpp() instead, and remove the existing APIs accessing
+> > > ->pp_magic e.g. page_pool_page_is_pp(), netmem_or_pp_magic(), and
+> > > netmem_clear_pp_magic() since they are totally replaced.
+> > >
+> > > This work was inspired by the following link by Pavel:
+> > >
+> > > [1] https://lore.kernel.org/all/582f41c0-2742-4400-9c81-0d46bf4e8314@=
+gmail.com/
+> > >
+> > > Suggested-by: Pavel Begunkov <asml.silence@gmail.com>
+> > > Signed-off-by: Byungchul Park <byungchul@sk.com>
+> > > ---
+> > >  .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  2 +-
+> > >  include/linux/mm.h                            | 28 ++---------------=
+--
+> > >  include/linux/page-flags.h                    |  6 ++++
+> > >  include/net/netmem.h                          |  2 +-
+> > >  mm/page_alloc.c                               |  4 +--
+> > >  net/core/netmem_priv.h                        | 16 ++---------
+> > >  net/core/page_pool.c                          | 10 +++++--
+> > >  7 files changed, 24 insertions(+), 44 deletions(-)
+> > >
+> > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drive=
+rs/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> > > index 5d51600935a6..def274f5c1ca 100644
+> > > --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> > > @@ -707,7 +707,7 @@ static void mlx5e_free_xdpsq_desc(struct mlx5e_xd=
+psq *sq,
+> > >                                 xdpi =3D mlx5e_xdpi_fifo_pop(xdpi_fif=
+o);
+> > >                                 page =3D xdpi.page.page;
+> > >
+> > > -                               /* No need to check page_pool_page_is=
+_pp() as we
+> > > +                               /* No need to check PageNetpp() as we
+> > >                                  * know this is a page_pool page.
+> > >                                  */
+> > >                                 page_pool_recycle_direct(pp_page_to_n=
+mdesc(page)->pp,
+> > > diff --git a/include/linux/mm.h b/include/linux/mm.h
+> > > index ae50c1641bed..736061749535 100644
+> > > --- a/include/linux/mm.h
+> > > +++ b/include/linux/mm.h
+> > > @@ -4135,10 +4135,9 @@ int arch_lock_shadow_stack_status(struct task_=
+struct *t, unsigned long status);
+> > >   * DMA mapping IDs for page_pool
+> > >   *
+> > >   * When DMA-mapping a page, page_pool allocates an ID (from an xarra=
+y) and
+> > > - * stashes it in the upper bits of page->pp_magic. We always want to=
+ be able to
+> > > - * unambiguously identify page pool pages (using page_pool_page_is_p=
+p()). Non-PP
+> > > - * pages can have arbitrary kernel pointers stored in the same field=
+ as pp_magic
+> > > - * (since it overlaps with page->lru.next), so we must ensure that w=
+e cannot
+> > > + * stashes it in the upper bits of page->pp_magic. Non-PP pages can =
+have
+> > > + * arbitrary kernel pointers stored in the same field as pp_magic (s=
+ince
+> > > + * it overlaps with page->lru.next), so we must ensure that we canno=
+t
+> > >   * mistake a valid kernel pointer with any of the values we write in=
+to this
+> > >   * field.
+> > >   *
+> > > @@ -4168,25 +4167,4 @@ int arch_lock_shadow_stack_status(struct task_=
+struct *t, unsigned long status);
+> > >
+> > >  #define PP_DMA_INDEX_MASK GENMASK(PP_DMA_INDEX_BITS + PP_DMA_INDEX_S=
+HIFT - 1, \
+> > >                                   PP_DMA_INDEX_SHIFT)
+> > > -
+> > > -/* Mask used for checking in page_pool_page_is_pp() below. page->pp_=
+magic is
+> > > - * OR'ed with PP_SIGNATURE after the allocation in order to preserve=
+ bit 0 for
+> > > - * the head page of compound page and bit 1 for pfmemalloc page, as =
+well as the
+> > > - * bits used for the DMA index. page_is_pfmemalloc() is checked in
+> > > - * __page_pool_put_page() to avoid recycling the pfmemalloc page.
+> > > - */
+> > > -#define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
+> > > -
+> > > -#ifdef CONFIG_PAGE_POOL
+> > > -static inline bool page_pool_page_is_pp(const struct page *page)
+> > > -{
+> > > -       return (page->pp_magic & PP_MAGIC_MASK) =3D=3D PP_SIGNATURE;
+> > > -}
+> > > -#else
+> > > -static inline bool page_pool_page_is_pp(const struct page *page)
+> > > -{
+> > > -       return false;
+> > > -}
+> > > -#endif
+> > > -
+> > >  #endif /* _LINUX_MM_H */
+> > > diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> > > index 4fe5ee67535b..906ba7c9e372 100644
+> > > --- a/include/linux/page-flags.h
+> > > +++ b/include/linux/page-flags.h
+> > > @@ -957,6 +957,7 @@ enum pagetype {
+> > >         PGTY_zsmalloc           =3D 0xf6,
+> > >         PGTY_unaccepted         =3D 0xf7,
+> > >         PGTY_large_kmalloc      =3D 0xf8,
+> > > +       PGTY_netpp              =3D 0xf9,
+> > >
+> > >         PGTY_mapcount_underflow =3D 0xff
+> > >  };
+> > > @@ -1101,6 +1102,11 @@ PAGE_TYPE_OPS(Zsmalloc, zsmalloc, zsmalloc)
+> > >  PAGE_TYPE_OPS(Unaccepted, unaccepted, unaccepted)
+> > >  FOLIO_TYPE_OPS(large_kmalloc, large_kmalloc)
+> > >
+> > > +/*
+> > > + * Marks page_pool allocated pages.
+> > > + */
+> > > +PAGE_TYPE_OPS(Netpp, netpp, netpp)
+> > > +
+> > >  /**
+> > >   * PageHuge - Determine if the page belongs to hugetlbfs
+> > >   * @page: The page to test.
+> > > diff --git a/include/net/netmem.h b/include/net/netmem.h
+> > > index f7dacc9e75fd..3667334e16e7 100644
+> > > --- a/include/net/netmem.h
+> > > +++ b/include/net/netmem.h
+> > > @@ -298,7 +298,7 @@ static inline struct net_iov *__netmem_clear_lsb(=
+netmem_ref netmem)
+> > >   */
+> > >  #define pp_page_to_nmdesc(p)                                        =
+   \
+> > >  ({                                                                  =
+   \
+> > > -       DEBUG_NET_WARN_ON_ONCE(!page_pool_page_is_pp(p));            =
+   \
+> > > +       DEBUG_NET_WARN_ON_ONCE(!PageNetpp(p));                       =
+   \
+> > >         __pp_page_to_nmdesc(p);                                      =
+   \
+> > >  })
+> > >
+> > > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > > index 2ef3c07266b3..71c7666e48a9 100644
+> > > --- a/mm/page_alloc.c
+> > > +++ b/mm/page_alloc.c
+> > > @@ -898,7 +898,7 @@ static inline bool page_expected_state(struct pag=
+e *page,
+> > >  #ifdef CONFIG_MEMCG
+> > >                         page->memcg_data |
+> > >  #endif
+> > > -                       page_pool_page_is_pp(page) |
+> > > +                       PageNetpp(page) |
+> > >                         (page->flags & check_flags)))
+> > >                 return false;
+> > >
+> > > @@ -925,7 +925,7 @@ static const char *page_bad_reason(struct page *p=
+age, unsigned long flags)
+> > >         if (unlikely(page->memcg_data))
+> > >                 bad_reason =3D "page still charged to cgroup";
+> > >  #endif
+> > > -       if (unlikely(page_pool_page_is_pp(page)))
+> > > +       if (unlikely(PageNetpp(page)))
+> > >                 bad_reason =3D "page_pool leak";
+> > >         return bad_reason;
+> > >  }
+> > > diff --git a/net/core/netmem_priv.h b/net/core/netmem_priv.h
+> > > index cd95394399b4..39a97703d9ed 100644
+> > > --- a/net/core/netmem_priv.h
+> > > +++ b/net/core/netmem_priv.h
+> > > @@ -8,21 +8,11 @@ static inline unsigned long netmem_get_pp_magic(net=
+mem_ref netmem)
+> > >         return __netmem_clear_lsb(netmem)->pp_magic & ~PP_DMA_INDEX_M=
+ASK;
+> > >  }
+> > >
+> > > -static inline void netmem_or_pp_magic(netmem_ref netmem, unsigned lo=
+ng pp_magic)
+> > > -{
+> > > -       __netmem_clear_lsb(netmem)->pp_magic |=3D pp_magic;
+> > > -}
+> > > -
+> > > -static inline void netmem_clear_pp_magic(netmem_ref netmem)
+> > > -{
+> > > -       WARN_ON_ONCE(__netmem_clear_lsb(netmem)->pp_magic & PP_DMA_IN=
+DEX_MASK);
+> > > -
+> > > -       __netmem_clear_lsb(netmem)->pp_magic =3D 0;
+> > > -}
+> > > -
+> > >  static inline bool netmem_is_pp(netmem_ref netmem)
+> > >  {
+> > > -       return (netmem_get_pp_magic(netmem) & PP_MAGIC_MASK) =3D=3D P=
+P_SIGNATURE;
+> > > +       if (netmem_is_net_iov(netmem))
+> > > +               return true;
+> >
+> > As Pavel alludes, this is dubious, and at least it's difficult to
+> > reason about it.
+> >
+> > There could be net_iovs that are not attached to pp, and should not be
+> > treated as pp memory. These are in the devmem (and future net_iov) tx
+> > paths.
+> >
+> > We need a way to tell if a net_iov is pp or not. A couple of options:
+> >
+> > 1. We could have it such that if net_iov->pp is set, then the
+> > netmem_is_pp =3D=3D true, otherwise false.
+> > 2. We could implement a page-flags equivalent for net_iov.
+> >
+> > Option #1 is simpler and is my preferred. To do that properly, you need=
+ to:
+> >
+> > 1. Make sure everywhere net_iovs are allocated that pp=3DNULL in the
+> > non-pp case and pp=3Dnon NULL in the pp case. those callsites are
+> > net_devmem_bind_dmabuf (devmem rx & tx path), io_zcrx_create_area
+> > (io_uring rx path).
+> >
+> > 2. Change netmem_is_pp to check net_iov->pp in the net_iov case.
+>
+> Good idea, but I'm not sure if I could work on it without consuming your
+> additional review efforts.  Can anyone add net_iov_is_pp() helper?
+>
 
-System errors can sometimes cause multiple errors to be reported
-to the TX reporter at the same time. For instance, lost interrupts
-may cause several SQs to time out simultaneously. When dev_watchdog
-notifies the driver for that, it iterates over all SQs to trigger
-recovery for the timed-out ones, via TX health reporter.
-However, grace period allows only one recovery at a time, so only
-the first SQ recovers while others remain blocked. Since no further
-recoveries are allowed during the grace period, subsequent errors
-cause the reporter to enter an ERROR state, requiring manual
-intervention.
+Things did indeed get busy for me with work work the past week and I
+still need to look at your merged netmem desc series, but I'm happy to
+review whenever I can.
 
-To address this, set the TX reporter's default grace period
-delay to 0.5 second. This allows the reporter to detect and handle
-all timed-out SQs within this delay window before initiating the
-grace period.
+> Or use the page type, Netpp, as an additional way to identify if it's a
+> pp page for system memory, keeping the current way using ->pp_magic.
+> So the page type, Netpp, is used for system memory, and ->pp_magic is
+> used for net_iov.  The clean up for ->pp_magic can be done if needed.
+>
 
-To account for the possibility of a similar issue in the RX reporter,
-its default grace period delay is also configured.
+IMO I would like to avoid deviations like this, especially since
+->pp_magic is in the netmem_desc struct that is now shared between
+page and net_iov. I'd rather both use pp_magic or both not, but that
+may just be me.
 
-Additionally, while here, align the TX definition prefix with the RX,
-as these are used only in EN driver.
 
-Signed-off-by: Shahar Shitrit <shshitrit@nvidia.com>
-Reviewed-by: Carolina Jubran <cjubran@nvidia.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c | 3 +++
- drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c | 7 +++++--
- 2 files changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
-index e106f0696486..feb3f2bce830 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
-@@ -645,6 +645,7 @@ void mlx5e_reporter_icosq_resume_recovery(struct mlx5e_channel *c)
- }
- 
- #define MLX5E_REPORTER_RX_GRACEFUL_PERIOD 500
-+#define MLX5E_REPORTER_RX_GRACEFUL_PERIOD_DELAY 500
- 
- static const struct devlink_health_reporter_ops mlx5_rx_reporter_ops = {
- 	.name = "rx",
-@@ -652,6 +653,8 @@ static const struct devlink_health_reporter_ops mlx5_rx_reporter_ops = {
- 	.diagnose = mlx5e_rx_reporter_diagnose,
- 	.dump = mlx5e_rx_reporter_dump,
- 	.default_graceful_period = MLX5E_REPORTER_RX_GRACEFUL_PERIOD,
-+	.default_graceful_period_delay =
-+		MLX5E_REPORTER_RX_GRACEFUL_PERIOD_DELAY,
- };
- 
- void mlx5e_reporter_rx_create(struct mlx5e_priv *priv)
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-index 6fb0d143ad1b..515b77585926 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-@@ -514,14 +514,17 @@ void mlx5e_reporter_tx_ptpsq_unhealthy(struct mlx5e_ptpsq *ptpsq)
- 	mlx5e_health_report(priv, priv->tx_reporter, err_str, &err_ctx);
- }
- 
--#define MLX5_REPORTER_TX_GRACEFUL_PERIOD 500
-+#define MLX5E_REPORTER_TX_GRACEFUL_PERIOD 500
-+#define MLX5E_REPORTER_TX_GRACEFUL_PERIOD_DELAY 500
- 
- static const struct devlink_health_reporter_ops mlx5_tx_reporter_ops = {
- 		.name = "tx",
- 		.recover = mlx5e_tx_reporter_recover,
- 		.diagnose = mlx5e_tx_reporter_diagnose,
- 		.dump = mlx5e_tx_reporter_dump,
--		.default_graceful_period = MLX5_REPORTER_TX_GRACEFUL_PERIOD,
-+		.default_graceful_period = MLX5E_REPORTER_TX_GRACEFUL_PERIOD,
-+		.default_graceful_period_delay =
-+			MLX5E_REPORTER_TX_GRACEFUL_PERIOD_DELAY,
- };
- 
- void mlx5e_reporter_tx_create(struct mlx5e_priv *priv)
--- 
-2.31.1
-
+--=20
+Thanks,
+Mina
 
