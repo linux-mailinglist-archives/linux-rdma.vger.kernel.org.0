@@ -1,192 +1,250 @@
-Return-Path: <linux-rdma+bounces-12478-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12479-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29E8FB118AD
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Jul 2025 08:51:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D495B11B2D
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Jul 2025 11:52:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5106A17DA73
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Jul 2025 06:51:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 738FC1C8520C
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Jul 2025 09:52:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E94E288C39;
-	Fri, 25 Jul 2025 06:50:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E96F32D3A77;
+	Fri, 25 Jul 2025 09:52:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VtbgN8ON"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D98AD1DED4A;
-	Fri, 25 Jul 2025 06:50:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08C6C23185E
+	for <linux-rdma@vger.kernel.org>; Fri, 25 Jul 2025 09:52:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753426252; cv=none; b=Qqje8qKtu7ZPeihvA1vNVyj4s4sk1330Jut7D+3PbO4m7C4eTvTxujkaO/2fwWaV9SWFFgFsJvWl1hlJugRbwVuUEwa0S76egAXet1xjKLVMSWFDjDPf1HfJtSz3vM9Ewtf8p1Qz9DCPjGHtyWDBMYR/TWHkKIq3G84itexoPho=
+	t=1753437123; cv=none; b=HoJomWOZgUROySNexa3Jyl3ZOJitCehcc4JxeiLK9hqVKYOl4qWjraTDqHPIpyf3OOwqNNsY72MPuP4Jab6iybPToyY4aiVHnMMUM9xFT8QSf77zjeVl56MYzltMOtZmwRz2mnAEahCUmh5s4mVEpb7WwfQwhljOIE7t7Mmm7mA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753426252; c=relaxed/simple;
-	bh=OO3pXYvp4Ujbu5BgmfsSaLZ7wyst5VWJXR1l2BfHnTE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wdh28ry0BxmfwmhYsYu4yzMGa+jTcMhr8GS6DNhI4J/vUccqmn3SUGqX1x4VwfDyrXIgQmmV8wH8oZpMMf3fv+ln29KAnkrd0YIHNhb97OsZQumqseLS0txx0/UQ+KxQtvJMp23/YN4DyjHhXhrGgYXpdWUUr44+xF2zcL5pUZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-64-68832943f8b9
-Date: Fri, 25 Jul 2025 15:50:38 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Mina Almasry <almasrymina@google.com>
-Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
-	harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
-	davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
-	john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
-	leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
-	andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
-	akpm@linux-foundation.org, david@redhat.com,
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
-	horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org,
-	ziy@nvidia.com, ilias.apalodimas@linaro.org, willy@infradead.org,
-	brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
-	usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
-	toke@redhat.com, asml.silence@gmail.com, bpf@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] mm, page_pool: introduce a new page type for page pool
- in page type
-Message-ID: <20250725065038.GA58004@system.software.com>
-References: <20250721054903.39833-1-byungchul@sk.com>
- <CAHS8izM11fxu6jHZw5VJsHXeZ+Tk+6ZBGDk0vHiOoHyXZoOvOg@mail.gmail.com>
+	s=arc-20240116; t=1753437123; c=relaxed/simple;
+	bh=LUwUHsA5yyl9/cHcI5QJeAZ2v8M1Sdik9K/naFteEPE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QOea1j6ufQr+PGNBNu0iPLPgLnctFekGv7Zix27X+xedSqzPNKaS2yjc+mPW8DFggjyQ6Eitx31ddvKDKUlsKcCBOFZLEuSycTrE4vN9CPl3DQsKkHme+z470Br9lTorafZAE7rvebwwVa3b+2BvF0WhPHgeRZYi8tLNipMh00M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VtbgN8ON; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1753437120;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=MTWdy+1SlxCZIWCULVABxeLHJl6jZUNfpstFC/dkyck=;
+	b=VtbgN8ON50nAd5lpCsB5eU/ur5Ud1CZDeHZZTRq9qiFFCjYA67eF7BSB73HmD/XgM3UdSK
+	qVyQYFSd7RgM7aF9ETOac4xaTs7RGHBnFDEhORbQGLhRrZl0DOpttWnFLyoWl9FER+pbl5
+	MyYCQg+Qe8PV3S9xwtAeqF3zmMnXhJk=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-199-BY7NuOcxOOm9Of-N-FEUTw-1; Fri, 25 Jul 2025 05:51:58 -0400
+X-MC-Unique: BY7NuOcxOOm9Of-N-FEUTw-1
+X-Mimecast-MFC-AGG-ID: BY7NuOcxOOm9Of-N-FEUTw_1753437117
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4586cc8f9f2so4203775e9.2
+        for <linux-rdma@vger.kernel.org>; Fri, 25 Jul 2025 02:51:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753437117; x=1754041917;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=MTWdy+1SlxCZIWCULVABxeLHJl6jZUNfpstFC/dkyck=;
+        b=f1J0cGmYR1mBLKkSvUdlif4ysPvgZrjBCMN5zj0TWBrV01wtZzr27wJeN/zg/qV8uL
+         K2U1EYJOG9jDRQTSIJcvxv4gdKeTIhoMdVEm/2uDSbVrWJexUTzNJc+9g2Euxuxnpoul
+         fKazhEuX9kKC8Gg8EzufMbQHZNDNmzy83Xjm5ciHlWFh9JoJN/RTBVLCSD+Bb3VQkg/8
+         aVSbxhT84dWuzjkCU7TtJZEWp+9yV4PYncVt1uZ+WlGcJeYKYRXLtn0R4L+jtJOV9dgn
+         dU7QS1Koewwn1XclrEyGRNJoTHhsr6tDhYVMv5d3WJyqVTH57tkQ844MkwOV2MU/rs9q
+         MLPw==
+X-Forwarded-Encrypted: i=1; AJvYcCVlpUa6yO4QqD6iq850yP0UiCT+BPxAO1ERWUHJoKHmxwObj4oogcxTPBaO8LnJql5lqXMa8TOFjiuu@vger.kernel.org
+X-Gm-Message-State: AOJu0YxtLudpoDH7y+qMTpLoBzCsxSJ8+ARtaRxcnpanfHdORUjRuoA1
+	fatiarPzDxzYCBuuv/kb4Xk7n32UIXOefg4QHeNB/a0ufgcn8E976Ku+ixRGRsHmUva51WuohHM
+	qu52lGOdhvlp0/AlSKk3RHRfHMORfLjx3vPFTkKttAkB53A1qBnyYzcx91soXf8g=
+X-Gm-Gg: ASbGncvqxdJF1x6KqcIaV8egYPocbi5Rfj/lbcdD4F8WODVBIjuwHXoAB3od9TqULu8
+	15wCFpH51kfxuesiBct4ghJ6VYvoxVW9L8mFfEy2XRd+yxEBuefuE4MU2RB+E0j7D5AsAyMOdfx
+	yGYc8yqu9XrmXHdkMpM2mxD+Hj7b4OS+niAl/YdMqEus/JAAMgQhAEqYWRaoBbarlKdJxdpVBqj
+	jf78tQRbQEMg3VuCpZNqoik1OMbT3TGqzjtAjMhuRzLPS/O90zHObymHaQk6XEYBKBAX62bn68K
+	2wB+E7wWrzL2ZAdYRaNWepOeQ9GDlH3lV3Wgd8y8xnfGjIDC2QOW6UZZZfDmhR74aBpuGhKBcIU
+	0eyNWYvtmgj1cLcQ4iZY7DymXak6XqyuEAklKCEIDUBtC8Lf6agpdEOsd5/cyuRoOBk8=
+X-Received: by 2002:a05:6000:420c:b0:3a6:d296:feaf with SMTP id ffacd0b85a97d-3b776737031mr1174849f8f.24.1753437117259;
+        Fri, 25 Jul 2025 02:51:57 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF2Ju9qbPhWwNNwVGPWubTU0EaExWPb4CE4F4jST4yWvzRfvTD7NkOT+SB5u1CFnRPEUIy3bw==
+X-Received: by 2002:a05:6000:420c:b0:3a6:d296:feaf with SMTP id ffacd0b85a97d-3b776737031mr1174815f8f.24.1753437116691;
+        Fri, 25 Jul 2025 02:51:56 -0700 (PDT)
+Received: from ?IPV6:2003:d8:2f1a:f400:5a9f:b1bf:4bb3:99b1? (p200300d82f1af4005a9fb1bf4bb399b1.dip0.t-ipconnect.de. [2003:d8:2f1a:f400:5a9f:b1bf:4bb3:99b1])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b7785d5e31sm207596f8f.6.2025.07.25.02.51.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Jul 2025 02:51:56 -0700 (PDT)
+Message-ID: <e64ee7c6-5113-4180-94e8-2fd7e711d5e2@redhat.com>
+Date: Fri, 25 Jul 2025 11:51:54 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHS8izM11fxu6jHZw5VJsHXeZ+Tk+6ZBGDk0vHiOoHyXZoOvOg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SfUzMcRzH9/09dzr73YW+5Kkza7V5yMP2sRltZr5/ME9jHv7gpt/czZXc
-	KWXMcS0xF3nuOhwpqba4qCtqVCLWLkcc4Ti6eUhStJ7IXTH999r7+/m+X58/PgKtbGDHCdr4
-	nZI+Xq1TcTJG9jX40rRFkSbNzDNZs8FaXMRBYXcyXHnrYMFaUIrgR08zDwOVdQg6a+9z8KWm
-	A0HOxS4arM5UBn4W99LQUuflodC+DDx5PgZuHyyjwXv0AQfm1D4aKnvaeDjgyKfAWmLkobE0
-	g4WTvbk0lBnf8vCkwsrBm6IBFnzVZgbqLVcZaD9VS4MnIwbqbGOg61ErgtriMgq6jpzjoCmr
-	goITLhsH71M9CFw1XgZO9adzkL0/A0Fft7+t7dgPFrLvveFjokhN6zea3Lj6giLuqocUKbe8
-	5onNnkhK8qPIYbeLJvaCQxyxdxznyatntzny4GwfQ8rfzSPljk6KmE1tHPne8pIh36qauBUh
-	G2TzYyWdNknSz1iwWaZxfPaxCU3jk2+dbWeMyBZ6GAUJWJyDvXWF/D82PXShADPiVGx0ltAB
-	5sQI7Hb3DPIoMRJfrspkA0yLp3mckzYywCHiBtxorKQCLBcBP2347O8RBKW4B183zx2KFbg+
-	6wMz9DUC95930YERWgzDV34LQ/EkbLqZPWgKEldiz9cTg+OjxSn4Tul9f7vMv+UHATszq/6u
-	PBbfzXczx5DCMkxhGaaw/FdYhilsiClASm18Upxaq5szXZMSr02evmV7nB35jyxvb/9GB+po
-	XF2NRAGpguUk4oBGyaqTDClx1QgLtGqUvPmaP5LHqlN2S/rtm/SJOslQjcIERhUqn9W1K1Yp
-	blXvlLZJUoKk//dKCUHjjCjXULCmYh+bkNJIpw9cszY1+DY/VbWuc1gOvtM7cfhAWr7pV8v6
-	pRMuUN57nSNX/WrY7eoOjVwyOc1zWhUthRelj/ieo5z7WDErsyesnvsUs1C5vELxfMF1+6v3
-	USG9itypoBsfvtVswNHznzsX+3Yk3gxbsiLn46K1Y4Ineprb96oYg0YdHUXrDeo/3knTkmAD
-	AAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SfUzMcRzH9/09d1x+Ev1WNnZYymOj7eOZMb6zeZ6H2Zpu+nG37o7dVTq0
-	HZc8Vqgs12VncaVMuqiLHuxKlFG7RESX0B9JkqRck65m+u+19+f9eX3++XCkTz7tzyk1UaJW
-	I1fJGAkl2bzMOG9tkFGxsCJhOpjzbzOQ1x8L2a12Gsy5RQh6B5pZGCqrRvCj6gkDXyp7EGRd
-	7yPBXBdPwc/83yR8rm5jIc+2CVzWdgpKTxeT0Jb8lIHEeDcJZQNdLJy05xBgLjSwUJlZQ0N9
-	URINqb9vklBsaGWh4YGZgZbbQzS0OxIpqDHdoqA7rYoEV9JqqLZMgb5nnQiq8osJ6LuQyUDj
-	1QcEpDgtDHyMdyFwVrZRkDZ4hoGME0kI3P3Dtq6LvTRkPG5hV8/BlZ3fSHzv1hsCN5XXErjE
-	9J7FFls0LswJxueanCS25Z5lsK3nMovfvSpl8NN0N4VLPizBJfYfBE40djH4++e3FP5W3shs
-	9d0rWR4hqpQxonbBynCJwt7RTh9unBr7ML2bMiCL3znkxQn8YsFY60QepvhZgqGukPQwwwcK
-	TU0DI+zLBwk3yi/RHib5K6yQleDt4Un8XqHeUEZ4WMqD8PJ5x7CH43z440JBYuhoPFGoufqJ
-	Gl0NFAavOUlPheQDhOw/3Gg8TTDezxi55MVvE1xfU0bqk/kZwqOiJ8RF5G0aYzKNMZn+m0xj
-	TBZE5SJfpSZGLVeqQufrIhV6jTJ2/v5DahsafiNr3OAlO+pt2OBAPIdk46U48KTCh5bH6PRq
-	BxI4UuYrbb47HEkj5PqjovbQPm20StQ5UABHyfykG3eL4T78QXmUGCmKh0XtvynBefkbkP+W
-	9XXWzdv73Sd6HAUxCdaObevUEluC3ntXryv1V9aiAI3sV05ryzP1UdbUrg0Ln41I1dyUNSHs
-	jj3JElf2uInXl67q335/3ql66864irDyIfexlBUz7xyJOA9X+LDkG1sOdIbUvp5amBk04cW0
-	g+5Jj6eb9Kq5X1JnqVx+4sy8NBmlU8hDgkmtTv4XDIkYeUIDAAA=
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/5] mm/hmm: HMM API to enable P2P DMA for device
+ private pages
+To: Alistair Popple <apopple@nvidia.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Matthew Wilcox <willy@infradead.org>,
+ Yonatan Maman <ymaman@nvidia.com>, =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?=
+ <jglisse@redhat.com>, Andrew Morton <akpm@linux-foundation.org>,
+ Leon Romanovsky <leon@kernel.org>, Lyude Paul <lyude@redhat.com>,
+ Danilo Krummrich <dakr@kernel.org>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>, Ben Skeggs <bskeggs@nvidia.com>,
+ Michael Guralnik <michaelgur@nvidia.com>, Or Har-Toov <ohartoov@nvidia.com>,
+ Daisuke Matsuda <dskmtsd@gmail.com>, Shay Drory <shayd@nvidia.com>,
+ linux-mm@kvack.org, linux-rdma@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, Gal Shalom <GalShalom@nvidia.com>
+References: <20250718115112.3881129-1-ymaman@nvidia.com>
+ <20250718115112.3881129-2-ymaman@nvidia.com>
+ <aHpXXKTaqp8FUhmq@casper.infradead.org> <20250718144442.GG2206214@ziepe.ca>
+ <aH4_QaNtIJMrPqOw@casper.infradead.org>
+ <7lvduvov3rvfsgixbkyyinnzz3plpp3szxam46ccgjmh6v5d7q@zoz4k723vs3d>
+ <aIBcTpC9Te7YIe4J@ziepe.ca>
+ <cn7hcxskr5prkc3jnd4vzzeau5weevzumcspzfayeiwdexkkfe@ovvgraqo7svh>
+ <a3f1af02-ef3f-40f8-be79-4c3929a59bb7@redhat.com>
+ <i5ya3n7bhhufpczprtp2ndg7bxtykoyjtsfae6dfdqk2rfz6ix@nzwnhqfwh6rq>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ g3eXuA==
+Organization: Red Hat
+In-Reply-To: <i5ya3n7bhhufpczprtp2ndg7bxtykoyjtsfae6dfdqk2rfz6ix@nzwnhqfwh6rq>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jul 22, 2025 at 03:17:15PM -0700, Mina Almasry wrote:
-> On Sun, Jul 20, 2025 at 10:49 PM Byungchul Park <byungchul@sk.com> wrote:
-> > diff --git a/net/core/netmem_priv.h b/net/core/netmem_priv.h
-> > index cd95394399b4..39a97703d9ed 100644
-> > --- a/net/core/netmem_priv.h
-> > +++ b/net/core/netmem_priv.h
-> > @@ -8,21 +8,11 @@ static inline unsigned long netmem_get_pp_magic(netmem_ref netmem)
-> >         return __netmem_clear_lsb(netmem)->pp_magic & ~PP_DMA_INDEX_MASK;
-> >  }
-> >
-> > -static inline void netmem_or_pp_magic(netmem_ref netmem, unsigned long pp_magic)
-> > -{
-> > -       __netmem_clear_lsb(netmem)->pp_magic |= pp_magic;
-> > -}
-> > -
-> > -static inline void netmem_clear_pp_magic(netmem_ref netmem)
-> > -{
-> > -       WARN_ON_ONCE(__netmem_clear_lsb(netmem)->pp_magic & PP_DMA_INDEX_MASK);
-> > -
-> > -       __netmem_clear_lsb(netmem)->pp_magic = 0;
-> > -}
-> > -
-> >  static inline bool netmem_is_pp(netmem_ref netmem)
-> >  {
-> > -       return (netmem_get_pp_magic(netmem) & PP_MAGIC_MASK) == PP_SIGNATURE;
-> > +       if (netmem_is_net_iov(netmem))
-> > +               return true;
+On 25.07.25 02:31, Alistair Popple wrote:
+> On Thu, Jul 24, 2025 at 10:52:54AM +0200, David Hildenbrand wrote:
+>> On 23.07.25 06:10, Alistair Popple wrote:
+>>> On Wed, Jul 23, 2025 at 12:51:42AM -0300, Jason Gunthorpe wrote:
+>>>> On Tue, Jul 22, 2025 at 10:49:10AM +1000, Alistair Popple wrote:
+>>>>>> So what is it?
+>>>>>
+>>>>> IMHO a hack, because obviously we shouldn't require real physical addresses for
+>>>>> something the CPU can't actually address anyway and this causes real
+>>>>> problems
+>>>>
+>>>> IMHO what DEVICE PRIVATE really boils down to is a way to have swap
+>>>> entries that point to some kind of opaque driver managed memory.
+>>>>
+>>>> We have alot of assumptions all over about pfn/phys to page
+>>>> relationships so anything that has a struct page also has to come with
+>>>> a fake PFN today..
+>>>
+>>> Hmm ... maybe. To get that PFN though we have to come from either a special
+>>> swap entry which we already have special cases for, or a struct page (which is
+>>> a device private page) which we mostly have to handle specially anyway. I'm not
+>>> sure there's too many places that can sensibly handle a fake PFN without somehow
+>>> already knowing it is device-private PFN.
+>>>
+>>>>> (eg. it doesn't actually work on anything other than x86_64). There's no reason
+>>>>> the "PFN" we store in device-private entries couldn't instead just be an index
+>>>>> into some data structure holding pointers to the struct pages. So instead of
+>>>>> using pfn_to_page()/page_to_pfn() we would use device_private_index_to_page()
+>>>>> and page_to_device_private_index().
+>>>>
+>>>> It could work, but any of the pfn conversions would have to be tracked
+>>>> down.. Could be troublesome.
+>>>
+>>> I looked at this a while back and I'm reasonably optimistic that this is doable
+>>> because we already have to treat these specially everywhere anyway.
+>> How would that look like?
+>>
+>> E.g., we have code like
+>>
+>> if (is_device_private_entry(entry)) {
+>> 	page = pfn_swap_entry_to_page(entry);
+>> 	folio = page_folio(page);
+>>
+>> 	...
+>> 	folio_get(folio);
+>> 	...
+>> }
+>>
+>> We could easily stop allowing pfn_swap_entry_to_page(), turning these into
+>> non-pfn swap entries.
+>>
+>> Would it then be something like
+>>
+>> if (is_device_private_entry(entry)) {
+>> 	page = device_private_entry_to_page(entry);
+>> 	
+>> 	...
+>> }
+>>
+>> Whereby device_private_entry_to_page() obtains the "struct page" not via the
+>> PFN but some other magical (index) value?
 > 
-> As Pavel alludes, this is dubious, and at least it's difficult to
-> reason about it.
+> Exactly. The observation being that when you convert a PTE from a swap entry
+> to a page we already know it is a device private entry, so can go look up the
+> struct page with special magic (eg. an index into some other array or data
+> structure).
 > 
-> There could be net_iovs that are not attached to pp, and should not be
-> treated as pp memory. These are in the devmem (and future net_iov) tx
-> paths.
+> And if you have a struct page you already know it's a device private page so if
+> you need to create the swap entry you can look up the magic index using some
+> alternate function.
 > 
-> We need a way to tell if a net_iov is pp or not. A couple of options:
-> 
-> 1. We could have it such that if net_iov->pp is set, then the
-> netmem_is_pp == true, otherwise false.
-> 2. We could implement a page-flags equivalent for net_iov.
-> 
-> Option #1 is simpler and is my preferred. To do that properly, you need to:
-> 
-> 1. Make sure everywhere net_iovs are allocated that pp=NULL in the
-> non-pp case and pp=non NULL in the pp case. those callsites are
-> net_devmem_bind_dmabuf (devmem rx & tx path), io_zcrx_create_area
+> The only issue would be if there were generic code paths that somehow have a
+> raw pfn obtained from neither a page-table walk or struct page. My assumption
+> (yet to be proven/tested) is that these paths don't exist.
 
-A few seconds reviewing the code, fortunately netmem_set_pp(pool) and
-netmem_or_pp_magic(PP_SIGNATURE) are always called paired, and
-netmem_set_pp(NULL) and netmem_clear_pp_magic() are always called paired
-too.
+I guess memory compaction and friends don't apply to ZONE_DEVICE, and 
+even memory_failure() handling goes a separate path.
 
-And there's no code to directly assign a value to ->pp and ->pp_magic,
-except in net_devmem_alloc_dmabuf() but that is also safe because always
-followed by page_pool_set_pp_info().
+-- 
+Cheers,
 
-Even though I think it's already equivalent between checking
-'->pp != NULL' and '->pp_magic == PP_SIGNATURE' with the current code,
-more consideration for better code should be always welcome.
+David / dhildenb
 
-As you mentioned, at net_devmem_bind_dmabuf() and io_zcrx_create_area(),
-it'd better initialize ->pp and ->pp_magic like:
-
---
-diff --git a/io_uring/zcrx.c b/io_uring/zcrx.c
-index 00d0064b22a5..8f2051b2c505 100644
---- a/io_uring/zcrx.c
-+++ b/io_uring/zcrx.c
-@@ -430,6 +430,7 @@ static int io_zcrx_create_area(struct io_zcrx_ifq *ifq,
- 		area->freelist[i] = i;
- 		atomic_set(&area->user_refs[i], 0);
- 		niov->type = NET_IOV_IOURING;
-+		page_pool_clear_pp_info(net_iov_to_netmem(niov));
- 	}
- 
- 	area->free_count = nr_iovs;
-diff --git a/net/core/devmem.c b/net/core/devmem.c
-index b3a62ca0df65..5d017c9f4986 100644
---- a/net/core/devmem.c
-+++ b/net/core/devmem.c
-@@ -285,6 +285,7 @@ net_devmem_bind_dmabuf(struct net_device *dev,
- 			niov = &owner->area.niovs[i];
- 			niov->type = NET_IOV_DMABUF;
- 			niov->owner = &owner->area;
-+			page_pool_clear_pp_info(net_iov_to_netmem(niov));
- 			page_pool_set_dma_addr_netmem(net_iov_to_netmem(niov),
- 						      net_devmem_get_dma_addr(niov));
- 			if (direction == DMA_TO_DEVICE)
---
-
-Do you think it works for using ->pp to check if a niov is pp?
-
-	Byungchul
 
