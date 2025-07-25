@@ -1,47 +1,47 @@
-Return-Path: <linux-rdma+bounces-12483-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12484-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B69AB12205
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Jul 2025 18:29:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52BFDB12231
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Jul 2025 18:41:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D960116759C
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Jul 2025 16:29:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 185EE3ADD89
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Jul 2025 16:40:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84B8A2EF28E;
-	Fri, 25 Jul 2025 16:29:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E61962EE99C;
+	Fri, 25 Jul 2025 16:41:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="chKb92Aw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iexTPIGI"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B98D1F0E26;
-	Fri, 25 Jul 2025 16:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B6AE3BBF2;
+	Fri, 25 Jul 2025 16:41:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753460980; cv=none; b=cpdblyRgqqs7lSmhsu+xSTPyF3inS2Ajw//QIPHHeYqbZOUatVCsfF9ykHbbkW0xsrSDqAiyUaOqIDdw4YgVLygGHhqIQy7hBZNyEHpbtrppA3Z8glOskXY2RiQTqil781czTpsbXy9ZCxR2+BPI1UGY15QtId3BYeX0yDjZWZ0=
+	t=1753461672; cv=none; b=TmVFIAnjBizJyMsrNRIImE98kFHNj1i4IaiUUNYaMvi8mvk7uiOZ1lmjCjVMs2fppglMmurH3RBegnV/80rUrbny4UaEBZmFPZWLlyKIQxKPZhqv+CrKa7dRaojrZjiwI0hBX6u/eGK4AatPNVEHp2dw3yCtsK3h1x758sgg474=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753460980; c=relaxed/simple;
-	bh=42TrrIOPkeb9eA0ooDQCwEToRUoD4yszjtBtK/6JRW4=;
+	s=arc-20240116; t=1753461672; c=relaxed/simple;
+	bh=+dn6kR5l0+iBlWJDGE+X3wOpJqP16In+19yWwfuvOXg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CkuOoaW8TIuA08qIMOuYfz3je+n51atav9v4QVJ1PwJQ5SY38IKCL/WQLNPZysjWaMdAb/acCJlJyLHGFhzbO0Q4wiMf+BnNdEQk6M/SVpPLIQGJZwS8AYQtrj9SF0oon+iERw/TrhADvJVzOiT2RnEbzf/4U1/j8Swh7aKc0vw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=chKb92Aw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A297C4CEE7;
-	Fri, 25 Jul 2025 16:29:36 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=kA49YfQwmWsm3qn2yiVZsGl9B0ZLtBtu2Cg2WIa0zIn9fUE8z1Jmfp+qZiuGW0pmH28IBThKJV1Cyq5mC9XZiK4i51TzvIyVj+9iCT2O9uV37OstgK2T284f9u+lkzr1PCzWM91iyFG3bF2BzYTVtI4Rbwq04bq1HtAcEogsjZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iexTPIGI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0533AC4CEE7;
+	Fri, 25 Jul 2025 16:41:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753460979;
-	bh=42TrrIOPkeb9eA0ooDQCwEToRUoD4yszjtBtK/6JRW4=;
+	s=k20201202; t=1753461672;
+	bh=+dn6kR5l0+iBlWJDGE+X3wOpJqP16In+19yWwfuvOXg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=chKb92AwoPO45zlhVcarcYPB8vfCinbNToixS1/Gpx/9obKTeVrxyffV2js3zTlgg
-	 NdcX9Xytq61pEG2MlJs66jAmC9jHLykkQBXjm76ebRxe0VSvAi1+ImC/EKVF2r5Czp
-	 5h3aWYVDrJVoE3/7ENcMdf81QMliBpJ1vlhrF9DkCaDRUT10xsDIE+lBedKhb5vrGC
-	 rKHlM6ii5rtMDMAUB2go3hK+kA7B+0yAleHhGQ/3Sapp/h8DGG+ez9o+fF+7x8EMjo
-	 k6S+lPOuanAl8a8UTk3rkg6m/2C4b6gtWMxvxH2zNY/okskCbuSlmd9CYLWptW3svR
-	 JBKJLfmyILXTg==
-Date: Fri, 25 Jul 2025 17:29:34 +0100
+	b=iexTPIGI6sf5i4M49WzUR/f188G1IgLsRU9y93Rrgp+zcQqnJtt6X5AiZwKeJlapI
+	 2gmyrmC3hXOqqM+Eu00ds49GM+ObZNO4oZ/q/HmwTlUwXtRd9QPbh85+jtEXGvYVPu
+	 Dp7noayYIlmgcUQpz7Q6T7t6HZD/awZAPY+MoHaCy5A/GMZfmHUpuWIo2EC7Gztr2V
+	 dByuwrrkY0GEjezSTDepuDKpWEKbO1toxACBcXEuI+FMt0+VJjcYAtGkl1V6H8Cpmc
+	 pP0Cpg+WQj/5u+MsyG6MuhgfzDt0sYqffj7QV2axnXI6FfxB5mjHkv636ZcU0HfnGx
+	 cg0Hgrl6/UUnw==
+Date: Fri, 25 Jul 2025 17:41:06 +0100
 From: Simon Horman <horms@kernel.org>
 To: Abhijit Gangurde <abhijit.gangurde@amd.com>
 Cc: shannon.nelson@amd.com, brett.creeley@amd.com, davem@davemloft.net,
@@ -50,11 +50,11 @@ Cc: shannon.nelson@amd.com, brett.creeley@amd.com, davem@davemloft.net,
 	andrew+netdev@lunn.ch, allen.hubbe@amd.com, nikhil.agarwal@amd.com,
 	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
 	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/14] net: ionic: Update LIF identity with additional
- RDMA capabilities
-Message-ID: <20250725162934.GH1367887@horms.kernel.org>
+Subject: Re: [PATCH v4 03/14] net: ionic: Export the APIs from net driver to
+ support device commands
+Message-ID: <20250725164106.GI1367887@horms.kernel.org>
 References: <20250723173149.2568776-1-abhijit.gangurde@amd.com>
- <20250723173149.2568776-3-abhijit.gangurde@amd.com>
+ <20250723173149.2568776-4-abhijit.gangurde@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -63,16 +63,21 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250723173149.2568776-3-abhijit.gangurde@amd.com>
+In-Reply-To: <20250723173149.2568776-4-abhijit.gangurde@amd.com>
 
-On Wed, Jul 23, 2025 at 11:01:37PM +0530, Abhijit Gangurde wrote:
-> Firmware sends the RDMA capability in a response for LIF_IDENTIFY
-> device command. Update the LIF indentify with additional RDMA
-> capabilities used by driver and firmware.
+On Wed, Jul 23, 2025 at 11:01:38PM +0530, Abhijit Gangurde wrote:
+> RDMA driver needs to establish admin queues to support admin operations.
+> Export the APIs to send device commands for the RDMA driver.
 > 
 > Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
 > Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Hi Abhijit,
 
+Perhaps I misunderstand things, or otherwise am on the wrong track here.
+But this seems to open the possibility of users of ionic_adminq_post_wait(),
+outside the Ethernet driver, executing a wide range or admin commands.
+It seems to me that it would be nice to narrow that surface.
+
+...
 
