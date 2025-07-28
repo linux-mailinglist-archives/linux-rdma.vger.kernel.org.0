@@ -1,244 +1,431 @@
-Return-Path: <linux-rdma+bounces-12509-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12510-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83224B140CB
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Jul 2025 18:56:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DB4BB14169
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Jul 2025 19:51:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A87E540AD8
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Jul 2025 16:56:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39FC44E0453
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Jul 2025 17:50:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B283827467B;
-	Mon, 28 Jul 2025 16:56:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A63127510F;
+	Mon, 28 Jul 2025 17:51:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ui9QGaq5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="p8NH4+hy";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ui9QGaq5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="p8NH4+hy"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DZ+KRn4y"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D864819AD70
-	for <linux-rdma@vger.kernel.org>; Mon, 28 Jul 2025 16:56:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D588E21C9EA
+	for <linux-rdma@vger.kernel.org>; Mon, 28 Jul 2025 17:51:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753721804; cv=none; b=sjMReTtW9W6X3o/I2xfKV1hB2QjwHv+zZ9jaGbIqkpbKTM5vYeUyP4qz48I/6ngq09SJeVenjTgnTctPZSfg782FioAl+RFyxuET+VX7iRAZtvVpJhMKxLcIHv/1vzKNZCstDu9G951DyfeqRR0s6AtgvqE/1KBMltF4oydJZiQ=
+	t=1753725073; cv=none; b=aIhKqnOaB7FiCmMS9+/7Jl7x5+Ak7P1+U7LJeqcJpFBHSVUbGQt9iia/HHLtsQyAAAh9+F2vfDRZTNcU2LJh81oy9WzcowNSozggUjeBnRFNipS6IfFZOCb4Qzlqitk7Q+aeq7zKo09PZv0I/GV3Q9+aGvZtH7Oil35KRrBchEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753721804; c=relaxed/simple;
-	bh=fbYLNExcnPOC80aCtdJrSGN4NFhvmB9b/KptI+tqHaI=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=M3TORgBHTxVkwvkpQiPQpYFIpDzHueFV4OT5YyVNniYUki5Z0XmaXXSnRcaRSD/d4Kw2UNivgdYYvg3reCbOAakFVEf+38GEXra6Rx/2/4IWbj3+U8gs7RFtuAR5vmCXUzOyNsDt8IvVT3KLbJAhuTZQ6pcwCHOaepQIJ8JnN/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ui9QGaq5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=p8NH4+hy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ui9QGaq5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=p8NH4+hy; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 032DD21235;
-	Mon, 28 Jul 2025 16:56:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1753721801; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:autocrypt:autocrypt;
-	bh=T4hxrER/Y5bQt1JVTtC7jjVd6hI2iYvgAd3Nm1Rz0kY=;
-	b=ui9QGaq5b73c0I5teTjwg02Y+cUSwq1e5Z0ZKX2xNLJhf8US8Ae1tMtozgTyE2icr1KKjp
-	QqPGMXzriKfQoyyu4wGXRAQAc+3AcWgIvEn0ePS5VDOzsXYR/Fs/NqywbaQ9tM2DAAuN0K
-	ebLgecfYmKNeqt0irMID2cNN4JUE3TA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1753721801;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:autocrypt:autocrypt;
-	bh=T4hxrER/Y5bQt1JVTtC7jjVd6hI2iYvgAd3Nm1Rz0kY=;
-	b=p8NH4+hyBGl8oORcTjkZLCeMBX4hUOhTCNX8ygV1yzMMk2clU7i20L2qKX+emAozrVIcmc
-	kmX7ESWYvR+vqPDw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1753721801; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:autocrypt:autocrypt;
-	bh=T4hxrER/Y5bQt1JVTtC7jjVd6hI2iYvgAd3Nm1Rz0kY=;
-	b=ui9QGaq5b73c0I5teTjwg02Y+cUSwq1e5Z0ZKX2xNLJhf8US8Ae1tMtozgTyE2icr1KKjp
-	QqPGMXzriKfQoyyu4wGXRAQAc+3AcWgIvEn0ePS5VDOzsXYR/Fs/NqywbaQ9tM2DAAuN0K
-	ebLgecfYmKNeqt0irMID2cNN4JUE3TA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1753721801;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:autocrypt:autocrypt;
-	bh=T4hxrER/Y5bQt1JVTtC7jjVd6hI2iYvgAd3Nm1Rz0kY=;
-	b=p8NH4+hyBGl8oORcTjkZLCeMBX4hUOhTCNX8ygV1yzMMk2clU7i20L2qKX+emAozrVIcmc
-	kmX7ESWYvR+vqPDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DC618138A5;
-	Mon, 28 Jul 2025 16:56:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id rxp3Ncirh2hBQgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 28 Jul 2025 16:56:40 +0000
-Message-ID: <450d3876-90a9-4b1c-8d73-62ac19048991@suse.cz>
-Date: Mon, 28 Jul 2025 18:56:40 +0200
+	s=arc-20240116; t=1753725073; c=relaxed/simple;
+	bh=vOmFchgkQyEQ+7SGTx8BojdlIqRNaIQQqGvyMI05+8Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tNaQAunR2r0X9Q827ujJBdwaRiCMXB8X7nfKUtmHP6hkr5rJ3c65deyXHEAsahuUyASlQt6IM6iEpTQPMgFgRhTI9+DJciOPOE32V3UwsgbEQCV9WNdoWfWqKH7b41px1NnhLQhq3JZckyWNhjFE9234GZuf2j0q/TqcbARIO9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DZ+KRn4y; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-23dd9ae5aacso17275ad.1
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Jul 2025 10:51:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1753725070; x=1754329870; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DBKeku6zVO55K67MLztQ2tt1Uyve6xAQKNrkkCjEuZI=;
+        b=DZ+KRn4yri2ntC5ftorXZQdkJw0s497yIfCelXQ3V2ohVdtCdXILMCgMTXogXIs5yB
+         B6cM4Gj7lnaqdLdHljd4HmgdR/M9wyh1V9BXeeKtrzTMm/jZy+3w+6JKuPzDPnsWFeyc
+         R/+9v+fzlgyVqFDdhlKoJNu6tvGX+4V2yRXBGUYHQiVX9pFkdu8aVIrevV0yyZ3jKzZB
+         Gg/glpNq1zqp/Q+SaTvD5QqixetZxktrR1GhRIM4agVH3FoJZJA+gxrtQXxdHfE/GyPm
+         Sr1iTOleog4qXQnGuHiFv+i6/GbXFU1m0YSWJ8XCCZu0Tx4vadGi6BuViH6pS21zKJdo
+         xPeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753725070; x=1754329870;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DBKeku6zVO55K67MLztQ2tt1Uyve6xAQKNrkkCjEuZI=;
+        b=a1fLHWLTsTTrkLHjaPARAeYGxUlf7oRf97SEXPU9Qcq9j6edSxBhN+htNmqLaFfcjQ
+         26VOyUEuurYfdLjjIgLJ1v7VWrSmdGnPD387uaf19o5hr8Rg2c+wAev5vG/s6lNcCf9C
+         IpLzaz8OfePOJ+hcwE3z5dVQ/fAnC6QNHg6Pd9TMzQnlJnoxMjHE1yRPurJ9fIVN8Yq8
+         e8AM+yDWWhGyl62486hTQuEETl6d7ZY59epsSI0mPlQYz7titUivemzPtUug83cC4xbx
+         oHKSMYVAVtd7Ib1PLl9Mtw9iJglCRjvttWmZeCk88OiibRfh1dbbtVDh6M1RRwWqeZoz
+         P2JQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWPXYocTJ0VIpTKqTmb8Q7iW7ulE2Uma8ShoJmE83fEWUgQJtryjFUFOWf9PYTW0bgL7jLYrACIOTuS@vger.kernel.org
+X-Gm-Message-State: AOJu0YxGrJUgCyYmkxkuAm6NlxBOCVdjc2wOvt1CR4YIYSOulCnh49hj
+	aA1RcY4y5RdWN3QRfXEKXIBPdyu3xloQdJ33V1HgPKooDxCAlf32wi4Kc9Vh7s3pobiVREzZ+4T
+	LH8PdfEXHUNzz7Nn78//OyZITB+Vw7+SwWgu7DnHS
+X-Gm-Gg: ASbGncvLi3HajAEtuk9CYFxkYlmkCkf9pVdpbfBx8TGzup/l/DiNRMqRgolr2qnw9IH
+	9Qtc9Nju/gp2rfsRxsU5ueycPnx9TZC6JKHU+qWeCcZR2Rb/3Wu6O/PI9ekTM34M0usLlJACTjy
+	9AM8z/78vuR12VKOWq4dkiCY+KQv0BIvzrwfuW0qyAIURpgTi/6BD174vKAh1Nzkjp5UW7pnDyF
+	hz1zAvgciXoCDAaHy8sAoeSqq4oCZX2jKXwrQ==
+X-Google-Smtp-Source: AGHT+IHcYeKC05850F4TTaw5KxBzxMXvA6FA4+SMB9VpNRlorOlyAj+f8QimcI7qy9S+bhrDnuKB9SXXwdjOVkm0pSM=
+X-Received: by 2002:a17:903:94c:b0:240:58bd:11ba with SMTP id
+ d9443c01a7336-24058cc56cemr1345875ad.23.1753725069763; Mon, 28 Jul 2025
+ 10:51:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Vlastimil Babka <vbabka@suse.cz>
-Subject: [GIT PULL] slab updates for 6.17
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Harry Yoo <harry.yoo@oracle.com>, David Rientjes <rientjes@google.com>,
- Christoph Lameter <cl@gentwo.org>, Roman Gushchin
- <roman.gushchin@linux.dev>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
- LKML <linux-kernel@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
- Pedro Falcato <pfalcato@suse.de>, Bernard Metzler
- <bernard.metzler@linux.dev>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- David Howells <dhowells@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.998];
-	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid]
-X-Spam-Flag: NO
-X-Spam-Score: -4.30
+References: <20250728052742.81294-1-byungchul@sk.com> <20250728082008.34091-1-byungchul@sk.com>
+In-Reply-To: <20250728082008.34091-1-byungchul@sk.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Mon, 28 Jul 2025 10:50:55 -0700
+X-Gm-Features: Ac12FXxVdVrRJS8-nghy7iGoNOdvPeYRQkCbX14O9WycDp4E_Y6QBKwCNMt-Clw
+Message-ID: <CAHS8izPTLSdN7uqPN7n97ovkdvc1vLc46EgyxDYSbAM6bdLUjg@mail.gmail.com>
+Subject: Re: [PATCH v2 rebase as of Jul 28] mm, page_pool: introduce a new
+ page type for page pool in page type
+To: Byungchul Park <byungchul@sk.com>
+Cc: linux-mm@kvack.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel_team@skhynix.com, harry.yoo@oracle.com, ast@kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org, hawk@kernel.org, 
+	john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org, 
+	tariqt@nvidia.com, mbloch@nvidia.com, andrew+netdev@lunn.ch, 
+	edumazet@google.com, pabeni@redhat.com, akpm@linux-foundation.org, 
+	david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, 
+	vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com, 
+	horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com, 
+	ilias.apalodimas@linaro.org, willy@infradead.org, brauner@kernel.org, 
+	kas@kernel.org, yuzhao@google.com, usamaarif642@gmail.com, 
+	baolin.wang@linux.alibaba.com, toke@redhat.com, asml.silence@gmail.com, 
+	bpf@vger.kernel.org, linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+On Mon, Jul 28, 2025 at 1:20=E2=80=AFAM Byungchul Park <byungchul@sk.com> w=
+rote:
+>
+> Rebasing on the latest linux-next/master is required.  Otherwise, a
+> build fail is observed.  Sorry about the noise.
+>
+> Changes from v1:
+>         1. Rebase on linux-next.
+>         2. Initialize net_iov->pp =3D NULL when allocating net_iov in
+>            net_devmem_bind_dmabuf() and io_zcrx_create_area().
+>         3. Use ->pp for net_iov to identify if it's pp rather than
+>            always consider net_iov as pp.
+>         4. Add Suggested-by: David Hildenbrand <david@redhat.com>.
+>
+> ---8<---
+> From 26c9a731f388b788d6ea972c313bc8da8831412b Mon Sep 17 00:00:00 2001
+> From: Byungchul Park <byungchul@sk.com>
+> Date: Mon, 28 Jul 2025 17:09:20 +0900
+> Subject: [PATCH v2 rebase as of Jul 28] mm, page_pool: introduce a new pa=
+ge type for page pool in page type
+>
+> ->pp_magic field in struct page is current used to identify if a page
+> belongs to a page pool.  However, ->pp_magic will be removed and page
+> type bit in struct page e.i. PGTY_netpp can be used for that purpose.
+>
+> Introduce and use the page type APIs e.g. PageNetpp(), __SetPageNetpp(),
+> and __ClearPageNetpp() instead, and remove the existing APIs accessing
+> ->pp_magic e.g. page_pool_page_is_pp(), netmem_or_pp_magic(), and
+> netmem_clear_pp_magic().
+>
+> For net_iov, use ->pp to identify if it's pp, with making sure that ->pp
+> is NULL for non-pp net_iov.
+>
+> This work was inspired by the following link:
+>
+> [1] https://lore.kernel.org/all/582f41c0-2742-4400-9c81-0d46bf4e8314@gmai=
+l.com/
+>
+> While at it, move the sanity check for page pool to on free.
+>
+> Suggested-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> ---
+>  .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  2 +-
+>  include/linux/mm.h                            | 27 +++----------------
+>  include/linux/page-flags.h                    |  6 +++++
+>  include/net/netmem.h                          |  2 +-
+>  io_uring/zcrx.c                               |  1 +
+>  mm/page_alloc.c                               |  7 +++--
+>  net/core/devmem.c                             |  1 +
+>  net/core/netmem_priv.h                        | 23 +++++++---------
+>  net/core/page_pool.c                          | 10 +++++--
+>  9 files changed, 34 insertions(+), 45 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/n=
+et/ethernet/mellanox/mlx5/core/en/xdp.c
+> index 5d51600935a6..def274f5c1ca 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+> @@ -707,7 +707,7 @@ static void mlx5e_free_xdpsq_desc(struct mlx5e_xdpsq =
+*sq,
+>                                 xdpi =3D mlx5e_xdpi_fifo_pop(xdpi_fifo);
+>                                 page =3D xdpi.page.page;
+>
+> -                               /* No need to check page_pool_page_is_pp(=
+) as we
+> +                               /* No need to check PageNetpp() as we
+>                                  * know this is a page_pool page.
+>                                  */
+>                                 page_pool_recycle_direct(pp_page_to_nmdes=
+c(page)->pp,
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 0d4ee569aa6b..d01b296e7184 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -4171,10 +4171,9 @@ int arch_lock_shadow_stack_status(struct task_stru=
+ct *t, unsigned long status);
+>   * DMA mapping IDs for page_pool
+>   *
+>   * When DMA-mapping a page, page_pool allocates an ID (from an xarray) a=
+nd
+> - * stashes it in the upper bits of page->pp_magic. We always want to be =
+able to
+> - * unambiguously identify page pool pages (using page_pool_page_is_pp())=
+. Non-PP
+> - * pages can have arbitrary kernel pointers stored in the same field as =
+pp_magic
+> - * (since it overlaps with page->lru.next), so we must ensure that we ca=
+nnot
+> + * stashes it in the upper bits of page->pp_magic. Non-PP pages can have
+> + * arbitrary kernel pointers stored in the same field as pp_magic (since
+> + * it overlaps with page->lru.next), so we must ensure that we cannot
+>   * mistake a valid kernel pointer with any of the values we write into t=
+his
+>   * field.
+>   *
+> @@ -4205,26 +4204,6 @@ int arch_lock_shadow_stack_status(struct task_stru=
+ct *t, unsigned long status);
+>  #define PP_DMA_INDEX_MASK GENMASK(PP_DMA_INDEX_BITS + PP_DMA_INDEX_SHIFT=
+ - 1, \
+>                                   PP_DMA_INDEX_SHIFT)
+>
+> -/* Mask used for checking in page_pool_page_is_pp() below. page->pp_magi=
+c is
+> - * OR'ed with PP_SIGNATURE after the allocation in order to preserve bit=
+ 0 for
+> - * the head page of compound page and bit 1 for pfmemalloc page, as well=
+ as the
+> - * bits used for the DMA index. page_is_pfmemalloc() is checked in
+> - * __page_pool_put_page() to avoid recycling the pfmemalloc page.
+> - */
+> -#define PP_MAGIC_MASK ~(PP_DMA_INDEX_MASK | 0x3UL)
+> -
+> -#ifdef CONFIG_PAGE_POOL
+> -static inline bool page_pool_page_is_pp(const struct page *page)
+> -{
+> -       return (page->pp_magic & PP_MAGIC_MASK) =3D=3D PP_SIGNATURE;
+> -}
+> -#else
+> -static inline bool page_pool_page_is_pp(const struct page *page)
+> -{
+> -       return false;
+> -}
+> -#endif
+> -
+>  #define PAGE_SNAPSHOT_FAITHFUL (1 << 0)
+>  #define PAGE_SNAPSHOT_PG_BUDDY (1 << 1)
+>  #define PAGE_SNAPSHOT_PG_IDLE  (1 << 2)
+> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> index 8d3fa3a91ce4..84247e39e9e7 100644
+> --- a/include/linux/page-flags.h
+> +++ b/include/linux/page-flags.h
+> @@ -933,6 +933,7 @@ enum pagetype {
+>         PGTY_zsmalloc           =3D 0xf6,
+>         PGTY_unaccepted         =3D 0xf7,
+>         PGTY_large_kmalloc      =3D 0xf8,
+> +       PGTY_netpp              =3D 0xf9,
+>
+>         PGTY_mapcount_underflow =3D 0xff
+>  };
+> @@ -1077,6 +1078,11 @@ PAGE_TYPE_OPS(Zsmalloc, zsmalloc, zsmalloc)
+>  PAGE_TYPE_OPS(Unaccepted, unaccepted, unaccepted)
+>  FOLIO_TYPE_OPS(large_kmalloc, large_kmalloc)
+>
+> +/*
+> + * Marks page_pool allocated pages.
+> + */
+> +PAGE_TYPE_OPS(Netpp, netpp, netpp)
+> +
+>  /**
+>   * PageHuge - Determine if the page belongs to hugetlbfs
+>   * @page: The page to test.
+> diff --git a/include/net/netmem.h b/include/net/netmem.h
+> index f7dacc9e75fd..3667334e16e7 100644
+> --- a/include/net/netmem.h
+> +++ b/include/net/netmem.h
+> @@ -298,7 +298,7 @@ static inline struct net_iov *__netmem_clear_lsb(netm=
+em_ref netmem)
+>   */
+>  #define pp_page_to_nmdesc(p)                                           \
+>  ({                                                                     \
+> -       DEBUG_NET_WARN_ON_ONCE(!page_pool_page_is_pp(p));               \
+> +       DEBUG_NET_WARN_ON_ONCE(!PageNetpp(p));                          \
+>         __pp_page_to_nmdesc(p);                                         \
+>  })
+>
+> diff --git a/io_uring/zcrx.c b/io_uring/zcrx.c
+> index e5ff49f3425e..4cceb97ca26a 100644
+> --- a/io_uring/zcrx.c
+> +++ b/io_uring/zcrx.c
+> @@ -444,6 +444,7 @@ static int io_zcrx_create_area(struct io_zcrx_ifq *if=
+q,
+>                 area->freelist[i] =3D i;
+>                 atomic_set(&area->user_refs[i], 0);
+>                 niov->type =3D NET_IOV_IOURING;
+> +               niov->pp =3D NULL;
+>         }
+>
+>         area->free_count =3D nr_iovs;
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index d1d037f97c5f..2f6a55fab942 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -1042,7 +1042,6 @@ static inline bool page_expected_state(struct page =
+*page,
+>  #ifdef CONFIG_MEMCG
+>                         page->memcg_data |
+>  #endif
+> -                       page_pool_page_is_pp(page) |
+>                         (page->flags & check_flags)))
+>                 return false;
+>
+> @@ -1069,8 +1068,6 @@ static const char *page_bad_reason(struct page *pag=
+e, unsigned long flags)
+>         if (unlikely(page->memcg_data))
+>                 bad_reason =3D "page still charged to cgroup";
+>  #endif
+> -       if (unlikely(page_pool_page_is_pp(page)))
+> -               bad_reason =3D "page_pool leak";
+>         return bad_reason;
+>  }
+>
+> @@ -1379,9 +1376,11 @@ __always_inline bool free_pages_prepare(struct pag=
+e *page,
+>                 mod_mthp_stat(order, MTHP_STAT_NR_ANON, -1);
+>                 folio->mapping =3D NULL;
+>         }
+> -       if (unlikely(page_has_type(page)))
+> +       if (unlikely(page_has_type(page))) {
+> +               WARN_ON_ONCE(PageNetpp(page));
+>                 /* Reset the page_type (which overlays _mapcount) */
+>                 page->page_type =3D UINT_MAX;
+> +       }
+>
+>         if (is_check_pages_enabled()) {
+>                 if (free_page_is_bad(page))
+> diff --git a/net/core/devmem.c b/net/core/devmem.c
+> index b3a62ca0df65..40e7a4ec9009 100644
+> --- a/net/core/devmem.c
+> +++ b/net/core/devmem.c
+> @@ -285,6 +285,7 @@ net_devmem_bind_dmabuf(struct net_device *dev,
+>                         niov =3D &owner->area.niovs[i];
+>                         niov->type =3D NET_IOV_DMABUF;
+>                         niov->owner =3D &owner->area;
+> +                       niov->pp =3D NULL;
+>                         page_pool_set_dma_addr_netmem(net_iov_to_netmem(n=
+iov),
+>                                                       net_devmem_get_dma_=
+addr(niov));
+>                         if (direction =3D=3D DMA_TO_DEVICE)
+> diff --git a/net/core/netmem_priv.h b/net/core/netmem_priv.h
+> index cd95394399b4..4b90332d6c64 100644
+> --- a/net/core/netmem_priv.h
+> +++ b/net/core/netmem_priv.h
+> @@ -8,21 +8,18 @@ static inline unsigned long netmem_get_pp_magic(netmem_=
+ref netmem)
+>         return __netmem_clear_lsb(netmem)->pp_magic & ~PP_DMA_INDEX_MASK;
+>  }
+>
+> -static inline void netmem_or_pp_magic(netmem_ref netmem, unsigned long p=
+p_magic)
+> -{
+> -       __netmem_clear_lsb(netmem)->pp_magic |=3D pp_magic;
+> -}
+> -
+> -static inline void netmem_clear_pp_magic(netmem_ref netmem)
+> -{
+> -       WARN_ON_ONCE(__netmem_clear_lsb(netmem)->pp_magic & PP_DMA_INDEX_=
+MASK);
+> -
+> -       __netmem_clear_lsb(netmem)->pp_magic =3D 0;
+> -}
+> -
+>  static inline bool netmem_is_pp(netmem_ref netmem)
+>  {
+> -       return (netmem_get_pp_magic(netmem) & PP_MAGIC_MASK) =3D=3D PP_SI=
+GNATURE;
+> +       /* Use ->pp for net_iov to identify if it's pp, which requires
+> +        * that non-pp net_iov should have ->pp NULL'd.
+> +        */
+> +       if (netmem_is_net_iov(netmem))
+> +               return !!__netmem_clear_lsb(netmem)->pp;
+> +
+> +       /* For system memory, page type bit in struct page can be used
+> +        * to identify if it's pp.
+> +        */
+> +       return PageNetpp(__netmem_to_page(netmem));
+>  }
+>
+>  static inline void netmem_set_pp(netmem_ref netmem, struct page_pool *po=
+ol)
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index 05e2e22a8f7c..0a10f3026faa 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+> @@ -654,7 +654,6 @@ s32 page_pool_inflight(const struct page_pool *pool, =
+bool strict)
+>  void page_pool_set_pp_info(struct page_pool *pool, netmem_ref netmem)
+>  {
+>         netmem_set_pp(netmem, pool);
+> -       netmem_or_pp_magic(netmem, PP_SIGNATURE);
+>
+>         /* Ensuring all pages have been split into one fragment initially=
+:
+>          * page_pool_set_pp_info() is only called once for every page whe=
+n it
+> @@ -665,12 +664,19 @@ void page_pool_set_pp_info(struct page_pool *pool, =
+netmem_ref netmem)
+>         page_pool_fragment_netmem(netmem, 1);
+>         if (pool->has_init_callback)
+>                 pool->slow.init_callback(netmem, pool->slow.init_arg);
+> +
+> +       if (netmem_is_net_iov(netmem))
+> +               return;
+> +       __SetPageNetpp(__netmem_to_page(netmem));
 
-please pull the latest slab updates from:
+nit:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git tags/slab-for-6.17
+if (!netmem_is_net_iov(netmem))
+  __SetPageNetpp(__netmem_to_page(netmem));
 
-We've hit a last-minute snag last week when lkp reported [1] the commit
-"mm, slab: use frozen pages for large kmalloc" exposed a pre-existing bug
-in siw_tcp_sendpages(). Pedro has been fixing it [2] so hopefully that will
-result in a PR soon, which you can pull before this one - or perhaps take
-the fix directly. If that gets stuck for some reason and taking the fix
-later would be unacceptable, I can do another PR with my commit taken out.
+i.e. no need for the early return. I would also move the diff to
+replace netmem_or_pp_magic.
 
-[1] https://lore.kernel.org/all/202507220801.50a7210-lkp@intel.com/
-[2] https://lore.kernel.org/all/20250723104123.190518-1-pfalcato@suse.de/
+>  }
+>
+>  void page_pool_clear_pp_info(netmem_ref netmem)
+>  {
+> -       netmem_clear_pp_magic(netmem);
+>         netmem_set_pp(netmem, NULL);
+> +
+> +       if (netmem_is_net_iov(netmem))
+> +               return;
+> +       __ClearPageNetpp(__netmem_to_page(netmem));
 
+Same here. I would do:
+
+if (!netmem_is_net_iov(netmem))
+  __ClearPageNetpp(__netmem_to_page(netmem));
+
+and no need for the early return.
+
+Reviewed-by: Mina Almasry <almasrymina@google.com>
+
+
+--=20
 Thanks,
-Vlastimil
-
-======================================
-
-* Convert struct slab to its own flags instead of referencing page flags,
-  which is another preparation step before separating it from struct page
-  completely. Along with that, a bunch of documentation fixes and cleanups.
-  (Matthew Wilcox)
-
-* Convert large kmalloc to use frozen pages in order to be consistent with
-  non-large kmalloc slabs (Vlastimil Babka)
-
-* MAINTAINERS updates (Matthew Wilcox, Lorenzo Stoakes)
-
-* Restore NUMA policy support for large kmalloc, broken by mistake in v6.1
-  (Vlastimil Babka)
-
-----------------------------------------------------------------
-Jonathan Corbet (1):
-      slub: Fix a documentation build error for krealloc()
-
-Lorenzo Stoakes (1):
-      MAINTAINERS: add missing files to slab section
-
-Matthew Wilcox (Oracle) (9):
-      doc: Move SLUB documentation to the admin guide
-      slab: Rename slab->__page_flags to slab->flags
-      slab: Add SL_partial flag
-      slab: Add SL_pfmemalloc flag
-      doc: Add slab internal kernel-doc
-      vmcoreinfo: Remove documentation of PG_slab and PG_hugetlb
-      kfence: Remove mention of PG_slab
-      memcg_slabinfo: Fix use of PG_slab
-      slab: Update MAINTAINERS entry
-
-Vlastimil Babka (2):
-      mm, slab: restore NUMA policy support for large kmalloc
-      mm, slab: use frozen pages for large kmalloc
-
- Documentation/ABI/testing/sysfs-kernel-slab        |  5 +-
- Documentation/admin-guide/kdump/vmcoreinfo.rst     |  8 +--
- Documentation/admin-guide/kernel-parameters.txt    | 12 ++--
- Documentation/admin-guide/mm/index.rst             |  1 +
- .../{mm/slub.rst => admin-guide/mm/slab.rst}       | 19 +++--
- Documentation/mm/index.rst                         |  1 -
- Documentation/mm/slab.rst                          |  7 ++
- MAINTAINERS                                        | 17 +++--
- include/linux/mm.h                                 |  4 +-
- mm/kfence/core.c                                   |  4 +-
- mm/slab.h                                          | 28 +-------
- mm/slub.c                                          | 80 ++++++++++++++++------
- tools/cgroup/memcg_slabinfo.py                     |  4 +-
- 13 files changed, 110 insertions(+), 80 deletions(-)
- rename Documentation/{mm/slub.rst => admin-guide/mm/slab.rst} (97%)
+Mina
 
