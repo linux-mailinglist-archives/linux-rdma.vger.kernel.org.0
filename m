@@ -1,167 +1,148 @@
-Return-Path: <linux-rdma+bounces-12512-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12513-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22D8CB141DB
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Jul 2025 20:20:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0235DB1420A
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Jul 2025 20:35:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1261189B620
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Jul 2025 18:20:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9A6A3B7868
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Jul 2025 18:35:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 930C2275845;
-	Mon, 28 Jul 2025 18:20:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BF12273D68;
+	Mon, 28 Jul 2025 18:35:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="IioLaXOg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LhOsPQIq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1FD525BF13;
-	Mon, 28 Jul 2025 18:20:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 299F84A11;
+	Mon, 28 Jul 2025 18:35:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753726822; cv=none; b=fwa24Tk1kSjIu8FZJ2lplsi5ZMjUWvVNGCISLnIHkTa77XD74CCxxpTgHVUWPYhoDz2PWlZezFdieWZrx2O3VTyu6ietHqDrtKFGX3bbmKn8XKoeP0Jiv428iLKuRqsSkgI9yDYbox/hAIQtFseh1mhmj1lhUUnOuYHTiI/3Pq0=
+	t=1753727740; cv=none; b=OpQTN4B/+0+wRwLybqfchjVRDkDna7KGNmQdHZDWr35fT5ry6yNVVkx7La4xuQXoeH1B/KPgFJn8z4kJeMOWZtRK6W5wxcVPwHbkemGePGQR8V5/F7TstYJhjsa6fxyFxrCoF039ELYl+ZrZv3ePcrWZRGGEVmAnPAPSvWMd8vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753726822; c=relaxed/simple;
-	bh=U0zPsTddS/u0ULy1YOXhCJeXWeOGAWL36PyOiEEcoqU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U0CR7jhKCz2WUS3xYlV2JxmhZDECgSIfCtV3EfurvpvW8rwvFBbKVzb45IuU8NUeeIgOGOcOIKQ78ISaHgZYyWUxyNow8FkEYkyXl8WAp9qO7A5bz8x6pJgfg+Fgiy38bGWOVZZmB5AQD/dQe4MegdnqF8mF0q8V2/7VPYGi220=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=IioLaXOg; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1204)
-	id 4BD4F2068328; Mon, 28 Jul 2025 11:20:20 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4BD4F2068328
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1753726820;
-	bh=aly2X9C9vKLqSl39GYAAJQCZKz+d4olZkLhJIKY7Yko=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IioLaXOgbM1DihOhpviKbRChA1EBsIcrDKBM+RJk0ZGVRJwzJv5AZcDccKcJ/UECu
-	 l3qBcAqzNwN5HKtqJroCTc/fLy6VUEJNmERM6oFcwFL9yJ9t2ieBlzy6YMzeGl8LXW
-	 hEqoXXKFs1ZgGbCGSYr2r8al1nPFoC8nKdNokP1g=
-Date: Mon, 28 Jul 2025 11:20:20 -0700
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: horms@kernel.org, kys@microsoft.com, haiyangz@microsoft.com,
-	wei.liu@kernel.org, decui@microsoft.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	longli@microsoft.com, kotaranov@microsoft.com, ast@kernel.org,
-	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-	sdf@fomichev.me, lorenzo@kernel.org, michal.kubiak@intel.com,
-	ernis@linux.microsoft.com, shradhagupta@linux.microsoft.com,
-	shirazsaleem@microsoft.com, rosenp@gmail.com,
-	netdev@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, ssengar@linux.microsoft.com,
-	dipayanroy@microsoft.com
-Subject: Re: [PATCH v2] net: mana: Use page pool fragments for RX buffers
- instead of full pages to improve memory efficiency.
-Message-ID: <20250728182020.GA29111@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20250723190706.GA5291@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20250725175418.553b5b6e@kernel.org>
+	s=arc-20240116; t=1753727740; c=relaxed/simple;
+	bh=MvMjX+N/9Bpj0G7UWl4UtsPuVtDv2i0dpYKJH2tfm7o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SFXbokNWXUYJ6XbIRwW5FoAG+tp3a1kgSE31rgOjSMXNUDShoDzfqzveVyBrf+RCAkw6gy21ED7W2rFFYRjRCJSC9o66YFiy4+KRxI2y/cf+AA8Uumnsh6vKM5ygFeDhcmSXLC1lPRPEtgJc6HFN1/WZzpjMA2A2UYxNdE/yDVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LhOsPQIq; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-aec5a714ae9so686112966b.3;
+        Mon, 28 Jul 2025 11:35:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1753727736; x=1754332536; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=78uPmEmg1jJUm+vcAxFvheQL2RNbyr9u5uHfG0T4KU0=;
+        b=LhOsPQIqQfUAtRMm9phQO+s2ZhOOmVMoviiW/1FBcqTzRK6yNmPmG39ZZi+wyrU6rR
+         YZ6cpklAl8IAeawcJARctHZY9Th/k0nvmw2sB6RGOwQ1359M16RFHwHmAu1dekeJiqVU
+         Dz3KqgDbWRqY2Y0cit56jtBmBBfOjQJd3QX+0Y4zuNjG8ollKpAZ8tiGuV6aogx44CmE
+         FINsFArkwGTqzv8p6RZ8vg38UzEItfyOSh9NDicly3c0VDpe03u9/xapDmXuw2qQAr98
+         rsjugMxIzH2W7bRm5RHEmIw5bqpAajqToibqEhW1xqmWWYjHMwrLkc6zNnaWJC0ZgB+T
+         rSfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753727736; x=1754332536;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=78uPmEmg1jJUm+vcAxFvheQL2RNbyr9u5uHfG0T4KU0=;
+        b=bGbvjAsBPKlZ/LHPdFPDTAdDxFuiq0+Q7FcGDEAFB3qUclYEbaFFtmIqn0muUp4K+7
+         CdWUH6DXnl2dtRHscrMykCuLnACY0tknk2CnobavfENMHtEBF87EjO1d31UTNiHBPoxD
+         QqKwLv9l+42Uy70SGWtXF+Gpzxlc/gQ8Qq+EQUfkUY+IAXRHwmi7JNmxXHd6HHPv74sy
+         J9lHTTiEFXke6eukn/dhY2lMpRzwINXDfB2Ic+dNvy3thuedjJWLKiMjN3thnRwurS2H
+         rKglcAhTWpYCn6FdFHn1szqZORe1wLYbmRnA5KMP7GW1URwkjd2N8Dlwa0Irw8EHlKwv
+         zUYg==
+X-Forwarded-Encrypted: i=1; AJvYcCU03/OfL06PeYeZA77iELaRTJos4KakX1l1m5ml3/C/lUYxqnv71KMrP1i2y3Do3RjlLTM=@vger.kernel.org, AJvYcCW6o9Cuh+GOtV8Bt7awkg1GFEMFf5ApfO6q2fiRNCuh6Lz7me+R9gBDgivnaud1BDr38rAjUEfIuPVSHw==@vger.kernel.org, AJvYcCWWWQDxRaNoelLa2Ca+AxjbFXqLaOHXURAHfF9uCgMyX7TzArbS8lxcfJo0AlmvjXEfXXExsPLU@vger.kernel.org
+X-Gm-Message-State: AOJu0YwzuikDlQAhJozqNkxjptuCq+AWVW4cnpJUGs4Gq4B/9o6U2h01
+	SnhSrbnnaH2tB6JWv1RBvaYadJGFqcI0V8ACmg6Ru82E5jZ56bFm5GaG
+X-Gm-Gg: ASbGncumdsj6pF9dyTU+Mb9h9cTfsS3yYD7Dy1io5jcu6YSp5UzauKEMmD0ia1dqEuL
+	sOb8F1gM2/bA4SqkVRe8FgYMaPBN5XC5k3HH/pk2qaF7BbLU3yZ2rqjiclYLQimayVCjHXJ14gS
+	ZfLSYwoWzbP1ECNw8H/sG/RELntFhGaMNQ9qC/l+zKmpiWPfNdWMG0Q3vgpb8UKUgn09I1NVzM7
+	0lJX98dvaok6ybek0ArK27cYZl0jcGTiPAs9nposZbHAsdjCJSQh4TeKdYxU0Y0llsz5rdufXh5
+	VtD5fcaFOPDOJDmccb0HG8044X4aA/f9r3BDl0Rcm96DgGaQ/mtHojSkCuyBYWWfX7mEcNJ39IS
+	R5fdinMPbQ2SOmegruEK3/Wpj3mwZsg8=
+X-Google-Smtp-Source: AGHT+IFgxhpFnrUM7/Tj+j4V+oCATiKKeV1GCz2P0yLgvuPSqvqeNh/T3kaG38PILpE4Urdvmq1apg==
+X-Received: by 2002:a17:906:4fd6:b0:ae0:d804:5bca with SMTP id a640c23a62f3a-af61ca9ed34mr1318179566b.17.1753727736013;
+        Mon, 28 Jul 2025 11:35:36 -0700 (PDT)
+Received: from [192.168.8.100] ([185.69.144.164])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-61500addc6asm3584548a12.53.2025.07.28.11.35.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Jul 2025 11:35:35 -0700 (PDT)
+Message-ID: <fc1ed731-33f8-4754-949f-2c7e3ed76c7b@gmail.com>
+Date: Mon, 28 Jul 2025 19:36:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250725175418.553b5b6e@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mm, page_pool: introduce a new page type for page pool
+ in page type
+To: Byungchul Park <byungchul@sk.com>, linux-mm@kvack.org,
+ netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+ harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
+ davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+ john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
+ leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
+ andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
+ akpm@linux-foundation.org, david@redhat.com, lorenzo.stoakes@oracle.com,
+ Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com,
+ mhocko@suse.com, horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org,
+ ziy@nvidia.com, ilias.apalodimas@linaro.org, willy@infradead.org,
+ brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
+ usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
+ almasrymina@google.com, toke@redhat.com, bpf@vger.kernel.org,
+ linux-rdma@vger.kernel.org
+References: <20250728052742.81294-1-byungchul@sk.com>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <20250728052742.81294-1-byungchul@sk.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jul 25, 2025 at 05:54:18PM -0700, Jakub Kicinski wrote:
-> On Wed, 23 Jul 2025 12:07:06 -0700 Dipayaan Roy wrote:
-> > This patch enhances RX buffer handling in the mana driver by allocating
-> > pages from a page pool and slicing them into MTU-sized fragments, rather
-> > than dedicating a full page per packet. This approach is especially
-> > beneficial on systems with large page sizes like 64KB.
-> > 
-> > Key improvements:
-> > 
-> > - Proper integration of page pool for RX buffer allocations.
-> > - MTU-sized buffer slicing to improve memory utilization.
-> > - Reduce overall per Rx queue memory footprint.
-> > - Automatic fallback to full-page buffers when:
-> >    * Jumbo frames are enabled (MTU > PAGE_SIZE / 2).
-> >    * The XDP path is active, to avoid complexities with fragment reuse.
-> > - Removal of redundant pre-allocated RX buffers used in scenarios like MTU
-> >   changes, ensuring consistency in RX buffer allocation.
-> > 
-> > Testing on VMs with 64KB pages shows around 200% throughput improvement.
-> > Memory efficiency is significantly improved due to reduced wastage in page
-> > allocations. Example: We are now able to fit 35 rx buffers in a single 64kb
-> > page for MTU size of 1500, instead of 1 rx buffer per page previously.
-> 
-> The diff is pretty large and messy, please try to extract some
-> refactoring patches that make the final transition easier to review.
-> 
-> > - iperf3, iperf2, and nttcp benchmarks.
-> > - Jumbo frames with MTU 9000.
-> > - Native XDP programs (XDP_PASS, XDP_DROP, XDP_TX, XDP_REDIRECT) for
-> >   testing the XDP path in driver.
-> > - Page leak detection (kmemleak).
-> 
-> kmemleak doesn't detect page leaks AFAIU, just slab objects
-> 
-> > - Driver load/unload, reboot, and stress scenarios.
-> > 
-> > Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-> > 
-> > Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-> > Reviewed-by: Saurabh Sengar <ssengar@linux.microsoft.com>
-> 
-> > -	if (apc->port_is_up)
-> > +	if (apc->port_is_up) {
-> > +		/* Re-create rxq's after xdp prog was loaded or unloaded.
-> > +		 * Ex: re create rxq's to switch from full pages to smaller
-> > +		 * size page fragments when xdp prog is unloaded and vice-versa.
-> > +		 */
-> > +
-> > +		err = mana_detach(ndev, false);
-> > +		if (err) {
-> > +			netdev_err(ndev, "mana_detach failed at xdp set: %d\n", err);
-> > +			goto out;
-> > +		}
-> > +
-> > +		err = mana_attach(ndev);
-> > +		if (err) {
-> > +			netdev_err(ndev, "mana_attach failed at xdp set: %d\n", err);
-> > +			goto out;
-> > +		}
-> 
-> If the system is low on memory you will make it unreachable.
-> It's a very poor design.
-> 
-> > -/* Release pre-allocated RX buffers */
-> > -void mana_pre_dealloc_rxbufs(struct mana_port_context *mpc)
-> > -{
-> > -	struct device *dev;
-> > -	int i;
-> > -
-> 
-> Looks like you're deleting the infrastructure the driver had for
-> pre-allocating memory. Not even mentioning it in the commit message.
-> This ability needs to be maintain. Please test with memory allocation
-> injections and make sure the driver survives failed reconfig requests.
-> The reconfiguration should be cleanly rejected if mem alloc fails,
-> and the driver should continue to work with old settings in place.
-> -- 
-> pw-bot: cr
+On 7/28/25 06:27, Byungchul Park wrote:
+> Changes from v1:
+> 	1. Rebase on linux-next.
 
-Hi Jakub,
+net-next is closed, looks like until August 11.
 
-Thanks for the review. I agree with your point on low memory during the
-reconfig of mana driver. I am sending out a v3 that will not touch the
-driver infrastructure for pre-allocating the pages for rx buffer to avoid
-failure in  mana driver reconfig due to low memory scenarios. And make
-sure all other mana driver reconfig path uses the pre-alloc rx buffers as
-a safe guard for the low memory condition.
+> 	2. Initialize net_iov->pp = NULL when allocating net_iov in
+> 	   net_devmem_bind_dmabuf() and io_zcrx_create_area().
+> 	3. Use ->pp for net_iov to identify if it's pp rather than
+> 	   always consider net_iov as pp.
+> 	4. Add Suggested-by: David Hildenbrand <david@redhat.com>.
 
-The v3 will be a single patch focusing only on the improvement in memory
-utilization and throughput that it is trying to achieve.
+Oops, looks you killed my suggested-by tag now. Since it's still
+pretty much my diff spliced with David's suggestions, maybe
+Co-developed-by sounds more appropriate. Even more so goes for
+the second patch getting rid of __netmem_clear_lsb().
 
+Looks fine, just one comment below.
 
-Thanks
-Dipayaan Roy
+...> diff --git a/io_uring/zcrx.c b/io_uring/zcrx.c
+> index 100b75ab1e64..34634552cf74 100644
+> --- a/io_uring/zcrx.c
+> +++ b/io_uring/zcrx.c
+> @@ -444,6 +444,7 @@ static int io_zcrx_create_area(struct io_zcrx_ifq *ifq,
+>   		area->freelist[i] = i;
+>   		atomic_set(&area->user_refs[i], 0);
+>   		niov->type = NET_IOV_IOURING;
+> +		niov->pp = NULL;
+
+It's zero initialised, you don't need it.
+
+And a friendly reminder, please never send patches modifying a
+subsystem without CC'ing it, especially kept in another tree.
+Sure, you CC'ed me, but it's easy to lose.
+
+-- 
+Pavel Begunkov
+
 
