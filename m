@@ -1,181 +1,157 @@
-Return-Path: <linux-rdma+bounces-12518-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12519-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 670EAB14582
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jul 2025 03:01:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE8DBB14590
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jul 2025 03:09:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86DD017FA8D
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jul 2025 01:01:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B71FA1AA0480
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jul 2025 01:09:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8987618DB03;
-	Tue, 29 Jul 2025 01:01:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=openai.com header.i=@openai.com header.b="CpmZcbHf"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96AA1195B37;
+	Tue, 29 Jul 2025 01:09:28 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DB9626290
-	for <linux-rdma@vger.kernel.org>; Tue, 29 Jul 2025 01:01:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5061517A2E0;
+	Tue, 29 Jul 2025 01:09:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753750891; cv=none; b=B9sXCuLVYFTtty+fjruBivG/7m59ey6+8UGlOZ/ASC2OJD9+8gyoEHNfQksrM0ta8ApTlaQbc1I5sxPeI1GI7CdyoAo2jJ1jANODUNsU6ib1Ca802Bb2Lh3jfB20DFNZxLV41bBSxWcx7CQ7jgU2eUKvYOW7wXinDkfL3hk5S64=
+	t=1753751368; cv=none; b=dCLPvcKqdc+uFoeQJQHSH399Y8WkTxTfWlmRdCqZPCuNP9Ffx3fR1lBw7GRRdXplPYmc/gFqqI3pMEPuEtpRHx2WOajx9Ep+gT77gRYFVMIIEgElufcLpGegd6ejAzd7XNTLxYlogqJDkjpfmAyF7T/zrYXOomWFqf32JSv5Xuk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753750891; c=relaxed/simple;
-	bh=YmYvO4FWfw/auTRrGHq/3PqRNQTKh1IL/8v263lla2U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=S6uR8VoHKVNDI+G7PfJi8oeenaWb2CFM72/fG58B8evOQiQHzlvQyt+9dJ9yAESOzRMGgdaeNz+RTpS0vbTRMVTT7xlEKw/tTBR5DbS3cGvhsEpyP2AkkwqvHEWYcKsmtwapIsmavHx9pQvwgTLSbQTNEkovkLBFt24mYpiNK+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=openai.com; spf=pass smtp.mailfrom=openai.com; dkim=pass (1024-bit key) header.d=openai.com header.i=@openai.com header.b=CpmZcbHf; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=openai.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openai.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-55a10c74f31so5373618e87.1
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Jul 2025 18:01:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=openai.com; s=google; t=1753750888; x=1754355688; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gDIT0nBpRVtuwBCG7gDLBrg2ssrS3F+2Uf8dT4SCT8w=;
-        b=CpmZcbHfhBWiGfqK70sbqTAJzekMmwHX2nszNIiSzP5I6N/1gZ2FMJYGJnn9SKEztz
-         UXklrTIG+TmpTpp9MBjQb0j74xY8DEpRBVvXB1kFmCnTJzhLrZ4xpbzEPtjvSS+jtcDo
-         uyVVRlfgqwWHVhN21aWuw6CzIsRPGjho94vos=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753750888; x=1754355688;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gDIT0nBpRVtuwBCG7gDLBrg2ssrS3F+2Uf8dT4SCT8w=;
-        b=wLGBbhSvQ+pkpJEcUY4y9/XnPnU+XDRLLqEcsQNBuBpVxAbzOC1bVIZYu78bW7Tqyl
-         x5asoIO5thHwcYJidaZi/2/w/1L2OAXiiHGBBCH4SbU9hysKVNjjMvPb1UPyIFj6vVM4
-         4v10M93P537FJzWQ2D8ZcdNXR1cPK4ChzDKkpBXQ7VUlGY+FgyZXc8ZCs4nlqAZIoU6z
-         nyvmovtu5PDFlW8DjmKKfCeawkBNCjxVjd3WHzj28iEA0PctwanvKSv10Eubc1aFBcwz
-         Y3APck4Z8xPThlXiXzFNzEwhzA+jPJ+3jZX66mdnN0i1Fvrin9xqMOr/fKC4pyghLnQU
-         sOGg==
-X-Forwarded-Encrypted: i=1; AJvYcCX+VAlkfOKY04xqZbzpjajKv/V8BzlXvtCHGr2Yv3Zzli00MgxF9+8yd3/u8QgTA42eQjJS7xX8gLwY@vger.kernel.org
-X-Gm-Message-State: AOJu0YzXOi21/97pGZoXsXS2Nqf3v8ZUJ6joXV/3quB8QW8Imletaipg
-	E2hPiiVc2UghV+2y4awatgc5qTheqHvUHrDxbDcWVImsMzX1PA5vfIBKGjyxlwkhMbppnCT0Yog
-	rLGYGpDO8d9OUHw1dhXQ1+i1zpb5aO1xl/Jb7OaNMBw==
-X-Gm-Gg: ASbGnct4C8/vGgG2INRYoNxXZhmW6Apfl4MGaqxc3RxsYP8xUgBf+pCGlQASyqbZpXf
-	Rgyfv/wUzAOP4qVtrt9of/A7T+6FVdn8eGnKaI8nfBBaqpFfHB4ncYHrtdSAN65l0FZvHmY9pqE
-	gowW2wMqehN2+I/cHzMiukiaaNgVWxFntsQF6Z0hnnNQEHsashX7/eRdBa7R/1NZPywE+EaxN7h
-	8iUTBq980knocLxJQ==
-X-Google-Smtp-Source: AGHT+IHZHYWPwrjCjyN3Pco3uAktH4UaV+w/6J5hon8rvvA1SU2NwaCn7/rkoQQC5Lp4hAo9W4qudp/AWBLzHde2GYo=
-X-Received: by 2002:a05:6512:2213:b0:553:51a2:4405 with SMTP id
- 2adb3069b0e04-55b5f4f0e02mr3346475e87.45.1753750887575; Mon, 28 Jul 2025
- 18:01:27 -0700 (PDT)
+	s=arc-20240116; t=1753751368; c=relaxed/simple;
+	bh=Qx+SZKAe5e3AuZnFZZmZAutyGTlZrZ+pt380AJBmqMw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H6UZKn9OuKUtvzD/CUuRYD6p1nu3yvPIpt7Nd1ewtYzaAIpi/C/NmZVNZ+qhkxxvSBOpzKKcEBEaJ2/0roFRaQfj9jGLWR/T/caZvu6aLRMoOcFpW82q7hjQZU/yJUHWGofzZQCzUg5Eq/RJEUTvXTW7xK/opZBUww9xwaBCO3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-681ff7000002311f-05-68881e0fb1f4
+Date: Tue, 29 Jul 2025 10:04:10 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Mina Almasry <almasrymina@google.com>, linux-mm@kvack.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel_team@skhynix.com, harry.yoo@oracle.com, ast@kernel.org,
+	daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
+	hawk@kernel.org, john.fastabend@gmail.com, sdf@fomichev.me,
+	saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com,
+	mbloch@nvidia.com, andrew+netdev@lunn.ch, edumazet@google.com,
+	pabeni@redhat.com, akpm@linux-foundation.org, david@redhat.com,
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+	horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org,
+	ziy@nvidia.com, ilias.apalodimas@linaro.org, willy@infradead.org,
+	brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
+	usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
+	toke@redhat.com, bpf@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v2] mm, page_pool: introduce a new page type for page
+ pool in page type
+Message-ID: <20250729010410.GC56089@system.software.com>
+References: <20250728052742.81294-1-byungchul@sk.com>
+ <fc1ed731-33f8-4754-949f-2c7e3ed76c7b@gmail.com>
+ <CAHS8izO6t0euQcNyhxXKPbrV7BZ1MfuMjrQiqKr-Y68t5XCGaA@mail.gmail.com>
+ <da4a9efd-64b3-4dc5-a613-b73e17f160d6@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250715-cpaasch-pf-925-investigate-incorrect-gso_size-on-cx-7-nic-v2-1-e06c3475f3ac@openai.com>
- <6583783f-f0fb-4fb1-a415-feec8155bc69@nvidia.com> <CADg4-L9osR02Aey319fMVAyAYXxOfaKqWcQ2AsfQCrdFKA5vsQ@mail.gmail.com>
-In-Reply-To: <CADg4-L9osR02Aey319fMVAyAYXxOfaKqWcQ2AsfQCrdFKA5vsQ@mail.gmail.com>
-From: Christoph Paasch <cpaasch@openai.com>
-Date: Mon, 28 Jul 2025 18:01:16 -0700
-X-Gm-Features: Ac12FXx34w-5NNkKbSzLrNHUmUDt-mDcYsz7pUlimEBGF8InxuFiNX1qQROyU7Q
-Message-ID: <CADg4-L_SNAKy3mBn7ssq7uw0_+wZ_=zyqrQ23yVTOo5J7z7Q=g@mail.gmail.com>
-Subject: Re: [PATCH net v2] net/mlx5: Correctly set gso_size when LRO is used
-To: Gal Pressman <gal@nvidia.com>
-Cc: Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
-	Leon Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, 
-	linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <da4a9efd-64b3-4dc5-a613-b73e17f160d6@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0hTYRjG+fadnXMcGx2X1ZcGwSoKK7sZvd2FCL7+CKIiKimdeWgjN23L
+	WxCsklzS7E41V6yrt9CYTrdKq2leKszMalnN0gyqaaYmmtJlSuR/D8/7Ps/v/ePlsfKJNJTX
+	6veJBr06QcXKGFmn/MrcqKlmzfzCIh5sxTdZKBxIg9z3LinYCsoQ9A2+4eB3RQ2C3upaFr5W
+	9SC4erkfg+1pBgM/in9i6Khp46DQsR5ab3xi4G5mOYa243UsWDKGMFQMdnFwyJUnAVuJiYPG
+	smwpnPl5HUO56T0Hz2/bWPDd/C2FTx4LA/XWfAa6z1ZjaM2Oghr7ROh/7EdQXVwugf5jF1l4
+	ceG2BE432Vloz2hF0FTVxsDZYTMLOQezEQwN/G3rOtEnhZyHPi4qnFb5v2Famv9aQr2VjyTU
+	bX3HUbsjmZbkhdMsbxOmjoKjLHX0nOLo25d3WVp3foih7g9LqdvVK6GWw10s/d7RwtBvlS/Y
+	DeO3y1bEiwnaFNEwb1WsTHPN1oKTLgenHTRtNaHP8iwUxBMhknR21EuzED+in91RBWxGmEFK
+	T/q4gGaFmcTrHcQBHSLMJl9feUZ8LFzlyCVfaCA6XthBbt1bHrAVAhBnpp/NQjJeKbQh4vxw
+	Do8Ogkn9hY/MaHYmGb7UhANZLISR3F/8qD2VHHbmjKwHCSvJvc6GEdQEYRq5X1YrCXQSwc8T
+	93GXdPT8yeRBnpc5gYKtYxDWMQjrf4R1DMKOmAKk1OpTdGptQmSEJl2vTYvYlahzoL8/duPA
+	cLQL9TRu8iCBRyq5QnM0U6OUqlOM6ToPIjxWhSiSrh/RKBXx6vT9oiExxpCcIBo9KIxnVJMU
+	C/tT45XCbvU+cY8oJomGf1MJHxRqQlfOtXq2RKNVO0tjYsmSrQfOGLTr/C1F5m5z5LLzubO+
+	x22bXueWR5sXJes25y9wr16stMylMX3+qF2xDRsLyn2vS1KNAxGKZiZsXu/CWrtuy9rUVw1r
+	dhO1fm9qtzOZzpHHPdieZAlZMeWx/JY8DoaNXzLtRbi5tn2Ts3FcRruKMWrUC8Kxwaj+A1Z8
+	W4FfAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUhTcRjF++9/d+91trquVRfNglUISpZQ8ITa64f+RUnUhywKveatDafJ
+	pqJBMFOyJM1ezJxTNFPzhazp1JllTFNX0MvEMis1UykyzTTJlKwpkd8O5zzn93w5LFbckbqz
+	mqgYURclaFW0jJIF+SetW7zyvHrDWDIDpsoKGsp/xkNJb50UTGU1CMYn3zIw86AFwVhzKw1f
+	mr4jKCyYwGB6nkzBj8pfGAZa+hgoN++DnuJBChpSajH0XWqjIS15CsODyWEGztbdloCpysBA
+	U65dCi9q0qVw7VcRhlpDLwPt9SYauitmpDBoS6PAbiyl4FtmM4ae9G3Qkr8MJp4OIWiurJXA
+	xMVcGjqy6yVw1ZFPw8fkHgSOpj4KMqfP05CTmI5g6udf2nDGuBRyHncz23xI09AIJtWlbySk
+	8+ETCbEa3zMk3xxLqm57k9ROBybmsgs0MX+/wpB3rxpo0nZjiiLWD5uJtW5MQtKShmkyOtBF
+	kZGHHfR+5RFZQLio1cSJuvVbQmXqW6YuHF3gFp9oCDagzwtTEcvy3Eb+5X1VKnJhKW4tX325
+	m3FqmvPiOzsnsVMrOR/+y2vbrI+5QobP63Z3Vpdwx/i7jf5OW84Bb0kZolORjFVwfYi3fMjC
+	c4Ebb8/up+a6Xvx0ngM7u5jz4Et+s3P2Kj7JkjN77sIF8o1fn82+Wsqt5h/VtEoy0CLjPJJx
+	Hsn4n2ScR8pHVBlSaqLiIgWNdpOvPkKdEKWJ9z1+KtKM/q6o+Mz05To03r7LhjgWqRbK1RdS
+	1AqpEKdPiLQhnsUqpTy66JxaIQ8XEk6LulMhulitqLchD5ZSLZfvOSSGKriTQowYIYrRou5f
+	KmFd3A2o9VOaSnC94Tq5prQ+cve5PR8/b5db7nr6p99bfszuvT/pemDwgsBvJ+lRVOw5EbPC
+	33LaviPFb9eLWFJ4lBv/6jq9M9RSrY0LSvyddbCW9TiwNSbTb2w0I6T95czZfnZksVVpL7L6
+	7pC77T0shJWvXR1wYupefcnNyg4HExaQ7fJYRenVgp831umFP0DnRSdBAwAA
+X-CFilter-Loop: Reflected
 
-On Mon, Jul 28, 2025 at 10:57=E2=80=AFAM Christoph Paasch <cpaasch@openai.c=
-om> wrote:
->
-> Hi!
->
-> On Mon, Jul 28, 2025 at 7:36=E2=80=AFAM Gal Pressman <gal@nvidia.com> wro=
-te:
->>
->> On 15/07/2025 23:20, Christoph Paasch via B4 Relay wrote:
->> > From: Christoph Paasch <cpaasch@openai.com>
->> >
->> > gso_size is expected by the networking stack to be the size of the
->> > payload (thus, not including ethernet/IP/TCP-headers). However, cqe_bc=
-nt
->> > is the full sized frame (including the headers). Dividing cqe_bcnt by
->> > lro_num_seg will then give incorrect results.
->> >
->> > For example, running a bpftrace higher up in the TCP-stack
->> > (tcp_event_data_recv), we commonly have gso_size set to 1450 or 1451 e=
-ven
->> > though in reality the payload was only 1448 bytes.
->> >
->> > This can have unintended consequences:
->> > - In tcp_measure_rcv_mss() len will be for example 1450, but. rcv_mss
->> > will be 1448 (because tp->advmss is 1448). Thus, we will always
->> > recompute scaling_ratio each time an LRO-packet is received.
->> > - In tcp_gro_receive(), it will interfere with the decision whether or
->> > not to flush and thus potentially result in less gro'ed packets.
->> >
->> > So, we need to discount the protocol headers from cqe_bcnt so we can
->> > actually divide the payload by lro_num_seg to get the real gso_size.
->> >
->> > v2:
->> >  - Use "(unsigned char *)tcp + tcp->doff * 4 - skb->data)" to compute =
-header-len
->> >    (Tariq Toukan <tariqt@nvidia.com>)
->> >  - Improve commit-message (Gal Pressman <gal@nvidia.com>)
->> >
->> > Fixes: e586b3b0baee ("net/mlx5: Ethernet Datapath files")
->> > Signed-off-by: Christoph Paasch <cpaasch@openai.com>
->>
->> Hi Christoph,
->>
->> This commit results in hw csum failures [1] when running iperf tcp
->> traffic with LRO enabled for a few seconds.
->>
->> I don't think the patch is wrong, but I suspect it exposes a new flow in
->> GRO which we did not exercise before.
->>
->> I am still debugging this, maybe you have some ideas as well. If the
->> debug takes too long I recommend submitting a revert until the issue is
->> properly resolved.
->
->
-> I'm looking into it. I can reproduce it indeed and when disabling GRO the=
- issue goes away.
+On Mon, Jul 28, 2025 at 07:49:30PM +0100, Pavel Begunkov wrote:
+> On 7/28/25 19:39, Mina Almasry wrote:
+> > On Mon, Jul 28, 2025 at 11:35 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+> > > 
+> > > On 7/28/25 06:27, Byungchul Park wrote:
+> > > > Changes from v1:
+> > > >        1. Rebase on linux-next.
+> > > 
+> > > net-next is closed, looks like until August 11.
+> > > 
+> > > >        2. Initialize net_iov->pp = NULL when allocating net_iov in
+> > > >           net_devmem_bind_dmabuf() and io_zcrx_create_area().
+> > > >        3. Use ->pp for net_iov to identify if it's pp rather than
+> > > >           always consider net_iov as pp.
+> > > >        4. Add Suggested-by: David Hildenbrand <david@redhat.com>.
+> > > 
+> > > Oops, looks you killed my suggested-by tag now. Since it's still
+> > > pretty much my diff spliced with David's suggestions, maybe
+> > > Co-developed-by sounds more appropriate. Even more so goes for
+> > > the second patch getting rid of __netmem_clear_lsb().
+> > > 
+> > > Looks fine, just one comment below.
+> > > 
+> > > ...> diff --git a/io_uring/zcrx.c b/io_uring/zcrx.c
+> > > > index 100b75ab1e64..34634552cf74 100644
+> > > > --- a/io_uring/zcrx.c
+> > > > +++ b/io_uring/zcrx.c
+> > > > @@ -444,6 +444,7 @@ static int io_zcrx_create_area(struct io_zcrx_ifq *ifq,
+> > > >                area->freelist[i] = i;
+> > > >                atomic_set(&area->user_refs[i], 0);
+> > > >                niov->type = NET_IOV_IOURING;
+> > > > +             niov->pp = NULL;
+> > > 
+> > > It's zero initialised, you don't need it.
+> > > 
+> > 
+> > This may be my bad since I said we should check if it's 0 initialized.
+> > 
+> > It looks like on the devmem side as well we kvmalloc_array the niovs,
+> > and if I'm checking through the helpers right, kvmalloc_array does
+> > 0-initialize indeed.
+> 
+> I wouldn't rely on that, it's just for zcrx I do:
+> 
+> kvmalloc_array(...,  GFP_KERNEL | __GFP_ZERO);
 
-The below fixes it. The problem is that because gso_segs is not set,
-NAPI_GRO_CB()->count is 0 when processing the packets.
-So, if we have a non-LRO'ed packet followed by an LRO'ed packet being
-processed, the first one will have NAPI_GRO_CB()->count set to 1 the
-next one to 0 (in dev_gro_receive()).
+For net_devmem_bind_dmabuf(), __GFP_ZERO will add bigger overhead than
+just assignment, 'niov->pp = NULL'.
 
-This means we end up in gro_complete() with count =3D=3D 1 and thus don't
-call inet_gro_complete().
+I'd like to ask you if you are still good with __GFP_ZERO overhead
+before going ahead.
 
-I'm still unclear why this only fails much later then when checking
-the checksum, but I'm sure the below diff fixes it (and also gets rid
-of all packet-loss, so throughput goes up)
+	Byungchul
 
-Will submit a proper patch tomorrow.
-
-
-----
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index 7462514c7f3d..da3e340c99b7 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -1567,6 +1567,7 @@ static inline void mlx5e_build_rx_skb(struct
-mlx5_cqe64 *cqe,
-  unsigned int hdrlen =3D mlx5e_lro_update_hdr(skb, cqe, cqe_bcnt);
-
-  skb_shinfo(skb)->gso_size =3D DIV_ROUND_UP(cqe_bcnt - hdrlen, lro_num_seg=
-);
-+ skb_shinfo(skb)->gso_segs =3D lro_num_seg;
-  /* Subtract one since we already counted this as one
-  * "regular" packet in mlx5e_complete_rx_cqe()
-  */
+> 
+> --
+> Pavel Begunkov
 
