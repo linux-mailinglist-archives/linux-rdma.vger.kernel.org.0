@@ -1,137 +1,162 @@
-Return-Path: <linux-rdma+bounces-12533-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12534-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF6CEB152DE
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jul 2025 20:34:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7BE3B1532D
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jul 2025 20:53:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C57F4E2E81
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jul 2025 18:33:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E649D3BA02A
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jul 2025 18:53:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7750E244681;
-	Tue, 29 Jul 2025 18:34:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E00224EABC;
+	Tue, 29 Jul 2025 18:53:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FGasT69i"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="j57oc76U"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E845220F20;
-	Tue, 29 Jul 2025 18:34:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 420C32459F6
+	for <linux-rdma@vger.kernel.org>; Tue, 29 Jul 2025 18:53:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753814052; cv=none; b=rXZC846JfA9tqkR5Oq3kG+MSZCaGTPcBumpJ/2y2TlsaQwquIrGKBK1UnsN65XLET2CMnNxhH0KcOFmgjE9OupQFibZwHb44vObIsgnX1GYrFbSM4LVpYcrKph2yTfxC8LT3Ik1VSCWzEYA00dM78in3umB+RoB47nZSiB7e2HE=
+	t=1753815205; cv=none; b=cK6cgbrPxrW4c9Z9kxEw2vxxBKXCuiS1246edz5MhoSKLOH91OhAs8q7BIMYucTcvuWDclOPB5krDHbu7MGHoDRalVLvUOJm1nnDY3E7uBXEmdvCme/2ERGuREwNJ7D+mwAgZcdu+pNqbtKzUazHBsOl2HE34QmRudAkGoPfoa4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753814052; c=relaxed/simple;
-	bh=FL9N2jUW9ILZvMTN4kv4hjivBOzbZrdxkcak7uxAnuA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=iX1K36Wd/r5Z4D11ZRiRANEI51+XozQLmSsmjzeektWi7HhEZE/WW0Y2qeod3RT4WfetyMnhFtdsXGu37Lumj7369rEnWvtV4nJpq6KSodOTc0p+h74Aai3R9Tq4g6l3HbMioYvbEC2ImxemfU6KMAkfpeNPkH8jICx74hqA6qU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FGasT69i; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EB641C4CEEF;
-	Tue, 29 Jul 2025 18:34:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753814052;
-	bh=FL9N2jUW9ILZvMTN4kv4hjivBOzbZrdxkcak7uxAnuA=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=FGasT69iyDvEF4s7Z1+JN86M1M4Zcuzi/d4ii0HSEqljoRFMVwN5hcuNLfSUrmd28
-	 1bFR4peXanuSv5H1ehUleXC0g5XgGgwwxsi+vG//QOa9eBNrHY6X+CBDLGlrlJScJG
-	 JdqykLK7y9gKW47nee0B8ZJ0zrcX6ph55DtHlYTr4BGjnja31zWiJuOx8kZmgYgfIA
-	 Ehm5s9c4tdeh5Cb9r9krSm+dv3c2L3JP1hOudUW/kznXz5oXqTqb0hfoz73EONCnl3
-	 bhD19PVxs7D+rne4ETAENYPoCslOELNXuFdNjrpVmkepy1+7/FX5xNhBUHzcsG7/zI
-	 JJjFYUPrcXK7Q==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2178C87FCA;
-	Tue, 29 Jul 2025 18:34:11 +0000 (UTC)
-From: Christoph Paasch via B4 Relay <devnull+cpaasch.openai.com@kernel.org>
-Date: Tue, 29 Jul 2025 11:34:00 -0700
-Subject: [PATCH net] net/mlx5: Correctly set gso_segs when LRO is used
+	s=arc-20240116; t=1753815205; c=relaxed/simple;
+	bh=vHiAZEJQ636SOevFTzB+2khGGZwRDs3zeAMpvxkeliQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=p+q1wAU1PEBmREdqxB72n1H463dYA+IQ2pPB3aW0YyMFkCV8/H2/846fRE4Uuf+El2ZG8W/0y1EpLU1P4sbRw2ZpF9pYLw70wgQHSo1m1hc2hI9CBIccqMnLPrRhPXGe0CJBkGCS06j1WuQlo+Yi06U3TxySx0zmMPdPZxN/8go=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=j57oc76U; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <8fad6c00-9c15-4315-a8c5-b8eac4281757@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1753815189;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m8uizJieSyqW56uosfxUJeKEVQ0kVEbrA+dUYFoOGRs=;
+	b=j57oc76UIhZL5Xpcfh4U0tWr8C6enCpVQGbo2hG9G/0MM06fuiCJ8Y9RkLcRYz1x4orT97
+	JobdnhYCZ2iemZAIgxqDkCvYrqbLu0Qm1apgcZEDuQd2TzZ6hTyq50I2Vd3GHzTBw1Z8r+
+	6U+OU1uUSU0PwvKHE1NHrhjo/vcQR1Y=
+Date: Tue, 29 Jul 2025 20:53:02 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Subject: Re: [PATCH v2] RDMA/siw: Fix the sendmsg byte count in
+ siw_tcp_sendpages
+To: Pedro Falcato <pfalcato@suse.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Leon Romanovsky <leon@kernel.org>, Vlastimil Babka <vbabka@suse.cz>
+Cc: Jakub Kicinski <kuba@kernel.org>, David Howells <dhowells@redhat.com>,
+ Tom Talpey <tom@talpey.com>, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ torvalds@linux-foundation.org, stable@vger.kernel.org,
+ kernel test robot <oliver.sang@intel.com>
+References: <20250729120348.495568-1-pfalcato@suse.de>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Bernard Metzler <bernard.metzler@linux.dev>
+In-Reply-To: <20250729120348.495568-1-pfalcato@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250729-mlx5_gso_segs-v1-1-b48c480c1c12@openai.com>
-X-B4-Tracking: v=1; b=H4sIABcUiWgC/x3MSQqAMBAF0atIrw3EYHC4iog4fGODRkmLCOLdD
- S7fouohQWAI1clDARcL7z4iSxMal947KJ6iyWhjdWEqta237ZzsncCJKmHRmykfqkFTbI6Ame/
- /15DHSe37fvYiHwdkAAAA
-X-Change-ID: 20250729-mlx5_gso_segs-8e5ea2d4b9b0
-To: Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, 
- Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
- Andrew Lunn <andrew+netdev@lunn.ch>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Amir Vadai <amirv@mellanox.com>
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
- Gal Pressman <gal@nvidia.com>, Christoph Paasch <cpaasch@openai.com>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1753814051; l=2293;
- i=cpaasch@openai.com; s=20250712; h=from:subject:message-id;
- bh=BEl29bER/lvNXl8OFGctWB+GNXoUpmP6lKzTKh8mgKg=;
- b=yG4Ad4zj5YUqZ8aVs2erdhWF4rIFYiTUjcQ5GjoBH6yq2o/jWDsZQQKaa5fOXpKT2toAU1YBc
- BIRIRVF3CTBAzabqecpVEuwaesH5SNP3pEififo1w7jqr08AnCvRt9H
-X-Developer-Key: i=cpaasch@openai.com; a=ed25519;
- pk=1HRHZlVUZPziMZvsAQFvP7n5+uEosTDAjXmNXykdxdg=
-X-Endpoint-Received: by B4 Relay for cpaasch@openai.com/20250712 with
- auth_id=459
-X-Original-From: Christoph Paasch <cpaasch@openai.com>
-Reply-To: cpaasch@openai.com
+X-Migadu-Flow: FLOW_OUT
 
-From: Christoph Paasch <cpaasch@openai.com>
+On 29.07.2025 14:03, Pedro Falcato wrote:
+> Ever since commit c2ff29e99a76 ("siw: Inline do_tcp_sendpages()"),
+> we have been doing this:
+>
+> static int siw_tcp_sendpages(struct socket *s, struct page **page, int offset,
+>                               size_t size)
+> [...]
+>          /* Calculate the number of bytes we need to push, for this page
+>           * specifically */
+>          size_t bytes = min_t(size_t, PAGE_SIZE - offset, size);
+>          /* If we can't splice it, then copy it in, as normal */
+>          if (!sendpage_ok(page[i]))
+>                  msg.msg_flags &= ~MSG_SPLICE_PAGES;
+>          /* Set the bvec pointing to the page, with len $bytes */
+>          bvec_set_page(&bvec, page[i], bytes, offset);
+>          /* Set the iter to $size, aka the size of the whole sendpages (!!!) */
+>          iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, &bvec, 1, size);
+> try_page_again:
+>          lock_sock(sk);
+>          /* Sendmsg with $size size (!!!) */
+>          rv = tcp_sendmsg_locked(sk, &msg, size);
+>
+> This means we've been sending oversized iov_iters and tcp_sendmsg calls
+> for a while. This has a been a benign bug because sendpage_ok() always
+> returned true. With the recent slab allocator changes being slowly
+> introduced into next (that disallow sendpage on large kmalloc
+> allocations), we have recently hit out-of-bounds crashes, due to slight
+> differences in iov_iter behavior between the MSG_SPLICE_PAGES and
+> "regular" copy paths:
+>
+> (MSG_SPLICE_PAGES)
+> skb_splice_from_iter
+>    iov_iter_extract_pages
+>      iov_iter_extract_bvec_pages
+>        uses i->nr_segs to correctly stop in its tracks before OoB'ing everywhere
+>    skb_splice_from_iter gets a "short" read
+>
+> (!MSG_SPLICE_PAGES)
+> skb_copy_to_page_nocache copy=iov_iter_count
+>   [...]
+>     copy_from_iter
+>          /* this doesn't help */
+>          if (unlikely(iter->count < len))
+>                  len = iter->count;
+>            iterate_bvec
+>              ... and we run off the bvecs
+>
+> Fix this by properly setting the iov_iter's byte count, plus sending the
+> correct byte count to tcp_sendmsg_locked.
+>
+> Cc: stable@vger.kernel.org
+> Fixes: c2ff29e99a76 ("siw: Inline do_tcp_sendpages()")
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202507220801.50a7210-lkp@intel.com
+> Reviewed-by: David Howells <dhowells@redhat.com>
+> Signed-off-by: Pedro Falcato <pfalcato@suse.de>
+> ---
+>
+> v2:
+>   - Add David Howells's Rb on the original patch
+>   - Remove the offset increment, since it's dead code
+>
+>   drivers/infiniband/sw/siw/siw_qp_tx.c | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
+> index 3a08f57d2211..f7dd32c6e5ba 100644
+> --- a/drivers/infiniband/sw/siw/siw_qp_tx.c
+> +++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
+> @@ -340,18 +340,17 @@ static int siw_tcp_sendpages(struct socket *s, struct page **page, int offset,
+>   		if (!sendpage_ok(page[i]))
+>   			msg.msg_flags &= ~MSG_SPLICE_PAGES;
+>   		bvec_set_page(&bvec, page[i], bytes, offset);
+> -		iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, &bvec, 1, size);
+> +		iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, &bvec, 1, bytes);
+>   
+>   try_page_again:
+>   		lock_sock(sk);
+> -		rv = tcp_sendmsg_locked(sk, &msg, size);
+> +		rv = tcp_sendmsg_locked(sk, &msg, bytes)
+>   		release_sock(sk);
+>   
+>   		if (rv > 0) {
+>   			size -= rv;
+>   			sent += rv;
+>   			if (rv != bytes) {
+> -				offset += rv;
+>   				bytes -= rv;
+>   				goto try_page_again;
+>   			}
 
-When gso_segs is left at 0, a number of assumptions will end up being
-incorrect throughout the stack.
-
-For example, in the GRO-path, we set NAPI_GRO_CB()->count to gso_segs.
-So, if a non-LRO'ed packet followed by an LRO'ed packet is being
-processed in GRO, the first one will have NAPI_GRO_CB()->count set to 1 and
-the next one to 0 (in dev_gro_receive()).
-Since commit 531d0d32de3e
-("net/mlx5: Correctly set gso_size when LRO is used")
-these packets will get merged (as their gso_size now matches).
-So, we end up in gro_complete() with NAPI_GRO_CB()->count == 1 and thus
-don't call inet_gro_complete(). Meaning, checksum-validation in
-tcp_checksum_complete() will fail with a "hw csum failure".
-
-Even before the above mentioned commit, incorrect gso_segs means that other
-things like TCP's accounting of incoming packets (tp->segs_in,
-data_segs_in, rcv_ooopack) will be incorrect. Which means that if one
-does bytes_received/data_segs_in, the result will be bigger than the
-MTU.
-
-Fix this by initializing gso_segs correctly when LRO is used.
-
-Fixes: e586b3b0baee ("net/mlx5: Ethernet Datapath files")
-Reported-by: Gal Pressman <gal@nvidia.com>
-Closes: https://lore.kernel.org/netdev/6583783f-f0fb-4fb1-a415-feec8155bc69@nvidia.com/
-Signed-off-by: Christoph Paasch <cpaasch@openai.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index 7462514c7f3d1606339ede13a6207c1629ab65a3..da3e340c99b72ce27861cccaa5bd722c1b446a55 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -1567,6 +1567,7 @@ static inline void mlx5e_build_rx_skb(struct mlx5_cqe64 *cqe,
- 		unsigned int hdrlen = mlx5e_lro_update_hdr(skb, cqe, cqe_bcnt);
- 
- 		skb_shinfo(skb)->gso_size = DIV_ROUND_UP(cqe_bcnt - hdrlen, lro_num_seg);
-+		skb_shinfo(skb)->gso_segs = lro_num_seg;
- 		/* Subtract one since we already counted this as one
- 		 * "regular" packet in mlx5e_complete_rx_cqe()
- 		 */
-
----
-base-commit: afd8c2c9e2e29c6c7705635bea2960593976dacc
-change-id: 20250729-mlx5_gso_segs-8e5ea2d4b9b0
-
-Best regards,
--- 
-Christoph Paasch <cpaasch@openai.com>
-
+Acked-by: Bernard Metzler <bernard.metzler@linux.dev>
 
 
