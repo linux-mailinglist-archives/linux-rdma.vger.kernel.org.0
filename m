@@ -1,142 +1,152 @@
-Return-Path: <linux-rdma+bounces-12522-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12523-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EACD2B14A70
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jul 2025 10:52:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB6C8B14A94
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jul 2025 11:00:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF31A162A15
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jul 2025 08:52:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 222154E156F
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jul 2025 08:59:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57963285C86;
-	Tue, 29 Jul 2025 08:52:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88F2C275B04;
+	Tue, 29 Jul 2025 09:00:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IoQZHrfg"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Ire/ACUF"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76D1478F34;
-	Tue, 29 Jul 2025 08:52:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E80B619D09C;
+	Tue, 29 Jul 2025 09:00:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753779136; cv=none; b=X4mHdotNtuwIbrqO+417bWfY7IH9z1s8vOdmAZGdQRvktkT8DY0geuD6kVltVzKcV3OW+lCI1vqxJo7Euo5+V2x3ZE40XifI216GEwN1l6ImSJL93tSs3G2fBgrAYWT0yFjsuwfFDXXjoC5jEdbBzOMLMAquOv/tQSUzO4p/VLg=
+	t=1753779621; cv=none; b=CA4R2PiZqZLewDrN+nf8TRmdGHRu3HdC4F+4z+2Ip/8v2lZGCnVEHotVmxf+36EOuTsF4ORnlKjggpz2JWRa7m4TKg1puxRWwXdd++TSqTHvIa63svsmR++NqhfPZ3Qy8ZQ9hfWd+UjjP4uZsYo6uO/cT+ghBuYfaA2Ur/3uo/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753779136; c=relaxed/simple;
-	bh=SN+9wrL45KOmZEoCo+QRSzNzRfauhceyHUari7IM4No=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rZ9QtYtdbkqotDF93dmFZYwbYLiYjysD+eKLJv/7PwaH5JpbL+uQQRa2k9UjLyAGW5V3SLpC00u3p/dWHwb79XIkV8irTZ3TlTJ5pu0Y+9YndDOKBCu0THZXYAkDLN+UywJwDEhSDROACNnLvV9sY/wNzWbU8qnWBHRNeTFYy6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IoQZHrfg; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4538bc52a8dso39216185e9.2;
-        Tue, 29 Jul 2025 01:52:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753779133; x=1754383933; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=puylhfEeh04//TXk56E+rvqvhJy4E6rc8s7DMainMJQ=;
-        b=IoQZHrfg3xUMzo3PxoRHiOgJNruj8+8No7dvuXU/ywgLZ9s4+iyrb027hnr7Ru2VNm
-         uEn4RIYeFRzEsltJ6X8Oc18tbwHeYZHkQkQb0ryUBGVSJVxXTQuT9rKe2mq6guHFvNZh
-         ONjRThZ+kGZcyO1FRlqinQkOyvc1s0+OAoZ1/vn/Hm4FAd/GNCBnyv+4HxeiWhm7ZBOb
-         N/rIg6LUzjx+WNcb+cgtcE/hhbm+TQZpp3+YxPeu4+UtXXnLBu9BM5isDlj8r3QCRN13
-         2haE/DYebbM2dg6NU19qRIrDsYEWhB+YqC2YbBxes8VRf7kniBQVxbmqHdf+0mVVAp91
-         ON6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753779133; x=1754383933;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=puylhfEeh04//TXk56E+rvqvhJy4E6rc8s7DMainMJQ=;
-        b=ibyLhln2Yy/NRr7eK+5YQlTRI3hDUWnZ7XqwZNs86CGxKjGWQMiSHCx1SHLbKNkwj7
-         A1pC/0KA+usl8BZLNDZj1go+poQ7fSN9El7LVJsLbS5kET45BojZv5Xt+fKO+QnK7KWt
-         wJP9K13xmkQ59ue/40G7yOrtxXMXwVqzw0cnX9mxekHTKm/IVO0wKPhzCOc2i8JVHOKq
-         Jk+b8g3zOnvAFsaANfMMdvYb0XUnF2yaQiNElWMd5d+jddgSGYRr9t59I7phW5wtgytt
-         6e4PKHhS1dKJ+piKQCjzSwovPMFUTSxKPxY5cZPP5bkLcKwNy0Vxv0R8PDDPbd/3ItNQ
-         HoKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWYygsdA3K43wxJvy47ILUnjxhberk+0eziJ6EQhzy0edlDwLj5ayEIhFadHfoXRQzhvnU=@vger.kernel.org, AJvYcCWjKSOEX1lFel3nJMALPUj2qRtv95LVT62noHdoj445+3igafeRJGUUnRpMwSLF7JtKsffq4FN+@vger.kernel.org, AJvYcCWsDkgKAb4UXtOmCEJ+TZgiWYbYsLRHK8upXjN5dhjnpPfZse9RQbUvHxNV8SICuQgUqprFHNd/A3C35A==@vger.kernel.org, AJvYcCX/KdDNRONkL4WBlBYzh0AIjNKiCamtrH6Sv4u3d7kM6Brs2Vym8he5fZHkqsqVf/s/UP36pc6A/q2zuo/J@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz49sLNNvtJuIteqkfRI/HDVvlwXb+aElvIl/GmeT5CAh11aI/a
-	VXFU8VcrHawNYr3QtBAGR/BNlzVprPthFzB0Cym1KkZL8Gqbme6yW6lk
-X-Gm-Gg: ASbGncvorSVmIyLYDNdGUCSBO6ArhgzmJV3PHeBElJX9qUyes/awTi4UA08QWSJXnK2
-	NXwDNS7d5h72gn5H4a6B1LluOMOZ2gqh5b/mxH9+vCCQsEKizwRHqYkd+BfAiU5Uc5/SJJ4foPX
-	0v27plElWV6qYZ0Lm96KDoxK2aiiEaFfq8eQ9fL0Lm9hx0+J3K/E1nWqPjA8agDt4cp/ByCQKim
-	PCM6LQG34zL6LCT2Wo0A2dhweFvPt5Mk7o8lpEbMhbe45sToloL+aeGCYKb/vstg13NS5tYkhil
-	dWFPHrLndWLjNu66RgyryCyC4nNihMhIa26Dpp8WsxTs5VeQymneKEEWGT86dJwdcVmQ0prBxYt
-	TpCI/TBjKNShqd707vnRMJZEmR6zsa5/Ql8c=
-X-Google-Smtp-Source: AGHT+IEm4VTiD/JSN689v0JLsMbYqbkmePqxtHqQp6IbEjtW00P2+vOo5p+wkfxwZCh3NLYlWmARzg==
-X-Received: by 2002:a05:600c:458d:b0:43d:9d5:474d with SMTP id 5b1f17b1804b1-4587b16efb2mr105032655e9.0.1753779132350;
-        Tue, 29 Jul 2025 01:52:12 -0700 (PDT)
-Received: from ?IPV6:2620:10d:c096:325::26f? ([2620:10d:c092:600::1:72ea])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3b77e216516sm10225969f8f.72.2025.07.29.01.52.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jul 2025 01:52:11 -0700 (PDT)
-Message-ID: <7d7eb3cd-db7e-4a9e-8671-4185b716bbc8@gmail.com>
-Date: Tue, 29 Jul 2025 09:53:31 +0100
+	s=arc-20240116; t=1753779621; c=relaxed/simple;
+	bh=DsCF20Q44FCdFYI8M9L9FEFSHIMRHjullCSimqZXOoY=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=LJsyUmQcVoMgV5XP5yuhBuXrHtNsRcDtx6kalXN+2sgdxq8+ZWSMuw/xCxa9PtHyTyJf82bjf/kGacZ/Mo5jcCMURVAzn/5RVnR/dMyVERelF47EDIwsOyAuzcoGuFcVHks3frc6PhFcdcXnl1RIEBJpRidIpTyc0Oz24y025Lc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Ire/ACUF; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1186)
+	id 7C94721176FC; Tue, 29 Jul 2025 02:00:18 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7C94721176FC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1753779618;
+	bh=r7wwOkDiGql8oFTfJZqe5CtlN+nAao9E22lf68AMpm8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Ire/ACUFf7rZ+dETogxGwYzzt6ubpO7FB3FXp6WD4IYwsKlra8kKZuKdYWgsNAzaJ
+	 r3siqkPbaXqbJkVEawNy49H5r8kutlP1OTh+Za1qlL3EfpRuDlmAWZ2GYoyMC322x/
+	 ivBt2kuly84Ze3hLeZk2zhrN5OYUJqQkfZlIFzRk=
+From: Konstantin Taranov <kotaranov@linux.microsoft.com>
+To: kotaranov@microsoft.com,
+	longli@microsoft.com,
+	jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH rdma-next 1/1] RDMA/mana_ib: drain send wrs of gsi qp
+Date: Tue, 29 Jul 2025 02:00:18 -0700
+Message-Id: <1753779618-23629-1-git-send-email-kotaranov@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mm, page_pool: introduce a new page type for page pool
- in page type
-To: Byungchul Park <byungchul@sk.com>
-Cc: Mina Almasry <almasrymina@google.com>, linux-mm@kvack.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel_team@skhynix.com, harry.yoo@oracle.com, ast@kernel.org,
- daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
- john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
- leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
- andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
- akpm@linux-foundation.org, david@redhat.com, lorenzo.stoakes@oracle.com,
- Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com,
- mhocko@suse.com, horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org,
- ziy@nvidia.com, ilias.apalodimas@linaro.org, willy@infradead.org,
- brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
- usamaarif642@gmail.com, baolin.wang@linux.alibaba.com, toke@redhat.com,
- bpf@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <20250728052742.81294-1-byungchul@sk.com>
- <fc1ed731-33f8-4754-949f-2c7e3ed76c7b@gmail.com>
- <CAHS8izO6t0euQcNyhxXKPbrV7BZ1MfuMjrQiqKr-Y68t5XCGaA@mail.gmail.com>
- <da4a9efd-64b3-4dc5-a613-b73e17f160d6@gmail.com>
- <20250729010410.GC56089@system.software.com>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <20250729010410.GC56089@system.software.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
 
-On 7/29/25 02:04, Byungchul Park wrote:
-> On Mon, Jul 28, 2025 at 07:49:30PM +0100, Pavel Begunkov wrote:
->> On 7/28/25 19:39, Mina Almasry wrote:
->>> On Mon, Jul 28, 2025 at 11:35 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+From: Konstantin Taranov <kotaranov@microsoft.com>
 
-...>>> This may be my bad since I said we should check if it's 0 initialized.
->>>
->>> It looks like on the devmem side as well we kvmalloc_array the niovs,
->>> and if I'm checking through the helpers right, kvmalloc_array does
->>> 0-initialize indeed.
->>
->> I wouldn't rely on that, it's just for zcrx I do:
->>
->> kvmalloc_array(...,  GFP_KERNEL | __GFP_ZERO);
-> 
-> For net_devmem_bind_dmabuf(), __GFP_ZERO will add bigger overhead than
-> just assignment, 'niov->pp = NULL'.
+Drain send WRs of the GSI QP on device removal.
 
-That's not a place where you should care about zeroing overhead.
+In rare servicing scenarios, the hardware may delete the
+state of the GSI QP, preventing it from generating CQEs
+for pending send WRs. Since WRs submitted to the GSI QP
+hold CM resources, the device cannot be removed until
+those WRs are completed. This patch marks all pending
+send WRs as failed, allowing the GSI QP to release the CM
+resources and enabling safe device removal.
 
-> I'd like to ask you if you are still good with __GFP_ZERO overhead
-> before going ahead.
+Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+---
+ drivers/infiniband/hw/mana/cq.c      | 26 ++++++++++++++++++++++++++
+ drivers/infiniband/hw/mana/device.c  |  3 +++
+ drivers/infiniband/hw/mana/mana_ib.h |  3 +++
+ 3 files changed, 32 insertions(+)
 
-However, it might be easier for you to just assign it directly
-for devmem and let Mina add GFP_ZERO if he fancy the idea.
-
+diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
+index 28e154bbb50f..1becc8779123 100644
+--- a/drivers/infiniband/hw/mana/cq.c
++++ b/drivers/infiniband/hw/mana/cq.c
+@@ -291,6 +291,32 @@ static int mana_process_completions(struct mana_ib_cq *cq, int nwc, struct ib_wc
+ 	return wc_index;
+ }
+ 
++void mana_drain_gsi_sqs(struct mana_ib_dev *mdev)
++{
++	struct mana_ib_qp *qp = mana_get_qp_ref(mdev, MANA_GSI_QPN, false);
++	struct ud_sq_shadow_wqe *shadow_wqe;
++	struct mana_ib_cq *cq;
++	unsigned long flags;
++
++	if (!qp)
++		return;
++
++	cq = container_of(qp->ibqp.send_cq, struct mana_ib_cq, ibcq);
++
++	spin_lock_irqsave(&cq->cq_lock, flags);
++	while ((shadow_wqe = shadow_queue_get_next_to_complete(&qp->shadow_sq))
++			!= NULL) {
++		shadow_wqe->header.error_code = IB_WC_GENERAL_ERR;
++		shadow_queue_advance_next_to_complete(&qp->shadow_sq);
++	}
++	spin_unlock_irqrestore(&cq->cq_lock, flags);
++
++	if (cq->ibcq.comp_handler)
++		cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
++
++	mana_put_qp_ref(qp);
++}
++
+ int mana_ib_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc)
+ {
+ 	struct mana_ib_cq *cq = container_of(ibcq, struct mana_ib_cq, ibcq);
+diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
+index fa60872f169f..bdeddb642b87 100644
+--- a/drivers/infiniband/hw/mana/device.c
++++ b/drivers/infiniband/hw/mana/device.c
+@@ -230,6 +230,9 @@ static void mana_ib_remove(struct auxiliary_device *adev)
+ {
+ 	struct mana_ib_dev *dev = dev_get_drvdata(&adev->dev);
+ 
++	if (mana_ib_is_rnic(dev))
++		mana_drain_gsi_sqs(dev);
++
+ 	ib_unregister_device(&dev->ib_dev);
+ 	dma_pool_destroy(dev->av_pool);
+ 	if (mana_ib_is_rnic(dev)) {
+diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
+index 5d31034ac7fb..af09a3e6ccb7 100644
+--- a/drivers/infiniband/hw/mana/mana_ib.h
++++ b/drivers/infiniband/hw/mana/mana_ib.h
+@@ -43,6 +43,8 @@
+  */
+ #define MANA_AV_BUFFER_SIZE	64
+ 
++#define MANA_GSI_QPN		(1)
++
+ struct mana_ib_adapter_caps {
+ 	u32 max_sq_id;
+ 	u32 max_rq_id;
+@@ -718,6 +720,7 @@ int mana_ib_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
+ int mana_ib_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
+ 		      const struct ib_send_wr **bad_wr);
+ 
++void mana_drain_gsi_sqs(struct mana_ib_dev *mdev);
+ int mana_ib_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc);
+ int mana_ib_arm_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags);
+ 
 -- 
-Pavel Begunkov
+2.43.0
 
 
