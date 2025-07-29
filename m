@@ -1,159 +1,140 @@
-Return-Path: <linux-rdma+bounces-12515-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12516-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29972B14237
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Jul 2025 20:48:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26481B14570
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jul 2025 02:51:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CC5718C1CEF
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Jul 2025 18:48:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B44C3B3FFB
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jul 2025 00:50:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BE3C275B00;
-	Mon, 28 Jul 2025 18:48:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ihrBSZE3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A96815A85A;
+	Tue, 29 Jul 2025 00:51:19 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C09021CC57;
-	Mon, 28 Jul 2025 18:48:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01AA9382;
+	Tue, 29 Jul 2025 00:51:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753728494; cv=none; b=uw8No4oWApZ6rF3h9Y2c2PInuKHyBRGqELYoFt6zn7gghun76VLtHQ1V06ZWpFxRGCXN2qlvqnA0Dly2Uafu6hhMv2B4dAamVIH75R7ZQhUbrGNu9V/OkkyQMdx9V60s+36vfH4hWusKb92tAg+6JP6EPmygfnkDqLGBDkpxfCg=
+	t=1753750279; cv=none; b=eCQ3gBgMIRDqowM0W5odrZZ+apRc5TFOnl5NRhRuk2Gpsukbn5UyfposQMelO7Eby/wOmq5BH7hjS3cQryKqEC4yPL1PWJJCYMBbENPSHwLs09enf3wB91p64yiruqaqQNzP71+EVqu8MHknKxsVz4bXR5A3Dh2Yod58os/5Wcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753728494; c=relaxed/simple;
-	bh=HmUFXtsPLKlOxVadQ+y0n2hrEEj+K3jv5Vs3dl1+XSs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=S3g5h+07/PCwe8Q5V77H/OG87yv3vwSnAN6NTvWwmGO0zd6Eg834wDe6WHIrAshKG2LkxGTYL9v24rrO0U7648iln8baAvU4PiJmiwrr+2fqmHVHBpnW/9TkwhRInaTUWRnjoy+jpLkWCoLVpaNZkbO3MMZHYlNLuG9X60cgJCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ihrBSZE3; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-ae0dd7ac1f5so967506166b.2;
-        Mon, 28 Jul 2025 11:48:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1753728491; x=1754333291; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KPtqArRqu6RKIpD2evhkTp5wjAyR3mIuxIPwkqRJjJg=;
-        b=ihrBSZE3YVPxc2F4rB6i03BeINzq9ZLbmlNAzC7g0mT45APCy3SFwhB6IYDhre+i7h
-         PVt1kfD5kzF3QJ0N361To36T/kbfQMap1mTOYGkuDM5uSQC3gNlHZJahujmwsgaX+khr
-         psie1BQOfL3X1JLpkuDnfahSvGCKVix+Uf16yVHhiUVwQiB6v3jQYRu4FF66hZAXIgzT
-         ny9forDzpyqe4ka0ZXn+TMPJh/cswyAQPeysrJMLRKQnoVHTkOqPYH94STunGLmfgduj
-         qgilMabfR3N2g9fVl2dlqa25gxRezoa9jRe1x/WdsCvCFzXrsXloef52O5siq9UTTNZd
-         qlwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1753728491; x=1754333291;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KPtqArRqu6RKIpD2evhkTp5wjAyR3mIuxIPwkqRJjJg=;
-        b=ubI6SYAZtfnhCZekKCyf5BriuPwPxMzQLNtEDByTdwdG3hmLTFcaRXJolJnRCjYzgl
-         99ldF2yChv/RGfIH+TELTW3a9qyw+xA+MHjGDQ/XcETqRmJY8yX+dX2vmRZttxzax67S
-         Sf+NwQvDiDTmxMNib6ug5VxzGk1JXxp+mkeGsGxpmOmv7UdfkOyORFuwLrE95tSitGIL
-         OZxmuFU+/TNX9p21NsvPyxQhhwYPOG9mtBiVfHG71qnFJKNTrbOTTVuSYveBas13Dwqt
-         A0yekyCUtXkpd8ofG+j6fuUlmx5Jbw2ZqX+TZuu3f6pLbEqoAQTdUBZoQGrt//wx6rU7
-         oeaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUJrWbVA2fDWJYMEBKElksnetmcWNGvC3zfs0efb+AZ+NIxTT98FAk6zDHl1U256NUpD3a1G1v/@vger.kernel.org, AJvYcCULingRW9SWCTUciHQYGRGdwwdMMQZzMf9COTu6E+xuId9A1z6XFi9mm3Zyrsb4rmpfXdBvCCapaLQbmSmW@vger.kernel.org, AJvYcCV8163SH9Im/pxTJck1HmfERkem3bDd65WcbyAs/Qjni/kRX3qHg/TiN5m+fv+hZ5COpkKJQljHjvxooA==@vger.kernel.org, AJvYcCVcbjmHQQmJ/HvNiVHer/HBQirg2DRgVwsJhIMluaMB9qtZCN7uP352cRU7d442pHgQ9Ho=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzX6Ai77gengSOmIWtI3EX9SHQKV8DlNsUdiq2A7xzJaveg7JGK
-	D+F6xkR5BCtWChsV/P4l1i+RXzn21jDimDzWSWwsIltxFwOmdQXwAKWA
-X-Gm-Gg: ASbGncstQ9CUJp3jXYTO4Sbq0LyjSQr0MHKtE3RouVZ4W27ruu3ZDJHtu3gsL5FIWaG
-	HZ5cHYDiEMZvx8IY+GmaY00I/hippCU2dvKilIGH4AqdUlhXH2XoHA6OiAdRf8snE8vr0Pl91dJ
-	jh2WocxZjdkzfAY2cbBfQ3kPLt837O3qZd5fGRtKBlBX482E296AS47mq+/QpK772+CcqPEvn5n
-	bHSe7IyCFwodSdQjpdqRSVwr85BNJMxFqm1ed1ofQUmeeJJ/9RmEyEwh+kcMXr1jVq7o5olewyY
-	j4o4sSUd4V0OtCgu6xJKd3bkizm5RshF1JhT2Zd7tJvYkNXoGC7LCQOomDglzjYKVXLFVZ53TrR
-	emdVATG0HMRoPAI6GvmfmQ4A77+ww2Gk=
-X-Google-Smtp-Source: AGHT+IGzAV+yc6Tr08lhtVqfYb5YTgQLPzE5kcZfo5vFpSIrj8JxMfbWLpoJFl0I+K+SgA12E6PiOQ==
-X-Received: by 2002:a17:907:d2a:b0:ae3:e378:159e with SMTP id a640c23a62f3a-af617d0afbbmr1521651666b.26.1753728490438;
-        Mon, 28 Jul 2025 11:48:10 -0700 (PDT)
-Received: from [192.168.8.100] ([185.69.144.164])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-af635aa33f9sm460220966b.98.2025.07.28.11.48.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jul 2025 11:48:09 -0700 (PDT)
-Message-ID: <da4a9efd-64b3-4dc5-a613-b73e17f160d6@gmail.com>
-Date: Mon, 28 Jul 2025 19:49:30 +0100
+	s=arc-20240116; t=1753750279; c=relaxed/simple;
+	bh=AMCqaIGiL6plGruravax33DNh3vkktxzRI1hEALZIGo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pgzq18Z8x4SdKhZsPMkDF2wNCcAQjsltYuIsUZfiTEtt8jV4Aw+/E0PXmNtfAiQO/wPBsM9hA0x60vVAUMYGeCAZ7loHK5NRsKqK6/x0gWElG97nhPSDHHNVAorvG3pyhHsEAslXSs4SxpUbeKc2bV0gixe2AObIV2JpH2AgPfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-681ff7000002311f-77-68881afed51a
+Date: Tue, 29 Jul 2025 09:51:05 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+	harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
+	davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+	john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
+	leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
+	andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
+	akpm@linux-foundation.org, david@redhat.com,
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+	horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org,
+	ziy@nvidia.com, ilias.apalodimas@linaro.org, willy@infradead.org,
+	brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
+	usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
+	almasrymina@google.com, toke@redhat.com, bpf@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: Re: [PATCH v2] mm, page_pool: introduce a new page type for page
+ pool in page type
+Message-ID: <20250729005105.GA56089@system.software.com>
+References: <20250728052742.81294-1-byungchul@sk.com>
+ <fc1ed731-33f8-4754-949f-2c7e3ed76c7b@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mm, page_pool: introduce a new page type for page pool
- in page type
-To: Mina Almasry <almasrymina@google.com>
-Cc: Byungchul Park <byungchul@sk.com>, linux-mm@kvack.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel_team@skhynix.com, harry.yoo@oracle.com, ast@kernel.org,
- daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
- john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
- leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
- andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
- akpm@linux-foundation.org, david@redhat.com, lorenzo.stoakes@oracle.com,
- Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com,
- mhocko@suse.com, horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org,
- ziy@nvidia.com, ilias.apalodimas@linaro.org, willy@infradead.org,
- brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
- usamaarif642@gmail.com, baolin.wang@linux.alibaba.com, toke@redhat.com,
- bpf@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <20250728052742.81294-1-byungchul@sk.com>
- <fc1ed731-33f8-4754-949f-2c7e3ed76c7b@gmail.com>
- <CAHS8izO6t0euQcNyhxXKPbrV7BZ1MfuMjrQiqKr-Y68t5XCGaA@mail.gmail.com>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <CAHS8izO6t0euQcNyhxXKPbrV7BZ1MfuMjrQiqKr-Y68t5XCGaA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fc1ed731-33f8-4754-949f-2c7e3ed76c7b@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SWUwTYRDH/Xa3u0ulyVo8PuHFFAwRFbwzxiO+mOwL8XzwiNEiG9twppxF
+	JChVjnAUBZVSIkigHCaYghQQUMuphkAgYAGFgmKCVpBTLkULMfr2y39mfjMPw5LSCpEzqwwM
+	FVSBcn8ZLabE3xwf71x2TlDs6tWuBX3ZExpK5yLBYK0Sgb6kEsH0fD8Dy3XNCKYaW2j42jCJ
+	ID9vlgR9u4aCmbIFEkaahxkoNXrDYOFnCmrjTSQMp7XSkKJZJKFufoyBW1VFBOjLYxnoqEwV
+	QcZCAQmmWCsDXTV6GgaeLIvgszmFgte6Ygq+ZzaSMJh6DJpzN8LsWxuCxjITAbPJOTR0Z9UQ
+	cK8zl4aPmkEEnQ3DFGQuJdCQfTMVweLcH9uYdloE2U0DzDEPvsE2TvIVxb0Eb6l/Q/DVug8M
+	n2sM48uLPPgkSyfJG0sSad44eZfh3/fU0nzrw0WKrx46yFdXTRF8StwYzU+M9FH8eH03fdLp
+	gviwr+CvDBdUXkeviBVv6q1UcJZj5PKXIRSLMh2SEMtibh9uWwhNQg4rWKDJIO1McVtx04iG
+	sjPNuWOLZX4lX89tx1/fmZkkJGZJ7j6D48tqabvHibuEn744ZO+RcIC7DDkiO0s5BS5q16LV
+	fB1+nfVpxUlyHtjya5Swj5KcCzb8Yu2xA3cEtz3PW1m1gXPFLytbiNXTrCzu6d+6ypvxqyIL
+	pUWc7j+r7j+r7p81F5ElSKoMDA+QK/33eSrUgcpIz6tBAUb055cKbyxdrEKTHWfMiGORzFGi
+	SIxXSEXy8BB1gBlhlpStlwQX3FFIJb5ydZSgCrqsCvMXQszIhaVkmyR7ZiN8pdw1eajgJwjB
+	gupvlWAdnGORwXb+PBOdPuR+xHDdR277xiYfX0yPOps+E6euCbNVux2nYiYePe4a/HS7zmQ2
+	O/5Mizn1KPFOzOFGv5nuBzbvUXXEWJe7Ibsvf82w64G5oCZl51LbgLLDkLAl8cQz63jE6YfR
+	ph/pUfvhwKvygaVt1lP1XtsrNMEF59xiOrQ79vrIqBCFfLcHqQqR/wbFFJJgRwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0hTcRTH+d3ffbk2uM2VFw2i9UIlSyo6YkVI0CUogogoqLzVrQ0fyZai
+	UWA52rQ0S41cM+zhe2Vs5aNMazPLQgztsR7OR6k9RMvMZprmjMj/PnzP+XzPP4fFyguUP6uN
+	PSzpYsVoNS0jZZvDU5aM+5s0yz4aV4Gl3EpDmScRijqqKLCUViAYGnnLwMS9BgTf6x/R8MU5
+	iODq5WEMlmYDCT/Kf2HobuhioMy2CdoLe0ioMVZi6DrzmIZ0wyiGeyP9DJyoKibAYk9mwJnX
+	SMGzigwKsn8VYKhM7mCg9Y6FBrd1goIeRzoJjeYSEr7m1GNoz1gHDfmzYfhpH4L68koChk/n
+	0fAi9w4BWS35NLw3tCNocXaRkDNmouHi8QwEo57Jtv7MIQouPnQz64IFZ98AFm6VvCYEV+0T
+	Qqg2tzFCvi1esBcHCWmuFizYSlNpwTZ4jhHevayhhccXRkmhujNMqK76TgjpKf208K37DSkM
+	1L6gt6h2ylbvl6K1CZJu6dpImeZJbQcZlytPnPjciZJRjk8a8mF5bgVfYMjGXia5hfzDbgPp
+	ZZpbzLtcI1O5igvmv7xyMGlIxmLuPMMby2voNMSyvtwu/mZduHdHwQHfWpRHeVnJafji5kz0
+	N5/JN+Z+mOrEXBDvGv9EeFXMBfBF46w39uHW8E13L0+dmsXN5+9XPCIykcI8zTZPs83/7XyE
+	S5FKG5sQI2qjV4boozRJsdrEkH2HYmxo8l8Kj42drUJDrRsciGORWq7QpBo1SkpM0CfFOBDP
+	YrVKEVdwUqNU7BeTjki6Q3t08dGS3oECWFLtp9i4XYpUcgfFw1KUJMVJun9TgvXxT0Ylvnut
+	t0X/+02B38qiPNkmye/pcP/gghM9iwIfrDbtyQpydi/HfqGiSTarrbbOE3n0dpTBbf+91fDR
+	fqPvEhUxZ82O8KYZoePb3EsLeuW01t77MzXu5d2w3dmjVve1611LfL8GH5hnnDP0XN7hlEc0
+	h1kDT3nUc7PK1qtagxdciVeTeo0YGoR1evEPOG9m1isDAAA=
+X-CFilter-Loop: Reflected
 
-On 7/28/25 19:39, Mina Almasry wrote:
-> On Mon, Jul 28, 2025 at 11:35 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
->>
->> On 7/28/25 06:27, Byungchul Park wrote:
->>> Changes from v1:
->>>        1. Rebase on linux-next.
->>
->> net-next is closed, looks like until August 11.
->>
->>>        2. Initialize net_iov->pp = NULL when allocating net_iov in
->>>           net_devmem_bind_dmabuf() and io_zcrx_create_area().
->>>        3. Use ->pp for net_iov to identify if it's pp rather than
->>>           always consider net_iov as pp.
->>>        4. Add Suggested-by: David Hildenbrand <david@redhat.com>.
->>
->> Oops, looks you killed my suggested-by tag now. Since it's still
->> pretty much my diff spliced with David's suggestions, maybe
->> Co-developed-by sounds more appropriate. Even more so goes for
->> the second patch getting rid of __netmem_clear_lsb().
->>
->> Looks fine, just one comment below.
->>
->> ...> diff --git a/io_uring/zcrx.c b/io_uring/zcrx.c
->>> index 100b75ab1e64..34634552cf74 100644
->>> --- a/io_uring/zcrx.c
->>> +++ b/io_uring/zcrx.c
->>> @@ -444,6 +444,7 @@ static int io_zcrx_create_area(struct io_zcrx_ifq *ifq,
->>>                area->freelist[i] = i;
->>>                atomic_set(&area->user_refs[i], 0);
->>>                niov->type = NET_IOV_IOURING;
->>> +             niov->pp = NULL;
->>
->> It's zero initialised, you don't need it.
->>
+On Mon, Jul 28, 2025 at 07:36:54PM +0100, Pavel Begunkov wrote:
+> On 7/28/25 06:27, Byungchul Park wrote:
+> > Changes from v1:
+> >       1. Rebase on linux-next.
 > 
-> This may be my bad since I said we should check if it's 0 initialized.
+> net-next is closed, looks like until August 11.
 > 
-> It looks like on the devmem side as well we kvmalloc_array the niovs,
-> and if I'm checking through the helpers right, kvmalloc_array does
-> 0-initialize indeed.
+> >       2. Initialize net_iov->pp = NULL when allocating net_iov in
+> >          net_devmem_bind_dmabuf() and io_zcrx_create_area().
+> >       3. Use ->pp for net_iov to identify if it's pp rather than
+> >          always consider net_iov as pp.
+> >       4. Add Suggested-by: David Hildenbrand <david@redhat.com>.
+> 
+> Oops, looks you killed my suggested-by tag now. Since it's still
+> pretty much my diff spliced with David's suggestions, maybe
+> Co-developed-by sounds more appropriate. Even more so goes for
+> the second patch getting rid of __netmem_clear_lsb().
 
-I wouldn't rely on that, it's just for zcrx I do:
+Sure.  I will.
 
-kvmalloc_array(...,  GFP_KERNEL | __GFP_ZERO);
+	Byungchul
 
--- 
-Pavel Begunkov
-
+> Looks fine, just one comment below.
+> 
+> ...> diff --git a/io_uring/zcrx.c b/io_uring/zcrx.c
+> > index 100b75ab1e64..34634552cf74 100644
+> > --- a/io_uring/zcrx.c
+> > +++ b/io_uring/zcrx.c
+> > @@ -444,6 +444,7 @@ static int io_zcrx_create_area(struct io_zcrx_ifq *ifq,
+> >               area->freelist[i] = i;
+> >               atomic_set(&area->user_refs[i], 0);
+> >               niov->type = NET_IOV_IOURING;
+> > +             niov->pp = NULL;
+> 
+> It's zero initialised, you don't need it.
+> 
+> And a friendly reminder, please never send patches modifying a
+> subsystem without CC'ing it, especially kept in another tree.
+> Sure, you CC'ed me, but it's easy to lose.
+> 
+> --
+> Pavel Begunkov
+> 
 
