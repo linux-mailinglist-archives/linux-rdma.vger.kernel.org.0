@@ -1,338 +1,165 @@
-Return-Path: <linux-rdma+bounces-12544-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12545-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3004B162A1
-	for <lists+linux-rdma@lfdr.de>; Wed, 30 Jul 2025 16:24:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2F0DB164BE
+	for <lists+linux-rdma@lfdr.de>; Wed, 30 Jul 2025 18:32:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF16A175152
-	for <lists+linux-rdma@lfdr.de>; Wed, 30 Jul 2025 14:23:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDDF718919B6
+	for <lists+linux-rdma@lfdr.de>; Wed, 30 Jul 2025 16:32:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F1C2D9ED5;
-	Wed, 30 Jul 2025 14:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2496F2DC32E;
+	Wed, 30 Jul 2025 16:31:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZZ49GT34"
+	dkim=pass (1024-bit key) header.d=openai.com header.i=@openai.com header.b="YqrqAGxe"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8229C2D8368;
-	Wed, 30 Jul 2025 14:23:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ED65190692
+	for <linux-rdma@vger.kernel.org>; Wed, 30 Jul 2025 16:31:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753885412; cv=none; b=X/9DVeYaN9IG0GMptM5TqDlcXgOjaYhzi3D9ao9/S5AIHhhOIqmshCKVOVlePXdO7IA09ZCq3WMbsOScr+rkxZF9ar9/q2OsZT1le6pgjxDzMROHa1jHrd65gbOG5QKIX2XVjumj+Rp7ViXWglxmENF7zkjrKbaYTRX7ho+cG6s=
+	t=1753893116; cv=none; b=SSzoBehfsTiNd/6CGSeuHzNzqCpUhPz1sZchMY90TSQZmW6qMzgcMypv3CwNRnUs3d7vKH3jCIjIcP071RtiV6LdxvpRJZ8Bn+5UV/YvjCUYG4CeutOVxOwClPPZY7PXoo/eRoyNWfEFzXwnz0SkWu069qrbs3b4WleepOUwnq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753885412; c=relaxed/simple;
-	bh=bN3kpeBwpOhmVfqJEu1+fLesJgASyi+hPMoIHv1PTnQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IPWXe9Dvr7civRF68CC7DqtcyidUrnp/qoH3hQOdBoM6nGhnjLbuxfwGh+1M3Zx3aEUvhPh3uM0+O49eLmnQm41b/YNlHXah86TXvhGkTIX8GYeQy2TCRdHhsU4u3MHW6Mix2XV1kN1J1arCMAoX8af2eNqRkBI+MdhRki5LNkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZZ49GT34; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6230C4CEE7;
-	Wed, 30 Jul 2025 14:23:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1753885412;
-	bh=bN3kpeBwpOhmVfqJEu1+fLesJgASyi+hPMoIHv1PTnQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZZ49GT34bpU+9OBIrS+aROiM26mkG8ip1uscxtH0VTiL2gvHo0MoT+8TL4ZWbIwyb
-	 +cw78Y0gveoSajUbNFKLl3wNEc5dL5Qo4FAGloVvopdsXizatNaCONWvomJ0xbiqCl
-	 KyQWVhERFfiSigWxCG45a2/skTYrn+ESmrScseOh/rC1mNKoWGZHXEvECn7cXjFiqz
-	 rAU99WbFZTaS0RsjzEOTbreNZVJcuS+ae9SRG/5oL8tPPsgZ+2MNveymVbrs2x0sA5
-	 78WxI7dnDE7ZTFohCIAv1eQ7AzRBv138vhy4itHbLDjyYL0s5OKkSlMJtVo47zrZcB
-	 lRkhCpakvILIA==
-Date: Wed, 30 Jul 2025 15:23:24 +0100
-From: Simon Horman <horms@kernel.org>
-To: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-Cc: kuba@kernel.org, kys@microsoft.com, haiyangz@microsoft.com,
-	wei.liu@kernel.org, decui@microsoft.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	longli@microsoft.com, kotaranov@microsoft.com, ast@kernel.org,
-	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-	sdf@fomichev.me, lorenzo@kernel.org, michal.kubiak@intel.com,
-	ernis@linux.microsoft.com, shradhagupta@linux.microsoft.com,
-	shirazsaleem@microsoft.com, rosenp@gmail.com,
-	netdev@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, ssengar@linux.microsoft.com,
-	dipayanroy@microsoft.com
-Subject: Re: [PATCH v3] net: mana: Use page pool fragments for RX buffers
- instead of full pages to improve memory efficiency.
-Message-ID: <20250730142324.GH1877762@horms.kernel.org>
-References: <20250729201410.GA4555@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	s=arc-20240116; t=1753893116; c=relaxed/simple;
+	bh=tAMrQ2FGFyfTHTJMkhm+xHWPCxFiMsXykb5iK4+ZKTo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G4iRrbKrefObTkbWsti9Ia1KmUj3BrL0RzvxwzKQ9fwO7JnUTQ9HiAyz+53wbevoCnmImqVo8RezGZF5axIOQKYGtt2QATVqO4kzTB9YiQkceFu3uGkv+JxNGGMVmeOCaHHNimUQhxQ7LeQCvDeoqecAAlyZ5zxz/sNZnixqrQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=openai.com; spf=pass smtp.mailfrom=openai.com; dkim=pass (1024-bit key) header.d=openai.com header.i=@openai.com header.b=YqrqAGxe; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=openai.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openai.com
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-553ba7f11cbso7469094e87.1
+        for <linux-rdma@vger.kernel.org>; Wed, 30 Jul 2025 09:31:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=openai.com; s=google; t=1753893113; x=1754497913; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fDliXGKvlQ/BCMbKD+15lV6uBzdFVhBiyBD3CCNoi+4=;
+        b=YqrqAGxeZqDn8zoz+745M5mBbzvEhzJ5kMBUDtznkWz9nmxqDrPoD3gOaMwaLMPNH2
+         1GHiSxq16Y6E+1lrbJz3X9mz+FpbgRqEcLDEogmb2EDv2MTb/AE5D/mZDTl0JXVsCW1C
+         0DfSSbJT8CKgXcoED0TKzmQwrFZkMC3jE3uJo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1753893113; x=1754497913;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fDliXGKvlQ/BCMbKD+15lV6uBzdFVhBiyBD3CCNoi+4=;
+        b=I8d9AtaN5s90GFSd4XDrt7wozI5p3xy3f2KqARjpSEgUhjIckVRNGhPYxXyQC6FK4r
+         AznWXe3ZwFThVSYNuoTsK6btWxYn09FWd6NudZXYR5yz3qpMVaMqjvstMXDjdhoXpBsF
+         KROmF2Fx1xomFCmCaVjYPl5CuTWbzWwRaF5QPZ20EUpmR13nrZIbaTPCKbalNyxephhS
+         2yUMn6dPtYi2KwiULHAhGzWewTo1+uSNRladQV5wunQqAzkDw8w3eyM/U6nF9XMKUwcl
+         Xfs6WJdMY0hkKvlkgCVXPra1z9gGGVYyqTXWCnOUodf8iLrsG8+9rgwvPOEYBiQ+bHJ1
+         xsXw==
+X-Forwarded-Encrypted: i=1; AJvYcCXmV84uSxWCK+2YjyVtbP7Ydicca+V2IY9VGfRfbKfA53jkF0jC9gfhtxFYCbHycKbzvIP1qWu9aePE@vger.kernel.org
+X-Gm-Message-State: AOJu0YyZKMNbgq0ZcSRQgeelvpHdR6aOBGAtyZNJ8KgpZXoOXRg1cTTg
+	gd6TvOFrmJCYzVMb+KgkBAnbdRSMGMHh8BlxWLl9a+ZES7mGcxgfSPTztJm6X2nx4l2wfDXay1q
+	5W3Jb1/CU2IJqd/tpbFl4tN1Zn+LHkHthva4Fq4wnpQ==
+X-Gm-Gg: ASbGncsWl28/Ey06r2U4YlQsdfU8NEOCLmOmGY77HZXzwE3nXj9YRVKYqJNPij3Lq5a
+	FT6YlX2HUuvx/mk/komGBtPoDBaoS4w6gCVr8HTJS8y/RXOKsjPtpzaQoWD7tb8FFKggnAogqvX
+	yFGAB91elZYthpAlk4ZF5B2dlgktTTnKbozC9CrzFdBBd616dTcMgdpJKKvOuzIfdWZXffdV9Yd
+	RpxcKeLqp7v3FyDfKI=
+X-Google-Smtp-Source: AGHT+IHlF87yt1sGF4mfsYTjr5DcCQHzlyp/fPJ2KzKKCuhmsciQ+9LBQj0uvlgAApGvkDLV62b8lv92hTjaIZ+oqQI=
+X-Received: by 2002:a05:6512:2116:b0:553:35e6:393b with SMTP id
+ 2adb3069b0e04-55b7c0a8a83mr1006865e87.45.1753893113145; Wed, 30 Jul 2025
+ 09:31:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250729201410.GA4555@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20250729-mlx5_gso_segs-v1-1-b48c480c1c12@openai.com>
+ <195d0388-57ca-4a1a-bc92-65da899443ab@nvidia.com> <CANn89iJo5Fxx4kqhE4S+z4N0BtLW2462Pc6uBB2OvPDpo7-pKw@mail.gmail.com>
+In-Reply-To: <CANn89iJo5Fxx4kqhE4S+z4N0BtLW2462Pc6uBB2OvPDpo7-pKw@mail.gmail.com>
+From: Christoph Paasch <cpaasch@openai.com>
+Date: Wed, 30 Jul 2025 09:31:42 -0700
+X-Gm-Features: Ac12FXzSoEUK9l_mGx6YTVX7yGAZQwi_r3XaSTcdGrTnQqDZo9W7jb3xXlrX0wI
+Message-ID: <CADg4-L-7UWVfWOAFOBjVJ4PXbz06b1riDO3r5d4QpGj+aTVcfw@mail.gmail.com>
+Subject: Re: [PATCH net] net/mlx5: Correctly set gso_segs when LRO is used
+To: Eric Dumazet <edumazet@google.com>
+Cc: Gal Pressman <gal@nvidia.com>, Willem de Bruijn <willemb@google.com>, Bailey Forrest <bcf@google.com>, 
+	Catherine Sullivan <csully@google.com>, Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, 
+	Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Amir Vadai <amirv@mellanox.com>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 29, 2025 at 01:14:10PM -0700, Dipayaan Roy wrote:
-> This patch enhances RX buffer handling in the mana driver by allocating
-> pages from a page pool and slicing them into MTU-sized fragments, rather
-> than dedicating a full page per packet. This approach is especially
-> beneficial on systems with large page sizes like 64KB.
-> 
-> Key improvements:
-> 
-> - Proper integration of page pool for RX buffer allocations.
-> - MTU-sized buffer slicing to improve memory utilization.
-> - Reduce overall per Rx queue memory footprint.
-> - Automatic fallback to full-page buffers when:
->    * Jumbo frames are enabled (MTU > PAGE_SIZE / 2).
->    * The XDP path is active, to avoid complexities with fragment reuse.
-> 
-> Testing on VMs with 64KB pages shows around 200% throughput improvement.
-> Memory efficiency is significantly improved due to reduced wastage in page
-> allocations. Example: We are now able to fit 35 rx buffers in a single 64kb
-> page for MTU size of 1500, instead of 1 rx buffer per page previously.
-> 
-> Tested:
-> 
-> - iperf3, iperf2, and nttcp benchmarks.
-> - Jumbo frames with MTU 9000.
-> - Native XDP programs (XDP_PASS, XDP_DROP, XDP_TX, XDP_REDIRECT) for
->   testing the XDP path in driver.
-> - Memory leak detection (kmemleak).
-> - Driver load/unload, reboot, and stress scenarios.
-> 
-> Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-> 
+On Wed, Jul 30, 2025 at 5:28=E2=80=AFAM Eric Dumazet <edumazet@google.com> =
+wrote:
+>
+> On Wed, Jul 30, 2025 at 4:06=E2=80=AFAM Gal Pressman <gal@nvidia.com> wro=
+te:
+> >
+> > On 29/07/2025 21:34, Christoph Paasch via B4 Relay wrote:
+> > > From: Christoph Paasch <cpaasch@openai.com>
+> > >
+> > > When gso_segs is left at 0, a number of assumptions will end up being
+> > > incorrect throughout the stack.
+> > >
+> > > For example, in the GRO-path, we set NAPI_GRO_CB()->count to gso_segs=
+.
+> > > So, if a non-LRO'ed packet followed by an LRO'ed packet is being
+> > > processed in GRO, the first one will have NAPI_GRO_CB()->count set to=
+ 1 and
+> > > the next one to 0 (in dev_gro_receive()).
+> > > Since commit 531d0d32de3e
+> > > ("net/mlx5: Correctly set gso_size when LRO is used")
+> > > these packets will get merged (as their gso_size now matches).
+> > > So, we end up in gro_complete() with NAPI_GRO_CB()->count =3D=3D 1 an=
+d thus
+> > > don't call inet_gro_complete(). Meaning, checksum-validation in
+> > > tcp_checksum_complete() will fail with a "hw csum failure".
+> > >
+> > > Even before the above mentioned commit, incorrect gso_segs means that=
+ other
+> > > things like TCP's accounting of incoming packets (tp->segs_in,
+> > > data_segs_in, rcv_ooopack) will be incorrect. Which means that if one
+> > > does bytes_received/data_segs_in, the result will be bigger than the
+> > > MTU.
+> > >
+> > > Fix this by initializing gso_segs correctly when LRO is used.
+> > >
+> > > Fixes: e586b3b0baee ("net/mlx5: Ethernet Datapath files")
+> >
+> > Maybe we should put an additional Fixes line for the gso_size patch?
+> > It doesn't directly fix it, but it will clearly emphasize the importanc=
+e
+> > of picking up this patch together with the other one.
+> >
+> > > Reported-by: Gal Pressman <gal@nvidia.com>
+> > > Closes: https://lore.kernel.org/netdev/6583783f-f0fb-4fb1-a415-feec81=
+55bc69@nvidia.com/
+> > > Signed-off-by: Christoph Paasch <cpaasch@openai.com>
+> >
+> > Thanks Christoph,
+> > Reviewed-by: Gal Pressman <gal@nvidia.com>
+>
+> I do not think we need many Fixes: tag.
+>
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
+>
+> If we really want to be precise, the issue also came when GRO got
+> support for GRO packets ;)
+>
+> commit 5eddb24901ee    gro: add support of (hw)gro packets to gro stack
+>
+> This commit really implied that both gso_size and gso_segs had to be
+> set by drivers RX paths.
+>
+> It seems drivers/net/ethernet/google/gve/gve_rx_dqo.c has a similar issue=
+.
+>
+> gve_rx_complete_rsc() sets gso_size but not gso_segs
+>
+> shinfo->gso_size =3D le16_to_cpu(desc->rsc_seg_len);
 
-nit: I'd have put your signed-off-by last,
-     as your're posting it after the Reviewed-by tags were provided
+I see! I can send a fix, but won't have the ability to actually test
+it. So, maybe better if someone else takes this one.
 
-     Also, no blank line between tags please.
-
-> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-> Reviewed-by: Saurabh Sengar <ssengar@linux.microsoft.com>
-> Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-
-...
-
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_bpf.c b/drivers/net/ethernet/microsoft/mana/mana_bpf.c
-> index d30721d4516f..1cf470b25167 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_bpf.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_bpf.c
-> @@ -174,6 +174,8 @@ static int mana_xdp_set(struct net_device *ndev, struct bpf_prog *prog,
->  	struct mana_port_context *apc = netdev_priv(ndev);
->  	struct bpf_prog *old_prog;
->  	struct gdma_context *gc;
-> +	int err = 0;
-> +	bool dealloc_rxbufs_pre = false;
-
-Please arrange local variables in Networking code in reverse xmas tree
-order - longest line to shortest.
-
-Edward Cree's tool can be of assistance in this area:
-https://github.com/ecree-solarflare/xmastree
-
->  
->  	gc = apc->ac->gdma_dev->gdma_context;
->  
-> @@ -198,15 +200,45 @@ static int mana_xdp_set(struct net_device *ndev, struct bpf_prog *prog,
->  	if (old_prog)
->  		bpf_prog_put(old_prog);
->  
-> -	if (apc->port_is_up)
-> +	if (apc->port_is_up) {
-> +		/* Re-create rxq's after xdp prog was loaded or unloaded.
-> +		 * Ex: re create rxq's to switch from full pages to smaller
-> +		 * size page fragments when xdp prog is unloaded and vice-versa.
-> +		 */
-> +
-> +		/* Pre-allocate buffers to prevent failure in mana_attach later */
-
-As is still preferred for Networking code, please line wrap code so that it
-is 80 columns wide or less, where it can be done without reducing
-readability. This is the case for the line above. But not the netdev_err()
-call below.
-
-Flagged by: checkpatch.pl --max-line-length=80
-
-> +		err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
-> +		if (err) {
-> +			netdev_err(ndev,
-> +				   "Insufficient memory for rx buf config change\n");
-
-I believe that any errors in mana_pre_alloc_rxbufs() will
-relate to memory allocation. And that errors will be logged by
-the mm subsustem. So no log is needed here.
-
-But I do wonder if here, and elsewhere, extack should be set on error.
-
-> +			goto out;
-> +		}
-> +		dealloc_rxbufs_pre = true;
-> +
-> +		err = mana_detach(ndev, false);
-> +		if (err) {
-> +			netdev_err(ndev, "mana_detach failed at xdp set: %d\n", err);
-> +			goto out;
-> +		}
-> +
-> +		err = mana_attach(ndev);
-> +		if (err) {
-> +			netdev_err(ndev, "mana_attach failed at xdp set: %d\n", err);
-> +			goto out;
-> +		}
-> +
->  		mana_chn_setxdp(apc, prog);
-> +	}
->  
->  	if (prog)
->  		ndev->max_mtu = MANA_XDP_MTU_MAX;
->  	else
->  		ndev->max_mtu = gc->adapter_mtu - ETH_HLEN;
->  
-> -	return 0;
-> +out:
-> +	if (dealloc_rxbufs_pre)
-> +		mana_pre_dealloc_rxbufs(apc);
-> +	return err;
->  }
-
-It's subjective to be sure, but I would suggest separating the
-error and non-error paths wrt calling mana_pre_dealloc_rxbufs().
-I feel this is an easier flow to parse (is my proposal correct?),
-and more idiomatic.
-
-I'm suggesting something like this incremental change (compile tested only!).
-
-Suggestion #1
-
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_bpf.c b/drivers/net/ethernet/microsoft/mana/mana_bpf.c
-index b6cbe853dc98..bbe64330a3e1 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_bpf.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_bpf.c
-@@ -174,8 +174,7 @@ static int mana_xdp_set(struct net_device *ndev, struct bpf_prog *prog,
- 	struct mana_port_context *apc = netdev_priv(ndev);
- 	struct bpf_prog *old_prog;
- 	struct gdma_context *gc;
--	int err = 0;
--	bool dealloc_rxbufs_pre = false;
-+	int err;
- 
- 	gc = apc->ac->gdma_dev->gdma_context;
- 
-@@ -211,23 +210,23 @@ static int mana_xdp_set(struct net_device *ndev, struct bpf_prog *prog,
- 		if (err) {
- 			netdev_err(ndev,
- 				   "Insufficient memory for rx buf config change\n");
--			goto out;
-+			return err;
- 		}
--		dealloc_rxbufs_pre = true;
- 
- 		err = mana_detach(ndev, false);
- 		if (err) {
- 			netdev_err(ndev, "mana_detach failed at xdp set: %d\n", err);
--			goto out;
-+			goto err_dealloc_rxbuffs;
- 		}
- 
- 		err = mana_attach(ndev);
- 		if (err) {
- 			netdev_err(ndev, "mana_attach failed at xdp set: %d\n", err);
--			goto out;
-+			goto err_dealloc_rxbuffs;
- 		}
- 
- 		mana_chn_setxdp(apc, prog);
-+		mana_pre_dealloc_rxbufs(apc);
- 	}
- 
- 	if (prog)
-@@ -235,9 +234,10 @@ static int mana_xdp_set(struct net_device *ndev, struct bpf_prog *prog,
- 	else
- 		ndev->max_mtu = gc->adapter_mtu - ETH_HLEN;
- 
--out:
--	if (dealloc_rxbufs_pre)
--		mana_pre_dealloc_rxbufs(apc);
-+	return 0;
-+
-+err_dealloc_rxbuffs:
-+	mana_pre_dealloc_rxbufs(apc);
- 	return err;
- }
-
-Suggestion #2
-
-Looking at the scope of the mana_pre_alloc_rxbufs() allocation,
-it seems to me that it would be nicer to move the rxq recreation
-to a separate function.
-
-Something like this (also compile tested only):
-
-/* Re-create rxq's after xdp prog was loaded or unloaded.
- * Ex: re create rxq's to switch from full pages to smaller size page
- * fragments when xdp prog is unloaded and vice-versa.
- */
-static int mana_recreate_rxqs(struct net_device *ndev, struct bpf_prog *prog)
-{
-	struct mana_port_context *apc = netdev_priv(ndev);
-	int err;
-
-	if (!apc->port_is_up)
-		return 0;
-
-	/* Pre-allocate buffers to prevent failure in mana_attach later */
-	err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
-	if (err) {
-		netdev_err(ndev,
-			   "Insufficient memory for rx buf config change\n");
-		return err;
-	}
-
-	err = mana_detach(ndev, false);
-	if (err) {
-		netdev_err(ndev, "mana_detach failed at xdp set: %d\n", err);
-		goto err_dealloc_rxbuffs;
-	}
-
-	err = mana_attach(ndev);
-	if (err) {
-		netdev_err(ndev, "mana_attach failed at xdp set: %d\n", err);
-		goto err_dealloc_rxbuffs;
-	}
-
-	mana_chn_setxdp(apc, prog);
-	mana_pre_dealloc_rxbufs(apc);
-
-	return 0;
-
-err_dealloc_rxbuffs:
-	mana_pre_dealloc_rxbufs(apc);
-	return err;
-}
-
-Note, I still think some thought should be given to setting extack on
-error.  But I didn't address that in my suggestions above.
-
-
-On process, this appears to be an enhancement targeted at net-next.
-It would be best to set the target tree in the subject, like this:
-
-	Subject [PATCH net-next v4] ...
-
-And if so, net-next is currently closed for the merge-window.
-
-## Form letter - net-next-closed
-
-The merge window for v6.17 has begun and therefore net-next is closed
-for new drivers, features, code refactoring and optimizations. We are
-currently accepting bug fixes only.
-
-Please repost when net-next reopens after 11th August.
-
-RFC patches sent for review only are obviously welcome at any time.
-
-See: https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#development-cycle
-
--- 
-pw-bot: defer
+Christoph
 
