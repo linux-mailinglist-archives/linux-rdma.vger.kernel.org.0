@@ -1,208 +1,147 @@
-Return-Path: <linux-rdma+bounces-12563-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12564-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAC24B17E11
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 Aug 2025 10:13:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECE7BB185E9
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 Aug 2025 18:41:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3338AA80214
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 Aug 2025 08:13:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6D463A4EE3
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 Aug 2025 16:41:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA5E420C01C;
-	Fri,  1 Aug 2025 08:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B2CD19F121;
+	Fri,  1 Aug 2025 16:41:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qHxSWG4l";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SIuZh/k4";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qHxSWG4l";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SIuZh/k4"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="UPzVD96y"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D8EB20B1F4
-	for <linux-rdma@vger.kernel.org>; Fri,  1 Aug 2025 08:12:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CBE41E50E
+	for <linux-rdma@vger.kernel.org>; Fri,  1 Aug 2025 16:41:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754035981; cv=none; b=gU2SKIrPA0en5l5J1TadZkiWSD+CpMXjg681IrYPxHzm3xC3aPR3GnJpKGr97QchT44CXPAiAkOV9jrLbGbleDVcMtVUcfX5QWp+IpGjSeetj5oFWjEEtJlHkMIHmsYL6UL735oIYIXYlaPChnrt4EcGMhTfxRGfY3TMb8IsYrA=
+	t=1754066463; cv=none; b=Yzjon7uFLk7cFCmMJkkQuySqUyFSBGbMuLiIuEOIU6FvOItBMgqwJ3f7t5WDxYqaakVC9+0AlRkvWvcmmFfx3RiDIGpgktaFJQV1U0jMV43qWq6xj9bdqX3DO/U+6Bu3KQ25xNj1p1PAdwiywReKqC/B1wocPimnsa4cDDI2in0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754035981; c=relaxed/simple;
-	bh=pIVjqoAd2uYaOFfmj/QvgxbUeeXomGCtAIHSoZdTd7c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MEbu5sRQARdwE3gfhW+Hlt3lkM3QBcQZ55D5t+Wjwun4wlYT0nPbwTO2SLKCFKeQm1wdZsbR1Q07rFYcyvR96QzB/cAlHtiVEyIcZCEPrMZJUic3MTFNgo8O7Cw7F3u0RZqxiYs1/23Vfr2pBdZLYKtTTY1N7EVWID8C1PIR0xo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qHxSWG4l; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SIuZh/k4; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qHxSWG4l; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SIuZh/k4; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5B46A21A77;
-	Fri,  1 Aug 2025 08:12:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1754035978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=UwIzklYubVz/GvYPz2IwlXbYM1AY7MxAqx56MYh3lpk=;
-	b=qHxSWG4lVOhtunEgOG+lOXQhDj90+bIIRUIJ/gvA1/vZlxCPPciEI2T89crwxCAySoWrf4
-	03l4pqtkcXHzgsdfj34DNb2L/kMoOCxi7m7xLB1zV2cac/GudccoLJEvzaweKE8Ob4+iOO
-	sMfqOcPz9cQ1e+YGvvBf7FPyDfA05Ho=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1754035978;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=UwIzklYubVz/GvYPz2IwlXbYM1AY7MxAqx56MYh3lpk=;
-	b=SIuZh/k48X1aZC5n/Ywqt5RKbUXPKbevte5ioyqkuYQZz/9f0mk4rkZ8wZ1ZQf5YUITEMd
-	n6DHA2Tfgn/wNjCA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1754035978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=UwIzklYubVz/GvYPz2IwlXbYM1AY7MxAqx56MYh3lpk=;
-	b=qHxSWG4lVOhtunEgOG+lOXQhDj90+bIIRUIJ/gvA1/vZlxCPPciEI2T89crwxCAySoWrf4
-	03l4pqtkcXHzgsdfj34DNb2L/kMoOCxi7m7xLB1zV2cac/GudccoLJEvzaweKE8Ob4+iOO
-	sMfqOcPz9cQ1e+YGvvBf7FPyDfA05Ho=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1754035978;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=UwIzklYubVz/GvYPz2IwlXbYM1AY7MxAqx56MYh3lpk=;
-	b=SIuZh/k48X1aZC5n/Ywqt5RKbUXPKbevte5ioyqkuYQZz/9f0mk4rkZ8wZ1ZQf5YUITEMd
-	n6DHA2Tfgn/wNjCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2B5E5138A5;
-	Fri,  1 Aug 2025 08:12:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id NX07Cgp3jGgoIgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 01 Aug 2025 08:12:58 +0000
-Message-ID: <f37ec25e-70b1-4f24-9d18-d869576aa7eb@suse.cz>
-Date: Fri, 1 Aug 2025 10:12:57 +0200
+	s=arc-20240116; t=1754066463; c=relaxed/simple;
+	bh=B0ddBwnOmQZLVOzE3sU/BJSF1dO9mMLzFrijfMzZ/2w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YuT/PHB/QBkIetNlqNjOSTis1urG4uosY7WAC0JItwWsPiwGQCSqwwZd58aWsAV5FP8STBk6/mrmKW2vAHSqIb7hWmqx+16gHb/N79Y1VkEsxvoFYEI/rawsJ54BQIvPBdaSoXnV+SJnHvp0T0KsCUHjInMLy7Cp+TLqXB6RaPI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=UPzVD96y; arc=none smtp.client-ip=209.85.219.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-7076eaa5febso4883656d6.2
+        for <linux-rdma@vger.kernel.org>; Fri, 01 Aug 2025 09:41:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1754066460; x=1754671260; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=B0ddBwnOmQZLVOzE3sU/BJSF1dO9mMLzFrijfMzZ/2w=;
+        b=UPzVD96yMxeJOyx7VW2u7Yft/7Nth5wFR7zXP16u6Nir5Kwhn7PtQ6D12wfAsn1piZ
+         Lbn2c4eMc9NPcZT/l13ROISmpjCcOPfga+IbEqZ3ndrZW8nJ83nYGiwBcNbVvgCGBl/z
+         OO4QCigleC6JrIyVFx5y5qKUfdFy9TRLJcHCiNvn/iTDT+MLx+HmsjK+YdcdJsu44m8n
+         BslmkMqqr+hIJFuDjgw4pzBnsmnlMxbpBJuXI87LFsmWq12jJYDc/vjFb8duVPuxV+Rs
+         /ZaPpD82SXqVVAJwx5rgLCSY/VV9DCj+Na9znQ/So4j6kD6IMH+fjGex5lkRvQjU25sG
+         Kdlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754066460; x=1754671260;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B0ddBwnOmQZLVOzE3sU/BJSF1dO9mMLzFrijfMzZ/2w=;
+        b=HBmnU1FebSaGSBB6NZZ4SVoOCchwkcD+DBJvUgKFlYY19nXwNX7c0aJYIKsmTtCLH1
+         fqWo/KZFpgjMRHqFlgKhwOcc038sRHZBnaqqii+WBhPBO5gLWOVGaHOycfVeVNr7CjJ9
+         mw6B5fwKPYDlPWlc+phAdzziM+iXmR3zzkpwSWWruoLApbujalOzcXoywkWytWc/dnwO
+         eaN7VpEWHttqm42WZunDpLyrCYYL4ORS0R/OECcUNH7vJVFNdk4oYtX28bGttUgnPDaG
+         gQpEY8qMTV80d0Y5Anb/RfVhGDKDOG0liPFRnLNWCT8kVTkjmWDx3vbnBnwfEIAdCjr7
+         Xejg==
+X-Forwarded-Encrypted: i=1; AJvYcCUZ0aGL78pRZDlcYM+1zm+O13lpxCUqqnbepxGqEunv7GZYQzy7BbtmLUz5ZuMzL3sWk5PrSeIKgnYU@vger.kernel.org
+X-Gm-Message-State: AOJu0YzIY2zU3TfsXlpEyek/TALoMQxzjj2RxkIA2Ib5HdYe4B6NS7ck
+	fz7mYZjV1rkCqCPvc8AVqVgohnnqgQWGYCa4Ylnv8cg9Dmui5bMxXuRivfdEBoBYIKA=
+X-Gm-Gg: ASbGncudzvqH4FgcA6Xk33gi/dOjADl+XPtFY3DM7nCR+muRps8UhcX6WPZ6eMA5k2k
+	w2TknQru6iEnrWjAZWXtUwkvRf9LnjhV39Xaq6lIE5jVnmIH2ilP78rTnPRWrnMac4RUpGhBWPO
+	1I0gmFzV9oZGUgBrwvhYz+ZFcxftNNbjbwFhgr7BrXDRz4eIZ9e12/wj8goWNxWtrVa4rnl4014
+	5kC63uNTPnB0onHwT7tw3RJKG/+UO2kPUWPCHm06+7RBLraof4JkKoi1VrvsonxaWiw3lfcQCoH
+	NMQocOH2g4N3i8MuOLCT0JlDC98N/wfwtglUyiAU9Dpv+ekFEi/O5ej3yvjVQAqYrsrs+odzPCi
+	DUXYgEg6fr+IDtxlJVeJPBtupUKBryEsCORrcTqqwgNtrIqcDRuJVMpE3mwVTiU+SXwaN
+X-Google-Smtp-Source: AGHT+IEy3UJJEisaAsFYVle9oO+qAAIDl2Jx71tj+7ZpM48o/4SMC51lEI3qAmHkBEbK3gRlxWE1yw==
+X-Received: by 2002:a05:6214:623:b0:707:641e:e4bb with SMTP id 6a1803df08f44-70935f66fcemr4291156d6.17.1754066460081;
+        Fri, 01 Aug 2025 09:41:00 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-120-4.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.120.4])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-7077ca5c23csm23275996d6.40.2025.08.01.09.40.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Aug 2025 09:40:59 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1uhsoU-00000001379-3cXq;
+	Fri, 01 Aug 2025 13:40:58 -0300
+Date: Fri, 1 Aug 2025 13:40:58 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Yonatan Maman <ymaman@nvidia.com>,
+	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Leon Romanovsky <leon@kernel.org>, Lyude Paul <lyude@redhat.com>,
+	Danilo Krummrich <dakr@kernel.org>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Ben Skeggs <bskeggs@nvidia.com>,
+	Michael Guralnik <michaelgur@nvidia.com>,
+	Or Har-Toov <ohartoov@nvidia.com>,
+	Daisuke Matsuda <dskmtsd@gmail.com>, Shay Drory <shayd@nvidia.com>,
+	linux-mm@kvack.org, linux-rdma@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org, Gal Shalom <GalShalom@nvidia.com>
+Subject: Re: [PATCH v2 1/5] mm/hmm: HMM API to enable P2P DMA for device
+ private pages
+Message-ID: <20250801164058.GD26511@ziepe.ca>
+References: <20250718115112.3881129-1-ymaman@nvidia.com>
+ <20250718115112.3881129-2-ymaman@nvidia.com>
+ <aHpXXKTaqp8FUhmq@casper.infradead.org>
+ <20250718144442.GG2206214@ziepe.ca>
+ <aH4_QaNtIJMrPqOw@casper.infradead.org>
+ <7lvduvov3rvfsgixbkyyinnzz3plpp3szxam46ccgjmh6v5d7q@zoz4k723vs3d>
+ <aIBcTpC9Te7YIe4J@ziepe.ca>
+ <cn7hcxskr5prkc3jnd4vzzeau5weevzumcspzfayeiwdexkkfe@ovvgraqo7svh>
+ <a3f1af02-ef3f-40f8-be79-4c3929a59bb7@redhat.com>
+ <i5ya3n7bhhufpczprtp2ndg7bxtykoyjtsfae6dfdqk2rfz6ix@nzwnhqfwh6rq>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] RDMA/siw: Fix the sendmsg byte count in
- siw_tcp_sendpages
-Content-Language: en-US
-To: Bernard Metzler <bernard.metzler@linux.dev>,
- Pedro Falcato <pfalcato@suse.de>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- Jakub Kicinski <kuba@kernel.org>, David Howells <dhowells@redhat.com>,
- Tom Talpey <tom@talpey.com>, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- torvalds@linux-foundation.org, stable@vger.kernel.org,
- kernel test robot <oliver.sang@intel.com>
-References: <20250729120348.495568-1-pfalcato@suse.de>
- <8fad6c00-9c15-4315-a8c5-b8eac4281757@linux.dev>
- <x43xlqzuher54k3j4iwkos36jz5qkhtgxw4zh52j5cz6l2spzw@yips5h4liqbi>
- <631a1251-5bbc-484d-9bd9-167c5e7cb69f@linux.dev>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <631a1251-5bbc-484d-9bd9-167c5e7cb69f@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Flag: NO
-X-Spam-Level: 
-X-Spam-Score: -4.30
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <i5ya3n7bhhufpczprtp2ndg7bxtykoyjtsfae6dfdqk2rfz6ix@nzwnhqfwh6rq>
 
-On 7/31/25 22:19, Bernard Metzler wrote:
-> On 30.07.2025 11:26, Pedro Falcato wrote:
->> On Tue, Jul 29, 2025 at 08:53:02PM +0200, Bernard Metzler wrote:
->>> On 29.07.2025 14:03, Pedro Falcato wrote:
->> Thanks!
->>
->> Do you want to take the fix through your tree? Otherwise I suspect Vlastimil
->> could simply take it (and possibly resubmit the SLAB PR, which hasn't been
->> merged yet).
->>
-> Thanks Pedro. Having Vlastimil taking care sounds good to me.
-> 
-> I am currently without development infrastructure (small village
-> 
-> in the mountains thing). And fixing the SLAB PR in the
-> 
-> first place would be even better.
+On Fri, Jul 25, 2025 at 10:31:25AM +1000, Alistair Popple wrote:
 
-The SLAB PR was meanwhile merged and Jason said he would take care of
-sending a PR with the fix:
-https://lore.kernel.org/all/20250730184724.GC89283@nvidia.com/
+> The only issue would be if there were generic code paths that somehow have a
+> raw pfn obtained from neither a page-table walk or struct page. My assumption
+> (yet to be proven/tested) is that these paths don't exist.
 
-> Best,
-> 
-> Bernard.
-> 
+hmm does it, it encodes the device private into a pfn and expects the
+caller to do pfn to page.
 
+This isn't set in stone and could be changed..
+
+But broadly, you'd want to entirely eliminate the ability to go from
+pfn to device private or from device private to pfn.
+
+Instead you'd want to work on some (space #, space index) tuple, maybe
+encoded in a pfn_t, but absolutely and typesafely distinct. Each
+driver gets its own 0 based space for device private information, the
+space is effectively the pgmap.
+
+And if you do this, maybe we don't need struct page (I mean the type!)
+backing device memory at all.... Which would be a very worthwhile
+project.
+
+Do we ever even use anything in the device private struct page? Do we
+refcount it?
+
+Jason
 
