@@ -1,83 +1,83 @@
-Return-Path: <linux-rdma+bounces-12570-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12571-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE78CB18810
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 Aug 2025 22:21:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17B15B18816
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 Aug 2025 22:23:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3839F1C279DC
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 Aug 2025 20:21:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4F386236E3
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 Aug 2025 20:23:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA23C21638A;
-	Fri,  1 Aug 2025 20:21:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 892CF21ADA2;
+	Fri,  1 Aug 2025 20:23:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cpZ4t0bE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="epPK9Djq"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67BC6128395;
-	Fri,  1 Aug 2025 20:21:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 425B0128395;
+	Fri,  1 Aug 2025 20:23:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754079690; cv=none; b=rEi5llXauueViTiJh+YqdzTU7Ctny0uJhJlZxnvdeGsaGW+o1OrV8z9H6P2Usz68A30qyebg8TZJOB6wili2mu0DnYB/Kn1nWR1dZ5eYHZ5yW6k23L9jKtEy7M2Fvxk7Lx0r7FrdeMPEbgmhWbZ0D5c831ODD97KPgTAZBiSRd0=
+	t=1754079824; cv=none; b=qHnEN3CjsSpGM8SBQhbdTBumTFazhDQ2WA5uUkVidpbpwZ6ZKi9e2CYnGKFYJt9xYq2rzQjib6h2GDOlpXJ1423JUgucFLvTRbSodr0Z87pMLCpTYVuxZoOy8jaBRODezh/oCueUdCftIuzCtb1RRs9A+SJqQt02KH7TJeZ7y4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754079690; c=relaxed/simple;
-	bh=uzfXcqaKzSAMPF8WTrZ+l7HXSGL+mUzNDECjAPvknK0=;
+	s=arc-20240116; t=1754079824; c=relaxed/simple;
+	bh=fthQXt9de8h8yk9ZNeBmjvQawcLsRN2+7oIi0y/MFLU=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lnphRB4bGMOvISU8F3QLSr7taSVn22cNhhUbx3gW164z591Vdgr7PhBbuuYXmEtO5G5ZABLmIXA9oJLQohnk2I764Lt5R1gXTFmVkk9ifdAUTgzWDUznsIxWxjqa4t35RDjv4+0J0d8Kd4Cv8mAtfnhysflZVwoK1ioDQQDEgWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cpZ4t0bE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BB68C4CEE7;
-	Fri,  1 Aug 2025 20:21:29 +0000 (UTC)
+	 MIME-Version:Content-Type; b=poXyyCwjyJtie1otEpDxRKD3bWR65LBZzIZc/DVaOMVMScd1RNRzwQ65PURBMu50JnbEA+04hGpxOc6HA6lJVjDdOmoacDR9Lzyp4c+FOEDmoXwGp4mGPQAxVbYIU7sNy4jobooZ1MEjorympcBrWsGUQ8DAJPml6pTYl5WSmOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=epPK9Djq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52C50C4CEE7;
+	Fri,  1 Aug 2025 20:23:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754079689;
-	bh=uzfXcqaKzSAMPF8WTrZ+l7HXSGL+mUzNDECjAPvknK0=;
+	s=k20201202; t=1754079823;
+	bh=fthQXt9de8h8yk9ZNeBmjvQawcLsRN2+7oIi0y/MFLU=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=cpZ4t0bEhU7dtMgA1StfRnVbji8n51H7lwTh6EpSjrXISkFYz7WQDVP+ABjsu+5Wi
-	 b1fBw+bxFJmTHDTdXA90kzgafiNoooApEM788Eh+rhlmXpMYu/KrVG4x/XXzVO0dm6
-	 mJLVPfl6rHsTEFU7QAxWlONEAHsCpplrVRT5WZLu+GdCZ9oCEISlOIHURAo2Z2Q1zh
-	 Y+61vJtHlCBw7rhkyhiug4Yyhm5FrK0lPaRQUSuXMdNIJhiLwE0JlojXRtJOwz+MT0
-	 2xAT3/4UxbKp8tcuc/w4ITLFWzDsxX6PQX7cpinGJIMYOvKCqJOTgNeoKrJDoxNG3w
-	 pCkNcABS+dibg==
-Date: Fri, 1 Aug 2025 13:21:28 -0700
+	b=epPK9DjqPFPZwUy7ZfxPxj1AefCIJotbQdbjwGdKwB8rR65nFG/3+cTBFsfCXtfwm
+	 afyW+OGvVwMBA3F0dgz8acatyXck35cURqwgIYLo18EqjvwCAMPR0ce+gfRFu02aCV
+	 5FirFRi5qIT34G0l/Wj/CELNJMuxNANtaHW4m10ETKqxbH5RYIW15dezK+DEooG5Pp
+	 S3xPY6HSLxV6fqpjKOh0CsTtgRmcbLVSaie88gigNxAGfflmrpSDJPn4vWXd9o2/ub
+	 vQRidU1k/4rTnjxaqiWL5Qyr7ipYLML0p9GoMgPKpfwCK01wPVb4sZZXaHQOxgTjPX
+	 2Ai+ZRth0KozA==
+Date: Fri, 1 Aug 2025 13:23:42 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Simon Horman <horms@kernel.org>, Abhijit Gangurde
- <abhijit.gangurde@amd.com>, shannon.nelson@amd.com, brett.creeley@amd.com,
- davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
- corbet@lwn.net, leon@kernel.org, andrew+netdev@lunn.ch,
- allen.hubbe@amd.com, nikhil.agarwal@amd.com, linux-rdma@vger.kernel.org,
- netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+To: Carolina Jubran <cjubran@nvidia.com>
+Cc: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Saeed Mahameed
+ <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Mark Bloch
+ <mbloch@nvidia.com>, Richard Cochran <richardcochran@gmail.com>,
+ netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 03/14] net: ionic: Export the APIs from net driver to
- support device commands
-Message-ID: <20250801132128.69940aab@kernel.org>
-In-Reply-To: <20250801170014.GG26511@ziepe.ca>
-References: <20250723173149.2568776-1-abhijit.gangurde@amd.com>
-	<20250723173149.2568776-4-abhijit.gangurde@amd.com>
-	<20250725164106.GI1367887@horms.kernel.org>
-	<20250801170014.GG26511@ziepe.ca>
+Subject: Re: [PATCH net-next 0/3] Support exposing raw cycle counters in PTP
+ and mlx5
+Message-ID: <20250801132342.6ad4303b@kernel.org>
+In-Reply-To: <c52004ea-16dd-4131-b58a-4a7f7c6be758@nvidia.com>
+References: <1752556533-39218-1-git-send-email-tariqt@nvidia.com>
+	<20250721170916.490ce57e@kernel.org>
+	<0c1cea33-6676-4590-8c7c-9fe1a3d88f0b@nvidia.com>
+	<20250729154012.5d540144@kernel.org>
+	<c52004ea-16dd-4131-b58a-4a7f7c6be758@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 1 Aug 2025 14:00:14 -0300 Jason Gunthorpe wrote:
-> > Perhaps I misunderstand things, or otherwise am on the wrong track here.
-> > But this seems to open the possibility of users of ionic_adminq_post_wait(),
-> > outside the Ethernet driver, executing a wide range or admin commands.
-> > It seems to me that it would be nice to narrow that surface.  
-> 
-> The kernel is monolithic, it is not normal to spend performance
-> aggressively policing APIs.
-> 
-> mlx5 and other drivers already have interfaces almost exactly like this.
+On Thu, 31 Jul 2025 22:03:02 +0300 Carolina Jubran wrote:
+> Additionally, I wanted to mention another relevant use case that wasn=E2=
+=80=99t=20
+> brought up earlier: fwctl can expose event records tagged with raw cycle=
+=20
+> counter timestamps. When the device is in free-running mode, correlating=
+=20
+> those with host time becomes difficult unless user space has access to=20
+> both cycle and system time snapshots.
 
-Which is not to say that it's a good idea.
+Okay, so DPDK and DOCA, got it.
 
