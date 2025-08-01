@@ -1,190 +1,102 @@
-Return-Path: <linux-rdma+bounces-12572-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12573-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAEC5B1889C
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 Aug 2025 23:16:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78CE1B188E1
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 Aug 2025 23:40:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 140007AE46B
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 Aug 2025 21:15:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 167031C83656
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 Aug 2025 21:40:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 380CA28E574;
-	Fri,  1 Aug 2025 21:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAFBD28DB78;
+	Fri,  1 Aug 2025 21:39:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="D7ROtqjC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MWCDkr5y"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.smtpout.orange.fr (smtp-75.smtpout.orange.fr [80.12.242.75])
-	(using TLSv1.2 with cipher AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0AF41F9F70;
-	Fri,  1 Aug 2025 21:16:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.75
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87D66220680;
+	Fri,  1 Aug 2025 21:39:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754083005; cv=none; b=TLIjCb/ZlwFqpEcfGzdGWDBAdIqNpiYGvAEbbaO40fQyWm3lfi/5MvH6kVcGu0jhXLmvWl6PL3Vbva1kEbieS73/9Vv2sgh+Uz5oQLxj0hyJt1UX18+UPykEseeivpF3yZWzrnbIQH8XoOY1z8IHdUvzx29YDoToGlwgroM+Id8=
+	t=1754084395; cv=none; b=jqd4Qpnpkc/JihH2TL+0iFVMpidGE7Jct96nxeyf5GFKygSRTCfztLna5oOTN+Z/NZniylgQhgCDXToT14GHBveZ89y7CpIUU3KXGKiZjIAy4lr8En3TpDl54TO70Gn5WQUK1Z79aN0dOQ9II3MxpQpo6jI23FiruT3z0JTqw8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754083005; c=relaxed/simple;
-	bh=cB8E+IiK84/sjDNniJugMqXQ0plFEnucL0t11Qs/fJA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fKecGtutZp9gOHgWC7+hB9YZH3Re20T02lqJtajq2xu51vYdL95DtVvzZO2ExKv8/Ma+sCQz0i60dEhFggp61sR87THGPDuGZ8JQgn3MLsytQ3zWEi+3JxMW+NKHj+rM0BT1JWm+23o+6yGN+9pSXbzf88WzGz0ZtRsqOptT9kc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=D7ROtqjC; arc=none smtp.client-ip=80.12.242.75
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [IPV6:2a01:cb10:785:b00:8347:f260:7456:7662]
- ([IPv6:2a01:cb10:785:b00:8347:f260:7456:7662])
-	by smtp.orange.fr with ESMTPA
-	id hx64urnIfWKZshx64udVBe; Fri, 01 Aug 2025 23:15:28 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1754082928;
-	bh=zf9gB3Bkl61hWd65WII9gJiaVB7imIErkHdmeSTRZuU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=D7ROtqjCjaehqV0nh9oaauk9Uml9trRFXrv6mKTS9Gfjx8j92DlmWeFG73YoocCpH
-	 YUtNz9dfMS6WL3abzCAvbWq8ljin8p06B9/e+v+H3gdgVPkZzDRuOyZOo6jZECKFb1
-	 LEfuVzeILvzwvifwX5AsJEWxBEaYyEPMkxQ7+CfhnSTeS4nNkr3aPei3Rnd/u8QH2Y
-	 NjuKVWA5R33RgKkgs0/ZQjY14dNXCwUf8b4SvoE7r/ldx1Jykal/1RCTYZ6k6ah/jD
-	 DYyD6Y+rX9RXoHmVCd8UFHCyRwfohP29NAp1DRHS6Uiov6iL6hW9SI4NEbwWiVYuQX
-	 VZ6y/r77kE/Mw==
-X-ME-Helo: [IPV6:2a01:cb10:785:b00:8347:f260:7456:7662]
-X-ME-Auth: bWFyaW9uLmphaWxsZXRAd2FuYWRvby5mcg==
-X-ME-Date: Fri, 01 Aug 2025 23:15:28 +0200
-X-ME-IP: 2a01:cb10:785:b00:8347:f260:7456:7662
-Message-ID: <7044823e-c263-4789-b83c-ecb1eccde04f@wanadoo.fr>
-Date: Fri, 1 Aug 2025 23:15:24 +0200
+	s=arc-20240116; t=1754084395; c=relaxed/simple;
+	bh=gU6AkxBeU6Ey08y46Gg6l6o4z/dGQiCsh8KIZLUBQds=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=gB3stLZ25eCSCozpYZv7oWZczilbfAeVACPmJZoj56MUwzCXJfEXOd9T+bn0wtHIXy6eFGpkMpPa/1D3saH7S4J/VaZ/He9WjEBfYEiC/Ku1GYnyDrctGpyEYx5kB6PJyeny5vhqsb6XGx+xw31isS+PUqHnK34BKeVpqQ4Bk/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MWCDkr5y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9F37C4CEE7;
+	Fri,  1 Aug 2025 21:39:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754084395;
+	bh=gU6AkxBeU6Ey08y46Gg6l6o4z/dGQiCsh8KIZLUBQds=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=MWCDkr5y4F8PAd1KfeK7b9DZULmjJ4jdLQjue0sRs+1AaI40WAA45hmjVYbRuVHZ8
+	 bTKwF5DaUevPQ9G52y5CGAfh4Q1DgFR/1YiraRZievXHiq8TYftgmajzVlAawzJX/P
+	 HKM9A3XvnO/LZ4mt7TpRScFfmRxG/rwGebBxk8ywjwzAOkP0DfaydErJ0qltdl6zWo
+	 fu8n0ih9sliGO1tNGg2RBhNuH1Q4Ejsv+mtSAC1aF5C0+K4VkzhzqzKpqINO37V4zH
+	 oVCZ8z9pGg6kR+UtFvcMabywZHB7bZx6DM+1gdUM0NYxSeg17XbLSPykWs1z04O0gk
+	 IRKd/Q32+4RLA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70EDE383BF56;
+	Fri,  1 Aug 2025 21:40:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 01/14] net: ionic: Create an auxiliary device for rdma
- driver
-To: Abhijit Gangurde <abhijit.gangurde@amd.com>, shannon.nelson@amd.com,
- brett.creeley@amd.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, corbet@lwn.net, jgg@ziepe.ca,
- leon@kernel.org, andrew+netdev@lunn.ch
-Cc: allen.hubbe@amd.com, nikhil.agarwal@amd.com, linux-rdma@vger.kernel.org,
- netdev@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250723173149.2568776-1-abhijit.gangurde@amd.com>
- <20250723173149.2568776-2-abhijit.gangurde@amd.com>
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Content-Language: en-US, fr-FR
-In-Reply-To: <20250723173149.2568776-2-abhijit.gangurde@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net/mlx5: Correctly set gso_segs when LRO is used
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175408441027.4089984.2960748466316299557.git-patchwork-notify@kernel.org>
+Date: Fri, 01 Aug 2025 21:40:10 +0000
+References: <20250729-mlx5_gso_segs-v1-1-b48c480c1c12@openai.com>
+In-Reply-To: <20250729-mlx5_gso_segs-v1-1-b48c480c1c12@openai.com>
+To: Christoph Paasch <cpaasch@openai.com>
+Cc: saeedm@nvidia.com, tariqt@nvidia.com, mbloch@nvidia.com, leon@kernel.org,
+ andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, amirv@mellanox.com,
+ netdev@vger.kernel.org, linux-rdma@vger.kernel.org, gal@nvidia.com
 
-Le 23/07/2025 à 19:31, Abhijit Gangurde a écrit :
-> To support RDMA capable ethernet device, create an auxiliary device in
-> the ionic Ethernet driver. The RDMA device is modeled as an auxiliary
-> device to the Ethernet device.
+Hello:
 
-...
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-> +static DEFINE_IDA(aux_ida);
-> +
-> +static void ionic_auxbus_release(struct device *dev)
-> +{
-> +	struct ionic_aux_dev *ionic_adev;
-> +
-> +	ionic_adev = container_of(dev, struct ionic_aux_dev, adev.dev);
-> +	kfree(ionic_adev);
-> +}
-> +
-> +int ionic_auxbus_register(struct ionic_lif *lif)
+On Tue, 29 Jul 2025 11:34:00 -0700 you wrote:
+> From: Christoph Paasch <cpaasch@openai.com>
+> 
+> When gso_segs is left at 0, a number of assumptions will end up being
+> incorrect throughout the stack.
+> 
+> For example, in the GRO-path, we set NAPI_GRO_CB()->count to gso_segs.
+> So, if a non-LRO'ed packet followed by an LRO'ed packet is being
+> processed in GRO, the first one will have NAPI_GRO_CB()->count set to 1 and
+> the next one to 0 (in dev_gro_receive()).
+> Since commit 531d0d32de3e
+> ("net/mlx5: Correctly set gso_size when LRO is used")
+> these packets will get merged (as their gso_size now matches).
+> So, we end up in gro_complete() with NAPI_GRO_CB()->count == 1 and thus
+> don't call inet_gro_complete(). Meaning, checksum-validation in
+> tcp_checksum_complete() will fail with a "hw csum failure".
+> 
+> [...]
 
-The 2 places that uses thus function don't check its error code.
+Here is the summary with links:
+  - [net] net/mlx5: Correctly set gso_segs when LRO is used
+    https://git.kernel.org/netdev/net/c/77bf1c55b2ac
 
-> +{
-> +	struct ionic_aux_dev *ionic_adev;
-> +	struct auxiliary_device *aux_dev;
-> +	int err, id;
-> +
-> +	if (!(le64_to_cpu(lif->ionic->ident.lif.capabilities) & IONIC_LIF_CAP_RDMA))
-> +		return 0;
-> +
-> +	ionic_adev = kzalloc(sizeof(*ionic_adev), GFP_KERNEL);
-> +	if (!ionic_adev)
-> +		return -ENOMEM;
-> +
-> +	aux_dev = &ionic_adev->adev;
-> +
-> +	id = ida_alloc_range(&aux_ida, 0, INT_MAX, GFP_KERNEL);
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Nitpick: why not just: ida_alloc(&aux_ida, GFP_KERNEL);
 
-> +	if (id < 0) {
-> +		dev_err(lif->ionic->dev, "Failed to allocate aux id: %d\n",
-> +			id);
-> +		err = id;
-> +		goto err_adev_free;
-> +	}
-> +
-> +	aux_dev->id = id;
-> +	aux_dev->name = "rdma";
-> +	aux_dev->dev.parent = &lif->ionic->pdev->dev;
-> +	aux_dev->dev.release = ionic_auxbus_release;
-> +	ionic_adev->lif = lif;
-> +	err = auxiliary_device_init(aux_dev);
-> +	if (err) {
-> +		dev_err(lif->ionic->dev, "Failed to initialize %s aux device: %d\n",
-> +			aux_dev->name, err);
-> +		goto err_ida_free;
-> +	}
-> +
-> +	err = auxiliary_device_add(aux_dev);
-> +	if (err) {
-> +		dev_err(lif->ionic->dev, "Failed to add %s aux device: %d\n",
-> +			aux_dev->name, err);
-> +		goto err_aux_uninit;
-> +	}
-> +
-> +	lif->ionic_adev = ionic_adev;
-> +
-> +	return 0;
-> +
-> +err_aux_uninit:
-> +	auxiliary_device_uninit(aux_dev);
-
-I think a return err; is missing here, because, IMOH, 
-auxiliary_device_uninit() will call put_device() that will trigger 
-ionic_auxbus_release(). So kfree(ionic_adev) would be called twice.
-
-I also think that ida_free() should also be ionic_auxbus_release() (just 
-a guess, not checked in details)
-
-> +err_ida_free:
-> +	ida_free(&aux_ida, id);
-> +err_adev_free:
-> +	kfree(ionic_adev);
-> +
-> +	return err;
-> +}
-> +
-> +void ionic_auxbus_unregister(struct ionic_lif *lif)
-> +{
-> +	struct auxiliary_device *aux_dev;
-> +	int id;
-> +
-> +	mutex_lock(&lif->adev_lock);
-> +	if (!lif->ionic_adev)
-> +		goto out;
-> +
-> +	aux_dev = &lif->ionic_adev->adev;
-> +	id = aux_dev->id;
-> +
-> +	auxiliary_device_delete(aux_dev);
-> +	auxiliary_device_uninit(aux_dev);
-> +	ida_free(&aux_ida, id);
-> +
-> +	lif->ionic_adev = NULL;
-> +
-> +out:
-> +	mutex_unlock(&lif->adev_lock);
-> +}
-
-...
-
-CJ
 
