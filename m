@@ -1,96 +1,59 @@
-Return-Path: <linux-rdma+bounces-12591-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12592-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1804B1B69E
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Aug 2025 16:35:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68022B1BAE0
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Aug 2025 21:21:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B41E1898A12
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Aug 2025 14:35:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C9A8624F4E
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Aug 2025 19:21:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 436FD27877B;
-	Tue,  5 Aug 2025 14:35:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E18F289804;
+	Tue,  5 Aug 2025 19:21:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="kaDTtUVO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ayTwqv6g"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2983F259CBC
-	for <linux-rdma@vger.kernel.org>; Tue,  5 Aug 2025 14:35:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 142E82749D5;
+	Tue,  5 Aug 2025 19:21:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754404508; cv=none; b=m3KbDTF4z4ZFm17DLZ0wm/+0vTmo9pE4OjDQY2ZaSJfMook0QWvaAlbaMm/h051zf3sfnC+cpEG6ohKKX7nNfhgERuQxHKoT5ivkspg31DLEe10nnZrCXBaWwKsZyNV4NXXkXCYhiBYhmnRxNZLeFRX7V4243A2dyQqyJ7mRcQI=
+	t=1754421680; cv=none; b=m0KZRL//EKeO2qDS7vjuXW//yxRcUmMGfcZgyN44cPpJUxCcmxXizM8tLm6x/bc8pWffRI1mrhjl6KeRF71AuzaB3rAi7J+5HxEweEjsmjysL/JtePqumxaGBJPFESrj22JH9+3wdwUoL2wxRYGNcAVwWCD53UoxH+NNG8UjZP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754404508; c=relaxed/simple;
-	bh=Cwbx4fAo3v6Kvmo6qZurjhrji8V9gCulLFdPdTB/AJY=;
+	s=arc-20240116; t=1754421680; c=relaxed/simple;
+	bh=kiDUfumk7urniobiimJVpztWStswxpnzCCTx7M+MdDQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t7OplqgaVzFWdw06mV5s0eCkXRimFIDIXbyA2f7euoX9pZgvlGYroWT0q1dxdDlR4tJNy76oHRpX1QMspMy7FC3SHsKb1kGCjt5SRCRrZa1L8/2oJ5xGYzQJhkomFDD6tIILVkbGEKsrPP0w+rspOjwNTGf6LGvpRCephcTcfUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=kaDTtUVO; arc=none smtp.client-ip=209.85.222.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-7e7f940a386so145688885a.3
-        for <linux-rdma@vger.kernel.org>; Tue, 05 Aug 2025 07:35:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1754404504; x=1755009304; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RBToXdvc7vhVURp+VSgDGT8CNn/O/Lx3N4Cacd9QC+s=;
-        b=kaDTtUVOdsgW+SanOdS8detQSiuBhifz7s5q7Q96YUopgFQgZywMedTVza5U8yIxll
-         ALPmtOY3tFzvmI1rKiWdkzIU0jwxaMQyPL0SgyOmFQnoqytBjj97wVsRJif7mq+9pgQG
-         69ELtb4hgNq3yV8JNjG2BXDuS3NpBrxQ3TvRMcuGxJw0so6H0H337S3NBwioKKtdF57d
-         vtNr7t/ofrVvu7Xcvv7OKtPd1CLmu0WT8ikJDFFzNNfnT9E0Ovwm4fDiEnBFFO89CJe9
-         K+b1dOs7x82+NXGrxUVQEWLQMNxzOeA3dYo6ch/C4J45haSbqcpb8YoeAdrJ2VCjewyT
-         RTAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754404504; x=1755009304;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RBToXdvc7vhVURp+VSgDGT8CNn/O/Lx3N4Cacd9QC+s=;
-        b=OlJcJeZ+4TFBiQuP9p7oAQ1erQoGwZpfbiwO/uzuQ3rJ0G28SQdFjLyZ9oWzTNt9IM
-         HEDw3GQ0N1wX+BjTWYocwv7np6oz95RQybVtucrvddGf97d+5vNaBUhw7EdPao7nP3Yq
-         yHFFgQuDR0D5XA2E/koCuJ2KHIyoWtO9/eSp30blO9/1FqjGxQaFR7uJ1dzzJw21V+jG
-         GGOin2iVJFQdSktm2ENxcEg56qtZn5t6vowp5Nwk6GDkXQhCZXlFvq3gqI7KWAyc4njM
-         lu3YaAmh9x5faJAfVeQwtCh6v1sLTGuinIBuzijyouB64clnJ3KNEPSh31Y3nABCTBcf
-         jwwg==
-X-Forwarded-Encrypted: i=1; AJvYcCWIoBRIcIR4uFGwJ705vlepLIrB2AvovEa12UI8y/jM2xMxK7xe3RYuiEtzBnVnCKgC8FtnhO3ifvlH@vger.kernel.org
-X-Gm-Message-State: AOJu0YwDgmtoz2dXszOrCz8ZZ5Cms3QBC33JIO2fEDXCD/27KotxZM53
-	AaVx8EIXtjzHQuGfULFpQ/gmAyAoDKRKFOhmigXqXj74gixgOFuKNTNaOfL+lzGrvug=
-X-Gm-Gg: ASbGncs4RC6VZxU/Ensbr7iSNGF0zbPt5ms3EBpw9+KtsUjvI/p+3UUUtFyEHkkuioD
-	Rr4Myocla3drhFu8zal6JXBnjiqPaxiVlV4eO5DGoo7+CyuL5OXw6Etgd087JRGWAgM2RWKtTtw
-	tuGLzGMixoPII6g+F1XvhktoeDboMTLGVIXhtD/Rd555xRAht/EoPJ9gG5DZV8oXT6Kzgcrv1PH
-	WPHoer9A6kQEs7iHKxzspM7/0snNvHvfxrFty4xNd5USwGRdL28iRYs7VU/NrekjG9oDNdOqnth
-	nEO0N/Uspo+oDd1eoUxmMLR9rOICpnfp25WeEkh5yDC9sI44DktpNtKsCT0jgExBtYEz5m7DaW3
-	14p/32g4QUQ0lI4wbzIGLlOjO6nCNm9a5A6cTFaZO9DAyMfSNl0l+WMBd/qVB6bJSz6OeCmXsE9
-	GoToI=
-X-Google-Smtp-Source: AGHT+IF+3kfrwzrTgPnPbgiihuZwD781MauBUX6H7jY1e1xn+FzW3NhXvH6UtxUPt9nNb/NESu2wng==
-X-Received: by 2002:a05:620a:a483:b0:7e6:7e39:be55 with SMTP id af79cd13be357-7e696269e7amr1410178785a.2.1754404503789;
-        Tue, 05 Aug 2025 07:35:03 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-120-4.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.120.4])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7e67f5bee91sm681707485a.32.2025.08.05.07.35.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Aug 2025 07:35:03 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1ujIko-00000001Y5w-2i8N;
-	Tue, 05 Aug 2025 11:35:02 -0300
-Date: Tue, 5 Aug 2025 11:35:02 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Pedro Falcato <pfalcato@suse.de>
-Cc: Bernard Metzler <bernard.metzler@linux.dev>,
-	Leon Romanovsky <leon@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
-	Jakub Kicinski <kuba@kernel.org>,
-	David Howells <dhowells@redhat.com>, Tom Talpey <tom@talpey.com>,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, torvalds@linux-foundation.org,
-	stable@vger.kernel.org, kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH v2] RDMA/siw: Fix the sendmsg byte count in
- siw_tcp_sendpages
-Message-ID: <20250805143502.GQ26511@ziepe.ca>
-References: <20250729120348.495568-1-pfalcato@suse.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ez6M9v1UpOKR/O4f0YpKnOzGqYenNhm/Yz+lrI3WFMzOcxjkMC6YiyfxTYuRaUEq29hVlWMo+O/pUEPcFJcqJlKMTT/hUYspbXWN6y64pvNoE9H6Rju2ECXMBlT4lJkFe6WSzJ9p/OPhP+MYS0GIUZ93vq2Aa6skKQM69oOE4fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ayTwqv6g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA854C4CEF0;
+	Tue,  5 Aug 2025 19:21:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754421679;
+	bh=kiDUfumk7urniobiimJVpztWStswxpnzCCTx7M+MdDQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ayTwqv6gYMSGIOdqhtZnIq5FUMAuXVEYD9sl3a68Jfa9StEGuCJZRSjnJfperzF1X
+	 i7YuRVMWJa1Fl7Dj258V3DozaIzyug6oG5nDeTh+o5g3wIsjv0JAMT4AM/wMAJXKB7
+	 54nicvNDf042EFM7VgjoatJeOQdy22b8qnePL1rLQlZAfupYbtZi/BUocAxyuPB+dN
+	 6V3JYxMMP66zW96QbPkKZlrOiMNvirL6JJs+6c/IUCwcDoxeu0tR+b254I7GrETO8B
+	 8rfNW4xxZIAcRSDeYYGcpMgbiOHkTxunBq+E89yExDpBFsY25RSbsKwk3UJw1X5WzB
+	 vb/WFzqgZqI3A==
+Date: Tue, 5 Aug 2025 20:21:15 +0100
+From: Simon Horman <horms@kernel.org>
+To: Miaoqian Lin <linmq006@gmail.com>
+Cc: Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] eth: mlx4: Fix IS_ERR() vs NULL check bug in
+ mlx4_en_create_rx_ring
+Message-ID: <20250805192115.GZ8494@horms.kernel.org>
+References: <20250805025057.3659898-1-linmq006@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -99,66 +62,16 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250729120348.495568-1-pfalcato@suse.de>
+In-Reply-To: <20250805025057.3659898-1-linmq006@gmail.com>
 
-On Tue, Jul 29, 2025 at 01:03:48PM +0100, Pedro Falcato wrote:
-> Ever since commit c2ff29e99a76 ("siw: Inline do_tcp_sendpages()"),
-> we have been doing this:
+On Tue, Aug 05, 2025 at 06:50:57AM +0400, Miaoqian Lin wrote:
+> Replace NULL check with IS_ERR() check after calling page_pool_create()
+> since this function returns error pointers (ERR_PTR).
+> Using NULL check could lead to invalid pointer dereference.
 > 
-> static int siw_tcp_sendpages(struct socket *s, struct page **page, int offset,
->                              size_t size)
-> [...]
->         /* Calculate the number of bytes we need to push, for this page
->          * specifically */
->         size_t bytes = min_t(size_t, PAGE_SIZE - offset, size);
->         /* If we can't splice it, then copy it in, as normal */
->         if (!sendpage_ok(page[i]))
->                 msg.msg_flags &= ~MSG_SPLICE_PAGES;
->         /* Set the bvec pointing to the page, with len $bytes */
->         bvec_set_page(&bvec, page[i], bytes, offset);
->         /* Set the iter to $size, aka the size of the whole sendpages (!!!) */
->         iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, &bvec, 1, size);
-> try_page_again:
->         lock_sock(sk);
->         /* Sendmsg with $size size (!!!) */
->         rv = tcp_sendmsg_locked(sk, &msg, size);
-> 
-> This means we've been sending oversized iov_iters and tcp_sendmsg calls
-> for a while. This has a been a benign bug because sendpage_ok() always
-> returned true. With the recent slab allocator changes being slowly
-> introduced into next (that disallow sendpage on large kmalloc
-> allocations), we have recently hit out-of-bounds crashes, due to slight
-> differences in iov_iter behavior between the MSG_SPLICE_PAGES and
-> "regular" copy paths:
-> 
-> (MSG_SPLICE_PAGES)
-> skb_splice_from_iter
->   iov_iter_extract_pages
->     iov_iter_extract_bvec_pages
->       uses i->nr_segs to correctly stop in its tracks before OoB'ing everywhere
->   skb_splice_from_iter gets a "short" read
-> 
-> (!MSG_SPLICE_PAGES)
-> skb_copy_to_page_nocache copy=iov_iter_count
->  [...]
->    copy_from_iter
->         /* this doesn't help */
->         if (unlikely(iter->count < len))
->                 len = iter->count;
->           iterate_bvec
->             ... and we run off the bvecs
-> 
-> Fix this by properly setting the iov_iter's byte count, plus sending the
-> correct byte count to tcp_sendmsg_locked.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: c2ff29e99a76 ("siw: Inline do_tcp_sendpages()")
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202507220801.50a7210-lkp@intel.com
-> Reviewed-by: David Howells <dhowells@redhat.com>
-> Signed-off-by: Pedro Falcato <pfalcato@suse.de>
+> Fixes: 8533b14b3d65 ("eth: mlx4: create a page pool for Rx")
+> Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
 
-Applied thanks,
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-Jason
 
