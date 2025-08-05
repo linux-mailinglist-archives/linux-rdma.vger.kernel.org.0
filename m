@@ -1,58 +1,57 @@
-Return-Path: <linux-rdma+bounces-12592-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12593-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68022B1BAE0
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Aug 2025 21:21:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D391DB1BCF0
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Aug 2025 01:09:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C9A8624F4E
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Aug 2025 19:21:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DFEA1894D32
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Aug 2025 23:10:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E18F289804;
-	Tue,  5 Aug 2025 19:21:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 426C72BD5BC;
+	Tue,  5 Aug 2025 23:09:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ayTwqv6g"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ssgplbCF"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 142E82749D5;
-	Tue,  5 Aug 2025 19:21:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECD4A2BD588;
+	Tue,  5 Aug 2025 23:09:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754421680; cv=none; b=m0KZRL//EKeO2qDS7vjuXW//yxRcUmMGfcZgyN44cPpJUxCcmxXizM8tLm6x/bc8pWffRI1mrhjl6KeRF71AuzaB3rAi7J+5HxEweEjsmjysL/JtePqumxaGBJPFESrj22JH9+3wdwUoL2wxRYGNcAVwWCD53UoxH+NNG8UjZP4=
+	t=1754435380; cv=none; b=XoTnq5yrDTrIwbA85NFtPeZMtuiefdQQSRWrPBUIQgrR/Kz/8CLqJTT6KaIDrUbO1lhSteB7f+hCfrnNpuFtiZ1oHVrCDf80vmO/jr9yPNkRz/T3eQXtZcHaAQvb8tLHAzFRbD67dLrsQ0wTNQtXP8dRV3xCREcz0sKLK9F3Bik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754421680; c=relaxed/simple;
-	bh=kiDUfumk7urniobiimJVpztWStswxpnzCCTx7M+MdDQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ez6M9v1UpOKR/O4f0YpKnOzGqYenNhm/Yz+lrI3WFMzOcxjkMC6YiyfxTYuRaUEq29hVlWMo+O/pUEPcFJcqJlKMTT/hUYspbXWN6y64pvNoE9H6Rju2ECXMBlT4lJkFe6WSzJ9p/OPhP+MYS0GIUZ93vq2Aa6skKQM69oOE4fc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ayTwqv6g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA854C4CEF0;
-	Tue,  5 Aug 2025 19:21:17 +0000 (UTC)
+	s=arc-20240116; t=1754435380; c=relaxed/simple;
+	bh=b+4gC3jrvqG+83u5Vh0Kk2KArZaArOezV8zzx5Mi8Pw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DeFe/hq217zrz5MKS1hXgFwNzFZChpWGB+BEstBmKzCqKs2xsZ8qh0lK5ZdmUpEKoFl8leX7KLNb5hpdd7G9s/JDuypETvG2O9/8FefRq3X2+8SJU6xLaXzLcfbbangW4KrXgPqsgVlW4+nqAnBNGROM2jZn4rLjg6GFKonrH+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ssgplbCF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2717BC4CEF0;
+	Tue,  5 Aug 2025 23:09:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754421679;
-	bh=kiDUfumk7urniobiimJVpztWStswxpnzCCTx7M+MdDQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ayTwqv6gYMSGIOdqhtZnIq5FUMAuXVEYD9sl3a68Jfa9StEGuCJZRSjnJfperzF1X
-	 i7YuRVMWJa1Fl7Dj258V3DozaIzyug6oG5nDeTh+o5g3wIsjv0JAMT4AM/wMAJXKB7
-	 54nicvNDf042EFM7VgjoatJeOQdy22b8qnePL1rLQlZAfupYbtZi/BUocAxyuPB+dN
-	 6V3JYxMMP66zW96QbPkKZlrOiMNvirL6JJs+6c/IUCwcDoxeu0tR+b254I7GrETO8B
-	 8rfNW4xxZIAcRSDeYYGcpMgbiOHkTxunBq+E89yExDpBFsY25RSbsKwk3UJw1X5WzB
-	 vb/WFzqgZqI3A==
-Date: Tue, 5 Aug 2025 20:21:15 +0100
-From: Simon Horman <horms@kernel.org>
+	s=k20201202; t=1754435379;
+	bh=b+4gC3jrvqG+83u5Vh0Kk2KArZaArOezV8zzx5Mi8Pw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ssgplbCFi6TgjsQZXxa8e5ZrcwMPNsDUh0sVbNcJY/6wIfXMV9HIc9Oyh+CQRgqWW
+	 CFn/E7H+vaNflQdu0HuRxDFgItGFd4cEbxzzA858j4GL9PCVqCNjOoHJjQ21V9neYY
+	 RrhtlUKVQUstu5nrtT+Xv5pol32pPlj6X65ZBc59Bq6tfIblY9xqIBXdOVy3UdjGdM
+	 mVJmoRg4yabba0OeBZ+2DkcAGxSlEee+htvi3KVE1VoIdOPxSuCzp+FeuDB7huV1hZ
+	 wRz4RC3J9fKK8yBmc+MO1GnzZnrcccH4WuxicCsRoCdetYCHSiHuRophBGf//hwztb
+	 OCK8qK3/8CR1Q==
+Date: Tue, 5 Aug 2025 16:09:38 -0700
+From: Jakub Kicinski <kuba@kernel.org>
 To: Miaoqian Lin <linmq006@gmail.com>
 Cc: Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] eth: mlx4: Fix IS_ERR() vs NULL check bug in
  mlx4_en_create_rx_ring
-Message-ID: <20250805192115.GZ8494@horms.kernel.org>
+Message-ID: <20250805160720.0187e36d@kernel.org>
+In-Reply-To: <20250805025057.3659898-1-linmq006@gmail.com>
 References: <20250805025057.3659898-1-linmq006@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -60,18 +59,21 @@ List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250805025057.3659898-1-linmq006@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Aug 05, 2025 at 06:50:57AM +0400, Miaoqian Lin wrote:
-> Replace NULL check with IS_ERR() check after calling page_pool_create()
-> since this function returns error pointers (ERR_PTR).
-> Using NULL check could lead to invalid pointer dereference.
-> 
-> Fixes: 8533b14b3d65 ("eth: mlx4: create a page pool for Rx")
-> Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
+On Tue,  5 Aug 2025 06:50:57 +0400 Miaoqian Lin wrote:
+>  	ring->pp = page_pool_create(&pp);
+> -	if (!ring->pp)
+> +	if (IS_ERR(ring->pp))
+>  		goto err_ring;
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Thanks for fixing! Looks we previously depended on err being initialized
+to -ENOMEM, but since we have an errno now, I think it'd be better to
+use it:
 
+	if (IS_ERR(ring->pp)) {
+		err = PTR_ERR(ring->pp);
+		goto err_ring;
+	}
 
