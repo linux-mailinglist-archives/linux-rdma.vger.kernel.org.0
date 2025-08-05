@@ -1,113 +1,96 @@
-Return-Path: <linux-rdma+bounces-12590-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12591-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEE16B1B615
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Aug 2025 16:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E1804B1B69E
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Aug 2025 16:35:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B0141883C0C
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Aug 2025 14:10:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B41E1898A12
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Aug 2025 14:35:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFEF5274B43;
-	Tue,  5 Aug 2025 14:09:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 436FD27877B;
+	Tue,  5 Aug 2025 14:35:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="QCwoi+dh"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="kaDTtUVO"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F87326CE2C
-	for <linux-rdma@vger.kernel.org>; Tue,  5 Aug 2025 14:09:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2983F259CBC
+	for <linux-rdma@vger.kernel.org>; Tue,  5 Aug 2025 14:35:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754402974; cv=none; b=TZKSm/xmYGO3J94hVHZKI8SnSkUWbKFRYBKcLyFQZRIjEP16eBfQI/ie5Uma0KES5s/aKoiCOOH6XBbTpl+M5yavh5nYhGdgcx5DaGer7xRagZFSWJiv8Q1IYCY3OuF/1RdPSHEM5GNv9sO2dYyPuGgkIOTtAFwsKUV6a9Pk5Gk=
+	t=1754404508; cv=none; b=m3KbDTF4z4ZFm17DLZ0wm/+0vTmo9pE4OjDQY2ZaSJfMook0QWvaAlbaMm/h051zf3sfnC+cpEG6ohKKX7nNfhgERuQxHKoT5ivkspg31DLEe10nnZrCXBaWwKsZyNV4NXXkXCYhiBYhmnRxNZLeFRX7V4243A2dyQqyJ7mRcQI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754402974; c=relaxed/simple;
-	bh=320HJNn3ZyIhNHt0qLcttuzPG79KlsmiYoJdg+13Uio=;
+	s=arc-20240116; t=1754404508; c=relaxed/simple;
+	bh=Cwbx4fAo3v6Kvmo6qZurjhrji8V9gCulLFdPdTB/AJY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VndyCSIKv8/lQ4SsR6jyU0Qv6ndptvCjJL6a28NxFE+28I7JZ++Ur/UkkhjITzvO6NMudZw0UGIGw4vIE5Lds80x4/ynQ0eDueL1kNDNX2JDL0ZioOqq6KLxgQavF7br+OmHEUuTeyAzKN+htvXKYsbQInyZIVeoJALx3gdBCMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=QCwoi+dh; arc=none smtp.client-ip=209.85.160.173
+	 Content-Type:Content-Disposition:In-Reply-To; b=t7OplqgaVzFWdw06mV5s0eCkXRimFIDIXbyA2f7euoX9pZgvlGYroWT0q1dxdDlR4tJNy76oHRpX1QMspMy7FC3SHsKb1kGCjt5SRCRrZa1L8/2oJ5xGYzQJhkomFDD6tIILVkbGEKsrPP0w+rspOjwNTGf6LGvpRCephcTcfUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=kaDTtUVO; arc=none smtp.client-ip=209.85.222.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4ab61ecc1e8so29043211cf.1
-        for <linux-rdma@vger.kernel.org>; Tue, 05 Aug 2025 07:09:32 -0700 (PDT)
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-7e7f940a386so145688885a.3
+        for <linux-rdma@vger.kernel.org>; Tue, 05 Aug 2025 07:35:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1754402972; x=1755007772; darn=vger.kernel.org;
+        d=ziepe.ca; s=google; t=1754404504; x=1755009304; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uzAYIR/shPSYacUrOQJo0K9+jh4P0UFNjUkTluGngLM=;
-        b=QCwoi+dhAkExXVPD5oTSD9d02H0sgPS7PcyAtJU248kNICO8iYoHOm4wt8fkuMffpZ
-         ojGNPywLIyVxHFTnOaMDP2IPwcgSh966mCds2whniBkuoGp+FBqC2PoEZq+w99vHwyh6
-         B0xIY2YH9tdCzmewwXwR0fekVxKhu92hO1MXtgwTh+OqBUL8FPAN5RJy7ax88P7i0ugE
-         R06JhzV1D4Ir5gI1wD/7hPXEMsMf90IddVQKwb9WkpYR89+3q7Eolz0VC7a5UOtWVeQr
-         gJ9qWWAoORZx3nVQvFPoR0ycAfs1j7+5FWqX+EPo+qP5YmN+xWRW2L3rNUX3eYN1GHeG
-         aTSQ==
+        bh=RBToXdvc7vhVURp+VSgDGT8CNn/O/Lx3N4Cacd9QC+s=;
+        b=kaDTtUVOdsgW+SanOdS8detQSiuBhifz7s5q7Q96YUopgFQgZywMedTVza5U8yIxll
+         ALPmtOY3tFzvmI1rKiWdkzIU0jwxaMQyPL0SgyOmFQnoqytBjj97wVsRJif7mq+9pgQG
+         69ELtb4hgNq3yV8JNjG2BXDuS3NpBrxQ3TvRMcuGxJw0so6H0H337S3NBwioKKtdF57d
+         vtNr7t/ofrVvu7Xcvv7OKtPd1CLmu0WT8ikJDFFzNNfnT9E0Ovwm4fDiEnBFFO89CJe9
+         K+b1dOs7x82+NXGrxUVQEWLQMNxzOeA3dYo6ch/C4J45haSbqcpb8YoeAdrJ2VCjewyT
+         RTAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754402972; x=1755007772;
+        d=1e100.net; s=20230601; t=1754404504; x=1755009304;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uzAYIR/shPSYacUrOQJo0K9+jh4P0UFNjUkTluGngLM=;
-        b=K204BFrXhwqvqbA7D/gVzyoYGZzkyhrVsXlCiuhpe1B5Hn76i9gH+m9QWLrurZ1tqm
-         iAhdahcRHrImSd1Uk38M1QO6evyRs9bv2E8ynSTcnOITrT8aLEwZ85KSszHSdop6GR9J
-         4v8xfWOeyI8z/hp3gHLVfwaF9/PtUumo66K2wXMBoRqr86RbvmgoiUhUNwfu2+AeIQSv
-         cLw6iyTBggGm4St2TxAOTsi376Mrz7wdMgfVCaPzPLcFadJTUtxGZk4GT9yjMnsDad/p
-         4kFVaKvJqsWZM1AZ6KE0c3KhKyE/PUwXbbrFFxANw0a9QFiy5k585HF50SHgj4TNHsrT
-         Y0pg==
-X-Forwarded-Encrypted: i=1; AJvYcCVX286GmAGJL+72BJDF6+Hai/ietZU3yoWMxvtRE05U+cCNFbnPp0v0osbtJSQO8rJI2dVQ5B1xgwaj@vger.kernel.org
-X-Gm-Message-State: AOJu0YxiL6UBE3w/VDwfRxxtsutsqbHQPOvAUA0GDIe+wxbVg1VWbkb3
-	9pKaxMxXntUPwxUEALdYwKK6e9EUx/I1j5PJJZw4SDyenpGjrRE5P8isnmHiN/ApEHg=
-X-Gm-Gg: ASbGncsjfzwmg+Fi3WTwoayT7JtOZMIZcNglYU921J8hXXMMQW/6DEIcDhd2ZgFkCG3
-	1meB6bKcrPn0riPlxbxuL6rS7hqNbuSMQU7z7WmafzJZhRypX9UO4pLtvRoX1TNj1Iv1zNwwDjb
-	25ep/knhKV+8MgWY2or9zvSxbHeEAWOiK9cx2S65ndznasKXB0/Po0htjUqX/bND3y/ujAGRaQX
-	JezUtG84CjbPq7KUpOmSs79ye1w6IfTwM+l+3gYIckwYVcT59qtHY/3S5r81MlL1XtTOkD0FWez
-	R7DRzBdrHRbZH8PrGqmoEMS2iYkFAOC5InKqiP2cb0t5L9+oXRNElrnnGCNwRkCWH/1NVAOcktl
-	+PV721JtyfQAzMJl1y7DSzOtU7C7zIhBdHaBlXCg/I+DGFjYJ6gkxAdXLW8A2a5GAmAkwtdQPVt
-	oPJ6c=
-X-Google-Smtp-Source: AGHT+IHL+J4sqP2SxcyYA/bm344OksrCpi3leJPwTfOOG1s5eCheuA6YOXSpbD6tw1CHk8ksExeFwQ==
-X-Received: by 2002:a05:622a:4a14:b0:4a9:a3ff:28bb with SMTP id d75a77b69052e-4af10a1abd0mr240543491cf.25.1754402967223;
-        Tue, 05 Aug 2025 07:09:27 -0700 (PDT)
+        bh=RBToXdvc7vhVURp+VSgDGT8CNn/O/Lx3N4Cacd9QC+s=;
+        b=OlJcJeZ+4TFBiQuP9p7oAQ1erQoGwZpfbiwO/uzuQ3rJ0G28SQdFjLyZ9oWzTNt9IM
+         HEDw3GQ0N1wX+BjTWYocwv7np6oz95RQybVtucrvddGf97d+5vNaBUhw7EdPao7nP3Yq
+         yHFFgQuDR0D5XA2E/koCuJ2KHIyoWtO9/eSp30blO9/1FqjGxQaFR7uJ1dzzJw21V+jG
+         GGOin2iVJFQdSktm2ENxcEg56qtZn5t6vowp5Nwk6GDkXQhCZXlFvq3gqI7KWAyc4njM
+         lu3YaAmh9x5faJAfVeQwtCh6v1sLTGuinIBuzijyouB64clnJ3KNEPSh31Y3nABCTBcf
+         jwwg==
+X-Forwarded-Encrypted: i=1; AJvYcCWIoBRIcIR4uFGwJ705vlepLIrB2AvovEa12UI8y/jM2xMxK7xe3RYuiEtzBnVnCKgC8FtnhO3ifvlH@vger.kernel.org
+X-Gm-Message-State: AOJu0YwDgmtoz2dXszOrCz8ZZ5Cms3QBC33JIO2fEDXCD/27KotxZM53
+	AaVx8EIXtjzHQuGfULFpQ/gmAyAoDKRKFOhmigXqXj74gixgOFuKNTNaOfL+lzGrvug=
+X-Gm-Gg: ASbGncs4RC6VZxU/Ensbr7iSNGF0zbPt5ms3EBpw9+KtsUjvI/p+3UUUtFyEHkkuioD
+	Rr4Myocla3drhFu8zal6JXBnjiqPaxiVlV4eO5DGoo7+CyuL5OXw6Etgd087JRGWAgM2RWKtTtw
+	tuGLzGMixoPII6g+F1XvhktoeDboMTLGVIXhtD/Rd555xRAht/EoPJ9gG5DZV8oXT6Kzgcrv1PH
+	WPHoer9A6kQEs7iHKxzspM7/0snNvHvfxrFty4xNd5USwGRdL28iRYs7VU/NrekjG9oDNdOqnth
+	nEO0N/Uspo+oDd1eoUxmMLR9rOICpnfp25WeEkh5yDC9sI44DktpNtKsCT0jgExBtYEz5m7DaW3
+	14p/32g4QUQ0lI4wbzIGLlOjO6nCNm9a5A6cTFaZO9DAyMfSNl0l+WMBd/qVB6bJSz6OeCmXsE9
+	GoToI=
+X-Google-Smtp-Source: AGHT+IF+3kfrwzrTgPnPbgiihuZwD781MauBUX6H7jY1e1xn+FzW3NhXvH6UtxUPt9nNb/NESu2wng==
+X-Received: by 2002:a05:620a:a483:b0:7e6:7e39:be55 with SMTP id af79cd13be357-7e696269e7amr1410178785a.2.1754404503789;
+        Tue, 05 Aug 2025 07:35:03 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-47-55-120-4.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.120.4])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4aeeed669c0sm65687951cf.33.2025.08.05.07.09.26
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7e67f5bee91sm681707485a.32.2025.08.05.07.35.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Aug 2025 07:09:26 -0700 (PDT)
+        Tue, 05 Aug 2025 07:35:03 -0700 (PDT)
 Received: from jgg by wakko with local (Exim 4.97)
 	(envelope-from <jgg@ziepe.ca>)
-	id 1ujIM1-00000001XVj-3WEg;
-	Tue, 05 Aug 2025 11:09:25 -0300
-Date: Tue, 5 Aug 2025 11:09:25 -0300
+	id 1ujIko-00000001Y5w-2i8N;
+	Tue, 05 Aug 2025 11:35:02 -0300
+Date: Tue, 5 Aug 2025 11:35:02 -0300
 From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Alistair Popple <apopple@nvidia.com>
-Cc: David Hildenbrand <david@redhat.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Yonatan Maman <ymaman@nvidia.com>,
-	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Leon Romanovsky <leon@kernel.org>, Lyude Paul <lyude@redhat.com>,
-	Danilo Krummrich <dakr@kernel.org>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Ben Skeggs <bskeggs@nvidia.com>,
-	Michael Guralnik <michaelgur@nvidia.com>,
-	Or Har-Toov <ohartoov@nvidia.com>,
-	Daisuke Matsuda <dskmtsd@gmail.com>, Shay Drory <shayd@nvidia.com>,
-	linux-mm@kvack.org, linux-rdma@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, Gal Shalom <GalShalom@nvidia.com>
-Subject: Re: [PATCH v2 1/5] mm/hmm: HMM API to enable P2P DMA for device
- private pages
-Message-ID: <20250805140925.GO26511@ziepe.ca>
-References: <aH4_QaNtIJMrPqOw@casper.infradead.org>
- <7lvduvov3rvfsgixbkyyinnzz3plpp3szxam46ccgjmh6v5d7q@zoz4k723vs3d>
- <aIBcTpC9Te7YIe4J@ziepe.ca>
- <cn7hcxskr5prkc3jnd4vzzeau5weevzumcspzfayeiwdexkkfe@ovvgraqo7svh>
- <a3f1af02-ef3f-40f8-be79-4c3929a59bb7@redhat.com>
- <i5ya3n7bhhufpczprtp2ndg7bxtykoyjtsfae6dfdqk2rfz6ix@nzwnhqfwh6rq>
- <20250801164058.GD26511@ziepe.ca>
- <b8009500-8b0b-4bb9-ae5e-6d2135adbfdd@redhat.com>
- <20250801165749.GF26511@ziepe.ca>
- <vscps6igy42u5limiigiok6y35mjx6acawi3qmvzbrpvltp4qp@mkydml7lz6fu>
+To: Pedro Falcato <pfalcato@suse.de>
+Cc: Bernard Metzler <bernard.metzler@linux.dev>,
+	Leon Romanovsky <leon@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
+	Jakub Kicinski <kuba@kernel.org>,
+	David Howells <dhowells@redhat.com>, Tom Talpey <tom@talpey.com>,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, torvalds@linux-foundation.org,
+	stable@vger.kernel.org, kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH v2] RDMA/siw: Fix the sendmsg byte count in
+ siw_tcp_sendpages
+Message-ID: <20250805143502.GQ26511@ziepe.ca>
+References: <20250729120348.495568-1-pfalcato@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -116,35 +99,66 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <vscps6igy42u5limiigiok6y35mjx6acawi3qmvzbrpvltp4qp@mkydml7lz6fu>
+In-Reply-To: <20250729120348.495568-1-pfalcato@suse.de>
 
-On Mon, Aug 04, 2025 at 11:51:38AM +1000, Alistair Popple wrote:
-> On Fri, Aug 01, 2025 at 01:57:49PM -0300, Jason Gunthorpe wrote:
-> > On Fri, Aug 01, 2025 at 06:50:18PM +0200, David Hildenbrand wrote:
-> > > On 01.08.25 18:40, Jason Gunthorpe wrote:
-> > > > On Fri, Jul 25, 2025 at 10:31:25AM +1000, Alistair Popple wrote:
-> > > > 
-> > > > > The only issue would be if there were generic code paths that somehow have a
-> > > > > raw pfn obtained from neither a page-table walk or struct page. My assumption
-> > > > > (yet to be proven/tested) is that these paths don't exist.
-> > > > 
-> > > > hmm does it, it encodes the device private into a pfn and expects the
-> > > > caller to do pfn to page.
+On Tue, Jul 29, 2025 at 01:03:48PM +0100, Pedro Falcato wrote:
+> Ever since commit c2ff29e99a76 ("siw: Inline do_tcp_sendpages()"),
+> we have been doing this:
 > 
-> What callers need to do pfn to page when finding a device private pfn via
-> hmm_range_fault()? GPU drivers don't, they tend just to use the pfn as an offset
-> from the start of the pgmap to find whatever data structure they are using to
-> track device memory allocations.
+> static int siw_tcp_sendpages(struct socket *s, struct page **page, int offset,
+>                              size_t size)
+> [...]
+>         /* Calculate the number of bytes we need to push, for this page
+>          * specifically */
+>         size_t bytes = min_t(size_t, PAGE_SIZE - offset, size);
+>         /* If we can't splice it, then copy it in, as normal */
+>         if (!sendpage_ok(page[i]))
+>                 msg.msg_flags &= ~MSG_SPLICE_PAGES;
+>         /* Set the bvec pointing to the page, with len $bytes */
+>         bvec_set_page(&bvec, page[i], bytes, offset);
+>         /* Set the iter to $size, aka the size of the whole sendpages (!!!) */
+>         iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, &bvec, 1, size);
+> try_page_again:
+>         lock_sock(sk);
+>         /* Sendmsg with $size size (!!!) */
+>         rv = tcp_sendmsg_locked(sk, &msg, size);
+> 
+> This means we've been sending oversized iov_iters and tcp_sendmsg calls
+> for a while. This has a been a benign bug because sendpage_ok() always
+> returned true. With the recent slab allocator changes being slowly
+> introduced into next (that disallow sendpage on large kmalloc
+> allocations), we have recently hit out-of-bounds crashes, due to slight
+> differences in iov_iter behavior between the MSG_SPLICE_PAGES and
+> "regular" copy paths:
+> 
+> (MSG_SPLICE_PAGES)
+> skb_splice_from_iter
+>   iov_iter_extract_pages
+>     iov_iter_extract_bvec_pages
+>       uses i->nr_segs to correctly stop in its tracks before OoB'ing everywhere
+>   skb_splice_from_iter gets a "short" read
+> 
+> (!MSG_SPLICE_PAGES)
+> skb_copy_to_page_nocache copy=iov_iter_count
+>  [...]
+>    copy_from_iter
+>         /* this doesn't help */
+>         if (unlikely(iter->count < len))
+>                 len = iter->count;
+>           iterate_bvec
+>             ... and we run off the bvecs
+> 
+> Fix this by properly setting the iov_iter's byte count, plus sending the
+> correct byte count to tcp_sendmsg_locked.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: c2ff29e99a76 ("siw: Inline do_tcp_sendpages()")
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202507220801.50a7210-lkp@intel.com
+> Reviewed-by: David Howells <dhowells@redhat.com>
+> Signed-off-by: Pedro Falcato <pfalcato@suse.de>
 
-All drivers today must. You have no idea if the PFN returned is a
-private or CPU page. The only way to know is to check the struct page
-type, by looking inside the struct page.
-
-> So other than adding a HMM_PFN flag to say this is really a device index I don't
-> see too many issues here.
-
-Christoph suggested exactly this, and it would solve the issue. Seems
-quite easy too. Let's do it.
+Applied thanks,
 
 Jason
 
