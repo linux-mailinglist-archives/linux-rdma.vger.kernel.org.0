@@ -1,116 +1,79 @@
-Return-Path: <linux-rdma+bounces-12621-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12622-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A789B1D141
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Aug 2025 05:34:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E86A0B1D203
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Aug 2025 07:30:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B923F17168E
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Aug 2025 03:34:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E14F07A907B
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Aug 2025 05:29:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F4081DE8A4;
-	Thu,  7 Aug 2025 03:34:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DC5521CC79;
+	Thu,  7 Aug 2025 05:30:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="XYEAnTGx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UVDwPBb3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44043524F;
-	Thu,  7 Aug 2025 03:34:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBECC21C9E1;
+	Thu,  7 Aug 2025 05:30:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754537680; cv=none; b=QcPCtxQPokFXFx2sBrlGN/l+icU3KfQ0xcSNt4eRZ8T8r0PYm1Fn1aogPUWUzyE1/1uVNM2cPHq2fsj5xoR5RjM2ri2iSxppO5QZLoe2JQz9VgikvPgEo/8cVNxAIs4v0R4uEW4Q58FqyJsmi/NDasUhvZhQk7N8hjJzQn4YxSA=
+	t=1754544607; cv=none; b=LSAL8jQRhvjzRr9eSVdXTsF5ZnlpaZeMX7IeoCN+STdMEyaviYny0chwATZd3BlxmW2N97qpIU2tfnW9Z2QWMe8ASmA5AG5UUaWLRX5PP6OqQdmVD4G0udmcUbisKhQvDpRyWZM7+yb3Dhivuxc08PUkX46iltuAxrN+ToLKVDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754537680; c=relaxed/simple;
-	bh=y8nioLbV5o8a9uuZ42Va/r1J0Xpx1iyjokFJZB2/TYs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MlVEmt8GeqVtHvGLoSyoSXc9jI4M8Ke+uovffyxWsmIdvUTNxM/TIOfHjI6s5xQC9REPz8ZI+EdCrWWvfNOi53UAahJh22RowrCBL5egM3SFrkRrjpS1jVpUXBfFKYn6tiFP6hnHBo/eSNq7Pq+BnMmcgw6Jg7tugFtCZ6rC7UQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=XYEAnTGx; arc=none smtp.client-ip=115.124.30.113
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1754537673; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=TYAtQyuM0GCObX8x0XidoUON81hG/onakbba9CnK3Pw=;
-	b=XYEAnTGx19obP/CMcBeN8y2ISVX1B8mcMK6npyiwZTzKrzMJQeukr4RfHmtGucsoTqpwRARbnQSTUPUa9aqYQqQAoHuFojr6uxqUlOhkW0997Li9NGgYnrDBLy0yosoPhA2kmmvY0Sr8RogVz/h2VZOusb959g7onCdhcrHGDSI=
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0WlCg0yN_1754537671 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Thu, 07 Aug 2025 11:34:32 +0800
-Date: Thu, 7 Aug 2025 11:34:31 +0800
-From: Dust Li <dust.li@linux.alibaba.com>
-To: Alexandra Winter <wintera@linux.ibm.com>,
-	David Miller <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"D. Wythe" <alibuda@linux.alibaba.com>,
-	Sidraya Jayagond <sidraya@linux.ibm.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>,
-	Julian Ruess <julianr@linux.ibm.com>
-Cc: netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Thorsten Winkler <twinkler@linux.ibm.com>,
-	Simon Horman <horms@kernel.org>,
-	Mahanta Jambigi <mjambigi@linux.ibm.com>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>, Halil Pasic <pasic@linux.ibm.com>,
-	linux-rdma@vger.kernel.org
-Subject: Re: [RFC net-next 01/17] net/smc: Remove __init marker from
- smc_core_init()
-Message-ID: <aJQex0Ey-eaysumJ@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20250806154122.3413330-1-wintera@linux.ibm.com>
- <20250806154122.3413330-2-wintera@linux.ibm.com>
+	s=arc-20240116; t=1754544607; c=relaxed/simple;
+	bh=Wzd6UhoUg0yfSQztKgrpjHYw7FdC+UjXdbbk8o/OoKA=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=q6MAFblDYuOEOfr/8V/qPe8V4x/3dfNn60j3whBMhjnNwapeJDRrpFmQINuFj+D62QW1ZgP+7MgXWXfTigPparWCtTS18eY9WrKsxPeRUOYKNqIJjA3JOmQRqzkHEBg3raaA70AovHfbivUWTosQeBmpYjga01EIq1WzVhhj3f8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UVDwPBb3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCFFEC4CEEB;
+	Thu,  7 Aug 2025 05:30:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1754544606;
+	bh=Wzd6UhoUg0yfSQztKgrpjHYw7FdC+UjXdbbk8o/OoKA=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=UVDwPBb3pPNOG5HZJ3pc2eAQ+u0UyL009r7RsQ3VGkeKnBlZefGZjvau4mGWPadFe
+	 uy5PxzafteOOR8K9BKdWSPiDb+Jh7yFOnCvztR84EVWIpHibcqj2QSp3k3qNqYDEiK
+	 DO+lRkcc3bKtoBmExyZICM/pe3k/njRzgydQGEOoxnqOqv+yc2O3cU1K+6xzeu7xIZ
+	 k6rn35ia9vKSldKv3R9Gvynb/5qMT2ZYfnBeBe+YIj0d6O+aR0BJGdZlWtnTZlBASs
+	 +0odkonc/UrvtrEaUpJZdZ71GtoMcBMyF2VHo9XIHXW8Alk+fyuu5YHE7fP4cZ2vDJ
+	 ovAvOq2CQBf6Q==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADF04383BF56;
+	Thu,  7 Aug 2025 05:30:21 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20250806183616.GA441213@nvidia.com>
+References: <20250806183616.GA441213@nvidia.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20250806183616.GA441213@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: c18646248fed07683d4cee8a8af933fc4fe83c0d
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 2095cf558f65d9aad9a945e4fd1077b97bf61383
+Message-Id: <175454462035.3059740.4284159928912062332.pr-tracker-bot@kernel.org>
+Date: Thu, 07 Aug 2025 05:30:20 +0000
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250806154122.3413330-2-wintera@linux.ibm.com>
 
-On 2025-08-06 17:41:06, Alexandra Winter wrote:
->Remove the __init marker because smc_core_init() is not the
->init function of the smc module and for consistency with
->smc_core_exit() which neither has an __exit marker.
+The pull request you sent on Wed, 6 Aug 2025 15:36:16 -0300:
 
-Have you seen a real warning or error because of the __init marker ?
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-I think the __init marker is just to tell the kernel this function
-will only be called during initialization. So it doesn't need to
-be the module's init function.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/2095cf558f65d9aad9a945e4fd1077b97bf61383
 
-Best regards,
-Dust
+Thank you!
 
->
->Signed-off-by: Alexandra Winter <wintera@linux.ibm.com>
->---
-> net/smc/smc_core.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
->index 262746e304dd..67f9e0b83ebc 100644
->--- a/net/smc/smc_core.c
->+++ b/net/smc/smc_core.c
->@@ -2758,7 +2758,7 @@ static struct notifier_block smc_reboot_notifier = {
-> 	.notifier_call = smc_core_reboot_event,
-> };
-> 
->-int __init smc_core_init(void)
->+int smc_core_init(void)
-> {
-> 	return register_reboot_notifier(&smc_reboot_notifier);
-> }
->-- 
->2.48.1
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
