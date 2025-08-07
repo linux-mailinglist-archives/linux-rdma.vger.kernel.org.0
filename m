@@ -1,47 +1,47 @@
-Return-Path: <linux-rdma+bounces-12627-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12628-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 171E0B1DDAA
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Aug 2025 21:47:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C99FB1DE62
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Aug 2025 22:34:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0C17620074
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Aug 2025 19:47:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7D57562C4F
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Aug 2025 20:34:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F8D82116E9;
-	Thu,  7 Aug 2025 19:47:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3052122A4E4;
+	Thu,  7 Aug 2025 20:34:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sd6i9/EN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AGtRAl2V"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 252254A06;
-	Thu,  7 Aug 2025 19:47:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D52381F63F9;
+	Thu,  7 Aug 2025 20:34:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754596043; cv=none; b=cVS8kF3YKdBRcuZChqZHcV/kKDc2qfPoyZuLy/kfmGQn/fWu6AVqYe/EiG7UBAv759wsXmJrZoUoxGCLvVM/qEIwW0Ry5sH34HVt8OnD05M0oJCZE06J1xqBopWgMUh+r9EhDEPEXN3MFRqBVlI7fZkhUvF7/obc1yErHtUCKPE=
+	t=1754598885; cv=none; b=fOTwU/5+NLO/07QG+gDR6BjxXN/heLtWzXakHPDOYaml9N+gXs0Sh3mpcaiB+10OhjoY0FnKY0waj46tLE7ECRqkZXehcG5oOHuQgZyC+3qz6CC994hZkCFi8QkdNFjeLCRYUvtkiIYAfcRALxjLrjRUfRACcfZl5a//61H9YqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754596043; c=relaxed/simple;
-	bh=JFuIJpdm0AMR0xv4NMaojaLmRYEny8W2asXb8REMVRo=;
+	s=arc-20240116; t=1754598885; c=relaxed/simple;
+	bh=CTHF2bfLHWxAICz4XAIr2jbjPAcP4K25/pM82onpA4I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dSw6XayaA3d2qPKaYSwYBp234SklEz+7fKgWYTrcx2r1UKJ+LfYGqbLt5U8GNNWiXQKIqgfhm9UmiJGNn/KDQIKMtOQ+6MGC28kknVlpezMkF34U5glYsIvOW/xR4EPI30xQ0dkiQARtT42lkffkfzhIfp/NQi4E8ZipUBXtXHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Sd6i9/EN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74954C4CEEB;
-	Thu,  7 Aug 2025 19:47:18 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=RWei3t8gmwmN5CwAj8oKSCaM9Hx3vGddTtLftrFeCPPB1AhTnibPrbH1NNopIXSIsoS0ToTS27YuaPN1XOcueHoUNjq1xoya+A2+UzEV/uHrZWGukbRhQgeQ9RGsCdZ8oneJ8vDirOOTHStmRtVUXcgquyT8S1Lwmrra8mBZ6kU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AGtRAl2V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23068C4CEEB;
+	Thu,  7 Aug 2025 20:34:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754596042;
-	bh=JFuIJpdm0AMR0xv4NMaojaLmRYEny8W2asXb8REMVRo=;
+	s=k20201202; t=1754598884;
+	bh=CTHF2bfLHWxAICz4XAIr2jbjPAcP4K25/pM82onpA4I=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Sd6i9/EN2gOj6JBJ+lYg3Tr0F8+7VpqW8Nc9nqDBmhtP5G7SpfHhJc3zXUznFwEzA
-	 8eUo+1eTGYv0l4oXsC3yhuM+UCVjK4LN268n7r73jkDLwkuAk6uO6OnXIZgP3STcI1
-	 52MTLTKkZcVFruYaQCFz/eTtuTfdamgOztb4WEb8cna0YeZRhBa0UclGOXJQwF3P+x
-	 ZogM+fzJU6OvQZ911dM4hdx/1HOPjZVgsOntaf3PQT+b8xxfQFoH1zjv3PhXuXEj7s
-	 ngCIy9aJTWtzte03OFhHzvcwFw2yYgpSHYl+8eXKxamxJGfDs89t/kOuac6zrh9Rx6
-	 q7/PgvM6ttOZg==
-Date: Thu, 7 Aug 2025 20:47:15 +0100
+	b=AGtRAl2VlG+N4Y5vl1pGJIVUbqHcsi8gpQ0mLYFb8KsjJ34yy9x+xJKcnpLMd0K6/
+	 SC5+R1IDPVS4dRhjA4Y1KzgC/G8WM2yvCaE3zf05iVSsqe3vlXaLMycddMlZKbiQR+
+	 EeaMGy+AsaJwy0IvyOuV/szzpTEDyyTut+I+MR9/8uiTCmS/VasdWQizTTU4AvWhMP
+	 mNpK8S5fxz+o7jiDtTtcEKoogH1J7E9tY8o8bZiiGhC4ukB/uJDY9th257mTuo3nbZ
+	 Te0pxToUyKVFRhwCKYol33CI5MlhjXjB1CRthICLU8pBlsYJnQ7EES8kNmeWfhQZ/J
+	 UsBhitv56bg4w==
+Date: Thu, 7 Aug 2025 21:34:38 +0100
 From: Simon Horman <horms@kernel.org>
 To: Alexandra Winter <wintera@linux.ibm.com>
 Cc: David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
@@ -62,11 +62,10 @@ Cc: David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
 	Tony Lu <tonylu@linux.alibaba.com>,
 	Wen Gu <guwen@linux.alibaba.com>, Halil Pasic <pasic@linux.ibm.com>,
 	linux-rdma@vger.kernel.org
-Subject: Re: [RFC net-next 10/17] net/dibs: Define dibs_client_ops and
- dibs_dev_ops
-Message-ID: <20250807194715.GP61519@horms.kernel.org>
+Subject: Re: [RFC net-next 16/17] net/dibs: Move data path to dibs layer
+Message-ID: <20250807203438.GR61519@horms.kernel.org>
 References: <20250806154122.3413330-1-wintera@linux.ibm.com>
- <20250806154122.3413330-11-wintera@linux.ibm.com>
+ <20250806154122.3413330-17-wintera@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -75,9 +74,9 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250806154122.3413330-11-wintera@linux.ibm.com>
+In-Reply-To: <20250806154122.3413330-17-wintera@linux.ibm.com>
 
-On Wed, Aug 06, 2025 at 05:41:15PM +0200, Alexandra Winter wrote:
+On Wed, Aug 06, 2025 at 05:41:21PM +0200, Alexandra Winter wrote:
 
 ...
 
@@ -85,89 +84,39 @@ On Wed, Aug 06, 2025 at 05:41:15PM +0200, Alexandra Winter wrote:
 
 ...
 
-> -static void smcd_register_dev(struct ism_dev *ism)
-> +static void smcd_register_dev(struct dibs_dev *dibs)
->  {
-> -	const struct smcd_ops *ops = ism_get_smcd_ops();
->  	struct smcd_dev *smcd, *fentry;
-> +	const struct smcd_ops *ops;
-> +	struct smc_lo_dev *smc_lo;
-> +	struct ism_dev *ism;
+> @@ -33,18 +32,18 @@ static void smcd_register_dev(struct dibs_dev *dibs);
+>  static void smcd_unregister_dev(struct dibs_dev *dibs);
+>  #if IS_ENABLED(CONFIG_ISM)
+>  static void smcd_handle_event(struct ism_dev *ism, struct ism_event *event);
+> -static void smcd_handle_irq(struct ism_dev *ism, unsigned int dmbno,
+> +static void smcd_handle_irq(struct dibs_dev *dibs, unsigned int dmbno,
+>  			    u16 dmbemask);
+
+Hi Alexandria,
+
+smcd_handle_irq is only declared (and defined) if CONFIG_ISM is enabled.
+
 >  
-> -	if (!ops)
-> -		return;
-> +	if (smc_ism_is_loopback(dibs)) {
-> +		if (smc_loopback_init(&smc_lo))
-> +			return;
-> +	}
+>  static struct ism_client smc_ism_client = {
+>  	.name = "SMC-D",
+>  	.handle_event = smcd_handle_event,
+> -	.handle_irq = smcd_handle_irq,
+>  };
+>  #endif
+>  static struct dibs_client_ops smc_client_ops = {
+>  	.add_dev = smcd_register_dev,
+>  	.del_dev = smcd_unregister_dev,
+> +	.handle_irq = smcd_handle_irq,
+
+But here smcd_handle_irq is used regardless of if CONFIG_ISM is enabled.
+
+I believe this is addressed by the following patch in this series.
+However, this does result ina transient build failure.
+And they should be avoided as they break bisection.
+
+>  };
 >  
-> -	smcd = smcd_alloc_dev(&ism->pdev->dev, dev_name(&ism->pdev->dev), ops,
-> -			      ISM_NR_DMBS);
-> +	if (smc_ism_is_loopback(dibs)) {
-> +		ops = smc_lo_get_smcd_ops();
-> +		smcd = smcd_alloc_dev(dev_name(&smc_lo->dev), ops,
-> +				      SMC_LO_MAX_DMBS);
-> +	} else {
-> +		ism = dibs->drv_priv;
-> +		ops = ism_get_smcd_ops();
-> +		smcd = smcd_alloc_dev(dev_name(&ism->pdev->dev), ops,
-> +				      ISM_NR_DMBS);
-> +	}
-
-Hi Alexandra,
-
-ism is initialised conditionally here.
-
-But towards the end of this function the following dereferences
-ism unconditionally. And it's not clear to me this won't occur
-even if ism wasn't initialised above.
-
-        if (smc_pnet_is_pnetid_set(smcd->pnetid))
-                pr_warn_ratelimited("smc: adding smcd device %s with pnetid %.16s%s\n",
-                                    dev_name(&ism->dev), smcd->pnetid,
-                                    smcd->pnetid_by_user ?
-                                        " (user defined)" :
-                                        "");
-        else
-                pr_warn_ratelimited("smc: adding smcd device %s without pnetid\n",
-                                    dev_name(&ism->dev));
-
-
->  	if (!smcd)
->  		return;
-> -	smcd->priv = ism;
-> +
-> +	smcd->dibs = dibs;
-> +	dibs_set_priv(dibs, &smc_dibs_client, smcd);
-> +
-> +	if (smc_ism_is_loopback(dibs)) {
-> +		smcd->priv = smc_lo;
-> +		smc_lo->smcd = smcd;
-> +	} else {
-> +		smcd->priv = ism;
-> +		ism_set_priv(ism, &smc_ism_client, smcd);
-
-This function is now compiled even if CONFIG_ISM is not enabled.
-But smc_ism_client is only defined if CONFIG_ISM is enabled.
-
-I think this code is removed by later patches. But nonetheless
-I also think this leads to a build error and it's best
-to avoid transient build errors as they break bisection.
-
-> +		if (smc_pnetid_by_dev_port(&ism->pdev->dev, 0, smcd->pnetid))
-> +			smc_pnetid_by_table_smcd(smcd);
-> +	}
-> +
->  	smcd->client = &smc_ism_client;
-
-Ditto.
-
-> -	ism_set_priv(ism, &smc_ism_client, smcd);
-> -	if (smc_pnetid_by_dev_port(&ism->pdev->dev, 0, smcd->pnetid))
-> -		smc_pnetid_by_table_smcd(smcd);
->  
->  	if (smcd->ops->supports_v2())
->  		smc_ism_set_v2_capable();
+>  static struct dibs_client smc_dibs_client = {
 
 ...
 
