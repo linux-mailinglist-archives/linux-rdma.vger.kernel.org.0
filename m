@@ -1,104 +1,138 @@
-Return-Path: <linux-rdma+bounces-12654-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12655-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36604B1FC08
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 Aug 2025 22:20:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A23FFB1FC0B
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 Aug 2025 22:20:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B578E3B653D
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 Aug 2025 20:20:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B233C174A96
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 Aug 2025 20:20:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09484204C0F;
-	Sun, 10 Aug 2025 20:20:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 165982165EC;
+	Sun, 10 Aug 2025 20:20:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Kh2r8tUm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gDchgDaD"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D68BB8BEE;
-	Sun, 10 Aug 2025 20:20:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 289091F429C;
+	Sun, 10 Aug 2025 20:20:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754857210; cv=none; b=n6ErP8dnHYesCj2Vphjgr8+59MbYoVhlXo2k0Yvs0H/iBl67I6Cl+vDFFtzcpk3QVGJQoAYac+Cs4aynfJdWkx47yAT3QrOSz3CmP4muGxJHEmtCSD6c78+YekSpcYQlnRim4VAiJHp6S77JdCPmaqh4PpcoTNdx6inKO8m8ZR0=
+	t=1754857228; cv=none; b=Jh4UimaZtzuVwshC+rR9f4+DGoUCPGVAb6c6Pj0PB4IXaFEM3mWfffdbNlysDnPxVnr77PYC1ySNsQoEkn6bALTTYYRv0HQhQ6rRxKUafXoGZQwnAG2t85hlmReehJLhFPe6omSy6HBMDx2du3L23ZqTJl39O//z3YQHXPbDvt0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754857210; c=relaxed/simple;
-	bh=SK29jn8R4xzXjx47k/Sx2ahNb2fhc75hy8aTdP+6uoU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kzQncwnmp2x73kTQmu48tDQJMvCGUm0Yl4+L0pj7BgkB1vI/CSZ+63m0MXNiV2k27onAVCiIR9sxi/dc6yzznwR3h7rSzWbOV7SsT8QSkz9IW3mQW1JLaEWi4GdCcpYmOVoBM+X1QZUONb88gGkAbNNWLIPev8gGYke6EPQ+bB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=Kh2r8tUm; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=9cKmtYSJg+15Z48bvfUgF0NQCiMXEeRkyLjdINLRnFw=; b=Kh2r8tUmvEQ9eRfd3ewTh8Fxoq
-	jtLnwQZue+mPg6caqN/u3iBJGPHwkAYDe2MClpP2G6/ZkmSVLhc8AbbRx96fwnzO6uiA6qJxo5UlG
-	4R+vt3H2l2r99qLo4oFhJPNQNvqv8FnzP08W1aP0g9hJ8ZLB15cl5LVXYFDa3p6DPrIE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1ulCWI-004FH4-HI; Sun, 10 Aug 2025 22:19:54 +0200
-Date: Sun, 10 Aug 2025 22:19:54 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Ujwal Kundur <ujwal.kundur@gmail.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, allison.henderson@oracle.com,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, horms@kernel.org, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] rds: Fix endian annotations across various
- assignments
-Message-ID: <63a22c3c-ee9b-44cd-9e5a-a68bb366eba5@lunn.ch>
-References: <20250810171155.3263-1-ujwal.kundur@gmail.com>
- <20250810174705.GK222315@ZenIV>
- <20250810182506.GL222315@ZenIV>
- <398e53d8-906d-43c9-9395-f6115dcb945b@lunn.ch>
- <CALkFLLJkGqA7T5JhRQOs4spa+ihr-6RXA9xWwQRbRp6upLXBaw@mail.gmail.com>
+	s=arc-20240116; t=1754857228; c=relaxed/simple;
+	bh=X18dPKykegb5IVOtMVKhJoUQ7LQapb0oeOk+mCzKQeg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Z88GJaX1lYIFALajDobd9Peo6nq5iITa8i+cRMAMog0bw3R8lbpTXgqWIX4OyJIgdCi0G/B3MzWKZNnUi3dIU1RfFpW8McJpOz8u+kqKNfWRX1bxmo7LxZa4HOjd5u32XxDgAqmKpqFcQBASule96Y+FLOsy49NMXb74ecf7Tog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gDchgDaD; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-459e7ea3ebeso13507535e9.0;
+        Sun, 10 Aug 2025 13:20:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1754857225; x=1755462025; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=l27SIyY6K8c3MGvtKdMZemDVV/kUF03H7mYHi+f0BLw=;
+        b=gDchgDaDir3ZeOUg2LYb/hAJjclRQ7L40MdNbqkuzN6av/d3ifKrjoPcHFl7CcU97r
+         H6YCb3pY5EMM00nqFDfBZy/j3wuqVJYRyXfHLLWGH0Z7zlHXp8jx2xBeWnmILB2XAR5E
+         /Gq5naEj0w7wAMakSXhcCbbcCfqWLQtrEPSndiEFMcLDO+0dyUtsXx1hIHzwJ1TuXJVE
+         JgFrOdgpVoWpd2UNYkub0/po+yfrz6QeC1u0AAy9TIYe96eRWVIY8KDottezcnnG8YyQ
+         VEbgplScKNVH2RejRCFQvS3kfTY//rGc/HhTkvHwgsF3VV3r2+Rasm1waNQJELMd6x7Y
+         J4wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754857225; x=1755462025;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=l27SIyY6K8c3MGvtKdMZemDVV/kUF03H7mYHi+f0BLw=;
+        b=LlVauVPbJTq9vAiIXd0VkDdXccQiMWweAHavkBL7V+YZMUjme8xCKMNULYLfEEJvMj
+         ezKGI8HKRtmRAAHaxMtpBOjOo/eG3wic2L+p3FPR1gdtlJpsKZijlVFpk1RIfTeqUjHv
+         3hGbzTdOWibxyfedT1nPA23L+JIy7yWAhGY5GvD8TJN7fuFbiPDyRmd3hqAnjXw+Ipta
+         wy2YldQGYz7MHWMxG6YAC6E8fgFShIk86Wuj+Hf/guhuPP16qLattOJ/SiIPuiKYXzVy
+         2KLVXe5iYUnVaGzsjQzMCG1r//AtRYi/B4EWVLaY9slb8C1ZYdRpMz8+PjuYn/dl/bNL
+         ypZw==
+X-Forwarded-Encrypted: i=1; AJvYcCU90dothLu5rKVlJ2s7KPxzXgx18At6C8vPvb3bQ7fcAtvvKdLbc6m9sLUsBFxaCn/J4OKHGYU1@vger.kernel.org, AJvYcCWJzq9zWAGaZBnSJ1DoKnau37S4MCr42zvVQqTorP8KZkoAYj1PsJad+odRsMEJluMzADRxklMN6vXrOA==@vger.kernel.org, AJvYcCXuaegVPdEz82HmAr/DjuPSfLVnhMjjYR67E34s6l6GASWS42MH3VOYlIFKPd5pZBrvkvI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyqMaMdgSbFwnoSmqYRSnCaKn5n3MKnhzzvZYjYhCR4gLpvAHM4
+	dn0W6RnGYhN6HMxLyMn9j4GBiHgiO8WTZT7ATDd284hGs8mmZnb/haa/
+X-Gm-Gg: ASbGncvZYaQwhCduIEQ7UJ5YEQM2MwKeM9DQkv3x+YIpa5SxqavniJg//uug+8SaG9h
+	1yatJBOIyGviw5qTmQF/yHJbpAsJYzH72M2oXSUEerVYZRUpNa/88CooGLC/jSW5ggizDaiOkVI
+	B6F1FWiKi3jSz08PNGUINdBU738sCGoQJgeOMSMBDwD4R4TrQ3p24toMP41uhgu1pP/rY6jzOnW
+	75fsBxLB8qUGVeaRidgOspGaEP/ydaSOSCLFWPJ8nPye5BtFuixqe2A/tEUHPQmRTIKPbBPglr2
+	fGyVV6folZKrURB+FsE80VlDfsv4/iNCOnkRA55oc0oYYJnk7rEDEt73GMgARwrHspljMxUYix6
+	jOE0dJQ2051M7+nvO/dLfK0KTQKXQ3WHpWhes6xYJZA==
+X-Google-Smtp-Source: AGHT+IGk7vG3POgXRirhM3QifkV6PKInb2ftoINCwL8L4D+zlXJNfPRwum9XWmerF0tKkLVVBbs8kQ==
+X-Received: by 2002:a05:600c:354d:b0:456:173c:8a53 with SMTP id 5b1f17b1804b1-459f4f2e6e4mr81715875e9.2.1754857225254;
+        Sun, 10 Aug 2025 13:20:25 -0700 (PDT)
+Received: from [192.168.8.100] ([148.252.128.41])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-459e58554f2sm224218235e9.12.2025.08.10.13.20.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Aug 2025 13:20:24 -0700 (PDT)
+Message-ID: <757b3268-43ab-41bf-88fa-4730089721f3@gmail.com>
+Date: Sun, 10 Aug 2025 21:21:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALkFLLJkGqA7T5JhRQOs4spa+ihr-6RXA9xWwQRbRp6upLXBaw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH linux-next v3] mm, page_pool: introduce a new page type
+ for page pool in page type
+To: Byungchul Park <byungchul@sk.com>, linux-mm@kvack.org,
+ netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+ harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
+ davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+ john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
+ leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
+ andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
+ akpm@linux-foundation.org, david@redhat.com, lorenzo.stoakes@oracle.com,
+ Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com,
+ mhocko@suse.com, horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org,
+ ziy@nvidia.com, ilias.apalodimas@linaro.org, willy@infradead.org,
+ brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
+ usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
+ almasrymina@google.com, toke@redhat.com, bpf@vger.kernel.org,
+ linux-rdma@vger.kernel.org, sfr@canb.auug.org.au
+References: <20250729110210.48313-1-byungchul@sk.com>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <20250729110210.48313-1-byungchul@sk.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> > This smells of an LLM generated patch. So i think you are somewhat
-> > wasting your time explaining in detail why this is wrong.
-> I have never used (and will not use) LLMs :(
+On 7/29/25 12:02, Byungchul Park wrote:
+> Changes from v2:
+> 	1. Rebase on linux-next as of Jul 29.
+> 	2. Skip 'niov->pp = NULL' when it's allocated using __GFP_ZERO.
+> 	3. Change trivial coding style. (feedbacked by Mina)
+> 	4. Add Co-developed-by, Acked-by, and Reviewed-by properly.
+> 	   Thanks to all.
+> 
+> Changes from v1:
+> 	1. Rebase on linux-next.
+> 	2. Initialize net_iov->pp = NULL when allocating net_iov in
+> 	   net_devmem_bind_dmabuf() and io_zcrx_create_area().
+> 	3. Use ->pp for net_iov to identify if it's pp rather than
+> 	   always consider net_iov as pp.
+> 	4. Add Suggested-by: David Hildenbrand <david@redhat.com>.
+> 
+> ---8<---
+>  From 88bcb9907a0cef65a9c0adf35e144f9eb67e0542 Mon Sep 17 00:00:00 2001
+> From: Byungchul Park <byungchul@sk.com>
+> Date: Tue, 29 Jul 2025 19:49:44 +0900
+> Subject: [PATCH linux-next v3] mm, page_pool: introduce a new page type for page pool in page type
 
-Sorry, I need to refine my sense of smell.
+That will conflict with "netmem: replace __netmem_clear_lsb() with
+netmem_to_nmdesc()", it'll need some coordination.
 
-> P.S: I'm still learning the ropes as a contributor so please pardon my
-> ignorance.
+-- 
+Pavel Begunkov
 
-You might find this interesting:
-
-https://www.kernel.org/doc/html/latest/process/maintainer-netdev.html
-
-You made a few process errors as well. Since you submitted this to
-net, it needs a Fixes: tag.
-
-Also:
-
-https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-
-Particularly:
-
-	It must either fix a real bug that bothers people
-
-Sparse warnings don't really both people. But is the sparse warning
-indicating a read bug which does bother people? If so, net is O.K, but
-please add to the commit message what the real bug is. If this is
-simply cleanup, not a bug fix, please submit to net-next.
-
-You can also learn a lot by subscribing to the netdev mailing list,
-and reading other peoples patches, and review comments they get.
-
-	Andrew
 
