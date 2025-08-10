@@ -1,49 +1,51 @@
-Return-Path: <linux-rdma+bounces-12645-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12646-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BC88B1FB60
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 Aug 2025 19:32:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00638B1FB7B
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 Aug 2025 19:47:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F113B7AA88F
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 Aug 2025 17:30:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4148C3A541D
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 Aug 2025 17:47:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C160267B89;
-	Sun, 10 Aug 2025 17:32:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08AEC24DD13;
+	Sun, 10 Aug 2025 17:47:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="d2oUyoKQ"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="MV/8oOPo"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FBA1DF75D;
-	Sun, 10 Aug 2025 17:32:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A97771BD9C9;
+	Sun, 10 Aug 2025 17:47:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754847138; cv=none; b=ArGbwk6YSrQ5Kz/OK3dux391g9iP+P6FXzVKsqGbyH1Z0vQbe06RnmIC+rUdIXKV97F92kereJ6BjibRA4hQCmv1Bwu8rVgWpk99fgQnmZ9/zYYGymj00N5s6VbKYiy/1xwCHZfejdEEpza9S1Ra8koXgt3IGfP3Vx25GMSOuEA=
+	t=1754848034; cv=none; b=QPRc82c3RX7iOqIv5SEynyiOgmoQhDTq15FAI9Gfh38JqUUAExENrUg3kpznRi91wrxymySUGjXR8Hno6asuF4K3DGEanYpFG+mVUtVg0VXhSoWd0szWO6LOZYc7Q7g5i/VeowFDs45rPzdHI7uRYSGiwtbj7OL0PasPTJyuypE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754847138; c=relaxed/simple;
-	bh=TNmUQ437s7eOKUcfVKHyRc4T6i8CUtA4TWoV3ciCMN8=;
+	s=arc-20240116; t=1754848034; c=relaxed/simple;
+	bh=rnQuOmgE0KMuPOTpXub7UBK7vP0ELwxG3TxeTDU0yeQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H0rOLnXihTN5awBnE0NYyWUNNyG+FGn2RHXiAR4UsA4GR37Q2F6S4TXoFngE8SUqPNW37kINlFNWgAUT76VujqtkHob83i2tnqd+dqbIzQ7kIABDxiEdCdZaXm80ZJyTuwPmr1VLfZT1Sht3lrKmFS/09/Q1S4TBU5lXKQvlSnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=d2oUyoKQ; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=AYabts41ywViN3lH6/8mBeNV/CtbPocv9+f3715eNQI=; b=d2oUyoKQjAlkYYjzqabnE8JhdT
-	A7TTg6U0iA88OIcQafOU1XXEa7mLYSBkx9mW/mO18DHVPMM4wb8xVIK2HJ5UxGPumcyTn6wtSKNTP
-	vC31BdYHbtRZ9fLXSN9RO4ZV3zmx5opY7WgMLC/QEUbBmW+JibenOeqBB7AlwoAukX6I=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1ul9tr-004Eep-KM; Sun, 10 Aug 2025 19:32:03 +0200
-Date: Sun, 10 Aug 2025 19:32:03 +0200
-From: Andrew Lunn <andrew@lunn.ch>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SPWGO305tl/xCrfd65/KYXK2xykzVKZ1LPqYIPYQTrUGJ8XJ2+wdRL5+D8y0OEFwU3fmvMr1aMzK20ZjqDZIWC+5W4iOe8RSyzwSMZHWHRRcKc1Qa01fuun4MyLK33H3Z0E2RjAQkSpyKtzHyfpZr/9BouxLZhpiQ05HVKYee9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=MV/8oOPo; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=PQt8jeiA+TBvJ8iDPPpJpi5l72JLqli8XK+VxXxBsC0=; b=MV/8oOPoToF2oAxPJMtQeXijWX
+	zFzhdDXCyyKMCZXPfiPSbSR2443NFKReSiUeH/T5Ov5oe3nbp2PKLolKReVZEHL6Adqz23PU1ThiT
+	ek+9cylKMOvIt149M/GOpc6Jug8uIBMIVB7UNj2kb07v1DtgUjx7tqbD96K7RBmEmydPkQcFUfPVS
+	sMXiej63ST4yLMGJJDqD9yZobvrIDQchd3ErqoNE0j91BIFvkoj3ANGAzpvDpBKeBJUQEo4kA+KuT
+	J+CUgyLOeUwI1M0kdJa2w9HxHWbIB9Qfn4rWr47Aii4Qkbg7riEMIOIp4HIY7ErBZfkR/OovK1Ev5
+	a95vbcrQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1ulA8P-000000092Kz-0ipJ;
+	Sun, 10 Aug 2025 17:47:05 +0000
+Date: Sun, 10 Aug 2025 18:47:05 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
 To: Ujwal Kundur <ujwal.kundur@gmail.com>
 Cc: allison.henderson@oracle.com, davem@davemloft.net, edumazet@google.com,
 	kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
@@ -51,7 +53,7 @@ Cc: allison.henderson@oracle.com, davem@davemloft.net, edumazet@google.com,
 	rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH net] rds: Fix endian annotations across various
  assignments
-Message-ID: <ac09739a-eec5-4025-989e-a6a202fcfd63@lunn.ch>
+Message-ID: <20250810174705.GK222315@ZenIV>
 References: <20250810171155.3263-1-ujwal.kundur@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -62,18 +64,9 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20250810171155.3263-1-ujwal.kundur@gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
 On Sun, Aug 10, 2025 at 10:41:55PM +0530, Ujwal Kundur wrote:
-> Sparse reports the following warnings:
-> 
-> net/rds/af_rds.c:245:22: warning: invalid assignment: |=
-> net/rds/af_rds.c:245:22: left side has type restricted __poll_t
-> net/rds/af_rds.c:245:22: right side has type int
-> 
-> __poll_t is typedef'ed to __bitwise while POLLERR is defined as 0x0008,
-> force conversion.
-
-Please could you split this up, one patch per type of problem.
 
 > diff --git a/net/rds/af_rds.c b/net/rds/af_rds.c
 > index 086a13170e09..9cd5905d916a 100644
@@ -86,50 +79,87 @@ Please could you split this up, one patch per type of problem.
 > -		mask |= POLLERR;
 > +		mask |= (__force __poll_t)POLLERR;
 
-I don't like __force, it suggests something is wrong with the
-design. If it is needed, it should be hidden away.
+EPOLLERR.
 
-However:
+>  	read_unlock_irqrestore(&rs->rs_recv_lock, flags);
+>  
+>  	/* clear state any time we wake a seen-congested socket */
+> diff --git a/net/rds/connection.c b/net/rds/connection.c
+> index d62f486ab29f..0047b76c3c0b 100644
+> --- a/net/rds/connection.c
+> +++ b/net/rds/connection.c
+> @@ -62,13 +62,13 @@ static struct hlist_head *rds_conn_bucket(const struct in6_addr *laddr,
+>  	net_get_random_once(&rds_hash_secret, sizeof(rds_hash_secret));
+>  	net_get_random_once(&rds6_hash_secret, sizeof(rds6_hash_secret));
+>  
+> -	lhash = (__force u32)laddr->s6_addr32[3];
+> +	lhash = (__force __u32)laddr->s6_addr32[3];
+>  #if IS_ENABLED(CONFIG_IPV6)
+>  	fhash = __ipv6_addr_jhash(faddr, rds6_hash_secret);
+>  #else
+> -	fhash = (__force u32)faddr->s6_addr32[3];
+> +	fhash = (__force __u32)(faddr->s6_addr32[3]);
+>  #endif
+> -	hash = __inet_ehashfn(lhash, 0, fhash, 0, rds_hash_secret);
+> +	hash = __inet_ehashfn((__force __be32)lhash, 0, (__force __be32)fhash, 0, rds_hash_secret);
 
-~/linux/net$ grep -r POLLERR
-caif/caif_socket.c:	wake_up_interruptible_poll(sk_sleep(sk), EPOLLERR|EPOLLHUP);
-caif/caif_socket.c:		mask |= EPOLLERR;
-rds/af_rds.c:		mask |= POLLERR;
-bluetooth/af_bluetooth.c:		mask |= EPOLLERR |
-sctp/socket.c:		mask |= EPOLLERR |
-vmw_vsock/af_vsock.c:		mask |= EPOLLERR;
-vmw_vsock/af_vsock.c:				mask |= EPOLLERR;
-vmw_vsock/af_vsock.c:					mask |= EPOLLERR;
-9p/trans_fd.c:		return EPOLLERR;
-9p/trans_fd.c:	if (n & (EPOLLERR | EPOLLHUP | EPOLLNVAL)) {
-mptcp/protocol.c:		mask |= EPOLLERR;
-core/datagram.c:	if (key && !(key_to_poll(key) & (EPOLLIN | EPOLLERR)))
-core/datagram.c:		mask |= EPOLLERR |
-core/sock.c:		wake_up_interruptible_poll(&wq->wait, EPOLLERR);
-nfc/llcp_sock.c:		mask |= EPOLLERR |
-smc/af_smc.c:		else if (flags & EPOLLERR)
-smc/af_smc.c:			mask |= EPOLLERR;
-phonet/socket.c:		return EPOLLERR;
-iucv/af_iucv.c:		mask |= EPOLLERR |
-unix/af_unix.c:		mask |= EPOLLERR;
-unix/af_unix.c:		mask |= EPOLLERR |
-ipv4/tcp.c:		mask |= EPOLLERR;
-sunrpc/rpc_pipe.c:		mask |= EPOLLERR | EPOLLHUP;
-atm/common.c:		mask = EPOLLERR;
+what the...  You have lhash and fhash set to __be32 values, then
+feed them to function that expects __be32 argument.  Just turn
+these two variables into __be32 and lose the pointless casts.
 
-So why is af_rds.c special? Or do all these files also give the same
-warning?
+> diff --git a/net/rds/rds.h b/net/rds/rds.h
+> index dc360252c515..c2fb47e1fe07 100644
+> --- a/net/rds/rds.h
+> +++ b/net/rds/rds.h
+> @@ -93,7 +93,7 @@ enum {
+>  
+>  /* Max number of multipaths per RDS connection. Must be a power of 2 */
+>  #define	RDS_MPATH_WORKERS	8
+> -#define	RDS_MPATH_HASH(rs, n) (jhash_1word((rs)->rs_bound_port, \
+> +#define	RDS_MPATH_HASH(rs, n) (jhash_1word((__force __u16)(rs)->rs_bound_port, \
+>  			       (rs)->rs_hash_initval) & ((n) - 1))
 
-Also:
+Reasonable.
 
-https://elixir.bootlin.com/linux/v6.16/source/include/uapi/linux/eventpoll.h#L34
+>  #define IS_CANONICAL(laddr, faddr) (htonl(laddr) < htonl(faddr))
+> diff --git a/net/rds/recv.c b/net/rds/recv.c
+> index 5627f80013f8..7fc7a3850a7b 100644
+> --- a/net/rds/recv.c
+> +++ b/net/rds/recv.c
+> @@ -216,10 +216,10 @@ static void rds_recv_hs_exthdrs(struct rds_header *hdr,
+>  		switch (type) {
+>  		case RDS_EXTHDR_NPATHS:
+>  			conn->c_npaths = min_t(int, RDS_MPATH_WORKERS,
+> -					       be16_to_cpu(buffer.rds_npaths));
+> +					      (__force __u16)buffer.rds_npaths);
 
-#define EPOLLERR	(__force __poll_t)0x00000008
+No.  It will break on little-endian.  That's over-the-wire data you are
+dealing with; it's *NOT* going to be host-endian.  Fix the buggered
+annotations instead.
 
-So your patch does nothing.
+>  			break;
+>  		case RDS_EXTHDR_GEN_NUM:
+> -			new_peer_gen_num = be32_to_cpu(buffer.rds_gen_num);
+> +			new_peer_gen_num = (__force __u32)buffer.rds_gen_num;
+>  			break;
 
-    Andrew
+Ditto.
 
----
-pw-bot: cr
+> diff --git a/net/rds/send.c b/net/rds/send.c
+> index 42d991bc8543..0d79455c9721 100644
+> --- a/net/rds/send.c
+> +++ b/net/rds/send.c
+> @@ -1454,8 +1454,8 @@ rds_send_probe(struct rds_conn_path *cp, __be16 sport,
+>  
+>  	if (RDS_HS_PROBE(be16_to_cpu(sport), be16_to_cpu(dport)) &&
+>  	    cp->cp_conn->c_trans->t_mp_capable) {
+> -		u16 npaths = cpu_to_be16(RDS_MPATH_WORKERS);
+> -		u32 my_gen_num = cpu_to_be32(cp->cp_conn->c_my_gen_num);
+> +		u16 npaths = (__force __u16)RDS_MPATH_WORKERS;
+> +		u32 my_gen_num = (__force __u32)cp->cp_conn->c_my_gen_num;
+
+Again, over-the-wire data; you are breaking it on l-e.
+
+>  		rds_message_add_extension(&rm->m_inc.i_hdr,
+>  					  RDS_EXTHDR_NPATHS, &npaths,
 
