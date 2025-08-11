@@ -1,604 +1,457 @@
-Return-Path: <linux-rdma+bounces-12675-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12676-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3D5BB21692
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Aug 2025 22:35:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AE6DB21859
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Aug 2025 00:29:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C67557ACBDB
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Aug 2025 20:34:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8039B1A22427
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Aug 2025 22:29:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C751D2DCBFC;
-	Mon, 11 Aug 2025 20:35:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E53042E2F09;
+	Mon, 11 Aug 2025 22:29:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QAD1dniE"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="dr61DEjQ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 813B226AA91;
-	Mon, 11 Aug 2025 20:35:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAF311C1AB4;
+	Mon, 11 Aug 2025 22:29:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754944542; cv=none; b=GjaidN2k5sCNOYWC26EbYzap+GYHhvEix7P2R5vZhxri1dWyqFWxtsk7FcZWHsKbY4OP3raY/XT1ZdPtWtosGEehIn9FO5JhRTXfhx57TVcddqo6pT1T6b37VAXhEJvrkHbFut856k0v0isuAh/bEEEn+JlnVzuKsyG6IGWuCF0=
+	t=1754951361; cv=none; b=UbfcYhncbm6ECu4CRRJLnnbMn5F1ZwPAXRFCiKDcBqbgR6qv0jHUIJyF0/12jJgOv5Oa0UszWy8iJb3KPCypAHQvRETkozNmEiE9xkehhFt3J2PQpUSAPwr7yZO4vAcW7isDayLOqq2EedhXNLHeeAN4eOzlMI51XyTb3EY7kL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754944542; c=relaxed/simple;
-	bh=+wrMYAXVu57IfOqOJCw3l6xiG+9Ojk+54cYW2ocE7xI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Or91+eXUyD+b50PaNzh3/QqJ1qgcC7LuJydywhgta9s3a8nSZg+naWvyBrXaCoYZEVunuMoMoAc3GUaQgNKtI4NOoVXCUeTmpTOlNst/mJ34MPhQi2XvHxtLT9x+O0XdU5VldxPFkbMAXusQf8zyXvwU4O4FErbexxpP0Pb1qSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QAD1dniE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96938C4CEED;
-	Mon, 11 Aug 2025 20:35:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1754944542;
-	bh=+wrMYAXVu57IfOqOJCw3l6xiG+9Ojk+54cYW2ocE7xI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=QAD1dniE3qoch5CSZRfhgKeKO4F8ASLPz/z3sM5yUIGwFyWxtbPrc/vDOnfUxoFbe
-	 czcCHsvNwCVfvCGv661Dmttl7te/nbZCu7WXcLY7z4B/i7gcir5lYmYhT979+an4uM
-	 F7KEsF5xDt3Hd7Qk8a5e2CzqTXO70GQn6BMeJ1gza+Mj6lNt/2fnP24s3vvGHt+yiU
-	 Pb4ZrKpx+hqWa2qwtNRQEDX+r5hWL/WOfoLJPkSCagwCPS5TO8MVoFeM8zbEpmKFCH
-	 48ZZq9wOv/WWZgS+rQZm1HTOpEmqyos5OqiGaAmLqdoz/uPZe+h7i5mx3bmdVDE1Ux
-	 s+lMOUtggRj5g==
-From: Chuck Lever <cel@kernel.org>
-To: <linux-nfs@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>
-Cc: Chuck Lever <chuck.lever@oracle.com>
-Subject: [RFC PATCH v2] svcrdma: Introduce Receive buffer arenas
-Date: Mon, 11 Aug 2025 16:35:39 -0400
-Message-ID: <20250811203539.1702-1-cel@kernel.org>
-X-Mailer: git-send-email 2.50.0
+	s=arc-20240116; t=1754951361; c=relaxed/simple;
+	bh=PBgVGOra2YvrVbnr8+Od0wEb0DKIKgk6rBzJ8BrOizA=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=X1IQ0jJnZfJOag9uO/qoseuTxAQBlkMRz+8YJnOAli8orvmbL34Sqgb9LKxS1vBn0jr/+Ea/unO0gH+xje8ZwQ1SSkrvLRtzYBJVoT12JkIU1wVraapG3HCviskFE7gX6226B2EWLaX+FWzM4NbGuUsDnvLCjQGx4cSC1lAF09g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=dr61DEjQ; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1204)
+	id 6E38F2118276; Mon, 11 Aug 2025 15:29:19 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6E38F2118276
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1754951359;
+	bh=fFBbki7f2MoxwpvGe/7cW5fawgyJq69IsHM0H1HdpiQ=;
+	h=Date:From:To:Subject:From;
+	b=dr61DEjQySjxuJnB8aFpAK/IFb7ZYwvzhvvupIL4XrILeCWS1H2Uh8yDqBadWKx2M
+	 YUQKYRdnpj+npG8u+CRotzro9o9bhOHJxAvbe1WG133liawyWiyoeiqra9tMJZJW5u
+	 dIaGml0fvtdr/EKQi9fFfL0F8Bmm0EnF9SawtnoY=
+Date: Mon, 11 Aug 2025 15:29:19 -0700
+From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+To: horms@kernel.org, kuba@kernel.org, kys@microsoft.com,
+	haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+	pabeni@redhat.com, longli@microsoft.com, kotaranov@microsoft.com,
+	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+	john.fastabend@gmail.com, sdf@fomichev.me, lorenzo@kernel.org,
+	michal.kubiak@intel.com, ernis@linux.microsoft.com,
+	shradhagupta@linux.microsoft.com, shirazsaleem@microsoft.com,
+	rosenp@gmail.com, netdev@vger.kernel.org,
+	linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	dipayanroy@microsoft.com
+Subject: [PATCH net-next v4] net: mana: Use page pool fragments for RX
+ buffers instead of full pages to improve memory efficiency.
+Message-ID: <20250811222919.GA25951@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-From: Chuck Lever <chuck.lever@oracle.com>
+This patch enhances RX buffer handling in the mana driver by allocating
+pages from a page pool and slicing them into MTU-sized fragments, rather
+than dedicating a full page per packet. This approach is especially
+beneficial on systems with large base page sizes like 64KB.
 
-Reduce the per-connection footprint in the host's and RNIC's memory
-management TLBs by combining groups of a connection's Receive
-buffers into fewer IOVAs.
+Key improvements:
 
-I don't have a good way to measure whether this approach is
-effective.
+- Proper integration of page pool for RX buffer allocations.
+- MTU-sized buffer slicing to improve memory utilization.
+- Reduce overall per Rx queue memory footprint.
+- Automatic fallback to full-page buffers when:
+   * Jumbo frames are enabled (MTU > PAGE_SIZE / 2).
+   * The XDP path is active, to avoid complexities with fragment reuse.
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Testing on VMs with 64KB pages shows around 200% throughput improvement.
+Memory efficiency is significantly improved due to reduced wastage in page
+allocations. Example: We are now able to fit 35 rx buffers in a single 64kb
+page for MTU size of 1500, instead of 1 rx buffer per page previously.
+
+Tested:
+
+- iperf3, iperf2, and nttcp benchmarks.
+- Jumbo frames with MTU 9000.
+- Native XDP programs (XDP_PASS, XDP_DROP, XDP_TX, XDP_REDIRECT) for
+  testing the XDP path in driver.
+- Memory leak detection (kmemleak).
+- Driver load/unload, reboot, and stress scenarios.
+
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Reviewed-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
 ---
- include/linux/sunrpc/svc_rdma.h         |   3 +
- include/trace/events/rpcrdma.h          |  99 +++++++++++
- net/sunrpc/xprtrdma/Makefile            |   2 +-
- net/sunrpc/xprtrdma/pool.c              | 223 ++++++++++++++++++++++++
- net/sunrpc/xprtrdma/pool.h              |  25 +++
- net/sunrpc/xprtrdma/svc_rdma_recvfrom.c |  43 ++---
- 6 files changed, 370 insertions(+), 25 deletions(-)
- create mode 100644 net/sunrpc/xprtrdma/pool.c
- create mode 100644 net/sunrpc/xprtrdma/pool.h
+Changes in v4:
+  - Better error handling in mana_xdp_set.
+Changes in v3:
+  - Retained the pre-alloc rxbuf for driver reconfig paths
+    to better handle low memory scenario during reconfig.
+Changes in v2:
+  - Fixed mana_xdp_set() to return error code on failure instead of
+    always returning 0.
+  - Moved all local variable declarations to the start of functions
+    in mana_get_rxbuf_cfg.
+  - Removed unnecessary parentheses and wrapped lines to <= 80 chars.
+  - Use mana_xdp_get() for checking bpf_prog.
+  - Factored repeated page put/free logic into a static helper function.
+---
+ .../net/ethernet/microsoft/mana/mana_bpf.c    |  42 ++++-
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 151 ++++++++++++------
+ include/net/mana/mana.h                       |   4 +
+ 3 files changed, 148 insertions(+), 49 deletions(-)
 
-Changes since v1:
-- Rename "chunks" to "shards" -- RPC/RDMA already has chunks
-- Replace pool's list of shards with an xarray
-- Implement bitmap-based shard free space management
-- Implement some naive observability
-
-diff --git a/include/linux/sunrpc/svc_rdma.h b/include/linux/sunrpc/svc_rdma.h
-index 22704c2e5b9b..b4f3c01f1b94 100644
---- a/include/linux/sunrpc/svc_rdma.h
-+++ b/include/linux/sunrpc/svc_rdma.h
-@@ -73,6 +73,8 @@ extern struct percpu_counter svcrdma_stat_recv;
- extern struct percpu_counter svcrdma_stat_sq_starve;
- extern struct percpu_counter svcrdma_stat_write;
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_bpf.c b/drivers/net/ethernet/microsoft/mana/mana_bpf.c
+index d30721d4516f..e616f4239294 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_bpf.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_bpf.c
+@@ -174,6 +174,7 @@ static int mana_xdp_set(struct net_device *ndev, struct bpf_prog *prog,
+ 	struct mana_port_context *apc = netdev_priv(ndev);
+ 	struct bpf_prog *old_prog;
+ 	struct gdma_context *gc;
++	int err;
  
-+struct rpcrdma_pool;
-+
- struct svcxprt_rdma {
- 	struct svc_xprt      sc_xprt;		/* SVC transport structure */
- 	struct rdma_cm_id    *sc_cm_id;		/* RDMA connection id */
-@@ -112,6 +114,7 @@ struct svcxprt_rdma {
- 	unsigned long	     sc_flags;
- 	struct work_struct   sc_work;
+ 	gc = apc->ac->gdma_dev->gdma_context;
  
-+	struct rpcrdma_pool  *sc_recv_pool;
- 	struct llist_head    sc_recv_ctxts;
+@@ -198,8 +199,43 @@ static int mana_xdp_set(struct net_device *ndev, struct bpf_prog *prog,
+ 	if (old_prog)
+ 		bpf_prog_put(old_prog);
  
- 	atomic_t	     sc_completion_ids;
-diff --git a/include/trace/events/rpcrdma.h b/include/trace/events/rpcrdma.h
-index e6a72646c507..8bc713082c1a 100644
---- a/include/trace/events/rpcrdma.h
-+++ b/include/trace/events/rpcrdma.h
-@@ -2336,6 +2336,105 @@ DECLARE_EVENT_CLASS(rpcrdma_client_register_class,
- DEFINE_CLIENT_REGISTER_EVENT(rpcrdma_client_register);
- DEFINE_CLIENT_REGISTER_EVENT(rpcrdma_client_unregister);
- 
-+TRACE_EVENT(rpcrdma_pool_create,
-+	TP_PROTO(
-+		unsigned int poolid,
-+		size_t bufsize
-+	),
+-	if (apc->port_is_up)
++	if (apc->port_is_up) {
++		/* Re-create rxq's after xdp prog was loaded or unloaded.
++		 * Ex: re create rxq's to switch from full pages to smaller
++		 * size page fragments when xdp prog is unloaded and
++		 * vice-versa.
++		 */
 +
-+	TP_ARGS(poolid, bufsize),
-+
-+	TP_STRUCT__entry(
-+		__field(unsigned int, poolid)
-+		__field(size_t, bufsize)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->poolid = poolid;
-+		__entry->bufsize = bufsize;
-+	),
-+
-+	TP_printk("poolid=%u bufsize=%zu bytes",
-+		__entry->poolid, __entry->bufsize
-+	)
-+);
-+
-+TRACE_EVENT(rpcrdma_pool_destroy,
-+	TP_PROTO(
-+		unsigned int poolid
-+	),
-+
-+	TP_ARGS(poolid),
-+
-+	TP_STRUCT__entry(
-+		__field(unsigned int, poolid)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->poolid = poolid;),
-+
-+	TP_printk("poolid=%u",
-+		__entry->poolid
-+	)
-+);
-+
-+DECLARE_EVENT_CLASS(rpcrdma_pool_shard_class,
-+	TP_PROTO(
-+		unsigned int poolid,
-+		u32 shardid
-+	),
-+
-+	TP_ARGS(poolid, shardid),
-+
-+	TP_STRUCT__entry(
-+		__field(unsigned int, poolid)
-+		__field(u32, shardid)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->poolid = poolid;
-+		__entry->shardid = shardid;
-+	),
-+
-+	TP_printk("poolid=%u shardid=%u",
-+		__entry->poolid, __entry->shardid
-+	)
-+);
-+
-+#define DEFINE_RPCRDMA_POOL_SHARD_EVENT(name)				\
-+	DEFINE_EVENT(rpcrdma_pool_shard_class, name,			\
-+	TP_PROTO(							\
-+		unsigned int poolid,					\
-+		u32 shardid						\
-+	),								\
-+	TP_ARGS(poolid, shardid))
-+
-+DEFINE_RPCRDMA_POOL_SHARD_EVENT(rpcrdma_pool_shard_new);
-+DEFINE_RPCRDMA_POOL_SHARD_EVENT(rpcrdma_pool_shard_free);
-+
-+TRACE_EVENT(rpcrdma_pool_buffer,
-+	TP_PROTO(
-+		unsigned int poolid,
-+		const void *buffer
-+	),
-+
-+	TP_ARGS(poolid, buffer),
-+
-+	TP_STRUCT__entry(
-+		__field(unsigned int, poolid)
-+		__field(const void *, buffer)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->poolid = poolid;
-+		__entry->buffer = buffer;
-+	),
-+
-+	TP_printk("poolid=%u buffer=%p",
-+		__entry->poolid, __entry->buffer
-+	)
-+);
-+
- #endif /* _TRACE_RPCRDMA_H */
- 
- #include <trace/define_trace.h>
-diff --git a/net/sunrpc/xprtrdma/Makefile b/net/sunrpc/xprtrdma/Makefile
-index 3232aa23cdb4..f69456dffe87 100644
---- a/net/sunrpc/xprtrdma/Makefile
-+++ b/net/sunrpc/xprtrdma/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_SUNRPC_XPRT_RDMA) += rpcrdma.o
- 
--rpcrdma-y := transport.o rpc_rdma.o verbs.o frwr_ops.o ib_client.o \
-+rpcrdma-y := transport.o rpc_rdma.o verbs.o frwr_ops.o ib_client.o pool.o \
- 	svc_rdma.o svc_rdma_backchannel.o svc_rdma_transport.o \
- 	svc_rdma_sendto.o svc_rdma_recvfrom.o svc_rdma_rw.o \
- 	svc_rdma_pcl.o module.o
-diff --git a/net/sunrpc/xprtrdma/pool.c b/net/sunrpc/xprtrdma/pool.c
-new file mode 100644
-index 000000000000..e285c3e9c38e
---- /dev/null
-+++ b/net/sunrpc/xprtrdma/pool.c
-@@ -0,0 +1,223 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2025, Oracle and/or its affiliates.
-+ *
-+ * Pools for RPC-over-RDMA Receive buffers.
-+ *
-+ * A buffer pool attempts to conserve both the number of DMA mappings
-+ * and the device's IOVA space by collecting small buffers together
-+ * into a shard that has a single DMA mapping.
-+ *
-+ * API Contract:
-+ *  - Buffers contained in one rpcrdma_pool instance are the same
-+ *    size (rp_bufsize), no larger than RPCRDMA_MAX_INLINE_THRESH
-+ *  - Buffers in one rpcrdma_pool instance are mapped using the same
-+ *    DMA direction
-+ *  - Buffers in one rpcrdma_pool instance are automatically released
-+ *    when the instance is destroyed
-+ *
-+ * Future work:
-+ *   - Manage pool resources by reference count
-+ */
-+
-+#include <linux/list.h>
-+#include <linux/xarray.h>
-+#include <linux/sunrpc/svc_rdma.h>
-+
-+#include <rdma/ib_verbs.h>
-+
-+#include "xprt_rdma.h"
-+#include "pool.h"
-+
-+#include <trace/events/rpcrdma.h>
-+
-+/*
-+ * An idr would give near perfect pool ID uniqueness, but for
-+ * the moment the pool ID is used only for observability, not
-+ * correctness.
-+ */
-+static atomic_t rpcrdma_pool_id;
-+
-+struct rpcrdma_pool {
-+	struct xarray		rp_xa;
-+	struct ib_device	*rp_device;
-+	size_t			rp_shardsize;	// in bytes
-+	size_t			rp_bufsize;	// in bytes
-+	enum dma_data_direction	rp_direction;
-+	unsigned int		rp_bufs_per_shard;
-+	unsigned int		rp_pool_id;
-+};
-+
-+struct rpcrdma_pool_shard {
-+	u8			*pc_cpu_addr;
-+	u64			pc_mapped_addr;
-+	unsigned long		*pc_bitmap;
-+};
-+
-+static struct rpcrdma_pool_shard *
-+rpcrdma_pool_shard_alloc(struct rpcrdma_pool *pool, gfp_t flags)
-+{
-+	struct rpcrdma_pool_shard *shard;
-+	size_t bmap_size;
-+
-+	shard = kmalloc(sizeof(*shard), flags);
-+	if (!shard)
-+		goto fail;
-+
-+	bmap_size = BITS_TO_LONGS(pool->rp_bufs_per_shard) * sizeof(unsigned long);
-+	shard->pc_bitmap = kzalloc(bmap_size, flags);
-+	if (!shard->pc_bitmap)
-+		goto free_shard;
-+
-+	/*
-+	 * For good NUMA awareness, allocate the shard's I/O buffer
-+	 * on the NUMA node that the underlying device is affined to.
-+	 */
-+	shard->pc_cpu_addr = kmalloc_node(pool->rp_shardsize, flags,
-+					  ibdev_to_node(pool->rp_device));
-+	if (!shard->pc_cpu_addr)
-+		goto free_bitmap;
-+	shard->pc_mapped_addr = ib_dma_map_single(pool->rp_device,
-+						  shard->pc_cpu_addr,
-+						  pool->rp_shardsize,
-+						  pool->rp_direction);
-+	if (ib_dma_mapping_error(pool->rp_device, shard->pc_mapped_addr))
-+		goto free_iobuf;
-+
-+	return shard;
-+
-+free_iobuf:
-+	kfree(shard->pc_cpu_addr);
-+free_bitmap:
-+	kfree(shard->pc_bitmap);
-+free_shard:
-+	kfree(shard);
-+fail:
-+	return NULL;
-+}
-+
-+static void
-+rpcrdma_pool_shard_free(struct rpcrdma_pool *pool,
-+			struct rpcrdma_pool_shard *shard)
-+{
-+	ib_dma_unmap_single(pool->rp_device, shard->pc_mapped_addr,
-+			    pool->rp_shardsize, pool->rp_direction);
-+	kfree(shard->pc_cpu_addr);
-+	kfree(shard->pc_bitmap);
-+	kfree(shard);
-+}
-+
-+/**
-+ * rpcrdma_pool_create - Allocate and initialize an rpcrdma_pool instance
-+ * @args: pool creation arguments
-+ * @flags: GFP flags used during pool creation
-+ *
-+ * Returns a pointer to an opaque rpcrdma_pool instance or
-+ * NULL. If a pool instance is returned, caller must free the
-+ * returned instance using rpcrdma_pool_destroy().
-+ */
-+struct rpcrdma_pool *
-+rpcrdma_pool_create(struct rpcrdma_pool_args *args, gfp_t flags)
-+{
-+	struct rpcrdma_pool *pool;
-+
-+	pool = kmalloc(sizeof(*pool), flags);
-+	if (!pool)
-+		return NULL;
-+
-+	xa_init_flags(&pool->rp_xa, XA_FLAGS_ALLOC);
-+	pool->rp_device = args->pa_device;
-+	pool->rp_shardsize = RPCRDMA_MAX_INLINE_THRESH;
-+	pool->rp_bufsize = args->pa_bufsize;
-+	pool->rp_direction = args->pa_direction;
-+	pool->rp_bufs_per_shard = pool->rp_shardsize / pool->rp_bufsize;
-+	pool->rp_pool_id = atomic_inc_return(&rpcrdma_pool_id);
-+
-+	trace_rpcrdma_pool_create(pool->rp_pool_id, pool->rp_bufsize);
-+	return pool;
-+}
-+
-+/**
-+ * rpcrdma_pool_destroy - Release resources owned by @pool
-+ * @pool: buffer pool instance that will no longer be used
-+ *
-+ * This call releases all buffers in @pool that were allocated
-+ * via rpcrdma_pool_buffer_alloc().
-+ */
-+void
-+rpcrdma_pool_destroy(struct rpcrdma_pool *pool)
-+{
-+	struct rpcrdma_pool_shard *shard;
-+	unsigned long index;
-+
-+	trace_rpcrdma_pool_destroy(pool->rp_pool_id);
-+
-+	xa_for_each(&pool->rp_xa, index, shard) {
-+		trace_rpcrdma_pool_shard_free(pool->rp_pool_id, index);
-+		xa_erase(&pool->rp_xa, index);
-+		rpcrdma_pool_shard_free(pool, shard);
-+	}
-+
-+	xa_destroy(&pool->rp_xa);
-+	kfree(pool);
-+}
-+
-+/**
-+ * rpcrdma_pool_buffer_alloc - Allocate a buffer from @pool
-+ * @pool: buffer pool from which to allocate the buffer
-+ * @flags: GFP flags used during this allocation
-+ * @cpu_addr: CPU address of the buffer
-+ * @mapped_addr: mapped address of the buffer
-+ *
-+ * Return values:
-+ *   %true: @cpu_addr and @mapped_addr are filled in with a DMA-mapped buffer
-+ *   %false: No buffer is available
-+ *
-+ * When rpcrdma_pool_buffer_alloc() is successful, the returned
-+ * buffer is freed automatically when the buffer pool is released
-+ * by rpcrdma_pool_destroy().
-+ */
-+bool
-+rpcrdma_pool_buffer_alloc(struct rpcrdma_pool *pool, gfp_t flags,
-+			  void **cpu_addr, u64 *mapped_addr)
-+{
-+	struct rpcrdma_pool_shard *shard;
-+	u64 returned_mapped_addr;
-+	void *returned_cpu_addr;
-+	unsigned long index;
-+	u32 id;
-+
-+	xa_for_each(&pool->rp_xa, index, shard) {
-+		unsigned int i;
-+
-+		returned_cpu_addr = shard->pc_cpu_addr;
-+		returned_mapped_addr = shard->pc_mapped_addr;
-+		for (i = 0; i < pool->rp_bufs_per_shard; i++) {
-+			if (!test_and_set_bit(i, shard->pc_bitmap)) {
-+				returned_cpu_addr += i * pool->rp_bufsize;
-+				returned_mapped_addr += i * pool->rp_bufsize;
-+				goto out;
-+			}
++		/* Pre-allocate buffers to prevent failure in mana_attach */
++		err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
++		if (err) {
++			NL_SET_ERR_MSG_MOD
++			    (extack,
++			    "XDP: Insufficient memory for tx/rx re-config");
++			return err;
 +		}
++
++		err = mana_detach(ndev, false);
++		if (err) {
++			netdev_err(ndev,
++				   "mana_detach failed at xdp set: %d\n", err);
++			NL_SET_ERR_MSG_MOD(extack,
++					   "XDP: Re-config failed at detach");
++			goto err_dealloc_rxbuffs;
++		}
++
++		err = mana_attach(ndev);
++		if (err) {
++			netdev_err(ndev,
++				   "mana_attach failed at xdp set: %d\n", err);
++			NL_SET_ERR_MSG_MOD(extack,
++					   "XDP: Re-config failed at attach");
++			goto err_dealloc_rxbuffs;
++		}
++
+ 		mana_chn_setxdp(apc, prog);
++		mana_pre_dealloc_rxbufs(apc);
 +	}
+ 
+ 	if (prog)
+ 		ndev->max_mtu = MANA_XDP_MTU_MAX;
+@@ -207,6 +243,10 @@ static int mana_xdp_set(struct net_device *ndev, struct bpf_prog *prog,
+ 		ndev->max_mtu = gc->adapter_mtu - ETH_HLEN;
+ 
+ 	return 0;
 +
-+	shard = rpcrdma_pool_shard_alloc(pool, flags);
-+	if (!shard)
-+		return false;
-+	set_bit(0, shard->pc_bitmap);
-+	returned_cpu_addr = shard->pc_cpu_addr;
-+	returned_mapped_addr = shard->pc_mapped_addr;
-+
-+	if (xa_alloc(&pool->rp_xa, &id, shard, xa_limit_16b, flags) != 0) {
-+		rpcrdma_pool_shard_free(pool, shard);
-+		return false;
-+	}
-+	trace_rpcrdma_pool_shard_new(pool->rp_pool_id, id);
-+
-+out:
-+	*cpu_addr = returned_cpu_addr;
-+	*mapped_addr = returned_mapped_addr;
-+
-+	trace_rpcrdma_pool_buffer(pool->rp_pool_id, returned_cpu_addr);
-+	return true;
++err_dealloc_rxbuffs:
++	mana_pre_dealloc_rxbufs(apc);
++	return err;
+ }
+ 
+ int mana_bpf(struct net_device *ndev, struct netdev_bpf *bpf)
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index a7973651ae51..3efe2e696589 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -56,6 +56,15 @@ static bool mana_en_need_log(struct mana_port_context *apc, int err)
+ 		return true;
+ }
+ 
++static void mana_put_rx_page(struct mana_rxq *rxq, struct page *page,
++			     bool from_pool)
++{
++	if (from_pool)
++		page_pool_put_full_page(rxq->page_pool, page, false);
++	else
++		put_page(page);
 +}
-diff --git a/net/sunrpc/xprtrdma/pool.h b/net/sunrpc/xprtrdma/pool.h
-new file mode 100644
-index 000000000000..214f8fe78b9a
---- /dev/null
-+++ b/net/sunrpc/xprtrdma/pool.h
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (c) 2025, Oracle and/or its affiliates.
-+ *
-+ * Pools for Send and Receive buffers.
-+ */
 +
-+#ifndef RPCRDMA_POOL_H
-+#define RPCRDMA_POOL_H
-+
-+struct rpcrdma_pool_args {
-+	struct ib_device	*pa_device;
-+	size_t			pa_bufsize;
-+	enum dma_data_direction	pa_direction;
-+};
-+
-+struct rpcrdma_pool;
-+
-+struct rpcrdma_pool *
-+rpcrdma_pool_create(struct rpcrdma_pool_args *args, gfp_t flags);
-+void rpcrdma_pool_destroy(struct rpcrdma_pool *pool);
-+bool rpcrdma_pool_buffer_alloc(struct rpcrdma_pool *pool, gfp_t flags,
-+			       void **cpu_addr, u64 *mapped_addr);
-+
-+#endif /* RPCRDMA_POOL_H */
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c b/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-index e7e4a39ca6c6..f625f1ede434 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
-@@ -104,9 +104,9 @@
- #include <linux/sunrpc/svc_rdma.h>
+ /* Microsoft Azure Network Adapter (MANA) functions */
  
- #include "xprt_rdma.h"
--#include <trace/events/rpcrdma.h>
-+#include "pool.h"
- 
--static void svc_rdma_wc_receive(struct ib_cq *cq, struct ib_wc *wc);
-+#include <trace/events/rpcrdma.h>
- 
- static inline struct svc_rdma_recv_ctxt *
- svc_rdma_next_recv_ctxt(struct list_head *list)
-@@ -115,14 +115,14 @@ svc_rdma_next_recv_ctxt(struct list_head *list)
- 					rc_list);
+ static int mana_open(struct net_device *ndev)
+@@ -629,21 +638,40 @@ static void *mana_get_rxbuf_pre(struct mana_rxq *rxq, dma_addr_t *da)
  }
  
-+static void svc_rdma_wc_receive(struct ib_cq *cq, struct ib_wc *wc);
-+
- static struct svc_rdma_recv_ctxt *
- svc_rdma_recv_ctxt_alloc(struct svcxprt_rdma *rdma)
+ /* Get RX buffer's data size, alloc size, XDP headroom based on MTU */
+-static void mana_get_rxbuf_cfg(int mtu, u32 *datasize, u32 *alloc_size,
+-			       u32 *headroom)
++static void mana_get_rxbuf_cfg(struct mana_port_context *apc,
++			       int mtu, u32 *datasize, u32 *alloc_size,
++			       u32 *headroom, u32 *frag_count)
  {
- 	int node = ibdev_to_node(rdma->sc_cm_id->device);
- 	struct svc_rdma_recv_ctxt *ctxt;
- 	unsigned long pages;
--	dma_addr_t addr;
--	void *buffer;
+-	if (mtu > MANA_XDP_MTU_MAX)
+-		*headroom = 0; /* no support for XDP */
+-	else
+-		*headroom = XDP_PACKET_HEADROOM;
++	u32 len, buf_size;
  
- 	pages = svc_serv_maxpages(rdma->sc_xprt.xpt_server);
- 	ctxt = kzalloc_node(struct_size(ctxt, rc_pages, pages),
-@@ -130,13 +130,11 @@ svc_rdma_recv_ctxt_alloc(struct svcxprt_rdma *rdma)
- 	if (!ctxt)
- 		goto fail0;
- 	ctxt->rc_maxpages = pages;
--	buffer = kmalloc_node(rdma->sc_max_req_size, GFP_KERNEL, node);
--	if (!buffer)
+-	*alloc_size = SKB_DATA_ALIGN(mtu + MANA_RXBUF_PAD + *headroom);
++	/* Calculate datasize first (consistent across all cases) */
++	*datasize = mtu + ETH_HLEN;
+ 
+-	/* Using page pool in this case, so alloc_size is PAGE_SIZE */
+-	if (*alloc_size < PAGE_SIZE)
+-		*alloc_size = PAGE_SIZE;
++	/* For xdp and jumbo frames make sure only one packet fits per page */
++	if (mtu + MANA_RXBUF_PAD > PAGE_SIZE / 2 || mana_xdp_get(apc)) {
++		if (mana_xdp_get(apc)) {
++			*headroom = XDP_PACKET_HEADROOM;
++			*alloc_size = PAGE_SIZE;
++		} else {
++			*headroom = 0; /* no support for XDP */
++			*alloc_size = SKB_DATA_ALIGN(mtu + MANA_RXBUF_PAD +
++						     *headroom);
++		}
+ 
+-	*datasize = mtu + ETH_HLEN;
++		*frag_count = 1;
++		return;
++	}
 +
-+	if (!rpcrdma_pool_buffer_alloc(rdma->sc_recv_pool, GFP_KERNEL,
-+				       &ctxt->rc_recv_buf,
-+				       &ctxt->rc_recv_sge.addr))
- 		goto fail1;
--	addr = ib_dma_map_single(rdma->sc_pd->device, buffer,
--				 rdma->sc_max_req_size, DMA_FROM_DEVICE);
--	if (ib_dma_mapping_error(rdma->sc_pd->device, addr))
--		goto fail2;
- 
- 	svc_rdma_recv_cid_init(rdma, &ctxt->rc_cid);
- 	pcl_init(&ctxt->rc_call_pcl);
-@@ -149,30 +147,17 @@ svc_rdma_recv_ctxt_alloc(struct svcxprt_rdma *rdma)
- 	ctxt->rc_recv_wr.sg_list = &ctxt->rc_recv_sge;
- 	ctxt->rc_recv_wr.num_sge = 1;
- 	ctxt->rc_cqe.done = svc_rdma_wc_receive;
--	ctxt->rc_recv_sge.addr = addr;
- 	ctxt->rc_recv_sge.length = rdma->sc_max_req_size;
- 	ctxt->rc_recv_sge.lkey = rdma->sc_pd->local_dma_lkey;
--	ctxt->rc_recv_buf = buffer;
- 	svc_rdma_cc_init(rdma, &ctxt->rc_cc);
- 	return ctxt;
- 
--fail2:
--	kfree(buffer);
- fail1:
- 	kfree(ctxt);
- fail0:
- 	return NULL;
++	/* Standard MTU case - optimize for multiple packets per page */
++	*headroom = 0;
++
++	/* Calculate base buffer size needed */
++	len = SKB_DATA_ALIGN(mtu + MANA_RXBUF_PAD + *headroom);
++	buf_size = ALIGN(len, MANA_RX_FRAG_ALIGNMENT);
++
++	/* Calculate how many packets can fit in a page */
++	*frag_count = PAGE_SIZE / buf_size;
++	*alloc_size = buf_size;
  }
  
--static void svc_rdma_recv_ctxt_destroy(struct svcxprt_rdma *rdma,
--				       struct svc_rdma_recv_ctxt *ctxt)
--{
--	ib_dma_unmap_single(rdma->sc_pd->device, ctxt->rc_recv_sge.addr,
--			    ctxt->rc_recv_sge.length, DMA_FROM_DEVICE);
--	kfree(ctxt->rc_recv_buf);
--	kfree(ctxt);
--}
+ int mana_pre_alloc_rxbufs(struct mana_port_context *mpc, int new_mtu, int num_queues)
+@@ -655,8 +683,9 @@ int mana_pre_alloc_rxbufs(struct mana_port_context *mpc, int new_mtu, int num_qu
+ 	void *va;
+ 	int i;
+ 
+-	mana_get_rxbuf_cfg(new_mtu, &mpc->rxbpre_datasize,
+-			   &mpc->rxbpre_alloc_size, &mpc->rxbpre_headroom);
++	mana_get_rxbuf_cfg(mpc, new_mtu, &mpc->rxbpre_datasize,
++			   &mpc->rxbpre_alloc_size, &mpc->rxbpre_headroom,
++			   &mpc->rxbpre_frag_count);
+ 
+ 	dev = mpc->ac->gdma_dev->gdma_context->dev;
+ 
+@@ -1841,8 +1870,11 @@ static void mana_rx_skb(void *buf_va, bool from_pool,
+ 
+ drop:
+ 	if (from_pool) {
+-		page_pool_recycle_direct(rxq->page_pool,
+-					 virt_to_head_page(buf_va));
++		if (rxq->frag_count == 1)
++			page_pool_recycle_direct(rxq->page_pool,
++						 virt_to_head_page(buf_va));
++		else
++			page_pool_free_va(rxq->page_pool, buf_va, true);
+ 	} else {
+ 		WARN_ON_ONCE(rxq->xdp_save_va);
+ 		/* Save for reuse */
+@@ -1858,33 +1890,46 @@ static void *mana_get_rxfrag(struct mana_rxq *rxq, struct device *dev,
+ 			     dma_addr_t *da, bool *from_pool)
+ {
+ 	struct page *page;
++	u32 offset;
+ 	void *va;
 -
- /**
-  * svc_rdma_recv_ctxts_destroy - Release all recv_ctxt's for an xprt
-  * @rdma: svcxprt_rdma being torn down
-@@ -185,8 +170,9 @@ void svc_rdma_recv_ctxts_destroy(struct svcxprt_rdma *rdma)
+ 	*from_pool = false;
  
- 	while ((node = llist_del_first(&rdma->sc_recv_ctxts))) {
- 		ctxt = llist_entry(node, struct svc_rdma_recv_ctxt, rc_node);
--		svc_rdma_recv_ctxt_destroy(rdma, ctxt);
-+		kfree(ctxt);
- 	}
-+	rpcrdma_pool_destroy(rdma->sc_recv_pool);
- }
- 
- /**
-@@ -305,8 +291,17 @@ static bool svc_rdma_refresh_recvs(struct svcxprt_rdma *rdma,
-  */
- bool svc_rdma_post_recvs(struct svcxprt_rdma *rdma)
- {
-+	struct rpcrdma_pool_args args = {
-+		.pa_device	= rdma->sc_cm_id->device,
-+		.pa_bufsize	= rdma->sc_max_req_size,
-+		.pa_direction	= DMA_FROM_DEVICE,
-+	};
- 	unsigned int total;
- 
-+	rdma->sc_recv_pool = rpcrdma_pool_create(&args, GFP_KERNEL);
-+	if (!rdma->sc_recv_pool)
-+		return false;
+-	/* Reuse XDP dropped page if available */
+-	if (rxq->xdp_save_va) {
+-		va = rxq->xdp_save_va;
+-		rxq->xdp_save_va = NULL;
+-	} else {
+-		page = page_pool_dev_alloc_pages(rxq->page_pool);
+-		if (!page)
++	/* Don't use fragments for jumbo frames or XDP where it's 1 fragment
++	 * per page.
++	 */
++	if (rxq->frag_count == 1) {
++		/* Reuse XDP dropped page if available */
++		if (rxq->xdp_save_va) {
++			va = rxq->xdp_save_va;
++			page = virt_to_head_page(va);
++			rxq->xdp_save_va = NULL;
++		} else {
++			page = page_pool_dev_alloc_pages(rxq->page_pool);
++			if (!page)
++				return NULL;
 +
- 	/* For each credit, allocate enough recv_ctxts for one
- 	 * posted Receive and one RPC in process.
- 	 */
++			*from_pool = true;
++			va = page_to_virt(page);
++		}
++
++		*da = dma_map_single(dev, va + rxq->headroom, rxq->datasize,
++				     DMA_FROM_DEVICE);
++		if (dma_mapping_error(dev, *da)) {
++			mana_put_rx_page(rxq, page, *from_pool);
+ 			return NULL;
++		}
+ 
+-		*from_pool = true;
+-		va = page_to_virt(page);
++		return va;
+ 	}
+ 
+-	*da = dma_map_single(dev, va + rxq->headroom, rxq->datasize,
+-			     DMA_FROM_DEVICE);
+-	if (dma_mapping_error(dev, *da)) {
+-		if (*from_pool)
+-			page_pool_put_full_page(rxq->page_pool, page, false);
+-		else
+-			put_page(virt_to_head_page(va));
+-
++	page =  page_pool_dev_alloc_frag(rxq->page_pool, &offset,
++					 rxq->alloc_size);
++	if (!page)
+ 		return NULL;
+-	}
++
++	va  = page_to_virt(page) + offset;
++	*da = page_pool_get_dma_addr(page) + offset + rxq->headroom;
++	*from_pool = true;
+ 
+ 	return va;
+ }
+@@ -1901,9 +1946,9 @@ static void mana_refill_rx_oob(struct device *dev, struct mana_rxq *rxq,
+ 	va = mana_get_rxfrag(rxq, dev, &da, &from_pool);
+ 	if (!va)
+ 		return;
+-
+-	dma_unmap_single(dev, rxoob->sgl[0].address, rxq->datasize,
+-			 DMA_FROM_DEVICE);
++	if (!rxoob->from_pool || rxq->frag_count == 1)
++		dma_unmap_single(dev, rxoob->sgl[0].address, rxq->datasize,
++				 DMA_FROM_DEVICE);
+ 	*old_buf = rxoob->buf_va;
+ 	*old_fp = rxoob->from_pool;
+ 
+@@ -2314,15 +2359,15 @@ static void mana_destroy_rxq(struct mana_port_context *apc,
+ 		if (!rx_oob->buf_va)
+ 			continue;
+ 
+-		dma_unmap_single(dev, rx_oob->sgl[0].address,
+-				 rx_oob->sgl[0].size, DMA_FROM_DEVICE);
+-
+ 		page = virt_to_head_page(rx_oob->buf_va);
+ 
+-		if (rx_oob->from_pool)
+-			page_pool_put_full_page(rxq->page_pool, page, false);
+-		else
+-			put_page(page);
++		if (rxq->frag_count == 1 || !rx_oob->from_pool) {
++			dma_unmap_single(dev, rx_oob->sgl[0].address,
++					 rx_oob->sgl[0].size, DMA_FROM_DEVICE);
++			mana_put_rx_page(rxq, page, rx_oob->from_pool);
++		} else {
++			page_pool_free_va(rxq->page_pool, rx_oob->buf_va, true);
++		}
+ 
+ 		rx_oob->buf_va = NULL;
+ 	}
+@@ -2428,11 +2473,22 @@ static int mana_create_page_pool(struct mana_rxq *rxq, struct gdma_context *gc)
+ 	struct page_pool_params pprm = {};
+ 	int ret;
+ 
+-	pprm.pool_size = mpc->rx_queue_size;
++	pprm.pool_size = mpc->rx_queue_size / rxq->frag_count + 1;
+ 	pprm.nid = gc->numa_node;
+ 	pprm.napi = &rxq->rx_cq.napi;
+ 	pprm.netdev = rxq->ndev;
+ 	pprm.order = get_order(rxq->alloc_size);
++	pprm.queue_idx = rxq->rxq_idx;
++	pprm.dev = gc->dev;
++
++	/* Let the page pool do the dma map when page sharing with multiple
++	 * fragments enabled for rx buffers.
++	 */
++	if (rxq->frag_count > 1) {
++		pprm.flags =  PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV;
++		pprm.max_len = PAGE_SIZE;
++		pprm.dma_dir = DMA_FROM_DEVICE;
++	}
+ 
+ 	rxq->page_pool = page_pool_create(&pprm);
+ 
+@@ -2471,9 +2527,8 @@ static struct mana_rxq *mana_create_rxq(struct mana_port_context *apc,
+ 	rxq->rxq_idx = rxq_idx;
+ 	rxq->rxobj = INVALID_MANA_HANDLE;
+ 
+-	mana_get_rxbuf_cfg(ndev->mtu, &rxq->datasize, &rxq->alloc_size,
+-			   &rxq->headroom);
+-
++	mana_get_rxbuf_cfg(apc, ndev->mtu, &rxq->datasize, &rxq->alloc_size,
++			   &rxq->headroom, &rxq->frag_count);
+ 	/* Create page pool for RX queue */
+ 	err = mana_create_page_pool(rxq, gc);
+ 	if (err) {
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index e1030a7d2daa..0921485565c0 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -65,6 +65,8 @@ enum TRI_STATE {
+ #define MANA_STATS_RX_COUNT 5
+ #define MANA_STATS_TX_COUNT 11
+ 
++#define MANA_RX_FRAG_ALIGNMENT 64
++
+ struct mana_stats_rx {
+ 	u64 packets;
+ 	u64 bytes;
+@@ -328,6 +330,7 @@ struct mana_rxq {
+ 	u32 datasize;
+ 	u32 alloc_size;
+ 	u32 headroom;
++	u32 frag_count;
+ 
+ 	mana_handle_t rxobj;
+ 
+@@ -510,6 +513,7 @@ struct mana_port_context {
+ 	u32 rxbpre_datasize;
+ 	u32 rxbpre_alloc_size;
+ 	u32 rxbpre_headroom;
++	u32 rxbpre_frag_count;
+ 
+ 	struct bpf_prog *bpf_prog;
+ 
 -- 
-2.50.0
+2.43.0
 
 
