@@ -1,132 +1,158 @@
-Return-Path: <linux-rdma+bounces-12658-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12659-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28398B1FD72
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Aug 2025 03:09:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC7AAB1FE85
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Aug 2025 07:26:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADAED1892237
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Aug 2025 01:10:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A77F1892614
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Aug 2025 05:27:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFCE719C542;
-	Mon, 11 Aug 2025 01:09:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4284B267B90;
+	Mon, 11 Aug 2025 05:26:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linbit-com.20230601.gappssmtp.com header.i=@linbit-com.20230601.gappssmtp.com header.b="pJ8Qk1QU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4DA22E401;
-	Mon, 11 Aug 2025 01:09:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FFC5264A86
+	for <linux-rdma@vger.kernel.org>; Mon, 11 Aug 2025 05:26:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754874578; cv=none; b=nTyX1Jfp9HFmtdCI6ZOndHiAWGToH1eH4Sdp4Gi6cfZlckcFo9inO4/NX6gov5vKJGkc0cXr+P9R5H/d6UJIgmGEqplMefBjJBqiTITOe1jeNAYfDbQxXfT+/cknBw7rIlzwurVw0ZcNWQOColkQApCFzUWjzrDK5QzUqa7pY2g=
+	t=1754890005; cv=none; b=RJxVjmmZAC8A1RVDXX1ubmASIxs1NAz8kjqwWPlcDtTVPgIlOa9zmckNmvi6I6p5qeXybfO96DMIFRm/AJ3zqR4CXB6G6gi5eElAfr03Hp7ff2vYm1gG5OycQG9tIyiGD0Acp3Mm0mfgwie/L1JQXnHX8TjKdWGvXO+G1RbKG4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754874578; c=relaxed/simple;
-	bh=edK6wfe82+a1zI95IT4725tatobF5C9KlGS4WvUMtzs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KOQ1jri43BGhRkFowd0ZaSW08ZC7L1rubyEb0XfFPmOPwOB/kFGMIzGua5QrcUgDIWtf1nkKahTNXJqm39BoFsjIRNlDWdj2VPY7YeTPW9wWWBwqtNGQHsdUXpDtgu7pV4EdRLHNX9jXqq+AqTKSbTbXaHITcJPvMtQZntfjm7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-681ff7000002311f-f7-689942c2df79
-Date: Mon, 11 Aug 2025 10:09:17 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
-	harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
-	davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
-	john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
-	leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
-	andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
-	akpm@linux-foundation.org, david@redhat.com,
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
-	horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org,
-	ziy@nvidia.com, ilias.apalodimas@linaro.org, willy@infradead.org,
-	brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
-	usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
-	almasrymina@google.com, toke@redhat.com, bpf@vger.kernel.org,
-	linux-rdma@vger.kernel.org, sfr@canb.auug.org.au
-Subject: Re: [PATCH linux-next v3] mm, page_pool: introduce a new page type
- for page pool in page type
-Message-ID: <20250811010917.GB28363@system.software.com>
-References: <20250729110210.48313-1-byungchul@sk.com>
- <757b3268-43ab-41bf-88fa-4730089721f3@gmail.com>
+	s=arc-20240116; t=1754890005; c=relaxed/simple;
+	bh=vTpxG/7bwb/tV6gaPq+KpsnEWX7NoumATykPMMwu+dM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TUe0jS4iFZ1p5xvgc4XXINcmJ+J8tZxFJmdHTejBeDrstjRsl232XDtfK2zTbVcXAbvJiELUgDpDwPQ7hVv9e0eXUnbK8gAFis59LSTCIWmVL4sD1RLqXzMoqIaXF1eqe8dO/9z8eVDtvSZhbMTAvkv+J+RaAA7QCo54gazkbDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linbit.com; spf=pass smtp.mailfrom=linbit.com; dkim=pass (2048-bit key) header.d=linbit-com.20230601.gappssmtp.com header.i=@linbit-com.20230601.gappssmtp.com header.b=pJ8Qk1QU; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linbit.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-6156463fae9so7862572a12.0
+        for <linux-rdma@vger.kernel.org>; Sun, 10 Aug 2025 22:26:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linbit-com.20230601.gappssmtp.com; s=20230601; t=1754890001; x=1755494801; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=69PxPPhAwOTbogeViQvDw262FB76BrPzf0OJx/mbyF8=;
+        b=pJ8Qk1QUji0T9x1vmhcVQ3W9xKI3jpjJZJtwBT6w4unaLxOFF3M9YSAzr3xp1p2Pa4
+         7O1r3rKdPiKh9oyaLY2vY5Y4qQy9OBc1EFTsUdvD6CfJWnUrJ5hWKkNFaBJZJQeBYmKT
+         zpK/8lN5XQS2a9CgTHXu1ZwcT6N52D6hlx5uI+K33NCIlXJVuJmOdcunDUUly3GTESWG
+         RvR4skDTS3ZAXV2ycG2GHAHCcWbM6uv+k64CwmYm3PYEdrCk/jTyXw03aj8oqVKs09nm
+         9gyYCzaXnLRPxoCcxp8t5KJ8tDQpb2LVv3V62/KIPEduMvj1ZNQ3n1uPJLeYfMRq34CA
+         TfqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754890001; x=1755494801;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=69PxPPhAwOTbogeViQvDw262FB76BrPzf0OJx/mbyF8=;
+        b=cwFbU9oZ+Rsew8HpuN0XFOcH3Ajpe2lSAdsNKuQe0JQ0KQbWvURm61YZ+Dv/Rb0lPA
+         6amlUOq8mv/AvLqXbPWURYpsD6T6TshuVSN1wNIT/MTfQDiTl49pCGTk81gLVVxwvWAT
+         uD18SN4VfdCJZrcS22N77D6mb8J0dt3nuPjuPWtEWbQcm7TSXctiYSZ4IIifB0dG4nis
+         pYolU7RrG0/oKDD/aVT1PAW3PMfgWNwoJqt6tXkZmNBlzyOp2PDH32Q/5czn6rUfMZv6
+         2fBvgmhRbKmwFZjEEMoR5AEk0oq28yMT5SKvwNbnf5eDgOz6Rf4QY+7tYVR2Bneca2rS
+         vSjA==
+X-Forwarded-Encrypted: i=1; AJvYcCUktzZL19Q1ORt/icqEZJC9yOlU+tf5iUGkbS6KV3BucqnLJhMwgX8ngfPmXczSpR0fMXyf1ngudMXg@vger.kernel.org
+X-Gm-Message-State: AOJu0YxXedbYNEtNIDyDsnan40UhsaI7eyLYXlF6cYpWl1V8fZuVOBDD
+	Q6Tlopc2OfBQ3yjJ1EcMuakyw0oZmVdtOW3wNZtK6DI3Zvq4p7TwIygIxBTQ1khcL4BYbLRs9Wr
+	6DhGik1ONYJ+11baxvy4M66/rrNE6fXV04qyM1qAhLA==
+X-Gm-Gg: ASbGncuKR2vM8zGVhyT+gqmXO5YPE4NjS7aUzmLk2IWLBQDDxZG+Ktvqb/xNrhgu6An
+	k1xWg+sL99TTIO4WY44HzXC+vPnM9tj/hebS8Ppay1lVrHuDdHnRSH2HyjB08mlpLxmbp4oU5hy
+	lKMBlLEWRuX8oBp3eLOMoMZQYfGBuTYe8laYFG0BbranIxYVzxT2i/L9pTl4bCZZPhIZe6iPxmy
+	xb0vLe1cnvzT+TuiA==
+X-Google-Smtp-Source: AGHT+IHaYSux36WBVNo6NkZaBw2GJAYwmrtrQojyp38xI/LkSrRkgdTHlXqlCqLZ1P02eXH1IuG84+lRDv8VSU4MWNo=
+X-Received: by 2002:a17:907:7247:b0:af9:6863:9d41 with SMTP id
+ a640c23a62f3a-af9a3e3f258mr1582062866b.14.1754890000722; Sun, 10 Aug 2025
+ 22:26:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <757b3268-43ab-41bf-88fa-4730089721f3@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+Z9zds5xOTotzX8GfViUYHSl4A1Kutr/SxEUBRrUcic3mlrT
-	vHSBaXbTZmLXLQvLMnWSMO+XSW3LS7EuRrUsnVlJstS8JN6oNkXq2/P+3pfneT68PC2vkwTz
-	mtgEURer1CpYKSPt9b+3zL7ZqF5Z7pRAbmkJC+bRZHjYWe2diisRDI995OCPtRHBkKOJBY99
-	EEH+3REacl+mM/CrdJyGb41dHJgtO8Bd0M1A/fkqGrouN7NgSJ+gwTrWx0FadSEFuWV6Dl5V
-	Zkng6vgDGqr0nRy8qc1loaPkjwS6bQYGWkxFDPy85qDBnbURGvPmwcjzHwgcpVUUjFy6zcJb
-	Yy0FFda3HFxpzWPhS7obQau9i4FrkxdYuJWahWBi1GvZlz0sgVtPO7iNS0mqy8US+49+mpQX
-	faCIq+EZRWpM7RzJsxwnZYWhJMPVShNL8UWWWAZzOPLpXT1Lmm9OMKTm8zpSUz1EEcOZPpYM
-	fGtjdgVESNerRK0mUdStCDsoVRsqJyRHW2clN9l7OT3q5zOQH4+FNdj5vYOd0e7757gMxPOM
-	sBi/NCf4MCuEYJdrjPbpAGEp9ry3eU+kPC2UcNj4IgP5FnMFNS6784XyaZkAONvTw/i03Mvf
-	nC2STPM5uMX4dYrTQih2/e6hfFm0sAA//D1Vx0/YgB1DDVNZgcIi/LiyifJlYeErjwusPdR0
-	z/n4SaGLyUaC6T9b03+2pn+2eYguRnJNbGKMUqNds1ydEqtJXh4VF2NB3pcqOD0ZWY0GX+22
-	IYFHCn9Z54ObarlEmRifEmNDmKcVAbJu9Q21XKZSppwQdXEHdMe1YrwNLeAZRZBs9UiSSi5E
-	KxPEI6J4VNTNbCneL1iP7mTLQ+K25ndcD3tdnunZdCr6UE7vnKQoZ1qtJku7Ihzr98iMpuGg
-	oDZb2d4tH5dlUmReWEXiWPPkbEf5vpz9SdZHgcau9UERhWu3UeK4s31Wt8ps1sSVslrDsfpI
-	D7ezPXq77GRE2lV7xEDkFpuzbdvwQvfBlNkF4YfriGqJUcHEq5WrQmldvPIvSa6EKU4DAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0iTcRTG+b93V4u3qfmiXWBRgZVlJB27IUH1J7p9CIoIdeiLG84pm4oG
-	habdrJndKNcMrTQvC2Oam6YSm01NyFDMmeVMTTAvZV5oahdnRH17+D3nOc/5cDhSlkf7cypN
-	oqjVKNRyRkJJDu/I2Gjbk6vcnFG4GYzlJgbKvqfA414rDcbSKgST7m4WftU5EEw0NDIwbP+G
-	4GHBNAnG1kwKpspnSPjk6GOhzHwIXEWDFNRetJDQd62JAX3mLAl17jEWzlmLCTBWpLFgz2um
-	4U1VNg23ZgpJsKT1stBeY2Sgx/SLhkGbnoJmQwkFX283kODKDgNH/jKYbhlB0FBuIWD6ah4D
-	Hbk1BDyr62DhZls+A/2ZLgRt9j4Kbs9dYuBeejaC2e/zK8dyJmm497KHDduA051OBttHvpC4
-	sqSLwM76VwSuNnxgcb45CVcUB+IsZxuJzaWXGWz+doPF79/WMrjp7iyFqz+G4mrrBIH1GWMM
-	Hv/0jjrqe1KyM1pUq5JF7abdkRKlvmqWTmhblNJoH2XT0BcuC3lxAr9VcD26wGYhjqP4NUJr
-	WaIHM/w6wel0kx7tw68Xhjtt8yMSjuRNrJD7Ogt5DG9eKVTc7yc8WsqDkDM8RHm0bJ63ny+h
-	//ClQnPuwAIn+UDB+XOI8HSRfIDw+OfCCV78LqFhon6hy5dfLbyoaiRykNTwX9rwX9rwL52P
-	yFLko9IkxylU6pAgXawyVaNKCYqKjzOj+acpOjN33Yom2/fbEM8h+WJpb+FdpYxWJOtS42xI
-	4Ei5j3RQeUcpk0YrUk+L2vgIbZJa1NlQAEfJ/aQHjouRMj5GkSjGimKCqP3rEpyXfxrSdq7C
-	jugmvzsPHk6dq4hypY9WBv+QrWjRHywb6DxyP+SzumhskHN5q84mbWskhsb7R5rrVh4zFew9
-	sSRi35WnYeNXmrbv9dKGJjrGwy17YgItGVu63N3WA6clcTPPTaHhr1KiAlpifPffmjbHXpKc
-	Gjnsq3EPrHXt3rSrMuhJumK5nNIpFcGBpFan+A1UN4MuMAMAAA==
-X-CFilter-Loop: Reflected
+References: <20250806123921.633410-1-philipp.reisner@linbit.com> <5a31f3ef-358f-4382-8ad1-8050569a2a23@linux.dev>
+In-Reply-To: <5a31f3ef-358f-4382-8ad1-8050569a2a23@linux.dev>
+From: Philipp Reisner <philipp.reisner@linbit.com>
+Date: Mon, 11 Aug 2025 07:26:29 +0200
+X-Gm-Features: Ac12FXwoMO_YfYRatsrbC8Hz6zhCD_XEaGw7Cu0dcqifieHK8nSJiOGowkx_ebg
+Message-ID: <CADGDV=UgDb51nEtdide7k8==urCdrWcig8kBAY6k0PryR0c7xw@mail.gmail.com>
+Subject: Re: [PATCH] rdma_rxe: call comp_handler without holding cq->cq_lock
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Aug 10, 2025 at 09:21:45PM +0100, Pavel Begunkov wrote:
-> On 7/29/25 12:02, Byungchul Park wrote:
-> > Changes from v2:
-> >       1. Rebase on linux-next as of Jul 29.
-> >       2. Skip 'niov->pp = NULL' when it's allocated using __GFP_ZERO.
-> >       3. Change trivial coding style. (feedbacked by Mina)
-> >       4. Add Co-developed-by, Acked-by, and Reviewed-by properly.
-> >          Thanks to all.
-> > 
-> > Changes from v1:
-> >       1. Rebase on linux-next.
-> >       2. Initialize net_iov->pp = NULL when allocating net_iov in
-> >          net_devmem_bind_dmabuf() and io_zcrx_create_area().
-> >       3. Use ->pp for net_iov to identify if it's pp rather than
-> >          always consider net_iov as pp.
-> >       4. Add Suggested-by: David Hildenbrand <david@redhat.com>.
-> > 
-> > ---8<---
-> >  From 88bcb9907a0cef65a9c0adf35e144f9eb67e0542 Mon Sep 17 00:00:00 2001
-> > From: Byungchul Park <byungchul@sk.com>
-> > Date: Tue, 29 Jul 2025 19:49:44 +0900
-> > Subject: [PATCH linux-next v3] mm, page_pool: introduce a new page type for page pool in page type
-> 
-> That will conflict with "netmem: replace __netmem_clear_lsb() with
-> netmem_to_nmdesc()", it'll need some coordination.
+On Thu, Aug 7, 2025 at 3:09=E2=80=AFAM Zhu Yanjun <yanjun.zhu@linux.dev> wr=
+ote:
+>
+> =E5=9C=A8 2025/8/6 5:39, Philipp Reisner =E5=86=99=E9=81=93:
+> > Allow the comp_handler callback implementation to call ib_poll_cq().
+> > A call to ib_poll_cq() calls rxe_poll_cq() with the rdma_rxe driver.
+> > And rxe_poll_cq() locks cq->cq_lock. That leads to a spinlock deadlock.
+> >
+> > The Mellanox and Intel drivers allow a comp_handler callback
+> > implementation to call ib_poll_cq().
+> >
+> > Avoid the deadlock by calling the comp_handler callback without
+> > holding cq->cw_lock.
+> >
+> > Signed-off-by: Philipp Reisner <philipp.reisner@linbit.com>
+>
+> ERROR: test_resize_cq (tests.test_cq.CQTest.test_resize_cq)
+> Test resize CQ, start with specific value and then increase and decrease
+> ----------------------------------------------------------------------
+> Traceback (most recent call last):
+>    File "/root/deb/rdma-core/tests/test_cq.py", line 135, in test_resize_=
+cq
+>      u.poll_cq(self.client.cq)
+>    File "/root/deb/rdma-core/tests/utils.py", line 687, in poll_cq
+>      wcs =3D _poll_cq(cq, count, data)
+>            ^^^^^^^^^^^^^^^^^^^^^^^^^
+>    File "/root/deb/rdma-core/tests/utils.py", line 669, in _poll_cq
+>      raise PyverbsError(f'Got timeout on polling ({count} CQEs remaining)=
+')
+> pyverbs.pyverbs_error.PyverbsError: Got timeout on polling (1 CQEs
+> remaining)
+>
+> After I applied your patch in kervel v6.16, I got the above errors.
+>
+> Zhu Yanjun
+>
 
-Indeed.  It'd better work on top of "netmem: replace __netmem_clear_lsb()
-with netmem_to_nmdesc()" then.  You said you are going to take the patch.
-Please lemme know the progress so that I can track and re-work on this.
+Hello Zhu,
 
-	Byungchul
+When I run the test_resize_cq test in a loop (100 runs each) on the
+original code and with my patch, I get about the same failure rate.
 
-> --
-> Pavel Begunkov
-> 
+without my patch success=3D87 failure=3D13
+without my patch success=3D82 failure=3D18
+without my patch success=3D81 failure=3D19
+with my patch    success=3D89 failure=3D11
+with my patch    success=3D90 failure=3D10
+with my patch    success=3D82 failure=3D18
+
+The patch I am proposing does not change the failure rate of this test.
+
+Best regards,
+ Philipp
+
+#!/bin/bash
+
+success=3D0
+failure=3D0
+
+for (( i =3D 0; i < 100; i++ )) do
+      if rdma-core/build/bin/run_tests.py -k test_resize_cq; then
+  success=3D$((success+1))
+      else
+  failure=3D$((failure+1))
+      fi
+done
+echo success=3D$success failure=3D$failure
 
