@@ -1,82 +1,82 @@
-Return-Path: <linux-rdma+bounces-12673-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12674-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB5BCB20BE0
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Aug 2025 16:29:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1751DB20D43
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Aug 2025 17:14:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3931A189E396
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Aug 2025 14:29:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF14A6200E2
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Aug 2025 15:13:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35B2324A057;
-	Mon, 11 Aug 2025 14:27:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 679512DFA38;
+	Mon, 11 Aug 2025 15:13:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Mknuml1E"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="igCI/Mnk"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8791524468E;
-	Mon, 11 Aug 2025 14:27:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D412DE1E2;
+	Mon, 11 Aug 2025 15:13:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754922457; cv=none; b=fb5iCaUISmSqSGLH4zUCkr/QW9W0blUc2TQAbOZAgx2C30NV/tlWTH40YbJmgX2K5ZDBGbGcUU6Je8PCYRGe9tJEz/Lq1gXndFaWSMZJecoJKXWOa1Epdlgj52e9JuCs9iU9U8V6nAs4WibssFwAm+NR+LYWYYTmgsGEFNtBic8=
+	t=1754925183; cv=none; b=IkaHxRHVqR50dvv53NVrKnzq0S167YMnM51nL95CnEXrR0NzQ67UGC4RRM3k6G3eq5VP6BhrV0vjLFhTd8Tc87Y3apJO+gHUH2t8RSMXDlvOTPdEbI6bltGdV/OeVBJ5ZO9ma21rbFDjA/bFu3rezZdXKyxhtU8BV4njBfTqmBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754922457; c=relaxed/simple;
-	bh=xc8zEZ4SLBVXvaNiqal5fEDwwLv5B3xd+aESbYwhq/w=;
+	s=arc-20240116; t=1754925183; c=relaxed/simple;
+	bh=2x7HVtWR7XNJj8/cCfSFaoGcwkvqQQJtL954QaAaJ1k=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CKNJjfMxGSHHi08ySKSJBQmAMHU99MoEMp8/DLaKEiKaP4T1+/HPh7Ze6FqtxloLdguhRUDcTgzgE7ur5IWnWLpnDMndUXxLJ7MxeZSH+aA+6QjRx4OGklLAlUS9pReJWZZlOPheP1NsXw1gtaaydviT6pjLsdQzc3IO1INIV04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Mknuml1E; arc=none smtp.client-ip=148.163.156.1
+	 In-Reply-To:Content-Type; b=CUuLUfQAXSi9/mYzE6YXDLRrWAveUW7Qa79JIPAKPvWw13LJD3c+IaQb805vFuXuRGPahlrZWJF+weUys0ZehzPNXmlQF1Cu8wrGUoaTEMx+um1dSLGyISLeRftmVQgfyYmQxBe0hBHTT7j37CDOjHbYpsQ5196ncd+9pOBGATc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=igCI/Mnk; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57B9HB7m025025;
-	Mon, 11 Aug 2025 14:27:28 GMT
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57BBtavO032457;
+	Mon, 11 Aug 2025 15:12:52 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=n3LE3A
-	RJejgP5xBFaNFZkL86tktjb39ybgxhlNJATXU=; b=Mknuml1Eh9b/JHHpDQLICK
-	VSw419Kce4lx1xdEB+30dnLCI/rqx0I580ZoJOLBB468IYzRtNnd6qKnS+Z2yDJi
-	9SLaHzjcTcS4CwGJ3/bnHrdZGFW62jR74XuR9KjGRBjWo4+8LS9OEGi5/IPJYpso
-	j+hc17c78hrEFP8dqdPOutM2zlqz918eAmjil2FfsmREbTmskTlZWiwpEFf0pMQz
-	ul/BqxvfpkPD32rYQciG8u5t8p+xqBl7VbmnnZJEvhSdUEGW/VibEz/nYsA7sSpu
-	Ft+zzkTgyCDEBfW3JPPK62jxvihXIWVvwY0aOBTx93tr6gOgyLnKbxtrZZRuRIjw
+	:message-id:mime-version:references:subject:to; s=pp1; bh=1Uyhbq
+	8nZiZ6zGRxliJmGE89t2X3iKne848oZ0LVFbc=; b=igCI/MnkgI7016KigkXALs
+	vHmHgXDxuldGGrAv6zoviFzVtDvOCvh3iol8eavRwT2xSBJDJq4AToN6JPoh0Hsa
+	Yji6fsCx+YMMzhjXcnkgy1g+CA6qSlWJ+G+Q5zlZn15vejm47E3yp8hN1oM3mDCp
+	76NmCtdy3xPJ0QXFIkvG0o5lkzFMwg9/pxKhxkjVMf3/QaA3PDvKNvDuROnko9jD
+	fnPcG/1qO2jqB2eNnPwL4p+Bj2DH9KUd87xc2lnfejeNmyodHoEhiG/S8o2jFE25
+	5Vjcn+xsfFyW5sB+F9qD+AYOrYJzBHbI0wsiswsP3Ga51C5tMZrxAOp0i5EPjBUA
 	==
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48dx149rg0-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48eha9x8wn-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Aug 2025 14:27:27 +0000 (GMT)
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 57BEQgTC012345;
-	Mon, 11 Aug 2025 14:27:27 GMT
+	Mon, 11 Aug 2025 15:12:52 +0000 (GMT)
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 57BFCQUn014303;
+	Mon, 11 Aug 2025 15:12:51 GMT
 Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48dx149rfv-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48eha9x8wh-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Aug 2025 14:27:27 +0000 (GMT)
+	Mon, 11 Aug 2025 15:12:51 +0000 (GMT)
 Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 57BDoC1q026345;
-	Mon, 11 Aug 2025 14:27:26 GMT
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 57BDoPAw026302;
+	Mon, 11 Aug 2025 15:12:50 GMT
 Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 48eh20xc2c-1
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 48eh20xgpv-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Aug 2025 14:27:25 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 57BERLJa26870018
+	Mon, 11 Aug 2025 15:12:50 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 57BFCkOd57278820
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 11 Aug 2025 14:27:22 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BEBBC20043;
-	Mon, 11 Aug 2025 14:27:21 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6DC2D20040;
-	Mon, 11 Aug 2025 14:27:21 +0000 (GMT)
+	Mon, 11 Aug 2025 15:12:46 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A304120043;
+	Mon, 11 Aug 2025 15:12:46 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 53A9020040;
+	Mon, 11 Aug 2025 15:12:46 +0000 (GMT)
 Received: from [9.152.224.240] (unknown [9.152.224.240])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 11 Aug 2025 14:27:21 +0000 (GMT)
-Message-ID: <2d511067-0cc6-4911-846a-ab815a0b318b@linux.ibm.com>
-Date: Mon, 11 Aug 2025 16:27:21 +0200
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 11 Aug 2025 15:12:46 +0000 (GMT)
+Message-ID: <37bc0a65-247f-4ac3-bb03-b1d2cdcaeccd@linux.ibm.com>
+Date: Mon, 11 Aug 2025 17:12:46 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -84,7 +84,8 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC net-next 08/17] net/dibs: Register ism as dibs device
+Subject: Re: [RFC net-next 10/17] net/dibs: Define dibs_client_ops and
+ dibs_dev_ops
 To: dust.li@linux.alibaba.com, David Miller <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
         Eric Dumazet <edumazet@google.com>,
@@ -106,66 +107,70 @@ Cc: netdev@vger.kernel.org, linux-s390@vger.kernel.org,
  <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
         Halil Pasic <pasic@linux.ibm.com>, linux-rdma@vger.kernel.org
 References: <20250806154122.3413330-1-wintera@linux.ibm.com>
- <20250806154122.3413330-9-wintera@linux.ibm.com>
- <aJiwrG-XD06gTKb3@linux.alibaba.com>
+ <20250806154122.3413330-11-wintera@linux.ibm.com>
+ <aJiye8W_giWiWWpI@linux.alibaba.com>
 Content-Language: en-US
 From: Alexandra Winter <wintera@linux.ibm.com>
-In-Reply-To: <aJiwrG-XD06gTKb3@linux.alibaba.com>
+In-Reply-To: <aJiye8W_giWiWWpI@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 97XCpIFJhX24vLAD4jLkyGgNX9O26ocC
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODExMDA5MSBTYWx0ZWRfXzCKc2BmAaubV
- Gew20LbWShdR38JKj6BbCYhKeRTFwX1WTY4eaJV6mlbro+oesbwWBTUdb68Tg/G+u0+gC/xlZAt
- Td2sZEeMUPDg3WfrOei0FfAwD9sxGx5iCx8rfqI0y4DwNNc8NMpSXuYBtG4azoqCi4K7v80dud7
- sYGJIEOzgKbAd1Nb0qSaemah8ZebTro4J6gdKGNQPae4L3oOiQIaOWNjQmLx18OtJMhJETjiT1y
- G7/iZaCVdWuOff6wul/OlWnr1y2GfeYb5fl1ldmOMEcDGgtXNU6t2t8FqmPYXZpj3b9oMAXJwcd
- 7P8/JfnPqXG/PbfWRY5GXCFlIpnssAi3QcLUhty6JgWh597A21Op6GHWTZ0+M1tN8hPbJGyD+vA
- r8wV0BIP6gZd59+3vY46+msU0nZmMsGuXpGFSMMoFTV24U7MVlCsoZulofpL9ZWP/bdIHup3
-X-Proofpoint-GUID: kiRFILACJSlKp_sugaUvxe1JQQXDy_Bx
-X-Authority-Analysis: v=2.4 cv=fLg53Yae c=1 sm=1 tr=0 ts=6899fdcf cx=c_pps
+X-Authority-Analysis: v=2.4 cv=KPRaDEFo c=1 sm=1 tr=0 ts=689a0874 cx=c_pps
  a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=ZVXq7tgFbyrpfJilAYUA:9
+ a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=_akHyxmYcdlLMKxn72UA:9
  a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: VK7To6NhxKjjNRzjLyjZH8Muconrf0bq
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODExMDA5NSBTYWx0ZWRfX156ZWzNTdgOn
+ X5wQCTeXOdlEI92LvIi9b9L12my0VdeES3GX1WuDOLpnqHZnAKmg9CWkNmHaXuwOOHDiKIVlW+M
+ T4C/VTtefxt/10Zjp5MGstEIP+TWHllHjE73UPsiuxsjg4PNbuTVc97et19g9RQTdFjie2vrvfa
+ RiRd5ikCmDglSu77SvHSF3A0G8KXv77pHBts9r73KczixxO3EevBh/2Ut0f3PpNp3zqJT/P+9tI
+ RKQZimjGWxNLsapGBtYYYlDM3lcWJo3MUYhA6Z+cNoJgMAcHi6YGJZ1Rqptc0VDzz7oOHl80z9p
+ vzI5YvaYW+s3uzwjiPToqusyoy+huSaZWambWoSUgrLnU+Oj4BkoXHgu6IwM7HiYiTD+28J9xKF
+ JbkGF81MwEuhW/gQLf/DLrS9iStwwVVjz6YKJz6WUZ4RFEidL4wvbzzzWO3gNbZrUCSNkVDQ
+X-Proofpoint-GUID: N_t2W-xIeopEYWF4Nean-B0xTAHJyGVN
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
  definitions=2025-08-11_03,2025-08-11_01,2025-03-28_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- adultscore=0 lowpriorityscore=0 clxscore=1015 spamscore=0 priorityscore=1501
- impostorscore=0 phishscore=0 mlxlogscore=862 malwarescore=0 bulkscore=0
- mlxscore=0 suspectscore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2507300000
- definitions=main-2508110091
+ phishscore=0 impostorscore=0 bulkscore=0 mlxlogscore=964 spamscore=0
+ clxscore=1015 adultscore=0 priorityscore=1501 malwarescore=0
+ lowpriorityscore=0 mlxscore=0 suspectscore=0 classifier=spam authscore=0
+ authtc=n/a authcc= route=outbound adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2507300000 definitions=main-2508110095
 
 
 
-On 10.08.25 16:46, Dust Li wrote:
-> I've been wondering whether we should completely remove the ISM concept
-> from SMC. Including rename smc_ism.c into smc_dibs.c.
+On 10.08.25 16:53, Dust Li wrote:
+> Hi Winter,
 > 
-> Since DIBS already serves as the replacement for ISM, having both ISM
-> and DIBS coexist in the codebase seems a bit confusing and inconsistent.
-> Removing ISM could help streamline the code and improve clarity.
+> I feel a bit hard for me to review the code especially with so many
+> intermediate parts. I may need more time to review these.
+> 
+> Seperate such a big refine patch is hard. Maybe put the
+> small parts in the front and the final one in the last to reduce
+> the intermediate part as much as possible ? I'm not sure.
 > 
 > Best regards,
 > Dust
 
-I second that.
-Like I wrote in the last commit message:
-"[RFC net-next 17/17] net/dibs: Move event handling to dibs layer
-...
-SMC-D and ISM are now independent.
-struct ism_dev can be moved to drivers/s390/net/ism.h.
+I can understand that very well. I tried hard to split up the dibs layer implementation
+into consumable pieces, while preserving the functionality of smc-d, ism and loopback at
+each intermediate step, so it is always bisectable.
 
-Note that in smc, the term 'ism' is still used. Future patches could
-replace that with 'dibs' or 'smc-d' as appropriate."
+I know this patch  "[RFC net-next 10/17] net/dibs: Define dibs_client_ops and dibs_dev_ops"
+and "[RFC net-next 16/17] net/dibs: Move data path to dibs layer" are rather large, but I
+could not find a way to split them up without temporarily breaking functionality.
+If you have any ideas, please let me know.
 
+You write:
+> Maybe put the small parts in the front and the final one in the last
+I am not sure I understand, what exactly you have in mind here. Are you asking
+for even larger patches?
 
-I am not sure what would be the best way to do such a global replacement.
-One big patch on top of dibs-series? That would be a lot of changes without
-adding any functionality.
-Or do you have other clarity improvements in the pipeline that could be combined?
-I would like to defer that decision to the smc maintainers. Would that be ok for you?
-
+> I may need more time to review these.
+FYI: I will be on vacation the last 2 weeks of August.
+Would you rather have an RFC v2 this week with all the changes, I made so far?
+Or would you prefer that you continue reviewing this RFC and I send a new version
+in the first week of September?
 
 
