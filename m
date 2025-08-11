@@ -1,457 +1,297 @@
-Return-Path: <linux-rdma+bounces-12676-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12677-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AE6DB21859
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Aug 2025 00:29:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EE16B2199F
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Aug 2025 02:00:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8039B1A22427
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Aug 2025 22:29:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B0101A2106E
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Aug 2025 00:00:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E53042E2F09;
-	Mon, 11 Aug 2025 22:29:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E9F2290DB2;
+	Mon, 11 Aug 2025 23:59:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="dr61DEjQ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iN6SitGi"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAF311C1AB4;
-	Mon, 11 Aug 2025 22:29:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754951361; cv=none; b=UbfcYhncbm6ECu4CRRJLnnbMn5F1ZwPAXRFCiKDcBqbgR6qv0jHUIJyF0/12jJgOv5Oa0UszWy8iJb3KPCypAHQvRETkozNmEiE9xkehhFt3J2PQpUSAPwr7yZO4vAcW7isDayLOqq2EedhXNLHeeAN4eOzlMI51XyTb3EY7kL0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754951361; c=relaxed/simple;
-	bh=PBgVGOra2YvrVbnr8+Od0wEb0DKIKgk6rBzJ8BrOizA=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=X1IQ0jJnZfJOag9uO/qoseuTxAQBlkMRz+8YJnOAli8orvmbL34Sqgb9LKxS1vBn0jr/+Ea/unO0gH+xje8ZwQ1SSkrvLRtzYBJVoT12JkIU1wVraapG3HCviskFE7gX6226B2EWLaX+FWzM4NbGuUsDnvLCjQGx4cSC1lAF09g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=dr61DEjQ; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1204)
-	id 6E38F2118276; Mon, 11 Aug 2025 15:29:19 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6E38F2118276
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1754951359;
-	bh=fFBbki7f2MoxwpvGe/7cW5fawgyJq69IsHM0H1HdpiQ=;
-	h=Date:From:To:Subject:From;
-	b=dr61DEjQySjxuJnB8aFpAK/IFb7ZYwvzhvvupIL4XrILeCWS1H2Uh8yDqBadWKx2M
-	 YUQKYRdnpj+npG8u+CRotzro9o9bhOHJxAvbe1WG133liawyWiyoeiqra9tMJZJW5u
-	 dIaGml0fvtdr/EKQi9fFfL0F8Bmm0EnF9SawtnoY=
-Date: Mon, 11 Aug 2025 15:29:19 -0700
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: horms@kernel.org, kuba@kernel.org, kys@microsoft.com,
-	haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
-	andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
-	pabeni@redhat.com, longli@microsoft.com, kotaranov@microsoft.com,
-	ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-	john.fastabend@gmail.com, sdf@fomichev.me, lorenzo@kernel.org,
-	michal.kubiak@intel.com, ernis@linux.microsoft.com,
-	shradhagupta@linux.microsoft.com, shirazsaleem@microsoft.com,
-	rosenp@gmail.com, netdev@vger.kernel.org,
-	linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	dipayanroy@microsoft.com
-Subject: [PATCH net-next v4] net: mana: Use page pool fragments for RX
- buffers instead of full pages to improve memory efficiency.
-Message-ID: <20250811222919.GA25951@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF1911F5851;
+	Mon, 11 Aug 2025 23:59:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.12
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1754956782; cv=fail; b=kqTEHCFOnug7jBpQ3uvONiv4Ow4pSlrhflao+RBPeSMrbwRwwerFDFdDEHnNDXTWw5xkfym3nWJsUVt8UvaoVnOzdG0faXPwnDj9pIVuE+xXX7xS9613xYgBbugnWHRUNt5j2OPd5zmD1kDOrvTpFDk8DB+8D/T+mtVqgoBB94A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1754956782; c=relaxed/simple;
+	bh=yGK4sbgWi0prmOdfkc/HXo/FoZfjCbae13v/xaLSZTw=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=SgsS2euzjISAjkV9xsBbZ1/nuCgRd3LAFxCpHSnJs0/MwVM1+G+IB9WLYaUT0aKjjWgdDf9m9ygTPGKWfnPRKy/P+0DewBxdXMxV147+OAD9TSPkFk8B/p2pUop99NvBc0PqOd2CKvcSPLlRkLsI24o9ZTa313LSJ18lucEIKR0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iN6SitGi; arc=fail smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1754956781; x=1786492781;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:mime-version;
+  bh=yGK4sbgWi0prmOdfkc/HXo/FoZfjCbae13v/xaLSZTw=;
+  b=iN6SitGiKRY8MDYmIgdVL6/b2Wy63ULwhwQL1SjIUUHiSs6yNRIieTO5
+   8dsPyjxiodUiVUefkg9Exvj0tEE+lD3dwE5PljU+LWyPYmgLlrV7ZTnzA
+   he06zBr6nZY6BNPzjetSqPA/n/Gati9zBOveoxyjOmJkWx+GvZtXI0RAW
+   I0cTSE9uSLRNufoXMaxPKbpoMeQrXmYQOXRZpfRljrkM92kRIJxL+5Xsg
+   tJ28nH+8WUdSNUx/l803elko9jSyKhdQzq8g3KDYTVwOrngF36G/D82If
+   HngUnnPTZ88knp8q9n3xgVO5j4BBea+ar4pPRVqHOURfznHsDgrlWKh5S
+   w==;
+X-CSE-ConnectionGUID: IFBwp+vCRheLFSs8F/wRgA==
+X-CSE-MsgGUID: hC5barWYSQi+qdvEZp1Zug==
+X-IronPort-AV: E=McAfee;i="6800,10657,11518"; a="61018925"
+X-IronPort-AV: E=Sophos;i="6.17,284,1747724400"; 
+   d="asc'?scan'208";a="61018925"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2025 16:59:40 -0700
+X-CSE-ConnectionGUID: ZBWvhswGQOS8eEMYN84Ddw==
+X-CSE-MsgGUID: kJp0m/HVSGCukYSfypE/Kg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.17,284,1747724400"; 
+   d="asc'?scan'208";a="165547748"
+Received: from fmsmsx901.amr.corp.intel.com ([10.18.126.90])
+  by fmviesa007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2025 16:59:40 -0700
+Received: from FMSMSX902.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx901.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.26; Mon, 11 Aug 2025 16:59:39 -0700
+Received: from fmsedg902.ED.cps.intel.com (10.1.192.144) by
+ FMSMSX902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.26 via Frontend Transport; Mon, 11 Aug 2025 16:59:39 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (40.107.102.66)
+ by edgegateway.intel.com (192.55.55.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1748.26; Mon, 11 Aug 2025 16:59:39 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=SJrIDDQTLqXPiplvc9+z3xGzoI+jWYLUFj5qf+ae/rHGR9x637jYSbo0/OigLXro39Vt/6zmyUPH9khfUxsV5jl0G6mo4kBBKRvabiED3nBp+XpR20mUnDAhmYER5/MRW0hGzChaFWQiiuK1gIHp1pDzacE+oQVJowczoRXWI+kyTcVbAIVP3z/CjO1SAFToxry6ApZP4d1P4DnaEQJ5y912y0brkVeO3yyhw4UQ7cD8gcrQAxmB8AkIj7796aXu9NNlBEJcN4epWUaQVGk3O5Sqr2lbryIRHd0MgfS16mCCXyrN46eLWvYU7TSAxLOXYJga6lNP0N5/suJWo+48Hw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yGK4sbgWi0prmOdfkc/HXo/FoZfjCbae13v/xaLSZTw=;
+ b=cULt1lU+vgQNUdPZjxrI7mY3EkvExCfLlD5ZMcswP1YPw1Q8UgOxfyOJPaER90JuryhENs7zQtoAwTJKHN5crMpjpeDx+MzU5opjNgRGrIUlNwfxX4tBvWtpPwTUY4JyZAaQ9oQxKQa9cURxUPUJM1b2u0vEDzMCxnsQQpmQgT3B8Eb6/fDZS2EZmw1pEjU/gDzJgTyGOdRWcgKS7YwIagm+VWse/DYUISHgj+ocu77v+N43XEwBhIuFjGRVDRy30oii+Hb0hgAHloj8lNt54LiRhiWF07Jo6DFGzpEKyD6HWaoUtJb9m4iG2LE4a0aZApVUJr3BeYOmZht+kjB7ig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
+ by PH0PR11MB7633.namprd11.prod.outlook.com (2603:10b6:510:26c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9009.22; Mon, 11 Aug
+ 2025 23:59:36 +0000
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::81f7:c6c0:ca43:11c3]) by CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::81f7:c6c0:ca43:11c3%5]) with mapi id 15.20.9009.018; Mon, 11 Aug 2025
+ 23:59:36 +0000
+Message-ID: <08e315e3-8f29-42c3-97d6-6449bf3cb716@intel.com>
+Date: Mon, 11 Aug 2025 16:59:33 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v5 0/2] net: Don't use %pK through printk or
+ tracepoints
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>, "Tony
+ Nguyen" <anthony.l.nguyen@intel.com>, Przemek Kitszel
+	<przemyslaw.kitszel@intel.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, "Jakub
+ Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Saeed Mahameed
+	<saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan
+	<tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>
+CC: <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>, "Aleksandr
+ Loktionov" <aleksandr.loktionov@intel.com>, Simon Horman <horms@kernel.org>,
+	Paul Menzel <pmenzel@molgen.mpg.de>
+References: <20250811-restricted-pointers-net-v5-0-2e2fdc7d3f2c@linutronix.de>
+Content-Language: en-US
+From: Jacob Keller <jacob.e.keller@intel.com>
+Autocrypt: addr=jacob.e.keller@intel.com; keydata=
+ xjMEaFx9ShYJKwYBBAHaRw8BAQdAE+TQsi9s60VNWijGeBIKU6hsXLwMt/JY9ni1wnsVd7nN
+ J0phY29iIEtlbGxlciA8amFjb2IuZS5rZWxsZXJAaW50ZWwuY29tPsKTBBMWCgA7FiEEIEBU
+ qdczkFYq7EMeapZdPm8PKOgFAmhcfUoCGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AA
+ CgkQapZdPm8PKOiZAAEA4UV0uM2PhFAw+tlK81gP+fgRqBVYlhmMyroXadv0lH4BAIf4jLxI
+ UPEL4+zzp4ekaw8IyFz+mRMUBaS2l+cpoBUBzjgEaFx9ShIKKwYBBAGXVQEFAQEHQF386lYe
+ MPZBiQHGXwjbBWS5OMBems5rgajcBMKc4W4aAwEIB8J4BBgWCgAgFiEEIEBUqdczkFYq7EMe
+ apZdPm8PKOgFAmhcfUoCGwwACgkQapZdPm8PKOjbUQD+MsPBANqBUiNt+7w0dC73R6UcQzbg
+ cFx4Yvms6cJjeD4BAKf193xbq7W3T7r9BdfTw6HRFYDiHXgkyoc/2Q4/T+8H
+In-Reply-To: <20250811-restricted-pointers-net-v5-0-2e2fdc7d3f2c@linutronix.de>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature";
+	boundary="------------8wEi0LTIWZ9RVg0DJHSInh7j"
+X-ClientProxiedBy: MW4P222CA0022.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:303:114::27) To CO1PR11MB5089.namprd11.prod.outlook.com
+ (2603:10b6:303:9b::16)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PR11MB5089:EE_|PH0PR11MB7633:EE_
+X-MS-Office365-Filtering-Correlation-Id: a040836f-0e54-440d-695d-08ddd9332002
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|7416014|921020|7053199007;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?RVhDSnVxMDdIM0o2YThmdUpmdFNiWkVjbWRka1hLaENuWVpYWFRkckQ3ZnUr?=
+ =?utf-8?B?eHQvdXRGbTduZTJycDhNVUViRjFJckx6Qm4wWHFBelpmeVVWblpYN2g3ZlVN?=
+ =?utf-8?B?NnFKNjkwcUNXaGo0d0tGcURURXFzeFZXbWVXNDFSUExzQVJhd2UzMkFpc1Zm?=
+ =?utf-8?B?a0l6UHJqOTU5RE1KV2cxN3lUNUtLZ0dSWGpIVVZmdE80ekxKUTU3SlJKV0t0?=
+ =?utf-8?B?VFpBTWUzOFVPbzd1NTVhUXlMcXlBTkY1SG15UXFmV0JNbXhBSE4zOGU1NXlk?=
+ =?utf-8?B?UlpVdlBod0FUalNOU0NYL0IvMVZhd3lPVmtKZWdlTm9QWUtLVWxkTGZxOGhC?=
+ =?utf-8?B?YnUwVnY2eldSbEQwZkgraUlGOU1BMkNKNG5OZTBsRXg0R3RTUklkNUJSME5w?=
+ =?utf-8?B?d0JnVk82R29NSytyeGVWVlc4Z2gzbkFvVytWOG5QUk5JL1liYVJrUGpoeGVK?=
+ =?utf-8?B?RWZSaGszelVBVXZJRGZ0ZG8vTUwzMnFPd0RseEtEaUZ4Tnc3cXlqRzdHUktz?=
+ =?utf-8?B?YVZTeGZQVERBWk9sNTdrWWUzN1YyZkxmcmUxcmZCckdlY3o0QVVmYm5xcy9w?=
+ =?utf-8?B?OTJVbTErRlZhTnFKOFJQY3Y5cWplZGM5OVE0OGZIcVQ3RSt2WTNBa2hJK2hj?=
+ =?utf-8?B?anZBWG9BeEIwSmg3ektSMG5VLzB4ZHR5WHdNTzJkMjFkSHBxUXkvM1owSVY1?=
+ =?utf-8?B?Q0o3MXcvalpYdmYyQmY0OUJBSlFSZVZBaW8yNjVJMXYvbUEwOWh5cXNyTnBK?=
+ =?utf-8?B?emsyV1p3L2d4eldMSk43aWt2dzNGK2NyQktndFFodTBlM21ldkVKMHVkdWtD?=
+ =?utf-8?B?cTRlQlgrd0Y5MlZBQmdaeGlCZ3NrR0FReDgwVVVVNG0vSDRyMnIxejFTVXox?=
+ =?utf-8?B?Q3pYVXhpNnNLWEh4bTlBUXU4OEtiQ3RxYnpIQVMrazR1NkFURGozaWEwQm95?=
+ =?utf-8?B?MHdRdzZQTUtwZ1kvUkZGanp2NEdGOG92WmgvWnNBakREZFhya2NMSzFheHEr?=
+ =?utf-8?B?V3ZZVjNjSSswbnBnYTVGRk1DN09vdHlNQkJyQURnQks3UWFvRlA3RGtyNDJL?=
+ =?utf-8?B?Z3FaUi9adE1HZDRVa1hpNFRuNGlTTEZnSHpqUHVwUkJodUY4M1hIQnVzZVFN?=
+ =?utf-8?B?bUdhLzlKcVFndjdMaXVuYjFTRVlJTFdaZ3I0ZGdtUG9oWlJCYUxzNlQ4YzBE?=
+ =?utf-8?B?bGlMa1RtQ1ZkNkxxNDkvNVA1bWl2bDZRT0ZlNXpDcVY0K3pQeWl4MmpEeTRS?=
+ =?utf-8?B?SVBmRm5GSVV4VjZBVjRUNGRXRzJ4eWdTWCt4U3JJZ1dyYklOcVZhTWtraXJG?=
+ =?utf-8?B?MlJZcnVES3p5QzRkNkZidFpCaklEbXZQWFBKSmZQeEZEZS9oY01uak5hRDMr?=
+ =?utf-8?B?a2piZzhiUFpLTTNxQjZkSTR1UkNvOVlRMDRoZE9WVTIvUkc2NkFqc3ZwMCtF?=
+ =?utf-8?B?Y25WZTQ0RnFiVDhoZjhHM3UxMmNQS1hwY0c4em1ibmhpYXg0U0F1bERSaUF0?=
+ =?utf-8?B?NjZqUjdwbmxobmlPWkxVR2dKcWF3aytlUHhzUXNtTEhRTm5LSmpVUHhDUCt0?=
+ =?utf-8?B?QnE4QjNOUG9uQ3ZmazEvNXhoVkpmOG9LQzgvQUMwTVVoeEprK0hodmx1S0hR?=
+ =?utf-8?B?ZHZ1Y2hCK3Y0UHlQamdWbUd4TnJGaFFUWlF4V2ZVdkRVM3VadkxUcDNHcDNJ?=
+ =?utf-8?B?QnBOU2MyUzJ0NjRmM1NVdGYxZTQ2eTFwdkE1VlAvRy9GdXpFeVNyNUtMU3pw?=
+ =?utf-8?B?aDh2V1dmSzVjZnpuTGRVWXI0NjFCanhJZjdLaXp1QmdBamUrWXdpbmloMTNV?=
+ =?utf-8?B?MTFSai9iUlhzRUxPMlRlR0xZRDBZNHVhTEJRNnYxcE9FMGxTT0k2cVlxVkFv?=
+ =?utf-8?B?MllkRldCd28vclR4NzhPWkg0RWcvY3htZUpETDVORlNUR0xQcWlSa016NFg0?=
+ =?utf-8?B?TmJYcXN3bnlTU3B5VU1Pb0c0QTA0aVN5NVZlU2tRSlVDdEZ3UnFYVEp1S3g3?=
+ =?utf-8?B?UHF5cWloKzhRPT0=?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014)(921020)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QUlPQVdKMG83aVF0R0V2d25WelpxRVFYcnIrSXFjWVExNFZuWmtNZmhFVUhw?=
+ =?utf-8?B?eElzSUNVLzJvR1dPZ1hvOEFQSjRYUllZM0Z4QUk4NDdyM1NaZUpyZTM3R2J6?=
+ =?utf-8?B?d1p6VWJZdmR6NitrMnJTOGZkNHNHbEJYU0d3dnc0U2lsc0RwQ0JMRFZSMjYy?=
+ =?utf-8?B?SFA5a3pxOElscXBsVGU2U3c0SENhUzBneVhOdkFCOWxLcTZKaGE2b0VzYmtB?=
+ =?utf-8?B?OUFLYWc0SDZIaGgrK09kV2FBTTYxeERoRWZLb3ZiOVhiOWpVUFhnN0pUTG5q?=
+ =?utf-8?B?YWNnRmc5aGw5K1N1eHY4eEp6VE5SM0wwbTFCVFVqaFR0MTBTVTQ0TENUQ0hD?=
+ =?utf-8?B?TXd3YlFXK2RXMmNvbmlXQXJpbHg2bW9LY3Q4VENCMW41TSthL3VWQkZ5YzRU?=
+ =?utf-8?B?TUJHaElhSDhnVVlQL01mNjU2VzI0Z3lMbmFRaEtBL3A1YUZjbE5kOUVTaTVk?=
+ =?utf-8?B?bEdVa2FKc3J2V09WOG1mL0g5bE0yMDJyWVNsMHhxZjZlR01jMWV5eG5rak40?=
+ =?utf-8?B?dU43ekJGaytDZWhiWm1kVEJQTUd1T01iakxjZDRFdGlaaXA2MENSa2hLQUJp?=
+ =?utf-8?B?bnNiZm8vUWY1bnBZM1VsbmJiVktBUU9VK3V0QnZKRC9YNWVkSmNxZXdwRlQ1?=
+ =?utf-8?B?Mk5aQjFXL3N4TTQ4eFBaTVY4Qjg5RTBHekVIeXFpdU1EZFh4T1NnRW51dW9B?=
+ =?utf-8?B?bTUyUmdOeFlkYUlVM0VlSnM4a0RJZXRwT2ZTdCsvcWtIbnkzYU5iQlV6TzR0?=
+ =?utf-8?B?UThkTkZCRVlwTEZhaVhMQ1VId2s5T1JGR05pWGIzeXlHc2EycXRWRUpMOGJC?=
+ =?utf-8?B?N2V4SHVJUXRDaUdzdm5TbS9UV2oyS0ZQNk5EcEF5b2V4a2NnL1V1U2tHZVFh?=
+ =?utf-8?B?QnBQYnNMOGt3Y1pHL1oxUk8wakgzejlha2NlVjFqOW9NaDJ0UFpmTHZPRXlH?=
+ =?utf-8?B?QnZYU0tpaGRYWDdjQjBvd0tXSDVZRVNPNElGS1U4YjRMbW5ZaUU5NkN0VDdN?=
+ =?utf-8?B?SVljdllmZERNN1h3YWVCajN2b0hyWC9ITlI1TjVLcGhhK2l2M2NsQ1Q4c25n?=
+ =?utf-8?B?aHB5WElqR1JzcE9XZ0ErL3JnSnk4TTczR0g2NTRWUlBicnZ5Yi8wY0FBWVZD?=
+ =?utf-8?B?bXd1Wm9XSk5DTGpRb0ZHOGZUaFRnRzFXTjdoTHU1Z3pFQjV2Ry9jbWlMOWhu?=
+ =?utf-8?B?R08yV2lSdWs1clRpWDlQbXB5UDcvRkFRanVIaW9kVnJyRit1QU9qVmdXRmw0?=
+ =?utf-8?B?OVB0Tk9tRzJIVzVDT0ZCNjdBanhLTFAvaGwra0o5M2ZiOFFWdzU5NmFnbEhY?=
+ =?utf-8?B?bW1Hb0s0Sm9Pd3ZpK2F4OWRqU0Rlblh4UGluMERzTGJkTjF6Nkk4RDFjQXlD?=
+ =?utf-8?B?Vm41MjArM2JSSS9uK1FiZkJHVEZSN3RaSFEyM240YStCZTV2b0RIcmkxTGV4?=
+ =?utf-8?B?dldITzV3ZVhuSWZyVDloUzJXclZMMUJOWXJuQkJrTVhzbkEreStoenRvMURr?=
+ =?utf-8?B?eTZWekFCUW1vTzlUQ2ZqMUlaT3VwRmVON0o5SmdnYXpud3g3VHFCREM5VVVv?=
+ =?utf-8?B?NmxJSTRVUmt6TExrMVM2NnJxcEZNaDVXVndpRGFwN3cxQ3RRRFRGZFNQRFZ6?=
+ =?utf-8?B?aFNqSENxZm8ydGRxWkU2RFpMUW5oRjd1V1AvZHEwSUhVbk9VVEFqclFkUllo?=
+ =?utf-8?B?NWxHNEh2TGh1aElJU0dXQjhqOTJJTTgxWEdnWlFRcXRuWDBRV3pRZy9TMzNj?=
+ =?utf-8?B?TE5hVnJZdW1BS3dCNkU0SjBRUG8rcEh0d3ZCWEhVMVBtRVBXcGRPVmFBeS9k?=
+ =?utf-8?B?WmRER0lDL0tEL0VGZitmbmtHWWRFU2hMdU1TcmZENHhLTWo0R3JMTnorRm9v?=
+ =?utf-8?B?T2lueDJTNzdqTXRqZFV2b05lTlBNUkUxcFdjTzlqaktEVlRzOGdPQzRNUlA4?=
+ =?utf-8?B?ZlFQaW05eVdsR21VdnpVaGJtOVZnL2x2NXhZdkhiRWpxOGJFWW5qa2hQV0I5?=
+ =?utf-8?B?NUpRK2phRnpBbkZaZ09NdlRrS3h3YTlMQkpVNnhOaHUyRTNOUjFwZTdQQlgx?=
+ =?utf-8?B?aStpYlRHeWVqZmNwZ2ZkWTByYVlhN0p0YXVNeTRNcWVJaC9lbzBHSFhEQTVC?=
+ =?utf-8?B?aU1yWmhlbnRTRE8rUHhFNHhQM3dHZXYzcXFvcWswV0d1aVZtQTZmUnZ4RkFG?=
+ =?utf-8?B?L0E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a040836f-0e54-440d-695d-08ddd9332002
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2025 23:59:36.2821
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cNgOSsfRRS1U9pbotwDUHJ7BHESpaKRq83XtSzW812Czs8UeoeUKRiKKSuzu8NMzr+SkkrrcneC+9Z0cBhdVUVPNCkIgL6Af0B6dRu+HgaQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB7633
+X-OriginatorOrg: intel.com
 
-This patch enhances RX buffer handling in the mana driver by allocating
-pages from a page pool and slicing them into MTU-sized fragments, rather
-than dedicating a full page per packet. This approach is especially
-beneficial on systems with large base page sizes like 64KB.
+--------------8wEi0LTIWZ9RVg0DJHSInh7j
+Content-Type: multipart/mixed; boundary="------------3RVlkU3S061k0nbj06nuUFbK";
+ protected-headers="v1"
+From: Jacob Keller <jacob.e.keller@intel.com>
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>
+Cc: intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+ Simon Horman <horms@kernel.org>, Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <08e315e3-8f29-42c3-97d6-6449bf3cb716@intel.com>
+Subject: Re: [PATCH net-next v5 0/2] net: Don't use %pK through printk or
+ tracepoints
+References: <20250811-restricted-pointers-net-v5-0-2e2fdc7d3f2c@linutronix.de>
+In-Reply-To: <20250811-restricted-pointers-net-v5-0-2e2fdc7d3f2c@linutronix.de>
 
-Key improvements:
+--------------3RVlkU3S061k0nbj06nuUFbK
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-- Proper integration of page pool for RX buffer allocations.
-- MTU-sized buffer slicing to improve memory utilization.
-- Reduce overall per Rx queue memory footprint.
-- Automatic fallback to full-page buffers when:
-   * Jumbo frames are enabled (MTU > PAGE_SIZE / 2).
-   * The XDP path is active, to avoid complexities with fragment reuse.
 
-Testing on VMs with 64KB pages shows around 200% throughput improvement.
-Memory efficiency is significantly improved due to reduced wastage in page
-allocations. Example: We are now able to fit 35 rx buffers in a single 64kb
-page for MTU size of 1500, instead of 1 rx buffer per page previously.
 
-Tested:
-
-- iperf3, iperf2, and nttcp benchmarks.
-- Jumbo frames with MTU 9000.
-- Native XDP programs (XDP_PASS, XDP_DROP, XDP_TX, XDP_REDIRECT) for
-  testing the XDP path in driver.
-- Memory leak detection (kmemleak).
-- Driver load/unload, reboot, and stress scenarios.
+On 8/11/2025 2:43 AM, Thomas Wei=C3=9Fschuh wrote:
+> In the past %pK was preferable to %p as it would not leak raw pointer
+> values into the kernel log.
+> Since commit ad67b74d2469 ("printk: hash addresses printed with %p")
+> the regular %p has been improved to avoid this issue.
+> Furthermore, restricted pointers ("%pK") were never meant to be used
+> through printk(). They can still unintentionally leak raw pointers or
+> acquire sleeping locks in atomic contexts.
+>=20
+> Switch to the regular pointer formatting which is safer and
+> easier to reason about.
+> There are still a few users of %pK left, but these use it through seq_f=
+ile,
+> for which its usage is safe.
+>=20
+> Signed-off-by: Thomas Wei=C3=9Fschuh <thomas.weissschuh@linutronix.de>
+> ---
+> Changes in v5:
+> - Rebase on v6.17-rc1
+> - Bick up Reviewed-by from Paul
+> - Link to v4: https://lore.kernel.org/r/20250718-restricted-pointers-ne=
+t-v4-0-4baa64e40658@linutronix.de
+>=20
+Thanks for fixing these up!
 
 Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-Reviewed-by: Saurabh Sengar <ssengar@linux.microsoft.com>
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
----
-Changes in v4:
-  - Better error handling in mana_xdp_set.
-Changes in v3:
-  - Retained the pre-alloc rxbuf for driver reconfig paths
-    to better handle low memory scenario during reconfig.
-Changes in v2:
-  - Fixed mana_xdp_set() to return error code on failure instead of
-    always returning 0.
-  - Moved all local variable declarations to the start of functions
-    in mana_get_rxbuf_cfg.
-  - Removed unnecessary parentheses and wrapped lines to <= 80 chars.
-  - Use mana_xdp_get() for checking bpf_prog.
-  - Factored repeated page put/free logic into a static helper function.
----
- .../net/ethernet/microsoft/mana/mana_bpf.c    |  42 ++++-
- drivers/net/ethernet/microsoft/mana/mana_en.c | 151 ++++++++++++------
- include/net/mana/mana.h                       |   4 +
- 3 files changed, 148 insertions(+), 49 deletions(-)
 
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_bpf.c b/drivers/net/ethernet/microsoft/mana/mana_bpf.c
-index d30721d4516f..e616f4239294 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_bpf.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_bpf.c
-@@ -174,6 +174,7 @@ static int mana_xdp_set(struct net_device *ndev, struct bpf_prog *prog,
- 	struct mana_port_context *apc = netdev_priv(ndev);
- 	struct bpf_prog *old_prog;
- 	struct gdma_context *gc;
-+	int err;
- 
- 	gc = apc->ac->gdma_dev->gdma_context;
- 
-@@ -198,8 +199,43 @@ static int mana_xdp_set(struct net_device *ndev, struct bpf_prog *prog,
- 	if (old_prog)
- 		bpf_prog_put(old_prog);
- 
--	if (apc->port_is_up)
-+	if (apc->port_is_up) {
-+		/* Re-create rxq's after xdp prog was loaded or unloaded.
-+		 * Ex: re create rxq's to switch from full pages to smaller
-+		 * size page fragments when xdp prog is unloaded and
-+		 * vice-versa.
-+		 */
-+
-+		/* Pre-allocate buffers to prevent failure in mana_attach */
-+		err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
-+		if (err) {
-+			NL_SET_ERR_MSG_MOD
-+			    (extack,
-+			    "XDP: Insufficient memory for tx/rx re-config");
-+			return err;
-+		}
-+
-+		err = mana_detach(ndev, false);
-+		if (err) {
-+			netdev_err(ndev,
-+				   "mana_detach failed at xdp set: %d\n", err);
-+			NL_SET_ERR_MSG_MOD(extack,
-+					   "XDP: Re-config failed at detach");
-+			goto err_dealloc_rxbuffs;
-+		}
-+
-+		err = mana_attach(ndev);
-+		if (err) {
-+			netdev_err(ndev,
-+				   "mana_attach failed at xdp set: %d\n", err);
-+			NL_SET_ERR_MSG_MOD(extack,
-+					   "XDP: Re-config failed at attach");
-+			goto err_dealloc_rxbuffs;
-+		}
-+
- 		mana_chn_setxdp(apc, prog);
-+		mana_pre_dealloc_rxbufs(apc);
-+	}
- 
- 	if (prog)
- 		ndev->max_mtu = MANA_XDP_MTU_MAX;
-@@ -207,6 +243,10 @@ static int mana_xdp_set(struct net_device *ndev, struct bpf_prog *prog,
- 		ndev->max_mtu = gc->adapter_mtu - ETH_HLEN;
- 
- 	return 0;
-+
-+err_dealloc_rxbuffs:
-+	mana_pre_dealloc_rxbufs(apc);
-+	return err;
- }
- 
- int mana_bpf(struct net_device *ndev, struct netdev_bpf *bpf)
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index a7973651ae51..3efe2e696589 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -56,6 +56,15 @@ static bool mana_en_need_log(struct mana_port_context *apc, int err)
- 		return true;
- }
- 
-+static void mana_put_rx_page(struct mana_rxq *rxq, struct page *page,
-+			     bool from_pool)
-+{
-+	if (from_pool)
-+		page_pool_put_full_page(rxq->page_pool, page, false);
-+	else
-+		put_page(page);
-+}
-+
- /* Microsoft Azure Network Adapter (MANA) functions */
- 
- static int mana_open(struct net_device *ndev)
-@@ -629,21 +638,40 @@ static void *mana_get_rxbuf_pre(struct mana_rxq *rxq, dma_addr_t *da)
- }
- 
- /* Get RX buffer's data size, alloc size, XDP headroom based on MTU */
--static void mana_get_rxbuf_cfg(int mtu, u32 *datasize, u32 *alloc_size,
--			       u32 *headroom)
-+static void mana_get_rxbuf_cfg(struct mana_port_context *apc,
-+			       int mtu, u32 *datasize, u32 *alloc_size,
-+			       u32 *headroom, u32 *frag_count)
- {
--	if (mtu > MANA_XDP_MTU_MAX)
--		*headroom = 0; /* no support for XDP */
--	else
--		*headroom = XDP_PACKET_HEADROOM;
-+	u32 len, buf_size;
- 
--	*alloc_size = SKB_DATA_ALIGN(mtu + MANA_RXBUF_PAD + *headroom);
-+	/* Calculate datasize first (consistent across all cases) */
-+	*datasize = mtu + ETH_HLEN;
- 
--	/* Using page pool in this case, so alloc_size is PAGE_SIZE */
--	if (*alloc_size < PAGE_SIZE)
--		*alloc_size = PAGE_SIZE;
-+	/* For xdp and jumbo frames make sure only one packet fits per page */
-+	if (mtu + MANA_RXBUF_PAD > PAGE_SIZE / 2 || mana_xdp_get(apc)) {
-+		if (mana_xdp_get(apc)) {
-+			*headroom = XDP_PACKET_HEADROOM;
-+			*alloc_size = PAGE_SIZE;
-+		} else {
-+			*headroom = 0; /* no support for XDP */
-+			*alloc_size = SKB_DATA_ALIGN(mtu + MANA_RXBUF_PAD +
-+						     *headroom);
-+		}
- 
--	*datasize = mtu + ETH_HLEN;
-+		*frag_count = 1;
-+		return;
-+	}
-+
-+	/* Standard MTU case - optimize for multiple packets per page */
-+	*headroom = 0;
-+
-+	/* Calculate base buffer size needed */
-+	len = SKB_DATA_ALIGN(mtu + MANA_RXBUF_PAD + *headroom);
-+	buf_size = ALIGN(len, MANA_RX_FRAG_ALIGNMENT);
-+
-+	/* Calculate how many packets can fit in a page */
-+	*frag_count = PAGE_SIZE / buf_size;
-+	*alloc_size = buf_size;
- }
- 
- int mana_pre_alloc_rxbufs(struct mana_port_context *mpc, int new_mtu, int num_queues)
-@@ -655,8 +683,9 @@ int mana_pre_alloc_rxbufs(struct mana_port_context *mpc, int new_mtu, int num_qu
- 	void *va;
- 	int i;
- 
--	mana_get_rxbuf_cfg(new_mtu, &mpc->rxbpre_datasize,
--			   &mpc->rxbpre_alloc_size, &mpc->rxbpre_headroom);
-+	mana_get_rxbuf_cfg(mpc, new_mtu, &mpc->rxbpre_datasize,
-+			   &mpc->rxbpre_alloc_size, &mpc->rxbpre_headroom,
-+			   &mpc->rxbpre_frag_count);
- 
- 	dev = mpc->ac->gdma_dev->gdma_context->dev;
- 
-@@ -1841,8 +1870,11 @@ static void mana_rx_skb(void *buf_va, bool from_pool,
- 
- drop:
- 	if (from_pool) {
--		page_pool_recycle_direct(rxq->page_pool,
--					 virt_to_head_page(buf_va));
-+		if (rxq->frag_count == 1)
-+			page_pool_recycle_direct(rxq->page_pool,
-+						 virt_to_head_page(buf_va));
-+		else
-+			page_pool_free_va(rxq->page_pool, buf_va, true);
- 	} else {
- 		WARN_ON_ONCE(rxq->xdp_save_va);
- 		/* Save for reuse */
-@@ -1858,33 +1890,46 @@ static void *mana_get_rxfrag(struct mana_rxq *rxq, struct device *dev,
- 			     dma_addr_t *da, bool *from_pool)
- {
- 	struct page *page;
-+	u32 offset;
- 	void *va;
--
- 	*from_pool = false;
- 
--	/* Reuse XDP dropped page if available */
--	if (rxq->xdp_save_va) {
--		va = rxq->xdp_save_va;
--		rxq->xdp_save_va = NULL;
--	} else {
--		page = page_pool_dev_alloc_pages(rxq->page_pool);
--		if (!page)
-+	/* Don't use fragments for jumbo frames or XDP where it's 1 fragment
-+	 * per page.
-+	 */
-+	if (rxq->frag_count == 1) {
-+		/* Reuse XDP dropped page if available */
-+		if (rxq->xdp_save_va) {
-+			va = rxq->xdp_save_va;
-+			page = virt_to_head_page(va);
-+			rxq->xdp_save_va = NULL;
-+		} else {
-+			page = page_pool_dev_alloc_pages(rxq->page_pool);
-+			if (!page)
-+				return NULL;
-+
-+			*from_pool = true;
-+			va = page_to_virt(page);
-+		}
-+
-+		*da = dma_map_single(dev, va + rxq->headroom, rxq->datasize,
-+				     DMA_FROM_DEVICE);
-+		if (dma_mapping_error(dev, *da)) {
-+			mana_put_rx_page(rxq, page, *from_pool);
- 			return NULL;
-+		}
- 
--		*from_pool = true;
--		va = page_to_virt(page);
-+		return va;
- 	}
- 
--	*da = dma_map_single(dev, va + rxq->headroom, rxq->datasize,
--			     DMA_FROM_DEVICE);
--	if (dma_mapping_error(dev, *da)) {
--		if (*from_pool)
--			page_pool_put_full_page(rxq->page_pool, page, false);
--		else
--			put_page(virt_to_head_page(va));
--
-+	page =  page_pool_dev_alloc_frag(rxq->page_pool, &offset,
-+					 rxq->alloc_size);
-+	if (!page)
- 		return NULL;
--	}
-+
-+	va  = page_to_virt(page) + offset;
-+	*da = page_pool_get_dma_addr(page) + offset + rxq->headroom;
-+	*from_pool = true;
- 
- 	return va;
- }
-@@ -1901,9 +1946,9 @@ static void mana_refill_rx_oob(struct device *dev, struct mana_rxq *rxq,
- 	va = mana_get_rxfrag(rxq, dev, &da, &from_pool);
- 	if (!va)
- 		return;
--
--	dma_unmap_single(dev, rxoob->sgl[0].address, rxq->datasize,
--			 DMA_FROM_DEVICE);
-+	if (!rxoob->from_pool || rxq->frag_count == 1)
-+		dma_unmap_single(dev, rxoob->sgl[0].address, rxq->datasize,
-+				 DMA_FROM_DEVICE);
- 	*old_buf = rxoob->buf_va;
- 	*old_fp = rxoob->from_pool;
- 
-@@ -2314,15 +2359,15 @@ static void mana_destroy_rxq(struct mana_port_context *apc,
- 		if (!rx_oob->buf_va)
- 			continue;
- 
--		dma_unmap_single(dev, rx_oob->sgl[0].address,
--				 rx_oob->sgl[0].size, DMA_FROM_DEVICE);
--
- 		page = virt_to_head_page(rx_oob->buf_va);
- 
--		if (rx_oob->from_pool)
--			page_pool_put_full_page(rxq->page_pool, page, false);
--		else
--			put_page(page);
-+		if (rxq->frag_count == 1 || !rx_oob->from_pool) {
-+			dma_unmap_single(dev, rx_oob->sgl[0].address,
-+					 rx_oob->sgl[0].size, DMA_FROM_DEVICE);
-+			mana_put_rx_page(rxq, page, rx_oob->from_pool);
-+		} else {
-+			page_pool_free_va(rxq->page_pool, rx_oob->buf_va, true);
-+		}
- 
- 		rx_oob->buf_va = NULL;
- 	}
-@@ -2428,11 +2473,22 @@ static int mana_create_page_pool(struct mana_rxq *rxq, struct gdma_context *gc)
- 	struct page_pool_params pprm = {};
- 	int ret;
- 
--	pprm.pool_size = mpc->rx_queue_size;
-+	pprm.pool_size = mpc->rx_queue_size / rxq->frag_count + 1;
- 	pprm.nid = gc->numa_node;
- 	pprm.napi = &rxq->rx_cq.napi;
- 	pprm.netdev = rxq->ndev;
- 	pprm.order = get_order(rxq->alloc_size);
-+	pprm.queue_idx = rxq->rxq_idx;
-+	pprm.dev = gc->dev;
-+
-+	/* Let the page pool do the dma map when page sharing with multiple
-+	 * fragments enabled for rx buffers.
-+	 */
-+	if (rxq->frag_count > 1) {
-+		pprm.flags =  PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV;
-+		pprm.max_len = PAGE_SIZE;
-+		pprm.dma_dir = DMA_FROM_DEVICE;
-+	}
- 
- 	rxq->page_pool = page_pool_create(&pprm);
- 
-@@ -2471,9 +2527,8 @@ static struct mana_rxq *mana_create_rxq(struct mana_port_context *apc,
- 	rxq->rxq_idx = rxq_idx;
- 	rxq->rxobj = INVALID_MANA_HANDLE;
- 
--	mana_get_rxbuf_cfg(ndev->mtu, &rxq->datasize, &rxq->alloc_size,
--			   &rxq->headroom);
--
-+	mana_get_rxbuf_cfg(apc, ndev->mtu, &rxq->datasize, &rxq->alloc_size,
-+			   &rxq->headroom, &rxq->frag_count);
- 	/* Create page pool for RX queue */
- 	err = mana_create_page_pool(rxq, gc);
- 	if (err) {
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index e1030a7d2daa..0921485565c0 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -65,6 +65,8 @@ enum TRI_STATE {
- #define MANA_STATS_RX_COUNT 5
- #define MANA_STATS_TX_COUNT 11
- 
-+#define MANA_RX_FRAG_ALIGNMENT 64
-+
- struct mana_stats_rx {
- 	u64 packets;
- 	u64 bytes;
-@@ -328,6 +330,7 @@ struct mana_rxq {
- 	u32 datasize;
- 	u32 alloc_size;
- 	u32 headroom;
-+	u32 frag_count;
- 
- 	mana_handle_t rxobj;
- 
-@@ -510,6 +513,7 @@ struct mana_port_context {
- 	u32 rxbpre_datasize;
- 	u32 rxbpre_alloc_size;
- 	u32 rxbpre_headroom;
-+	u32 rxbpre_frag_count;
- 
- 	struct bpf_prog *bpf_prog;
- 
--- 
-2.43.0
+--------------3RVlkU3S061k0nbj06nuUFbK--
 
+--------------8wEi0LTIWZ9RVg0DJHSInh7j
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wnsEABYIACMWIQQgQFSp1zOQVirsQx5qll0+bw8o6AUCaJqD5QUDAAAAAAAKCRBqll0+bw8o6M2Q
+APwII677+PCewpdBui2LFX0BKIXw3ghN/I1ydAUk47uyzAD9F3C30ZK9k2n2HXrwZvz06/OEyrgD
+XpgSfpQMfwOQ8Q4=
+=js0V
+-----END PGP SIGNATURE-----
+
+--------------8wEi0LTIWZ9RVg0DJHSInh7j--
 
