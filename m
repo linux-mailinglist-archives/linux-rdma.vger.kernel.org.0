@@ -1,200 +1,141 @@
-Return-Path: <linux-rdma+bounces-12663-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12664-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1653FB203D6
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Aug 2025 11:36:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA440B20408
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Aug 2025 11:43:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E82AB16D870
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Aug 2025 09:35:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AEC943B4B34
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Aug 2025 09:43:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6108A21C190;
-	Mon, 11 Aug 2025 09:35:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AEA32DE6E0;
+	Mon, 11 Aug 2025 09:43:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nAVbP5DY"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="WwHk0GWp";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="pb1pNvSd"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6CA972624;
-	Mon, 11 Aug 2025 09:35:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 657CD2DCF6C;
+	Mon, 11 Aug 2025 09:43:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754904914; cv=none; b=RDRyRLHZ62/FTTGQWvyR0Qleminn7e8dI5GYDhV+cPifEX5br91JxBvKsqXfsBobGTe2MeS8GuCwLVK1TVt/DmV6Qa8IgrGV19PT3PRDtqlIvT+5LHPyGSxx96kALJGMbAoN7CeiuKqAQ6B01bTsUQuCzzgauH+oNGC/IWovdks=
+	t=1754905410; cv=none; b=jfCyLClq0UpO2h15iximCTe+fWY4fFFnEOtARi/w9YU4NOMIRXjWbDe0Z5RrTjQB3sg3YvMFj+WOVqToxJqj8xuxhj99CUx+KaeFX6eY+hthImDoqP7/7XZ3quQ0NucPAYIDo/25qJ7OIw/cT7NTmEhW9xPH4na5gaqMFoNe/DY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754904914; c=relaxed/simple;
-	bh=2ZwxylsB2Cwq/rvyoSTDwCTj2j1ikXNbgKvfQtzfiIM=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=Khr9OSXBMxkqFGqP15P20MZo4iXgf3w74WWu17fjrs2Lhr1izR0yRLtYtqaby2UCIJqxaDLJxe3BymYGrjT4OS4d/uCAHFYMambCnfKObSCQvDrBi0t3EKWCjNmTeWWn+/Rm1Vz2gv9/GhnX0rAQpkyrkKJNOC+N1grvA8ll6hI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nAVbP5DY; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57ALLNoK029952;
-	Mon, 11 Aug 2025 09:34:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=U9zuCk
-	9a4CIQxDbpkwJyEPUlSTdQtCQi9qS3qt6IsBE=; b=nAVbP5DYod1gSp3wPYwypP
-	pn1A0jycqfztbzTb+M9q3iXpzAfUi9Yu56MPE5Ehgdc3l/G++UwTjEA7XMrObiO4
-	8RvS5pJIPHO8M+6wp+05xD2yikC4/9LQkpWc5rdXpiMKboRDMyZHhMeGraEB+AXX
-	fOWLuR4ga9gE6o4JuFQaSfURE6M2BGaA0iHOs8A9/dRBJvQDl5atOxTzDxpqDRCy
-	TNJP34dmomxwh/6uu2JFbFmJU5SVcP46Q7b+pKEIBjtdy8cnLUejnRSAcSqyLQck
-	XLl7Msj5aNx+nsS+BiEUZE2SyFnh66HK7uP/FXBFu19Bmw3Fqq56UDVRvLW82iaQ
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48dwud0k4r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Aug 2025 09:34:56 +0000 (GMT)
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 57B9YtHl004330;
-	Mon, 11 Aug 2025 09:34:55 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48dwud0k4p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Aug 2025 09:34:55 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 57B6jXVD025654;
-	Mon, 11 Aug 2025 09:34:54 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 48ejvm50j7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Aug 2025 09:34:54 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 57B9Yoau23069100
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 11 Aug 2025 09:34:51 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D349020043;
-	Mon, 11 Aug 2025 09:34:50 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3201420040;
-	Mon, 11 Aug 2025 09:34:49 +0000 (GMT)
-Received: from localhost (unknown [9.111.3.65])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 11 Aug 2025 09:34:49 +0000 (GMT)
+	s=arc-20240116; t=1754905410; c=relaxed/simple;
+	bh=L8xlTdbV68sRk5Mq8IoevADaEzgZ+a6EIL6L9IxI4bQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=cyMXNWF7OdrWLMLRSvjI0uXzn0yVLiWXsNzLUVZBLsmifoeLuYRLIuFMtbhN+V0hdob2wfMxmvETVOdVwY8BMd4u7n44EcD8YVQpzrU+2rLUa29MtqGc9ushQoG9eCoE5CcV+CJu/EDL8L8iBNHpqaiXLXyKCJ6a1ImnH8emugw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=WwHk0GWp; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=pb1pNvSd; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1754905407;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=b0423Apn/yDdM75Hzc5wqjfCAct86GXaSdLhTu73vbY=;
+	b=WwHk0GWpQylBlDPLOvp+4jJT31NqMeZNolN80ZjVuMFaTaFFTDcbpwJ/ppwV2YoSLJjwlP
+	SEXCqIMdUhQYxNFXRf5hMlM0iKBLEiPHSPFb5K+8nXmfqSB7NYk4OxyPqc8kdb85dCAAl6
+	2tc28DbOSxxq9swMqTOLU9Gkr8ktWN5g8/qa1L+UkFqO4+7hnxoHIwRdg+T3dh+xEZdCY6
+	zScyVPDSYhQ7iRpJU3blIzFH+JKgxiTRWXJsjIStXVRm4g44cLB1aMk5uKGdMl85auGIb0
+	uv1ogSsUa4u8qS8tQxROXpqm99pDmvL4hob3PnM6VUCb41YyILHOVfTiWcDfEw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1754905407;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=b0423Apn/yDdM75Hzc5wqjfCAct86GXaSdLhTu73vbY=;
+	b=pb1pNvSdSSE86gdlMRearVcFmTxP+TDEd2qJYBnnHGL/kRSfzoBuej/rw2QyxxUcmCmrEe
+	ycajX09I9JyPSXAg==
+Subject: [PATCH net-next v5 0/2] net: Don't use %pK through printk or
+ tracepoints
+Date: Mon, 11 Aug 2025 11:43:17 +0200
+Message-Id: <20250811-restricted-pointers-net-v5-0-2e2fdc7d3f2c@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 11 Aug 2025 11:34:45 +0200
-Message-Id: <DBZHV2Z3T4M5.1G8HW0HFP8GLO@linux.ibm.com>
-Subject: Re: [RFC net-next 15/17] net/dibs: Move query_remote_gid() to
- dibs_dev_ops
-From: "Julian Ruess" <julianr@linux.ibm.com>
-To: "Alexandra Winter" <wintera@linux.ibm.com>,
-        "David Miller"
- <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>, "Paolo Abeni"
- <pabeni@redhat.com>,
-        "Eric Dumazet" <edumazet@google.com>,
-        "Andrew Lunn"
- <andrew+netdev@lunn.ch>,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        "Dust Li"
- <dust.li@linux.alibaba.com>,
-        "Sidraya Jayagond" <sidraya@linux.ibm.com>,
-        "Wenjia Zhang" <wenjia@linux.ibm.com>,
-        "Julian Ruess"
- <julianr@linux.ibm.com>
-Cc: <netdev@vger.kernel.org>, <linux-s390@vger.kernel.org>,
-        "Heiko Carstens"
- <hca@linux.ibm.com>,
-        "Vasily Gorbik" <gor@linux.ibm.com>,
-        "Alexander
- Gordeev" <agordeev@linux.ibm.com>,
-        "Christian Borntraeger"
- <borntraeger@linux.ibm.com>,
-        "Sven Schnelle" <svens@linux.ibm.com>,
-        "Thorsten Winkler" <twinkler@linux.ibm.com>,
-        "Simon Horman"
- <horms@kernel.org>,
-        "Mahanta Jambigi" <mjambigi@linux.ibm.com>,
-        "Tony Lu"
- <tonylu@linux.alibaba.com>,
-        "Wen Gu" <guwen@linux.alibaba.com>,
-        "Halil
- Pasic" <pasic@linux.ibm.com>, <linux-rdma@vger.kernel.org>
-X-Mailer: aerc 0.20.1-89-g2ed71ec4c9b9
-References: <20250806154122.3413330-1-wintera@linux.ibm.com>
- <20250806154122.3413330-16-wintera@linux.ibm.com>
-In-Reply-To: <20250806154122.3413330-16-wintera@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODExMDA2MiBTYWx0ZWRfXywnBeQ0XHwDl
- hmuPWPtAAEM2SQixHHoQ5fsvDse7vTMzrC/2Q846CfxPP2CnGxab7FYurfgxDZFTdYAkpMa8nbQ
- UaHwjcM7y9bkK0hMxhbwVnq61eScEtIr0TrO068kGhLxF9WqJsqEt+YmoWd+Gg7FlUQLJ9kXkqR
- LKUEw/q2z34xEb53WsYg4q7jYQ66oabQyAf/p69Ex4y+SCSpH8KtxpkBXH2TRDndLmHw5nlJ+Gj
- dDuZ/u2qmlGMpYPIyQJP6YByWYSGxXAsepFcsYsTnSRhy52xAQET/FqLcBiciEgLt6ifpLh5H2d
- PGzA8Eu7NUD5rEJvj0c4z2cEMDhuI9eqyLFmcxCZtN5uXsGUArIGToLcxbe1MFQtE1UlJiUgwE7
- gHAWW9OW1RTSwIsmcN1ZgLt3qN7THRyjMsQSFrjDcySxuGOgBq0HbCt3nrP+PeuzuVdidjRM
-X-Authority-Analysis: v=2.4 cv=d/31yQjE c=1 sm=1 tr=0 ts=6899b940 cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=VnNF1IyMAAAA:8 a=jCXx2w3Ciln4EzbrpMcA:9
- a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: nzGxTHx6airBsFf8-a7MLiG6oquhhpt4
-X-Proofpoint-ORIG-GUID: bAGj4ybGNeTeedoc1_sO0gOPQD2F6qwW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-08-11_01,2025-08-06_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1011 mlxscore=0 suspectscore=0 impostorscore=0 priorityscore=1501
- mlxlogscore=999 phishscore=0 lowpriorityscore=0 adultscore=0 spamscore=0
- bulkscore=0 malwarescore=0 classifier=spam authscore=0 authtc=n/a authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2507300000
- definitions=main-2508110062
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIADW7mWgC/33NTW7DIBAF4KtErEvEz4BpVrlH1AWGcTNShSMgl
+ qPIdy91F4mquMunN/O9OyuYCQs77O4s40SFxtSCeduxcPbpEznFlpkSyggQwDOWmilUjPwyUqq
+ YC09YuXchxig0mihZ+75kHGhe5RP7OUg4V/bRmjOVOubbOjnJtf/V5bY+SS64VH4QAcG2peMXp
+ WvNY6J5H3F1J/VsdduWatY7hKHDwaH1+MrSD8tKt23pZum+80ZLNK7vX1nwsLr/LGgW9N5bQBD
+ WuL/WsizfPCy4dLABAAA=
+X-Change-ID: 20250404-restricted-pointers-net-a8cddd03e5d1
+To: Tony Nguyen <anthony.l.nguyen@intel.com>, 
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+ Andrew Lunn <andrew+netdev@lunn.ch>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
+ Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>
+Cc: intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
+ Aleksandr Loktionov <aleksandr.loktionov@intel.com>, 
+ Simon Horman <horms@kernel.org>, Paul Menzel <pmenzel@molgen.mpg.de>, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1754905404; l=1968;
+ i=thomas.weissschuh@linutronix.de; s=20240209; h=from:subject:message-id;
+ bh=L8xlTdbV68sRk5Mq8IoevADaEzgZ+a6EIL6L9IxI4bQ=;
+ b=rSJrXaszfDDrt8hU0fUQBJsibudoaXOy7MMpFvOV2l/6IRnujeE+95Jis4SetZdmM92vI7QRM
+ S8mPnXGv4ASAjo9fuPA5/Q+dBrqBK0nVGLmwt7QBPukJ5c455TuXRmd
+X-Developer-Key: i=thomas.weissschuh@linutronix.de; a=ed25519;
+ pk=pfvxvpFUDJV2h2nY0FidLUml22uGLSjByFbM6aqQQws=
 
-On Wed Aug 6, 2025 at 5:41 PM CEST, Alexandra Winter wrote:
-> Provide the dibs_dev_ops->query_remote_gid() in ism and dibs_loopback
-> dibs_devices. And call it in smc dibs_client.
->
-> Signed-off-by: Alexandra Winter <wintera@linux.ibm.com>
-> Reviewed-by: Julian Ruess <julianr@linux.ibm.com>
-> ---
->  drivers/s390/net/ism_drv.c | 41 +++++++++++++++++---------------------
->  include/linux/dibs.h       | 14 +++++++++++++
->  include/net/smc.h          |  2 --
->  net/dibs/dibs_loopback.c   | 10 ++++++++++
->  net/smc/smc_ism.c          |  8 ++++++--
->  net/smc/smc_loopback.c     | 13 ------------
->  6 files changed, 48 insertions(+), 40 deletions(-)
->
+In the past %pK was preferable to %p as it would not leak raw pointer
+values into the kernel log.
+Since commit ad67b74d2469 ("printk: hash addresses printed with %p")
+the regular %p has been improved to avoid this issue.
+Furthermore, restricted pointers ("%pK") were never meant to be used
+through printk(). They can still unintentionally leak raw pointers or
+acquire sleeping locks in atomic contexts.
 
--- snip --
+Switch to the regular pointer formatting which is safer and
+easier to reason about.
+There are still a few users of %pK left, but these use it through seq_file,
+for which its usage is safe.
 
-> diff --git a/include/linux/dibs.h b/include/linux/dibs.h
-> index 10be10ae4660..d940411aa179 100644
-> --- a/include/linux/dibs.h
-> +++ b/include/linux/dibs.h
-> @@ -133,6 +133,20 @@ struct dibs_dev_ops {
->  	 * Return: 2 byte dibs fabric id
->  	 */
->  	u16 (*get_fabric_id)(struct dibs_dev *dev);
-> +	/**
-> +	 * query_remote_gid()
-> +	 * @dev: local dibs device
-> +	 * @rgid: gid of remote dibs device
-> +	 * @vid_valid: if zero, vid will be ignored;
-> +	 *	       deprecated, ignored if device does not support vlan
-> +	 * @vid: VLAN id; deprecated, ignored if device does not support vlan
-> +	 *
-> +	 * Query whether a remote dibs device is reachable via this local devic=
-e
-> +	 * and this vlan id.
-> +	 * Return: 0 if remote gid is reachable.
-> +	 */
-> +	int (*query_remote_gid)(struct dibs_dev *dev, uuid_t *rgid,
-> +				u32 vid_valid, u32 vid);
+Signed-off-by: Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+---
+Changes in v5:
+- Rebase on v6.17-rc1
+- Bick up Reviewed-by from Paul
+- Link to v4: https://lore.kernel.org/r/20250718-restricted-pointers-net-v4-0-4baa64e40658@linutronix.de
 
-Shouldn't this be 'const uuid_t *rgid'?
+Changes in v4:
+- Pick up Reviewed-by from Simon
+- Link to v3: https://lore.kernel.org/r/20250618-restricted-pointers-net-v3-0-3b7a531e58bb@linutronix.de
 
--- snip --
+Changes in v3:
+- Fix typo in commit messages
+- Link to v2: https://lore.kernel.org/r/20250417-restricted-pointers-net-v2-0-94cf7ef8e6ae@linutronix.de
 
-Thanks,
-Julian
+Changes in v2:
+- Drop wifi/ath patches, they are submitted on their own now
+- Link to v1: https://lore.kernel.org/r/20250414-restricted-pointers-net-v1-0-12af0ce46cdd@linutronix.de
+
+---
+Thomas Weißschuh (2):
+      ice: Don't use %pK through printk or tracepoints
+      net/mlx5: Don't use %pK through tracepoints
+
+ drivers/net/ethernet/intel/ice/ice_main.c                      |  2 +-
+ drivers/net/ethernet/intel/ice/ice_trace.h                     | 10 +++++-----
+ .../ethernet/mellanox/mlx5/core/sf/dev/diag/dev_tracepoint.h   |  2 +-
+ 3 files changed, 7 insertions(+), 7 deletions(-)
+---
+base-commit: 8f5ae30d69d7543eee0d70083daf4de8fe15d585
+change-id: 20250404-restricted-pointers-net-a8cddd03e5d1
+
+Best regards,
+-- 
+Thomas Weißschuh <thomas.weissschuh@linutronix.de>
+
 
