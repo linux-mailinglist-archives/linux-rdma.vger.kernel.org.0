@@ -1,244 +1,156 @@
-Return-Path: <linux-rdma+bounces-12687-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12688-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34388B22B6D
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Aug 2025 17:10:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68904B22CD1
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Aug 2025 18:12:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E44027AF3E3
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Aug 2025 15:09:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E37786223FD
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Aug 2025 16:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B8BB2F530F;
-	Tue, 12 Aug 2025 15:10:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 472F326E6FA;
+	Tue, 12 Aug 2025 15:54:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="HD6yb4BJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q92L41Zr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2072.outbound.protection.outlook.com [40.107.220.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A13B2F5308;
-	Tue, 12 Aug 2025 15:10:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.72
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755011450; cv=fail; b=N+YSCalXr2mFvnrt/gRVFCrpoo1nEu+VqHFTm5P1grdB9KUNhP53vS5xRAVLbwOdbu+znlxal3j6reQITA5GhhCmP+LSPV7lPkAnTEMD6H0bmU4/tqbmBGIHyqSC6p4QXB/X+Wz/Pr9n0God+DOtAUfRiU4uO0jO3Pnfn7cjsro=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755011450; c=relaxed/simple;
-	bh=p1DYgsFitiyDIsFJ1PQrZhuc4Dqk8c1Q9gY6MuTsc5s=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Vj/8CBK17uI0Y3Jfd8gT1eHGNrwvg1PVELb50cQk/g0Yt9Tg6iqXmhDYBi0nFS+TliWc8lgpfOnASVajuNlaZWpVGrYNTZOvQVUzw9WsECTJCGjEJhXwbUblU1J72h54KcSeLnTkowEYsugQFBVrukRVYzXZHOsfqRIBhf2DOXw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=HD6yb4BJ; arc=fail smtp.client-ip=40.107.220.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=L5RGziEm/UBhEg62ZxqY7j2OhltctSI0zqi2QRt39FHA48xZhq4at/cn0PYhBDl8CKRn7U1hObciyhGT3vTLwZ1T3qbvw0u8LU2onvO6lnbdxWMGleWbqVRmUF9EK5EwASrmvZBSurUXy5Hk4F2hnkS+GkkZZhqfWcogewD3AgM7Ab9fLtCBqkA6N/ShRMQrkPaF3nfGT+/2Ayfv3NozOqg1VARotbGTF06IeL4vWCzngoG/TU3pmKIj2yeXSDiZSkxTIGtWsPLmYp1NUvOj3f/eHpOoGCMKiBEllokTNB2rbAGEz7I9PGoffc8zVTdol6f/JC9wm1JF513f4+qxhg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lz2bJyykGasvalwTjjUDQAEjMONwOHokthsOPZABC2g=;
- b=yQ6aQ59jJiV11LUBYilQyUgmAWai9CU+FJZVfdcAjmxh7+co1p9Zj3q7d+738mnsz7eg5Lfyo0Q5R/t83F7HLbZ87xt59iMq5l/IyBzQAUEYGgDsbZNJ0SWhGcs+a1r/NwYIRtC7TGqpdB/eUuNcJLoh3Yz9koyxUvYi5QXzgkPfBwo87NtSOtF4k1plC1u3NJXFljp8vu3S+8jW29QsOTG6u5oDBMtxfU8ln/386yJLBf5uHRlTUlANIZ8NCy8e+8k4+5RKIq8eygIW4pnz3354Wy4AMOKl6ipH4Z/0LXrR6/R96CxD01b6odPWZyQJoSAL6iE0rGEoO03k/yjwKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lz2bJyykGasvalwTjjUDQAEjMONwOHokthsOPZABC2g=;
- b=HD6yb4BJisRuhbC7Ah4x+bd+IPtraBtTHDosoAPhB8ST4f2H/P1ZdWAkXmTLVJw/G8H78LuoVxAGt0NWXoi0wlSu9ffWsPzhyrVlvDdUu0eN7WR6iMiIbczpOc9rDgidCeq3gm+Sf5Mo7msbq/zvl9eHUV9+jO0w2Z0JxkyoUGXmn98UQWJYX5m0JzO6XggZ6sqpTtZXKruRvHAUEjAIYvHjSJrlMnVq+AEOl7v2yYGFrvvaXDgl0pvIkPXJaqW/+OVniSqlqHpDlJOZWio6P69SroQMYX5ixcZSPvWudgzFOKSsnNAShk4bxM8N4cS9B3STbQkDmX5YzZ6t6Udz+A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH3PR12MB7548.namprd12.prod.outlook.com (2603:10b6:610:144::12)
- by CH3PR12MB7642.namprd12.prod.outlook.com (2603:10b6:610:14a::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9009.21; Tue, 12 Aug
- 2025 15:10:44 +0000
-Received: from CH3PR12MB7548.namprd12.prod.outlook.com
- ([fe80::e8c:e992:7287:cb06]) by CH3PR12MB7548.namprd12.prod.outlook.com
- ([fe80::e8c:e992:7287:cb06%2]) with mapi id 15.20.9031.012; Tue, 12 Aug 2025
- 15:10:44 +0000
-Message-ID: <13cc74e7-4a18-45e6-b511-940f9ed56a2b@nvidia.com>
-Date: Tue, 12 Aug 2025 18:10:39 +0300
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH rdma-next 1/1] RDMA/core: Fix socket leak in
- rdma_dev_init_net
-To: Parav Pandit <parav@nvidia.com>, =?UTF-8?Q?H=C3=A5kon_Bugge?=
- <haakon.bugge@oracle.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Leon Romanovsky <leon@kernel.org>, Chiara Meiohas <cmeiohas@nvidia.com>,
- Michael Guralnik <michaelgur@nvidia.com>, Yuyu Li <liyuyu6@huawei.com>,
- Patrisious Haddad <phaddad@nvidia.com>, Zhu Yanjun <yanjun.zhu@linux.dev>,
- Yishai Hadas <yishaih@nvidia.com>, "Dr. David Alan Gilbert"
- <linux@treblig.org>, Wang Liang <wangliang74@huawei.com>
-Cc: "stable@vger.kernel.org" <stable@vger.kernel.org>,
- Junxian Huang <huangjunxian6@hisilicon.com>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20250812133743.1788579-1-haakon.bugge@oracle.com>
- <CY8PR12MB719547A39C4B93FFA6FF40EEDC2BA@CY8PR12MB7195.namprd12.prod.outlook.com>
-Content-Language: en-US
-From: Mark Bloch <mbloch@nvidia.com>
-In-Reply-To: <CY8PR12MB719547A39C4B93FFA6FF40EEDC2BA@CY8PR12MB7195.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: TL2P290CA0018.ISRP290.PROD.OUTLOOK.COM
- (2603:1096:950:3::17) To CH3PR12MB7548.namprd12.prod.outlook.com
- (2603:10b6:610:144::12)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B98305E3D;
+	Tue, 12 Aug 2025 15:54:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1755014053; cv=none; b=QigxcuSnfRLO1FzATOpjXNGn1iBymi4g+MnMOKUH1Nx9bIMk+mj/jLvgkO0iUqFgWZakS+CCHFiUQ5ag2r7zXdWpTOyj1S/xhq+gAlRLHtY+0gl9I/GdtZB0mhh/kGzUHMBujp+/60OcmW1zMjlxeWgh4R3QxNbnRobtrdM3gOo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1755014053; c=relaxed/simple;
+	bh=LnSL/I4TDJTGUKy/9MU9LngUaRGtkr4yj5O7VSL9eso=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b7ykKj/eEIUU1iY9Ona7M/y2rvqbJEe2Kv5zRiKqZWc+SPN5FRaXbZTPtHSSxjinSKXtBT8BPJIfr9tgc8VEpakUQ1oXTF8s19mdVsOZPnJ+HNBOfcY+Zy8oO8IdDtEWgsVkWEWDREhMbrWToqa1jZ/z/ZYXFdrICHFoq3OIe9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q92L41Zr; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-747e41d5469so6345122b3a.3;
+        Tue, 12 Aug 2025 08:54:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755014051; x=1755618851; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0XGUKeIytn27uH12AB55KaSCGBl+m42SQlOGJHqsv6A=;
+        b=Q92L41ZrfAZsHFuMAlKkn0YAiwqGH/SHDtjW5aqF7iTlYS/MhUdCxNMAD+sO5RX9TM
+         vml2F+p39ONAAp3r8GqVhpQept6vLf5DVLX6BwJ2iDwohOt/nnnnJHBcsVLMbvR8p4H9
+         z3dOIg4B4huEiNZkFnW45YInIsNHs7KU0aLwwJs44Sm8wQMo5pZgIgmYF3wQ9AvbCoZs
+         RZBeoQmRg2N6VSBMgzXrt4R0fUUxtLtQpRJZlFLXe/mE7bYlwaGEF4MEu+EBepJ/vGxz
+         F8EkRCkUY4eIGb9BkZJPc7BYhPMqtjZp4qYUV50TlRMYOA9WU4y7M5ezfi19ne8hxOcn
+         5wZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755014051; x=1755618851;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0XGUKeIytn27uH12AB55KaSCGBl+m42SQlOGJHqsv6A=;
+        b=Bt0ORmO2uMMS3fttopVlYIBHpwud6s8oOGbhM+IVU9JRhyGFrHv+R5ECNAMNHDeTng
+         DSQamv8snhgew+EnWJ7uGpisrJIAZVY1lwCG8zY1Ksc6qvfmfewTALp8FuVJYCS2OM/K
+         7akD/QUge5omPCQHDuEtjce5hp1Wd+1UaBvvo+X9w08UIE5mSi0VrfAplFHPp8hxm16+
+         8A25Jh62n4ARLiQWE6NCRCzph/q6fgPu82yy1MrBScHQV76Pn78tYQMmqHv411gOfX9l
+         W0CF+EI9I74CgIbFU2piZd3lilwGzgaspgzyq/sECkM/SNP4EmxBn5pzc8SI8QBFQMBx
+         erQA==
+X-Forwarded-Encrypted: i=1; AJvYcCUzZAOB6sz5DUVHAPnwjp2VyF4ZsaZzMzC/Kd8UU34znx/UEtqUAySLJO26O3nOwMUjBzxscXE9DstLrg==@vger.kernel.org, AJvYcCVSr5af9d8QvW6gUPwBKMG12K0CunFecfZEvyhNjJzVeFnZNJe7j5HRjmy53MLQd84OrKVLFQy64oDqPd8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzuTYs72KUcPBTnQd1nYUevEBtKdLbiqEQZx4d3EvNuQHfAhOLZ
+	5xTE7oce2Q21COHtSOsNfiWVbFYruv2y3rgOcOtX/k8HpyllATISNkpH
+X-Gm-Gg: ASbGncvRrg1IzgSGtIM5XN2fOWkt2Kb/dPOQzbBXKBQQJOKzjUdRuR0cYXajkcl6SHU
+	nG8cGRFFM53C4rxK58k7NyVVOh1HC8Z/bSo0JM1C44Epq0dZVpj2sW200ampvNASIUV0UVbGH4G
+	Hy1omaHAK/hd2Sw5X61H3bBURIIFvUtA4K0YqsWtFwD/gbFxFBHzW2oWGvRZDw5rjeuLiXY+Bhh
+	8tJMaDUk0JTOCQxeRgxTUDweNaVH1gAJ1OW+3vQGJW1dtFj7JaZ3DiLbI/+IifnPduJH1GvH/9Z
+	yqYQ/VREw3uFnaMEc1z2VKHQxqvGbcg6YJZ3qnqvKOxG2qdzdMSee/wU4NnF9r+drWkXxxi4ofN
+	34CnlZTrcWqi/NExcu5ewucEqgkQowiTyxM2u1W46tb0IBhhPaDGeadyaC6GrrEam6BTxcO4jcG
+	SqGPEhFo2zZLc=
+X-Google-Smtp-Source: AGHT+IFLqFHsJ/JQ/5sC88VOK4z7IOEAGPfo9DDCHF6jNVPKl4dgKGPZixbMByjSwwABeaYTRyniew==
+X-Received: by 2002:a05:6a00:66ce:b0:748:2ac2:f8c3 with SMTP id d2e1a72fcca58-76e1fe1f6e5mr47541b3a.24.1755014050666;
+        Tue, 12 Aug 2025 08:54:10 -0700 (PDT)
+Received: from [192.168.11.3] (FL1-125-195-176-151.tky.mesh.ad.jp. [125.195.176.151])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76bccfd026dsm29748464b3a.95.2025.08.12.08.54.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Aug 2025 08:54:10 -0700 (PDT)
+Message-ID: <6dbc1383-0c9f-4648-ae8d-4219e89589f4@gmail.com>
+Date: Wed, 13 Aug 2025 00:54:06 +0900
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB7548:EE_|CH3PR12MB7642:EE_
-X-MS-Office365-Filtering-Correlation-Id: 61b633de-d935-418d-e1d5-08ddd9b26859
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|1800799024|376014|7416014|921020|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?Rkh3aXJlQTZGcmJzZVFCR3E0ejNKSHk2LzlscTZaa2hQQlV6U2d6MVlwclpE?=
- =?utf-8?B?Q2hsOTlNV2g2VHZicWN3M2FlN08xL21GRU5RdHhFcmVoaHBEdWp3QUtnek1F?=
- =?utf-8?B?TGdxdEFuaHpXK3pheXUrU2xBdFZSeTFOV3lYb3h6UEJSNVA0ZHZrdTVSbzFW?=
- =?utf-8?B?VExmbWNBOW83K3JqVWp0WVU3UEgvYUl6RngvQUVodWJ0UDk1QWNudWFKNjhz?=
- =?utf-8?B?ckZZQWhqM256Y0dUSHVGTlpFdThYV0xhUG5PYXFibjN4dHZuUkUyS3dKbmx2?=
- =?utf-8?B?ZktGQXFxRlJOZnBLaUJGV2RnUFpPeVV5akxsTThXWTVZRGdJZVovSGtwRE1n?=
- =?utf-8?B?dDN6aGF4YTR5SVV0Ly90TER2NnNqTXpVanIrUjRZZmVJR1dGVmszQTN5OGhH?=
- =?utf-8?B?QUJqVGNYYnViWWI5ZjE0OUZzcHhiS05uT3UxNXl1SHZHdnY0bUNRSURTU0U5?=
- =?utf-8?B?L29hYURzaDlrdk85ejhkTm40U2hybkNaaS9ML0NYdWhrditKWllYZlpYeEtZ?=
- =?utf-8?B?ZldLNE9EK25pZGpBUlVTeEd1QWw2RlFOaEVQMzY1aDEzdytNOGlDRWVLaGVs?=
- =?utf-8?B?ZUM4cWkyaHNueVBhS0FGR0FZeEJOWUhIeWlyZ3JIYk9ZbFE5bHRJYnhVN3cr?=
- =?utf-8?B?SkF4cnVNQVFMK1ZQU0NERGwxclR5eitmZllsWktXRUJSUFdkZ3lsaXVRbkNW?=
- =?utf-8?B?a1UwbmVXVUxDMEtzcjY4WTQ4cXZmR0g2Skc0bEZMZ005MWhnbWRtOTBzb3g5?=
- =?utf-8?B?TkdLWTJIQkYvU3BtMnJxQ3I4aWV6aTFUejhIVXBobGZuTEhYYk4xSjkwVjBO?=
- =?utf-8?B?Y1dUOVZsaHZHaGdudjN0VHF3RkE2b3prUFlPaS9sQk5CcTRTZTZWMEFxR2ty?=
- =?utf-8?B?UnN0bzJLWHdmS1p3NmNIUUlDOGlXbmdqL0l1RWpmalN1ejMwWDJGQTl4YVVF?=
- =?utf-8?B?ZFNsaTQ5K2ljNDR0azEwVW84TllyVC9QQS82bWdQKzltVFlITUZVLzBsUW5T?=
- =?utf-8?B?d2F5ZUhySUVhTmlZTkVuQ0FwbVBNMzdiNTE1ODUyVlpQd2pqTlNrdlpyU2pj?=
- =?utf-8?B?L1FEK2tnQm1rWVppMGdkMTNHNTM0YzJNZWJNdDRkZ1VkN2NPNHFoWHhFK3pl?=
- =?utf-8?B?VDFnWkRrMFo0UW12MUZOVlJoWkFRSVYzTE9STTBpUmgvaGw3ZFQrUmp6VmZE?=
- =?utf-8?B?R0ZXM0xtT1F2Z3JkZEpwQzRtL3FHYkh4NTh1dUtWS21qN1ZXdEpUV0xlbnNv?=
- =?utf-8?B?amNyQnFXekxWMzNxWjlCVHBYWUt0amJQN3M1NDFhc2xEdmVCK09JMERLVzQ4?=
- =?utf-8?B?SlNWb0g5MVh2VlU1OHNtenFwRlJZTDFOU1Q3am5KZjRJdU92OWdEcTcxbXFX?=
- =?utf-8?B?QlFrRDhYZWJqRkVnaFRta1l3OU5BeGtrV0hBVDdFTW9Lc1ZqeEk3Njh0NVNs?=
- =?utf-8?B?TExzV3dIakZGSytHOVJMVDV2a3FYWTFCMkRUZjhvTGVERkJhYVVZVFVJRTBn?=
- =?utf-8?B?eGZ2aWlxUnlyNGR0MHJYc3ZpbXkwd3BicHJyRjduMW0wSTUvdUs4ZE9na2xO?=
- =?utf-8?B?ZVRKUmJVbU8wNFZ3QXFGSEhjeXV6T0ZmSWZPTTljbURNVUNyVzh2by80cUJO?=
- =?utf-8?B?MlBiOVNIbmcybTNFMkEvblJ1WkJqaExoaXJiK0pBbzY3TnkzSTBSY1BZQmZO?=
- =?utf-8?B?RUk4K1UwREJtY0I4TWovWWp5bDEzUWQyVWlmdWRnUHBJdlhZeDVDOExWQ3Rn?=
- =?utf-8?B?azJyYW1KcUhaT3B1Wno4bXJWMXdoSkNKVWFDOTdsYk5HVjZVYkpkbm5kWW9I?=
- =?utf-8?B?OWxMd1RjSHBVbzFlQ2JYNTU5WlFGN3l4MDVXc0FDQlVpT1RrREVQWklQT1dT?=
- =?utf-8?B?bVlwZ2QybTFVb2wrMCsySEpqSkVZNnBrSTR2MmxKemUrT2JPN0RudkJwR3hw?=
- =?utf-8?B?NCt3VGdmSm55VFpvWlRlczUyTDFYSzUzcTlDREk5SVQ1OGpaa24wMUJSWDgw?=
- =?utf-8?B?QW10dzJaTHpRPT0=?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB7548.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(921020)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?eXF0RXhxWjgydmNNS3ZyemphejByWmZLZ05xWnIyZ2JVWVdkUWR6aTlqVlpp?=
- =?utf-8?B?dFlNRjNHZDQ3d0xGblQ2eVl5UEZQU3NZc1g0SSswWi9UNTI5cDMzWFYxMmoy?=
- =?utf-8?B?TFNlQU5yeWFrakhBN1d2WG1GMFcxVVZYUFM3OGFKekpXME5JSEhGRDliNmlx?=
- =?utf-8?B?enN4amJ5U3M2NkFrNmM0SE9nSUFKaVhXWlhsTThCdXM0RVdjVUtlZUo4M2hF?=
- =?utf-8?B?cmZoVkdwb1FHb3ZuMmdqKy8xN04zKzZ3aDYwaFBWQk1KT0NSMzZZTWprTU00?=
- =?utf-8?B?UzhhMGVwK3VRRWpmOWh2VElEV0YvN2hjMkdhaFdpdU94QmY2TDgyeWVTbFhu?=
- =?utf-8?B?WnlMdjZIQUtKTUdobGtMNFJtaXNGZ1VRayt6OTBmem5jVVhJRUJ1bzNOOVVR?=
- =?utf-8?B?cUZrZkxMV0RoYWljMGwyMllqRTVQYWdjNXhoMVYxbTR4QnZia3FlU3plekhB?=
- =?utf-8?B?aUV2WDkrSEEvb2YzWVl2NzQ1NUp2RHlpeE1GYzhJekJ5QU5DUy9YY2lReUk2?=
- =?utf-8?B?WDFhcUR3MFFveFZaQlJTYS92OENpd1g3WU91NWtSUXo2dnkzb0lGcW9EVDVp?=
- =?utf-8?B?VWxDSHVrcXFqTnNxdHBBWW9zTUNZMzhxaDQ1bVRhcjBLaWVuSXVqM1dmeVV0?=
- =?utf-8?B?dU9kQ1pYOFpxZjNadm9MeXJhc0tONFRYL1IvVUFBNFNYclZVM1NSZjRUZDky?=
- =?utf-8?B?RFFRQ0FURjlLS0ZpazcwZzBmUUcvS3FwbjVjM1I5RXMwU1M4UHF4U3RseXR2?=
- =?utf-8?B?anhYSVdSVXpTUDdPVzBOcXBZUWpPdmZPUFdJNjVwa2FGaUpvMU5JRWxNQXkv?=
- =?utf-8?B?QWdydnZwZEZVL3RnS3dKRGRIaVJPdWVONWlvSGFWMlFpdGxHRlVxZWhkbzlL?=
- =?utf-8?B?SXhReE1yVTRGOHErN3poem1BV1FvN2ZLSEttdVVNYW9jYzc2VnZIRGJxd2lo?=
- =?utf-8?B?elZkcCtSb0tzeWl4VHA0cWxkRExIMk5uQ0ZyMjdtWDFTb0NlV1ZGV2p3YjQ0?=
- =?utf-8?B?ZkQwcUZoS0RiL2Vmci9VODlFbzJzVk0wVUVEQTZlV25jeHJHRGs0N056WFR3?=
- =?utf-8?B?c0lhMnBJaXdFTjRoLzNTUDEyT2lsUW01QjZnUFJHSXFlcHQ0bGRnVXB5cnFB?=
- =?utf-8?B?WGtORU50d2UzM3NUMGhaNW5FdmZqRVZwQTlRUWdVVjRYQnBGMzZVT1EzbDlK?=
- =?utf-8?B?WEhKRCtpQXRSdFFESmx0dnhWU2FIT0dMNUVXK1Q0MEJnTStzdjFvcFRlQXRM?=
- =?utf-8?B?THdscFFiT29DSU9aQXF0ZEl4dGRtR3FtM0JIczdxaXgzRGEwbk9EcGVTRnND?=
- =?utf-8?B?UU1PdzJpK0lJai9UakhRSkd0Q2lYNTNQWkJ0dG1CL2tidnlMdEU3dFF4bytR?=
- =?utf-8?B?VWhWSFJIK1B1K3UwRHBEeGhyL3FnOTExbUFPMTI1U1lYWmJhdUxWUExMY2N4?=
- =?utf-8?B?ZDBpVWd3ektXV2dFUStpOHJZbEFUL1lrTUhWZnJjdStCNXI4QnpjcHo2TTd0?=
- =?utf-8?B?YUhrbzNDMk1TU0ZQSGxidXpQYU9ZQUxvYmpXcjlCNksxVW1EeTZSeVI4eTds?=
- =?utf-8?B?MXRmMkFWK0M5VzlGN3o0TUNSaVd5Q1NXRm1VOGdHS3RMTWhWQWVoSTUyWSt1?=
- =?utf-8?B?M0tqS0dSSDdrbDhuTDBkLytlb1FFN3RCdWxwV0lJbzUzSnRMWGhXYk00MkJL?=
- =?utf-8?B?cG1wYUpOT0lBR1h1dVY0a3EzZW9wWXUrbklaMk54SlVUZ2NjU1ByNUwzOGdL?=
- =?utf-8?B?V0pxbGE1b0VXRG9JMEd3M3FQSUtBcFJBZDdjT2F6UlBabkZoV2hDOUhFcGt0?=
- =?utf-8?B?M0ZXV3dPaitKQ3J0Wm96Ujd4SDNXQ216K3crSGM4WE1hMVFDMUZYVzRPRE42?=
- =?utf-8?B?QzhaYkpxRDI3bGlremV2N1hrMzJERDRrV0pLNE1JWFVSNmRkeEFHL2FEMGV3?=
- =?utf-8?B?eFZ4UURaTmJTQk8raEJoU0xNSkluMVRxTU00TmRQRkc2NmtWUWM0S3J4MGQz?=
- =?utf-8?B?QWFtY2xCbEV3OFVubkhjaHdxc2w4US8xckUvL2NwNHphdE5yb0lQcTdsMFZR?=
- =?utf-8?B?MkZXeVZaRVp6U2k4d1NueW9vUTR0dm5WMk9xclJ2Z3Q0MHBVQTZ0NjlWWE1W?=
- =?utf-8?Q?6G6HGlL3MwR8iS+i05S/unXXE?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 61b633de-d935-418d-e1d5-08ddd9b26859
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB7548.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Aug 2025 15:10:43.8331
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AWebqpa4kZ792u35Flgrgf8BXeiz/LztITKS5W4qc1Ze7PT4h7g7Z3DPY+rD5GEkvYiL6gn2Jtc2SSA8zDrtEA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7642
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rdma_rxe: call comp_handler without holding cq->cq_lock
+To: Zhu Yanjun <yanjun.zhu@linux.dev>,
+ Philipp Reisner <philipp.reisner@linbit.com>
+Cc: Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20250806123921.633410-1-philipp.reisner@linbit.com>
+ <5a31f3ef-358f-4382-8ad1-8050569a2a23@linux.dev>
+ <CADGDV=UgDb51nEtdide7k8==urCdrWcig8kBAY6k0PryR0c7xw@mail.gmail.com>
+ <2b593684-4409-485b-9edf-e44a402ecf3a@linux.dev>
+Content-Language: en-US
+From: Daisuke Matsuda <dskmtsd@gmail.com>
+In-Reply-To: <2b593684-4409-485b-9edf-e44a402ecf3a@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-
-
-On 12/08/2025 16:49, Parav Pandit wrote:
-> 
-> 
->> From: Håkon Bugge <haakon.bugge@oracle.com>
->> Sent: 12 August 2025 07:08 PM
+On 2025/08/11 22:48, Zhu Yanjun wrote:
+> 在 2025/8/10 22:26, Philipp Reisner 写道:
+>> On Thu, Aug 7, 2025 at 3:09 AM Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
+>>>
+>>> 在 2025/8/6 5:39, Philipp Reisner 写道:
+>>>> Allow the comp_handler callback implementation to call ib_poll_cq().
+>>>> A call to ib_poll_cq() calls rxe_poll_cq() with the rdma_rxe driver.
+>>>> And rxe_poll_cq() locks cq->cq_lock. That leads to a spinlock deadlock.
+>>>>
+>>>> The Mellanox and Intel drivers allow a comp_handler callback
+>>>> implementation to call ib_poll_cq().
+>>>>
+>>>> Avoid the deadlock by calling the comp_handler callback without
+>>>> holding cq->cw_lock.
+>>>>
+>>>> Signed-off-by: Philipp Reisner <philipp.reisner@linbit.com>
+>>>
+>>> ERROR: test_resize_cq (tests.test_cq.CQTest.test_resize_cq)
+>>> Test resize CQ, start with specific value and then increase and decrease
+>>> ----------------------------------------------------------------------
+>>> Traceback (most recent call last):
+>>>     File "/root/deb/rdma-core/tests/test_cq.py", line 135, in test_resize_cq
+>>>       u.poll_cq(self.client.cq)
+>>>     File "/root/deb/rdma-core/tests/utils.py", line 687, in poll_cq
+>>>       wcs = _poll_cq(cq, count, data)
+>>>             ^^^^^^^^^^^^^^^^^^^^^^^^^
+>>>     File "/root/deb/rdma-core/tests/utils.py", line 669, in _poll_cq
+>>>       raise PyverbsError(f'Got timeout on polling ({count} CQEs remaining)')
+>>> pyverbs.pyverbs_error.PyverbsError: Got timeout on polling (1 CQEs
+>>> remaining)
+>>>
+>>> After I applied your patch in kervel v6.16, I got the above errors.
+>>>
+>>> Zhu Yanjun
+>>>
 >>
->> If rdma_dev_init_net() has an early return because the supplied net is the
->> default init_net, we need to call rdma_nl_net_exit() before returning.
+>> Hello Zhu,
 >>
-> Not really.
-> We still need to create the netlink socket so that rdma commands can be operational in init_net.
+>> When I run the test_resize_cq test in a loop (100 runs each) on the
+>> original code and with my patch, I get about the same failure rate.
 > 
-> However, there is a bug in incorrectly cleaning up the init_net during ib_core driver unload flow.
+> Add Daisuke Matsuda
 > 
-> I reviewed a fix internally from Mark Bloch for it.
-> It should be posted anytime soon from Leon's queue.
-> 
-> Mark,
-> Can you please comment on plan to post the fix to rdma-rc?
+> If I remember it correctly, when Daisuke and I discussed ODP patches, we both made tests with rxe, from our tests results, it seems that this test_resize_cq error does not occur.
 
-Leon is reviewing it now, once he’s finished, he’ll send it.
+Hi Zhu and Philipp,
 
-Mark
+As far as I know, this error has been present for some time.
+It might be possible to investigate further by capturing a memory dump while the polling is stuck, but I have not had time to do that yet.
+At least, I can confirm that this is not a regression caused by Philipp's patch.
 
-> 
->  
->> Fixes: 4e0f7b907072 ("RDMA/core: Implement compat device/sysfs tree in net
->> namespace")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
->> ---
->>  drivers/infiniband/core/device.c | 4 +++-
->>  1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
->> index 3145cb34a1d20..ec5642e70c5db 100644
->> --- a/drivers/infiniband/core/device.c
->> +++ b/drivers/infiniband/core/device.c
->> @@ -1203,8 +1203,10 @@ static __net_init int rdma_dev_init_net(struct net
->> *net)
->>  		return ret;
->>
->>  	/* No need to create any compat devices in default init_net. */
->> -	if (net_eq(net, &init_net))
->> +	if (net_eq(net, &init_net)) {
->> +		rdma_nl_net_exit(rnet);
->>  		return 0;
->> +	}
->>
->>  	ret = xa_alloc(&rdma_nets, &rnet->id, rnet, xa_limit_32b,
->> GFP_KERNEL);
->>  	if (ret) {
->> --
->> 2.43.5
-> 
+Thanks,
+Daisuke
 
 
