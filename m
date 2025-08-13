@@ -1,83 +1,83 @@
-Return-Path: <linux-rdma+bounces-12722-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12723-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9D7DB2538B
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Aug 2025 21:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C019B25390
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Aug 2025 21:00:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C731D1C29920
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Aug 2025 18:58:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71ABB1C29E2F
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Aug 2025 18:58:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70281305E0B;
-	Wed, 13 Aug 2025 18:57:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 761D83093AD;
+	Wed, 13 Aug 2025 18:57:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Gc8akc8V"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="FkTT7DVG"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2044.outbound.protection.outlook.com [40.107.236.44])
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2050.outbound.protection.outlook.com [40.107.220.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 955FF307AD4;
-	Wed, 13 Aug 2025 18:57:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A67E307496;
+	Wed, 13 Aug 2025 18:57:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.50
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755111441; cv=fail; b=fdvQlErd9WQJsEIiAA+Hh66nNPESeLuftvU6wzMBUIsMyABHOz8my9IVYPnbCAVEjV0y71rfO3lq294xdJId/9zK+kBvIuehyTxbgQM5SE15m7A3sRgjQR0II0c1LENLz1SKIDioRCC4VzpSTlsgkn2ZSaoWyCiBSqnM/j3kwZY=
+	t=1755111445; cv=fail; b=QII/dCF+zmHEAFkxthSiznOEDe8zVr2HyCzPDarKmDSFd5iaQdybAdjC675qMgVbZYme3461jYdYc2KQ57gqCvqmSAEg0zPQEFiQKsiwEQrWvz2x55r3mtkasqJzltMfxPDymBoWqytrNdN85QnrltmROsWz8+O/AltI94QJIj8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755111441; c=relaxed/simple;
-	bh=nw7e42wjf921ppD4T5yj0hdnNztiy5v0kdLKQWckYfA=;
+	s=arc-20240116; t=1755111445; c=relaxed/simple;
+	bh=lqjosAPgrgm7IEkC8V4YHnDVbRtV+5NoXTliONViuRI=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CdHPc1cOQcxD9Ob0AZbiuHl9AoEvsTNMpFw+rW2gO790oW8j2iIHRs+ynEbFORhFpeQ85pqTnui1Bgjy/f9FQC1kn87IgLXbnG+n2PnetXP6KBRRiV+hEVHPr3uwXQ4JCVyBn2cdzBZmzgq1jlzqbAOikRgQEHlxCweoI5/ecUc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Gc8akc8V; arc=fail smtp.client-ip=40.107.236.44
+	 MIME-Version:Content-Type; b=IgaGUlfFzR0OPjPrxZgaRs3oUZ+ThaMXblcuP937d4hUZJyxHIfbmMBf6SBQRLfo8mjmloKkDET61ou80vyWsms1wEJJ7fcqUv0B60KqF7CVJOyaZKK30dElqfxrFgZVrMCW3EIoAKQtrwvSRHCL7uZbyYXyWMILfRuhYk8xi2k=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=FkTT7DVG; arc=fail smtp.client-ip=40.107.220.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=P6k+d+oyhG2lekJAQj0i+mkDiOX+BKVTS1IrjSzL82P6rUFVw/gSy9fHGMQv/sgAQBrRcS4h81TnPXgKI77P7oSQUNPskkGod0q2sFHQzxs0pyCFjgRnX/aVuIQ93hJeLoH1bBTliy7k6usmkgltrfTJKHze9u/Vl+YSaDZlRGNwPE9zPhhs4bnX6bhoQo6emT90Psmm52Wd3AtR3pIVUPdC2FEXPLmdBiNFAAoUgjnbdvTTm5dquicQ3b/5PBL0XXez27FYz9TqIcJgFg1vX1Ctk+lmLvO734RRQfeiaiAc6FMa6uSk1apglietaOUTnhcP2d7mOxcrsbepKwhJJA==
+ b=txqfqE66W1A4432qzMVC+P/8nqB3Tf+nbeSJ2Z9Nt68vFoYpw3/DzpbyNtEvSAVDh77BEIi5KYeLKaYTICPuLAT1/AjNKucYeGZF+oZWkr5dGovSon6HSnw+q8s+4ln/q7Vv9C+BL2cXAlhrhfC6Z1MSTcsNBh8IKeaauVbiCRI3LBiwezdcwKxe6HaLy+plT9ESNOHX+b+aUQV8fbegNAxe7zrul8kZjJKCV5KOXwx7lQ6rd2nx5nSve6Bj3RDAry0RfpYRTeogFtICK8oMwzGkfm5ZE08pEjPmxiJ1bnSRf/DMp0a2mtn2W5CQ/iM8Rq8hNkHzie6yiOvRf9mr9Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MNN/6e+AJSxVIWquN8UVMvimWWMzFfsxXSxW0WMrrxg=;
- b=JOgZPnnLJKILkEghavWa7tpFpwpG9xsYQvOxVWvdbDVA3h1MQ0aUg/w0pXGkRCHZpfczPDLPSh+yXerxYkq2g1haEYGRWYYCKtAwzlyzpGYNDpfTFBcSHj5gqp8tR8Cce1zI1Qmxgn7oBAe6vJ7w1JFusXMDuAMoyc+TzOaDPPWM95Zd2DBo88q2ZLZG3+WDgt4wkVknPPBJOq2dOsCM7ebaf787SjuthfUVDIwzJJ/Aw6WPtX9URy+ngWdPcs1slGLMab5bscGEuqF/GU/wRXwp2aXYH05+0Y7w2tCUaGA+A0mwGfBv1YZVJ+COwrL8UPyrHKbu0qPPsXpvA/dUYg==
+ bh=5bx0nltJAqPDiw32nYF7myL0CiKz0propbjqOIW/bYQ=;
+ b=HOzkmNnzoGY/NEBn+GyM306xMT4fbMaJO4oVm6sPd+RLQk+/NSi+k1Rm1XXfq1Kmb516EfmfIAaAGZdctJbx07WuqEw/rgNo0exl9luyGHjykbpcbzYu6tmFbR068PBVHPlUZXdHUJIz5eB3qziLRJzQPwygfHAWfrvuQmdaogD9BobLco0d8G09R37295lIW7ZL8QuwQam8rybYhsIr29bizbKMTMbJgOa1K6miS03oqm4PNVyjcM3kN38ddtI5a3a7YUzegHxTq362jAY12tC1bfEBuQIYmnEimTX3+526T1PIdW9+wo863qLau+wuVmVDkK1n07ruyCavCpJg1Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=marvell.com smtp.mailfrom=nvidia.com;
+ 216.228.117.161) smtp.rcpttodomain=marvell.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MNN/6e+AJSxVIWquN8UVMvimWWMzFfsxXSxW0WMrrxg=;
- b=Gc8akc8VIU5e05yJw9lUlGsLwejgSO8kMuwmnatBxPVAAF6etBHJ39QiiML8CRL4g13J+xkUFRQsGn3lf3FaU4CRPJBfuo0PifGCrH7hP2IIpMPmfw61gySwOYohYgRB0RbXxkfgy5Rt/TVTFNDdpmWD7CMOxflaBqdJz/s3HKn3RzJn/IGFSEvpZqlvsDTpk7Ep9VNcAGKMIJyzxcre7jXpRTQydN4L4ZLX4Qnzbomm8N3Mix55FrgPX9bQCmx7z5uda+2/kW7ksVICj2yZkjM09PD4zS0HBwUf79tTf8QVu+Ms04OsEon9Lnfd28pcRanwp+x8PHCTMgGQqQqXxA==
-Received: from SJ0PR05CA0064.namprd05.prod.outlook.com (2603:10b6:a03:332::9)
- by DS0PR12MB6533.namprd12.prod.outlook.com (2603:10b6:8:c2::10) with
+ bh=5bx0nltJAqPDiw32nYF7myL0CiKz0propbjqOIW/bYQ=;
+ b=FkTT7DVG8FHvneTX1yOd78oUI/27skV/nA+nm/G+7EpnKWQzWrhfGIeK2LFhOOEfvUA4dzXJRMwBC13O+Br91MTf6GMozK8pj08YWSgV9Td0zbvLKg0ViesvnaK864nAPlinA+76ozEWrtXUj28p7kVLyJSDAHe4fT86aPxreWNCc50/AszaVMDWZ/OSk1/gTJTEzGd8aASy/W1jqnzbbaUZ8EO6tL4H2dBsBdsZGyHULHD1ZylTX8Ow8cXaldBDn7UrjjH/bSRST/RGU7HguzN4W8IJausSV57dxzuEcquHOY9AJZylIcSEWpBoGyrygnaEx2WiwMhOburFfeRYoQ==
+Received: from SJ0PR03CA0089.namprd03.prod.outlook.com (2603:10b6:a03:331::34)
+ by PH0PR12MB8152.namprd12.prod.outlook.com (2603:10b6:510:292::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9031.14; Wed, 13 Aug
- 2025 18:57:10 +0000
-Received: from SJ5PEPF000001F4.namprd05.prod.outlook.com
- (2603:10b6:a03:332:cafe::cb) by SJ0PR05CA0064.outlook.office365.com
- (2603:10b6:a03:332::9) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9031.12 via Frontend Transport; Wed,
- 13 Aug 2025 18:57:09 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9031.13; Wed, 13 Aug
+ 2025 18:57:20 +0000
+Received: from SJ1PEPF00002325.namprd03.prod.outlook.com
+ (2603:10b6:a03:331:cafe::1f) by SJ0PR03CA0089.outlook.office365.com
+ (2603:10b6:a03:331::34) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9031.15 via Frontend Transport; Wed,
+ 13 Aug 2025 18:57:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SJ5PEPF000001F4.mail.protection.outlook.com (10.167.242.72) with Microsoft
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ SJ1PEPF00002325.mail.protection.outlook.com (10.167.242.88) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9031.11 via Frontend Transport; Wed, 13 Aug 2025 18:57:09 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.9031.11 via Frontend Transport; Wed, 13 Aug 2025 18:57:20 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 13 Aug
- 2025 11:56:57 -0700
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ 2025 11:57:06 -0700
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 13 Aug
- 2025 11:56:57 -0700
+ 2025 11:57:06 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.9)
  with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Wed, 13
- Aug 2025 11:56:49 -0700
+ Aug 2025 11:56:57 -0700
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Jiri Pirko <jiri@nvidia.com>, Jiri Pirko <jiri@resnulli.us>, Eric Dumazet
 	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
@@ -99,9 +99,9 @@ CC: Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
 	<intel-wired-lan@lists.osuosl.org>, <linux-rdma@vger.kernel.org>, "Gal
  Pressman" <gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, "Shahar
  Shitrit" <shshitrit@nvidia.com>
-Subject: [PATCH net-next V3 3/5] devlink: Introduce error burst period for health reporter
-Date: Wed, 13 Aug 2025 21:55:47 +0300
-Message-ID: <1755111349-416632-4-git-send-email-tariqt@nvidia.com>
+Subject: [PATCH net-next V3 4/5] devlink: Make health reporter error burst period configurable
+Date: Wed, 13 Aug 2025 21:55:48 +0300
+Message-ID: <1755111349-416632-5-git-send-email-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.8.0
 In-Reply-To: <1755111349-416632-1-git-send-email-tariqt@nvidia.com>
 References: <1755111349-416632-1-git-send-email-tariqt@nvidia.com>
@@ -111,182 +111,259 @@ List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ5PEPF000001F4:EE_|DS0PR12MB6533:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2d3cb27d-c35d-45ee-c6ca-08ddda9b34b2
+X-MS-TrafficTypeDiagnostic: SJ1PEPF00002325:EE_|PH0PR12MB8152:EE_
+X-MS-Office365-Filtering-Correlation-Id: c34441a1-e032-4200-d292-08ddda9b3b54
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|82310400026|376014|7416014|36860700013;
+	BCL:0;ARA:13230040|82310400026|1800799024|7416014|36860700013|376014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?N2sZPYyRDJnSXSj40nQXciVk67RagSDqYj+BFNqoJ/8RRHryvXuSjxKCwUFH?=
- =?us-ascii?Q?P06gCK2IDrxuJbft/HJ7tG1GKZ9MnX5b7TPuAfwxY/7aFq4EjA6337OtHx3m?=
- =?us-ascii?Q?yXB/ET1j37W1F5g0Um7Zz1lj/tDUzD97e3cE+qfTk5tnn6HMnmhm7tuH+R40?=
- =?us-ascii?Q?g/5h81zSw6l/v9VuMaf6YuqWI4JGxb0t2XegWNNy1gPPHyWyn1iJpmvSr2Yo?=
- =?us-ascii?Q?J94QhHhzjfD1YT1bVlVqL5Vz4Lt73nObawld2VsW8cavytHiJbXgvEp6jy9x?=
- =?us-ascii?Q?WE3fYvl29IhVMhW6W3eoDwqtrIaK2SBhmItiC1f67d2Fix3IoRVwfsVd8xlV?=
- =?us-ascii?Q?uApC79job3fC1r86ytGmzDy2bJn5h+4rAqDrZqNyxRMC8kNumikwAYSZgWpn?=
- =?us-ascii?Q?ohY/W1Sbt1d0RJd4StQJiOGAUhrdnGK9VVDqxL9sJgDQkZa8T427s6W4HsOC?=
- =?us-ascii?Q?xy7E8wbV6R/iYhOYVtRtWUCdWkd7cG3+CbbhDcYykIBfMNJJRUrZEAC70RnW?=
- =?us-ascii?Q?GIhHdBHW00LkPAnRj3P0d41tuqiLYFvQGNyL1hdn0p0tvz5anUUE4AaSUYT5?=
- =?us-ascii?Q?OZuJvLYJ+gz+R6rFwN3HsCHFKSVtHmdGFbY2NEMxRaIHxEmc+EqFSclRAqV5?=
- =?us-ascii?Q?s7RBDTwDtJq2eiYj1Kc81hPa4KaPVQu5cy38wjApqLch0pLH//qYj8i1hb4A?=
- =?us-ascii?Q?hEW8SnhfU5Xf7/IWAA12f1BCGeEIo3Cg2DIZEhdhoT50sc803ZfOE8BNoBnG?=
- =?us-ascii?Q?zVWiTQHGJnHLTDqF1nTayIRaFKSbXvLEt09TRKDK7gfnQWFlsPFG/EHKcndy?=
- =?us-ascii?Q?G0if75GiiiD3xw3RnRJNjxrNbDhfCdL/Udsw9awFKh7VY92bSTXh3vt9lHSW?=
- =?us-ascii?Q?REMqKgaatPiz1K8T9VVsMKepBJdoyb5w+ZU8B62EgynsX15kpZyQCHbjJEes?=
- =?us-ascii?Q?SgNUrKBc0BbAl5MuWedjrZ8PUnv60rt5Ge5UbOsDlgE2qS90JNld+tMrIIaF?=
- =?us-ascii?Q?ZYbLJhzWQejKqiX6NSig4JZ998hEFQmVun8JVaQcfKvrd+N/c4Jkmc5VihP8?=
- =?us-ascii?Q?+F6qMS7PyFs8Gb0ICmYx2hb+yYgvFogKCzc48HijheumfTK8dr24Mtbfz7h4?=
- =?us-ascii?Q?qlA4SsDgBWBSh+dh9jvEfChkSmTWZ6xnmLh9qKVlfHwsDdXcKzYn+RjJoTge?=
- =?us-ascii?Q?nR6YQ6yFcbC6wuvS1d5EAAyNJjDUH3xxCTcXBspsgNfRCz1uJwOtH9/l14Qg?=
- =?us-ascii?Q?nrggqcfQbMXFBnCi8F01JI44q5kD6W3tOD2V4pV6PE4KsudzBDjPXRxM5n3s?=
- =?us-ascii?Q?2dRudkQDKKOrUh5gvVSX82Xnih0qmGKOBmz0hLcBgjm1RdqWL5RVQKrjGdDr?=
- =?us-ascii?Q?bxOHMxYLKt1MdrNqYUngURAZEpFsgFk7hBuw6fTRL+Nd+mCalTiw+xJLURTg?=
- =?us-ascii?Q?o0XlsYPQOgQS3UvETyjU7z5fOyLlZAeKmGMJpHeEo8LgSSk4u5IyxbbfJLE7?=
- =?us-ascii?Q?z6LESGoZYDgxT0yoIf9RkjXYKWqU8FSUIWiP?=
+	=?utf-8?B?WHNISTl4V090bmFGcWpkTEk2cTUwUmR0SFFKblBlaUNwTGxvWTEzL3NhSENa?=
+ =?utf-8?B?QUxQNEZEdDZxeWhFTmt0YlQySEJzYlFUelRGbkV1VUVMQW1TY1hhUHE2NmU5?=
+ =?utf-8?B?WElxemNXTUc4bzVpMm9BZWxRM1B0M1JPbWpPaG5wSHp4aEd3UHM3R1FKNEta?=
+ =?utf-8?B?N2NJdmxaaVJCZHBWSzdvM3k1OTdIcDZ0a29rc1ljenpGN2xpbkdzU3d1b0sy?=
+ =?utf-8?B?Wld5Y0dsZVllSWVZUndtenl0Z3VReUdFOHZlS3JiUmdlajU2cm1BZnNrNzZH?=
+ =?utf-8?B?eFRTNy90Ym5SbzZpYjlyVTJBWmR0cGNSVlQ5R1FHWUtkdURPK2ZQY011VWtq?=
+ =?utf-8?B?TUtVcU5YdG4wSjlHL2lmUmNEYVVoMW9qNGkyUjlVZVhxTUFnMk41S0h6MEZs?=
+ =?utf-8?B?S0ZvbTVxVHZGbW01c0t4b2NkdDNWU0NNLzRVR3BJL2RXZmJIbG8xdDNvZWpj?=
+ =?utf-8?B?dzMxWXAvTC9vTEZHYzhJVG5NcDJXKzF0Rk9UOXN4TFJITG9rUy9PNjVna3FZ?=
+ =?utf-8?B?NmZxNEFvZHE5SlZzbkxWNzFVSlpVd0o2MDRVY0hzUmprR3RJRWt1NnArY01O?=
+ =?utf-8?B?MGZOYUgrUXUvdjh6ZHk0ZUhPaUg1RWNodjdWS09kNTJmdVA5ZXR5WHRtNnpL?=
+ =?utf-8?B?bWsxVFZRTUptSG5ULzc4ZmN1Q21TcVJNUlk3cnkxY0E5R3RwL0txQWNCWTlK?=
+ =?utf-8?B?c0NZYUw0cE4vZ1IwQWpTNHhuWWVjOFFCS3AxblUvZ0NKcDZWQ2dxazFZRHZS?=
+ =?utf-8?B?TkJFeEFsYXNzOVdud3pQSWhZS2x6ZzFubG9sYzdVcTJLYzIweW00aUYzcmVk?=
+ =?utf-8?B?RjhtTjFyQUdNRHhuZ2dsWXhxNWhZRk5VRWJvQ3RNNVVHMXlHQTVlSWdPbVlt?=
+ =?utf-8?B?KzFxaHRENkVEdGxud1Y3Nk5YZStPQlh4YnY0d0RYdHBVSEpuNDdQdzllMGw1?=
+ =?utf-8?B?NnVrWVNvWEtueC8ybWQ1OEQxNzRoZTVDVDFEeXNaM3RaZkZpOW9tam9qc2N2?=
+ =?utf-8?B?VEt1S0NwZlkzUzcrbnZIY2pobDBaYzFBNG9kWmN4dlk1T3Q2N3ZSaW5xRTIw?=
+ =?utf-8?B?WTlQcFZ2TkM5MG9pbWVDNmd1YmtXbWlCdlBiOE1EL1M1MHhZbGJER3hQcVBa?=
+ =?utf-8?B?Z2c5OWE1M1ZlY3N4dkxjU1l3cmJ0UDVWcE0xc1hyaUpsS3NzZHVXSWkySDQ3?=
+ =?utf-8?B?dEtpcHdjTTRNQ0lCQTRRM2c5WTJKeTl2cXQrWkxyMTRPdTY3WS9aUnhQTmJL?=
+ =?utf-8?B?U05LUWtBcHcvMzJSNjJNRkd5aDh3Ynd3aFZsQmRyY0h3ZkY0bWxtQXlvODIr?=
+ =?utf-8?B?cU8yZWMyRkFreFFzTzJsQWx3WmczYm8rZkN5alZqb2tTL2dES21GZDVwakJF?=
+ =?utf-8?B?SHdUaXNvb1laM0RkbU81N2FVNUxXZHpPQllWb2pHeGQ1WlJVaEN0NFF1c0Ey?=
+ =?utf-8?B?MjZsekFmQ05saU9GMmZvR2NXYmwybjVRbWI3a3RRWVNndmhwSHIwV1NWOUU2?=
+ =?utf-8?B?MFlHaVFzdTJweWdZWTZ3cG9uSkhFVkVIeWV6NHZhcytVd3h4cVJPdzVUcVU3?=
+ =?utf-8?B?Zy9XYUtNWEUzSWo3dGx3OXFDWjRJdWdyQWhwSkw0U1hGRVJ3S25VY2ZUU084?=
+ =?utf-8?B?eVpCaHQwb2FYOHA4RmZHMTQrMWMxSDJXR2k2YTZWaWdzY0NIOG1UZWx0TWxS?=
+ =?utf-8?B?NmhoNkp2Q3E0S0JxaW11TCszSEpMVEIwRGpBaFVTOW1VV1dFclVnQ3FqK3FX?=
+ =?utf-8?B?TGJNSHZTMEJQdmkyRTBRMjhLcUtrSnJCaWxtb0MvNjBMR0xHbG54ZXZtUjcy?=
+ =?utf-8?B?VFp0ZWpSaHdmUzVNaFp6UTcvMnpKOVdmWVV1Y0hGS0FJbjU5akVOVFF1MXor?=
+ =?utf-8?B?RHo1UWtkRjNNOVQzQ0M3QnM2N0tPNUtGSGtSaHlLWk03RGptUUVSVTBOd1A4?=
+ =?utf-8?B?MzN2K0JtQ2lTOFFRa3FIM3JGUnJYNmJoR0RRQlZmY2ptTGlibEV2M0ZHMkNZ?=
+ =?utf-8?B?aGlPNW13a0FZTVJYNlZMMlprT0FtMFZDSkhRSFV1RkYvMi8zL3V5T3dHUHIv?=
+ =?utf-8?Q?41W7AA?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(376014)(7416014)(36860700013);DIR:OUT;SFP:1101;
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(7416014)(36860700013)(376014);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2025 18:57:09.5118
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2025 18:57:20.6146
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d3cb27d-c35d-45ee-c6ca-08ddda9b34b2
+X-MS-Exchange-CrossTenant-Network-Message-Id: c34441a1-e032-4200-d292-08ddda9b3b54
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SJ5PEPF000001F4.namprd05.prod.outlook.com
+	SJ1PEPF00002325.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6533
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8152
 
 From: Shahar Shitrit <shshitrit@nvidia.com>
 
-Currently, the devlink health reporter starts the grace period
-immediately after handling an error, blocking any further recoveries
-until it finished.
+Enable configuration of the error burst period — a time window
+starting from the first error recovery, during which the reporter
+allows recovery attempts for each reported error.
 
-However, when a single root cause triggers multiple errors in a short
-time frame, it is desirable to treat them as a bulk of errors and to
-allow their recoveries, avoiding premature blocking of subsequent
-related errors, and reducing the risk of inconsistent or incomplete
-error handling.
+This feature is helpful when a single underlying issue causes
+multiple errors, as it delays the start of the grace period
+to allow sufficient time for recovering all related errors.
+For example, if multiple TX queues time out simultaneously,
+a sufficient error burst period could allow all affected TX
+queues to be recovered within that window. Without this period,
+only the first TX queue that reports a timeout will undergo
+recovery, while the remaining TX queues will be blocked once
+the grace period begins.
 
-To address this, introduce a configurable error burst period for devlink
-health reporter. Start this period when the first error is handled, and
-allow recovery attempts for reported errors during this window. Once
-error burst period expires, begin the grace period to block further
-recoveries until it concludes.
+Configuration example:
+$ devlink health set pci/0000:00:09.0 reporter tx error_burst_period 500
 
-Timeline summary:
-
-----|--------|------------------------------/----------------------/--
-error is  error is    error burst period         grace period
-reported  recovered  (recoveries allowed)    (recoveries blocked)
-
-For calculating the error burst period duration, use the same
-last_recovery_ts as the grace period. Update it on recovery only
-when the error burst period is inactive (either disabled or at the
-first error).
-
-This patch implements the framework for the error burst period and
-effectively sets its value to 0 at reporter creation, so the current
-behavior remains unchanged, which ensures backward compatibility.
-
-A downstream patch will make the error burst period configurable.
+Configuration example with ynl:
+./tools/net/ynl/pyynl/cli.py \
+ --spec Documentation/netlink/specs/devlink.yaml \
+ --do health-reporter-set --json '{
+  "bus-name": "auxiliary",
+  "dev-name": "mlx5_core.eth.0",
+  "port-index": 65535,
+  "health-reporter-name": "tx",
+  "health-reporter-error-burst-period": 500
+}'
 
 Signed-off-by: Shahar Shitrit <shshitrit@nvidia.com>
 Reviewed-by: Carolina Jubran <cjubran@nvidia.com>
 Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- include/net/devlink.h |  4 ++++
- net/devlink/health.c  | 22 +++++++++++++++++++++-
- 2 files changed, 25 insertions(+), 1 deletion(-)
+ Documentation/netlink/specs/devlink.yaml      |  6 ++++
+ .../networking/devlink/devlink-health.rst     |  2 +-
+ include/uapi/linux/devlink.h                  |  2 ++
+ net/devlink/health.c                          | 30 +++++++++++++++++--
+ net/devlink/netlink_gen.c                     |  5 ++--
+ 5 files changed, 39 insertions(+), 6 deletions(-)
 
-diff --git a/include/net/devlink.h b/include/net/devlink.h
-index a65aa24e8df4..0c7b41cbb0bd 100644
---- a/include/net/devlink.h
-+++ b/include/net/devlink.h
-@@ -744,6 +744,9 @@ enum devlink_health_reporter_state {
-  * @test: callback to trigger a test event
-  * @default_graceful_period: default min time (in msec)
- 			     between recovery attempts
-+ * @default_error_burst_period: default time (in msec) for
-+ *				error recoveries before
-+ *				starting the grace period
-  */
+diff --git a/Documentation/netlink/specs/devlink.yaml b/Documentation/netlink/specs/devlink.yaml
+index bb87111d5e16..0e81640dd3b2 100644
+--- a/Documentation/netlink/specs/devlink.yaml
++++ b/Documentation/netlink/specs/devlink.yaml
+@@ -853,6 +853,9 @@ attribute-sets:
+         type: nest
+         multi-attr: true
+         nested-attributes: dl-rate-tc-bws
++      -
++        name: health-reporter-error-burst-period
++        type: u64
+   -
+     name: dl-dev-stats
+     subset-of: devlink
+@@ -1216,6 +1219,8 @@ attribute-sets:
+         name: health-reporter-dump-ts-ns
+       -
+         name: health-reporter-auto-dump
++      -
++        name: health-reporter-error-burst-period
  
- struct devlink_health_reporter_ops {
-@@ -759,6 +762,7 @@ struct devlink_health_reporter_ops {
- 	int (*test)(struct devlink_health_reporter *reporter,
- 		    struct netlink_ext_ack *extack);
- 	u64 default_graceful_period;
-+	u64 default_error_burst_period;
- };
+   -
+     name: dl-attr-stats
+@@ -1961,6 +1966,7 @@ operations:
+             - health-reporter-graceful-period
+             - health-reporter-auto-recover
+             - health-reporter-auto-dump
++            - health-reporter-error-burst-period
  
- /**
+     -
+       name: health-reporter-recover
+diff --git a/Documentation/networking/devlink/devlink-health.rst b/Documentation/networking/devlink/devlink-health.rst
+index e0b8cfed610a..2279a4370003 100644
+--- a/Documentation/networking/devlink/devlink-health.rst
++++ b/Documentation/networking/devlink/devlink-health.rst
+@@ -50,7 +50,7 @@ Once an error is reported, devlink health will perform the following actions:
+   * Auto recovery attempt is being done. Depends on:
+ 
+     - Auto-recovery configuration
+-    - Grace period vs. time passed since last recover
++    - Grace period (and error burst period)  vs. time passed since last recover
+ 
+ Devlink formatted message
+ =========================
+diff --git a/include/uapi/linux/devlink.h b/include/uapi/linux/devlink.h
+index 9fcb25a0f447..458915c22990 100644
+--- a/include/uapi/linux/devlink.h
++++ b/include/uapi/linux/devlink.h
+@@ -636,6 +636,8 @@ enum devlink_attr {
+ 
+ 	DEVLINK_ATTR_RATE_TC_BWS,		/* nested */
+ 
++	DEVLINK_ATTR_HEALTH_REPORTER_ERR_BURST_PERIOD,	/* u64 */
++
+ 	/* Add new attributes above here, update the spec in
+ 	 * Documentation/netlink/specs/devlink.yaml and re-generate
+ 	 * net/devlink/netlink_gen.c.
 diff --git a/net/devlink/health.c b/net/devlink/health.c
-index 9d0d4a9face7..c4a028e37277 100644
+index c4a028e37277..d01eb4eaf89c 100644
 --- a/net/devlink/health.c
 +++ b/net/devlink/health.c
-@@ -60,6 +60,7 @@ struct devlink_health_reporter {
- 	struct devlink_port *devlink_port;
- 	struct devlink_fmsg *dump_fmsg;
- 	u64 graceful_period;
-+	u64 error_burst_period;
- 	bool auto_recover;
- 	bool auto_dump;
- 	u8 health_state;
-@@ -123,6 +124,7 @@ __devlink_health_reporter_create(struct devlink *devlink,
- 	reporter->ops = ops;
- 	reporter->devlink = devlink;
- 	reporter->graceful_period = ops->default_graceful_period;
-+	reporter->error_burst_period = ops->default_error_burst_period;
- 	reporter->auto_recover = !!ops->recover;
- 	reporter->auto_dump = !!ops->dump;
- 	return reporter;
-@@ -508,11 +510,25 @@ static void devlink_recover_notify(struct devlink_health_reporter *reporter,
- 	devlink_nl_notify_send_desc(devlink, msg, &desc);
- }
- 
-+static bool
-+devlink_health_reporter_burst_period_active(struct devlink_health_reporter *reporter)
-+{
-+	unsigned long burst_threshold = reporter->last_recovery_ts +
-+		msecs_to_jiffies(reporter->error_burst_period);
-+
-+	return time_is_after_jiffies(burst_threshold);
-+}
-+
- void
- devlink_health_reporter_recovery_done(struct devlink_health_reporter *reporter)
+@@ -113,7 +113,9 @@ __devlink_health_reporter_create(struct devlink *devlink,
  {
- 	reporter->recovery_count++;
--	reporter->last_recovery_ts = jiffies;
-+	if (!devlink_health_reporter_burst_period_active(reporter))
-+		/* When error burst period is set, last_recovery_ts marks the
-+		 * first recovery within the burst period, not necessarily the
-+		 * last one.
-+		 */
-+		reporter->last_recovery_ts = jiffies;
- }
- EXPORT_SYMBOL_GPL(devlink_health_reporter_recovery_done);
+ 	struct devlink_health_reporter *reporter;
  
-@@ -599,7 +615,11 @@ devlink_health_recover_abort(struct devlink_health_reporter *reporter,
- 	if (prev_state != DEVLINK_HEALTH_REPORTER_STATE_HEALTHY)
- 		return true;
+-	if (WARN_ON(ops->default_graceful_period && !ops->recover))
++	if (WARN_ON(ops->default_error_burst_period &&
++		    !ops->default_graceful_period) ||
++	    WARN_ON(ops->default_graceful_period && !ops->recover))
+ 		return ERR_PTR(-EINVAL);
  
-+	if (devlink_health_reporter_burst_period_active(reporter))
-+		return false;
+ 	reporter = kzalloc(sizeof(*reporter), GFP_KERNEL);
+@@ -293,6 +295,11 @@ devlink_nl_health_reporter_fill(struct sk_buff *msg,
+ 	    devlink_nl_put_u64(msg, DEVLINK_ATTR_HEALTH_REPORTER_GRACEFUL_PERIOD,
+ 			       reporter->graceful_period))
+ 		goto reporter_nest_cancel;
++	if (reporter->ops->recover &&
++	    devlink_nl_put_u64(msg,
++			       DEVLINK_ATTR_HEALTH_REPORTER_ERR_BURST_PERIOD,
++			       reporter->error_burst_period))
++		goto reporter_nest_cancel;
+ 	if (reporter->ops->recover &&
+ 	    nla_put_u8(msg, DEVLINK_ATTR_HEALTH_REPORTER_AUTO_RECOVER,
+ 		       reporter->auto_recover))
+@@ -458,16 +465,33 @@ int devlink_nl_health_reporter_set_doit(struct sk_buff *skb,
+ 
+ 	if (!reporter->ops->recover &&
+ 	    (info->attrs[DEVLINK_ATTR_HEALTH_REPORTER_GRACEFUL_PERIOD] ||
+-	     info->attrs[DEVLINK_ATTR_HEALTH_REPORTER_AUTO_RECOVER]))
++	     info->attrs[DEVLINK_ATTR_HEALTH_REPORTER_AUTO_RECOVER] ||
++	     info->attrs[DEVLINK_ATTR_HEALTH_REPORTER_ERR_BURST_PERIOD]))
+ 		return -EOPNOTSUPP;
+ 
+ 	if (!reporter->ops->dump &&
+ 	    info->attrs[DEVLINK_ATTR_HEALTH_REPORTER_AUTO_DUMP])
+ 		return -EOPNOTSUPP;
+ 
+-	if (info->attrs[DEVLINK_ATTR_HEALTH_REPORTER_GRACEFUL_PERIOD])
++	if (info->attrs[DEVLINK_ATTR_HEALTH_REPORTER_GRACEFUL_PERIOD]) {
+ 		reporter->graceful_period =
+ 			nla_get_u64(info->attrs[DEVLINK_ATTR_HEALTH_REPORTER_GRACEFUL_PERIOD]);
++		if (!reporter->graceful_period)
++			reporter->error_burst_period = 0;
++	}
 +
- 	recover_ts_threshold = reporter->last_recovery_ts +
-+		msecs_to_jiffies(reporter->error_burst_period) +
- 		msecs_to_jiffies(reporter->graceful_period);
- 	if (reporter->last_recovery_ts && reporter->recovery_count &&
- 	    time_is_after_jiffies(recover_ts_threshold))
++	if (info->attrs[DEVLINK_ATTR_HEALTH_REPORTER_ERR_BURST_PERIOD]) {
++		u64 burst_period =
++			nla_get_u64(info->attrs[DEVLINK_ATTR_HEALTH_REPORTER_ERR_BURST_PERIOD]);
++
++		if (!reporter->graceful_period && burst_period) {
++			NL_SET_ERR_MSG_MOD(info->extack,
++					   "Cannot set error burst period without a grace period.");
++			return -EINVAL;
++		}
++
++		reporter->error_burst_period = burst_period;
++	}
+ 
+ 	if (info->attrs[DEVLINK_ATTR_HEALTH_REPORTER_AUTO_RECOVER])
+ 		reporter->auto_recover =
+diff --git a/net/devlink/netlink_gen.c b/net/devlink/netlink_gen.c
+index d97c326a9045..a02da5a0002f 100644
+--- a/net/devlink/netlink_gen.c
++++ b/net/devlink/netlink_gen.c
+@@ -389,7 +389,7 @@ static const struct nla_policy devlink_health_reporter_get_dump_nl_policy[DEVLIN
+ };
+ 
+ /* DEVLINK_CMD_HEALTH_REPORTER_SET - do */
+-static const struct nla_policy devlink_health_reporter_set_nl_policy[DEVLINK_ATTR_HEALTH_REPORTER_AUTO_DUMP + 1] = {
++static const struct nla_policy devlink_health_reporter_set_nl_policy[DEVLINK_ATTR_HEALTH_REPORTER_ERR_BURST_PERIOD + 1] = {
+ 	[DEVLINK_ATTR_BUS_NAME] = { .type = NLA_NUL_STRING, },
+ 	[DEVLINK_ATTR_DEV_NAME] = { .type = NLA_NUL_STRING, },
+ 	[DEVLINK_ATTR_PORT_INDEX] = { .type = NLA_U32, },
+@@ -397,6 +397,7 @@ static const struct nla_policy devlink_health_reporter_set_nl_policy[DEVLINK_ATT
+ 	[DEVLINK_ATTR_HEALTH_REPORTER_GRACEFUL_PERIOD] = { .type = NLA_U64, },
+ 	[DEVLINK_ATTR_HEALTH_REPORTER_AUTO_RECOVER] = { .type = NLA_U8, },
+ 	[DEVLINK_ATTR_HEALTH_REPORTER_AUTO_DUMP] = { .type = NLA_U8, },
++	[DEVLINK_ATTR_HEALTH_REPORTER_ERR_BURST_PERIOD] = { .type = NLA_U64, },
+ };
+ 
+ /* DEVLINK_CMD_HEALTH_REPORTER_RECOVER - do */
+@@ -1032,7 +1033,7 @@ const struct genl_split_ops devlink_nl_ops[74] = {
+ 		.doit		= devlink_nl_health_reporter_set_doit,
+ 		.post_doit	= devlink_nl_post_doit,
+ 		.policy		= devlink_health_reporter_set_nl_policy,
+-		.maxattr	= DEVLINK_ATTR_HEALTH_REPORTER_AUTO_DUMP,
++		.maxattr	= DEVLINK_ATTR_HEALTH_REPORTER_ERR_BURST_PERIOD,
+ 		.flags		= GENL_ADMIN_PERM | GENL_CMD_CAP_DO,
+ 	},
+ 	{
 -- 
 2.31.1
 
