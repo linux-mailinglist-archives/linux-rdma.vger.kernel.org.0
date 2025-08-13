@@ -1,80 +1,93 @@
-Return-Path: <linux-rdma+bounces-12705-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12709-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27DCBB24875
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Aug 2025 13:29:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAAB1B249B4
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Aug 2025 14:44:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D6771A27449
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Aug 2025 11:29:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06CCC3A7070
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Aug 2025 12:42:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E2D12F6570;
-	Wed, 13 Aug 2025 11:28:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF242E093E;
+	Wed, 13 Aug 2025 12:42:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n/EsR+QY"
+	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="l81Nc8mz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C422F212547
-	for <linux-rdma@vger.kernel.org>; Wed, 13 Aug 2025 11:28:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A7532DD5E2
+	for <linux-rdma@vger.kernel.org>; Wed, 13 Aug 2025 12:42:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.251
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755084535; cv=none; b=Cfol5CFxrbTNirJgSdbY2UMwflVfpvN0117bLy7VWQar97lVryigzizpZKw/dMI8V7hJCv7cnxsUuq4adm3Y1Bgui6G4TGTGQJSrT92ixp4RAB1o9YBj13NkFo2V1ztBgzdBm+nSgFBDO1N9Tc3CxzFfR8c1hiUJBiKh0162wGg=
+	t=1755088939; cv=none; b=rECsYF27PlIZzprjXgdmGrUCwqJ21aL9Xw+7EPG06Du61S1FrX3rS9uSoScX85huTe+xVrVUTUl8cozlj0MbPZi+Z3BvkLg2cZwDnS68w2T9Ef6Puw+0SUxUDqJ5BbeHSH3f6v5BjAmbYfwqEr4Bn2+5gz2n1Uhv4oLnVnAwLpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755084535; c=relaxed/simple;
-	bh=b+BJwdXJ+U5tM2Yoabd+rBocoKqS0m7lwEuUWh70Uow=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=j0wQFWQgPj3qNs9BkEcbSOj770sfP7MrWxtLSl/1mZ2UWc9ubZHM8b8B3PHOtpTj1nck8lZpW3GXJU1+/iWuHgD/Kgwik32JqYTUrrJYw0Bmvy5cMMoU2EmF6+QkvkMLLqyurqviVUy7vwVtcqx/aNgBq84xCZqFCCe17NF9inA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n/EsR+QY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9855C4CEEB;
-	Wed, 13 Aug 2025 11:28:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755084535;
-	bh=b+BJwdXJ+U5tM2Yoabd+rBocoKqS0m7lwEuUWh70Uow=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=n/EsR+QYDr76skhDNoPnu96DNr7aUKOaifg0/UWkjE9un16V7HutpXeBDLkuUQwZe
-	 vJ/SV6eB7BxHlkvUVuP1PmHxbjcDU1Qk7I0mnfWcc8+nQPTztU1MqLbMKclRQ0nU3y
-	 onmbxEHA0w1psySemibfFjIb0a4+0N3FHbccr4foD873C/FndE2+o2KVatToDXqXAo
-	 fLKHl/YdJumBTezW0PDxEnb8NXM0cvdqWO22/gIWR7OBV7XEn47uEBTof/bjZQkuav
-	 5mWma1jywH/1iJDlQQBj0iXKDo4zh7t0Uvgq0jAG33+z0deZY8Eso0HLyi8YxU9mqM
-	 V+xbIQD1WAqCQ==
-From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com, 
- tangchengchang@huawei.com
-In-Reply-To: <20250812122602.3524602-1-huangjunxian6@hisilicon.com>
-References: <20250812122602.3524602-1-huangjunxian6@hisilicon.com>
-Subject: Re: [PATCH for-rc] RDMA/hns: Fix dip entries leak on devices newer
- than hip09
-Message-Id: <175508453196.201413.2328539322104230853.b4-ty@kernel.org>
-Date: Wed, 13 Aug 2025 07:28:51 -0400
+	s=arc-20240116; t=1755088939; c=relaxed/simple;
+	bh=qTdz51eo20/MZlbMIiOQxbWGgMzw4/XJ2s3DlZRstIE=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=CQF+2vGE/rDm5fCPzboriUGgbLH2XujrMRRo7MlDfQnLPks5onRtuQ1IDhVTWCfbrFfVh31Kn07GLugdhrHCkOsE9Qm+l6j5AVc5vCwZUEx96tj/xafP1ANo3t1nvmSG/L2sOt/LKpdi7EkSoOPE811CVBM0Cn0FRyHe1DhfGN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=l81Nc8mz; arc=none smtp.client-ip=185.125.188.251
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
+Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id 152D44BCBD
+	for <linux-rdma@vger.kernel.org>; Wed, 13 Aug 2025 12:32:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+	s=20210803; t=1755088370;
+	bh=qTdz51eo20/MZlbMIiOQxbWGgMzw4/XJ2s3DlZRstIE=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+	 Reply-To;
+	b=l81Nc8mzUGd0uarRJLcUWSm43Vem2cBDn3Iq1/d/f6CaPRcvDJhXV9H83GadNhukR
+	 YvNELLz4IuzOuzFXJNNy2dQwA3OBpV2g9wgKgu2SEdvIhzbpJdg+7XHBL/y0+cB8vi
+	 +AjwuVvGWwmf3CaPXUoTo3f+bVZpqDn6QgaM4G6/Zk54+UPXllGacVDO2FuNt9iR77
+	 xsc/JTSThHZ0osmGegT7bhNM4K17A25ZjbvpVNRM59IYYDDHwRCRz8U1J3C8W4r6+y
+	 XiuWV/spKOfQSQuAIkvRLcauLBNAdf1244rXt5VD5UbLFSeI/PPdR5M9mUdEen/GKa
+	 PoOBHmILCtL3A==
+Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
+	by buildd-manager.lp.internal (Postfix) with ESMTP id 00F7E7E6FA
+	for <linux-rdma@vger.kernel.org>; Wed, 13 Aug 2025 12:32:50 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To: Linux RDMA <linux-rdma@vger.kernel.org>
+From: noreply@launchpad.net
+Subject: [recipe build #3933958] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <175508837000.1267249.17107923122638194743.launchpad@buildd-manager.lp.internal>
+Date: Wed, 13 Aug 2025 12:32:50 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+Errors-To: noreply@launchpad.net
+Precedence: bulk
+X-Generated-By: Launchpad (canonical.com); Revision="2e2dbb502f0ece7c824fee89b47752027cef4ee9"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: 071a7ccffaedc99e0840aa12fa45ccf16a3697df
 
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 2 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3933958/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-034
 
-On Tue, 12 Aug 2025 20:26:02 +0800, Junxian Huang wrote:
-> DIP algorithm is also supported on devices newer than hip09, so free
-> dip entries too.
-> 
-> 
-
-Applied, thanks!
-
-[1/1] RDMA/hns: Fix dip entries leak on devices newer than hip09
-      https://git.kernel.org/rdma/rdma/c/fa2e2d31ee3b72
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3933958
+Your team Linux RDMA is the requester of the build.
 
 
