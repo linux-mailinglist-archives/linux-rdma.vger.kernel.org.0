@@ -1,55 +1,57 @@
-Return-Path: <linux-rdma+bounces-12701-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12702-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0CE7B247BF
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Aug 2025 12:54:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17A49B247E7
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Aug 2025 13:03:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8273A5642F0
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Aug 2025 10:54:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DB597B00F3
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Aug 2025 11:01:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5F272F4A11;
-	Wed, 13 Aug 2025 10:54:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3077B2F6586;
+	Wed, 13 Aug 2025 11:02:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HoNf2dZT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BVSKa7XL"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80B122F5322;
-	Wed, 13 Aug 2025 10:54:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFBDF2F657D;
+	Wed, 13 Aug 2025 11:02:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755082450; cv=none; b=hYa9XBCTDInoKCaF3AlDDqzG+HuWEEXmS5syAYmwAFd8RANqaDUk9oTRWIBIf45mUR2p4sLRzkfwQqioxMiPCXhXUucMNo6euEVmpWRwiU6IeSOSaifSSABLgXoeMObCQ+JJTcl3vF/Z4ktR2sAbn2S2zunOwfLgR7txozmPiog=
+	t=1755082972; cv=none; b=itkyHQTn7us9BUhavDLS7MSXKAOWWaBUvs6woWT7Af19VP45zbiLCxkuB4ChuQpiNNVuR9xGq9kKg+BXsput3VYBPcUAcBdXNXWDdpMDsOEySJQWG+FD3s5KEzr8RQMjOtmGMf+HnLtxAihDGUPjyvUzJz5YyUt0EUmfBHrwzf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755082450; c=relaxed/simple;
-	bh=IA30e12EnWb/a4zorjCkw/sI2jug3qphKMlYO7PiwcI=;
+	s=arc-20240116; t=1755082972; c=relaxed/simple;
+	bh=VF+8hq4bkXa+A5pCGm7VgTReGjczHteGXGp0VIRjfc0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=rvBOOlOK9+W0Dqj0+Rxc2P9kVk2tCNYvhSxOzHKuXSVlLOiDuVb6e0GG+zdwY903NsyZ1JoFNzWtTNn2lJ3cs9paVB7StuRJd8P8ScUWj6LqsldbJAjpYcO7qA6FOFoEOlufDaMs72pLt9QVwbvinaE2EyyQV4wleQnb/PaRxAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HoNf2dZT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A227C4CEEB;
-	Wed, 13 Aug 2025 10:54:08 +0000 (UTC)
+	 MIME-Version:Content-Type; b=ZgibI2TG/4gNmmOLPpPAJv9g02BS+A7RQRhMCg10sahuP0SOD72LjdQQk42KwO0vedDKKlgS0PGr6KtdKfJZayy2+vU/vM0+gKFDLBWjIqg6s/Pq6GnH1izOQRffS8bSch0Y1kShTl+/rifdBGbsxV2tIeeQel+VyhyfZbHneH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BVSKa7XL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBD5FC4CEEB;
+	Wed, 13 Aug 2025 11:02:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755082449;
-	bh=IA30e12EnWb/a4zorjCkw/sI2jug3qphKMlYO7PiwcI=;
+	s=k20201202; t=1755082971;
+	bh=VF+8hq4bkXa+A5pCGm7VgTReGjczHteGXGp0VIRjfc0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=HoNf2dZTWlD6t4UslGDzYL6HQVadeIp3pBgW2RNENbgFVTJSqRsVe1Ri1MCcOmcRd
-	 veNueKZ+NA8lVOXwC1LL82K+PAlALoGYxAe9jPb350JedxlxRKwcsRTL1CiT+Bd5qO
-	 PTUxJ3GAtzDDs3ldU81xJlg/ySZIOapCLLi34/t1RwIue0ob84MJ2uS/XeOILNXcyA
-	 qzKtAfei/qbBbsHP2Ccod1uzcUfGZGjv7LXdiQwVD2WrsNs61Gi9OwsNWF613i+Xm8
-	 7YXNPlJ5+p0hFJPZRkXMk5xETACovf9Txqj/MWoVpnJRu2Wsg/3oc7gopF5AhYGlGj
-	 izVeLdHl6OKwA==
+	b=BVSKa7XL3BXIn0DeWji49/OI3xIMxxlDMXoYhiSHyZ2py6O31VRIPerpQtJVzlpqO
+	 UbWoDwaOj/c30rfiSTqUv4GRB6aoPWO5phK8nZuB1LmaxLEPDD+rY+u8V6RPYE3uHR
+	 NvZfgrLuN3nozVlDgm7S+R1dVAtloGO6CNjC90Evrhw++V+ap3eNzZ4gtYanJ+DJdD
+	 L+rg7qxbHeO9J1XbPjcC/wlHq1znKFJo1r4NWdN4cjZglMCCrjrnNAb9597fBgt7LI
+	 HSY8RZ2efm1ltSK4TX1Sto1cSjVEiOVJw1nbQiKIbRp1wUPmP1evfSLBUtpNTrP7wT
+	 whvYMUtZ7OH5A==
 From: Leon Romanovsky <leon@kernel.org>
-To: linux-kernel@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>
-Cc: linux-rdma@vger.kernel.org, 
- Tatyana Nikolova <tatyana.e.nikolova@intel.com>
-In-Reply-To: <20250808175601.EF0AF767@davehans-spike.ostc.intel.com>
-References: <20250808175601.EF0AF767@davehans-spike.ostc.intel.com>
-Subject: Re: [PATCH] MAINTAINERS: Remove bouncing irdma maintainer
-Message-Id: <175508244543.199624.12082806444245569887.b4-ty@kernel.org>
-Date: Wed, 13 Aug 2025 06:54:05 -0400
+To: jgg@ziepe.ca, michaelgur@nvidia.com, ohartoov@nvidia.com, 
+ shayd@nvidia.com, dskmtsd@gmail.com, hch@infradead.org, 
+ Akhilesh Patil <akhilesh@ee.iitb.ac.in>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ akhileshpatilvnit@gmail.com, skhan@linuxfoundation.org
+In-Reply-To: <aJjcPjL1BVh8QrMN@bhairav-test.ee.iitb.ac.in>
+References: <aJjcPjL1BVh8QrMN@bhairav-test.ee.iitb.ac.in>
+Subject: Re: [PATCH] RDMA/core: fix memory alloc/free for pfn_list
+Message-Id: <175508296763.200362.3314419784184530983.b4-ty@kernel.org>
+Date: Wed, 13 Aug 2025 07:02:47 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -61,17 +63,17 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
 
 
-On Fri, 08 Aug 2025 10:56:01 -0700, Dave Hansen wrote:
-> This maintainer's email no longer works. Remove it from MAINTAINERS.
-> 
-> This still leaves one maintainer for the driver.
+On Sun, 10 Aug 2025 23:21:58 +0530, Akhilesh Patil wrote:
+> Ensure memory allocated for umem_odp->map->pfn_list using kvcalloc()
+> is freed using corresponding kvfree() to avoid potential memory
+> corruption. Match memory allocation and free routines kvcalloc -> kvfree
 > 
 > 
 
 Applied, thanks!
 
-[1/1] MAINTAINERS: Remove bouncing irdma maintainer
-      https://git.kernel.org/rdma/rdma/c/2186e8c39eb156
+[1/1] RDMA/core: fix memory alloc/free for pfn_list
+      https://git.kernel.org/rdma/rdma/c/111aea0464c20f
 
 Best regards,
 -- 
