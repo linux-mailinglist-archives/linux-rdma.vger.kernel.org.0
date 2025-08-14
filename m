@@ -1,60 +1,61 @@
-Return-Path: <linux-rdma+bounces-12732-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12733-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C88BB25ADB
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 07:39:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50FB3B25AF4
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 07:42:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA44C684BC9
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 05:39:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7A8D18836D0
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 05:40:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 155FD221736;
-	Thu, 14 Aug 2025 05:39:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DAFF2222A7;
+	Thu, 14 Aug 2025 05:39:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ft3Q95U6"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="0hSYqmUQ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2055.outbound.protection.outlook.com [40.107.220.55])
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2084.outbound.protection.outlook.com [40.107.236.84])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12B6A1E3DFE;
-	Thu, 14 Aug 2025 05:39:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C0A01E3DFE;
+	Thu, 14 Aug 2025 05:39:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.84
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755149962; cv=fail; b=fcAasvHVB7f/yXoOm5Dz4xK7BOscECd3UXRkBE7gV+EEqc6K71WbTG7n9KaReiVP+hwl9Vv8mQRoejc3Z2y/9TKPH3Inea/zb5xpTgqvrkbYQqT3dDE1Uf+u90Z8PPx6YkPd8KqmRFRvztjLMJXpLrcvpSrKjQ4h9HEtf+ntqSw=
+	t=1755149972; cv=fail; b=SbrG/nPIN1K+78yYL/+SYVBV+Db20DTeMbE7ilMk/kFd7zXVDS714iL1JInqmnQBZUNsdjiJKRz6UmUJdE9BQxSSuP5W6KysHc71MkYZWXyKK+weiBVwp+cSpqupGQEQoeB/aQ19/vXRlmr49WHaVl15EEyaEsh3KZujp+R86bI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755149962; c=relaxed/simple;
-	bh=SlnmTGalpi8ZMoUVwefy9ottM4wshRYugRQMAWNT+V4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dWMB3bKzu/Vv4ZBNL9sMeFqjihJzU/xMKQyOoLb9y/4+v8kReHZxEf5Rf5xAhPouYcJdHzTAKb1kiyppe7MbjF2UGrPmZfS+/MAtd3cci+JmMJzGoX0qCl8x8SJU5BEhf1uraapnKdxpdwVOeyMz1UC5tqftjdr1qyyDvkHnp6E=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=ft3Q95U6; arc=fail smtp.client-ip=40.107.220.55
+	s=arc-20240116; t=1755149972; c=relaxed/simple;
+	bh=n7Ag7VrGMr0eXV9KsRtEFDZUaiLoLkfXXRwpnGbLQOA=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Gyf869rWqYXIyYBaovqG3jzdC+8LXVvr77mnNj4OjxZU/xYdt8Bhgjx0hpCSfKsdH1dmFo/rYaVWKRadyDTZpSuWvbWVk/udM0DG2qCLlIGbBqCDBO4jfIM+L1wVu+S6uzhhFO2gb9+MhDUGn09uz4ZMv3SlEhZ/LIz4he4SosU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=0hSYqmUQ; arc=fail smtp.client-ip=40.107.236.84
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=YW6IPB3Hf2fQp4b8iWtbzK84nuNDR9jPqEp3H3B0U1JNzWMjwzR1JkzRPHrrRmY1txVeuRmcwrZkdHm2PlQ6ZKQ98OCqhDYkzImwaPTvE+8QO3MXAhnOgRG3wSD4syDmKISnTG30WFkIc63tl5AE1ixw5Scz2opo0XPrMaO1QKfJxe4ubynpyhUGMyTUzRhKxShsI4C5kHqBKIVBEuLT9l9HE3dyZ9+MuowzYbK7L/aMXPM8EOXf09v6kGhcOy/v29nvfHljVMTKQDO+5HvAKBlV5Ubaa1848w/0/bKSbP7NvoXuObsN7w2FTzgcH66YDeCORQDKrO5b2gV03Ad/lQ==
+ b=BaH0TKogPYiFU8OWenNK6huYGRfxYdmjkQBe0bLvwfdHVB46xw8qXH7fvIJPmcKB8Pp38KO62gbrWsTeAzNexWELTRadEG8ESxt7NkIIXao7l1wbBoPM0Rbweutmv+gi66NDnWVhuCG+yzMwTG3Qqlr6bl67Bk55iJ2/cQA7kZj5EO64+eWQDPT2kpoofn4hxKZ0Ga0LXqY2RIDCYqRcP2XEEmQHex8ASvyTx4pl4VbFAVbJ74O0ETNsD1NR3dRweQAlMijmLd53n/3jhajlj09/HuNHtuaslfbT2JEYuUjnWBl7rizfhwYOfYy4h8YS1iLnlpTX2bJqicmtIDotww==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=u26LbOFiv2e1piQu6/WctApVofAunxQ1aH0H7JaD0wc=;
- b=ICjkSiQ//HoFQisuVF6gEZxq6F33FjQAVx6EG6YnNzTzTwKIcCAqzAIYrXfQkSIFdQBwxhhLw5qmFH8eMLxlVPky+DiCpdCIfRXvbGdtTRypUia7T7FHNpduJNAPsFpVYvOmAEJP6mORWpIGVQX9xEQE83JSHrXOpf5XNM4dZqwTM7nX7tVMrI291JRf53ZKRGMOIlZPlKvLk61eh47kAFN/JBycQKmCwKJHsbxWuiI4iTfJF3WIIx7WwzAIG83oZaxz1NKXC7GQZFG2Eg4HwPtT3DWVqY0HZUGMTYZ3XhLuP81PQdt6xbmpESpy0r5eAl7Xesiga+SaqMWsiFvmMw==
+ bh=JxfUUDtW2SDTyhw0hYRj6aj+IY4QFOr52TMIQYw3JBI=;
+ b=JjCEG8n0/8CeyA0l35gBpo+mKQXdmLgHnQ8QudIkHKSad0sWp8DLAiQV8hRhE6JLPhW10sDol6ZDTewCsdgkoJQiAi6M7jBpCOJ33PA5cnJXUFtJAeGfDp5CwecXxELMqe+drlPwjaocD1j644D8theO3Mvza+fxeXHu7z1QpbFsrs23/l/b6kBYt4vKXtEyJEUEFguZ9MvRVlsL3YU8LbYqx0HnHzvOe+/BMoMLAmX6oCii0RpdheBPoN7DDAnxvBSUpchKd5fTbKqowvCFwiBn0XZV7JPiCF1qieCMyaC9Oe1w1HlpqXQyrvV7nxwv16vCNLdZPYPekwWe2BqMsA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=davemloft.net smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u26LbOFiv2e1piQu6/WctApVofAunxQ1aH0H7JaD0wc=;
- b=ft3Q95U6KqDH3FLdafRfzUbsb5NiHEmCb90AyG88p5+FOiPXReQMelhX0OSJtVGXaKgN4k5115ihr8UPeaR2n1XJmTsxB6519tmoFU/gURZgATXwMTo+38dZ6C1zJpjMHO10NwY1QFlGpfl5gw0XQskjhqdxEm+c2f/jdm9OxFc=
-Received: from DM6PR04CA0024.namprd04.prod.outlook.com (2603:10b6:5:334::29)
- by DM3PR12MB9352.namprd12.prod.outlook.com (2603:10b6:0:4a::20) with
+ bh=JxfUUDtW2SDTyhw0hYRj6aj+IY4QFOr52TMIQYw3JBI=;
+ b=0hSYqmUQ5/QElo6KPi8iPToMmhwMWwm2wo8x/Bhm9tx+QkuBgpgjtmOntlQI/Lg4kZNcvazV6l4etbl/ViEEtf+tzjvsMKPLtX+BKQVWL0wK9OKv/rvAgO6AtZlRqIQzOMYQDWFbP1TCuHL7B2MSQ1PWjPjeJPvAEH8up2VtN5k=
+Received: from BN8PR15CA0009.namprd15.prod.outlook.com (2603:10b6:408:c0::22)
+ by PH0PR12MB8176.namprd12.prod.outlook.com (2603:10b6:510:290::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9031.14; Thu, 14 Aug
- 2025 05:39:16 +0000
-Received: from DS3PEPF0000C37A.namprd04.prod.outlook.com
- (2603:10b6:5:334:cafe::f7) by DM6PR04CA0024.outlook.office365.com
- (2603:10b6:5:334::29) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9031.16 via Frontend Transport; Thu,
- 14 Aug 2025 05:39:16 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9031.15; Thu, 14 Aug
+ 2025 05:39:24 +0000
+Received: from BL02EPF00021F6B.namprd02.prod.outlook.com
+ (2603:10b6:408:c0:cafe::74) by BN8PR15CA0009.outlook.office365.com
+ (2603:10b6:408:c0::22) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9031.17 via Frontend Transport; Thu,
+ 14 Aug 2025 05:39:23 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -62,20 +63,20 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS3PEPF0000C37A.mail.protection.outlook.com (10.167.23.4) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.9031.11 via Frontend Transport; Thu, 14 Aug 2025 05:39:15 +0000
-Received: from satlexmb08.amd.com (10.181.42.217) by SATLEXMB04.amd.com
+ BL02EPF00021F6B.mail.protection.outlook.com (10.167.249.7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.9031.11 via Frontend Transport; Thu, 14 Aug 2025 05:39:22 +0000
+Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Thu, 14 Aug
- 2025 00:39:15 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by satlexmb08.amd.com
- (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1748.10; Wed, 13 Aug
- 2025 22:39:14 -0700
+ 2025 00:39:20 -0500
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
+ (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.39; Thu, 14 Aug
+ 2025 00:39:19 -0500
 Received: from xhdabhijitg41x.xilinx.com (10.180.168.240) by
  SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.39
- via Frontend Transport; Thu, 14 Aug 2025 00:39:11 -0500
+ via Frontend Transport; Thu, 14 Aug 2025 00:39:15 -0500
 From: Abhijit Gangurde <abhijit.gangurde@amd.com>
 To: <brett.creeley@amd.com>, <davem@davemloft.net>, <edumazet@google.com>,
 	<kuba@kernel.org>, <pabeni@redhat.com>, <corbet@lwn.net>, <jgg@ziepe.ca>,
@@ -83,186 +84,386 @@ To: <brett.creeley@amd.com>, <davem@davemloft.net>, <edumazet@google.com>,
 CC: <sln@onemain.com>, <allen.hubbe@amd.com>, <nikhil.agarwal@amd.com>,
 	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
 	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Abhijit Gangurde
-	<abhijit.gangurde@amd.com>
-Subject: [PATCH v5 00/14] Introduce AMD Pensando RDMA driver
-Date: Thu, 14 Aug 2025 11:08:46 +0530
-Message-ID: <20250814053900.1452408-1-abhijit.gangurde@amd.com>
+	<abhijit.gangurde@amd.com>, Shannon Nelson <shannon.nelson@amd.com>
+Subject: [PATCH v5 01/14] net: ionic: Create an auxiliary device for rdma driver
+Date: Thu, 14 Aug 2025 11:08:47 +0530
+Message-ID: <20250814053900.1452408-2-abhijit.gangurde@amd.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20250814053900.1452408-1-abhijit.gangurde@amd.com>
+References: <20250814053900.1452408-1-abhijit.gangurde@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF0000C37A:EE_|DM3PR12MB9352:EE_
-X-MS-Office365-Filtering-Correlation-Id: e822cefb-4383-4fca-77ca-08dddaf4e832
+X-MS-TrafficTypeDiagnostic: BL02EPF00021F6B:EE_|PH0PR12MB8176:EE_
+X-MS-Office365-Filtering-Correlation-Id: 30eb692f-249a-4974-7f3e-08dddaf4ec73
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|82310400026|36860700013|1800799024|7416014|13003099007;
+	BCL:0;ARA:13230040|82310400026|36860700013|1800799024|376014|7416014;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?YkdUZjVEWmVKa1RBVDVyWTJQMTJzb2g2cU41QXNSTWxGN2tvYTZRVTV2VFI0?=
- =?utf-8?B?WnM1U3ZYUHVwMXd4aTlDVnJyc3VoUVdkZk1oWDhXZGVrbm5rUWZ2ekhDUXhE?=
- =?utf-8?B?MytyTXdtS2JaOHNtZUR6aTh0dnBCVVBid25zQVNXMzhKdWluTEYxOWFnekRC?=
- =?utf-8?B?cFJockt4Sm1KQ0J0KzlqV0VkZW01eDhkZDYwY0E5MjBweUJHQVdmM294cVBY?=
- =?utf-8?B?VHJYN01kNlNUanVnSGQ2S1JwUUJLL20wSVRjamVIMS9lNlJTMElCY0JQSEE0?=
- =?utf-8?B?QXJBNDZCM2tBbFVjbW5vYWxOdGl5SkFSdFV3dytlVDZaNDB0UGtIWW9yeldj?=
- =?utf-8?B?dDdPUk1IcTYrRVB0RXpOaDJYbU1VZlJUWjJzWGdjU2hiY2RvYktlY0xvTFdE?=
- =?utf-8?B?ZFFWOCtOS040Z1cvaGZoSDZlTVpWNWY2eVdlZFdBV0NXQzNEdWVFMmFTZkNZ?=
- =?utf-8?B?SlYxQjJ2SjM4ZE50eTZWbTd1N0RPeFVtNzFZRERzSkk5bVFibHJWUXcwYnRQ?=
- =?utf-8?B?dFRKaWJmVmk5a3kzNFJua1kwSEgwUmNMSGtkZjJzdW5tK21RL0hHdVljVElY?=
- =?utf-8?B?TEdlZWg3T0ZuL1p3cGlVMGE2dkJnY3VKUFJLczhhTmZJUHlJUUcwdGRpQ0JU?=
- =?utf-8?B?dmdWTWdyZVdMQmRwTWxiZzB4RXpFeWVRYUI0MU9HaGticlBYcnVVRnE1bGIw?=
- =?utf-8?B?V055OEo1bmFZQWttLzNIdXRRVjlRZVJHR0paUGNpbVo4dWpCZDhMeHpXeXJ4?=
- =?utf-8?B?eFUwSy9JUkRlOFp2eDBwY3BvVEFteDdjTUJhNGY1ekcyR1ArdjhxMVNtT0lq?=
- =?utf-8?B?UlRpRFRHNlI4Y3kveWU5YWR3Q29LREVGd2V4WVFadzJpZzdqWnRQME9qYk9j?=
- =?utf-8?B?dWQwa0cyZzgxYUU1OW9YSHFGVlZ5NERJYVZ1NzBmejNpMmN0UktIWkdVREdG?=
- =?utf-8?B?WjEwbDdpUUVmTkRUREZmSzBPZEh0aTI3QUltbldXQXNudzdHRDN5UW0vVnhS?=
- =?utf-8?B?Vk1vSzlJUmUrNWVGZjBCaXNYYUpUanV3K1U2WkoxUXprV1dEZmFWb283UE1H?=
- =?utf-8?B?UU5SSVJ3NGJFUkZ3VVE3TDNKWnN2S3o5NHJtSndUSHZwWEpDZ3NrdGFWOStp?=
- =?utf-8?B?MlV3WHo5ZHcwVi9sSVJaVjc2enQ5OEtrcFUvS1R5Ymhwb3hNK2o3elVseGRz?=
- =?utf-8?B?NzA3K3N1V1VtcmYwTFJKSm1YVkZwWllTSDVhUjBwaG4yUlhYYW1kcjVkUlUx?=
- =?utf-8?B?TEo2eTBpMnYzOFp6b0M2b3RPU0J0V0JaZzN4TEk4Mmh2ZTdSaDZiQ2lmWk52?=
- =?utf-8?B?MmEwMjBlRUIyS2xHVTZLSXAzYjVYeUdqcFVQN0RURE4rZHFEMkl5OGRFTlBs?=
- =?utf-8?B?R3JzUjhMT2R3aFZqMmIzSzdvUzNLNFFhR2dFZzZwc056dTNYd1pYc0RGS3cy?=
- =?utf-8?B?TFhzWHZqZjFiNTNPdkJiTmw0TDF5bGR2bkR4bm9SbDBjVFIyZlNvaFp0MFhz?=
- =?utf-8?B?Q0gvY2VYbGlqUzJWWTR6N0dXQWhoMVMvZTYySjJhVEh2SE9CdnlsYS9hSmp1?=
- =?utf-8?B?eTExeVNxZEQ0SmluN3NYQmU3c2xOSVNhLyt2a1JNVzNkSGJRQkI2K1ZkRlM0?=
- =?utf-8?B?SFlnUTNvSGpaMXdkdk1ydmE2V0dKNFd6WlQ5R1V6Y2VWcGdHV0R3azJ1Z0hr?=
- =?utf-8?B?c1BkdDZWVVg2OXB5Z1JvMTFWc1JnbGRhWjBEdTE5ZnJXYmI1TmlOK3pyeFE0?=
- =?utf-8?B?eWY1YUg5a1krWFpaKzdzYVo0YWE1SkYxYndHOVVtZ2RjQXd0dG95Q25XSTBC?=
- =?utf-8?B?V3Q2ZUwxYzdoVFBuVjhwWmV3Q05YVnM0NTlCbExVYXdUYzlYVE5yZ3lzb2pB?=
- =?utf-8?B?M2lVL1VCeDhXRThTRjNNTDlxREFSTVlzZVV6NDVWbDBMVGtrNEltKys5Vkw0?=
- =?utf-8?B?ZDhTNHZjTXU1ckVlZEJ1QTlyd2dYWDYwb1lHNlBQRG96MnBkTmdMN1oxd1VU?=
- =?utf-8?B?aWRlcGQzTGhKVlpCR2JheDFnQnFhNnpLcXJjd1JiQkdyb2VUbWdGYUFDVlpQ?=
- =?utf-8?B?YWFRNTE2OE53eHlrWnZDU0huK1J5OUNtM2oyUT09?=
+	=?us-ascii?Q?bz/fbqb8vyGYYAmy/E+Yf3tkZ5JofpzQZr5Dahgl/yW8ph/Ku7CRQJd6hJN3?=
+ =?us-ascii?Q?A5GGlr2YGQ0/oziDVB0KrhEkdEh+wchWH5gS/xaCTukS4I4D88U4UIbMW97u?=
+ =?us-ascii?Q?YI0t9W4HxlcjEv40SkJlQgLzNh5mTiZA0HNZlP6E1jXgFIDxvS5IS6OxfkG/?=
+ =?us-ascii?Q?mtlWjBcju0ufyVmNDdLWlNSy7dzxeV3xPAgLZwlQW6AHHiy7yvI9hM9rPBrQ?=
+ =?us-ascii?Q?4J55lr/OocyMOIgLbE+wZbA1Ld9yJxrDzBXFXn2gr7y4z2vrUof6wELdwjSC?=
+ =?us-ascii?Q?OlrQAyV4sFfBaOz0GNLFvdG7I9inzZiCz9z9JizTKyeyJB5Q13S/S5Y6p6U5?=
+ =?us-ascii?Q?+KPb8/5Ioy/vA2MwOue3ncam991ookXArXLsl+DBTfi02G5SUOpNlEMYwjkv?=
+ =?us-ascii?Q?P+0nCiLTyPD6YqNzuKYMYLM/ya4p6iEnVdvK/UelPgrwcApSa5pqDPJRrJT6?=
+ =?us-ascii?Q?MSyMVgEQXTS4dfl1927LGql96JdKos4Hna1idZ8C01jni35V0YVZx4cMxpPO?=
+ =?us-ascii?Q?j648Y39dt5INHpPQLlp4hAJ6gWASI534vSIzlL+DBx7FyZmGYbNZNX2x0f15?=
+ =?us-ascii?Q?QGXIBFMhQgQnbY9QiJg6Xvr3jxqU6CCGP+l6AJm12lJCQlyFJpOPfUBkE/b4?=
+ =?us-ascii?Q?Tz8LCTpCFYmE5BNLUzP+kR/z1q7hvbFSFg5kPfwQe0W1dulXxKlomO3Mz2ZJ?=
+ =?us-ascii?Q?O6iGO7LUmB1q6zKQSvoVdSsM9MTakTYBtnCwKi7GiAcRAMuoih27vZ/d5o8d?=
+ =?us-ascii?Q?WLflyRf61PV9k8rhqwuURPc7Kk7WSJ/4ZJJNAIdQWWigbm4DLlJv2hIvEgLP?=
+ =?us-ascii?Q?mPzMA79iNVSMOxnzTnm39YL6474QECXeE4MER7zY5KkiFvVF74fQEvbGEuck?=
+ =?us-ascii?Q?SKZZHf2misr56CCNuZ0Y74c5VrWIFi1vasizwHZic4av8NmVc6RC3AE97LwJ?=
+ =?us-ascii?Q?SHinhsK+0GBTan+UbKl91GUFiCWFo6/XvSPq7FB9bcPUHsKcPSacpb9uabdh?=
+ =?us-ascii?Q?N4cPriuBgC8V7QKcAz0e+pOrHKHJFw1k11Xm25Rva2U8UV9FrN6zoIG3/UT4?=
+ =?us-ascii?Q?25M1N8peTbKl4jCyubPLRMS/Y2to/QKJweFiEr6cuD+ODb6kkU3jbFTC0WVy?=
+ =?us-ascii?Q?qK6IBds9VEMQvsEqq1X1pzRCm897NsakOXxC3e//Tamsn3l5WODJ9Kj8Rah1?=
+ =?us-ascii?Q?5RvDXjaBlwk3QbXSFyx7eBA8Jm+cNjYmXW816zGnTbfLVV+eM3V0qwkGLurx?=
+ =?us-ascii?Q?t23rseoFWL6MDPQH7iW33DLQbgOYBYkpDs9uSh4PgGEyLQFTGhYMiut8ODGQ?=
+ =?us-ascii?Q?E0pXzhqMzGlNf4wqQzSIV+cU0GNNZRehC13zxI92StnEkXgn98750B21TMH2?=
+ =?us-ascii?Q?+w0dixmL6MDLNzhLFU8KK78s1Ojt//ZSJfNNd7w1HsmsF5s4xwoA944FLk1X?=
+ =?us-ascii?Q?C82og8YFzf13SrjrI91+kM4UV2oDkewp2rGJIwD65Ee6eqg2egpaxIhrE7At?=
+ =?us-ascii?Q?uV3PRQGWJ9qtalDOMZhD6/HE6J75nZvvLYeu?=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(82310400026)(36860700013)(1800799024)(7416014)(13003099007);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(82310400026)(36860700013)(1800799024)(376014)(7416014);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2025 05:39:15.8165
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2025 05:39:22.9893
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e822cefb-4383-4fca-77ca-08dddaf4e832
+X-MS-Exchange-CrossTenant-Network-Message-Id: 30eb692f-249a-4974-7f3e-08dddaf4ec73
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF0000C37A.namprd04.prod.outlook.com
+	BL02EPF00021F6B.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR12MB9352
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8176
 
-This patchset introduces an RDMA driver for the AMD Pensando adapter.
-An AMD Pensando Ethernet device with RDMA capabilities extends its
-functionality through an auxiliary device.
+To support RDMA capable ethernet device, create an auxiliary device in
+the ionic Ethernet driver. The RDMA device is modeled as an auxiliary
+device to the Ethernet device.
 
-The first 6 patches of the series modify the ionic Ethernet driver
-to support the RDMA driver. The ionic RDMA driver implementation is
-split into the remaining 8 patches.
-
-The user-mode of the driver is being reviewed at:
-https://github.com/linux-rdma/rdma-core/pull/1620
-
+Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
+Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
+---
 v4->v5
   - Updated documentation
   - Fixed error path in aux device creation
-v3->v4
-  - Used xa lock instead of rcu lock for qp and cq access
-  - Removed empty labels
-  - Improved comments
-  - Removed unwanted warning and error prints.
-v2->v3
-  - Used IDA for resource id allocation
-  - Fixed lockdep warning
-  - Removed rw locks around xarrays
-  - Used rdma_user_mmap_* APIs for mappings
-  - Removed uverbs_cmd_mask
-  - Registered main ib ops at once
-  - Fixed sparse checks
-  - Fixed make htmldocs error
-v1->v2
-  - Removed netdev references from ionic RDMA driver
-  - Moved to ionic_lif* instead of void* to convey information between
-    aux devices and drivers
 
-Abhijit Gangurde (14):
-  net: ionic: Create an auxiliary device for rdma driver
-  net: ionic: Update LIF identity with additional RDMA capabilities
-  net: ionic: Export the APIs from net driver to support device commands
-  net: ionic: Provide RDMA reset support for the RDMA driver
-  net: ionic: Provide interrupt allocation support for the RDMA driver
-  net: ionic: Provide doorbell and CMB region information
-  RDMA: Add IONIC to rdma_driver_id definition
-  RDMA/ionic: Register auxiliary module for ionic ethernet adapter
-  RDMA/ionic: Create device queues to support admin operations
-  RDMA/ionic: Register device ops for control path
-  RDMA/ionic: Register device ops for datapath
-  RDMA/ionic: Register device ops for miscellaneous functionality
-  RDMA/ionic: Implement device stats ops
-  RDMA/ionic: Add Makefile/Kconfig to kernel build environment
-
- .../device_drivers/ethernet/index.rst         |    1 +
- .../ethernet/pensando/ionic.rst               |   10 +
- .../ethernet/pensando/ionic_rdma.rst          |   52 +
- MAINTAINERS                                   |    9 +
- drivers/infiniband/Kconfig                    |    1 +
- drivers/infiniband/hw/Makefile                |    1 +
- drivers/infiniband/hw/ionic/Kconfig           |   15 +
- drivers/infiniband/hw/ionic/Makefile          |    9 +
- drivers/infiniband/hw/ionic/ionic_admin.c     | 1228 ++++++++
- .../infiniband/hw/ionic/ionic_controlpath.c   | 2679 +++++++++++++++++
- drivers/infiniband/hw/ionic/ionic_datapath.c  | 1392 +++++++++
- drivers/infiniband/hw/ionic/ionic_fw.h        | 1029 +++++++
- drivers/infiniband/hw/ionic/ionic_hw_stats.c  |  484 +++
- drivers/infiniband/hw/ionic/ionic_ibdev.c     |  452 +++
- drivers/infiniband/hw/ionic/ionic_ibdev.h     |  517 ++++
- drivers/infiniband/hw/ionic/ionic_lif_cfg.c   |  111 +
- drivers/infiniband/hw/ionic/ionic_lif_cfg.h   |   66 +
- drivers/infiniband/hw/ionic/ionic_pgtbl.c     |  143 +
- drivers/infiniband/hw/ionic/ionic_queue.c     |   52 +
- drivers/infiniband/hw/ionic/ionic_queue.h     |  234 ++
- drivers/infiniband/hw/ionic/ionic_res.h       |  154 +
- drivers/net/ethernet/pensando/Kconfig         |    1 +
- drivers/net/ethernet/pensando/ionic/Makefile  |    2 +-
- drivers/net/ethernet/pensando/ionic/ionic.h   |    7 -
- .../net/ethernet/pensando/ionic/ionic_api.h   |  131 +
- .../net/ethernet/pensando/ionic/ionic_aux.c   |  102 +
- .../net/ethernet/pensando/ionic/ionic_aux.h   |   10 +
- .../ethernet/pensando/ionic/ionic_bus_pci.c   |    7 +
- .../net/ethernet/pensando/ionic/ionic_dev.c   |  270 +-
- .../net/ethernet/pensando/ionic/ionic_dev.h   |   28 +-
- .../net/ethernet/pensando/ionic/ionic_if.h    |  118 +-
- .../net/ethernet/pensando/ionic/ionic_lif.c   |   47 +-
- .../net/ethernet/pensando/ionic/ionic_lif.h   |    3 +
- .../net/ethernet/pensando/ionic/ionic_main.c  |    4 +-
- include/uapi/rdma/ib_user_ioctl_verbs.h       |    1 +
- include/uapi/rdma/ionic-abi.h                 |  115 +
- 36 files changed, 9421 insertions(+), 64 deletions(-)
- create mode 100644 Documentation/networking/device_drivers/ethernet/pensando/ionic_rdma.rst
- create mode 100644 drivers/infiniband/hw/ionic/Kconfig
- create mode 100644 drivers/infiniband/hw/ionic/Makefile
- create mode 100644 drivers/infiniband/hw/ionic/ionic_admin.c
- create mode 100644 drivers/infiniband/hw/ionic/ionic_controlpath.c
- create mode 100644 drivers/infiniband/hw/ionic/ionic_datapath.c
- create mode 100644 drivers/infiniband/hw/ionic/ionic_fw.h
- create mode 100644 drivers/infiniband/hw/ionic/ionic_hw_stats.c
- create mode 100644 drivers/infiniband/hw/ionic/ionic_ibdev.c
- create mode 100644 drivers/infiniband/hw/ionic/ionic_ibdev.h
- create mode 100644 drivers/infiniband/hw/ionic/ionic_lif_cfg.c
- create mode 100644 drivers/infiniband/hw/ionic/ionic_lif_cfg.h
- create mode 100644 drivers/infiniband/hw/ionic/ionic_pgtbl.c
- create mode 100644 drivers/infiniband/hw/ionic/ionic_queue.c
- create mode 100644 drivers/infiniband/hw/ionic/ionic_queue.h
- create mode 100644 drivers/infiniband/hw/ionic/ionic_res.h
+ .../ethernet/pensando/ionic.rst               | 10 +++
+ drivers/net/ethernet/pensando/Kconfig         |  1 +
+ drivers/net/ethernet/pensando/ionic/Makefile  |  2 +-
+ .../net/ethernet/pensando/ionic/ionic_api.h   | 21 +++++
+ .../net/ethernet/pensando/ionic/ionic_aux.c   | 80 +++++++++++++++++++
+ .../net/ethernet/pensando/ionic/ionic_aux.h   | 10 +++
+ .../ethernet/pensando/ionic/ionic_bus_pci.c   |  5 ++
+ .../net/ethernet/pensando/ionic/ionic_lif.c   |  7 ++
+ .../net/ethernet/pensando/ionic/ionic_lif.h   |  3 +
+ 9 files changed, 138 insertions(+), 1 deletion(-)
  create mode 100644 drivers/net/ethernet/pensando/ionic/ionic_api.h
  create mode 100644 drivers/net/ethernet/pensando/ionic/ionic_aux.c
  create mode 100644 drivers/net/ethernet/pensando/ionic/ionic_aux.h
- create mode 100644 include/uapi/rdma/ionic-abi.h
 
-
-base-commit: 8f5ae30d69d7543eee0d70083daf4de8fe15d585
+diff --git a/Documentation/networking/device_drivers/ethernet/pensando/ionic.rst b/Documentation/networking/device_drivers/ethernet/pensando/ionic.rst
+index 05fe2b11bb18..d0005a7f04c7 100644
+--- a/Documentation/networking/device_drivers/ethernet/pensando/ionic.rst
++++ b/Documentation/networking/device_drivers/ethernet/pensando/ionic.rst
+@@ -13,6 +13,7 @@ Contents
+ - Identifying the Adapter
+ - Enabling the driver
+ - Configuring the driver
++- RDMA Support via Auxiliary Device
+ - Statistics
+ - Support
+ 
+@@ -105,6 +106,15 @@ XDP
+ Support for XDP includes the basics, plus Jumbo frames, Redirect and
+ ndo_xmit.  There is no current support for zero-copy sockets or HW offload.
+ 
++RDMA Support via Auxiliary Device
++=================================
++
++The ionic driver supports RDMA (Remote Direct Memory Access) functionality
++through the Linux auxiliary device framework when advertised by the firmware.
++RDMA capability is detected during device initialization, and if supported,
++the ethernet driver will create an auxiliary device that allows the rdma
++driver to bind and provide InfiniBand/RoCE functionality.
++
+ Statistics
+ ==========
+ 
+diff --git a/drivers/net/ethernet/pensando/Kconfig b/drivers/net/ethernet/pensando/Kconfig
+index 01fe76786f77..c99758adf3ad 100644
+--- a/drivers/net/ethernet/pensando/Kconfig
++++ b/drivers/net/ethernet/pensando/Kconfig
+@@ -24,6 +24,7 @@ config IONIC
+ 	select NET_DEVLINK
+ 	select DIMLIB
+ 	select PAGE_POOL
++	select AUXILIARY_BUS
+ 	help
+ 	  This enables the support for the Pensando family of Ethernet
+ 	  adapters.  More specific information on this driver can be
+diff --git a/drivers/net/ethernet/pensando/ionic/Makefile b/drivers/net/ethernet/pensando/ionic/Makefile
+index 4e7642a2d25f..a598972fef41 100644
+--- a/drivers/net/ethernet/pensando/ionic/Makefile
++++ b/drivers/net/ethernet/pensando/ionic/Makefile
+@@ -5,5 +5,5 @@ obj-$(CONFIG_IONIC) := ionic.o
+ 
+ ionic-y := ionic_main.o ionic_bus_pci.o ionic_devlink.o ionic_dev.o \
+ 	   ionic_debugfs.o ionic_lif.o ionic_rx_filter.o ionic_ethtool.o \
+-	   ionic_txrx.o ionic_stats.o ionic_fw.o
++	   ionic_txrx.o ionic_stats.o ionic_fw.o ionic_aux.o
+ ionic-$(CONFIG_PTP_1588_CLOCK) += ionic_phc.o
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_api.h b/drivers/net/ethernet/pensando/ionic/ionic_api.h
+new file mode 100644
+index 000000000000..f9fcd1b67b35
+--- /dev/null
++++ b/drivers/net/ethernet/pensando/ionic/ionic_api.h
+@@ -0,0 +1,21 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/* Copyright (C) 2018-2025, Advanced Micro Devices, Inc. */
++
++#ifndef _IONIC_API_H_
++#define _IONIC_API_H_
++
++#include <linux/auxiliary_bus.h>
++
++/**
++ * struct ionic_aux_dev - Auxiliary device information
++ * @lif:        Logical interface
++ * @idx:        Index identifier
++ * @adev:       Auxiliary device
++ */
++struct ionic_aux_dev {
++	struct ionic_lif *lif;
++	int idx;
++	struct auxiliary_device adev;
++};
++
++#endif /* _IONIC_API_H_ */
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_aux.c b/drivers/net/ethernet/pensando/ionic/ionic_aux.c
+new file mode 100644
+index 000000000000..f3c2a5227b36
+--- /dev/null
++++ b/drivers/net/ethernet/pensando/ionic/ionic_aux.c
+@@ -0,0 +1,80 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2018-2025, Advanced Micro Devices, Inc. */
++
++#include <linux/kernel.h>
++#include "ionic.h"
++#include "ionic_lif.h"
++#include "ionic_aux.h"
++
++static DEFINE_IDA(aux_ida);
++
++static void ionic_auxbus_release(struct device *dev)
++{
++	struct ionic_aux_dev *ionic_adev;
++
++	ionic_adev = container_of(dev, struct ionic_aux_dev, adev.dev);
++	ida_free(&aux_ida, ionic_adev->adev.id);
++	kfree(ionic_adev);
++}
++
++int ionic_auxbus_register(struct ionic_lif *lif)
++{
++	struct ionic_aux_dev *ionic_adev;
++	struct auxiliary_device *aux_dev;
++	int err, id;
++
++	if (!(le64_to_cpu(lif->ionic->ident.lif.capabilities) & IONIC_LIF_CAP_RDMA))
++		return 0;
++
++	ionic_adev = kzalloc(sizeof(*ionic_adev), GFP_KERNEL);
++	if (!ionic_adev)
++		return -ENOMEM;
++
++	aux_dev = &ionic_adev->adev;
++
++	id = ida_alloc(&aux_ida, GFP_KERNEL);
++	if (id < 0) {
++		dev_err(lif->ionic->dev, "Failed to allocate aux id: %d\n", id);
++		kfree(ionic_adev);
++		return id;
++	}
++
++	aux_dev->id = id;
++	aux_dev->name = "rdma";
++	aux_dev->dev.parent = &lif->ionic->pdev->dev;
++	aux_dev->dev.release = ionic_auxbus_release;
++	ionic_adev->lif = lif;
++	err = auxiliary_device_init(aux_dev);
++	if (err) {
++		dev_err(lif->ionic->dev, "Failed to initialize %s aux device: %d\n",
++			aux_dev->name, err);
++		ida_free(&aux_ida, id);
++		kfree(ionic_adev);
++		return err;
++	}
++
++	err = auxiliary_device_add(aux_dev);
++	if (err) {
++		dev_err(lif->ionic->dev, "Failed to add %s aux device: %d\n",
++			aux_dev->name, err);
++		auxiliary_device_uninit(aux_dev);
++		return err;
++	}
++
++	lif->ionic_adev = ionic_adev;
++	return 0;
++}
++
++void ionic_auxbus_unregister(struct ionic_lif *lif)
++{
++	mutex_lock(&lif->adev_lock);
++	if (!lif->ionic_adev)
++		goto out;
++
++	auxiliary_device_delete(&lif->ionic_adev->adev);
++	auxiliary_device_uninit(&lif->ionic_adev->adev);
++
++	lif->ionic_adev = NULL;
++out:
++	mutex_unlock(&lif->adev_lock);
++}
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_aux.h b/drivers/net/ethernet/pensando/ionic/ionic_aux.h
+new file mode 100644
+index 000000000000..f5528a9f187d
+--- /dev/null
++++ b/drivers/net/ethernet/pensando/ionic/ionic_aux.h
+@@ -0,0 +1,10 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/* Copyright (C) 2018-2025, Advanced Micro Devices, Inc. */
++
++#ifndef _IONIC_AUX_H_
++#define _IONIC_AUX_H_
++
++int ionic_auxbus_register(struct ionic_lif *lif);
++void ionic_auxbus_unregister(struct ionic_lif *lif);
++
++#endif /* _IONIC_AUX_H_ */
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_bus_pci.c b/drivers/net/ethernet/pensando/ionic/ionic_bus_pci.c
+index 136bfa3516d0..f8752b1d2790 100644
+--- a/drivers/net/ethernet/pensando/ionic/ionic_bus_pci.c
++++ b/drivers/net/ethernet/pensando/ionic/ionic_bus_pci.c
+@@ -9,6 +9,7 @@
+ #include "ionic.h"
+ #include "ionic_bus.h"
+ #include "ionic_lif.h"
++#include "ionic_aux.h"
+ #include "ionic_debugfs.h"
+ 
+ /* Supported devices */
+@@ -375,6 +376,8 @@ static int ionic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		goto err_out_deregister_devlink;
+ 	}
+ 
++	ionic_auxbus_register(ionic->lif);
++
+ 	mod_timer(&ionic->watchdog_timer,
+ 		  round_jiffies(jiffies + ionic->watchdog_period));
+ 	ionic_queue_doorbell_check(ionic, IONIC_NAPI_DEADLINE);
+@@ -416,6 +419,7 @@ static void ionic_remove(struct pci_dev *pdev)
+ 
+ 		if (ionic->lif->doorbell_wa)
+ 			cancel_delayed_work_sync(&ionic->doorbell_check_dwork);
++		ionic_auxbus_unregister(ionic->lif);
+ 		ionic_lif_unregister(ionic->lif);
+ 		ionic_devlink_unregister(ionic);
+ 		ionic_lif_deinit(ionic->lif);
+@@ -445,6 +449,7 @@ static void ionic_reset_prepare(struct pci_dev *pdev)
+ 	timer_delete_sync(&ionic->watchdog_timer);
+ 	cancel_work_sync(&lif->deferred.work);
+ 
++	ionic_auxbus_unregister(ionic->lif);
+ 	mutex_lock(&lif->queue_lock);
+ 	ionic_stop_queues_reconfig(lif);
+ 	ionic_txrx_free(lif);
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_lif.c b/drivers/net/ethernet/pensando/ionic/ionic_lif.c
+index 48cb5d30b5f6..8ed5d2e5fde4 100644
+--- a/drivers/net/ethernet/pensando/ionic/ionic_lif.c
++++ b/drivers/net/ethernet/pensando/ionic/ionic_lif.c
+@@ -19,6 +19,7 @@
+ #include "ionic_bus.h"
+ #include "ionic_dev.h"
+ #include "ionic_lif.h"
++#include "ionic_aux.h"
+ #include "ionic_txrx.h"
+ #include "ionic_ethtool.h"
+ #include "ionic_debugfs.h"
+@@ -3293,6 +3294,7 @@ int ionic_lif_alloc(struct ionic *ionic)
+ 
+ 	mutex_init(&lif->queue_lock);
+ 	mutex_init(&lif->config_lock);
++	mutex_init(&lif->adev_lock);
+ 
+ 	spin_lock_init(&lif->adminq_lock);
+ 
+@@ -3349,6 +3351,7 @@ int ionic_lif_alloc(struct ionic *ionic)
+ 	lif->info = NULL;
+ 	lif->info_pa = 0;
+ err_out_free_mutex:
++	mutex_destroy(&lif->adev_lock);
+ 	mutex_destroy(&lif->config_lock);
+ 	mutex_destroy(&lif->queue_lock);
+ err_out_free_netdev:
+@@ -3384,6 +3387,7 @@ static void ionic_lif_handle_fw_down(struct ionic_lif *lif)
+ 
+ 	netif_device_detach(lif->netdev);
+ 
++	ionic_auxbus_unregister(ionic->lif);
+ 	mutex_lock(&lif->queue_lock);
+ 	if (test_bit(IONIC_LIF_F_UP, lif->state)) {
+ 		dev_info(ionic->dev, "Surprise FW stop, stopping queues\n");
+@@ -3446,6 +3450,8 @@ int ionic_restart_lif(struct ionic_lif *lif)
+ 	netif_device_attach(lif->netdev);
+ 	ionic_queue_doorbell_check(ionic, IONIC_NAPI_DEADLINE);
+ 
++	ionic_auxbus_register(ionic->lif);
++
+ 	return 0;
+ 
+ err_txrx_free:
+@@ -3528,6 +3534,7 @@ void ionic_lif_free(struct ionic_lif *lif)
+ 
+ 	mutex_destroy(&lif->config_lock);
+ 	mutex_destroy(&lif->queue_lock);
++	mutex_destroy(&lif->adev_lock);
+ 
+ 	/* free netdev & lif */
+ 	ionic_debugfs_del_lif(lif);
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_lif.h b/drivers/net/ethernet/pensando/ionic/ionic_lif.h
+index e01756fb7fdd..43bdd0fb8733 100644
+--- a/drivers/net/ethernet/pensando/ionic/ionic_lif.h
++++ b/drivers/net/ethernet/pensando/ionic/ionic_lif.h
+@@ -10,6 +10,7 @@
+ #include <linux/dim.h>
+ #include <linux/pci.h>
+ #include "ionic_rx_filter.h"
++#include "ionic_api.h"
+ 
+ #define IONIC_ADMINQ_LENGTH	16	/* must be a power of two */
+ #define IONIC_NOTIFYQ_LENGTH	64	/* must be a power of two */
+@@ -225,6 +226,8 @@ struct ionic_lif {
+ 	dma_addr_t info_pa;
+ 	u32 info_sz;
+ 	struct ionic_qtype_info qtype_info[IONIC_QTYPE_MAX];
++	struct ionic_aux_dev *ionic_adev;
++	struct mutex adev_lock;	/* lock for aux_dev actions */
+ 
+ 	u8 rss_hash_key[IONIC_RSS_HASH_KEY_SIZE];
+ 	u8 *rss_ind_tbl;
 -- 
 2.43.0
 
