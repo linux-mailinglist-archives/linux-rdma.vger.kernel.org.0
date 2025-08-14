@@ -1,82 +1,80 @@
-Return-Path: <linux-rdma+bounces-12749-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12750-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06BF2B25F93
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 10:52:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9576FB26158
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 11:47:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 619B51C83F19
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 08:52:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A05D5720E3F
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 09:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 811962D46A7;
-	Thu, 14 Aug 2025 08:51:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B64652E7188;
+	Thu, 14 Aug 2025 09:41:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="oz+i0Asn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WdNHMX1K"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CABD2FF662;
-	Thu, 14 Aug 2025 08:51:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6EF11A9F94;
+	Thu, 14 Aug 2025 09:41:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755161506; cv=none; b=QV/5AquR9RNJBFlBpnba+fvESNrNOUM3T4wxLup31wP49tSAllxR0jRbvgCcTk1W2iI6dYkBonw9LevqDfhqSFATcop+Fon7MTLR0STk0ik/Nyesl1AZ4JoXfez3L7LPofnaiGysWQqqAO7vsUrseCKemsLTLUf0yb+SvxFFSF0=
+	t=1755164495; cv=none; b=MTYXp1KvVTtVk3qzD5HbbNgomZcI1laAZ+8wOggIibhk2WSN0Ymd7PAvxyaWYH5GAbPt71/DdlMdr6TdJRl6N88p0vXTxzQeOoURuinHex0iwLPjXeVHV1U0g+pngHemhvHx9gnP32YRT8QX3mCCoF8HNGjH0CQ6fFgefEcjO/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755161506; c=relaxed/simple;
-	bh=XFAH3UXSvhyR/Rdv8WT4Qm6EXrH7HiErl4dIQLbJdzE=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=leJPJRmNJi5wtgLj9SFAx2YoYtVYLiQeVaxesFlCZkZXn8FppReSYdfrCI0jF7ahwQ16/KjSEjwStgXwDLE0dNBQ69K0zyKjSV9z0fiNrnW03+upkwFQ3lEmSKdXRgZ4IdM8VUSfgygPMYSs4TLEPZJqHBTyKWbS1uOD8yEmFuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=oz+i0Asn; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57E06on8031959;
-	Thu, 14 Aug 2025 08:51:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=AAqcVO
-	5sYWfbdPu3ycJdiGIpYSAyyTXeXH3xf8Pum2E=; b=oz+i0AsnWR0E2UxtlM7n8+
-	6F595YVz/9aWcFtjaIlHNTy7q6eVUf6qiBKdG5Vgsl5NIcXPMJ2YTTFMcWY9unxP
-	pCye7XUySkAHN2sPWahFUu0wo+2vwAFTpe6+jg8t+dG3J7tSZ51/NNu5GziMkdcA
-	asB+yt9Dm562FWPjsWrte3mS/WupkVVMnlRSmKEF5NzsmWiKXHgdVT8DOXllrFg4
-	Ljp7V/V+0FJcSNrtjJ3gvXPKOcOlk1sxz+dJRoM7U5tLtRk1D+7crHsNbbn32Yxo
-	pcIeybMYKwgXYujNzd7W0TZNJjYfTn3ChXmqxCTjFbvG1YkRkz0jy24P5rKeI2Cw
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48dvrp8vb8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Aug 2025 08:51:33 +0000 (GMT)
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 57E8fJqj027274;
-	Thu, 14 Aug 2025 08:51:33 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48dvrp8vb3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Aug 2025 08:51:33 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 57E64CH0025657;
-	Thu, 14 Aug 2025 08:51:32 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 48ejvmk6fp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Aug 2025 08:51:32 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 57E8pSOA18481422
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 14 Aug 2025 08:51:28 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7B1E12004B;
-	Thu, 14 Aug 2025 08:51:28 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 16F6320040;
-	Thu, 14 Aug 2025 08:51:28 +0000 (GMT)
-Received: from [9.152.224.240] (unknown [9.152.224.240])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 14 Aug 2025 08:51:28 +0000 (GMT)
-Message-ID: <369a292c-c8c5-4002-a116-f9e1b4a436ba@linux.ibm.com>
-Date: Thu, 14 Aug 2025 10:51:27 +0200
+	s=arc-20240116; t=1755164495; c=relaxed/simple;
+	bh=fqWw6Rlkb6iW5fYfJR1lVN007rszHDAUsQ5oLmIgy/M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=p88OMIUVGIJ6n2ye3pMy9AcU9ILxo1OxNWHkHdJcguseoqbSCGktNOKtuaWhpge3QbQBty0v20wI/M1WPoFr7iV6xn9gX0W5xMaTw/Vj95DeAzkxNz23S5YrLTQ3DBsGgcuArrrtGZcZdpHwmW5zQ54zupp1e64uwdRNoV/W3is=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WdNHMX1K; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-45a1b0bd237so5753915e9.2;
+        Thu, 14 Aug 2025 02:41:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755164492; x=1755769292; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mfVsnps5PF16eK/6Z6rbqgY0AeNAHzhL7ZogriCupsE=;
+        b=WdNHMX1KzEEAylfU/Dya/2xOa3nxCBrjaVnGtOPiX9yf+Ib0r1jt3DSx3XbKFBJRY3
+         BgYQNh/8s2zevQPbORjzt1Fzwn62qw/eTL6XgIgUlQyz26RWjvQ/LSyruP9HBVHqXGER
+         HrB5guwvkSZtsqLHpVZYTVvDnd27qONC4xsFs0zU14pXKv7+8BudIw/gD7SPjWQUmpLb
+         dWOTjz8523FCxf+ZFO8KyQIRKjgxgSQaPvaTwP5KHfYLhvdk6MZn4+jRCVZlbPcE1w5P
+         t84QEbtlZNgTwGb+pvDDgjvK69T4vgTS/SdmjxDmXvHaXnZzDDYKWoFqGNSAG/U3ICNv
+         fvJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755164492; x=1755769292;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mfVsnps5PF16eK/6Z6rbqgY0AeNAHzhL7ZogriCupsE=;
+        b=qUHuyWe02uAb8mVgt0osRhA2aDAGggFB/wQzcWSULcAuzdRCbIqBUMGC59Y7ofGPCK
+         N2EC1zVyvdTYHh0paatuvJShQSgSCp5MVWUZbMqxlE6705suGKYjnEiJUhET+jLIkX/L
+         Ox+n68kG64B9tktSl4I/Im4O6MgiQEk9BvuI65snhKtGAK6eVEa4gjn4wt+OtiRsCtJo
+         Do4nZvcS4/061bbnrFie9fyflhH4YwQydJZADk3vGNYQuFM5HgfhK52ZC4QKCw8au2Pf
+         OsHWcHPp+7t587wHnPdqK7flzTg4cOYan8IZ+RC+VGvtkNTyq1SF+k6kW3ZDMsrPT8Pe
+         a+Rw==
+X-Forwarded-Encrypted: i=1; AJvYcCU0kjEf6iEtjZCvdajw6BIw9N/1i5NK2ZaITCxUU5k5odEyZhoX64QL+f9rTeQ95gFWQk40kdIOsTqOn83c@vger.kernel.org, AJvYcCUhSqEee1nzkkSZPEVUIm9056/35MmKw1w0G7jl7GVhC36OrCNz1kJUm0EtxZupAicVyfots7Dm@vger.kernel.org, AJvYcCUzIf11/JK+OxteUyNnNuxa6MDXsGQ7zAgI85AosVmIQ47j41Pi9buf27uhwZfnXk48tzUAuLDDXthC9w==@vger.kernel.org, AJvYcCUzhSGVJGk5mTYUtyn5/a2bYVFGqBaKTQ8qMn7XGtR1n7ARiX2YEUYzSbEmiV1kEE+Rz3Q=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxexseO+QNzdo8NW7uKOnExUh2P1u65km9GICzTudkSAvJ0WSdQ
+	qURPKQyuxh93tT9hgCojHNr4cgmDVqeiBy+pNLo8YyukR/cwtjtB/3xN
+X-Gm-Gg: ASbGncttQZUudnsUaiVp2jwj9hLEgb4VPD5o5Smv/joQCEn+YY1rYxbPvjf8Rx6xLMn
+	8IvlqUINnZDirCx+EP0cBIYKN94j2Se/ou+QvkTMSqjiR/Gug+Z4x2g0irEnk8x4pHHf278drY6
+	a8JbOkB/1oYEeN4djDuifMc0ZNzF9vxYqxcCDH7/FnhOehrJHvVl1Fe0GH8kB2/ZMhD64KiQ+mC
+	W/zp4SGVrBv0QpF2elJ1k+eOVxSl5sRQGoJ7VLiLT+pHFD+J/wm4xn6iGlun0JtNlpghquP2SJ6
+	9JPc2mh1WYx+6lOhlJiALRkD5u1w0BmFF3ExnMo936v1/69FlWDMBN354K1i6R3S7E6KSwPXf9p
+	+coWFmSP0xKEQCCH6te0Az6oUzcjy9Ww01JqKA3o39UXilw==
+X-Google-Smtp-Source: AGHT+IHBe3UbzHGADMZbxm6C1MQMCttafmz3pDCs0fFtOpYQDzgStuK34BlZw62Cf2j8jvkUuST0pA==
+X-Received: by 2002:a05:600c:3b93:b0:459:d780:3604 with SMTP id 5b1f17b1804b1-45a1b605845mr18547955e9.3.1755164491690;
+        Thu, 14 Aug 2025 02:41:31 -0700 (PDT)
+Received: from ?IPV6:2620:10d:c096:325::26f? ([2620:10d:c092:600::1:7acd])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45a1c6be10esm15261205e9.3.2025.08.14.02.41.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Aug 2025 02:41:30 -0700 (PDT)
+Message-ID: <e8d33a38-6465-432a-9c28-25f2689e95da@gmail.com>
+Date: Thu, 14 Aug 2025 10:42:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -84,250 +82,64 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC net-next 11/17] net/dibs: Move struct device to dibs_dev
-From: Alexandra Winter <wintera@linux.ibm.com>
-To: David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>,
-        Andrew Lunn <andrew+netdev@lunn.ch>,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        Dust Li <dust.li@linux.alibaba.com>,
-        Sidraya Jayagond
- <sidraya@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Julian Ruess <julianr@linux.ibm.com>
-Cc: netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thorsten Winkler <twinkler@linux.ibm.com>,
-        Simon Horman <horms@kernel.org>,
-        Mahanta Jambigi <mjambigi@linux.ibm.com>,
-        Tony Lu
- <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
-        Halil Pasic <pasic@linux.ibm.com>, linux-rdma@vger.kernel.org
-References: <20250806154122.3413330-1-wintera@linux.ibm.com>
- <20250806154122.3413330-12-wintera@linux.ibm.com>
+Subject: Re: [PATCH linux-next v3] mm, page_pool: introduce a new page type
+ for page pool in page type
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Byungchul Park <byungchul@sk.com>, akpm@linux-foundation.org,
+ linux-kernel@vger.kernel.org, kernel_team@skhynix.com, harry.yoo@oracle.com,
+ ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+ john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
+ leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
+ andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
+ david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+ vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+ horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com,
+ ilias.apalodimas@linaro.org, willy@infradead.org, brauner@kernel.org,
+ kas@kernel.org, yuzhao@google.com, usamaarif642@gmail.com,
+ baolin.wang@linux.alibaba.com, almasrymina@google.com, toke@redhat.com,
+ bpf@vger.kernel.org, linux-rdma@vger.kernel.org, sfr@canb.auug.org.au,
+ linux-mm@kvack.org, netdev@vger.kernel.org
+References: <20250729110210.48313-1-byungchul@sk.com>
+ <20250813060901.GA9086@system.software.com>
+ <6bbf6ca2-0c46-43b7-82d8-b990f01ae5dd@gmail.com>
+ <20250813075212.051b5178@kernel.org>
 Content-Language: en-US
-In-Reply-To: <20250806154122.3413330-12-wintera@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <20250813075212.051b5178@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODEyMDIxOSBTYWx0ZWRfX99qRzlkMt2GD
- Olpm53p2Ld97G2tN4zgcyP7FQCiwXGREgFSDcYDa4yCakd+cn40QioyagB/uGSGUsakCNckxbUM
- AsCWyAxYlbhN9OMeX4WnBpJUoU1p7rnP9Fp8Zb/YDKUtofqd0W7OE3cMV/Ln9rTyd4wL9VB8et5
- pVqof/wBPiT4ZZBD16K5ua2n1bVAAtVgui7ZQZxzGe1H6qaV2w/1bQvnteM4vQd1Dalj4yUjjTE
- MrmTi1yav4E/aiDCwfQqXTVUtWRTv4SnMljV3r30DufZGDdqslMDOKu0Xm0jam2GcZ9UGbJoZbr
- 6Q7zd+wdGiUPG/m0umq/Ps8++xnuACD8dA/Nh1RzfEb8M3Tqnbti5a7+HN1ZlZYKeEZLPre6iap
- +zUTXhFy
-X-Authority-Analysis: v=2.4 cv=GrpC+l1C c=1 sm=1 tr=0 ts=689da395 cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=b55MMyH7UsmVj3mJHRQA:9
- a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: xtUeB8hFQfe1seCQRBeL9KObdBYvEyHt
-X-Proofpoint-ORIG-GUID: gNvEYqXMdAaelgVFAHFeQ49U9M7Zfoeg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-08-13_02,2025-08-11_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 adultscore=0 spamscore=0 impostorscore=0 suspectscore=0
- phishscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2508120219
 
-
-
-On 06.08.25 17:41, Alexandra Winter wrote:
-[...]
+On 8/13/25 15:52, Jakub Kicinski wrote:
+> On Wed, 13 Aug 2025 12:18:56 +0100 Pavel Begunkov wrote:
+>> It should go to net, there will be enough of conflicts otherwise.
+>> mm maintainers, do you like it as a shared branch or can it just
+>> go through the net tree?
 > 
-> Replace smcd->ops->get_dev(smcd) by dibs_get_dev().
+> Looks like this is 100% in mm, and the work is not urgent at all.
+
+There is a slight dependency in rc1, but we should be able to
+massage it to be mm only.
+
+> So I'm happy for Andrew to take this, and dependent patches (if any)
+> can come in the next cycle.
+
+Yeah, good option. It'd be a good idea to cut the diff down to
+avoid removing the relevant mm page state checks until the next
+cycle.
+  >> @@ -1379,9 +1376,11 @@ __always_inline bool free_pages_prepare(struct page *page,
+>>    		mod_mthp_stat(order, MTHP_STAT_NR_ANON, -1);
+>>    		folio->mapping = NULL;
+>>    	}
+>> -	if (unlikely(page_has_type(page)))
+>> +	if (unlikely(page_has_type(page))) {
+>> +		WARN_ON_ONCE(PageNet_pp(page));
 > 
+> I guess my ask to add a comment here got ignored?
 
-Looking at the resulting code, I don't really like this concept of a *_get_dev() function,
-that does not call get_device().
-I plan to replace that by using dibs->dev directly in the next version.
+It's an old patch attached as a point of reference. Any actual submission
+surely will need to follow up on the reviews.
 
-
-See below for the code pieces I am referring to:
-
-
-> diff --git a/drivers/s390/net/ism_drv.c b/drivers/s390/net/ism_drv.c
-> index 84a6e9ae2e64..0ddfd47a3a7c 100644
-> --- a/drivers/s390/net/ism_drv.c
-> +++ b/drivers/s390/net/ism_drv.c
-[...]
-> @@ -697,16 +684,14 @@ static int ism_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  	ism_dev_exit(ism);
->  err_dibs:
->  	/* pairs with dibs_dev_alloc() */
-> -	kfree(dibs);
-> +	put_device(dibs_get_dev(dibs));
-[...]
-> @@ -719,13 +704,12 @@ static void ism_remove(struct pci_dev *pdev)
->  	dibs_dev_del(dibs);
->  	ism_dev_exit(ism);
->  	/* pairs with dibs_dev_alloc() */
-> -	kfree(dibs);
-> +	put_device(dibs_get_dev(dibs));
->  
->  	pci_release_mem_regions(pdev);
-[...]
-> @@ -871,13 +855,6 @@ static void smcd_get_local_gid(struct smcd_dev *smcd,
->  	smcd_gid->gid_ext = 0;
->  }
->  
-> -static inline struct device *smcd_get_dev(struct smcd_dev *dev)
-> -{
-> -	struct ism_dev *ism = dev->priv;
-> -
-> -	return &ism->dev;
-> -}
-> -
->  static const struct smcd_ops ism_smcd_ops = {
->  	.query_remote_gid = smcd_query_rgid,
->  	.register_dmb = smcd_register_dmb,
-> @@ -890,7 +867,6 @@ static const struct smcd_ops ism_smcd_ops = {
->  	.move_data = smcd_move,
->  	.supports_v2 = smcd_supports_v2,
->  	.get_local_gid = smcd_get_local_gid,
-> -	.get_dev = smcd_get_dev,
->  };
->  
->  const struct smcd_ops *ism_get_smcd_ops(void)
-> diff --git a/include/linux/dibs.h b/include/linux/dibs.h
-> index 805ab33271b5..4459b9369dc0 100644
-> --- a/include/linux/dibs.h
-> +++ b/include/linux/dibs.h
-[...]
-> @@ -158,6 +159,21 @@ static inline void *dibs_get_priv(struct dibs_dev *dev,
->  
->  /* ------- End of client-only functions ----------- */
->  
-> +/* Functions to be called by dibs clients and dibs device drivers:
-> + */
-> +/**
-> + * dibs_get_dev()
-> + * @dev: dibs device
-> + * @token: dmb token of the remote dmb
-> + *
-> + * TODO: provide get and put functions
-> + * Return: struct device* to be used for device refcounting
-> + */
-> +static inline struct device *dibs_get_dev(struct dibs_dev *dibs)
-> +{
-> +	return &dibs->dev;
-> +}
-> +
-[...]
-> diff --git a/include/net/smc.h b/include/net/smc.h
-> index e271891b85e6..05faac83371e 100644
-> --- a/include/net/smc.h
-> +++ b/include/net/smc.h
-> @@ -63,7 +63,6 @@ struct smcd_ops {
->  			 unsigned int size);
->  	int (*supports_v2)(void);
->  	void (*get_local_gid)(struct smcd_dev *dev, struct smcd_gid *gid);
-> -	struct device* (*get_dev)(struct smcd_dev *dev);
->  
->  	/* optional operations */
->  	int (*add_vlan_id)(struct smcd_dev *dev, u64 vlan_id);
-[...]
-
->  
-> diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-> index 67f9e0b83ebc..71c410dc3658 100644
-> --- a/net/smc/smc_core.c
-> +++ b/net/smc/smc_core.c
-> @@ -924,7 +924,7 @@ static int smc_lgr_create(struct smc_sock *smc, struct smc_init_info *ini)
->  	if (ini->is_smcd) {
->  		/* SMC-D specific settings */
->  		smcd = ini->ism_dev[ini->ism_selected];
-> -		get_device(smcd->ops->get_dev(smcd));
-> +		get_device(dibs_get_dev(smcd->dibs));
->  		lgr->peer_gid.gid =
->  			ini->ism_peer_gid[ini->ism_selected].gid;
->  		lgr->peer_gid.gid_ext =
-> @@ -1474,7 +1474,7 @@ static void smc_lgr_free(struct smc_link_group *lgr)
->  	destroy_workqueue(lgr->tx_wq);
->  	if (lgr->is_smcd) {
->  		smc_ism_put_vlan(lgr->smcd, lgr->vlan_id);
-> -		put_device(lgr->smcd->ops->get_dev(lgr->smcd));
-> +		put_device(dibs_get_dev(lgr->smcd->dibs));
->  	}
->  	smc_lgr_put(lgr); /* theoretically last lgr_put */
->  }
-[...]
-> diff --git a/net/smc/smc_loopback.c b/net/smc/smc_loopback.c
-> index 37d8366419f7..262d0d0df4d0 100644
-> --- a/net/smc/smc_loopback.c
-> +++ b/net/smc/smc_loopback.c
-> @@ -23,7 +23,6 @@
->  #define SMC_LO_SUPPORT_NOCOPY	0x1
->  #define SMC_DMA_ADDR_INVALID	(~(dma_addr_t)0)
->  
-> -static const char smc_lo_dev_name[] = "loopback-ism";
->  static struct smc_lo_dev *lo_dev;
->  
->  static void smc_lo_generate_ids(struct smc_lo_dev *ldev)
-> @@ -255,11 +254,6 @@ static void smc_lo_get_local_gid(struct smcd_dev *smcd,
->  	smcd_gid->gid_ext = ldev->local_gid.gid_ext;
->  }
->  
-> -static struct device *smc_lo_get_dev(struct smcd_dev *smcd)
-> -{
-> -	return &((struct smc_lo_dev *)smcd->priv)->dev;
-> -}
-> -
->  static const struct smcd_ops lo_ops = {
->  	.query_remote_gid = smc_lo_query_rgid,
->  	.register_dmb = smc_lo_register_dmb,
-> @@ -274,7 +268,6 @@ static const struct smcd_ops lo_ops = {
->  	.signal_event		= NULL,
->  	.move_data = smc_lo_move_data,
->  	.get_local_gid = smc_lo_get_local_gid,
-> -	.get_dev = smc_lo_get_dev,
->  };
->  
-[...]
-> diff --git a/net/smc/smc_pnet.c b/net/smc/smc_pnet.c
-> index 76ad29e31d60..bbdd875731f2 100644
-> --- a/net/smc/smc_pnet.c
-> +++ b/net/smc/smc_pnet.c
-> @@ -169,7 +169,7 @@ static int smc_pnet_remove_by_pnetid(struct net *net, char *pnet_name)
->  			pr_warn_ratelimited("smc: smcd device %s "
->  					    "erased user defined pnetid "
->  					    "%.16s\n",
-> -					    dev_name(smcd->ops->get_dev(smcd)),
-> +					    dev_name(dibs_get_dev(smcd->dibs)),
->  					    smcd->pnetid);
->  			memset(smcd->pnetid, 0, SMC_MAX_PNETID_LEN);
->  			smcd->pnetid_by_user = false;
-> @@ -332,7 +332,7 @@ static struct smcd_dev *smc_pnet_find_smcd(char *smcd_name)
->  
->  	mutex_lock(&smcd_dev_list.mutex);
->  	list_for_each_entry(smcd_dev, &smcd_dev_list.list, list) {
-> -		if (!strncmp(dev_name(smcd_dev->ops->get_dev(smcd_dev)),
-> +		if (!strncmp(dev_name(dibs_get_dev(smcd_dev->dibs)),
->  			     smcd_name, IB_DEVICE_NAME_MAX - 1))
->  			goto out;
->  	}
-> @@ -431,7 +431,7 @@ static int smc_pnet_add_ib(struct smc_pnettable *pnettable, char *ib_name,
->  	if (smcd) {
->  		smcddev_applied = smc_pnet_apply_smcd(smcd, pnet_name);
->  		if (smcddev_applied) {
-> -			dev = smcd->ops->get_dev(smcd);
-> +			dev = dibs_get_dev(smcd->dibs);
->  			pr_warn_ratelimited("smc: smcd device %s "
->  					    "applied user defined pnetid "
->  					    "%.16s\n", dev_name(dev),
-> @@ -1192,7 +1192,7 @@ int smc_pnetid_by_table_ib(struct smc_ib_device *smcibdev, u8 ib_port)
->   */
->  int smc_pnetid_by_table_smcd(struct smcd_dev *smcddev)
->  {
-> -	const char *ib_name = dev_name(smcddev->ops->get_dev(smcddev));
-> +	const char *ib_name = dev_name(dibs_get_dev(smcddev->dibs));
->  	struct smc_pnettable *pnettable;
->  	struct smc_pnetentry *tmp_pe;
->  	struct smc_net *sn;
+-- 
+Pavel Begunkov
 
 
