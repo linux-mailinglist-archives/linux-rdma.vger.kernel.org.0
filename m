@@ -1,81 +1,82 @@
-Return-Path: <linux-rdma+bounces-12765-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12766-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABB39B2691E
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 16:24:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FC9DB26A26
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 16:55:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE59D1CE2DC9
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 14:12:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC0E618840CD
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 14:50:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 627ED1DDC35;
-	Thu, 14 Aug 2025 14:07:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 527B621B9F0;
+	Thu, 14 Aug 2025 14:49:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LAHk3EJq"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="qVWwE5mO"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CCA8321439;
-	Thu, 14 Aug 2025 14:07:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53085218AA3;
+	Thu, 14 Aug 2025 14:49:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755180459; cv=none; b=i63eC/5s9B94BriToXn6y1BGXZVrNGuCzuPZqB9qWFVwKZi437uYALaEMljE8q0DoXVR1719GChkhBcfdiU6wojn220KNFMe51kQblUTCfEWwq1NkzLBBkzS1eSHPCN3uPMPZWCsIoH8mqaBwcLRJUphHBb/pddEHJTZwJAKyIQ=
+	t=1755182975; cv=none; b=OeHVqjF7NErakVrhAUtH5W0TF7T/Qc7tMo8aTc7Q7JHR2Wl56h05BNYphogRHDiUcY3MVVxCRFtH3loduoIwbLGewTxdXwuS6cb20a4UwnYbLhVcNx7SlO72FOH7XY1WSoKJoDmlZRHW7HW6tkTqmB9W0B14mEPMyKMyRFMfdjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755180459; c=relaxed/simple;
-	bh=ogP+TxjeUQ615opTCvKtc8nW60djt1JYUZPPSNMeeNI=;
+	s=arc-20240116; t=1755182975; c=relaxed/simple;
+	bh=5OQaVcwy8qq0BWPBq0Xv9tdlEf3SSr+Vlbc+VNiKzhc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SSeq6NrUC55oWsoo/tCgERHDul+4i5jFVJrwlmvAc0a1LsVURgKohbuEuemUbegpXEzw5keMTDW2IJHV5S3AxT3bA9hFF2whpXdp2rffW99LRC7nwBxCercWu7l3cl7/8jjuWLZIkS2B3fJLRZzYwAo/K2l653sAzik3uu3KmoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LAHk3EJq; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-76e39ec6f30so325492b3a.2;
-        Thu, 14 Aug 2025 07:07:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755180457; x=1755785257; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=O6cvNIV0xqhli0dmeveiiyFXh9agijpGuMN3/g8PfPY=;
-        b=LAHk3EJqge7XC4z/eJKrVDNz3uPwyhU7pLc+q/1hK+INmUu9N25R40rDSUSGyGWfMW
-         Wg67Tnj7hP03zGpGTb+xp6WQ0uibdkfm87cSrQP06gIMnL5HRtxta5HHJYYCHz6hYF/y
-         xLZ12ENI/QnKhzb3NXS8G58tyjaNLp0gX/Gw5Go8rR5w3F/nK/Gs5mGB7Icb04Sft2DF
-         HL/kte9aFt7F1X/OA2uJ2aCc3JrXi8aqvg5UpEDDsnamgx5IFcyYMos3SYlnTePhOoDO
-         b7H68hPd3rSXmmKQjiw5Pt7nTuE3tPezPsleom5vTy6pPql0chI/OiZfSZFH4+eG0J2v
-         +lvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755180457; x=1755785257;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O6cvNIV0xqhli0dmeveiiyFXh9agijpGuMN3/g8PfPY=;
-        b=OozpV9PSxmUL5FiBlA8fRiwcH1QUShwhs0N8YsgESRQfzzB5DgRh9wRUJsntM83y1/
-         VEvNVMEuu+vb5UXNwjmvd6Ff7H8Gbpb15VH+czllvWJsMlannI5kpjvm7A6wneTRJDfs
-         NjBd9Ow4LV0PJuXGjpQiQ+syHW9aQvhpIo6viCbdqSrwMJDH9rU4CbG33q0K2Sh+hMbj
-         yh4e88qTl/wQySa+EVzkWrxkCZDnDwhqSBLmaDbUiNsicaVw7D7BPed+h2K4ERZlSZ1j
-         RMmIOuVzoAGP/lKjJDWNlWG8prvNZIO92TpJS7Tjy8WHFF+dcSEGvwgnfJUR4KTBnjFx
-         TfBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUtMjBpaH9n4FcnwqNE4MQ9N1J3wA5eFKY0LALVNJ+7aY+2A7iZjUqQQRzrhGhbTvudTY4MyvOtPF37pg==@vger.kernel.org, AJvYcCVPUv5+GYkUScPSyhU1fMPM/O5+wJy3QCei44fOHmFT1TwP9s3Az+O+iF4FcbZ5ApnaYreR+GWAKvJadRY=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyKvtYScPMoM4ldfP7NRq2Dh+5pr2IV8hb2G3EDT8KECAMXNC9P
-	TfkpZ1XOTraiicNYJJJIs/uAB7qq6FXdBwh6/IKgVSizaczN4NABhRLc
-X-Gm-Gg: ASbGncubSEUMkmgPtDpYzvdVsy1Gyxcra32k2QkX/RnsDLGxdz1Q7JQIO32AWDotg/j
-	xjnsh5vmYOVkBVbTBrbGIxsHaX+FOpotzhtjkDTz3L/u3uSfeq1phiOmwwtL2UkROZGrQugsg1j
-	YnrLDMabMdV25AFmqOR71iZf1r5gPW1oL2feYKejDm9NdbjWI3WWMZsahHjU40zhFjMhHFRw74J
-	ba4+WBW9SDilZ17NDavpHoyISdOyPendndC430oklX+mdwiZG9ZR0vay3LZ5wZGupnL3hSYOrxU
-	I6MU8+1OzfDIl2ChbQbSQ0oYPv8FlyRy/kU6ZXbWuJCAG9HAoV1sIDCD1ntRcjz/c0diT9p1ekR
-	jlToFnQ2vxDTy2hIL6vbgavSnzup7qvmaWOk1zqT8rzR7gCEL2XZ5689fKHv7ASB2E+1ndr6aKE
-	3g
-X-Google-Smtp-Source: AGHT+IETXK2tayceA9Thr6gxuCMdcQM9N9NolHLj7dddZ1gHkfbEUG88wriyjfEjKMnlGI75KEkibg==
-X-Received: by 2002:a05:6a20:939d:b0:230:69f1:620a with SMTP id adf61e73a8af0-240bd375c4fmr5308601637.42.1755180456653;
-        Thu, 14 Aug 2025 07:07:36 -0700 (PDT)
-Received: from [192.168.11.3] (FL1-125-195-176-151.tky.mesh.ad.jp. [125.195.176.151])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b43c54fbce4sm11782244a12.55.2025.08.14.07.07.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Aug 2025 07:07:36 -0700 (PDT)
-Message-ID: <620f8611-1e95-4ebd-9db2-eb7231cfb3f2@gmail.com>
-Date: Thu, 14 Aug 2025 23:07:33 +0900
+	 In-Reply-To:Content-Type; b=us6+TfATr49LHl+YNVVpDwWo5Q/CG/anz14ps+eq2otycCmpbFDlWzlWF6ICSXCXvkgPuh4/IRUQBF8qZkmoWv5FRxjrxVkIbFOK2J+E/d5oFszNoFn2eylfLf4z0wn5a7gY3FlLoUvWuz1BuGZ8EPap/vrwES56n0pfkQNonBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=qVWwE5mO; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 57EEVUkH029945;
+	Thu, 14 Aug 2025 14:49:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=gdTcb/
+	3GX9TLmprI5fhVBXai54xRUdMwJgxbtUu3+cQ=; b=qVWwE5mO10SIM7OFwN2Nj0
+	P8KR6gzeQvXbFaDrTz90ZvHgQ5xw+a5uvaL1PkmIi92XtXlw+HDEfg2DAh+4HhU4
+	iM0Yuc4meMQ/YWYV2o1LtSipK6+i2JXAvWD7l5JuTgbDKWfhf9RRV30zrfEbS80g
+	Q10pCoX8nQiBE1ib3Z7GTqNLYyk552rnNDOSE5uUHJmIILtUvymJqy61SjT0o9Xj
+	R3wXgt3Tz5AqDskcmGmlle1PJTwPHMNUvc2WTvE44pzfGGEue/uXJc40Y+1uLkfy
+	DgugMb9SUZxiQDDRUloyMfzxRpBzk1ZGCBzeMPNwTcHoJxH+Ms09aQqF0LuLnLMw
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48dvrpafqv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Aug 2025 14:49:23 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 57EEgxkY024384;
+	Thu, 14 Aug 2025 14:49:23 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48dvrpafqq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Aug 2025 14:49:23 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 57ECMCb3010832;
+	Thu, 14 Aug 2025 14:49:22 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 48egnuvumj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 14 Aug 2025 14:49:22 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 57EEnIDg58458472
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 14 Aug 2025 14:49:18 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C84FB20049;
+	Thu, 14 Aug 2025 14:49:18 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6363220040;
+	Thu, 14 Aug 2025 14:49:18 +0000 (GMT)
+Received: from [9.152.224.240] (unknown [9.152.224.240])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 14 Aug 2025 14:49:18 +0000 (GMT)
+Message-ID: <ed4750cf-fcd7-40b3-be7c-84838cf8fd63@linux.ibm.com>
+Date: Thu, 14 Aug 2025 16:49:18 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -83,128 +84,111 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] rdma_rxe: call comp_handler without holding cq->cq_lock
-To: Zhu Yanjun <yanjun.zhu@linux.dev>,
- Philipp Reisner <philipp.reisner@linbit.com>
-Cc: Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20250806123921.633410-1-philipp.reisner@linbit.com>
- <5a31f3ef-358f-4382-8ad1-8050569a2a23@linux.dev>
- <CADGDV=UgDb51nEtdide7k8==urCdrWcig8kBAY6k0PryR0c7xw@mail.gmail.com>
- <2b593684-4409-485b-9edf-e44a402ecf3a@linux.dev>
- <6dbc1383-0c9f-4648-ae8d-4219e89589f4@gmail.com>
- <885bb38c-4108-4fa2-a6d2-1e60d5e84af9@linux.dev>
+Subject: Re: [RFC net-next 15/17] net/dibs: Move query_remote_gid() to
+ dibs_dev_ops
+To: Julian Ruess <julianr@linux.ibm.com>, David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Andrew Lunn <andrew+netdev@lunn.ch>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        Dust Li <dust.li@linux.alibaba.com>,
+        Sidraya Jayagond <sidraya@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>
+Cc: netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Thorsten Winkler <twinkler@linux.ibm.com>,
+        Simon Horman <horms@kernel.org>,
+        Mahanta Jambigi <mjambigi@linux.ibm.com>,
+        Tony Lu
+ <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
+        Halil Pasic <pasic@linux.ibm.com>, linux-rdma@vger.kernel.org
+References: <20250806154122.3413330-1-wintera@linux.ibm.com>
+ <20250806154122.3413330-16-wintera@linux.ibm.com>
+ <DBZHV2Z3T4M5.1G8HW0HFP8GLO@linux.ibm.com>
 Content-Language: en-US
-From: Daisuke Matsuda <dskmtsd@gmail.com>
-In-Reply-To: <885bb38c-4108-4fa2-a6d2-1e60d5e84af9@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Alexandra Winter <wintera@linux.ibm.com>
+In-Reply-To: <DBZHV2Z3T4M5.1G8HW0HFP8GLO@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODEyMDIxOSBTYWx0ZWRfXyyjYnhW/NHex
+ l9zGpqZLgTksdvwvq4wSMgyqwFy6FTNogr75P9uTR330BYqDSGt6nbbzk+UlWgsVtC00x144v+L
+ EErWQvIorlsr8StR9sXPexo1EWtfVsi1o05BNzBcSoYV8i8mlepwbaIiuuDvz6RiEH5+oTiPDBS
+ mLIAKKKPQpwiD8OhBFwvDDLUEnJUViPUlMTyrAvpOQVMf8XLCUUPYAZJ/m2PIj3hcLvWIH3R2Ux
+ OnNCgfkQuPG9xAGRteG3gy/1LcsYd5QQZw/bvJpuJFIBuclxZPcxRmL9PZ0GZpbPWggG8zBk/Gj
+ QNSYh6f+PSNWYgSgTfC2kQwM5zByWNFEo9Y783L7kB7q0OngA27Ne96crYOofh2sPJCqEIug2Xh
+ Pb8lBEsz
+X-Authority-Analysis: v=2.4 cv=GrpC+l1C c=1 sm=1 tr=0 ts=689df773 cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=VnNF1IyMAAAA:8 a=-a8VnQ1ltUyKSbjGXZUA:9
+ a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: t2ZMvLahaUXAs7GJ8CCnFcrO3p-HmseG
+X-Proofpoint-ORIG-GUID: aCCuv498CXKYH4gF3BiOPTB3Dx4WO2RG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1099,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-08-13_02,2025-08-14_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 adultscore=0 spamscore=0 impostorscore=0 suspectscore=0
+ phishscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2508120219
 
-On 2025/08/14 14:33, Zhu Yanjun wrote:
-> 在 2025/8/12 8:54, Daisuke Matsuda 写道:
->> On 2025/08/11 22:48, Zhu Yanjun wrote:
->>> 在 2025/8/10 22:26, Philipp Reisner 写道:
->>>> On Thu, Aug 7, 2025 at 3:09 AM Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
->>>>>
->>>>> 在 2025/8/6 5:39, Philipp Reisner 写道:
->>>>>> Allow the comp_handler callback implementation to call ib_poll_cq().
->>>>>> A call to ib_poll_cq() calls rxe_poll_cq() with the rdma_rxe driver.
->>>>>> And rxe_poll_cq() locks cq->cq_lock. That leads to a spinlock deadlock.
->>>>>>
->>>>>> The Mellanox and Intel drivers allow a comp_handler callback
->>>>>> implementation to call ib_poll_cq().
->>>>>>
->>>>>> Avoid the deadlock by calling the comp_handler callback without
->>>>>> holding cq->cw_lock.
->>>>>>
->>>>>> Signed-off-by: Philipp Reisner <philipp.reisner@linbit.com>
->>>>>
->>>>> ERROR: test_resize_cq (tests.test_cq.CQTest.test_resize_cq)
->>>>> Test resize CQ, start with specific value and then increase and decrease
->>>>> ----------------------------------------------------------------------
->>>>> Traceback (most recent call last):
->>>>>     File "/root/deb/rdma-core/tests/test_cq.py", line 135, in test_resize_cq
->>>>>       u.poll_cq(self.client.cq)
->>>>>     File "/root/deb/rdma-core/tests/utils.py", line 687, in poll_cq
->>>>>       wcs = _poll_cq(cq, count, data)
->>>>>             ^^^^^^^^^^^^^^^^^^^^^^^^^
->>>>>     File "/root/deb/rdma-core/tests/utils.py", line 669, in _poll_cq
->>>>>       raise PyverbsError(f'Got timeout on polling ({count} CQEs remaining)')
->>>>> pyverbs.pyverbs_error.PyverbsError: Got timeout on polling (1 CQEs
->>>>> remaining)
->>>>>
->>>>> After I applied your patch in kervel v6.16, I got the above errors.
->>>>>
->>>>> Zhu Yanjun
->>>>>
->>>>
->>>> Hello Zhu,
->>>>
->>>> When I run the test_resize_cq test in a loop (100 runs each) on the
->>>> original code and with my patch, I get about the same failure rate.
->>>
->>> Add Daisuke Matsuda
->>>
->>> If I remember it correctly, when Daisuke and I discussed ODP patches, we both made tests with rxe, from our tests results, it seems that this test_resize_cq error does not occur.
+
+
+On 11.08.25 11:34, Julian Ruess wrote:
+> On Wed Aug 6, 2025 at 5:41 PM CEST, Alexandra Winter wrote:
+>> Provide the dibs_dev_ops->query_remote_gid() in ism and dibs_loopback
+>> dibs_devices. And call it in smc dibs_client.
 >>
->> Hi Zhu and Philipp,
->>
->> As far as I know, this error has been present for some time.
->> It might be possible to investigate further by capturing a memory dump while the polling is stuck, but I have not had time to do that yet.
->> At least, I can confirm that this is not a regression caused by Philipp's patch.
-> 
-> Hi, Daisuke
-> 
-> Thanks a lot. I’m now able to consistently reproduce this problem. I have created a commit here: https://github.com/zhuyj/linux/commit/8db3abc00bf49cac6ea1d5718d28c6516c94fb4e.
-> 
-> After applying this commit, I ran test_resize_cq 10,000 times, and the problem did not occur.
-> 
-> I’m not sure if there’s a better way to fix this issue. If anyone has a better solution, please share it.
-
-Hi Zhu,
-
-Thank you very much for the investigation.
-
-I agree that the issue can be worked around by adding a delay in the rxe completer path.
-However, since the issue is easily reproducible, introducing an explicit sleep might
-add unnecessary overhead. I think a short busy-wait would be a more desirable alternative.
-
-The intermediate change below does make the issue disappear on my node, but I don't think
-this is a complete solution. In particular, it appears that ibcq->event_handler() —
-typically ib_uverbs_cq_event_handler() — is not re-entrant, so simply spinning like this
-could be risky.
-
-===
-diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-index a5b2b62f596b..a10a173e53cf 100644
---- a/drivers/infiniband/sw/rxe/rxe_comp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-@@ -454,7 +454,7 @@ static void do_complete(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
-         queue_advance_consumer(qp->sq.queue, QUEUE_TYPE_FROM_CLIENT);
-
-         if (post)
--               rxe_cq_post(qp->scq, &cqe, 0);
-+               while (rxe_cq_post(qp->scq, &cqe, 0) == -EBUSY);
-
-         if (wqe->wr.opcode == IB_WR_SEND ||
-             wqe->wr.opcode == IB_WR_SEND_WITH_IMM ||
-===
-
-If you agree with this direction, I can take some time in the next week or so to make a
-formal patch. Of course, you are welcome to take over this idea if you prefer.
-
-Thanks,
-Daisuke
-
-> 
-> Thanks a lot.
-> Zhu Yanjun
-> 
->>
->> Thanks,
->> Daisuke
+>> Signed-off-by: Alexandra Winter <wintera@linux.ibm.com>
+>> Reviewed-by: Julian Ruess <julianr@linux.ibm.com>
+>> ---
+>>  drivers/s390/net/ism_drv.c | 41 +++++++++++++++++---------------------
+>>  include/linux/dibs.h       | 14 +++++++++++++
+>>  include/net/smc.h          |  2 --
+>>  net/dibs/dibs_loopback.c   | 10 ++++++++++
+>>  net/smc/smc_ism.c          |  8 ++++++--
+>>  net/smc/smc_loopback.c     | 13 ------------
+>>  6 files changed, 48 insertions(+), 40 deletions(-)
 >>
 > 
+> -- snip --
+> 
+>> diff --git a/include/linux/dibs.h b/include/linux/dibs.h
+>> index 10be10ae4660..d940411aa179 100644
+>> --- a/include/linux/dibs.h
+>> +++ b/include/linux/dibs.h
+>> @@ -133,6 +133,20 @@ struct dibs_dev_ops {
+>>  	 * Return: 2 byte dibs fabric id
+>>  	 */
+>>  	u16 (*get_fabric_id)(struct dibs_dev *dev);
+>> +	/**
+>> +	 * query_remote_gid()
+>> +	 * @dev: local dibs device
+>> +	 * @rgid: gid of remote dibs device
+>> +	 * @vid_valid: if zero, vid will be ignored;
+>> +	 *	       deprecated, ignored if device does not support vlan
+>> +	 * @vid: VLAN id; deprecated, ignored if device does not support vlan
+>> +	 *
+>> +	 * Query whether a remote dibs device is reachable via this local device
+>> +	 * and this vlan id.
+>> +	 * Return: 0 if remote gid is reachable.
+>> +	 */
+>> +	int (*query_remote_gid)(struct dibs_dev *dev, uuid_t *rgid,
+>> +				u32 vid_valid, u32 vid);
+> 
+> Shouldn't this be 'const uuid_t *rgid'?
+> 
+> -- snip --
+> 
+> Thanks,
+> Julian
 
+
+Good point. Same for the 'uuid_t *' in signal_event() in
+[RFC net-next 17/17] net/dibs: Move event handling to dibs layer
+Changed in next version.
 
