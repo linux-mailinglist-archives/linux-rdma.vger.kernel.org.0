@@ -1,154 +1,101 @@
-Return-Path: <linux-rdma+bounces-12729-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12730-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAC83B258C4
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 03:11:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99D6EB25919
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 03:31:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D3271B67AB2
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 01:12:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 599A19E0617
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 01:30:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD4A717A2FA;
-	Thu, 14 Aug 2025 01:11:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 220AA1D88AC;
+	Thu, 14 Aug 2025 01:30:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="WwNUwWBr"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TN9BTB8M"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F92D23B0;
-	Thu, 14 Aug 2025 01:11:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E5761C6FE1;
+	Thu, 14 Aug 2025 01:30:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755133894; cv=none; b=aufsGPEzvLQroLlihJ21qMbnLt2it5l575tkSmhE4b7RY6N/mCkVUB8KoAC7ua4guF5F5frJxo/V0Fm/Mg85wGzr2+1stdaBz9gyH1JuT1FSqR45x/1dXHF1EoO+03RSgw3PZ5dcIGRENssd8tX0tj3Pz/0PO7NrhyiZcRjSpTY=
+	t=1755135006; cv=none; b=ddu0C2/IFxPv7p0EcSIaQUSM1tlhJDySDGC1wSrhTDLApuULCLSczZb+0ssj2Ur45f/EtjiSCzb0E8zyi8ccQIQx6ZbdJLaNLcX8X+nuY6O3yDwhazBrX4wjSUcG6nfzzA0x8pILUDUwy5ZyTvalHcygDumU99/Ti/WEu8HJ6ZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755133894; c=relaxed/simple;
-	bh=XJIig21WqK4b4EcBXflRF2hKoC3oV/jWqdwFWSgYtLY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T7YsK7q/J15ZegcERd4PbMQj5As6x6jycluXCJZsF8Ar+baNNF7mv6fED9bXVeBRfPFiH4OmkGG3U6x90NnAQm+fP/sxdLw1DpZ2bvIDgNG4WZoi76aTRygAXSdcBgo+z19FFbpNl6g+Qrc1K62aHbTtLkciuBvKFttDGrLHINc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=WwNUwWBr; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1204)
-	id 902422015E5E; Wed, 13 Aug 2025 18:11:32 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 902422015E5E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1755133892;
-	bh=LPV047bXOThMstCe4e8lAmvOoRt4u5HfZm/JlOTqLoA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WwNUwWBrWNB0B7vHZXCOOXkTTMZUOr/Yd4JX2nARAru4D+FgsfQTxuQVqlRhSJaq6
-	 vX3AGd8ENZVjl9ZsBXI0W435pGpFGIvl4fEJHXbSH+vR5BrcIXHKAWVS/x2aLjIb/k
-	 3z/tAUDJQdupkiyAdoJW7MEZKGlDATyZxVn/9AzE=
-Date: Wed, 13 Aug 2025 18:11:32 -0700
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: horms@kernel.org, kys@microsoft.com, haiyangz@microsoft.com,
-	wei.liu@kernel.org, decui@microsoft.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	longli@microsoft.com, kotaranov@microsoft.com, ast@kernel.org,
-	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-	sdf@fomichev.me, lorenzo@kernel.org, michal.kubiak@intel.com,
-	ernis@linux.microsoft.com, shradhagupta@linux.microsoft.com,
-	shirazsaleem@microsoft.com, rosenp@gmail.com,
-	netdev@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, dipayanroy@microsoft.com
-Subject: Re: [PATCH net-next v4] net: mana: Use page pool fragments for RX
- buffers instead of full pages to improve memory efficiency.
-Message-ID: <20250814011132.GA30001@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20250811222919.GA25951@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20250813164847.62ade421@kernel.org>
+	s=arc-20240116; t=1755135006; c=relaxed/simple;
+	bh=P+It4k3Z3whbPaKl6RWbBy8Vkp87xIILFiRgerpR/1A=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=JTP5fMAgkyecT778bfetd1oB9d1Llnps53dlBWTZAnBB3U20sYdJsolzvI0fUMkEDtE9aKbkB/fzSsQhmx+UC9Sv0sF05dk6wbaPrOsTsEBzbi8J8oxqWo9lvMDF+IZDxP28x2cWjyVsTfPH3vgWNjK0rW2DSo08ZmgAYDyJ3U8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TN9BTB8M; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30637C4CEEB;
+	Thu, 14 Aug 2025 01:30:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755135006;
+	bh=P+It4k3Z3whbPaKl6RWbBy8Vkp87xIILFiRgerpR/1A=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=TN9BTB8Md7oeWbpnSfTIjNTZR6D5CVUotSIvHxdUc4aCZ15ng9ga9f0jnm7IhaKze
+	 wY35f+SIB2xlOt6SwICuldTZ4QNjMV60Qc2shZOYwvDGyawEI1GYnaLH3m3w9vZPo6
+	 uImYuI/ia+fm+rVz+VFNgDeF+0D05M2BBPnQQAtVic9bnt6LNPSeZ/wPQChyvzRbhS
+	 sQK3C9992E/T+xMmKeDfF0j0kSwZTgAOVC6K4yPgAN8kj2Vhn2VB5Okt7Rsvttf2LG
+	 d8aK8X20nU5TgvoSWSvTGItdIVCwgYiXQXrxag5g0pYksfqMUvTb+4Bhvnr7krd5Nx
+	 mzRiGf7VqkKZQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB09039D0C38;
+	Thu, 14 Aug 2025 01:30:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250813164847.62ade421@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v5 0/2] net: Don't use %pK through printk or
+ tracepoints
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175513501748.3846704.2653284504088460874.git-patchwork-notify@kernel.org>
+Date: Thu, 14 Aug 2025 01:30:17 +0000
+References: <20250811-restricted-pointers-net-v5-0-2e2fdc7d3f2c@linutronix.de>
+In-Reply-To: 
+ <20250811-restricted-pointers-net-v5-0-2e2fdc7d3f2c@linutronix.de>
+To: =?utf-8?q?Thomas_Wei=C3=9Fschuh_=3Cthomas=2Eweissschuh=40linutronix=2Ede=3E?=@codeaurora.org
+Cc: anthony.l.nguyen@intel.com, przemyslaw.kitszel@intel.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, saeedm@nvidia.com, leon@kernel.org,
+ tariqt@nvidia.com, mbloch@nvidia.com, intel-wired-lan@lists.osuosl.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, aleksandr.loktionov@intel.com, horms@kernel.org,
+ pmenzel@molgen.mpg.de
 
-Hi Jakub,
+Hello:
 
-Thank you for the review comments,
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-On Wed, Aug 13, 2025 at 04:48:47PM -0700, Jakub Kicinski wrote:
-> On Mon, 11 Aug 2025 15:29:19 -0700 Dipayaan Roy wrote:
-> > -	if (apc->port_is_up)
-> > +	if (apc->port_is_up) {
-> > +		/* Re-create rxq's after xdp prog was loaded or unloaded.
-> > +		 * Ex: re create rxq's to switch from full pages to smaller
-> > +		 * size page fragments when xdp prog is unloaded and
-> > +		 * vice-versa.
-> > +		 */
-> > +
-> > +		/* Pre-allocate buffers to prevent failure in mana_attach */
-> > +		err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
-> > +		if (err) {
-> > +			NL_SET_ERR_MSG_MOD
-> > +			    (extack,
-> > +			    "XDP: Insufficient memory for tx/rx re-config");
+On Mon, 11 Aug 2025 11:43:17 +0200 you wrote:
+> In the past %pK was preferable to %p as it would not leak raw pointer
+> values into the kernel log.
+> Since commit ad67b74d2469 ("printk: hash addresses printed with %p")
+> the regular %p has been improved to avoid this issue.
+> Furthermore, restricted pointers ("%pK") were never meant to be used
+> through printk(). They can still unintentionally leak raw pointers or
+> acquire sleeping locks in atomic contexts.
 > 
-> This weird line breaking is not necessary, checkpatch understands that
-> string can go over line limit:
-> 
-> 			NL_SET_ERR_MSG_MOD(extack,
-> 					   "XDP: Insufficient memory for tx/rx re-config");
-> 
-Ok, I willl rectify this in v5.
+> [...]
 
-> > +			return err;
-> 
-> I think you already replaced the bpf program at this point? 
-> So the allocation should happen earlier. On failure changes
-> to the driver state should be undone.
-The bpf prog gets completely replaced in mana_chn_setxdp,
-I suggest these changes below to address your point on alloc failure
-and will work on a v5:
+Here is the summary with links:
+  - [net-next,v5,1/2] ice: Don't use %pK through printk or tracepoints
+    https://git.kernel.org/netdev/net-next/c/66ceb45b7d7e
+  - [net-next,v5,2/2] net/mlx5: Don't use %pK through tracepoints
+    https://git.kernel.org/netdev/net-next/c/e2068f74b976
 
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_bpf.c
-b/drivers/net/ethernet/microsoft/mana/mana_bpf.c
-index e616f4239294..0000c1dd7aa2 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_bpf.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_bpf.c
-@@ -196,9 +196,6 @@ static int mana_xdp_set(struct net_device *ndev,
-struct bpf_prog *prog,
-         */
-        apc->bpf_prog = prog;
- 
--       if (old_prog)
--               bpf_prog_put(old_prog);
--
-        if (apc->port_is_up) {
-                /* Re-create rxq's after xdp prog was loaded or
- * unloaded.
-                 * Ex: re create rxq's to switch from full pages to
-                 * smaller
-@@ -237,6 +234,9 @@ static int mana_xdp_set(struct net_device *ndev,
-struct bpf_prog *prog,
-                mana_pre_dealloc_rxbufs(apc);
-        }
- 
-+       if (old_prog)
-+               bpf_prog_put(old_prog);
-+
-        if (prog)
-                ndev->max_mtu = MANA_XDP_MTU_MAX;
-        else
-@@ -245,6 +245,7 @@ static int mana_xdp_set(struct net_device *ndev,
-struct bpf_prog *prog,
-        return 0;
- 
- err_dealloc_rxbuffs:
-+       apc->bpf_prog = old_prog;
-        mana_pre_dealloc_rxbufs(apc);
-        return err;
- }
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-> -- 
-> pw-bot: cr
 
-Thanks
-Dipayaan Roy
 
