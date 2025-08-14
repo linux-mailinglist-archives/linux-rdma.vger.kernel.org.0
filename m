@@ -1,87 +1,87 @@
-Return-Path: <linux-rdma+bounces-12756-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12757-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FDBEB2640F
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 13:20:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 078A0B2641A
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 13:21:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E43F17C2BF
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 11:20:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01B621897549
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Aug 2025 11:20:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 031732727FC;
-	Thu, 14 Aug 2025 11:20:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAEC1318156;
+	Thu, 14 Aug 2025 11:20:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Nbxhs1F8"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="MaTapeQr"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F62E318156
-	for <linux-rdma@vger.kernel.org>; Thu, 14 Aug 2025 11:20:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 517581EF39E
+	for <linux-rdma@vger.kernel.org>; Thu, 14 Aug 2025 11:20:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755170404; cv=none; b=AE2rOq9OKu1aoFT8a2XKrFUCtK234OS8GtFKy3MWGBjS2TxfdKz9kOMpYhSZ5SKLVW8Zpj5hr3pdnYCfCNe8IxOcVR8OygAHWgiIY6MV+9jx6gIWuMMUfJSWBZJ1q+iB4CJqA3yEZsCG3ipGzn8pkjmHhUu3EFNg1n9BEWx6Yks=
+	t=1755170407; cv=none; b=GhuKy3PDGa2o2v3Zo0MU51jtHdr2x6CLk48MWqJp6G+iRKiJZTMVVcFdJzTVzOIgeA991NDhdP75hQn0vV4y7672oSaw8tbfbSJ0+02p5YVtQMDRWGJceS27qO3KDPsbk6u5aTU65cv2/LO6U/Vwl6c53e1OkW3CL+2vfG2C4Jk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755170404; c=relaxed/simple;
-	bh=W0sdYqTiG/VpCC7isuHn8GbT6+lYncPckAJV6u8+kmI=;
+	s=arc-20240116; t=1755170407; c=relaxed/simple;
+	bh=08q+AcR75uIxsyQ4mPiVdJGvSDE16zcM2fZPP6N7z2U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=H1mQ1oF0S3r7uOFFwWxc1PnCbHpfHHYCy0O/gj7pr6exu58VfgOFtHSHKponhIYU0d50ccfBSa//XQuYWSjODYo2rsOdalQa/NznUtpRTTmwd+FxCjpqG3MUbn6quUZ6PWK1Qt4iutBsivjQA7jqE9hJ4adeq3OfYkUJkYZVSp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Nbxhs1F8; arc=none smtp.client-ip=209.85.214.171
+	 MIME-Version; b=jNavhRVHksFweXMVQ2iPDP0Das/Dr9NdseLvsBWEoYVZNZ10wuUi5hOH0m9RhW0JTE6M/qTan8E2NQ4F1ETgOuOQBmE/Md6L5jZ7G76x18PnEpin48W2gV3scyWFJKziykTlBjJEZp4fd0YHdCygmDY4P7UXiHVHWdZpyCp1kJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=MaTapeQr; arc=none smtp.client-ip=209.85.215.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-244580523a0so6979845ad.1
-        for <linux-rdma@vger.kernel.org>; Thu, 14 Aug 2025 04:20:03 -0700 (PDT)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-b4716f46a2eso518481a12.0
+        for <linux-rdma@vger.kernel.org>; Thu, 14 Aug 2025 04:20:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1755170402; x=1755775202; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1755170405; x=1755775205; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kdBbh52+wdbpaseYwLsgYNiA8SzI9KZV+XaS3AIB8eM=;
-        b=Nbxhs1F8HiInzOjis5zNYWvcbsFmhuakE0lnfS7DzAzwbx3ULzCqwZ/IEWiQIjTLm6
-         6T7QQGIcBBSY4+wxh3KHw3mhxbaYJgm5oWLJ6yGguDvdKuN7hebXJI1wrLGXZyPuNqeg
-         +FG6agd/GgvulRGGfTbBWhWI96dKP9IXLcf98=
+        bh=hNmMnaIXsCk2Pjj55YxHNpeiIQ1EmgVMwNMoh6yFOKg=;
+        b=MaTapeQrRYSiKGSzIwqUzZ6TkkA2UUAxPF7wrtXObRejT6GXqVf9nQaT2QI68XJsZD
+         8XMQerJdf+RZ9u43hmPjcsMFO0kA6j7hSoZPjQKySm4xhuZHweZrbFKqKV0qK78A5eHw
+         V/seI+CXr+EhjyRZZP6vqOmzjnEM8T3BkYnsE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755170402; x=1755775202;
+        d=1e100.net; s=20230601; t=1755170405; x=1755775205;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kdBbh52+wdbpaseYwLsgYNiA8SzI9KZV+XaS3AIB8eM=;
-        b=nveIxbCHVam2ZV6PiaeZ0cu51HIZX9TjXR2FBDFqWOYj402r1aH5TkgA11rF+TY4KR
-         0tAGT66HQyuiiJUbBpE3SAo+bUrKmS/KC8P9pMkB529l4myjsw3xYlx//VGY96Nu2Dlh
-         pC+WpYeTvZEl2nvA25R57e20saiAu1Z2sLEo7oTPF1POZ/FVrT6P0Y1RfarqC/W9e07b
-         Lad8nPHkYA4e0SrHKT0X8xrvuMwpwEnTN3p/Cf6IWmFd6CVOq0siZeCcDTDAMpRJfCqK
-         6TdycRdOSrlh7+rkUpGGusN/ZMyaawXCfdVg4C1+LsNc2P76nMQAjLoaZINghjsTdtr1
-         90Yw==
-X-Gm-Message-State: AOJu0YzUQhPqTqXHbiW+w1m56Jddrds47eJQ8Pyvr3yNhJYyW9KFCvVu
-	2kZF4tb5cf98XvpvPvk+e2kjTHPZgAwMTwGp1Fz68HQPV7diGrPaHBpp/dY2asMQknWrMsvSKJk
-	617Y=
-X-Gm-Gg: ASbGncs1OVYD7bQl8oBI/Bb3n7e8swz5nOpi4Qq0kDxdGU35UlVkaq4slJxsjt0cWL+
-	6WBRLiJwaAS6CgyXLe6q4j09cP8xQqOAE3oxgujQkTxuQ4YJNZvgKmj3k3EFII4G7RfCsI2crhB
-	ULOo1y2ZwbBjJan96R+QNt3mX24Vzrcq+nwu/LDd1qhc1Z7qWU9lSuokbFEaBXDVRUskC4qpHVD
-	WYdqGZ8PJ6EuduCqEbnop/IC9oX1WyIF3rh62Xsce9DPzP/0tXZPA97U5Y3qnNO21j6ng010kUP
-	1LYqWV5WYQd80Bi5zhLzwfN/jBZhFCE1N1LKQIsjjrUlLBYbkLYayT485OXPaR+We4i14tihOOC
-	PHgufAHHXYJE73h6xHzweNy6jBokBQIfifb4Z8LCTM+t0iDviibLltDd/QDMYmmzc4IqgPrtGrN
-	xKaUXicNHdp9joGZn/5bimgDhxtcEDT1Gv5IHCnIKv
-X-Google-Smtp-Source: AGHT+IHKv9dsQP5pOfjlji2VmP1NWi+YtMH4mfaFWBtusBYCW9WCcIZm9b1KU1mh84iJDOp08KiZtg==
-X-Received: by 2002:a17:902:f693:b0:242:cd69:faa6 with SMTP id d9443c01a7336-24458b25ffdmr34691675ad.29.1755170402470;
-        Thu, 14 Aug 2025 04:20:02 -0700 (PDT)
+        bh=hNmMnaIXsCk2Pjj55YxHNpeiIQ1EmgVMwNMoh6yFOKg=;
+        b=ckGyI0pqgFc+nmhib/o3Dxa66y+/sd2Rtm/PRQj13qxu0ME3Dpi2/AuWNbpPayo08k
+         boSoN+TikTO4PEOFDMUpIcR+azceGQu+RUvq2X/7afiEbcJIPgg5hZE4E1EHoCYVBDy1
+         RUfcbswvusguyQ2ynKnDsT78K2oRZ9078BjnHGccGvJ4cF6DSa2iZyC/W/8KdpMYGVr0
+         +x4JLe06zsMjhE0Zzf31JKp36DbGsZesdwsYA5l1R1xd984HfjHEUNN0Ae0ZqxC0Pm0U
+         l3g06CkKWrtsodU0x3vlAZJwoYLMvdz1UTK93NfSI9eXSOP5WIhtp5NhwwaSrt0n7+vq
+         Efyg==
+X-Gm-Message-State: AOJu0YzNF4qKGjcgBFeYaNL8sepvjL1hW4d7wSorkI9COgDjgLooK+1d
+	LQbeTYX7GNbFS4Wk5Pjmb1nTWZOiHXNH/BeSgwehV/cdDAEztqCARCPt/qHHS4nafQ==
+X-Gm-Gg: ASbGncvKwzSdtgk5pURuCHJPhvadHLEkGPXNFdkWMN3vVqg9LVW4pNL91o2tmS+JKw/
+	QebH8ozvBKNuhtyf1+sTDIlVjZPQ/5REXgx7dRxWOhe7Cp1kyU3QtqlE3U3cUAwZEzP7NyDIK0W
+	5Q8Dn8oiAH4Vf1LTMkoQTiP9zchgj1HsSxZdWlkSUEiGLsDc1vFnwepe+zXXsuj3ydo3xF4eM2B
+	8nRa5mFoMPDYa0JHt5NOj+33dHrjj/+uOHylqFcczep7FCR0x2ImocEMq3BIvXDlvF6OOgQDYvR
+	7yKEGRwJPSHlWEHDJ4UpUwKPE7bKE4qt21v05ORyH58Xc0ov05/wp2iCXc4X2NrrfV9KHU/KFkp
+	GJ/dGKYjIVLOht0UwsiRWBuGSESfeJgUDQVEjbHSxdFfh3rkusVp07tK4Xo9Fih0jSCSd8UcRkx
+	RF/5Rk7fHJFHLYDr5VDa1TgrZQyrdPGw==
+X-Google-Smtp-Source: AGHT+IF4kZ1ibD6VIQH89JwmdhgJURjpUlLoBXelEkH3/PUg2xJNqf44m/ApA4dU6egfRx2BiL9svg==
+X-Received: by 2002:a17:903:3c25:b0:240:99e6:6bc3 with SMTP id d9443c01a7336-244585190a7mr42039825ad.20.1755170405398;
+        Thu, 14 Aug 2025 04:20:05 -0700 (PDT)
 Received: from dhcp-10-123-157-228.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-241d1f21c65sm352415175ad.73.2025.08.14.04.20.00
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-241d1f21c65sm352415175ad.73.2025.08.14.04.20.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Aug 2025 04:20:02 -0700 (PDT)
+        Thu, 14 Aug 2025 04:20:05 -0700 (PDT)
 From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
 Cc: linux-rdma@vger.kernel.org,
 	andrew.gospodarek@broadcom.com,
 	selvin.xavier@broadcom.com,
-	Shravya KN <shravya.k-n@broadcom.com>,
-	Saravanan Vajravel <saravanan.vajravel@broadcom.com>
-Subject: [PATCH rdma-next 4/9] RDMA/bnxt_re: Avoid GID level QoS update from the driver
-Date: Thu, 14 Aug 2025 16:55:50 +0530
-Message-ID: <20250814112555.221665-5-kalesh-anakkur.purayil@broadcom.com>
+	Damodharam Ammepalli <damodharam.ammepalli@broadcom.com>,
+	Hongguang Gao <hongguang.gao@broadcom.com>,
+	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Subject: [PATCH rdma-next 5/9] RDMA/bnxt_re: Optimize bnxt_qplib_get_dev_attr function
+Date: Thu, 14 Aug 2025 16:55:51 +0530
+Message-ID: <20250814112555.221665-6-kalesh-anakkur.purayil@broadcom.com>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20250814112555.221665-1-kalesh-anakkur.purayil@broadcom.com>
 References: <20250814112555.221665-1-kalesh-anakkur.purayil@broadcom.com>
@@ -93,197 +93,95 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Shravya KN <shravya.k-n@broadcom.com>
+From: Damodharam Ammepalli <damodharam.ammepalli@broadcom.com>
 
-The driver inserts a VLAN header into RoCE packets when the
-traffic was untagged by modifying the existing GID entries.
-This has caused the firmware to enforce only VLAN-based
-priority mappings, ignoring other valid priority configurations
-set via APP TLVs (e.g., DSCP selectors).
+Optimize bnxt_qplib_get_dev_attr() by separating out query_version which
+uses creq notification method to host. Due to serialization of cmdq by
+firmware, expected latency in response to heavy multi-threaded rdma
+applications might be observed.
 
-Driver now has support for selecting the service level (vlan id)
-and traffic class (dscp) during modify_qp. So no need to override
-the priority update using the update gid method. Hence removing
-the code that handles the above operation.
+This patch separates the version_query logic out of device attribute
+query and called only during rdma driver init.
 
-Signed-off-by: Shravya KN <shravya.k-n@broadcom.com>
-Reviewed-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
-Reviewed-by: Selvin Xavier <selvin.xavier@broadcom.com>
+Signed-off-by: Damodharam Ammepalli <damodharam.ammepalli@broadcom.com>
+Reviewed-by: Hongguang Gao <hongguang.gao@broadcom.com>
+Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/main.c     | 94 ------------------------
- drivers/infiniband/hw/bnxt_re/qplib_sp.c | 40 ----------
- 2 files changed, 134 deletions(-)
+ drivers/infiniband/hw/bnxt_re/main.c     |  1 +
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c | 15 +++++++--------
+ drivers/infiniband/hw/bnxt_re/qplib_sp.h |  1 +
+ 3 files changed, 9 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index f08948a49976..a66da4892ad4 100644
+index a66da4892ad4..1c474b3707ce 100644
 --- a/drivers/infiniband/hw/bnxt_re/main.c
 +++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -1870,81 +1870,6 @@ static void bnxt_re_dev_stop(struct bnxt_re_dev *rdev)
- 	mutex_unlock(&rdev->qp_lock);
- }
+@@ -2135,6 +2135,7 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 op_type)
+ 	if (rc)
+ 		goto disable_rcfw;
  
--static int bnxt_re_update_gid(struct bnxt_re_dev *rdev)
--{
--	struct bnxt_qplib_sgid_tbl *sgid_tbl = &rdev->qplib_res.sgid_tbl;
--	struct bnxt_qplib_gid gid;
--	u16 gid_idx, index;
--	int rc = 0;
--
--	if (!ib_device_try_get(&rdev->ibdev))
--		return 0;
--
--	for (index = 0; index < sgid_tbl->active; index++) {
--		gid_idx = sgid_tbl->hw_id[index];
--
--		if (!memcmp(&sgid_tbl->tbl[index], &bnxt_qplib_gid_zero,
--			    sizeof(bnxt_qplib_gid_zero)))
--			continue;
--		/* need to modify the VLAN enable setting of non VLAN GID only
--		 * as setting is done for VLAN GID while adding GID
--		 */
--		if (sgid_tbl->vlan[index])
--			continue;
--
--		memcpy(&gid, &sgid_tbl->tbl[index], sizeof(gid));
--
--		rc = bnxt_qplib_update_sgid(sgid_tbl, &gid, gid_idx,
--					    rdev->qplib_res.netdev->dev_addr);
--	}
--
--	ib_device_put(&rdev->ibdev);
--	return rc;
--}
--
--static u32 bnxt_re_get_priority_mask(struct bnxt_re_dev *rdev)
--{
--	u32 prio_map = 0, tmp_map = 0;
--	struct net_device *netdev;
--	struct dcb_app app = {};
--
--	netdev = rdev->netdev;
--
--	app.selector = IEEE_8021QAZ_APP_SEL_ETHERTYPE;
--	app.protocol = ETH_P_IBOE;
--	tmp_map = dcb_ieee_getapp_mask(netdev, &app);
--	prio_map = tmp_map;
--
--	app.selector = IEEE_8021QAZ_APP_SEL_DGRAM;
--	app.protocol = ROCE_V2_UDP_DPORT;
--	tmp_map = dcb_ieee_getapp_mask(netdev, &app);
--	prio_map |= tmp_map;
--
--	return prio_map;
--}
--
--static int bnxt_re_setup_qos(struct bnxt_re_dev *rdev)
--{
--	u8 prio_map = 0;
--
--	/* Get priority for roce */
--	prio_map = bnxt_re_get_priority_mask(rdev);
--
--	if (prio_map == rdev->cur_prio_map)
--		return 0;
--	rdev->cur_prio_map = prio_map;
--	/* Actual priorities are not programmed as they are already
--	 * done by L2 driver; just enable or disable priority vlan tagging
--	 */
--	if ((prio_map == 0 && rdev->qplib_res.prio) ||
--	    (prio_map != 0 && !rdev->qplib_res.prio)) {
--		rdev->qplib_res.prio = prio_map;
--		bnxt_re_update_gid(rdev);
--	}
--
--	return 0;
--}
--
- static void bnxt_re_net_unregister_async_event(struct bnxt_re_dev *rdev)
- {
- 	if (rdev->is_virtfn)
-@@ -2106,16 +2031,6 @@ static void bnxt_re_dev_uninit(struct bnxt_re_dev *rdev, u8 op_type)
- 	}
- }
++	bnxt_qplib_query_version(&rdev->rcfw);
+ 	bnxt_re_set_resource_limits(rdev);
  
--/* worker thread for polling periodic events. Now used for QoS programming*/
--static void bnxt_re_worker(struct work_struct *work)
--{
--	struct bnxt_re_dev *rdev = container_of(work, struct bnxt_re_dev,
--						worker.work);
--
--	bnxt_re_setup_qos(rdev);
--	schedule_delayed_work(&rdev->worker, msecs_to_jiffies(30000));
--}
--
- static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 op_type)
- {
- 	struct bnxt_re_ring_attr rattr = {};
-@@ -2270,15 +2185,6 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 op_type)
- 		if (rc)
- 			ibdev_warn(&rdev->ibdev, "Failed to query CC defaults\n");
- 
--		rc = bnxt_re_setup_qos(rdev);
--		if (rc)
--			ibdev_info(&rdev->ibdev,
--				   "RoCE priority not yet configured\n");
--
--		INIT_DELAYED_WORK(&rdev->worker, bnxt_re_worker);
--		set_bit(BNXT_RE_FLAG_QOS_WORK_REG, &rdev->flags);
--		schedule_delayed_work(&rdev->worker, msecs_to_jiffies(30000));
--
- 		if (!(rdev->qplib_res.en_dev->flags & BNXT_EN_FLAG_ROCE_VF_RES_MGMT))
- 			bnxt_re_vf_res_config(rdev);
- 	}
+ 	rc = bnxt_qplib_alloc_ctx(&rdev->qplib_res, &rdev->qplib_ctx, 0,
 diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-index 68981399598d..ce6ec3412c11 100644
+index ce6ec3412c11..79edff6bda95 100644
 --- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
 +++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-@@ -397,46 +397,6 @@ int bnxt_qplib_add_sgid(struct bnxt_qplib_sgid_tbl *sgid_tbl,
- 	return 0;
+@@ -66,14 +66,15 @@ static bool bnxt_qplib_is_atomic_cap(struct bnxt_qplib_rcfw *rcfw)
+ 	return (pcie_ctl2 & PCI_EXP_DEVCTL2_ATOMIC_REQ);
  }
  
--int bnxt_qplib_update_sgid(struct bnxt_qplib_sgid_tbl *sgid_tbl,
--			   struct bnxt_qplib_gid *gid, u16 gid_idx,
--			   const u8 *smac)
--{
--	struct bnxt_qplib_res *res = to_bnxt_qplib(sgid_tbl,
--						   struct bnxt_qplib_res,
--						   sgid_tbl);
--	struct bnxt_qplib_rcfw *rcfw = res->rcfw;
--	struct creq_modify_gid_resp resp = {};
--	struct bnxt_qplib_cmdqmsg msg = {};
--	struct cmdq_modify_gid req = {};
--	int rc;
+-static void bnxt_qplib_query_version(struct bnxt_qplib_rcfw *rcfw,
+-				     char *fw_ver)
++void bnxt_qplib_query_version(struct bnxt_qplib_rcfw *rcfw)
+ {
+ 	struct creq_query_version_resp resp = {};
+ 	struct bnxt_qplib_cmdqmsg msg = {};
+ 	struct cmdq_query_version req = {};
++	struct bnxt_qplib_dev_attr *attr;
+ 	int rc;
+ 
++	attr = rcfw->res->dattr;
+ 	bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)&req,
+ 				 CMDQ_BASE_OPCODE_QUERY_VERSION,
+ 				 sizeof(req));
+@@ -82,10 +83,10 @@ static void bnxt_qplib_query_version(struct bnxt_qplib_rcfw *rcfw,
+ 	rc = bnxt_qplib_rcfw_send_message(rcfw, &msg);
+ 	if (rc)
+ 		return;
+-	fw_ver[0] = resp.fw_maj;
+-	fw_ver[1] = resp.fw_minor;
+-	fw_ver[2] = resp.fw_bld;
+-	fw_ver[3] = resp.fw_rsvd;
++	attr->fw_ver[0] = resp.fw_maj;
++	attr->fw_ver[1] = resp.fw_minor;
++	attr->fw_ver[2] = resp.fw_bld;
++	attr->fw_ver[3] = resp.fw_rsvd;
+ }
+ 
+ int bnxt_qplib_get_dev_attr(struct bnxt_qplib_rcfw *rcfw)
+@@ -179,8 +180,6 @@ int bnxt_qplib_get_dev_attr(struct bnxt_qplib_rcfw *rcfw)
+ 	if (_is_max_srq_ext_supported(attr->dev_cap_flags2))
+ 		attr->max_srq += le16_to_cpu(sb->max_srq_ext);
+ 
+-	bnxt_qplib_query_version(rcfw, attr->fw_ver);
 -
--	bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)&req,
--				 CMDQ_BASE_OPCODE_MODIFY_GID,
--				 sizeof(req));
--
--	req.gid[0] = cpu_to_be32(((u32 *)gid->data)[3]);
--	req.gid[1] = cpu_to_be32(((u32 *)gid->data)[2]);
--	req.gid[2] = cpu_to_be32(((u32 *)gid->data)[1]);
--	req.gid[3] = cpu_to_be32(((u32 *)gid->data)[0]);
--	if (res->prio) {
--		req.vlan |= cpu_to_le16
--			(CMDQ_ADD_GID_VLAN_TPID_TPID_8100 |
--			 CMDQ_ADD_GID_VLAN_VLAN_EN);
--	}
--
--	/* MAC in network format */
--	req.src_mac[0] = cpu_to_be16(((u16 *)smac)[0]);
--	req.src_mac[1] = cpu_to_be16(((u16 *)smac)[1]);
--	req.src_mac[2] = cpu_to_be16(((u16 *)smac)[2]);
--
--	req.gid_index = cpu_to_le16(gid_idx);
--
--	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, NULL, sizeof(req),
--				sizeof(resp), 0);
--	rc = bnxt_qplib_rcfw_send_message(rcfw, &msg);
--	return rc;
--}
--
- /* AH */
- int bnxt_qplib_create_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
- 			 bool block)
+ 	for (i = 0; i < MAX_TQM_ALLOC_REQ / 4; i++) {
+ 		temp = le32_to_cpu(sb->tqm_alloc_reqs[i]);
+ 		tqm_alloc = (u8 *)&temp;
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.h b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+index 09faf4a1e849..e9834e7fc383 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_sp.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+@@ -358,6 +358,7 @@ int bnxt_qplib_read_context(struct bnxt_qplib_rcfw *rcfw, u8 type, u32 xid,
+ 			    u32 resp_size, void *resp_va);
+ int bnxt_qplib_query_cc_param(struct bnxt_qplib_res *res,
+ 			      struct bnxt_qplib_cc_param *cc_param);
++void bnxt_qplib_query_version(struct bnxt_qplib_rcfw *rcfw);
+ 
+ #define BNXT_VAR_MAX_WQE       4352
+ #define BNXT_VAR_MAX_SLOT_ALIGN 256
 -- 
 2.43.5
 
