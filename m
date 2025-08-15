@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-12781-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12782-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91FC3B2869C
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Aug 2025 21:49:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C0F1B2869E
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Aug 2025 21:49:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5F63D4E42A1
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Aug 2025 19:49:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC56B1CC8C46
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Aug 2025 19:49:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A4EC29B8DD;
-	Fri, 15 Aug 2025 19:49:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15AD82BE03F;
+	Fri, 15 Aug 2025 19:49:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sJcQ0y8f"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sRuukM2M"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBA82298CB7;
-	Fri, 15 Aug 2025 19:49:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6225217F34;
+	Fri, 15 Aug 2025 19:49:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755287347; cv=none; b=P6rM2V/cLIsfBTZfCWxkn9euWvkEn5N4LNBajogOJrUFoUke0VyUCUFq4GWuLx5sTa2VIeN+Y8tV6AtsSVEZb/HNsL56VeW95sFCOLLFFh+rB4LjQC93pGUtKaavPYJhBFS6idsUOPXTpjb7MlDtDbyudeaLExH35C9QC8RHTJk=
+	t=1755287347; cv=none; b=g2ZkUQ8LAnTrkWu92CRAbe14x+0Q5Yz4ueJl6v71FPsS4vsWO+vSDxHIBWL+ejZ0wl4oS8pHLzx6w6tWo7wScmWSBW2+ePa6N7IgeT7kMpIKBMFJylT9zCccU60civQfYmXkqRdsnv6K+XOLZzYjWsyrUNt3/2P1XD0Ui0Lf/OU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1755287347; c=relaxed/simple;
-	bh=ZdMwwDi44CBlBL96tREaUSFD4UvArqAeYJ7b4CXbswg=;
+	bh=rkGx+lRC/7erdVeOn1owLQLQFyp2otzUOtAD0mzwRoY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=T0BIrxl/aQHEUS/O02raM6MMWPyn07NDGAbueox5eKk6bc7+J3lrtV9PRAk7xZbI+iphROpYNvFrucsI3Ck+c3d+O9JBATi3lo9FB1el3SJyrZXIChBIeR+0FWlYfi4NJEz8FuA2oBzKGVfYDVqLssZ6I+Mj7daSc6T0kRO33Fw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sJcQ0y8f; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7422FC4CEEB;
-	Fri, 15 Aug 2025 19:49:06 +0000 (UTC)
+	 MIME-Version; b=HL1xD0MfoQMzshnsxBLHlzfT3iklAxulihZ0dBKil8MSLzeAt+IilVvz2oY0rzX6Pt8jrdjzsgKILhOkexCnK891lxPHB4R7BwrpNBz6iIZWSVZ16VCOJ9edh88/rWOaXm9wYsrvQDL1qwJX8QOtRckHIXLpBSpbhoEZr+QTIXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sRuukM2M; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 475EDC4CEEB;
+	Fri, 15 Aug 2025 19:49:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755287346;
-	bh=ZdMwwDi44CBlBL96tREaUSFD4UvArqAeYJ7b4CXbswg=;
+	s=k20201202; t=1755287347;
+	bh=rkGx+lRC/7erdVeOn1owLQLQFyp2otzUOtAD0mzwRoY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sJcQ0y8fpbYUBRi7KYhe8AX3rFY8ng2b1HTPpaZ4DIl6mbWPtiR0hQZhwuvBpAJUp
-	 WEEjmkhjFgPDW737Aku91n8X/LqNLGUKLvRhP+sZurrNZsz0Z03Gun3kjgzC0+ESLI
-	 qKrbVCeiXYtpx75nhpL/W499raun8TFI5RZpgHim1p8csC3WR08qHw5KlYo5+uxLrv
-	 PrHJUIJqTCeJh7WzrvpW1gnq2yNXADgvMmjyhZQmYQC+ey1tTa0/gMNBbUzMBUxiX6
-	 LJrNEXJY5yeLnVPOc6KJsMLGCsysN3C1bz9wJnxl0tYm7ORwKhYdUy3Fk0oqKRMnF0
-	 E7g8Q+JHRHewQ==
+	b=sRuukM2MXBzNlHSeEW/BCbgxbfk4+zKWyypSxU4EfNTjcxVidZTnVOhyYq05rzCdu
+	 bX7JfyMkPO68rJyqezs3DhIc/EOvm/eYs37X5hC2DBOAgCg2qCanjKouXgomFJ7Kds
+	 fCE5YXWqOfQSKCIjZtMAH6qNwDGaNBxetS8Gl/GXmkVO2CSZEcMI20wsQb/YHWwoOD
+	 1R433P1uMYlVZ1o7OMrgUHNIW8UW4Qj2q4n0b12HRuzBnDLI41wbaS1dBnbZWe5suj
+	 qATAo0lWto8hTZ23dwBj7b8eK4XUGjDgnwES/6zvoMYChmU2/c5wxoS0WBlE7wZ87f
+	 1MjPf6LHHpDvw==
 From: Saeed Mahameed <saeed@kernel.org>
 To: Saeed Mahameed <saeedm@nvidia.com>,
 	Leon Romanovsky <leonro@nvidia.com>
@@ -50,11 +50,11 @@ Cc: Jason Gunthorpe <jgg@nvidia.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Parav Pandit <parav@nvidia.com>,
 	Mark Bloch <mbloch@nvidia.com>,
-	Jack Morgenstein <jackm@nvidia.com>,
-	Alexei Lazar <alazar@nvidia.com>
-Subject: [PATCH mlx5-next 1/4] net/mlx5: mlx5_ifc, Add hardware definitions needed for adjacent vports
-Date: Fri, 15 Aug 2025 12:48:58 -0700
-Message-ID: <20250815194901.298689-2-saeed@kernel.org>
+	Alexei Lazar <alazar@nvidia.com>,
+	Feng Liu <feliu@nvidia.com>
+Subject: [PATCH mlx5-next 2/4] net/mlx5: E-Switch, Cache vport vhca id on first cap query
+Date: Fri, 15 Aug 2025 12:48:59 -0700
+Message-ID: <20250815194901.298689-3-saeed@kernel.org>
 X-Mailer: git-send-email 2.50.1
 In-Reply-To: <20250815194901.298689-1-saeed@kernel.org>
 References: <20250815194901.298689-1-saeed@kernel.org>
@@ -68,205 +68,160 @@ Content-Transfer-Encoding: 8bit
 
 From: Saeed Mahameed <saeedm@nvidia.com>
 
-Next patches will implement the discovery and creation of adjacent
-functions vports, this patch introduces the hardware structures
-definitions needed for the driver implementation.
+We need vhca_id to set up the vhca_id to vport mapping for every vport,
+for that we query the firmware in mlx5_esw_vport_vhca_id_set, and it is
+redundant since in esw_vport_setup, we already query hca caps which has
+the vhca_id, cache it there and save 2 extra fw queries per vport.
 
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Reviewed-by: Mark Bloch <mbloch@nvidia.com>
 Reviewed-by: Parav Pandit <parav@nvidia.com>
-Reviewed-by: Jack Morgenstein <jackm@nvidia.com>
 Signed-off-by: Alexei Lazar <alazar@nvidia.com>
+Reviewed-by: Feng Liu <feliu@nvidia.com>
 ---
- include/linux/mlx5/mlx5_ifc.h | 133 +++++++++++++++++++++++++++++++++-
- 1 file changed, 129 insertions(+), 4 deletions(-)
+ .../net/ethernet/mellanox/mlx5/core/eswitch.c |  6 ++--
+ .../net/ethernet/mellanox/mlx5/core/eswitch.h | 12 +++++--
+ .../mellanox/mlx5/core/eswitch_offloads.c     | 34 +++++++++----------
+ 3 files changed, 31 insertions(+), 21 deletions(-)
 
-diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
-index 8360d9011d4f..44d497272162 100644
---- a/include/linux/mlx5/mlx5_ifc.h
-+++ b/include/linux/mlx5/mlx5_ifc.h
-@@ -189,6 +189,9 @@ enum {
- 	MLX5_CMD_OP_QUERY_XRQ_ERROR_PARAMS        = 0x727,
- 	MLX5_CMD_OP_RELEASE_XRQ_ERROR             = 0x729,
- 	MLX5_CMD_OP_MODIFY_XRQ                    = 0x72a,
-+	MLX5_CMD_OPCODE_QUERY_DELEGATED_VHCA      = 0x732,
-+	MLX5_CMD_OPCODE_CREATE_ESW_VPORT          = 0x733,
-+	MLX5_CMD_OPCODE_DESTROY_ESW_VPORT         = 0x734,
- 	MLX5_CMD_OP_QUERY_ESW_FUNCTIONS           = 0x740,
- 	MLX5_CMD_OP_QUERY_VPORT_STATE             = 0x750,
- 	MLX5_CMD_OP_MODIFY_VPORT_STATE            = 0x751,
-@@ -2207,7 +2210,19 @@ struct mlx5_ifc_cmd_hca_cap_2_bits {
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+index 4917d185d0c3..eeffe9c4aa56 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+@@ -820,6 +820,7 @@ static int mlx5_esw_vport_caps_get(struct mlx5_eswitch *esw, struct mlx5_vport *
  
- 	u8	   reserved_at_440[0x8];
- 	u8	   max_num_eqs_24b[0x18];
--	u8	   reserved_at_460[0x3a0];
-+
-+	u8         reserved_at_460[0x160];
-+
-+	u8         query_adjacent_functions_id[0x1];
-+	u8         ingress_egress_esw_vport_connect[0x1];
-+	u8         function_id_type_vhca_id[0x1];
-+	u8         reserved_at_5c3[0xd];
-+	u8         delegate_vhca_management_profiles[0x10];
-+
-+	u8         delegated_vhca_max[0x10];
-+	u8         delegate_vhca_max[0x10];
-+
-+	u8         reserved_at_600[0x200];
- };
+ 	hca_caps = MLX5_ADDR_OF(query_hca_cap_out, query_ctx, capability);
+ 	vport->info.roce_enabled = MLX5_GET(cmd_hca_cap, hca_caps, roce);
++	vport->vhca_id = MLX5_GET(cmd_hca_cap, hca_caps, vhca_id);
  
- enum mlx5_ifc_flow_destination_type {
-@@ -5159,7 +5174,9 @@ struct mlx5_ifc_set_hca_cap_in_bits {
+ 	if (!MLX5_CAP_GEN_MAX(esw->dev, hca_cap_2))
+ 		goto out_free;
+@@ -929,7 +930,7 @@ int mlx5_esw_vport_enable(struct mlx5_eswitch *esw, struct mlx5_vport *vport,
  
- 	u8         other_function[0x1];
- 	u8         ec_vf_function[0x1];
--	u8         reserved_at_42[0xe];
-+	u8         reserved_at_42[0x1];
-+	u8         function_id_type[0x1];
-+	u8         reserved_at_44[0xc];
- 	u8         function_id[0x10];
+ 	if (!mlx5_esw_is_manager_vport(esw, vport_num) &&
+ 	    MLX5_CAP_GEN(esw->dev, vhca_resource_manager)) {
+-		ret = mlx5_esw_vport_vhca_id_set(esw, vport_num);
++		ret = mlx5_esw_vport_vhca_id_map(esw, vport);
+ 		if (ret)
+ 			goto err_vhca_mapping;
+ 	}
+@@ -973,7 +974,7 @@ void mlx5_esw_vport_disable(struct mlx5_eswitch *esw, struct mlx5_vport *vport)
  
- 	u8         reserved_at_60[0x20];
-@@ -6357,7 +6374,9 @@ struct mlx5_ifc_query_hca_cap_in_bits {
+ 	if (!mlx5_esw_is_manager_vport(esw, vport_num) &&
+ 	    MLX5_CAP_GEN(esw->dev, vhca_resource_manager))
+-		mlx5_esw_vport_vhca_id_clear(esw, vport_num);
++		mlx5_esw_vport_vhca_id_unmap(esw, vport);
  
- 	u8         other_function[0x1];
- 	u8         ec_vf_function[0x1];
--	u8         reserved_at_42[0xe];
-+	u8         reserved_at_42[0x1];
-+	u8         function_id_type[0x1];
-+	u8         reserved_at_44[0xc];
- 	u8         function_id[0x10];
+ 	if (vport->vport != MLX5_VPORT_PF &&
+ 	    (vport->info.ipsec_crypto_enabled || vport->info.ipsec_packet_enabled))
+@@ -1710,6 +1711,7 @@ static int mlx5_esw_vport_alloc(struct mlx5_eswitch *esw,
+ 	vport->vport = vport_num;
+ 	vport->index = index;
+ 	vport->info.link_state = MLX5_VPORT_ADMIN_STATE_AUTO;
++	vport->vhca_id = MLX5_VHCA_ID_INVALID;
+ 	INIT_WORK(&vport->vport_change_handler, esw_vport_change_handler);
+ 	err = xa_insert(&esw->vports, vport_num, vport, GFP_KERNEL);
+ 	if (err)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
+index b0b8ef3ec3c4..7f6bfaae5f5f 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
+@@ -197,6 +197,11 @@ static inline struct mlx5_vport *mlx5_devlink_port_vport_get(struct devlink_port
+ 	return mlx5_devlink_port_get(dl_port)->vport;
+ }
  
- 	u8         reserved_at_60[0x20];
-@@ -6983,6 +7002,28 @@ struct mlx5_ifc_query_esw_vport_context_in_bits {
- 	u8         reserved_at_60[0x20];
- };
++#define MLX5_VHCA_ID_INVALID (-1)
++
++#define MLX5_VPORT_INVAL_VHCA_ID(vport) \
++	((vport)->vhca_id == MLX5_VHCA_ID_INVALID)
++
+ struct mlx5_vport {
+ 	struct mlx5_core_dev    *dev;
+ 	struct hlist_head       uc_list[MLX5_L2_ADDR_HASH_SIZE];
+@@ -209,6 +214,7 @@ struct mlx5_vport {
+ 	struct vport_egress     egress;
+ 	u32                     default_metadata;
+ 	u32                     metadata;
++	int                     vhca_id;
  
-+struct mlx5_ifc_destroy_esw_vport_out_bits {
-+	u8         status[0x8];
-+	u8         reserved_at_8[0x18];
-+
-+	u8         syndrome[0x20];
-+
-+	u8         reserved_at_40[0x20];
-+};
-+
-+struct mlx5_ifc_destroy_esw_vport_in_bits {
-+	u8         opcode[0x10];
-+	u8         uid[0x10];
-+
-+	u8         reserved_at_20[0x10];
-+	u8         op_mod[0x10];
-+
-+	u8         reserved_at_40[0x10];
-+	u8         vport_num[0x10];
-+
-+	u8         reserved_at_60[0x20];
-+};
-+
- struct mlx5_ifc_modify_esw_vport_context_out_bits {
- 	u8         status[0x8];
- 	u8         reserved_at_8[0x18];
-@@ -7484,6 +7525,85 @@ struct mlx5_ifc_query_adapter_in_bits {
- 	u8         reserved_at_40[0x40];
- };
+ 	struct mlx5_vport_info  info;
  
-+struct mlx5_ifc_function_vhca_rid_info_reg_bits {
-+	u8         host_number[0x8];
-+	u8         host_pci_device_function[0x8];
-+	u8         host_pci_bus[0x8];
-+	u8         reserved_at_18[0x3];
-+	u8         pci_bus_assigned[0x1];
-+	u8         function_type[0x4];
-+
-+	u8         parent_pci_device_function[0x8];
-+	u8         parent_pci_bus[0x8];
-+	u8         vhca_id[0x10];
-+
-+	u8         reserved_at_40[0x10];
-+	u8         function_id[0x10];
-+
-+	u8         reserved_at_60[0x20];
-+};
-+
-+struct mlx5_ifc_delegated_function_vhca_rid_info_bits {
-+	struct mlx5_ifc_function_vhca_rid_info_reg_bits function_vhca_rid_info;
-+
-+	u8         reserved_at_80[0x18];
-+	u8         manage_profile[0x8];
-+
-+	u8         reserved_at_a0[0x60];
-+};
-+
-+struct mlx5_ifc_query_delegated_vhca_out_bits {
-+	u8         status[0x8];
-+	u8         reserved_at_8[0x18];
-+
-+	u8         syndrome[0x20];
-+
-+	u8         reserved_at_40[0x20];
-+
-+	u8         reserved_at_60[0x10];
-+	u8         functions_count[0x10];
-+
-+	u8         reserved_at_80[0x80];
-+
-+	struct mlx5_ifc_delegated_function_vhca_rid_info_bits
-+			delegated_function_vhca_rid_info[];
-+};
-+
-+struct mlx5_ifc_query_delegated_vhca_in_bits {
-+	u8         opcode[0x10];
-+	u8         uid[0x10];
-+
-+	u8         reserved_at_20[0x10];
-+	u8         op_mod[0x10];
-+
-+	u8         reserved_at_40[0x40];
-+};
-+
-+struct mlx5_ifc_create_esw_vport_out_bits {
-+	u8         status[0x8];
-+	u8         reserved_at_8[0x18];
-+
-+	u8         syndrome[0x20];
-+
-+	u8         reserved_at_40[0x20];
-+
-+	u8         reserved_at_60[0x10];
-+	u8         vport_num[0x10];
-+};
-+
-+struct mlx5_ifc_create_esw_vport_in_bits {
-+	u8         opcode[0x10];
-+	u8         reserved_at_10[0x10];
-+
-+	u8         reserved_at_20[0x10];
-+	u8         op_mod[0x10];
-+
-+	u8         reserved_at_40[0x10];
-+	u8         managed_vhca_id[0x10];
-+
-+	u8         reserved_at_60[0x20];
-+};
-+
- struct mlx5_ifc_qp_2rst_out_bits {
- 	u8         status[0x8];
- 	u8         reserved_at_8[0x18];
-@@ -7611,7 +7731,12 @@ struct mlx5_ifc_modify_vport_state_in_bits {
- 	u8         reserved_at_41[0xf];
- 	u8         vport_number[0x10];
+@@ -822,8 +828,10 @@ struct devlink_port *mlx5_esw_offloads_devlink_port(struct mlx5_eswitch *esw, u1
  
--	u8         reserved_at_60[0x18];
-+	u8         reserved_at_60[0x10];
-+	u8         ingress_connect[0x1];
-+	u8         egress_connect[0x1];
-+	u8         ingress_connect_valid[0x1];
-+	u8         egress_connect_valid[0x1];
-+	u8         reserved_at_74[0x4];
- 	u8         admin_state[0x4];
- 	u8         reserved_at_7c[0x4];
- };
+ int mlx5_esw_sf_max_hpf_functions(struct mlx5_core_dev *dev, u16 *max_sfs, u16 *sf_base_id);
+ 
+-int mlx5_esw_vport_vhca_id_set(struct mlx5_eswitch *esw, u16 vport_num);
+-void mlx5_esw_vport_vhca_id_clear(struct mlx5_eswitch *esw, u16 vport_num);
++int mlx5_esw_vport_vhca_id_map(struct mlx5_eswitch *esw,
++			       struct mlx5_vport *vport);
++void mlx5_esw_vport_vhca_id_unmap(struct mlx5_eswitch *esw,
++				  struct mlx5_vport *vport);
+ int mlx5_eswitch_vhca_id_to_vport(struct mlx5_eswitch *esw, u16 vhca_id, u16 *vport_num);
+ 
+ /**
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+index bee906661282..19decaa8a96e 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+@@ -4161,23 +4161,28 @@ u32 mlx5_eswitch_get_vport_metadata_for_match(struct mlx5_eswitch *esw,
+ }
+ EXPORT_SYMBOL(mlx5_eswitch_get_vport_metadata_for_match);
+ 
+-int mlx5_esw_vport_vhca_id_set(struct mlx5_eswitch *esw, u16 vport_num)
++int mlx5_esw_vport_vhca_id_map(struct mlx5_eswitch *esw,
++			       struct mlx5_vport *vport)
+ {
+ 	u16 *old_entry, *vhca_map_entry, vhca_id;
+-	int err;
+ 
+-	err = mlx5_vport_get_vhca_id(esw->dev, vport_num, &vhca_id);
+-	if (err) {
+-		esw_warn(esw->dev, "Getting vhca_id for vport failed (vport=%u,err=%d)\n",
+-			 vport_num, err);
+-		return err;
++	if (WARN_ONCE(MLX5_VPORT_INVAL_VHCA_ID(vport),
++		      "vport %d vhca_id is not set", vport->vport)) {
++		int err;
++
++		err = mlx5_vport_get_vhca_id(vport->dev, vport->vport,
++					     &vhca_id);
++		if (err)
++			return err;
++		vport->vhca_id = vhca_id;
+ 	}
+ 
++	vhca_id = vport->vhca_id;
+ 	vhca_map_entry = kmalloc(sizeof(*vhca_map_entry), GFP_KERNEL);
+ 	if (!vhca_map_entry)
+ 		return -ENOMEM;
+ 
+-	*vhca_map_entry = vport_num;
++	*vhca_map_entry = vport->vport;
+ 	old_entry = xa_store(&esw->offloads.vhca_map, vhca_id, vhca_map_entry, GFP_KERNEL);
+ 	if (xa_is_err(old_entry)) {
+ 		kfree(vhca_map_entry);
+@@ -4187,17 +4192,12 @@ int mlx5_esw_vport_vhca_id_set(struct mlx5_eswitch *esw, u16 vport_num)
+ 	return 0;
+ }
+ 
+-void mlx5_esw_vport_vhca_id_clear(struct mlx5_eswitch *esw, u16 vport_num)
++void mlx5_esw_vport_vhca_id_unmap(struct mlx5_eswitch *esw,
++				  struct mlx5_vport *vport)
+ {
+-	u16 *vhca_map_entry, vhca_id;
+-	int err;
+-
+-	err = mlx5_vport_get_vhca_id(esw->dev, vport_num, &vhca_id);
+-	if (err)
+-		esw_warn(esw->dev, "Getting vhca_id for vport failed (vport=%hu,err=%d)\n",
+-			 vport_num, err);
++	u16 *vhca_map_entry;
+ 
+-	vhca_map_entry = xa_erase(&esw->offloads.vhca_map, vhca_id);
++	vhca_map_entry = xa_erase(&esw->offloads.vhca_map, vport->vhca_id);
+ 	kfree(vhca_map_entry);
+ }
+ 
 -- 
 2.50.1
 
