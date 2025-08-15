@@ -1,75 +1,96 @@
-Return-Path: <linux-rdma+bounces-12772-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12773-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DB31B282CE
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Aug 2025 17:19:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54CC3B282FA
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Aug 2025 17:32:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16DDCAE79D4
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Aug 2025 15:18:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61CC51D02A8A
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Aug 2025 15:31:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AC0B2957CD;
-	Fri, 15 Aug 2025 15:18:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 353E322DFB1;
+	Fri, 15 Aug 2025 15:31:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="DZPV+XX9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V1LTMd4A"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63C0C1E51EB;
-	Fri, 15 Aug 2025 15:18:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932882AD13;
+	Fri, 15 Aug 2025 15:31:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755271132; cv=none; b=B+0cv6eair0OAXFbqPsHM2LpR7svUwupUSSTjN9pZ5D4CnLZpJZ6ZyxyAQL+o4zB/9mv8Tn6Ckxlf7XgUU5+UUbo4I/PW9XazmWAsngPuCSaevyDWRAj2G4eQptA0sLk/YVNMvB5+a9VVotbFanqz2xFcVoGcALpLfo9Xd7VkhQ=
+	t=1755271869; cv=none; b=Qtr9WU7wCGC9MZpqeY8UdSz2t93Tk0wCSDGzlQMvIKqjoY1OVoRdk1LLaIq6VGYT4Q2vjJ1I+2x7pokHUWsf45z/L/I2FeOvw+wQ2Q+x443f+P215OHaW9EG0Pl4V5r49Zn+CsjYvlaolUnmf1+EFZSCfpgs2UoFCjIqgfuCezQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755271132; c=relaxed/simple;
-	bh=St+m+XjWR/D4VK4NB5c9bnl2k3LwJ4ySiZP7SeGdbVQ=;
+	s=arc-20240116; t=1755271869; c=relaxed/simple;
+	bh=IRqI8fHDMdsh55e0Tx0NBB8lE6UkIbtfrdJC3dNGRJs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OecZoLcDjfLEVdiuEXynp80KVkrNHYqwrzePlHvmcEnQRhijQYNPTn21iVGO31RwBnM/Jihk6GsQkKEQosZZbHbJ50yIrskSJQZJg6OwTZZUM2gPP1qJe+anE2OH9RfBqu+gg7Ai3Jv8gZBg0MXtnaqVoBVs0oA04apxF5RtOa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=DZPV+XX9; arc=none smtp.client-ip=115.124.30.118
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1755271122; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=XbSjaFfmeqSEDkSADy+S30PSxGVVPnDzKxoBgjjd400=;
-	b=DZPV+XX9dTC4xc35Q9W4bu4WdlPipQlwtDL8qSgVbdl+MvSCQCEY9Tq3BbPZNFyVWgZqLFkA4pVTaAWuZKNmwRIDquj8e/y5JnziiVwTPR9W+l26c/QYxx3NvuLOWOOqoo/ChyUv1xcVhjrc68taEPuOw4Jf7ry1R1MSoCPbGu0=
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0WlpLglp_1755271121 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Fri, 15 Aug 2025 23:18:42 +0800
-Date: Fri, 15 Aug 2025 23:18:41 +0800
-From: Dust Li <dust.li@linux.alibaba.com>
-To: Alexandra Winter <wintera@linux.ibm.com>,
-	David Miller <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=TA3YwY87mkYxiLWmP01EAheJ+eQ+vIW2GlUvUHDES0IdPqrR3xB39Uya7Xcxsm1fUqafnO0xeT1ZSG9LYfDmJiXh6Nf19K+2DxPlTVkm1UizaJecqfCEAUKPuxbqIOBeH8Ye5QIxuC0/Fi4QnGZSE6uKiHxT6c3V/LJr/OKDLU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V1LTMd4A; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-24458242b33so19880725ad.3;
+        Fri, 15 Aug 2025 08:31:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755271867; x=1755876667; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NSt0o4DAYQoZCN08JDMbTQeP9CBWq8tSRkUO5qbJiM8=;
+        b=V1LTMd4AUo/6uEDuSOR7DdqYPYBc46Dx5DRMaBCRBSrC/UxTvmzCa7C06wb0AspC5j
+         8x57o2WIAhurSOvT32DKoLlDXwI2ThRku9THBpgj7lUtPQS/KiOFdPqx2P9z+cxrUK7I
+         WT9UiUXoHp+cKtozCISb0aLj2ZtJ7md+dLmSzT1f2+VnbGiboh9/yWORX7/AaqbG2lIz
+         huz5m5xeIae6/qNfgAvyhQ4k5PaWPhIDwT1Ml5Z4WG/Oo3+0s1Ze+dytpEKQbNohOWhe
+         JsQoDaXUBjMeOzyFGJfNJqb/JfDiNei2pPaE9YxbueMt61/SdDA/ZcWM0TezRC9AHhXa
+         eiQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755271867; x=1755876667;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NSt0o4DAYQoZCN08JDMbTQeP9CBWq8tSRkUO5qbJiM8=;
+        b=vLN3IJrDrke6OMKgFkkzIwmN/Ef7duN2H6i0FxvU2TxFJFSBt38MjwiRRMEsJd9Lol
+         Ivvu/w6ZX3j3y9hyh8VJOVE9NvM7hi2MrK+8LNlD/2YSvtRS/fpcvY219PAMmTKIwAN9
+         1L8MXP4iWoidOEv2nKrKW+/GsPwlAid7fTRWaXBxSqBRnUAtINWxJiPaB82M9cloNOw0
+         7v47sXFwoCKShyQKyLcrYuK7xHodSeOPV3jcVuqkIPTpwqoIHIDif+1mXjGhmW35g/MK
+         oOAeCAXJ9dhtgNROYWJxxjVLByUMMnRJikfdyX3holrLqg/pYk45gOBLrncUERn2aId1
+         3euA==
+X-Forwarded-Encrypted: i=1; AJvYcCUaqpw/YVPxGM4dXaH3KfnWsEMfDYsA3cHGIyosrdhoQPOlFieihgpV0o2fCUQVrxNzk8qwJ2h5WKKrrtPf@vger.kernel.org, AJvYcCV9b3KNOoXklQGYNns2B1pk+ufKpOutXDW3ZEuWYR6k5NNrz8ZeNiRASNSJRQxUEjo9BAb9ZcKtpg==@vger.kernel.org, AJvYcCXhacvJFWZsHm6vHG+pxhIe6xaACaWvk5TTE42nbG/gvuXrJhEp/VyXIKF3yPcDOGDC2hGhgN1i@vger.kernel.org, AJvYcCXj4YKCsSbW4QFxyE9js/3ibcnJu84iZArrAR4nDMZP8gWO4fseNl+7PGUA4nMswv6wwqHks3PKKuL+MQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyhMu5Nmwb1VW2/9o0rmV0H0q98XDP5t+ibeVF4iDoh0vivp6hy
+	ysa9/6tcm1aEEOIELdSVAnbgllMC3yioFXd8eE4ie+9mIGPRTUpjt40=
+X-Gm-Gg: ASbGncvIGugJLXt49RGp9O6MXaasZUAaab3anW87gHwwhJ5rMg33tlayKVWEq57AX9z
+	CTafbEdEaDMrYOocif4dZ3oYt7CDwuBadD2RsOx0x3X6MNyz3ljORRlcTUK5TIxNEUr1mpFJbYh
+	HS298u6T7b8sh8ZUhvjT9UwXrs9LTGh4QrywOSMRLqV1C428uuB3OAIpswHq7uDtsnL2ZWZEfYV
+	CGb2idBPQkxhFSCnOBR24am1lQWidIDpBK1WLmMpTq4pRdDjtjd67hOjHww9vT7kOha+Mk7s1kJ
+	uPp/ITFvyTqVGfZwvg9gtfe7mRFB8SHpQTCDFYj8Qaz2bB5jmTXKRk41SCwFu7ql9GA/tR29zKI
+	BAt+hng00U9PT979/WwaCzQn5j7ICQMutwX9wUWBIKkJX3hthO4WwA0+1x2U=
+X-Google-Smtp-Source: AGHT+IFuIiW/HvU2DvdjMihkEix7W9hPl4GUhJNG8esujMO8U+GyUJ45blWSl0KpxoQv2EfYq5Npmw==
+X-Received: by 2002:a17:903:37c7:b0:23f:ed09:f7b with SMTP id d9443c01a7336-2446d95078amr40125455ad.48.1755271866678;
+        Fri, 15 Aug 2025 08:31:06 -0700 (PDT)
+Received: from localhost (c-73-158-218-242.hsd1.ca.comcast.net. [73.158.218.242])
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-2446cb0dd5bsm16573385ad.63.2025.08.15.08.31.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Aug 2025 08:31:06 -0700 (PDT)
+Date: Fri, 15 Aug 2025 08:31:05 -0700
+From: Stanislav Fomichev <stfomichev@gmail.com>
+To: Dragos Tatulea <dtatulea@nvidia.com>
+Cc: almasrymina@google.com, asml.silence@gmail.com,
+	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"D. Wythe" <alibuda@linux.alibaba.com>,
-	Sidraya Jayagond <sidraya@linux.ibm.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>,
-	Julian Ruess <julianr@linux.ibm.com>
-Cc: netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Thorsten Winkler <twinkler@linux.ibm.com>,
-	Simon Horman <horms@kernel.org>,
-	Mahanta Jambigi <mjambigi@linux.ibm.com>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>, Halil Pasic <pasic@linux.ibm.com>,
-	linux-rdma@vger.kernel.org
-Subject: Re: [RFC net-next 11/17] net/dibs: Move struct device to dibs_dev
-Message-ID: <aJ9P0WpHU30zpLLt@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20250806154122.3413330-1-wintera@linux.ibm.com>
- <20250806154122.3413330-12-wintera@linux.ibm.com>
- <369a292c-c8c5-4002-a116-f9e1b4a436ba@linux.ibm.com>
- <aJ6TsutbywkTLWxO@linux.alibaba.com>
- <88d261d1-b1fe-447f-a928-02dec6141b0b@linux.ibm.com>
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Andrew Lunn <andrew+netdev@lunn.ch>, cratiu@nvidia.com,
+	parav@nvidia.com, Christoph Hellwig <hch@infradead.org>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	io-uring@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [RFC net-next v3 0/7] devmem/io_uring: allow more flexibility
+ for ZC DMA devices
+Message-ID: <aJ9SuemoS6n0GIBs@mini-arch>
+References: <20250815110401.2254214-2-dtatulea@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -78,86 +99,63 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <88d261d1-b1fe-447f-a928-02dec6141b0b@linux.ibm.com>
+In-Reply-To: <20250815110401.2254214-2-dtatulea@nvidia.com>
 
-On 2025-08-15 13:59:49, Alexandra Winter wrote:
->
->
->On 15.08.25 03:56, Dust Li wrote:
->> On 2025-08-14 10:51:27, Alexandra Winter wrote:
->>>
->>> On 06.08.25 17:41, Alexandra Winter wrote:
->>> [...]
->>>> Replace smcd->ops->get_dev(smcd) by dibs_get_dev().
->>>>
->>> Looking at the resulting code, I don't really like this concept of a *_get_dev() function,
->>> that does not call get_device().
->>> I plan to replace that by using dibs->dev directly in the next version.
->> May I ask why? Because of the function name ? If so, maybe we can change the name.
->
->Yes the name. Especially, as it is often used as argument for get_device() or put_device().
->Eventually I would like to provide dibs_get_dev()/dibs_put_dev() that actually
->do refcounting.
->And then I thought defining dibs_read_dev() is not helping readability.
+On 08/15, Dragos Tatulea wrote:
+> For TCP zerocopy rx (io_uring, devmem), there is an assumption that the
+> parent device can do DMA. However that is not always the case:
+> - Scalable Function netdevs [1] have the DMA device in the grandparent.
+> - For Multi-PF netdevs [2] queues can be associated to different DMA
+>   devices.
+> 
+> The series adds an API for getting the DMA device for a netdev queue.
+> Drivers that have special requirements can implement the newly added
+> queue management op. Otherwise the parent will still be used as before.
+> 
+> This series continues with switching to this API for io_uring zcrx and
+> devmem and adds a ndo_queue_dma_dev op for mlx5.
+> 
+> The last part of the series changes devmem rx bind to get the DMA device
+> per queue and blocks the case when multiple queues use different DMA
+> devices. The tx bind is left as is.
+> 
+> [1] Documentation/networking/device_drivers/ethernet/mellanox/mlx5/switchdev.rst
+> [2] Documentation/networking/multi-pf-netdev.rst
+> 
+> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+> 
+> ----
+> Changes sice v2 [3]:
+> - Downgraded to RFC status until consensus is reached.
+> - Implemented more generic approach as discussed during
+>   v2 review.
+> - Refactor devmem to get DMA device for multiple rx queues for
+>   multi PF netdev support.
+> - Renamed series with a more generic name.
+> 
+> Changes since v1 [2]:
+> - Dropped the Fixes tag.
+> - Added more documentation as requeseted.
+> - Renamed the patch title to better reflect its purpose.
+> 
+> Changes since RFC [1]:
+> - Upgraded from RFC status.
+> - Dropped driver specific bits for generic solution.
+> - Implemented single patch as a fix as requested in RFC.
+> - Handling of multi-PF netdevs will be handled in a subsequent patch
+>   series.
+> 
+> [1] RFC: https://lore.kernel.org/all/20250702172433.1738947-2-dtatulea@nvidia.com/
+> [2]  v1: https://lore.kernel.org/all/20250709124059.516095-2-dtatulea@nvidia.com/
+> [3]  v2: https://lore.kernel.org/all/20250711092634.2733340-2-dtatulea@nvidia.com/
+> ---
+> Dragos Tatulea (7):
+>   queue_api: add support for fetching per queue DMA dev
 
-I see. I don't like dibs_get_dev() either.
-What about dibs_device_to_dev() or dibs_to_dev() ?
+[..]
 
-If we can't agree on a name we’re all happy with, I agree we can
-leave it as is for now.
+>   io_uring/zcrx: add support for custom DMA devices
 
-
->> 
->> While I don't have a strong preference either way, I personally favor
->> hiding the members of the dibs_dev structure from the upper layer. In my
->> opinion, it would be better to avoid direct access to dibs members from
->> upper layers and instead provide dedicated interface functions.
->> 
->> For example, I even think we should not expose dibs->ops->xxx directly
->> to the SMC layer. Encapsulating such details would improve modularity
->> and maintainability. Just like what IB subsystem has done before :)
->> 
->> For example:
->> # git grep dibs net/smc
->> [...]
->> net/smc/smc_ism.c:      return dibs->ops->query_remote_gid(dibs, &ism_rgid, vlan_id ? 1 : 0,
->> net/smc/smc_ism.c:      return smcd->dibs->ops->get_fabric_id(smcd->dibs);
->> net/smc/smc_ism.c:      if (!smcd->dibs->ops->add_vlan_id)
->> net/smc/smc_ism.c:      if (smcd->dibs->ops->add_vlan_id(smcd->dibs, vlanid)) {
->> net/smc/smc_ism.c:      if (!smcd->dibs->ops->del_vlan_id)
->> net/smc/smc_ism.c:      if (smcd->dibs->ops->del_vlan_id(smcd->dibs, vlanid))
->> [...]
->> 
->> Best regards,
->> Dust
->
->
->I see your point and I remember you brought that up in your review of
->[RFC net-next 0/7] Provide an ism layer
->already.
->
->I tried to keep this series to a meaningful minimum, which is a tradeoff.
->If possible, I just wanted to move code around and add the dibs layer
->in-between. There are several areas where I would like to see even more
->de-coupling. eg.:
->- handle_irq(): Clients should not run in interrupt context,
->  a receive_data() callback function would be better.
->- The device drivers should not loop through the client array
->- dibs_dev_op.*_dmb() functions reveal unnecessary details of the
->  internal dmb struct to the clients
->- ...
->
->So instead of adding a set of 1:1 caller functions / interface functions
->for dibs_dev_ops and dibs_client_ops now, I would like to propose to work
->on further decoupling devices and clients by adding more abstractions that
->bring benefit. And then replace the remaining calls to ops by 1:1 caller
->functions. Does that make sense? Or does anybody feel strongly that I need
->to provide interface functions now?
-
-Yes, I agree we can do that in the future.
-
-Best regards,
-Dust
-
+Did something happen to 2/7? I don't see it in my mailbox and in the
+lore..
 
