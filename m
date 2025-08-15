@@ -1,110 +1,125 @@
-Return-Path: <linux-rdma+bounces-12779-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12780-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B4FEB2865E
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Aug 2025 21:26:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B20DB286A9
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Aug 2025 21:50:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3E001CC1333
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Aug 2025 19:26:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0730B056DD
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Aug 2025 19:49:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1316285061;
-	Fri, 15 Aug 2025 19:26:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EE3E2561C9;
+	Fri, 15 Aug 2025 19:49:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RPzsPUfJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="le5+wiC8"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88CC6221D87;
-	Fri, 15 Aug 2025 19:26:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39C6D217F34;
+	Fri, 15 Aug 2025 19:49:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755285989; cv=none; b=hGbM4+PPRwOz8sVIKrXuE/KYZ81TRm+5CW8EnSJC7EeRjWZZk8xZQJaMJwiwuSrs0ohhsWiky0mnCB645sLn9kGWneTIfNDFAtByp6eL0s7lcuxggdwhjaLOST8pZEMWPr6ya6Rg7ogmIP7pIXvUBx07kp6HKgxmcfTe3MXNIRQ=
+	t=1755287346; cv=none; b=PStxiqqP3hToAVwgeLn2nD6epqXJTISgTnWS1YbSTACLs3l4iqu9++NX2ikXEMKCaividNlNoylm0J2ciuG4D/g1uIkI5/bFYLLciuqqQ/wOPIxMa2lEZTJgiJfLe8dZnRO2O97RiMRD1CyOYrH9ogqpCKRVNDUnkdcqsy7WpTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755285989; c=relaxed/simple;
-	bh=XThlV1U6bmBUoCCBTZhniQaFumiomKJglFZyqJ8EKMo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GpoPwVUwJJTKcbEsjf/hxdVvCA+qshOxZRkrXUc+Zcv0oe4GVvMquLBpR0YPX3zuAvHLjrhgqaGmjk/W/hQHD5UwWsm5GIisZfbH4qh1qSDuzQv0QYY6Sg97MsMdmvLKfQvl9iqL20txCriXriPmcVNQJmTJZ57GQ5rCERmRanw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RPzsPUfJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 234DAC4CEEB;
-	Fri, 15 Aug 2025 19:26:28 +0000 (UTC)
+	s=arc-20240116; t=1755287346; c=relaxed/simple;
+	bh=rPWcJvQK/bcOJAdv0+HXrKWJauiznY4nDlfwlarhDxk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tRdE5ycqJqhLKC6Hg44zGtIwyH75b7eblUYgxyRiB2j1hVsm/dSJyjYesga/z7MsYq3kcjJmyH59vNVJrJUJ3HYMYRC1X9G5x8xWrPiUhQsvSg0lYmi2pvn+sbPu6//F62DtcZRKDDekCZks8JaJy1Smfrzqdx6kBASMRw4R1cs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=le5+wiC8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5D65C4CEEB;
+	Fri, 15 Aug 2025 19:49:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1755285989;
-	bh=XThlV1U6bmBUoCCBTZhniQaFumiomKJglFZyqJ8EKMo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=RPzsPUfJBr5q5p+iF9vGtPAIahYFabs9abdt4JCY7KxS1BzGSCe6yRc539IhK5VBn
-	 BHJH/IQp4gyfnkPd1YC/dKSq0GM/dU83SnnwkOxSYvQ4TUUPUuV0CoMUlKZANeCulU
-	 IXM7O4rn6DuC98dxd83wIL7+Z2YA1qUbe6SKpFDZ796B1oaIbDtehNXYrQJ3NyjTB8
-	 ThvxZ/TZ1RZHfqz1s2dV1biJs0NzcmsQg3rroH2ODMZvpYx7eLoaDNpgmShfEcB0P1
-	 15fyszyNz+4TOiZQtxl4cn/2BGzPyxDkB2ruCyy84Yo8ioH+1EZGfD3XjmVyTDdNMw
-	 8Qx3qtsNsZypw==
-Date: Fri, 15 Aug 2025 12:26:27 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: Jiri Pirko <jiri@nvidia.com>, Jiri Pirko <jiri@resnulli.us>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Andrew Lunn
- <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Donald
- Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Brett
- Creeley <brett.creeley@amd.com>, Michael Chan <michael.chan@broadcom.com>,
- Pavan Chebbi <pavan.chebbi@broadcom.com>, "Cai Huoqing"
- <cai.huoqing@linux.dev>, Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek
- Kitszel <przemyslaw.kitszel@intel.com>, Sunil Goutham
- <sgoutham@marvell.com>, Linu Cherian <lcherian@marvell.com>, Geetha
- sowjanya <gakula@marvell.com>, Jerin Jacob <jerinj@marvell.com>, hariprasad
- <hkelam@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>, Saeed
- Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Mark Bloch
- <mbloch@nvidia.com>, Ido Schimmel <idosch@nvidia.com>, Petr Machata
- <petrm@nvidia.com>, Manish Chopra <manishc@marvell.com>,
- <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-doc@vger.kernel.org>, <intel-wired-lan@lists.osuosl.org>,
- <linux-rdma@vger.kernel.org>, "Gal Pressman" <gal@nvidia.com>, Dragos
- Tatulea <dtatulea@nvidia.com>, "Shahar Shitrit" <shshitrit@nvidia.com>
-Subject: Re: [PATCH net-next V3 4/5] devlink: Make health reporter error
- burst period configurable
-Message-ID: <20250815122627.77877d21@kernel.org>
-In-Reply-To: <1755111349-416632-5-git-send-email-tariqt@nvidia.com>
-References: <1755111349-416632-1-git-send-email-tariqt@nvidia.com>
-	<1755111349-416632-5-git-send-email-tariqt@nvidia.com>
+	s=k20201202; t=1755287345;
+	bh=rPWcJvQK/bcOJAdv0+HXrKWJauiznY4nDlfwlarhDxk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=le5+wiC8zmV5zRGh7rVK7lp70IoWZWe5nZ7fD+RIUF4XjUJhvNnWuU+lV8plPxT25
+	 EP8xOcepdfx3XWQgv3a4V5VCqHDiJzbBSuI3HNXagsfvkzqtsDvx/aonjq9AugsGyo
+	 6fo+QofQCbfABkDG5iWLz7owdMQuwZ8KcWraUD7fGuxOqkNycyytIOjCnNTHIpm7hA
+	 0fUSnR8qsYzlhEoMfGA5YC813ARVIryCTczJ2KjaMLnKkyGx9DCPZeIpcUQJzcyZwi
+	 N+pSyetGQUMNpCt1A06Klpn11xp2qBBT0++8huZa38B0aEjB3yeULEeESXIBcuxfLM
+	 dJeRd+z9tAHyQ==
+From: Saeed Mahameed <saeed@kernel.org>
+To: Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leonro@nvidia.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>,
+	linux-rdma@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Jakub Kicinski <kuba@kernel.org>,
+	Parav Pandit <parav@nvidia.com>
+Subject: [GIT PULL][mlx5-next 0/4] Cached vhca id and adjacent function vports
+Date: Fri, 15 Aug 2025 12:48:57 -0700
+Message-ID: <20250815194901.298689-1-saeed@kernel.org>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Wed, 13 Aug 2025 21:55:48 +0300 Tariq Toukan wrote:
-> diff --git a/Documentation/netlink/specs/devlink.yaml b/Documentation/netlink/specs/devlink.yaml
-> index bb87111d5e16..0e81640dd3b2 100644
-> --- a/Documentation/netlink/specs/devlink.yaml
-> +++ b/Documentation/netlink/specs/devlink.yaml
-> @@ -853,6 +853,9 @@ attribute-sets:
->          type: nest
->          multi-attr: true
->          nested-attributes: dl-rate-tc-bws
-> +      -
-> +        name: health-reporter-error-burst-period
+From: Saeed Mahameed <saeedm@nvidia.com>
 
-the "graceful-period" does not have the word "error"
-in it. Why is it necessary to include it in this parameter?
-What else would be bursting in an error reporter if not errors?
+Hi Jakub, Jason,
 
-> +        type: u64
+This pull request introduces a preparation patchset for caching vhca_id 
+and needed HW bits for the upcoming netdev/eswitch series to support
+adjacent function vports.
 
-could you add a doc: here?
+For more information please see tag log below.
 
->    -
->      name: dl-dev-stats
->      subset-of: devlink
+The following changes since commit 8f5ae30d69d7543eee0d70083daf4de8fe15d585:
 
-> +	DEVLINK_ATTR_HEALTH_REPORTER_ERR_BURST_PERIOD,	/* u64 */
+  Linux 6.17-rc1 (2025-08-10 19:41:16 +0300)
 
-The _ERR here won't work if you used _ERROR in YAML. 
-The naming in the YAML spec must match the C naming exactly.
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git tags/mlx5-next-vhca-id
+
+for you to fetch changes up to 40653f280b2640e5caa94eeedee43e0f1df97704:
+
+  {rdma,net}/mlx5: export mlx5_vport_get_vhca_id (2025-08-15 12:17:47 -0700)
+
+----------------------------------------------------------------
+mlx5-next-vhca-id
+
+A preparation patchset for adjacent function vports.
+
+Adjacent functions can delegate their SR-IOV VFs to sibling PFs,
+allowing for more flexible and scalable management in multi-host and
+ECPF-to-host scenarios. Adjacent vports can be managed by the management
+PF via their unique vhca id and can't be managed by function index as the
+index can conflict with the local vports/vfs.
+
+This series provides:
+
+- Use the cached vcha id instead of querying it every time from fw
+- Query hca cap using vhca id instead of function id when FW supports it
+- Add HW capabilities and required definitions for adjacent function vports
+
+----------------------------------------------------------------
+Saeed Mahameed (4):
+      net/mlx5: mlx5_ifc, Add hardware definitions needed for adjacent vports
+      net/mlx5: E-Switch, Cache vport vhca id on first cap query
+      net/mlx5: E-Switch, Set/Query hca cap via vhca id
+      {rdma,net}/mlx5: export mlx5_vport_get_vhca_id
+
+ drivers/infiniband/hw/mlx5/std_types.c                        |  27 ++++-----------------------
+ drivers/net/ethernet/mellanox/mlx5/core/diag/reporter_vnic.c  |   2 ++
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch.c             |  18 ++++++++++++++++--
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch.h             |  20 ++++++++++++++++++--
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c    |  34 +++++++++++++++++-----------------
+ drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h           |   2 --
+ drivers/net/ethernet/mellanox/mlx5/core/steering/hws/cmd.c    |  16 +++++++++++-----
+ drivers/net/ethernet/mellanox/mlx5/core/steering/sws/dr_cmd.c |  16 ++++++++++++----
+ drivers/net/ethernet/mellanox/mlx5/core/vport.c               |  58 ++++++++++++++++++++++++++++++++++++++++++++++++++++------
+ include/linux/mlx5/mlx5_ifc.h                                 | 133 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----
+ include/linux/mlx5/vport.h                                    |   2 ++
+ 11 files changed, 263 insertions(+), 65 deletions(-)
+
 -- 
-pw-bot: cr
+2.50.1
+
 
