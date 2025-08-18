@@ -1,225 +1,166 @@
-Return-Path: <linux-rdma+bounces-12807-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12808-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC262B29B61
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Aug 2025 09:56:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0C8BB29FAE
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Aug 2025 12:54:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14A1218A54A9
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Aug 2025 07:56:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A71CF1773A4
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Aug 2025 10:54:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44ADC2BD5A4;
-	Mon, 18 Aug 2025 07:55:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1767630FF22;
+	Mon, 18 Aug 2025 10:53:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="oJ62Ad6X"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Tj/Bm0j2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from fra-out-003.esa.eu-central-1.outbound.mail-perimeter.amazon.com (fra-out-003.esa.eu-central-1.outbound.mail-perimeter.amazon.com [3.72.182.33])
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0859277CAC
-	for <linux-rdma@vger.kernel.org>; Mon, 18 Aug 2025 07:55:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=3.72.182.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6FE430100E;
+	Mon, 18 Aug 2025 10:53:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755503751; cv=none; b=d35LOTsl+WSEJmy7rby0knRlqaUTYIuliutzjdk/5HY7dc99F/SF+V70uUZ0UCz/zgLfppxQIvFgGzkfLrwEKWoD6YDjOCUMvlurI56ExGF18R5xANudVVIS5ftweNZYClbscAX6S5x9RooY6srS+vP3UMpylnCyE90O7O5+2/A=
+	t=1755514436; cv=none; b=u0Ag04Zl8H+WGqN1EznOb1/YZFtf3Q7i17cbeswqwMbOQI1DfsEqDTd7OYHFBSGkS/aTASSIk3ICzQDrydRF7b7nR+vsH+mOwWwBf8bU5xs0CwPMzxuLqlzubraDgFwF830gplFAIUuAj/+pjC66kOIYLJ97bYBnC1Oo3M2hcNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755503751; c=relaxed/simple;
-	bh=IjqD8qsolFp+3egy9l/GmbgTnoX2xldlJ1bM9bKd3qk=;
-	h=Subject:Message-ID:Date:MIME-Version:From:To:CC:References:
-	 In-Reply-To:Content-Type; b=rnlqXYocywqh/Ml42bnzNg8BN17kT/DRptSW+9h7OkZuEIc+jzO13gGCvI/EYh/eXZ8RQXoGqXCyVm7e491Vgy7c45zZ9Q6pkU5XFJ509Ev69PLNRIv9A0JWzlchwoVogkVchzf29QR9Pnwol0Dc4Yd1gTH22MPUeGoUow1w64c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=oJ62Ad6X; arc=none smtp.client-ip=3.72.182.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1755503749; x=1787039749;
-  h=message-id:date:mime-version:from:to:cc:references:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=sfzYe3CBhOdVmE3JWr3mo2VDvsgKp2+5ayKcnSzrEtQ=;
-  b=oJ62Ad6XKOT7njqSRXDrZDKs6SOVrqYMT2KMIjQQQx8/gMcVZFJu2aYU
-   HjZi1V2JwTvp7wPv2RRo8+6ULF0NJBhanAXZgw5C6TAyaU8eNSEeF49dZ
-   8oMmGMzSljrDXkO0Z2+WX2SH2j0M1w1P+2pIzoyEcP8GHoav6kvD3EnK5
-   s/srL1Wushrqjacz3zbBz9uC+zwfdTlNBQIz7U5Mq+RiDj/8P3/0J3aV2
-   /r7M9isEcg9VysV7GMVYXBRjCPJ1XqA/uyJBMsHWjbvcfZllmaTaMvhRT
-   MmE3tHAHLkcOvAti2xpFou47LCBOJC//GQehLAFkfvQ0iyjilEsSY5sIu
-   g==;
-X-CSE-ConnectionGUID: PSsvjyfRSWuUpSwtwmI+2A==
-X-CSE-MsgGUID: TfLwJBQ6RG6YNpf7RczhLA==
-X-IronPort-AV: E=Sophos;i="6.17,293,1747699200"; 
-   d="scan'208";a="868738"
-Subject: Re: [PATCH for-next v2] RDMA/efa: Extend admin timeout error print
-Received: from ip-10-6-3-216.eu-central-1.compute.internal (HELO smtpout.naws.eu-west-1.prod.farcaster.email.amazon.dev) ([10.6.3.216])
-  by internal-fra-out-003.esa.eu-central-1.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2025 07:55:38 +0000
-Received: from EX19MTAEUC001.ant.amazon.com [10.0.43.254:45113]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.17.225:2525] with esmtp (Farcaster)
- id a3dd292d-563c-498a-b82b-0fc7624b153a; Mon, 18 Aug 2025 07:55:37 +0000 (UTC)
-X-Farcaster-Flow-ID: a3dd292d-563c-498a-b82b-0fc7624b153a
-Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
- EX19MTAEUC001.ant.amazon.com (10.252.51.155) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1544.14;
- Mon, 18 Aug 2025 07:55:37 +0000
-Received: from [192.168.141.233] (10.85.143.178) by
- EX19D031EUB003.ant.amazon.com (10.252.61.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.17;
- Mon, 18 Aug 2025 07:55:32 +0000
-Message-ID: <4d595390-a37d-40ea-8a3c-7962ece8e33c@amazon.com>
-Date: Mon, 18 Aug 2025 10:55:25 +0300
+	s=arc-20240116; t=1755514436; c=relaxed/simple;
+	bh=bdkGFGntJn6b9/DexCBKcDKT9nz79mQibMj1XFOZbAI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VGnSIcWusYB7agiqeRG1GmcUeE3GYtv7Cg4IlQ923yP28LTwvEij7+XvLCykNs+6OV4nrt346b7V9JGZ2vtY70QNWEXtye5npxbbg+WMTRBVUmcezqFyaSE8rCnfnNnffCKSzRw2RY6mnD+ZaoTPXhLw1jCCJfxJzhw5DOlB00g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Tj/Bm0j2; arc=none smtp.client-ip=115.124.30.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1755514424; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=UC+BNZzpQ+2R/7vUVL670jKwVT1hX1AhqBX1uis4yPM=;
+	b=Tj/Bm0j27okO4rsi+mbgGvlrgwicdRTNTF/uIGXmKv0ArGiJOkb0XWoGVxfywZrPPtZlac6pQHsC6h8FwElRGkkBtVU39vhQTSwlZGF7o42CEFjVgT+jm9wGkMgZNChGARmk8uwCKrbLnCLPnV7q4PtAGeszYVNY/eQrY57BIkc=
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0Wm-j9fQ_1755514423 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Mon, 18 Aug 2025 18:53:43 +0800
+Date: Mon, 18 Aug 2025 18:53:43 +0800
+From: Dust Li <dust.li@linux.alibaba.com>
+To: "D. Wythe" <alibuda@linux.alibaba.com>, Mahanta.Jambigi@ibm.com,
+	Sidraya.Jayagond@ibm.com, wenjia@linux.ibm.com,
+	wintera@linux.ibm.com, tonylu@linux.alibaba.com,
+	guwen@linux.alibaba.com
+Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+	pabeni@redhat.com, edumazet@google.com, jaka@linux.ibm.com
+Subject: Re: [PATCH net] net/smc: fix UAF on smcsk after smc_listen_out()
+Message-ID: <aKMGNyMUUwq7ufT7@linux.alibaba.com>
+Reply-To: dust.li@linux.alibaba.com
+References: <20250818054618.41615-1-alibuda@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: "Margolin, Michael" <mrgolin@amazon.com>
-To: Leon Romanovsky <leon@kernel.org>
-CC: <jgg@nvidia.com>, <linux-rdma@vger.kernel.org>, <sleybo@amazon.com>,
-	<matua@amazon.com>, <gal.pressman@linux.dev>, Yonatan Nachum
-	<ynachum@amazon.com>
-References: <20250703182314.16442-1-mrgolin@amazon.com>
- <20250706072523.GQ6278@unreal>
- <2ca6de0f-e3d7-4d11-affc-259fd9deff40@amazon.com>
- <20250707062808.GT6278@unreal>
- <f8fc9034-41b4-4b2f-8032-1bc9d2bcdb99@amazon.com>
- <20250707102830.GV6278@unreal>
- <dd59336e-6ab5-4814-a25a-9185d0737ecc@amazon.com>
-Content-Language: en-US
-In-Reply-To: <dd59336e-6ab5-4814-a25a-9185d0737ecc@amazon.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: EX19D044UWB002.ant.amazon.com (10.13.139.188) To
- EX19D031EUB003.ant.amazon.com (10.252.61.88)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250818054618.41615-1-alibuda@linux.alibaba.com>
 
-
-On 7/7/2025 2:18 PM, Margolin, Michael wrote:
+On 2025-08-18 13:46:18, D. Wythe wrote:
+>BPF CI testing report a UAF issue:
 >
-> On 7/7/2025 1:28 PM, Leon Romanovsky wrote:
->> CAUTION: This email originated from outside of the organization. Do 
->> not click links or open attachments unless you can confirm the sender 
->> and know the content is safe.
->>
->>
->>
->> On Mon, Jul 07, 2025 at 12:51:40PM +0300, Margolin, Michael wrote:
->>> On 7/7/2025 9:28 AM, Leon Romanovsky wrote:
->>>> CAUTION: This email originated from outside of the organization. Do 
->>>> not click links or open attachments unless you can confirm the 
->>>> sender and know the content is safe.
->>>>
->>>>
->>>>
->>>> On Sun, Jul 06, 2025 at 07:32:05PM +0300, Margolin, Michael wrote:
->>>>> On 7/6/2025 10:25 AM, Leon Romanovsky wrote:
->>>>>> CAUTION: This email originated from outside of the organization. 
->>>>>> Do not click links or open attachments unless you can confirm the 
->>>>>> sender and know the content is safe.
->>>>>>
->>>>>>
->>>>>>
->>>>>> On Thu, Jul 03, 2025 at 06:23:14PM +0000, Michael Margolin wrote:
->>>>>>> reinit_completion(&comp_ctx->wait_event);
->>>>>>>
->>>>>>> @@ -557,17 +559,19 @@ static int 
->>>>>>> efa_com_wait_and_process_admin_cq_interrupts(struct efa_comp_ctx 
->>>>>>> *com
->>>>>>>                  if (comp_ctx->status == EFA_CMD_COMPLETED)
->>>>>>>                          ibdev_err_ratelimited(
->>>>>>>                                  aq->efa_dev,
->>>>>>> -                             "The device sent a completion but 
->>>>>>> the driver didn't receive any MSI-X interrupt for admin cmd 
->>>>>>> %s(%d) status %d (ctx: 0x%p, sq producer: %d, sq consumer: %d, 
->>>>>>> cq consumer: %d)\n",
->>>>>>> +                             "The device sent a completion but 
->>>>>>> the driver didn't receive any MSI-X interrupt for admin cmd 
->>>>>>> %s(%d) status %d (id: %d, sq producer: %d, sq consumer: %d, cq 
->>>>>>> consumer: %d)\n",
->>>>>>> efa_com_cmd_str(comp_ctx->cmd_opcode),
->>>>>>> comp_ctx->cmd_opcode, comp_ctx->status,
->>>>>>> -                             comp_ctx, aq->sq.pc, aq->sq.cc, 
->>>>>>> aq->cq.cc);
->>>>>>> +                             comp_ctx->cmd_id, aq->sq.pc, 
->>>>>>> aq->sq.cc,
->>>>>>> +                             aq->cq.cc);
->>>>>>>                  else
->>>>>>>                          ibdev_err_ratelimited(
->>>>>>>                                  aq->efa_dev,
->>>>>>> -                             "The device didn't send any 
->>>>>>> completion for admin cmd %s(%d) status %d (ctx 0x%p, sq 
->>>>>>> producer: %d, sq consumer: %d, cq consumer: %d)\n",
->>>>>>> +                             "The device didn't send any 
->>>>>>> completion for admin cmd %s(%d) status %d (id: %d, sq producer: 
->>>>>>> %d, sq consumer: %d, cq consumer: %d)\n",
->>>>>>> efa_com_cmd_str(comp_ctx->cmd_opcode),
->>>>>>> comp_ctx->cmd_opcode, comp_ctx->status,
->>>>>>> -                             comp_ctx, aq->sq.pc, aq->sq.cc, 
->>>>>>> aq->cq.cc);
->>>>>>> +                             comp_ctx->cmd_id, aq->sq.pc, 
->>>>>>> aq->sq.cc,
->>>>>>> +                             aq->cq.cc);
->>>>>> I have very strong feeling that you don't really use these prints 
->>>>>> in real life.
->>>>>>
->>>>>> For example, comp_ctx->cmd_id is printed with %d, while code and 
->>>>>> comment
->>>>>> around cmd_id in __efa_com_submit_admin_cmd() suggests that it 
->>>>>> needs to be 0x%X.
->>>>>>
->>>>>> It has a lot of information separated to LSB and MSB bits which 
->>>>>> are not readable
->>>>>> while printing with %d.
->>>>>>
->>>>>> You are also printing comp_ctx->status, which is clear from 
->>>>>> if/else section.
->>>>>>
->>>>>> So no, I don't buy this claim for "additional debug information", 
->>>>>> while
->>>>>> existing is not used.
->>>>> What do you mean by that?!?
->>>> If you take a close look on the prints, you will see the reasons.
->>>> For example, you print comp_ctx->status which can be only 0 or 1,
->>>> while it is already clear what its value from the print itself.
->>>>
->>>>> These errors are extremely rare and are not manually reproducible, 
->>>>> that's
->>>>> why we want to collect as much information as we can when it happens.
->>>> Do it out-of-tree, there is no need in upstream code for internal 
->>>> debug
->>>> sessions.
->>> It's not for internal debug, it is used in production. Why would I 
->>> upstream
->>> internal debug prints?
->> It is used in internal cloud for the NICs not available to the rest of
->> the world. So yes, it is your internal debug print.
->>>>> I'm less bothered by the format as long as we have the info we need.
->>>> Like I said, it is clear that you never actually relied on this 
->>>> information.
->>>> Better if you completely delete these prints and keep them 
->>>> out-of-tree.
->>> Not sure that I follow, can you please elaborate on what "relying" 
->>> means
->>> from your POV?
->> "relied" == "used"
->>
-> The NIC might be available only in AWS but customers decide what Linux 
-> versions they use. Many of our customers choose to use upstream 
-> versions and avoid taking debug or modified versions.
+>  [   16.446633] BUG: kernel NULL pointer dereference, address: 000000000000003  0
+>  [   16.447134] #PF: supervisor read access in kernel mod  e
+>  [   16.447516] #PF: error_code(0x0000) - not-present pag  e
+>  [   16.447878] PGD 0 P4D   0
+>  [   16.448063] Oops: Oops: 0000 [#1] PREEMPT SMP NOPT  I
+>  [   16.448409] CPU: 0 UID: 0 PID: 9 Comm: kworker/0:1 Tainted: G           OE      6.13.0-rc3-g89e8a75fda73-dirty #4  2
+>  [   16.449124] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODUL  E
+>  [   16.449502] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/201  4
+>  [   16.450201] Workqueue: smc_hs_wq smc_listen_wor  k
+>  [   16.450531] RIP: 0010:smc_listen_work+0xc02/0x159  0
+>  [   16.452158] RSP: 0018:ffffb5ab40053d98 EFLAGS: 0001024  6
+>  [   16.452526] RAX: 0000000000000001 RBX: 0000000000000002 RCX: 000000000000030  0
+>  [   16.452994] RDX: 0000000000000280 RSI: 00003513840053f0 RDI: 000000000000000  0
+>  [   16.453492] RBP: ffffa097808e3800 R08: ffffa09782dba1e0 R09: 000000000000000  5
+>  [   16.453987] R10: 0000000000000000 R11: 0000000000000000 R12: ffffa0978274640  0
+>  [   16.454497] R13: 0000000000000000 R14: 0000000000000000 R15: ffffa09782d4092  0
+>  [   16.454996] FS:  0000000000000000(0000) GS:ffffa097bbc00000(0000) knlGS:000000000000000  0
+>  [   16.455557] CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003  3
+>  [   16.455961] CR2: 0000000000000030 CR3: 0000000102788004 CR4: 0000000000770ef  0
+>  [   16.456459] PKRU: 5555555  4
+>  [   16.456654] Call Trace  :
+>  [   16.456832]  <TASK  >
+>  [   16.456989]  ? __die+0x23/0x7  0
+>  [   16.457215]  ? page_fault_oops+0x180/0x4c  0
+>  [   16.457508]  ? __lock_acquire+0x3e6/0x249  0
+>  [   16.457801]  ? exc_page_fault+0x68/0x20  0
+>  [   16.458080]  ? asm_exc_page_fault+0x26/0x3  0
+>  [   16.458389]  ? smc_listen_work+0xc02/0x159  0
+>  [   16.458689]  ? smc_listen_work+0xc02/0x159  0
+>  [   16.458987]  ? lock_is_held_type+0x8f/0x10  0
+>  [   16.459284]  process_one_work+0x1ea/0x6d  0
+>  [   16.459570]  worker_thread+0x1c3/0x38  0
+>  [   16.459839]  ? __pfx_worker_thread+0x10/0x1  0
+>  [   16.460144]  kthread+0xe0/0x11  0
+>  [   16.460372]  ? __pfx_kthread+0x10/0x1  0
+>  [   16.460640]  ret_from_fork+0x31/0x5  0
+>  [   16.460896]  ? __pfx_kthread+0x10/0x1  0
+>  [   16.461166]  ret_from_fork_asm+0x1a/0x3  0
+>  [   16.461453]  </TASK  >
+>  [   16.461616] Modules linked in: bpf_testmod(OE) [last unloaded: bpf_testmod(OE)  ]
+>  [   16.462134] CR2: 000000000000003  0
+>  [   16.462380] ---[ end trace 0000000000000000 ]---
+>  [   16.462710] RIP: 0010:smc_listen_work+0xc02/0x1590
 >
-> You are right saying the appearance for this print is rare, that's why 
-> as you pointed out, it isn't perfectly formatted. But this is since 
-> the issue rarely reproduce, what is exactly the reason we need the 
-> print in-place when it does.
+>The direct cause of this issue is that after smc_listen_out_connected(),
+>newclcsock->sk may be NULL since it will releases the smcsk. Therefore,
+>if the application closes the socket immediately after accept,
+>newclcsock->sk can be NULL. A possible execution order could be as
+>follows:
 >
-> I can definitely improve the styling if it makes things better.
+>smc_listen_work                                 | userspace
+>-----------------------------------------------------------------
+>lock_sock(sk)                                   |
+>smc_listen_out_connected()                      |
+>| \- smc_listen_out                             |
+>|    | \- release_sock                          |
+>     | |- sk->sk_data_ready()                   |
+>                                                | fd = accept();
+>                                                | close(fd);
+>                                                |  \- socket->sk = NULL;
+>/* newclcsock->sk is NULL now */
+>SMC_STAT_SERV_SUCC_INC(sock_net(newclcsock->sk))
 >
-> Michael
+>Since smc_listen_out_connected() will not fail, simply swapping the order
+>of the code can easily fix this issue.
 >
-Leon, do you have any additional concerns regarding this patch? It's 
-more than 6 weeks in the pipe now.
+>Fixes: 3b2dec2603d5 ("net/smc: restructure client and server code in af_smc")
+>Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+>Reviewed-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+>Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
 
-We are asking customers to use patched drivers and we shouldn't be there.
+Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
 
+Best regards,
+Dust
 
-Michael
-
+>---
+> net/smc/af_smc.c | 3 ++-
+> 1 file changed, 2 insertions(+), 1 deletion(-)
+>
+>diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+>index 9311c38f7abe..e0e48f24cd61 100644
+>--- a/net/smc/af_smc.c
+>+++ b/net/smc/af_smc.c
+>@@ -2568,8 +2568,9 @@ static void smc_listen_work(struct work_struct *work)
+> 			goto out_decl;
+> 	}
+> 
+>-	smc_listen_out_connected(new_smc);
+> 	SMC_STAT_SERV_SUCC_INC(sock_net(newclcsock->sk), ini);
+>+	/* smc_listen_out() will release smcsk */
+>+	smc_listen_out_connected(new_smc);
+> 	goto out_free;
+> 
+> out_unlock:
+>-- 
+>2.45.0
+>
 
