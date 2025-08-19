@@ -1,174 +1,131 @@
-Return-Path: <linux-rdma+bounces-12813-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12814-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86A52B2B019
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Aug 2025 20:18:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 434B5B2B71B
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Aug 2025 04:37:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 668AF564205
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Aug 2025 18:18:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 089AE7AFE98
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Aug 2025 02:36:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B60D22773E0;
-	Mon, 18 Aug 2025 18:18:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0244D25A35F;
+	Tue, 19 Aug 2025 02:37:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="whZP111d"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GIXkje/e"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBB6825D533
-	for <linux-rdma@vger.kernel.org>; Mon, 18 Aug 2025 18:18:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D54E286897
+	for <linux-rdma@vger.kernel.org>; Tue, 19 Aug 2025 02:37:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755541106; cv=none; b=P78koDYQAK36HgbAzgxx9HLtEDEttUQpknv3wfLL8noOEVoSbXK0/8W7EFqWu3O75mDQe510/hqP2luCqkzgIBwbUTK/clVnDMoOhq9KvTV1hOyL2I1cohgPHhIeoMRZFqgKvSBmYZZqaFxuNJ+6EEsqKnwMoXtwlVDzcnaRmzI=
+	t=1755571060; cv=none; b=KfMZgXPeDLVrPUVeOPmgEHHmM/Caj/Tz/wiTf+gI8TT4xUOoDesy1/nulpkXi16VvHHJnUdMLJyRTA/rD9NK8NmptAhhENp3VnwQJIGO3NVoRXSMuGpIdRL49BrMlfApobb7fVK4tkyvIYJFwkdXmzDJEbzVysBw66+fSFSLc0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755541106; c=relaxed/simple;
-	bh=MN6cMEgwQsI9LU7L5DTRfKs2G4F7QGv63KzoSuBphFw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=p5g59qi5g+WyLCBdUoydXv52tW7kgBFoyTGk8FoqUdqNZOpbVcucLknXJBPYL68I6TKhUWXwgmybHjnXEIvtyq38WZ9PzudOKBfDwkHtiMGVenjigps3q1p+YdS894jDGSyeCH7YGjb5omG1ZdDBhaqiNbhBo3e+Aud+2acZS+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=whZP111d; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-55cc715d0easo1255e87.0
-        for <linux-rdma@vger.kernel.org>; Mon, 18 Aug 2025 11:18:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1755541103; x=1756145903; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DWR/SbaxqayRTD44wtFfLeF4GeVcOog9WH0lYeaW0Bk=;
-        b=whZP111dGGJjKbnvTu+26xDruGuckzCeh7COcoy+vugK0Xm5ehmvm5SYzgDi+PcQiE
-         qUtSkUXQFijFC7C64i5ErUmK3YGC8l0G34PpgHH7UI2mSN1vLWyQvNYCqzX1wAR/AI2v
-         lG7HPDoAlXnbqjbWoWyoQSkLssTCvDArhXIlZnn0PeVzjHI005wV24RW2emTnqvghPON
-         d6YIFMjeT/yLP/SD4HyAiS4ZquRD8uPHfHQCfoww/Dz5u6vWprZc9H1lgS17CebvYkdk
-         1yDGH6n/qnGM3/jsUG2E8Zdz2QuXSroaMjWgWKSNOXaDe5COm5UBb+ZDschVsDFcJivf
-         Ys+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755541103; x=1756145903;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DWR/SbaxqayRTD44wtFfLeF4GeVcOog9WH0lYeaW0Bk=;
-        b=TdBp9jeOzY2pOU2dWe8XxN3VTYxTvluDwQVeczK9PGhJDfU7nX8Fk9H+VP3Gh2Mjex
-         Fmur9rvrNpzBO0YQW+ywbaw7JesomhhykTYnRtOVxKoNrZvSe+lCPLjqNXcteFza+/OU
-         lR0e/4kokhDilZ4D206RrEA6k8wqIIA7bEJltJCpobkTk/I8QUCrMLqaUEIiwBEfXj1L
-         4Vt0VcCQ1KLB+tG8kkM7vsvFGnzLQ3aBb6JPq0+AIr3vpmeCgP7mW7z70x4W7toZdtua
-         ssItayH6gjT0eq2Dqm/ljCbD0aPgLMC7Tt0qj9A5A+RFuMUXsXaxOGOHpGTf119EwAkD
-         oeCw==
-X-Forwarded-Encrypted: i=1; AJvYcCX2hqhX9fMYI6tZqIKlVF4izzct/ZnSRkyTfo/9SNt9I9f6CrRcPB/mmxjMJ/XpgLRsq7jCuqhYz49x@vger.kernel.org
-X-Gm-Message-State: AOJu0YwSWKyJlu9ZG2/x2TZta5N+hjE0XBYqwdtxfSeO/6XzUXwMIf/e
-	sqyDEinC7BaRj3q65ootD9bnuZLL2eW9KVEp2lAWDoK3cYF92mHFpadGAkxqJBAPwEdl/g2v4QL
-	zg++34dZ4p8Ws74VSKRHUz8HkXg27IpMsrF/EQPmO
-X-Gm-Gg: ASbGncuStUl6U+ay24eTaLk2XNTwt0bfElTqyH6MbpSTtUY/Yad0mR7klrc2t7TvzZ0
-	9t1JndmLzvGli3b++xWe6dbtlxJFTaC5SLskdWPKbauEVXd+UI3pDBRrhGCJgvG4QHRnl2+sZvH
-	K2hxxzPZIrUPZZyxL6JTwHG4pLVYKHfjY5zShZ8xs+oBLNv/J6SuJghiCo0vQ7ffqlpptlEBlTG
-	6z/gQWoDSEXgi8dNkDOjStEgHBPtjSbzJNZ7Oe6lDINAu3t
-X-Google-Smtp-Source: AGHT+IHs2hDwNnShp2o5vXlAxIJDY3ZyuELs6Qbn9swcDZaVjFbHPjN6aHjnakTgYOX9eOvexrRF6+S71VUKA4qKz/A=
-X-Received: by 2002:a05:6512:1c3:b0:55b:9f89:928b with SMTP id
- 2adb3069b0e04-55e001125d4mr11794e87.1.1755541102509; Mon, 18 Aug 2025
- 11:18:22 -0700 (PDT)
+	s=arc-20240116; t=1755571060; c=relaxed/simple;
+	bh=V071NYvHh5cdjm+WP3OMWffJbE+bnL9K3nYzRdqsPKY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jvadJVQbQ+/C01K6pEOQ5z5mWVMKyd6E0P38jdeKBOTeqvTzXUyXgREuBDv5OeDUG7G0JwrHhiHFFOFHlpgGQaxtdM7vyXbCYalVM1ZoEpMljhkA4wH2+9GWk1QtKCd9zQG5SLpy/2+qB1Svk7MUKmf0dj72+koQ0+ab6S0QKp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GIXkje/e; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e0f88ef5-b046-4128-8c81-ce3c7e20274c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1755571054;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Yb0ATGH3PpNPET0acCYFBEvAlmYh6lwPjl8Ts17Dyso=;
+	b=GIXkje/eDX7CHR9aMwmqKH8qC74UAoxetJcTZbH/XIJwy4ns/8SQ0WnNYje/zOFb1ao9mn
+	D1/UV4DotQJaI1MA+Z8Awe7T2+gpjfv9EiS9RMsUWFnOzMvsaBm9xDTQQNivWchQD2nw1l
+	SqhXjbg6OF8UHLOPvdIwIFYF8LyhSAI=
+Date: Mon, 18 Aug 2025 19:37:16 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250815110401.2254214-2-dtatulea@nvidia.com> <20250815110401.2254214-6-dtatulea@nvidia.com>
- <CAHS8izO327v1ZXnpqiyBRyO1ntgycVBG9ZLGMdCv4tg_5wBWng@mail.gmail.com> <jvbtvbmgqspgfc7q2bprtdtigrhdsrjqf3un2wvxnbydngyc7r@y2sgbxgqkdyi>
-In-Reply-To: <jvbtvbmgqspgfc7q2bprtdtigrhdsrjqf3un2wvxnbydngyc7r@y2sgbxgqkdyi>
-From: Mina Almasry <almasrymina@google.com>
-Date: Mon, 18 Aug 2025 11:18:10 -0700
-X-Gm-Features: Ac12FXyie8zJRkeTDcLtpvBJzFcHj52yCohewjEDLantFzz9m9oBZlFv4CV91bE
-Message-ID: <CAHS8izNWStDWNfNro3oX1v5mwyzK_xmA0YfffqSeB0JZwArK7w@mail.gmail.com>
-Subject: Re: [RFC net-next v3 4/7] net/mlx5e: add op for getting netdev DMA device
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: asml.silence@gmail.com, Saeed Mahameed <saeedm@nvidia.com>, 
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	cratiu@nvidia.com, parav@nvidia.com, Christoph Hellwig <hch@infradead.org>, 
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] rdma_rxe: call comp_handler without holding cq->cq_lock
+To: Philipp Reisner <philipp.reisner@linbit.com>,
+ Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20250806123921.633410-1-philipp.reisner@linbit.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20250806123921.633410-1-philipp.reisner@linbit.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Aug 18, 2025 at 10:40=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.co=
-m> wrote:
->
-> On Fri, Aug 15, 2025 at 10:37:15AM -0700, Mina Almasry wrote:
-> > On Fri, Aug 15, 2025 at 4:07=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia=
-.com> wrote:
-> > >
-> > > For zero-copy (devmem, io_uring), the netdev DMA device used
-> > > is the parent device of the net device. However that is not
-> > > always accurate for mlx5 devices:
-> > > - SFs: The parent device is an auxdev.
-> > > - Multi-PF netdevs: The DMA device should be determined by
-> > >   the queue.
-> > >
-> > > This change implements the DMA device queue API that returns the DMA
-> > > device appropriately for all cases.
-> > >
-> > > Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
-> > > ---
-> > >  .../net/ethernet/mellanox/mlx5/core/en_main.c | 24 +++++++++++++++++=
-++
-> > >  1 file changed, 24 insertions(+)
-> > >
-> > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/driv=
-ers/net/ethernet/mellanox/mlx5/core/en_main.c
-> > > index 21bb88c5d3dc..0e48065a46eb 100644
-> > > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> > > @@ -5625,12 +5625,36 @@ static int mlx5e_queue_start(struct net_devic=
-e *dev, void *newq,
-> > >         return 0;
-> > >  }
-> > >
-> > > +static struct device *mlx5e_queue_get_dma_dev(struct net_device *dev=
-,
-> > > +                                             int queue_index)
-> > > +{
-> > > +       struct mlx5e_priv *priv =3D netdev_priv(dev);
-> > > +       struct mlx5e_channels *channels;
-> > > +       struct device *pdev =3D NULL;
-> > > +       struct mlx5e_channel *ch;
-> > > +
-> > > +       channels =3D &priv->channels;
-> > > +
-> > > +       mutex_lock(&priv->state_lock);
-> > > +
-> > > +       if (queue_index >=3D channels->num)
-> > > +               goto out;
-> > > +
-> > > +       ch =3D channels->c[queue_index];
-> > > +       pdev =3D ch->pdev;
-> >
-> > This code assumes priv is initialized, and probably that the device is
-> > up/running/registered. At first I thought that was fine, but now that
-> > I look at the code more closely, netdev_nl_bind_rx_doit checks if the
-> > device is present but doesn't seem to check that the device is
-> > registered.
-> >
-> > I wonder if we should have a generic check in netdev_nl_bind_rx_doit
-> > for NETDEV_REGISTERED, and if not, does this code handle unregistered
-> > netdev correctly (like netdev_priv and priv->channels are valid even
-> > for unregistered mlx5 devices)?
-> >
-> netdev_get_by_index_lock() returns non-NULL only when the device is in
-> state NETDEV_REGISTERED or NETREG_UNINITIALIZED. So I think  that this
-> check should suffice.
->
+在 2025/8/6 5:39, Philipp Reisner 写道:
+> Allow the comp_handler callback implementation to call ib_poll_cq().
+> A call to ib_poll_cq() calls rxe_poll_cq() with the rdma_rxe driver.
+> And rxe_poll_cq() locks cq->cq_lock. That leads to a spinlock deadlock.
+> 
+> The Mellanox and Intel drivers allow a comp_handler callback
+> implementation to call ib_poll_cq().
+> 
+> Avoid the deadlock by calling the comp_handler callback without
+> holding cq->cw_lock.
+> 
+> Signed-off-by: Philipp Reisner <philipp.reisner@linbit.com>
+> ---
+>   drivers/infiniband/sw/rxe/rxe_cq.c | 12 +++++++-----
+>   1 file changed, 7 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c b/drivers/infiniband/sw/rxe/rxe_cq.c
+> index fffd144d509e..1195e109f89b 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_cq.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_cq.c
+> @@ -88,6 +88,7 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
+>   	int full;
+>   	void *addr;
+>   	unsigned long flags;
+> +	u8 notify;
+>   
+>   	spin_lock_irqsave(&cq->cq_lock, flags);
+>   
+> @@ -110,14 +111,15 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
+>   
+>   	queue_advance_producer(cq->queue, QUEUE_TYPE_TO_CLIENT);
+>   
+> -	if ((cq->notify & IB_CQ_NEXT_COMP) ||
+> -	    (cq->notify & IB_CQ_SOLICITED && solicited)) {
+> -		cq->notify = 0;
+> -		cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
+> -	}
+> +	notify = cq->notify;
+> +	cq->notify = 0;
 
-Ack, thanks for checking. For the patch:
+Thanks a lot. In the original source code, cq->notify is set to 0 in the 
+following test cases:
 
-Reviewed-by: Mina Almasry <almasrymina@google.com>
+if ((cq->notify & IB_CQ_NEXT_COMP) ||
+	    (cq->notify & IB_CQ_SOLICITED && solicited))
 
+but in your commit, the above test case is removed.
+I am not sure if this will introduce any risk or not.
 
+I am fine with others.
 
---=20
-Thanks,
-Mina
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+
+Zhu Yanjun
+
+>   
+>   	spin_unlock_irqrestore(&cq->cq_lock, flags);
+>   
+> +	if ((notify & IB_CQ_NEXT_COMP) ||
+> +	    (notify & IB_CQ_SOLICITED && solicited))
+> +		cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
+> +
+>   	return 0;
+>   }
+>   
+
 
