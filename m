@@ -1,131 +1,135 @@
-Return-Path: <linux-rdma+bounces-12814-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12815-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 434B5B2B71B
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Aug 2025 04:37:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4AEFB2BC18
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Aug 2025 10:43:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 089AE7AFE98
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Aug 2025 02:36:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D105F7A8F8E
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Aug 2025 08:41:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0244D25A35F;
-	Tue, 19 Aug 2025 02:37:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E34AA311944;
+	Tue, 19 Aug 2025 08:43:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GIXkje/e"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Yt4PjlWN"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D54E286897
-	for <linux-rdma@vger.kernel.org>; Tue, 19 Aug 2025 02:37:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3734C3115A7
+	for <linux-rdma@vger.kernel.org>; Tue, 19 Aug 2025 08:43:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755571060; cv=none; b=KfMZgXPeDLVrPUVeOPmgEHHmM/Caj/Tz/wiTf+gI8TT4xUOoDesy1/nulpkXi16VvHHJnUdMLJyRTA/rD9NK8NmptAhhENp3VnwQJIGO3NVoRXSMuGpIdRL49BrMlfApobb7fVK4tkyvIYJFwkdXmzDJEbzVysBw66+fSFSLc0Y=
+	t=1755592989; cv=none; b=AD55DAk1Nm/i96QuvpmlmmiqgDMyW1Pnl1GVDIQZ/ccmY3dp/0RQ2YwH6BkXidVvGCpjIG+Hx3B2bRKSWPiSwoeAmvBwi2UT8ImHcOmHBlV3lRdZ2tA6YVfV04w9U04TGZ+cemYaJKm013100MiBtmA9nC9LGTy8i0f/jYFIqwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755571060; c=relaxed/simple;
-	bh=V071NYvHh5cdjm+WP3OMWffJbE+bnL9K3nYzRdqsPKY=;
+	s=arc-20240116; t=1755592989; c=relaxed/simple;
+	bh=uiXQE0NRvooKnb00ZyDFhzitwmlzgW0GBH3yhlrAOPM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jvadJVQbQ+/C01K6pEOQ5z5mWVMKyd6E0P38jdeKBOTeqvTzXUyXgREuBDv5OeDUG7G0JwrHhiHFFOFHlpgGQaxtdM7vyXbCYalVM1ZoEpMljhkA4wH2+9GWk1QtKCd9zQG5SLpy/2+qB1Svk7MUKmf0dj72+koQ0+ab6S0QKp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GIXkje/e; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e0f88ef5-b046-4128-8c81-ce3c7e20274c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1755571054;
+	 In-Reply-To:Content-Type; b=cUVhbNjxjsdo+DgqOofQFF8Prl1xY4UfdLbN1P6ybTkBTPHo4BRrmC0Jlce4N05LXy7g5ZbSwJ91h6xlkEzQ8Df+FJ5v4k2ygOpD10UfSbq71WRdqC1hy301ESsgLFFTRCD/CJNCQAbGplOfoGSN7SqmpBvbhD98kbnOU1X7x3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Yt4PjlWN; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1755592987;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Yb0ATGH3PpNPET0acCYFBEvAlmYh6lwPjl8Ts17Dyso=;
-	b=GIXkje/eDX7CHR9aMwmqKH8qC74UAoxetJcTZbH/XIJwy4ns/8SQ0WnNYje/zOFb1ao9mn
-	D1/UV4DotQJaI1MA+Z8Awe7T2+gpjfv9EiS9RMsUWFnOzMvsaBm9xDTQQNivWchQD2nw1l
-	SqhXjbg6OF8UHLOPvdIwIFYF8LyhSAI=
-Date: Mon, 18 Aug 2025 19:37:16 -0700
+	bh=nj9EkvlpuR2O71TRrkQ6effPG9eafUyoJmenDbBRkkc=;
+	b=Yt4PjlWNTR33A17qSKrH/TVis3t3b//Nqh9rUTDOS1iF0b/a1nydLY1SPlMtv/z6eSECqw
+	y+4KJ+KwFeWAO5a345R1WutrYy+LdLgu75ohWXhpPTSl3lTySfG+dFfc+XR6hF3nmshw9r
+	iZflmXyzZTkOvfQA2c0Qm4oySpFRU2k=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-423-HXVBMq0eO4yBPlgokd-KrQ-1; Tue, 19 Aug 2025 04:43:05 -0400
+X-MC-Unique: HXVBMq0eO4yBPlgokd-KrQ-1
+X-Mimecast-MFC-AGG-ID: HXVBMq0eO4yBPlgokd-KrQ_1755592985
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-4b109be41a1so228147791cf.2
+        for <linux-rdma@vger.kernel.org>; Tue, 19 Aug 2025 01:43:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755592985; x=1756197785;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nj9EkvlpuR2O71TRrkQ6effPG9eafUyoJmenDbBRkkc=;
+        b=Ro5zB8WOt5lQ5vY/HnBc81dnJVzX9cF/acNVbLQbR77N3X+jFZP7HnddM2BsfHYDMu
+         G+YgJNC867BlenvYtNDNJ0CK5aN2niFGvIJo9AGolFqYSkjQSd/vfYlKTzTyn4tBgFcg
+         U1+AjF0xmSFPFNz8Dkft55kQpUw9Oqr76xI/qke2hnDfzOLUhUrFgK80zSwtNaaddFMA
+         S3QoWmO+UgPY5lexZeyFBM9bIyhDAiR9dbuIyO1IaZZZZjc1vUzHsE+Mxy71OAN9bmKl
+         vD2ZxVUcnAmxqY+P3V6/8uuD46F2eKAyHIrbBm7De+Yrynsq9YdTXHh6ThaC98phBbJq
+         kbwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW9HKyyzFg3NEz9S8GetM8if559MQ0hwzie3xbTV24CJ8DZmrfb6jsdAWBV8tXhr6yEFqJJYXQDlKYs@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw3ESD1332jwqJzcqRE3TYGknAWIVFNlE5zR1wh/3bTCJTNcmxI
+	KBHYdbIddFtXYuONqB6nZl4bZ6T4+AzdaUK2xUsRBHbkFHUBhOROdXeDoCU3vvPHFsJ7LXshABC
+	4n2B+sEKngLAGgfeyEFqi7co2iNu9l4rBSG4eqS/94cVF41HVurY5uyfaTL6308vhG/fgiA8=
+X-Gm-Gg: ASbGncuDckMomhSy4tURhuYkQqR7yTgb4YTIYpfV997L86BWQwp8OvbAwhBKBFl0GlY
+	AAamVMHQLipH/3QgTSklJu6ZlVgu2kDZKLTXxPzVyTEkdfNY25cvnl63YACayfZe6flw3bwLf3f
+	EQoZSJXGWoC3buEWYyZLEc6GLbNuVyxyvMPRDv1Xtk8a26tgzu6GhmuL5PYENAHgULWvSCoqO7P
+	HkIsu23mWcm9bx5oWhuUN5M+Cbj73ZJpp7R2ZSULffNOy7raaxc3f8ChULLC9mvqZhpOsGIUUf7
+	dGC07dbc5o50/lwfxbSoCqiebMoTvJD4kAdrVVGKzRubxN2sTvD0tJYqXvcF1udEOW/vOFN9dt5
+	/TXwkrc1AgRs=
+X-Received: by 2002:a05:622a:4d03:b0:4af:1837:778e with SMTP id d75a77b69052e-4b286d9f7ebmr18161781cf.31.1755592985088;
+        Tue, 19 Aug 2025 01:43:05 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGw7UB9FBrpGjQ2XSRXKjMIthoW12C3rhlMGUbObj2mrt2S/t/HnOA8M/IRXI4lKNYc+qncPA==
+X-Received: by 2002:a05:622a:4d03:b0:4af:1837:778e with SMTP id d75a77b69052e-4b286d9f7ebmr18161561cf.31.1755592984715;
+        Tue, 19 Aug 2025 01:43:04 -0700 (PDT)
+Received: from ?IPV6:2a0d:3344:2712:7e10:4d59:d956:544f:d65c? ([2a0d:3344:2712:7e10:4d59:d956:544f:d65c])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4b11dc19631sm63346241cf.12.2025.08.19.01.43.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Aug 2025 01:43:04 -0700 (PDT)
+Message-ID: <ca8b550b-a284-4afc-9a50-09e42b86c774@redhat.com>
+Date: Tue, 19 Aug 2025 10:43:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] rdma_rxe: call comp_handler without holding cq->cq_lock
-To: Philipp Reisner <philipp.reisner@linbit.com>,
- Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250806123921.633410-1-philipp.reisner@linbit.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20250806123921.633410-1-philipp.reisner@linbit.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next V2 1/3] ptp: Add ioctl commands to expose raw
+ cycle counter values
+To: Richard Cochran <richardcochran@gmail.com>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Mark Bloch <mbloch@nvidia.com>, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Gal Pressman <gal@nvidia.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Carolina Jubran <cjubran@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
+ Vladimir Oltean <vladimir.oltean@nxp.com>,
+ Dragos Tatulea <dtatulea@nvidia.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>
+References: <1755008228-88881-1-git-send-email-tariqt@nvidia.com>
+ <1755008228-88881-2-git-send-email-tariqt@nvidia.com>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <1755008228-88881-2-git-send-email-tariqt@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-在 2025/8/6 5:39, Philipp Reisner 写道:
-> Allow the comp_handler callback implementation to call ib_poll_cq().
-> A call to ib_poll_cq() calls rxe_poll_cq() with the rdma_rxe driver.
-> And rxe_poll_cq() locks cq->cq_lock. That leads to a spinlock deadlock.
+On 8/12/25 4:17 PM, Tariq Toukan wrote:
+> From: Carolina Jubran <cjubran@nvidia.com>
 > 
-> The Mellanox and Intel drivers allow a comp_handler callback
-> implementation to call ib_poll_cq().
+> Introduce two new ioctl commands, PTP_SYS_OFFSET_PRECISE_CYCLES and
+> PTP_SYS_OFFSET_EXTENDED_CYCLES, to allow user space to access the
+> raw free-running cycle counter from PTP devices.
 > 
-> Avoid the deadlock by calling the comp_handler callback without
-> holding cq->cw_lock.
+> These ioctls are variants of the existing PRECISE and EXTENDED
+> offset queries, but instead of returning device time in realtime,
+> they return the raw cycle counter value.
 > 
-> Signed-off-by: Philipp Reisner <philipp.reisner@linbit.com>
-> ---
->   drivers/infiniband/sw/rxe/rxe_cq.c | 12 +++++++-----
->   1 file changed, 7 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c b/drivers/infiniband/sw/rxe/rxe_cq.c
-> index fffd144d509e..1195e109f89b 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_cq.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_cq.c
-> @@ -88,6 +88,7 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
->   	int full;
->   	void *addr;
->   	unsigned long flags;
-> +	u8 notify;
->   
->   	spin_lock_irqsave(&cq->cq_lock, flags);
->   
-> @@ -110,14 +111,15 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
->   
->   	queue_advance_producer(cq->queue, QUEUE_TYPE_TO_CLIENT);
->   
-> -	if ((cq->notify & IB_CQ_NEXT_COMP) ||
-> -	    (cq->notify & IB_CQ_SOLICITED && solicited)) {
-> -		cq->notify = 0;
-> -		cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
-> -	}
-> +	notify = cq->notify;
-> +	cq->notify = 0;
+> Signed-off-by: Carolina Jubran <cjubran@nvidia.com>
+> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 
-Thanks a lot. In the original source code, cq->notify is set to 0 in the 
-following test cases:
+Hi Richard,
 
-if ((cq->notify & IB_CQ_NEXT_COMP) ||
-	    (cq->notify & IB_CQ_SOLICITED && solicited))
+can we have a formal ack here?
 
-but in your commit, the above test case is removed.
-I am not sure if this will introduce any risk or not.
+Thanks,
 
-I am fine with others.
-
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-
-Zhu Yanjun
-
->   
->   	spin_unlock_irqrestore(&cq->cq_lock, flags);
->   
-> +	if ((notify & IB_CQ_NEXT_COMP) ||
-> +	    (notify & IB_CQ_SOLICITED && solicited))
-> +		cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
-> +
->   	return 0;
->   }
->   
+Paolo
 
 
