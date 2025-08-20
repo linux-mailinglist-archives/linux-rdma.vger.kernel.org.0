@@ -1,78 +1,78 @@
-Return-Path: <linux-rdma+bounces-12845-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12846-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5770BB2E48A
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Aug 2025 19:59:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AF27B2E486
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Aug 2025 19:58:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5DFEA26F76
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Aug 2025 17:57:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1066A7BD539
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Aug 2025 17:56:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8CA72765E1;
-	Wed, 20 Aug 2025 17:56:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83397277C9B;
+	Wed, 20 Aug 2025 17:56:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QlCEfWwV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QPuvGeFZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ACEA280308;
-	Wed, 20 Aug 2025 17:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0BC7277038;
+	Wed, 20 Aug 2025 17:56:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755712599; cv=none; b=Arf5NkiItf+0xL1vTbwcn6wiuXbhaHL755A8GL4vpNQ6obW6lALbvbGk8RLPLw7n3kJGrbpnQGdAh/GcclpRAa2iR2Do5oaWROUGEOmuzCBI5QSUCRVshDIE3rbdcySulgOZ2Wp3h8PhyrM5zS95bRZ5WsmKRddb7jR65CIufaA=
+	t=1755712606; cv=none; b=RlTpfGSf/izRgySxA8StwEfzpHnLgPelnsC2W6GIkRYaMMA/gV+j2/yfZ70xFbR8CqFsBUYn0TD41VosZ1q5aFSHUmkC45pBBg9FHxAe6Mlr1lT/br7fSvW2UX0I96ddNCU2HPxCpNbVDjP6773YhYZNPxKqLAWSBkYEfQJbQ24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755712599; c=relaxed/simple;
-	bh=lLfmta+h4SkyENDhCMnpdr51VJu3AKvH01fLUD8umjs=;
+	s=arc-20240116; t=1755712606; c=relaxed/simple;
+	bh=/0gzM+3hdedGfBPxBtBaiKUwTX9q1lzp1I1KRqZW8+s=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lIWIhf1YKpQnCJ2ijKwFr4S5q5/4R2wgq0+MAajD3ahBgSAbS9P8MbtpJ0GSIwFlxIJ2ZDBOmO62QZbpkJCsHLNeojkQfFd1ju8OaP26MH31cKoscaikfHGmV79gqj3IkLUakXOPEH64w5tB29GHs0aSPnoO8pOS47o0WX9HPsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QlCEfWwV; arc=none smtp.client-ip=209.85.214.175
+	 MIME-Version; b=ogsSn/VElfu99PCu0/HXx/5JzmNeR2ScSpa4bBD8q9gSQYjZe+SEW1LvT9OY/NMDQ89ctUZ2eweR0H54sOiexG29mr1ZGzzYnGIWE1tVSHZOc3GC5UiStaVNe6TzjCupITIeoZdbghANqX/Uob8qIRDEs09Gf0SVejqCQnkzqWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QPuvGeFZ; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-244580523a0so1281515ad.1;
-        Wed, 20 Aug 2025 10:56:37 -0700 (PDT)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-24458195495so724805ad.2;
+        Wed, 20 Aug 2025 10:56:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755712597; x=1756317397; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1755712604; x=1756317404; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=H+38vPXKcE2XwH0KgIp2x58rU9vDQLzRiLzmYeUQXBI=;
-        b=QlCEfWwV++Oz0XpjNI5BhGkCyyWDx+gjVjcahTt018CN4ASsiUgKf+8422U9Ey2t8f
-         wawhCj0Z3chx/82zEQh3QEcJLUMlHxtsXuJN4oMBw7c8H+vRgibI718aNJsLkYCfcDdS
-         lJyUt6VIJywwOMs7o+yTG2uUHKyMnMVs8ZQDO0u8rfDIi9J5P1j477hgF2XD9YrZBoB5
-         EgBSZMmt9YESS7aKFDjbxjZ52NEZtLY7PLD4e+B8NXGsRrYYT2nXiG6zY2M23x7JWiOj
-         rAKLjm2Q5e9jCoogSgUCHAI+QlEukxQ3V/b08sixe9Y28pzbVizVm7uvEBelIDizW6/e
-         ysRA==
+        bh=sGLb0vaI51LWFzVBHuMu+Aqd/KzmZTAIpd9FpNIGaCw=;
+        b=QPuvGeFZEbOe4sQxozPYoEtqAOxuz/3IAR7CgEvglrLTaE9EzWqBBcTx+daDdToW9o
+         /k29qr3h+ZTHxYJ34XsRDlxqk8wkIJodmEw6w4dT8MviYhkIZb5hfJmU9O9rFybCHSmG
+         g/neDS5+XcQDiENfVeliDTY54j2EluJ8bSwdtqhlcVJ9WKd/NB2zuyKQb9UhfQ5aiytI
+         4g4Srxrn89KMZIyZQHict6DoUj9I8mcvlMYKsbwPPjNo4i6m5A5774qa0pi69U4t3mLt
+         eXYXAnfGsbyYKWnpE3IUlcSNIIfkugFnMDk90w5CNUduBWw6qXQjsUgmHbTM7CQXbTrv
+         pMEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755712597; x=1756317397;
+        d=1e100.net; s=20230601; t=1755712604; x=1756317404;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=H+38vPXKcE2XwH0KgIp2x58rU9vDQLzRiLzmYeUQXBI=;
-        b=d0DZuJDYnqMQzbOqDYgR+E2Kov7h/2eBlTZHKIpBypMKd28440nqKgEnvXszfqaVwC
-         LrgdQP12KsWkJlzplpAKO4dDN9Y2QnNAO25ingZgPPQvbhDJO3nFT0oStkOdSa3DaYim
-         VSrGDVD9WwCz3gMFbj4HikyrITDvrupeMZoBnx33ZqWv/jskb4YkXCLwwIy34LIcAIeu
-         Y4F6d/nFmIfRCBdcoIjXWFF18REZwi+8Fuk/+7p/kNtxVwbpszmReowcj92Q2us1cMEd
-         YHetF4olO9ra5Wvh5u+UwOS9IBTFytF28sdVnuA1gPG1A1rBIt2e9TvAoVmrLHaLIxG2
-         g8kQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW9tYjS+YgvVqd39JQd3uGLCGBuQgwsyo2GLQIjXrEaAsDsN67xFNz62aqcXPQOwnWfU9KUYNrwTdDGbbY=@vger.kernel.org, AJvYcCWH+jAXAsMhwnYlwZEZNg42IwqRXw3PeDD6kgc5oMO9mT5r7Y+lbzSFUvfVQ94CZUzoLU8Sc9HHQ3X1Hw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxYEQ28sHDJr8CZAdbeVzplnFBJvUqO+eL5O+Ouj5p3kSdGlzIB
-	yoQau1Kj9FFOx9+vXPaG2Jd2CULTtB0q+c/HuOzPvo5+NczrCeQTra8=
-X-Gm-Gg: ASbGnctqrXajTHSjwfFR4WBt+Njkrov3Vj+Xo458CNrVBOxcTmZxO/+mJB4mPG0LP0U
-	bF8X2gr3awa1ZQexFnHhEfkdIumBIVu24BusYAVEYAY3IfSbnZ4BVlMAza1KQYFfRJCH79czSWv
-	In8nfXLUY3glg0v8CPi+po5rjVb3dz0oMCtLqx8/5ViPW4m1td2waz+U3DDIXpoPow32VFa2unC
-	XUYa08Jn7k2cLzCbWbu09T1D/xMTf0SfGoz6cLCmYhKURxXsq/LiV5RBKIJk8mXDFgBVL1cBxuo
-	/kPyr5GmSAdlYCb+K0OGTOqEf24dfF69pK7JxDvBVotqoxpU9cWfkLoY7O0Jcb4hXl5g8tRds9J
-	UFkbJmh0XuKxED1Xs3vuq5YdD3q0FkoZZ
-X-Google-Smtp-Source: AGHT+IGOFAhBd7MGUiftUnl9fbiq5WDVmusdQ49YdOIXSr9FdK2a+VkS31ZeJvULUj4TqUOJvUU3zw==
-X-Received: by 2002:a17:902:e80b:b0:237:e696:3d56 with SMTP id d9443c01a7336-245ef22f57amr59998195ad.32.1755712597270;
-        Wed, 20 Aug 2025 10:56:37 -0700 (PDT)
+        bh=sGLb0vaI51LWFzVBHuMu+Aqd/KzmZTAIpd9FpNIGaCw=;
+        b=mREiixgBh+T4rEwSofv531ZaHNxCx/3eNrBa0zX7Jz+kWTp+XkV6mXnoj8yo/DJt5d
+         kSzMH8mBUwkgl7CBo26uFrAOaCB/16SLhPxfQYUv2AHmvNpKXm5QKC95e1XwHBVmRDgR
+         3DeHsxqTfJ+dHgbw7izLwR6A6INm0C+7x+PdFnQnLypeFdj/ztIU2/B5gbabVwtWnIwI
+         qCdj+QOiPVOPbx+2OkCvef7Qs2RT+3oxonqy5KYKufkEAaiOog16DFgM3iORXT89E0/H
+         RlhedQT/xNWDipB1zu4v2MWS9ZH5r44Z6aiNRkI/dbPxwvVCxbcGaPBJcfkMbrnX2Kt+
+         A0ug==
+X-Forwarded-Encrypted: i=1; AJvYcCVbzzsEt44x9GYCO/uwMa1JhD1XC8HKMwy3xYiFvwywomGdRQe0rEnktEjacmm6krGNpnqIdFpY4jd2MHE=@vger.kernel.org, AJvYcCXVxj+GcFkMBua8GLtzFZtkoijG9UItVb7VDElYBm8vKzpCXnuze261xUJ/LZGMdpDELBuGqZXHqqlj+g==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwbsyEfbQC3V4Ah0JhjnId6H1kAN+hH5Z+HyumyUk1E/n4tBTHW
+	ySSbeYEN6IAjKXsmrYjcQNn/lTBSx+L2jKzxKbJ0ibLMc1d98gMRBh0=
+X-Gm-Gg: ASbGnct8YEr1UsYmvqyuF5zDvDeKjT7s49dOD8uu465zqkGAdFBCfy2xHx8gRY8TK3Y
+	17CODtxTNFPHadiU4u6Xlaq1B1h1I/CNIs7lPZrK+MKFVmlkSp9Up0HLzuDRYZ8Em1NabIJbq6b
+	HA9QNxL2U7YKlUHdkZ9Ltf7gapx/QisjwsG/uewBM9rR9F2fUgqRlOPqxIG+3S49o38OV0zNyzh
+	UqCq5KQdE82kCdzgJLOVTX4fE6Mk66AGvRlHzQRWit29TkHcqa0mPPIbe77NGa1RoHyLROxBCUd
+	ZU0ddrQ+1NbbHAySENc0qGIrNJDOUMWhN4Bx5ieuJ1PCXZPVGq4mRq8fPt9PCWkV8EgsiS1M/4B
+	4IpGKeWJKr/8biKV0sm3NQBygX4iRoKCaxiU/m1fzbXE=
+X-Google-Smtp-Source: AGHT+IGPtz2x4V8T24dPaoqPFFBquGmZtrJlTAYRsxhSzc2q+oMKFmBMq/AEpCOimnGu2SqlqkG7cA==
+X-Received: by 2002:a17:902:ef45:b0:245:fbf8:dd0b with SMTP id d9443c01a7336-245fbf8ddefmr8250265ad.57.1755712604073;
+        Wed, 20 Aug 2025 10:56:44 -0700 (PDT)
 Received: from debian.ujwal.com ([223.185.130.96])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-245ed4ccaa9sm32553815ad.86.2025.08.20.10.56.33
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-245ed4ccaa9sm32553815ad.86.2025.08.20.10.56.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Aug 2025 10:56:36 -0700 (PDT)
+        Wed, 20 Aug 2025 10:56:43 -0700 (PDT)
 From: Ujwal Kundur <ujwal.kundur@gmail.com>
 To: allison.henderson@oracle.com,
 	davem@davemloft.net,
@@ -85,9 +85,9 @@ Cc: netdev@vger.kernel.org,
 	rds-devel@oss.oracle.com,
 	linux-kernel@vger.kernel.org,
 	Ujwal Kundur <ujwal.kundur@gmail.com>
-Subject: [PATCH net-next v2 1/4] rds: Replace POLLERR with EPOLLERR
-Date: Wed, 20 Aug 2025 23:25:47 +0530
-Message-Id: <20250820175550.498-2-ujwal.kundur@gmail.com>
+Subject: [PATCH net-next v2 2/4] rds: Fix endianness annotation of jhash wrappers
+Date: Wed, 20 Aug 2025 23:25:48 +0530
+Message-Id: <20250820175550.498-3-ujwal.kundur@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20250820175550.498-1-ujwal.kundur@gmail.com>
 References: <20250820175550.498-1-ujwal.kundur@gmail.com>
@@ -99,28 +99,44 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Both constants are 1<<3, but EPOLLERR uses the correct annotations.
+__ipv6_addr_jhash (wrapper around jhash2()) and __inet_ehashfn (wrapper
+around jhash_3words()) work with u32 (host endian) values but accept big
+endian inputs. Declare the local variables as big endian to avoid
+unnecessary casts.
 
 Flagged by Sparse.
 
 Signed-off-by: Ujwal Kundur <ujwal.kundur@gmail.com>
 ---
- net/rds/af_rds.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/rds/connection.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/net/rds/af_rds.c b/net/rds/af_rds.c
-index 086a13170e09..4a7217fbeab6 100644
---- a/net/rds/af_rds.c
-+++ b/net/rds/af_rds.c
-@@ -242,7 +242,7 @@ static __poll_t rds_poll(struct file *file, struct socket *sock,
- 	if (rs->rs_snd_bytes < rds_sk_sndbuf(rs))
- 		mask |= (EPOLLOUT | EPOLLWRNORM);
- 	if (sk->sk_err || !skb_queue_empty(&sk->sk_error_queue))
--		mask |= POLLERR;
-+		mask |= EPOLLERR;
- 	read_unlock_irqrestore(&rs->rs_recv_lock, flags);
+diff --git a/net/rds/connection.c b/net/rds/connection.c
+index d62f486ab29f..ba6fb87647ac 100644
+--- a/net/rds/connection.c
++++ b/net/rds/connection.c
+@@ -57,16 +57,17 @@ static struct hlist_head *rds_conn_bucket(const struct in6_addr *laddr,
+ 	static u32 rds6_hash_secret __read_mostly;
+ 	static u32 rds_hash_secret __read_mostly;
  
- 	/* clear state any time we wake a seen-congested socket */
+-	u32 lhash, fhash, hash;
++	u32 hash;
++	__be32 lhash, fhash;
+ 
+ 	net_get_random_once(&rds_hash_secret, sizeof(rds_hash_secret));
+ 	net_get_random_once(&rds6_hash_secret, sizeof(rds6_hash_secret));
+ 
+-	lhash = (__force u32)laddr->s6_addr32[3];
++	lhash = laddr->s6_addr32[3];
+ #if IS_ENABLED(CONFIG_IPV6)
+-	fhash = __ipv6_addr_jhash(faddr, rds6_hash_secret);
++	fhash = (__force __be32)__ipv6_addr_jhash(faddr, rds6_hash_secret);
+ #else
+-	fhash = (__force u32)faddr->s6_addr32[3];
++	fhash = faddr->s6_addr32[3];
+ #endif
+ 	hash = __inet_ehashfn(lhash, 0, fhash, 0, rds_hash_secret);
+ 
 -- 
 2.30.2
 
