@@ -1,43 +1,43 @@
-Return-Path: <linux-rdma+bounces-12837-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12838-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 202A1B2DE02
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Aug 2025 15:39:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E52E4B2DE0B
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Aug 2025 15:40:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F10E188BBDF
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Aug 2025 13:35:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB9BB1BC63BD
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Aug 2025 13:36:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D40C320CB6;
-	Wed, 20 Aug 2025 13:33:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B615B322DDE;
+	Wed, 20 Aug 2025 13:33:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="hh3JfCMB"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="J4IeVQYn"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2078.outbound.protection.outlook.com [40.107.244.78])
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2068.outbound.protection.outlook.com [40.107.92.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A61C320CB2;
-	Wed, 20 Aug 2025 13:33:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB492322DCB;
+	Wed, 20 Aug 2025 13:33:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.68
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755696805; cv=fail; b=ljnYn/jQJSf3t/Cn6KPePRUCCirYpj5CyvdeEFoDzVa3PZUuCsewXpe8ZXoPtNwhedo181V7xutQ/zivcyTHY+otHFXyI/O0ZOqUyYkn8w6qt5MnXEKuqTwyxlzP2mLFn0wwy1P0CAbDM1HO7K6D5kqzX28bo8hbIZQkGJOjiOQ=
+	t=1755696819; cv=fail; b=dDY/8+UWfqo2Mu/B6rfimZlzsFeAzMWJ8pxONzxnjtRr6T4nPBOugI7G1TMV8F3v5pQDUOm2BvmH/v5aD1uQbv600PxdTZC+L39yAluzXx84Nc6RiE5AG9Z16WFUHuImbRfF0mv/63e6ZxwOn6F4cDAXVY3yyNnMe8MGWL6sRAg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755696805; c=relaxed/simple;
-	bh=r4OWMpFRlD1QXjTYj59WudBUav/5hJ2xx9wQe82B7rM=;
+	s=arc-20240116; t=1755696819; c=relaxed/simple;
+	bh=XduI2BsUpLO4Z9VMNwcENZSYfmVoijEjWqzHUFYGzts=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=S/qSTLRPiWOjTi8ecMwwFgPgxzKxLbgnhbeaXRPPeNf17b49EDPCF2Ppr5KhiZhekisYUJU01FOK+GMwx50ST6hAH2DceAu+AMX3dNvK7SVDIR+fcehiEuutIF67AHesAiu5YV0e4goTxQ8NsDsPasxjZ13/pfPfOLCwvH2Oc+s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=hh3JfCMB; arc=fail smtp.client-ip=40.107.244.78
+	 MIME-Version:Content-Type; b=qiEGCHVFS0fUhl3b4lFpGZF1tClA88QhLS2sQPII8SaJjldPF76G5gxPZDBgtQSbi7UpKThVOD6RIwz/YxJefJRFDmD/VaB5HnAd0vjQQh0cZYjbuTi+kVnTa+83q4FEKMpyEk9SIclwTm2scxdTfqYjHtZiy1Qsm5B1pqgrri8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=J4IeVQYn; arc=fail smtp.client-ip=40.107.92.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=JUPYW2VRWMePkXX04Jv2xsOVrXR1q3p48TId+CaG3nZQaBwW+LBvuwJeGkhcb/R/BPzE4PIzM2A8w1YsjS+jkw94eaMPuEPM8+shG88ppaP3vqWMQRoCO/ZoTzjo7x0rJAZspG8PScKxAXp/9r5wh5vnQmQw7/IAJTCxzXfpyxjdk6i5trMXPUayWjYT5cmoCxz1QLAnzmPJdCJqd7ohoxQwXTGoLqKNLAZnSeFaJZHls2XiuA2NW4cBfcIHn9H7ybaWj4P2UedoyDXakOO4bvrX9XIDNGJgHpEe98TN/lOCcwU/bWz7PMPn7fOtx9PCjR32JJe7WAbg8MNEPaIfLA==
+ b=sbnS3JeliP7FrC1UuNros5GLDq4tb0ThSfSojWMsTu12MCBi9tWXtZWlJtVPbj+WrdGhYnWl2uok7O9OyNLRYZgdH5lTT66LaoF7gjJh6sW1dqkiUSk6ARk+kPWCrVUwrQ9qj5wEi6Dv+vyfWV+4oQGC+eKuIObW5Oqnu0Dei32X1ayl/7UtHk3LQrTY6Kp/5u3Q2B+XBbyfi9O1hlEDvMfBg9f1j4v8niaYg+rnKurlYoYMgyjKLqxNrKPyiscWk/aOSmpbXjQaDzbQCXhD91HX4uP+nx7P3TIsmzliHHG56WP4Hki5EZvnXBssD5DIBadOS/p4IKbj4u5dGoPGCA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fpNz96fuoQaKhfN1KpGb6IkuzhXGoFqz1f6inIATB4c=;
- b=aWWKPL563Tqay2cTfgNPHpSl18bPJAykHsnVr/X7Ld2Q2zdT0rlv+hGullBp/f0/nvXFdHdIEvVbb5lp1zVYvFLmvJhySPGTHtQ0WtyK4RpMYZo4wZCJJga9I21EhtVBN9duhtUuo9/qv5dYdMD/Bji2Z8Sb3VAbySyr4Iv29K9CHsHgEAOheSL4QT5hV4DcGgw7efLAC+OcBzEGkyWpG0CL+seLRQwnzZQrlCARM1ILiCLf31qMw8PZ1yehmCFQXc5VsxGcnsywM0/CBBgGpXNggYgtRmP9ZTDHybol86dhaBOUoCT85jT6VYQe5enC3ZfiQKEMGoIr6XQe/iGX9w==
+ bh=nRcud7PpQo+6fSJRtkjHVzFyMZer1xoclqr3CNUq2xQ=;
+ b=p0iVRjOmg/9dPBnju6tvGPa7ZiEO4lcADWvIk1FsQSYX65md77EOfk2CoOEYoplAi5NG0cUl744tqbuifliIVtZCy5LlvjTCfi0va4hGj/JFlrE5WOO/4ebQUuBhS4C5ivHSrMsbe/16M9n18Phdef5u+JCbl/y/56pgbiAhzrwov0NSfpn8fLUp+E5eYJOKiluPxZe8ift+2BD+eJX0XzJwGn7R8sgsWPRZSqggLB0GDxnMbX5R8La4lYbnpz6MO04u/Um7Irk6WLaZkXHD8zNn6CsGpMnG3XX9ahN9nunoKDjrgFgj/YqEsE+KXFL1pj2Sfq8tDv/kCrWiZ5mlNA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -45,18 +45,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fpNz96fuoQaKhfN1KpGb6IkuzhXGoFqz1f6inIATB4c=;
- b=hh3JfCMBCHxZB0scJZpnKNJnZX2wdqFVnfVePEJCGyWOezxdfMaHjGGNZOkWCE6X11OA52IAq1bkb8JNm1/+0GrnON+ifMVXhk+3aKrQwTZjOcAV9JS5qBX4dMyov7fXc3T+PoX7NGxQnnRwPnYeyO8X527oxKt283nsYwwYiejJSeE78PR3zkkzs2pnWE32OA5cUDDHfm/umLNBMRKGZGUQ8DlqsFycR6UoWUt6km5XJlkejtAW6JXtqtC/4p1MUIkltMesTJw953fxzn1EnezWESV0B83Ku0YPxuIOx/INdg2uEEz0v8ca6dRnR+anducBan9cx2qVYTQnMm/SPw==
-Received: from MW2PR2101CA0019.namprd21.prod.outlook.com (2603:10b6:302:1::32)
- by PH0PR12MB8098.namprd12.prod.outlook.com (2603:10b6:510:29a::17) with
+ bh=nRcud7PpQo+6fSJRtkjHVzFyMZer1xoclqr3CNUq2xQ=;
+ b=J4IeVQYnKrxXxqC1znJZcH4OLhnNn99b/8UgLBQocx9HTj5vuxUcRn3o6eJsP7qk0xqKR7q+YJNDpRC8Ho8BYWugGyahCAtSMiD6eXY5uq9ci478bEfqJ1S0EB2e6t4tBLFn8kmhVY+SOA2Sz063hJ6FCud2wv9K4LKZtPlT35aSLrCBrD+DXlOzCW3rWIeYImq+/z3bLPt8+s7xx2h35zkEMwz8LbXDZ1R2679YF4vTEAPgBE683Guh0YJJDa4wKyiQWzIaJ5i3v282DiflCJj39YuUsxbMipo3DlldDdbr5DtQt0szyZKB2p+TECGyybMrChI6GHfGuXnqQOUgfA==
+Received: from BYAPR01CA0008.prod.exchangelabs.com (2603:10b6:a02:80::21) by
+ PH8PR12MB6889.namprd12.prod.outlook.com (2603:10b6:510:1c9::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9031.25; Wed, 20 Aug
- 2025 13:33:21 +0000
-Received: from CY4PEPF0000EE3F.namprd03.prod.outlook.com
- (2603:10b6:302:1:cafe::41) by MW2PR2101CA0019.outlook.office365.com
- (2603:10b6:302:1::32) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9073.5 via Frontend Transport; Wed,
- 20 Aug 2025 13:33:20 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9052.14; Wed, 20 Aug
+ 2025 13:33:27 +0000
+Received: from CY4PEPF0000EE3C.namprd03.prod.outlook.com
+ (2603:10b6:a02:80:cafe::e) by BYAPR01CA0008.outlook.office365.com
+ (2603:10b6:a02:80::21) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9052.14 via Frontend Transport; Wed,
+ 20 Aug 2025 13:34:02 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -64,20 +64,20 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.117.161 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.117.161) by
- CY4PEPF0000EE3F.mail.protection.outlook.com (10.167.242.17) with Microsoft
+ CY4PEPF0000EE3C.mail.protection.outlook.com (10.167.242.13) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9052.8 via Frontend Transport; Wed, 20 Aug 2025 13:33:20 +0000
+ 15.20.9052.8 via Frontend Transport; Wed, 20 Aug 2025 13:33:26 +0000
 Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
  (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 20 Aug
- 2025 06:32:58 -0700
+ 2025 06:33:03 -0700
 Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail203.nvidia.com
  (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 20 Aug
- 2025 06:32:57 -0700
+ 2025 06:33:03 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.8)
  with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Wed, 20
- Aug 2025 06:32:53 -0700
+ Aug 2025 06:32:58 -0700
 From: Mark Bloch <mbloch@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -85,13 +85,12 @@ To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 CC: Tariq Toukan <tariqt@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
 	"Saeed Mahameed" <saeedm@nvidia.com>, <netdev@vger.kernel.org>,
 	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Gal Pressman
-	<gal@nvidia.com>, Alexei Lazar <alazar@nvidia.com>, Shahar Shitrit
-	<shshitrit@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, Mark Bloch
-	<mbloch@nvidia.com>, Huy Nguyen <huyn@mellanox.com>, Parav Pandit
-	<parav@mellanox.com>, Saeed Mahameed <saeedm@mellanox.com>
-Subject: [PATCH V2 net 7/8] net/mlx5e: Query FW for buffer ownership
-Date: Wed, 20 Aug 2025 16:32:08 +0300
-Message-ID: <20250820133209.389065-8-mbloch@nvidia.com>
+	<gal@nvidia.com>, Armen Ratner <armeng@nvidia.com>, Maher Sanalla
+	<msanalla@nvidia.com>, Alexei Lazar <alazar@nvidia.com>, Mark Bloch
+	<mbloch@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>
+Subject: [PATCH V2 net 8/8] net/mlx5e: Preserve shared buffer capacity during headroom updates
+Date: Wed, 20 Aug 2025 16:32:09 +0300
+Message-ID: <20250820133209.389065-9-mbloch@nvidia.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250820133209.389065-1-mbloch@nvidia.com>
 References: <20250820133209.389065-1-mbloch@nvidia.com>
@@ -106,183 +105,146 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE3F:EE_|PH0PR12MB8098:EE_
-X-MS-Office365-Filtering-Correlation-Id: 89053f60-f518-45a9-0c01-08dddfee2139
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE3C:EE_|PH8PR12MB6889:EE_
+X-MS-Office365-Filtering-Correlation-Id: 965c5a55-0623-4529-d87c-08dddfee24e6
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|7416014|376014|1800799024|82310400026;
+	BCL:0;ARA:13230040|82310400026|1800799024|36860700013|376014|7416014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?1//ZNnEbbS3i47VkwVVWocuWbOfgiutSKNyt7UHyc0ucJdAXH3rkS6vF+Sg5?=
- =?us-ascii?Q?FtW1pesVq2c4wzjnatU3I9EDqvdURJMWMf5ciGs16n7tmwSHgmXIJHJCwocX?=
- =?us-ascii?Q?mtNIG78PulFNtEr7M+Im0Mbix4sMwMk9zOKKDWcZIs3TzYDvDRtNiURKrcmQ?=
- =?us-ascii?Q?J6RzSn/3gcAHt4d0XUWsNVix3AWagDsVNfG5gtfiuH2UP4Pdi6ZP1g9AbU0/?=
- =?us-ascii?Q?ZBkpqDETuYOD8T7k8iARcl6uUpHuYT+8JTgFEc/qG+PnR10mn4clHVnqU223?=
- =?us-ascii?Q?253T8M+OKv8SXLdfiI2e3dDqR6TZl3dOirbdppZFrib2XNXj3SjmTFgPVQHP?=
- =?us-ascii?Q?+OpxHf3pumfbUYWVDcQthl4Souu29MqRCUG29wukc22Tnu5FNnj23Y+BnjhT?=
- =?us-ascii?Q?ER040nMJzZgjaOuHS6IUyHe8d7YGvrN6/pmrM7po86y6wy9iJaP5i6I1ZLj0?=
- =?us-ascii?Q?RBGXyoUGydCjBNyn9FxQiFodcBm9BXGBGCfDmSyQbDF3omGOtYit07Mo8y3/?=
- =?us-ascii?Q?mulhIVwP+e9AOSeCDa+jNczCWO2llfuSLMVrLO2iTcxwbfUtr2JKpj/zVU8T?=
- =?us-ascii?Q?E7fnWgXz/gyJnMn+MohbYPaJNLG7HvrXFn5Ish2uynv+fsQ45GKzhBQ2zuDH?=
- =?us-ascii?Q?LSjZyDIsy4ngKodIycZm8wQJQ2lbaxSfPdLvDiXBKmCuQUOkccNH4piWjq/c?=
- =?us-ascii?Q?JHqVCdEZcMBzEDOa+aL3W+Ratn7a+pCuNINiAiqaq4N4IlFvGckQh4NvnN+j?=
- =?us-ascii?Q?JnQPoQNEQSkqKPBva4+ZAX2wAjpJA5ITnrEQxmxH8Bi3/qOnpefehhFthnE4?=
- =?us-ascii?Q?wNOvPslv/tAQHeHfV3xSNCLX/QG2Hw1xuyh79qYSwXYvvAGzSKF/g5qlf3+K?=
- =?us-ascii?Q?K162zhH09/Z3d2ZJmgfJ7BV4a9EeU3sa+p1L1bRWkHtpZqOmgE1EzHl59HBF?=
- =?us-ascii?Q?4kpAq+iaR/39ETE8EuWfRwKYdDzKShnMdh08vz4lRGtCC7uhbJsUmEoOmNwz?=
- =?us-ascii?Q?JWot5wUUxCb1VR6xBVLh8PJHewP47FzwXoxz6nAYIbuPZPzx4gvZBe3BzhsT?=
- =?us-ascii?Q?rVkCxJw2PQ7kSH/WTYDYfe0/J4M9foU9bmXZEUzCqawEojpPJcIon4pWQ+qM?=
- =?us-ascii?Q?GgArM+KQC0XUEJrr/SQuYWCGlKQlqqqM2qUQ1/w06RUkLQLzaKpoFvw7KYu1?=
- =?us-ascii?Q?1QsidfSAJqdCB3I94gmyc8cL0mgTZ5dNvNxfVinKh3T2FAKWhN6/kv1j15Lv?=
- =?us-ascii?Q?bFyY9iAnhZey7TOraLGRV6aG8MrBAvZnqtneYQTWAgNnbyl93RnQ/dx0zYly?=
- =?us-ascii?Q?SV68BIoz3B8tqqwOstLvCcPTlpNSQM4IbrBrd+PKZfYmm7E2o/LplX5e4aLt?=
- =?us-ascii?Q?+GvYStcM5yJtflNknncDnfkpvJnX+CceSo1OKYSkofFPJTJP73FJKown0sn9?=
- =?us-ascii?Q?+NUwn8AnQw0o8T4UF+7eyT+MP3V4xWT4dbiHgRQjJ5NZvWRAXSdjANj/kDQg?=
- =?us-ascii?Q?EXRAs1ZJBjVMlhzm1UPslny1l3QSNRfY6aZP?=
+	=?us-ascii?Q?NIW6+gtt6E3e6SRjbPMYFlvnMRjGEDxzCWoBqNjWVq51rM7ORRzDBdfvkDzu?=
+ =?us-ascii?Q?KnyjADNo35XzWRWlRIdTILyp77zdcQDeD+yWIEZkjgDjgRsibT1HvmCkUOXB?=
+ =?us-ascii?Q?kWO0ZxLnkzBho5vbdATGCdjgxqtv1Lv+Ll/010CO42mMrVAVFy0cJgg3ulst?=
+ =?us-ascii?Q?NzTWARMT7doT/LAZZ9WpaiDI5rL63vJqAT9jCIWZAKXQgLq/c74aEA3apC8M?=
+ =?us-ascii?Q?6mW4PvwlF+eOr6b/QHBW31sDVwI2s5gjvGxQALj7Y93GZRRFWUCrTmQGsOym?=
+ =?us-ascii?Q?TfWxNkSLfs/2WSYn/5FptZgMmhl+Bvxiuzv8QitF5jzc5avo/WzwPtjzMDPA?=
+ =?us-ascii?Q?rvSHiVfK+DOzkL5BkhMGap69ym3Dwl/cz0IWijxhUDCetoRBtdbg0vNNbD/q?=
+ =?us-ascii?Q?WoUD3J8U7HgRXYuhnyQiDNWh/gMYByRxv9hejLe/QoWZQrXYaGVplsKqrqyF?=
+ =?us-ascii?Q?imn5uS3ysLbouZ/f7fJhk3qvXeZF/9uy1cTKCnCsHMDdKED3N0R5GqtPUn2K?=
+ =?us-ascii?Q?HW5Fvrv6gCIz7rWZQbV3aUeYbT3uL6fruqCgAWktHWjwdwYnI8pzvBTWfk9D?=
+ =?us-ascii?Q?5ELHMnpg8qxvDmC6JFvt5l6hozm6Hy3gP2Gztjo4W3ncDNoFKGYYRGjSyh5S?=
+ =?us-ascii?Q?gf/KWRydauBzUXHb8ko4UMOUOKqKfFpCU2/HH6PTcLY10DXsFbd+WNv+2Ph4?=
+ =?us-ascii?Q?QATku2dp+9WgI0zHoPa/cJ2itZ/6fG22a1ZPY5CCk7rZZ2VAys8zYwkj6lMe?=
+ =?us-ascii?Q?jWLlzTzfbSZyZi+dOsW0NYtm/CCXIa2MY831nMzFzR7Nxb2Z7+bZqYwyQILo?=
+ =?us-ascii?Q?HdlombnHsU0tn2tmoKZp0C3AcjAeFwFeG9w76ELrIls9EdZsEG91pyQ1osxF?=
+ =?us-ascii?Q?bE5KchtcjYnThGaD6ibC9k0TMVvH2qY5zEBlzv7CcDR+20jWGgsHZ6zlEu9z?=
+ =?us-ascii?Q?93X5AVays42yfpK+57QpiVmZCCpwaM77bLrEqgngL94IRqMN3EOnLkmsJeTw?=
+ =?us-ascii?Q?qUwQ9OQ+DjT2qBpzhXoXBQJEbxR8jrxdlHIdnOPngJ30iA4UbZP/GulTeAhB?=
+ =?us-ascii?Q?D2ikO95CiPZT/KZuEDx4vlmF2jegvLIHADbf5O93PPaWgXYI+7Z9UZRKCrkq?=
+ =?us-ascii?Q?VHplKXWnidCEqAuUP8jk1QdFTJX5LKbY+2BUdSXkleJ7FiAPyg9pqjctwImy?=
+ =?us-ascii?Q?fEXSpMwzsUvb3xxfntL8GMQmMqqZZnxR73IdslXbPI1OWqUorH2Zy51u/tHl?=
+ =?us-ascii?Q?JJH1yoN2IubQigA/Zqv3pic+QAjBlnC8+yMtfGn4npza5fLz6szNB+mKnf6E?=
+ =?us-ascii?Q?iO68IUXrQwlXgWS+nBzKFUBc32Y32nXeNEo4HgfbDh4CXbTSuKMlYitG0SnM?=
+ =?us-ascii?Q?5Uv7Aw8BFqxmOdwy6sZYpKSiiTjODOds4iFTC3710nNq25K7aMXi9TP4wBqb?=
+ =?us-ascii?Q?nUdWzxvykY66C8AaML8C7yJFpEWIRanTwQYNKBmKB0ewEspTP2nVJVBl6dCJ?=
+ =?us-ascii?Q?Jlkyz6HoLbsrEYpz1jg4I5UQ5IgVZ3xQSN7B?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(7416014)(376014)(1800799024)(82310400026);DIR:OUT;SFP:1101;
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(1800799024)(36860700013)(376014)(7416014);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2025 13:33:20.7727
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2025 13:33:26.8968
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 89053f60-f518-45a9-0c01-08dddfee2139
+X-MS-Exchange-CrossTenant-Network-Message-Id: 965c5a55-0623-4529-d87c-08dddfee24e6
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000EE3F.namprd03.prod.outlook.com
+	CY4PEPF0000EE3C.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8098
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6889
 
-From: Alexei Lazar <alazar@nvidia.com>
+From: Armen Ratner <armeng@nvidia.com>
 
-The SW currently saves local buffer ownership when setting
-the buffer.
-This means that the SW assumes it has ownership of the buffer
-after the command is set.
+When port buffer headroom changes, port_update_shared_buffer()
+recalculates the shared buffer size and splits it in a 3:1 ratio
+(lossy:lossless) - Currently, the calculation is:
+lossless = shared / 4;
+lossy = (shared / 4) * 3;
 
-If setting the buffer fails and we remain in FW ownership,
-the local buffer ownership state incorrectly remains as SW-owned.
-This leads to incorrect behavior in subsequent PFC commands,
-causing failures.
+Meaning, the calculation dropped the remainder of shared % 4 due to
+integer division, unintentionally reducing the total shared buffer
+by up to three cells on each update. Over time, this could shrink
+the buffer below usable size.
 
-Instead of saving local buffer ownership in SW,
-query the FW for buffer ownership when setting the buffer.
-This ensures that the buffer ownership state is accurately
-reflected, avoiding the issues caused by incorrect ownership
-states.
+Fix it by changing the calculation to:
+lossless = shared / 4;
+lossy = shared - lossless;
 
-Fixes: ecdf2dadee8e ("net/mlx5e: Receive buffer support for DCBX")
+This retains all buffer cells while still approximating the
+intended 3:1 split, preventing capacity loss over time.
+
+While at it, perform headroom calculations in units of cells rather than
+in bytes for more accurate calculations avoiding extra divisions.
+
+Fixes: a440030d8946 ("net/mlx5e: Update shared buffer along with device buffer changes")
+Signed-off-by: Armen Ratner <armeng@nvidia.com>
+Signed-off-by: Maher Sanalla <msanalla@nvidia.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 Signed-off-by: Alexei Lazar <alazar@nvidia.com>
-Reviewed-by: Shahar Shitrit <shshitrit@nvidia.com>
-Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
 Signed-off-by: Mark Bloch <mbloch@nvidia.com>
 ---
- .../ethernet/mellanox/mlx5/core/en/dcbnl.h    |  1 -
- .../ethernet/mellanox/mlx5/core/en_dcbnl.c    | 12 ++++++++---
- .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  2 ++
- .../net/ethernet/mellanox/mlx5/core/port.c    | 20 +++++++++++++++++++
- 4 files changed, 31 insertions(+), 4 deletions(-)
+ .../mellanox/mlx5/core/en/port_buffer.c        | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/dcbnl.h b/drivers/net/ethernet/mellanox/mlx5/core/en/dcbnl.h
-index b59aee75de94..2c98a5299df3 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/dcbnl.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/dcbnl.h
-@@ -26,7 +26,6 @@ struct mlx5e_dcbx {
- 	u8                         cap;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/port_buffer.c b/drivers/net/ethernet/mellanox/mlx5/core/en/port_buffer.c
+index 5ae787656a7c..3efa8bf1d14e 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/port_buffer.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/port_buffer.c
+@@ -272,8 +272,8 @@ static int port_update_shared_buffer(struct mlx5_core_dev *mdev,
+ 	/* Total shared buffer size is split in a ratio of 3:1 between
+ 	 * lossy and lossless pools respectively.
+ 	 */
+-	lossy_epool_size = (shared_buffer_size / 4) * 3;
+ 	lossless_ipool_size = shared_buffer_size / 4;
++	lossy_epool_size    = shared_buffer_size - lossless_ipool_size;
  
- 	/* Buffer configuration */
--	bool                       manual_buffer;
- 	u32                        cable_len;
- 	u32                        xoff;
- 	u16                        port_buff_cell_sz;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_dcbnl.c b/drivers/net/ethernet/mellanox/mlx5/core/en_dcbnl.c
-index 5fe016e477b3..d166c0d5189e 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_dcbnl.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_dcbnl.c
-@@ -362,6 +362,7 @@ static int mlx5e_dcbnl_ieee_getpfc(struct net_device *dev,
- static int mlx5e_dcbnl_ieee_setpfc(struct net_device *dev,
- 				   struct ieee_pfc *pfc)
- {
-+	u8 buffer_ownership = MLX5_BUF_OWNERSHIP_UNKNOWN;
- 	struct mlx5e_priv *priv = netdev_priv(dev);
+ 	mlx5e_port_set_sbpr(mdev, 0, MLX5_EGRESS_DIR, MLX5_LOSSY_POOL, 0,
+ 			    lossy_epool_size);
+@@ -288,14 +288,12 @@ static int port_set_buffer(struct mlx5e_priv *priv,
+ 	u16 port_buff_cell_sz = priv->dcbx.port_buff_cell_sz;
  	struct mlx5_core_dev *mdev = priv->mdev;
- 	u32 old_cable_len = priv->dcbx.cable_len;
-@@ -389,7 +390,14 @@ static int mlx5e_dcbnl_ieee_setpfc(struct net_device *dev,
+ 	int sz = MLX5_ST_SZ_BYTES(pbmc_reg);
+-	u32 new_headroom_size = 0;
+-	u32 current_headroom_size;
++	u32 current_headroom_cells = 0;
++	u32 new_headroom_cells = 0;
+ 	void *in;
+ 	int err;
+ 	int i;
  
- 	if (MLX5_BUFFER_SUPPORTED(mdev)) {
- 		pfc_new.pfc_en = (changed & MLX5E_PORT_BUFFER_PFC) ? pfc->pfc_en : curr_pfc_en;
--		if (priv->dcbx.manual_buffer)
-+		ret = mlx5_query_port_buffer_ownership(mdev,
-+						       &buffer_ownership);
-+		if (ret)
-+			netdev_err(dev,
-+				   "%s, Failed to get buffer ownership: %d\n",
-+				   __func__, ret);
-+
-+		if (buffer_ownership == MLX5_BUF_OWNERSHIP_SW_OWNED)
- 			ret = mlx5e_port_manual_buffer_config(priv, changed,
- 							      dev->mtu, &pfc_new,
- 							      NULL, NULL);
-@@ -982,7 +990,6 @@ static int mlx5e_dcbnl_setbuffer(struct net_device *dev,
- 	if (!changed)
- 		return 0;
+-	current_headroom_size = port_buffer->headroom_size;
+-
+ 	in = kzalloc(sz, GFP_KERNEL);
+ 	if (!in)
+ 		return -ENOMEM;
+@@ -306,12 +304,14 @@ static int port_set_buffer(struct mlx5e_priv *priv,
  
--	priv->dcbx.manual_buffer = true;
- 	err = mlx5e_port_manual_buffer_config(priv, changed, dev->mtu, NULL,
- 					      buffer_size, prio2buffer);
- 	return err;
-@@ -1252,7 +1259,6 @@ void mlx5e_dcbnl_initialize(struct mlx5e_priv *priv)
- 		priv->dcbx.cap |= DCB_CAP_DCBX_HOST;
+ 	for (i = 0; i < MLX5E_MAX_NETWORK_BUFFER; i++) {
+ 		void *buffer = MLX5_ADDR_OF(pbmc_reg, in, buffer[i]);
++		current_headroom_cells += MLX5_GET(bufferx_reg, buffer, size);
++
+ 		u64 size = port_buffer->buffer[i].size;
+ 		u64 xoff = port_buffer->buffer[i].xoff;
+ 		u64 xon = port_buffer->buffer[i].xon;
  
- 	priv->dcbx.port_buff_cell_sz = mlx5e_query_port_buffers_cell_size(priv);
--	priv->dcbx.manual_buffer = false;
- 	priv->dcbx.cable_len = MLX5E_DEFAULT_CABLE_LEN;
+-		new_headroom_size += size;
+ 		do_div(size, port_buff_cell_sz);
++		new_headroom_cells += size;
+ 		do_div(xoff, port_buff_cell_sz);
+ 		do_div(xon, port_buff_cell_sz);
+ 		MLX5_SET(bufferx_reg, buffer, size, size);
+@@ -320,10 +320,8 @@ static int port_set_buffer(struct mlx5e_priv *priv,
+ 		MLX5_SET(bufferx_reg, buffer, xon_threshold, xon);
+ 	}
  
- 	mlx5e_ets_init(priv);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-index b6d53db27cd5..9d3504f5abfa 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
-@@ -367,6 +367,8 @@ int mlx5_query_port_dcbx_param(struct mlx5_core_dev *mdev, u32 *out);
- int mlx5_set_port_dcbx_param(struct mlx5_core_dev *mdev, u32 *in);
- int mlx5_set_trust_state(struct mlx5_core_dev *mdev, u8 trust_state);
- int mlx5_query_trust_state(struct mlx5_core_dev *mdev, u8 *trust_state);
-+int mlx5_query_port_buffer_ownership(struct mlx5_core_dev *mdev,
-+				     u8 *buffer_ownership);
- int mlx5_set_dscp2prio(struct mlx5_core_dev *mdev, u8 dscp, u8 prio);
- int mlx5_query_dscp2prio(struct mlx5_core_dev *mdev, u8 *dscp2prio);
+-	new_headroom_size /= port_buff_cell_sz;
+-	current_headroom_size /= port_buff_cell_sz;
+-	err = port_update_shared_buffer(priv->mdev, current_headroom_size,
+-					new_headroom_size);
++	err = port_update_shared_buffer(priv->mdev, current_headroom_cells,
++					new_headroom_cells);
+ 	if (err)
+ 		goto out;
  
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/port.c b/drivers/net/ethernet/mellanox/mlx5/core/port.c
-index 549f1066d2a5..2d7adf7444ba 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/port.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/port.c
-@@ -968,6 +968,26 @@ int mlx5_query_trust_state(struct mlx5_core_dev *mdev, u8 *trust_state)
- 	return err;
- }
- 
-+int mlx5_query_port_buffer_ownership(struct mlx5_core_dev *mdev,
-+				     u8 *buffer_ownership)
-+{
-+	u32 out[MLX5_ST_SZ_DW(pfcc_reg)] = {};
-+	int err;
-+
-+	if (!MLX5_CAP_PCAM_FEATURE(mdev, buffer_ownership)) {
-+		*buffer_ownership = MLX5_BUF_OWNERSHIP_UNKNOWN;
-+		return 0;
-+	}
-+
-+	err = mlx5_query_pfcc_reg(mdev, out, sizeof(out));
-+	if (err)
-+		return err;
-+
-+	*buffer_ownership = MLX5_GET(pfcc_reg, out, buf_ownership);
-+
-+	return 0;
-+}
-+
- int mlx5_set_dscp2prio(struct mlx5_core_dev *mdev, u8 dscp, u8 prio)
- {
- 	int sz = MLX5_ST_SZ_BYTES(qpdpm_reg);
 -- 
 2.34.1
 
