@@ -1,55 +1,49 @@
-Return-Path: <linux-rdma+bounces-12856-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12857-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D302B2F920
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Aug 2025 15:00:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2B24B2FE4E
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Aug 2025 17:26:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFBAB3A73C2
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Aug 2025 12:54:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21A3C3B56F5
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Aug 2025 15:20:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E09132D3744;
-	Thu, 21 Aug 2025 12:54:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90C21271472;
+	Thu, 21 Aug 2025 15:20:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="Ffd3acOq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nzU5OQ7p"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFC3C2F6566
-	for <linux-rdma@vger.kernel.org>; Thu, 21 Aug 2025 12:54:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.250
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C0FB26F478;
+	Thu, 21 Aug 2025 15:20:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755780857; cv=none; b=Dci0p538NuoSCmPcs4j/Ukiuzv8pt102HkrAfculeaIcXcFEkHcesmVWMZTLzHnLOVI/DXWZ73BZDHFBK5JQobn8QU7wTnPjP9VsFdqymS3O1Q6I/EtYWFQ5fgM+2kToomWwGbEy4pXE/3dhdSzi8UI5EQ8kJ6dOFQnEcqu+6x8=
+	t=1755789607; cv=none; b=kin9by2wsTOHb3AFDWfsNlelcLlvNO4vd2Gwt1hPL5hpvO0uvZHU7GKLUUp3O3tzwZZDuuPwUmXS8Tf75gYvl3HAFLdAUotDQoQvUahMhIsT5NxpzcPepeDE4nIJADrgYvi59qiYumhJf47pOgRkgi5/usJ/JiKfXCzfEkrt8a4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755780857; c=relaxed/simple;
-	bh=XDQtR6gz3bbl9ueXPaS7c+/s6Hyzc47iY2O8/cM5OWU=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=T5YKDbkr59JtmI3SPKlJ7FX7VH/05Ru+2KrJwu8mOO4sSWDxiBee/mTTmQFPUxL6nT9yBaPHw3kRkmjegVqgUIpdKtkFqYnb2aJPZBPulPS/ew4x4NNVw2nyQuCzvcRu7s33USxDru62Lshqsx03/MFPjGFpRoEtnBv6DFFuzEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=Ffd3acOq; arc=none smtp.client-ip=185.125.188.250
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
-Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id 4C5883FFE5
-	for <linux-rdma@vger.kernel.org>; Thu, 21 Aug 2025 12:47:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-	s=20210803; t=1755780430;
-	bh=XDQtR6gz3bbl9ueXPaS7c+/s6Hyzc47iY2O8/cM5OWU=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
-	 Reply-To;
-	b=Ffd3acOqQxSCnpw+BEYCsylSMkVUlfTa8JyReVcXX8mPCAw//uAHtRg8kbQ9kYj/I
-	 et5e9ioorOk7nr8v2WL+sbgYzSMD8d7F1wbWfc/K18d/F3AZfpKirX/ALW+nMeR9Bb
-	 I1jlBcp1YzvsXfFGFOdxCMNFSDfojEnzpKBHYY1d1Zb4jDaUzy+0pMGGYIxrI/FnOP
-	 zN0Ff1/loMlSyYkecgWatHFSO4DtqxCZw0s1o5AgA9dVAdU1Ltpi8ZPOCF8EdyHBVO
-	 Kb0SbBwtA9QI8FL1qTKxFCXqVz/vui1uBa+lRX4MZFJDv0Tc2TCAcG9sEu9UQizdr/
-	 //hvqKxhCzupw==
-Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
-	by buildd-manager.lp.internal (Postfix) with ESMTP id 326D27E759
-	for <linux-rdma@vger.kernel.org>; Thu, 21 Aug 2025 12:47:10 +0000 (UTC)
+	s=arc-20240116; t=1755789607; c=relaxed/simple;
+	bh=UcWfbi0iEkHH1+i77ePdo2DIJTciIamgyhLpHY/OeH0=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=IbJtRK8z9x+LTGHaDy9oXA1daiERAfJVrEmVXz74R37e6qdnNuNQMeAeD7frNhDn7VR7198UixEKWZdK2eErcu2xshBq0/xAby7IicXFyCTvRBh7/WLWGRk1b6tUn7ULSy3wJztD236uram88Ys/mteYYfivmEH0E7ntQyeB08w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nzU5OQ7p; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE233C4CEEB;
+	Thu, 21 Aug 2025 15:20:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1755789606;
+	bh=UcWfbi0iEkHH1+i77ePdo2DIJTciIamgyhLpHY/OeH0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=nzU5OQ7pRM5+tru7wQGM31jdSyerDgdNvIeQdfBwij15soBJzFYvNwnmgwK/Y2MJs
+	 x3QGG0r+OQ4R4XmMBkKCpldxJrIhJttKuOv/0C2uxQlqtwpYaptP9V+HJhs7fvUpVM
+	 SIuWWQX08p5OeWzzAgWAr3YJf5y4blkb1U2kkn7gdj6y1rZlMeZUHvkKqlVjs1SYHU
+	 yQb5Ox8q8wSHAyMFMhD/omDzkOgWsIk0hxLM/59//Tgyh+izV0C4d3ehP75TA0Voer
+	 SGVYtU1H6qBM6XzwGN0/pIxR7Fzbm6VBFtk+F3xhHxkZL2J8twKp3/s6lZRDSnLQcJ
+	 GSRLks9w2RzOQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33D7E383BF5B;
+	Thu, 21 Aug 2025 15:20:17 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -57,37 +51,58 @@ List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Launchpad-Message-Rationale: Requester @linux-rdma
-X-Launchpad-Message-For: linux-rdma
-X-Launchpad-Notification-Type: recipe-build-status
-X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
-X-Launchpad-Build-State: MANUALDEPWAIT
-To: Linux RDMA <linux-rdma@vger.kernel.org>
-From: noreply@launchpad.net
-Subject: [recipe build #3937057] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
-Message-Id: <175578043020.369328.1774114170516227260.launchpad@buildd-manager.lp.internal>
-Date: Thu, 21 Aug 2025 12:47:10 -0000
-Reply-To: noreply@launchpad.net
-Sender: noreply@launchpad.net
-Errors-To: noreply@launchpad.net
-Precedence: bulk
-X-Generated-By: Launchpad (canonical.com); Revision="919009172d854f2b8e4e8262db447f12f11d25eb"; Instance="launchpad-buildd-manager"
-X-Launchpad-Hash: 2663300c6c86c90614c375f4ccf9a49323375a9e
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH V2 net 0/8] mlx5 misx fixes 2025-08-20
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175578961600.1082285.18104026294621476330.git-patchwork-notify@kernel.org>
+Date: Thu, 21 Aug 2025 15:20:16 +0000
+References: <20250820133209.389065-1-mbloch@nvidia.com>
+In-Reply-To: <20250820133209.389065-1-mbloch@nvidia.com>
+To: Mark Bloch <mbloch@nvidia.com>
+Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, przemyslaw.kitszel@intel.com,
+ tariqt@nvidia.com, leon@kernel.org, saeedm@nvidia.com,
+ netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, gal@nvidia.com
 
- * State: Dependency wait
- * Recipe: linux-rdma/rdma-core-daily
- * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Distroseries: xenial
- * Duration: 2 minutes
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+recipebuild/3937057/+files/buildlog.txt.gz
- * Upload Log:=20
- * Builder: https://launchpad.net/builders/lcy02-amd64-042
+Hello:
 
---=20
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
-ild/3937057
-Your team Linux RDMA is the requester of the build.
+This series was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Wed, 20 Aug 2025 16:32:01 +0300 you wrote:
+> Hi,
+> 
+> This patchset provides misc bug fixes from the team to the mlx5 core and
+> Eth drivers.
+> 
+> v1: https://lore.kernel.org/all/1755095476-414026-1-git-send-email-tariqt@nvidia.com/
+> 
+> [...]
+
+Here is the summary with links:
+  - [V2,net,1/8] net/mlx5: Base ECVF devlink port attrs from 0
+    https://git.kernel.org/netdev/net/c/bc17455bc843
+  - [V2,net,2/8] net/mlx5: Remove default QoS group and attach vports directly to root TSAR
+    https://git.kernel.org/netdev/net/c/330f0f6713a3
+  - [V2,net,3/8] net/mlx5e: Preserve tc-bw during parent changes
+    https://git.kernel.org/netdev/net/c/e8f973576ca5
+  - [V2,net,4/8] net/mlx5: Destroy vport QoS element when no configuration remains
+    https://git.kernel.org/netdev/net/c/b697ef4d1d13
+  - [V2,net,5/8] net/mlx5: Fix QoS reference leak in vport enable error path
+    https://git.kernel.org/netdev/net/c/3c114fb2afe4
+  - [V2,net,6/8] net/mlx5: Restore missing scheduling node cleanup on vport enable failure
+    https://git.kernel.org/netdev/net/c/51b17c98e3db
+  - [V2,net,7/8] net/mlx5e: Query FW for buffer ownership
+    https://git.kernel.org/netdev/net/c/451d2849ea66
+  - [V2,net,8/8] net/mlx5e: Preserve shared buffer capacity during headroom updates
+    https://git.kernel.org/netdev/net/c/8b0587a885fd
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
