@@ -1,107 +1,89 @@
-Return-Path: <linux-rdma+bounces-12880-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12881-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F8E2B30D3E
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Aug 2025 06:05:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD958B31197
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Aug 2025 10:21:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2540AC5E30
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Aug 2025 04:04:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DEE95C6020
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Aug 2025 08:20:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 103D6296BA3;
-	Fri, 22 Aug 2025 04:03:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A95B92EB5D1;
+	Fri, 22 Aug 2025 08:20:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Xl+iEgpU"
+	dkim=pass (2048-bit key) header.d=linbit-com.20230601.gappssmtp.com header.i=@linbit-com.20230601.gappssmtp.com header.b="w4O+TQhc"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f228.google.com (mail-pl1-f228.google.com [209.85.214.228])
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0242226B769
-	for <linux-rdma@vger.kernel.org>; Fri, 22 Aug 2025 04:03:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.228
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17F292EA48B
+	for <linux-rdma@vger.kernel.org>; Fri, 22 Aug 2025 08:20:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755835401; cv=none; b=Ob1e8BPVxXG4Ul+/VKnPeibNDlz67zK4B+SzuLZPlJnedTOmrOjOHRbqwJDRzHoyJycXoB+9QOf+ybtp+qjePqcDvoQyxwZ3gA6qmA39sURveSFIML7jc3NHnYw/qhfLKUBbsXwl6TmlM1UzjQ2FPjjgjdyNLxoFlD6LsOwfRS4=
+	t=1755850823; cv=none; b=MHGsQlVi9Y1K6t45YHL49ZojgkR4bS48Oo3ikK+8EnCp4kfbpaT2Y2OtzyG4/eoXfdHvCUA3oo9yiZwRmKOasJLEYUokVdfGVFBccoYOjob8CXt7aSESWG6yxSFblh5Sjk0Cvr8d0geqWm2JQxhsQhcYwEDaOKTw3vcVkHPlYlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755835401; c=relaxed/simple;
-	bh=jvXFLpYVYHEIUc1iLOZbe4sL5yU9EXCDJbEwLbZOtJo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WWLSx6um8pYLaqfYvJSGtaTYZp2fEszewexE9CsNkDQbSP6ZzDhKEmB/ViBiU3IZK0diAIujuqZISn/OZOifdP45QLaGD1FFVHwUFbshSvWC/fTo6SYz8oDXa/zwDopHZSTM5GDDdTnrU1oS4j2pX2bz60SKWepG+thMPcDZD7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Xl+iEgpU; arc=none smtp.client-ip=209.85.214.228
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f228.google.com with SMTP id d9443c01a7336-24622df0d95so6287585ad.2
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Aug 2025 21:03:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755835397; x=1756440197;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:dkim-signature
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f53GRlIh8R+xAEhzUiUULZbbPM7pwilIyORgSUpiEzU=;
-        b=nD2G6HW6BDcMQ9QdGo+G4MgB6yjanrQtzqfREk3TXBysFc/0yvvqp0qCifpB1RZIkd
-         0J+43DJhe0uH+HxOylF7uHMyWlfNfhZ6jfS0rYCCPMClD+4WDfEWvBnlR17fZaXopWxh
-         xl/WBgG1xDNWsKn8wjOfsRn35k/y6wab5ZoilWdpFPcGzJmhAI4QnZjGfajqXAkdMB90
-         7jIbv6U7axNrmOT8gDcR34+lgfwsQBF50gRVeTF36gMa2VgbqD6WzpCucWnypVjgFqRS
-         9mNFJS5jkFwvm4eh/1OHiCDVDxYceX15aA1NAah9JzZQVpIYo2ejP3f0QFK8hm4GLAqr
-         NLBw==
-X-Gm-Message-State: AOJu0Yzj9cYp04ccYhUi/67sbSiRE/CyPIgDTukLI0HkP7vH2KuNzgni
-	LcEoaRWD8End21av5SCRpomeoKqeZZEjhLlUZlpcsIWzN5+Ch2z3RVVACH/edFheRs6NOpKgquX
-	X0G1IAOVpfDiVbC0eO9mYol4ex/LbNAztVgUSU/eMrPUo5FNXAA2QzoTNecfa6GzYtqCIRFQgLw
-	Zu9XDRH1tmVrvpXmkFdUvy1TnBFjtMzZP0RIymxPUyMU4BNWQYfx8Opx5sidV2bptXvRzlIv6PP
-	/31NtPJojIFD00EKdBRsyhqq5soAQ==
-X-Gm-Gg: ASbGnct7pnbefD0SpgamF9sABrB7a/dK7jz3ZWsPwCXHuWbhL3ftyteJl0H07CFlwtV
-	007RJHPxyFZNncp2YOCAlXIpd5Q6I9BuiGoFJqNlL7h2arjyxHdRqm7CVq05N2HXf3Ww/ccdsq0
-	ipWZ78mcF3VuwlxWwpjKUn0pH9sw7DEFqb3P29JeTNGlbww7akYqugHslpotr55oIumuN/RGFjl
-	GCwWlyGJNq/hNeDhzIIXBpDTW/lEq18ydiF/ckiZinndoyuVpwJVy/KSs3oZxIcvAVYjtHm7p6u
-	HxIjtZMRY5cfzGGI5qKragfHRFC8XCTMDnO3mQLdpkuetVJjGozLmugdQ0UdAjlmu/NiwHm54pP
-	fUUGLrUaIBVZn7d4wp1ij+QQgkwSeuseB7HpBb4P6aVa+t5tBzrIb9NqCa3jcfkccYOVnzw1/bL
-	xBb3hpf669MgD8
-X-Google-Smtp-Source: AGHT+IEbqhm+u19Nnr1MBG6g38ppvMB3fN1Dq7s4+m/fjpOdJaQMD7aLWLKZeKFOg37uMgS7H6s457G2dKda
-X-Received: by 2002:a17:902:e841:b0:240:3c62:6194 with SMTP id d9443c01a7336-2462ee52164mr22313955ad.20.1755835397141;
-        Thu, 21 Aug 2025 21:03:17 -0700 (PDT)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-19.dlp.protect.broadcom.com. [144.49.247.19])
-        by smtp-relay.gmail.com with ESMTPS id d9443c01a7336-245ed32cf5asm6596595ad.6.2025.08.21.21.03.16
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Aug 2025 21:03:17 -0700 (PDT)
-X-Relaying-Domain: broadcom.com
-X-CFilter-Loop: Reflected
-Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-76e92b3dde9so1641199b3a.3
-        for <linux-rdma@vger.kernel.org>; Thu, 21 Aug 2025 21:03:16 -0700 (PDT)
+	s=arc-20240116; t=1755850823; c=relaxed/simple;
+	bh=SoqeEvRyDj9xNZRwO+49resqGUPxezysRjpX7ed1NkA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MqO0KmebCtXQOV/HLJg5MIfNArHVLbV3zofXCumnu8Fe7ud1HfEYLN8ztayIYT360bU25xVVBYrutkhEWQkt5hxg/ahZcy9bm5T+FFbX+G4viY/NWky4P8KWzzM4KqgEstrLCHw7FmocoFUfpOhX1AE+HU9x8mji5ZRiL9+QMfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linbit.com; spf=pass smtp.mailfrom=linbit.com; dkim=pass (2048-bit key) header.d=linbit-com.20230601.gappssmtp.com header.i=@linbit-com.20230601.gappssmtp.com header.b=w4O+TQhc; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linbit.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-618b62dbb21so3709974a12.2
+        for <linux-rdma@vger.kernel.org>; Fri, 22 Aug 2025 01:20:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1755835395; x=1756440195; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f53GRlIh8R+xAEhzUiUULZbbPM7pwilIyORgSUpiEzU=;
-        b=Xl+iEgpUKa/bzhcquYrK6c29hn8RN1c0MU19bDxxATuq9j+RIfN53+NtPXxzUDeAai
-         tI7eO4LDhD9EvFvvpoMhR6CouJ3ZEl/RSUKJRH1GhaDsz/BoW3XL9///d5XIS+UKhl6Y
-         IMdTsAxyJG+5LZVvTnxrz1zP+1tD2iYZ4mTCc=
-X-Received: by 2002:a05:6a00:10c7:b0:76b:f24d:6d67 with SMTP id d2e1a72fcca58-7702fa62641mr2408573b3a.13.1755835395367;
-        Thu, 21 Aug 2025 21:03:15 -0700 (PDT)
-X-Received: by 2002:a05:6a00:10c7:b0:76b:f24d:6d67 with SMTP id d2e1a72fcca58-7702fa62641mr2408534b3a.13.1755835394864;
-        Thu, 21 Aug 2025 21:03:14 -0700 (PDT)
-Received: from dhcp-10-123-157-228.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-76e7d0d3abdsm9659814b3a.11.2025.08.21.21.03.12
+        d=linbit-com.20230601.gappssmtp.com; s=20230601; t=1755850818; x=1756455618; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JyWZRAhQvL3ZewOrTkNRPEBR9onjx67kcalcGvlZ+IA=;
+        b=w4O+TQhcQMl5lL+KvCdtNXNg7ROAM8lJ0sL0oGNYA3440gZcgxmps+YKW2o4KOZFYP
+         xdzZJQdMxnGDQTKI9TOlpJYRve6IQfTHiVVlc/0Q3/wTSI5fyUwyxFFjFdzW8LQcNQR1
+         8qP+sa9kXcp/ryvWWXtYmorldqBAK+6TDwkSZCHvrFPPYn05F7wniKTyvbPBkRHAAnjI
+         tDhgvnMFECJoiAhSSz1fxmxDFETbm5jXh85gw/OH+mVQ0OLqWgMVNHStWwiGlq+BLr5l
+         8MkeJcH16/DrJhYXKO3axP3UwNqedoiBbtUAo6bwUtI1L0e1kcN4sa6zZwxPl/pPPvWH
+         HR+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755850818; x=1756455618;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JyWZRAhQvL3ZewOrTkNRPEBR9onjx67kcalcGvlZ+IA=;
+        b=Dxaze4+bp4dJHCe70dlRdgPdir5MxYxNCRKpf4ad7fwHZJsjKJ3G3IvBLPPpdS/6hr
+         IbRMh+BWB7319bUgKbhPzzNhW9cRfd6+SwS/+/rdhg1wG6OwlX+STjoXbjUmYk5VSx1m
+         RMapaffLlooGX3iofun7qNJQRiuGijju60JZ390RCFcGA7Mcu82t0FTYuExkbTBdp6x3
+         Q5fJCFqHSDiLcSQZRWum/Y+s9H0+hbr4Zsgd3eAyK7ogBYpnteSTTtzwy0EVgotxrsAJ
+         zYNJAeJ7miX5RL12aVTe/6Jsr7r2kZBNUcD3r/jQ5U8Jl4x+eiJgjDPh+obUy6pXVtab
+         GqxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXuuuPoRDDVZapEukKriO0uBBpJ8mcXvI2WfZPHqzAU4Qgmg7atgdTi4eFbkT6LG9lVReWAkT5iEDMX@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzsop/1VyhZzwKlg7BpHoH3Chg/Tm8Hd1MP5HdYKWv7n8b1YSUl
+	/1HuRyp1tOey9HoNHw1rfJ0q6ES9bBJrT4AeMgd6keHxwi6aD0XRkAlt7SBmk/g0y6ERdNqMCKZ
+	rVKVSO5I=
+X-Gm-Gg: ASbGncuxV6J5Itu9ZY0NDakhqcNvWIONI8tFlHsd9e7bYNbyPzbIXv7JU/8/zTHUDm7
+	SxTCi098ewl18Ps/HKJ85wSglshR2DVwVi3Wk7atwxhLcrzd+MU51ztNu3gFZiAHT9vssuuq3b6
+	34YDF2azoVIGxQR9p39Fdq1rdTFaLKFS1gSH6w7MQwozsiJyOe4yy1TaVDfBh7EV18EMTgK3+B2
+	vQUjCyOj5mFSISqSrmUxaUyoouHj85wp17zuq/eEhhZouOcc/gknxRbBGyRe8mkhECeJe7peutA
+	IFoN3pxnWzPbm5q4hl9S5NF+s77vdmIMyr4CDDdbLWfDl0YtbFHr5zx6DGqS620WrG2kI1cBnAN
+	CCkyxi793p0DLoiS1MoYkTgE8+1hlr622b1zzaEV11WU5ve2tGsLGlz9bBIgSfum04wMIjgM8aO
+	mKISy5oQ==
+X-Google-Smtp-Source: AGHT+IFlbHv8xDZAAC640GMgCDpBsfF6zlAzeggthwP5mZNndc9mGjlmfC4QW/vbdALXrNy2SS/1PA==
+X-Received: by 2002:a05:6402:5187:b0:61a:89aa:8d37 with SMTP id 4fb4d7f45d1cf-61c1b7134ccmr1679703a12.21.1755850818338;
+        Fri, 22 Aug 2025 01:20:18 -0700 (PDT)
+Received: from ryzen9.home (194-166-79-38.hdsl.highway.telekom.at. [194.166.79.38])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-61a761f2599sm6538432a12.5.2025.08.22.01.20.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Aug 2025 21:03:14 -0700 (PDT)
-From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-To: leon@kernel.org,
-	jgg@ziepe.ca
-Cc: linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org,
-	andrew.gospodarek@broadcom.com,
-	selvin.xavier@broadcom.com,
-	michael.chan@broadcom.com,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	Saravanan Vajravel <saravanan.vajravel@broadcom.com>
-Subject: [PATCH rdma-next 10/10] RDMA/bnxt_re: Remove unnecessary condition checks
-Date: Fri, 22 Aug 2025 09:38:01 +0530
-Message-ID: <20250822040801.776196-11-kalesh-anakkur.purayil@broadcom.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20250822040801.776196-1-kalesh-anakkur.purayil@broadcom.com>
-References: <20250822040801.776196-1-kalesh-anakkur.purayil@broadcom.com>
+        Fri, 22 Aug 2025 01:20:17 -0700 (PDT)
+From: Philipp Reisner <philipp.reisner@linbit.com>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Philipp Reisner <philipp.reisner@linbit.com>
+Subject: [PATCH V2] rdma_rxe: call comp_handler without holding cq->cq_lock
+Date: Fri, 22 Aug 2025 10:19:41 +0200
+Message-ID: <20250822081941.989520-1-philipp.reisner@linbit.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -109,69 +91,57 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 
-The check for "rdev" and "en_dev" pointer validity always
-return false.
+Allow the comp_handler callback implementation to call ib_poll_cq().
+A call to ib_poll_cq() calls rxe_poll_cq() with the rdma_rxe driver.
+And rxe_poll_cq() locks cq->cq_lock. That leads to a spinlock deadlock.
 
-Remove them.
+The Mellanox and Intel drivers allow a comp_handler callback
+implementation to call ib_poll_cq().
 
-Reviewed-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
-Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Avoid the deadlock by calling the comp_handler callback without
+holding cq->cq_lock.
+
+Changelog:
+v1: https://lore.kernel.org/all/20250806123921.633410-1-philipp.reisner@linbit.com/
+v1 -> v2:
+- Only reset cq->notify to 0 when invoking the comp_handler
+====================
+
+Signed-off-by: Philipp Reisner <philipp.reisner@linbit.com>
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 ---
- drivers/infiniband/hw/bnxt_re/main.c | 17 -----------------
- 1 file changed, 17 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_cq.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 3e1161721738..43af0dba0749 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -922,14 +922,6 @@ static int bnxt_re_net_ring_free(struct bnxt_re_dev *rdev,
- 	struct bnxt_fw_msg fw_msg = {};
- 	int rc = -EINVAL;
+diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c b/drivers/infiniband/sw/rxe/rxe_cq.c
+index fffd144d509e..95652001665d 100644
+--- a/drivers/infiniband/sw/rxe/rxe_cq.c
++++ b/drivers/infiniband/sw/rxe/rxe_cq.c
+@@ -88,6 +88,7 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
+ 	int full;
+ 	void *addr;
+ 	unsigned long flags;
++	bool invoke_handler = false;
  
--	if (!rdev)
--		return rc;
--
--	en_dev = rdev->en_dev;
--
--	if (!en_dev)
--		return rc;
--
- 	if (test_bit(BNXT_RE_FLAG_ERR_DEVICE_DETACHED, &rdev->flags))
- 		return 0;
+ 	spin_lock_irqsave(&cq->cq_lock, flags);
  
-@@ -955,9 +947,6 @@ static int bnxt_re_net_ring_alloc(struct bnxt_re_dev *rdev,
- 	struct bnxt_fw_msg fw_msg = {};
- 	int rc = -EINVAL;
+@@ -113,11 +114,14 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
+ 	if ((cq->notify & IB_CQ_NEXT_COMP) ||
+ 	    (cq->notify & IB_CQ_SOLICITED && solicited)) {
+ 		cq->notify = 0;
+-		cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
++		invoke_handler = true;
+ 	}
  
--	if (!en_dev)
--		return rc;
--
- 	bnxt_re_init_hwrm_hdr((void *)&req, HWRM_RING_ALLOC);
- 	req.enables = 0;
- 	req.page_tbl_addr =  cpu_to_le64(ring_attr->dma_arr[0]);
-@@ -990,9 +979,6 @@ static int bnxt_re_net_stats_ctx_free(struct bnxt_re_dev *rdev,
- 	struct bnxt_fw_msg fw_msg = {};
- 	int rc = -EINVAL;
+ 	spin_unlock_irqrestore(&cq->cq_lock, flags);
  
--	if (!en_dev)
--		return rc;
--
- 	if (test_bit(BNXT_RE_FLAG_ERR_DEVICE_DETACHED, &rdev->flags))
- 		return 0;
++	if (invoke_handler)
++		cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
++
+ 	return 0;
+ }
  
-@@ -1020,9 +1006,6 @@ static int bnxt_re_net_stats_ctx_alloc(struct bnxt_re_dev *rdev,
- 
- 	stats->fw_id = INVALID_STATS_CTX_ID;
- 
--	if (!en_dev)
--		return rc;
--
- 	bnxt_re_init_hwrm_hdr((void *)&req, HWRM_STAT_CTX_ALLOC);
- 	req.update_period_ms = cpu_to_le32(1000);
- 	req.stats_dma_addr = cpu_to_le64(stats->dma_map);
 -- 
-2.43.5
-
+2.50.1
 
