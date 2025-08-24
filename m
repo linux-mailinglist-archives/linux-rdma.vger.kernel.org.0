@@ -1,248 +1,182 @@
-Return-Path: <linux-rdma+bounces-12886-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12887-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EF29B326EA
-	for <lists+linux-rdma@lfdr.de>; Sat, 23 Aug 2025 07:23:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 916E2B330CC
+	for <lists+linux-rdma@lfdr.de>; Sun, 24 Aug 2025 16:49:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8156517C6DD
-	for <lists+linux-rdma@lfdr.de>; Sat, 23 Aug 2025 05:23:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47D36441F23
+	for <lists+linux-rdma@lfdr.de>; Sun, 24 Aug 2025 14:49:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C6E3393DD4;
-	Sat, 23 Aug 2025 05:23:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D0302DF3C6;
+	Sun, 24 Aug 2025 14:49:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MEUvJy13"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="F6DTGXvu"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2089.outbound.protection.outlook.com [40.107.212.89])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91BD51A9FB6
-	for <linux-rdma@vger.kernel.org>; Sat, 23 Aug 2025 05:23:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755926587; cv=none; b=SRhZQOaCeBbbRzIF5ymenuOnrXEn0TRYLaG+4CYQCjFOSjYfKZ6iMsPK0ER+Zk3dAaMqebLfmQLND8RjK+swFLiwQC048B81RjHg6EoFSOqZ5CvT5Aw8/06QOKX8ICHWj3rgvhKeawAbfQc4XuyVr+jamXMocJuNwM7ktdMFTCY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755926587; c=relaxed/simple;
-	bh=Sl0XSx20TweYUUIdD6CPwhuG9r+JogxTgKtGPquvbCE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WykT7KOYoeE2RsCz3ViZypdJivpxg/pnU9EqHebKoDw4CxQepXZsCIO5aYuu3MeuNzyzAKrMIVh3NDmAQ5Se0tUsVazOkDwzc5Q3ldXx6p5CLtJRDPHN/m29X8oP7WMoc4IdWWoqqkJrVWZq78xx2Spt3383rt3OzAfaiDbAQw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MEUvJy13; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <41f3b537-3463-498e-a2bb-cb8be8176a1a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1755926582;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uTkVZrM3isklAHhw6Z2qbIYKCl+UFE1C0mlKfuNl0N0=;
-	b=MEUvJy13JQGazrI7N67K+dJZtHwGoKjxd/dFzl7zcxrvJrmA8ZuMkDCLAFKxkXHKXD/65R
-	ODCDOMEjmlcmGIu1NkisThORdx0xbX4duGf0TezTDUy7yG6OtdfRscJfPnbPO6PoesUj/a
-	QJ1I/G0u+5A9kmvtw4mMkiy64FygcXM=
-Date: Fri, 22 Aug 2025 22:22:39 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43A5F2DECD3;
+	Sun, 24 Aug 2025 14:49:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.89
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756046958; cv=fail; b=sV/ZotmgwembjbCIjtdRgi/SpsuSniWVO1i5fV2VS4CRyYZJ97bnV1N7qdfumCssWotzbXa7L3Zo2MnOBGblfAXghy1qFbPNS+0Jhr9jxnhrmw+VGuhGcOb5Co3MF6yk7U7HbJrEHfPrE67OyluAC67IpBMTtOVvipq+L+yn7yU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756046958; c=relaxed/simple;
+	bh=Fq/F2VQT9Qhhu3xRijKVRv8KPfRxWEZmKrPN9fu5t00=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kjOltcui1xl9+0tAKXs3ay0YJJ1IRZ8dIV7wMdfl2gAD+pm4JczCzX7PcxSOoZZiQpsIgT+L9QveCdLq5XUZToT+7RSCsNveLvEqoehVN4VwSIlNNInVPkaj3JXpDtkDmrxFAJCjDG0kfZBCE0Mvvzok7HsVFsD2U9Qn+xPUpAs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=F6DTGXvu; arc=fail smtp.client-ip=40.107.212.89
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=YKHAUnKyCAnvIbXagG7hKB2PbaKqJLNQ3QFGt5NKShohHmZoLp9dbvthTSsbChLhks156CHC3LLD/N5Z/St0cVWVt4G0RzLhDayRA8B7kBwiXXH/D4jd8u+ggtcfmRWPc6n283n5uCJ6qwVCAzpzvHkLG430brVYtjDkTwEDQvgA40m05G+Xnex1GNJ3peXT7g/xoifx7auv4InokUALK0NTZeQZ3e70aNfLy6k0a56i7/GCE9srr7xaK9MaTk0c/L7RVNZLDk+9yl1WJvd0k4Uy97Y1zd0VMYlSwCdDVdDcorcQDFg5X+stbEEFuKCgOx2uwW13xmvPVAa/vK5K+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Sx/ZBxqp1qFK/7vHeYOxHEYU1zg6OnUssf1Ew4k+SHQ=;
+ b=hsl12zvNQFwOIjrLfc5cMIbLl0XDPyChyHaBhO8xcyCe3XE8ehcFzB+e54acIAoXIbWhzQ57viiH4fPC31+lue660g6U157MNbF8quV/TxhT1lHsEHvzT+V6hNHAzPB1T6XSwSBDqD2+QPBqNSg0XoRN449kbRmsokD5wT0IfCQuHSnhJtw0W3uWQOLIDjYJ0Tlrfd8weOKddr5+4M/Jm4oNSAzhLGM+iaiHLNAf266HvwDw5GYZAiQ+gUiVLPgsNLp182+lkW0s8eJ+Xyed2VHQ6p4yOvIYsvy6L21sKVaK/4CrnEgLDdY74tXR5VAECmVOgMT9PQV60N1QDh2kjA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Sx/ZBxqp1qFK/7vHeYOxHEYU1zg6OnUssf1Ew4k+SHQ=;
+ b=F6DTGXvuaDicLRCW+7qpknYbgiXmfLyMIIRI+FQjR6jJaKhl9DY2nVsv2ZX0+ilYkqwsHxpKNpxJhg9h1yoA7+XUwFCP+L+1RDMJY3nSG8WyKvbHuMYD0WLrJ6fhNznGUjTlgTGNx4qkY+5tXScIxUoFwLo/oxzjypZ/bpS4Uk2IGm/v/Cnf71Ko5blATNj0A0BDYx4U2h/t7ihkCuDshi1eW/Vl+4F0PGUBJQ3vY+ubZn/1pCJq6yZZGYj/sy7Q5wP3Qrebu57Iz0frOW/5WbRm6kA3gd5V4hD96ZGShyz7pDRmQf48tzsmMnsdU459H77JniMzlSVFzz7Ybr3UqQ==
+Received: from SN7P222CA0022.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:124::7)
+ by PH7PR12MB6739.namprd12.prod.outlook.com (2603:10b6:510:1aa::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9052.18; Sun, 24 Aug
+ 2025 14:49:10 +0000
+Received: from SN1PEPF0002BA4D.namprd03.prod.outlook.com
+ (2603:10b6:806:124:cafe::8b) by SN7P222CA0022.outlook.office365.com
+ (2603:10b6:806:124::7) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9052.20 via Frontend Transport; Sun,
+ 24 Aug 2025 14:49:10 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ SN1PEPF0002BA4D.mail.protection.outlook.com (10.167.242.70) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9073.11 via Frontend Transport; Sun, 24 Aug 2025 14:49:10 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Sun, 24 Aug
+ 2025 07:49:04 -0700
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.14; Sun, 24 Aug 2025 07:49:04 -0700
+Received: from vdi.nvidia.com (10.127.8.14) by mail.nvidia.com
+ (10.126.190.181) with Microsoft SMTP Server id 15.2.1544.14 via Frontend
+ Transport; Sun, 24 Aug 2025 07:49:02 -0700
+From: Edward Srouji <edwards@nvidia.com>
+To: <edwards@nvidia.com>, <jgg@ziepe.ca>, <leon@kernel.org>
+CC: <michaelgur@nvidia.com>, <linux-rdma@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/1] RDMA/mlx5: Fix page size bitmap calculation for KSM mode
+Date: Sun, 24 Aug 2025 17:48:39 +0300
+Message-ID: <20250824144839.154717-1-edwards@nvidia.com>
+X-Mailer: git-send-email 2.21.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH for-rc v1] RDMA/rxe: Avoid CQ polling hang triggered by CQ
- resize
-To: Daisuke Matsuda <dskmtsd@gmail.com>, linux-rdma@vger.kernel.org,
- leon@kernel.org, jgg@ziepe.ca, zyjzyj2000@gmail.com
-Cc: philipp.reisner@linbit.com
-References: <20250817123752.153735-1-dskmtsd@gmail.com>
- <f764f4ae-91c2-4e22-8380-9a8dd144d0c1@linux.dev>
- <4a2b6587-7bb1-4fdd-a3c1-6f0c61a84ef7@gmail.com>
- <29dad784-f3d0-4b90-84fb-6f7ae066a79d@linux.dev>
- <6851c585-b7ed-43a8-8edf-b08573a37afd@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <6851c585-b7ed-43a8-8edf-b08573a37afd@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA4D:EE_|PH7PR12MB6739:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8d9ee1a1-8be8-4f48-49f8-08dde31d62c8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|82310400026|376014|36860700013;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?GEUkj1s3S26QD06oJPQq8sMpWpNAAZYf3wmuw6Y+t/FeaYOooauHljHSinHF?=
+ =?us-ascii?Q?zKfaq6uUrnWjjhr2+MQPh+oaz/Se+7nCnahml0muGdOdI3Hplwt4kUv6dNWW?=
+ =?us-ascii?Q?kJCdGw0nsbazpqI/Mr0qSMW7cNFcYc+q52gvGxRd/jg7DGlLXSvFYjJX6Z7z?=
+ =?us-ascii?Q?CtTHpWypNE684Bblkl861W9V/o0sSaruT9IOM/Q654zdojB/ZfpjL+T4j3s9?=
+ =?us-ascii?Q?XAgYnUU88oh817wor4rIL3lgREcdfo6Nvfs/QfCpf69dTDwos7Y0B+3mFK5r?=
+ =?us-ascii?Q?zr2RwLrdClyFgkRD+YagLMdJAPiCO5a02N5734++vwFEkWx3kVQlwLg9oi+J?=
+ =?us-ascii?Q?90DDWeTM9XQqH4wGMbr/L6ATmtogd1n2XEWXC29In5SIYMeHzogZgIFX+6Et?=
+ =?us-ascii?Q?QxKcGq4l2xnVA3229sHX6r4+/+8opTwHTW+Ix7ijLK+ZnChQJTDPHIXKizqj?=
+ =?us-ascii?Q?sLNkJjxwvB81PsKllE3hFAuQXpmvv7qSK13+E/BPFIdONEhUfe66qzX4UAyP?=
+ =?us-ascii?Q?Eimj4jI6e84ywWpTPF0PoCEtKDXnYoJDOH9Hkcgxdb7yDJ3EQobMdUJeifBc?=
+ =?us-ascii?Q?rJxp8Iro9uWXYw5WNurg/1QVDCLV/u7zomUbTEfgQYYUZxJOrv0XpG0oyXVE?=
+ =?us-ascii?Q?aWFFwkbvvDmgVeQxrcqAstkVd+xzetbqKJ9S6ByWI+ac4BXv32R7lJ9JHUxT?=
+ =?us-ascii?Q?WThG2aDdnYNSuN5nQ2oZgTJtKnp0mu/Qa5Ptu57OAB3VZF0xgKOgUO8SMtEV?=
+ =?us-ascii?Q?64phaC5LYrhIUU0GozoOlX3iIfwvVs+XINc48BKOifrIVAUg7NyXohw6nwZ9?=
+ =?us-ascii?Q?yo8CEZDWHkqr381VklqwmeCej2wMFUOttB2j+ST2OzSpzcBreCHBl7IODjYJ?=
+ =?us-ascii?Q?C4NHaI7cLvqszLXWoadPubYK8a/g5B7mbnw/VG78jT6Gb8PaQcADRFEaQHN4?=
+ =?us-ascii?Q?Dm3BpHom8wGKuVUQtKJgPnqJBcPac783e/N+3nVBf1ygIf3sHB9Ixid9k1XA?=
+ =?us-ascii?Q?FuZMgP+hib2psQApktYNvroPjW7UGwM948jSVQGt+7Ubia4/l2yApfuDrn0+?=
+ =?us-ascii?Q?EL/6bf5VK6KC0+tDLyDa4iRQRS4ojgo5vp+Ao/4+Dh+dl0oYSl34PgGz9Cfo?=
+ =?us-ascii?Q?pgpRhB0zSuP6/yzvnHFXr8puLcyRa7x/9nIWJ6f6RANOd8eegWAWbTlc63n/?=
+ =?us-ascii?Q?TVWcNvo8KVK6ZfFWEpKe8c5iDhHEZI5zI3IdXD4gGLWeehkPk6pQeu/LdTUl?=
+ =?us-ascii?Q?vJyb6h0R9NV89yB5sFSu1MoetBMwUs3jF0YSG7ePg5XwAIx4oFCcDEBzBfbz?=
+ =?us-ascii?Q?KLLCaelBtgR3UnMWjQ3c74QAXVaKeZhb/VAkzZRYb0XvbiW7YU+LmK2n+DOf?=
+ =?us-ascii?Q?XjjKJ2fynTexMAS078rq83A9pLgrELbSyTTwzI24CIhMYu1NkxqpCAr+FNf2?=
+ =?us-ascii?Q?V4AO58KBu5Z2Nd1mbFnDTcVN7IMg4zS7X5nT+nZYtCYkKDvNrjqi8HgHAS2l?=
+ =?us-ascii?Q?Q4ryU13MK14JuTNJr+BOubeAMIzfEHZewlDy?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(376014)(36860700013);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2025 14:49:10.5947
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d9ee1a1-8be8-4f48-49f8-08dde31d62c8
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SN1PEPF0002BA4D.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6739
 
+When using KSM (Key Scatter-gather Memory) access mode, the HW requires
+the IOVA to be aligned to the selected page size.
+Without this alignment, the HW may not function correctly.
 
-在 2025/8/22 21:19, Daisuke Matsuda 写道:
-> On 2025/08/21 12:12, Zhu Yanjun wrote:
->> 在 2025/8/19 8:15, Daisuke Matsuda 写道:
->>> On 2025/08/18 13:44, Zhu Yanjun wrote:
->>>> 在 2025/8/17 5:37, Daisuke Matsuda 写道:
->>>>> When running the test_resize_cq testcase from rdma-core, polling a
->>>>> completion queue from userspace may occasionally hang and 
->>>>> eventually fail
->>>>> with a timeout:
->>>>> =====
->>>>> ERROR: test_resize_cq (tests.test_cq.CQTest.test_resize_cq)
->>>>> Test resize CQ, start with specific value and then increase and 
->>>>> decrease
->>>>> ---------------------------------------------------------------------- 
->>>>>
->>>>> Traceback (most recent call last):
->>>>>      File "/root/deb/rdma-core/tests/test_cq.py", line 135, in 
->>>>> test_resize_cq
->>>>>        u.poll_cq(self.client.cq)
->>>>>      File "/root/deb/rdma-core/tests/utils.py", line 687, in poll_cq
->>>>>        wcs = _poll_cq(cq, count, data)
->>>>>              ^^^^^^^^^^^^^^^^^^^^^^^^^
->>>>>      File "/root/deb/rdma-core/tests/utils.py", line 669, in _poll_cq
->>>>>        raise PyverbsError(f'Got timeout on polling ({count} CQEs 
->>>>> remaining)')
->>>>> pyverbs.pyverbs_error.PyverbsError: Got timeout on polling (1 CQEs
->>>>> remaining)
->>>>> =====
->>>>>
->>>>> The issue is caused when rxe_cq_post() fails to post a CQE due to 
->>>>> the queue
->>>>> being temporarily full, and the CQE is effectively lost. To 
->>>>> mitigate this,
->>>>> add a bounded busy-wait with fallback rescheduling so that CQE 
->>>>> does not get
->>>>> lost.
->>>>>
->>>>> Signed-off-by: Daisuke Matsuda <dskmtsd@gmail.com>
->>>>> ---
->>>>>   drivers/infiniband/sw/rxe/rxe_cq.c | 27 +++++++++++++++++++++++++--
->>>>>   1 file changed, 25 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c 
->>>>> b/drivers/infiniband/ sw/rxe/rxe_cq.c
->>>>> index fffd144d509e..7b0fba63204e 100644
->>>>> --- a/drivers/infiniband/sw/rxe/rxe_cq.c
->>>>> +++ b/drivers/infiniband/sw/rxe/rxe_cq.c
->>>>> @@ -84,14 +84,36 @@ int rxe_cq_resize_queue(struct rxe_cq *cq, int 
->>>>> cqe,
->>>>>   /* caller holds reference to cq */
->>>>>   int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int 
->>>>> solicited)
->>>>>   {
->>>>> +    unsigned long flags;
->>>>> +    u32 spin_cnt = 3000;
->>>>>       struct ib_event ev;
->>>>> -    int full;
->>>>>       void *addr;
->>>>> -    unsigned long flags;
->>>>> +    int full;
->>>>>       spin_lock_irqsave(&cq->cq_lock, flags);
->>>>>       full = queue_full(cq->queue, QUEUE_TYPE_TO_CLIENT);
->>>>> +    if (likely(!full))
->>>>> +        goto post_queue;
->>>>> +
->>>>> +    /* constant backoff until queue is ready */
->>>>> +    while (spin_cnt--) {
->>>>> +        full = queue_full(cq->queue, QUEUE_TYPE_TO_CLIENT);
->>>>> +        if (!full)
->>>>> +            goto post_queue;
->>>>> +
->>>>> +        cpu_relax();
->>>>> +    }
->>>>
->>>> The loop runs 3000 times.
->>>> Each iteration:
->>>>
->>>> Checks queue_full()
->>>> Executes cpu_relax()
->>>>
->>>> On modern CPUs, each iteration may take a few cycles, e.g., 4–10 
->>>> cycles per iteration (depends on memory/cache).
->>>>
->>>> Suppose 1 cycle = ~0.3 ns on a 3 GHz CPU, 10 cycles ≈ 3 ns
->>>> 3000 iterations × 10 cycles ≈ 30,000 cycles
->>>>
->>>> 30000 cycles * 0.3 ns = 9000 ns = 9 microseconds
->>>>
->>>> So the “critical section” while spinning is tens of microseconds, 
->>>> not milliseconds.
->>>>
->>>> I was concerned that 3000 iterations might make the spin lock 
->>>> critical section too long, but based on the analysis above, it 
->>>> appears that this is still a short-duration critical section.
->>>
->>> Thank you for the review.
->>>
->>> Assuming the two loads in queue_full() hit in the L1 cache, I 
->>> estimate each iteration could take around
->>> 15–20 cycles. Based on your calculation, the maximum total time 
->>> would be approximately 18 microseconds.
->>
->> ======================================================================
->> ERROR: test_rdmacm_async_write (tests.test_rdmacm.CMTestCase)
->> ----------------------------------------------------------------------
->> Traceback (most recent call last):
->>    File "/..../rdma-core/tests/test_rdmacm.py", line 71, in 
->> test_rdmacm_async_write
->>      self.two_nodes_rdmacm_traffic(CMAsyncConnection,
->>    File "/..../rdma-core/tests/base.py", line 447, in 
->> two_nodes_rdmacm_traffic
->>      raise Exception('Exception in active/passive side occurred')
->> Exception: Exception in active/passive side occurred
->>
->> After appying your commit, I run the following run_tests.py for 10000 
->> times.
->> The above error sometimes will appear. The frequency is very low.
->>
->> "
->> for (( i = 0; i < 10000; i++ ))
->> do
->>      rdma-core/build/bin/run_tests.py --dev rxe0
->> done
->> "
->> It is weird.
->
-> I tried running test_rdmacm_async_write alone for 50000 times, but 
-> could not reproduce this one.
-> There have been multiple latency-related issues in RXE, so it is not 
-> surprising a new one is
-> uncovered by changing seemingly irrelevant part.
->
-> How about applying additional change below:
-> ===
-> diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c 
-> b/drivers/infiniband/sw/rxe/rxe_cq.c
-> index 7b0fba63204e..8f8d56051b8d 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_cq.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_cq.c
-> @@ -102,7 +102,9 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe 
-> *cqe, int solicited)
->                 if (!full)
->                         goto post_queue;
->
-> +               spin_unlock_irqrestore(&cq->cq_lock, flags);
->                 cpu_relax();
-> +               spin_lock_irqsave(&cq->cq_lock, flags);
->         }
->
->         /* try giving up cpu and retry */
-> ===
-> This makes cpu_relax() almost meaningless, but ensures the lock is 
-> released in each iteration.
->
-> It would be nice if you could provide the frequency and whether it 
-> takes longer than usual in failure cases.
-> I think that could be helpful as a starting point to find a solution.
+Currently, mlx5_umem_mkc_find_best_pgsz() does not filter out page sizes
+that would result in misaligned IOVAs for KSM mode. This can lead to
+selecting page sizes that are incompatible with the given IOVA.
 
+Fix this by filtering the page size bitmap when in KSM mode, keeping
+only page sizes to which the IOVA is aligned to.
 
-With a clean KVM QEMU VM, after applying your commit, the same problem 
-occurs every time the above script is run.
+Fixes: fcfb03597b7d ("RDMA/mlx5: Align mkc page size capability check to PRM")
+Signed-off-by: Edward Srouji <edwards@nvidia.com>
+Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
+---
+ drivers/infiniband/hw/mlx5/mlx5_ib.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Yanjun.Zhu
-
-
->
-> Thanks,
-> Daisuke
->
->>
->> Yanjun.Zhu
->>
->
->
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index 4fc2c0ca2af3..fbb9803785ba 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -1805,6 +1805,10 @@ mlx5_umem_mkc_find_best_pgsz(struct mlx5_ib_dev *dev, struct ib_umem *umem,
+ 
+ 	bitmap = GENMASK_ULL(max_log_entity_size_cap, min_log_entity_size_cap);
+ 
++	/* In KSM mode HW requires IOVA and mkey's page size to be aligned */
++	if (access_mode == MLX5_MKC_ACCESS_MODE_KSM && iova)
++		bitmap &= GENMASK_ULL(__ffs64(iova), 0);
++
+ 	return ib_umem_find_best_pgsz(umem, bitmap, iova);
+ }
+ 
 -- 
-Best Regards,
-Yanjun.Zhu
+2.21.3
 
 
