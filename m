@@ -1,238 +1,148 @@
-Return-Path: <linux-rdma+bounces-12917-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12918-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0DFAB3525A
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Aug 2025 05:47:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A57BB352D2
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Aug 2025 06:44:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDAA13AD076
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Aug 2025 03:47:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5728D2443B0
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Aug 2025 04:44:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C94D2D5427;
-	Tue, 26 Aug 2025 03:47:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A951D2DF6E3;
+	Tue, 26 Aug 2025 04:44:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tqaHbDkp"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="TRNzaXv/"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from DNSNULL (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34BD42D46D1;
-	Tue, 26 Aug 2025 03:47:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523D92D3A74
+	for <linux-rdma@vger.kernel.org>; Tue, 26 Aug 2025 04:44:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756180044; cv=none; b=ht4nEORTSt7YzyBwy2xo7lk1CIhykclx2HsiH4qrbhL7j1tff4FWVOmkRgWRdTj93zinQYwhuy1p1xR7zCKQ808EFZiNC+VRb4Q8mvJmdlrv+NbsFUNUoe1HFWot//dzQ0id485tz/AneSwTbq0GPJ7QqeFJaD2ypECsrnmuHOQ=
+	t=1756183463; cv=none; b=hs1SE6eK5SfSwFAXsJrTFY57/8bI4f7IlwbSgpSUu4zBH/yITCs5a0+7seDZxNxvAlVrBBs32tZKCDhRDzkYM0YFeliHC2EBAk8CRAUNdBOVHHw2BYuR+CHjJZDuJU/MpEZTdtEK61+W9IsL1HHCBq0n2Tn4em0NvntEkm5HUTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756180044; c=relaxed/simple;
-	bh=yLYQVKhqwB/ijZirbZGgAU4hOXvqaurt5kLnfO9bU8s=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=IWrNbEWQYF0Fl4hxV0cNkE7QqZA/mEJkyKxqM0kZM7sd5rYhctODU6lkmu7CBT80ITDrqkjujMBnJjnNTZdQ68kVTMzPYqQ8Y64JkAKfoBB9Gx469XiCCQqyj647FVNvx4qeeJlzl/OF5/vHFrSg0kPk1QKOmJmydNz822nX/NI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tqaHbDkp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B5A48C116B1;
-	Tue, 26 Aug 2025 03:47:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756180043;
-	bh=yLYQVKhqwB/ijZirbZGgAU4hOXvqaurt5kLnfO9bU8s=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=tqaHbDkpnwkSwCgAA6hLpxcnhvAUpuxCKL3LnqCjBlDeoeXmORubLNXhmuTEeWw1C
-	 NnIsad0cA6Q5vybbCYdSFL2YhwC467uPuPuxre/Py2k5yWJ9NZUtkO3vrsYgkvF2ae
-	 I4EiYyxBGYG15MrUBzzeONR9eiKbHjADUe7kq0TmHYREMx1nEzu2sEEDOo0U+fbGKw
-	 8y7dYthxnymzL7pZoFcX6XTjNsWwYcIAnmXUuwi2fkiStN8uo9XJ/k7JQ6WibFX9A/
-	 S8/rPPM2ngGHP4iypsx4/fh4iyjiExUB4Xq72R/v6HHrGCuRPCCh80lhrz/iwPryip
-	 iwOof5Y7p90pQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A229FCA0EFA;
-	Tue, 26 Aug 2025 03:47:23 +0000 (UTC)
-From: Christoph Paasch via B4 Relay <devnull+cpaasch.openai.com@kernel.org>
-Date: Mon, 25 Aug 2025 20:47:13 -0700
-Subject: [PATCH net-next v3 2/2] net/mlx5: Avoid copying payload to the
- skb's linear part
+	s=arc-20240116; t=1756183463; c=relaxed/simple;
+	bh=6fpAxUXqlyE93Q/+JD6IIdh4cHWyrM9VR52auhBYhWE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tZJ4LHwQUyIFrTeK1Nz1fiJGqRXalFJqRDp024awuEgcclluTAmyG8rv7iQZhtjvClv98+hsfCGmcADtQxCgRbrSCBDtMRQGQu72cQsHHv+KQwD2qHh9t1DTooYGJAPD3wPh2IFuBeuWLI5xgFiL6ksk68WoiqIktQFxi0hHTsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=TRNzaXv/; arc=none smtp.client-ip=35.89.44.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-5003b.ext.cloudfilter.net ([10.0.29.155])
+	by cmsmtp with ESMTPS
+	id qjAeulmZvSONXqlXaugnPa; Tue, 26 Aug 2025 04:44:14 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id qlXZuJxLbXZDSqlXZuKhvH; Tue, 26 Aug 2025 04:44:13 +0000
+X-Authority-Analysis: v=2.4 cv=SdD3duRu c=1 sm=1 tr=0 ts=68ad3b9d
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=DR2cKC/DEnBA9KqqjaPhpA==:17
+ a=IkcTkHD0fZMA:10 a=2OwXVqhp2XgA:10 a=7T7KSl7uo7wA:10
+ a=yNDbeuk1G1CePlwefi4A:9 a=QEXdDO2ut3YA:10 a=xYX6OU9JNrHFPr8prv8u:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=3LEUZooy3cA+r1A+6Q/9oLA+oz/81DPxxeW8Ak9/YpM=; b=TRNzaXv/y0xo5y03+fEnAlaqt2
+	KZpexqG6D79IuXlv6yRe+d54dWiO3xDAPcsFF4z9yrugm3egVG+aUBIicmyl61uXJOUyH5hM4LTr4
+	YvTomCwxl2ExBNOnkDa1ctlokC7b35/CgdxvgB9MccKfmA9ij7g1lTR1I0jil01d4nwfoUi2L9t0+
+	cpnGtj8f1H+++YwZP82wX5XRq8UB3DMP5f4zI9qV03pDgGzf8+11mBlbXI5K2q8o3L0Cu00TYj+g9
+	U4724lFmFDwkKlk8ZHl6xzHcRVApv6s0BAaZS28R2/68zD3ka4kuXtJHCtYVN47OeUjGzmW68ExoQ
+	UcPk2bMQ==;
+Received: from static-243-216-117-93.thenetworkfactory.nl ([93.117.216.243]:36842 helo=[10.94.27.44])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.98.1)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1uqlXY-00000001RSx-0ZQh;
+	Mon, 25 Aug 2025 23:44:12 -0500
+Message-ID: <aa568cd4-3bfc-4eac-8a49-eb4cf7cf7331@embeddedor.com>
+Date: Tue, 26 Aug 2025 06:43:55 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2][next] RDMA/cm: Avoid -Wflex-array-member-not-at-end
+ warning
+To: Jason Gunthorpe <jgg@nvidia.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <aJxnVjItIEW4iYAv@kspp> <20250825172020.GA2077724@nvidia.com>
+Content-Language: en-US
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20250825172020.GA2077724@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20250825-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v3-2-5527e9eb6efc@openai.com>
-References: <20250825-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v3-0-5527e9eb6efc@openai.com>
-In-Reply-To: <20250825-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v3-0-5527e9eb6efc@openai.com>
-To: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
- Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
- Andrew Lunn <andrew+netdev@lunn.ch>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Alexander Lobakin <aleksander.lobakin@intel.com>, 
- Gal Pressman <gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>
-Cc: linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
- Christoph Paasch <cpaasch@openai.com>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1756180043; l=5447;
- i=cpaasch@openai.com; s=20250712; h=from:subject:message-id;
- bh=D9E65BwQNcFvlAPB/eyJC0zHDSe2SK53bOifpMzA4GA=;
- b=EbNFWUl4M6B4ZFYeUkogwcsUxWNMy5CP1KLDAhKVRptNzM/Y5jWOyqbwjjBoZATbZutEHNyU7
- TdkR4PtGvkVAtFi/uPiz862fVX6B9qXUwyJwaoofxEcWdh1K2D+bXpX
-X-Developer-Key: i=cpaasch@openai.com; a=ed25519;
- pk=1HRHZlVUZPziMZvsAQFvP7n5+uEosTDAjXmNXykdxdg=
-X-Endpoint-Received: by B4 Relay for cpaasch@openai.com/20250712 with
- auth_id=459
-X-Original-From: Christoph Paasch <cpaasch@openai.com>
-Reply-To: cpaasch@openai.com
-
-From: Christoph Paasch <cpaasch@openai.com>
-
-mlx5e_skb_from_cqe_mpwrq_nonlinear() copies MLX5E_RX_MAX_HEAD (256)
-bytes from the page-pool to the skb's linear part. Those 256 bytes
-include part of the payload.
-
-When attempting to do GRO in skb_gro_receive, if headlen > data_offset
-(and skb->head_frag is not set), we end up aggregating packets in the
-frag_list.
-
-This is of course not good when we are CPU-limited. Also causes a worse
-skb->len/truesize ratio,...
-
-So, let's avoid copying parts of the payload to the linear part. The
-goal here is to err on the side of caution and prefer to copy too little
-instead of copying too much (because once it has been copied over, we
-trigger the above described behavior in skb_gro_receive).
-
-So, we can do a rough estimate of the header-space by looking at
-cqe_l3/l4_hdr_type. This is now done in mlx5e_cqe_estimate_hdr_len().
-We always assume that TCP timestamps are present, as that's the most common
-use-case.
-
-That header-len is then used in mlx5e_skb_from_cqe_mpwrq_nonlinear for
-the headlen (which defines what is being copied over). We still
-allocate MLX5E_RX_MAX_HEAD for the skb so that if the networking stack
-needs to call pskb_may_pull() later on, we don't need to reallocate
-memory.
-
-This gives a nice throughput increase (ARM Neoverse-V2 with CX-7 NIC and
-LRO enabled):
-
-BEFORE:
-=======
-(netserver pinned to core receiving interrupts)
-$ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
- 87380  16384 262144    60.01    32547.82
-
-(netserver pinned to adjacent core receiving interrupts)
-$ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
- 87380  16384 262144    60.00    52531.67
-
-AFTER:
-======
-(netserver pinned to core receiving interrupts)
-$ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
- 87380  16384 262144    60.00    52896.06
-
-(netserver pinned to adjacent core receiving interrupts)
- $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
- 87380  16384 262144    60.00    85094.90
-
-Additional tests across a larger range of parameters w/ and w/o LRO, w/
-and w/o IPv6-encapsulation, different MTUs (1500, 4096, 9000), different
-TCP read/write-sizes as well as UDP benchmarks, all have shown equal or
-better performance with this patch.
-
-Signed-off-by: Christoph Paasch <cpaasch@openai.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 49 ++++++++++++++++++++++++-
- 1 file changed, 48 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index b8c609d91d11bd315e8fb67f794a91bd37cd28c0..050f3efca34f3b8984c30f335ee43f487fef33ac 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -1991,13 +1991,54 @@ mlx5e_shampo_fill_skb_data(struct sk_buff *skb, struct mlx5e_rq *rq,
- 	} while (data_bcnt);
- }
- 
-+static u16
-+mlx5e_cqe_estimate_hdr_len(const struct mlx5_cqe64 *cqe, u16 cqe_bcnt)
-+{
-+	u8 l3_type, l4_type;
-+	u16 hdr_len;
-+
-+	hdr_len = sizeof(struct ethhdr);
-+
-+	if (cqe_has_vlan(cqe))
-+		hdr_len += VLAN_HLEN;
-+
-+	l3_type = get_cqe_l3_hdr_type(cqe);
-+	if (l3_type == CQE_L3_HDR_TYPE_IPV4) {
-+		hdr_len += sizeof(struct iphdr);
-+	} else if (l3_type == CQE_L3_HDR_TYPE_IPV6) {
-+		hdr_len += sizeof(struct ipv6hdr);
-+	} else {
-+		hdr_len = MLX5E_RX_MAX_HEAD;
-+		goto out;
-+	}
-+
-+	l4_type = get_cqe_l4_hdr_type(cqe);
-+	if (l4_type == CQE_L4_HDR_TYPE_UDP) {
-+		hdr_len += sizeof(struct udphdr);
-+	} else if (l4_type & (CQE_L4_HDR_TYPE_TCP_NO_ACK |
-+			      CQE_L4_HDR_TYPE_TCP_ACK_NO_DATA |
-+			      CQE_L4_HDR_TYPE_TCP_ACK_AND_DATA)) {
-+		/* ACK_NO_ACK | ACK_NO_DATA | ACK_AND_DATA == 0x7, but
-+		 * the previous condition checks for _UDP which is 0x2.
-+		 *
-+		 * As we know that l4_type != 0x2, we can simply check
-+		 * if any of the bits of 0x7 is set.
-+		 */
-+		hdr_len += sizeof(struct tcphdr) + TCPOLEN_TSTAMP_ALIGNED;
-+	} else {
-+		hdr_len = MLX5E_RX_MAX_HEAD;
-+	}
-+
-+out:
-+	return min3(hdr_len, cqe_bcnt, MLX5E_RX_MAX_HEAD);
-+}
-+
- static struct sk_buff *
- mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *wi,
- 				   struct mlx5_cqe64 *cqe, u16 cqe_bcnt, u32 head_offset,
- 				   u32 page_idx)
- {
- 	struct mlx5e_frag_page *frag_page = &wi->alloc_units.frag_pages[page_idx];
--	u16 headlen = min_t(u16, MLX5E_RX_MAX_HEAD, cqe_bcnt);
- 	struct mlx5e_frag_page *head_page = frag_page;
- 	struct mlx5e_xdp_buff *mxbuf = &rq->mxbuf;
- 	u32 frag_offset    = head_offset;
-@@ -2009,6 +2050,7 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
- 	u32 linear_frame_sz;
- 	u16 linear_data_len;
- 	u16 linear_hr;
-+	u16 headlen;
- 	void *va;
- 
- 	prog = rcu_dereference(rq->xdp_prog);
-@@ -2039,6 +2081,8 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
- 		net_prefetchw(va); /* xdp_frame data area */
- 		net_prefetchw(skb->data);
- 
-+		headlen = mlx5e_cqe_estimate_hdr_len(cqe, cqe_bcnt);
-+
- 		frag_offset += headlen;
- 		byte_cnt -= headlen;
- 		linear_hr = skb_headroom(skb);
-@@ -2115,6 +2159,9 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
- 				pagep->frags++;
- 			while (++pagep < frag_page);
- 		}
-+
-+		headlen = mlx5e_cqe_estimate_hdr_len(cqe, cqe_bcnt);
-+
- 		__pskb_pull_tail(skb, headlen);
- 	} else {
- 		dma_addr_t addr;
-
--- 
-2.50.1
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 93.117.216.243
+X-Source-L: No
+X-Exim-ID: 1uqlXY-00000001RSx-0ZQh
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: static-243-216-117-93.thenetworkfactory.nl ([10.94.27.44]) [93.117.216.243]:36842
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfK18hwTN1XL2qtvnEIH8gy7UUxHZZQPNzn6Gjk/zsQdz53ASLNPU5DZUYs8xL1ILVVwfQkZcgYqMa/OyLkTu3x6B20Y/lkcsoDE1xP3Z5e7D6DXwJ8ct
+ ml7wclFIzloEMoyKa4R99mBh+j9xZv9+tNpow5hJ3EkizPtSGkN2mgvXjI9v/PiBb4j6/CUGVCor1a2em8dpO7aFmKyTUwU/u/7MswVCp1mRZ1DKKoyNuaPC
 
 
+
+On 25/08/25 19:20, Jason Gunthorpe wrote:
+> On Wed, Aug 13, 2025 at 07:22:14PM +0900, Gustavo A. R. Silva wrote:
+> 
+>> @@ -1866,7 +1872,7 @@ static void cm_process_work(struct cm_id_private *cm_id_priv,
+>>   	int ret;
+> 
+> I think if you are going to do this restructing then these lower level
+> functions that never touch the path member should also have their
+> signatures updated to take in the cm_work_hdr not the cm_work struct
+> with the path, and we should never cast from a cm_work_hdr to a
+> cm_work.
+> 
+> Basically we should have more type clarity when the path touches are
+> to be sure the cm_timewait_info version never gets into there.
+> 
+> And to do that properly is going to need a preparing patch to untangle
+> cm_work_handler() a little bit, it shouldn't be the work function for
+> the cm_timewait_handler() which has a different ype.
+> 
+> Also did you look closely at which members needed to be in the hdr?
+> I think with the above it will turn out that some members can be moved
+> to cm_work..
+
+I was wondering if we could just move cm_work at the very end of
+struct cm_timewait_info, like this:
+
+  struct cm_timewait_info {
+-       struct cm_work work;
+         struct list_head list;
+         struct rb_node remote_qp_node;
+         struct rb_node remote_id_node;
+@@ -204,6 +203,7 @@ struct cm_timewait_info {
+         __be32 remote_qpn;
+         u8 inserted_remote_qp;
+         u8 inserted_remote_id;
++       struct cm_work work;
+  };
+
+and then I found this commit 09fb406a569b ("RDMA/cm: Add a note explaining
+how the timewait is eventually freed")
+
+-Gustavo
 
