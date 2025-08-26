@@ -1,184 +1,293 @@
-Return-Path: <linux-rdma+bounces-12929-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12930-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E424B3546D
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Aug 2025 08:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C1531B354AF
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Aug 2025 08:38:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D7993BE006
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Aug 2025 06:22:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82D3B3BFE15
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Aug 2025 06:38:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39F562FA0DF;
-	Tue, 26 Aug 2025 06:21:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB483289E36;
+	Tue, 26 Aug 2025 06:38:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="cxqfT2Uv"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jn91P3mX"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yb1-f225.google.com (mail-yb1-f225.google.com [209.85.219.225])
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 568CE2F99A8
-	for <linux-rdma@vger.kernel.org>; Tue, 26 Aug 2025 06:21:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.225
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AE9823B62B
+	for <linux-rdma@vger.kernel.org>; Tue, 26 Aug 2025 06:38:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756189268; cv=none; b=dKQJAew6CVxdgZF24vnUILYvAS7x0zLVbv/azzMtKTRl4C9vTGum/GIc8+KQeu2ikSsK0XcA9OtFPW+PpPQWm0O0pfYlTHbXPNDlZbjDYtPznV7RD+d1GCBLZWF1II6xIbN8osoY3zBYsde2n8MVFqSvFhqEc7ZCFTZgHcTH/is=
+	t=1756190303; cv=none; b=qqEjFw43vS2ZwRC2RePz5/8eRe/sBqN36TCH0aiCyAP4LDZrHU3ffrvsKP7E7ZV5FzP3GzKlDXzqPe3txJg5MW6EUus+LWnq/o5Y5b8ZJekDsdod2wqtGiOw+gyskY+SFnvWcffbb+ojftXZSZKbwBKqQ1+nsol+hm3vQD+WTxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756189268; c=relaxed/simple;
-	bh=ONvUs6gCM1AXz/svlHDmLstiRv7jgG5D+ybE8/LNI1w=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HM6VUQe48gmmVxb0wyHNnPBCdF488AE/7wME8q38chh/nRrEJJhywFbuDgHBy+yT2YL2Y0TkwLZjyqq/qPIH2Qc4dwIWHCcQjJzyG2/yXBk7bGPpfN/r/cyDNT7hQARRMZndXE7rGGNG0Q8cjXAFEW1V5Ol4zval6lPvuQKmXu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=cxqfT2Uv; arc=none smtp.client-ip=209.85.219.225
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-yb1-f225.google.com with SMTP id 3f1490d57ef6-e9537c4a2cdso2022218276.2
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Aug 2025 23:21:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756189266; x=1756794066;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:dkim-signature
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uDT5ArH2GSLOx05FVKYh091ceB024UhDnWB5JU+LHP4=;
-        b=WNk2XQy7RuPKHwX/zYmhErhLCc2Tvsh9N/Ltdaf86ugz8Kor13bXHF0WDl3SwvQjw5
-         XX825TuFej1UsALAuIB37U5U0ogVQZnU2plHJPqhE/g5+vb7HatF0kwBqkuFEVrjsI7p
-         CzI7hiQPmRvFHsedMw8xXhAg0rkeQzfvRKIt/XLZVtQ09NZ1U9PFHzyy27aYYfI5js8i
-         s+GqNGnpeUAOBjXu2IA3zNFEfcUHcqJmhVp4PUzuMC+T/IcZhBvhXddJQh6hvE5Xg5vT
-         yOKt6p2xootmO9e0ch/e/Tp+HDQ36M0SacRlsj6pR9d5Ks1irVOw6VU9hKw6dMb8vggn
-         t8yQ==
-X-Gm-Message-State: AOJu0YwmaQ63oH0B/ciaXcBLlfoqK13RS7St2rQ9Qm8Kr6hOYTxqGwHo
-	QE9l+2y8uIOTk/JTwLvjmFdZDWc+b+S9vty5COY3oMwsej5IVGmPklA9/sZyfXDyErqHKTcNO06
-	AqR2AVM3LTVF5vHxb1ov1v++SNFrZUyXJUp4aUURfmIQPiIk4Ae0JcLUgKcrJ9u48nUMWQOswXU
-	H0jmO9NbR0JAkNoMTotR5OSEm3km+epL7F5j2ZuzyOeR+0/P/FKeISZDIetgqmcw6TsKAlnOU7W
-	6m4OEV+2wZhmcTy+8QIcd9l3f/x1A==
-X-Gm-Gg: ASbGncsKC6jvWJ9wr8CyUUHBRoxfAN4gqlet3l/A+47THppVH/yWUtqTl3WRAF8JwQQ
-	WH8iT4bmv4wroabr0fRfwIhcp6C+BrGEemoQs3oqTe3w6D94qiCYOVubVjGXgkYr11l49KstcpY
-	CM9bB/fI0ow9Sp5cDr9O/Z+TbBQtFgiK/M2Fg3glvub0skJTZM69361rtp9ZhW4qoTb1cp2cWqO
-	NXR3ZGbRP2n3FMx6P3i7VWW0RnLtrcGQPqTfkOZNyNHCZ/LOfQDTZlb6J4SzhVX1a1lC2qTU87/
-	Lx7CxyCW7YplpuP9vjmrwiXYd1jUniAD6YU7OaPYkr3gVuGJF1o/xGXOF2/EZkZ0pnk7BIsM9Kt
-	Q8O0c0zdj+kPCdL9u0tPDjm2vu4/Ot35Lv2pTTcFWMXqdR+j315P6m4bkRCnhNU33qMUjLczmy6
-	GxuHe0gIBqjiyV
-X-Google-Smtp-Source: AGHT+IFIeaCrQzvy2vSh0JYLfnu+6E7ZMERlHnCk/7Q56BldRLNhsu6xgsfn1xYN7jOKgbRC/aroxNHtMpUv
-X-Received: by 2002:a05:6902:2a49:b0:e95:3ae8:844 with SMTP id 3f1490d57ef6-e953ae80c2amr7812968276.38.1756189266265;
-        Mon, 25 Aug 2025 23:21:06 -0700 (PDT)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-16.dlp.protect.broadcom.com. [144.49.247.16])
-        by smtp-relay.gmail.com with ESMTPS id 3f1490d57ef6-e952c35c0e7sm681673276.15.2025.08.25.23.21.05
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 25 Aug 2025 23:21:06 -0700 (PDT)
-X-Relaying-Domain: broadcom.com
-X-CFilter-Loop: Reflected
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-246eb38205fso17208885ad.0
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Aug 2025 23:21:05 -0700 (PDT)
+	s=arc-20240116; t=1756190303; c=relaxed/simple;
+	bh=wpU8pIN/IW7kIhoJKatbUTCAqJ0FjOn1Rg1gTLzUeOQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FVV7t/Yci4Rtzk0Wwt4/HQIJTulRtdCnsa3/C3sPk7VKX5+tP6rPOQn9XqebL/roLm7pkipd2yiiLy2wpKvomocdruzjec6WtMU2uCmYHMMTomxuLEJ2AFqaqPmrlY43Es4M6WcAh6Tnw2W64H59lvi2bvDoWCvbGVYQbBApCVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jn91P3mX; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-4b134f1c451so75420331cf.1
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Aug 2025 23:38:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1756189265; x=1756794065; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1756190297; x=1756795097; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uDT5ArH2GSLOx05FVKYh091ceB024UhDnWB5JU+LHP4=;
-        b=cxqfT2Uv4y0tQWOyZHcPgZFPL7vF71+03KDRR2k7rH28acMt7dYUY+ihJJf894W4bw
-         ZgZECirxYYQMy+i7iCuTop5it8LMg9sZgdCXRme0rQa28ykZmxU0AH8Oq+g8mYwao8Ob
-         +Q1wfdt7rbija2InhcUCSRyAvmpnAwv9eVuMc=
-X-Received: by 2002:a17:903:234c:b0:246:1c5c:775 with SMTP id d9443c01a7336-2462eddce8dmr173542935ad.1.1756189265009;
-        Mon, 25 Aug 2025 23:21:05 -0700 (PDT)
-X-Received: by 2002:a17:903:234c:b0:246:1c5c:775 with SMTP id d9443c01a7336-2462eddce8dmr173542685ad.1.1756189264611;
-        Mon, 25 Aug 2025 23:21:04 -0700 (PDT)
-Received: from dhcp-10-123-157-228.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b4c04c7522fsm4392543a12.5.2025.08.25.23.21.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Aug 2025 23:21:04 -0700 (PDT)
-From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-To: leon@kernel.org,
-	jgg@ziepe.ca
-Cc: linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org,
-	andrew.gospodarek@broadcom.com,
-	selvin.xavier@broadcom.com,
-	michael.chan@broadcom.com,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	Saravanan Vajravel <saravanan.vajravel@broadcom.com>
-Subject: [PATCH V2 rdma-next 10/10] RDMA/bnxt_re: Remove unnecessary condition checks
-Date: Tue, 26 Aug 2025 11:55:22 +0530
-Message-ID: <20250826062522.1036432-11-kalesh-anakkur.purayil@broadcom.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20250826062522.1036432-1-kalesh-anakkur.purayil@broadcom.com>
-References: <20250826062522.1036432-1-kalesh-anakkur.purayil@broadcom.com>
+        bh=a0C3S1bVVtePc/APHT/8WoZJdWGoJ1m+D+V53HqBA7o=;
+        b=jn91P3mXyCa0I0UtuKN1e0EBc4oG9WpO6MirHi1mKKwEKbc1CW3oISIs0QgLZ4HJfr
+         QJzcLVbfUsXvSWvByaYiU5P194ZqpAhSGLw2w9XmmjRsRZEAMlywHGQqCm11PBg0ySGW
+         B+PC1XCFgDBs3APyBn1TjGIRtO4Y1hoavJgVep+5XiTWbl4ZvNCnJvWb2lzRWrRQ+AlK
+         AYIyo7lmSWcDPWUnCtlXMtM7zrJw6wfEg2bFbsTiNaBC2tqgMRWPCkgodpTPgPJCHekG
+         ut8wLxzc1ue+o8HqvmEbkR+2UnI53TVcdx/iJAfbdGWpXHdm1Z6Pd7WJAkHrAdZe6eKc
+         qGRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756190297; x=1756795097;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a0C3S1bVVtePc/APHT/8WoZJdWGoJ1m+D+V53HqBA7o=;
+        b=qrhbcwhCLkCkCJbnfDZBWsZTHwUmK+hMOIrnS/4ttchmNN+kzAtHSTY6/lfmplYANG
+         Z/+HzHI/18cz13bhxcmJdyBBIgsiesUwAWpcgRPc9l67pqdLlRfDB8rm8oRp8Qq9tObU
+         NTZtishvTX55YiQzgrBYHkOYeJ4pmwtscIcOLW+nyGCXlLOw7a1uNBWEc+CdAC2hp9cD
+         RfDAr2nsGsQDoqsejo0kvtPO9+UXq49tmvSG+/27S92DMv9fyQESZeOwJpzaKDAyG12D
+         SsM0wx3gqiXi0x56GfyBjcdFvm8cqIxwhZq4YW4nh42E4iQQBdmbgccJnJAmIK/JFw73
+         v6Gg==
+X-Forwarded-Encrypted: i=1; AJvYcCUFkaAIZhww5YyXxPZIKr1CK8y9KqC5sakTiJS+JtdcCfYlO6Kzjd0M1hoUi/Ci5ClrJSY6lNWprDTX@vger.kernel.org
+X-Gm-Message-State: AOJu0YzxCuN3d3S1n6DcldNEzLmto39oRWjfGC2/sba5bQRu8TslaTxz
+	IDsJ6P7qUkQtHHB4pnCCwx5tMg2aoxbckO76YPcKryLvCJP1hI43P10bX8/1cFUQUGWl+ecXKw7
+	4YGPb1hXWljmrFAsoXsyvOkxnBYERw0uI2JaWrYDC
+X-Gm-Gg: ASbGncvImP7fNx7/wzUDx2qAzchZ+1qlAv+0CA2ak1RVdW9izR2YEzYcdbsuCSq8Gsd
+	lZ8sCjiBe/MnOtAeBmzqFryVSIUDQNe7YLMsBItS4rIZ/YD6bYThK8cI9hGArSOjz/5t5Q0nP93
+	WeqQP7KzaDKieNbBEWYkx8cjvX9kBJznm3Ke78w9ammiOEw9bzs61a9Q30USR175P+lm7XAOxYn
+	7WYtTyL6S8LnLVfN7elYIUl4w==
+X-Google-Smtp-Source: AGHT+IHKLF2ER9I7pXDkRBQiOJY6S9iwrojCpIUCPgd3UbgIlllqycwq0hMz3my1s0m2wrjolIBjDpG3hredR1BoJkk=
+X-Received: by 2002:a05:622a:44d:b0:4b0:7c4f:aefa with SMTP id
+ d75a77b69052e-4b2aaa6db01mr171561191cf.35.1756190296574; Mon, 25 Aug 2025
+ 23:38:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
+References: <20250825-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v3-0-5527e9eb6efc@openai.com>
+ <20250825-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v3-2-5527e9eb6efc@openai.com>
+In-Reply-To: <20250825-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v3-2-5527e9eb6efc@openai.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Mon, 25 Aug 2025 23:38:05 -0700
+X-Gm-Features: Ac12FXwMOXaPuD5H2XjFt2mAQbfXmgTtztUtNIlns1GSIvefg4_ldwJMpGaHcxM
+Message-ID: <CANn89iJ5brG-tSdyEPYH67BL1rkU5CKfvUO4Jc03twfVFKFPqQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 2/2] net/mlx5: Avoid copying payload to the
+ skb's linear part
+To: cpaasch@openai.com
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, 
+	Mark Bloch <mbloch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Alexander Lobakin <aleksander.lobakin@intel.com>, Gal Pressman <gal@nvidia.com>, 
+	Dragos Tatulea <dtatulea@nvidia.com>, linux-rdma@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The check for "rdev" and "en_dev" pointer validity always
-return false.
+On Mon, Aug 25, 2025 at 8:47=E2=80=AFPM Christoph Paasch via B4 Relay
+<devnull+cpaasch.openai.com@kernel.org> wrote:
+>
+> From: Christoph Paasch <cpaasch@openai.com>
+>
+> mlx5e_skb_from_cqe_mpwrq_nonlinear() copies MLX5E_RX_MAX_HEAD (256)
+> bytes from the page-pool to the skb's linear part. Those 256 bytes
+> include part of the payload.
+>
+> When attempting to do GRO in skb_gro_receive, if headlen > data_offset
+> (and skb->head_frag is not set), we end up aggregating packets in the
+> frag_list.
+>
+> This is of course not good when we are CPU-limited. Also causes a worse
+> skb->len/truesize ratio,...
+>
+> So, let's avoid copying parts of the payload to the linear part. The
+> goal here is to err on the side of caution and prefer to copy too little
+> instead of copying too much (because once it has been copied over, we
+> trigger the above described behavior in skb_gro_receive).
+>
+> So, we can do a rough estimate of the header-space by looking at
+> cqe_l3/l4_hdr_type. This is now done in mlx5e_cqe_estimate_hdr_len().
+> We always assume that TCP timestamps are present, as that's the most comm=
+on
+> use-case.
+>
+> That header-len is then used in mlx5e_skb_from_cqe_mpwrq_nonlinear for
+> the headlen (which defines what is being copied over). We still
+> allocate MLX5E_RX_MAX_HEAD for the skb so that if the networking stack
+> needs to call pskb_may_pull() later on, we don't need to reallocate
+> memory.
+>
+> This gives a nice throughput increase (ARM Neoverse-V2 with CX-7 NIC and
+> LRO enabled):
+>
+> BEFORE:
+> =3D=3D=3D=3D=3D=3D=3D
+> (netserver pinned to core receiving interrupts)
+> $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
+>  87380  16384 262144    60.01    32547.82
+>
+> (netserver pinned to adjacent core receiving interrupts)
+> $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
+>  87380  16384 262144    60.00    52531.67
+>
+> AFTER:
+> =3D=3D=3D=3D=3D=3D
+> (netserver pinned to core receiving interrupts)
+> $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
+>  87380  16384 262144    60.00    52896.06
+>
+> (netserver pinned to adjacent core receiving interrupts)
+>  $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
+>  87380  16384 262144    60.00    85094.90
+>
+> Additional tests across a larger range of parameters w/ and w/o LRO, w/
+> and w/o IPv6-encapsulation, different MTUs (1500, 4096, 9000), different
+> TCP read/write-sizes as well as UDP benchmarks, all have shown equal or
+> better performance with this patch.
+>
+> Signed-off-by: Christoph Paasch <cpaasch@openai.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 49 +++++++++++++++++++=
++++++-
+>  1 file changed, 48 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/ne=
+t/ethernet/mellanox/mlx5/core/en_rx.c
+> index b8c609d91d11bd315e8fb67f794a91bd37cd28c0..050f3efca34f3b8984c30f335=
+ee43f487fef33ac 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+> @@ -1991,13 +1991,54 @@ mlx5e_shampo_fill_skb_data(struct sk_buff *skb, s=
+truct mlx5e_rq *rq,
+>         } while (data_bcnt);
+>  }
+>
+> +static u16
+> +mlx5e_cqe_estimate_hdr_len(const struct mlx5_cqe64 *cqe, u16 cqe_bcnt)
+> +{
+> +       u8 l3_type, l4_type;
+> +       u16 hdr_len;
+> +
+> +       hdr_len =3D sizeof(struct ethhdr);
+> +
+> +       if (cqe_has_vlan(cqe))
+> +               hdr_len +=3D VLAN_HLEN;
+> +
+> +       l3_type =3D get_cqe_l3_hdr_type(cqe);
+> +       if (l3_type =3D=3D CQE_L3_HDR_TYPE_IPV4) {
+> +               hdr_len +=3D sizeof(struct iphdr);
+> +       } else if (l3_type =3D=3D CQE_L3_HDR_TYPE_IPV6) {
+> +               hdr_len +=3D sizeof(struct ipv6hdr);
+> +       } else {
+> +               hdr_len =3D MLX5E_RX_MAX_HEAD;
+> +               goto out;
+> +       }
+> +
+> +       l4_type =3D get_cqe_l4_hdr_type(cqe);
+> +       if (l4_type =3D=3D CQE_L4_HDR_TYPE_UDP) {
+> +               hdr_len +=3D sizeof(struct udphdr);
+> +       } else if (l4_type & (CQE_L4_HDR_TYPE_TCP_NO_ACK |
+> +                             CQE_L4_HDR_TYPE_TCP_ACK_NO_DATA |
+> +                             CQE_L4_HDR_TYPE_TCP_ACK_AND_DATA)) {
+> +               /* ACK_NO_ACK | ACK_NO_DATA | ACK_AND_DATA =3D=3D 0x7, bu=
+t
+> +                * the previous condition checks for _UDP which is 0x2.
+> +                *
+> +                * As we know that l4_type !=3D 0x2, we can simply check
+> +                * if any of the bits of 0x7 is set.
+> +                */
+> +               hdr_len +=3D sizeof(struct tcphdr) + TCPOLEN_TSTAMP_ALIGN=
+ED;
+> +       } else {
+> +               hdr_len =3D MLX5E_RX_MAX_HEAD;
+> +       }
+> +
+> +out:
+> +       return min3(hdr_len, cqe_bcnt, MLX5E_RX_MAX_HEAD);
+> +}
+> +
 
-Remove them.
+Hi Christoph
 
-Reviewed-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
-Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/main.c | 19 +------------------
- 1 file changed, 1 insertion(+), 18 deletions(-)
+I wonder if you have tried to use eth_get_headlen() instead of yet
+another dissector ?
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 3e1161721738..583199e90bdd 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -916,20 +916,12 @@ static void bnxt_re_deinitialize_dbr_pacing(struct bnxt_re_dev *rdev)
- static int bnxt_re_net_ring_free(struct bnxt_re_dev *rdev,
- 				 u16 fw_ring_id, int type)
- {
--	struct bnxt_en_dev *en_dev;
-+	struct bnxt_en_dev *en_dev = rdev->en_dev;
- 	struct hwrm_ring_free_input req = {};
- 	struct hwrm_ring_free_output resp;
- 	struct bnxt_fw_msg fw_msg = {};
- 	int rc = -EINVAL;
- 
--	if (!rdev)
--		return rc;
--
--	en_dev = rdev->en_dev;
--
--	if (!en_dev)
--		return rc;
--
- 	if (test_bit(BNXT_RE_FLAG_ERR_DEVICE_DETACHED, &rdev->flags))
- 		return 0;
- 
-@@ -955,9 +947,6 @@ static int bnxt_re_net_ring_alloc(struct bnxt_re_dev *rdev,
- 	struct bnxt_fw_msg fw_msg = {};
- 	int rc = -EINVAL;
- 
--	if (!en_dev)
--		return rc;
--
- 	bnxt_re_init_hwrm_hdr((void *)&req, HWRM_RING_ALLOC);
- 	req.enables = 0;
- 	req.page_tbl_addr =  cpu_to_le64(ring_attr->dma_arr[0]);
-@@ -990,9 +979,6 @@ static int bnxt_re_net_stats_ctx_free(struct bnxt_re_dev *rdev,
- 	struct bnxt_fw_msg fw_msg = {};
- 	int rc = -EINVAL;
- 
--	if (!en_dev)
--		return rc;
--
- 	if (test_bit(BNXT_RE_FLAG_ERR_DEVICE_DETACHED, &rdev->flags))
- 		return 0;
- 
-@@ -1020,9 +1006,6 @@ static int bnxt_re_net_stats_ctx_alloc(struct bnxt_re_dev *rdev,
- 
- 	stats->fw_id = INVALID_STATS_CTX_ID;
- 
--	if (!en_dev)
--		return rc;
--
- 	bnxt_re_init_hwrm_hdr((void *)&req, HWRM_STAT_CTX_ALLOC);
- 	req.update_period_ms = cpu_to_le32(1000);
- 	req.stats_dma_addr = cpu_to_le64(stats->dma_map);
--- 
-2.43.5
+I doubt you will see a performance difference.
 
+commit cfecec56ae7c7c40f23fbdac04acee027ca3bd66
+Author: Eric Dumazet <edumazet@google.com>
+Date:   Fri Sep 5 18:29:45 2014 -0700
+
+    mlx4: only pull headers into skb head
+
+    Use the new fancy eth_get_headlen() to pull exactly the headers
+    into skb->head.
+
+    This speeds up GRE traffic (or more generally tunneled traffuc),
+    as GRO can aggregate up to 17 MSS per GRO packet instead of 8.
+
+    (Pulling too much data was forcing GRO to keep 2 frags per MSS)
+
+    Signed-off-by: Eric Dumazet <edumazet@google.com>
+    Cc: Amir Vadai <amirv@mellanox.com>
+    Signed-off-by: David S. Miller <davem@davemloft.net>
+
+
+>  static struct sk_buff *
+>  mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw=
+_info *wi,
+>                                    struct mlx5_cqe64 *cqe, u16 cqe_bcnt, =
+u32 head_offset,
+>                                    u32 page_idx)
+>  {
+>         struct mlx5e_frag_page *frag_page =3D &wi->alloc_units.frag_pages=
+[page_idx];
+> -       u16 headlen =3D min_t(u16, MLX5E_RX_MAX_HEAD, cqe_bcnt);
+>         struct mlx5e_frag_page *head_page =3D frag_page;
+>         struct mlx5e_xdp_buff *mxbuf =3D &rq->mxbuf;
+>         u32 frag_offset    =3D head_offset;
+> @@ -2009,6 +2050,7 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq =
+*rq, struct mlx5e_mpw_info *w
+>         u32 linear_frame_sz;
+>         u16 linear_data_len;
+>         u16 linear_hr;
+> +       u16 headlen;
+>         void *va;
+>
+>         prog =3D rcu_dereference(rq->xdp_prog);
+> @@ -2039,6 +2081,8 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq =
+*rq, struct mlx5e_mpw_info *w
+>                 net_prefetchw(va); /* xdp_frame data area */
+>                 net_prefetchw(skb->data);
+>
+> +               headlen =3D mlx5e_cqe_estimate_hdr_len(cqe, cqe_bcnt);
+> +
+>                 frag_offset +=3D headlen;
+>                 byte_cnt -=3D headlen;
+>                 linear_hr =3D skb_headroom(skb);
+> @@ -2115,6 +2159,9 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq =
+*rq, struct mlx5e_mpw_info *w
+>                                 pagep->frags++;
+>                         while (++pagep < frag_page);
+>                 }
+> +
+> +               headlen =3D mlx5e_cqe_estimate_hdr_len(cqe, cqe_bcnt);
+> +
+>                 __pskb_pull_tail(skb, headlen);
+>         } else {
+>                 dma_addr_t addr;
+>
+> --
+> 2.50.1
+>
+>
 
