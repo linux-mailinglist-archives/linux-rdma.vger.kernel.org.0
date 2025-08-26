@@ -1,179 +1,133 @@
-Return-Path: <linux-rdma+bounces-12914-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12916-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 746ADB34A1A
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Aug 2025 20:20:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEC45B35257
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Aug 2025 05:47:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 312351692AC
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Aug 2025 18:20:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08B6A3B2790
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Aug 2025 03:47:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 378CC2F28F2;
-	Mon, 25 Aug 2025 18:19:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E89F2D47FA;
+	Tue, 26 Aug 2025 03:47:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="gtJd049h"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="be3BWdCy"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2058.outbound.protection.outlook.com [40.107.244.58])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8064430AAD2;
-	Mon, 25 Aug 2025 18:19:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.58
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756145975; cv=fail; b=NxNNbVXiSgCRtrOcbZVKO4kFlI9XwdKznaxQYqJ9Z4MTG7uPFB5Nal/rKZh9zSid/SYQm+J0w0UOHuXuMhC0k0OsRzUbK6sFuOWGv+L8w7mbhK2Ex4vGWRN5qzfk1ejwdd9Ij970r91sLI38/febUSQTbQh3iHKFefyhYRlS8e4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756145975; c=relaxed/simple;
-	bh=kK8PYdfHMaVzUeo2tA5cQJ1PIPyoZP//ijK6i5V6xWQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=GWIBiiqtHETHL8UPWm7yl1DTBye49oqzzkfNUcdzQXvkeW5BjWUyu7qz95ldNoGWsLwpuIEZhOkuhbClAlGP6PaHpAoxndIZRhyRU+8isxzySRmmzwT0uqF7oiBiFiXcMhmDvQ2e4D4Ntb0l2MPsfHNZKX+1kgzQ89xmIATtVR4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=gtJd049h; arc=fail smtp.client-ip=40.107.244.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=GCSpVjaHhMEyk+WEeeZ6nRun9jScMb23thfj7LJvXwqnq4i0qhIX3KavJ/W22txCaE8wCK4Po1Kg+bWteLidhSl9+mvisJdaIDVJlMC6YFsCPgpVJeg1+DwdTO9EJt8MRnPFBJT1gRorx7glzF/CxlXjaQlQpvOTB28ijPsQmZ3l2ZGAHEJ9TwKgRUpudZt7Xo1rVMiBKheFg7I8Wrh5vbX8tQW6HDxwRZwlhvUA/rA1OYCWcdvulaEV+EZuthi1LI7OTzadb8hlj32fCyuowMsAcGucsPOmHiOZhK05lsI/9bG31vsxjZxRrL3XojrB/Fy6YHp9NqUs7tCnZiPwRg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IR2mwterbF85rODRYkfFLdATSAFn4fPc3sdXCcIPXFU=;
- b=nLnWj8yAsZOXkZt/4bu5D3iOv+FPjyU2bIayQXMSH8N5QhU2TrgTBUFkGg0sb+Ov8wbVpP59sbc989Ghv8k8QUzJklNkKsoU8t2YoTRxarQGs0iZb5IvKEC0849LvRFb3KQnwQiEGnNUKwJujuRJceYQHBDfe5t4PWCJKzVezL8XbTes57C++trpfD9FQ+FREYal5x1Se4KiQJ/Pwkrfw3a38LlQTBx6220VAxMqKHGPDP91xaB971VuErRiiyoyOQ2fWBeGF3221heat62uf39ZxjU1sZMv3KKUAb+UiZED7aJwKLwswoWHQr5wRTngSTQalEMnN87cFfqW+XEhDA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IR2mwterbF85rODRYkfFLdATSAFn4fPc3sdXCcIPXFU=;
- b=gtJd049h/RMrQyQpnMhggJCLurVOgIkEAwt2v3Ycfe4QGsIdG5mNvCUD0WaJpqzfmgmVoznZVW1KGWGZxbQ23vjLMCP5Icrfm3qtSNDWBvaV3RPjMhxN1FDiJ3zKCLwgRN89ppdzLheNcu4vnWbf0gUXXCa+aixo5ALIAj51H0XmT2WQgJF8NAzQ4Wa7TVST2zOi/3aRLIZg9oSxuvQYxUNI2/t/ixccde/xRFGkQce/Zzy1xj2sdPueffCOkpflElDsxza8q+TXKLJIIVs9wRtZGG52cau1EdT6esjjE1sGOS4ae5J7A1pmM7mfxoXtkIQKxEav81DjxzyH/PWqRA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH3PR12MB8659.namprd12.prod.outlook.com (2603:10b6:610:17c::13)
- by SJ1PR12MB6316.namprd12.prod.outlook.com (2603:10b6:a03:455::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9031.19; Mon, 25 Aug
- 2025 18:19:31 +0000
-Received: from CH3PR12MB8659.namprd12.prod.outlook.com
- ([fe80::6eb6:7d37:7b4b:1732]) by CH3PR12MB8659.namprd12.prod.outlook.com
- ([fe80::6eb6:7d37:7b4b:1732%4]) with mapi id 15.20.9052.019; Mon, 25 Aug 2025
- 18:19:30 +0000
-Date: Mon, 25 Aug 2025 15:19:29 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Qianfeng Rong <rongqianfeng@vivo.com>
-Cc: Cheng Xu <chengyou@linux.alibaba.com>,
-	Kai Shen <kaishen@linux.alibaba.com>,
-	Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Markus.Elfring@web.de
-Subject: Re: [PATCH v2] RDMA/erdma: Use vcalloc() instead of vzalloc()
-Message-ID: <20250825181929.GA2088087@nvidia.com>
-References: <20250821072209.510348-1-rongqianfeng@vivo.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250821072209.510348-1-rongqianfeng@vivo.com>
-X-ClientProxiedBy: YT4PR01CA0130.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:d5::19) To CH3PR12MB8659.namprd12.prod.outlook.com
- (2603:10b6:610:17c::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F05211F4191;
+	Tue, 26 Aug 2025 03:47:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756180044; cv=none; b=UONdsQrk7HTilMMUFfTocLRKLMHL8KinFfw6AaK2vjv8/qklscckrn/ElHfxL+0HvCVCf7UW/JaoT8SRvAdIYriSsqbEvbjxwlevgl+Go/5nU1gIwq/PqaOMaZp945rhDOML780zJT+AQuRPA9/p16N/wcs6VIpHwFn/K8D5P7c=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756180044; c=relaxed/simple;
+	bh=k+7yizfovCBjqyr67T5WBtYGeOcnZ1OX5JkfkELb1h0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=nNwBfhIaXFAV0Vlgu0D1DkxcvbkVQDxf+KoNz7h/RBtXLJVhsamtHtVa9i7q75AOSTcC1Zk4GVYoFftFe8ejl5Wrr3Ptbet6KyzdGrmvha0h1h65HPULCeEqhAZj+GR7jlw0H+PNKoZjRaCdyvc4hn0Ikw6LP7xzKzF2ytxoPd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=be3BWdCy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9472EC113CF;
+	Tue, 26 Aug 2025 03:47:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756180043;
+	bh=k+7yizfovCBjqyr67T5WBtYGeOcnZ1OX5JkfkELb1h0=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=be3BWdCyqOFR5hU0LMQblQ+kw7JlvzUWu99lkLxoZfzo7IgOQoZSUj0YFL9NT7G0Y
+	 BwyUQzFiCqSyuJsD5XW1ky34bjbVC9OL+jVfEuRcx91jzGZaFKrtquUQeQ1atWwRkB
+	 osEiZMC5pdjRLyJIuaLWX6Uk0iCBaKlq7X/NwuVGS4/3mZ6ubAnja5YUw30+ps6XaF
+	 mTfDrYn/i1TrlyEocII6I+Ja9nZg5plYs+saTbbqDs2AYpthgMYdXWSZwXnik+uU4p
+	 Sx2wxZDA3/R4hIcfViSUJA6q0bHeO60tUqQg2m6rNJsg1sbFN1v+2jyZ4OMEeCpgra
+	 hkgburfCit41w==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8187DCA0FE7;
+	Tue, 26 Aug 2025 03:47:23 +0000 (UTC)
+From: Christoph Paasch via B4 Relay <devnull+cpaasch.openai.com@kernel.org>
+Subject: [PATCH net-next v3 0/2] net/mlx5: Avoid payload in skb's linear
+ part for better GRO-processing
+Date: Mon, 25 Aug 2025 20:47:11 -0700
+Message-Id: <20250825-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v3-0-5527e9eb6efc@openai.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB8659:EE_|SJ1PR12MB6316:EE_
-X-MS-Office365-Filtering-Correlation-Id: 64a0dc81-fd9f-48fb-44ef-08dde403ef1b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?HWtEY6YX14i4Du8tJeiQm+QD6PWe5VRaUW33OgdGDEqcKkhsxg6Iad1C2gWW?=
- =?us-ascii?Q?qdJ3QQmOld2NSoz4HEHYIneFKTMvi3Ze2DdqnIZrcHW/sfj3LSptwAy92NTQ?=
- =?us-ascii?Q?yTxBsbWM3P8HJ/NJSDdbXT/SziN/kfVtFM3z6e3+liEGKTlvoKyfwKStmybS?=
- =?us-ascii?Q?OEcKUxabapSxLp8LWr6NgEfX/Zv/cy9Xu5IS+oe90Thn4eSVqy5Jd0INNy3Y?=
- =?us-ascii?Q?wwQtWXC5e6e2K1cQg6I8+bXQ5FBTWcq7aqjhkgL//P27vAb5VFiGDX+w/b1b?=
- =?us-ascii?Q?A1fUuYigLiEfMcmjuqpSH2/Qai7ICfbGZ+VldxOtRvpEwnBNr+PEys7FYLNK?=
- =?us-ascii?Q?m63U7EyYlaNnh+z9tD8orKaLmqFHwGAtvCe6NLRE0BE/qWRoGfR6O5e2zK8s?=
- =?us-ascii?Q?QNFCEWD3CQNeM9twxCKsq4QeZT95bNQqgC+FU1OPKsAF4cplTniZjOJItHFq?=
- =?us-ascii?Q?8XwTiX2lnoFL6rSdaBxDmNtgY5LCUbF2/mtXqZIgSrIfX4o//WAtmC5WsdLF?=
- =?us-ascii?Q?FJVfuU58mtsTz+wfdbtBbNCUduvxFlLA3TIMuE2nm2a9+ECp0JoT198JNVmy?=
- =?us-ascii?Q?sCIxLDMidIJ7GtfaCNTzUDKJYEJBCeiv1eJdz0FSk7UvrGMr/cm23vMLlaA/?=
- =?us-ascii?Q?qM/KN20y8hPLNvTPPnkW5sNp0uvI1X+14yArDjz6fCHOfQWprGphS9XaK0uf?=
- =?us-ascii?Q?OnBuAemxox8+5XuyQuYN60765UhNrsH5AHKXxZm9s9t002FHBVTxUURoHYEG?=
- =?us-ascii?Q?M43x4xbm8ngEno5DZf45BYD9p+mZWX1jXYAei4+0yX3twAg0Fc0RrobGjIx2?=
- =?us-ascii?Q?Ycg0lh0xK0JhJF+LGGvxi30qqw8rPYIeL15RZp1sYG4FJxQqCgBswTuVweNg?=
- =?us-ascii?Q?bWAwqk8Ztk1AmdFTNMQBLJ8Ni0Pe+IgZHvpj1xPx9qDwExL8KMV8rTQpXwFB?=
- =?us-ascii?Q?BZS4N2xr2c11gzKop3iaN+Q9asjyoP40twNKHEmXtlNfnKVhYHd1SaAY2zKQ?=
- =?us-ascii?Q?/BHNkDJpB1NP5GwK5MsqsZgDPpVaCYLeyUIBwwV9YpI/ykhDcYtynSUx8IC5?=
- =?us-ascii?Q?Tmn0/VmA1tC0IKCXSBkItX9FNrpiNc09kJUcjPLzkDV69OOJnyjIf8sjjo24?=
- =?us-ascii?Q?J2O1GyZT7O8nmQOBF31Kzfu+ev6KL9zctDdi5ZlFPZdLfoEwk+Q6UlimWNf3?=
- =?us-ascii?Q?TSuzh/iRLUTpWsld40wlHby55lIygxRCkgtp1HRb4pg26fmDOYYjq6Wnn0wn?=
- =?us-ascii?Q?j6WRNCuHmLXDAQAJ4RUYY8eYYRpgRbhfOugjlm/KAQZLqMSJ/E0C3hxQ6EJ/?=
- =?us-ascii?Q?dwX1QVLcI///aiqsQdiuGKyhUA+Ykj3o3N5YoiKELVgUVMkW9WAJo+PhXrw0?=
- =?us-ascii?Q?ONgeC7UT87tGQe1Qsr+oRkzPydb2sE9C87BCFG1HaMqtFM6X7bdH2iFphOEz?=
- =?us-ascii?Q?QlJSiNcWezE=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8659.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?ERInK/XJUOb5GBRHjDNLR0uQnylU/bgskR86/Vo4Q2Ua7sZFuJzp5+8JNLrs?=
- =?us-ascii?Q?dm7lbV9fNwDzRuIp/lQtFG1irqCG7HnxA/jubdx+BP2xYuj+J8WwkLNDdRfA?=
- =?us-ascii?Q?YgECwrOE1rUGbCbUCFu3bxoAj/lJxg8d9vn05WkEowKuryBJwjVYz8zwzOZI?=
- =?us-ascii?Q?nIs8f2rkGOrbCVQXNtcMRH2fqRnd0ZK688WrNkHB5gb4da7VkSyczq1s6eDy?=
- =?us-ascii?Q?OCbkK3KoagUG1iYcJlEa5Lst2bfidedZlvagbNW5Hp+2oIazJU9p+Noi8DkQ?=
- =?us-ascii?Q?RmCecIcEVnlsVbSpIQZ3LEZ9DfcTp5/WCOfY7jXB/oTLp1pXBY3epYSyev+g?=
- =?us-ascii?Q?97+vt0yakhY2MBFqvMWFkEtitT2ahHV+k0bQIpym5VD5iksVOgSgxhnwF664?=
- =?us-ascii?Q?YWayjf/IpwNbSflHAGeY3kIVYz5LAPiTjKmyDqWetdJ3dmIVxYmFJN9+ob3U?=
- =?us-ascii?Q?yhBOMfQ0puCX8SOEtAeuFWQeich2LD/gOddGAfOhoc7iThl9HfnqCdIvRx3K?=
- =?us-ascii?Q?wXCwe9lovkAbYOs1ET5mxica9gH0AnlLx6rqpOnpnZ3z0alGnCZOT4/mrbr8?=
- =?us-ascii?Q?074BSnXtSzIdTvAUDnxhm0wXvq72HdKeL/5ho8QzPsGWiTwOhvfrI77WJsoj?=
- =?us-ascii?Q?tL2V1g+UceGXmCf24W3E99yhXd34wceAI84ysU4J2X7BIpxzpVnc8gkGkISy?=
- =?us-ascii?Q?JVjmi5mugs3ZqP4QMfwSV2IU2BRKVgoG/E6Qscnuxq18URaYZ9wu3I8HCYQt?=
- =?us-ascii?Q?vVeGVkTe9ZRdPWZuc+5K68z5jM3vUKv9NS+IQweVUQhm7i1huvv/cjuPIidO?=
- =?us-ascii?Q?KBfOe+l9j2rsnHtuAXskf56WewJ4xoUyrHYcYnU2KJ7KXrWaAK7HhnHQt5/K?=
- =?us-ascii?Q?CdymwblES8qdILqwGC5HBYNdTvEJXMQfMDk/ciemFCsUa+6L3P8oXZT4AyhZ?=
- =?us-ascii?Q?hG1IfncCiF4yvYu+FNIQnlt919dsLVo5rKaGre1hKV6SNenKgiOY7DQN25IB?=
- =?us-ascii?Q?EmfEulwanAzm8W3xZRfG0ua05Imo3/zHnPfqA1C1dlT+ugNQtHT064hxjn2P?=
- =?us-ascii?Q?KyG/v3/1BWVLXF/DARA5qmM7zFKkhmZbkkoVrUZ4X5lUc4cePQ97NbEQsc+H?=
- =?us-ascii?Q?Y248azEIW3tFtffM9idHE8MZ6IeiVDg85NHHX3rBzDyisv2NJXwKar7JHkra?=
- =?us-ascii?Q?myVEz9Tl/3kWJm0YZRrMlCPcmQG8DhrTf6tz8xFt8FG7GLxXtkLW73AgNNZf?=
- =?us-ascii?Q?t1vOq035U2mANF7DA4Fl7Jm9ZAnLDb0c/xcokS3k7FEARysG+deVofE7M0Cj?=
- =?us-ascii?Q?f7WneYNQvMGcxgeK3/4WpvSF1YucQirgLsXnM+ED/7XZmxUimlkNTcGMULcS?=
- =?us-ascii?Q?CsL0y9d53GuNEYCZKldg42QVuY9TwynP+Gng0LAV6eD4XQIbAphI33XQ6ozn?=
- =?us-ascii?Q?bDmEXbLHbaK4x4KbHn1Krrp0jKEHhrINY6vYA6RMPb4cWHUyFE+ZJYVlzKGb?=
- =?us-ascii?Q?yHyvVKUQVUbmKSSQs3zRNKbblkblyi6rHqyd47SQK+6AEskcYKwlp4v4tUB8?=
- =?us-ascii?Q?UvOhL9SnnCNmHYxmdYI=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 64a0dc81-fd9f-48fb-44ef-08dde403ef1b
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8659.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2025 18:19:30.6675
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FSMRG+gAZz3yXcBtRS6jOSOCC3kuOeddXipUcGvaN0nwft3Ocs3SkaTM3RjUreaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6316
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAD8urWgC/62OwWrEIBRFf2Vw3VfUxCTTVf+jdPGibyZCoqIiC
+ UP+fUQGSvezPFy45zxYomgpsa/Lg0UqNlnvKnQfF6YXdHcCayozyaXio5CgA2LSC4QbXOUIjvK
+ 27gqweGtA+3BYd4e8EAQ8Vo8Gsm+44bp6TQYwEsKgZH8VY68UDqy6QqSb3VvHD6uf9XfP7Lcui
+ 03Zx6MFFtH2V0v3ppYigANpJDNpOfU9fftADu2n9ltLKPJPO4nhXVpZtbMQc8dnLY3g/7TneT4
+ BzeSZdpwBAAA=
+X-Change-ID: 20250712-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-6524917455a6
+To: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
+ Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
+ Andrew Lunn <andrew+netdev@lunn.ch>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Alexander Lobakin <aleksander.lobakin@intel.com>, 
+ Gal Pressman <gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>
+Cc: linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
+ Christoph Paasch <cpaasch@openai.com>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1756180043; l=2117;
+ i=cpaasch@openai.com; s=20250712; h=from:subject:message-id;
+ bh=k+7yizfovCBjqyr67T5WBtYGeOcnZ1OX5JkfkELb1h0=;
+ b=3tiuDdElYpLSKjZVLFiCbNxYu7fGhXcZA4R52YnDxXXGxuUlKQ02zoVrC+FytHQ2AnrgoCInP
+ DAFDhiRlxSpA9PCELUXcKg2Dg1lX2SiDPNFbQ0sn46/xW3/joD8HVDn
+X-Developer-Key: i=cpaasch@openai.com; a=ed25519;
+ pk=1HRHZlVUZPziMZvsAQFvP7n5+uEosTDAjXmNXykdxdg=
+X-Endpoint-Received: by B4 Relay for cpaasch@openai.com/20250712 with
+ auth_id=459
+X-Original-From: Christoph Paasch <cpaasch@openai.com>
+Reply-To: cpaasch@openai.com
 
-On Thu, Aug 21, 2025 at 03:22:09PM +0800, Qianfeng Rong wrote:
-> Replace vzalloc() with vcalloc() in vmalloc_to_dma_addrs().  As noted
-> in the kernel documentation [1], open-coded multiplication in allocator
-> arguments is discouraged because it can lead to integer overflow.
-> 
-> Use vcalloc() to gain built-in overflow protection, making memory
-> allocation safer when calculating allocation size compared to explicit
-> multiplication.
-> 
-> [1]: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
-> 
-> Signed-off-by: Qianfeng Rong <rongqianfeng@vivo.com>
-> ---
-> v2: change sizeof(dma_addr_t) to sizeof(*pg_dma) to improve code
->     robustness as suggested by Markus.
-> ---
->  drivers/infiniband/hw/erdma/erdma_verbs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+When LRO is enabled on the MLX, mlx5e_skb_from_cqe_mpwrq_nonlinear
+copies parts of the payload to the linear part of the skb.
 
-Applied to for-next, thanks
+This triggers suboptimal processing in GRO, causing slow throughput,...
 
-Jason
+This patch series addresses this by copying a lower-bound estimate of
+the protocol headers - trying to avoid the payload part. This results in
+a significant throughput improvement (detailled results in the specific
+patch).
+
+Signed-off-by: Christoph Paasch <cpaasch@openai.com>
+---
+Changes in v3:
+- Avoid computing headlen when it is not absolutely necessary (e.g., xdp
+  decides to "consume" the packet) (Dragos Tatulea <dtatulea@nvidia.com> & Jakub Kicinski <kuba@kernel.org>)
+- Given the above change, consolidate the check for min3(...) in the new
+  function to avoid code duplication.
+- Make sure local variables are in reverse xmas-tree order.
+- Refine comment about why the check for l4_type worsk as is.
+- Link to v2: https://lore.kernel.org/r/20250816-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v2-0-b11b30bc2d10@openai.com
+
+Changes in v2:
+- Refine commit-message with more info and testing data
+- Make mlx5e_cqe_get_min_hdr_len() return MLX5E_RX_MAX_HEAD when l3_type
+  is neither IPv4 nor IPv6. Same for the l4_type. That way behavior is
+  unchanged for other traffic types.
+- Rename mlx5e_cqe_get_min_hdr_len to mlx5e_cqe_estimate_hdr_len
+- Link to v1: https://lore.kernel.org/r/20250713-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v1-0-ecaed8c2844e@openai.com
+
+---
+Christoph Paasch (2):
+      net/mlx5: Bring back get_cqe_l3_hdr_type
+      net/mlx5: Avoid copying payload to the skb's linear part
+
+ drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 49 ++++++++++++++++++++++++-
+ include/linux/mlx5/device.h                     | 12 +++++-
+ 2 files changed, 59 insertions(+), 2 deletions(-)
+---
+base-commit: 6e8e6baf16ce7d2310959ae81d0194a56874e0d2
+change-id: 20250712-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-6524917455a6
+
+Best regards,
+-- 
+Christoph Paasch <cpaasch@openai.com>
+
+
 
