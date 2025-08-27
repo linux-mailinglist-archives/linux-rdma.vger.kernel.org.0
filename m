@@ -1,125 +1,144 @@
-Return-Path: <linux-rdma+bounces-12945-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12946-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAE51B38046
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Aug 2025 12:49:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3491B380A4
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Aug 2025 13:15:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 934BE364828
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Aug 2025 10:49:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C04261887E8C
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Aug 2025 11:15:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC4FC34AAF0;
-	Wed, 27 Aug 2025 10:48:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB02D335BC1;
+	Wed, 27 Aug 2025 11:14:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DzElD+qh"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77CD734A334;
-	Wed, 27 Aug 2025 10:48:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37A4230CD9F
+	for <linux-rdma@vger.kernel.org>; Wed, 27 Aug 2025 11:14:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756291725; cv=none; b=E5/GxLLPGt8btHHzRXSap/kKINZy8zmS4ZO52bGUm5eBH921IYcunRiixKtpJmt1M7PijDX3UyvvshaUFv1XAH4jEfW/7V+FfsMIu5jsloW909/SpZdqYQ+YGBBvUMwVf8hq569gjCGgzC8eNvixVIS/gzfkcSaL+dU/loleHj4=
+	t=1756293298; cv=none; b=KJSEkcwPzy2ME6UAshmwkmntszmoc/m267ioWCi/iJQM+7mE5y1wZ/uM26E/OD8jlPAwVJHBaiKxFa3aP8uH/pyidXhTvHs7Kd/IRzYTVVztluMyZMnCuoklCZ0sgbZf8ZAodzlafdDJe/TphFdYe259WKo+3m9ZJL+NN+PWDFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756291725; c=relaxed/simple;
-	bh=4QChEoRjqWHTne5COgEK+7FgPenEtjJhU59F2PQTz28=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=UeRi9ek2SeGM1oW/onmGJjfu/g490kh5co9BUQbDQ5n3KXaZfd4ZmGxip5PXXTkCUCTuUbOejS526hzypxwJKMpqj6HKpuF3GHauyPJLzs1b8JTLzDiXAU12Yf2y8rFEymvNaQas3ufhkOEn30ATZ7Hpi7wr2cz3wSuhH2fRSXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4cBh5L2d6nz24htl;
-	Wed, 27 Aug 2025 18:45:42 +0800 (CST)
-Received: from dggpemf500015.china.huawei.com (unknown [7.185.36.143])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0588B140109;
-	Wed, 27 Aug 2025 18:48:40 +0800 (CST)
-Received: from dggpemf500015.china.huawei.com (7.185.36.143) by
- dggpemf500015.china.huawei.com (7.185.36.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 27 Aug 2025 18:48:39 +0800
-Received: from dggpemf500015.china.huawei.com ([7.185.36.143]) by
- dggpemf500015.china.huawei.com ([7.185.36.143]) with mapi id 15.02.1544.011;
- Wed, 27 Aug 2025 18:48:39 +0800
-From: "liujian (CE)" <liujian56@huawei.com>
-To: "D. Wythe" <alibuda@linux.alibaba.com>
-CC: "dust.li@linux.alibaba.com" <dust.li@linux.alibaba.com>,
-	"sidraya@linux.ibm.com" <sidraya@linux.ibm.com>, "wenjia@linux.ibm.com"
-	<wenjia@linux.ibm.com>, "mjambigi@linux.ibm.com" <mjambigi@linux.ibm.com>,
-	"tonylu@linux.alibaba.com" <tonylu@linux.alibaba.com>,
-	"guwen@linux.alibaba.com" <guwen@linux.alibaba.com>, "davem@davemloft.net"
-	<davem@davemloft.net>, "edumazet@google.com" <edumazet@google.com>,
-	"kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
-	"horms@kernel.org" <horms@kernel.org>, "guangguan.wang@linux.alibaba.com"
-	<guangguan.wang@linux.alibaba.com>, "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>, "linux-s390@vger.kernel.org"
-	<linux-s390@vger.kernel.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>
-Subject: RE: [PATCH net] net/smc: fix one NULL pointer dereference in
- smc_ib_is_sg_need_sync()
-Thread-Topic: [PATCH net] net/smc: fix one NULL pointer dereference in
- smc_ib_is_sg_need_sync()
-Thread-Index: AQHcFmKWx5M9zwvyZkS3sfn5/yfKorR0KFsAgAIq2qA=
-Date: Wed, 27 Aug 2025 10:48:39 +0000
-Message-ID: <9ae4d764df69431cb77f5c5c32eaa911@huawei.com>
-References: <20250826084442.322587-1-liujian56@huawei.com>
- <20250826094138.GA67990@j66a10360.sqa.eu95>
-In-Reply-To: <20250826094138.GA67990@j66a10360.sqa.eu95>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1756293298; c=relaxed/simple;
+	bh=OkzI+esUgg2TOUYfT34RpxxsKTDtal6Iw23msifomQE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WmGwU1O8vQarXpVhhbtpbVsfxZhcl+2P5WsHePQ69fjk8mcnSpl9FCUWd2RYJFTXaqUrx/gXl0BvgWyAvU2pIg8My/fZn85UAUSo94LcGQ/hT7pDRgxvmNu2M3rS6GhHcKhhdEKZWYLZvDcwulp4hjAIvWXNpTehKd2f/34KG6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DzElD+qh; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-24457fe9704so61851825ad.0
+        for <linux-rdma@vger.kernel.org>; Wed, 27 Aug 2025 04:14:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756293296; x=1756898096; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=O9AUMpHG9hYrL2HIyah8t27L8dq0k/MJO/hNIBcX44o=;
+        b=DzElD+qhuByAqRGJUJbFm3H9MyRgh1BNCaBHeENp/p03aucYTFlT9SZnHt9Yq9Kvrr
+         EVyM933Um85V12vov2by4NK5IKs3ssJiy67VSHtwMbQEJYMs7nxxcRcypnvuSPUrM56r
+         ZROmIURKdBajRlAxVQ0Aq0AhIuquYp55o6l+KU+PKrjlz4AMbvrVErJUStlSMjYJRj0a
+         J2+HlrxAlMcyGlrIkbXIVUR6sbs5Ghl8NHyIgi2HWFOkmXyqAZi+bhrXcojZH2nY3AvX
+         i9i+tY4iPs1KA9kIH37HgGKRZ3A+Ktj25uzuo73JguzlgAPCQTsrOn0ERMVUrqIDNZXz
+         sQ9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756293296; x=1756898096;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O9AUMpHG9hYrL2HIyah8t27L8dq0k/MJO/hNIBcX44o=;
+        b=BIzkw1Hi5Jo/vUOVwBOvCw3q6y5rn6yl7jd8Ck/RtNS//9UM3+e4s8oRjP6gZV05Th
+         +uCxfP9DKMHSYB3Y1lZmrxfK88BcnhAspyOXMSTfP8NXSlP2zOWIcou4svqeVOoGp+s1
+         F1SDAgcxrt4lEzHnu1MswCKg68vlJYAQPWwgUuhI4t3ZPxhCEFemDwNwKoPYx1qxtpDB
+         eMXJoA7Wr/W84B7t9yOLw5lA2A5m9tLoNdG2Erao4xpvUlzU99vijWVZVgJUdn+RxIim
+         m19rCpzm1jj5JtvPGZHSa3tXSNSGmALFTvrJ6fIzfB6MC6xF++6jZ1UG+EuwPQefdTSg
+         DnNg==
+X-Gm-Message-State: AOJu0Yx+EazwG7zEAsaSYRvc29KX3DMoUWtdUdY8goXXRqp497ELXUNo
+	NRuEx0YrhYNoDBwKwb431/gQEXfO/oOhruXWCDQNa1WzXos7ix7iHG8T
+X-Gm-Gg: ASbGnctz43hfU5oruJC/o0d81yMIf7/RyhldhQLlTqRgmhzLQjGqEbzTk68aj5QxEls
+	SawsAUAmwHuYT7a8FBYZdYpyDVngLtmKE5RzSA3vZbqjPjyxhgJOZhiE/ejW6+pNN+Bg7MuslNd
+	vpbrxZyKDgjZclM4CpQW6Z1DW24lUM+LARmssxEX8lVrmztxiiWYFXZr7wWO4PhOLTBS+3M7Lc1
+	6wPcYZFkNiBE7xga5Cs+VDpnBksIeOO1NPJyZUhi7pafvwxRN6DgqM4mGjSR8em9iuBC5RArdaR
+	rR1iXst0/2apRoCcXZsXE9Q7fFxHuQzOc29Vvs48fC+RrvSPr6kFqrKN9A2CDk2l4lJpTjWB+b2
+	2vFg9h5OvFDXxm/O5PEN2hne2tT6B8EuHOoihQMQhBd6EKVulAsCZ4bMylNVyr4j2K6/t2mPJiA
+	5u
+X-Google-Smtp-Source: AGHT+IE7AVCK7fXVKkZOkprLKnH/X4jdNzylKT6eul1eVTUMwD8O7rDc8lRLIrc5TRXBu9sp1TViWw==
+X-Received: by 2002:a17:903:3885:b0:240:6aad:1c43 with SMTP id d9443c01a7336-2462ef70541mr214209325ad.48.1756293296415;
+        Wed, 27 Aug 2025 04:14:56 -0700 (PDT)
+Received: from [192.168.11.3] (FL1-125-195-176-151.tky.mesh.ad.jp. [125.195.176.151])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24886269169sm27303875ad.159.2025.08.27.04.14.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Aug 2025 04:14:56 -0700 (PDT)
+Message-ID: <a59640c4-f166-4a7d-9da5-f8318aadb394@gmail.com>
+Date: Wed, 27 Aug 2025 20:14:53 +0900
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH for-rc v1] RDMA/rxe: Avoid CQ polling hang triggered by CQ
+ resize
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: linux-rdma@vger.kernel.org, leon@kernel.org, zyjzyj2000@gmail.com,
+ yanjun.zhu@linux.dev, philipp.reisner@linbit.com
+References: <20250817123752.153735-1-dskmtsd@gmail.com>
+ <20250825181053.GA2085854@nvidia.com>
+Content-Language: en-US
+From: Daisuke Matsuda <dskmtsd@gmail.com>
+In-Reply-To: <20250825181053.GA2085854@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 2025/08/26 3:10, Jason Gunthorpe wrote:
+> On Sun, Aug 17, 2025 at 12:37:52PM +0000, Daisuke Matsuda wrote:
+>> When running the test_resize_cq testcase from rdma-core, polling a
+>> completion queue from userspace may occasionally hang and eventually fail
+>> with a timeout:
+>> =====
+>> ERROR: test_resize_cq (tests.test_cq.CQTest.test_resize_cq)
+>> Test resize CQ, start with specific value and then increase and decrease
+>> ----------------------------------------------------------------------
+>> Traceback (most recent call last):
+>>      File "/root/deb/rdma-core/tests/test_cq.py", line 135, in test_resize_cq
+>>        u.poll_cq(self.client.cq)
+>>      File "/root/deb/rdma-core/tests/utils.py", line 687, in poll_cq
+>>        wcs = _poll_cq(cq, count, data)
+>>              ^^^^^^^^^^^^^^^^^^^^^^^^^
+>>      File "/root/deb/rdma-core/tests/utils.py", line 669, in _poll_cq
+>>        raise PyverbsError(f'Got timeout on polling ({count} CQEs remaining)')
+>> pyverbs.pyverbs_error.PyverbsError: Got timeout on polling (1 CQEs
+>> remaining)
+>> =====
+>>
+>> The issue is caused when rxe_cq_post() fails to post a CQE due to the queue
+>> being temporarily full, and the CQE is effectively lost. To mitigate this,
+>> add a bounded busy-wait with fallback rescheduling so that CQE does not get
+>> lost.
+> 
+> Nothing should spin like this, that is not right.
+> 
+> The CQE queue is intended to be properly sized for the workload and I
+> seem to remember overflowing a CQE can just ERR the QP.
+> 
+> Alternatively you can drop the packet and do nothing.
+> 
+> But not spin hoping something emptys it.
+> 
+> Jason
 
+Okay, please drop this patch.
+In a sense, the failure indicates that RXE is behaving as intended.
 
-> -----Original Message-----
-> From: D. Wythe [mailto:alibuda@linux.alibaba.com]
-> Sent: Tuesday, August 26, 2025 5:42 PM
-> To: liujian (CE) <liujian56@huawei.com>
-> Cc: alibuda@linux.alibaba.com; dust.li@linux.alibaba.com;
-> sidraya@linux.ibm.com; wenjia@linux.ibm.com; mjambigi@linux.ibm.com;
-> tonylu@linux.alibaba.com; guwen@linux.alibaba.com;
-> davem@davemloft.net; edumazet@google.com; kuba@kernel.org;
-> pabeni@redhat.com; horms@kernel.org;
-> guangguan.wang@linux.alibaba.com; linux-rdma@vger.kernel.org; linux-
-> s390@vger.kernel.org; netdev@vger.kernel.org
-> Subject: Re: [PATCH net] net/smc: fix one NULL pointer dereference in
-> smc_ib_is_sg_need_sync()
->=20
-> On Tue, Aug 26, 2025 at 04:44:42PM +0800, Liu Jian wrote:
-> > BUG: kernel NULL pointer dereference, address: 00000000000002ec PGD 0
-> > P4D 0
-> > Oops: Oops: 0000 [#1] SMP PTI
-> > CPU: 28 UID: 0 PID: 343 Comm: kworker/28:1 Kdump: loaded Tainted: G
-> OE       6.17.0-rc2+ #9 NONE
-> > Tainted: [O]=3DOOT_MODULE, [E]=3DUNSIGNED_MODULE Hardware name:
-> QEMU
-> > Standard PC (Q35 + ICH9, 2009), BIOS 1.15.0-1 04/01/2014
-> > Workqueue: smc_hs_wq smc_listen_work [smc]
-> > RIP: 0010:smc_ib_is_sg_need_sync+0x9e/0xd0 [smc]
-> >
-> > diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c index
-> > 53828833a3f7..85501d2c1f1b 100644
-> > --- a/net/smc/smc_ib.c
-> > +++ b/net/smc/smc_ib.c
-> > @@ -747,6 +747,8 @@ bool smc_ib_is_sg_need_sync(struct smc_link *lnk,
-> >  		    buf_slot->sgt[lnk->link_idx].nents, i) {
-> >  		if (!sg_dma_len(sg))
-> >  			break;
-> > +		if (!lnk->smcibdev->ibdev->dma_device)
-> > +			break;
->=20
-> Why check it inside the loop?
-Ok, will send v2, move the check outside of loop.
-Thanks.
+This issue seems to have always existed, though its frequency appears to vary over time.
+Perhaps the switch from tasklet to workqueue introduced additional latency that influences this behavior.
+
+Thanks,
+Daisuke
 
 
