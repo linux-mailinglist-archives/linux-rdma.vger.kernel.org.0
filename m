@@ -1,141 +1,142 @@
-Return-Path: <linux-rdma+bounces-12943-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12944-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36B43B37C32
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Aug 2025 09:50:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9F9DB37FBC
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Aug 2025 12:19:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10974178C17
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Aug 2025 07:50:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91FB97A9CAE
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Aug 2025 10:17:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA22321446;
-	Wed, 27 Aug 2025 07:50:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB985346A10;
+	Wed, 27 Aug 2025 10:19:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="b/6jqAYJ"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Sx5RwQl4";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="IydAXml5";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Sx5RwQl4";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="IydAXml5"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A885631DD97
-	for <linux-rdma@vger.kernel.org>; Wed, 27 Aug 2025 07:50:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7CF730AD06
+	for <linux-rdma@vger.kernel.org>; Wed, 27 Aug 2025 10:19:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756281043; cv=none; b=A3cP+P6x1f3GRtkjr+U2LjLglh6y68D4oBzXY3dVmpHuKlDfcl/4QIlk/FpTlN8ouZPb1Z/jU9skM6SwmdgNi5SeEeiS7hhKr4F1JY02pkabC5lpgjZ6G5mYUQx8ajq7ab8U118KmcJzKNWubf/azoJPsJGRjDKJVMPgKDp+Ivk=
+	t=1756289966; cv=none; b=W3XwLDZZEH563Z4+y8w1AM1DsHyTPKMxkLNZ2rNNfp43FlOifgFeLy/5nH5fjIi3W1th7b7ZOKrcwVApo4Nttrnwg7Jl/tZczJ2mKpRwlvhgmj1JR103XAoEvfY3Ngo+XkYAsRQf/cMucQNyyASa784DWnuALqX8TtEopfo6/I8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756281043; c=relaxed/simple;
-	bh=rKzArrpjxa/Lq0kefQY0MeR2/PKN5QtZoFTBYUdkchM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jnyEojWqKRdl94lqQCgqr1jFUjyLIFtN7La+q6f0m5URdaCwXyXz6OrlZPFHfusQm8uwOhUpQRELIU1xHZRDRPYn2ClwZPEnBjmomlNv8LqYynP7B5Fw42dHe1GKPZqsNIKMg0xZx+oTZvbndkQnsydkDSjUkjH8x1a9LDqCn7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=b/6jqAYJ; arc=none smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-4b1098f9e9eso100213911cf.0
-        for <linux-rdma@vger.kernel.org>; Wed, 27 Aug 2025 00:50:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1756281040; x=1756885840; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vazTG+jUIqFROmWwd6b3nHdEYOXrR8g9m3k15ZXCIZw=;
-        b=b/6jqAYJq6L8dEUSiDJl6R91ZNMVZKaBE9y9plVJBcd/bYbuoQHWvx07tgKGwAJcr0
-         g00VwkR1y3c9U5r8cUY1+B9IY1zCczhaDV+RGuXxo9L0DOEbNLOwQePPZRlJiFqAj1Oz
-         ehaBSxJ0H57AW3ZLHk1zAUWKtSbdmkGUAOPnh9Uz8+HlddBTVuus1Qoon25kHTIco2YR
-         ve6CzRuDgJ0ecTk3btYOVkwMzREvTMI+KQu02ILkaT5XhTAt5jQ1UQIrapayUsxxbvQe
-         1rNCn136ARUnEpD/9vLrHsXF2W0p1uM1v84i2mezoKs5eSyc/7KLnSlkrJgYSnkJTh+l
-         v0tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756281040; x=1756885840;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vazTG+jUIqFROmWwd6b3nHdEYOXrR8g9m3k15ZXCIZw=;
-        b=c0Aaj36EMwcmjLUNavaGxtHZ94LAUzcKVNIx4K1hPRvqnyj79wiXLtf//rG2m4dH06
-         aXwbwnZZCgxzuUnIQGnfX/EL05JtHZAZ+ARura5tWKl4LmqNJle+hHfiUh2qI6Gz/30k
-         p/V7BVf3+q9PUmnshVYxiEX9j/pSfV3UAWtp+xCgG0+h0YF2F90uudhgIQrSQtgLyRS5
-         4GgsojvUiICKSkSFMSKSmHRi1qnNFfEkdr7VluUiHVvL2owMIW6hckB6fwFmve38HG4z
-         1ZMDlBladhrJXb3dcy/+wE75YsWUoREXFeWUwCAp3DecBwqPzPIjo2vOVsKrtDqd87K2
-         4xAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVBRMlZPPPY1gqaTi7oL9qH6swRwWdosU/zWIS8hKjIpJTm4FZsXUZOGhlG+0QVwLpMz2PZfgGUHRAZ@vger.kernel.org
-X-Gm-Message-State: AOJu0YyYJGnLsgBom55FWXQ+esaLz4z3FbxtBCzceYlCt7JW6SXhs+zS
-	sD+sxmhiqN42UjKoXcVzYEjbUHKEYu+89LYL3sxVITfIvbQXt6+igM+6NGIYasgZ7v8paqRvwsn
-	jO9cmRNAm90H8um0uOESH8XxB8yDJCCKnfaofXq6b
-X-Gm-Gg: ASbGncu3FzWZ5cZ5SWLF+ffSmLWctnDBFGq/SEusymwohMhV6qff6OunSTz/99gymw+
-	iWdX4uzba63Dv0u5mvBnIeUMCXE6VaFSe728GfqDwpfdJEsI09IZy+kpkOzMwgdN+A26bsLsZvl
-	eL7yApARS6RQzRbAMVZNc57PDg4kp1KsByIcNWL2rfp6VkKDbsUMvPBsyX71/A9V3Bii3AJqbUq
-	qn+C0S13V6PBQ==
-X-Google-Smtp-Source: AGHT+IGntaJmdIqvh+6j7/jxL3REciPKkOKmbPQVXlTso2X7mImO23KWb5HDF9Ug45l2zI1Y+TwLyOjxL3xSnAvzq0g=
-X-Received: by 2002:ac8:584d:0:b0:4b2:83d8:4e19 with SMTP id
- d75a77b69052e-4b2aab2f2b4mr222861061cf.67.1756281040226; Wed, 27 Aug 2025
- 00:50:40 -0700 (PDT)
+	s=arc-20240116; t=1756289966; c=relaxed/simple;
+	bh=dCfxmqI5NQievIDHdaUucZ8EXZqp2k9O4S3tudNYjfc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hB2zXJ1cdpXcnR4Q0qTW4ULptZG4Ysb2aPm+CCxpB01Vbl6nrlzv1bdfejdiSxVWULxC7ykgkOzB/qrDj8boh8Vfp/5VHqnN/uX4oOlwDO4zDOPvewn17Q3Qgpi++KCawWGC32MTYHvWgsSc1rkGZtvCoFg6fWbHzzOOA59pgJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Sx5RwQl4; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=IydAXml5; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Sx5RwQl4; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=IydAXml5; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 1304D22221;
+	Wed, 27 Aug 2025 10:10:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1756289427; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NxE5rKnj5TjaBsXbpbII/rsOANqwX+dNrTnexSalI0E=;
+	b=Sx5RwQl4mdrvGKXWphXUQ0hvtykvK3pbomkWvnnY3C/J3xN+x2ZHAOSBJLxC4GLt4+IHP6
+	fhIb397Tjh7ZItBttJVZrcn5W6MbblkxSPnUuMkh2m4qZnlZylUmCvuzsNJNQDI/fgYDPT
+	CxFKOH1aH8JG61b+9eFz6FNE5WZULgs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1756289427;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NxE5rKnj5TjaBsXbpbII/rsOANqwX+dNrTnexSalI0E=;
+	b=IydAXml5RA8wO5fCwvDAMvtOzsuRqzJS78ZPyZQjET5bKCdXt3mdY6VsEVH2Z8wcR9Zny6
+	ul1gwma8lALLX1Cg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1756289427; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NxE5rKnj5TjaBsXbpbII/rsOANqwX+dNrTnexSalI0E=;
+	b=Sx5RwQl4mdrvGKXWphXUQ0hvtykvK3pbomkWvnnY3C/J3xN+x2ZHAOSBJLxC4GLt4+IHP6
+	fhIb397Tjh7ZItBttJVZrcn5W6MbblkxSPnUuMkh2m4qZnlZylUmCvuzsNJNQDI/fgYDPT
+	CxFKOH1aH8JG61b+9eFz6FNE5WZULgs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1756289427;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NxE5rKnj5TjaBsXbpbII/rsOANqwX+dNrTnexSalI0E=;
+	b=IydAXml5RA8wO5fCwvDAMvtOzsuRqzJS78ZPyZQjET5bKCdXt3mdY6VsEVH2Z8wcR9Zny6
+	ul1gwma8lALLX1Cg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 038D713310;
+	Wed, 27 Aug 2025 10:10:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Z+iAO5LZrmg1JQAAD6G6ig
+	(envelope-from <dwagner@suse.de>); Wed, 27 Aug 2025 10:10:26 +0000
+Date: Wed, 27 Aug 2025 12:10:26 +0200
+From: Daniel Wagner <dwagner@suse.de>
+To: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc: "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>, 
+	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>, "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, 
+	"nbd@other.debian.org" <nbd@other.debian.org>, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: blktests failures with v6.17-rc1 kernel
+Message-ID: <ff748a3f-9f07-4933-b4b3-b4f58aacac5b@flourine.local>
+References: <suhzith2uj75uiprq4m3cglvr7qwm3d7gi4tmjeohlxl6fcmv3@zu6zym6nmvun>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250825-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v3-0-5527e9eb6efc@openai.com>
- <20250825-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v3-2-5527e9eb6efc@openai.com>
- <CANn89iJ5brG-tSdyEPYH67BL1rkU5CKfvUO4Jc03twfVFKFPqQ@mail.gmail.com>
- <CADg4-L9GdJUVcGBoR3+jAt5QsSEwtiQptx2KY7UF8ga1yA7SWQ@mail.gmail.com> <b5k5gan4nwyrjm5pm76oeyll55u2om2chnvx4tekgsw2y3zqpm@pa3e3hhfbpjf>
-In-Reply-To: <b5k5gan4nwyrjm5pm76oeyll55u2om2chnvx4tekgsw2y3zqpm@pa3e3hhfbpjf>
-From: Eric Dumazet <edumazet@google.com>
-Date: Wed, 27 Aug 2025 00:50:29 -0700
-X-Gm-Features: Ac12FXzfaI2TRnCMsm7MgToJl9Ml2QUToSzADe4M1Wh9cAdCZ7NW7drK6Q4jWXk
-Message-ID: <CANn89iJnUDCfjeDg91jomVmiFSTDSoSc-mPiSS+opTEB-7+A_g@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 2/2] net/mlx5: Avoid copying payload to the
- skb's linear part
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: Christoph Paasch <cpaasch@openai.com>, Saeed Mahameed <saeedm@nvidia.com>, 
-	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexander Lobakin <aleksander.lobakin@intel.com>, Gal Pressman <gal@nvidia.com>, 
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <suhzith2uj75uiprq4m3cglvr7qwm3d7gi4tmjeohlxl6fcmv3@zu6zym6nmvun>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Spam-Flag: NO
+X-Spam-Score: -4.30
 
-On Wed, Aug 27, 2025 at 12:08=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.co=
-m> wrote:
+On Wed, Aug 13, 2025 at 10:50:34AM +0000, Shinichiro Kawasaki wrote:
+> #4: nvme/061 (fc transport)
+> 
+>     The test case nvme/061 sometimes fails for fc transport due to a WARN and
+>     refcount message "refcount_t: underflow; use-after-free." Refer to the
+>     report for the v6.15 kernel [5].
+> 
+>     [5]
+>     https://lore.kernel.org/linux-block/2xsfqvnntjx5iiir7wghhebmnugmpfluv6ef22mghojgk6gilr@mvjscqxroqqk/
 
-> What are the advantages of using eth_get_headlen() besides the fact that
-> it is more exhaustive? It seems quite expensive compared to reading some
-> bits in the CQE and doing a few comparisons. Even if this cost is amortiz=
-ed
-> by the benefits in the good cases, in the non-aggregation cases it seems
-> more costly. What am I missing here?
+This one might be fixed with
 
-Let's not reinvent the wheel, and add more potential bugs. Please ?
-
-Why spending hours and ending with some ugly/wrong things like 'TCP
-headers have at least 12 bytes of options'
-
-  } else if (l4_type & (CQE_L4_HDR_TYPE_TCP_NO_ACK |
-+                             CQE_L4_HDR_TYPE_TCP_ACK_NO_DATA |
-+                             CQE_L4_HDR_TYPE_TCP_ACK_AND_DATA)) {
-+               /* ACK_NO_ACK | ACK_NO_DATA | ACK_AND_DATA =3D=3D 0x7, but
-+                * the previous condition checks for _UDP which is 0x2.
-+                *
-+                * As we know that l4_type !=3D 0x2, we can simply check
-+                * if any of the bits of 0x7 is set.
-+                */
-+               hdr_len +=3D sizeof(struct tcphdr) + TCPOLEN_TSTAMP_ALIGNED=
-;
-
-Either do not pull anything and let upper stacks pull one header at a time,
-or call the generic helper to make a single memcpy()
-
-Real costs are the cache line misses, analyzing the 'CQE' will not help at =
-all.
-
-Really vendors need to stop adding useless stuff in their receive descripto=
-rs,
-there is no way they can cover all encapsulations in modern networking.
-
-I find it very annoying that Mellanox in 2025 still doed the overpull
-thing in mlx5, considering
-I fixed mlx4 driver in 2014.
-
-This is the major and well known issue.
+https://lore.kernel.org/linux-nvme/20250821-fix-nvmet-fc-v1-1-3349da4f416e@kernel.org/
 
