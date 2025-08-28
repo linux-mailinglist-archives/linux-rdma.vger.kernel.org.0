@@ -1,95 +1,112 @@
-Return-Path: <linux-rdma+bounces-12985-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12986-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE284B3AA98
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 Aug 2025 21:09:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF1ACB3AE95
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Aug 2025 01:50:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F291A0357C
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 Aug 2025 19:09:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 562BA98634B
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 Aug 2025 23:50:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5E7335BCB;
-	Thu, 28 Aug 2025 19:09:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D9A32DA74A;
+	Thu, 28 Aug 2025 23:50:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G0LEEhgP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bSThdl5s"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5523322A2C;
-	Thu, 28 Aug 2025 19:09:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B59262FC0;
+	Thu, 28 Aug 2025 23:50:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756408155; cv=none; b=QhXQOGART95fgQA7QMS1mI9uUQkUFRKmjZI5iyHtUUJUcCa5H+ZOFqw48UVIQOL1Zl98n9+bqgKjvBVr9AWyQXRuHjHT/QvUu8ATAyplpYD0vRy3RzV0Wvbi8JdQIkwlsMOyKhEtfE8VjsMea8U5dUO2Tva8eLqlDJBXtLHbzUA=
+	t=1756425009; cv=none; b=Sa24vp+pjCMZcGYkZ4WYT9tDx3/nJCnA6aFGzE6RX1KZubqfC8boWmQo/N5M7w4pBlNILzIKebyTtwTGU9XaOeHRLOK9hUsGmDiK6/2BLnoJLLQB5GQqlBGhwb9K1rh1OxZA0j8ER1FvRMVe2Qcr746o1nOHqYcgCa97HGqfvIc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756408155; c=relaxed/simple;
-	bh=WsHbenj5KwFFzOUaeFvWZ8WFGYghepGFMuFzgg1hvoQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MGx3Ek+pWyOLLG5IG5k/pmCoc5+EB9Erlz7mYhMmVDw3p2GuJcQmyo6xkCVpmf9su7RG0wNxip4PJR0Um0o3s9Cuock6lwMzpgEq83G/AN/9xTsmqqXYYKdWFCFM6REkpPx3AnVaOpTPnpwABIwcqfUW/WiH+nHgwW9Hqvwr41k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G0LEEhgP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60CA0C4CEEB;
-	Thu, 28 Aug 2025 19:09:12 +0000 (UTC)
+	s=arc-20240116; t=1756425009; c=relaxed/simple;
+	bh=e17ImB2Y/pO+JEDTa5g4HLe3a+vtXCoIi5gWJqdD4HY=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=o1muHGv2ZHSIs/QSQg5NqOC/D18LUUv6osN1ETThjqYkHOKPoDjTUrsHRaj/0UB9uZT8XIR9DNW1iIx3bAS4lXk1t/bkoBu+y3/B6P04r0DzZE98zkHJCumg1b34SAZyran8H56FkhIcflqxzzlf1edOACyPyenotLa6aJ21wa4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bSThdl5s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 497CFC4CEEB;
+	Thu, 28 Aug 2025 23:50:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756408154;
-	bh=WsHbenj5KwFFzOUaeFvWZ8WFGYghepGFMuFzgg1hvoQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=G0LEEhgPXy+04+eP5bD10uPzoef9ViUGTpwSK6kj2BOyvmblYg0xEIWlxfm1vDWSZ
-	 a39zqIOqgoyWFmxmy1D3MCEf6DvG1Vrzy1TcrXw2uGuvbRkV/bu93G6j/glYwvXccC
-	 CDfPusna8PQvOeMLfcT6d4JZSm/oQK6Fe0oEvqnfaGit6Xetm//zEQY6jCZk//OkS8
-	 Eov9VO3gr6IP6lUKrVUOHbhNdI/nms7VSj4IVVlXf7YiSkXGlo4IN3lGx49uivHFWt
-	 uqj9xkTXTzxZ9TND61ObklUWZsafiR0kMgKXvioMMPrI7biXL8KDRspOR8yoc3zzqJ
-	 Pbnhi/pnELWCg==
-Date: Thu, 28 Aug 2025 20:09:10 +0100
-From: Simon Horman <horms@kernel.org>
-To: Liao Yuanhong <liaoyuanhong@vivo.com>
-Cc: Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"open list:MELLANOX MLX4 core VPI driver" <netdev@vger.kernel.org>,
-	"open list:MELLANOX MLX4 core VPI driver" <linux-rdma@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net/mlx4: Remove redundant ternary operators
-Message-ID: <20250828190910.GG31759@horms.kernel.org>
-References: <20250827121503.497138-1-liaoyuanhong@vivo.com>
+	s=k20201202; t=1756425009;
+	bh=e17ImB2Y/pO+JEDTa5g4HLe3a+vtXCoIi5gWJqdD4HY=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=bSThdl5sMj8UJckeXo86O7E1G4tsHn1RRrQnDQfvnQ9CnFaTxC6W4RtHwV5ToKMrO
+	 w/Bf/FH1k3I9vXmNuM/l2bCgqbyl7ZPupkptUWjAL7yb+v3PcL/EUmVBSLWCZE9y+h
+	 pwHVAG+HUOQeHZgVFdokM7wXw34Toy/d/FWurC9QJywnCqCLpKRBmiBxL7BNI9tn5x
+	 kJMrbnQynmjPOZ77vt5XkhNt1DkUi3yJtjjwlgxalhQ7vNTrq6wCSX0yYpRT5K8mGY
+	 bdfOc9Ry8z802zpG3UKMwaHNZ79gILGAjNgNY0NulzOZLyqBwGL/usmgx3kZQymLfT
+	 Pq6H2o3jywtEg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70D67383BF75;
+	Thu, 28 Aug 2025 23:50:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250827121503.497138-1-liaoyuanhong@vivo.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v6 0/7] devmem/io_uring: allow more flexibility
+ for
+ ZC DMA devices
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175642501625.1650971.15574075096463666063.git-patchwork-notify@kernel.org>
+Date: Thu, 28 Aug 2025 23:50:16 +0000
+References: <20250827144017.1529208-2-dtatulea@nvidia.com>
+In-Reply-To: <20250827144017.1529208-2-dtatulea@nvidia.com>
+To: Dragos Tatulea <dtatulea@nvidia.com>
+Cc: almasrymina@google.com, asml.silence@gmail.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
+ axboe@kernel.dk, saeedm@nvidia.com, tariqt@nvidia.com, mbloch@nvidia.com,
+ leon@kernel.org, andrew+netdev@lunn.ch, cratiu@nvidia.com, parav@nvidia.com,
+ netdev@vger.kernel.org, sdf@meta.com, linux-kernel@vger.kernel.org,
+ io-uring@vger.kernel.org, linux-rdma@vger.kernel.org
 
-On Wed, Aug 27, 2025 at 08:15:03PM +0800, Liao Yuanhong wrote:
-> For ternary operators in the form of "a ? true : false", if 'a' itself
-> returns a boolean result, the ternary operator can be omitted. Remove
-> redundant ternary operators to clean up the code.
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Wed, 27 Aug 2025 17:39:54 +0300 you wrote:
+> For TCP zerocopy rx (io_uring, devmem), there is an assumption that the
+> parent device can do DMA. However that is not always the case:
+> - Scalable Function netdevs [1] have the DMA device in the grandparent.
+> - For Multi-PF netdevs [2] queues can be associated to different DMA
+>   devices.
 > 
-> Signed-off-by: Liao Yuanhong <liaoyuanhong@vivo.com>
+> The series adds an API for getting the DMA device for a netdev queue.
+> Drivers that have special requirements can implement the newly added
+> queue management op. Otherwise the parent will still be used as before.
+> 
+> [...]
 
-Quoting documentation:
+Here is the summary with links:
+  - [net-next,v6,1/7] queue_api: add support for fetching per queue DMA dev
+    https://git.kernel.org/netdev/net-next/c/13d8e05adf9d
+  - [net-next,v6,2/7] io_uring/zcrx: add support for custom DMA devices
+    https://git.kernel.org/netdev/net-next/c/59b8b32ac8d4
+  - [net-next,v6,3/7] net: devmem: get netdev DMA device via new API
+    https://git.kernel.org/netdev/net-next/c/7c7e94603a76
+  - [net-next,v6,4/7] net/mlx5e: add op for getting netdev DMA device
+    https://git.kernel.org/netdev/net-next/c/f1debf1a2ef4
+  - [net-next,v6,5/7] net: devmem: pull out dma_dev out of net_devmem_bind_dmabuf
+    https://git.kernel.org/netdev/net-next/c/512c88fb0e88
+  - [net-next,v6,6/7] net: devmem: pre-read requested rx queues during bind
+    https://git.kernel.org/netdev/net-next/c/1b416902cd25
+  - [net-next,v6,7/7] net: devmem: allow binding on rx queues with same DMA devices
+    https://git.kernel.org/netdev/net-next/c/b8aab4bb9585
 
-  Clean-up patches
-  ~~~~~~~~~~~~~~~~
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-  Netdev discourages patches which perform simple clean-ups, which are not in
-  the context of other work. For example:
-
-  * Addressing ``checkpatch.pl`` warnings
-  * Addressing :ref:`Local variable ordering<rcs>` issues
-  * Conversions to device-managed APIs (``devm_`` helpers)
-
-  This is because it is felt that the churn that such changes produce comes
-  at a greater cost than the value of such clean-ups.
-
-  Conversely, spelling and grammar fixes are not discouraged.
-
-See: https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#clean-up-patches
---
-pw-bot: cr
 
 
