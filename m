@@ -1,119 +1,124 @@
-Return-Path: <linux-rdma+bounces-12987-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12988-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A19E7B3B02E
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Aug 2025 03:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F72FB3B1A9
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Aug 2025 05:35:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7793F16429C
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Aug 2025 01:03:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7E695843AC
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Aug 2025 03:35:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A7821DDC2C;
-	Fri, 29 Aug 2025 01:03:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AD8322422B;
+	Fri, 29 Aug 2025 03:32:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J3fVGpMg"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="AjIzwqyd"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC1F1D5CDE;
-	Fri, 29 Aug 2025 01:03:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18FCC21D3F0;
+	Fri, 29 Aug 2025 03:32:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756429412; cv=none; b=PU+wfQZIBbehg+5XyJe8FBDoivdds1b6fDidpz/XPi19RLahvoV2u5+tX0HtjuKbnjvZrD0x5OckWNrmB+K9jRvxzNtajFDXHcgKxQKcoDLS45TQOFdg7xufDg/X5SO4Rv6jIetJmXGFaDoiK8qy0CSSNDT807BLHNjDbct2tps=
+	t=1756438357; cv=none; b=Fpht/hNySmqGjDdf+dYJW3rGO4f7r7h8LHpjc7flw/xBtdjAXiWqg058t+fspe9BbFz/sX61ePUTDUEf90Tj2wOa0BjEyyF1R/16Q2Qtcr1EwrGEWSmmPtDUC5RDsyb3CL3P8jxZgGw86udtXTYM4ns/gsd78xzG/wsz5/tcfMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756429412; c=relaxed/simple;
-	bh=JnjTHc4tN+fj7bTEL4vaeVKqTaIJBWp8jzHXrTlqc6o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QCPJ5x8D6DtpuXrDCJXNUJiHKX20bOhxQsRxTwkL4SPrs+Z0kvNOD0IXTkuxBS3AxMGrx/zUAphxjn2+Gjkvqcd2arWST6qH6zko9+iIQQpNXYXZcjRTT/sAEluiwK34G2VwT3k6eN3L6vMZGcVI9qLsI3wf3Ko2HYAj928CPeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J3fVGpMg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CA38C4CEF9;
-	Fri, 29 Aug 2025 01:03:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756429411;
-	bh=JnjTHc4tN+fj7bTEL4vaeVKqTaIJBWp8jzHXrTlqc6o=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=J3fVGpMgabd0xHSNkOU7/Glp23pcZHxo4B0/Z2eXh3M08w24rnhzn/kCh53F2efwy
-	 qURAQZE9LKq4K2bioGolyZHbI+mj9FQ6imO1ZPCed42Vqn9bwzxVjOD0LjfhNTlM/6
-	 hqj8QjsCmTcs60wgMTkmI3U4o16STA0luobBtNuGUpAl8XHyI1IBPSzPuSIqoopR3I
-	 UtLbQYStZNzvVNLdjXtPKThSFW5vhQZSXYtJCgC9KAr4ndgNPDY6IkFftm+I2Pu0Fx
-	 GKMZTQXsbZGGTaaYzxVXESYef+qIEBij+LhRT4MFGMTrWbp7dMDJdoJv7vro1DvkTE
-	 4xREp4xA2h7NQ==
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-61cf8280f02so1022710a12.0;
-        Thu, 28 Aug 2025 18:03:31 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWNz8NRvGb2julZ28XdTT27oUqxdchYzvqICy8YIQBL1NS+edCYZWqC7acLN2D70jXIPKyHXKQ7TjNL@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxs8XcSISZLwY5RZOc+Fl++dSyuXxCQPaY19sTuN2Z/NwC3SWV0
-	E5Zavsv1GQQpDrtfSoZ+V2Gmrg7achFfvnMfVAxnwi48ASt0tJ8VrJL0hRgSc4mWEBH5eLNbpJb
-	7eqDgWoVnK82cxNlCfVXb80YA2h3U1G0=
-X-Google-Smtp-Source: AGHT+IEC3tzEBZVMFFl1IVXgtix0fY5IP99nyNrSk50T1sy3myoDXtbVpBcpWYLdNJsJljRKWhOMMIEUMhJmKMOqcvo=
-X-Received: by 2002:a05:6402:5107:b0:61c:9970:a86a with SMTP id
- 4fb4d7f45d1cf-61c9970ad16mr8655627a12.34.1756429409703; Thu, 28 Aug 2025
- 18:03:29 -0700 (PDT)
+	s=arc-20240116; t=1756438357; c=relaxed/simple;
+	bh=jUQbrcsjNBjt3pe3d9ipZTkMsmGGOJYkz9OYPhBGfCk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KZ2LlsJwTdxvhcJJQGltjLAyKynRfpOYfxrbA3jHQHP3rkR0mLp6xY5HGIur41iBHzu3MeeKFvQe4Tc7wZpzToMsg1tmRIVRKsuNpALRk5a/LvkqvFh0q9W33EfpROBWjePtdj/42w1BM6lRS3calulBdaTGGlj5a54pmNl+A6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=AjIzwqyd; arc=none smtp.client-ip=115.124.30.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1756438345; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=JwkaZtdeycipElvzrMbmePNoAaY3D32TdQvKDMK/Sv0=;
+	b=AjIzwqydb1SO63NLOvrkMPCVloJqXfwV95OhquPP4FHubwbZ00Vs9i55OZ+5HF/xHg8ls6s7ma50yv/D4e7iefn2aMIAATgITSYBCOljGzoxzG4sdvcaCdUzBroRw0D31LG63tEM8jIRKaAL9ec69E+T7s1Sf5fz611+kV1bh6g=
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0Wmq001h_1756438344 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Fri, 29 Aug 2025 11:32:25 +0800
+Date: Fri, 29 Aug 2025 11:32:24 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com    >
+To: Liu Jian <liujian56@huawei.com>
+Cc: alibuda@linux.alibaba.com, dust.li@linux.alibaba.com,
+	sidraya@linux.ibm.com, wenjia@linux.ibm.com, mjambigi@linux.ibm.com,
+	tonylu@linux.alibaba.com, guwen@linux.alibaba.com,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org,
+	guangguan.wang@linux.alibaba.com, linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net v2] net/smc: fix one NULL pointer dereference in
+ smc_ib_is_sg_need_sync()
+Message-ID: <20250829033224.GA96384@j66a10360.sqa.eu95>
+References: <20250828124117.2622624-1-liujian56@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8c6027ac-09dc-4ee6-ba82-4afd897dabf6@samba.org>
-In-Reply-To: <8c6027ac-09dc-4ee6-ba82-4afd897dabf6@samba.org>
-From: Namjae Jeon <linkinjeon@kernel.org>
-Date: Fri, 29 Aug 2025 10:03:17 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd-TNCOd04Nw+FYhWT3inPCpQU0scT91FuM-SbahX3cRwQ@mail.gmail.com>
-X-Gm-Features: Ac12FXwgjPnR8HAbaB9WFamRg7luu63RqUjZlEtl70_jCyn-9Os0DdZAWIdluog
-Message-ID: <CAKYAXd-TNCOd04Nw+FYhWT3inPCpQU0scT91FuM-SbahX3cRwQ@mail.gmail.com>
-Subject: Re: struct rdma_conn_param uses u8 for responder_resources,
- initiator_depth and private_data_len
-To: Stefan Metzmacher <metze@samba.org>, Jason Gunthorpe <jgg@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>
-Cc: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, 
-	"linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>, 
-	Samba Technical <samba-technical@lists.samba.org>, Tom Talpey <tom@talpey.com>, 
-	Steve French <smfrench@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250828124117.2622624-1-liujian56@huawei.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Fri, Aug 22, 2025 at 6:04=E2=80=AFAM Stefan Metzmacher <metze@samba.org>=
- wrote:
->
-> Hi,
-CC: Jason and Leon.
->
-> this mail is triggered by the discussion in this thread on
-> linux-cifs:
-> https://lore.kernel.org/linux-cifs/f551bf7f-697a-4298-a62c-74da18992204@s=
-amba.org/T/#t
->
-> In include/rdma/rdma_cm.h we have this:
->
-> struct rdma_conn_param {
->          const void *private_data;
->          u8 private_data_len;
->          u8 responder_resources;
->          u8 initiator_depth;
->          u8 flow_control;
->          u8 retry_count;         /* ignored when accepting */
->          u8 rnr_retry_count;
->          /* Fields below ignored if a QP is created on the rdma_cm_id. */
->          u8 srq;
->          u32 qp_num;
->          u32 qkey;
-> };
->
-> The iwarp MPA v2 negotiation can handle values up to
-> 0x3fff for responder_resources and initiator_depth.
-> And private_data_len can be 0xffff for MPA v1 and
-> 0xffff - 4 for MPA v2.
->
-> I just found that ROCE only supports u8 in the CM ConnectRequest
-> (and I guess it's ROCE v1 and v2 as well as Infiniband,
-> but I've only every seen ROCE v2 captures).
->
-> BTW: does ROCE also support private data and if how much?
->
-> So is it desired to limit iwarp to u8 values too?
->
-> Thanks!
-> metze
+On Thu, Aug 28, 2025 at 08:41:17PM +0800, Liu Jian wrote:
+> BUG: kernel NULL pointer dereference, address: 00000000000002ec
+> PGD 0 P4D 0
+> Oops: Oops: 0000 [#1] SMP PTI
+> CPU: 28 UID: 0 PID: 343 Comm: kworker/28:1 Kdump: loaded Tainted: G        OE       6.17.0-rc2+ #9 NONE
+> Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.15.0-1 04/01/2014
+> Workqueue: smc_hs_wq smc_listen_work [smc]
+> RIP: 0010:smc_ib_is_sg_need_sync+0x9e/0xd0 [smc]
+> ...
+> Call Trace:
+>  <TASK>
+>  smcr_buf_map_link+0x211/0x2a0 [smc]
+>  __smc_buf_create+0x522/0x970 [smc]
+>  smc_buf_create+0x3a/0x110 [smc]
+>  smc_find_rdma_v2_device_serv+0x18f/0x240 [smc]
+>  ? smc_vlan_by_tcpsk+0x7e/0xe0 [smc]
+>  smc_listen_find_device+0x1dd/0x2b0 [smc]
+>  smc_listen_work+0x30f/0x580 [smc]
+>  process_one_work+0x18c/0x340
+>  worker_thread+0x242/0x360
+>  kthread+0xe7/0x220
+>  ret_from_fork+0x13a/0x160
+>  ret_from_fork_asm+0x1a/0x30
+>  </TASK>
+> 
+> If the software RoCE device is used, ibdev->dma_device is a null pointer.
+> As a result, the problem occurs. Null pointer detection is added to
+> prevent problems.
+> 
+> Fixes: 0ef69e788411c ("net/smc: optimize for smc_sndbuf_sync_sg_for_device and smc_rmb_sync_sg_for_cpu")
+> Signed-off-by: Liu Jian <liujian56@huawei.com>
+> ---
+> v1->v2:
+> move the check outside of loop.
+>  net/smc/smc_ib.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c
+> index 53828833a3f7..a42ef3f77b96 100644
+> --- a/net/smc/smc_ib.c
+> +++ b/net/smc/smc_ib.c
+> @@ -742,6 +742,9 @@ bool smc_ib_is_sg_need_sync(struct smc_link *lnk,
+>  	unsigned int i;
+>  	bool ret = false;
+>  
+> +	if (!lnk->smcibdev->ibdev->dma_device)
+> +		return ret;
+> +
+>  	/* for now there is just one DMA address */
+>  	for_each_sg(buf_slot->sgt[lnk->link_idx].sgl, sg,
+>  		    buf_slot->sgt[lnk->link_idx].nents, i) {
+
+LGTM, thanks.
+
+Reviewed-by: D. Wythe <alibuda@linux.alibaba.com>
+
 
