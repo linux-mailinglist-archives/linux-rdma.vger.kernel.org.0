@@ -1,47 +1,47 @@
-Return-Path: <linux-rdma+bounces-13007-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13008-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED680B3C51C
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 Aug 2025 00:41:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CBE1B3C54A
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Aug 2025 00:45:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E9713AA253
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Aug 2025 22:40:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8138F188DB21
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Aug 2025 22:45:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E6DA2C08BB;
-	Fri, 29 Aug 2025 22:39:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1C402DAFD5;
+	Fri, 29 Aug 2025 22:43:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J1q1yefJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LnocQWii"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99CC32874F6;
-	Fri, 29 Aug 2025 22:39:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 246B92DAFBD;
+	Fri, 29 Aug 2025 22:43:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756507198; cv=none; b=si2rjJtFIbO73Ave304HWGBkZT0+iKBxobeg2VxdCQWMr2JnxQmQ0ODefQYn7OVJqS9ea0TZNidW+f3yEoVgVjS0noamM6p+gqfcptDPyMUseQfnaGJginfDO5WqTFhhsTUQpIstHCT7tgHVc9BvPvBU80zjcrvaCyDP7FrYjtc=
+	t=1756507393; cv=none; b=q9MRyDAjsSq7NdYOKL/aFfub8/fFu0Ns/Qc5t3R4+p58supWzHIiH2jBrWLWx/dhrTpq0n74ssjek2pIuM5w2iFRbWqNJ+v/T5ZZ7pojOKTGb1i3SNdsucEeRRD3JjH+BOecOMFoEQuE7KQ2QQBywp3r/J75fV8u58/5luSAcBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756507198; c=relaxed/simple;
-	bh=/dFVOutQ049ZKsF0GOUTUNJq1MoFTKksuVmpNbG7AwM=;
+	s=arc-20240116; t=1756507393; c=relaxed/simple;
+	bh=ndLcDPeWdN0wA/DqMpvNhcnp+pz1BGrAusiuh4ipoZM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mC0Ddovkafp2myJr/zLt1ifoEI8s6a6hMN7Y8SgqhCp7dzWZaLUlRmxlVuxRN7j1Inaa2193UchorvUT56TNWM25k/X7P1sdK2FqMwDVLNsTym3YniKFk24r9xOTgf/tx/NI+d2nF1ezaiQTd6lRYNnC8+v9hksVIiQPV65f/xw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J1q1yefJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28EBEC4CEF0;
-	Fri, 29 Aug 2025 22:39:58 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=nQSKIsSJPeH7+oELkltYz5zGN7M0+etPAFFoKMZrktVKyMh56FeVE0u0mLlh5HG0tHJAvhGgetROouVW+My3Ge0lB+lcKzYFhLohxEQK18V/xZWMNyRZRoVAUQ9KbXFf3en1TLwhGNc057FKr/WtfGmYHfV38FBHTOpv+YQlrzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LnocQWii; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D1F0C4CEF0;
+	Fri, 29 Aug 2025 22:43:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756507198;
-	bh=/dFVOutQ049ZKsF0GOUTUNJq1MoFTKksuVmpNbG7AwM=;
+	s=k20201202; t=1756507392;
+	bh=ndLcDPeWdN0wA/DqMpvNhcnp+pz1BGrAusiuh4ipoZM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=J1q1yefJqXEokjlduDXUH9vjhf1YrWFOIdpeQhAPIDrAPfV95mjUWGtWb+GzRCU9a
-	 Dou9d7MtxO+l/4t16SEMPCCMEjdiySwTAAHbbGxvC3EEHWraSOp7iMKsRITQUrpjL/
-	 dQ9L5l6q4aFqOYqwq1pI54TuOz2yM57dGxJ148EelFUdsA3YDed5srSLA+nwaoVzfO
-	 +ngAVMBbeF2sPzppbXrGaPICBgcmVD2ltu5a0d/L9IcegSbgOoXrf58ui5OzhqsRfG
-	 9cLY/iGh2XECcgBkYM4FfAErP1aVitnvC8yl5ViARUzScRH7v5gzefjhfEtL18BnJ0
-	 Al2KtxSMY41rA==
-Date: Fri, 29 Aug 2025 15:39:57 -0700
+	b=LnocQWiiwbqNCSnULb0Q8VaKKsRkgCBvomsAiupePPOlZ0m4VDs5AX4u/M3C9mP+q
+	 p0NwzqV10rYMOw2wnnFKztItsSfVIrI5Ngsr31s8UjvO0bMkXWYRKz//dpdH+VOqej
+	 s1Pw92nQwOZ8H+v2YLUzXxTyNqrwxdBUNOejpflfqjcph/OxPL+abaWehP/yXfeMGO
+	 /bzZsxjCh2lX36xQM1GofOpISlIAoW6vgyOGBDnzxxOk0Wmv1sY5XHc22m0wrxu3+n
+	 qGuoK9CoV52thU7J+qbO2bzAB4uzi5/KhxKWNu3wbn6kouPp/g6zVrMIfbNRYL6dj4
+	 uXoJg8FTIsdOA==
+Date: Fri, 29 Aug 2025 15:43:11 -0700
 From: Saeed Mahameed <saeed@kernel.org>
 To: cpaasch@openai.com
 Cc: Gal Pressman <gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>,
@@ -58,11 +58,10 @@ Cc: Gal Pressman <gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>,
 	John Fastabend <john.fastabend@gmail.com>,
 	Stanislav Fomichev <sdf@fomichev.me>, netdev@vger.kernel.org,
 	linux-rdma@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next v4 2/2] net/mlx5: Avoid copying payload to the
- skb's linear part
-Message-ID: <aLIsPRq-1eX87NUq@x130>
+Subject: Re: [PATCH net-next v4 0/2] net/mlx5: Avoid payload in skb's linear
+ part for better GRO-processing
+Message-ID: <aLIs_-lDKHCLTrTy@x130>
 References: <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-0-bfcd5033a77c@openai.com>
- <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-2-bfcd5033a77c@openai.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -71,61 +70,25 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-2-bfcd5033a77c@openai.com>
+In-Reply-To: <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-0-bfcd5033a77c@openai.com>
 
 On 28 Aug 20:36, Christoph Paasch via B4 Relay wrote:
->From: Christoph Paasch <cpaasch@openai.com>
+>When LRO is enabled on the MLX, mlx5e_skb_from_cqe_mpwrq_nonlinear
+>copies parts of the payload to the linear part of the skb.
 >
->mlx5e_skb_from_cqe_mpwrq_nonlinear() copies MLX5E_RX_MAX_HEAD (256)
->bytes from the page-pool to the skb's linear part. Those 256 bytes
->include part of the payload.
+>This triggers suboptimal processing in GRO, causing slow throughput,...
 >
->When attempting to do GRO in skb_gro_receive, if headlen > data_offset
->(and skb->head_frag is not set), we end up aggregating packets in the
->frag_list.
->
->This is of course not good when we are CPU-limited. Also causes a worse
->skb->len/truesize ratio,...
->
->So, let's avoid copying parts of the payload to the linear part. We use
->eth_get_headlen() to parse the headers and compute the length of the
->protocol headers, which will be used to copy the relevant bits ot the
->skb's linear part.
->
->We still allocate MLX5E_RX_MAX_HEAD for the skb so that if the networking
->stack needs to call pskb_may_pull() later on, we don't need to reallocate
->memory.
->
->This gives a nice throughput increase (ARM Neoverse-V2 with CX-7 NIC and
->LRO enabled):
->
->BEFORE:
->=======
->(netserver pinned to core receiving interrupts)
->$ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
-> 87380  16384 262144    60.01    32547.82
->
->(netserver pinned to adjacent core receiving interrupts)
->$ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
-> 87380  16384 262144    60.00    52531.67
->
->AFTER:
->======
->(netserver pinned to core receiving interrupts)
->$ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
-> 87380  16384 262144    60.00    52896.06
->
->(netserver pinned to adjacent core receiving interrupts)
-> $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
-> 87380  16384 262144    60.00    85094.90
->
->Additional tests across a larger range of parameters w/ and w/o LRO, w/
->and w/o IPv6-encapsulation, different MTUs (1500, 4096, 9000), different
->TCP read/write-sizes as well as UDP benchmarks, all have shown equal or
->better performance with this patch.
+>This patch series addresses this by using eth_get_headlen to compute the
+>size of the protocol headers and only copy those bits. This results in
+>a significant throughput improvement (detailled results in the specific
+>patch).
 >
 >Signed-off-by: Christoph Paasch <cpaasch@openai.com>
 
-Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
+LGTM, I would love to take this to net-next-mlx5 and submit it back to
+netdev after regression testing if that's ok? Christoph? 
+Anyway I will wait for Jakub to mark this as "awaiting-upstream" or if he
+applies it directly then fine.
+
 
 
