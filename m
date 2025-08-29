@@ -1,112 +1,119 @@
-Return-Path: <linux-rdma+bounces-12986-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-12987-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF1ACB3AE95
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Aug 2025 01:50:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A19E7B3B02E
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Aug 2025 03:03:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 562BA98634B
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 Aug 2025 23:50:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7793F16429C
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Aug 2025 01:03:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D9A32DA74A;
-	Thu, 28 Aug 2025 23:50:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A7821DDC2C;
+	Fri, 29 Aug 2025 01:03:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bSThdl5s"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J3fVGpMg"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B59262FC0;
-	Thu, 28 Aug 2025 23:50:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC1F1D5CDE;
+	Fri, 29 Aug 2025 01:03:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756425009; cv=none; b=Sa24vp+pjCMZcGYkZ4WYT9tDx3/nJCnA6aFGzE6RX1KZubqfC8boWmQo/N5M7w4pBlNILzIKebyTtwTGU9XaOeHRLOK9hUsGmDiK6/2BLnoJLLQB5GQqlBGhwb9K1rh1OxZA0j8ER1FvRMVe2Qcr746o1nOHqYcgCa97HGqfvIc=
+	t=1756429412; cv=none; b=PU+wfQZIBbehg+5XyJe8FBDoivdds1b6fDidpz/XPi19RLahvoV2u5+tX0HtjuKbnjvZrD0x5OckWNrmB+K9jRvxzNtajFDXHcgKxQKcoDLS45TQOFdg7xufDg/X5SO4Rv6jIetJmXGFaDoiK8qy0CSSNDT807BLHNjDbct2tps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756425009; c=relaxed/simple;
-	bh=e17ImB2Y/pO+JEDTa5g4HLe3a+vtXCoIi5gWJqdD4HY=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=o1muHGv2ZHSIs/QSQg5NqOC/D18LUUv6osN1ETThjqYkHOKPoDjTUrsHRaj/0UB9uZT8XIR9DNW1iIx3bAS4lXk1t/bkoBu+y3/B6P04r0DzZE98zkHJCumg1b34SAZyran8H56FkhIcflqxzzlf1edOACyPyenotLa6aJ21wa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bSThdl5s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 497CFC4CEEB;
-	Thu, 28 Aug 2025 23:50:09 +0000 (UTC)
+	s=arc-20240116; t=1756429412; c=relaxed/simple;
+	bh=JnjTHc4tN+fj7bTEL4vaeVKqTaIJBWp8jzHXrTlqc6o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QCPJ5x8D6DtpuXrDCJXNUJiHKX20bOhxQsRxTwkL4SPrs+Z0kvNOD0IXTkuxBS3AxMGrx/zUAphxjn2+Gjkvqcd2arWST6qH6zko9+iIQQpNXYXZcjRTT/sAEluiwK34G2VwT3k6eN3L6vMZGcVI9qLsI3wf3Ko2HYAj928CPeM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J3fVGpMg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CA38C4CEF9;
+	Fri, 29 Aug 2025 01:03:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756425009;
-	bh=e17ImB2Y/pO+JEDTa5g4HLe3a+vtXCoIi5gWJqdD4HY=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=bSThdl5sMj8UJckeXo86O7E1G4tsHn1RRrQnDQfvnQ9CnFaTxC6W4RtHwV5ToKMrO
-	 w/Bf/FH1k3I9vXmNuM/l2bCgqbyl7ZPupkptUWjAL7yb+v3PcL/EUmVBSLWCZE9y+h
-	 pwHVAG+HUOQeHZgVFdokM7wXw34Toy/d/FWurC9QJywnCqCLpKRBmiBxL7BNI9tn5x
-	 kJMrbnQynmjPOZ77vt5XkhNt1DkUi3yJtjjwlgxalhQ7vNTrq6wCSX0yYpRT5K8mGY
-	 bdfOc9Ry8z802zpG3UKMwaHNZ79gILGAjNgNY0NulzOZLyqBwGL/usmgx3kZQymLfT
-	 Pq6H2o3jywtEg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70D67383BF75;
-	Thu, 28 Aug 2025 23:50:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1756429411;
+	bh=JnjTHc4tN+fj7bTEL4vaeVKqTaIJBWp8jzHXrTlqc6o=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=J3fVGpMgabd0xHSNkOU7/Glp23pcZHxo4B0/Z2eXh3M08w24rnhzn/kCh53F2efwy
+	 qURAQZE9LKq4K2bioGolyZHbI+mj9FQ6imO1ZPCed42Vqn9bwzxVjOD0LjfhNTlM/6
+	 hqj8QjsCmTcs60wgMTkmI3U4o16STA0luobBtNuGUpAl8XHyI1IBPSzPuSIqoopR3I
+	 UtLbQYStZNzvVNLdjXtPKThSFW5vhQZSXYtJCgC9KAr4ndgNPDY6IkFftm+I2Pu0Fx
+	 GKMZTQXsbZGGTaaYzxVXESYef+qIEBij+LhRT4MFGMTrWbp7dMDJdoJv7vro1DvkTE
+	 4xREp4xA2h7NQ==
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-61cf8280f02so1022710a12.0;
+        Thu, 28 Aug 2025 18:03:31 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWNz8NRvGb2julZ28XdTT27oUqxdchYzvqICy8YIQBL1NS+edCYZWqC7acLN2D70jXIPKyHXKQ7TjNL@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxs8XcSISZLwY5RZOc+Fl++dSyuXxCQPaY19sTuN2Z/NwC3SWV0
+	E5Zavsv1GQQpDrtfSoZ+V2Gmrg7achFfvnMfVAxnwi48ASt0tJ8VrJL0hRgSc4mWEBH5eLNbpJb
+	7eqDgWoVnK82cxNlCfVXb80YA2h3U1G0=
+X-Google-Smtp-Source: AGHT+IEC3tzEBZVMFFl1IVXgtix0fY5IP99nyNrSk50T1sy3myoDXtbVpBcpWYLdNJsJljRKWhOMMIEUMhJmKMOqcvo=
+X-Received: by 2002:a05:6402:5107:b0:61c:9970:a86a with SMTP id
+ 4fb4d7f45d1cf-61c9970ad16mr8655627a12.34.1756429409703; Thu, 28 Aug 2025
+ 18:03:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v6 0/7] devmem/io_uring: allow more flexibility
- for
- ZC DMA devices
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175642501625.1650971.15574075096463666063.git-patchwork-notify@kernel.org>
-Date: Thu, 28 Aug 2025 23:50:16 +0000
-References: <20250827144017.1529208-2-dtatulea@nvidia.com>
-In-Reply-To: <20250827144017.1529208-2-dtatulea@nvidia.com>
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: almasrymina@google.com, asml.silence@gmail.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
- axboe@kernel.dk, saeedm@nvidia.com, tariqt@nvidia.com, mbloch@nvidia.com,
- leon@kernel.org, andrew+netdev@lunn.ch, cratiu@nvidia.com, parav@nvidia.com,
- netdev@vger.kernel.org, sdf@meta.com, linux-kernel@vger.kernel.org,
- io-uring@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <8c6027ac-09dc-4ee6-ba82-4afd897dabf6@samba.org>
+In-Reply-To: <8c6027ac-09dc-4ee6-ba82-4afd897dabf6@samba.org>
+From: Namjae Jeon <linkinjeon@kernel.org>
+Date: Fri, 29 Aug 2025 10:03:17 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd-TNCOd04Nw+FYhWT3inPCpQU0scT91FuM-SbahX3cRwQ@mail.gmail.com>
+X-Gm-Features: Ac12FXwgjPnR8HAbaB9WFamRg7luu63RqUjZlEtl70_jCyn-9Os0DdZAWIdluog
+Message-ID: <CAKYAXd-TNCOd04Nw+FYhWT3inPCpQU0scT91FuM-SbahX3cRwQ@mail.gmail.com>
+Subject: Re: struct rdma_conn_param uses u8 for responder_resources,
+ initiator_depth and private_data_len
+To: Stefan Metzmacher <metze@samba.org>, Jason Gunthorpe <jgg@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>
+Cc: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, 
+	"linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>, 
+	Samba Technical <samba-technical@lists.samba.org>, Tom Talpey <tom@talpey.com>, 
+	Steve French <smfrench@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Wed, 27 Aug 2025 17:39:54 +0300 you wrote:
-> For TCP zerocopy rx (io_uring, devmem), there is an assumption that the
-> parent device can do DMA. However that is not always the case:
-> - Scalable Function netdevs [1] have the DMA device in the grandparent.
-> - For Multi-PF netdevs [2] queues can be associated to different DMA
->   devices.
-> 
-> The series adds an API for getting the DMA device for a netdev queue.
-> Drivers that have special requirements can implement the newly added
-> queue management op. Otherwise the parent will still be used as before.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,v6,1/7] queue_api: add support for fetching per queue DMA dev
-    https://git.kernel.org/netdev/net-next/c/13d8e05adf9d
-  - [net-next,v6,2/7] io_uring/zcrx: add support for custom DMA devices
-    https://git.kernel.org/netdev/net-next/c/59b8b32ac8d4
-  - [net-next,v6,3/7] net: devmem: get netdev DMA device via new API
-    https://git.kernel.org/netdev/net-next/c/7c7e94603a76
-  - [net-next,v6,4/7] net/mlx5e: add op for getting netdev DMA device
-    https://git.kernel.org/netdev/net-next/c/f1debf1a2ef4
-  - [net-next,v6,5/7] net: devmem: pull out dma_dev out of net_devmem_bind_dmabuf
-    https://git.kernel.org/netdev/net-next/c/512c88fb0e88
-  - [net-next,v6,6/7] net: devmem: pre-read requested rx queues during bind
-    https://git.kernel.org/netdev/net-next/c/1b416902cd25
-  - [net-next,v6,7/7] net: devmem: allow binding on rx queues with same DMA devices
-    https://git.kernel.org/netdev/net-next/c/b8aab4bb9585
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+On Fri, Aug 22, 2025 at 6:04=E2=80=AFAM Stefan Metzmacher <metze@samba.org>=
+ wrote:
+>
+> Hi,
+CC: Jason and Leon.
+>
+> this mail is triggered by the discussion in this thread on
+> linux-cifs:
+> https://lore.kernel.org/linux-cifs/f551bf7f-697a-4298-a62c-74da18992204@s=
+amba.org/T/#t
+>
+> In include/rdma/rdma_cm.h we have this:
+>
+> struct rdma_conn_param {
+>          const void *private_data;
+>          u8 private_data_len;
+>          u8 responder_resources;
+>          u8 initiator_depth;
+>          u8 flow_control;
+>          u8 retry_count;         /* ignored when accepting */
+>          u8 rnr_retry_count;
+>          /* Fields below ignored if a QP is created on the rdma_cm_id. */
+>          u8 srq;
+>          u32 qp_num;
+>          u32 qkey;
+> };
+>
+> The iwarp MPA v2 negotiation can handle values up to
+> 0x3fff for responder_resources and initiator_depth.
+> And private_data_len can be 0xffff for MPA v1 and
+> 0xffff - 4 for MPA v2.
+>
+> I just found that ROCE only supports u8 in the CM ConnectRequest
+> (and I guess it's ROCE v1 and v2 as well as Infiniband,
+> but I've only every seen ROCE v2 captures).
+>
+> BTW: does ROCE also support private data and if how much?
+>
+> So is it desired to limit iwarp to u8 values too?
+>
+> Thanks!
+> metze
 
