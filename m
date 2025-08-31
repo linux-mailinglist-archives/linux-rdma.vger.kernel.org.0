@@ -1,145 +1,150 @@
-Return-Path: <linux-rdma+bounces-13010-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13011-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A243B3D19E
-	for <lists+linux-rdma@lfdr.de>; Sun, 31 Aug 2025 11:28:17 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8931EB3D1C0
+	for <lists+linux-rdma@lfdr.de>; Sun, 31 Aug 2025 11:57:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8FA53B906D
-	for <lists+linux-rdma@lfdr.de>; Sun, 31 Aug 2025 09:28:15 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 66CC04E00C5
+	for <lists+linux-rdma@lfdr.de>; Sun, 31 Aug 2025 09:57:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E34024BD0C;
-	Sun, 31 Aug 2025 09:28:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD5F2494ED;
+	Sun, 31 Aug 2025 09:56:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FRE0/Su9"
+	dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b="dbwfZMbe";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="VIqfHGHA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BB153D81;
-	Sun, 31 Aug 2025 09:28:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42C8643169;
+	Sun, 31 Aug 2025 09:56:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756632490; cv=none; b=b4VEM/EIJDxJXDj50l24pBgZRPdrs7GxBvQ0RCOms707rOUf1q1j3NnN8ZfXkIZXQ6lTzhI+83b5mIEgoqfXHud1tRUN2YXJBEAj7iwtc2usTcV0u3EY/afIQPssdL7CtHoLED22ojGgwRdpp5rHbiPFpeQ1khKTN073p+p2YtQ=
+	t=1756634219; cv=none; b=pbeQXBO9ZDRXU0TluutNNMHkjS1P0CHv/I1vebnqdnIxSj4mkiBmp8KyS4SmRctQASvWXrccUtpuLOKGscu9HOa4G2wbk//xA/42ecNZKwD3by79cV8qSFkog4W342a7kfkIZ7sM6OtltNW9f+/nfgCfxxcMrc99OKMWNASdvEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756632490; c=relaxed/simple;
-	bh=XPJ4hFRfRkyT/XA+k0K0wp/bwh5t0nxRoRj7nHtr5Jo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iCHb79P+BeEzm88dFUt8lplf09AD24coOg6/jnTT38ZTk+c0bPQEVyxu3zlUIJluyWkkpmB+rJcwdJvyVq9PsNiC8uCq0cieYsvRkidsc6+SfOYMZwZTqfu1MbhZVIoRgL1GARJJ1ja1axpwGtXc1lBc/BzJxp5Fo/Si2xUIZFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FRE0/Su9; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-45b82a21e6bso11229695e9.2;
-        Sun, 31 Aug 2025 02:28:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756632487; x=1757237287; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=H+xG21Oeo6HSyqyssQi7DDQRhEgxOVv7xjDl0q72uBU=;
-        b=FRE0/Su9Pic/rkFi8aadwPCzXfEmGuxRBW4JhDDH4SY+DPoBDMspCUNfbIeYgoQNlC
-         bdRFhHAf/s7cPl6xEe9SMs1ybmuidmXOEr5NnLXpuUy6NjFfBtOV7Wyhs/k4IsyN7ZrK
-         pSnohr1+jdJd7/pHhD5xQ45HHdRveyW6NXQLUVVs7YwrKCg+YXc4gPFgs/NSUp3H9qY6
-         OXRk+cCExylc8R6hZfEgCZBSByGNJJzATWF1SOgBmdiF+JenHKWG6AosqRU01/9wfAVK
-         7NfA4z8L+37z+SB9wt5VqDAXx8nMAWJGd0IBxomR508L00dKCiaFn+Zfu8yMYssD2cqX
-         hbGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756632487; x=1757237287;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H+xG21Oeo6HSyqyssQi7DDQRhEgxOVv7xjDl0q72uBU=;
-        b=dePz7cCy2dpJQHNSPSnlnwJk/2YYIpfXlucLEDVVf0kdDtgKc4kA0gYu3UXlpJSk3K
-         x1we1KW6shBp9h8AbOuVp8cpzXQNZMm8xp3bEJ+eWWX0jMsLi0qPHVsFYCwLFNQJKEv0
-         uxuuwJii3/yghyGH55QXBxoggIANkp5ALqP2rDBaz19lVo/fwzCXxVYOLNU2Bv8r01my
-         5QjM0yne3gMUFYZOpEgB/BOKBfNr4Uh3f22A38STe3z6tUZroZ8th2S/X4GJGHxtwU2G
-         QaJAJ/7AGAZ8me5ufCXcV9UQnNq2iNw50YeN83vD4OpTinquoztp3mu2TgIksgco94UL
-         mJeQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVRlvbQFwr2mjgK1ylBl0bVvvPxt0vVneXLoRWfOPyBK/Le+RkBciMYKBBpwFVZfknNw11pZFhcdrJFgA==@vger.kernel.org, AJvYcCW63jcl4C5F129uDmSPb3IPb0Nahz1BCgMaizcNhY1LbuOWIzD9UO+0IOdv07MqDjkuMHo=@vger.kernel.org, AJvYcCXcjbMVLEdtM3Fa2OtZZMn0EfgaFolWhkQ+JMM7DSxGPcH3qzqh83KAe/E9p6/+JcBsvfyM34Zq@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyv4SJ/Dii13IZS7WkIBjTQ2WvKXzK+X8nvbKtU0Q5CXeExIZ44
-	RzCRUOurqmoD5LGc5U1mdqwPQfV4Pz7+OyjO999YoMuRkwpZD9feXqK1
-X-Gm-Gg: ASbGncua4Z7fnIgaFrxT/7qFEcGeoadYe9uug9wDu00ZKoTvSECrRuNPZ3E1Mdx3PSY
-	100bbOniW62ryCCMGlJbulr8AE8qVn19rdkYvL4GxHxcgmDEfxMfCWJKDwt+sT/aLVun7aywC18
-	lkupnidVDLVVKK9nbgdFre8hFZzVmwcqEZKK2P3/yIxTkHs2O686hwG9e9re2QBVTDwhCCbuTGh
-	IplWJrY5/QWO0++h7dfm3T86mnXmxZf4p4kpKPDDlsh1ZoRFNjXtzMgRjMa1XAyvB/umlf+Vu1v
-	Sd1jQlGnYs6U1DWJgOvcy9HjeF4x9MkN4H3YOuEeoR7U2LrU4n9n47zqh2lDyB1DQLHNTgwilsu
-	zrWHJo3cMkjUfQobS7833+pRom0ugwUa97MtTXEuJHGEC2g==
-X-Google-Smtp-Source: AGHT+IEryDBAwgH4ZBdTyXuCEd0bPl6kuLLfrmQASO3st64H4tDFzb2aAzLU74xzS75Na386oTvwmQ==
-X-Received: by 2002:a05:600c:a4c:b0:45b:7bba:c7a6 with SMTP id 5b1f17b1804b1-45b85598aaemr28343535e9.32.1756632486727;
-        Sun, 31 Aug 2025 02:28:06 -0700 (PDT)
-Received: from [10.221.199.15] ([165.85.126.46])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3d12c90a01bsm7872246f8f.31.2025.08.31.02.28.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Aug 2025 02:28:06 -0700 (PDT)
-Message-ID: <e0786dbc-4681-4bee-a54a-e58c1b9b7557@gmail.com>
-Date: Sun, 31 Aug 2025 12:28:05 +0300
+	s=arc-20240116; t=1756634219; c=relaxed/simple;
+	bh=kGtb2RYRdn0Swor8JnLakxT+7d1PidwrZ50+oMn5EfM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bU61zLBJwc5cjQDy4yXghDCBGjUzIuJcUBZDpebiL4upmYDbICa9kfbebChdl25bAIrl19QFm92wYWdpVKNj9qn+iNuen0MguE8cZo5QP1piLCp2okCxevU72rc7TqB5hndc3GS+W0a7E/tJQV1OnosHOxF4shdbINo/y1p7DnY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com; spf=pass smtp.mailfrom=fastmail.com; dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b=dbwfZMbe; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=VIqfHGHA; arc=none smtp.client-ip=202.12.124.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.com
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id DF3717A0081;
+	Sun, 31 Aug 2025 05:56:55 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-04.internal (MEProxy); Sun, 31 Aug 2025 05:56:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
+	cc:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm1; t=1756634215; x=1756720615; bh=mMODJHU8uJag0Sf9/rM/P
+	gx0JRSeeuAwd53OX6+7mb8=; b=dbwfZMbeDYjv794TZ23lsZMClqVFnbES34qBk
+	g431yYz8s9qWehiHtDLypgl754h4/XQWRn2/t2Qfe9d+bvDrNnMDETolbmJaRLX0
+	9LytDpC5vLa5w4Fp6ngXSluOF7zk9UP8tkc2YP3UtbCjYJV3ieFsf8tmuzKuwKrH
+	8YEtZx6J4ik7hO9Hdcz7OmKG0lvRdfkp7wazKbKpzboXD0Ne1V6Jd4ZRSAy8hWiG
+	cGbTGqmI1Z3cx/BfIbJzYGW9nFE1oR4ENvZ9HFzHP2LA9/gh1NsbFEnCyk0/Ez1u
+	cA1LjyMuCj2+aRrVBFi9X6zQgIv1p46wQX1zpQxNHl1qjZ6xA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1756634215; x=1756720615; bh=mMODJHU8uJag0Sf9/rM/Pgx0JRSeeuAwd53
+	OX6+7mb8=; b=VIqfHGHASRhyo9pBXT9JGZ412656Aed9cntq7ERzVImFXydwQlk
+	GfcF50Gn98ueaA5AvnGElS91yZAOn/bl1HPDbB4Uho8+1ltiOIUgutH37OKSPiKP
+	DknauPeKoSdShFpGfqBOzWjvCPSSfHWEzVg9fS2DV76yG6gyjaiWBbHq7b4AuSWZ
+	7WdzIEqUG70SH3ZyFaa+E6ierO7ebQTDzVXJ7n8KhLpOUDLlB6NwTWgDroAb3SNw
+	xDI7ZcZg6yWhmxU1Mi7u40cQGqk3vU9ZlrTCyjLhif93nKlLWSw1K8XJSLIZ72Kv
+	byvxJwGX3hS//wtqJubzvQtsajaQtPBA1rg==
+X-ME-Sender: <xms:Zhy0aAJC2lhyQmjjshdiop8-ZsiNCm6qardy6_RkNGiJIJS13uB8Yg>
+    <xme:Zhy0aFKEOcgC0dOCb_KUau0Fi8Vw14CxN44j_K5MqiusttCmxKi2Ft7GZIv1YwA8a
+    3ZKPGeC5U5YVg6blV8>
+X-ME-Received: <xmr:Zhy0aBnKYyCWJcfcaFaGLN36oT3URPDIHTwD696tw95zaI-D0fyERlGiTWcK7oax6vLPhhv7G0gW_MdxRS3ZIRR3f7FYxxg6ktJ2T2RNQCNgLaFo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgddukeekleeiucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpeflrghmvghsucfhlhhofigvrhhsuceosgholhgurdiiohhnvgdvfeej
+    feesfhgrshhtmhgrihhlrdgtohhmqeenucggtffrrghtthgvrhhnpeeitdetffdutdfhve
+    dtvdejkefglefgvdeiveduffdvgfeifeeiveejteeitdegkeenucffohhmrghinhepthgv
+    shhtvggurdhnvghtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepsgholhgurdiiohhnvgdvfeejfeesfhgrshhtmhgrihhlrdgtohhmpdhnsggp
+    rhgtphhtthhopeduledpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheprghlihgsuh
+    gurgeslhhinhhugidrrghlihgsrggsrgdrtghomhdprhgtphhtthhopeguuhhsthdrlhhi
+    sehlihhnuhigrdgrlhhisggrsggrrdgtohhmpdhrtghpthhtohepshhiughrrgihrgeslh
+    hinhhugidrihgsmhdrtghomhdprhgtphhtthhopeifvghnjhhirgeslhhinhhugidrihgs
+    mhdrtghomhdprhgtphhtthhopehmjhgrmhgsihhgiheslhhinhhugidrihgsmhdrtghomh
+    dprhgtphhtthhopehtohhnhihluheslhhinhhugidrrghlihgsrggsrgdrtghomhdprhgt
+    phhtthhopehguhifvghnsehlihhnuhigrdgrlhhisggrsggrrdgtohhmpdhrtghpthhtoh
+    epuggrvhgvmhesuggrvhgvmhhlohhfthdrnhgvthdprhgtphhtthhopegvughumhgriigv
+    thesghhoohhglhgvrdgtohhm
+X-ME-Proxy: <xmx:Zhy0aDLG2UOT7rrhj6x0VMrZgK08wSh27r9MfAit9Drri6RBqXmQqw>
+    <xmx:Zhy0aEWmGrQGYcR7ldzuTwK2ryDNvdWYwaaKsb1YGIQVQQQtc3TXyQ>
+    <xmx:Zhy0aANCDraOso4Pgy9jpvONZvnDZvbl3wPXYfzs6cg1insEfmgt0A>
+    <xmx:Zhy0aInU7d3muP6s2nJMO2_PaP0_jvzQOuVgxS76OKYtFVt_8Z0mpA>
+    <xmx:Zxy0aMrsv0wi-BviLZ2YU1JR_k9zRhQM7Y36BKUy-vBqZS8Le8VZnSYr>
+Feedback-ID: ibd7e4881:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 31 Aug 2025 05:56:52 -0400 (EDT)
+From: James Flowers <bold.zone2373@fastmail.com>
+To: alibuda@linux.alibaba.com,
+	dust.li@linux.alibaba.com,
+	sidraya@linux.ibm.com,
+	wenjia@linux.ibm.com,
+	mjambigi@linux.ibm.com,
+	tonylu@linux.alibaba.com,
+	guwen@linux.alibaba.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	skhan@linuxfoundation.org
+Cc: James Flowers <bold.zone2373@fastmail.com>,
+	linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kernel-mentees@lists.linux.dev
+Subject: [PATCH] net/smc: Replace use of strncpy on NUL-terminated string with strscpy
+Date: Sun, 31 Aug 2025 02:49:47 -0700
+Message-ID: <20250831095535.176554-1-bold.zone2373@fastmail.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v4 0/2] net/mlx5: Avoid payload in skb's linear
- part for better GRO-processing
-To: Saeed Mahameed <saeed@kernel.org>, cpaasch@openai.com
-Cc: Gal Pressman <gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>,
- Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
- Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, bpf@vger.kernel.org
-References: <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-0-bfcd5033a77c@openai.com>
- <aLIs_-lDKHCLTrTy@x130>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <aLIs_-lDKHCLTrTy@x130>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+strncpy is deprecated for use on NUL-terminated strings, as indicated in
+Documentation/process/deprecated.rst. strncpy NUL-pads the destination
+buffer and doesn't guarantee the destination buffer will be NUL
+terminated.
 
+Signed-off-by: James Flowers <bold.zone2373@fastmail.com>
+---
+Note: this has only been compile tested.
 
-On 30/08/2025 1:43, Saeed Mahameed wrote:
-> On 28 Aug 20:36, Christoph Paasch via B4 Relay wrote:
->> When LRO is enabled on the MLX, mlx5e_skb_from_cqe_mpwrq_nonlinear
->> copies parts of the payload to the linear part of the skb.
->>
->> This triggers suboptimal processing in GRO, causing slow throughput,...
->>
->> This patch series addresses this by using eth_get_headlen to compute the
->> size of the protocol headers and only copy those bits. This results in
->> a significant throughput improvement (detailled results in the specific
->> patch).
->>
->> Signed-off-by: Christoph Paasch <cpaasch@openai.com>
-> 
-> LGTM, I would love to take this to net-next-mlx5 and submit it back to
-> netdev after regression testing if that's ok? Christoph? Anyway I will 
-> wait for Jakub to mark this as "awaiting-upstream" or if he
-> applies it directly then fine.
-> 
-> 
-> 
+ net/smc/smc_pnet.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hi,
+diff --git a/net/smc/smc_pnet.c b/net/smc/smc_pnet.c
+index 76ad29e31d60..5cfde2b9cad8 100644
+--- a/net/smc/smc_pnet.c
++++ b/net/smc/smc_pnet.c
+@@ -450,7 +450,7 @@ static int smc_pnet_add_ib(struct smc_pnettable *pnettable, char *ib_name,
+ 		return -ENOMEM;
+ 	new_pe->type = SMC_PNET_IB;
+ 	memcpy(new_pe->pnet_name, pnet_name, SMC_MAX_PNETID_LEN);
+-	strncpy(new_pe->ib_name, ib_name, IB_DEVICE_NAME_MAX);
++	strscpy(new_pe->ib_name, ib_name, IB_DEVICE_NAME_MAX);
+ 	new_pe->ib_port = ib_port;
+ 
+ 	new_ibdev = true;
+-- 
+2.50.1
 
-I recall trying out similar approach internally a few years ago.
-
-eth_get_headlen() function didn't work properly for non-Eth frames 
-(ipoib). I believe this is still the case.
-
-Extra care is needed for the ipoib flow, which I assume gets broken here.
-
-According to the perf gain, it is worth splitting to multiple code paths 
-via branches/function pointers.
-
-Regards,
-Tariq
 
