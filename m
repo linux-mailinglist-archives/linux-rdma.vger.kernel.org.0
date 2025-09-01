@@ -1,202 +1,277 @@
-Return-Path: <linux-rdma+bounces-13015-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13016-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F9A5B3D9F2
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Sep 2025 08:27:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B6CCB3DC86
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Sep 2025 10:34:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC9293A5A6C
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Sep 2025 06:27:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C9E6189D203
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Sep 2025 08:35:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 131DF2566D9;
-	Mon,  1 Sep 2025 06:27:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C1B52FB627;
+	Mon,  1 Sep 2025 08:34:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="tXrh8fE4"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Sc0b3nr2";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BxHqpGY1";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Sc0b3nr2";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BxHqpGY1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2060.outbound.protection.outlook.com [40.107.94.60])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E155D1FA272;
-	Mon,  1 Sep 2025 06:27:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.60
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756708061; cv=fail; b=DkQlbqhemeoquayW/yA2A4zWu++Zn+Rt5OxQwnT2TOP5DYLMk+idHAiNxIpNNZvITRpXsVjwjhQBGxNGQ+HHnmqYD2FsZ8L6qVkJrGQn4uyhe8hlabln6uUpqMg3ccllRq1VjMxe2MhgxpxIT+CBM7n9YMXhf6fQnq/AXwyIAMo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756708061; c=relaxed/simple;
-	bh=wBCXgKh4If/TtqzdUc2L2LBvha3OPXEdAGyNf9ayUDo=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Tgmx3Oac7urCRKZijaXXQ6OEsiplZSbL8fRCdvVSeH4vCSVj73Eb2ps4VhMcTow62Do3qEUuf0z0X0XRIlL+AzmVlSuSEkx2UGLuLTFugP8ICfqj0Czi6LkVxNloBDsrSxc9bJr26n6hmXK43EFIfLBHa0WUrrkr/M3RVaMgSaM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=tXrh8fE4; arc=fail smtp.client-ip=40.107.94.60
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=vYtkEsEWVlHc7nOxxGsRfrY4IEL8YWXI2FGQb3VQI1opoTCCq1S/R2MF0JI5I8wMOjEnG8KpK6DQN8iUtvw92n3RiQ3B1ABiAzdf9xTLiQ1txdS9xGEDeccRtxx/3GdjJkjklB3waV5lkHEvcQk74sL5kNaDnj8YFiL2xBxQIVCynQtzuyS3rTuRGNbFhQUj0hAOzGq7d77xOkZgXTFyJia7exsTxRDrUao5ffRLt/6Zzhvvip0xitOn/iya1/3nArwjeftQ1CZtcI/WzCfyj6Rz+ZeIVSB9zsx8D6X1dq+f5if0bA0PImra4eexHpzm30PaG/hXpOxSAsusParExg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=woLR5gfLmDYgS6WO+yyL3uMad7VFcpQA6bxS0NIpxVE=;
- b=ZBIG6z2DWh6iL9fHs6igvQe2wz/2ApQB2gUlQWPIMqcAvduEJGC8rB4FNOJ/BwTTQvtRIMbAJkW2t/kqBsgoVM90JjTJhVb+I1dDQxkIB2ZhQc0nNUpnph4D38YpFLXgU38u6ze+EFty8mvOKugUpswE6hg0/pp93ZkUYD9eTelx4pMP7v7JmZvVR5q40b7jHlkTss7sKHPBeoPHTjB3c9ZJxLzdG/lUNg9DOXR4LJafmHPtWDaaPWlzuOlqbuVIrSHi5+5TKZOpIZFALSqOPyiAgzkaUjxNNjRr1/biqByWB15xxfOTvrz3zxqasE4cEWyuFbDykoRpBm2Z4Zd0/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=woLR5gfLmDYgS6WO+yyL3uMad7VFcpQA6bxS0NIpxVE=;
- b=tXrh8fE4ACs0kOHfjfEYNJYmF/3C7e4bYeH0u4lCOob+llTcu4zlBDw8emc4PK+ovEsbLntRzOBek88QLaRhpgrtt/3yG8ju5+gXkaHklPvDkMt0p+PMu81X8oCbpRpVPK7DtT89DkF9bVF2bXD9Byxe8r0dsN6aDk9xQbEKQlY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB9066.namprd12.prod.outlook.com (2603:10b6:510:1f6::5)
- by SA5PPFDC35F96D4.namprd12.prod.outlook.com (2603:10b6:80f:fc04::8e5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9073.21; Mon, 1 Sep
- 2025 06:27:37 +0000
-Received: from PH7PR12MB9066.namprd12.prod.outlook.com
- ([fe80::954d:ca3a:4eac:213f]) by PH7PR12MB9066.namprd12.prod.outlook.com
- ([fe80::954d:ca3a:4eac:213f%4]) with mapi id 15.20.8989.018; Mon, 1 Sep 2025
- 06:27:37 +0000
-Message-ID: <d829c4ee-f16c-6cfa-afdc-05f4b981ac02@amd.com>
-Date: Mon, 1 Sep 2025 11:57:21 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH v5 00/14] Introduce AMD Pensando RDMA driver
-Content-Language: en-US
-To: Jason Gunthorpe <jgg@nvidia.com>, kuba@kernel.org
-Cc: brett.creeley@amd.com, davem@davemloft.net, edumazet@google.com,
- pabeni@redhat.com, corbet@lwn.net, leon@kernel.org, andrew+netdev@lunn.ch,
- sln@onemain.com, allen.hubbe@amd.com, nikhil.agarwal@amd.com,
- linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250814053900.1452408-1-abhijit.gangurde@amd.com>
- <20250826155226.GB2134666@nvidia.com>
-From: Abhijit Gangurde <abhijit.gangurde@amd.com>
-In-Reply-To: <20250826155226.GB2134666@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN4PR01CA0012.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:272::15) To PH7PR12MB9066.namprd12.prod.outlook.com
- (2603:10b6:510:1f6::5)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43A4A2FAC1C
+	for <linux-rdma@vger.kernel.org>; Mon,  1 Sep 2025 08:34:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1756715667; cv=none; b=U11IB3uXwiIsqn6W39kGkspr95vI9MYb+LiTGWphKzDn6FZCsG+H7qMXY+lDFLnH8dH+CB8w4Vny0NCqK1sCAoUBymnCVbpxsXB2V4ifnbWoov9YOB8P3QPhnLY46qMt+zWyV4SKC95F+jR/kR1BAR1e4iRpE6Vod+JG12W9dvo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1756715667; c=relaxed/simple;
+	bh=CX+TO9gDNqsfYA4iSTZNQQzCZgBpeGXDXpWJCsncFrU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eQ8apJxCvqgjhNyyRgnxzEGjKI+hz7EE9LIM5/M4aI6qV+w5pzcipTbvOEhpEGAZBKevAP3HbBeSkjNQnCYPA45KOiC5UsgS7gFIoSa2FCpN0JrGwYsa1T5rfFMw+rfnqpLJPsWl116xRoz5kp5k2ku4JPMcJ+km1rZJjAX4sUU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Sc0b3nr2; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BxHqpGY1; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Sc0b3nr2; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BxHqpGY1; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 45F2F21A19;
+	Mon,  1 Sep 2025 08:34:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1756715663; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sUs0tvmNOhyGihKsdzrfm7Mns2CmpxurqjG3WitBJfk=;
+	b=Sc0b3nr2ige8EVi76LakLqqkQVNbLrDvb0J6XGyVHRXjq1NZwQL5KtTkRsZBX0hiKQjKx9
+	oZ2SQyYcncPwwNIdOBQMBXNEEcqZOo6X5zOJ+SItRwWCFI3p6NcunB+LXyrwrY34VXvwM0
+	ciPOTFOw9o6ku/3JilKbm168I61O70M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1756715663;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sUs0tvmNOhyGihKsdzrfm7Mns2CmpxurqjG3WitBJfk=;
+	b=BxHqpGY1rvjhaflWoPzUdUz+03Yl3md7QpYrdNENyDY1xPmyCv4skO5A1y+Q7XfsRRjA0e
+	o9jCj3X7T7lcLsBw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1756715663; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sUs0tvmNOhyGihKsdzrfm7Mns2CmpxurqjG3WitBJfk=;
+	b=Sc0b3nr2ige8EVi76LakLqqkQVNbLrDvb0J6XGyVHRXjq1NZwQL5KtTkRsZBX0hiKQjKx9
+	oZ2SQyYcncPwwNIdOBQMBXNEEcqZOo6X5zOJ+SItRwWCFI3p6NcunB+LXyrwrY34VXvwM0
+	ciPOTFOw9o6ku/3JilKbm168I61O70M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1756715663;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sUs0tvmNOhyGihKsdzrfm7Mns2CmpxurqjG3WitBJfk=;
+	b=BxHqpGY1rvjhaflWoPzUdUz+03Yl3md7QpYrdNENyDY1xPmyCv4skO5A1y+Q7XfsRRjA0e
+	o9jCj3X7T7lcLsBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3376E136ED;
+	Mon,  1 Sep 2025 08:34:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id UB1ADI9atWhjXQAAD6G6ig
+	(envelope-from <dwagner@suse.de>); Mon, 01 Sep 2025 08:34:23 +0000
+Date: Mon, 1 Sep 2025 10:34:14 +0200
+From: Daniel Wagner <dwagner@suse.de>
+To: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc: "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>, 
+	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>, "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, 
+	"nbd@other.debian.org" <nbd@other.debian.org>, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: blktests failures with v6.17-rc1 kernel
+Message-ID: <629ddb72-c10d-4930-9d81-61d7322ed3b0@flourine.local>
+References: <suhzith2uj75uiprq4m3cglvr7qwm3d7gi4tmjeohlxl6fcmv3@zu6zym6nmvun>
+ <ff748a3f-9f07-4933-b4b3-b4f58aacac5b@flourine.local>
+ <rsdinhafrtlguauhesmrrzkybpnvwantwmyfq2ih5aregghax5@mhr7v3eryci3>
+ <6ef89cb5-1745-4b98-9203-51ba6de40799@flourine.local>
+ <u4ttvhnn7lark5w3sgrbuy2rxupcvosp4qmvj46nwzgeo5ausc@uyrkdls2muwx>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB9066:EE_|SA5PPFDC35F96D4:EE_
-X-MS-Office365-Filtering-Correlation-Id: 834fca12-5583-4b57-dd1f-08dde920a49b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?N0xON2w5blNUaUFQRDFGNG1CRVJWZzBaR1pxWURZdG4vWHZYMWoxMFM3L2ZU?=
- =?utf-8?B?TkxjNXZ0SFFhNnpYdTZkeXdEQTJEMFo3Q1FYZjRwVmJtNTFjWmRKUWNKcUcz?=
- =?utf-8?B?bW9zaXVOMm85T3kycWRhSGRJcUgrOWJkL1NLQW9wazhSemNFbDdEelFBd2lq?=
- =?utf-8?B?czc4cFpSMDZnYTJ3TmdvaUtrWnUvbnBzSkRvTVFxSm54QlVsOEt5NDRYclov?=
- =?utf-8?B?NW0veXdoUHRRVzFHaklaaFJDVTNsb05PQjBGcWpUMUVKRFl0YmtwOHphN3FJ?=
- =?utf-8?B?UEYrbDZHWWdkei91V1J5MEt0SEl4SnZoYzVZcVAxOGNkRWMwb2Q4cTJGd2Vr?=
- =?utf-8?B?ZWFUQTJhOUFidkZLeHVEL2lmSG5yOVpNTG52RWZiak05KzNPVWFwS2FSOHpa?=
- =?utf-8?B?UVpqWGdmNkNXRW5GOUpUTkNmblQ1TUxNVnpXeDV3Uk5BK1V0VjM3bXJjUU00?=
- =?utf-8?B?R0E3aUtLalBmN1gyZWFVQmV3NzNuajlGY3I4bkpQOVliaUE1YVIyWUErS0ly?=
- =?utf-8?B?eWlreGIvQURJVHU4aDZXZzhId3Z5TW84MWQ0YUNsbklCZHcyTklFUEZWWlZ4?=
- =?utf-8?B?QjhZcHU1N2w3UHFjRWhpNkdtemlTUWtkZGJiWDFlOU0zWWQxelIzd1Y2ckZN?=
- =?utf-8?B?dm94c0RCMkFhdTIrTFFTQWZKbC8xQ3Y1UndtMGtmbmtCbWlHMGhvVDNFT0Zn?=
- =?utf-8?B?MVA3TDkwRzZsZDd5T0VHK2VialRocEdYdFFpYUdoOWhMdlNkejNRc3NsUVov?=
- =?utf-8?B?TWIrSkZPdHVrRFJEcFpmdFoxWGNNUmtIbEtDcGZmbUEyd0FDd2hRMW1ObzlJ?=
- =?utf-8?B?UWZpRGU3ZWgwWEgweW1OQW9LQUE3VWJSMU04cndGcU5ZbG51MExqdXkvR2Nn?=
- =?utf-8?B?aXUxSnBTMUJMaGF1clFsYXZUUUlHa0JONkNvODFkU1FHWm1XRjlsWFRqaUZh?=
- =?utf-8?B?QUY0QVZZTTdMY01qU3dkUkJORHo4dFMvazd0ZTIxSSs0Zy8vTnA1bkw1djJQ?=
- =?utf-8?B?bjF3REhteUc4Z05xWHBtTzQ4N3Ryc2hVdEhYRFF0SVkwRXBqSEtpWmxVWmRq?=
- =?utf-8?B?ekx5Z3FseDdmR3dyZ0R6YkhXc3BtRCtUb0ZOL3I1dDNreXUwcGxyVlJiRkRh?=
- =?utf-8?B?eGF5dEoxV1dWaFo1cFZZNkdNS1p4b0RjTVJPWEZlbzB0cW1WWnR3S0hSVGpU?=
- =?utf-8?B?SVFyK1FhbTJmVDU4c0RWempjQkZlS3ZJNnlHWmkrLzNERGdtQzNtdElVbG80?=
- =?utf-8?B?OEE4UnhUa0x5cmlxc0ovWS80WFZ6UXkzRHRHOHdzRVpFKzNjYjV6MXFPWktY?=
- =?utf-8?B?S3g1UWJWdStaMHJZNGI4UWFYVWZURC9JazRBYWZnTVBBZmpsclZwZXVZZ01V?=
- =?utf-8?B?ek5OcERDRXRHdDR4NDBuWmVxRHZlWklsdUk1TllHQkJCWXRHaVNtbk9SZm41?=
- =?utf-8?B?NHJMR1dhM0l2ejcyTTlpSmRhUk5La09kZ1V3WHBqeUY4OEpmSGhrSVh0Q0Rp?=
- =?utf-8?B?TjFSSzROM3BBZDQ3aFZ4ZDFZQ0Nhcnc2eEQwaktHclhKeldSdmlPQ0o1eWJn?=
- =?utf-8?B?d2xTdjN4UzVra2czQTJ1a0ZmMUUrSjU3TUlJVFRiT09OWDZhZUJjSUdOa29j?=
- =?utf-8?B?aGU3N0lkQjVObUQ2a0UzUzRzeWdZOThoK1dYVXRNeWVHaUhBQkdvZStqM201?=
- =?utf-8?B?ZVI1d3VKTWx1QW9YSlMwRkx0S2VPbVZrcDJNWTg5MCtFdDhyQ0RzNGRabG9r?=
- =?utf-8?B?dzVQRmdvUElSMjdsdk51MEw3MldrcUREVFdrUktId1B6aVgwY2tCUVlUcEhh?=
- =?utf-8?B?Q1VFa3BnZ3lveDdmeGpGNTlSRUkxc2ljMGFlYWwrL1lzNjExUTBrdWNnQXRV?=
- =?utf-8?B?bGNkZXBTbWNML2gydi92K3JyN2N6bkt5MVgxRGxCaDBBRytyNmNqWVlhenVG?=
- =?utf-8?Q?VZ63nO7eAwI=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB9066.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?czUrbGdTRmcwY2IwbnVCMllwRlNyb1MyTlhob0o5T1NkVnlkWlV3Wnkybk5q?=
- =?utf-8?B?b0h3TllOMlpLMnJCL09JbGY2SUkva2pSaEZKbkRmeGFQM045RlltU1NpVCtZ?=
- =?utf-8?B?d2Nqa2ZZdmJaMWNGcE5ScTVXckc5RDZGWnBjRzU1NXQyOVVqSWFra1E1cExQ?=
- =?utf-8?B?L0wyem5YVDE4NEE5SlhmWExGVDQzSnpUMWJmeGhoZFlxQThZUlExYjVKRmdy?=
- =?utf-8?B?empnNmVSUWdoVUwwZWFodC9yUmpGZi92aVkyWWtaanpIQVdFZmpudlZnMkF6?=
- =?utf-8?B?UTkydXFBVVQ3eFJ2cVI0N2NCM0ZxbUl2Y1p6UkFCazVMVExnWHpXbmFheVlB?=
- =?utf-8?B?cjlBbVo3TWs1eWJaUFZ0bm9FRG9pOE9uNTExUkpuZWl5TCtZVWdWUmNkdVAy?=
- =?utf-8?B?OTd5U2ZKT2FGK2lreURhQXd4Um9LQnN5S05qbG5tNlFTYkZVUFVaT1hsZmdr?=
- =?utf-8?B?VHRycDAxWFdCaDRwb2Rkbkg2K3ZqNzRzNlNvdmh2cmlsYm9hcnJQL2NqTU1j?=
- =?utf-8?B?SEt0MGZCL3BnalpOVXJHYXc2L1hZaWNSVEh5cVZmVS9ENmlFZlV0YngzajhL?=
- =?utf-8?B?MkxTcSt0YURVQ2dqd3ZXZHkwUWdxUGE0Wi90aWxMSC8rMnBIUWRRcWVYcGVa?=
- =?utf-8?B?bHlrdFRkOXZsdlJsemVDNWhyeFhHYUpjZHgxK1VjK2RHYWhBNy82c1l1clkx?=
- =?utf-8?B?SUsxOCtrMUJZR25JOWNwdDZTSjRFR3Z0L0RHd0hxU05hcm43MHZCRkw1Z0Fk?=
- =?utf-8?B?MWJWUDhjc09YaDM2Qkg3TnVkcno0b0dTcWk3RkVRMGlCSkRrUThlVElMNVE1?=
- =?utf-8?B?cGg2VkN1d3U0SW1wK1hqdkhydnRhSGpRUXBZMjNBMU5hQnc0cWVWUWxsdmxO?=
- =?utf-8?B?Y0VoTWdTWjJiQlhCZUJGZDRhTFpDR1AyZzl1MHE4QmlyRlgwOS90TlJ4WXRt?=
- =?utf-8?B?SzJqcWx0WTNJMGRQbTNyVUxoNXRmdGtza09MNGZOVmY4Q2p5bDRiendzRXJw?=
- =?utf-8?B?c0hBb093Y2R5VktGcWdJVHZIT2hmZGs3SFN6ZXBGRUdqdEx3NGxDcDhWZjd1?=
- =?utf-8?B?bmVVK1hHd2ZQbG1Hdkkzd09qRmI3YnVEMkNaQUhZc3Nna1NDN0M4Wk1rTzYw?=
- =?utf-8?B?cmlUZmUveEM2VTdxd081alVNNE1tOFR6TkhDRUZpdUNOUTVCUGdndGpmZmZ6?=
- =?utf-8?B?VDNFaEFYUUo1SkNyK0RKZnFOSzY0OU9NcXR3L3VyQlZieFFTL2lDbGh4TnVV?=
- =?utf-8?B?SUNkYWxZT3pwS1B2RGlOVklDYlpEK1FCZ3ZWcTRiUVRiczZING9ZVndjSXJ4?=
- =?utf-8?B?QnJOUE8wZ3JncEpMNDBva1NMcklHRjI3VzhxeCtSS0VCMmhLWWhxZkU5bGF6?=
- =?utf-8?B?RmF5MG94VHJXcEhsTTkvakx0Mko1V01QcTBYOVVzSzdwQklYdzZxbkx1azZK?=
- =?utf-8?B?S28vVzliTS9SLzdHMm54OVEva3BIcVl1aUZTL0gxSjdPVnM2aGpVTGYvWlJQ?=
- =?utf-8?B?Q3VHOWFNdFUzdk5JVDN1UlphT2JyS0tIbEQxdFdnZjRqcXpmVy9oekZSQjVO?=
- =?utf-8?B?UzlaTjdud2ZNbG5NbTc3QWNQVDFLbnhHSXVZQlhYbXZFK2J0L1NtTVdwV0tB?=
- =?utf-8?B?YjdPblZFYkxOemVxMy9iR2V6WFNxZmgrTDlGb3ZNeU0yK3NzczYrRG1jVmZo?=
- =?utf-8?B?cjFySnRzZGF0ekhIN2RPTC9VU25hWjZmcG5DeGFtd2dlckJSa2pybm1rSzJt?=
- =?utf-8?B?TVU0aVE5akFwVlNJZXRucGpGazVPYW12dWNPNnBoRFJpTHlNV2loRmJTcUlz?=
- =?utf-8?B?VHErWGx5NStNYzVlM21XeEdhbFhMSDNVa2JGM0d5SWNxOEh0WFF6STJyVHd2?=
- =?utf-8?B?Snh0c2RoenY1T21aVVFiL3RmQ21mZDB4ejRQQWl5OEI2SVRBVXVTbnlxaHVa?=
- =?utf-8?B?K1Vxd3FuOGhSZ2Rsa0ZuQS9WUnZ5a1VXRU5tRVR6bUlDTkthbHRzOGpSeWJW?=
- =?utf-8?B?d1AreEoyaUFwdUpQT3hPNC9DTHRYaTY2dk5BT3VFK1d4NFFBdXBPQ2NlaWpr?=
- =?utf-8?B?VmtVaHowcXljZ1RTbStmWjRIVzZTYmwrZ1U0a3pUNURpRk9MQk9xTWZtb0JO?=
- =?utf-8?Q?k4wwvr+PculNMDTrufMo8g6Oz?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 834fca12-5583-4b57-dd1f-08dde920a49b
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB9066.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2025 06:27:37.4300
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7SQpn80+A5dbqj79FOqYto6vpqtzAbWqMT7qED19BdQ32bnGKWbBTQi5hsxjLl21WXjuTf2WeI2tVTsC1fj11g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA5PPFDC35F96D4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <u4ttvhnn7lark5w3sgrbuy2rxupcvosp4qmvj46nwzgeo5ausc@uyrkdls2muwx>
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_FIVE(0.00)[6]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Spam-Score: -4.30
 
+On Sat, Aug 30, 2025 at 01:15:48PM +0000, Shinichiro Kawasaki wrote:
+> On Aug 28, 2025 / 13:33, Daniel Wagner wrote:
+> > Would you mind to give the attached patch a try? It fixes the problem I
+> > was able to reproduce.
+> 
+> Thanks for the effort. I applied the patch attached to v6.17-rc3 kernel an
+> repeated nvme/061. It avoided the WARN and the refcount_t message. This looks
+> good.
 
-On 8/26/25 21:22, Jason Gunthorpe wrote:
-> On Thu, Aug 14, 2025 at 11:08:46AM +0530, Abhijit Gangurde wrote:
->> This patchset introduces an RDMA driver for the AMD Pensando adapter.
->> An AMD Pensando Ethernet device with RDMA capabilities extends its
->> functionality through an auxiliary device.
-> It looks in pretty good enough shape now, what is your plan for
-> merging this?  Will you do a shared branch or do you just want to have
-> it all go through rdma? Is the netdev side ack'd?
->
-> Jason
+Glad to hear this!
 
-I'm happy for the patches to go through the RDMA tree.
+> However, unfortunately, I observed a different failure symptom with KASAN
+> slab-use-after-free [*]. I'm not sure if the fix patch unveiled this KASAN, or
+> if created this KASAN. This failure is observed on my test systems in stable
+> manner, but it is required to repeat nvme/061 a few hundreds of times to
+> recreated it.
 
-Jakub, thank you for looking over the Ethernet side 
-earlier(https://lore.kernel.org/linux-rdma/20250625144433.351c7be4@kernel.org/#t). 
-Are you good with them being merged via the RDMA tree? For context, the 
-ethernet patches are getting applied on net-next, and there are no 
-further ethernet patches planned for this release.
+I am not surprised that there are more bugs popping up. Maybe it was
+hidden by the previous one. Anyway let's have a look.
 
-Abhijit
+> Aug 29 15:26:06 testnode1 kernel: nvme nvme2: Please enable CONFIG_NVME_MULTIPATH for full support of multi-port devices.
 
+Do you happen to know if this is necessary to reproduce? After looking
+at it, I don't think it matters.
 
+> Aug 29 15:26:06 testnode1 kernel: nvme nvme2: NVME-FC{0}: controller connect complete
+> Aug 29 15:26:06 testnode1 kernel: (NULL device *): {0:0} Association deleted
+> Aug 29 15:26:07 testnode1 kernel: nvme nvme2: NVME-FC{0}: io failed due to lldd error 6
+> Aug 29 15:26:07 testnode1 kernel: nvme nvme2: NVME-FC{0}: transport association event: transport detected io error
+> Aug 29 15:26:07 testnode1 kernel: nvme nvme2: NVME-FC{0}: resetting controller
+> Aug 29 15:26:07 testnode1 kernel: (NULL device *): {0:0} Association freed
+> Aug 29 15:26:07 testnode1 kernel: nvme nvme2: NVME-FC{0}: create association : host wwpn 0x20001100aa000001  rport wwpn 0x20001100ab000001: NQN "blktests-subsystem-1"
+> Aug 29 15:26:07 testnode1 kernel: (NULL device *): queue 0 connect admin queue failed (-111).
+> Aug 29 15:26:07 testnode1 kernel: nvme nvme2: NVME-FC{0}: controller connectivity lost. Awaiting Reconnect
+> Aug 29 15:26:07 testnode1 kernel: ==================================================================
+> Aug 29 15:26:07 testnode1 kernel: BUG: KASAN: slab-use-after-free in fcloop_remoteport_delete+0x150/0x190 [nvme_fcloop]
+> Aug 29 15:26:07 testnode1 kernel: Write of size 8 at addr ffff8881145fa700 by task kworker/u16:9/95
+> Aug 29 15:26:07 testnode1 kernel: 
+> Aug 29 15:26:07 testnode1 kernel: CPU: 0 UID: 0 PID: 95 Comm: kworker/u16:9 Not tainted 6.17.0-rc3+ #356 PREEMPT(voluntary) 
+> Aug 29 15:26:07 testnode1 kernel: Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-4.fc42 04/01/2014
+> Aug 29 15:26:07 testnode1 kernel: Workqueue: nvme-wq nvme_fc_connect_ctrl_work [nvme_fc]
+> Aug 29 15:26:07 testnode1 kernel: Call Trace:
+> Aug 29 15:26:07 testnode1 kernel:  <TASK>
+> Aug 29 15:26:07 testnode1 kernel:  dump_stack_lvl+0x6a/0x90
+> Aug 29 15:26:07 testnode1 kernel:  ? fcloop_remoteport_delete+0x150/0x190 [nvme_fcloop]
+> Aug 29 15:26:07 testnode1 kernel:  print_report+0x170/0x4f3
+> Aug 29 15:26:07 testnode1 kernel:  ? __virt_addr_valid+0x22e/0x4e0
+> Aug 29 15:26:07 testnode1 kernel:  ? fcloop_remoteport_delete+0x150/0x190 [nvme_fcloop]
+> Aug 29 15:26:07 testnode1 kernel:  kasan_report+0xad/0x170
+> Aug 29 15:26:07 testnode1 kernel:  ? fcloop_remoteport_delete+0x150/0x190 [nvme_fcloop]
+> Aug 29 15:26:07 testnode1 kernel:  fcloop_remoteport_delete+0x150/0x190 [nvme_fcloop]
+> Aug 29 15:26:07 testnode1 kernel:  nvme_fc_ctlr_inactive_on_rport.isra.0+0x1b1/0x210 [nvme_fc]
+> Aug 29 15:26:07 testnode1 kernel:  nvme_fc_connect_ctrl_work.cold+0x33f/0x348e [nvme_fc]
+> Aug 29 15:26:07 testnode1 kernel:  ? lock_acquire+0x170/0x310
+> Aug 29 15:26:07 testnode1 kernel:  ? __pfx_nvme_fc_connect_ctrl_work+0x10/0x10 [nvme_fc]
+> Aug 29 15:26:07 testnode1 kernel:  ? lock_acquire+0x180/0x310
+> Aug 29 15:26:07 testnode1 kernel:  ? process_one_work+0x722/0x14b0
+> Aug 29 15:26:07 testnode1 kernel:  ? lock_release+0x1ad/0x300
+> Aug 29 15:26:07 testnode1 kernel:  ? rcu_is_watching+0x11/0xb0
+> Aug 29 15:26:07 testnode1 kernel:  process_one_work+0x868/0x14b0
+> Aug 29 15:26:07 testnode1 kernel:  ? __pfx_process_one_work+0x10/0x10
+> Aug 29 15:26:07 testnode1 kernel:  ? lock_acquire+0x170/0x310
+> Aug 29 15:26:07 testnode1 kernel:  ? assign_work+0x156/0x390
+> Aug 29 15:26:07 testnode1 kernel:  worker_thread+0x5ee/0xfd0
+> Aug 29 15:26:07 testnode1 kernel:  ? __pfx_worker_thread+0x10/0x10
+> Aug 29 15:26:07 testnode1 kernel:  kthread+0x3af/0x770
+> Aug 29 15:26:07 testnode1 kernel:  ? lock_acquire+0x180/0x310
+> Aug 29 15:26:07 testnode1 kernel:  ? __pfx_kthread+0x10/0x10
+> Aug 29 15:26:07 testnode1 kernel:  ? ret_from_fork+0x1d/0x4e0
+> Aug 29 15:26:07 testnode1 kernel:  ? lock_release+0x1ad/0x300
+> Aug 29 15:26:07 testnode1 kernel:  ? rcu_is_watching+0x11/0xb0
+> Aug 29 15:26:07 testnode1 kernel:  ? __pfx_kthread+0x10/0x10
+> Aug 29 15:26:07 testnode1 kernel:  ret_from_fork+0x3be/0x4e0
+> Aug 29 15:26:07 testnode1 kernel:  ? __pfx_kthread+0x10/0x10
+> Aug 29 15:26:07 testnode1 kernel:  ? __pfx_kthread+0x10/0x10
+> Aug 29 15:26:07 testnode1 kernel:  ret_from_fork_asm+0x1a/0x30
+> Aug 29 15:26:07 testnode1 kernel:  </TASK>
+> Aug 29 15:26:07 testnode1 kernel: 
+> Aug 29 15:26:07 testnode1 kernel: Allocated by task 14561:
+> Aug 29 15:26:07 testnode1 kernel:  kasan_save_stack+0x2c/0x50
+> Aug 29 15:26:07 testnode1 kernel:  kasan_save_track+0x10/0x30
+> Aug 29 15:26:07 testnode1 kernel:  __kasan_kmalloc+0x96/0xb0
+> Aug 29 15:26:07 testnode1 kernel:  fcloop_alloc_nport.isra.0+0xdb/0x910 [nvme_fcloop]
+> Aug 29 15:26:07 testnode1 kernel:  fcloop_create_target_port+0xa6/0x5a0 [nvme_fcloop]
+> Aug 29 15:26:07 testnode1 kernel:  kernfs_fop_write_iter+0x39a/0x5a0
+> Aug 29 15:26:07 testnode1 kernel:  vfs_write+0x523/0xf80
+> Aug 29 15:26:07 testnode1 kernel:  ksys_write+0xfb/0x200
+> Aug 29 15:26:07 testnode1 kernel:  do_syscall_64+0x94/0x3d0
+> Aug 29 15:26:07 testnode1 kernel:  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> Aug 29 15:26:07 testnode1 kernel: 
+> Aug 29 15:26:07 testnode1 kernel: Freed by task 14126:
+> Aug 29 15:26:07 testnode1 kernel:  kasan_save_stack+0x2c/0x50
+> Aug 29 15:26:07 testnode1 kernel:  kasan_save_track+0x10/0x30
+> Aug 29 15:26:07 testnode1 kernel:  kasan_save_free_info+0x37/0x70
+> Aug 29 15:26:07 testnode1 kernel:  __kasan_slab_free+0x5f/0x70
+> Aug 29 15:26:07 testnode1 kernel:  kfree+0x13a/0x4c0
+> Aug 29 15:26:07 testnode1 kernel:  fcloop_delete_remote_port+0x238/0x390 [nvme_fcloop]
+> Aug 29 15:26:07 testnode1 kernel:  kernfs_fop_write_iter+0x39a/0x5a0
+> Aug 29 15:26:07 testnode1 kernel:  vfs_write+0x523/0xf80
+> Aug 29 15:26:07 testnode1 kernel:  ksys_write+0xfb/0x200
+> Aug 29 15:26:07 testnode1 kernel:  do_syscall_64+0x94/0x3d0
+> Aug 29 15:26:07 testnode1 kernel:  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> Aug 29 15:26:07 testnode1 kernel: 
+> Aug 29 15:26:07 testnode1 kernel: The buggy address belongs to the object at ffff8881145fa700
+>                                    which belongs to the cache kmalloc-96 of size 96
+> Aug 29 15:26:07 testnode1 kernel: The buggy address is located 0 bytes inside of
+>                                    freed 96-byte region [ffff8881145fa700, ffff8881145fa760)
+> Aug 29 15:26:07 testnode1 kernel: 
+> Aug 29 15:26:07 testnode1 kernel: The buggy address belongs to the physical page:
+> Aug 29 15:26:07 testnode1 kernel: page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1145fa
+> Aug 29 15:26:07 testnode1 kernel: flags: 0x17ffffc0000000(node=0|zone=2|lastcpupid=0x1fffff)
+> Aug 29 15:26:07 testnode1 kernel: page_type: f5(slab)
+> Aug 29 15:26:07 testnode1 kernel: raw: 0017ffffc0000000 ffff888100042280 ffffea0004792400 dead000000000002
+> Aug 29 15:26:07 testnode1 kernel: raw: 0000000000000000 0000000080200020 00000000f5000000 0000000000000000
+> Aug 29 15:26:07 testnode1 kernel: page dumped because: kasan: bad access detected
+> Aug 29 15:26:07 testnode1 kernel: 
+> Aug 29 15:26:07 testnode1 kernel: Memory state around the buggy address:
+> Aug 29 15:26:07 testnode1 kernel:  ffff8881145fa600: 00 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc
+> Aug 29 15:26:07 testnode1 kernel:  ffff8881145fa680: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+> Aug 29 15:26:07 testnode1 kernel: >ffff8881145fa700: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+> Aug 29 15:26:07 testnode1 kernel:                    ^
+> Aug 29 15:26:07 testnode1 kernel:  ffff8881145fa780: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+> Aug 29 15:26:07 testnode1 kernel:  ffff8881145fa800: 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc
+> Aug 29 15:26:07 testnode1 kernel: ==================================================================
 
+The test is removing the ports while the host driver is about to
+reconnect and accesses a stale pointer.
+
+nvme_fc_create_association is calling nvme_fc_ctlr_inactive_on_rport in
+the error path. The problem is that nvme_fc_create_association gets half
+through the setup and then fails. In the cleanup path
+
+	dev_warn(ctrl->ctrl.device,
+		"NVME-FC{%d}: create_assoc failed, assoc_id %llx ret %d\n",
+		ctrl->cnum, ctrl->association_id, ret);
+
+is issued and then nvme_fc_ctlr_inactive_on_rport is called. And there
+is the log message above, so it's clear the error path is taken.
+
+But the thing is fcloop is not supposed to remove the ports when the
+host driver is still using it. So there is a race window where it's
+possible to enter nvme_fc_create_assocation and fcloop removing the
+ports.
+
+So between nvme_fc_create_assocation and nvme_fc_ctlr_active_on_rport.
 
