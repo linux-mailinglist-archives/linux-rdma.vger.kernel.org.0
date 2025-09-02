@@ -1,101 +1,161 @@
-Return-Path: <linux-rdma+bounces-13030-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13031-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F238B3F634
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Sep 2025 09:08:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A643B3F64D
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Sep 2025 09:13:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE56B1891693
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Sep 2025 07:09:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 153B63ACAFC
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Sep 2025 07:13:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A5B72E613B;
-	Tue,  2 Sep 2025 07:08:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05BD32E6CA5;
+	Tue,  2 Sep 2025 07:13:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EDq2ptt9"
+	dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b="KK8nmWXS";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YpCWR0bY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fhigh-a3-smtp.messagingengine.com (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC8111E868;
-	Tue,  2 Sep 2025 07:08:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E7A2E54D1;
+	Tue,  2 Sep 2025 07:13:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756796917; cv=none; b=VJWSPpFIWPHcaXAVNI+EenZ9GX3YIUe2qrwZ6UiKqd17ZvrstW9X0N8EBqpuCNRslYqS3UyldpW44/CjafuLS0MaRwnKFAnTElL/9S10G9q+Lr4EEjBOxSlhuragGy2ByBVJlC4sDJ5Pi80FCBYRC2q8HGQmLOS0pNwHYr4THz0=
+	t=1756797184; cv=none; b=SVbAtPGDvLlSwvts2UsECHePmO4b7B6QqfVLdbJHZMGOYiLxRdL47P9RYz2drczWuldR3Di6Ct+Re1rD5g8gHz+xKay7u5P9dE2dinWeXta09yPKFB4NE7bKU0QKfSNHr8eZLueGjVssHLY0uwXSzF4+ZzR0uRKiYUtg+lx5gi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756796917; c=relaxed/simple;
-	bh=t5rO2T8mcpV/W/74JNv+yoltgjj6T30b4Yx8Qdk4rr4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g70yucsmPriaXvlZeXbjXGPdCR41O9KKKnket/Ce8P52H9sqLCnjnW/5NHNLvbm8tgi+NoWR2C/50oggMW/liapBGHuCncvqMpDKWWZ1g8EqCOfA8SnRyAhQdHHCNExT1rMo2BbIc655EkndCPASA8o0ETkTAnsVT/oVWkIscwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EDq2ptt9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33A84C4CEED;
-	Tue,  2 Sep 2025 07:08:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756796917;
-	bh=t5rO2T8mcpV/W/74JNv+yoltgjj6T30b4Yx8Qdk4rr4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EDq2ptt9neIjVNygJczFJMZ0xpN43oztKUqeih3z+EM44a+t1R5VuXd83SWlPETBl
-	 Go9x91sIMJqVUXWFyLUghS4hAjn+oU/4RuycMbbx8TcpWE1x6+Z4AJprmUNy0CdHow
-	 /Zz6cuvAsBoPpbaczXv5G0q4r9iiGlnn7E+vAVxyH3KZm6/SXKIzTwWKakrhbxQypN
-	 OiYoovWE4KBtd69xQSJ+8p89I+rc7zUnYfL/Puve/hm2iFXLZeQXU/IdksAdzTB3Gn
-	 pY1leSKxEo3cAbxRdJ0qK5psMq4hcCTKMTJYMWtZIcnTYQl5VhxnBS3LfE2t0aIzDD
-	 MKh4djt661TUQ==
-Date: Tue, 2 Sep 2025 08:08:31 +0100
-From: Simon Horman <horms@kernel.org>
-To: Mahanta Jambigi <mjambigi@linux.ibm.com>
-Cc: andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, alibuda@linux.alibaba.com,
-	dust.li@linux.alibaba.com, sidraya@linux.ibm.com,
-	wenjia@linux.ibm.com, pasic@linux.ibm.com, tonylu@linux.alibaba.com,
-	guwen@linux.alibaba.com, netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-	Alexandra Winter <wintera@linux.ibm.com>
-Subject: Re: [PATCH net] net/smc: Remove validation of reserved bits in CLC
- Decline message
-Message-ID: <20250902070831.GA168966@horms.kernel.org>
-References: <20250829102626.3271637-1-mjambigi@linux.ibm.com>
+	s=arc-20240116; t=1756797184; c=relaxed/simple;
+	bh=oGDss44/R+p3Gc+SA7s6Q0fiu6Jp4FtRYb3A6LAVp9Y=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=XJY3Hm6VazjthwEZ1k76s8CoFSUP6VlmXsc6iPsiDcwaksn/Xi7IhwfLZO522imtS+auCegX7VGwt1GJhL0Jmz/nD4WnzgWty37Xytr76gZxd5BeinsEtR+9fO159GAUbcIUKKYwdYCs3ZPKkuVfUkqhymtUoNJ0LuLtlz3eZtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com; spf=pass smtp.mailfrom=fastmail.com; dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b=KK8nmWXS; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=YpCWR0bY; arc=none smtp.client-ip=103.168.172.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.com
+Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 1D8321400256;
+	Tue,  2 Sep 2025 03:13:01 -0400 (EDT)
+Received: from phl-imap-15 ([10.202.2.104])
+  by phl-compute-06.internal (MEProxy); Tue, 02 Sep 2025 03:13:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1756797181;
+	 x=1756883581; bh=toLDHdQc9Oyqd27CNLCz1AEnk/JhIml68A5kSp/J1Zg=; b=
+	KK8nmWXSOG9eC9vm3zqHImXC3Vd9TFcsAgdrRcN65bfkzWBqxJdOEbpZqxFjJLFO
+	bxAsZzlsicmJ/Cwb4FRQU4OIjvTJMW5VEBMawaQavkFNInl2eMSaA93E3a3sudu7
+	4g/fHQouWTjBvJhB+hgUOub0LWAVrhnYnRkoFvCdm/VFoRWOgoTTiAcpiiL1gbi+
+	xQ6v9HWhrnolGXJdCd4e2evm1gxiOpVr+vevQkz9Ti7T3e/GHD56cxCiZAL2uLKT
+	TD38scTPaFsoYFbBZQra9218+mOvPsuf7qgHI99Mgvp7GyjXdAPLmfcZgBRH5AQt
+	NpoLOkma7nQYd7ovt8bTCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1756797181; x=
+	1756883581; bh=toLDHdQc9Oyqd27CNLCz1AEnk/JhIml68A5kSp/J1Zg=; b=Y
+	pCWR0bYSjqAa3379JZWa5VPBaaZCz/CEiS40YM+SpHxXbEc1qZyCDwG1yy2tY88r
+	E8vp5t2+2/ggdwQw1qxjWoBSta0fROKt/kYV1wRvtAhSgLjSs9ys6u4QgyuXpjj4
+	tTnq5XudJAlpGhqVaxgJji56FS2GiIe2OpxQGUkpuqVJ/ecmNZgQiy1tmG8T+H1N
+	jWk3Y5ex9SvLdrSbgpD1XrLil4qe7y87wwrQA9ma3zWchVUvNI+RlfEHRurNM09e
+	4+Bf63BFamWhkoq7oWctiBfBEzkSaFGIs11L+ML6jatDYuqId/dZwIloNX/Ri0pn
+	3S5oU/pTvQ0lQWqsrrRzg==
+X-ME-Sender: <xms:_Ji2aPLnlh-WUgwhMOI2Zg7Mdy4FYXqxIxIczT8bOzH6p2kkAuJflQ>
+    <xme:_Ji2aDJKsv47xLFxUaz8AE-jPCXRWW3QSjsb6PDpgr7XR9hd72ylLk77W9LTz3FPw
+    40jre6gW0DnumR3igA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdefgdduleegfeelucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpeflrghmvghs
+    uceosgholhgurdiiohhnvgdvfeejfeesfhgrshhtmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeffleeuffekgfefhfejudetheevgfduudefffeifeetveekteefhefffffg
+    heejhfenucffohhmrghinhepthgvshhtvggurdhnvghtnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsgholhgurdiiohhnvgdvfeejfeesfhgr
+    shhtmhgrihhlrdgtohhmpdhnsggprhgtphhtthhopedukedpmhhouggvpehsmhhtphhouh
+    htpdhrtghpthhtohepuggrvhgvmhesuggrvhgvmhhlohhfthdrnhgvthdprhgtphhtthho
+    pegvughumhgriigvthesghhoohhglhgvrdgtohhmpdhrtghpthhtohephhhorhhmsheskh
+    gvrhhnvghlrdhorhhgpdhrtghpthhtohepkhhusggrsehkvghrnhgvlhdrohhrghdprhgt
+    phhtthhopegrlhhisghuuggrsehlihhnuhigrdgrlhhisggrsggrrdgtohhmpdhrtghpth
+    htohepughushhtrdhliheslhhinhhugidrrghlihgsrggsrgdrtghomhdprhgtphhtthho
+    pehguhifvghnsehlihhnuhigrdgrlhhisggrsggrrdgtohhmpdhrtghpthhtohepthhonh
+    ihlhhusehlihhnuhigrdgrlhhisggrsggrrdgtohhmpdhrtghpthhtohepmhhjrghmsghi
+    ghhisehlihhnuhigrdhisghmrdgtohhm
+X-ME-Proxy: <xmx:_Ji2aLoTvCpUu1JQ-VNzygKegdd3NWLEUNTPHaAN_6muHs0p2V6wrA>
+    <xmx:_Ji2aG8zF0WHaRHEHckXZMp1eTEo3LqTzgC7TY9GWMtiPgqtt3xSmw>
+    <xmx:_Ji2aM2kmYrNinIuYis4tYswnSOc60WLMQdoDYYAGUbnw5rJfsGFSg>
+    <xmx:_Ji2aBkBM2toMFghTbYgHBM1LtOipJDbWkg8nbLomGULkqGzgXkG9w>
+    <xmx:_Zi2aKkeDCsn6nW1Om00piS6NXNJNdF-aJagw9JQbvmzL4_w2iEXDKvb>
+Feedback-ID: ibd7e4881:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 85B99780070; Tue,  2 Sep 2025 03:13:00 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250829102626.3271637-1-mjambigi@linux.ibm.com>
+X-ThreadId: AYqA-NWBhw8c
+Date: Tue, 02 Sep 2025 00:12:22 -0700
+From: James <bold.zone2373@fastmail.com>
+To: "Mahanta Jambigi" <mjambigi@linux.ibm.com>, alibuda@linux.alibaba.com,
+ "Dust Li" <dust.li@linux.alibaba.com>, sidraya@linux.ibm.com,
+ wenjia@linux.ibm.com, tonylu@linux.alibaba.com, guwen@linux.alibaba.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ "Simon Horman" <horms@kernel.org>, "Shuah Khan" <skhan@linuxfoundation.org>
+Cc: linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kernel-mentees@lists.linux.dev
+Message-Id: <27d1804c-27c4-488f-9f35-1913a7f7015f@app.fastmail.com>
+In-Reply-To: <7bd60e6d-4b33-4a04-998b-0be163a6fdb0@linux.ibm.com>
+References: <20250901030512.80099-1-bold.zone2373@fastmail.com>
+ <7bd60e6d-4b33-4a04-998b-0be163a6fdb0@linux.ibm.com>
+Subject: Re: [PATCH v2] net/smc: Replace use of strncpy on NUL-terminated string with
+ strscpy
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-On Fri, Aug 29, 2025 at 12:26:26PM +0200, Mahanta Jambigi wrote:
-> Currently SMC code is validating the reserved bits while parsing the incoming
-> CLC decline message & when this validation fails, its treated as a protocol
-> error. As a result, the SMC connection is terminated instead of falling back to
-> TCP. As per RFC7609[1] specs we shouldn't be validating the reserved bits that
-> is part of CLC message. This patch fixes this issue.
-> 
-> CLC Decline message format can viewed here[2].
-> 
-> [1] https://datatracker.ietf.org/doc/html/rfc7609#page-92
-> [2] https://datatracker.ietf.org/doc/html/rfc7609#page-105
-> 
-> Fixes: 8ade200(net/smc: add v2 format of CLC decline message)
-> 
 
-Hi Mahanta,
 
-Sorry to nit-pick, but there should not be a blank line here.
-And the correct format for the Fixes tag, whith at least
-12 characters of hash, is:
+On Mon, Sep 1, 2025, at 11:40 PM, Mahanta Jambigi wrote:
+> On 01/09/25 8:34 am, James Flowers wrote:
+>> strncpy is deprecated for use on NUL-terminated strings, as indicated in
+>> Documentation/process/deprecated.rst. strncpy NUL-pads the destination
+>> buffer and doesn't guarantee the destination buffer will be NUL
+>> terminated.
+>> 
+>> Signed-off-by: James Flowers <bold.zone2373@fastmail.com>
+>> ---
+>> V1 -> V2: Replaced with two argument version of strscpy
+>> Note: this has only been compile tested.
+>> 
+>>  net/smc/smc_pnet.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> diff --git a/net/smc/smc_pnet.c b/net/smc/smc_pnet.c
+>> index 76ad29e31d60..b90337f86e83 100644
+>> --- a/net/smc/smc_pnet.c
+>> +++ b/net/smc/smc_pnet.c
+>> @@ -450,7 +450,7 @@ static int smc_pnet_add_ib(struct smc_pnettable *pnettable, char *ib_name,
+>>  		return -ENOMEM;
+>>  	new_pe->type = SMC_PNET_IB;
+>>  	memcpy(new_pe->pnet_name, pnet_name, SMC_MAX_PNETID_LEN);
+>> -	strncpy(new_pe->ib_name, ib_name, IB_DEVICE_NAME_MAX);
+>> +	strscpy(new_pe->ib_name, ib_name);
+>
+> I tested your changes by creating a Software PNET ID using *smc_pnet*
+> tool & it works fine. Your changes are similar to ae2402b(net/smc:
+> replace strncpy with strscpy) commit.
+>
+> Reviewed-by: Mahanta Jambigi <mjambigi@linux.ibm.com>
+>
+>>  	new_pe->ib_port = ib_port;
+>>  
+>>  	new_ibdev = true;
 
-Fixes: 8ade200c269f ("net/smc: add v2 format of CLC decline message")
+Thank you for doing that test, Mahanta. Thanks to all who have reviewed so far.
 
-> Signed-off-by: Mahanta Jambigi <mjambigi@linux.ibm.com>
-> Reference-ID: LTC214332
-
-Please drop this non-standard tag.
-And please only include references (by any means) to public information.
-
-> Reviewed-by: Sidraya Jayagond <sidraya@linux.ibm.com>
-> Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
-
-...
+Best regards,
+James Flowers
 
