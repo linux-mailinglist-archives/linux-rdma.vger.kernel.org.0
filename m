@@ -1,99 +1,132 @@
-Return-Path: <linux-rdma+bounces-13024-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13025-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FAFFB3F27E
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Sep 2025 04:41:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D824B3F35F
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Sep 2025 06:08:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC185189E535
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Sep 2025 02:42:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28F3420378C
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Sep 2025 04:08:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 911CC2DECD3;
-	Tue,  2 Sep 2025 02:41:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B59B12DF3FD;
+	Tue,  2 Sep 2025 04:08:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Dmpf6e0y"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="pwVaqz8a"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f227.google.com (mail-pl1-f227.google.com [209.85.214.227])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA991D61B7
-	for <linux-rdma@vger.kernel.org>; Tue,  2 Sep 2025 02:41:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.227
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43F2121C17D;
+	Tue,  2 Sep 2025 04:08:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756780914; cv=none; b=SeT8DP+q0qNoarjCvLFTPhzKw+ym/o2Yt+5LWBtV1F6SIAGaBaaZt9VyEDoVHkEfnhbOgnJX21XUNyLCpQeGQVCYkveYYkTdELw7qQ2MW1eK9bUtvxqvEr35LfpwirOH4B4jC5me2+LDoYpezLpvDQAQxMQxnm9d5wZvgpa7uP0=
+	t=1756786107; cv=none; b=GsM8R8yTlV5kilUSGXPD22mGLSSHoQD842nUcHcYWOmH40x7136LgEEqwKPUKdo9WmG6myKWKYbQt+Kaq219fM3581Nm5g++TlYg/pAPHiLQW8E0/ALXWAT0L4OrWjPm16cW3bFv20SeDew3Z/qniUW8xlix2F8mnReN2InKZWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756780914; c=relaxed/simple;
-	bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=i+EW0t31+FqUpxqkh7q6YPYVyN0NJyNw6mI8yZwQpfglnid+42MZVp2dRKzkx9upRFZNXPyCcAd0v9asI/fIkIVx6XdUfWYsxGcbLW+tiZX9KimNoAax54Jh9PBAXXrhMj5Oo0DMfjaKAAvoRI8DFplMV6EMP03QTMc3Zjjs6dA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Dmpf6e0y; arc=none smtp.client-ip=209.85.214.227
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f227.google.com with SMTP id d9443c01a7336-2489acda3bbso39294865ad.1
-        for <linux-rdma@vger.kernel.org>; Mon, 01 Sep 2025 19:41:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756780912; x=1757385712;
-        h=to:subject:message-id:date:from:mime-version:dkim-signature
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=g8AW7s7PL9PVE9N0WdoKJmvOqy6Ot7ShrpEUZpFXZh5QqZ/H5ZotADBLuReClKinNj
-         LIWVaEiHHlxr/oYQxQfipyF0I2au6Z6/YgyaQc8DiuuxBg26uK4Ns6Ea8GHmNjgOE9qB
-         D8SqR6uSkwLAKse3cncZjydvLeG18nmqym5EpnIdxYqepzJz+n3MFJltLCuqzLkSUPkj
-         duiCagL2Dz746mBGCP4Vx2f9/b2lgM8Z3VDmQdK1LiBy6ZRv68Yww8g8gXDOZRNfZXCY
-         PeeIXs7RGqSDGGy7zTqDSQa9rcFJ3oc3W1VX4Y0LJeBYZncVd1l8bHm9gAW9jQI777hv
-         qE/Q==
-X-Gm-Message-State: AOJu0YzvhPRotj2lsLLNytDpI2x61A9lLJ+ZC6oDH6hNAZe/aqBJs53A
-	rQvTdusVCAQYMqmXQ7iAzw6RsSBF44bT/VGuH0jyam8Eumcg4pjv5AC+YoLlpoZHU6yCmJxcbkr
-	Qstj4fEqGMv7gaMWLQOlaC91m/GH9JOkC0P3IrwgIyQ7ZQSBarXirBbNskSYkVCyGsJF+Xxc1FB
-	xZ+/5851NV9LV+CBHDG/InGGt4wGGYpspwcj47m/JclcOHb+SLng9KM3ZzSD+LG5W+S0r1VGzWu
-	QJCr8jmGsvkmfM=
-X-Gm-Gg: ASbGncvT/yaD2X0R8xyiircyvONDQMUx7app6ReV4G7kwsAWFyD0ZUjVywmSE0PrH9i
-	5OLNtSwdOwZiMZQ5VezUY3aHsBuqCNns0H/Cswrw5kIr2b6iOiaC58Ebt9yZ5gSiB5zgoUDIDQT
-	REQW9RlErQptTmMiL6NCQyW9NJAfYxinDTsQs34OUhKH8a36NZz0UykpzeCMlj57sAYlSQsWEf3
-	HSd239gYNgKtUH5g/RuBBYbDeTRaO4WNhmBemMXVMFNq7x0I5yb8Nd/2ikC7bEjHsLa1/BaGH6J
-	1HFQrs/hhY4tirFJQyhFl1SOUhP1gAUuI4mMfscDFKYJMUqP4V7yi9kVA+tihVuuyE06obWZUPp
-	dXRqi2NYylD+ybuIPVFIWtTenX2mlkpqJ2wXEHARCFwr9bt/NUUbT+B7dTXPx+iCvYRHwdejgog
-	==
-X-Google-Smtp-Source: AGHT+IH8HyX8PR0XE9u5XA8oRW1RFi4RVGw6OnKz6q+ySvdOzVS/kpWyD8mbyYXsi8U5g/BmvSBqq1Hm1hR6
-X-Received: by 2002:a17:903:228b:b0:246:a16c:5699 with SMTP id d9443c01a7336-24944b3d697mr132399325ad.61.1756780911984;
-        Mon, 01 Sep 2025 19:41:51 -0700 (PDT)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-16.dlp.protect.broadcom.com. [144.49.247.16])
-        by smtp-relay.gmail.com with ESMTPS id 41be03b00d2f7-b4cd006da91sm812215a12.3.2025.09.01.19.41.51
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Sep 2025 19:41:51 -0700 (PDT)
-X-Relaying-Domain: broadcom.com
-X-CFilter-Loop: Reflected
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-327594fd627so4986285a91.3
-        for <linux-rdma@vger.kernel.org>; Mon, 01 Sep 2025 19:41:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1756780910; x=1757385710; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=Dmpf6e0yI4368P7T/73kE068ErlCULAowqZ4XwGh+FF2k5nuFOf+wLdz5FSha2FmpG
-         jX57vCHp6EfjdWsl4gk5OdZ0rJmcMAhnXBdumWJkeeWm6kE5P7uxtmfZN1b4vSIb6zmI
-         2+v300fuuJBK74dBickfDBRd3XxaLlJkq3S+8=
-X-Received: by 2002:a17:90b:4f85:b0:327:add2:4f31 with SMTP id 98e67ed59e1d1-328156e57d2mr13606365a91.33.1756780910018;
-        Mon, 01 Sep 2025 19:41:50 -0700 (PDT)
-X-Received: by 2002:a17:90b:4f85:b0:327:add2:4f31 with SMTP id
- 98e67ed59e1d1-328156e57d2mr13606342a91.33.1756780909577; Mon, 01 Sep 2025
- 19:41:49 -0700 (PDT)
+	s=arc-20240116; t=1756786107; c=relaxed/simple;
+	bh=jTI556Eooi1/vXJTugUObsZl+P+sOBU/fSgyZoB4Wec=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EFI1wtlYOOZ7bGYAzxhkfSUTJI4DavFsHYPTKb6Jjz2wZnTfZH9bmt5DqpnjRs8/AfBYeMLyNqRHZYsSxe+2cjajN45q/7AEGTgPw3HA/gOVncGoWG83PrlAeIi50XIyGhVzZ/sASCgz8cj2pH3E8V0TeQRe056Dg9BpNUWZCSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=pwVaqz8a; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1756786095; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=2woiSeoT7iI3yiE5TVB69UAKIiB6QW53ddfa85a7Joo=;
+	b=pwVaqz8a7AcEmO2Muu9mRyVEbKYwMEDgFibgh5BDGnOy7KDpOMRRCVbXiCY0c/IcBn3ndf+MkmyfKOaYhBZ7bzgdnhUIPKtw68+tloz2wFLAk8OA1W7GTm1X4E7itipOv7vfpPIJMSNwo5qJh5Mr/AXlixLhag7tPhh2jw2nHmk=
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0Wn69K76_1756786093 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Tue, 02 Sep 2025 12:08:14 +0800
+Date: Tue, 2 Sep 2025 12:08:13 +0800
+From: Dust Li <dust.li@linux.alibaba.com>
+To: Mahanta Jambigi <mjambigi@linux.ibm.com>, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, alibuda@linux.alibaba.com, sidraya@linux.ibm.com,
+	wenjia@linux.ibm.com
+Cc: pasic@linux.ibm.com, horms@kernel.org, tonylu@linux.alibaba.com,
+	guwen@linux.alibaba.com, netdev@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+	Alexandra Winter <wintera@linux.ibm.com>
+Subject: Re: [PATCH net] net/smc: Remove validation of reserved bits in CLC
+ Decline message
+Message-ID: <aLZtraICmwOQAtsO@linux.alibaba.com>
+Reply-To: dust.li@linux.alibaba.com
+References: <20250829102626.3271637-1-mjambigi@linux.ibm.com>
+ <aLHAAy-S_1_Ud7l-@linux.alibaba.com>
+ <57c2976e-8b6c-4cee-803f-ca5b0636f30b@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Siva Reddy Kallam <siva.kallam@broadcom.com>
-Date: Tue, 2 Sep 2025 08:11:37 +0530
-X-Gm-Features: Ac12FXyP4JoAEama0XEk7qfjblCVlS-kP-vd0IxlvtRXpeJf6ZxQJZlc_T6MDUs
-Message-ID: <CAMet4B6mDArM8me2hOZUJiNMr3DjuAHAmK9r5AXc17zNZdxNFw@mail.gmail.com>
-Subject: subscribe
-To: linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <57c2976e-8b6c-4cee-803f-ca5b0636f30b@linux.ibm.com>
+
+On 2025-09-01 11:42:38, Mahanta Jambigi wrote:
+>
+>
+>On 29/08/25 8:28 pm, Dust Li wrote:
+>> > 
+>> > Fixes: 8ade200(net/smc: add v2 format of CLC decline message)
+>> > 
+>> > Signed-off-by: Mahanta Jambigi <mjambigi@linux.ibm.com>
+>> > Reference-ID: LTC214332
+>> 
+>> I think this is your internal ID ? It's better not to leave that
+>> in the upstream patches.
+>
+>Oops, I missed to remove it. Sure, I'll remove it.
+>
+>> 
+>> > Reviewed-by: Sidraya Jayagond <sidraya@linux.ibm.com>
+>> > Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
+>> > 
+>> > ---
+>> > net/smc/smc_clc.c | 2 --
+>> > 1 file changed, 2 deletions(-)
+>> > 
+>> > diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
+>> > index 5a4db151fe95..08be56dfb3f2 100644
+>> > --- a/net/smc/smc_clc.c
+>> > +++ b/net/smc/smc_clc.c
+>> > @@ -426,8 +426,6 @@ smc_clc_msg_decl_valid(struct smc_clc_msg_decline *dclc)
+>> > {
+>> > 	struct smc_clc_msg_hdr *hdr = &dclc->hdr;
+>> > 
+>> > -	if (hdr->typev1 != SMC_TYPE_R && hdr->typev1 != SMC_TYPE_D)
+>> > -		return false;
+>> 
+>> Here it's checking the typev1 in smc_clc_msg_hdr, but your commit message
+>> says it's validating the reserved bits:
+>> 
+>>    Currently SMC code is validating the reserved bits while parsing the incoming
+>>    CLC decline message & when this validation fails, its treated as a protocol
+>>    error.
+>> 
+>> Did I miss something ?
+>
+>If you refer to struct *smc_clc_msg_hdr* in smc_clc.h file, typev1 member
+>represents bits 4 & 5 at offset 7. If we compare it with the CLC Decline
+>message header, it represents one of the reserved(5-7 bits) at offset 7. You
+>can refer to below link for reserved bits.
+>
+>https://datatracker.ietf.org/doc/html/rfc7609#page-105
+
+Oh, I see, thanks! The patch looks good to me.
+
+
+BTW, I checked the rfc7609 and SMCv2.1 spec:
+https://www.ibm.com/support/pages/system/files/inline-files/IBM%20Shared%20Memory%20Communications%20Version%202.1_0.pdf
+
+I think the name type1/type2 in smc_clc_msg_hdr is confusing, as it doesn't sync
+with the spec for decline message.
+
+Best regards,
+Dust
 
 
 
