@@ -1,94 +1,200 @@
-Return-Path: <linux-rdma+bounces-13073-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13074-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31950B42C8D
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Sep 2025 00:10:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E802B42D7F
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Sep 2025 01:39:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C4C17AA48F
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Sep 2025 22:08:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2758C1C22FA5
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Sep 2025 23:39:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA762EDD52;
-	Wed,  3 Sep 2025 22:10:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21F5927B4E4;
+	Wed,  3 Sep 2025 23:39:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M/z3YDuk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BtnVAY42"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C59FC2ECEAE;
-	Wed,  3 Sep 2025 22:10:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D96824677D;
+	Wed,  3 Sep 2025 23:39:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756937403; cv=none; b=uYjK8rmA873hWeLhX7FdjG8i/P0cWcl1Pqg8fhYqx9/YKDFxIi28jCOGOgyubJoIRkcnc4GSX6r1YqhJ7MULkWUIrCrpUO9Zpq5+WXUoj7CPPJZ/sqxX6DOyOj5BWu3HV1rpAS1k5FbTpK1c9ucptF+l8ysd1Kk9ZXCVB4TuQT0=
+	t=1756942742; cv=none; b=Mc0h7oxHEBu+bEnrBgKN9B2ZLsJpGyiluX9WKbaGyDFE6hkdZRDxyQn1PiBWj0e4LU8aysepUEY4NmFdpoIxrgZFZ9XJtFKAWYSNAybrNAbjLNKplXzJEpCl9LsfkcO5v8+z+iJ4EfFlPurLa804J4aHr14z286NmTscKnqE8MA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756937403; c=relaxed/simple;
-	bh=cJLDDvPcPL4O4YAzuxUUFnnO+/RebYjcF6y3auColIE=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=H84E+GGe8IX2HXncvNdNWZi22sn3kdwL2gcU2l6sTyRccUHZtFuen2V8uf1mB7yQqK/12B0ZShye23ycGB5z9PPwr/knI4AhutLQ/mkz/YOPeMMITr2k45VS8tWJl7KaFvda0/7eeR+sDap5EyGCJ9qZ/PL1fJGmmWksEOHQ9zQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M/z3YDuk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 680CEC4CEE7;
-	Wed,  3 Sep 2025 22:10:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1756937402;
-	bh=cJLDDvPcPL4O4YAzuxUUFnnO+/RebYjcF6y3auColIE=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=M/z3YDukG4DzBpvAw3wQlZxaA2yf3Xcj9l2r6kCR+Br+cBNwFWZABrRP2c95NtezD
-	 tkIeY+mk0tHMaBYSjQ5bwbSeVFwDPM+xt7lMrWFrUUfk/rWhcRU3zkkz0zfRHlywTo
-	 j59KNUBlYMasit5z9odTYFTY27eTYzWXOms/l/zWrYK7mZPktOJiTa/UZQe3hwoq+a
-	 BIUhxQsIqfhzhWRFecsJ+152kxdw9UUzm/nKeRaXaO7e/O0aszTltn1AudnHuH3xtF
-	 c05gK2vqlldHRer8GAJ/WsimQ+iNWC683se0szDRVRL+CHh5bqaoeLQxMiOLx+AhqN
-	 j0JMXfoe7zQCg==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADC32383C259;
-	Wed,  3 Sep 2025 22:10:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1756942742; c=relaxed/simple;
+	bh=RZOICfDiuL5KBp01Tpbggkwd+ps6zFVvHSlxZn9X+Jw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gnpO0byjVwJUrrqoBfyMPC7Z1kBghXGT9j753VTmO0ND5Q2Uf21QD8RaxNVb5N1GQE7/lpxaKuCqE9PrRaSYY4tDk3O1NcYO7feSnm7QH+9OV6Xb0309nnfUwS6HKUcGrDX1i3Y181wXr7A9IYqkWZ0ess9iR/i5aS+yPutQd90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BtnVAY42; arc=none smtp.client-ip=209.85.215.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-b471737b347so244664a12.1;
+        Wed, 03 Sep 2025 16:39:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1756942740; x=1757547540; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Z12ABXWEzXqZcaHBvu7IqMQ7zDyeIiaeHwQRXzioUPU=;
+        b=BtnVAY42jmdaxWsYHLS3I85t1p5MqRlqXUX2An3kPEDho5hhaK0HUuAOtqKtFAxAs6
+         WEodhXSOyU/KTX6nt9pGwfJWhE9K3ixyZM0vjCoFm7n0nn9qt8gHeinZH+jyFjEQuD5t
+         BfAi8ktjvf5zEs3cE74zzo/6uZtXte7k6s4WE1dw05WAJpGahpxytxO2+d6y32odGe9e
+         9lGei1c0PGGgDT2zfvSQlmG3Qghz5sNjN1y7Cnxb96YXzkMuQgJ+IPzzWb2/GkaHlB+x
+         2P7+8lc7fcb+oBsGkZFvyLHZlRQBNhL1ODZtWPxYku9FJ4yRM2Z71mBbtuxg8Jp2atUU
+         H1jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1756942740; x=1757547540;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z12ABXWEzXqZcaHBvu7IqMQ7zDyeIiaeHwQRXzioUPU=;
+        b=KnBn9VR/NtoofKYw+oJvnilHpIEvx8GbsvCWlXVuowc6BiaUiIQ6y2bctwKu/T8VFb
+         c7N5sFCZIdrjQdA+2MQFoulbLuMPBPgdY61xzI+6neP5aE4BQv1jGw/X3rLI3IX7IK6A
+         N8cq6pU0c85wTBWwhn8APA2yw9n4afhOD5hsJEJqind/ZQOjfzHA2+Yg7xjxFvXoEnoW
+         pjr2aEYhMz7XXrv8fVzJ7cpiI+CKi++22LEu5qTvAnFdaQYdGL3UNbM2KCufJUNC5zmT
+         +JlaZ0wkEEA21yioRKAg1AhCv78TmFRkqFLDsQsOXR8uW5yzcShT73gXa1py4SwZKhRk
+         Tdog==
+X-Forwarded-Encrypted: i=1; AJvYcCVVK1ypy7KVF3xzxgGs1LjB/cD9/vzW5Sh0669bJVyNiz4vrB6WMK6W1xlCZATan7Rh9e3Gywc8rXMbYA==@vger.kernel.org, AJvYcCWxcqf8Z7Eeh92dAMAGbI8ANIxreqp/KblYl33NyqZqcyw7Uru5kJfSbWzraGNwluMV1Gw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YweWTCmE4aAoCR2GC7Y4S2CJWl1hL5WlDhpPdaFak0wUSCsR5uL
+	IHCiQCowMSwiiAXw2gjH8lBWjXGxS8Ed8nds7tjI3KrAq5ID0wFBR0KR
+X-Gm-Gg: ASbGncufPAp8zBEpgg46Lvwh+LirO62+3mtgwlVImGk/mTgqdk6h7Ucuk/bgzWsmhwS
+	Lrmn91ATVHGzWgUwKxoGe4dcrtPwj3cvaHczkfs/TcXdkbXzLkpXPsFAdLmWHkpO7lLsalFZedS
+	ZNs9JSdWk9XRq3hkiaIHIpsIbSyN5au2Z0fwnFK4umKazNHkjElkNo+Rkp3Yl9oFwGdqwpwCeEc
+	NW72tV+qc9gfWYlWyb7yuKFvTP0arJZAdapJVUB6+VshSQEGYwrBXOM4jPcFHheelAJ19NI5q0O
+	faErnMD7LIvU5ZRoJunYCVLfU3rs4VO5brL+BgGbiRj/uB5jjc9G09griOHLwojc94K1yUNPi3t
+	RwLgNkDvr9WEXARCwId3FoAtjB0M6SUWINP8AufubF2xKw8yljxxSkuNEFI2Ki25P0ObBvlBoYM
+	4o
+X-Google-Smtp-Source: AGHT+IFlVlW4wyVFzJGmUC434Y82dVvdmWR0zRlrKzhgQnQHqYzNdkO9p8Iz4i88nTLylMED71XEJw==
+X-Received: by 2002:a17:902:d4cb:b0:246:cc24:3934 with SMTP id d9443c01a7336-2494487342emr242374005ad.1.1756942740363;
+        Wed, 03 Sep 2025 16:39:00 -0700 (PDT)
+Received: from [172.37.169.159] (245.sub-97-133-23.myvzw.com. [97.133.23.245])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24b2570cfc8sm50926475ad.76.2025.09.03.16.38.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Sep 2025 16:39:00 -0700 (PDT)
+Message-ID: <b840533a-25e1-4884-9d9e-222d9bf79635@gmail.com>
+Date: Wed, 3 Sep 2025 16:38:55 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [GIT PULL] mlx5 PSP IFC bits
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175693740749.1217361.16080488330185740117.git-patchwork-notify@kernel.org>
-Date: Wed, 03 Sep 2025 22:10:07 +0000
-References: <20250903063050.668442-1-saeed@kernel.org>
-In-Reply-To: <20250903063050.668442-1-saeed@kernel.org>
-To: Saeed Mahameed <saeed@kernel.org>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
- edumazet@google.com, jgg@nvidia.com, saeedm@nvidia.com,
- linux-rdma@vger.kernel.org, leonro@nvidia.com, netdev@vger.kernel.org,
- mbloch@nvidia.com, tariqt@nvidia.com, daniel.zahka@gmail.com,
- raeds@nvidia.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v4 2/2] net/mlx5: Avoid copying payload to the
+ skb's linear part
+To: cpaasch@openai.com, Gal Pressman <gal@nvidia.com>,
+ Dragos Tatulea <dtatulea@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
+ Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+ Leon Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>
+Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org, bpf@vger.kernel.org
+References: <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-0-bfcd5033a77c@openai.com>
+ <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-2-bfcd5033a77c@openai.com>
+Content-Language: en-US
+From: Amery Hung <ameryhung@gmail.com>
+In-Reply-To: <20250828-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v4-2-bfcd5033a77c@openai.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello:
 
-This pull request was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
 
-On Tue,  2 Sep 2025 23:30:49 -0700 you wrote:
-> From: Saeed Mahameed <saeedm@nvidia.com>
-> 
-> Hi Jakub, Jason,
-> 
-> This PR has a single patch to add mlx5_ifc PSP related capabilities structures
-> and HW definitions needed for PSP support in mlx5.
-> 
-> [...]
+On 8/28/25 8:36 PM, Christoph Paasch via B4 Relay wrote:
+> From: Christoph Paasch <cpaasch@openai.com>
+>
+> mlx5e_skb_from_cqe_mpwrq_nonlinear() copies MLX5E_RX_MAX_HEAD (256)
+> bytes from the page-pool to the skb's linear part. Those 256 bytes
+> include part of the payload.
+>
+> When attempting to do GRO in skb_gro_receive, if headlen > data_offset
+> (and skb->head_frag is not set), we end up aggregating packets in the
+> frag_list.
+>
+> This is of course not good when we are CPU-limited. Also causes a worse
+> skb->len/truesize ratio,...
+>
+> So, let's avoid copying parts of the payload to the linear part. We use
+> eth_get_headlen() to parse the headers and compute the length of the
+> protocol headers, which will be used to copy the relevant bits ot the
+> skb's linear part.
+>
+> We still allocate MLX5E_RX_MAX_HEAD for the skb so that if the networking
+> stack needs to call pskb_may_pull() later on, we don't need to reallocate
+> memory.
+>
+> This gives a nice throughput increase (ARM Neoverse-V2 with CX-7 NIC and
+> LRO enabled):
+>
+> BEFORE:
+> =======
+> (netserver pinned to core receiving interrupts)
+> $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
+>   87380  16384 262144    60.01    32547.82
+>
+> (netserver pinned to adjacent core receiving interrupts)
+> $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
+>   87380  16384 262144    60.00    52531.67
+>
+> AFTER:
+> ======
+> (netserver pinned to core receiving interrupts)
+> $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
+>   87380  16384 262144    60.00    52896.06
+>
+> (netserver pinned to adjacent core receiving interrupts)
+>   $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
+>   87380  16384 262144    60.00    85094.90
+>
+> Additional tests across a larger range of parameters w/ and w/o LRO, w/
+> and w/o IPv6-encapsulation, different MTUs (1500, 4096, 9000), different
+> TCP read/write-sizes as well as UDP benchmarks, all have shown equal or
+> better performance with this patch.
+>
+> Signed-off-by: Christoph Paasch <cpaasch@openai.com>
+> ---
+>   drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+> index 8bedbda522808cbabc8e62ae91a8c25d66725ebb..792bb647ba28668ad7789c328456e3609440455d 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+> @@ -2047,6 +2047,8 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+>   		dma_sync_single_for_cpu(rq->pdev, addr + head_offset, headlen,
+>   					rq->buff.map_dir);
+>   
+> +		headlen = eth_get_headlen(skb->dev, head_addr, headlen);
+> +
 
-Here is the summary with links:
-  - [GIT,PULL] mlx5 PSP IFC bits
-    https://git.kernel.org/netdev/net-next/c/0e2a5208cc3d
+Hi,
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+I am building on top of this patchset and got a kernel crash. It was 
+triggered by attaching an xdp program.
 
+I think the problem is skb->dev is still NULL here. It will be set later by:
+mlx5e_complete_rx_cqe() -> mlx5e_build_rx_skb() -> eth_type_trans()
+
+
+>   		frag_offset += headlen;
+>   		byte_cnt -= headlen;
+>   		linear_hr = skb_headroom(skb);
+> @@ -2123,6 +2125,9 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *w
+>   				pagep->frags++;
+>   			while (++pagep < frag_page);
+>   		}
+> +
+> +		headlen = eth_get_headlen(skb->dev, mxbuf->xdp.data, headlen);
+> +
+>   		__pskb_pull_tail(skb, headlen);
+>   	} else {
+>   		if (xdp_buff_has_frags(&mxbuf->xdp)) {
+>
 
 
