@@ -1,328 +1,165 @@
-Return-Path: <linux-rdma+bounces-13093-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13094-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74E3EB4451E
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Sep 2025 20:11:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 125F2B44547
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Sep 2025 20:26:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F6561C880CC
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Sep 2025 18:11:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAB01A47464
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Sep 2025 18:26:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8247F342C94;
-	Thu,  4 Sep 2025 18:11:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 678D4342CB6;
+	Thu,  4 Sep 2025 18:26:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="Nch4Okn3"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="HBmN3SnX"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
+Received: from mout.web.de (mout.web.de [212.227.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E57341ACF;
-	Thu,  4 Sep 2025 18:11:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 416A7342C9C;
+	Thu,  4 Sep 2025 18:25:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757009478; cv=none; b=dnPN5hYYPSs7Cvmbtj2wgz+uJzY8TdR+bovTOXQUKrjdlKelH6M3+OdAhEHrTNhYz9S2vyiBNAJpyvVCLIFka9zL4y7r0npTPjAn7TT0asL6NwkFn55pjHuG6mBezJJ/WicKR5ilrx96QQzHYhK4Z+4ik9Y64/hB1WE7kd/Byjc=
+	t=1757010362; cv=none; b=TswZ9j2c1U9v4QOJB5eixzPTtArJZcl2sFXTWqlx1qpNacq/wOdESnAmVJVg8LtGzfG+LtJQZQNCIMqyNscvtAi6aF3fvvFZu7/d2OvdBs2oid9V2tlqbVdNAf1gGv78cJHTua+5SdedyOqKCwsP7Rg3JI5j2zOo4j79wZe/xfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757009478; c=relaxed/simple;
-	bh=jJrDOxd3dLrB1uSC4dO4POJ7QpSpLTBVDZrUf0xF9Wc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ByBn3Ml44Jgl10tkKY3qHW7NZMOJxRN5BnGGqvzOpgidDfYYuOUpjWJtRM/tWw8zoYQRn3kRso9iD7Iv/zFYmzlEAE2PK88a8OFCHkQAF69hSPMgmgkwiXofuvWaivnySEPsZMMXREMlqhxfRQ89eMCvrgtMaxJRKFiaAZD/454=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=Nch4Okn3; arc=none smtp.client-ip=144.76.82.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-	s=42; h=Message-ID:Date:Cc:To:From;
-	bh=sIFnMhg6Zy70elxx9bXPS/PX1TWz6D8vQq0QtLRDqGk=; b=Nch4Okn3sxQD+2QZNepsDJuykg
-	LyD4+QP3fq3Y0EKZuTWhjS7apHnXeHymKEEGBVV1rnN9/H49QsNhvvdU2c1wL+JJvvGhFJOkK3eVU
-	NgOD9pUrXpcdj4+qer7g8NousfFl17WR4EuN9TKywVksIggg+QqWYCN5350284n/BN9ODrwp0yDqm
-	kyk+9nZNydqG1nxV9HSoW0JlyHtZsQfPtYkYGN/k1BioYB4MOmlTo49RAK0v7Z8YmvSCXPwZqEKeN
-	dR7p22Yi3unNrmT8h2cAgEThzjE2nP9VHRHFy7S4UJNLndmWgDfQU6OKKR29cuWqv2rstKPkT6x/A
-	54Kt8Agqk9v+9goB5A+t6UDOtgUPX168QMUSF5NS9IqFvVk17pmiyReDmes8K0uel/i9gUEy/CFG4
-	scT+rqUEzcT/MC9kcUCEMIQ9gWz0rh0wapyOxMfcQt191015AD7gDOWeyN8Jx5AdemNApD18pDhI7
-	2fABk2s9cVMEVnXgKArNpRcq;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__CHACHA20_POLY1305:256)
-	(Exim)
-	id 1uuEQS-002Ru9-1i;
-	Thu, 04 Sep 2025 18:11:12 +0000
-From: Stefan Metzmacher <metze@samba.org>
-To: linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org
-Cc: metze@samba.org,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	Steve French <smfrench@gmail.com>,
-	Tom Talpey <tom@talpey.com>,
-	Hyunchul Lee <hyc.lee@gmail.com>,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH] smb: server: let smb_direct_writev() respect SMB_DIRECT_MAX_SEND_SGES
-Date: Thu,  4 Sep 2025 20:10:59 +0200
-Message-ID: <20250904181059.1594876-1-metze@samba.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1757010362; c=relaxed/simple;
+	bh=+tteNLx9opozrh1s8Efp+6clgTIu9P57fY5cwnZi94A=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=Dr2HCf/cFBvbJMTFdX+EiHAi4RDwB9+kYYQJP0ERbi8zHluWmSjNJPYkA+Riq/BCzYqHJ2bPZdOKwfOPbbgwqDDtHL39gLBeG+FtLkNelGIMqin0KfCnPUbzrBW+uWEBtOHb+sec/q3J/cxh2LLNZw7rOMnypQD1ITEfySKM4lk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=HBmN3SnX; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1757010335; x=1757615135; i=markus.elfring@web.de;
+	bh=AxrXcyH9yQHDLWNeHJjAZYu3Zod7lCovQeXx09PsYAA=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=HBmN3SnX4I+aK+YhRllSRifvY6VFm94Wyq7C5wa3doujWMyst2+y6XS4NdpYtZyL
+	 e7z+tDex3YWab5BC8J506X93swI5qtOQXLPYp71NjExDntSGbYOETUmVoxzaZVXcH
+	 bwZoa1v2IG+VRmhUPeOWB6Ru67LgAuz/Zu4beLoh+2N8oIK1fEQWQo6RaioIuE0yA
+	 ICrXR2fva3SS1pIA53QFwfAvBdnyrrpp6fwy5cWxDXAONOf6F8JM4qyqgpQMKK1Ok
+	 TRLMkPTyZqJbiaenA6Sr2FOWFrhE2/SpB3R/FhKgW3I8J4IxzFhE4dZIvGcKYmkSc
+	 8iM90iss4yBpyclKkQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.29] ([94.31.92.243]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MGgNU-1uhbbR2BGs-00Girz; Thu, 04
+ Sep 2025 20:25:35 +0200
+Message-ID: <c9f68648-8231-455f-adcf-eec83a282e4b@web.de>
+Date: Thu, 4 Sep 2025 20:25:25 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+To: Makar Semyonov <m.semenov@tssltd.ru>, linux-rdma@vger.kernel.org,
+ netdev@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Saeed Mahameed <saeedm@nvidia.com>,
+ Sabrina Dubroca <sd@queasysnail.net>, Tariq Toukan <tariqt@nvidia.com>
+References: <20250904140858.1690639-1-m.semenov@tssltd.ru>
+Subject: Re: [PATCH 1/2] eth: mlx5: fix double free of flow_table groups on
+ allocation failure
+Content-Language: en-GB, de-DE
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20250904140858.1690639-1-m.semenov@tssltd.ru>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:9O+Dw4A/WU71jMlPHXMsJnEC886sjLXmFlhRnyH72BAeTPFddtz
+ KtnNHDXdbo+PCLbKUxH8rQlLWsc8+jCvh4S1Ebd51rxUO11uBTHJMCDZul3g/kCtOCwPjH8
+ hgek5LBlQ21TJF6rR+Pc+Ee8WlOkXFniHvketp9kg0YRx8Xi8NDR8ZaEwStrnmE1xfCwGCK
+ A9lcyXv063QKUz6SmJQzg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:kauTz5nALZo=;c/umTDZRCnY293/zQjo+ygU91TX
+ 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
+ 1qkcHxoCNIkJg2gmFQbjnuGwGWGeN/Pg==
 
-We should not use more sges for ib_post_send() than we told the rdma
-device in rdma_create_qp()!
+=E2=80=A6
+> This commit fixes the issue by =E2=80=A6
 
-Otherwise ib_post_send() will return -EINVAL, so we disconnect the
-connection. Or with the current siw.ko we'll get 0 from ib_post_send(),
-but will never ever get a completion for the request. I've already sent a
-fix for siw.ko...
+* See also:
+  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/=
+Documentation/process/submitting-patches.rst?h=3Dv6.17-rc4#n94
 
-So we need to make sure smb_direct_writev() limits the number of vectors
-we pass to individual smb_direct_post_send_data() calls, so that we
-don't go over the queue pair limits.
+* How do you think about to add any tags (like =E2=80=9CFixes=E2=80=9D and=
+ =E2=80=9CCc=E2=80=9D) accordingly?
 
-Commit 621433b7e25d ("ksmbd: smbd: relax the count of sges required")
-was very strange and I guess only needed because
-SMB_DIRECT_MAX_SEND_SGES was 8 at that time. It basically removed the
-check that the rdma device is able to handle the number of sges we try
-to use.
+* Would you like to reconsider the numbers in the subject prefix?
 
-While the real problem was added by commit ddbdc861e37c ("ksmbd: smbd:
-introduce read/write credits for RDMA read/write") as it used the
-minumun of device->attrs.max_send_sge and device->attrs.max_sge_rd, with
-the problem that device->attrs.max_sge_rd is always 1 for iWarp. And
-that limitation should only apply to RDMA Read operations. For now we
-keep that limitation for RDMA Write operations too, fixing that is a
-task for another day as it's not really required a bug fix.
 
-Commit 2b4eeeaa9061 ("ksmbd: decrease the number of SMB3 smbdirect
-server SGEs") lowered SMB_DIRECT_MAX_SEND_SGES to 6, which is also used
-by our client code. And that client code enforces
-device->attrs.max_send_sge >= 6 since commit d2e81f92e5b7 ("Decrease the
-number of SMB3 smbdirect client SGEs") and (briefly looking) only the
-i40w driver provides only 3, see I40IW_MAX_WQ_FRAGMENT_COUNT. But
-currently we'd require 4 anyway, so that would not work anyway, but now
-it fails early.
-
-Cc: Namjae Jeon <linkinjeon@kernel.org>
-Cc: Steve French <smfrench@gmail.com>
-Cc: Tom Talpey <tom@talpey.com>
-Cc: Hyunchul Lee <hyc.lee@gmail.com>
-Cc: linux-cifs@vger.kernel.org
-Cc: samba-technical@lists.samba.org
-Cc: linux-rdma@vger.kernel.org
-Fixes: 0626e6641f6b ("cifsd: add server handler for central processing and tranport layers")
-Fixes: ddbdc861e37c ("ksmbd: smbd: introduce read/write credits for RDMA read/write")
-Fixes: 621433b7e25d ("ksmbd: smbd: relax the count of sges required")
-Fixes: 2b4eeeaa9061 ("ksmbd: decrease the number of SMB3 smbdirect server SGEs")
-Signed-off-by: Stefan Metzmacher <metze@samba.org>
----
- fs/smb/server/transport_rdma.c | 157 ++++++++++++++++++++++-----------
- 1 file changed, 107 insertions(+), 50 deletions(-)
-
-diff --git a/fs/smb/server/transport_rdma.c b/fs/smb/server/transport_rdma.c
-index 6cfca9a00060..3fb1b797a080 100644
---- a/fs/smb/server/transport_rdma.c
-+++ b/fs/smb/server/transport_rdma.c
-@@ -1219,78 +1219,130 @@ static int smb_direct_writev(struct ksmbd_transport *t,
- 			     bool need_invalidate, unsigned int remote_key)
- {
- 	struct smb_direct_transport *st = smb_trans_direct_transfort(t);
--	int remaining_data_length;
--	int start, i, j;
--	int max_iov_size = st->max_send_size -
-+	size_t remaining_data_length;
-+	size_t iov_idx;
-+	size_t iov_ofs;
-+	size_t max_iov_size = st->max_send_size -
- 			sizeof(struct smb_direct_data_transfer);
- 	int ret;
--	struct kvec vec;
- 	struct smb_direct_send_ctx send_ctx;
-+	int error = 0;
- 
- 	if (st->status != SMB_DIRECT_CS_CONNECTED)
- 		return -ENOTCONN;
- 
- 	//FIXME: skip RFC1002 header..
-+	if (WARN_ON_ONCE(niovs <= 1 || iov[0].iov_len != 4))
-+		return -EINVAL;
- 	buflen -= 4;
-+	iov_idx = 1;
-+	iov_ofs = 0;
- 
- 	remaining_data_length = buflen;
- 	ksmbd_debug(RDMA, "Sending smb (RDMA): smb_len=%u\n", buflen);
- 
- 	smb_direct_send_ctx_init(st, &send_ctx, need_invalidate, remote_key);
--	start = i = 1;
--	buflen = 0;
--	while (true) {
--		buflen += iov[i].iov_len;
--		if (buflen > max_iov_size) {
--			if (i > start) {
--				remaining_data_length -=
--					(buflen - iov[i].iov_len);
--				ret = smb_direct_post_send_data(st, &send_ctx,
--								&iov[start], i - start,
--								remaining_data_length);
--				if (ret)
-+	while (remaining_data_length) {
-+		struct kvec vecs[SMB_DIRECT_MAX_SEND_SGES - 1]; /* minus smbdirect hdr */
-+		size_t possible_bytes = max_iov_size;
-+		size_t possible_vecs;
-+		size_t bytes = 0;
-+		size_t nvecs = 0;
-+
-+		/*
-+		 * For the last message remaining_data_length should be
-+		 * have been 0 already!
-+		 */
-+		if (WARN_ON_ONCE(iov_idx >= niovs)) {
-+			error = -EINVAL;
-+			goto done;
-+		}
-+
-+		/*
-+		 * We have 2 factors which limit the arguments we pass
-+		 * to smb_direct_post_send_data():
-+		 *
-+		 * 1. The number of supported sges for the send,
-+		 *    while one is reserved for the smbdirect header.
-+		 *    And we currently need one SGE per page.
-+		 * 2. The number of negotiated payload bytes per send.
-+		 */
-+		possible_vecs = min_t(size_t, ARRAY_SIZE(vecs), niovs - iov_idx);
-+
-+		while (iov_idx < niovs && possible_vecs && possible_bytes) {
-+			struct kvec *v = &vecs[nvecs];
-+			int page_count;
-+
-+			v->iov_base = ((u8 *)iov[iov_idx].iov_base) + iov_ofs;
-+			v->iov_len = min_t(size_t,
-+					   iov[iov_idx].iov_len - iov_ofs,
-+					   possible_bytes);
-+			page_count = get_buf_page_count(v->iov_base, v->iov_len);
-+			if (page_count > possible_vecs) {
-+				/*
-+				 * If the number of pages in the buffer
-+				 * is to much (because we currently require
-+				 * one SGE per page), we need to limit the
-+				 * length.
-+				 *
-+				 * We know possible_vecs is at least 1,
-+				 * so we always keep the first page.
-+				 *
-+				 * We need to calculate the number extra
-+				 * pages (epages) we can also keep.
-+				 *
-+				 * We calculate the number of bytes in the
-+				 * first page (fplen), this should never be
-+				 * larger than v->iov_len because page_count is
-+				 * at least 2, but adding a limitation feels
-+				 * better.
-+				 *
-+				 * Then we calculate the number of bytes (elen)
-+				 * we can keep for the extra pages.
-+				 */
-+				size_t epages = possible_vecs - 1;
-+				size_t fpofs = offset_in_page(v->iov_base);
-+				size_t fplen = min_t(size_t, PAGE_SIZE - fpofs, v->iov_len);
-+				size_t elen = min_t(size_t, v->iov_len - fplen, epages*PAGE_SIZE);
-+
-+				v->iov_len = fplen + elen;
-+				page_count = get_buf_page_count(v->iov_base, v->iov_len);
-+				if (WARN_ON_ONCE(page_count > possible_vecs)) {
-+					/*
-+					 * Something went wrong in the above
-+					 * logic...
-+					 */
-+					error = -EINVAL;
- 					goto done;
--			} else {
--				/* iov[start] is too big, break it */
--				int nvec  = (buflen + max_iov_size - 1) /
--						max_iov_size;
--
--				for (j = 0; j < nvec; j++) {
--					vec.iov_base =
--						(char *)iov[start].iov_base +
--						j * max_iov_size;
--					vec.iov_len =
--						min_t(int, max_iov_size,
--						      buflen - max_iov_size * j);
--					remaining_data_length -= vec.iov_len;
--					ret = smb_direct_post_send_data(st, &send_ctx, &vec, 1,
--									remaining_data_length);
--					if (ret)
--						goto done;
- 				}
--				i++;
--				if (i == niovs)
--					break;
- 			}
--			start = i;
--			buflen = 0;
--		} else {
--			i++;
--			if (i == niovs) {
--				/* send out all remaining vecs */
--				remaining_data_length -= buflen;
--				ret = smb_direct_post_send_data(st, &send_ctx,
--								&iov[start], i - start,
--								remaining_data_length);
--				if (ret)
--					goto done;
--				break;
-+			possible_vecs -= page_count;
-+			nvecs += 1;
-+			possible_bytes -= v->iov_len;
-+			bytes += v->iov_len;
-+
-+			iov_ofs += v->iov_len;
-+			if (iov_ofs >= iov[iov_idx].iov_len) {
-+				iov_idx += 1;
-+				iov_ofs = 0;
- 			}
- 		}
-+
-+		remaining_data_length -= bytes;
-+
-+		ret = smb_direct_post_send_data(st, &send_ctx,
-+						vecs, nvecs,
-+						remaining_data_length);
-+		if (unlikely(ret)) {
-+			error = ret;
-+			goto done;
-+		}
- 	}
- 
- done:
- 	ret = smb_direct_flush_send_list(st, &send_ctx, true);
-+	if (unlikely(!ret && error))
-+		ret = error;
- 
- 	/*
- 	 * As an optimization, we don't wait for individual I/O to finish
-@@ -1757,6 +1809,11 @@ static int smb_direct_init_params(struct smb_direct_transport *t,
- 		return -EINVAL;
- 	}
- 
-+	if (device->attrs.max_send_sge < SMB_DIRECT_MAX_SEND_SGES) {
-+		pr_err("warning: device max_send_sge = %d too small\n",
-+		       device->attrs.max_send_sge);
-+		return -EINVAL;
-+	}
- 	if (device->attrs.max_recv_sge < SMB_DIRECT_MAX_RECV_SGES) {
- 		pr_err("warning: device max_recv_sge = %d too small\n",
- 		       device->attrs.max_recv_sge);
-@@ -1780,7 +1837,7 @@ static int smb_direct_init_params(struct smb_direct_transport *t,
- 
- 	cap->max_send_wr = max_send_wrs;
- 	cap->max_recv_wr = t->recv_credit_max;
--	cap->max_send_sge = max_sge_per_wr;
-+	cap->max_send_sge = SMB_DIRECT_MAX_SEND_SGES;
- 	cap->max_recv_sge = SMB_DIRECT_MAX_RECV_SGES;
- 	cap->max_inline_data = 0;
- 	cap->max_rdma_ctxs = t->max_rw_credits;
--- 
-2.43.0
-
+Regards,
+Markus
 
