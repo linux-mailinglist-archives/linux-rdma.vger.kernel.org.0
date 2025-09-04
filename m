@@ -1,97 +1,101 @@
-Return-Path: <linux-rdma+bounces-13083-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13084-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B170DB43CC5
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Sep 2025 15:14:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 359FAB43CCA
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Sep 2025 15:14:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 619F11C21BFB
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Sep 2025 13:14:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4D005854F8
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Sep 2025 13:14:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D530301022;
-	Thu,  4 Sep 2025 13:13:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A90A301032;
+	Thu,  4 Sep 2025 13:14:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a5S5goeX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kc1cN+MP"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CE2A2356C9;
-	Thu,  4 Sep 2025 13:13:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5828C3002D8;
+	Thu,  4 Sep 2025 13:14:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756991634; cv=none; b=guIN3hx6pyt2/R/+WXlM/SQXhs/olH23eW5ypP7qS7IwraZ7lW7Ez5zQrGEBkQcu8wNp40KBWkXBd6RapmhDjrUbSu9r1NbiSp8ELqJ+VwuTp3XSa7145sEzaqjBsBk7xRCPsLsi0HxNOj7QyZZs7UJUz2IN3/zBvGl1eCZpKoc=
+	t=1756991677; cv=none; b=cxgJqdXlndqtUXNRQMajqcjDv3i3U0C1vB3tzy5icHkE6NT5wwkQoyAlCnNHVDzHGh6Dwtg0YQ1rHO2BMLnpeAzyjlfOuU5qN7ho3sw2dJvQ0QDTQ0+ZGAgWky/ZnA6XMSII+6fugdKnHwiOGs/wE49vfI26cl+MdaL9QXaqjM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756991634; c=relaxed/simple;
-	bh=Bn4/xmGOOXZEWDYkD1BiChxDFd+yskU5Xd81KlPYiO8=;
+	s=arc-20240116; t=1756991677; c=relaxed/simple;
+	bh=dEe3oGeQMtPB8wuvNB8FBuJzRWiGuoUdh066kutEK9s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jKp3aANamgAlTGTZnkYV2CdgNBc8iP9Q41q7N3kTbs38rje6sfBDWYhoY9abEIe1df+POOy/xcbkP2oeyWwGKkfF7aRk7n55D9gDt6aIs8ZqGsHZOPuLI/YKxfIG4l2p1IfBpU1ONMfHgGbFKiZeRvUQn90nxSLA6BfdCkV/5aY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a5S5goeX; arc=none smtp.client-ip=209.85.128.182
+	 Content-Type:Content-Disposition:In-Reply-To; b=ktnGx/XCzJdpC84dj+k0FSjGUtV4mCniktwaZli2ge0e0+BKk8mAHdhItPW27ecdtkNcgBgadv6UCoinSmDoPKV5RMlZojuAMTpUKfbC7yJiM/9Bmt5mFibzXagll/6DDeleXfx6eqliJYkXIba6QARwwVNv9FRg37qKR8XV8H8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kc1cN+MP; arc=none smtp.client-ip=209.85.128.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-71d605c6501so10502727b3.3;
-        Thu, 04 Sep 2025 06:13:51 -0700 (PDT)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-71d60528734so9010627b3.2;
+        Thu, 04 Sep 2025 06:14:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756991630; x=1757596430; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1756991675; x=1757596475; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LH7LTZA0LFoRV127Jw0yCNL5LEvQmyntlFClrTJFhI8=;
-        b=a5S5goeXUO7IlwoPYZEIQ3w714DNdp1Pn6Jq1YIV1bOPNOBPGtVolyKUmDQektAWff
-         3TPaWlkJZPG6pRw9axiFshl446R5gcT4zrQf98b2P1rpa2VSoOwbGm5X5PmnJ8c8QYG9
-         G3EvjUTlr5HLFrmvuJZUwkENYerVQdR+Qy7WX+yN9V7xaDGWEXAp1HFDItGAPlRhmU3h
-         cjesSPrVG4RfRgxNTODBtmiOU+aZuJtpf9R35ZO2YnOeIA/uyWgtI5eKN7QhxgmiUyVB
-         P2AC9wCRO8zbBEGZal9fAr+7Yt4L3O9Thn4aXRwaMvIR5XLScINWzZ4KMSoSoEyJj6Qz
-         uzsg==
+        bh=Q1hNBrk05MCGZgtGPl87X/mVFXWaCSlKuwxFY/ixXTs=;
+        b=Kc1cN+MPsECYuBqqiz+XkzHcsAfajjM0Gc5nD9ypN/IESj1J9GuLpROzl7izJdWkVx
+         4o2tRHEeGR6eEBYJKCHzFNatU0dWdfGwPr9xBuTOQFDLH2SXu9EXN0TWRwvb+2S1Oc+X
+         UFEJJQaoT7DWyAuFDFMq7+tcwfk5mzjJlNl0CvwPsUvxns21bhQSGzTOS6HealAylnsH
+         cJnU7syFgIQ4TyjfCg23bOGGmQby5UZSVk/n6PXu6foU2aw2l9VxOaNa4kaHTH+9nsuJ
+         lPEQdgBHmMnxxpsnhgPu04KXumfDQugLZjVXPz9PkcRneRhm4qhWbBURZxqp3SddI4am
+         6wGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756991630; x=1757596430;
+        d=1e100.net; s=20230601; t=1756991675; x=1757596475;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LH7LTZA0LFoRV127Jw0yCNL5LEvQmyntlFClrTJFhI8=;
-        b=osBcbUdkh6UDFUdYFbd6CK18Tjie41zyokcSZkKkfUlitg67tTXRAKptbBxViu2dBJ
-         5AuqaEFuxr2aBGUwelA1Nx2hYQP0762wfQWZNfrgf2OvfD/GQxI2PkgfbS2sgTaB6VL3
-         y97/eua++kEeJXGicuOaD8XQ2tRjk9CDtQRFA/DytfhzM0sn6k3gEEOZPwz5btlEQ3u5
-         HMH8gwe7X0lyX567gXbIipWHUu4tsPqo9EzcOChcbbUlMM148B4hlNTPoiBMu8fsz9tW
-         i2d2epOujCycHnYleXnUHwo9pltWDHX/NuH5Ext1qv7Bo96eEFOGpxQrKUtgOmOWaaoX
-         Fhkg==
-X-Forwarded-Encrypted: i=1; AJvYcCUk+oycuUlnAmSihfPkYytlFn1UanQHur/H2mgakZuJEzg9vdApSb37u8X31DLtncjAH86EgEblO2bdewE=@vger.kernel.org, AJvYcCWHTfYX7m0Mw15i6rSQnGI7BdyrzMqovC7Zro5i1sZl8b9ttYToqvutFDTJKf4ykHlm0Z+Mwv9uoOhNyQ==@vger.kernel.org, AJvYcCXVQA6nxKp2fx6fPfuVM+t1ucPYdiid1A5xTnivfysi/YJy8ZuBqH53PIhtYtHCDOkTn7PHeYE3@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx3fyGSzG6nDraEA9p8mXydxIbfcIYdxZ3wqP9P+Bd0Yr0b1N5R
-	3Yq8DLOErbLLxuRFSc94zEVvzUQpSTDR0yjfD7gsdqLhxoWYKRdMZJlK
-X-Gm-Gg: ASbGnctIA1eXwxUcbSP9dRM2PurnVU8UV+keUntVL2rH9Xg1r43800eCtkzaZUQWYz0
-	xsGI8YhbqGaBTU2TcVCzRE2a8e01rSLA9iMfllaM+CjpmYv8eNII+G2iCf2YrMgSeCOrbpHWk56
-	QtQdwZMXFt+lK09bKbiikqJ5KGn3ZNZ3xLW7GdFZRc4VaVA8WnM7FHPl6cZntrXBcMPb7ls8Ufn
-	R7/5sMkaKhraJcOfbIpGcP29013NqBDvCyrtgE4yKlMmLz1ZVcAaSiME/8BoRM3/O+uiGI2uBrS
-	Qx0+Vbp28oESxCyXjWbqXxoPkwwgix1KvFzb9v/L86kcc6KXuNe3H0G4LFthhI6gh5Ym2TGnHAD
-	RVJON7M9EENh2x/izgShqyekrKjcQHwLrv8cg3fWGdA==
-X-Google-Smtp-Source: AGHT+IFxCX0FPAFrAq7cMJ2jYvzuzwez7IWM1fSRoaoHtERYCHbEqS0gxBnwmzewR6MRW/8N2rzRxQ==
-X-Received: by 2002:a05:690c:6307:b0:723:adfc:5a4a with SMTP id 00721157ae682-723adfc8a35mr98239467b3.33.1756991630055;
-        Thu, 04 Sep 2025 06:13:50 -0700 (PDT)
+        bh=Q1hNBrk05MCGZgtGPl87X/mVFXWaCSlKuwxFY/ixXTs=;
+        b=jfstJqUXMryJtxU0KPGWm80jXMxDD+5Bu+85fF7ADOkpO6dole0M+1qOkryGMUpU0W
+         KnMoe0ObuyJECz8k6zZX/Bhbkz4yqhVo/R/eDxmZoBAyNcEIFJWyJo2WDnzCeC7R/r2i
+         gBFbP7R+DSD4D0592/itmG+aNt6S6GU2byVlzoVu8y4tFtX6v67/mPoZ09xw05YKfuTY
+         vVumrC/TrB2Z66gjs5ehRhf8IeBel7YiLUJaC/HLbfjm0LLixycFLd8rsMfFkhD3Q8qm
+         FfsOnhYO4CaEsz+xvF6/XRB80huj8VfVZ4yyKlJhc5wcwR6nChWc+WUzesKzwn6ziKtJ
+         v4Yg==
+X-Forwarded-Encrypted: i=1; AJvYcCU3SwIXV1/WWCRQORTcd3NCkjdqPzEArMRuRzYNSWpgDrkDBe/M+79CmC0TOA4s0QlwvlYAn6kP4SjfRnM=@vger.kernel.org, AJvYcCVLOl8CjGWV6DGnrW5aNTmDH4yI4XHDtpNTP6uqsWEfo87wKxGPJeuA8yIvOQ+Gqb182uQVtxFbGtdRwQ==@vger.kernel.org, AJvYcCVlxK038NgnVR/IONfTRO0gW/11gzJIcPEsf3SdpRpKOuliffGu66KgYDrpxKzxr3wdB5CY/snb@vger.kernel.org
+X-Gm-Message-State: AOJu0YwZ+VsMFP5cIvR0X4HPPxXEMg1cuUSIVnExQedYepjvtZQmn9Y/
+	KjiqBGp7bFBszahRBGAP+xU+aQNRlHQuia61NqjSOdZpLB5Znugfv+pE6BLHYr3x
+X-Gm-Gg: ASbGncvUFUnlDN74QSfnb4f3DhVMOvUAkFVAPpeHVThBkLVqoCOTIWQ+caqLNY/3wK3
+	nc6bUAxMdGlPpLMChw46UbutO9rJSs24N5z8EFKC+BPNjaJCQrjeFas0f7QAovmkQJJNU5tUC/h
+	wnacQAtirNT6yXLMyxweKnC30NEwozkonXNh4krlrqdZcz0GljaTwREKKYsTAeTaavE1CaV8qdm
+	eMwUBsmHjtsR6xz/8HGWMsVwtaMQ1O1ph+Vjvxpz0dZHflk5xX+Lk8Jn9TyealnQBQCaAnY4Sig
+	yVh9uaRm8ULRMsPyMMg2/Pecf+qGDCwfCpKgJ0HQuKukW6NM+Cp+fRrjy1pG1u4jbU/Ob0eVOcw
+	ViAFW0rVIjh7dB+WEmBYoscnaq+PUvCmmi/9L+HcmjQ==
+X-Google-Smtp-Source: AGHT+IFNskK3EFi2xtyUCVxgOnvSd1XZWTDJnBX3UGI8lrc9DMhpnA8IpUMHa4JoiklpSdQDgNd34g==
+X-Received: by 2002:a05:690c:4513:b0:721:6a43:c960 with SMTP id 00721157ae682-722763cfc0amr199134677b3.21.1756991675072;
+        Thu, 04 Sep 2025 06:14:35 -0700 (PDT)
 Received: from hoboy.vegasvil.org ([2600:1700:2430:6f6f:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-723a856914esm20965507b3.60.2025.09.04.06.13.48
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-723a82d6ad1sm21418977b3.5.2025.09.04.06.14.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Sep 2025 06:13:49 -0700 (PDT)
-Date: Thu, 4 Sep 2025 06:13:46 -0700
+        Thu, 04 Sep 2025 06:14:34 -0700 (PDT)
+Date: Thu, 4 Sep 2025 06:14:31 -0700
 From: Richard Cochran <richardcochran@gmail.com>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
+To: Carolina Jubran <cjubran@nvidia.com>
+Cc: Mark Bloch <mbloch@nvidia.com>, Paolo Abeni <pabeni@redhat.com>,
 	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Carolina Jubran <cjubran@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Gal Pressman <gal@nvidia.com>, Thomas Gleixner <tglx@linutronix.de>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Vladimir Oltean <vladimir.oltean@nxp.com>,
-	Dragos Tatulea <dtatulea@nvidia.com>
+	Dragos Tatulea <dtatulea@nvidia.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>
 Subject: Re: [PATCH net-next V2 1/3] ptp: Add ioctl commands to expose raw
  cycle counter values
-Message-ID: <aLmQiiwI_1Uvb4J3@hoboy.vegasvil.org>
+Message-ID: <aLmQt838Yt-Vu_bL@hoboy.vegasvil.org>
 References: <1755008228-88881-1-git-send-email-tariqt@nvidia.com>
  <1755008228-88881-2-git-send-email-tariqt@nvidia.com>
+ <ca8b550b-a284-4afc-9a50-09e42b86c774@redhat.com>
+ <1384ef6c-4c20-49fb-9a9f-1ee8b8ce012a@nvidia.com>
+ <aLAouocTPQJezuzq@hoboy.vegasvil.org>
+ <3f44187b-ce41-47e8-b8b1-1b0435beb779@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -100,22 +104,18 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1755008228-88881-2-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <3f44187b-ce41-47e8-b8b1-1b0435beb779@nvidia.com>
 
-On Tue, Aug 12, 2025 at 05:17:06PM +0300, Tariq Toukan wrote:
-> From: Carolina Jubran <cjubran@nvidia.com>
+On Thu, Sep 04, 2025 at 03:09:23PM +0300, Carolina Jubran wrote:
 > 
-> Introduce two new ioctl commands, PTP_SYS_OFFSET_PRECISE_CYCLES and
-> PTP_SYS_OFFSET_EXTENDED_CYCLES, to allow user space to access the
-> raw free-running cycle counter from PTP devices.
-> 
-> These ioctls are variants of the existing PRECISE and EXTENDED
-> offset queries, but instead of returning device time in realtime,
-> they return the raw cycle counter value.
-> 
-> Signed-off-by: Carolina Jubran <cjubran@nvidia.com>
-> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
-> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> On 28/08/2025 13:00, Richard Cochran wrote:
+> > On Mon, Aug 25, 2025 at 08:52:52PM +0300, Mark Bloch wrote:
+> > > 
+> > > On 19/08/2025 11:43, Paolo Abeni wrote:
+> > > > can we have a formal ack here?
 
-Acked-by: Richard Cochran <richardcochran@gmail.com>
+Looks good to me.
+
+Thanks,
+Richard
 
