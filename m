@@ -1,121 +1,72 @@
-Return-Path: <linux-rdma+bounces-13084-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13085-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 359FAB43CCA
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Sep 2025 15:14:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DB4AB43D86
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Sep 2025 15:45:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4D005854F8
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Sep 2025 13:14:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F293A7B73EE
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Sep 2025 13:43:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A90A301032;
-	Thu,  4 Sep 2025 13:14:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EC0F3054D5;
+	Thu,  4 Sep 2025 13:45:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kc1cN+MP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R+gMvT9D"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5828C3002D8;
-	Thu,  4 Sep 2025 13:14:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD99B14AA9;
+	Thu,  4 Sep 2025 13:44:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756991677; cv=none; b=cxgJqdXlndqtUXNRQMajqcjDv3i3U0C1vB3tzy5icHkE6NT5wwkQoyAlCnNHVDzHGh6Dwtg0YQ1rHO2BMLnpeAzyjlfOuU5qN7ho3sw2dJvQ0QDTQ0+ZGAgWky/ZnA6XMSII+6fugdKnHwiOGs/wE49vfI26cl+MdaL9QXaqjM8=
+	t=1756993499; cv=none; b=i6tFVvd9ncyoXVUExL1qQhcIryTo9+eRb1AibpN5k3fwXMCJMfIonBLNh0FZ8herWD155NRNGUzGZLLgssQAvQ2X2V/ZYSJt1VCqt1rilLgZrk22LNa1ALDuQS2w+NGB04FUjMDJYUTpsEEmRIQqg+wD9s9qGbWkS3EagyZYLBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756991677; c=relaxed/simple;
-	bh=dEe3oGeQMtPB8wuvNB8FBuJzRWiGuoUdh066kutEK9s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ktnGx/XCzJdpC84dj+k0FSjGUtV4mCniktwaZli2ge0e0+BKk8mAHdhItPW27ecdtkNcgBgadv6UCoinSmDoPKV5RMlZojuAMTpUKfbC7yJiM/9Bmt5mFibzXagll/6DDeleXfx6eqliJYkXIba6QARwwVNv9FRg37qKR8XV8H8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kc1cN+MP; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-71d60528734so9010627b3.2;
-        Thu, 04 Sep 2025 06:14:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1756991675; x=1757596475; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q1hNBrk05MCGZgtGPl87X/mVFXWaCSlKuwxFY/ixXTs=;
-        b=Kc1cN+MPsECYuBqqiz+XkzHcsAfajjM0Gc5nD9ypN/IESj1J9GuLpROzl7izJdWkVx
-         4o2tRHEeGR6eEBYJKCHzFNatU0dWdfGwPr9xBuTOQFDLH2SXu9EXN0TWRwvb+2S1Oc+X
-         UFEJJQaoT7DWyAuFDFMq7+tcwfk5mzjJlNl0CvwPsUvxns21bhQSGzTOS6HealAylnsH
-         cJnU7syFgIQ4TyjfCg23bOGGmQby5UZSVk/n6PXu6foU2aw2l9VxOaNa4kaHTH+9nsuJ
-         lPEQdgBHmMnxxpsnhgPu04KXumfDQugLZjVXPz9PkcRneRhm4qhWbBURZxqp3SddI4am
-         6wGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1756991675; x=1757596475;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q1hNBrk05MCGZgtGPl87X/mVFXWaCSlKuwxFY/ixXTs=;
-        b=jfstJqUXMryJtxU0KPGWm80jXMxDD+5Bu+85fF7ADOkpO6dole0M+1qOkryGMUpU0W
-         KnMoe0ObuyJECz8k6zZX/Bhbkz4yqhVo/R/eDxmZoBAyNcEIFJWyJo2WDnzCeC7R/r2i
-         gBFbP7R+DSD4D0592/itmG+aNt6S6GU2byVlzoVu8y4tFtX6v67/mPoZ09xw05YKfuTY
-         vVumrC/TrB2Z66gjs5ehRhf8IeBel7YiLUJaC/HLbfjm0LLixycFLd8rsMfFkhD3Q8qm
-         FfsOnhYO4CaEsz+xvF6/XRB80huj8VfVZ4yyKlJhc5wcwR6nChWc+WUzesKzwn6ziKtJ
-         v4Yg==
-X-Forwarded-Encrypted: i=1; AJvYcCU3SwIXV1/WWCRQORTcd3NCkjdqPzEArMRuRzYNSWpgDrkDBe/M+79CmC0TOA4s0QlwvlYAn6kP4SjfRnM=@vger.kernel.org, AJvYcCVLOl8CjGWV6DGnrW5aNTmDH4yI4XHDtpNTP6uqsWEfo87wKxGPJeuA8yIvOQ+Gqb182uQVtxFbGtdRwQ==@vger.kernel.org, AJvYcCVlxK038NgnVR/IONfTRO0gW/11gzJIcPEsf3SdpRpKOuliffGu66KgYDrpxKzxr3wdB5CY/snb@vger.kernel.org
-X-Gm-Message-State: AOJu0YwZ+VsMFP5cIvR0X4HPPxXEMg1cuUSIVnExQedYepjvtZQmn9Y/
-	KjiqBGp7bFBszahRBGAP+xU+aQNRlHQuia61NqjSOdZpLB5Znugfv+pE6BLHYr3x
-X-Gm-Gg: ASbGncvUFUnlDN74QSfnb4f3DhVMOvUAkFVAPpeHVThBkLVqoCOTIWQ+caqLNY/3wK3
-	nc6bUAxMdGlPpLMChw46UbutO9rJSs24N5z8EFKC+BPNjaJCQrjeFas0f7QAovmkQJJNU5tUC/h
-	wnacQAtirNT6yXLMyxweKnC30NEwozkonXNh4krlrqdZcz0GljaTwREKKYsTAeTaavE1CaV8qdm
-	eMwUBsmHjtsR6xz/8HGWMsVwtaMQ1O1ph+Vjvxpz0dZHflk5xX+Lk8Jn9TyealnQBQCaAnY4Sig
-	yVh9uaRm8ULRMsPyMMg2/Pecf+qGDCwfCpKgJ0HQuKukW6NM+Cp+fRrjy1pG1u4jbU/Ob0eVOcw
-	ViAFW0rVIjh7dB+WEmBYoscnaq+PUvCmmi/9L+HcmjQ==
-X-Google-Smtp-Source: AGHT+IFNskK3EFi2xtyUCVxgOnvSd1XZWTDJnBX3UGI8lrc9DMhpnA8IpUMHa4JoiklpSdQDgNd34g==
-X-Received: by 2002:a05:690c:4513:b0:721:6a43:c960 with SMTP id 00721157ae682-722763cfc0amr199134677b3.21.1756991675072;
-        Thu, 04 Sep 2025 06:14:35 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2600:1700:2430:6f6f:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-723a82d6ad1sm21418977b3.5.2025.09.04.06.14.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Sep 2025 06:14:34 -0700 (PDT)
-Date: Thu, 4 Sep 2025 06:14:31 -0700
-From: Richard Cochran <richardcochran@gmail.com>
-To: Carolina Jubran <cjubran@nvidia.com>
-Cc: Mark Bloch <mbloch@nvidia.com>, Paolo Abeni <pabeni@redhat.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Gal Pressman <gal@nvidia.com>, Thomas Gleixner <tglx@linutronix.de>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Vladimir Oltean <vladimir.oltean@nxp.com>,
-	Dragos Tatulea <dtatulea@nvidia.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>
-Subject: Re: [PATCH net-next V2 1/3] ptp: Add ioctl commands to expose raw
- cycle counter values
-Message-ID: <aLmQt838Yt-Vu_bL@hoboy.vegasvil.org>
-References: <1755008228-88881-1-git-send-email-tariqt@nvidia.com>
- <1755008228-88881-2-git-send-email-tariqt@nvidia.com>
- <ca8b550b-a284-4afc-9a50-09e42b86c774@redhat.com>
- <1384ef6c-4c20-49fb-9a9f-1ee8b8ce012a@nvidia.com>
- <aLAouocTPQJezuzq@hoboy.vegasvil.org>
- <3f44187b-ce41-47e8-b8b1-1b0435beb779@nvidia.com>
+	s=arc-20240116; t=1756993499; c=relaxed/simple;
+	bh=+BW5/2LAZqixMbdbAbb7uoQXYsbhUfksqEkqBZNbAsE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=FjDE9qpBL4irDSt5lxd/Yzx6aOzJfnt5or6iStxnRhz9+hTbvp/dP4t4lnfg7zkt/4Rc0UrsF/3KQfoWJ2Urd4UTqP36yYOxv/eu49d7a+BP2VJjgidiTsctPxS/Xy6jV52Duzr0/vp3B++vYRwLcZEggOQLohRA5OhSzcNH3qA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R+gMvT9D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4B12C4CEF1;
+	Thu,  4 Sep 2025 13:44:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1756993499;
+	bh=+BW5/2LAZqixMbdbAbb7uoQXYsbhUfksqEkqBZNbAsE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=R+gMvT9D18jZ2jXV+iA4wFOqMy9mnXDMTzW/0LKvwO1K/P2flsluXjrpbLyJLz0n6
+	 RJs+xHanRdtbJRbunnOfOhQW9/xi67S/douHd/jnVyHf6VLikeZgcXOeqU2Vt3LES9
+	 29A63gt/3cT5z8uYKldFk96PiJYqcw8tVghAT0cVrCszRQ8WodXPA3nuN2G2ooF6z2
+	 S7w9i/EAKknf6KzVse4oe/R8En8H73yqvoL6cNXrEA2Kjg5dII6ed4GFFkPnWqUZhZ
+	 1pV8Z6pWxcbajsaV7FkEgOjthRF/7BgInfJiP71/VNRBvm2el/Z9huukV9Rk17xPo5
+	 Q/VYU6tmhgqHQ==
+Date: Thu, 4 Sep 2025 06:44:57 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Makar Semyonov <m.semenov@tssltd.ru>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Sabrina Dubroca
+ <sd@queasysnail.net>, netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] macsec: fix double free of flow_table groups on
+ allocation failure
+Message-ID: <20250904064457.0b222da4@kernel.org>
+In-Reply-To: <20250904114655.1674691-1-m.semenov@tssltd.ru>
+References: <20250904114655.1674691-1-m.semenov@tssltd.ru>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3f44187b-ce41-47e8-b8b1-1b0435beb779@nvidia.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Sep 04, 2025 at 03:09:23PM +0300, Carolina Jubran wrote:
-> 
-> On 28/08/2025 13:00, Richard Cochran wrote:
-> > On Mon, Aug 25, 2025 at 08:52:52PM +0300, Mark Bloch wrote:
-> > > 
-> > > On 19/08/2025 11:43, Paolo Abeni wrote:
-> > > > can we have a formal ack here?
+On Thu,  4 Sep 2025 14:46:54 +0300 Makar Semyonov wrote:
+> Subject: [PATCH] macsec: fix double free of flow_table groups on allocation failure
 
-Looks good to me.
-
-Thanks,
-Richard
+nit: please use the driver name as the first prefix, so "mlx5:" or 
+"eth: mlx5:". "macsec:" would be appropriate for drivers/net/macsec
 
