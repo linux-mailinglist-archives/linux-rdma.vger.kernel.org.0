@@ -1,119 +1,208 @@
-Return-Path: <linux-rdma+bounces-13131-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13132-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEE86B45E16
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Sep 2025 18:26:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87AC7B4625A
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Sep 2025 20:37:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 678085C788C
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Sep 2025 16:26:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 668A61CC80EC
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Sep 2025 18:38:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB8652F7AC5;
-	Fri,  5 Sep 2025 16:26:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A89F226FA5A;
+	Fri,  5 Sep 2025 18:37:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="oc+RQ8U/"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pGGLzriU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37B8F31D750
-	for <linux-rdma@vger.kernel.org>; Fri,  5 Sep 2025 16:26:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E30A779CF
+	for <linux-rdma@vger.kernel.org>; Fri,  5 Sep 2025 18:37:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757089609; cv=none; b=Uv3ZQz4DqcjPPenHX0cnVToaGdb0x6nVJ41Yj911zwqzZe1Mgr+9SmTM9wJNERq4lYtM2hr2omIc2QuKpee5uTSR3Ea8CQhhITRkE/GN6M4skwfa6OowP2FWiEgsohaNw9ajJpTGQAkuRoRcW8gCq0wYly2XkmK2R+rXLrvPYrw=
+	t=1757097468; cv=none; b=LqmYgh5oItEQbASiQ/gsaHVKp5hrujXKnImFDXECIBnjAJ1l0dcKXgDQSg8oYK5pxKA2r4312OvShAJNddQEWBm+Xp+KasAJwi/04rOTG0murqbyzZLYQPudCW/Ss1ClGM9iGOKf3eyVNDs25Vs3nUHsaucuGNJaqxlEOY7Oyvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757089609; c=relaxed/simple;
-	bh=2PS5JRt8rYq8ZdgH2QfqyI1JjO6i3QNO1FmCz8ytBWQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nX2wFLqBWmo8C3Ofdpryy8w6GAcJPLBi7lxXidpV1CAYASRj7GV9HWhbTQcV+4vtajyefW9BiBj7dvfFbQMxKacEkY+RADdDQfwXirBDFuUcBtyeVFBMJx27ZAwtihdursLEys41SdtHoOmXnd7zeRswxzigWjxoNVHmVHqv7ws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=oc+RQ8U/; arc=none smtp.client-ip=209.85.219.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-726549f81a6so24436826d6.2
-        for <linux-rdma@vger.kernel.org>; Fri, 05 Sep 2025 09:26:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1757089607; x=1757694407; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2PS5JRt8rYq8ZdgH2QfqyI1JjO6i3QNO1FmCz8ytBWQ=;
-        b=oc+RQ8U/IdmF+raFPFWc4kfmsKJNExqLun3iNBIUl0A4ii6A8l6Q7wvjRUAguQMX3j
-         GlPZ1rUO8tqor4vjIPtnnXDDY4kj24DmYtD12p/Mbw22zko17G71NdYGW1B8zKTdvwne
-         +U7h168qIibNrc0uLLlc2VhC/utpDCEvoDQroiWwdsBl3kyyXVCkFgASOsxR7IMgbYAr
-         5SUD0pFVQWQzzq+dMEW9dJOfjaGMN6YC55TduXwWB0eoc/emupmTQq1xSCTQ9GHLAlWY
-         Ct/4O1pOeclbTXVvpSVhZ3yXM7n3WWlRAmvRi/RZt3SooPt4yBx1szAhz/P7g530y2io
-         ZGXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757089607; x=1757694407;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2PS5JRt8rYq8ZdgH2QfqyI1JjO6i3QNO1FmCz8ytBWQ=;
-        b=AqdFrv3XSUE+iOaVJxZEA2i8bTNuUy1GIeKQ2erTKmzqG4FjIhYkmxQYr6FqnMSf4l
-         6t3kMU76KR7P1ZQWkl5lFet9cC9rUWjPi6VhloAVBNZvs3SXwEuRKrbjxaYM1LAlMyay
-         qIJdp98XEnm2Tg0iRv8LH9MGcx0zGAmdR3kUB2KL1NCZ1z7y9bZ0zxdxfsH6CeD72KQi
-         fY83pZxFP96FpPhOiK4rAv2FlYN7ONt8zCSQgsu1zvqQ/ZqHJe21SpnLJz3oMjOwwevl
-         zi43Rzz+VkGq9Kc2lCp5IHk6fIgK5MZlAVpD196/c4RlCKXMI5F9uaSm3XiQsVxsYbyf
-         eYfg==
-X-Forwarded-Encrypted: i=1; AJvYcCV/jkDImVi+V+DC09ZgvYRVy92ynCj9NXOwnPR8db0j/GoGFihG6qRFM5a+mFYavDUqj+CHhj77izw9@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx7nmnQVY6aEETdPTEJ6UpuOP5VA7vUUFoeAZ+4CcUWBr47xorv
-	PWLP46diQ9b0GQTIfTYHUXSiJd3ITA3dLR69m7YNtM39FJlXB+gkL2OXfeS1VrdzAdQ=
-X-Gm-Gg: ASbGncuOqT4lTHdqMP9dpiVR2SJ7JkqECXAuuU5eQ1M5i72nM8qtwaMQyEcuTyYTIrF
-	hvBYDlUZCkDjjq0IWzsoNC9cQD/8uPHa92j4btRLkeckzlB2FEfaKKct4xDk5hLBzkmuJivbFoQ
-	tkbf7fbPY1FvQ2u7TyvbJhLkMC9Hft6meLdLQO8ed2MaVMhXQxns4AIRTUPr6JNaitqWUNlB45G
-	LMck4eGJW8dJQA6+nH5oVPTRWfcOC/MLrTd9J3qq2nTUSZeft2tQUVBTOpToqBzBkdW9/PFMdo/
-	y/yZzK6bpiNMRCJI2y9gNn4kAYGAocUBVb6GvqjcYL2mRk8JLat58n0CoKHQNq7NTjPrVBJpUie
-	RHShiYDPbLRVeTgvBTE6gmTrzZlCkeIV9r7MKqr42B98XilO+1jMDrYPNqsRbNEPmvJ+K
-X-Google-Smtp-Source: AGHT+IFSn5HY+WeJUt1wAviTMKOBWm+lvLAThCgWpXgEcnXeGVtNLDN/lb9+gdaDyGFY+W25tA/JJg==
-X-Received: by 2002:a05:6214:301e:b0:70d:6df4:1b21 with SMTP id 6a1803df08f44-70fac920713mr231386786d6.62.1757089606848;
-        Fri, 05 Sep 2025 09:26:46 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-120-4.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.120.4])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-720ac16e723sm68417896d6.9.2025.09.05.09.26.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Sep 2025 09:26:46 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1uuZGv-00000002sYM-3KbU;
-	Fri, 05 Sep 2025 13:26:45 -0300
-Date: Fri, 5 Sep 2025 13:26:45 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc: leon@kernel.org, stable@vger.kernel.org,
-	Nick Child <nchild@cornelisnetworks.com>,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-rc] IB/rdmavt: Fix lock dependency in rvt_send/recv_cq
-Message-ID: <20250905162645.GB483339@ziepe.ca>
-References: <175708273545.611781.8035611015794018890.stgit@awdrv-04.cornelisnetworks.com>
+	s=arc-20240116; t=1757097468; c=relaxed/simple;
+	bh=hnrmP/+pNxdXfUPKjINYP+3IVXC/H6zCKFpa8R2p3eE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=boB0YzUNbPuP1Cb8wcD3bLnWFzhlQ6gpuL8jtRddRETU1hx5tPkRTN0JJj3oN7oGGuPDwk3k97GDLkEbqfBbSYKmGHflL+BNZFnAJwvp96pscIygJbWlThlfdqDumtMZGVsGyQGEy4S8+QrBAACwTuw2qleO1P/cgtxU/nRlrhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pGGLzriU; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <81f8377e-9872-40cc-8aab-736ac2c548ee@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1757097462;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bNr+fPN199iKuFsHhxnohFGP55usYrSnsaOTZPUwS0k=;
+	b=pGGLzriU+6TraG9G5cBAiUyg0IhneVIsZGiwPJMOb7ORdj0Ig71LadU+0gUnBy96vQOonb
+	COvRnLDrU8NV9vopIzbQEvJ/Kz6xEidkXML6/ftz25ewS7mmVP3q52jOjx8QMkio2CHiFP
+	CUnsZVj+lsQiyEz1Z9aqHKpjOSMCdjM=
+Date: Fri, 5 Sep 2025 20:37:21 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <175708273545.611781.8035611015794018890.stgit@awdrv-04.cornelisnetworks.com>
+Subject: Re: [PATCH] RDMA/siw: avoid hiding errors in siw_post_send()
+To: Stefan Metzmacher <metze@samba.org>, linux-rdma@vger.kernel.org
+References: <20250904173608.1590444-1-metze@samba.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Bernard Metzler <bernard.metzler@linux.dev>
+In-Reply-To: <20250904173608.1590444-1-metze@samba.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Sep 05, 2025 at 10:32:15AM -0400, Dennis Dalessandro wrote:
+On 04.09.2025 19:36, Stefan Metzmacher wrote:
+> When we hit situations like "sq full", "too many sge's" or similar
+> things while queueing sqes, we should remember the error before
+> rv = siw_activate_tx(qp); clears the return value.
+> 
+> Currently we hide such errors and confuse the caller
+> which is waiting (most likely forever) for a post completion
+> to arrive.
+> 
+I agree with that overall observation. Thanks for pointing it out.
 
-> Note there are cases when callers only held the s lock. In order to
-> prevent further ABBA spinlocks we must not attempt to grab the r lock
-> while someone else holds it. If someone holds it we must drop the s lock
-> and grab r then s.
+> Also if we already queued some sqes with success we need to process
+This is what we already do. But we hide the initial error.
 
-That's horrible, please don't do this.
+One tricky question is what to return if we have both an immediate
+error and an error happening during starting/processing the send queue.
+I think it is best to return the immediate error in that case since
+the caller relates it with the bad_wr content. The caller may
+even understand that if bad_wr is not assigned it is not an
+immediate error.
 
-If the caller holds a lock across a function then the function
-shouldn't randomly unlock it, it destroys any data consistency the
-caller may have had or relied on.
 
-If the caller doesn't actually need the lock after calling this new
-callchain then have the function return with the lock unlocked. This
-is ugly too, but at least it does not expose the caller to a subtle
-bug class.
+> them as no error happened, but at the end we need to return the
+> error relative to the bad_wr to the caller.
+> 
+> Cc: Bernard Metzler <bernard.metzler@linux.dev>
+> Cc: linux-rdma@vger.kernel.org
+> Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
+> Signed-off-by: Stefan Metzmacher <metze@samba.org>
+> ---
+>   drivers/infiniband/sw/siw/siw_verbs.c | 20 ++++++++++++++++++++
+>   1 file changed, 20 insertions(+)
+> 
+> diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+> index 556a2b4b42ed..a3f548652c37 100644
+> --- a/drivers/infiniband/sw/siw/siw_verbs.c
+> +++ b/drivers/infiniband/sw/siw/siw_verbs.c
+> @@ -770,6 +770,8 @@ int siw_post_send(struct ib_qp *base_qp, const struct ib_send_wr *wr,
+>   
+>   	unsigned long flags;
+>   	int rv = 0;
+> +	size_t num_queued = 0;
 
-Also, this seems too big and complicated for -rc at this point :\
+I don't like counters which are actually used as boolean.
+Introducing an immediate error value and assigning it if needed
+should be sufficient.
 
-Jason
+
+> +	int error = 0;
+>   
+>   	if (wr && !rdma_is_kernel_res(&qp->base_qp.res)) {
+>   		siw_dbg_qp(qp, "wr must be empty for user mapped sq\n");
+> @@ -948,9 +950,24 @@ int siw_post_send(struct ib_qp *base_qp, const struct ib_send_wr *wr,
+>   		sqe->flags |= SIW_WQE_VALID;
+>   
+>   		qp->sq_put++;
+> +		num_queued++;
+>   		wr = wr->next;
+>   	}
+>   
+> +	if (unlikely(rv < 0)) {
+> +		/*
+> +		 * If at least one was queued
+> +		 * we should start the tx, but
+> +		 * still return an error with
+> +		 * the bad_wr at the end.
+> +		 */
+> +		error = rv;
+> +		if (num_queued == 0) {
+> +			spin_unlock_irqrestore(&qp->sq_lock, flags);
+> +			goto skip_direct_sending;
+> +		}
+> +	}
+> +
+>   	/*
+>   	 * Send directly if SQ processing is not in progress.
+>   	 * Eventual immediate errors (rv < 0) do not affect the involved
+> @@ -982,6 +999,9 @@ int siw_post_send(struct ib_qp *base_qp, const struct ib_send_wr *wr,
+>   
+>   	up_read(&qp->state_lock);
+>   
+> +	if (unlikely(error != 0))
+> +		rv = error;
+> +
+>   	if (rv >= 0)
+>   		return 0;
+>   	/*
+
+I unfortunately do not have access to build/test infrastructure until
+September 18th, but just a source tree and an editor. Sorry about that.
+What I would have in mind as a good patch is the following below
+(untested, maybe even with spelling errors). Maybe you can take it from
+there and test?
+
+Thanks very much!
+Bernard.
+
+diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
+index 2b2a7b8e93b0..7780e39b4e3e 100644
+--- a/drivers/infiniband/sw/siw/siw_verbs.c
++++ b/drivers/infiniband/sw/siw/siw_verbs.c
+@@ -769,7 +769,7 @@ int siw_post_send(struct ib_qp *base_qp, const struct ib_send_wr *wr,
+	struct siw_wqe *wqe = tx_wqe(qp);
+
+	unsigned long flags;
+-	int rv = 0;
++	int rv = 0, imm_err = 0;
+
+	if (wr && !rdma_is_kernel_res(&qp->base_qp.res)) {
+		siw_dbg_qp(qp, "wr must be empty for user mapped sq\n");
+@@ -958,6 +958,14 @@ int siw_post_send(struct ib_qp *base_qp, const struct ib_send_wr *wr,
+	 * processing, if new work is already pending. But rv must be passed
+	 * to caller.
+	 */
++	if (unlikely(rv < 0)) {
++		/*
++		 * Immediate error
++		 */
++		siw_dbg_qp(qp, "Immediate error %d\n", rv);
++		imm_err = rv;
++		*bad_wr = wr;
++	}
+	if (wqe->wr_status != SIW_WR_IDLE) {
+		spin_unlock_irqrestore(&qp->sq_lock, flags);
+		goto skip_direct_sending;
+@@ -982,15 +990,10 @@ int siw_post_send(struct ib_qp *base_qp, const struct ib_send_wr *wr,
+
+	up_read(&qp->state_lock);
+
+-	if (rv >= 0)
+-		return 0;
+-	/*
+-	 * Immediate error
+-	 */
+-	siw_dbg_qp(qp, "error %d\n", rv);
++	if unlikely(imm_err)
++		return imm_err;
+
+-	*bad_wr = wr;
+-	return rv;
++	return (rv >= 0) ? 0 : rv;
+  }
+
+  /*
+
+
 
