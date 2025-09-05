@@ -1,81 +1,81 @@
-Return-Path: <linux-rdma+bounces-13120-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13119-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D94AB45B13
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Sep 2025 16:55:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7E99B45B17
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Sep 2025 16:55:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BC501777C5
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Sep 2025 14:55:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 520781BC60E9
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Sep 2025 14:55:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA2A237C0EB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B687637C0E4;
 	Fri,  5 Sep 2025 14:54:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="V71S6tIU"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="K0Y/8SqW"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8504537426B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65D8537426A;
 	Fri,  5 Sep 2025 14:54:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757084086; cv=none; b=gscS5iJZH1GiAOJMi6EmLkJ57iGZTKFWr7FtQrP1W3QI/hODptn+cmcmXNk16xvrw6ZWd/mYOQKCAsMdc/2ZByJ04WWuZ1RHwFONHx3qloWGpiFykSqlNbzpFE8352vwezJI38qAXhdY7jEQ5peGCkoEcelorw4E/uAEKzHaIRE=
+	t=1757084086; cv=none; b=M9E4BRlSRHTtD+BVzEQ+q3aNaAdJ6xotcxgJdUxOjSDcx57zdPVAukzf5/3PSpBuovBz0EMeuEjzUiBJIwVKzcfHXBs9XD1l7VAF57LNSQdFXuW5NFSWXcTtUGAJRDpZ7tOvVxSIa6N3vKF6jBH1jnamwVFZYmFhjaRrD9EDi7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1757084086; c=relaxed/simple;
-	bh=9V3OZ322bL1BTgQi9jDQboxA+msHPUfe6/RY8b9biyA=;
+	bh=my8n0VdtD6tyNiTnWCJ0CNPczTLx4CJRbjLGICDOhww=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WxjuuObhK/1A4i6jKbaI0d87xm0KNt1ro5foBGagjxrucV8xYYKvBHELQSjYuGt+FdqbbM8+Ykagjw2ch/ZTSUhQ2k4h6BdC2X/hoWb1kZ9+8aQDYvErQwu3S+mC7refj+VV5WxK9om7KLy04+P7jKJ92wZTBvQ/o+0rfjkY+Tk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=V71S6tIU; arc=none smtp.client-ip=148.163.158.5
+	 MIME-Version; b=k2Pmhf0OssH2BbL81zDEv+enW+WReq8O+WAXULo+MramgNyyseNCm7c2yxa7CF4Z+MT81IIGZbvhLZ6RcnufNa/6USlGG3ngw+cqRFn23SjcftIJyFn3MOBTBOX/2Cxop540CSJ09a+gALQEVilJMyozQc3Ba15p5mDxWakXxo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=K0Y/8SqW; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 585924nB014694;
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 585CxSDG005481;
 	Fri, 5 Sep 2025 14:54:34 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=1UUf1Capi/J40Vfp4
-	QA85ezgKIYNgZOSms/0R+qlV4o=; b=V71S6tIUuNo6XJas5Ch/C/ZsDCx1zlfkc
-	PtvU2pxZs0rW1nmPdx4EluQ+8Saf/CJJqLEFjmy6+BUetnIxf06g3nZN9bxCebir
-	7csTamaqVYFp7Z9r4YlOy5IzXqGaBKjO+7eB52YIIOTezVKCaKCysSiaqAb+Pog2
-	0lLhTt/li7k11LQnvsl+NN9+Nk2ebQ2dcteVB97sTZS1ZTK8P5KuptAOJp5DOszf
-	pDNIDogFlTHTL4LOKfcyX5uGhn3pQVE84PkNiZV0SctbeqTBbVw5IFp9uQei0ads
-	vcNfacIU1VFPjj72NfzP4z2m4PdVAudXM4GD0UWUyeVznPp034AZQ==
+	:mime-version:references:subject:to; s=pp1; bh=XGinc7QtK05TLMEec
+	tvTR+us6jj6cPq6NUC6PBDN/00=; b=K0Y/8SqWgpGTwzkyCYyvhTGW6R+80Yis4
+	WkBjfGOvhdPyjYOIjZdA4j6CE9iE/HC+ifYP6+voS+izQdxR81cx676Lif0MZbV7
+	Ni364XQ4HR1Npq5iF/zlqJznDAUTJMUlU4DILhpAEtUrKlRYDOd6uQG6/RFjbISV
+	8FjbYHmLxTAXmE3/Ec6WG7mOkjlofw0H4MFBmRUId91NC2uQ9+v+oyKDBmTJPcol
+	5X40DCoWewttj7P1mhZ1861xU5pXTiHdmCd17ymteQBRmnpvOKASiVF955HB3oo/
+	xQLI/VdEjx7bLcg9sxKv2Iou4bvD/HSAHpt9AAnZXnzZeutTLdmnA==
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48wshfcejn-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48usvg88wm-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 05 Sep 2025 14:54:33 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 585EmSTU017994;
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 585EngrN028470;
 	Fri, 5 Sep 2025 14:54:33 GMT
 Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48wshfcejd-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48usvg88wg-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 05 Sep 2025 14:54:33 +0000 (GMT)
 Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 585D07Xm019316;
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 585D0He3019442;
 	Fri, 5 Sep 2025 14:54:32 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 48vd4n9tv9-1
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 48vd4n9tv8-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 05 Sep 2025 14:54:32 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 585EsSET48955840
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 585EsScH56689144
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
 	Fri, 5 Sep 2025 14:54:28 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5C2372004B;
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6E17D20043;
 	Fri,  5 Sep 2025 14:54:28 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 46BED20040;
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5915E20040;
 	Fri,  5 Sep 2025 14:54:28 +0000 (GMT)
 Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
 	Fri,  5 Sep 2025 14:54:28 +0000 (GMT)
 Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55271)
-	id 20C14E113D; Fri, 05 Sep 2025 16:54:28 +0200 (CEST)
+	id 23C5FE115D; Fri, 05 Sep 2025 16:54:28 +0200 (CEST)
 From: Alexandra Winter <wintera@linux.ibm.com>
 To: "D. Wythe" <alibuda@linux.alibaba.com>,
         Dust Li <dust.li@linux.alibaba.com>,
@@ -95,9 +95,9 @@ Cc: Julian Ruess <julianr@linux.ibm.com>,
         Alexander Gordeev <agordeev@linux.ibm.com>,
         Christian Borntraeger <borntraeger@linux.ibm.com>,
         Sven Schnelle <svens@linux.ibm.com>, Simon Horman <horms@kernel.org>
-Subject: [PATCH net-next 03/14] net/dibs: Create net/dibs
-Date: Fri,  5 Sep 2025 16:54:16 +0200
-Message-ID: <20250905145428.1962105-4-wintera@linux.ibm.com>
+Subject: [PATCH net-next 04/14] net/dibs: Register smc as dibs_client
+Date: Fri,  5 Sep 2025 16:54:17 +0200
+Message-ID: <20250905145428.1962105-5-wintera@linux.ibm.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250905145428.1962105-1-wintera@linux.ibm.com>
 References: <20250905145428.1962105-1-wintera@linux.ibm.com>
@@ -109,211 +109,202 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: JoQv64Yuq1kO69eSPgGgX7OaB6cf43Jp
-X-Authority-Analysis: v=2.4 cv=do3bC0g4 c=1 sm=1 tr=0 ts=68baf9a9 cx=c_pps
+X-Authority-Analysis: v=2.4 cv=behrUPPB c=1 sm=1 tr=0 ts=68baf9a9 cx=c_pps
  a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
- a=yJojWOMRYYMA:10 a=VnNF1IyMAAAA:8 a=VwQbUJbxAAAA:8 a=xsEuQG0pSSLqzmWC_KQA:9
-X-Proofpoint-ORIG-GUID: 10IBuEt5BBLoWotNXMJC75kAijs1shiB
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTAyMDA0MCBTYWx0ZWRfXxd7ilCvtOqLy
- DCOZJdD6gwuuf7Tuc7NevsBuc39gOvJOjC1AJdISPDzXFBPEoSP1fJRjiwmNN4NQohKj5lKjYXg
- nBkSmnT7Lkh8pbXEwX424h4khQsSx/v7cKfFyJq7LacHlJNY10bLRxbdonEWBijxssjeiDWIImP
- Vuctp79dj74yVvG0tT3fms1/+cMf8dF3haa6YQJgc7pa1Dg6AXHX8n927rW+IN7GU2If4Z7dSju
- 5DhwIJibGPRsaV+PZ8S+FJS67vbzrjSfajZpiMWTOOQQWcbpOktdvwE/GPRZ9Yj1wUyNTWgwemD
- 8ozD0kYWF9VPuHOl5wO846WQVNZOGAGWBWAkV3XQE1gVglKRo4q+Hruk3Exv0RuhLnG3nI7j0Ly
- cdeoJhX4
+ a=yJojWOMRYYMA:10 a=VnNF1IyMAAAA:8 a=ToqWdGCbH8b2siDz3c8A:9
+X-Proofpoint-ORIG-GUID: pta4jJzoYdXgfzi6t8EsRIciSbVu6vHW
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwODMwMDAzNCBTYWx0ZWRfX2IE68SkTDoJG
+ 6G++oXL9dQXlKlP2Qa0/yDDXHKgHu9sWZZQUt13rHBY7hP/ODUr5eLf+dPyZ9BXVCs344q8LvbU
+ GBFeMIiMYvViplQRjN3Ptlj3PwMTGUo8MDAbhHMs8VuKVjsAQi0PWlGEB10IRJCzW1ohmcWOJsE
+ 44gJBu5cKOMQ0ckH6bqXEozHt7XzfYr/UlIvEkK7CDLZAwvE8swt/svZJnji1egkoF1S0sYNO+B
+ 93TzHlxLwchw3WqAeA97twBG3ZRB6k9vxSflV16duWwc2pCuCa4jBr80cZBHP9Sw3g7ZGmMIKoq
+ e3/+88xAZ+daZnoLRWL1koT3VAUtjr9tcSqONCVgpvzMqZyk20LyPMyM2t4ljTDf9pIky7eeTYW
+ Hf8tdJdU
+X-Proofpoint-GUID: A4MKpF2E3LZV8OEAdj_PQeAMtRgDbEYg
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
  definitions=2025-09-05_05,2025-09-04_01,2025-03-28_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 clxscore=1015 impostorscore=0 bulkscore=0 suspectscore=0
- malwarescore=0 spamscore=0 priorityscore=1501 adultscore=0
+ malwarescore=0 impostorscore=0 spamscore=0 clxscore=1015 phishscore=0
+ priorityscore=1501 adultscore=0 bulkscore=0 suspectscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2509020040
+ reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2508300034
 
-Create an 'DIBS' shim layer that will provide generic functionality and
-declarations for dibs device drivers and dibs clients.
-
-Following patches will add functionality.
+Formally register smc as dibs client. Functionality will be moved by
+follow-on patches from ism_client to dibs_client until eventually
+ism_client can be removed.
+As DIBS is only a shim layer without any dependencies, we can depend SMC
+on DIBS without adding indirect dependencies. A follow-on patch will
+remove dependency of SMC on ISM.
 
 Signed-off-by: Alexandra Winter <wintera@linux.ibm.com>
+Reviewed-by: Julian Ruess <julianr@linux.ibm.com>
 ---
- MAINTAINERS          |  7 +++++++
- include/linux/dibs.h | 42 ++++++++++++++++++++++++++++++++++++++++++
- net/Kconfig          |  1 +
- net/Makefile         |  1 +
- net/dibs/Kconfig     | 12 ++++++++++++
- net/dibs/Makefile    |  7 +++++++
- net/dibs/dibs_main.c | 37 +++++++++++++++++++++++++++++++++++++
- 7 files changed, 107 insertions(+)
- create mode 100644 include/linux/dibs.h
- create mode 100644 net/dibs/Kconfig
- create mode 100644 net/dibs/Makefile
- create mode 100644 net/dibs/dibs_main.c
+ arch/s390/configs/debug_defconfig |  1 +
+ arch/s390/configs/defconfig       |  1 +
+ include/linux/dibs.h              | 24 ++++++++++++++++++++-
+ net/dibs/dibs_main.c              | 35 +++++++++++++++++++++++++++++++
+ net/smc/Kconfig                   |  2 +-
+ net/smc/smc_ism.c                 |  6 ++++++
+ 6 files changed, 67 insertions(+), 2 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b81595e9ea95..c621ed92eb0e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13047,6 +13047,13 @@ F:	Documentation/devicetree/bindings/hwmon/renesas,isl28022.yaml
- F:	Documentation/hwmon/isl28022.rst
- F:	drivers/hwmon/isl28022.c
- 
-+DIBS (DIRECT INTERNAL BUFFER SHARING)
-+M:	Alexandra Winter <wintera@linux.ibm.com>
-+L:	netdev@vger.kernel.org
-+S:	Supported
-+F:	include/linux/dibs.h
-+F:	net/dibs/
-+
- ISOFS FILESYSTEM
- M:	Jan Kara <jack@suse.cz>
- L:	linux-fsdevel@vger.kernel.org
+diff --git a/arch/s390/configs/debug_defconfig b/arch/s390/configs/debug_defconfig
+index 5e616bc988ac..7bc54f053a3b 100644
+--- a/arch/s390/configs/debug_defconfig
++++ b/arch/s390/configs/debug_defconfig
+@@ -120,6 +120,7 @@ CONFIG_UNIX=y
+ CONFIG_UNIX_DIAG=m
+ CONFIG_XFRM_USER=m
+ CONFIG_NET_KEY=m
++CONFIG_DIBS=y
+ CONFIG_SMC_DIAG=m
+ CONFIG_SMC_LO=y
+ CONFIG_INET=y
+diff --git a/arch/s390/configs/defconfig b/arch/s390/configs/defconfig
+index 094599cdaf4d..4bf6f3311f7d 100644
+--- a/arch/s390/configs/defconfig
++++ b/arch/s390/configs/defconfig
+@@ -111,6 +111,7 @@ CONFIG_UNIX=y
+ CONFIG_UNIX_DIAG=m
+ CONFIG_XFRM_USER=m
+ CONFIG_NET_KEY=m
++CONFIG_DIBS=y
+ CONFIG_SMC_DIAG=m
+ CONFIG_SMC_LO=y
+ CONFIG_INET=y
 diff --git a/include/linux/dibs.h b/include/linux/dibs.h
-new file mode 100644
-index 000000000000..3f4175aaa732
---- /dev/null
+index 3f4175aaa732..5c432699becb 100644
+--- a/include/linux/dibs.h
 +++ b/include/linux/dibs.h
-@@ -0,0 +1,42 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ *  Direct Internal Buffer Sharing
-+ *
-+ *  Definitions for the DIBS module
-+ *
-+ *  Copyright IBM Corp. 2025
-+ */
-+#ifndef _DIBS_H
-+#define _DIBS_H
-+
-+/* DIBS - Direct Internal Buffer Sharing - concept
-+ * -----------------------------------------------
-+ * In the case of multiple system sharing the same hardware, dibs fabrics can
-+ * provide dibs devices to these systems. The systems use dibs devices of the
-+ * same fabric to communicate via dmbs (Direct Memory Buffers). Each dmb has
-+ * exactly one owning local dibs device and one remote using dibs device, that
-+ * is authorized to write into this dmb. This access control is provided by the
-+ * dibs fabric.
-+ *
-+ * Because the access to the dmb is based on access to physical memory, it is
-+ * lossless and synchronous. The remote devices can directly access any offset
-+ * of the dmb.
-+ *
-+ * Dibs fabrics, dibs devices and dmbs are identified by tokens and ids.
-+ * Dibs fabric id is unique within the same hardware (with the exception of the
-+ * dibs loopback fabric), dmb token is unique within the same fabric, dibs
-+ * device gids are guaranteed to be unique within the same fabric and
-+ * statistically likely to be globally unique. The exchange of these tokens and
-+ * ids between the systems is not part of the dibs concept.
-+ *
-+ * The dibs layer provides an abstraction between dibs device drivers and dibs
-+ * clients.
-+ */
-+
-+#define MAX_DIBS_CLIENTS	8
-+
-+struct dibs_client {
-+	const char *name;
-+};
-+
-+#endif	/* _DIBS_H */
-diff --git a/net/Kconfig b/net/Kconfig
-index d5865cf19799..5410226f314b 100644
---- a/net/Kconfig
-+++ b/net/Kconfig
-@@ -87,6 +87,7 @@ source "net/tls/Kconfig"
- source "net/xfrm/Kconfig"
- source "net/iucv/Kconfig"
- source "net/smc/Kconfig"
-+source "net/dibs/Kconfig"
- source "net/xdp/Kconfig"
+@@ -33,10 +33,32 @@
+  * clients.
+  */
  
- config NET_HANDSHAKE
-diff --git a/net/Makefile b/net/Makefile
-index aac960c41db6..3e4771cfe48e 100644
---- a/net/Makefile
-+++ b/net/Makefile
-@@ -50,6 +50,7 @@ obj-$(CONFIG_TIPC)		+= tipc/
- obj-$(CONFIG_NETLABEL)		+= netlabel/
- obj-$(CONFIG_IUCV)		+= iucv/
- obj-$(CONFIG_SMC)		+= smc/
-+obj-$(CONFIG_DIBS)		+= dibs/
- obj-$(CONFIG_RFKILL)		+= rfkill/
- obj-$(CONFIG_NET_9P)		+= 9p/
- obj-$(CONFIG_CAIF)		+= caif/
-diff --git a/net/dibs/Kconfig b/net/dibs/Kconfig
-new file mode 100644
-index 000000000000..09c12f6838ad
---- /dev/null
-+++ b/net/dibs/Kconfig
-@@ -0,0 +1,12 @@
-+# SPDX-License-Identifier: GPL-2.0
-+config DIBS
-+	tristate "DIBS support"
-+	default n
-+	help
-+	  Direct Internal Buffer Sharing (DIBS)
-+	  A communication method that uses common physical (internal) memory
-+	  for synchronous direct access into a remote buffer.
-+
-+	  Select this option to provide the abstraction layer between
-+	  dibs devices and dibs clients like the SMC protocol.
-+	  The module name is dibs.
-diff --git a/net/dibs/Makefile b/net/dibs/Makefile
-new file mode 100644
-index 000000000000..825dec431bfc
---- /dev/null
-+++ b/net/dibs/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# DIBS class module
-+#
-+
-+dibs-y += dibs_main.o
-+obj-$(CONFIG_DIBS) += dibs.o
-diff --git a/net/dibs/dibs_main.c b/net/dibs/dibs_main.c
-new file mode 100644
-index 000000000000..68e189932fcf
---- /dev/null
-+++ b/net/dibs/dibs_main.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ *  DIBS - Direct Internal Buffer Sharing
-+ *
-+ *  Implementation of the DIBS class module
-+ *
-+ *  Copyright IBM Corp. 2025
++/* DIBS client
++ * -----------
 + */
-+#define KMSG_COMPONENT "dibs"
-+#define pr_fmt(fmt) KMSG_COMPONENT ": " fmt
+ #define MAX_DIBS_CLIENTS	8
+-
+ struct dibs_client {
++	/* client name for logging and debugging purposes */
+ 	const char *name;
++	/* client index - provided and used by dibs layer */
++	u8 id;
+ };
+ 
++/* Functions to be called by dibs clients:
++ */
++/**
++ * dibs_register_client() - register a client with dibs layer
++ * @client: this client
++ *
++ * Return: zero on success.
++ */
++int dibs_register_client(struct dibs_client *client);
++/**
++ * dibs_unregister_client() - unregister a client with dibs layer
++ * @client: this client
++ *
++ * Return: zero on success.
++ */
++int dibs_unregister_client(struct dibs_client *client);
 +
-+#include <linux/module.h>
-+#include <linux/types.h>
-+#include <linux/err.h>
-+#include <linux/dibs.h>
+ #endif	/* _DIBS_H */
+diff --git a/net/dibs/dibs_main.c b/net/dibs/dibs_main.c
+index 68e189932fcf..a5d2be9c3246 100644
+--- a/net/dibs/dibs_main.c
++++ b/net/dibs/dibs_main.c
+@@ -20,6 +20,41 @@ MODULE_LICENSE("GPL");
+ /* use an array rather a list for fast mapping: */
+ static struct dibs_client *clients[MAX_DIBS_CLIENTS];
+ static u8 max_client;
++static DEFINE_MUTEX(clients_lock);
 +
-+MODULE_DESCRIPTION("Direct Internal Buffer Sharing class");
-+MODULE_LICENSE("GPL");
-+
-+/* use an array rather a list for fast mapping: */
-+static struct dibs_client *clients[MAX_DIBS_CLIENTS];
-+static u8 max_client;
-+
-+static int __init dibs_init(void)
++int dibs_register_client(struct dibs_client *client)
 +{
-+	memset(clients, 0, sizeof(clients));
-+	max_client = 0;
++	int i, rc = -ENOSPC;
 +
-+	return 0;
++	mutex_lock(&clients_lock);
++	for (i = 0; i < MAX_DIBS_CLIENTS; ++i) {
++		if (!clients[i]) {
++			clients[i] = client;
++			client->id = i;
++			if (i == max_client)
++				max_client++;
++			rc = 0;
++			break;
++		}
++	}
++	mutex_unlock(&clients_lock);
++
++	return rc;
 +}
++EXPORT_SYMBOL_GPL(dibs_register_client);
 +
-+static void __exit dibs_exit(void)
++int dibs_unregister_client(struct dibs_client *client)
 +{
-+}
++	int rc = 0;
 +
-+module_init(dibs_init);
-+module_exit(dibs_exit);
++	mutex_lock(&clients_lock);
++	clients[client->id] = NULL;
++	if (client->id + 1 == max_client)
++		max_client--;
++	mutex_unlock(&clients_lock);
++	return rc;
++}
++EXPORT_SYMBOL_GPL(dibs_unregister_client);
+ 
+ static int __init dibs_init(void)
+ {
+diff --git a/net/smc/Kconfig b/net/smc/Kconfig
+index ba5e6a2dd2fd..40dd60c1d23f 100644
+--- a/net/smc/Kconfig
++++ b/net/smc/Kconfig
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ config SMC
+ 	tristate "SMC socket protocol family"
+-	depends on INET && INFINIBAND
++	depends on INET && INFINIBAND && DIBS
+ 	depends on m || ISM != m
+ 	help
+ 	  SMC-R provides a "sockets over RDMA" solution making use of
+diff --git a/net/smc/smc_ism.c b/net/smc/smc_ism.c
+index 503a9f93b392..a7a965e3c0ce 100644
+--- a/net/smc/smc_ism.c
++++ b/net/smc/smc_ism.c
+@@ -18,6 +18,7 @@
+ #include "smc_pnet.h"
+ #include "smc_netlink.h"
+ #include "linux/ism.h"
++#include "linux/dibs.h"
+ 
+ struct smcd_dev_list smcd_dev_list = {
+ 	.list = LIST_HEAD_INIT(smcd_dev_list.list),
+@@ -42,6 +43,9 @@ static struct ism_client smc_ism_client = {
+ 	.handle_irq = smcd_handle_irq,
+ };
+ #endif
++static struct dibs_client smc_dibs_client = {
++	.name = "SMC-D",
++};
+ 
+ static void smc_ism_create_system_eid(void)
+ {
+@@ -623,11 +627,13 @@ int smc_ism_init(void)
+ #if IS_ENABLED(CONFIG_ISM)
+ 	rc = ism_register_client(&smc_ism_client);
+ #endif
++	rc = dibs_register_client(&smc_dibs_client);
+ 	return rc;
+ }
+ 
+ void smc_ism_exit(void)
+ {
++	dibs_unregister_client(&smc_dibs_client);
+ #if IS_ENABLED(CONFIG_ISM)
+ 	ism_unregister_client(&smc_ism_client);
+ #endif
 -- 
 2.48.1
 
