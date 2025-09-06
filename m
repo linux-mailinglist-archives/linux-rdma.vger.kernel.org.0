@@ -1,172 +1,119 @@
-Return-Path: <linux-rdma+bounces-13133-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13134-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97CDAB46525
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Sep 2025 23:05:34 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FC7CB47613
+	for <lists+linux-rdma@lfdr.de>; Sat,  6 Sep 2025 20:26:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A5095C7914
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Sep 2025 21:05:34 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E11C94E028B
+	for <lists+linux-rdma@lfdr.de>; Sat,  6 Sep 2025 18:26:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CAF22ECD10;
-	Fri,  5 Sep 2025 21:05:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED5F279903;
+	Sat,  6 Sep 2025 18:26:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="kFjJXLIa"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BeXSGy8k"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A4BB2EA493;
-	Fri,  5 Sep 2025 21:05:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24970221F12;
+	Sat,  6 Sep 2025 18:26:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757106325; cv=none; b=OEyjkvZ4Qs+YkNCqNyuF8hXTCWULQEZ846kI4bcGPCBmbCvwlaTRHfIE+Xfm9rAi+jmno8fnLzqoN8vak8slPbVlOuuZIqjSrA3BYzyihl6X9iuX2tQsOwUHSSuIZHoua85cb7kqa1ZDb8E5CbWgbkXjsTScwtu5uHlS2KKwIrE=
+	t=1757183178; cv=none; b=nbSK945vk1d6EVyuZ7fdlHLj9n3Lc/NsKrBf+XS6N6OT1x9e6+KMD82vxHmNozbbMPDYvCKk1Hi8cOBS84C0Um7IDXEYhy9ouHc7VbilC2JKxAgtpLhLHCND1zJXYRiHHuWohOZvRes+MyRW9GgTsDyZyIYMVl0S1u/z6QZE7pg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757106325; c=relaxed/simple;
-	bh=WwXmevbkvQGC2scZhhIJEKbZtmCmkQ9lVU6gO1rOqmg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VarEe7fMA9S6okDXkxsnB2+GEEOEPBo20tlu+HQit2Hh0Ijklc03bhNmSF1phQEXfziGXpOO1czncUEfzEESBdtnH3Hn9yBRDUsF9+Poov1daxeUeO2M8cOlb2oDgpS/Z1RiMtK9Ug0kaGX1HFx6V5PXTmmXj4MnNlzUT1udf4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=kFjJXLIa; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 585GoQAG032215;
-	Fri, 5 Sep 2025 21:05:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=WeBZPL
-	befegcelt2pAe1gHU6EeWURDShAbvkLnzzvbA=; b=kFjJXLIavwzCft0z8Xzj+l
-	Yq+wIvqdhB0R9IWyhA0/bAJDPUsS1NM4QvwNeDF819meGmlVqwTrdmVl2Hbll6Jm
-	g6dUP/or/4Nr/40COfo0hfG/aqa7jP8VXvvc5E3igEpHUr+s4IeEFL1Xr4O3yqLR
-	GTZ1ogSd3ObXxf04/TPrJVx/iW2h3ymVQ0bso+rf35TYFoVQCHgIzjakREdU7cSh
-	zRtjSvaMCu3OLPiiMiAjXBl4rbElLzpYQR5qE0f0/mqOH9LzAFfaQXN82NDkDQzO
-	3gjt1JtEaVQoyLr4trMjRXBSjwoD6oav9T+hRQxJLBt/gtUo+vNveam/6hJK0t3A
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48wshfe3n9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Sep 2025 21:05:19 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 585Kxarm028378;
-	Fri, 5 Sep 2025 21:05:19 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 48wshfe3n7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Sep 2025 21:05:19 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 585HqE2A014365;
-	Fri, 5 Sep 2025 21:05:18 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 48veb3u1ah-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Sep 2025 21:05:18 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 585L5E5t28574352
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 5 Sep 2025 21:05:14 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7F32C20040;
-	Fri,  5 Sep 2025 21:05:14 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id F152720043;
-	Fri,  5 Sep 2025 21:05:12 +0000 (GMT)
-Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.111.18.66])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with SMTP;
-	Fri,  5 Sep 2025 21:05:12 +0000 (GMT)
-Date: Fri, 5 Sep 2025 23:05:10 +0200
-From: Halil Pasic <pasic@linux.ibm.com>
-To: Dust Li <dust.li@linux.alibaba.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Simon
- Horman <horms@kernel.org>,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        Sidraya
- Jayagond <sidraya@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Mahanta Jambigi <mjambigi@linux.ibm.com>,
-        Tony Lu
- <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-s390@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>
+	s=arc-20240116; t=1757183178; c=relaxed/simple;
+	bh=LSqfnwRaCxz/qt66MNF+bf0NREQDPnp6VzCH4Zt6gd8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K4wy6E+n4BI0iI2a89Xi/lKpS7UWJQE5+tlBAolA3avmkgIUnYT68BsInL1Jeyi9D4SnqaoRfp9/68GPXAOiNSdIycn6hLlFis+5C83gaSYg9KJKxzpGiYPV1EvYjRsGaXyE65f8u6p6pcg1AHK7WSwsXlPTAPU84mcuUI5Rw2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BeXSGy8k; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1757183177; x=1788719177;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=LSqfnwRaCxz/qt66MNF+bf0NREQDPnp6VzCH4Zt6gd8=;
+  b=BeXSGy8ksJZwv9E7o1GplmFDnbPlqWKzBDQzL4iS6EyNseYykV1Hr7sT
+   Qp4alw+wUmxmqFSgEE3wil+rHpcEwLP5kAlqCuVyLAOFpwwhBiiS6Q4TN
+   J8kTlG2Xu7CE8Q4hRTAwd/tfLNn2JPuswksdaeb4iEuHj3nzqgpbtWw40
+   CLBO8Ji3pexYUapo0pMK8ny/6/RL17HCDiNYupNqIFq67V1Bm6i09Y8oa
+   EPSC8rqBz5h3Ikj52lR7AVwxnD4mfdcbvZVNV3lc84V46vCkAqgxgazLh
+   KZe9iyf68B4Iot72yDIi2dhYA10vgUAVBqyqjZq/RvQDGVSJ9dh3NgZmp
+   A==;
+X-CSE-ConnectionGUID: bYm62msVSWav8iRtxNlMLw==
+X-CSE-MsgGUID: 2GIB7Rz6SR2uKo0lgE4UDw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11545"; a="59199682"
+X-IronPort-AV: E=Sophos;i="6.18,244,1751266800"; 
+   d="scan'208";a="59199682"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2025 11:26:17 -0700
+X-CSE-ConnectionGUID: x3W0eVxLTsSI2xa8jvDr1Q==
+X-CSE-MsgGUID: swWJ9GldTViBEQSAgLPwsw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.18,244,1751266800"; 
+   d="scan'208";a="172308236"
+Received: from lkp-server01.sh.intel.com (HELO 114d98da2b6c) ([10.239.97.150])
+  by orviesa007.jf.intel.com with ESMTP; 06 Sep 2025 11:26:13 -0700
+Received: from kbuild by 114d98da2b6c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1uuxc2-0001jX-1x;
+	Sat, 06 Sep 2025 18:26:10 +0000
+Date: Sun, 7 Sep 2025 02:25:54 +0800
+From: kernel test robot <lkp@intel.com>
+To: Halil Pasic <pasic@linux.ibm.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+	"D. Wythe" <alibuda@linux.alibaba.com>,
+	Dust Li <dust.li@linux.alibaba.com>,
+	Sidraya Jayagond <sidraya@linux.ibm.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Mahanta Jambigi <mjambigi@linux.ibm.com>,
+	Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>, netdev@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, Halil Pasic <pasic@linux.ibm.com>
 Subject: Re: [PATCH net-next 1/2] net/smc: make wr buffer count configurable
-Message-ID: <20250905230510.76171115.pasic@linux.ibm.com>
-In-Reply-To: <aLr4-V8V1ZWGMrOj@linux.alibaba.com>
-References: <20250904211254.1057445-1-pasic@linux.ibm.com>
-	<20250904211254.1057445-2-pasic@linux.ibm.com>
-	<aLpc4H_rHkHRu0nQ@linux.alibaba.com>
-	<20250905110059.450da664.pasic@linux.ibm.com>
-	<20250905140135.2487a99f.pasic@linux.ibm.com>
-	<aLryOL-fahUINVg0@linux.alibaba.com>
-	<aLr4-V8V1ZWGMrOj@linux.alibaba.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+Message-ID: <202509070225.pVKkaaCr-lkp@intel.com>
+References: <20250904211254.1057445-2-pasic@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 8kAslMKBxvWgLUbRtWp7CSySMvN480U-
-X-Authority-Analysis: v=2.4 cv=do3bC0g4 c=1 sm=1 tr=0 ts=68bb508f cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=IkcTkHD0fZMA:10 a=yJojWOMRYYMA:10 a=SRrdq9N9AAAA:8 a=SH69JWTYOVUKGAvczP0A:9
- a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-ORIG-GUID: xoMw5JAyoRFrxm5iJo3FhvMUghevaDfO
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTAyMDA0MCBTYWx0ZWRfX5szN4hcKmu+4
- AMkRIWahJP8eudhEtuHBdms+HHNJaWNZ0waQsaSUsHE+pmrSyZ6LraYZcHaFYMmG8OI0losoP0t
- HQuzs53h8qFiFhMIptffRsXlW3E/NHf4qAgx74zznn9TiCp8GltD0bj5gB8b5twl04hQNYLaAMF
- +80HVTMWH70PoLpfrcZB1VLL2W7uanJCF0pn8+vB7KAidGbw2HXMIYzi6896A0ragxM7AtnMX2r
- RZwpB8fNh1JWkWcOcv1Ra6tiibnmzI1E5Twse3ZHqgMcZAg1QSBGLGzSMzoPMj0FuK8+BMplJMK
- El4edhL2qdJDTnVU0bVQ+nQN3DHdvH4GgHWiy5MllQT1sZ1VejMwDZlgxV63GxcJgc7IGRsGSF5
- doM0WOX3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-09-05_07,2025-09-04_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 clxscore=1015 impostorscore=0 bulkscore=0 suspectscore=0
- malwarescore=0 spamscore=0 priorityscore=1501 adultscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2509020040
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250904211254.1057445-2-pasic@linux.ibm.com>
 
-On Fri, 5 Sep 2025 22:51:37 +0800
-Dust Li <dust.li@linux.alibaba.com> wrote:
+Hi Halil,
 
-> >>Did some research and some thinking. Are you concerned about a
-> >>performance regression for e.g. 64 -> 16 compared to 16 -> 16? According
-> >>to my current understanding the RNR must not lead to a catastrophic
-> >>failure, but the RDMA/IB stack is supposed to handle that.  
-> >
-> >No, it's not just a performance regression.
-> >If we get an RNR when going from 64 -> 16, the whole link group gets
-> >torn down — and all SMC connections inside it break.
-> >So from the user’s point of view, connections will just randomly drop
-> >out of nowhere.  
-> 
-> I double-checked the code and noticed we set qp_attr.rnr_retry =
-> SMC_QP_RNR_RETRY = 7, which means "infinite retries."
-> So the QP will just keep retrying — we won't actually get an RNR.
-> That said, yeah, just performance regression.
-> 
-> So in this case, I would regard it as acceptable. We can go with this.
+kernel test robot noticed the following build errors:
 
-Yes, that is consistent with Mahanta's testing in a sense that he did
-not see any catastrophic failure. Regarding the performance regression,
-I don't know how bad it is. Mahanta was so kind to do most of the
-testing. 
+[auto build test ERROR on 5ef04a7b068cbb828eba226aacb42f880f7924d7]
 
-So that leaves us with replacing tabs with spaces and maybe with the
-names, or? If you have a proposal for a better name let's talk about
-is.
+url:    https://github.com/intel-lab-lkp/linux/commits/Halil-Pasic/net-smc-make-wr-buffer-count-configurable/20250905-051510
+base:   5ef04a7b068cbb828eba226aacb42f880f7924d7
+patch link:    https://lore.kernel.org/r/20250904211254.1057445-2-pasic%40linux.ibm.com
+patch subject: [PATCH net-next 1/2] net/smc: make wr buffer count configurable
+config: loongarch-randconfig-002-20250906 (https://download.01.org/0day-ci/archive/20250907/202509070225.pVKkaaCr-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 15.1.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250907/202509070225.pVKkaaCr-lkp@intel.com/reproduce)
 
-BTW are you aware of any generic counters that would help with
-figuring out how many RNRs have been sent/received?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202509070225.pVKkaaCr-lkp@intel.com/
 
-Regards,
-Halil
+All errors (new ones prefixed by >>, old ones prefixed by <<):
+
+>> ERROR: modpost: "smc_ib_sysctl_max_send_wr" [net/smc/smc.ko] undefined!
+>> ERROR: modpost: "smc_ib_sysctl_max_recv_wr" [net/smc/smc.ko] undefined!
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
