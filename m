@@ -1,286 +1,188 @@
-Return-Path: <linux-rdma+bounces-13139-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13140-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA2B0B47C26
-	for <lists+linux-rdma@lfdr.de>; Sun,  7 Sep 2025 18:01:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB414B47C38
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Sep 2025 18:10:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 946643BCF3B
-	for <lists+linux-rdma@lfdr.de>; Sun,  7 Sep 2025 16:01:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 667B6177D24
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Sep 2025 16:10:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D48CE27F183;
-	Sun,  7 Sep 2025 16:01:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 921532836A0;
+	Sun,  7 Sep 2025 16:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b="ndIbsl8i"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="G5KDyQs9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2047.outbound.protection.outlook.com [40.107.93.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A6818AFF
-	for <linux-rdma@vger.kernel.org>; Sun,  7 Sep 2025 16:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757260879; cv=none; b=u87s1zdVZc/v8w/Uj3nHEVVOJRAlJv5RzRf6KshVRL+Oo1yZmXgyA98ERoRJ/9QkV1zuV18rwhLP451Z7CEgMYWSmuCKfedyVv66Gc03NUOW7jW1KiaQU8SguN2ePVJngOuQms6AtosrEOIx9cR8Iojrq0cHHNjIF+jAXnwXre8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757260879; c=relaxed/simple;
-	bh=2iH/tmlgtIXVcbg5sIxO5juHiTu9/jGxxy+gkH576Oo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=f5Op5R752ZQHb98SPhrD3WCcve0BKHfz83x1jv4p7PfzegOxpWbEB8YfmHeNUJsCKwwi7+Jd2GaeKx3HeegzFPxTuuk3XXAbcOCu1CC4cSt4X7uIeQN+zuuyo1sDG31Om/PDFD25ESCyhi5DjNe2iv2iO8NhRZqkrDwFGCDgrFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org; spf=pass smtp.mailfrom=networkplumber.org; dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b=ndIbsl8i; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=networkplumber.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=networkplumber.org
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-45de6ab6ce7so595325e9.1
-        for <linux-rdma@vger.kernel.org>; Sun, 07 Sep 2025 09:01:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1757260875; x=1757865675; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:subject:cc:to
-         :from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vg7CHqQNYYzh26+Hh5oDujqwGy19VW95gl4qkCfQ+9o=;
-        b=ndIbsl8irgOlKTtqnxvhy5OKtGVZNhDgzmi9bwlj6boHXjsgKCnyV+cdqc5Upkjlhh
-         /1sQg/nHV70LH9gC+8Y53jCdQQbTp7ZLlXzHojFyMmUmEnD36Cx8ekwrBTGR0mRPxe+p
-         iPH/OEtwW+QdBrYuUfnAERyf582T89yc7k0eN/JqsRElwPGteCFgfq1IeV0tHYBSXg6E
-         /Cs8jrn8h89ZoF5ToPMEHSD64AyW7O4xYwFYwgI91wMVL/cDElYUqs75LVzLt/iG9AHH
-         JmOMKR/P4SpTz7GzAL2oVZqd2EX8u90m/OmGkrUqK4NxwflSVHNPqthU8BfkXjtDbY0/
-         9LgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757260875; x=1757865675;
-        h=content-transfer-encoding:mime-version:message-id:subject:cc:to
-         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Vg7CHqQNYYzh26+Hh5oDujqwGy19VW95gl4qkCfQ+9o=;
-        b=L8tjxzXys0tAXLu21bOIQhhBCyLgD76+1f/tFO2cQZs0OsVhQWGWN38KAH83QV7oJQ
-         NZJqHDvhqKy4urEAurzEdbqoK8MWIBKb1fNC9Mjl+DT0UJrCiNsH1RfpVVOpGMoqytlH
-         wWKMDuaQpYvX12g3cHyQ/2FJZpcaKDI710Rx+Rf1hrBPau7WKct0PINmnR9z6Ulxl9N8
-         hVuKM23QfKhw/QqpMDG76i0Mk9HKTFds7S/BGFJyxRlJUkHYDTLW+9k9EzwEszjkz2SL
-         PFiGZBNYnH0xp70n774zpRnF5cNypSPAFNOIOJRAKmexQ6wvM3pkIsshtPFfYsVcCyJo
-         4RGg==
-X-Gm-Message-State: AOJu0YzmbQWeJ872FFpiHMiM7NYuIthGOZrJmbIeKmLqmZPybkcf9Txg
-	nQuMF8OUu+gKcTlv7Ar9eh48h8DuTh6xP1I4XvL/GHnwNs6j7tqWw8q/Je/fRzVVSro=
-X-Gm-Gg: ASbGncvJI2CchhLPEJWgcR5CMuaslYY5gp6/tkUdSLza+CYTNnXLMR9ROZBb9pLbQ2h
-	/XrgZecsas1KDy2UViBPSslsuiWOkLoiA9FTA5lrD32tGqSP6hoU7eNt3NgTag1qAFyx4nS3tFB
-	ngACoS2UqOmtYBN23OcmPKWKJogXvJ/4tABdWBi/kqGIcqTdPXeKzYnA74vZzeGWItSv6JivLJb
-	XG2dzSbxT7siUNqzMAFAnnpL0AEvevtQhqCygAoBwg3QDatqP6AQnj7husvPm2SDbW82jHRSaiX
-	nNCj8KguPF2N5D6kOgcq/hybr6Rg6Ce0yIesQc8p8k4v8nqTHIdZ7uKyqhJeHeascoNheXQfqKN
-	kk0PMOufWlnwcEMlGsAEksqlzI5ZNJXSRGvP0zraZzKXVRHuSzwugTTX2CktaKDQfqibGoYA9w9
-	rzV0tuZ3/hXw==
-X-Google-Smtp-Source: AGHT+IGn9DppX1oWsqBRvsOrhn+d3X5JdUygKPkoLsD9fVU4imK0p6ui2veZhjeECxYo+CUppl84ZA==
-X-Received: by 2002:a05:600c:1386:b0:45c:b5f7:c6e4 with SMTP id 5b1f17b1804b1-45dddedf9bfmr35637975e9.35.1757260874428;
-        Sun, 07 Sep 2025 09:01:14 -0700 (PDT)
-Received: from hermes.local (204-195-96-226.wavecable.com. [204.195.96.226])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45de45dce11sm27848815e9.10.2025.09.07.09.01.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Sep 2025 09:01:14 -0700 (PDT)
-Date: Sun, 7 Sep 2025 09:01:07 -0700
-From: Stephen Hemminger <stephen@networkplumber.org>
-To: alibuda@linux.alibaba.com, dust.li@linux.alibaba.com,
- sidraya@linux.ibm.com, wenjia@linux.ibm.com, mjambigi@linux.ibm.com,
- tonylu@linux.alibaba.com, guwen@linux.alibaba.com
-Cc: linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
- netdev@vger.kernel.org
-Subject: Fw: [Bug 220544] New: AF_SMC deadlock: held by __sock_release,
- smc_release, and __flush_work
-Message-ID: <20250907090107.44a3f68e@hermes.local>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9011A285041;
+	Sun,  7 Sep 2025 16:10:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.47
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1757261426; cv=fail; b=N5FcNpTYRVFHROlbQsMMWFh3QWhxYSzmV8U0PBPgVHHCVR5snT6HBa597TGtg89wt5eP0gzFS1/wkfMouJfuvyHlKAjBv+pJ8bdIYMAESXKEfr8iIYKiW4mbHBA86Vzls6a4NQ9Kh8g/YInhx25jJUk/0lUMvYOPXtrZbCMeSHg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1757261426; c=relaxed/simple;
+	bh=OsM1IvLb7Tjl3y9Kw5quZqmGSjslvt1pXYbX+a0Khdg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=PqAnFGEl8CIQW6OwXPP3twSNL0dCgiTORQ+KnGDnr12kqVeZH53QHNHGhkaLYYZY8HbEJwcO6Jeig+K3oUNtWgd5O8K/qKzeRyYY+gdbVGdFSDNrwp+ZbPrBCuQABB8E3fK7I0WFohU3zWskoR0F5eiDoX+eAnmB2s3F60AjwL0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=G5KDyQs9; arc=fail smtp.client-ip=40.107.93.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=ObYQQYOsZDUEGIHPM9WEeO46eS/qAE+G3t8UyIKGCYTXH+QIZn0/q8TWj+N2tY2wNCIuthBK6lbMV3vKwqzxqkB4RU0v4LTS2mEr0IzP/hFtKus0CFCMcxu2/hgmqDqEBmbbolC0gWbDtlb+OmhBvpRIc/6OnP9lT3asAtomybhpkk4nMDgUkOh1GiNNc7xSdi7ECkqOncabHWD0slym17VNh9u8m43OpAEWJDVGjzqxrvZAuqjD7yfihgI9Xoq/odNH0vqvEukCWkUnfTNyb5i4QP8lTtY0Bo2+wlOHBkHSJogqQBTwV9BKYRzY9DibVNFUpuW+IbfTnqPh958jsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Q/UuhiwaZOzoDQJMivL1a7qyjkl8MdUJk+33hK0cuhs=;
+ b=gZww1xKZBzCKsgBNxsCtwIIWNOLqT+x2VfcJjD/I3OyZnZ0+rw94o0UUytyj3zQz0Vr46dpzEahI5u/MnybgOR2fsCFBkvl1ABgIL/usrnmypmJSDmlV2jyb/fBF14B7dNRb7T76A7n/yPBHjJnAh+yICJzfErEUedHwSLtsj+MPMsJID1FcXE/fDrQLITOrnIVFgbJnf237ZIOWaufK6Cs339Dzyd4NNW4Wp9fKJUoTtipoonIwvylUlj2EEmJm0MvaWm2CaRMlvJbHzyOjKKbVvu7tY2YltgX2jySZLXQQeVPuH0MRnwNL5W1m3BesPVzIAidARiw0LReOc1NjfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q/UuhiwaZOzoDQJMivL1a7qyjkl8MdUJk+33hK0cuhs=;
+ b=G5KDyQs96c3OUM4OE/7J+Yo6bXHqnGJbx4lxf5foqN0PSaYvD4OfjCgAPW69Piua9JjTSpfI3Js4q2hL+JksitDRUPhMle4+kmWQ2vddetmXeOgA/mXIGUJmpqL23gIoERG6g27dYdWOILs/lU54MYSXT2X2pTl4wR01kfIdUzEfD1djFXkfmOGUxT6WSgNPWvPPvbXbs5BYgch+3P1FCJoC+kRXPXFmPhQO1jniRZAOBUwxo86GACsY/Cxd1AGk3nC2ULNw7hw6MLu5s4JLpTbyxmUL8tj4pogDU8EXgnljlBlNftDFFc/6NePZcyS9aEUwdz3h7aJ5hrY0HsRd7Q==
+Received: from MW4PR04CA0247.namprd04.prod.outlook.com (2603:10b6:303:88::12)
+ by MN0PR12MB5956.namprd12.prod.outlook.com (2603:10b6:208:37f::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9094.19; Sun, 7 Sep
+ 2025 16:10:20 +0000
+Received: from BY1PEPF0001AE19.namprd04.prod.outlook.com
+ (2603:10b6:303:88:cafe::8c) by MW4PR04CA0247.outlook.office365.com
+ (2603:10b6:303:88::12) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9094.22 via Frontend Transport; Sun,
+ 7 Sep 2025 16:10:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ BY1PEPF0001AE19.mail.protection.outlook.com (10.167.242.101) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9115.13 via Frontend Transport; Sun, 7 Sep 2025 16:10:20 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Sun, 7 Sep
+ 2025 09:10:04 -0700
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Sun, 7 Sep
+ 2025 09:10:03 -0700
+Received: from vdi.nvidia.com (10.127.8.14) by mail.nvidia.com (10.129.68.10)
+ with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Sun, 7 Sep
+ 2025 09:10:00 -0700
+From: Edward Srouji <edwards@nvidia.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>
+CC: <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<parav@nvidia.com>, <cratiu@nvidia.com>, <vdumitrescu@nvidia.com>,
+	<edwards@nvidia.com>, <kuba@kernel.org>, <tariqt@nvidia.com>,
+	<mbloch@nvidia.com>, <gal@nvidia.com>
+Subject: [PATCH 0/4] Fix local destination address resolution with VRF
+Date: Sun, 7 Sep 2025 19:08:29 +0300
+Message-ID: <20250907160833.56589-1-edwards@nvidia.com>
+X-Mailer: git-send-email 2.21.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY1PEPF0001AE19:EE_|MN0PR12MB5956:EE_
+X-MS-Office365-Filtering-Correlation-Id: a0ae6ff0-af28-4373-1234-08ddee290b02
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|36860700013|82310400026|1800799024|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?YS1Dnr97ybz72mpCvEQ5pSCRvPSiHf1ji/NxJMe88cCG1hMnD9JnnwvseS8r?=
+ =?us-ascii?Q?TsZVG7nSogCE6d4P9DGUuId3XIjHmyYVpXyawYptp7G+PPqbkaiwyevigfAs?=
+ =?us-ascii?Q?Lmq2KHvaF6cFIyVJ1xrVlgVrrmoAcgFMSiLHLsihBMOqe5V4BxBq3whNjWIM?=
+ =?us-ascii?Q?r53heMxWYtkDYFYBuwkXIfJmxiZV3Q8MUKe4gwTjyf84tCyzZcDx9PB/EiML?=
+ =?us-ascii?Q?8jSp1OocZIeHi8C9cSuxeLhYZq6hoPwIv+XRWJt7Sip6//Pv2qZSPaoi8hhI?=
+ =?us-ascii?Q?VWnUadVQPMh0q9IFhNFTtvguYn19z4fYfWUmmL/e3KXZI9X3a0sdAUsAjYAy?=
+ =?us-ascii?Q?HYCCJoZRLhrKShEXINlw68927h027cLGQlLuV3SUJmgwS6pbI/uIXmedQnrn?=
+ =?us-ascii?Q?+Pom8gM1aYO+iW6ykTWFDQuAwyZNgffg9IkF3ZTm3RX91PJyPp1Pq6CdVvN3?=
+ =?us-ascii?Q?CH0b8g25qDZqG9TlD8mTRYU/16R+OldxTsX6YVajCgtgBVYYKTDC5lTDEY8e?=
+ =?us-ascii?Q?dbBgbJSkhcAqy3Ekzp/lc41N7x+tP3Rdw1TmCosq8EYDfa5m/KQ+tPBp5wzz?=
+ =?us-ascii?Q?TWDoYZFWFA7B+jpjOlYp+PGXQfygeYxwNrsl5x8sue3Uq1SU1ZemNii3jVQc?=
+ =?us-ascii?Q?VrZwqy1xoMIbtwn+E7T64gtdDlSp+9ORFv1F5FS/oeWSmjnnOd4i5cTvo7T4?=
+ =?us-ascii?Q?1HxdiUSA0tp0jCcit7GzEUpnt0W2G+asj6BQ2gA9B2BLeGYSFCSVx17jOsxf?=
+ =?us-ascii?Q?jCpo4UYorXrVbcMFwahqoDP4A3wNJaLjGWFddDLjle5sSDRwDvxRV/mKayhT?=
+ =?us-ascii?Q?ZoHLht0DYjbscW5fjP1OW2YVDKSXcAJiFU29zf86rWw1rdm12LxiBFl1wFUt?=
+ =?us-ascii?Q?Q4813HxNp1wsqB1s1iAbuZKrqCr3vSN+APvFlaRW+SnkkIW4I5t23O70LLv/?=
+ =?us-ascii?Q?GTv8cYNeenS+RAUH0ysai80E8JMr32kXoe9X+vnjanOpSn1I5L5QowltU6uH?=
+ =?us-ascii?Q?FIKF/XtDq4eotRfEHRs3kiE6rEMzJZrXqvqC6ZRJWur5EzVaOVsiP0uq06NF?=
+ =?us-ascii?Q?rqBa5NDwSm31IaYMJpCLzrhaoy8Ie9I3U7ogcJOpoX9yYgujOpsWG6DY0JvG?=
+ =?us-ascii?Q?Z10BwqwC+qcJzs4/t6V9jrkYd5i0k9whG77WgDbQPgMXrmTVlCRaGml+qgwn?=
+ =?us-ascii?Q?ppClrDweWVX0zSX9uZbbTwWZwwuFF3WH6gDkq0A/Yi0XLZuCDdVZJu5oyuzw?=
+ =?us-ascii?Q?ch1Uy2nE2SoaNyj9VVftthTds+4RsaCxp0ipnTulvSJfGKnCtjQkyX/9qETd?=
+ =?us-ascii?Q?pV335EpDLlwkSC4MWQciSUNiSupzKuREWZXZtBqZAJBNJU3xm2x9PSqrw4NM?=
+ =?us-ascii?Q?gujWYZn5kagGTeNT7Ms132p1sJRugoQafEy7At5riPdqbRcs8J7ZfrVIIzov?=
+ =?us-ascii?Q?JjLlaG/Smc1G39NIQY/L9xlyKa1CjuMwz4nz89QecmxH3mMeGFj7KS9zsxKr?=
+ =?us-ascii?Q?HE11rX4gKsdiBLpYkOVN2KGtXna0uRBXihwP?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(82310400026)(1800799024)(376014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2025 16:10:20.0549
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a0ae6ff0-af28-4373-1234-08ddee290b02
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BY1PEPF0001AE19.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5956
 
+From Parav:
 
+Presently, address resolve routines consider a destination to be local
+if the next-hop device of the resolved route for the destination is the
+loopback netdevice. While this works for simple configurations, it fails
+when the source and destination IP addresses belong to an enslaved
+netdevice of a VRF.
+In that case the next-hop device is the VRF itself, so packets are
+generated with an incorrect destination MAC on the VRF netdevice and
+ib_write_bw times out.
 
-Begin forwarded message:
+This patch series fixes that by determining whether a destination is
+local based on the resolved route's type rather than on the next-hop
+netdevice's loopback flag.
+That approach resolves loopback traffic consistently both with and
+without VRF configurations.
 
-Date: Sun, 07 Sep 2025 03:42:22 +0000
-From: bugzilla-daemon@kernel.org
-To: stephen@networkplumber.org
-Subject: [Bug 220544] New: AF_SMC deadlock: held by __sock_release, smc_release, and __flush_work
+This series contains 4 patches:
+  1/4: refactor address resolution code for reuse by subsequent patches
+  2/4: resolve destination MAC via IP stack
+  3/4: use route table entry instead of netdev loopback flag
+  4/4: fix netdev lookup for IPoIB interfaces
 
+Parav.
 
-https://bugzilla.kernel.org/show_bug.cgi?id=220544
+Parav Pandit (3):
+  RDMA/core: Squash a single user static function
+  RDMA/core: Resolve MAC of next-hop device without ARP support
+  RDMA/core: Use route entry flag to decide on loopback traffic
 
-            Bug ID: 220544
-           Summary: AF_SMC deadlock: held by __sock_release, smc_release,
-                    and __flush_work
-           Product: Networking
-           Version: 2.5
-    Kernel Version: 6.12.x
-          Hardware: All
-                OS: Linux
-            Status: NEW
-          Severity: normal
-          Priority: P3
-         Component: Other
-          Assignee: stephen@networkplumber.org
-          Reporter: hi@fourdim.xyz
-        Regression: No
+Vlad Dumitrescu (1):
+  IB/ipoib: Ignore L3 master device
 
-Created attachment 308627
-  --> https://bugzilla.kernel.org/attachment.cgi?id=308627&action=edit  
-crash full log and program source code
-
-[ 2499.781797] 
-[ 2499.782400] ======================================================
-[ 2499.784129] WARNING: possible circular locking dependency detected
-[ 2499.785824] 6.12.42 #1 Not tainted
-[ 2499.786843] ------------------------------------------------------
-[ 2499.788589] 1296/22742 is trying to acquire lock:
-[ 2499.789941] ffff88801776ec18
-((work_completion)(&new_smc->smc_listen_work)){+.+.}-{0:0}, at:
-__flush_work+0x514/0xd50
-[ 2499.793080] 
-[ 2499.793080] but task is already holding lock:
-[ 2499.794731] ffff888017768e98 (sk_lock-AF_SMC/1){+.+.}-{0:0}, at:
-smc_release+0x376/0x600
-[ 2499.797004] 
-[ 2499.797004] which lock already depends on the new lock.
-[ 2499.797004] 
-[ 2499.799295] 
-[ 2499.799295] the existing dependency chain (in reverse order) is:
-[ 2499.801365] 
-[ 2499.801365] -> #1 (sk_lock-AF_SMC/1){+.+.}-{0:0}:
-[ 2499.803149]        lock_sock_nested+0x3a/0x100
-[ 2499.804427]        smc_listen_out+0x1ea/0x4c0
-[ 2499.805686]        smc_listen_work+0x4d1/0x5520
-[ 2499.806987]        process_one_work+0x94a/0x1740
-[ 2499.808415]        worker_thread+0x5c4/0xe10
-[ 2499.809650]        kthread+0x2ad/0x360
-[ 2499.810763]        ret_from_fork+0x4e/0x80
-[ 2499.811966]        ret_from_fork_asm+0x1a/0x30
-[ 2499.813324] 
-[ 2499.813324] -> #0
-((work_completion)(&new_smc->smc_listen_work)){+.+.}-{0:0}:
-[ 2499.815691]        __lock_acquire+0x2413/0x4310
-[ 2499.816983]        lock_acquire.part.0+0xff/0x350
-[ 2499.818259]        __flush_work+0x528/0xd50
-[ 2499.819376]        __cancel_work_sync+0x105/0x130
-[ 2499.820689]        smc_clcsock_release+0x61/0xf0
-[ 2499.821958]        __smc_release+0x5c9/0x8a0
-[ 2499.823163]        smc_close_non_accepted+0xd7/0x210
-[ 2499.824602]        smc_close_active+0x535/0x10e0
-[ 2499.825867]        __smc_release+0x643/0x8a0
-[ 2499.827067]        smc_release+0x1f0/0x600
-[ 2499.828197]        __sock_release+0xac/0x260
-[ 2499.829427]        sock_close+0x1c/0x30
-[ 2499.830506]        __fput+0x3f6/0xb40
-[ 2499.831552]        __fput_sync+0x4a/0x60
-[ 2499.832651]        __x64_sys_close+0x86/0x100
-[ 2499.833855]        do_syscall_64+0xbb/0x1d0
-[ 2499.835043]        entry_SYSCALL_64_after_hwframe+0x77/0x7f
-[ 2499.836574] 
-[ 2499.836574] other info that might help us debug this:
-[ 2499.836574] 
-[ 2499.838725]  Possible unsafe locking scenario:
-[ 2499.838725] 
-[ 2499.840491]        CPU0                    CPU1
-[ 2499.841748]        ----                    ----
-[ 2499.843036]   lock(sk_lock-AF_SMC/1);
-[ 2499.844110]                               
-lock((work_completion)(&new_smc->smc_listen_work));
-[ 2499.846436]                                lock(sk_lock-AF_SMC/1);
-[ 2499.848134]   lock((work_completion)(&new_smc->smc_listen_work));
-[ 2499.849780] 
-[ 2499.849780]  *** DEADLOCK ***
-[ 2499.849780] 
-[ 2499.851388] 3 locks held by 1296/22742:
-[ 2499.852456]  #0: ffff88801ed58d88 (&sb->s_type->i_mutex_key#12){+.+.}-{3:3},
-at: __sock_release+0x81/0x260
-[ 2499.855185]  #1: ffff888017768e98 (sk_lock-AF_SMC/1){+.+.}-{0:0}, at:
-smc_release+0x376/0x600
-[ 2499.857486]  #2: ffffffff86e9dc00 (rcu_read_lock){....}-{1:2}, at:
-__flush_work+0xff/0xd50
-[ 2499.859710] 
-[ 2499.859710] stack backtrace:
-[ 2499.860913] CPU: 0 UID: 0 PID: 22742 Comm: 1296 Not tainted 6.12.42 #1
-[ 2499.860935] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.15.0-1 04/01/2014
-[ 2499.860944] Call Trace:
-[ 2499.860951]  <TASK>
-[ 2499.860959]  dump_stack_lvl+0xba/0x110
-[ 2499.860983]  print_circular_bug.cold+0x1e8/0x27f
-[ 2499.861041]  check_noncircular+0x30e/0x3c0
-[ 2499.861064]  ? __pfx_check_noncircular+0x10/0x10
-[ 2499.861084]  ? register_lock_class+0xb2/0x12e0
-[ 2499.861112]  ? lockdep_lock+0xb5/0x1b0
-[ 2499.861131]  ? __pfx_lockdep_lock+0x10/0x10
-[ 2499.861151]  __lock_acquire+0x2413/0x4310
-[ 2499.861177]  ? __pfx___lock_acquire+0x10/0x10
-[ 2499.861199]  ? __pfx_mark_lock+0x10/0x10
-[ 2499.861221]  ? __flush_work+0x514/0xd50
-[ 2499.861240]  lock_acquire.part.0+0xff/0x350
-[ 2499.861261]  ? __flush_work+0x514/0xd50
-[ 2499.861280]  ? lock_release+0x209/0x7d0
-[ 2499.861302]  ? __pfx_lock_acquire.part.0+0x10/0x10
-[ 2499.861323]  ? __flush_work+0x514/0xd50
-[ 2499.861342]  ? trace_lock_acquire+0x132/0x1c0
-[ 2499.861360]  ? __flush_work+0x514/0xd50
-[ 2499.861378]  ? lock_acquire+0x31/0xc0
-[ 2499.861398]  ? __flush_work+0x514/0xd50
-[ 2499.861418]  __flush_work+0x528/0xd50
-[ 2499.861436]  ? __flush_work+0x514/0xd50
-[ 2499.861456]  ? __pfx___flush_work+0x10/0x10
-[ 2499.861475]  ? __pfx_sock_def_readable+0x10/0x10
-[ 2499.861497]  ? trace_irq_disable.constprop.0+0xcd/0x110
-[ 2499.861519]  ? __pfx_wq_barrier_func+0x10/0x10
-[ 2499.861548]  ? __pfx___might_resched+0x10/0x10
-[ 2499.861567]  ? __pfx_sock_def_readable+0x10/0x10
-[ 2499.861587]  __cancel_work_sync+0x105/0x130
-[ 2499.861609]  smc_clcsock_release+0x61/0xf0
-[ 2499.861630]  ? __local_bh_enable_ip+0x9b/0x140
-[ 2499.861646]  __smc_release+0x5c9/0x8a0
-[ 2499.861665]  ? lockdep_hardirqs_on_prepare+0x201/0x400
-[ 2499.861688]  ? __pfx_sock_def_readable+0x10/0x10
-[ 2499.861708]  smc_close_non_accepted+0xd7/0x210
-[ 2499.861730]  smc_close_active+0x535/0x10e0
-[ 2499.861753]  __smc_release+0x643/0x8a0
-[ 2499.861772]  ? lockdep_hardirqs_on_prepare+0x25c/0x400
-[ 2499.861795]  smc_release+0x1f0/0x600
-[ 2499.861814]  __sock_release+0xac/0x260
-[ 2499.861840]  ? __pfx_sock_close+0x10/0x10
-[ 2499.861864]  sock_close+0x1c/0x30
-[ 2499.861886]  __fput+0x3f6/0xb40
-[ 2499.861912]  __fput_sync+0x4a/0x60
-[ 2499.861935]  __x64_sys_close+0x86/0x100
-[ 2499.861950]  do_syscall_64+0xbb/0x1d0
-[ 2499.861972]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-[ 2499.861992] RIP: 0033:0x7f40854559a0
-[ 2499.862033] Code: 0d 00 00 00 eb b2 e8 0f f8 01 00 66 2e 0f 1f 84 00 00 00
-00 00 0f 1f 44 00 00 80 3d 41 1c 0e 00 00 74 17 b8 03 00 00 00 0f 05 <48> 3d 00
-f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 7c
-[ 2499.862049] RSP: 002b:00007ffecd7bbad8 EFLAGS: 00000202 ORIG_RAX:
-0000000000000003
-[ 2499.862065] RAX: ffffffffffffffda RBX: 0000000000000005 RCX:
-00007f40854559a0
-[ 2499.862077] RDX: 0000000000000000 RSI: 000055df79c1fe38 RDI:
-0000000000000005
-[ 2499.862087] RBP: 0000000000000006 R08: 000000000000f800 R09:
-0000000000000073
-[ 2499.862098] R10: 0000000000000000 R11: 0000000000000202 R12:
-00007ffecd7bbb80
-[ 2499.862110] R13: 00007ffecd7bbdb8 R14: 000055df79c21dd8 R15:
-0000000000000000
-[ 2499.862128]  </TASK>
-
-
-Crashes happened on 6.12.34 and 6.12.42.
-Machine info:
-QEMU X86_64
-Linux version 6.12.42(gcc (GCC) 15.1.1 20250729, GNU ld (GNU Binutils) 2.45.0)
-#1 SMP PREEMPT_DYNAMIC Tue Aug 19 21:04:29 EDT 2025
-Command line: console=ttyS0 root=/dev/sda earlyprintk=serial net.ifnames=0
-nokaslr
-infiniband enabled through rxe
-
-Programs and logs that trigger the bug are attached
-
-Usage `cat crash.input | program`
+ drivers/infiniband/core/addr.c            | 83 +++++++++++------------
+ drivers/infiniband/ulp/ipoib/ipoib_main.c | 21 +++---
+ 2 files changed, 50 insertions(+), 54 deletions(-)
 
 -- 
-You may reply to this email to add a comment.
+2.21.3
 
-You are receiving this mail because:
-You are the assignee for the bug.
 
