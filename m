@@ -1,339 +1,181 @@
-Return-Path: <linux-rdma+bounces-13153-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13154-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9242B488AE
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Sep 2025 11:39:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D69CB4898F
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Sep 2025 12:07:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E153189078C
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Sep 2025 09:39:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3B32164218
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Sep 2025 10:07:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 883322ECD13;
-	Mon,  8 Sep 2025 09:39:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B1BE2F616D;
+	Mon,  8 Sep 2025 10:07:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="O+u62tKM"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="PeZIALqC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-il1-f225.google.com (mail-il1-f225.google.com [209.85.166.225])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2060.outbound.protection.outlook.com [40.107.243.60])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FF2427F4F5
-	for <linux-rdma@vger.kernel.org>; Mon,  8 Sep 2025 09:39:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.225
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757324343; cv=none; b=DvtXn+ycpw2dWSUcYXtmL9KTVSglWMAv6Vx0MWfhza4HbN8du8sqzGyMZ/CRUki/5sDDMi/da23L3s7Tiq1jnXs3FxSrShJcmRwIEPpo/K+qGEDaPP2c1wz/c2A+Qft0Jfm1AGY3UEaz+BsnxSbzlJTQNevG5761xvauIpeXzZ0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757324343; c=relaxed/simple;
-	bh=uCbn0TsZDbcf3EXBEsnCLqrPoUIhBXplR/PHwKHXo0U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SAtcUsV2OabwssEvncdxiKc8ZsvovuNh9ND4U+Eq/ApFWPeTHD6LSEucQA7KC/wXdCGAHQfQwFFYxFnAgJ4kGegiSX0kJP9AK3QSJQTIhoi0oIyJ2xV7Eg9N7RVFYjBNC8pgmjHIMTPIbVRrhb+P9EkgUumWGvLIdDwl0i9Q3Fg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=O+u62tKM; arc=none smtp.client-ip=209.85.166.225
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-il1-f225.google.com with SMTP id e9e14a558f8ab-3f660084016so27037135ab.3
-        for <linux-rdma@vger.kernel.org>; Mon, 08 Sep 2025 02:39:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757324340; x=1757929140;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:dkim-signature
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YGjl4q66wmN7/ezkb9S+V7QVIqhx40OH4hsVUrE8K0g=;
-        b=LkdVzeLlikrmcF2T9uviiUxXKGF+lJPK8mfA6TOjfJHXEuShvbPd/XShmOjC185x+U
-         5IhC76GfD6mqShszZP0EvEOyXIW6awVOwUf2XK0OBmcIbzbNyYlEP+oGLSijgVqXr84P
-         kjLFXozJ0FHtMQ8dKUxg95KxPXbkZLA3uXhFRG5DsDWkiOONektNyXBR86hlMjEtaveh
-         JhqYegrNngC7gYAc9HKG96uMblgUjqI2FzbgT4S7Kpw7XiBcX/HJ2s7n9dnEKWAI1xAj
-         zBGz/XVCCkcvw4dYt+n/2lLBdWP4NFf3jz7SrpFLIPlYnPdj2mcXTZxlKlStPA3n/IX9
-         67cg==
-X-Gm-Message-State: AOJu0YzetbJDVwoAbhkcTRo/MZ79hZ3dk04L7q4PzY2JcTkrE7sUJLVN
-	zgVuFpH+LT8UqZszNo8jgYfufvxOkAosp4kf2nAsyfhjtQ7G85C+wRMytLFMdAATad5mz7E2CJq
-	fsoeZR/WQEAM1Yf1kzNjW9DlckL9ohxgcsVK5BfiISrPbsOXLs5/HrY5bOX8K4bpKBFp0VOUZJU
-	wgHA8bChMRAJct8N00AkxtYrHhxyH9V960bEXoRffSiGQmPbdvPo3MWqNSIUwguoGeSLxFjVqLa
-	4OAIwBUrIzozm6jewnKm9BA4ymnzg==
-X-Gm-Gg: ASbGncvV5I2AytL7RMsdKCbw4byY2Bt0jM8RdigvJIqO4W/9XUAVSR1RDAQDQQBKDIp
-	xA1rnko0mVay9tYOm5kW0wQe8qrXTgYE2A1ZMiFRZ0uTFkrIotS1N3yECivPi4JtwjVKLcMk4W3
-	aOp63Co0iu6ZnGcBIrErHKk8nf5BI1NxzlVJDyv0og1TGumOcmF7X9Bu72AH+Aey9udOfzpr+6J
-	Uqn0XAR2TpMGxZZu3mAX3nDzg2hD74gxBYrhou/Vqjbnu3rGtNv2hfq5ijc697J4R62sQwF5pvl
-	XuAGl3rH8uWR6sK5V0j0FKkSdSyUv97R4nhi7QtQ48N8mCzjkLOEsu14xqATUSum7zdWd46sDZM
-	7yz4craMkxi1TzGrHvS5oqxELF4SHqNRAQEkIOUs9njTmSuH7jfwiMfrvz/w34nW6WJ9B8FVtak
-	/XGW80b+GhoOSC
-X-Google-Smtp-Source: AGHT+IEentAnI1yj0z6qRZ5KdLBVgjnziNgHhb/Jl+pNRxdF1zphm0ZkabxVVNMn+VJXwHdjra5MXgfIwMD5
-X-Received: by 2002:a05:6e02:441a:20b0:3fe:33d4:8890 with SMTP id e9e14a558f8ab-3fe33d48949mr83910705ab.17.1757324340610;
-        Mon, 08 Sep 2025 02:39:00 -0700 (PDT)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-13.dlp.protect.broadcom.com. [144.49.247.13])
-        by smtp-relay.gmail.com with ESMTPS id e9e14a558f8ab-3f8af8752dfsm7010415ab.42.2025.09.08.02.39.00
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Sep 2025 02:39:00 -0700 (PDT)
-X-Relaying-Domain: broadcom.com
-X-CFilter-Loop: Reflected
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-252afdfafe1so17597755ad.0
-        for <linux-rdma@vger.kernel.org>; Mon, 08 Sep 2025 02:39:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1757324339; x=1757929139; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YGjl4q66wmN7/ezkb9S+V7QVIqhx40OH4hsVUrE8K0g=;
-        b=O+u62tKMfpPej6XHFf+uuytIdvHaKQoHnKzyK4RtuI42K3CgQhHuDwb6NWtsigj4v/
-         vEGRJOaT3Cc4uIaqpCxqI5A0k13zb2F59b1uxiUxVNLyP3XjpHNblhYJ2CuTikkaE1PV
-         3dkuOF33UWeSRiO1+wnCtlIynPaZ3vhSPlCv0=
-X-Received: by 2002:a05:6a20:7fa5:b0:243:f797:fdf9 with SMTP id adf61e73a8af0-25344415f91mr9005557637.47.1757324339115;
-        Mon, 08 Sep 2025 02:38:59 -0700 (PDT)
-X-Received: by 2002:a05:6a20:7fa5:b0:243:f797:fdf9 with SMTP id adf61e73a8af0-25344415f91mr9005549637.47.1757324338715;
-        Mon, 08 Sep 2025 02:38:58 -0700 (PDT)
-Received: from dhcp-10-123-157-228.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-32d8ead7bbbsm1629283a91.16.2025.09.08.02.38.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Sep 2025 02:38:58 -0700 (PDT)
-From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-To: leon@kernel.org,
-	jgg@ziepe.ca
-Cc: linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com,
-	selvin.xavier@broadcom.com,
-	Shravya KN <shravya.k-n@broadcom.com>,
-	Saravanan Vajravel <saravanan.vajravel@broadcom.com>
-Subject: [PATCH V2 rdma-next 2/2] RDMA/bnxt_re: Avoid GID level QoS update from the driver
-Date: Mon,  8 Sep 2025 15:15:16 +0530
-Message-ID: <20250908094516.18222-3-kalesh-anakkur.purayil@broadcom.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20250908094516.18222-1-kalesh-anakkur.purayil@broadcom.com>
-References: <20250908094516.18222-1-kalesh-anakkur.purayil@broadcom.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782772EA752;
+	Mon,  8 Sep 2025 10:07:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.60
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1757326071; cv=fail; b=Avu213zYDJ30MkpqM6ns2ciZwB+oblKjN0pCQTye7p31RLHvFxaAiN3F56ABaKHQgWmht+H7kPFFiDZPrkDg6y8EuRGqlNZUFkksX4TWRf6UrHeZeUxQP4VU8H/sWoX99Cz+UXz9Bm6dqs+pHTGRvVHZ4MmFcVq7i5bkfRAyUlE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1757326071; c=relaxed/simple;
+	bh=TKheL/CQeQtnbSp1hP/+WOBz+GX6MZZHFMoTCijZEqA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pFrEzqS+8OH1UQweNWCj3avTF3rUAXMg1zgxLlEiENTgwFyXVoU1fHke/EQThkD1gcoDPQrbzdLCfR5b7JK86gJbUAPm2SLdiXUFZc6o/LAVVi+ncwjNaUlTMmt6qr6YHVQHleSNih/wIyWX/u0H2jKMR4L/82PtfUm2agmfC0M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=PeZIALqC; arc=fail smtp.client-ip=40.107.243.60
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=N/s5pZp34QtB7tnS46VXZqtZDBf0PbZD4VnxKBFmQRP2Gmt4AQqoPKQqri8wmQ4izXePeLixcD0tGtvj7cA99otPDjw9SbXcorT5yfok0PI/8s5XbKpKkWFm3xJUMv1p5MaSh3OYKE9enFZvKDciZzGgGafQtE3HZe1CwQAoy9yr96d2U4ijyEpGdLmYS9zHmLH7Nn2XZYlVmrOrxw7ea2tpD+kYXiKdO0F1Gg/YdIQmXRSCAwgzhEJdfMPO9k3lXOMAAuBSPa/wiq2VBW4n5dxN4xExyF7J6Jxei3ckwlVrqFE1nSwgaj50wfwCc5zCHdGUxRSZnIyWJUejRgMSJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LHSSadfTT5ddammFakS/VaDIHehUohWZV2/avdB1Xis=;
+ b=lduIhzY87ZawcD740vNysMJUn5lwPPf1NSxDjMDlid3ZJdpDIA5Z5Lq3IJROe75B3usDzIw5vlaRv3FC4J5frqYpGysAzCkid2Y/SkS1qvB2cFCxvbnR5xpX/yNP4I1qZxZYAE9EX8aJMpixL2jP6lU5ZpfS4NsOA7enULcRSCOg2jq1tDU7oMhr2n0kZVB3fYoctarGlob4hwmXWChEaowgD7B49WE/Yax/9HsoHXeakPtcQhQ7OcYLJOWp4VK9a84n88FDi4TxX4od1eAx2X2e9UFdzwzpHYdQye/SY0FYlzw3PvdhUpHKYiRpkm119/Jtu2Jp95paY5aa1mbGlQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LHSSadfTT5ddammFakS/VaDIHehUohWZV2/avdB1Xis=;
+ b=PeZIALqCeO/dbwE8MMQ0ce3zLdciKwDk9zurFl+s6HpN7OuvKkGUi3xUT9ncH4DwvsMeZ/mjjry+2NYHTU8TeCPfQF3Eg+Uh1rtIytXDz5MaHGuimRaJbGMC75BWSu/wIqYZW0FOy+ddjaJrHUww9UCZwpoC1iAZ0tmIQ7VQKW+1pfZwLPe5l0lYcUBYO9yXfbkpvG8ILpIgiajq1oyvSjd3Wd1EU0AsX5RgdAhkLhddkBvuLBXNTZ85tOf7Ou0fTf/Rj5DJV2DYodL9inQKxD0SRFPyEg4dFsqc7jjUSb3n6RiFqSbMKzg0nupie4TYaoJF6hDvrVMK5QXzx0CbJQ==
+Received: from DS7PR03CA0066.namprd03.prod.outlook.com (2603:10b6:5:3bb::11)
+ by DS0PR12MB7745.namprd12.prod.outlook.com (2603:10b6:8:13c::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9094.19; Mon, 8 Sep
+ 2025 10:07:43 +0000
+Received: from DS1PEPF0001708F.namprd03.prod.outlook.com
+ (2603:10b6:5:3bb:cafe::3b) by DS7PR03CA0066.outlook.office365.com
+ (2603:10b6:5:3bb::11) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9094.22 via Frontend Transport; Mon,
+ 8 Sep 2025 10:07:43 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ DS1PEPF0001708F.mail.protection.outlook.com (10.167.17.139) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9115.13 via Frontend Transport; Mon, 8 Sep 2025 10:07:42 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Mon, 8 Sep
+ 2025 03:07:21 -0700
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Mon, 8 Sep
+ 2025 03:07:20 -0700
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.10)
+ with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Mon, 8 Sep
+ 2025 03:07:16 -0700
+From: Tariq Toukan <tariqt@nvidia.com>
+To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>
+CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>
+Subject: [PATCH net 0/3] mlx5e misc fixes 2025-09-08
+Date: Mon, 8 Sep 2025 13:07:03 +0300
+Message-ID: <1757326026-536849-1-git-send-email-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.8.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS1PEPF0001708F:EE_|DS0PR12MB7745:EE_
+X-MS-Office365-Filtering-Correlation-Id: 13668614-57b9-4023-df2b-08ddeebf8d25
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|376014|82310400026|36860700013;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?u4+Q8sn72h27cGAdk4kATq4/FzpFQdTtnGpykT0aLCSDu6PLXHAkuaf1EamO?=
+ =?us-ascii?Q?RZRf/Ba55y9q9HbDbSVeL6CMu/yy3yrqsvrH1p2usRnZ4ynbIOkX1lTHgeEW?=
+ =?us-ascii?Q?2//dp/5WtBrPlBDUblBYP34qg9gdFa8E5RlfqifDu8k+TFPoAI1NjPQTU7F+?=
+ =?us-ascii?Q?7sGBtlf/+rTKQeifrmj7xLe3nozWkh0txL4R2eSr6m1yvHEAU0lzYx3og/yW?=
+ =?us-ascii?Q?Po806IkGc0dnVNW4uXfnaAPg2Ns1bwYK1z6hyc5FN3SmKab5gwaTouY79E/F?=
+ =?us-ascii?Q?yybAWFcKpFscj5gPXjIJ+ntw0EjfczxbCftG2T1cGp4Qv0z60ZT8MRKi8oU7?=
+ =?us-ascii?Q?SRA9qeBYc32G0fXtmcytuot6CHPztpAbzCxkkvgsy6UqbGptZBADWUm+w772?=
+ =?us-ascii?Q?CrlHMkXfktA9OYLPwE2qsEv+kwOazCezPzY838v/D8rWO5RA/wVHRYdm4kXa?=
+ =?us-ascii?Q?hCELSPchLjKbqqvuF8+dmelIYhswPc1VHXDcXqhNA3NUu6ERV6QUF886JuIG?=
+ =?us-ascii?Q?oh7otbwY/0+pWyCm2FydpF52YvpHknu3hgjF2zZaElG5hnbQLPw/EfOUSMtR?=
+ =?us-ascii?Q?ufHXJJeVyiVouVLq1ROLwd5H/bVPtOt9hP900saFDGp+OpVmG7NAvBMfw3qU?=
+ =?us-ascii?Q?cT0FSQ1FdnxUgl6HmZjiJZelwXo0NxY+CAWuCPv3FsEuNnao9AvTm84LmC2B?=
+ =?us-ascii?Q?o/tFWbdx7I4ngH/YzZEz/GjjvYK2gFSgovV110Qp8klAG71fjmIsUw4NSksd?=
+ =?us-ascii?Q?Ju2xzq4K6+lQht2kLecPMwpe3kq0gKiqxBjT6+EDXkm9cGzIpkNsnn6NiMaG?=
+ =?us-ascii?Q?XqRNor47nwkcq0lnv/F86gM55/EnDG7IQd3IcY4EsPRQ+egSI4w5LALcvSu4?=
+ =?us-ascii?Q?ef5Qku4xAy8uQmk0sg4RR9n+yFASpEyUu5H+il8WE0itFcji9X3eWkWjk/kD?=
+ =?us-ascii?Q?iqxFjbyFh3iPsivo1zUkCoYiM/QeDjfnSCk6ouXRsh5ldLw5BlT04rQu5LtE?=
+ =?us-ascii?Q?Kw6rdciFyo7w2wNco3EQ7j3R29py49PXgdVKhm8aOUiGsfCoCvO2bUZ6kAQR?=
+ =?us-ascii?Q?b2UFJ0ODSVauQeY5UatJ/nFxaQxkwfPlBKckmBpvrfe8hqD853Wd0QXnwCzW?=
+ =?us-ascii?Q?hmXq5/DPegeRppIWjgEe6Ks9X1Gd0BFoP2WcxApPa9akVAkO1g9fHpT/PvkY?=
+ =?us-ascii?Q?q32p3mKNPojvrufbn/bkw6o9LUpts49CeSD6wLic3UhazxtwHEWMLVsOSzZS?=
+ =?us-ascii?Q?+DCrrCNq+Gdksk2oVQktK3eFH8ZUSa7ULvZmtpGF+4ahddDQxLNFjfa05ApR?=
+ =?us-ascii?Q?DjH/qqkGPUrJBFpctSQuo76yvWcc9Mx0B5w/w6uQjSX2EXVogf0WEzsgOzyl?=
+ =?us-ascii?Q?8AApix891/0BR1EwrWSHlJpFOBk9kDpgm+88qjtn6iGNigSs+IcXSu6Pf1Xu?=
+ =?us-ascii?Q?T2FzcgXyfiZFZ+bYFda2qyTPF1PvNK8f4ij2iNyEQmB6VzzypMlhROZNTw0T?=
+ =?us-ascii?Q?RpraFI1JWzRFmwIGL8v5Q2O7RGxOFv4X3yib?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(376014)(82310400026)(36860700013);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2025 10:07:42.7872
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 13668614-57b9-4023-df2b-08ddeebf8d25
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS1PEPF0001708F.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7745
 
-From: Shravya KN <shravya.k-n@broadcom.com>
+Hi,
 
-The driver inserts a VLAN header into RoCE packets when the
-traffic was untagged by modifying the existing GID entries.
-This has caused the firmware to enforce only VLAN-based
-priority mappings, ignoring other valid priority configurations
-set via APP TLVs (e.g., DSCP selectors).
+This patchset provides misc bug fixes from the team to the mlx5 Eth
+driver.
 
-Driver now has support for selecting the service level (vlan id)
-and traffic class (dscp) during modify_qp. So no need to override
-the priority update using the update gid method. Hence removing
-the code that handles the above operation.
+Thanks,
+Tariq.
 
-Signed-off-by: Shravya KN <shravya.k-n@broadcom.com>
-Reviewed-by: Saravanan Vajravel <saravanan.vajravel@broadcom.com>
-Reviewed-by: Selvin Xavier <selvin.xavier@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/bnxt_re.h  |  4 -
- drivers/infiniband/hw/bnxt_re/main.c     | 97 ------------------------
- drivers/infiniband/hw/bnxt_re/qplib_sp.c | 40 ----------
- 3 files changed, 141 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-index b5d0e38c7396..2cce7818daaa 100644
---- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-+++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
-@@ -174,7 +174,6 @@ struct bnxt_re_dev {
- #define BNXT_RE_FLAG_NETDEV_REGISTERED		0
- #define BNXT_RE_FLAG_HAVE_L2_REF		3
- #define BNXT_RE_FLAG_RCFW_CHANNEL_EN		4
--#define BNXT_RE_FLAG_QOS_WORK_REG		5
- #define BNXT_RE_FLAG_RESOURCES_ALLOCATED	7
- #define BNXT_RE_FLAG_RESOURCES_INITIALIZED	8
- #define BNXT_RE_FLAG_ERR_DEVICE_DETACHED       17
-@@ -187,9 +186,6 @@ struct bnxt_re_dev {
- 
- 	int				id;
- 
--	struct delayed_work		worker;
--	u8				cur_prio_map;
--
- 	/* RCFW Channel */
- 	struct bnxt_qplib_rcfw		rcfw;
- 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index 4703ed3ec928..a55ea813176c 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -1870,81 +1870,6 @@ static void bnxt_re_dev_stop(struct bnxt_re_dev *rdev)
- 	mutex_unlock(&rdev->qp_lock);
- }
- 
--static int bnxt_re_update_gid(struct bnxt_re_dev *rdev)
--{
--	struct bnxt_qplib_sgid_tbl *sgid_tbl = &rdev->qplib_res.sgid_tbl;
--	struct bnxt_qplib_gid gid;
--	u16 gid_idx, index;
--	int rc = 0;
--
--	if (!ib_device_try_get(&rdev->ibdev))
--		return 0;
--
--	for (index = 0; index < sgid_tbl->active; index++) {
--		gid_idx = sgid_tbl->hw_id[index];
--
--		if (!memcmp(&sgid_tbl->tbl[index], &bnxt_qplib_gid_zero,
--			    sizeof(bnxt_qplib_gid_zero)))
--			continue;
--		/* need to modify the VLAN enable setting of non VLAN GID only
--		 * as setting is done for VLAN GID while adding GID
--		 */
--		if (sgid_tbl->vlan[index])
--			continue;
--
--		memcpy(&gid, &sgid_tbl->tbl[index], sizeof(gid));
--
--		rc = bnxt_qplib_update_sgid(sgid_tbl, &gid, gid_idx,
--					    rdev->qplib_res.netdev->dev_addr);
--	}
--
--	ib_device_put(&rdev->ibdev);
--	return rc;
--}
--
--static u32 bnxt_re_get_priority_mask(struct bnxt_re_dev *rdev)
--{
--	u32 prio_map = 0, tmp_map = 0;
--	struct net_device *netdev;
--	struct dcb_app app = {};
--
--	netdev = rdev->netdev;
--
--	app.selector = IEEE_8021QAZ_APP_SEL_ETHERTYPE;
--	app.protocol = ETH_P_IBOE;
--	tmp_map = dcb_ieee_getapp_mask(netdev, &app);
--	prio_map = tmp_map;
--
--	app.selector = IEEE_8021QAZ_APP_SEL_DGRAM;
--	app.protocol = ROCE_V2_UDP_DPORT;
--	tmp_map = dcb_ieee_getapp_mask(netdev, &app);
--	prio_map |= tmp_map;
--
--	return prio_map;
--}
--
--static int bnxt_re_setup_qos(struct bnxt_re_dev *rdev)
--{
--	u8 prio_map = 0;
--
--	/* Get priority for roce */
--	prio_map = bnxt_re_get_priority_mask(rdev);
--
--	if (prio_map == rdev->cur_prio_map)
--		return 0;
--	rdev->cur_prio_map = prio_map;
--	/* Actual priorities are not programmed as they are already
--	 * done by L2 driver; just enable or disable priority vlan tagging
--	 */
--	if ((prio_map == 0 && rdev->qplib_res.prio) ||
--	    (prio_map != 0 && !rdev->qplib_res.prio)) {
--		rdev->qplib_res.prio = prio_map;
--		bnxt_re_update_gid(rdev);
--	}
--
--	return 0;
--}
--
- static void bnxt_re_net_unregister_async_event(struct bnxt_re_dev *rdev)
- {
- 	if (rdev->is_virtfn)
-@@ -2071,9 +1996,6 @@ static void bnxt_re_dev_uninit(struct bnxt_re_dev *rdev, u8 op_type)
- 	bnxt_re_net_unregister_async_event(rdev);
- 	bnxt_re_uninit_dcb_wq(rdev);
- 
--	if (test_and_clear_bit(BNXT_RE_FLAG_QOS_WORK_REG, &rdev->flags))
--		cancel_delayed_work_sync(&rdev->worker);
--
- 	if (test_and_clear_bit(BNXT_RE_FLAG_RESOURCES_INITIALIZED,
- 			       &rdev->flags))
- 		bnxt_re_cleanup_res(rdev);
-@@ -2106,16 +2028,6 @@ static void bnxt_re_dev_uninit(struct bnxt_re_dev *rdev, u8 op_type)
- 	}
- }
- 
--/* worker thread for polling periodic events. Now used for QoS programming*/
--static void bnxt_re_worker(struct work_struct *work)
--{
--	struct bnxt_re_dev *rdev = container_of(work, struct bnxt_re_dev,
--						worker.work);
--
--	bnxt_re_setup_qos(rdev);
--	schedule_delayed_work(&rdev->worker, msecs_to_jiffies(30000));
--}
--
- static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 op_type)
- {
- 	struct bnxt_re_ring_attr rattr = {};
-@@ -2272,15 +2184,6 @@ static int bnxt_re_dev_init(struct bnxt_re_dev *rdev, u8 op_type)
- 		if (rc)
- 			ibdev_warn(&rdev->ibdev, "Failed to query CC defaults\n");
- 
--		rc = bnxt_re_setup_qos(rdev);
--		if (rc)
--			ibdev_info(&rdev->ibdev,
--				   "RoCE priority not yet configured\n");
--
--		INIT_DELAYED_WORK(&rdev->worker, bnxt_re_worker);
--		set_bit(BNXT_RE_FLAG_QOS_WORK_REG, &rdev->flags);
--		schedule_delayed_work(&rdev->worker, msecs_to_jiffies(30000));
--
- 		if (!(rdev->qplib_res.en_dev->flags & BNXT_EN_FLAG_ROCE_VF_RES_MGMT))
- 			bnxt_re_vf_res_config(rdev);
- 	}
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-index b602a1da19cd..79edff6bda95 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-@@ -396,46 +396,6 @@ int bnxt_qplib_add_sgid(struct bnxt_qplib_sgid_tbl *sgid_tbl,
- 	return 0;
- }
- 
--int bnxt_qplib_update_sgid(struct bnxt_qplib_sgid_tbl *sgid_tbl,
--			   struct bnxt_qplib_gid *gid, u16 gid_idx,
--			   const u8 *smac)
--{
--	struct bnxt_qplib_res *res = to_bnxt_qplib(sgid_tbl,
--						   struct bnxt_qplib_res,
--						   sgid_tbl);
--	struct bnxt_qplib_rcfw *rcfw = res->rcfw;
--	struct creq_modify_gid_resp resp = {};
--	struct bnxt_qplib_cmdqmsg msg = {};
--	struct cmdq_modify_gid req = {};
--	int rc;
--
--	bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)&req,
--				 CMDQ_BASE_OPCODE_MODIFY_GID,
--				 sizeof(req));
--
--	req.gid[0] = cpu_to_be32(((u32 *)gid->data)[3]);
--	req.gid[1] = cpu_to_be32(((u32 *)gid->data)[2]);
--	req.gid[2] = cpu_to_be32(((u32 *)gid->data)[1]);
--	req.gid[3] = cpu_to_be32(((u32 *)gid->data)[0]);
--	if (res->prio) {
--		req.vlan |= cpu_to_le16
--			(CMDQ_ADD_GID_VLAN_TPID_TPID_8100 |
--			 CMDQ_ADD_GID_VLAN_VLAN_EN);
--	}
--
--	/* MAC in network format */
--	req.src_mac[0] = cpu_to_be16(((u16 *)smac)[0]);
--	req.src_mac[1] = cpu_to_be16(((u16 *)smac)[1]);
--	req.src_mac[2] = cpu_to_be16(((u16 *)smac)[2]);
--
--	req.gid_index = cpu_to_le16(gid_idx);
--
--	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, NULL, sizeof(req),
--				sizeof(resp), 0);
--	rc = bnxt_qplib_rcfw_send_message(rcfw, &msg);
--	return rc;
--}
--
- /* AH */
- int bnxt_qplib_create_ah(struct bnxt_qplib_res *res, struct bnxt_qplib_ah *ah,
- 			 bool block)
+Jianbo Liu (2):
+  net/mlx5e: Harden uplink netdev access against device unbind
+  net/mlx5e: Prevent entering switchdev mode with inconsistent netns
+
+Lama Kayal (1):
+  net/mlx5e: Add a miss level for ipsec crypto offload
+
+ .../net/ethernet/mellanox/mlx5/core/en/fs.h   |  1 +
+ .../mellanox/mlx5/core/en_accel/ipsec.h       |  1 +
+ .../mellanox/mlx5/core/en_accel/ipsec_fs.c    |  3 +-
+ .../net/ethernet/mellanox/mlx5/core/en_rep.c  | 26 ++++++++++++---
+ .../net/ethernet/mellanox/mlx5/core/esw/qos.c |  1 +
+ .../mellanox/mlx5/core/eswitch_offloads.c     | 33 +++++++++++++++++++
+ .../net/ethernet/mellanox/mlx5/core/fs_core.c |  4 +--
+ .../ethernet/mellanox/mlx5/core/lib/mlx5.h    | 15 ++++++++-
+ include/linux/mlx5/driver.h                   |  1 +
+ 9 files changed, 76 insertions(+), 9 deletions(-)
+
+
+base-commit: e2a10daba84968f6b5777d150985fd7d6abc9c84
 -- 
-2.43.5
+2.31.1
 
 
