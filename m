@@ -1,101 +1,95 @@
-Return-Path: <linux-rdma+bounces-13163-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13164-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15903B497DA
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Sep 2025 20:09:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13427B49CA2
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 00:02:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 093C44E2051
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Sep 2025 18:09:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE8951BC05C9
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Sep 2025 22:02:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 239763148D9;
-	Mon,  8 Sep 2025 18:09:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1629F2E7BCC;
+	Mon,  8 Sep 2025 22:02:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F2P5/d75"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="KG8awAPp"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B7DF7FBAC;
-	Mon,  8 Sep 2025 18:09:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D4A523B61A;
+	Mon,  8 Sep 2025 22:02:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757354979; cv=none; b=AMEq8YNVQQsUJ9QaEncjWVvkCn6CqF9VXExZj6KC1RxUTEgn4qr9ITGMdMw7HIGz35ycfy9CFD9fexVMRX46ObuIFRSMhqU4L/3UtQVe3CgbgMe4/3JZhXMvV535/E7w2dD/9kdnFieoJ5qXpBHLsDfP5fy8Y7FEZ3Seqdgjffk=
+	t=1757368935; cv=none; b=JMVSIk7abRjsB97AsNDxpX3TakOT1LOJMnCJcAcmswFHwFzWtPE5X4EgEOW92HKvA8mGYOyvcUnT2jwuAXs+k8RhRQdsg2TIspeiu2/Qb3l/JRxYg1OJ3FDDX9mqssN1KJGZVL3YHmYb0qGMmMY5XQzPEBfqVEkltwoeQ3VIEyE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757354979; c=relaxed/simple;
-	bh=NuQI4nMA0g0N9BbTVEQpy+JxTD3mg9+9KzSwGSix7cU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eOd9yDgO2LpoWlx92umlM3ZEZJ4TKG7OQrSNDMUD/gl7r0hKTiy3zRkUokCQh6vNZ7T02dzsp+S8nMz6fhpHIUd+o+sKRGs3TsXZte8GSceJxUqZAfQAu94/15NbSRWnPJlUGDPuuxuPtsiNV3Q7PypXaHA9CTJvbOPvZ8FGt9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F2P5/d75; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-24cde6c65d1so34309225ad.3;
-        Mon, 08 Sep 2025 11:09:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757354978; x=1757959778; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RTgXOKpTqqoYfQsbZozKU3x3sBsg6MhNCEyIXZl9xW4=;
-        b=F2P5/d7563rzk8tOjyR7iOGMwybTxV813345uok762tukNF78/gl310yyTgDOs9txT
-         UViLDWMzL5HnOB9rKbW9k8ktA32MURPE4e51grCWmJUuralA4CB+BSScd3FqlbPez2Ur
-         TOM14VC4F46pBbSMz/qe2og+DkBnhVdWY3SBKrd3qRZINJzmu2L9QMONGcMSdjmWR/sb
-         f4o01bBRlnRGZU9NwQVd2MpGR2UUU/GfbokjAlx1re1SdgY9IJO3grAzvaBawXi/FIou
-         lMLgJgBLsLdvcmBLBlhKb+ShDe9sLktu1SrWuk8NrRDxyIlUDt9hvVTo84fnkcR3pRqc
-         qd8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757354978; x=1757959778;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RTgXOKpTqqoYfQsbZozKU3x3sBsg6MhNCEyIXZl9xW4=;
-        b=iDBH+Az0SCPIiJdD0u9Tga6oWLJvYHunqWfzczSJQ157nhY6gAcbBUjL+cNiwK/fOx
-         tDwu1hlgQIZFRETSYgG7lB9gFylMXmZuUWunGfOMjIh/giMKHmexYdwrv5kTg21ceWjA
-         b5wFL2/cgs8TRTEqDEzW9ozOD7vHIqFbNC64RE0aFK9HtCrLyB83KfOPyUoIa+WwsHtT
-         UKj/PDlbpF9vzzPkJKjkv2A0AO6YoEcuEXeGCBPmw7iecp23Kznh2X6iwGu3igiINLCa
-         LMxUJyrp0qlTKXtbumE4uObVrszMUqDLQQO0RnsIyUhQNysmI9nUOk+/KN+/ZvA/oqPk
-         pWTg==
-X-Forwarded-Encrypted: i=1; AJvYcCVHqr+oHPzFCS6IzWWOOTB2aP/OJGoGa5bDC5Ycxs6X37rxhPVeMBnyYD7TizWlJ+ZKKB1Qkpwm@vger.kernel.org, AJvYcCWtrfwBzbKaXRah5kIRtdf634iXYn/bSWSgYjEaKKvUokBluBS6YQ69WCDpfGQmcXN1o9CGAQQEM6esKg==@vger.kernel.org, AJvYcCWvvg13kagMlSy3Yd/Y9ZfCTaziMQnSFkd8N9cINLTWcs5zOSceAKkd8o1ZDMSipJWgvn2bz0v1EA/6iiY=@vger.kernel.org, AJvYcCX8fQEBwlfxXvNP4NUFbHldMk679M4S9p6GoVZ1XIA4Rfe1OJyhdkwiGdz4FkUp/BOxNeUaQbKaXtvGpA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzT8thVlD5fh1Qatktjjm927Qn+m9TEAhHbtfjf2mM5nunLBfjN
-	ULJqZm3hFwMKB3Cda0nIltZxSqR0ZplIEzTHD/X1VVSobBIot3g1HrLO
-X-Gm-Gg: ASbGnctNEaghTdeatS7JVoRMU/kuB8A2HuLURa3a/2q8ivkUOmZNTNsZMQjtxBoRTAx
-	C5eg9mR7tUgvXlOvsrpmpGeKtmSlj8Q7R0RKmB+lQuTd/xJLTap3De/jYE3TkMH6m0fsUe54LCo
-	XrxIK3pzQSGJiA8GoVdlLniqSfL4wfQ6RM8ZDEDjAY/jC955g8qqRFbPagK+y0t7pqCPGBu5NkF
-	m6Mq0sFXxVmu7DymV6ImEU73IJFXFS+i9u1EVv+S79Iuo/Xl1kanYhiAe8m8z9ENqz5i7qEdU0g
-	xP1FLJXBTcQFE8pkCanvMzUq5VBwPbrAgRouZjUWHmY6aMEUWlLIRn4WqP6RaTbxVP6RfbC6gkR
-	1IeaNS2oGxD4D1lhL3/Scf+/M6pGaUoQM3vi+pY93+gt1fhiiPtxOuML9VJYebWG5NIHJoAl1NU
-	8oK/u1bwMDSjKQiVSM7QLZeNHtCgW57PGRhjqge4oCV/7pKwo=
-X-Google-Smtp-Source: AGHT+IHUvGdkTF6ftj5zF8+ukk3mhEagKf7AXIJW2UU34v0dDiyGOkNx8+ez0Gtfkca6XYJRXXePLg==
-X-Received: by 2002:a17:903:3d06:b0:258:2476:77db with SMTP id d9443c01a7336-25824767953mr24731155ad.42.1757354977526;
-        Mon, 08 Sep 2025 11:09:37 -0700 (PDT)
-Received: from crl-3.node2.local ([125.63.65.162])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-24b273e4ad5sm172768845ad.25.2025.09.08.11.09.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Sep 2025 11:09:37 -0700 (PDT)
-From: Kriish Sharma <kriish.sharma2006@gmail.com>
-To: alibuda@linux.alibaba.com,
-	dust.li@linux.alibaba.com,
-	sidraya@linux.ibm.com,
-	wenjia@linux.ibm.com
-Cc: mjambigi@linux.ibm.com,
-	tonylu@linux.alibaba.com,
-	guwen@linux.alibaba.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	horms@kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org,
-	linux-kernel-mentees@lists.linuxfoundation.org,
-	kriish.sharma2006@gmail.com
-Subject: [PATCH] net/smc: replace strncpy with strscpy for ib_name
-Date: Mon,  8 Sep 2025 18:09:13 +0000
-Message-Id: <20250908180913.356632-1-kriish.sharma2006@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1757368935; c=relaxed/simple;
+	bh=hhE6RGL+FRpzFdGhBf7AK1KQErFfrcOxy9ye5CpwxNo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XWLJ+tZP4YoTlIDwlVvJ9AA/kpuC/wiU+n4vcJ1QFR6M/8Nm9wB6/piZ5i/7qvzqn0J6pvr1WF/NLtY+Kn2B4fnDvL6+xtDrtlB83iXptlI5PNEzft7vkc345Jubyfeyuyy1NcXkcVG64j0stuRNweaOuNBhDMd7GA0T6ZgF2JI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=KG8awAPp; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 588HsGjK006469;
+	Mon, 8 Sep 2025 22:02:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=qpbTHU8EIW3qhR3cjrpx1set9Uut6u/PXSeZfaBSi
+	UM=; b=KG8awAPpy/C8y8G7pcV5X4hzRXpOUghByGPU04rmEVwNGpkvEmBFtmduT
+	0HC4ecesu04ME5Gh4+nKfGd11+bGuZc1Zwm1fsQnjy/5yVCkHM0KiTXqheZzB8Xi
+	POcJ8dNBh9mOEbRfkOSkF88yvRA4b8qhfQUqwuMbzaVdOztxftyPubWb+rXJ4wDS
+	tWOg4HhHKw26sZrtUKyFsuBacT0YEsUAg1SJfcnLdWAEpIaP+GezXzkbpgWMi9V7
+	uUclB/POEwa/DO/MyeYgWlFdz4lKLLjoxpX/9FchUoXUrJz8CLPUfPdT2AqqDTcM
+	aNTxUWEhXFtx8hI0ZcTAkEs1wKMZQ==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 490cmwm43j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Sep 2025 22:02:09 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 588LrKxp027864;
+	Mon, 8 Sep 2025 22:02:08 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 490cmwm43a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Sep 2025 22:02:08 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 588KC61K011435;
+	Mon, 8 Sep 2025 22:02:07 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 490y9u8b5v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 08 Sep 2025 22:02:07 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 588M24Vk61538686
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 8 Sep 2025 22:02:04 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id EDF4F20040;
+	Mon,  8 Sep 2025 22:02:03 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id ADBA820043;
+	Mon,  8 Sep 2025 22:02:03 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon,  8 Sep 2025 22:02:03 +0000 (GMT)
+From: Halil Pasic <pasic@linux.ibm.com>
+To: Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Simon Horman <horms@kernel.org>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        Dust Li <dust.li@linux.alibaba.com>,
+        Sidraya Jayagond <sidraya@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Mahanta Jambigi <mjambigi@linux.ibm.com>,
+        Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Cc: Halil Pasic <pasic@linux.ibm.com>
+Subject: [PATCH net-next v2 0/2] net/smc: make wr buffer count configurable 
+Date: Tue,  9 Sep 2025 00:01:48 +0200
+Message-ID: <20250908220150.3329433-1-pasic@linux.ibm.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -103,31 +97,90 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ZvQu3b2NvW__VhgPLhLqlyl9HpPgnH97
+X-Proofpoint-ORIG-GUID: gtQ_0s5TQzq9r25UlxbXbPysDtje5wda
+X-Authority-Analysis: v=2.4 cv=J52q7BnS c=1 sm=1 tr=0 ts=68bf5261 cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=yJojWOMRYYMA:10 a=OPAOpny1AAAA:8 a=vF7HM7XGAAAA:8 a=QyXUC8HyAAAA:8
+ a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=piJGGMyLFvZckxoXyWEA:9
+ a=Vt4qOV5uLRUYeah0QK8L:22 a=bNn2QJc11pDkoTYzAKk6:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTA2MDAyNSBTYWx0ZWRfXxlIICvURjiWB
+ 1Cz96MRYfonkWO8i63gCKHPysWKwCzMbVrW93SYq+Qle4vnGNs5YUxwNCjsbjomitPms7p/TCJd
+ TRdPvmTox6zp4KaCBLPvIOLLOVsQNKVMVCadK0gHjZDp8ioTDtVu84pkWnJ3BZ1qLNxYEg4UORQ
+ 7A0UO92puRlWP61kG38eoSHgRNpBdg0NIpFG1AI8cEZEzYRIoCWNdKP1LlDEgHWOTdqh6E1o0gy
+ x0GjXacKyA7lpL0e2uwBNxPAJt7nwDvITRhr4uj9JnLiQr7uXO6BUqvZqM3CrhVzkThr4chzuU/
+ IM8R//Mue9lOkkowbi5cGuHA/ZTABKIlUmwie197k7fokePIlItP2kMnAAqRBWTFAulq/mP327l
+ CVtsbWxG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-09-08_06,2025-09-08_02,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 clxscore=1015 suspectscore=0 spamscore=0 phishscore=0
+ bulkscore=0 adultscore=0 malwarescore=0 priorityscore=1501
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2509060025
 
-Replace the deprecated strncpy() with strscpy() for ib_name in
-smc_pnet_add_ib(). The destination buffer should be NUL-terminated and
-does not require any trailing NUL-padding. Since ib_name is a fixed-size
-array, the two-argument form of strscpy() is sufficient and preferred.
+The current value of SMC_WR_BUF_CNT is 16 which leads to heavy
+contention on the wr_tx_wait workqueue of the SMC-R linkgroup and its
+spinlock when many connections are competing for the work request
+buffers. Currently up to 256 connections per linkgroup are supported.
 
-Signed-off-by: Kriish Sharma <kriish.sharma2006@gmail.com>
----
- net/smc/smc_pnet.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+To make things worse when finally a buffer becomes available and
+smc_wr_tx_put_slot() signals the linkgroup's wr_tx_wait wq, because
+WQ_FLAG_EXCLUSIVE is not used all the waiters get woken up, most of the
+time a single one can proceed, and the rest is contending on the
+spinlock of the wq to go to sleep again.
 
-diff --git a/net/smc/smc_pnet.c b/net/smc/smc_pnet.c
-index 76ad29e31d60..b90337f86e83 100644
---- a/net/smc/smc_pnet.c
-+++ b/net/smc/smc_pnet.c
-@@ -450,7 +450,7 @@ static int smc_pnet_add_ib(struct smc_pnettable *pnettable, char *ib_name,
- 		return -ENOMEM;
- 	new_pe->type = SMC_PNET_IB;
- 	memcpy(new_pe->pnet_name, pnet_name, SMC_MAX_PNETID_LEN);
--	strncpy(new_pe->ib_name, ib_name, IB_DEVICE_NAME_MAX);
-+	strscpy(new_pe->ib_name, ib_name);
- 	new_pe->ib_port = ib_port;
- 
- 	new_ibdev = true;
+Addressing this by simply bumping SMC_WR_BUF_CNT to 256 was deemed
+risky, because the large-ish physically continuous allocation could fail
+and lead to TCP fall-backs. For reference see this discussion thread on
+"[PATCH net-next] net/smc: increase SMC_WR_BUF_CNT" (in archive
+https://lists.openwall.net/netdev/2024/11/05/186), which concludes with
+the agreement to try to come up with something smarter, which is what
+this series aims for.
+
+Additionally if for some reason it is known that heavy contention is not
+to be expected going with something like 256 work request buffers is
+wasteful. To address these concerns make the number of work requests
+configurable, and introduce a back-off logic with handles -ENOMEM form
+smc_wr_alloc_link_mem() gracefully.
+
+Changelog:
+v2:
+ 1) Fixed https://lore-kernel.gnuweeb.org/linux-doc/202509070225.pVKkaaCr-lkp@intel.com/
+ 2) Inspired by 1) made the sysctls namespaced and moved the backing
+    variables into struct netns_smc 
+ 3) Use tabs instead of spaces for alignment in (Dust Li) 
+ 4) Renamed the sysctls form smcr_max_*_wr to smcr_pref_*_wr (along with
+    the affiliated fields/variables based on the discussion with Dust Li
+    (although maximal is mathematically accurate preferred is more fitting
+    IMHO). Should the community decide tha max was better I can roll
+    this change back very quickly
+ 5) Removed Wenjia's r-b form patch 1 as quite a few things changed
+ 4) Add r-b from Mahanta I forgot to add in v1 (which remains the
+    same moduo rename.
+v1: https://lore.kernel.org/all/20250904211254.1057445-1-pasic@linux.ibm.com/
+
+Halil Pasic (2):
+  net/smc: make wr buffer count configurable
+  net/smc: handle -ENOMEM from smc_wr_alloc_link_mem gracefully
+
+ Documentation/networking/smc-sysctl.rst | 40 +++++++++++++++++++++++++
+ include/net/netns/smc.h                 |  2 ++
+ net/smc/smc_core.c                      | 34 ++++++++++++++-------
+ net/smc/smc_core.h                      |  8 +++++
+ net/smc/smc_ib.c                        |  7 ++---
+ net/smc/smc_llc.c                       |  2 ++
+ net/smc/smc_sysctl.c                    | 22 ++++++++++++++
+ net/smc/smc_sysctl.h                    |  2 ++
+ net/smc/smc_wr.c                        | 32 ++++++++++----------
+ net/smc/smc_wr.h                        |  2 --
+ 10 files changed, 119 insertions(+), 32 deletions(-)
+
+
+base-commit: f3883b1ea5a8f31df4eba1c2cb5196e3a249a09e
 -- 
-2.34.1
+2.48.1
 
 
