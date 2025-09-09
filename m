@@ -1,131 +1,184 @@
-Return-Path: <linux-rdma+bounces-13168-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13169-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74CFAB49D99
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 01:50:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3D89B49EA4
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 03:23:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 243373A1441
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Sep 2025 23:50:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CCC83AD53D
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 01:23:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65C1430B51F;
-	Mon,  8 Sep 2025 23:49:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B1EC219301;
+	Tue,  9 Sep 2025 01:23:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rNEDlFNZ"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Is/jeUlP"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B4B3EA8D;
-	Mon,  8 Sep 2025 23:49:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65D8D16DC28;
+	Tue,  9 Sep 2025 01:23:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757375398; cv=none; b=ZJpoZTtqAgatLFivCnG5GJG6RZy2+ygvRAKpLtA/FMuNUwpZOHDraWdMiZgdJCX8XM2YF6XyNzg1vAX+vLJvijLoNTnmLLYOcE6AJ1HGjmLuBidb2eRUZwP/f+WRihnWPsxAtOim1WdTONq+IOPmgmSx3PI78nAeXQc25hcthM0=
+	t=1757380987; cv=none; b=dc3Vk0T9MCmAHFuOf2d+9GkIrPB8XK2TaMv9HsG5UPYlpkurDqR5UrIfDZswBBmY5qOOTTor36KgC0Ebd/xtA3V2MOq4qMf20bghcenebHVk+5onE+Sf1yaazowiUYNtgEQABKGFDEDb+3/CoumCP4c6T8PtOJer71wc+nVptyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757375398; c=relaxed/simple;
-	bh=mTHhFjwx67T5cZggeXioncQ5Z5pNfVAaSNJfNKn+EjU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nJTgwxsdxEBAG7BHOd34v0+b49eTyIHDBheF77whOFqUX1C7K+JPYzVZIzV/JHZLO1uCxLahJ4GQj0KWlZ4DOeYvzGInnClGfzav/h/oT1D0Zu4k+hNYy1UR8i/0t13Hib3W8jZrWNhWD+ERx/N7jL7RmK0CP3wubQWIWIz6BpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rNEDlFNZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1205C4CEF7;
-	Mon,  8 Sep 2025 23:49:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757375397;
-	bh=mTHhFjwx67T5cZggeXioncQ5Z5pNfVAaSNJfNKn+EjU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=rNEDlFNZq+oSe7d12DDTIKSlFCntaekoWN/DoCna8Taumeuz17fSiJV/fJwAmVyaU
-	 1hNmeg4vGpmpZzbX3c4MPNgIIGgVrE/UUmTC5ej/OLQhfgp/RSGkjP/hex/YSQaID/
-	 lUjMOe8/ESIpCDqI2Gmc1bJF8AAlpEsnPRCW08ZhsoYh2If1Zn7BXC5UzIWe7ZNYGF
-	 WHOz3gRO5n+LYwp0w0TzviZwv4QggbXY6hg2IUyx6llKmiHFVygKhJCHk7E/QUwF7t
-	 h0lakoeQn+K8EDRLeIu8xm1CfgCQPWbIEc94Ney1e8+Ewj4Dv3mJjwTc9FOf8XXjfv
-	 JTeexEcitCcWQ==
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-61d143aa4acso8004134a12.2;
-        Mon, 08 Sep 2025 16:49:57 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCW/l6+F7n2tz2qyGP1mA1yeSEC3cUzv26x4D/H/4AUEnbTv8048wmaslLWq7y46Qr7WQCmi/2+/ahKB@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+N1+SC5jCu6yauvPIkGALXUkiZRGA5TTX4/TrXT64UvXYNCRa
-	aZh9zUmtyZ56XqovYKNU6sSgZZvki7M2JItEGArE9tV1/r9CuYxameB9tBqKA1X+9OD9Gu9vX7S
-	3KRUSHyvPby79dRXugphQsSv6V0nVvXo=
-X-Google-Smtp-Source: AGHT+IF0vDLrKfIOYBdnMhc8vs1WK7t5IsPpYoj/HNM9PMAcfcDeg36yoUW0Kj8rAa9gNHHKNw5jkqfheCoV/5taOgw=
-X-Received: by 2002:a05:6402:274d:b0:62b:4e83:e13 with SMTP id
- 4fb4d7f45d1cf-62b4e925357mr2284585a12.26.1757375396258; Mon, 08 Sep 2025
- 16:49:56 -0700 (PDT)
+	s=arc-20240116; t=1757380987; c=relaxed/simple;
+	bh=+Suf3UYL1FEYqrtEdRrLdPX55+LxnXEf18p8fqNUYqo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ttmgnCyY7k+W4q58+Bw+XYpi1bVbaX/B6zRuOK1qKqKwA+hYhyMMoREHuTXJImh43Ri176FpAplDKNpXtZ809fBdl4BPyZ5XW1GVVOjlCndvrXlyaqvmZTM8r/lBqE4t1vhDslGzWeBN1v28N6NSykacitaB6PVWFDK8Dm5rzh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Is/jeUlP; arc=none smtp.client-ip=115.124.30.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1757380981; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=xA2Ejw8sW8Ofk5QY6h87367f6vzr1rTStNEScUBbL98=;
+	b=Is/jeUlPQCjThmyHaJHkSbMrMF10wWmdyesywFmj8n8Dapc4jEKcpng2/HQfOEe+y+58zByof03mDffmjKu3W5Lm286VUOr7o8py5BospLjW0w0pbgQNwaTD2hh1ygVp85WXAcW0/Bz01l9hpRkVV7rIIvOxkrdyiBrqSeWoipQ=
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0WnbokwK_1757380980 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Tue, 09 Sep 2025 09:23:00 +0800
+Date: Tue, 9 Sep 2025 09:23:00 +0800
+From: Dust Li <dust.li@linux.alibaba.com>
+To: Alexandra Winter <wintera@linux.ibm.com>,
+	"D. Wythe" <alibuda@linux.alibaba.com>,
+	Sidraya Jayagond <sidraya@linux.ibm.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	David Miller <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>
+Cc: Julian Ruess <julianr@linux.ibm.com>,
+	Aswin Karuvally <aswin@linux.ibm.com>,
+	Halil Pasic <pasic@linux.ibm.com>,
+	Mahanta Jambigi <mjambigi@linux.ibm.com>,
+	Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>, linux-rdma@vger.kernel.org,
+	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Simon Horman <horms@kernel.org>
+Subject: Re: [PATCH net-next 01/14] net/smc: Remove error handling of
+ unregister_dmb()
+Message-ID: <aL-BdPSnQTPUy5rc@linux.alibaba.com>
+Reply-To: dust.li@linux.alibaba.com
+References: <20250905145428.1962105-1-wintera@linux.ibm.com>
+ <20250905145428.1962105-2-wintera@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250904181059.1594876-1-metze@samba.org>
-In-Reply-To: <20250904181059.1594876-1-metze@samba.org>
-From: Namjae Jeon <linkinjeon@kernel.org>
-Date: Tue, 9 Sep 2025 08:49:44 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd-pm1zbf7cHiC5Z9EsDYpYYpP7XdPLwcrMEC=rmDHm90A@mail.gmail.com>
-X-Gm-Features: AS18NWDWnPRi4SnE4bDJZ0suDXPkVol1xCIuN9zUkmkpwdDsqv80qp9Zu6zklMg
-Message-ID: <CAKYAXd-pm1zbf7cHiC5Z9EsDYpYYpP7XdPLwcrMEC=rmDHm90A@mail.gmail.com>
-Subject: Re: [PATCH] smb: server: let smb_direct_writev() respect SMB_DIRECT_MAX_SEND_SGES
-To: Stefan Metzmacher <metze@samba.org>
-Cc: linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
-	Steve French <smfrench@gmail.com>, Tom Talpey <tom@talpey.com>, Hyunchul Lee <hyc.lee@gmail.com>, 
-	linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250905145428.1962105-2-wintera@linux.ibm.com>
 
-On Fri, Sep 5, 2025 at 3:11=E2=80=AFAM Stefan Metzmacher <metze@samba.org> =
-wrote:
+On 2025-09-05 16:54:14, Alexandra Winter wrote:
+>smcd_buf_free() calls smc_ism_unregister_dmb(lgr->smcd, buf_desc) and
+>then unconditionally frees buf_desc.
 >
-> We should not use more sges for ib_post_send() than we told the rdma
-> device in rdma_create_qp()!
+>Remove the cleaning up of fields of buf_desc in
+>smc_ism_unregister_dmb(), because it is not helpful.
 >
-> Otherwise ib_post_send() will return -EINVAL, so we disconnect the
-> connection. Or with the current siw.ko we'll get 0 from ib_post_send(),
-> but will never ever get a completion for the request. I've already sent a
-> fix for siw.ko...
+>This removes the only usage of ISM_ERROR from the smc module. So move it
+>to drivers/s390/net/ism.h.
 >
-> So we need to make sure smb_direct_writev() limits the number of vectors
-> we pass to individual smb_direct_post_send_data() calls, so that we
-> don't go over the queue pair limits.
+>Signed-off-by: Alexandra Winter <wintera@linux.ibm.com>
+>Reviewed-by: Mahanta Jambigi <mjambigi@linux.ibm.com>
+
+Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+
+Best regards,
+Dust
+
+>---
+> drivers/s390/net/ism.h |  1 +
+> include/net/smc.h      |  2 --
+> net/smc/smc_ism.c      | 14 +++++---------
+> net/smc/smc_ism.h      |  3 ++-
+> 4 files changed, 8 insertions(+), 12 deletions(-)
 >
-> Commit 621433b7e25d ("ksmbd: smbd: relax the count of sges required")
-> was very strange and I guess only needed because
-> SMB_DIRECT_MAX_SEND_SGES was 8 at that time. It basically removed the
-> check that the rdma device is able to handle the number of sges we try
-> to use.
->
-> While the real problem was added by commit ddbdc861e37c ("ksmbd: smbd:
-> introduce read/write credits for RDMA read/write") as it used the
-> minumun of device->attrs.max_send_sge and device->attrs.max_sge_rd, with
-> the problem that device->attrs.max_sge_rd is always 1 for iWarp. And
-> that limitation should only apply to RDMA Read operations. For now we
-> keep that limitation for RDMA Write operations too, fixing that is a
-> task for another day as it's not really required a bug fix.
->
-> Commit 2b4eeeaa9061 ("ksmbd: decrease the number of SMB3 smbdirect
-> server SGEs") lowered SMB_DIRECT_MAX_SEND_SGES to 6, which is also used
-> by our client code. And that client code enforces
-> device->attrs.max_send_sge >=3D 6 since commit d2e81f92e5b7 ("Decrease th=
-e
-> number of SMB3 smbdirect client SGEs") and (briefly looking) only the
-> i40w driver provides only 3, see I40IW_MAX_WQ_FRAGMENT_COUNT. But
-> currently we'd require 4 anyway, so that would not work anyway, but now
-> it fails early.
->
-> Cc: Namjae Jeon <linkinjeon@kernel.org>
-> Cc: Steve French <smfrench@gmail.com>
-> Cc: Tom Talpey <tom@talpey.com>
-> Cc: Hyunchul Lee <hyc.lee@gmail.com>
-> Cc: linux-cifs@vger.kernel.org
-> Cc: samba-technical@lists.samba.org
-> Cc: linux-rdma@vger.kernel.org
-> Fixes: 0626e6641f6b ("cifsd: add server handler for central processing an=
-d tranport layers")
-> Fixes: ddbdc861e37c ("ksmbd: smbd: introduce read/write credits for RDMA =
-read/write")
-> Fixes: 621433b7e25d ("ksmbd: smbd: relax the count of sges required")
-> Fixes: 2b4eeeaa9061 ("ksmbd: decrease the number of SMB3 smbdirect server=
- SGEs")
-> Signed-off-by: Stefan Metzmacher <metze@samba.org>
-Applied it to #ksmbd-for-next-next.
-Thanks!
+>diff --git a/drivers/s390/net/ism.h b/drivers/s390/net/ism.h
+>index 047fa6101555..b5b03db52fce 100644
+>--- a/drivers/s390/net/ism.h
+>+++ b/drivers/s390/net/ism.h
+>@@ -10,6 +10,7 @@
+> #include <asm/pci_insn.h>
+> 
+> #define UTIL_STR_LEN	16
+>+#define ISM_ERROR	0xFFFF
+> 
+> /*
+>  * Do not use the first word of the DMB bits to ensure 8 byte aligned access.
+>diff --git a/include/net/smc.h b/include/net/smc.h
+>index db84e4e35080..a9c023dd1380 100644
+>--- a/include/net/smc.h
+>+++ b/include/net/smc.h
+>@@ -44,8 +44,6 @@ struct smcd_dmb {
+> 
+> #define ISM_RESERVED_VLANID	0x1FFF
+> 
+>-#define ISM_ERROR	0xFFFF
+>-
+> struct smcd_dev;
+> 
+> struct smcd_gid {
+>diff --git a/net/smc/smc_ism.c b/net/smc/smc_ism.c
+>index a58ffb7a0610..fca01b95b65a 100644
+>--- a/net/smc/smc_ism.c
+>+++ b/net/smc/smc_ism.c
+>@@ -205,13 +205,13 @@ int smc_ism_put_vlan(struct smcd_dev *smcd, unsigned short vlanid)
+> 	return rc;
+> }
+> 
+>-int smc_ism_unregister_dmb(struct smcd_dev *smcd, struct smc_buf_desc *dmb_desc)
+>+void smc_ism_unregister_dmb(struct smcd_dev *smcd,
+>+			    struct smc_buf_desc *dmb_desc)
+> {
+> 	struct smcd_dmb dmb;
+>-	int rc = 0;
+> 
+> 	if (!dmb_desc->dma_addr)
+>-		return rc;
+>+		return;
+> 
+> 	memset(&dmb, 0, sizeof(dmb));
+> 	dmb.dmb_tok = dmb_desc->token;
+>@@ -219,13 +219,9 @@ int smc_ism_unregister_dmb(struct smcd_dev *smcd, struct smc_buf_desc *dmb_desc)
+> 	dmb.cpu_addr = dmb_desc->cpu_addr;
+> 	dmb.dma_addr = dmb_desc->dma_addr;
+> 	dmb.dmb_len = dmb_desc->len;
+>-	rc = smcd->ops->unregister_dmb(smcd, &dmb);
+>-	if (!rc || rc == ISM_ERROR) {
+>-		dmb_desc->cpu_addr = NULL;
+>-		dmb_desc->dma_addr = 0;
+>-	}
+>+	smcd->ops->unregister_dmb(smcd, &dmb);
+> 
+>-	return rc;
+>+	return;
+> }
+> 
+> int smc_ism_register_dmb(struct smc_link_group *lgr, int dmb_len,
+>diff --git a/net/smc/smc_ism.h b/net/smc/smc_ism.h
+>index 6763133dd8d0..765aa8fae6fa 100644
+>--- a/net/smc/smc_ism.h
+>+++ b/net/smc/smc_ism.h
+>@@ -47,7 +47,8 @@ int smc_ism_get_vlan(struct smcd_dev *dev, unsigned short vlan_id);
+> int smc_ism_put_vlan(struct smcd_dev *dev, unsigned short vlan_id);
+> int smc_ism_register_dmb(struct smc_link_group *lgr, int buf_size,
+> 			 struct smc_buf_desc *dmb_desc);
+>-int smc_ism_unregister_dmb(struct smcd_dev *dev, struct smc_buf_desc *dmb_desc);
+>+void smc_ism_unregister_dmb(struct smcd_dev *dev,
+>+			    struct smc_buf_desc *dmb_desc);
+> bool smc_ism_support_dmb_nocopy(struct smcd_dev *smcd);
+> int smc_ism_attach_dmb(struct smcd_dev *dev, u64 token,
+> 		       struct smc_buf_desc *dmb_desc);
+>-- 
+>2.48.1
 
