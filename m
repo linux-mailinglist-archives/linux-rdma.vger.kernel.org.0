@@ -1,56 +1,62 @@
-Return-Path: <linux-rdma+bounces-13206-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13203-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF66FB4FCC0
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 15:28:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA095B4FB62
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 14:37:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FC873ABE68
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 13:28:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A82BE7A21DE
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 12:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4781C340D8F;
-	Tue,  9 Sep 2025 13:28:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45B783375B9;
+	Tue,  9 Sep 2025 12:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H+yZ20h0"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="FJS4dV/Q"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9902236435;
-	Tue,  9 Sep 2025 13:28:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64A1B322C67;
+	Tue,  9 Sep 2025 12:36:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757424492; cv=none; b=KA5RCmEg/JuT5p7SbyHGsRMy9oTVJihrM6ieuI+fISnCSDhna4VtJqW5/IUZq4Wm0VtpUYRPhWXvDk2iG3qsgr+F9CzmsJYUDHiARcHQ4r7/lDR7qPnU0YcW5HzUhvNnTPFLM63hkr9dfTIn0NCCxBx9lpjuDHt/Hj93/eI9nf0=
+	t=1757421418; cv=none; b=p6Y4t4A3sH7UYjuymgNyxFYoCK3E5GqgIwV/MYXNQSRxyORUh+wDYv7kHyW1lWWSleDGPiw9e7DywctXdd2V9VM+REsXuy2C/umFo8cQ3C2/IQEh2aRtZiBdhQng63kaSViU/94y5yLchdtbVw1iBX/blnRzdpRwydUDiY7NizQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757424492; c=relaxed/simple;
-	bh=VMUJFmLcsKGBDDr5v9bXqubrob3qdBOhonNwTJDZQaU=;
+	s=arc-20240116; t=1757421418; c=relaxed/simple;
+	bh=OE9PPZLsxRCIoQbYUx3sEkmOYfHCMAJ8vEXu2ZsW+es=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IpHMoocKTXsO8qx7QLozgRhBI6WIMLttL86gU1uuvbJ30iYRENQIUJ0wXAsyqFqfyKAhwGu6xlFdb8uBYRk4+YLNiEJwiBjK2Tv32t1Qv3pvh7xtDquWYQKWBHDSRJYsxepA0aiikY+s+Vg0ZBSL7FmbZcMB4+wnzqAWHY26xwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H+yZ20h0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0751AC4CEF4;
-	Tue,  9 Sep 2025 13:28:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757424491;
-	bh=VMUJFmLcsKGBDDr5v9bXqubrob3qdBOhonNwTJDZQaU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=H+yZ20h0+Dby0VNZESEZBL1k7vPh7lZAT5v4K0c7BYWTYEGfVNgf/a0zNMA6fDYlQ
-	 +zZ615z4LihhDOJuqLi1RmI4Exu0DZwTcYrIzjOwNjkRxJP166fiFYjsOj/hvkZUY2
-	 Batn+CgQKCn1AOsrK/I+qFkx8HvulAqoi5DYjTnWrIRKxMgyu83yQa6drOdCHLMtyb
-	 k5HZPEnsBVqhixIqIPzP5DrZgyfJbIzCi1UX28MjOyeHr67pOwrC83QV11iSMiBAgw
-	 c/0Fnqo1X1teBFuFGJPXN19nFNh8koJxx134game4/7YsbmO16fcp62PFVwYlbMXIl
-	 HdbUsYstHAdSg==
-Date: Tue, 9 Sep 2025 15:20:51 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Tatyana Nikolova <tatyana.e.nikolova@intel.com>, jiri@resnulli.us
-Cc: intel-wired-lan@lists.osuosl.org, przemyslaw.kitszel@intel.com,
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-	anthony.l.nguyen@intel.com
-Subject: Re: [iwl-next] ice, irdma: Add rdma_qp_limits_sel devlink parameter
- for irdma
-Message-ID: <20250909122051.GF341237@unreal>
-References: <20250904195719.371-1-tatyana.e.nikolova@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MgqssqzbQUZTqfHUA+9642L5825XubMJ+VQA5cz2kJpYBHd5I9oFQxVWSSiYiDTWReddAhxFRwgrKOsPKtzaR7kD3iGo432/JKk6b4g3wBZdOkYoBoCLiDprlr90X8RtE+T12j48RXV2iYsUVWe8e4GQJiLCcvfUubG7innXmYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=FJS4dV/Q; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=cPRW62VS5R4qpqyRM77zTED0HPd4w2ydDiojjTHXIHc=; b=FJS4dV/Q4TV6Uwq7EGD2bqAe9j
+	6oBGWpF3hflR1vQc4CybmJ3xcJPyyHGPfhy1SW02BjcUIdqMnJf27QTIQ2oBhR1/TXnsLbn/4G/jP
+	jlQgjCVdkdfnZKR5XhXEiL0wY99xl4IXcjSGbw2LJetnqqXg5CJ2hBk9hLghzrpwPx18=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1uvxaV-007nQN-Tx; Tue, 09 Sep 2025 14:36:43 +0200
+Date: Tue, 9 Sep 2025 14:36:43 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Mahanta Jambigi <mjambigi@linux.ibm.com>
+Cc: dust.li@linux.alibaba.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	alibuda@linux.alibaba.com, sidraya@linux.ibm.com,
+	wenjia@linux.ibm.com, pasic@linux.ibm.com, horms@kernel.org,
+	tonylu@linux.alibaba.com, guwen@linux.alibaba.com,
+	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net] net/smc: Remove unused argument from 2 SMC functions
+Message-ID: <6492e952-6763-447c-b491-135f5b94a6d6@lunn.ch>
+References: <20250909071145.2440407-1-mjambigi@linux.ibm.com>
+ <aMAR8q4mc3Lhkovw@linux.alibaba.com>
+ <8bc987c9-a79d-42ec-8279-da8b407cfd2c@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -59,35 +65,16 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250904195719.371-1-tatyana.e.nikolova@intel.com>
+In-Reply-To: <8bc987c9-a79d-42ec-8279-da8b407cfd2c@linux.ibm.com>
 
-On Thu, Sep 04, 2025 at 02:57:19PM -0500, Tatyana Nikolova wrote:
-> Add a devlink parameter to switch between different QP resource profiles
-> (max number of QPs) supported by irdma for Intel Ethernet 800 devices. The
-> rdma_qp_limits_sel is translated into an index in the rsrc_limits_table to
-> select a power of two number between 1 and 256 for max supported QPs (1K-256K).
-> To reduce the irdma memory footprint, set the rdma_qp_limits_sel default value
-> to 1 (max 1K QPs).
+> > But I don't think this is a bugfix.
 > 
-> Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-> Signed-off-by: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
-> ---
-> Since the changes to irdma are minor, this is targeted to iwl-next/net-next.
+> Yeah, its more of a clean up code. Should I use net-next? How should I
+> got about this.
 
-<...>
+https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
 
->  #define DEVLINK_LOCAL_FWD_DISABLED_STR "disabled"
->  #define DEVLINK_LOCAL_FWD_ENABLED_STR "enabled"
->  #define DEVLINK_LOCAL_FWD_PRIORITIZED_STR "prioritized"
-> @@ -1621,6 +1723,7 @@ enum ice_param_id {
->  	ICE_DEVLINK_PARAM_ID_BASE = DEVLINK_PARAM_GENERIC_ID_MAX,
->  	ICE_DEVLINK_PARAM_ID_TX_SCHED_LAYERS,
->  	ICE_DEVLINK_PARAM_ID_LOCAL_FWD,
-> +	ICE_DEVLINK_PARAM_ID_RDMA_QP_LIMITS_SEL,
->  };
+   It must either fix a real bug that bothers people....
 
-I was under impression that driver-specific devlink knobs are not
-allowed. Was this limitation changed for Intel?
-
-Thanks
+	Andrew
 
