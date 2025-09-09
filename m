@@ -1,249 +1,133 @@
-Return-Path: <linux-rdma+bounces-13210-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13211-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E67DB500D7
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 17:18:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16FFAB50185
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 17:37:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 762691C63152
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 15:19:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39ACD7A5EE4
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 15:34:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF6BE350824;
-	Tue,  9 Sep 2025 15:18:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B894F26D4F9;
+	Tue,  9 Sep 2025 15:31:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=openai.com header.i=@openai.com header.b="H72Yl/zC"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="YhT1NqWn"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD29933A027
-	for <linux-rdma@vger.kernel.org>; Tue,  9 Sep 2025 15:18:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB1A62690D1
+	for <linux-rdma@vger.kernel.org>; Tue,  9 Sep 2025 15:31:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757431128; cv=none; b=rgNx0FyVJ+Ut+KqHfaAN4NoJqRF3ZTsD08lk+hb/J85Y3NrwfL+ybvdKRASzgCuGIdMz/8sSdiwaqFyhWIpyzvDKeRVRf5VYPVA6aJBJsV7eZom9fOedUofwqPBkccpRxIALUFQnXdx555ahH7xLroBxu5GqMLUIsJLnlRDFchU=
+	t=1757431898; cv=none; b=fmd8olK7OSKpzOyJ4wVsSDLjZQKJGX6/lJ02tPPiuv02M3t1dktIhQ8h9V86JXCQtpzr1rNXsMK4GpDD7KEpXwMcyfC/60vVynJ5t/+ukajEUjObJyNxK9M6qqj3wFnZUXWSDPFoDHKN+URPmNr7fI3v/8j4OL+UowYUsS76WMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757431128; c=relaxed/simple;
-	bh=bR4dIdoRPS6mGjl21kqHScfk2rx+W6ycIilX7b/RNGo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kOamLdy7b6LrRYuL84cHSUlTG+A7G2/GU+a0oFyU6+XZFyErm3JJAPlRW0/DlEkHeN/V3xPzk+u9TrPSzLt73j5/jOFNHp6D5p1teF/xsSTWgLkh9ChTu8aF7S1aFp6zs1F6gpqpaEeqgu/NWhWLAOWqo2gG6e0irE34m9OgWHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=openai.com; spf=pass smtp.mailfrom=openai.com; dkim=pass (1024-bit key) header.d=openai.com header.i=@openai.com header.b=H72Yl/zC; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=openai.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=openai.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-55f72452a8eso6853539e87.3
-        for <linux-rdma@vger.kernel.org>; Tue, 09 Sep 2025 08:18:46 -0700 (PDT)
+	s=arc-20240116; t=1757431898; c=relaxed/simple;
+	bh=ZiFhYdl2bjOWEjo1NqUMAnXwgT2PaGixslQiYutgRy0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mn1pCEaYwfXDhx54RCsnLvKuJM5SEHYlsNIEmnorkL/e8NCs1MfOWJ4GzT4SbVIxGfrPTmQqw2XgtlFkkwnRHyIdtqew1bvzBo6FJb86pkZEX7wvG7pCUvtCcQ3iMy+6rjVr/ycJjO477fKbO9dhQC8XiaFr2t+werR2YLU9zvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=YhT1NqWn; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4b490287648so93930141cf.2
+        for <linux-rdma@vger.kernel.org>; Tue, 09 Sep 2025 08:31:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=openai.com; s=google; t=1757431125; x=1758035925; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CTmYm/3NJWN6FaiyVzu4eHMNvDOcOAN+2cDrv4pkNQA=;
-        b=H72Yl/zCPpwPcCfemS1mUrNgI0UeCyWOkK4wrIWkbMhHWwljS8S/OqmNQUPcaZlT5u
-         M6P4gm0xXOf/jiZEMeh9SGtb4bHL1ltWMMBuO7Mnx+DExPnndQZFq69DevBDPr8y17V/
-         ams4FDRTAllxE331o80XHD25cJfCFPxUFeoJk=
+        d=ziepe.ca; s=google; t=1757431895; x=1758036695; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=498dEo+KF6gTc379XcLxpYOuwK2LCxMHvU+qZ/OXUfM=;
+        b=YhT1NqWno+hgmBaBASpVCoyWjg2pvukMr8WzMjOQpwMofq8SZBnKETFAyBi8f6wDdA
+         RqVQ43oqY0ylrBg7Fq/2m1eAplq069JCVIQYBPcXqSOvOwqstPdD4lEyKhxfISghJuov
+         aAHdtVN8GL7m0xIZ+hGPT7VwHhdZJPW4/cXQXTOP8cGagfQ984mCxa5oXa5egzjUCiLA
+         fCDZ1lAYhJPWIk8L8UXnPSzG1XkZ4/1J1o+Uxl+cYj6aoTgHBNfd8yNDm3j4ppbpo1Y+
+         Qu2O8tuQAkHNXI0gFF2iE/6qkrkAP0SoqUdF5bx6M5AfNJcL9NAV1oeT3tHtkAE9awFm
+         xWig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757431125; x=1758035925;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CTmYm/3NJWN6FaiyVzu4eHMNvDOcOAN+2cDrv4pkNQA=;
-        b=W3AwPiwMcifnQiDEjPitVGrHVLPqC+NIufCi69lUBoo7WPd83joE4G0Zbg2d1nvxNx
-         Sv/U+nQj30BhHcSXQGqgTB3K/Xbca6T+oNJqMOj9NGzLQP+O/iQDYZ57dJ4yj6Y3kvr9
-         xlMBwOrBuoi/T8Z3PybmdnIJRzSXdH15y6/Lv7IhmRyewKVDqmlXLctAiI1cceuP8fEb
-         bVeM1P4ZwCi3WcR1r14jRNLyre9wnN8iTpQoKXWpTIgdq/XoFxDHOfIAKA8lSN3+Bu/Y
-         uI2k1fimEgW7PzPnG2naIC/lCNjTmeZ11KP9yYCmyczruQISi7qEDVZN+5GkjQbJLpgP
-         MeKw==
-X-Forwarded-Encrypted: i=1; AJvYcCXnAOwowUCbb5gQWWn9Q+wXYdk7NusDLhm4qO9xVBklKpV8XmEcqtYuCQom9ug1PQVIuf0pwrlJZLkH@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQhzdyyVptLNWg2QYZI8TCE+tU5cWD7MxjnjLTfqYZioV6kRBH
-	FfnJqm4CR3QZ01yJD70IjN7FWQAlNCFrlHhgByOBkx+AZ2SLI+FJVjz1CCQw8YKhL4h+/5GcZYC
-	Tz06j2TQJuU1qXKDlPdZXwOqavF7c1BDaLfxp78hdDQ==
-X-Gm-Gg: ASbGncuRxvDHPTeU0pS0+M1h0H1DkfIBQjj9FNOepuAN+xx9k9v80BOsAtJhd/88OUD
-	NmPv3aiNQL0z/pACgtdZfnvELp1mBuwIXd8MAE38btFKZZ5v9tey/S4KwvwqcR9MYjjxeByD8W9
-	iRsfjhlOmF16avOzB0lvcb+enWURTkxIsj4fGw80yEl8lfNML2wzHAKcpaRjHlP93aVoDcq2QDG
-	9jypef65A75da2qfFDYtM/HNDD0vEZYBYdaos6DX3neAq+73NOjnw==
-X-Google-Smtp-Source: AGHT+IFn4BOWF97PNcC3qO85DqmGcYDSyB3hTK4fzzbrhufLdnD7HWaPgAbvIg7kgSs2qLUEWNuedl/bAzFC23sgoI4=
-X-Received: by 2002:a05:6512:1385:b0:55f:7193:1e8c with SMTP id
- 2adb3069b0e04-562636d5c11mr4275328e87.31.1757431124882; Tue, 09 Sep 2025
- 08:18:44 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1757431895; x=1758036695;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=498dEo+KF6gTc379XcLxpYOuwK2LCxMHvU+qZ/OXUfM=;
+        b=EUkCyz9SLB14ZCi9MAexQNrGA423Pqzvz6mHOmBx5ZzJy9uPGfmexhD0iAAzJ5eDZU
+         GwHMbeGTBz2lTH4h0Br50TZlty57WavpUejvu83PGvKX0HfNjg2nl7uC+gFRRxKcebi3
+         FsrKTTBE2GVW3359CD+TNYEI9qJuWsfi75l41upBTXfkaiyo9FXKgFms8nFeYdYlzJFC
+         UxWWPpYP/xRHJxrMUjiWD9OYhmJTZ3h2yUBcffXmtjbNoL/5F+F3lCF7pQ3LokeKlLWG
+         ddSl3WYeWuS7+1sfo/imAyftKcON41aP5fxwI8P/c+zCFUSYxlEQ7vOkcsjFF3GxZqVO
+         i0+A==
+X-Forwarded-Encrypted: i=1; AJvYcCVJWfkBu808dUAUux4JmZK4UnoJM5mnOZulAl8QEOX5EW0vHQ7A1kTdcLaqT20QKyQZTdXL6uMmZlTH@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzk8ftf6Ci4Yz8E5eGd+aTPhFMU3Q7/YoDScZvZ32SmbJjuLCFf
+	pAO8/TiTNVYB1+HPb+I1Crnybqp/Rd1AUFfBPlVKj+E2tjaX+OmaJqPsRMHmXZQDzzo=
+X-Gm-Gg: ASbGncvp9SqjtzA8mx0J/sHjyBSPQurBDj7A00+prhe1N5ySovUH0v0rVpgEs1WdE1g
+	67ARSRYLpFuqakxjZdp9e2W4A6W1MXWOU35RhFoxkcm+YsSRYTA2PfyFR5TlsqaCCtLnuXjotKA
+	u1ek4n9LvplNJW0HwGtsp9nwYDXm4yImHHwV5qYUmo6AVJKcd22ZM0jFDbv4mn/4aU70NmWvqj/
+	Yi5ClsTFQ89vOT1OTik9OUQF4Bb/Vq1OOXCI8xb2qBuVKQrPD/d07WXu+n17Ir+QnGTrI8Wx2Ag
+	W6rsEgngP+KrUgoaugtNZiFH9r4Hvzv6IifMglA7d8OmZBdQ7oOk4uJfPe5SPDsFsvE6BY9GP34
+	Q+yGQxRkuZh63B6/XEfhcfMzpQNBrslnV8r7c2EAMkgoSlLMCwx84Uwym+u26e8R1T53J
+X-Google-Smtp-Source: AGHT+IH7K1XIyNvmlwRcafXwBvIsTn6HhCOCwW9mXvrQDKTlxF6E0GAU/aFQzWje+0RX4kjUPitS3g==
+X-Received: by 2002:a05:622a:5796:b0:4b2:ecfd:be0d with SMTP id d75a77b69052e-4b5f84b6e2emr137778461cf.81.1757431895263;
+        Tue, 09 Sep 2025 08:31:35 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-120-4.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.120.4])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4b61ba8c52dsm10541271cf.20.2025.09.09.08.31.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Sep 2025 08:31:34 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1uw0Jh-00000003i1N-3Pgp;
+	Tue, 09 Sep 2025 12:31:33 -0300
+Date: Tue, 9 Sep 2025 12:31:33 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Philipp Reisner <philipp.reisner@linbit.com>
+Cc: Leon Romanovsky <leon@kernel.org>, Zhu Yanjun <yanjun.zhu@linux.dev>,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2] rdma_rxe: call comp_handler without holding
+ cq->cq_lock
+Message-ID: <20250909153133.GA882933@ziepe.ca>
+References: <20250822081941.989520-1-philipp.reisner@linbit.com>
+ <20250908142457.GA341237@unreal>
+ <CADGDV=XNrmNo5gNZ1cX4eGUi+0xgAcQzra+pNHNGuQbc0DrpKA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250904-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v5-0-ea492f7b11ac@openai.com>
- <20250904-cpaasch-pf-927-netmlx5-avoid-copying-the-payload-to-the-malloced-area-v5-2-ea492f7b11ac@openai.com>
- <CAMB2axO4ySD2Lo9xzkkYdUqL2tHPcO02-h2HZiWT993wsU3NtA@mail.gmail.com> <CADg4-L92GbxSXaqg1KuoGxt2c_yC=gbmKywVPvcAjHY_7v2H1g@mail.gmail.com>
-In-Reply-To: <CADg4-L92GbxSXaqg1KuoGxt2c_yC=gbmKywVPvcAjHY_7v2H1g@mail.gmail.com>
-From: Christoph Paasch <cpaasch@openai.com>
-Date: Tue, 9 Sep 2025 08:18:32 -0700
-X-Gm-Features: AS18NWC8bTZ9zbKs1e6hJdbXPQ9cmJYIK9GtF_caFhUdPXvo43ULFYnM1yFVzB4
-Message-ID: <CADg4-L8dLtzPL-x8o1HAHrbQ2fQ0MxB3Gm68HVj9Jp3-YunwrA@mail.gmail.com>
-Subject: Re: [PATCH net-next v5 2/2] net/mlx5: Avoid copying payload to the
- skb's linear part
-To: Amery Hung <ameryhung@gmail.com>
-Cc: Gal Pressman <gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
-	Leon Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, netdev@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADGDV=XNrmNo5gNZ1cX4eGUi+0xgAcQzra+pNHNGuQbc0DrpKA@mail.gmail.com>
 
-On Mon, Sep 8, 2025 at 9:00=E2=80=AFPM Christoph Paasch <cpaasch@openai.com=
-> wrote:
->
-> On Thu, Sep 4, 2025 at 4:30=E2=80=AFPM Amery Hung <ameryhung@gmail.com> w=
-rote:
+On Tue, Sep 09, 2025 at 04:48:19PM +0200, Philipp Reisner wrote:
+> On Mon, Sep 8, 2025 at 4:25 PM Leon Romanovsky <leon@kernel.org> wrote:
 > >
-> > On Thu, Sep 4, 2025 at 3:57=E2=80=AFPM Christoph Paasch via B4 Relay
-> > <devnull+cpaasch.openai.com@kernel.org> wrote:
-> > >
-> > > From: Christoph Paasch <cpaasch@openai.com>
-> > >
-> > > mlx5e_skb_from_cqe_mpwrq_nonlinear() copies MLX5E_RX_MAX_HEAD (256)
-> > > bytes from the page-pool to the skb's linear part. Those 256 bytes
-> > > include part of the payload.
-> > >
-> > > When attempting to do GRO in skb_gro_receive, if headlen > data_offse=
-t
-> > > (and skb->head_frag is not set), we end up aggregating packets in the
-> > > frag_list.
-> > >
-> > > This is of course not good when we are CPU-limited. Also causes a wor=
-se
-> > > skb->len/truesize ratio,...
-> > >
-> > > So, let's avoid copying parts of the payload to the linear part. We u=
-se
-> > > eth_get_headlen() to parse the headers and compute the length of the
-> > > protocol headers, which will be used to copy the relevant bits ot the
-> > > skb's linear part.
-> > >
-> > > We still allocate MLX5E_RX_MAX_HEAD for the skb so that if the networ=
-king
-> > > stack needs to call pskb_may_pull() later on, we don't need to reallo=
-cate
-> > > memory.
-> > >
-> > > This gives a nice throughput increase (ARM Neoverse-V2 with CX-7 NIC =
-and
-> > > LRO enabled):
-> > >
-> > > BEFORE:
-> > > =3D=3D=3D=3D=3D=3D=3D
-> > > (netserver pinned to core receiving interrupts)
-> > > $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
-> > >  87380  16384 262144    60.01    32547.82
-> > >
-> > > (netserver pinned to adjacent core receiving interrupts)
-> > > $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
-> > >  87380  16384 262144    60.00    52531.67
-> > >
-> > > AFTER:
-> > > =3D=3D=3D=3D=3D=3D
-> > > (netserver pinned to core receiving interrupts)
-> > > $ netperf -H 10.221.81.118 -T 80,9 -P 0 -l 60 -- -m 256K -M 256K
-> > >  87380  16384 262144    60.00    52896.06
-> > >
-> > > (netserver pinned to adjacent core receiving interrupts)
-> > >  $ netperf -H 10.221.81.118 -T 80,10 -P 0 -l 60 -- -m 256K -M 256K
-> > >  87380  16384 262144    60.00    85094.90
-> > >
-> > > Additional tests across a larger range of parameters w/ and w/o LRO, =
-w/
-> > > and w/o IPv6-encapsulation, different MTUs (1500, 4096, 9000), differ=
-ent
-> > > TCP read/write-sizes as well as UDP benchmarks, all have shown equal =
-or
-> > > better performance with this patch.
-> > >
-> > > Reviewed-by: Eric Dumazet <edumazet@google.com>
-> > > Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
-> > > Signed-off-by: Christoph Paasch <cpaasch@openai.com>
-> > > ---
-> > >  drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > >
-> > > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/driver=
-s/net/ethernet/mellanox/mlx5/core/en_rx.c
-> > > index 8bedbda522808cbabc8e62ae91a8c25d66725ebb..0ac31c7fb64cd60720d39=
-0de45a5b6b453ed0a3f 100644
-> > > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> > > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-> > > @@ -2047,6 +2047,8 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e=
-_rq *rq, struct mlx5e_mpw_info *w
-> > >                 dma_sync_single_for_cpu(rq->pdev, addr + head_offset,=
- headlen,
-> > >                                         rq->buff.map_dir);
-> > >
-> > > +               headlen =3D eth_get_headlen(rq->netdev, head_addr, he=
-adlen);
-> > > +
-> > >                 frag_offset +=3D headlen;
-> > >                 byte_cnt -=3D headlen;
-> > >                 linear_hr =3D skb_headroom(skb);
-> > > @@ -2123,6 +2125,9 @@ mlx5e_skb_from_cqe_mpwrq_nonlinear(struct mlx5e=
-_rq *rq, struct mlx5e_mpw_info *w
-> > >                                 pagep->frags++;
-> > >                         while (++pagep < frag_page);
-> > >                 }
-> > > +
-> > > +               headlen =3D eth_get_headlen(rq->netdev, mxbuf->xdp.da=
-ta, headlen);
-> > > +
+> > On Fri, Aug 22, 2025 at 10:19:41AM +0200, Philipp Reisner wrote:
+> > > Allow the comp_handler callback implementation to call ib_poll_cq().
+> > > A call to ib_poll_cq() calls rxe_poll_cq() with the rdma_rxe driver.
+> > > And rxe_poll_cq() locks cq->cq_lock. That leads to a spinlock deadlock.
 > >
-> > The size of mxbuf->xdp.data is most likely not headlen here.
+> > Can you please be more specific about the deadlock?
+> > Please write call stack to describe it.
 > >
-> > The driver currently generates a xdp_buff with empty linear data, pass
-> > it to the xdp program and assumes the layout If the xdp program does
-> > not change the layout of the xdp_buff through bpf_xdp_adjust_head() or
-> > bpf_xdp_adjust_tail(). The assumption is not correct and I am working
-> > on a fix. But, if we keep that assumption for now, mxbuf->xdp.data
-> > will not contain any headers or payload. The thing that you try to do
-> > probably should be:
-> >
-> >         skb_frag_t *frag =3D &sinfo->frags[0];
-> >
-> >         headlen =3D eth_get_headlen(rq->netdev, skb_frag_address(frag),
-> > skb_frag_size(frag));
+> Instead of a call stack, I write it from top to bottom:
+> 
+> The line numbers in the .c files are valid for Linux-6.16:
+> 
+> 1  rxe_cq_post()                      [rxe_cq.c:85]
+> 2   spin_lock_irqsave()               [rxe_cq.c:93]
+> 3   cq->ibcq.comp_handler()           [rxe_cq.c:116]
+> 4    some_comp_handler()
+> 5     ib_poll_cq()
+> 6      cq->device->ops.poll_cq()      [ib_verbs.h:4037]
+> 7       rxe_poll_cq()                 [rxe_verbs.c:1165]
+> 8        spin_lock_irqsave()          [rxe_verbs.c:1172]
+> 
+> In line 8 of this call graph, it deadlocks because the spinlock
+> was already acquired in line 2 of the call graph.
 
-So, when I look at the headlen I get, it is correct (even with my old
-code using mxbuf->xdp.data).
+Is this even legal in verbs? I'm not sure you can do pull cq from a
+interrupt driven comp handler.. Is something already doing this intree?
 
-To make sure I test the right thing, which scenario would
-mxbuf->xdp.data not contain any headers or payload ? What do I need to
-do to reproduce that ?
-
-Thanks,
-Christoph
-
->
-> Ok, I think I understand what you mean! Thanks for taking the time to exp=
-lain!
->
-> I will do some tests on my side to make sure I get it right.
->
-> As your change goes to net and mine to netnext, I can wait until yours
-> is in the tree so that there aren't any conflicts that need to be
-> taken care of.
->
->
-> Christoph
->
-> >
-> >
-> >
-> > >                 __pskb_pull_tail(skb, headlen);
-> > >         } else {
-> > >                 if (xdp_buff_has_frags(&mxbuf->xdp)) {
-> > >
-> > > --
-> > > 2.50.1
-> > >
-> > >
+Jason
 
