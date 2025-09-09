@@ -1,55 +1,57 @@
-Return-Path: <linux-rdma+bounces-13194-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13195-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9903B4AC37
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 13:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A8182B4AC57
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 13:40:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CCD01B24FA8
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 11:35:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19C841BC3EE6
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 11:40:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEDF82E8DF7;
-	Tue,  9 Sep 2025 11:34:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 618E6322A13;
+	Tue,  9 Sep 2025 11:39:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eMv4v4J3"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="YE3sGncy"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64AAC1B78F3
-	for <linux-rdma@vger.kernel.org>; Tue,  9 Sep 2025 11:34:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFECF255F31;
+	Tue,  9 Sep 2025 11:39:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757417682; cv=none; b=UurbpbEVJM/SsSlhP+8tB5ufHbSlHRg/ULujuj7lzl14kDp8uuBofFz4LaoA3Lkqo5mb2uD+kCpDd2nxsyTrvaueAy8dx42YJshtmPyuP/TmdYRXrhteDPUjtyuLF5+zpyGvTA5WAKr/PwcVHI2ni3xdKBnq84ngo7NtLUo4dWY=
+	t=1757417983; cv=none; b=d2NDyLQ5XpIkONp4+EWHbdymhBfok4IObOYZv5eSaaEP51D6QA4vMoUtevz/984Tb2MSYOy++GXJSfvj+isLAyvAA2f2hU2vyp4Bx6X4Xx4wXFaVswQyjxMSJ/F6nEaK8ocs9KQJO6VF2fSVsrAJeHmcaP2q/lAfZI+FzaKACX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757417682; c=relaxed/simple;
-	bh=sENPlbQRZQK0f+ZpvkTMNl6040J+1Uhos83IvcsHa2A=;
+	s=arc-20240116; t=1757417983; c=relaxed/simple;
+	bh=2vPVGLuNg1awR+xeX85MRQK0GwqZk7QK0+n5jfOfVqE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aw6geJ2ZtyeRZ0KyIM4pEA9AV7PN20kbkbDXvHgJEu5Hb2dMtiZq7Y+21xes7G7GkZIuTLGkzOH0N+0b6KHJzazgrjb5lS6zfHxqhF0SzmnrrDkGxq1ezbx8w9qB0EW4of8MuDNEFU1jZqMxySfjxEUfdjOHFMS3Ejndswb6Glg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eMv4v4J3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71AAAC4CEF4;
-	Tue,  9 Sep 2025 11:34:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757417681;
-	bh=sENPlbQRZQK0f+ZpvkTMNl6040J+1Uhos83IvcsHa2A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eMv4v4J34F8F9+cx5LEwp2lCGAOc7VDu+9gZV6OHhb1A3brNDcK2tZRZTp9mPLrqh
-	 DSd9m5o9LPli69Ai/KCyvqTvxLHpnG6LdDPa35ru4fSDUMXMpYCLic3098zN3ZljEC
-	 +svL4QjyyKfqTH2yv3pFnXvztgAt7yAepes6VjePpPtmbIu0RMCu3DlHUBZuF97VyS
-	 Ohqe8e1MnOlgPdRNDqUapRfWkLa0ojSYj2U5ZSTAvVMpaIKm5K4lIexB4t0+Qb2nhN
-	 z16W4tad+XzZ8p7OUGaJQZjUq4UNxUJ/7UkrtIszE2ZjZParYXnpMF5Qh2ILw1keWY
-	 ObA3LRKOU+WeQ==
-Date: Tue, 9 Sep 2025 14:34:37 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Jacob Moroni <jmoroni@google.com>
-Cc: Tatyana Nikolova <tatyana.e.nikolova@intel.com>, jgg@nvidia.com,
-	linux-rdma@vger.kernel.org, krzysztof.czurylo@intel.com
-Subject: Re: [for-next 00/16] Add RDMA support for Intel IPU E2000 in irdma
-Message-ID: <20250909113437.GE341237@unreal>
-References: <20250827152545.2056-1-tatyana.e.nikolova@intel.com>
- <CAHYDg1Taj9PBoHRoNjBJsgmpWWYtkD9P5BHLRJ-BSi+4J6kU_w@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ePqCiaPtXeuMuF3w9juNyDHJQs/TeiU8oRgh0k9iEoGOj1ZStT65pJj5dMeqJqaGbX3w83eug0li6/rfcyMo5k2ByhyuviWZjlfxjAz2G7iLaAvFWluCCl5/syOfweSLtCYLYgVztiAqTO0ikbSjC865a4toQe3hTRIaYozM7tY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=YE3sGncy; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1757417971; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=2vPVGLuNg1awR+xeX85MRQK0GwqZk7QK0+n5jfOfVqE=;
+	b=YE3sGncysMk0oelbbahQEsjnhlGa/j/ZrnPtW9daUFgKsD9X+B/s17cEJJybsCLxJxOqwHzJfrDKWQ6r/f83IjJjy2Z9qhrqmHO6GGJ1tmR4PGbJo+oSiIFm2lXlnqNr8T5P3tdGHbgdl4RNJRd63GUcGMORT8234a4scZ+UoRo=
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0Wndu0.e_1757417970 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Tue, 09 Sep 2025 19:39:30 +0800
+Date: Tue, 9 Sep 2025 19:39:30 +0800
+From: Dust Li <dust.li@linux.alibaba.com>
+To: Mahanta Jambigi <mjambigi@linux.ibm.com>, andrew+netdev@lunn.ch,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, alibuda@linux.alibaba.com, sidraya@linux.ibm.com,
+	wenjia@linux.ibm.com
+Cc: pasic@linux.ibm.com, horms@kernel.org, tonylu@linux.alibaba.com,
+	guwen@linux.alibaba.com, netdev@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net] net/smc: Remove unused argument from 2 SMC functions
+Message-ID: <aMAR8q4mc3Lhkovw@linux.alibaba.com>
+Reply-To: dust.li@linux.alibaba.com
+References: <20250909071145.2440407-1-mjambigi@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -58,27 +60,28 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHYDg1Taj9PBoHRoNjBJsgmpWWYtkD9P5BHLRJ-BSi+4J6kU_w@mail.gmail.com>
+In-Reply-To: <20250909071145.2440407-1-mjambigi@linux.ibm.com>
 
-On Wed, Aug 27, 2025 at 03:21:28PM -0400, Jacob Moroni wrote:
-> Tested with rdma-unit-test (https://github.com/google/rdma-unit-test).
-> 
-> [==========] 522 tests from 43 test suites ran. (1872510 ms total)
-> [  PASSED  ] 481 tests.
-> [  SKIPPED ] 41 tests, listed below:
-> 
-> Tested-by: Jacob Moroni <jmoroni@google.com>
+On 2025-09-09 09:11:45, Mahanta Jambigi wrote:
+>The smc argument is not used in both smc_connect_ism_vlan_setup() &
+>smc_connect_ism_vlan_cleanup(). Hence removing it.
+>
+>Fixes: 413498440e30 net/smc: add SMC-D support in af_smc
 
-What did you test?
-I don't see any rdma-core changes to support this new driver.
-https://lore.kernel.org/all/20250827152545.2056-8-tatyana.e.nikolova@intel.com/
+The standard format for the Fixes tag requires the title to be enclosed
+in parentheses.
 
-"""
-This change introduces a GEN3 auxiliary vPort driver responsible for
-registering a verbs device for every RDMA-capable vPort. Additionally,
-the UAPI is updated to prevent the binding of GEN3 devices to older
-user-space providers.
-"""
+But I don't think this is a bugfix.
 
-Thanks
+
+>Signed-off-by: Mahanta Jambigi <mjambigi@linux.ibm.com>
+>Reviewed-by: Sidraya Jayagond <sidraya@linux.ibm.com>
+
+Besides,
+Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+
+Best regards,
+Dust
+
+
 
