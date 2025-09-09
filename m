@@ -1,137 +1,181 @@
-Return-Path: <linux-rdma+bounces-13176-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13177-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66F55B4A19D
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 07:52:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 268AFB4A32A
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 09:13:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED22E4E5FB1
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 05:52:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5C973AEEF3
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Sep 2025 07:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E4B02FC030;
-	Tue,  9 Sep 2025 05:52:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40620306D52;
+	Tue,  9 Sep 2025 07:12:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hmRdyYgg"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sGnEDM2O"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59DF1235345;
-	Tue,  9 Sep 2025 05:52:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49E41235044;
+	Tue,  9 Sep 2025 07:12:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757397158; cv=none; b=YzxvE3S1dJin5gzrN4MSEOilG1RSwrw7XA90rz9V4xcLlH7USqFVrJEPnZ6dms01mXe9wGtq01LE6e/e5gk+iKxvuW8va1pypJkgW3T2RCf3k7M2oebRlkx4pbUpTACO1jir/Vmtl+srWKWtXMvzm7X/lLIYu7IvP8ie8CB2/H4=
+	t=1757401933; cv=none; b=r7DNIF+dGTG95zkFu1gLxXW55XEGqlY2V7Nvfsfust9r4h4Cj/lYztNbtDaLo0OWRfKspdQnKQj+IrDBl10SZ8yhUdLdsotZKZAxQa+/IEqWtqMb6hrjGtV8+FwjrLqP73e5j4Nm0TuYxyTwsg3weB9/v8U6iNuOyts6sVhIeF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757397158; c=relaxed/simple;
-	bh=VQQ1lN513RELz1RBuncnSXiG7shY2pPI+qGAdfdX+rk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hESIao04Q03uksdlMDqJ8zjRIyjTVShWoPfl0bB3ostlYRN05upqBEa/6+vG7MjU7ogWUBUtuY06cQVQH5MDalCQ/JqzBJ4jmukM5V01Vo1VHCHr2CvZuBA32w/XuWWQqWM1q/bEnUjONmQVI7r71heK2VPFXdEHvfGf3hMmjtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hmRdyYgg; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-45dd513f4ecso31073395e9.3;
-        Mon, 08 Sep 2025 22:52:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1757397155; x=1758001955; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8GQtuEM9KVeO11wzE/KB3+A4EoaPaCi2T85wynCWuLQ=;
-        b=hmRdyYgg2Ek3+B/r4nQoLSsptF0GlAqGhfIV4l+0t25bh9YviDZXQ0UgeEucd7FKQh
-         8j0d+a3WXzBTJOy/Sz1OYikuQ8wgTUR0mnBbCYvnmDysSUvZ4DsDijVJ+rfnBx7iKDnp
-         hBcNwha8VecKmPYqp+jpW3XbNWvwWfpul6E7OxI5MKVZpRt0PT5CEQLvHHM9vnAgpN4z
-         lA1+B2f8aOoiFXqcEp0j7iM7eGHTTg/154isHoIwIh5wHb/WQoCzZxHyKwPXMmLcuzNt
-         2ht2lwtfzT2XGmdUrxxCQVBlBmedZsxIsm3uOVvOGXI+d6tKeOajwdjjdtutdji8ZKss
-         /V6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757397155; x=1758001955;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8GQtuEM9KVeO11wzE/KB3+A4EoaPaCi2T85wynCWuLQ=;
-        b=LZ3SbFn7XI8eO5fqjRmEfjVwZE10WgZ2VxmGVFaYFw0bA9iOrA0YT6gc7/AP7lcoGs
-         pxR8tVg6l37jUjFYYNugqZehvizw8uGYc/dnd+cnPwNLV4/RM/PlfqT0yAxFDWy89JTj
-         J0uopPZMiHXciMnKY3rJXP5D6oTdV00zirCIpshkPGcl44640BhBgo9hd44tjHEB0bRH
-         sEKqaaqc5IAcL8pHnj/PS1kjLxoKRYFboVBOtYpAwlXIpiOWlu/s9IHjC/vXtsLiNRKF
-         KtpCkQxKfXFOwBWC9Jlv8pTpFUOKjxshMi+fJrSy61rFA3Y00xAHy5q9OleWhK3J4YkI
-         ACow==
-X-Forwarded-Encrypted: i=1; AJvYcCVXPnk3Kpy9HZrHSvrnm9zhHa0O84bZILa9HpPuVqmXT03Eq+b3PxQ2UpMt4QPQbDGFk9mB+RQTt8PKx5o=@vger.kernel.org, AJvYcCWM7lzsxEpyHA8eRZzTGQSr7jqlZj8R83s/NRqhk2qO1KAgAsqu9F9+4iCTPnD5P/ftwoaBqQik@vger.kernel.org, AJvYcCXodlf6VPHPa5CvkewIbMKDE5Kc5KnB6VjDqOwyDE8gOF9G/3A9/AzoBfzFZ9t8b1lmfH4VNU8ghxk3dQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx2v0VA8TROafVmLsxY5EwwnOaqrRXJ63J3YZsVC3DO9HtiDFMI
-	pOW5Ebmsx88i7BCBQ0dmvu/SDqSI/ycOwaHR4C9utj0vLDoUU6nxh0j/
-X-Gm-Gg: ASbGncs9VjOnh2TsxisDvUdofvRM/40bfBS2TyDJcIUIC2mZAu4A60R+cCWTS+CBheH
-	QgyQKg2E8GAEir5R/orGMWpNhODKK+dw1dzEydh3Y/H1FkYP+ED1X4EjMtf9cqcFldLW7IFXHYm
-	vbK6J9+r5L46EcpDNLRFc8TYx1fPF7NnaIG7gDvt/Ph9tIWCz06i1BDa1K2kARIHacI4O8okhea
-	7vsg29Co/JqM5ApOPeC4b9ZfVwiQZKLE7j2CrJQIyCw7Wr2gXRhWKB2GXwy0dxZJqj8m+4knbki
-	v4s4/RWru2btb1ClHQWW7oc3sQ5tURNJAaFAUfdvgpQILb/GoEPG+vQzCbMPeNqp2PNgxBStbJp
-	D7Oi6D/+/DjFdSGOHGepDdUzvY54uC+YNsN2FHvfLcyu3jaFpARUElr/cGEyliH+bIGtH26ObE5
-	Uxn1dKsQ8=
-X-Google-Smtp-Source: AGHT+IEd0QVuQMf9hcVCydaZL4Gz0VKAhlI6CBSPbinLFBT6z6bSurd34JLpj+zDmHoa/hAeexUN+w==
-X-Received: by 2002:a05:600c:c4ac:b0:45d:d97c:236c with SMTP id 5b1f17b1804b1-45dddecdaf1mr76419575e9.21.1757397154320;
-        Mon, 08 Sep 2025 22:52:34 -0700 (PDT)
-Received: from ?IPV6:2a0d:6fc0:1394:1700:c43f:7c46:8b7f:da00? ([2a0d:6fc0:1394:1700:c43f:7c46:8b7f:da00])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-45de18f4824sm119956455e9.10.2025.09.08.22.52.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Sep 2025 22:52:33 -0700 (PDT)
-Message-ID: <1f85b803-eeda-4d62-b36b-8fc84390e74f@gmail.com>
-Date: Tue, 9 Sep 2025 08:52:33 +0300
+	s=arc-20240116; t=1757401933; c=relaxed/simple;
+	bh=KVlFynD/KZmkbHRpxXJbCvEPT7and5zJ2SZIwAzXdvo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Xcri4HhnBvtJL1mxYnIublMt+7bHmbbMK0spTOchGccQSHn4Ry1xnY61yz9JB7KkguMM1cnVp5JQtBVKGsWtZ+Uj28HOTQ+pg2kPM5BmiGeCEhqcVIh886X9yfSDja9nHjoCJIQvnzj2Pb2uhQdd1DLK0HcPEC1Um4ytJ9TGJhw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sGnEDM2O; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 588IKo7a030930;
+	Tue, 9 Sep 2025 07:12:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=vWUCdWdACL6jj/zlMERgKPOhY36Zq28tXZGn/gKQK
+	SU=; b=sGnEDM2OPA9a0v0Y3XrMFTL3fEyhyjslSkyhJ780yR3GfFOtviSd6RYH1
+	eE2ZQe0ApImNCLQnGDwcZ3CZltePzniMAflEkHuyB+lcRyZdoYxhrpwPwKx7LCUv
+	Rrp/vvANPukmIh4+g5AbpG03ZW1rVSA3LDx4EFhOD6Tp73ffhlOO7QQKf+aFboDh
+	jODkPI6KO4UBK5lIqutaLmQa8CC1GN/Lzein1z+ZXPjN1CQMKYLx3YbGLh82Is43
+	RjwQugtByllRRdZZ74WGKQLK67J+4BUUyJdFJRoWZmfDVolaqGU7HY9QvJ46fVJK
+	MvTHS/hheRYA3atMPx4J4Frc5r25w==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 490xyctycs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Sep 2025 07:12:03 +0000 (GMT)
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5897BoPo015898;
+	Tue, 9 Sep 2025 07:12:03 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 490xyctyck-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Sep 2025 07:12:03 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5895LjcB020499;
+	Tue, 9 Sep 2025 07:12:02 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 490yp0t0fc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 09 Sep 2025 07:12:01 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5897BvaU56689130
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 9 Sep 2025 07:11:58 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CF3C720043;
+	Tue,  9 Sep 2025 07:11:57 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id BD1AE20040;
+	Tue,  9 Sep 2025 07:11:57 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue,  9 Sep 2025 07:11:57 +0000 (GMT)
+Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 56341)
+	id 8D31FE1089; Tue, 09 Sep 2025 09:11:57 +0200 (CEST)
+From: Mahanta Jambigi <mjambigi@linux.ibm.com>
+To: andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, alibuda@linux.alibaba.com,
+        dust.li@linux.alibaba.com, sidraya@linux.ibm.com, wenjia@linux.ibm.com
+Cc: pasic@linux.ibm.com, horms@kernel.org, tonylu@linux.alibaba.com,
+        guwen@linux.alibaba.com, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Mahanta Jambigi <mjambigi@linux.ibm.com>
+Subject: [PATCH net] net/smc: Remove unused argument from 2 SMC functions
+Date: Tue,  9 Sep 2025 09:11:45 +0200
+Message-ID: <20250909071145.2440407-1-mjambigi@linux.ibm.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next V2 1/3] ptp: Add ioctl commands to expose raw
- cycle counter values
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: Mark Bloch <mbloch@nvidia.com>, Paolo Abeni <pabeni@redhat.com>,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
- Thomas Gleixner <tglx@linutronix.de>, Jakub Kicinski <kuba@kernel.org>,
- Vladimir Oltean <vladimir.oltean@nxp.com>,
- Dragos Tatulea <dtatulea@nvidia.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Richard Cochran <richardcochran@gmail.com>,
- Carolina Jubran <cjubran@nvidia.com>
-References: <1755008228-88881-1-git-send-email-tariqt@nvidia.com>
- <1755008228-88881-2-git-send-email-tariqt@nvidia.com>
- <ca8b550b-a284-4afc-9a50-09e42b86c774@redhat.com>
- <1384ef6c-4c20-49fb-9a9f-1ee8b8ce012a@nvidia.com>
- <aLAouocTPQJezuzq@hoboy.vegasvil.org>
- <3f44187b-ce41-47e8-b8b1-1b0435beb779@nvidia.com>
- <aLmQt838Yt-Vu_bL@hoboy.vegasvil.org>
-Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <aLmQt838Yt-Vu_bL@hoboy.vegasvil.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: A5nJGg-45huZa9MfKbYiaY44eWRAo0NA
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTA2MDIzNSBTYWx0ZWRfX8m+VdLur9tS9
+ EuV5nNj7P72F9gdEsxpPXgUv5AT7w7Qm1JTDXxAtg3S5+9ddoPbdfCw2+0lnxKPT7nyqSv7xRaz
+ NultpRVmsIfIFlqXTr8ABOhINZ2oA8k0puhw57NkIi07KpVWzY7krNmqyCF+Qs68mlxKI6MaKr8
+ yell8j6Oew+E3Uy32VC7kntyTTQy3dGJ88VPc+yEIxmW/jvcBuX+4c/+3tJfiFSVg+H/arYfR7B
+ TOvJ/ICm+47/YaNsnnT/ycaA9jD0G46yBiwAh3phQGkzcFawgXkDGMNkmW/WTZPDWSUWi16R6Or
+ 1fHMUWCYAWilx+KbCUWB1u+hzoSkk1FNex7DayFjgnuDP92TXS2IrVLk8OUG17D7GeTlQRFYIe6
+ IH3UB9/k
+X-Proofpoint-GUID: iWqDC6xXS4FtD670A2NIjIFe28u1Oj8N
+X-Authority-Analysis: v=2.4 cv=F59XdrhN c=1 sm=1 tr=0 ts=68bfd343 cx=c_pps
+ a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
+ a=yJojWOMRYYMA:10 a=VnNF1IyMAAAA:8 a=jK4AapCLPKrqRyuMZfEA:9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-09-08_06,2025-09-08_02,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 phishscore=0 clxscore=1015
+ impostorscore=0 bulkscore=0 adultscore=0 spamscore=0 classifier=typeunknown
+ authscore=0 authtc= authcc= route=outbound adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2507300000 definitions=main-2509060235
 
+The smc argument is not used in both smc_connect_ism_vlan_setup() &
+smc_connect_ism_vlan_cleanup(). Hence removing it.
 
+Fixes: 413498440e30 net/smc: add SMC-D support in af_smc
+Signed-off-by: Mahanta Jambigi <mjambigi@linux.ibm.com>
+Reviewed-by: Sidraya Jayagond <sidraya@linux.ibm.com>
+---
+ net/smc/af_smc.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-On 04/09/2025 16:14, Richard Cochran wrote:
-> On Thu, Sep 04, 2025 at 03:09:23PM +0300, Carolina Jubran wrote:
->>
->> On 28/08/2025 13:00, Richard Cochran wrote:
->>> On Mon, Aug 25, 2025 at 08:52:52PM +0300, Mark Bloch wrote:
->>>>
->>>> On 19/08/2025 11:43, Paolo Abeni wrote:
->>>>> can we have a formal ack here?
-> 
-> Looks good to me.
-> 
-> Thanks,
-> Richard
-> 
-
-Hi Paolo,
-A kind reminder, we got the needed ack here.
-Yet patchwork state is still 'Needs ACK'.
-
-Regards,
-Tariq
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index 66033afd168a..1ea54c09b3ac 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -1096,8 +1096,7 @@ static int smc_find_ism_v2_device_clnt(struct smc_sock *smc,
+ }
+ 
+ /* Check for VLAN ID and register it on ISM device just for CLC handshake */
+-static int smc_connect_ism_vlan_setup(struct smc_sock *smc,
+-				      struct smc_init_info *ini)
++static int smc_connect_ism_vlan_setup(struct smc_init_info *ini)
+ {
+ 	if (ini->vlan_id && smc_ism_get_vlan(ini->ism_dev[0], ini->vlan_id))
+ 		return SMC_CLC_DECL_ISMVLANERR;
+@@ -1112,7 +1111,7 @@ static int smc_find_proposal_devices(struct smc_sock *smc,
+ 	/* check if there is an ism device available */
+ 	if (!(ini->smcd_version & SMC_V1) ||
+ 	    smc_find_ism_device(smc, ini) ||
+-	    smc_connect_ism_vlan_setup(smc, ini))
++	    smc_connect_ism_vlan_setup(ini))
+ 		ini->smcd_version &= ~SMC_V1;
+ 	/* else ISM V1 is supported for this connection */
+ 
+@@ -1157,8 +1156,7 @@ static int smc_find_proposal_devices(struct smc_sock *smc,
+ /* cleanup temporary VLAN ID registration used for CLC handshake. If ISM is
+  * used, the VLAN ID will be registered again during the connection setup.
+  */
+-static int smc_connect_ism_vlan_cleanup(struct smc_sock *smc,
+-					struct smc_init_info *ini)
++static int smc_connect_ism_vlan_cleanup(struct smc_init_info *ini)
+ {
+ 	if (!smcd_indicated(ini->smc_type_v1))
+ 		return 0;
+@@ -1581,13 +1579,13 @@ static int __smc_connect(struct smc_sock *smc)
+ 		goto vlan_cleanup;
+ 
+ 	SMC_STAT_CLNT_SUCC_INC(sock_net(smc->clcsock->sk), aclc);
+-	smc_connect_ism_vlan_cleanup(smc, ini);
++	smc_connect_ism_vlan_cleanup(ini);
+ 	kfree(buf);
+ 	kfree(ini);
+ 	return 0;
+ 
+ vlan_cleanup:
+-	smc_connect_ism_vlan_cleanup(smc, ini);
++	smc_connect_ism_vlan_cleanup(ini);
+ 	kfree(buf);
+ fallback:
+ 	kfree(ini);
+-- 
+2.48.1
 
 
