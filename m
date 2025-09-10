@@ -1,238 +1,185 @@
-Return-Path: <linux-rdma+bounces-13246-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13247-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09272B51497
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Sep 2025 12:56:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 853D4B514C3
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Sep 2025 13:05:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3ACF483D47
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Sep 2025 10:55:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6ADA71C2318F
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Sep 2025 11:05:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A77F1316912;
-	Wed, 10 Sep 2025 10:55:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D95E4522F;
+	Wed, 10 Sep 2025 11:05:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="CdxmrtEK"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="VtmIrCR5"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2078.outbound.protection.outlook.com [40.107.223.78])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC3C3265609;
-	Wed, 10 Sep 2025 10:55:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.78
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757501743; cv=fail; b=h3ibd8JrV2K+LJ+rFWrwdfS5q1CEEEvf3nku2x3CI+8IT6iuAOD4cQD+sbgr+/ZL/VoH4vVa9ZWa0W1Hywk8HT25MaqXG2iVczg9q2IhO+XU1Xz1a1jvuGjBRl2CMFeGuRAolzsifG+T2y9yL/9YOWjjPOFEgVk5iMJQgwR2E08=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757501743; c=relaxed/simple;
-	bh=3KYTMeQtZNRtdfdH00hYo206Qxpyk/bOkZvwYgyZU98=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=HUsf4aDBHiZvzI6S4slozbUKe9M32jehrcRAG9qpV1u53htpmPjFXpBmovGST7Hq8o3ubi99GK8lwLX8l1kfzY5YsWV+CK3RTkYtMfaogJrux0moY2tUMcn3mG/z/timpuhiIOeA7mBXh4ufkgq6duwF7XKrO5TdFp0xcuogmW0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=CdxmrtEK; arc=fail smtp.client-ip=40.107.223.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=PDfmUoWoCk4jllvWQQo2HmpOTVtQvBYdI5B3I/a66eR+KiskP9rd5yrCCXqDr1wgRXkDewm5c0HIVbDgwNRLZjVBYEY9S3KKNQqmu7QxDQsIVjYAdQOh3Hx/s65EMup9iJkXYo1UkEdo+6WME68w+WIdv6mZfWphgQUTDDh1x2eMZpWQ+ENeuZR1Znj8b9S1J166/mJjUT9fLWyJkjEzu/APumis7cMq8AR7/l3Y4gjG3DY1I344u1p75Lq+kpyOa72U1128To9D6O1/L6xnCP2nWXl8gVi1j+I/qEMRNn7Yt72+L+PB1Z2GXMTgAYjI+I6oCsTf9NFtwiKqMbqEKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ciw+RW4jo49WIj99OwJQ4ig+8ZTiMe+C352ACtL+lnE=;
- b=GYoOq4RnWHMGTA1xbsQKPheiYgEAnZSjsPhvHrYp5HP/R3xdtArYLUoqMngIMUUxRVZh8zPyE//0fobd/CpwdHSEIcM1mjmxrPyC0rD6cQcY3teSKp89oA1bL5O8ypGdVk4JhYkN/3uTiamNCYp/8lRSuYLGp3IPwj38aLkoHwi11E8+Y5A5/BYYOwixECgbrcYY8A6j5/4J6hZyzbwsWHnyfYMha34exiSaSARRON0RRVJAEKZ02dGV/4uqDbFU+1cqfp/tVV7/g13gWMbmF1Mj4ycuIPPjLtqEiVnXFbIEMZVaqVrYbZ2HYr8k/9Vy3W/mAw5s0vFmIpgI0waWVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ciw+RW4jo49WIj99OwJQ4ig+8ZTiMe+C352ACtL+lnE=;
- b=CdxmrtEKJNI8jK2/0ZolYXlbF0IPVU2ZleWvGzpEtZ8vIKK7t1tpmZlGROi6IN/6BTeVii9AxnsxuNQWotttjl6WKyWqh+NpstDKFQGRIh7FhUWvhPgglrnxhn9h0wvaUJDcbgHK/BVZxEWeiAtGco0zc379/WhvSEPxSMeuoWwKxN/2DSspFDhr8GY2hl/fgDfc+TXRGpVFH5taax+/hGOepz0BIpWYNbV1zKmL1mmAmDAmqSqfWoEpvotfl1bmqI90cZQBQ2XvpPVd2Mu2mCOFM4RvcgY+XDahyLNCO0+2fCl1G8YcrnjSGKyeX8cYFzZ1cmTvYxrRaMwJoo7iPA==
-Received: from CY8PR12MB7195.namprd12.prod.outlook.com (2603:10b6:930:59::11)
- by SA3PR12MB8021.namprd12.prod.outlook.com (2603:10b6:806:305::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9094.19; Wed, 10 Sep
- 2025 10:55:36 +0000
-Received: from CY8PR12MB7195.namprd12.prod.outlook.com
- ([fe80::e571:5f76:2b46:e0f8]) by CY8PR12MB7195.namprd12.prod.outlook.com
- ([fe80::e571:5f76:2b46:e0f8%6]) with mapi id 15.20.9094.021; Wed, 10 Sep 2025
- 10:55:36 +0000
-From: Parav Pandit <parav@nvidia.com>
-To: Leon Romanovsky <leon@kernel.org>, Edward Srouji <edwards@nvidia.com>
-CC: "jgg@ziepe.ca" <jgg@ziepe.ca>, "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Cosmin Ratiu <cratiu@nvidia.com>, Vlad
- Dumitrescu <vdumitrescu@nvidia.com>, "kuba@kernel.org" <kuba@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Gal
- Pressman <gal@nvidia.com>
-Subject: RE: [PATCH 2/4] RDMA/core: Resolve MAC of next-hop device without ARP
- support
-Thread-Topic: [PATCH 2/4] RDMA/core: Resolve MAC of next-hop device without
- ARP support
-Thread-Index: AQHcIBIGYUSf6USQe0GQnNY3QDSVn7SMGr+AgAAmyPA=
-Date: Wed, 10 Sep 2025 10:55:36 +0000
-Message-ID:
- <CY8PR12MB71954BE7258390B4B7965E8FDC0EA@CY8PR12MB7195.namprd12.prod.outlook.com>
-References: <20250907160833.56589-1-edwards@nvidia.com>
- <20250907160833.56589-3-edwards@nvidia.com> <20250910083229.GK341237@unreal>
-In-Reply-To: <20250910083229.GK341237@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CY8PR12MB7195:EE_|SA3PR12MB8021:EE_
-x-ms-office365-filtering-correlation-id: 32a01215-7a6f-4eef-7d7e-08ddf0589278
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|1800799024|366016|376014|10070799003|38070700021;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?YWrD+KuiMfykSXKvgpOdPXbVb9pjDsXbkRYRTgSq5DNMV4F0wsLcoRkaSbYE?=
- =?us-ascii?Q?z5s7mbDemCI9oOp0pS83WUeTBzOYbszj+ZDXr6wxNyf+emGkDikcragg5WqY?=
- =?us-ascii?Q?FkPrzRJInT7JXRwpc1f41uc9Kp4zKFOZShURhw+Z5dBZa/MlJ094vY8ig0jt?=
- =?us-ascii?Q?zaopa+YodeFGc8Co7mJEzz8tph386Pl4yKRq2PFGQplpSKBeAkdusVfz3rcr?=
- =?us-ascii?Q?YtYsfN1lQYvBC3mBZD3tqq61WsH1+jl0bCMEhPIbj2DCuoaQR4Rd0HemIFmm?=
- =?us-ascii?Q?/ehEf7BbXXRm+0ABeY/uJ2ZMVn3bneUpQ+KgKzup5rStWcxah5OJFMODu/gK?=
- =?us-ascii?Q?8Qj2PWQK2SOvKMALOXA4oslWY7bP1fPHiw5ID6lYiEU2eIWlkyKXV/3D07Hf?=
- =?us-ascii?Q?3QlwxG1k0OdiUL693nr8SLFBdwUJ50qMS+U/r0Zjx05y/YH0m+Zr0SLwj6ky?=
- =?us-ascii?Q?uw6ZFCpOk/Hz6N+NvQQjySe7CnpgV4/D6JF8xumFU6mx/hv8wdwF9ewgaqAx?=
- =?us-ascii?Q?k8i3Kk7nSgAjO7D9ID4rfkw4DU/RGWLayOggmYPPmWJsKUO5qeTQcz1UumUX?=
- =?us-ascii?Q?bZ4HWtOKgcysvw70jzz6QCvOeHoEMt4vZIrMaBSw6bRvND161l7/jJfsdXrN?=
- =?us-ascii?Q?7mfzS8nNbvo4EOzwujKP6U/5avyJd3ChEyqBkjrVEbL4uZLw72ORcjBiZLlm?=
- =?us-ascii?Q?CCnX+4JH21PonNWia97mDmJNesVBGDXFkw4DUjt9CufH/KQ+z24VaRhk3VVE?=
- =?us-ascii?Q?Rw/QLgmjQjuzV9CCMf0GMgvRntXsMzyBwQ9MFQXbcCOIuY8yMngoWLV7l3hu?=
- =?us-ascii?Q?6YBpL61jTTYFxhLqOUBp3PJkjeTqYwDFmV6CvnVa0+ZnfpGXwa7vDiIQSLdn?=
- =?us-ascii?Q?2/gsPVhfhuKUb3BNv660/V/YcCtD55wvq00FvW0FlclV7KVlAf2mOCfGYKZj?=
- =?us-ascii?Q?DXo72Nb2T06QRvDslot/T1rgO9rQJz9mFoQ/2b+fwSpAy3c2JRySibT4HeIn?=
- =?us-ascii?Q?xhXZ3EaX3c5D4chWM3MZwWwyuRJJVA/Lhz+M9E4OYmzaMyBwEJHNiWh66EZe?=
- =?us-ascii?Q?WLoXWObjr6rS3KDJah+6obvy8OwtsLcWWzxUAaZd3XgEpyrvBTT6eu0LGlpu?=
- =?us-ascii?Q?nLhfZXYCx6/1suzwGGaNB4rDWf4WCvazBnI55o5vQ1saR7wrXdqajeBDK/nV?=
- =?us-ascii?Q?JX8CUII+10n3nRVsaZbtwkyCm3eNxEUwXTA1Ceynj/1aDz6JGvgoUb7G2lnO?=
- =?us-ascii?Q?84yWgm7GUgkNDgczxVtLi8Df7q/Vza7vXu4qWgiUjBgy00G/aHV9GB8yGcxT?=
- =?us-ascii?Q?vd1+DyMATNJrztP0WMn7E1aIh9PGZ5hrFFv3C1pRNB6DzB37OX/8443Tavsd?=
- =?us-ascii?Q?uFjrpI6VYUF3wY8EdM8V/ahlf5SirasiCSoc3Pf2hWYeO+n9GeiilLsUdIi6?=
- =?us-ascii?Q?AQATIbE+mDfqKu+yrSqqsIEWD9Cq5kyIPM3Zea79hbjhHgU+DcJg2w=3D=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY8PR12MB7195.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(10070799003)(38070700021);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?WaGunXpr/cVUNIe8iFEfU9GBUwWvgBUR1mZxjynxd9Epukua3hr9Ji9RAc8E?=
- =?us-ascii?Q?kWIKuB8sK0soz+rEf6suRvOBchlEjL20gA/hNPyZvVYVB6BRyVBfv2fI26vL?=
- =?us-ascii?Q?gOSG/zpA5wVxdKxZFWuuj5Nv0P9dUfzKSOu/+GFThFcXGlb+IH+Q8uZQtLtW?=
- =?us-ascii?Q?1Kf38TZUPGrZNiuuxoyga9n5QpsEtZEWg9tz2/NfJu9Vbx6ofdTbF0fV2dKD?=
- =?us-ascii?Q?ktyFH5SARybVTMKRm8fXFHP49CIqktHuWhEIlSjkm+SEEaKgATqDXp/LlHWk?=
- =?us-ascii?Q?fddy2DcwaQTw/56IQ9lE4qyee1LU42UfBHUA82H0tR+k21pZNAp8wKBGBXcK?=
- =?us-ascii?Q?X0nuJW4p/ObuVGAsZzowD/7z30lNNh54dhCoFUSr6ZuhO7GFTIduuEvnUPRw?=
- =?us-ascii?Q?RN+VSnitVVn+oatH9cttl/3fyRPvSijV6b1Y04YegMngndSzzYqZix5YqQ5e?=
- =?us-ascii?Q?yeQoF03xwxHXNviK5f0OfJ1KxEQ6wWPHhs3RhuemakaRaiu7WVk6HA6PrJ3v?=
- =?us-ascii?Q?IT/gbkiJrqam/de4DjwQeZqS/05T44v70JvxRg4zbzEy7XnGFxiHCLVYE0tj?=
- =?us-ascii?Q?ppnXR55ARf7vG/vmwHuoUjhIstNvhtPL9Q5KgD97K6fyV8FShas2VerrRACc?=
- =?us-ascii?Q?k7JmPWDajXt7e8VQ6R6tztFmWdd5E7aPD214lpXSBsyMl+TqqpEFoTRfEtni?=
- =?us-ascii?Q?lZfE7a33M+CygZFfGb9FcAXAQ0pXso678KNF5iF82dSGsLeydBIJrkMiMMem?=
- =?us-ascii?Q?OK9ziWGjVcTonXfq8OWwYz20TBzlY0BlUsxPv4FSuw8HbHhkWkvCcs809BsG?=
- =?us-ascii?Q?EHRPokWC/IGi3TMlbkek+enpQDMfRin+vh/Bk4G0hcEjqmEeqU/ViIOqBy88?=
- =?us-ascii?Q?a2d2hRTAtcviBWfbhxSh502UdZ8ROjYvi0X3N0sHHzrFoWysFu4aysw40zAd?=
- =?us-ascii?Q?cL37p8evD35g9IN6oV+kSin2iALpkVXTmRee2P3OwMfwukPZ4yxFiBmsFLLl?=
- =?us-ascii?Q?8A6i/B0PSk2t6AzUEvy5Q5uPrpAx2PuTqguujf4POSrdZXiyPfS0MUvvNdRL?=
- =?us-ascii?Q?eMEBNhow/2LiqLJ+aawUpZO5JWmGoLhs3VADSbfuBpWfzh+0n117lAiiKWEk?=
- =?us-ascii?Q?uvqdsU4Xfw3hC9vDpx8r0cRTU+PlSqbZ3BrFjr8zMTFPYAV2JxsaI3kTxSnS?=
- =?us-ascii?Q?xXLJAumGCY9UO92qKbys5HoFCOxl3vmjcVr6L9Cyv59rwJggrAqpxSexDBDg?=
- =?us-ascii?Q?fTRouz8z9Urj2cNaQjD0AI06J1N1Z8KRuofNGt3fw0PP5eOEQazb26nyV2cC?=
- =?us-ascii?Q?5FCNtKoLKJ97M2P4Twl34DuRhyIaCwxngYmiLMnHKv/wkdXpSJZg6gY5l6iM?=
- =?us-ascii?Q?iupRqYGa/uj8WmKtW53bjoEd2CNNgEyil5mXEOkSZNqcLRauSKXYDQhO26RB?=
- =?us-ascii?Q?4ANZoEWYWGaZmU9/OjZ5UiMa0sVGAnFAJ/BoG+NgrSRWgnzAN9HtHD85W/Rl?=
- =?us-ascii?Q?/h8QQDxtxGwB0opwJ+k6iuko9aOObp7XmjNHMCh6+hz/2jS70U9/B4nsXBM3?=
- =?us-ascii?Q?ETh+pbAJrFSYfyXDUOwHLYMklkQpDls8WEwwMJM2yrEiP+OjkT4Cyh5eUFoG?=
- =?us-ascii?Q?2npq2CvSC9nQGeBBN1wwWHE=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E49F031D370;
+	Wed, 10 Sep 2025 11:05:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1757502317; cv=none; b=t5o8NQk/TyFI3Ptwe/KIet2qwqGSiyTI6eO5JlC+LEUN8/a/mSHdAre/0M8mFqa5BQITBSfwvaFJCy1/n0TxlZ2Y5hTjQfVXwizyBhWdM67UvXa0k1DtBQJEN3E+wPpcHxTqs6YvmoG2xHYfQFlHOGn/Fhu6FqjF5WLdmdQKeyo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1757502317; c=relaxed/simple;
+	bh=mr5VREO0zlgyp0+N3c6zL0+mdMv963Esrn8kaa2OT50=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LbwSgqXSw2C6STTs/Yyni0yl/gj8IUvaKkzmxo7+inIoL3xtJhvhA7B1z6OnlKH/AVXhnFGr4fpBEW0o0Eov/feh+qDlZswbRgEBuJCbHdj/6pJFX729tAD1RU2BeRW9Iu6nD9tbmG+lCRrWKaoIdarMYBgIy3vAxwnLNj3PHEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=VtmIrCR5; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58A9N7dO010083;
+	Wed, 10 Sep 2025 11:05:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=corp-2025-04-25; bh=OCpi8OJ5u07C66mC
+	VMY0WtQNKjYjRamzDj98hmn56E0=; b=VtmIrCR5mfkoC0194t0qVYs9PTo2r9ay
+	IJ8N91j4LP04+qlwAzXwOApjeIFiNEcgTJ2MMYwxbNhQGNtUAfYmft4fBH/ZDiEo
+	K9pTksHwabybMODAWd7U/s4Y39xt7o3u8nFFUOBReqTgVjZwhLU3PbXU1PAD8Kj+
+	q0rMtXMhlzRtBtsW/XDqpLid9mOcLjNyEF+LWX96PRdHZnxVel39e96S9wxvkMSS
+	WmF2ksXS05RLA8nI7dCylLrbt+VI9IibbiK1hiNiSv3Ooraw1QNdwFxhVVFq+Upb
+	RuEGN06ZheAJZWngd6AWnGByttTeJ0QvlX5UV4ilLa42LPKX+QRgXA==
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4921d1m1xe-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Sep 2025 11:05:08 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 58AAKsq2013588;
+	Wed, 10 Sep 2025 11:05:07 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 490bdb2r97-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Sep 2025 11:05:07 +0000
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 58AB57Xd035490;
+	Wed, 10 Sep 2025 11:05:07 GMT
+Received: from lab61.no.oracle.com (lab61.no.oracle.com [10.172.144.82])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 490bdb2r4w-1;
+	Wed, 10 Sep 2025 11:05:06 +0000
+From: =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
+To: Allison Henderson <allison.henderson@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>
+Cc: stable@vger.kernel.org,
+        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org
+Subject: [PATCH net v3] rds: ib: Increment i_fastreg_wrs before bailing out
+Date: Wed, 10 Sep 2025 13:04:59 +0200
+Message-ID: <20250910110501.350238-1-haakon.bugge@oracle.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY8PR12MB7195.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32a01215-7a6f-4eef-7d7e-08ddf0589278
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Sep 2025 10:55:36.1221
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: v7wyHEEiDe9s3iwzASVjYENJFnJovkRWwMZ9m6XbMzyKKvyb8jsB+MZeiUYxMch4uPkqyf5t5crRF3Fu14+gCA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB8021
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-09-09_03,2025-09-10_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
+ mlxlogscore=999 adultscore=0 phishscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2508110000
+ definitions=main-2509100101
+X-Proofpoint-ORIG-GUID: CYATfuSztpsdZXvqgwIgyX1ejF1u80s9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTA4MDE1MCBTYWx0ZWRfXx7LBPhpsEOSm
+ 3WPKCLsVnjog3w+4c3uG+lLK/xG+iIOfD77c81GubJlhaOzDV3PnZeQL9SQQOxWW76rvM1ME6Mg
+ c9IKmnxtpb6kyq9dlqplKWFvAP+BOE/SeloPGLZlw3B4WD08exGY0s4O3bgCHFnmw6jrJeQR52f
+ CXeIE8DiDhy6d0FhUDTsEQmglLhsFhCu42w80VSd4lHawJeE9diJKDeTMzp79/Q9buyvob3Q43b
+ +y4Ec/Tt6SK9pcVm5mLY66UMmv2WH6gbbZTNcNgtbCXMPM1Wdl/bPAX1kWye5ULHMDLr9mpUQhR
+ wI0tmtkiSWe+zpMFaq6EMujf1Y5LVO6ymVvTOXYFQJQnIncSmy0dAp+52UCahdsqg1J4fTDUTkk
+ GC1gtnTH
+X-Authority-Analysis: v=2.4 cv=d6P1yQjE c=1 sm=1 tr=0 ts=68c15b64 b=1 cx=c_pps
+ a=WeWmnZmh0fydH62SvGsd2A==:117 a=WeWmnZmh0fydH62SvGsd2A==:17
+ a=IkcTkHD0fZMA:10 a=yJojWOMRYYMA:10 a=M51BFTxLslgA:10 a=VwQbUJbxAAAA:8
+ a=yPCof4ZbAAAA:8 a=9eyeeSo07tw-mEE3XcsA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: CYATfuSztpsdZXvqgwIgyX1ejF1u80s9
 
+We need to increment i_fastreg_wrs before we bail out from
+rds_ib_post_reg_frmr().
 
-> From: Leon Romanovsky <leon@kernel.org>
-> Sent: 10 September 2025 02:02 PM
->=20
-> On Sun, Sep 07, 2025 at 07:08:31PM +0300, Edward Srouji wrote:
-> > From: Parav Pandit <parav@nvidia.com>
-> >
-> > Currently, if the next-hop netdevice does not support ARP resolution,
-> > the destination MAC address is silently set to zero without reporting
-> > an error.
->=20
-> Not an expert here, but from my understanding this is right behavior.
-> IFF_NOARP means "leave" MAC address as is (zero).
->
-Not really.
-In the example of the VRF, the device does not resolve the ARP itself, but =
-it's the enslaved device which resolves the neighbour.
-Some ip vlan l2 devices do not do arp internally but depends on the bridge/=
-stack to resolve.
+We have a fixed budget of how many FRWR operations that can be
+outstanding using the dedicated QP used for memory registrations and
+de-registrations. This budget is enforced by the atomic_t
+i_fastreg_wrs. If we bail out early in rds_ib_post_reg_frmr(), we will
+"leak" the possibility of posting an FRWR operation, and if that
+accumulates, no FRWR operation can be carried out.
 
+Fixes: 1659185fb4d0 ("RDS: IB: Support Fastreg MR (FRMR) memory registration mode")
+Fixes: 3a2886cca703 ("net/rds: Keep track of and wait for FRWR segments in use upon shutdown")
+Cc: stable@vger.kernel.org
+Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
 
-> > This leads to incorrect behavior and may result in packet transmission
-> failures.
-> >
-> > Fix this by deferring MAC resolution to the IP stack via neighbour
-> > lookup, allowing proper resolution or error reporting as appropriate.
->=20
-> What is the difference here? For IPv4, neighbour lookup is ARP, no?
-It is but it is not the only way. A device may not do ARP by itself but it =
-relies on the rest of the stack like vrf or ip vlan mode to resolve.
-A user may also set manual entry without explicit ARP.
+---
 
->=20
-> >
-> > Fixes: 7025fcd36bd6 ("IB: address translation to map IP toIB addresses
-> > (GIDs)")
-> > Signed-off-by: Parav Pandit <parav@nvidia.com>
-> > Reviewed-by: Vlad Dumitrescu <vdumitrescu@nvidia.com>
-> > Signed-off-by: Edward Srouji <edwards@nvidia.com>
-> > ---
-> >  drivers/infiniband/core/addr.c | 10 +++-------
-> >  1 file changed, 3 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/drivers/infiniband/core/addr.c
-> > b/drivers/infiniband/core/addr.c index 594e7ee335f7..ca86c482662f
-> > 100644
-> > --- a/drivers/infiniband/core/addr.c
-> > +++ b/drivers/infiniband/core/addr.c
-> > @@ -454,14 +454,10 @@ static int addr_resolve_neigh(const struct
-> > dst_entry *dst,  {
-> >  	int ret =3D 0;
-> >
-> > -	if (ndev_flags & IFF_LOOPBACK) {
-> > +	if (ndev_flags & IFF_LOOPBACK)
-> >  		memcpy(addr->dst_dev_addr, addr->src_dev_addr,
-> MAX_ADDR_LEN);
-> > -	} else {
-> > -		if (!(ndev_flags & IFF_NOARP)) {
-> > -			/* If the device doesn't do ARP internally */
-> > -			ret =3D fetch_ha(dst, addr, dst_in, seq);
-> > -		}
-> > -	}
-> > +	else
-> > +		ret =3D fetch_ha(dst, addr, dst_in, seq);
-> >  	return ret;
-> >  }
-> >
-> > --
-> > 2.21.3
-> >
+v2 -> v3:
+   * Amended commit message
+   * Removed indentation of this section
+   * Fixing error path from ib_post_send()
+
+v1 -> v2: Added Cc: stable@vger.kernel.org
+---
+ net/rds/ib_frmr.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
+
+diff --git a/net/rds/ib_frmr.c b/net/rds/ib_frmr.c
+index 28c1b00221780..395a99b5a65ca 100644
+--- a/net/rds/ib_frmr.c
++++ b/net/rds/ib_frmr.c
+@@ -133,12 +133,15 @@ static int rds_ib_post_reg_frmr(struct rds_ib_mr *ibmr)
+ 
+ 	ret = ib_map_mr_sg_zbva(frmr->mr, ibmr->sg, ibmr->sg_dma_len,
+ 				&off, PAGE_SIZE);
+-	if (unlikely(ret != ibmr->sg_dma_len))
+-		return ret < 0 ? ret : -EINVAL;
++	if (unlikely(ret != ibmr->sg_dma_len)) {
++		ret = ret < 0 ? ret : -EINVAL;
++		goto out_inc;
++	}
+ 
+-	if (cmpxchg(&frmr->fr_state,
+-		    FRMR_IS_FREE, FRMR_IS_INUSE) != FRMR_IS_FREE)
+-		return -EBUSY;
++	if (cmpxchg(&frmr->fr_state, FRMR_IS_FREE, FRMR_IS_INUSE) != FRMR_IS_FREE) {
++		ret = -EBUSY;
++		goto out_inc;
++	}
+ 
+ 	atomic_inc(&ibmr->ic->i_fastreg_inuse_count);
+ 
+@@ -166,11 +169,10 @@ static int rds_ib_post_reg_frmr(struct rds_ib_mr *ibmr)
+ 		/* Failure here can be because of -ENOMEM as well */
+ 		rds_transition_frwr_state(ibmr, FRMR_IS_INUSE, FRMR_IS_STALE);
+ 
+-		atomic_inc(&ibmr->ic->i_fastreg_wrs);
+ 		if (printk_ratelimit())
+ 			pr_warn("RDS/IB: %s returned error(%d)\n",
+ 				__func__, ret);
+-		goto out;
++		goto out_inc;
+ 	}
+ 
+ 	/* Wait for the registration to complete in order to prevent an invalid
+@@ -178,9 +180,11 @@ static int rds_ib_post_reg_frmr(struct rds_ib_mr *ibmr)
+ 	 * being accessed while registration is still pending.
+ 	 */
+ 	wait_event(frmr->fr_reg_done, !frmr->fr_reg);
+-
+ out:
++	return ret;
+ 
++out_inc:
++	atomic_inc(&ibmr->ic->i_fastreg_wrs);
+ 	return ret;
+ }
+ 
+-- 
+2.43.5
+
 
