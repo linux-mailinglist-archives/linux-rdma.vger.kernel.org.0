@@ -1,184 +1,181 @@
-Return-Path: <linux-rdma+bounces-13219-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13220-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B377CB50C4C
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Sep 2025 05:25:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BB18B50E0E
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Sep 2025 08:32:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60F2D163F1E
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Sep 2025 03:25:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20EFB7B3308
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Sep 2025 06:31:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60AEA25A659;
-	Wed, 10 Sep 2025 03:25:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 638F72D0283;
+	Wed, 10 Sep 2025 06:32:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="m5cAK7Lb"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="aRaRwDcQ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2053.outbound.protection.outlook.com [40.107.220.53])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8862331D39C;
-	Wed, 10 Sep 2025 03:25:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.53
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757474744; cv=fail; b=E0Pmn+Ln1oPLDC/6WCH1B5Q1PkeqUEEXyhbR7FAj7deJOn5qulaXD4Umex01KpiUes7j8gTMWm3j2uqL13I3nQZzzqkWOuwC3GsMw5S5U/mri5HRZZwKqpPVra6K0Igk7/PiIdkLvp5c5xFYnZTYrhDiijiIo5QTMylGQ64QW98=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757474744; c=relaxed/simple;
-	bh=FEi8oZCT83fUsWm+4Vem/2kl0E0UyM47csU9ozm40q0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=fFw60hPRi8S/NXnL5eBWeD32kJy2RCMKdJz8ayIc1cNQZzcncHFogWmxCTZPwRkNRJrV9pJpw9PuepbGeKdY2Seh0nOYKll4BHNpl8lrHpPYAkISeEewImJY8MGXKlD8Z+Rut5Nz11jBIZj2xl9zLQJQm3+ZDUFVI2D9BSAbqJ8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=m5cAK7Lb; arc=fail smtp.client-ip=40.107.220.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=CANfAMmbpDR2JwOr4XpRz4f60j2Vb+4SM6p9BiceSQTp3uL8bION8n0oYfbQQS4jqVi6wR17uXN4SBYGd9Z6td5sX4Hh6rQCq+3H81l1J5l+DJrDXY2dszOHQKQlK9rUcOqrn4rPRZSu8enpna8M0duZjp1E4NpCUcWTnLur0POMotdKtc6MFEgiPOzwg08XES6tGFpfuRfGL0tww/S/0z/xog4P5i8ZWW5i4ABsmzEHQ6BGidbjT/flBRmyy9UJJU4f1mnvwlfY5mDmgwIpMRIigp7r7iNGYJgTdWUBK/gHEBqazdm4x6gwNo6EZJNNvGDd/KXPv5NIZjXLlIAhVw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UDXx7GnDEKhUbyv5Shnp1Zw/o9D+lV9ZBlLCKHRs9nw=;
- b=egbog1EGFF0g+0FQ3ZIAlFHPV7NfVVPDMJoB1BqfdZvskNBA+kAYX5AI8675q0f7KMutmufIEXtRNESpThyqdb7oxLUfI4PPwZ3Pe/ZzJXTJczQNcbE3hYDfJD++j00KV+xFD2wOI8pC/iZw3VRMEXbjWZuqDtdlcNhKnIbUQNUPsH3xwuBcsxJKw+4fYtytjxJbqMN7ijSV6knYtasyVbPJ0P/VubpjjdnJ78+cxn8XHRUhkIBlUn1qPo1oNwKKhNoMzHlw+IpU5XWG/8fag0hJuMtSTCSAwGsN/bxy2cZ5shw71sDQcTVwWpeivH+gsdE4AvfB6dSBGpaNZwefCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UDXx7GnDEKhUbyv5Shnp1Zw/o9D+lV9ZBlLCKHRs9nw=;
- b=m5cAK7LbBMX/uNmxOYzATbcEA0LYPxIRixM+gGfKGUR+a21u4Ces2QKBTg1Jzc7pG3SK60rOdQQEs3wYwWBrrCDvQI2WuU1uGNj9WT4BbJUIUhPsEX10zmo8oNfcdhrdtGYQUqhRj+XExzDg+8wQFBPObg/LBOfNMgjIMfvOY5h4ehQFK4xvES8L3vcYL6mnwra8LEcytpVWYml0Ky8CbCe3jVg9/C3izcMlywoEk9bVy9j4AtNJUUG4g2cNv14rvRkPQqpWJpGiZ6qe5YS0QWMRfexf4XABpqIOfg+0SAwE4hjXEWGmrkLjpwQSWArqkGtt7hwhOPiPd46OaaBOOQ==
-Received: from BN8PR04CA0045.namprd04.prod.outlook.com (2603:10b6:408:d4::19)
- by BL4PR12MB9724.namprd12.prod.outlook.com (2603:10b6:208:4ed::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9073.27; Wed, 10 Sep
- 2025 03:25:39 +0000
-Received: from BN3PEPF0000B36D.namprd21.prod.outlook.com
- (2603:10b6:408:d4:cafe::b7) by BN8PR04CA0045.outlook.office365.com
- (2603:10b6:408:d4::19) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9094.23 via Frontend Transport; Wed,
- 10 Sep 2025 03:25:39 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- BN3PEPF0000B36D.mail.protection.outlook.com (10.167.243.164) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9115.0 via Frontend Transport; Wed, 10 Sep 2025 03:25:39 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Tue, 9 Sep
- 2025 20:25:19 -0700
-Received: from [172.29.225.228] (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Tue, 9 Sep
- 2025 20:24:15 -0700
-Message-ID: <cc776b20-7fc0-4889-be27-29d6fcb3d3ad@nvidia.com>
-Date: Wed, 10 Sep 2025 11:23:09 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D9E431D364;
+	Wed, 10 Sep 2025 06:32:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1757485963; cv=none; b=N5exfkeEcQ0PhHenHGS5gJgMNa2/M9N6pteyDFvdYvNgnEQZjqdWKKc75oWQbvxWncFYgB8Q0jAxA+yeBJ5i4cImwNoB6xjtAgHIOpXBLfn98TELQz5aSIRx5NEP6g8uizxYARCdepV9/jpKIvQV4n+pZ20ephBcRC8ApcMrH1Q=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1757485963; c=relaxed/simple;
+	bh=9Q6zS2/4O/eBnBIjlNDHY5Tf8xsuS6/6e3ZqTu7O1S4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=g77x5Cqnsh9zH688tE8Tr0DA0qHIGhMvS05HCMwHF/SeogE5Mm8nEk3rv0ThY5OVT4MWGw+zCAq6plVZLfvkBOuaNW5iW0PL7k7TtOhCi0zJ/MEX3Usu1yjrH/sZB9/eJauhI/V97R3TKZjxQ6FjwTAA4JOE3kBkom2QV8zGULo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=aRaRwDcQ; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 589K5AGC007706;
+	Wed, 10 Sep 2025 06:32:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=D0n7V5zxRFqzihzn2VYWhbt8HqCQIPmJ+q7SchDP2
+	/k=; b=aRaRwDcQ8QDMpKGnFHA5JDByOXy7jucdPeOOxTHUbOqyZwZctVadFb7MM
+	E+Q/hfxr25IvV7AA8XEjRbbu730xEyTQjZ0lK5GKtfaj9sFW/KQ1LmHa+pEDtkTZ
+	1d9G+w9+q41zkPP4g/8uiBNzQ3yhjnVfFgpjNe6JoPwaZ7IuHBti1dsE53AEPgUL
+	8+CjMORLUKzaPZIEYM8q+dbeXMpMYH78sWHUvI3YLRe6LF1ldS2dgF2eHIsquqYw
+	OS5H0Lu3J//P/vb2lm4Z52ICnpRgEC2a378CeJAZvFbi7UT7GIvdzZVF4yNML1nd
+	kus3pUEar5Bm18DJuU6Tp+k4mr4RA==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 490xyd153y-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Sep 2025 06:32:33 +0000 (GMT)
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 58A6NO4K022058;
+	Wed, 10 Sep 2025 06:32:33 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 490xyd153v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Sep 2025 06:32:33 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58A2eCcq017218;
+	Wed, 10 Sep 2025 06:32:32 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4911gmeusc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Sep 2025 06:32:32 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 58A6WSM019923386
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Sep 2025 06:32:28 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8E42B20043;
+	Wed, 10 Sep 2025 06:32:28 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7BD8E20040;
+	Wed, 10 Sep 2025 06:32:28 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 10 Sep 2025 06:32:28 +0000 (GMT)
+Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 56341)
+	id 344B0E0677; Wed, 10 Sep 2025 08:32:28 +0200 (CEST)
+From: Mahanta Jambigi <mjambigi@linux.ibm.com>
+To: andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, alibuda@linux.alibaba.com,
+        dust.li@linux.alibaba.com, sidraya@linux.ibm.com, wenjia@linux.ibm.com
+Cc: pasic@linux.ibm.com, horms@kernel.org, tonylu@linux.alibaba.com,
+        guwen@linux.alibaba.com, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Mahanta Jambigi <mjambigi@linux.ibm.com>
+Subject: [PATCH net-next] net/smc: Remove unused argument from 2 SMC functions
+Date: Wed, 10 Sep 2025 08:31:25 +0200
+Message-ID: <20250910063125.2112577-1-mjambigi@linux.ibm.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 1/3] net/mlx5e: Harden uplink netdev access against
- device unbind
-To: Jakub Kicinski <kuba@kernel.org>, Tariq Toukan <tariqt@nvidia.com>
-CC: Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>,
-	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, "Mark
- Bloch" <mbloch@nvidia.com>, <netdev@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Gal Pressman
-	<gal@nvidia.com>
-References: <1757326026-536849-1-git-send-email-tariqt@nvidia.com>
- <1757326026-536849-2-git-send-email-tariqt@nvidia.com>
- <20250909182350.3ab98b64@kernel.org>
-Content-Language: en-US
-From: Jianbo Liu <jianbol@nvidia.com>
-In-Reply-To: <20250909182350.3ab98b64@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN3PEPF0000B36D:EE_|BL4PR12MB9724:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7afff521-fea6-478c-ca6b-08ddf019b723
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|376014|82310400026|36860700013;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?MHJ2Tm82UFNrQVUvOXFtS0tPdTNrMEhWbUhrejZscmFsL2U3UFVBRSsyM1M1?=
- =?utf-8?B?WnI2K2ZDdDg1VWw4VEpIS0ZxcDRodG5lemp0VVBWK09iQW9xdjJtVDdEa0F4?=
- =?utf-8?B?Mlg0bVNnR2VXQnowL1lTdmhoY2F6ZU9JYitEODB3SWlYdkdWY2RHNjA3UmJ6?=
- =?utf-8?B?YnBVdjljQlFWb3EwcnpVbmZhN0pPdlhja3RtNUJyNFJDaW41V3NZWS9ldFAx?=
- =?utf-8?B?NjhXRW0wc1dXbkFkUGZlU2tRV2thcjZMek92Z0VIb2IwWUFBM3k5dFJBMWEw?=
- =?utf-8?B?anJnVmkvYS9yU2EzQ3dPNnhFdStFVzl2cHNyZHh6VGk0d3JJWXNhSVcrYXdX?=
- =?utf-8?B?UVVkMk1JU04rRlRkTWZIU0UyUEtjZkpnamdaUE1mdzdXbFAreUhzVjdCZENL?=
- =?utf-8?B?VVpXYldxU21JMDR5dVZBcmI4dldvN0VtaUtGSWYxbFpsb0RYUFVuWitYUnRL?=
- =?utf-8?B?L05acUFIV3NrV1pVN0RjS1k2em9BYy9CRng3V1JZYnAvOGRvVnJIdDRrdUdU?=
- =?utf-8?B?TGIzeEhyUGdNcjNtOUp2VDJ1VmRQUGZWbnNPS2ZCVXF6elFBcjNZOWgvdmpz?=
- =?utf-8?B?cDk2UkdicGdQRnExcVVIZHdwSkFjVWV6UGRsS1dWNmc2MHZoL05OamNwQjkr?=
- =?utf-8?B?Y0tzNlpzMHlqUkFSWnpyRUtVbXV3RUdLOTdndWhDQTNEejNwUVB4WXcvNmM3?=
- =?utf-8?B?NVQrSGlLbndzamRTUzk5T0IrdkpFazk3VnpweGhIbWFhTWkxRVlTM2RtWk1W?=
- =?utf-8?B?ckIxNkMyckthNkh3K1poTkIwc0M2TEZoU2VnZUgyV0lHNmppUFNkaWVpUGNL?=
- =?utf-8?B?WXpJZThmQW53UGQzbThkSjRtZjdacTZjV0tCZkJVQWQxandNdU01MFpqcUNj?=
- =?utf-8?B?WU5adk9xTTl2NGxoL3V2MFBYdUFIVWdCRENINXZyY2VYOFNBeHRxQlR1YXNT?=
- =?utf-8?B?T1RTd1JkM245a3h0eStmbVVjNUNxakt4UG5IbWRTWkEwSnlPU1lWL2lFZUtW?=
- =?utf-8?B?Nms0NnI3YU5YSkVvL2lKVXY0WXI0U1JLU2E4S25WZHg4UVI0Z3lFM1NWNHM5?=
- =?utf-8?B?STNKWm1BMzBCR2kzbmhBL3BRWE1sM09Db0FuN0hOL0xyUVA5Z3FGNmhraDNC?=
- =?utf-8?B?M1FnNkVPb3BXSGVHVzFsVER6ZVdNQlUrUXNhRk9qSnd2aFZxZHN0UnBKS0Zv?=
- =?utf-8?B?R2gxeEVvNVNkVlJpMkZoNmp5WmtaK0VJOTAxVFlJaS9ZeS9mOXdMNzFNMlk1?=
- =?utf-8?B?YjdCUFg0MFk2TGFFUHQxenMwSThxZldpUVJGWnN2Y2dYY2pxZDhKeWJ0L0hI?=
- =?utf-8?B?WndoQ25FUGlqRkZERC9UTnRBL24zOUFGMU8zZ2pmL2pXYXpTejdHcG00NThN?=
- =?utf-8?B?NVhqQVU0TlluM01mY2ZNMGJCYnk1NzZDMGpwWG5DS09hRDk1T3R0SFNvQXVU?=
- =?utf-8?B?QVYvdHIxYVRaMDlVSmhteFMwcU1NcWVKa05JSlBWMml6OG16Vk5vakp2WTFE?=
- =?utf-8?B?ZVc3V0Z6ZUE5UDBpYVV0UlE0TkRaK1NHVkNxRmtqcEgwRVI0YUttSjFjNzVw?=
- =?utf-8?B?eUhvb3ZkTU1zcjFlY0Frb2tSVXg3KzBBQnNRbDZsUTlZVklhVEtuL3FLVU02?=
- =?utf-8?B?K2NNMlp1UlMvTUdpVWdmYUJlbmJ1THhwTjl3YjlWMTdDNGJDSlpNT2lqZU51?=
- =?utf-8?B?ZlhHbXZRcU9QWGZjbmtQS3pyaE1jMjZ4MHVkMWpvS1lFSXR5RjRJaktNK0tZ?=
- =?utf-8?B?UTM1UlRrYTlTdmRiVU8rTlpJeldieEFHb0tFNTZ3ak15QVZIVm5YQVNsSlpr?=
- =?utf-8?B?ZXNEM0FxTDExSVZtRTQ5UEtJV0tEWjRUb3lLMkZFRkZCZVFJTFlmOXVXeGZx?=
- =?utf-8?B?WklBdkNmT2cvMmFWOGVTTi9aN3lKdmF5c25GUGVSVlJEZi9qRDdBNmwyb0xT?=
- =?utf-8?B?K3lwL2xtRFhsbkFuQjNvVmNJZlBMaXJjbUd0REppTkFFdjV2UWE3WGRWOUM5?=
- =?utf-8?B?OHllREhkTnliOUNVNnoxektqdWNhcXJUSklpK3kyOGZETkQvQ0lVNTQ5Q28y?=
- =?utf-8?Q?S46nz1?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(376014)(82310400026)(36860700013);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2025 03:25:39.0453
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7afff521-fea6-478c-ca6b-08ddf019b723
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN3PEPF0000B36D.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL4PR12MB9724
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: RzCPh5cJFFQDsUnJkmlDi6_gXhtsanvL
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTA2MDIzNSBTYWx0ZWRfX1f/UQ9GV1+gJ
+ 38F6lTtzQu8ioz4HntSQdlqrJwYG+M2XfMVSvIsr6l+ytT2deOl02W9GSVvEoWJm+jqPJwU9Cj0
+ m3Ps3vY7dvmZ90zmC3AfiVH6NKpz11hc2KVHL57/JUumb4KSt0GWRIuZHaVv6CjzYuP8WWW8cdg
+ DBI0Qa9QfjQNNiKpzhdF3txQVvWl3X7sWG86kREPDHDH1l0Fv2joiKvilyatroI5gmuj6sS2H8i
+ yvpaCJxaj8Ztpgy4jcX5xm+k7qes/iKc7Lrx8Lz4k0ku1vJkDpPE1kE4cUInQ9MMk6Lbn+yr4iw
+ dRYRpbmBwkc2K56rNYMxHucDsCg7/DXOFAZ5RKIXdBppVRvyGlUKtOf5mMZKtdgMb+hKt/tEcgg
+ vpIv5ifq
+X-Proofpoint-GUID: E3b-I3fBK_IaxpB_Dr-QaPh4cTOyJmXa
+X-Authority-Analysis: v=2.4 cv=F59XdrhN c=1 sm=1 tr=0 ts=68c11b81 cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=yJojWOMRYYMA:10 a=VnNF1IyMAAAA:8 a=SRrdq9N9AAAA:8 a=XXhYVPmdku_RaRXcbhIA:9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-09-09_03,2025-09-10_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 phishscore=0 clxscore=1015
+ impostorscore=0 bulkscore=0 adultscore=0 spamscore=0 classifier=typeunknown
+ authscore=0 authtc= authcc= route=outbound adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2507300000 definitions=main-2509060235
 
+The smc argument is not used in both smc_connect_ism_vlan_setup() &
+smc_connect_ism_vlan_cleanup(). Hence removing it.
 
+Signed-off-by: Mahanta Jambigi <mjambigi@linux.ibm.com>
+Reviewed-by: Sidraya Jayagond <sidraya@linux.ibm.com>
+Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+---
+ net/smc/af_smc.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-On 9/10/2025 9:23 AM, Jakub Kicinski wrote:
-> On Mon, 8 Sep 2025 13:07:04 +0300 Tariq Toukan wrote:
->> +	struct net_device *netdev = mlx5_uplink_netdev_get(dev);
->> +	struct mlx5e_priv *priv;
->> +	int err;
->> +
->> +	if (!netdev)
->> +		return 0;
-> 
-> Please don't call in variable init functions which require cleanup
-> or error checking.
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index 66033afd168a..1ea54c09b3ac 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -1096,8 +1096,7 @@ static int smc_find_ism_v2_device_clnt(struct smc_sock *smc,
+ }
+ 
+ /* Check for VLAN ID and register it on ISM device just for CLC handshake */
+-static int smc_connect_ism_vlan_setup(struct smc_sock *smc,
+-				      struct smc_init_info *ini)
++static int smc_connect_ism_vlan_setup(struct smc_init_info *ini)
+ {
+ 	if (ini->vlan_id && smc_ism_get_vlan(ini->ism_dev[0], ini->vlan_id))
+ 		return SMC_CLC_DECL_ISMVLANERR;
+@@ -1112,7 +1111,7 @@ static int smc_find_proposal_devices(struct smc_sock *smc,
+ 	/* check if there is an ism device available */
+ 	if (!(ini->smcd_version & SMC_V1) ||
+ 	    smc_find_ism_device(smc, ini) ||
+-	    smc_connect_ism_vlan_setup(smc, ini))
++	    smc_connect_ism_vlan_setup(ini))
+ 		ini->smcd_version &= ~SMC_V1;
+ 	/* else ISM V1 is supported for this connection */
+ 
+@@ -1157,8 +1156,7 @@ static int smc_find_proposal_devices(struct smc_sock *smc,
+ /* cleanup temporary VLAN ID registration used for CLC handshake. If ISM is
+  * used, the VLAN ID will be registered again during the connection setup.
+  */
+-static int smc_connect_ism_vlan_cleanup(struct smc_sock *smc,
+-					struct smc_init_info *ini)
++static int smc_connect_ism_vlan_cleanup(struct smc_init_info *ini)
+ {
+ 	if (!smcd_indicated(ini->smc_type_v1))
+ 		return 0;
+@@ -1581,13 +1579,13 @@ static int __smc_connect(struct smc_sock *smc)
+ 		goto vlan_cleanup;
+ 
+ 	SMC_STAT_CLNT_SUCC_INC(sock_net(smc->clcsock->sk), aclc);
+-	smc_connect_ism_vlan_cleanup(smc, ini);
++	smc_connect_ism_vlan_cleanup(ini);
+ 	kfree(buf);
+ 	kfree(ini);
+ 	return 0;
+ 
+ vlan_cleanup:
+-	smc_connect_ism_vlan_cleanup(smc, ini);
++	smc_connect_ism_vlan_cleanup(ini);
+ 	kfree(buf);
+ fallback:
+ 	kfree(ini);
+-- 
+2.48.1
 
-But in this function, a NULL return from mlx5_uplink_netdev_get is a 
-valid condition where it should simply return 0. No cleanup or error 
-check is needed.
-
-Thanks!
-Jianbo
 
