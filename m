@@ -1,208 +1,93 @@
-Return-Path: <linux-rdma+bounces-13249-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13250-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06AF1B516BF
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Sep 2025 14:22:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE42DB517B5
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Sep 2025 15:14:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC0694E706D
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Sep 2025 12:22:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 291691C85183
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Sep 2025 13:15:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18B71319867;
-	Wed, 10 Sep 2025 12:21:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 382D5313E33;
+	Wed, 10 Sep 2025 13:14:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dQcAg+h/"
+	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="ja5mvsbi"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABF483176E4;
-	Wed, 10 Sep 2025 12:21:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C2E82F9C2D
+	for <linux-rdma@vger.kernel.org>; Wed, 10 Sep 2025 13:14:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.250
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757506917; cv=none; b=spWdaRxcu/nlSOfKiyflNcABXuNcbUPBSHB0SUfcl7REPnjuQcbLJP5S9iPb8Eoul79Tk95h7EV1s4lVEJr4MiS95s54VwCMgrABIGAv46KEoAAQVR/OL6oCDlVPC+4vbNuzYXeSIsP+aypnpBG6NELv+f3mSoz7CJNTJ6+F3Cc=
+	t=1757510076; cv=none; b=S3RRh7dMrDNv6ThLnEwxfrV5aTHey0nVqKdrKlX9asnG91jgHQSFQxSjjYZP7IQItbLT1ebEWzRz238KTgfjBEbM/o/yFYOTFoKkWEP8jXDmRn9RuVFF6w3RLC0Nd1YdhiQwqgbUrcCyzFB9juWcFoEMfmISn7KYXVfggd7AFx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757506917; c=relaxed/simple;
-	bh=n59irqxSGsvzQvA5L9wGZ9uWkKm4Jb4znbdYPJEyXKA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qSo5LggscAwF5VSJRz6mDKQEA4KgWBGyr+w1iCleFTU8CaIQlx6D+ebGOoyz71mkap8iUIBqmQhddUPdCSYWRC3gohdqbjxvOIqjYuIB9t44o3il5iUiBSmhc9XmWLbZie/WZG4u2H9EPn/ND31p0T3aNYA7J6g+kyMkkXmWc9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dQcAg+h/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78EB7C4CEF8;
-	Wed, 10 Sep 2025 12:21:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757506917;
-	bh=n59irqxSGsvzQvA5L9wGZ9uWkKm4Jb4znbdYPJEyXKA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dQcAg+h/2Gfs+wLHKFVvg0SWlt8YJAfpvxGyAQkG9+5/BknT8zL4rmyjK5jRos3h4
-	 8NFQ0wUBzAUVdyCAgkipHI0sUH3SkU4ZQ2ATtAi2ql1NbiA6XDl/kHbbtz8GAZ00el
-	 etzWUEDNpRrBc3vSZJELBNOt9KMSWR1QT/gK8Xv2uwAKKzADiFfjtDy65VE0xZKqKI
-	 Tiru6o069i48LHUH1SMJVwfktFeBipssaJo8Za+9H41XoCFVUtJMKbq6B/vd3fyw9e
-	 gu3v+EiVPtysCUPw12y+1QMiIE5D2piqJkH9Yw8ri9MmX5sF6IEuJDCeNrgImpWg0F
-	 AAlcswf4fJm2w==
-Date: Wed, 10 Sep 2025 15:21:52 +0300
-From: Leon Romanovsky <leon@kernel.org>
-To: Parav Pandit <parav@nvidia.com>
-Cc: Edward Srouji <edwards@nvidia.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Cosmin Ratiu <cratiu@nvidia.com>,
-	Vlad Dumitrescu <vdumitrescu@nvidia.com>,
-	"kuba@kernel.org" <kuba@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
-	Gal Pressman <gal@nvidia.com>
-Subject: Re: [PATCH 1/4] RDMA/core: Squash a single user static function
-Message-ID: <20250910122152.GR341237@unreal>
-References: <20250907160833.56589-1-edwards@nvidia.com>
- <20250907160833.56589-2-edwards@nvidia.com>
- <20250910081735.GJ341237@unreal>
- <CY8PR12MB719561454E13288C929E5E70DC0EA@CY8PR12MB7195.namprd12.prod.outlook.com>
+	s=arc-20240116; t=1757510076; c=relaxed/simple;
+	bh=MzLo7wKSlhd2jxgcp9cnKzTak7BRFGWV6R+Xh2Kip2k=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=YTas9HjsjdGCMGwwz3WdYuNURajFtJze00mtgRaI8V5A+xCRGtHGRj2Ae+DmwgnypkGQv+mRsiM3UhZ1Xq78JyNp6CuFE8NSz3eTy/RuCyq2tCuqYqaNA1nIc5p87ULHjLb0ZiFFTgWc81F3NiLvrrsGNwu9B82b65BEEBTXQ2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=ja5mvsbi; arc=none smtp.client-ip=185.125.188.250
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
+Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id 577F842204
+	for <linux-rdma@vger.kernel.org>; Wed, 10 Sep 2025 13:06:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+	s=20210803; t=1757509568;
+	bh=MzLo7wKSlhd2jxgcp9cnKzTak7BRFGWV6R+Xh2Kip2k=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+	 Reply-To;
+	b=ja5mvsbiSXfsJh8UUgKc+Kk7zcRXCYgxDx+agEBegA25x7uZPfb4NhoNGLP6rVvup
+	 nhhOJTOp66jaJ0iaXfL6rBADJGqkj3grYpybD22HoVSLIwGSXIGx4nfIwTQP580g7a
+	 puhsOihm2976Djy+34wg/QXOQmRw1R3NyzL8+RSOFLI+HdtdVpm0xKR9qZgm0S6lGz
+	 EMrfE5C5fSyUuixT+tDldbWzmky8Y/h/VvmRmvhYKt2Z+DMlg3nm5hULuLiTRQNPFb
+	 XtJMytYkv+GqPkVfZt7L2tv9+HG+EEX/PwpQ3vh1ouGbz/EVcx+n8r/7cbkEWpWfwj
+	 1PjdWO0RQqlTQ==
+Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
+	by buildd-manager.lp.internal (Postfix) with ESMTP id 471A5847A1
+	for <linux-rdma@vger.kernel.org>; Wed, 10 Sep 2025 13:06:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CY8PR12MB719561454E13288C929E5E70DC0EA@CY8PR12MB7195.namprd12.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To: Linux RDMA <linux-rdma@vger.kernel.org>
+From: noreply@launchpad.net
+Subject: [recipe build #3943946] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <175750956828.2222963.11267711653443984640.launchpad@buildd-manager.lp.internal>
+Date: Wed, 10 Sep 2025 13:06:08 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+Errors-To: noreply@launchpad.net
+Precedence: bulk
+X-Generated-By: Launchpad (canonical.com); Revision="3db21b43f675a56d404bb64e0fe1fcfc5dc01a90"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: e846d6e603f32cae5eb0d7d2ce16a93b3a4c17ea
 
-On Wed, Sep 10, 2025 at 10:51:08AM +0000, Parav Pandit wrote:
-> 
-> 
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: 10 September 2025 01:48 PM
-> > 
-> > On Sun, Sep 07, 2025 at 07:08:30PM +0300, Edward Srouji wrote:
-> > > From: Parav Pandit <parav@nvidia.com>
-> > >
-> > > In order to reduce dependencies in IFF_LOOPBACK in route and neighbour
-> > > resolution steps, squash the static function to its single caller and
-> > > simplify the code. No functional change.
-> > 
-> > It needs more explanation why it is true. 
-> After second look at the code, it is not true.
-> It is not true for the case when dev->flags has IFF_LOOPBACK and translate_ip() failed.
-> In existing code, when translate_ip() fails, code still sets dev_addr->network.
-> dev_addr->network is not referred if the process_one_req() has error.
-> 
-> > Before this change, we set dev_addr-
-> > >network to some value and returned error.
-> > That error propagated upto process_one_req(), which handles only some
-> > errors and ignores rest.
-> > 
-> > So now, we continue to handle REQ without proper req->addr->network.
-> >
-> Not exactly. When error is returned by the code addr->network is not filled up, which is correct thing to do.
-> 
-> So at best, commit message should be updated to remove "No functional change".
-> 
-> Will send v1.
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 6 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3943946/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-053
 
-Parav,
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3943946
+Your team Linux RDMA is the requester of the build.
 
-Please setup your e-mail client, your reply is mixed with mine and
-repeats it.
-
-Thanks
-
->  
-> > Thanks
-> > 
-> > >
-> > > Signed-off-by: Parav Pandit <parav@nvidia.com>
-> > > Reviewed-by: Vlad Dumitrescu <vdumitrescu@nvidia.com>
-> > > Signed-off-by: Edward Srouji <edwards@nvidia.com>
-> > > ---
-> > >  drivers/infiniband/core/addr.c | 49
-> > > ++++++++++++++--------------------
-> > >  1 file changed, 20 insertions(+), 29 deletions(-)
-> > >
-> > > diff --git a/drivers/infiniband/core/addr.c
-> > > b/drivers/infiniband/core/addr.c index be0743dac3ff..594e7ee335f7
-> > > 100644
-> > > --- a/drivers/infiniband/core/addr.c
-> > > +++ b/drivers/infiniband/core/addr.c
-> > > @@ -465,34 +465,6 @@ static int addr_resolve_neigh(const struct dst_entry
-> > *dst,
-> > >  	return ret;
-> > >  }
-> > >
-> > > -static int copy_src_l2_addr(struct rdma_dev_addr *dev_addr,
-> > > -			    const struct sockaddr *dst_in,
-> > > -			    const struct dst_entry *dst,
-> > > -			    const struct net_device *ndev)
-> > > -{
-> > > -	int ret = 0;
-> > > -
-> > > -	if (dst->dev->flags & IFF_LOOPBACK)
-> > > -		ret = rdma_translate_ip(dst_in, dev_addr);
-> > > -	else
-> > > -		rdma_copy_src_l2_addr(dev_addr, dst->dev);
-> > > -
-> > > -	/*
-> > > -	 * If there's a gateway and type of device not ARPHRD_INFINIBAND,
-> > > -	 * we're definitely in RoCE v2 (as RoCE v1 isn't routable) set the
-> > > -	 * network type accordingly.
-> > > -	 */
-> > > -	if (has_gateway(dst, dst_in->sa_family) &&
-> > > -	    ndev->type != ARPHRD_INFINIBAND)
-> > > -		dev_addr->network = dst_in->sa_family == AF_INET ?
-> > > -						RDMA_NETWORK_IPV4 :
-> > > -						RDMA_NETWORK_IPV6;
-> > > -	else
-> > > -		dev_addr->network = RDMA_NETWORK_IB;
-> > > -
-> > > -	return ret;
-> > > -}
-> > > -
-> > >  static int rdma_set_src_addr_rcu(struct rdma_dev_addr *dev_addr,
-> > >  				 unsigned int *ndev_flags,
-> > >  				 const struct sockaddr *dst_in,
-> > > @@ -503,6 +475,7 @@ static int rdma_set_src_addr_rcu(struct
-> > rdma_dev_addr *dev_addr,
-> > >  	*ndev_flags = ndev->flags;
-> > >  	/* A physical device must be the RDMA device to use */
-> > >  	if (ndev->flags & IFF_LOOPBACK) {
-> > > +		int ret;
-> > >  		/*
-> > >  		 * RDMA (IB/RoCE, iWarp) doesn't run on lo interface or
-> > >  		 * loopback IP address. So if route is resolved to loopback
-> > @@
-> > > -512,9 +485,27 @@ static int rdma_set_src_addr_rcu(struct rdma_dev_addr
-> > *dev_addr,
-> > >  		ndev = rdma_find_ndev_for_src_ip_rcu(dev_net(ndev),
-> > dst_in);
-> > >  		if (IS_ERR(ndev))
-> > >  			return -ENODEV;
-> > > +		ret = rdma_translate_ip(dst_in, dev_addr);
-> > > +		if (ret)
-> > > +			return ret;
-> > > +	} else {
-> > > +		rdma_copy_src_l2_addr(dev_addr, dst->dev);
-> > >  	}
-> > >
-> > > -	return copy_src_l2_addr(dev_addr, dst_in, dst, ndev);
-> > > +	/*
-> > > +	 * If there's a gateway and type of device not ARPHRD_INFINIBAND,
-> > > +	 * we're definitely in RoCE v2 (as RoCE v1 isn't routable) set the
-> > > +	 * network type accordingly.
-> > > +	 */
-> > > +	if (has_gateway(dst, dst_in->sa_family) &&
-> > > +	    ndev->type != ARPHRD_INFINIBAND)
-> > > +		dev_addr->network = dst_in->sa_family == AF_INET ?
-> > > +						RDMA_NETWORK_IPV4 :
-> > > +						RDMA_NETWORK_IPV6;
-> > > +	else
-> > > +		dev_addr->network = RDMA_NETWORK_IB;
-> > > +
-> > > +	return 0;
-> > >  }
-> > >
-> > >  static int set_addr_netns_by_gid_rcu(struct rdma_dev_addr *addr)
-> > > --
-> > > 2.21.3
-> > >
-> > >
 
