@@ -1,181 +1,191 @@
-Return-Path: <linux-rdma+bounces-13220-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13221-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BB18B50E0E
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Sep 2025 08:32:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F86CB50E77
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Sep 2025 08:49:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20EFB7B3308
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Sep 2025 06:31:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 375883BAA79
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Sep 2025 06:48:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 638F72D0283;
-	Wed, 10 Sep 2025 06:32:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83AAF2D97BE;
+	Wed, 10 Sep 2025 06:48:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="aRaRwDcQ"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="DJzQvIj9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2044.outbound.protection.outlook.com [40.107.236.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D9E431D364;
-	Wed, 10 Sep 2025 06:32:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757485963; cv=none; b=N5exfkeEcQ0PhHenHGS5gJgMNa2/M9N6pteyDFvdYvNgnEQZjqdWKKc75oWQbvxWncFYgB8Q0jAxA+yeBJ5i4cImwNoB6xjtAgHIOpXBLfn98TELQz5aSIRx5NEP6g8uizxYARCdepV9/jpKIvQV4n+pZ20ephBcRC8ApcMrH1Q=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757485963; c=relaxed/simple;
-	bh=9Q6zS2/4O/eBnBIjlNDHY5Tf8xsuS6/6e3ZqTu7O1S4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=g77x5Cqnsh9zH688tE8Tr0DA0qHIGhMvS05HCMwHF/SeogE5Mm8nEk3rv0ThY5OVT4MWGw+zCAq6plVZLfvkBOuaNW5iW0PL7k7TtOhCi0zJ/MEX3Usu1yjrH/sZB9/eJauhI/V97R3TKZjxQ6FjwTAA4JOE3kBkom2QV8zGULo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=aRaRwDcQ; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 589K5AGC007706;
-	Wed, 10 Sep 2025 06:32:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=pp1; bh=D0n7V5zxRFqzihzn2VYWhbt8HqCQIPmJ+q7SchDP2
-	/k=; b=aRaRwDcQ8QDMpKGnFHA5JDByOXy7jucdPeOOxTHUbOqyZwZctVadFb7MM
-	E+Q/hfxr25IvV7AA8XEjRbbu730xEyTQjZ0lK5GKtfaj9sFW/KQ1LmHa+pEDtkTZ
-	1d9G+w9+q41zkPP4g/8uiBNzQ3yhjnVfFgpjNe6JoPwaZ7IuHBti1dsE53AEPgUL
-	8+CjMORLUKzaPZIEYM8q+dbeXMpMYH78sWHUvI3YLRe6LF1ldS2dgF2eHIsquqYw
-	OS5H0Lu3J//P/vb2lm4Z52ICnpRgEC2a378CeJAZvFbi7UT7GIvdzZVF4yNML1nd
-	kus3pUEar5Bm18DJuU6Tp+k4mr4RA==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 490xyd153y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Sep 2025 06:32:33 +0000 (GMT)
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 58A6NO4K022058;
-	Wed, 10 Sep 2025 06:32:33 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 490xyd153v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Sep 2025 06:32:33 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58A2eCcq017218;
-	Wed, 10 Sep 2025 06:32:32 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4911gmeusc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Sep 2025 06:32:32 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 58A6WSM019923386
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 10 Sep 2025 06:32:28 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8E42B20043;
-	Wed, 10 Sep 2025 06:32:28 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7BD8E20040;
-	Wed, 10 Sep 2025 06:32:28 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 10 Sep 2025 06:32:28 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 56341)
-	id 344B0E0677; Wed, 10 Sep 2025 08:32:28 +0200 (CEST)
-From: Mahanta Jambigi <mjambigi@linux.ibm.com>
-To: andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, alibuda@linux.alibaba.com,
-        dust.li@linux.alibaba.com, sidraya@linux.ibm.com, wenjia@linux.ibm.com
-Cc: pasic@linux.ibm.com, horms@kernel.org, tonylu@linux.alibaba.com,
-        guwen@linux.alibaba.com, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Mahanta Jambigi <mjambigi@linux.ibm.com>
-Subject: [PATCH net-next] net/smc: Remove unused argument from 2 SMC functions
-Date: Wed, 10 Sep 2025 08:31:25 +0200
-Message-ID: <20250910063125.2112577-1-mjambigi@linux.ibm.com>
-X-Mailer: git-send-email 2.48.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35F7C1798F;
+	Wed, 10 Sep 2025 06:48:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.44
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1757486912; cv=fail; b=AWrpgZsQrqhYJFpAGaAb/XkX+MFkK6mhuXS9LJhAIMqMufj7Hx2ZnKXtT/LIPyDNQ2WcrdEyKQ0gYnXaG8wLTDYn7+XrR07eRIwR6p9Ld+sxcpm/M/cXRgK5rN22IW3hE2uXdq12F1rCym0BxJBtDyH7oIqav1WLiEwQlBC14M8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1757486912; c=relaxed/simple;
+	bh=z5MO+W5F7wY7FVsU6Gtjb1NDMKeeilMD0AOC0FJstLQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OkrCtF7gUXIRO6L0hVwi1aQPYjYueNK+CzKdC0wn3Vv2Fi0QxL/OgHb2X/8zR0/xIEdpogT4X/0B/q5frvBUTJtptoqfjd6M+o80UwZmapUSaM95XlOqlLu0682x0zeGQhAbHAyUmpvrvqCHCIUEYOcP2/FOl5/cXvRJ6WXjc4w=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=DJzQvIj9; arc=fail smtp.client-ip=40.107.236.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=is0L2Fb2Gp7RAWZ2PHaaZpJNHJyvieApe+I4fphbfyuhaM9IGwWVlkKquBg6lLxD6/FjS816Ghp53phn55JvmzUhGWoqjZqfODAcz5OM1mQ/29NavEf7vLWm70woyWaOrb6tv1X5Tem9hYjbqtDBSZLNrzlSUKOdKfgCYyn2idoNltweY9145ZZ8Hz9+IOmxGxFALdUFqi24FaOXVfpolISTcwF9U8qmzLAU9FGkRBzLDO1yCoZwZqXXbRMTJF4SIcOxoICehlLx6lJBR9L+7dQtmfmsGZXIkc7W7cmJzZukERZZbL08OnMU5pety9TqdIbWVpP0cbY4lEtXbh7VXg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ThAh43QtzvTHrgCCnb+fgBgZkB35SrajdKPZtZxN9Jo=;
+ b=X0p+TyJzDKtuNZC1NK8KPcU4/G0Z+7JBGy2tHfzWeyFr1/bnQZyVaQQ/NCHgLyIITtiNdrlgYjzleV3AGJOQat1m0E9MPQMV9rjKs8AqEG2iwYhAXKDWz1TiwtzxRj1lbZKp5R06QbHIdaaCi71vhB+Nthu1bE5zWdHqDx3tPSPkgO+9w47GC12TbxTcO4fYCyE5DdT09jfuu59aw87tU6FZLNY/+DQw88GM1VBBV/0PAZQzpAGqmilIBWC0hVym+qb0XEcc4a6VApRAq0rzICTaJ4mFPqyRrumXmtzZ/aGiRbMpICGjFhXFA1/BBbWLNus3uozKN7hPq1hfZnsDaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ThAh43QtzvTHrgCCnb+fgBgZkB35SrajdKPZtZxN9Jo=;
+ b=DJzQvIj9A+BpTWVu+o8bqvRStMVkTr6HTlcneZpvRZg8yNovKtvhgbiXg7hTkBLxEndEv9rX7/i12i1/QlXrryILJA+cgVyvv2EN5z8DfaQEfunT6YBg8E870hVL2byqUKdGH1nWckNHB2SBiSbL4T3qPwVBnnwA+V03/IHMsZydXg2DGH1YtNRjgT3LuwD7UO87uNzIDfhXFZTjtJv8hFDt6VJ+vjQY3RbvU99CvOclaK3wRlgKprm//kfYCkJ4L35+F5OYZDuoYcyVKczz6xEHXuSwQZ98LQD6RQxlyiY2uEfIM32ddC+t/Nn7TqmmocRVg4iUr5UYTZqE2BMaMQ==
+Received: from BLAPR03CA0113.namprd03.prod.outlook.com (2603:10b6:208:32a::28)
+ by DS4PR12MB9745.namprd12.prod.outlook.com (2603:10b6:8:2a9::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9094.22; Wed, 10 Sep
+ 2025 06:48:26 +0000
+Received: from BL02EPF0001A0FB.namprd03.prod.outlook.com
+ (2603:10b6:208:32a:cafe::43) by BLAPR03CA0113.outlook.office365.com
+ (2603:10b6:208:32a::28) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9094.23 via Frontend Transport; Wed,
+ 10 Sep 2025 06:48:26 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ BL02EPF0001A0FB.mail.protection.outlook.com (10.167.242.102) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9115.13 via Frontend Transport; Wed, 10 Sep 2025 06:48:26 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Tue, 9 Sep
+ 2025 23:48:08 -0700
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Tue, 9 Sep
+ 2025 23:48:08 -0700
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.8)
+ with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Tue, 9 Sep
+ 2025 23:48:04 -0700
+From: Tariq Toukan <tariqt@nvidia.com>
+To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>
+CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, "John
+ Fastabend" <john.fastabend@gmail.com>, Sabrina Dubroca <sd@queasysnail.net>,
+	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Boris Pismenny
+	<borisp@nvidia.com>, Shahar Shitrit <shshitrit@nvidia.com>
+Subject: [PATCH net 0/3] tls: Introduce and use RX async resync request cancel function
+Date: Wed, 10 Sep 2025 09:47:38 +0300
+Message-ID: <1757486861-542133-1-git-send-email-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.8.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: RzCPh5cJFFQDsUnJkmlDi6_gXhtsanvL
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTA2MDIzNSBTYWx0ZWRfX1f/UQ9GV1+gJ
- 38F6lTtzQu8ioz4HntSQdlqrJwYG+M2XfMVSvIsr6l+ytT2deOl02W9GSVvEoWJm+jqPJwU9Cj0
- m3Ps3vY7dvmZ90zmC3AfiVH6NKpz11hc2KVHL57/JUumb4KSt0GWRIuZHaVv6CjzYuP8WWW8cdg
- DBI0Qa9QfjQNNiKpzhdF3txQVvWl3X7sWG86kREPDHDH1l0Fv2joiKvilyatroI5gmuj6sS2H8i
- yvpaCJxaj8Ztpgy4jcX5xm+k7qes/iKc7Lrx8Lz4k0ku1vJkDpPE1kE4cUInQ9MMk6Lbn+yr4iw
- dRYRpbmBwkc2K56rNYMxHucDsCg7/DXOFAZ5RKIXdBppVRvyGlUKtOf5mMZKtdgMb+hKt/tEcgg
- vpIv5ifq
-X-Proofpoint-GUID: E3b-I3fBK_IaxpB_Dr-QaPh4cTOyJmXa
-X-Authority-Analysis: v=2.4 cv=F59XdrhN c=1 sm=1 tr=0 ts=68c11b81 cx=c_pps
- a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
- a=yJojWOMRYYMA:10 a=VnNF1IyMAAAA:8 a=SRrdq9N9AAAA:8 a=XXhYVPmdku_RaRXcbhIA:9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-09-09_03,2025-09-10_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 malwarescore=0 suspectscore=0 phishscore=0 clxscore=1015
- impostorscore=0 bulkscore=0 adultscore=0 spamscore=0 classifier=typeunknown
- authscore=0 authtc= authcc= route=outbound adjust=0 reason=mlx scancount=1
- engine=8.19.0-2507300000 definitions=main-2509060235
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL02EPF0001A0FB:EE_|DS4PR12MB9745:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0654d790-60e4-4da5-01b4-08ddf0360b41
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|82310400026|376014|7416014|36860700013;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?QnVb5pGoXIowyCdRIpQJCzjjP2K/Y9i82rJjRLSNPYdhsKLC1WmoR1984lS7?=
+ =?us-ascii?Q?8WO6GVNl4xHfBu8WUIzyjXOntgjZ46SiD2shf6uKWMtdgUwiVLpHt3Eeytxd?=
+ =?us-ascii?Q?U/WG9qDIC4+eqeYIUcVrQTopGBSodO4CsvbNZOzk6XzckZRap44nL7hKePSC?=
+ =?us-ascii?Q?gaUCRdpxTzz91bW3kfiCSqPrQMkDnVte5KtKLchojpIKpof1vGmyy+uBtRqh?=
+ =?us-ascii?Q?EHN8tXfZhikSnrxlEjcdIRuP9p8GWop2aWwGZL3VZ24Jcx0doXEsJpYbOU8s?=
+ =?us-ascii?Q?7w3hcV28whRjbtQSeFcavSjItgxs8HAFPGmmjTCFkoxHIqN4k2i2Opb0OW1f?=
+ =?us-ascii?Q?DdGuQ72TAuzaw3WrHbC9KCI7ksUZ/3m2BERjWCk2MvI9HWm5a9+1d3v3Lmlp?=
+ =?us-ascii?Q?7suqE7LGbnsrraPNsznDcUdfeInGtLXEohV5UCjvZ+dbjh6NbMWczMc4oPQ4?=
+ =?us-ascii?Q?9L+u7p2XwILz+3VkC9chFT5beBE8Gfw7QLOLBvV3c0Xu5lr+NKEj6HIB6G5W?=
+ =?us-ascii?Q?QCh7gR0lJKUtOC57MuiOMGqxqb+Ixx1a4+f3tFNQQULpdNBlsq4xq4YZqzCX?=
+ =?us-ascii?Q?M3j64UdOisiOxmh0SeG2nlRQQcuuRaY7kLeld4qfICXBAZxSWrbX35NFYPok?=
+ =?us-ascii?Q?1rptgOr4ejVlXd2u/WYMKkR6BAavtAouoHthgnX19Pax5Tqn8/tikttDmsQ9?=
+ =?us-ascii?Q?vMJMEeChmkeQxVDmj0gBvqh5ogXNGgHLoXCb1I1h2krf7M6GCsv0u665uqR8?=
+ =?us-ascii?Q?sqc4UZkz6p7nAZ+ToS2IBCd2wauNofsjBMGykO237KtzG7mtdTnrIR9dGuPi?=
+ =?us-ascii?Q?YEgjwQu3R/KsXIQMbsaCPlOEajAow/pLChH0Kxk3rsiSF2Z4qTR/Cu6qeL+/?=
+ =?us-ascii?Q?8b/PyFCFUR8mlkn3WhVtLTv+hHSgnWnc6/qHQ0mdyLDiC8FOSYgNuRB5yM1c?=
+ =?us-ascii?Q?I+l1KtzneSw6swm1PHr9vvcOIkZRNZj4No5oKJuG9PsP3Bd1H0Y0yOe0i/It?=
+ =?us-ascii?Q?9MSy1+/kAnAEiv/G4f6hwJgKZMdsNK/2YAgh3G+y3amohCn3m54LypLGBKkS?=
+ =?us-ascii?Q?tp2xe/VFTNg4yfVy9DNAXt6GHnwDyFRxSzH+JhdqFgjfLXKK8l0fwcCtLD2R?=
+ =?us-ascii?Q?WQYheMCBqy+Z97qFG/UntxUUh9vHclZrQ/rlaGHopyYox2leSEwUG0To84Cs?=
+ =?us-ascii?Q?+Y1AsMaSTL4dsKraAk5DIsmH89b/QjY/2cyFCbyBcm1jrVvGyVLs7niUxKNI?=
+ =?us-ascii?Q?0/1GVCsozgoT119q/TX01NMLNBnd4R6FGiyKZF5q94tRimP42Ck1NRW/SSFw?=
+ =?us-ascii?Q?v/0FjT9IZsWANrezQOky9d0gwjhhKLgJoYqaWdchi7GUfVPWeyU8c4KpsSNX?=
+ =?us-ascii?Q?n/KJpsSGAiEuvj7S2GxXCOYGkeQXPQXqkLxX/uTMG8BGd0CTu+tblNWPFbmQ?=
+ =?us-ascii?Q?4MKEzJ64h7Y88uLYSP1gdNpxwmuvpVr5dwVVhGCilMolFJl2wJA9JjtNiADi?=
+ =?us-ascii?Q?rStOU5TBXo0bxoktIPI+2Of5AOT8GJj390c+?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(376014)(7416014)(36860700013);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2025 06:48:26.2291
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0654d790-60e4-4da5-01b4-08ddf0360b41
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL02EPF0001A0FB.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS4PR12MB9745
 
-The smc argument is not used in both smc_connect_ism_vlan_setup() &
-smc_connect_ism_vlan_cleanup(). Hence removing it.
+Hi,
 
-Signed-off-by: Mahanta Jambigi <mjambigi@linux.ibm.com>
-Reviewed-by: Sidraya Jayagond <sidraya@linux.ibm.com>
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
----
- net/smc/af_smc.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+This series by Shahar introduces RX async resync request cancel function
+in tls module, and uses it in mlx5e driver.
 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index 66033afd168a..1ea54c09b3ac 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -1096,8 +1096,7 @@ static int smc_find_ism_v2_device_clnt(struct smc_sock *smc,
- }
- 
- /* Check for VLAN ID and register it on ISM device just for CLC handshake */
--static int smc_connect_ism_vlan_setup(struct smc_sock *smc,
--				      struct smc_init_info *ini)
-+static int smc_connect_ism_vlan_setup(struct smc_init_info *ini)
- {
- 	if (ini->vlan_id && smc_ism_get_vlan(ini->ism_dev[0], ini->vlan_id))
- 		return SMC_CLC_DECL_ISMVLANERR;
-@@ -1112,7 +1111,7 @@ static int smc_find_proposal_devices(struct smc_sock *smc,
- 	/* check if there is an ism device available */
- 	if (!(ini->smcd_version & SMC_V1) ||
- 	    smc_find_ism_device(smc, ini) ||
--	    smc_connect_ism_vlan_setup(smc, ini))
-+	    smc_connect_ism_vlan_setup(ini))
- 		ini->smcd_version &= ~SMC_V1;
- 	/* else ISM V1 is supported for this connection */
- 
-@@ -1157,8 +1156,7 @@ static int smc_find_proposal_devices(struct smc_sock *smc,
- /* cleanup temporary VLAN ID registration used for CLC handshake. If ISM is
-  * used, the VLAN ID will be registered again during the connection setup.
-  */
--static int smc_connect_ism_vlan_cleanup(struct smc_sock *smc,
--					struct smc_init_info *ini)
-+static int smc_connect_ism_vlan_cleanup(struct smc_init_info *ini)
- {
- 	if (!smcd_indicated(ini->smc_type_v1))
- 		return 0;
-@@ -1581,13 +1579,13 @@ static int __smc_connect(struct smc_sock *smc)
- 		goto vlan_cleanup;
- 
- 	SMC_STAT_CLNT_SUCC_INC(sock_net(smc->clcsock->sk), aclc);
--	smc_connect_ism_vlan_cleanup(smc, ini);
-+	smc_connect_ism_vlan_cleanup(ini);
- 	kfree(buf);
- 	kfree(ini);
- 	return 0;
- 
- vlan_cleanup:
--	smc_connect_ism_vlan_cleanup(smc, ini);
-+	smc_connect_ism_vlan_cleanup(ini);
- 	kfree(buf);
- fallback:
- 	kfree(ini);
+For a device-offloaded TLS RX connection, the TLS module increments
+rcd_delta each time a new TLS record is received, tracking the distance
+from the original resync request. In the meanwhile, the device is
+queried and is expected to respond, asynchronously.
+
+However, if the device response is delayed or fails (e.g due to unstable
+connection and device getting out of tracking, hardware errors, resource
+exhaustion etc.), the TLS module keeps logging and incrementing
+rcd_delta, which can lead to a WARN() when rcd_delta exceeds the
+threshold.
+
+This series improves this code area by canceling the resync request when
+spotting an issue with the device response.
+
+Regards,
+Tariq
+
+
+Shahar Shitrit (3):
+  net: tls: Introduce RX async resync request cancel function
+  net: tls: Cancel RX async resync request on rdc_delta overflow
+  net/mlx5e: kTLS, cancel RX async resync request in error flows
+
+ .../mellanox/mlx5/core/en_accel/ktls_rx.c     | 29 +++++++++++++++++--
+ .../mellanox/mlx5/core/en_accel/ktls_txrx.h   |  4 +++
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  4 +++
+ include/net/tls.h                             |  9 ++++++
+ net/tls/tls_device.c                          |  5 +++-
+ 5 files changed, 47 insertions(+), 4 deletions(-)
+
+
+base-commit: 78dd8ad62cad4f5af22afc842890d531312bbb8a
 -- 
-2.48.1
+2.31.1
 
 
