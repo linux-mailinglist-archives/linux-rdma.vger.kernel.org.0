@@ -1,92 +1,193 @@
-Return-Path: <linux-rdma+bounces-13277-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13278-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAF74B53441
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Sep 2025 15:47:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79051B534E4
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Sep 2025 16:08:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA394188D43A
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Sep 2025 13:48:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E27E176FE1
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Sep 2025 14:08:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B24CB324B32;
-	Thu, 11 Sep 2025 13:47:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E840338F38;
+	Thu, 11 Sep 2025 14:08:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZYsPrYqH"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ey3i2rE1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E6F97261A;
-	Thu, 11 Sep 2025 13:47:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AFDE3376B3;
+	Thu, 11 Sep 2025 14:08:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757598459; cv=none; b=HV+uQsZgIERopCRkYOl8BPJFeFqtCX1YydUX/v47H1MngImyq2qgW0TAgjrsWsF26Gn48C0fc6wztNJS/Kiz8t1kN0yAlcwHGujk5BgvFBbKzzjn1GRfb3twEO/th65OS8SjHoTjlwB/lpitEeYaJE8jAonzvRMGwx4p3RHzTgM=
+	t=1757599708; cv=none; b=gRqdF/Jz+COL/C6gErO6oKfvM76YXJztfINtKrr6ZxutoCK+T87uy4mIhNGlqLN8Mc+uZKawquabN6OWIgVJbAK3/1vlxD8QgsDbmLljErbLmyzgcKB35gLsEzurqJtnXOcNLtRgsic/JdCKvzDQz21PTeyPA9DCz/xxmXSUnLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757598459; c=relaxed/simple;
-	bh=GyN4TZqUGP7GmM7frRvFOeCqKuKOWiXsTn/1gHowWKM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Z13Nz8X+V9QfWuyXC6RytJfa38WXsMVOMmV/J1cHzNdz7rpK/lwY+qIMiKr+ax+Iq7YBjhgz+TyyGJ/DL+S9nbGIidnq3n0tc14kU6XLl1dBZy2hcT2iDUQiNnbqkTHIGKptXvhYR1b9YUoJ7+kL0hQsDmh971l/oLE+cg4xl1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZYsPrYqH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EAF5C4CEF0;
-	Thu, 11 Sep 2025 13:47:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1757598458;
-	bh=GyN4TZqUGP7GmM7frRvFOeCqKuKOWiXsTn/1gHowWKM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ZYsPrYqHwmsbmX3q3vNT1TJHeHM14ewRbwNcn8r47QqgY869N6wyxKebf92CpfRVF
-	 t6MRyZrUOD/YBE4+LmPn/ur4jfS84bTK78TV3xRnvi2DAYACS6xnyam6byVe3P+rgR
-	 VvX8WX4uGt0cWh7gdMGjCRnkQ+bnjWM12FRuUNONgQ8MRgH4eLCz6pvRp9wCzCTENj
-	 NXIFfP1V0wCqItdI6+LvLKkIyTpoccjSL5leaCEMwrFLg8+Qk+/CGeO6+MfaoSq6Sr
-	 Vz9b/BO74auehkJ1qGYQlDSMSQmqSoM3I1fJph5bzZ4LQUWdTvgVeyv2JH6fM38Qrt
-	 88pdPAEijT/BA==
-Date: Thu, 11 Sep 2025 06:47:32 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Mark Bloch <mbloch@nvidia.com>
-Cc: Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Tariq Toukan <tariqt@nvidia.com>, Leon Romanovsky
- <leon@kernel.org>, "Saeed Mahameed" <saeedm@nvidia.com>,
- <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Gal Pressman
- <gal@nvidia.com>, <linux-rdma@vger.kernel.org>, Alexei Lazar
- <alazar@nvidia.com>
-Subject: Re: [PATCH net V2 10/11] net/mlx5e: Update and set Xon/Xoff upon
- port speed set
-Message-ID: <20250911064732.2234b9fb@kernel.org>
-In-Reply-To: <20250910170011.70528106@kernel.org>
-References: <20250825143435.598584-1-mbloch@nvidia.com>
-	<20250825143435.598584-11-mbloch@nvidia.com>
-	<20250910170011.70528106@kernel.org>
+	s=arc-20240116; t=1757599708; c=relaxed/simple;
+	bh=kv2eBtjwRALSjkTVtevZKAclp/iDEa+pCYEiho0diGc=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=CNpr8EESqWWIH+7RD9G8LeN+XIhI/aLb0iER4sbUVyPQYODuOoV4sFv8J/5+IHyNX8w+YQJQpKKC74Kcy5S4iMPDVv66EjcobnFGPL0L07eXSiBrtnyjZ9WeAbDIatvDWyfZWnjGJw5d8y6CTtA4wp8OgKRatcRLIe3S3YYONWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ey3i2rE1; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58BDsbmW001261;
+	Thu, 11 Sep 2025 14:08:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=VskSST
+	rWn5qiOMDBZUp59jFR30JzT7l3J5/tgQkHT1U=; b=ey3i2rE1HdC+KK4R5fP7WR
+	uf9S0ggSuytcc8KITJBfC12lJXI00z4DrqgLqtAXrRmFuxTa/YLcttGi7daLXmOK
+	oXtxUA1DJwduyk/1TiyHZvRYoIpY9EuPlYRy5g0SvIQebUFWuij897kG1DNmxt0z
+	UdpSrxoCTGUUOUgBZ625Kwuqf7vRUk+GURtVJZEGE7z2yfNtEWEaLEINsZNamz+9
+	b/Z7E3AF1I0Ibv4x4Y9B0uiv3V27Gha/3CGi3ao8bQ9tAwdJ4goXbDod1Bb+KIe1
+	ojpu4WqymHwHXpLIYNNNoiVoFBquc5An0i84vHm+mtRJVh+HYvxDeFN9V8q/tIzA
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 490cmx5460-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Sep 2025 14:08:16 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 58BDxNlZ016077;
+	Thu, 11 Sep 2025 14:08:15 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 490cmx545t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Sep 2025 14:08:15 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58BB6UJ2001177;
+	Thu, 11 Sep 2025 14:08:14 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 491203nw06-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Sep 2025 14:08:14 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 58BE8BMU49873362
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 11 Sep 2025 14:08:11 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3D74B2004E;
+	Thu, 11 Sep 2025 14:08:11 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B6DDE20043;
+	Thu, 11 Sep 2025 14:08:10 +0000 (GMT)
+Received: from [9.152.224.94] (unknown [9.152.224.94])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 11 Sep 2025 14:08:10 +0000 (GMT)
+Message-ID: <ede6f320-7b22-4c9a-97d4-86ae1a72d115@linux.ibm.com>
+Date: Thu, 11 Sep 2025 16:08:10 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 07/14] net/dibs: Define dibs_client_ops and
+ dibs_dev_ops
+From: Alexandra Winter <wintera@linux.ibm.com>
+To: "D. Wythe" <alibuda@linux.alibaba.com>,
+        Dust Li <dust.li@linux.alibaba.com>,
+        Sidraya Jayagond
+ <sidraya@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>,
+        Andrew Lunn <andrew+netdev@lunn.ch>
+Cc: Julian Ruess <julianr@linux.ibm.com>,
+        Aswin Karuvally <aswin@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Mahanta Jambigi <mjambigi@linux.ibm.com>,
+        Tony Lu
+ <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev
+ <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>, Simon Horman <horms@kernel.org>
+References: <20250905145428.1962105-1-wintera@linux.ibm.com>
+ <20250905145428.1962105-8-wintera@linux.ibm.com>
+Content-Language: en-US
+In-Reply-To: <20250905145428.1962105-8-wintera@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: oKftr45LpQEyG7Ef2Td-gIIhSpgmncHg
+X-Proofpoint-ORIG-GUID: mH_FHjlLYfsUdCsQx47M_m1vDZBo_BY1
+X-Authority-Analysis: v=2.4 cv=J52q7BnS c=1 sm=1 tr=0 ts=68c2d7d0 cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=IkcTkHD0fZMA:10 a=yJojWOMRYYMA:10 a=Bgk_8WYZIKrMYqbXgc0A:9
+ a=QEXdDO2ut3YA:10
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTA2MDAyNSBTYWx0ZWRfX/OShp/m76CvX
+ lcn97czU+GCvByJBeFRc56rzgxcaQTwdrZVcNilSynVLGU8Brh4F7WB+Et0Y4VuCOneoOZBkL8k
+ PgkjUEeDdM8lpbdzj9hFt9d1DfkWiaCiPGpF+iDmkJJvCjtz/dQ2ggtNlo6IFdQzxSRaERTyipb
+ ZY//ni7neHZ3bzJW/+QXLx9bqYHQenZhz9SOYVEPxCX4IemQq897afBHydH2R6JZYVZF9a+a28L
+ /4ZzuXtev+MiVx24s6FO1fOltHosVaY637TjQcGolHVcx1M4nVdltSk2UxcRmGH9LmcydgL33CW
+ bThvt4rXrBTrUoJum72E+Y5vg/jdCWgPQrqb6FWKsXcNDo/IBKBmlBddALvFlQQCDKTz/WAbmj9
+ N5jhFrn2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-09-11_01,2025-09-11_02,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 clxscore=1015 suspectscore=0 spamscore=0 phishscore=0
+ bulkscore=0 adultscore=0 malwarescore=0 priorityscore=1501
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2509060025
 
-On Wed, 10 Sep 2025 17:00:11 -0700 Jakub Kicinski wrote:
-> On Mon, 25 Aug 2025 17:34:33 +0300 Mark Bloch wrote:
-> > Xon/Xoff sizes are derived from calculations that include
-> > the port speed.
-> > These settings need to be updated and applied whenever the
-> > port speed is changed.
-> > The port speed is typically set after the physical link goes down
-> > and is negotiated as part of the link-up process between the two
-> > connected interfaces.
-> > Xon/Xoff parameters being updated at the point where the new
-> > negotiated speed is established.  
-> 
-> Hi, this is breaking dual host CX7 w/ 28.45.1300 (but I think most
-> older FW versions, too). Looks like the host is not receiving any
-> mcast (ping within a subnet doesn't work because the host receives
-> no ndisc), and most traffic slows down to a trickle.
-> Lost of rx_prio0_buf_discard increments.
-> 
-> Please TAL ASAP, this change went to LTS last week.
 
-Any news on this? I heard that it also breaks DCB/QoS configuration
-on 6.12.45 LTS.
+
+On 05.09.25 16:54, Alexandra Winter wrote:
+> diff --git a/net/smc/smc_ism.c b/net/smc/smc_ism.c
+> index a7a965e3c0ce..d90e11e1a945 100644
+> --- a/net/smc/smc_ism.c
+> +++ b/net/smc/smc_ism.c
+[...]
+> -static void smcd_register_dev(struct ism_dev *ism)
+> +static void smcd_register_dev(struct dibs_dev *dibs)
+>  {
+> -	const struct smcd_ops *ops = ism_get_smcd_ops();
+>  	struct smcd_dev *smcd, *fentry;
+> +	const struct smcd_ops *ops;
+> +	struct smc_lo_dev *smc_lo;
+> +	struct ism_dev *ism;
+>  
+> -	if (!ops)
+> -		return;
+> +	if (smc_ism_is_loopback(dibs)) {
+> +		if (smc_loopback_init(&smc_lo))
+> +			return;
+> +	}
+>  
+> -	smcd = smcd_alloc_dev(&ism->pdev->dev, dev_name(&ism->pdev->dev), ops,
+> -			      ISM_NR_DMBS);
+> +	if (smc_ism_is_loopback(dibs)) {
+> +		ops = smc_lo_get_smcd_ops();
+> +		smcd = smcd_alloc_dev(dev_name(&smc_lo->dev), ops,
+> +				      SMC_LO_MAX_DMBS);
+> +	} else {
+> +		ism = dibs->drv_priv;
+> +		ops = ism_get_smcd_ops();
+> +		smcd = smcd_alloc_dev(dev_name(&ism->pdev->dev), ops,
+> +				      ISM_NR_DMBS);
+> +	}
+[...]
+>  
+>  	if (smcd->ops->supports_v2())
+>  		smc_ism_set_v2_capable();
+
+If applied on top of
+  091d019adce0 ("net/smc: remove unused function smc_lo_supports_v2")
+v6.17-rc1
+this will crash during boot with CONFIG_DIBS_LO.
+Corrected later in the series by
+[PATCH net-next 11/14] net/dibs: Move vlan support to dibs_dev_ops
+
+
+Fixed in v2.
+
+
+
 
