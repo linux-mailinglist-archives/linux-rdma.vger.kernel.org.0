@@ -1,43 +1,43 @@
-Return-Path: <linux-rdma+bounces-13269-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13270-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C44DB52998
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Sep 2025 09:11:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95C90B5299B
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Sep 2025 09:11:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A52D9580E18
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Sep 2025 07:11:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 409397B2B4F
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Sep 2025 07:10:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE12626B942;
-	Thu, 11 Sep 2025 07:10:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAAA7270ECD;
+	Thu, 11 Sep 2025 07:11:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="gO8JqwUk"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="HG6DdEvA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2083.outbound.protection.outlook.com [40.107.95.83])
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2057.outbound.protection.outlook.com [40.107.243.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D48DD265614;
-	Thu, 11 Sep 2025 07:10:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.83
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56CF6266B67;
+	Thu, 11 Sep 2025 07:11:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.57
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757574656; cv=fail; b=a+cJ7PJsqc9Af53aiXFw0xWSDrDGFzL3S2Vw37GdInIlgVmpqqR/zs8o/RCzG9abNhzAYWx+r5fhc0PnJf/pNjsMDbzd7YV1wMCsc6wxbhmc10QM4oI5wUugpkV/NbuXhRdBWXPQZio2KQ2E+O9ttL6ynY5k5yUY5x2MgBqo2UU=
+	t=1757574664; cv=fail; b=HfCBOjN7SJflnE0ZO5l+MGoLTOVZH468v3JtbWF7J1vx3z86vHHvvnQ3UxfF05xI6OyvX/nck3DA/1ngVAUrKQY+V1JLjdqZWWSmr3H6veUkGd4oUO3kSIY7erw76Uq/k6wdF7HyD0OFdX9WJirXWYrHchML/Dkes5TvgnYqjpg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757574656; c=relaxed/simple;
-	bh=Y+wXRF07RPDuftHoOJd3vuY1V9KTpZXApAtRzbO95P8=;
+	s=arc-20240116; t=1757574664; c=relaxed/simple;
+	bh=pJXAXWP4cPS1sQCBUpZ7xY8mGUsQwn5pYrHpZy2TGWo=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mQoGm4yqP3JvMAf+WD2pG1CfroDX2bikhCyKO5WTFOCSLqATm5vyqvPrGEXRf5H4gcjNscgxMlgbmOUT2uNStkOH0Kr0dwB7M3hsfdRqcxJAQ/wK8M6cgQ6ApLykAAEdA7cHFPAI1vBS6hKTTNfSVELLLThUJ5B9g7gh6hAGZfU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=gO8JqwUk; arc=fail smtp.client-ip=40.107.95.83
+	 MIME-Version:Content-Type; b=u0Cc//MxbqQKW2YMrl0y+oHU979DaBwxFqFQTTuBrdcPCaSQji/jWUHbnaH1bc2on/ELMTUDPVwA8qI4bqcah5D6lbz0NfO+PCcnYaAUvmbuJAyBTdrDGqQZD/OOdsKGUeNAYoXporIdZVmeZUBqU/+3vNNcWBMVm5ETDkGhb5I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=HG6DdEvA; arc=fail smtp.client-ip=40.107.243.57
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=g6QC0V8uvmyaYtAIEf0Jnne9JKvRDS2n0Nn5rTSDhZItjFhMpYWzoWvW09AcxuibqG0OVwtUDNJDpozz5T4W3iLrKtnK/uMlE1XYcp9W9ALfq84sWqSqoo3w82CYyCz/JM1Dbx6O8M/B75Z13ftwReyUCUUzgeTrDoJ3ZZgB/Os8PzTM0RkD00uRThj7/utzls2yvVvPi1mdLoP/UM2QhcacAmCaXUUv15bk1pNUD6MgdAyanH1+A+jCEO27CQevHoelLPTC+L1b3STbjK9haeOgPjZX9tpFdq2OuilUXbeRKMw6TIk+E8ZPaejRXiMoQu+xyazYQH0ENThPG74oQw==
+ b=SCBdZ9NZcXUurUBk6NrtMZPLWKxchsaF6tlfizBCcSXHTx+SbT5YSEgS1/BolyDw4YyJIdTW6zwHdQuU87V/xbUKYHoO95PtnsZ0fkh9UWvPGCEcqwS5FBvKYzUUu36mMWk/3/yU87Fuk3KQU3eEJHuvjB+rOzyRB26jMDXDZC9ekxmwlby+JwFYuvnP/OXkUfgn6Oyq+rbJUNzUhRL6oPnUxL27CBSymSqc4iV3wmYIcEtJ2ssuhfIZNkfKkXHEamVRxO+DdAtTkwkowKgoMUoIe2Mvlx9p7u4xK8KKxVhsSw0OXfChgPfHQ6u5ngDXTLPf8P1Z80rHIjVvZ8JFdQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vOYtz9FHLCd5gYWWWzNvYK9I/W2ZU6MdbN4FP/arZso=;
- b=fZdjPYZYoH9UAJ7ZID1Ve7aPAbek5eDvUaeG97IHz9LBKuR2FYf9J/rBJbloBwMuqUuBMKLGqbPVREakQBKoD54cNaThIwuIVmdUFnEyGYsVadWlQKRkOoIWll2r1rdq0/WgGFJ5CnrRlXWHRFzUrfhmbjAbgvQrqFxQ0QYPH3R388MFS8clplxJn2+0KuYFqgahEXAAV65sQpITdDd8P7w2+eXyfrl44Op/335gDepbhVlyCG0Evcs9VgEBV7HeEtDanxDJUUkqR51vXexOgExKk/NFljdZdIdtcoq+IaneFgxSo3sUi+ilwxIVGi1U5QPzvVM1sie7YzzCQ9v4xA==
+ bh=80yQIPQU4TV00dyQTLEwl5LpQJvcLNF+ysqKLJ00GJc=;
+ b=QF6j6K/WMfMb05uCfkEh5gp61sGIOGIEWGacAaXVQEE6xEK29RmcG6vG41HQjFqNlYHtChxC4MkzmlSnVP4m02m/BuPX3dI2d4IMkXnPK9b+MoJHMHQDuZL7raaoTG8tJtuaitVi3EDFHhf9vXTAMgFd2IRo0y2aTPyIQO1g6siflbYye+kjwegNObqJAUAJ82wlgiauTmAdp9Z+zarxhLtVecDAWzSQYf+YvfTeFkorhAnPFELlTu2epMnxCxO8EwdHOJaGhuYEhG6vUAOloSQFlOqztjFCntze+k/N2seaPJqO2NB/jKNo4XUJ6KKpErGWMA15ejtxLzdmM/S7YQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.117.161) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -45,18 +45,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vOYtz9FHLCd5gYWWWzNvYK9I/W2ZU6MdbN4FP/arZso=;
- b=gO8JqwUkPfBtBYqf4eKcbDyiq+M5BhtsBzRuhzexNB2SHPB0ScvVUfO0Ew+XAg3irzWiwUoOgrAai4AIf8/tid3OyEKnw9n2Awi80JT5adYDaShfrsBdXSWcDA0YTnlAzle5FwcHWSDsTW2plBCz+kSSJ2IgElYDrpWogml05PQke/Na7TffG+4gZvGDllT3R46i+i67bBQE86uSWHGGCoLICR0lBQ4hLmni8Tgo0Tn+0/Oduf+dj7i706C+m6yR5E7Hr74j/BcmlXE7jaJlZalS2wkl7Jy+XmUQjRTK3d9+3iPhueZxdniLid9xpAPe8JbINYf/4qvfx7ZMVz4UGw==
-Received: from CH2PR10CA0004.namprd10.prod.outlook.com (2603:10b6:610:4c::14)
- by MN2PR12MB4078.namprd12.prod.outlook.com (2603:10b6:208:1de::18) with
+ bh=80yQIPQU4TV00dyQTLEwl5LpQJvcLNF+ysqKLJ00GJc=;
+ b=HG6DdEvA65cWhMSli98aJOP9AtXtBrGNrTracjqps6YL59RsZyBcBNe6ZG70Vk0bSLV5uUEGzUcitNDYxzhAh8iBr+H0kiQJYUsKdqkSekpuBLwT+yUNGfppFqbqm2WVAc+P0PfYNtfaplL5ESHry7Ia/K+NaweYmgZkmPBLskYr/10aRd1FBJOrB7rZhQpG21DHadvBRZKnXID6fjjVDVeUc0Vc+qYHK+CZsngj8e8zZ6tXyOcv+cmMEvV9yInd8skOIqOUz/RTJtijXbIGz21oYYodmlTiyVoe70qIM+JcyYB6p9C4AvGMpR9u35RKRyn4nO87XG2XANEHllsf4g==
+Received: from CH0P220CA0024.NAMP220.PROD.OUTLOOK.COM (2603:10b6:610:ef::16)
+ by DM4PR12MB7765.namprd12.prod.outlook.com (2603:10b6:8:113::5) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9094.22; Thu, 11 Sep
- 2025 07:10:51 +0000
-Received: from CH1PEPF0000AD79.namprd04.prod.outlook.com
- (2603:10b6:610:4c:cafe::ac) by CH2PR10CA0004.outlook.office365.com
- (2603:10b6:610:4c::14) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9115.16 via Frontend Transport; Thu,
- 11 Sep 2025 07:10:51 +0000
+ 2025 07:10:57 +0000
+Received: from CH1PEPF0000AD7B.namprd04.prod.outlook.com
+ (2603:10b6:610:ef:cafe::eb) by CH0P220CA0024.outlook.office365.com
+ (2603:10b6:610:ef::16) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9115.15 via Frontend Transport; Thu,
+ 11 Sep 2025 07:10:56 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -64,20 +64,20 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.117.161 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.117.161) by
- CH1PEPF0000AD79.mail.protection.outlook.com (10.167.244.57) with Microsoft
+ CH1PEPF0000AD7B.mail.protection.outlook.com (10.167.244.58) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9115.13 via Frontend Transport; Thu, 11 Sep 2025 07:10:51 +0000
+ 15.20.9115.13 via Frontend Transport; Thu, 11 Sep 2025 07:10:56 +0000
 Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
  (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Thu, 11 Sep
- 2025 00:10:36 -0700
+ 2025 00:10:41 -0700
 Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail201.nvidia.com
  (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Thu, 11 Sep
- 2025 00:10:36 -0700
+ 2025 00:10:41 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.10)
  with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Thu, 11
- Sep 2025 00:10:32 -0700
+ Sep 2025 00:10:37 -0700
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>
 CC: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
@@ -88,9 +88,9 @@ CC: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Dragos Tatulea
 	<dtatulea@nvidia.com>, Carolina Jubran <cjubran@nvidia.com>, Jianbo Liu
 	<jianbol@nvidia.com>
-Subject: [PATCH mlx5-next 1/3] net/mlx5: Remove VLAN insertion fields from WQE Ether segment
-Date: Thu, 11 Sep 2025 10:10:17 +0300
-Message-ID: <1757574619-604874-2-git-send-email-tariqt@nvidia.com>
+Subject: [PATCH mlx5-next 2/3] net/mlx5: Refactor MACsec WQE metadata shifts
+Date: Thu, 11 Sep 2025 10:10:18 +0300
+Message-ID: <1757574619-604874-3-git-send-email-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.8.0
 In-Reply-To: <1757574619-604874-1-git-send-email-tariqt@nvidia.com>
 References: <1757574619-604874-1-git-send-email-tariqt@nvidia.com>
@@ -100,97 +100,203 @@ List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH1PEPF0000AD79:EE_|MN2PR12MB4078:EE_
-X-MS-Office365-Filtering-Correlation-Id: cd390eda-a96f-46e2-494d-08ddf1025763
+X-MS-TrafficTypeDiagnostic: CH1PEPF0000AD7B:EE_|DM4PR12MB7765:EE_
+X-MS-Office365-Filtering-Correlation-Id: fc7019f1-60ed-495d-8bc7-08ddf1025a6d
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|82310400026|7416014|376014|1800799024|36860700013;
+	BCL:0;ARA:13230040|7416014|376014|82310400026|1800799024|36860700013;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?a30IjHTMer9KTu5SDGhuPg6D6+LlpjvYKL5RqGUSk3PTC019kxyB2I9ZXJs6?=
- =?us-ascii?Q?L6pxtuOOnIcYw6Ycjyo5pVVTkh/gkpjq5MFRQjcwxcVQ/RclIpvL0s/6Qrjj?=
- =?us-ascii?Q?XiomBG5WFzS9nrq2Avtq9p8pjuOBKKdWjJsnCxpcceQqVmLVA/XvUmmKGxTQ?=
- =?us-ascii?Q?Txtb5Y2iHg1JHYsWGzYGR9K8iWZbhEJ7PUICFbK+igHhP0/v0MDgFopU+QE0?=
- =?us-ascii?Q?wQts5v59qsOm/g+2ek8MKITB3jYibsTIXgq4306nX6//cw1kl7XcieBETiIW?=
- =?us-ascii?Q?kfny47kR1sVlVVr5GPOfnB4tHJul3s/4NWQDd2dLq0L8bosuG8Fh8NuTjM3z?=
- =?us-ascii?Q?jClxV7pMX2HC7WFwOtXxTTHVesfZwb4cgd3rktinL0g4fTPATSPaSVLo6/Dh?=
- =?us-ascii?Q?8MbB6LDnZMCihnDG7ZLrcWQj+qsr0osYWjUKKvFstN6aVS1j3pwlLEvO8evr?=
- =?us-ascii?Q?WWoOZfN1o7jw0L2e3qXFTa7xuBf/hj0+9YzFKVON+4DW6oy95zZ3Xf/iyujQ?=
- =?us-ascii?Q?7GJqSOcyyXqamBZB/YRgEeua8XBnp8cXbjd1/cqm8VAbavliFvNBajqTK9ni?=
- =?us-ascii?Q?qHk0LiEksdF+eurhmaoMg6SBeoiFQrRcvnHa96L2NYHWedHLOiKfX3vr/LTj?=
- =?us-ascii?Q?IsjJvILhO0Le4xwajcYTY6dY4rccwekqEBDCp7vZI1juN5Tkc9NVmjRiiPft?=
- =?us-ascii?Q?zZxbH0gZM0/Zlut7uNxh80mg/fEBzdZij+a36uAQlghGeIDAxQXp3UlVPLKF?=
- =?us-ascii?Q?u2FcTXHWWDqYnpJ9Y7Z3pBhwM6W2Nh6I4+WiH4eJ/B8+nNKbeFLLcvByW0Qg?=
- =?us-ascii?Q?4f7OQsbdfr4pILxSGrzj6JaQl/lBUnmcEsIAVolyE4fnMxk3lzAxmWkiN9US?=
- =?us-ascii?Q?8WCrKRH0vCTGwl2EZlvQEcwPYtCpeNoFG4kwlhhHmO+PCheUtBv2xUtiV3II?=
- =?us-ascii?Q?NjCDiLBllhzfNB811jikWCV16X+2ArT0eUZayAnxCp37eHhkh0rZ3xknWB9q?=
- =?us-ascii?Q?zquODaLMDtW34OLJGbXN/0QbLRZ3EhopOdbwUtHizINttNqLPZTJ5MHVSh6x?=
- =?us-ascii?Q?BUDj0IdFN1hRIxS98AeBm3egA8ssbR99TX/iOmB1W2Viv9IebSWmEwcmuitd?=
- =?us-ascii?Q?gAADSDmxILF1WpxH28f7pq7X2L6Bnipg92pV2BaVGTkw6Jp/AoqFkw+XpzNx?=
- =?us-ascii?Q?LCupS6d+QE1aKA0h8fgRuK63GzhV83O2/AsJI8ohevMaFlZQPZyd/ptRgk4x?=
- =?us-ascii?Q?ebh9RaP0CScDJAFTqGvhawp/WV1nV47sF1XO8+sGWqGuIlXQrFbGtzxtDpWQ?=
- =?us-ascii?Q?uSCIM3QEQLEiSfLKLG7Tw8TTglCe4UwFOke1SZ2nr6ikAEQpKIlRykClR8XN?=
- =?us-ascii?Q?9XdHf5sjEAQC3NsurdO4HCL6/kT3OSq1akeQoQchW5ivNjJf6Gwcrp9t7XDK?=
- =?us-ascii?Q?FD36d5K/tJHuR6pzWH2taQvf1ZWWJ/ec5QJOyttW8d/5RyAjk7VOM/HAw8lm?=
- =?us-ascii?Q?wpPX9axYZfBP85IgmSpKT9V2ZHfhU3vbOO5C?=
+	=?utf-8?B?RGNwSnpvWXJ6NmNnRml6aEUvTTA3ajhQNzJUbXpJSVlRZVZvRXEzZ0c4MHhC?=
+ =?utf-8?B?Nkc1QTBiM2RmVGFKdklOUlJDbkJNcExSODZPQVljcUtlVEFOOThmK3dnYWtm?=
+ =?utf-8?B?QXVQNEN6d21LbXpyZjZLWHE5SVErWVBlL3RBcE1wVkZuME1RbGN3UG41ZFlr?=
+ =?utf-8?B?c3AxalpWcHNveDFHQi9wMXpOb0trcUdRaXM1YW9NTkZOWEs1bXo0MGxjUmFW?=
+ =?utf-8?B?TTJqcGJEb2s1QWhwYTVEL29pRjJibnltTzVYS1BjSlBCYXJuV1NYaUQzSVBL?=
+ =?utf-8?B?U29yVCs0K3dxdXFIZGNZQU5LQnFtMGlONmtYeE4yVWhOZWx4dHRiNUY2SW5K?=
+ =?utf-8?B?bFZYdXhSMWJBdjI0SHdEVWVuUEFiUVE0anhKblNLV1p5UmR0ejJJYmQrbGFV?=
+ =?utf-8?B?bElSQnVmQjJpYjNRNEJlc1lZQXhjaTJ4VGx6aG5TSlM3eTF3a0hkanNwR2JP?=
+ =?utf-8?B?RndZNkpWMXpKTHZnZlBzeVl2WmRyZFNLVjh6TUxPRFhIcHBEaHFhcEF0ZER3?=
+ =?utf-8?B?WFNsSXBtWURLUWZ4TEY2M2lLSmtmdmJGRzZ5cllOZk14Y1o3RnA3ZDlhK2hv?=
+ =?utf-8?B?aHk4MlF3OTFPSkN6WjBqZy9lZDJPbzhlNzYwTTEwUCtkamlCb1RTVjliYllV?=
+ =?utf-8?B?Z2kzcnYwWTE0QkpWWFJSeW0xU2duNnJhZjdEd3UvR2hWc1htRnlNekdFV1Bh?=
+ =?utf-8?B?SGRUc0syVTV4NXo0NFpzTkp1STRqKy9JTUcvM25Pc0s5SUpJV0U2YVlUQXVJ?=
+ =?utf-8?B?UFVGNkJwSW4zVEt5S2FPUldIQkVIbnFZL0JscG9CeWRaYVVDM2hmbHF2c2Fx?=
+ =?utf-8?B?SlhqY1V6cnhTYXJhc2lORHZYMENHb0drdCthZGIyNzdWME0yTk1IL25YZ3ph?=
+ =?utf-8?B?MDZyeGw0K2h3ZTNTbUFWZmVSdDlwOVpicTNPTXIrN0dFRWpON0Y5YitaV2Ry?=
+ =?utf-8?B?T3Zkd3M3bEo0anpkTHBxUDVWMXFUVzNXa0EvQWxLbDVaOUlXS29adzFZQVNK?=
+ =?utf-8?B?NUtSMHZDVFBOcE5JUWFhTmQ3emtxMXI1eVZyQ25mOWFYTEpPT0htWUlnbkhB?=
+ =?utf-8?B?d2pyOXF1YUdyVW5xSVJtYU1oUklzSTJpM3lLQ3MxV2F1QnV1dzFVWlNLMENv?=
+ =?utf-8?B?Y2xncGt0RWF2U1BjMittVTN3RWFxNFhSMmlYWi9oQVVDV2FjY3dlaFJKYXcv?=
+ =?utf-8?B?SzN2eXdJRXJnSHg2V3dpQWs4dWlYNU1rV1F2OGR3Z29HQTBKWjVNVTZPdFRW?=
+ =?utf-8?B?OTJoTFl5MWNrOEhjWUM3Ymw5cWxhVStpYTRYRjZvRmI2NUdCY2x0ejZjK0xi?=
+ =?utf-8?B?eklpQmNLekhwSG4zSGZPL29EZTZFK1p2NWtJWmlGYkRSS0tyZS9ycFUyZ0NG?=
+ =?utf-8?B?VjUrRDZsVUxWVkRlUFk0NExDRld0b0xsQ1djbkZFakdDTnFmOVRROS95VEFs?=
+ =?utf-8?B?R1huWjRZV29SSlpsTDRKSnQ2UnNqUEFjMDgzRk12YlhNNzJ5U1l0cnFTMzZ4?=
+ =?utf-8?B?eVNUbWtqM05raXRlU09VTnoza0hCMmFwcngzT2ZUQXVFS0hHbkxsa2hQcW9T?=
+ =?utf-8?B?NGE2MWtrQlZTR2d2TjRQa3VQQ3FOcHI4b2dRR25kMGtpbllwczZKc0tsTVIw?=
+ =?utf-8?B?YkEyRVlvSThOV0dsSTcrcFJOQnZPRzkrZklWdElJQm1TK3lGcUphbVhJa1FH?=
+ =?utf-8?B?ZUE2YWl1S0RKYjlqbWdpelRSQTZ3N0NGd1MzcXJUT2tUNTQwUUFoeWRrQm1M?=
+ =?utf-8?B?VFRqeDQ2RVpmQVdPRzQ3QzVjREZSbmxsdHFaYkpHaTZKYjN3WkdnR0djVmQz?=
+ =?utf-8?B?T2NINDFIWCtOcVVoYnAzU3h0NDczTDZ3R1RxdjJUSEZPajdxTkt5ZnZrNHJi?=
+ =?utf-8?B?YVJHY0xYMWpxaVhyS1YzTmQwWEJQM0dtcThnMWhhNXZXeEg0R1JjSFd4dGRQ?=
+ =?utf-8?B?Z05TbWh3S2Q3eVd3YzJsVlpDR3owL3pocVhtbWRMNkxyUjk1eU9Cb05PcHpm?=
+ =?utf-8?B?T3JLRm1IbDlJUXRrQklLNWJkTFRWcHp4Mk9mQXBJQWNxNEFxcXlDblJIQkx4?=
+ =?utf-8?Q?vdpYgK?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(7416014)(376014)(1800799024)(36860700013);DIR:OUT;SFP:1101;
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(7416014)(376014)(82310400026)(1800799024)(36860700013);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2025 07:10:51.3747
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2025 07:10:56.4189
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd390eda-a96f-46e2-494d-08ddf1025763
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc7019f1-60ed-495d-8bc7-08ddf1025a6d
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	CH1PEPF0000AD79.namprd04.prod.outlook.com
+	CH1PEPF0000AD7B.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4078
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7765
 
 From: Carolina Jubran <cjubran@nvidia.com>
 
-Now that the driver no longer uses VLAN TX insertion via the WQE
-Ethernet segment, the related fields and flags can be removed.
+Introduce MLX5_ETH_WQE_FT_META_SHIFT as a shared base offset for
+features that use the lower 8 bits of the WQE flow_table_metadata
+field, currently used for timestamping, IPsec, and MACsec.
+
+Define MLX5_ETH_WQE_FT_META_MACSEC_FS_ID_MASK so that fs_id occupies
+bits 2–5, making it clear that fs_id occupies bits in the metadata.
+
+Set MLX5_ETH_WQE_FT_META_MACSEC_MASK as the OR of the MACsec flag and
+MLX5_ETH_WQE_FT_META_MACSEC_FS_ID_MASK, corresponding to the original
+0x3E mask.
+
+Update the fs_id macro to right-shift the MACsec flag by
+MLX5_ETH_WQE_FT_META_SHIFT and update the RoCE modify-header action to
+use it.
+
+Introduce the helper macro MLX5_MACSEC_TX_METADATA(fs_id) to compose
+the full shifted MACsec metadata value.
+
+These changes make it explicit exactly which metadata bits carry MACsec
+information, simplifying future feature exclusions when multiple
+features share the WQE flowtable metadata.
+
+In addition, drop the incorrect “RX flow steering” comment, since this
+applies to TX flow steering.
 
 Signed-off-by: Carolina Jubran <cjubran@nvidia.com>
+Reviewed-by: Jianbo Liu <jianbol@nvidia.com>
+Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- include/linux/mlx5/qp.h | 6 ------
- 1 file changed, 6 deletions(-)
+ .../ethernet/mellanox/mlx5/core/en_accel/macsec.c |  2 +-
+ .../ethernet/mellanox/mlx5/core/lib/macsec_fs.c   | 12 +++++-------
+ .../ethernet/mellanox/mlx5/core/lib/macsec_fs.h   | 15 +++++++++++++++
+ include/linux/mlx5/qp.h                           |  9 +++++++--
+ 4 files changed, 28 insertions(+), 10 deletions(-)
 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
+index 6ab02f3fc291..528b04d4de41 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec.c
+@@ -1676,7 +1676,7 @@ void mlx5e_macsec_tx_build_eseg(struct mlx5e_macsec *macsec,
+ 	if (!fs_id)
+ 		return;
+ 
+-	eseg->flow_table_metadata = cpu_to_be32(MLX5_ETH_WQE_FT_META_MACSEC | fs_id << 2);
++	eseg->flow_table_metadata = cpu_to_be32(MLX5_MACSEC_TX_METADATA(fs_id));
+ }
+ 
+ void mlx5e_macsec_offload_handle_rx_skb(struct net_device *netdev,
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
+index 762d55ba9e51..9ec450603176 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
+@@ -45,11 +45,7 @@
+ #define MLX5_SECTAG_HEADER_SIZE_WITHOUT_SCI 0x8
+ #define MLX5_SECTAG_HEADER_SIZE_WITH_SCI (MLX5_SECTAG_HEADER_SIZE_WITHOUT_SCI + MACSEC_SCI_LEN)
+ 
+-/* MACsec RX flow steering */
+-#define MLX5_ETH_WQE_FT_META_MACSEC_MASK 0x3E
+-
+ /* MACsec fs_id handling for steering */
+-#define macsec_fs_set_tx_fs_id(fs_id) (MLX5_ETH_WQE_FT_META_MACSEC | (fs_id) << 2)
+ #define macsec_fs_set_rx_fs_id(fs_id) ((fs_id) | BIT(30))
+ 
+ struct mlx5_sectag_header {
+@@ -597,7 +593,7 @@ static int macsec_fs_tx_setup_fte(struct mlx5_macsec_fs *macsec_fs,
+ 	MLX5_SET(fte_match_param, spec->match_criteria, misc_parameters_2.metadata_reg_a,
+ 		 MLX5_ETH_WQE_FT_META_MACSEC_MASK);
+ 	MLX5_SET(fte_match_param, spec->match_value, misc_parameters_2.metadata_reg_a,
+-		 macsec_fs_set_tx_fs_id(id));
++		 MLX5_MACSEC_TX_METADATA(id));
+ 
+ 	*fs_id = id;
+ 	flow_act->crypto.type = MLX5_FLOW_CONTEXT_ENCRYPT_DECRYPT_TYPE_MACSEC;
+@@ -2219,8 +2215,10 @@ static int mlx5_macsec_fs_add_roce_rule_tx(struct mlx5_macsec_fs *macsec_fs, u32
+ 
+ 	MLX5_SET(set_action_in, action, action_type, MLX5_ACTION_TYPE_SET);
+ 	MLX5_SET(set_action_in, action, field, MLX5_ACTION_IN_FIELD_METADATA_REG_A);
+-	MLX5_SET(set_action_in, action, data, macsec_fs_set_tx_fs_id(fs_id));
+-	MLX5_SET(set_action_in, action, offset, 0);
++	MLX5_SET(set_action_in, action, data,
++		 mlx5_macsec_fs_set_tx_fs_id(fs_id));
++	MLX5_SET(set_action_in, action, offset,
++		 MLX5_ETH_WQE_FT_META_MACSEC_SHIFT);
+ 	MLX5_SET(set_action_in, action, length, 32);
+ 
+ 	modify_hdr = mlx5_modify_header_alloc(mdev, MLX5_FLOW_NAMESPACE_RDMA_TX_MACSEC,
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.h b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.h
+index 34b80c3ef6a5..15acaff43641 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.h
+@@ -12,6 +12,21 @@
+ #define MLX5_MACSEC_METADATA_MARKER(metadata)  ((((metadata) >> 30) & 0x3)  == 0x1)
+ #define MLX5_MACSEC_RX_METADAT_HANDLE(metadata)  ((metadata) & MLX5_MACSEC_RX_FS_ID_MASK)
+ 
++/* MACsec TX flow steering */
++#define MLX5_ETH_WQE_FT_META_MACSEC_MASK \
++	(MLX5_ETH_WQE_FT_META_MACSEC | MLX5_ETH_WQE_FT_META_MACSEC_FS_ID_MASK)
++#define MLX5_ETH_WQE_FT_META_MACSEC_SHIFT MLX5_ETH_WQE_FT_META_SHIFT
++
++/* MACsec fs_id handling for steering */
++#define mlx5_macsec_fs_set_tx_fs_id(fs_id) \
++	(((MLX5_ETH_WQE_FT_META_MACSEC) >> MLX5_ETH_WQE_FT_META_MACSEC_SHIFT) \
++	 | ((fs_id) << 2))
++
++#define MLX5_MACSEC_TX_METADATA(fs_id) \
++	(mlx5_macsec_fs_set_tx_fs_id(fs_id) << \
++	 MLX5_ETH_WQE_FT_META_MACSEC_SHIFT)
++
++/* MACsec fs_id uses 4 bits, supports up to 16 interfaces */
+ #define MLX5_MACSEC_NUM_OF_SUPPORTED_INTERFACES 16
+ 
+ struct mlx5_macsec_fs;
 diff --git a/include/linux/mlx5/qp.h b/include/linux/mlx5/qp.h
-index fc7eeff99a8a..5546c7bd2c83 100644
+index 5546c7bd2c83..b21be7630575 100644
 --- a/include/linux/mlx5/qp.h
 +++ b/include/linux/mlx5/qp.h
-@@ -237,13 +237,11 @@ enum {
+@@ -251,9 +251,14 @@ enum {
+ 	MLX5_ETH_WQE_SWP_OUTER_L4_UDP   = 1 << 5,
  };
  
++/* Base shift for metadata bits used by timestamping, IPsec, and MACsec */
++#define MLX5_ETH_WQE_FT_META_SHIFT 0
++
  enum {
--	MLX5_ETH_WQE_SVLAN              = 1 << 0,
- 	MLX5_ETH_WQE_TRAILER_HDR_OUTER_IP_ASSOC = 1 << 26,
- 	MLX5_ETH_WQE_TRAILER_HDR_OUTER_L4_ASSOC = 1 << 27,
- 	MLX5_ETH_WQE_TRAILER_HDR_INNER_IP_ASSOC = 3 << 26,
- 	MLX5_ETH_WQE_TRAILER_HDR_INNER_L4_ASSOC = 1 << 28,
- 	MLX5_ETH_WQE_INSERT_TRAILER     = 1 << 30,
--	MLX5_ETH_WQE_INSERT_VLAN        = 1 << 15,
+-	MLX5_ETH_WQE_FT_META_IPSEC = BIT(0),
+-	MLX5_ETH_WQE_FT_META_MACSEC = BIT(1),
++	MLX5_ETH_WQE_FT_META_IPSEC = BIT(0) << MLX5_ETH_WQE_FT_META_SHIFT,
++	MLX5_ETH_WQE_FT_META_MACSEC = BIT(1) << MLX5_ETH_WQE_FT_META_SHIFT,
++	MLX5_ETH_WQE_FT_META_MACSEC_FS_ID_MASK =
++		GENMASK(5, 2) << MLX5_ETH_WQE_FT_META_SHIFT,
  };
  
- enum {
-@@ -275,10 +273,6 @@ struct mlx5_wqe_eth_seg {
- 				DECLARE_FLEX_ARRAY(u8, data);
- 			};
- 		} inline_hdr;
--		struct {
--			__be16 type;
--			__be16 vlan_tci;
--		} insert;
- 		__be32 trailer;
- 	};
- };
+ struct mlx5_wqe_eth_seg {
 -- 
 2.31.1
 
