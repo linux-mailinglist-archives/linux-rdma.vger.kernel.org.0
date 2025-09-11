@@ -1,292 +1,767 @@
-Return-Path: <linux-rdma+bounces-13297-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13298-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17410B53CB8
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Sep 2025 21:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 59C56B53DC8
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Sep 2025 23:34:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C16941648E7
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Sep 2025 19:51:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AA4016E5F5
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Sep 2025 21:34:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7C07262808;
-	Thu, 11 Sep 2025 19:51:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 530A62DAFBB;
+	Thu, 11 Sep 2025 21:34:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lqbEJ79U"
+	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="aSxuiuzy"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B254523D28C;
-	Thu, 11 Sep 2025 19:51:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757620285; cv=fail; b=Q9ym5BmjG7gbSxZy2G5yWKj/nCyGYXJBBidf251f668vqSRCZdEkFPutwL/Ll6rg3Vm2S4QiZxwEZXUQPa2/jdR9gN5UoFxSdr/8vbYzqB+Z5pvjwsHxyCu/mKaK0d7BEc8tbuqlZZL7xBMkMOhs/5Q36zrTfQ5Impks1yfyVqA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757620285; c=relaxed/simple;
-	bh=46Q5MxuhMreCINodYRO3FiuQ7LG7HGhcfcWTUps2AYs=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=XkB754n2zaHBWNp2btUul8W8y2fBIl98ZWOMkuAomf2ez4cOZGcHNkBsD5mLfpUlpXinNG4jN/qHxqOSQDc1lK/vXV6243Luz3RMfAefHn4rORFGydeC3lL298QsZh9E9s4FQ9+jR0qsE/hMtllkmcbzkytkVhMdrrBi/NkNK2A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lqbEJ79U; arc=fail smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1757620283; x=1789156283;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=46Q5MxuhMreCINodYRO3FiuQ7LG7HGhcfcWTUps2AYs=;
-  b=lqbEJ79U5FKM0m55C2OJO/ffayLANbQsovR89YEVsW90q4T++5r5QyXY
-   VdDTqA6aGy9tHOcAkM8UREsyvGWXLxdchFF0rpqb6++kQGZU09AkMGAqd
-   EovBRToDKc+G+hqDrecpfZnumGXKf1A6ZG0l2RiA3kMurbRO0UIfIvGG4
-   0WaquxlNU1dFc3VdFqLj8dmJVbllYN7lrx/asbZa3UOo/hk4CnaeKBhmj
-   FuVuCA8fjPNKGLt02r+lyWg8VtoGrgnmEKZXeRx5FpEM1LbBBmpJwA/QP
-   nF1L9cuhHuEMfrG+2RB+n5+E3R6agWRdKa8idBsek6iOnePi5zev1Bd9u
-   A==;
-X-CSE-ConnectionGUID: 3hg76Lh2RBeo07w3FJJ/ig==
-X-CSE-MsgGUID: u1l1D1N7Qha54ESaiNG5Qw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11550"; a="60037756"
-X-IronPort-AV: E=Sophos;i="6.18,258,1751266800"; 
-   d="scan'208";a="60037756"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2025 12:51:23 -0700
-X-CSE-ConnectionGUID: SGJw9YjISXKcU8cyu4LAdQ==
-X-CSE-MsgGUID: lB2jSijQTpKaOKPXVDOOTg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,258,1751266800"; 
-   d="scan'208";a="210933649"
-Received: from orsmsx903.amr.corp.intel.com ([10.22.229.25])
-  by orviesa001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2025 12:51:23 -0700
-Received: from ORSMSX902.amr.corp.intel.com (10.22.229.24) by
- ORSMSX903.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.17; Thu, 11 Sep 2025 12:51:22 -0700
-Received: from ORSEDG902.ED.cps.intel.com (10.7.248.12) by
- ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.17 via Frontend Transport; Thu, 11 Sep 2025 12:51:22 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (40.107.102.73)
- by edgegateway.intel.com (134.134.137.112) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.17; Thu, 11 Sep 2025 12:51:21 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=U22sQLJtI+tcuJedG87cQ/Ln59wJ+opGEjZThvzSKRPkeVTYF1i/GVJj8KF70GtXQfV96dzCBzrVu7jp3S2IE/8zy4gc6X2OgRUjjXh27nhcRZW5JDh7MXMWnMO2qS6+CzmGAzswhg/vxGLpVTJe2EOg/oRBSKVTXlb3l6x0DqnJvH6rLcFozqR31o1iy/9fg7oIuIHI2JDptLO5sJoKRM/7qDWB4eLc5Tn01V18rIBpNm4uF4wvJwu9DnsuPF93DkABUpzEdvsnK2So5gjd9x++hZR4U4QWG/bu+8BGEnJfD87IqRkQ3C7wKttD1OKXWWxyZSsJkKj8Ru79EGKjzQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AXIovW/MJTpNsJYVjrd2I0qW9CBncwrxQoZUAYM1uLs=;
- b=iDglx5I9teVsoabOO3XFWhp2iV8yycaUQ+OjHtSE83k0R9jS8ktfneS+rDqI4Ifo6l2NGvWtTxp5+9U8ao0/TMtyDROOy3b9z4jvAZ3aH0tN317PjU7oBN2B9Ep6eqXqh8zIa40KL1SSxv7ClEPSnNK4JYSMKWOjbDNvkVsNwCPn3pA2dJ46mLG2WGDTQgXK1pFS86zEaE7Kb4d0SXJ6Jed8yDpHSL+9P7igblxIB2XrNVPuljKmds6WQgz+3xMZ766LIpwSEIO4z4fkeNgnzqAKxG8CyCdJlIaSnQN7Q4Kwph9xFQ/5cEJNbuDNzysBEGkump/nUvP/Y0Xlgs+JmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN6PR11MB8102.namprd11.prod.outlook.com (2603:10b6:208:46d::9)
- by PH3PPF9E162731D.namprd11.prod.outlook.com (2603:10b6:518:1::d3c) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9094.22; Thu, 11 Sep
- 2025 19:51:19 +0000
-Received: from MN6PR11MB8102.namprd11.prod.outlook.com
- ([fe80::15b2:ee05:2ae7:cfd6]) by MN6PR11MB8102.namprd11.prod.outlook.com
- ([fe80::15b2:ee05:2ae7:cfd6%6]) with mapi id 15.20.9094.021; Thu, 11 Sep 2025
- 19:51:12 +0000
-Message-ID: <4513322a-28a8-4990-a7c6-f2a0d5675720@intel.com>
-Date: Thu, 11 Sep 2025 21:51:07 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [iwl-next] ice, irdma: Add rdma_qp_limits_sel devlink parameter
- for irdma
-To: Leon Romanovsky <leon@kernel.org>, Tatyana Nikolova
-	<tatyana.e.nikolova@intel.com>
-CC: <jiri@resnulli.us>, <intel-wired-lan@lists.osuosl.org>,
-	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<anthony.l.nguyen@intel.com>, Jakub Kicinski <kuba@kernel.org>, Mohammad Heib
-	<mheib@redhat.com>
-References: <20250904195719.371-1-tatyana.e.nikolova@intel.com>
- <20250909122051.GF341237@unreal>
- <33d327a0-72d3-4775-8842-6c4ceaff41e2@intel.com>
- <20250910121317.GQ341237@unreal>
-From: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Content-Language: en-US
-In-Reply-To: <20250910121317.GQ341237@unreal>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DUZPR01CA0281.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:4b9::9) To MN6PR11MB8102.namprd11.prod.outlook.com
- (2603:10b6:208:46d::9)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ACC82C11C4
+	for <linux-rdma@vger.kernel.org>; Thu, 11 Sep 2025 21:34:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1757626449; cv=none; b=AIQjiF7qldERwEtmQ6dVat/boJPilo/hwz2AWRHW2EnLJtlutLMD6q1iqrjKy22j5xaLPxQRbGRDATsGkRSwV86a/hevQb68D5pt6VtX5s6196RY24FU0ZE2QqMn+1iPHIkCU/Tr3sTaZP84mplQ9B8E1iYbEHEJltThaK4gR0U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1757626449; c=relaxed/simple;
+	bh=d3j34i9sJCMncszw8YOjGibinHf2vnSqpHzXMc64EbI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y/EKwq/bNXS/01yKFjgcMNnAsMVdvDcifjy9RVVkYIJMJFQfCgIEOEp3bn2br+AGgxtM3A2vtqBM25xYiMeWwgaEBnxSYV0Na6PRk3EfCL95S8dW7Z53k3QvkTCcQ9SS+AQ5TaZTyldhsvqDqoln/RsUPRi3k+9w/0lhp5m3AaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=aSxuiuzy; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-336c79c89daso11023031fa.2
+        for <linux-rdma@vger.kernel.org>; Thu, 11 Sep 2025 14:34:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umich.edu; s=google-2016-06-03; t=1757626445; x=1758231245; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RhENIYCfJpjMQi+doZ363SDoLipO9NvDyiRsphw1CrI=;
+        b=aSxuiuzyosa71594M6Dhhmy8u6K2nefXC7yrG/SDhAtZJwfScBA8Wnl5Jw/fkZGnPC
+         6iP+H0C2A3/YF/g6X9vySTqFeNJeqxlgOyVUZy3doYkxgF1RtafAwWnPXd0Gbf23732I
+         hSQRX2XBVhXRkfpoff/cArQmPpDDmWf/BSiWMUX2ntXSsuKdPDVTNdhGjXLA5wiEX1RU
+         jrAfxQO4UHMZdZQ6F91Y5ZzrROrJVRz1YJpclxx2cHTUO94Bp9oiWOvnfrcSBzU6YRtA
+         w1JZl8N0drFB72/4CqxX/mOGqN8XTTJEVPgGZTFqFD7MTwrJI4tXwbF7PbO8Y0EI2+ua
+         8Hrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1757626445; x=1758231245;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RhENIYCfJpjMQi+doZ363SDoLipO9NvDyiRsphw1CrI=;
+        b=j0Vr/5DTCw5i3cKAU+dfsQUbLi5nJSOHfiW8hS00LO01k1CAVYI5YPDVo81ZqVPr2s
+         cSrIDneEWEl17Cn0ddrI0kRgp+iUt9Zzm125RIzHwdsTl3+en0gjmwKLxNxanV6PRmdf
+         +pHM5BxvtjLiyiZC8TqmV8mTbgkh+BcWcJnI2Rn3LNG5lbS2c200UOr8Ri17N3J9x6yy
+         nEPT32+TSg0LeWSU3T9yDInOBR7g7xqTa80n/3Tm5WEmt1azN4EJjFBn1fWGP2PM4PGm
+         aYpQW4gcL9BC7bzCEwRezSoyJpo/ZeOweIxCilevxY++VboFi5Wb8+GsVhkmUDXj1Xlx
+         zbjg==
+X-Forwarded-Encrypted: i=1; AJvYcCWeLAABCjAlNV3QzLS6frW8CS9wGN9ICUmdcTD6KauIgkHds3afsdAjzpAukFC4Ukj0/b3hmWGTJYyl@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy6g+5LkdaTxmZGWy0Py1n1oOLsB38Kil7WfzXxjLZYb2I9GqCb
+	r3EU96GZvBRiafGfdV4LxewgrMdowklGJcI55mct+q2Fv54WUscl/MFaqiuEMQr9vIrma5wcKOW
+	zKMFpQ4G1d1ZT1klu3M7A7uyoF72y+GI=
+X-Gm-Gg: ASbGncvza2J4QNrAVBv9qXS5/dNvEXIA0VDzdr83kyAcuuj1poXvB8OBQK0aBVeF6j+
+	dsrKN+UKOzxMQG9rGV79CQOvBCvMcbRayakvS9YvQyDbkrNTyScUbCKRatBRCLXz3DtVVOuWu+g
+	jzCiV/xJOWPbWNYWb08mGCgJ5AW3nBFBsho2dVGgtLhP2IePj1mFLjG7sliuMabOK+NWwKONcme
+	mcsVc+wo9FUx7GvxqsuGvxfiuugrR+QEBc+8xWEYg==
+X-Google-Smtp-Source: AGHT+IFue5dFMM1amLCgfzMNsuOfMEuvlxEFgVK7dkeLZhjRTlrmy8G/pIS9d9elJifiVKpk+MGnKvc+e+sAOiX/o6s=
+X-Received: by 2002:a05:651c:2341:20b0:338:10c9:58a6 with SMTP id
+ 38308e7fff4ca-3513fc38b9dmr1514641fa.22.1757626444184; Thu, 11 Sep 2025
+ 14:34:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN6PR11MB8102:EE_|PH3PPF9E162731D:EE_
-X-MS-Office365-Filtering-Correlation-Id: 35042abc-eb66-4726-23ed-08ddf16c8fb9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?cEVXZWplblNkUm5aaFlEZDNicS9FQXZtRlZhWjU3MWs3ek1BVXcrUGQxMDlS?=
- =?utf-8?B?ZEFsRVNwL2xOV3JvZC9Mbkh5Mm0wV01mbm9lQ2JSUVdRSlZGS3kwUElhMUFZ?=
- =?utf-8?B?MG5FUW43WmN2RTRWUlF1bzUrdjZvN1pQc2NVSnd0NHg0blBGcklqR2xBb1NY?=
- =?utf-8?B?UE5PalJFMHJRV09TczNXME1nemN1UG9Ga1o0UnFYckVzbThKZGhXd0dWNlhQ?=
- =?utf-8?B?OW9iUmpqQWtVajdZQzBsSmdrTHNTWUZPelQxSWNlNlpzczN4WXlna3gzUzl1?=
- =?utf-8?B?aEJOaGVBSFdCS1J2NHhJcUtuVlNBZ3EvNW1yT2dkbDJCazFFT0hGdHNFeXNW?=
- =?utf-8?B?dFYwcDRiWGl5YzJNUHlkTnpSS0ZmOTRIRmdETnFjNzJsRW5tdldxRWxOY3k0?=
- =?utf-8?B?QnZNcHlxK3lSeEdad25TM2xmalRjZzVpUHFjL1ltU2UxUVdiMSsybUdlWGox?=
- =?utf-8?B?RlFJZkQ5bEFEcC90MmxBTGRMei9rRUVCbzRUVVRLUEF4WmxBeGFxWFozdlAy?=
- =?utf-8?B?TVg3NmU1WWNOVm1CeU9WdnV1SVpDUTdndWVWRlpFNGdqcGxaWFZBK0h1SmpC?=
- =?utf-8?B?MTNVR2dIM0pKVWd0a1BKODVlZVhxdE9GaVY3cWRDZWsySmI5ejV3V1YyYlg0?=
- =?utf-8?B?enVaaFNNY2syNy9IZjNBaTNDaDhDaGZNVTZPYUhncWkxR2tsM2FnL3FkRzQx?=
- =?utf-8?B?VThtOHI3dEFuNk5qRW5UMDc4ay9rdWFNd0IzOE0rbkh2Y1pyUWhoREhBL0d2?=
- =?utf-8?B?WE5NMVhHNCttVGw0WkZhdGU5bVIvdlA2Sk9ybjFyeVZDZkd4R2JtWi9WblB1?=
- =?utf-8?B?UHVsWE1uYnZSRzRGU00rSDVYNW1pSnRvYmFLOFVROGJjdFBWNS9lNlE2SE53?=
- =?utf-8?B?OGxBQnNpNEF0MnpVR0JlamJjTTg1VVVtT3RFVnA2Uy9tMlhvOFc5VG94REdR?=
- =?utf-8?B?SGkvc1l1cjNqcXZsOW9rUEV0MW4xUThZdUl5ekNsN3IvRDR5c2pxTXcxMjJT?=
- =?utf-8?B?Q2NZQlBkcUJiMG1qcmdpdHM3NmlqVU9vcWQvbndXaldxWDgyK3lOQk8rTW9s?=
- =?utf-8?B?bGpobmRUUTdtMHhacmsxWm1KOEdybGVrbURBZE9GdDh6bVZwM3FFaXBZRWwz?=
- =?utf-8?B?dGpMNmNmSXR4aU5uSDhMM085aERXZUMxcFp0Y2djeTI3T0hRemZIdVRlVnhF?=
- =?utf-8?B?d1hqNUFPeGtFRFFDclMxK3VNVlVnMTN0R1I1bWhUTDBOT0FnbXRRZlZnbEY1?=
- =?utf-8?B?SzByWUdvLzJNL0ZLcGxlZ1d2MzR1VlhJYWdXM2lFcGd6Vm1wNzdaYk11RUJO?=
- =?utf-8?B?eVhaNU5POGs4NUpQNE5HbDQ2QmU2cGF0a01odkluSlE1SmlqcXluTzhNRTJT?=
- =?utf-8?B?eFBTdHRVdi90VjVKaVVYNzRIeW9mRFFUNFpxMDJETjVjVGVIK1hRbER2TStI?=
- =?utf-8?B?Umk0d1hsckx2WWdicEF1UFNuLzNyM3FMNkhJMDQvL2xFam1GL0FWMVJ3Mksw?=
- =?utf-8?B?cWpsRXZmekRldjg5QWxXYXdEZUFKcFpoOHZxSkNWbVZybUx2dGtxYlZqWTJ5?=
- =?utf-8?B?MmU3c2tycXROQTdqUUJLenNGNUFzcmJ5bVVSVGNIeStWQlNaL2VGeER5KzlP?=
- =?utf-8?B?anVBMGt5Vi9kd0dvT3FYZ1BUWTJxNWRsSXJIV29hcS9KdHc5MGJ1TEp5RW13?=
- =?utf-8?B?MnJGOHY1dnlNOS81bTZXQ2lqU2oyQW5jOThrSzlOTWpGZVBhalpJZE4xaUNu?=
- =?utf-8?B?dzBpdW9sWld6QVY1QmdKaXljaFZCK2RhUjFUZnpOUHJ3SVUzYlVCZE1MNUpT?=
- =?utf-8?B?Nko0amdmV1VYZGlZN0Y5SHFiRmRjcURqOEFpUk9heDVlcHBIbisvUWNybnow?=
- =?utf-8?Q?9EFt5xquCcmCH?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN6PR11MB8102.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UDM3K3Nvc0s4dzl5L0tyT2xEMGlNYWNoek9GSHNBc3R2ZE5FbUh5WTlFc24w?=
- =?utf-8?B?TVo5L3lpeGNNTnp2NFNhMll3VzdadlNmdUZhQlQ0R0xKNDBrUVJVTS80d251?=
- =?utf-8?B?b2E2cERheWw3YTRWZzFpb3BrTzRwSy9CdS9USGVMK3gxMS9TZUdZYm02ZGwz?=
- =?utf-8?B?UXIydmJ6M3pNc2l3UzhxbjJCNlZHbExldkxnMFNHM2t4QkhrcSsvUDlFbjUz?=
- =?utf-8?B?ZFNBQktFTjFwVWc5YjVQdlI3cldsaURtQ3BNOEd5alJYaUc2dmFVM1lkWmhX?=
- =?utf-8?B?ZXozdVpuRW9lZFBrSUJlN00yNmxkV3QrQ3hOb0d0VkVvWGFEVzdrNWdpbWtI?=
- =?utf-8?B?K21HbW1JazVkUDZ0Ti9rL2tPYkJiT3hGOFUxR014cUxYUU82dnhlTU9PbWFV?=
- =?utf-8?B?SzRZcFNXNTlBQjZVVmVWc1c0MVFYUWRVeEtRU3AyOXhCbnJxeGp0NXNpOVNM?=
- =?utf-8?B?dk5Nanh2d1JpUjZrbDN2aW51OG0yV0JuS2ZZZEJrOGQ0TjJJbTkyMHRmWFpo?=
- =?utf-8?B?d211bldjbTVJNGh3R01abWFCSkVMMFRtTG5pK0E4TUtwMGRqY29pRXBOdGN2?=
- =?utf-8?B?OXdyd2ZEa1NsaU9kRWxkSERCdTNxQ0FGc2NTdG0vcXc0NzNPak5CL1lGdjBK?=
- =?utf-8?B?NWp2aGVocGR0YmtCQXhkTW55UmcxUWo2cnhlMFF6MUZsOVN4aDFJZlB4ZFJ6?=
- =?utf-8?B?MGJKRFdVT1k2SlNRb21iMjJnL0ZWclNROFB6eDdXVHdBVzZlaFZ5dTJNN0Q5?=
- =?utf-8?B?bzNQQkw0S1BFdUNWVGNOY01PUVlnekZLTklrTlNqNjRvZVlBWUFpY052Zk4r?=
- =?utf-8?B?SmxndVhBaFF4NVNtRkovd0NGaXdvZWkvV1ZwaGRnL1JUMklMcnVGMDNPdkhR?=
- =?utf-8?B?YUsvTDZOaFE1VjJBeEZDYmFYUWFMYUowK0VaUi82ZlFQNys5RnZkUkVOK0c0?=
- =?utf-8?B?OXVxMDZ5MXNzYmdKUU16S0t3TmNQdTJLRUFETDNjT3pTNXBDR3RTZGFGM0RF?=
- =?utf-8?B?QnN0TnFEc3VrTlA2WERDSlU4VWlDWU80d2FwSkt2MklDR0JtNGtDa1RkVmVt?=
- =?utf-8?B?VWtSd0xScEhqMjZrUjhGYVVDcFU3YnprOGg4QVpNMEhzTjNTdUNHRHNLQ3ZN?=
- =?utf-8?B?V1NuNEQ3SFJKeXF4M21leExxa2pJMnVRRVRpOWxkdHlYdzJibG5YSXk3Sm5V?=
- =?utf-8?B?VzV4ZnkwNk8vaFEwWnl1d0FaL2RvTy96RWlmS3ZiNEJFTWI2cTlWYk92d2Vx?=
- =?utf-8?B?ZFBocGljQUNEWDZTQnE5MmFZNUJPVDhRNlQzUTIxTGJRcklrZWYzUlF0RENL?=
- =?utf-8?B?bEMzRlFBK25zQVNpcCtWU1dKdStMRHYxZUdnODNhUUhhVkUrM21pT21palZr?=
- =?utf-8?B?Qnd5cHk4bkdFcXNsR0pPRXZoRXArMTJFeEp0b3JaNWdQOWlOeTZDeFYyWVJY?=
- =?utf-8?B?Zk96aWNrcWkvdTVoNDhpMndXYlF3NEM3WjNwcUw2d3lJeGZHZnA2bzcvckgr?=
- =?utf-8?B?eUMyZk8yVjBtSU5jRGhOVGw1akVqUlMzL1lXM0FCZXVBMkJZbFdIK0UxL0p5?=
- =?utf-8?B?YTVPa2ZOUjNVTFNSalQwUmoraWFrMmNOcENwS2dXS20vRlpFUG5QSzFJMjNF?=
- =?utf-8?B?blNVSDRBYkpKemJzcWYrQUZkNkp0MVh5OXpGblZPaEZXN2pJQm54cjArTk1J?=
- =?utf-8?B?M0ZKL1ZiYWhYSFhjelJSOFZ2elZLYURadE81NFY5RGpvUjZLZXgyVkxHdjZK?=
- =?utf-8?B?dDBDWldQUEw2aFMwRk01OVpnWmRML20rbEdPenRzWGhPK3hVV2dIWWtxaEdl?=
- =?utf-8?B?cUthN2tnejlkYzVieGhWNG9aTlgzcGtOMWpmanZCRmFFNEtJcGI4TlBRZEUw?=
- =?utf-8?B?MGEybE9nVHBNdmNkTTVPRENzSDFJOHlFeTdOSENJYXpRQUhmbUxsek1sQUVv?=
- =?utf-8?B?bnBGZXFzelYvdlNEL0RoakdGQ1JsdHh2U0FwbDNoNlFRd2hKM00yQ25sUytx?=
- =?utf-8?B?dTNEcFNBK3B5LzBneS9acWdpZWtISE1IZTNxYUMrcFE1UXpvb0JyVUxIaTNm?=
- =?utf-8?B?Tm9NRlJKZExjbjhnQ3RlOEluTFpXUi9NRXBjd1UwOHBOZFEwcnlNSDQ2SWtx?=
- =?utf-8?B?THZ3eGovZkU4RXBMWHVubW43bG9ZcDRCTWVnelBNQ3VCQnRkNTZIR3p2Y0FF?=
- =?utf-8?Q?b6vLr/0plV7juzGLcMLgA1I=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 35042abc-eb66-4726-23ed-08ddf16c8fb9
-X-MS-Exchange-CrossTenant-AuthSource: MN6PR11MB8102.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2025 19:51:12.7782
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oeJ6PdzbWn8C8Iq2xiH1RzxzAZRmUnPB/fTTR4FUz744whMD5rAF0yKY96w9o1Z1NrOFX31IymORhMhecruJJnqmqVKf68ICVYUA5uxIssI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH3PPF9E162731D
-X-OriginatorOrg: intel.com
+References: <20250821152254.8781-1-cel@kernel.org>
+In-Reply-To: <20250821152254.8781-1-cel@kernel.org>
+From: Olga Kornievskaia <aglo@umich.edu>
+Date: Thu, 11 Sep 2025 17:33:52 -0400
+X-Gm-Features: Ac12FXxkvY8h7thf6RJYPyEX_K6ZuJVCMnN58KMrVasRbZZYnK29lEnLz8iQ6RE
+Message-ID: <CAN-5tyHxtn=KjR-A3jDU-3Y2B8w2S2pqus7McerCZVpaEG4hcA@mail.gmail.com>
+Subject: Re: [RFC PATCH v3] svcrdma: Introduce Receive buffer arenas
+To: Chuck Lever <cel@kernel.org>
+Cc: linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	Chuck Lever <chuck.lever@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 9/10/25 14:13, Leon Romanovsky wrote:
-> On Wed, Sep 10, 2025 at 09:41:14AM +0200, Przemek Kitszel wrote:
->> On 9/9/25 14:20, Leon Romanovsky wrote:
->>> On Thu, Sep 04, 2025 at 02:57:19PM -0500, Tatyana Nikolova wrote:
->>>> Add a devlink parameter to switch between different QP resource profiles
->>>> (max number of QPs) supported by irdma for Intel Ethernet 800 devices. The
->>>> rdma_qp_limits_sel is translated into an index in the rsrc_limits_table to
->>>> select a power of two number between 1 and 256 for max supported QPs (1K-256K).
->>>> To reduce the irdma memory footprint, set the rdma_qp_limits_sel default value
->>>> to 1 (max 1K QPs).
->>>>
->>>> Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
->>>> Signed-off-by: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
->>>> ---
->>>> Since the changes to irdma are minor, this is targeted to iwl-next/net-next.
->>>
->>> <...>
->>>
->>>>    #define DEVLINK_LOCAL_FWD_DISABLED_STR "disabled"
->>>>    #define DEVLINK_LOCAL_FWD_ENABLED_STR "enabled"
->>>>    #define DEVLINK_LOCAL_FWD_PRIORITIZED_STR "prioritized"
->>>> @@ -1621,6 +1723,7 @@ enum ice_param_id {
->>>>    	ICE_DEVLINK_PARAM_ID_BASE = DEVLINK_PARAM_GENERIC_ID_MAX,
->>>>    	ICE_DEVLINK_PARAM_ID_TX_SCHED_LAYERS,
->>>>    	ICE_DEVLINK_PARAM_ID_LOCAL_FWD,
->>>> +	ICE_DEVLINK_PARAM_ID_RDMA_QP_LIMITS_SEL,
->>>>    };
->>>
->>> I was under impression that driver-specific devlink knobs are not
->>> allowed. Was this limitation changed for Intel?
->>
->> I'm not aware of such limitation.
-> 
-> It is possible that my impression was wrong.
-> 
->> It's always better to have generic params, but some knobs are not likely
->> to be reused; anyway it would be easy to convert into generic.
-> 
-> Unlikely, you will need to keep old parameter and new at the same time
-> for backward compatibility reasons.
+When I have this patch it causes the following panic just from doing
+"systemctl start nfs-server" followed by
+"systemctl stop nfs-server"
 
-you are right in numeric sense, but the command will be the same
-(so we will end up with one wrapper func/redirection),
+[   69.705986] Unable to handle kernel paging request at virtual
+address dfff800000000001
+[   69.706706] KASAN: null-ptr-deref in range
+[0x0000000000000008-0x000000000000000f]
+[   69.707299] Mem abort info:
+[   69.707514]   ESR =3D 0x0000000096000005
+[   69.707787]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+[   69.708186]   SET =3D 0, FnV =3D 0
+[   69.708415]   EA =3D 0, S1PTW =3D 0
+[   69.708637]   FSC =3D 0x05: level 1 translation fault
+[   69.708986] Data abort info:
+[   69.709203]   ISV =3D 0, ISS =3D 0x00000005, ISS2 =3D 0x00000000
+[   69.709604]   CM =3D 0, WnR =3D 0, TnD =3D 0, TagAccess =3D 0
+[   69.709986]   GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
+[   69.710345] [dfff800000000001] address between user and kernel address r=
+anges
+[   69.710842] Internal error: Oops: 0000000096000005 [#1]  SMP
+[   69.711207] Modules linked in: rpcrdma rdma_cm iw_cm ib_cm ib_core
+nfsd nfs_acl lockd grace nfs_localio ext4 crc16 mbcache jbd2 overlay
+isofs uinput snd_seq_dummy snd_hrtimer qrtr rfkill vfat fat uvcvideo
+videobuf2_vmalloc videobuf2_memops snd_hda_codec_generic uvc
+videobuf2_v4l2 videobuf2_common e1000e snd_hda_intel videodev
+snd_intel_dspcfg snd_hda_codec mc snd_hda_core snd_hwdep snd_seq
+snd_seq_device snd_pcm snd_timer snd soundcore sg auth_rpcgss loop
+dm_multipath sunrpc dm_mod nfnetlink vsock_loopback
+vmw_vsock_virtio_transport_common vmw_vsock_vmci_transport vmw_vmci
+vsock xfs nvme sr_mod nvme_core cdrom ghash_ce nvme_keyring nvme_auth
+vmwgfx drm_ttm_helper ttm fuse
+[   69.715331] CPU: 2 UID: 0 PID: 204 Comm: kworker/2:1 Kdump: loaded
+Not tainted 6.17.0-rc4+ #3 PREEMPT(voluntary)
+[   69.716036] Hardware name: VMware, Inc. VMware20,1/VBSA, BIOS
+VMW201.00V.24006586.BA64.2406042154 06/04/2024
+[   69.716751] Workqueue: events __svc_rdma_free [rpcrdma]
+[   69.717100] pstate: 01400005 (nzcv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=
+=3D--)
+[   69.717483] pc : xas_start+0x74/0x260
+[   69.717756] lr : xas_load+0x18/0x208
+[   69.717972] sp : ffff800088287910
+[   69.718182] x29: ffff800088287910 x28: 000000000000002c x27: ffff000098c=
+a3c78
+[   69.718625] x26: 1ffff00011050f62 x25: ffff800088287a08 x24: fffffffffff=
+fffff
+[   69.719067] x23: 0000000000000000 x22: ffff800088287a18 x21: 1ffff000110=
+50f43
+[   69.719504] x20: 0000000000000000 x19: ffff800088287a00 x18: 00000000000=
+00000
+[   69.719928] x17: 302e3a3a06000000 x16: 3670637404000000 x15: 03000000a38=
+60100
+[   69.720362] x14: 0000000000000000 x13: 0000003001000000 x12: ffff600015a=
+36265
+[   69.720800] x11: 1fffe00015a36264 x10: ffff600015a36264 x9 : ffff8000828=
+78150
+[   69.721241] x8 : ffff700011050f3c x7 : ffff8000882879e0 x6 : 00000000f3f=
+3f3f3
+[   69.721674] x5 : 0000000000000000 x4 : dfff800000000000 x3 : 1fffe000132=
+01657
+[   69.722112] x2 : 0000000000000001 x1 : dfff800000000000 x0 : 00000000000=
+00008
+[   69.722567] Call trace:
+[   69.722733]  xas_start+0x74/0x260 (P)
+[   69.722996]  xas_load+0x18/0x208
+[   69.723193]  xas_find+0x288/0x440
+[   69.723385]  xa_find+0x160/0x1a0
+[   69.723572]  rpcrdma_pool_destroy+0xb0/0x480 [rpcrdma]
+[   69.724164]  svc_rdma_recv_ctxts_destroy+0x54/0x78 [rpcrdma]
+[   69.724550]  __svc_rdma_free+0xd0/0x288 [rpcrdma]
+[   69.724842]  process_one_work+0x584/0x1050
+[   69.725093]  worker_thread+0x4c4/0xc80
+[   69.725295]  kthread+0x2f8/0x398
+[   69.725468]  ret_from_fork+0x10/0x20
+[   69.725666] Code: d2d00001 f2fbffe1 91002280 d343fc02 (38e16841)
+[   69.725988] SMP: stopping secondary CPUs
+[   69.727548] Starting crashdump kernel...
+[   69.727781] Bye!
 
-or perhaps we could go crazy and say that we have stable uAPI
-(on "string name level") instead of stable uABI (given number mapped
-into ice-set-rdma-qp-limits) :)
-
-> 
->>
->> To have this particular param more generic-ready, we have converted from
->> our internal format (values were 0...7, mapped into some powers of two)
->> to what one could imagine other drivers would like to add at some point
->> (perhaps multiplying the user-provided value by 1K is unnecessarily
->> complicating adoption for small NICs, IDK?).
->>
->> Do you believe this should be switched to generic now (instead of when
->> there is a future user)?
->> What about a name (this should be kept forever)?
-> 
-> mlx5 has .log_max_qp in mlx5_profile which looks similar to what you are
-> proposing here, so RDMA_QP_LIMITS sounds fine to me.
-
-thanks!
-"SEL" part in our current proposal somewhat implies that we have a whole
-bunch of limits that this particular number imposes/causes
-for just QP, I would even say "rdma_qp_limit"
-
-> 
->>
->> side note:
->> We are also going to add yet another param, now used only by intel, but
->> we do so as a generic one: "max number of MAC addrs for VF in i40e", see
->> https://lore.kernel.org/intel-wired-lan/20250907100454.193420-1-mheib@redhat.com/T/#t
->>
->>
->>>
->>> Thanks
->>
-
+On Thu, Aug 21, 2025 at 11:35=E2=80=AFAM Chuck Lever <cel@kernel.org> wrote=
+:
+>
+> From: Chuck Lever <chuck.lever@oracle.com>
+>
+> Reduce the per-connection footprint in the host's and RNIC's memory
+> management TLBs by combining groups of a connection's Receive
+> buffers into fewer IOVAs.
+>
+> I don't have a good way to measure whether this approach is
+> effective.
+>
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> ---
+>  include/linux/sunrpc/svc_rdma.h         |   3 +
+>  include/trace/events/rpcrdma.h          |  99 ++++++++++
+>  net/sunrpc/xprtrdma/Makefile            |   2 +-
+>  net/sunrpc/xprtrdma/pool.c              | 241 ++++++++++++++++++++++++
+>  net/sunrpc/xprtrdma/pool.h              |  20 ++
+>  net/sunrpc/xprtrdma/svc_rdma_recvfrom.c |  45 ++---
+>  6 files changed, 380 insertions(+), 30 deletions(-)
+>  create mode 100644 net/sunrpc/xprtrdma/pool.c
+>  create mode 100644 net/sunrpc/xprtrdma/pool.h
+>
+> Changes since v2:
+> - Allocate the shard buffer with alloc_pages instead of kmalloc
+> - Simplify the synopsis of rpcrdma_pool_create
+> - rpcrdma_pool_buffer_alloc now initializes the RECV's ib_sge
+> - Added a "sync_for_cpu" API
+>
+> Changes since v1:
+> - Rename "chunks" to "shards" -- RPC/RDMA already has chunks
+> - Replace pool's list of shards with an xarray
+> - Implement bitmap-based shard free space management
+> - Implement some naive observability
+>
+> diff --git a/include/linux/sunrpc/svc_rdma.h b/include/linux/sunrpc/svc_r=
+dma.h
+> index 22704c2e5b9b..b4f3c01f1b94 100644
+> --- a/include/linux/sunrpc/svc_rdma.h
+> +++ b/include/linux/sunrpc/svc_rdma.h
+> @@ -73,6 +73,8 @@ extern struct percpu_counter svcrdma_stat_recv;
+>  extern struct percpu_counter svcrdma_stat_sq_starve;
+>  extern struct percpu_counter svcrdma_stat_write;
+>
+> +struct rpcrdma_pool;
+> +
+>  struct svcxprt_rdma {
+>         struct svc_xprt      sc_xprt;           /* SVC transport structur=
+e */
+>         struct rdma_cm_id    *sc_cm_id;         /* RDMA connection id */
+> @@ -112,6 +114,7 @@ struct svcxprt_rdma {
+>         unsigned long        sc_flags;
+>         struct work_struct   sc_work;
+>
+> +       struct rpcrdma_pool  *sc_recv_pool;
+>         struct llist_head    sc_recv_ctxts;
+>
+>         atomic_t             sc_completion_ids;
+> diff --git a/include/trace/events/rpcrdma.h b/include/trace/events/rpcrdm=
+a.h
+> index e6a72646c507..8bc713082c1a 100644
+> --- a/include/trace/events/rpcrdma.h
+> +++ b/include/trace/events/rpcrdma.h
+> @@ -2336,6 +2336,105 @@ DECLARE_EVENT_CLASS(rpcrdma_client_register_class=
+,
+>  DEFINE_CLIENT_REGISTER_EVENT(rpcrdma_client_register);
+>  DEFINE_CLIENT_REGISTER_EVENT(rpcrdma_client_unregister);
+>
+> +TRACE_EVENT(rpcrdma_pool_create,
+> +       TP_PROTO(
+> +               unsigned int poolid,
+> +               size_t bufsize
+> +       ),
+> +
+> +       TP_ARGS(poolid, bufsize),
+> +
+> +       TP_STRUCT__entry(
+> +               __field(unsigned int, poolid)
+> +               __field(size_t, bufsize)
+> +       ),
+> +
+> +       TP_fast_assign(
+> +               __entry->poolid =3D poolid;
+> +               __entry->bufsize =3D bufsize;
+> +       ),
+> +
+> +       TP_printk("poolid=3D%u bufsize=3D%zu bytes",
+> +               __entry->poolid, __entry->bufsize
+> +       )
+> +);
+> +
+> +TRACE_EVENT(rpcrdma_pool_destroy,
+> +       TP_PROTO(
+> +               unsigned int poolid
+> +       ),
+> +
+> +       TP_ARGS(poolid),
+> +
+> +       TP_STRUCT__entry(
+> +               __field(unsigned int, poolid)
+> +       ),
+> +
+> +       TP_fast_assign(
+> +               __entry->poolid =3D poolid;),
+> +
+> +       TP_printk("poolid=3D%u",
+> +               __entry->poolid
+> +       )
+> +);
+> +
+> +DECLARE_EVENT_CLASS(rpcrdma_pool_shard_class,
+> +       TP_PROTO(
+> +               unsigned int poolid,
+> +               u32 shardid
+> +       ),
+> +
+> +       TP_ARGS(poolid, shardid),
+> +
+> +       TP_STRUCT__entry(
+> +               __field(unsigned int, poolid)
+> +               __field(u32, shardid)
+> +       ),
+> +
+> +       TP_fast_assign(
+> +               __entry->poolid =3D poolid;
+> +               __entry->shardid =3D shardid;
+> +       ),
+> +
+> +       TP_printk("poolid=3D%u shardid=3D%u",
+> +               __entry->poolid, __entry->shardid
+> +       )
+> +);
+> +
+> +#define DEFINE_RPCRDMA_POOL_SHARD_EVENT(name)                          \
+> +       DEFINE_EVENT(rpcrdma_pool_shard_class, name,                    \
+> +       TP_PROTO(                                                       \
+> +               unsigned int poolid,                                    \
+> +               u32 shardid                                             \
+> +       ),                                                              \
+> +       TP_ARGS(poolid, shardid))
+> +
+> +DEFINE_RPCRDMA_POOL_SHARD_EVENT(rpcrdma_pool_shard_new);
+> +DEFINE_RPCRDMA_POOL_SHARD_EVENT(rpcrdma_pool_shard_free);
+> +
+> +TRACE_EVENT(rpcrdma_pool_buffer,
+> +       TP_PROTO(
+> +               unsigned int poolid,
+> +               const void *buffer
+> +       ),
+> +
+> +       TP_ARGS(poolid, buffer),
+> +
+> +       TP_STRUCT__entry(
+> +               __field(unsigned int, poolid)
+> +               __field(const void *, buffer)
+> +       ),
+> +
+> +       TP_fast_assign(
+> +               __entry->poolid =3D poolid;
+> +               __entry->buffer =3D buffer;
+> +       ),
+> +
+> +       TP_printk("poolid=3D%u buffer=3D%p",
+> +               __entry->poolid, __entry->buffer
+> +       )
+> +);
+> +
+>  #endif /* _TRACE_RPCRDMA_H */
+>
+>  #include <trace/define_trace.h>
+> diff --git a/net/sunrpc/xprtrdma/Makefile b/net/sunrpc/xprtrdma/Makefile
+> index 3232aa23cdb4..f69456dffe87 100644
+> --- a/net/sunrpc/xprtrdma/Makefile
+> +++ b/net/sunrpc/xprtrdma/Makefile
+> @@ -1,7 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  obj-$(CONFIG_SUNRPC_XPRT_RDMA) +=3D rpcrdma.o
+>
+> -rpcrdma-y :=3D transport.o rpc_rdma.o verbs.o frwr_ops.o ib_client.o \
+> +rpcrdma-y :=3D transport.o rpc_rdma.o verbs.o frwr_ops.o ib_client.o poo=
+l.o \
+>         svc_rdma.o svc_rdma_backchannel.o svc_rdma_transport.o \
+>         svc_rdma_sendto.o svc_rdma_recvfrom.o svc_rdma_rw.o \
+>         svc_rdma_pcl.o module.o
+> diff --git a/net/sunrpc/xprtrdma/pool.c b/net/sunrpc/xprtrdma/pool.c
+> new file mode 100644
+> index 000000000000..87404f1fc5bc
+> --- /dev/null
+> +++ b/net/sunrpc/xprtrdma/pool.c
+> @@ -0,0 +1,241 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2025, Oracle and/or its affiliates.
+> + *
+> + * Pools for RPC-over-RDMA Receive buffers.
+> + *
+> + * A buffer pool attempts to conserve both the number of DMA mappings
+> + * and the device's IOVA space by collecting small buffers together
+> + * into a shard that has a single DMA mapping.
+> + *
+> + * API Contract:
+> + *  - Buffers contained in one rpcrdma_pool instance are the same
+> + *    size (rp_bufsize), no larger than RPCRDMA_MAX_INLINE_THRESH
+> + *  - Buffers in one rpcrdma_pool instance are automatically released
+> + *    when the pool instance is destroyed
+> + *
+> + * Future work:
+> + *   - Manage pool resources by reference count
+> + */
+> +
+> +#include <linux/list.h>
+> +#include <linux/xarray.h>
+> +#include <linux/sunrpc/svc_rdma.h>
+> +
+> +#include <rdma/ib_verbs.h>
+> +
+> +#include "xprt_rdma.h"
+> +#include "pool.h"
+> +
+> +#include <trace/events/rpcrdma.h>
+> +
+> +/*
+> + * An idr would give near perfect pool ID uniqueness, but for
+> + * the moment the pool ID is used only for observability, not
+> + * correctness.
+> + */
+> +static atomic_t rpcrdma_pool_id;
+> +
+> +struct rpcrdma_pool {
+> +       struct xarray           rp_xa;
+> +       struct ib_pd            *rp_pd;
+> +       size_t                  rp_shardsize;   // in bytes
+> +       size_t                  rp_bufsize;     // in bytes
+> +       unsigned int            rp_bufs_per_shard;
+> +       unsigned int            rp_pool_id;
+> +};
+> +
+> +struct rpcrdma_pool_shard {
+> +       struct page             *pc_pages;
+> +       u8                      *pc_cpu_addr;
+> +       u64                     pc_mapped_addr;
+> +       unsigned long           *pc_bitmap;
+> +};
+> +
+> +/*
+> + * For good NUMA awareness, ensure that the shard is allocated on
+> + * the NUMA node that the underlying device is affined to.
+> + *
+> + * For the shard buffer, we really want alloc_pages_node rather
+> + * than kmalloc_node.
+> + */
+> +static struct rpcrdma_pool_shard *
+> +rpcrdma_pool_shard_alloc(struct rpcrdma_pool *pool, gfp_t flags)
+> +{
+> +       struct ib_device *device =3D pool->rp_pd->device;
+> +       int numa_node =3D ibdev_to_node(device);
+> +       struct rpcrdma_pool_shard *shard;
+> +       size_t bmap_size;
+> +
+> +       shard =3D kmalloc_node(sizeof(*shard), flags, numa_node);
+> +       if (!shard)
+> +               goto fail;
+> +
+> +       bmap_size =3D BITS_TO_LONGS(pool->rp_bufs_per_shard) * sizeof(uns=
+igned long);
+> +       shard->pc_bitmap =3D kzalloc(bmap_size, flags);
+> +       if (!shard->pc_bitmap)
+> +               goto free_shard;
+> +
+> +       shard->pc_pages =3D alloc_pages_node(numa_node, flags,
+> +                                          get_order(pool->rp_shardsize))=
+;
+> +       if (!shard->pc_pages)
+> +               goto free_bitmap;
+> +
+> +       shard->pc_cpu_addr =3D page_address(shard->pc_pages);
+> +       shard->pc_mapped_addr =3D ib_dma_map_single(device, shard->pc_cpu=
+_addr,
+> +                                                 pool->rp_shardsize,
+> +                                                 DMA_FROM_DEVICE);
+> +       if (ib_dma_mapping_error(device, shard->pc_mapped_addr))
+> +               goto free_iobuf;
+> +
+> +       return shard;
+> +
+> +free_iobuf:
+> +       __free_pages(shard->pc_pages, get_order(pool->rp_shardsize));
+> +free_bitmap:
+> +       kfree(shard->pc_bitmap);
+> +free_shard:
+> +       kfree(shard);
+> +fail:
+> +       return NULL;
+> +}
+> +
+> +static void
+> +rpcrdma_pool_shard_free(struct rpcrdma_pool *pool,
+> +                       struct rpcrdma_pool_shard *shard)
+> +{
+> +       ib_dma_unmap_single(pool->rp_pd->device, shard->pc_mapped_addr,
+> +                           pool->rp_shardsize, DMA_FROM_DEVICE);
+> +
+> +       __free_pages(shard->pc_pages, get_order(pool->rp_shardsize));
+> +       kfree(shard->pc_bitmap);
+> +       kfree(shard);
+> +}
+> +
+> +/**
+> + * rpcrdma_pool_create - Allocate an rpcrdma_pool instance
+> + * @pd: RDMA protection domain to be used for the pool's buffers
+> + * @bufsize: Size, in bytes, of all buffers in the pool
+> + * @flags: GFP flags to be used during pool creation
+> + *
+> + * Returns a pointer to an opaque rpcrdma_pool instance, or NULL. If
+> + * a pool instance is returned, caller must free the instance using
+> + * rpcrdma_pool_destroy().
+> + */
+> +struct rpcrdma_pool *rpcrdma_pool_create(struct ib_pd *pd, size_t bufsiz=
+e,
+> +                                        gfp_t flags)
+> +{
+> +       struct rpcrdma_pool *pool;
+> +
+> +       pool =3D kmalloc(sizeof(*pool), flags);
+> +       if (!pool)
+> +               return NULL;
+> +
+> +       xa_init_flags(&pool->rp_xa, XA_FLAGS_ALLOC);
+> +       pool->rp_pd =3D pd;
+> +       pool->rp_shardsize =3D RPCRDMA_MAX_INLINE_THRESH;
+> +       pool->rp_bufsize =3D bufsize;
+> +       pool->rp_bufs_per_shard =3D pool->rp_shardsize / pool->rp_bufsize=
+;
+> +       pool->rp_pool_id =3D atomic_inc_return(&rpcrdma_pool_id);
+> +
+> +       trace_rpcrdma_pool_create(pool->rp_pool_id, pool->rp_bufsize);
+> +       return pool;
+> +}
+> +
+> +/**
+> + * rpcrdma_pool_destroy - Release resources owned by @pool
+> + * @pool: buffer pool instance that will no longer be used
+> + *
+> + * This call releases all buffers in @pool that were allocated
+> + * via rpcrdma_pool_buffer_alloc().
+> + */
+> +void
+> +rpcrdma_pool_destroy(struct rpcrdma_pool *pool)
+> +{
+> +       struct rpcrdma_pool_shard *shard;
+> +       unsigned long index;
+> +
+> +       trace_rpcrdma_pool_destroy(pool->rp_pool_id);
+> +
+> +       xa_for_each(&pool->rp_xa, index, shard) {
+> +               trace_rpcrdma_pool_shard_free(pool->rp_pool_id, index);
+> +               xa_erase(&pool->rp_xa, index);
+> +               rpcrdma_pool_shard_free(pool, shard);
+> +       }
+> +
+> +       xa_destroy(&pool->rp_xa);
+> +       kfree(pool);
+> +}
+> +
+> +/**
+> + * rpcrdma_pool_buffer_alloc - Allocate a buffer from @pool
+> + * @pool: buffer pool from which to allocate the buffer
+> + * @flags: GFP flags used during this allocation
+> + * @cpu_addr: CPU address of the buffer
+> + * @sge: OUT: an initialized scatter-gather entry
+> + *
+> + * Return values:
+> + *   %true: @cpu_addr and @mapped_addr are filled in with a DMA-mapped b=
+uffer
+> + *   %false: No buffer is available
+> + *
+> + * When rpcrdma_pool_buffer_alloc() is successful, the returned
+> + * buffer is freed automatically when the buffer pool is released
+> + * by rpcrdma_pool_destroy().
+> + */
+> +bool
+> +rpcrdma_pool_buffer_alloc(struct rpcrdma_pool *pool, gfp_t flags,
+> +                         void **cpu_addr, struct ib_sge *sge)
+> +{
+> +       struct rpcrdma_pool_shard *shard;
+> +       u64 returned_mapped_addr;
+> +       void *returned_cpu_addr;
+> +       unsigned long index;
+> +       u32 id;
+> +
+> +       xa_for_each(&pool->rp_xa, index, shard) {
+> +               unsigned int i;
+> +
+> +               returned_cpu_addr =3D shard->pc_cpu_addr;
+> +               returned_mapped_addr =3D shard->pc_mapped_addr;
+> +               for (i =3D 0; i < pool->rp_bufs_per_shard; i++) {
+> +                       if (!test_and_set_bit(i, shard->pc_bitmap)) {
+> +                               returned_cpu_addr +=3D i * pool->rp_bufsi=
+ze;
+> +                               returned_mapped_addr +=3D i * pool->rp_bu=
+fsize;
+> +                               goto out;
+> +                       }
+> +               }
+> +       }
+> +
+> +       shard =3D rpcrdma_pool_shard_alloc(pool, flags);
+> +       if (!shard)
+> +               return false;
+> +       set_bit(0, shard->pc_bitmap);
+> +       returned_cpu_addr =3D shard->pc_cpu_addr;
+> +       returned_mapped_addr =3D shard->pc_mapped_addr;
+> +
+> +       if (xa_alloc(&pool->rp_xa, &id, shard, xa_limit_16b, flags) !=3D =
+0) {
+> +               rpcrdma_pool_shard_free(pool, shard);
+> +               return false;
+> +       }
+> +       trace_rpcrdma_pool_shard_new(pool->rp_pool_id, id);
+> +
+> +out:
+> +       *cpu_addr =3D returned_cpu_addr;
+> +       sge->addr =3D returned_mapped_addr;
+> +       sge->length =3D pool->rp_bufsize;
+> +       sge->lkey =3D pool->rp_pd->local_dma_lkey;
+> +
+> +       trace_rpcrdma_pool_buffer(pool->rp_pool_id, returned_cpu_addr);
+> +       return true;
+> +}
+> +
+> +/**
+> + * rpcrdma_pool_buffer_sync - Sync the contents of a pool buffer after I=
+/O
+> + * @pool: buffer pool to which the buffer belongs
+> + * @sge: SGE containing the DMA-mapped buffer address and length
+> + */
+> +void rpcrdma_pool_buffer_sync(struct rpcrdma_pool *pool, struct ib_sge *=
+sge)
+> +{
+> +       ib_dma_sync_single_for_cpu(pool->rp_pd->device, sge->addr,
+> +                                  sge->length, DMA_FROM_DEVICE);
+> +}
+> diff --git a/net/sunrpc/xprtrdma/pool.h b/net/sunrpc/xprtrdma/pool.h
+> new file mode 100644
+> index 000000000000..9c8ec8723884
+> --- /dev/null
+> +++ b/net/sunrpc/xprtrdma/pool.h
+> @@ -0,0 +1,20 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (c) 2025, Oracle and/or its affiliates.
+> + *
+> + * Pools for RDMA Receive buffers.
+> + */
+> +
+> +#ifndef RPCRDMA_POOL_H
+> +#define RPCRDMA_POOL_H
+> +
+> +struct rpcrdma_pool;
+> +
+> +struct rpcrdma_pool *rpcrdma_pool_create(struct ib_pd *pd, size_t bufsiz=
+e,
+> +                                        gfp_t flags);
+> +void rpcrdma_pool_destroy(struct rpcrdma_pool *pool);
+> +bool rpcrdma_pool_buffer_alloc(struct rpcrdma_pool *pool, gfp_t flags,
+> +                              void **cpu_addr, struct ib_sge *sge);
+> +void rpcrdma_pool_buffer_sync(struct rpcrdma_pool *pool, struct ib_sge *=
+sge);
+> +
+> +#endif /* RPCRDMA_POOL_H */
+> diff --git a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c b/net/sunrpc/xprtrdm=
+a/svc_rdma_recvfrom.c
+> index e7e4a39ca6c6..704f6d5fa3e6 100644
+> --- a/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
+> +++ b/net/sunrpc/xprtrdma/svc_rdma_recvfrom.c
+> @@ -104,9 +104,9 @@
+>  #include <linux/sunrpc/svc_rdma.h>
+>
+>  #include "xprt_rdma.h"
+> -#include <trace/events/rpcrdma.h>
+> +#include "pool.h"
+>
+> -static void svc_rdma_wc_receive(struct ib_cq *cq, struct ib_wc *wc);
+> +#include <trace/events/rpcrdma.h>
+>
+>  static inline struct svc_rdma_recv_ctxt *
+>  svc_rdma_next_recv_ctxt(struct list_head *list)
+> @@ -115,14 +115,14 @@ svc_rdma_next_recv_ctxt(struct list_head *list)
+>                                         rc_list);
+>  }
+>
+> +static void svc_rdma_wc_receive(struct ib_cq *cq, struct ib_wc *wc);
+> +
+>  static struct svc_rdma_recv_ctxt *
+>  svc_rdma_recv_ctxt_alloc(struct svcxprt_rdma *rdma)
+>  {
+>         int node =3D ibdev_to_node(rdma->sc_cm_id->device);
+>         struct svc_rdma_recv_ctxt *ctxt;
+>         unsigned long pages;
+> -       dma_addr_t addr;
+> -       void *buffer;
+>
+>         pages =3D svc_serv_maxpages(rdma->sc_xprt.xpt_server);
+>         ctxt =3D kzalloc_node(struct_size(ctxt, rc_pages, pages),
+> @@ -130,13 +130,10 @@ svc_rdma_recv_ctxt_alloc(struct svcxprt_rdma *rdma)
+>         if (!ctxt)
+>                 goto fail0;
+>         ctxt->rc_maxpages =3D pages;
+> -       buffer =3D kmalloc_node(rdma->sc_max_req_size, GFP_KERNEL, node);
+> -       if (!buffer)
+> +
+> +       if (!rpcrdma_pool_buffer_alloc(rdma->sc_recv_pool, GFP_KERNEL,
+> +                                      &ctxt->rc_recv_buf, &ctxt->rc_recv=
+_sge))
+>                 goto fail1;
+> -       addr =3D ib_dma_map_single(rdma->sc_pd->device, buffer,
+> -                                rdma->sc_max_req_size, DMA_FROM_DEVICE);
+> -       if (ib_dma_mapping_error(rdma->sc_pd->device, addr))
+> -               goto fail2;
+>
+>         svc_rdma_recv_cid_init(rdma, &ctxt->rc_cid);
+>         pcl_init(&ctxt->rc_call_pcl);
+> @@ -149,30 +146,15 @@ svc_rdma_recv_ctxt_alloc(struct svcxprt_rdma *rdma)
+>         ctxt->rc_recv_wr.sg_list =3D &ctxt->rc_recv_sge;
+>         ctxt->rc_recv_wr.num_sge =3D 1;
+>         ctxt->rc_cqe.done =3D svc_rdma_wc_receive;
+> -       ctxt->rc_recv_sge.addr =3D addr;
+> -       ctxt->rc_recv_sge.length =3D rdma->sc_max_req_size;
+> -       ctxt->rc_recv_sge.lkey =3D rdma->sc_pd->local_dma_lkey;
+> -       ctxt->rc_recv_buf =3D buffer;
+>         svc_rdma_cc_init(rdma, &ctxt->rc_cc);
+>         return ctxt;
+>
+> -fail2:
+> -       kfree(buffer);
+>  fail1:
+>         kfree(ctxt);
+>  fail0:
+>         return NULL;
+>  }
+>
+> -static void svc_rdma_recv_ctxt_destroy(struct svcxprt_rdma *rdma,
+> -                                      struct svc_rdma_recv_ctxt *ctxt)
+> -{
+> -       ib_dma_unmap_single(rdma->sc_pd->device, ctxt->rc_recv_sge.addr,
+> -                           ctxt->rc_recv_sge.length, DMA_FROM_DEVICE);
+> -       kfree(ctxt->rc_recv_buf);
+> -       kfree(ctxt);
+> -}
+> -
+>  /**
+>   * svc_rdma_recv_ctxts_destroy - Release all recv_ctxt's for an xprt
+>   * @rdma: svcxprt_rdma being torn down
+> @@ -185,8 +167,9 @@ void svc_rdma_recv_ctxts_destroy(struct svcxprt_rdma =
+*rdma)
+>
+>         while ((node =3D llist_del_first(&rdma->sc_recv_ctxts))) {
+>                 ctxt =3D llist_entry(node, struct svc_rdma_recv_ctxt, rc_=
+node);
+> -               svc_rdma_recv_ctxt_destroy(rdma, ctxt);
+> +               kfree(ctxt);
+>         }
+> +       rpcrdma_pool_destroy(rdma->sc_recv_pool);
+>  }
+>
+>  /**
+> @@ -307,6 +290,12 @@ bool svc_rdma_post_recvs(struct svcxprt_rdma *rdma)
+>  {
+>         unsigned int total;
+>
+> +       rdma->sc_recv_pool =3D rpcrdma_pool_create(rdma->sc_pd,
+> +                                                rdma->sc_max_req_size,
+> +                                                GFP_KERNEL);
+> +       if (!rdma->sc_recv_pool)
+> +               return false;
+> +
+>         /* For each credit, allocate enough recv_ctxts for one
+>          * posted Receive and one RPC in process.
+>          */
+> @@ -962,9 +951,7 @@ int svc_rdma_recvfrom(struct svc_rqst *rqstp)
+>                 return 0;
+>
+>         percpu_counter_inc(&svcrdma_stat_recv);
+> -       ib_dma_sync_single_for_cpu(rdma_xprt->sc_pd->device,
+> -                                  ctxt->rc_recv_sge.addr, ctxt->rc_byte_=
+len,
+> -                                  DMA_FROM_DEVICE);
+> +       rpcrdma_pool_buffer_sync(rdma_xprt->sc_recv_pool, &ctxt->rc_recv_=
+sge);
+>         svc_rdma_build_arg_xdr(rqstp, ctxt);
+>
+>         ret =3D svc_rdma_xdr_decode_req(&rqstp->rq_arg, ctxt);
+> --
+> 2.50.0
+>
+>
 
