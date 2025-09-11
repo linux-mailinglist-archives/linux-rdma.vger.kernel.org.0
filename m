@@ -1,83 +1,83 @@
-Return-Path: <linux-rdma+bounces-13265-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13266-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A1CCB528CC
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Sep 2025 08:33:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2728B528D1
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Sep 2025 08:34:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CFD117BB8A1
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Sep 2025 06:31:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11E9F7BB4AB
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Sep 2025 06:31:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 504A626E703;
-	Thu, 11 Sep 2025 06:32:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4930827057D;
+	Thu, 11 Sep 2025 06:32:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ci0ylugm"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="r8f69Dgk"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2064.outbound.protection.outlook.com [40.107.93.64])
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2082.outbound.protection.outlook.com [40.107.237.82])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 438EA25A631;
-	Thu, 11 Sep 2025 06:32:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 478DE2594BD;
+	Thu, 11 Sep 2025 06:32:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.82
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757572326; cv=fail; b=lBa20wYnB0h0Z+Hr7bfrf9ycAAxZObaTU6vnEKjJG/57s2P0dIbXQ0GrybhEVSs/8FuO+aXswsprW5nKMuJvYJejErUVlmZGYSSLi2gSMIMNoqoG5JUyWvj1fnHGFfGuyhn5ZSbdrYPvQg+ZRgV6HLhSFwYFKRsfPeEmy789IqI=
+	t=1757572334; cv=fail; b=A/W7pEBBKIRYwRDgEADfTc6w3vYdtTVY7AdO0PivakRmHX4vVAsa+5RMICx1fP6gq2lKkJ+j5mEYallj1CZE38KrhnEqEdPU2s+wTs1nc/A7JL6JaP3FAgoS4JqIAHO/bmWfZsh58Wdyb5zXdvkFemhXh4/P3eHCEuNPZSqLdsk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757572326; c=relaxed/simple;
-	bh=mCPKWeZpLIq3zF7NJSmw1YnVV+tMUAPRAL4ipsqc0Tk=;
+	s=arc-20240116; t=1757572334; c=relaxed/simple;
+	bh=fa2VtRx+KgKkcjKtn/CHY9wvMV9YeYUVTdLqqtvwwcc=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=j15SQWdKNJmsGUhLFItySYfH5DleJ8c/kUjx4Lf5SjC9xpPyg1ky5xRI/0RKtWmOc/GSjjcTaZHg7V//adABUwAUba0UfZ0S3F/zUAikaUxCBWFOyC2ITWKSs28ZxJLzp0tXp6CXEh57Yi9HwhvMBp9gFJ58LLlntiAFu1I1H4Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ci0ylugm; arc=fail smtp.client-ip=40.107.93.64
+	 MIME-Version:Content-Type; b=UJNKcANd8nD5Y2UqtwEvbCeppzASXV9aeOABR13iqLfwa2IGEeXaZg7A8Hj+NpyYZ2pnnq83LJOrXFzs0OMLqJJ6Zrf/p0o7vJugrJ023Sw3QsnmtM0Wp6sxy6KlmZnrNSiKNGrw73UB2W+iMd/IZK4wiDQWlJnicbY04fK7wEU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=r8f69Dgk; arc=fail smtp.client-ip=40.107.237.82
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=snGNY28WymYlrDN5BY1s+mjmBmLTvTHWAuym8fR6HGKPRgPakZE7LBKoi7MkGOllghtlghh0L61753oRaDVF9qvdVLpZrOfx9C0/5ScJ5UUE88SbdlsHubbsmdZhzZwOOM7FN7rbIGsAteKhFzgmaU9jfx8HC+H5INXNIO37Eyqr1h0JRFFQv5vpRxEUJzRmyhlh7K6y1shXsTxfQcW7aFqdD1NKyiWljMignvSbcn+AhCd/6zs7+mOxHcC9TBtMRJYmd/d+W1lw6rEpkXuJZeU0Y2ToDPtZUCz6zQggWrtwjKILoL6EDy7b8i7IK6Q/XgXkJZE7AbpRjOdrHrrD0A==
+ b=w01+/25POF/p/P0qhQEft5IjN8lbWsd7257WRL58NaBSD4mMJDWlGSxLCl7RGaZ7lpsIOa8OUG4OEy6BwApxy4ntjw3JBT/AYybAtLn6C6OMl2zKLA8Y39gD6eUQrgV5jfxkjKAJD1H83IKLF6gQW2UNqxCY65RK76pZEEMf27n8Bad6l3hk3PN2NDYHuiZGD65Czu/dduxzH3576q9mn8f7Vf4FO++q4OsCnbaSWAe9us55oDMjnD2oYF3okQ2XS3Osd/ZHZPr0bss6BD0+NlWXF0RqDFTF0LzDjXfBJzfcGEBvigr/tz6dtwSqjz5PBEj8XQaDxBrubkIiIY5Pvg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Sb+0fPcrpH1nJvBr46tuy/ZYpzq4upY3mUiARI4CCsM=;
- b=QU3bTkxe7dLdcYAa7JBpcc64hjHp041WdOX27LKgTA+mtlLvCa49JV59JbkK0ayLFqbs/8k78ifDMAlBiuLwN9TbMwsWYt0GJSpZa/tLq7wn2+2tZsXia3ze9wCjry18KHbAi0t39PO5wgLx4jHgWfQ1vomwSMe4CpFAI6J7dC5a0x7zyn/xoJL9bfHlBtKLejnWBIv+MVhFex6o5M6cpzLKogv09FGcjw1LIzCv+TMEWmilNtj8km+fqFPFYwMLw8cLUFGFwtqKtjFX7MHGdEf2qK4474FPnqSnfjC5D7VABW8gEZZuGk89Vs6WdhPHMEJy1dVtw8ur8dvJYCykug==
+ bh=PZIBciaJ19pOLC9vsrl7+r+Ee2dZKgIGdg2xIBQ07Gk=;
+ b=AlQYXwUTqzZb78hTIBbEZku+wwa27vPtwzH6JJcLmGl6JGW3O/vwmexkPh9VauQ5XewzldCdWhuzTQAW9xLdRAEBkCehMt04gKJZuLbFPfQytloUGI99CPjD71Dfi0O6KprWsJ9crbHzhfLOl2S1GBIHHiVCrzSIqVMIOsbDCWIAAc/zaIll9Lid30xwLr3/BKN+ipMTTJBJz7cbyKlnicK49R2c2QAa8m2tqAbjX/T8hJVkLOSa5K8fuN1NLGyjC9EkTceZ+pW4s25wIsgOV9Dj4+BT6BydNTuZUs5SkqL+obezKBKdPEXf7r1JHBaDFHdi+r6IJzMpdkpwMLgrGA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Sb+0fPcrpH1nJvBr46tuy/ZYpzq4upY3mUiARI4CCsM=;
- b=ci0ylugmjlRkByYbaVUrnVbJytKTHxeOOlWfALNelgJ3YkXAzSCjww0XRG9j1UwL4BABwGI1sHbGg1+WDGTncHKNVUzPK7In8yQ/yiDGcdO8dcob2eQfQm4wt51s2kP84O8MAWRqEtIxO4/944bx2Qd9hwuJr1vTiTHuZcjuXpmAe21RQ5BM1BjH0WtNGOM7/KF4S4d3A2B3+LK7aKQvj8wFZZUAXr8O99lMnh/5MQFJEfFXx6VPZ8zy+YTnQP7+FxVG4oP3NbxvBA7aHk7VSLZ2qkRCWQhFjfJHPSuF6rmKkN18vZpZ/OJycYyKTqu/mcy32y2RxH9I+EHufoymJA==
-Received: from CH0PR03CA0383.namprd03.prod.outlook.com (2603:10b6:610:119::18)
- by BY5PR12MB4067.namprd12.prod.outlook.com (2603:10b6:a03:212::17) with
+ bh=PZIBciaJ19pOLC9vsrl7+r+Ee2dZKgIGdg2xIBQ07Gk=;
+ b=r8f69DgkWr9ReT690tTXPJ0hibPwQhhqeh8eGUxz/GfgTY7kqhvFUAOaarOaFDm3oMeZcHIvnMq7p9fQX3oLJoQwrg7sEN31fMfX6xXm328Avjz6fnrC1DAj5bAY9xB7MeIwDnWllBQcsnZvXyCJpEatO7sbUVgIM6y39cDGhbOSFwtAHMYrF8S+yllaRhJom02ymyRF7VvWtNqA33hYM/PCAoE+XlVzySqV8z1v7p+Je7nOxf4gjp125wmqWXrv+2m33CGN9WKxod3eZo4ZZauTqCK/6a45MQpbUIPwsmcLzFDLQcZfB4aQo20pOyGJ2d3JMre3JwElJQJ9ZLfsUg==
+Received: from SN7P222CA0022.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:124::7)
+ by LV3PR12MB9119.namprd12.prod.outlook.com (2603:10b6:408:1a2::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9094.22; Thu, 11 Sep
- 2025 06:32:00 +0000
-Received: from DS3PEPF000099D8.namprd04.prod.outlook.com
- (2603:10b6:610:119:cafe::44) by CH0PR03CA0383.outlook.office365.com
- (2603:10b6:610:119::18) with Microsoft SMTP Server (version=TLS1_3,
+ 2025 06:32:09 +0000
+Received: from SA2PEPF00003AEB.namprd02.prod.outlook.com
+ (2603:10b6:806:124:cafe::9d) by SN7P222CA0022.outlook.office365.com
+ (2603:10b6:806:124::7) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.20.9115.16 via Frontend Transport; Thu,
- 11 Sep 2025 06:32:00 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ 11 Sep 2025 06:32:08 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- DS3PEPF000099D8.mail.protection.outlook.com (10.167.17.9) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9115.13 via Frontend Transport; Thu, 11 Sep 2025 06:32:00 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ SA2PEPF00003AEB.mail.protection.outlook.com (10.167.248.11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9115.13 via Frontend Transport; Thu, 11 Sep 2025 06:32:08 +0000
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 10 Sep
- 2025 23:31:48 -0700
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ 2025 23:31:53 -0700
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail204.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Wed, 10 Sep
- 2025 23:31:48 -0700
+ 2025 23:31:53 -0700
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.8)
  with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Wed, 10
- Sep 2025 23:31:43 -0700
+ Sep 2025 23:31:48 -0700
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -87,9 +87,9 @@ CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
 	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Parav Pandit
 	<parav@nvidia.com>, Shay Drory <shayd@nvidia.com>
-Subject: [PATCH net-next 3/4] net/mlx5: Add net namespace support to devcom
-Date: Thu, 11 Sep 2025 09:31:06 +0300
-Message-ID: <1757572267-601785-4-git-send-email-tariqt@nvidia.com>
+Subject: [PATCH net-next 4/4] net/mlx5: Lag, add net namespace support
+Date: Thu, 11 Sep 2025 09:31:07 +0300
+Message-ID: <1757572267-601785-5-git-send-email-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.8.0
 In-Reply-To: <1757572267-601785-1-git-send-email-tariqt@nvidia.com>
 References: <1757572267-601785-1-git-send-email-tariqt@nvidia.com>
@@ -103,189 +103,154 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099D8:EE_|BY5PR12MB4067:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1cea58d3-c183-4974-6a0c-08ddf0fce9e5
+X-MS-TrafficTypeDiagnostic: SA2PEPF00003AEB:EE_|LV3PR12MB9119:EE_
+X-MS-Office365-Filtering-Correlation-Id: 73b613f1-08dc-47a8-949e-08ddf0fcef11
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|82310400026|376014|36860700013;
+	BCL:0;ARA:13230040|36860700013|1800799024|376014|82310400026;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?XBpp30k1+BUvJAh0mBRKgLw234/0UPeFRfZ6vWa5K1hzCVquPoElbmcjJ93c?=
- =?us-ascii?Q?mlb3Q1v5ydoqAHKz3Hfc7O9wxQn+Y0XvmKjUXmclFhZKUvwWkp5Jfnjl4wSQ?=
- =?us-ascii?Q?C26YCzJuhnTfqOInn5sYrZLGEprOHG0t9JYwFkF/P681u4CmTV+z2Fnix4fn?=
- =?us-ascii?Q?Af+Mdij5NgC62pHk0HWJ+yosCwQxp9IoR8f3AUSQFObw44hklfpap2Hm9W0R?=
- =?us-ascii?Q?ZPjKuXqke7rhvGDGi8KQWVyNhoTdNhruZqGL3dqfXfulCYmFbLTS/rSSQQWS?=
- =?us-ascii?Q?mf3jMXADLmK4sqJ0sy0bp7XP9jaHxFAy9wMzHtFo1YYMSFbxTC2wRwdOn9QM?=
- =?us-ascii?Q?EpyTdE0mTVgcVNMcrBYDDzks4113Zrjf5Oui4xM1fVz0x8jgisnTeQQk6gzx?=
- =?us-ascii?Q?ISVtjNeoOQ9ObLJCq/bfFka9XOvS27x0KU2oOLoyCSZ9SVpGesDzEAntV3UK?=
- =?us-ascii?Q?G0/D/51hRN8gPII4QDb2FGigjtlcZ05gWR3teQxDrVyw5KzBn0aTDqYeuB2x?=
- =?us-ascii?Q?mgZDOZmauqIy66g5hmoquIUczh9YxTCNLzIgT/9w/qy1/lnOvYuGuKUdyUfY?=
- =?us-ascii?Q?IIL990U/JVTIinrIFxV1CsdaHavRls/AZSayb8ZK6kAzEyQCFkUZiq9mqxMY?=
- =?us-ascii?Q?zcI4+pws8pWqC09RjzT6QD/ZAHapMW8/odGzk+H7tR2QEpZpkNYhmlT6fu/n?=
- =?us-ascii?Q?34g2PVunkEGIVft7/1kpn90xyb+H+biQE0vrpAD+dGgvQ3DWMZTbKkStDzmK?=
- =?us-ascii?Q?aRFKF22vmMriICy+nVoFB/7tGOS7A7Y/wR0iqqjsDUFrmpAp2JngWIcZDYCt?=
- =?us-ascii?Q?NXhkYmIGfxFGPmXJyvIcfHdVueAa5oCvupK43ZU7eUeqCZTHPXyap15r941r?=
- =?us-ascii?Q?ouITXzz9ux1hg/QQAGiVv7LN3qNBkJSzsZMAnnGG3YsO35tLI54Z4ftEJjq9?=
- =?us-ascii?Q?/dcirj1TmIdPG+NXuWQnrCr/vHcHm3bmc5lpq8keCTdUEAxPlpzd56QYZJcM?=
- =?us-ascii?Q?QbTA+gEVEgYdbsOWlK48bDVKUCqwA3+QeRF/32z289wKoc6Hnh08WimqOiYn?=
- =?us-ascii?Q?TnTjs7q/Qd1tcbjllbxaQTA0At6bEB3VPzPndamRhUAhlF6IgHYRRBhM2KTt?=
- =?us-ascii?Q?48DQoccTzJkCPbgp1ppOkzjXg/7go2tQTnjBwbWpKYrvP37iiBpcoXB6MIT0?=
- =?us-ascii?Q?86gEBa2kcOQcIx97YZS9ycHRJ5u+czGbcrkb504MTJl6Jg7qKbxiFkiNhzLd?=
- =?us-ascii?Q?YQ67/dZjoDivsFsOFTUi278qMqJj0fnrI6wYaMDeTPN7vuWblyDgtCmVpUoC?=
- =?us-ascii?Q?BwWEDRWxshkXDXvbBHX0nKZHBIEr/btvB/hl6CUJWoqCMzGXXiXePCwRPMNM?=
- =?us-ascii?Q?c1/OsICmIWiyDC8BWHgQ11OUoKbgYzpNXWdBwavVRnjP5LXunzFPurV9DJEs?=
- =?us-ascii?Q?Ue3e383W3PSpNvbZgnX65QBM6G+7XqQS9y4I44VJ/dB37G9ZQ+2QpcEmfnm3?=
- =?us-ascii?Q?oE6wg2T7pKiYUElcX5oNmtAwmtF7ad53FfkE?=
+	=?us-ascii?Q?9kO+fbM5SJy9Gprz1vm2EPkZpnsFDIaoCEXz6xdE1xv4q+J2mkKgfal57n9y?=
+ =?us-ascii?Q?xavWtUPrLCR9vQzycD44Nqfpm3MlO+90usitXWbFc2fd6n/eTNIOSMWjTqEC?=
+ =?us-ascii?Q?3rTU8ANQGojek2HmmedLdT4USaV4ziAbghiOxdyXYB0iYa9onI6nkGal0Fxz?=
+ =?us-ascii?Q?XqHhb0PWuGch7cEer2iicVZs56rDItTReh08DviDzBN156CDGDIE08h+iPbn?=
+ =?us-ascii?Q?Uu0dBDjLJkbAGHsOa10NsuyungOqfxlsdafsR7PtrlsaqknHNMZJE9O0NFmJ?=
+ =?us-ascii?Q?u4Gla+L+pSQb7GIerkXSziB2tmBM5MTFcdc5JFU63oaXvuhy7k4r/L5R1nCg?=
+ =?us-ascii?Q?jaIA67Iq7ppJX8tROZ7jcyKrzcnSnCMJ34jnWW2OfTs6FW3p6pViFd/DX5mw?=
+ =?us-ascii?Q?Yp4KdNLOJhNR/DK5kaR1tFi8lm91nT7fCa+7/aShX4aW+dItalkRQAXbCtPz?=
+ =?us-ascii?Q?cqDyA3vWr7Eo/fX9KtKd7WGGGWwWmPwg1SJnG/GjNLEm9BrICketbQRFqhGu?=
+ =?us-ascii?Q?cD0cGqYoHHjcxBznKAY9ks42ZxIhPqnVsPhX+P+ICl2dmNdO62VNkN/eN7wp?=
+ =?us-ascii?Q?gaaANqeQPBZxSOvFQ+IaJQWdyeWbee35WmDLvVJOdjnbaiWZ+ynvNIDVpr85?=
+ =?us-ascii?Q?xq+bUqeRsyQulN9ev095mLZMU0Jrbo1zXIEn8cjdZkXelWwplsYmaJojiW4M?=
+ =?us-ascii?Q?rkvNF3gVu42FzFMZPegiFV0taW/YKp5CE/f3YaFJ5dF95X78Rr/SmzyZXJ2F?=
+ =?us-ascii?Q?66hB8pVZxmRyHBlo6BkgOMnRMSXF/tyxAjjDqnbJegg9/AejwEdCxa7ZUNFi?=
+ =?us-ascii?Q?xoqjcjwY1HD7BoizPZoGTJuFhxnaLRksC/DJDjlUOfadF1PdU4bK7a82fjoC?=
+ =?us-ascii?Q?WhEEoCI6incaVVIzMWxGj7mydG3zhcUXd4KBpyTkHdv/FtD4SnqclL9pJbLD?=
+ =?us-ascii?Q?nSNKagt10Z0ADueExJrtBFXYrl8mB7MBlRVLI13/6dvgzuoz//HTsvOH7+3Y?=
+ =?us-ascii?Q?ksUA4zXIFZZvczlTUu3JXx4lPm4iQ5eH5tyFGdRqMos/i4N0KCaWxqnn1cJ4?=
+ =?us-ascii?Q?m1Mb8/vJb4elcPw0SjYbpKMDGR8oOrHiem7kqn3EsJcegpQEz8t8DsamGLA8?=
+ =?us-ascii?Q?Qwu0o9pB/8z4rgK1Jy03d9UP+Up207TBnmZ4UDEn3AO9JUCbE2TA0YEcL1xe?=
+ =?us-ascii?Q?PCW2pPWO0GKwyVOhVHFxI1mQcWHDpfUMZualcvuiOw/svQGRPZ/xmfwKE+Ws?=
+ =?us-ascii?Q?meuqq4EQeRnNHqEYn2GI7HYCP8cs2LRKTN1HmBE651JYXsAzlFCbL/AaJbpg?=
+ =?us-ascii?Q?o6xyS1Re+vc04exCxDyHAYQeoSRAjcY/6fA2uPzsWeMEsT8Y9N8c+fW9xwIR?=
+ =?us-ascii?Q?/avcertP0QHk2kUULCBELfriYEvQ8XJ8KuCfLRyRnH734dgZT4isV+KUOihC?=
+ =?us-ascii?Q?wqY/7oqVrrU9kNQrzzG/hHGFCcnvO+csmKY5HRZkH0XQCVeOj1pXFmRTDeJe?=
+ =?us-ascii?Q?sQbDioEajLZ6b4Eez2+miTQ0U+gJrebeW7W+?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(376014)(36860700013);DIR:OUT;SFP:1101;
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(376014)(82310400026);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2025 06:32:00.1633
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2025 06:32:08.8458
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1cea58d3-c183-4974-6a0c-08ddf0fce9e5
+X-MS-Exchange-CrossTenant-Network-Message-Id: 73b613f1-08dc-47a8-949e-08ddf0fcef11
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF000099D8.namprd04.prod.outlook.com
+	SA2PEPF00003AEB.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4067
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9119
 
 From: Shay Drory <shayd@nvidia.com>
 
-Extend the devcom framework to support namespace-aware components.
+Update the LAG implementation to support net namespace isolation.
 
-The existing devcom matching logic was based solely on numeric keys,
-limiting its use to the global (init_net) scope or requiring clients
-to ignore namespaces altogether, both of which are incorrect in
-multi-namespace environments.
+With recent changes to the devcom framework allowing namespace-aware
+matching, the LAG layer is updated to register devcom clients with the
+associated net namespace. This ensures that LAG formation only occurs
+between mlx5 interfaces that reside in the same namespace.
 
-This patch introduces namespace support by allowing devcom clients to
-provide a namespace match attribute. The devcom pairing mechanism is
-updated to compare the namespace, enabling proper isolation and
-interaction of components across different net namespaces.
+This change ensures that devices in different namespaces do not interfere
+with each other's LAG setup and behavior. For example, if two PCI PFs are
+in the same namespace, they are eligible to form a hardware LAG.
 
-With this change, components that require namespace aware pairing,
-such as SD groups or LAG, can now work correctly in multi-namespace
-scenarios. In particular, this opens the way to support hardware LAG
-within a net namespace.
+In addition, reload behavior for LAG is adjusted to handle namespace
+contexts appropriately.
 
 Signed-off-by: Shay Drory <shayd@nvidia.com>
 Reviewed-by: Mark Bloch <mbloch@nvidia.com>
 Reviewed-by: Parav Pandit <parav@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_tc.c     |  3 +++
- .../net/ethernet/mellanox/mlx5/core/lib/devcom.c    | 13 +++++++++++++
- .../net/ethernet/mellanox/mlx5/core/lib/devcom.h    |  6 ++++++
- drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c    |  2 ++
- 4 files changed, 24 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/devlink.c |  5 -----
+ drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c | 14 +++++++++++---
+ drivers/net/ethernet/mellanox/mlx5/core/lag/lag.h |  1 +
+ 3 files changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-index 9874a15c6fba..09c3eecb836d 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-@@ -66,6 +66,7 @@
- #include "lib/devcom.h"
- #include "lib/geneve.h"
- #include "lib/fs_chains.h"
-+#include "lib/mlx5.h"
- #include "diag/en_tc_tracepoint.h"
- #include <asm/div64.h>
- #include "lag/lag.h"
-@@ -5450,6 +5451,8 @@ int mlx5e_tc_esw_init(struct mlx5_rep_uplink_priv *uplink_priv)
- 	err = netif_get_port_parent_id(priv->netdev, &ppid, false);
- 	if (!err) {
- 		memcpy(&attr.key.val, &ppid.id, sizeof(attr.key.val));
-+		attr.flags = MLX5_DEVCOM_MATCH_FLAGS_NS;
-+		attr.net = mlx5_core_net(esw->dev);
- 		mlx5_esw_offloads_devcom_init(esw, &attr);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+index a0b68321355a..bfa44414be82 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+@@ -204,11 +204,6 @@ static int mlx5_devlink_reload_down(struct devlink *devlink, bool netns_change,
+ 		return 0;
  	}
  
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c
-index 1ab9de316deb..faa2833602c8 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c
-@@ -4,6 +4,7 @@
- #include <linux/mlx5/vport.h>
- #include <linux/list.h>
- #include "lib/devcom.h"
-+#include "lib/mlx5.h"
- #include "mlx5_core.h"
- 
- static LIST_HEAD(devcom_dev_list);
-@@ -23,7 +24,9 @@ struct mlx5_devcom_dev {
- };
- 
- struct mlx5_devcom_key {
-+	u32 flags;
- 	union mlx5_devcom_match_key key;
-+	possible_net_t net;
- };
- 
- struct mlx5_devcom_comp {
-@@ -123,6 +126,9 @@ mlx5_devcom_comp_alloc(u64 id, const struct mlx5_devcom_match_attr *attr,
- 
- 	comp->id = id;
- 	comp->key.key = attr->key;
-+	comp->key.flags = attr->flags;
-+	if (attr->flags & MLX5_DEVCOM_MATCH_FLAGS_NS)
-+		write_pnet(&comp->key.net, attr->net);
- 	comp->handler = handler;
- 	init_rwsem(&comp->sem);
- 	lockdep_register_key(&comp->lock_key);
-@@ -190,9 +196,16 @@ devcom_component_equal(struct mlx5_devcom_comp *devcom,
- 	if (devcom->id != id)
- 		return false;
- 
-+	if (devcom->key.flags != attr->flags)
-+		return false;
-+
- 	if (memcmp(&devcom->key.key, &attr->key, sizeof(devcom->key.key)))
- 		return false;
- 
-+	if (devcom->key.flags & MLX5_DEVCOM_MATCH_FLAGS_NS &&
-+	    !net_eq(read_pnet(&devcom->key.net), attr->net))
-+		return false;
-+
- 	return true;
- }
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.h b/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.h
-index f350d2395707..609c85f47917 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.h
-@@ -6,12 +6,18 @@
- 
+-	if (mlx5_lag_is_active(dev)) {
+-		NL_SET_ERR_MSG_MOD(extack, "reload is unsupported in Lag mode");
+-		return -EOPNOTSUPP;
+-	}
+-
+ 	if (mlx5_core_is_mp_slave(dev)) {
+ 		NL_SET_ERR_MSG_MOD(extack, "reload is unsupported for multi port slave");
+ 		return -EOPNOTSUPP;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
+index ccb22ed13f84..59c00c911275 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
+@@ -35,6 +35,7 @@
  #include <linux/mlx5/driver.h>
- 
-+enum mlx5_devom_match_flags {
-+	MLX5_DEVCOM_MATCH_FLAGS_NS = BIT(0),
-+};
-+
- union mlx5_devcom_match_key {
- 	u64 val;
- };
- 
- struct mlx5_devcom_match_attr {
-+	u32 flags;
- 	union mlx5_devcom_match_key key;
+ #include <linux/mlx5/eswitch.h>
+ #include <linux/mlx5/vport.h>
++#include "lib/mlx5.h"
+ #include "lib/devcom.h"
+ #include "mlx5_core.h"
+ #include "eswitch.h"
+@@ -231,9 +232,13 @@ static void mlx5_do_bond_work(struct work_struct *work);
+ static void mlx5_ldev_free(struct kref *ref)
+ {
+ 	struct mlx5_lag *ldev = container_of(ref, struct mlx5_lag, ref);
 +	struct net *net;
- };
++
++	if (ldev->nb.notifier_call) {
++		net = read_pnet(&ldev->net);
++		unregister_netdevice_notifier_net(net, &ldev->nb);
++	}
  
- enum mlx5_devcom_component {
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c
-index d4015328ba65..f5c2701f6e87 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c
-@@ -217,6 +217,8 @@ static int sd_register(struct mlx5_core_dev *dev)
+-	if (ldev->nb.notifier_call)
+-		unregister_netdevice_notifier_net(&init_net, &ldev->nb);
+ 	mlx5_lag_mp_cleanup(ldev);
+ 	cancel_delayed_work_sync(&ldev->bond_work);
+ 	destroy_workqueue(ldev->wq);
+@@ -271,7 +276,8 @@ static struct mlx5_lag *mlx5_lag_dev_alloc(struct mlx5_core_dev *dev)
+ 	INIT_DELAYED_WORK(&ldev->bond_work, mlx5_do_bond_work);
  
- 	sd = mlx5_get_sd(dev);
- 	attr.key.val = sd->group_id;
-+	attr.flags = MLX5_DEVCOM_MATCH_FLAGS_NS;
-+	attr.net = mlx5_core_net(dev);
- 	devcom = mlx5_devcom_register_component(dev->priv.devc, MLX5_DEVCOM_SD_GROUP,
- 						&attr, NULL, dev);
- 	if (IS_ERR(devcom))
+ 	ldev->nb.notifier_call = mlx5_lag_netdev_event;
+-	if (register_netdevice_notifier_net(&init_net, &ldev->nb)) {
++	write_pnet(&ldev->net, mlx5_core_net(dev));
++	if (register_netdevice_notifier_net(read_pnet(&ldev->net), &ldev->nb)) {
+ 		ldev->nb.notifier_call = NULL;
+ 		mlx5_core_err(dev, "Failed to register LAG netdev notifier\n");
+ 	}
+@@ -1413,6 +1419,8 @@ static int mlx5_lag_register_hca_devcom_comp(struct mlx5_core_dev *dev)
+ {
+ 	struct mlx5_devcom_match_attr attr = {
+ 		.key.val = mlx5_query_nic_system_image_guid(dev),
++		.flags = MLX5_DEVCOM_MATCH_FLAGS_NS,
++		.net = mlx5_core_net(dev),
+ 	};
+ 
+ 	/* This component is use to sync adding core_dev to lag_dev and to sync
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.h b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.h
+index c2f256bb2bc2..4918eee2b3da 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.h
+@@ -67,6 +67,7 @@ struct mlx5_lag {
+ 	struct workqueue_struct   *wq;
+ 	struct delayed_work       bond_work;
+ 	struct notifier_block     nb;
++	possible_net_t net;
+ 	struct lag_mp             lag_mp;
+ 	struct mlx5_lag_port_sel  port_sel;
+ 	/* Protect lag fields/state changes */
 -- 
 2.31.1
 
