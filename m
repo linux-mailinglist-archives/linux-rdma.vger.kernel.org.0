@@ -1,104 +1,104 @@
-Return-Path: <linux-rdma+bounces-13322-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13323-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69B52B556EB
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Sep 2025 21:27:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A63B9B556FE
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Sep 2025 21:38:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 250B57A9F8C
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Sep 2025 19:26:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 678A9AC238F
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Sep 2025 19:38:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54EAB32ED2F;
-	Fri, 12 Sep 2025 19:27:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F195432A81F;
+	Fri, 12 Sep 2025 19:38:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oV1luJhK"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oIMNpUsC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9B113191C6
-	for <linux-rdma@vger.kernel.org>; Fri, 12 Sep 2025 19:27:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C608A29ACF6
+	for <linux-rdma@vger.kernel.org>; Fri, 12 Sep 2025 19:38:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757705272; cv=none; b=Ketwm+oTlQzNzEHockNWU7qT5oHgbpaUJaxr8phZLHcvuCLF4DNtllGNWZcFjszlfG5NBYj47sVHuNNK3dYYPjqV9r70V4divu1GXucaqskTOQ89f+dfBx7LHsNswnThq9o8qVyReS7XtCB5wTCqvLBpn0Vpmnh2N6wosH5RTLY=
+	t=1757705894; cv=none; b=Lczm9V/OgdI9ZjpPoY1eV8rV6XF92Q1D72XUfAEEbw14lO3qcwpF4Tr5lqE63zgfuXzWrreEHD5fxdYONb4GUDMuq2So47TX2GJGrRwZMEXngSk+GbWzsnMSnmjWbjBR4Y1uwNjobfMeSTTk/6tY9IFCxDpU7KDT3V7x/I0kSO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757705272; c=relaxed/simple;
-	bh=0/PSKF2to2OaJnAdRMMBgx1N67O2wxoTS8DRkJ0j+PU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=E1oG+GWdX3P7lrq4deB4PmpWbwx6DlcVr3FC1B54yT+zoLlTVorDIi99b32EcyqYt/EO0GSuTkYX9GzqyvaDXgS63leCVof9vlxZmY9Q+LThG+LOgIdwJDl4867Ly/M6T5F8H+j1BhxhO1g0WZGqz708zHSLzQqfcaRWaJOq134=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oV1luJhK; arc=none smtp.client-ip=91.218.175.170
+	s=arc-20240116; t=1757705894; c=relaxed/simple;
+	bh=kVdVoE4gybFTANwmPEdaeati0u3esKOiokiwd3mxlRI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=CdIfHTTs54m7amIAQ+HoQ/8p0UjK+q4Q5M8Z6KVm75xr5uN9mN6o2DueVbkI1I+pGAnCmC3yyQk1aCDLUPPWbDdARjAdMGB2UpKM7W1VDoDBZnDr/t+galwV30qh8hQUbNto/isFN7uj6ymNbKmutMyHyH7+wGeaIPYLDZrQlB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oIMNpUsC; arc=none smtp.client-ip=91.218.175.184
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <df0d8ea8-9a4f-4de9-8bbc-ba54e19cedbf@linux.dev>
+Message-ID: <6f3b9149-2a2d-4532-b38f-946b98e72000@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1757705257;
+	t=1757705889;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=shPyU1wloMgDISSN93FeuBHz7Metwmsu/VH9NlbZVaY=;
-	b=oV1luJhKBvfVaz6bo/u96BOU0BShALi8KGp7Y+1muWEOLypYOj9dW+1QmoQvu5xB1miLCE
-	UgHTJcRbD5e5kiDCLLTJFjXzKZSznx1QLP7joie1hcYIte9lGJc4dnC7xMQv3GtD9GPokY
-	i4gwQ72GfZHQUWgV9a7CPaU+Kk5uTQY=
-Date: Fri, 12 Sep 2025 12:27:33 -0700
+	bh=vX5FNfh32HsPx94JItMdCOB+Unc0XHjjtrYR8Ey18iY=;
+	b=oIMNpUsCfpeP+kxppfx25DKocOWjO4sb0uvbGFmLKlcjXViKRfGGN+3S4gr3W3RAFffmX7
+	P7c8jKJ5A5AzZDHSAQCWM9Uv0KSQnCDIcGKZ5v/cJKWMD4Shuuz4wDWg+HBDeJwT5dp0fd
+	xGN/d7YquKZfbC5iNORdRvVAI+F2mkQ=
+Date: Fri, 12 Sep 2025 12:38:05 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH for-next] RDMA/cm: Rate limit destroy CM ID timeout error
- message
-To: =?UTF-8?Q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
- Sean Hefty <shefty@nvidia.com>, Vlad Dumitrescu <vdumitrescu@nvidia.com>,
- Or Har-Toov <ohartoov@nvidia.com>, Jacob Moroni <jmoroni@google.com>,
- Manjunath Patil <manjunath.b.patil@oracle.com>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250912100525.531102-1-haakon.bugge@oracle.com>
+Subject: Re: [syzbot] [rdma?] WARNING in gid_table_release_one (3)
+To: syzbot <syzbot+b0da83a6c0e2e2bddbd4@syzkaller.appspotmail.com>,
+ edwards@nvidia.com, hdanton@sina.com, jgg@ziepe.ca, leon@kernel.org,
+ leonro@nvidia.com, linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ syzkaller-bugs@googlegroups.com
+References: <68c3a49a.a70a0220.3543fc.0031.GAE@google.com>
 Content-Language: en-US
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: "yanjun.zhu" <yanjun.zhu@linux.dev>
-In-Reply-To: <20250912100525.531102-1-haakon.bugge@oracle.com>
+In-Reply-To: <68c3a49a.a70a0220.3543fc.0031.GAE@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
-On 9/12/25 3:05 AM, HÃ¥kon Bugge wrote:
-> When the destroy CM ID timeout kicks in, you typically get a storm of
-> them which creates a log flooding. Hence, change pr_err() to
-> pr_err_ratelimited() in cm_destroy_id_wait_timeout().
+On 9/11/25 9:42 PM, syzbot wrote:
+> syzbot has bisected this issue to:
 > 
-> Fixes: 96d9cbe2f2ff ("RDMA/cm: add timeout to cm_destroy_id wait")
-> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
-> ---
->   drivers/infiniband/core/cm.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+> commit a92fbeac7e94a420b55570c10fe1b90e64da4025
+> Author: Leon Romanovsky <leonro@nvidia.com>
+> Date:   Tue May 28 12:52:51 2024 +0000
 > 
-> diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-> index 92678e438ff4d..01bede8ba1055 100644
-> --- a/drivers/infiniband/core/cm.c
-> +++ b/drivers/infiniband/core/cm.c
-> @@ -1049,8 +1049,8 @@ static noinline void cm_destroy_id_wait_timeout(struct ib_cm_id *cm_id,
->   	struct cm_id_private *cm_id_priv;
->   
->   	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
-> -	pr_err("%s: cm_id=%p timed out. state %d -> %d, refcnt=%d\n", __func__,
-> -	       cm_id, old_state, cm_id->state, refcount_read(&cm_id_priv->refcount));
-> +	pr_err_ratelimited("%s: cm_id=%p timed out. state %d -> %d, refcnt=%d\n", __func__,
-> +			   cm_id, old_state, cm_id->state, refcount_read(&cm_id_priv->refcount));
+>      RDMA/cache: Release GID table even if leak is detected
 
-When many CMs time out, this pr_err can generate excessive noise. Using 
-the _ratelimited variant will help alleviate the problem.
+Maybe this commit just detects ref leaks and reports ref leak.
+Even though this commit is reverted, this ref leak still occurs.
 
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+The root cause is not in this commit.
+
+"
+GID entry ref leak for dev syz1 index 2 ref=615
+"
+
+Ref leaks in dev syz1.
 
 Zhu Yanjun
 
->   }
->   
->   static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13fc9642580000
+> start commit:   5f540c4aade9 Add linux-next specific files for 20250910
+> git tree:       linux-next
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=10029642580000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17fc9642580000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=5ed48faa2cb8510d
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b0da83a6c0e2e2bddbd4
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15b52362580000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16b41642580000
+> 
+> Reported-by: syzbot+b0da83a6c0e2e2bddbd4@syzkaller.appspotmail.com
+> Fixes: a92fbeac7e94 ("RDMA/cache: Release GID table even if leak is detected")
+> 
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
 
