@@ -1,125 +1,140 @@
-Return-Path: <linux-rdma+bounces-13314-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13315-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12AE5B55009
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Sep 2025 15:51:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BE40B55073
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Sep 2025 16:09:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 954AA167EF6
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Sep 2025 13:51:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E32CD164D4E
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Sep 2025 14:09:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CB883081B8;
-	Fri, 12 Sep 2025 13:51:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE88130F7F6;
+	Fri, 12 Sep 2025 14:09:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="kcvZOLE3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AIhbFgsN"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1F5F3002DE;
-	Fri, 12 Sep 2025 13:51:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66D2B27472;
+	Fri, 12 Sep 2025 14:09:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757685068; cv=none; b=HaATVJyj7Fhs9o+oH31aURraDeQuMWyrHWg3W6yd3sLv6BanwcNSyL4z/WskftqSzoeEicqTq3bnbaRgHh7GJ4NJKKVF182U2tJj5m91/eTlOna3cP6Tfik7vycCEUicNh5AYi27ReGBeZNm4VfqJx0jsNcirrHzYYn9ZIS32qg=
+	t=1757686147; cv=none; b=iO1MOOgG36p4lGf43JmguQy/TN0Ig14Cb8fNJH7SXnCNIM3wnZyJl/qTzOMcYvYuYyZzEj9OKywgR3vIm+zKjZdROjJfKqQ6WvUQ5K2Ea2zof1eawwoSqLc3zA5d6R8zJnCigjXNigpH52Z9W3cz3Yg+HLp1SFBb7Q5gMCsyS3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757685068; c=relaxed/simple;
-	bh=2UKOvJk8sT4wD4CgxBKlGW2IV/aUfFIbJVKRo8iIYN4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=PFwfrDm9lucFCT0gZo7gX3GnVIVLvvTtpKGxkuPn2/wgbz6FnByFxW2TCLfXXWHWjSNry3G01uKzUnL9bGJuD6TjzLNbr/TX2J4CI6uP+V81FSx3dLekZGm5n7Fapvj9Pi9eva1ekt1mH+EOFUtT6v1s+pGt/FtK6ZFRvwlGiAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=kcvZOLE3; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58C1ug6O022007;
-	Fri, 12 Sep 2025 13:50:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=corp-2025-04-25; bh=FjSQ5V25DxhSwBaA
-	ZR7X4fXaIWfKI+kAQTy1IEtVj7A=; b=kcvZOLE34K4Le2UjSzafLHvlJKN32XXT
-	5ntuMXf87wG4N2SEbxl+CjBEKhLlnQCKtWB6B2mETSQTcNKPv8yYX5pvei+x99+d
-	zBzhIvN+yHJ6sBincrTWZE8S9shiCo/nwWTe6Ml+6ACAd7d0G2UeXt6CVr098WVY
-	shLs1YwzuTTCyyq+BxEb0mVe4t8nFytq5eyx0Su92QQ4NKyQxtiJu9GzllNuJEjH
-	NX70hnDjI3oh4ua0uk63L9dxY05zdYUn6cmhcVaxIbF4nvCesG2RyQOMWRGhCXq2
-	DW6d5Xg7CClFcDyNb1v1lMH2u04FNHsIbJHt4V70crvyKXbl1qIgHA==
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4922jh0a6a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 12 Sep 2025 13:50:55 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 58CCYdrJ038766;
-	Fri, 12 Sep 2025 13:50:54 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 490bddwe5m-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 12 Sep 2025 13:50:54 +0000
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 58CDosCk009920;
-	Fri, 12 Sep 2025 13:50:54 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 490bddwe53-1;
-	Fri, 12 Sep 2025 13:50:54 +0000
-From: Alok Tiwari <alok.a.tiwari@oracle.com>
-To: mbloch@nvidia.com, saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com,
-        andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
-        netdev@vger.kernel.org
-Cc: alok.a.tiwari@oracle.com, linux-rdma@vger.kernel.org
-Subject: [PATCH net-next] net/mlx5: fix typo in pci_irq.c comment
-Date: Fri, 12 Sep 2025 06:50:44 -0700
-Message-ID: <20250912135050.3921116-1-alok.a.tiwari@oracle.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1757686147; c=relaxed/simple;
+	bh=8KzDjALzo8xyyPxdB0VGYT1Iqlg4ome+voJh7zshsT4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RHOERMfv6Y+NR0bCPvJcekCEBmmC9zmJ+KtTXY0SG9qWqj8FZX80a6pcVgwDrwwHGstAjjw2Xw8FdMbILAaVdNtmCLo1o4EgN9Q9ot7QvYTHgJ58hjFiMjoBlF9iOzGJv+e+uwBTtPDT848pXAc/94OY6qH60khChKen6mtcvAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AIhbFgsN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D7A2C4CEF1;
+	Fri, 12 Sep 2025 14:09:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757686147;
+	bh=8KzDjALzo8xyyPxdB0VGYT1Iqlg4ome+voJh7zshsT4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AIhbFgsNZzwTeZi8P89hgzRTWGtS3aOMf63RbPxk4jAuUpRgec8QYvEhJ7fbs/W6w
+	 lJzwwJ8Fyl6ODs3YLjX55rSkKEf3p/p9s+P6bnDgFP5VgLx0N5WPXdHPaRxUstKk4A
+	 J5U3DeYTMYYXmQW5qdz/g8+xtqwAKAs8vMUxYF2dMgfQX9p7h5a+H4FIoEOq8a3KCD
+	 OPdDGmeURfMNWXORrrhYwl8kFrAhWKx7cLu4gXICW0y/SeANQ/jsbeFkDxtreLF05z
+	 3zfKtxNV7d/Mpi4vuGDebulNtmHHnwZRrlQFtiBWWbii2dZ+tsh5dqhCFoRNlp0dz4
+	 5SD2jFvwbUV5w==
+Date: Fri, 12 Sep 2025 15:09:02 +0100
+From: Simon Horman <horms@kernel.org>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
+	Parav Pandit <parav@nvidia.com>, Shay Drory <shayd@nvidia.com>
+Subject: Re: [PATCH net-next 4/4] net/mlx5: Lag, add net namespace support
+Message-ID: <20250912140902.GC30363@horms.kernel.org>
+References: <1757572267-601785-1-git-send-email-tariqt@nvidia.com>
+ <1757572267-601785-5-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-09-12_05,2025-09-11_02,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=0
- mlxlogscore=999 adultscore=0 spamscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2508110000
- definitions=main-2509120129
-X-Proofpoint-ORIG-GUID: gRGxFeuuodI3g7xOcg63x8ZwWVzXQPTY
-X-Authority-Analysis: v=2.4 cv=PLMP+eqC c=1 sm=1 tr=0 ts=68c4253f b=1 cx=c_pps
- a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17
- a=IkcTkHD0fZMA:10 a=yJojWOMRYYMA:10 a=yPCof4ZbAAAA:8 a=nEMAJ4ySRUttQcq-aIwA:9
- a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 cc=ntf awl=host:12083
-X-Proofpoint-GUID: gRGxFeuuodI3g7xOcg63x8ZwWVzXQPTY
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTA4MDE2MiBTYWx0ZWRfX+YMhEWPfmsP9
- fbzOs+5rzoaYk9lUxWpzPZ6mwtIbkzlQnBMTpPQye0dU7mJxO4V18Xi/zn2TTo81JtV/Z0ETxOM
- 87hP2PXXHlnrz+Q1JdV/4l8VmT1W3F8pWF1x2x2ACOhmAkeRayMxvXzb0edOLhyF6j21cddWxi0
- QqthTk5w4wTYbg64x5tLYBeAgqm4M2q+yqoWPNDbSvlmO8mLJcwlm3n96QAdvwfa3+yTXyLXL7r
- IaCRjwG9Aimf40uL3Kfn0Yrd6TCe3/buBfYgwyUNivXyynSXBtdPvWz9CaHfrtoHmp/m1ddZZw4
- xwiSCRBoiaP47ia37mYBpKrDGczdPQIcD9kiQJ3jwIVfBqOtZKnOmBPJFRZjpZDlTJDXjAy8Duz
- Ny8UNEOXQ1hdWZLpszgbWqOfQNe7Pg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1757572267-601785-5-git-send-email-tariqt@nvidia.com>
 
-Fix a typo in a comment in pci_irq.c:
- "ssigned" → "assigned"
+On Thu, Sep 11, 2025 at 09:31:07AM +0300, Tariq Toukan wrote:
+> From: Shay Drory <shayd@nvidia.com>
+> 
+> Update the LAG implementation to support net namespace isolation.
+> 
+> With recent changes to the devcom framework allowing namespace-aware
+> matching, the LAG layer is updated to register devcom clients with the
+> associated net namespace. This ensures that LAG formation only occurs
+> between mlx5 interfaces that reside in the same namespace.
+> 
+> This change ensures that devices in different namespaces do not interfere
+> with each other's LAG setup and behavior. For example, if two PCI PFs are
+> in the same namespace, they are eligible to form a hardware LAG.
+> 
+> In addition, reload behavior for LAG is adjusted to handle namespace
+> contexts appropriately.
+> 
+> Signed-off-by: Shay Drory <shayd@nvidia.com>
+> Reviewed-by: Mark Bloch <mbloch@nvidia.com>
+> Reviewed-by: Parav Pandit <parav@nvidia.com>
+> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/devlink.c |  5 -----
+>  drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c | 14 +++++++++++---
+>  drivers/net/ethernet/mellanox/mlx5/core/lag/lag.h |  1 +
+>  3 files changed, 12 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+> index a0b68321355a..bfa44414be82 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+> @@ -204,11 +204,6 @@ static int mlx5_devlink_reload_down(struct devlink *devlink, bool netns_change,
+>  		return 0;
+>  	}
+>  
+> -	if (mlx5_lag_is_active(dev)) {
+> -		NL_SET_ERR_MSG_MOD(extack, "reload is unsupported in Lag mode");
+> -		return -EOPNOTSUPP;
+> -	}
+> -
 
-Signed-off-by: Alok Tiwari <alok.a.tiwari@oracle.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Maybe I'm missing something obvious. But I think this could do with
+some further commentary in the commit message. Or perhaps being a separate
+patch.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-index 692ef9c2f729..e18a850c615c 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-@@ -54,7 +54,7 @@ static int mlx5_core_func_to_vport(const struct mlx5_core_dev *dev,
- 
- /**
-  * mlx5_get_default_msix_vec_count - Get the default number of MSI-X vectors
-- *                                   to be ssigned to each VF.
-+ *                                   to be assigned to each VF.
-  * @dev: PF to work on
-  * @num_vfs: Number of enabled VFs
-  */
--- 
-2.50.1
+>  	if (mlx5_core_is_mp_slave(dev)) {
+>  		NL_SET_ERR_MSG_MOD(extack, "reload is unsupported for multi port slave");
+>  		return -EOPNOTSUPP;
 
+...
+
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.h b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.h
+> index c2f256bb2bc2..4918eee2b3da 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.h
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.h
+> @@ -67,6 +67,7 @@ struct mlx5_lag {
+>  	struct workqueue_struct   *wq;
+>  	struct delayed_work       bond_work;
+>  	struct notifier_block     nb;
+> +	possible_net_t net;
+
+nit: inconsistent indentation.
+
+>  	struct lag_mp             lag_mp;
+>  	struct mlx5_lag_port_sel  port_sel;
+>  	/* Protect lag fields/state changes */
+> -- 
+> 2.31.1
+> 
+> 
 
