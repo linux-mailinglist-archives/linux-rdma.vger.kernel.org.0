@@ -1,110 +1,65 @@
-Return-Path: <linux-rdma+bounces-13319-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13320-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E2F8B55303
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Sep 2025 17:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CEACB55421
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Sep 2025 17:50:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F7B4AC71FD
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Sep 2025 15:17:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51FF8AE4E14
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Sep 2025 15:49:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83F0D31CA78;
-	Fri, 12 Sep 2025 15:15:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D4943043B9;
+	Fri, 12 Sep 2025 15:49:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=queasysnail.net header.i=@queasysnail.net header.b="YpCc6mTm";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dQN79vfI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eKn3iU5x"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from fhigh-a5-smtp.messagingengine.com (fhigh-a5-smtp.messagingengine.com [103.168.172.156])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2591E27B356;
-	Fri, 12 Sep 2025 15:15:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D995F2AC17;
+	Fri, 12 Sep 2025 15:49:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757690104; cv=none; b=mT8oBXG5pZUZ6poNnBNP8faLexO98u3L1f8PEgq6bMCMM2t251KN57gJ1NumRC+nOB+pG2HQwokyDwV0GYHPIc9KeE7eqFZ8waV/dZhGOFqjpzDv2+x6ZaypdjjnNksD2LGbAqdGGlzO/guthzvGd726JB4wuagLSWn7oDXDuWs=
+	t=1757692173; cv=none; b=RwTH621AMfeq3IZGhhHqql0Jr/lELoYOdcl4oU5YBlUaCqNf/+hKogq4bPs4QcZgApNV3KNXqizI3SK1YbBzhDBex5TaBFSBAf4eMvrmp1jHUYoZ5wOXHusLg3THrO4k7HsE3MdLn68jbGEBGSqWJ6W6+UVGEcpRxyCWHlCMZ4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757690104; c=relaxed/simple;
-	bh=sTA7wdLLP5StoLzQlnJfbA/m/hasnjg9SRRfSR18UGY=;
+	s=arc-20240116; t=1757692173; c=relaxed/simple;
+	bh=oYVzC7tZjxxq6Zp3GdbKqJsbqRR/wPhIfgtU/YrCoc0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H2RI3B2BwuRIbvu8fSSZuMg/rLNfopRNGg5kzUid4t8XegAxRyX78eg8gc95iI+blv2Ai9n9bJ5zKAjCc4l+Am1IEgl8ujbS4Cf1aKHk2yhBOJVuaKuEdv/kjPUADZehrFtisLJBWovEWdpaNwtq5lI1xLXVdjWEoIPdL5EXZQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net; spf=pass smtp.mailfrom=queasysnail.net; dkim=pass (2048-bit key) header.d=queasysnail.net header.i=@queasysnail.net header.b=YpCc6mTm; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=dQN79vfI; arc=none smtp.client-ip=103.168.172.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=queasysnail.net
-Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 24A8A1400420;
-	Fri, 12 Sep 2025 11:15:00 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-10.internal (MEProxy); Fri, 12 Sep 2025 11:15:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=queasysnail.net;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1757690100; x=
-	1757776500; bh=uvtZXsfcELV22AtbWmz3YRzUDbKCxWdiP6BvEqTMA3I=; b=Y
-	pCc6mTmRbZ1PT+/u0Ku5tHOy3vZGinnuCT1oYEMaTR6M6tAYDYg12RLHY1WrZ84W
-	qcs+iKRF9g+RmsmeffRAob1lH1jH8AdSzX++E8/IFgN5eBBFB/RwCpkM/Mm6cUBU
-	h5HMTdU1hwb8WHLdEAkHkFZwYMQ115lyuH9D2IdhEVO7bICR9bO/4n+S4/ylTPXi
-	DxiEmqL7+UDNocYRG8ct6xFnNxrtkmZRfYr7LIj9sMYwmkgDiN3XqPiFfALzikqL
-	zOce/QfGHw4QlVr7qttCxjCFXXbRsQxISDsyAf23ud7iY0hO9+sN7i30TmLwN5by
-	aI+bCu4hMRXcg+gEzkPFg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1757690100; x=1757776500; bh=uvtZXsfcELV22AtbWmz3YRzUDbKCxWdiP6B
-	vEqTMA3I=; b=dQN79vfIb3K02YjC3P/u9/D+Y8Ug+2xruRrTk0h4gSS4AnwCt/K
-	CsrMvG7iPWfXm9S2BrGBIU15m8AHDhkOvceGRGhlhVewELUsnt910wYdujOMbtiD
-	5lZXmCgfp6WahdRwiDSmzbkkqrwk2sDkAPxNrVW7muCA0VxlY6uKfj4dZovAZ9a9
-	FvXh4Xb5XC/E0VRwjz2WcHkHafhG3+QEWqRrZZUPTnsM8+LO7k1i8cDhPCxKyHF+
-	jdpFQFdBPKQu6hJC37gIRPj3WERuNXnLSAXHjG5eYDRAY/ARMJQNYemic0uRtzBz
-	YX0M6ahP82mwTFn9ONcZWzx88doIVL1uTXw==
-X-ME-Sender: <xms:8zjEaPiw75v6e0-ZjTS1NqzxwkjqUUEn4uiUJRWuYXDUou1T6wrIGw>
-    <xme:8zjEaH2x_gY7709oabEQ71Jw0gcxmG72T4HWvDL9AcmnnmZDIqxZyRoOvUcWTzC1i
-    zqCXRVm8uDxELe3c8c>
-X-ME-Received: <xmr:8zjEaEkeqrKPKhyY4z2sr2HXFazIUuieO5nCT51fjQszPpLNy3yBCQ1VTPWW>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvleefkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpeffhffvvefukfhfgggtuggjsehttdertddttdejnecuhfhrohhmpefurggsrhhinhgr
-    ucffuhgsrhhotggruceoshgusehquhgvrghshihsnhgrihhlrdhnvghtqeenucggtffrrg
-    htthgvrhhnpeeuhffhfffgfffhfeeuiedugedtfefhkeegteehgeehieffgfeuvdeuffef
-    gfduffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hsugesqhhuvggrshihshhnrghilhdrnhgvthdpnhgspghrtghpthhtohepudeipdhmohgu
-    vgepshhmthhpohhuthdprhgtphhtthhopehtrghrihhqthesnhhvihguihgrrdgtohhmpd
-    hrtghpthhtohepvgguuhhmrgiivghtsehgohhoghhlvgdrtghomhdprhgtphhtthhopehk
-    uhgsrgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepphgrsggvnhhisehrvgguhhgrth
-    drtghomhdprhgtphhtthhopegrnhgurhgvfidonhgvthguvghvsehluhhnnhdrtghhpdhr
-    tghpthhtohepuggrvhgvmhesuggrvhgvmhhlohhfthdrnhgvthdprhgtphhtthhopehsrg
-    gvvggumhesnhhvihguihgrrdgtohhmpdhrtghpthhtoheplhgvohhnsehkvghrnhgvlhdr
-    ohhrghdprhgtphhtthhopehmsghlohgthhesnhhvihguihgrrdgtohhm
-X-ME-Proxy: <xmx:8zjEaOuW7JgBvUC7YndKSAwADOCWAYc3fihhz8Lz9Ys1f7GvnWWeHw>
-    <xmx:8zjEaM2vXWhfhufI4Mvq_3cT1BFykhcyD_ageMNbZaFforq90Uj9uw>
-    <xmx:8zjEaCRG0UIdhYyt0j0dwt6ZE_Ze1ZCz3mxP-30XXXDWhjT8hu_SdQ>
-    <xmx:8zjEaIuzh5Xt5akEBi6fRAh4YPjYIOFdHwTcUBhfNUrIdW0AIvlY9Q>
-    <xmx:9DjEaLI5-lBhMfa3tbkMJi5kCLWWuGWd-N_NOYv8zH1PN7OIQfO0CZIN>
-Feedback-ID: i934648bf:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 12 Sep 2025 11:14:58 -0400 (EDT)
-Date: Fri, 12 Sep 2025 17:14:56 +0200
-From: Sabrina Dubroca <sd@queasysnail.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=U7yY2DfMbiiTQtipTTew8wC9M5OfLYBfdegriYeuu/aevfpq5nc1PrTZNtEWrWiGTw3hufHq6jwuZkt0B584tBZ85SV6sH+hxldJlugbThQkbLi6NxDfnoYSsepGs1uWaBWSWHgUWlGDCfLiWxCS+/iKF49NadsHTQcTXy2zde8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eKn3iU5x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33B50C4CEF1;
+	Fri, 12 Sep 2025 15:49:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757692172;
+	bh=oYVzC7tZjxxq6Zp3GdbKqJsbqRR/wPhIfgtU/YrCoc0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eKn3iU5xMHxJPtWKw3aAKBbDHY6hZ4bYpvcibDPz4NHZFpsLDdTdNxFm4uw/fRG7j
+	 6E8e9VdkE5MZMFXlj0S684FEB46rlRHoLW8mybkDC0aeTbYnONrsM3Vjne10MDSTE5
+	 WxZNB90ItxqdJvfnYBglPocNIxFpMCLyJjo7YACv+NtEb/scrE9qXoUlvi46EOQGxM
+	 8uTOCzwHC0rE3G4uPCVbuekozk/uGKpU9/+6zCRd/D+zsv98y41VL0VURFCGTixqN8
+	 dHit5rzQSjYNdpzy8nCqHBkoIwRzLLJ460UEn6J4/0FstYgRV20LOXPnVHodcDJRtu
+	 VNUrkYRjCEjMQ==
+Date: Fri, 12 Sep 2025 16:49:26 +0100
+From: Simon Horman <horms@kernel.org>
 To: Tariq Toukan <tariqt@nvidia.com>
-Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
 	Andrew Lunn <andrew+netdev@lunn.ch>,
 	"David S. Miller" <davem@davemloft.net>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
-	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
+	Mark Bloch <mbloch@nvidia.com>,
+	Sabrina Dubroca <sd@queasysnail.net>, netdev@vger.kernel.org,
 	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Gal Pressman <gal@nvidia.com>, Boris Pismenny <borisp@nvidia.com>,
-	Shahar Shitrit <shshitrit@nvidia.com>
-Subject: Re: [PATCH net 2/3] net: tls: Cancel RX async resync request on
- rdc_delta overflow
-Message-ID: <aMQ48Ba7BcHKjhP_@krikkit>
-References: <1757486861-542133-1-git-send-email-tariqt@nvidia.com>
- <1757486861-542133-3-git-send-email-tariqt@nvidia.com>
+	Gal Pressman <gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>,
+	Carolina Jubran <cjubran@nvidia.com>,
+	Jianbo Liu <jianbol@nvidia.com>
+Subject: Re: [PATCH mlx5-next 2/3] net/mlx5: Refactor MACsec WQE metadata
+ shifts
+Message-ID: <20250912154926.GG30363@horms.kernel.org>
+References: <1757574619-604874-1-git-send-email-tariqt@nvidia.com>
+ <1757574619-604874-3-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -113,61 +68,112 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1757486861-542133-3-git-send-email-tariqt@nvidia.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1757574619-604874-3-git-send-email-tariqt@nvidia.com>
 
-2025-09-10, 09:47:40 +0300, Tariq Toukan wrote:
-> From: Shahar Shitrit <shshitrit@nvidia.com>
+On Thu, Sep 11, 2025 at 10:10:18AM +0300, Tariq Toukan wrote:
+> From: Carolina Jubran <cjubran@nvidia.com>
 > 
-> When a netdev issues an RX async resync request, the TLS module
-> increments rcd_delta for each new record that arrives. This tracks
-> how far the current record is from the point where synchronization
-> was lost.
+> Introduce MLX5_ETH_WQE_FT_META_SHIFT as a shared base offset for
+> features that use the lower 8 bits of the WQE flow_table_metadata
+> field, currently used for timestamping, IPsec, and MACsec.
 > 
-> When rcd_delta reaches its threshold, it indicates that the device
-> response is either excessively delayed or unlikely to arrive at all
-> (at that point, tcp_sn may have wrapped around, so a match would no
-> longer be valid anyway).
+> Define MLX5_ETH_WQE_FT_META_MACSEC_FS_ID_MASK so that fs_id occupies
+> bits 2–5, making it clear that fs_id occupies bits in the metadata.
 > 
-> Previous patch introduced tls_offload_rx_resync_async_request_cancel()
-> to explicitly cancel resync requests when a device response failure
-> is detected.
+> Set MLX5_ETH_WQE_FT_META_MACSEC_MASK as the OR of the MACsec flag and
+> MLX5_ETH_WQE_FT_META_MACSEC_FS_ID_MASK, corresponding to the original
+> 0x3E mask.
 > 
-> This patch adds a final safeguard: cancel the async resync request when
-> rcd_delta crosses its threshold, as reaching this point implies that
-> earlier cancellation did not occur.
+> Update the fs_id macro to right-shift the MACsec flag by
+> MLX5_ETH_WQE_FT_META_SHIFT and update the RoCE modify-header action to
+> use it.
 > 
-> Signed-off-by: Shahar Shitrit <shshitrit@nvidia.com>
+> Introduce the helper macro MLX5_MACSEC_TX_METADATA(fs_id) to compose
+> the full shifted MACsec metadata value.
+> 
+> These changes make it explicit exactly which metadata bits carry MACsec
+> information, simplifying future feature exclusions when multiple
+> features share the WQE flowtable metadata.
+> 
+> In addition, drop the incorrect “RX flow steering” comment, since this
+> applies to TX flow steering.
+> 
+> Signed-off-by: Carolina Jubran <cjubran@nvidia.com>
+> Reviewed-by: Jianbo Liu <jianbol@nvidia.com>
+> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
 > Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-> ---
->  net/tls/tls_device.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
-> index f672a62a9a52..56c14f1647a4 100644
-> --- a/net/tls/tls_device.c
-> +++ b/net/tls/tls_device.c
-> @@ -721,8 +721,11 @@ tls_device_rx_resync_async(struct tls_offload_resync_async *resync_async,
->  		/* shouldn't get to wraparound:
->  		 * too long in async stage, something bad happened
->  		 */
-> -		if (WARN_ON_ONCE(resync_async->rcd_delta == USHRT_MAX))
-> +		if (WARN_ON_ONCE(resync_async->rcd_delta == USHRT_MAX)) {
 
-Do we still need to WARN here? It's a condition that can actually
-happen (even if it's rare), and that the stack can handle, so maybe
-not?
+Hi Carolina, Tariq, all,
 
-> +			/* cancel resync request */
-> +			atomic64_set(&resync_async->req, 0);
->  			return false;
-> +		}
->  
->  		/* asynchronous stage: log all headers seq such that
->  		 * req_seq <= seq <= end_seq, and wait for real resync request
-> -- 
-> 2.31.1
-> 
+I'm wondering if dropping _SHIFT and making use of FIELD_PREP
+would lead to a cleaner and more idiomatic implementation.
 
--- 
-Sabrina
+I'm thinking that such an approach would involve
+updating MLX5_ETH_WQE_FT_META_MACSEC_MASK rather
+than MLX5_ETH_WQE_FT_META_MACSEC_SHIFT in the following patch.
+
+I'm thinking of something along the lines of following incremental patch.
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
+index 9ec450603176..58c0ff4af78f 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.c
+@@ -2218,7 +2218,7 @@ static int mlx5_macsec_fs_add_roce_rule_tx(struct mlx5_macsec_fs *macsec_fs, u32
+ 	MLX5_SET(set_action_in, action, data,
+ 		 mlx5_macsec_fs_set_tx_fs_id(fs_id));
+ 	MLX5_SET(set_action_in, action, offset,
+-		 MLX5_ETH_WQE_FT_META_MACSEC_SHIFT);
++		 __bf_shf(MLX5_ETH_WQE_FT_META_MACSEC_MASK));
+ 	MLX5_SET(set_action_in, action, length, 32);
+ 
+ 	modify_hdr = mlx5_modify_header_alloc(mdev, MLX5_FLOW_NAMESPACE_RDMA_TX_MACSEC,
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.h b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.h
+index 15acaff43641..402840cb3110 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/macsec_fs.h
+@@ -13,18 +13,15 @@
+ #define MLX5_MACSEC_RX_METADAT_HANDLE(metadata)  ((metadata) & MLX5_MACSEC_RX_FS_ID_MASK)
+ 
+ /* MACsec TX flow steering */
+-#define MLX5_ETH_WQE_FT_META_MACSEC_MASK \
+-	(MLX5_ETH_WQE_FT_META_MACSEC | MLX5_ETH_WQE_FT_META_MACSEC_FS_ID_MASK)
+-#define MLX5_ETH_WQE_FT_META_MACSEC_SHIFT MLX5_ETH_WQE_FT_META_SHIFT
++#define MLX5_ETH_WQE_FT_META_MACSEC_MASK GENMASK(7, 0)
+ 
+ /* MACsec fs_id handling for steering */
+ #define mlx5_macsec_fs_set_tx_fs_id(fs_id) \
+-	(((MLX5_ETH_WQE_FT_META_MACSEC) >> MLX5_ETH_WQE_FT_META_MACSEC_SHIFT) \
+-	 | ((fs_id) << 2))
++	(MLX5_ETH_WQE_FT_META_IPSEC | (fs_id) << 2)
+ 
+ #define MLX5_MACSEC_TX_METADATA(fs_id) \
+-	(mlx5_macsec_fs_set_tx_fs_id(fs_id) << \
+-	 MLX5_ETH_WQE_FT_META_MACSEC_SHIFT)
++	FIELD_PREP(MLX5_ETH_WQE_FT_META_MACSEC_MASK, \
++		   mlx5_macsec_fs_set_tx_fs_id(fs_id))
+ 
+ /* MACsec fs_id uses 4 bits, supports up to 16 interfaces */
+ #define MLX5_MACSEC_NUM_OF_SUPPORTED_INTERFACES 16
+diff --git a/include/linux/mlx5/qp.h b/include/linux/mlx5/qp.h
+index b21be7630575..5546c7bd2c83 100644
+--- a/include/linux/mlx5/qp.h
++++ b/include/linux/mlx5/qp.h
+@@ -251,14 +251,9 @@ enum {
+ 	MLX5_ETH_WQE_SWP_OUTER_L4_UDP   = 1 << 5,
+ };
+ 
+-/* Base shift for metadata bits used by timestamping, IPsec, and MACsec */
+-#define MLX5_ETH_WQE_FT_META_SHIFT 0
+-
+ enum {
+-	MLX5_ETH_WQE_FT_META_IPSEC = BIT(0) << MLX5_ETH_WQE_FT_META_SHIFT,
+-	MLX5_ETH_WQE_FT_META_MACSEC = BIT(1) << MLX5_ETH_WQE_FT_META_SHIFT,
+-	MLX5_ETH_WQE_FT_META_MACSEC_FS_ID_MASK =
+-		GENMASK(5, 2) << MLX5_ETH_WQE_FT_META_SHIFT,
++	MLX5_ETH_WQE_FT_META_IPSEC = BIT(0),
++	MLX5_ETH_WQE_FT_META_MACSEC = BIT(1),
+ };
+ 
+ struct mlx5_wqe_eth_seg {
 
