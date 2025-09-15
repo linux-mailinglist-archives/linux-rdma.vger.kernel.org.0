@@ -1,291 +1,405 @@
-Return-Path: <linux-rdma+bounces-13363-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13364-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41995B5740C
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Sep 2025 11:06:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68FE9B5741D
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Sep 2025 11:08:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 153D11A21D29
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Sep 2025 09:06:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3D7C1A21DB7
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Sep 2025 09:08:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21D6D2F3600;
-	Mon, 15 Sep 2025 09:02:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D5612EFD80;
+	Mon, 15 Sep 2025 09:08:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Z6WMJZ+N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S0Y3Zl9t"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2054.outbound.protection.outlook.com [40.107.243.54])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C0B279324;
-	Mon, 15 Sep 2025 09:01:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.54
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757926919; cv=fail; b=hZcqNK4NEhORNw162rSQkEUmAaCDS002LoBV2JsP3WZ3cCGjHkDE7QaKz8fzD9oTa3bwQSkMSxq+Bvmf0MoKY+OAHdYJlAG3VMIGMoMaoWMIyEvp0R18Ok0miiWZOSDxIkjhZ8yy5slC4kInRJhznNiTpwugaS/bwu8r0rnlCrg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757926919; c=relaxed/simple;
-	bh=nKvpqkVkcfGFo36XnUQs9TQRX9pDauwsrNQTqEVKBDk=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aupOcbQyN9+6ZW+q2nd7G+jf/+mQEs0w2rhKj1RQ4i7U3mpOMl0d++xYFgOaf6pAFK0NXUurt4USDqpeXsaCv2FNfdUd40KgPoRfK/+AVfvV7sep/9MQFmtC1G3JTbScmqq9lIEPaJ3f0u7DwAPDhgVb84vZStmDbAG3OI6dbBg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Z6WMJZ+N; arc=fail smtp.client-ip=40.107.243.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=MCECjYNbvhp0fIiyVn7NBKcAnE+ouihp9YFzsFf4wqa0WVTOSWMK72pcytxpwCLRSwv3X03uiUWUjEqsspDa7gKAtsQP5ZT9KxbKhEaqCvHU0s/YK9zy8fQNGFlyNHWVj3MES5YXD9utTbPFRIrUKdZz06gdFSKvPp4TXpw7/3AmZp6ljsf2tmiw1rLlVxtJfLOLzVc0weoamDIe1aMlFM3cCQBSGQEwgj4Cr8KMo/5J0CBTdgpxUah/+AZarASZyD0p+1WkhaQ8lesqT7hqbvJGZX19Srf1QOX8B4QWlOZq5wTglsUGHKXsDpICsr6alYL8zAqApq5H0WJMqpsjYw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IDub70ys3u1U0+3kpB4xyFatjKV1C2LaNK5PD0Kk6/c=;
- b=nYZDkVVSw77GbFD/XsahAeq7jh5GtDM2BClDvYNbOEODAu6EphNR3TIZoepU1r7yKhIVadBf+0K6hzgTtoZex3tFdCRthBIf/gNZFSbFFkt0pkawozDtou0b37Bmo8UcxnkgJM9VJY4cDdnDLNQEgs5yu63d/6yS904Cg5vQ3J5glTNcCcYleIru8MLxzD50UeaZf/PefyFXLkIEbM5RLPcrND/r8OvLQe/zY8sx3ErpzIUDhS4fEyWK8IQkTcIC7GUib/ZjgkGbv5UbFyJhKLY95VDc7BNznqJaxEVoLKiQw9edBEiuDNtyMHLDDtq1l/UR+Jq+oVMPW6v/HcDsjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=broadcom.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IDub70ys3u1U0+3kpB4xyFatjKV1C2LaNK5PD0Kk6/c=;
- b=Z6WMJZ+NhuTt9+4Ibfs0J30595uOimm/5lBvAwr1yvUjlEU+16nWdsrf2LM+R56FjQfl+IPE5YJp+pl17qWSg0xhx6oFGz/JHl7UhdSJ7c+vz8ebHelcSy15MbsVgUIgtSu54tMDeKM/Vc6Y2tXXTfCsReUhYdIAWoco43ybEPH0hqeNGp7LxK/KKI24xXBZO4n7BFGV4iKZol7seb+kUAml0e5hl2IsQEErD8AWs74Yp/0A1dzOelsDcCxp7D3+yxvazS2rQhXYizsSk9yPnoTeVlZHV02whQTj2QNyk0pQ3vCEFwSgWwTTHPR3mJamkUdOAdcyxcPsFVRnhbgx7A==
-Received: from BYAPR07CA0008.namprd07.prod.outlook.com (2603:10b6:a02:bc::21)
- by IA0PR12MB7752.namprd12.prod.outlook.com (2603:10b6:208:442::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9115.19; Mon, 15 Sep
- 2025 09:01:52 +0000
-Received: from SJ1PEPF00002311.namprd03.prod.outlook.com
- (2603:10b6:a02:bc:cafe::c1) by BYAPR07CA0008.outlook.office365.com
- (2603:10b6:a02:bc::21) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9115.20 via Frontend Transport; Mon,
- 15 Sep 2025 09:01:51 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SJ1PEPF00002311.mail.protection.outlook.com (10.167.242.165) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9115.13 via Frontend Transport; Mon, 15 Sep 2025 09:01:51 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Mon, 15 Sep
- 2025 02:01:39 -0700
-Received: from localhost (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Mon, 15 Sep
- 2025 02:01:37 -0700
-Date: Mon, 15 Sep 2025 12:00:30 +0300
-From: Leon Romanovsky <leonro@nvidia.com>
-To: Siva Reddy Kallam <siva.kallam@broadcom.com>
-CC: Simon Horman <horms@kernel.org>, <jgg@nvidia.com>,
-	<linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<vikas.gupta@broadcom.com>, <selvin.xavier@broadcom.com>,
-	<anand.subramanian@broadcom.com>, Usman Ansari <usman.ansari@broadcom.com>
-Subject: Re: [PATCH 5/8] RDMA/bng_re: Add infrastructure for enabling
- Firmware channel
-Message-ID: <20250915090030.GB9353@unreal>
-References: <20250829123042.44459-1-siva.kallam@broadcom.com>
- <20250829123042.44459-6-siva.kallam@broadcom.com>
- <20250912083928.GS30363@horms.kernel.org>
- <CAMet4B7SJXk1yMsJ61a026U3wNKr-7oNX9_-V+_W1PA0VRaaTQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 247D31F30BB;
+	Mon, 15 Sep 2025 09:08:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1757927288; cv=none; b=nM9X259CtvvEhIyLPoPWmWQjW0t1YGat8ScgEkr9F1CKqbk7Nyfvv+4vQA32gttLE6FI9sYmWAvJi0BB09a66omM8PSXHU8ET9dXogwzEsLzHdQOokXxCfsfHXqP4AaCIXQUkcjkf3HhAhnxawy/cdEn3ZL7Quy+fIr1m0TcekU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1757927288; c=relaxed/simple;
+	bh=rdmU8XtIiyaAZo1ozKb8u794i2m7nr5UIQUOiAgCmRQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DqN+V5fyY/H6TffYTwuNORQe2oiRZAr48E1rg2zc66ByBh4kOMzOHbLdg8XGSgWmfegCz1RmvVE+jKiSPMuDLzQn8xrmRf9VSKrZjAPF/ddTak81NFI3OkgzvDOxtwv/NM2QvRuvV9Ln+vgwTxXGbFWuqthdBWvcEG7/DlUqwa8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S0Y3Zl9t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEBA1C4CEF9;
+	Mon, 15 Sep 2025 09:08:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757927287;
+	bh=rdmU8XtIiyaAZo1ozKb8u794i2m7nr5UIQUOiAgCmRQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=S0Y3Zl9tr9rZnyayfArlslImUYTjwCENJk9uhd4VRzkWjaiQT9ZsvL8cI9EWJm13i
+	 Uw1WOmMiH81G+7XM7hBEcpIfU3wYGgK0odaCKjrtVVAaFkA2dVfVBdWwpFEnJErUe8
+	 SqBLnzRUOB8f+mIEs29xCV7nebv7uPx1ITX0Amtr+anDZLojMZMclCSlh9tuCOpmGR
+	 gvKx0ACxc0nwqwf4+dq+Z/nfULqkW4nPBESDiec3jwt2TwvXg4jf5iY6EQg+lVzXQC
+	 ZP2zz8ayFz7Kr+X1Uhh+yvJX8IrfU45AqtcmugOj8lr7rvxoRuBN+H3imiJ7Dc8WEV
+	 8Xm+PJ0tF0tkQ==
+Date: Mon, 15 Sep 2025 12:08:02 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Saeed Mahameed <saeedm@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
+	Parav Pandit <parav@nvidia.com>, Shay Drory <shayd@nvidia.com>
+Subject: Re: [PATCH net-next 1/4] net/mlx5: Refactor devcom to use match
+ attributes
+Message-ID: <20250915090802.GC9353@unreal>
+References: <1757572267-601785-1-git-send-email-tariqt@nvidia.com>
+ <1757572267-601785-2-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMet4B7SJXk1yMsJ61a026U3wNKr-7oNX9_-V+_W1PA0VRaaTQ@mail.gmail.com>
-X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF00002311:EE_|IA0PR12MB7752:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2cd6e19c-6252-44a5-a1cd-08ddf4368306
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|1800799024|82310400026|376014|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?bnJhQ242bEoyUkxZUWwwK0hqNVh6V3lON0Vsa25oYVBRSzJjWWxHeFBnUm8z?=
- =?utf-8?B?bXVYaW5MUnZnc0FHNE4zREM3blNXNVdTM3dNOE44Y1dpZ29FL2p5L1FLaUJ2?=
- =?utf-8?B?THcwOFZJbXM3ZklCYjRIQ0lYNC9UU3dVTFVIQkRVU1pCSzFhVy85cWEvaU85?=
- =?utf-8?B?MDZxamhoQTRHdW9DTUxzSTdRblRwVmFMb2FKQ24zU0hjemxRVmp5MUpYT0li?=
- =?utf-8?B?SDYzazRsNGRuSlFXbUhFUGlaQk5BbjBxZm1SOVByTVhIOFBrWUU0S01oeldB?=
- =?utf-8?B?NTlpUHY5VWE3MFRndno5K3RsUFp1eENrYkRpcmpKZTFtVlBIY21jMmVxMGsr?=
- =?utf-8?B?M0p6TFpubHNmRlhVaGtja1hxMzhwam9YOGFSb25zemdWMXhVY3pUazQrVmlj?=
- =?utf-8?B?bHphdWVRdWtKNkhPUG96RTRFc1gvQjd4TXVzRE10ZkJnWG4vZGZ3bzFZa1VS?=
- =?utf-8?B?SkNPNW5PVmd3a0NOR1UyWVlWa3V1T0FtRDNhbWxvR0ZTdkpvUGxRN1EvdWFP?=
- =?utf-8?B?WWo5ejN1dlNmM2pGeXlDeFltTDVjQU1lTUJHMlhUczZhQXg3MHg2Zy9rUG8y?=
- =?utf-8?B?Um44NlVGMFJwN1g4bzJSTzQwMS8vMTF0b3VnK25LS3ZXcHNpWEJqT2h6bXRj?=
- =?utf-8?B?SFZJUURwMThKaThqZjU3dE1hMUYzZmcxbzRVWkVpV3B3emwydXhrbGlFeEUv?=
- =?utf-8?B?b3E3aWlDNUhhNGVCbGd6bi9nMkFEVnJ1YzYvbFNsU1JEZ2wrakVFZEZpMVJP?=
- =?utf-8?B?Sm9FQUFjbmJYMmo1bEZ1eW9xQXBNRUppL09HY0x4ZUVhRHZXdmIwZFRucHVq?=
- =?utf-8?B?ajg4L2V5cXgrZzBHTzRxTGZHMWtFMDRyb0MxU3JSZWlXNDJRakJKc2VXOEpN?=
- =?utf-8?B?MUFtc3lZRnp1Q1RXd3dKbXpYeC9MbHIvSjhCbEpQcnNrNE95ZGxqNmdnUGdN?=
- =?utf-8?B?cjRwNEd0YVRIRGNvY3pwYnZPYTZ0WFV4NWE3cjZRNHRmRmt5YWFuc2dNRkdq?=
- =?utf-8?B?VEg4N3h3VVFBbXBPamd1djJEVGtuNThZUklQYURNN04wN1dZcGhLNDc4QllV?=
- =?utf-8?B?WXEyMWJ1RXpKSHlGYVIvUGtEbklYajVaa1l5eXlsbUZENUVxbUZJNUtDV1dk?=
- =?utf-8?B?U08wdCtmSTZlSGdZeWJXWlhmVVBnVjdZbjVFWXRaSFF4eElKcHdVMSt0MjJS?=
- =?utf-8?B?Y0pqYkZNV0JTNmI5a21Xd1JoS2pOQ2M4ZVFGNXo0eXk4eVVHd2F6c2dVRnh0?=
- =?utf-8?B?blo0NTIvRk9sQ3REVlZ6NDRZcUZueUU4SWNtcmp4Qk5FYmxGcU9tK0dodC9C?=
- =?utf-8?B?ckppWWpTYVhWWnRjWWNwcU9rMlBwZW1IRVJ4U0NLUnFTVmE3STk1T0JtTkxx?=
- =?utf-8?B?SXFFanlZbTlRNnZGaXo3UnMwYTRsRkhyekxjbXBzZkt6R1hwZm52QlRXRWJn?=
- =?utf-8?B?QzZGbHRWT3N2TE01T0haa1MvVWFiYmZuNVBRT09jblUrMmR0a2tGSW9OZnRP?=
- =?utf-8?B?QjBXM3o1VEtJbWJkTi9nY1NKYkpRZ2N6THJyUjNGSFVDdlp4NnRtcTRTazJx?=
- =?utf-8?B?SFFvdXBCR2dHWExuSU5PWVBHYmFYRHY3Y3Z1UXlsZ3FNWXUzUjVlQVViTlBM?=
- =?utf-8?B?aDRyVlJnUU5PVEI1V0ZGcGtJL2R6YnlCdXd5U2ZITlJiTjkrTm9yK2lHa3hS?=
- =?utf-8?B?b1NiTFlYNkVWVjU1c3I1ZDlwYlJPcHZkVGlGclRCTi9PdzZIUFdhMkRtZS9M?=
- =?utf-8?B?WTF0SG1XWnE4aUFsQmtsaG1yTGlvL09QcWxmbkl6QVYyNmhDZ0djMVo3cHJ1?=
- =?utf-8?B?RDVFT3A3bzZjcy9CUzVEWXI3dDBaVUwwOGVhWW1XNExDWDZnMEl3L0Z0cERB?=
- =?utf-8?B?ZjI3Q3U5VVJGNnRwSkY0SFIzc1dRdWtVbWpJUlBMeTgvZ2RmMnd6RjJuM094?=
- =?utf-8?B?VG1xMkpobVN5UWRKMmVqZlp0MzhuOWlKQ0xFcHU0RWRBemFuTmVIWUh4UE5I?=
- =?utf-8?B?VGUxTUJ5QytSeER6YlRHQld3Y1owOG8xa2x3dUFvN0N6SXpXczFwalpjOU43?=
- =?utf-8?Q?DaYmTP?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(82310400026)(376014)(7053199007);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2025 09:01:51.9783
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2cd6e19c-6252-44a5-a1cd-08ddf4368306
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SJ1PEPF00002311.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7752
+In-Reply-To: <1757572267-601785-2-git-send-email-tariqt@nvidia.com>
 
-On Mon, Sep 15, 2025 at 02:14:19PM +0530, Siva Reddy Kallam wrote:
-> On Fri, Sep 12, 2025 at 2:09 PM Simon Horman <horms@kernel.org> wrote:
-> >
-> > On Fri, Aug 29, 2025 at 12:30:39PM +0000, Siva Reddy Kallam wrote:
-> > > Add infrastructure for enabling Firmware channel.
-> > >
-> > > Signed-off-by: Siva Reddy Kallam <siva.kallam@broadcom.com>
-> > > Reviewed-by: Usman Ansari <usman.ansari@broadcom.com>
-> >
-> > ...
-> >
-> > > diff --git a/drivers/infiniband/hw/bng_re/bng_fw.c b/drivers/infiniband/hw/bng_re/bng_fw.c
-> >
-> > ...
-> >
-> > > +/* function events */
-> > > +static int bng_re_process_func_event(struct bng_re_rcfw *rcfw,
-> > > +                                  struct creq_func_event *func_event)
-> > > +{
-> > > +     int rc;
-> > > +
-> > > +     switch (func_event->event) {
-> > > +     case CREQ_FUNC_EVENT_EVENT_TX_WQE_ERROR:
-> > > +             break;
-> > > +     case CREQ_FUNC_EVENT_EVENT_TX_DATA_ERROR:
-> > > +             break;
-> > > +     case CREQ_FUNC_EVENT_EVENT_RX_WQE_ERROR:
-> > > +             break;
-> > > +     case CREQ_FUNC_EVENT_EVENT_RX_DATA_ERROR:
-> > > +             break;
-> > > +     case CREQ_FUNC_EVENT_EVENT_CQ_ERROR:
-> > > +             break;
-> > > +     case CREQ_FUNC_EVENT_EVENT_TQM_ERROR:
-> > > +             break;
-> > > +     case CREQ_FUNC_EVENT_EVENT_CFCQ_ERROR:
-> > > +             break;
-> > > +     case CREQ_FUNC_EVENT_EVENT_CFCS_ERROR:
-> > > +             /* SRQ ctx error, call srq_handler??
-> > > +              * But there's no SRQ handle!
-> > > +              */
-> > > +             break;
-> > > +     case CREQ_FUNC_EVENT_EVENT_CFCC_ERROR:
-> > > +             break;
-> > > +     case CREQ_FUNC_EVENT_EVENT_CFCM_ERROR:
-> > > +             break;
-> > > +     case CREQ_FUNC_EVENT_EVENT_TIM_ERROR:
-> > > +             break;
-> > > +     case CREQ_FUNC_EVENT_EVENT_VF_COMM_REQUEST:
-> > > +             break;
-> > > +     case CREQ_FUNC_EVENT_EVENT_RESOURCE_EXHAUSTED:
-> > > +             break;
-> > > +     default:
-> > > +             return -EINVAL;
-> > > +     }
-> > > +
-> > > +     return rc;
-> >
-> > rc does not appear to be initialised in this function.
-> >
-> > Flagged by Clang 20.1.8 with -Wuninitialized
+On Thu, Sep 11, 2025 at 09:31:04AM +0300, Tariq Toukan wrote:
+> From: Shay Drory <shayd@nvidia.com>
 > 
-> Thank you for the review. We will fix it in the next version of the patchset.
+> Refactor the devcom interface to use a match attribute structure instead
+> of passing raw keys. This change lays the groundwork for extending devcom
+> matching logic with additional fields like net namespace, improving its
+> flexibility and robustness.
+> 
+> No functional changes.
+> 
+> Signed-off-by: Shay Drory <shayd@nvidia.com>
+> Reviewed-by: Mark Bloch <mbloch@nvidia.com>
+> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> ---
+>  .../net/ethernet/mellanox/mlx5/core/en_main.c |  6 +++-
+>  .../net/ethernet/mellanox/mlx5/core/en_tc.c   |  7 +++--
+>  .../net/ethernet/mellanox/mlx5/core/eswitch.h |  7 +++--
+>  .../mellanox/mlx5/core/eswitch_offloads.c     |  5 +--
+>  .../ethernet/mellanox/mlx5/core/lib/clock.c   | 14 ++++++---
+>  .../ethernet/mellanox/mlx5/core/lib/devcom.c  | 31 +++++++++++++------
+>  .../ethernet/mellanox/mlx5/core/lib/devcom.h  | 10 +++++-
+>  .../net/ethernet/mellanox/mlx5/core/lib/sd.c  |  4 ++-
+>  .../net/ethernet/mellanox/mlx5/core/main.c    |  7 +++--
+>  9 files changed, 65 insertions(+), 26 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> index 714cce595692..fe5f5ae433b7 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> @@ -235,9 +235,13 @@ static int mlx5e_devcom_event_mpv(int event, void *my_data, void *event_data)
+>  
+>  static int mlx5e_devcom_init_mpv(struct mlx5e_priv *priv, u64 *data)
+>  {
+> +	struct mlx5_devcom_match_attr attr = {
+> +		.key.val = *data,
+> +	};
+> +
+>  	priv->devcom = mlx5_devcom_register_component(priv->mdev->priv.devc,
+>  						      MLX5_DEVCOM_MPV,
+> -						      *data,
+> +						      &attr,
+>  						      mlx5e_devcom_event_mpv,
+>  						      priv);
+>  	if (IS_ERR(priv->devcom))
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+> index 32c07a8b03d1..9874a15c6fba 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
+> @@ -5387,12 +5387,13 @@ void mlx5e_tc_ht_cleanup(struct rhashtable *tc_ht)
+>  int mlx5e_tc_esw_init(struct mlx5_rep_uplink_priv *uplink_priv)
+>  {
+>  	const size_t sz_enc_opts = sizeof(struct tunnel_match_enc_opts);
+> +	struct mlx5_devcom_match_attr attr = {};
+>  	struct netdev_phys_item_id ppid;
+>  	struct mlx5e_rep_priv *rpriv;
+>  	struct mapping_ctx *mapping;
+>  	struct mlx5_eswitch *esw;
+>  	struct mlx5e_priv *priv;
+> -	u64 mapping_id, key;
+> +	u64 mapping_id;
+>  	int err = 0;
+>  
+>  	rpriv = container_of(uplink_priv, struct mlx5e_rep_priv, uplink_priv);
+> @@ -5448,8 +5449,8 @@ int mlx5e_tc_esw_init(struct mlx5_rep_uplink_priv *uplink_priv)
+>  
+>  	err = netif_get_port_parent_id(priv->netdev, &ppid, false);
+>  	if (!err) {
+> -		memcpy(&key, &ppid.id, sizeof(key));
+> -		mlx5_esw_offloads_devcom_init(esw, key);
+> +		memcpy(&attr.key.val, &ppid.id, sizeof(attr.key.val));
+> +		mlx5_esw_offloads_devcom_init(esw, &attr);
+>  	}
+>  
+>  	return 0;
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
+> index 4fe285ce32aa..df3756d7e52e 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
+> @@ -433,7 +433,8 @@ int mlx5_eswitch_enable(struct mlx5_eswitch *esw, int num_vfs);
+>  void mlx5_eswitch_disable_sriov(struct mlx5_eswitch *esw, bool clear_vf);
+>  void mlx5_eswitch_disable_locked(struct mlx5_eswitch *esw);
+>  void mlx5_eswitch_disable(struct mlx5_eswitch *esw);
+> -void mlx5_esw_offloads_devcom_init(struct mlx5_eswitch *esw, u64 key);
+> +void mlx5_esw_offloads_devcom_init(struct mlx5_eswitch *esw,
+> +				   const struct mlx5_devcom_match_attr *attr);
+>  void mlx5_esw_offloads_devcom_cleanup(struct mlx5_eswitch *esw);
+>  bool mlx5_esw_offloads_devcom_is_ready(struct mlx5_eswitch *esw);
+>  int mlx5_eswitch_set_vport_mac(struct mlx5_eswitch *esw,
+> @@ -928,7 +929,9 @@ static inline void mlx5_eswitch_cleanup(struct mlx5_eswitch *esw) {}
+>  static inline int mlx5_eswitch_enable(struct mlx5_eswitch *esw, int num_vfs) { return 0; }
+>  static inline void mlx5_eswitch_disable_sriov(struct mlx5_eswitch *esw, bool clear_vf) {}
+>  static inline void mlx5_eswitch_disable(struct mlx5_eswitch *esw) {}
+> -static inline void mlx5_esw_offloads_devcom_init(struct mlx5_eswitch *esw, u64 key) {}
+> +static inline void
+> +mlx5_esw_offloads_devcom_init(struct mlx5_eswitch *esw,
+> +			      const struct mlx5_devcom_match_attr *attr) {}
+>  static inline void mlx5_esw_offloads_devcom_cleanup(struct mlx5_eswitch *esw) {}
+>  static inline bool mlx5_esw_offloads_devcom_is_ready(struct mlx5_eswitch *esw) { return false; }
+>  static inline bool mlx5_eswitch_is_funcs_handler(struct mlx5_core_dev *dev) { return false; }
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+> index d57f86d297ab..bc9838dc5bf8 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+> @@ -3104,7 +3104,8 @@ static int mlx5_esw_offloads_devcom_event(int event,
+>  	return err;
+>  }
+>  
+> -void mlx5_esw_offloads_devcom_init(struct mlx5_eswitch *esw, u64 key)
+> +void mlx5_esw_offloads_devcom_init(struct mlx5_eswitch *esw,
+> +				   const struct mlx5_devcom_match_attr *attr)
+>  {
+>  	int i;
+>  
+> @@ -3123,7 +3124,7 @@ void mlx5_esw_offloads_devcom_init(struct mlx5_eswitch *esw, u64 key)
+>  	esw->num_peers = 0;
+>  	esw->devcom = mlx5_devcom_register_component(esw->dev->priv.devc,
+>  						     MLX5_DEVCOM_ESW_OFFLOADS,
+> -						     key,
+> +						     attr,
+>  						     mlx5_esw_offloads_devcom_event,
+>  						     esw);
+>  	if (IS_ERR(esw->devcom))
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
+> index 7ad3baca99de..8f2ad45bec9f 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
+> @@ -1435,14 +1435,20 @@ static int mlx5_clock_alloc(struct mlx5_core_dev *mdev, bool shared)
+>  static void mlx5_shared_clock_register(struct mlx5_core_dev *mdev, u64 key)
+>  {
+>  	struct mlx5_core_dev *peer_dev, *next = NULL;
+> +	struct mlx5_devcom_match_attr attr = {
+> +		.key.val = key,
+> +	};
+> +	struct mlx5_devcom_comp_dev *compd;
+>  	struct mlx5_devcom_comp_dev *pos;
+>  
+> -	mdev->clock_state->compdev = mlx5_devcom_register_component(mdev->priv.devc,
+> -								    MLX5_DEVCOM_SHARED_CLOCK,
+> -								    key, NULL, mdev);
+> -	if (IS_ERR(mdev->clock_state->compdev))
+> +	compd = mlx5_devcom_register_component(mdev->priv.devc,
+> +					       MLX5_DEVCOM_SHARED_CLOCK,
+> +					       &attr, NULL, mdev);
+> +	if (IS_ERR(compd))
+>  		return;
+>  
+> +	mdev->clock_state->compdev = compd;
+> +
+>  	mlx5_devcom_comp_lock(mdev->clock_state->compdev);
+>  	mlx5_devcom_for_each_peer_entry(mdev->clock_state->compdev, peer_dev, pos) {
+>  		if (peer_dev->clock) {
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c
+> index 7b0766c89f4c..1ab9de316deb 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.c
+> @@ -22,11 +22,15 @@ struct mlx5_devcom_dev {
+>  	struct kref ref;
+>  };
+>  
+> +struct mlx5_devcom_key {
+> +	union mlx5_devcom_match_key key;
+> +};
+> +
+>  struct mlx5_devcom_comp {
+>  	struct list_head comp_list;
+>  	enum mlx5_devcom_component id;
+> -	u64 key;
+>  	struct list_head comp_dev_list_head;
+> +	struct mlx5_devcom_key key;
+>  	mlx5_devcom_event_handler_t handler;
+>  	struct kref ref;
+>  	bool ready;
+> @@ -108,7 +112,8 @@ void mlx5_devcom_unregister_device(struct mlx5_devcom_dev *devc)
+>  }
+>  
+>  static struct mlx5_devcom_comp *
+> -mlx5_devcom_comp_alloc(u64 id, u64 key, mlx5_devcom_event_handler_t handler)
+> +mlx5_devcom_comp_alloc(u64 id, const struct mlx5_devcom_match_attr *attr,
+> +		       mlx5_devcom_event_handler_t handler)
+>  {
+>  	struct mlx5_devcom_comp *comp;
+>  
+> @@ -117,7 +122,7 @@ mlx5_devcom_comp_alloc(u64 id, u64 key, mlx5_devcom_event_handler_t handler)
+>  		return ERR_PTR(-ENOMEM);
+>  
+>  	comp->id = id;
+> -	comp->key = key;
+> +	comp->key.key = attr->key;
+>  	comp->handler = handler;
+>  	init_rwsem(&comp->sem);
+>  	lockdep_register_key(&comp->lock_key);
+> @@ -180,21 +185,27 @@ devcom_free_comp_dev(struct mlx5_devcom_comp_dev *devcom)
+>  static bool
+>  devcom_component_equal(struct mlx5_devcom_comp *devcom,
+>  		       enum mlx5_devcom_component id,
+> -		       u64 key)
+> +		       const struct mlx5_devcom_match_attr *attr)
+>  {
+> -	return devcom->id == id && devcom->key == key;
+> +	if (devcom->id != id)
+> +		return false;
+> +
+> +	if (memcmp(&devcom->key.key, &attr->key, sizeof(devcom->key.key)))
+> +		return false;
+> +
+> +	return true;
+>  }
+>  
+>  static struct mlx5_devcom_comp *
+>  devcom_component_get(struct mlx5_devcom_dev *devc,
+>  		     enum mlx5_devcom_component id,
+> -		     u64 key,
+> +		     const struct mlx5_devcom_match_attr *attr,
+>  		     mlx5_devcom_event_handler_t handler)
+>  {
+>  	struct mlx5_devcom_comp *comp;
+>  
+>  	devcom_for_each_component(comp) {
+> -		if (devcom_component_equal(comp, id, key)) {
+> +		if (devcom_component_equal(comp, id, attr)) {
+>  			if (handler == comp->handler) {
+>  				kref_get(&comp->ref);
+>  				return comp;
+> @@ -212,7 +223,7 @@ devcom_component_get(struct mlx5_devcom_dev *devc,
+>  struct mlx5_devcom_comp_dev *
+>  mlx5_devcom_register_component(struct mlx5_devcom_dev *devc,
+>  			       enum mlx5_devcom_component id,
+> -			       u64 key,
+> +			       const struct mlx5_devcom_match_attr *attr,
+>  			       mlx5_devcom_event_handler_t handler,
+>  			       void *data)
+>  {
+> @@ -223,14 +234,14 @@ mlx5_devcom_register_component(struct mlx5_devcom_dev *devc,
+>  		return ERR_PTR(-EINVAL);
+>  
+>  	mutex_lock(&comp_list_lock);
+> -	comp = devcom_component_get(devc, id, key, handler);
+> +	comp = devcom_component_get(devc, id, attr, handler);
+>  	if (IS_ERR(comp)) {
+>  		devcom = ERR_PTR(-EINVAL);
+>  		goto out_unlock;
+>  	}
+>  
+>  	if (!comp) {
+> -		comp = mlx5_devcom_comp_alloc(id, key, handler);
+> +		comp = mlx5_devcom_comp_alloc(id, attr, handler);
+>  		if (IS_ERR(comp)) {
+>  			devcom = ERR_CAST(comp);
+>  			goto out_unlock;
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.h b/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.h
+> index c79699b94a02..f350d2395707 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.h
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/devcom.h
+> @@ -6,6 +6,14 @@
+>  
+>  #include <linux/mlx5/driver.h>
+>  
+> +union mlx5_devcom_match_key {
+> +	u64 val;
+> +};
+> +
+> +struct mlx5_devcom_match_attr {
+> +	union mlx5_devcom_match_key key;
+> +};
+> +
+>  enum mlx5_devcom_component {
+>  	MLX5_DEVCOM_ESW_OFFLOADS,
+>  	MLX5_DEVCOM_MPV,
+> @@ -25,7 +33,7 @@ void mlx5_devcom_unregister_device(struct mlx5_devcom_dev *devc);
+>  struct mlx5_devcom_comp_dev *
+>  mlx5_devcom_register_component(struct mlx5_devcom_dev *devc,
+>  			       enum mlx5_devcom_component id,
+> -			       u64 key,
+> +			       const struct mlx5_devcom_match_attr *attr,
+>  			       mlx5_devcom_event_handler_t handler,
+>  			       void *data);
+>  void mlx5_devcom_unregister_component(struct mlx5_devcom_comp_dev *devcom);
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c
+> index eeb0b7ea05f1..d4015328ba65 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c
+> @@ -210,13 +210,15 @@ static void sd_cleanup(struct mlx5_core_dev *dev)
+>  static int sd_register(struct mlx5_core_dev *dev)
+>  {
+>  	struct mlx5_devcom_comp_dev *devcom, *pos;
+> +	struct mlx5_devcom_match_attr attr = {};
+>  	struct mlx5_core_dev *peer, *primary;
+>  	struct mlx5_sd *sd, *primary_sd;
+>  	int err, i;
+>  
+>  	sd = mlx5_get_sd(dev);
+> +	attr.key.val = sd->group_id;
+>  	devcom = mlx5_devcom_register_component(dev->priv.devc, MLX5_DEVCOM_SD_GROUP,
+> -						sd->group_id, NULL, dev);
+> +						&attr, NULL, dev);
+>  	if (IS_ERR(devcom))
+>  		return PTR_ERR(devcom);
+>  
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+> index 0951c7cc1b5f..1f7942202e14 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+> @@ -975,6 +975,10 @@ static void mlx5_pci_close(struct mlx5_core_dev *dev)
+>  
+>  static void mlx5_register_hca_devcom_comp(struct mlx5_core_dev *dev)
+>  {
+> +	struct mlx5_devcom_match_attr attr = {
+> +		.key.val = mlx5_query_nic_system_image_guid(dev),
+> +	};
+> +
+>  	/* This component is use to sync adding core_dev to lag_dev and to sync
+>  	 * changes of mlx5_adev_devices between LAG layer and other layers.
+>  	 */
+> @@ -983,8 +987,7 @@ static void mlx5_register_hca_devcom_comp(struct mlx5_core_dev *dev)
+>  
+>  	dev->priv.hca_devcom_comp =
+>  		mlx5_devcom_register_component(dev->priv.devc, MLX5_DEVCOM_HCA_PORTS,
+> -					       mlx5_query_nic_system_image_guid(dev),
+> -					       NULL, dev);
+> +					       &attr, NULL, dev);
+>  	if (IS_ERR(dev->priv.hca_devcom_comp))
 
-Once you are fixing it, please squeeze you switch-case to be something
-like that:
-
-switch (func_event->event) {
-     case CREQ_FUNC_EVENT_EVENT_TX_WQE_ERROR:
-     case CREQ_FUNC_EVENT_EVENT_TX_DATA_ERROR:
-     case CREQ_FUNC_EVENT_EVENT_RX_WQE_ERROR:
-     ....
-     	break;
-     default:
-     	return -EINVAL;
-    }
+Because you are changing mlx5_devcom_register_component() signature
+anyway, please do one step more and make sure that mlx5_devcom_register_component()
+returns or NULL or successful devcom pointer. The thing is that devcom
+pointer has error code which is stored for whole lifetime of the driver
+is causing issues in mlx5_ib IPsec cleanup for multi-port devices.
 
 Thanks
 
-> 
-> >
-> > > +}
-> >
-> > ...
-> >
-> > > +int bng_re_enable_fw_channel(struct bng_re_rcfw *rcfw,
-> > > +                          int msix_vector,
-> > > +                          int cp_bar_reg_off)
-> > > +{
-> > > +     struct bng_re_cmdq_ctx *cmdq;
-> > > +     struct bng_re_creq_ctx *creq;
-> > > +     int rc;
-> > > +
-> > > +     cmdq = &rcfw->cmdq;
-> > > +     creq = &rcfw->creq;
-> >
-> > Conversely, creq is initialised here but otherwise unused in this function.
-> >
-> > Flagged by GCC 15.1.0 and Clang 20.1.8 with -Wunused-but-set-variable
-> 
-> Thank you for the review. We will fix it in the next version of the patchset.
-> 
-> >
-> > > +
-> > > +     /* Assign defaults */
-> > > +     cmdq->seq_num = 0;
-> > > +     set_bit(FIRMWARE_FIRST_FLAG, &cmdq->flags);
-> > > +     init_waitqueue_head(&cmdq->waitq);
-> > > +
-> > > +     rc = bng_re_map_cmdq_mbox(rcfw);
-> > > +     if (rc)
-> > > +             return rc;
-> > > +
-> > > +     rc = bng_re_map_creq_db(rcfw, cp_bar_reg_off);
-> > > +     if (rc)
-> > > +             return rc;
-> > > +
-> > > +     rc = bng_re_rcfw_start_irq(rcfw, msix_vector, true);
-> > > +     if (rc) {
-> > > +             dev_err(&rcfw->pdev->dev,
-> > > +                     "Failed to request IRQ for CREQ rc = 0x%x\n", rc);
-> > > +             bng_re_disable_rcfw_channel(rcfw);
-> > > +             return rc;
-> > > +     }
-> > > +
-> > > +     return 0;
-> > > +}
-> >
-> > ...
+>  		mlx5_core_err(dev, "Failed to register devcom HCA component\n");
+>  }
+> -- 
+> 2.31.1
 > 
 
