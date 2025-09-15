@@ -1,234 +1,132 @@
-Return-Path: <linux-rdma+bounces-13361-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13362-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02509B5735B
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Sep 2025 10:47:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A948DB5739F
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Sep 2025 10:53:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E3CD17AB5B
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Sep 2025 08:47:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6ACCC17C385
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Sep 2025 08:53:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CE562EE294;
-	Mon, 15 Sep 2025 08:47:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B8422F3614;
+	Mon, 15 Sep 2025 08:51:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="esTNBALg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F1p+J/wi"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-il1-f227.google.com (mail-il1-f227.google.com [209.85.166.227])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 368522D3212
-	for <linux-rdma@vger.kernel.org>; Mon, 15 Sep 2025 08:47:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.227
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA34E2F28EE;
+	Mon, 15 Sep 2025 08:51:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1757926025; cv=none; b=sjP4SMX7dY/sGeZz9CN+jLhhrWOSKqp11QDBnizlwOFdbQA2YQTdqlUFrDu7cyob0SHGX+vBsESvT8zdIuBntKDexeFwk2UNnVkkcua8bctqcnHMPEC2BI1ZZ2f3L7RF2WQtUn5JMeJ5anV3n4UphMZo+PVUhYxYcsCirv7EpeY=
+	t=1757926315; cv=none; b=CqVyHg6E3cqa01zU2Wn2bOPaeIDcO49skAs8lVbq9L+rhNpvx7ZSoEUbCxLF3nLGXHGI80LN2NyiXfVvTVLeKtzwKzrwz0jf3tXRhunsuJ6WAw5toIfvqnSeVlTe6O/IKp2p0faIJdw67w9cZS5kb5paAXCi/j55lXilaBwEYNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1757926025; c=relaxed/simple;
-	bh=Nh1fmSS7S0Y+TlIauZOnptlFGVr7YB83chfdrVSrH20=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XBlQWqJQTRwSPc6Z6wN/d2sHhB0zKuTgcD+MxQT4mZEDUC2F6beA1aPkWCiPjZE6MZFGucG0981a0xm8g2UFukROFgcSkJsyhnfT7kbHU8eti8yh/61hy1Zy1I9G8Xanq4I72LfIes2pp5rwQj7852Gy1d6oBuL0CruzfxnAYsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=esTNBALg; arc=none smtp.client-ip=209.85.166.227
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-il1-f227.google.com with SMTP id e9e14a558f8ab-408929699eeso19064495ab.1
-        for <linux-rdma@vger.kernel.org>; Mon, 15 Sep 2025 01:47:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1757926023; x=1758530823;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SRL/oERcgqujpEFqLS0DNlUVpNwIxOMmrM7SzRWb83w=;
-        b=LFbK5hxIqyMseDVsYXmg4pB3Jtf64DEFceeubAmileG4IoF8kQPGg4MraystdDofVk
-         uDQfTlNOca84rsIzot+dzSlt5RAffwZYCBCEcAMgyR04eom1FqDpUYSDlVjgmHikhe1/
-         87qBS1EfGBJ8mEYeIWI9tZmJnMKYsJyPItPVwTDRX0Xx7mXoGvU6FFjpooaCjWYBcCoV
-         HZpSPWjUDN/wjsFHbY5+eNnZQP32F4ke8S0hA3MvJ7t8Q6sWdcNAQlLxRVadyjthKVL/
-         pL3xFuOuxOIVwraQHCzBgNB90mS+yXcBdWz+qStJBl1D5mqarNFf4mcpYZMh43KGpu4l
-         5uuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX2jU2bY6TO8CRU5wykk3mRi2Ey1viuW4MtGM4HVSPp9vjcut7udpl1AfrIL+RRUp5hIUCnIgfpmmbA@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy/8HYjvVcr6H+inJi4oE6aGDMMatnCKei/mswf2KMAi8ikZrEp
-	AYAe5RtA3Q2l0RDx5Sj6yIV6Gf+79oLMtlIZNpttCubTIE9BBgpoYzj5GLM6j5yvjYiIFiNoPcd
-	W/YGfdSxGH2z8lNa5JBqLTmrTG4RFAQ2II/PqhTMLfVA8hdm6GkX3NQKiyb7I0fIoCnbD54Oh4z
-	8BMEwl4pLlLXlYXPsIYCs2ZX7Q+BaNdpi5af2WzC1LY2b2nJjqtvvNoY3l+Bk3cJa0Zu1VxyQfA
-	tEuF6XVlV5hpAg=
-X-Gm-Gg: ASbGncvFA1UFRUfMc2guC38r9AlrSNuVHRBr6Al7dnGw48/6auVBDY8tEkqITIQPX1z
-	mGhNceSryIqe5F0Tu5cDJMwYKhWZfYUVS92lRjAs3YoJQbYA0NmHguqXspYizkXbbB+crxqgMBX
-	xn3i5KwmC9nJbvpoXxOpRn206C2dpVN2JY1eZ+GQ8pIuEQgaGTtt67KzOR9bGXJ/ECo4y2oP6n5
-	Mj18EBPpUWSPHf7UGWqHu32DVmSuYAm98bQSLgGj2R+2ZbKS0lMgHqt9xNSKGJTfl8nLofIvW/g
-	r0Jl3ZtgaevTWQWYTsNXus/ph5KlCfKSNNLKmI/XcrmhQk3mrGIedx5L8Gd+LdQ6EvxO8rJ4sYV
-	lJyt/52i05lkjJE67d96uFSRfX9uKkXjpaKTaLvSuA68KZlgGOvH4OBrMfWq1QChNEQOibLufQw
-	Dj
-X-Google-Smtp-Source: AGHT+IGpitApu305d8rRSoGYDXovKe9mIiDpZ54cpyn9OBs2MYZa012Hms+M7SXiHl8X96wJt0ai6AhYpF2+
-X-Received: by 2002:a92:cd8e:0:b0:420:f97:744c with SMTP id e9e14a558f8ab-4209e833e87mr143534325ab.12.1757926023172;
-        Mon, 15 Sep 2025 01:47:03 -0700 (PDT)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-100.dlp.protect.broadcom.com. [144.49.247.100])
-        by smtp-relay.gmail.com with ESMTPS id 8926c6da1cb9f-511f304dd9asm925401173.41.2025.09.15.01.47.02
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 15 Sep 2025 01:47:03 -0700 (PDT)
-X-Relaying-Domain: broadcom.com
-X-CFilter-Loop: Reflected
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-32e120e0e4aso2395357a91.3
-        for <linux-rdma@vger.kernel.org>; Mon, 15 Sep 2025 01:47:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1757926022; x=1758530822; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SRL/oERcgqujpEFqLS0DNlUVpNwIxOMmrM7SzRWb83w=;
-        b=esTNBALg0e8MiUaU+Q5gY9lAMDCrzaAA89qOxSNUD9puHmCD2Wri4ysyH8PvMSQDcU
-         XLxtS/3XgayeTG6VBJ41OL8RHIQkthx7J3Z1608fxw9qcFEHICIuye2R7u0kY9wDIRf4
-         jpTp8nRT8RD/sMuq9wHH4i2egdUnp/RdxFipM=
-X-Forwarded-Encrypted: i=1; AJvYcCU2LoBJjjqNVyMqJVHzVqHzwfxc7ZYIty6QD7ln66XRsdFshmDtvYYkdBZIcbCx9p21NeNnZlfUZohQ@vger.kernel.org
-X-Received: by 2002:a17:90b:390a:b0:32e:32e4:9773 with SMTP id 98e67ed59e1d1-32e32e4a039mr6276305a91.10.1757926021542;
-        Mon, 15 Sep 2025 01:47:01 -0700 (PDT)
-X-Received: by 2002:a17:90b:390a:b0:32e:32e4:9773 with SMTP id
- 98e67ed59e1d1-32e32e4a039mr6276241a91.10.1757926020541; Mon, 15 Sep 2025
- 01:47:00 -0700 (PDT)
+	s=arc-20240116; t=1757926315; c=relaxed/simple;
+	bh=zgTyu2IVPRbQbX73aW4fq2zkqmj1x1GIQuq8W/aVZO4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gXL5YLfvInvLbB3uMAXGycf3bN7nCdqbOT6GPVvxnnKQH4ie+ZhM15IFJQUwpTlXIXh+GrtT+YfvmiA1h6780hyxyWLoMvftgfabzVigJiuEZf/NM+4xioAUkfBMbEymv2zbMQBaXzJLKRFCHfX+cBv3WOtzmiMv9LN1PJK5Ee8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F1p+J/wi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66899C4CEF1;
+	Mon, 15 Sep 2025 08:51:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1757926315;
+	bh=zgTyu2IVPRbQbX73aW4fq2zkqmj1x1GIQuq8W/aVZO4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=F1p+J/wikOOHjwhw2cBejpdU/zptoP9jH9AJlbKUZeNxyjlvDQXx5osIF8bbicpGa
+	 Hz+JhRvxgO6bBlPGXQcik/UxXwKRyYtyZXA2CDvH8l0FgXtLueHOecsUaSzDHZfBa0
+	 Lq5zROAXjh2OvHPzBSAg1V35X7P5Cbzx8KtVnfZrqffnD/5cA/7BkCdubiG460X1y1
+	 EQTrBb8QR7CT/gfv6HfLfD2KLGsm2PWa6CwL8qprL7u0Nj3KfYmJJ9kPFHn/0rrWnR
+	 KHzKyweoKPU3qtGuYTqIn4YilGumgYupUQLWc2F840LWRdvGSLdB/Kf7FhYVyAR0wk
+	 cP6q7cDk5wRng==
+Date: Mon, 15 Sep 2025 09:51:50 +0100
+From: Simon Horman <horms@kernel.org>
+To: Mark Bloch <mbloch@nvidia.com>
+Cc: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Gal Pressman <gal@nvidia.com>, Parav Pandit <parav@nvidia.com>,
+	Shay Drory <shayd@nvidia.com>
+Subject: Re: [PATCH net-next 4/4] net/mlx5: Lag, add net namespace support
+Message-ID: <20250915085150.GN224143@horms.kernel.org>
+References: <1757572267-601785-1-git-send-email-tariqt@nvidia.com>
+ <1757572267-601785-5-git-send-email-tariqt@nvidia.com>
+ <20250912140902.GC30363@horms.kernel.org>
+ <5af63b6d-8609-4799-83b7-fa3daca390bb@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250829123042.44459-1-siva.kallam@broadcom.com>
- <20250829123042.44459-7-siva.kallam@broadcom.com> <20250912084234.GT30363@horms.kernel.org>
-In-Reply-To: <20250912084234.GT30363@horms.kernel.org>
-From: Siva Reddy Kallam <siva.kallam@broadcom.com>
-Date: Mon, 15 Sep 2025 14:16:49 +0530
-X-Gm-Features: Ac12FXxCwAvULClSZKcYwWuvMI0YbqfkcBpa1uDsHkgAnwASiLraUmmFYMFCC5A
-Message-ID: <CAMet4B7PWUrZNnwVf+qdMVAA6L5Gw3sFEw6akNTWeq0X-HtdzQ@mail.gmail.com>
-Subject: Re: [PATCH 6/8] RDMA/bng_re: Enable Firmware channel and query device attributes
-To: Simon Horman <horms@kernel.org>
-Cc: leonro@nvidia.com, jgg@nvidia.com, linux-rdma@vger.kernel.org, 
-	netdev@vger.kernel.org, vikas.gupta@broadcom.com, selvin.xavier@broadcom.com, 
-	anand.subramanian@broadcom.com, Usman Ansari <usman.ansari@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5af63b6d-8609-4799-83b7-fa3daca390bb@nvidia.com>
 
-On Fri, Sep 12, 2025 at 2:12=E2=80=AFPM Simon Horman <horms@kernel.org> wro=
-te:
->
-> On Fri, Aug 29, 2025 at 12:30:40PM +0000, Siva Reddy Kallam wrote:
-> > Enable Firmware channel and query device attributes
-> >
-> > Signed-off-by: Siva Reddy Kallam <siva.kallam@broadcom.com>
-> > Reviewed-by: Usman Ansari <usman.ansari@broadcom.com>
->
-> ...
->
-> > diff --git a/drivers/infiniband/hw/bng_re/bng_sp.c b/drivers/infiniband=
-/hw/bng_re/bng_sp.c
->
-> ...
->
-> > +int bng_re_get_dev_attr(struct bng_re_rcfw *rcfw)
-> > +{
-> > +     struct bng_re_dev_attr *attr =3D rcfw->res->dattr;
-> > +     struct creq_query_func_resp resp =3D {};
-> > +     struct bng_re_cmdqmsg msg =3D {};
-> > +     struct creq_query_func_resp_sb *sb;
-> > +     struct bng_re_rcfw_sbuf sbuf;
-> > +     struct bng_re_chip_ctx *cctx;
-> > +     struct cmdq_query_func req =3D {};
-> > +     u8 *tqm_alloc;
-> > +     int i, rc;
-> > +     u32 temp;
-> > +
-> > +     cctx =3D rcfw->res->cctx;
->
-> Similar to my comment on an earlier patch in this series,
-> cctx appears to be initialised but otherwise unused in this function.
+On Sat, Sep 13, 2025 at 04:52:17AM +0300, Mark Bloch wrote:
+> 
+> 
+> On 12/09/2025 17:09, Simon Horman wrote:
+> > On Thu, Sep 11, 2025 at 09:31:07AM +0300, Tariq Toukan wrote:
+> >> From: Shay Drory <shayd@nvidia.com>
+> >>
+> >> Update the LAG implementation to support net namespace isolation.
+> >>
+> >> With recent changes to the devcom framework allowing namespace-aware
+> >> matching, the LAG layer is updated to register devcom clients with the
+> >> associated net namespace. This ensures that LAG formation only occurs
+> >> between mlx5 interfaces that reside in the same namespace.
+> >>
+> >> This change ensures that devices in different namespaces do not interfere
+> >> with each other's LAG setup and behavior. For example, if two PCI PFs are
+> >> in the same namespace, they are eligible to form a hardware LAG.
+> >>
+> >> In addition, reload behavior for LAG is adjusted to handle namespace
+> >> contexts appropriately.
+> >>
+> >> Signed-off-by: Shay Drory <shayd@nvidia.com>
+> >> Reviewed-by: Mark Bloch <mbloch@nvidia.com>
+> >> Reviewed-by: Parav Pandit <parav@nvidia.com>
+> >> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> >> ---
+> >>  drivers/net/ethernet/mellanox/mlx5/core/devlink.c |  5 -----
+> >>  drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c | 14 +++++++++++---
+> >>  drivers/net/ethernet/mellanox/mlx5/core/lag/lag.h |  1 +
+> >>  3 files changed, 12 insertions(+), 8 deletions(-)
+> >>
+> >> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+> >> index a0b68321355a..bfa44414be82 100644
+> >> --- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+> >> +++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+> >> @@ -204,11 +204,6 @@ static int mlx5_devlink_reload_down(struct devlink *devlink, bool netns_change,
+> >>  		return 0;
+> >>  	}
+> >>  
+> >> -	if (mlx5_lag_is_active(dev)) {
+> >> -		NL_SET_ERR_MSG_MOD(extack, "reload is unsupported in Lag mode");
+> >> -		return -EOPNOTSUPP;
+> >> -	}
+> >> -
+> > 
+> > Maybe I'm missing something obvious. But I think this could do with
+> > some further commentary in the commit message. Or perhaps being a separate
+> > patch.
+> 
+> While one could split this into two patches, first enabling LAG creation
+> within a namespace, then separately removing the devlink reload restriction
+> that separation feels artificial.
+> 
+> Both changes are required to deliver complete support for LAG in namespaces
+> Since removing the reload restriction is a trivial change, it is better
+> to deliver the entire feature in this single patch.
+> 
+> Will clarify and add this justification to the commit message.
 
-Thank you for the review. We will fix it in the next version of the patchse=
-t.
-
->
->
-> > +     bng_re_rcfw_cmd_prep((struct cmdq_base *)&req,
-> > +                          CMDQ_BASE_OPCODE_QUERY_FUNC,
-> > +                          sizeof(req));
-> > +
-> > +     sbuf.size =3D ALIGN(sizeof(*sb), BNG_FW_CMDQE_UNITS);
-> > +     sbuf.sb =3D dma_alloc_coherent(&rcfw->pdev->dev, sbuf.size,
-> > +                                  &sbuf.dma_addr, GFP_KERNEL);
-> > +     if (!sbuf.sb)
-> > +             return -ENOMEM;
-> > +     sb =3D sbuf.sb;
-> > +     req.resp_size =3D sbuf.size / BNG_FW_CMDQE_UNITS;
-> > +     bng_re_fill_cmdqmsg(&msg, &req, &resp, &sbuf, sizeof(req),
-> > +                         sizeof(resp), 0);
-> > +     rc =3D bng_re_rcfw_send_message(rcfw, &msg);
-> > +     if (rc)
-> > +             goto bail;
-> > +     /* Extract the context from the side buffer */
-> > +     attr->max_qp =3D le32_to_cpu(sb->max_qp);
-> > +     /* max_qp value reported by FW doesn't include the QP1 */
-> > +     attr->max_qp +=3D 1;
-> > +     attr->max_qp_rd_atom =3D
-> > +             sb->max_qp_rd_atom > BNG_RE_MAX_OUT_RD_ATOM ?
-> > +             BNG_RE_MAX_OUT_RD_ATOM : sb->max_qp_rd_atom;
-> > +     attr->max_qp_init_rd_atom =3D
-> > +             sb->max_qp_init_rd_atom > BNG_RE_MAX_OUT_RD_ATOM ?
-> > +             BNG_RE_MAX_OUT_RD_ATOM : sb->max_qp_init_rd_atom;
-> > +     attr->max_qp_wqes =3D le16_to_cpu(sb->max_qp_wr) - 1;
-> > +
-> > +     /* Adjust for max_qp_wqes for variable wqe */
-> > +     attr->max_qp_wqes =3D min_t(u32, attr->max_qp_wqes, BNG_VAR_MAX_W=
-QE - 1);
-> > +
-> > +     attr->max_qp_sges =3D min_t(u32, sb->max_sge_var_wqe, BNG_VAR_MAX=
-_SGE);
-> > +     attr->max_cq =3D le32_to_cpu(sb->max_cq);
-> > +     attr->max_cq_wqes =3D le32_to_cpu(sb->max_cqe);
-> > +     attr->max_cq_sges =3D attr->max_qp_sges;
-> > +     attr->max_mr =3D le32_to_cpu(sb->max_mr);
-> > +     attr->max_mw =3D le32_to_cpu(sb->max_mw);
-> > +
-> > +     attr->max_mr_size =3D le64_to_cpu(sb->max_mr_size);
-> > +     attr->max_pd =3D 64 * 1024;
-> > +     attr->max_raw_ethy_qp =3D le32_to_cpu(sb->max_raw_eth_qp);
-> > +     attr->max_ah =3D le32_to_cpu(sb->max_ah);
-> > +
-> > +     attr->max_srq =3D le16_to_cpu(sb->max_srq);
-> > +     attr->max_srq_wqes =3D le32_to_cpu(sb->max_srq_wr) - 1;
-> > +     attr->max_srq_sges =3D sb->max_srq_sge;
-> > +     attr->max_pkey =3D 1;
-> > +     attr->max_inline_data =3D le32_to_cpu(sb->max_inline_data);
-> > +     /*
-> > +      * Read the max gid supported by HW.
-> > +      * For each entry in HW  GID in HW table, we consume 2
-> > +      * GID entries in the kernel GID table.  So max_gid reported
-> > +      * to stack can be up to twice the value reported by the HW, up t=
-o 256 gids.
-> > +      */
-> > +     attr->max_sgid =3D le32_to_cpu(sb->max_gid);
-> > +     attr->max_sgid =3D min_t(u32, BNG_RE_NUM_GIDS_SUPPORTED, 2 * attr=
-->max_sgid);
-> > +     attr->dev_cap_flags =3D le16_to_cpu(sb->dev_cap_flags);
-> > +     attr->dev_cap_flags2 =3D le16_to_cpu(sb->dev_cap_ext_flags_2);
-> > +
-> > +     if (_is_max_srq_ext_supported(attr->dev_cap_flags2))
-> > +             attr->max_srq +=3D le16_to_cpu(sb->max_srq_ext);
-> > +
-> > +     bng_re_query_version(rcfw, attr->fw_ver);
-> > +     for (i =3D 0; i < BNG_MAX_TQM_ALLOC_REQ / 4; i++) {
-> > +             temp =3D le32_to_cpu(sb->tqm_alloc_reqs[i]);
-> > +             tqm_alloc =3D (u8 *)&temp;
-> > +             attr->tqm_alloc_reqs[i * 4] =3D *tqm_alloc;
-> > +             attr->tqm_alloc_reqs[i * 4 + 1] =3D *(++tqm_alloc);
-> > +             attr->tqm_alloc_reqs[i * 4 + 2] =3D *(++tqm_alloc);
-> > +             attr->tqm_alloc_reqs[i * 4 + 3] =3D *(++tqm_alloc);
-> > +     }
-> > +
-> > +     attr->max_dpi =3D le32_to_cpu(sb->max_dpi);
-> > +     attr->is_atomic =3D bng_re_is_atomic_cap(rcfw);
-> > +bail:
-> > +     dma_free_coherent(&rcfw->pdev->dev, sbuf.size,
-> > +                       sbuf.sb, sbuf.dma_addr);
-> > +     return rc;
-> > +}
->
-> ...
+Thanks, much appreciated.
 
