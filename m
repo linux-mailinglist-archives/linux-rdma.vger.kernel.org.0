@@ -1,136 +1,199 @@
-Return-Path: <linux-rdma+bounces-13427-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13428-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E6B3B59D52
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Sep 2025 18:19:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FC87B59DB7
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Sep 2025 18:33:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 154B43AC0F1
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Sep 2025 16:15:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC52D7B766D
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Sep 2025 16:30:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3A0928489E;
-	Tue, 16 Sep 2025 16:15:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BF342F2601;
+	Tue, 16 Sep 2025 16:32:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mwv+33IG"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="jQR8hf9W"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012035.outbound.protection.outlook.com [52.101.43.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF1A827B325
-	for <linux-rdma@vger.kernel.org>; Tue, 16 Sep 2025 16:15:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758039315; cv=none; b=gk6bHvXKGR4t/B2999gNE7mqlInrwI3epWp95O7IZESdG11mIamC7eOTQ1KtWymbEowb8LenAILyeKxsY2xeBBnH9V1BXQ0I1cStAFmL031/rTKb5k3OafGd2lh63ygnOXdXQ3bBebVQZJJadcek84MCZN+v6/J+yTCkJRAEUtM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758039315; c=relaxed/simple;
-	bh=Fau07E6HejNdul8Szkqjw5bZVaz1B/kG8LVY6o+QQXk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=BDTp7rNj/kIojgcZAtTv7MEg3Mm1aKCfzPD39BvaOwx0ZjsYBJpyqfyBFKwyCnPfLD89xAR2bXJg14j25xlGG8ZTUEV5KnsYKmkT/6tgfcyw5X7ztSJDbZSGgLJZVBbr3E9pLd6jgK8r/7gXPve9Fwm2m2nCvxziQAyGD1SPv0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mwv+33IG; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <92171eea-e7ff-4cf3-a923-a4efabe6dec5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758039310;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6KBC+nK2RkCVHyAeUAqIGl3Ld5/CTaXGUV+afM+Gk2Q=;
-	b=mwv+33IGWF3UtH3Ox7yDBt52Th4X3q2lOv1rKUQtPNXdB3h004TYtPSCukr9bbo8jCCnJ/
-	nTal+zQASg9EIoGny57dGANLfSFEb4W2fXHbsE9g9zhSBbQ5kqnACQGcjwwtLtRU8TwNuG
-	PjPL0lH032Se/Ysti0VNgWgenMLsbFA=
-Date: Tue, 16 Sep 2025 09:15:06 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8247D2F25FD;
+	Tue, 16 Sep 2025 16:32:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.35
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758040326; cv=fail; b=FOEcpV792q6jAhmRietbMc/nqjaI4B5DUUDBA5dZmnr06EwTV2Xqhgf3ZBNdRXOPOq52QlmM51864Hls//wzrfjiyQQWpjhvlQpd3v7I/+0K0CKcozpiPF68m/gq196EzXOY8cuAHQWHa8G7mydDmNU9CS9DJNmvuxd/+gBfgLs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758040326; c=relaxed/simple;
+	bh=HCLHWco/dNYdNuISnQCcR9wetAD+TRcvRvbyIsG0sp4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=b/4XoEhrAzfZC3E7tSU9QyuOw+L6GAcPNwIKnOV6gIvs8cIf7Q1FADGqkR5aVV1o4idS2lLPcwpzi25/ScGbSldBjogBOOoixNZMKgLtQ3RsxlB8z9HIAEtF+/+FG1LHRNiXuIWq1uLySmpf92AX2HDbSD3pgRp+optq5z49EC4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=jQR8hf9W; arc=fail smtp.client-ip=52.101.43.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=WA/xHojUnAUlv8YWWyJFazDuy13r0j/1lm4Dhh2+YePL8kMq/ZD6lkYwPWlG5GBJkJYMUIs1fZRliZq7dhnOHrWe16yByS3eChr1HppRPS8f84F8PGft1Q9Rj57NifWFmQU0+YfwNWgC8AszB4SHhkY+kYLPsyHL0dL8ZzqXfsrt1ybSD7cWHNY63wqfVVkgOnB6GrLF5AehKQHvknT7os5R7KuCYpe8ePHR+7GTajNbzbc0tnYFLBUGQflA4LlAFiFu19Li2m2rfsbWiAvhQnQSnYU0RLUp5r11uDxvQKM+5qpAz7Dt7l4JRimWO5lzGxc4dB9+rHKawSq4uzl1XQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Cc+fg7j9jadB5ZIgy8OCLsN6prdLWiYUMX+ZD/c/Mrw=;
+ b=TjEbAhDKtcxao8Mjq5wM18bp/KT6eX9rITgaGHkkGZyV88IeIrikPbkvLfx5z/UZOs6qp0iFfBW1KJVCnuhYwL47kYeIJvzJoiR7aQ27V01oJvaWzUiZmLsiDvsIhnXYnOY+AW0zdWgsfGGglad8lt0yXXY3iuc8AxVMdTwHbnww4ABl2pXV49BHNkCu506EDszJc2FY82TbRgAVwi2QATGXF1WyK4qogTMVovGDR94ztnLFg5WXl+r2v39NZGgeYqGhyJ4inZSV9nCG4dqWxzuXKGekqLidvf8K+kxUhwjfMYiTi8cQzq3XK+25lm1VvhQPr03o0tXjFhIcdO9Llw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Cc+fg7j9jadB5ZIgy8OCLsN6prdLWiYUMX+ZD/c/Mrw=;
+ b=jQR8hf9Wxj+SimfZASwfKHKUr0tgv1jdVwm39gpdliOmzxLs0vqm63B0gx+TF3c5Wxnkd3zbEDZxxLThP9TpM9ipgXkiqatzwqrUwFZcxMqushIb4jibs/3/US/liU0N8f1N+6DF+vFDZJLLNWC/tX4abOz1ClNC06/VqLqxed1MvRWT96yonBSuG7Ju70dL5+NMvJh3Asxq0thEZ54auvlUj+wU2D2/OTU06KhSpFsq4fPq8IxI6XTH3fKKCIoC74IkQ6MhjrSlgXdKZo4xPRWWfHGlRhT/NcFMQK1jPlousCVO7h9CfZB3Nm5zCSuMSmQQBn/QIPyWHpcX0W4rXw==
+Received: from CH5PR05CA0014.namprd05.prod.outlook.com (2603:10b6:610:1f0::24)
+ by CH8PR12MB9814.namprd12.prod.outlook.com (2603:10b6:610:26b::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9115.23; Tue, 16 Sep
+ 2025 16:32:00 +0000
+Received: from CH2PEPF00000142.namprd02.prod.outlook.com
+ (2603:10b6:610:1f0:cafe::97) by CH5PR05CA0014.outlook.office365.com
+ (2603:10b6:610:1f0::24) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9137.13 via Frontend Transport; Tue,
+ 16 Sep 2025 16:31:59 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ CH2PEPF00000142.mail.protection.outlook.com (10.167.244.75) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9137.12 via Frontend Transport; Tue, 16 Sep 2025 16:32:00 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Tue, 16 Sep
+ 2025 09:31:36 -0700
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Tue, 16 Sep
+ 2025 09:31:35 -0700
+Received: from vdi.nvidia.com (10.127.8.14) by mail.nvidia.com (10.129.68.10)
+ with Microsoft SMTP Server id 15.2.1544.14 via Frontend Transport; Tue, 16
+ Sep 2025 09:31:32 -0700
+From: Edward Srouji <edwards@nvidia.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>
+CC: <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<vdumitrescu@nvidia.com>, <markzhang@nvidia.com>, <ohartoov@nvidia.com>,
+	<edwards@nvidia.com>, <ira.weiny@intel.com>, <kaike.wan@intel.com>,
+	<dledford@redhat.com>, <john.fleck@intel.com>
+Subject: [PATCH 1/1] IB/sa: Fix sa_local_svc_timeout_ms read race
+Date: Tue, 16 Sep 2025 19:31:12 +0300
+Message-ID: <20250916163112.98414-1-edwards@nvidia.com>
+X-Mailer: git-send-email 2.21.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [syzbot] [rdma?] WARNING in gid_table_release_one (3)
-To: syzbot <syzbot+b0da83a6c0e2e2bddbd4@syzkaller.appspotmail.com>,
- edwards@nvidia.com, jgg@ziepe.ca, leon@kernel.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- syzkaller-bugs@googlegroups.com
-References: <68c2ec01.050a0220.3c6139.003f.GAE@google.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "yanjun.zhu" <yanjun.zhu@linux.dev>
-In-Reply-To: <68c2ec01.050a0220.3c6139.003f.GAE@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH2PEPF00000142:EE_|CH8PR12MB9814:EE_
+X-MS-Office365-Filtering-Correlation-Id: 67fb838b-4061-4da6-00b2-08ddf53e8fa3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|376014|36860700013|82310400026;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?OZIoz6fZ9R+opxFVktOPn46ZQ8TxojXhhrfGohB2XYa12+My2iqN6qykfvQw?=
+ =?us-ascii?Q?llrnTUHU4//bA0di78TBqnKIKVEokELwCIbtRuDTiGhh9xGGGjg2XEiCPeGD?=
+ =?us-ascii?Q?VvCtiSPRgc7qK+WyAVpvbQR+PERJMpIno5BGQZcreh/fBk+LRGbrzUcVuNUw?=
+ =?us-ascii?Q?XLuFufxnRFGUaTnmtlrqNNmWrDKL3sZWV5pTgquzTQtdQ1YkA0IQEJ239Xcl?=
+ =?us-ascii?Q?kpuJ2H8db9+KsGN0CdiF13v5tdX/e0RF6MWcqrtTObpBq1ofW48MMJ8DZ9CR?=
+ =?us-ascii?Q?hoonI+SbUbOL9wIAlzX4FqWWUOUNr78ZkWVlOLYqVPYgTKh5ipJ1EI4T9d8P?=
+ =?us-ascii?Q?vA4Nrk16N+U9/j9BL4pXfM5p2hr805vXub434HJis5huAxKdDoEcgXVo6lMX?=
+ =?us-ascii?Q?0ZC9ONDWBT8S03pc+HpMQUHeewNw6u9deONyg6n46JbaLV5VQdpq0JbS4kG/?=
+ =?us-ascii?Q?YPH6OCjkTTAas81SI35dj5IUAgKEEJC4LtSRtqSS0wFnrBQPfwjMmcmJcNaS?=
+ =?us-ascii?Q?tIt3hdUliq1dOk3XDG5zr01KVH4tHw4VC+JjobBIYMpzqFnbc+CO4OY2WvZ5?=
+ =?us-ascii?Q?QH0pmWYdrxkMEayjzntbvk1s5tns/aeHS12qBeQiPRdMMF9vqariJu0p/Z6u?=
+ =?us-ascii?Q?JgwfBQ6X/xZcOcf1ilT7GC8+MajAoofikZpXer4N1gJ3dFCznwKHDW5/qEqQ?=
+ =?us-ascii?Q?FgPF/MIEao059tsB6xXDfpatXAB4ScNUKbGFJaFzsNZvBOA/len91JUQPDz8?=
+ =?us-ascii?Q?Hun4oDBZE53C7kuDTgngNxKemRl0TFeqOJ817n5KzJAT1/Olpaq4kvjZ/Du6?=
+ =?us-ascii?Q?VoNlGkic2YGmOg7maL3caf+BxrFvndIiWTMmSyxThol/bj1z+/u9xRmQ+Eh/?=
+ =?us-ascii?Q?XhWSUS4D3B7Yr54o5iA3TuAxCmkso5aoCtpEZOBPLwxwHRc+QJwg4KITDEEf?=
+ =?us-ascii?Q?u3FjH9P1X7Q8XQZQjLy8Dyn6WSOwJsYmPQQB2UOsDf34kHzGqXq772k3YtUt?=
+ =?us-ascii?Q?Q7Z0tD08qg7v8+t+bpHl7YQI4W6akKqJN3pjEF3CwDoVZUqxPp5esyilrufh?=
+ =?us-ascii?Q?WtV3VNweNYlbD96MgHN5RLBw6ay1jCB+IDNnJFFlTGhs3AokverjjD/tmteP?=
+ =?us-ascii?Q?Qm+HeDUu2LPAuU2mHjabJlp60pPihgEgJBEBUtx1hgG/+1n4SW0asEGACXQ3?=
+ =?us-ascii?Q?oDe0Th3isyh4BPefPpgQSOyBZuA0us8sLXI+NDyjNA1u9LU39zIRHjrWxdEE?=
+ =?us-ascii?Q?gtyTYIWyjR0GN5HTVZ14CdVIFa0DTndV9XNrKAZ/Eyd+LoYfVxsxnXcgFfgb?=
+ =?us-ascii?Q?G3YbeVO4J9K/39x7+d9ldYe1FvG+4ujW5c6Lx6paB8VDlpJft63wczAQw0ss?=
+ =?us-ascii?Q?6WMhTe0OmtVd0QSTvPfFkykwUwrSqPgjy96d0nLF9puMQi73V1TUSrn9Cd4R?=
+ =?us-ascii?Q?sW0kIXU9lKEROqhuIsEIY5fdQHjN4NiY2Azoma5axsKZ1DrPydLJ4bk43iCZ?=
+ =?us-ascii?Q?wJNHFfQUD/YaOwlWmOmzKNripsCGkT7EmJ9r?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(376014)(36860700013)(82310400026);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2025 16:32:00.1498
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 67fb838b-4061-4da6-00b2-08ddf53e8fa3
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CH2PEPF00000142.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH8PR12MB9814
 
-On 9/11/25 8:34 AM, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    5f540c4aade9 Add linux-next specific files for 20250910
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=157dab12580000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=5ed48faa2cb8510d
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b0da83a6c0e2e2bddbd4
-> compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15b52362580000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16b41642580000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/df0dfb072f52/disk-5f540c4a.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/20649042ae30/vmlinux-5f540c4a.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/4c16358268b8/bzImage-5f540c4a.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+b0da83a6c0e2e2bddbd4@syzkaller.appspotmail.com
+From: Vlad Dumitrescu <vdumitrescu@nvidia.com>
 
-This problem is fixed by a fix in https://github.com/zhuyj/linux.git 
-v6.17_fix_gid_table_release_one
+When computing the delta, the sa_local_svc_timeout_ms is read without
+ib_nl_request_lock held. Though unlikely in practice, this can cause
+a race condition if multiple local service threads are managing the
+timeout.
 
-I will make an official patch and send it out very soon.
+Fixes: 2ca546b92a02 ("IB/sa: Route SA pathrecord query through netlink")
+Signed-off-by: Vlad Dumitrescu <vdumitrescu@nvidia.com>
+Reviewed-by: Mark Zhang <markzhang@nvidia.com>
+Signed-off-by: Edward Srouji <edwards@nvidia.com>
+---
+ drivers/infiniband/core/sa_query.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Zhu Yanjun
-
-> 
-> ------------[ cut here ]------------
-> GID entry ref leak for dev syz1 index 2 ref=615
-> WARNING: drivers/infiniband/core/cache.c:809 at release_gid_table drivers/infiniband/core/cache.c:806 [inline], CPU#0: kworker/u8:2/36
-> WARNING: drivers/infiniband/core/cache.c:809 at gid_table_release_one+0x346/0x4d0 drivers/infiniband/core/cache.c:886, CPU#0: kworker/u8:2/36
-> Modules linked in:
-> CPU: 0 UID: 0 PID: 36 Comm: kworker/u8:2 Not tainted syzkaller #0 PREEMPT(full)
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/18/2025
-> Workqueue: ib-unreg-wq ib_unregister_work
-> RIP: 0010:release_gid_table drivers/infiniband/core/cache.c:806 [inline]
-> RIP: 0010:gid_table_release_one+0x346/0x4d0 drivers/infiniband/core/cache.c:886
-> Code: e8 03 48 b9 00 00 00 00 00 fc ff df 0f b6 04 08 84 c0 75 3d 41 8b 0e 48 c7 c7 a0 43 91 8c 4c 89 e6 44 89 fa e8 fb 67 f5 f8 90 <0f> 0b 90 90 e9 e3 fe ff ff 44 89 e9 80 e1 07 80 c1 03 38 c1 0f 8c
-> RSP: 0018:ffffc90000ac7908 EFLAGS: 00010246
-> RAX: 621d731dcb27e200 RBX: ffff88806241b8d8 RCX: ffff888141289e40
-> RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000002
-> RBP: 1ffff1100c48371b R08: ffff8880b8724253 R09: 1ffff110170e484a
-> R10: dffffc0000000000 R11: ffffed10170e484b R12: ffff888027503e00
-> R13: ffff88806241b800 R14: ffff8880289a2400 R15: 0000000000000002
-> FS:  0000000000000000(0000) GS:ffff8881259f0000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000555569847588 CR3: 00000000338c8000 CR4: 00000000003526f0
-> Call Trace:
->   <TASK>
->   ib_device_release+0xd2/0x1c0 drivers/infiniband/core/device.c:509
->   device_release+0x99/0x1c0 drivers/base/core.c:-1
->   kobject_cleanup lib/kobject.c:689 [inline]
->   kobject_release lib/kobject.c:720 [inline]
->   kref_put include/linux/kref.h:65 [inline]
->   kobject_put+0x228/0x480 lib/kobject.c:737
->   process_one_work kernel/workqueue.c:3263 [inline]
->   process_scheduled_works+0xae1/0x17b0 kernel/workqueue.c:3346
->   worker_thread+0x8a0/0xda0 kernel/workqueue.c:3427
->   kthread+0x711/0x8a0 kernel/kthread.c:463
->   ret_from_fork+0x47c/0x820 arch/x86/kernel/process.c:158
->   ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
->   </TASK>
-> 
-> 
-> ---
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
+diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
+index c0a7af1b4fe4..c23e9c847314 100644
+--- a/drivers/infiniband/core/sa_query.c
++++ b/drivers/infiniband/core/sa_query.c
+@@ -1074,6 +1074,8 @@ int ib_nl_handle_set_timeout(struct sk_buff *skb,
+ 	if (timeout > IB_SA_LOCAL_SVC_TIMEOUT_MAX)
+ 		timeout = IB_SA_LOCAL_SVC_TIMEOUT_MAX;
+ 
++	spin_lock_irqsave(&ib_nl_request_lock, flags);
++
+ 	delta = timeout - sa_local_svc_timeout_ms;
+ 	if (delta < 0)
+ 		abs_delta = -delta;
+@@ -1081,7 +1083,6 @@ int ib_nl_handle_set_timeout(struct sk_buff *skb,
+ 		abs_delta = delta;
+ 
+ 	if (delta != 0) {
+-		spin_lock_irqsave(&ib_nl_request_lock, flags);
+ 		sa_local_svc_timeout_ms = timeout;
+ 		list_for_each_entry(query, &ib_nl_request_list, list) {
+ 			if (delta < 0 && abs_delta > query->timeout)
+@@ -1099,9 +1100,10 @@ int ib_nl_handle_set_timeout(struct sk_buff *skb,
+ 		if (delay)
+ 			mod_delayed_work(ib_nl_wq, &ib_nl_timed_work,
+ 					 (unsigned long)delay);
+-		spin_unlock_irqrestore(&ib_nl_request_lock, flags);
+ 	}
+ 
++	spin_unlock_irqrestore(&ib_nl_request_lock, flags);
++
+ settimeout_out:
+ 	return 0;
+ }
+-- 
+2.21.3
 
 
