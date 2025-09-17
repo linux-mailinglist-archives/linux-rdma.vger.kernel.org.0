@@ -1,117 +1,113 @@
-Return-Path: <linux-rdma+bounces-13444-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13445-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D3A1B7E260
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Sep 2025 14:42:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 376D6B7E621
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Sep 2025 14:47:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDBFE1B2596A
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Sep 2025 12:42:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC0FD7B8EEF
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Sep 2025 12:44:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEF0C31A814;
-	Wed, 17 Sep 2025 12:40:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 723942F260C;
+	Wed, 17 Sep 2025 12:45:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="doZf51hp"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="TdAzRgxe"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E86881F3BA2;
-	Wed, 17 Sep 2025 12:40:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D81A306B1E
+	for <linux-rdma@vger.kernel.org>; Wed, 17 Sep 2025 12:45:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758112848; cv=none; b=T7lfE3T4aZWxV3cTVUK7NGe8diBfD9BmsqNOZIZ3AfSMETeBs9LlyEsS4jl3ytSUFQH+3Qk2pjOPbCJL/XGBXufGqzlERfAsHvfhV6KYHzXtzkCj9HIiGtULGFZDNIIlxsBz8L1o+GCL/ugV3fcZhkD5qSgdgwNVzvYM8UI7KGE=
+	t=1758113142; cv=none; b=XokB4v8EZS0LOmD73l7LMapwYuXsUvOK+vqhBoLMhzlTCCtMGrlli62TLu1lWzSpdComLrqsRHNBU/trBfIcH1JYnSpn4zEW2JI6bsAxSkNGMVCB7KrLwtK2/1IwIMD8LM90qakAefOFWyenBUMjKGJLd8Ruf7Fe0bGQMIK5Bmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758112848; c=relaxed/simple;
-	bh=DW3dCW9zfLTrh7OOEGOvG1H31gk9z0NCojfNW5UCAJ0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fPBxSA41yV6uQUPrbQ6pcxEtuzFZ697e696/hB0mBUJluBvxZzu1IJvOhJKkcVtjOcvrpJdGeUw/qpOsBtJNsr/iElnI6W5Ee6gdXxPdHNWQjZEh63VQ4zWQIi89REGDQh8iy60GCre+V3EPjCDrgFRt5VzH3MF7ImOAv8dWFPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=doZf51hp; arc=none smtp.client-ip=117.135.210.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=NU
-	ZxpJS3obiOiDUp+EVz/UTN72QWU0J/B28urQMb4Ws=; b=doZf51hpIkGtFi/HEH
-	ccjUM+NWwmpRMUlLBr+Ni7JmNDKjZ4sR1ZOp7+FyrqEBeOZ2RpxoLiNJ8oL3fCyK
-	Uy2JmjJ1iDpu4tH/zuYO4xOz90qXKMcl0IWcqSXBT7C4yOA5C1FSzr/1YFmA8rgW
-	Q4G0n46hE+ZN36u/8R8Jq6lWk=
-Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g1-0 (Coremail) with SMTP id _____wDHftAirMpo2LiKBw--.38864S2;
-	Wed, 17 Sep 2025 20:40:03 +0800 (CST)
-From: YanLong Dai <dyl_wlc@163.com>
-To: kalesh-anakkur.purayil@broadcom.com
-Cc: jgg@ziepe.ca,
-	leon@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	selvin.xavier@broadcom.com,
-	daiyanlong@kylinos.cn,
-	dyl_wlc@163.com
-Subject: [PATCH v3] drivers: fix the potential memory leak in bnxt_re_destroy_gsi_sqp()
-Date: Wed, 17 Sep 2025 20:40:00 +0800
-Message-ID: <20250917124000.3652-1-dyl_wlc@163.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250916134915.GC82444@unreal>
-References: <20250916134915.GC82444@unreal>
+	s=arc-20240116; t=1758113142; c=relaxed/simple;
+	bh=YxDmg1jKrqps1XCrWcHf6Nph6TAAphbfQ3igJXNklEo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q+hXCvwDMu2sHXFwyBTpFjOwL8B47jm9YrIBkJkgX/QSTSJLo6tWXDKJcqtpG2Y/nW3hAKkLLQrwi4eEncDb0TB9HABxfSw1TdgygyvYKJFFsn6nFYY9li0if/9Tug7WSXOBK42goLUNjmjtBPfxKuZG5D2mEUfmriLJckX9HJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=TdAzRgxe; arc=none smtp.client-ip=209.85.222.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-80e2c527010so417300085a.1
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Sep 2025 05:45:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1758113139; x=1758717939; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0wH+ceGKGyNuHnW4Mzcl7LqGu5C+vYLka2lZQEuLsAE=;
+        b=TdAzRgxeMZ+ueBN1lxaQyBZ5bSMDpj8X0AzUsCt/5WDBgP7eNMS3B6ZlEWjZCG+fUE
+         u0PRpc77pH+zaLLYeuAE6/8PII91Zu9RWdPcx2WmLwXnF0Qpg+Ge+yGv9phq9moRF7k/
+         rFalhkAC8bU/E8ukzo0KQ7ecCQ0jXgiHm4TYq50DCQ5DBQCxVZOeH9EdQy1RpWG4rA9O
+         39GACPDDEyqXVFTU3GhHAkUXlMIQOeTDVuOmtQUz4RKuYwWYTlJyC/GvKJuI/4W+CJ4T
+         X3F6vEoK391T1T6Gfi966J2Nl9R4romnVDwwsFmiSCkAXlBzaj2nh78CFlhzIiMvlbJD
+         8GiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758113139; x=1758717939;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0wH+ceGKGyNuHnW4Mzcl7LqGu5C+vYLka2lZQEuLsAE=;
+        b=mCR5+z3uDhMVOxS9qBTSm2NVNRBX/huLOM3h7XrxpNFho64VPxHhLawwlRzu1RJUCd
+         xrSV+8MnU0NSJD3EOR0KlUjqXwBsNF45sVrYKPGzEDddu3FK/SYzLph4hLdo2fHGVipo
+         YTMq1OTXX6q++XMR5+EQEsqJws/nwH60idqKIilVlj+5WF1n1aaJ3cHB5cYpsL1opMdy
+         1K8tVSBmmh84wlBASNDnkfCKnPOpQ0b/JIMGT6p1/TunRRWA0IAF08YnxSY7c9dQ7n3p
+         XfQj0+YH+sm/RPmb+ag50UODVw2KGXfI1EbC5ZvfISoEAICPO0civawYGE9G4iCsc3dd
+         5yjw==
+X-Forwarded-Encrypted: i=1; AJvYcCV8EpvXDmeHQaQvWT8iOdRbhWUfiD2VC9ynZ3XYn15XHhPszVkd70SNuM7PIe7BT/XOLBl5E5iIDOBM@vger.kernel.org
+X-Gm-Message-State: AOJu0YzC8+t9yOyYs2N7DuO3IQcWzzaAkjIo03YsIknc/jbgsLjduM69
+	yDeG1fIZrzMT20J8dIshvqNGW6bJ1YY1oKamglYJk4n8hQ5tg3bsidOZ72eTqEl7ozw=
+X-Gm-Gg: ASbGncu9j4DSk2jBzmxWtknCPM8+N1amru1uADwIT7VRhq1Jlv/+meO7d4nHU32CgPJ
+	n2LWChAlT09SQ2DCRK0UvOYOANsE+mH8/2kGIhwQP/mr5tXZbmzCILd7taA/mfqckWuiv5fN85E
+	Z0hL78E20XFunl+eIVoXgvTVQSIMdMubigrfbr8QKNH8DKOGpNmnm/gDwjATi4ymlAvI+xO8Eaa
+	DOXBgEZOqT/yC3u6vRm1psjJUGI6GiPIA4mA32c6TCsxx8QhOTmkABxmzDxKVtGYYM3H+IR9yAF
+	bDt5cR9YxrOWN9y7PhldxtKnXmzxtF+8k+8FguE2UMldWt7B7dJyWxlXpL6dGlWTuYFgcx9njA8
+	9gGx6K/Y=
+X-Google-Smtp-Source: AGHT+IEZFd6Ciye9ajHh39C9NxMT19QjB09+jHNmDMrNjKMQ1BbOHVaOyXCny3oyij+bcEfEw4hy4g==
+X-Received: by 2002:a05:620a:2683:b0:827:d83e:a64d with SMTP id af79cd13be357-8310912bd9cmr227559185a.27.1758113138910;
+        Wed, 17 Sep 2025 05:45:38 -0700 (PDT)
+Received: from ziepe.ca ([130.41.10.202])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-820c8bb8f46sm1107416185a.10.2025.09.17.05.45.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Sep 2025 05:45:38 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1uyrXV-00000005jyn-30nQ;
+	Wed, 17 Sep 2025 09:45:37 -0300
+Date: Wed, 17 Sep 2025 09:45:37 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: syzbot <syzbot+b0da83a6c0e2e2bddbd4@syzkaller.appspotmail.com>,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [rdma?] WARNING in gid_table_release_one (3)
+Message-ID: <20250917124537.GB1326709@ziepe.ca>
+References: <68232e7b.050a0220.f2294.09f6.GAE@google.com>
+ <20250514085421.GO22843@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDHftAirMpo2LiKBw--.38864S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxJrWxKFy8GFyDZF1DWw43trb_yoW8GFy8pr
-	43J3s0k3y5JF4xWFWUJFy7XF45Ga40y3ykKa9Fk3sxAa15A3WkJF93t3Zavas5ArZ5Gr4I
-	vw13Jrs8G3W7WaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pELvtJUUUUU=
-X-CM-SenderInfo: 5g1os4lof6il2tof0z/xtbBMR7LImjKpOfX4AAAsQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250514085421.GO22843@unreal>
 
-From: daiyanlong <daiyanlong@kylinos.cn>
+On Wed, May 14, 2025 at 11:54:21AM +0300, Leon Romanovsky wrote:
 
-As suggested by Kalesh Anakkur Purayil, fix the potential memory leak in
-bnxt_re_destroy_gsi_sqp() by continuing the teardown even if
-bnxt_qplib_destroy_qp() fails, weshould not fail the resource
-destroy operations
+> According to repro https://syzkaller.appspot.com/x/repro.syz?x=15a08cf4580000, we joined multicast group,
+> but never left it. This is how we can get "ref=573".
+> 
+> write$RDMA_USER_CM_CMD_CREATE_ID(r1, &(0x7f00000001c0)={0x0, 0x18, 0xfa00, {0x3, &(0x7f0000000100)={<r2=>0xffffffffffffffff}, 0x13f, 0x4}}, 0x20)
+> write$RDMA_USER_CM_CMD_BIND_IP(r1, &(0x7f0000000180)={0x2, 0x28, 0xfa00, {0x0, {0xa, 0x4e25, 0x10001, @local, 0xb}, r2}}, 0x30)
+> write$RDMA_USER_CM_CMD_JOIN_MCAST(r1, &(0x7f0000000900)={0x16, 0x98, 0xfa00, {0x0, 0x5, r2, 0x10, 0x1, @in={0x2, 0x4e23, @loopback}}}, 0xa0)
 
-Eliminates the 'fail:' label and associated return statement
+This should be fine, it is supposed to get cleaned up.
 
-Modify commit information exceeding 75 bytes
+I think it is more likely there is a refcount leak on an error path..
 
-Signed-off-by: daiyanlong <daiyanlong@kylinos.cn>
----
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 260dc67b8b87..15d3f5d5c0ee 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -931,10 +931,9 @@ static int bnxt_re_destroy_gsi_sqp(struct bnxt_re_qp *qp)
- 
- 	ibdev_dbg(&rdev->ibdev, "Destroy the shadow QP\n");
- 	rc = bnxt_qplib_destroy_qp(&rdev->qplib_res, &gsi_sqp->qplib_qp);
--	if (rc) {
-+	if (rc)
- 		ibdev_err(&rdev->ibdev, "Destroy Shadow QP failed");
--		goto fail;
--	}
-+
- 	bnxt_qplib_free_qp_res(&rdev->qplib_res, &gsi_sqp->qplib_qp);
- 
- 	/* remove from active qp list */
-@@ -951,8 +950,6 @@ static int bnxt_re_destroy_gsi_sqp(struct bnxt_re_qp *qp)
- 	rdev->gsi_ctx.sqp_tbl = NULL;
- 
- 	return 0;
--fail:
--	return rc;
- }
- 
- /* Queue Pairs */
--- 
-2.43.0
-
+Jason
 
