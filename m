@@ -1,197 +1,212 @@
-Return-Path: <linux-rdma+bounces-13460-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13461-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B9E5B81447
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Sep 2025 19:58:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7F6CB815FE
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Sep 2025 20:42:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 117AD7A6F63
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Sep 2025 17:57:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56BFF4683D4
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Sep 2025 18:42:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE26B2FF660;
-	Wed, 17 Sep 2025 17:58:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14ACA301024;
+	Wed, 17 Sep 2025 18:42:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="pajF9CRa"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90C601C84C0
-	for <linux-rdma@vger.kernel.org>; Wed, 17 Sep 2025 17:58:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24ECC26D4C4;
+	Wed, 17 Sep 2025 18:42:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758131915; cv=none; b=vBMoJUFXu6QFQhEUsrKus8eJmhFJ5zjcxgMLM1wt0LszLsXNVzFDrLCKi84818SKpZCo3o+VxjD0c7YHnWO2KtsvjkCgVt3pXzbd76wUqkNObNfHDlYAx6vi4F0eu0XRniPcndDo+Jsza/C7oYEdqYD963s/36sSBHdTenyDyTQ=
+	t=1758134560; cv=none; b=fWX6l1Ah02zqTAucVYHk6/rrcCx43XHfrnsr5Q0Ekj4M05tsVZHp+lCqSUsvz/d7RwqHgW78K1xAIJ/xsa2jE/iy+1vwhN/m4FTzFiBLCn51iTRKuX6WUavOIgkTQxpN8nbQpkPhcVRyi00FhimVUeKOs5TdfBud/uQcLXmDT5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758131915; c=relaxed/simple;
-	bh=69OG071o7BEwF4No6eOyFMedk4HNChdK7jZDZfMpo+I=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=qigxWvhUcAyX9nImuUmS7oJ92/2RvSH7SC6heD6zb/mrCWW1hgf4ME4dAtiYGd1+rtvHUq3qKrp+XKKfbdXKDzSTh+hy9Hc1Mb1+E+GD+OFgkUUeQG/E9LTuMldA+xJi9kbwLBmeob/oKX6PrRvzSJ9PH2sydJsXcIPjho7v80c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-424090abf73so193405ab.3
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Sep 2025 10:58:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758131913; x=1758736713;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qigWR4tgTt8PlUwu+HTH5RtNoyHT1mfFt7jRXPhJuVk=;
-        b=U5aD2BGSMjI3IvFiA4Oe4YiHk4woAAIsAdRgftrsIa4Q7B9px4We882U66giIsRTq6
-         uZuZlywZPaWuY5hX2SUoR+2VcG3X6RudHKec4mSuNp82XluFAp7lqwzItPgz4cnpR3A+
-         N+lya5axl1XTec5ZJLI1EHHd+GwEKf2wMxyIdMxKBhNCItrDAi+eIDRUR6d1EXe3ugwM
-         EribDOvLguUzVuJxmmPHtbVnbauu/h6xPqJPsf0UfozitjwlfXiNo7BUTJnXrFTl6CZ3
-         MDSgKLWuGQPrW0AcypzhDOt67JcTz8oApconlEtKSD+/xEspOFRcD+ciPW5Yyw+YCHCg
-         Vt1A==
-X-Forwarded-Encrypted: i=1; AJvYcCXCgaIvWJC6EHsxkcZFLHnOdNbRFkxIhT1PqOTpQQKfwW+xrmaXjXZdRk4SrpS/lCSE8LW4ILq6pIfO@vger.kernel.org
-X-Gm-Message-State: AOJu0YwiJMfpY7MaLKS8juNJUszrxTemsKEwmnvqlvukA3yuiylQAsME
-	PoPKrzrObQaIOAaGwFymTtmAaIpwZ1A+R8YkFpefrXuyl7nJ78DtoQRfm/ML6bZlLBdlC5064wh
-	H96+09t2AH/gBUvOAK/Tqz1qb7GYU9Tt3mQEfin3GEOfFyuaJJ6M1zZkr+eA=
-X-Google-Smtp-Source: AGHT+IHI8JKeGFowjLy0Wq7k903HGmQnMboTuhZ97GWWaj4JMLmqqLM0pV4N9Nrzx89PQOqS034ZZG3LZBWnD5Vd6m6W/MspODLB
+	s=arc-20240116; t=1758134560; c=relaxed/simple;
+	bh=0foBAsVE+LB5+pq0SPplm74sj2q/NUP0pBhIynF97vU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=A1i5afT9M1XeJVmd6GxgSZu0eOUPksmIPRivZAxIfBD8VI6l1GFF0hTiMBbvlFkWnv/EPgCN8xAhAWSxrtHRTh5tMRj2+QuGAMHB+QecmuW9gM75aNXakVZ6CpJGFG+ZP6JJDEjlqfZTtGo+C1jcD+jApse+JZI0pSLR7OERmWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=pajF9CRa; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58HIJd6T027672;
+	Wed, 17 Sep 2025 18:42:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=sz16kJF9qOd971cDCM9SATsIbe06/InSon5nSaYxE
+	zo=; b=pajF9CRaOGNjdwy1Vgu/phOuL0/lkJD5Mqh8LVNtm4WAJ2AmCzTN26VBL
+	Tb5D6egJuP+NHS/udXrtn9gwK/2nMwrxoyg5VD7+BLcAJWOFeJeoj6p54BgVD4jp
+	xkGk9r2KQYsjdC2yG1LpCpkkqilTxsvavvqUxyH8/FzPY3h6YeyMwCUk1FMkbC5Q
+	IaZvSahYXndXGrXVHYaBD6uWvOcKJoBWh3w8H/q3sGAmBAysOReDJ7y+DDfc2Jq8
+	0QMxtBpXSgXbl6ToUgp4lmmG6oopSLGJgu3qV+D+7cg1h3E9UHHRTDscW0vxiALl
+	9KIgIVOlVnau1TZusDTTRma0l1ixQ==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 497g4p5p0s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Sep 2025 18:42:29 +0000 (GMT)
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 58HIbVG0018256;
+	Wed, 17 Sep 2025 18:42:29 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 497g4p5p0n-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Sep 2025 18:42:28 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58HIC8Ji018632;
+	Wed, 17 Sep 2025 18:42:27 GMT
+Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 495n5mjjp4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Sep 2025 18:42:27 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 58HIgQ507078552
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 17 Sep 2025 18:42:26 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8D6E658050;
+	Wed, 17 Sep 2025 18:42:26 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CF1B958052;
+	Wed, 17 Sep 2025 18:42:24 +0000 (GMT)
+Received: from a3560036.lnxne.boe (unknown [9.152.108.100])
+	by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 17 Sep 2025 18:42:24 +0000 (GMT)
+From: Sidraya Jayagond <sidraya@linux.ibm.com>
+To: kuba@kernel.org, andrew+netdev@lunn.ch, davem@davemloft.net,
+        pabeni@redhat.com, horms@kernel.org, alibuda@linux.alibaba.com,
+        dust.li@linux.alibaba.com, wenjia@linux.ibm.com,
+        mjambigi@linux.ibm.com, tonylu@linux.alibaba.com,
+        guwen@linux.alibaba.com
+Cc: netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Sidraya Jayagond <sidraya@linux.ibm.com>
+Subject: [PATCH net] net/smc: fix warning in smc_rx_splice() when calling get_page()
+Date: Wed, 17 Sep 2025 20:42:20 +0200
+Message-ID: <20250917184220.801066-1-sidraya@linux.ibm.com>
+X-Mailer: git-send-email 2.49.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1567:b0:423:fd65:ff02 with SMTP id
- e9e14a558f8ab-4241a4cfc3emr41068525ab.4.1758131911038; Wed, 17 Sep 2025
- 10:58:31 -0700 (PDT)
-Date: Wed, 17 Sep 2025 10:58:31 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68caf6c7.050a0220.2ff435.0597.GAE@google.com>
-Subject: [syzbot] [smc?] general protection fault in __smc_diag_dump (4)
-From: syzbot <syzbot+f775be4458668f7d220e@syzkaller.appspotmail.com>
-To: alibuda@linux.alibaba.com, davem@davemloft.net, dust.li@linux.alibaba.com, 
-	edumazet@google.com, guwen@linux.alibaba.com, horms@kernel.org, 
-	kuba@kernel.org, linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-s390@vger.kernel.org, mjambigi@linux.ibm.com, netdev@vger.kernel.org, 
-	pabeni@redhat.com, sidraya@linux.ibm.com, syzkaller-bugs@googlegroups.com, 
-	tonylu@linux.alibaba.com, wenjia@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTE2MDIwNCBTYWx0ZWRfX2+CbK4IC47Rn
+ jHWdDwuPYk6CNOheWhapPHWjtpaBAqdpzaO6h8LPV81V9f+R0o0OxBHQWHjfxWASotsJ55nwaHK
+ tRQ0XQc26sCjigt0h4PALN+8yFlqgEs1PyjS+cjj+2DPnmOO/tnsePgGzeC3x7V4CYComAs9021
+ VGeVfUe9CTXqPucERxCU0iSqhTtTK3ruSvPreqi1Y/VllPx4ZVyhjWnk0JzjdFTEwdl1hrtLiiL
+ eilfxe79N3IlD2MpPt00Xfr3vBhG3oZRmDNPnOtj9XbTU4vS1VId2aE6ywLh8mXHv2AQ2EnA+8H
+ soxaSRmHstDZtr2Ch5nauaahlqKj0C1qzE/FBA1ZVmeQChxbQDqicZVjLIeTnH4uyLXzik5HCgO
+ FrLF+W6S
+X-Proofpoint-ORIG-GUID: kco9-Jjn9a2PjTbvShXfph2LF4VijF9T
+X-Proofpoint-GUID: Ogats12SsLMDZ1X-zxw-rF9lnUJuxn0m
+X-Authority-Analysis: v=2.4 cv=cNzgskeN c=1 sm=1 tr=0 ts=68cb0115 cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=yJojWOMRYYMA:10 a=VnNF1IyMAAAA:8 a=3kUJVLf2yPifrhjWNHsA:9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-09-17_01,2025-09-17_02,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ suspectscore=0 clxscore=1011 spamscore=0 bulkscore=0 malwarescore=0
+ adultscore=0 priorityscore=1501 impostorscore=0 phishscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2509160204
 
-Hello,
+smc_lo_register_dmb() allocates DMB buffers with kzalloc(), which are
+later passed to get_page() in smc_rx_splice(). Since kmalloc memory is
+not page-backed, this triggers WARN_ON_ONCE() in get_page() and prevents
+holding a refcount on the buffer. This can lead to use-after-free if
+the memory is released before splice_to_pipe() completes.
 
-syzbot found the following issue on:
+Use folio_alloc() instead, ensuring DMBs are page-backed and safe for
+get_page().
 
-HEAD commit:    5aca7966d2a7 Merge tag 'perf-tools-fixes-for-v6.17-2025-09..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=147e2e42580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8f01d8629880e620
-dashboard link: https://syzkaller.appspot.com/bug?extid=f775be4458668f7d220e
-compiler:       gcc (Debian 12.2.0-14+deb12u1) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17aec534580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=115a9f62580000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/f191b2524020/disk-5aca7966.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5aa02ba0cba2/vmlinux-5aca7966.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b9b04ddba61b/bzImage-5aca7966.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f775be4458668f7d220e@syzkaller.appspotmail.com
-
-Oops: general protection fault, probably for non-canonical address 0xfbd5a5d5a0000003: 0000 [#1] SMP KASAN NOPTI
-KASAN: maybe wild-memory-access in range [0xdead4ead00000018-0xdead4ead0000001f]
-CPU: 1 UID: 0 PID: 6949 Comm: syz.0.335 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/18/2025
-RIP: 0010:smc_diag_msg_common_fill net/smc/smc_diag.c:44 [inline]
-RIP: 0010:__smc_diag_dump.constprop.0+0x3ca/0x2550 net/smc/smc_diag.c:89
-Code: 4c 8b b3 40 06 00 00 4d 85 f6 0f 84 f6 02 00 00 e8 6b 4f 78 f6 49 8d 7e 18 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 f6 1e 00 00 48 b8 00 00 00 00 00 fc ff df 4d 8b
-RSP: 0018:ffffc90003f2f1a8 EFLAGS: 00010a06
-RAX: dffffc0000000000 RBX: ffff88802a33bd40 RCX: ffffffff897ee8a4
-RDX: 1bd5a9d5a0000003 RSI: ffffffff8b434dd5 RDI: dead4ead00000018
-RBP: ffff888032418000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000001 R11: 0000000000000000 R12: ffff8880754915f0
-R13: ffff88805d823780 R14: dead4ead00000000 R15: ffff88802a33c380
-FS:  00007fec5f7dd6c0(0000) GS:ffff8881247b2000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fec5f7dcf98 CR3: 000000007d646000 CR4: 00000000003526f0
+WARNING: CPU: 18 PID: 12152 at ./include/linux/mm.h:1330 smc_rx_splice+0xaf8/0xe20 [smc]
+CPU: 18 UID: 0 PID: 12152 Comm: smcapp Kdump: loaded Not tainted 6.17.0-rc3-11705-g9cf4672ecfee #10 NONE
+Hardware name: IBM 3931 A01 704 (z/VM 7.4.0)
+Krnl PSW : 0704e00180000000 000793161032696c (smc_rx_splice+0xafc/0xe20 [smc])
+           R:0 T:1 IO:1 EX:1 Key:0 M:1 W:0 P:0 AS:3 CC:2 PM:0 RI:0 EA:3
+Krnl GPRS: 0000000000000000 001cee80007d3001 00077400000000f8 0000000000000005
+           0000000000000001 001cee80007d3006 0007740000001000 001c000000000000
+           000000009b0c99e0 0000000000001000 001c0000000000f8 001c000000000000
+           000003ffcc6f7c88 0007740003e98000 0007931600000005 000792969b2ff7b8
+Krnl Code: 0007931610326960: af000000		mc	0,0
+           0007931610326964: a7f4ff43		brc	15,00079316103267ea
+          #0007931610326968: af000000		mc	0,0
+          >000793161032696c: a7f4ff3f		brc	15,00079316103267ea
+           0007931610326970: e320f1000004	lg	%r2,256(%r15)
+           0007931610326976: c0e53fd1b5f5	brasl	%r14,000793168fd5d560
+           000793161032697c: a7f4fbb5		brc	15,00079316103260e6
+           0007931610326980: b904002b		lgr	%r2,%r11
 Call Trace:
- <TASK>
- smc_diag_dump_proto+0x26d/0x420 net/smc/smc_diag.c:217
- smc_diag_dump+0x27/0x90 net/smc/smc_diag.c:234
- netlink_dump+0x539/0xd30 net/netlink/af_netlink.c:2327
- __netlink_dump_start+0x6d6/0x990 net/netlink/af_netlink.c:2442
- netlink_dump_start include/linux/netlink.h:341 [inline]
- smc_diag_handler_dump+0x1f9/0x240 net/smc/smc_diag.c:251
- __sock_diag_cmd net/core/sock_diag.c:249 [inline]
- sock_diag_rcv_msg+0x438/0x790 net/core/sock_diag.c:285
- netlink_rcv_skb+0x158/0x420 net/netlink/af_netlink.c:2552
- netlink_unicast_kernel net/netlink/af_netlink.c:1320 [inline]
- netlink_unicast+0x5a7/0x870 net/netlink/af_netlink.c:1346
- netlink_sendmsg+0x8d1/0xdd0 net/netlink/af_netlink.c:1896
- sock_sendmsg_nosec net/socket.c:714 [inline]
- __sock_sendmsg net/socket.c:729 [inline]
- ____sys_sendmsg+0xa95/0xc70 net/socket.c:2614
- ___sys_sendmsg+0x134/0x1d0 net/socket.c:2668
- __sys_sendmsg+0x16d/0x220 net/socket.c:2700
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0xcd/0x4e0 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fec6018eba9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fec5f7dd038 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fec603d6090 RCX: 00007fec6018eba9
-RDX: 0000000000000000 RSI: 0000200000000140 RDI: 0000000000000003
-RBP: 00007fec60211e19 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fec603d6128 R14: 00007fec603d6090 R15: 00007ffcb0713c08
- </TASK>
-Modules linked in:
+ smc_rx_splice+0xafc/0xe20 [smc]
+ smc_rx_splice+0x756/0xe20 [smc])
+ smc_rx_recvmsg+0xa74/0xe00 [smc]
+ smc_splice_read+0x1ce/0x3b0 [smc]
+ sock_splice_read+0xa2/0xf0
+ do_splice_read+0x198/0x240
+ splice_file_to_pipe+0x7e/0x110
+ do_splice+0x59e/0xde0
+ __do_splice+0x11a/0x2d0
+ __s390x_sys_splice+0x140/0x1f0
+ __do_syscall+0x122/0x280
+ system_call+0x6e/0x90
+Last Breaking-Event-Address:
+smc_rx_splice+0x960/0xe20 [smc]
 ---[ end trace 0000000000000000 ]---
-RIP: 0010:smc_diag_msg_common_fill net/smc/smc_diag.c:44 [inline]
-RIP: 0010:__smc_diag_dump.constprop.0+0x3ca/0x2550 net/smc/smc_diag.c:89
-Code: 4c 8b b3 40 06 00 00 4d 85 f6 0f 84 f6 02 00 00 e8 6b 4f 78 f6 49 8d 7e 18 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 f6 1e 00 00 48 b8 00 00 00 00 00 fc ff df 4d 8b
-RSP: 0018:ffffc90003f2f1a8 EFLAGS: 00010a06
-RAX: dffffc0000000000 RBX: ffff88802a33bd40 RCX: ffffffff897ee8a4
-RDX: 1bd5a9d5a0000003 RSI: ffffffff8b434dd5 RDI: dead4ead00000018
-RBP: ffff888032418000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000001 R11: 0000000000000000 R12: ffff8880754915f0
-R13: ffff88805d823780 R14: dead4ead00000000 R15: ffff88802a33c380
-FS:  00007fec5f7dd6c0(0000) GS:ffff8881247b2000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fec5f7dcf98 CR3: 000000007d646000 CR4: 00000000003526f0
-----------------
-Code disassembly (best guess):
-   0:	4c 8b b3 40 06 00 00 	mov    0x640(%rbx),%r14
-   7:	4d 85 f6             	test   %r14,%r14
-   a:	0f 84 f6 02 00 00    	je     0x306
-  10:	e8 6b 4f 78 f6       	call   0xf6784f80
-  15:	49 8d 7e 18          	lea    0x18(%r14),%rdi
-  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  20:	fc ff df
-  23:	48 89 fa             	mov    %rdi,%rdx
-  26:	48 c1 ea 03          	shr    $0x3,%rdx
-* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2e:	0f 85 f6 1e 00 00    	jne    0x1f2a
-  34:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  3b:	fc ff df
-  3e:	4d                   	rex.WRB
-  3f:	8b                   	.byte 0x8b
 
-
+Fixes: f7a22071dbf3 ("net/smc: implement DMB-related operations of loopback-ism")
+Reviewed-by: Mahanta Jambigi <mjambigi@linux.ibm.com>
+Signed-off-by: Sidraya Jayagond <sidraya@linux.ibm.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ net/smc/smc_loopback.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/net/smc/smc_loopback.c b/net/smc/smc_loopback.c
+index 0eb00bbefd17..77cc1c6dc3e9 100644
+--- a/net/smc/smc_loopback.c
++++ b/net/smc/smc_loopback.c
+@@ -56,6 +56,7 @@ static int smc_lo_register_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb,
+ {
+ 	struct smc_lo_dmb_node *dmb_node, *tmp_node;
+ 	struct smc_lo_dev *ldev = smcd->priv;
++	struct folio *folio;
+ 	int sba_idx, rc;
+ 
+ 	/* check space for new dmb */
+@@ -74,13 +75,16 @@ static int smc_lo_register_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb,
+ 
+ 	dmb_node->sba_idx = sba_idx;
+ 	dmb_node->len = dmb->dmb_len;
+-	dmb_node->cpu_addr = kzalloc(dmb_node->len, GFP_KERNEL |
+-				     __GFP_NOWARN | __GFP_NORETRY |
+-				     __GFP_NOMEMALLOC);
+-	if (!dmb_node->cpu_addr) {
++
++	/* not critical; fail under memory pressure and fallback to TCP */
++	folio = folio_alloc(GFP_KERNEL | __GFP_NOWARN | __GFP_NOMEMALLOC |
++			    __GFP_NORETRY | __GFP_ZERO,
++			    get_order(dmb_node->len));
++	if (!folio) {
+ 		rc = -ENOMEM;
+ 		goto err_node;
+ 	}
++	dmb_node->cpu_addr = folio_address(folio);
+ 	dmb_node->dma_addr = SMC_DMA_ADDR_INVALID;
+ 	refcount_set(&dmb_node->refcnt, 1);
+ 
+@@ -122,7 +126,7 @@ static void __smc_lo_unregister_dmb(struct smc_lo_dev *ldev,
+ 	write_unlock_bh(&ldev->dmb_ht_lock);
+ 
+ 	clear_bit(dmb_node->sba_idx, ldev->sba_idx_mask);
+-	kvfree(dmb_node->cpu_addr);
++	folio_put(virt_to_folio(dmb_node->cpu_addr));
+ 	kfree(dmb_node);
+ 
+ 	if (atomic_dec_and_test(&ldev->dmb_cnt))
+-- 
+2.49.0
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
