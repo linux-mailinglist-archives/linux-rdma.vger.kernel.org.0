@@ -1,45 +1,45 @@
-Return-Path: <linux-rdma+bounces-13443-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13444-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62C92B7E192
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Sep 2025 14:42:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D3A1B7E260
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Sep 2025 14:42:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02DB1188C074
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Sep 2025 12:41:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDBFE1B2596A
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Sep 2025 12:42:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9C218BBAE;
-	Wed, 17 Sep 2025 12:40:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEF0C31A814;
+	Wed, 17 Sep 2025 12:40:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="GovVgAc7"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="doZf51hp"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC99030F933;
-	Wed, 17 Sep 2025 12:40:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E86881F3BA2;
+	Wed, 17 Sep 2025 12:40:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758112841; cv=none; b=N68xpTzCbMoBrQIeMFPTRiaWdYSeWqkxEtL4jcvxyoT+V0F5jL5enT4MP6P3FbNGAfPLDGAiHL77dL/79jurd7nULhM4Zw/Le0eDGng4ygufsApM9aGAvyN5+BAji7r0+aQRlbaJLCdRMF7jxfzhJ3bFZ1wlh6SSDTFSLADw5/Q=
+	t=1758112848; cv=none; b=T7lfE3T4aZWxV3cTVUK7NGe8diBfD9BmsqNOZIZ3AfSMETeBs9LlyEsS4jl3ytSUFQH+3Qk2pjOPbCJL/XGBXufGqzlERfAsHvfhV6KYHzXtzkCj9HIiGtULGFZDNIIlxsBz8L1o+GCL/ugV3fcZhkD5qSgdgwNVzvYM8UI7KGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758112841; c=relaxed/simple;
+	s=arc-20240116; t=1758112848; c=relaxed/simple;
 	bh=DW3dCW9zfLTrh7OOEGOvG1H31gk9z0NCojfNW5UCAJ0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=B8xca3LPijvgQTlJhJhBE5bK0jMoFflIQ/xjEMoBZKxHP2574M9bzHDChez7Kcn4bVM3jOt5wNZoKOJqbgUEhCLzUho/d1l1LUYwzm+jMDfeKDC7x+tCw4hixqyyq0H50YqQ1UTsCeKDBtYEximXj80DNtKWN2wRmWDrIJsMItw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=GovVgAc7; arc=none smtp.client-ip=117.135.210.3
+	 MIME-Version; b=fPBxSA41yV6uQUPrbQ6pcxEtuzFZ697e696/hB0mBUJluBvxZzu1IJvOhJKkcVtjOcvrpJdGeUw/qpOsBtJNsr/iElnI6W5Ee6gdXxPdHNWQjZEh63VQ4zWQIi89REGDQh8iy60GCre+V3EPjCDrgFRt5VzH3MF7ImOAv8dWFPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=doZf51hp; arc=none smtp.client-ip=117.135.210.3
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
 	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=NU
-	ZxpJS3obiOiDUp+EVz/UTN72QWU0J/B28urQMb4Ws=; b=GovVgAc7u6SHBbDQHX
-	ZaO760GUCh5WCNawgDVf7rWDZCmg3g7J7rKLYE+y8TEG4IHLFpxPq69UcVhZu3jD
-	FKzNEGArfo1bWuGv6Xyd+/DMqygGWwWHw1ASpihx2Y0rpA7I9aNwC/DyGAjTARMM
-	DzXw3dQBUWqgcnX5hwngEq9H4=
+	ZxpJS3obiOiDUp+EVz/UTN72QWU0J/B28urQMb4Ws=; b=doZf51hpIkGtFi/HEH
+	ccjUM+NWwmpRMUlLBr+Ni7JmNDKjZ4sR1ZOp7+FyrqEBeOZ2RpxoLiNJ8oL3fCyK
+	Uy2JmjJ1iDpu4tH/zuYO4xOz90qXKMcl0IWcqSXBT7C4yOA5C1FSzr/1YFmA8rgW
+	Q4G0n46hE+ZN36u/8R8Jq6lWk=
 Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g0-1 (Coremail) with SMTP id _____wDntyoQrMpolpKeBw--.4066S2;
-	Wed, 17 Sep 2025 20:39:45 +0800 (CST)
+	by gzga-smtp-mtada-g1-0 (Coremail) with SMTP id _____wDHftAirMpo2LiKBw--.38864S2;
+	Wed, 17 Sep 2025 20:40:03 +0800 (CST)
 From: YanLong Dai <dyl_wlc@163.com>
 To: kalesh-anakkur.purayil@broadcom.com
 Cc: jgg@ziepe.ca,
@@ -50,8 +50,8 @@ Cc: jgg@ziepe.ca,
 	daiyanlong@kylinos.cn,
 	dyl_wlc@163.com
 Subject: [PATCH v3] drivers: fix the potential memory leak in bnxt_re_destroy_gsi_sqp()
-Date: Wed, 17 Sep 2025 20:39:43 +0800
-Message-ID: <20250917123943.3634-1-dyl_wlc@163.com>
+Date: Wed, 17 Sep 2025 20:40:00 +0800
+Message-ID: <20250917124000.3652-1-dyl_wlc@163.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20250916134915.GC82444@unreal>
 References: <20250916134915.GC82444@unreal>
@@ -62,12 +62,12 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDntyoQrMpolpKeBw--.4066S2
+X-CM-TRANSID:_____wDHftAirMpo2LiKBw--.38864S2
 X-Coremail-Antispam: 1Uf129KBjvJXoWxJrWxKFy8GFyDZF1DWw43trb_yoW8GFy8pr
 	43J3s0k3y5JF4xWFWUJFy7XF45Ga40y3ykKa9Fk3sxAa15A3WkJF93t3Zavas5ArZ5Gr4I
 	vw13Jrs8G3W7WaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pEv38UUUUUU=
-X-CM-SenderInfo: 5g1os4lof6il2tof0z/xtbBMRDLImjKpOfVrwAAsT
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pELvtJUUUUU=
+X-CM-SenderInfo: 5g1os4lof6il2tof0z/xtbBMR7LImjKpOfX4AAAsQ
 
 From: daiyanlong <daiyanlong@kylinos.cn>
 
