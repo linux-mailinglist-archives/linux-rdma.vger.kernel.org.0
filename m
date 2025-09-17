@@ -1,131 +1,94 @@
-Return-Path: <linux-rdma+bounces-13433-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13434-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2849B7F700
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Sep 2025 15:41:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 389E5B7EE85
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Sep 2025 15:06:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69AE0582E9C
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Sep 2025 02:16:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC4A41B27BDB
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Sep 2025 05:54:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0F212DF707;
-	Wed, 17 Sep 2025 02:16:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F4206269D18;
+	Wed, 17 Sep 2025 05:53:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="C/cyo+si"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="KOt+W++K"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1C231BC58;
-	Wed, 17 Sep 2025 02:16:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59FE228682;
+	Wed, 17 Sep 2025 05:53:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758075403; cv=none; b=Yfp+7QAmwdKMxjbjVAj/hvTP+/NfKRNkz16i7cqLpzEgchpIuMu2uoAGnWBioUC85jr7m5/m9KEZM8ISnlvcGDyNaW2c9zS1e6FjH/oq5o/wrglCxdowQxYRUxGxVtX66RU6CuULJuvAl/DEh9PPsKyA0uV3nx5A/Y/mpsXS+4k=
+	t=1758088437; cv=none; b=TBoGezDv+anFTFN8NExAeqDhSUGZpY9s/5TuJ61JeP7FJCWlXoEy2ifL5KINBi6BpymyKHAuDLjABH5nhHQkeGJ7QHR3a4MgR5sWw7SZJEjVjLDck0vIqL6699mB+LdrZB479W2FPxq6TwdQlFdSnqH7sF1TaQDAPI0MB3sAers=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758075403; c=relaxed/simple;
-	bh=0h5IC4hB4vcqA1MeCKMaRQ1CQprih7AwfcGJEvlz36k=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Jx4jOf98TGmZOjdTm5v8yUJ8RRf5CfovvFpZccbWwcs/PZQ+/nFIu2erYmAmE6MTxdWm/oOSAz3ziJ2yKfyAWjRpQkdhkMljO4psrzfwpqgA9XudmyXZEqQr6CsZjGf1lyeKiIqWroYnWRTHJElAHXYmgfUibwExjfcfKsWIOMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=C/cyo+si; arc=none smtp.client-ip=117.135.210.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=KZ
-	FXUOv8rJmRZQ+Ct1Y4YDKVBMbWdMoJqlvmXvP+TQM=; b=C/cyo+siwlzLwRfQWy
-	x2d83pBfLfdGZ3UUgRkqfjeG3SRdTlJAEBBBlxsTaPNNsGn5ywDTkKXOie1Xx761
-	gyUeg6Ys0tBGXItPZqu5BhCPOr0zcNCmUirxwwSyXWkXV244KIoeWyiBNQ/5/gzB
-	UN7P5BiGlN88Vh3KsBQu2ts78=
-Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g0-2 (Coremail) with SMTP id _____wDXf6fYGcpobBozBw--.62864S2;
-	Wed, 17 Sep 2025 10:15:53 +0800 (CST)
-From: YanLong Dai <dyl_wlc@163.com>
-To: leon@kernel.org
-Cc: daiyanlong@kylinos.cn,
-	dyl_wlc@163.com,
-	jgg@ziepe.ca,
-	kalesh-anakkur.purayil@broadcom.com,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	selvin.xavier@broadcom.com
-Subject: Re: [PATCH] drivers: fix the exception was not returned
-Date: Wed, 17 Sep 2025 10:15:50 +0800
-Message-ID: <20250917021550.47243-1-dyl_wlc@163.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20250916134915.GC82444@unreal>
-References: <20250916134915.GC82444@unreal>
+	s=arc-20240116; t=1758088437; c=relaxed/simple;
+	bh=CCX37D9Qr7GX+74n8qfAy6TluFo/LtQaDdLKVHdQLCc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S/m69hti5RIqeiEm78HHuH2J2T6DphkpAsFObQFQ9M5r6SHoerIKqjxK1eY08PrOtOGjMiGNAjTUIR/YrxzBCqnWD1JRhFm8WgQXd9EY13duQtuaxNsdSq7ktW4UTZYWkmRrzUUQOUJD7oDvPhzmI10RDMLmxUcoAt7KlmGMteQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=KOt+W++K; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1173)
+	id EABAA2018E4F; Tue, 16 Sep 2025 22:53:55 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EABAA2018E4F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1758088435;
+	bh=YHQ3EH9SyJ8VRyn828fVbYcfbFUAxPm7FMoa/3X+BBE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KOt+W++Kvq53kIom1S9t1ix7U8JW3wuLQCKLEP5i81uWmacMI/IjJfhT21C2px9F3
+	 VP0+8MAsCRyaYR7eRFTNv7QaClkEOmjh/d/02JFidqnIFNC7PC+xws+2g4uyeumHg6
+	 Zq7SMFdQrQPJSUwS72GuTxy+JGuEsMPjVxTagfx0=
+Date: Tue, 16 Sep 2025 22:53:55 -0700
+From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, longli@microsoft.com,
+	kotaranov@microsoft.com, horms@kernel.org,
+	shradhagupta@linux.microsoft.com, dipayanroy@linux.microsoft.com,
+	shirazsaleem@microsoft.com, rosenp@gmail.com,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 2/2] net: mana: Add standard counter rx_missed_errors
+Message-ID: <20250917055355.GA31577@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1757908698-16778-1-git-send-email-ernis@linux.microsoft.com>
+ <1757908698-16778-3-git-send-email-ernis@linux.microsoft.com>
+ <0b5b0d1d-438a-4e41-99c8-a6f61d7581b4@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-CM-TRANSID:_____wDXf6fYGcpobBozBw--.62864S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7uFy7Kw48tFWkur18AFyUAwb_yoW8Aw45pr
-	4UW34qkrW5Jr4xCF4kZ3WUWw1ruFWftrW8J39IgFnxXw15Wwn3tF1SvwsIvF98GrZ3Gryv
-	v3y5XrZxCay5uFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0JUno7XUUUUU=
-X-CM-SenderInfo: 5g1os4lof6il2tof0z/1tbiSArLImjKGIQmkgAAsh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0b5b0d1d-438a-4e41-99c8-a6f61d7581b4@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Tue, Sep 16, 2025 at 04:49:15PM +0300, Leon Romanovsky wrote:=0D
-> On Tue, Sep 16, 2025 at 05:11:54PM +0800, YanLong Dai wrote:=0D
-> > From: daiyanlong <daiyanlong@kylinos.cn>=0D
-> > =0D
-> > The return value rc of bnxt_qplib_destroy_qp is abnormal and no return=
-=0D
-> =0D
-> And what is wrong with that? This is expected behavior - do not fail if=0D
-> destroy fails.=0D
-=0D
-Thank you for the feedback! I understand your perspective that destroy oper=
-ations should ideally complete cleanup whenever possible.=0D
-=0D
-However, while reviewing the related code, I noticed a consistency detail:=
-=0D
-In the bnxt_re_destroy_gsi_sqp() function within the same file (drivers/inf=
-iniband/hw/bnxt_re/ib_verbs.c), the error handling for bnxt_qplib_destroy_q=
-p() is different:=0D
-=0D
-static void bnxt_re_destroy_gsi_sqp(struct bnxt_re_qp *qp)=0D
-{=0D
-    ...=0D
-    rc =3D bnxt_qplib_destroy_qp(&rdev->qplib_res, &qp->qplib_qp);=0D
-    if (rc) {=0D
-        ibdev_err(...);  // <- logs a warning here=0D
-        goto fail;       // <- returns immediately without further cleanup=
-=0D
-    }=0D
-    bnxt_qplib_free_qp_res(&rdev->qplib_res, &qp->qplib_qp); // <- cleans u=
-p resources=0D
-	=0D
-fail:=0D
-	return rc;=0D
-}=0D
-=0D
-Whereas in the function addressed by the current patch:=0D
-=0D
-static int bnxt_re_destroy_qp(...)=0D
-{=0D
-    ...=0D
-    rc =3D bnxt_qplib_destroy_qp(&qp->qplib_qp);=0D
-	if (rc)=0D
-		ibdev_err(&rdev->ibdev, "Failed to destroy HW QP");=0D
-=0D
-    // no check of rc, proceeds directly to cleanup=0D
-    bnxt_qplib_free_qp_res(&qp->qplib_qp);=0D
-}=0D
-=0D
-My consideration is:=0D
-If bnxt_qplib_free_qp_res() is called after bnxt_qplib_destroy_qp() fails, =
-could this potentially lead to =0D
-=0D
-This might be a minor robustness concern in the code. Of course, you as the=
- maintainer have the best understanding of the code context. If this is an =
-intentional design decision, please feel free to disregard my suggestion.=0D
-=0D
-Thank you for your time!=0D
-YanLong=0D
+On Tue, Sep 16, 2025 at 03:22:54PM +0200, Paolo Abeni wrote:
+> On 9/15/25 5:58 AM, Erni Sri Satya Vennela wrote:
+> > Report standard counter stats->rx_missed_errors
+> > using hc_rx_discards_no_wqe from the hardware.
+> > 
+> > Add a dedicated workqueue to periodically run
+> > mana_query_gf_stats every 2 seconds to get the latest
+> > info in eth_stats and define a driver capability flag
+> > to notify hardware of the periodic queries.
+> > 
+> > To avoid repeated failures and log flooding, the workqueue
+> > is not rescheduled if mana_query_gf_stats fails.
+> 
+> Can the failure root cause be a "transient" one? If so, this looks like
+> a dangerous strategy; is such scenario, AFAICS, stats will be broken
+> until the device is removed and re-probed.
+> 
+We are working on using the stats query as a health check for the
+hardware and its channel. Even if it fails once, the VF needs to
+be reset, similar to a probe. The hardware team also confirmed that even
+a one-time or temporary failure needs a VF reset.
 
+- Vennela
+
+> /P
 
