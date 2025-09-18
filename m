@@ -1,251 +1,128 @@
-Return-Path: <linux-rdma+bounces-13501-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13502-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14A7FB859C9
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 17:31:54 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5D1AB860B0
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 18:31:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9851E1C24965
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 15:27:48 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 937A94E0412
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 16:31:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 518B130F52C;
-	Thu, 18 Sep 2025 15:27:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B970A30DEDC;
+	Thu, 18 Sep 2025 16:31:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="HqvfU+a9"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fmstMp9f"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 833F030EF92;
-	Thu, 18 Sep 2025 15:26:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87CF8217733
+	for <linux-rdma@vger.kernel.org>; Thu, 18 Sep 2025 16:31:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758209220; cv=none; b=QgI1FqtqD1H1oFVoe5vcDlxLl4GkwjVaTSUABDhkZEU/80A0amUDNu/7ZvJ5kk9DrS4ycm7NJhec632iYr2g9yuT1BkUV+Ek9LATCvC6tQCSyLV1RcpqZDFWenlTgNpbqdv2bTTe3q52zgSxgytRv73Zh/ta8NhhdTMCe0V5HMc=
+	t=1758213083; cv=none; b=AId9zeFb2W6cIP+dzgOyi3DayN5bvmjEyHqP+DTBb5dkPBK00mBlawzSAEPPqr24NDPGGApcmuaNK5ExKLRfZTIYazskr5o9NjnuXysZDbUUh3PXdevJwDmNjOWeq/Nl221DaAwG9syaw3nFaor0Vf8+kUyU0uX9XL3y6qPXYd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758209220; c=relaxed/simple;
-	bh=Y8sZXG+U5HmHTYC6zjkUTRWeq91xe2VMiLllmZ6cazM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=I+A0vRFcmEYp8pl2SACMcgemvAVDZDo2V6QD9xIimC8larG4SMeu5DRhZpGpGDD1LM6Za5G9/JW6ccmbTw+KnUOsutnms5WHiqAh5wYucyloT2vyxwWGvelc7upW1ObBO+82IGSx+XqeUJk96PWpNoZnH8O332edX9ByRkcspn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=HqvfU+a9; arc=none smtp.client-ip=144.76.82.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-	s=42; h=Message-ID:Date:Cc:To:From;
-	bh=fIHaTXuQ6ex+XU7opMOaP0o4J0tZUt/DTnjrKna1zK8=; b=HqvfU+a9QcBcQy7IArawJZPOdj
-	sHQ8qbboLcpjhD2c06xLtVNbiuDnQ1dT+z3/qiBp4Qqgf9ZTA/6cA5HvQ9rH5VJqJRptEgyeriasc
-	Iv2qWbM41A94DLCmXfxvAlLWtMFKg1mxqZDOErRCHoPS79T4wqO5XLHmyBfVuL9gQvZGXQd4rYgV/
-	S3spA1tRyNWt8FZpMIXAD2AQbsrApuJ/vE2TpOZE5Vj4d5GD596ugXhLQClN0MzMbuA28qfP9saC0
-	W0qv3XtklE3R5aZFVtrYWZw2ZhnfC0oCWcXgnbm0T5dy1T+oNrXDIg2weccZnOrb7OP1V0sP20ST2
-	66EVufjRTLcC6GBsayj+rjoJL0qw0J2yobTExtcHLwSxCJZf59fKF+JAAri4Vkl0zLjcQvnnu92gk
-	qn7WNswacvNxyzZgUeAeOTFK18hkIq98pezL4k4JIHZTJG2Z1fmwEspV7yaWQpLBP0cmYn4NqJ2Er
-	KUw3VLcMpYRrgusvFnDFhBkr;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__CHACHA20_POLY1305:256)
-	(Exim)
-	id 1uzGX9-004mXM-1W;
-	Thu, 18 Sep 2025 15:26:55 +0000
-From: Stefan Metzmacher <metze@samba.org>
-To: linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org
-Cc: metze@samba.org,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	Steve French <smfrench@gmail.com>,
-	Tom Talpey <tom@talpey.com>,
-	linux-rdma@vger.kernel.org,
-	Steve French <stfrench@microsoft.com>
-Subject: [PATCH v3] smb: server: fix IRD/ORD negotiation with the client
-Date: Thu, 18 Sep 2025 17:26:44 +0200
-Message-ID: <20250918152644.1245030-1-metze@samba.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1758213083; c=relaxed/simple;
+	bh=3KNQBrmuTJnLnWcZwGaVeyMZ6PXTJNOElnm2MX06lJE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Fq770xtqdXf3pOO7UcZb6cSc6Y9Yo0UlHtZDLyXutMIupybEZ5UXtpZ/1k1ckrwu8Vv/qQ0OMJ82naqqMkjeOZlIN0q04CcKAe16rQtKwJUYngcL2m6qWWBQIJ8obk66+TG6ghVgn2BQndipJq3A9Quykde8dODQouv4wQGpcIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fmstMp9f; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <abc0f24a-33dc-4a64-a293-65683f52dd42@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1758213079;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+1p1A6UBHOrPki1VrYn/yNmVc9P78XZFmtuQXerf7RA=;
+	b=fmstMp9fFges487/IV/ethWtE9xqvl2Y3omU0qNnsk16lV33roM+pUJJvKak8LfzJmdCAl
+	iti9nBCbaf6nwA8oIkoucZHMwaU5feBVcCs2OngyWavgznRf4PgymK6tFR38r9jLVj5nuH
+	BhOjnbq/D6J6nfPRrgripqVxBXXgsOo=
+Date: Thu, 18 Sep 2025 09:31:12 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH] RDMA/rxe: Fix race in do_task() when draining
+To: Gui-Dong Han <hanguidong02@gmail.com>
+Cc: zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ baijiaju1990@gmail.com, stable@vger.kernel.org, rpearsonhpe@gmail.com
+References: <20250917100657.1535424-1-hanguidong02@gmail.com>
+ <a321729d-f8a1-4901-ae9d-f08339b5093b@linux.dev>
+ <CALbr=LZFZP3ioRmRx1T4Xm=LpPXRsDhkNMxM9dYrfE5nOuknNg@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Yanjun.Zhu" <yanjun.zhu@linux.dev>
+In-Reply-To: <CALbr=LZFZP3ioRmRx1T4Xm=LpPXRsDhkNMxM9dYrfE5nOuknNg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Already do real negotiation in smb_direct_handle_connect_request()
-where we see the requested initiator_depth and responder_resources
-from the client.
 
-We should should detect legacy iwarp clients using MPA v1
-with the custom IRD/ORD negotiation.
+On 9/17/25 7:21 PM, Gui-Dong Han wrote:
+> On Thu, Sep 18, 2025 at 3:31 AM yanjun.zhu <yanjun.zhu@linux.dev> wrote:
+>> On 9/17/25 3:06 AM, Gui-Dong Han wrote:
+>>> When do_task() exhausts its RXE_MAX_ITERATIONS budget, it unconditionally
+>>   From the source code, it will check ret value, then set it to
+>> TASK_STATE_IDLE, not unconditionally.
+> Hi Yanjun,
+>
+> Thanks for your review. Let me clarify a few points.
+>
+> You are correct that the code checks the ret value. The if (!ret)
+> branch specifically handles the case where the RXE_MAX_ITERATIONS
+> limit is reached while work still remains. My use of "unconditionally"
+> refers to the action inside this branch, which sets the state to
+> TASK_STATE_IDLE without a secondary check on task->state. The original
+> tasklet implementation effectively checked both conditions in this
+> scenario.
+>
+>>> sets the task state to TASK_STATE_IDLE to reschedule. This overwrites
+>>> the TASK_STATE_DRAINING state that may have been concurrently set by
+>>> rxe_cleanup_task() or rxe_disable_task().
+>>   From the source code, there is a spin lock to protect the state. It
+>> will not make race condition.
+> While a spinlock protects state changes, rxe_cleanup_task() and
+> rxe_disable_task() do not hold it for its entire duration. It acquires
+> the lock to set TASK_STATE_DRAINING, but then releases it to wait in
+> the while (!is_done(task)) loop. The race window exists when do_task()
+> acquires the lock during this wait period, allowing it to overwrite
+> the TASK_STATE_DRAINING state.
+>
+>>> This race condition breaks the cleanup and disable logic, which expects
+>>> the task to stop processing new work. The cleanup code may proceed while
+>>> do_task() reschedules itself, leading to a potential use-after-free.
+>>>
+>> Can you post the call trace when this problem occurred?
+> This issue was identified through code inspection and a static
+> analysis tool we are developing to detect TOCTOU bugs in the kernel,
+> so I do not have a runtime call trace. The bug is confirmed by
+> inspecting the Fixes commit (9b4b7c1f9f54), which lost the special
+> handling for the draining case during the migration from tasklets to
+> workqueues.
+Thanks a lot for your detailed explanations. Could you update the commit 
+logs to reflect the points you explained above?
 
-We need to send the custom IRD/ORD in big endian,
-but we need to try to let clients with broken requests
-using little endian (older cifs.ko) to work.
+The current commit logs are a bit confusing, but your explanation makes 
+everything clear. If you rewrite the logs with that context, other 
+reviewers will be able to understand your intent directly from the 
+commit message, without needing the extra explanation. That would make 
+the commit much clearer.
 
-Note the reason why this uses u8 for
-initiator_depth and responder_resources is
-that the rdma layer also uses it.
+Any way,
 
-Cc: Namjae Jeon <linkinjeon@kernel.org>
-Cc: Steve French <smfrench@gmail.com>
-Cc: Tom Talpey <tom@talpey.com>
-Cc: linux-cifs@vger.kernel.org
-Cc: samba-technical@lists.samba.org
-Cc: linux-rdma@vger.kernel.org
-Fixes: 0626e6641f6b ("cifsd: add server handler for central processing and tranport layers")
-Signed-off-by: Stefan Metzmacher <metze@samba.org>
-Signed-off-by: Steve French <stfrench@microsoft.com>
----
- fs/smb/server/transport_rdma.c | 99 +++++++++++++++++++++++++++++-----
- 1 file changed, 85 insertions(+), 14 deletions(-)
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-diff --git a/fs/smb/server/transport_rdma.c b/fs/smb/server/transport_rdma.c
-index 74dfb6496095..e1f659d3b4cf 100644
---- a/fs/smb/server/transport_rdma.c
-+++ b/fs/smb/server/transport_rdma.c
-@@ -153,6 +153,10 @@ struct smb_direct_transport {
- 	struct work_struct	disconnect_work;
- 
- 	bool			negotiation_requested;
-+
-+	bool			legacy_iwarp;
-+	u8			initiator_depth;
-+	u8			responder_resources;
- };
- 
- #define KSMBD_TRANS(t) ((struct ksmbd_transport *)&((t)->transport))
-@@ -347,6 +351,9 @@ static struct smb_direct_transport *alloc_transport(struct rdma_cm_id *cm_id)
- 	t->cm_id = cm_id;
- 	cm_id->context = t;
- 
-+	t->initiator_depth = SMB_DIRECT_CM_INITIATOR_DEPTH;
-+	t->responder_resources = 1;
-+
- 	t->status = SMB_DIRECT_CS_NEW;
- 	init_waitqueue_head(&t->wait_status);
- 
-@@ -1676,21 +1683,21 @@ static int smb_direct_send_negotiate_response(struct smb_direct_transport *t,
- static int smb_direct_accept_client(struct smb_direct_transport *t)
- {
- 	struct rdma_conn_param conn_param;
--	struct ib_port_immutable port_immutable;
--	u32 ird_ord_hdr[2];
-+	__be32 ird_ord_hdr[2];
- 	int ret;
- 
-+	/*
-+	 * smb_direct_handle_connect_request()
-+	 * already negotiated t->initiator_depth
-+	 * and t->responder_resources
-+	 */
- 	memset(&conn_param, 0, sizeof(conn_param));
--	conn_param.initiator_depth = min_t(u8, t->cm_id->device->attrs.max_qp_rd_atom,
--					   SMB_DIRECT_CM_INITIATOR_DEPTH);
--	conn_param.responder_resources = 0;
--
--	t->cm_id->device->ops.get_port_immutable(t->cm_id->device,
--						 t->cm_id->port_num,
--						 &port_immutable);
--	if (port_immutable.core_cap_flags & RDMA_CORE_PORT_IWARP) {
--		ird_ord_hdr[0] = conn_param.responder_resources;
--		ird_ord_hdr[1] = 1;
-+	conn_param.initiator_depth = t->initiator_depth;
-+	conn_param.responder_resources = t->responder_resources;
-+
-+	if (t->legacy_iwarp) {
-+		ird_ord_hdr[0] = cpu_to_be32(conn_param.responder_resources);
-+		ird_ord_hdr[1] = cpu_to_be32(conn_param.initiator_depth);
- 		conn_param.private_data = ird_ord_hdr;
- 		conn_param.private_data_len = sizeof(ird_ord_hdr);
- 	} else {
-@@ -2081,10 +2088,13 @@ static bool rdma_frwr_is_supported(struct ib_device_attr *attrs)
- 	return true;
- }
- 
--static int smb_direct_handle_connect_request(struct rdma_cm_id *new_cm_id)
-+static int smb_direct_handle_connect_request(struct rdma_cm_id *new_cm_id,
-+					     struct rdma_cm_event *event)
- {
- 	struct smb_direct_transport *t;
- 	struct task_struct *handler;
-+	u8 peer_initiator_depth;
-+	u8 peer_responder_resources;
- 	int ret;
- 
- 	if (!rdma_frwr_is_supported(&new_cm_id->device->attrs)) {
-@@ -2098,6 +2108,67 @@ static int smb_direct_handle_connect_request(struct rdma_cm_id *new_cm_id)
- 	if (!t)
- 		return -ENOMEM;
- 
-+	peer_initiator_depth = event->param.conn.initiator_depth;
-+	peer_responder_resources = event->param.conn.responder_resources;
-+	if (rdma_protocol_iwarp(new_cm_id->device, new_cm_id->port_num) &&
-+	    event->param.conn.private_data_len == 8) {
-+		/*
-+		 * Legacy clients with only iWarp MPA v1 support
-+		 * need a private blob in order to negotiate
-+		 * the IRD/ORD values.
-+		 */
-+		const __be32 *ird_ord_hdr = event->param.conn.private_data;
-+		u32 ird32 = be32_to_cpu(ird_ord_hdr[0]);
-+		u32 ord32 = be32_to_cpu(ird_ord_hdr[1]);
-+
-+		/*
-+		 * cifs.ko sends the legacy IRD/ORD negotiation
-+		 * event if iWarp MPA v2 was used.
-+		 *
-+		 * Here we check that the values match and only
-+		 * mark the client as legacy if they don't match.
-+		 */
-+		if ((u32)event->param.conn.initiator_depth != ird32 ||
-+		    (u32)event->param.conn.responder_resources != ord32) {
-+			/*
-+			 * There are broken clients (old cifs.ko)
-+			 * using little endian and also
-+			 * struct rdma_conn_param only uses u8
-+			 * for initiator_depth and responder_resources,
-+			 * so we truncate the value to U8_MAX.
-+			 *
-+			 * smb_direct_accept_client() will then
-+			 * do the real negotiation in order to
-+			 * select the minimum between client and
-+			 * server.
-+			 */
-+			ird32 = min_t(u32, ird32, U8_MAX);
-+			ord32 = min_t(u32, ord32, U8_MAX);
-+
-+			t->legacy_iwarp = true;
-+			peer_initiator_depth = (u8)ird32;
-+			peer_responder_resources = (u8)ord32;
-+		}
-+	}
-+
-+	/*
-+	 * First set what the we as server are able to support
-+	 */
-+	t->initiator_depth = min_t(u8, t->initiator_depth,
-+				   new_cm_id->device->attrs.max_qp_rd_atom);
-+
-+	/*
-+	 * negotiate the value by using the minimum
-+	 * between client and server if the client provided
-+	 * non 0 values.
-+	 */
-+	if (peer_initiator_depth != 0)
-+		t->initiator_depth = min_t(u8, t->initiator_depth,
-+					   peer_initiator_depth);
-+	if (peer_responder_resources != 0)
-+		t->responder_resources = min_t(u8, t->responder_resources,
-+					       peer_responder_resources);
-+
- 	ret = smb_direct_connect(t);
- 	if (ret)
- 		goto out_err;
-@@ -2122,7 +2193,7 @@ static int smb_direct_listen_handler(struct rdma_cm_id *cm_id,
- {
- 	switch (event->event) {
- 	case RDMA_CM_EVENT_CONNECT_REQUEST: {
--		int ret = smb_direct_handle_connect_request(cm_id);
-+		int ret = smb_direct_handle_connect_request(cm_id, event);
- 
- 		if (ret) {
- 			pr_err("Can't create transport: %d\n", ret);
--- 
-2.43.0
+Zhu Yanjun
 
+>
+> Regards,
+> Han
 
