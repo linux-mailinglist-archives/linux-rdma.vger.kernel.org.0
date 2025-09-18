@@ -1,142 +1,286 @@
-Return-Path: <linux-rdma+bounces-13499-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13500-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3012B85771
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 17:10:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09FEFB85924
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 17:26:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4704B62225
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 15:07:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C9EAE7B01BC
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 15:25:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10F3730C0E4;
-	Thu, 18 Sep 2025 15:07:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCECB30FC2C;
+	Thu, 18 Sep 2025 15:26:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kwZnl0bg"
+	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="3bXl+Z+F"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8089E1607AC;
-	Thu, 18 Sep 2025 15:07:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94A9630E0C6;
+	Thu, 18 Sep 2025 15:26:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758208058; cv=none; b=vC/fq12ScbsdzSJ9sLs0vIzguqZsjsZ8jJERLzhV+uP3I950VSWRLkfq90kjAtO2IbcEq3u+JTP8ZxwIo/2D/iaxJLyswab9mFoFfYgDQdfjgviVKXe+jq/LdZEGP/mllUoyxMjNT8bR7T/skq9jMAoG06WW6Km4Ldm7AwGHC2I=
+	t=1758209173; cv=none; b=nZcBuyBt1xLKJWzKw3q3boHz2npdc3Dm0yIqsEpQeiaQND0G+vZPmv439htKn1iU0YR87ZLXKW+Y8LdnrFp9JWmi8BDpT6yrPU+I3sdpg1rnx5UCc9IMrTFHtvwOcS50i9RzKDEA26Kk5A0rzfc2i7kOx1riocFe57G+0kzfg/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758208058; c=relaxed/simple;
-	bh=sW/npsoqVvH2jZ1iYFeywDG41QnbgIzfrJf90iHIx94=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eYNuEjCN9+jJskTHbs4XDGmPeKXXXaiW5hh2KJ8LgwellK4VtkyC+P96X+4e8gA4bH0Dja1NqyfhvBApY4kvVMCw69FXZ9n/BP3//g0EPlBvILyyQ8lkp/bnQY+AI1FmOJ3YxlZ0gwRTeAHecT4o1J1HNjqSdz+7Qkn/ktQ0z08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kwZnl0bg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AD3CC4CEEB;
-	Thu, 18 Sep 2025 15:07:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758208057;
-	bh=sW/npsoqVvH2jZ1iYFeywDG41QnbgIzfrJf90iHIx94=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kwZnl0bgzIv5G9GpaNIDQbuvO9HddfBAxifrvDjM5Ugs42X76RrBv51TpbdZm5Y1L
-	 mHQv8IAwm4Xd7QqDtWeChSyd0hXizLPuB2fIG09/9z0/ttqtVToJnG0xDvM7xZQN0y
-	 m2pRwIJx1HdEaHaPQRUPdlZi+AeKJfLhgt5uRqabPJ95o3Ib7FYa3KR/mz++sX1Lka
-	 ouGGsFcEH95nRzAxLtCilfOwp6ls1KG4xphq5ucvhDweyDOeUjwEszovJaqSF1pTVe
-	 1JVb1CKf7Cti5yxGTvJENeZRlV2K3Kjermk5ncw0x/qepBF3oLDwfHUQsk+YORmcjv
-	 fkxEbB7s/6Ojg==
-Date: Thu, 18 Sep 2025 16:07:27 +0100
-From: Simon Horman <horms@kernel.org>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Michael Guralnik <michaelgur@nvidia.com>,
-	Moshe Shemesh <moshe@nvidia.com>, Will Deacon <will@kernel.org>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Justin Stitt <justinstitt@google.com>, linux-s390@vger.kernel.org,
-	llvm@lists.linux.dev, Ingo Molnar <mingo@redhat.com>,
-	Bill Wendling <morbo@google.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-	Yisen Zhuang <yisen.zhuang@huawei.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Leon Romanovsky <leonro@mellanox.com>, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Mark Rutland <mark.rutland@arm.com>,
-	Michael Guralnik <michaelgur@mellanox.com>, patches@lists.linux.dev,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Jijie Shao <shaojijie@huawei.com>,
-	Patrisious Haddad <phaddad@nvidia.com>
-Subject: Re: [PATCH net-next V3] net/mlx5: Improve write-combining test
- reliability for ARM64 Grace CPUs
-Message-ID: <20250918150727.GX394836@horms.kernel.org>
-References: <1758178883-648295-1-git-send-email-tariqt@nvidia.com>
+	s=arc-20240116; t=1758209173; c=relaxed/simple;
+	bh=cVOX0k3Ep5O6QsxMI31eJgKQAsaViJmx6+5+pJJKQH4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PCDSMGxo1//nVviRpiez1ak/yy9tdDwGlkw8rV2p0QyPeZYtQft583mZr/oxNHJ1ciky/LCc4iC0scx4m6Mucml9Ak+C39kEChQUQkEg8S8BUeigwyLfIt9SqiJQi+N7g+g1x61vq0HP4Kw863IeYGIzXlwpshsDSgcm/8qU65g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=3bXl+Z+F; arc=none smtp.client-ip=144.76.82.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+	s=42; h=Message-ID:Date:Cc:To:From;
+	bh=ROEeV6/bs53twvM5/USaWrqxnj7hhOA4GFldd0FLYdE=; b=3bXl+Z+FLnQL7aD7MzEwCYa0es
+	r9ShVTHl0CXLnxfolFUduZB+NeZ8AshpVJ6wo6jk8EuaWBVSnruciq9Hc9aaQi+6Fint6EkNVmLrG
+	wbMmjR1XiZ07iWJoXiMwdgUFq54ZX7dihaKjVfzXCihl8px22drVb2Rx7tO3VVLmx6gTdD2t9SCRp
+	R9VG+R/8erbriKfu0d34ov17tgvGLrbCag1Cuqaz+zA+bCbYAVLPjEg30i9IWdC/hYDoyL4dYh1gg
+	pX129PIEJtJANBIq7qrqEr+BNWzt18WPD1f0fC6EkRbFKvu3PNCQgte496KDTcmhGHS4SRifysiz3
+	zUrICPMrFCOhkog/P25VwhEax8ENLTqicDq1YBbzBVhxrPamnAC8AuOGO7Nt0aiVjqOMIR/+iq82A
+	8o3v/mgWMoWMwnHyyX+MIj4pJ3OjuBwaNyLDMlPy4prZsiP0H1Ki7buYSXr3iQwRKl8yDr5022GKp
+	gQ0FGkPO3dClgn5Ta8R4T+ER;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__CHACHA20_POLY1305:256)
+	(Exim)
+	id 1uzGWH-004mWv-0a;
+	Thu, 18 Sep 2025 15:26:01 +0000
+From: Stefan Metzmacher <metze@samba.org>
+To: linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org
+Cc: metze@samba.org,
+	Steve French <smfrench@gmail.com>,
+	Tom Talpey <tom@talpey.com>,
+	Long Li <longli@microsoft.com>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	linux-rdma@vger.kernel.org,
+	Steve French <stfrench@microsoft.com>
+Subject: [PATCH v2] smb: client: fix sending the iwrap custom IRD/ORD negotiation messages
+Date: Thu, 18 Sep 2025 17:25:00 +0200
+Message-ID: <20250918152459.1244824-2-metze@samba.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1758178883-648295-1-git-send-email-tariqt@nvidia.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Sep 18, 2025 at 10:01:23AM +0300, Tariq Toukan wrote:
-> From: Patrisious Haddad <phaddad@nvidia.com>
-> 
-> Write combining is an optimization feature in CPUs that is frequently
-> used by modern devices to generate 32 or 64 byte TLPs at the PCIe level.
-> These large TLPs allow certain optimizations in the driver to HW
-> communication that improve performance. As WC is unpredictable and
-> optional the HW designs all tolerate cases where combining doesn't
-> happen and simply experience a performance degradation.
+Do a real negotiation and check the servers initiator_depth and responder_resources.
 
-...
+This should use big endian in order to be useful.
+I have captures of windows clients showing this.
 
-> Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
-> Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
-> Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/wc.c | 28 ++++++++++++++++++--
->  1 file changed, 26 insertions(+), 2 deletions(-)
-> 
-> Find V2 here:
-> https://lore.kernel.org/all/1757925308-614943-1-git-send-email-tariqt@nvidia.com/
-> 
-> V3:
-> - Move the new copy assembly code to be inline, within the same file it
->   is used.
-> - Use ".arch_extension simd;\n\t" to avoid the need for separate file
->   and special compilation flags.
+The fact that we used little endian up to now
+means that we sent very large numbers and the
+negotiation with the server truncated them to the
+server limits.
 
-Hi Tariq, Patrisious, all,
+Note the reason why this uses u8 for
+initiator_depth and responder_resources is
+that the rdma layer also uses it.
 
-This is not a full review - although I've been following this patch with
-much interest, I don't feel qualified to provide one.
+The inconsitency regarding the initiator_depth
+and responder_resources values being reversed
+for iwarp devices in RDMA_CM_EVENT_ESTABLISHED
+should also be fixed later, but for now we should
+fix it.
 
-But what I can do is be the poor soul to report that unfortunately
-the patch doesn't compile against net-next. So at some point it will
-need to be rebased and reposted.
+Cc: Steve French <smfrench@gmail.com>
+Cc: Tom Talpey <tom@talpey.com>
+Cc: Long Li <longli@microsoft.com>
+Cc: Namjae Jeon <linkinjeon@kernel.org>
+Cc: linux-cifs@vger.kernel.org
+Cc: samba-technical@lists.samba.org
+Cc: linux-rdma@vger.kernel.org
+Fixes: c7398583340a ("CIFS: SMBD: Implement RDMA memory registration")
+Signed-off-by: Stefan Metzmacher <metze@samba.org>
+Signed-off-by: Steve French <stfrench@microsoft.com>
+---
+ fs/smb/client/smbdirect.c | 110 ++++++++++++++++++++++++++++++++++----
+ fs/smb/client/smbdirect.h |   4 +-
+ 2 files changed, 103 insertions(+), 11 deletions(-)
 
-Thanks for your persistence on working on this, it is indeed a nettlesome issue.
-
+diff --git a/fs/smb/client/smbdirect.c b/fs/smb/client/smbdirect.c
+index a26f677e7adb..30c3ff034816 100644
+--- a/fs/smb/client/smbdirect.c
++++ b/fs/smb/client/smbdirect.c
+@@ -179,6 +179,8 @@ static int smbd_conn_upcall(
+ 	struct smbd_connection *info = id->context;
+ 	struct smbdirect_socket *sc = &info->socket;
+ 	const char *event_name = rdma_event_msg(event->event);
++	u8 peer_initiator_depth;
++	u8 peer_responder_resources;
+ 
+ 	log_rdma_event(INFO, "event=%s status=%d\n",
+ 		event_name, event->status);
+@@ -204,6 +206,85 @@ static int smbd_conn_upcall(
+ 
+ 	case RDMA_CM_EVENT_ESTABLISHED:
+ 		log_rdma_event(INFO, "connected event=%s\n", event_name);
++
++		/*
++		 * Here we work around an inconsistency between
++		 * iWarp and other devices (at least rxe and irdma using RoCEv2)
++		 */
++		if (rdma_protocol_iwarp(id->device, id->port_num)) {
++			/*
++			 * iWarp devices report the peer's values
++			 * with the perspective of the peer here.
++			 * Tested with siw and irdma (in iwarp mode)
++			 * We need to change to our perspective here,
++			 * so we need to switch the values.
++			 */
++			peer_initiator_depth = event->param.conn.responder_resources;
++			peer_responder_resources = event->param.conn.initiator_depth;
++		} else {
++			/*
++			 * Non iWarp devices report the peer's values
++			 * already changed to our perspective here.
++			 * Tested with rxe and irdma (in roce mode).
++			 */
++			peer_initiator_depth = event->param.conn.initiator_depth;
++			peer_responder_resources = event->param.conn.responder_resources;
++		}
++		if (rdma_protocol_iwarp(id->device, id->port_num) &&
++		    event->param.conn.private_data_len == 8) {
++			/*
++			 * Legacy clients with only iWarp MPA v1 support
++			 * need a private blob in order to negotiate
++			 * the IRD/ORD values.
++			 */
++			const __be32 *ird_ord_hdr = event->param.conn.private_data;
++			u32 ird32 = be32_to_cpu(ird_ord_hdr[0]);
++			u32 ord32 = be32_to_cpu(ird_ord_hdr[1]);
++
++			/*
++			 * cifs.ko sends the legacy IRD/ORD negotiation
++			 * event if iWarp MPA v2 was used.
++			 *
++			 * Here we check that the values match and only
++			 * mark the client as legacy if they don't match.
++			 */
++			if ((u32)event->param.conn.initiator_depth != ird32 ||
++			    (u32)event->param.conn.responder_resources != ord32) {
++				/*
++				 * There are broken clients (old cifs.ko)
++				 * using little endian and also
++				 * struct rdma_conn_param only uses u8
++				 * for initiator_depth and responder_resources,
++				 * so we truncate the value to U8_MAX.
++				 *
++				 * smb_direct_accept_client() will then
++				 * do the real negotiation in order to
++				 * select the minimum between client and
++				 * server.
++				 */
++				ird32 = min_t(u32, ird32, U8_MAX);
++				ord32 = min_t(u32, ord32, U8_MAX);
++
++				info->legacy_iwarp = true;
++				peer_initiator_depth = (u8)ird32;
++				peer_responder_resources = (u8)ord32;
++			}
++		}
++
++		/*
++		 * negotiate the value by using the minimum
++		 * between client and server if the client provided
++		 * non 0 values.
++		 */
++		if (peer_initiator_depth != 0)
++			info->initiator_depth =
++					min_t(u8, info->initiator_depth,
++					      peer_initiator_depth);
++		if (peer_responder_resources != 0)
++			info->responder_resources =
++					min_t(u8, info->responder_resources,
++					      peer_responder_resources);
++
+ 		sc->status = SMBDIRECT_SOCKET_CONNECTED;
+ 		wake_up_interruptible(&info->status_wait);
+ 		break;
+@@ -1549,7 +1630,7 @@ static struct smbd_connection *_smbd_get_connection(
+ 	struct ib_qp_init_attr qp_attr;
+ 	struct sockaddr_in *addr_in = (struct sockaddr_in *) dstaddr;
+ 	struct ib_port_immutable port_immutable;
+-	u32 ird_ord_hdr[2];
++	__be32 ird_ord_hdr[2];
+ 
+ 	info = kzalloc(sizeof(struct smbd_connection), GFP_KERNEL);
+ 	if (!info)
+@@ -1557,6 +1638,9 @@ static struct smbd_connection *_smbd_get_connection(
+ 	sc = &info->socket;
+ 	sp = &sc->parameters;
+ 
++	info->initiator_depth = 1;
++	info->responder_resources = SMBD_CM_RESPONDER_RESOURCES;
++
+ 	sc->status = SMBDIRECT_SOCKET_CONNECTING;
+ 	rc = smbd_ia_open(info, dstaddr, port);
+ 	if (rc) {
+@@ -1637,22 +1721,22 @@ static struct smbd_connection *_smbd_get_connection(
+ 	}
+ 	sc->ib.qp = sc->rdma.cm_id->qp;
+ 
+-	memset(&conn_param, 0, sizeof(conn_param));
+-	conn_param.initiator_depth = 0;
+-
+-	conn_param.responder_resources =
+-		min(sc->ib.dev->attrs.max_qp_rd_atom,
+-		    SMBD_CM_RESPONDER_RESOURCES);
+-	info->responder_resources = conn_param.responder_resources;
++	info->responder_resources =
++		min_t(u8, info->responder_resources,
++		      sc->ib.dev->attrs.max_qp_rd_atom);
+ 	log_rdma_mr(INFO, "responder_resources=%d\n",
+ 		info->responder_resources);
+ 
++	memset(&conn_param, 0, sizeof(conn_param));
++	conn_param.initiator_depth = info->initiator_depth;
++	conn_param.responder_resources = info->responder_resources;
++
+ 	/* Need to send IRD/ORD in private data for iWARP */
+ 	sc->ib.dev->ops.get_port_immutable(
+ 		sc->ib.dev, sc->rdma.cm_id->port_num, &port_immutable);
+ 	if (port_immutable.core_cap_flags & RDMA_CORE_PORT_IWARP) {
+-		ird_ord_hdr[0] = info->responder_resources;
+-		ird_ord_hdr[1] = 1;
++		ird_ord_hdr[0] = cpu_to_be32(conn_param.responder_resources);
++		ird_ord_hdr[1] = cpu_to_be32(conn_param.initiator_depth);
+ 		conn_param.private_data = ird_ord_hdr;
+ 		conn_param.private_data_len = sizeof(ird_ord_hdr);
+ 	} else {
+@@ -2119,6 +2203,12 @@ static int allocate_mr_list(struct smbd_connection *info)
+ 	atomic_set(&info->mr_used_count, 0);
+ 	init_waitqueue_head(&info->wait_for_mr_cleanup);
+ 	INIT_WORK(&info->mr_recovery_work, smbd_mr_recovery_work);
++
++	if (info->responder_resources == 0) {
++		log_rdma_mr(ERR, "responder_resources negotiated as 0\n");
++		return -EINVAL;
++	}
++
+ 	/* Allocate more MRs (2x) than hardware responder_resources */
+ 	for (i = 0; i < info->responder_resources * 2; i++) {
+ 		smbdirect_mr = kzalloc(sizeof(*smbdirect_mr), GFP_KERNEL);
+diff --git a/fs/smb/client/smbdirect.h b/fs/smb/client/smbdirect.h
+index e45aa9ddd71d..4ca9b2b2c57f 100644
+--- a/fs/smb/client/smbdirect.h
++++ b/fs/smb/client/smbdirect.h
+@@ -67,7 +67,9 @@ struct smbd_connection {
+ 
+ 	/* Memory registrations */
+ 	/* Maximum number of RDMA read/write outstanding on this connection */
+-	int responder_resources;
++	bool legacy_iwarp;
++	u8 initiator_depth;
++	u8 responder_resources;
+ 	/* Maximum number of pages in a single RDMA write/read on this connection */
+ 	int max_frmr_depth;
+ 	/*
 -- 
-pw-bot: changes-requested
+2.43.0
+
 
