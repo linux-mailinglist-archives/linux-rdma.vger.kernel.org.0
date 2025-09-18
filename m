@@ -1,130 +1,116 @@
-Return-Path: <linux-rdma+bounces-13463-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13464-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47EC0B81A39
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Sep 2025 21:31:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87D04B8287C
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 03:40:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 018B71894E37
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Sep 2025 19:31:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F2123BD296
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 01:40:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49F102DCF69;
-	Wed, 17 Sep 2025 19:31:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88E94236437;
+	Thu, 18 Sep 2025 01:40:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nYwiUIRT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JLwy2+s8"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2076420E03F
-	for <linux-rdma@vger.kernel.org>; Wed, 17 Sep 2025 19:31:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CF681922FD;
+	Thu, 18 Sep 2025 01:40:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758137474; cv=none; b=SkQ5y4KIA6JJI7vabvG2nvHYXkt1xE1+h4b4Xa9AApWvinnA70mTn3jHzCbvHi+qozQd8blEhereY6O/W4YBL9a6K9Vr6nNhVk7FGPhd6Qx9eeRLmKXD4169zoXVVJvV4eU7a/yXZ7yS7pgwX3dnoEBqDQ5vrzRrsBk1qo7LUcw=
+	t=1758159618; cv=none; b=j/lIBzgIDzMTljwKTzZYB7rwm0cTocU29kZAPWIz4MiT9OI4Rtf7DFq4sNJflhDbU/q3ZwzkKJ/ykz2VhvIgohZkRC5ZGVmv3JX+zlA6A+7vhMh4r7BEFOS3DvdqIEYEFd4g7wwK6viIH/7pR/DEmFD14EMlVI6dzU0chS4B44c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758137474; c=relaxed/simple;
-	bh=RZnZyxoAGJixZI7UyHnJvCMzSr5eHzb1JHDa6gR5wx4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WXqYP2Li/aNIBPBqyW22ve9hXFwJaAWAknPrRHuVc0So70E0FETBk2jqmkoyhUBYUMY4hAImNJ6T+ruGoqanoM6EtREWnZmXVC+t2TQ6MAg0NlRqbPwQjdGFH/O1RheYyn/+GSIIspxU2Bsg4NOyc0C/So3A0OBilsL7iDsi8JI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nYwiUIRT; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a321729d-f8a1-4901-ae9d-f08339b5093b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1758137460;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J0BNl5ZVaTpZ5ArhCofyo8O0fTEGTpHVhfR9/EZhE9g=;
-	b=nYwiUIRTNIiGEE1ZnVtuwqUSOqeiLmRKmM34YFiQUBkTRqeL2v036e67QKwS1bX778SHza
-	WMJbqK8mY6kPTpRcUMqZuwy3AV+bvLHtQ+ZzXyt5sDf+LFFPIWGpGPtKsBHPL36GOE17QX
-	R6eBb6Z5RwtM6VExi1669Pn0L97OhV8=
-Date: Wed, 17 Sep 2025 12:30:56 -0700
+	s=arc-20240116; t=1758159618; c=relaxed/simple;
+	bh=TrU7RfUYr9JD6ui4vjRDy4Ys0CVm0kceHpIIercU4QY=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Os+IU2vPBlEGvYn74fRb1g9S5AEZrf0/o2RjwB6H5jSwcXopvY3V+Wl2e5WKQDmGMuDvA+Q8N+1pDnMkLM4lWJqZ0zvJvth3QeR/maSZ389TVYMklKq0oMSNE7pM2no4FDUnvmJAuRPVvyFbyLz03bc48cFA0m2E7xLeaQ7lH7A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JLwy2+s8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B9BBC4CEE7;
+	Thu, 18 Sep 2025 01:40:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758159617;
+	bh=TrU7RfUYr9JD6ui4vjRDy4Ys0CVm0kceHpIIercU4QY=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=JLwy2+s82zqjN4ShMOXEvugvHpejzous9IQjb+0WKIR3iC+KkrKWR7wvJD4FaooJn
+	 ln780t1Yt9GQIs5o+aAiR0aWbEz2b3lQ9c7Qe5BIQGIQ4h1BN85tBP6FHF5QLTaKPN
+	 EMoMvp05r0U7Wsc7maXxfIvRlc1TdrlhIu3TTOezES394SBJo7guBUCmFbDbvR+i0N
+	 OrIQCvsyqRrXol0dGu1HX5EVoNsj5IGsp9cT46zDIFnQNyOVXFOnNNMvTVa75Oz91Q
+	 7lPCsA2TJReRu7K5l/pM0ooqPBq0ZbP6imD/jjuN2hzg7S79fOqFuHjaTPqKhyjoA/
+	 0N7iN2Kv75XEw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33C5739D0C28;
+	Thu, 18 Sep 2025 01:40:19 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] RDMA/rxe: Fix race in do_task() when draining
-To: Gui-Dong Han <hanguidong02@gmail.com>, zyjzyj2000@gmail.com,
- jgg@ziepe.ca, leon@kernel.org
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- baijiaju1990@gmail.com, stable@vger.kernel.org
-References: <20250917100657.1535424-1-hanguidong02@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "yanjun.zhu" <yanjun.zhu@linux.dev>
-In-Reply-To: <20250917100657.1535424-1-hanguidong02@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next V2 00/10] net/mlx5e: Use multiple doorbells
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175815961800.2217978.13039702853348998554.git-patchwork-notify@kernel.org>
+Date: Thu, 18 Sep 2025 01:40:18 +0000
+References: <1758031904-634231-1-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1758031904-634231-1-git-send-email-tariqt@nvidia.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, jiri@resnulli.us, corbet@lwn.net,
+ leon@kernel.org, jgg@ziepe.ca, saeedm@nvidia.com, mbloch@nvidia.com,
+ ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+ john.fastabend@gmail.com, netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ bpf@vger.kernel.org, gal@nvidia.com, cratiu@nvidia.com, dtatulea@nvidia.com,
+ jiri@nvidia.com, jgg@nvidia.com
 
-On 9/17/25 3:06 AM, Gui-Dong Han wrote:
-> When do_task() exhausts its RXE_MAX_ITERATIONS budget, it unconditionally
+Hello:
 
- From the source code, it will check ret value, then set it to 
-TASK_STATE_IDLE, not unconditionally.
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-> sets the task state to TASK_STATE_IDLE to reschedule. This overwrites
-> the TASK_STATE_DRAINING state that may have been concurrently set by
-> rxe_cleanup_task() or rxe_disable_task().
-
- From the source code, there is a spin lock to protect the state. It 
-will not make race condition.
-
+On Tue, 16 Sep 2025 17:11:34 +0300 you wrote:
+> Hi,
 > 
-> This race condition breaks the cleanup and disable logic, which expects
-> the task to stop processing new work. The cleanup code may proceed while
-> do_task() reschedules itself, leading to a potential use-after-free.
+> This series by Cosmin adds multiple doorbells usage in mlx5e driver.
+> See detailed description by Cosmin below [1].
 > 
-
-Can you post the call trace when this problem occurred?
-
-Hi, Jason && Leon
-
-Please comment on this problem.
-
-Thanks a lot.
-Yanjun.Zhu
-
-> This bug was introduced during the migration from tasklets to workqueues,
-> where the special handling for the draining case was lost.
+> Find V1 here:
+> https://lore.kernel.org/all/1757499891-596641-1-git-send-email-tariqt@nvidia.com/
 > 
-> Fix this by restoring the original behavior. If the state is
-> TASK_STATE_DRAINING when iterations are exhausted, continue the loop by
-> setting cont to 1. This allows new iterations to finish the remaining
-> work and reach the switch statement, which properly transitions the
-> state to TASK_STATE_DRAINED and stops the task as intended.
-> 
-> Fixes: 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue support for rxe tasks")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Gui-Dong Han <hanguidong02@gmail.com>
-> ---
->   drivers/infiniband/sw/rxe/rxe_task.c | 8 ++++++--
->   1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
-> index 6f8f353e9583..f522820b950c 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_task.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_task.c
-> @@ -132,8 +132,12 @@ static void do_task(struct rxe_task *task)
->   		 * yield the cpu and reschedule the task
->   		 */
->   		if (!ret) {
-> -			task->state = TASK_STATE_IDLE;
-> -			resched = 1;
-> +			if (task->state != TASK_STATE_DRAINING) {
-> +				task->state = TASK_STATE_IDLE;
-> +				resched = 1;
-> +			} else {
-> +				cont = 1;
-> +			}
->   			goto exit;
->   		}
->   
+> [...]
+
+Here is the summary with links:
+  - [net-next,V2,01/10] net/mlx5: Fix typo of MLX5_EQ_DOORBEL_OFFSET
+    https://git.kernel.org/netdev/net-next/c/917449e7c3cd
+  - [net-next,V2,02/10] net/mlx5: Remove unused 'offset' field from mlx5_sq_bfreg
+    https://git.kernel.org/netdev/net-next/c/05dfe654b593
+  - [net-next,V2,03/10] net/mlx5e: Remove unused 'xsk' param of mlx5e_build_xdpsq_param
+    https://git.kernel.org/netdev/net-next/c/913d28f8a71c
+  - [net-next,V2,04/10] net/mlx5: Store the global doorbell in mlx5_priv
+    https://git.kernel.org/netdev/net-next/c/aa4595d0ada6
+  - [net-next,V2,05/10] net/mlx5e: Prepare for using multiple TX doorbells
+    https://git.kernel.org/netdev/net-next/c/673d7ab7563e
+  - [net-next,V2,06/10] net/mlx5e: Prepare for using different CQ doorbells
+    https://git.kernel.org/netdev/net-next/c/a315b723e87b
+  - [net-next,V2,07/10] net/mlx5e: Use multiple TX doorbells
+    https://git.kernel.org/netdev/net-next/c/71fb4832d50b
+  - [net-next,V2,08/10] net/mlx5e: Use multiple CQ doorbells
+    https://git.kernel.org/netdev/net-next/c/325db9c6f69b
+  - [net-next,V2,09/10] devlink: Add a 'num_doorbells' driverinit param
+    https://git.kernel.org/netdev/net-next/c/6bdcb735fec6
+  - [net-next,V2,10/10] net/mlx5e: Use the 'num_doorbells' devlink param
+    https://git.kernel.org/netdev/net-next/c/11bbcfb7668c
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
