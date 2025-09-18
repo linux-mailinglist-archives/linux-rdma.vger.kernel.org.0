@@ -1,81 +1,81 @@
-Return-Path: <linux-rdma+bounces-13487-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13484-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68DB9B84467
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 13:06:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53D3BB84450
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 13:06:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D421546877A
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 11:06:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86C817ABD5D
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 11:04:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED1E83043C6;
-	Thu, 18 Sep 2025 11:05:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABA6B302CD7;
+	Thu, 18 Sep 2025 11:05:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="HReWpnoV"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="d/hhb943"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 679F9302745;
-	Thu, 18 Sep 2025 11:05:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80ABF3016FE;
+	Thu, 18 Sep 2025 11:05:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758193536; cv=none; b=h93Pkgh+b1MBFqv4+ugiP60BgLkha4DQ8HVFKVcJDgyqDSUH/FcrhQCHSC/ho6JzVtBfN+b9mxXRxuS9WFp57NiVLhG6QETLf1ODesCkYZZVD2+K8T3hz1HAlcV8vc7Vd9u2a6xCO8Z9xNbBY1kMI7Akw7VxbPAFJ2kEbiRJko4=
+	t=1758193535; cv=none; b=TsQrANSiCgD02yqPKgiRINjjI7fZK/TdS6jPkReT6p+HpWHG0nJGU+ixjPSuG9NCS8LbJFOTWdMXOONwti76JfGuf4B8mKf5BLcXeE7ppTZCBReZNq7S56TLzeqelJNWHj6KgL+wrS01Uwj9pPNcjQOkjOASEjCuCCRvxsRmKCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758193536; c=relaxed/simple;
-	bh=EAdnwAKF2FJr95930n4qeJYs7mNkTbFUYvks5LGS0kU=;
+	s=arc-20240116; t=1758193535; c=relaxed/simple;
+	bh=bGug2TMrasSwLsQs2f/SL6ty3KSChsn2pPrmiNuGEbU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YmlLGxp3XIw67UGq4vMyj+usxMr0kUbjZ/tqX8SA7MAoFLkRzapOeQCrQFrWjn2Dd7ZMFRzHBY5Gxzyd56kaX7+9HxrEyn6L/QvF87wiA8y8lMqiAJ9qxR6T70zGoQBGZ68HbGBbS35wkN0AUWQ8huOCNpgacVMmYnAKJ9x/4WA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=HReWpnoV; arc=none smtp.client-ip=148.163.158.5
+	 MIME-Version; b=J3MZELXcnz25E0Rq3+SeiAfvvWi0Y4Y6RbWCU1rJPpfJ2s5gGrI3+MbVTOJuxA8vEHjCZ8/64Iu342Zraw0jJIcGZCOjxT7ouAr/Kth1Klcuc6msiAdfz6Uxu9buMObMgSm5QUlLSWqrq5bWHxx1MkYuhy1hFQvhRylYXyu/gbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=d/hhb943; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58IAih6H006031;
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58I8GL1R024759;
 	Thu, 18 Sep 2025 11:05:07 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:date:from:in-reply-to:message-id
-	:mime-version:references:subject:to; s=pp1; bh=bOMClpkIesy4Of9FL
-	BSJ4MC6N2xpy9dWkVQhmz22Utg=; b=HReWpnoVwNHYaSONJNyA3XHLorhGERk9r
-	BzY3B7jfHlt+Mco6pvnvx8UDGUxa4BgCuUx3CCDDhPxSJy6US6xuq6ZB2z5SCQSz
-	oh8RR0ezroluZpTuctqJoQeDXm9tUlSERWhdUopfFVYn0Y9ftsa10ManuIKUij3A
-	bNUTE5nzmNHNmtmRqCPgFpLdyPEb0BZh9zVkbElZBBIsN+HD+PAkjNHJepxxi3gc
-	6q0GOIT8CFa14BK6A7iy+1dcQ2w8fTUrgo/Ti7Rt73/PqvyxE9b5trde/4dMIQ/z
-	MHk+s2rBcmR7I6SgHRZQH23yI2dazUJdDJW6LWVKkpk4yI8lcoNPA==
+	:mime-version:references:subject:to; s=pp1; bh=1R2FRvqYkTiAFoReC
+	YwD9o49UkijhJ4zipzBvBh2WlA=; b=d/hhb943HKDr4CXtT9SJJefOVuqYj/FiU
+	iVyJRsX/Zk91VbqP7bsU2qRCABpO7E1O5vvrS06RlsnCrq07GNoPDAWQ0q/m6mvE
+	dp3UK7MTLy1Fr5ycFtXLUHvHTgznAFOZYxKfEJ6h+AW25oZaXs5axyy9MmjTqDSR
+	Pb4oJ6NzzHnAcF8EB7XuDUhnqNrxWqbpFOLRQRw7LRL2bzd5Zbp/bdrx9s3/Fiyj
+	2V4ijyWTN036Ws+xKXps9Pn2uQ804AxPAEhkxEjxp6hEr0ntfD76xEUnkSfr/4v/
+	CRyNHREV38So1GmDgUrxJSr4hbmc6PZb42ZHqxNSD4BHh/0rWiFDA==
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 497g4nhaur-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 497g4qs9up-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 18 Sep 2025 11:05:06 +0000 (GMT)
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 58IAxwWf011598;
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 58IAuq9j011190;
 	Thu, 18 Sep 2025 11:05:06 GMT
 Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 497g4nhauc-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 497g4qs9uc-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 18 Sep 2025 11:05:06 +0000 (GMT)
 Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58I92k2v029468;
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58I9X1YC029514;
 	Thu, 18 Sep 2025 11:05:05 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 495kb16f4w-1
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 495kb16f4x-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 18 Sep 2025 11:05:05 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 58IB51iN45875468
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 58IB51nL51511630
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
 	Thu, 18 Sep 2025 11:05:01 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 521002004D;
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 422002004E;
 	Thu, 18 Sep 2025 11:05:01 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 306DF20043;
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1CD5020040;
 	Thu, 18 Sep 2025 11:05:01 +0000 (GMT)
 Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
 	Thu, 18 Sep 2025 11:05:01 +0000 (GMT)
 Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55271)
-	id C4AF5E155B; Thu, 18 Sep 2025 13:05:00 +0200 (CEST)
+	id C84ADE156D; Thu, 18 Sep 2025 13:05:00 +0200 (CEST)
 From: Alexandra Winter <wintera@linux.ibm.com>
 To: "D. Wythe" <alibuda@linux.alibaba.com>,
         Dust Li <dust.li@linux.alibaba.com>,
@@ -105,9 +105,9 @@ Cc: Julian Ruess <julianr@linux.ibm.com>,
         Shannon Nelson <sln@onemain.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Jason Gunthorpe <jgg@ziepe.ca>
-Subject: [PATCH net-next v3 10/14] dibs: Local gid for dibs devices
-Date: Thu, 18 Sep 2025 13:04:56 +0200
-Message-ID: <20250918110500.1731261-11-wintera@linux.ibm.com>
+Subject: [PATCH net-next v3 11/14] dibs: Move vlan support to dibs_dev_ops
+Date: Thu, 18 Sep 2025 13:04:57 +0200
+Message-ID: <20250918110500.1731261-12-wintera@linux.ibm.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250918110500.1731261-1-wintera@linux.ibm.com>
 References: <20250918110500.1731261-1-wintera@linux.ibm.com>
@@ -119,433 +119,288 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=MN5gmNZl c=1 sm=1 tr=0 ts=68cbe762 cx=c_pps
+X-Proofpoint-ORIG-GUID: 2jpzlWMEp_wGCvdnGubBlz6szyAMMhdj
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTE2MDIwNCBTYWx0ZWRfX4RxHxwLSe/hd
+ kfQIgdoHvV5lZgd9amXV0lkKTMdot5akAbofATj+TSEXdPemxo9R76dUxUqXq3uuvZjXnFrt4bO
+ FYF26eZ4SrqMzYml7b3TB8aBoKaLHc/V1BlDJtt4ZMTShp9GyjmOg5qBzs3bTU1fQWYRfycwra+
+ YV9Yffht04nT09LlZ6Qin4LsZmqJJdhbK4kVj6R7F7QWSj+Y0GpdXsm9d3fpFUnn7CU3qpgNvSg
+ oNOJaQxcHv/X3Ek9WIE0PzR01ICuMShfFUXAGukLiMK8F1RDJ5LSuJbY0ezsvnz5Gui/Su4PTUp
+ lzPj6YF1Jv7duuSXyJgvV2yG9ZifEFhMSqVUd4MAq0HJ24TYZbSUQ2tVaixxQSqaCHzcp2r5J1u
+ 7cwa6Hd3
+X-Authority-Analysis: v=2.4 cv=R8oDGcRX c=1 sm=1 tr=0 ts=68cbe762 cx=c_pps
  a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=yJojWOMRYYMA:10 a=48vgC7mUAAAA:8 a=VnNF1IyMAAAA:8 a=3oSkw3nq568YOmkJtqoA:9
-X-Proofpoint-GUID: KFD6gH9Xjt-3TJ96xBXsbtgUatkO3W1B
-X-Proofpoint-ORIG-GUID: TAy2JaKYaG0qki7ouETOaOecaE-BfISw
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTE2MDIwNCBTYWx0ZWRfX1BaKYimMSS3R
- YaTcKiaTrPp3YDmdiZDrP3fKNZqmJJelYV7f+wjSun+tSYK+IBqKZkkHo1im8rPOwpS52fFxeNl
- b3zXEHWcirrl27R4q0wp1YgJqb3NnEtnP181S2ilb/H3GsYzJ5O7F+vhqSQ4Djdk/YDoDCsx6UI
- PfZpsyRNE6eZkRNvIIaFeVKHb0kJeINh5lNyOzgMVkdfB0jfy3BlhfZL8u+XaXfSnawbv5VUEAm
- 6wUVo/ZD32dwpC9N7aCmfjQuG2mxWZRUX0ZRRcyPbChqO1HUHzh4TAfkp1yIoen/0wAjw+j1wr/
- uIVgpH7gra3GQpfexl9aCk7EpP4HnsJsBAJi6/5Wous3TJzg9ap8Cu5s0CJZwG05MeSkxvBx2+I
- wpF/qLlk
+ a=yJojWOMRYYMA:10 a=VnNF1IyMAAAA:8 a=z8tP7dbUM_-rWPAmZuAA:9
+X-Proofpoint-GUID: FTw7_-k35YIPG7E-rtmJsyqDCO3830wz
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
  definitions=2025-09-17_01,2025-09-18_02,2025-03-28_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1011 spamscore=0 priorityscore=1501 bulkscore=0 impostorscore=0
- malwarescore=0 adultscore=0 phishscore=0 suspectscore=0
+ clxscore=1015 suspectscore=0 malwarescore=0 bulkscore=0 spamscore=0
+ adultscore=0 impostorscore=0 priorityscore=1501 phishscore=0
  classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
  reason=mlx scancount=1 engine=8.19.0-2507300000 definitions=main-2509160204
 
-Define a uuid_t GID attribute to identify a dibs device.
+It can be debated how much benefit definition of vlan ids for dibs devices
+brings, as the dmbs are accessible only by a single peer anyhow. But ism
+provides vlan support and smcd exploits it, so move it to dibs layer as an
+optional feature.
 
-SMC uses 64 Bit and 128 Bit Global Identifiers (GIDs) per device, that
-need to be sent via the SMC protocol. Because the smc code uses integers,
-network endianness and host endianness need to be considered. Avoid this
-in the dibs layer by using uuid_t byte arrays. Future patches could change
-SMC to use uuid_t. For now conversion helper functions are introduced.
+smcd_loopback simply ignores all vlan settings, do the same in
+dibs_loopback.
 
-ISM devices provide 64 Bit GIDs. Map them to dibs uuid_t GIDs like this:
- _________________________________________
-| 64 Bit ISM-vPCI GID | 00000000_00000000 |
- -----------------------------------------
-If interpreted as UUID [1], this would be interpreted as the UIID variant,
-that is reserved for NCS backward compatibility. So it will not collide
-with UUIDs that were generated according to the standard.
+SMC-D and ISM have a method to use the invalid VLAN ID 1FFF
+(ISM_RESERVED_VLANID), to indicate that both communication peers support
+routable SMC-Dv2. Tolerate it in dibs, but move it to SMC only.
 
-smc_loopback already uses version 4 UUIDs as 128 Bit GIDs, move that to
-dibs loopback. A temporary change to smc_lo_query_rgid() is required,
-that will be moved to dibs_loopback with a follow-on patch.
-
-Provide gid of a dibs device as sysfs read-only attribute.
-
-Link: https://datatracker.ietf.org/doc/html/rfc4122 [1]
 Signed-off-by: Alexandra Winter <wintera@linux.ibm.com>
-Reviewed-by: Julian Ruess <julianr@linux.ibm.com>
-Reviewed-by: Mahanta Jambigi <mjambigi@linux.ibm.com>
 ---
- drivers/dibs/dibs_loopback.c |  1 +
- drivers/dibs/dibs_main.c     | 12 ++++++++++++
- drivers/s390/net/ism.h       |  9 +++++++++
- drivers/s390/net/ism_drv.c   | 30 +++++++++---------------------
- include/linux/dibs.h         |  3 +++
- include/linux/ism.h          |  1 -
- include/net/smc.h            |  1 -
- net/smc/smc_clc.c            |  6 +++---
- net/smc/smc_core.c           |  2 +-
- net/smc/smc_diag.c           |  2 +-
- net/smc/smc_ism.h            | 22 ++++++++++++++++++++++
- net/smc/smc_loopback.c       | 29 ++++-------------------------
- net/smc/smc_loopback.h       |  1 -
- 13 files changed, 65 insertions(+), 54 deletions(-)
+ drivers/s390/net/ism_drv.c | 47 +++++---------------------------------
+ include/linux/dibs.h       | 19 +++++++++++++++
+ include/net/smc.h          |  5 ----
+ net/smc/smc_ism.c          | 14 ++++++++----
+ net/smc/smc_loopback.c     |  5 ----
+ 5 files changed, 34 insertions(+), 56 deletions(-)
 
-diff --git a/drivers/dibs/dibs_loopback.c b/drivers/dibs/dibs_loopback.c
-index 76e479d5724b..d7e6fa5e90f3 100644
---- a/drivers/dibs/dibs_loopback.c
-+++ b/drivers/dibs/dibs_loopback.c
-@@ -46,6 +46,7 @@ static int dibs_lo_dev_probe(void)
- 
- 	ldev->dibs = dibs;
- 	dibs->drv_priv = ldev;
-+	uuid_gen(&dibs->gid);
- 	dibs->ops = &dibs_lo_ops;
- 
- 	dibs->dev.parent = NULL;
-diff --git a/drivers/dibs/dibs_main.c b/drivers/dibs/dibs_main.c
-index b3f21805aa59..f20ed0594a51 100644
---- a/drivers/dibs/dibs_main.c
-+++ b/drivers/dibs/dibs_main.c
-@@ -114,6 +114,17 @@ struct dibs_dev *dibs_dev_alloc(void)
- }
- EXPORT_SYMBOL_GPL(dibs_dev_alloc);
- 
-+static ssize_t gid_show(struct device *dev, struct device_attribute *attr,
-+			char *buf)
-+{
-+	struct dibs_dev *dibs;
-+
-+	dibs = container_of(dev, struct dibs_dev, dev);
-+
-+	return sysfs_emit(buf, "%pUb\n", &dibs->gid);
-+}
-+static DEVICE_ATTR_RO(gid);
-+
- static ssize_t fabric_id_show(struct device *dev, struct device_attribute *attr,
- 			      char *buf)
- {
-@@ -128,6 +139,7 @@ static ssize_t fabric_id_show(struct device *dev, struct device_attribute *attr,
- static DEVICE_ATTR_RO(fabric_id);
- 
- static struct attribute *dibs_dev_attrs[] = {
-+	&dev_attr_gid.attr,
- 	&dev_attr_fabric_id.attr,
- 	NULL,
- };
-diff --git a/drivers/s390/net/ism.h b/drivers/s390/net/ism.h
-index 3078779fa71e..1b9fa14da20c 100644
---- a/drivers/s390/net/ism.h
-+++ b/drivers/s390/net/ism.h
-@@ -67,6 +67,15 @@ union ism_reg_ieq {
- 	} response;
- } __aligned(16);
- 
-+/* ISM-vPCI devices provide 64 Bit GIDs
-+ * Map them to ISM UUID GIDs like this:
-+ *  _________________________________________
-+ * | 64 Bit ISM-vPCI GID | 00000000_00000000 |
-+ *  -----------------------------------------
-+ * This will be interpreted as a UIID variant, that is reserved
-+ * for NCS backward compatibility. So it will not collide with
-+ * proper UUIDs.
-+ */
- union ism_read_gid {
- 	struct {
- 		struct ism_req_hdr hdr;
 diff --git a/drivers/s390/net/ism_drv.c b/drivers/s390/net/ism_drv.c
-index ab1d61eb3e3b..e58c55fb03c2 100644
+index e58c55fb03c2..ed4c28ca355b 100644
 --- a/drivers/s390/net/ism_drv.c
 +++ b/drivers/s390/net/ism_drv.c
-@@ -272,8 +272,9 @@ static int unregister_ieq(struct ism_dev *ism)
- 	return 0;
+@@ -36,7 +36,6 @@ static struct ism_client *clients[MAX_CLIENTS];	/* use an array rather than */
+ 						/* a list for fast mapping  */
+ static u8 max_client;
+ static DEFINE_MUTEX(clients_lock);
+-static bool ism_v2_capable;
+ struct ism_dev_list {
+ 	struct list_head list;
+ 	struct mutex mutex; /* protects ism device list */
+@@ -409,8 +408,9 @@ int ism_unregister_dmb(struct ism_dev *ism, struct ism_dmb *dmb)
  }
+ EXPORT_SYMBOL_GPL(ism_unregister_dmb);
  
--static int ism_read_local_gid(struct ism_dev *ism)
-+static int ism_read_local_gid(struct dibs_dev *dibs)
+-static int ism_add_vlan_id(struct ism_dev *ism, u64 vlan_id)
++static int ism_add_vlan_id(struct dibs_dev *dibs, u64 vlan_id)
  {
 +	struct ism_dev *ism = dibs->drv_priv;
- 	union ism_read_gid cmd;
- 	int ret;
+ 	union ism_set_vlan_id cmd;
  
-@@ -285,7 +286,8 @@ static int ism_read_local_gid(struct ism_dev *ism)
- 	if (ret)
- 		goto out;
- 
--	ism->local_gid = cmd.response.gid;
-+	memset(&dibs->gid, 0, sizeof(dibs->gid));
-+	memcpy(&dibs->gid, &cmd.response.gid, sizeof(cmd.response.gid));
- out:
- 	return ret;
+ 	memset(&cmd, 0, sizeof(cmd));
+@@ -422,8 +422,9 @@ static int ism_add_vlan_id(struct ism_dev *ism, u64 vlan_id)
+ 	return ism_cmd(ism, &cmd);
  }
-@@ -563,10 +565,6 @@ static int ism_dev_init(struct ism_dev *ism)
+ 
+-static int ism_del_vlan_id(struct ism_dev *ism, u64 vlan_id)
++static int ism_del_vlan_id(struct dibs_dev *dibs, u64 vlan_id)
+ {
++	struct ism_dev *ism = dibs->drv_priv;
+ 	union ism_set_vlan_id cmd;
+ 
+ 	memset(&cmd, 0, sizeof(cmd));
+@@ -536,6 +537,8 @@ static irqreturn_t ism_handle_irq(int irq, void *data)
+ 
+ static const struct dibs_dev_ops ism_ops = {
+ 	.get_fabric_id = ism_get_chid,
++	.add_vlan_id = ism_add_vlan_id,
++	.del_vlan_id = ism_del_vlan_id,
+ };
+ 
+ static int ism_dev_init(struct ism_dev *ism)
+@@ -565,12 +568,6 @@ static int ism_dev_init(struct ism_dev *ism)
  	if (ret)
  		goto unreg_sba;
  
--	ret = ism_read_local_gid(ism);
--	if (ret)
--		goto unreg_ieq;
+-	if (!ism_add_vlan_id(ism, ISM_RESERVED_VLANID))
+-		/* hardware is V2 capable */
+-		ism_v2_capable = true;
+-	else
+-		ism_v2_capable = false;
 -
- 	if (!ism_add_vlan_id(ism, ISM_RESERVED_VLANID))
- 		/* hardware is V2 capable */
- 		ism_v2_capable = true;
-@@ -588,8 +586,6 @@ static int ism_dev_init(struct ism_dev *ism)
- 	query_info(ism);
- 	return 0;
+ 	mutex_lock(&ism_dev_list.mutex);
+ 	mutex_lock(&clients_lock);
+ 	for (i = 0; i < max_client; ++i) {
+@@ -611,8 +608,6 @@ static void ism_dev_exit(struct ism_dev *ism)
  
--unreg_ieq:
--	unregister_ieq(ism);
- unreg_sba:
+ 	mutex_lock(&ism_dev_list.mutex);
+ 
+-	if (ism_v2_capable)
+-		ism_del_vlan_id(ism, ISM_RESERVED_VLANID);
+ 	unregister_ieq(ism);
  	unregister_sba(ism);
- free_irq:
-@@ -672,6 +668,11 @@ static int ism_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	if (ret)
- 		goto err_dibs;
- 
-+	/* after ism_dev_init() we can call ism function to set gid */
-+	ret = ism_read_local_gid(dibs);
-+	if (ret)
-+		goto err_ism;
-+
- 	dibs->dev.parent = &pdev->dev;
- 
- 	zdev = to_zpci(pdev);
-@@ -841,18 +842,6 @@ static int smcd_supports_v2(void)
- 	return ism_v2_capable;
+ 	free_irq(pci_irq_vector(pdev, 0), ism);
+@@ -786,26 +781,6 @@ static int smcd_unregister_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
+ 	return ism_unregister_dmb(smcd->priv, (struct ism_dmb *)dmb);
  }
  
--static u64 ism_get_local_gid(struct ism_dev *ism)
+-static int smcd_add_vlan_id(struct smcd_dev *smcd, u64 vlan_id)
 -{
--	return ism->local_gid;
+-	return ism_add_vlan_id(smcd->priv, vlan_id);
 -}
 -
--static void smcd_get_local_gid(struct smcd_dev *smcd,
--			       struct smcd_gid *smcd_gid)
+-static int smcd_del_vlan_id(struct smcd_dev *smcd, u64 vlan_id)
 -{
--	smcd_gid->gid = ism_get_local_gid(smcd->priv);
--	smcd_gid->gid_ext = 0;
+-	return ism_del_vlan_id(smcd->priv, vlan_id);
+-}
+-
+-static int smcd_set_vlan_required(struct smcd_dev *smcd)
+-{
+-	return ism_cmd_simple(smcd->priv, ISM_SET_VLAN);
+-}
+-
+-static int smcd_reset_vlan_required(struct smcd_dev *smcd)
+-{
+-	return ism_cmd_simple(smcd->priv, ISM_RESET_VLAN);
+-}
+-
+ static int ism_signal_ieq(struct ism_dev *ism, u64 rgid, u32 trigger_irq,
+ 			  u32 event_code, u64 info)
+ {
+@@ -837,22 +812,12 @@ static int smcd_move(struct smcd_dev *smcd, u64 dmb_tok, unsigned int idx,
+ 	return ism_move(smcd->priv, dmb_tok, idx, sf, offset, data, size);
+ }
+ 
+-static int smcd_supports_v2(void)
+-{
+-	return ism_v2_capable;
 -}
 -
  static const struct smcd_ops ism_smcd_ops = {
  	.query_remote_gid = smcd_query_rgid,
  	.register_dmb = smcd_register_dmb,
-@@ -864,7 +853,6 @@ static const struct smcd_ops ism_smcd_ops = {
+ 	.unregister_dmb = smcd_unregister_dmb,
+-	.add_vlan_id = smcd_add_vlan_id,
+-	.del_vlan_id = smcd_del_vlan_id,
+-	.set_vlan_required = smcd_set_vlan_required,
+-	.reset_vlan_required = smcd_reset_vlan_required,
  	.signal_event = smcd_signal_ieq,
  	.move_data = smcd_move,
- 	.supports_v2 = smcd_supports_v2,
--	.get_local_gid = smcd_get_local_gid,
+-	.supports_v2 = smcd_supports_v2,
  };
  
  const struct smcd_ops *ism_get_smcd_ops(void)
 diff --git a/include/linux/dibs.h b/include/linux/dibs.h
-index 793c6e1ece0f..904f37505c27 100644
+index 904f37505c27..166148fb8d76 100644
 --- a/include/linux/dibs.h
 +++ b/include/linux/dibs.h
-@@ -10,6 +10,8 @@
- #define _DIBS_H
- 
- #include <linux/device.h>
-+#include <linux/uuid.h>
-+
- /* DIBS - Direct Internal Buffer Sharing - concept
-  * -----------------------------------------------
-  * In the case of multiple system sharing the same hardware, dibs fabrics can
-@@ -138,6 +140,7 @@ struct dibs_dev {
- 	struct device dev;
- 	/* To be filled by device driver, before calling dibs_dev_add(): */
- 	const struct dibs_dev_ops *ops;
-+	uuid_t gid;
- 	/* priv pointer for device driver */
- 	void *drv_priv;
- 
-diff --git a/include/linux/ism.h b/include/linux/ism.h
-index 84f1afb3dded..a926dd61b5a1 100644
---- a/include/linux/ism.h
-+++ b/include/linux/ism.h
-@@ -42,7 +42,6 @@ struct ism_dev {
- 	struct ism_eq *ieq;
- 	dma_addr_t ieq_dma_addr;
- 
--	u64 local_gid;
- 	int ieq_idx;
- 
- 	struct ism_client *subs[MAX_CLIENTS];
-diff --git a/include/net/smc.h b/include/net/smc.h
-index 05faac83371e..9cb8385bbc6e 100644
---- a/include/net/smc.h
-+++ b/include/net/smc.h
-@@ -62,7 +62,6 @@ struct smcd_ops {
- 			 bool sf, unsigned int offset, void *data,
- 			 unsigned int size);
- 	int (*supports_v2)(void);
--	void (*get_local_gid)(struct smcd_dev *dev, struct smcd_gid *gid);
- 
- 	/* optional operations */
- 	int (*add_vlan_id)(struct smcd_dev *dev, u64 vlan_id);
-diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
-index 09745baa1017..157aace169d4 100644
---- a/net/smc/smc_clc.c
-+++ b/net/smc/smc_clc.c
-@@ -916,7 +916,7 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
- 		/* add SMC-D specifics */
- 		if (ini->ism_dev[0]) {
- 			smcd = ini->ism_dev[0];
--			smcd->ops->get_local_gid(smcd, &smcd_gid);
-+			copy_to_smcdgid(&smcd_gid, &smcd->dibs->gid);
- 			pclc_smcd->ism.gid = htonll(smcd_gid.gid);
- 			pclc_smcd->ism.chid =
- 				htons(smc_ism_get_chid(ini->ism_dev[0]));
-@@ -966,7 +966,7 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
- 		if (ini->ism_offered_cnt) {
- 			for (i = 1; i <= ini->ism_offered_cnt; i++) {
- 				smcd = ini->ism_dev[i];
--				smcd->ops->get_local_gid(smcd, &smcd_gid);
-+				copy_to_smcdgid(&smcd_gid, &smcd->dibs->gid);
- 				gidchids[entry].chid =
- 					htons(smc_ism_get_chid(ini->ism_dev[i]));
- 				gidchids[entry].gid = htonll(smcd_gid.gid);
-@@ -1059,7 +1059,7 @@ smcd_clc_prep_confirm_accept(struct smc_connection *conn,
- 	/* SMC-D specific settings */
- 	memcpy(clc->hdr.eyecatcher, SMCD_EYECATCHER,
- 	       sizeof(SMCD_EYECATCHER));
--	smcd->ops->get_local_gid(smcd, &smcd_gid);
-+	copy_to_smcdgid(&smcd_gid, &smcd->dibs->gid);
- 	clc->hdr.typev1 = SMC_TYPE_D;
- 	clc->d0.gid = htonll(smcd_gid.gid);
- 	clc->d0.token = htonll(conn->rmb_desc->token);
-diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-index 585e86890ff7..48d434470517 100644
---- a/net/smc/smc_core.c
-+++ b/net/smc/smc_core.c
-@@ -555,7 +555,7 @@ static int smc_nl_fill_smcd_lgr(struct smc_link_group *lgr,
- 
- 	if (nla_put_u32(skb, SMC_NLA_LGR_D_ID, *((u32 *)&lgr->id)))
- 		goto errattr;
--	smcd->ops->get_local_gid(smcd, &smcd_gid);
-+	copy_to_smcdgid(&smcd_gid, &smcd->dibs->gid);
- 	if (nla_put_u64_64bit(skb, SMC_NLA_LGR_D_GID,
- 			      smcd_gid.gid, SMC_NLA_LGR_D_PAD))
- 		goto errattr;
-diff --git a/net/smc/smc_diag.c b/net/smc/smc_diag.c
-index 8ed2f6689b01..bf0beaa23bdb 100644
---- a/net/smc/smc_diag.c
-+++ b/net/smc/smc_diag.c
-@@ -175,7 +175,7 @@ static int __smc_diag_dump(struct sock *sk, struct sk_buff *skb,
- 		dinfo.linkid = *((u32 *)conn->lgr->id);
- 		dinfo.peer_gid = conn->lgr->peer_gid.gid;
- 		dinfo.peer_gid_ext = conn->lgr->peer_gid.gid_ext;
--		smcd->ops->get_local_gid(smcd, &smcd_gid);
-+		copy_to_smcdgid(&smcd_gid, &smcd->dibs->gid);
- 		dinfo.my_gid = smcd_gid.gid;
- 		dinfo.my_gid_ext = smcd_gid.gid_ext;
- 		dinfo.token = conn->rmb_desc->token;
-diff --git a/net/smc/smc_ism.h b/net/smc/smc_ism.h
-index 04699951d03f..139e99da2c9f 100644
---- a/net/smc/smc_ism.h
-+++ b/net/smc/smc_ism.h
-@@ -96,4 +96,26 @@ static inline bool smc_ism_is_loopback(struct dibs_dev *dibs)
- 	return (dibs->ops->get_fabric_id(dibs) == DIBS_LOOPBACK_FABRIC);
- }
- 
-+static inline void copy_to_smcdgid(struct smcd_gid *sgid, uuid_t *dibs_gid)
-+{
-+	__be64 temp;
-+
-+	memcpy(&temp, dibs_gid, sizeof(sgid->gid));
-+	sgid->gid = ntohll(temp);
-+	memcpy(&temp, (uint8_t *)dibs_gid + sizeof(sgid->gid),
-+	       sizeof(sgid->gid_ext));
-+	sgid->gid_ext = ntohll(temp);
-+}
-+
-+static inline void copy_to_dibsgid(uuid_t *dibs_gid, struct smcd_gid *sgid)
-+{
-+	__be64 temp;
-+
-+	temp = htonll(sgid->gid);
-+	memcpy(dibs_gid, &temp, sizeof(sgid->gid));
-+	temp = htonll(sgid->gid_ext);
-+	memcpy((uint8_t *)dibs_gid + sizeof(sgid->gid), &temp,
-+	       sizeof(sgid->gid_ext));
-+}
-+
- #endif
-diff --git a/net/smc/smc_loopback.c b/net/smc/smc_loopback.c
-index 262d0d0df4d0..454d9d6a6e8f 100644
---- a/net/smc/smc_loopback.c
-+++ b/net/smc/smc_loopback.c
-@@ -13,6 +13,7 @@
- 
- #include <linux/device.h>
- #include <linux/types.h>
-+#include <linux/dibs.h>
- #include <net/smc.h>
- 
- #include "smc_cdc.h"
-@@ -25,25 +26,14 @@
- 
- static struct smc_lo_dev *lo_dev;
- 
--static void smc_lo_generate_ids(struct smc_lo_dev *ldev)
--{
--	struct smcd_gid *lgid = &ldev->local_gid;
--	uuid_t uuid;
--
--	uuid_gen(&uuid);
--	memcpy(&lgid->gid, &uuid, sizeof(lgid->gid));
--	memcpy(&lgid->gid_ext, (u8 *)&uuid + sizeof(lgid->gid),
--	       sizeof(lgid->gid_ext));
--}
--
- static int smc_lo_query_rgid(struct smcd_dev *smcd, struct smcd_gid *rgid,
- 			     u32 vid_valid, u32 vid)
- {
--	struct smc_lo_dev *ldev = smcd->priv;
-+	uuid_t temp;
- 
-+	copy_to_dibsgid(&temp, rgid);
- 	/* rgid should be the same as lgid */
--	if (!ldev || rgid->gid != ldev->local_gid.gid ||
--	    rgid->gid_ext != ldev->local_gid.gid_ext)
-+	if (!uuid_equal(&temp, &smcd->dibs->gid))
- 		return -ENETUNREACH;
- 	return 0;
- }
-@@ -245,15 +235,6 @@ static int smc_lo_move_data(struct smcd_dev *smcd, u64 dmb_tok,
- 	return 0;
- }
- 
--static void smc_lo_get_local_gid(struct smcd_dev *smcd,
--				 struct smcd_gid *smcd_gid)
--{
--	struct smc_lo_dev *ldev = smcd->priv;
--
--	smcd_gid->gid = ldev->local_gid.gid;
--	smcd_gid->gid_ext = ldev->local_gid.gid_ext;
--}
--
- static const struct smcd_ops lo_ops = {
- 	.query_remote_gid = smc_lo_query_rgid,
- 	.register_dmb = smc_lo_register_dmb,
-@@ -267,7 +248,6 @@ static const struct smcd_ops lo_ops = {
- 	.reset_vlan_required	= NULL,
- 	.signal_event		= NULL,
- 	.move_data = smc_lo_move_data,
--	.get_local_gid = smc_lo_get_local_gid,
+@@ -133,6 +133,25 @@ struct dibs_dev_ops {
+ 	 * Return: 2 byte dibs fabric id
+ 	 */
+ 	u16 (*get_fabric_id)(struct dibs_dev *dev);
++	/**
++	 * add_vlan_id() - add dibs device to vlan (optional, deprecated)
++	 * @dev: dibs device
++	 * @vlan_id: vlan id
++	 *
++	 * In order to write into a vlan-tagged dmb, the remote device needs
++	 * to belong to the this vlan. A device can belong to more than 1 vlan.
++	 * Any device can access an untagged dmb.
++	 * Deprecated, only supported for backwards compatibility.
++	 * Return: zero on success
++	 */
++	int (*add_vlan_id)(struct dibs_dev *dev, u64 vlan_id);
++	/**
++	 * del_vlan_id() - remove dibs device from vlan (optional, deprecated)
++	 * @dev: dibs device
++	 * @vlan_id: vlan id
++	 * Return: zero on success
++	 */
++	int (*del_vlan_id)(struct dibs_dev *dev, u64 vlan_id);
  };
  
- const struct smcd_ops *smc_lo_get_smcd_ops(void)
-@@ -277,7 +257,6 @@ const struct smcd_ops *smc_lo_get_smcd_ops(void)
+ struct dibs_dev {
+diff --git a/include/net/smc.h b/include/net/smc.h
+index 9cb8385bbc6e..51b4aefc106a 100644
+--- a/include/net/smc.h
++++ b/include/net/smc.h
+@@ -61,13 +61,8 @@ struct smcd_ops {
+ 	int (*move_data)(struct smcd_dev *dev, u64 dmb_tok, unsigned int idx,
+ 			 bool sf, unsigned int offset, void *data,
+ 			 unsigned int size);
+-	int (*supports_v2)(void);
  
- static void smc_lo_dev_init(struct smc_lo_dev *ldev)
- {
--	smc_lo_generate_ids(ldev);
- 	rwlock_init(&ldev->dmb_ht_lock);
- 	hash_init(ldev->dmb_ht);
- 	atomic_set(&ldev->dmb_cnt, 0);
-diff --git a/net/smc/smc_loopback.h b/net/smc/smc_loopback.h
-index a033bf10890a..33bb96ec8b77 100644
---- a/net/smc/smc_loopback.h
-+++ b/net/smc/smc_loopback.h
-@@ -32,7 +32,6 @@ struct smc_lo_dmb_node {
+ 	/* optional operations */
+-	int (*add_vlan_id)(struct smcd_dev *dev, u64 vlan_id);
+-	int (*del_vlan_id)(struct smcd_dev *dev, u64 vlan_id);
+-	int (*set_vlan_required)(struct smcd_dev *dev);
+-	int (*reset_vlan_required)(struct smcd_dev *dev);
+ 	int (*signal_event)(struct smcd_dev *dev, struct smcd_gid *rgid,
+ 			    u32 trigger_irq, u32 event_code, u64 info);
+ 	int (*support_dmb_nocopy)(struct smcd_dev *dev);
+diff --git a/net/smc/smc_ism.c b/net/smc/smc_ism.c
+index 6a6e7c9641e8..5118441bed18 100644
+--- a/net/smc/smc_ism.c
++++ b/net/smc/smc_ism.c
+@@ -140,7 +140,7 @@ int smc_ism_get_vlan(struct smcd_dev *smcd, unsigned short vlanid)
  
- struct smc_lo_dev {
- 	struct smcd_dev *smcd;
--	struct smcd_gid local_gid;
- 	atomic_t dmb_cnt;
- 	rwlock_t dmb_ht_lock;
- 	DECLARE_BITMAP(sba_idx_mask, SMC_LO_MAX_DMBS);
+ 	if (!vlanid)			/* No valid vlan id */
+ 		return -EINVAL;
+-	if (!smcd->ops->add_vlan_id)
++	if (!smcd->dibs->ops->add_vlan_id)
+ 		return -EOPNOTSUPP;
+ 
+ 	/* create new vlan entry, in case we need it */
+@@ -163,7 +163,7 @@ int smc_ism_get_vlan(struct smcd_dev *smcd, unsigned short vlanid)
+ 	/* no existing entry found.
+ 	 * add new entry to device; might fail, e.g., if HW limit reached
+ 	 */
+-	if (smcd->ops->add_vlan_id(smcd, vlanid)) {
++	if (smcd->dibs->ops->add_vlan_id(smcd->dibs, vlanid)) {
+ 		kfree(new_vlan);
+ 		rc = -EIO;
+ 		goto out;
+@@ -187,7 +187,7 @@ int smc_ism_put_vlan(struct smcd_dev *smcd, unsigned short vlanid)
+ 
+ 	if (!vlanid)			/* No valid vlan id */
+ 		return -EINVAL;
+-	if (!smcd->ops->del_vlan_id)
++	if (!smcd->dibs->ops->del_vlan_id)
+ 		return -EOPNOTSUPP;
+ 
+ 	spin_lock_irqsave(&smcd->lock, flags);
+@@ -205,7 +205,7 @@ int smc_ism_put_vlan(struct smcd_dev *smcd, unsigned short vlanid)
+ 	}
+ 
+ 	/* Found and the last reference just gone */
+-	if (smcd->ops->del_vlan_id(smcd, vlanid))
++	if (smcd->dibs->ops->del_vlan_id(smcd->dibs, vlanid))
+ 		rc = -EIO;
+ 	list_del(&vlan->list);
+ 	kfree(vlan);
+@@ -539,8 +539,12 @@ static void smcd_register_dev(struct dibs_dev *dibs)
+ 	if (smc_pnetid_by_dev_port(dibs->dev.parent, 0, smcd->pnetid))
+ 		smc_pnetid_by_table_smcd(smcd);
+ 
+-	if (smc_ism_is_loopback(dibs) || smcd->ops->supports_v2())
++	if (smc_ism_is_loopback(dibs) ||
++	    (dibs->ops->add_vlan_id &&
++	     !dibs->ops->add_vlan_id(dibs, ISM_RESERVED_VLANID))) {
+ 		smc_ism_set_v2_capable();
++	}
++
+ 	mutex_lock(&smcd_dev_list.mutex);
+ 	/* sort list:
+ 	 * - devices without pnetid before devices with pnetid;
+diff --git a/net/smc/smc_loopback.c b/net/smc/smc_loopback.c
+index 454d9d6a6e8f..982a19430313 100644
+--- a/net/smc/smc_loopback.c
++++ b/net/smc/smc_loopback.c
+@@ -20,7 +20,6 @@
+ #include "smc_ism.h"
+ #include "smc_loopback.h"
+ 
+-#define SMC_LO_V2_CAPABLE	0x1 /* loopback-ism acts as ISMv2 */
+ #define SMC_LO_SUPPORT_NOCOPY	0x1
+ #define SMC_DMA_ADDR_INVALID	(~(dma_addr_t)0)
+ 
+@@ -242,10 +241,6 @@ static const struct smcd_ops lo_ops = {
+ 	.support_dmb_nocopy = smc_lo_support_dmb_nocopy,
+ 	.attach_dmb = smc_lo_attach_dmb,
+ 	.detach_dmb = smc_lo_detach_dmb,
+-	.add_vlan_id		= NULL,
+-	.del_vlan_id		= NULL,
+-	.set_vlan_required	= NULL,
+-	.reset_vlan_required	= NULL,
+ 	.signal_event		= NULL,
+ 	.move_data = smc_lo_move_data,
+ };
 -- 
 2.48.1
 
