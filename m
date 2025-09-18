@@ -1,57 +1,57 @@
-Return-Path: <linux-rdma+bounces-13476-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13477-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 115DCB83F09
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 11:59:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85769B83F36
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 12:02:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AE1F7A8166
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 09:57:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11D253B1DEE
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 10:02:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D87E12E9743;
-	Thu, 18 Sep 2025 09:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A157A235345;
+	Thu, 18 Sep 2025 10:02:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R6mng8FS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BqOmpIHM"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F1C4221DAE;
-	Thu, 18 Sep 2025 09:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F9C02AD0D;
+	Thu, 18 Sep 2025 10:02:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758189530; cv=none; b=aVlva4lHd0RTRaztnKx10ZRVCqStAMi07WkbVD3k0iwaz1g3TiQdnga+hU4jFt9Wu4Ai6JjO6EmVaIYCwrdieRtA8zONfeAfNASU8+S8h/Vjkcu80H2Xko0pFQOK+h9N9QcOHzztNHEkybl+I1+R2b/GbrYPFdozAYb3iXlQKIc=
+	t=1758189730; cv=none; b=rfSGOr3MNcVTgMg9WY4/zNtSztgoNqYU8FBxRl6zvsG2ROqAy/3D0QBvSKvU0HbmEMUsvqjDovaCvwoCWZ+CfJNJERQU4B/o0BHjBudchSlFQPfozbFOzLivtLfl1dUiCe7WUioy749tTYtCQ3cD9/WWnDp6T8dwmDnNF1HrPNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758189530; c=relaxed/simple;
-	bh=wZ0jJ3AfFbctD9TGyyfz/skh1/gN9TayJVlnjwK+8xE=;
+	s=arc-20240116; t=1758189730; c=relaxed/simple;
+	bh=pIHGaGx2cvCcdeBapTyy30mussctO9oipC7Drg8JAGY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ve50ffaLNfO7KFgREDvoLMIkddzMpTE35fOvw5e0f5O+m22kw/+7tAKq1yQStqpSBVUMLZpPm/4F/LwWzq2szx0Q/3IfxUfDmB4do0SrmYizqJV1Tfli3GAipW+OMvfprtnJyYV45Uq/SeUrO0/TfC3sfPP1slzoU0Ja9RWETTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R6mng8FS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B261C4CEE7;
-	Thu, 18 Sep 2025 09:58:49 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=MVustMgTdPdTk6wsOTuaeQMMKEdFPPtMJpSEEIx2REmxKWBc7Oa+UP1ypC+EgNV5Y697tEImW2B0U8slVaSijFjfHtDr7wRGw5mnRtlQm1RRm3yAJexp2HoDBDDzQH6TxGJPpRYyiDoBkODIX5aDWr0nsnvWqK4TAIisIqm0RCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BqOmpIHM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F2FCC4CEE7;
+	Thu, 18 Sep 2025 10:02:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758189530;
-	bh=wZ0jJ3AfFbctD9TGyyfz/skh1/gN9TayJVlnjwK+8xE=;
+	s=k20201202; t=1758189729;
+	bh=pIHGaGx2cvCcdeBapTyy30mussctO9oipC7Drg8JAGY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=R6mng8FS7mZ813mxW/F0Y3qsrI0aKGcwjPAFxKqnv2H7du7w2FzK7FCOOdLzwdpz1
-	 LwkpL0HlFOBpk39auPasGutwiX/ek9UUQFF0F0zlmZFy1B7KJ4aYIjyQBb66bIgfrh
-	 GPYvLhVQ7Pf+aeuO7MOrJp9lRtdleQ/HCOncFVjW+DdJrzADlGfPjaZXlktow+jSwT
-	 emgQF4QxcHq3So6p63+VHfWSkjmt+b8Qw0up2pSfJa3XZl49oZWc62UixrNt7tqoPX
-	 5CYsjDIdfrM8+8D8BLey76pRwjI35wuCIXrL9WV8yIJBnOs0/cCmf9ZpCr+2gYi2Ya
-	 a3YB4dOTGoCvg==
-Date: Thu, 18 Sep 2025 12:58:44 +0300
+	b=BqOmpIHMyFNBFwLBJtR6KPeDO744MKKgVeG73e401xgD+KZKJqtrpuKlWkC0EAPb0
+	 1xLDv3dQGwLdlx80xX+WrXum3t3es+chioD1OzB3OaYrZ06V7NCP+ZTfiDoHf+tPKy
+	 NjpJWZT56K+F64GXzGRYCGY0QiQvNS6+dl9RtJ17WJdfQ+F/y5Zju7UnFG0D8Af7lp
+	 z/hP24IdDy/xq7xjYdXQI4wLjkP7lVoClorhzQaErUbCmIz9RWvmZi3LC/yky+hG0o
+	 EOK2jqsvMmIgWAXZmRLT8DQ65GP8W4Ve22OayIyU23TGmRP+358bL9YfdH3DdBub9s
+	 oK/sucryWEosQ==
+Date: Thu, 18 Sep 2025 13:02:05 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: "yanjun.zhu" <yanjun.zhu@linux.dev>
-Cc: Gui-Dong Han <hanguidong02@gmail.com>, zyjzyj2000@gmail.com,
-	jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, baijiaju1990@gmail.com,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] RDMA/rxe: Fix race in do_task() when draining
-Message-ID: <20250918095844.GD10800@unreal>
-References: <20250917100657.1535424-1-hanguidong02@gmail.com>
- <a321729d-f8a1-4901-ae9d-f08339b5093b@linux.dev>
+To: YanLong Dai <dyl_wlc@163.com>
+Cc: kalesh-anakkur.purayil@broadcom.com, jgg@ziepe.ca,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	selvin.xavier@broadcom.com, daiyanlong@kylinos.cn
+Subject: Re: [PATCH] drivers: fix the potential memory leak in
+ bnxt_re_destroy_gsi_sqp()
+Message-ID: <20250918100205.GE10800@unreal>
+References: <20250916134915.GC82444@unreal>
+ <20250917113539.6139-1-dyl_wlc@163.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -60,103 +60,45 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a321729d-f8a1-4901-ae9d-f08339b5093b@linux.dev>
+In-Reply-To: <20250917113539.6139-1-dyl_wlc@163.com>
 
-On Wed, Sep 17, 2025 at 12:30:56PM -0700, yanjun.zhu wrote:
-> On 9/17/25 3:06 AM, Gui-Dong Han wrote:
-> > When do_task() exhausts its RXE_MAX_ITERATIONS budget, it unconditionally
+On Wed, Sep 17, 2025 at 07:35:39PM +0800, YanLong Dai wrote:
+> From: daiyanlong <daiyanlong@kylinos.cn>
 > 
-> From the source code, it will check ret value, then set it to
-> TASK_STATE_IDLE, not unconditionally.
+> As suggested by Kalesh Anakkur Purayil, fix the potential memory leak in bnxt_re_destroy_gsi_sqp() by continuing the teardown even if bnxt_qplib_destroy_qp() fails, we should not fail the resource destroy operations
 > 
-> > sets the task state to TASK_STATE_IDLE to reschedule. This overwrites
-> > the TASK_STATE_DRAINING state that may have been concurrently set by
-> > rxe_cleanup_task() or rxe_disable_task().
-> 
-> From the source code, there is a spin lock to protect the state. It will not
-> make race condition.
-> 
-> > 
-> > This race condition breaks the cleanup and disable logic, which expects
-> > the task to stop processing new work. The cleanup code may proceed while
-> > do_task() reschedules itself, leading to a potential use-after-free.
-> > 
-> 
-> Can you post the call trace when this problem occurred?
-> 
-> Hi, Jason && Leon
-> 
-> Please comment on this problem.
+> Signed-off-by: daiyanlong <daiyanlong@kylinos.cn>
+> ---
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 
-The idea to recheck task->state looks correct to me, otherwise we overwrite it unconditionally.
-However I would write this patch slightly different (without cont = 1):
+Please resend this patch as standalone and not as Reply-to to other conversion.
+While you are doing that, make sure that your patch pass checkpatch.pl, break lines
+in commit message, use real name in Signed-off-by and From fields, and
+remove "rc" variable too, which is not used.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
-index 6f8f353e95838..2ff5d7cc0a933 100644
---- a/drivers/infiniband/sw/rxe/rxe_task.c
-+++ b/drivers/infiniband/sw/rxe/rxe_task.c
-@@ -132,8 +132,10 @@ static void do_task(struct rxe_task *task)
-                 * yield the cpu and reschedule the task
-                 */
-                if (!ret) {
--                       task->state = TASK_STATE_IDLE;
--                       resched = 1;
-+                       if (task->state != TASK_STATE_DRAINING) {
-+                               task->state = TASK_STATE_IDLE;
-+                               resched = 1;
-+                       }
-                        goto exit;
-                }
-
-@@ -151,7 +153,6 @@ static void do_task(struct rxe_task *task)
-                        break;
-
-                case TASK_STATE_DRAINING:
--                       task->state = TASK_STATE_DRAINED;
-                        break;
-
-                default:
-(END)
-
-
+Thanks
 
 > 
-> Thanks a lot.
-> Yanjun.Zhu
+> diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> index 260dc67b8b87..adee44aa0583 100644
+> --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+> @@ -931,10 +931,9 @@ static int bnxt_re_destroy_gsi_sqp(struct bnxt_re_qp *qp)
+>  
+>  	ibdev_dbg(&rdev->ibdev, "Destroy the shadow QP\n");
+>  	rc = bnxt_qplib_destroy_qp(&rdev->qplib_res, &gsi_sqp->qplib_qp);
+> -	if (rc) {
+> +	if (rc)
+>  		ibdev_err(&rdev->ibdev, "Destroy Shadow QP failed");
+> -		goto fail;
+> -	}
+> +
+>  	bnxt_qplib_free_qp_res(&rdev->qplib_res, &gsi_sqp->qplib_qp);
+>  
+>  	/* remove from active qp list */
+> -- 
+> 2.43.0
 > 
-> > This bug was introduced during the migration from tasklets to workqueues,
-> > where the special handling for the draining case was lost.
-> > 
-> > Fix this by restoring the original behavior. If the state is
-> > TASK_STATE_DRAINING when iterations are exhausted, continue the loop by
-> > setting cont to 1. This allows new iterations to finish the remaining
-> > work and reach the switch statement, which properly transitions the
-> > state to TASK_STATE_DRAINED and stops the task as intended.
-> > 
-> > Fixes: 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue support for rxe tasks")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Gui-Dong Han <hanguidong02@gmail.com>
-> > ---
-> >   drivers/infiniband/sw/rxe/rxe_task.c | 8 ++++++--
-> >   1 file changed, 6 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
-> > index 6f8f353e9583..f522820b950c 100644
-> > --- a/drivers/infiniband/sw/rxe/rxe_task.c
-> > +++ b/drivers/infiniband/sw/rxe/rxe_task.c
-> > @@ -132,8 +132,12 @@ static void do_task(struct rxe_task *task)
-> >   		 * yield the cpu and reschedule the task
-> >   		 */
-> >   		if (!ret) {
-> > -			task->state = TASK_STATE_IDLE;
-> > -			resched = 1;
-> > +			if (task->state != TASK_STATE_DRAINING) {
-> > +				task->state = TASK_STATE_IDLE;
-> > +				resched = 1;
-> > +			} else {
-> > +				cont = 1;
-> > +			}
-> >   			goto exit;
-> >   		}
 > 
 
