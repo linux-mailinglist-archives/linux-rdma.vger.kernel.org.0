@@ -1,57 +1,61 @@
-Return-Path: <linux-rdma+bounces-13474-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13475-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46DB0B83C81
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 11:27:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC9A2B83CE5
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 11:32:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 270AA587F6D
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 09:26:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DC1B4835D0
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Sep 2025 09:32:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FCB73002D4;
-	Thu, 18 Sep 2025 09:26:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70DE9227B83;
+	Thu, 18 Sep 2025 09:32:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YN1Xx/vR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cvqix58x"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5C202EF670;
-	Thu, 18 Sep 2025 09:26:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0853E28F1;
+	Thu, 18 Sep 2025 09:32:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758187597; cv=none; b=E8qiPBHiu3mS27pc1q6eNnyb0SB+4cNUCg33Ix0veab1E3k+0bPLuTECh8RVFx9x73bIs4xHQhsfIrayYVfzO2W10lYmzpXp/8Gv4FmHJbUTHvYRn2EoN38Y9aYt0TqP/XILWHwwPSlpZoPbDh8TWOVSj19duhz406jJEJQTk3o=
+	t=1758187961; cv=none; b=ItbypTMB7J3rO6qAWaUlJeST0x/cmXKIGQK6Gj4BpprvR6oQz0XqdezMbWsV0rU38ibPs0AFWP/DFDTj5EcO22CEIqg2URQes18dZQoLlCJJUc9twgW/TofGmVDfcEqVkoEKlfSpF5ctu+IOMfJxd3G2E3B9JuoeDcR91qRUTDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758187597; c=relaxed/simple;
-	bh=uK8K+McimdqfVysQIcucW40VdesqNWFbdgb2B2jmf8w=;
+	s=arc-20240116; t=1758187961; c=relaxed/simple;
+	bh=1e3t9p71KVL74Ux/URLsHxgOMlqcMojhPLPMQA0v01Y=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=XTkZrdS3xFZhL/Qn0grDTOLF/1HQQKvMI/0/lvtkpzPudqyESvZIzM3UP95Uq3Es+dnmY6gaftB+LLKBx5kNeNEpC6swxzJ5w/rlpluyveGV3/Jhn4KcMBmjRgFE866mbdcWwBrjhouL/2iJEeeoqUT6xrCJJmQJV6AiBeEHYg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YN1Xx/vR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD49AC4CEE7;
-	Thu, 18 Sep 2025 09:26:36 +0000 (UTC)
+	 MIME-Version:Content-Type; b=JWPD3joHgjOfwrk+uyABeLUK7C8kzuNRkogLNUhK/+FSA4ca88ZCZBqzgSREJhuZN1hHFcTLJk3PGCFpI03gl4CeeZmzKChSuMD02GVA2AqOUogK4nMpR0lwAqFO9LZJ6uYWPOU7iwWg012cK+cPl+HiiJDbZ7a4ZE8KiWf4wuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cvqix58x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31152C4CEE7;
+	Thu, 18 Sep 2025 09:32:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758187597;
-	bh=uK8K+McimdqfVysQIcucW40VdesqNWFbdgb2B2jmf8w=;
+	s=k20201202; t=1758187960;
+	bh=1e3t9p71KVL74Ux/URLsHxgOMlqcMojhPLPMQA0v01Y=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=YN1Xx/vRNo7d0mncD5CfN5aEoWJPXWNVfikNeazO4WCPw/koQz9IpiB5qdp9+y06w
-	 kIzh+WTnEYX3envCYC80xvFTzNE3VHGtziljHuYkEqKTD5NhiIbJ9NIqsluS/y/5nN
-	 X6vNrmp8l/IAIXvsiC5PaYC6bxeg5x6Qzo0aZNDaOgq7TTySCoaYOR/dE/AYbALYWm
-	 dzrgiPuFZHY4Um8bsT9Khgi6CU688v3ip0wfUh+ZTSA0XUbaHnk0+tcEnOZeSklhaJ
-	 wrB5aIzWb9iSjDvW7XbkQ0xPp8lCo9xN4IwOnucGUB3BB+KGJstnnlysz5g7X4IsfE
-	 00wtRloSIqqDg==
+	b=cvqix58xM5PG6q1racvxs+87hpHLItPbKlmUZwMFPbaXs1laOqjcpQndDnfjpBdAS
+	 AUSZNz4Amtkd5/VP9niq3ITDyevtdrcPtcL6rChUhDe/rFJJXG9kesXr/StKV0zri0
+	 2qKK6+vC3YIFXpnfZ3JSsF0dwwckJCsE53MPZ6MViLVaJRwT4HVTzNMtpE2UbTSExc
+	 9VLKZS+GgEoXRb7lkQYDwXOyv/rsrgFO0VWaEwn7KQL+eEN9HKRj+siR6LvuJ/fouH
+	 xbh2dXFBVdLKkbbUm94TyjAU7Vt5LinD3H3g4inhwedJudsR7xkrSxfyXEG9WPiIAS
+	 O8rxQF46DXUEQ==
 From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Edward Srouji <edwards@nvidia.com>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
- vdumitrescu@nvidia.com, markzhang@nvidia.com, ohartoov@nvidia.com, 
- ira.weiny@intel.com, kaike.wan@intel.com, dledford@redhat.com, 
- john.fleck@intel.com
-In-Reply-To: <20250916163112.98414-1-edwards@nvidia.com>
-References: <20250916163112.98414-1-edwards@nvidia.com>
-Subject: Re: [PATCH 1/1] IB/sa: Fix sa_local_svc_timeout_ms read race
-Message-Id: <175818759420.1954322.16553906868936878178.b4-ty@kernel.org>
-Date: Thu, 18 Sep 2025 05:26:34 -0400
+To: Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+ "David S. Miller" <davem@davemloft.net>, Mark Bloch <mbloch@nvidia.com>, 
+ linux-rdma@vger.kernel.org, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>, 
+ Dragos Tatulea <dtatulea@nvidia.com>, 
+ Akiva Goldberger <agoldberger@nvidia.com>
+In-Reply-To: <1758115678-643464-1-git-send-email-tariqt@nvidia.com>
+References: <1758115678-643464-1-git-send-email-tariqt@nvidia.com>
+Subject: Re: [PATCH mlx5-next] net/mlx5: Add uar access and odp page fault
+ counters
+Message-Id: <175818795753.1954650.17735055248478987450.b4-ty@kernel.org>
+Date: Thu, 18 Sep 2025 05:32:37 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -63,18 +67,17 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-37811
 
 
-On Tue, 16 Sep 2025 19:31:12 +0300, Edward Srouji wrote:
-> When computing the delta, the sa_local_svc_timeout_ms is read without
-> ib_nl_request_lock held. Though unlikely in practice, this can cause
-> a race condition if multiple local service threads are managing the
-> timeout.
+On Wed, 17 Sep 2025 16:27:58 +0300, Tariq Toukan wrote:
+> Add bar_uar_access, odp_local_triggered_page_fault, and
+> odp_remote_triggered_page_fault counters to the query_vnic_env command.
+> Additionally, add corresponding capabilities bits to the HCA CAP.
 > 
 > 
 
 Applied, thanks!
 
-[1/1] IB/sa: Fix sa_local_svc_timeout_ms read race
-      https://git.kernel.org/rdma/rdma/c/1428cd764cd708
+[1/1] net/mlx5: Add uar access and odp page fault counters
+      https://git.kernel.org/rdma/rdma/c/a3d076b0567e72
 
 Best regards,
 -- 
