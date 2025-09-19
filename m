@@ -1,102 +1,124 @@
-Return-Path: <linux-rdma+bounces-13510-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13511-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C88BBB87C6E
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Sep 2025 05:16:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8665AB87D0B
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Sep 2025 05:32:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8850A580EE6
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Sep 2025 03:16:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C42D1C27CF0
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Sep 2025 03:32:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06B46244671;
-	Fri, 19 Sep 2025 03:16:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CC6F22F757;
+	Fri, 19 Sep 2025 03:31:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fQVxOCEb"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hp+0s/S6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CA3C1DE3AD
-	for <linux-rdma@vger.kernel.org>; Fri, 19 Sep 2025 03:16:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53DC318A6C4;
+	Fri, 19 Sep 2025 03:31:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758251767; cv=none; b=uHTAFrOgcUMRRxDHP4jiBOdmwWi+vCoBEW5XcomIUh6PYJNHd3t96iKIrb1Qch6xcBBacFwe5C1mMQ7btU7o8TTL/LNEA178l0L+de4gHdb3Zjuo7JRMi8FBbrey3YjeVwMLuwQLYJWn3DCENvu/M0fKWqEbsmfYSbTK27oH7Mc=
+	t=1758252718; cv=none; b=AmPNZ7AxpnE3h4x/wCC4EYbV7qAaLQ60S1kM4nqv4U4K4S5U1hzlf4HvGZ9RSSG9f78SOSyw7pv2MoMnk2Pv40jVmKUDKt5fX8H1xYZJ1761Lpqlo1LvESZaNzsgsuf2yLpt0diySFPdiXtugXlSKJLrOEpUPfsXPj4F6+xybdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758251767; c=relaxed/simple;
-	bh=SKwgfiNki99HQfE+BDZ76jqOzfurZlN2ZbRA0KdOE1M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B8Cf04SvUGES2oWn3hF9AwXD6CFsXbKGAwJyOZmb9M7gzkovGsjHCfTuSmRk/onvI0cj6bSGcUAhXksYXLjfJZpLzr+ZBwCc7U3Xe9p1IqvvGY3HfilnCmk1tISlCfyvy2LcWk9jwqXgX7sGgJ8zDKXsGEcbbeW3oWCcECwrp18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fQVxOCEb; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-62fbfeb097eso745195a12.2
-        for <linux-rdma@vger.kernel.org>; Thu, 18 Sep 2025 20:16:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758251764; x=1758856564; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=SKwgfiNki99HQfE+BDZ76jqOzfurZlN2ZbRA0KdOE1M=;
-        b=fQVxOCEbPGqx+dyhkUUZdDEk4b63Zk/s12muZ+R6pMhxdVG86lkIAXMQFVv7314MMj
-         bAMQglMPKlwdjtszbOvFLJU+EiK6GjIAxrrZawu2rzJ1cuX2gHE2rNY3YwiRne38pIuj
-         90oi2TzIvuU6krD29TnDAuE60mGfJGZ9iFM1hyjFPQ5Csp+CHPa3/mONCLa7xDtxpuXW
-         zmz+/da8FrjWBr9LeDtMWNBm84ArE8t8uWF4s5aVq0o1tOpRbwH1wMiXOZaucC6TSZ7L
-         A+GhSnfVU98fPnDScZPPyZby28hX/i0gHspmQLSjy7p84RG7Oh7gV1Enhd3JFKKib6TV
-         JgaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758251764; x=1758856564;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SKwgfiNki99HQfE+BDZ76jqOzfurZlN2ZbRA0KdOE1M=;
-        b=TY9WN7aYeJi9dWKAwV+Gc17ghIITxvt1dTreMXN2xeNvNJtIEYZCR6wqpPHdXgb8g0
-         w5Xe8z8JhlxhzsR5qYMShJcQa9EoUE0YHhQAzU+WIFizLcXgodLsrmGLNOn3Da4Mue3s
-         W3DFUM1/1GQ9fWJ52uJXXSLc52CwfXCmtNcpRr8rhG4vXUEav7cnGSSH49CqHWAYxwQG
-         TF17+X+Be2nHUmqnGIvDFe8wvgGGQQdcZKCXAjijE1lBKb8X7SLHdWLXiy3jb06wfGnM
-         NXm+TLFxVpHfBJQJOcGEtxLQFcoBqlDFX8siQ4l5o1s7TlmLCDMyeMJ/KY8k71XAqmu9
-         hdcw==
-X-Forwarded-Encrypted: i=1; AJvYcCV8IKnD7YW6fDDdGeOhLSZChoeOTpX1XpWXft9Ge1DKrS3Jdz3vdFmsV1Ker8lVKBezh7KPVwnAojTd@vger.kernel.org
-X-Gm-Message-State: AOJu0YzTXdK/pJUjcqj2finOxnJUEMgjVnbJKJe8beqUVjAVymkcosDI
-	L2dbgDLBOOQtaj6Qq3sylyrGqeOGZsxEc8/JGHXdbcxKHevXvii4QsAk+2MUw993b7MQnsAJdFm
-	b9DioeSHLTw7gBj3Bz2GE7xZxmuowvKY=
-X-Gm-Gg: ASbGncupp6MXjJo/PctCy9UiJ/8nxoKHKw4mL/kPDTtIUnmypfPHGisl1lxam+KSeAW
-	zOpWtE6RHqEbpp0kUcp6zvctx3/C7e0odHDGFH1zlFbISdSLB5hGazhNLXGgxrMB0Zyat9PWK/K
-	TxvDKfIXnn+yk0PUbF3BtPeA+E3f9HZNSPoIOaoQ45YzuVpCkUI9fVCFSV43qvYmss7aSsrB130
-	dloOUy9
-X-Google-Smtp-Source: AGHT+IHpuZQvB5VjDIkqb6EILgkWDUV5pQg8TL4O9i66Ma8EIkoa3WtmJBAeGAlFDqdQk9Kqs1c+lPs2vKiXQxoNaR0=
-X-Received: by 2002:a05:6402:51c7:b0:62f:3531:d905 with SMTP id
- 4fb4d7f45d1cf-62fbff7b4bbmr1183252a12.0.1758251764087; Thu, 18 Sep 2025
- 20:16:04 -0700 (PDT)
+	s=arc-20240116; t=1758252718; c=relaxed/simple;
+	bh=9i+ewLTm0tW3oXQSCeGon/cSgfcT+S++hB/pwA2zED0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qpE1cLG9EeboqTZWlOihaMtjacgdWUhTSYtTNed2kwijeOnYxg4o/x2hK8l3J6ypfhbPX0yCRq9IzZbdxldyd9IMnGoSSy469SQ4naBsXwbJ7tRXt1Qy26iJ0Yi3F9UuDq3emH5taip3nFA9NqeWuXZgN8GEb9gp23ouKu7KzS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hp+0s/S6; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <76443569-ec44-421c-8447-4afc27892f23@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1758252713;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gnuCEFFdN917o/8qA/xrR9kzuXojStpI6kORXvgXUoA=;
+	b=hp+0s/S63yfT2Qp2O2VH0w9Htyr7I5soo/0KudVCBPBBPx+Q7UPiWL0NznagYoIAXrOFKF
+	2r4ezJvZakZP8rS9aXP0Tl4DbE8D5ybxBIKfi501Fnpsb4m+oujh1By6l/ECr6NW2sP0Rt
+	YCkEojXRWQUHbikBfDMdoGibz7EEeQ0=
+Date: Thu, 18 Sep 2025 20:31:48 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250917100657.1535424-1-hanguidong02@gmail.com>
- <a321729d-f8a1-4901-ae9d-f08339b5093b@linux.dev> <CALbr=LZFZP3ioRmRx1T4Xm=LpPXRsDhkNMxM9dYrfE5nOuknNg@mail.gmail.com>
- <abc0f24a-33dc-4a64-a293-65683f52dd42@linux.dev>
-In-Reply-To: <abc0f24a-33dc-4a64-a293-65683f52dd42@linux.dev>
-From: Gui-Dong Han <hanguidong02@gmail.com>
-Date: Fri, 19 Sep 2025 11:15:28 +0800
-X-Gm-Features: AS18NWBWy3JSGoTuAR7nCC9TldQxYSoxjAO81Iqekfd37aXEUhor2yl6szKD32M
-Message-ID: <CAOPYjvb1vEzgRM_m=FsjDTTuyGMWpxgK7UfmS458rbN6orVjtg@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/rxe: Fix race in do_task() when draining
-To: "Yanjun.Zhu" <yanjun.zhu@linux.dev>
-Cc: zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org, 
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	baijiaju1990@gmail.com, stable@vger.kernel.org, rpearsonhpe@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v2] RDMA/rxe: Fix race in do_task() when draining
+To: Gui-Dong Han <hanguidong02@gmail.com>, zyjzyj2000@gmail.com,
+ jgg@ziepe.ca, leon@kernel.org
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ baijiaju1990@gmail.com, rpearsonhpe@gmail.com, stable@vger.kernel.org
+References: <20250919025212.1682087-1-hanguidong02@gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Yanjun.Zhu" <yanjun.zhu@linux.dev>
+In-Reply-To: <20250919025212.1682087-1-hanguidong02@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-> Thanks a lot for your detailed explanations. Could you update the commit
-> logs to reflect the points you explained above?
 
-Hi Yanjun,
+On 9/18/25 7:52 PM, Gui-Dong Han wrote:
+> When do_task() exhausts its iteration budget (!ret), it sets the state
+> to TASK_STATE_IDLE to reschedule, without a secondary check on the
+> current task->state. This can overwrite the TASK_STATE_DRAINING state
+> set by a concurrent call to rxe_cleanup_task() or rxe_disable_task().
+>
+> While state changes are protected by a spinlock, both rxe_cleanup_task()
+> and rxe_disable_task() release the lock while waiting for the task to
+> finish draining in the while(!is_done(task)) loop. The race occurs if
+> do_task() hits its iteration limit and acquires the lock in this window.
+> The cleanup logic may then proceed while the task incorrectly
+> reschedules itself, leading to a potential use-after-free.
+>
+> This bug was introduced during the migration from tasklets to workqueues,
+> where the special handling for the draining case was lost.
+>
+> Fix this by restoring the original pre-migration behavior. If the state is
+> TASK_STATE_DRAINING when iterations are exhausted, set cont to 1 to
+> force a new loop iteration. This allows the task to finish its work, so
+> that a subsequent iteration can reach the switch statement and correctly
+> transition the state to TASK_STATE_DRAINED, stopping the task as intended.
+>
+> Fixes: 9b4b7c1f9f54 ("RDMA/rxe: Add workqueue support for rxe tasks")
+> Cc: stable@vger.kernel.org
+> Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-Fixed in the patch v2.
-Thanks!
+Thanks a lot. I am fine with this.
 
-Regards,
-Han
+Yanjun.Zhu
+
+> Signed-off-by: Gui-Dong Han <hanguidong02@gmail.com>
+> ---
+> v2:
+> * Rewrite commit message for clarity. Thanks to Zhu Yanjun for the review.
+> ---
+>   drivers/infiniband/sw/rxe/rxe_task.c | 8 ++++++--
+>   1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
+> index 6f8f353e9583..f522820b950c 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_task.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_task.c
+> @@ -132,8 +132,12 @@ static void do_task(struct rxe_task *task)
+>   		 * yield the cpu and reschedule the task
+>   		 */
+>   		if (!ret) {
+> -			task->state = TASK_STATE_IDLE;
+> -			resched = 1;
+> +			if (task->state != TASK_STATE_DRAINING) {
+> +				task->state = TASK_STATE_IDLE;
+> +				resched = 1;
+> +			} else {
+> +				cont = 1;
+> +			}
+>   			goto exit;
+>   		}
+>   
 
