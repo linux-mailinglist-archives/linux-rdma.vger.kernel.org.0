@@ -1,92 +1,90 @@
-Return-Path: <linux-rdma+bounces-13533-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13534-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CD97B8DA4E
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Sep 2025 13:35:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A698EB8DA8F
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Sep 2025 14:17:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D407189D906
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Sep 2025 11:35:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 609F517845B
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Sep 2025 12:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A81BB2BEFFD;
-	Sun, 21 Sep 2025 11:35:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4298234BA52;
+	Sun, 21 Sep 2025 12:17:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I6laAfbO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vEVtOKLz"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4659B13B284;
-	Sun, 21 Sep 2025 11:35:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D23D22AD13
+	for <linux-rdma@vger.kernel.org>; Sun, 21 Sep 2025 12:17:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758454507; cv=none; b=Gf2TpD3klhItG94UNUp2HRX/2dvvB1qWYYPphf8le/V3EeXCAJnkDGLNjnXw8IRXNBwLc6otGylcAQhGtuVxKmYWFjg6/FSqew1bh0+7lmjSxQIUonZcEl/otLFsRX0OBsWeuIrJHN8XQzsdCTiz5VS7dBOKzywzoIzvq5/cGvM=
+	t=1758457040; cv=none; b=RmPQ4QTX25zjKJxWoOurbE4ShkGn+LaZvYvcRBb0ASYcB4XRpdhwK9A4cV/U7deX5CgMeRnXfimZvgGyHWP5o6anUZYR+PNpxEeNefKaar0cgnuZrUyy0wwub/yFhRNQV7Kc6r3gkDlXCwkfvQKz4UcQWX5w6BXmhbAk9d37ch8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758454507; c=relaxed/simple;
-	bh=9RirVJ+oRinL3Yqw4bpLEbY0lfsulX8n+ssxtmmcVzc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=XlW5wE1/96YN9IVyEUbmHKOmmRuR5jlip8aJynsiwN5FzeGkP5WLPyMiu6L55pavh4ELkGnR6gNWIVdrKH/tpIgIKZZl7rE+7lMEhliMyjgo21LNUFBRpuIwmq8ue6webZocitLDIISl+yfdyL8622HyMSALQh0You/J8aEHrkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I6laAfbO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A913C4CEE7;
-	Sun, 21 Sep 2025 11:35:06 +0000 (UTC)
+	s=arc-20240116; t=1758457040; c=relaxed/simple;
+	bh=fPQSGoBLvEr61cvFsTXU/9R4TTh3b0z97fK8UPq3pgM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=By0WqiDHkF38f1KZCWXT55vBLma5JG/h2UzK8dsUJ1T7VY5VNoQfwtdm0odlXftLU/9/s3hZuR2HdSnuRS73V/IQW4anGwksd3LjcCmSC8SXKz0i//vyPtCkuAk6C2LjBRa72tIoC8YXEHAkVuSCmNFmstAZSa7D7T9qHjpR+ww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vEVtOKLz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB90AC4CEE7;
+	Sun, 21 Sep 2025 12:17:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758454506;
-	bh=9RirVJ+oRinL3Yqw4bpLEbY0lfsulX8n+ssxtmmcVzc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=I6laAfbOW3d0FfhmJOxLNiOQnSE74AZCo27nOatD3m5G62yC8RoAPvHMjAAn1ddRM
-	 /hD5c0BrfHIJ8BRwTtdgtZ4lwuo5s4Bp1MTxsEJOrzBIpxgIyY8HwxJ5sJ3tnSJBRL
-	 oRsiIkLO5f8GLTERCmGSu7v8KOKcTcI+HgpF2csxRI2NSqsFhJSmZa8YzmPHMT5pU1
-	 EBzAwwp5mg9vh5Nlz9CtlyVUtGMDoEtpq5p1bic0h6/aKNR02hLAUxLihe2XWY+DqY
-	 zVuLAzgF4pwtWvr56C79tZWeZL8EWJkoqMJhsoPPLQlIOvilEOj5hhVn5d3q8zShdn
-	 +5kkhj3a0dE4g==
+	s=k20201202; t=1758457040;
+	bh=fPQSGoBLvEr61cvFsTXU/9R4TTh3b0z97fK8UPq3pgM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=vEVtOKLzDv8tUJwERQfxRVbKyeSRR4gr9X8FrTyTw50x2/EXcmqlE11i2aC6/AgBh
+	 eqSpY7m+2Vl7evJyhZHARH8e2kQyh3C1LU+u0qiFhHf+JMQxqLgZ8X+7nfJsgpyNiy
+	 zPJsS4Hdpk7UMjTcTMsuhoAOf9kTF+SLeLd25ToRl4DK8JjimeVQci+M9+PPcNSzmB
+	 2aTJRaY4r8fUFw6JfXaAZeatCxmVVvWKbsFuLTWreIc909Z5bUCWWBcNJX6CMgSvQk
+	 UWFiJn7JMtprNSripk8mf8gPVfbyjSzmQeBFuUr1XhyZPc/ClN5UuzrD8lLDlAtlRa
+	 Ijemr9FKgY6nw==
+Date: Sun, 21 Sep 2025 15:17:15 +0300
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc: Abhijit Gangurde <abhijit.gangurde@amd.com>, 
- Allen Hubbe <allen.hubbe@amd.com>, Bart Van Assche <bvanassche@acm.org>, 
- Chengchang Tang <tangchengchang@huawei.com>, 
- Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, 
- Junxian Huang <huangjunxian6@hisilicon.com>, 
- Kalesh AP <kalesh-anakkur.purayil@broadcom.com>, 
- Konstantin Taranov <kotaranov@microsoft.com>, linux-rdma@vger.kernel.org, 
- Long Li <longli@microsoft.com>, Michael Margolin <mrgolin@amazon.com>, 
- Mustafa Ismail <mustafa.ismail@intel.com>, 
- Potnuri Bharat Teja <bharat@chelsio.com>, 
- Selvin Xavier <selvin.xavier@broadcom.com>, target-devel@vger.kernel.org, 
- Tatyana Nikolova <tatyana.e.nikolova@intel.com>, 
- Yishai Hadas <yishaih@nvidia.com>, Leon Romanovsky <leon@kernel.org>
-In-Reply-To: <e81ec02df1e474be20417fb62e779776e3f47a50.1758217936.git.leon@kernel.org>
-References: <e81ec02df1e474be20417fb62e779776e3f47a50.1758217936.git.leon@kernel.org>
-Subject: Re: [PATCH rdma-next] RDMA: Use %pe format specifier for error
- pointers
-Message-Id: <175845450356.2104816.4462663406652713808.b4-ty@kernel.org>
-Date: Sun, 21 Sep 2025 07:35:03 -0400
+To: Ilya Andronov <ilyaandronov1983@gmail.com>
+Cc: linux-rdma@vger.kernel.org
+Subject: Re: librdmacm infinite loop in rpoll when timeout > 0
+Message-ID: <20250921121715.GJ10800@unreal>
+References: <CAA9MXNTgdRCg0te=jzEontuLAdbTnfjr7o3cf6en4a=wYJs-Qg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-37811
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA9MXNTgdRCg0te=jzEontuLAdbTnfjr7o3cf6en4a=wYJs-Qg@mail.gmail.com>
 
+How did you come to this conclusion?
 
-On Thu, 18 Sep 2025 20:53:41 +0300, Leon Romanovsky wrote:
-> Convert error logging throughout the RDMA subsystem to use
-> the %pe format specifier instead of PTR_ERR() with integer
-> format specifiers.
+Thanks
+
+On Sat, Sep 20, 2025 at 11:33:32AM +0300, Ilya Andronov wrote:
+> index 005bd0be8..32fb30aea 100644
+> --- a/librdmacm/rsocket.c
+> +++ b/librdmacm/rsocket.c
+> @@ -3362,9 +3362,6 @@ int rpoll(struct pollfd *fds, nfds_t nfds, int timeout)
+>                 if (ret)
+>                         break;
 > 
+> -               if (rs_poll_enter())
+> -                       continue;
+> -
+>                 if (timeout >= 0) {
+>                         timeout -= (int) ((rs_time_us() - start_time) / 1000);
+>                         if (timeout <= 0)
+> @@ -3374,6 +3371,9 @@ int rpoll(struct pollfd *fds, nfds_t nfds, int timeout)
+>                         pollsleep = wake_up_interval;
+>                 }
 > 
-
-Applied, thanks!
-
-[1/1] RDMA: Use %pe format specifier for error pointers
-      https://git.kernel.org/rdma/rdma/c/4b6b6233f50f72
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+> +               if (rs_poll_enter())
+> +                       continue;
+> +
+>                 ret = poll(rfds, nfds + 1, pollsleep);
+>                 if (ret < 0) {
+>                         rs_poll_exit();
+> 
 
