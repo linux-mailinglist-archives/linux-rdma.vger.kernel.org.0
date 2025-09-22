@@ -1,116 +1,156 @@
-Return-Path: <linux-rdma+bounces-13565-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13566-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3241B8FE64
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Sep 2025 12:05:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDFCEB90F18
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Sep 2025 13:57:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06DE3188CD7F
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Sep 2025 10:05:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AED10423A1E
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Sep 2025 11:57:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD5DF2D97A9;
-	Mon, 22 Sep 2025 10:05:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZKdxg8o0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91A3A305964;
+	Mon, 22 Sep 2025 11:57:25 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 346ED24167A;
-	Mon, 22 Sep 2025 10:05:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C925B303A1E;
+	Mon, 22 Sep 2025 11:57:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758535504; cv=none; b=CRfdn063Ysl1sY0hysfuvAE9OVyvRoCu9B5YklIRhA4kCkChWjqUV9zIXHpwsaIspL++IILHA7dv6i2JXwUppAtn4+ww7+InFj7LeRKanI4ycCEP6heiuOfls0GNI7u4BK+6K5m3k0qUTTGhrk2wkaga7r/JK9sMg22RIzr9vaQ=
+	t=1758542245; cv=none; b=PuOJenppUBjLpszfqHNhMN5azO5QxgQjBE1Llsc9ISf0kNMLU/XtP1vNMKYh516X8W8cZFLfo7rkVGcEGYdVnApg9an6qx7+9KxRQ+J8X1wk/34CdGPZn1cevTslUV+d10zPyrTvurTZpDfU6q0Uk+SIjPHYvINAIXFvRqQZelA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758535504; c=relaxed/simple;
-	bh=WB8GQ5RsepoYi2eFGEtfbChCX1TN6uBkef1VC/5PxZ8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lQY0scQZxIqB2bjmakSrpw0SDZZIp7KkyhVY/XDPLUmymiUHRE9Pxj+D9HnxiHR8CdNPWHurNlOuucNSa1f48esfVOw2Q/pGNZe6hdunLJ/1MQ4RtsYKYbiQ9p1ZUJD+i39jcbuTEDAMQsRR0LCYGdaMmADLPWxjuKCIvte+OVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZKdxg8o0; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1758535502; x=1790071502;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=WB8GQ5RsepoYi2eFGEtfbChCX1TN6uBkef1VC/5PxZ8=;
-  b=ZKdxg8o08fJWoD1uy5ByViiSqsbiP3qkzAYKXj8xTnC1vPcRghczW3Xf
-   cP95VDcep8FeCOhJdro3zSsElf8IsyllgSIy040q38wEswu83AxuW7ODq
-   Wc3yiqdVOi26UmduoEvSSGkbJs9YtSKL0Wqdndx2Lfv8+GJJAotx3NHxP
-   Un6Cmhg3vYR3r4VVuPeF3Y4hMyGYqYC+nUZH7KR+p8SgKJWyMDM4xZf78
-   mnb5ADBlm+6Mcz/6mn8Elww+v4E8//bZsgL9Loftaw0izyZQKVj0YP6vn
-   FIMRQ6bkNX480gurq5IegbiCVD9djVEFNJLi95u6wTlUGx3uuWv1+m/gK
-   g==;
-X-CSE-ConnectionGUID: tOhN9DbPRa2nw0NwlGI+Jg==
-X-CSE-MsgGUID: /tAajN2JRbuCRLMMmhOzKw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11560"; a="72218546"
-X-IronPort-AV: E=Sophos;i="6.18,284,1751266800"; 
-   d="scan'208";a="72218546"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2025 03:05:01 -0700
-X-CSE-ConnectionGUID: Ai8W4B+aTiKldxgsb2qz1A==
-X-CSE-MsgGUID: G6NnfLnPQDaymjrIefS/zw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,284,1751266800"; 
-   d="scan'208";a="207180385"
-Received: from uniemimu-mobl1.ger.corp.intel.com (HELO [10.245.80.13]) ([10.245.80.13])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2025 03:04:57 -0700
-Message-ID: <2a927881-e0c7-47c8-a455-7ba3b1413648@linux.intel.com>
-Date: Mon, 22 Sep 2025 12:04:54 +0200
+	s=arc-20240116; t=1758542245; c=relaxed/simple;
+	bh=GvG5ejXGXPafTAj+efoN2UKdHGx1hTFLARGVrTbUyiQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=D2lGYzgMuFpPr/FX5MtGiGdXMA9SC9m/ulkuM9ohFAZpt3HmnHQa48qET+vQd/oJGkdgxbP1aJX3m+xWe4kY07auLcMJHYD/XRBlSyXtvsFN5+On88TbriAJFytJTjoRTHYUy7XD3G92ulzBWFW7J5+Z4ed8tdWnlIxcQQwP+MM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4cVhNG3dpDz1R9BM;
+	Mon, 22 Sep 2025 19:54:06 +0800 (CST)
+Received: from dggpemf500016.china.huawei.com (unknown [7.185.36.197])
+	by mail.maildlp.com (Postfix) with ESMTPS id 874181800B2;
+	Mon, 22 Sep 2025 19:57:14 +0800 (CST)
+Received: from huawei.com (10.50.159.234) by dggpemf500016.china.huawei.com
+ (7.185.36.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Mon, 22 Sep
+ 2025 19:57:13 +0800
+From: Wang Liang <wangliang74@huawei.com>
+To: <alibuda@linux.alibaba.com>, <dust.li@linux.alibaba.com>,
+	<sidraya@linux.ibm.com>, <wenjia@linux.ibm.com>, <mjambigi@linux.ibm.com>,
+	<tonylu@linux.alibaba.com>, <guwen@linux.alibaba.com>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<horms@kernel.org>
+CC: <yuehaibing@huawei.com>, <zhangchangzhong@huawei.com>,
+	<wangliang74@huawei.com>, <linux-kernel@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-s390@vger.kernel.org>
+Subject: [PATCH net] net/smc: fix general protection fault in __smc_diag_dump
+Date: Mon, 22 Sep 2025 20:18:18 +0800
+Message-ID: <20250922121818.654011-1-wangliang74@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 0/2] net: page_pool: Expose size limit
-To: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>
-Cc: Saeed Mahameed <saeedm@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
- Leon Romanovsky <leon@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- Gal Pressman <gal@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>
-References: <1758532715-820422-1-git-send-email-tariqt@nvidia.com>
-Content-Language: pl, en-US
-From: Dawid Osuchowski <dawid.osuchowski@linux.intel.com>
-In-Reply-To: <1758532715-820422-1-git-send-email-tariqt@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: kwepems100002.china.huawei.com (7.221.188.206) To
+ dggpemf500016.china.huawei.com (7.185.36.197)
 
-On 2025-09-22 11:18 AM, Tariq Toukan wrote:
-> Hi,
-> 
-> This small series by Dragos has two patches.
-> 
-> Patch #1 exposes the page_pool internal size limit so that drivers can
-> check against it before creating a page_pool.
-> 
-> Patch #2 adds usage of the exposed limit in mlx5e driver.
-> 
-> Regards,
-> Tariq
-> 
-> Dragos Tatulea (2):
->    net: page_pool: Expose internal limit
->    net/mlx5e: Clamp page_pool size to max
-> 
->   drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 2 ++
->   include/net/page_pool/types.h                     | 2 ++
->   net/core/page_pool.c                              | 2 +-
->   3 files changed, 5 insertions(+), 1 deletion(-)
-> 
-> 
-> base-commit: 312e6f7676e63bbb9b81e5c68e580a9f776cc6f0
+The syzbot report a crash:
 
-For the series:
-Reviewed-by: Dawid Osuchowski <dawid.osuchowski@linux.intel.com>
+  Oops: general protection fault, probably for non-canonical address 0xfbd5a5d5a0000003: 0000 [#1] SMP KASAN NOPTI
+  KASAN: maybe wild-memory-access in range [0xdead4ead00000018-0xdead4ead0000001f]
+  CPU: 1 UID: 0 PID: 6949 Comm: syz.0.335 Not tainted syzkaller #0 PREEMPT(full)
+  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/18/2025
+  RIP: 0010:smc_diag_msg_common_fill net/smc/smc_diag.c:44 [inline]
+  RIP: 0010:__smc_diag_dump.constprop.0+0x3ca/0x2550 net/smc/smc_diag.c:89
+  Call Trace:
+   <TASK>
+   smc_diag_dump_proto+0x26d/0x420 net/smc/smc_diag.c:217
+   smc_diag_dump+0x27/0x90 net/smc/smc_diag.c:234
+   netlink_dump+0x539/0xd30 net/netlink/af_netlink.c:2327
+   __netlink_dump_start+0x6d6/0x990 net/netlink/af_netlink.c:2442
+   netlink_dump_start include/linux/netlink.h:341 [inline]
+   smc_diag_handler_dump+0x1f9/0x240 net/smc/smc_diag.c:251
+   __sock_diag_cmd net/core/sock_diag.c:249 [inline]
+   sock_diag_rcv_msg+0x438/0x790 net/core/sock_diag.c:285
+   netlink_rcv_skb+0x158/0x420 net/netlink/af_netlink.c:2552
+   netlink_unicast_kernel net/netlink/af_netlink.c:1320 [inline]
+   netlink_unicast+0x5a7/0x870 net/netlink/af_netlink.c:1346
+   netlink_sendmsg+0x8d1/0xdd0 net/netlink/af_netlink.c:1896
+   sock_sendmsg_nosec net/socket.c:714 [inline]
+   __sock_sendmsg net/socket.c:729 [inline]
+   ____sys_sendmsg+0xa95/0xc70 net/socket.c:2614
+   ___sys_sendmsg+0x134/0x1d0 net/socket.c:2668
+   __sys_sendmsg+0x16d/0x220 net/socket.c:2700
+   do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+   do_syscall_64+0xcd/0x4e0 arch/x86/entry/syscall_64.c:94
+   entry_SYSCALL_64_after_hwframe+0x77/0x7f
+   </TASK>
 
-Thanks,
-Dawid
+The process like this:
+
+               (CPU1)              |             (CPU2)
+  ---------------------------------|-------------------------------
+  inet_create()                    |
+    // init clcsock to NULL        |
+    sk = sk_alloc()                |
+                                   |
+    // unexpectedly change clcsock |
+    inet_init_csk_locks()          |
+                                   |
+    // add sk to hash table        |
+    smc_inet_init_sock()           |
+      smc_sk_init()                |
+        smc_hash_sk()              |
+                                   | // traverse the hash table
+                                   | smc_diag_dump_proto
+                                   |   __smc_diag_dump()
+                                   |     // visit wrong clcsock
+                                   |     smc_diag_msg_common_fill()
+    // alloc clcsock               |
+    smc_create_clcsk               |
+      sock_create_kern             |
+
+With CONFIG_DEBUG_LOCK_ALLOC=y, the smc->clcsock is unexpectedly changed
+in inet_init_csk_locks(), because the struct smc_sock does not have struct
+inet_connection_sock as the first member.
+
+Previous commit 60ada4fe644e ("smc: Fix various oops due to inet_sock type
+confusion.") add inet_sock as the first member of smc_sock. For protocol
+with INET_PROTOSW_ICSK, use inet_connection_sock instead of inet_sock is
+more appropriate.
+
+Reported-by: syzbot+f775be4458668f7d220e@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=f775be4458668f7d220e
+Tested-by: syzbot+f775be4458668f7d220e@syzkaller.appspotmail.com
+Fixes: d25a92ccae6b ("net/smc: Introduce IPPROTO_SMC")
+Signed-off-by: Wang Liang <wangliang74@huawei.com>
+---
+ net/smc/smc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/smc/smc.h b/net/smc/smc.h
+index 2c9084963739..1b20f0c927d3 100644
+--- a/net/smc/smc.h
++++ b/net/smc/smc.h
+@@ -285,7 +285,7 @@ struct smc_connection {
+ struct smc_sock {				/* smc sock container */
+ 	union {
+ 		struct sock		sk;
+-		struct inet_sock	icsk_inet;
++		struct inet_connection_sock	inet_conn;
+ 	};
+ 	struct socket		*clcsock;	/* internal tcp socket */
+ 	void			(*clcsk_state_change)(struct sock *sk);
+-- 
+2.34.1
+
 
