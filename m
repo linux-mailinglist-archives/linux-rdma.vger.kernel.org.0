@@ -1,91 +1,91 @@
-Return-Path: <linux-rdma+bounces-13570-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13571-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 744ECB92088
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Sep 2025 17:44:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 696CDB92073
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Sep 2025 17:44:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C62C2A6B1C
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Sep 2025 15:43:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 859673B4128
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Sep 2025 15:44:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A112EBBA6;
-	Mon, 22 Sep 2025 15:43:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 038C82EBDC8;
+	Mon, 22 Sep 2025 15:43:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="aDtEux6C"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="bGvKSfaC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-vk1-f225.google.com (mail-vk1-f225.google.com [209.85.221.225])
+Received: from mail-qv1-f97.google.com (mail-qv1-f97.google.com [209.85.219.97])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7532C2EA75D
-	for <linux-rdma@vger.kernel.org>; Mon, 22 Sep 2025 15:43:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.225
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C67862EBB80
+	for <linux-rdma@vger.kernel.org>; Mon, 22 Sep 2025 15:43:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.97
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758555816; cv=none; b=E9ZCbcWMitZ3UjfVBijKS75DmH3XNJHK0H78Hj/BaaycCpbIjYKT/Xk72ZAjWNfS2g8d1LAQq+M2ymTNjVIQGS7pnHgnB+KGq9OD1ZXplo8Px7jzS9tEqVEpxj0fmNp31lkT62le5TqP1IMgXUHXS7w1K2PCgLqAPsF+Q65ozNw=
+	t=1758555817; cv=none; b=BbkPufgKF5EdZNdHlsTS5Mzb+Euod2B+Xz1JXG2KE3joHfZUbJrgsemVen69g0muUYj0jRjFZSCjqnYY/76CYYShZJSy/3/OAoPeaWKamcTkYZk+OdQ5y+6nw5ye5HGlhNnWIPo3Stjo0vIZb/RzpDXYtX9D5H19IqoRnIl0mlA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758555816; c=relaxed/simple;
-	bh=nvS/W6KyxMZxG8V8N050+H9gunEqjBk64MEWWL8UZZ4=;
+	s=arc-20240116; t=1758555817; c=relaxed/simple;
+	bh=5K22EYFqwhSZtpxvZ7pw6FhqwGWzT59lHJi/dIXRS/c=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZKSfLJm1rR489LfQCsayHTqnyAw7N6DFe2FMAgupcg25WbDZPRFZcqaXalo+Tiw31S0GXVVuV2Xa+K4c+R0P01Z7CBdpU8uMlfXna0HAsmvIEZn4XWcSW/0CnFKz9BRRCPpM/agI6GO+lLJIXvLOj9D3TvbPojLKp27V005tXj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=aDtEux6C; arc=none smtp.client-ip=209.85.221.225
+	 MIME-Version; b=LuchYPn675SSeXpxIHLTPxKmTYMQ0xOIEp9VsaBjo1HQcq6IzCLOjJifgn3+JkTpSQA/alt6gP7h9tRjdtWkR0ZnpY96D+7PjFd1N7cYWZwsFjNWeSspjnRRrDm1plC7VPNZqP4DMbpIW+ojDY86+7jyJchtjfqLzwNKEw0n2Mc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=bGvKSfaC; arc=none smtp.client-ip=209.85.219.97
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-vk1-f225.google.com with SMTP id 71dfb90a1353d-54bbb587d6dso654848e0c.2
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Sep 2025 08:43:34 -0700 (PDT)
+Received: by mail-qv1-f97.google.com with SMTP id 6a1803df08f44-78ed682e9d3so40948376d6.0
+        for <linux-rdma@vger.kernel.org>; Mon, 22 Sep 2025 08:43:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758555813; x=1759160613;
+        d=1e100.net; s=20230601; t=1758555815; x=1759160615;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:dkim-signature
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZEVkZUHr9+nmdKm/NA9YeMe1Jm0/YNgYQLjrx3Tp1/w=;
-        b=kgooA0hdye5AKrQEVZsNqcLNZw0uKgi28t+cyuc1BBdE2WQKF2v4nr96k6wsTmLPRw
-         wgnljgRymiHqZv0ui/B5hEeyDOvju54APFkbTiOnq7VzgzxOOb6G9uIKdk+r/M1fK+7U
-         gmH2tEnQvZgisKZhpWVUF8r5ZejJD2uuorbkrVvXZj9etedpfS26eVshEqsbA8uMdkjt
-         3GnkjpxnmQes1fEQ3AgMKnW4/nHGZsQ231TYN253CwBgX7x7Ehky0sqZm1ZyahkxwSab
-         C607kliBlwV5gtRbooymWOHv1wVZqh7t2zyOA6urtkeTJaUqaieTchu2d9Wy6tb9l0an
-         wh3w==
-X-Gm-Message-State: AOJu0Yxq1I+5AKq2HY6H8pCNX8OELcssqfK//ViSlvexss3MPLf8FXok
-	BeY9t9c/hfMp3/oEmUzZ5mkW0ngN0/pBR+D8YniYRFPdHz5IZtXeyuB9Br9mx3SKAXlHuqcRb3C
-	KwP3XfXDr6pyqJ2BmPkNBtnqWn/P+ypTCcaBsxZ2BXFxQgrYi6lt8NuuIBj2SvNyFeNQHztN+Om
-	hCWPY9dPQ1nRAdu/B5CPmtcJ7cCCAyB7Kntm3HBERrddkPBWUy+OMJ0FngWaQCaeRs5q7e4y8+o
-	WHjDB6kdV09LYN5bQ==
-X-Gm-Gg: ASbGncsQnEKZ+rP7yP3LkWGzFO6ZNxzIPWbaqZl4B2nZDSCk7GTsS0SItmZZb2dkl1T
-	CXfJvBNSxYFpJIcUCm5X893IBbYEQyZCGCkIXa78oM3xECl4UQ6Y8TTUVumsT3hh31t3ZKRV638
-	WS0AUK3orkc3jOhDiorSEd0JZKvRQcdGTJMuZjWXn+OVuu6BqER/hGxfPTHhJGNo8ldyb3rf0E7
-	BHV8YRpLRUl1qJi+uUhNobZINNDk9a5FT4ZuFxDkUtwHByHLpQ7CRfR2pLT0UZqpOrU8u+y57uj
-	oQwazogKfepyk9oUJsG77/bl/TWdZdsE7A+Ka2Q3ktsGWG/vruiJfaM6ZJcq4FkTE0ezsEO2GmP
-	Ooxke0wws8qL9moJ+feldNUPE9LPDJ7J82l6c7SdxXt91t1fcbt2PUFtyAdLnzHvB+/oVCjPrqH
-	Je
-X-Google-Smtp-Source: AGHT+IGi1s3xa+Qg17WKIzJ5Ap3CA2Xh1C08qObMAo+H65bwK2h/jXcBAbzGUzFUh0+D9bL5qg+OgNS5pbe3
-X-Received: by 2002:a05:6122:2005:b0:54a:9fe8:171e with SMTP id 71dfb90a1353d-54a9fe81ad1mr1879361e0c.7.1758555811567;
-        Mon, 22 Sep 2025 08:43:31 -0700 (PDT)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-119.dlp.protect.broadcom.com. [144.49.247.119])
-        by smtp-relay.gmail.com with ESMTPS id 71dfb90a1353d-54a8076bb76sm806952e0c.1.2025.09.22.08.43.31
+        bh=ljzRf+fQkTXrHRLgyTo6IBmxzVI6wZ2jIzrNCpRNIRY=;
+        b=Fo5tgJ9x5+Ruvheje9huK3yjabbXGvDR0RDiuByRwiOF8eM98fiVHmrTbRu2guJHoP
+         81GgvYXlVdpODflJYZ7KaefDT4EaDXjLnNuDEBu8uPqJ3Ea8d6dEcq0HZ9Ul1Fgj3XUU
+         a+Grd37XNxzQXn2VR1vxEQfOV0k6CdCGhdYPB+vQMcz9ubWrZ+Gylz0jDYBSp1PcQNFk
+         POkU0yl2bwOLa1B+xYfBpUSeSkcjjS/jOfJKq6mjk+5ZorEVgkC2ZNyPO2/1VjjGC2yO
+         8L6ITWo1tU19x5Gs8NlLUTmqU+CoH22jz2917B0KA7QAV0nVoOWy3YQZgcY/uOVKIf1t
+         Ec6w==
+X-Gm-Message-State: AOJu0YwotQLil44dQJoVFMLyM6UFWmPAI+vbxlVN50ioErJbbQGXqmph
+	Cd6eufhnNa0i6XrWpceR3kyvYF8a3iarUO0jucrRE9/E4J7DmuB39H1BQendLxOodiNKAclFZZ1
+	4jZko4x8JXNcKvJmd6uC1DxnSCv1QObb1nvC2b4POb8Sycr9MSsMSD6lBjQ1vBNV31XsDaH6b8V
+	haBwgoXVcjARh0gv/fdcwZkp9BkuoBnwUs8HOWgkBk8AjZhHLxRGK8EJ8g5U3bYfayRtSNZw59c
+	CPQlrwX732O247YZg==
+X-Gm-Gg: ASbGncsYcoKgTmZvY0pOyp18gswpElj5ILPhq0AuUZN16J019hyQ5SVtBN0/8+p9N1F
+	sP8fOJgQaPtFNo5irNRZV/k0CtmXisnp9NQqjOtVohDSlAlLVaC0TX7pczKpv9/IWvUU0J68bXg
+	Lx5IOtCi7IhTWqDY2pXDpZzG8kdDysOImdOUEc3CAKH2+9mCOxeX4HgBXzFI/Kg9I+umkieJBcj
+	NomXbwWIjrogD/zK1nEUNpxoKpURvIyDiH/dvShF0zagxEcneshbYtkM+wqtP5hCpnpHVhnAlg/
+	XMWE8Myg6GjUDLtH05VEsXEWkmy9b3WXRggOsdwiyr9EdyPbGqpKgj3c6H77BU4sh4RLx/JFdfI
+	P1xUXEt5+GwksuStqKaO2KrfIoV0uB978ZfweMKfi+XbRNn1gWZbwnEfwbO4ncRDoM9mJEgfSoj
+	Q4
+X-Google-Smtp-Source: AGHT+IH/TUTPjMBC9AywMJtOGjOiL9q/eYNgz0//Sg3CD81bZChBeXu/LvolBmW8fgQ6f6l/CimSVZIhwVAD
+X-Received: by 2002:ad4:594b:0:b0:7aa:b2f3:bd74 with SMTP id 6a1803df08f44-7aab2f3c059mr84683726d6.53.1758555814543;
+        Mon, 22 Sep 2025 08:43:34 -0700 (PDT)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-122.dlp.protect.broadcom.com. [144.49.247.122])
+        by smtp-relay.gmail.com with ESMTPS id 6a1803df08f44-7934ee8bc03sm7676466d6.28.2025.09.22.08.43.34
         for <linux-rdma@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 22 Sep 2025 08:43:31 -0700 (PDT)
+        Mon, 22 Sep 2025 08:43:34 -0700 (PDT)
 X-Relaying-Domain: broadcom.com
 X-CFilter-Loop: Reflected
-Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-78f3a8ee4d8so73534796d6.1
-        for <linux-rdma@vger.kernel.org>; Mon, 22 Sep 2025 08:43:31 -0700 (PDT)
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-4b7ad72bc9fso99921061cf.0
+        for <linux-rdma@vger.kernel.org>; Mon, 22 Sep 2025 08:43:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1758555811; x=1759160611; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1758555814; x=1759160614; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZEVkZUHr9+nmdKm/NA9YeMe1Jm0/YNgYQLjrx3Tp1/w=;
-        b=aDtEux6CagwkWis9HY+X1nqJLIKUVLNDLlYY4mSSVrxJQvkHUgkFWCk5qM8VlZw/d4
-         56Vrgc80dexT1hh1YSgWUHqmRUlcgFqOfrJuiriWQX358KH11SAk2QZlEq5lQAwRGx8j
-         kQ+9cCLNk35PdggIdqkpbrF2nsAfx87kmYGJs=
-X-Received: by 2002:a05:620a:9489:b0:7f9:ec3f:b047 with SMTP id af79cd13be357-83ba29b676bmr1017032685a.2.1758555810611;
-        Mon, 22 Sep 2025 08:43:30 -0700 (PDT)
-X-Received: by 2002:a05:620a:9489:b0:7f9:ec3f:b047 with SMTP id af79cd13be357-83ba29b676bmr1017029685a.2.1758555810013;
-        Mon, 22 Sep 2025 08:43:30 -0700 (PDT)
+        bh=ljzRf+fQkTXrHRLgyTo6IBmxzVI6wZ2jIzrNCpRNIRY=;
+        b=bGvKSfaCG6tAo7MrSsH4Aev7e4FQ/ss91LWgHs58r823qu/LgkgQlWT43+AYbhXVwJ
+         8B5d2VU4jRmnk2KK23nyb4NmCjwZmjwQ93jkZdKttorCYj2d4bDeUPP6hixgAjE61g63
+         D1ALaLPXCNLp8+BStdQ+fLcBXjDM1k9Mc07QQ=
+X-Received: by 2002:a05:622a:4295:b0:4b3:741:2e1f with SMTP id d75a77b69052e-4c06f8423acmr155597231cf.33.1758555813583;
+        Mon, 22 Sep 2025 08:43:33 -0700 (PDT)
+X-Received: by 2002:a05:622a:4295:b0:4b3:741:2e1f with SMTP id d75a77b69052e-4c06f8423acmr155596821cf.33.1758555813032;
+        Mon, 22 Sep 2025 08:43:33 -0700 (PDT)
 Received: from sjs-csg-thor3-swe-29.lvn.broadcom.net044broadcom.net ([192.19.224.250])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-84ada77bb17sm179496785a.30.2025.09.22.08.43.28
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-84ada77bb17sm179496785a.30.2025.09.22.08.43.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Sep 2025 08:43:29 -0700 (PDT)
+        Mon, 22 Sep 2025 08:43:32 -0700 (PDT)
 From: Siva Reddy Kallam <siva.kallam@broadcom.com>
 To: leonro@nvidia.com,
 	jgg@nvidia.com
@@ -96,9 +96,9 @@ Cc: linux-rdma@vger.kernel.org,
 	anand.subramanian@broadcom.com,
 	usman.ansari@broadcom.com,
 	Siva Reddy Kallam <siva.kallam@broadcom.com>
-Subject: [PATCH v2 2/8] RDMA/bng_re: Add Auxiliary interface
-Date: Mon, 22 Sep 2025 15:42:57 +0000
-Message-Id: <20250922154303.246809-3-siva.kallam@broadcom.com>
+Subject: [PATCH v2 3/8] RDMA/bng_re: Register and get the resources from bnge driver
+Date: Mon, 22 Sep 2025 15:42:58 +0000
+Message-Id: <20250922154303.246809-4-siva.kallam@broadcom.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250922154303.246809-1-siva.kallam@broadcom.com>
 References: <20250922154303.246809-1-siva.kallam@broadcom.com>
@@ -108,277 +108,256 @@ List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=all
 Content-Transfer-Encoding: 8bit
 X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 
-Add basic Auxiliary interface to the driver which supports
-the BCM5770X NIC family.
+Register and get the basic required resources from bnge driver.
 
 Signed-off-by: Siva Reddy Kallam <siva.kallam@broadcom.com>
 Reviewed-by: Usman Ansari <usman.ansari@broadcom.com>
 ---
- MAINTAINERS                            |   7 ++
- drivers/infiniband/Kconfig             |   1 +
- drivers/infiniband/hw/Makefile         |   1 +
- drivers/infiniband/hw/bng_re/Kconfig   |  10 ++
- drivers/infiniband/hw/bng_re/Makefile  |   7 ++
- drivers/infiniband/hw/bng_re/bng_dev.c | 142 +++++++++++++++++++++++++
- drivers/infiniband/hw/bng_re/bng_re.h  |  27 +++++
- 7 files changed, 195 insertions(+)
- create mode 100644 drivers/infiniband/hw/bng_re/Kconfig
- create mode 100644 drivers/infiniband/hw/bng_re/Makefile
- create mode 100644 drivers/infiniband/hw/bng_re/bng_dev.c
- create mode 100644 drivers/infiniband/hw/bng_re/bng_re.h
+ drivers/infiniband/hw/bng_re/bng_dev.c | 149 +++++++++++++++++++++++++
+ drivers/infiniband/hw/bng_re/bng_re.h  |   5 +
+ drivers/infiniband/hw/bng_re/bng_res.h |  16 +++
+ 3 files changed, 170 insertions(+)
+ create mode 100644 drivers/infiniband/hw/bng_re/bng_res.h
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 088558cc8b18..b29b1f58b0b2 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5131,6 +5131,13 @@ W:	http://www.broadcom.com
- F:	drivers/infiniband/hw/bnxt_re/
- F:	include/uapi/rdma/bnxt_re-abi.h
- 
-+BROADCOM 800 GIGABIT ROCE DRIVER
-+M:	Siva Reddy Kallam <siva.kallam@broadcom.com>
-+L:	linux-rdma@vger.kernel.org
-+S:	Supported
-+W:	http://www.broadcom.com
-+F:	drivers/infiniband/hw/bng_re/
-+
- BROADCOM NVRAM DRIVER
- M:	Rafał Miłecki <zajec5@gmail.com>
- L:	linux-mips@vger.kernel.org
-diff --git a/drivers/infiniband/Kconfig b/drivers/infiniband/Kconfig
-index f0323f1d6f01..794b9778816b 100644
---- a/drivers/infiniband/Kconfig
-+++ b/drivers/infiniband/Kconfig
-@@ -80,6 +80,7 @@ config INFINIBAND_VIRT_DMA
- if INFINIBAND_USER_ACCESS || !INFINIBAND_USER_ACCESS
- if !UML
- source "drivers/infiniband/hw/bnxt_re/Kconfig"
-+source "drivers/infiniband/hw/bng_re/Kconfig"
- source "drivers/infiniband/hw/cxgb4/Kconfig"
- source "drivers/infiniband/hw/efa/Kconfig"
- source "drivers/infiniband/hw/erdma/Kconfig"
-diff --git a/drivers/infiniband/hw/Makefile b/drivers/infiniband/hw/Makefile
-index b706dc0d0263..c42b22ac3303 100644
---- a/drivers/infiniband/hw/Makefile
-+++ b/drivers/infiniband/hw/Makefile
-@@ -13,5 +13,6 @@ obj-$(CONFIG_INFINIBAND_HFI1)		+= hfi1/
- obj-$(CONFIG_INFINIBAND_HNS_HIP08)	+= hns/
- obj-$(CONFIG_INFINIBAND_QEDR)		+= qedr/
- obj-$(CONFIG_INFINIBAND_BNXT_RE)	+= bnxt_re/
-+obj-$(CONFIG_INFINIBAND_BNG_RE)		+= bng_re/
- obj-$(CONFIG_INFINIBAND_ERDMA)		+= erdma/
- obj-$(CONFIG_INFINIBAND_IONIC)		+= ionic/
-diff --git a/drivers/infiniband/hw/bng_re/Kconfig b/drivers/infiniband/hw/bng_re/Kconfig
-new file mode 100644
-index 000000000000..85845f72c64d
---- /dev/null
-+++ b/drivers/infiniband/hw/bng_re/Kconfig
-@@ -0,0 +1,10 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+config INFINIBAND_BNG_RE
-+	tristate "Broadcom Next generation RoCE HCA support"
-+	depends on 64BIT
-+	depends on INET && DCB && BNGE
-+	help
-+	  This driver supports Broadcom Next generation
-+	  50/100/200/400/800 gigabit RoCE HCAs. The module
-+	  will be called bng_re. To compile this driver
-+	  as a module, choose M here.
-diff --git a/drivers/infiniband/hw/bng_re/Makefile b/drivers/infiniband/hw/bng_re/Makefile
-new file mode 100644
-index 000000000000..f854dae25b1c
---- /dev/null
-+++ b/drivers/infiniband/hw/bng_re/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+ccflags-y := -I $(srctree)/drivers/net/ethernet/broadcom/bnge
-+
-+obj-$(CONFIG_INFINIBAND_BNG_RE) += bng_re.o
-+
-+bng_re-y := bng_dev.o
 diff --git a/drivers/infiniband/hw/bng_re/bng_dev.c b/drivers/infiniband/hw/bng_re/bng_dev.c
-new file mode 100644
-index 000000000000..08aba72a26f7
---- /dev/null
+index 08aba72a26f7..cad065df2032 100644
+--- a/drivers/infiniband/hw/bng_re/bng_dev.c
 +++ b/drivers/infiniband/hw/bng_re/bng_dev.c
-@@ -0,0 +1,142 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2025 Broadcom.
+@@ -7,8 +7,10 @@
+ 
+ #include <rdma/ib_verbs.h>
+ 
++#include "bng_res.h"
+ #include "bng_re.h"
+ #include "bnge.h"
++#include "bnge_hwrm.h"
+ #include "bnge_auxr.h"
+ 
+ static char version[] =
+@@ -40,6 +42,144 @@ static struct bng_re_dev *bng_re_dev_add(struct auxiliary_device *adev,
+ 	return rdev;
+ }
+ 
 +
-+#include <linux/module.h>
-+#include <linux/pci.h>
-+#include <linux/auxiliary_bus.h>
-+
-+#include <rdma/ib_verbs.h>
-+
-+#include "bng_re.h"
-+#include "bnge.h"
-+#include "bnge_auxr.h"
-+
-+static char version[] =
-+		BNG_RE_DESC "\n";
-+
-+MODULE_AUTHOR("Siva Reddy Kallam <siva.kallam@broadcom.com>");
-+MODULE_DESCRIPTION(BNG_RE_DESC);
-+MODULE_LICENSE("Dual BSD/GPL");
-+
-+static struct bng_re_dev *bng_re_dev_add(struct auxiliary_device *adev,
-+					 struct bnge_auxr_dev *aux_dev)
++static int bng_re_register_netdev(struct bng_re_dev *rdev)
 +{
-+	struct bng_re_dev *rdev;
++	struct bnge_auxr_dev *aux_dev;
 +
-+	/* Allocate bng_re_dev instance */
-+	rdev = ib_alloc_device(bng_re_dev, ibdev);
-+	if (!rdev) {
-+		ibdev_err(NULL, "%s: bng_re_dev allocation failure!",
-+			  BNG_ROCE_DRV_MODULE_NAME);
-+		return NULL;
-+	}
-+
-+	/* Assign auxiliary device specific data */
-+	rdev->netdev = aux_dev->net;
-+	rdev->aux_dev = aux_dev;
-+	rdev->adev = adev;
-+	rdev->fn_id = rdev->aux_dev->pdev->devfn;
-+
-+	return rdev;
++	aux_dev = rdev->aux_dev;
++	return bnge_register_dev(aux_dev, rdev->adev);
 +}
 +
-+static int bng_re_add_device(struct auxiliary_device *adev)
++static void bng_re_destroy_chip_ctx(struct bng_re_dev *rdev)
 +{
-+	struct bnge_auxr_priv *auxr_priv =
-+		container_of(adev, struct bnge_auxr_priv, aux_dev);
-+	struct bng_re_en_dev_info *dev_info;
-+	struct bng_re_dev *rdev;
-+	int rc;
++	struct bng_re_chip_ctx *chip_ctx;
 +
-+	dev_info = auxiliary_get_drvdata(adev);
++	if (!rdev->chip_ctx)
++		return;
 +
-+	rdev = bng_re_dev_add(adev, auxr_priv->auxr_dev);
-+	if (!rdev) {
-+		rc = -ENOMEM;
-+		goto exit;
-+	}
++	chip_ctx = rdev->chip_ctx;
++	rdev->chip_ctx = NULL;
++	kfree(chip_ctx);
++}
 +
-+	dev_info->rdev = rdev;
++static int bng_re_setup_chip_ctx(struct bng_re_dev *rdev)
++{
++	struct bng_re_chip_ctx *chip_ctx;
++	struct bnge_auxr_dev *aux_dev;
++
++	aux_dev = rdev->aux_dev;
++
++	chip_ctx = kzalloc(sizeof(*chip_ctx), GFP_KERNEL);
++	if (!chip_ctx)
++		return -ENOMEM;
++	chip_ctx->chip_num = aux_dev->chip_num;
++	chip_ctx->hw_stats_size = aux_dev->hw_ring_stats_size;
++
++	rdev->chip_ctx = chip_ctx;
 +
 +	return 0;
-+exit:
-+	return rc;
 +}
 +
-+
-+static void bng_re_remove_device(struct bng_re_dev *rdev,
-+				 struct auxiliary_device *aux_dev)
++static void bng_re_init_hwrm_hdr(struct input *hdr, u16 opcd)
 +{
-+	ib_dealloc_device(&rdev->ibdev);
++	hdr->req_type = cpu_to_le16(opcd);
++	hdr->cmpl_ring = cpu_to_le16(-1);
++	hdr->target_id = cpu_to_le16(-1);
 +}
 +
-+
-+static int bng_re_probe(struct auxiliary_device *adev,
-+			const struct auxiliary_device_id *id)
++static void bng_re_fill_fw_msg(struct bnge_fw_msg *fw_msg, void *msg,
++			       int msg_len, void *resp, int resp_max_len,
++			       int timeout)
 +{
-+	struct bnge_auxr_priv *aux_priv =
-+		container_of(adev, struct bnge_auxr_priv, aux_dev);
-+	struct bng_re_en_dev_info *en_info;
++	fw_msg->msg = msg;
++	fw_msg->msg_len = msg_len;
++	fw_msg->resp = resp;
++	fw_msg->resp_max_len = resp_max_len;
++	fw_msg->timeout = timeout;
++}
++
++static void bng_re_query_hwrm_version(struct bng_re_dev *rdev)
++{
++	struct bnge_auxr_dev *aux_dev = rdev->aux_dev;
++	struct hwrm_ver_get_output ver_get_resp = {};
++	struct hwrm_ver_get_input ver_get_req = {};
++	struct bng_re_chip_ctx *cctx;
++	struct bnge_fw_msg fw_msg = {};
 +	int rc;
 +
-+	en_info = kzalloc(sizeof(*en_info), GFP_KERNEL);
-+	if (!en_info)
-+		return -ENOMEM;
-+
-+	en_info->auxr_dev = aux_priv->auxr_dev;
-+
-+	auxiliary_set_drvdata(adev, en_info);
-+
-+	rc = bng_re_add_device(adev);
-+	if (rc)
-+		kfree(en_info);
-+	return rc;
-+}
-+
-+static void bng_re_remove(struct auxiliary_device *adev)
-+{
-+	struct bng_re_en_dev_info *dev_info = auxiliary_get_drvdata(adev);
-+	struct bng_re_dev *rdev;
-+
-+	rdev = dev_info->rdev;
-+
-+	if (rdev)
-+		bng_re_remove_device(rdev, adev);
-+	kfree(dev_info);
-+}
-+
-+static const struct auxiliary_device_id bng_re_id_table[] = {
-+	{ .name = BNG_RE_ADEV_NAME ".rdma", },
-+	{},
-+};
-+
-+MODULE_DEVICE_TABLE(auxiliary, bng_re_id_table);
-+
-+static struct auxiliary_driver bng_re_driver = {
-+	.name = "rdma",
-+	.probe = bng_re_probe,
-+	.remove = bng_re_remove,
-+	.id_table = bng_re_id_table,
-+};
-+
-+static int __init bng_re_mod_init(void)
-+{
-+	int rc;
-+
-+	pr_info("%s: %s", BNG_ROCE_DRV_MODULE_NAME, version);
-+
-+	rc = auxiliary_driver_register(&bng_re_driver);
++	bng_re_init_hwrm_hdr((void *)&ver_get_req, HWRM_VER_GET);
++	ver_get_req.hwrm_intf_maj = HWRM_VERSION_MAJOR;
++	ver_get_req.hwrm_intf_min = HWRM_VERSION_MINOR;
++	ver_get_req.hwrm_intf_upd = HWRM_VERSION_UPDATE;
++	bng_re_fill_fw_msg(&fw_msg, (void *)&ver_get_req, sizeof(ver_get_req),
++			    (void *)&ver_get_resp, sizeof(ver_get_resp),
++			    BNGE_DFLT_HWRM_CMD_TIMEOUT);
++	rc = bnge_send_msg(aux_dev, &fw_msg);
 +	if (rc) {
-+		pr_err("%s: Failed to register auxiliary driver\n",
-+		       BNG_ROCE_DRV_MODULE_NAME);
++		ibdev_err(&rdev->ibdev, "Failed to query HW version, rc = 0x%x",
++			  rc);
++		return;
 +	}
-+	return rc;
++
++	cctx = rdev->chip_ctx;
++	cctx->hwrm_intf_ver =
++		(u64)le16_to_cpu(ver_get_resp.hwrm_intf_major) << 48 |
++		(u64)le16_to_cpu(ver_get_resp.hwrm_intf_minor) << 32 |
++		(u64)le16_to_cpu(ver_get_resp.hwrm_intf_build) << 16 |
++		le16_to_cpu(ver_get_resp.hwrm_intf_patch);
++
++	cctx->hwrm_cmd_max_timeout = le16_to_cpu(ver_get_resp.max_req_timeout);
++
++	if (!cctx->hwrm_cmd_max_timeout)
++		cctx->hwrm_cmd_max_timeout = BNG_ROCE_FW_MAX_TIMEOUT;
 +}
 +
-+static void __exit bng_re_mod_exit(void)
++static int bng_re_dev_init(struct bng_re_dev *rdev)
 +{
-+	auxiliary_driver_unregister(&bng_re_driver);
++	int rc;
++
++	/* Registered a new RoCE device instance to netdev */
++	rc = bng_re_register_netdev(rdev);
++	if (rc) {
++		ibdev_err(&rdev->ibdev,
++				"Failed to register with netedev: %#x\n", rc);
++		return -EINVAL;
++	}
++
++	set_bit(BNG_RE_FLAG_NETDEV_REGISTERED, &rdev->flags);
++
++	if (rdev->aux_dev->auxr_info->msix_requested < BNG_RE_MIN_MSIX) {
++		ibdev_err(&rdev->ibdev,
++			  "RoCE requires minimum 2 MSI-X vectors, but only %d reserved\n",
++			  rdev->aux_dev->auxr_info->msix_requested);
++		bnge_unregister_dev(rdev->aux_dev);
++		clear_bit(BNG_RE_FLAG_NETDEV_REGISTERED, &rdev->flags);
++		return -EINVAL;
++	}
++	ibdev_dbg(&rdev->ibdev, "Got %d MSI-X vectors\n",
++		  rdev->aux_dev->auxr_info->msix_requested);
++
++	rc = bng_re_setup_chip_ctx(rdev);
++	if (rc) {
++		bnge_unregister_dev(rdev->aux_dev);
++		clear_bit(BNG_RE_FLAG_NETDEV_REGISTERED, &rdev->flags);
++		ibdev_err(&rdev->ibdev, "Failed to get chip context\n");
++		return -EINVAL;
++	}
++
++	bng_re_query_hwrm_version(rdev);
++
++	return 0;
 +}
 +
-+module_init(bng_re_mod_init);
-+module_exit(bng_re_mod_exit);
++static void bng_re_dev_uninit(struct bng_re_dev *rdev)
++{
++	bng_re_destroy_chip_ctx(rdev);
++	if (test_and_clear_bit(BNG_RE_FLAG_NETDEV_REGISTERED, &rdev->flags))
++		bnge_unregister_dev(rdev->aux_dev);
++}
++
+ static int bng_re_add_device(struct auxiliary_device *adev)
+ {
+ 	struct bnge_auxr_priv *auxr_priv =
+@@ -58,7 +198,14 @@ static int bng_re_add_device(struct auxiliary_device *adev)
+ 
+ 	dev_info->rdev = rdev;
+ 
++	rc = bng_re_dev_init(rdev);
++	if (rc)
++		goto re_dev_dealloc;
++
+ 	return 0;
++
++re_dev_dealloc:
++	ib_dealloc_device(&rdev->ibdev);
+ exit:
+ 	return rc;
+ }
+@@ -67,6 +214,7 @@ static int bng_re_add_device(struct auxiliary_device *adev)
+ static void bng_re_remove_device(struct bng_re_dev *rdev,
+ 				 struct auxiliary_device *aux_dev)
+ {
++	bng_re_dev_uninit(rdev);
+ 	ib_dealloc_device(&rdev->ibdev);
+ }
+ 
+@@ -90,6 +238,7 @@ static int bng_re_probe(struct auxiliary_device *adev,
+ 	rc = bng_re_add_device(adev);
+ 	if (rc)
+ 		kfree(en_info);
++
+ 	return rc;
+ }
+ 
 diff --git a/drivers/infiniband/hw/bng_re/bng_re.h b/drivers/infiniband/hw/bng_re/bng_re.h
-new file mode 100644
-index 000000000000..bd3aacdc05c4
---- /dev/null
+index bd3aacdc05c4..db692ad8db0e 100644
+--- a/drivers/infiniband/hw/bng_re/bng_re.h
 +++ b/drivers/infiniband/hw/bng_re/bng_re.h
-@@ -0,0 +1,27 @@
+@@ -11,6 +11,8 @@
+ 
+ #define	rdev_to_dev(rdev)	((rdev) ? (&(rdev)->ibdev.dev) : NULL)
+ 
++#define BNG_RE_MIN_MSIX		2
++
+ struct bng_re_en_dev_info {
+ 	struct bng_re_dev *rdev;
+ 	struct bnge_auxr_dev *auxr_dev;
+@@ -18,9 +20,12 @@ struct bng_re_en_dev_info {
+ 
+ struct bng_re_dev {
+ 	struct ib_device		ibdev;
++	unsigned long			flags;
++#define BNG_RE_FLAG_NETDEV_REGISTERED		0
+ 	struct net_device		*netdev;
+ 	struct auxiliary_device         *adev;
+ 	struct bnge_auxr_dev		*aux_dev;
++	struct bng_re_chip_ctx		*chip_ctx;
+ 	int				fn_id;
+ };
+ 
+diff --git a/drivers/infiniband/hw/bng_re/bng_res.h b/drivers/infiniband/hw/bng_re/bng_res.h
+new file mode 100644
+index 000000000000..d64833498e2a
+--- /dev/null
++++ b/drivers/infiniband/hw/bng_re/bng_res.h
+@@ -0,0 +1,16 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +// Copyright (c) 2025 Broadcom.
 +
-+#ifndef __BNG_RE_H__
-+#define __BNG_RE_H__
++#ifndef __BNG_RES_H__
++#define __BNG_RES_H__
 +
-+#define BNG_ROCE_DRV_MODULE_NAME	"bng_re"
-+#define BNG_RE_ADEV_NAME		"bng_en"
++#define BNG_ROCE_FW_MAX_TIMEOUT	60
 +
-+#define BNG_RE_DESC	"Broadcom 800G RoCE Driver"
-+
-+#define	rdev_to_dev(rdev)	((rdev) ? (&(rdev)->ibdev.dev) : NULL)
-+
-+struct bng_re_en_dev_info {
-+	struct bng_re_dev *rdev;
-+	struct bnge_auxr_dev *auxr_dev;
-+};
-+
-+struct bng_re_dev {
-+	struct ib_device		ibdev;
-+	struct net_device		*netdev;
-+	struct auxiliary_device         *adev;
-+	struct bnge_auxr_dev		*aux_dev;
-+	int				fn_id;
++struct bng_re_chip_ctx {
++	u16	chip_num;
++	u16	hw_stats_size;
++	u64	hwrm_intf_ver;
++	u16	hwrm_cmd_max_timeout;
 +};
 +
 +#endif
