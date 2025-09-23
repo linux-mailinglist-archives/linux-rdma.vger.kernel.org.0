@@ -1,238 +1,108 @@
-Return-Path: <linux-rdma+bounces-13593-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13594-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BD2EB95B13
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Sep 2025 13:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EC2DB95F4F
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Sep 2025 15:11:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C0CE4816F3
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Sep 2025 11:41:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3E273ADEB2
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Sep 2025 13:10:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30D41322537;
-	Tue, 23 Sep 2025 11:40:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81641326D6C;
+	Tue, 23 Sep 2025 13:10:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="p09P/wZx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uxTvbuAS"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB04D322763
-	for <linux-rdma@vger.kernel.org>; Tue, 23 Sep 2025 11:40:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1844F326D4D;
+	Tue, 23 Sep 2025 13:10:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758627657; cv=none; b=XmPvrgVf7j7bg31qDh4C7apYw8lzHYlNouw7t/WfyrZgGa/FVJdmPfQrB/X5h5cq6BiDHMxOmDJzk2WeZ2OpiqFxFhRbR2Fa/XlrPRGulApX87uVklYnJ1xLuzbqyWjS4LjgAFcRpttqTxS4d7QpTt2A9B8hN0xgbZKnA8YEwq8=
+	t=1758633013; cv=none; b=tvqqANh4LDHzfJJxwzv+vL+aSCHmIMqc7fuZQJokEap3XUsEnXSB5eVaaz+JtkvatQfgjTjrONMaCNV5Cm2P98BN2r71CkQt2LWiVIzJGcPy4NZ6ZBdrq6PxTCwg3ccVmiOUJSa6+MD+9dBnAnewzx++Yn/NibP/4mYR3z+2BFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758627657; c=relaxed/simple;
-	bh=UScOWjCmWbFjwS/dCq07vT9PWUwgxf1QQaMsCHpJsIc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=IpfECj5GJn/P36xQwN4f1OISabDtBpK5aNON/8DLUmwwCrwp1IOu1xBd+GACeB7+3mx1plqMBhTytCARTN51zvpMgxosr9AMYfAAYxcXzrjyZh4j/KwsJfyTb6D+hscm4opfTpdvh4K3cE2405TB89EYdPK9MsWi1+Mi4c9OUxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=p09P/wZx; arc=none smtp.client-ip=144.76.82.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-	s=42; h=From:To:Date:Message-ID:CC;
-	bh=2anwBVX0Vt4JtwsOWiV8fXiDXLg47Y7tHF4ltZkhhIA=; b=p09P/wZx42CMSH7Za+eTcjd63L
-	7rFfF3N0bBUUAdCaob6Vi1impTr0biJwLpW4GeXns120ZsUdXmYN4aMKMi1tfpDmTCwBarILr1ssZ
-	Hfel+LdYyahUhcqOeyZlzbRgcG41E/SuUj+QqznyUdbKP8prD+MV64028P2Z9EGFPiAQBZfCA0lUO
-	lLMO4OSx/XFTsKlXVzLAe55YS7Zpxfo3zGqSn1eGhLg5LRkTGy2RrbGEtLTsoxc2mqXqffEjtA2mj
-	DpUPeyXqP1bYYnTfLYxoiRJFNZDjSELyvgcVHgBDRHT0rPBMefwAx3Any4+AmBcVMqO0YRoo9GA7k
-	r6OFbCggjlv9gxbm+IY4Tu8YeIGsjzu8gUxolmAU0tAmYwWOt1/hJm/v2Sjf87S0kiH5kNa1+ij6+
-	an8mY67gMRb0ryKDwCOjaSh6FYRR2dK5Z2OVLbc8Om/KXHP+slBeW20IXAsja5K5HeKrYr3wjpTSG
-	8kldsM3TSYsZp46LutkWZzyx;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__CHACHA20_POLY1305:256)
-	(Exim)
-	id 1v11O3-005Z62-0K;
-	Tue, 23 Sep 2025 11:40:47 +0000
-Message-ID: <9e1fb308-35c5-4ea0-9dbf-2f5bc297e8be@samba.org>
-Date: Tue, 23 Sep 2025 13:40:45 +0200
+	s=arc-20240116; t=1758633013; c=relaxed/simple;
+	bh=3eTEM5iteMPKpUUiayTkYaX7myBwc3OUeGnJqH5onNw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N9ERFZwc8Z0d8l6tnfAoOveYBYPiFMSuMYM9bIycb8Pq68WAqf1Z8EIYquW5S9j5XRiIVH7fDE0XuSFAvCryvNS9RZcylNhcNv/PaNX6vLX2OP+NlERqN7uEWqBK5FZXGXvo49txG3INvcIcDX/m27oVfb6+X3YlhWUS+tzlAz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uxTvbuAS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EAC7C4CEF5;
+	Tue, 23 Sep 2025 13:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758633011;
+	bh=3eTEM5iteMPKpUUiayTkYaX7myBwc3OUeGnJqH5onNw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uxTvbuASkvlEqAuHBYNx3FhRWzQd1sr6u8f3MwHB20Eeci9+PGh1yQh1c525P7zi6
+	 tFvlD4NIm8Xl+43c58KqPIREiZAi7/IwK9hqLgKGIizsJR5+BmmrXUkTA9we+Lq8iz
+	 A0GP3mUWKZNPlybZwogmBOUnZdeFY/q6JIKSnj1EblWryF7L07UEk8Id9yeqiY3QER
+	 oxGlbFTUtLEO2Pv+ItLS24AgG0Btp3gz2FNrn0rqSnPBqOc8XJYpX7lUzOUY2mJhMV
+	 yTEan4n/dV1S2/X4ebR7ShUPVsYa3gm0W2mFLvAcJAA2+2Jrpv1XnAZrlL6d/ou1Xb
+	 gzvb7Y2FQ+J/w==
+Date: Tue, 23 Sep 2025 14:10:06 +0100
+From: Simon Horman <horms@kernel.org>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Saeed Mahameed <saeedm@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
+	Dragos Tatulea <dtatulea@nvidia.com>
+Subject: Re: [PATCH net-next 2/2] net/mlx5e: Clamp page_pool size to max
+Message-ID: <20250923131006.GK836419@horms.kernel.org>
+References: <1758532715-820422-1-git-send-email-tariqt@nvidia.com>
+ <1758532715-820422-3-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] RDMA/siw: avoid hiding errors in siw_post_send()
-To: Bernard Metzler <bernard.metzler@linux.dev>, linux-rdma@vger.kernel.org
-References: <20250904173608.1590444-1-metze@samba.org>
- <81f8377e-9872-40cc-8aab-736ac2c548ee@linux.dev>
-Content-Language: en-US
-From: Stefan Metzmacher <metze@samba.org>
-In-Reply-To: <81f8377e-9872-40cc-8aab-736ac2c548ee@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1758532715-820422-3-git-send-email-tariqt@nvidia.com>
 
-Am 05.09.25 um 20:37 schrieb Bernard Metzler:
-> On 04.09.2025 19:36, Stefan Metzmacher wrote:
->> When we hit situations like "sq full", "too many sge's" or similar
->> things while queueing sqes, we should remember the error before
->> rv = siw_activate_tx(qp); clears the return value.
->>
->> Currently we hide such errors and confuse the caller
->> which is waiting (most likely forever) for a post completion
->> to arrive.
->>
-> I agree with that overall observation. Thanks for pointing it out.
+On Mon, Sep 22, 2025 at 12:18:35PM +0300, Tariq Toukan wrote:
+> From: Dragos Tatulea <dtatulea@nvidia.com>
 > 
->> Also if we already queued some sqes with success we need to process
-> This is what we already do. But we hide the initial error.
+> When the user configures a large ring size (8K) and a large MTU (9000)
+> in HW-GRO mode, the queue will fail to allocate due to the size of the
+> page_pool going above the limit.
 > 
-> One tricky question is what to return if we have both an immediate
-> error and an error happening during starting/processing the send queue.
-> I think it is best to return the immediate error in that case since
-> the caller relates it with the bad_wr content. The caller may
-> even understand that if bad_wr is not assigned it is not an
-> immediate error.
+> This change clamps the pool_size to the limit.
 > 
+> Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
->> them as no error happened, but at the end we need to return the
->> error relative to the bad_wr to the caller.
->>
->> Cc: Bernard Metzler <bernard.metzler@linux.dev>
->> Cc: linux-rdma@vger.kernel.org
->> Fixes: 303ae1cdfdf7 ("rdma/siw: application interface")
->> Signed-off-by: Stefan Metzmacher <metze@samba.org>
->> ---
->>   drivers/infiniband/sw/siw/siw_verbs.c | 20 ++++++++++++++++++++
->>   1 file changed, 20 insertions(+)
->>
->> diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
->> index 556a2b4b42ed..a3f548652c37 100644
->> --- a/drivers/infiniband/sw/siw/siw_verbs.c
->> +++ b/drivers/infiniband/sw/siw/siw_verbs.c
->> @@ -770,6 +770,8 @@ int siw_post_send(struct ib_qp *base_qp, const struct ib_send_wr *wr,
->>       unsigned long flags;
->>       int rv = 0;
->> +    size_t num_queued = 0;
-> 
-> I don't like counters which are actually used as boolean.
-> Introducing an immediate error value and assigning it if needed
-> should be sufficient.
-> 
-> 
->> +    int error = 0;
->>       if (wr && !rdma_is_kernel_res(&qp->base_qp.res)) {
->>           siw_dbg_qp(qp, "wr must be empty for user mapped sq\n");
->> @@ -948,9 +950,24 @@ int siw_post_send(struct ib_qp *base_qp, const struct ib_send_wr *wr,
->>           sqe->flags |= SIW_WQE_VALID;
->>           qp->sq_put++;
->> +        num_queued++;
->>           wr = wr->next;
->>       }
->> +    if (unlikely(rv < 0)) {
->> +        /*
->> +         * If at least one was queued
->> +         * we should start the tx, but
->> +         * still return an error with
->> +         * the bad_wr at the end.
->> +         */
->> +        error = rv;
->> +        if (num_queued == 0) {
->> +            spin_unlock_irqrestore(&qp->sq_lock, flags);
->> +            goto skip_direct_sending;
->> +        }
->> +    }
->> +
->>       /*
->>        * Send directly if SQ processing is not in progress.
->>        * Eventual immediate errors (rv < 0) do not affect the involved
->> @@ -982,6 +999,9 @@ int siw_post_send(struct ib_qp *base_qp, const struct ib_send_wr *wr,
->>       up_read(&qp->state_lock);
->> +    if (unlikely(error != 0))
->> +        rv = error;
->> +
->>       if (rv >= 0)
->>           return 0;
->>       /*
-> 
-> I unfortunately do not have access to build/test infrastructure until
-> September 18th, but just a source tree and an editor. Sorry about that.
-> What I would have in mind as a good patch is the following below
-> (untested, maybe even with spelling errors). Maybe you can take it from
-> there and test?
-> 
-> Thanks very much!
-> Bernard.
-> 
-> diff --git a/drivers/infiniband/sw/siw/siw_verbs.c b/drivers/infiniband/sw/siw/siw_verbs.c
-> index 2b2a7b8e93b0..7780e39b4e3e 100644
-> --- a/drivers/infiniband/sw/siw/siw_verbs.c
-> +++ b/drivers/infiniband/sw/siw/siw_verbs.c
-> @@ -769,7 +769,7 @@ int siw_post_send(struct ib_qp *base_qp, const struct ib_send_wr *wr,
->      struct siw_wqe *wqe = tx_wqe(qp);
-> 
->      unsigned long flags;
-> -    int rv = 0;
-> +    int rv = 0, imm_err = 0;
-> 
->      if (wr && !rdma_is_kernel_res(&qp->base_qp.res)) {
->          siw_dbg_qp(qp, "wr must be empty for user mapped sq\n");
-> @@ -958,6 +958,14 @@ int siw_post_send(struct ib_qp *base_qp, const struct ib_send_wr *wr,
->       * processing, if new work is already pending. But rv must be passed
->       * to caller.
->       */
-> +    if (unlikely(rv < 0)) {
-> +        /*
-> +         * Immediate error
-> +         */
-> +        siw_dbg_qp(qp, "Immediate error %d\n", rv);
-> +        imm_err = rv;
-> +        *bad_wr = wr;
-> +    }
->      if (wqe->wr_status != SIW_WR_IDLE) {
->          spin_unlock_irqrestore(&qp->sq_lock, flags);
->          goto skip_direct_sending;
-> @@ -982,15 +990,10 @@ int siw_post_send(struct ib_qp *base_qp, const struct ib_send_wr *wr,
-> 
->      up_read(&qp->state_lock);
-> 
-> -    if (rv >= 0)
-> -        return 0;
-> -    /*
-> -     * Immediate error
-> -     */
-> -    siw_dbg_qp(qp, "error %d\n", rv);
-> +    if unlikely(imm_err)
-> +        return imm_err;
-> 
-> -    *bad_wr = wr;
-> -    return rv;
-> +    return (rv >= 0) ? 0 : rv;
->   }
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> index 5e007bb3bad1..e56052895776 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> @@ -989,6 +989,8 @@ static int mlx5e_alloc_rq(struct mlx5e_params *params,
+>  		/* Create a page_pool and register it with rxq */
+>  		struct page_pool_params pp_params = { 0 };
+>  
+> +		pool_size = min_t(u32, pool_size, PAGE_POOL_SIZE_LIMIT);
 
-I think the last line whould be wrong as it won't set *bad_wr at all,
-so I used this instead:
+pool_size is u32 and PAGE_POOL_SIZE_LIMIT is a constant.
+AFAIK min() would work just fine here.
 
-        if (likely(rv >= 0))
-                 return 0;
-
-        *bad_wr = NULL;
-        return rv;
-
-But that's wrong as it will trigger the BUG_ON in net/rds/ib_send.c
-
-         /* XXX need to worry about failed_wr and partial sends. */
-         failed_wr = &first->s_wr;
-         ret = ib_post_send(ic->i_cm_id->qp, &first->s_wr, &failed_wr);
-         rdsdebug("ic %p first %p (wr %p) ret %d wr %p\n", ic,
-                  first, &first->s_wr, ret, failed_wr);
-         BUG_ON(failed_wr != &first->s_wr);
-         if (ret) {
-
-But leaving it uninitialized on error would also likely cause problems.
-
-
-The comment on ib_post_send() says:
-... if an immediate error is returned, the QP state shall not be affected,
-
-So may such non immediate errors should be reported as QP state changes
-instead? So that ib_post_send() would return 0..
-
-metze
-
-
-
+> +
+>  		pp_params.order     = 0;
+>  		pp_params.flags     = PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV;
+>  		pp_params.pool_size = pool_size;
+> -- 
+> 2.31.1
+> 
+> 
 
