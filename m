@@ -1,154 +1,129 @@
-Return-Path: <linux-rdma+bounces-13584-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13585-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 644CFB942BD
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Sep 2025 06:06:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A68DB948A2
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Sep 2025 08:22:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77D0918A3488
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Sep 2025 04:07:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBBDA3A5625
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Sep 2025 06:22:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E28B727381F;
-	Tue, 23 Sep 2025 04:06:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14AF930F546;
+	Tue, 23 Sep 2025 06:22:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="k5glPcMZ"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="iJUT2WJy"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f227.google.com (mail-pg1-f227.google.com [209.85.215.227])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 044AE2CCC0;
-	Tue, 23 Sep 2025 04:06:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B12224BCF5
+	for <linux-rdma@vger.kernel.org>; Tue, 23 Sep 2025 06:22:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.227
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758600401; cv=none; b=WrWPgGYKpMdaVCrjPlLUwojB77juzcq9Jp9xoqD1Y/fe3b8P0cfyJKJXs8quz8UeemkRio6g7Rmkxxo5hxSnh+Sd9Gm179nE63PcENcuwZbTkkW/fca/VlIiahgG6jK7MTcJ8m3jyUpxmyzO8/TNmXkCUDqB/A2zlCKcSPdhr8Q=
+	t=1758608537; cv=none; b=E4MCzRndRpWNgTHW2oW0zUlpVsu4E9X9LFY/1RZLX8hLcXnMIO6cpHnlnksetpJHX8PhOjzwaarf/TSfNgQ7rTAQW25gRvwtPUHw53sI1pFcboYPmhc5x3bAPMaIUhF+8vqIHFNUv1M+Kalxpo3sbQ4Ap3OZBNGgy5XISdEAV08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758600401; c=relaxed/simple;
-	bh=VZX0azsj2Y+I4tix4/GQPEAlzuuwnGYKkwOGjH+jPEM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VSHHS7upziXcoNHhaDVNbTdZxQF45blRWJwnzwq/WbIGMLkZDZeWpScKsRBf76CtehQHa6aTdbfTNwsMLVskAViSCg6nodWRBahM0kXHlf53RoLD9gIBK1caywAm3PItkfm2XiPjIXQ1OUzzPWHXp/FTyZqjcL0IzD9wcdbRE7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=k5glPcMZ; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1758600400; x=1790136400;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=VZX0azsj2Y+I4tix4/GQPEAlzuuwnGYKkwOGjH+jPEM=;
-  b=k5glPcMZ/eeAqPtIrSFuBDMrj7AceTtSHPscwmQu0VxuE5vDL/UW3AR8
-   PEq92ZFaxsW32/dr6V/VcG6mmw7+OVsUw13/xbuNJItfesKQN9ZtIcAp9
-   BK64JbUBCpPDyKrTll4/hQz4ENZTJMAytp+4ROfROsZ9/WVNAdOCqNwWH
-   csP+t9dl0ZTzo7+ytp7p5pffp47n/LKjpVxN0ENXPoXtv50HIy7fsQMVK
-   tPA+ZCSlfeW/T+DdD+FfI8uEFOxB24XPLRcIeTerJwxYsNZQKxLQ5zENG
-   y/XqF66eE0lnz1xRxLeYUbzj/LoQ3nyLyhVA1xkth0GYhai1VqwhtO+WE
-   A==;
-X-CSE-ConnectionGUID: oYgo5dhoQ8eEYvKt3UNUUQ==
-X-CSE-MsgGUID: SuxTSzTTSuq9oXtUWhrzQg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11561"; a="86307513"
-X-IronPort-AV: E=Sophos;i="6.18,287,1751266800"; 
-   d="scan'208";a="86307513"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2025 21:06:39 -0700
-X-CSE-ConnectionGUID: cX+GWRf6Tu2t5gJnCXlABw==
-X-CSE-MsgGUID: Es1S0oWbQ6miuIDWmPNphw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,287,1751266800"; 
-   d="scan'208";a="177030369"
-Received: from lkp-server02.sh.intel.com (HELO 84c55410ccf6) ([10.239.97.151])
-  by fmviesa008.fm.intel.com with ESMTP; 22 Sep 2025 21:06:35 -0700
-Received: from kbuild by 84c55410ccf6 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1v0uIQ-0002jV-2y;
-	Tue, 23 Sep 2025 04:06:31 +0000
-Date: Tue, 23 Sep 2025 12:06:22 +0800
-From: kernel test robot <lkp@intel.com>
-To: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
-	Mark Bloch <mbloch@nvidia.com>, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
-	Moshe Shemesh <moshe@nvidia.com>
-Subject: Re: [PATCH net-next 7/7] net/mlx5e: Use extack in set rxfh callback
-Message-ID: <202509231125.Tsan9Qny-lkp@intel.com>
-References: <1758531671-819655-8-git-send-email-tariqt@nvidia.com>
+	s=arc-20240116; t=1758608537; c=relaxed/simple;
+	bh=o4JmdKuLcQfTUsTj3MD9PemUAYgxTdWyIbbaNCPabgs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eElLN80aLTEAWuRP91B6eZlxusDWFY1eS29IrqwtKl713ZE40zWZul4D7mqJ7OaHS6mJVVM2TPUBWP6UYT7VDhGMCp8pE0xjPu9Nm0NNlFhwJIPL4IYYXwAHGCjYFu44ZQNg1YbwTV7GZ5UeR0kjbnvSs9T08mfwKruPFAg8xOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=iJUT2WJy; arc=none smtp.client-ip=209.85.215.227
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pg1-f227.google.com with SMTP id 41be03b00d2f7-b553412a19bso1722715a12.1
+        for <linux-rdma@vger.kernel.org>; Mon, 22 Sep 2025 23:22:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758608535; x=1759213335;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:dkim-signature:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JlhAIGyCbD0W994mehaU6IN17cEBI7olLdc+pSVw5Us=;
+        b=Ky4YCAIZWWZibrb9ot31zKSKazbaoePfa+X9ewUuyc6iLlZeRZfvarZTwr/8Hv7hBg
+         ekWuUGagTKAWlkRHHV7Aqdp+1eEjNsmZIej4velr/eu1tPA3U/24VhD22AxDbg4c0m0g
+         0QeBwgtlQt356WQekjLSV2aNfmko1b5dmnk/0x0kNKibvXt+qKVpCnotYGCABKmWuXO+
+         Y16Bm3OaZy/pLUc4mucc+731/IFWJf2vL5uTwhGQsgEe9huYS8hJ0n19eZCbBtpM/fHo
+         xA80Frq5j9BMFvNyRw8xSlubBtzIIpnXacgj5CnlHfmWD2e/dtLD/LLxX+hpvYLH1/Ce
+         c81Q==
+X-Gm-Message-State: AOJu0YzS8gtXDrvhig03++/ukgN77ivdLCvct6zYfH9iB4lUoh385aCC
+	xEDASRuQqTbmJW0tWXCzDWEuAr1M8QXki7zpLKLSFe2sTYu8oq6LqcZv+AdIbex21IIuQVyLDwj
+	q1Kzu9UzKhw40r9jj21C9F3opePmo7SDwTDCygRZwXVd3XVPkh7M+KsTFLeY2+0zRUy3pbNedCQ
+	olMnbPp9y/RVNhxIIi/nLlExDdjEPx+h+g0tCDjaQFZMvwXTP+SQOIxw/vAM4SPku7LHjERYzgw
+	R9CVM9i0BIQzCl9t2KDoUUCCKEQ/Q==
+X-Gm-Gg: ASbGncuFJOYqdlRkHzqb/appZC5xXEQBVI3/ARD14BcGlS7Gq39ZD5i6u6cRLCJbq2c
+	qCqyzkFOACpVztGlR2FJu3FM1hJIHWkzoBH+JxB7whJC88sTyjlHPxnML2Ds2UFRKKxQ5j48yiH
+	A7H1KVgC6B3x+nYbsYF2EW6Sd9Vfs6ClgfsTGUvUVA4ZQxRVOmwHaYUag/Yw8LgBp5HdtIjI48f
+	zVkWub8mi90guIKsDoA3USlZPWXS9ZYdPF5EsYhR24q5KM0r3wCPJOU9WeJ8taJdk4NwMw1kFjR
+	wYxr0ArmNWKn3tCd/IO2NALm9+crSVll+6RB8VWryCRH14EEAMVCdw7XaFIIgazpiAlXGlxWSHa
+	vltkY4LIMhd9DAAOOd25YVutP9t3etneoLLPy/5+AeSIXR086lhDTYyppeHE6XwyGnqmADYI0RG
+	4euK0P0MeMt+2un10=
+X-Google-Smtp-Source: AGHT+IHzju6rJheA/n+9eRIXhogZ3kXcv1Piz0kMURjvTezweDfoP4pklc9ZJQKRTY9gw/kSdxfdUUeaJTIb
+X-Received: by 2002:a17:903:11c3:b0:24b:25f:5f81 with SMTP id d9443c01a7336-27cc1e1f429mr22705195ad.17.1758608535481;
+        Mon, 22 Sep 2025 23:22:15 -0700 (PDT)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-121.dlp.protect.broadcom.com. [144.49.247.121])
+        by smtp-relay.gmail.com with ESMTPS id d9443c01a7336-269802c23fcsm9656315ad.72.2025.09.22.23.22.15
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 22 Sep 2025 23:22:15 -0700 (PDT)
+X-Relaying-Domain: broadcom.com
+X-CFilter-Loop: Reflected
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-2699ed6d43dso50859005ad.1
+        for <linux-rdma@vger.kernel.org>; Mon, 22 Sep 2025 23:22:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1758608534; x=1759213334; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JlhAIGyCbD0W994mehaU6IN17cEBI7olLdc+pSVw5Us=;
+        b=iJUT2WJyX3A2Ufzv9aW6v2NPINLX6rddNiyqC0S9JCtghxnvNyukfwT4EZ5jm5N9Pl
+         FPkN8nFxkR24ADS1dTGpcFhamPn1T+BK5cxjLsVZ5F/4gpjFu+A93niNdzw6cfFgMLDP
+         hiS3AGnb3jRRtD+YNe+Hso3D94xRuttfrd7Sc=
+X-Received: by 2002:a17:902:e84d:b0:263:ac60:fc41 with SMTP id d9443c01a7336-27cc76e2007mr17098915ad.48.1758608533585;
+        Mon, 22 Sep 2025 23:22:13 -0700 (PDT)
+X-Received: by 2002:a17:902:e84d:b0:263:ac60:fc41 with SMTP id d9443c01a7336-27cc76e2007mr17098725ad.48.1758608533234;
+        Mon, 22 Sep 2025 23:22:13 -0700 (PDT)
+Received: from dhcp-10-123-157-228.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-26980053db2sm152582285ad.2.2025.09.22.23.22.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Sep 2025 23:22:12 -0700 (PDT)
+From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+To: leon@kernel.org,
+	jgg@ziepe.ca
+Cc: linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com,
+	selvin.xavier@broadcom.com,
+	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Subject: [PATCH rdma-next 0/2] RDMA/bnxt_re: Update RDMA hw_counters sysfs interface
+Date: Tue, 23 Sep 2025 11:56:55 +0530
+Message-ID: <20250923062657.981487-1-kalesh-anakkur.purayil@broadcom.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1758531671-819655-8-git-send-email-tariqt@nvidia.com>
+Content-Transfer-Encoding: 8bit
+X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 
-Hi Tariq,
+Driver currently exposes many non-hw counters through the RDMA hw_counters
+sysfs interface. This patchset cleans it up by removing the non-statistics
+counters from the RDMA hw_counters.
 
-kernel test robot noticed the following build warnings:
+This change ensures that the hw_counters sysfs interface contains only the
+true performance and error statistics counters.
 
-[auto build test WARNING on 312e6f7676e63bbb9b81e5c68e580a9f776cc6f0]
+Added a debugfs info entry to expose driver specific counters.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Tariq-Toukan/net-mlx5-HWS-Generalize-complex-matchers/20250922-170716
-base:   312e6f7676e63bbb9b81e5c68e580a9f776cc6f0
-patch link:    https://lore.kernel.org/r/1758531671-819655-8-git-send-email-tariqt%40nvidia.com
-patch subject: [PATCH net-next 7/7] net/mlx5e: Use extack in set rxfh callback
-config: x86_64-rhel-9.4-rust (https://download.01.org/0day-ci/archive/20250923/202509231125.Tsan9Qny-lkp@intel.com/config)
-compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
-rustc: rustc 1.88.0 (6b00bc388 2025-06-23)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20250923/202509231125.Tsan9Qny-lkp@intel.com/reproduce)
+Anantha Prabhu (2):
+  RDMA/bnxt_re: Add debugfs info entry for device and resource
+    information
+  RDMA/bnxt_re: Remove non-statistics counters from hw_counters
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202509231125.Tsan9Qny-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c:1508:4: warning: 'snprintf' will always be truncated; specified size is 80, but format string expands to at least 131 [-Wformat-truncation]
-    1508 |                         NL_SET_ERR_MSG_FMT_MOD(
-         |                         ^
-   include/linux/netlink.h:131:2: note: expanded from macro 'NL_SET_ERR_MSG_FMT_MOD'
-     131 |         NL_SET_ERR_MSG_FMT((extack), KBUILD_MODNAME ": " fmt, ##args)
-         |         ^
-   include/linux/netlink.h:116:6: note: expanded from macro 'NL_SET_ERR_MSG_FMT'
-     116 |         if (snprintf(__extack->_msg_buf, NETLINK_MAX_FMTMSG_LEN,               \
-         |             ^
-   1 warning generated.
-
-
-vim +/snprintf +1508 drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-
-  1495	
-  1496	static int mlx5e_rxfh_hfunc_check(struct mlx5e_priv *priv,
-  1497					  const struct ethtool_rxfh_param *rxfh,
-  1498					  struct netlink_ext_ack *extack)
-  1499	{
-  1500		unsigned int count;
-  1501	
-  1502		count = priv->channels.params.num_channels;
-  1503	
-  1504		if (rxfh->hfunc == ETH_RSS_HASH_XOR) {
-  1505			unsigned int xor8_max_channels = mlx5e_rqt_max_num_channels_allowed_for_xor8();
-  1506	
-  1507			if (count > xor8_max_channels) {
-> 1508				NL_SET_ERR_MSG_FMT_MOD(
-  1509					extack,
-  1510					"Cannot set RSS hash function to XOR, current number of channels (%d) exceeds the maximum allowed for XOR8 RSS hfunc (%d)\n",
-  1511					count, xor8_max_channels);
-  1512				return -EINVAL;
-  1513			}
-  1514		}
-  1515	
-  1516		return 0;
-  1517	}
-  1518	
+ drivers/infiniband/hw/bnxt_re/debugfs.c     | 37 +++++++++++++
+ drivers/infiniband/hw/bnxt_re/hw_counters.c | 58 ---------------------
+ drivers/infiniband/hw/bnxt_re/hw_counters.h | 23 --------
+ 3 files changed, 37 insertions(+), 81 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.5
+
 
