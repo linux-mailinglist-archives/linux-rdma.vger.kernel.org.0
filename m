@@ -1,127 +1,130 @@
-Return-Path: <linux-rdma+bounces-13591-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13592-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC3F5B95385
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Sep 2025 11:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DB28B959D3
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Sep 2025 13:20:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B174F1890095
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Sep 2025 09:21:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00EE719C28EA
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Sep 2025 11:21:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 699FB31E100;
-	Tue, 23 Sep 2025 09:20:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C014B3218C9;
+	Tue, 23 Sep 2025 11:20:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AqkdkOyG"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GtShq0u8"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F056E18027;
-	Tue, 23 Sep 2025 09:20:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8C2E286D70
+	for <linux-rdma@vger.kernel.org>; Tue, 23 Sep 2025 11:20:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758619226; cv=none; b=kxsxe0HsawfFptYoCLUC9UGYXK1/oSIVN7zov0R+G7wHIDR/8cUEYB7C/RdqdT9eae6Cg+l5bktxbIYev0stbUaqqCuLLCUfdsf1uuZsU9hvzhp70YfEczMtbj0BAlOOpuGrq5b0DYeW9IPNtBFgpuH2OrCvYHK3nRct4NhYmmw=
+	t=1758626452; cv=none; b=MHgoALDgqhSCVU2i0Oi3LUt1S08fTgI6XrttfUy17vekRhfpfV+HxttON0zTtM/ztYscc54Sy36TzVY+aT8e7A+qakX62dMr8A3FT4Y4f1Czlpm4SQ41ssKCGQpjDJIF0/uJNo7Cxbk22zV+m4AyJqIOThLuaPhWqnlSFYu+3h8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758619226; c=relaxed/simple;
-	bh=gdoXPqKcRwqsS6xGmaE6ieeKY1UOE2LdWb4KSBpnMZQ=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=fKSnGl9+gmXx/kzyYs7ji/g7BPWL4wcrR0gMlvOZ7+ig1nhsT3LZ9dQTPKU4zSTXaeoRwLbIMGcnTqePgzW3L0RLl28o3t3aaxTEn84GucvvdfcGeVjdi9pg6HXA/CuGA8E7ohbnNKQ1wfPHHRDlMEcLorcUCRCKHl/Vh4NeFEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AqkdkOyG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79FD2C4CEF5;
-	Tue, 23 Sep 2025 09:20:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1758619225;
-	bh=gdoXPqKcRwqsS6xGmaE6ieeKY1UOE2LdWb4KSBpnMZQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=AqkdkOyGWQX0zxAuGM24pyt9Rz33HurS1DtRVsIVpuEsrOI2VlKsbQ9sA+m+wwYHD
-	 fzT4FN68udJLKcsKFb5gog4nWOKFSSogj5wnnF3iUUDij9GPGBM7dRTsh9KTYmE6t7
-	 1mUVpRvEwojqO1GAGvxqBw7ljAycYZayGTNYqCChzQEWd9AqDlOpnS4ZssfRNvjC7j
-	 2LgwuZabZdJUG3AcfcndlEflm3iwzX+KHg7vsAZgNZ3ryS2+9hPT+0NoYOtBARurA1
-	 PlP2Sd1l/552W5uNUVzmPYoWFYQSh1OdWARTYD06P8kDL14rfszkCR9wVMkaLsvoWL
-	 Fu7B7YezHQNpw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EB36439D0C20;
-	Tue, 23 Sep 2025 09:20:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1758626452; c=relaxed/simple;
+	bh=eJliZ++5VLobZbvP2Qe72C0QCu7EczhThEbLO5tMavE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=QnaNvJNsyM/XD9K2Z5amibTpypEZIIYCQg6ASKYvd+yzp3DnTbBXW1rkyqZN27E/zdVUzSZJDZw25ez0LLpKFITerXDMmZBvAhHQQ8qp59VuXOISHSHglIhoUROPRCn1gFsHQ/FcYKoyLkqikaMhUKjPg1+iq4/bXlszoDod6qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GtShq0u8; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3f0134ccc0cso4199752f8f.1
+        for <linux-rdma@vger.kernel.org>; Tue, 23 Sep 2025 04:20:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1758626449; x=1759231249; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9zredUSynQCwtloc7g5NGofS4JgiDu7n8B9m9/iOKfE=;
+        b=GtShq0u8Ox+G+as6n1sQ/UNEvHSUL4sGvdmQ96ylXy0rGwgmK0D7e09CQQcxSNohmv
+         zYfTD24hWO2afThqKXOqWaj104tmEG6HAR3wgKUkIjI65DUfflw9WvZJOtMa5WRh2KnP
+         D2z6Mngj3zC4KqbSECmXiQWcZrlDqtJhF8hbnrtbRhc2d+weKtwPNmiMl8UjRwbJn7x2
+         4gxPKr63AbVOiQXcuPRaNIVp+D7HCewRHhG9TP+gR72enuioAzLSESrGDU2OnjyYAFfd
+         VV3pA2z9ov9Z0F5CkV2jJUfsKkNbe0KuBioMhZm/57LFu13Xnt1Q/Y66e/GGv0upH+I0
+         SK4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758626449; x=1759231249;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9zredUSynQCwtloc7g5NGofS4JgiDu7n8B9m9/iOKfE=;
+        b=Derd/hvHlpE2MYjqLz3G1xIv9lqiOk4WK6191ggEyfAB2/HmwqOCeFZDwXxaRLBIWG
+         Ao3v24hp9DjTm2COX+kjZdeV0rWEUkcfXFX3hrAyZ5sqKshg5e5nYqPHwL09NlTHMfoV
+         FCi/2/WFIhqfpBdHdqVEt6zKlPNhpi0NEKtcTO7ovdQ5qD5v/iIOXqmlRIyYD4UK/6sx
+         rSxxydOU2JfhqCnBHrxx+JKHiH/v0r4dPZLHCEi46kaO6MrAA3HJlpZMCS4y8GDct5q4
+         qGuErHnlVuDkj9lLtNKhy58wDdqvs4tzNgAteNTfYMmh2dBQQ6/GY+8eG0Gz55XitCs/
+         +SzA==
+X-Forwarded-Encrypted: i=1; AJvYcCVxcQxRvESFcSdPT+r0ighWb0WNq7e2gX5sqvHdnw2N7OTvhD/abihiV6CE+QtVq75dXEd0Dri+3R2Q@vger.kernel.org
+X-Gm-Message-State: AOJu0YzZJEo7ztm/2yKd2dzvzyIjYr665aY7tgqZE5o7CpZRifjYXaYc
+	LLb/rPOfjHhU60HYbb/3UtCd0f+bebuQXKhkhjKZzC6N5JQdC7cuya+UMFzXKSC/6jDA6mjgJEC
+	+HDb4
+X-Gm-Gg: ASbGncuumpvfv2R7+Nlo7cyvBJb2jskG4UO7AEEWrn816tQYu3p/GYuS51sk+FIILks
+	iRx16cxTcsCt+z3DIRqmQxX56fuejR9mJNVGnee/+HQgUbupWo88Rl2QVRSJa1pwFMoALtZ6ytN
+	6q3tZH1fbc+U2nTT2WQ9dFcCz93Wd10WRtwII6NaxEH4YhiDtIGWqov4fmD1aA4d4GZTB6i3GmL
+	VtRRLbnO2XhKv1qdxeAGJXhjUEl6Sp5ci4jpi3Cug7N5bIyXNpU3ORp6e3HrJLYh/ulboPkB5u1
+	Te+c4aIIS8c59PXXiNBssfo+ec8jmBfCx9GYgO/GUiDclsZXdVN2m3OaHR4QUBz7863+cTR5DPO
+	nBTZ/Vuj8vVjeFc2CJw0KnOdA5UQI
+X-Google-Smtp-Source: AGHT+IFOLWwlUksxJsVUnIS1To44S+BUbgVSaPlPESYIl9UWZxAJU0rpuoUTCO7CBZd1r0VNy84pmw==
+X-Received: by 2002:a05:6000:40da:b0:3f2:dc6e:6a83 with SMTP id ffacd0b85a97d-405cb9a5341mr1917861f8f.59.1758626449168;
+        Tue, 23 Sep 2025 04:20:49 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-3ee0fbc7188sm24521715f8f.37.2025.09.23.04.20.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Sep 2025 04:20:48 -0700 (PDT)
+Date: Tue, 23 Sep 2025 14:20:45 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Faisal Latif <faisal.latif@intel.com>
+Cc: Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH next] RDMA/irdma: Fix positive vs negative error codes in
+ irdma_post_send()
+Message-ID: <aNKCjcD6Nab1jWEV@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v3 00/14] dibs - Direct Internal Buffer Sharing
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <175861922275.1349779.9038445436427700576.git-patchwork-notify@kernel.org>
-Date: Tue, 23 Sep 2025 09:20:22 +0000
-References: <20250918110500.1731261-1-wintera@linux.ibm.com>
-In-Reply-To: <20250918110500.1731261-1-wintera@linux.ibm.com>
-To: Alexandra Winter <wintera@linux.ibm.com>
-Cc: alibuda@linux.alibaba.com, dust.li@linux.alibaba.com,
- sidraya@linux.ibm.com, wenjia@linux.ibm.com, davem@davemloft.net,
- kuba@kernel.org, pabeni@redhat.com, edumazet@google.com,
- andrew+netdev@lunn.ch, julianr@linux.ibm.com, aswin@linux.ibm.com,
- pasic@linux.ibm.com, mjambigi@linux.ibm.com, tonylu@linux.alibaba.com,
- guwen@linux.alibaba.com, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
- linux-s390@vger.kernel.org, hca@linux.ibm.com, gor@linux.ibm.com,
- agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com,
- horms@kernel.org, ebiggers@kernel.org, ardb@kernel.org,
- herbert@gondor.apana.org.au, freude@linux.ibm.com, kshk@linux.ibm.com,
- dan.j.williams@intel.com, dave.jiang@intel.com, Jonathan.Cameron@huawei.com,
- sln@onemain.com, geert@linux-m68k.org, jgg@ziepe.ca
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
-Hello:
+This code accidentally returns positive EINVAL instead of negative
+-EINVAL.  Some of the callers treat positive returns as success.
+Add the missing '-' char.
 
-This series was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+Fixes: a24a29c8747f ("RDMA/irdma: Add Atomic Operations support")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ drivers/infiniband/hw/irdma/verbs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On Thu, 18 Sep 2025 13:04:46 +0200 you wrote:
-> This series introduces a generic abstraction of existing components like:
-> - the s390 specific ISM device (Internal Shared Memory),
-> - the SMC-D loopback mechanism (Shared Memory Communication - Direct)
-> - the client interface of the SMC-D module to the transport devices
-> This generic shim layer can be extended with more devices, more clients and
-> more features in the future.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,v3,01/14] net/smc: Remove error handling of unregister_dmb()
-    https://git.kernel.org/netdev/net-next/c/884eee8e43f3
-  - [net-next,v3,02/14] net/smc: Decouple sf and attached send_buf in smc_loopback
-    https://git.kernel.org/netdev/net-next/c/a4997e17d137
-  - [net-next,v3,03/14] dibs: Create drivers/dibs
-    https://git.kernel.org/netdev/net-next/c/35758b0032c0
-  - [net-next,v3,04/14] dibs: Register smc as dibs_client
-    https://git.kernel.org/netdev/net-next/c/d324a2ca3f8e
-  - [net-next,v3,05/14] dibs: Register ism as dibs device
-    https://git.kernel.org/netdev/net-next/c/269726968f95
-  - [net-next,v3,06/14] dibs: Define dibs loopback
-    https://git.kernel.org/netdev/net-next/c/cb990a45d7f6
-  - [net-next,v3,07/14] dibs: Define dibs_client_ops and dibs_dev_ops
-    https://git.kernel.org/netdev/net-next/c/69baaac9361e
-  - [net-next,v3,08/14] dibs: Move struct device to dibs_dev
-    https://git.kernel.org/netdev/net-next/c/845c334a0186
-  - [net-next,v3,09/14] dibs: Create class dibs
-    https://git.kernel.org/netdev/net-next/c/804737349813
-  - [net-next,v3,10/14] dibs: Local gid for dibs devices
-    https://git.kernel.org/netdev/net-next/c/05e68d8dedf3
-  - [net-next,v3,11/14] dibs: Move vlan support to dibs_dev_ops
-    https://git.kernel.org/netdev/net-next/c/92a0f7bb081d
-  - [net-next,v3,12/14] dibs: Move query_remote_gid() to dibs_dev_ops
-    https://git.kernel.org/netdev/net-next/c/719c3b67bb7e
-  - [net-next,v3,13/14] dibs: Move data path to dibs layer
-    https://git.kernel.org/netdev/net-next/c/cc21191b584c
-  - [net-next,v3,14/14] dibs: Move event handling to dibs layer
-    https://git.kernel.org/netdev/net-next/c/a612dbe8d04d
-
-You are awesome, thank you!
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 24f9503f410f..f9d9157029ac 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -3966,7 +3966,7 @@ static int irdma_post_send(struct ib_qp *ibqp,
+ 		case IB_WR_ATOMIC_CMP_AND_SWP:
+ 			if (unlikely(!(dev->hw_attrs.uk_attrs.feature_flags &
+ 				       IRDMA_FEATURE_ATOMIC_OPS))) {
+-				err = EINVAL;
++				err = -EINVAL;
+ 				break;
+ 			}
+ 			info.op_type = IRDMA_OP_TYPE_ATOMIC_COMPARE_AND_SWAP;
+@@ -3983,7 +3983,7 @@ static int irdma_post_send(struct ib_qp *ibqp,
+ 		case IB_WR_ATOMIC_FETCH_AND_ADD:
+ 			if (unlikely(!(dev->hw_attrs.uk_attrs.feature_flags &
+ 				       IRDMA_FEATURE_ATOMIC_OPS))) {
+-				err = EINVAL;
++				err = -EINVAL;
+ 				break;
+ 			}
+ 			info.op_type = IRDMA_OP_TYPE_ATOMIC_FETCH_AND_ADD;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.51.0
 
 
