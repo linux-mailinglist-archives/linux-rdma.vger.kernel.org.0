@@ -1,136 +1,187 @@
-Return-Path: <linux-rdma+bounces-13611-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13612-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B4B1B981DC
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Sep 2025 05:13:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C345B98234
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Sep 2025 05:30:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 793113B7399
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Sep 2025 03:13:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F5993A2B0B
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Sep 2025 03:30:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5B0232369;
-	Wed, 24 Sep 2025 03:13:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="DLZOdXdj"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08250225785;
+	Wed, 24 Sep 2025 03:30:11 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC00224225;
-	Wed, 24 Sep 2025 03:13:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEDE822DF9E;
+	Wed, 24 Sep 2025 03:30:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758683593; cv=none; b=NZ6eXiPDsVru829VTULKoVdHLOpk/y/giPCmq1WMEd2iGJ9L2n749RwbWQ5Tx3MdePUAZcfuMn4MM8YaBmswo4OT0NKHxIyBCe4nzW61ZM9NyntJ1ZJj6knowqZA0hWM9nIxxMIFLe00XFP1mop+osVm8ktazgw5Tdxzjdj/FQQ=
+	t=1758684610; cv=none; b=eWUVGRDq6W1KJ9LgHb7rSGiQZSZLZfQeaiz79pCJbsAoes/jtCovwpQvplZKEKC+61F9IbluHCtf59ruVI1plCkyFE5CqHm25b4hMtj7lD9MwlQfTCHeGSSENBpmDy8ynVnxvUyUYWTOLQh2ecUgsb4zvLBwXFIiKVgZaq+COls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758683593; c=relaxed/simple;
-	bh=Iu8F7B89dEF/lT14VXPako98TSEnjF2DviQJuVNcmWE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XouL+AUD8FFdTtmme37lwhUFVnaTDtIAqePJF4amhSyFvkig+tpBNxzGsqhOioBcPwq+XpH7r4gCFivlt1kiQyaYsjg438MRgzsbxvEpfe+f8W585W9lZYQ4CWFlByqnFb2vzFtzS282onAf0tJYBAzua+0D5ZPd8Am+rnZs600=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=DLZOdXdj; arc=none smtp.client-ip=115.124.30.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1758683587; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=b+CiZ/ws2vTrRYAbVi6irLmhLVkR3R52CUsAsqU0XPU=;
-	b=DLZOdXdjjr1rehl9zQlckhtD4hRbBaI7qbNYKrllJTHy+vJGr43UXpNZPzDmm7fjLnYH4K6kq/wg9kcnvondiF8GxhYGawj2b4SFuDleKAg5ySmlEfvClhLoA1F7Wjod3b5ifu4isknBS57B2/K6ps7oyq4Q+EiEpuBZ0iRVLHs=
-Received: from 30.221.114.81(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0WohxFPm_1758683586 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Wed, 24 Sep 2025 11:13:07 +0800
-Message-ID: <06a87a92-6cce-4a63-99d0-463a1d035478@linux.alibaba.com>
-Date: Wed, 24 Sep 2025 11:13:05 +0800
+	s=arc-20240116; t=1758684610; c=relaxed/simple;
+	bh=mC5G8/c7XmbarhMqgxAR+zzK5m3RmNWe+wkCuPuMlO0=;
+	h=From:Subject:To:Cc:Date:Message-ID:References:MIME-Version:
+	 Content-Type; b=mId2JPdDzRymr4PgmvarxrM7x49E+JuEgjAe8f9eiU+IWJul2MwNysfeNaXvMkDFiz+toAl4eUGZjHrXKvokoogxGVVFlQvSwyw6F0NmF8N2HlyKmOo0EdhJXyTiNr+G0E101k3OePzBL52+lqTmcmGRlAeY6eDDDuApBCXJyz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: bc762eb898f611f08b9f7d2eb6caa7cf-20250924
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.45,REQID:d5924a4a-45c6-4f72-9faa-13bc751d5034,IP:0,U
+	RL:0,TC:-7,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-12
+X-CID-META: VersionHash:6493067,CLOUDID:1c821660fbfd41d1344e50efed819307,BulkI
+	D:nil,BulkQuantity:0,Recheck:0,SF:81|83|102,TC:1,Content:0|51,EDM:-3,IP:ni
+	l,URL:99|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,
+	LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
+X-UUID: bc762eb898f611f08b9f7d2eb6caa7cf-20250924
+Received: from node1 [(10.44.16.4)] by mailgw.kylinos.cn
+	(envelope-from <daiyanlong@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 766256814; Wed, 24 Sep 2025 11:29:53 +0800
+Received: from node1 (localhost [127.0.0.1])
+	by node1 (NSMail) with SMTP id BF88843001F80;
+	Wed, 24 Sep 2025 11:29:53 +0800 (CST)
+Received: by node1 (NSMail, from userid 10001)
+	id B78AE43001F80; Wed, 24 Sep 2025 11:29:53 +0800 (CST)
+From: =?UTF-8?B?5Luj5b2m6b6Z?= <daiyanlong@kylinos.cn>
+Subject: =?UTF-8?B?5Zue5aSNOiBSZTogW1BBVENIIHJkbWEtcmNdIFJETUEvYm54dF9yZTogRml4IGEgcG90ZW50aWFsIG1lbW9yeSBsZWFrIGluIGRlc3Ryb3lfZ3NpX3NxcA==?=
+To: =?UTF-8?B?TGVvbiBSb21hbm92c2t5?= <leon@kernel.org>
+Cc: =?UTF-8?B?a2FsZXNoLWFuYWtrdXIucHVyYXlpbA==?= <kalesh-anakkur.purayil@broadcom.com>,
+	=?UTF-8?B?amdn?= <jgg@ziepe.ca>,
+	=?UTF-8?B?bGludXgta2VybmVs?= <linux-kernel@vger.kernel.org>,
+	=?UTF-8?B?bGludXgtcmRtYQ==?= <linux-rdma@vger.kernel.org>,
+	=?UTF-8?B?c2VsdmluLnhhdmllcg==?= <selvin.xavier@broadcom.com>,
+	=?UTF-8?B?ZHlsX3dsYw==?= <dyl_wlc@163.com>
+Date: Wed, 24 Sep 2025 11:29:53 +0800
+X-Mailer: NSMAIL 8.2
+Message-ID: <55mc6t88gc17-55mhuzizcgdo@nsmail8.2--kylin--1>
+References: 20250921112854.GI10800@unreal
+X-Israising: 0
+X-Seclevel-1: 0
+X-Seclevel: 0
+X-Delaysendtime: Wed, 24 Sep 2025 11:29:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 1/2] net/smc: make wr buffer count
- configurable
-To: Halil Pasic <pasic@linux.ibm.com>, Dust Li <dust.li@linux.alibaba.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>, "D. Wythe" <alibuda@linux.alibaba.com>,
- Sidraya Jayagond <sidraya@linux.ibm.com>, Wenjia Zhang
- <wenjia@linux.ibm.com>, Mahanta Jambigi <mjambigi@linux.ibm.com>,
- Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
- netdev@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-s390@vger.kernel.org
-References: <20250908220150.3329433-1-pasic@linux.ibm.com>
- <20250908220150.3329433-2-pasic@linux.ibm.com>
- <aL-YYoYRsFiajiPW@linux.alibaba.com>
- <20250909121850.2635894a.pasic@linux.ibm.com>
- <20250919165549.7bebfbc3.pasic@linux.ibm.com>
-From: Guangguan Wang <guangguan.wang@linux.alibaba.com>
-In-Reply-To: <20250919165549.7bebfbc3.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary=nsmail-58e29k738qum-58e5t64t1tkf
+X-ns-mid: webmail-68d365b1-56614ojl
+X-ope-from: <daiyanlong@kylinos.cn>
+X-receipt: 0
 
+This message is in MIME format.
 
+--nsmail-58e29k738qum-58e5t64t1tkf
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: base64
 
-在 2025/9/19 22:55, Halil Pasic 写道:
-> On Tue, 9 Sep 2025 12:18:50 +0200
-> Halil Pasic <pasic@linux.ibm.com> wrote:
-> 
-> 
-> Can maybe Wen Gu and  Guangguan Wang chime in. From what I read
-> link->wr_rx_buflen can be either SMC_WR_BUF_SIZE that is 48 in which
-> case it does not matter, or SMC_WR_BUF_V2_SIZE that is 8192, if
-> !smc_link_shared_v2_rxbuf(lnk) i.e. max_recv_sge == 1. So we talk
-> about roughly a factor of 170 here. For a large pref_recv_wr the
-> back of logic is still there to save us but I really would not say that
-> this is how this is intended to work.
-> 
+PGRpdiBzdHlsZT0iZm9udC1mYW1pbHk6TWljcm9zb2Z0IFlhSGVpO2ZvbnQt
+c2l6ZToxNHB4O2NvbG9yOiMwMDAwMDA7IiBjbGFzcz0ibF9ub2RlX2hhc19j
+b2xvciI+PHA+Jm5ic3A7PC9wPgo8cD5IZWxsbyBLYWxlc2gsIFNlbHZpbiwg
+TGlzdCw8L3A+CjxwPlRoYW5rIHlvdSBmb3IgdGhlIGZlZWRiYWNrIG9uIG15
+IHByZXZpb3VzIHBhdGNoIHJlZ2FyZGluZyB0aGUgZW1haWwgaWRlbnRpdHkg
+aXNzdWUuIE15IGFwb2xvZ2llcyBmb3IgdGhhdCBvdmVyc2lnaHQuPC9wPgo8
+cD5BcyBzdWdnZXN0ZWQsIEkgaGF2ZSBzdWJtaXR0ZWQgYSBuZXcsIHN0YW5k
+YWxvbmUgcGF0Y2ggdG8gcmVwbGFjZSB0aGUgcHJldmlvdXMuIEluIHRoaXMg
+bmV3IHN1Ym1pc3Npb24sIEkgaGF2ZSBlbnN1cmVkIGNvbnNpc3RlbnQgdXNl
+IG9mIG15IGNvcnBvcmF0ZSBlbWFpbCBhZGRyZXNzIChkYWl5YW5sb25nQGt5
+bGlub3MuY24pIGZvciBib3RoIGF1dGhvcnNoaXAgYW5kIHNpZ24tb2ZmLCBm
+dWxmaWxsaW5nIHRoZSByZXF1aXJlbWVudCBpbiBgU3VibWl0dGluZy1wYXRj
+aGVzLnJzdGAuPC9wPgo8cD5Db3VsZCB5b3UgcGxlYXNlIHJldmlldyB0aGUg
+bmV3IHBhdGNoIGF0IHlvdXIgY29udmVuaWVuY2U/IFBsZWFzZSBsZXQgbWUg
+a25vdyBpZiB0aGVyZSBhcmUgYW55IGZ1cnRoZXIgaXNzdWVzLjwvcD4KPHA+
+VGhhbmsgeW91IGZvciB5b3VyIGd1aWRhbmNlLjwvcD4KPHA+UmVmZXJlbmNl
+czo8YnI+WzFdIE5ldyBwYXRjaDogPGEgaHJlZj0iaHR0cHM6Ly9sb3JlLmtl
+cm5lbC5vcmcvYWxsLzIwMjUwOTIyMDIyMjU1LjQ4MTgtMS1kYWl5YW5sb25n
+Ij5odHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvMjAyNTA5MjIwMjIyNTUu
+NDgxOC0xLWRhaXlhbmxvbmc8L2E+QGt5bGlub3MuY24vPC9wPgo8cD5CZXN0
+IHJlZ2FyZHMsPGJyPllhbkxvbmcgRGFpPC9wPgo8ZGl2IGlkPSJzaWduYXR1
+cmVUb3AiPjwvZGl2Pgo8ZGl2IGlkPSJjczJjX3JlIiBzdHlsZT0ibWFyZ2lu
+LWxlZnQ6IDAuNWVtOyBwYWRkaW5nLWxlZnQ6IDAuNWVtOyBib3JkZXItbGVm
+dDogMXB4IHNvbGlkICNjYWNhY2E7IC13ZWJraXQtdXNlci1tb2RpZnk6IHJl
+YWQtb25seTsgLW1vei11c2VyLW1vZGlmeTogcmVhZC1vbmx5OyAtbXMtdXNl
+ci1tb2RpZnk6IHJlYWQtb25seTsgLW8tdXNlci1tb2RpZnk6IHJlYWQtb25s
+eTsiPjxicj48YnI+PGJyPgo8ZGl2IHN0eWxlPSJiYWNrZ3JvdW5kLWNvbG9y
+OiAjZjhmOGY4OyBwYWRkaW5nOiA4cHggMTBweDsgZm9udC1mYW1pbHk6IE1p
+Y3Jvc29mdCBZYUhlaTsgZm9udC1zaXplOiAxNHB4OyBjb2xvcjogIzAwMDsi
+PjxzdHJvbmc+5Li7Jm5ic3A7Jm5ic3A7Jm5ic3A76aKY77yaPC9zdHJvbmc+
+PHNwYW4gaWQ9ImNzMmNfc3ViamVjdCI+UmU6IFtQQVRDSCByZG1hLXJjXSBS
+RE1BL2JueHRfcmU6IEZpeCBhIHBvdGVudGlhbCBtZW1vcnkgbGVhayBpbiBk
+ZXN0cm95X2dzaV9zcXA8L3NwYW4+IDxicj48c3Ryb25nPuaXpSZuYnNwOyZu
+YnNwOyZuYnNwO+acn++8mjwvc3Ryb25nPjxzcGFuIGlkPSJjczJjX2RhdGUi
+PjIwMjXlubQwOeaciDIx5pelMTk6Mjg8L3NwYW4+IDxicj48c3Ryb25nPuWP
+keS7tuS6uu+8mjwvc3Ryb25nPjxzcGFuIGlkPSJjczJjX2Zyb20iPkxlb24g
+Um9tYW5vdnNreTwvc3Bhbj4gPGJyPjxzdHJvbmc+5pS25Lu25Lq677yaPC9z
+dHJvbmc+PHNwYW4gaWQ9ImNzMmNfdG8iIHN0eWxlPSJ3b3JkLWJyZWFrOiBi
+cmVhay1hbGw7Ij5ZYW5Mb25nIERhaSxMZW9uIFJvbWFub3Zza3k8L3NwYW4+
+IDxicj48c3Ryb25nPuaKhOmAgeS6uu+8mjwvc3Ryb25nPjxzcGFuIGlkPSJj
+czJjX3RvIiBzdHlsZT0id29yZC1icmVhazogYnJlYWstYWxsOyI+a2FsZXNo
+LWFuYWtrdXIucHVyYXlpbCxqZ2csbGludXgta2VybmVsLGxpbnV4LXJkbWEs
+c2VsdmluLnhhdmllcjwvc3Bhbj48L2Rpdj4KPGJyPgo8ZGl2IGlkPSJjczJj
+X2NvbnRlbnQiPk9uIEZyaSwgU2VwIDE5LCAyMDI1IGF0IDAxOjQyOjM4UE0g
+KzA4MDAsIFlhbkxvbmcgRGFpIHdyb3RlOiAmZ3Q7IEZyb206IGRhaXlhbmxv
+bmcgJmx0O2RhaXlhbmxvbmdAa3lsaW5vcy5jbiZndDsgJmd0OyAmZ3Q7IFRo
+ZSBjdXJyZW50IGVycm9yIGhhbmRsaW5nIHBhdGggaW4gYm54dF9yZV9kZXN0
+cm95X2dzaV9zcXAoKSBjb3VsZCBsZWFkICZndDsgdG8gYSByZXNvdXJjZSBs
+ZWFrLiBXaGVuIGJueHRfcXBsaWJfZGVzdHJveV9xcCgpIGZhaWxzLCB0aGUg
+ZnVuY3Rpb24gJmd0OyBqdW1wcyB0byB0aGUgJ2ZhaWwnIGxhYmVsIGFuZCBy
+ZXR1cm5zIGltbWVkaWF0ZWx5LCBza2lwcGluZyB0aGUgY2FsbCAmZ3Q7IHRv
+IGJueHRfcXBsaWJfZnJlZV9xcF9yZXMoKS4gJmd0OyAmZ3Q7IENvbnRpbnVl
+IHRoZSByZXNvdXJjZSB0ZWFyZG93biBldmVuIGlmIGJueHRfcXBsaWJfZGVz
+dHJveV9xcCgpIGZhaWxzLCAmZ3Q7IHdoaWNoIGFsaWducyB3aXRoIHRoZSBk
+cml2ZXIncyBnZW5lcmFsIGVycm9yIGhhbmRsaW5nIHN0cmF0ZWd5IGFuZCAm
+Z3Q7IHByZXZlbnRzIHRoZSBwb3RlbnRpYWwgbGVhay4gJmd0OyAmZ3Q7IEZp
+eGVzOiA4ZGFlNDE5ZjllYzczICgiUkRNQS9ibnh0X3JlOiBSZWZhY3RvciBx
+dWV1ZSBwYWlyIGNyZWF0aW9uIGNvZGUiKSAmZ3Q7ICZndDsgU2lnbmVkLW9m
+Zi1ieTogZGFpeWFubG9uZyAmbHQ7ZGFpeWFubG9uZ0BreWxpbm9zLmNuJmd0
+OyBEb2N1bWVudGF0aW9uL3Byb2Nlc3Mvc3VibWl0dGluZy1wYXRjaGVzLnJz
+dCAzOTYgU2lnbiB5b3VyIHdvcmsgLSB0aGUgRGV2ZWxvcGVyJ3MgQ2VydGlm
+aWNhdGUgb2YgT3JpZ2luIDM5NyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0gMzk4IC4uLiA0NDAgdXNp
+bmcgYSBrbm93biBpZGVudGl0eSAoc29ycnksIG5vIGFub255bW91cyBjb250
+cmlidXRpb25zLikgVGhhbmtzICZndDsgLS0tICZndDsgZHJpdmVycy9pbmZp
+bmliYW5kL2h3L2JueHRfcmUvaWJfdmVyYnMuYyB8IDcgKystLS0tLSAmZ3Q7
+IDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25z
+KC0pICZndDsgJmd0OyBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5k
+L2h3L2JueHRfcmUvaWJfdmVyYnMuYyBiL2RyaXZlcnMvaW5maW5pYmFuZC9o
+dy9ibnh0X3JlL2liX3ZlcmJzLmMgJmd0OyBpbmRleCAyNjBkYzY3YjhiODcu
+LjE1ZDNmNWQ1YzBlZSAxMDA2NDQgJmd0OyAtLS0gYS9kcml2ZXJzL2luZmlu
+aWJhbmQvaHcvYm54dF9yZS9pYl92ZXJicy5jICZndDsgKysrIGIvZHJpdmVy
+cy9pbmZpbmliYW5kL2h3L2JueHRfcmUvaWJfdmVyYnMuYyAmZ3Q7IEBAIC05
+MzEsMTAgKzkzMSw5IEBAIHN0YXRpYyBpbnQgYm54dF9yZV9kZXN0cm95X2dz
+aV9zcXAoc3RydWN0IGJueHRfcmVfcXAgKnFwKSAmZ3Q7ICZndDsgaWJkZXZf
+ZGJnKCZhbXA7cmRldi0mZ3Q7aWJkZXYsICJEZXN0cm95IHRoZSBzaGFkb3cg
+UVBcbiIpOyAmZ3Q7IHJjID0gYm54dF9xcGxpYl9kZXN0cm95X3FwKCZhbXA7
+cmRldi0mZ3Q7cXBsaWJfcmVzLCAmYW1wO2dzaV9zcXAtJmd0O3FwbGliX3Fw
+KTsgJmd0OyAtIGlmIChyYykgeyAmZ3Q7ICsgaWYgKHJjKSAmZ3Q7IGliZGV2
+X2VycigmYW1wO3JkZXYtJmd0O2liZGV2LCAiRGVzdHJveSBTaGFkb3cgUVAg
+ZmFpbGVkIik7ICZndDsgLSBnb3RvIGZhaWw7ICZndDsgLSB9ICZndDsgKyAm
+Z3Q7IGJueHRfcXBsaWJfZnJlZV9xcF9yZXMoJmFtcDtyZGV2LSZndDtxcGxp
+Yl9yZXMsICZhbXA7Z3NpX3NxcC0mZ3Q7cXBsaWJfcXApOyAmZ3Q7ICZndDsg
+LyogcmVtb3ZlIGZyb20gYWN0aXZlIHFwIGxpc3QgKi8gJmd0OyBAQCAtOTUx
+LDggKzk1MCw2IEBAIHN0YXRpYyBpbnQgYm54dF9yZV9kZXN0cm95X2dzaV9z
+cXAoc3RydWN0IGJueHRfcmVfcXAgKnFwKSAmZ3Q7IHJkZXYtJmd0O2dzaV9j
+dHguc3FwX3RibCA9IE5VTEw7ICZndDsgJmd0OyByZXR1cm4gMDsgJmd0OyAt
+ZmFpbDogJmd0OyAtIHJldHVybiByYzsgJmd0OyB9ICZndDsgJmd0OyAvKiBR
+dWV1ZSBQYWlycyAqLyAmZ3Q7IC0tICZndDsgMi40My4wICZndDsgJmx0Oy9k
+YWl5YW5sb25nQGt5bGlub3MuY24mZ3Q7Jmx0Oy9kYWl5YW5sb25nQGt5bGlu
+b3MuY24mZ3Q7PC9kaXY+CjwvZGl2Pgo8cD4mbmJzcDs8L3A+CjxwPiZuYnNw
+OzwvcD4KPGRpdiBpZD0ic2lnbmF0dXJlQm9tIj4KPGRpdj4KPHA+Jm5ic3A7
+PC9wPgo8YnI+CjxwIHN0eWxlPSJjb2xvcjogIzAwMDsgZm9udC1zaXplOiAx
+NnB4OyI+LS0tPC9wPgo8ZGl2IGlkPSJjczJjX21haWxfc2lnYXR1cmUiIHN0
+eWxlPSJjb2xvcjogIzAwMDsgZm9udC1zaXplOiAxNnB4OyBmb250LWZhbWls
+eTogTWljcm9zb2Z0IFlhSGVpOyI+PC9kaXY+CjxwPiZuYnNwOzwvcD4KPC9k
+aXY+CjwvZGl2PjwvZGl2Pg==
 
-Hi Halil,
-
-I think the root cause of the problem this patchset try to solve is a mismatch
-between SMC_WR_BUF_CNT and the max_conns per lgr(which value is 255). Furthermore,
-I believe that value 255 of the max_conns per lgr is not an optimal value, as too
-few connections lead to a waste of memory and too many connections lead to I/O queuing
-within a single QP(every WR post_send to a single QP will initiate and complete in sequence).
-
-We actually identified this problem long ago. In Alibaba Cloud Linux distribution, we have
-changed SMC_WR_BUF_CNT to 64 and reduced max_conns per lgr to 32(for SMC-R V2.1). This
-configuration has worked well under various workflow for a long time.
-
-SMC-R V2.1 already support negotiation of the max_conns per lgr. Simply change the value of
-the macro SMC_CONN_PER_LGR_PREFER can influence the negotiation result. But SMC-R V1.0 and SMC-R
-v2.0 do not support the negotiation of the max_conns per lgr.
-I think it is better to reduce SMC_CONN_PER_LGR_PREFER for SMC-R V2.1. But for SMC-R V1.0 and
-SMC-R V2.0, I do not have any good idea.
-
-> Maybe not supporting V2 on devices with max_recv_sge is a better choice,
-> assuming that a maximal V2 LLC msg needs to fit each and every receive
-> WR buffer. Which seems to be the case based on 27ef6a9981fe ("net/smc:
-> support SMC-R V2 for rdma devices with max_recv_sge equals to 1").
->
-
-For rdma dev whose max_recv_sge is 1, as metioned in the commit log in the related patch,
-it is better to support than SMC_CLC_DECL_INTERR fallback, as SMC_CLC_DECL_INTERR fallback
-is not a fast fallback, and may heavily influence the efficiency of the connecting process
-in both the server and client side.
-
- 
-> For me the best course of action seems to be to send a V3 using
-> link->wr_rx_buflen. I'm really not that knowledgeable about RDMA or
-> the SMC-R protocol, but I'm happy to be part of the discussion on this
-> matter.
-> 
-> Regards,
-> Halil
-And a tiny suggestion for the risk you mentioned in commit log
-("Addressing this by simply bumping SMC_WR_BUF_CNT to 256 was deemed
-risky, because the large-ish physically continuous allocation could fail
-and lead to TCP fall-backs."). Non-physically continuous allocation (vmalloc/vzalloc .etc.) is
-also supported for wr buffers. SMC-R snd_buf and rmb have already supported for non-physically
-continuous memory, when sysctl_smcr_buf_type is set to SMCR_VIRT_CONT_BUFS or SMCR_MIXED_BUFS.
-It can be an example of using non-physically continuous memory.
-
-Regards,
-Guangguan Wang
-
+--nsmail-58e29k738qum-58e5t64t1tkf--
 
