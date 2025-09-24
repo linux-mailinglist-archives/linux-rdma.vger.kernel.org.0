@@ -1,89 +1,99 @@
-Return-Path: <linux-rdma+bounces-13610-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13608-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2BC2B97ECA
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Sep 2025 02:43:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35477B97DAF
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Sep 2025 02:20:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EF2E4C16D8
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Sep 2025 00:43:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D14EB7ABC30
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Sep 2025 00:18:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 637461C54AA;
-	Wed, 24 Sep 2025 00:43:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 323CB13DDAE;
+	Wed, 24 Sep 2025 00:20:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=maguitec.com.mx header.i=@maguitec.com.mx header.b="GuF5APrQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SsHl+LM8"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from sender4-g3-154.zohomail360.com (sender4-g3-154.zohomail360.com [136.143.188.154])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4E0E1A23AF
-	for <linux-rdma@vger.kernel.org>; Wed, 24 Sep 2025 00:43:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.154
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758674622; cv=pass; b=k7BAN2P00YpxImrfIomgk7KLxJft/zBHj/OeiJLx3FzmGSvg1uHnEqGxvwY2EsNS25A/Lxdu5UIkETpbwlbD84aI5D9eEQvkOYuNSFA9RF8m7hAr6fCBR1vZbCKkg9ePAKM5JZLD8vvPO/9d+VY3bHDeyoZhjrtOhG97ZSVWrR4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758674622; c=relaxed/simple;
-	bh=VCtXNDdcyx4IggrcwtHubEdfyEhdAI8/Dvo/rJmMNEg=;
-	h=Date:From:To:Message-ID:Subject:MIME-Version:Content-Type; b=oNLaOGurJ5aOteOFOV5B1n9opK1YktDWuGl2yhAGa2BXIYKFph8L7YygKKOenhENu2S/rz0Maj8FsC49PUPtxF6CrTrjCK+D6MCOqyODiauyPp4WZne/B/kycZBg68iUcano30EG+oCcl8CL0z+jScQtOhBMBA8yGr7eVaC6L9A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=maguitec.com.mx; spf=pass smtp.mailfrom=bounce-zem.maguitec.com.mx; dkim=pass (1024-bit key) header.d=maguitec.com.mx header.i=@maguitec.com.mx header.b=GuF5APrQ; arc=pass smtp.client-ip=136.143.188.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=maguitec.com.mx
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bounce-zem.maguitec.com.mx
-ARC-Seal: i=1; a=rsa-sha256; t=1758674619; cv=none; 
-	d=us.zohomail360.com; s=zohoarc; 
-	b=NVdZ3U5ZN+2dIsmlUfcG9fuHJyyNPKegE48jM5Srqh41cFUfjZiATNwxBNJVyjrWTHQXf6E/mQYDpZfwQNj5CFLZXvxPlSng0FT93wKHReoaIbCgdCxq+36WEjgy7eCw3BUtCvTRBDuOhOvI9B7Ot+DlOh5QH6C3SQG7Jh63frk=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=us.zohomail360.com; s=zohoarc; 
-	t=1758674619; h=Content-Type:Content-Transfer-Encoding:Date:Date:From:From:MIME-Version:Message-ID:Reply-To:Reply-To:Subject:Subject:To:To:Message-Id:Cc; 
-	bh=VCtXNDdcyx4IggrcwtHubEdfyEhdAI8/Dvo/rJmMNEg=; 
-	b=FCQI9zVfvL8qfnd56tQYfKeRWzvFDhg2G68QtCO3hxqXNgur6phdDjVSThy3J/lNRD/1kHCNMsPRm5KDf4FQ6IY1aFLQt+gjNryF7NWn1l6Xi75ItNx2GB6qsF9K+8P8ob+msfWI75D5i4he7uEInrsD70nVWDiEsGHbZ1bDFXg=
-ARC-Authentication-Results: i=1; mx.us.zohomail360.com;
-	dkim=pass  header.i=maguitec.com.mx;
-	spf=pass  smtp.mailfrom=investorrelations+9aabbeb0-98d8-11f0-9ce0-52540088df93_vt1@bounce-zem.maguitec.com.mx;
-	dmarc=pass header.from=<investorrelations@maguitec.com.mx>
-Received: by mx.zohomail.com with SMTPS id 1758671653186869.5677730041249;
-	Tue, 23 Sep 2025 16:54:13 -0700 (PDT)
-DKIM-Signature: a=rsa-sha256; b=GuF5APrQOyudA7R9d+xn8p18vuV0+uejpKCgjD3KqUDFfD0N0SU5Ugi+l6rqDms1nmI6xsXpo+5pNx5oOwUQn8tvWkPqJfCrNiGhwoh6oDX2mgoas6qs4v2m6pDN2rL1WWmkv/v3qY97Z7X9/fb8E2Y6HlqvPYcpnhqXOIg8BBY=; c=relaxed/relaxed; s=15205840; d=maguitec.com.mx; v=1; bh=VCtXNDdcyx4IggrcwtHubEdfyEhdAI8/Dvo/rJmMNEg=; h=date:from:reply-to:to:message-id:subject:mime-version:content-type:content-transfer-encoding:date:from:reply-to:to:message-id:subject;
-Date: Tue, 23 Sep 2025 16:54:13 -0700 (PDT)
-From: Al Sayyid Sultan <investorrelations@maguitec.com.mx>
-Reply-To: investorrelations@alhaitham-investment.ae
-To: linux-rdma@vger.kernel.org
-Message-ID: <2d6f.1aedd99b146bc1ac.m1.9aabbeb0-98d8-11f0-9ce0-52540088df93.19978ffc61b@bounce-zem.maguitec.com.mx>
-Subject: Thematic Funds Letter Of Intent
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C046D78F36;
+	Wed, 24 Sep 2025 00:20:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758673218; cv=none; b=iGhGPgb2PxVj+E5CYRapUw6YHn/ENZMXYVMgk7Nv8xyaitRGuKmy9uW1ZfgGQUzw0EgdeaQti1PGvxNOJ2oCXnGKWMfCURqHq2R+ExDhmu+OGL+q3vU/Z/YB1lynH166nM9YLh1fls/qQQ9811vbZ372dcRfXq/hyqoM1yYoAgw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758673218; c=relaxed/simple;
+	bh=1auLVJ7s7PzdO1Nyus0vxo6b3G1QtyEqRIbW7qlzRws=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=mT0I2A82/4Ilng/M3abF5ZMvIU3RUADXChpDGxDkOVaQOevl/9GiL5Dxd/fLowfMBWQxkYNTeYpp2AVGEM2q0ppDmPJJXjCUbsLDRJJu+z+feQB1Etqs4qFmWbxbT5BmqHm5823mzvN3P6IyakRafz2QeVBrf2uXHVK6Iy/l7NA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SsHl+LM8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95EB2C4CEF5;
+	Wed, 24 Sep 2025 00:20:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758673218;
+	bh=1auLVJ7s7PzdO1Nyus0vxo6b3G1QtyEqRIbW7qlzRws=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=SsHl+LM8HkvmjdRzsf7oNuVZU1m+I6v0cjdV+kzDJxBMelGi88G+PpVM8CDMVTw4g
+	 rwC8J0+RfT/nyvS0bwJ+vK+gTV6yBzT1wSnbIj+ek9kNNC8Sb633axLuIhz/lbz/qu
+	 HQaxvvADtL9ALXFANIbvPfho2bystVBGGiUTuVNpcO4oQd+YZIQXlE27F4EIWX6D7V
+	 Rc7+m+CrmQuCid7pSbLZ0py3Rz99SZ0qJV3UNrnn5020sbf1AJ2fqWg+DIDL23z1yy
+	 P5Aty2wc1U4ZBZrE05D/9COLIDiGc6ivo/YxUEcTFVQycm5LhRMODBn1kGq+O51LBI
+	 pr77g6VxH4cFw==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADCF239D0C20;
+	Wed, 24 Sep 2025 00:20:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-content-transfer-encoding-Orig: quoted-printable
-content-type-Orig: text/plain;\r\n\tcharset="utf-8"
-Original-Envelope-Id: 2d6f.1aedd99b146bc1ac.m1.9aabbeb0-98d8-11f0-9ce0-52540088df93.19978ffc61b
-X-JID: 2d6f.1aedd99b146bc1ac.s1.9aabbeb0-98d8-11f0-9ce0-52540088df93.19978ffc61b
-TM-MAIL-JID: 2d6f.1aedd99b146bc1ac.m1.9aabbeb0-98d8-11f0-9ce0-52540088df93.19978ffc61b
-X-App-Message-ID: 2d6f.1aedd99b146bc1ac.m1.9aabbeb0-98d8-11f0-9ce0-52540088df93.19978ffc61b
-X-Report-Abuse: <abuse+2d6f.1aedd99b146bc1ac.m1.9aabbeb0-98d8-11f0-9ce0-52540088df93.19978ffc61b@zeptomail.com>
-X-ZohoMailClient: External
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 0/3] mlx5 misc fixes 2025-09-22
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <175867321524.1971872.14099732111728782116.git-patchwork-notify@kernel.org>
+Date: Wed, 24 Sep 2025 00:20:15 +0000
+References: <1758525094-816583-1-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1758525094-816583-1-git-send-email-tariqt@nvidia.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
+ mbloch@nvidia.com, leon@kernel.org, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, gal@nvidia.com,
+ moshe@nvidia.com
 
-To: linux-rdma@vger.kernel.org
-Date: 24-09-2025
-Thematic Funds Letter Of Intent
+Hello:
 
-It's a pleasure to connect with you
+This series was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Having been referred to your investment by my team, we would be=20
-honored to review your available investment projects for onward=20
-referral to my principal investors who can allocate capital for=20
-the financing of it.
+On Mon, 22 Sep 2025 10:11:31 +0300 you wrote:
+> Hi,
+> 
+> This patchset provides misc bug fixes from the team to the mlx5 Eth
+> and core drivers.
+> 
+> Thanks,
+> Tariq.
+> 
+> [...]
 
-kindly advise at your convenience
+Here is the summary with links:
+  - [net,1/3] net/mlx5: fs, fix UAF in flow counter release
+    https://git.kernel.org/netdev/net/c/6043819e707c
+  - [net,2/3] net/mlx5: HWS, ignore flow level for multi-dest table
+    https://git.kernel.org/netdev/net/c/efb877cf27e3
+  - [net,3/3] net/mlx5e: Fix missing FEC RS stats for RS_544_514_INTERLEAVED_QUAD
+    https://git.kernel.org/netdev/net/c/6d0477d0d067
 
-Best Regards,
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Respectfully,
-Al Sayyid Sultan Yarub Al Busaidi
-Director
+
 
