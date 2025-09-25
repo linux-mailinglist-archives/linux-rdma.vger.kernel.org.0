@@ -1,182 +1,121 @@
-Return-Path: <linux-rdma+bounces-13662-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13663-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09611BA1463
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Sep 2025 21:57:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5DC7BA15BB
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Sep 2025 22:31:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22F291BC7C8B
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Sep 2025 19:57:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 585BE4A098D
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Sep 2025 20:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECA4331D73E;
-	Thu, 25 Sep 2025 19:57:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBA81303A14;
+	Thu, 25 Sep 2025 20:30:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linbit-com.20230601.gappssmtp.com header.i=@linbit-com.20230601.gappssmtp.com header.b="LfT0Ka3M"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oG2Nik8g"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05F3B246787
-	for <linux-rdma@vger.kernel.org>; Thu, 25 Sep 2025 19:57:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59BD84204E;
+	Thu, 25 Sep 2025 20:30:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758830238; cv=none; b=JkSqjl/2O6uSsizLWCBSipfR1yanlCfPE7FZSzz+yXBFgI2HIEQD5iWFYCKobhnC/rDAbmhevwBT/qtyCvB0OaJgej762xow2M0W49RFLBSEco08NsWMLe4EYIZkbXo2i/ZMGGZkK2hjGC0Utcf5QZ9w0/+2Uz2/o0pDhXv3iHc=
+	t=1758832258; cv=none; b=VIIa8TU9Gyz2SMkWvJ3RUmMdI2PvOgE93/fGzJiQSdsunNGxtlAO7AoWef2qxYjSB+5Q54UAvwtzNLiTBq6RO+EKc4JzAMUviKfggiOpiuZRwQHIIi3bZ6CzLjloN2+xAVGNdbn2BT5KpZnJpL7H1wdPcY6ADGtW5r3vDR/D1No=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758830238; c=relaxed/simple;
-	bh=ceHH3IWiGV3BdvhtaHzZJ3H6fS+G8Ki3Bma+PJK8TBY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Jwb8HkGRjviju+UOMmnN2UO74SZD2EbcSx5QrU59ANYxDRD5yjBEqTbMbfSQfYDd93Anx5UfN8BCG9LxpBgUu9/Iga6mJahpggBB39BRntQ6OBZZCPSjJ8mhvYuCAdm+gBGcy2rWSIzD+QnuVy798yolc6WYmFi8j83qcjZSnlQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linbit.com; spf=pass smtp.mailfrom=linbit.com; dkim=pass (2048-bit key) header.d=linbit-com.20230601.gappssmtp.com header.i=@linbit-com.20230601.gappssmtp.com header.b=LfT0Ka3M; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linbit.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-46e317bc647so10024795e9.2
-        for <linux-rdma@vger.kernel.org>; Thu, 25 Sep 2025 12:57:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linbit-com.20230601.gappssmtp.com; s=20230601; t=1758830233; x=1759435033; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8t1cmbuldlzF6KX2Rqj5ZAm/oa7fTEbzdh+kEVZm6Lk=;
-        b=LfT0Ka3ML7xs+oahrSNfRh9zr1C8DkrLGj7t6XLQUocaj150xZxBxGTHfr2L4IxPLR
-         yuq5KQpztYJnzfIo3Inpunj5Be2aTJQFcPk4Lcye+TX19C135kg8Jp5K1ABhCdPEbpCF
-         cGWeJC53cXKoyjeLEBZSdNJ1fFOKeovFIVigOs5D1sJlpTUj43bUczAGp3GFiC3NYBmO
-         mbXSqu5F1RsvgeJFkGMCoM5LTutx31i//K1YYs5DhbuyVCj4uywqYHyWYcBFIUq0vd7c
-         v5uphJj1zYzsPilmo+WPJhuG4IfeOUptHjobVnUxfXFtrXOwG/GdmlV1tEz9QIWtt+Go
-         tW0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758830233; x=1759435033;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8t1cmbuldlzF6KX2Rqj5ZAm/oa7fTEbzdh+kEVZm6Lk=;
-        b=oVzKlKpzLgZNmDpYoWlES/1wTuXviq2g6odFlvUHVaOvHh1IHi15O4UhA7FqAVt/wd
-         6+zJoDKtkaYINr47CfDM9gcQlMiRoZV27q/vaL35z+xvPa6wcKogDvE6v/PgiaWiKNNC
-         yVH5vucU/BJm84asGjwE1gHwsxjORo3XQxwDC+kcksqN3w/y6/RK55TaGXJdqJI/RR7n
-         pRdJSQOKKvVw6SSPiyqVn7DVLKoiu/N4PDbACfbX6FQeYhkVTSDAB29wjGgxQ5wF/ixc
-         FdMvYyRLxv+v2S6S1Jy0WhNlkDWRu2Mp3+ngHCe9TMK2lmee+itKyixHsGet6gg07xpK
-         nKBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWeJZVPORp8sNqHM3QJaghmwpckQ9XWi/VHHPtp93tBckPiWp+04afVyxikXVOonEk2S/UHTR6cGvp6@vger.kernel.org
-X-Gm-Message-State: AOJu0YxXwGCk6pJyKxSH/pH196NgPz+jpSu7VGkuNk588vpR2Rupb979
-	OWnH0ZB7qRtvF8lcncnIHKnpzCN3wq4FB6PBYMlX1Q0i1S5p7irupOSNEM/KJv+FcKWhILK7gF9
-	YY+UIp2I6bSd/
-X-Gm-Gg: ASbGncsC6Bosh0nVBHYpjD2c7TrUQ2GPbXsdkdKYJpZAe6gXMFgy3JkAO62ueiUEzFY
-	05mSTAx4FWG3CwvdPvMvssx3EjMQzWW1HI3337uMFZsbSP+HE63iEoltaND5Raz7w1Y8dIf+I06
-	vxq0eq8E8aEJTs1HtKvqKAYvkHoV5W83AWlWaZEXboo4zRRflyxoIelTK6FbAoDGDY7JUHHySM5
-	aFrZJDonDv8RjDZ5JNbaaF8tFnUQ78PLjfUhK4PZoiMnPcdesQEXnhLx7gwVS1YkiggkelUycTi
-	JuaWVnNZ23Gen1hRdQYAxoWN9TaV82dUXBAeaK5ualWtn14e1fh4jyyYskPPacHN1+pIngvOmWZ
-	77w==
-X-Google-Smtp-Source: AGHT+IGG4rQpAEs3KSwr2soh9X6HBNwrl1IFW/ev8oiIGHxU/rW0RIbLhVcfR2nFx4utAhjntsi3YA==
-X-Received: by 2002:a05:600c:8a1b:20b0:45b:43cc:e558 with SMTP id 5b1f17b1804b1-46e32a185f0mr38233895e9.35.1758830233153;
-        Thu, 25 Sep 2025 12:57:13 -0700 (PDT)
-Received: from fw13-phil ([80.149.170.1])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46e33baab12sm45507565e9.8.2025.09.25.12.57.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Sep 2025 12:57:12 -0700 (PDT)
-From: Philipp Reisner <philipp.reisner@linbit.com>
-To: Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Philipp Reisner <philipp.reisner@linbit.com>
-Subject: [PATCH V3] rdma_rxe: call comp_handler without holding cq->cq_lock
-Date: Thu, 25 Sep 2025 21:56:40 +0200
-Message-ID: <20250925195640.32594-1-philipp.reisner@linbit.com>
-X-Mailer: git-send-email 2.50.1
+	s=arc-20240116; t=1758832258; c=relaxed/simple;
+	bh=SB7VFFS497fVqOtw/xEspRqIe+JuY6wZmouhpT9nChM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XmJjEZYNvhRRn2lfjVyCcd4VDxDuGuTAYY8+uoNE6K86ysEnWzBEza/XWJvTpdug0dWNviViaFzp0nzVxvWgYYcXdnWQYKlsgVCC51NqqT3N41jogl3rOvuQcCLID/Md8LEUAt0t69j74KywjBXXxo6bKdbA3cLUT2mUObSEbK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oG2Nik8g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0C23C4CEF7;
+	Thu, 25 Sep 2025 20:30:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1758832258;
+	bh=SB7VFFS497fVqOtw/xEspRqIe+JuY6wZmouhpT9nChM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oG2Nik8gzsWZh4y8F/lhqAYk70kCj3etLu0UGMrA3eCDJxAuVemwc+TzmdzEQBjHj
+	 szCeNajFGVSbmWl0E5fE2bfTT4cojKEiGrB8uXKYhC6jrcfOcLnHEPr08n3HJoRIeb
+	 xs6y50qus7EtCoTO2axKKvR2V+7hnnT4Jpye1ubwF5dQQkEthyW4VS9MQQsxADG1Z8
+	 SLNn1xX5M0kJB1UMOxRdinekft352a5qQwDP3kGNJz0OLXKFWnxNmAbi5mGBhK2w6U
+	 Fs5gUTiXssFLJ3H5ccv/xjrxK6P0VRVFykGtqwstFdgh6Le+MDfMDlQMsczF8w2IG3
+	 MoLr8DuugM0Dw==
+Date: Thu, 25 Sep 2025 16:30:46 -0400
+From: Nathan Chancellor <nathan@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Jason Gunthorpe <jgg@nvidia.com>,
+	Patrisious Haddad <phaddad@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S . Miller" <davem@davemloft.net>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
+	Netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
+	Leon Romanovsky <leonro@nvidia.com>,
+	Michael Guralnik <michaelgur@nvidia.com>,
+	Moshe Shemesh <moshe@nvidia.com>, Will Deacon <will@kernel.org>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Justin Stitt <justinstitt@google.com>, linux-s390@vger.kernel.org,
+	llvm@lists.linux.dev, Ingo Molnar <mingo@redhat.com>,
+	Bill Wendling <morbo@google.com>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+	Yisen Zhuang <yisen.zhuang@huawei.com>,
+	Leon Romanovsky <leonro@mellanox.com>,
+	Linux-Arch <linux-arch@vger.kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	Mark Rutland <mark.rutland@arm.com>,
+	Michael Guralnik <michaelgur@mellanox.com>, patches@lists.linux.dev,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	Jijie Shao <shaojijie@huawei.com>, Simon Horman <horms@kernel.org>
+Subject: Re: [PATCH net-next V5] net/mlx5: Improve write-combining test
+ reliability for ARM64 Grace CPUs
+Message-ID: <20250925203046.GA491548@ax162>
+References: <1758800913-830383-1-git-send-email-tariqt@nvidia.com>
+ <20250925115433.GU2617119@nvidia.com>
+ <d548b14e-ae28-4807-9b29-9961543ea549@nvidia.com>
+ <20250925122139.GW2617119@nvidia.com>
+ <13c5072c-dc93-477c-b72e-02156a0ecc2e@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <13c5072c-dc93-477c-b72e-02156a0ecc2e@app.fastmail.com>
 
-Allow the comp_handler callback implementation to call ib_poll_cq().
-A call to ib_poll_cq() calls rxe_poll_cq() with the rdma_rxe driver.
-And rxe_poll_cq() locks cq->cq_lock. That leads to a spinlock deadlock.
+On Thu, Sep 25, 2025 at 03:05:52PM +0200, Arnd Bergmann wrote:
+> On the other hand, I would in general strongly prefer
+> 
+>      if (IS_ENABLED(CONFIG_FOO)) {
+>             ...
+>      }
+> 
+> over any of the preprocessor conditionals, both for readability
+> and for improving compile-time coverage of the conditional code.
+> 
+> Unfortunately that does not work here because kernel_neon_begin()
+> etc are only defined on Arm.
 
-The Mellanox and Intel drivers allow a comp_handler callback
-implementation to call ib_poll_cq().
-
-Avoid the deadlock by calling the comp_handler callback without
-holding cq->cq_lock.
-
-Other InfiniBand drivers call the comp_handler callback from a single
-thread, in the RXE driver, acquiring the cq->cq_lock has achieved that
-up to now. As that gets removed, introduce a new lock dedicated to
-making the execution of the comp_handler single-threaded.
-
-Changelog:
- v2 -> v3:
-   - make execution of comp_handler single-threaded
-
- v2: https://lore.kernel.org/lkml/20250822081941.989520-1-philipp.reisner@linbit.com/
-
- v1 -> v2:
-   - Only reset cq->notify to 0 when invoking the comp_handler
-
- v1: https://lore.kernel.org/all/20250806123921.633410-1-philipp.reisner@linbit.com/
-====================
-
-Signed-off-by: Philipp Reisner <philipp.reisner@linbit.com>
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
- drivers/infiniband/sw/rxe/rxe_cq.c    | 10 +++++++++-
- drivers/infiniband/sw/rxe/rxe_verbs.h |  1 +
- 2 files changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c b/drivers/infiniband/sw/rxe/rxe_cq.c
-index fffd144d509e..8d94cef7bd50 100644
---- a/drivers/infiniband/sw/rxe/rxe_cq.c
-+++ b/drivers/infiniband/sw/rxe/rxe_cq.c
-@@ -62,6 +62,7 @@ int rxe_cq_from_init(struct rxe_dev *rxe, struct rxe_cq *cq, int cqe,
- 	cq->is_user = uresp;
- 
- 	spin_lock_init(&cq->cq_lock);
-+	spin_lock_init(&cq->comp_handler_lock);
- 	cq->ibcq.cqe = cqe;
- 	return 0;
- }
-@@ -88,6 +89,7 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
- 	int full;
- 	void *addr;
- 	unsigned long flags;
-+	bool invoke_handler = false;
- 
- 	spin_lock_irqsave(&cq->cq_lock, flags);
- 
-@@ -113,11 +115,17 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
- 	if ((cq->notify & IB_CQ_NEXT_COMP) ||
- 	    (cq->notify & IB_CQ_SOLICITED && solicited)) {
- 		cq->notify = 0;
--		cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
-+		invoke_handler = true;
- 	}
- 
- 	spin_unlock_irqrestore(&cq->cq_lock, flags);
- 
-+	if (invoke_handler) {
-+		spin_lock_irqsave(&cq->comp_handler_lock, flags);
-+		cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
-+		spin_unlock_irqrestore(&cq->comp_handler_lock, flags);
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index fd48075810dd..04ec60a786f8 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -62,6 +62,7 @@ struct rxe_cq {
- 	struct rxe_pool_elem	elem;
- 	struct rxe_queue	*queue;
- 	spinlock_t		cq_lock;
-+	spinlock_t		comp_handler_lock;
- 	u8			notify;
- 	bool			is_user;
- 	atomic_t		num_wq;
--- 
-2.50.1
-
+Even if the neon macros/functions were to be dummy defined, I suspect
+clang may complain about the vector register clobbers on architectures
+other than arm64, since it will validate some inline assembly even in
+dead code.
 
