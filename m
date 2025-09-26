@@ -1,261 +1,408 @@
-Return-Path: <linux-rdma+bounces-13665-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13666-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5ADCBA23A1
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Sep 2025 04:39:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1523BA23CE
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Sep 2025 04:44:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55C8C18850F7
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Sep 2025 02:40:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CABD3AB432
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Sep 2025 02:44:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 545CB261573;
-	Fri, 26 Sep 2025 02:39:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B48DA262FC0;
+	Fri, 26 Sep 2025 02:44:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Kg88IMRj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E901425F98B;
-	Fri, 26 Sep 2025 02:39:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36186261B80;
+	Fri, 26 Sep 2025 02:44:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758854392; cv=none; b=jOOWL+sTBS0Xeb63fBZY14ojL6vwE4Bekez5Hgnk/A3h53esBilmEuWoW7730dlz3eLWbRE17bauPfJK51lfx8ZJ194IINqqTBNlaOszGV4PTBRV+DiKK4BAe38kFuqedjuxovpeWBqtBz2yZ9rSWq4nR/mAn/PZ9c4hRnPfCPU=
+	t=1758854655; cv=none; b=aYERrE5pvJL9kKRbWSNSm1+Cu8X3zEmy6CIe7teVWcJjssB9T650FENfJfZK5+KVrqrqfucE6y/GNJybNq6iI2OqyUrOiue/MFR/5+vm8IW5ftsBGrhDJys4sZtb/gQcHmJHxMHyuu44Lyxe7Y6h/2acoFp5kdTknmvBELe0GTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758854392; c=relaxed/simple;
-	bh=8fa29N4mikEGOPX1BE258Bf0XvgER3taD046glYwIRY=;
-	h=From:Subject:To:Cc:Date:Message-ID:References:MIME-Version:
-	 Content-Type; b=NQP8NKo2wEK2jyBnbridFhwviHNhLA7oCCdH2XjRvLg4kdEjbtfKV2pWfCayH5CQeC3NV5NIP2LuP7EIkKRVr/XAM/L+y/Ehcul3ruGGU1C/NhphK5gu5IQ/wNBh1hozu6eKdsOMiQR+BXkfyUwA/eNMHAn1vyr52rSWTNyRdiI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 0c7893ce9a8211f08b9f7d2eb6caa7cf-20250926
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.45,REQID:e8e69cea-8f7e-4135-805e-bdd1025de44b,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-25
-X-CID-META: VersionHash:6493067,CLOUDID:67955ded4d085b4f0dd55419cda563c2,BulkI
-	D:nil,BulkQuantity:0,Recheck:0,SF:81|83|102,TC:0,Content:0|51,EDM:-3,IP:ni
-	l,URL:99|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,
-	LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-UUID: 0c7893ce9a8211f08b9f7d2eb6caa7cf-20250926
-Received: from node1 [(10.44.16.4)] by mailgw.kylinos.cn
-	(envelope-from <daiyanlong@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 777327969; Fri, 26 Sep 2025 10:39:39 +0800
-Received: from node1 (localhost [127.0.0.1])
-	by node1 (NSMail) with SMTP id 38FFD43001F80;
-	Fri, 26 Sep 2025 10:39:39 +0800 (CST)
-Received: by node1 (NSMail, from userid 10001)
-	id 2FB7F43001F80; Fri, 26 Sep 2025 10:39:39 +0800 (CST)
-From: =?UTF-8?B?5Luj5b2m6b6Z?= <daiyanlong@kylinos.cn>
-Subject: =?UTF-8?B?5Zue5aSNOiBSZTogW1BBVENIIHYyIHJkbWEtcmNdIFJETUEvYm54dF9yZTogRml4IGEgcG90ZW50aWFsIG1lbW9yeSBsZWFrIGluIGRlc3Ryb3lfZ3NpX3NxcA==?=
-To: =?UTF-8?B?S2FsZXNoIEFuYWtrdXIgUHVyYXlpbA==?= <kalesh-anakkur.purayil@broadcom.com>
-Cc: =?UTF-8?B?amdn?= <jgg@ziepe.ca>,
-	=?UTF-8?B?bGVvbg==?= <leon@kernel.org>,
-	=?UTF-8?B?bGludXgta2VybmVs?= <linux-kernel@vger.kernel.org>,
-	=?UTF-8?B?bGludXgtcmRtYQ==?= <linux-rdma@vger.kernel.org>,
-	=?UTF-8?B?c2VsdmluLnhhdmllcg==?= <selvin.xavier@broadcom.com>,
-	=?UTF-8?B?ZHlsX3dsYw==?= <dyl_wlc@163.com>
-Date: Fri, 26 Sep 2025 10:39:39 +0800
-X-Mailer: NSMAIL 8.2
-Message-ID: <vuezvoi8y7j-vuko1z952k0@nsmail8.2--kylin--1>
-References: 4fh5fbn3q13d-4fhbt0q6z5ze@nsmail8.2--kylin--1
-X-Israising: 0
-X-Seclevel-1: 0
-X-Seclevel: 0
-X-Delaysendtime: Fri, 26 Sep 2025 10:39:39 +0800
+	s=arc-20240116; t=1758854655; c=relaxed/simple;
+	bh=/udMnapIHTCpHoAnc7xqh5vUpmIkXgo9vnmB1oioYJg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=m7v4Yy6kWTyKL8vhDSM/ujL92IGQetN+C8BI0guevpz7YOE7YOYYayXpQoobF0HtLs6CQSPHa7dlN+NAZ3AJOqKdBR3nnkVBOuxuIWOBAs8NGZCNlUlGMDos910rSthg7HGhetjtDqqftO4sAvmoJEkqo5WNQ6r9ZFdQydoPkWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Kg88IMRj; arc=none smtp.client-ip=115.124.30.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1758854642; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=2CQ+xRfB/5MjspUDiPRIa1Fl8PKQZuSj45XqTftZtcc=;
+	b=Kg88IMRj0QRbCn72RqRFT8Ap4HFchKT14MKcL5oIssJk0uxqGoQ7SPfe5tSQxZmztRm09+krjpvK7eD7uC8BMZiNjf48c9VmsX0FzVydgkGYUaL9JnL7glYdd47jdKA66p67qHD+xbtwWpjwXxXl7z36cGKaBwlHjYFbm/75Y60=
+Received: from 30.221.116.140(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0Woq-QMi_1758854641 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Fri, 26 Sep 2025 10:44:01 +0800
+Message-ID: <1aa764d0-0613-499e-bc44-52e70602b661@linux.alibaba.com>
+Date: Fri, 26 Sep 2025 10:44:00 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary=nsmail-yeodu980n5e-yesa7l4084z
-X-ns-mid: webmail-68d5fceb-wcb2hygp
-X-ope-from: <daiyanlong@kylinos.cn>
-X-receipt: 0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v3 1/2] net/smc: make wr buffer count
+ configurable
+To: Halil Pasic <pasic@linux.ibm.com>
+References: <20250921214440.325325-1-pasic@linux.ibm.com>
+ <20250921214440.325325-2-pasic@linux.ibm.com>
+From: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>, "D. Wythe" <alibuda@linux.alibaba.com>,
+ Dust Li <dust.li@linux.alibaba.com>, Sidraya Jayagond
+ <sidraya@linux.ibm.com>, Wenjia Zhang <wenjia@linux.ibm.com>,
+ Mahanta Jambigi <mjambigi@linux.ibm.com>, Tony Lu
+ <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
+ netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-s390@vger.kernel.org
+In-Reply-To: <20250921214440.325325-2-pasic@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-This message is in MIME format.
 
---nsmail-yeodu980n5e-yesa7l4084z
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: base64
 
-PGRpdiBzdHlsZT0iZm9udC1mYW1pbHk6TWljcm9zb2Z0IFlhSGVpO2ZvbnQt
-c2l6ZToxNHB4O2NvbG9yOiMwMDAwMDA7IiBjbGFzcz0ibF9ub2RlX2hhc19j
-b2xvciI+PHA+SGVsbG8gS2FsZXNoLCBTZWx2aW4sIExpc3QsPC9wPgo8cD5H
-ZW50bGUgcGluZyBvbiB0aGlzIHBhdGNoLjxicj5JIGp1c3Qgd2FudGVkIHRv
-IGZvbGxvdyB1cCBhbmQgbWFrZSBzdXJlIHRoZSB2MiB2ZXJzaW9uIHdhcyBy
-ZWNlaXZlZCBjb3JyZWN0bHkuPC9wPgo8cD5Gb3IgZWFzeSByZWZlcmVuY2Us
-IHRoZSBwYXRjaCBpcyBhdmFpbGFibGUgb24gbG9yZS5rZXJuZWwub3JnIGhl
-cmU6PGJyPjxhIGhyZWY9Imh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC8y
-MDI1MDkyNDA2MTQ0NC4xMTI4OC0xLWRhaXlhbmxvbmciPmh0dHBzOi8vbG9y
-ZS5rZXJuZWwub3JnL2FsbC8yMDI1MDkyNDA2MTQ0NC4xMTI4OC0xLWRhaXlh
-bmxvbmc8L2E+QGt5bGlub3MuY24vPC9wPgo8cD5QbGVhc2UgbGV0IG1lIGtu
-b3cgaWYgdGhlcmUncyBhbnl0aGluZyBlbHNlIG5lZWRlZCBmcm9tIG15IHNp
-ZGUsIG9yIGlmIHlvdSd2ZSBoYWQgYSBjaGFuY2UgdG8gcmV2aWV3IHRoZSB0
-ZWNobmljYWwgY2hhbmdlcy48YnI+VGhhbmsgeW91IGZvciB5b3VyIHRpbWUg
-YW5kIGNvbnNpZGVyYXRpb24uPC9wPgo8cD5CZXN0IHJlZ2FyZHMsPGJyPllh
-bkxvbmcgRGFpPC9wPgo8cD4mbmJzcDs8L3A+CjxkaXYgaWQ9InNpZ25hdHVy
-ZVRvcCI+PC9kaXY+CjxkaXYgaWQ9ImNzMmNfcmUiIHN0eWxlPSJtYXJnaW4t
-bGVmdDogMC41ZW07IHBhZGRpbmctbGVmdDogMC41ZW07IGJvcmRlci1sZWZ0
-OiAxcHggc29saWQgI2NhY2FjYTsgLXdlYmtpdC11c2VyLW1vZGlmeTogcmVh
-ZC1vbmx5OyAtbW96LXVzZXItbW9kaWZ5OiByZWFkLW9ubHk7IC1tcy11c2Vy
-LW1vZGlmeTogcmVhZC1vbmx5OyAtby11c2VyLW1vZGlmeTogcmVhZC1vbmx5
-OyI+PGJyPjxicj48YnI+CjxkaXYgc3R5bGU9ImJhY2tncm91bmQtY29sb3I6
-ICNmOGY4Zjg7IHBhZGRpbmc6IDhweCAxMHB4OyBmb250LWZhbWlseTogTWlj
-cm9zb2Z0IFlhSGVpOyBmb250LXNpemU6IDE0cHg7IGNvbG9yOiAjMDAwOyI+
-PHN0cm9uZz7kuLsmbmJzcDsmbmJzcDsmbmJzcDvpopjvvJo8L3N0cm9uZz48
-c3BhbiBpZD0iY3MyY19zdWJqZWN0Ij5SZTogW1BBVENIIHYyIHJkbWEtcmNd
-IFJETUEvYm54dF9yZTogRml4IGEgcG90ZW50aWFsIG1lbW9yeSBsZWFrIGlu
-IGRlc3Ryb3lfZ3NpX3NxcDwvc3Bhbj4gPGJyPjxzdHJvbmc+5pelJm5ic3A7
-Jm5ic3A7Jm5ic3A75pyf77yaPC9zdHJvbmc+PHNwYW4gaWQ9ImNzMmNfZGF0
-ZSI+MjAyNeW5tDA55pyIMjTml6UxNDozMzwvc3Bhbj4gPGJyPjxzdHJvbmc+
-5Y+R5Lu25Lq677yaPC9zdHJvbmc+PHNwYW4gaWQ9ImNzMmNfZnJvbSI+5Luj
-5b2m6b6ZPC9zcGFuPiA8YnI+PHN0cm9uZz7mlLbku7bkurrvvJo8L3N0cm9u
-Zz48c3BhbiBpZD0iY3MyY190byIgc3R5bGU9IndvcmQtYnJlYWs6IGJyZWFr
-LWFsbDsiPkthbGVzaCBBbmFra3VyIFB1cmF5aWws5Luj5b2m6b6ZPC9zcGFu
-PiA8YnI+PHN0cm9uZz7mioTpgIHkurrvvJo8L3N0cm9uZz48c3BhbiBpZD0i
-Y3MyY190byIgc3R5bGU9IndvcmQtYnJlYWs6IGJyZWFrLWFsbDsiPmpnZyxs
-ZW9uLGxpbnV4LWtlcm5lbCxsaW51eC1yZG1hLHNlbHZpbi54YXZpZXIsZHls
-X3dsYzwvc3Bhbj48L2Rpdj4KPGJyPgo8ZGl2IGlkPSJjczJjX2NvbnRlbnQi
-Pgo8ZGl2IGNsYXNzPSJsX25vZGVfaGFzX2NvbG9yIiBzdHlsZT0iZm9udC1m
-YW1pbHk6IE1pY3Jvc29mdCBZYUhlaTsgZm9udC1zaXplOiAxNHB4OyBjb2xv
-cjogIzAwMDAwMDsiPgo8cD5IZWxsbyBTZWx2aW4sIEthbGVzaCwgTGlzdCw8
-L3A+CjxwPlRoYW5rIHlvdSBzbyBtdWNoIGZvciB5b3VyIHBhdGllbmNlIGFu
-ZCBndWlkYW5jZSB0aHJvdWdob3V0IHRoaXMgcHJvY2Vzcy4gSSB0cnVseSBh
-cHByZWNpYXRlIHlvdSB0YWtpbmcgdGhlIHRpbWUgdG8gcmV2aWV3IG15IHBh
-dGNoZXMgYW5kIHByb3ZpZGUgZGV0YWlsZWQgZmVlZGJhY2sgLSBpdCBoYXMg
-YmVlbiBhIGdyZWF0IGxlYXJuaW5nIGV4cGVyaWVuY2UuPC9wPgo8cD5JIGhh
-dmUgaW5jb3Jwb3JhdGVkIGFsbCBvZiB5b3VyIHN1Z2dlc3Rpb25zIGluIHRo
-aXMgdjIgdmVyc2lvbjo8YnI+LSBBZGRlZCB0aGUgInJkbWEtcmMiIHRhcmdl
-dCB0cmVlIHByZWZpeCBpbiB0aGUgc3ViamVjdCBsaW5lPGJyPi0gVXNlZCBw
-cm9wZXIgdmVyc2lvbiBudW1iZXJpbmcgKHYyKTxicj4tIEluY2x1ZGVkIHRo
-ZSBjaGFuZ2Vsb2cgYmVsb3cgdGhlICctLS0nIGxpbmUgYXMgcmVjb21tZW5k
-ZWQ8L3A+CjxwPlRoZSB1cGRhdGVkIHBhdGNoIGlzIGF0dGFjaGVkLiBJIGJl
-bGlldmUgaXQgbm93IGZvbGxvd3MgYWxsIHRoZSByZXF1aXJlZCBndWlkZWxp
-bmVzLiBQbGVhc2UgbGV0IG1lIGtub3cgaWYgdGhlcmUgYXJlIGFueSBmdXJ0
-aGVyIGlzc3VlcyBvciBhZGp1c3RtZW50cyBuZWVkZWQuPC9wPgo8cD5UaGUg
-cGF0Y2ggaXMgYWxzbyBhdmFpbGFibGUgb24gbG9yZS5rZXJuZWwub3JnIGhl
-cmU6PGJyPjxhIGhyZWY9Imh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC8y
-MDI1MDkyNDA2MTQ0NC4xMTI4OC0xLWRhaXlhbmxvbmciPmh0dHBzOi8vbG9y
-ZS5rZXJuZWwub3JnL2FsbC8yMDI1MDkyNDA2MTQ0NC4xMTI4OC0xLWRhaXlh
-bmxvbmc8L2E+QGt5bGlub3MuY24vPC9wPgo8cD5CZXN0IHJlZ2FyZHMsPGJy
-PllhbkxvbmcgRGFpPC9wPgo8cD4mbmJzcDs8L3A+CjxwPi0tLTwvcD4KPGRp
-dj4mbmJzcDs8L2Rpdj4KPGRpdiBpZD0iY3MyY19yZSIgc3R5bGU9Im1hcmdp
-bi1sZWZ0OiAwLjVlbTsgcGFkZGluZy1sZWZ0OiAwLjVlbTsgYm9yZGVyLWxl
-ZnQ6IDFweCBzb2xpZCAjY2FjYWNhOyAtd2Via2l0LXVzZXItbW9kaWZ5OiBy
-ZWFkLW9ubHk7IC1tb3otdXNlci1tb2RpZnk6IHJlYWQtb25seTsgLW1zLXVz
-ZXItbW9kaWZ5OiByZWFkLW9ubHk7IC1vLXVzZXItbW9kaWZ5OiByZWFkLW9u
-bHk7Ij48YnI+PGJyPjxicj4KPGRpdiBzdHlsZT0iYmFja2dyb3VuZC1jb2xv
-cjogI2Y4ZjhmODsgcGFkZGluZzogOHB4IDEwcHg7IGZvbnQtZmFtaWx5OiBN
-aWNyb3NvZnQgWWFIZWk7IGZvbnQtc2l6ZTogMTRweDsgY29sb3I6ICMwMDA7
-Ij48c3Ryb25nPuS4uyZuYnNwOyZuYnNwOyZuYnNwO+mimO+8mjwvc3Ryb25n
-PjxzcGFuIGlkPSJjczJjX3N1YmplY3QiPlJlOiBbUEFUQ0hdIFJETUEvYm54
-dF9yZTogRml4IGEgcG90ZW50aWFsIG1lbW9yeSBsZWFrIGluIGRlc3Ryb3lf
-Z3NpX3NxcDwvc3Bhbj4gPGJyPjxzdHJvbmc+5pelJm5ic3A7Jm5ic3A7Jm5i
-c3A75pyf77yaPC9zdHJvbmc+PHNwYW4gaWQ9ImNzMmNfZGF0ZSI+MjAyNeW5
-tDA55pyIMjTml6UxMzowMTwvc3Bhbj4gPGJyPjxzdHJvbmc+5Y+R5Lu25Lq6
-77yaPC9zdHJvbmc+PHNwYW4gaWQ9ImNzMmNfZnJvbSI+S2FsZXNoIEFuYWtr
-dXIgUHVyYXlpbDwvc3Bhbj4gPGJyPjxzdHJvbmc+5pS25Lu25Lq677yaPC9z
-dHJvbmc+PHNwYW4gaWQ9ImNzMmNfdG8iIHN0eWxlPSJ3b3JkLWJyZWFrOiBi
-cmVhay1hbGw7Ij5LYWxlc2ggQW5ha2t1ciBQdXJheWlsPC9zcGFuPiA8YnI+
-PHN0cm9uZz7mioTpgIHkurrvvJo8L3N0cm9uZz48c3BhbiBpZD0iY3MyY190
-byIgc3R5bGU9IndvcmQtYnJlYWs6IGJyZWFrLWFsbDsiPmpnZyxsZW9uLGxp
-bnV4LWtlcm5lbCxsaW51eC1yZG1hLHNlbHZpbi54YXZpZXIsZHlsX3dsYzwv
-c3Bhbj48L2Rpdj4KPGJyPgo8ZGl2IGlkPSJjczJjX2NvbnRlbnQiPgo8ZGl2
-IGRpcj0ibHRyIj4KPGRpdiBkaXI9Imx0ciI+SGkmbmJzcDtZYW5Mb25nLDwv
-ZGl2Pgo8ZGl2IGRpcj0ibHRyIj4mbmJzcDs8L2Rpdj4KPGRpdiBkaXI9Imx0
-ciI+RmV3IGdlbmVyaWMmbmJzcDtndWlkZWxpbmVzLjxicj4KPGRpdj4mbmJz
-cDs8L2Rpdj4KPGRpdj4xLiBZb3Ugc2hvdWxkIHNlbGVjdCBhIHRhcmdldCB0
-cmVlIGluIHRoZSBzdWJqZWN0IHByZWZpeCBhbmQgc3BlY2lmeSBhIHJldmlz
-aW9uIG51bWJlci4gU2luY2UgdGhpcyBpcyBhIGJ1ZyBmaXgsIHRoZSB0YXJn
-ZXQgdHJlZSBzaG91bGQgYmUgInJkbWEtcmMiLjxicj4yLiBXaGVuIHlvdSBz
-ZW5kIGFuIHVwZGF0ZWQgdmVyc2lvbiBvZiB0aGUgcGF0Y2gsIHBsZWFzZSBt
-ZW50aW9uIHZlcnNpb24gbnVtYmVyLiBBbHNvLCBtZW50aW9uIHRoZSBjaGFu
-Z2VzIG1hZGUgaW4gZWFjaCB2ZXJzaW9uLiBpLmUuIHVuZGVyIC0tLSB5b3Ug
-Y2FuIGFkZCBleHRyYSBpbmZvIHRoYXQgd2lsbCBub3QgYmUgaW5jbHVkZWQg
-aW4gdGhlIGFjdHVhbCBjb21taXQsIGUuZy4gY2hhbmdlcyBiZXR3ZWVuIGVh
-Y2ggdmVyc2lvbiBvZiBwYXRjaGVzLjwvZGl2Pgo8ZGl2PiZuYnNwOzwvZGl2
-Pgo8ZGl2Pk9uZSBjb21tZW50IGluIGxpbmUuPC9kaXY+CjwvZGl2Pgo8YnI+
-CjxkaXYgY2xhc3M9ImdtYWlsX3F1b3RlIGdtYWlsX3F1b3RlX2NvbnRhaW5l
-ciI+CjxkaXYgY2xhc3M9ImdtYWlsX2F0dHIiIGRpcj0ibHRyIj5PbiBNb24s
-IFNlcCAyMiwgMjAyNSBhdCA3OjUz4oCvQU0gWWFuTG9uZyBEYWkgJmx0Ozxh
-IGhyZWY9Im1haWx0bzpkYWl5YW5sb25nQGt5bGlub3MuY24iPmRhaXlhbmxv
-bmdAa3lsaW5vcy5jbjwvYT4mZ3Q7IHdyb3RlOjwvZGl2Pgo8YmxvY2txdW90
-ZSBjbGFzcz0iZ21haWxfcXVvdGUiIHN0eWxlPSJtYXJnaW46IDBweCAwcHgg
-MHB4IDAuOGV4OyBib3JkZXItbGVmdDogMXB4IHNvbGlkICNjY2NjY2M7IHBh
-ZGRpbmctbGVmdDogMWV4OyI+RnJvbTogZGFpeWFubG9uZyAmbHQ7PGEgaHJl
-Zj0ibWFpbHRvOmRhaXlhbmxvbmdAa3lsaW5vcy5jbiIgdGFyZ2V0PSJfYmxh
-bmsiIHJlbD0ibm9vcGVuZXIiPmRhaXlhbmxvbmdAa3lsaW5vcy5jbjwvYT4m
-Z3Q7PGJyPjxicj5UaGUgY3VycmVudCBlcnJvciBoYW5kbGluZyBwYXRoIGlu
-IGJueHRfcmVfZGVzdHJveV9nc2lfc3FwKCkgY291bGQgbGVhZDxicj50byBh
-IHJlc291cmNlIGxlYWsuIFdoZW4gYm54dF9xcGxpYl9kZXN0cm95X3FwKCkg
-ZmFpbHMsIHRoZSBmdW5jdGlvbjxicj5qdW1wcyB0byB0aGUgJ2ZhaWwnIGxh
-YmVsIGFuZCByZXR1cm5zIGltbWVkaWF0ZWx5LCBza2lwcGluZyB0aGUgY2Fs
-bDxicj50byBibnh0X3FwbGliX2ZyZWVfcXBfcmVzKCkuPGJyPjxicj5Db250
-aW51ZSB0aGUgcmVzb3VyY2UgdGVhcmRvd24gZXZlbiBpZiBibnh0X3FwbGli
-X2Rlc3Ryb3lfcXAoKSBmYWlscyw8YnI+d2hpY2ggYWxpZ25zIHdpdGggdGhl
-IGRyaXZlcidzIGdlbmVyYWwgZXJyb3IgaGFuZGxpbmcgc3RyYXRlZ3kgYW5k
-PGJyPnByZXZlbnRzIHRoZSBwb3RlbnRpYWwgbGVhay48YnI+PGJyPkZpeGVz
-OiA4ZGFlNDE5ZjllYzczICgiUkRNQS9ibnh0X3JlOiBSZWZhY3RvciBxdWV1
-ZSBwYWlyIGNyZWF0aW9uIGNvZGUiKTxicj5bS2FsZXNoXSBCbGFuayBsaW5l
-IGlzIG5vdCBuZWVkZWQgYmV0d2VlbiBGaXhlcyB0YWcgYW5kIFNPQiB0YWc8
-YnI+U2lnbmVkLW9mZi1ieTogZGFpeWFubG9uZyAmbHQ7PGEgaHJlZj0ibWFp
-bHRvOmRhaXlhbmxvbmdAa3lsaW5vcy5jbiIgdGFyZ2V0PSJfYmxhbmsiIHJl
-bD0ibm9vcGVuZXIiPmRhaXlhbmxvbmdAa3lsaW5vcy5jbjwvYT4mZ3Q7PGJy
-Pi0tLTxicj4mbmJzcDtkcml2ZXJzL2luZmluaWJhbmQvaHcvYm54dF9yZS9p
-Yl92ZXJicy5jIHwgNyArKy0tLS0tPGJyPiZuYnNwOzEgZmlsZSBjaGFuZ2Vk
-LCAyIGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pPGJyPjxicj5kaWZm
-IC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L2JueHRfcmUvaWJfdmVy
-YnMuYyBiL2RyaXZlcnMvaW5maW5pYmFuZC9ody9ibnh0X3JlL2liX3ZlcmJz
-LmM8YnI+aW5kZXggMjYwZGM2N2I4Yjg3Li4xNWQzZjVkNWMwZWUgMTAwNjQ0
-PGJyPi0tLSBhL2RyaXZlcnMvaW5maW5pYmFuZC9ody9ibnh0X3JlL2liX3Zl
-cmJzLmM8YnI+KysrIGIvZHJpdmVycy9pbmZpbmliYW5kL2h3L2JueHRfcmUv
-aWJfdmVyYnMuYzxicj5AQCAtOTMxLDEwICs5MzEsOSBAQCBzdGF0aWMgaW50
-IGJueHRfcmVfZGVzdHJveV9nc2lfc3FwKHN0cnVjdCBibnh0X3JlX3FwICpx
-cCk8YnI+PGJyPiZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyBpYmRldl9k
-YmcoJmFtcDtyZGV2LSZndDtpYmRldiwgIkRlc3Ryb3kgdGhlIHNoYWRvdyBR
-UFxuIik7PGJyPiZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyByYyA9IGJu
-eHRfcXBsaWJfZGVzdHJveV9xcCgmYW1wO3JkZXYtJmd0O3FwbGliX3Jlcywg
-JmFtcDtnc2lfc3FwLSZndDtxcGxpYl9xcCk7PGJyPi0mbmJzcDsgJm5ic3A7
-ICZuYnNwOyAmbmJzcDtpZiAocmMpIHs8YnI+KyZuYnNwOyAmbmJzcDsgJm5i
-c3A7ICZuYnNwO2lmIChyYyk8YnI+Jm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5i
-c3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyBpYmRldl9lcnIoJmFt
-cDtyZGV2LSZndDtpYmRldiwgIkRlc3Ryb3kgU2hhZG93IFFQIGZhaWxlZCIp
-Ozxicj4tJm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJz
-cDsgJm5ic3A7ICZuYnNwO2dvdG8gZmFpbDs8YnI+LSZuYnNwOyAmbmJzcDsg
-Jm5ic3A7ICZuYnNwO308YnI+Kzxicj4mbmJzcDsgJm5ic3A7ICZuYnNwOyAm
-bmJzcDsgYm54dF9xcGxpYl9mcmVlX3FwX3JlcygmYW1wO3JkZXYtJmd0O3Fw
-bGliX3JlcywgJmFtcDtnc2lfc3FwLSZndDtxcGxpYl9xcCk7PGJyPjxicj4m
-bmJzcDsgJm5ic3A7ICZuYnNwOyAmbmJzcDsgLyogcmVtb3ZlIGZyb20gYWN0
-aXZlIHFwIGxpc3QgKi88YnI+QEAgLTk1MSw4ICs5NTAsNiBAQCBzdGF0aWMg
-aW50IGJueHRfcmVfZGVzdHJveV9nc2lfc3FwKHN0cnVjdCBibnh0X3JlX3Fw
-ICpxcCk8YnI+Jm5ic3A7ICZuYnNwOyAmbmJzcDsgJm5ic3A7IHJkZXYtJmd0
-O2dzaV9jdHguc3FwX3RibCA9IE5VTEw7PGJyPjxicj4mbmJzcDsgJm5ic3A7
-ICZuYnNwOyAmbmJzcDsgcmV0dXJuIDA7PGJyPi1mYWlsOjxicj4tJm5ic3A7
-ICZuYnNwOyAmbmJzcDsgJm5ic3A7cmV0dXJuIHJjOzxicj4mbmJzcDt9PGJy
-Pjxicj4mbmJzcDsvKiBRdWV1ZSBQYWlycyAqLzxicj4tLSA8YnI+Mi40My4w
-PGJyPjxicj48YnI+PC9ibG9ja3F1b3RlPgo8L2Rpdj4KPGRpdj4mbmJzcDs8
-L2Rpdj4KPGRpdj4mbmJzcDs8L2Rpdj4KPHNwYW4gY2xhc3M9ImdtYWlsX3Np
-Z25hdHVyZV9wcmVmaXgiPi0tIDwvc3Bhbj48YnI+CjxkaXYgY2xhc3M9Imdt
-YWlsX3NpZ25hdHVyZSIgZGlyPSJsdHIiPgo8ZGl2IGRpcj0ibHRyIj5SZWdh
-cmRzLAo8ZGl2PkthbGVzaCBBUDwvZGl2Pgo8L2Rpdj4KPC9kaXY+CjwvZGl2
-Pgo8L2Rpdj4KPC9kaXY+CjxwPiZuYnNwOzwvcD4KPHA+Jm5ic3A7PC9wPgo8
-ZGl2Pgo8ZGl2Pgo8cD4mbmJzcDs8L3A+Cjxicj4KPHAgc3R5bGU9ImNvbG9y
-OiAjMDAwOyBmb250LXNpemU6IDE2cHg7Ij4tLS08L3A+CjxkaXY+Jm5ic3A7
-PC9kaXY+CjxwPiZuYnNwOzwvcD4KPC9kaXY+CjwvZGl2Pgo8L2Rpdj4KPC9k
-aXY+CjwvZGl2Pgo8cD4mbmJzcDs8L3A+CjxwPiZuYnNwOzwvcD4KPGRpdiBp
-ZD0ic2lnbmF0dXJlQm9tIj4KPGRpdj4KPHA+Jm5ic3A7PC9wPgo8YnI+Cjxw
-IHN0eWxlPSJjb2xvcjogIzAwMDsgZm9udC1zaXplOiAxNnB4OyI+LS0tPC9w
-Pgo8ZGl2IGlkPSJjczJjX21haWxfc2lnYXR1cmUiIHN0eWxlPSJjb2xvcjog
-IzAwMDsgZm9udC1zaXplOiAxNnB4OyBmb250LWZhbWlseTogTWljcm9zb2Z0
-IFlhSGVpOyI+PC9kaXY+CjxwPiZuYnNwOzwvcD4KPC9kaXY+CjwvZGl2Pjwv
-ZGl2Pg==
+在 2025/9/22 05:44, Halil Pasic 写道:
+> Think SMC_WR_BUF_CNT_SEND := SMC_WR_BUF_CNT used in send context and
+> SMC_WR_BUF_CNT_RECV := 3 * SMC_WR_BUF_CNT used in recv context. Those
+> get replaced with lgr->max_send_wr and lgr->max_recv_wr respective.
+> 
+> While at it let us also remove a confusing comment that is either not
+> about the context in which it resides (describing
+> qp_attr.cap.max_send_wr and qp_attr.cap.max_recv_wr) or not applicable
+> any more when these values become configurable.
+> 
+> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+> ---
+>  Documentation/networking/smc-sysctl.rst | 36 +++++++++++++++++++++++++
+>  include/net/netns/smc.h                 |  2 ++
+>  net/smc/smc_core.h                      |  6 +++++
+>  net/smc/smc_ib.c                        |  7 ++---
+>  net/smc/smc_llc.c                       |  2 ++
+>  net/smc/smc_sysctl.c                    | 22 +++++++++++++++
+>  net/smc/smc_sysctl.h                    |  2 ++
+>  net/smc/smc_wr.c                        | 32 +++++++++++-----------
+>  net/smc/smc_wr.h                        |  2 --
+>  9 files changed, 89 insertions(+), 22 deletions(-)
+> 
+> diff --git a/Documentation/networking/smc-sysctl.rst b/Documentation/networking/smc-sysctl.rst
+> index a874d007f2db..c94d750c7c84 100644
+> --- a/Documentation/networking/smc-sysctl.rst
+> +++ b/Documentation/networking/smc-sysctl.rst
+> @@ -71,3 +71,39 @@ smcr_max_conns_per_lgr - INTEGER
+>  	acceptable value ranges from 16 to 255. Only for SMC-R v2.1 and later.
+>  
+>  	Default: 255
+> +
+> +smcr_max_send_wr - INTEGER
+> +	So called work request buffers are SMCR link (and RDMA queue pair) level
+> +	resources necessary for performing RDMA operations. Since up to 255
+> +	connections can share a link group and thus also a link and the number
+> +	of the work request buffers is decided when the link is allocated,
+> +	depending on the workload it can a bottleneck in a sense that threads
+> +	have to wait for work request buffers to become available. Before the
+> +	introduction of this control the maximal number of work request buffers
+> +	available on the send path used to be hard coded to 16. With this control
+> +	it becomes configurable. The acceptable range is between 2 and 2048.
+> +
+> +	Please be aware that all the buffers need to be allocated as a physically
+> +	continuous array in which each element is a single buffer and has the size
+> +	of SMC_WR_BUF_SIZE (48) bytes. If the allocation fails we give up much
+> +	like before having this control.
+> +
+> +	Default: 16
+> +
+> +smcr_max_recv_wr - INTEGER
+> +	So called work request buffers are SMCR link (and RDMA queue pair) level
+> +	resources necessary for performing RDMA operations. Since up to 255
+> +	connections can share a link group and thus also a link and the number
+> +	of the work request buffers is decided when the link is allocated,
+> +	depending on the workload it can a bottleneck in a sense that threads
+> +	have to wait for work request buffers to become available. Before the
+> +	introduction of this control the maximal number of work request buffers
+> +	available on the receive path used to be hard coded to 16. With this control
+> +	it becomes configurable. The acceptable range is between 2 and 2048.
+> +
+> +	Please be aware that all the buffers need to be allocated as a physically
+> +	continuous array in which each element is a single buffer and has the size
+> +	of SMC_WR_BUF_SIZE (48) bytes. If the allocation fails we give up much
+> +	like before having this control.
+> +
+> +	Default: 48
 
---nsmail-yeodu980n5e-yesa7l4084z--
+Notice that the ratio of smcr_max_recv_wr to smcr_max_send_wr is set to 3:1, with the
+intention of ensuring that the peer QP's smcr_max_recv_wr is three times the local QP's
+smcr_max_send_wr and the local QP's smcr_max_recv_wr is three times the peer QP's
+smcr_max_send_wr, rather than making the local QP's smcr_max_recv_wr three times its own
+smcr_max_send_wr. The purpose of this design is to guarantee sufficient receive WRs on
+the side to receive incoming data when peer QP doing RDMA sends. Otherwise, RNR (Receiver
+Not Ready) may occur, leading to poor performance(RNR will drop the packet and retransmit
+happens in the transport layer of the RDMA).
+
+Let us guess a scenario that have multiple hosts, and the multiple hosts have different
+smcr_max_send_wr and smcr_max_recv_wr configurations, mesh connections between these hosts.
+It is difficult to ensure that the smcr_max_recv_wr/smcr_max_send_wr is 3:1 on the connected
+QPs between these hosts, and it may even be hard to guarantee the smcr_max_recv_wr > smcr_max_send_wr
+on the connected QPs between these hosts.
+
+Therefore, I believe that if these values are made configurable, additional mechanisms must be
+in place to prevent RNR from occurring. Otherwise we need to carefully configure smcr_max_recv_wr
+and smcr_max_send_wr, or ensure that all hosts capable of establishing SMC-R connections are configured
+smcr_max_recv_wr and smcr_max_send_wr with the same values.
+
+Regards,
+Guangguan Wang
+
+> diff --git a/include/net/netns/smc.h b/include/net/netns/smc.h
+> index fc752a50f91b..6ceb12baec24 100644
+> --- a/include/net/netns/smc.h
+> +++ b/include/net/netns/smc.h
+> @@ -24,5 +24,7 @@ struct netns_smc {
+>  	int				sysctl_rmem;
+>  	int				sysctl_max_links_per_lgr;
+>  	int				sysctl_max_conns_per_lgr;
+> +	unsigned int			sysctl_smcr_max_send_wr;
+> +	unsigned int			sysctl_smcr_max_recv_wr;
+>  };
+>  #endif
+> diff --git a/net/smc/smc_core.h b/net/smc/smc_core.h
+> index 48a1b1dcb576..ab2d15929cb2 100644
+> --- a/net/smc/smc_core.h
+> +++ b/net/smc/smc_core.h
+> @@ -33,6 +33,8 @@
+>  					 * distributions may modify it to a value between
+>  					 * 16-255 as needed.
+>  					 */
+> +#define SMCR_MAX_SEND_WR_DEF	16	/* Default number of work requests per send queue */
+> +#define SMCR_MAX_RECV_WR_DEF	48	/* Default number of work requests per recv queue */
+>  
+>  struct smc_lgr_list {			/* list of link group definition */
+>  	struct list_head	list;
+> @@ -361,6 +363,10 @@ struct smc_link_group {
+>  						/* max conn can be assigned to lgr */
+>  			u8			max_links;
+>  						/* max links can be added in lgr */
+> +			u16			max_send_wr;
+> +						/* number of WR buffers on send */
+> +			u16			max_recv_wr;
+> +						/* number of WR buffers on recv */
+>  		};
+>  		struct { /* SMC-D */
+>  			struct smcd_gid		peer_gid;
+> diff --git a/net/smc/smc_ib.c b/net/smc/smc_ib.c
+> index 0052f02756eb..e8d35c22c525 100644
+> --- a/net/smc/smc_ib.c
+> +++ b/net/smc/smc_ib.c
+> @@ -669,11 +669,6 @@ int smc_ib_create_queue_pair(struct smc_link *lnk)
+>  		.recv_cq = lnk->smcibdev->roce_cq_recv,
+>  		.srq = NULL,
+>  		.cap = {
+> -				/* include unsolicited rdma_writes as well,
+> -				 * there are max. 2 RDMA_WRITE per 1 WR_SEND
+> -				 */
+> -			.max_send_wr = SMC_WR_BUF_CNT * 3,
+> -			.max_recv_wr = SMC_WR_BUF_CNT * 3,
+>  			.max_send_sge = SMC_IB_MAX_SEND_SGE,
+>  			.max_recv_sge = lnk->wr_rx_sge_cnt,
+>  			.max_inline_data = 0,
+> @@ -683,6 +678,8 @@ int smc_ib_create_queue_pair(struct smc_link *lnk)
+>  	};
+>  	int rc;
+>  
+> +	qp_attr.cap.max_send_wr = 3 * lnk->lgr->max_send_wr;
+> +	qp_attr.cap.max_recv_wr = lnk->lgr->max_recv_wr;
+>  	lnk->roce_qp = ib_create_qp(lnk->roce_pd, &qp_attr);
+>  	rc = PTR_ERR_OR_ZERO(lnk->roce_qp);
+>  	if (IS_ERR(lnk->roce_qp))
+> diff --git a/net/smc/smc_llc.c b/net/smc/smc_llc.c
+> index f865c58c3aa7..f5d5eb617526 100644
+> --- a/net/smc/smc_llc.c
+> +++ b/net/smc/smc_llc.c
+> @@ -2157,6 +2157,8 @@ void smc_llc_lgr_init(struct smc_link_group *lgr, struct smc_sock *smc)
+>  	init_waitqueue_head(&lgr->llc_msg_waiter);
+>  	init_rwsem(&lgr->llc_conf_mutex);
+>  	lgr->llc_testlink_time = READ_ONCE(net->smc.sysctl_smcr_testlink_time);
+> +	lgr->max_send_wr = (u16)(READ_ONCE(net->smc.sysctl_smcr_max_send_wr));
+> +	lgr->max_recv_wr = (u16)(READ_ONCE(net->smc.sysctl_smcr_max_recv_wr));
+>  }
+>  
+>  /* called after lgr was removed from lgr_list */
+> diff --git a/net/smc/smc_sysctl.c b/net/smc/smc_sysctl.c
+> index 2fab6456f765..7b2471904d04 100644
+> --- a/net/smc/smc_sysctl.c
+> +++ b/net/smc/smc_sysctl.c
+> @@ -29,6 +29,8 @@ static int links_per_lgr_min = SMC_LINKS_ADD_LNK_MIN;
+>  static int links_per_lgr_max = SMC_LINKS_ADD_LNK_MAX;
+>  static int conns_per_lgr_min = SMC_CONN_PER_LGR_MIN;
+>  static int conns_per_lgr_max = SMC_CONN_PER_LGR_MAX;
+> +static unsigned int smcr_max_wr_min = 2;
+> +static unsigned int smcr_max_wr_max = 2048;
+>  
+>  static struct ctl_table smc_table[] = {
+>  	{
+> @@ -99,6 +101,24 @@ static struct ctl_table smc_table[] = {
+>  		.extra1		= SYSCTL_ZERO,
+>  		.extra2		= SYSCTL_ONE,
+>  	},
+> +	{
+> +		.procname	= "smcr_max_send_wr",
+> +		.data		= &init_net.smc.sysctl_smcr_max_send_wr,
+> +		.maxlen		= sizeof(int),
+> +		.mode		= 0644,
+> +		.proc_handler	= proc_dointvec_minmax,
+> +		.extra1		= &smcr_max_wr_min,
+> +		.extra2		= &smcr_max_wr_max,
+> +	},
+> +	{
+> +		.procname	= "smcr_max_recv_wr",
+> +		.data		= &init_net.smc.sysctl_smcr_max_recv_wr,
+> +		.maxlen		= sizeof(int),
+> +		.mode		= 0644,
+> +		.proc_handler	= proc_dointvec_minmax,
+> +		.extra1		= &smcr_max_wr_min,
+> +		.extra2		= &smcr_max_wr_max,
+> +	},
+>  };
+>  
+>  int __net_init smc_sysctl_net_init(struct net *net)
+> @@ -130,6 +150,8 @@ int __net_init smc_sysctl_net_init(struct net *net)
+>  	WRITE_ONCE(net->smc.sysctl_rmem, net_smc_rmem_init);
+>  	net->smc.sysctl_max_links_per_lgr = SMC_LINKS_PER_LGR_MAX_PREFER;
+>  	net->smc.sysctl_max_conns_per_lgr = SMC_CONN_PER_LGR_PREFER;
+> +	net->smc.sysctl_smcr_max_send_wr = SMCR_MAX_SEND_WR_DEF;
+> +	net->smc.sysctl_smcr_max_recv_wr = SMCR_MAX_RECV_WR_DEF;
+>  	/* disable handshake limitation by default */
+>  	net->smc.limit_smc_hs = 0;
+>  
+> diff --git a/net/smc/smc_sysctl.h b/net/smc/smc_sysctl.h
+> index eb2465ae1e15..8538915af7af 100644
+> --- a/net/smc/smc_sysctl.h
+> +++ b/net/smc/smc_sysctl.h
+> @@ -25,6 +25,8 @@ static inline int smc_sysctl_net_init(struct net *net)
+>  	net->smc.sysctl_autocorking_size = SMC_AUTOCORKING_DEFAULT_SIZE;
+>  	net->smc.sysctl_max_links_per_lgr = SMC_LINKS_PER_LGR_MAX_PREFER;
+>  	net->smc.sysctl_max_conns_per_lgr = SMC_CONN_PER_LGR_PREFER;
+> +	net->smc.sysctl_smcr_max_send_wr = SMCR_MAX_SEND_WR_DEF;
+> +	net->smc.sysctl_smcr_max_recv_wr = SMCR_MAX_RECV_WR_DEF;
+>  	return 0;
+>  }
+>  
+> diff --git a/net/smc/smc_wr.c b/net/smc/smc_wr.c
+> index b04a21b8c511..f5b2772414fd 100644
+> --- a/net/smc/smc_wr.c
+> +++ b/net/smc/smc_wr.c
+> @@ -34,6 +34,7 @@
+>  #define SMC_WR_MAX_POLL_CQE 10	/* max. # of compl. queue elements in 1 poll */
+>  
+>  #define SMC_WR_RX_HASH_BITS 4
+> +
+>  static DEFINE_HASHTABLE(smc_wr_rx_hash, SMC_WR_RX_HASH_BITS);
+>  static DEFINE_SPINLOCK(smc_wr_rx_hash_lock);
+>  
+> @@ -547,9 +548,9 @@ void smc_wr_remember_qp_attr(struct smc_link *lnk)
+>  		    IB_QP_DEST_QPN,
+>  		    &init_attr);
+>  
+> -	lnk->wr_tx_cnt = min_t(size_t, SMC_WR_BUF_CNT,
+> +	lnk->wr_tx_cnt = min_t(size_t, lnk->lgr->max_send_wr,
+>  			       lnk->qp_attr.cap.max_send_wr);
+> -	lnk->wr_rx_cnt = min_t(size_t, SMC_WR_BUF_CNT * 3,
+> +	lnk->wr_rx_cnt = min_t(size_t, lnk->lgr->max_recv_wr,
+>  			       lnk->qp_attr.cap.max_recv_wr);
+>  }
+>  
+> @@ -741,50 +742,51 @@ int smc_wr_alloc_lgr_mem(struct smc_link_group *lgr)
+>  int smc_wr_alloc_link_mem(struct smc_link *link)
+>  {
+>  	/* allocate link related memory */
+> -	link->wr_tx_bufs = kcalloc(SMC_WR_BUF_CNT, SMC_WR_BUF_SIZE, GFP_KERNEL);
+> +	link->wr_tx_bufs = kcalloc(link->lgr->max_send_wr,
+> +				   SMC_WR_BUF_SIZE, GFP_KERNEL);
+>  	if (!link->wr_tx_bufs)
+>  		goto no_mem;
+> -	link->wr_rx_bufs = kcalloc(SMC_WR_BUF_CNT * 3, link->wr_rx_buflen,
+> +	link->wr_rx_bufs = kcalloc(link->lgr->max_recv_wr, link->wr_rx_buflen,
+>  				   GFP_KERNEL);
+>  	if (!link->wr_rx_bufs)
+>  		goto no_mem_wr_tx_bufs;
+> -	link->wr_tx_ibs = kcalloc(SMC_WR_BUF_CNT, sizeof(link->wr_tx_ibs[0]),
+> -				  GFP_KERNEL);
+> +	link->wr_tx_ibs = kcalloc(link->lgr->max_send_wr,
+> +				  sizeof(link->wr_tx_ibs[0]), GFP_KERNEL);
+>  	if (!link->wr_tx_ibs)
+>  		goto no_mem_wr_rx_bufs;
+> -	link->wr_rx_ibs = kcalloc(SMC_WR_BUF_CNT * 3,
+> +	link->wr_rx_ibs = kcalloc(link->lgr->max_recv_wr,
+>  				  sizeof(link->wr_rx_ibs[0]),
+>  				  GFP_KERNEL);
+>  	if (!link->wr_rx_ibs)
+>  		goto no_mem_wr_tx_ibs;
+> -	link->wr_tx_rdmas = kcalloc(SMC_WR_BUF_CNT,
+> +	link->wr_tx_rdmas = kcalloc(link->lgr->max_send_wr,
+>  				    sizeof(link->wr_tx_rdmas[0]),
+>  				    GFP_KERNEL);
+>  	if (!link->wr_tx_rdmas)
+>  		goto no_mem_wr_rx_ibs;
+> -	link->wr_tx_rdma_sges = kcalloc(SMC_WR_BUF_CNT,
+> +	link->wr_tx_rdma_sges = kcalloc(link->lgr->max_send_wr,
+>  					sizeof(link->wr_tx_rdma_sges[0]),
+>  					GFP_KERNEL);
+>  	if (!link->wr_tx_rdma_sges)
+>  		goto no_mem_wr_tx_rdmas;
+> -	link->wr_tx_sges = kcalloc(SMC_WR_BUF_CNT, sizeof(link->wr_tx_sges[0]),
+> +	link->wr_tx_sges = kcalloc(link->lgr->max_send_wr, sizeof(link->wr_tx_sges[0]),
+>  				   GFP_KERNEL);
+>  	if (!link->wr_tx_sges)
+>  		goto no_mem_wr_tx_rdma_sges;
+> -	link->wr_rx_sges = kcalloc(SMC_WR_BUF_CNT * 3,
+> +	link->wr_rx_sges = kcalloc(link->lgr->max_recv_wr,
+>  				   sizeof(link->wr_rx_sges[0]) * link->wr_rx_sge_cnt,
+>  				   GFP_KERNEL);
+>  	if (!link->wr_rx_sges)
+>  		goto no_mem_wr_tx_sges;
+> -	link->wr_tx_mask = bitmap_zalloc(SMC_WR_BUF_CNT, GFP_KERNEL);
+> +	link->wr_tx_mask = bitmap_zalloc(link->lgr->max_send_wr, GFP_KERNEL);
+>  	if (!link->wr_tx_mask)
+>  		goto no_mem_wr_rx_sges;
+> -	link->wr_tx_pends = kcalloc(SMC_WR_BUF_CNT,
+> +	link->wr_tx_pends = kcalloc(link->lgr->max_send_wr,
+>  				    sizeof(link->wr_tx_pends[0]),
+>  				    GFP_KERNEL);
+>  	if (!link->wr_tx_pends)
+>  		goto no_mem_wr_tx_mask;
+> -	link->wr_tx_compl = kcalloc(SMC_WR_BUF_CNT,
+> +	link->wr_tx_compl = kcalloc(link->lgr->max_send_wr,
+>  				    sizeof(link->wr_tx_compl[0]),
+>  				    GFP_KERNEL);
+>  	if (!link->wr_tx_compl)
+> @@ -905,7 +907,7 @@ int smc_wr_create_link(struct smc_link *lnk)
+>  		goto dma_unmap;
+>  	}
+>  	smc_wr_init_sge(lnk);
+> -	bitmap_zero(lnk->wr_tx_mask, SMC_WR_BUF_CNT);
+> +	bitmap_zero(lnk->wr_tx_mask, lnk->lgr->max_send_wr);
+>  	init_waitqueue_head(&lnk->wr_tx_wait);
+>  	rc = percpu_ref_init(&lnk->wr_tx_refs, smcr_wr_tx_refs_free, 0, GFP_KERNEL);
+>  	if (rc)
+> diff --git a/net/smc/smc_wr.h b/net/smc/smc_wr.h
+> index f3008dda222a..aa4533af9122 100644
+> --- a/net/smc/smc_wr.h
+> +++ b/net/smc/smc_wr.h
+> @@ -19,8 +19,6 @@
+>  #include "smc.h"
+>  #include "smc_core.h"
+>  
+> -#define SMC_WR_BUF_CNT 16	/* # of ctrl buffers per link */
+> -
+>  #define SMC_WR_TX_WAIT_FREE_SLOT_TIME	(10 * HZ)
+>  
+>  #define SMC_WR_TX_SIZE 44 /* actual size of wr_send data (<=SMC_WR_BUF_SIZE) */
+
 
