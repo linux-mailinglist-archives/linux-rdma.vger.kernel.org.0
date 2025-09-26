@@ -1,211 +1,296 @@
-Return-Path: <linux-rdma+bounces-13668-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13669-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 045BDBA2FE1
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Sep 2025 10:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F2467BA3044
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Sep 2025 10:51:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4A26625810
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Sep 2025 08:42:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A04D14A3AB0
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Sep 2025 08:51:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C4E5296BC0;
-	Fri, 26 Sep 2025 08:42:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81CE829B79A;
+	Fri, 26 Sep 2025 08:51:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="ROYU4YKE"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f226.google.com (mail-pl1-f226.google.com [209.85.214.226])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A1C35950;
-	Fri, 26 Sep 2025 08:42:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A726E29B214
+	for <linux-rdma@vger.kernel.org>; Fri, 26 Sep 2025 08:51:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758876164; cv=none; b=DExztVPYivMWQYOenkgfL4YHk57qRyfJp8RGiZZ+QiTQLODURC9D1f2Vka1Fs80mj4mM1MVSZXWSvolJyNYm9IsEQtKv49JUfxNnZ0qaKmCKaFoLM4MoAzQ1ImEzcDjQAwPcotJ+2LYORw+fzgKImyBPpihjjd+Em4Bsi6qiACo=
+	t=1758876690; cv=none; b=f0Wf2R2WG1V30nQ54wlaLXHTUrJLZ8vRzEyk1JPI/q3nAbvx6X9sweZ3x4IlTWCmZRvLPSoMZr1IwZs+hWadFAFLRugjUcHo3eHR82SVVOzhWJq2As50LUz0Y/SKG2lJBXMqI8ADseoLNPEgIYi9l16ZWL3ZXLbIXBcc9yVsNlE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758876164; c=relaxed/simple;
-	bh=YpkXVO2Y6uKbqfDq/4Hn+poYOhVaKbGk1KU87swjoOQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=mAD8hU6pbgw7hSbSvjvaUiO8sUOX+IjMxDq0tNV3nHyZYEm1OWRilFom8hgiOXv8C5wNoD+Xxfu7yR5c4AhnA1SoC/c3rVAa4AixrZviBM+cytH7nb26gKX7jX1wKvnW6U9L8lTo3GXTTT3jv9oSbeF7XucnXy//xkW6c4Z2+zg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4cY3r74l2NzRkDx;
-	Fri, 26 Sep 2025 16:37:59 +0800 (CST)
-Received: from dggpemf500016.china.huawei.com (unknown [7.185.36.197])
-	by mail.maildlp.com (Postfix) with ESMTPS id 755C6180486;
-	Fri, 26 Sep 2025 16:42:38 +0800 (CST)
-Received: from [10.174.177.19] (10.174.177.19) by
- dggpemf500016.china.huawei.com (7.185.36.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Fri, 26 Sep 2025 16:42:36 +0800
-Message-ID: <8ab4d343-d287-4b42-94f7-511f46e131d3@huawei.com>
-Date: Fri, 26 Sep 2025 16:42:35 +0800
+	s=arc-20240116; t=1758876690; c=relaxed/simple;
+	bh=PqVmoBJ3n9FUfPcb+ahelooKl/SQ3J98XS1MbbnNCPE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=FUj17Z4ubae9yihETkxqKf/ODFjxCVqWCsFpnJW/lB6lgmiZ5x4V6Bb8FZq60esrfQuuvvt8e7kRdvwVlopcpcfHyTZPZIriF0gpKx7Z3V+EszOz5ci0R38CUyuM8E0GBx/+TDJ/yV++jj9uVusB71V8FFMwkpd98SUR3TYaCW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=ROYU4YKE; arc=none smtp.client-ip=209.85.214.226
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pl1-f226.google.com with SMTP id d9443c01a7336-2680cf68265so16721285ad.2
+        for <linux-rdma@vger.kernel.org>; Fri, 26 Sep 2025 01:51:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1758876688; x=1759481488;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:dkim-signature
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0WTwptKJB4wsOQ5ZpYNmlcHWB6JYf0nt/4QKdcm94TA=;
+        b=NttiDUH/GCptnhDtuWpkHshjn84yI3A7is5cvtSH3IRa1vzA2bPXo51dTeUF4Tl00P
+         a9YSYO4MpIN9WaXwZoRSuRW5MV+hcJGyHwrcQrczLWN/huBjf2RyZ6UbFM74PwdSuvCS
+         7cYQwXTdsDN1DSggy3X0nPSimIlVPGmOJ1ieIzgGZXcadiVpvnpvRrGo3aZWzzM4+eFs
+         KUPuUiRAzsLLSZ96fMVnZ3RKD0ueBqbJAUPwKvu6sZ5F5K2QNkTAzu5PvpEocpsNxSVj
+         w4p+v7Tb9o6Ax2WvxoV3KrISJe9Zo5foKcgJUBGEpnO+KtVmAibJM6N8j8mWIiJufwkh
+         JM7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCW0lIE4aOkKQtcmCZ+y6mVIXJR4K7X2/z/zjM/362Wgci9i8+7NrQKHDkj3dtUGWD/RRwjcgwyNRZuv@vger.kernel.org
+X-Gm-Message-State: AOJu0YxzzIIc4Mlj8zP7P7y9NXzYDxZOJobzJYhzSE6wUZdUKKwgFAjb
+	uHetzc4s6fA0nMas0m8DKj8PrnwTBMEPFfqFvxzGVHxQ2dWMPwuNlfFaQsFbtSeDOBuZsd0kI/Q
+	dSI4/ElHgsMIbge07lfCMHCh5vp8nKk7/O+Jz1EAcYNtK7WhM1JeIFAE8rIjIIXnaTyctZMMKvd
+	Zqg2eWsI+xFVtzROo2puXkoydA8tNACmec1mDralR4U4L14GZtwAl11w3h8n7xzHGJ+spV75Zdm
+	54AT2V24vw7mXyX
+X-Gm-Gg: ASbGncsa+lZ9x61/vPOETVPcF5BINkFzZ/mCkERW+srkWzB9IZFxzA78ijwi7yY+upr
+	qyXMK4znaegIWmgOhfXWczt9mnh4rhA3TL7zs4tExYCF8CDm4g50tZdZ91SKXBfolrB22vnYSdR
+	cfeRovOUdndYd/2ZiMem7BwmA9aeKmmZGb5mDjOBbafgnorEfEauFNyCLysgj2cxFh0gK5Lj8/s
+	sHPgQ/bTJzTHioQ9cwQkkdajpocYUOKDtim22YSCxKWHYY0KUBbguTkiUf4AwIUm8jvppdwbfDO
+	ENj/7KUlfptTzsDHql5leyFy22MWwxyVsbEeO773F+tD9bIPdIWmbm/moOZ0vKD9HyjSIAjDH5V
+	2ZIXbplKS/Yf5PrZSN6iuqs/sObT2/5C4Ia8gH98lqLF58h6eV99/kO9rA/P2rnKAaPNRfEsV/A
+	pRQg==
+X-Google-Smtp-Source: AGHT+IHPPg7InMZdWdSBObFqcs6kfjFUOgWBiRLbnOwbp/qbSCnJin6OVQsIKGFSz2yTHd9AkQI4Hwky9+3n
+X-Received: by 2002:a17:903:3884:b0:274:3e52:4d2d with SMTP id d9443c01a7336-27ed4a76e00mr66270855ad.37.1758876687815;
+        Fri, 26 Sep 2025 01:51:27 -0700 (PDT)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-121.dlp.protect.broadcom.com. [144.49.247.121])
+        by smtp-relay.gmail.com with ESMTPS id d9443c01a7336-27ed68131dcsm3269135ad.58.2025.09.26.01.51.27
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 26 Sep 2025 01:51:27 -0700 (PDT)
+X-Relaying-Domain: broadcom.com
+X-CFilter-Loop: Reflected
+Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-77f2466eeb5so1614550b3a.2
+        for <linux-rdma@vger.kernel.org>; Fri, 26 Sep 2025 01:51:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1758876686; x=1759481486; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0WTwptKJB4wsOQ5ZpYNmlcHWB6JYf0nt/4QKdcm94TA=;
+        b=ROYU4YKEtlZjZQf+uI3oVnikjdeZ1XkEKPOpSd0SDOyEjZrDe5bEypwgf3AfDsYsCr
+         Ja5AmdTKj26M34YG3oPuMw+HnRwvVUEuT20X79ri0z+yZfxDO9xJnsAE4CETQ0EtZMpR
+         ++FeUxKQGzNNStm4YUbvpD3jrku+yRIQFpu2Q=
+X-Forwarded-Encrypted: i=1; AJvYcCWNtEB0HIwPb7jywY0jtGo1dVshdvwgFpPvpk5wkfu5Qzhz35A+a3tHVvskKg8QFNITTo1sQMJQhHT3@vger.kernel.org
+X-Received: by 2002:a05:6a21:6d95:b0:262:d265:a3c with SMTP id adf61e73a8af0-2e7ceeee4a2mr8684564637.32.1758876685961;
+        Fri, 26 Sep 2025 01:51:25 -0700 (PDT)
+X-Received: by 2002:a05:6a21:6d95:b0:262:d265:a3c with SMTP id adf61e73a8af0-2e7ceeee4a2mr8684521637.32.1758876685537;
+        Fri, 26 Sep 2025 01:51:25 -0700 (PDT)
+Received: from PC-MID-R740.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-78102c1203fsm3959896b3a.92.2025.09.26.01.51.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Sep 2025 01:51:25 -0700 (PDT)
+From: Pavan Chebbi <pavan.chebbi@broadcom.com>
+To: jgg@ziepe.ca,
+	michael.chan@broadcom.com
+Cc: dave.jiang@intel.com,
+	saeedm@nvidia.com,
+	Jonathan.Cameron@huawei.com,
+	davem@davemloft.net,
+	corbet@lwn.net,
+	edumazet@google.com,
+	gospo@broadcom.com,
+	kuba@kernel.org,
+	netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	andrew+netdev@lunn.ch,
+	selvin.xavier@broadcom.com,
+	leon@kernel.org,
+	kalesh-anakkur.purayil@broadcom.com,
+	Pavan Chebbi <pavan.chebbi@broadcom.com>,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH net-next v3 1/5] bnxt_en: Move common definitions to include/linux/bnxt/
+Date: Fri, 26 Sep 2025 01:59:07 -0700
+Message-Id: <20250926085911.354947-2-pavan.chebbi@broadcom.com>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20250926085911.354947-1-pavan.chebbi@broadcom.com>
+References: <20250926085911.354947-1-pavan.chebbi@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] net/smc: fix general protection fault in
- __smc_diag_dump
-To: Kuniyuki Iwashima <kuniyu@google.com>, Eric Dumazet <edumazet@google.com>
-CC: <alibuda@linux.alibaba.com>, <dust.li@linux.alibaba.com>,
-	<sidraya@linux.ibm.com>, <wenjia@linux.ibm.com>, <mjambigi@linux.ibm.com>,
-	<tonylu@linux.alibaba.com>, <guwen@linux.alibaba.com>, <davem@davemloft.net>,
-	<kuba@kernel.org>, <pabeni@redhat.com>, <horms@kernel.org>,
-	<yuehaibing@huawei.com>, <zhangchangzhong@huawei.com>,
-	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-s390@vger.kernel.org>
-References: <20250922121818.654011-1-wangliang74@huawei.com>
- <CANn89iLOyFnwD+monMHCmTgfZEAPWmhrZu-=8mvtMGyM9FG49g@mail.gmail.com>
- <CAAVpQUBxoWW_4U2an4CZNoSi95OduUhArezHnzKgpV3oOYs5Jg@mail.gmail.com>
- <CANn89i+V847kRTTFW43ouZXXuaBs177fKv5_bqfbvRutpg+s6g@mail.gmail.com>
- <CAAVpQUBriJFUhq2MpfwFTBLkF0rJfaVp1gaJ3wdhZuD7NWOaXw@mail.gmail.com>
- <CANn89i+Ntwzm2A=NSHbKdFuGVR6kar00AjrJE91Lu0e5BUsVow@mail.gmail.com>
- <CAAVpQUAd1oba6cy-hSub-iS0cnh7WH=HXgVnUwj8MXZLyU=a+w@mail.gmail.com>
-From: Wang Liang <wangliang74@huawei.com>
-In-Reply-To: <CAAVpQUAd1oba6cy-hSub-iS0cnh7WH=HXgVnUwj8MXZLyU=a+w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: kwepems200002.china.huawei.com (7.221.188.68) To
- dggpemf500016.china.huawei.com (7.185.36.197)
+X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 
+We have common definitions that are now going to be used
+by more than one component outside of bnxt (bnxt_re and
+fwctl)
 
-在 2025/9/26 3:51, Kuniyuki Iwashima 写道:
-> On Thu, Sep 25, 2025 at 12:37 PM Eric Dumazet <edumazet@google.com> wrote:
->> On Thu, Sep 25, 2025 at 12:25 PM Kuniyuki Iwashima <kuniyu@google.com> wrote:
->>> On Thu, Sep 25, 2025 at 11:54 AM Eric Dumazet <edumazet@google.com> wrote:
->>>> On Thu, Sep 25, 2025 at 11:46 AM Kuniyuki Iwashima <kuniyu@google.com> wrote:
->>>>> Thanks Eric for CCing me.
->>>>>
->>>>> On Thu, Sep 25, 2025 at 7:32 AM Eric Dumazet <edumazet@google.com> wrote:
->>>>>> On Mon, Sep 22, 2025 at 4:57 AM Wang Liang <wangliang74@huawei.com> wrote:
->>>>>>> The syzbot report a crash:
->>>>>>>
->>>>>>>    Oops: general protection fault, probably for non-canonical address 0xfbd5a5d5a0000003: 0000 [#1] SMP KASAN NOPTI
->>>>>>>    KASAN: maybe wild-memory-access in range [0xdead4ead00000018-0xdead4ead0000001f]
->>>>>>>    CPU: 1 UID: 0 PID: 6949 Comm: syz.0.335 Not tainted syzkaller #0 PREEMPT(full)
->>>>>>>    Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/18/2025
->>>>>>>    RIP: 0010:smc_diag_msg_common_fill net/smc/smc_diag.c:44 [inline]
->>>>>>>    RIP: 0010:__smc_diag_dump.constprop.0+0x3ca/0x2550 net/smc/smc_diag.c:89
->>>>>>>    Call Trace:
->>>>>>>     <TASK>
->>>>>>>     smc_diag_dump_proto+0x26d/0x420 net/smc/smc_diag.c:217
->>>>>>>     smc_diag_dump+0x27/0x90 net/smc/smc_diag.c:234
->>>>>>>     netlink_dump+0x539/0xd30 net/netlink/af_netlink.c:2327
->>>>>>>     __netlink_dump_start+0x6d6/0x990 net/netlink/af_netlink.c:2442
->>>>>>>     netlink_dump_start include/linux/netlink.h:341 [inline]
->>>>>>>     smc_diag_handler_dump+0x1f9/0x240 net/smc/smc_diag.c:251
->>>>>>>     __sock_diag_cmd net/core/sock_diag.c:249 [inline]
->>>>>>>     sock_diag_rcv_msg+0x438/0x790 net/core/sock_diag.c:285
->>>>>>>     netlink_rcv_skb+0x158/0x420 net/netlink/af_netlink.c:2552
->>>>>>>     netlink_unicast_kernel net/netlink/af_netlink.c:1320 [inline]
->>>>>>>     netlink_unicast+0x5a7/0x870 net/netlink/af_netlink.c:1346
->>>>>>>     netlink_sendmsg+0x8d1/0xdd0 net/netlink/af_netlink.c:1896
->>>>>>>     sock_sendmsg_nosec net/socket.c:714 [inline]
->>>>>>>     __sock_sendmsg net/socket.c:729 [inline]
->>>>>>>     ____sys_sendmsg+0xa95/0xc70 net/socket.c:2614
->>>>>>>     ___sys_sendmsg+0x134/0x1d0 net/socket.c:2668
->>>>>>>     __sys_sendmsg+0x16d/0x220 net/socket.c:2700
->>>>>>>     do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
->>>>>>>     do_syscall_64+0xcd/0x4e0 arch/x86/entry/syscall_64.c:94
->>>>>>>     entry_SYSCALL_64_after_hwframe+0x77/0x7f
->>>>>>>     </TASK>
->>>>>>>
->>>>>>> The process like this:
->>>>>>>
->>>>>>>                 (CPU1)              |             (CPU2)
->>>>>>>    ---------------------------------|-------------------------------
->>>>>>>    inet_create()                    |
->>>>>>>      // init clcsock to NULL        |
->>>>>>>      sk = sk_alloc()                |
->>>>>>>                                     |
->>>>>>>      // unexpectedly change clcsock |
->>>>>>>      inet_init_csk_locks()          |
->>>>>>>                                     |
->>>>>>>      // add sk to hash table        |
->>>>>>>      smc_inet_init_sock()           |
->>>>>>>        smc_sk_init()                |
->>>>>>>          smc_hash_sk()              |
->>>>>>>                                     | // traverse the hash table
->>>>>>>                                     | smc_diag_dump_proto
->>>>>>>                                     |   __smc_diag_dump()
->>>>>>>                                     |     // visit wrong clcsock
->>>>>>>                                     |     smc_diag_msg_common_fill()
->>>>>>>      // alloc clcsock               |
->>>>>>>      smc_create_clcsk               |
->>>>>>>        sock_create_kern             |
->>>>>>>
->>>>>>> With CONFIG_DEBUG_LOCK_ALLOC=y, the smc->clcsock is unexpectedly changed
->>>>>>> in inet_init_csk_locks(), because the struct smc_sock does not have struct
->>>>>>> inet_connection_sock as the first member.
->>>>>>>
->>>>>>> Previous commit 60ada4fe644e ("smc: Fix various oops due to inet_sock type
->>>>>>> confusion.") add inet_sock as the first member of smc_sock. For protocol
->>>>>>> with INET_PROTOSW_ICSK, use inet_connection_sock instead of inet_sock is
->>>>>>> more appropriate.
->>>>> Why is INET_PROTOSW_ICSK necessary in the first place ?
->>>>>
->>>>> I don't see a clear reason because smc_clcsock_accept() allocates
->>>>> a new sock by smc_sock_alloc() and does not use inet_accept().
->>>>>
->>>>> Or is there any other path where smc_sock is cast to
->>>>> inet_connection_sock ?
->>>> What I saw in this code was a missing protection.
->>>>
->>>> smc_diag_msg_common_fill() runs without socket lock being held.
->>>>
->>>> I was thinking of this fix, but apparently syzbot still got crashes.
->>> Looking at the test result,
->>>
->>> https://syzkaller.appspot.com/x/report.txt?x=15944c7c580000
->>> KASAN: maybe wild-memory-access in range [0xdead4ead00000018-0xdead4ead0000001f]
->>>
->>> the top half of the address is SPINLOCK_MAGIC (0xdead4ead),
->>> so the type confusion mentioned in the commit message makes
->>> sense to me.
->>>
->>> $ pahole -C inet_connection_sock vmlinux
->>> struct inet_connection_sock {
->>> ...
->>>      struct request_sock_queue  icsk_accept_queue;    /*   992    80 */
->>>
->>> $ pahole -C smc_sock vmlinux
->>> struct smc_sock {
->>> ...
->>>      struct socket *            clcsock;              /*   992     8 */
->>>
->>> The option is 1) let inet_init_csk_locks() init inet_connection_sock
->>> or 2) avoid inet_init_csk_locks(), and I guess 2) could be better to
->>> avoid potential issues in IS_ICSK branches.
->>>
->> I definitely vote to remove INET_PROTOSW_ICSK from smc.
->>
->> We want to reserve inet_connection_sock to TCP only, so that we can
->> move fields to better
->> cache friendly locations in tcp_sock hopefully for linux-6.19
-> Fully agreed.
->
-> Wang: please squash the revert of 6fd27ea183c2 for
-> INET_PROTOSW_ICSK removal.  This is for one of
-> IS_ICSK branches.
+Move bnxt_ulp.h to include/linux/bnxt/ as ulp.h.
 
+Reviewed-by: Andy Gospodarek <gospo@broadcom.com>
+Cc: linux-rdma@vger.kernel.org
+Signed-off-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
+---
+ drivers/infiniband/hw/bnxt_re/debugfs.c                         | 2 +-
+ drivers/infiniband/hw/bnxt_re/main.c                            | 2 +-
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c                        | 2 +-
+ drivers/infiniband/hw/bnxt_re/qplib_res.h                       | 2 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c                       | 2 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c               | 2 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c               | 2 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c                 | 2 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c                   | 2 +-
+ .../broadcom/bnxt/bnxt_ulp.h => include/linux/bnxt/ulp.h        | 0
+ 10 files changed, 9 insertions(+), 9 deletions(-)
+ rename drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h => include/linux/bnxt/ulp.h (100%)
 
-Thanks for your suggestions, they are helpful!
-
-I will remove INET_PROTOSW_ICSK from smc_inet_protosw and smc_inet6_protosw,
-
-and revert 6fd27ea183c2 ("net/smc: fix lacks of icsk_syn_mss with 
-IPPROTO_SMC")
-
-in one patchset later.
-
-------
-Best regards
-Wang Liang
-
-
+diff --git a/drivers/infiniband/hw/bnxt_re/debugfs.c b/drivers/infiniband/hw/bnxt_re/debugfs.c
+index e632f1661b92..a9dd3597cfbc 100644
+--- a/drivers/infiniband/hw/bnxt_re/debugfs.c
++++ b/drivers/infiniband/hw/bnxt_re/debugfs.c
+@@ -9,8 +9,8 @@
+ #include <linux/debugfs.h>
+ #include <linux/pci.h>
+ #include <rdma/ib_addr.h>
++#include <linux/bnxt/ulp.h>
+ 
+-#include "bnxt_ulp.h"
+ #include "roce_hsi.h"
+ #include "qplib_res.h"
+ #include "qplib_sp.h"
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index df7cf8d68e27..b773556fc5e9 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -55,8 +55,8 @@
+ #include <rdma/ib_umem.h>
+ #include <rdma/ib_addr.h>
+ #include <linux/hashtable.h>
++#include <linux/bnxt/ulp.h>
+ 
+-#include "bnxt_ulp.h"
+ #include "roce_hsi.h"
+ #include "qplib_res.h"
+ #include "qplib_sp.h"
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+index ee36b3d82cc0..bb252cd8509b 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+@@ -46,6 +46,7 @@
+ #include <linux/delay.h>
+ #include <linux/prefetch.h>
+ #include <linux/if_ether.h>
++#include <linux/bnxt/ulp.h>
+ #include <rdma/ib_mad.h>
+ 
+ #include "roce_hsi.h"
+@@ -55,7 +56,6 @@
+ #include "qplib_sp.h"
+ #include "qplib_fp.h"
+ #include <rdma/ib_addr.h>
+-#include "bnxt_ulp.h"
+ #include "bnxt_re.h"
+ #include "ib_verbs.h"
+ 
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+index 6a13927674b4..7cdddf921b48 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
+@@ -39,7 +39,7 @@
+ #ifndef __BNXT_QPLIB_RES_H__
+ #define __BNXT_QPLIB_RES_H__
+ 
+-#include "bnxt_ulp.h"
++#include <linux/bnxt/ulp.h>
+ 
+ extern const struct bnxt_qplib_gid bnxt_qplib_gid_zero;
+ 
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index 1d0e0e7362bd..785a6146b968 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -59,10 +59,10 @@
+ #include <net/netdev_rx_queue.h>
+ #include <linux/pci-tph.h>
+ #include <linux/bnxt/hsi.h>
++#include <linux/bnxt/ulp.h>
+ 
+ #include "bnxt.h"
+ #include "bnxt_hwrm.h"
+-#include "bnxt_ulp.h"
+ #include "bnxt_sriov.h"
+ #include "bnxt_ethtool.h"
+ #include "bnxt_dcb.h"
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
+index 02961d93ed35..cfcd3335a2d3 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
+@@ -13,12 +13,12 @@
+ #include <net/devlink.h>
+ #include <net/netdev_lock.h>
+ #include <linux/bnxt/hsi.h>
++#include <linux/bnxt/ulp.h>
+ #include "bnxt.h"
+ #include "bnxt_hwrm.h"
+ #include "bnxt_vfr.h"
+ #include "bnxt_devlink.h"
+ #include "bnxt_ethtool.h"
+-#include "bnxt_ulp.h"
+ #include "bnxt_ptp.h"
+ #include "bnxt_coredump.h"
+ #include "bnxt_nvm_defs.h"
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
+index be32ef8f5c96..3231d3c022dc 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
+@@ -27,9 +27,9 @@
+ #include <net/netdev_queues.h>
+ #include <net/netlink.h>
+ #include <linux/bnxt/hsi.h>
++#include <linux/bnxt/ulp.h>
+ #include "bnxt.h"
+ #include "bnxt_hwrm.h"
+-#include "bnxt_ulp.h"
+ #include "bnxt_xdp.h"
+ #include "bnxt_ptp.h"
+ #include "bnxt_ethtool.h"
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c
+index 80fed2c07b9e..84c43f83193a 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_sriov.c
+@@ -17,9 +17,9 @@
+ #include <linux/etherdevice.h>
+ #include <net/dcbnl.h>
+ #include <linux/bnxt/hsi.h>
++#include <linux/bnxt/ulp.h>
+ #include "bnxt.h"
+ #include "bnxt_hwrm.h"
+-#include "bnxt_ulp.h"
+ #include "bnxt_sriov.h"
+ #include "bnxt_vfr.h"
+ #include "bnxt_ethtool.h"
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
+index 61cf201bb0dc..992eec874345 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
+@@ -22,10 +22,10 @@
+ #include <linux/auxiliary_bus.h>
+ #include <net/netdev_lock.h>
+ #include <linux/bnxt/hsi.h>
++#include <linux/bnxt/ulp.h>
+ 
+ #include "bnxt.h"
+ #include "bnxt_hwrm.h"
+-#include "bnxt_ulp.h"
+ 
+ static DEFINE_IDA(bnxt_aux_dev_ids);
+ 
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h b/include/linux/bnxt/ulp.h
+similarity index 100%
+rename from drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h
+rename to include/linux/bnxt/ulp.h
+-- 
+2.39.1
 
 
