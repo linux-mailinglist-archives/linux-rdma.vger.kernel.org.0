@@ -1,205 +1,172 @@
-Return-Path: <linux-rdma+bounces-13680-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13681-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AC3EBA6206
-	for <lists+linux-rdma@lfdr.de>; Sat, 27 Sep 2025 19:18:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5815EBA64AD
+	for <lists+linux-rdma@lfdr.de>; Sun, 28 Sep 2025 00:55:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E38833AB21B
-	for <lists+linux-rdma@lfdr.de>; Sat, 27 Sep 2025 17:18:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 176ED1883F00
+	for <lists+linux-rdma@lfdr.de>; Sat, 27 Sep 2025 22:56:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F00C9225403;
-	Sat, 27 Sep 2025 17:18:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF35523D7E3;
+	Sat, 27 Sep 2025 22:55:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eyc37pbL"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="WCRpzsJg"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 067B21632C8
-	for <linux-rdma@vger.kernel.org>; Sat, 27 Sep 2025 17:18:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2F81227599;
+	Sat, 27 Sep 2025 22:55:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758993516; cv=none; b=Z+xAuff1DPAOC2mXA9gyyNuwnxM0iOSkHrgo+HNE6Q083SSRRr1V8xz7dnHG4KPiK9f2FdV4NQG7OflucAMFr70hNhNiC4lInnMMUuOu5JTgAA9ANWbYDuNa6k1FGZ6Bwh+naSZUxe6eSZW9bFmFoxNbRro+in5MU7qihJU1xzc=
+	t=1759013734; cv=none; b=GR8M7rWZX3xdXPAZ7Dr5QIXgETOsSUFTpouu/30RIR6Q3mtH9dUmL1vL9JQObMQNU0Svfm8TGhkv+FVPYiWJaR5yQ3vqMYJd1vh374EjuWeB4dGkWAiM3fSuCMoeHiykOHPDLi4AA9o5/nSBLuiL86HktnlEhpBsyT9aF1ChEgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758993516; c=relaxed/simple;
-	bh=8mhwQKE8ttGfsaEonbnSyD8/ON4f3F3OL0P6FrCuVzc=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=pEPayPzbVdfnEurT51LbZN7QXkeBk0oFkQB2u24shhYf20j3hnmxEwJhWZPQuTi+ZWVaTMPXZbi+P5yDA4/eNj7jNSD4A3fr+bkbmFbWUFlO47rG445L3/AIWrvMWamF2EDXSsxFLiRKuMcGpf4t36NVwY2dotekHL6GlA5UrXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eyc37pbL; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1758993515; x=1790529515;
-  h=date:from:to:cc:subject:message-id;
-  bh=8mhwQKE8ttGfsaEonbnSyD8/ON4f3F3OL0P6FrCuVzc=;
-  b=eyc37pbLC3r4s5Y5b8UOH2TuUWbYF0XccbEyQ3K1wmW9g3ny7uGAWRWs
-   DNAZT+IltSAdaCkRLNdsitJMogN7xOnmvkVbqWmlXGZQKuRxyAKjZlg1i
-   T0dKez61IGdV9jbTjlzVHDYCa+NUy23ESUyXNf9fDIDXZ9LetlHesTz68
-   shiU4pFqJt5S/nehd70191vfO2mqM2Vfh3x/uYifnUJdQ29orv79pi6BC
-   uP1dLEDbz7ZUvnCIAqz5W1iSfI76IH4Kdj3jObnkAb+Csc0iKhRZOBaQW
-   MaIx0YtLNU0leO1yggNZ39FkcsttFYxIw7O5ux4Crt9SBO/Tnwfv5gVtV
-   g==;
-X-CSE-ConnectionGUID: Fy426+UqT7S4bNyteI19Fw==
-X-CSE-MsgGUID: r1F186UhTdqffvw7xempbg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11531"; a="61208355"
-X-IronPort-AV: E=Sophos;i="6.17,312,1747724400"; 
-   d="scan'208";a="61208355"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2025 10:18:34 -0700
-X-CSE-ConnectionGUID: LACSePA/SkyXRfWaKnC2ug==
-X-CSE-MsgGUID: 29OZE68WS7ikDHX2ehVWeQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.18,298,1751266800"; 
-   d="scan'208";a="177447863"
-Received: from lkp-server02.sh.intel.com (HELO 84c55410ccf6) ([10.239.97.151])
-  by fmviesa007.fm.intel.com with ESMTP; 27 Sep 2025 10:18:33 -0700
-Received: from kbuild by 84c55410ccf6 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1v2YZ0-0007EZ-0G;
-	Sat, 27 Sep 2025 17:18:27 +0000
-Date: Sun, 28 Sep 2025 01:17:37 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Subject: [rdma:for-next] BUILD SUCCESS
- e6d736bd08902ba53460df1b62ee4218bbd17d9b
-Message-ID: <202509280130.Urn0P7RZ-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1759013734; c=relaxed/simple;
+	bh=J/lkEaSlOjgbIMEBcrcnqLn8F4KPz/eqNN7bz7Ax+Yw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fXIMbmdrU5MfAgThgvqh+16WaaUogJEDAyGHvIjIr6V92KUgB6QQq4/ALFEfT3ticd0O+SCNcSpcnU+xCcENV8MiuLPRtE9FDEDOAs5HREDoPrZtJNJrNtz+wKh0uRsPO9uAa3wMj8IX7+xR1lsSBEMieApNRhMMHrTnZrTvccg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=WCRpzsJg; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58RIn5Yj021061;
+	Sat, 27 Sep 2025 22:55:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=CGyNmg
+	9lCRxrC35psWn0YaeYKYJvFaHxr0YSuHrRWPE=; b=WCRpzsJgvk4FmskRTpKedc
+	u46iz0gqDqvhWK/obPldUMM/nhqgvaLJXsjpbuQxryERLMU6c0twg49jw3Ui0Xgs
+	erQKXhpnvV8PwDexdLBhyvA2l6TljnL7qbcUTjBuUPPEyXcDUIIiZOA4LmiBK3xk
+	L5M3dqssEmRrfn60ila3oOuoWS02zrcfXqNaXYDXSuyru/mIaWSXMueqfH+97V+j
+	IoO1PG+pQAi0TilrynNH5vgCfVLtqX7rBLpN0WQlAOAOGDehTv9F7yt6JHdAmkIR
+	tzVgF7d9Fm1BKhNmiZV+NhXCcTkjaS+TGJy8T84NDii8v+C+9r+yjBqpParvgYHg
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49e6bh3nch-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 27 Sep 2025 22:55:22 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 58RMtMlI004163;
+	Sat, 27 Sep 2025 22:55:22 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49e6bh3ncf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 27 Sep 2025 22:55:22 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58RLkDEv014407;
+	Sat, 27 Sep 2025 22:55:21 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 49dawmaspt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 27 Sep 2025 22:55:21 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 58RMtH0M50725312
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sat, 27 Sep 2025 22:55:17 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B2D8A20043;
+	Sat, 27 Sep 2025 22:55:17 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CC4D220040;
+	Sat, 27 Sep 2025 22:55:16 +0000 (GMT)
+Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.87.130.219])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with SMTP;
+	Sat, 27 Sep 2025 22:55:16 +0000 (GMT)
+Date: Sun, 28 Sep 2025 00:55:15 +0200
+From: Halil Pasic <pasic@linux.ibm.com>
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>,
+        "D.
+ Wythe" <alibuda@linux.alibaba.com>,
+        Dust Li <dust.li@linux.alibaba.com>,
+        Sidraya Jayagond <sidraya@linux.ibm.com>,
+        Wenjia Zhang
+ <wenjia@linux.ibm.com>,
+        Mahanta Jambigi <mjambigi@linux.ibm.com>,
+        Tony Lu
+ <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH net-next v3 1/2] net/smc: make wr buffer count
+ configurable
+Message-ID: <20250928005515.61a57542.pasic@linux.ibm.com>
+In-Reply-To: <20250925132540.74091295.pasic@linux.ibm.com>
+References: <20250921214440.325325-1-pasic@linux.ibm.com>
+	<20250921214440.325325-2-pasic@linux.ibm.com>
+	<7cc2df09-0230-40cb-ad4f-656b0d1d785b@redhat.com>
+	<20250925132540.74091295.pasic@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=Se/6t/Ru c=1 sm=1 tr=0 ts=68d86b5a cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=kj9zAlcOel0A:10 a=yJojWOMRYYMA:10 a=VnNF1IyMAAAA:8 a=d6B9MPh4GzydLbDzm_AA:9
+ a=CjuIK1q_8ugA:10 a=cPQSjfK2_nFv0Q5t_7PE:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTI3MDAxMCBTYWx0ZWRfXyehZBiMfHR7w
+ /n+rhFoG6VKNxi4OIteUySe+T9U5LSk+p9iOJQqjt/toVbbgtBieuiAQdYIG/Li18yuWZDArA1q
+ xg1B/ph5qs50y2dELYwGUGWJyPGGN0HEgMrMwm218Ln1MVnR3myymCFlbeQne3I8cjoDeJeo9c+
+ JdZBqj8Do4bFVaQ6uzpc1atWlXUaexmZSmtFbO8aKMisvRPOquVCAIU6Oj/AAi1uacWVzcr3Pun
+ ipH/xQLpnNXSf81AkJhTPfzoShMQQpGsg/N7orVnpOPvggv9Aqeegz19x5rbt5GNLUiuDcOTcWD
+ pU41s+LQ4EXJbdQhtaTRsd6HxsPwis6gJxb2KKNvXLDf2oTFMNcLI+Cu1AVdtLrHFyjX1ZGv0zP
+ UoyfIZNWmn20Cpua2BUfNrMrc9k98w==
+X-Proofpoint-GUID: ZvXP4YeF5JYu1VuKgBF2CVctlzrCxZDg
+X-Proofpoint-ORIG-GUID: pWjiWAZRIuuBP2oSto0eEBbGqHdIJIfm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-09-27_08,2025-09-26_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 malwarescore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0
+ clxscore=1015 phishscore=0 priorityscore=1501 adultscore=0 spamscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2509150000 definitions=main-2509270010
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-branch HEAD: e6d736bd08902ba53460df1b62ee4218bbd17d9b  RDMA/ionic: Fix memory leak of admin q_wr
+On Thu, 25 Sep 2025 13:25:40 +0200
+Halil Pasic <pasic@linux.ibm.com> wrote:
 
-elapsed time: 1457m
+> > [...]  
+> > > @@ -683,6 +678,8 @@ int smc_ib_create_queue_pair(struct smc_link *lnk)
+> > >  	};
+> > >  	int rc;
+> > >  
+> > > +	qp_attr.cap.max_send_wr = 3 * lnk->lgr->max_send_wr;
+> > > +	qp_attr.cap.max_recv_wr = lnk->lgr->max_recv_wr;    
+> > 
+> > Possibly:
+> > 
+> > 	cap = max(3 * lnk->lgr->max_send_wr, lnk->lgr->max_recv_wr);
+> > 	qp_attr.cap.max_send_wr = cap;
+> > 	qp_attr.cap.max_recv_wr = cap
+> > 
+> > to avoid assumption on `max_send_wr`, `max_recv_wr` relative values.  
+> 
+> Can you explain a little more. I'm happy to do the change, but I would
+> prefer to understand why is keeping qp_attr.cap.max_send_wr ==
+> qp_attr.cap.max_recv_wr better? But if you tell: "Just trust me!" I will.
 
-configs tested: 112
-configs skipped: 3
+Due to a little accident we ended up having a private conversation
+on this, which I'm going to sum up quickly.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Paolo stated that he has no strong preference and that I should at
+least add a comment, which I will do for v4. 
 
-tested configs:
-alpha                             allnoconfig    gcc-15.1.0
-alpha                            allyesconfig    gcc-15.1.0
-alpha                               defconfig    gcc-15.1.0
-arc                              allmodconfig    gcc-15.1.0
-arc                               allnoconfig    gcc-15.1.0
-arc                              allyesconfig    gcc-15.1.0
-arc                                 defconfig    gcc-15.1.0
-arc                   randconfig-001-20250927    gcc-10.5.0
-arc                   randconfig-002-20250927    gcc-13.4.0
-arm                               allnoconfig    clang-22
-arm                          ixp4xx_defconfig    gcc-15.1.0
-arm                            mps2_defconfig    clang-22
-arm                             mxs_defconfig    clang-22
-arm                   randconfig-001-20250927    clang-18
-arm                   randconfig-002-20250927    clang-16
-arm                   randconfig-003-20250927    gcc-8.5.0
-arm                   randconfig-004-20250927    gcc-10.5.0
-arm                        vexpress_defconfig    gcc-15.1.0
-arm64                             allnoconfig    gcc-15.1.0
-arm64                 randconfig-001-20250927    gcc-8.5.0
-arm64                 randconfig-002-20250927    gcc-11.5.0
-arm64                 randconfig-003-20250927    clang-22
-arm64                 randconfig-004-20250927    gcc-9.5.0
-csky                              allnoconfig    gcc-15.1.0
-csky                  randconfig-001-20250927    gcc-15.1.0
-csky                  randconfig-002-20250927    gcc-13.4.0
-hexagon                          allmodconfig    clang-17
-hexagon                           allnoconfig    clang-22
-hexagon                          allyesconfig    clang-22
-hexagon               randconfig-001-20250927    clang-22
-hexagon               randconfig-002-20250927    clang-22
-i386                             allmodconfig    gcc-14
-i386                              allnoconfig    gcc-14
-i386        buildonly-randconfig-001-20250927    clang-20
-i386        buildonly-randconfig-002-20250927    gcc-14
-i386        buildonly-randconfig-003-20250927    clang-20
-i386        buildonly-randconfig-004-20250927    clang-20
-i386        buildonly-randconfig-005-20250927    gcc-12
-i386        buildonly-randconfig-006-20250927    clang-20
-i386                                defconfig    clang-20
-loongarch                        allmodconfig    clang-19
-loongarch                         allnoconfig    clang-22
-loongarch             randconfig-001-20250927    gcc-15.1.0
-loongarch             randconfig-002-20250927    clang-18
-m68k                             allmodconfig    gcc-15.1.0
-m68k                              allnoconfig    gcc-15.1.0
-m68k                             allyesconfig    gcc-15.1.0
-microblaze                       allmodconfig    gcc-15.1.0
-microblaze                        allnoconfig    gcc-15.1.0
-microblaze                       allyesconfig    gcc-15.1.0
-microblaze                          defconfig    gcc-15.1.0
-mips                              allnoconfig    gcc-15.1.0
-nios2                             allnoconfig    gcc-11.5.0
-nios2                               defconfig    gcc-11.5.0
-nios2                 randconfig-001-20250927    gcc-9.5.0
-nios2                 randconfig-002-20250927    gcc-11.5.0
-openrisc                          allnoconfig    gcc-15.1.0
-openrisc                            defconfig    gcc-15.1.0
-parisc                            allnoconfig    gcc-15.1.0
-parisc                              defconfig    gcc-15.1.0
-parisc                randconfig-001-20250927    gcc-9.5.0
-parisc                randconfig-002-20250927    gcc-11.5.0
-parisc64                            defconfig    gcc-15.1.0
-powerpc                           allnoconfig    gcc-15.1.0
-powerpc                      ep88xc_defconfig    gcc-15.1.0
-powerpc                 mpc834x_itx_defconfig    clang-16
-powerpc               randconfig-001-20250927    gcc-13.4.0
-powerpc               randconfig-002-20250927    clang-22
-powerpc               randconfig-003-20250927    gcc-8.5.0
-powerpc                     tqm8555_defconfig    gcc-15.1.0
-powerpc64             randconfig-001-20250927    clang-22
-powerpc64             randconfig-002-20250927    gcc-15.1.0
-powerpc64             randconfig-003-20250927    gcc-12.5.0
-riscv                             allnoconfig    gcc-15.1.0
-riscv             nommu_k210_sdcard_defconfig    gcc-15.1.0
-riscv                 randconfig-001-20250927    clang-22
-riscv                 randconfig-002-20250927    gcc-15.1.0
-s390                             allmodconfig    clang-18
-s390                              allnoconfig    clang-22
-s390                             allyesconfig    gcc-15.1.0
-s390                  randconfig-001-20250927    clang-22
-s390                  randconfig-002-20250927    clang-22
-sh                               allmodconfig    gcc-15.1.0
-sh                                allnoconfig    gcc-15.1.0
-sh                               allyesconfig    gcc-15.1.0
-sh                    randconfig-001-20250927    gcc-15.1.0
-sh                    randconfig-002-20250927    gcc-15.1.0
-sparc                            allmodconfig    gcc-15.1.0
-sparc                             allnoconfig    gcc-15.1.0
-sparc                               defconfig    gcc-15.1.0
-sparc                 randconfig-001-20250927    gcc-11.5.0
-sparc                 randconfig-002-20250927    gcc-11.5.0
-sparc64               randconfig-001-20250927    gcc-15.1.0
-sparc64               randconfig-002-20250927    gcc-8.5.0
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-22
-um                               allyesconfig    gcc-14
-um                    randconfig-001-20250927    gcc-14
-um                    randconfig-002-20250927    clang-22
-x86_64                            allnoconfig    clang-20
-x86_64                           allyesconfig    clang-20
-x86_64      buildonly-randconfig-001-20250927    gcc-14
-x86_64      buildonly-randconfig-002-20250927    clang-20
-x86_64      buildonly-randconfig-003-20250927    clang-20
-x86_64      buildonly-randconfig-004-20250927    gcc-14
-x86_64      buildonly-randconfig-005-20250927    gcc-14
-x86_64      buildonly-randconfig-006-20250927    clang-20
-x86_64                              defconfig    gcc-14
-x86_64                          rhel-9.4-rust    clang-20
-xtensa                            allnoconfig    gcc-15.1.0
-xtensa                randconfig-001-20250927    gcc-8.5.0
-xtensa                randconfig-002-20250927    gcc-10.5.0
+Unfortunately I don't quite understand why qp_attr.cap.max_send_wr is 3
+times the number of send WR buffers we allocate. My understanding
+is that qp_attr.cap.max_send_wr is about the number of send WQEs.
+I assume that qp_attr.cap.max_send_wr == qp_attr.cap.max_recv_wr
+is not something we would want to preserve.
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards,
+Halil 
 
