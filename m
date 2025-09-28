@@ -1,174 +1,187 @@
-Return-Path: <linux-rdma+bounces-13703-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13704-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0487BA75BD
-	for <lists+linux-rdma@lfdr.de>; Sun, 28 Sep 2025 19:52:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B3DEBA7639
+	for <lists+linux-rdma@lfdr.de>; Sun, 28 Sep 2025 20:32:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E190176758
-	for <lists+linux-rdma@lfdr.de>; Sun, 28 Sep 2025 17:52:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57FFE3A3CF9
+	for <lists+linux-rdma@lfdr.de>; Sun, 28 Sep 2025 18:32:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E4792550BA;
-	Sun, 28 Sep 2025 17:51:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A49F4244698;
+	Sun, 28 Sep 2025 18:32:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="ZY6ga6yf"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="NuS64/zC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.3])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2392123BF9C;
-	Sun, 28 Sep 2025 17:51:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C8A149E17;
+	Sun, 28 Sep 2025 18:32:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759081918; cv=none; b=befrwCEzqvxwsZOKkQL6E8c7fiYwWmp8KIm9i4fDN3biYxug637tk978ryZqtlAEvMF9XugMenwLxq71U+8NQABVrFY5vtqLZ9qHZQbJFjA988gorHPfq7+zCGi229YcTHSaroeJ9eTld9bkPQQpGjFmr7lv3yF4oqEUJRCT3e4=
+	t=1759084336; cv=none; b=dLjIyxOayvQs0ED0rbNoLjRinnEfVKPEbMqYdFu6kY0Hjra4ejMLNH/bqyATJnV6wN9shKSn6J3dUEcGPOQxMJCnycPtovo7quvDmjHhjbyZZ5PY1iyVsQ/7i8wEZnYrYGTQ2a/FraXso92BTcCSoaGhd5AiqeuOX4526Wi45XI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759081918; c=relaxed/simple;
-	bh=WKMCyS3jCeMTkJ4zg8ja5dS+2dWHBVk0U6vBjvU3Aew=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pLx2fPCWl8/jCa4SzItg2XyatYOpm+8/3ZGXrtx0e3E5+zo2TroH06YaGwL4IcY6fIGdXhR6sA9vP5prg41vVhq5XzdDQrvfflLc8apInNCsUzH1DnrX2iqz3D6sDPEH5i8IfjjFFJ32NlmR/s9LeoY1VK3brvr9iZafzX0TLbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=ZY6ga6yf; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1759081900; x=1759686700; i=markus.elfring@web.de;
-	bh=WKMCyS3jCeMTkJ4zg8ja5dS+2dWHBVk0U6vBjvU3Aew=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=ZY6ga6yfjUXspR/ETGHdoVVP04rac4VeOUmyLvoennKVWORquiVMG6MuhB8wh7Ck
-	 sGoopK8QK2ng7f1CVGEesxPcdq3MiS6tSvlx5c3Cj+e9uvk1nh0+VIKYe+Sw7g4FX
-	 kb4TueUe+A9psvc/uciTTifKI5y3obzotM6Zrj72rhkKwjDBJo8NbzR08k8KSIwtK
-	 luAf7Rg+VmrqS9CZdcwGQ7MnVexXVaXUE/bKfbgFKvn0yAmjSTHXCJe9FpwPNrwI3
-	 zqDta1tZP1b+rLTZxB/61/Mtz3AZQb13O791TNbZN9U/j+SomnM8uBSwnrR8ffCNq
-	 E5rtIeNPuiX/NPgNmg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.29] ([94.31.69.189]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1M59n6-1v41UG1LqW-000Oci; Sun, 28
- Sep 2025 19:51:40 +0200
-Message-ID: <99ea3145-5df5-4da0-9e3e-269c243f42d0@web.de>
-Date: Sun, 28 Sep 2025 19:51:37 +0200
+	s=arc-20240116; t=1759084336; c=relaxed/simple;
+	bh=3fXN/jGvJgMgNtDL2f1i10+UbkOMXScOnXk2zWvjpZg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kd/Br9QihFe+W+LBTxu+34TBHteMUMLGKvJ3tmHRWvYktl72edsqBoow7ssY/VoiHyx0fP5gsHoL+xrD66vAipnkiFSYA82qcCkBezfjBpGPLaDG8QycldWvoJyP4Vwcyd5n6cD70Wf9z7plN4JEIHt/cvfPGFAjJ5GeD2+yse8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=NuS64/zC; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58SCJnR8018653;
+	Sun, 28 Sep 2025 18:32:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=poUkSA
+	wxxn9OgsiB0V78chkL7btUOpcQgI6qcsINleE=; b=NuS64/zC9nrf4+6KCceOWr
+	6zSFoOFcdArj9hAaOiBpFUDJ6/NFIQjNeneK84SGq5m6azpi8hrk5QH8eV6EhoAs
+	1lOyJ9ncQ9eate5VdGww5vGtdJUJY/4rX6N1Y5Mp678R5nlDMHY+gN5stKUG1v0X
+	Fojg/CADZj+ZmYco2gC6BL+xYEh33jCnoX9B5gWucNyQIHTZxBjLtZnYg6XR/azy
+	ZeZjOTiAJbZkfwtCey9j9ZrG9OUDoNO+28E/v2pKRtAxaN4Sodsbbvnt5l9pjMxt
+	E3WNsb3SFySnikFERCSPGLNePRpb1qoZNccKCQaGHnD/aZdhs4FqsbjWwaWeLDeQ
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49e5bqeren-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 28 Sep 2025 18:32:10 +0000 (GMT)
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 58SIW97G029923;
+	Sun, 28 Sep 2025 18:32:09 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49e5bqerej-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 28 Sep 2025 18:32:09 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58SH1QoB020057;
+	Sun, 28 Sep 2025 18:32:08 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 49et8rtvqw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 28 Sep 2025 18:32:08 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 58SIW55E55247338
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sun, 28 Sep 2025 18:32:05 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 125DB20043;
+	Sun, 28 Sep 2025 18:32:05 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2871620040;
+	Sun, 28 Sep 2025 18:32:04 +0000 (GMT)
+Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.87.130.219])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with SMTP;
+	Sun, 28 Sep 2025 18:32:04 +0000 (GMT)
+Date: Sun, 28 Sep 2025 20:32:02 +0200
+From: Halil Pasic <pasic@linux.ibm.com>
+To: Dust Li <dust.li@linux.alibaba.com>
+Cc: Paolo Abeni <pabeni@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+        Simon
+ Horman <horms@kernel.org>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        Sidraya
+ Jayagond <sidraya@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Mahanta Jambigi <mjambigi@linux.ibm.com>,
+        Tony Lu
+ <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH net-next v3 1/2] net/smc: make wr buffer count
+ configurable
+Message-ID: <20250928203202.7d31a9bb.pasic@linux.ibm.com>
+In-Reply-To: <aNkfPqTyQxYTusKw@linux.alibaba.com>
+References: <20250921214440.325325-1-pasic@linux.ibm.com>
+	<20250921214440.325325-2-pasic@linux.ibm.com>
+	<7cc2df09-0230-40cb-ad4f-656b0d1d785b@redhat.com>
+	<20250925132540.74091295.pasic@linux.ibm.com>
+	<20250928005515.61a57542.pasic@linux.ibm.com>
+	<aNiXQ_UfG9k-f9-n@linux.alibaba.com>
+	<20250928103951.6464dfd3.pasic@linux.ibm.com>
+	<aNkfPqTyQxYTusKw@linux.alibaba.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [cocci] [1/2] scripts/coccinelle: Find PTR_ERR() to %pe
- candidates
-To: Gal Pressman <gal@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
- cocci@inria.fr, Alexei Lazar <alazar@nvidia.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Julia Lawall <Julia.Lawall@inria.fr>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
- Mark Bloch <mbloch@nvidia.com>, Nicolas Palix <nicolas.palix@imag.fr>,
- Richard Cochran <richardcochran@gmail.com>,
- Saeed Mahameed <saeedm@nvidia.com>
-References: <1758192227-701925-1-git-send-email-tariqt@nvidia.com>
- <1758192227-701925-2-git-send-email-tariqt@nvidia.com>
- <48a8dbb8-adf1-475e-897d-7369e2c3f6eb@web.de>
- <48228618-083b-4cdb-b7df-aa9b7ff0ce92@nvidia.com>
- <8b0034a7-f63b-4a98-a812-69b988dd3785@web.de>
- <7d46a1d1-f205-4751-9f7d-6a219be04801@nvidia.com>
- <5b8b05c8-91db-40a2-8aff-c6e214b1202f@web.de>
- <2c86405e-ae95-4567-b359-36c4dca1fa25@nvidia.com>
-Content-Language: en-GB, de-DE
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <2c86405e-ae95-4567-b359-36c4dca1fa25@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:0Vd5ev+1IUxNfq8rNbPYQUaHpaERCYaT/18K5Fl5szUxOuB0inT
- +mI148Cl6VZnXfcnRNC+vFG0wOkry3y+gu/2PpQW8EViv8fazPVzEuQXly+uycXqCVhnJ6E
- RK6YpIko9e3wvhjAy7/nED6l4ftiszDf/GBkicL7QJ7Tv4+PilIO4XeUANqTUv5EdwPVQJ2
- sNRifuNRUfsFeki0pDkPw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:CpAuMkuyyEA=;NREyE8K8h+aSn0b6ExSYGWHOGzp
- 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
- 2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTI2MDIxNCBTYWx0ZWRfX53OcWNRbjcq4
+ pv02O5YTQAryATb/G5CCwKXa7rOKDruQstUBLUbc9iFFAhfIRpCZv6p40Cw7JsSe81CIrChuIRt
+ iyHMLK021J8MvaeNoZC1OqyLzgJ34QGuc8kYmDlLDFqICAbxHn5ksV5jvJ0OLohrliBuRd9iOo3
+ /V4MHBWKwtsNOweOKpEflZNOBgzybf5xgiW+eNhJLOWX0rPiflwHlrh7C9kR3tBXkj3MSgeZSbE
+ Pt4IWuDN1L3eC5gD7GuJKgM3nswzeuXkFTPnso+DoBjRbDeO6y6ja6YrGQ/armKqxWAfwUVT9Pw
+ Mo5zul38Cmz0e9bVIIJNliCeMpd3LHtjxGwIm8W6OECRLQdRALIfhoIZIxHgmC1ceWyHtB0JpjS
+ euDwTmuH3lL1dNdEYi2sZEKpi6DgJQ==
+X-Proofpoint-GUID: ImC0uIDMvTV6wjFfCmyexAaU3oEHByVb
+X-Authority-Analysis: v=2.4 cv=LLZrgZW9 c=1 sm=1 tr=0 ts=68d97f2a cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=kj9zAlcOel0A:10 a=yJojWOMRYYMA:10 a=fgEhGd6aAAAA:8 a=SRrdq9N9AAAA:8
+ a=bxKWgVZqml0MJVlldkoA:9 a=CjuIK1q_8ugA:10 a=lTNmK5dgYt2SiR4ZQSdr:22
+ a=cPQSjfK2_nFv0Q5t_7PE:22
+X-Proofpoint-ORIG-GUID: QQJ3MbGicb2uuvcm3G71W-nh2WF5rxUp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-09-28_07,2025-09-26_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0 impostorscore=0 bulkscore=0 malwarescore=0 suspectscore=0
+ clxscore=1015 priorityscore=1501 phishscore=0 lowpriorityscore=0 adultscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2509150000 definitions=main-2509260214
 
-> I'm not really sure if I'm speaking to a real person or some kind of
-> weird AI, so I'm going to respectfully ignore these comments..
+On Sun, 28 Sep 2025 19:42:54 +0800
+Dust Li <dust.li@linux.alibaba.com> wrote:
 
-Can you get more development ideas from another information source
-than from hints by known contributors (like me)?
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/dev-tools/coccinelle.rst?h=v6.17-rc7#n71
+> >> We have at most 2 RDMA Write for 1 RDMA send. So 3 times is necessary.
+> >> That is explained in the original comments. Maybe it's better to keep it.
+> >> 
+> >> ```
+> >> .cap = {
+> >>                 /* include unsolicited rdma_writes as well,
+> >>                  * there are max. 2 RDMA_WRITE per 1 WR_SEND
+> >>                  */  
+> >
+> >But what are "the unsolicited" rdma_writes? I have heard of
+> >unsolicited receive, where the data is received without
+> >consuming a WR previously put on the RQ on the receiving end, but
+> >the concept of unsolicited rdma_writes eludes me completely.  
+> 
+> unsolicited RDMA Writes means those RDMA Writes won't generate
+> CQEs on the local side. You can refer to:
+> https://www.rdmamojo.com/2014/05/27/solicited-event/
+> 
+> >
+> >I guess what you are trying to say, and what I understand is
+> >that we first put the payload into the RMB of the remote, which
+> >may require up 2 RDMA_WRITE operations, probably because we may
+> >cross the end (and start) of the array that hosts the circular
+> >buffer, and then we send a CDC message to update the cursor.
+> >
+> >For the latter a  ib_post_send() is used in smc_wr_tx_send()
+> >and AFAICT it consumes a WR from wr_tx_bufs. For the former
+> >we consume a single wr_tx_rdmas which and each wr_tx_rdmas
+> >has 2 WR allocated.  
+> 
+> Right.
 
-I hope that the clarification can become more constructive again.
+Thank you Dust Li! Unfortunately I have already spinned a v4. Let
+me add back that comment, as for people knowledgeable enough it does
+not appear to be confusing at all. I can try to improve that comment
+and maybe add a new one on the reason why we do need more WRs on the
+receive end than on the send end, after this series has been merged. Or
+if you want to do it yourself, I'm happy with it as well. In the end
+it is you who me helped get a better understanding of this :)
+
+Thank you again!
 
 Regards,
-Markus
+Halil
 
