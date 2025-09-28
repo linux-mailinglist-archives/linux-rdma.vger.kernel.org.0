@@ -1,226 +1,185 @@
-Return-Path: <linux-rdma+bounces-13718-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13719-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C29C2BA78A3
-	for <lists+linux-rdma@lfdr.de>; Sun, 28 Sep 2025 23:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E0B2BA799C
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Sep 2025 02:00:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADBDA17910D
-	for <lists+linux-rdma@lfdr.de>; Sun, 28 Sep 2025 21:27:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F586176007
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Sep 2025 00:00:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E245B2C2369;
-	Sun, 28 Sep 2025 21:26:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FFFA1C84AE;
+	Mon, 29 Sep 2025 00:00:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="UGz0E/c8"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ISK2oOvg"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CO1PR03CU002.outbound.protection.outlook.com (mail-westus2azon11010038.outbound.protection.outlook.com [52.101.46.38])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF3CB2C11E3;
-	Sun, 28 Sep 2025 21:26:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.46.38
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759094780; cv=fail; b=WcAk9OVjjbCmBREz1F62NXd7SoIJGe8LLM2VjF5u2uY4jk1tWMSG03aKj1GkNTH9UKQ9SgHZG9npsBh/Vn8sZvfCvdYtMNUpCA+VLsVjYqU/4TStN0npEmHOBo/ddyhHLu7dNm6UfIPfAHdAC0jMJ9wThBv/tVwzHM2i9cFZowA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759094780; c=relaxed/simple;
-	bh=lyzSE+5ShTnvx9eFRVjHX6V9YTGzKs2hNVmq/IPPKok=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TTIHou39P8e7nf3Vg36nSBeRjqPJZw7NnL8jZL7lTEnA+AQqt3NLSiAEfCmqGAaY4AcH8gKcoEW8uM976Tc4Byr1Af1eiw8y64EdFoOiuraN56SBR2TCfba4YnxXZ0T9v3cjvEEUND++Xa+/C5qm9TQ/0PVgbSp6wUMTtt95Ifg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=UGz0E/c8; arc=fail smtp.client-ip=52.101.46.38
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ox13dh9baKVrGAqoTLHmt0P6FlAj+pWKkx4Ak3kuGX2WavLIpfuGZphMmC4Gdb4yzfsyl40cYTERYAXrpg+khcHd/KzEeB/VwWI22Zd4bBtM84pyCHx58xnGRnIVo2QH36/So5z0v+GvC3WRZcnubEFUH6NK6PXSuZO40LLlSdrYi4SimEskXuccFLH1IMaNbdKrpt7x9nrqT5Uq3ezdkmZ49s4DX0KcAyq5P5/tcuannDddyVfp0AwXKCLu/RgTB2Mo6EFxKB7YmweOUftYqmWlAOUBXFnDZiUxXolUFaXOZ2KJayqp3sAkdVcYy3/uBB73vd4lSJGmjVdiEKg2Eg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1yEN6FYnKxNwuXK0X2JrMpR9gU+HMN+/NLGgffbcBBc=;
- b=m76v1FpH06vRRWpgURqyUs78m4TBXll7uEestPBmcQxsGOZIfQMNcN7S9cStRZyG+Jv+2y77Mj4vmGwaoYrWJqdTeOzN9fLm4bd/JzggVt8pgeLxWLfAmj2zLQYcH6sh/vsaoUtmR/zCv8BQ+QR58hmRtEZ5KVhh/QhrXfQe9pA0y+wfLDyz1wr13qnTyAsJvwIox1KY3N7cdYaqykXCIGFkvBuOQREbhLxAcMqPUSg+DgJh9KoR1dTg4S2xtDgR2e0FcAxu1i9sCZljAFtlTsZ6w89sytlkpKRN6Kj1sHyXUNCTou7tmOyqM1jh9/yat+TzePO9rOTPxX5iGbDYbA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1yEN6FYnKxNwuXK0X2JrMpR9gU+HMN+/NLGgffbcBBc=;
- b=UGz0E/c8sfkKQzfByCa/u/j+w22wvZDyoJHUZidYozM30De6xKqR7rh1lTdeUrmbwDzXWmb31EOK6v33neNourWbk2Rr+gX9GwyN2R5+rSakJTTlh1/w+iXJrZPvumW86VTqu0FMi30c82LeGFsJzTJglmDk1h+kOFS6GVG14WPJEajE4hDqMymPWBBl8QUlkrGm4kmP3uzOD0NRTGt3ZhHZ620GD0/fWW3jpoogdLi1QxciZ5AcYVdPWdPB3tdOW5UVy3mPF72AZopmBGvuiEAsiOJM5UUy7i4zIzv9WYmLM8WLWpt1SBy6Anu2IX3RfyKyle7cdnizjYt8/+bqxQ==
-Received: from PH5P222CA0004.NAMP222.PROD.OUTLOOK.COM (2603:10b6:510:34b::7)
- by DS7PR12MB6021.namprd12.prod.outlook.com (2603:10b6:8:87::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9160.15; Sun, 28 Sep 2025 21:26:14 +0000
-Received: from CY4PEPF0000EDD5.namprd03.prod.outlook.com
- (2603:10b6:510:34b:cafe::de) by PH5P222CA0004.outlook.office365.com
- (2603:10b6:510:34b::7) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9137.22 via Frontend Transport; Sun,
- 28 Sep 2025 21:26:14 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- CY4PEPF0000EDD5.mail.protection.outlook.com (10.167.241.201) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9160.9 via Frontend Transport; Sun, 28 Sep 2025 21:26:14 +0000
-Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Sun, 28 Sep
- 2025 14:26:14 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.20; Sun, 28 Sep 2025 14:26:13 -0700
-Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
- Transport; Sun, 28 Sep 2025 14:26:10 -0700
-From: Tariq Toukan <tariqt@nvidia.com>
-To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
- S. Miller" <davem@davemloft.net>
-CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
-	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Moshe Shemesh
-	<moshe@nvidia.com>
-Subject: [PATCH net-next V2 7/7] net/mlx5e: Use extack in set rxfh callback
-Date: Mon, 29 Sep 2025 00:25:23 +0300
-Message-ID: <1759094723-843774-8-git-send-email-tariqt@nvidia.com>
-X-Mailer: git-send-email 2.8.0
-In-Reply-To: <1759094723-843774-1-git-send-email-tariqt@nvidia.com>
-References: <1759094723-843774-1-git-send-email-tariqt@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A37333F6;
+	Mon, 29 Sep 2025 00:00:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1759104029; cv=none; b=cFYK+r6Bq8wUIgaYEt0RlHPBDe3wuSxfgQ03K//wPjaMrN67pkBZURb67y2aylcprY8k6LIH49Ai9Qq5zq7KdDZ8mrPd4tpSGX7j9CVZded5VfnIhb7U6jDPI1LG8ls791Xqlds0mRVXdLsQvwmtPe8jROH2hkMIg3sBPwh6HPU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1759104029; c=relaxed/simple;
+	bh=M+8HMW4Fh6OK4Hz/R6zXRnBPy/8QEo2dSANk56c/yok=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=kO25ZMEBfWwJZpL44sNVB3IrUw6/kLBdf6EafRCQwzy6rHfIjo3IEcS2ONt6p1vDEROk3FEHENZ2sGDGHQY15T/27tZLtZ8BawhBBI3PxQ+bjm1ehZ65uKYXGPq5t1Z7Wz3HcQlIr6I9Q2vNTYOa1TWSUCRNNLwgwnV/J4EIFa4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ISK2oOvg; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58SAkd4H026037;
+	Mon, 29 Sep 2025 00:00:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+	content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=1CuVaQu2ZLTLPZRT7jm5p12CJZvNLA0UOcK2fl2Bp
+	fY=; b=ISK2oOvgrxnijsn/xvCcW+VrPQSGetwotRq6tmFDRcBP9g426uNHxsABL
+	Ja1LfygRctYlFDGpACtLRwaomQvpwNBWq4rFGrlfmOlvogZ1JkUo8x1aUhgklP2h
+	qg0qOY0sYZUq40rbeMya9uS/DOEK9zYJbb/w3Y8A3lQuoj6+pYafmPmv/Hv3/N1W
+	pOoCAys0CRXQ/JIxh4a9mpRiGJXx6DAVT3610z+k+uz+kc/CQJHDSF+BLhpp7ALU
+	6ALKWWQ4rbKvYn9ygkqsosA/Muyh63DPFK1is2UtGRWw+zeNHdmOt2VAloS8nfvf
+	3WYhUcqBTo1K10CrghE+IBcuWcUCQ==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49e7e6yaw3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Sep 2025 00:00:10 +0000 (GMT)
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 58T009v6008385;
+	Mon, 29 Sep 2025 00:00:09 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49e7e6yaw0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Sep 2025 00:00:09 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58SIZDDH007292;
+	Mon, 29 Sep 2025 00:00:08 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 49eurjkfs9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 29 Sep 2025 00:00:08 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 58T004LZ53543286
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 29 Sep 2025 00:00:04 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E388920043;
+	Mon, 29 Sep 2025 00:00:03 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 914A920040;
+	Mon, 29 Sep 2025 00:00:03 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 29 Sep 2025 00:00:03 +0000 (GMT)
+From: Halil Pasic <pasic@linux.ibm.com>
+To: "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        Dust Li <dust.li@linux.alibaba.com>,
+        Sidraya Jayagond <sidraya@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Mahanta Jambigi <mjambigi@linux.ibm.com>,
+        Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
+        Guangguan Wang <guangguan.wang@linux.alibaba.com>,
+        Halil Pasic <pasic@linux.ibm.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [PATCH net-next v5 0/2] net/smc: make wr buffer count configurable 
+Date: Mon, 29 Sep 2025 01:59:59 +0200
+Message-ID: <20250929000001.1752206-1-pasic@linux.ibm.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD5:EE_|DS7PR12MB6021:EE_
-X-MS-Office365-Filtering-Correlation-Id: e6568e8d-4a11-4b91-cfa4-08ddfed5a73d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|36860700013|376014|82310400026;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?SJFRs+v6dEMuyMgeez54OyYFjjM/1mp3iaVqFYbsP0/pMtzcTc1oKBwVEs2z?=
- =?us-ascii?Q?BR+BqvTD5WsQdRUqTHvDALvgMt+ckIB4u8BE+mtK2yk3bY0SJbu6HFwB6z1D?=
- =?us-ascii?Q?DFLN7jh/YAf+1OKRMy2k6kni6FYcGtZrKasL0X6Zn8uYYav8evMww1OJR7zv?=
- =?us-ascii?Q?InmOfovpPOUz3SHc19Av+RL4ho7toq11h+QF1jn6arwgUB7ZppidSMP5bAeF?=
- =?us-ascii?Q?586LGuJI/ydsUKql/OVOotT+ze5wv++yovvg4z2GMp+b/cqv/+UfW7oZHO93?=
- =?us-ascii?Q?262Jb96ff2vNV2EV0QUaJCHicIa5U+23o1n/Lx3toaQIk88dJ5N/dS4yO6S9?=
- =?us-ascii?Q?KRDrBCI+mr2rrWLUQSnNkX8ySzC12a5jhtysx0NBUjOmvfr07t+hIiV+UQqK?=
- =?us-ascii?Q?l1GS6ckPBbt2gKdjM313tc2q/NoGvnNyD+nOt8RD8/7eNLm+ZShArlrH+Fxn?=
- =?us-ascii?Q?EAEWvs7NDO0nXChCToCqEoebU4WM12hrTZzHWnMM0XJMg0RF0vZ74fhkrKPf?=
- =?us-ascii?Q?7zSE20dHoXtA2OxGSbVV/L7hjLdQxbbvRaYScLolIGfjSTkgpm1GVSLUesnl?=
- =?us-ascii?Q?nuQADPSx/Hi3TyetUrQmmDmjQXz1xL/dPNRbXbyX2kN3ujsb9wxCTNQIyRO/?=
- =?us-ascii?Q?tjS90nn7MA/0I3dGSJDgKrX4IAv0TJmh+41xHfxPuekXSBz/rZXCvU4zib5g?=
- =?us-ascii?Q?fw03RzDopqKx2hq80i8uMm+4XJ+dJogd71sdSfd3S0SrHAWdMZPbOp1xNKvc?=
- =?us-ascii?Q?s9iew9GNvU3TDnJ9ls6/S2TXuhNWNBMdAY1gwjEDOd9A9iUWB9kjW25xFiUn?=
- =?us-ascii?Q?RQ+cX3ag+GGpILRrqFc7NT9Da7jHKzSAuhHjtAsUDDZ1UFYZXwZ53KuPXZme?=
- =?us-ascii?Q?JeeknHB/IW0UAT2zZTz/+WhqqG3jNbXf9EAHf28w2bcZGYC6GEtZtVq98MD1?=
- =?us-ascii?Q?O1dFEaviWSjJoQTK6XBBd14K+J+Cy9YFX/syB8kEb6aVdXtyoGpx3TIbdJ8O?=
- =?us-ascii?Q?JtmXqOCnuzIxos0ViQL1V1ykXYiRB//tJtDP082g5UhpuSFWsWJq93PtXqgd?=
- =?us-ascii?Q?I2SMT6sUMeEcC0ttlWUNPJV2ylHtKMVZnxG4KFJOvwSAg6VfvbSeeP+e4SbF?=
- =?us-ascii?Q?P5BDmBHFRhW14fj9s7LF20d6Be8GH6jZc8tZ24n3rLOQdI42DfEtd51Nt4aV?=
- =?us-ascii?Q?v7x+L23BaMVbAEFWcHAJR6B/k8ZXDtGhbjmbNOVXtM/wvYv2VRNv6TBu/7BS?=
- =?us-ascii?Q?qot5B+Suo1ek1Wh8zNLJgxOmcNWrqMs4HTsjC2EFy0owQ8OL5DOgahAS6p7s?=
- =?us-ascii?Q?ZiZsEWLBzRmljy4A0mtnYtC4kHkdd1mw+HzRerc/gjrd5eAeNlgjKv8clqn4?=
- =?us-ascii?Q?7m6qmjJUSwSnj6qKyiIOoImmJRMJZJFwi4N+h0GiDcJO2sYimuOw7IYRdJaT?=
- =?us-ascii?Q?eucUAo1Kxg2sIOOJessQnCSaZqXiw6ROWR/TxlfZU2g9y0EYxnb6mmWZqgze?=
- =?us-ascii?Q?nA3WI2X4VchnGSKGdilwrFw1JSpsRm5Y8XcEmixq8qi8AXLVhs0Jncg9wlHM?=
- =?us-ascii?Q?uyAO0qtad5M7A5tWgTk=3D?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(36860700013)(376014)(82310400026);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2025 21:26:14.2742
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6568e8d-4a11-4b91-cfa4-08ddfed5a73d
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000EDD5.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6021
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: CutAPlPge7EgJjykul8zpkpGuZSW6pCy
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTI3MDAyMCBTYWx0ZWRfXyY6wFq71PSLt
+ UUE0Wq5sOoRfW/SEgTHotPyeXPiexkUSWQ0K9vFbqEnODPQR8F/fwfFI0Jp2RmGedD2yiElYBrw
+ p95v2p5fSHAccDTdbTEH0/+t/sVg+8/ahdtvmfqKYQqQTaDqp14Edkq2eRtpyN/k9zyX9KZo2jh
+ 3J9ePv17iUPeQj5eAUH8fx1fOuX4AC4tzqHZLbxxsoqxI710R0AeEs3TiYbib+tAr+9Ob8pii3g
+ cQyagIZZaZsiCnkxUfawDGN14zeTRTRpI1Jm7n5KIKBONkBrl/KB3mtVcmX/PybGgTVtlJ8sSqx
+ 5f1EzH1oqEoy1wGUMbroyok4K56FOV4n0hlQ03+wpPQP1UV7kn7pXWuXJFMoebh/7MOa2PoQDrn
+ nnHYVTg5052pwpQuEdMHwo4pf9w1jw==
+X-Proofpoint-GUID: 32lPrucm31XxhfVay1fX8mcyZn2Sgkhh
+X-Authority-Analysis: v=2.4 cv=Jvj8bc4C c=1 sm=1 tr=0 ts=68d9cc0a cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=yJojWOMRYYMA:10 a=OPAOpny1AAAA:8 a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8
+ a=piJGGMyLFvZckxoXyWEA:9 a=Vt4qOV5uLRUYeah0QK8L:22 a=cPQSjfK2_nFv0Q5t_7PE:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-09-28_10,2025-09-26_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ lowpriorityscore=0 malwarescore=0 priorityscore=1501 impostorscore=0
+ suspectscore=0 phishscore=0 bulkscore=0 clxscore=1015 spamscore=0
+ adultscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2509150000
+ definitions=main-2509270020
 
-From: Gal Pressman <gal@nvidia.com>
+The current value of SMC_WR_BUF_CNT is 16 which leads to heavy
+contention on the wr_tx_wait workqueue of the SMC-R linkgroup and its
+spinlock when many connections are competing for the work request
+buffers. Currently up to 256 connections per linkgroup are supported.
 
-The ->set/create/modify_rxfh() callbacks now pass a valid extack instead
-of NULL through netlink [1]. In case of an error, reflect it through
-extack instead of a dmesg print.
+To make things worse when finally a buffer becomes available and
+smc_wr_tx_put_slot() signals the linkgroup's wr_tx_wait wq, because
+WQ_FLAG_EXCLUSIVE is not used all the waiters get woken up, most of the
+time a single one can proceed, and the rest is contending on the
+spinlock of the wq to go to sleep again.
 
-[1]
-commit c0ae03588bbb ("ethtool: rss: initial RSS_SET (indirection table handling)")
+Addressing this by simply bumping SMC_WR_BUF_CNT to 256 was deemed
+risky, because the large-ish physically continuous allocation could fail
+and lead to TCP fall-backs. For reference see this discussion thread on
+"[PATCH net-next] net/smc: increase SMC_WR_BUF_CNT" (in archive
+https://lists.openwall.net/netdev/2024/11/05/186), which concludes with
+the agreement to try to come up with something smarter, which is what
+this series aims for.
 
-Signed-off-by: Gal Pressman <gal@nvidia.com>
-Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+Additionally if for some reason it is known that heavy contention is not
+to be expected going with something like 256 work request buffers is
+wasteful. To address these concerns make the number of work requests
+configurable, and introduce a back-off logic with handles -ENOMEM form
+smc_wr_alloc_link_mem() gracefully.
 ---
- .../net/ethernet/mellanox/mlx5/core/en_ethtool.c  | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-index fd45384a855b..53e5ae252eac 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
-@@ -1494,7 +1494,8 @@ static int mlx5e_get_rxfh(struct net_device *netdev, struct ethtool_rxfh_param *
- }
- 
- static int mlx5e_rxfh_hfunc_check(struct mlx5e_priv *priv,
--				  const struct ethtool_rxfh_param *rxfh)
-+				  const struct ethtool_rxfh_param *rxfh,
-+				  struct netlink_ext_ack *extack)
- {
- 	unsigned int count;
- 
-@@ -1504,8 +1505,10 @@ static int mlx5e_rxfh_hfunc_check(struct mlx5e_priv *priv,
- 		unsigned int xor8_max_channels = mlx5e_rqt_max_num_channels_allowed_for_xor8();
- 
- 		if (count > xor8_max_channels) {
--			netdev_err(priv->netdev, "%s: Cannot set RSS hash function to XOR, current number of channels (%d) exceeds the maximum allowed for XOR8 RSS hfunc (%d)\n",
--				   __func__, count, xor8_max_channels);
-+			NL_SET_ERR_MSG_FMT_MOD(
-+				extack,
-+				"Number of channels (%u) exceeds the max for XOR8 RSS (%u)",
-+				count, xor8_max_channels);
- 			return -EINVAL;
- 		}
- 	}
-@@ -1524,7 +1527,7 @@ static int mlx5e_set_rxfh(struct net_device *dev,
- 
- 	mutex_lock(&priv->state_lock);
- 
--	err = mlx5e_rxfh_hfunc_check(priv, rxfh);
-+	err = mlx5e_rxfh_hfunc_check(priv, rxfh, extack);
- 	if (err)
- 		goto unlock;
- 
-@@ -1550,7 +1553,7 @@ static int mlx5e_create_rxfh_context(struct net_device *dev,
- 
- 	mutex_lock(&priv->state_lock);
- 
--	err = mlx5e_rxfh_hfunc_check(priv, rxfh);
-+	err = mlx5e_rxfh_hfunc_check(priv, rxfh, extack);
- 	if (err)
- 		goto unlock;
- 
-@@ -1590,7 +1593,7 @@ static int mlx5e_modify_rxfh_context(struct net_device *dev,
- 
- 	mutex_lock(&priv->state_lock);
- 
--	err = mlx5e_rxfh_hfunc_check(priv, rxfh);
-+	err = mlx5e_rxfh_hfunc_check(priv, rxfh, extack);
- 	if (err)
- 		goto unlock;
- 
+Changelog:
+---------
+v5:
+ * Added back a code comment about the value of qp_attr.cap.max_send_wr 
+   after Dust Li's explanation of the comment itsef and the logic behind 
+   it, and removed the paragraph from the commit message that concerns 
+   itself with the removal of that comment. (Dust Li)
+v4: https://lore.kernel.org/netdev/20250927232144.3478161-1-pasic@linux.ibm.com/
+v3: https://lore.kernel.org/netdev/20250921214440.325325-1-pasic@linux.ibm.com/
+v2: https://lore.kernel.org/netdev/20250908220150.3329433-1-pasic@linux.ibm.com/
+v1: https://lore.kernel.org/all/20250904211254.1057445-1-pasic@linux.ibm.com/
+
+Halil Pasic (2):
+  net/smc: make wr buffer count configurable
+  net/smc: handle -ENOMEM from smc_wr_alloc_link_mem gracefully
+
+ Documentation/networking/smc-sysctl.rst | 40 +++++++++++++++++++++++++
+ include/net/netns/smc.h                 |  2 ++
+ net/smc/smc_core.c                      | 34 ++++++++++++++-------
+ net/smc/smc_core.h                      |  8 +++++
+ net/smc/smc_ib.c                        | 10 +++----
+ net/smc/smc_llc.c                       |  2 ++
+ net/smc/smc_sysctl.c                    | 22 ++++++++++++++
+ net/smc/smc_sysctl.h                    |  2 ++
+ net/smc/smc_wr.c                        | 31 +++++++++----------
+ net/smc/smc_wr.h                        |  2 --
+ 10 files changed, 121 insertions(+), 32 deletions(-)
+
+
+base-commit: e835faaed2f80ee8652f59a54703edceab04f0d9
 -- 
-2.31.1
+2.48.1
 
 
