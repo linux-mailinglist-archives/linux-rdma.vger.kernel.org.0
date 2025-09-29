@@ -1,205 +1,196 @@
-Return-Path: <linux-rdma+bounces-13726-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13727-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8BC2BA899F
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Sep 2025 11:27:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73791BA8C84
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Sep 2025 11:54:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27E9418809EE
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Sep 2025 09:27:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63F0D189FF56
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Sep 2025 09:55:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5AE1299923;
-	Mon, 29 Sep 2025 09:23:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 174BF2F068B;
+	Mon, 29 Sep 2025 09:54:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="CGCadrZb"
+	dkim=pass (2048-bit key) header.d=queasysnail.net header.i=@queasysnail.net header.b="rSEb0e6q";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Eic64eEs"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from fout-b2-smtp.messagingengine.com (fout-b2-smtp.messagingengine.com [202.12.124.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DDBA2877E2;
-	Mon, 29 Sep 2025 09:23:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C4CE2BDC2C;
+	Mon, 29 Sep 2025 09:54:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759137788; cv=none; b=R7/YAM5GP0eACoUBFNhhHazcHeHTtS5d87Fud4x8XnMrDq53WqGwzIfMgozfbQxOItkoxS6NjdM5ctPtz6ZNVAM4N18Qw8Jn4QgFgOVXfxTUMhkZh7H+URQDq7I3Heha9jmc1tBoQZwY5Dzf11X7CSTv47+awp7FfEjH9dZJDzw=
+	t=1759139649; cv=none; b=V8z7gGujBdgdn5PG89G8MwwEjQwZi2JLWkeF0JNO6bBfz4C1vcfC6UT05+lLSajEeJnD5GYag5g3b2QDKXSX5uMTAZRzzIMliZg9W3hlydKA8smXEiSVM3sxYJ+MzFPlib3ypOUYAMSx3dGRLbBv3WItXnqzNYqCNdhn4kLJnog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759137788; c=relaxed/simple;
-	bh=o38UPIN29bLniqPiPhFpZrIMTLX/LLvulgo6lweFGic=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NijNDWI/8y1q5AG1KZV/DOgdP8UoUgGlMiBE3ncmNnRyeRfq+y4rsEwI+f7GKydE/EiNiQXIxoLt7N/+nsQcZs+O8AEuQcnc1ob5w9W4oSKCFpkgmqwEZlnMivf0Tkz4WNXS+3rjjaUVVB0SuFWgiJIQddSx9MJWisIFOAPHcvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=CGCadrZb; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 58T3eQYh010350;
-	Mon, 29 Sep 2025 09:22:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=s1gJnQ
-	2qSyMcjpCBSUPDDpGvvrpJYUiX69aCYoKB4ko=; b=CGCadrZbpOzw/Gsgjhf4/F
-	SyVr0VsvCuX15NyQWXc1x1jE3nrrsctfWfK25rL1vp2SiuKzqT8zEpg3lJxO1qaQ
-	WdWPr87Uz0mpwrtxms1FkbzL5rjTCbEKtrN1m3Fj1LJ3MIXnLgxCKNpPkNukK6v2
-	40GlKT4sWxtayuXTrN+BuQRByDAiQIxT3AogN3SL8SCml3L83q+rmUOO/jOBS9Oa
-	qqHwBjqQGfR8BMUXMAwcwvOMdzbDtZFcTBtv40r67Q86+2blPzVWsdQwwrNgcN1r
-	HiZfspiBCyB7n1VHUqHUQ6b4he+R88NaTckMr1qB/RCzQFv5GAz/600r1EZX5C5A
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49e6bh9c97-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Sep 2025 09:22:58 +0000 (GMT)
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 58T9FOkB025149;
-	Mon, 29 Sep 2025 09:22:58 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49e6bh9c94-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Sep 2025 09:22:58 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 58T8xJb5026736;
-	Mon, 29 Sep 2025 09:22:57 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 49eu8mnbgg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 29 Sep 2025 09:22:57 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 58T9MreZ26607972
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 29 Sep 2025 09:22:53 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5AC5C20043;
-	Mon, 29 Sep 2025 09:22:53 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0D3DA20040;
-	Mon, 29 Sep 2025 09:22:53 +0000 (GMT)
-Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.152.224.212])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 29 Sep 2025 09:22:53 +0000 (GMT)
-Date: Mon, 29 Sep 2025 11:22:51 +0200
-From: Halil Pasic <pasic@linux.ibm.com>
-To: Dust Li <dust.li@linux.alibaba.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni
- <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
-        Jonathan Corbet
- <corbet@lwn.net>,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        Sidraya Jayagond
- <sidraya@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Mahanta
- Jambigi <mjambigi@linux.ibm.com>,
-        Tony Lu <tonylu@linux.alibaba.com>, Wen
- Gu <guwen@linux.alibaba.com>,
-        Guangguan Wang
- <guangguan.wang@linux.alibaba.com>,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-s390@vger.kernel.org, Halil Pasic
- <pasic@linux.ibm.com>
-Subject: Re: [PATCH net-next v5 2/2] net/smc: handle -ENOMEM from
- smc_wr_alloc_link_mem gracefully
-Message-ID: <20250929112251.72ab759d.pasic@linux.ibm.com>
-In-Reply-To: <aNnl_CfV0EvIujK0@linux.alibaba.com>
-References: <20250929000001.1752206-1-pasic@linux.ibm.com>
-	<20250929000001.1752206-3-pasic@linux.ibm.com>
-	<aNnl_CfV0EvIujK0@linux.alibaba.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1759139649; c=relaxed/simple;
+	bh=v+wEtl5tHLqrDwnWMVgOrOW1sli01owpUUF4Of7bsgY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jowkdct0TqysS+QxpYxibI0hiFX3YS30zc1Oon99elSiyPuxudmjWJsqas6jQLhMUnUfX2t8IVcNTkqv9zwEYU5NEqWd8eIltHxa5TUPyTYea/HuFsdL2y2s93EC6uKLMvj9+d5XfFCiq/wzZC4PKYLJlkF1ZrZUWbJLd41gJHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net; spf=pass smtp.mailfrom=queasysnail.net; dkim=pass (2048-bit key) header.d=queasysnail.net header.i=@queasysnail.net header.b=rSEb0e6q; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Eic64eEs; arc=none smtp.client-ip=202.12.124.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=queasysnail.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=queasysnail.net
+Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
+	by mailfout.stl.internal (Postfix) with ESMTP id AA6021D000DA;
+	Mon, 29 Sep 2025 05:54:04 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-06.internal (MEProxy); Mon, 29 Sep 2025 05:54:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=queasysnail.net;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm3; t=1759139644; x=
+	1759226044; bh=/rc71YCEHhKLBV9D9Me9cJn+cjShEvg2fEZj5cVG/80=; b=r
+	SEb0e6qK7s1Nhg7X/zrH5w/UhJiZB+fCjpTk2pVImI5lSwt4g+nnHjrs7eDtFQVA
+	sQUjBtV86x7Puhbxo/AhNukgZmxJat9Vrju6hbQNsjmGoh0FYQqVuZpLX79PuZ91
+	iQgKnlr4g868kDELzcIU5T4J1NiMp1HFoL/9f1DofrshNxvEdp121K8c0qzprX6v
+	bipxSPAkKK8EPj6WruI43uuCnrCpiCUJLhDR0uUN7EhauwjPCzc73jpbUvm8XBcL
+	WY8vGO7BzgQfCGR//yqx3fQIDH3xIYUjY7AP7k6N0lYK3ZvVZxHWwSvf8gbVtoEi
+	pYIxbYqEjJIj7YmCGf20Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1759139644; x=1759226044; bh=/rc71YCEHhKLBV9D9Me9cJn+cjShEvg2fEZ
+	j5cVG/80=; b=Eic64eEsuV6/StBR02jIhXz6jcjLCkOF4JQjpjPJBW618CEMTZq
+	GOX/XKWn1Hp5GBxzMj875Yst+DgkSKYodgw2RTbxeWTshyVtK8i/51IfYPIpAFeO
+	vmDg+nmeTMqAYZtWRAjrwOWHfxCp7MQmxsJ2jjTAJOgkICbz8zGJp9nqI8d3jkiG
+	G5zgpF/B5tUh4BcwHXztGZt98g6iecLzPPU/idx+1tjNJi3y/p3Wnq4yzMUvWVkJ
+	paI7k9CkUPTPH8fw/X0mluECRjRQmBIWOQxQThdJQytfc/U962l64UANtk3yQJDU
+	T+vBSPRD8/GWV64VEl/+vad5rPWlo7UWl4g==
+X-ME-Sender: <xms:PFfaaCiL2pFsfzulugGhltWX93suoortmGzIG9DO5Ae6siwbeunagQ>
+    <xme:PFfaaImPph8F7H74Ip1I2Oto3VnaplIrgUjhp2M7tnyjxSSc9M3EGHuXiYge1ERpa
+    3yYg2rov06Hp5rGHU5lDG5HWgL0biP66dXPm2oDAtz45284p_D2uZs>
+X-ME-Received: <xmr:PFfaaDq7fVOYYa6arnJvPXpq9QWseFlCUKMacbYh8yii2WEbegayKHaKNB6v>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdejjeejtdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpeffhffvvefukfhfgggtuggjsehttdertddttdejnecuhfhrohhmpefurggsrhhinhgr
+    ucffuhgsrhhotggruceoshgusehquhgvrghshihsnhgrihhlrdhnvghtqeenucggtffrrg
+    htthgvrhhnpeeuhffhfffgfffhfeeuiedugedtfefhkeegteehgeehieffgfeuvdeuffef
+    gfduffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hsugesqhhuvggrshihshhnrghilhdrnhgvthdpnhgspghrtghpthhtohepudeipdhmohgu
+    vgepshhmthhpohhuthdprhgtphhtthhopehshhhshhhithhrihhtsehnvhhiughirgdrtg
+    homhdprhgtphhtthhopehkuhgsrgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepthgr
+    rhhiqhhtsehnvhhiughirgdrtghomhdprhgtphhtthhopegvughumhgriigvthesghhooh
+    hglhgvrdgtohhmpdhrtghpthhtohepphgrsggvnhhisehrvgguhhgrthdrtghomhdprhgt
+    phhtthhopegrnhgurhgvfidonhgvthguvghvsehluhhnnhdrtghhpdhrtghpthhtohepug
+    grvhgvmhesuggrvhgvmhhlohhfthdrnhgvthdprhgtphhtthhopehsrggvvggumhesnhhv
+    ihguihgrrdgtohhmpdhrtghpthhtoheplhgvohhnsehkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:PFfaaMIRvUf6bUVE3fnJWlnUVp1hkEtLQMeRV3eUeJcv1dTLsXcQFw>
+    <xmx:PFfaaHD3SHp-4n1tjYdfJYZW7D8pKjvoZHPj0XNKR-opAYa591WxIw>
+    <xmx:PFfaaG5GBqxIzocndHZte0a_wM-IlgfX1UuJ4znnUioqYy-5PRSF-g>
+    <xmx:PFfaaLEOWgMlarRMyiq1pj7p86xSR4rwlKdhr36EMjssVgqF6kcYcQ>
+    <xmx:PFfaaGp_rF8iLiksS-1kTyh9KMojhfeOrAZYPMBbe7sK6kmYN4C_BweF>
+Feedback-ID: i934648bf:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 29 Sep 2025 05:54:03 -0400 (EDT)
+Date: Mon, 29 Sep 2025 11:54:01 +0200
+From: Sabrina Dubroca <sd@queasysnail.net>
+To: Shahar Shitrit <shshitrit@nvidia.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, Tariq Toukan <tariqt@nvidia.com>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
+	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Gal Pressman <gal@nvidia.com>, Boris Pismenny <borisp@nvidia.com>
+Subject: Re: [PATCH net 2/3] net: tls: Cancel RX async resync request on
+ rdc_delta overflow
+Message-ID: <aNpXOS3DmdtD9RU0@krikkit>
+References: <1757486861-542133-1-git-send-email-tariqt@nvidia.com>
+ <1757486861-542133-3-git-send-email-tariqt@nvidia.com>
+ <20250914115308.6e991f7d@kernel.org>
+ <0b7a83ec-d505-40c3-afa4-8f6474cd78d9@nvidia.com>
+ <aNFxIfD2aPpB11dC@krikkit>
+ <cd0210cc-2531-4711-8a15-2fbae77cbf0a@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=Se/6t/Ru c=1 sm=1 tr=0 ts=68da4ff2 cx=c_pps
- a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
- a=kj9zAlcOel0A:10 a=yJojWOMRYYMA:10 a=SRrdq9N9AAAA:8 a=Rw7vO3jwzhc16tXXxd0A:9
- a=CjuIK1q_8ugA:10 a=cPQSjfK2_nFv0Q5t_7PE:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTI3MDAxMCBTYWx0ZWRfX1CpacjLlkMq6
- MIbY1/i9PfsW6QpiUG7SAbznR9jJwDMtVQ+bO+jWx4E7eVjDBSuFqAAvRFtVeu2M/xzfvf4w5n8
- XiOUb2qKAQgkxrD7/bpHgFK25I6vtFcuyDmDUQMVs0J+IdIB7cdm5CqyU8ytioHKMG67+Ic9L0f
- IJ9dMqnhFTVeNAQvcNz8VC8eFxYRuqChKT/RcfiSkl+zveLFLoXMhZXWzwfwmxvPoyQlOBdyY47
- l93E7Oth99sEfePpNf09VZxKBLwJCf+0EKXLmXwaSL4LnFH6jOHdIAA1PkdsgDj+a2yb6BRNMh0
- yUtzU7ssrNIZqmpHGAK0vaSJcrJRNz4qT8VqU0fEIJiQRHiLoVe/8HK1bkVjNtubGlUlwkUzgu4
- EG4nHcgYOyC9LtAXenpQZiE0S0tPNw==
-X-Proofpoint-GUID: nGVjQKKzu6o9ZAcaEMtguM9SGulJrRt2
-X-Proofpoint-ORIG-GUID: iHKcb-bTY_QZrCitDOpNcCuxb1IVoaeM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-09-29_03,2025-09-29_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 malwarescore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0
- clxscore=1015 phishscore=0 priorityscore=1501 adultscore=0 spamscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2509150000 definitions=main-2509270010
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <cd0210cc-2531-4711-8a15-2fbae77cbf0a@nvidia.com>
 
-On Mon, 29 Sep 2025 09:50:52 +0800
-Dust Li <dust.li@linux.alibaba.com> wrote:
-
-> >@@ -175,6 +175,8 @@ struct smc_link {
-> > 	struct completion	llc_testlink_resp; /* wait for rx of testlink */
-> > 	int			llc_testlink_time; /* testlink interval */
-> > 	atomic_t		conn_cnt; /* connections on this link */
-> >+	u16			max_send_wr;
-> >+	u16			max_recv_wr;  
+2025-09-28, 09:35:48 +0300, Shahar Shitrit wrote:
 > 
-> Here, you've moved max_send_wr/max_recv_wr from the link group to individual links.
-> This means we can now have different max_send_wr/max_recv_wr values on two
-> different links within the same link group.
-
-Only if allocations fail. Please notice that the hunk:
-
---- a/net/smc/smc_core.c
-+++ b/net/smc/smc_core.c
-@@ -810,6 +810,8 @@ int smcr_link_init(struct smc_link_group *lgr, struct smc_link *lnk,
- 	lnk->clearing = 0;
- 	lnk->path_mtu = lnk->smcibdev->pattr[lnk->ibport - 1].active_mtu;
- 	lnk->link_id = smcr_next_link_id(lgr);
-+	lnk->max_send_wr = lgr->max_send_wr;
-+	lnk->max_recv_wr = lgr->max_recv_wr;
-
-initializes the link values with the values from the lgr which are in
-turn picked up form the systctls at lgr creation time. I have made an
-effort to keep these values the same for each link, but in case the
-allocation fails and we do back off, we can end up with different values
-on the links. 
-
-The alternative would be to throw in the towel, and not create
-a second link if we can't match what worked for the first one.
-
 > 
-> Since in Alibaba we doesn't use multi-link configurations, we haven't tested
-> this scenario. Have you tested the link-down handling process in a multi-link
-> setup?
-> 
+> On 22/09/2025 18:54, Sabrina Dubroca wrote:
+> > 2025-09-22, 10:18:52 +0300, Shahar Shitrit wrote:
+> >>
+> >>
+> >> On 14/09/2025 21:53, Jakub Kicinski wrote:
+> >>> On Wed, 10 Sep 2025 09:47:40 +0300 Tariq Toukan wrote:
+> >>>> When a netdev issues an RX async resync request, the TLS module
+> >>>> increments rcd_delta for each new record that arrives. This tracks
+> >>>> how far the current record is from the point where synchronization
+> >>>> was lost.
+> >>>>
+> >>>> When rcd_delta reaches its threshold, it indicates that the device
+> >>>> response is either excessively delayed or unlikely to arrive at all
+> >>>> (at that point, tcp_sn may have wrapped around, so a match would no
+> >>>> longer be valid anyway).
+> >>>>
+> >>>> Previous patch introduced tls_offload_rx_resync_async_request_cancel()
+> >>>> to explicitly cancel resync requests when a device response failure
+> >>>> is detected.
+> >>>>
+> >>>> This patch adds a final safeguard: cancel the async resync request when
+> >>>> rcd_delta crosses its threshold, as reaching this point implies that
+> >>>> earlier cancellation did not occur.
+> >>>
+> >>> Missing a Fixes tag
+> >> Will add
+> >>>
+> >>>> diff --git a/net/tls/tls_device.c b/net/tls/tls_device.c
+> >>>> index f672a62a9a52..56c14f1647a4 100644
+> >>>> --- a/net/tls/tls_device.c
+> >>>> +++ b/net/tls/tls_device.c
+> >>>> @@ -721,8 +721,11 @@ tls_device_rx_resync_async(struct tls_offload_resync_async *resync_async,
+> >>>>  		/* shouldn't get to wraparound:
+> >>>>  		 * too long in async stage, something bad happened
+> >>>>  		 */
+> >>>> -		if (WARN_ON_ONCE(resync_async->rcd_delta == USHRT_MAX))
+> >>>> +		if (WARN_ON_ONCE(resync_async->rcd_delta == USHRT_MAX)) {
+> >>>> +			/* cancel resync request */
+> >>>> +			atomic64_set(&resync_async->req, 0);
+> >>>
+> >>> we should probably use the helper added by the previous patch (I'd
+> >>> probably squash them TBH)
+> >>
+> >> It's not trivial to use the helper here, since we don't have the socket.
+> > 
+> > tls_device_rx_resync_async doesn't currently get the socket, but it
+> > has only one caller, tls_device_rx_resync_new_rec, which does. So
+> > tls_device_rx_resync_async could easily get the socket. Or just pass
+> > resync_async to tls_offload_rx_resync_async_request_cancel, since
+> > that's what it really needs?
+> > 
+> yes these are options, but we don't like too much passing the socket to
+> tls_device_rx_resync_new_rec() merely for this matter.
 
-Mahanta was so kind to do most of the testing on this. I don't think
-I've tested this myself. @Mahanta: Would you be kind to give this a try
-if it wasn't covered in the past? The best way is probably to modify
-the code to force such a scenario. I don't think it is easy to somehow
-trigger in the wild.
+Why not? If you felt the need to add a comment saying we're canceling
+the request, using a helper instead that says it does the canceling is
+a pretty decent reason to add whatever argument
+tls_device_rx_resync_async needs (or swap resync_async for the socket
+if you don't want to add another argument).
 
-BTW I don't expect any problems. I think at worst the one link would
-end up giving worse performance than the other, but I guess that can
-happen for other reasons as well (like different HW for the two links).
+> Also we wanted to
+> keep tls_offload_rx_resync_async_request_cancel in the same format of
+> tls_offload_rx_resync_async_request_start/end meaning to have the socket
+> as a parameter.
 
-But I think getting some sort of a query interface which would tell
-us how much did we end up with down the road would be a good idea anyway.
+Then they could easily be changed to make the 3 helpers consistent
+(all taking resync_async), since
+tls_offload_rx_resync_async_request_start/end are used exactly once
+each.
 
-And I hope we can switch to vmalloc down the road as well, which would
-make back off less likely.
-
-> Otherwise, the patch looks good to me.
-> 
-
-Thank you very much!
-
-Regards,
-Halil
+-- 
+Sabrina
 
