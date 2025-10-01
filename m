@@ -1,180 +1,189 @@
-Return-Path: <linux-rdma+bounces-13754-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13755-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BE53BAFE2D
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Oct 2025 11:38:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 501C2BB003D
+	for <lists+linux-rdma@lfdr.de>; Wed, 01 Oct 2025 12:30:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDA421C7806
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Oct 2025 09:38:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DB44167707
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Oct 2025 10:30:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D79922D9ED7;
-	Wed,  1 Oct 2025 09:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B175E2BEFE3;
+	Wed,  1 Oct 2025 10:30:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ZSXykRCi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LN4oECF6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB5B278150;
-	Wed,  1 Oct 2025 09:38:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8E8D2BDC0C
+	for <linux-rdma@vger.kernel.org>; Wed,  1 Oct 2025 10:30:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759311495; cv=none; b=ELZTFnKh4t1jmkWXNY5jzf/DUfQrCntBGkqwWFHlZLiPvXGkWxUKNCkBzZJ9QIuZUIRKXJvSS6E1lMCWIyZsmE8oeZDgzjknue/HXq0xooPjtgn2+mAdaHO8NVAVGty4Cv+RJmBhSIGJfOclIn3R8QKQfWLuvrtxU3KaxGB73/4=
+	t=1759314606; cv=none; b=Q10LyQFfWIFENjt92VtFlLYS3LYeV3aN8ML05WLQeTosIta50Ei72z6f78I64hYFQ8eXbtAIkfoirS1M4M+XGAdkEY7ebIn5Hu7qf4fJn+ZfMhL+R82Suu2+Eha82ir2q6RJ3vIk8JjYwpTUm+TKALtECaglyO1QQgeQHpG+Has=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759311495; c=relaxed/simple;
-	bh=HBNLnWqag4y3UT0dBQ5pPCBHzHPEBNk+pQGMnJzp98M=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=k0iRpTWV373bGnNgCaAJ6gIroMZN+7qKgn2WNRwH/ZZcKqvbflXcziIZb1um1UyqjowRa43QuevFoLkg3AqTtj6SOQAiyS4njqpMWXutnkA5f3wxZ2Sop6UgAi/HLAGS6VuaMJfsXgSgEOrK+pvegzc7SnBBrY0wItIzxpF9T44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ZSXykRCi; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5916Y4DL008978;
-	Wed, 1 Oct 2025 09:38:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=dZJ4bR
-	wYxvI8Llc1XXA1o+1TApcKPXxvoY49BSpv3gI=; b=ZSXykRCiCDi9qSn/D4pq0Y
-	H8vOXkVzvAt8+L3rfNy7XVF9JOkvzOKQf/TrxsOVXhGBOeHFrr54mRCqX2H9bbBj
-	xuHyF+oNuvPK/SdpIy8q8rXR8dnXe8txGh3gLLyfpWeGgGxA++jGFq+T51FM+AV4
-	cqy+uKtMd+tLcgMAEN9dnIauaMt+v6kptdJ48d7fiTx9pvv46qUe6eumgb9teeZC
-	6bex0+24uKEpseR6JOjIBzv/IOP0mu9gX/RzqdOZnfOa2uSP9HlpLbT1uJrhQUkq
-	15usyxINfaLSKu2YMs0ImDCRvqSqEhy74vwjPsI37lgp0x73e3d2nyhQ0Nsgm70Q
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49e5bqx33q-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 01 Oct 2025 09:37:59 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5919bx4m022819;
-	Wed, 1 Oct 2025 09:37:59 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49e5bqx33k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 01 Oct 2025 09:37:59 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5915aJdN024191;
-	Wed, 1 Oct 2025 09:37:58 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 49evy17rhc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 01 Oct 2025 09:37:58 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5919bsY456951258
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 1 Oct 2025 09:37:54 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6E50120043;
-	Wed,  1 Oct 2025 09:37:54 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 54E1D20040;
-	Wed,  1 Oct 2025 09:37:53 +0000 (GMT)
-Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.111.14.128])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with SMTP;
-	Wed,  1 Oct 2025 09:37:53 +0000 (GMT)
-Date: Wed, 1 Oct 2025 11:37:51 +0200
-From: Halil Pasic <pasic@linux.ibm.com>
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: Dust Li <dust.li@linux.alibaba.com>,
-        "David S. Miller"
- <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
- <kuba@kernel.org>,
-        Simon Horman <horms@kernel.org>, Jonathan Corbet
- <corbet@lwn.net>,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        Sidraya Jayagond
- <sidraya@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Mahanta
- Jambigi <mjambigi@linux.ibm.com>,
-        Tony Lu <tonylu@linux.alibaba.com>, Wen
- Gu <guwen@linux.alibaba.com>,
-        Guangguan Wang
- <guangguan.wang@linux.alibaba.com>,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-s390@vger.kernel.org, Halil Pasic
- <pasic@linux.ibm.com>
-Subject: Re: [PATCH net-next v5 2/2] net/smc: handle -ENOMEM from
- smc_wr_alloc_link_mem gracefully
-Message-ID: <20251001113751.17e9eb31.pasic@linux.ibm.com>
-In-Reply-To: <acad498b-06e6-4639-b389-ef954e4c6abc@redhat.com>
+	s=arc-20240116; t=1759314606; c=relaxed/simple;
+	bh=lpcbaTnRUfRuUjlxvKbi7MippNxGb5EWhV7oCbjdFdE=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=famzGoyBI3q4CeDfpiNasJfLzyEXKBG1OFBJKhOfl2RoRnBAs7CSehrlYoYJGyzQ/k9Y22HudbYoJbbS/VpLyW1UZLj0QcR+dkIQSE+sEmsKRdBkAJVyL3wItPTf+Sno0MxkRbQscdtE1t6hXhIEeCAWOaKUPgHvt5T5p0Be0EY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LN4oECF6; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-33082aed31dso7770682a91.3
+        for <linux-rdma@vger.kernel.org>; Wed, 01 Oct 2025 03:30:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759314604; x=1759919404; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Fvvc2wJV4y/adOnS6TVe7Zorj1unil+xBTIrzA8bkw=;
+        b=LN4oECF6HYqrTDe+J/1iFgvvBgpF+ylX/BvnGJ2gzWGqCOLBwZWzVdVZe4YDBcofmA
+         WRGYXuZgjyGX4wJyaCo5qH9daAPc+L9Z+dZ0coRPFX88n5596085TpgMmfcSrQ1pr3Rs
+         qG07v2FlTmy/4HxWEeme1eptGO9PgQ8Nay2iwYnvZkCGT3tkx3q09RPAibF/iUnJDh/f
+         HrnFByyQmiinRkIQTG/Fdk2pxRRbHCBd1HnnJ5w6llR8z+uBoaMMa9xPQ3mpcXhdMtDx
+         t9EWKjOEyjBE1uwIVJ3ayJz4Wy4TzVgev76WVQNCUfKGxwCRmivNXvrpXEVfypdWca1/
+         9EZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759314604; x=1759919404;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+Fvvc2wJV4y/adOnS6TVe7Zorj1unil+xBTIrzA8bkw=;
+        b=qtLbCL+gRRsUqTgF0LtZMFNnawHSjrKTAiCXKrC3PcmrXF2k1paPb12sA8VP7POuiB
+         ACIhzSTLNAr+3NFEEBGzCS6vPUl2ikRBy6N+M/xUc6IdhbFPSPr0Uy1aZp5wcEt3YPPb
+         p6iYgh6cNnTWwznbHNJglMz5zSmK1i852Tlks9S7gHyEWAAIovJz90wgyJsQLY4gBBul
+         XFm8qzAVRwhh9YVORl2dLJtLJ7It4wvYBCiG9IX9KJo3SU88qqFJwWtKjFyq78CIDkdw
+         j88iNSifKk0hnuxe64G9uN2V+4ZvXJDn9SLHbUKEbpY4VnFCtJLE3c9dUXsYdh6V5728
+         2z5w==
+X-Forwarded-Encrypted: i=1; AJvYcCU3M7eFx5nbmFU5LvF7G3J/k3Pa7T90GzDzfZpws5qi4t3MiJv/HOuiBhPTAahAmmcfvLaPHa6R/928@vger.kernel.org
+X-Gm-Message-State: AOJu0YygrQjWY0D7e99wSoW70G8XpgsQnsyX6Kz9ZanRHpMvRF8wlJdg
+	7U/pdOib40ud6nm6wk0ZcDBz4qOLf3XDLoSNeNy/tlXgdytNrJZUCrW+
+X-Gm-Gg: ASbGncv+oiLah9zCYpVBPNILu9x7IIxJDoo59h+hsa12HaL7Mmbgpiv4v+YS5OOWa+d
+	UsyRhDca/8KvfMpocHltMxafmrzzi3ECggi2t+M75Gzp+v16FFaKNkdB+S4QbazKGradmF8rVcl
+	mIyHIqIH5Gy/dbwexZQYY0bOK42nQ1tdXiqMYaa8RQH/PbVxuOjEpGU+EVPgHgvFJtz52SHnsag
+	uH1BYH26s3AveHsHTs77xEeRpzv7pTURMitaWmy19D9P1uVi3VfUKNPfM3RqfFE0N867JoNNEFw
+	WhdFq5d510O2SqopsuqsbTD8qOKqvT6ZzVH+0DRJfrrhGnWQG0jgClnF5+TEiNvc1K5ydjpQhFU
+	BcNGcfsHkAzD7qRi5wu+OVsj3diiYEMYwlMHjMOSabxA7j3nCaQ==
+X-Google-Smtp-Source: AGHT+IGlOP08FechFri9XhBd09rOWOVrXywqRW8pZP7UrkJv21iqrkorW0M3GD4lm+V6u0a1W3KkFQ==
+X-Received: by 2002:a17:90b:4d06:b0:30a:4874:5397 with SMTP id 98e67ed59e1d1-339a6ea3208mr2952898a91.9.1759314603841;
+        Wed, 01 Oct 2025 03:30:03 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b608f0fe65esm643463a12.0.2025.10.01.03.30.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Oct 2025 03:30:02 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id E93B544507EC; Wed, 01 Oct 2025 17:29:59 +0700 (WIB)
+Date: Wed, 1 Oct 2025 17:29:59 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Halil Pasic <pasic@linux.ibm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+	"D. Wythe" <alibuda@linux.alibaba.com>,
+	Dust Li <dust.li@linux.alibaba.com>,
+	Sidraya Jayagond <sidraya@linux.ibm.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Mahanta Jambigi <mjambigi@linux.ibm.com>,
+	Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>,
+	Guangguan Wang <guangguan.wang@linux.alibaba.com>,
+	netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-s390@vger.kernel.org
+Subject: Re: [PATCH net-next v5 1/2] net/smc: make wr buffer count
+ configurable
+Message-ID: <aN0Cpw7mTtLdnBMZ@archie.me>
 References: <20250929000001.1752206-1-pasic@linux.ibm.com>
-	<20250929000001.1752206-3-pasic@linux.ibm.com>
-	<aNnl_CfV0EvIujK0@linux.alibaba.com>
-	<20250929112251.72ab759d.pasic@linux.ibm.com>
-	<acad498b-06e6-4639-b389-ef954e4c6abc@redhat.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+ <20250929000001.1752206-2-pasic@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUwOTI2MDIxNCBTYWx0ZWRfX1CiPGiYSFxCl
- dtfuqyNFp79/kJN6zzDiBVaozb4Afu+yvcTwZCUN2ps38P6Gmg4gxRVDx7J9P6VAlQ+HzZDofLt
- 3NK1gy7CSW770Lkum/PzF849jmJ4V0FzDVruuhZ/tp5ORiN1uthfT/vTQAAX6uIj8MMGwQYNv0p
- 13UAF0VJxYnp4F/uhK2KWoPywIftxkI3AiY+kAXhkyTNgRleNj7hSUyqSW974a7E0mmZaMwSmCY
- Q2Y4e+k0O70KVVVmxAXr7riLIt199TbN5VoBJlymXg14GhhT40yHuegPss/ISjh5ege7TfMTZGZ
- 0rL1eebJhzS0H6NeWGSjvNXII4/4Tj1y3QEoxaXnP1No4TOV5ov4VFHZ1rHpCydrUW2tkyCmDb2
- 9yppB6HEURyOvlNsYQ+GgXCTsrM0TQ==
-X-Proofpoint-GUID: SwTTiudnV0p8FOOkMonpK7JmQkDqDN08
-X-Authority-Analysis: v=2.4 cv=LLZrgZW9 c=1 sm=1 tr=0 ts=68dcf677 cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=kj9zAlcOel0A:10 a=x6icFKpwvdMA:10 a=20KFwNOVAAAA:8 a=SWeHzL2Wsuba8V6tri8A:9
- a=CjuIK1q_8ugA:10 a=cPQSjfK2_nFv0Q5t_7PE:22
-X-Proofpoint-ORIG-GUID: fAL13DQhW0VQgaJcTSECik-HboFRYs-M
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1117,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-10-01_02,2025-09-29_04,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 impostorscore=0 bulkscore=0 malwarescore=0 suspectscore=0
- clxscore=1015 priorityscore=1501 phishscore=0 lowpriorityscore=0 adultscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2509150000 definitions=main-2509260214
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="XTnKR8OXozLogMib"
+Content-Disposition: inline
+In-Reply-To: <20250929000001.1752206-2-pasic@linux.ibm.com>
 
-On Wed, 1 Oct 2025 09:21:09 +0200
-Paolo Abeni <pabeni@redhat.com> wrote:
 
-> >>
-> >> Since in Alibaba we doesn't use multi-link configurations, we haven't tested
-> >> this scenario. Have you tested the link-down handling process in a multi-link
-> >> setup?
-> >>  
-> > 
-> > Mahanta was so kind to do most of the testing on this. I don't think
-> > I've tested this myself. @Mahanta: Would you be kind to give this a try
-> > if it wasn't covered in the past? The best way is probably to modify
-> > the code to force such a scenario. I don't think it is easy to somehow
-> > trigger in the wild.
-> > 
-> > BTW I don't expect any problems. I think at worst the one link would
-> > end up giving worse performance than the other, but I guess that can
-> > happen for other reasons as well (like different HW for the two links).
-> > 
-> > But I think getting some sort of a query interface which would tell
-> > us how much did we end up with down the road would be a good idea anyway.
-> > 
-> > And I hope we can switch to vmalloc down the road as well, which would
-> > make back off less likely.  
-> 
-> Unfortunately we are closing the net-next PR right now and I would
-> prefer such testing being reported explicitly. Let's defer this series
-> to the next cycle: please re-post when net-next will reopen after Oct 12th.
+--XTnKR8OXozLogMib
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Than you Paolo! Will do! I have talked to Mahanta yesterday about this,
-and he has done some testing in the meanwhile, but I'm not sure he
-covered everything he wanted. And he is out for the week (today and
-tomorrow is public holiday in his geography).
+On Mon, Sep 29, 2025 at 02:00:00AM +0200, Halil Pasic wrote:
+> diff --git a/Documentation/networking/smc-sysctl.rst b/Documentation/netw=
+orking/smc-sysctl.rst
+> index a874d007f2db..5de4893ef3e7 100644
+> --- a/Documentation/networking/smc-sysctl.rst
+> +++ b/Documentation/networking/smc-sysctl.rst
+> @@ -71,3 +71,39 @@ smcr_max_conns_per_lgr - INTEGER
+>  	acceptable value ranges from 16 to 255. Only for SMC-R v2.1 and later.
+> =20
+>  	Default: 255
+> +
+> +smcr_max_send_wr - INTEGER
+> +	So called work request buffers are SMCR link (and RDMA queue pair) level
+        So-called
+> +	resources necessary for performing RDMA operations. Since up to 255
+> +	connections can share a link group and thus also a link and the number
+> +	of the work request buffers is decided when the link is allocated,
+> +	depending on the workload it can be a bottleneck in a sense that threads
+> +	have to wait for work request buffers to become available. Before the
+> +	introduction of this control the maximal number of work request buffers
+> +	available on the send path used to be hard coded to 16. With this contr=
+ol
+> +	it becomes configurable. The acceptable range is between 2 and 2048.
+> +
+> +	Please be aware that all the buffers need to be allocated as a physical=
+ly
+> +	continuous array in which each element is a single buffer and has the s=
+ize
+> +	of SMC_WR_BUF_SIZE (48) bytes. If the allocation fails we give up much
+> +	like before having this control.
+> +
+> +	Default: 16
+> +
+> +smcr_max_recv_wr - INTEGER
+> +	So called work request buffers are SMCR link (and RDMA queue pair) level
+Ditto.
+> +	resources necessary for performing RDMA operations. Since up to 255
+> +	connections can share a link group and thus also a link and the number
+> +	of the work request buffers is decided when the link is allocated,
+> +	depending on the workload it can be a bottleneck in a sense that threads
+> +	have to wait for work request buffers to become available. Before the
+> +	introduction of this control the maximal number of work request buffers
+> +	available on the receive path used to be hard coded to 16. With this co=
+ntrol
+> +	it becomes configurable. The acceptable range is between 2 and 2048.
+> +
+> +	Please be aware that all the buffers need to be allocated as a physical=
+ly
+> +	continuous array in which each element is a single buffer and has the s=
+ize
+> +	of SMC_WR_BUF_SIZE (48) bytes. If the allocation fails we give up much
+> +	like before having this control.
+> +
+> +	Default: 48
 
-Regards,
-Halil
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--XTnKR8OXozLogMib
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCaN0CowAKCRD2uYlJVVFO
+o0wMAQC5im7T2Vp9QlkibFW/54g3imCkfNlm7IUNsqBjTp2m9AEA1GNBLgxsziTy
+v2vNJmcJSA7s6ugOR+dFS8j67OYO3Qs=
+=jHsY
+-----END PGP SIGNATURE-----
+
+--XTnKR8OXozLogMib--
 
