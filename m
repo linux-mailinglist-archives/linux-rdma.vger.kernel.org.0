@@ -1,98 +1,96 @@
-Return-Path: <linux-rdma+bounces-13762-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13763-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 035F5BB1AB4
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Oct 2025 22:18:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B3F5BB203D
+	for <lists+linux-rdma@lfdr.de>; Thu, 02 Oct 2025 00:45:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AF131924079
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Oct 2025 20:18:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A0A116BE0A
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Oct 2025 22:45:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EA542D5C95;
-	Wed,  1 Oct 2025 20:18:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 876EF311C21;
+	Wed,  1 Oct 2025 22:45:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j7Ytx0Ks"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VmUejYhc"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B51B9246333;
-	Wed,  1 Oct 2025 20:18:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0271E2FE072;
+	Wed,  1 Oct 2025 22:44:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759349893; cv=none; b=bng5ki8yALDkRefCWkFnhnbz015x00Y6OcsURrFR3g81OCZ9F9OCtLX72fW7ecyr3KJphOg2PWrtVdS1BeTMv7C868FQUMcn28G5bPjb46Qa5aPBg/BTWof+o2fKT8BKraax2ZLpaQrORtf+c0Ier0G6acvx7B+9oNCjuJ8bkS4=
+	t=1759358700; cv=none; b=GkY/G4X54wf2idlnJWHsNe53FRicO1b9yCYZuuASRYpGx7wHpxD1t+LFL9ptQsTUU+mlgaIZEz+nOV7nrwnU4LumhHMmUz7Kjk3a34unvfXRSbj3KNwyPlzj594m1lIcwEwqn9nrgbU2bkHtkQqDiyAVo3XSyTMh9MY6tSaqG6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759349893; c=relaxed/simple;
-	bh=XKqZ71ZFkeikuPZEgrFrB0WDfHrcuxCy1Lo05b6QUpE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T5/vwBO47A+haW2Ytq3Hg8U4wOrsd+ncClGK7JDy2P/ROLZhiWD7+HpPJxVQATfqD1Afynk7Vqzg1ylcKo8biJwFqY3cwsMlid93NskWALsn315YwRL92ifsGr0s6Ot1z27XOM0pydqocgFxWKFvrY+QFwBWYZ3NUejFS7iNzCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j7Ytx0Ks; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7ECC5C4CEF1;
-	Wed,  1 Oct 2025 20:18:11 +0000 (UTC)
+	s=arc-20240116; t=1759358700; c=relaxed/simple;
+	bh=q0gcSaQKbrhUmp/AVOV9rmKhndELotdpu/zySyS644A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AwuezaJCHiG+dlg6N+9bFJMi6uWYf9PGSmKLTaO1B7oOl90LO9pc9ibxS3D0lj8DmMoL9hRl+yVDLkIIZudF8T9qbyWcxIPXZECu7LzzEkWrg9n50a1WgpMK/fFasPtUw8CCo2i2ua1tzJ0Mm1i2pgb3vZwvIBpT8Z7LcK8DjJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VmUejYhc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C60BC4CEF1;
+	Wed,  1 Oct 2025 22:44:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1759349892;
-	bh=XKqZ71ZFkeikuPZEgrFrB0WDfHrcuxCy1Lo05b6QUpE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=j7Ytx0KsT3ZjWSq3yP69szSofmLhIvUeNIkfXpSkz9J7TF/VbnZW5RR27sQn1wg79
-	 +QKeKc0DlivVjfPjuAUUjMN0lRz42iPi5es7q/kHgPGkJDHDhJ+CHAc2IknxRR/14X
-	 amLoKTdfW9wQFXVm5jcO4ynXisyBe48MvRmgp7bIXsodwXMsfBFUdx8GWqNJOwbOPi
-	 jo6QXvliNdtqRJWQcmigvWBe03QyeWhvdP5dvmLz+1RTGlIad3f/Co9DdeY06ShnOc
-	 dcouT8z5N4sYdr2fo8YPR8hjNoNuhShO9Qjswo14hvh9cVQfsyZ6tkGaE1gaxBurI6
-	 OA3g3eHPkvzEQ==
-Message-ID: <2cfc0bf3-e1ee-46ab-9fa5-de6d0e39a3db@kernel.org>
-Date: Wed, 1 Oct 2025 16:18:10 -0400
+	s=k20201202; t=1759358699;
+	bh=q0gcSaQKbrhUmp/AVOV9rmKhndELotdpu/zySyS644A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VmUejYhcWmcwu6DX3jvTXoLlHnNuJPUQ5F37WO2wvl2dZ03IfRGXHD+vaS5RLeJ+p
+	 oGqSfWJRiRT0AtMaOH1K/deoa5o4F9pCA6RHhKaDjQD6akYwYQq9IkxVa4a1sS0TzG
+	 bhq4Fa2P6qMdw+kS/HqsZNeG/6nJZaD6i5dBQsaFhvRDkq+ZKS82WxVvuKS7489tCP
+	 Gn1z8oDzwXhCXw4RX8eCBhvzMtdfkYLpVAU9znlpnel2eEeKzyuEdWvS4e7vZ6vZwL
+	 8krFGQOzt60rN9PewWcOk5KdwZcHqbcAr+n+Mupjhabsr4V/wobxG1PsMP1cVELHJv
+	 Iw7BRzy8UBk1A==
+Date: Wed, 1 Oct 2025 18:44:58 -0400
+From: Mike Snitzer <snitzer@kernel.org>
+To: Chuck Lever <cel@kernel.org>
+Cc: NeilBrown <neil@brown.name>, Jeff Layton <jlayton@kernel.org>,
+	Olga Kornievskaia <okorniev@redhat.com>,
+	Dai Ngo <dai.ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+	linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org,
+	Chuck Lever <chuck.lever@oracle.com>
+Subject: Re: [PATCH v1] svcrdma: Increase the server's default RPC/RDMA
+ credit grant
+Message-ID: <aN2u6tt39GCNXRHO@kernel.org>
+References: <20250926155235.60924-1-cel@kernel.org>
+ <aN2Cnz1TrdOO74vb@kernel.org>
+ <2cfc0bf3-e1ee-46ab-9fa5-de6d0e39a3db@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] svcrdma: Increase the server's default RPC/RDMA credit
- grant
-To: Mike Snitzer <snitzer@kernel.org>
-Cc: NeilBrown <neil@brown.name>, Jeff Layton <jlayton@kernel.org>,
- Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <dai.ngo@oracle.com>,
- Tom Talpey <tom@talpey.com>, linux-nfs@vger.kernel.org,
- linux-rdma@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>
-References: <20250926155235.60924-1-cel@kernel.org>
- <aN2Cnz1TrdOO74vb@kernel.org>
-Content-Language: en-US
-From: Chuck Lever <cel@kernel.org>
-Organization: kernel.org
-In-Reply-To: <aN2Cnz1TrdOO74vb@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2cfc0bf3-e1ee-46ab-9fa5-de6d0e39a3db@kernel.org>
 
-On 10/1/25 3:35 PM, Mike Snitzer wrote:
-> On Fri, Sep 26, 2025 at 11:52:35AM -0400, Chuck Lever wrote:
->> From: Chuck Lever <chuck.lever@oracle.com>
->>
->> Now that the nfsd thread count can scale to more threads, permit
+On Wed, Oct 01, 2025 at 04:18:10PM -0400, Chuck Lever wrote:
+> On 10/1/25 3:35 PM, Mike Snitzer wrote:
+> > On Fri, Sep 26, 2025 at 11:52:35AM -0400, Chuck Lever wrote:
+> >> From: Chuck Lever <chuck.lever@oracle.com>
+> >>
+> >> Now that the nfsd thread count can scale to more threads, permit
+> > 
+> > Just trying to appreciate which change(s) paved the way for this
+> > RPCRDMA_MAX_REQUESTS change.
+> > 
+> > Are you referring to the netlink interface changes Jeff did earlier
+> > this year or something else? (thinking "something else" but...)
+> > 
+> > Might be useful to update the header to convey which specific
+> > commit(s) made this change possible.
 > 
-> Just trying to appreciate which change(s) paved the way for this
-> RPCRDMA_MAX_REQUESTS change.
+> The svc thread scaling change refers to the commits from
 > 
-> Are you referring to the netlink interface changes Jeff did earlier
-> this year or something else? (thinking "something else" but...)
+> e3274026e2ec ("SUNRPC: move all of xprt handling into svc_xprt_handle()")
 > 
-> Might be useful to update the header to convey which specific
-> commit(s) made this change possible.
+> to
+> 
+> 15d39883ee7d ("SUNRPC: change the back-channel queue to lwq")
+> 
+> all dated about two years ago, merged in v6.7. Just checking,
+> should the updated description provide more detail than that?
 
-The svc thread scaling change refers to the commits from
-
-e3274026e2ec ("SUNRPC: move all of xprt handling into svc_xprt_handle()")
-
-to
-
-15d39883ee7d ("SUNRPC: change the back-channel queue to lwq")
-
-all dated about two years ago, merged in v6.7. Just checking,
-should the updated description provide more detail than that?
-
-
--- 
-Chuck Lever
+No, that's perfect. Thanks
 
