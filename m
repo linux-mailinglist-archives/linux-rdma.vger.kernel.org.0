@@ -1,87 +1,87 @@
-Return-Path: <linux-rdma+bounces-13752-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13753-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23AC5BAF60B
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Oct 2025 09:21:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED11BBAFD7C
+	for <lists+linux-rdma@lfdr.de>; Wed, 01 Oct 2025 11:28:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F01B19211C3
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Oct 2025 07:21:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D27F1897123
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Oct 2025 09:28:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BCBC22B594;
-	Wed,  1 Oct 2025 07:21:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BA95283FEE;
+	Wed,  1 Oct 2025 09:28:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QcnIQXbp"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BHKMtLub"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53D5D1F0E32
-	for <linux-rdma@vger.kernel.org>; Wed,  1 Oct 2025 07:21:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11CC627B339
+	for <linux-rdma@vger.kernel.org>; Wed,  1 Oct 2025 09:28:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759303277; cv=none; b=GGKor9skl+PYyPWUBTpb4tZ39lZetSPm3yRk+mZwsFSI4ok5tp73q/Nk+LmN4h4VthIceqP92sL/05jHL3p94ts1oGPGgglQ9OfccgKwBjDyY8ANZCSmLQvsC0l9eFeTsgC455f+19G+m7GYfNLC7QybXf4Az+z5XH3HEGkzukg=
+	t=1759310898; cv=none; b=f/R+WSyFSNJNxKeHsOlOfT02zP/bstkzXiHZyoZUDXK8htZ1+PwPBeQFwT3B4kLOv43CR8hC3htYkzk9Vz3vIXhyEf05T+AKasypJ0CklIbKW2QeDTca5vDrwAxRjawk1Ft4Vh7/+FwSjeQTcSsxcvHtXLzeyJjfh5KBQd2MbzE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759303277; c=relaxed/simple;
-	bh=ZchBe3UVZFcajzAfPm5iupGhaT45ZKDAxK04VZzhIoA=;
+	s=arc-20240116; t=1759310898; c=relaxed/simple;
+	bh=u8Q/puU00m1+Ma30hn2PbTN/YeCwD3+SnWOZqn5KRRE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZSD7xfSCbhrS171t/Uqn3jZ+cVfD5tsTgfdBNtskFlMxSfCsKkLxza1W01BSyDAFeo9BAmkHSQsDzfSP2NML/s2aZwdRv634Z3d6jgU4Y0md7i+xRMxeXI3py7cLGekquFyGDTfYmGwfG15osUlbsTxpysdtut+nnTQvmn7U63k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QcnIQXbp; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=HZWG0LcSjWoJ/iHKbZLK4LTfPJXUiGsLXHQsRet7xlzjvdaG7S3i8tQjjwNisabKnu1DarHW5li8eyAmzN4+BlzJEXYQhBzPedWLOZLGfnDqQLLJuE2Pw/9KUR04We2cFXwPmgpIrf4QZv0fZ7JegvfKQVtXjbIOqhebRPKT5jk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BHKMtLub; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1759303274;
+	s=mimecast20190719; t=1759310896;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=S6TphmWVV7btIJvjp1CTjxC8F2bt+sldx5I/c4TiGGc=;
-	b=QcnIQXbpCqa3QuGfqc4LTZ8GIpfHs/Pm5KZBIfi24tc2rfSsgskY8NmNRBU6Nc7rYHlZ8J
-	2SmPMOV59rEommb0W5rz0GNP3K6LUI21Nnp6RZfBHGwC32VYRMAtu2hG+DGK/2H9ckDvrs
-	zTNR15kwE2CWrpyXNEcUPQZ/Po5NURM=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=ybtVMUpvDW3U/F2Zx0MRGWKL6mjqpdZhKS9ovQqZCJg=;
+	b=BHKMtLubZVnUb3kgB8l8GqsQOgsRsfJQJORgdf1eigTzkrvrcMBtWwXXK7JK45Gcw8Q6aR
+	DLMdlexDdwY70oyFUA059g04mpYC6ew0fNiD55sKAkoeE0Gy1K+I4VXBrY3sVzbjTOJMQC
+	i+NHFO2+xR92ZRiQRCz9b0OuIXQrQnk=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-12-C58NPRxlN5ChBrnupiH8vw-1; Wed, 01 Oct 2025 03:21:13 -0400
-X-MC-Unique: C58NPRxlN5ChBrnupiH8vw-1
-X-Mimecast-MFC-AGG-ID: C58NPRxlN5ChBrnupiH8vw_1759303272
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-46e4fa584e7so17941275e9.0
-        for <linux-rdma@vger.kernel.org>; Wed, 01 Oct 2025 00:21:13 -0700 (PDT)
+ us-mta-694-XjgkPlgqMHWI1UWeNKGNMA-1; Wed, 01 Oct 2025 05:28:15 -0400
+X-MC-Unique: XjgkPlgqMHWI1UWeNKGNMA-1
+X-Mimecast-MFC-AGG-ID: XjgkPlgqMHWI1UWeNKGNMA_1759310894
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3f384f10762so4313750f8f.3
+        for <linux-rdma@vger.kernel.org>; Wed, 01 Oct 2025 02:28:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1759303272; x=1759908072;
+        d=1e100.net; s=20230601; t=1759310894; x=1759915694;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=S6TphmWVV7btIJvjp1CTjxC8F2bt+sldx5I/c4TiGGc=;
-        b=ucPtnRqCvQdvA2Qtvy+WB8B+yGqwEMoUf4vp+D9dgGkXCZWO8Zl1Zv3HGDTcS6izCc
-         SFZAh0BAeC1DOM9VzoCXeKIc/jR/2Vtmc7zl8xoWDAWuLXI3Jzh7ATGcYfDfTkbY91Rk
-         dmRsgs5S5+oemUutPeh7ZrZcCTzpvgLwz4SANvmihuJugaAVcdS2SKZHNvlMsdgqee23
-         ZRMToRn8me2DfZa8dNqvC7UhfwRlBRey53sH+nzHT+2BelrZgPbeR/+6kUjQeCqCF4Dp
-         9yjeZAX0aX6QnvgIpAp3ezLbPeXTQ7bpibS7OfRNUco5FhX5bDlnV5jKRfW0rxoJj1hZ
-         75og==
-X-Forwarded-Encrypted: i=1; AJvYcCUcZmkDcDLkLsQsU2R6DO//MvMXife2ExsW/G5UUbAvP7Jk6FhgcYiRmFjZXsOzJ0JNpz7NVN7DRkyx@vger.kernel.org
-X-Gm-Message-State: AOJu0YyJ8+LKxHl9mPLVsDdis/40jNcYLi34ScyF/nuMha+hd/KRL+1w
-	pSGRi9OIfe15+gXsknEB0iMryIcEHUPSM1cLzRGq8v1T7xsAXUFYqVpjcVmDiEupDbtvYgpnQ80
-	7ovmMOlx+cvLk6yQ6gtheDq1akL7kDu4W9qC422YyEs38mq13XI7D+OJInKnId1A=
-X-Gm-Gg: ASbGncv2q+R1tbPa95JDr81JiavCDkak5QroOxVxHRzNvf7173VZkciep9WetT2j8mr
-	205nfmawmgPOX9Oj/ZsmSjAE9l/mS1JBr7yBJl/v584/RHPO8WPrBxnekV+ZG2pLyi3vBomg9n3
-	6xVHhdhlFehvuOkV6uRghST+APU4RbysoqvmS6RaiydK+34wOPtkVB6R0q7l1phQT8mS4dvVAoQ
-	BcAmmU4CJcN4uRS1ppBC8tA8YvBFN6xkGa70gMe8xpbS7jAFU0Js0IfePY9MsN+DiSSgy4MAW4b
-	O8bUOvSO2ovFqIT/R1n9/8tCBXhQnnPQ0ugpTvG/y5KVmGfJWdonK4KopZkubtpcXKids9Pn4QM
-	paIZ7L+IbZcJPMo+tPA==
-X-Received: by 2002:a05:6000:2dc3:b0:410:3a4f:12c8 with SMTP id ffacd0b85a97d-425577f0588mr1793507f8f.20.1759303271982;
-        Wed, 01 Oct 2025 00:21:11 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFL9Aoaglcvmq0NJZa7kQLBpIJUntR5wIckFB4bSle6etuGPxOt3URwof3q3OmopFDd6P6LuQ==
-X-Received: by 2002:a05:6000:2dc3:b0:410:3a4f:12c8 with SMTP id ffacd0b85a97d-425577f0588mr1793475f8f.20.1759303271534;
-        Wed, 01 Oct 2025 00:21:11 -0700 (PDT)
+        bh=ybtVMUpvDW3U/F2Zx0MRGWKL6mjqpdZhKS9ovQqZCJg=;
+        b=oIgwl9IKkX/lPpKRZKw12lWazBjtj3jbnPTxect556Tv90eHqhxwU1bGSWx+Q+K4ru
+         wmxR9HMBzQs2qysv/sP9QD3SoHy/1w6+GF+4NICyt/VL7R6yW+U4avdfyTLFYNR52yax
+         4JhF+Z7fI6pSxiioqW3kW4Jgoy5yIOuD+AYc8RB1kUnV0GYigLe/RA5dqRaxVRGwSFsC
+         TYRCsXU3DJUTwGSdKDasud+vU8ycUF2Tf8G9HSAnJE/QcrD4Go3ynGGUFpBmj+GBHFzv
+         POSQYXMTqQKzeTfwUjD1Eu+aoAPSc29wD8a1OvXihPLDHRoESqWJmF4dfQlL/yv4COkd
+         O48w==
+X-Forwarded-Encrypted: i=1; AJvYcCU3/TfywGka4ErrOWt4U1BFsKGGn7NPsjiUhuyyO94G47c0JCvB4f3qDNBF8u1wP7JPBw4yDlJrE1M+@vger.kernel.org
+X-Gm-Message-State: AOJu0YweNazZxbCMVHTGHJrBgVagoJ58jRYgk2SOi/omNuLhfUOu5sZL
+	T9bWcjm/eNPpmioVxjUKu4sqEn3mimSqEzLMM/r1w3QoewRyH7ksM5F8bDN/vZSiRoD9b8v8Foa
+	aA1o022BIcazTzNwzO5VmraOZ28uzBt5B9NKFVwwlzGuUr+tj7okSDXh3elMrS8M=
+X-Gm-Gg: ASbGncs0OiNTXgVGeL5H1Z4HRE9haa5mKuUcndsz3Mz+yiO/oH7gayHwzpptSGU6urv
+	60RA3EgtlmmpkGCKTiT1xjJCzZu7AhODc8xICJrw14j4Uszw77KWpLGgoIaQTkEqoE0LCaLKRaF
+	fWZjDI1gpMbDv+jWzY95lZxeoIHp68cPD8hio3cvUyOlrYiNPcg+4hDCWLZvZCRkxSUEjtC0RgP
+	jziafI08D2ZLUh3FuL4b+eE+nxqaO/mwURrKCz8mMY5Xkk13RW+K13cT7ElyV0jy4q3V1E1hAW5
+	GfxDuP2U8rKGrzOJklFDmPSGo7giN7HI8EOdRG08nA/3/2jRGPN/WIZMq2GoB/jYKp/ip2XJg/c
+	YWTCz19SccOgoXW6wfw==
+X-Received: by 2002:a5d:588a:0:b0:3ec:248f:f86a with SMTP id ffacd0b85a97d-425578183aamr2084078f8f.48.1759310893694;
+        Wed, 01 Oct 2025 02:28:13 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH2jGX49TGzAee2RWy6ApUBj/jwFn2OVqWsFJymuz8OiVF8ehgSB3/azRECWeXusX/4XaZBCg==
+X-Received: by 2002:a5d:588a:0:b0:3ec:248f:f86a with SMTP id ffacd0b85a97d-425578183aamr2084020f8f.48.1759310893212;
+        Wed, 01 Oct 2025 02:28:13 -0700 (PDT)
 Received: from ?IPV6:2a0d:3344:2712:7e10:4d59:d956:544f:d65c? ([2a0d:3344:2712:7e10:4d59:d956:544f:d65c])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-40fb72fb729sm25151903f8f.6.2025.10.01.00.21.09
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-40fac4a5e41sm28042341f8f.0.2025.10.01.02.28.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Oct 2025 00:21:10 -0700 (PDT)
-Message-ID: <acad498b-06e6-4639-b389-ef954e4c6abc@redhat.com>
-Date: Wed, 1 Oct 2025 09:21:09 +0200
+        Wed, 01 Oct 2025 02:28:12 -0700 (PDT)
+Message-ID: <651ee9fe-706e-4471-a71b-e7a12b42cc3e@redhat.com>
+Date: Wed, 1 Oct 2025 11:28:09 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -89,89 +89,84 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v5 2/2] net/smc: handle -ENOMEM from
- smc_wr_alloc_link_mem gracefully
-To: Halil Pasic <pasic@linux.ibm.com>, Dust Li <dust.li@linux.alibaba.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- "D. Wythe" <alibuda@linux.alibaba.com>,
- Sidraya Jayagond <sidraya@linux.ibm.com>, Wenjia Zhang
- <wenjia@linux.ibm.com>, Mahanta Jambigi <mjambigi@linux.ibm.com>,
- Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
- Guangguan Wang <guangguan.wang@linux.alibaba.com>, netdev@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org
-References: <20250929000001.1752206-1-pasic@linux.ibm.com>
- <20250929000001.1752206-3-pasic@linux.ibm.com>
- <aNnl_CfV0EvIujK0@linux.alibaba.com>
- <20250929112251.72ab759d.pasic@linux.ibm.com>
+Subject: Re: [PATCH net-next V6] net/mlx5: Improve write-combining test
+ reliability for ARM64 Grace CPUs
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Mark Bloch <mbloch@nvidia.com>, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Gal Pressman <gal@nvidia.com>, Leon Romanovsky <leonro@nvidia.com>,
+ Jason Gunthorpe <jgg@nvidia.com>, Michael Guralnik <michaelgur@nvidia.com>,
+ Moshe Shemesh <moshe@nvidia.com>, Will Deacon <will@kernel.org>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Justin Stitt <justinstitt@google.com>,
+ linux-s390@vger.kernel.org, llvm@lists.linux.dev,
+ Ingo Molnar <mingo@redhat.com>, Bill Wendling <morbo@google.com>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>,
+ Salil Mehta <salil.mehta@huawei.com>, Sven Schnelle <svens@linux.ibm.com>,
+ Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+ Yisen Zhuang <yisen.zhuang@huawei.com>, Arnd Bergmann <arnd@arndb.de>,
+ Leon Romanovsky <leonro@mellanox.com>, linux-arch@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Mark Rutland <mark.rutland@arm.com>,
+ Michael Guralnik <michaelgur@mellanox.com>, patches@lists.linux.dev,
+ Niklas Schnelle <schnelle@linux.ibm.com>, Jijie Shao <shaojijie@huawei.com>,
+ Simon Horman <horms@kernel.org>, Patrisious Haddad <phaddad@nvidia.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, Eric Dumazet <edumazet@google.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Jakub Kicinski <kuba@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>
+References: <1759093688-841357-1-git-send-email-tariqt@nvidia.com>
 Content-Language: en-US
 From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20250929112251.72ab759d.pasic@linux.ibm.com>
+In-Reply-To: <1759093688-841357-1-git-send-email-tariqt@nvidia.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 9/29/25 11:22 AM, Halil Pasic wrote:
-> On Mon, 29 Sep 2025 09:50:52 +0800
-> Dust Li <dust.li@linux.alibaba.com> wrote:
-> 
->>> @@ -175,6 +175,8 @@ struct smc_link {
->>> 	struct completion	llc_testlink_resp; /* wait for rx of testlink */
->>> 	int			llc_testlink_time; /* testlink interval */
->>> 	atomic_t		conn_cnt; /* connections on this link */
->>> +	u16			max_send_wr;
->>> +	u16			max_recv_wr;  
->>
->> Here, you've moved max_send_wr/max_recv_wr from the link group to individual links.
->> This means we can now have different max_send_wr/max_recv_wr values on two
->> different links within the same link group.
-> 
-> Only if allocations fail. Please notice that the hunk:
-> 
-> --- a/net/smc/smc_core.c
-> +++ b/net/smc/smc_core.c
-> @@ -810,6 +810,8 @@ int smcr_link_init(struct smc_link_group *lgr, struct smc_link *lnk,
->  	lnk->clearing = 0;
->  	lnk->path_mtu = lnk->smcibdev->pattr[lnk->ibport - 1].active_mtu;
->  	lnk->link_id = smcr_next_link_id(lgr);
-> +	lnk->max_send_wr = lgr->max_send_wr;
-> +	lnk->max_recv_wr = lgr->max_recv_wr;
-> 
-> initializes the link values with the values from the lgr which are in
-> turn picked up form the systctls at lgr creation time. I have made an
-> effort to keep these values the same for each link, but in case the
-> allocation fails and we do back off, we can end up with different values
-> on the links. 
-> 
-> The alternative would be to throw in the towel, and not create
-> a second link if we can't match what worked for the first one.
-> 
->>
->> Since in Alibaba we doesn't use multi-link configurations, we haven't tested
->> this scenario. Have you tested the link-down handling process in a multi-link
->> setup?
->>
-> 
-> Mahanta was so kind to do most of the testing on this. I don't think
-> I've tested this myself. @Mahanta: Would you be kind to give this a try
-> if it wasn't covered in the past? The best way is probably to modify
-> the code to force such a scenario. I don't think it is easy to somehow
-> trigger in the wild.
-> 
-> BTW I don't expect any problems. I think at worst the one link would
-> end up giving worse performance than the other, but I guess that can
-> happen for other reasons as well (like different HW for the two links).
-> 
-> But I think getting some sort of a query interface which would tell
-> us how much did we end up with down the road would be a good idea anyway.
-> 
-> And I hope we can switch to vmalloc down the road as well, which would
-> make back off less likely.
+Hi,
 
-Unfortunately we are closing the net-next PR right now and I would
-prefer such testing being reported explicitly. Let's defer this series
-to the next cycle: please re-post when net-next will reopen after Oct 12th.
+On 9/28/25 11:08 PM, Tariq Toukan wrote:
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/wc.c b/drivers/net/ethernet/mellanox/mlx5/core/wc.c
+> index 999d6216648a..c281153bd411 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/wc.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/wc.c
+> @@ -7,6 +7,10 @@
+>  #include "mlx5_core.h"
+>  #include "wq.h"
+>  
+> +#if IS_ENABLED(CONFIG_KERNEL_MODE_NEON) && IS_ENABLED(CONFIG_ARM64)
+> +#include <asm/neon.h>
+> +#endif
+> +
+>  #define TEST_WC_NUM_WQES 255
+>  #define TEST_WC_LOG_CQ_SZ (order_base_2(TEST_WC_NUM_WQES))
+>  #define TEST_WC_SQ_LOG_WQ_SZ TEST_WC_LOG_CQ_SZ
+> @@ -255,6 +259,27 @@ static void mlx5_wc_destroy_sq(struct mlx5_wc_sq *sq)
+>  	mlx5_wq_destroy(&sq->wq_ctrl);
+>  }
+>  
+> +static void mlx5_iowrite64_copy(struct mlx5_wc_sq *sq, __be32 mmio_wqe[16],
+> +				size_t mmio_wqe_size, unsigned int offset)
+> +{
+> +#if IS_ENABLED(CONFIG_KERNEL_MODE_NEON) && IS_ENABLED(CONFIG_ARM64)
+> +	if (cpu_has_neon()) {
+> +		kernel_neon_begin();
+> +		asm volatile
+> +		(".arch_extension simd;\n\t"
+
+Here I'm observing build errors with aarch64-linux-gnu-gcc 12.1.1
+20220507 (Red Hat Cross 12.1.1-1):
+
+/tmp/cchqHdeI.s: Assembler messages:
+/tmp/cchqHdeI.s:746: Error: unknown architectural extension `simd;'
+
+I can't reproduce the error on any recent compiler version via
+godbolt.org, so I *think* this should not block/be reverted for the MR,
+but could you please have a look soonish?
 
 Thanks,
 
