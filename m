@@ -1,217 +1,180 @@
-Return-Path: <linux-rdma+bounces-13751-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13752-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2384BAF0C5
-	for <lists+linux-rdma@lfdr.de>; Wed, 01 Oct 2025 05:02:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23AC5BAF60B
+	for <lists+linux-rdma@lfdr.de>; Wed, 01 Oct 2025 09:21:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 857694A484C
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Oct 2025 03:02:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F01B19211C3
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Oct 2025 07:21:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8209027A10D;
-	Wed,  1 Oct 2025 03:02:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BCBC22B594;
+	Wed,  1 Oct 2025 07:21:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="MvJUXIMy"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QcnIQXbp"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from pdx-out-014.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-014.esa.us-west-2.outbound.mail-perimeter.amazon.com [35.83.148.184])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AF3A46B5;
-	Wed,  1 Oct 2025 03:02:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.83.148.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53D5D1F0E32
+	for <linux-rdma@vger.kernel.org>; Wed,  1 Oct 2025 07:21:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759287764; cv=none; b=kvUm7c74KO3OLGXW/gEO5K3d7BWNWmZVvYGxLZmfxtg9GRtTumbCz6P/O2IdZWOTYP5MVrrke9xvUtbMnFU+k4DSldZ2BULRiOHXD2yUV5NoukUIfKYexOc7VnMifxVrfSojI70txvkRGEESALvcXdFJfubE6V48R9/RuJPnhxQ=
+	t=1759303277; cv=none; b=GGKor9skl+PYyPWUBTpb4tZ39lZetSPm3yRk+mZwsFSI4ok5tp73q/Nk+LmN4h4VthIceqP92sL/05jHL3p94ts1oGPGgglQ9OfccgKwBjDyY8ANZCSmLQvsC0l9eFeTsgC455f+19G+m7GYfNLC7QybXf4Az+z5XH3HEGkzukg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759287764; c=relaxed/simple;
-	bh=whn4o977e6ZiB5yPUkCpLeHhE7jNoVwdjwkN52NNJxc=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CsBVVPj6YZxygs1ml36TFov9/VP7q4muezZojap6VxgHtT5KOv0smWrabfMOPufhVaB5QYS9IlpXJtrhDgGR9uZ+0bEuH0iCrw/u41Uat8x2mYTupY4AFgqS8KHFku8kVKuvtsZvWXV7wgG/s8R3Pb3qX5H44TVIcRrgjHACVh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=MvJUXIMy; arc=none smtp.client-ip=35.83.148.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1759287762; x=1790823762;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=p8R7A51WEVdgSz5MeW6Bhqev9k9kLLp4VwDvPagdCTM=;
-  b=MvJUXIMy2QifLWZWM/OAeUV9KqthMA9rYp/w7ig1QC1qkKD6JEGMAY8k
-   4gU/jwiFxKkmBhU2jLahKwxGiEPTBfAx6N512WIU97jgvR/TbxwEeUNGz
-   ODtg6710IINCWS2czAiKqjTvZsjH/5xQqJdI8TTZlBHfGxk82kCPOxTds
-   JRfqn4Y4KpHoyjumEVdBgum2KiOn1+1/Rm9NtbndEea5MkBIy4I372esl
-   4Z7KFTd9jJ8HC4aOHIm8Xa76dILGWqWd2cOaXugzu4I3QnIeZed0RToK8
-   Exf47m3mhh6rSFbVSoHrxglfJ8CWdAAubooJtUNNpkzrzFmZOJjJHMtOR
-   A==;
-X-CSE-ConnectionGUID: MRZA34sNSsG895oXGBtAkg==
-X-CSE-MsgGUID: QQys0kR4Ri2gSlmA/rYtRA==
-X-IronPort-AV: E=Sophos;i="6.18,305,1751241600"; 
-   d="scan'208";a="3850333"
-Received: from ip-10-5-12-219.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.12.219])
-  by internal-pdx-out-014.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2025 03:02:40 +0000
-Received: from EX19MTAUWC001.ant.amazon.com [10.0.21.151:20538]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.36.10:2525] with esmtp (Farcaster)
- id 8cbb2507-5691-45d7-8d59-02f4da147527; Wed, 1 Oct 2025 03:02:40 +0000 (UTC)
-X-Farcaster-Flow-ID: 8cbb2507-5691-45d7-8d59-02f4da147527
-Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Wed, 1 Oct 2025 03:02:40 +0000
-Received: from b0be8375a521.amazon.com (10.37.244.7) by
- EX19D001UWA001.ant.amazon.com (10.13.138.214) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.20;
- Wed, 1 Oct 2025 03:02:38 +0000
-From: Kohei Enju <enjuk@amazon.com>
-To: <syzbot+938fcd548c303fe33c1a@syzkaller.appspotmail.com>
-CC: <jgg@ziepe.ca>, <leon@kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <syzkaller-bugs@googlegroups.com>
-Subject: Re: [syzbot] [rdma?] KMSAN: uninit-value in ib_nl_handle_ip_res_resp
-Date: Wed, 1 Oct 2025 12:02:10 +0900
-Message-ID: <20251001030227.84476-1-enjuk@amazon.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <68dc3dac.a00a0220.102ee.004f.GAE@google.com>
-References: <68dc3dac.a00a0220.102ee.004f.GAE@google.com>
+	s=arc-20240116; t=1759303277; c=relaxed/simple;
+	bh=ZchBe3UVZFcajzAfPm5iupGhaT45ZKDAxK04VZzhIoA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZSD7xfSCbhrS171t/Uqn3jZ+cVfD5tsTgfdBNtskFlMxSfCsKkLxza1W01BSyDAFeo9BAmkHSQsDzfSP2NML/s2aZwdRv634Z3d6jgU4Y0md7i+xRMxeXI3py7cLGekquFyGDTfYmGwfG15osUlbsTxpysdtut+nnTQvmn7U63k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QcnIQXbp; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1759303274;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=S6TphmWVV7btIJvjp1CTjxC8F2bt+sldx5I/c4TiGGc=;
+	b=QcnIQXbpCqa3QuGfqc4LTZ8GIpfHs/Pm5KZBIfi24tc2rfSsgskY8NmNRBU6Nc7rYHlZ8J
+	2SmPMOV59rEommb0W5rz0GNP3K6LUI21Nnp6RZfBHGwC32VYRMAtu2hG+DGK/2H9ckDvrs
+	zTNR15kwE2CWrpyXNEcUPQZ/Po5NURM=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-12-C58NPRxlN5ChBrnupiH8vw-1; Wed, 01 Oct 2025 03:21:13 -0400
+X-MC-Unique: C58NPRxlN5ChBrnupiH8vw-1
+X-Mimecast-MFC-AGG-ID: C58NPRxlN5ChBrnupiH8vw_1759303272
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-46e4fa584e7so17941275e9.0
+        for <linux-rdma@vger.kernel.org>; Wed, 01 Oct 2025 00:21:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759303272; x=1759908072;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S6TphmWVV7btIJvjp1CTjxC8F2bt+sldx5I/c4TiGGc=;
+        b=ucPtnRqCvQdvA2Qtvy+WB8B+yGqwEMoUf4vp+D9dgGkXCZWO8Zl1Zv3HGDTcS6izCc
+         SFZAh0BAeC1DOM9VzoCXeKIc/jR/2Vtmc7zl8xoWDAWuLXI3Jzh7ATGcYfDfTkbY91Rk
+         dmRsgs5S5+oemUutPeh7ZrZcCTzpvgLwz4SANvmihuJugaAVcdS2SKZHNvlMsdgqee23
+         ZRMToRn8me2DfZa8dNqvC7UhfwRlBRey53sH+nzHT+2BelrZgPbeR/+6kUjQeCqCF4Dp
+         9yjeZAX0aX6QnvgIpAp3ezLbPeXTQ7bpibS7OfRNUco5FhX5bDlnV5jKRfW0rxoJj1hZ
+         75og==
+X-Forwarded-Encrypted: i=1; AJvYcCUcZmkDcDLkLsQsU2R6DO//MvMXife2ExsW/G5UUbAvP7Jk6FhgcYiRmFjZXsOzJ0JNpz7NVN7DRkyx@vger.kernel.org
+X-Gm-Message-State: AOJu0YyJ8+LKxHl9mPLVsDdis/40jNcYLi34ScyF/nuMha+hd/KRL+1w
+	pSGRi9OIfe15+gXsknEB0iMryIcEHUPSM1cLzRGq8v1T7xsAXUFYqVpjcVmDiEupDbtvYgpnQ80
+	7ovmMOlx+cvLk6yQ6gtheDq1akL7kDu4W9qC422YyEs38mq13XI7D+OJInKnId1A=
+X-Gm-Gg: ASbGncv2q+R1tbPa95JDr81JiavCDkak5QroOxVxHRzNvf7173VZkciep9WetT2j8mr
+	205nfmawmgPOX9Oj/ZsmSjAE9l/mS1JBr7yBJl/v584/RHPO8WPrBxnekV+ZG2pLyi3vBomg9n3
+	6xVHhdhlFehvuOkV6uRghST+APU4RbysoqvmS6RaiydK+34wOPtkVB6R0q7l1phQT8mS4dvVAoQ
+	BcAmmU4CJcN4uRS1ppBC8tA8YvBFN6xkGa70gMe8xpbS7jAFU0Js0IfePY9MsN+DiSSgy4MAW4b
+	O8bUOvSO2ovFqIT/R1n9/8tCBXhQnnPQ0ugpTvG/y5KVmGfJWdonK4KopZkubtpcXKids9Pn4QM
+	paIZ7L+IbZcJPMo+tPA==
+X-Received: by 2002:a05:6000:2dc3:b0:410:3a4f:12c8 with SMTP id ffacd0b85a97d-425577f0588mr1793507f8f.20.1759303271982;
+        Wed, 01 Oct 2025 00:21:11 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFL9Aoaglcvmq0NJZa7kQLBpIJUntR5wIckFB4bSle6etuGPxOt3URwof3q3OmopFDd6P6LuQ==
+X-Received: by 2002:a05:6000:2dc3:b0:410:3a4f:12c8 with SMTP id ffacd0b85a97d-425577f0588mr1793475f8f.20.1759303271534;
+        Wed, 01 Oct 2025 00:21:11 -0700 (PDT)
+Received: from ?IPV6:2a0d:3344:2712:7e10:4d59:d956:544f:d65c? ([2a0d:3344:2712:7e10:4d59:d956:544f:d65c])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-40fb72fb729sm25151903f8f.6.2025.10.01.00.21.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Oct 2025 00:21:10 -0700 (PDT)
+Message-ID: <acad498b-06e6-4639-b389-ef954e4c6abc@redhat.com>
+Date: Wed, 1 Oct 2025 09:21:09 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D031UWA002.ant.amazon.com (10.13.139.96) To
- EX19D001UWA001.ant.amazon.com (10.13.138.214)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v5 2/2] net/smc: handle -ENOMEM from
+ smc_wr_alloc_link_mem gracefully
+To: Halil Pasic <pasic@linux.ibm.com>, Dust Li <dust.li@linux.alibaba.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ "D. Wythe" <alibuda@linux.alibaba.com>,
+ Sidraya Jayagond <sidraya@linux.ibm.com>, Wenjia Zhang
+ <wenjia@linux.ibm.com>, Mahanta Jambigi <mjambigi@linux.ibm.com>,
+ Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
+ Guangguan Wang <guangguan.wang@linux.alibaba.com>, netdev@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org
+References: <20250929000001.1752206-1-pasic@linux.ibm.com>
+ <20250929000001.1752206-3-pasic@linux.ibm.com>
+ <aNnl_CfV0EvIujK0@linux.alibaba.com>
+ <20250929112251.72ab759d.pasic@linux.ibm.com>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20250929112251.72ab759d.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, 30 Sep 2025 13:29:32 -0700, syzbot wrote:
+On 9/29/25 11:22 AM, Halil Pasic wrote:
+> On Mon, 29 Sep 2025 09:50:52 +0800
+> Dust Li <dust.li@linux.alibaba.com> wrote:
+> 
+>>> @@ -175,6 +175,8 @@ struct smc_link {
+>>> 	struct completion	llc_testlink_resp; /* wait for rx of testlink */
+>>> 	int			llc_testlink_time; /* testlink interval */
+>>> 	atomic_t		conn_cnt; /* connections on this link */
+>>> +	u16			max_send_wr;
+>>> +	u16			max_recv_wr;  
+>>
+>> Here, you've moved max_send_wr/max_recv_wr from the link group to individual links.
+>> This means we can now have different max_send_wr/max_recv_wr values on two
+>> different links within the same link group.
+> 
+> Only if allocations fail. Please notice that the hunk:
+> 
+> --- a/net/smc/smc_core.c
+> +++ b/net/smc/smc_core.c
+> @@ -810,6 +810,8 @@ int smcr_link_init(struct smc_link_group *lgr, struct smc_link *lnk,
+>  	lnk->clearing = 0;
+>  	lnk->path_mtu = lnk->smcibdev->pattr[lnk->ibport - 1].active_mtu;
+>  	lnk->link_id = smcr_next_link_id(lgr);
+> +	lnk->max_send_wr = lgr->max_send_wr;
+> +	lnk->max_recv_wr = lgr->max_recv_wr;
+> 
+> initializes the link values with the values from the lgr which are in
+> turn picked up form the systctls at lgr creation time. I have made an
+> effort to keep these values the same for each link, but in case the
+> allocation fails and we do back off, we can end up with different values
+> on the links. 
+> 
+> The alternative would be to throw in the towel, and not create
+> a second link if we can't match what worked for the first one.
+> 
+>>
+>> Since in Alibaba we doesn't use multi-link configurations, we haven't tested
+>> this scenario. Have you tested the link-down handling process in a multi-link
+>> setup?
+>>
+> 
+> Mahanta was so kind to do most of the testing on this. I don't think
+> I've tested this myself. @Mahanta: Would you be kind to give this a try
+> if it wasn't covered in the past? The best way is probably to modify
+> the code to force such a scenario. I don't think it is easy to somehow
+> trigger in the wild.
+> 
+> BTW I don't expect any problems. I think at worst the one link would
+> end up giving worse performance than the other, but I guess that can
+> happen for other reasons as well (like different HW for the two links).
+> 
+> But I think getting some sort of a query interface which would tell
+> us how much did we end up with down the road would be a good idea anyway.
+> 
+> And I hope we can switch to vmalloc down the road as well, which would
+> make back off less likely.
 
->Hello,
->
->syzbot found the following issue on:
->
->HEAD commit:    1896ce8eb6c6 Merge tag 'fsverity-for-linus' of git://git.k..
->git tree:       upstream
->console output: https://syzkaller.appspot.com/x/log.txt?x=153d0092580000
->kernel config:  https://syzkaller.appspot.com/x/.config?x=6eca10e0cdef44f
->dashboard link: https://syzkaller.appspot.com/bug?extid=938fcd548c303fe33c1a
->compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
->userspace arch: i386
->
->Unfortunately, I don't have any reproducer for this issue yet.
->
->Downloadable assets:
->disk image: https://storage.googleapis.com/syzbot-assets/d0fbab3c0b62/disk-1896ce8e.raw.xz
->vmlinux: https://storage.googleapis.com/syzbot-assets/71c7b444e106/vmlinux-1896ce8e.xz
->kernel image: https://storage.googleapis.com/syzbot-assets/96a4aa63999d/bzImage-1896ce8e.xz
->
->IMPORTANT: if you fix the issue, please add the following tag to the commit:
->Reported-by: syzbot+938fcd548c303fe33c1a@syzkaller.appspotmail.com
->
->netlink: 8 bytes leftover after parsing attributes in process `syz.8.3246'.
->=====================================================
->BUG: KMSAN: uninit-value in hex_byte_pack include/linux/hex.h:13 [inline]
->BUG: KMSAN: uninit-value in ip6_string+0xef4/0x13a0 lib/vsprintf.c:1490
-> hex_byte_pack include/linux/hex.h:13 [inline]
-> ip6_string+0xef4/0x13a0 lib/vsprintf.c:1490
-> ip6_addr_string+0x18a/0x3e0 lib/vsprintf.c:1509
-> ip_addr_string+0x245/0xee0 lib/vsprintf.c:1633
-> pointer+0xc09/0x1bd0 lib/vsprintf.c:2542
-> vsnprintf+0xf8a/0x1bd0 lib/vsprintf.c:2930
-> vprintk_store+0x3ae/0x1530 kernel/printk/printk.c:2279
-> vprintk_emit+0x307/0xcd0 kernel/printk/printk.c:2426
-> vprintk_default+0x3f/0x50 kernel/printk/printk.c:2465
-> vprintk+0x36/0x50 kernel/printk/printk_safe.c:82
-> _printk+0x17e/0x1b0 kernel/printk/printk.c:2475
-> ib_nl_process_good_ip_rsep drivers/infiniband/core/addr.c:128 [inline]
+Unfortunately we are closing the net-next PR right now and I would
+prefer such testing being reported explicitly. Let's defer this series
+to the next cycle: please re-post when net-next will reopen after Oct 12th.
 
-I see when gid is not initialized in nla_for_each_attr loop, this should
-return early.
+Thanks,
 
-I think the splat occurrs when gid is not found, so a simple fix might
-be like:
+Paolo
 
-diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
-index be0743dac3ff..c03a308bcda5 100644
---- a/drivers/infiniband/core/addr.c
-+++ b/drivers/infiniband/core/addr.c
-@@ -103,15 +103,21 @@ static void ib_nl_process_good_ip_rsep(const struct nlmsghdr *nlh)
-        struct addr_req *req;
-        int len, rem;
-        int found = 0;
-+       bool gid_found = false;
-
-        head = (const struct nlattr *)nlmsg_data(nlh);
-        len = nlmsg_len(nlh);
-
-        nla_for_each_attr(curr, head, len, rem) {
--               if (curr->nla_type == LS_NLA_TYPE_DGID)
-+               if (curr->nla_type == LS_NLA_TYPE_DGID) {
-                        memcpy(&gid, nla_data(curr), nla_len(curr));
-+                       gid_found = true;
-+               }
-        }
-
-+       if (!gid_found)
-+               return;
-+
-        spin_lock_bh(&lock);
-        list_for_each_entry(req, &req_list, list) {
-                if (nlh->nlmsg_seq != req->seq)
-
-> ib_nl_handle_ip_res_resp+0x963/0x9d0 drivers/infiniband/core/addr.c:141
-> rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:-1 [inline]
-> rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
-> rdma_nl_rcv+0xefa/0x11c0 drivers/infiniband/core/netlink.c:259
-> netlink_unicast_kernel net/netlink/af_netlink.c:1320 [inline]
-> netlink_unicast+0xf04/0x12b0 net/netlink/af_netlink.c:1346
-> netlink_sendmsg+0x10b3/0x1250 net/netlink/af_netlink.c:1896
-> sock_sendmsg_nosec net/socket.c:714 [inline]
-> __sock_sendmsg+0x333/0x3d0 net/socket.c:729
-> ____sys_sendmsg+0x7e0/0xd80 net/socket.c:2617
-> ___sys_sendmsg+0x271/0x3b0 net/socket.c:2671
-> __sys_sendmsg+0x1aa/0x300 net/socket.c:2703
-> __compat_sys_sendmsg net/compat.c:346 [inline]
-> __do_compat_sys_sendmsg net/compat.c:353 [inline]
-> __se_compat_sys_sendmsg net/compat.c:350 [inline]
-> __ia32_compat_sys_sendmsg+0xa4/0x100 net/compat.c:350
-> ia32_sys_call+0x3f6c/0x4310 arch/x86/include/generated/asm/syscalls_32.h:371
-> do_syscall_32_irqs_on arch/x86/entry/syscall_32.c:83 [inline]
-> __do_fast_syscall_32+0xb0/0x150 arch/x86/entry/syscall_32.c:306
-> do_fast_syscall_32+0x38/0x80 arch/x86/entry/syscall_32.c:331
-> do_SYSENTER_32+0x1f/0x30 arch/x86/entry/syscall_32.c:369
-> entry_SYSENTER_compat_after_hwframe+0x84/0x8e
->
->Local variable gid.i created at:
-> ib_nl_process_good_ip_rsep drivers/infiniband/core/addr.c:102 [inline]
-> ib_nl_handle_ip_res_resp+0x254/0x9d0 drivers/infiniband/core/addr.c:141
-> rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:-1 [inline]
-> rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
-> rdma_nl_rcv+0xefa/0x11c0 drivers/infiniband/core/netlink.c:259
->
->CPU: 0 UID: 0 PID: 17455 Comm: syz.8.3246 Not tainted syzkaller #0 PREEMPT(none) 
->Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/18/2025
->=====================================================
->
->
->---
->This report is generated by a bot. It may contain errors.
->See https://goo.gl/tpsmEJ for more information about syzbot.
->syzbot engineers can be reached at syzkaller@googlegroups.com.
->
->syzbot will keep track of this issue. See:
->https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
->If the report is already addressed, let syzbot know by replying with:
->#syz fix: exact-commit-title
->
->If you want to overwrite report's subsystems, reply with:
->#syz set subsystems: new-subsystem
->(See the list of subsystem names on the web dashboard)
->
->If the report is a duplicate of another one, reply with:
->#syz dup: exact-subject-of-another-report
->
->If you want to undo deduplication, reply with:
->#syz undup
->
 
