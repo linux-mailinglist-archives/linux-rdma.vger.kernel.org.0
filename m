@@ -1,161 +1,151 @@
-Return-Path: <linux-rdma+bounces-13785-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13786-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75309BBDF1B
-	for <lists+linux-rdma@lfdr.de>; Mon, 06 Oct 2025 13:59:09 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB9C8BBE074
+	for <lists+linux-rdma@lfdr.de>; Mon, 06 Oct 2025 14:30:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 303F83BA8D4
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Oct 2025 11:59:06 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id F108E4EBD58
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Oct 2025 12:30:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F3E317E4;
-	Mon,  6 Oct 2025 11:59:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7479E27F19F;
+	Mon,  6 Oct 2025 12:30:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="qhMhXeJk";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="B76/Ywx9"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="qYELF5GQ";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="crxqOEWA";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="i9FFLlfw";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="KLmWKvyW"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from fhigh-a4-smtp.messagingengine.com (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9E3E276049;
-	Mon,  6 Oct 2025 11:59:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1C96F9C1
+	for <linux-rdma@vger.kernel.org>; Mon,  6 Oct 2025 12:30:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759751944; cv=none; b=ZLAgpu/du3/Kljx9O+L31PuxZzJKvASGvK8JZvnonPLtoF2OEZxBZOCIZbd/Ts+I5IAWaKJfG4bjsLVmvlmjKhysMBzdUcUPYLv5epY3pdK20ZMXTa33vDLsalJL3B8FELUoHJBogMy0kiZbpTPxuJwdgKDq1w0wcEMtA5CC9tk=
+	t=1759753845; cv=none; b=s2rJBAWmLEkq9+bXzQMTs8aFLHM/sT00t9P1hfFUulPDWhEbxC5hGz9HzT/dBbaIOa7ZIkNVItgD1w++WR7gND3BW6M/tXy8Kemy1dQGj4XPA5JDQmrjevc6p00YPrkqbfLzIbgjhoR4egSyfQL25OgaBaiZ2hd41zl+N8+mh2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759751944; c=relaxed/simple;
-	bh=vtj7u1PPyXg2zYDgNyYCdqqkCdW2GE7U6pgTcOk1lpY=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=EbvvjFeYXO9kw1x9w+iRuNPqGbQ+lgiL73aEToav5tJoTxe1V5g+FUqlI7LekZ7Lit6KY2ijzO7U9os5W/GDnZKWPcw12P2V2NzVlfJjksmj0e/QPcUn79TxGCDUixDgAZht8APyDGHw4xPDsX3tLmRe5bdtUsjGi+dl/zrVu/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=qhMhXeJk; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=B76/Ywx9; arc=none smtp.client-ip=103.168.172.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 039E514000E2;
-	Mon,  6 Oct 2025 07:59:02 -0400 (EDT)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-05.internal (MEProxy); Mon, 06 Oct 2025 07:59:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1759751942;
-	 x=1759838342; bh=7GQ/0jR0gVdoLEQuuwM/Hs1zQEnI3s78mUUBE3R9tUM=; b=
-	qhMhXeJkK0ZAsD8fQDGc9FkqBOdXuWYRz1JK0xf20I4m8zCP6yT4cHe6eiG+84zZ
-	cJCFYYa7AJux2umtoU1iLS817iOgJYfby79rTIDeTuhj4id2EVjaHlj3O1oSn9xl
-	JRufo260ZpCRun9DtA3wLjw+PTY57h6mY8oE8iEF9gQRB6B+4kI9e2qXa7i7PTKr
-	n3r8e5ed+/HWyqSybNNiXxF7yu0a1kjVww4+d3zC8SqhBErxFuJtauZPMWwuOl+i
-	qr9GOE1jsLW7upa8hXJT/EbRT8darbErd4x3bXzqJHGQU42NiR165Jjt6+jGYyK/
-	NygIlALHsVC17dqMTDa3lA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1759751942; x=
-	1759838342; bh=7GQ/0jR0gVdoLEQuuwM/Hs1zQEnI3s78mUUBE3R9tUM=; b=B
-	76/Ywx9vbXjDjujzUcyhVWlQsYtwTAcOOGqpU1mFDCW9V5C6sUawSoYQlsCoVtgL
-	C6wZ0lQd0fQca7BHIjvhBmSG3NWQslmNdruZ7pKIYs9lrDefQ0Mbt+cWHR/mQbkW
-	Y2bNJcuzRXAbF41RqL0tAFwNCNZU6HewB0gGXAdf4OPIqLc8JLn/VmrM9uBWov1+
-	p5DmYWIU/8PBsqOiSTKwrY7Xr58rluhEWeKgifUv8ujqGVHOZLjQ8bJOo1djywL/
-	Figu72Xmtrwqj/ZzF5S+61uCsM55n3xyokp7LQZgyzxJ7ZbecLWFju/0I/mqy9nF
-	RdQKng5NtssSajknVV/DA==
-X-ME-Sender: <xms:Ba_jaEfGweUCEwN3MH9DoD4rXHqUcGIMIKY0UFGVRyI43VB3fwoeSA>
-    <xme:Ba_jaBAKqCIEh2FrkI6Rx4soK0iddDYv5Kxnj7hFhAy03QtSJWKgn_uO-bqey-NY9
-    -odQKcd38I7loLduSZJESt6NvHqwDdnmkcr_iwGQ0AknDPY-WjctbA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdeljeegkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpefoggffhffvvefkjghfufgtgfesthejredtredttdenucfhrhhomhepfdetrhhnugcu
-    uegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtthgvrh
-    hnpeefuddtfeeukefgteduieeiuedvjeelgfettddtiefhfeefhfefffelvefhveeileen
-    ucffohhmrghinhepghhoohhglhgvshhouhhrtggvrdgtohhmpdhkvghrnhgvlhdrohhrgh
-    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhn
-    ugesrghrnhgusgdruggvpdhnsggprhgtphhtthhopedujedpmhhouggvpehsmhhtphhouh
-    htpdhrtghpthhtoheprghruggssehkvghrnhgvlhdrohhrghdprhgtphhtthhopehkuhgs
-    rgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepnhgrthhhrghnsehkvghrnhgvlhdroh
-    hrghdprhgtphhtthhopegrnhguvghrshdrrhhogigvlhhlsehlihhnrghrohdrohhrghdp
-    rhgtphhtthhopegsvghnjhgrmhhinhdrtghophgvlhgrnhgusehlihhnrghrohdrohhrgh
-    dprhgtphhtthhopegurghnrdgtrghrphgvnhhtvghrsehlihhnrghrohdrohhrghdprhgt
-    phhtthhopehnrghrvghshhdrkhgrmhgsohhjuheslhhinhgrrhhordhorhhgpdhrtghpth
-    htoheplhhinhhugidqrghrmhdqkhgvrhhnvghlsehlihhsthhsrdhinhhfrhgruggvrggu
-    rdhorhhgpdhrtghpthhtoheplhhkfhhtqdhtrhhirghgvgeslhhishhtshdrlhhinhgrrh
-    hordhorhhg
-X-ME-Proxy: <xmx:Ba_jaKAGybnjVE-uWoUnRgJKlfqjmUKzRGjKe5q7nuLC4S_gzhkSwQ>
-    <xmx:Ba_jaNQtNC8ngmUykBG9GqraoJJS2h74jGCmuEaZ-J-FY_CxmDAl6A>
-    <xmx:Ba_jaMQac1xHqd8lsMQhNQm3ubOhUb9e6Pvi3vfNwtW0XA_CJZBaWg>
-    <xmx:Ba_jaLIU2c2cSGXiBrkAGglM2IVJxfWblgLf2CqrhvL0QcX1LqRTvA>
-    <xmx:Ba_jaO_bqHvRa8C_Gf8CDe9AB-0F0mHSrqoHkmY2exYkdtLoOdXjHIvZ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 73FF3700065; Mon,  6 Oct 2025 07:59:01 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1759753845; c=relaxed/simple;
+	bh=8WgKRqMJPSYfkRP5kOqAcrkJUwR6La9YOMWBWAGjIFM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FfdbXIrgLCHgr6jml/PATRC0dVjMpNs8BSLZ2/sal2vysurQFyivGIqPheV9swewRQ9g3lUL7HdB4uX9faX77dZqeIV4CSTx52DFKczUXt9faEzgwwdV1Q3ScpfcXchR0WlGQIp5tU27vfs0OlQD1fmtIqh7Jc94Hr/RaDpTuMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=qYELF5GQ; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=crxqOEWA; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=i9FFLlfw; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=KLmWKvyW; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BDC4D336CB;
+	Mon,  6 Oct 2025 12:30:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1759753842; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DH/E8tdqQkikeQeW9VrxwMtlsxz2Qi0OG9Sx1VZcu7Q=;
+	b=qYELF5GQ/fEzIt6b6U/00fnf8TZ4Am9FPXKWPtwfM2jNyOIHcAiJUmj6vTLEB1sTpsQBS5
+	2RVl1SNqRt6kE+l0zwPAzWSBsbK6MVE69gUNxLrnsb80VLa6IUgECnqGq5mV5YFpQj2uiF
+	k13SsPzszmzPE07BrK6HwwmEhEmdKz4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1759753842;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DH/E8tdqQkikeQeW9VrxwMtlsxz2Qi0OG9Sx1VZcu7Q=;
+	b=crxqOEWAKQga4pFbqrJrAPtOIrT9lTPYsnddKqsPCPaB2cX/gIIm/zikz36s6JNoBnXr9/
+	XlagKGba+KJdj1BQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=i9FFLlfw;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=KLmWKvyW
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1759753840; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DH/E8tdqQkikeQeW9VrxwMtlsxz2Qi0OG9Sx1VZcu7Q=;
+	b=i9FFLlfwoi6YO3QSmRJX2BbkmHa/vi/HYrvDb8+80Z6+fo6dHWx6n4FU7Uhhreem7fvng/
+	3XwvaEm1BuRvxMTLOfYUlf64xOjxyS2tRqcRPADMzDw76sKu3IO+R3BInbHhr1U1X9kbHV
+	lAKIs/EYEmuOfnSzCIp1uhkBW6M9Jys=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1759753840;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DH/E8tdqQkikeQeW9VrxwMtlsxz2Qi0OG9Sx1VZcu7Q=;
+	b=KLmWKvyW/TQznlozFKG995pOwzVwtAuHepkeU1dXa1VBokbG36OsFgtyjvepq6mXh9Xf2x
+	fI7q0uXX/AqgndBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A451213995;
+	Mon,  6 Oct 2025 12:30:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Uc4oJ3C242hwdwAAD6G6ig
+	(envelope-from <dwagner@suse.de>); Mon, 06 Oct 2025 12:30:40 +0000
+Date: Mon, 6 Oct 2025 14:30:32 +0200
+From: Daniel Wagner <dwagner@suse.de>
+To: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc: "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>, 
+	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>, "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, 
+	"nbd@other.debian.org" <nbd@other.debian.org>, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: blktests failures with v6.17 kernel
+Message-ID: <6f615e86-d160-41a2-a078-478406e4c749@flourine.local>
+References: <3bbujxlhhzxufnihiyhssmknscdcqt7igyvzbhwf3sxdgbruma@kw5cf6u5npan>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AOEbzVvuXYlJ
-Date: Mon, 06 Oct 2025 13:58:41 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Naresh Kamboju" <naresh.kamboju@linaro.org>,
- Netdev <netdev@vger.kernel.org>,
- "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
- "open list" <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
- "Linux Regressions" <regressions@lists.linux.dev>, linux-rdma@vger.kernel.org
-Cc: "Ard Biesheuvel" <ardb@kernel.org>,
- "Patrisious Haddad" <phaddad@nvidia.com>,
- "Michael Guralnik" <michaelgur@nvidia.com>,
- "Moshe Shemesh" <moshe@nvidia.com>, "Tariq Toukan" <tariqt@nvidia.com>,
- "Jakub Kicinski" <kuba@kernel.org>,
- "Dan Carpenter" <dan.carpenter@linaro.org>,
- "Anders Roxell" <anders.roxell@linaro.org>,
- "Benjamin Copeland" <benjamin.copeland@linaro.org>,
- "Nathan Chancellor" <nathan@kernel.org>
-Message-Id: <a2357b92-8a8a-4d79-afb8-0bb8aee244ac@app.fastmail.com>
-In-Reply-To: 
- <CA+G9fYt+9QZ4TwEx7+m2S5Vtn7cq1N54oGceSR72upZJTrzkng@mail.gmail.com>
-References: 
- <CA+G9fYu-5gS0Z6+18qp1xdrYRtHXG_FeTV0hYEbhavuGe_jGQg@mail.gmail.com>
- <CA+G9fYt+9QZ4TwEx7+m2S5Vtn7cq1N54oGceSR72upZJTrzkng@mail.gmail.com>
-Subject: Re: next-20251002: arm64: gcc-8-defconfig: Assembler messages: Error: unknown
- architectural extension `simd;'
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3bbujxlhhzxufnihiyhssmknscdcqt7igyvzbhwf3sxdgbruma@kw5cf6u5npan>
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	TO_DN_SOME(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Spam-Flag: NO
+X-Spam-Level: 
+X-Rspamd-Queue-Id: BDC4D336CB
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.51
 
-On Mon, Oct 6, 2025, at 13:31, Naresh Kamboju wrote:
-> + linux-rdma@vger.kernel.org
->
-> On Mon, 6 Oct 2025 at 17:00, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->> ### Build error log
->> /tmp/cclfMnj9.s: Assembler messages:
->> /tmp/cclfMnj9.s:656: Error: unknown architectural extension `simd;'
->> make[8]: *** [scripts/Makefile.build:287:
->> drivers/net/ethernet/mellanox/mlx5/core/wc.o] Error 1
->>
->> Suspecting commit,
->> $ git blame -L 269 drivers/net/ethernet/mellanox/mlx5/core/wc.c
->> fd8c8216648cd8 (Patrisious Haddad 2025-09-29 00:08:08 +0300 269)
->>          (".arch_extension simd;\n\t"
->> fd8c8216648cd net/mlx5: Improve write-combining test reliability for
->> ARM64 Grace CPUs
->>
->> ## Source
->> * Kernel version: 6.17.0
->> * Git tree: https://kernel.googlesource.com/pub/scm/linux/kernel/git/next/linux-next.git
->> * Git commit: 47a8d4b89844f5974f634b4189a39d5ccbacd81c
->> * Architectures: arm64
->> * Toolchains: gcc-8
->> * Kconfigs: defconfig
->>
+On Thu, Oct 02, 2025 at 10:35:48AM +0000, Shinichiro Kawasaki wrote:
+> #2: nvme/041 (fc transport)
+> 
+>     The test case nvme/041 fails for fc transport. Refer to the report for the
+>     v6.12 kernel [4].
+> 
+>     [4] https://lore.kernel.org/linux-nvme/6crydkodszx5vq4ieox3jjpwkxtu7mhbohypy24awlo5w7f4k6@to3dcng24rd4/
 
-Nathan already analyzed the problem and suggested a fix, but I could
-not find a patch on the mailing list so far and sent his suggestion
-now. Please check
+Thanks for reminding me. I'll have to update the nvme-fc-sync series
+This should finally allow to pass all tests for the FC transport. 
 
-https://lore.kernel.org/all/20251006115640.497169-1-arnd@kernel.org/
-
-    Arnd
+[1] https://lore.kernel.org/linux-nvme/20250829-nvme-fc-sync-v3-0-d69c87e63aee@kernel.org/
 
