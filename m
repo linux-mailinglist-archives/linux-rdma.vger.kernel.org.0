@@ -1,78 +1,78 @@
-Return-Path: <linux-rdma+bounces-13821-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13822-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E178BD3D65
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 17:03:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20B7BBD3D7A
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 17:03:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C72B91882DA8
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 15:02:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53F0A1884578
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 15:02:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70DF830C351;
-	Mon, 13 Oct 2025 14:53:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C776830F805;
+	Mon, 13 Oct 2025 14:53:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dttiYk1R"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UfXa/LL9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37EE830BBA5
-	for <linux-rdma@vger.kernel.org>; Mon, 13 Oct 2025 14:53:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 172E030BF64
+	for <linux-rdma@vger.kernel.org>; Mon, 13 Oct 2025 14:53:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760367213; cv=none; b=YpFLPaj6gMagoh2UEA8RiYLp9yANJB6QRUcaQ5lOwreTFxZQwPhprAM0G4KZEIvm43dtTjO7TKY789aQFBbQmbtn+RiJFPG5gsyoCKD1U+YZhPnNAjH13ZYVq2VPrVqYi/4QYLRoINN0uHGIHyZHHbAcWw6pQLrTywWUXf/PFPs=
+	t=1760367214; cv=none; b=Oye+lDJT5MI8eHPFp+aMjhJcj1zbq+Dsashb90or2nEI+Td3umN7/lVRRKi9jHPXLPxZSLA+/BBy6M28oSnEO+6Gud8GpV3SbwTZshlyRZbp0xddMlMdh6EfYnXESnm+UMSncZDLJshnETN6ReLNnT+2ka1BSJM2InZPW6og4kA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760367213; c=relaxed/simple;
-	bh=8yivflMmS6ZWIrzJSRvVg7Se0eo997CBR4EGse4XT6s=;
+	s=arc-20240116; t=1760367214; c=relaxed/simple;
+	bh=+Yq4ejKTaKLjG6/YRDf0JOYouI+O/PnZAdPWT/9Qhhk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pi6rhORHLEXA6xjyX+hlIORpk7WuA25EoCP04TiVlWdK6qtgmgQgENGWqq/FLSBDFGdO9V1qiMPY6fBh++tu2xeETGjnNwPqfpvKCvJktrwvyLPUd/0V7cbkAjhD9z4tSfqLXXMwhgN5oSvksFBioOjZd4d9+SmJCBm00s7HDWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dttiYk1R; arc=none smtp.client-ip=209.85.128.49
+	 MIME-Version; b=pSWJ43gkAOTw8NYqYq6T41R7oGCVpQGPHXX0i50cwMSunMfo4IKXQl7LbCVZ5H4f5In2AlC8Soae+mVOosqMIKCmqMokn29SIw0e+tu+fbhu9pDiBVX+05fTXIccv2FkyDQhkvhcFXJHhhhspkdndRR+QDbjUaXghQvSkZ/zACg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UfXa/LL9; arc=none smtp.client-ip=209.85.221.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-46e326e4e99so25579155e9.1
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Oct 2025 07:53:29 -0700 (PDT)
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3ee130237a8so3466761f8f.0
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Oct 2025 07:53:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760367208; x=1760972008; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1760367210; x=1760972010; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OiKBlG9HlBGLvLNYc+/UZCgemFX+hK9aM2Cm2KqNb2E=;
-        b=dttiYk1RMiXJYpx+btQtg+m0l/59NdUYe799cbaiEAZ9V4bqy1Pm1Jcyz0s/3Za6JP
-         kisRXY9YR8vcz+PuknSdeGWa6yrnbH2Emp5lgMRHkYRyGPsDo1Jv1FCLf37IywFmh5+m
-         v9oS6lrE/MM9xa17SIrDq1I50tVZLKhNvsbZci8JPuKo97CQwIgba9LAKFDsFynxNRlo
-         jwqZ5UarIqNYnzKRP1pzXebrZStqBMeWRkiadfnQ3UxwCB/8ijckVZ8172f+w35+TjGm
-         jybRi3oVO53CFZ4F94ivTVz+7RWeilop1Hk9p4b3pZgTwYRpkg8AjdwZVG7MpAWcWwjf
-         RJmQ==
+        bh=YU2s6sLvAqme/ijuimTj+jjmuWN5wreusGBihnFUvPU=;
+        b=UfXa/LL9yt+Ysw1wELrwsK0t6iKsy3t5IUCTAtjy9DKPeEQanGkLuJByICJfJiZRCo
+         2Wl0lW72AvP8ho1HcN9Vh9JHkJEC/het3urWxISh4IBGSTI2zcl4uDokpum0E4gS+f6S
+         rzKjJA0ZoNwMByGLXQsosTYoRpzxaDEu9+6EFUP7NhJ6QZpIMPouJpt0h36oOrWjjJc2
+         mGWA+JtH+YR7SJWokCKiE0ZMpHPgQMlW19yf/Eppm+0Svg+S2t3IQHeSgDTDa0jcTk3W
+         sYh82YaDhp5lLDSbjYC+O2Iz7tPfhod7oVo1LybgB7st4jk7r/J9i8Iroo5GUcs8HNzb
+         ZXrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760367208; x=1760972008;
+        d=1e100.net; s=20230601; t=1760367210; x=1760972010;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OiKBlG9HlBGLvLNYc+/UZCgemFX+hK9aM2Cm2KqNb2E=;
-        b=FeQbu8genB8ITgxerWywFB6qbtH7/mCrLyBV0WNm2dAHUEcEf4bCY3PSVGuFSM45OS
-         R9SOeK87y+ch0MSZ41cxx2jvjcXb09/OPWQNlLUDdPWx1wQW3VJelcpCaHFa91PiwfVd
-         ZKhLGNPBr/lBpPqYT4gozd3TgMNjmrH6WcbOtKEF8Boo3htjWEiXvlolWM9tcnscFMht
-         rqOBL48SN5AR4A7loVT6y8EisSrWP67hd4eeJY3nitqRV9OXJq4lOHuCTxx4xJzpMksT
-         xpBSZgKUEzwnGscsH69/ZMZkd3md8waYSHVkhDQMlwdgVqEZjCOlEWPgdkAF8alGsJRn
-         uePg==
-X-Forwarded-Encrypted: i=1; AJvYcCUy0xWT3BuyE3l+aIRGpoaRF8LMwFmCInktYHszfoGgEnOEl5MWe/FxD3NSOvK/722nsakx0udUlOWQ@vger.kernel.org
-X-Gm-Message-State: AOJu0YzO6pJv1MH0gYWu+L/C0jGEpCbr8jZyu4cFas/XNetd1o1ATsNt
-	e378ZopdUerCjOtMdgAcXLpMFYkDCyRBDSVCiUnaleAjvSESc0dDtwes
-X-Gm-Gg: ASbGnctsF/2zzsRCRqwC0RXRbc6DN6Ums3AuO9mgfTHYiOAbTJgXGy0zZS1JOtbsYfV
-	91I+xuqGkqlLBllBre3Z6tPwkH5cTrTGSUuBEsZF3zjCZBasND74t9tg/+pm+VWSMdp9VMw5FJd
-	CAwvXqm4P+zYcmU/LhmL1h6QsqzBEkPQLyC78EF2BN/vh0ijccGoYhxV7S2lwMPdsxzdifHxonL
-	fJtmVXvyl+8TcqqvUl6DoicXNzVE7KwGSRWCDLNCRyelLM1S379Iz25+0vVcHkSDmh5OYTx+2a7
-	kLAzTuHQrWl6XmT8c6WqGIy6oNSyBEbD9ERAXZBbn+U1qV5BNhtiaQrg7JQGb0mV4+Rrf8AQLff
-	qLtMuDdma7XuJXTrAs15YdRp2
-X-Google-Smtp-Source: AGHT+IG0nnL9ogS0pl6/D61qEgnidvhF+6cZZVmeF2+ocwra6H4vaRwkXGqdq/k3KCd5ICzpoZPQag==
-X-Received: by 2002:a05:600c:b96:b0:46e:59bd:f7e2 with SMTP id 5b1f17b1804b1-46fa9ebe245mr152016175e9.11.1760367208347;
-        Mon, 13 Oct 2025 07:53:28 -0700 (PDT)
+        bh=YU2s6sLvAqme/ijuimTj+jjmuWN5wreusGBihnFUvPU=;
+        b=gynQMdaPDJY+Ttx/p2SYRAhTM26vA1jRv+ZvRr1yi8kdEjY8RWitX2bSVrXLbaZSL1
+         hxu3sP6FM4A/iXN2VDXsCZ98MXiMHSZmpzPzHCk8OCOeCfTJsS9xwKqBfKOmJNEGVZZd
+         ElG50pbrCeSjJD72Atz0MHtFyCiK/h13cZWghlCbXVZivVfbsNQ66Efu1SC83kTuqId5
+         XLfnpIp/POaZHficzlnhXf+svLDd8+z9WEbXRnXTQ7ni9oNUl7r+Gxu2yJYi8gAtoGPL
+         BI69dhkXineTB4EGzN55dOqxE2yyKkUxw2xRX+pho3kbL4I49wbQBfofdj9sBHajtEsK
+         sgKw==
+X-Forwarded-Encrypted: i=1; AJvYcCX29fkiJbZjY9jXxZEl0napDhRv4c4XSah//4HlIB6vt0i9tUwJQat/ll5pwweIBL5OB30N5DiErN5v@vger.kernel.org
+X-Gm-Message-State: AOJu0YzAHlC96u6NhzIWvS9OHJdKmh/4sB8HrKcyUL5yeZ8cttIE/4gh
+	OWype6iFr5Hrkoy3cBoW+AYxBf4+xOVhbVf7WI5YWb+vaxr20HMsRoax
+X-Gm-Gg: ASbGncvUO9BgDVz1ciHgIg2zwSBbGbaOQOFPcT8xaaecZLPuAqT8McTbBbipCEiXpsH
+	si8aETSc/fcJ6GWNExZYaxKalCpVJ/0roOqMbLMGEktycPYlTNOitV95i9pk4yoe5cCmKZadHlv
+	ha4nc0gI3/tP8mWvKukVNEqC8lF2WunxTvy1l3iuS//ryCpGFJ0rZaL/oUsgDj9MbOsgQdhfkCv
+	Ncgv0UzA7u5G54XhkRvuFwG3xbgY2DV6vwfe9AD3+hgJsaaPAzqKBC5dFunVCrx7IHQ/rOUiGHq
+	Ah0FQR4weh/XU8zBY2Pgg3KqUMO2WzEx8ULzxjdtwPKMC/qfD0mgHQ4XYRm/5BpBERzDKT2v3fD
+	iWbOCV3Ed1GsmKToh070brXXL
+X-Google-Smtp-Source: AGHT+IFXhn4holBktx1xsLQ9+wDO9MN5koElxro/9HDsZg+Lkdgx3g/gzvUUvtFHe8wBJMhvUCR6Yw==
+X-Received: by 2002:a05:6000:400a:b0:408:5363:8266 with SMTP id ffacd0b85a97d-4266e7df744mr15794027f8f.44.1760367210172;
+        Mon, 13 Oct 2025 07:53:30 -0700 (PDT)
 Received: from 127.com ([2620:10d:c092:600::1:eb09])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-426ce5e0e70sm18641085f8f.40.2025.10.13.07.53.26
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-426ce5e0e70sm18641085f8f.40.2025.10.13.07.53.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Oct 2025 07:53:27 -0700 (PDT)
+        Mon, 13 Oct 2025 07:53:29 -0700 (PDT)
 From: Pavel Begunkov <asml.silence@gmail.com>
 To: netdev@vger.kernel.org
 Cc: Andrew Lunn <andrew@lunn.ch>,
@@ -115,9 +115,9 @@ Cc: Andrew Lunn <andrew@lunn.ch>,
 	linux-doc@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
 	Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH net-next v4 04/24] net: use zero value to restore rx_buf_len to default
-Date: Mon, 13 Oct 2025 15:54:06 +0100
-Message-ID: <271820dbf61d9de6f62440598a318926aa96f9cd.1760364551.git.asml.silence@gmail.com>
+Subject: [PATCH net-next v4 05/24] net: hns3: net: use zero to restore rx_buf_len to default
+Date: Mon, 13 Oct 2025 15:54:07 +0100
+Message-ID: <17130da451bba12995b3e0de4eeddef72de70235.1760364551.git.asml.silence@gmail.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1760364551.git.asml.silence@gmail.com>
 References: <cover.1760364551.git.asml.silence@gmail.com>
@@ -129,74 +129,56 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Jakub Kicinski <kuba@kernel.org>
+As in previous commit, restore the default rx_buf_len value if the user
+passes 0. Also initialise rx_buf_len_max.
 
-Distinguish between rx_buf_len being driver default vs user config.
-Use 0 as a special value meaning "unset" or "restore driver default".
-This will be necessary later on to configure it per-queue, but
-the ability to restore defaults may be useful in itself.
-
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
 ---
- Documentation/networking/ethtool-netlink.rst              | 2 +-
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c | 3 +++
- include/linux/ethtool.h                                   | 1 +
- net/ethtool/rings.c                                       | 2 +-
- 4 files changed, 6 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/networking/ethtool-netlink.rst b/Documentation/networking/ethtool-netlink.rst
-index d96a6292f37b..41d4d81a86d1 100644
---- a/Documentation/networking/ethtool-netlink.rst
-+++ b/Documentation/networking/ethtool-netlink.rst
-@@ -983,7 +983,7 @@ threshold value, header and data will be split.
- ``ETHTOOL_A_RINGS_RX_BUF_LEN`` controls the size of the buffers driver
- uses to receive packets. If the device uses different buffer pools for
- headers and payload (due to HDS, HW-GRO etc.) this setting must
--control the size of the payload buffers.
-+control the size of the payload buffers. Setting to 0 restores driver default.
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
+index a5eefa28454c..3d3acc2b9402 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
+@@ -10,6 +10,9 @@
+ #include "hns3_enet.h"
+ #include "hns3_ethtool.h"
  
- CHANNELS_GET
- ============
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-index 19bcf52330d4..ada6244445da 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-@@ -397,6 +397,9 @@ static int otx2_set_ringparam(struct net_device *netdev,
- 	if (ring->rx_mini_pending || ring->rx_jumbo_pending)
++#define RX_BUF_LEN_2K 2048
++#define RX_BUF_LEN_4K 4096
++
+ /* tqp related stats */
+ #define HNS3_TQP_STAT(_string, _member)	{			\
+ 	.stats_string = _string,				\
+@@ -684,6 +687,7 @@ static void hns3_get_ringparam(struct net_device *netdev,
+ 	param->tx_pending = priv->ring[0].desc_num;
+ 	param->rx_pending = priv->ring[rx_queue_index].desc_num;
+ 	kernel_param->rx_buf_len = priv->ring[rx_queue_index].buf_size;
++	kernel_param->rx_buf_len_max = RX_BUF_LEN_4K;
+ 	kernel_param->tx_push = test_bit(HNS3_NIC_STATE_TX_PUSH_ENABLE,
+ 					 &priv->state);
+ }
+@@ -1113,9 +1117,6 @@ static int hns3_check_ringparam(struct net_device *ndev,
+ 				struct ethtool_ringparam *param,
+ 				struct kernel_ethtool_ringparam *kernel_param)
+ {
+-#define RX_BUF_LEN_2K 2048
+-#define RX_BUF_LEN_4K 4096
+-
+ 	struct hns3_nic_priv *priv = netdev_priv(ndev);
+ 
+ 	if (hns3_nic_resetting(ndev) || !priv->ring) {
+@@ -1127,6 +1128,9 @@ static int hns3_check_ringparam(struct net_device *ndev,
+ 	if (param->rx_mini_pending || param->rx_jumbo_pending)
  		return -EINVAL;
  
-+	if (!rx_buf_len)
-+		rx_buf_len = OTX2_DEFAULT_RBUF_LEN;
++	if (!kernel_param->rx_buf_len)
++		kernel_param->rx_buf_len = RX_BUF_LEN_2K;
 +
- 	/* Hardware supports max size of 32k for a receive buffer
- 	 * and 1536 is typical ethernet frame size.
- 	 */
-diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
-index 26ef5ffdc435..0e6023df3ee9 100644
---- a/include/linux/ethtool.h
-+++ b/include/linux/ethtool.h
-@@ -77,6 +77,7 @@ enum {
- /**
-  * struct kernel_ethtool_ringparam - RX/TX ring configuration
-  * @rx_buf_len: Current length of buffers on the rx ring.
-+ *		Setting to 0 means reset to driver default.
-  * @rx_buf_len_max: Max length of buffers on the rx ring.
-  * @tcp_data_split: Scatter packet headers and data to separate buffers
-  * @tx_push: The flag of tx push mode
-diff --git a/net/ethtool/rings.c b/net/ethtool/rings.c
-index 5e872ceab5dd..628546a1827b 100644
---- a/net/ethtool/rings.c
-+++ b/net/ethtool/rings.c
-@@ -139,7 +139,7 @@ const struct nla_policy ethnl_rings_set_policy[] = {
- 	[ETHTOOL_A_RINGS_RX_MINI]		= { .type = NLA_U32 },
- 	[ETHTOOL_A_RINGS_RX_JUMBO]		= { .type = NLA_U32 },
- 	[ETHTOOL_A_RINGS_TX]			= { .type = NLA_U32 },
--	[ETHTOOL_A_RINGS_RX_BUF_LEN]            = NLA_POLICY_MIN(NLA_U32, 1),
-+	[ETHTOOL_A_RINGS_RX_BUF_LEN]            = { .type = NLA_U32 },
- 	[ETHTOOL_A_RINGS_TCP_DATA_SPLIT]	=
- 		NLA_POLICY_MAX(NLA_U8, ETHTOOL_TCP_DATA_SPLIT_ENABLED),
- 	[ETHTOOL_A_RINGS_CQE_SIZE]		= NLA_POLICY_MIN(NLA_U32, 1),
+ 	if (kernel_param->rx_buf_len != RX_BUF_LEN_2K &&
+ 	    kernel_param->rx_buf_len != RX_BUF_LEN_4K) {
+ 		netdev_err(ndev, "Rx buf len only support 2048 and 4096\n");
 -- 
 2.49.0
 
