@@ -1,43 +1,43 @@
-Return-Path: <linux-rdma+bounces-13842-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13816-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23B31BD40E1
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 17:21:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4449BD3C96
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 16:59:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2E97C4F6ABC
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 15:14:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D124B18A0846
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 14:59:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 655CC308F02;
-	Mon, 13 Oct 2025 14:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB1A9273D8A;
+	Mon, 13 Oct 2025 14:51:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="hlQxfkU+"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Zezx/nrb"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E5F11F03C9;
-	Mon, 13 Oct 2025 14:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F4281EB9FA;
+	Mon, 13 Oct 2025 14:51:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760367500; cv=none; b=plYek6d4c9c3F5cjXo67AWeSK1wZCovSUKk2oMs9TxF7hiVd9mLT1MThrqkcUnMn4lhT52nmCRvQsZwALivLASj98WbcemJ17G4FSoZOkhxET+hsvaRZ3J10XmQpiG41MLdGr0DNGdmKi2tcLmhBnnGJkD0sDuCnPc5xyDA0ap0=
+	t=1760367064; cv=none; b=pE6x29KL+92nlXJ0Uy6V0o0T+KdJrjU2JNQPRiJ0Vm159/dND8dLo5Tv2XS7s9r98rHfoAbg0wSTx7LafuFEBTla24qcRWoaEo6uZtP/4sr2esvhKPVvk4OXDsMnrT/qwJ1pw2wfwQQg+qhQ+heq5jW6+q03U+K8VtN03bU+o0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760367500; c=relaxed/simple;
-	bh=AcHoyMvXd7YQTNbf4AbjMjuRvwF+rz53tWVME8AfVK4=;
+	s=arc-20240116; t=1760367064; c=relaxed/simple;
+	bh=V+EA/HAYN4xAQmv1tLAZQoGTMRNG5Dw7RZ7cdv7LCAw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oGlhJg04axr0T8gvi/w9Wg11FU4YPvGITAjdlFUonCFYH7fcAylYmAXYclsbnH+DMIbqp3k8st3F+HUvpeBx3MXB3jgjf2BALXmCArRktOCU2+C9HRPwMNe50ITGybjPxBRjC618YlJhE+AU2blpbcsx6P3+L4PogXZudS6vwTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=hlQxfkU+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58977C4CEFE;
-	Mon, 13 Oct 2025 14:58:19 +0000 (UTC)
+	 MIME-Version; b=P+op4GlTrgJzHpbOp6EISfNXqqMZm+GBWoj8omjWpWG4dXHroeLTHTddw71RKMiqnb664kEcWYnnt8yNMgOIBLd4OekLmIyv16ddlpzl9DusuqCZwbFWogYsfrYHLwxdm3S8rHFhkxbt8QRNlaJOtmjK0vtsN14U3tcbseXcSLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Zezx/nrb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D696AC4CEE7;
+	Mon, 13 Oct 2025 14:51:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1760367499;
-	bh=AcHoyMvXd7YQTNbf4AbjMjuRvwF+rz53tWVME8AfVK4=;
+	s=korg; t=1760367064;
+	bh=V+EA/HAYN4xAQmv1tLAZQoGTMRNG5Dw7RZ7cdv7LCAw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hlQxfkU+ZFuQDGYs+tpzDf4i6hDVmt6XxsFbiPqg23l/1rShzVvG8V2/KJQX7LESV
-	 Rlcsue0UeTf3f/EyGOKWVG96fKdf7ciBo43uwmslGw46BvIcsrSo8B/A2RQNUizK58
-	 K7mgueQHaiwRDUg/WZbz7P4XSWvQAAeypjuDzODE=
+	b=Zezx/nrbo6xTPhoAliQwjBgbLOyLsLRPTkR1YzSML3d3g/O8ke7rv1gScPCwgbYv4
+	 MsvAvv0YyGb55tzaV3nemzUD2XSt9EELiIHONr1UUXgdQQJ7iGRFk4Xib8uW6U/3Ya
+	 2EAIsuDqoJwIk2C4ZO7Q1MY7Sw3RSrrfPOGIiaNU=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -51,12 +51,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Stefan Metzmacher <metze@samba.org>,
 	Steve French <stfrench@microsoft.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 008/196] smb: server: fix IRD/ORD negotiation with the client
-Date: Mon, 13 Oct 2025 16:43:19 +0200
-Message-ID: <20251013144315.496078826@linuxfoundation.org>
+Subject: [PATCH 6.1 052/196] smb: server: fix IRD/ORD negotiation with the client
+Date: Mon, 13 Oct 2025 16:43:45 +0200
+Message-ID: <20251013144316.467260856@linuxfoundation.org>
 X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251013144315.184275491@linuxfoundation.org>
-References: <20251013144315.184275491@linuxfoundation.org>
+In-Reply-To: <20251013144314.549284796@linuxfoundation.org>
+References: <20251013144314.549284796@linuxfoundation.org>
 User-Agent: quilt/0.69
 X-stable: review
 X-Patchwork-Hint: ignore
@@ -68,7 +68,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-6.6-stable review patch.  If anyone has any objections, please let me know.
+6.1-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -106,7 +106,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 85 insertions(+), 14 deletions(-)
 
 diff --git a/fs/smb/server/transport_rdma.c b/fs/smb/server/transport_rdma.c
-index 504e2a1cf33b8..31c1ac256e1be 100644
+index 84b5b2f5df998..af1c41f922bb3 100644
 --- a/fs/smb/server/transport_rdma.c
 +++ b/fs/smb/server/transport_rdma.c
 @@ -152,6 +152,10 @@ struct smb_direct_transport {
@@ -120,7 +120,7 @@ index 504e2a1cf33b8..31c1ac256e1be 100644
  };
  
  #define KSMBD_TRANS(t) ((struct ksmbd_transport *)&((t)->transport))
-@@ -346,6 +350,9 @@ static struct smb_direct_transport *alloc_transport(struct rdma_cm_id *cm_id)
+@@ -345,6 +349,9 @@ static struct smb_direct_transport *alloc_transport(struct rdma_cm_id *cm_id)
  	t->cm_id = cm_id;
  	cm_id->context = t;
  
@@ -130,7 +130,7 @@ index 504e2a1cf33b8..31c1ac256e1be 100644
  	t->status = SMB_DIRECT_CS_NEW;
  	init_waitqueue_head(&t->wait_status);
  
-@@ -1623,21 +1630,21 @@ static int smb_direct_send_negotiate_response(struct smb_direct_transport *t,
+@@ -1618,21 +1625,21 @@ static int smb_direct_send_negotiate_response(struct smb_direct_transport *t,
  static int smb_direct_accept_client(struct smb_direct_transport *t)
  {
  	struct rdma_conn_param conn_param;
@@ -164,7 +164,7 @@ index 504e2a1cf33b8..31c1ac256e1be 100644
  		conn_param.private_data = ird_ord_hdr;
  		conn_param.private_data_len = sizeof(ird_ord_hdr);
  	} else {
-@@ -2023,10 +2030,13 @@ static bool rdma_frwr_is_supported(struct ib_device_attr *attrs)
+@@ -2018,10 +2025,13 @@ static bool rdma_frwr_is_supported(struct ib_device_attr *attrs)
  	return true;
  }
  
@@ -179,7 +179,7 @@ index 504e2a1cf33b8..31c1ac256e1be 100644
  	int ret;
  
  	if (!rdma_frwr_is_supported(&new_cm_id->device->attrs)) {
-@@ -2040,6 +2050,67 @@ static int smb_direct_handle_connect_request(struct rdma_cm_id *new_cm_id)
+@@ -2035,6 +2045,67 @@ static int smb_direct_handle_connect_request(struct rdma_cm_id *new_cm_id)
  	if (!t)
  		return -ENOMEM;
  
@@ -247,7 +247,7 @@ index 504e2a1cf33b8..31c1ac256e1be 100644
  	ret = smb_direct_connect(t);
  	if (ret)
  		goto out_err;
-@@ -2064,7 +2135,7 @@ static int smb_direct_listen_handler(struct rdma_cm_id *cm_id,
+@@ -2059,7 +2130,7 @@ static int smb_direct_listen_handler(struct rdma_cm_id *cm_id,
  {
  	switch (event->event) {
  	case RDMA_CM_EVENT_CONNECT_REQUEST: {
