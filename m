@@ -1,78 +1,78 @@
-Return-Path: <linux-rdma+bounces-13838-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13839-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8776BD3FA5
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 17:16:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE191BD3EDC
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 17:12:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8A9614FEA64
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 15:09:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 741B318A2BE6
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 15:10:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E5EA3148B7;
-	Mon, 13 Oct 2025 14:54:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55EC4314A65;
+	Mon, 13 Oct 2025 14:54:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nK8CWOB5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vqk0YYK4"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3800F313E13
-	for <linux-rdma@vger.kernel.org>; Mon, 13 Oct 2025 14:54:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84720313E20
+	for <linux-rdma@vger.kernel.org>; Mon, 13 Oct 2025 14:54:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760367245; cv=none; b=cxDqyLxtL+0Z1zsD2X/KnpGSwRc4yLZm2X7E1InyZKsc8mp7hQk5EAYJPpJ+pxYLyKz2bRg7pugCOWa+JrY7zysESRABhZIlXUG/J22DJk6wDwgQ+xaGshtUXLiLboPKt9ZdU+nss/wnJ5bWRURzpzcock+TfYwGELnBn2B4YR4=
+	t=1760367248; cv=none; b=eD68QNv6jDx0iOLsL0ZqmnvI2el8fMpHlUOwVCc9+/fl4RuWGB3ZG/CtU29o6PGu7EvKL+mExtswKJdffgzvEqYCJsRLTreddXD+/wLPrqp1k4nJiNgiFm0bljupt9h9MrUo5gSsz41g9QrE5UTGRTRkmp4Bwj6xoASqIoPlxM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760367245; c=relaxed/simple;
-	bh=VbkbnL9Jd7IBf/weO/ABOH6hhH/VI1oK8B4vqYtdCZQ=;
+	s=arc-20240116; t=1760367248; c=relaxed/simple;
+	bh=UN20xXoo/DIsknQaKnQS3nE5pqQGdfuGllMStEKfLhQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qkWwc2T56zgW8vI35JJJsxsu8l7iBXVImIBWBWQVF01Ei3Wox6NEDQR4GtCXPzBdMjwAa1kPbr+kFxnMXhunzoCTcWlVMABCZw37g9yllSH18WS7L8fC7Ico6no/kjYE6MZfoK5hv02OsnMTj2v90A40qGgiwj2c2/5p5TUuPYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nK8CWOB5; arc=none smtp.client-ip=209.85.221.43
+	 MIME-Version; b=s+3JZDFlyRh6sWcOd/5EdSpJYuHQYiv/dg8c82OvNwoTvX3yBklk5hHqpVxCVbil46nMAU0hFzFhjvJKDEaDpYL3IIlhSQM9jHyWC1wTg7jfiZQO/oupR3qly3276eCtS3zmWhQWlAJtFcwPBJedoI7lhcXIKSwfjlJPYZ/Jmro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vqk0YYK4; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3ecde0be34eso2755569f8f.1
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Oct 2025 07:54:02 -0700 (PDT)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-46e37d10ed2so39819295e9.2
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Oct 2025 07:54:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760367241; x=1760972041; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1760367243; x=1760972043; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RkGcDsrwsgWPCsuq5GDhJNJxx+ikf4u6w8tp//AtVs0=;
-        b=nK8CWOB5unkrl3VkdLu5QANW1g/EuAZou8GsyC1Ykz6MrJJmM8L15r7wMjv+s4oXbU
-         R2p9Snh86SXLQyE9X0KzTphJCmaJP3Z0OFpNVrIQau1R0txqeENR8EsB6CoctmwRBbkl
-         VQW1dZ6o9fTNdgMpImWKqkQTOM0tUshnMBMwUhVs/p/mkIm6PSqShS8ETMyGfmn17fKs
-         MiBWsAodYfGCMGZ04MJQtR4TLDvkVtCSKwd7hSaSC2HCF+dSDTum9RVkUI8E9P8zmn7d
-         Ff6/oc2tbOtwL+772KlzQPGLbXFUtBrV50au751DLpf5Typ9aRtiLS/cvi24PA8mE8QZ
-         gRUQ==
+        bh=kBVbea7flwKQsaU79NLWmhrt2gwy8JKbrcaG5BbSXQs=;
+        b=Vqk0YYK4D39Lu3ifEgEsEVQoPaxkf9bJepAlOQBM79Vx3AxqTiUZmN0owgmjsEjzOG
+         +EUXHJdOAb3fDTEloWsDBtBHUQDqOgTS4KrsQcwZ6AfcJ3pew8XTxJkywrhFfJupikPo
+         gG6plI4kX8Stj5BPTj3JMNGg5bISxNAchPeDHn4pwm0tpwVcG0gLIPHKltmbZ+zvvQKv
+         mgA/VlnG5okocDEzcM2C0Co+BFPDv25CGel0/VNvAtx038t3jqqACW8B8oevVONulD4+
+         9NOxAE+P3JjJxpheoXkxJIKweAEnkxYtPSj43uf0lrtZUkcmIRh/utLnFyV1YR9SxEra
+         RwWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760367241; x=1760972041;
+        d=1e100.net; s=20230601; t=1760367243; x=1760972043;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RkGcDsrwsgWPCsuq5GDhJNJxx+ikf4u6w8tp//AtVs0=;
-        b=LxrUH9q8+13GjucyMPKcPf6V/zunl0/60IVFH7p1sWMa/HHUvOABNxtTI9insxOZ4p
-         ckkMj8VAqVRXBDQMidu82QbPEmXn1wZo80Bx7ZknHyW3wTmtcKfmeZVMnZwD5TEEaifA
-         cvhpPba0sflcDiIMCk+cXlMxlFKy5j+9NYuCLLfOnROtHg5tGsFPE2TdNCLtPmqK+UOf
-         uJyJXmTL0QlPZcOtAcr8Peg67Q4BbcuPBu5CGJVrsvWjuuy7rHWvETRFlAvoL58FfTLR
-         sqoZA0/gW4OAu70dx7Eaaj2rLZQoXhauZtWSFY/BO9t1YtD5mJREsDl2uMfHQe0P4Vhk
-         Le9w==
-X-Forwarded-Encrypted: i=1; AJvYcCVEOnOo5mNPikhvX6Kt/XZyhCBHAPgxRVDH2+yKm0AdqZ/xVJY+JGsB+YBFvI/OnlIe8BcT+FYpTajK@vger.kernel.org
-X-Gm-Message-State: AOJu0YxC8FSR8hw6FJdYrkKOueIECSoZZOmd5pEgibQUHTeRodpcc0Yn
-	VEJBZzSKWYksHD8jzXKxCm+Ut+M2Rmh6dK01gWh1NUAuFS88NJH/8Us0
-X-Gm-Gg: ASbGncukd3fP5VURtEoOMDONWXRYiFBWhjWhqwttVpxfH44O05Ao1qFKlqaOYrIWpt3
-	7uqjDUlUlKlZgcdki1CqkrN7bsgCfuvLTigYA5VP3+kzwd5HbQfqVJ4DagzFwogEGAw5jsWngo0
-	FNbTtuQ6dLe9Uy0yXpN6l3dRQEVziKYUMxSa3qZDQZE2KNHKaWekqAn+Xp9vplVZ3AY+wjH7LTK
-	Q3dJY2T/f4npkmDm8XK0mSvlFIZmf9AXDxbbuxkwmGuWgKqKmG2j/MLvTMf+iWwAJCLX1HmDYGb
-	vR30KF9iYnfS70nFbRQMeXHhATppgQsil0y0Ng+lIrUd9bUp2d/X/BWMv9qzWtgGh9/mjmhj8uA
-	1jloUgMSxEMXfaBIWXFgCmr3q+FaQud0kY/g=
-X-Google-Smtp-Source: AGHT+IFZf5L5TRXz5wsFBrykN326xbtU7X5fxLPBYKQtWRmSSbTCDM7kGLqU4vBh+Qln0Ip8y76AUg==
-X-Received: by 2002:a05:6000:1861:b0:426:d514:286c with SMTP id ffacd0b85a97d-426d5142a25mr5987222f8f.28.1760367241180;
-        Mon, 13 Oct 2025 07:54:01 -0700 (PDT)
+        bh=kBVbea7flwKQsaU79NLWmhrt2gwy8JKbrcaG5BbSXQs=;
+        b=aRZDeFOSEsTjKyYI2ZVP/5tlQBWcyflZspZFYVl70dRLZlboKFMrcqyGcpIbojI5s7
+         awB+Hg0PHpW1xsDWqo3zUrbRKC24kOiM/9GEdauIMbd5FpW6xI4vwt3U/1SbGosLbVu0
+         q3X8jhvXtzvmnhGl43tH/7qvYHPNJM3YdV9caGA91eMciOg1DQ/3mi3ALDrYtQ6Itr3n
+         iNyX4ElHD72SZjVsO/W3lHDrI84xIHTvnFoFO/7+/d9QWTKsbuRhIbJd3GK5Bp98JGtz
+         DgTOLAUaw6IcQbZE2PGp7Sd/fwFF71lNRQ/3BmKXF7LKHW4+kwz3Va027ndcpQRcfr6O
+         TS8A==
+X-Forwarded-Encrypted: i=1; AJvYcCWT1V09eod/0VclZzLLvHt8b6K4jVLh3zSOTQPy4lpuqP47OKBEkO//LI14DFCUYlaR90JNd1UAp2Ra@vger.kernel.org
+X-Gm-Message-State: AOJu0YyOo+aR3UOv1/3szRgOv7mmbTIUB3j9IrAr/VQyN9TzDEARG6z1
+	ZFTSXGPwMQ8SeUj7ENBkKVdqmqVt92uDLplk2d5k6vNV+IOWPgA/r2mb
+X-Gm-Gg: ASbGncsjpgAkB2CVUdFdJZ+bNJDcqmcPL4DNXdDLeuVIdCI2JGQXnGlB9V1RKfXusqR
+	uXLVIgXmVzYEkKT1ZJEIC94W5EeaSdUc6F5yNT1xn+Ho8Vm5Zzv6xVUnoWjgkFXIfiz+47bL4Yu
+	nYCgbR1pswKGXd/nE6yKijQLRjwi1YFV8i4pdPV92IKwWx07tvjE8MeUgtwsU1ZwZRModir1hMc
+	IryNVcYlrfmKYmKRznAmkXCZlEnxAR3yDTfBy2QH7cqmnvyesDL0Z33vLggPiNmk3Fmi01g3ou2
+	q8GRPoF/T+1FTxowOXlA2uacLMrZs4V0K2zaoEVKLL7zv0OLNwdEBDYspX5EMmGvigd/LkS+qsd
+	Ki5whw/Mmcr6aFOL6wYyAGatW
+X-Google-Smtp-Source: AGHT+IGvZad4w3tGfNyelo8jRaGthiTAOmBgbASb/CfTYlM5+kxTUyX0ReE6Y+6587qOM/YD4IdmEg==
+X-Received: by 2002:a05:600c:1d1b:b0:46f:b32e:4f3e with SMTP id 5b1f17b1804b1-46fb32e4fa5mr121333895e9.37.1760367243089;
+        Mon, 13 Oct 2025 07:54:03 -0700 (PDT)
 Received: from 127.com ([2620:10d:c092:600::1:eb09])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-426ce5e0e70sm18641085f8f.40.2025.10.13.07.53.59
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-426ce5e0e70sm18641085f8f.40.2025.10.13.07.54.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Oct 2025 07:54:00 -0700 (PDT)
+        Mon, 13 Oct 2025 07:54:02 -0700 (PDT)
 From: Pavel Begunkov <asml.silence@gmail.com>
 To: netdev@vger.kernel.org
 Cc: Andrew Lunn <andrew@lunn.ch>,
@@ -115,9 +115,9 @@ Cc: Andrew Lunn <andrew@lunn.ch>,
 	linux-doc@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
 	Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH net-next v4 21/24] eth: bnxt: use queue op config validate
-Date: Mon, 13 Oct 2025 15:54:23 +0100
-Message-ID: <fabcf6c4d115b53bb1de8474e9cb51ddd19cc9fd.1760364551.git.asml.silence@gmail.com>
+Subject: [PATCH net-next v4 22/24] eth: bnxt: support per queue configuration of rx-buf-len
+Date: Mon, 13 Oct 2025 15:54:24 +0100
+Message-ID: <29f1f23b21eb1de0920aa912bcbefc6312160102.1760364551.git.asml.silence@gmail.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1760364551.git.asml.silence@gmail.com>
 References: <cover.1760364551.git.asml.silence@gmail.com>
@@ -131,98 +131,64 @@ Content-Transfer-Encoding: 8bit
 
 From: Jakub Kicinski <kuba@kernel.org>
 
-Move the rx-buf-len config validation to the queue ops.
+Now that the rx_buf_len is stored and validated per queue allow
+it being set differently for different queues. Instead of copying
+the device setting for each queue ask the core for the config
+via netdev_queue_config().
 
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c     | 40 +++++++++++++++++++
- .../net/ethernet/broadcom/bnxt/bnxt_ethtool.c | 12 ------
- 2 files changed, 40 insertions(+), 12 deletions(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index 1741aeffee55..ea95a06ae62b 100644
+index ea95a06ae62b..a734b18e47c4 100644
 --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
 +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -16203,8 +16203,46 @@ static int bnxt_queue_stop(struct net_device *dev, void *qmem, int idx)
- 	return 0;
+@@ -4320,6 +4320,7 @@ static void bnxt_init_ring_struct(struct bnxt *bp)
+ 
+ 	for (i = 0; i < bp->cp_nr_rings; i++) {
+ 		struct bnxt_napi *bnapi = bp->bnapi[i];
++		struct netdev_queue_config qcfg;
+ 		struct bnxt_ring_mem_info *rmem;
+ 		struct bnxt_cp_ring_info *cpr;
+ 		struct bnxt_rx_ring_info *rxr;
+@@ -4342,7 +4343,8 @@ static void bnxt_init_ring_struct(struct bnxt *bp)
+ 		if (!rxr)
+ 			goto skip_rx;
+ 
+-		rxr->rx_page_size = bp->rx_page_size;
++		netdev_queue_config(bp->dev, i,	&qcfg);
++		rxr->rx_page_size = qcfg.rx_buf_len;
+ 
+ 		ring = &rxr->rx_ring_struct;
+ 		rmem = &ring->ring_mem;
+@@ -15928,6 +15930,7 @@ static int bnxt_queue_mem_alloc(struct net_device *dev,
+ 	clone->rx_agg_prod = 0;
+ 	clone->rx_sw_agg_prod = 0;
+ 	clone->rx_next_cons = 0;
++	clone->rx_page_size = qcfg->rx_buf_len;
+ 	clone->need_head_pool = false;
+ 
+ 	rc = bnxt_alloc_rx_page_pool(bp, clone, rxr->page_pool->p.nid);
+@@ -16032,6 +16035,8 @@ static void bnxt_copy_rx_ring(struct bnxt *bp,
+ 	src_ring = &src->rx_ring_struct;
+ 	src_rmem = &src_ring->ring_mem;
+ 
++	dst->rx_page_size = src->rx_page_size;
++
+ 	WARN_ON(dst_rmem->nr_pages != src_rmem->nr_pages);
+ 	WARN_ON(dst_rmem->page_size != src_rmem->page_size);
+ 	WARN_ON(dst_rmem->flags != src_rmem->flags);
+@@ -16239,6 +16244,7 @@ bnxt_queue_cfg_defaults(struct net_device *dev, int idx,
  }
  
-+static int
-+bnxt_queue_cfg_validate(struct net_device *dev, int idx,
-+			struct netdev_queue_config *qcfg,
-+			struct netlink_ext_ack *extack)
-+{
-+	struct bnxt *bp = netdev_priv(dev);
-+
-+	/* Older chips need MSS calc so rx_buf_len is not supported,
-+	 * but we don't set queue ops for them so we should never get here.
-+	 */
-+	if (qcfg->rx_buf_len != bp->rx_page_size &&
-+	    !(bp->flags & BNXT_FLAG_CHIP_P5_PLUS)) {
-+		NL_SET_ERR_MSG_MOD(extack, "changing rx-buf-len not supported");
-+		return -EINVAL;
-+	}
-+
-+	if (!is_power_of_2(qcfg->rx_buf_len)) {
-+		NL_SET_ERR_MSG_MOD(extack, "rx-buf-len is not power of 2");
-+		return -ERANGE;
-+	}
-+	if (qcfg->rx_buf_len < BNXT_RX_PAGE_SIZE ||
-+	    qcfg->rx_buf_len > BNXT_MAX_RX_PAGE_SIZE) {
-+		NL_SET_ERR_MSG_MOD(extack, "rx-buf-len out of range");
-+		return -ERANGE;
-+	}
-+	return 0;
-+}
-+
-+static void
-+bnxt_queue_cfg_defaults(struct net_device *dev, int idx,
-+			struct netdev_queue_config *qcfg)
-+{
-+	qcfg->rx_buf_len	= BNXT_RX_PAGE_SIZE;
-+}
-+
  static const struct netdev_queue_mgmt_ops bnxt_queue_mgmt_ops = {
++	.supported_ring_params	= ETHTOOL_RING_USE_RX_BUF_LEN,
  	.ndo_queue_mem_size	= sizeof(struct bnxt_rx_ring_info),
-+
-+	.ndo_queue_cfg_defaults	= bnxt_queue_cfg_defaults,
-+	.ndo_queue_cfg_validate = bnxt_queue_cfg_validate,
- 	.ndo_queue_mem_alloc	= bnxt_queue_mem_alloc,
- 	.ndo_queue_mem_free	= bnxt_queue_mem_free,
- 	.ndo_queue_start	= bnxt_queue_start,
-@@ -16212,6 +16250,8 @@ static const struct netdev_queue_mgmt_ops bnxt_queue_mgmt_ops = {
- };
  
- static const struct netdev_queue_mgmt_ops bnxt_queue_mgmt_ops_unsupp = {
-+	.ndo_queue_cfg_defaults	= bnxt_queue_cfg_defaults,
-+	.ndo_queue_cfg_validate = bnxt_queue_cfg_validate,
- };
- 
- static void bnxt_remove_one(struct pci_dev *pdev)
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-index 7b5b9781262d..07bdf37421ce 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-@@ -867,18 +867,6 @@ static int bnxt_set_ringparam(struct net_device *dev,
- 	if (!kernel_ering->rx_buf_len)	/* Zero means restore default */
- 		kernel_ering->rx_buf_len = BNXT_RX_PAGE_SIZE;
- 
--	if (kernel_ering->rx_buf_len != bp->rx_page_size &&
--	    !(bp->flags & BNXT_FLAG_CHIP_P5_PLUS)) {
--		NL_SET_ERR_MSG_MOD(extack, "changing rx-buf-len not supported");
--		return -EINVAL;
--	}
--	if (!is_power_of_2(kernel_ering->rx_buf_len) ||
--	    kernel_ering->rx_buf_len < BNXT_RX_PAGE_SIZE ||
--	    kernel_ering->rx_buf_len > BNXT_MAX_RX_PAGE_SIZE) {
--		NL_SET_ERR_MSG_MOD(extack, "rx-buf-len out of range, or not power of 2");
--		return -ERANGE;
--	}
--
- 	if (netif_running(dev))
- 		bnxt_close_nic(bp, false, false);
- 
+ 	.ndo_queue_cfg_defaults	= bnxt_queue_cfg_defaults,
 -- 
 2.49.0
 
