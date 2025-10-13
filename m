@@ -1,81 +1,52 @@
-Return-Path: <linux-rdma+bounces-13843-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13847-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AC32BD47A2
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 17:46:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 360ABBD580D
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 19:32:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E60BD505808
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 15:17:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4B304071AE
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 17:12:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC9D230B529;
-	Mon, 13 Oct 2025 15:02:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7524E2C0F7F;
+	Mon, 13 Oct 2025 17:12:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Km/+C7xs"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XQ1UEGnM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D473271468
-	for <linux-rdma@vger.kernel.org>; Mon, 13 Oct 2025 15:02:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F191021B9DE;
+	Mon, 13 Oct 2025 17:12:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760367749; cv=none; b=aCjNkQTe66tE81QfQWRPPiYfVy1MPK61MH2i0MrhcjtIs41SdjHA+7NN6SG4ahUI35LaMlLzMalitTQEPe0Z0+9YzwEFUNuheUcKKelk3IJxiML25PpKlfqBC1QFS8DrUqD2fV0A6KaSS3Wn/f8h4T2t1K7psfKS4c0AhVyuSEg=
+	t=1760375556; cv=none; b=MzwJCck0Cxs4J4jmp18peFfRJLFxzrFnQQ/LF46ZI3Pkrk5PlDhZXm5BQJL4ioXb+/3rDP0GCxsm0kg3wfLvDiEisRKVEG5fN6NJNHB0PUqyy+Ci5QYFBOBSYgu+tFGUTfNb526+Segwt1DSmHcnUEA4CbT12Me2ozFjS6YKee8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760367749; c=relaxed/simple;
-	bh=XZ4lzHryEJQS9jgidvbUbN7osxHnfwhUvb5lDvX5gJM=;
+	s=arc-20240116; t=1760375556; c=relaxed/simple;
+	bh=717BLPS8TqcgpzXR0dY5x7Gybl2tsULmLFysiGQrXNI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sE9V3RmWDbBjbLohiJDaB1vOyW28huyciMgdiQjpw8Ui/8pwuZLk8itbFznAVvhhbH4KzLCTROFHH7qmNT2VBGNakFl8ijAtwo3pUMfrVTnvAf8V1j92XM0yYuLVgHpF2SbMuYiWWyNlV0q7ovhPi9R/2vkcipjqwInUxDttmxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Km/+C7xs; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3ee13baf2e1so3181229f8f.3
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Oct 2025 08:02:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760367746; x=1760972546; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Yh3tjmmjbgFKGhBWocvc5VFMFhZLywRMRFtzLSkbw0s=;
-        b=Km/+C7xsfZItqUK1cRI41oQudCJQXawtSlxm2Y90QzKe9b1CH9Lue/2I7UhiV9ElL/
-         QbsSPdkyMDOFYhdArM/WwUk4HrRd78V3RT1IKtSrA3tojPLDyJJgw1uFNjhsOatstdjf
-         awHA8HXlg+4SOEZ9oEI0WYufnhqiDxH7H1pDa2kElbVfVK/isv9w6THHMeFYOFdsTzrT
-         4XPM6rT28Dtw7BCO5UlxgNQd6gurCk9yoS6p4GVG3DiwKS/kZXmT1g4FH0o84SKujCvj
-         NNq3v1ken4Lh0yVIZ4HeRdWXMC3yki6pD6VwCI9gK9RKdT3vhvmYDl93+WFdT69sWhcP
-         DVaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760367746; x=1760972546;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Yh3tjmmjbgFKGhBWocvc5VFMFhZLywRMRFtzLSkbw0s=;
-        b=P97dvMOXffAd+4wxraIeKPwTidfbWVFqK4C/7LkghZp6FsCOO4DMLRvda8xN5JrPtU
-         P/EKvDazg2uyVUFoeR575pki3TP0QFVeBZjL7Sv4iHTCUwia1+YznsU7/MJCy9MR7Fof
-         Bid8s7/zGPOim51aU/AiKxOl/Db7UcezLViYeUzA/BqGxUiOVy9dCzlBRa1pKpn5hOtk
-         lDbgz04kkx04JVnpBLMbT8FJBD3nUmGIzVvubdvIyjAuErzhisx9PkZyKOWxhFTNni0A
-         BmeuNf36QscG38vG4755gb82wmgVcPDNe/2kmRz+z9j3bKKExlreHrwf+6j2wv5waBG6
-         y2oA==
-X-Forwarded-Encrypted: i=1; AJvYcCXwqksDXf96VWusyjiDLB1W99QKWOhNebsomFOxJK3AZE3EzMSjOelrWlY8pECK1MC89xLmdYDA8KRb@vger.kernel.org
-X-Gm-Message-State: AOJu0YxDVWudiVbMu6WiRFS9TIviDOJk6NemsiGbeI9f58bq8+D0FrPU
-	vtRmcBdQ94/28JjEpZO3C2wOSo1VhAPUDLmDPDyqjP0VTIIrK4m7QXg1
-X-Gm-Gg: ASbGncskpjyqSNz+1ZVcnDI+rLbWGTH6jSafU0ws+8a9vSKoOn/K46jx9lle3Fl8r2t
-	PULFJj9ZeLGkh5RGGTKiFiRqLgXZ2IYx85zdN+UOUSbeS49DQYag5wVllybzYId87WYQdO05yUN
-	WEJOQY3B/nlPwU0kfYsT1hF3YbxT1F48MQBNLd60eHadJDJ0bIHwNzEpVXo6ABq2ApLSjPu0UNS
-	jCUMDP+nbFfLOjMAEjkENSHF8R1Yx8yb9LYEwlRnEzrpDNT8DWN60SsYmCEs6iE6i29EOnPxW6J
-	bclm6anweHENwIJUllA0xHgDjcZ6k56k9+EZP5AlzCQoORcH1whiz4pNT+K7zYzbL8MZY+NPNcF
-	qXxTs7ywK2LC3LVPTc1qMRgEYyNLjHQPnS+W97lLVZMkAC2pwChNpa5GMluVvsFR43vNGTIwwvO
-	B0jQqE6D/F
-X-Google-Smtp-Source: AGHT+IGNkJ4QbgL7tRzgvPN+I8L7UO5FdEYBSf53xVmGqianIIUKzVvqoD7JkSPO2wQpbIF5bLMK1Q==
-X-Received: by 2002:a05:6000:491e:b0:426:d549:5861 with SMTP id ffacd0b85a97d-426d5495947mr6222761f8f.42.1760367745998;
-        Mon, 13 Oct 2025 08:02:25 -0700 (PDT)
-Received: from ?IPV6:2620:10d:c096:325:77fd:1068:74c8:af87? ([2620:10d:c092:600::1:eb09])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-426ce583664sm18651180f8f.22.2025.10.13.08.02.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Oct 2025 08:02:24 -0700 (PDT)
-Message-ID: <f0e40a00-ab13-42dc-b9ca-010fd4b115b8@gmail.com>
-Date: Mon, 13 Oct 2025 16:03:40 +0100
+	 In-Reply-To:Content-Type; b=gTZu0oveoMvHHpeuFfTbBuWT9MUk2QYdYjlz6cWjVHjHEsxjXGR0wm2e+iWMqPdvK3WifLcr+hUtWRGPesgiigvAMMFkU+zPjbO7zQlM4wxoXMtZ2R8FZqZ23vIDlkDwBjoVj33JZ3OcbuML8yy3o8rHMSjaTySzIe6keL1dcUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XQ1UEGnM; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=z2hdWZ0thhVkXt2TsbVzmKj2YSVerRKfrQUAEPsjG+o=; b=XQ1UEGnMfggLK+U6HoAn11DmZo
+	ekyxdCXIzLKTYI2Au0FY3mbbQnkS6GVQTS7ot3OGcG+6Wd1nlzssyMW4Zp4XlzftNkvJ8mlefYNUx
+	fO8N+LUXigXqrGqI14BFslaizX/UaKuqxPohopAutXpO2qxy8/Pv50UPglC/gG2mA0LktVjyJyTe7
+	9gwx1d45jZj4FljtiKV4Qqe88h3SIwB+aKSDYbcVQAuJwRCkC1LiCo3zdwiO4mi4/Gd/74Y4jXtPj
+	dE6V9PmIJXALUrAOOxIR9733nd77noaGmhdhCZu/EejZVSYO9kXrtmecdINUi8XNfvyPT11Hx73kQ
+	ICXTbfuA==;
+Received: from [50.53.43.113] (helo=[192.168.254.34])
+	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1v8M63-0000000Dzof-3PUA;
+	Mon, 13 Oct 2025 17:12:31 +0000
+Message-ID: <572c425e-d29d-43e5-930f-4be7220e89fc@infradead.org>
+Date: Mon, 13 Oct 2025 10:12:30 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -83,9 +54,9 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v4 00/24][pull request] Queue configs and large
- buffer providers
-To: netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v4 06/24] net: clarify the meaning of
+ netdev_config members
+To: Pavel Begunkov <asml.silence@gmail.com>, netdev@vger.kernel.org
 Cc: Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
  davem@davemloft.net, Eric Dumazet <edumazet@google.com>,
  Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
@@ -109,33 +80,101 @@ Cc: Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
  <almasrymina@google.com>, Breno Leitao <leitao@debian.org>,
  Dragos Tatulea <dtatulea@nvidia.com>, linux-kernel@vger.kernel.org,
  linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
- Jonathan Corbet <corbet@lwn.net>, io-uring <io-uring@vger.kernel.org>
+ Jonathan Corbet <corbet@lwn.net>
 References: <cover.1760364551.git.asml.silence@gmail.com>
+ <fa4a6200c614f9f6652624b03e46b3bfa2539a72.1760364551.git.asml.silence@gmail.com>
 Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <cover.1760364551.git.asml.silence@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <fa4a6200c614f9f6652624b03e46b3bfa2539a72.1760364551.git.asml.silence@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 10/13/25 15:54, Pavel Begunkov wrote:
+Hi,
 
-Forgot to CC io_uring
+On 10/13/25 7:54 AM, Pavel Begunkov wrote:
+> From: Jakub Kicinski <kuba@kernel.org>
+> 
+> hds_thresh and hds_config are both inside struct netdev_config
+> but have quite different semantics. hds_config is the user config
+> with ternary semantics (on/off/unset). hds_thresh is a straight
+> up value, populated by the driver at init and only modified by
+> user space. We don't expect the drivers to have to pick a special
+> hds_thresh value based on other configuration.
+> 
+> The two approaches have different advantages and downsides.
+> hds_thresh ("direct value") gives core easy access to current
+> device settings, but there's no way to express whether the value
+> comes from the user. It also requires the initialization by
+> the driver.
+> 
+> hds_config ("user config values") tells us what user wanted, but
+> doesn't give us the current value in the core.
+> 
+> Try to explain this a bit in the comments, so at we make a conscious
+> choice for new values which semantics we expect.
+> 
+> Move the init inside ethtool_ringparam_get_cfg() to reflect the semantics.
+> Commit 216a61d33c07 ("net: ethtool: fix ethtool_ringparam_get_cfg()
+> returns a hds_thresh value always as 0.") added the setting for the
+> benefit of netdevsim which doesn't touch the value at all on get.
+> Again, this is just to clarify the intention, shouldn't cause any
+> functional change.
+> 
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> [pavel: applied clarification on relationship b/w HDS thresh and config]
+> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+> ---
+>  include/net/netdev_queues.h | 20 ++++++++++++++++++--
+>  net/ethtool/common.c        |  3 ++-
+>  2 files changed, 20 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/net/netdev_queues.h b/include/net/netdev_queues.h
+> index cd00e0406cf4..9d5dde36c2e5 100644
+> --- a/include/net/netdev_queues.h
+> +++ b/include/net/netdev_queues.h
+> @@ -6,11 +6,27 @@
+>  
+>  /**
+>   * struct netdev_config - queue-related configuration for a netdev
+> - * @hds_thresh:		HDS Threshold value.
+> - * @hds_config:		HDS value from userspace.
+>   */
+>  struct netdev_config {
+> +	/* Direct value
+> +	 *
+> +	 * Driver default is expected to be fixed, and set in this struct
+> +	 * at init. From that point on user may change the value. There is
+> +	 * no explicit way to "unset" / restore driver default. Used only
+> +	 * when @hds_config is set.
+> +	 */
+> +	/** @hds_thresh: HDS Threshold value (ETHTOOL_A_RINGS_HDS_THRESH).
+> +	 */
+>  	u32	hds_thresh;
+> +
+> +	/* User config values
+> +	 *
+> +	 * Contain user configuration. If "set" driver must obey.
+> +	 * If "unset" driver is free to decide, and may change its choice
+> +	 * as other parameters change.
+> +	 */
+> +	/** @hds_config: HDS enabled (ETHTOOL_A_RINGS_TCP_DATA_SPLIT).
+> +	 */
+>  	u8	hds_config;
+>  };
 
-> Add support for per-queue rx buffer length configuration based on [2]
-> and basic infrastructure for using it in memory providers like
-> io_uring/zcrx. Note, it only includes net/ patches and leaves out
-> zcrx to be merged separately. Large rx buffers can be beneficial with
-> hw-gro enabled cards that can coalesce traffic, which reduces the
-> number of frags traversing the network stack and resuling in larger
-> contiguous chunks of data given to the userspace.
+kernel-doc comments should being with
+/**
+on a separate line. This will prevent warnings like these new ones:
 
-Same note as the last time, not great that it's over the 15 patches,
-but I don't see a good way to shrink it considering that the original
-series [2] is 22 patches long, and I'll somehow need to pull it it
-into the io_uring tree after. Please let me know if there is a strong
-feeling about that, and/or what would the preferred way be.
+Warning: include/net/netdev_queues.h:36 struct member 'hds_thresh' not described in 'netdev_config'
+Warning: include/net/netdev_queues.h:36 struct member 'hds_config' not described in 'netdev_config'
+Warning: include/net/netdev_queues.h:36 struct member 'rx_buf_len' not described in 'netdev_config'
+
+(but there are 4 variables that this applies to. I don't know why kernel-doc.py
+only reported 3 of them.)
+
 
 -- 
-Pavel Begunkov
+~Randy
 
 
