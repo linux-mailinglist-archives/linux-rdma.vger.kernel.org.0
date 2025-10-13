@@ -1,115 +1,97 @@
-Return-Path: <linux-rdma+bounces-13813-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13814-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D22FBCFDDB
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Oct 2025 01:36:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A1B2BD20A2
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 10:25:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E04A84E02B1
-	for <lists+linux-rdma@lfdr.de>; Sat, 11 Oct 2025 23:36:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE3FC3A7AAB
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 08:25:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06AF3242D6C;
-	Sat, 11 Oct 2025 23:36:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PxfCo9fg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1AC52E7F2F;
+	Mon, 13 Oct 2025 08:25:37 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+Received: from canpmsgout12.his.huawei.com (canpmsgout12.his.huawei.com [113.46.200.227])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8856A22157F
-	for <linux-rdma@vger.kernel.org>; Sat, 11 Oct 2025 23:36:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D86D2F362E
+	for <linux-rdma@vger.kernel.org>; Mon, 13 Oct 2025 08:25:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.227
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760225808; cv=none; b=n2Y7j+ZRMT1laPLGFnNQEGV5rEUtHEJ1pR52x4By1iU7Jh+V+59lSlBEPsc6rNkJ2oOZ2CtA1UJF/fY6SvDJ0rFxqHG/ILNaXbpPWdhefbZrzNPRpnUBT38AJj7FBd9migUDadFTp27xxWpzrD270ckXybZOdYTXHvVQmpEPcMo=
+	t=1760343937; cv=none; b=n+qJLgxB4Ooz0DQU3ZyJkqIdfhB74GVwnGWcPt87U9/GRf+TCtPaUe/jVEN1ks6jzLfokQAEWaeixZ44qTptxAhgAbPqk34d05wHMZmF/DxDo6xGzoRrX8+tv8t+Kww4IzPftcVUwdM6F9DNfDeQkNZFlOTz0SmvO9cvD6LGCQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760225808; c=relaxed/simple;
-	bh=R2lYa4L4daYjxt8fCRBKjZ7g5EgOnkSjnTBjQxYbKGM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=krAzQvOw8Z5w/aeTeRsXFlHiUdy5U4mnEccfzJ3eXxToXRVJlGKpLYpSYwSFStTVfKCQRT9ee935djXKXZW2gGq1ctvki4Lfjcb7hOOsZKLzMcXWDj9iPpOK40xlRhDUQhIU6Ge0WflT3nJPV3Ph7zBVIcvb4hiYg+NU3fFtkv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PxfCo9fg; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1760225806; x=1791761806;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=R2lYa4L4daYjxt8fCRBKjZ7g5EgOnkSjnTBjQxYbKGM=;
-  b=PxfCo9fg4XojZoBTazMQBrGb3r4/pys3d7zc1EDZu3lqJScKBv2p/jFf
-   sytZhiDhbR7igPSDiBUK3aCD4zgegt1TV9lwkF2kSvxuuf2NgEKICxUwn
-   CM1SAy/LWpGmXzy7VQiLbfdwYaRzmuzj2vMynsTbrUgegC8USkcH0ngNl
-   xAPPC7qXBeMJjR+4/gyvKjLImY1rXkCYOahkyGxtimPOaDHRgkkWk7uX+
-   KiG+S/bb+foQ/DyMeTEbrsEQ1sUWBQbUdLj0PHAkdNbVCRJDa3kXsT7kA
-   ZGdzH166TLfiTXXhZIo41Q3yyVP6+ZVPuDY3+W0VrK7Jpb0mhcwOE05Af
-   w==;
-X-CSE-ConnectionGUID: 4q/cbODmRVmpsv7mr5uJ9A==
-X-CSE-MsgGUID: jXK5kQEASM+v08oMQXkIUA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11579"; a="62106949"
-X-IronPort-AV: E=Sophos;i="6.19,222,1754982000"; 
-   d="scan'208";a="62106949"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2025 16:36:46 -0700
-X-CSE-ConnectionGUID: Hardy0Z8QzyKO67EdFq0Ww==
-X-CSE-MsgGUID: nKHkdnF7SF2btuOfijcUzw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,222,1754982000"; 
-   d="scan'208";a="212229613"
-Received: from lkp-server01.sh.intel.com (HELO 6a630e8620ab) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 11 Oct 2025 16:36:44 -0700
-Received: from kbuild by 6a630e8620ab with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1v7j8k-00042r-0C;
-	Sat, 11 Oct 2025 23:36:42 +0000
-Date: Sun, 12 Oct 2025 07:35:42 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jian Wen <wenjianhn@gmail.com>, jgg@nvidia.com, leonro@nvidia.com
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Jian Wen <wenjian1@xiaomi.com>, linux-rdma@vger.kernel.org,
-	wenjianhn@gmail.com
-Subject: Re: [PATCH] RDMA/mlx5: Use mlx5_cmd_is_down to detect PCIe Surprise
- Link Down
-Message-ID: <202510120715.P7oFOBOQ-lkp@intel.com>
-References: <20251009142326.3794769-1-wenjian1@xiaomi.com>
+	s=arc-20240116; t=1760343937; c=relaxed/simple;
+	bh=2on/ZzhVaazHcTNyUi5zLU/zhC/aChoxCYzedu4KdYY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ATA10AH+TIG4yVidSaxgI9Ke1pPj2WHx1LzDmE3kgFt9wQh68qUhctON+Aizf0f5E+byRUJOnbCKUFDqb4Ecr60K1IX1RfqI6+JaexkTjuMXrNEMxNFAzHrsCP59jxjtXA7VKt2Nh5uYmBc31jRw6cHo/aJje/QOxm/sL35pSsM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=113.46.200.227
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by canpmsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4clVkv3rNCznTbr;
+	Mon, 13 Oct 2025 16:24:39 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id BF5AF140123;
+	Mon, 13 Oct 2025 16:25:25 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 13 Oct 2025 16:25:25 +0800
+Message-ID: <24f577e0-16d9-748f-86c1-fb2e259e03ca@hisilicon.com>
+Date: Mon, 13 Oct 2025 16:25:24 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251009142326.3794769-1-wenjian1@xiaomi.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH for-next 2/8] RDMA/hns: Initialize bonding resources
+To: Jason Gunthorpe <jgg@nvidia.com>
+CC: <leon@kernel.org>, <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<tangchengchang@huawei.com>
+References: <20250913090615.212720-1-huangjunxian6@hisilicon.com>
+ <20250913090615.212720-3-huangjunxian6@hisilicon.com>
+ <20250924140439.GB2674734@nvidia.com>
+Content-Language: en-US
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+In-Reply-To: <20250924140439.GB2674734@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-Hi Jian,
 
-kernel test robot noticed the following build errors:
 
-[auto build test ERROR on rdma/for-next]
-[also build test ERROR on linus/master v6.17 next-20251010]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On 2025/9/24 22:04, Jason Gunthorpe wrote:
+> On Sat, Sep 13, 2025 at 05:06:09PM +0800, Junxian Huang wrote:
+>> +static bool check_vf_support(struct pci_dev *vf)
+>> +{
+>> +	struct hns_roce_bond_group *bond_grp;
+>> +	struct pci_dev *pf = pci_physfn(vf);
+>> +	struct hnae3_ae_dev *ae_dev;
+>> +	struct hnae3_handle *handle;
+>> +	struct hns_roce_dev *hr_dev;
+>> +	struct hclge_dev *hdev;
+>> +
+>> +	if (pf == vf)
+>> +		return true;
+>> +
+>> +	ae_dev = pci_get_drvdata(pf);
+> 
+> This isn't how you get a drv data of a PF.. Use
+> pci_iov_get_pf_drvdata()
+> 
+> Jason
+> 
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jian-Wen/RDMA-mlx5-Use-mlx5_cmd_is_down-to-detect-PCIe-Surprise-Link-Down/20251009-224616
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-patch link:    https://lore.kernel.org/r/20251009142326.3794769-1-wenjian1%40xiaomi.com
-patch subject: [PATCH] RDMA/mlx5: Use mlx5_cmd_is_down to detect PCIe Surprise Link Down
-config: s390-defconfig (https://download.01.org/0day-ci/archive/20251012/202510120715.P7oFOBOQ-lkp@intel.com/config)
-compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project 39f292ffa13d7ca0d1edff27ac8fd55024bb4d19)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251012/202510120715.P7oFOBOQ-lkp@intel.com/reproduce)
+Hi Jason, sorry for the late response.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202510120715.P7oFOBOQ-lkp@intel.com/
+After discussion, we decided to move this check into FW
+instead of driver. I'll remove this code in v2.
 
-All errors (new ones prefixed by >>, old ones prefixed by <<):
-
->> ERROR: modpost: "mlx5_cmd_is_down" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Junxian
 
