@@ -1,78 +1,78 @@
-Return-Path: <linux-rdma+bounces-13828-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13829-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 108BEBD3F4B
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 17:14:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E073BD41AD
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 17:24:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 32DFA4F6396
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 15:05:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 760AA401864
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Oct 2025 15:06:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76B2C311971;
-	Mon, 13 Oct 2025 14:53:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E6503126AC;
+	Mon, 13 Oct 2025 14:53:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hiNG2nGf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ntsjXgqp"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E8543112C2
-	for <linux-rdma@vger.kernel.org>; Mon, 13 Oct 2025 14:53:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D9CB311941
+	for <linux-rdma@vger.kernel.org>; Mon, 13 Oct 2025 14:53:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760367227; cv=none; b=Q84K/FGgIKCPNaCPX/X6kXA2Wqs1Y389sbEP81+2vKy/axJmDMFlc0W7ljXOZN0qmv+bfk+RVKZMiu0AaYTYywlgjz5gGRGg3xObOLBq7qlBw3hG18fzOqA9FU3qUXOI9eIhNpAc7k1uH8fDaJcK0nxC87ZLRJYfjc4ShjRNTKM=
+	t=1760367228; cv=none; b=ESf5AWLfuxYoIiqxA+TcYw+PyM9UdvJvdb7dDKsgjSv4bN3jnrV9BrZyDn9ZsXg5s26UuiMzVl4D4I7nCtkeq0T+Ok/zHFWsh5cnCTnDCnYO2ljThQN1q6rxG2ZbKcmRZtFzNNy6omZ/ZGDveTLO2p8XoODKBK9sC9AsyiE1r4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760367227; c=relaxed/simple;
-	bh=E8WoJuBOO+qk8Q5hqtoULQ0PwkM4ocuACiUdIi2N6so=;
+	s=arc-20240116; t=1760367228; c=relaxed/simple;
+	bh=WjwEwnVgKDmKGf0mOT4U63jLGaTZvrYbarJ0ZWgPq60=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cTMrOEYkyEAwWQ/jcQpW03T+LG6qz6rZjvmTmi7fzaSKbe69XaNTConIrqV9KOO5WRav7QIGh8idP+zkDiTczNAwvfai3t8Cp0M35M3AaNOBlmlMuzMCpWa55V5r2umENMsYlCxCXM5J0FMCTuD8woh0sfLn9M22VWogUMBCmQU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hiNG2nGf; arc=none smtp.client-ip=209.85.221.41
+	 MIME-Version; b=uOX61uZarkOAuc9m4+8SNg7B0WV4uObEc5e53rGFSZ8qVB7DM9vIyweqOCNW58COIg6isVzmGQSkWKISOUtL+Opa8KEcKjXXoTO7/7QIUAWhAWJojnytmveQ3t5Huo3Z224aokyibwQTzW67jNS29r2mMk2GQP1aMo5Yo5PsE6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ntsjXgqp; arc=none smtp.client-ip=209.85.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3fc36b99e92so3810146f8f.0
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Oct 2025 07:53:43 -0700 (PDT)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-46fc5e54cceso7864175e9.0
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Oct 2025 07:53:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760367222; x=1760972022; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1760367224; x=1760972024; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bxISOHK0sfOtFB4YWzm4iWfmIyELFZH9BHOLFWLiapg=;
-        b=hiNG2nGfIOADsE6zv+QCnp6aPiVdaHd6GuPVT8fBfgs6P1Ceh+IqHgXZoWTBEFkZkH
-         a4/69ZYAqcwdOPfap5Ut7XpJFErQFPsha4AGKWF5CmCtwz9FRbmXx5cvA6Y5bsZ8YBSx
-         QPmSYVGVKPwHebxDSKmjK7zoRoN9d49lh2s9O3YaLp3r2oUUA9B3/oibXpoSViZj/3sW
-         iEDiycF9RUBsiUZRWqg9buB/7ynAbXx3TphsvpMV0RUOsm+xsoIrxOrWdyl1xSxOrTvS
-         we8LnQeyHQqLvwGdlj+bDLwgtQDUBhSLTC2Ce/Hnwu3qUGVALaWi9veZy3A37I7avq16
-         V27A==
+        bh=F0ayzy+SCb9hz0mwDQVd4KG2A98cKImsuCLT5S++72Y=;
+        b=ntsjXgqpoNwGQJFY5YTI4/Sg83v1z6IxVjIk9Ia8/LPwR54LdE2pXA8Izvo+h7sNRy
+         glO/mdiOExwTPNkfzNwNp0FHe3Y+AGmN7+XFES9QfAIFxaq6fQs4lt9Cq9+QGhBpNQ26
+         oM6voQa1PSEzzHr5FszUTVh3Z+Q5evgmgXoj9OP+xpYStpIJ8uOfVQifZvBrdQ6NffnD
+         YYIeob9os1Ds+51ZEoIZafpqhXfzBc2Whp4J0PK49IUz2RcO5wT9GirzL1rqPpuWiEMC
+         jtJO8F7DytaTmx4tsbMHbEU3+OcDAQKIbsofYdp2qEiXFHIuu70cLPyNBQbnSZHDyOle
+         h+Xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760367222; x=1760972022;
+        d=1e100.net; s=20230601; t=1760367224; x=1760972024;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bxISOHK0sfOtFB4YWzm4iWfmIyELFZH9BHOLFWLiapg=;
-        b=MYtvmClLfzqYhonY7v9GRXPHGTQl6jk1ae2W6N8m1O2/N6E9f/cuM1o9sb3s9gXuTY
-         CGis0DGyZ7F+rs1nyS3oqHZkJ3ei8VWu0oN5007YPfiKpIc9ce1PE9/mMcLlv4ziTkM6
-         CS1tgbb2MG+Lu91n4y8O/x0/u4M/dYxzhP9f90G0mw1FBiMqDijIenv+r2yjX7brj0gi
-         0hdnsSFdqsejDtVpuftG9OjvEKdaa17h3Y5qiMieuU6BHP3KU1mwLn3r33E6v9GM6mT4
-         RlIAgusBdC1TetJ+4h6059ArsLetfYaPP3RzCNDR/1ZnTZXywqoibpEi7jv1j1T7JV61
-         PrYA==
-X-Forwarded-Encrypted: i=1; AJvYcCVXbMDnuOA+IVWw9lz5WQQ0UsiDqWC1+W4C0D79GgTm9BKwi5yyM3EKxS0uwU9OtEdjyjmNwlx/KPE9@vger.kernel.org
-X-Gm-Message-State: AOJu0YyPT+pT3Ln2ikRt6ghupXPQTPibVWiuQV2xWJV+boYDD2faw1eO
-	bc43Vi/XPVpdTrygEfgQhVl5qCVXWBmUv3wccgOnrHLG90J1MShxkWxC
-X-Gm-Gg: ASbGncsmhXodzvqGGEbuswLlfBTck/WrEd23o0x0Tx6ZsqsEMn0f5Ua8Alvz/uYW0V2
-	j3kKlvEUjFLIyENEoJW2SnxnCvS6QbLbQVhYfMY0SzFYX4GkmWsa9ZiDo8UBM1DlSaU+goedAFO
-	5qlMhpOaevkIo0/asooSbWrsaxIqKdpqnmLSRv1dTiZ/BsElqEvMLAwOLI09Cp3UT0pzPxT1DrK
-	3/N6Th17fYdY++JlyKsy7NQBejU1SDeeFCT1dusvs+T6QRm9yqR3HYbWYKJsjBp0ffCQ5qd7a8C
-	yer8RsYPc/hp9xbVtLJN1QuE4BUFPxbpz2JHC3XtsWsoWl7jKyz9grFrw0eOsshNxfRM7WGoQJd
-	zxFSKamVlC1ug2FWXgpZcHh2jFvVhw6ZqBlk=
-X-Google-Smtp-Source: AGHT+IEzTwZdHTurtXtAEUjWNLzW7QhST7sltiH1Xg9KXxn65EDy7cgKglM2V8lRa6iGebxt7MLQeg==
-X-Received: by 2002:a05:6000:609:b0:3ec:db87:ff53 with SMTP id ffacd0b85a97d-42666aa67demr15479799f8f.12.1760367222156;
-        Mon, 13 Oct 2025 07:53:42 -0700 (PDT)
+        bh=F0ayzy+SCb9hz0mwDQVd4KG2A98cKImsuCLT5S++72Y=;
+        b=DT6mYyjFdNHWrJftEwnnLwc3P14Z67myrVMp14RMHbiX9XQ7qIDu3qDAbjZ3Ji+Vir
+         Zub+LifToqhwDl+sG3kzCxiIlLrW50WOkLOLmFJ/umjYUM9ClJYuTWRpCnBHxTvLcRfo
+         QM3YU6aY6jYq8KLI1WqHNCOW7dcjZ4R2JVjGOGS8+q1hEzicijCMgbRuqBx00+UDwCko
+         GUyWYaYVBGRMU3awzZLMmcO/REz4j95dh1muO3GUsONaJVDNfN1+FqQjOb5p2onCAICR
+         zGxLWIY+pLbHptKgXq5WWvSaxBzYrpHMMyDuVk3Jkk/wKvJeQiNPrsWEmEbIhVP8v57E
+         71gA==
+X-Forwarded-Encrypted: i=1; AJvYcCVwPzknyRHh84pUfTCSMVn5fwExpcVE6bbgub7n5FbL8PNpsHL8m+rmDT+JB2Qo0vBebUn2XdMhTj3c@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz99mP9aC/HA+c5LiSeLtfghpgrMRRiMFO3G9Cak3+Er+XfBY2q
+	WwpPpVp1pu8fICxPGNT1ELmPk7A27ZZR45be1Ieppo3B2E0blFy9OmGT
+X-Gm-Gg: ASbGncuIzUJwP6MdhdSf7Y4govtnlOf9TubRXGfqvYSwAoCQcTQxwZgbiclZyY6JRR/
+	AZmK8oaMNMTMZ3hi5yIW/wTLFZ2pztlXR0Zm+50Tmq47kV/f/80QYrKISIXW1hNTGnLmWZTi/3n
+	JQdMOq73wkWXGSmFsMT9Aw8cCUC+pUvjrdHwXYQZyTV4cwB4t2/yQDlEr0nfE+ZGu3UKrT/UIS5
+	qc42ou9+kdc5ZL1l9Dkn+h34zGPUSWeBry4F90TCiaAa9Uat5RiEQMRjRQFz76MDRbcG693bNTH
+	IPvlkNcT3/rhKMwzMB9QMqBaAfZJlJ+Xv6iknXYxdGU9jXLDEqi2K7wQOLsIQnqUhlEH6KBTy33
+	n+RvNTwmHJK6PfKXXN7OIb1pa
+X-Google-Smtp-Source: AGHT+IGrRvDbIKp6K6AMCw6Zdmo39z5Z8/jDdtEHlFD69lSVWOS65RcIgP2PsQY/WwDW9hF6vRZo3w==
+X-Received: by 2002:a05:600c:4687:b0:46e:37a4:d003 with SMTP id 5b1f17b1804b1-46fae33dbbdmr135008035e9.8.1760367224018;
+        Mon, 13 Oct 2025 07:53:44 -0700 (PDT)
 Received: from 127.com ([2620:10d:c092:600::1:eb09])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-426ce5e0e70sm18641085f8f.40.2025.10.13.07.53.40
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-426ce5e0e70sm18641085f8f.40.2025.10.13.07.53.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Oct 2025 07:53:41 -0700 (PDT)
+        Mon, 13 Oct 2025 07:53:43 -0700 (PDT)
 From: Pavel Begunkov <asml.silence@gmail.com>
 To: netdev@vger.kernel.org
 Cc: Andrew Lunn <andrew@lunn.ch>,
@@ -115,9 +115,9 @@ Cc: Andrew Lunn <andrew@lunn.ch>,
 	linux-doc@vger.kernel.org,
 	linux-rdma@vger.kernel.org,
 	Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH net-next v4 11/24] net: move netdev_config manipulation to dedicated helpers
-Date: Mon, 13 Oct 2025 15:54:13 +0100
-Message-ID: <247a04527829dcc9e7a6e580b3cd5fe4745c9e84.1760364551.git.asml.silence@gmail.com>
+Subject: [PATCH net-next v4 12/24] net: reduce indent of struct netdev_queue_mgmt_ops members
+Date: Mon, 13 Oct 2025 15:54:14 +0100
+Message-ID: <707b02494c7748beb1e535eb82c77b5be8002492.1760364551.git.asml.silence@gmail.com>
 X-Mailer: git-send-email 2.49.0
 In-Reply-To: <cover.1760364551.git.asml.silence@gmail.com>
 References: <cover.1760364551.git.asml.silence@gmail.com>
@@ -131,165 +131,56 @@ Content-Transfer-Encoding: 8bit
 
 From: Jakub Kicinski <kuba@kernel.org>
 
-netdev_config manipulation will become slightly more complicated
-soon and we will need to call if from ethtool as well as queue API.
-Encapsulate the logic into helper functions.
+Trivial change, reduce the indent. I think the original is copied
+from real NDOs. It's unnecessarily deep, makes passing struct args
+problematic.
 
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Reviewed-by: Mina Almasry <almasrymina@google.com>
 Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
 ---
- net/core/Makefile        |  1 +
- net/core/dev.c           |  7 ++-----
- net/core/dev.h           |  5 +++++
- net/core/netdev_config.c | 43 ++++++++++++++++++++++++++++++++++++++++
- net/ethtool/netlink.c    | 14 ++++++-------
- 5 files changed, 57 insertions(+), 13 deletions(-)
- create mode 100644 net/core/netdev_config.c
+ include/net/netdev_queues.h | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/net/core/Makefile b/net/core/Makefile
-index 9ef2099c5426..9f1f08ff585f 100644
---- a/net/core/Makefile
-+++ b/net/core/Makefile
-@@ -21,6 +21,7 @@ obj-y += net-sysfs.o
- obj-y += hotdata.o
- obj-y += netdev_rx_queue.o
- obj-y += netdev_queues.o
-+obj-y += netdev_config.o
- obj-$(CONFIG_PAGE_POOL) += page_pool.o page_pool_user.o
- obj-$(CONFIG_PROC_FS) += net-procfs.o
- obj-$(CONFIG_NET_PKTGEN) += pktgen.o
-diff --git a/net/core/dev.c b/net/core/dev.c
-index a64cef2c537e..5f92425dfdbd 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -11973,10 +11973,8 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
- 	if (!dev->ethtool)
- 		goto free_all;
+diff --git a/include/net/netdev_queues.h b/include/net/netdev_queues.h
+index 31559f2711de..b7c9895cd4b2 100644
+--- a/include/net/netdev_queues.h
++++ b/include/net/netdev_queues.h
+@@ -155,20 +155,20 @@ void netdev_stat_queue_sum(struct net_device *netdev,
+  * be called for an interface which is open.
+  */
+ struct netdev_queue_mgmt_ops {
+-	size_t			ndo_queue_mem_size;
+-	int			(*ndo_queue_mem_alloc)(struct net_device *dev,
+-						       void *per_queue_mem,
+-						       int idx);
+-	void			(*ndo_queue_mem_free)(struct net_device *dev,
+-						      void *per_queue_mem);
+-	int			(*ndo_queue_start)(struct net_device *dev,
+-						   void *per_queue_mem,
+-						   int idx);
+-	int			(*ndo_queue_stop)(struct net_device *dev,
+-						  void *per_queue_mem,
+-						  int idx);
+-	struct device *		(*ndo_queue_get_dma_dev)(struct net_device *dev,
+-							 int idx);
++	size_t	ndo_queue_mem_size;
++	int	(*ndo_queue_mem_alloc)(struct net_device *dev,
++				       void *per_queue_mem,
++				       int idx);
++	void	(*ndo_queue_mem_free)(struct net_device *dev,
++				      void *per_queue_mem);
++	int	(*ndo_queue_start)(struct net_device *dev,
++				   void *per_queue_mem,
++				   int idx);
++	int	(*ndo_queue_stop)(struct net_device *dev,
++				  void *per_queue_mem,
++				  int idx);
++	struct device *	(*ndo_queue_get_dma_dev)(struct net_device *dev,
++						 int idx);
+ };
  
--	dev->cfg = kzalloc(sizeof(*dev->cfg), GFP_KERNEL_ACCOUNT);
--	if (!dev->cfg)
-+	if (netdev_alloc_config(dev))
- 		goto free_all;
--	dev->cfg_pending = dev->cfg;
- 
- 	dev->num_napi_configs = maxqs;
- 	napi_config_sz = array_size(maxqs, sizeof(*dev->napi_config));
-@@ -12047,8 +12045,7 @@ void free_netdev(struct net_device *dev)
- 		return;
- 	}
- 
--	WARN_ON(dev->cfg != dev->cfg_pending);
--	kfree(dev->cfg);
-+	netdev_free_config(dev);
- 	kfree(dev->ethtool);
- 	netif_free_tx_queues(dev);
- 	netif_free_rx_queues(dev);
-diff --git a/net/core/dev.h b/net/core/dev.h
-index 900880e8b5b4..1ec0b836c652 100644
---- a/net/core/dev.h
-+++ b/net/core/dev.h
-@@ -92,6 +92,11 @@ extern struct rw_semaphore dev_addr_sem;
- extern struct list_head net_todo_list;
- void netdev_run_todo(void);
- 
-+int netdev_alloc_config(struct net_device *dev);
-+void __netdev_free_config(struct netdev_config *cfg);
-+void netdev_free_config(struct net_device *dev);
-+int netdev_reconfig_start(struct net_device *dev);
-+
- /* netdev management, shared between various uAPI entry points */
- struct netdev_name_node {
- 	struct hlist_node hlist;
-diff --git a/net/core/netdev_config.c b/net/core/netdev_config.c
-new file mode 100644
-index 000000000000..270b7f10a192
---- /dev/null
-+++ b/net/core/netdev_config.c
-@@ -0,0 +1,43 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/netdevice.h>
-+#include <net/netdev_queues.h>
-+
-+#include "dev.h"
-+
-+int netdev_alloc_config(struct net_device *dev)
-+{
-+	struct netdev_config *cfg;
-+
-+	cfg = kzalloc(sizeof(*dev->cfg), GFP_KERNEL_ACCOUNT);
-+	if (!cfg)
-+		return -ENOMEM;
-+
-+	dev->cfg = cfg;
-+	dev->cfg_pending = cfg;
-+	return 0;
-+}
-+
-+void __netdev_free_config(struct netdev_config *cfg)
-+{
-+	kfree(cfg);
-+}
-+
-+void netdev_free_config(struct net_device *dev)
-+{
-+	WARN_ON(dev->cfg != dev->cfg_pending);
-+	__netdev_free_config(dev->cfg);
-+}
-+
-+int netdev_reconfig_start(struct net_device *dev)
-+{
-+	struct netdev_config *cfg;
-+
-+	WARN_ON(dev->cfg != dev->cfg_pending);
-+	cfg = kmemdup(dev->cfg, sizeof(*dev->cfg), GFP_KERNEL_ACCOUNT);
-+	if (!cfg)
-+		return -ENOMEM;
-+
-+	dev->cfg_pending = cfg;
-+	return 0;
-+}
-diff --git a/net/ethtool/netlink.c b/net/ethtool/netlink.c
-index 2f813f25f07e..d376d3043177 100644
---- a/net/ethtool/netlink.c
-+++ b/net/ethtool/netlink.c
-@@ -6,6 +6,7 @@
- #include <linux/ethtool_netlink.h>
- #include <linux/phy_link_topology.h>
- #include <linux/pm_runtime.h>
-+#include "../core/dev.h"
- #include "netlink.h"
- #include "module_fw.h"
- 
-@@ -906,12 +907,9 @@ static int ethnl_default_set_doit(struct sk_buff *skb, struct genl_info *info)
- 
- 	rtnl_lock();
- 	netdev_lock_ops(dev);
--	dev->cfg_pending = kmemdup(dev->cfg, sizeof(*dev->cfg),
--				   GFP_KERNEL_ACCOUNT);
--	if (!dev->cfg_pending) {
--		ret = -ENOMEM;
--		goto out_tie_cfg;
--	}
-+	ret = netdev_reconfig_start(dev);
-+	if (ret)
-+		goto out_unlock;
- 
- 	ret = ethnl_ops_begin(dev);
- 	if (ret < 0)
-@@ -930,9 +928,9 @@ static int ethnl_default_set_doit(struct sk_buff *skb, struct genl_info *info)
- out_ops:
- 	ethnl_ops_complete(dev);
- out_free_cfg:
--	kfree(dev->cfg_pending);
--out_tie_cfg:
-+	__netdev_free_config(dev->cfg_pending);
- 	dev->cfg_pending = dev->cfg;
-+out_unlock:
- 	netdev_unlock_ops(dev);
- 	rtnl_unlock();
- out_dev:
+ bool netif_rxq_has_unreadable_mp(struct net_device *dev, int idx);
 -- 
 2.49.0
 
