@@ -1,214 +1,238 @@
-Return-Path: <linux-rdma+bounces-13860-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13861-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id B673FBD973C
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Oct 2025 14:52:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E423DBD9EBB
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Oct 2025 16:13:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 92ED6501270
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Oct 2025 12:52:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8198188ACE1
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Oct 2025 14:11:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F99C313E05;
-	Tue, 14 Oct 2025 12:52:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3FF6314A8E;
+	Tue, 14 Oct 2025 14:11:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BXHBtvVE"
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="JgTiJ7yl"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11021114.outbound.protection.outlook.com [52.101.62.114])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43CD730F949
-	for <linux-rdma@vger.kernel.org>; Tue, 14 Oct 2025 12:52:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760446323; cv=none; b=Wn5OUAFJneejWu5+EeTHGS4VavKXaY+aTMajp14ATNB5MBIc39EGaRGIqDZzQPizeuJRNxjTIQq8XQdgA50pXLQPLh22qyLKYc5Hj9HmJtyxunk06CnXO/jBezBkKCuV8pqMv9R4iMfaYa/ENZZy//+1E9VM/0ElL8wMRZSN8hA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760446323; c=relaxed/simple;
-	bh=lhZBS8xqXDtT7VbeKEzjyokyMGNBcF56sXqc2Q9DJ68=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ie9gzDVwaEbKTLMDzyOadncJI2xIc8cepcIBb9UFhAQiGPkeD3AVWZL1Du1fxKq+nR2daVMXxwvlF0dZRYRHQvEByFb0fn6NiQYrOSIxWT8hBK6PmuYMBir4ZIdLKjKjH5Aisi3gFNTPwJ9VdVpyvenBPqenRkfXu+pZsY4RZrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BXHBtvVE; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-46e5980471eso28918305e9.2
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Oct 2025 05:52:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760446319; x=1761051119; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=u4vnL+R+LVejZqTBCW/1skmQQQlc0ydc7YfiCLUDn0w=;
-        b=BXHBtvVEHAvK7Q8mmiYMJ16/vlxIoeSfAY9jPRq63rqfaWa7kEfrgh0fWWyDM0JKqI
-         micUk2eB38L2gXyvom/wA1grjij6QkM5ucpC9ltqywt/NgoFiGoF7gD5IAHyWF/mLq64
-         XIVoKnOnrjFmMCi67uGaDQ5h67+U/zuYKStcmGPjZ/wZzl7FFd0FjWg340EGH0S53WGk
-         v+jW5oxqXIHKzIYR8vJu/Wei8UWKveHZo1wAhWRubqIX3avD504xMbQKEAkDFnOaHV1A
-         UF+znnyPRNAoaxpYKM/3i8X6Z2pXbLhe2F1KguuumllWUYEPWcDfAiuhHJHZKh7S366i
-         A6hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760446319; x=1761051119;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=u4vnL+R+LVejZqTBCW/1skmQQQlc0ydc7YfiCLUDn0w=;
-        b=tBJRGwQKoogDJciAUV4tuXVR5OoU7V3NhDbPDC6UtKc8q9llk2q1wWGaHAbb2DsLGJ
-         KZS6KcM3jwSMxBG4ep37HYNsrtNFwVc8t7B4ppzpSo2vkl35QlJOGQSbWlzCTMtLudNL
-         AnPGwdx19rSHccZ3yzwijYoiPvvzD1Z/L1Nnj+LRbRPMwTJjmMVHHXj7HhiZJFhpctPS
-         288JLl37yw3c71CElVyixckMCaeuyfuD+cgJv/bAaEDcm4mE5bf/MvMtM3rUtsNGCwYy
-         HT2Z6jN9mlarFZIvs6eE9BPfdaJSKt80hbOMf3Z7gt/GDBi65p+CdtiVi7Jt8Em9nPjR
-         uFfg==
-X-Forwarded-Encrypted: i=1; AJvYcCVqW6ee/qr/d2Mqh2sTj+SexL9ugUsZtD0clUaZVoKlZDFxC7Wyk4j23f/vyoZXFtIxlBH1NxteG3l3@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy7Z6V14U7GDV/B5FrZm+7TTsZ3PbMkLBJ8gPoi2j+ly1rfkEyy
-	Z/r4827ATra3JFjgTPVzfZUHuXc2uWkAHP56cQca4breE7xVchTF2XUC
-X-Gm-Gg: ASbGncs4xjqY2t9X6ZQQAnPaTQ4uhQIXoKP59g/bsp8HgYhrVEHvSxwl+KHWlD2ErR9
-	n63b/CSYSpBc4Wwr4ZrrMtliuW8mkNJdsqjFYs5CvOfgITps1j2dcTnebjkZYNoZPKoZnTTg1LO
-	Q2yZDw9zVUkDBWIENps/9cUhv7lZWNXL3BJ9m9pVqSmNJO9+LsKlNKUWvKWNeYWfbRq+MehbnLu
-	dx7JBASEQQMokUCn39RYjc6/6e23XPFid7msHmlj4KqGUsylQBdRXSolMuHRM6WBDX7SlGxvfBO
-	7IcN+hxTeEMNnIxe7uRG/LWgtphUyL0m3O9B2UwI4DTG+i7qH0C+jKyYb1Zu83/vDQO3jk0k5Pq
-	1SWyY+wy8FtlOzVu6wlUEwNxZ7l/3TpdEDK+W5B1OsH1P57DGXBZhi/v/NYb9yRL3koCxOpP1H+
-	zza28HzLJH
-X-Google-Smtp-Source: AGHT+IHGhuXiI705ZMy4gT9FBX9BE9BgWkwpuFDltW+qidBa5CYSY2HjmkpobxQOHA/DrJoT1AzhIA==
-X-Received: by 2002:a05:600c:1f93:b0:46e:376c:b1f0 with SMTP id 5b1f17b1804b1-46fa9a8ca9fmr177984195e9.7.1760446319404;
-        Tue, 14 Oct 2025 05:51:59 -0700 (PDT)
-Received: from ?IPV6:2620:10d:c096:325:77fd:1068:74c8:af87? ([2620:10d:c092:600::1:7ec0])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-46fb49bdfd0sm239969845e9.10.2025.10.14.05.51.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Oct 2025 05:51:58 -0700 (PDT)
-Message-ID: <85a85b35-3862-4260-833c-267720125817@gmail.com>
-Date: Tue, 14 Oct 2025 13:53:14 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEA57314B8F;
+	Tue, 14 Oct 2025 14:11:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.62.114
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1760451089; cv=fail; b=kh55EMnHdY2vzd152dNzRKdha04gvO0siqAA5/zreQHPPzV7mmkhAWAx3d/0m9pQFlNxSgj6bIVsiU0byharxleOB/hG377HlfnCEiegHVIM3vYzJKRUu5gXozYTj+VssAOcQ2ny6T+e4gnsIExJ38UaGhTVzVsttyYcpqtRWhQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1760451089; c=relaxed/simple;
+	bh=eQ39fwvvLTjgmiclGQ7dke6aBejGNso7NUaEaHf0bi8=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=cCye+SMdvnljpAR3Fg0f3xC90cZ0YMPv4dlpHKdjUVzAoAGXvMGMPIfcdLQwAl68jL7OJ2S93nWqT1NDB3E8tvh3KxW/ugcqnGRYwx5A93N2tENm/xIRmvg5Ms3fPoV7D4gKO10BAqfqO/i7/ehsbPMM4QT9T1Qk7RLZdc20CwI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=JgTiJ7yl; arc=fail smtp.client-ip=52.101.62.114
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=d1fr1OE7hXzIuwj3fYYtWlhV0W5hqnHvAWFbYDvQ4e/JeP9+8fYNB2NHMvPwjug4d1ICRznqznhDegw6FGkCh0iWtdyVpe6IMEpo3U57CD1KG1zYNj3MWnqC0FpHmG44K9SqJI8p8i2fs12+63kvkF/ugKfJikNlGh8q3lxz5I9H535HnSttay3Ds6xJ49SOeqqfkyow694yh5yJtzWnq9XOSTRYahC1UnKD9d13rcW+IVmbDnJ04RX5GtRx/q7aS5Yjx9fSILTY7v1Y1kodx4YC/4B73RlqIT5OSn7TE02UlepWm6XY8RslOE4MWGMoL0KFq2p8ztXOj45WxpLayQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gkHJh8c6Q1yMVnr/bmhbsgKkA8gowdlPpT1699pkHBk=;
+ b=W23EZnqfGrzXqHy3pmUQAIzcS1QyxXpuWnTdp9aMreszhtqJtmCLFqftfTFEDZ7LUjeNLDAAN2JoCPd5tAuQbjz8vogghyHTjwnkdQVMBdIPB6WbDmhEzrjqIf7fQEZSOIk4DpgfDQGNHsv0SAfYsK6zgqAAze1nfjsy4UqH6pWdcdSZjX7XZGrCTTI3jwHuoxPDK+wbuyJhfDP1L27WOmkqCaQvUfp4wk6TLVXTBO5DifYgQTfU7UhBKDyX3r7LVLRz6P2FlFuj4IF3yuU3eQhYc2P3PCR4Pxx+rSNrMpHMplpUZCSFVqGTDTSJIVE8AC1aPsIbbH5HPaZRoxTItg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gkHJh8c6Q1yMVnr/bmhbsgKkA8gowdlPpT1699pkHBk=;
+ b=JgTiJ7ylgJQx5yn3NBa3U11yodTpVMu6Z1GDA+m2tp0P7nYady7b1Oj0GtF9xGZ2udE71YWXz7Y/zH0EHHnqBWQl6Vg3hVp12W4YN2+NYTDuFkTMe02SdTxp1Y3jzmnVcYXq6HHF9Oq1DzX8Zg70MLpwSaeQDWWJWA7rD7njEfM=
+Received: from CY5PR21MB3447.namprd21.prod.outlook.com (2603:10b6:930:c::15)
+ by CY5PR21MB3711.namprd21.prod.outlook.com (2603:10b6:930:2f::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9228.7; Tue, 14 Oct
+ 2025 14:11:24 +0000
+Received: from CY5PR21MB3447.namprd21.prod.outlook.com
+ ([fe80::a6a7:e6e:ce3d:15bf]) by CY5PR21MB3447.namprd21.prod.outlook.com
+ ([fe80::a6a7:e6e:ce3d:15bf%4]) with mapi id 15.20.9253.002; Tue, 14 Oct 2025
+ 14:11:24 +0000
+From: Haiyang Zhang <haiyangz@microsoft.com>
+To: Andrew Lunn <andrew@lunn.ch>
+CC: Haiyang Zhang <haiyangz@linux.microsoft.com>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, Paul Rosswurm
+	<paulros@microsoft.com>, Dexuan Cui <DECUI@microsoft.com>, KY Srinivasan
+	<kys@microsoft.com>, "wei.liu@kernel.org" <wei.liu@kernel.org>,
+	"edumazet@google.com" <edumazet@google.com>, "davem@davemloft.net"
+	<davem@davemloft.net>, "kuba@kernel.org" <kuba@kernel.org>,
+	"pabeni@redhat.com" <pabeni@redhat.com>, Long Li <longli@microsoft.com>,
+	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+	"ernis@linux.microsoft.com" <ernis@linux.microsoft.com>,
+	"dipayanroy@linux.microsoft.com" <dipayanroy@linux.microsoft.com>, Konstantin
+ Taranov <kotaranov@microsoft.com>, "horms@kernel.org" <horms@kernel.org>,
+	"shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
+	"leon@kernel.org" <leon@kernel.org>, "mlevitsk@redhat.com"
+	<mlevitsk@redhat.com>, "yury.norov@gmail.com" <yury.norov@gmail.com>, Shiraz
+ Saleem <shirazsaleem@microsoft.com>, "andrew+netdev@lunn.ch"
+	<andrew+netdev@lunn.ch>, "linux-rdma@vger.kernel.org"
+	<linux-rdma@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: RE: [EXTERNAL] Re: [PATCH net-next] net: mana: Support HW link state
+ events
+Thread-Topic: [EXTERNAL] Re: [PATCH net-next] net: mana: Support HW link state
+ events
+Thread-Index: AQHcPHhE0kkRC6B4zEaD5wgJwu71ibTAk3YAgAADFDCAACDNgIAA+DfQ
+Date: Tue, 14 Oct 2025 14:11:24 +0000
+Message-ID:
+ <CY5PR21MB34476DA4115A6C5D6B76E12DCAEBA@CY5PR21MB3447.namprd21.prod.outlook.com>
+References: <1760384001-30805-1-git-send-email-haiyangz@linux.microsoft.com>
+ <74490632-68da-401d-89a7-3d937d63cbe3@lunn.ch>
+ <CY5PR21MB3447B6D69542EA4532547A5FCAEAA@CY5PR21MB3447.namprd21.prod.outlook.com>
+ <4ea9acfd-be02-4299-b8c4-95bb69ad04cd@lunn.ch>
+In-Reply-To: <4ea9acfd-be02-4299-b8c4-95bb69ad04cd@lunn.ch>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=5ca48914-a98f-440d-8292-5d58f25161f3;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2025-10-14T14:10:08Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
+ 3, 0, 1;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CY5PR21MB3447:EE_|CY5PR21MB3711:EE_
+x-ms-office365-filtering-correlation-id: c55a8a08-60b1-4558-d28a-08de0b2b8efb
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|376014|7416014|1800799024|366016|38070700021;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?JzkqUdT4PYifx3CqnJqaK3wUeHiySEomyBDZamSNo8AyHl3DE/aNkYX+rJzu?=
+ =?us-ascii?Q?zUznmRqOjbw9RrvdzpIHUXgvMMEGxiirY6qEYT8RWOyL0xl/fpF9RSCyzhDG?=
+ =?us-ascii?Q?HUcq/GU3+5gXg+Io418MiHqZgriBQQqqhgKwarK4UBjCCjtk+Azp/sN2cptj?=
+ =?us-ascii?Q?5CRQYY+BLiDy6XHLozM81HkJ3nhntKbwyUIIZaJq5Giut5XlGlMu6MkZ4aLD?=
+ =?us-ascii?Q?8gj/XGY/EgHllEbcpD7EhMzKwzsSFb+LVUTV7l6XxjhbrmXqSc7MJ2TeR4XP?=
+ =?us-ascii?Q?iYFwmmcwKZJCPxWxiiGUr31tuOhmCNjABQIpGXzomcuwQbCA8dJLkhOwQuGs?=
+ =?us-ascii?Q?Cz8zvCHL42mXkjZDaJWQIwBkGVOJ/FQVInG6KJfHS+uEsTrcWhOlGOGLk5Vr?=
+ =?us-ascii?Q?dPRi1zVHPVA0nZqgRetbDqrGjJhcK/BA8Oemdyip/tEsSHESCXU27Zyw+HTd?=
+ =?us-ascii?Q?VyLUk1fjobCDizxvLgur3UAnavNI/Y/4BdTV0/wEcgHbdT7GAYjmeMa+Lyty?=
+ =?us-ascii?Q?lYEFeiIPGxjn129z6GQn1TwJmPG3rXmaH0idV1fNWDuFjJOmhz0hWy9xuQIU?=
+ =?us-ascii?Q?4xm03byYAcRvmyR0skWptizPE4ME8vD4/Agq3espSBQ7qmiMR77vn5BaO1Jv?=
+ =?us-ascii?Q?CnQcDvAuZwKk7IT9Bt5lK+YZnq8Oy4q/rQknu1wKIQVi4mOj3eZleyo2HDrn?=
+ =?us-ascii?Q?XRfGnt71tTmTd9ykdGy85/b865JHOPoMlAoDfXYc4bIr975GSuqVqNtj8kUu?=
+ =?us-ascii?Q?IAsvFDJVwCDEEtXZwyfS9fleMOJyIHJvHIX0IbzP0ik95Ju8uWLl2hB0KNh5?=
+ =?us-ascii?Q?n0uPdNIz5ptAIA8j9PLuHHejpIb7q9sxX7RJQy29DLiR9VczCMy2luciovuL?=
+ =?us-ascii?Q?QMBQz4HUQyi70wyRWbM9jT5gfTxdzWLVVh27ZrgUcmk/tqVXsuoko/DfOCkH?=
+ =?us-ascii?Q?TkQfBStAl5Uv0FrQnO4Jj4jK/0AC5tKdQg6xqLEk5M1xmLyg9nYmNSMNjKCM?=
+ =?us-ascii?Q?HzjKyXTSjhkUuVRMrcvyZgrJv3Ecc0eWU2Y/Pn6njy7OcTGvOMBoqIHd4I8J?=
+ =?us-ascii?Q?GA5O3Y7D9qp0KE8rxYOLKB4CAGMaAf1zrzK6mICgq5Lekg96JiP4IMUsXvoz?=
+ =?us-ascii?Q?DH/cnNAd7zMByyMa2+kUGq34sZGb+4KNxgumAfMlimpWcR6Goe6yxJM2AE2B?=
+ =?us-ascii?Q?GqEAbssQ0dcxEeHd/JpXi1aEWXAAAEsdWGBYkfRsqSSHq33Ug7m9mR+aL//u?=
+ =?us-ascii?Q?X2WeZyCLoTynOimC2AQokS8KtgYdNI+bQr1dxts7Wcc8xnWztJ9SvJ8qSRCh?=
+ =?us-ascii?Q?zdvAwu96D4l480f87iD0gAwKF/+F8xRSS3BS0fstk6Z4ztgXJIce3Y8OfDzg?=
+ =?us-ascii?Q?kT21wz2FsMN4FlPfbwKoCjGgbyeTMPep+QRWa7QS2vG9ghdgyeJt8nlZeYU+?=
+ =?us-ascii?Q?ixQB0rPK1d+TWH8Y/D6BaxsLMHzY7Zwj4EAiq8mZyGTlGRCIGlc2SbT7zgS1?=
+ =?us-ascii?Q?QQsiwgbZ8dO+Z74t2efevk5oO26ya3hbihbl?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR21MB3447.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016)(38070700021);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?nLaVy4Itg+rVbxWNH/FQtQifDvVTmhZD5mh5hQOEZQwar2IVE012JYcsQKGh?=
+ =?us-ascii?Q?3PEygLLQdmQifxuPDqlLxDg89CsG4m/LR2pyR9AQkJvpUIaZEDKz4EPMLUCX?=
+ =?us-ascii?Q?TMvpnh/DWXt9jIWXATnN1FmzL1rqUk6GKQ2WgLj6KPkurBztPQz5mE6KiMXW?=
+ =?us-ascii?Q?mtHN28glL+S66IpDMqnYy+mPaOEuASBSIaZ1rvqzJGlm4e6/pzSlK37cMOSE?=
+ =?us-ascii?Q?Bu+I2hFyfz6EMz+sglQ3YMYEvi3tWk74XJJVyjcHAtcsPdGp1sQTLQ2F9KII?=
+ =?us-ascii?Q?oSaUwgdA6jROL8pi/rhazmayUey7F8fomMs0I/juTQUxTVIRE2FpJHNqvDCS?=
+ =?us-ascii?Q?YzI/ORsKE8ZqeeAW6rn/TYoHr21YHFD9nLTopXkhuPItf5cd3G3SPYa09ROD?=
+ =?us-ascii?Q?HZfVcw2zynuYKBEG6KvHgnA5HjCvYzPdBlvUhAniO/ZV2eIIgmRVuwPnFnFD?=
+ =?us-ascii?Q?jWBAz2kibC6tJZ51uMjadCwcEfy2x7ufCb9GFAXGnsf9CLzkwsU6n00K+6JK?=
+ =?us-ascii?Q?GkQs7dnkUaQ/w63eca/c41FvhOz//g1Q6cCoPhHAAm6Csf4opPC9UN9TVsUG?=
+ =?us-ascii?Q?KCM+LNzRAW5EjGewPdRWfjlPvtSrFPqCVnrRpiS9hiA9HXdfemj6HfkS0Uri?=
+ =?us-ascii?Q?6RX8ljHcPD7jdTL7C3zUebV4GyJNXbQ0iUqXDM9RF4AaqMz8R/vkHfpYzZvr?=
+ =?us-ascii?Q?SW0HOC0W0VVrxL2POFUDKZr6IEni7nc0iVVWpUlooj/YdbvZCq7pQY7L8UQT?=
+ =?us-ascii?Q?bBqb/juzXplgknIt16a7qPws7YEYGmRhV838bq2fzw6oyHrolAaAyUQ6gZys?=
+ =?us-ascii?Q?8a74Fy3SLRXCOEaQPbFHhny1FUm1uu/kG8iN/9KiQj/Wc3qszmVE+aIODTE6?=
+ =?us-ascii?Q?IpZKNasWWgv5bTzGlnKGu0locm3xZeKv4oGuHV86h7lSszBwUf/hkVtL0ijX?=
+ =?us-ascii?Q?BMa0d4LL3KViRt/X39mk4BbUlw4YYV9ZE5Zbz0Q9HSSqtNXA8+to76tQBopE?=
+ =?us-ascii?Q?yTMNC7hA/XZh8E+TVxaO+SQSrKm7aTF+/XJ/3Z2k2MrOVN3IgnZdu8ZXbYK3?=
+ =?us-ascii?Q?cNaxcBTg0RAjaafU9m78hoFYxIv355lWcUOQEUpJaGpqkPpTyE45IGj8XQV+?=
+ =?us-ascii?Q?6qG1mRa+J4eNtpBQO/OfTbKCvUUY2rY9DklJHkgea3c5Mzs0uUhieOIwE/fr?=
+ =?us-ascii?Q?3YfwI44JOL7B8m+w11ZfOKXkQ5xysjZSkDPseVP/WE8HqE6PJNT8jYxznau+?=
+ =?us-ascii?Q?aTiHsOOqmDGTLJqYRvJFsdAbBvLUhZaBQIBKHB55Sjp3ETmPtAAojlX6F8rP?=
+ =?us-ascii?Q?HAPgZev5B9F2Hz7oAmLLoX6TfvshKc0rKPPHpNDZCGm5RL2cKlSPP3RUDAYd?=
+ =?us-ascii?Q?mvy8f7L7ktg+izR1wjtul5vyP5SY8TtKGaRWD+Ixo+hdCdMCM7m10f5lqXfB?=
+ =?us-ascii?Q?dMZvJV8zfWx8GpIgmNNUHQbm0T7k4SjbdpnS+szV3reXHrYNvKmqJM+yFT8X?=
+ =?us-ascii?Q?4x8rCJZQktUfgFw55WYqDS+Ur1ADDMFi++lZ5RP0XYAHPDCMIGzluB7+rj5j?=
+ =?us-ascii?Q?C0NWwrkjCHbRXFjPKOTZyqAGNGXFzPQprTniuwcq?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v4 06/24] net: clarify the meaning of
- netdev_config members
-To: Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org
-Cc: Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
- davem@davemloft.net, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Donald Hunter <donald.hunter@gmail.com>,
- Michael Chan <michael.chan@broadcom.com>,
- Pavan Chebbi <pavan.chebbi@broadcom.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>, Joshua Washington
- <joshwash@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>,
- Jian Shen <shenjian15@huawei.com>, Salil Mehta <salil.mehta@huawei.com>,
- Jijie Shao <shaojijie@huawei.com>, Sunil Goutham <sgoutham@marvell.com>,
- Geetha sowjanya <gakula@marvell.com>, Subbaraya Sundeep
- <sbhatta@marvell.com>, hariprasad <hkelam@marvell.com>,
- Bharat Bhushan <bbhushan2@marvell.com>, Saeed Mahameed <saeedm@nvidia.com>,
- Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
- Leon Romanovsky <leon@kernel.org>, Alexander Duyck <alexanderduyck@fb.com>,
- kernel-team@meta.com, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Joe Damato <joe@dama.to>, David Wei <dw@davidwei.uk>,
- Willem de Bruijn <willemb@google.com>, Mina Almasry
- <almasrymina@google.com>, Breno Leitao <leitao@debian.org>,
- Dragos Tatulea <dtatulea@nvidia.com>, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
- Jonathan Corbet <corbet@lwn.net>
-References: <cover.1760364551.git.asml.silence@gmail.com>
- <fa4a6200c614f9f6652624b03e46b3bfa2539a72.1760364551.git.asml.silence@gmail.com>
- <572c425e-d29d-43e5-930f-4be7220e89fc@infradead.org>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <572c425e-d29d-43e5-930f-4be7220e89fc@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR21MB3447.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c55a8a08-60b1-4558-d28a-08de0b2b8efb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Oct 2025 14:11:24.3253
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tH3H88g0LjpIGh2BY+6g3FMYJjRbi5/kBO3CAEWIWjzUH6jgFpU52i4UNWXP7BnoVm3Z93s1SvDR/gw/PRbWbg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR21MB3711
 
-On 10/13/25 18:12, Randy Dunlap wrote:
-> Hi,
-> 
-> On 10/13/25 7:54 AM, Pavel Begunkov wrote:
->> From: Jakub Kicinski <kuba@kernel.org>
->>
->> hds_thresh and hds_config are both inside struct netdev_config
->> but have quite different semantics. hds_config is the user config
->> with ternary semantics (on/off/unset). hds_thresh is a straight
->> up value, populated by the driver at init and only modified by
->> user space. We don't expect the drivers to have to pick a special
->> hds_thresh value based on other configuration.
->>
->> The two approaches have different advantages and downsides.
->> hds_thresh ("direct value") gives core easy access to current
->> device settings, but there's no way to express whether the value
->> comes from the user. It also requires the initialization by
->> the driver.
->>
->> hds_config ("user config values") tells us what user wanted, but
->> doesn't give us the current value in the core.
->>
->> Try to explain this a bit in the comments, so at we make a conscious
->> choice for new values which semantics we expect.
->>
->> Move the init inside ethtool_ringparam_get_cfg() to reflect the semantics.
->> Commit 216a61d33c07 ("net: ethtool: fix ethtool_ringparam_get_cfg()
->> returns a hds_thresh value always as 0.") added the setting for the
->> benefit of netdevsim which doesn't touch the value at all on get.
->> Again, this is just to clarify the intention, shouldn't cause any
->> functional change.
->>
->> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
->> [pavel: applied clarification on relationship b/w HDS thresh and config]
->> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
->> ---
->>   include/net/netdev_queues.h | 20 ++++++++++++++++++--
->>   net/ethtool/common.c        |  3 ++-
->>   2 files changed, 20 insertions(+), 3 deletions(-)
->>
->> diff --git a/include/net/netdev_queues.h b/include/net/netdev_queues.h
->> index cd00e0406cf4..9d5dde36c2e5 100644
->> --- a/include/net/netdev_queues.h
->> +++ b/include/net/netdev_queues.h
->> @@ -6,11 +6,27 @@
->>   
->>   /**
->>    * struct netdev_config - queue-related configuration for a netdev
->> - * @hds_thresh:		HDS Threshold value.
->> - * @hds_config:		HDS value from userspace.
->>    */
->>   struct netdev_config {
->> +	/* Direct value
->> +	 *
->> +	 * Driver default is expected to be fixed, and set in this struct
->> +	 * at init. From that point on user may change the value. There is
->> +	 * no explicit way to "unset" / restore driver default. Used only
->> +	 * when @hds_config is set.
->> +	 */
->> +	/** @hds_thresh: HDS Threshold value (ETHTOOL_A_RINGS_HDS_THRESH).
->> +	 */
->>   	u32	hds_thresh;
->> +
->> +	/* User config values
->> +	 *
->> +	 * Contain user configuration. If "set" driver must obey.
->> +	 * If "unset" driver is free to decide, and may change its choice
->> +	 * as other parameters change.
->> +	 */
->> +	/** @hds_config: HDS enabled (ETHTOOL_A_RINGS_TCP_DATA_SPLIT).
->> +	 */
->>   	u8	hds_config;
->>   };
-> 
-> kernel-doc comments should being with
-> /**
-> on a separate line. This will prevent warnings like these new ones:
-> 
-> Warning: include/net/netdev_queues.h:36 struct member 'hds_thresh' not described in 'netdev_config'
-> Warning: include/net/netdev_queues.h:36 struct member 'hds_config' not described in 'netdev_config'
-> Warning: include/net/netdev_queues.h:36 struct member 'rx_buf_len' not described in 'netdev_config'
-> 
-> (but there are 4 variables that this applies to. I don't know why kernel-doc.py
-> only reported 3 of them.)
 
-Thanks for taking a look! I was a bit reluctant to change it
-too much since it's not authored by me. I'll be moving in direction
-of removing the patch completely.
 
--- 
-Pavel Begunkov
+> -----Original Message-----
+> From: Andrew Lunn <andrew@lunn.ch>
+> Sent: Monday, October 13, 2025 7:22 PM
+> To: Haiyang Zhang <haiyangz@microsoft.com>
+> Cc: Haiyang Zhang <haiyangz@linux.microsoft.com>; linux-
+> hyperv@vger.kernel.org; netdev@vger.kernel.org; Paul Rosswurm
+> <paulros@microsoft.com>; Dexuan Cui <decui@microsoft.com>; KY Srinivasan
+> <kys@microsoft.com>; wei.liu@kernel.org; edumazet@google.com;
+> davem@davemloft.net; kuba@kernel.org; pabeni@redhat.com; Long Li
+> <longli@microsoft.com>; ssengar@linux.microsoft.com;
+> ernis@linux.microsoft.com; dipayanroy@linux.microsoft.com; Konstantin
+> Taranov <kotaranov@microsoft.com>; horms@kernel.org;
+> shradhagupta@linux.microsoft.com; leon@kernel.org; mlevitsk@redhat.com;
+> yury.norov@gmail.com; Shiraz Saleem <shirazsaleem@microsoft.com>;
+> andrew+netdev@lunn.ch; linux-rdma@vger.kernel.org; linux-
+> kernel@vger.kernel.org
+> Subject: Re: [EXTERNAL] Re: [PATCH net-next] net: mana: Support HW link
+> state events
+>=20
+> > > > +		if (link_up) {
+> > > > +			netif_carrier_on(ndev);
+> > > > +
+> > > > +			if (apc->port_is_up)
+> > > > +				netif_tx_wake_all_queues(ndev);
+> > > > +
+> > > > +			__netdev_notify_peers(ndev);
+> > > > +		} else {
+> > > > +			if (netif_carrier_ok(ndev)) {
+> > > > +				netif_tx_disable(ndev);
+> > > > +				netif_carrier_off(ndev);
+> > > > +			}
+> > > > +		}
+> > >
+> > > It is odd this is asymmetric. Up and down should really be opposites.
+> > For the up event, we need to delay the wake up queues if the
+> > mana_close() is called, or mana_open() isn't called yet.
+> >
+> > Also, we notify peers only when link up.
+>=20
+> But why is this not symmetric?
+>=20
+> On down, if port_is_up is not true, there is no need to disable tx and
+> set the carrier off. There are also counters associated with
+> netif_carrier_off() and netif_carrier_on(), and if you don't call them
+> in symmetric pairs, the counters are going to look odd.
 
+I see. Will update the patch.
+
+Thanks,
+- Haiyang
 
