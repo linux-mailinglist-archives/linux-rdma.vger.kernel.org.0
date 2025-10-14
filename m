@@ -1,213 +1,157 @@
-Return-Path: <linux-rdma+bounces-13853-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13854-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6304BD70A5
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Oct 2025 04:04:41 +0200 (CEST)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1861BD7472
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Oct 2025 06:41:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 224C93B0F64
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Oct 2025 02:04:40 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2FD7E34F664
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Oct 2025 04:41:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C86CF303A26;
-	Tue, 14 Oct 2025 02:04:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E181730BB82;
+	Tue, 14 Oct 2025 04:41:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="aPAKJ8Im"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Fjg5Ts3r"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C072DDAB;
-	Tue, 14 Oct 2025 02:04:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C85BB3074AC
+	for <linux-rdma@vger.kernel.org>; Tue, 14 Oct 2025 04:41:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760407475; cv=none; b=mz/OSMA8iQZPPH1M/JvypatU/CgImnBmvgfHurGCq2NxS1QIA0UO+HtT/N1B76lKRIIJgXCCo4m7RTfjEthZP9bKwg69uic9WSfLLR5pQKomGJJcoc9jcrb9dUsMGC9YJg7b6L5kCPJBlISPShOCem5+lc++5qadUy0t1tH/8m4=
+	t=1760416914; cv=none; b=gQ0YIhmV7UOOQQy2F+x/+0DVSjCTyS1HMi8ZZAaUlpxzin1li5IUSHl+ODD4NMTmtVamVuVpjDCBq4NgCHuE8Yd1I3ientCusA1MgdeyML+fDgkrwfofh4/5w4dqPWvIsTrfy2D8an31CpgnPbYgbptRJ/aMbJ9LF6U4M/xmAYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760407475; c=relaxed/simple;
-	bh=dww80B3Hk7HPkJ5DlFsPZ2Wkdo+EJLE2Aw1BA4evdsk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wto4RfpiSzPkLnwQDv9Ku/NnWN0+Y5VmNGiCUiOFkABMRmu6Qr0i43kd/QvWO/3DnNf6YJPg1NATO3LW2hRO0LO8hO/HDelG9WD5JgunZXjo1Tt6ZUUnPfxbVulEYtmVLDoLwzRSzntIdXuetkOpLscHoa1I/zsMeNrwQdxRMPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=aPAKJ8Im; arc=none smtp.client-ip=115.124.30.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1760407468; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=NC6lAq5v+naNOL8xOJgDemeTBmw5nvWnLwrWkWNVO60=;
-	b=aPAKJ8ImAoAehFNTbdRkyxle/vDDcbTQuP8WP9BnWDLcCRyIMBk4tc8xATDtoAUIrgOzgvK/FdjaMrivCppbFkeui6wdCb6Y7yyjzln5i+p8ymrqRm7RjXoYNUgV+5QfYrq5Wm7R4UBhBE/5dGLO7mw9R62e9aiAbEjpJXTqDoQ=
-Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WqA-Nit_1760407467 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Tue, 14 Oct 2025 10:04:28 +0800
-Date: Tue, 14 Oct 2025 10:04:27 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com    >
-To: Wang Liang <wangliang74@huawei.com>
-Cc: Kuniyuki Iwashima <kuniyu@google.com>,
-	Eric Dumazet <edumazet@google.com>, alibuda@linux.alibaba.com,
-	dust.li@linux.alibaba.com, sidraya@linux.ibm.com,
-	wenjia@linux.ibm.com, mjambigi@linux.ibm.com,
-	tonylu@linux.alibaba.com, guwen@linux.alibaba.com,
-	davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-	horms@kernel.org, yuehaibing@huawei.com, zhangchangzhong@huawei.com,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: Re: [PATCH net] net/smc: fix general protection fault in
- __smc_diag_dump
-Message-ID: <20251014020427.GA109537@j66a10360.sqa.eu95>
-References: <20250922121818.654011-1-wangliang74@huawei.com>
- <CANn89iLOyFnwD+monMHCmTgfZEAPWmhrZu-=8mvtMGyM9FG49g@mail.gmail.com>
- <CAAVpQUBxoWW_4U2an4CZNoSi95OduUhArezHnzKgpV3oOYs5Jg@mail.gmail.com>
- <CANn89i+V847kRTTFW43ouZXXuaBs177fKv5_bqfbvRutpg+s6g@mail.gmail.com>
- <CAAVpQUBriJFUhq2MpfwFTBLkF0rJfaVp1gaJ3wdhZuD7NWOaXw@mail.gmail.com>
- <CANn89i+Ntwzm2A=NSHbKdFuGVR6kar00AjrJE91Lu0e5BUsVow@mail.gmail.com>
- <CAAVpQUAd1oba6cy-hSub-iS0cnh7WH=HXgVnUwj8MXZLyU=a+w@mail.gmail.com>
- <8ab4d343-d287-4b42-94f7-511f46e131d3@huawei.com>
+	s=arc-20240116; t=1760416914; c=relaxed/simple;
+	bh=HkIZGagwqQSK/Ux73E//1WE05pc2dBkZn1z8WlsOsmA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WBkKa9oL0t8LTw669PnC8frkYVgHvEa4tvqcdAO7j1fu0J6dmGbj2ScfpsHuXafqt4ADPN6sxcIICGiMy9PPrgWoKHWGvO7iGGsVBRAiaIcYGibByPvgrWwb76wirwgWuVoReiVWaH7pfrB93BrpVa4cjyrc/qYZWctXKEaDDOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Fjg5Ts3r; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-587bdad8919so16942e87.0
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Oct 2025 21:41:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1760416911; x=1761021711; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/H993Yv05c5jEdeR6de+2fECvHc6eeWZhFT1JvbrSFk=;
+        b=Fjg5Ts3rb495TT6Yz5OTQCOUFV2w1Lr4ec0+zT8Kv1m3K1n6tmGIo8yuSwaOq/B8GT
+         R2sR3qTRX4dJFKiccoz75DpUlfX3eltiZUp7qYsUHKHazetX2H1i0UwpgSbM1y+Ra1pi
+         dGnO4MDyMVzEkByd/f6iuZFdxWgMJ/f4AwRTeEIASbYLOEz5WYSaGxrh6KxENeV6YRtF
+         mymSUb1GnjRntLiaO9L2/8JyQr6T5VU8sW9VHLagryK5TO41AQ8sQWlFsaQLKs6gXWdI
+         m7XMicRMLoeYjwiwNcbIzrCH0JDmEnB6l14qItiOukeZpTUwKoTlBTNlxOP/btbAtT7P
+         aDkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760416911; x=1761021711;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/H993Yv05c5jEdeR6de+2fECvHc6eeWZhFT1JvbrSFk=;
+        b=MHfKNA+QG4bYsviFhseYPc3WcCMkCW87KqPS/ys/WxuY1lKcye7SzRMpRBBPYgnx7F
+         sldw+k+1+G1CgmaYhSTdNogyfWmGhiOdouGcGsqLHvepCpNhCA6B7VSgFeMZgzOvR7m6
+         5LseoGONPfsd0IpMyXkGQKQN3VCqHvSnB+JrvJB7GK4N3BnHibiZNgC4DAt4C+fSUgOu
+         sxzzvyV0r1DL2/6wbs30dxTsXWksDcqk2TTEfbHyYoCIe0vDmR6PjwrufXuaSC0yjHxS
+         BjWa7LG8co1QmUWRLEH81bL461wNrfxjd5HZtPQFXMhrK6OJf/YL5d6vuoYdDKIshSjx
+         lOCg==
+X-Forwarded-Encrypted: i=1; AJvYcCXzLv7Hzi2HfEXE0vMbmQMJ8u/AzesICOdLUHYn7TvpcWYEcSOLz8ipDik9h4yIqtPSve+Ug2MHOOfE@vger.kernel.org
+X-Gm-Message-State: AOJu0YwFVRbw+auXL71WKtWcwViSitHTVe56FbWDMwzi93dC/iqNxVkl
+	mTpg30uty7+6o4W6akTewMhb5GQapLQtfItKdOJ8tzLDsaH3a5J578JeoypgW99UYMFthju6b6R
+	As1BQKZkLIysapI291P4VIOMh770qKItFoBCJ7oXl
+X-Gm-Gg: ASbGncvW55LrbDC/SJD2Seq3O7sZ3z/L7jXs8DVfLfzm8sWNS4d1bUF1wXvQOhGNgEQ
+	x/+pDmE0yW+pnwiggSJx6PEfW5Lpvl9c/ECGp9wSYe4HizQbIXafUzyiRYOtN/3oXFD7vfyFWD8
+	DMpwkKWVt9MC8Mk0ZXV1sS3gMG4u73dNcrM3PZLsbJSf1muee8ekieX+yXl1rYh2eDlmMZiGcXo
+	A0/uzyBWMPgPVkbw/hXHteAuOvBibUQ6YTCAufN9n5a
+X-Google-Smtp-Source: AGHT+IGO2N6eEZzAYyKaq78kUeEFq20BCf9kSNKrULoXVn92wigmiiTTyiqOtJSWbFILRsrzS2mx9pVSEawVxWJPTh4=
+X-Received: by 2002:a05:6512:6d3:b0:55b:9f89:928b with SMTP id
+ 2adb3069b0e04-5906e383503mr43296e87.1.1760416910537; Mon, 13 Oct 2025
+ 21:41:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8ab4d343-d287-4b42-94f7-511f46e131d3@huawei.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <cover.1760364551.git.asml.silence@gmail.com> <20251013105446.3efcb1b3@kernel.org>
+In-Reply-To: <20251013105446.3efcb1b3@kernel.org>
+From: Mina Almasry <almasrymina@google.com>
+Date: Mon, 13 Oct 2025 21:41:38 -0700
+X-Gm-Features: AS18NWDsUu_PMxJh1iCf-aXLBKzwTZ_46MmoA7_5elnWV_3Q5KDGegO5lPk6knY
+Message-ID: <CAHS8izOupVhkaZXNDmZo8KzR42M+rxvvmmLW=9r3oPoNOC6pkQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 00/24][pull request] Queue configs and large
+ buffer providers
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Pavel Begunkov <asml.silence@gmail.com>, netdev@vger.kernel.org, 
+	Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net, Eric Dumazet <edumazet@google.com>, 
+	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Donald Hunter <donald.hunter@gmail.com>, Michael Chan <michael.chan@broadcom.com>, 
+	Pavan Chebbi <pavan.chebbi@broadcom.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
+	Joshua Washington <joshwash@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
+	Jian Shen <shenjian15@huawei.com>, Salil Mehta <salil.mehta@huawei.com>, 
+	Jijie Shao <shaojijie@huawei.com>, Sunil Goutham <sgoutham@marvell.com>, 
+	Geetha sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>, 
+	hariprasad <hkelam@marvell.com>, Bharat Bhushan <bbhushan2@marvell.com>, 
+	Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Alexander Duyck <alexanderduyck@fb.com>, kernel-team@meta.com, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Joe Damato <joe@dama.to>, David Wei <dw@davidwei.uk>, 
+	Willem de Bruijn <willemb@google.com>, Breno Leitao <leitao@debian.org>, 
+	Dragos Tatulea <dtatulea@nvidia.com>, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	Jonathan Corbet <corbet@lwn.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 26, 2025 at 04:42:35PM +0800, Wang Liang wrote:
-> 
-> 在 2025/9/26 3:51, Kuniyuki Iwashima 写道:
-> >On Thu, Sep 25, 2025 at 12:37 PM Eric Dumazet <edumazet@google.com> wrote:
-> >>On Thu, Sep 25, 2025 at 12:25 PM Kuniyuki Iwashima <kuniyu@google.com> wrote:
-> >>>On Thu, Sep 25, 2025 at 11:54 AM Eric Dumazet <edumazet@google.com> wrote:
-> >>>>On Thu, Sep 25, 2025 at 11:46 AM Kuniyuki Iwashima <kuniyu@google.com> wrote:
-> >>>>>Thanks Eric for CCing me.
-> >>>>>
-> >>>>>On Thu, Sep 25, 2025 at 7:32 AM Eric Dumazet <edumazet@google.com> wrote:
-> >>>>>>On Mon, Sep 22, 2025 at 4:57 AM Wang Liang <wangliang74@huawei.com> wrote:
-> >>>>>>>The syzbot report a crash:
-> >>>>>>>
-> >>>>>>>   Oops: general protection fault, probably for non-canonical address 0xfbd5a5d5a0000003: 0000 [#1] SMP KASAN NOPTI
-> >>>>>>>   KASAN: maybe wild-memory-access in range [0xdead4ead00000018-0xdead4ead0000001f]
-> >>>>>>>   CPU: 1 UID: 0 PID: 6949 Comm: syz.0.335 Not tainted syzkaller #0 PREEMPT(full)
-> >>>>>>>   Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/18/2025
-> >>>>>>>   RIP: 0010:smc_diag_msg_common_fill net/smc/smc_diag.c:44 [inline]
-> >>>>>>>   RIP: 0010:__smc_diag_dump.constprop.0+0x3ca/0x2550 net/smc/smc_diag.c:89
-> >>>>>>>   Call Trace:
-> >>>>>>>    <TASK>
-> >>>>>>>    smc_diag_dump_proto+0x26d/0x420 net/smc/smc_diag.c:217
-> >>>>>>>    smc_diag_dump+0x27/0x90 net/smc/smc_diag.c:234
-> >>>>>>>    netlink_dump+0x539/0xd30 net/netlink/af_netlink.c:2327
-> >>>>>>>    __netlink_dump_start+0x6d6/0x990 net/netlink/af_netlink.c:2442
-> >>>>>>>    netlink_dump_start include/linux/netlink.h:341 [inline]
-> >>>>>>>    smc_diag_handler_dump+0x1f9/0x240 net/smc/smc_diag.c:251
-> >>>>>>>    __sock_diag_cmd net/core/sock_diag.c:249 [inline]
-> >>>>>>>    sock_diag_rcv_msg+0x438/0x790 net/core/sock_diag.c:285
-> >>>>>>>    netlink_rcv_skb+0x158/0x420 net/netlink/af_netlink.c:2552
-> >>>>>>>    netlink_unicast_kernel net/netlink/af_netlink.c:1320 [inline]
-> >>>>>>>    netlink_unicast+0x5a7/0x870 net/netlink/af_netlink.c:1346
-> >>>>>>>    netlink_sendmsg+0x8d1/0xdd0 net/netlink/af_netlink.c:1896
-> >>>>>>>    sock_sendmsg_nosec net/socket.c:714 [inline]
-> >>>>>>>    __sock_sendmsg net/socket.c:729 [inline]
-> >>>>>>>    ____sys_sendmsg+0xa95/0xc70 net/socket.c:2614
-> >>>>>>>    ___sys_sendmsg+0x134/0x1d0 net/socket.c:2668
-> >>>>>>>    __sys_sendmsg+0x16d/0x220 net/socket.c:2700
-> >>>>>>>    do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-> >>>>>>>    do_syscall_64+0xcd/0x4e0 arch/x86/entry/syscall_64.c:94
-> >>>>>>>    entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> >>>>>>>    </TASK>
-> >>>>>>>
-> >>>>>>>The process like this:
-> >>>>>>>
-> >>>>>>>                (CPU1)              |             (CPU2)
-> >>>>>>>   ---------------------------------|-------------------------------
-> >>>>>>>   inet_create()                    |
-> >>>>>>>     // init clcsock to NULL        |
-> >>>>>>>     sk = sk_alloc()                |
-> >>>>>>>                                    |
-> >>>>>>>     // unexpectedly change clcsock |
-> >>>>>>>     inet_init_csk_locks()          |
-> >>>>>>>                                    |
-> >>>>>>>     // add sk to hash table        |
-> >>>>>>>     smc_inet_init_sock()           |
-> >>>>>>>       smc_sk_init()                |
-> >>>>>>>         smc_hash_sk()              |
-> >>>>>>>                                    | // traverse the hash table
-> >>>>>>>                                    | smc_diag_dump_proto
-> >>>>>>>                                    |   __smc_diag_dump()
-> >>>>>>>                                    |     // visit wrong clcsock
-> >>>>>>>                                    |     smc_diag_msg_common_fill()
-> >>>>>>>     // alloc clcsock               |
-> >>>>>>>     smc_create_clcsk               |
-> >>>>>>>       sock_create_kern             |
-> >>>>>>>
-> >>>>>>>With CONFIG_DEBUG_LOCK_ALLOC=y, the smc->clcsock is unexpectedly changed
-> >>>>>>>in inet_init_csk_locks(), because the struct smc_sock does not have struct
-> >>>>>>>inet_connection_sock as the first member.
-> >>>>>>>
-> >>>>>>>Previous commit 60ada4fe644e ("smc: Fix various oops due to inet_sock type
-> >>>>>>>confusion.") add inet_sock as the first member of smc_sock. For protocol
-> >>>>>>>with INET_PROTOSW_ICSK, use inet_connection_sock instead of inet_sock is
-> >>>>>>>more appropriate.
-> >>>>>Why is INET_PROTOSW_ICSK necessary in the first place ?
-> >>>>>
-> >>>>>I don't see a clear reason because smc_clcsock_accept() allocates
-> >>>>>a new sock by smc_sock_alloc() and does not use inet_accept().
-> >>>>>
-> >>>>>Or is there any other path where smc_sock is cast to
-> >>>>>inet_connection_sock ?
-> >>>>What I saw in this code was a missing protection.
-> >>>>
-> >>>>smc_diag_msg_common_fill() runs without socket lock being held.
-> >>>>
-> >>>>I was thinking of this fix, but apparently syzbot still got crashes.
-> >>>Looking at the test result,
-> >>>
-> >>>https://syzkaller.appspot.com/x/report.txt?x=15944c7c580000
-> >>>KASAN: maybe wild-memory-access in range [0xdead4ead00000018-0xdead4ead0000001f]
-> >>>
-> >>>the top half of the address is SPINLOCK_MAGIC (0xdead4ead),
-> >>>so the type confusion mentioned in the commit message makes
-> >>>sense to me.
-> >>>
-> >>>$ pahole -C inet_connection_sock vmlinux
-> >>>struct inet_connection_sock {
-> >>>...
-> >>>     struct request_sock_queue  icsk_accept_queue;    /*   992    80 */
-> >>>
-> >>>$ pahole -C smc_sock vmlinux
-> >>>struct smc_sock {
-> >>>...
-> >>>     struct socket *            clcsock;              /*   992     8 */
-> >>>
-> >>>The option is 1) let inet_init_csk_locks() init inet_connection_sock
-> >>>or 2) avoid inet_init_csk_locks(), and I guess 2) could be better to
-> >>>avoid potential issues in IS_ICSK branches.
-> >>>
-> >>I definitely vote to remove INET_PROTOSW_ICSK from smc.
-> >>
-> >>We want to reserve inet_connection_sock to TCP only, so that we can
-> >>move fields to better
-> >>cache friendly locations in tcp_sock hopefully for linux-6.19
-> >Fully agreed.
-> >
-> >Wang: please squash the revert of 6fd27ea183c2 for
-> >INET_PROTOSW_ICSK removal.  This is for one of
-> >IS_ICSK branches.
-> 
-> 
-> Thanks for your suggestions, they are helpful!
-> 
-> I will remove INET_PROTOSW_ICSK from smc_inet_protosw and smc_inet6_protosw,
-> 
+On Mon, Oct 13, 2025 at 10:54=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> w=
+rote:
+>
+> On Mon, 13 Oct 2025 15:54:02 +0100 Pavel Begunkov wrote:
+> > Jakub Kicinski (20):
+> >   docs: ethtool: document that rx_buf_len must control payload lengths
+> >   net: ethtool: report max value for rx-buf-len
+> >   net: use zero value to restore rx_buf_len to default
+> >   net: clarify the meaning of netdev_config members
+> >   net: add rx_buf_len to netdev config
+> >   eth: bnxt: read the page size from the adapter struct
+> >   eth: bnxt: set page pool page order based on rx_page_size
+> >   eth: bnxt: support setting size of agg buffers via ethtool
+> >   net: move netdev_config manipulation to dedicated helpers
+> >   net: reduce indent of struct netdev_queue_mgmt_ops members
+> >   net: allocate per-queue config structs and pass them thru the queue
+> >     API
+> >   net: pass extack to netdev_rx_queue_restart()
+> >   net: add queue config validation callback
+> >   eth: bnxt: always set the queue mgmt ops
+> >   eth: bnxt: store the rx buf size per queue
+> >   eth: bnxt: adjust the fill level of agg queues with larger buffers
+> >   netdev: add support for setting rx-buf-len per queue
+> >   net: wipe the setting of deactived queues
+> >   eth: bnxt: use queue op config validate
+> >   eth: bnxt: support per queue configuration of rx-buf-len
+>
+> I'd like to rework these a little bit.
+> On reflection I don't like the single size control.
+> Please hold off.
+>
 
-This is a bit of a long story. The INET_PROTOSW_ICSK flag was originally
-introduced for an effort to merge smc_sock and clcsock. The goal was to
-allow the merged socket to behave like a standard tcp_sock during
-fallback, thus avoiding the need for any special handling.
+FWIW when I last looked at this I didn't like that the size control
+seemed to control the size of the allocations made from the pp, but
+not the size actually posted to the NIC.
 
-However, this approach was later abandoned. Since the original reason
-for this flag no longer exists, so the removal makes sense.
+I.e. in the scenario where the driver fragments each pp buffer into 2,
+and the user asks for 8K rx-buf-len, the size actually posted to the
+NIC would have actually been 4K (8K / 2 for 2 fragments).
 
-> 
+Not sure how much of a concern this really is. I thought it would be
+great if somehow rx-buf-len controlled the buffer sizes actually
+posted to the NIC, because that what ultimately matters, no (it ends
+up being the size of the incoming frags)? Or does that not matter for
+some reason I'm missing?
+
+--=20
+Thanks,
+Mina
 
