@@ -1,186 +1,186 @@
-Return-Path: <linux-rdma+bounces-13877-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13878-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7765BBDFEC6
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Oct 2025 19:44:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1B42BE0333
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Oct 2025 20:35:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 1F2D3355C40
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Oct 2025 17:44:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73207486F03
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Oct 2025 18:34:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD92E2FDC40;
-	Wed, 15 Oct 2025 17:44:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81ADE2343C0;
+	Wed, 15 Oct 2025 18:34:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OsAPqUAE"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Q3kcfuEC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from CH1PR05CU001.outbound.protection.outlook.com (mail-northcentralusazon11010037.outbound.protection.outlook.com [52.101.193.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4AD527E076
-	for <linux-rdma@vger.kernel.org>; Wed, 15 Oct 2025 17:44:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760550275; cv=none; b=iigSN6TBMS317ug/c4uaPzTuK+JLIzcCd27I9MDp4geLGz90SxTiYgTNxHzrZ97KJvidHjeqB4HkkQL6Nrp9mVK/jAtPRZZpwSP5vbxgHoA3kFOXVj0a8dcgWzHeB5qQ2Qy+2pPgWE7bHop8NmGpte/0RUr0evUOBEH/CYFEHDU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760550275; c=relaxed/simple;
-	bh=3AUIEStV7cdbPd++W98zRPC/OeYAHWTOst7DyxGEouE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UsABfEVhsmR6/xLjL5waq5atHmxQSW5LtE7y4XP77D9xV5ljDliWQZjK8HirltyhhRy5o+hfTpJD+/zzLFYLH61aS2lmApxGPPUJ0U7AhnXvbqCwSkeE0wRXsGWN9V4TmNoHu+H6BaHEOrU10El8GmBK7/9++EQqvTwnrJ6ouFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OsAPqUAE; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-58877f30cd4so663e87.1
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Oct 2025 10:44:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1760550272; x=1761155072; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kY8QZndwhT3+NL15Z/FlWhrmYP9xi4mJKswCgkhxCxA=;
-        b=OsAPqUAEODUwcXhfXzKrGTgsA7TWLp/kadRcqCUadj9YM07Qnu3tSGd7Izh/e1vgzd
-         UkdVqCsLynx6kOBbBcTsyeHLusWciKgW4SWL67Ssq4QE9rokwyeQwLnYLFh5FWiGQGTC
-         9u+8UmrSAgzKpT3zpX6e1ZpDpk7OpnO1y9riFr+RhegBMf7JKS7rZ3VOqfnP/rAVeQqG
-         F2rGY+zKpA11IGze1+7/6cm4YrTTUmY8jgPjiNtOZTsKMiQBKO0H7aOv4l0FSl6JnU8U
-         Uw+qU4D7iiSOaRjfmObn5kpu/nz7qEbKQKp4fK6k0xgCJzP1RcBwEiyyGS/Z0MDurxeu
-         7upw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760550272; x=1761155072;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kY8QZndwhT3+NL15Z/FlWhrmYP9xi4mJKswCgkhxCxA=;
-        b=xR9pR4gev7Zku0v4oGnjIppSzWBRQbOuNtyVVjOv1ZtuZDwISyjQLvA+byM+lRLCd0
-         GDzZHYqgLGTUNwtWRxFpUK08yLtGUfpbBBTTemtrTD3NOXptsdE5OSVStsrPbhPsvaXL
-         QHxgsNz4EOHtXvuRxue0umtC3HwQFd9fdsNMdnDr5v+OYVP4wRjAal1MiNBSDWcK2tZE
-         iEOwhzSrmRHx3GT9vRDiQrvxF6Yf8lnDnuqJ9EDlfeiSEGNaCYe5c0zCMD/2fqPG1lLn
-         pKIBjknFbUbBJeg4hzK3n8PRYOX9STYKrytrwnS0vblFGq6U+1Dsn0sj6ruf+KSZRofs
-         tSEg==
-X-Forwarded-Encrypted: i=1; AJvYcCVoYOpSXb26qeUnw8Fpgkxoze8vAUjZ/0tts5ucsGbDhbyXnoe4AEZnwsrenBRkmknbjZ1NzGFP5UVg@vger.kernel.org
-X-Gm-Message-State: AOJu0YwMJ/rKjADz7sYo+uGT6YdZahnpQsMiZqZbRkpvBfTI169AywVG
-	Uc1IpxDM2O9eNVRc8kQO9L9nLspB08zUW4m4z7e+Lp/QR1c8MFe1aIMCS/3/D/u+vb6dASoi87V
-	eemBLuez7HhxSEk+l317Af+kT0zsdFjE6Q0q+p6wG
-X-Gm-Gg: ASbGncsicBdovWjixO8dBZCnToS4bkKDvnBoRyhLn9kxkYpA1D936xvuZ89uof2N20j
-	Jzfzjs3DsHeBOut7pm0Kq7u159IrDkO5OOBVAy8UdtARxzlIMhjO47CEE/T+4UDwqbeg84cKsjA
-	RndpsMJM4g1wuB6k/vHVlskYrsxspoC5hNwuX4MVEjYr/+xX59zJs51hHOLjhEp3dd7pdd4j9fM
-	iLHMLqsWUUeaO+Rc6mhvcYDyPLGRjLdA4eGhNlWcN/tfBKLdohtTm3lZhgkxno=
-X-Google-Smtp-Source: AGHT+IHx5Sap8SgnApTXFbqfybLicQYBWKriw3rBnz1ag8JZ5i0NwBJ8RBbeffYVeAvVKPzvXptpArbao695kNWSp1A=
-X-Received: by 2002:a05:6512:3089:b0:591:c473:5bb6 with SMTP id
- 2adb3069b0e04-591c93205f3mr448255e87.0.1760550271312; Wed, 15 Oct 2025
- 10:44:31 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF2824DD0E;
+	Wed, 15 Oct 2025 18:34:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.193.37
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1760553279; cv=fail; b=BIYGm3hAWQVwo6ZpCFvH1FpKhq+se9fOQ4GCT/1y8jAb8Do7nh65UKeBbsv1SFdxKR2U5eQSfG4GH2uGBeKK4gGmTtsXS4Hh47rkxBvglbgyg7npz6HzUfW0q+FAghYgpjDwTe5tkGczJJ+aiGYtfNlSBE8dTIgDmCh5lNikmNI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1760553279; c=relaxed/simple;
+	bh=9bhhfWu2F5qEvHne9sTuoKgOqqepI+j9GPI1scydT7U=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=jUB8oSzKPEksjTU0Ar9pTdu8KLpaArZ8W4q/Z/QBgeY10BG6WitbfbkDj7355nAT1sMXrX7u8vfGXhp8X1X8JowrietMr+eG8DLpEpQHH8zpBjIaPzhbSkNO7TQbWkKYeq9/JrW6B15uFnvHvP5TXGo/Fz48V1+AFZr3kS6uQ6o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Q3kcfuEC; arc=fail smtp.client-ip=52.101.193.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Nb82OJeGQ7bRgU+PqAzvuDJgkeFQt5xZ1LcedfPIAbZYYbM/fxEd8+vUQnApRwvysZwm7yfUcj92apVBMSYDZL7elmaHXsDTPZ/WQMuHuMprc52ovG1FVTEheneadBQPdckO/25BrHG64qWY3q18shMYDcl15OepvODGch8PWpbQ2+oNpbHzZDCMzE1toXl9e4ecq/S1iE6F4oRWMcCZhNYFhtz9/PpEAvFRE/qIAPayxguE+HrFGlD4ttFBwRP0a4icSoOmwznh3ePcnS4nWQa+cWV3oidjgfvvjqp4+uGU8lg3I79KN9DkulkLN4cD7wHPITdRDgAdjMAmmN44eg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pTp84h6XLZsM2Y7BFw47ldtYg/PrRE6MT9LBvxXt0os=;
+ b=I9663cA8HpTKQQ9JLzSzlUhqlQWGMPpgbbwuJw7tzRrlFDtgTG0q0c8fJOfd73GsekgMEecOtqjmdeZyDpfetg7aYPWIN+17QZBIBAxdrFUuEi9cS6hkfbsYTsAWkccsOwXGe7izVOfvFK6QLUm3tJcvKowCZspzijiXdAkfm73LsOKcPszg7faKVqzai0obqU+amhc0Mw6eJJU3UZVAzuRoYs15GEuB/PmcIjhD/0DOm9BrFPP46N9fIddQL+/w1Hok8G+imV6nRgsADxG4FvuQaMgiYbZnPFyaI/YV7Zl2Cb1mC+iMKxkq7H6gvjJX2WPSMskZNWLLQwj2EPE7jQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pTp84h6XLZsM2Y7BFw47ldtYg/PrRE6MT9LBvxXt0os=;
+ b=Q3kcfuECPgEOnbB7TUnLsEHYqowEmdyA7KG3+vyUw+WrFi77inX+wTvMuank2bbk/sHCr7vhrRGN8j9rhQ2RJUsWpB/5Cst3yi8VyM96Ip0I53LRTTt8Wf4nCxAh7fGyioLyQTcde/HpEiUlY05nT2VuVOufZXk27u057MJdbuPhSUQqrzu+JKDAOAnnKiL2KdZ7d4Fg/7goWfIH9M29O0bqxpkGuGkUmnnnf3P0/J57dOlewybVS4u8pwKmbtK6SVptxZuSJATZM7VeTOn6f8nD68vZtu2PB4r213J0dx4wdWxh7mQL5nAY1aKahsIDYSgwoOgh7zwHhe9+OyLITA==
+Received: from CH8PR12MB9741.namprd12.prod.outlook.com (2603:10b6:610:27a::21)
+ by LV8PR12MB9618.namprd12.prod.outlook.com (2603:10b6:408:2a0::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9228.10; Wed, 15 Oct
+ 2025 18:34:34 +0000
+Received: from CH8PR12MB9741.namprd12.prod.outlook.com
+ ([fe80::4fd5:60a3:9cfd:1256]) by CH8PR12MB9741.namprd12.prod.outlook.com
+ ([fe80::4fd5:60a3:9cfd:1256%6]) with mapi id 15.20.9203.009; Wed, 15 Oct 2025
+ 18:34:33 +0000
+From: Sean Hefty <shefty@nvidia.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>, Haakon Bugge <haakon.bugge@oracle.com>
+CC: Jacob Moroni <jmoroni@google.com>, Leon Romanovsky <leon@kernel.org>, Vlad
+ Dumitrescu <vdumitrescu@nvidia.com>, Or Har-Toov <ohartoov@nvidia.com>,
+	Manjunath Patil <manjunath.b.patil@oracle.com>, OFED mailing list
+	<linux-rdma@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH for-next] RDMA/cm: Rate limit destroy CM ID timeout error
+ message
+Thread-Topic: [PATCH for-next] RDMA/cm: Rate limit destroy CM ID timeout error
+ message
+Thread-Index:
+ AQHcI8zKXOnJln5Em0KQJ/NPqMbnKrSV4d4AgAAFLICADfDDgIAcdSMAgAL70wCAAFb6AIAAHIzw
+Date: Wed, 15 Oct 2025 18:34:33 +0000
+Message-ID:
+ <CH8PR12MB97419E98111F553FCC117E36BDE8A@CH8PR12MB9741.namprd12.prod.outlook.com>
+References: <20250912100525.531102-1-haakon.bugge@oracle.com>
+ <20250916141812.GP882933@ziepe.ca>
+ <CAHYDg1Rd=meRaF=AJAXJ+5_hDaJckaZs7DJUtXAY_D2z_a6wsw@mail.gmail.com>
+ <D2E28412-CC9F-497E-BF81-2DB4A8BC1C5E@oracle.com>
+ <ABD64250-0CA0-4F4F-94D3-9AA4497E3518@oracle.com>
+ <07DE3BC6-827E-4311-B68B-695074000CA3@oracle.com>
+ <20251015164928.GJ3938986@ziepe.ca>
+In-Reply-To: <20251015164928.GJ3938986@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CH8PR12MB9741:EE_|LV8PR12MB9618:EE_
+x-ms-office365-filtering-correlation-id: e8afb9a1-cfb6-45d4-1b9a-08de0c197c9c
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|376014|366016|1800799024|38070700021;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?//M8F+U09RhrIPdjyZdhdSTM3qY3Hes4csVKtGrr1HjFQKsd7m8MVDTgXjnw?=
+ =?us-ascii?Q?Q2cQK6Y2snzNfLn2pAVSocnDghQBs9QUONxoxGTK99aLCkCdRlVEUfsNCFd9?=
+ =?us-ascii?Q?8IQEtEfx7etlhVvu23YI2pjWn50XYSFIYCM+c070DCrz7Mbl1edzjgNnnSUV?=
+ =?us-ascii?Q?6lN05kenSkSEaa/V7lDIRYnx1tND1aosye6KtzdJu9le7Z1rhE+LpHEVa76R?=
+ =?us-ascii?Q?p7RPoZs9sqeC5TPj4ZRt1R+bgVUjfai0ghnzgQHFaILyQL0G0Ys7ZVALJJY5?=
+ =?us-ascii?Q?BIA/lzX4Ar5eYqmtpsMyXm5v6o3xR1GpA31JEwfK1Z7VfVD+0pX6Auzd1R+l?=
+ =?us-ascii?Q?7eirVBXn7E6J4ZsNPrecEiB0qZiIj7fuLzWwgFv1cvy+d9i04rYsqytU15ZR?=
+ =?us-ascii?Q?/CJSq6ZW7sqEiNpTcfwc6g4IERi23VXXhy2oCPbxF8h1mKdPw1de7n9MKcFr?=
+ =?us-ascii?Q?RdFatAshTp/agIc1YvTR1n7vSsTP3p6upP7sy6wk5kFCu45hlRCBcISBognH?=
+ =?us-ascii?Q?AreGxRq+vsFISIJ8OaU0wsTHfcW0cddYrAK6NAcLwaMJtjL31gsi6Q2vJacF?=
+ =?us-ascii?Q?MiWwrzbI+YtfObx3YY7gq+X0dx7xVSYFM2p+8e4OSDEm9xbKTijgXtmuLom5?=
+ =?us-ascii?Q?S7pRkrhDetGQwKCZLq9mFlogL8XcUTSfmeHiyIfqeWMxx7V84Ag4Oc4hQ0zM?=
+ =?us-ascii?Q?uo4O6wA8hec08YdjtKAjKiAV2dkbTAQeHgsFBQ3n/IDO+tYoBlAbvND8oczT?=
+ =?us-ascii?Q?YM5yB6SIP6rSVZHPJ4abwlQRpqmVa+2qrS4/41qd2j7y8UuVs8J4jiHN5gUT?=
+ =?us-ascii?Q?yOIDtGWeTqf6L6/5Ug8NJol9gJaR8yBHMGdqx8nkkQ5j5se5aahs2TREDg0m?=
+ =?us-ascii?Q?ps8Sq+H6t4MXztUhWHqkPq9M+GGYUAzoRW2yV+Z6kHBPRzIAz/Vp/w7xdDXQ?=
+ =?us-ascii?Q?jlGxo33Vr3crzwWTjbH02kLDbX8OGIq7ov/EvJK/UtNAoYDDmfwsqe+8mHW9?=
+ =?us-ascii?Q?rsjeblQ2IxLVYXvtH3nBdLG+vogstL5iD4Y0mb/HE0P1Cf8/ZS9r+588TSDH?=
+ =?us-ascii?Q?6fYY4J0s4lr8uyjX10zLQ4le7giW6pbXQoqIqg9ksNLRq2OIaf7Y2oGW3+JS?=
+ =?us-ascii?Q?OGBkrHFMuYk/S8WDgCOwP/867gxz4J2joUr1J5+YDdk6IrR0B3e3+/UfFzBQ?=
+ =?us-ascii?Q?vfiMlO5nDZbTMniSR+fg+1qfJu2RsxRIaFmqtRVtHERJlA7MsATL/n/Sp39T?=
+ =?us-ascii?Q?mLNvCXHRwbnqmcsPRqJmUO+SY4hQop9yoN3xlCyLwZOuY5PQfngEibpz5lfs?=
+ =?us-ascii?Q?JUhRvB8gkHP8qNYOyb1lzQPOa6H5/GAwnwjJVDuuENYRBpMLR+JSRFxqIrDN?=
+ =?us-ascii?Q?v7zi4NWeP4UGsOlYmTdbd5hJ5v7q97T1W8oguwBGX2q01M3IOLqUavR2effn?=
+ =?us-ascii?Q?Rd4aNeMa2L/aSkK5x0lVrXbjecOA57DGqmAJS3lz3JnKtgzs52qD0FuChw0m?=
+ =?us-ascii?Q?ZUS/Mi0OvNPK1ZvkyCjdMCQFPGaPLOltjf4k?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH8PR12MB9741.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?i6nl/yQF9moRvYnQimN1Rzf0WzcPfbFqZK9tHY9xJVVmJW/QAFqMe0EymV+t?=
+ =?us-ascii?Q?Zaj6Iv7QyAClRDyrw5KW1jilIq2VV2CuQF9/OjceaFI65Q1sMwgMWeLTnD7Q?=
+ =?us-ascii?Q?ioEQfBqOrjjY8At+P04K1FzNiEq73qOhHFST/ia4DJ5yD6PEPMXEmVxm3jyD?=
+ =?us-ascii?Q?mlE/8U7jgD1C4o3IoVDcXnEi1SN6yOR+THlulQoP7cogVKARmwm09pBiLz4s?=
+ =?us-ascii?Q?23+fzhwT1Q3tsHClML84MtilRNBW604xaFfggvljz6hv2buKaLkzI8ZspcH8?=
+ =?us-ascii?Q?9a7y8G2hqfOXWl3nNWd/qoIcg61UQlnGf5zabKlhWa894rXW+NhDrD0vNHds?=
+ =?us-ascii?Q?h40gy8Fiql4tdX/JPHN4KlYc6IqQAJEmFJRIGmLTiEpIJri+uM9e9/jIMXrV?=
+ =?us-ascii?Q?lbU1AnprfOHWmGIoZb014ffkKmRP5fFjvLRYuPvelSc+QqJcEWS+Y/YsfgWj?=
+ =?us-ascii?Q?gXkXX8hk4HrngV3EQqoTG5kU2PScsmWzlaB4u13WqeQsWk/AwUzCLD2BDc/4?=
+ =?us-ascii?Q?twRGVqzXwYZWqKEoEJfR+ZCgsXLDFBj+bWWz5Cb8PaRMXAqPcJ195h03rXMr?=
+ =?us-ascii?Q?FWgJVKqGM6f/4G5KxMOVGTElWPdG8iXVcS5sISjUuCAHukBmQBTpRBLBbwo7?=
+ =?us-ascii?Q?BfDuDfVCvrcetxkm+HT4dbYxJmr2DyZX+94+JvYzAVtXPMwHb5VApVftkxTf?=
+ =?us-ascii?Q?Ja8E8SVoN9o/U8V00WVphblZVNQb617HRr82EoIojGKPwgVWOs58RyePZKra?=
+ =?us-ascii?Q?NQKObo12PptBAFeuWGiXadlwrWfmY/7JF8QG91sH+OUMc3QfeCzMB1meaSz/?=
+ =?us-ascii?Q?VUNvqr9HZpsY62j7I2qDRXBWBw7WJ6yKQL5UgpJJyIPtioG9WndYyJjWRKFt?=
+ =?us-ascii?Q?lEKN/+rd7ywbp7L9Lktk6eIzgZ/L64o6Au5h8hfV/f8F/L2zPgu+DbZ/knWD?=
+ =?us-ascii?Q?wRj3/CjsPaihX5ByLExttTvLKHfDi0DVtn+3sLofr9QMxxHcIow1/Mw/Yn1x?=
+ =?us-ascii?Q?isxsI7jV6luU58XFDm5LI/b5k70DlSz3b1KxEtvfU+Fkt1gYLFmRQdjBch0G?=
+ =?us-ascii?Q?hm4blze4piGrL9hrE32hexFyTc6/MuZZpcgUqz6LT54NJ6pNL20fmwqbY4UP?=
+ =?us-ascii?Q?lD30gdOfVy9rrsQvDrJQ0ij41XV5inRh+qoW4uNGIM0BbxUp50AtFBcZQO/Q?=
+ =?us-ascii?Q?3nw1/sWJyLpDZJ5dxRpiGiR4W+ZLA75x143ewQPSfhvcRpOsVra8UdpFeJKu?=
+ =?us-ascii?Q?Ba+NWhxbAyLzoIQUN/8n+sAitCzADMjKCHHgEKivT/qiXD34pgGvd4MNfLBS?=
+ =?us-ascii?Q?JfvgWDwZlY91I07VBpp1M8xAWujnxk1+VyxKFufhGjaLB+w/esWAKf35gR/T?=
+ =?us-ascii?Q?fvl4pwlhTrO7MDFNW8BrFDarueRu4k1+qKmFyL684hbEOIFKLoYVgLBKeaoj?=
+ =?us-ascii?Q?dtph7beiEVG7qCrs76amEyWJoqp/6FURv6N8aSwfZnyhOjPusjmJZSfKKgRM?=
+ =?us-ascii?Q?+IKNtbvFmzLtD0SX74elIVBpZdTH0LcXB8zj8i15liveYr2Qh9Q1SLHdsyMZ?=
+ =?us-ascii?Q?727xDdZzRjuTP+k9rw4=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1760364551.git.asml.silence@gmail.com> <20251013105446.3efcb1b3@kernel.org>
- <CAHS8izOupVhkaZXNDmZo8KzR42M+rxvvmmLW=9r3oPoNOC6pkQ@mail.gmail.com> <20251014184119.3ba2dd70@kernel.org>
-In-Reply-To: <20251014184119.3ba2dd70@kernel.org>
-From: Mina Almasry <almasrymina@google.com>
-Date: Wed, 15 Oct 2025 10:44:19 -0700
-X-Gm-Features: AS18NWBNAtVbc4MmchZmMh3H3Ojj06sazP4EU7tysH0mrHozuhBSQzUN8gwMOFY
-Message-ID: <CAHS8izOnzxbSuW5=aiTAUja7D2ARgtR13qYWr-bXNYSCvm5Bbg@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 00/24][pull request] Queue configs and large
- buffer providers
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Pavel Begunkov <asml.silence@gmail.com>, netdev@vger.kernel.org, 
-	Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net, Eric Dumazet <edumazet@google.com>, 
-	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	Donald Hunter <donald.hunter@gmail.com>, Michael Chan <michael.chan@broadcom.com>, 
-	Pavan Chebbi <pavan.chebbi@broadcom.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>, 
-	Joshua Washington <joshwash@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Jian Shen <shenjian15@huawei.com>, Salil Mehta <salil.mehta@huawei.com>, 
-	Jijie Shao <shaojijie@huawei.com>, Sunil Goutham <sgoutham@marvell.com>, 
-	Geetha sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>, 
-	hariprasad <hkelam@marvell.com>, Bharat Bhushan <bbhushan2@marvell.com>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
-	Leon Romanovsky <leon@kernel.org>, Alexander Duyck <alexanderduyck@fb.com>, kernel-team@meta.com, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Joe Damato <joe@dama.to>, David Wei <dw@davidwei.uk>, 
-	Willem de Bruijn <willemb@google.com>, Breno Leitao <leitao@debian.org>, 
-	Dragos Tatulea <dtatulea@nvidia.com>, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	Jonathan Corbet <corbet@lwn.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH8PR12MB9741.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e8afb9a1-cfb6-45d4-1b9a-08de0c197c9c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2025 18:34:33.7467
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Jjd2fomW83CoyH35/Pw856yc2Mekw8SraJbq1eMPyQrDfrIXOxEsl9wPSOSGDw5ltCTw31p797rOHGbnYx5DTQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9618
 
-On Tue, Oct 14, 2025 at 6:41=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Mon, 13 Oct 2025 21:41:38 -0700 Mina Almasry wrote:
-> > > I'd like to rework these a little bit.
-> > > On reflection I don't like the single size control.
-> > > Please hold off.
-> >
-> > FWIW when I last looked at this I didn't like that the size control
-> > seemed to control the size of the allocations made from the pp, but
-> > not the size actually posted to the NIC.
-> >
-> > I.e. in the scenario where the driver fragments each pp buffer into 2,
-> > and the user asks for 8K rx-buf-len, the size actually posted to the
-> > NIC would have actually been 4K (8K / 2 for 2 fragments).
-> >
-> > Not sure how much of a concern this really is. I thought it would be
-> > great if somehow rx-buf-len controlled the buffer sizes actually
-> > posted to the NIC, because that what ultimately matters, no (it ends
-> > up being the size of the incoming frags)? Or does that not matter for
-> > some reason I'm missing?
->
-> I spent a couple of hours trying to write up my thoughts but I still have=
-n't
-> finished =F0=9F=98=85=EF=B8=8F I'll send the full thing tomorrow.
->
-> You may have looked at hns3 is that right? It bumps the page pool order
-> by 1 so that it can fit two allocations into each page. I'm guessing
-> it's a remnant of "page flipping". The other current user of rx-buf-len
-> (otx2) doesn't do that - it uses simple page_order(rx_buf_len), AFAICT.
-> If that's what you mean - I'd chalk the hns3 behavior to "historical
-> reasons", it can probably be straightened out today to everyone's
-> benefit.
->
-> I wanted to reply already (before I present my "full case" :)) because
-> my thinking started slipping in the opposite direction of being
-> concerned about "buffer sizes actually posted to the NIC".
-> Say the NIC packs packet payloads into buffers like this:
->
->           1          2     3
-> packets:  xxxxxxxxx  yyyy  zzzzzzz
-> buffers:  [xxxx] [xxxx] [x|yyy] [y|zzz] [zzzz]
->
-> Hope the diagram makes sense, each [....] is 4k, headers went elsewhere.
->
-> If the user filled in the page pool with 16k buffers, and driver split
-> it up into 4k chunks. HW packed the payloads into those 4k chunks,
-> and GRO reformed them back into just 2 skb frags. Do we really care
-> about the buffer size on the HW fill ring being 4kB ? Isn't what user
-> cares about that they saw 2 frags not 5 ?
+> > With this hack, running cmtime with 10.000 connections in loopback,
+> > the "cm_destroy_id_wait_timeout: cm_id=3D000000007ce44ace timed out.
+> > state 6 -> 0, refcnt=3D1" messages are indeed produced. Had to kill
+> > cmtime because it was hanging, and then it got defunct with the
+> > following stack:
+>=20
+> Seems like a bug, it should not hang forever if a MAD is lost..
 
-I think what you're saying is what I was trying to say, but you said
-it more eloquently and genetically correct. I'm not familiar with the
-GRO packing you're referring to so I just assumed the 'buffer sizes
-actually posted to the NIC' are the 'buffer sizes we end up seeing in
-the skb frags'.
+The hack skipped calling ib_post_send.  But the result of that is a complet=
+ion is never written to the CQ.  The state machine or reference counting is=
+ likely waiting for the completion, so it knows that HW is done trying to a=
+ccess the buffer.
 
-I guess what I'm trying to say in a different way, is: there are lots
-of buffer sizes in the rx path, AFAICT, at least:
-
-1. The size of the allocated netmems from the pp.
-2. The size of the buffers posted to the NIC (which will be different
-from #1 if the page_pool_fragment_netmem or some other trick like
-hns3).
-3. The size of the frags that end up in the skb (which will be
-different from #2 for GRO/other things I don't fully understand).
-
-...and I'm not sure what rx-buf-len should actually configure. My
-thinking is that it probably should configure #3, since that is what
-the user cares about, I agree with that.
-
-IIRC when I last looked at this a few weeks ago, I think as written
-this patch series makes rx-buf-len actually configure #1.
-
---=20
-Thanks,
-Mina
+- Sean
 
