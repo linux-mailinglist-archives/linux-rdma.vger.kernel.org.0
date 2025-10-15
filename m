@@ -1,165 +1,222 @@
-Return-Path: <linux-rdma+bounces-13871-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13872-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E0EEBDE516
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Oct 2025 13:45:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E4DCBDE7EB
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Oct 2025 14:36:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C49819C473B
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Oct 2025 11:45:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 552E43C6BC3
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Oct 2025 12:36:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 491A2322A29;
-	Wed, 15 Oct 2025 11:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8216B1A23A5;
+	Wed, 15 Oct 2025 12:36:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="i4/7zSlq"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="dEYx8EDP"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.14])
+Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazolkn19012054.outbound.protection.outlook.com [52.103.2.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A7BD322523;
-	Wed, 15 Oct 2025 11:44:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760528698; cv=none; b=tZ0D9h5aThZ/rlBAm4lOWJawb8k5+NbpbZI+lBNzf0guGAhssLtfUMLCOuHjQpS1XqZn3cwT8D4c6djSv54U7NRQLtepZ15RgHaeS18k/NyCAddnAWbEsz+HujLpTGjXsUG/5WtKqsowh8KSqJmni89YxppznXBUHZZC1ANYWbw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760528698; c=relaxed/simple;
-	bh=+UYna7j626X3GstXLWaKHsufcJRW7DHMHxNOWyvJdgQ=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=A/O9Z0TdZ53FIpqiw40rX0Rx7wJVwQYuSOVTTKxbsl9hwtUABv916A0RLqPcXFNha9a3QQBJMgeA53xQcKtqooSuaKkCisPONeQfpdRl4SDofAxDh7LiUE9lK9mJ4ipwAbqe43Z1XJ1hs1z9fblyBqoeqY1xE7b66+RRhNEt0qI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=i4/7zSlq; arc=none smtp.client-ip=212.227.15.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1760528688; x=1761133488; i=markus.elfring@web.de;
-	bh=+UYna7j626X3GstXLWaKHsufcJRW7DHMHxNOWyvJdgQ=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=i4/7zSlq4OMKgthxdwDJQk8LqDvaMqv/yOT+YXE2znmgHHjzSDHLCkHzkxaRVy0W
-	 GROOGZUPXO2UEGWpZqeDCp7XSmjK21G/at5+GL6U5IM+F/AAyE/WGiE+IUW1zrJqV
-	 LcB3ql540JB1gOMD0jXkMSJyFXVHj0icySk+Rzwk+x4C2sdJyw3vRpkxhGFR7OTus
-	 k1z+peex4SBwaxmB4H4H0LRZanjdZQXJAQVKau8HbbIMw67j47qZh9H1nIedobag+
-	 yuHbYjpSATIeAM75LiUMN2Nb6OUCCYIXw+41lM38t1nkV2uB3Iko6xcD5r9JdTg9I
-	 CoRnUoCxgvQV3FP+mA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.29] ([94.31.69.181]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MzTLI-1uMYAy2xf6-00vbzT; Wed, 15
- Oct 2025 13:44:48 +0200
-Message-ID: <848585e2-9fa6-4a6e-b852-e99f37f47a5e@web.de>
-Date: Wed, 15 Oct 2025 13:44:46 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D87FEEDE;
+	Wed, 15 Oct 2025 12:36:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.2.54
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1760531802; cv=fail; b=slyJmuZOQkCzlw9ke1rqOCqSPJ+ZPNUHJcjXcMKY6bJyKXFcmWSkPDIGK8Vn7r3hkH/vSjd4LQ5AO9VezICAmOZqzvKAD65Pz75CD+deRGCjEPEa1GZykx3ZwC3tSa/mEN70qrEfCFgOgkR482SC4P+8l4MIOG8TsLLBRXl+Rgg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1760531802; c=relaxed/simple;
+	bh=8bn+NSw7GKgzYM3HdY6FVdN7noZOV8Qj6ogdRR1wjOI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=acseRciCUBcxh3v0UEmwQ39wyLFv5qCLMuL6maO3W/9d3kKeAKlMgUDqTKvWy8zfmiX+105T/qUOMfU4DiCpu3Uf3kjKYeM20rs6c8GPl/dY9jYGAnQTK367Xxi3twD1LP248+Wf34roI4VDLTTJFwIkdO32OdhxG5uaNfi+uBc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=dEYx8EDP; arc=fail smtp.client-ip=52.103.2.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=S5lucw70MB+kpOpG2VrpoizRCUU00kidRriVb+7VcnN8Tj92/j8/XvnQm2dDEkLAVRPKhqpfbKt2ciclhcq5PKfuvNaXMj6/lgJBGhQ/aZnj7TQWvny/x4He/AmdTObTppztvKL5sMqg89ngrgHvscK8lRxerE1Tk6Kj7b3ul28Vywd74/9uv2QKIxJkJ7E07dlsPcYRySsQMSvPf9RVqPonm84tZMa8KNbDGaWIXQZ/x+BnPxx5O4Qg1XVDefAzFPmrHVeXsYmOZ1uhbC6lDc/+K1hfWufB2c/arKeqsIIUpTLu1L2hVuT1OKFzN5/X3kOwO4asTFZ/IeZdUo8inQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mqUcZH8TW+8lW4Oh8fGjPsP7rbLhUwcD0AWsON4dxSo=;
+ b=CbybDZOGGkuWmcsEYpC9wdoCkKQEvq0GhDlCb5nfoKM+xDEgMzV7VFAd5DNoBz65m8MkoVbECFZmPbrGS8OgLJbhXzkDLbo2jbECR7l2ac7WmL4c67m0c6wLkwArJESnLXUHtM90o2F5j/yEXkEt6r1cqEe+110RFkmnbdLIg6QHahp/bi03XsGcQHg7LrShfia7Xbv+tdejXNrF32rCL7bFJnaNMbq+eB8BUgt6dYnT+RczK0Kpmi14CRV8j6WHQek89PbG/TaQsN8YHD4SmBKsu+3gYQfD0hMXIQwwCFQB5Og7zu4Quy4nuH7JA21VKkH47+MrhGbrCQQu+zD06w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mqUcZH8TW+8lW4Oh8fGjPsP7rbLhUwcD0AWsON4dxSo=;
+ b=dEYx8EDPjIwtLc9MrGGRYMIL7GeaGHKxldo1wPpwLnb0w4URErk947Lwnn6zbv9pD4QCqfY8ebsxbZ47VVrxKAwUYODOZ4xlRQERwJsYYmyDKc0MaqmGvOgoHvSL4Cs/zGt9bM1IxXnfLo2CGFj+r0y6FPKE4QuQiOhUwh0nTuM8s4JQNExFh397ztx5u38wO0jetVuSI40ZHVvdF8ALn4+AVbVTrWrA8FIMfX7uroJ+h/kH3vwcvSmUTa5pDryPMT1amkam+RR7MgNkMIS1yVe94fEsp04W0CvkBhuJTS2Tr25REOc1fNb/e2Ue1SDu9NxEpJF3Wu0nH2Yzaam1jg==
+Received: from MN6PR16MB5450.namprd16.prod.outlook.com (2603:10b6:208:476::18)
+ by LV8PR16MB6032.namprd16.prod.outlook.com (2603:10b6:408:1ec::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9203.13; Wed, 15 Oct
+ 2025 12:36:37 +0000
+Received: from MN6PR16MB5450.namprd16.prod.outlook.com
+ ([fe80::3dfc:2c47:c615:2d68]) by MN6PR16MB5450.namprd16.prod.outlook.com
+ ([fe80::3dfc:2c47:c615:2d68%4]) with mapi id 15.20.9203.009; Wed, 15 Oct 2025
+ 12:36:37 +0000
+From: Mingrui Cui <mingruic@outlook.com>
+To: jacob.e.keller@intel.com
+Cc: andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	dtatulea@nvidia.com,
+	edumazet@google.com,
+	kuba@kernel.org,
+	leon@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	mbloch@nvidia.com,
+	mingruic@outlook.com,
+	netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	saeedm@nvidia.com,
+	tariqt@nvidia.com
+Subject: Re: [PATCH net v2] net/mlx5e: Make DEFAULT_FRAG_SIZE relative to page size
+Date: Wed, 15 Oct 2025 20:32:55 +0800
+Message-ID:
+ <MN6PR16MB545089E086BF99087773B76EB7E8A@MN6PR16MB5450.namprd16.prod.outlook.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <324e376c-8f66-4ae4-af2d-eea7e5a8e498@intel.com>
+References: <324e376c-8f66-4ae4-af2d-eea7e5a8e498@intel.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI2P153CA0012.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:140::15) To MN6PR16MB5450.namprd16.prod.outlook.com
+ (2603:10b6:208:476::18)
+X-Microsoft-Original-Message-ID: <20251015123255.15156-1-mingruic@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Cosmin Ratiu <cratiu@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>,
- Tariq Toukan <tariqt@nvidia.com>, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Gal Pressman <gal@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
- Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
- Moshe Shemesh <moshe@nvidia.com>, Paolo Abeni <pabeni@redhat.com>,
- Saeed Mahameed <saeedm@nvidia.com>
-References: <1760511923-890650-1-git-send-email-tariqt@nvidia.com>
-Subject: Re: [PATCH net] net/mlx5e: psp, avoid 'accel' NULL pointer
- dereference
-Content-Language: en-GB, de-DE
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <1760511923-890650-1-git-send-email-tariqt@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:897SkDtkkGduIbV2Ns1XogGEesiu2+wH2lvQSyNJVYB+LdNc0oY
- krSAQfZWLJSH05l8ZlMIU5a7S+6BFqKpXYO/63mCtO/ITJixR0XGcqykiuSOdRtFdjpiQa+
- 67PP33gKIN+5gtuXQs1Wt+kYxI6+Hi9iQOs1lQAX9h7v0rJ8YU4hTJqtlkV27k2AmU7ru3J
- GcCaAnEfrqKBhf7H9I6Uw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:FfO4GWzkodg=;PU5jJUkAmxv2LbwtVGrYU3QcXRJ
- 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
- +3gsw==
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN6PR16MB5450:EE_|LV8PR16MB6032:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4a72a91a-cfbc-4b0a-e589-08de0be77b1e
+X-MS-Exchange-SLBlob-MailProps:
+	YfhX3sd/0TVWrg+fxRScxfg9v9HXnUFl1pVDTAvjfLspHx/j4tgns8ZHePwzibS5NJrvI1uRSbSQW5nQ3qTP4FbeAu5i1uIb1EPcEDVNbowHJAW9u3IMD66W4g3no0x3B30+TY3d/bvmpwm1L+hmPkTNyijp7kTyfwxEiDA4Aaw/datoOl4943qV2SeTcub6Kwcp/PRpwZeCONTaNfsyy6XHjm08GRUwKZKHez3fYu4wGrHTeieJam9z0rqu2I2RIEjxKn4n5+85OmwpN01uLAACecU8yB38lzpJXrrHyyHlmoAVlPSXa3GlLCodF6laPaFkB+oMH8tqLTm+Zo140sJ4zpcFwB5LLar3kdz7zYPzb0/gqyaokFma214HuqME9ZwXk8HqexJs0bGXfsW31+JBz1BKHO8FA1sXqnXMQQD6hOoANMLN3UxlZiWkz3R444iPmjpTRf1PWrW3/EejHQsvo8apDZgssR3HHX6CNyPbM7svtW0ci0nt9TE2rPdC4c3dD4WItLaAq3d5r63HKw555ESLg49OZ2hnh3kqRV4XVEx/wtto8pzX/+QzV9CqdOf3j+kgyErt+G10nFKSqvuQYO7sdIuJg0Den/yyR2X1TG5WSh+7i/ZERnq3UytBLQFJ24N94iRfKLFnttthiXtMTIBH7LqKmQkFDhm0kGfbf+wCQl9uvz3+uLCShO84gx8MA4NbS4d0ca4q1jsExxheYbPlb6dds8QsXP5jJb8mSJtJPQRbtc0OmqhQUZWzCljzk5wQZriUFMIWfScrPbM/mUxt3qX+/4fH+2Y0LFo=
+X-Microsoft-Antispam:
+	BCL:0;ARA:14566002|8060799015|19110799012|15080799012|5072599009|23021999003|461199028|440099028|3412199025|40105399003|1710799026;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?5XWyG15xZqDJlSJSo9oN8VkfesL+RhwZf5MzCuEp2ZZaEVPy2x5aWQQBBAsv?=
+ =?us-ascii?Q?9PY2Sb4mD0sIVIccJAqPQHyBKHL5mhM2z8a+1BxrepNIss1z8TUuFN1SioJa?=
+ =?us-ascii?Q?xoYk8OMX3Y8+jTb74J7EILG17CKD6QtuCbdl1tC1X2CQANTIDIR1NQD5/DhZ?=
+ =?us-ascii?Q?9t9U0Nj/Ev+ui/LUGksxdv+zB3uvo5dt3NprdvpgcjyMJiTjNTbEWPFyzqE9?=
+ =?us-ascii?Q?1BJnRDdVXRwxkOEA2Iww0meRbHr+wxhzHVjWgMLn+ZUvO0QsIFWr/6H8q2oN?=
+ =?us-ascii?Q?l1eXg0B1BPO/BcwGfOKfRn17C8bJA4P9sEgmyRFAwtJKSvWEcgdGM/vBHXB6?=
+ =?us-ascii?Q?6T6+GMuXAodRGS3Psg+uzAvK0rSvmw/yOODpb++iu/xmL3KUijj+FxcdkDIz?=
+ =?us-ascii?Q?dhGIJBZEM5me6+0d90oHyO1bIIGlMBlAsUfYaRqZ8nbo+HuEFmzwFZFAsqyx?=
+ =?us-ascii?Q?7GSUi0wfFfE8v8jauA73dwswnw7WRiYh78XPW9SmVFJhvtcbBuYD9N7ijmkc?=
+ =?us-ascii?Q?GGdtU219kq0ISs3KwKoGnM9ix9/vZnj2rK67rrzsr4Nrs2MZ+SDlNmTgPbTK?=
+ =?us-ascii?Q?D4pRFFx/zhPfSp9QdROsk74No0URSGm29R6AVX5dn5Boa6Tilqj+vVuG3lGf?=
+ =?us-ascii?Q?MBhefmojlilx3QxLgaNwH1yrrGlxehDWmrBbmzySvWDz7ycjzX2wmpGGudij?=
+ =?us-ascii?Q?Y1t5ANeecv0LlaGQQDv+7iozntG1wIS9LDgxv9b9iDqPVH6eahGndZWV8cM2?=
+ =?us-ascii?Q?/Zn3NGAq9ROond4In7C2DYrO/GxQZffB196jDZL5NqhJNlkmcGOCBI23Efx/?=
+ =?us-ascii?Q?UW4gnrloTJXAyKCf8n0kZGSvu14ahLY0yj+kcjpYELGM+mnmZS1A3z1uSYoj?=
+ =?us-ascii?Q?6SDrXXlxx7FBXL0bo5xWD8fNJO+bbPjZLL9Ka/U53TAGB3Zh9vmiIZG/Bo4p?=
+ =?us-ascii?Q?V5dYS4Z3EzHOypUh7Eo6624QxfUT0DNXtYHMgr3Qu2QlDp1gT0I2V/a1Go6U?=
+ =?us-ascii?Q?91Bouj1ZtBh1mQjPOubnxOHU03k612HCVJGRrxQd7ByjrkvF2ho1F1ae+6NG?=
+ =?us-ascii?Q?MQ1aaflADnjSrlZNjeme3A5oOoecZceHy3bTMKJRQTBYyNa6an/ibFwPpJn3?=
+ =?us-ascii?Q?ubKNLX+aBPf3d6Avbel5dpkD20Zsta10d86NG+EUszE7zsno2+KwpXQ=3D?=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?822cVHbNz1eNbd7XYngXa3E4d3Ff47MN9Hm4QaqVEj66BV98T7TewdfJpWJq?=
+ =?us-ascii?Q?D2FhYFQH4v1KbZM65e17XjRxuCAFBoiGrigEm7QqzT0bLR9/aVC/TK+93Stl?=
+ =?us-ascii?Q?I6vS1ARwoiBlHb+GyNCtbph0/vpLMRtAUPgREg5czqY0DyDDnw4sPsAJ9SqP?=
+ =?us-ascii?Q?NxunuB/K0zX3dvyMTHq5eKTNh+oZwhbtm/a6/R3RUUxwEZ7dAcP+e6/HSfHX?=
+ =?us-ascii?Q?HEgeVjjrozWAvISXBH5fSdrbNLq4uTE2hiyuOOPgn7THkPRe4uz86VWfJfvs?=
+ =?us-ascii?Q?9CmlhYaUZLNRHlhr2ulA7g+mwPHfzFhA/MYo1jvqCY3jhv3nAQmbWtszQpQq?=
+ =?us-ascii?Q?uMxrIWTKIBsT/bmsmjpTz//GlkU+ANt5090en1zfIE3STgo/CGg8NyXHP4+j?=
+ =?us-ascii?Q?jbD2rFqcmmRusPD24PtRX7F79x1kp0xcp0DGR32SVnBr9ng1jqJPrMDw3GVj?=
+ =?us-ascii?Q?UlLcqhxxrIljeh9ScOgb1zcHeghVF8As2Z9WHnB1XGOs1wXu0jOSRCEr3IRw?=
+ =?us-ascii?Q?efjV/fyTpdCxHacI0APq6rs3ChTwKGXTxHdqmBjoGxVQfXEDwWnRtX74dCiV?=
+ =?us-ascii?Q?UqqiH5e6Y1QotfWpnfgAMD3FNGzln1Be1ruZiyhiBSBrq2EdAqbQ+0swSJ9N?=
+ =?us-ascii?Q?p3P/RdhXB5II77ct5yrEaiMQO7jy3W7xJkS7QdV6BlNmizAE4ldMuTd/WjgC?=
+ =?us-ascii?Q?3sAV3Be2qSo5HVXu5A0cXXwMNwpLg0r9Svr9nv8QJ/otiKnQ5QgNxpy3sPc3?=
+ =?us-ascii?Q?sWdMSpfq4GZfql/kw1SbWwn5WYDJR+LqszTfQQtR0LQMwLj0Oe1yn0ftBo4f?=
+ =?us-ascii?Q?27G6zglZEeh/vK3Sk341aoVzSaTUJIZewR2VGkhiMvQGvYQbR1e8YHd3jYtl?=
+ =?us-ascii?Q?QM+wi5tPh7RxjiSdtgJjjL/IAlSQPcrmFFnkiRq3DZUd+PKd13yDt269mMun?=
+ =?us-ascii?Q?nZCx9NhoRWpWOg3pcEtIWGDcFAeP6kLoV1RhTfWiPGRKvAuydcP874bDsQ0q?=
+ =?us-ascii?Q?QRq5TcaVkRTFyU9f1EHcTQkD8qHp7zgaJAcITok0ryUFo6l6xBfgqmqH09uw?=
+ =?us-ascii?Q?S4iJSUC/Wjm+7cSfg/3LR9uv0A7V1eJ4xRvAbMCwehltqu18cvwnbGjoeaE9?=
+ =?us-ascii?Q?n0xAXzUK8qNrf7F47/Lz3j95JZuki2I+c745ge2+hsgjNGWbkz5ec6PxjwmV?=
+ =?us-ascii?Q?dNJ52gWjBczP87A8kjkczKTkKsagqEOr92th2cMdMT+1m6vlM8mMu3Yu511e?=
+ =?us-ascii?Q?IQKYeScpSH0cFRV0vvwl+qDaSbfYuBcmNB9xICNduVHmHlBgJ3es6t0KwK4P?=
+ =?us-ascii?Q?AtcptZdEXDspyaQf/BUhlhXh1GlI2s1kaQTjRr83zFRFDw=3D=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a72a91a-cfbc-4b0a-e589-08de0be77b1e
+X-MS-Exchange-CrossTenant-AuthSource: MN6PR16MB5450.namprd16.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2025 12:36:36.9395
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR16MB6032
 
-=E2=80=A6
-> guaranteeing that 'accel' is never NULL. Also remove an unnecessary
-> check from mlx5e_tx_wqe_inline_mode().
+That's all the effects of changing DEFAULT_FRAG_SIZE. DEFAULT_FRAG_SIZE is only
+used as the initial value for frag_size_max. It is primarily used to calculate
+frag_size and frag_stride in arr of mlx5e_rq_frags_info, representing the actual
+data size and the size used for page allocation, respectively. In
+mlx5e_init_frags_partition(), an mlx5e_wqe_frag_info is allocated for each
+fragment according to its frag_stride, which determines the layout of fragments
+on a page.
 
-See also once more:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
-cumentation/process/submitting-patches.rst?h=3Dv6.17#n81
+> >  static int mlx5e_build_rq_frags_info(struct mlx5_core_dev *mdev,
+> >  				     struct mlx5e_params *params,
+> > @@ -756,18 +756,13 @@ static int mlx5e_build_rq_frags_info(struct mlx5_=
+> core_dev *mdev,
+> >  		/* No WQE can start in the middle of a page. */
+> >  		info->wqe_index_mask =3D 0;
+> >  	} else {
+> > -		/* PAGE_SIZEs starting from 8192 don't use 2K-sized fragments,
+> > -		 * because there would be more than MLX5E_MAX_RX_FRAGS of them.
+> > -		 */
+> > -		WARN_ON(PAGE_SIZE !=3D 2 * DEFAULT_FRAG_SIZE);
+> > -
+> 
+> So previously we would warn, but now we just fix the DEFAULT_FRAG_SIZE
+> so this warning is redundant.. Ok.
+> 
+> >  		/* Odd number of fragments allows to pack the last fragment of
+> >  		 * the previous WQE and the first fragment of the next WQE into
+> >  		 * the same page.
+> > -		 * As long as DEFAULT_FRAG_SIZE is 2048, and MLX5E_MAX_RX_FRAGS
+> > -		 * is 4, the last fragment can be bigger than the rest only if
+> > -		 * it's the fourth one, so WQEs consisting of 3 fragments will
+> > -		 * always share a page.
+> > +		 * As long as DEFAULT_FRAG_SIZE is (PAGE_SIZE / 2), and
+> > +		 * MLX5E_MAX_RX_FRAGS is 4, the last fragment can be bigger than
+> > +		 * the rest only if it's the fourth one, so WQEs consisting of 3
+> > +		 * fragments will always share a page.
+> >  		 * When a page is shared, WQE bulk size is 2, otherwise just 1.
+> >  		 */
+> >  		info->wqe_index_mask =3D info->num_frags % 2;
+> 
+> Would it be possible to fix the other logic so that it works for a
+> DEFAULT_FRAG_SIZE of 2k on 8K pages? I guess if there's no negative to
+> increasing the frag size then this fix makes sense since it is simple.
 
-Regards,
-Markus
+To maintain 2K DEFAULT_FRAG_SIZE on 8K pages, one of two alternatives would be
+necessary: either find a method to calculate the occurrence period of
+page-aligned WQEs for the current MTU to replace wqe_index_mask, or use a more
+complex logic to manage fragment allocation and release on shared pages to avoid
+conflicts. This would make the page allocation logic for 8K pages significantly
+different from the 4K page case. Therefore, I believe directly modifying
+DEFAULT_FRAG_SIZE is a cleaner solution.
+
+Please note that frag_size_max is not fixed at 2048. If the current MTU exceeds
+the maximum size that 2K fragments can store, frag_size_max will be set to
+PAGE_SIZE. Therefore, changing DEFAULT_FRAG_SIZE to PAGE_SIZE/2 should
+theoretically be safe. The only downside is a potential for slightly more wasted
+space when filling a page.
+
+> I guess the noted fixed commit limits to 4 fragments, but it make some
+> assumptions that were wrong for 8K pages?
+
+That's right. Specifically, on 4KB pages, once a small fragment and a 2K
+fragment are placed, there is no room for another 2K fragment. This results in
+the predictable page-sharing pattern for 3-fragment WQEs that breaks on larger
+page sizes.
 
