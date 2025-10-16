@@ -1,214 +1,191 @@
-Return-Path: <linux-rdma+bounces-13906-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13907-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2146ABE5419
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Oct 2025 21:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B1A32BE5499
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Oct 2025 21:56:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D58CA584294
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Oct 2025 19:40:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 651003AB358
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Oct 2025 19:56:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEED32DC763;
-	Thu, 16 Oct 2025 19:39:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E3C12DC795;
+	Thu, 16 Oct 2025 19:56:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Xa4cbksi"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ILFHLKrl"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from SN4PR0501CU005.outbound.protection.outlook.com (mail-southcentralusazon11011056.outbound.protection.outlook.com [40.93.194.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5818714F112;
-	Thu, 16 Oct 2025 19:39:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760643597; cv=none; b=cHDbckQjgiDrxr1MxcfmwPQe9YLH4mfZUQZY1n2bXyJ4hZM6HmC5DKeb8Tq0DhByisYDYkcP+TyijXDCppH/h13qi+QHFsHsOBCECA84z5oPOQUyaGeL1oNE6rX+lccrVJQI26JKS79ysvwsPXJTQhdw7G2YKY8jz6fzIsDSLoQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760643597; c=relaxed/simple;
-	bh=CC/AgS6gk9HMNPlrpGG6X9jAb39xkIRmyJwwtgPVL0Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AxDzCaOauYRH9dma5veNSu6g9IiKN9PP1HB7U7wbaNp6LKxZ3a+3JLjDJO2/jK3LmFmeZpB951ZQtWkoJQQMdCQ13Kl3D0FiKMrBOnJ+yViOfhZqTKdClvqA69FgUQ49freBnNUNRst6xTb8sS3QhHVEPJP3zu2sqxRa4LdOyCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Xa4cbksi; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1760643596; x=1792179596;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=CC/AgS6gk9HMNPlrpGG6X9jAb39xkIRmyJwwtgPVL0Q=;
-  b=Xa4cbksieYVCNshC28sOwNRMFWq7gsWVvZfryWEg/tTw5Ox1gIuY2xnN
-   NqXwBt/rXJvwsZynFWQdNrr8B2a0iAzVnncrwA5wUhmhaC1PoUo/5Lnho
-   T/Bkju0D3f5fO+E8ixDm8KwaQEJFAzWQtRga8eGTqSf75i7XOFiXbrPCj
-   PYtWdqWbWuCMRYQxxwJpMN2V+rxa7he/DWQ/T7AFV+khAzx1+CN7CrT0H
-   cvPVz6KXgAffQCntpxeiHsl5omV94DtTnUttZFxiE7YRc/vkaL0kj84+e
-   eAkt8PudTA/BqLilbRrbPmoqflkOLV08XgqRGAkRlVQgngEpV9pc2LP0G
-   g==;
-X-CSE-ConnectionGUID: G4ztYf/qQ2++eiTSUHD1mg==
-X-CSE-MsgGUID: 0breztugSJaK9jQc4cTaQw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11584"; a="73966931"
-X-IronPort-AV: E=Sophos;i="6.19,234,1754982000"; 
-   d="scan'208";a="73966931"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2025 12:39:55 -0700
-X-CSE-ConnectionGUID: NiWqnOR8QWa3OZf6Nqok/A==
-X-CSE-MsgGUID: ceApWpnpTTWBjGlb+XGk2g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,234,1754982000"; 
-   d="scan'208";a="182224908"
-Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
-  by fmviesa007.fm.intel.com with ESMTP; 16 Oct 2025 12:39:50 -0700
-Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1v9TpE-0005Br-2h;
-	Thu, 16 Oct 2025 19:39:48 +0000
-Date: Fri, 17 Oct 2025 03:39:24 +0800
-From: kernel test robot <lkp@intel.com>
-To: "D. Wythe" <alibuda@linux.alibaba.com>, mjambigi@linux.ibm.com,
-	wenjia@linux.ibm.com, wintera@linux.ibm.com,
-	dust.li@linux.alibaba.com, tonylu@linux.alibaba.com,
-	guwen@linux.alibaba.com
-Cc: oe-kbuild-all@lists.linux.dev, kuba@kernel.org, davem@davemloft.net,
-	netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-rdma@vger.kernel.org, pabeni@redhat.com, edumazet@google.com,
-	sidraya@linux.ibm.com, jaka@linux.ibm.com
-Subject: Re: [PATCH net-next] net/smc: add full IPv6 support for SMC
-Message-ID: <202510170341.RsDKVdRg-lkp@intel.com>
-References: <20251016054541.692-1-alibuda@linux.alibaba.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F9D52D9ECA;
+	Thu, 16 Oct 2025 19:56:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.194.56
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1760644598; cv=fail; b=Xfk/7vehr/E3oXROPPlOngq2n/QoTVXrE2egKcEWZgRcqp08xMCrIfSu9EQ5LPMpSzSDYzJvdVArhrGhooBYN+ztNuv+usKTae8PX8f3c+qKZH15YGmgdHn4g/bX96T7KeDMKeDQyxlF9AduN/OjUDJmHXJ6Y27TW+B1U1rj3RQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1760644598; c=relaxed/simple;
+	bh=BYm55Ra5kDvEnQoorZ9vas9/DC93g7/FqnfuPF/JDZg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=leYWzfri2GD0Mxotz/vWhekxSy9QDq2VzkD7F49BINQDyZY+8vI+q2s16zFN9aC9xqNJTN8dxnq0ABMpWTsSQwqhJYpUl7xc2sqyYPdaWWmIABMYW6EhgG/c6WjtshxRfU0RiOSGwVRQJnIgOQYlqy3nlHf8t2/AyiKhiRcZHyw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ILFHLKrl; arc=fail smtp.client-ip=40.93.194.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=hKgvxWdI5CFWLtSVajiej9XqmGZMVKYXlrNbTh1TPihuXQIYPtkNGqBQrawYc3E8rZJKIyNuUQgHZlPfwUEtn7eAuTBPdEDEXRLNv5/iLsko/IkToxwrlPgm+b7OmQRs7bhPc4F2esWXudLCmGs4+NHVQAF/3yyej1lMg/aJ+gO8FhnINV4A/4NOY+SImC110K727NsHQDlgNr/jDdZvRSI8fFMlknRRjP3T2tcKOFdng9Ag0n++rb0+WWbZArHvOsM3532RIRHECWMBtWIQhe8/mmPrfrBhcSPM3w/M9yrA5iPQR3Pz4SJC6HNCaadZiFaRAocXatHC/nR2CSpSJA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qAnl+O9VatNgsGISK+XsQy0dPcj1GXlFNAVbcr3kGvg=;
+ b=HLlWmjp9Pi2pPXoxYBU/BQOg+m+Jjcc0gymfIyB7i9/tCb2RkiFO+Es0OdBi45Osrmjg1Y/8P3povQXlOqICYJrOskwDrJeqaJBCRFxheLHrrRLzOzfJ+gElEUB4ey/9pY+wiBCrlHsBjSrbq7tKaSmDvCIKFmzhxJ39J6qSImXfLk+ofuVQVTbEE4hnDnG9vjc7UkeOW02CooVh9Ib4TO3kzwxzK+Qn+WiF9lHSZRCJWQ6QEZUieB3/PnUxR6TUCfuT/xtS4D2n412zG0zDwBKne+5zIRDJfX8U7o1fCU7qnDc7lnHtCaaWGGVQzJoko1V9E993HOBiflSLfF7NCw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qAnl+O9VatNgsGISK+XsQy0dPcj1GXlFNAVbcr3kGvg=;
+ b=ILFHLKrligVtsgDJvFECYIXJ/fxJwTfDCXYmqvo3EHlj6eDXXURam/HlSUZidiSDlj23W603uDJvgfmymeukIwDVMLDmCxZHv2TnmQtJi2khae1dMYSK4FX0SwZcbx9GNAyTh0h0g79fLdxvgbZIiWTGRcs2ctVL61MN+IA/cehLJe2HQTMiOAYO3lSRKLC4aLHU6ZND4u26KGlrFK+cWWC5DBB0p6UBKHBWvA4UEDv2lWweGnRKgoWCGfObiwJdCqOn/ZgsX626wO9R6EXrllJ0hYXzJ42smCvtgyCpsWg/J5UOHZvaqV8Q94AqVfm5w0ga+snHkKsZH98v8aHMrA==
+Received: from SJ0PR13CA0185.namprd13.prod.outlook.com (2603:10b6:a03:2c3::10)
+ by DS0PR12MB8573.namprd12.prod.outlook.com (2603:10b6:8:162::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9228.10; Thu, 16 Oct
+ 2025 19:56:34 +0000
+Received: from SJ5PEPF000001E9.namprd05.prod.outlook.com
+ (2603:10b6:a03:2c3:cafe::1d) by SJ0PR13CA0185.outlook.office365.com
+ (2603:10b6:a03:2c3::10) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9253.5 via Frontend Transport; Thu,
+ 16 Oct 2025 19:56:34 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ SJ5PEPF000001E9.mail.protection.outlook.com (10.167.242.197) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9228.7 via Frontend Transport; Thu, 16 Oct 2025 19:56:34 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.34; Thu, 16 Oct
+ 2025 12:56:14 -0700
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 16 Oct
+ 2025 12:56:13 -0700
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.10)
+ with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Thu, 16
+ Oct 2025 12:56:07 -0700
+From: Tariq Toukan <tariqt@nvidia.com>
+To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>
+CC: Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
+	"Mark Bloch" <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>, "Alexei
+ Starovoitov" <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+	"Jesper Dangaard Brouer" <hawk@kernel.org>, John Fastabend
+	<john.fastabend@gmail.com>, <netdev@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<bpf@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Moshe Shemesh
+	<moshe@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, Amery Hung
+	<ameryhung@gmail.com>, <martin.lau@kernel.org>, <noren@nvidia.com>,
+	<cpaasch@openai.com>, <kernel-team@meta.com>
+Subject: [PATCH net V3 0/2] Fix generating skb from non-linear xdp_buff for mlx5
+Date: Thu, 16 Oct 2025 22:55:38 +0300
+Message-ID: <1760644540-899148-1-git-send-email-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.8.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251016054541.692-1-alibuda@linux.alibaba.com>
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ5PEPF000001E9:EE_|DS0PR12MB8573:EE_
+X-MS-Office365-Filtering-Correlation-Id: e57a7f62-74cc-44e5-acd2-08de0cee1bdb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|36860700013|376014|7416014|1800799024|82310400026;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?MCx305qZQJyt/yVjpgXyqdpK6KFOzE20pkf47VB/eLWzKe6w7++zubMZeyAr?=
+ =?us-ascii?Q?EnACr/xe+R2qYZ6FelY0RT/RVaWkwO70QxOTN8nE0roghqed1Ov64eCmaw0u?=
+ =?us-ascii?Q?McXBqmV4FlwiZqJgvHZVCTNti7SeROEcnERCdX8Q12N7RJpbF0oAArNflFLN?=
+ =?us-ascii?Q?fFF/BzBxJ01YR6hPE7TihSPUEEhuB5N53OCNqfb5dkjqPZgBDIX1GnEdJqX4?=
+ =?us-ascii?Q?/mn5kgH/mjYBnnkQhgnl6yLb6bHnrQHNH3AKBislzK9rdrGsa2xZcQtmawJ5?=
+ =?us-ascii?Q?0v2BY7Lgiu8dobRrRblTwUQiBCk+8fvr582ddlCkHOeEKrA+x0OwTBs4tyi/?=
+ =?us-ascii?Q?LM/X1QlF0G388FULT+5HoFS3o5TIxszRIt7c131Gi0Z4a9Bp2cemTtlM/Yo4?=
+ =?us-ascii?Q?egrfcSfdsy7I0pKvVzoaoEcU7E92ULVW/JdFemxLxbDGb3W/FeFvtdHVqa5P?=
+ =?us-ascii?Q?VzYtSi2ZDAhM1LgOTCAvTzfMcgj/YVXaaJ20HsmXMi9dbeAzz94KziQtVmvL?=
+ =?us-ascii?Q?5OkAHkaHWm1MztRty+L6YiMX6zAK75lsXfPZ58DrhRqkVX2LnCH+Rc95ZymJ?=
+ =?us-ascii?Q?Ze1naRG05/+DkI5aAniKzna5uSR2dPq+TpD36fkwRfQjGje5PSZwJd94T0Iu?=
+ =?us-ascii?Q?uw75kvYf9v6QbFaF6m15rHXn68ODh/oT6PFn3NZ7E1H+5vxAB532obGwHtX1?=
+ =?us-ascii?Q?WkrP9Jyx64AH//y6f84fpu8mfRlpYNxVDeBIGZWVwea0WBEkOA2uuNaDj5xF?=
+ =?us-ascii?Q?V9u8f82utiAXvGOuUJhgPM6izSXGxeNkBwWX2y8H/OWaFY40q6lQMB2ufxMq?=
+ =?us-ascii?Q?Y9rIUddUdW7Mpw9Ns0EyCJrAFqfx6QsNbxQJB4QKw1jFZ8Ra4cL8/mhiPUVt?=
+ =?us-ascii?Q?hJYBcgphBOir1cs2oe2J2jUStG2PHbeTiLJW6xHXokeMyu8gStaaZRdPM2Hv?=
+ =?us-ascii?Q?UINUwkm4iuE6m/LtL6W9Usi7gBikbhGVU0MIUP4gi5Mrg81XCnqiOTiGZwO6?=
+ =?us-ascii?Q?aJ9tQOJhX4KlHqDAPOaTbLAGvwZ3+blhPOoiizCQqQRIX2FcfcUnfi+61OMu?=
+ =?us-ascii?Q?ENBu4hpysTakK60PgaVxkS7itOBb3ixFSyRRw6t3csUZR1VbDNyIRXBTcURZ?=
+ =?us-ascii?Q?eMPGJPMyQzpQvv+CBPUU5yJITreRJCOYL0KZHSiJylQJv7uB0Mm/qP2vl+wM?=
+ =?us-ascii?Q?FsnRpVftAwmzIJm9FVoEQ1BgKRPqfsqCadv8To4lHYonXabqSLklWZLJ4WsC?=
+ =?us-ascii?Q?yxmoBNNZegd+1xu7ERJqMJi5YXDPJO9yLo8DlLSNF3vBJkxTu197+ufwKUz3?=
+ =?us-ascii?Q?qw8eGyplHV+3iEAz/+vbST1KwRBbWkErts0B9WhgNQzB7nd7iybGlAzsrQ7A?=
+ =?us-ascii?Q?FiE6mtkGcXdNPYPSUKUgkH3UhTHMAqbwSElxVceH5nQVgzNhMhxAUVPFZPVM?=
+ =?us-ascii?Q?Lb8C/lSVJXwFiFLcpEhh9mRpNnfc6f7NIAptpp34Fn6tQ0TBGt9QQpPUHDSO?=
+ =?us-ascii?Q?Oyi9LNRwjb/5R0icyXpjsf2e+Yf1BouOFYLpRD+tpWV0i57ntmVUeWEm4ZqN?=
+ =?us-ascii?Q?CgX3RGyIQ6n0cwdFDloHqOBj1JeWF0XN2XHVgDUf?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(376014)(7416014)(1800799024)(82310400026);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2025 19:56:34.1047
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e57a7f62-74cc-44e5-acd2-08de0cee1bdb
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ5PEPF000001E9.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8573
 
-Hi Wythe,
+v3
+ - checkpatch fixes
 
-kernel test robot noticed the following build errors:
+v2
+ - Simplify truesize calculation (Tariq)
+ - Narrow the scope of local variables (Tariq)
+ - Make truesize adjustment conditional (Tariq)
 
-[auto build test ERROR on net-next/main]
+Link: https://lore.kernel.org/all/20250915225857.3024997-1-ameryhung@gmail.com/
 
-url:    https://github.com/intel-lab-lkp/linux/commits/D-Wythe/net-smc-add-full-IPv6-support-for-SMC/20251016-134735
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20251016054541.692-1-alibuda%40linux.alibaba.com
-patch subject: [PATCH net-next] net/smc: add full IPv6 support for SMC
-config: s390-randconfig-002-20251017 (https://download.01.org/0day-ci/archive/20251017/202510170341.RsDKVdRg-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 8.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251017/202510170341.RsDKVdRg-lkp@intel.com/reproduce)
+v1
+ - Separate the set from [0] (Dragos)
+ - Split legacy RQ and striding RQ fixes (Dragos)
+ - Drop conditional truesize and end frag ptr update (Dragos)
+ - Fix truesize calculation in striding RQ (Dragos)
+ - Fix the always zero headlen passed to __pskb_pull_tail() that
+   causes kernel panic (Nimrod)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202510170341.RsDKVdRg-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from net/smc/smc_wr.h:20,
-                    from net/smc/smc_llc.h:16,
-                    from net/smc/af_smc.c:47:
-   net/smc/af_smc.c: In function 'smc_find_proposal_devices':
->> include/net/sock.h:389:37: error: 'struct sock_common' has no member named 'skc_v6_rcv_saddr'; did you mean 'skc_rcv_saddr'?
-    #define sk_v6_rcv_saddr __sk_common.skc_v6_rcv_saddr
-                                        ^~~~~~~~~~~~~~~~
-   net/smc/smc_core.h:639:30: note: in definition of macro 'smc_ipaddr_from'
-       __ipaddr->addr_v6 = __sk->_v6_member; \
-                                 ^~~~~~~~~~
-   net/smc/af_smc.c:1136:70: note: in expansion of macro 'sk_v6_rcv_saddr'
-     smc_ipaddr_from(&ini->smcrv2.saddr, smc->clcsock->sk, sk_rcv_saddr, sk_v6_rcv_saddr);
-                                                                         ^~~~~~~~~~~~~~~
-   In file included from net/smc/af_smc.c:32:
-   net/smc/af_smc.c: In function 'smc_connect_rdma_v2_prepare':
->> include/net/sock.h:389:37: error: 'struct sock_common' has no member named 'skc_v6_rcv_saddr'; did you mean 'skc_rcv_saddr'?
-    #define sk_v6_rcv_saddr __sk_common.skc_v6_rcv_saddr
-                                        ^~~~~~~~~~~~~~~~
-   net/smc/af_smc.c:1241:53: note: in expansion of macro 'sk_v6_rcv_saddr'
-       if (smc_ib_find_route_v6(net, &smc->clcsock->sk->sk_v6_rcv_saddr,
-                                                        ^~~~~~~~~~~~~~~
-   In file included from net/smc/smc_wr.h:20,
-                    from net/smc/smc_llc.h:16,
-                    from net/smc/af_smc.c:47:
-   net/smc/af_smc.c: In function 'smc_find_rdma_v2_device_serv':
->> include/net/sock.h:389:37: error: 'struct sock_common' has no member named 'skc_v6_rcv_saddr'; did you mean 'skc_rcv_saddr'?
-    #define sk_v6_rcv_saddr __sk_common.skc_v6_rcv_saddr
-                                        ^~~~~~~~~~~~~~~~
-   net/smc/smc_core.h:639:30: note: in definition of macro 'smc_ipaddr_from'
-       __ipaddr->addr_v6 = __sk->_v6_member; \
-                                 ^~~~~~~~~~
-   net/smc/af_smc.c:2320:74: note: in expansion of macro 'sk_v6_rcv_saddr'
-     smc_ipaddr_from(&ini->smcrv2.saddr, new_smc->clcsock->sk, sk_rcv_saddr, sk_v6_rcv_saddr);
-                                                                             ^~~~~~~~~~~~~~~
-
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for I2C_K1
-   Depends on [n]: I2C [=y] && HAS_IOMEM [=y] && (ARCH_SPACEMIT || COMPILE_TEST [=y]) && OF [=n]
-   Selected by [y]:
-   - MFD_SPACEMIT_P1 [=y] && HAS_IOMEM [=y] && (ARCH_SPACEMIT || COMPILE_TEST [=y]) && I2C [=y]
+Link: https://lore.kernel.org/bpf/20250910034103.650342-1-ameryhung@gmail.com/
 
 
-vim +389 include/net/sock.h
+Amery Hung (2):
+  net/mlx5e: RX, Fix generating skb from non-linear xdp_buff for legacy
+    RQ
+  net/mlx5e: RX, Fix generating skb from non-linear xdp_buff for
+    striding RQ
 
-4dc6dc7162c08b Eric Dumazet             2009-07-15  368  
-68835aba4d9b74 Eric Dumazet             2010-11-30  369  #define sk_dontcopy_begin	__sk_common.skc_dontcopy_begin
-68835aba4d9b74 Eric Dumazet             2010-11-30  370  #define sk_dontcopy_end		__sk_common.skc_dontcopy_end
-4dc6dc7162c08b Eric Dumazet             2009-07-15  371  #define sk_hash			__sk_common.skc_hash
-5080546682bae3 Eric Dumazet             2013-10-02  372  #define sk_portpair		__sk_common.skc_portpair
-05dbc7b59481ca Eric Dumazet             2013-10-03  373  #define sk_num			__sk_common.skc_num
-05dbc7b59481ca Eric Dumazet             2013-10-03  374  #define sk_dport		__sk_common.skc_dport
-5080546682bae3 Eric Dumazet             2013-10-02  375  #define sk_addrpair		__sk_common.skc_addrpair
-5080546682bae3 Eric Dumazet             2013-10-02  376  #define sk_daddr		__sk_common.skc_daddr
-5080546682bae3 Eric Dumazet             2013-10-02  377  #define sk_rcv_saddr		__sk_common.skc_rcv_saddr
-^1da177e4c3f41 Linus Torvalds           2005-04-16  378  #define sk_family		__sk_common.skc_family
-^1da177e4c3f41 Linus Torvalds           2005-04-16  379  #define sk_state		__sk_common.skc_state
-^1da177e4c3f41 Linus Torvalds           2005-04-16  380  #define sk_reuse		__sk_common.skc_reuse
-055dc21a1d1d21 Tom Herbert              2013-01-22  381  #define sk_reuseport		__sk_common.skc_reuseport
-9fe516ba3fb29b Eric Dumazet             2014-06-27  382  #define sk_ipv6only		__sk_common.skc_ipv6only
-26abe14379f8e2 Eric W. Biederman        2015-05-08  383  #define sk_net_refcnt		__sk_common.skc_net_refcnt
-^1da177e4c3f41 Linus Torvalds           2005-04-16  384  #define sk_bound_dev_if		__sk_common.skc_bound_dev_if
-^1da177e4c3f41 Linus Torvalds           2005-04-16  385  #define sk_bind_node		__sk_common.skc_bind_node
-8feaf0c0a5488b Arnaldo Carvalho de Melo 2005-08-09  386  #define sk_prot			__sk_common.skc_prot
-07feaebfcc10cd Eric W. Biederman        2007-09-12  387  #define sk_net			__sk_common.skc_net
-efe4208f47f907 Eric Dumazet             2013-10-03  388  #define sk_v6_daddr		__sk_common.skc_v6_daddr
-efe4208f47f907 Eric Dumazet             2013-10-03 @389  #define sk_v6_rcv_saddr	__sk_common.skc_v6_rcv_saddr
-33cf7c90fe2f97 Eric Dumazet             2015-03-11  390  #define sk_cookie		__sk_common.skc_cookie
-70da268b569d32 Eric Dumazet             2015-10-08  391  #define sk_incoming_cpu		__sk_common.skc_incoming_cpu
-8e5eb54d303b7c Eric Dumazet             2015-10-08  392  #define sk_flags		__sk_common.skc_flags
-ed53d0ab761f5c Eric Dumazet             2015-10-08  393  #define sk_rxhash		__sk_common.skc_rxhash
-efe4208f47f907 Eric Dumazet             2013-10-03  394  
-5d4cc87414c5d1 Eric Dumazet             2024-02-16  395  	__cacheline_group_begin(sock_write_rx);
-43f51df4172955 Eric Dumazet             2021-11-15  396  
-9115e8cd2a0c6e Eric Dumazet             2016-12-03  397  	atomic_t		sk_drops;
-5d4cc87414c5d1 Eric Dumazet             2024-02-16  398  	__s32			sk_peek_off;
-7d452516b67add Eric Dumazet             2025-09-29  399  	struct sk_buff_head	sk_error_queue;
-b178bb3dfc30d9 Eric Dumazet             2010-11-16  400  	struct sk_buff_head	sk_receive_queue;
-fa438ccfdfd3f6 Eric Dumazet             2007-03-04  401  	/*
-fa438ccfdfd3f6 Eric Dumazet             2007-03-04  402  	 * The backlog queue is special, it is always used with
-fa438ccfdfd3f6 Eric Dumazet             2007-03-04  403  	 * the per-socket spinlock held and requires low latency
-fa438ccfdfd3f6 Eric Dumazet             2007-03-04  404  	 * access. Therefore we special case it's implementation.
-b178bb3dfc30d9 Eric Dumazet             2010-11-16  405  	 * Note : rmem_alloc is in this structure to fill a hole
-b178bb3dfc30d9 Eric Dumazet             2010-11-16  406  	 * on 64bit arches, not because its logically part of
-b178bb3dfc30d9 Eric Dumazet             2010-11-16  407  	 * backlog.
-fa438ccfdfd3f6 Eric Dumazet             2007-03-04  408  	 */
-fa438ccfdfd3f6 Eric Dumazet             2007-03-04  409  	struct {
-b178bb3dfc30d9 Eric Dumazet             2010-11-16  410  		atomic_t	rmem_alloc;
-b178bb3dfc30d9 Eric Dumazet             2010-11-16  411  		int		len;
-fa438ccfdfd3f6 Eric Dumazet             2007-03-04  412  		struct sk_buff	*head;
-fa438ccfdfd3f6 Eric Dumazet             2007-03-04  413  		struct sk_buff	*tail;
-fa438ccfdfd3f6 Eric Dumazet             2007-03-04  414  	} sk_backlog;
-b178bb3dfc30d9 Eric Dumazet             2010-11-16  415  #define sk_rmem_alloc sk_backlog.rmem_alloc
-2c8c56e15df3d4 Eric Dumazet             2014-11-11  416  
-5d4cc87414c5d1 Eric Dumazet             2024-02-16  417  	__cacheline_group_end(sock_write_rx);
-5d4cc87414c5d1 Eric Dumazet             2024-02-16  418  
-5d4cc87414c5d1 Eric Dumazet             2024-02-16  419  	__cacheline_group_begin(sock_read_rx);
-5d4cc87414c5d1 Eric Dumazet             2024-02-16  420  	/* early demux fields */
-5d4cc87414c5d1 Eric Dumazet             2024-02-16  421  	struct dst_entry __rcu	*sk_rx_dst;
-5d4cc87414c5d1 Eric Dumazet             2024-02-16  422  	int			sk_rx_dst_ifindex;
-5d4cc87414c5d1 Eric Dumazet             2024-02-16  423  	u32			sk_rx_dst_cookie;
-5d4cc87414c5d1 Eric Dumazet             2024-02-16  424  
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 51 +++++++++++++++----
+ 1 file changed, 42 insertions(+), 9 deletions(-)
 
+
+base-commit: 634ec1fc7982efeeeeed4a7688b0004827b43a21
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.31.1
+
 
