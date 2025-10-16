@@ -1,155 +1,172 @@
-Return-Path: <linux-rdma+bounces-13882-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13883-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F439BE2304
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Oct 2025 10:40:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CF56BE237F
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Oct 2025 10:48:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A1FD19A62E8
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Oct 2025 08:41:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1270540422
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Oct 2025 08:48:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B77830B531;
-	Thu, 16 Oct 2025 08:40:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 768EA2FABF2;
+	Thu, 16 Oct 2025 08:48:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="blksfxaI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O03AjARc"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B81063054F6;
-	Thu, 16 Oct 2025 08:40:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76158212FAA
+	for <linux-rdma@vger.kernel.org>; Thu, 16 Oct 2025 08:48:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760604021; cv=none; b=GJUYJZE1p4zynBBm92MXmCq+NUogfG37PuS0V4pbdrXIQf6FQD4hCNoJ01QuE0A9yeBkodPVCWlq8vvq2J3Vec3Q+7v8FfbHlEjGIP1vpRs7qJD9C8kpNlkZontH7tZdn5p4t5h8Nk5u4gRHlBizYbps5VG8ySDrn2vuB5WFeXQ=
+	t=1760604516; cv=none; b=S2ovLOjR2booRck3+GnYwd+r/n1YeierkRPpf43atRiz3y8J5FugzQnMIpyJECTPQxxmaCax98qM1by9w22l3ZYvT4LAi9Spl4sp6Fy0+3x8FxCRQv1BcVk23SnPfu8A5Zw3y/sEB3BBP0x/2SfLuVKXlVZOTTE9GIC4hhpVW3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760604021; c=relaxed/simple;
-	bh=3AWrDtmV1JGxPTVWPOgARlJPPLjkXwSKEbROH0L2i+Q=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=gflWBAlTZLKQP/UHPWcL+IM8Y7yvz3vF91PXLE1wTcRL9j6R/9s83fPTZnsd/orAF5NX1Uqhifq9c8Bc6kmeJ1Eonwd8Tx3TDS+yOtuNomNqm1IIOiEBJisMBSb1ZAqrnenS9bkQS0scAc5Rmm5DmWzOwSr+VgdLR5y40vZUaOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=blksfxaI; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 59G6Vtst023503;
-	Thu, 16 Oct 2025 08:40:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=3AWrDt
-	mV1JGxPTVWPOgARlJPPLjkXwSKEbROH0L2i+Q=; b=blksfxaInlRDg2OhbPedPA
-	zj4DZT4v/nHljm4QgW+sLzkpPMA8jnDs5K4/B31TCEH4BYOPDMljxZ7jyc4IK22d
-	x3dL10KHGHlDdp++SBGxw0/rBSKDUc80FG560jcHgGMP+8/fDM+Y4WHmN1fic3QH
-	bU/4fNuczwo7cOMmcgpXAGifgpZhu7neU4DjjoG5V1VsNGrwcVlPLgW2ps3FR2ul
-	mDVMWxcLQPM++Vng//nIkIVDv+toIzUNA0MQlbhEwfleGM1iMfhw6gPKJUjlJcFS
-	LNmat/E7WsxLebN3dWq5Iq+c/6CtX4GJX3dIiZ09QeQwGmrkLC1k2oIVA2aiAs3Q
-	==
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49tfxpk95y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 16 Oct 2025 08:40:14 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 59G649MZ003663;
-	Thu, 16 Oct 2025 08:40:13 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 49r1xy4v4k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 16 Oct 2025 08:40:13 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 59G8e7uq55116284
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 16 Oct 2025 08:40:07 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BC21020140;
-	Thu, 16 Oct 2025 08:40:07 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4DBD420146;
-	Thu, 16 Oct 2025 08:40:07 +0000 (GMT)
-Received: from [9.155.208.229] (unknown [9.155.208.229])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 16 Oct 2025 08:40:07 +0000 (GMT)
-Message-ID: <ba6bf792162213fd4a1085b1c157e3c5e4996133.camel@linux.ibm.com>
-Subject: Re: [PATCH v2] s390/pci: Avoid deadlock between PCI error recovery
- and mlx5 crdump
-From: Gerd Bayer <gbayer@linux.ibm.com>
-To: Niklas Schnelle <schnelle@linux.ibm.com>,
-        Gerald Schaefer	
- <gerald.schaefer@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily
- Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Shay Drori	 <shayd@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Tariq Toukan <tariqt@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky	 <leon@kernel.org>,
-        Christian Borntraeger
- <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Pierre
- Morel <pmorel@linux.ibm.com>,
-        Matthew Rosato	 <mjrosato@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Date: Thu, 16 Oct 2025 10:40:07 +0200
-In-Reply-To: <358e3a7a1e735d5b1e761cf159db8ae735a9578d.camel@linux.ibm.com>
-References: <20251015-fix_pcirecov_master-v2-1-e07962fe9558@linux.ibm.com>
-	 <358e3a7a1e735d5b1e761cf159db8ae735a9578d.camel@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2 (3.56.2-2.fc42) 
+	s=arc-20240116; t=1760604516; c=relaxed/simple;
+	bh=kkrnDxMYNrznAE3Hee5XF8MX8bDoYkPgWg1IrtAOtqc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BBxjICSclCT+ofrEh80k51kau+v4htYm0gVpVzegB6fGVfnRf7pCICQdPWnNj/KFlWXPv4g5vwHA2Dk2r7RD1V+1LiM372BBm8WDegU7qOC5cyZ9jdr78xlwlcTngGgXy11W9B468radVgXY8jcXkzubIHH5n7OBOWT5ml9rk/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O03AjARc; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-421851bca51so375541f8f.1
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Oct 2025 01:48:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1760604513; x=1761209313; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AVEUrQi9cWOpaDRyBLGip7wyDUSKU6wiRqunzh1l3BU=;
+        b=O03AjARc9R27ZMZrKE8djRKA3KxAYGJsRMNyCcIfOfm0XJVskqFMYGOvH2ejD0qYws
+         JERlaM6Qo/06NIrHKXPky1XbjwK0LbcJIZjVPLl9pJ/ZmUsajnZ3Lh/yfelonwkORXyC
+         8KmD/hOAf+M+KxL+C1SliHXXqCrh5npK9Gl6GtcDDYIaW7+VUZ5D//PTM2jQHh6XxKNQ
+         ftzWrbmwf1yf6h7OPgy4nmu4VSrefeSEZisvv/aFYR7L9Z9+UWdrtRSaLpY5vnANO9qG
+         uj9/DeVr1uzDySUvtszyuixQt5nwHZTfvRt3Q9qzYrI98cXhP2Do67uUrpD8mKKcOCqr
+         MSJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1760604513; x=1761209313;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AVEUrQi9cWOpaDRyBLGip7wyDUSKU6wiRqunzh1l3BU=;
+        b=f/lwBMknqEJLezDF+XJSDMe46tfbqw7UX+tEmfkvzmNWZbL7PMtJhipVU/9k8PlF48
+         aXmNiYCi+dcw4MJubo9CoZcRQwIdZj2CKa7rZIg+iIZQXo+S4tDHdYAFIiQ+hcji7Wqd
+         IOsstYpuCNxEcvZDhAGgAZXM8tq3MekWxJRk4wjtiNIg7JN21hQtCNQ3BUhJr6qiXBzm
+         Um/vN/HF1Ikhl3WYSqqjF/hg3ctcaHjhWDMdbY16Yrso4hh/t80Dt0xST2dezvlVHT0D
+         7kkvhE2IW+i9jGBzRP4wfK+jjr3bj2wHK3FFeOvnDBfHo91Dem3hTtmDFDLdr94W5r5N
+         3jyg==
+X-Forwarded-Encrypted: i=1; AJvYcCUvw8Rcy9MZdAPdE8x7BxFfajVSNepgn4lcVb1wVDQosqO4ynA6Ao92f2o0xN0uzX+O54PcZzMaj8Rq@vger.kernel.org
+X-Gm-Message-State: AOJu0YyiyLIZ29f8f/xOVz6CAtpQd0YI9R8jfI0WQRqc0fsfEW5zbnKq
+	7YUJtx8Ds/3diA3GTyNJU17l0OSRJHH/2zDyNIc09upZehR0C9pf7Qz7
+X-Gm-Gg: ASbGncvlM0WiSBuSKwHl+WvEQ9Q3U/1fkQzwDOmGdNx1E0Wd/YG2ofPOxgHK9fIumy2
+	jC4G+Oh2ijOE70hpbNVUg6kSKAk6hi9R00P9VGvhu/hthQudGRtoaJhgvClUcHDlWzmyNuQ2nCu
+	WLmVXg9SvfEGu63kl9Ts+TNOImBDE8fUM2+enFZ0m9g5Mdt6emhZ3MX0b1XRz+8kp/a0ZW3RPSZ
+	HK0ekmcx73boAbCnYbAvuv8oaxsHZIRAnUrx+//cqC1RCKskEIcMjkiiGRbtf2KKUki5Ph6Jv95
+	zJagOKYKj/K2vCjQA8Xc5dhe601i/yolMcXyIByMf2Cq0FMtdaxxlFYKS3X24z7Zi3Cvms1mlZc
+	/3avE/dbpmCX8LS9WDLkNKRcM9Faut9oycwmK89CWvFb9+1qNz3rwbdZEr/58nKyn7VatP8Zhq/
+	DcOVXSIR/y5C5K6g1NBBmtwRkzkUjc8IRbmFc=
+X-Google-Smtp-Source: AGHT+IFcjkeuZRpv+IRzVM4XciTTJue0s3dCI3MiZ144Kh9FyQmKyef1x1llDDTMWlEp/vC66d5XcA==
+X-Received: by 2002:a05:6000:2010:b0:402:4142:c7a7 with SMTP id ffacd0b85a97d-42666ac6f35mr23068224f8f.16.1760604512220;
+        Thu, 16 Oct 2025 01:48:32 -0700 (PDT)
+Received: from [10.221.203.215] ([165.85.126.96])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42704141cdfsm42311f8f.4.2025.10.16.01.48.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Oct 2025 01:48:31 -0700 (PDT)
+Message-ID: <abe2f4c3-086e-4023-911d-f2ecbdff24cd@gmail.com>
+Date: Thu, 16 Oct 2025 11:48:30 +0300
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: QDsrJC5RMRKIqG9CaXi5okcG_yOi1Vcy
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDE1MDEyNSBTYWx0ZWRfX4ltVL7ge9Vu6
- iyOzSkTXhUzBNEJ2+AzNnZ5F4ekwsIQPhMliNTQCX/1AzL+ar6ivA8bzC9AT7Hh0GnY4ayeFXCu
- 0GcxjTamNUqfImLXtpjRpafCzBc5NvEBJ9e3ayzL8MnWqwcO/1pWpNN4yrx7FS9BCZhdOhwBSUg
- Qpi2H4wyVzlhBgpWbnCvYxdkPElncrSPEPJvPjUfpotNjx4FO8agTumdjZsshLuonQPfvrnXyH5
- hLxpVYchlN8t2tSs4IBLfJTewBC7NJGtgwEISX2zT3ODYxcUjiAeEvdyVIAI7UADDB9TYqj/UVT
- SZSONB9bYtHtiZUvYR7v3hpBrXlhh2qpWOHPWCh9v0HlOBUuTzWAbv9TqHwQUyAODj1yHvlVXov
- vMNqbjz1ZlsB44v7n4Xv01UKL6F5LA==
-X-Authority-Analysis: v=2.4 cv=R+wO2NRX c=1 sm=1 tr=0 ts=68f0af6e cx=c_pps
- a=5BHTudwdYE3Te8bg5FgnPg==:117 a=5BHTudwdYE3Te8bg5FgnPg==:17
- a=IkcTkHD0fZMA:10 a=x6icFKpwvdMA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VnNF1IyMAAAA:8 a=97ZeUEOCl0Sx5TDpsusA:9 a=QEXdDO2ut3YA:10
- a=cPQSjfK2_nFv0Q5t_7PE:22
-X-Proofpoint-ORIG-GUID: QDsrJC5RMRKIqG9CaXi5okcG_yOi1Vcy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-10-16_01,2025-10-13_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 lowpriorityscore=0 suspectscore=0 bulkscore=0 clxscore=1015
- priorityscore=1501 adultscore=0 spamscore=0 impostorscore=0 malwarescore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2510020000 definitions=main-2510150125
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] net/mlx5e: Return 1 instead of 0 in invalid case in
+ mlx5e_mpwrq_umr_entry_size()
+To: Nathan Chancellor <nathan@kernel.org>, Saeed Mahameed
+ <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+ Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ netdev@vger.kernel.org, linux-rdma@vger.kernel.org, patches@lists.linux.dev,
+ llvm@lists.linux.dev
+References: <20251014-mlx5e-avoid-zero-div-from-mlx5e_mpwrq_umr_entry_size-v1-1-dc186b8819ef@kernel.org>
+Content-Language: en-US
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20251014-mlx5e-avoid-zero-div-from-mlx5e_mpwrq_umr_entry_size-v1-1-dc186b8819ef@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, 2025-10-15 at 16:10 +0200, Niklas Schnelle wrote:
-> On Wed, 2025-10-15 at 13:05 +0200, Gerd Bayer wrote:
-> > Do not block PCI config accesses through pci_cfg_access_lock() when
-> > executing the s390 variant of PCI error recovery: Acquire just
-> > device_lock() instead of pci_dev_lock() as powerpc's EEH and
-> > generig PCI AER processing do.
-> >=20
 
-[... snip ...]
 
->=20
-> Code-wise this looks good to me and I've confirmed that EEH and AER
-> indeed only use the device_lock() and I don't see a reason why that
-> shouldn't be enough for us too if it is enough for them. I think I
-> just
-> picked pci_dev_lock() because it seemed fitting but it probably was
-> too
-> big a hammer.
->=20
-> Reviewed-by: Niklas Schnelle <schnelle@linux.ibm.com>
+On 14/10/2025 23:46, Nathan Chancellor wrote:
+> When building with Clang 20 or newer, there are some objtool warnings
+> from unexpected fallthroughs to other functions:
+> 
+>    vmlinux.o: warning: objtool: mlx5e_mpwrq_mtts_per_wqe() falls through to next function mlx5e_mpwrq_max_num_entries()
+>    vmlinux.o: warning: objtool: mlx5e_mpwrq_max_log_rq_size() falls through to next function mlx5e_get_linear_rq_headroom()
+> 
+> LLVM 20 contains an (admittedly problematic [1]) optimization [2] to
+> convert divide by zero into the equivalent of __builtin_unreachable(),
+> which invokes undefined behavior and destroys code generation when it is
+> encountered in a control flow graph.
+> 
+> mlx5e_mpwrq_umr_entry_size() returns 0 in the default case of an
+> unrecognized mlx5e_mpwrq_umr_mode value. mlx5e_mpwrq_mtts_per_wqe(),
+> which is inlined into mlx5e_mpwrq_max_log_rq_size(), uses the result of
+> mlx5e_mpwrq_umr_entry_size() in a divide operation without checking for
+> zero, so LLVM is able to infer there will be a divide by zero in this
+> case and invokes undefined behavior. While there is some proposed work
+> to isolate this undefined behavior and avoid the destructive code
+> generation that results in these objtool warnings, code should still be
+> defensive against divide by zero.
+> 
+> As the WARN_ONCE() implies that an invalid value should be handled
+> gracefully, return 1 instead of 0 in the default case so that the
+> results of this division operation is always valid.
+> 
+> Fixes: 168723c1f8d6 ("net/mlx5e: xsk: Use umr_mode to calculate striding RQ parameters")
+> Link: https://lore.kernel.org/CAGG=3QUk8-Ak7YKnRziO4=0z=1C_7+4jF+6ZeDQ9yF+kuTOHOQ@mail.gmail.com/ [1]
+> Link: https://github.com/llvm/llvm-project/commit/37932643abab699e8bb1def08b7eb4eae7ff1448 [2]
+> Closes: https://github.com/ClangBuiltLinux/linux/issues/2131
+> Closes: https://github.com/ClangBuiltLinux/linux/issues/2132
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>   drivers/net/ethernet/mellanox/mlx5/core/en/params.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/params.c b/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
+> index 3692298e10f2..c9bdee9a8b30 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/params.c
+> @@ -100,7 +100,7 @@ u8 mlx5e_mpwrq_umr_entry_size(enum mlx5e_mpwrq_umr_mode mode)
+>   		return sizeof(struct mlx5_ksm) * 4;
+>   	}
+>   	WARN_ONCE(1, "MPWRQ UMR mode %d is not known\n", mode);
+> -	return 0;
+> +	return 1;
+>   }
+>   
+>   u8 mlx5e_mpwrq_log_wqe_sz(struct mlx5_core_dev *mdev, u8 page_shift,
+> 
+> ---
+> base-commit: 4f86eb0a38bc719ba966f155071a6f0594327f34
+> change-id: 20251014-mlx5e-avoid-zero-div-from-mlx5e_mpwrq_umr_entry_size-e6d49c18a43f
+> 
+> Best regards,
+> --
+> Nathan Chancellor <nathan@kernel.org>
+> 
+> 
 
-I'll send around a v3 with your suggested changes to the commit message
-included.
+Thanks for your patch.
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 
-Thanks for the review,
-Gerd
+
+
 
