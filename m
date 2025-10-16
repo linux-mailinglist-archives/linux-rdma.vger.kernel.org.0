@@ -1,39 +1,40 @@
-Return-Path: <linux-rdma+bounces-13890-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13891-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81C7FBE3A87
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Oct 2025 15:20:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCEBEBE3A8A
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Oct 2025 15:20:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1F214503963
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Oct 2025 13:20:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E02D31A65587
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Oct 2025 13:21:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B3781E633C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4B781EA7C9;
 	Thu, 16 Oct 2025 13:20:30 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from canpmsgout06.his.huawei.com (canpmsgout06.his.huawei.com [113.46.200.221])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 904851E5201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9041E1C5486
 	for <linux-rdma@vger.kernel.org>; Thu, 16 Oct 2025 13:20:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.221
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760620830; cv=none; b=eCuAU+N6TPNM5kyXpjVwrJjLkQy7Z9mU42d2Pw2+C2bqb3KAVT0JuR5KfH29d3UZvHrBYLRQwH/77zDcOKAXkj+Df11BxLlUSiybY+NZ1/Ywd1ofcCSKpOQGHCBoLwCtRnSrux3HEKUo3uDQITexMYR729q2osaJ0uQjJEIaMlo=
+	t=1760620830; cv=none; b=sKlxp+A6i1r1s5jCLyV6Cqvq1fIBFHGugXYjvN/QU8Pkf0Epwynzn4N//nt157JERMdtGI9dyZlPynFmo3wiOZVWPd53p9NNE5y25WAIYcNa3CMprxI+FlmHwElNy3Mb310zzMJ3snNW1vx8DT3EB3zoXyb2nf7aGstS2xkwYcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1760620830; c=relaxed/simple;
-	bh=iLV6ZLnK3yCy/M4vGAhIF4qI76wAkkMIApNk8X+nBVA=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ljSDOOkxsMELCSvw1VAGeAJ/EF+SG6S22VWaYU6C5U3w0WxabTKErFYhNSMmR6VclgI0F0oDAnT0bjFTlK0NccxO7cUqqXWY0QoEze7Gm1muwY2P18aS3DaADI7k+vI9cspVgdrzh0S9rnNCs/WaI2bViTtFHTKHtEJhDPqkUyQ=
+	bh=6Nwr7ESCyo2k2mF7s+mBmRgUdKhvQfjjSnhNlqjOiSU=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=eoscXd7fXlIgqpvH+hkyBRPOw/ZOTW63VqhpjF1ptoZLg4ljIrOICNWW8zMHAEu+D9lBDjm2esabz+4LyiO841TlTcs07ut+x520DmtFyXs+PkTZigAqc5KDm7PqfdG31hoMubI8q3Fh/KcMl677sZCG5hfS9C699DYuMhZj1AY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=113.46.200.221
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by canpmsgout06.his.huawei.com (SkyGuard) with ESMTPS id 4cnT8M4qYWzRhR6;
-	Thu, 16 Oct 2025 21:20:03 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by canpmsgout06.his.huawei.com (SkyGuard) with ESMTPS id 4cnT8N0JHGzRhR6;
+	Thu, 16 Oct 2025 21:20:04 +0800 (CST)
 Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id DB663140156;
-	Thu, 16 Oct 2025 21:20:24 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 3DD6C1800EB;
+	Thu, 16 Oct 2025 21:20:25 +0800 (CST)
 Received: from localhost.localdomain (10.50.163.32) by
  kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -42,10 +43,12 @@ From: Junxian Huang <huangjunxian6@hisilicon.com>
 To: <jgg@ziepe.ca>, <leon@kernel.org>
 CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
 	<huangjunxian6@hisilicon.com>, <tangchengchang@huawei.com>
-Subject: [PATCH v2 for-next 0/8] RDMA/hns: Support RoCE bonding
-Date: Thu, 16 Oct 2025 21:20:15 +0800
-Message-ID: <20251016132023.3043538-1-huangjunxian6@hisilicon.com>
+Subject: [PATCH v2 for-next 1/8] RDMA/hns: Add helpers to obtain netdev and bus_num from hr_dev
+Date: Thu, 16 Oct 2025 21:20:16 +0800
+Message-ID: <20251016132023.3043538-2-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20251016132023.3043538-1-huangjunxian6@hisilicon.com>
+References: <20251016132023.3043538-1-huangjunxian6@hisilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -57,52 +60,179 @@ Content-Type: text/plain
 X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
  kwepemf100018.china.huawei.com (7.202.181.17)
 
-This series adds support for RoCE bonding. The bond mode is active
-when multiple PF netdevs are enslaved to a bond master while all
-following rules are met:
-  * All the slaves are on the same card, i.e., they share the same
-    bus number.
-  * The bond mode are set to mode 1 (active-backup), 2 (XOR) or
-    4 (802.3ad).
-  * None of the slaves have generated a VF.
+Add helpers to obtain netdev and bus_num from hr_dev.
 
-In bond mode, a bond ibdev "hns_bond_*" is registered instead of the
-regular PF ibdev "hns_*". For RoCE traffic, HW chooses the same active
-port as netdev bonding in mode 1, while in mode 2/4, the port selection
-is determined by the hash algorithm.
+Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_ah.c     |  1 -
+ drivers/infiniband/hw/hns/hns_roce_device.h | 12 ++++++++++++
+ drivers/infiniband/hw/hns/hns_roce_main.c   | 19 ++++++++++---------
+ drivers/infiniband/hw/hns/hns_roce_pd.c     |  1 -
+ drivers/infiniband/hw/hns/hns_roce_qp.c     |  5 +++--
+ drivers/infiniband/hw/hns/hns_roce_srq.c    |  1 -
+ 6 files changed, 25 insertions(+), 14 deletions(-)
 
-v1 -> v2:
-https://lore.kernel.org/linux-rdma/20250913090615.212720-1-huangjunxian6@hisilicon.com/T/#t
-* Hold the refcount when returning from hns_roce_get_hrdev_by_netdev()
-  and get_upper_dev_from_ndev().
-* Remove check_vf_support() as we've moved the check into FW now.
-
-Junxian Huang (8):
-  RDMA/hns: Add helpers to obtain netdev and bus_num from hr_dev
-  RDMA/hns: Initialize bonding resources
-  RDMA/hns: Add bonding event handler
-  RDMA/hns: Add bonding cmds
-  RDMA/hns: Implement bonding init/uninit process
-  RDMA/hns: Add delayed work for bonding
-  RDMA/hns: Support link state reporting for bond
-  RDMA/hns: Support reset recovery for bond
-
- drivers/infiniband/hw/hns/Makefile          |    4 +-
- drivers/infiniband/hw/hns/hns_roce_ah.c     |    1 -
- drivers/infiniband/hw/hns/hns_roce_bond.c   | 1012 +++++++++++++++++++
- drivers/infiniband/hw/hns/hns_roce_bond.h   |   95 ++
- drivers/infiniband/hw/hns/hns_roce_device.h |   16 +-
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  143 ++-
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |   20 +
- drivers/infiniband/hw/hns/hns_roce_main.c   |  176 +++-
- drivers/infiniband/hw/hns/hns_roce_pd.c     |    1 -
- drivers/infiniband/hw/hns/hns_roce_qp.c     |    5 +-
- drivers/infiniband/hw/hns/hns_roce_srq.c    |    1 -
- 11 files changed, 1422 insertions(+), 52 deletions(-)
- create mode 100644 drivers/infiniband/hw/hns/hns_roce_bond.c
- create mode 100644 drivers/infiniband/hw/hns/hns_roce_bond.h
-
---
+diff --git a/drivers/infiniband/hw/hns/hns_roce_ah.c b/drivers/infiniband/hw/hns/hns_roce_ah.c
+index 307c35888b30..0c1c32d23c88 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_ah.c
++++ b/drivers/infiniband/hw/hns/hns_roce_ah.c
+@@ -30,7 +30,6 @@
+  * SOFTWARE.
+  */
+ 
+-#include <linux/pci.h>
+ #include <rdma/ib_addr.h>
+ #include <rdma/ib_cache.h>
+ #include "hns_roce_device.h"
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 78ee04a48a74..5ae37832059f 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -33,6 +33,7 @@
+ #ifndef _HNS_ROCE_DEVICE_H
+ #define _HNS_ROCE_DEVICE_H
+ 
++#include <linux/pci.h>
+ #include <rdma/ib_verbs.h>
+ #include <rdma/hns-abi.h>
+ #include "hns_roce_debugfs.h"
+@@ -1165,6 +1166,17 @@ static inline u8 get_tclass(const struct ib_global_route *grh)
+ 	       grh->traffic_class >> DSCP_SHIFT : grh->traffic_class;
+ }
+ 
++static inline struct net_device *get_hr_netdev(struct hns_roce_dev *hr_dev,
++					       u8 port)
++{
++	return hr_dev->iboe.netdevs[port];
++}
++
++static inline u8 get_hr_bus_num(struct hns_roce_dev *hr_dev)
++{
++	return hr_dev->pci_dev->bus->number;
++}
++
+ void hns_roce_init_uar_table(struct hns_roce_dev *dev);
+ int hns_roce_uar_alloc(struct hns_roce_dev *dev, struct hns_roce_uar *uar);
+ 
+diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
+index d50f36f8a110..8bca0b10c69e 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_main.c
++++ b/drivers/infiniband/hw/hns/hns_roce_main.c
+@@ -32,7 +32,6 @@
+  */
+ #include <linux/acpi.h>
+ #include <linux/module.h>
+-#include <linux/pci.h>
+ #include <rdma/ib_addr.h>
+ #include <rdma/ib_smi.h>
+ #include <rdma/ib_user_verbs.h>
+@@ -148,12 +147,13 @@ static int hns_roce_netdev_event(struct notifier_block *self,
+ 
+ static int hns_roce_setup_mtu_mac(struct hns_roce_dev *hr_dev)
+ {
++	struct net_device *net_dev;
+ 	int ret;
+ 	u8 i;
+ 
+ 	for (i = 0; i < hr_dev->caps.num_ports; i++) {
+-		ret = hns_roce_set_mac(hr_dev, i,
+-				       hr_dev->iboe.netdevs[i]->dev_addr);
++		net_dev = get_hr_netdev(hr_dev, i);
++		ret = hns_roce_set_mac(hr_dev, i, net_dev->dev_addr);
+ 		if (ret)
+ 			return ret;
+ 	}
+@@ -246,7 +246,7 @@ static int hns_roce_query_port(struct ib_device *ib_dev, u32 port_num,
+ 
+ 	spin_lock_irqsave(&hr_dev->iboe.lock, flags);
+ 
+-	net_dev = hr_dev->iboe.netdevs[port];
++	net_dev = get_hr_netdev(hr_dev, port);
+ 	if (!net_dev) {
+ 		spin_unlock_irqrestore(&hr_dev->iboe.lock, flags);
+ 		dev_err(dev, "find netdev %u failed!\n", port);
+@@ -704,11 +704,12 @@ static const struct ib_device_ops hns_roce_dev_restrack_ops = {
+ 
+ static int hns_roce_register_device(struct hns_roce_dev *hr_dev)
+ {
+-	int ret;
+ 	struct hns_roce_ib_iboe *iboe = NULL;
+-	struct ib_device *ib_dev = NULL;
+ 	struct device *dev = hr_dev->dev;
++	struct ib_device *ib_dev = NULL;
++	struct net_device *net_dev;
+ 	unsigned int i;
++	int ret;
+ 
+ 	iboe = &hr_dev->iboe;
+ 	spin_lock_init(&iboe->lock);
+@@ -744,11 +745,11 @@ static int hns_roce_register_device(struct hns_roce_dev *hr_dev)
+ 	ib_set_device_ops(ib_dev, &hns_roce_dev_ops);
+ 	ib_set_device_ops(ib_dev, &hns_roce_dev_restrack_ops);
+ 	for (i = 0; i < hr_dev->caps.num_ports; i++) {
+-		if (!hr_dev->iboe.netdevs[i])
++		net_dev = get_hr_netdev(hr_dev, i);
++		if (!net_dev)
+ 			continue;
+ 
+-		ret = ib_device_set_netdev(ib_dev, hr_dev->iboe.netdevs[i],
+-					   i + 1);
++		ret = ib_device_set_netdev(ib_dev, net_dev, i + 1);
+ 		if (ret)
+ 			return ret;
+ 	}
+diff --git a/drivers/infiniband/hw/hns/hns_roce_pd.c b/drivers/infiniband/hw/hns/hns_roce_pd.c
+index d35cf59d0f43..225c3e328e0e 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_pd.c
++++ b/drivers/infiniband/hw/hns/hns_roce_pd.c
+@@ -30,7 +30,6 @@
+  * SOFTWARE.
+  */
+ 
+-#include <linux/pci.h>
+ #include "hns_roce_device.h"
+ 
+ void hns_roce_init_pd_table(struct hns_roce_dev *hr_dev)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 6ff1b8ce580c..e0e28c4ff1ca 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -31,7 +31,6 @@
+  * SOFTWARE.
+  */
+ 
+-#include <linux/pci.h>
+ #include <rdma/ib_addr.h>
+ #include <rdma/ib_umem.h>
+ #include <rdma/uverbs_ioctl.h>
+@@ -1350,11 +1349,13 @@ static int check_mtu_validate(struct hns_roce_dev *hr_dev,
+ 			      struct hns_roce_qp *hr_qp,
+ 			      struct ib_qp_attr *attr, int attr_mask)
+ {
++	struct net_device *net_dev;
+ 	enum ib_mtu active_mtu;
+ 	int p;
+ 
+ 	p = attr_mask & IB_QP_PORT ? (attr->port_num - 1) : hr_qp->port;
+-	active_mtu = iboe_get_mtu(hr_dev->iboe.netdevs[p]->mtu);
++	net_dev = get_hr_netdev(hr_dev, p);
++	active_mtu = iboe_get_mtu(net_dev->mtu);
+ 
+ 	if ((hr_dev->caps.max_mtu >= IB_MTU_2048 &&
+ 	    attr->path_mtu > hr_dev->caps.max_mtu) ||
+diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
+index 1090051f493b..8a6efb6b9c9e 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_srq.c
++++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
+@@ -3,7 +3,6 @@
+  * Copyright (c) 2018 Hisilicon Limited.
+  */
+ 
+-#include <linux/pci.h>
+ #include <rdma/ib_umem.h>
+ #include <rdma/uverbs_ioctl.h>
+ #include "hns_roce_device.h"
+-- 
 2.33.0
 
 
