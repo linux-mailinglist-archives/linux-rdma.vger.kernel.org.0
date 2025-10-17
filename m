@@ -1,101 +1,179 @@
-Return-Path: <linux-rdma+bounces-13925-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13926-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7EF8BE8BD9
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Oct 2025 15:06:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B028DBEB1A8
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Oct 2025 19:41:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A888C561D18
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Oct 2025 13:05:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD64D6E5001
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Oct 2025 17:41:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54DB9345759;
-	Fri, 17 Oct 2025 13:05:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB5E8308F26;
+	Fri, 17 Oct 2025 17:41:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=debtmanager.org header.i=@debtmanager.org header.b="X5mG0Mre"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="mcZxpF2N"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from manage.vyzra.com (unknown [104.128.60.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62710343D64
-	for <linux-rdma@vger.kernel.org>; Fri, 17 Oct 2025 13:05:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.128.60.218
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18A81307AD0;
+	Fri, 17 Oct 2025 17:41:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760706312; cv=none; b=mCdgKBOebS8Wh96hzLeTg5U7suSxBf0fXR3GMGq6JububCl0WNm28cYLwytHrcV09nVmOY7++zJ3zuQtHgdgu3NN4QDLwMfvYmQ1Ua8lM8JKiDH/dcXRAgfeK0US9o5igDrxR5uqE+1MTGgfz6DSWt/hdEPRfvQ79KdaJX7tjQQ=
+	t=1760722883; cv=none; b=UB/1RbfStKHCGcIlv91fk/aZUfgu5NLMDlB7DgOFe545bpFk+NaPi27aliBBe5eBBNLRvTtceel9Gi4cKOiU8Ty3E1hx/klxK9jz2KVZjyGuFmCIgqErJbgOEDvvz0dKNpV7xjylfVd8wNL5XbuHCxaQgByrm8kFHdvgxNjKUw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760706312; c=relaxed/simple;
-	bh=biLnUx9jTTyVdIbdiavoTAgEZeIqqOihfb373MH/e18=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=deWkFjpOwUl9ti/hf0VDaT80x1T1mi0+fM0lxOjKXXtfvJlEkhr74VYWsva3xOUjeK6pMeamlJ8tHEENANo8tAPiWTcpAl+i1jaRJKf9oVziv10kXBVB9xnu7L9LpIML/y1z5mhOiGD6WmLkxrmoEZWok+0d0K/rgX8DAhs8EL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debtmanager.org; spf=none smtp.mailfrom=manage.vyzra.com; dkim=fail (0-bit key) header.d=debtmanager.org header.i=@debtmanager.org header.b=X5mG0Mre reason="key not found in DNS"; arc=none smtp.client-ip=104.128.60.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debtmanager.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=manage.vyzra.com
-Received: from debtmanager.org (unknown [103.237.86.103])
-	by manage.vyzra.com (Postfix) with ESMTPA id AE1C34A7793B
-	for <linux-rdma@vger.kernel.org>; Fri, 17 Oct 2025 07:45:34 -0500 (CDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=debtmanager.org;
-	s=DKIM2021; t=1760705135; h=from:from:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=Aj8bDacQlJB5qNMC5+yWWged1+K/M8YReXQkzUminbQ=;
-	b=X5mG0MrebGlINQJcyjnioaRxK+eDv/HoUf6MsHDltXW9bWd436yiKujRvFopWdQXuBeh+c
-	+8t0EOtO3A4VNLsAw5DCdld+qt3QTTyzvJFD3g8Co+AaoiDfxkR0fWvhAZm3US+Tjid6+K
-	wj80BtIAPge8snltZVGb0hEatiGOrh13UgyVU4VqHCx6UFHjZL3X+CJ7fZlbKuTCUBFOKV
-	UkkcOsCs/HBENAI4MOMS+fq53OIbwb77fb+5CqwicnEwvKyD8VrJQhew2BNIZa0kpfT+ZB
-	Q8nocLPH5jHmdIBLhxhtJ+e1GzttX0jcmF8IJjMZ9unWbHBupWhEnNk2s2dqIg==
-Reply-To: vlad.dinu@rdslink.ro
-From: "Vlad Dinu" <info@debtmanager.org>
-To: linux-rdma@vger.kernel.org
-Subject: *** Urgent Change ***
-Date: 17 Oct 2025 05:45:34 -0700
-Message-ID: <20251017054534.E2799D500C91F0F4@debtmanager.org>
+	s=arc-20240116; t=1760722883; c=relaxed/simple;
+	bh=PRfVQxJjy6Vjp+xyCypyGyhNOHUhx/dYPG4ShHWopEk=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ht1N+pMWLEZTGq0CwFFqBRgLSwkOQUXENLiFRtB/Iyq6BwPQXtb+PqfxOh7RVLvu9TnZnSwCHLFfDXi3b0CR73c9izQKMtgEAXBRcQAlo+gC/O/i+RyMjsMig5VtGvPSbdnYjXCfCmss51Rg4FCiY3EKU/zlDZPqhzfxY/DVnCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=mcZxpF2N; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [192.168.1.19] (unknown [103.212.145.76])
+	by linux.microsoft.com (Postfix) with ESMTPSA id A03B9201724E;
+	Fri, 17 Oct 2025 10:41:14 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A03B9201724E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1760722881;
+	bh=Vj1gk3aMFO+P9nUqeopKE4AuncD7z4KeVlwI818/kuQ=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=mcZxpF2N174Av/F08Hahi5sOnNi4wbANuLMTrs8jeuc7aGqKcDFhDpjSjqKb/Cuta
+	 K8Oi1Yc9cgeAM45PzaA1ouFsjnbdCIc/eG2aVfLh1CKIvY71FNf3rxs6E+1OiGQ+pA
+	 Jx9qOYEy9pHXZKqfKMxFYpTW8gYTkP4Vp5G49D+w=
+Message-ID: <1d3ac973-7bc7-4abe-9fe2-6b17dbba223b@linux.microsoft.com>
+Date: Fri, 17 Oct 2025 23:11:11 +0530
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Score: -0.10
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next] net: mana: Linearize SKB if TX SGEs exceeds
+ hardware limit
+From: Aditya Garg <gargaditya@linux.microsoft.com>
+To: Eric Dumazet <edumazet@google.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+ kotaranov@microsoft.com, horms@kernel.org, shradhagupta@linux.microsoft.com,
+ ernis@linux.microsoft.com, dipayanroy@linux.microsoft.com,
+ shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, gargaditya@microsoft.com,
+ ssengar@linux.microsoft.com
+References: <20251003154724.GA15670@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <CANn89iJwkbxC5HvSKmk807K-3HY+YR1kt-LhcYwnoFLAaeVVow@mail.gmail.com>
+ <9d886861-2e1f-4ea8-9f2c-604243bd751b@linux.microsoft.com>
+ <CANn89iKwHWdUaeAsdSuZUXG-W8XwyM2oppQL9spKkex0p9-Azw@mail.gmail.com>
+ <7bc327ba-0050-4d9e-86b6-1b7427a96f53@linux.microsoft.com>
+Content-Language: en-US
+In-Reply-To: <7bc327ba-0050-4d9e-86b6-1b7427a96f53@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hello,
+On 08-10-2025 20:58, Aditya Garg wrote:
+> On 08-10-2025 20:51, Eric Dumazet wrote:
+>> On Wed, Oct 8, 2025 at 8:16 AM Aditya Garg
+>> <gargaditya@linux.microsoft.com> wrote:
+>>>
+>>> On 03-10-2025 21:45, Eric Dumazet wrote:
+>>>> On Fri, Oct 3, 2025 at 8:47 AM Aditya Garg
+>>>> <gargaditya@linux.microsoft.com> wrote:
+>>>>>
+>>>>> The MANA hardware supports a maximum of 30 scatter-gather entries 
+>>>>> (SGEs)
+>>>>> per TX WQE. In rare configurations where MAX_SKB_FRAGS + 2 exceeds 
+>>>>> this
+>>>>> limit, the driver drops the skb. Add a check in mana_start_xmit() to
+>>>>> detect such cases and linearize the SKB before transmission.
+>>>>>
+>>>>> Return NETDEV_TX_BUSY only for -ENOSPC from 
+>>>>> mana_gd_post_work_request(),
+>>>>> send other errors to free_sgl_ptr to free resources and record the tx
+>>>>> drop.
+>>>>>
+>>>>> Signed-off-by: Aditya Garg <gargaditya@linux.microsoft.com>
+>>>>> Reviewed-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+>>>>> ---
+>>>>>    drivers/net/ethernet/microsoft/mana/mana_en.c | 26 +++++++++++++ 
+>>>>> ++----
+>>>>>    include/net/mana/gdma.h                       |  8 +++++-
+>>>>>    include/net/mana/mana.h                       |  1 +
+>>>>>    3 files changed, 29 insertions(+), 6 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/ 
+>>>>> drivers/net/ethernet/microsoft/mana/mana_en.c
+>>>>> index f4fc86f20213..22605753ca84 100644
+>>>>> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+>>>>> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+>>>>> @@ -20,6 +20,7 @@
+>>>>>
+>>>>>    #include <net/mana/mana.h>
+>>>>>    #include <net/mana/mana_auxiliary.h>
+>>>>> +#include <linux/skbuff.h>
+>>>>>
+>>>>>    static DEFINE_IDA(mana_adev_ida);
+>>>>>
+>>>>> @@ -289,6 +290,19 @@ netdev_tx_t mana_start_xmit(struct sk_buff 
+>>>>> *skb, struct net_device *ndev)
+>>>>>           cq = &apc->tx_qp[txq_idx].tx_cq;
+>>>>>           tx_stats = &txq->stats;
+>>>>>
+>>>>> +       BUILD_BUG_ON(MAX_TX_WQE_SGL_ENTRIES != 
+>>>>> MANA_MAX_TX_WQE_SGL_ENTRIES);
+>>>>> +       #if (MAX_SKB_FRAGS + 2 > MANA_MAX_TX_WQE_SGL_ENTRIES)
+>>>>> +               if (skb_shinfo(skb)->nr_frags + 2 > 
+>>>>> MANA_MAX_TX_WQE_SGL_ENTRIES) {
+>>>>> +                       netdev_info_once(ndev,
+>>>>> +                                        "nr_frags %d exceeds max 
+>>>>> supported sge limit. Attempting skb_linearize\n",
+>>>>> +                                        skb_shinfo(skb)->nr_frags);
+>>>>> +                       if (skb_linearize(skb)) {
+>>>>
+>>>> This will fail in many cases.
+>>>>
+>>>> This sort of check is better done in ndo_features_check()
+>>>>
+>>>> Most probably this would occur for GSO packets, so can ask a software
+>>>> segmentation
+>>>> to avoid this big and risky kmalloc() by all means.
+>>>>
+>>>> Look at idpf_features_check()  which has something similar.
+>>>
+>>> Hi Eric,
+>>> Thank you for your review. I understand your concerns regarding the use
+>>> of skb_linearize() in the xmit path, as it can fail under memory
+>>> pressure and introduces additional overhead in the transmit path. Based
+>>> on your input, I will work on a v2 that will move the SGE limit check to
+>>> the ndo_features_check() path and for GSO skbs exceding the hw limit
+>>> will disable the NETIF_F_GSO_MASK to enforce software segmentation in
+>>> kernel before the call to xmit.
+>>> Also for non GSO skb exceeding the SGE hw limit should we go for using
+>>> skb_linearize only then or would you suggest some other approach here?
+>>
+>> I think that for non GSO, the linearization attempt is fine.
+>>
+>> Note that this is extremely unlikely for non malicious users,
+>> and MTU being usually small (9K or less),
+>> the allocation will be much smaller than a GSO packet.
+> 
+> Okay. Will send a v2
+Hi Eric,
+I tested the code by disabling GSO in ndo_features_check when the number 
+of SGEs exceeds the hardware limit, using iperf for a single TCP 
+connection with zerocopy enabled. I noticed a significant difference in 
+throughput compared to when we linearize the skbs.
+For reference, the throughput is 35.6 Gbits/sec when using 
+skb_linearize, but drops to 6.75 Gbits/sec when disabling GSO per skb.
 
-I am Vlad Dinu, the newly appointed Director of IMF Legal=20
-Affairs, Security and Investigation. I have been given the=20
-responsibility to look into all the payments that are still=20
-pending and owed to fund beneficiaries / scam victims worldwide.
-
-This action was taken because there have been issues with some=20
-banks not being able to send or release money to the correct=20
-beneficiary accounts. We have found out that some directors in=20
-different organizations are moving pending funds to their own=20
-chosen accounts instead of where they should go.
-
-During my investigation, I discovered that an account was=20
-reported to redirect your funds to a bank in Sweden.
-The details of that account are provided below. I would like you=20
-to confirm if you are aware of this new information, as we are=20
-now planning to send the payment to the account mentioned.
-
-NAME OF BENEFICIARY: ERIK KASPERSSON
-BANK NAME: SWEDBANK AB
-ADDRESS: REPSLAGAREGATAN 23A, 582 22 LINK=C3=96PING, SWEDEN
-SWIFT CODE: SWEDSESS
-ACCOUNT NUMBER: 84806-31282205
-
-
-A payment instruction has been issued by the Department of=20
-Treasury for an immediate release of your payment to the bank=20
-account above without further prejudice. We cannot approve or=20
-schedule payment to the 
-
-given bank account without your confirmation. May we proceed with=20
-the transfer to the Beneficiary: Erik Kaspersson, bank account in=20
-Sweden?
-
-I await your urgent response.
-
-Mr. Vlad Dinu.
+Hence, We propose to  linearizing skbs until the first failure occurs. 
+After that, we switch to a fail-safe mode by disabling GSO for SKBs with 
+  sge > hw limit using the ndo_feature_check implementation, while 
+continuing to apply  skb_linearize() for non-GSO packets that exceed the 
+hardware limit. This ensures we remain on the optimal performance path 
+initially, and only transition to the fail-safe path after encountering 
+a failure.
+Regards,
+Aditya
 
