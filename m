@@ -1,56 +1,56 @@
-Return-Path: <linux-rdma+bounces-13936-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13937-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40518BEE3C9
-	for <lists+linux-rdma@lfdr.de>; Sun, 19 Oct 2025 13:43:11 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DACBBEE463
+	for <lists+linux-rdma@lfdr.de>; Sun, 19 Oct 2025 14:06:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C969B189D494
-	for <lists+linux-rdma@lfdr.de>; Sun, 19 Oct 2025 11:43:34 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 628324E386C
+	for <lists+linux-rdma@lfdr.de>; Sun, 19 Oct 2025 12:06:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE1E22E6CA3;
-	Sun, 19 Oct 2025 11:43:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41B662E54DE;
+	Sun, 19 Oct 2025 12:06:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ACnkAzvd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dgrzxIld"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B0AD2E62A8;
-	Sun, 19 Oct 2025 11:43:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E612BE02D;
+	Sun, 19 Oct 2025 12:06:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760874185; cv=none; b=ZpFqKfeVjIdhEQ90Kta1UOKxnkcEiT8XVB9uP85AVKBjyvu5v2AuHmu3OS4DN/uhFWdUzwieSHBbvkNbcanRTnxjNN23+x1htFiMFwricqaQMiJzi6S20GUXb+l2kOKp24SF9nQuc+2Fr+xtc67ZOmwdc88jSlif2vpzg3/9D8M=
+	t=1760875599; cv=none; b=RteeuxdRsFnIfIzwbOKHidd77jXVHYC2AmGsaIbN9S2/hz29V7ws+lLkR5nKjwcMwkhFOM4Zad1rkc2kM/7a4hKD40qsK22Ln3r6Y+sL+YG385GiUzyCHGAWBeHE2JF4StXrY6rNKCuiZB8Sy/LXtKpiGQq8IW2WGGe41DXttNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760874185; c=relaxed/simple;
-	bh=sxIdf2TDihjjUe+ar/Lb0guj0iRhwTOQoqVwsaF/Uuc=;
+	s=arc-20240116; t=1760875599; c=relaxed/simple;
+	bh=jwTIPas7lC/lJexiriofL65Tjg4nkG6c33oxdib635g=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=AvC/ok72f2cnvPi1TAAzS2U+jYD8OcueIOzU3nVimGZP5WAHgLgpeOi2g45OnzeliKmK6sxoyMA9AE5L29T+T0fNY8+KY4Jwko63OSV+M7zOvVGCtMSrORvV/Ywt18RZgW2+WEHO2dQNy2duCuJQWFeMWMMwPcfUNGmhrzwcOAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ACnkAzvd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96938C4CEE7;
-	Sun, 19 Oct 2025 11:43:03 +0000 (UTC)
+	 MIME-Version:Content-Type; b=mrSyPbBABPFuS3GgFAtITQCDikU0hAyh5XBVAAaeu2JiPKO/foGFbCPmLcslS/7qphgCv+vRWSFi9hMyRpTDszCXw5f3KRnpf9NdRQENIUsuJw2Tby/UFkvrIe8Svo7fiXkokAa1+bzkFfSzXvS5FgQesEHYABeB7NOcfypYT5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dgrzxIld; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A9A0C4CEE7;
+	Sun, 19 Oct 2025 12:06:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760874184;
-	bh=sxIdf2TDihjjUe+ar/Lb0guj0iRhwTOQoqVwsaF/Uuc=;
+	s=k20201202; t=1760875598;
+	bh=jwTIPas7lC/lJexiriofL65Tjg4nkG6c33oxdib635g=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ACnkAzvdqqGZAsQAUYjSrKqbrR1S6WsFEEwY5Xc9z3t0j7Se+JRWz7STVBtxRH07H
-	 1VmttEcoilmHHgs0t8ADAJiqHHUMOEwBz1pYPeVTe3I2WbUj45M2FdTC8U/dNevSHz
-	 0BF7CE+7Wrvw7wBVXxh1di17pMdXhpewKrh7gEPUipbZ8Q+5gD4eSvwi0UrdglWyfO
-	 CfOe2MJX2cUK8lZWqbpasoEE4cXoB/gV1QJGMOXPnGKBbpPWoIRQudXp6RzQBxwJQz
-	 02y9aWRbzHVlprlA+O5sl+x/3j8egVVEqwob3S1Oz6CGFpyoy3HQ5aYpmg0+tbqkHj
-	 5y1x4sFFIffVg==
+	b=dgrzxIldJDEKuCL8vvDMjQw9td6O8ceJbJJBRY1OuuWP4tqkIpI/HhX7TXdLOSDTE
+	 Ocvefi24xNKrlWjWdQT5MpmKe+0K/eGm/TA9q1EXbstC7SgctSSXPef1rGGSG0fUnc
+	 r+15BkRO2dvVifKiEMgQMyXEMV37KDwcg4XvSNBahBqVk7990MVsas2xGpp5jlmKpZ
+	 e5KEMRML9+hdiQ08g2PM2XtmOQIL92s1rjeBmcOejo/HkMZFU5wG7SruP09cUUy+/1
+	 v6udRpkG/QxDDRkNbKzHlrvEdQs2KYLPC0Cb7bU0h67Jzl94Ua3NZ98bgpbpZPj/Ro
+	 CfWcxvKPvHaTg==
 From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, 
- Shuhao Fu <sfual@cse.ust.hk>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <aOh1le4YqtYwj-hH@osx.local>
-References: <aOh1le4YqtYwj-hH@osx.local>
-Subject: Re: [PATCH v2] RDMA/uverbs: fix umem release in
- UVERBS_METHOD_CQ_CREATE
-Message-Id: <176087418063.150745.13749475166152366151.b4-ty@kernel.org>
-Date: Sun, 19 Oct 2025 07:43:00 -0400
+To: Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+ linux-rdma@vger.kernel.org, Colin Ian King <coking@nvidia.com>
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20251014120343.2528608-1-coking@nvidia.com>
+References: <20251014120343.2528608-1-coking@nvidia.com>
+Subject: Re: [PATCH] RDMA/rxe: remove redundant assignment to variable
+ page_offset
+Message-Id: <176087559546.151380.14260477175096572642.b4-ty@kernel.org>
+Date: Sun, 19 Oct 2025 08:06:35 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,20 +62,18 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev
 
 
-On Fri, 10 Oct 2025 10:55:17 +0800, Shuhao Fu wrote:
-> In `UVERBS_METHOD_CQ_CREATE`, umem should be released if anything goes
-> wrong. Currently, if `create_cq_umem` fails, umem would not be
-> released or referenced, causing a possible leak.
+On Tue, 14 Oct 2025 13:03:43 +0100, Colin Ian King wrote:
+> The variable page_offset is being assigned a value at the start of
+> a loop and being redundantly zero'd at the end of the loop, there
+> is no code that reads the zero'd value. The assignment is redundant
+> and can be removed.
 > 
-> In this patch, we release umem at `UVERBS_METHOD_CQ_CREATE`, the driver
-> should not release umem if it returns an error code.
 > 
-> [...]
 
 Applied, thanks!
 
-[1/1] RDMA/uverbs: fix umem release in UVERBS_METHOD_CQ_CREATE
-      https://git.kernel.org/rdma/rdma/c/d8713158faad0f
+[1/1] RDMA/rxe: remove redundant assignment to variable page_offset
+      https://git.kernel.org/rdma/rdma/c/1511efaca032ed
 
 Best regards,
 -- 
