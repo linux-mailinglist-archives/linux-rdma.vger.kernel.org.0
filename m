@@ -1,56 +1,54 @@
-Return-Path: <linux-rdma+bounces-13931-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13932-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id D853FBEE368
-	for <lists+linux-rdma@lfdr.de>; Sun, 19 Oct 2025 12:53:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEDD0BEE371
+	for <lists+linux-rdma@lfdr.de>; Sun, 19 Oct 2025 13:02:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A2F7E4E666F
-	for <lists+linux-rdma@lfdr.de>; Sun, 19 Oct 2025 10:53:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72C633E3014
+	for <lists+linux-rdma@lfdr.de>; Sun, 19 Oct 2025 11:02:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEDAB2E2EEE;
-	Sun, 19 Oct 2025 10:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93E4728B4FD;
+	Sun, 19 Oct 2025 11:01:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Aw9xESWQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iPnqQNmv"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 975CD2D94A4;
-	Sun, 19 Oct 2025 10:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52EE31E51FA
+	for <linux-rdma@vger.kernel.org>; Sun, 19 Oct 2025 11:01:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760871214; cv=none; b=tVUVEdnq1ZuuJsM8PVLc0IOw5AE5h4GTGJEXdfg5ouJE+Hvc9VqFfSkuT8spEM4aXwiVGT3pzMcNU40Qnl4gtxwSkft0GJLiHaGVlAhsd4pL7hp8X5aK8QxeNYgkh4THao79IYNaWwo+9XZNKGoLxMNDLDl5XnybL72rbBb0i38=
+	t=1760871717; cv=none; b=OrfTOoPFuk5TqSznzUjEOrDJh0vnbGTkwBbzoZ1zI0hHJELi9D82DdAh72mVjO2jxZ/LVO1KI53CK7078tPiXs00fuoo+0R+wEUDI4AdKOyY9YiNXfQxi79b0NK5MaT1MB6H77B+IOvV4P41EtSvtQ7RFe6+0tUfsI0uKeBhwPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760871214; c=relaxed/simple;
-	bh=DIpyWgDHxamRdUXKHbbNEu45AREQVMTGhBtf03xL+m0=;
+	s=arc-20240116; t=1760871717; c=relaxed/simple;
+	bh=4En01FUabUOOd0m0BsiP3HE415rq73bn1hCvpDjQO9g=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=LhkKjr8W5ZyyJ7GTULMxR/FYUTHOOkYGcfifLUWiwpx5J89JH27PQcICxXcLcQ6Y9VIE7O1PfNW+6pWwLUO0SxiNQa4LKQNSFvSXyHGrXwJ5zVeatj0+9JkRKC8ej1U72ruWnH/0w1Ai0w/jQoW6L6y3Dv2NaXgJmkWtWIQdyPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Aw9xESWQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E597C4CEE7;
-	Sun, 19 Oct 2025 10:53:33 +0000 (UTC)
+	 MIME-Version:Content-Type; b=OMx0Vb4x8hOJCwb1Cbgthm1sJN53ASNi+ayFx9Wdb9CBBA37TD51wMEm/6op4jX06HQkMNyowkDwx6Bzocx7zer5ZGqCYhtTViorPOiaZGhbwQOYPu2/sW/QzmbCRD7mfdfMd4dEgwVIb8JtvVVDBth2tNtBdsY5LrpwC/zSkHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iPnqQNmv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EA90C4CEE7;
+	Sun, 19 Oct 2025 11:01:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760871214;
-	bh=DIpyWgDHxamRdUXKHbbNEu45AREQVMTGhBtf03xL+m0=;
+	s=k20201202; t=1760871716;
+	bh=4En01FUabUOOd0m0BsiP3HE415rq73bn1hCvpDjQO9g=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Aw9xESWQjbdQ72voqlu9rqrgxbPvbLcecrZMbCJCPOXy8dw9UkE83FuM8+kIYEbz/
-	 E+CLAX9QcxpH7k0XZXwvGPEqBJU/y3KbD4A+yExT65dTCgFa1MlMxnDc7cdCJNzTPR
-	 6YI5QD0wEoRkcTGQIrq3K7nQlxkKK3OQtbA2x6ziGuOAaJtaM4H7yoCx4dj20sykvV
-	 XEDw62ScrQ4+6xETK00Je+OrPsnOQRj7MwyeB//rl/e0xbc/p1nK/JAqQw9Hy9Msu6
-	 XC+FUN6BhIpvllx3L7LORZ30vLrkBx8/7IzMmouh6deGqy6L5G98+5IlUNFpcoD9il
-	 AHCe05wKdxWxg==
+	b=iPnqQNmvsSSfUdoAEahwuBLLyX50WySoHOrYmTG0gpjMm4NBF2bui9n51kzoFeiSm
+	 9CS7Vc4+p7YvXeKBdRoZoUPb1uJoV1E3grJunIQ9XvsVpH0uhUUcSzZFgVZ2I1btSw
+	 uiWuM6ICcGbQ5VmtQNY8gTjtbSMdJ3MfpkDylt+0kqvhHEKas2lW+pmaCkRTnITYFp
+	 4X4fLSJS+EHLExWJK8Eg3HFl+0hUnIzolGBWoRIGxRMPkLlpN9X0E+xFN1a1cFT5nG
+	 COXcsB3fq9C2cKn8fdNRHNcDFP57k7QXIJLfIWzPbJfFN0w7t+uKNqUhLixGqd3CVG
+	 +GoYCw+rAgk2Q==
 From: Leon Romanovsky <leon@kernel.org>
-To: bharat@chelsio.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org, 
- Alok Tiwari <alok.a.tiwari@oracle.com>
-Cc: linux-kernel@vger.kernel.org
-In-Reply-To: <20250929091102.50384-1-alok.a.tiwari@oracle.com>
-References: <20250929091102.50384-1-alok.a.tiwari@oracle.com>
-Subject: Re: [PATCH rdma-next] RDMA/cxgb4: fix typo in write_pbl() debug
- message
-Message-Id: <176087121096.148517.11307955840338942731.b4-ty@kernel.org>
-Date: Sun, 19 Oct 2025 06:53:30 -0400
+To: tatyana.e.nikolova@intel.com, Jacob Moroni <jmoroni@google.com>
+Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org
+In-Reply-To: <20250923190850.1022773-1-jmoroni@google.com>
+References: <20250923190850.1022773-1-jmoroni@google.com>
+Subject: Re: [PATCH rdma-next] RDMA/irdma: Fix SD index calculation
+Message-Id: <176087171352.148920.9040275096990248019.b4-ty@kernel.org>
+Date: Sun, 19 Oct 2025 07:01:53 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -59,19 +57,23 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-3ae27
+X-Mailer: b4 0.15-dev
 
 
-On Mon, 29 Sep 2025 02:10:56 -0700, Alok Tiwari wrote:
-> Correct the debug log format string from "pdb_addr" -> "pbl_addr"
-> to match the actual variable name.
+On Tue, 23 Sep 2025 19:08:50 +0000, Jacob Moroni wrote:
+> In some cases, it is possible for pble_rsrc->next_fpm_addr to be
+> larger than u32, so remove the u32 cast to avoid unintentional
+> truncation.
 > 
+> This fixes the following error that can be observed when registering
+> massive memory regions:
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] RDMA/cxgb4: fix typo in write_pbl() debug message
-      https://git.kernel.org/rdma/rdma/c/cfd51fcf117157
+[1/1] RDMA/irdma: Fix SD index calculation
+      https://git.kernel.org/rdma/rdma/c/8d158f47f1f33d
 
 Best regards,
 -- 
