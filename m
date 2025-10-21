@@ -1,89 +1,122 @@
-Return-Path: <linux-rdma+bounces-13950-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13951-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EFCDBF2351
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Oct 2025 17:50:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2167BF42F0
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Oct 2025 02:50:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1912B3B1421
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Oct 2025 15:46:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65B883AC495
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Oct 2025 00:50:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F8CE2750ED;
-	Mon, 20 Oct 2025 15:46:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 678241FC0EA;
+	Tue, 21 Oct 2025 00:50:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jjVKEsOV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mPv7SLjv"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7E5274FEB;
-	Mon, 20 Oct 2025 15:45:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A7331E7C19;
+	Tue, 21 Oct 2025 00:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760975160; cv=none; b=hZzf7bltKHWz5miBTw5cEuSBjs5im7HyUIXfe3lArLHojq+T7FKNqVeiej3lZPloL6F31sasE81mjW1K+tmlNjdvCfiI1dBE2KhmogX5t1xQbhtZPRK5c4EPWmhY1Dj9YtQhKlcriNAzqkR66oIGeG0+1wWQag4367otdpxZrUc=
+	t=1761007828; cv=none; b=nRxgTxg3J/IaL/gFwZrzUMeOk4k2Y13+Np5rlemfTvFPTjIAFlIqWyMqKVzcT8uj82XKLm7r5nvGi4HFUfQCsKltVDqHJbFe/2Y6aAbOahL9h2cN6d0MhBTRZyZsYBVdiYT4cKfazh6wMhBmTm5rNaVlalquY/4pY5MFQAHXK5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760975160; c=relaxed/simple;
-	bh=H8cn2O1JRaxPBijwkulh4VUiHadh8z33IQtXsxuF6Ek=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=OYXnsjUoZVwv7uPnrDuhbGfBLtoadO8v89i1JnhY1+P3PuowPq3mk8kuIxAmub9bXRCS7U6/hbcxk7eDovEWf7FP5AUE60opsrA1GaOALf9YjyQuJEcRNascKzpLWkjaoXOEZiEPmwpURojyYBX5BOpG3xd4CBxBIEGGbs85QCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jjVKEsOV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01CA8C4CEF9;
-	Mon, 20 Oct 2025 15:45:58 +0000 (UTC)
+	s=arc-20240116; t=1761007828; c=relaxed/simple;
+	bh=oMlYshkcc5RvJ9NUcckvVdcCEGPA36gUCVeoMsopJGA=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=F5ga9dKoQuTmB6Ar9uSi8mXD8rpalYnZS7pSwW/YYoXK6AxMxfiy2nB1uV1wq7hP2icYNG5UdlbirCYu/UDFnwkCo9qq1x0t0/Wb959989VN+ocH5zEOMRHsS7ASNhLog2I8d0Zq1LTvvfLHmPlDiXWKvI2CkBGGeF6ldKlqVgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mPv7SLjv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5E51C113D0;
+	Tue, 21 Oct 2025 00:50:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1760975159;
-	bh=H8cn2O1JRaxPBijwkulh4VUiHadh8z33IQtXsxuF6Ek=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=jjVKEsOVQdA5p7qWhAfM055zuIIlB2KrMdIZYEoEHvzOJYHZlnmVb/PsY/qVPBc8i
-	 yAY8E+jA0IENCRrf32jHgRTmu96E/JzAC0Goz+xt7678xolbHjwKRcDM7Qed16wr0l
-	 ImXS5HE5GnbXSS7CDGZHmrT2v0MxpVfklel9bZEhqespgy/dpMrzSqOY1BCle7VxuT
-	 bNXq/i6+sQ8D1gi1ZVw1OV5huF+6hrtTEdeRWWdNSFddph+wfpjhogbaGkpEodqVqz
-	 OBO4krFSFjX2OXTIPb5KVF4mfuEXSOeWCeMnaTJIMeFbAOdORkosXt6MUvrJKBNCJc
-	 R5JMiYQBEPxRA==
-From: Leon Romanovsky <leon@kernel.org>
-To: linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>, 
- Leon Romanovsky <leon@kernel.org>
-In-Reply-To: <20251020034320.3011094-1-rdunlap@infradead.org>
-References: <20251020034320.3011094-1-rdunlap@infradead.org>
-Subject: Re: [PATCH] RDMA/uverbs: fix some kernel-doc warnings
-Message-Id: <176097515612.343859.12543106218321557373.b4-ty@kernel.org>
-Date: Mon, 20 Oct 2025 11:45:56 -0400
+	s=k20201202; t=1761007827;
+	bh=oMlYshkcc5RvJ9NUcckvVdcCEGPA36gUCVeoMsopJGA=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=mPv7SLjvpy8cYOFjoXpon0RIFeTwfAPLGEldBhOJfikRorQxmZo3h304ruAyy9E6a
+	 PY2whK3LjxepK8Chiq7zx5UvJtkAEW18HSiS7gYBckljdnj44EfgZUBNulJ/j+Xo9l
+	 +1/VFaUiIcqPHoyQiI1220a3Lungf7ixG5rlIAnNiwmPGQD9N1LY3hkqM5jPQqo1aC
+	 ov5UCon9YX6HbV341G+H2n41TFTBm3nqjb2v2Xtm171PMxgS6Luns9fC3GezAFWars
+	 UvECPmLB4Q1hHnSqMgkN3GnxGzGWFPXLmbS7RcVi9spFm64wxfmlROORM8J8+KYKX+
+	 WNmL947DncnAQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADE503A4102D;
+	Tue, 21 Oct 2025 00:50:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v2] net/smc: fix general protection fault in
+ __smc_diag_dump
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176100780950.473459.10068795081815761640.git-patchwork-notify@kernel.org>
+Date: Tue, 21 Oct 2025 00:50:09 +0000
+References: <20251017024827.3137512-1-wangliang74@huawei.com>
+In-Reply-To: <20251017024827.3137512-1-wangliang74@huawei.com>
+To: Wang Liang <wangliang74@huawei.com>
+Cc: alibuda@linux.alibaba.com, dust.li@linux.alibaba.com,
+ sidraya@linux.ibm.com, wenjia@linux.ibm.com, mjambigi@linux.ibm.com,
+ tonylu@linux.alibaba.com, guwen@linux.alibaba.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
+ linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, yuehaibing@huawei.com,
+ zhangchangzhong@huawei.com
 
+Hello:
 
-On Sun, 19 Oct 2025 20:43:20 -0700, Randy Dunlap wrote:
-> Fix 49 kernel-doc warnings in ib_verbs.h:
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Fri, 17 Oct 2025 10:48:27 +0800 you wrote:
+> The syzbot report a crash:
 > 
-> - Add struct short description for rdma_stat_desc, rdma_hw_stats.
-> - Fix kernel-doc format for struct members (use ':' instead of '-') for
->   several structs.
-> - Don't use "/**" kernel-doc notation for struct members in ib_device_ops
->   (most members are not documented and most of the kernel-doc was
->   not formatted correctly).
-> - Spell function parameters correctly in ib_dma_map_sgtable_attrs(),
->   ib_device_try_get(), rdma_roce_rescan_device().
-> - Add kernel-doc for the function parameter in
->   rdma_flow_label_to_udp_sport().
+>   Oops: general protection fault, probably for non-canonical address 0xfbd5a5d5a0000003: 0000 [#1] SMP KASAN NOPTI
+>   KASAN: maybe wild-memory-access in range [0xdead4ead00000018-0xdead4ead0000001f]
+>   CPU: 1 UID: 0 PID: 6949 Comm: syz.0.335 Not tainted syzkaller #0 PREEMPT(full)
+>   Hardware name: Google Compute Engine/Google Compute Engine, BIOS Google 08/18/2025
+>   RIP: 0010:smc_diag_msg_common_fill net/smc/smc_diag.c:44 [inline]
+>   RIP: 0010:__smc_diag_dump.constprop.0+0x3ca/0x2550 net/smc/smc_diag.c:89
+>   Call Trace:
+>    <TASK>
+>    smc_diag_dump_proto+0x26d/0x420 net/smc/smc_diag.c:217
+>    smc_diag_dump+0x27/0x90 net/smc/smc_diag.c:234
+>    netlink_dump+0x539/0xd30 net/netlink/af_netlink.c:2327
+>    __netlink_dump_start+0x6d6/0x990 net/netlink/af_netlink.c:2442
+>    netlink_dump_start include/linux/netlink.h:341 [inline]
+>    smc_diag_handler_dump+0x1f9/0x240 net/smc/smc_diag.c:251
+>    __sock_diag_cmd net/core/sock_diag.c:249 [inline]
+>    sock_diag_rcv_msg+0x438/0x790 net/core/sock_diag.c:285
+>    netlink_rcv_skb+0x158/0x420 net/netlink/af_netlink.c:2552
+>    netlink_unicast_kernel net/netlink/af_netlink.c:1320 [inline]
+>    netlink_unicast+0x5a7/0x870 net/netlink/af_netlink.c:1346
+>    netlink_sendmsg+0x8d1/0xdd0 net/netlink/af_netlink.c:1896
+>    sock_sendmsg_nosec net/socket.c:714 [inline]
+>    __sock_sendmsg net/socket.c:729 [inline]
+>    ____sys_sendmsg+0xa95/0xc70 net/socket.c:2614
+>    ___sys_sendmsg+0x134/0x1d0 net/socket.c:2668
+>    __sys_sendmsg+0x16d/0x220 net/socket.c:2700
+>    do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+>    do_syscall_64+0xcd/0x4e0 arch/x86/entry/syscall_64.c:94
+>    entry_SYSCALL_64_after_hwframe+0x77/0x7f
+>    </TASK>
 > 
 > [...]
 
-Applied, thanks!
+Here is the summary with links:
+  - [net,v2] net/smc: fix general protection fault in __smc_diag_dump
+    https://git.kernel.org/netdev/net/c/f584239a9ed2
 
-[1/1] RDMA/uverbs: fix some kernel-doc warnings
-      https://git.kernel.org/rdma/rdma/c/be180c847a6db6
-
-Best regards,
+You are awesome, thank you!
 -- 
-Leon Romanovsky <leon@kernel.org>
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
