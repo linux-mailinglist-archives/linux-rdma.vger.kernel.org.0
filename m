@@ -1,243 +1,151 @@
-Return-Path: <linux-rdma+bounces-13955-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13956-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 005BFBF58F2
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Oct 2025 11:40:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A076FBF6874
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Oct 2025 14:48:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D2B018C7D4B
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Oct 2025 09:41:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFAAB3AF3D6
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Oct 2025 12:47:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C55DD2F6933;
-	Tue, 21 Oct 2025 09:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EBEE3321C7;
+	Tue, 21 Oct 2025 12:47:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="k42bulir"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="gO/vRsv0"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3970284B2E
-	for <linux-rdma@vger.kernel.org>; Tue, 21 Oct 2025 09:40:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 681D541C63;
+	Tue, 21 Oct 2025 12:47:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761039633; cv=none; b=ZP+SKyRCnwm2Jl5VfUG9rwBdY5qa+mi+OhJrC249nK4hwWllM9HwLJBjCU+3aymTxVIEPUAQqvW5V9pSr2qvnygDWrGLpxxcSUnVsqNpK+3kQfoGfgZ8kVBtEt4Zi8ElkfNxHJUX5cOMh+B85SlCk8G+idMbXHZEdehugl0ZRBc=
+	t=1761050856; cv=none; b=LTF5qwgcOh/qfb+zPEZGiu9Z3J7EC+gxXOhM4whRlpsnNtYuV2u2g9qrV7kzUqZ/ZQTSiYoQNoOGZvNV3UjKihthmYlqkXm+lnj8/OF5XLIie8LYaVFEH5NqhOi9n2jwOxseuGzujoQ1KAZQN5z8mO/3c+4OwRYV30fKwTENLdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761039633; c=relaxed/simple;
-	bh=wubnhqquEjQfMN9Vc/YjCRL4zpCZiKRPKh/Y6eJlXBo=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=HG0ccd4f1rpOwU7+DarKU0MkiqKlhXgI3mkVi409j8nmoY87WCl1jWdF6qs+VKzgSw1p26vkwRAbPr1NjXjmISw84vZwvkRM1NmsheAXwaVQIe3q0xPJ2Ze9g+2s5YBHh3/wx9c/uIDHhC0ySqE6bjVT0FEzuYs4ev4zHhywS+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=k42bulir; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1761039632; x=1792575632;
-  h=date:from:to:cc:subject:message-id;
-  bh=wubnhqquEjQfMN9Vc/YjCRL4zpCZiKRPKh/Y6eJlXBo=;
-  b=k42bulirU1Tw9epfW6wFeXbCHTbVbuVKqpWPgGU8kg7VF7L1/NvNqCk7
-   X/hFtvHJZ2CW6ptBgxMrlo5WakUUCcEY/kgOkhT/e15qlt/g6aHHQO45k
-   kFD1TIIqdg7cVm2TDMUJOWgcYFtPwNUAhpXBFE8SLtgAd206aVnKPnqp8
-   KeZJz9F4wE0fmADcU0+WBTD5R6yaSMiukoMqE7YLTPQRYhLIZv7oOSYlq
-   pdYR3YtGE5XiXu+tGa1p0e2IpjXpMrnO8Nl6/HdaOsM3en5hsUBDFifSN
-   XfBw/WKBPpUkZsVxUdLEKHmPy8CzN7XGJQMs7JW8GzQgiUsyUDxmWBJsW
-   Q==;
-X-CSE-ConnectionGUID: ANmLPPSgTZmvS/NNhIJMAA==
-X-CSE-MsgGUID: QUABg6ycS6GNrhDU063uZA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11586"; a="74504726"
-X-IronPort-AV: E=Sophos;i="6.19,244,1754982000"; 
-   d="scan'208";a="74504726"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2025 02:40:31 -0700
-X-CSE-ConnectionGUID: sKt+kT9ZSpqjj93vYI+OAQ==
-X-CSE-MsgGUID: rMEupWKMTcmp67qSWM+4IA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,244,1754982000"; 
-   d="scan'208";a="182701358"
-Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
-  by orviesa006.jf.intel.com with ESMTP; 21 Oct 2025 02:40:30 -0700
-Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1vB8qL-000Ahf-2W;
-	Tue, 21 Oct 2025 09:40:01 +0000
-Date: Tue, 21 Oct 2025 17:34:20 +0800
-From: kernel test robot <lkp@intel.com>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Doug Ledford <dledford@redhat.com>,
- Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- be180c847a6db6646d7bb4740a1d73f6f67d1030
-Message-ID: <202510211714.j2gmfMn5-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	s=arc-20240116; t=1761050856; c=relaxed/simple;
+	bh=nEEOvwGFoaio4Z73CGBjuz3prJe6v2U2OEU9Gw76vck=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A80zrp3ufXpTEod3NOGzg02DkTAdvBp4pn6W19t20k3eC4alIc7zKnbn14UMIkkV1l8HMzH1qw4uPcEj6YqiE/ZhixlR30RCUGp+Vhtz0B8dbQ1SsWvOO9dw+/m2/pdqoAoRXPpSEE6XKKvZdQB6TkSWaaA6Pve4Q/kSd+sZBqQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=gO/vRsv0; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 59LBHPta020537;
+	Tue, 21 Oct 2025 12:47:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=iNqoZWgWQCEkxMVzM8LaPwhvDpeQuf
+	fSX5XZC01i0U4=; b=gO/vRsv0omSRvgQzH7sx+eMm/phOoih4flIuG7vFSajX+W
+	o4BeByI9aVn5O2kOaoHAqMLL53fns0Kb01pTVLxQyDN8mBy8gf2Te6jMAKfnwccV
+	x9sAu/qk+XJ2li7Mbq2St3vaPM4hnrBM/cBE5MTncbc6ZGti1GqZtT49QrwGnOIO
+	q3Ylc4fMCnkyc2emzqjxsbR+gQ44faBJH/kk+5JCFx4/hoZOxCDu8/h5Si4ZW7Xd
+	kIWoyKyuZBijyV9i/byeGiG7p5q+JhHAoqMB/flfC0OORZt50VzpQQIWvHtXOMKx
+	WpQWwiPJ4NVIy1eb3NIT7bODBwaKKYxqvcrK155g==
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49v31ry0c3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 21 Oct 2025 12:47:30 +0000 (GMT)
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 59LB75kk014848;
+	Tue, 21 Oct 2025 12:47:29 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 49vn7s2x64-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 21 Oct 2025 12:47:29 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 59LClNHZ52691438
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 21 Oct 2025 12:47:23 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B521F20049;
+	Tue, 21 Oct 2025 12:47:23 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3DAF42004B;
+	Tue, 21 Oct 2025 12:47:23 +0000 (GMT)
+Received: from osiris (unknown [9.155.211.25])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue, 21 Oct 2025 12:47:23 +0000 (GMT)
+Date: Tue, 21 Oct 2025 14:47:21 +0200
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Gerd Bayer <gbayer@linux.ibm.com>
+Cc: Niklas Schnelle <schnelle@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Shay Drori <shayd@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Tariq Toukan <tariqt@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v3] s390/pci: Avoid deadlock between PCI error recovery
+ and mlx5 crdump
+Message-ID: <20251021124721.26700C66-hca@linux.ibm.com>
+References: <20251016-fix_pcirecov_master-v3-1-9fb7c7badd67@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251016-fix_pcirecov_master-v3-1-9fb7c7badd67@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: GgtonA3OlxRBJyMjgLHOTIRQx53op6mp
+X-Proofpoint-GUID: GgtonA3OlxRBJyMjgLHOTIRQx53op6mp
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDE4MDAyMiBTYWx0ZWRfX1C1I5J+HsJCj
+ b3GZ6Iodpf9a7J2sgPs8hW+vwGi2GreWltw9VkbmlEoxQwdbsrunOdjehNAB78/rFwRd0Fj4U3x
+ Y9f4W9bkDOkRPYls7Pui5tnB2vLH9ePDPh3rl14U/qsrxTwpCrh+eyP4z0BjnmlRtKl9TxkoIy9
+ +E03IdeY/VXQnAzUEVZWqOcfUm+OAzJ2cEB0cxC8Syu+P/HBWmrHkL209Z1E1UEdBWXjumTNLzY
+ Ddzt+v+dXZMdxxSU182Ph/Rx3qmYwaVO/7zv5rhXrA4yjEe+yS/U/ltsqCICOjJ7BoPwnEwTmp/
+ tooBXynap4Nn9It/wuYInZBUJbLiTvHVipQzOvISNgPDaFRMG+vz6mKHDfxfdigrmGsVpb4LmZC
+ FIWJTGIpVlYbuxun1U7UPgvPjoLTmQ==
+X-Authority-Analysis: v=2.4 cv=IJYPywvG c=1 sm=1 tr=0 ts=68f780e2 cx=c_pps
+ a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
+ a=kj9zAlcOel0A:10 a=x6icFKpwvdMA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=lAFIM-5KWFqR7GMvSqoA:9 a=CjuIK1q_8ugA:10
+ a=cPQSjfK2_nFv0Q5t_7PE:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-10-21_01,2025-10-13_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 lowpriorityscore=0 clxscore=1011 suspectscore=0 spamscore=0
+ bulkscore=0 adultscore=0 impostorscore=0 malwarescore=0 priorityscore=1501
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2510020000 definitions=main-2510180022
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: be180c847a6db6646d7bb4740a1d73f6f67d1030  RDMA/uverbs: fix some kernel-doc warnings
+On Thu, Oct 16, 2025 at 11:27:03AM +0200, Gerd Bayer wrote:
+> Do not block PCI config accesses through pci_cfg_access_lock() when
+> executing the s390 variant of PCI error recovery: Acquire just
+> device_lock() instead of pci_dev_lock() as powerpc's EEH and
+> generig PCI AER processing do.
+> 
+> During error recovery testing a pair of tasks was reported to be hung:
+> 
+> mlx5_core 0000:00:00.1: mlx5_health_try_recover:338:(pid 5553): health recovery flow aborted, PCI reads still not working
+> INFO: task kmcheck:72 blocked for more than 122 seconds.
+>       Not tainted 5.14.0-570.12.1.bringup7.el9.s390x #1
+> Cc: stable@vger.kernel.org
+> Fixes: 4cdf2f4e24ff ("s390/pci: implement minimal PCI error recovery")
+> Reviewed-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
+> ---
+> Hi Niklas, Shay, Jason,
+> 
+> by now I believe fixing this in s390/pci is the right way to go, since
+> the other PCI error recovery implementations apparently don't require
+> this strict blocking of accesses to the PCI config space.
+>     
+> Hi Alexander, Vasily, Heiko,
+>     
+> while I sent this to netdev since prior versions were discussed there,
+> I assume this patch will go through the s390 tree, right?
 
-elapsed time: 1064m
-
-configs tested: 149
-configs skipped: 5
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig    clang-22
-alpha                             allnoconfig    gcc-15.1.0
-alpha                            allyesconfig    clang-19
-alpha                            allyesconfig    gcc-15.1.0
-arc                              allmodconfig    clang-19
-arc                              allmodconfig    gcc-15.1.0
-arc                               allnoconfig    clang-22
-arc                               allnoconfig    gcc-15.1.0
-arc                              allyesconfig    clang-19
-arc                              allyesconfig    gcc-15.1.0
-arc                   randconfig-001-20251021    gcc-8.5.0
-arc                   randconfig-002-20251021    gcc-9.5.0
-arm                              allmodconfig    clang-19
-arm                              allmodconfig    gcc-15.1.0
-arm                               allnoconfig    clang-22
-arm                              allyesconfig    clang-19
-arm                              allyesconfig    gcc-15.1.0
-arm                   randconfig-001-20251021    clang-22
-arm                   randconfig-002-20251021    clang-22
-arm                   randconfig-003-20251021    clang-22
-arm                   randconfig-004-20251021    clang-22
-arm64                            allmodconfig    clang-19
-arm64                             allnoconfig    clang-22
-arm64                             allnoconfig    gcc-15.1.0
-arm64                 randconfig-001-20251021    gcc-15.1.0
-arm64                 randconfig-002-20251021    clang-22
-arm64                 randconfig-003-20251021    gcc-12.5.0
-arm64                 randconfig-004-20251021    clang-18
-csky                              allnoconfig    clang-22
-csky                              allnoconfig    gcc-15.1.0
-csky                  randconfig-001-20251021    gcc-15.1.0
-csky                  randconfig-002-20251021    gcc-11.5.0
-hexagon                          allmodconfig    clang-17
-hexagon                          allmodconfig    clang-19
-hexagon                           allnoconfig    clang-22
-hexagon                          allyesconfig    clang-19
-hexagon                          allyesconfig    clang-22
-hexagon               randconfig-001-20251021    clang-22
-hexagon               randconfig-002-20251021    clang-17
-i386                             allmodconfig    gcc-14
-i386                              allnoconfig    gcc-14
-i386                             allyesconfig    gcc-14
-i386        buildonly-randconfig-001-20251021    clang-20
-i386        buildonly-randconfig-002-20251021    clang-20
-i386        buildonly-randconfig-003-20251021    clang-20
-i386        buildonly-randconfig-004-20251021    gcc-14
-i386        buildonly-randconfig-005-20251021    gcc-14
-i386        buildonly-randconfig-006-20251021    clang-20
-i386                                defconfig    clang-20
-loongarch                        allmodconfig    clang-19
-loongarch                         allnoconfig    clang-22
-loongarch             randconfig-001-20251021    clang-22
-loongarch             randconfig-002-20251021    clang-22
-m68k                             allmodconfig    gcc-15.1.0
-m68k                              allnoconfig    gcc-15.1.0
-m68k                             allyesconfig    gcc-15.1.0
-microblaze                       allmodconfig    gcc-15.1.0
-microblaze                        allnoconfig    gcc-15.1.0
-microblaze                       allyesconfig    gcc-15.1.0
-microblaze                          defconfig    gcc-15.1.0
-mips                              allnoconfig    gcc-15.1.0
-nios2                             allnoconfig    gcc-11.5.0
-nios2                             allnoconfig    gcc-15.1.0
-nios2                               defconfig    gcc-11.5.0
-nios2                 randconfig-001-20251021    gcc-10.5.0
-nios2                 randconfig-002-20251021    gcc-8.5.0
-openrisc                          allnoconfig    gcc-15.1.0
-openrisc                         allyesconfig    gcc-15.1.0
-openrisc                            defconfig    gcc-15.1.0
-parisc                           allmodconfig    gcc-15.1.0
-parisc                            allnoconfig    gcc-15.1.0
-parisc                           allyesconfig    gcc-15.1.0
-parisc                              defconfig    gcc-15.1.0
-parisc                randconfig-001-20251021    gcc-8.5.0
-parisc                randconfig-002-20251021    gcc-15.1.0
-parisc64                            defconfig    gcc-15.1.0
-powerpc                          allmodconfig    gcc-15.1.0
-powerpc                           allnoconfig    gcc-15.1.0
-powerpc                          allyesconfig    clang-22
-powerpc                     ep8248e_defconfig    clang-22
-powerpc                      ep88xc_defconfig    clang-22
-powerpc                      ppc44x_defconfig    clang-22
-powerpc               randconfig-001-20251021    clang-22
-powerpc               randconfig-002-20251021    clang-19
-powerpc               randconfig-003-20251021    clang-22
-powerpc                     tqm8560_defconfig    clang-22
-powerpc64                        alldefconfig    clang-22
-powerpc64             randconfig-001-20251021    clang-22
-powerpc64             randconfig-002-20251021    gcc-12.5.0
-powerpc64             randconfig-003-20251021    gcc-8.5.0
-riscv                            allmodconfig    clang-22
-riscv                             allnoconfig    gcc-15.1.0
-riscv                            allyesconfig    clang-16
-riscv                               defconfig    clang-22
-riscv                 randconfig-001-20251021    gcc-8.5.0
-riscv                 randconfig-002-20251021    clang-22
-s390                             allmodconfig    clang-18
-s390                             allmodconfig    gcc-15.1.0
-s390                              allnoconfig    clang-22
-s390                             allyesconfig    gcc-15.1.0
-s390                                defconfig    clang-22
-s390                  randconfig-001-20251021    clang-22
-s390                  randconfig-002-20251021    gcc-11.5.0
-sh                               allmodconfig    gcc-15.1.0
-sh                                allnoconfig    gcc-15.1.0
-sh                               allyesconfig    gcc-15.1.0
-sh                                  defconfig    gcc-15.1.0
-sh                    randconfig-001-20251021    gcc-9.5.0
-sh                    randconfig-002-20251021    gcc-10.5.0
-sparc                            allmodconfig    gcc-15.1.0
-sparc                             allnoconfig    gcc-15.1.0
-sparc                               defconfig    gcc-15.1.0
-sparc                 randconfig-001-20251021    gcc-8.5.0
-sparc                 randconfig-002-20251021    gcc-14.3.0
-sparc64                             defconfig    clang-20
-sparc64               randconfig-001-20251021    gcc-8.5.0
-sparc64               randconfig-002-20251021    gcc-10.5.0
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-22
-um                               allyesconfig    clang-19
-um                               allyesconfig    gcc-14
-um                                  defconfig    clang-22
-um                             i386_defconfig    gcc-14
-um                    randconfig-001-20251021    gcc-14
-um                    randconfig-002-20251021    gcc-14
-um                           x86_64_defconfig    clang-22
-x86_64                            allnoconfig    clang-20
-x86_64                           allyesconfig    clang-20
-x86_64      buildonly-randconfig-001-20251021    clang-20
-x86_64      buildonly-randconfig-001-20251021    gcc-13
-x86_64      buildonly-randconfig-002-20251021    clang-20
-x86_64      buildonly-randconfig-003-20251021    clang-20
-x86_64      buildonly-randconfig-004-20251021    clang-20
-x86_64      buildonly-randconfig-005-20251021    clang-20
-x86_64      buildonly-randconfig-005-20251021    gcc-14
-x86_64      buildonly-randconfig-006-20251021    clang-20
-x86_64                              defconfig    gcc-14
-x86_64                                  kexec    clang-20
-x86_64                               rhel-9.4    clang-20
-x86_64                           rhel-9.4-bpf    gcc-14
-x86_64                          rhel-9.4-func    clang-20
-x86_64                    rhel-9.4-kselftests    clang-20
-x86_64                         rhel-9.4-kunit    gcc-14
-x86_64                           rhel-9.4-ltp    gcc-14
-x86_64                          rhel-9.4-rust    clang-20
-xtensa                            allnoconfig    gcc-15.1.0
-xtensa                randconfig-001-20251021    gcc-8.5.0
-xtensa                randconfig-002-20251021    gcc-13.4.0
-xtensa                    smp_lx200_defconfig    clang-22
-
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Applied, thanks!
 
