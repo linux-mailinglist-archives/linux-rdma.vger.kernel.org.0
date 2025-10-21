@@ -1,109 +1,164 @@
-Return-Path: <linux-rdma+bounces-13965-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13966-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00972BF7BF3
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Oct 2025 18:43:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFC63BF8039
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Oct 2025 20:07:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9F3E423834
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Oct 2025 16:41:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E90B4080E8
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Oct 2025 18:07:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51932347BA9;
-	Tue, 21 Oct 2025 16:41:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 306EF35581F;
+	Tue, 21 Oct 2025 18:07:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=cse.ust.hk header.i=@cse.ust.hk header.b="GZdXIYEl"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bkhPNNdz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from cse.ust.hk (cssvr7.cse.ust.hk [143.89.41.157])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07F2C33FE0B;
-	Tue, 21 Oct 2025 16:41:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=143.89.41.157
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761064894; cv=pass; b=lkGOo5IR65TGgla2U2LhTMXwLaji6wiH+mGeB4Fsc83qRWuw9CtF6AWSAU7S6TcPTAEkNyrQspi/FqzXbWSuupqKf4Jsx+M5AHHoadAmKBq367KWAECM2srmrzvTFmSFhfIl1JK1VxDEMXbr9Z3xc1L6lyr5A3JZG906hZlua/M=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761064894; c=relaxed/simple;
-	bh=0uItpz1pLX8HIG5XI6mC7zJLAzblcS+XDRjNSKGIIeQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=fOR4qbICKElhSN6ziZRNWSylvSzD6mrXeCSbMDfgBbyeGYOFORlYvHp9BiWkmQn8tqu+7io8l03tPpojl0YGT58qGdL24Sr14LVkcpe/1vDvrzojzY5q6Mx5vwGuUa5bVcIO18YkRiFUB2LMpW//CkhlibYb1OnEk25BfSKIwz4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cse.ust.hk; spf=pass smtp.mailfrom=cse.ust.hk; dkim=pass (1024-bit key) header.d=cse.ust.hk header.i=@cse.ust.hk header.b=GZdXIYEl; arc=pass smtp.client-ip=143.89.41.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cse.ust.hk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cse.ust.hk
-Received: from chcpu18 (191host009.mobilenet.cse.ust.hk [143.89.191.9])
-	(authenticated bits=0)
-	by cse.ust.hk (8.18.1/8.12.5) with ESMTPSA id 59LGf3N6777008
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Wed, 22 Oct 2025 00:41:09 +0800
-ARC-Seal: i=1; a=rsa-sha256; d=cse.ust.hk; s=arccse; t=1761064870; cv=none;
-	b=tw6kC97ubPTKPFK2Pi5DArsAPF4hw5oAL6et4x63jm4bIfk/f0mlsUVZnkggTbSFLymG3YzxDmxSn55xRM3PB6WGiRzwfBj18uqUR9nptRv1S3jFz6KaF8iRIwUP3wk5I968tx9Kd83KKw98CXqhTndm17j3/aCbMmHS0a6G7jU=
-ARC-Message-Signature: i=1; a=rsa-sha256; d=cse.ust.hk; s=arccse;
-	t=1761064870; c=relaxed/relaxed;
-	bh=TZPyizmzA/60DtRKWuQLfOf8db5VKmyvKCbeOKOykwY=;
-	h=DKIM-Signature:Date:From:To:Subject:Message-ID:MIME-Version; b=McEqUAR1gtH7znjYt4LiwHMMjl6hqkKsCjwfJFFlx6AIKGwVuITjbToPvUCWfpptsmuNEf4dske1hL5euEPbSr2bTkJVG6UiNsqyEDTxPi92BPdcvvyEMwxCqYx2c3pwkFOiXTOJL7/qyp1bb5XAaEivVW6upX+6KvDj2h/VfaI=
-ARC-Authentication-Results: i=1; cse.ust.hk
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cse.ust.hk;
-	s=cseusthk; t=1761064870;
-	bh=TZPyizmzA/60DtRKWuQLfOf8db5VKmyvKCbeOKOykwY=;
-	h=Date:From:To:Cc:Subject:From;
-	b=GZdXIYElwWe4ladj1aTMvqSogzjE8GNwGhfKLkBed8R9Ukv/1+vqHK+KNE9Y0LlDZ
-	 G2tavRL1LU826ntGGTkph2DY5p8O2xEgxYlY3W4P+Yxj5MO0Idzrk3DzRn/tIIBdND
-	 pXwUtgXmLUJa18eFQz5JZyP2iRheVrD9lPyQzirU=
-Date: Tue, 21 Oct 2025 16:40:58 +0000
-From: Shuhao Fu <sfual@cse.ust.hk>
-To: Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] RDMA/mlx5: Fix refcount inconsistency in mlx5_netdev_event
-Message-ID: <aPe3mnFjQeXaILyR@chcpu18>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57CF1346E65
+	for <linux-rdma@vger.kernel.org>; Tue, 21 Oct 2025 18:07:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1761070041; cv=none; b=P5u2Kb4L1m/2PMa3/X4r0Wogp6hXkVwphpv/eqKtvJuhZTW2rQuaLoofHoilfWyhUEoH3yi8AiIpEJwUnLBhWqL7Zltvou+9zIyJnHFJR2p0aQojQyLR8fj4QRG6tW93IQnnj432PSeksn0WR8C5HgwTmrBzHZI8WfmRrJBm6XA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1761070041; c=relaxed/simple;
+	bh=wIC+/v6WIBNXrJXaUwY53IJCUxv+gMYg/LTYvVG7PCo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HcNWDOSi5/PtDjAQZiDrafy11rKA4qvPaJ+VdjxUZpk0kW8CFIX+s5MvFtMnKxGaepXKpr3FolhW6F6QBSZ1kR6FvttqHHHmEQDL23XyGmNyyMVC+KlvvajusqfO/mFlUBJ4O8nU/hrN0mrgi1IX01x9RBSKNZy3edyLEXVyrbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bkhPNNdz; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <35b05f34-543b-4180-a18e-3ba4fbbd16b5@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1761070035;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eivMlnTEpQdEK++a6Em9MLcXy6/3SwbeKxkmKvE1PYU=;
+	b=bkhPNNdzpT6G1AhPKdfNarlvPxzvcTB7c/rhY/8S1U8d62gojgjhqySKib2xq2iIt6o1iv
+	oCcg3otzzr8cK8RyD0HF+EhF0MFj4VmlrSUALbc1dW+/feCH75/HaZ6YnWBS8fHbgkbMO0
+	gQ2uciQU2+KskUa57uAIbSimEH7Jouk=
+Date: Tue, 21 Oct 2025 11:06:55 -0700
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Env-From: sfual
+Subject: Re: [PATCH] RDMA/rxe: fix null deref on srq->rq.queue after resize
+ failure
+To: Junxian Huang <huangjunxian6@hisilicon.com>,
+ Yi Liu <asatsuyu.liu@gmail.com>, linux-rdma@vger.kernel.org
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>
+References: <CANQ=Xi1JW2zFuYzNCw9Ft7WhseiHk4w1prYKmBc-Hbn1N32XNQ@mail.gmail.com>
+ <91be3a58-c7e4-7250-9826-a8294386f2a0@hisilicon.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "yanjun.zhu" <yanjun.zhu@linux.dev>
+In-Reply-To: <91be3a58-c7e4-7250-9826-a8294386f2a0@hisilicon.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Fix refcount inconsistency related to `mlx5_ib_get_native_port_mdev`.
+On 10/21/25 6:42 AM, Junxian Huang wrote:
+> 
+> 
+> On 2025/10/21 10:20, Yi Liu wrote:
+>> A NULL pointer dereference can occur in rxe_srq_chk_attr() when
+>> ibv_modify_srq() is invoked twice in succession under certain error
+>> conditions. The first call may fail in rxe_queue_resize(), which leads
+>> rxe_srq_from_attr() to set srq->rq.queue = NULL. The second call then
+>> triggers a crash (null deref) when accessing
+>> srq->rq.queue->buf->index_mask.
+>>
+>> Call Trace:
+>> <TASK>
+>> rxe_modify_srq+0x170/0x480 [rdma_rxe]
+>> ? __pfx_rxe_modify_srq+0x10/0x10 [rdma_rxe]
+>> ? uverbs_try_lock_object+0x4f/0xa0 [ib_uverbs]
+>> ? rdma_lookup_get_uobject+0x1f0/0x380 [ib_uverbs]
+>> ib_uverbs_modify_srq+0x204/0x290 [ib_uverbs]
+>> ? __pfx_ib_uverbs_modify_srq+0x10/0x10 [ib_uverbs]
+>> ? tryinc_node_nr_active+0xe6/0x150
+>> ? uverbs_fill_udata+0xed/0x4f0 [ib_uverbs]
+>> ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0x2c0/0x470 [ib_uverbs]
+>> ? __pfx_ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0x10/0x10 [ib_uverbs]
+>> ? uverbs_fill_udata+0xed/0x4f0 [ib_uverbs]
+>> ib_uverbs_run_method+0x55a/0x6e0 [ib_uverbs]
+>> ? __pfx_ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0x10/0x10 [ib_uverbs]
+>> ib_uverbs_cmd_verbs+0x54d/0x800 [ib_uverbs]
+>> ? __pfx_ib_uverbs_cmd_verbs+0x10/0x10 [ib_uverbs]
+>> ? __pfx___raw_spin_lock_irqsave+0x10/0x10
+>> ? __pfx_do_vfs_ioctl+0x10/0x10
+>> ? ioctl_has_perm.constprop.0.isra.0+0x2c7/0x4c0
+>> ? __pfx_ioctl_has_perm.constprop.0.isra.0+0x10/0x10
+>> ib_uverbs_ioctl+0x13e/0x220 [ib_uverbs]
+>> ? __pfx_ib_uverbs_ioctl+0x10/0x10 [ib_uverbs]
+>> __x64_sys_ioctl+0x138/0x1c0
+>> do_syscall_64+0x82/0x250
+>> ? fdget_pos+0x58/0x4c0
+>> ? ksys_write+0xf3/0x1c0
+>> ? __pfx_ksys_write+0x10/0x10
+>> ? do_syscall_64+0xc8/0x250
+>> ? __pfx_vm_mmap_pgoff+0x10/0x10
+>> ? fget+0x173/0x230
+>> ? fput+0x2a/0x80
+>> ? ksys_mmap_pgoff+0x224/0x4c0
+>> ? do_syscall_64+0xc8/0x250
+>> ? do_user_addr_fault+0x37b/0xfe0
+>> ? clear_bhb_loop+0x50/0xa0
+>> ? clear_bhb_loop+0x50/0xa0
+>> ? clear_bhb_loop+0x50/0xa0
+>> entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>>
+>> Fix by aligning the error handling path in rxe_srq_from_attr() with
+>> rxe_cq_resize_queue(), which also uses rxe_queue_resize(): do not
+>> nullify the queue when resize fails.
+>>
+>> Reported-by: Liu Yi <asatsuyu.liu@gmail.com>
+>> Link: https://paste.ubuntu.com/p/Zhj65q6gr9/
+>> Fixes: 8700e3e7c485 ("Soft RoCE driver")
+>> Tested-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+>> ---
+>> drivers/infiniband/sw/rxe/rxe_srq.c | 2 --
+>> 1 file changed, 2 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_srq.c
+>> b/drivers/infiniband/sw/rxe/rxe_srq.c
+>> index 3661cb627d28..2764dc00e2f3 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_srq.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_srq.c
+>> @@ -182,8 +182,6 @@ int rxe_srq_from_attr(struct rxe_dev *rxe, struct
+>> rxe_srq *srq,
+>> return 0;
+>>
+>> err_free:
+>> - rxe_queue_cleanup(q);
+>> - srq->rq.queue = NULL;
+>> return err;
+> 
+> A minor suggestion, this err_free label doesn’t seem necessary any more.
+> You can return directly at the place where you jump to err_free currently.
 
-Function `mlx5_ib_get_native_port_mdev` could increase the counter of 
-`mpi->mdev_refcnt` if mpi is not master. To ensure refcount consistency,
-each call to `mlx5_ib_get_native_port_mdev` should have a corresponding
-call to `mlx5_ib_put_native_port_mdev`. In `mlx5_netdev_event`, two
-branches fail to do so, leading to a possible bug when unbinding.
+Thanks a lot. It might be better to return immediately when an error 
+occurs, but keeping the current state unchanged could also be a valid 
+option.
 
-Fixes: 379013776222 ("RDMA/mlx5: Handle link status event only for LAG device")
-Fixes: 35b0aa67b298 ("RDMA/mlx5: Refactor netdev affinity code")
-Signed-off-by: Shuhao Fu <sfual@cse.ust.hk>
----
- drivers/infiniband/hw/mlx5/main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Best Regards,
+Yanjun.Zhu
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index fc1e86f6c..0c4aa7c50 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -247,7 +247,7 @@ static int mlx5_netdev_event(struct notifier_block *this,
- 
- 		if (!netif_is_lag_master(ndev) && !netif_is_lag_port(ndev) &&
- 		    !mlx5_core_mp_enabled(mdev))
--			return NOTIFY_DONE;
-+			goto done;
- 
- 		if (mlx5_lag_is_roce(mdev) || mlx5_lag_is_sriov(mdev)) {
- 			struct net_device *lag_ndev;
-@@ -268,7 +268,7 @@ static int mlx5_netdev_event(struct notifier_block *this,
- 		if (ibdev->is_rep)
- 			roce = mlx5_get_rep_roce(ibdev, ndev, upper, &port_num);
- 		if (!roce)
--			return NOTIFY_DONE;
-+			goto done;
- 
- 		ib_ndev = ib_device_get_netdev(&ibdev->ib_dev, port_num);
- 
--- 
-2.39.5 (Apple Git-154)
+> 
+> Junxian
+> 
+>> }
+>>
+>> --
+>> 2.34.1
+>>
 
 
