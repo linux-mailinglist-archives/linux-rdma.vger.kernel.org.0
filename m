@@ -1,151 +1,160 @@
-Return-Path: <linux-rdma+bounces-13956-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13957-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A076FBF6874
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Oct 2025 14:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6801FBF6C56
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Oct 2025 15:29:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFAAB3AF3D6
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Oct 2025 12:47:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C69D48604D
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Oct 2025 13:27:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EBEE3321C7;
-	Tue, 21 Oct 2025 12:47:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CED2337100;
+	Tue, 21 Oct 2025 13:27:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="gO/vRsv0"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="SSDUECDd"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 681D541C63;
-	Tue, 21 Oct 2025 12:47:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9481C253B59;
+	Tue, 21 Oct 2025 13:27:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761050856; cv=none; b=LTF5qwgcOh/qfb+zPEZGiu9Z3J7EC+gxXOhM4whRlpsnNtYuV2u2g9qrV7kzUqZ/ZQTSiYoQNoOGZvNV3UjKihthmYlqkXm+lnj8/OF5XLIie8LYaVFEH5NqhOi9n2jwOxseuGzujoQ1KAZQN5z8mO/3c+4OwRYV30fKwTENLdU=
+	t=1761053273; cv=none; b=vFVYgKmMinzievK1RkFG+JcxioBr6PK3rFI5RK3hhU1gMDx0dN05duX9jYep+/8yCeXn++Ge/KuXpGefhtito9ufE5vhL4m8QR9m9uRwM5mk69MZqqq2nbimwl2VcSAM+6rwQ75zW8q6OLjxPhMVA016k01OMMn2LexhidyAiF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761050856; c=relaxed/simple;
-	bh=nEEOvwGFoaio4Z73CGBjuz3prJe6v2U2OEU9Gw76vck=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A80zrp3ufXpTEod3NOGzg02DkTAdvBp4pn6W19t20k3eC4alIc7zKnbn14UMIkkV1l8HMzH1qw4uPcEj6YqiE/ZhixlR30RCUGp+Vhtz0B8dbQ1SsWvOO9dw+/m2/pdqoAoRXPpSEE6XKKvZdQB6TkSWaaA6Pve4Q/kSd+sZBqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=gO/vRsv0; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 59LBHPta020537;
-	Tue, 21 Oct 2025 12:47:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=iNqoZWgWQCEkxMVzM8LaPwhvDpeQuf
-	fSX5XZC01i0U4=; b=gO/vRsv0omSRvgQzH7sx+eMm/phOoih4flIuG7vFSajX+W
-	o4BeByI9aVn5O2kOaoHAqMLL53fns0Kb01pTVLxQyDN8mBy8gf2Te6jMAKfnwccV
-	x9sAu/qk+XJ2li7Mbq2St3vaPM4hnrBM/cBE5MTncbc6ZGti1GqZtT49QrwGnOIO
-	q3Ylc4fMCnkyc2emzqjxsbR+gQ44faBJH/kk+5JCFx4/hoZOxCDu8/h5Si4ZW7Xd
-	kIWoyKyuZBijyV9i/byeGiG7p5q+JhHAoqMB/flfC0OORZt50VzpQQIWvHtXOMKx
-	WpQWwiPJ4NVIy1eb3NIT7bODBwaKKYxqvcrK155g==
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49v31ry0c3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 21 Oct 2025 12:47:30 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 59LB75kk014848;
-	Tue, 21 Oct 2025 12:47:29 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 49vn7s2x64-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 21 Oct 2025 12:47:29 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 59LClNHZ52691438
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 21 Oct 2025 12:47:23 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B521F20049;
-	Tue, 21 Oct 2025 12:47:23 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3DAF42004B;
-	Tue, 21 Oct 2025 12:47:23 +0000 (GMT)
-Received: from osiris (unknown [9.155.211.25])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue, 21 Oct 2025 12:47:23 +0000 (GMT)
-Date: Tue, 21 Oct 2025 14:47:21 +0200
-From: Heiko Carstens <hca@linux.ibm.com>
-To: Gerd Bayer <gbayer@linux.ibm.com>
-Cc: Niklas Schnelle <schnelle@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Shay Drori <shayd@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Tariq Toukan <tariqt@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v3] s390/pci: Avoid deadlock between PCI error recovery
- and mlx5 crdump
-Message-ID: <20251021124721.26700C66-hca@linux.ibm.com>
-References: <20251016-fix_pcirecov_master-v3-1-9fb7c7badd67@linux.ibm.com>
+	s=arc-20240116; t=1761053273; c=relaxed/simple;
+	bh=C0Vsu5q2435elJlVerWo0mXxWQjXfadCTKvMMq6uDA4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TLeLUnTPmALb8qHsYv18c8YinZjPn67ZudHDcHsu3N6rj+UzdLP0YZwWywysIq3merXzGZbmBuQ42LABdELl/msT39zDOx5G2v6Lw43/SW6WPmT5X8Ui5UYVixmSLA8rWsyCH2DHz5Kuw4Em3zKv/Z9hbC+cvhuBgQbbv8DSxro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=SSDUECDd; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 59L7uUDj029425;
+	Tue, 21 Oct 2025 13:27:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=corp-2025-04-25; bh=XL8yF1gk7jDq2pim
+	rOdoo7P8n64/Uwhpj1T+/1FZ4jE=; b=SSDUECDdkBYIgU0LSWQBZ2UyOSY/9Jzj
+	x5VSQ9nhiq4qXIgPBry3OXbjcEJqF/Q+yAybTLstK0WuKwytTaYs8gyHj7lGVyqC
+	waEQ4tBe/HgGyp5wjOI4jGjNRcXhSUdmintgvIAGXRgqCEc2vKE1hj7oOxbUVNCz
+	3Q2DgzGF0A3a72ZB2OPcimzNBdFL6ekupmbp/9OoMkIfXGZJjcHMAmnzp3NcMKnZ
+	YWgYkKLeIILvIyhVMX0m6xPTea37ivuvPrJnr0aWJOsy2FLuVuD28JRw2/RR4RZy
+	1Izr1vdaBl527HQnOnN9/Xqo2j4BG7gSx/9/C05nE5Q6QDUAYxSrvg==
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 49v2waw6gg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 21 Oct 2025 13:27:43 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 59LB1Urk025462;
+	Tue, 21 Oct 2025 13:27:42 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 49v1bbv622-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 21 Oct 2025 13:27:42 +0000
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 59LDRfej018557;
+	Tue, 21 Oct 2025 13:27:41 GMT
+Received: from lab61.no.oracle.com (lab61.no.oracle.com [10.172.144.82])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 49v1bbv617-1;
+	Tue, 21 Oct 2025 13:27:41 +0000
+From: =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Sean Hefty <shefty@nvidia.com>,
+        Vlad Dumitrescu <vdumitrescu@nvidia.com>,
+        Or Har-Toov <ohartoov@nvidia.com>,
+        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
+        Jacob Moroni <jmoroni@google.com>,
+        Manjunath Patil <manjunath.b.patil@oracle.com>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH for-next] RDMA/cm: Base cm_id destruction timeout on CMA values
+Date: Tue, 21 Oct 2025 15:27:33 +0200
+Message-ID: <20251021132738.4179604-1-haakon.bugge@oracle.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251016-fix_pcirecov_master-v3-1-9fb7c7badd67@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: GgtonA3OlxRBJyMjgLHOTIRQx53op6mp
-X-Proofpoint-GUID: GgtonA3OlxRBJyMjgLHOTIRQx53op6mp
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDE4MDAyMiBTYWx0ZWRfX1C1I5J+HsJCj
- b3GZ6Iodpf9a7J2sgPs8hW+vwGi2GreWltw9VkbmlEoxQwdbsrunOdjehNAB78/rFwRd0Fj4U3x
- Y9f4W9bkDOkRPYls7Pui5tnB2vLH9ePDPh3rl14U/qsrxTwpCrh+eyP4z0BjnmlRtKl9TxkoIy9
- +E03IdeY/VXQnAzUEVZWqOcfUm+OAzJ2cEB0cxC8Syu+P/HBWmrHkL209Z1E1UEdBWXjumTNLzY
- Ddzt+v+dXZMdxxSU182Ph/Rx3qmYwaVO/7zv5rhXrA4yjEe+yS/U/ltsqCICOjJ7BoPwnEwTmp/
- tooBXynap4Nn9It/wuYInZBUJbLiTvHVipQzOvISNgPDaFRMG+vz6mKHDfxfdigrmGsVpb4LmZC
- FIWJTGIpVlYbuxun1U7UPgvPjoLTmQ==
-X-Authority-Analysis: v=2.4 cv=IJYPywvG c=1 sm=1 tr=0 ts=68f780e2 cx=c_pps
- a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
- a=kj9zAlcOel0A:10 a=x6icFKpwvdMA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VwQbUJbxAAAA:8 a=VnNF1IyMAAAA:8 a=lAFIM-5KWFqR7GMvSqoA:9 a=CjuIK1q_8ugA:10
- a=cPQSjfK2_nFv0Q5t_7PE:22
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-10-21_01,2025-10-13_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 lowpriorityscore=0 clxscore=1011 suspectscore=0 spamscore=0
- bulkscore=0 adultscore=0 impostorscore=0 malwarescore=0 priorityscore=1501
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2510020000 definitions=main-2510180022
+ definitions=2025-10-21_02,2025-10-13_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 spamscore=0
+ adultscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2510020000
+ definitions=main-2510210105
+X-Proofpoint-ORIG-GUID: Smzmd9-8UTuCmmqxPB4NrfSKWO3MiUYH
+X-Authority-Analysis: v=2.4 cv=Pf3yRyhd c=1 sm=1 tr=0 ts=68f78a4f cx=c_pps
+ a=XiAAW1AwiKB2Y8Wsi+sD2Q==:117 a=XiAAW1AwiKB2Y8Wsi+sD2Q==:17
+ a=IkcTkHD0fZMA:10 a=x6icFKpwvdMA:10 a=M51BFTxLslgA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=yPCof4ZbAAAA:8 a=78MCNktfei52413G-oQA:9
+ a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=cPQSjfK2_nFv0Q5t_7PE:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDE4MDAyMiBTYWx0ZWRfX2zIkpDBiki/B
+ RJkV3zKN9SvnaC86ep4j9STesC4mE2xAw0fmfrWUffG2Dl1Tk/844R5s3WJR0XbLVRN99vyIlUE
+ T21WWQfTxaXZoqqoyj7y1MbwV19mS8MkH2P9dLZD4is6D201QA1R5EaJ9xebuzzVFp2klpKjkwS
+ +f5cmqTZEjFR1BXcZYQFPnXcJtR1Plcx5xsD92n4BfLT/tZ7DBwBRkl5xh4LnuUiR8c0hnMj2mY
+ OWUfk/5ZMGxd1lNG1NqfNoyFTufq1cICtdQjumTFvVM5WPaoHyAVJuDtoDQ9P0Q5Nvt56m0Xo/O
+ w54FTTTthTImm/JUVVhS4d0ckKLk0OowfiS9dkSsj+j0GjNfOh3XnQC8jqUTKsTZ6LGXhtu9VA/
+ I17VJz2KMONwjjkRsMTXCUXoofdKUg==
+X-Proofpoint-GUID: Smzmd9-8UTuCmmqxPB4NrfSKWO3MiUYH
 
-On Thu, Oct 16, 2025 at 11:27:03AM +0200, Gerd Bayer wrote:
-> Do not block PCI config accesses through pci_cfg_access_lock() when
-> executing the s390 variant of PCI error recovery: Acquire just
-> device_lock() instead of pci_dev_lock() as powerpc's EEH and
-> generig PCI AER processing do.
-> 
-> During error recovery testing a pair of tasks was reported to be hung:
-> 
-> mlx5_core 0000:00:00.1: mlx5_health_try_recover:338:(pid 5553): health recovery flow aborted, PCI reads still not working
-> INFO: task kmcheck:72 blocked for more than 122 seconds.
->       Not tainted 5.14.0-570.12.1.bringup7.el9.s390x #1
-> Cc: stable@vger.kernel.org
-> Fixes: 4cdf2f4e24ff ("s390/pci: implement minimal PCI error recovery")
-> Reviewed-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
-> ---
-> Hi Niklas, Shay, Jason,
-> 
-> by now I believe fixing this in s390/pci is the right way to go, since
-> the other PCI error recovery implementations apparently don't require
-> this strict blocking of accesses to the PCI config space.
->     
-> Hi Alexander, Vasily, Heiko,
->     
-> while I sent this to netdev since prior versions were discussed there,
-> I assume this patch will go through the s390 tree, right?
+When a GSI MAD packet is sent on the QP, it will potentially be
+retried CMA_MAX_CM_RETRIES times with a timeout value of:
 
-Applied, thanks!
+    4.096usec * 2 ^ CMA_CM_RESPONSE_TIMEOUT
+
+The above equates to ~64 seconds using the default CMA values.
+
+The cm_id_priv's refcount will be incremented for this period.
+Therefore, the timeout value waiting for a cm_id destruction must be
+based on the effective timeout of MAD packets.  To provide additional
+leeway, we add 25% to this timeout and use that instead of the
+constant 10 seconds timeout, which may result in false negatives.
+
+Fixes: 96d9cbe2f2ff ("RDMA/cm: add timeout to cm_destroy_id wait")
+Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+---
+ drivers/infiniband/core/cm.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index 01bede8ba1055..2a36a93459592 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -34,7 +34,6 @@ MODULE_AUTHOR("Sean Hefty");
+ MODULE_DESCRIPTION("InfiniBand CM");
+ MODULE_LICENSE("Dual BSD/GPL");
+ 
+-#define CM_DESTROY_ID_WAIT_TIMEOUT 10000 /* msecs */
+ #define CM_DIRECT_RETRY_CTX ((void *) 1UL)
+ #define CM_MRA_SETTING 24 /* 4.096us * 2^24 = ~68.7 seconds */
+ 
+@@ -1057,6 +1056,7 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+ {
+ 	struct cm_id_private *cm_id_priv;
+ 	enum ib_cm_state old_state;
++	unsigned long timeout;
+ 	struct cm_work *work;
+ 	int ret;
+ 
+@@ -1167,10 +1167,9 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
+ 
+ 	xa_erase(&cm.local_id_table, cm_local_id(cm_id->local_id));
+ 	cm_deref_id(cm_id_priv);
++	timeout = msecs_to_jiffies((cm_id_priv->max_cm_retries * cm_id_priv->timeout_ms * 5) / 4);
+ 	do {
+-		ret = wait_for_completion_timeout(&cm_id_priv->comp,
+-						  msecs_to_jiffies(
+-						  CM_DESTROY_ID_WAIT_TIMEOUT));
++		ret = wait_for_completion_timeout(&cm_id_priv->comp, timeout);
+ 		if (!ret) /* timeout happened */
+ 			cm_destroy_id_wait_timeout(cm_id, old_state);
+ 	} while (!ret);
+-- 
+2.43.5
+
 
