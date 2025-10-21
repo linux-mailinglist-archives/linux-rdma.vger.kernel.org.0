@@ -1,160 +1,153 @@
-Return-Path: <linux-rdma+bounces-13957-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13958-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6801FBF6C56
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Oct 2025 15:29:54 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8B37BF6DA0
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Oct 2025 15:45:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C69D48604D
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Oct 2025 13:27:56 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 460035039AD
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Oct 2025 13:43:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CED2337100;
-	Tue, 21 Oct 2025 13:27:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="SSDUECDd"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD518338587;
+	Tue, 21 Oct 2025 13:43:09 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from canpmsgout01.his.huawei.com (canpmsgout01.his.huawei.com [113.46.200.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9481C253B59;
-	Tue, 21 Oct 2025 13:27:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DEC433506F
+	for <linux-rdma@vger.kernel.org>; Tue, 21 Oct 2025 13:43:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761053273; cv=none; b=vFVYgKmMinzievK1RkFG+JcxioBr6PK3rFI5RK3hhU1gMDx0dN05duX9jYep+/8yCeXn++Ge/KuXpGefhtito9ufE5vhL4m8QR9m9uRwM5mk69MZqqq2nbimwl2VcSAM+6rwQ75zW8q6OLjxPhMVA016k01OMMn2LexhidyAiF8=
+	t=1761054189; cv=none; b=nMtQgSCqi8kQ/5orMUzX82WJxwGynlSWdLaedlksaSACB/K0HMRCqG5K+gSrTGs9HO9RV2bot44nK3oaJGN8Jy6FDraBFJ3azTKMN8YupgO2vJYnEWWgE/Zn/uGu1ZxRjOtSLQcOd3YrHmnuQNNZxTQkfqFy7cz60pAA/g62NoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761053273; c=relaxed/simple;
-	bh=C0Vsu5q2435elJlVerWo0mXxWQjXfadCTKvMMq6uDA4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TLeLUnTPmALb8qHsYv18c8YinZjPn67ZudHDcHsu3N6rj+UzdLP0YZwWywysIq3merXzGZbmBuQ42LABdELl/msT39zDOx5G2v6Lw43/SW6WPmT5X8Ui5UYVixmSLA8rWsyCH2DHz5Kuw4Em3zKv/Z9hbC+cvhuBgQbbv8DSxro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=SSDUECDd; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 59L7uUDj029425;
-	Tue, 21 Oct 2025 13:27:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=corp-2025-04-25; bh=XL8yF1gk7jDq2pim
-	rOdoo7P8n64/Uwhpj1T+/1FZ4jE=; b=SSDUECDdkBYIgU0LSWQBZ2UyOSY/9Jzj
-	x5VSQ9nhiq4qXIgPBry3OXbjcEJqF/Q+yAybTLstK0WuKwytTaYs8gyHj7lGVyqC
-	waEQ4tBe/HgGyp5wjOI4jGjNRcXhSUdmintgvIAGXRgqCEc2vKE1hj7oOxbUVNCz
-	3Q2DgzGF0A3a72ZB2OPcimzNBdFL6ekupmbp/9OoMkIfXGZJjcHMAmnzp3NcMKnZ
-	YWgYkKLeIILvIyhVMX0m6xPTea37ivuvPrJnr0aWJOsy2FLuVuD28JRw2/RR4RZy
-	1Izr1vdaBl527HQnOnN9/Xqo2j4BG7gSx/9/C05nE5Q6QDUAYxSrvg==
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 49v2waw6gg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 21 Oct 2025 13:27:43 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 59LB1Urk025462;
-	Tue, 21 Oct 2025 13:27:42 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 49v1bbv622-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 21 Oct 2025 13:27:42 +0000
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 59LDRfej018557;
-	Tue, 21 Oct 2025 13:27:41 GMT
-Received: from lab61.no.oracle.com (lab61.no.oracle.com [10.172.144.82])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 49v1bbv617-1;
-	Tue, 21 Oct 2025 13:27:41 +0000
-From: =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Sean Hefty <shefty@nvidia.com>,
-        Vlad Dumitrescu <vdumitrescu@nvidia.com>,
-        Or Har-Toov <ohartoov@nvidia.com>,
-        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
-        Jacob Moroni <jmoroni@google.com>,
-        Manjunath Patil <manjunath.b.patil@oracle.com>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH for-next] RDMA/cm: Base cm_id destruction timeout on CMA values
-Date: Tue, 21 Oct 2025 15:27:33 +0200
-Message-ID: <20251021132738.4179604-1-haakon.bugge@oracle.com>
-X-Mailer: git-send-email 2.43.5
+	s=arc-20240116; t=1761054189; c=relaxed/simple;
+	bh=S1GGoIt4wj+j2SMy9s5dUaCOH2nRIFNeYT/pZ91EcAM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=SBfjW7Fc1cUS3LHWpKrbC8myd8eR27m45Dc6JatG5h9cTmBEe8r0rvLLbAXfw0zT5FKoFRsl9R5sw/84h2jUI4AABagPH1DtXuR0Kp4MobDNuxcth9vBRI8B50MmoeTgSRvyik5MfVXC/QCLO3CqNxF6Fz2tsy5zKJf3lR7735s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=113.46.200.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by canpmsgout01.his.huawei.com (SkyGuard) with ESMTPS id 4crYPQ3bsVz1T4G8;
+	Tue, 21 Oct 2025 21:42:02 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id 88931140123;
+	Tue, 21 Oct 2025 21:42:55 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 21 Oct 2025 21:42:55 +0800
+Message-ID: <91be3a58-c7e4-7250-9826-a8294386f2a0@hisilicon.com>
+Date: Tue, 21 Oct 2025 21:42:54 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] RDMA/rxe: fix null deref on srq->rq.queue after resize
+ failure
+Content-Language: en-US
+To: Yi Liu <asatsuyu.liu@gmail.com>, <linux-rdma@vger.kernel.org>
+CC: Zhu Yanjun <yanjun.zhu@linux.dev>, Jason Gunthorpe <jgg@ziepe.ca>,
+	"leon@kernel.org" <leon@kernel.org>
+References: <CANQ=Xi1JW2zFuYzNCw9Ft7WhseiHk4w1prYKmBc-Hbn1N32XNQ@mail.gmail.com>
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+In-Reply-To: <CANQ=Xi1JW2zFuYzNCw9Ft7WhseiHk4w1prYKmBc-Hbn1N32XNQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.80.40
- definitions=2025-10-21_02,2025-10-13_01,2025-03-28_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 spamscore=0
- adultscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2510020000
- definitions=main-2510210105
-X-Proofpoint-ORIG-GUID: Smzmd9-8UTuCmmqxPB4NrfSKWO3MiUYH
-X-Authority-Analysis: v=2.4 cv=Pf3yRyhd c=1 sm=1 tr=0 ts=68f78a4f cx=c_pps
- a=XiAAW1AwiKB2Y8Wsi+sD2Q==:117 a=XiAAW1AwiKB2Y8Wsi+sD2Q==:17
- a=IkcTkHD0fZMA:10 a=x6icFKpwvdMA:10 a=M51BFTxLslgA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=yPCof4ZbAAAA:8 a=78MCNktfei52413G-oQA:9
- a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=cPQSjfK2_nFv0Q5t_7PE:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDE4MDAyMiBTYWx0ZWRfX2zIkpDBiki/B
- RJkV3zKN9SvnaC86ep4j9STesC4mE2xAw0fmfrWUffG2Dl1Tk/844R5s3WJR0XbLVRN99vyIlUE
- T21WWQfTxaXZoqqoyj7y1MbwV19mS8MkH2P9dLZD4is6D201QA1R5EaJ9xebuzzVFp2klpKjkwS
- +f5cmqTZEjFR1BXcZYQFPnXcJtR1Plcx5xsD92n4BfLT/tZ7DBwBRkl5xh4LnuUiR8c0hnMj2mY
- OWUfk/5ZMGxd1lNG1NqfNoyFTufq1cICtdQjumTFvVM5WPaoHyAVJuDtoDQ9P0Q5Nvt56m0Xo/O
- w54FTTTthTImm/JUVVhS4d0ckKLk0OowfiS9dkSsj+j0GjNfOh3XnQC8jqUTKsTZ6LGXhtu9VA/
- I17VJz2KMONwjjkRsMTXCUXoofdKUg==
-X-Proofpoint-GUID: Smzmd9-8UTuCmmqxPB4NrfSKWO3MiUYH
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-When a GSI MAD packet is sent on the QP, it will potentially be
-retried CMA_MAX_CM_RETRIES times with a timeout value of:
 
-    4.096usec * 2 ^ CMA_CM_RESPONSE_TIMEOUT
 
-The above equates to ~64 seconds using the default CMA values.
+On 2025/10/21 10:20, Yi Liu wrote:
+> A NULL pointer dereference can occur in rxe_srq_chk_attr() when
+> ibv_modify_srq() is invoked twice in succession under certain error
+> conditions. The first call may fail in rxe_queue_resize(), which leads
+> rxe_srq_from_attr() to set srq->rq.queue = NULL. The second call then
+> triggers a crash (null deref) when accessing
+> srq->rq.queue->buf->index_mask.
+> 
+> Call Trace:
+> <TASK>
+> rxe_modify_srq+0x170/0x480 [rdma_rxe]
+> ? __pfx_rxe_modify_srq+0x10/0x10 [rdma_rxe]
+> ? uverbs_try_lock_object+0x4f/0xa0 [ib_uverbs]
+> ? rdma_lookup_get_uobject+0x1f0/0x380 [ib_uverbs]
+> ib_uverbs_modify_srq+0x204/0x290 [ib_uverbs]
+> ? __pfx_ib_uverbs_modify_srq+0x10/0x10 [ib_uverbs]
+> ? tryinc_node_nr_active+0xe6/0x150
+> ? uverbs_fill_udata+0xed/0x4f0 [ib_uverbs]
+> ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0x2c0/0x470 [ib_uverbs]
+> ? __pfx_ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0x10/0x10 [ib_uverbs]
+> ? uverbs_fill_udata+0xed/0x4f0 [ib_uverbs]
+> ib_uverbs_run_method+0x55a/0x6e0 [ib_uverbs]
+> ? __pfx_ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0x10/0x10 [ib_uverbs]
+> ib_uverbs_cmd_verbs+0x54d/0x800 [ib_uverbs]
+> ? __pfx_ib_uverbs_cmd_verbs+0x10/0x10 [ib_uverbs]
+> ? __pfx___raw_spin_lock_irqsave+0x10/0x10
+> ? __pfx_do_vfs_ioctl+0x10/0x10
+> ? ioctl_has_perm.constprop.0.isra.0+0x2c7/0x4c0
+> ? __pfx_ioctl_has_perm.constprop.0.isra.0+0x10/0x10
+> ib_uverbs_ioctl+0x13e/0x220 [ib_uverbs]
+> ? __pfx_ib_uverbs_ioctl+0x10/0x10 [ib_uverbs]
+> __x64_sys_ioctl+0x138/0x1c0
+> do_syscall_64+0x82/0x250
+> ? fdget_pos+0x58/0x4c0
+> ? ksys_write+0xf3/0x1c0
+> ? __pfx_ksys_write+0x10/0x10
+> ? do_syscall_64+0xc8/0x250
+> ? __pfx_vm_mmap_pgoff+0x10/0x10
+> ? fget+0x173/0x230
+> ? fput+0x2a/0x80
+> ? ksys_mmap_pgoff+0x224/0x4c0
+> ? do_syscall_64+0xc8/0x250
+> ? do_user_addr_fault+0x37b/0xfe0
+> ? clear_bhb_loop+0x50/0xa0
+> ? clear_bhb_loop+0x50/0xa0
+> ? clear_bhb_loop+0x50/0xa0
+> entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> 
+> Fix by aligning the error handling path in rxe_srq_from_attr() with
+> rxe_cq_resize_queue(), which also uses rxe_queue_resize(): do not
+> nullify the queue when resize fails.
+> 
+> Reported-by: Liu Yi <asatsuyu.liu@gmail.com>
+> Link: https://paste.ubuntu.com/p/Zhj65q6gr9/
+> Fixes: 8700e3e7c485 ("Soft RoCE driver")
+> Tested-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> ---
+> drivers/infiniband/sw/rxe/rxe_srq.c | 2 --
+> 1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_srq.c
+> b/drivers/infiniband/sw/rxe/rxe_srq.c
+> index 3661cb627d28..2764dc00e2f3 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_srq.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_srq.c
+> @@ -182,8 +182,6 @@ int rxe_srq_from_attr(struct rxe_dev *rxe, struct
+> rxe_srq *srq,
+> return 0;
+> 
+> err_free:
+> - rxe_queue_cleanup(q);
+> - srq->rq.queue = NULL;
+> return err;
 
-The cm_id_priv's refcount will be incremented for this period.
-Therefore, the timeout value waiting for a cm_id destruction must be
-based on the effective timeout of MAD packets.  To provide additional
-leeway, we add 25% to this timeout and use that instead of the
-constant 10 seconds timeout, which may result in false negatives.
+A minor suggestion, this err_free label doesn’t seem necessary any more.
+You can return directly at the place where you jump to err_free currently.
 
-Fixes: 96d9cbe2f2ff ("RDMA/cm: add timeout to cm_destroy_id wait")
-Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
----
- drivers/infiniband/core/cm.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Junxian
 
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index 01bede8ba1055..2a36a93459592 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -34,7 +34,6 @@ MODULE_AUTHOR("Sean Hefty");
- MODULE_DESCRIPTION("InfiniBand CM");
- MODULE_LICENSE("Dual BSD/GPL");
- 
--#define CM_DESTROY_ID_WAIT_TIMEOUT 10000 /* msecs */
- #define CM_DIRECT_RETRY_CTX ((void *) 1UL)
- #define CM_MRA_SETTING 24 /* 4.096us * 2^24 = ~68.7 seconds */
- 
-@@ -1057,6 +1056,7 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
- {
- 	struct cm_id_private *cm_id_priv;
- 	enum ib_cm_state old_state;
-+	unsigned long timeout;
- 	struct cm_work *work;
- 	int ret;
- 
-@@ -1167,10 +1167,9 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
- 
- 	xa_erase(&cm.local_id_table, cm_local_id(cm_id->local_id));
- 	cm_deref_id(cm_id_priv);
-+	timeout = msecs_to_jiffies((cm_id_priv->max_cm_retries * cm_id_priv->timeout_ms * 5) / 4);
- 	do {
--		ret = wait_for_completion_timeout(&cm_id_priv->comp,
--						  msecs_to_jiffies(
--						  CM_DESTROY_ID_WAIT_TIMEOUT));
-+		ret = wait_for_completion_timeout(&cm_id_priv->comp, timeout);
- 		if (!ret) /* timeout happened */
- 			cm_destroy_id_wait_timeout(cm_id, old_state);
- 	} while (!ret);
--- 
-2.43.5
-
+> }
+> 
+> --
+> 2.34.1
+> 
 
