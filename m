@@ -1,236 +1,215 @@
-Return-Path: <linux-rdma+bounces-13978-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-13979-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 777D7BFD75F
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Oct 2025 19:07:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FDBCBFD8A3
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Oct 2025 19:21:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6B0D401214
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Oct 2025 16:48:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C17FF3B22E4
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Oct 2025 17:13:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDA7B35B13A;
-	Wed, 22 Oct 2025 16:44:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7342D2877C3;
+	Wed, 22 Oct 2025 17:13:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="IAmJ8k7K"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="FzGIlU3a"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D38EA35B129;
-	Wed, 22 Oct 2025 16:44:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761151455; cv=none; b=EFAFwpQ49Blkn3UB3nl8ZD6gpnydgPcfiYuYGWCD6DthBfMNJRfzaydoXS7vOKwQ06GtGu+D1nwy8J4JDI210SAnXp17egiWCMZqu520qBLNVXNyH8tovTKZCYEGmyNKrE+EMK4hlMHhCuXfUEIXbaokFPxB2RF/c+aD9KY5ymU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761151455; c=relaxed/simple;
-	bh=CClu27EVIMb0L+/utii1f+p0OGlvQYvUTKRT8So2Tq8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QRdaxhPvelrV8dGJqBvJ9aDmeJAd/gyKJXT417tNze4tfLQRUd4qaWYUrb6qBHzECcCTPdHx5D2vER5S3+37BuM1GdNO6t+z2GWqhsIl/qk6cK4x/BIHC05o3WjR/eeKtKAlAdTn5Rs7WvFlR/ZKPHuRQHaPcJLwAfLwpu4G1jI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=IAmJ8k7K; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [192.168.1.19] (unknown [103.212.145.76])
-	by linux.microsoft.com (Postfix) with ESMTPSA id B7C7D206595A;
-	Wed, 22 Oct 2025 09:44:06 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B7C7D206595A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1761151452;
-	bh=QD4gN2DR0xkuQGbWjt1Moftwz75l5x53sM6fqnFk+q4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=IAmJ8k7KCZJwvov2ZtpqG5Dn0YM29BJq+o5gcgkdK4M9QRKnuElFrhpLHxm4njEeP
-	 7Wszxn/cro5H0MhVCV0WK8lY8Ckx26xr44bwFEqx0WImBYjaMoj8v1lEbhvaQIA7/T
-	 ADal63Odxasth2mBWNSX1UvCrJZJP1waF3/kMMLM=
-Message-ID: <cd716f3f-cb08-4ff9-8de4-25363180d7a4@linux.microsoft.com>
-Date: Wed, 22 Oct 2025 22:14:03 +0530
+Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012040.outbound.protection.outlook.com [40.107.209.40])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0C67285CAA;
+	Wed, 22 Oct 2025 17:12:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.40
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1761153180; cv=fail; b=QwIWVTfyVlD9O3g03C7lMpyoa4K/V4HBiFK+BM+V+mrSG+UZGjpCcdWgpU9j4+MSEhBWPavoSkwEztfbkJ3f7ZvbT4+6qC5Ctg9owKb7MZIiUx6hj1OwBChFj4PPVDpe0p621IhulUOsz3v3bat/a7qCtbIBZgNTc8L14aoXZoU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1761153180; c=relaxed/simple;
+	bh=JDDZR8d4NoFk5wKXrm8pBa5m+Mi7WPXjxHLH7GlBpKs=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=NXGs8PZX2/c3S9hMrnBguSqM8utch+x/vEziodUEYA/h3sJgSVjd/oRf6fkXjFRog8IZx8NSFX/bnJHsxCXufNWAaZA4sWrJtfTtGKglm/1zKBKSuNQm7mluUJq1nksvuJrSvfE9Jb0FS5rmfsajwQL6vHxXRX9eN57bGIbRvDg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=FzGIlU3a; arc=fail smtp.client-ip=40.107.209.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=n8zhsZP+yz6h+eVG/wc2pxnqU13YbMKQq0cE/5AAO3BUcEWZPxnAvc9OIi2IzqRGayaQ+1dKxrZpaY9xbDLqfJ/ICfxBhpk9ob6lR9vCl23ALjUEQE3m2uGtXkBZSr6UeVlmyXZQxmbudyNtHvbzoOo+KUcB2wfEIUVlhR3Yo723EjD609EA8/qeiUxzUq/Uu/qdCmG/vZaxZO/fSSpc/+FrXuFA9FmeljcUHLVHAXmPJIpQJvey8pFSovmBuxpcnyDh6qEAAcV/E6D9PbyTdZSJXiO3Wh7iCEFrRy+iixI1tL5PxD1KmQdL3gycOCoo1ZyWWVCSslpjIdt7IwrGNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RiTt3OgHrGAQDAhQX+n6580eNFiVH+JPN7EjoxCvlZ8=;
+ b=XmzEGNvJxD1965RWB1rJcrG3yeIiEcF2bwL5Xsp35GAASobPKpPzxP5K2XHzmHM+fifNWMxy6HFMejpBZF+hepjMZ77JiamdLF/qjpIOUOwnJCMcqCKW5C/zRCUtNWYVKqpDn8br/+I+j9TUvCMo24gTS2dqMINcs6HVjMaBuOjU9SBelU8ia1TBGAXAmfzOIqqTGfaanbFwVTcX56mVS5gjUoibR/Yuf3z3T4cvwNpk77Je9JGav06ViLYqOfHn+yvE06QlLvxJlXG1byLkKHU8uHO1Q0aLdeiJCc/fZmhAqii5Rsdo/JnVXIShAq/ykk77tXhpL4TX1CAcCKc4eg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RiTt3OgHrGAQDAhQX+n6580eNFiVH+JPN7EjoxCvlZ8=;
+ b=FzGIlU3aatuZnmumdSOmMbvzo0jIx5HRxGEYG67utXH1z5RuIFP8n10CDrWX73JiUlUcMLc2wS3lU9iAjDVx4x8cMUI9FRjhbsM5k9vakOrsBdNrOsvl6E8jnVX9SIC+gjem2mMbDHUSZ16VuJcMu/ReGgl6Dr0IB2F548gk2RBL6Z7+Cw08wp4rCjXtNIuTtM2yrShCk3b/C169DTAvEWK2NZ3+B6keGtcNF+7p0w+CrvxTgGSLLa36/eqchnK9tu+Jrgvv2Q6s75HwyPgFLORqR1O0E78tnl1Bp5NR28MitIAAUy6bq9CWA/aAkE+DlriJS/khmdMHNqdrZ6Wi+A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB3613.namprd12.prod.outlook.com (2603:10b6:208:c1::17)
+ by MN2PR12MB4125.namprd12.prod.outlook.com (2603:10b6:208:1d9::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9253.13; Wed, 22 Oct
+ 2025 17:12:53 +0000
+Received: from MN2PR12MB3613.namprd12.prod.outlook.com
+ ([fe80::1b3b:64f5:9211:608b]) by MN2PR12MB3613.namprd12.prod.outlook.com
+ ([fe80::1b3b:64f5:9211:608b%4]) with mapi id 15.20.9253.011; Wed, 22 Oct 2025
+ 17:12:53 +0000
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Christian Benvenuti <benve@cisco.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	iommu@lists.linux.dev,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Leon Romanovsky <leon@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-mediatek@lists.infradead.org,
+	linux-rdma@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	linux-sunxi@lists.linux.dev,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Nelson Escobar <neescoba@cisco.com>,
+	Rob Clark <robin.clark@oss.qualcomm.com>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Will Deacon <will@kernel.org>,
+	Yong Wu <yong.wu@mediatek.com>
+Cc: patches@lists.linux.dev
+Subject: [PATCH 0/3] Cleanup around iommu_set_fault_handler()
+Date: Wed, 22 Oct 2025 14:12:49 -0300
+Message-ID: <0-v1-391058a85f30+14b-iommu_set_fault_jgg@nvidia.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MN0P223CA0024.NAMP223.PROD.OUTLOOK.COM
+ (2603:10b6:208:52b::31) To MN2PR12MB3613.namprd12.prod.outlook.com
+ (2603:10b6:208:c1::17)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] net: mana: Linearize SKB if TX SGEs exceeds
- hardware limit
-To: Eric Dumazet <edumazet@google.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
- kotaranov@microsoft.com, horms@kernel.org, shradhagupta@linux.microsoft.com,
- ernis@linux.microsoft.com, dipayanroy@linux.microsoft.com,
- shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, gargaditya@microsoft.com,
- ssengar@linux.microsoft.com
-References: <20251003154724.GA15670@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <CANn89iJwkbxC5HvSKmk807K-3HY+YR1kt-LhcYwnoFLAaeVVow@mail.gmail.com>
- <9d886861-2e1f-4ea8-9f2c-604243bd751b@linux.microsoft.com>
- <CANn89iKwHWdUaeAsdSuZUXG-W8XwyM2oppQL9spKkex0p9-Azw@mail.gmail.com>
- <7bc327ba-0050-4d9e-86b6-1b7427a96f53@linux.microsoft.com>
- <1d3ac973-7bc7-4abe-9fe2-6b17dbba223b@linux.microsoft.com>
- <CANn89iKFsuUnwMb-upqwswrCYaTL-MXVwsQdxFhduZeZRAJZ2A@mail.gmail.com>
-Content-Language: en-US
-From: Aditya Garg <gargaditya@linux.microsoft.com>
-In-Reply-To: <CANn89iKFsuUnwMb-upqwswrCYaTL-MXVwsQdxFhduZeZRAJZ2A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3613:EE_|MN2PR12MB4125:EE_
+X-MS-Office365-Filtering-Correlation-Id: c81ccd42-623a-4562-64ef-08de118e3cb0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|7416014|1800799024|376014|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?J/heM5aejHKpPZgtslO0kEHKC9wqL9cBe1Nxss/qMeVG+/BMqIHd45Ssv+i4?=
+ =?us-ascii?Q?zUR8huftgWe+5jRHWQ/ylvE97D/RsAQLLW+JWRUa0lTJj+mbumsNpfkTcx+S?=
+ =?us-ascii?Q?XAnyPGaT2GXwyQN+ItA+bSpwkekapG4jU08YQnZKCendTC0La9rwiaGx/icL?=
+ =?us-ascii?Q?Sk1/uLc0Jk2HP9Nwm7nbF+XWxjDZJhnAUBixJ7r7NpiyBeqUhvROtMSRCEvv?=
+ =?us-ascii?Q?vL0xG1U2yZX5113wktAbyS3yXoAqG5vNP/vPqtlqUIJwRuU2kgFBxWJ1YriK?=
+ =?us-ascii?Q?gGXG1l5pncqsZ2OI0vdVpobA3prcSYpoPVqm+SgHrrsVd9BsTTY7+tZYnFkP?=
+ =?us-ascii?Q?U64xTw3kDfapxbSOEmPiMjTeRNhrBhqp/ps+zfQhXjcpqmuFBJbC24dUbNl0?=
+ =?us-ascii?Q?32qBUUeVAgTLEfT9l7Ors5ODkFUqUxAJ7IWR/jftWojYUvywJ15MpqIEgkTs?=
+ =?us-ascii?Q?KiAKS7r4YZRPwure6UceHoN5qLVYNmlNbWw3XuyMMJ+TGfnvgPNTLuZ/Wlx7?=
+ =?us-ascii?Q?VCkbZfP4ICpawM86AL0Y0FISur7m1ly8EXqZzNaoYEydeOrSzxpBGNYupl+J?=
+ =?us-ascii?Q?+6KYhxx8AsaWn/hlZIfiBk1VixI6D74um/cwYR2sPkcVm59IDiiTyaU5+GIx?=
+ =?us-ascii?Q?/bs5U1nrKzoEZrolSdJQaxbzh2Of+Hvv8eCyxLqoGWWTMcRl/EIp0QAps3J9?=
+ =?us-ascii?Q?Fqdpd1AMC2Iwyn2oOfI3oejAQXon+Utj5BD2zCgaQeG2nSAyLFWcalsxI/o6?=
+ =?us-ascii?Q?xDusoEeTeheWc7qlykX/nnGJE/2ZQE8Z1YMnq0yycYUtM+kOFD3vj3VM9qMT?=
+ =?us-ascii?Q?GxJdYms46Mr70NSs8QS2NXBCnoOuWsXOnYMdi6R5FpCfTX05/rBVmEa39jNq?=
+ =?us-ascii?Q?/IPXEDIcSLeF49lfh72PMW41MwFwbF0qwY44HhrazfzNsj4FzA7BkvWbFAmt?=
+ =?us-ascii?Q?sRvRvFykCquaTpB0HZHbzOr9+mRbGhVwf4AYskI9RSBYhKNypBaynH4s0YnO?=
+ =?us-ascii?Q?e2Zd4jOuHAE1nckaUeo+wRcbT6roMdRYrCxfA+onozM7diaTMp4AxcutZ97b?=
+ =?us-ascii?Q?9NfACQKUqEM99qrbUCGTA3ZjJVYHbDddS9CZAY5qIuDXMNAyOBUtXxutAHuX?=
+ =?us-ascii?Q?cf5yoBtdSQvn0WjhdqDBV2LGZuyg+R0B8gwd/AYx5UBzpK5vvtwqvqgW/jkG?=
+ =?us-ascii?Q?MK9e6yT8yMO4zE3xoWwOMKfihN4pQA7qK1bl+1C3wyJLr6+t6FIOHPCb/8wV?=
+ =?us-ascii?Q?x0Vy7VdDnlRIAKCK2i1l1qNr+3X+xQhxbqkfh/QU5MlM9lZEkQqKZGTDeRt8?=
+ =?us-ascii?Q?WMsa0kRbl3nioZ0BDfBxIvFxdLPcOzM/dhUVuP28GLVxYvpIj0PtfwNul2rc?=
+ =?us-ascii?Q?5fFTxXxG7pNCS1+BEG1hPvQ9ZRiZe0+mnQItI70jKIlB+OqdaGpINU70+3NS?=
+ =?us-ascii?Q?ym7s5gWvNRUMGEent+h4nzidXmnArJDuP7thHTjEI1Tdol7q4fxjT+DnzB5/?=
+ =?us-ascii?Q?6HHpYi1wI+2WZ64=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3613.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(1800799024)(376014)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?OtO9mMBnFOtWKe8FyILQZz01ScD3aizQi7OOX7SV6pnqH2yeafZe41vlFRW7?=
+ =?us-ascii?Q?KeFahGTOcRIT8CX3NHvv6dp9t/5h9/IdKKDQ2cgJwWuIBfnR+WiOK5kfeBAH?=
+ =?us-ascii?Q?u3T3k9Zt3EE0eE6QQQ6GEonnsCaganJ76dPkaoimRvSetDgmiYl6luewR+we?=
+ =?us-ascii?Q?TeuhjfNb3azoQgFdxQrJiknpLH7bTB83oMw3o4B2gCbUx+WXhWU861V4YZF/?=
+ =?us-ascii?Q?BcnwQZbFYk4FjRl44oz/WnQ206SC4WpItPGeRqG/fO8TvADGrOqyU12HJvXa?=
+ =?us-ascii?Q?jLRC8ZScUtD+8xS6ZGpFPKuFD3YGPjaDW3ku+NbEoNqf0lnSQCw2Mb3cMZVs?=
+ =?us-ascii?Q?1c+Mh4FPmKzPCfcx+fuW/rGj0T4Aeiz98qGJZJrUXe+F82iwgHWkVegmVQkQ?=
+ =?us-ascii?Q?gbpbgM9hs0UDG9KGdbqlYS7bB37f0qWiJd5IxmNQpLF2ggMydPwpg8vOZuxe?=
+ =?us-ascii?Q?CgiZLRDpPUL37CyHJpCFUjoQrtbpHkhAk3CnhFf0PndJkdMrJjr2DxTlAF1U?=
+ =?us-ascii?Q?1UpgX/d6wCj7Z21LieKMggVzErCi5NNgHLsiVX0+/+3ytU0j4deEGsvFMHaH?=
+ =?us-ascii?Q?n1Pz5VBpCMDU2X6ezmkOR8brXrZeiRKLCPBlCh0PkAQh60yLeZaWZUAs2vY/?=
+ =?us-ascii?Q?sG2ip6O5XE13dsEKLXXjhF4k31spajnzfcGLUow8P6SdBNFRZ4Dqrk2+1Yze?=
+ =?us-ascii?Q?s1hKPyN9GPiyxRk9Q32bkPvrEgnn9ijOXDe3gHmpUkzchw+xv8TvacAA7Vzt?=
+ =?us-ascii?Q?P44GGqLsWSZRXvOL+QU53J32MvergZhOljCIckXiwAWjQiB87cxGFjq95lBJ?=
+ =?us-ascii?Q?/eMABBcSd3U0InT81y647gfyj8Z+m2U4f/9ZAhR6+DBFCFOAck/W/qBu0Ipg?=
+ =?us-ascii?Q?/W8tyQpR5ngyzMvH8up/wDjj+1QsuZAWzz99Es6SnPXyN5RC4P3L/3g+7Ltq?=
+ =?us-ascii?Q?jwFvIINpBTWIoA7oVw6t907cnivYw10GooA2mwFxkmTm04DekViE0ec6XIT+?=
+ =?us-ascii?Q?PA+c8RrXr1uX9ozFrKOQSZNEOErYzoG2iZ961rk7fzkwmqrf/a3eXmn7Rq1j?=
+ =?us-ascii?Q?S1BVlsYRiTqUnOeNY0U8ZwTcGb945lewgZ8/Nn+vVNNdKk0iQ56isAAsYM5j?=
+ =?us-ascii?Q?Ni06td10t3NCk9XmZ7w7u1cyyWv4NECEDJIkyFLNeUNxgokJBhmCl1LzhOJV?=
+ =?us-ascii?Q?Dadg5FqYwGXyfyUevf56ItMLtep9SqlxiLaGzqEG50r1Sgp0+4lR4Q0B/VlT?=
+ =?us-ascii?Q?Uhrbjx8ZNoXdfPO/QBykbtYQLjnZ7DMzo5tx8QhdWvYomsPippMunc7Tn02w?=
+ =?us-ascii?Q?xIeGvptpi/mqh4AukDxq/Q9uIESyUJf1iIYJLclnU2nX4GGoC0U8o7AhAWXM?=
+ =?us-ascii?Q?jw+2fo8V037rLBIiopV1MPbaHsuo4PCu+z5iMUG6cng2tLenEG3TTGMZOjWT?=
+ =?us-ascii?Q?yaYK5jFoQTajaI2EqmR6VvL/8h+oGj12EV2dEf/Ojz4oqEdjd0ya4AOLQ1KC?=
+ =?us-ascii?Q?vbd1MH/q1rCNhb90TkZ1AnKNJWtZd9yCf47qnSGdXWcEb/k6Vw6QxyAZbt21?=
+ =?us-ascii?Q?F9S+AlGpI7jsNuEgCMo=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c81ccd42-623a-4562-64ef-08de118e3cb0
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3613.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2025 17:12:53.6306
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pLBCTP0qB1d+VEFmf0SlB2ASyvzWsIzoF/QKri6mUOvtiuP4Xx2qvzswqOQ39tjC
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4125
 
-On 17-10-2025 23:36, Eric Dumazet wrote:
-> On Fri, Oct 17, 2025 at 10:41 AM Aditya Garg
-> <gargaditya@linux.microsoft.com> wrote:
->>
->> On 08-10-2025 20:58, Aditya Garg wrote:
->>> On 08-10-2025 20:51, Eric Dumazet wrote:
->>>> On Wed, Oct 8, 2025 at 8:16 AM Aditya Garg
->>>> <gargaditya@linux.microsoft.com> wrote:
->>>>>
->>>>> On 03-10-2025 21:45, Eric Dumazet wrote:
->>>>>> On Fri, Oct 3, 2025 at 8:47 AM Aditya Garg
->>>>>> <gargaditya@linux.microsoft.com> wrote:
->>>>>>>
->>>>>>> The MANA hardware supports a maximum of 30 scatter-gather entries
->>>>>>> (SGEs)
->>>>>>> per TX WQE. In rare configurations where MAX_SKB_FRAGS + 2 exceeds
->>>>>>> this
->>>>>>> limit, the driver drops the skb. Add a check in mana_start_xmit() to
->>>>>>> detect such cases and linearize the SKB before transmission.
->>>>>>>
->>>>>>> Return NETDEV_TX_BUSY only for -ENOSPC from
->>>>>>> mana_gd_post_work_request(),
->>>>>>> send other errors to free_sgl_ptr to free resources and record the tx
->>>>>>> drop.
->>>>>>>
->>>>>>> Signed-off-by: Aditya Garg <gargaditya@linux.microsoft.com>
->>>>>>> Reviewed-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
->>>>>>> ---
->>>>>>>     drivers/net/ethernet/microsoft/mana/mana_en.c | 26 +++++++++++++
->>>>>>> ++----
->>>>>>>     include/net/mana/gdma.h                       |  8 +++++-
->>>>>>>     include/net/mana/mana.h                       |  1 +
->>>>>>>     3 files changed, 29 insertions(+), 6 deletions(-)
->>>>>>>
->>>>>>> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/
->>>>>>> drivers/net/ethernet/microsoft/mana/mana_en.c
->>>>>>> index f4fc86f20213..22605753ca84 100644
->>>>>>> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
->>>>>>> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
->>>>>>> @@ -20,6 +20,7 @@
->>>>>>>
->>>>>>>     #include <net/mana/mana.h>
->>>>>>>     #include <net/mana/mana_auxiliary.h>
->>>>>>> +#include <linux/skbuff.h>
->>>>>>>
->>>>>>>     static DEFINE_IDA(mana_adev_ida);
->>>>>>>
->>>>>>> @@ -289,6 +290,19 @@ netdev_tx_t mana_start_xmit(struct sk_buff
->>>>>>> *skb, struct net_device *ndev)
->>>>>>>            cq = &apc->tx_qp[txq_idx].tx_cq;
->>>>>>>            tx_stats = &txq->stats;
->>>>>>>
->>>>>>> +       BUILD_BUG_ON(MAX_TX_WQE_SGL_ENTRIES !=
->>>>>>> MANA_MAX_TX_WQE_SGL_ENTRIES);
->>>>>>> +       #if (MAX_SKB_FRAGS + 2 > MANA_MAX_TX_WQE_SGL_ENTRIES)
->>>>>>> +               if (skb_shinfo(skb)->nr_frags + 2 >
->>>>>>> MANA_MAX_TX_WQE_SGL_ENTRIES) {
->>>>>>> +                       netdev_info_once(ndev,
->>>>>>> +                                        "nr_frags %d exceeds max
->>>>>>> supported sge limit. Attempting skb_linearize\n",
->>>>>>> +                                        skb_shinfo(skb)->nr_frags);
->>>>>>> +                       if (skb_linearize(skb)) {
->>>>>>
->>>>>> This will fail in many cases.
->>>>>>
->>>>>> This sort of check is better done in ndo_features_check()
->>>>>>
->>>>>> Most probably this would occur for GSO packets, so can ask a software
->>>>>> segmentation
->>>>>> to avoid this big and risky kmalloc() by all means.
->>>>>>
->>>>>> Look at idpf_features_check()  which has something similar.
->>>>>
->>>>> Hi Eric,
->>>>> Thank you for your review. I understand your concerns regarding the use
->>>>> of skb_linearize() in the xmit path, as it can fail under memory
->>>>> pressure and introduces additional overhead in the transmit path. Based
->>>>> on your input, I will work on a v2 that will move the SGE limit check to
->>>>> the ndo_features_check() path and for GSO skbs exceding the hw limit
->>>>> will disable the NETIF_F_GSO_MASK to enforce software segmentation in
->>>>> kernel before the call to xmit.
->>>>> Also for non GSO skb exceeding the SGE hw limit should we go for using
->>>>> skb_linearize only then or would you suggest some other approach here?
->>>>
->>>> I think that for non GSO, the linearization attempt is fine.
->>>>
->>>> Note that this is extremely unlikely for non malicious users,
->>>> and MTU being usually small (9K or less),
->>>> the allocation will be much smaller than a GSO packet.
->>>
->>> Okay. Will send a v2
->> Hi Eric,
->> I tested the code by disabling GSO in ndo_features_check when the number
->> of SGEs exceeds the hardware limit, using iperf for a single TCP
->> connection with zerocopy enabled. I noticed a significant difference in
->> throughput compared to when we linearize the skbs.
->> For reference, the throughput is 35.6 Gbits/sec when using
->> skb_linearize, but drops to 6.75 Gbits/sec when disabling GSO per skb.
-> 
-> You must be doing something very wrong.
-> 
-> Difference between TSO and non TSO should not be that high.
-> 
-> ethtool -K eth0 tso on
-> netperf -H tjbp27
-> MIGRATED TCP STREAM TEST from ::0 (::) port 0 AF_INET6 to
-> tjbp27.prod.google.com () port 0 AF_INET6
-> Recv   Send    Send
-> Socket Socket  Message  Elapsed
-> Size   Size    Size     Time     Throughput
-> bytes  bytes   bytes    secs.    10^6bits/sec
-> 
-> 540000 262144 262144    10.00    92766.69
-> 
-> 
-> ethtool -K eth0 tso off
-> netperf -H tjbp27
-> MIGRATED TCP STREAM TEST from ::0 (::) port 0 AF_INET6 to
-> tjbp27.prod.google.com () port 0 AF_INET6
-> Recv   Send    Send
-> Socket Socket  Message  Elapsed
-> Size   Size    Size     Time     Throughput
-> bytes  bytes   bytes    secs.    10^6bits/sec
-> 
-> 540000 262144 262144    10.00    52218.97
-> 
-> Now if I force linearization, you can definitely see the very high
-> cost of the copies !
-> 
-> ethtool -K eth1 sg off
-> tjbp26:/home/edumazet# ./netperf -H tjbp27
-> MIGRATED TCP STREAM TEST from ::0 (::) port 0 AF_INET6 to
-> tjbp27.prod.google.com () port 0 AF_INET6
-> Recv   Send    Send
-> Socket Socket  Message  Elapsed
-> Size   Size    Size     Time     Throughput
-> bytes  bytes   bytes    secs.    10^6bits/sec
-> 
-> 540000 262144 262144    10.00    16951.32
-> 
->>
->> Hence, We propose to  linearizing skbs until the first failure occurs.
-> 
-> Hmm... basically hiding a bug then ?
-> 
->> After that, we switch to a fail-safe mode by disabling GSO for SKBs with
->>    sge > hw limit using the ndo_feature_check implementation, while
->> continuing to apply  skb_linearize() for non-GSO packets that exceed the
->> hardware limit. This ensures we remain on the optimal performance path
->> initially, and only transition to the fail-safe path after encountering
->> a failure.
-> 
-> Please post your patch (adding the check in ndo_features_check()),
-> perhaps one of us is able to help.
+report_iommu_fault() is an older API that has been superseded by
+iommu_report_device_fault() which is capable to support PRI.
 
-Okay Eric, I'll Post a v2 with RFC. Please let me know.
+Only three external drivers consume this via iommu_set_fault_handler()
+  drivers/remoteproc
+  drivers/gpu/drm/msm
+  drivers/infiniband/hw/usnic
 
-Regards,
-Aditya
+Remove the use in usnic as the iommu driver logging is good enough these
+days.
+
+Remove generation support from the AMD iommu driver since msm and
+remoteproc are not used on AMD x86 CPUs.
+
+Fail iommu_set_fault_handler() if the underlying iommu driver does not
+support it.
+
+Jason Gunthorpe (3):
+  RDMA/usnic: Remove iommu_set_fault_handler()
+  iommu/amd: Don't call report_iommu_fault()
+  iommu: Allow drivers to say if they use report_iommu_fault()
+
+ drivers/infiniband/hw/usnic/usnic_uiom.c | 13 -------------
+ drivers/iommu/amd/iommu.c                | 24 ------------------------
+ drivers/iommu/arm/arm-smmu/arm-smmu.c    |  1 +
+ drivers/iommu/arm/arm-smmu/qcom_iommu.c  |  1 +
+ drivers/iommu/iommu.c                    |  6 +++++-
+ drivers/iommu/ipmmu-vmsa.c               |  1 +
+ drivers/iommu/mtk_iommu.c                |  1 +
+ drivers/iommu/mtk_iommu_v1.c             |  1 +
+ drivers/iommu/omap-iommu.c               |  1 +
+ drivers/iommu/rockchip-iommu.c           |  1 +
+ drivers/iommu/sun50i-iommu.c             |  1 +
+ include/linux/iommu.h                    |  3 +++
+ 12 files changed, 16 insertions(+), 38 deletions(-)
+
+
+base-commit: 211ddde0823f1442e4ad052a2f30f050145ccada
+-- 
+2.43.0
+
 
