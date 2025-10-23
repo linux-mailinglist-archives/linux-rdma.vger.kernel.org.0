@@ -1,105 +1,163 @@
-Return-Path: <linux-rdma+bounces-14001-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14003-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6EF8BFF984
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Oct 2025 09:29:55 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3B92BFFAD4
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Oct 2025 09:44:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 922BB35AA46
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Oct 2025 07:29:55 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 327EE4F887B
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Oct 2025 07:44:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FE952DF6E3;
-	Thu, 23 Oct 2025 07:26:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B50A32C2345;
+	Thu, 23 Oct 2025 07:44:34 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A849F2BE620
-	for <linux-rdma@vger.kernel.org>; Thu, 23 Oct 2025 07:26:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28DFA2BF011;
+	Thu, 23 Oct 2025 07:44:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761204388; cv=none; b=Syjq3L7XlK7lXiKh0t4CHTDBiMq2N08Y3Gb8j2ih9mt2DKW6iBEVbrrBqzZ/km/qjzS4Q6P2VYpqqgUxrau6UAMHLjVmm8B/62RLOK4XGAB0S9dn/khVXhKX/BhIdBqD5+XzAgghEeWM0ofxb5K+aybfMqUUD6QyvLgsOLSRgtA=
+	t=1761205474; cv=none; b=qbFJJz/wBxlWt1lUAcwq/e+hNUSrUdDFK59PIo8G+E7cuYeCnHScfz7Ffr6sT0Ko/GoFhsvHT3YMr3xL18DS38ty/xIv3xLV0nr5lvGHg5o/anPtkaRHqWlASc9YJdqgK6F02n3zJ7rkiy64vpqd8JB3QY2phoZhxLJpSwpsNDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761204388; c=relaxed/simple;
-	bh=072T1hELA4IEXLyNAvTpI1QKo4tu/F09LzG59OgBE/g=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=pEEuIVLr83nD/oz0RyvBCbM67+ysgGHsac5KTlAgCzMj20qV2HzGAZmoxtVsMPxVCifSjF6JefH9coohzmQdXVKNmZzy+xNU4bU80gVUswGkctCVvwqrbE4jK1WOCGP4wDvF3TxNPIomMKUucyecQtHXKi2dvm4gU2MrvzKid9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-930db3a16c9so35685839f.0
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Oct 2025 00:26:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1761204386; x=1761809186;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Fvf9ZRE92JNWYABHY5d/bObPYmap/MAjRNgVlHVzgxs=;
-        b=IW6Lch8Gihxxk/PvEHhEGhu6U4i3vTOoi8NnkTqtcu4BGQOoBj6G0oFerVCl1TCBup
-         4QA/vmwJpqVPxBsekrgL0u+16eeLMEyrjZipbE8wVpZIGtKuCxXGy8LYZDyMZZB0JIgE
-         tjSMIVKUVgOiYQOFdJ56f0eIyUIT6ba8jykhhfdDZoCGIwP0sDIGJXc2+ark1G4028jd
-         BreIKA60+Skugn3pgOc7R+NVUo9ANnX/UoJCk86DXuW1YlBQLYz7hKnCOO9CGOxRqbcm
-         iISX5bVEgWCHqI0H8rs72EbInnteo6IMTCxEu7wNQzlEoOFdV9mghL/uAT9SaIkml/Sl
-         Idwg==
-X-Forwarded-Encrypted: i=1; AJvYcCVZBVGSflEXbIbpeyPMgHJ7w4AfkP/X7J+Z4FG9R2NE5WNhd7hcoIYjP15uwb+IUReh3iqSqsGhYqN9@vger.kernel.org
-X-Gm-Message-State: AOJu0YwH72rEupnhaGDmkVaqCw3yVcgfavVdumXPkNqxKpokyNJJSpo1
-	1+N7iP005TxSAPTkrNpptdH4d+gsXIMKClMikt5S1shJMmrr5g8z0KCcipx1zOCsZBgAGODaXQa
-	hKlgj5oMlAdLRynSnt+GpeEjf5QBsB99fOEjMk43k91/OALyaAXGqXzrni+E=
-X-Google-Smtp-Source: AGHT+IG2kb+3VHnGMQVwuNQxhL6zzopTu/NOetDQ0IYJeK1D56foFuVk+8IoRsWkHr8VbEZDqSkkljH9Yltq1k42HqeQ8hqGDBHu
+	s=arc-20240116; t=1761205474; c=relaxed/simple;
+	bh=/ievbL36Rs5ZFE2K+CltxLGakEwUPtbnWP2MFWEQ/Vs=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=e1IW17TDnjS/cc6NONcmYpU9UDQa9bY9dq3YWHkcnsOc4QO6gMLHy8P2KpE5cxUxrU+nhA5Vq/6QGnJbckcUKfBbnUPUNpYExS58TrQVqrMW4PJehsNH3DMsMcsaRkofTAexruo9ezihsdc7iBFitgL1CdKt3GT3VmFVA2oRF2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-c2dff70000001609-4f-68f9dcd425f0
+From: Byungchul Park <byungchul@sk.com>
+To: linux-mm@kvack.org,
+	netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel_team@skhynix.com,
+	harry.yoo@oracle.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	sdf@fomichev.me,
+	saeedm@nvidia.com,
+	leon@kernel.org,
+	tariqt@nvidia.com,
+	mbloch@nvidia.com,
+	andrew+netdev@lunn.ch,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	akpm@linux-foundation.org,
+	david@redhat.com,
+	lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com,
+	vbabka@suse.cz,
+	rppt@kernel.org,
+	surenb@google.com,
+	mhocko@suse.com,
+	horms@kernel.org,
+	jackmanb@google.com,
+	hannes@cmpxchg.org,
+	ziy@nvidia.com,
+	ilias.apalodimas@linaro.org,
+	willy@infradead.org,
+	brauner@kernel.org,
+	kas@kernel.org,
+	yuzhao@google.com,
+	usamaarif642@gmail.com,
+	baolin.wang@linux.alibaba.com,
+	almasrymina@google.com,
+	toke@redhat.com,
+	asml.silence@gmail.com,
+	bpf@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	sfr@canb.auug.org.au,
+	dw@davidwei.uk,
+	ap420073@gmail.com,
+	dtatulea@nvidia.com
+Subject: [RFC mm v4 0/2] mm, page_pool: introduce a new page type for page pool in page type
+Date: Thu, 23 Oct 2025 16:44:08 +0900
+Message-Id: <20251023074410.78650-1-byungchul@sk.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWSa0hTYRjHe885e8/ZanBYVif7kAy6UGkXujxdKIM+vB8qivxgJdTIkxs5
+	J9NsBoKWoGmuq2S6aBXqdAtz5mXizLybUGoZJzI1IwVvxTJzTlzT6NuP/4/n9+nhaNUEE8zp
+	4hJFY5wmVo0VjGJi2ZPQD31e7TbXdQBLmQODfcYExYM1MvA6RiiwlFYhmPJ+ZsHvbkXwq7kN
+	w1iTB8GzJ9M0WN6lM/C7bJYGV+0IgtG85xi+tw6xYHceg4GiYQbqMqppGLrVjiEn3UeD2zvJ
+	wrUaWyBckcpCV5VZBvdnC2moTh1k4X2tBUO/wy+D4cYcBjrySxj4mdtMw4A5HFqtK2G6cxxB
+	c1k1BdM3H2HofVhLQaW7l4V7PVYM39IHEPQ0DTGQO5eJoSDNjMA3E0hO3p6SQUFLPxseRtIk
+	CZOm8R80eVnyiSIf8+4wRKp/QxFX/heWWJ2XSYVtE8mSemjiLL2BidNzlyV9H+swac/zMcT1
+	dS9x1fyiSM71SXxixRnFgWgxVpckGrcePK/QTtzz4/hRpSnb0cmmIq88C8k5gd8pvPK/o/9z
+	RuY4XmDMbxAkybu4B/HbBFvuVIAVHM1nc8Ln+vJFsZyPEp6P/EELzPDrhOwO8yIr+V1CZamP
+	/RddK9hfNCweC3whJ3zrzqL+idXCa5vE3EZLrWhJKVLp4pL0Gl3szjBtcpzOFHbBoHeiwBMU
+	pcydrUGerlONiOeQepkyvG1Gq5JpkhKS9Y1I4Gh1kDLpdGBSRmuSr4pGwznj5VgxoRGt4Rj1
+	KuWO6SvRKj5GkyheEsV40fjfUpw8OBWtnj2kuhgif7vbt8Xa4G9Wt+Nr3ZMW3fyVkBNRVP5M
+	yRgf+iDNVGHpUllM68tP1od0S4Z0d4N/4tlTdcz8Rv3NKb9hT1b1fsNhm+3H41tHT0YeOx62
+	r7cvYly/OeJTYjn9eLjAnFHVmniJjKXUP/IeaYnMkRe7rSbPnxFPvD1YzSRoNds30cYEzV9l
+	YPpMAAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAAzXRa0hTcRjH8f47Z/9zHC0OKnXoQjCLyEi7CY8V4RvpX1FEEFFpNurUhjpl
+	s6FJZbrQNNfFFt5ZROY1a6Vuplabl2lBNbUWVtqiJFtWauacYtPo3YfnB983D0v5v6AXs0pV
+	kqBWyeNkWEJL9mzJWNvzzqNYV9a3AoprqzFUTSTDnQGzGDzVgyIorqxHMObpY2CmuR3BaGsH
+	hm+2EQS3bo5TUPxCR8Pv2kkKLI2DCIbyazB8bncxUGXaDf1lX2hoymygwHXZjiFX56Wg2TPM
+	QLq53Bd+kMaAraRTDC/r9WK4Pnmbgoa0AQa6G4sxfKieEcMXay4NnYUVNPw0tFLQr4+AduNC
+	GH/mRtBa2yCC8UslGHoLGkVQ19zLQJ7DiOGTrh+Bw+aiwTCVhaHovB6Bd8KXHL4yJoaitg9M
+	RCg573RiYnP/oMjDirci8jr/Kk2cLV0iYil8zxCj6RR5UB5Msp0OipgqL2JiGrnGkHevmzCx
+	53tpYvkYTizmURHJzRjGexcekmw9LsQptYI6dNtRieJ73gxOHJIm51Q/Y9KQxy8b+bE8t4nP
+	zHLjWWNuFe90eqhZB3Lr+HLDmM8SluJyWL6v5f7cEMBF8TWDf9CsaW4ln9Opn7OUC+PrKr3M
+	v+hyvureE+oKYo1oXiUKVKq08XJlXFiIJlaRolImhxxLiDch35vLzkxdNaOx7u1WxLFINl8a
+	0TGh8BfLtZqUeCviWUoWKNUe9J2kx+UppwV1Qoz6VJygsaIlLC1bJN15QDjqz52UJwmxgpAo
+	qP+vItZvcRqy17xafTc8svSRMSy6p+rIhjXTwdFB94beT5fq9925kHQ4ypso/bq5pzldPRCC
+	cd2njarURetR0cdf7mVdAU+GYu93fF4w89Qy2huWYGhIfBuZai+tP3fAaD/rutVN+FXcROqu
+	tsmH5oSCG4+fh+7YH6QrP/gm/NzSmJwTngDiyGRltEYhXx9MqTXyv50GY8HiAgAA
+X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6602:1414:b0:940:d395:fb53 with SMTP id
- ca18e2360f4ac-940d395fcbemr2167628439f.12.1761204385851; Thu, 23 Oct 2025
- 00:26:25 -0700 (PDT)
-Date: Thu, 23 Oct 2025 00:26:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <68f9d8a1.050a0220.346f24.0070.GAE@google.com>
-Subject: [syzbot] Monthly rdma report (Oct 2025)
-From: syzbot <syzbot+list0ee54e0d9d6647c72420@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
 
-Hello rdma maintainers/developers,
+This patch is supposed to go via the mm tree, but it currently also
+depends on patches in the net-next tree.  For now, this patch is based
+on linux-next, but will apply cleanly (or get rebased) after mm tree was
+rebased.
 
-This is a 31-day syzbot report for the rdma subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/rdma
+Changes from v3:
+	1. Rebase on next-20251023 of linux-next.
+	2. Split into two, mm changes and network changes.
+	3. Improve the comments (feedbacked by Jakub)
 
-During the period, 1 new issues were detected and 0 were fixed.
-In total, 8 issues are still open and 66 have already been fixed.
+Changes from v2:
+	1. Rebase on linux-next as of Jul 29.
+	2. Skip 'niov->pp = NULL' when it's allocated using __GFP_ZERO.
+	3. Change trivial coding style. (feedbacked by Mina)
+	4. Add Co-developed-by, Acked-by, and Reviewed-by properly.
+	   Thanks to all.
 
-Some of the still happening issues:
+Changes from v1:
+	1. Rebase on linux-next.
+	2. Initialize net_iov->pp = NULL when allocating net_iov in
+	   net_devmem_bind_dmabuf() and io_zcrx_create_area().
+	3. Use ->pp for net_iov to identify if it's pp rather than
+	   always consider net_iov as pp.
+	4. Add Suggested-by: David Hildenbrand <david@redhat.com>.
 
-Ref Crashes Repro Title
-<1> 969     No    INFO: task hung in rdma_dev_change_netns
-                  https://syzkaller.appspot.com/bug?extid=73c5eab674c7e1e7012e
-<2> 546     Yes   WARNING in rxe_pool_cleanup
-                  https://syzkaller.appspot.com/bug?extid=221e213bf17f17e0d6cd
-<3> 100     No    INFO: task hung in rdma_dev_exit_net (6)
-                  https://syzkaller.appspot.com/bug?extid=3658758f38a2f0f062e7
-<4> 94      No    INFO: task hung in add_one_compat_dev (3)
-                  https://syzkaller.appspot.com/bug?extid=6dee15fdb0606ef7b6ba
-<5> 89      Yes   WARNING in gid_table_release_one (3)
-                  https://syzkaller.appspot.com/bug?extid=b0da83a6c0e2e2bddbd4
-<6> 5       Yes   KASAN: slab-use-after-free Read in ucma_create_uevent
-                  https://syzkaller.appspot.com/bug?extid=a6ffe86390c8a6afc818
+Byungchul Park (2):
+  page_pool: check if nmdesc->pp is !NULL to confirm its usage as pp for
+    net_iov
+  mm: introduce a new page type for page pool in page type
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  2 +-
+ include/linux/mm.h                            | 27 +++----------------
+ include/linux/page-flags.h                    |  6 +++++
+ include/net/netmem.h                          |  2 +-
+ mm/page_alloc.c                               |  8 +++---
+ net/core/devmem.c                             |  1 +
+ net/core/netmem_priv.h                        | 25 +++++++++--------
+ net/core/page_pool.c                          | 14 ++++++++--
+ 8 files changed, 40 insertions(+), 45 deletions(-)
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+base-commit: efb26a23ed5f5dc3554886ab398f559dcb1de96b
+-- 
+2.17.1
 
-You may send multiple commands in a single email message.
 
