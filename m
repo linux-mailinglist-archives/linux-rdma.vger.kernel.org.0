@@ -1,172 +1,251 @@
-Return-Path: <linux-rdma+bounces-14021-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14022-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DA67C01B9C
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Oct 2025 16:21:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3117C01CAA
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Oct 2025 16:33:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E13DF50684A
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Oct 2025 14:17:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B451F3B2F81
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Oct 2025 14:27:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54030328B58;
-	Thu, 23 Oct 2025 14:17:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91AD932B9B8;
+	Thu, 23 Oct 2025 14:27:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Teu2Xa+6"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="LaErF0yY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11010058.outbound.protection.outlook.com [52.101.61.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09805318146;
-	Thu, 23 Oct 2025 14:17:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761229056; cv=none; b=roQC7gFnDzs6ESATgYZI92mezvkANZbgyOxSUdRJMybcHVMhjVw8nfD4sVaSCSEZuaYrca2hbKv4KDQRSuvFk5yb4MzIJL4YyoXPva0ZdsosDMFVbOZmjqgUJexFJxMEQIBer7mPRPy6qjaVRfT9d8+miAk7j3jQGPWJa7NO1/Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761229056; c=relaxed/simple;
-	bh=5z2CwcrsfghWCt50FGQg1cggIkm7cb/zWiEmyg6elfQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=l51Rxnwpfaej0mW6d+Hcq7W14S6s+SwhiJ0hJI8Brj/YfhJquA8RRhlO8sgihGWixHPcxxhCbWirpvdql06PDMQ0qIFjgwtGSZ64OpDyJC7uuG83mkEmvmuNCPBBR4r/eXwGgH2aIB5Dz0JIkrOHhLl+IxVK7LrizVutFdsC6Lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Teu2Xa+6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E390C4CEE7;
-	Thu, 23 Oct 2025 14:17:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761229055;
-	bh=5z2CwcrsfghWCt50FGQg1cggIkm7cb/zWiEmyg6elfQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Teu2Xa+6vZBzpTMntPbR5kZX0wapbccoOmRSn+z8mj6AXv+u2UUI3XKNHUTO61/fv
-	 YKMfHnUiy60PRDLwhK1U8k7zSCSCVO0eAGyJP34thG0107GBVZTkhXlU2Xb092GFg3
-	 YxpfHJK/PU1yN4s+JppPDtHq7RYte8GkzAoC6AGH9MK5cEbwImqwXURQa3rjmwh0AZ
-	 Fv/3IJWAa3ToYlWwkL3SIFa0JB84DK6sBx4oCXYw98zNInkIBKfe8SKHutT+5uYIpa
-	 kmKeyCg7axvavMKac3nae9CzebgtYJ4S/KiNVmoa4r8c44mI+/M96/YHKJ+DznUaFd
-	 EJpGO6DVmpcXw==
-Date: Thu, 23 Oct 2025 07:17:34 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
- <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
- <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, "Patrisious
- Haddad" <phaddad@nvidia.com>
-Subject: Re: [PATCH net 4/4] net/mlx5: Fix IPsec cleanup over MPV device
-Message-ID: <20251023071734.3f9233cb@kernel.org>
-In-Reply-To: <1761136182-918470-5-git-send-email-tariqt@nvidia.com>
-References: <1761136182-918470-1-git-send-email-tariqt@nvidia.com>
-	<1761136182-918470-5-git-send-email-tariqt@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 407F832D42E;
+	Thu, 23 Oct 2025 14:27:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.58
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1761229628; cv=fail; b=ZAWQxp7FQH1daVBNuGBEPDmESIlrrOUR8Z7UnIEqKkFG6dUHcT2WviohGfbGz7OGl/UAMcZzMOKr3WcIz69NpxK/BzTjzy/P2cmcIDRvc9OX8yFZ3KMHmmGkmJiqozYmEXv0whejOxP1JbXHt2PtdhChwHXFRfikRJ6MtndoMr0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1761229628; c=relaxed/simple;
+	bh=qN5JwCu7cUjAOU4gG+BuRiRb87l1Dw5qDqF7FgxPIig=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Pv7AmpCnUlb6gSRgQ36Rf1MXDgc0N4WPHbwkELdFtFuqr08+s1exZEjUCxo5t6uVTHanbNfhWuvYCqfyKIMntn98h10ZeEozDGFYA6XwLMrbCLNsDELI7he7Z3TyksXqxip54kzxwK29m+vdiDxr9plsT24jRDhuzuvaTNMfv7A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=LaErF0yY; arc=fail smtp.client-ip=52.101.61.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Zp8r2qlkb8MJUBtASLgWR8tbYPt4j0hjPFfjBf0U1gLqvP/APV339QBhHinJObhJeRWznN4ZGLeQKOazmh+0rNWHD7DL4xI0Xim3suiTTX3IRajV4qSITkxYnBo4H+ffci9RPsikFKJFWJGUVqNxxCDshqPFJnpaE/T4LiRiEKdKd7UmmsoiPw6RbcMqVBXtqWGPssdaRHAU/bG5T3COUj060MCzFz9/+Ra/bb4S6IFe1kOa+yZjQlo3ev+6h9idTOE6nWtoGKJZKMRoGIGAVNJBz5stzOU40P6tkX3Tv26l5jyVzPqH3bG+A7qYhhY1OVHQIkcrgRuHhrQgTUVNoA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=L70ISb5udTSOblj/fwUOMONa2wOnc7GX6XtX6syjQ/A=;
+ b=VVjSeLxDXb5u2xQmfLsIG4UB8Ao2SunI7hC2BlrivRlhLVBqxxZ8tdVIINqQjllMKbc8rUcK3CYUl/210j819t+VW/Pix6RPqH/IegBqV8kO978M3hvcjRmE7uK546Xk3MiwEkm8I+5DHo6yInBBs/YoXaET4kxo0NeHbIvkUCaTq9e+eeXV7xqShDlS9rnv6XRl0U7+dlRHAgqpHzVbrkljLf/Dq5Us2pvxINvcBdm+aW7PyY1mvZinGByeYN10gMYo5PcskiuBP26FIF2kgFabuVaZSwnT+O9+rqHwDahBVlWzP+8iPbIOdxKAn/2qTciSaZodjVDpYaZqsE6JVg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L70ISb5udTSOblj/fwUOMONa2wOnc7GX6XtX6syjQ/A=;
+ b=LaErF0yY2OGFTRdwOOBIuM8AQuBmFbwSZxykaJNzCpKBNMdOLZOh/GpR8OBxMw8RvXzg4sAMQUVTqml+kPykHZ1J9kuBTHwNqCDbE47enKwHswgeDWB9dht48haicoE8Dhz4r2WSEKAMR55TKgbhqaas6knd7I7RGxnf6X0e981MRhoSmV78FQm0g5DrSQxJ+05zn2sQ2EzZP5sSTm1ObnE0e3biWJ8RdayKBDGVXqVXfS+t79lnqKfl1FlMYQ+ELOiJeDN4Qmkx2BSyGVeg0BB5pnmVasd1hOTB+ixTj6cC32/p+ev3eoBBQ2P58zQlGYQKqzB3RFMOmlZdHFIAyg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB3613.namprd12.prod.outlook.com (2603:10b6:208:c1::17)
+ by DM4PR12MB7743.namprd12.prod.outlook.com (2603:10b6:8:101::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9253.13; Thu, 23 Oct
+ 2025 14:26:58 +0000
+Received: from MN2PR12MB3613.namprd12.prod.outlook.com
+ ([fe80::1b3b:64f5:9211:608b]) by MN2PR12MB3613.namprd12.prod.outlook.com
+ ([fe80::1b3b:64f5:9211:608b%4]) with mapi id 15.20.9253.011; Thu, 23 Oct 2025
+ 14:26:58 +0000
+Date: Thu, 23 Oct 2025 11:26:57 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Christian Benvenuti <benve@cisco.com>,
+	Heiko Stuebner <heiko@sntech.de>, iommu@lists.linux.dev,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Joerg Roedel <joro@8bytes.org>, Leon Romanovsky <leon@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-mediatek@lists.infradead.org, linux-rdma@vger.kernel.org,
+	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Nelson Escobar <neescoba@cisco.com>,
+	Rob Clark <robin.clark@oss.qualcomm.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+	Chen-Yu Tsai <wens@csie.org>, Will Deacon <will@kernel.org>,
+	Yong Wu <yong.wu@mediatek.com>, patches@lists.linux.dev
+Subject: Re: [PATCH 2/3] iommu/amd: Don't call report_iommu_fault()
+Message-ID: <20251023142657.GH262900@nvidia.com>
+References: <2-v1-391058a85f30+14b-iommu_set_fault_jgg@nvidia.com>
+ <579bdc4e-ab71-4120-8991-34400d4bbf8d@arm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <579bdc4e-ab71-4120-8991-34400d4bbf8d@arm.com>
+X-ClientProxiedBy: MN0PR04CA0026.namprd04.prod.outlook.com
+ (2603:10b6:208:52d::17) To MN2PR12MB3613.namprd12.prod.outlook.com
+ (2603:10b6:208:c1::17)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3613:EE_|DM4PR12MB7743:EE_
+X-MS-Office365-Filtering-Correlation-Id: c37b7ba0-f2e7-4046-2c9e-08de124038ed
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|7416014|376014|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?REoMElNXr7jlpZpQ0trkmXGqAvhAtCOVDrUD7ZC3d6Bo4zbmrhp/QmyjCcJc?=
+ =?us-ascii?Q?ACL5mlwUlHjKr5xscknjKDRZk+7eRPIOiAlLDFTYm8aUHRmqdE2cwPs20rxa?=
+ =?us-ascii?Q?MY0ZHiJEqAesUxza8xzvLWghFAELg9Eo7l6b0awNlZJESRnIbsHPlmtRAggR?=
+ =?us-ascii?Q?ljzXKI24GVzeJvL2k0qX1MspcvWSw0sMXN3Z5tuQnVDMFvFg5RjqOyt+zQCe?=
+ =?us-ascii?Q?814mNcCJhybLJs99SgY7SKGoF0mrgEhOBzritDkgyW4GrPDwdbDGnFm9aHmO?=
+ =?us-ascii?Q?iwC8dhfzNLjULsRuS8qXMMtvWfNI5ykGLrjClsB7Ox0c0JVcpSA8CvagL+XZ?=
+ =?us-ascii?Q?6NjagHdoLPGLn80OLhsVbpITZpFWSjCw4HQZQsibZL2fDmKhmL0uztNk/6eQ?=
+ =?us-ascii?Q?vaHpNR2aAQaI2zLDjnCuKGPN9jTuu/6ViE26DhxjrOr7ugrTs+zR9NYuXlq2?=
+ =?us-ascii?Q?50Z8DxxW4gKE5mwkiAAStNXnIs/in8BUtokFx4ZbwgAF+PNAhvCGyIzVJJe9?=
+ =?us-ascii?Q?GG5g/QytWP89MJHgSXrqN9c9Luue8CAI2tuezwuaCHqTIf5d8UQVRsCl9B5m?=
+ =?us-ascii?Q?zC0GlqprdBHsUn/C9pA4mpn060x+g9y3M8GBU7IWQfNbEdXITbO9wzoMdays?=
+ =?us-ascii?Q?0mlvA0FmKr2swbq3fwKmyqCp1uM+f8IbkQssBW0DomVPe6P2Es+oTWx3LWlV?=
+ =?us-ascii?Q?D4u5toI0Kfs+jE6apiAIYExNIszAfQC6EDxOIpX0HIUCRN70Cuue2cjfBKzR?=
+ =?us-ascii?Q?HExZ1Dr3IMLfMgg1Flxmt/BKSbISgLgGdUrFD+9uLZYfSWuD+q5F7OzzspuI?=
+ =?us-ascii?Q?RRwUGTiVNfEFTo1bzbF4LSNiPKNkhxd8hC3mG1bjD9A0pn+fsFMwh9j9f/e3?=
+ =?us-ascii?Q?EIhfvJ2BLEYjDaMKM/Me6fXYPlukazqAvZ84qS2eX+8YYpWnwGn61xtxH9Bc?=
+ =?us-ascii?Q?Ye+PGqV8hbz4lWHEETkWxZiYCvo+mGGHt/e+HqQymnvIpFq/afYcPUsu0a7b?=
+ =?us-ascii?Q?7mAyEYXU8jrX0vuw2tWsiaBAwGCWNCuiYskjiG0uHtQ9t4d+bH6Uwz7Jgw89?=
+ =?us-ascii?Q?pgrQZTLrR00rEKcD1CChL9DCexTkFNxOC7kJY9OR+yJbK9D18lGNWjH5ZeyB?=
+ =?us-ascii?Q?97hXrX5UV406hAQWiGS4N9cba23nhNrK19axK1xo5v0e1U1kuN+rt3oAWMxW?=
+ =?us-ascii?Q?16DTnVfL83hdrpglC8745dqVY/+lRa8Gd6UvedoGrgRFLhnXIQapYPNadtMs?=
+ =?us-ascii?Q?9sH0WzZa1DWiB9tFhdkFlkoxKcc3IN91VedhQXnbyDYOMznTFTgPF3GcNu1C?=
+ =?us-ascii?Q?EQ7E/wN9C83ynD5T2y2TA0r838DqAp0TcpJap2exz3fdpBaCiwdEGT9wBmR4?=
+ =?us-ascii?Q?RAHrm5diAHmMrDDFdCDRM6M79GuEnOfATKfEjRtgkVIjikqYM51/WOy0Wzsa?=
+ =?us-ascii?Q?oZFpnoY6pPZS3RLudwq5v+uOZckB7DyX?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3613.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?PIvtdRJKmggPKpS4XzTl+AxK0XCRneZRLugGHDAH/DQ7vn4nCwiEGLjRg6C+?=
+ =?us-ascii?Q?QEfBX6hxqBrbcRK4pJmnlWYwqWCEWEeNFNII9yypl8o0TWzCYYf8lKUdXocC?=
+ =?us-ascii?Q?LUS06atd4NNaCFXWqojzv6RS5h/tl1E90l4RO/VE+MCuH51NvA7ctriotzZx?=
+ =?us-ascii?Q?vkqXhWMbm4KwFRWAqwN5+ZjQf6KS/mmUV4irI7WNMtyKBm7IvXfasOTP01xg?=
+ =?us-ascii?Q?VdFcMlubBNvukVIliV465/3/ZA58Yc2WYRiqKLfrbuxd5Eo4hzEOganLakUE?=
+ =?us-ascii?Q?IwgdB+MiFP/uFbzdEASsqjRngcfTCpkp0t9I6UzlGrLlP29YGMUY8lr6UwGT?=
+ =?us-ascii?Q?/zZ2mJyOavbK6+WfZqrX386oIEaezFx6H5tD8OXyrIJajATDsN4zN1a2t29u?=
+ =?us-ascii?Q?EzIcDIbPRjdmtLJCDpcalfXnCd9upBVLa8OY2dFb+EHlBirEz/zDzhbOI+1h?=
+ =?us-ascii?Q?PVdpHrVJxT0LFsWNRu6krdjTrrypbK0DIxL9j2qJNW4kEFH84C+Vp0NB2Z3/?=
+ =?us-ascii?Q?hqmY+9jLSDZgqJHegfPpMYfxgYx73GxwwfCKZHVdw1+0acLDa9nOuJtRY9Ar?=
+ =?us-ascii?Q?geRzeQiCD8j7WRI4eItZK+PCpn7dR5iG9M45J491cCjr+9oWH3hrbmfS/3b1?=
+ =?us-ascii?Q?g3YSJYMn41rAQuS5EXDatyNciURZneDVod2B6OuA3azESLWjNxVe4f1kufh0?=
+ =?us-ascii?Q?ks56027rwjP4vyQ1KMErvo+d6FJawGcFdyvx/iraWKaqyHefGiTKvltBxjG6?=
+ =?us-ascii?Q?34A4W0yXNUJ2SEJ4UeTd5t7C5CKzkNWwBGXPfzyaoz7wxoc/LUJhmfJmICG2?=
+ =?us-ascii?Q?dtzbjyQ16CnaCcb89rvyAKTUsiR783EmFDIuxSHjJGektForohww2yqlR89k?=
+ =?us-ascii?Q?2HgplBidOcSg8MKC06wJg3VCAjxm4l0FrpaIE/KJpQGJr+ogM12Lcf9Vvemi?=
+ =?us-ascii?Q?Ez0V8Sf5Nv2v1qxgyI6v/JVG0PfYZlUUyFk1V1I7FEFwfKeKIduCCVR52Whu?=
+ =?us-ascii?Q?uX6lDhTHmvWPHqs+iPUnWiOpBEVtzTrssk9mDT01NTPXBt5/WSVn2BUYggbI?=
+ =?us-ascii?Q?WU1M38C9U+ux9BMfIf9V/dkD8rwllMuY/C8bvjXAE8vnbnE0f6ybFmOVfEc+?=
+ =?us-ascii?Q?honl7t0F32n+wZ6zTE0V/U5BhB8qREwbX2su4WamTfvcqt4ilrXQ9LqI6orC?=
+ =?us-ascii?Q?mKCN6mrQLPPH9mbF/jd/RTmFnYF1a0Lr8gE1cFyOh/lIWg5vxWguSgeqzaaK?=
+ =?us-ascii?Q?H/5XhCbS0MGLpHN2rex8ZkpGLyrjjhBGvdEp9fhUcVbfBW+izJqeWimTdNTM?=
+ =?us-ascii?Q?PDGi9Uc4uBB6NgDdE5cOauDHJaiG6JtHMWv4J8z19mD0t/RLAZOFfBW7uNlp?=
+ =?us-ascii?Q?LcrsBSLLls6bTPsUjDJ1uNR3rW93OBcXS+rhKDsGj/Q1BTngox7fz+zsNc2O?=
+ =?us-ascii?Q?SHZhQo8YJBS3N/cXO0ieny09s0W0RyNU7OwJ6du/Mt8GcN/eQyaqn4hTuuvb?=
+ =?us-ascii?Q?HB1nUk2T4JuDwcLrzVnYm2A9BB1KJPpNJUKnt4PjUQaGyUaMW3lb+fv3/Ed5?=
+ =?us-ascii?Q?esGHrKw1Jl0c0NwTdvg=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c37b7ba0-f2e7-4046-2c9e-08de124038ed
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3613.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2025 14:26:58.0176
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gpr+5VVnFFAJZN8NC2yB3UKQMBqLMY8fLwl3qLZbc2arRFa2jX5ypiTBtyzmw3Ew
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7743
 
-On Wed, 22 Oct 2025 15:29:42 +0300 Tariq Toukan wrote:
-> BUG: kernel NULL pointer dereference, address: 0000000000000010
-> PGD 146427067 P4D 146427067 PUD 146488067 PMD 0
-> Oops: Oops: 0000 [#1] SMP
-> CPU: 1 UID: 0 PID: 7735 Comm: devlink Tainted: GW 6.12.0-rc6_for_upstream_min_debug_2024_11_08_00_46 #1
-> Tainted: [W]=WARN
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-> RIP: 0010:mlx5_devcom_comp_set_ready+0x5/0x40 [mlx5_core]
-> Code: 00 01 48 83 05 23 32 1e 00 01 41 b8 ed ff ff ff e9 60 ff ff ff 48 83 05 00 32 1e 00 01 eb e3 66 0f 1f 44 00 00 0f 1f 44 00 00 <48> 8b 47 10 48 83 05 5f 32 1e 00 01 48 8b 50 40 48 85 d2 74 05 40
-> RSP: 0018:ffff88811a5c35f8 EFLAGS: 00010206
-> RAX: ffff888106e8ab80 RBX: ffff888107d7e200 RCX: ffff88810d6f0a00
-> RDX: ffff88810d6f0a00 RSI: 0000000000000001 RDI: 0000000000000000
-> RBP: ffff88811a17e620 R08: 0000000000000040 R09: 0000000000000000
-> R10: ffff88811a5c3618 R11: 0000000de85d51bd R12: ffff88811a17e600
-> R13: ffff88810d6f0a00 R14: 0000000000000000 R15: ffff8881034bda80
-> FS:  00007f27bdf89180(0000) GS:ffff88852c880000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000000010 CR3: 000000010f159005 CR4: 0000000000372eb0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  ? __die+0x20/0x60
->  ? page_fault_oops+0x150/0x3e0
->  ? exc_page_fault+0x74/0x130
->  ? asm_exc_page_fault+0x22/0x30
->  ? mlx5_devcom_comp_set_ready+0x5/0x40 [mlx5_core]
->  mlx5e_devcom_event_mpv+0x42/0x60 [mlx5_core]
->  mlx5_devcom_send_event+0x8c/0x170 [mlx5_core]
->  blocking_event+0x17b/0x230 [mlx5_core]
->  notifier_call_chain+0x35/0xa0
->  blocking_notifier_call_chain+0x3d/0x60
->  mlx5_blocking_notifier_call_chain+0x22/0x30 [mlx5_core]
->  mlx5_core_mp_event_replay+0x12/0x20 [mlx5_core]
->  mlx5_ib_bind_slave_port+0x228/0x2c0 [mlx5_ib]
->  mlx5_ib_stage_init_init+0x664/0x9d0 [mlx5_ib]
->  ? idr_alloc_cyclic+0x50/0xb0
->  ? __kmalloc_cache_noprof+0x167/0x340
->  ? __kmalloc_noprof+0x1a7/0x430
->  __mlx5_ib_add+0x34/0xd0 [mlx5_ib]
->  mlx5r_probe+0xe9/0x310 [mlx5_ib]
->  ? kernfs_add_one+0x107/0x150
->  ? __mlx5_ib_add+0xd0/0xd0 [mlx5_ib]
->  auxiliary_bus_probe+0x3e/0x90
->  really_probe+0xc5/0x3a0
->  ? driver_probe_device+0x90/0x90
->  __driver_probe_device+0x80/0x160
->  driver_probe_device+0x1e/0x90
->  __device_attach_driver+0x7d/0x100
->  bus_for_each_drv+0x80/0xd0
->  __device_attach+0xbc/0x1f0
->  bus_probe_device+0x86/0xa0
->  device_add+0x62d/0x830
->  __auxiliary_device_add+0x3b/0xa0
->  ? auxiliary_device_init+0x41/0x90
->  add_adev+0xd1/0x150 [mlx5_core]
->  mlx5_rescan_drivers_locked+0x21c/0x300 [mlx5_core]
->  esw_mode_change+0x6c/0xc0 [mlx5_core]
->  mlx5_devlink_eswitch_mode_set+0x21e/0x640 [mlx5_core]
->  devlink_nl_eswitch_set_doit+0x60/0xe0
->  genl_family_rcv_msg_doit+0xd0/0x120
->  genl_rcv_msg+0x180/0x2b0
->  ? devlink_get_from_attrs_lock+0x170/0x170
->  ? devlink_nl_eswitch_get_doit+0x290/0x290
->  ? devlink_nl_pre_doit_port_optional+0x50/0x50
->  ? genl_family_rcv_msg_dumpit+0xf0/0xf0
->  netlink_rcv_skb+0x54/0x100
->  genl_rcv+0x24/0x40
->  netlink_unicast+0x1fc/0x2d0
->  netlink_sendmsg+0x1e4/0x410
->  __sock_sendmsg+0x38/0x60
->  ? sockfd_lookup_light+0x12/0x60
->  __sys_sendto+0x105/0x160
->  ? __sys_recvmsg+0x4e/0x90
->  __x64_sys_sendto+0x20/0x30
->  do_syscall_64+0x4c/0x100
->  entry_SYSCALL_64_after_hwframe+0x4b/0x53
-> RIP: 0033:0x7f27bc91b13a
-> Code: bb 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 8b 05 fa 96 2c 00 45 89 c9 4c 63 d1 48 63 ff 85 c0 75 15 b8 2c 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 76 f3 c3 0f 1f 40 00 41 55 41 54 4d 89 c5 55
-> RSP: 002b:00007fff369557e8 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
-> RAX: ffffffffffffffda RBX: 0000000009c54b10 RCX: 00007f27bc91b13a
-> RDX: 0000000000000038 RSI: 0000000009c54b10 RDI: 0000000000000006
-> RBP: 0000000009c54920 R08: 00007f27bd0030e0 R09: 000000000000000c
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
->  </TASK>
-> Modules linked in: mlx5_vdpa vringh vhost_iotlb vdpa xt_MASQUERADE nf_conntrack_netlink nfnetlink iptable_nat xt_addrtype xt_conntrack nf_nat br_netfilter rpcsec_gss_krb5 auth_rpcgss oid_registry overlay rpcrdma rdma_ucm ib_iser libiscsi ib_umad scsi_transport_iscsi ib_ipoib rdma_cm iw_cm ib_cm mlx5_fwctl mlx5_ib ib_uverbs ib_core mlx5_core
-> CR2: 0000000000000010
+On Thu, Oct 23, 2025 at 01:34:21PM +0100, Robin Murphy wrote:
+> On 2025-10-22 6:12 pm, Jason Gunthorpe wrote:
+> > This old style API is only used by drivers/gpu/drm/msm and
+> > drivers/remoteproc, neither are used on x86 HW. Remove the dead code to
+> > discourage new users.
+> 
+> I'd be almost certain there's somebody somewhere using remoteproc on x86
+> with some FPGA/bespoke PCI device/on-board MCU/etc. - whether they're doing
+> it on AMD *and* care about its fault reporting mechanism is really the
+> question.
 
-Please trim the crashes in the future.
+Hmm!
 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> index 41fd5eee6306..9c46511e7b43 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> @@ -266,6 +266,7 @@ static void mlx5e_devcom_cleanup_mpv(struct mlx5e_priv *priv)
->  	}
->  
->  	mlx5_devcom_unregister_component(priv->devcom);
-> +	priv->devcom = NULL;
->  }
+Looking more closely
 
-This feels a little like it should be in patch 3. 
-But I guess the two are inextricably linked anyway :\
+static int rproc_enable_iommu(struct rproc *rproc)
+{
+        struct iommu_domain *domain;
+        struct device *dev = rproc->dev.parent;
+        int ret;
+
+        if (!rproc->has_iommu) {
+                 ^^^^^^^^^^^^^
+                dev_dbg(dev, "iommu not present\n");
+                return 0;
+        }
+
+        iommu_set_fault_handler(domain, rproc_iommu_fault, rproc);
+
+And then:
+
+drivers/remoteproc/omap_remoteproc.c:   rproc->has_iommu = true;
+drivers/remoteproc/qcom_q6v5_adsp.c:    .has_iommu = true,
+
+config OMAP_REMOTEPROC
+        tristate "OMAP remoteproc support"
+        depends on ARCH_OMAP4 || SOC_OMAP5 || SOC_DRA7XX
+        depends on OMAP_IOMMU
+
+config QCOM_Q6V5_ADSP
+        tristate "Qualcomm Technology Inc ADSP Peripheral Image Loader"
+        depends on OF && ARCH_QCOM
+        depends on QCOM_SMEM
+
+So, I think it is safe. I will revise the commit message.
+
+Seems like these drivers are definately used:
+
+ drivers/iommu/arm/arm-smmu/arm-smmu.c    |  1 +
+ drivers/iommu/arm/arm-smmu/qcom_iommu.c  |  1 +
+ drivers/iommu/omap-iommu.c               |  1 +
+
+But I wonder if these are all dead code too? Any thoughts?
+
+ drivers/iommu/ipmmu-vmsa.c               |  1 +
+ drivers/iommu/mtk_iommu.c                |  1 +
+ drivers/iommu/mtk_iommu_v1.c             |  1 +
+ drivers/iommu/rockchip-iommu.c           |  1 +
+ drivers/iommu/sun50i-iommu.c             |  1 +
+
+> >   	if (dev_data) {
+> > -		/*
+> > -		 * If this is a DMA fault (for which the I(nterrupt)
+> > -		 * bit will be unset), allow report_iommu_fault() to
+> > -		 * prevent logging it.
+> > -		 */
+> > -		if (IS_IOMMU_MEM_TRANSACTION(flags)) {
+> > -			/* Device not attached to domain properly */
+> > -			if (dev_data->domain == NULL) {
+> > -				pr_err_ratelimited("Event logged [Device not attached to domain properly]\n");
+> > -				pr_err_ratelimited("  device=%04x:%02x:%02x.%x domain=0x%04x\n",
+> > -						   iommu->pci_seg->id, PCI_BUS_NUM(devid), PCI_SLOT(devid),
+> > -						   PCI_FUNC(devid), domain_id);
+> > -				goto out;
+> > -			}
+> This part is unrelated to the report_iommu_fault() call - in fact it was
+> specifically added even more recently.
+
+Yeah, I'll fix it
+
+Thanks,
+Jason
 
