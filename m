@@ -1,203 +1,155 @@
-Return-Path: <linux-rdma+bounces-14025-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14026-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AC1FC01E96
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Oct 2025 16:54:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26B52C0204C
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Oct 2025 17:12:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40DBE1A63B05
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Oct 2025 14:55:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 618A43B6707
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Oct 2025 15:06:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A57214C85;
-	Thu, 23 Oct 2025 14:54:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3664222068D;
+	Thu, 23 Oct 2025 15:06:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="s5jfA7oW"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="czB/VHzj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from MW6PR02CU001.outbound.protection.outlook.com (mail-westus2azon11012054.outbound.protection.outlook.com [52.101.48.54])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 162FE330B2F;
-	Thu, 23 Oct 2025 14:54:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.48.54
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761231281; cv=fail; b=Z4K68hNsnYv45Paw6O+TX4wgVuyBLxsylJXyAYguDtRm3qrsv6ptOzHpB4zJNnojDrlOJrrPxNGMhmxtmb7j5Or4vAuC0hNu0fJUFFEdYMALyILWPQxrw8OM/69H1aNgzJ3TzdnRTinUEnyrVQbh9OLn8V5xB4FJE+opTmgsvG4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761231281; c=relaxed/simple;
-	bh=IiPvYAvcpBGZ2u81AWUq/U54GlzHSWxPP82TE8a9w0w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=PRzd065WpYZt5qKpjCZ+/i2Tdsb7eml/pCLvOSb8MQkeIjPzW77BHdVPYC1Qn/w7v0t1WJktBX6U+bhS3bawUdc5S1yCuNUHtfOMurlWg0uocuaZwranKHMJGPPqFqqE32qW+T9KIDvorzUeP4WtAOx3Sqw4vv82Gy4cghzTVCY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=s5jfA7oW; arc=fail smtp.client-ip=52.101.48.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=uxx6M8fwVAJviMfHmvkgHPF/9iHxr50K98BXYyLmobMpZs/gTeZUHbrAXDY0UeOojM2RVc+lNtZPdghLBNSzG64tBf9g/80l0xSzKma+WLicQwKRAEDnYrZUo3LobU4K4l/PsVMc6zPFC+iRCeY9OKpYJ4w3dTlx5u7d6dXgPF1ChAik95jrWDZ9wFVbK83/FeyR3ueFyMeMmDDT+gbKAw5EuBHhPmnMc0ifmLs46i42C+xXtu61hkDP3vl83lC47PwcoW72mtvyiZ9Gnpl+OHmiTBK4qrsel6qgj8wXKJJdKpjXi9VgPK3syYwWtwjtysds1xVhf5uG6qqT7q9REA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dqU7mjwQ9Tuv6viIvC+OdjC5AD/nKvbUFs66cknXclY=;
- b=BDWxwD2S8RJv2lyec+MaXrtoNDwkSD04juaRSgPrc6HKFqsirCozlMBmrPxeaHuvBi3vVKpuZTBf9yNT/Wqk/kWw47TWuaAwM9bleCH4TD//TgKHUF95Uq26xOWdMsb/gjxLRNraw92sNP7oCovkbHzIhWnjeTDvWmGG8UZSsk1w4FJ9o/i7FXZrMLhzokY0iKiGDqv67OUIKRQdyG8XY/0HfEX8/JIvJgDZr+AikpMyBvsdNkzXH7o3W3XjI1l8L1cJVXSdD736HJ8m+9CFL9EiQ1sq82za7j5h/VtYnlodRLKjdOJE6YZpfa5A8vSydxZRzimIrve6teGlw+1bQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dqU7mjwQ9Tuv6viIvC+OdjC5AD/nKvbUFs66cknXclY=;
- b=s5jfA7oW5xFSTQB2NljI80gVY11IYv/PdmkCxRCP3tU1GnxsCwntK2Kea0y1g5vqiwGE/Vi6RJ279T7aI42wXEEKI+X8pvoMmbHIaVzX7VLavxeNHnjwq9yqV7Cf9netElLKhHqJBqfQP3IM3CgdXgMlWUkK315DDCJBa7J+/SeUVEOK/24SrVpbA4M2J9Zpy8yXxe44unoIVP5wzSgA7XKnmEvtYtXK/IG9ep+m5sjMUJCZd3on1R0BnrTNQByHx5q/NJGVhM5DBiCfeX0GlyX6MGBKP3EP1wGSUIZjqQ2O0t/NHXcHzAPl/kM473igopZej1VIn++eiJImT30lZw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB3613.namprd12.prod.outlook.com (2603:10b6:208:c1::17)
- by DM6PR12MB4266.namprd12.prod.outlook.com (2603:10b6:5:21a::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9253.12; Thu, 23 Oct
- 2025 14:54:36 +0000
-Received: from MN2PR12MB3613.namprd12.prod.outlook.com
- ([fe80::1b3b:64f5:9211:608b]) by MN2PR12MB3613.namprd12.prod.outlook.com
- ([fe80::1b3b:64f5:9211:608b%4]) with mapi id 15.20.9253.011; Thu, 23 Oct 2025
- 14:54:35 +0000
-Date: Thu, 23 Oct 2025 11:54:34 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Christian Benvenuti <benve@cisco.com>,
-	Heiko Stuebner <heiko@sntech.de>, iommu@lists.linux.dev,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Joerg Roedel <joro@8bytes.org>, Leon Romanovsky <leon@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-mediatek@lists.infradead.org, linux-rdma@vger.kernel.org,
-	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	Nelson Escobar <neescoba@cisco.com>,
-	Rob Clark <robin.clark@oss.qualcomm.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-	Chen-Yu Tsai <wens@csie.org>, Will Deacon <will@kernel.org>,
-	Yong Wu <yong.wu@mediatek.com>, patches@lists.linux.dev
-Subject: Re: [PATCH 3/3] iommu: Allow drivers to say if they use
- report_iommu_fault()
-Message-ID: <20251023145434.GJ262900@nvidia.com>
-References: <3-v1-391058a85f30+14b-iommu_set_fault_jgg@nvidia.com>
- <d594cdf2-5aab-4539-8d44-f7e57770df72@arm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d594cdf2-5aab-4539-8d44-f7e57770df72@arm.com>
-X-ClientProxiedBy: MN2PR01CA0064.prod.exchangelabs.com (2603:10b6:208:23f::33)
- To MN2PR12MB3613.namprd12.prod.outlook.com (2603:10b6:208:c1::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 550012FCBF5;
+	Thu, 23 Oct 2025 15:06:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1761232011; cv=none; b=hr4O29lDzANMnAcQpFx1Cj+ocapTKBr94Y4140gr1J+3UCQzsiisa2IdZc9KpmsMV1MZHn7kZIIW2xssowtBNfJlHK0YfbrcQFEaNpTVpti+BKvXl827SES6bQdApDJO0XcQYxbu//21W6anxEVnVl/HpYonwXESkPmU5gljryM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1761232011; c=relaxed/simple;
+	bh=UoQ13NiOpGEiKHmwMpKk6tQhEhUFeAhW/pw6KPT0wg0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RYjm59+InjG0/yph8496Ww5DkxvDKM5Hy0mE2Fk5BvNEC3L+oyJymY8dps6dKRAbkbotyo1iwDMuEwthLHMShONWHti6jZlshFBphkWKO3CiSkQpzRwCt+hzse7QfNU2INMJUQzye8QwjdAnXlzgocP7K7u4QDWZBb3m5z+9VGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=czB/VHzj; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 59N6tuVH019265;
+	Thu, 23 Oct 2025 15:06:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=Av0H3oynECbxpqDu2AL7/Q8q2mkewhV28IVGTKriN
+	SM=; b=czB/VHzj9ULWNVCFBwHoQd09I2+ahNHQLazFMGj05zOnpvkRdBMTH96NW
+	soxGkprKJVy1XzC/Jzb0LmyLzuKhpaS2QRexIf2Gg7XiaohFXKMGK6y5vZAqWHNY
+	LjqvSPnjbHSuHZy/vVdJAPoeilpRV2hGtV9nT1KBsmFK45ryz4kqnFI5beDMCRVA
+	+r8gqJ+aqU/v1+4YhhlgpPmEsfftpz2vOEoKyV2caI5kiUbTdWKq7l8yFp4A2Qrk
+	RMRwHPt33X+FDPb8UurkWPo8OPUjF+N06E5c7moevcN3dAHL4urlgfzPqsO463Hg
+	AYTcJjm5TurVBBKbl8x9c3o32kyww==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49v30w1e0n-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 23 Oct 2025 15:06:41 +0000 (GMT)
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 59NF619q013455;
+	Thu, 23 Oct 2025 15:06:41 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 49v30w1e0g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 23 Oct 2025 15:06:41 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 59NEZrks011075;
+	Thu, 23 Oct 2025 15:06:40 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 49vqx1e3bg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 23 Oct 2025 15:06:40 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 59NF6aDB26608020
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 23 Oct 2025 15:06:36 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 77C0E2004D;
+	Thu, 23 Oct 2025 15:06:36 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 646772004B;
+	Thu, 23 Oct 2025 15:06:36 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu, 23 Oct 2025 15:06:36 +0000 (GMT)
+Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55271)
+	id 3A99CE0505; Thu, 23 Oct 2025 17:06:36 +0200 (CEST)
+From: Alexandra Winter <wintera@linux.ibm.com>
+To: Julian Ruess <julianr@linux.ibm.com>, Mete Durlu <meted@linux.ibm.com>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        Dust Li <dust.li@linux.alibaba.com>,
+        Sidraya Jayagond <sidraya@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>,
+        Andrew Lunn <andrew+netdev@lunn.ch>
+Cc: Mahanta Jambigi <mjambigi@linux.ibm.com>,
+        Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>, Simon Horman <horms@kernel.org>
+Subject: [PATCH net-next 1/2] dibs: Remove reset of static vars in dibs_init()
+Date: Thu, 23 Oct 2025 17:06:35 +0200
+Message-ID: <20251023150636.3995476-1-wintera@linux.ibm.com>
+X-Mailer: git-send-email 2.48.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3613:EE_|DM6PR12MB4266:EE_
-X-MS-Office365-Filtering-Correlation-Id: ecf5b08e-c5d5-409c-0366-08de12441541
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|366016|1800799024|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?94oQD/d7+HvV+q5LlVCKVCK4C5oFl/NbIU6GgBaBG8yDL3kfL/bk1oEgKE1g?=
- =?us-ascii?Q?98mZugHJDgQ7u8QWULMbWZWmH+O/NtamGcuBAPkhkcrzfm0WsgdcS009f0CR?=
- =?us-ascii?Q?2J9InKx39yy3pH0vETHHW84s6eUSpcnIgXj2hrVrlOuFXnnsxqWWtbNJK+Ty?=
- =?us-ascii?Q?YI4MMsSTQq4QtX8JsicfS5kA5dy0NujHaVO2+PimhHJCUf7pTv5iJtDRzKew?=
- =?us-ascii?Q?HEmCjbC7k33W4UUD1ZBn3UI8XddIp0A0sG+khpPGr/tUA6aaAHjTaJSxBOj0?=
- =?us-ascii?Q?BYTZygHCcbm+VvhsQxDBqfCJxqlTNBYsi8Y+ICjFtgvPHcJxueN2iOv73osX?=
- =?us-ascii?Q?csS6jvuomuNfYFrVyjbsRMOXBs+yg4XQ856KEP7VJ1hVLRvWtWmckzFPbkcQ?=
- =?us-ascii?Q?7Zijv/+XmeRW6zjZNoL0UZk0rrrwhijopJZaiatiOwXhcoLdJ8FFODLFKoW8?=
- =?us-ascii?Q?wVsbrSt9J4GUr81KT4pdv5c0ZFJP3KM/SYf/oECpDYMIonQAGBA3IO8MDg7c?=
- =?us-ascii?Q?VIbFJ1z5NFbwo4SHs1WNSiEtYGH280DiifhqEXUBImnPUw6SFBedfZgdurVt?=
- =?us-ascii?Q?TTyzUFSWMv+yVci8B3qwvLHIR57ESytfO06h6SGb2Ku5OtF64ddIs3dERugO?=
- =?us-ascii?Q?1YUkcpq2gqEQqMnUaXYx9mezGiJrYgNp3ESQuMFCZjmRfWBwBlTOpr3pvHGA?=
- =?us-ascii?Q?jDvW6y4GSzhDkw8h+BJ+qLApie1Wj7ZtiDRvEsL4ZqnBI8MTxwyosl4bB0YN?=
- =?us-ascii?Q?0hLrTHGJYR8ZfGYs1e3bpJEzpg6dVOK/WKjkxmblm6QKpHcFa2mkB7OULqNd?=
- =?us-ascii?Q?40KQjy2M5oh+mezwDD3PWw9L+WuFaLEXwxVua0UexQ6SHchDbjD2kK8VCB2v?=
- =?us-ascii?Q?M+BA4kRcBjQo+0+KpbDj+azXxBpSQTh1MdWhGQnYZ7pQlyDrTRTBmiu+0htz?=
- =?us-ascii?Q?CalZN3NBoPAiYApLwr88vkWFIXsRnaX3Voh7C09fw8JyF8aHNj4juQClx5Uf?=
- =?us-ascii?Q?Mt95ZQVbkAHpxDKgbvKENTiLjCOYCCoe+wcFBKU/J80jMER2FK73z+GJqG8D?=
- =?us-ascii?Q?Naxgq3/wTtROJumKfFvKuP53tPdtvHwk5FIaC7ymsYG07Fdqn+ugLmp+r6PS?=
- =?us-ascii?Q?0cemeRykbCUd74QD1RbX5DaNNp7DfnVuHrXz+xiP22XyuOvnfUoL+F97AngM?=
- =?us-ascii?Q?Qu0mw8iTKr3s/nYktOjZ4qsxz1mUBOhm9/km8lg8r3ZoJ6YgDuYOuh3glVBQ?=
- =?us-ascii?Q?bR2LLnNpTyDw3VeCUbHQckBJHPOu1/mrSYr+4Le74Bc0pMjrBejbdqE1tH7f?=
- =?us-ascii?Q?Xz3AFUDwC5X8Jgx8jHYGi1bI+aC9vVK5GLisblswNBzyj/2aExCVMwhOGZch?=
- =?us-ascii?Q?Y0I65XS4lHKceAnLDFwLfWfBqO+gJS7KuxzoQZX2GROLzQfBV/nIhX/rCBrA?=
- =?us-ascii?Q?xnwjdB90otNj7wnXmOq9QCmffUudpHZN?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3613.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?d3v36TDUSHZkWQqPEs+llBOCuhT8akovkIXjF/xPDJXhgFijAIULyDp4sTl8?=
- =?us-ascii?Q?5MaDs8j5j/cNetsZty69l4erkvxDbZKJP2Rh4TXRbxj4KVOsJPHCn/DPd0FP?=
- =?us-ascii?Q?PqaedyTmx6G9XCECpDvUI2OezIgyxgFEHExpyPfpugFiZn9w/Nu8WRVa5juY?=
- =?us-ascii?Q?VbO+CPPuq5j0USP5wNE8rE5x1dCfGihzh/sStC244XM/OWdTV51ljgCnxwyk?=
- =?us-ascii?Q?0MJKG8TqiOtFgUH0wTqKWiv2E+ahXtA8Y5fRTaLL0UHMAFZUT4O6Y24lK7nC?=
- =?us-ascii?Q?PgbktrC+H2S4bkfZaDinakk0mQhYp5PbA2ghQHjhTx26OAEFyWIlh0V2uHcv?=
- =?us-ascii?Q?Bt65XWnaxOUsJT1ITt5X7Ro5CZEkHQAVaXQ1oGMcHL8zODaSOf4EwuvLiM7Y?=
- =?us-ascii?Q?AcN12CYPvObdN2qiFyaMFH1OwfIqRLaJpxFO53Awe1Gib64VnMajGmqDMB89?=
- =?us-ascii?Q?LCDIQoL7PBdkkdnp0RpikLfQE5eK9dI47oy7euXcEvQ2VVtZmoe8F5JetYsA?=
- =?us-ascii?Q?3TinnwDIqcBR71yShmE7RMAFrW7CgRzc9tl4b6Z/U0d7SIk/8vBLqE3KPtoj?=
- =?us-ascii?Q?j1PYujQqE+R8CVRQflwOawYlPvkA4JBANEIsjH9WsSJ8Dxs93yBGy6s3RQ9X?=
- =?us-ascii?Q?+pAbNkS4H3qjr9iCzc/8A8vo+W+wz/gL5xmH3GIwkuzmAKUXamm60L/kEAZE?=
- =?us-ascii?Q?yTd+it8ElQnZHMCZdEdaWbIvhByqt1iJSbwRD9N/8yy36ay6q1nqByWu4PRO?=
- =?us-ascii?Q?FzqQ6h9TecdqcomXkZuNKMq1/0+ULPjxdOwo+mVYmSmkj7deKYTQpCGunvUU?=
- =?us-ascii?Q?0A24hIPJf4DLdldVyemWbouRRBDaOrmPokUKaRsxwbdBNLFAPvfZfbrVokEX?=
- =?us-ascii?Q?qFg83Sz53MSEJDJenyIiZaE3M0DSmL6SrisaxvUfPBz2l2BqnY0ejlkh4LAa?=
- =?us-ascii?Q?YhX6Ac4VbHROmoGJDnsr4OuHEe+MzwKI6xrOWfDzDbuHW9NfSr4XWyQ11Dbl?=
- =?us-ascii?Q?Qf9SUmbcfwD7ECECBFBBacqOTiykCrTkI8Gqkh4kt9HhOMUca1iP/2C6LUHh?=
- =?us-ascii?Q?tACCibY5xgMyTRghIWJqAT2EVkZTgYfAxtReSvp8wOcreoi5lJA86or/Ubbi?=
- =?us-ascii?Q?N4vWqMz1y3NSkxh48ViJgbj8pHg2d0N40rMdibaUmIMDZkXci7qyPNEJZXqU?=
- =?us-ascii?Q?f5j2NByEeO2aXWzKxD8IMAemZF9ok3E80xFzS9pys8I3OvfqL76ta95dVVvv?=
- =?us-ascii?Q?gUT9NJArsnD5IwoutruN//klfeJk9/BvA8PlcOdiqY8TaZpkvIvyPZixT+Lh?=
- =?us-ascii?Q?W3ekyEInWo2qFzjkOhDLrMsht7J02MQWVN3LAgSBqKYtnQuyiVLCmFhgYbu1?=
- =?us-ascii?Q?dRWg5HdWi2K36TsoBzz4FKwNkPSJEcPGOQTtgkOayDWzygANnbYri8iPi19L?=
- =?us-ascii?Q?MzmOhOdX9PV+nfxSc2ZKNTbIOpGoZ3fWUrcn9PSi/l6GWIf3jfis/o1BXXLh?=
- =?us-ascii?Q?ZeVNnAk02xqKH9/NYRbyBPygpJ4j0BkWpG0O7NSBd0oNtnwP353sDf5isrpU?=
- =?us-ascii?Q?/5d7V11C+4cIwh9libGNj4XN5Wxfqoxn7W7zov6Q?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ecf5b08e-c5d5-409c-0366-08de12441541
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3613.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2025 14:54:35.8465
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: e+m8tgumpImimoCaMVbCCvLsQ+MFEpFp02TkvyZ+vorOd6Iv+Hz7n7QenP1vxL5Y
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4266
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Thhvfx46WOP6PAZCaySNauprniLkgjZP
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMDE4MDAyMiBTYWx0ZWRfX+dGYMbMp9Hd9
+ wTK2r/i6byqOBUakCbYEPsyjaYhWp2Ko33i5am64cZaxilWE2tiD1OFdS0Ks6vA2h1BJJB1yJcn
+ zU7MleHmS9Vj7rZXi2NEVuw0hgRJAWmSrfHocAqecpzSP00DVks1bMbz234Ug1zg6aVBe6DGtsc
+ tdWjfsGJx8km9ZnNcqd+GDP4CuPu98HQUvN7BYOupUBZvYSrJQ1egdGX02EddPvwFwjZJgoPofm
+ /akljc9dEmoLl8uqat/s5gTh3BT+eKR4CHTJLD+mkS8LDepZJsu+wr8D7fNU4B+GSGKLUiKKmOf
+ aH/B5v4az78YVKBGaNwhE/QUGSdvMtL1fX2T/Grm9B5cb8ooLHVv3QJ6CT7y/vw99B12BsTKu44
+ KJ4rE3ZKKErNGtWo11vijnNNm9fLYA==
+X-Authority-Analysis: v=2.4 cv=MIJtWcZl c=1 sm=1 tr=0 ts=68fa4481 cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=x6icFKpwvdMA:10 a=VkNPw1HP01LnGYTKEx00:22 a=VnNF1IyMAAAA:8
+ a=8oxiqV0urVS3dNMH5xsA:9 a=cPQSjfK2_nFv0Q5t_7PE:22
+X-Proofpoint-ORIG-GUID: _U9ukBPxbYPmKBgv-HbeQZ81lRSho-wk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.80.40
+ definitions=2025-10-23_01,2025-10-22_01,2025-03-28_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ malwarescore=0 spamscore=0 phishscore=0 lowpriorityscore=0 adultscore=0
+ clxscore=1015 impostorscore=0 bulkscore=0 priorityscore=1501 suspectscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2510020000 definitions=main-2510180022
 
-On Thu, Oct 23, 2025 at 12:24:01PM +0100, Robin Murphy wrote:
-> On 2025-10-22 6:12 pm, Jason Gunthorpe wrote:
-> > report_iommu_fault() is an older API that has been superseded by
-> > iommu_report_device_fault() which is capable to support PRI.
-> > 
-> > Only two external drivers consume this, drivers/remoteproc and
-> > drivers/gpu/drm/msm. Ideally they would move over to the new APIs, but for
-> > now protect against accidentally mix and matching the wrong components.
-> > 
-> > The iommu drivers support either the old iommu_set_fault_handler() via the
-> > driver calling report_iommu_fault(), or they are newer server focused
-> > drivers that call iommu_report_device_fault().
-> > 
-> > Include a flag in the domain_ops if it calls report_iommu_fault() and
-> > block iommu_set_fault_handler() on iommu's that can't support it.
-> 
-> This isn't a domain operation though; depending on how you look at it,
-> supporting a legacy fault_handler is either a capability of the IOMMU driver
-> (that would be reachable via domain->owner->capable) or a property of the
-> iommu_domain itself that the drivers can set at allocation time (basically
-> this same patch just with the lines in slightly different places).
+'clients' and 'max_client' are static variables and therefore don't need to
+be initialized.
 
-That's right, the issue is:
+Reported-by: Mete Durlu <meted@linux.ibm.com>
+Signed-off-by: Alexandra Winter <wintera@linux.ibm.com>
+---
+ drivers/dibs/dibs_main.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-void iommu_set_fault_handler(struct iommu_domain *domain,
-					iommu_fault_handler_t handler,
-					void *token)
+diff --git a/drivers/dibs/dibs_main.c b/drivers/dibs/dibs_main.c
+index 0374f8350ff7..b015578b4d2e 100644
+--- a/drivers/dibs/dibs_main.c
++++ b/drivers/dibs/dibs_main.c
+@@ -254,9 +254,6 @@ static int __init dibs_init(void)
+ {
+ 	int rc;
+ 
+-	memset(clients, 0, sizeof(clients));
+-	max_client = 0;
+-
+ 	dibs_class = class_create("dibs");
+ 	if (IS_ERR(dibs_class))
+ 		return PTR_ERR(dibs_class);
+-- 
+2.48.1
 
-We can't get to the iommu instance starting from a domain pointer
-
-Do you think we should change the above signature to include a
-struct device *?
-
-Jason
 
