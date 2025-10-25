@@ -1,59 +1,63 @@
-Return-Path: <linux-rdma+bounces-14042-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14043-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EB7EC0964D
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Oct 2025 18:24:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B936FC09890
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Oct 2025 18:33:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E9C8B34E37D
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Oct 2025 16:24:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F33B3AC8D0
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Oct 2025 16:27:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2521230E85D;
-	Sat, 25 Oct 2025 16:19:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8098A304BC1;
+	Sat, 25 Oct 2025 16:22:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fL/dblZA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ccVn/F8P"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB8BC30DEBD;
-	Sat, 25 Oct 2025 16:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 362973054D1;
+	Sat, 25 Oct 2025 16:22:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761409163; cv=none; b=U8u9BSLPQhhQE8geKba5IFmIWsP6euQ/fePRg2fj+Hu9R89/n5Azt7JrLX+1paWcjggVqZs/eJxqt0SuUdh9rEZA/Gh4fKAzGXAQG+l/AKxglP3c/QkYGwy1NqnXl0mFLtIwGzMBd+ftr53T5sxgrWcdDD11ZETqNCjW1henYLs=
+	t=1761409323; cv=none; b=Yi3tQJ41peLDE+/i46JS6xrjJLLp4PZ1t3IJZG2uTE0ItWRPJDn5vgCPTfTj8EW3WHktnd6oB82MAsGq3q+o2scNNhgZIj0awwPiLXNDCaYN/AMO+83mEE7yLgRFJR4OQfB5AQ3UwKYvGa2AndZWdYtFX9GlvRxhufymYw8TURY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761409163; c=relaxed/simple;
-	bh=+30FKIxEdVTz0B4kDF4g4b+6ckiJoxjBf4wxOUt1m8U=;
+	s=arc-20240116; t=1761409323; c=relaxed/simple;
+	bh=BymGNPj82NaSFZQ2tSGRk2+TuheCQrfQdfZVGqDguuY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nG8jGWVfW05Gi2QdavP5+PWKws6gt7Nv7pfpDJjNccFZqKK7z5yLdFdsuali/2XwPge47m52MDWVtCOOqTNKS4o6n7bPoAZeP1WyE3decCHSxSLtvjs4aD+6mTglCxJmxTZgvphOCERO6o0QNVS883l/2PGPTXkGhtKL9VDNSA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fL/dblZA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE2DBC4CEF5;
-	Sat, 25 Oct 2025 16:19:22 +0000 (UTC)
+	 MIME-Version:Content-Type; b=O2ybpPUV8ByqUZrbOMyvn3Wvnn8MlzZ92oerYa458eBv44FSo/ku2QTjJB0K8DONN9cwsH8pZuqPdDDcEpoweLBeZDKH7MFkqIVTQFtcvhvfWUSEvcpOH/zzHSqwnTqUunO+l0IXkuWmtCi+01xAOIn7TfS68ehne5+tOVtXAx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ccVn/F8P; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAB71C2BCB8;
+	Sat, 25 Oct 2025 16:22:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761409163;
-	bh=+30FKIxEdVTz0B4kDF4g4b+6ckiJoxjBf4wxOUt1m8U=;
+	s=k20201202; t=1761409323;
+	bh=BymGNPj82NaSFZQ2tSGRk2+TuheCQrfQdfZVGqDguuY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fL/dblZAbcnvrsK5M1mm2DBZ7rFU5hVfzdJNrpLdSdLtqrQOG1ejIyo+EW25boRIr
-	 x73pof3RaOeUtABMdsla8sRHoxcLF6nzIUmibpNOdw9u3Ze3kzikVVsYDEnosauQOK
-	 XInguzg8b2zM+38HoBDSyjgC+ERIa6NtDSopupJjoWuBMy0vHyJykBd+knKxLl2TUC
-	 i51/ywEMezVkHMM5/+DyrljeW/6etJKK8zwQcaa6e7idbJTyqrTq+V53mK9Pn4EcZN
-	 jRVJNSBSo+3oVPRQQ/vQzZSlw0XR2TV1TgRS9WWltOCiTvZTTAOxbNlU1p71PU0BBH
-	 DGoFpfi4nbVkA==
+	b=ccVn/F8PQLXJIvD5+umydTKp462BojBiCWfuj2KMaBBhsMIbRrNJDvSPsuTAhQZu/
+	 W0pmwom++rKoQxgeBWQIdx8FWBr6EyQMlb190mN4WgsHAJ8ogI13cE4n6cZZpcB/S0
+	 3Fx6UY2/aKpOVCvQCyEQ1St9XTu2ePzQ2laXthyPZc3A2i5HkkqGVZ5DMe2EkY2YSo
+	 yOXiDN9vRMm04fEH1X6+Xl5yPrAAiO1U7J7T8T3UvDnJ1WT8kjCBczKnWwWHwl+40C
+	 RYDR0CvLtrS9chl7DWIb/RcmSad7VWr1mz9ICqLY+5l7iRJl24qZkSwG8WNxj6wDjt
+	 ArfXXI+S8IE1A==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Ujwal Kundur <ujwal.kundur@gmail.com>,
-	Allison Henderson <allison.henderson@oracle.com>,
+Cc: Jianbo Liu <jianbol@nvidia.com>,
+	Cosmin Ratiu <cratiu@nvidia.com>,
+	Jiri Pirko <jiri@nvidia.com>,
+	Dragos Tatulea <dtatulea@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
+	saeedm@nvidia.com,
+	mbloch@nvidia.com,
 	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	rds-devel@oss.oracle.com
-Subject: [PATCH AUTOSEL 6.17-5.4] rds: Fix endianness annotation for RDS_MPATH_HASH
-Date: Sat, 25 Oct 2025 11:57:37 -0400
-Message-ID: <20251025160905.3857885-226-sashal@kernel.org>
+	linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.17] net/mlx5e: Prevent entering switchdev mode with inconsistent netns
+Date: Sat, 25 Oct 2025 11:58:30 -0400
+Message-ID: <20251025160905.3857885-279-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251025160905.3857885-1-sashal@kernel.org>
 References: <20251025160905.3857885-1-sashal@kernel.org>
@@ -69,273 +73,129 @@ X-stable-base: Linux 6.17.5
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Ujwal Kundur <ujwal.kundur@gmail.com>
+From: Jianbo Liu <jianbol@nvidia.com>
 
-[ Upstream commit 77907a068717fbefb25faf01fecca553aca6ccaa ]
+[ Upstream commit 06fdc45f16c392dc3394c67e7c17ae63935715d3 ]
 
-jhash_1word accepts host endian inputs while rs_bound_port is a be16
-value (sockaddr_in6.sin6_port). Use ntohs() for consistency.
+When a PF enters switchdev mode, its netdevice becomes the uplink
+representor but remains in its current network namespace. All other
+representors (VFs, SFs) are created in the netns of the devlink
+instance.
 
-Flagged by Sparse.
+If the PF's netns has been moved and differs from the devlink's netns,
+enabling switchdev mode would create a state where the OVS control
+plane (ovs-vsctl) cannot manage the switch because the PF uplink
+representor and the other representors are split across different
+namespaces.
 
-Signed-off-by: Ujwal Kundur <ujwal.kundur@gmail.com>
-Reviewed-by: Allison Henderson <allison.henderson@oracle.com>
-Link: https://patch.msgid.link/20250820175550.498-4-ujwal.kundur@gmail.com
+To prevent this inconsistent configuration, block the request to enter
+switchdev mode if the PF netdevice's netns does not match the netns of
+its devlink instance.
+
+As part of this change, the PF's netns is first marked as immutable.
+This prevents race conditions where the netns could be changed after
+the check is performed but before the mode transition is complete, and
+it aligns the PF's behavior with that of the final uplink representor.
+
+Signed-off-by: Jianbo Liu <jianbol@nvidia.com>
+Reviewed-by: Cosmin Ratiu <cratiu@nvidia.com>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+Link: https://patch.msgid.link/1759094723-843774-3-git-send-email-tariqt@nvidia.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
 LLM Generated explanations, may be completely bogus:
 
-## BACKPORT RECOMMENDATION: YES (Low Priority)
+YES
+**Why Backport**
+- Rejects switchdev activation when the PF netdev sits in a different
+  netns than the devlink instance, avoiding the broken state where OVS
+  loses control of the split representors (`drivers/net/ethernet/mellano
+  x/mlx5/core/eswitch_offloads.c:3842-3847`).
+- New helper grabs the uplink netdev safely via the existing ref-counted
+  accessor and sets `netns_immutable` under RTNL so the PF behaves like
+  the eventual uplink representor, while immediately detecting namespace
+  divergence (`drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.
+  c:3777-3797`;
+  `drivers/net/ethernet/mellanox/mlx5/core/lib/mlx5.h:48-64`).
+- If the mode change later fails, the helper rolls the flag back to keep
+  legacy behavior untouched; successful transitions keep the flag set,
+  matching switchdev guidance to freeze port namespaces (`drivers/net/et
+  hernet/mellanox/mlx5/core/eswitch_offloads.c:3867-3869`;
+  `Documentation/networking/switchdev.rst:130-143`).
+- Locking the namespace leverages the core check that rejects moves of
+  immutable interfaces (`net/core/dev.c:12352-12355`), eliminating the
+  race window the commit message highlights without touching data-path
+  code.
+- The change is tightly scoped to the mode-set path, has no dependencies
+  on new infrastructure, and fixes a long-standing, user-visible bug
+  with minimal regression risk—strong fit for stable kernels that ship
+  mlx5 switchdev support.
 
-## Executive Summary
+ .../mellanox/mlx5/core/eswitch_offloads.c     | 33 +++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-This commit fixes a **real but subtle endianness bug** in the RDS
-(Reliable Datagram Sockets) multipath hashing mechanism that has existed
-since multipath support was introduced in Linux 4.10 (July 2016). The
-fix adds a single `ntohs()` call to properly convert network byte order
-to host byte order before hashing, ensuring correct behavior across all
-architectures.
-
-## Detailed Technical Analysis
-
-### The Bug (net/rds/rds.h:96)
-
-**Before (incorrect):**
-```c
-#define RDS_MPATH_HASH(rs, n) (jhash_1word((rs)->rs_bound_port, \
-                               (rs)->rs_hash_initval) & ((n) - 1))
-```
-
-**After (correct):**
-```c
-#define RDS_MPATH_HASH(rs, n) (jhash_1word(ntohs((rs)->rs_bound_port), \
-                               (rs)->rs_hash_initval) & ((n) - 1))
-```
-
-### Root Cause Analysis
-
-Using semcode tools, I verified that:
-
-1. **`rs_bound_port` is `__be16`** (net/rds/rds.h:600):
-   - Defined as `rs_bound_sin6.sin6_port` from `struct sockaddr_in6`
-   - Stored in network byte order (big-endian) as confirmed in
-     net/rds/bind.c:126: `rs->rs_bound_port = cpu_to_be16(rover);`
-
-2. **`jhash_1word()` expects `u32` in host byte order**
-   (tools/include/linux/jhash.h:170):
-  ```c
-  static inline u32 jhash_1word(u32 a, u32 initval)
-  ```
-
-3. **The macro violates type safety** by passing `__be16` where `u32`
-   (host endian) is expected
-
-### Functional Impact
-
-**On Little-Endian Systems (x86, x86_64, ARM-LE):**
-- Port 80 (0x0050 in network order) → hashed as 0x5000 (20480) ❌
-- Port 443 (0x01BB in network order) → hashed as 0xBB01 (47873) ❌
-- Results in **incorrect hash values** and **wrong multipath selection**
-
-**On Big-Endian Systems (SPARC, PowerPC in BE mode):**
-- Port 80 → hashed correctly as 80 ✓
-- Port 443 → hashed correctly as 443 ✓
-
-**Cross-Architecture Implications:**
-- Heterogeneous clusters (mixing LE and BE systems) would compute
-  different hashes for the same port
-- This violates the fundamental assumption that the same port should
-  select the same path consistently
-
-### Code Location and Usage
-
-The `RDS_MPATH_HASH` macro is used in **net/rds/send.c:1050-1052**:
-```c
-static int rds_send_mprds_hash(struct rds_sock *rs,
-                               struct rds_connection *conn, int
-nonblock)
-{
-    int hash;
-
-    if (conn->c_npaths == 0)
-        hash = RDS_MPATH_HASH(rs, RDS_MPATH_WORKERS);
-    else
-        hash = RDS_MPATH_HASH(rs, conn->c_npaths);
-    // ... path selection logic
-}
-```
-
-This function is called from `rds_sendmsg()` to determine which
-connection path to use for multipath RDS, affecting all RDS multipath
-traffic.
-
-### Historical Context
-
-- **Introduced:** July 14, 2016 in commit 5916e2c1554f3 ("RDS: TCP:
-  Enable multipath RDS for TCP")
-- **Bug duration:** ~9 years (2016-2025)
-- **Affected kernels:** All versions from v4.10 onwards
-- **Discovery method:** Sparse static analysis tool
-- **No Fixes: tag:** Indicating maintainer didn't consider it critical
-- **No Cc: stable tag:** Not marked for automatic stable backporting
-
-### Why This Bug Went Unnoticed
-
-1. **Limited Deployment Scope:**
-   - RDS is primarily used in Oracle RAC (Real Application Clusters)
-   - Niche protocol with specialized use cases
-   - Not commonly deployed in general-purpose environments
-
-2. **Homogeneous Architectures:**
-   - Most RDS deployments use identical hardware (typically x86_64)
-   - Within a single architecture, the bug is **consistent** (always
-     wrong, but deterministically wrong)
-   - Same port always selects the same path (even if it's the "wrong"
-     path)
-
-3. **Subtle Impact:**
-   - Doesn't cause crashes or data corruption
-   - Only affects multipath load distribution
-   - Performance impact may be attributed to other factors
-
-### Comparison with Correct Usage
-
-Looking at similar kernel code in **include/net/ip.h:714**, I found the
-correct pattern:
-```c
-static inline u32 ipv4_portaddr_hash(const struct net *net,
-                                     __be32 saddr,
-                                     unsigned int port)
-{
-    return jhash_1word((__force u32)saddr, net_hash_mix(net)) ^ port;
-}
-```
-
-Note the explicit `(__force u32)` cast to convert big-endian to host
-endian before passing to `jhash_1word()`.
-
-## Backporting Assessment
-
-### Criteria Evaluation
-
-| Criterion | Assessment | Details |
-|-----------|-----------|---------|
-| **Fixes a real bug** | ✅ YES | Endianness type mismatch causing
-incorrect hash on LE systems |
-| **Affects users** | ⚠️ LIMITED | RDS is niche; most deployments
-homogeneous |
-| **Small change** | ✅ YES | Single line, one function call added |
-| **Obviously correct** | ✅ YES | Standard byte order conversion;
-matches kernel patterns |
-| **No side effects** | ⚠️ MINOR | Hash values change on LE systems;
-path selection may differ |
-| **Architectural change** | ✅ NO | Correctness fix only |
-| **Risk of regression** | 🟡 LOW | Minimal; changes observable behavior
-but fixes incorrect behavior |
-
-### Benefits of Backporting
-
-1. **Correctness:** Fixes architecturally incorrect code that violates
-   API contracts
-2. **Sparse-clean:** Brings code in line with kernel coding standards
-3. **Cross-architecture consistency:** Ensures LE and BE systems hash
-   identically
-4. **Future-proofing:** Prevents potential issues in heterogeneous
-   deployments
-5. **Long-term stability:** Eliminates subtle load-balancing issues
-
-### Risks of Backporting
-
-1. **Behavior Change on LE Systems:**
-   - Hash values will change for all ports
-   - Existing multipath connections may select different paths after
-     upgrade
-   - Could cause brief connection disruption during kernel update
-
-2. **Limited Testing:**
-   - RDS multipath is not widely deployed
-   - Difficult to predict impact on production systems
-   - No specific bug reports to validate the fix against
-
-3. **Low Severity:**
-   - No CVE assigned
-   - No security implications
-   - Hasn't caused reported user-facing issues in 9 years
-
-## Related Commits
-
-This is part of a series of endianness annotation fixes by Ujwal Kundur:
-- **92b925297a2f** "rds: Fix endianness annotation of jhash wrappers"
-  (companion fix)
-- **5e9e8e376ae19** "rds: Fix endianness annotations for RDS extension
-  headers"
-
-These related commits further support the importance of proper
-endianness handling in the RDS subsystem.
-
-## Recommendation Rationale
-
-**YES, this commit should be backported**, but as a **low-priority
-correctness fix** rather than a critical bugfix:
-
-1. **It's the right thing to do technically:** The code is objectively
-   incorrect and violates the jhash_1word() API contract
-2. **Minimal risk:** One-line change with obvious semantics
-3. **Long-term benefit:** Prevents future issues and aligns with kernel
-   standards
-4. **Completeness:** Part of a broader effort to fix RDS endianness
-   issues
-5. **Stable kernel compatibility:** Follows stable tree rules (small,
-   obvious, no ABI change)
-
-**However, prioritization should be LOW because:**
-- No reported user issues in 9 years
-- Limited real-world impact (niche protocol, homogeneous deployments)
-- Maintainer didn't mark as Cc: stable
-- Behavior change (hash values) could surprise users
-
-## Suggested Backport Scope
-
-Backport to all **actively maintained stable kernels** where RDS
-multipath exists:
-- v6.x series (current)
-- v5.15+ LTS series
-- v5.10 LTS (if still maintained)
-
-**Do NOT backport to:**
-- EOL kernels (maintenance overhead not justified)
-- Kernels older than v4.10 (RDS_MPATH_HASH doesn't exist)
-
-## Final Verdict
-
-**Backport Status: YES**
-
-This is a **valid correctness fix** for a real architectural bug that
-should be backported to stable trees. While the practical impact is
-limited due to RDS's specialized usage, the fix is minimal, obviously
-correct, and brings the code in line with kernel standards. The small
-risk of path selection changes on little-endian systems is outweighed by
-the long-term benefits of having correct, Sparse-clean code that behaves
-consistently across all architectures.
-
- net/rds/rds.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/rds/rds.h b/net/rds/rds.h
-index dc360252c5157..5b1c072e2e7ff 100644
---- a/net/rds/rds.h
-+++ b/net/rds/rds.h
-@@ -93,7 +93,7 @@ enum {
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+index f358e8fe432cf..59a1a3a5fc8b5 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+@@ -3739,6 +3739,29 @@ void mlx5_eswitch_unblock_mode(struct mlx5_core_dev *dev)
+ 	up_write(&esw->mode_lock);
+ }
  
- /* Max number of multipaths per RDS connection. Must be a power of 2 */
- #define	RDS_MPATH_WORKERS	8
--#define	RDS_MPATH_HASH(rs, n) (jhash_1word((rs)->rs_bound_port, \
-+#define	RDS_MPATH_HASH(rs, n) (jhash_1word(ntohs((rs)->rs_bound_port), \
- 			       (rs)->rs_hash_initval) & ((n) - 1))
++/* Returns false only when uplink netdev exists and its netns is different from
++ * devlink's netns. True for all others so entering switchdev mode is allowed.
++ */
++static bool mlx5_devlink_netdev_netns_immutable_set(struct devlink *devlink,
++						    bool immutable)
++{
++	struct mlx5_core_dev *mdev = devlink_priv(devlink);
++	struct net_device *netdev;
++	bool ret;
++
++	netdev = mlx5_uplink_netdev_get(mdev);
++	if (!netdev)
++		return true;
++
++	rtnl_lock();
++	netdev->netns_immutable = immutable;
++	ret = net_eq(dev_net(netdev), devlink_net(devlink));
++	rtnl_unlock();
++
++	mlx5_uplink_netdev_put(mdev, netdev);
++	return ret;
++}
++
+ int mlx5_devlink_eswitch_mode_set(struct devlink *devlink, u16 mode,
+ 				  struct netlink_ext_ack *extack)
+ {
+@@ -3781,6 +3804,14 @@ int mlx5_devlink_eswitch_mode_set(struct devlink *devlink, u16 mode,
+ 	esw->eswitch_operation_in_progress = true;
+ 	up_write(&esw->mode_lock);
  
- #define IS_CANONICAL(laddr, faddr) (htonl(laddr) < htonl(faddr))
++	if (mode == DEVLINK_ESWITCH_MODE_SWITCHDEV &&
++	    !mlx5_devlink_netdev_netns_immutable_set(devlink, true)) {
++		NL_SET_ERR_MSG_MOD(extack,
++				   "Can't change E-Switch mode to switchdev when netdev net namespace has diverged from the devlink's.");
++		err = -EINVAL;
++		goto skip;
++	}
++
+ 	if (mode == DEVLINK_ESWITCH_MODE_LEGACY)
+ 		esw->dev->priv.flags |= MLX5_PRIV_FLAGS_SWITCH_LEGACY;
+ 	mlx5_eswitch_disable_locked(esw);
+@@ -3799,6 +3830,8 @@ int mlx5_devlink_eswitch_mode_set(struct devlink *devlink, u16 mode,
+ 	}
+ 
+ skip:
++	if (mode == DEVLINK_ESWITCH_MODE_SWITCHDEV && err)
++		mlx5_devlink_netdev_netns_immutable_set(devlink, false);
+ 	down_write(&esw->mode_lock);
+ 	esw->eswitch_operation_in_progress = false;
+ unlock:
 -- 
 2.51.0
 
