@@ -1,57 +1,57 @@
-Return-Path: <linux-rdma+bounces-14045-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14046-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A201C099ED
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Oct 2025 18:41:41 +0200 (CEST)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74DDEC09B2A
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Oct 2025 18:46:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD52B3AE46C
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Oct 2025 16:32:39 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0BB115640F3
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Oct 2025 16:36:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEEC930F55C;
-	Sat, 25 Oct 2025 16:25:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E8D231B805;
+	Sat, 25 Oct 2025 16:27:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XpRRBtsd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CMV8anQu"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68B79307ADE;
-	Sat, 25 Oct 2025 16:25:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A3A6306498;
+	Sat, 25 Oct 2025 16:27:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761409506; cv=none; b=PEsUoONWSJvbOUbSkFTaIy7+f8ZKlbb5fKIeQpVdVxIPEOJxIoPhGxTtRvac3FMp4MkaqDst1SdOh41pAKEC1uzIwj7YVXofurOFqMbSvz39hjShX0P6F/2iqfckYYivXjmPDNdt73jW9Jq5n1/RrP1Nl/erBBxQEOj8cL53qZM=
+	t=1761409621; cv=none; b=CYd8lFKPxxsSSE5+QmipVk7dgxacqHP+csTKOuVg4LvOvMUnnkKBCVNdQhSjEmHBkL7X/NfKTS3tOVOacfBnWrZrL3TVOlpVqwDfCJ4KDM+3Tf7/odKCAvopjfbUsiwxCl/s6gYgRKdzdcweBaznnE25pHQaFUweK4B/yyqdJEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761409506; c=relaxed/simple;
-	bh=mQCUW0RCCXD33ZtjeHweSU2Gd6SdDLgTUBvEpuaGNgM=;
+	s=arc-20240116; t=1761409621; c=relaxed/simple;
+	bh=EV4V0aToZ75vj9kD31WLFR0fiNf2p961IW8sUVl4/d4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=c2ev8lyGFDO64YHMNhi+7GrqhKl9ZfJlA3aOQujR4uQZ5/rnJDfIpTRgHYi22azBnIrsGJauS3Sz5en8HVtUaceTCXM2JmpyFuk3j3sluJNtad2LzrPsJ1+fxG2sMp1OyDEQbLR5AT+XWmEKSgeV61W6lSnOmU4wyIYARBuegI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XpRRBtsd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C4B7C4CEF5;
-	Sat, 25 Oct 2025 16:25:05 +0000 (UTC)
+	 MIME-Version:Content-Type; b=Ijmst2t0rUbVGRdT9Gy3sZciGa1HnSA14CD8Un9WG3T/UGNoy3GmnNhC2H/iXnH6RfsoabCWyhmtEqJSISlqXDPeMTcPQMQ8hOMDg6yN7eN0uwE4hGx4jBME2iL2jn3D+gbZsm3ZpWsP7PKzcS5krGC1WNkh2K1XbE9RWM6r1C4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CMV8anQu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4F07C4CEFB;
+	Sat, 25 Oct 2025 16:26:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761409506;
-	bh=mQCUW0RCCXD33ZtjeHweSU2Gd6SdDLgTUBvEpuaGNgM=;
+	s=k20201202; t=1761409620;
+	bh=EV4V0aToZ75vj9kD31WLFR0fiNf2p961IW8sUVl4/d4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XpRRBtsdLECqNsox2HDQJgzIwMcuXmcg8LY9MjeXbK6KodWsdSpwvJxQFLoCRe4SV
-	 1x4p+jzWA4E4ltu1E7UHsKfIeJ5EP9IhzyLbff3RxdwGtGCX32YUmbA5wpsuTK504J
-	 nV2+I1JY9N355bx5pLnt+zHlb5NoQrTMUUrVjOpfziUUWXhejfTQUwftwTynfbsFYR
-	 GcKGtVq6XKiqBDn7Yrc0L3C4jJNr2gjR6hUkzM//S9paaihkJQlJKH7d/JBIEJ9wH+
-	 T+iF0cNxrsQ0jW7i8Y6me7gOLJUGmlFJ5B/ijbLxL40/gNGBtw51oebUhOnNprS31l
-	 LEHYTb20vRK2w==
+	b=CMV8anQuNyFfPS/it7TZ8rApThqQ+jg7Dd6dkkln+kDwppdWJLIgQkUZcxyFLLu3J
+	 yS//fLsMBqw4tOg0iS9QuNqVuWE+02q5tCMPmIt4Uin8TKxzurOoYj76QWnnnoNXlY
+	 kn+tumOzPCNKtAyqJMgoNpQVgCzZNQGEhAXnq9iXU3MGykzGP6UV8ow+DXF2x27e57
+	 Zd5XAZQbSUbLjXwRMYUAFymmsQDGF6IZ3b1xm7JLYj8BQffQyZHOXVgTbTHkjLrVIz
+	 fKM/gebMKo29dlGPdOkPg4EmOg9G29Ky2heItcg//VncRpoZ746oPvkj3/n5pVNhKy
+	 3wOVEJLgn1Ahw==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Konstantin Taranov <kotaranov@microsoft.com>,
+Cc: Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
+	Jacob Moroni <jmoroni@google.com>,
 	Leon Romanovsky <leon@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	longli@microsoft.com,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.17] RDMA/mana_ib: Drain send wrs of GSI QP
-Date: Sat, 25 Oct 2025 11:59:44 -0400
-Message-ID: <20251025160905.3857885-353-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.17-5.15] RDMA/irdma: Update Kconfig
+Date: Sat, 25 Oct 2025 12:00:28 -0400
+Message-ID: <20251025160905.3857885-397-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20251025160905.3857885-1-sashal@kernel.org>
 References: <20251025160905.3857885-1-sashal@kernel.org>
@@ -67,187 +67,63 @@ X-stable-base: Linux 6.17.5
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
+From: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
 
-[ Upstream commit 44d69d3cf2e8047c279cbb9708f05e2c43e33234 ]
+[ Upstream commit 060842fed53f77a73824c9147f51dc6746c1267a ]
 
-Drain send WRs of the GSI QP on device removal.
+Update Kconfig to add dependency on idpf module and
+add IPU E2000 to the list of supported devices.
 
-In rare servicing scenarios, the hardware may delete the
-state of the GSI QP, preventing it from generating CQEs
-for pending send WRs. Since WRs submitted to the GSI QP
-hold CM resources, the device cannot be removed until
-those WRs are completed. This patch marks all pending
-send WRs as failed, allowing the GSI QP to release the CM
-resources and enabling safe device removal.
-
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
-Link: https://patch.msgid.link/1753779618-23629-1-git-send-email-kotaranov@linux.microsoft.com
+Signed-off-by: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
+Link: https://patch.msgid.link/20250827152545.2056-17-tatyana.e.nikolova@intel.com
+Tested-by: Jacob Moroni <jmoroni@google.com>
 Signed-off-by: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
 LLM Generated explanations, may be completely bogus:
 
-YES
+YES – the new dependency avoids a real build break that appears as soon
+as the GEN3/IDPF support series lands while keeping risk negligible.
 
-Explanation
+- `drivers/infiniband/hw/irdma/ig3rdma_if.c` calls several IDPF-exported
+  helpers (`idpf_idc_rdma_vc_send_sync`, `idpf_idc_request_reset`,
+  `idpf_idc_vport_dev_ctrl`) unconditionally at lines 25, 73, and 188
+  (`drivers/infiniband/hw/irdma/ig3rdma_if.c:25`, `:73`, `:188`). If
+  `CONFIG_INFINIBAND_IRDMA` is enabled without `CONFIG_IDPF`, modpost
+  reports unresolved symbols and the build fails.
+- The patch adds the missing `depends on IDPF` requirement to the
+  Kconfig entry (`drivers/infiniband/hw/irdma/Kconfig:6`), so broken
+  configurations are filtered out at menuconfig time instead of failing
+  late in the build.
+- The help text tweak (`drivers/infiniband/hw/irdma/Kconfig:10-11`) is
+  purely informational and carries no risk.
+- No functional behavior changes or architectural upheaval are involved;
+  it is a small, self-contained dependency fix squarely in stable’s
+  remit.
 
-- What it fixes
-  - Addresses a real hang during device removal when hardware loses GSI
-    QP state and stops generating send CQEs; pending GSI send WRs hold
-    CM resources and block teardown. The patch proactively fails those
-    WRs so CM can release resources and removal can proceed.
+ drivers/infiniband/hw/irdma/Kconfig | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-- Change details and rationale
-  - drivers/infiniband/hw/mana/cq.c: adds mana_drain_gsi_sqs(struct
-    mana_ib_dev *mdev)
-    - Obtains the GSI QP by number via mana_get_qp_ref(mdev,
-      MANA_GSI_QPN, false).
-    - Locates its send CQ: container_of(qp->ibqp.send_cq, struct
-      mana_ib_cq, ibcq).
-    - Under cq->cq_lock, iterates pending UD SQ shadow entries via
-      shadow_queue_get_next_to_complete(&qp->shadow_sq), marks each with
-      IB_WC_GENERAL_ERR, and advances with
-      shadow_queue_advance_next_to_complete(&qp->shadow_sq).
-    - After unlocking, invokes cq->ibcq.comp_handler if present to wake
-      pollers, then mana_put_qp_ref(qp).
-    - This directly resolves the “no CQE emitted” case by synthesizing
-      error completion for all outstanding GSI send WRs.
-  - drivers/infiniband/hw/mana/device.c: in mana_ib_remove, before
-    unregistering the device, calls mana_drain_gsi_sqs(dev) when running
-    as RNIC. This ensures all problematic GSI send WRs are drained
-    before teardown.
-  - drivers/infiniband/hw/mana/mana_ib.h: defines MANA_GSI_QPN (1) and
-    declares mana_drain_gsi_sqs(), making explicit that QP1 is the GSI
-    QP and exposing the drain helper.
-
-- Scope, risk, and stable rules compliance
-  - Small, contained change:
-    - Touches only the MANA RDMA (mana_ib) driver and only the teardown
-      path and CQ-side helper.
-    - No UAPI/ABI change, no behavior outside removal-time GSI send WR
-      cleanups.
-  - No architectural changes:
-    - Adds a helper and a single removal-path call site; does not
-      refactor subsystem code.
-  - Low regression risk:
-    - Operates under existing cq->cq_lock to serialize with CQ
-      processing.
-    - Uses existing shadow queue primitives and error code
-      IB_WC_GENERAL_ERR.
-    - Only runs on device removal for RNIC devices; normal datapath
-      unaffected.
-  - User-visible impact is a fix for a hard-to-debug removal hang;
-    aligns with stable policy to backport important bug fixes.
-
-- Security and reliability considerations
-  - Prevents a device-removal stall that can be a
-    reliability/availability issue (potential DoS via stuck teardown).
-    The fix reduces hang risk without exposing new attack surface.
-
-- Dependencies and backport considerations
-  - The patch relies on:
-    - Presence of GSI/UD QP support and the shadow SQ/RQ infrastructure
-      (e.g., qp->shadow_sq, shadow_queue_get_next_to_complete(), and
-      cq->cq_lock).
-    - The GSI QP number being 1 (MANA_GSI_QPN).
-    - A mana_get_qp_ref() with a boolean third parameter in the target
-      tree (some branches have a 2-argument variant; trivial adaptation
-      may be required).
-  - Conclusion: Backport to stable series that already include MANA’s
-    GSI/UD QP and shadow-queue CQ processing. It’s not applicable to
-    older trees that lack UD/GSI support in this driver.
-
-Why this meets stable criteria
-
-- Fixes an important, user-affecting bug (device removal hang).
-- Minimal, well-scoped change in a single driver.
-- No new features or interface changes.
-- Low risk of regression; guarded by existing locking and only active
-  during removal.
-- RDMA driver-local; no core subsystem impact.
-
-Given the above, this is a strong candidate for backporting to relevant
-stable kernels that contain the corresponding GSI/UD code paths.
-
- drivers/infiniband/hw/mana/cq.c      | 26 ++++++++++++++++++++++++++
- drivers/infiniband/hw/mana/device.c  |  3 +++
- drivers/infiniband/hw/mana/mana_ib.h |  3 +++
- 3 files changed, 32 insertions(+)
-
-diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
-index 28e154bbb50f8..1becc87791235 100644
---- a/drivers/infiniband/hw/mana/cq.c
-+++ b/drivers/infiniband/hw/mana/cq.c
-@@ -291,6 +291,32 @@ static int mana_process_completions(struct mana_ib_cq *cq, int nwc, struct ib_wc
- 	return wc_index;
- }
- 
-+void mana_drain_gsi_sqs(struct mana_ib_dev *mdev)
-+{
-+	struct mana_ib_qp *qp = mana_get_qp_ref(mdev, MANA_GSI_QPN, false);
-+	struct ud_sq_shadow_wqe *shadow_wqe;
-+	struct mana_ib_cq *cq;
-+	unsigned long flags;
-+
-+	if (!qp)
-+		return;
-+
-+	cq = container_of(qp->ibqp.send_cq, struct mana_ib_cq, ibcq);
-+
-+	spin_lock_irqsave(&cq->cq_lock, flags);
-+	while ((shadow_wqe = shadow_queue_get_next_to_complete(&qp->shadow_sq))
-+			!= NULL) {
-+		shadow_wqe->header.error_code = IB_WC_GENERAL_ERR;
-+		shadow_queue_advance_next_to_complete(&qp->shadow_sq);
-+	}
-+	spin_unlock_irqrestore(&cq->cq_lock, flags);
-+
-+	if (cq->ibcq.comp_handler)
-+		cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
-+
-+	mana_put_qp_ref(qp);
-+}
-+
- int mana_ib_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc)
- {
- 	struct mana_ib_cq *cq = container_of(ibcq, struct mana_ib_cq, ibcq);
-diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-index fa60872f169f4..bdeddb642b877 100644
---- a/drivers/infiniband/hw/mana/device.c
-+++ b/drivers/infiniband/hw/mana/device.c
-@@ -230,6 +230,9 @@ static void mana_ib_remove(struct auxiliary_device *adev)
- {
- 	struct mana_ib_dev *dev = dev_get_drvdata(&adev->dev);
- 
-+	if (mana_ib_is_rnic(dev))
-+		mana_drain_gsi_sqs(dev);
-+
- 	ib_unregister_device(&dev->ib_dev);
- 	dma_pool_destroy(dev->av_pool);
- 	if (mana_ib_is_rnic(dev)) {
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index 5d31034ac7fb3..af09a3e6ccb78 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -43,6 +43,8 @@
-  */
- #define MANA_AV_BUFFER_SIZE	64
- 
-+#define MANA_GSI_QPN		(1)
-+
- struct mana_ib_adapter_caps {
- 	u32 max_sq_id;
- 	u32 max_rq_id;
-@@ -718,6 +720,7 @@ int mana_ib_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
- int mana_ib_post_send(struct ib_qp *ibqp, const struct ib_send_wr *wr,
- 		      const struct ib_send_wr **bad_wr);
- 
-+void mana_drain_gsi_sqs(struct mana_ib_dev *mdev);
- int mana_ib_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc);
- int mana_ib_arm_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags);
- 
+diff --git a/drivers/infiniband/hw/irdma/Kconfig b/drivers/infiniband/hw/irdma/Kconfig
+index 5f49a58590ed7..0bd7e3fca1fbb 100644
+--- a/drivers/infiniband/hw/irdma/Kconfig
++++ b/drivers/infiniband/hw/irdma/Kconfig
+@@ -4,10 +4,11 @@ config INFINIBAND_IRDMA
+ 	depends on INET
+ 	depends on IPV6 || !IPV6
+ 	depends on PCI
+-	depends on ICE && I40E
++	depends on IDPF && ICE && I40E
+ 	select GENERIC_ALLOCATOR
+ 	select AUXILIARY_BUS
+ 	select CRC32
+ 	help
+-	  This is an Intel(R) Ethernet Protocol Driver for RDMA driver
+-	  that support E810 (iWARP/RoCE) and X722 (iWARP) network devices.
++	  This is an Intel(R) Ethernet Protocol Driver for RDMA that
++	  supports IPU E2000 (RoCEv2), E810 (iWARP/RoCEv2) and X722 (iWARP)
++	  network devices.
 -- 
 2.51.0
 
