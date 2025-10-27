@@ -1,238 +1,155 @@
-Return-Path: <linux-rdma+bounces-14066-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14067-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C6F5C0E06F
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Oct 2025 14:29:30 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id D07CAC0E0DD
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Oct 2025 14:32:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 516963B4025
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Oct 2025 13:28:26 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 7C32F34DF1F
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Oct 2025 13:32:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4DC729B20D;
-	Mon, 27 Oct 2025 13:28:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADA3C2550AD;
+	Mon, 27 Oct 2025 13:30:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="d6fN207m"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PTleKIi+"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68BD721C9EA;
-	Mon, 27 Oct 2025 13:28:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AC4D253B40
+	for <linux-rdma@vger.kernel.org>; Mon, 27 Oct 2025 13:30:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761571701; cv=none; b=ooOuF7ZNZv+ZqwiEraMHV6RWmfJ9Kv50A7x6pww35LlCyCAyr3f6qAT/7ECt5FRnC5Nf63UE+DbrLc0ktNss3EEuihtmDhdnyqOsfTYejbr3jruzO3msnBNSICWH4GB6wIRAqndiqH7dAnLpaE/MkwkApAKxm3K9+RRkRQbPTTI=
+	t=1761571858; cv=none; b=TMsrRT5dU/XkXiJkBPCfOtcefXX836Mhe43X4KlPqkW9ub5wzJwgz50pzBGavX0/TscRPMFbb0u9xFIwooJRO8s+D5uQDqVEG3fpq5eeBNEC6EoyL2+o8FYzxcT1c3W8g+Co3GvP0bgxc76kyh0e01bfbrPrI49jicgPZXRaQdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761571701; c=relaxed/simple;
-	bh=WudvgY1+NjctXdMFJHM6T8W8YrXJqyy7iGoNT8yrPsI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=l/Gz+//YKjVqNUuNTqIlSwaV+xMp4OKesHw278tKag4AMm/Np9Lm+xZj/ydKux0CdBhMwbyFvsh/vOOMU2/nEzdM2rBIfuZMtOx3WtmaC2XTt2IHAhJx39ZCGhdqiV1fGO78NRSW1PsvvnkI/QwYilaY+qmWELHYH3CbWSgyGZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=d6fN207m; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [192.168.1.19] (unknown [103.212.145.71])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 526B7201DAF0;
-	Mon, 27 Oct 2025 06:28:12 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 526B7201DAF0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1761571697;
-	bh=cdvGXmO2QhPla821CybL9Si45ofFWbVC4LfOQsMFj4M=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=d6fN207msQ5TU0EcZZghd6EkMO2qi3psIqq91l5JK347j/AEaxlZMFpvt6TuRON4g
-	 AwIE33ZKEPdEQAflk3nwUNUliEfXfCXWyx6hCE1ZYqd8jP9qyZi8Q9F8xUvnqfnWoi
-	 1l2OhBK3JOFd6E/+2ttWHGmdwevpOZv3EA93eqCU=
-Message-ID: <788b4f16-2627-45d5-a23c-b69cbdc7bbac@linux.microsoft.com>
-Date: Mon, 27 Oct 2025 18:58:09 +0530
+	s=arc-20240116; t=1761571858; c=relaxed/simple;
+	bh=82sD9ds0a5e5pJWuGDP/Q5yUzmDxXYpQQFg67P7XJn8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KtaJkUyKpmzUn58U0EI+Y6MHUQpvAe3Aa244IOUJOmeDZJ//YHryZkZaNamuTF/bKq/XWa/MvNi4rxC3X6JhGGjUos3C5oVOQNB3F0cUj+7DNpj3UaUK+6NK4FCeOocDF2PXv4yyomTCSX+kT6EbqvuB5CEP9KkYINv8j8E4JgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PTleKIi+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D173EC4CEF1;
+	Mon, 27 Oct 2025 13:30:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761571858;
+	bh=82sD9ds0a5e5pJWuGDP/Q5yUzmDxXYpQQFg67P7XJn8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PTleKIi+yrJT/phZ7NLYoDHOhKsWcTpWaI5jn0pXik0mQknXoMpwqVbPvd6ztdOGO
+	 qgrp7UuK2uMnsJ40/ki5KwldUOquDE3TPC+F2oWHQ4HO/pk2h632SLde5O4GJiLizU
+	 CEljWqXVp/Wwjq/uUV/lN0rndWuTNMjP0kWRUVUySJpm31GhQEabom3/u0toEOqv4H
+	 pjk1WaXffFmkkDvrXKjYYTo657KLsZNBTHyG34cCsx7DHDuLgwUJVKSfBFYSejMquF
+	 CKslsLii3ibG5IIlZLKj5W4ojKdJdGwyubC3EarsvKqy0Wx3t5rTcs6Fixv/xQNmfc
+	 rTPp3Y0Rh8SXQ==
+Date: Mon, 27 Oct 2025 15:30:53 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Yi Liu <asatsuyu.liu@gmail.com>
+Cc: linux-rdma@vger.kernel.org, Zhu Yanjun <yanjun.zhu@linux.dev>,
+	Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: [PATCH] RDMA/rxe: fix null deref on srq->rq.queue after resize
+ failure
+Message-ID: <20251027133053.GK12554@unreal>
+References: <CANQ=Xi1JW2zFuYzNCw9Ft7WhseiHk4w1prYKmBc-Hbn1N32XNQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH net-next v2] net: mana: Handle SKB if TX SGEs exceed
- hardware limit
-To: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
- shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
- ernis@linux.microsoft.com, dipayanroy@linux.microsoft.com,
- shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, gargaditya@microsoft.com
-References: <20251022204325.GA18380@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-Content-Language: en-US
-From: Aditya Garg <gargaditya@linux.microsoft.com>
-In-Reply-To: <20251022204325.GA18380@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANQ=Xi1JW2zFuYzNCw9Ft7WhseiHk4w1prYKmBc-Hbn1N32XNQ@mail.gmail.com>
 
-On 23-10-2025 02:13, Aditya Garg wrote:
-> The MANA hardware supports a maximum of 30 scatter-gather entries (SGEs)
-> per TX WQE. Exceeding this limit can cause TX failures.
-> Add ndo_features_check() callback to validate SKB layout before
-> transmission. For GSO SKBs that would exceed the hardware SGE limit, clear
-> NETIF_F_GSO_MASK to enforce software segmentation in the stack.
-> Add a fallback in mana_start_xmit() to linearize non-GSO SKBs that still
-> exceed the SGE limit.
+On Tue, Oct 21, 2025 at 10:20:26AM +0800, Yi Liu wrote:
+> A NULL pointer dereference can occur in rxe_srq_chk_attr() when
+> ibv_modify_srq() is invoked twice in succession under certain error
+> conditions. The first call may fail in rxe_queue_resize(), which leads
+> rxe_srq_from_attr() to set srq->rq.queue = NULL. The second call then
+> triggers a crash (null deref) when accessing
+> srq->rq.queue->buf->index_mask.
 > 
-> Return NETDEV_TX_BUSY only for -ENOSPC from mana_gd_post_work_request(),
-> send other errors to free_sgl_ptr to free resources and record the tx
-> drop.
+> Call Trace:
+> <TASK>
+> rxe_modify_srq+0x170/0x480 [rdma_rxe]
+> ? __pfx_rxe_modify_srq+0x10/0x10 [rdma_rxe]
+> ? uverbs_try_lock_object+0x4f/0xa0 [ib_uverbs]
+> ? rdma_lookup_get_uobject+0x1f0/0x380 [ib_uverbs]
+> ib_uverbs_modify_srq+0x204/0x290 [ib_uverbs]
+> ? __pfx_ib_uverbs_modify_srq+0x10/0x10 [ib_uverbs]
+> ? tryinc_node_nr_active+0xe6/0x150
+> ? uverbs_fill_udata+0xed/0x4f0 [ib_uverbs]
+> ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0x2c0/0x470 [ib_uverbs]
+> ? __pfx_ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0x10/0x10 [ib_uverbs]
+> ? uverbs_fill_udata+0xed/0x4f0 [ib_uverbs]
+> ib_uverbs_run_method+0x55a/0x6e0 [ib_uverbs]
+> ? __pfx_ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0x10/0x10 [ib_uverbs]
+> ib_uverbs_cmd_verbs+0x54d/0x800 [ib_uverbs]
+> ? __pfx_ib_uverbs_cmd_verbs+0x10/0x10 [ib_uverbs]
+> ? __pfx___raw_spin_lock_irqsave+0x10/0x10
+> ? __pfx_do_vfs_ioctl+0x10/0x10
+> ? ioctl_has_perm.constprop.0.isra.0+0x2c7/0x4c0
+> ? __pfx_ioctl_has_perm.constprop.0.isra.0+0x10/0x10
+> ib_uverbs_ioctl+0x13e/0x220 [ib_uverbs]
+> ? __pfx_ib_uverbs_ioctl+0x10/0x10 [ib_uverbs]
+> __x64_sys_ioctl+0x138/0x1c0
+> do_syscall_64+0x82/0x250
+> ? fdget_pos+0x58/0x4c0
+> ? ksys_write+0xf3/0x1c0
+> ? __pfx_ksys_write+0x10/0x10
+> ? do_syscall_64+0xc8/0x250
+> ? __pfx_vm_mmap_pgoff+0x10/0x10
+> ? fget+0x173/0x230
+> ? fput+0x2a/0x80
+> ? ksys_mmap_pgoff+0x224/0x4c0
+> ? do_syscall_64+0xc8/0x250
+> ? do_user_addr_fault+0x37b/0xfe0
+> ? clear_bhb_loop+0x50/0xa0
+> ? clear_bhb_loop+0x50/0xa0
+> ? clear_bhb_loop+0x50/0xa0
+> entry_SYSCALL_64_after_hwframe+0x76/0x7e
 > 
-> Co-developed-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-> Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-> Signed-off-by: Aditya Garg <gargaditya@linux.microsoft.com>
+> Fix by aligning the error handling path in rxe_srq_from_attr() with
+> rxe_cq_resize_queue(), which also uses rxe_queue_resize(): do not
+> nullify the queue when resize fails.
+> 
+> Reported-by: Liu Yi <asatsuyu.liu@gmail.com>
+> Link: https://paste.ubuntu.com/p/Zhj65q6gr9/
+> Fixes: 8700e3e7c485 ("Soft RoCE driver")
+> Tested-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 > ---
->   drivers/net/ethernet/microsoft/mana/mana_en.c | 48 +++++++++++++++++--
->   include/net/mana/gdma.h                       |  6 ++-
->   include/net/mana/mana.h                       |  1 +
->   3 files changed, 49 insertions(+), 6 deletions(-)
+> drivers/infiniband/sw/rxe/rxe_srq.c | 2 --
+> 1 file changed, 2 deletions(-)
 > 
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> index 0142fd98392c..8e23a87a779d 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> @@ -11,6 +11,7 @@
->   #include <linux/mm.h>
->   #include <linux/pci.h>
->   #include <linux/export.h>
-> +#include <linux/skbuff.h>
->   
->   #include <net/checksum.h>
->   #include <net/ip6_checksum.h>
-> @@ -289,6 +290,21 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->   	cq = &apc->tx_qp[txq_idx].tx_cq;
->   	tx_stats = &txq->stats;
->   
-> +	if (MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES &&
-> +	    skb_shinfo(skb)->nr_frags + 2 > MAX_TX_WQE_SGL_ENTRIES) {
-> +		/* GSO skb with Hardware SGE limit exceeded is not expected here
-> +		 * as they are handled in mana_features_check() callback
-> +		 */
-> +		if (skb_is_gso(skb))
-> +			netdev_warn_once(ndev, "GSO enabled skb exceeds max SGE limit\n");
-> +		if (skb_linearize(skb)) {
-> +			netdev_warn_once(ndev, "Failed to linearize skb with nr_frags=%d and is_gso=%d\n",
-> +					 skb_shinfo(skb)->nr_frags,
-> +					 skb_is_gso(skb));
-> +			goto tx_drop_count;
-> +		}
-> +	}
-> +
->   	pkg.tx_oob.s_oob.vcq_num = cq->gdma_id;
->   	pkg.tx_oob.s_oob.vsq_frame = txq->vsq_frame;
->   
-> @@ -402,8 +418,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->   		}
->   	}
->   
-> -	WARN_ON_ONCE(pkg.wqe_req.num_sge > MAX_TX_WQE_SGL_ENTRIES);
-> -
->   	if (pkg.wqe_req.num_sge <= ARRAY_SIZE(pkg.sgl_array)) {
->   		pkg.wqe_req.sgl = pkg.sgl_array;
->   	} else {
-> @@ -438,9 +452,13 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->   
->   	if (err) {
->   		(void)skb_dequeue_tail(&txq->pending_skbs);
-> +		mana_unmap_skb(skb, apc);
->   		netdev_warn(ndev, "Failed to post TX OOB: %d\n", err);
-> -		err = NETDEV_TX_BUSY;
-> -		goto tx_busy;
-> +		if (err == -ENOSPC) {
-> +			err = NETDEV_TX_BUSY;
-> +			goto tx_busy;
-> +		}
-> +		goto free_sgl_ptr;
->   	}
->   
->   	err = NETDEV_TX_OK;
-> @@ -478,6 +496,25 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->   	return NETDEV_TX_OK;
->   }
->   
-> +static netdev_features_t mana_features_check(struct sk_buff *skb,
-> +					     struct net_device *ndev,
-> +					     netdev_features_t features)
-> +{
-> +	if (MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES &&
-> +	    skb_shinfo(skb)->nr_frags + 2 > MAX_TX_WQE_SGL_ENTRIES) {
-> +		/* Exceeds HW SGE limit.
-> +		 * GSO case:
-> +		 *   Disable GSO so the stack will software-segment the skb
-> +		 *   into smaller skbs that fit the SGE budget.
-> +		 * Non-GSO case:
-> +		 *   The xmit path will attempt skb_linearize() as a fallback.
-> +		 */
-> +		if (skb_is_gso(skb))
-> +			features &= ~NETIF_F_GSO_MASK;
-> +	}
-> +	return features;
-> +}
-> +
->   static void mana_get_stats64(struct net_device *ndev,
->   			     struct rtnl_link_stats64 *st)
->   {
-> @@ -838,6 +875,7 @@ static const struct net_device_ops mana_devops = {
->   	.ndo_open		= mana_open,
->   	.ndo_stop		= mana_close,
->   	.ndo_select_queue	= mana_select_queue,
-> +	.ndo_features_check	= mana_features_check,
->   	.ndo_start_xmit		= mana_start_xmit,
->   	.ndo_validate_addr	= eth_validate_addr,
->   	.ndo_get_stats64	= mana_get_stats64,
-> @@ -1606,7 +1644,7 @@ static int mana_move_wq_tail(struct gdma_queue *wq, u32 num_units)
->   	return 0;
->   }
->   
-> -static void mana_unmap_skb(struct sk_buff *skb, struct mana_port_context *apc)
-> +void mana_unmap_skb(struct sk_buff *skb, struct mana_port_context *apc)
->   {
->   	struct mana_skb_head *ash = (struct mana_skb_head *)skb->head;
->   	struct gdma_context *gc = apc->ac->gdma_dev->gdma_context;
-> diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-> index 57df78cfbf82..b35ecc58fbab 100644
-> --- a/include/net/mana/gdma.h
-> +++ b/include/net/mana/gdma.h
-> @@ -591,6 +591,9 @@ enum {
->   /* Driver can self reset on FPGA Reconfig EQE notification */
->   #define GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE BIT(17)
->   
-> +/* Driver supports linearizing the skb when num_sge exceeds hardware limit */
-> +#define GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE BIT(20)
-> +
->   #define GDMA_DRV_CAP_FLAGS1 \
->   	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
->   	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
-> @@ -599,7 +602,8 @@ enum {
->   	 GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP | \
->   	 GDMA_DRV_CAP_FLAG_1_DYNAMIC_IRQ_ALLOC_SUPPORT | \
->   	 GDMA_DRV_CAP_FLAG_1_SELF_RESET_ON_EQE | \
-> -	 GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE)
-> +	 GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE | \
-> +	 GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE)
->   
->   #define GDMA_DRV_CAP_FLAGS2 0
->   
-> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-> index 0921485565c0..330e1bb088bb 100644
-> --- a/include/net/mana/mana.h
-> +++ b/include/net/mana/mana.h
-> @@ -580,6 +580,7 @@ int mana_set_bw_clamp(struct mana_port_context *apc, u32 speed,
->   void mana_query_phy_stats(struct mana_port_context *apc);
->   int mana_pre_alloc_rxbufs(struct mana_port_context *apc, int mtu, int num_queues);
->   void mana_pre_dealloc_rxbufs(struct mana_port_context *apc);
-> +void mana_unmap_skb(struct sk_buff *skb, struct mana_port_context *apc);
->   
->   extern const struct ethtool_ops mana_ethtool_ops;
->   extern struct dentry *mana_debugfs_root;
-Hi Eric,
+> diff --git a/drivers/infiniband/sw/rxe/rxe_srq.c
+> b/drivers/infiniband/sw/rxe/rxe_srq.c
+> index 3661cb627d28..2764dc00e2f3 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_srq.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_srq.c
+> @@ -182,8 +182,6 @@ int rxe_srq_from_attr(struct rxe_dev *rxe, struct
+> rxe_srq *srq,
+> return 0;
+> 
+> err_free:
+> - rxe_queue_cleanup(q);
+> - srq->rq.queue = NULL;
+> return err;
+> }
 
-I hope this approach is okay. If there are no issues, I'll go ahead and 
-send the patch for final review.
-Let me know if you need more time for this RFC.
+This patch is badly formatted and doesn't apply.
 
-Regards,
-Aditya
+Applying: RDMA/rxe: fix null deref on srq->rq.queue after resize failure
+Patch failed at 0001 RDMA/rxe: fix null deref on srq->rq.queue after resize failure
+error: git diff header lacks filename information when removing 1 leading pathname component (line 6)
+hint: Use 'git am --show-current-patch=diff' to see the failed patch
+hint: When you have resolved this problem, run "git am --continue".
+hint: If you prefer to skip this patch, run "git am --skip" instead.
+hint: To restore the original branch and stop patching, run "git am --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+Press any key to continue...
+
+
+> 
+> --
+> 2.34.1
 
