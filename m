@@ -1,71 +1,71 @@
-Return-Path: <linux-rdma+bounces-14062-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14063-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57CFAC0D2CF
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Oct 2025 12:38:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84095C0D2AE
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Oct 2025 12:37:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3388B4F38BD
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Oct 2025 11:36:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 040AE3A3AA6
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Oct 2025 11:36:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DA452F9D86;
-	Mon, 27 Oct 2025 11:36:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40FCA2FAC06;
+	Mon, 27 Oct 2025 11:36:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="krDRom+I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hfnQoZN+"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0736B284B37;
-	Mon, 27 Oct 2025 11:36:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E78902FAC09;
+	Mon, 27 Oct 2025 11:36:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761565001; cv=none; b=Q5+PB4ADpgxuTvKB1NIm5AmPNbq8VaT5yxTbW1tjtP62u9xijHkMMJFjFUksDezp9dud7KI/MCuSh8C+AVUQmat84c/jTetguz66KgzGlAkzHXthvhTOxgpIEubj5ZBWAw4GvyVjFyqC350v1WkmFG4aCccdduws4U/wTZjdTG8=
+	t=1761565013; cv=none; b=p36SvGjrZ8AjQzOcS5A0xT0YP0Ko81QwlxfJPIhAlx6u6pAlyO8km7YK+u0mwNRxjKzOC7jfJNS4cbzldTxYcNHj8m9iH650rBhl62l+eFUKHJQIOZVH2Sr4F5HTqo0n3EpkWDAd4YD3zwKbr3gv0VX+AhSOAoKAvtqRC/ZbWhg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761565001; c=relaxed/simple;
-	bh=62tX1iQfBuXvV3RHBzxXODO9efIkWc47J+wuFTI0uX8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lSEKgIY82I6W1QM2/LLCbgiFya/KSwLwlLn5LKEolPH6sfo/aU4erpiZtRCu8CvNMwvrchwaysSZdFNK+kqLxQWmZuSqjhxEjrDcBF0hGSdV3+zXo3GNB7sbYW1k1FwxC1AADgteHpCPcAP4sHjyEoqwMz2ZGDTEU2XYCLHwS4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=krDRom+I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39C9CC4CEFF;
-	Mon, 27 Oct 2025 11:36:40 +0000 (UTC)
+	s=arc-20240116; t=1761565013; c=relaxed/simple;
+	bh=GR9p7sJmgdRpfFp4lXDp4Qj9+w0WDpc9bzpGxSfqLzY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=oFQ6aGHxZ3Cn5u5EQfLe5VZbY/AUJXuWMW2xCDow+ojpkIkxbNsYrJnR1RlH0J3cnTZA2f0cePWU1CaWV9j867DsBuYeAmSL9Un6EsVMvEmurrTNVgaj2bP8WQwaQCNFv6eALGefwCFye/zyk+RD4iuox0kcRAoR+SkGp0rZcDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hfnQoZN+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E5F0C4AF0B;
+	Mon, 27 Oct 2025 11:36:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761565000;
-	bh=62tX1iQfBuXvV3RHBzxXODO9efIkWc47J+wuFTI0uX8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=krDRom+IQ9LhblbTvSeN06bsJYKdh9xZMj8WQFM0URHn0+3RKKBd8HmR7PKeyvPOW
-	 ekl3QpNO6wLWYKnRJBpFcmg2NRvKfhYgoSBPZqkaRooHNIg5AD+7quvGDYqUW3ZaLm
-	 bxUnRdnMoPUxjUPvz0LOW571sFnyPnLRpKqHaAaaI3O5N3GzWIzTkUjPESP8qgIKoh
-	 v209HfCx4rYlX92GYPz4hdsXgYkiwMELZ6p09vGSeK1RLdCfQj+yWM0EHnlJM7rMS7
-	 I9LaW7av0G1MlilLaQl9B5L3LxB+4QyzbQTpIPRXTQv48LmqOTk6oXUA1vesDOrE3K
-	 99aMXnySkHRdw==
-Date: Mon, 27 Oct 2025 13:36:36 +0200
+	s=k20201202; t=1761565012;
+	bh=GR9p7sJmgdRpfFp4lXDp4Qj9+w0WDpc9bzpGxSfqLzY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=hfnQoZN+LhQnCdYNuGEpTU1gxBjch34hFrWZzO+aRAOXouvkfBb4eKmjIqrMKzig2
+	 KkKGdzI4gM3ZZ34X04hxc4qo/l++QZ1F2syos3jrU9k4nE8uNwy+VPp1AvdDU8S/jn
+	 s1y7k0iFuJbzoNI8QqnaH2Nl/Ecl01ogDz3hFxwCt5Y4UUpdH8rcsx9KyCrg2Ld8cc
+	 KxSCYiq+N5jc5VbXijX2w433ed3JMn1CRnFzIKbbAmzH1Tn/ZquOJ9HxAAVSztS+k6
+	 6QowQ4BOATczGIJgSbQPypAhyJVkt6kXF1Vfta5zjPwXEtZAmm83lbGgaYC9rwl0gV
+	 gwFzU1oM4j4Gw==
 From: Leon Romanovsky <leon@kernel.org>
-To: =?iso-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Sean Hefty <shefty@nvidia.com>,
-	Vlad Dumitrescu <vdumitrescu@nvidia.com>,
-	Or Har-Toov <ohartoov@nvidia.com>,
-	Jacob Moroni <jmoroni@google.com>,
-	Manjunath Patil <manjunath.b.patil@oracle.com>,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-next] RDMA/cm: Base cm_id destruction timeout on CMA
- values
-Message-ID: <20251027113636.GI12554@unreal>
+To: Jason Gunthorpe <jgg@ziepe.ca>, Sean Hefty <shefty@nvidia.com>, 
+ Vlad Dumitrescu <vdumitrescu@nvidia.com>, Or Har-Toov <ohartoov@nvidia.com>, 
+ Jacob Moroni <jmoroni@google.com>, 
+ Manjunath Patil <manjunath.b.patil@oracle.com>, 
+ =?utf-8?q?H=C3=A5kon_Bugge?= <haakon.bugge@oracle.com>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20251021132738.4179604-1-haakon.bugge@oracle.com>
 References: <20251021132738.4179604-1-haakon.bugge@oracle.com>
+Subject: Re: [PATCH for-next] RDMA/cm: Base cm_id destruction timeout on
+ CMA values
+Message-Id: <176156500963.450375.15935808694605364471.b4-ty@kernel.org>
+Date: Mon, 27 Oct 2025 07:36:49 -0400
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20251021132738.4179604-1-haakon.bugge@oracle.com>
+X-Mailer: b4 0.15-dev
 
-On Tue, Oct 21, 2025 at 03:27:33PM +0200, Håkon Bugge wrote:
+
+On Tue, 21 Oct 2025 15:27:33 +0200, HÃ¥kon Bugge wrote:
 > When a GSI MAD packet is sent on the QP, it will potentially be
 > retried CMA_MAX_CM_RETRIES times with a timeout value of:
 > 
@@ -73,16 +73,15 @@ On Tue, Oct 21, 2025 at 03:27:33PM +0200, Håkon Bugge wrote:
 > 
 > The above equates to ~64 seconds using the default CMA values.
 > 
-> The cm_id_priv's refcount will be incremented for this period.
-> Therefore, the timeout value waiting for a cm_id destruction must be
-> based on the effective timeout of MAD packets.  To provide additional
-> leeway, we add 25% to this timeout and use that instead of the
-> constant 10 seconds timeout, which may result in false negatives.
-> 
-> Fixes: 96d9cbe2f2ff ("RDMA/cm: add timeout to cm_destroy_id wait")
+> [...]
 
-I applied and removed this Fixes line. Most likely someone will complain
-that this patch breaks his flow.
+Applied, thanks!
 
-Thanks
+[1/1] RDMA/cm: Base cm_id destruction timeout on CMA values
+      https://git.kernel.org/rdma/rdma/c/58aca1f3de059c
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
