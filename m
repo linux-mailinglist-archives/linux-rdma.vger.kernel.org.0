@@ -1,69 +1,66 @@
-Return-Path: <linux-rdma+bounces-14074-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14075-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05116C0FDB7
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Oct 2025 19:10:16 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC159C114CE
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Oct 2025 21:04:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 252774FEA6D
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Oct 2025 18:08:19 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 67E0D35232A
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Oct 2025 20:04:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7902F316911;
-	Mon, 27 Oct 2025 18:08:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DD4431D72E;
+	Mon, 27 Oct 2025 20:04:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qBJbYBOl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EbpaV0Wa"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76226314D36
-	for <linux-rdma@vger.kernel.org>; Mon, 27 Oct 2025 18:08:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DDCC31BCAE
+	for <linux-rdma@vger.kernel.org>; Mon, 27 Oct 2025 20:04:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761588498; cv=none; b=un8SLle0SKkvCF9rx2H9DsDnuCNiCnKF0IZ4ct1x5KOwloFbAx9TV7IIGR9JfQvWg4d4LKRCkD8NNPh62AdGqQict9XSIlPbyd8Xj6cbph9CbVwEmCvo4qyeeLYaatK6Kpekb9bPMLKdr517vKxC3gceBQTXZzIwRWXgyUJp2Lw=
+	t=1761595484; cv=none; b=DUocNxcRTYRMTF118HKkjpKEMcP/fTdYMXTAfTp+9z7btwJ0cQlFc2T4Kw099ourqr/FemMd/LH86hq7ODDF5zM0BbPaQ+k4/CON9iYlytdJO1jOtJg7oeH2EhtMm9lXcSgdA9mvr2tgoJWDH9TCcvGHsKRnsbhDIl1y7x9GW7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761588498; c=relaxed/simple;
-	bh=KCJqccZEYfr/KtuGoPZYCtW1Wc3s33epIv15R2m37gI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nD4Sko7vLalKRn8kyh5MgH+KO42lQqAK0meK28fftUqyHjl0UcTxBMqD4XdgKylVsMnpxaXgM5XXeiS71f7huumcR+QxcoTIjEYWKYIS55OMlukmPr9LNcLm5PqeWO+RJtt86t5skUfsvSJgOZvm9GVJOBrtqx4Xl3OfDFTiAWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qBJbYBOl; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <467b218f-9309-44bc-b3d1-bcf95a0610bd@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1761588491;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nREHhIDGZoJApWESD3lFDKt+tFOiDiqltoER8Tw9WV4=;
-	b=qBJbYBOlluLlyfXtBqbhvEc8yMpwyfaLNEdfbEt96UsLH39ZZndMwgmJ0Ne2l4KvnKIlbh
-	/ErdhwF+1yvmSembRUXtcdQkYk3XvQEvffippt/5vvFpvtAI8aYbmdZQ0MKt1Cts/E6k50
-	WewV/KLIpMGUUlU1nhR6am+RcaLliUI=
-Date: Mon, 27 Oct 2025 11:08:06 -0700
+	s=arc-20240116; t=1761595484; c=relaxed/simple;
+	bh=5Tr0X6lSxSEUZErvOOuRUu37jg8MG3xnP+F0dsmSt+Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hiDVREwLZpEyFcQJLNDTWdRu5T9g8L8QCl9uhjEYSaXc5WYC5uST0XthYVx7gGAotdIqr8wlLzCz5bgNxhv2yWPYoM95Vv7U8ja3UZ4MUqW3A071xWbx0UjqxmjGdCVnJn9LRSIoax4LZW7FphMX2xTh41FUBGWiZO9E62z0VuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EbpaV0Wa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 713DDC4CEF1;
+	Mon, 27 Oct 2025 20:04:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761595483;
+	bh=5Tr0X6lSxSEUZErvOOuRUu37jg8MG3xnP+F0dsmSt+Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EbpaV0Wa025JE2iyyw61+tzcacjt6kAEpD4jxR2ZgQxGzdF2m6er8OwCFNa7pnxSa
+	 +OQfQGr6lX5JWa9qTGqwcsV48Aznx6qx7fxJ60SWRtES2veyUnZg0SLJMsxL4hqTnS
+	 3OC2BQ/Sa0wboswU9Dh1i64AeohtSNmD7W1L/AO6dk7bpGmoPRx0vijfGOreMqDfjv
+	 HvZdYonQbUxObIbH8AfydaN+UvtbmczGS6uRHxuaPX0iGHGnRYRQVeMHOE5v4Dyu/z
+	 u0AjVzCoNYdJZzY+oP9fnhXlYPvhfxZK+zzFD4e5SdROMV2IDrNLShupl7H/uPZ3SU
+	 K0+D56o8IE4Jw==
+Date: Mon, 27 Oct 2025 22:04:38 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: zyjzyj2000@gmail.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+	Liu Yi <asatsuyu.liu@gmail.com>
+Subject: Re: [PATCH 1/1] RDMA/rxe: Fix null deref on srq->rq.queue after
+ resize failure
+Message-ID: <20251027200438.GP12554@unreal>
+References: <20251027174306.254381-1-yanjun.zhu@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] RDMA/rxe: Fix null deref on srq->rq.queue after
- resize failure
-To: zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
- linux-rdma@vger.kernel.org
-Cc: Liu Yi <asatsuyu.liu@gmail.com>
-References: <20251027174306.254381-1-yanjun.zhu@linux.dev>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "yanjun.zhu" <yanjun.zhu@linux.dev>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <20251027174306.254381-1-yanjun.zhu@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-On 10/27/25 10:43 AM, Zhu Yanjun wrote:
+On Mon, Oct 27, 2025 at 10:43:06AM -0700, Zhu Yanjun wrote:
 > A NULL pointer dereference can occur in rxe_srq_chk_attr() when
 > ibv_modify_srq() is invoked twice in succession under certain error
 > conditions. The first call may fail in rxe_queue_resize(), which leads
@@ -111,8 +108,8 @@ On 10/27/25 10:43 AM, Zhu Yanjun wrote:
 > ? clear_bhb_loop+0x50/0xa0
 > entry_SYSCALL_64_after_hwframe+0x76/0x7e
 > 
-> Root cause:
->     The queue is released when the first failure of rxe_cq_resize_queue.
+> Root cause: 
+>    The queue is released when the first failure of rxe_cq_resize_queue.
 > Thus, when rxe_cq_resize_queue is called again, the above call trace
 > will occur.
 > 
@@ -121,45 +118,24 @@ On 10/27/25 10:43 AM, Zhu Yanjun wrote:
 > rxe_cq_resize_queue(), which also uses rxe_queue_resize(): do not
 > nullify the queue when resize fails.
 
-This commit is based on the repository 
-https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next.
-
-Yanjun.Zhu
+Did these two paragraphs come from AI? They don't add any new
+information, let's remove them.
 
 > 
 > Reported-by: Liu Yi <asatsuyu.liu@gmail.com>
 > Closes: https://paste.ubuntu.com/p/Zhj65q6gr9/
+
+Link in "Closes" tag should point to report and not to some random
+place.
+
 > Fixes: 8700e3e7c485 ("Soft RoCE driver")
 > Tested-by: Liu Yi <asatsuyu.liu@gmail.com>
 > Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 > ---
->   drivers/infiniband/sw/rxe/rxe_srq.c | 7 +------
->   1 file changed, 1 insertion(+), 6 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_srq.c b/drivers/infiniband/sw/rxe/rxe_srq.c
-> index 3661cb627d28..2a234f26ac10 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_srq.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_srq.c
-> @@ -171,7 +171,7 @@ int rxe_srq_from_attr(struct rxe_dev *rxe, struct rxe_srq *srq,
->   				       udata, mi, &srq->rq.producer_lock,
->   				       &srq->rq.consumer_lock);
->   		if (err)
-> -			goto err_free;
-> +			return err;
->   
->   		srq->rq.max_wr = attr->max_wr;
->   	}
-> @@ -180,11 +180,6 @@ int rxe_srq_from_attr(struct rxe_dev *rxe, struct rxe_srq *srq,
->   		srq->limit = attr->srq_limit;
->   
->   	return 0;
-> -
-> -err_free:
-> -	rxe_queue_cleanup(q);
-> -	srq->rq.queue = NULL;
-> -	return err;
->   }
->   
->   void rxe_srq_cleanup(struct rxe_pool_elem *elem)
+>  drivers/infiniband/sw/rxe/rxe_srq.c | 7 +------
+>  1 file changed, 1 insertion(+), 6 deletions(-)
 
+It is second version of previously sent patch. Please add changelog.
+
+Thanks
 
