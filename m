@@ -1,114 +1,238 @@
-Return-Path: <linux-rdma+bounces-14065-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14066-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97AD4C0DD95
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Oct 2025 14:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C6F5C0E06F
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Oct 2025 14:29:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11120405650
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Oct 2025 13:02:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 516963B4025
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Oct 2025 13:28:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 955C92566DD;
-	Mon, 27 Oct 2025 12:59:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4DC729B20D;
+	Mon, 27 Oct 2025 13:28:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WEbq8ce0"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="d6fN207m"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5133825393B;
-	Mon, 27 Oct 2025 12:59:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68BD721C9EA;
+	Mon, 27 Oct 2025 13:28:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761569981; cv=none; b=ZL7MJ98qjq1cVp22WsCMqQ5jjE2RW6qP47qX9w1/YMP70vzmJSyDB830Xm7WSFu3ms3BKr4eC9l5zOSeCnfnNAzsdXW9miJDYLYyhPRQrpAwhXC1I/5wA6rQZ+dHcYFwCjVnxlpj4i+Spmh/WanUqvJ3zY31EZDFBsq0FU0vC9M=
+	t=1761571701; cv=none; b=ooOuF7ZNZv+ZqwiEraMHV6RWmfJ9Kv50A7x6pww35LlCyCAyr3f6qAT/7ECt5FRnC5Nf63UE+DbrLc0ktNss3EEuihtmDhdnyqOsfTYejbr3jruzO3msnBNSICWH4GB6wIRAqndiqH7dAnLpaE/MkwkApAKxm3K9+RRkRQbPTTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761569981; c=relaxed/simple;
-	bh=eW1OcFnqyrp5QQ5y5xmXHAC1ZnTIFdjryrwStarra9w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=upwZLg+iBlVG2Qrad7nVFSKtPNEIuci0U0eVYNHcHb49qKuVzYUtH1/Y7/NflOnvBEaeTQAHhTdF/oZQr/y9PzQAJUGSwOY37Q5212spBelEZ/Tw9lJEXCu2Pr0WvpH9YQFdAO15NF5F8i9taWr9yvoHJjAJ/c6WHHysCOZm4EY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WEbq8ce0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E42AC4CEF1;
-	Mon, 27 Oct 2025 12:59:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761569980;
-	bh=eW1OcFnqyrp5QQ5y5xmXHAC1ZnTIFdjryrwStarra9w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WEbq8ce0cOWHXvIHjN2VMb0Zka5H2ureVvPVX4PMYFAdA6ypmvwLO76hT0X4ryBh8
-	 LRT+MiHpJ0RILflN1BlWFd5xlcgrUOhlYB4FnZ2wekESZmLkpZQtc6W+dJfQwDRHvQ
-	 9/q3d5nf3HAdYjYg/df2Q/xh6pJ5qJT5qg0aYh3WzmHTebjMYrFyLqY9MKxXXqaWjk
-	 wEhowhBZz5mQ9qP+hTHR0auxsM20Cdd2yiMpequj5rJmhdMfpxZS7Wt+KE6xX5aojg
-	 7hJFv4kiTgyw4gqU563jVp18sWDesGamk6s+seJgwRFSpVTE/Q7YZ7w3zUIFBrSItH
-	 6E4cpRZVltz+Q==
-Date: Mon, 27 Oct 2025 14:59:35 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Shuhao Fu <sfual@cse.ust.hk>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/mlx5: Fix refcount inconsistency in
- mlx5_netdev_event
-Message-ID: <20251027125935.GJ12554@unreal>
-References: <aPe3mnFjQeXaILyR@chcpu18>
+	s=arc-20240116; t=1761571701; c=relaxed/simple;
+	bh=WudvgY1+NjctXdMFJHM6T8W8YrXJqyy7iGoNT8yrPsI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=l/Gz+//YKjVqNUuNTqIlSwaV+xMp4OKesHw278tKag4AMm/Np9Lm+xZj/ydKux0CdBhMwbyFvsh/vOOMU2/nEzdM2rBIfuZMtOx3WtmaC2XTt2IHAhJx39ZCGhdqiV1fGO78NRSW1PsvvnkI/QwYilaY+qmWELHYH3CbWSgyGZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=d6fN207m; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [192.168.1.19] (unknown [103.212.145.71])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 526B7201DAF0;
+	Mon, 27 Oct 2025 06:28:12 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 526B7201DAF0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1761571697;
+	bh=cdvGXmO2QhPla821CybL9Si45ofFWbVC4LfOQsMFj4M=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=d6fN207msQ5TU0EcZZghd6EkMO2qi3psIqq91l5JK347j/AEaxlZMFpvt6TuRON4g
+	 AwIE33ZKEPdEQAflk3nwUNUliEfXfCXWyx6hCE1ZYqd8jP9qyZi8Q9F8xUvnqfnWoi
+	 1l2OhBK3JOFd6E/+2ttWHGmdwevpOZv3EA93eqCU=
+Message-ID: <788b4f16-2627-45d5-a23c-b69cbdc7bbac@linux.microsoft.com>
+Date: Mon, 27 Oct 2025 18:58:09 +0530
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aPe3mnFjQeXaILyR@chcpu18>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next v2] net: mana: Handle SKB if TX SGEs exceed
+ hardware limit
+To: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+ shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+ ernis@linux.microsoft.com, dipayanroy@linux.microsoft.com,
+ shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, gargaditya@microsoft.com
+References: <20251022204325.GA18380@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Content-Language: en-US
+From: Aditya Garg <gargaditya@linux.microsoft.com>
+In-Reply-To: <20251022204325.GA18380@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Oct 21, 2025 at 04:40:58PM +0000, Shuhao Fu wrote:
-> Fix refcount inconsistency related to `mlx5_ib_get_native_port_mdev`.
+On 23-10-2025 02:13, Aditya Garg wrote:
+> The MANA hardware supports a maximum of 30 scatter-gather entries (SGEs)
+> per TX WQE. Exceeding this limit can cause TX failures.
+> Add ndo_features_check() callback to validate SKB layout before
+> transmission. For GSO SKBs that would exceed the hardware SGE limit, clear
+> NETIF_F_GSO_MASK to enforce software segmentation in the stack.
+> Add a fallback in mana_start_xmit() to linearize non-GSO SKBs that still
+> exceed the SGE limit.
 > 
-> Function `mlx5_ib_get_native_port_mdev` could increase the counter of 
-> `mpi->mdev_refcnt` if mpi is not master. To ensure refcount consistency,
-> each call to `mlx5_ib_get_native_port_mdev` should have a corresponding
-> call to `mlx5_ib_put_native_port_mdev`. In `mlx5_netdev_event`, two
-> branches fail to do so, leading to a possible bug when unbinding.
+> Return NETDEV_TX_BUSY only for -ENOSPC from mana_gd_post_work_request(),
+> send other errors to free_sgl_ptr to free resources and record the tx
+> drop.
 > 
-> Fixes: 379013776222 ("RDMA/mlx5: Handle link status event only for LAG device")
-> Fixes: 35b0aa67b298 ("RDMA/mlx5: Refactor netdev affinity code")
-> Signed-off-by: Shuhao Fu <sfual@cse.ust.hk>
+> Co-developed-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+> Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+> Signed-off-by: Aditya Garg <gargaditya@linux.microsoft.com>
 > ---
->  drivers/infiniband/hw/mlx5/main.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>   drivers/net/ethernet/microsoft/mana/mana_en.c | 48 +++++++++++++++++--
+>   include/net/mana/gdma.h                       |  6 ++-
+>   include/net/mana/mana.h                       |  1 +
+>   3 files changed, 49 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-> index fc1e86f6c..0c4aa7c50 100644
-> --- a/drivers/infiniband/hw/mlx5/main.c
-> +++ b/drivers/infiniband/hw/mlx5/main.c
-> @@ -247,7 +247,7 @@ static int mlx5_netdev_event(struct notifier_block *this,
->  
->  		if (!netif_is_lag_master(ndev) && !netif_is_lag_port(ndev) &&
->  		    !mlx5_core_mp_enabled(mdev))
-> -			return NOTIFY_DONE;
-> +			goto done;
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> index 0142fd98392c..8e23a87a779d 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> @@ -11,6 +11,7 @@
+>   #include <linux/mm.h>
+>   #include <linux/pci.h>
+>   #include <linux/export.h>
+> +#include <linux/skbuff.h>
+>   
+>   #include <net/checksum.h>
+>   #include <net/ip6_checksum.h>
+> @@ -289,6 +290,21 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>   	cq = &apc->tx_qp[txq_idx].tx_cq;
+>   	tx_stats = &txq->stats;
+>   
+> +	if (MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES &&
+> +	    skb_shinfo(skb)->nr_frags + 2 > MAX_TX_WQE_SGL_ENTRIES) {
+> +		/* GSO skb with Hardware SGE limit exceeded is not expected here
+> +		 * as they are handled in mana_features_check() callback
+> +		 */
+> +		if (skb_is_gso(skb))
+> +			netdev_warn_once(ndev, "GSO enabled skb exceeds max SGE limit\n");
+> +		if (skb_linearize(skb)) {
+> +			netdev_warn_once(ndev, "Failed to linearize skb with nr_frags=%d and is_gso=%d\n",
+> +					 skb_shinfo(skb)->nr_frags,
+> +					 skb_is_gso(skb));
+> +			goto tx_drop_count;
+> +		}
+> +	}
+> +
+>   	pkg.tx_oob.s_oob.vcq_num = cq->gdma_id;
+>   	pkg.tx_oob.s_oob.vsq_frame = txq->vsq_frame;
+>   
+> @@ -402,8 +418,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>   		}
+>   	}
+>   
+> -	WARN_ON_ONCE(pkg.wqe_req.num_sge > MAX_TX_WQE_SGL_ENTRIES);
+> -
+>   	if (pkg.wqe_req.num_sge <= ARRAY_SIZE(pkg.sgl_array)) {
+>   		pkg.wqe_req.sgl = pkg.sgl_array;
+>   	} else {
+> @@ -438,9 +452,13 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>   
+>   	if (err) {
+>   		(void)skb_dequeue_tail(&txq->pending_skbs);
+> +		mana_unmap_skb(skb, apc);
+>   		netdev_warn(ndev, "Failed to post TX OOB: %d\n", err);
+> -		err = NETDEV_TX_BUSY;
+> -		goto tx_busy;
+> +		if (err == -ENOSPC) {
+> +			err = NETDEV_TX_BUSY;
+> +			goto tx_busy;
+> +		}
+> +		goto free_sgl_ptr;
+>   	}
+>   
+>   	err = NETDEV_TX_OK;
+> @@ -478,6 +496,25 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>   	return NETDEV_TX_OK;
+>   }
+>   
+> +static netdev_features_t mana_features_check(struct sk_buff *skb,
+> +					     struct net_device *ndev,
+> +					     netdev_features_t features)
+> +{
+> +	if (MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES &&
+> +	    skb_shinfo(skb)->nr_frags + 2 > MAX_TX_WQE_SGL_ENTRIES) {
+> +		/* Exceeds HW SGE limit.
+> +		 * GSO case:
+> +		 *   Disable GSO so the stack will software-segment the skb
+> +		 *   into smaller skbs that fit the SGE budget.
+> +		 * Non-GSO case:
+> +		 *   The xmit path will attempt skb_linearize() as a fallback.
+> +		 */
+> +		if (skb_is_gso(skb))
+> +			features &= ~NETIF_F_GSO_MASK;
+> +	}
+> +	return features;
+> +}
+> +
+>   static void mana_get_stats64(struct net_device *ndev,
+>   			     struct rtnl_link_stats64 *st)
+>   {
+> @@ -838,6 +875,7 @@ static const struct net_device_ops mana_devops = {
+>   	.ndo_open		= mana_open,
+>   	.ndo_stop		= mana_close,
+>   	.ndo_select_queue	= mana_select_queue,
+> +	.ndo_features_check	= mana_features_check,
+>   	.ndo_start_xmit		= mana_start_xmit,
+>   	.ndo_validate_addr	= eth_validate_addr,
+>   	.ndo_get_stats64	= mana_get_stats64,
+> @@ -1606,7 +1644,7 @@ static int mana_move_wq_tail(struct gdma_queue *wq, u32 num_units)
+>   	return 0;
+>   }
+>   
+> -static void mana_unmap_skb(struct sk_buff *skb, struct mana_port_context *apc)
+> +void mana_unmap_skb(struct sk_buff *skb, struct mana_port_context *apc)
+>   {
+>   	struct mana_skb_head *ash = (struct mana_skb_head *)skb->head;
+>   	struct gdma_context *gc = apc->ac->gdma_dev->gdma_context;
+> diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+> index 57df78cfbf82..b35ecc58fbab 100644
+> --- a/include/net/mana/gdma.h
+> +++ b/include/net/mana/gdma.h
+> @@ -591,6 +591,9 @@ enum {
+>   /* Driver can self reset on FPGA Reconfig EQE notification */
+>   #define GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE BIT(17)
+>   
+> +/* Driver supports linearizing the skb when num_sge exceeds hardware limit */
+> +#define GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE BIT(20)
+> +
+>   #define GDMA_DRV_CAP_FLAGS1 \
+>   	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
+>   	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
+> @@ -599,7 +602,8 @@ enum {
+>   	 GDMA_DRV_CAP_FLAG_1_DEV_LIST_HOLES_SUP | \
+>   	 GDMA_DRV_CAP_FLAG_1_DYNAMIC_IRQ_ALLOC_SUPPORT | \
+>   	 GDMA_DRV_CAP_FLAG_1_SELF_RESET_ON_EQE | \
+> -	 GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE)
+> +	 GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE | \
+> +	 GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE)
+>   
+>   #define GDMA_DRV_CAP_FLAGS2 0
+>   
+> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+> index 0921485565c0..330e1bb088bb 100644
+> --- a/include/net/mana/mana.h
+> +++ b/include/net/mana/mana.h
+> @@ -580,6 +580,7 @@ int mana_set_bw_clamp(struct mana_port_context *apc, u32 speed,
+>   void mana_query_phy_stats(struct mana_port_context *apc);
+>   int mana_pre_alloc_rxbufs(struct mana_port_context *apc, int mtu, int num_queues);
+>   void mana_pre_dealloc_rxbufs(struct mana_port_context *apc);
+> +void mana_unmap_skb(struct sk_buff *skb, struct mana_port_context *apc);
+>   
+>   extern const struct ethtool_ops mana_ethtool_ops;
+>   extern struct dentry *mana_debugfs_root;
+Hi Eric,
 
-mdev_refcnt is increased only for MPV slave, but here we are checking if
-MPV is enabled. It is not in this leaf and "return NOTIFY_DONE" is the
-right thing to do.
+I hope this approach is okay. If there are no issues, I'll go ahead and 
+send the patch for final review.
+Let me know if you need more time for this RFC.
 
->  
->  		if (mlx5_lag_is_roce(mdev) || mlx5_lag_is_sriov(mdev)) {
->  			struct net_device *lag_ndev;
-> @@ -268,7 +268,7 @@ static int mlx5_netdev_event(struct notifier_block *this,
->  		if (ibdev->is_rep)
->  			roce = mlx5_get_rep_roce(ibdev, ndev, upper, &port_num);
->  		if (!roce)
-> -			return NOTIFY_DONE;
-> +			goto done;
-
-It is not MPV flow either. There is nothing to change here.
-
-Thanks
-
->  
->  		ib_ndev = ib_device_get_netdev(&ibdev->ib_dev, port_num);
->  
-> -- 
-> 2.39.5 (Apple Git-154)
-> 
+Regards,
+Aditya
 
