@@ -1,170 +1,132 @@
-Return-Path: <linux-rdma+bounces-14085-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14086-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1CDEC12A7D
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Oct 2025 03:24:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0CAFC12AB3
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Oct 2025 03:31:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3792F4E993A
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Oct 2025 02:24:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C5813A3B42
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Oct 2025 02:31:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D80A923BD17;
-	Tue, 28 Oct 2025 02:24:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB9DB26CE3F;
+	Tue, 28 Oct 2025 02:31:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PehnpHXt"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 236A91A5B8A;
-	Tue, 28 Oct 2025 02:24:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C21D25D1F7
+	for <linux-rdma@vger.kernel.org>; Tue, 28 Oct 2025 02:31:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761618281; cv=none; b=A9r9ip1Q11azkL69rpzGUnBpWxGpzizdiG9gQTGF8svJ47jYgtQkWTh2nHxECJz5v3awxtn1QaEqtH22JrhTkB1ctltTzZXV20CTWzZJ5oDZtYSocveCcaoL8rjpnVMHXMevMF6RPGrDuNp23RVbfu+FzedM7Re8ti2aCO+GvRY=
+	t=1761618712; cv=none; b=gkryLQ4UQIc1bNYZCAVB0s/Q9/TB1sbJSDxiQNYfPKVJXfec0kDUKJFbaQLfQpkukgVgC1oMzpLFj9q7Obcon9MDca0SKXawl5NfkVcOuBz+s3lj3F+BefZ/IP1bx8iX3b/3UCbCuSCMBt4ROLEO7vh828PaXYj6mXVl8uiXA3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761618281; c=relaxed/simple;
-	bh=q6FNcEVb7r/dd3rY9+bQk6lP5I+i/FtdOTB3/WeN3EQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JZYe2g9Fmoir9DuXH155tCtfzIIzHJULh7Zx7ehaT4OPuAPkjtz+8AmnrPDKiienqSpALYg7R9sMVS0M9ZW2PFjKmY7X8jCrkxFEUPTmC6HLQUwgNpMThpVa5qQ0WzTWHbSGFRwoRV1Gu01hOA+zLYgMCialQSTll7IhnmH2Mjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-c45ff70000001609-8a-6900295ba92a
-Date: Tue, 28 Oct 2025 11:24:21 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Mina Almasry <almasrymina@google.com>
-Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
-	harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
-	davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
-	john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
-	leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
-	andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
-	akpm@linux-foundation.org, david@redhat.com,
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
-	horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org,
-	ziy@nvidia.com, ilias.apalodimas@linaro.org, willy@infradead.org,
-	brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
-	usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
-	toke@redhat.com, asml.silence@gmail.com, bpf@vger.kernel.org,
-	linux-rdma@vger.kernel.org, sfr@canb.auug.org.au, dw@davidwei.uk,
-	ap420073@gmail.com, dtatulea@nvidia.com
-Subject: Re: [RFC mm v4 1/2] page_pool: check if nmdesc->pp is !NULL to
- confirm its usage as pp for net_iov
-Message-ID: <20251028022421.GA77904@system.software.com>
-References: <20251023074410.78650-1-byungchul@sk.com>
- <20251023074410.78650-2-byungchul@sk.com>
- <CAHS8izPM-s2sL_KyGyUyv37PfZxNLf029DrXpQe8fo637Rn+rw@mail.gmail.com>
+	s=arc-20240116; t=1761618712; c=relaxed/simple;
+	bh=krWO4O+I6Syup84sG/IOEgf0qnpbjhmyqctFaWO1iw4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kvXfqenqFXP6urkbJwBypXMnyfx9PS+Hn8Qti//hgXMIkJLwYzDVkKyv1D/wJxi2+Ish6J1PjrlzuKDJyiR/psO7te6JYUp9cOcFEG1gRNYmCfD1KRrXui4daiqnl4eYjGtuM6d65SfqL17kt6LyhhK7QHEibllNLqWUVLNePuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PehnpHXt; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-b6d5c59f2b6so851520266b.2
+        for <linux-rdma@vger.kernel.org>; Mon, 27 Oct 2025 19:31:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1761618709; x=1762223509; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=krWO4O+I6Syup84sG/IOEgf0qnpbjhmyqctFaWO1iw4=;
+        b=PehnpHXtZOEUr+eAPqiihfgEFrf6lyhOIhcg6iHzH5IrLGMjso7Hy96r9cD3Gl19YX
+         LsDTGAhzZDy9tk80ff78dJn+58FVcdEIpoSrTDASLXAj112/CbOuaGZ4faUXNZy/6clz
+         V1zA0e6YIj925GDQRfqap3kUDMOjzpM8w3kZUT94J0ANfxzI/vYs2DcjTfjOqGDeboo/
+         NpkJMdzRarUTmN8/buEV7F7LCiEnicHIcmX/0pbo8e6sjc9B3V3Bw8sObWeVjK8COhbX
+         uRm9KfG8t6dV6nkQ4j6bx7Ld81DpqUDKhD2aPVuOn1g1ZKghpmlAbg1WElJBypn+O8AH
+         V/Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761618709; x=1762223509;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=krWO4O+I6Syup84sG/IOEgf0qnpbjhmyqctFaWO1iw4=;
+        b=auzd22uuYeY1S2fktK0mVFrK8alPrQV2YlXiME8Tk/7DQ7vlx9BdXF6Q8prQePhcBe
+         fUZSR0Yo/+b3LyDbMOrEZAcL+QQM2MDXWdOpib45FnS7xHouwr9csRegwUvVpYgRiSvF
+         U1SqNzIDEBoSqfQvTwkN/57IQGnoERYHVW1EcyqqI9zqwVUx3/Log1ZI7OjlBzWRN6EX
+         ghvVZLj5bqfpu22DWx83GvuG+j54fI/9HMnQutt7GJgw2P0qTFFL/fKmBeauS50VWjHd
+         JTp81WQ3mnmxnhV2qkWSmNsIQHHaKNqxovyIMxy0c7HWEV9vshEeiY4X7jDVsHX1Pzab
+         BamQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWyztBzqkvPWwQqEkypyLKO+JnyRHtNxZ5gKqUo6tTiiodTTE/8Pco81UvOEJTfyoABD58vlKJLiriT@vger.kernel.org
+X-Gm-Message-State: AOJu0YyUDHN+8oFoHE0aeNeXznjPngvZJLUjhsv03acxLNt++pIxsY3h
+	mmf+XPXdMsZXGwzf51ICsmy/wN8G6T4WG72mSDjH5DzTvTKJeHDvdVsyDSQAyOm/tbzJbUFhJpP
+	iRa42S5+3rWJa96rQkiw4EI92IS1kM6KL5fDI
+X-Gm-Gg: ASbGncv6nfDEBTbex+HtGeD09Br4TF0BFytu6cd3U4MVe8JKXGievmjo9lmeIs7qRii
+	2PwAYDBPRq2xO8xqCjhKJtYZg2X63V6PxkzekyKeX+6Eq/IhoegrRQ4XY2hEHLpSPjL1YsSWftp
+	EbT7esxaXryS3neELBNAFAv+SXzAw9/M1mDwji2mZDgR0K28jx1p8DIo4VctCLPAbCqiLWRW8tN
+	QOCKujrHAnmEKOP15vMf1ZJA0xzvnxIbxuPqv+wHKIeDoEdjojfG6pdXc6kIxzFlJImj0W6wO0=
+X-Google-Smtp-Source: AGHT+IFBJulmjKaEIQwsvJx64/V8WnKApmQIOwSwHunZ+yybA0TJVObz3sscqfk1aYSp9aG5M78IBhqaP8umhuhldbI=
+X-Received: by 2002:a17:907:d15:b0:b57:2d81:41f with SMTP id
+ a640c23a62f3a-b6dba584270mr204086466b.40.1761618708492; Mon, 27 Oct 2025
+ 19:31:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHS8izPM-s2sL_KyGyUyv37PfZxNLf029DrXpQe8fo637Rn+rw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+++cnXNcro7L6p8SwaKiIGtR9AZSZhCnIjL60EWiDnlqo23F
-	ZqZR4C0qSbOs0LlkYuUyc23a1JWSm5fZ1RbKotLSUrppaYmXmelE8tvD+z7v83s+vAwhaxeH
-	MCptrKDT8mo5JSElPwLzl0cvnaZaWfBqHhgtxRTcHYiHwg8VYhgs7hKBsciO4PfgWxpGq+oR
-	9NU2UPDN1YugIL+fAOPLVBL+WIYIqHR0IfiafY+Cz/XtNNy1bYe2250kPDpXTkD7JTcF6anD
-	BFQNdtOQXGEeCy5NpKHJniGGq0O3CChP/EDDa4eRgtbiUTF0OtNJaDTcIeHntVoC2jIioN40
-	B/qffkdQaykXQf/FGxQ05zhE8KCqmYYsj4mCjtQ2BB5XOwnXfOcpyE3KQDA8MBbZnflbDLl1
-	rXREGJfk9VKc63sPwZXdeSPiWrIvk5y3+omIqzS8pzmT7QRXal7GpXk9BGcrukBxtt4rNPeu
-	5RHFubOHSa7y4zqusqJPxKWndFNRs/dJwmMEtSpO0K1Yf1CitLyzo+Png+N/3DCgRFQ3Mw0F
-	MJhdjR1WHzGp3dbr5Lgm2UW4M6MUjWuKXYK93kG/J5hdim9WXxanIQlDsF00fv4ik0pDDDOL
-	1eC6Zs24R8oCNl5t9XtkrBnhkbwGamIRhBtzPvkBxFioL89DjN8SbCgu/MtMjBfglAe5flYA
-	uxO/TnL5O8xmF+LH9gbRRM9zAbjEETSh5+Eas5fMREGGKQTDFILhP8EwhWBCZBGSqbRxGl6l
-	Xh2mTNCq4sMOHdPY0Njn3T7ji65AvU27nIhlkDxQ2qQeVcrEfJw+QeNEmCHkwdLwXJ9SJo3h
-	E04JumMHdCfUgt6JQhlSPle6qv9kjIw9wscKRwXhuKCb3IqYgJBERMYud/7MyXGHWD1DHS0R
-	Q1kzNocXKnp+7Z8+f2T+jk1b2Ld8x6k1bUHuhj3BVmUBuzBfERu1NXJddDl/8/7W5PUlewce
-	6tc6Ukyr7L4vi7eVhe62JruOHj4duaGzVTtalnX2Qg2fat7xJ8wSckD57JZa8WzaGeNGRp/5
-	q9HYV6VolJN6Ja9YRuj0/D+lH0RNdQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTcRjG+++c8z/H0fK0rA76IVhEuC4WFb1d0S91CMqKIKigTnVow81k
-	S9GwmLqoRq7ZDZuXVlmZGdKs6Swlnc7ZPWWxyDYzU7pZmUlOa21G5LeH533e3/N+eBlC3kLF
-	MurUA6IuVdAosJSUbliRN297/AT1ggGHBIqrKjHc+JkJ17pqKRiu7AtbFQ4Eg8OvaAjVuxF8
-	b27F8NE1gODyxSECip8aSfhRFSTAWdeH4EPhTQzv3N003LCvh8DVXhLuHa0hoPukB0O+cYSA
-	+uF+GnJry8PgagMNrpI2Cp45zBScCV4hoMbQRUNHXTEGf2WIgt6mfBLarNdJ+Hq2mYCAORHc
-	tmkw9PATguaqGgkMnSjB4D1fJ4E79V4aTrfbMLw1BhC0u7pJODt6DENRjhnByM8wst8ySEFR
-	i59OTOBzfD7Muz59Ifjb119K+BeFBSTva3gg4Z3W1zRvs6fz1eVK3uRrJ3h7xXHM2wdO0Xzn
-	i3uY9xSOkLzzzTLeWftdwufn9eON07ZJV+4VNeoMUZewepdUVdXpQGnHYjI/l1iRAbVEm1AU
-	w7GLOc+tc2REk+wsrtdcjSIas7M5n2+YiOgYNp4rayigTEjKEGwfzT1+YsEmxDBTWC3X4tVG
-	MjIWuOIz/rGMnC1H3K/SVvx3MJlrO98zVkCEoaOl7URkl2DjuGu/mb/2DC7vTtFYVxS7ievI
-	cY3dMJWdyd13tEosaJJ1HMk6jmT9T7KOI9kQWYFi1KkZWkGtWTJfn6LKSlVnzt+zX2tH4ee6
-	emi0oBYNdqxtQiyDFBNlzzQhlZwSMvRZ2ibEMYQiRrayaFQll+0Vsg6Kuv07dekaUd+E4hhS
-	MV22bqu4S87uEw6IKaKYJur+TSVMVKwBOc0hpqz6V8OjKcKRi53PS/2G5PhvwcOy2M2Lg7aG
-	NL0n6fCq5G1bok0LdliowHvmypD4OXB3+Qk4sh5nKo/eNv4Q5EH1WnmuZ47uUrnFbVqj9Bq7
-	Ei58WZo0Kd3uV+6emzzQ6N2cnZQdHbf76YZNj3oWVcS7axpznbkzp4ZOJypIvUpYqCR0euEP
-	GRjoFVgDAAA=
-X-CFilter-Loop: Reflected
+References: <CANQ=Xi1JW2zFuYzNCw9Ft7WhseiHk4w1prYKmBc-Hbn1N32XNQ@mail.gmail.com>
+ <20251027133053.GK12554@unreal> <eb232c55-1307-473e-8620-4e277f28be4a@linux.dev>
+In-Reply-To: <eb232c55-1307-473e-8620-4e277f28be4a@linux.dev>
+From: Yi Liu <asatsuyu.liu@gmail.com>
+Date: Tue, 28 Oct 2025 10:31:37 +0800
+X-Gm-Features: AWmQ_bnI6tHx8fWAlcNUMW4fitJjrM2rhM6MWN-0lyeud0qKrBtE_3Ys9tfflTc
+Message-ID: <CANQ=Xi3KzyGiFvoD_sgsq3x8e6B-npN87vD3vAT4gZZo37sUJw@mail.gmail.com>
+Subject: Re: [PATCH] RDMA/rxe: fix null deref on srq->rq.queue after resize failure
+To: "Yanjun.Zhu" <yanjun.zhu@linux.dev>
+Cc: Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org, 
+	Jason Gunthorpe <jgg@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 27, 2025 at 06:25:38PM -0700, Mina Almasry wrote:
-> On Thu, Oct 23, 2025 at 12:44 AM Byungchul Park <byungchul@sk.com> wrote:
+Thanks for your kind help. I think the format issue comes from the
+Gmail Web Client. I did not send the email by "git send-email".
+
+Yanjun.Zhu <yanjun.zhu@linux.dev> =E4=BA=8E2025=E5=B9=B410=E6=9C=8828=E6=97=
+=A5=E5=91=A8=E4=BA=8C 00:56=E5=86=99=E9=81=93=EF=BC=9A
+>
+>
+> On 10/27/25 6:30 AM, Leon Romanovsky wrote:
+> >> err_free:
+> >> - rxe_queue_cleanup(q);
+> >> - srq->rq.queue =3D NULL;
+> >> return err;
+> >> }
+> > This patch is badly formatted and doesn't apply.
+>
+>
+> Sorry. I will send a new patch very soon.
+>
+> Yanjun.Zhu
+>
+>
 > >
-> > ->pp_magic field in struct page is current used to identify if a page
-> > belongs to a page pool.  However, ->pp_magic will be removed and page
-> > type bit in struct page e.g. PGTY_netpp should be used for that purpose.
+> > Applying: RDMA/rxe: fix null deref on srq->rq.queue after resize failur=
+e
+> > Patch failed at 0001 RDMA/rxe: fix null deref on srq->rq.queue after re=
+size failure
+> > error: git diff header lacks filename information when removing 1 leadi=
+ng pathname component (line 6)
+> > hint: Use 'git am --show-current-patch=3Ddiff' to see the failed patch
+> > hint: When you have resolved this problem, run "git am --continue".
+> > hint: If you prefer to skip this patch, run "git am --skip" instead.
+> > hint: To restore the original branch and stop patching, run "git am --a=
+bort".
+> > hint: Disable this message with "git config set advice.mergeConflict fa=
+lse"
+> > Press any key to continue...
 > >
-> > As a preparation, the check for net_iov, that is not page-backed, should
-> > avoid using ->pp_magic since net_iov doens't have to do with page type.
-> > Instead, nmdesc->pp can be used if a net_iov or its nmdesc belongs to a
-> > page pool, by making sure nmdesc->pp is NULL otherwise.
 > >
-> > For page-backed netmem, just leave unchanged as is, while for net_iov,
-> > make sure nmdesc->pp is initialized to NULL and use nmdesc->pp for the
-> > check.
-> >
-> > Signed-off-by: Byungchul Park <byungchul@sk.com>
-> > ---
-> >  net/core/devmem.c      |  1 +
-> >  net/core/netmem_priv.h |  8 ++++++++
-> >  net/core/page_pool.c   | 16 ++++++++++++++--
-> >  3 files changed, 23 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/net/core/devmem.c b/net/core/devmem.c
-> > index d9de31a6cc7f..f81b700f1fd1 100644
-> > --- a/net/core/devmem.c
-> > +++ b/net/core/devmem.c
-> > @@ -291,6 +291,7 @@ net_devmem_bind_dmabuf(struct net_device *dev,
-> >                         niov = &owner->area.niovs[i];
-> >                         niov->type = NET_IOV_DMABUF;
-> >                         niov->owner = &owner->area;
-> > +                       niov->desc.pp = NULL;
-> 
-> Don't you also need to = NULL the niov allocations in io_uring zcrx,
-> or is that already done? Maybe mention in commit message.
-
-Yes, that's been already done by kvmalloc_array(__GFP_ZERO).  I want to
-leave a comment explaining that on io_uring side like:
-
-diff --git a/io_uring/zcrx.c b/io_uring/zcrx.c
-index e5ff49f3425e..f771bb3e756d 100644
---- a/io_uring/zcrx.c
-+++ b/io_uring/zcrx.c
-@@ -444,6 +444,10 @@ static int io_zcrx_create_area(struct io_zcrx_ifq *ifq,
- 		area->freelist[i] = i;
- 		atomic_set(&area->user_refs[i], 0);
- 		niov->type = NET_IOV_IOURING;
-+
-+		/* niov->pp is already initialized to NULL by
-+		 * kvmalloc_array(__GFP_ZERO).
-+		 */
- 	}
- 
- 	area->free_count = nr_iovs;
-
-However, I dropped it as Pavel requested:
-
-  https://lore.kernel.org/lkml/8d833a3f-ae18-4ea6-9092-ddaa48290a63@gmail.com/
-
-I will mention it in commit message then.
-
-> Other than that, looks correct,
-> 
-> Reviewed-by: Mina Almasry <almasrymina@google.com>
-
-Thanks.
-
-	Byungchul
+> >> --
+> >> 2.34.1
 
