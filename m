@@ -1,118 +1,105 @@
-Return-Path: <linux-rdma+bounces-14111-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14112-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07090C17F4B
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Oct 2025 02:56:48 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D937C19D69
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Oct 2025 11:47:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 266104ED06E
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Oct 2025 01:56:29 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id F08C14E9CC3
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Oct 2025 10:42:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCD492DFF04;
-	Wed, 29 Oct 2025 01:56:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956783126C7;
+	Wed, 29 Oct 2025 10:37:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="jrrgSFug"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68B572D0C7A;
-	Wed, 29 Oct 2025 01:56:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE8681C861A;
+	Wed, 29 Oct 2025 10:37:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761702983; cv=none; b=gB6BdnOVcDL0D1rYvYxjHADIDpA6jvgR8UDD4xjQ2Kv9gANCLij0nxJB9SVwtoooeuOdz6LS2m89sOHaP4QiIKpXEygKBGrVqnkPheYkpWmeNJ9XH/ltAxQ4OP4A2VKxsZRq9C3MFDiw38KXL3Nh67SxYv9/+m1dt5+eVnKMnzI=
+	t=1761734275; cv=none; b=Idc1fkttb60AmZRvLjHpFnWaO+UfXDRxe/cnJ3XWB+TZrf5AxmMGZ1P8d6hc0I4fHLH2rgF0ZWlWkI/vFV2rXDib6UGAS74akMUx+g2x8CNFMV/KU4K2MDfvhXShW2vOPwDjXXxamT/I1q/2DFeGqTjHLQkIkdMDNjx+ffa/a7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761702983; c=relaxed/simple;
-	bh=oNEBHuq2LmK+th/kjOkTgOWVlI8Rc6Yn1bP3zYucX84=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZUgrdtD2rLDnF5HKNmFK7kIx0uZmPAO2d+9LVGvSi9rSLnVeOyy9gaI+PTMC8fyoWE6NP7hx+rPoO/Qn5kdrFJURLuHwb/Ow9hq6yuXPrKU04LG8tB1kxQgM/Z5eIx/bcfWE2HUfQ1T6oBMCd/9wWKWHxhPmuNpqj1ne8lIEhuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-c45ff70000001609-f7-6901743d1673
-Date: Wed, 29 Oct 2025 10:56:08 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
-	harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
-	davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
-	sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org,
-	tariqt@nvidia.com, mbloch@nvidia.com, andrew+netdev@lunn.ch,
-	edumazet@google.com, pabeni@redhat.com, akpm@linux-foundation.org,
-	david@redhat.com, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, horms@kernel.org,
-	jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com,
-	ilias.apalodimas@linaro.org, willy@infradead.org,
-	brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
-	usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
-	almasrymina@google.com, toke@redhat.com, asml.silence@gmail.com,
-	bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
-	sfr@canb.auug.org.au, dw@davidwei.uk, ap420073@gmail.com,
-	dtatulea@nvidia.com
-Subject: Re: [RFC mm v4 1/2] page_pool: check if nmdesc->pp is !NULL to
- confirm its usage as pp for net_iov
-Message-ID: <20251029015608.GA37879@system.software.com>
-References: <20251023074410.78650-1-byungchul@sk.com>
- <20251023074410.78650-2-byungchul@sk.com>
- <20251028183356.29601348@kernel.org>
+	s=arc-20240116; t=1761734275; c=relaxed/simple;
+	bh=Ipt2kJVMfyBC6vavSVsAP+eR+Q14fkhSx3nka6tuAbQ=;
+	h=From:To:Subject:Date:Message-Id; b=bnOXeX1cKPsHonDowAJvCp+wkstT+vnSxL7i3spcsjxm8tEjjDPSqT2dDSwGAvspIIUqIZRANWvpCWZCr1gQUrgnT/1vcLKkJnEhLJEv88E8YUaWvyaz307YWUhDPHfPE/yocIRxmBJ64Un6DBzAIZT5k2BYwwwjl5PsngVTbmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=jrrgSFug; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1173)
+	id 8121220145DE; Wed, 29 Oct 2025 03:37:53 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8121220145DE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1761734273;
+	bh=80h6HfrWORE7PTyumoXAiEIcX58NZJwYv6oowTzV7NU=;
+	h=From:To:Subject:Date:From;
+	b=jrrgSFug6DT/Jo5m0hQ8ydaNGvYn3XC98/x1i/80B1FmvOTIzRdMtH/AqiUzCNjMW
+	 hipdXIDs0AwVI8tMivRc8gJR1mCK2WaTa5+8nmLPqFqZEyA5RNAd2GvUEZU4RkzFzE
+	 nruiNa/EWMfMvR9dgegpVaIaSriZzVd7bOXrqSDk=
+From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+To: kys@microsoft.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	andrew+netdev@lunn.ch,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	longli@microsoft.com,
+	kotaranov@microsoft.com,
+	horms@kernel.org,
+	shradhagupta@linux.microsoft.com,
+	ssengar@linux.microsoft.com,
+	ernis@linux.microsoft.com,
+	dipayanroy@linux.microsoft.com,
+	shirazsaleem@microsoft.com,
+	rosenp@gmail.com,
+	linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH net-next v2 0/2] net: mana: Refactor GF stats handling and add rx_missed_errors counter
+Date: Wed, 29 Oct 2025 03:37:50 -0700
+Message-Id: <1761734272-32055-1-git-send-email-ernis@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251028183356.29601348@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUxTZxTH99zn9t5LY81dBXmmm3GdZoYEBILmbEHDzBKfDyok+mXMZDb2
-	blTbYlpeTVyqYhQjlSEqLSwDjbzWsJWNvgTMVqCAmM1UwetgoPhCVECCiPIi2GrM/PbLOf/z
-	O+fDEbC6R7FC0JuyJLNJa9BwSlY5tqQqdlMW0sc/7l4HFY1ODhpe5kHNHY8CZpwjDFTUNyOY
-	munnYbE1gOBZeycHT9omEVysmsZQ8U8BC88bZzF4fSMIHpdd5uBBYJiHBtd2GKp+yELLcTeG
-	4dNdHBQVzGFonRnn4YinNiRusvJwvdmmgNLZSxjc1js83PBVcDDoXFTAQ38RC92OOhYmzrZj
-	GLKlQKByOUz3jCJob3QzMH3qZw567T4G/mjt5eFMsJKDewVDCIJtwyycnT/BQflhG4K5lyHl
-	ePGUAso7BvmUOHpYljnaNvoU09/rbjO0r+wnlspXrjLU6/iPp5WubNpUG0NPykFMXfWFHHVN
-	lvB0oK+Fo11lcyz13v2Cej3PGFp0dJxLi0pXJuskgz5HMq/fvEeZ8cpn4w4EFXkNVX8jK3Kz
-	J1GEQMQkci101Ds+d+T8G2bFtcR3vFQRZk78nMjyDA5zpLiGFDTZQxmlgMUJnpTJg6GQICwT
-	jaSj1xjOqEQgiy/qcTijFk8g0ubtZd42PiTd9vtvFmAxhsgLj5jwLBZXkpoFIVyOEBOIvfoC
-	F+Yo8TPyZ3MnE/YQcUogo4XX8NtDPyJ/1cpsMRId72kd72kd/2srEa5Har0px6jVG5LiMvJN
-	+ry4vZlGFwq9WPWh+W89aPL6Tj8SBaRZooq/8IFerdDmWPKNfkQErIlUjZ4OlVQ6bf5ByZz5
-	nTnbIFn8aKXAaqJVidO5OrX4gzZL2i9JByTzuy4jRKywovMls/ZF54ODxbryru9tm+qid3nu
-	5+7QrS10zKcNDJiTTQmfXKI/Pi3eMpt3c9mtY6WuuaHUX9PZWNfwwpUNO7Y4X/TYU5N2GwKJ
-	W0sDzC8l+RtTsrdZ+hOqc79aerfT/Y1nbNXXp2K/3DdiDc4n7mlUGVb3J+8aW9OS+vHF35pv
-	fur/V8NaMrQJMdhs0b4Gq9SA+l4DAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SXUhTcRjG+5//Of9zthyczOxUdtEqpEEfRtHbJ14EHYoiuonqQtc65HBb
-	taloFCwbZZbTPiy3ZkwlLbWEWepGVmxmWdGHpp2o1OzDPsSkzHLmbCui7h6e5/c8783L4ehL
-	zFROb0qTzCatQU2UtHLD8oNzV6Yh/QJvLg+ummoCVT8yoaK7gYHh6l4KXJV1CAaHn7Mw1tiM
-	4GvTbQKfAl8QlJUMYXA9tNHwrSaIwevrRfCx6BKBt809LFR51kNX+Tsarh2ux9CTf4dAnm0E
-	Q+NwPwvZDRfCw7VWFgLFLQw8qrMzcCp4HkO9tZuFNp+LQGf1GAPv/Hk0tDgv0jBQ2IShy54I
-	ze5YGLrXh6Cppp6CoWPFBNodPgquNrazcLLVTeC1rQtBa6CHhsKfOQTOHrAjGPkRnuwvGGTg
-	7K1ONnG+eECWiRjo+4zFKxefUWJH0XFalK/fpUSv8yUruj3pYu0FjZgrt2LRU3mEiJ4vJ1jx
-	Rcc1It4pGqFF76ulorfhKyXmHewnG2O3KlfskAz6DMk8f1WyMmXUZye7W5nMqpIHyIrq6Vyk
-	4AR+kXA6+8xvTfOzBd/hU0xEEz5ekOVhHNEx/CzBVusIM0oO8wOsUCR3hiGOm8gbhVvtxgij
-	4kEY+16JI0w0n4OEgLed+hNMEFocb34fwLxGkEMfqEgX89OEihAXsRV8guAoLyURPYmfKdys
-	u00VIJXzv7bzv7bzX9uNcCWK0ZsyjFq9YfE8S2pKlkmfOU+3y+hB4Scq3//zeAMabFvjRzyH
-	1FGqBaXj9NGMNsOSZfQjgcPqGFVffthS7dBm7ZXMu5LM6QbJ4kfTOFo9WbV2s5Qcze/Upkmp
-	krRbMv9NKU4x1Yq6O3XeMWaKYU1B/uWOwkMz6kYSEzRRtn56TvrCh0/8CteS6Sv7NOMLXsXH
-	jeriP0PbfeK4Ejq6ddU5zdOBM8GPul5tRtU63Z4cHbW5efEbU1KNNVNxQ97HrzOPixNWV9i3
-	LMl/v6yMCXY8z45NjQps2p6b/DipJy748sXT16Fto2rakqJN0GCzRfsLmdJKBkADAAA=
-X-CFilter-Loop: Reflected
 
-On Tue, Oct 28, 2025 at 06:33:56PM -0700, Jakub Kicinski wrote:
-> On Thu, 23 Oct 2025 16:44:09 +0900 Byungchul Park wrote:
-> > As a preparation, the check for net_iov, that is not page-backed, should
-> > avoid using ->pp_magic since net_iov doens't have to do with page type.
-> 
-> doesn't
-> 
-> > Instead, nmdesc->pp can be used if a net_iov or its nmdesc belongs to a
-> > page pool, by making sure nmdesc->pp is NULL otherwise.
-> 
-> Please explain in the commit message why the new branch in
-> netmem_is_pp() is necessary. We used to identify the pages based
-> on PP_SIGNATURE, now we identify them based on page_type.
+Restructure mana_query_gf_stats() to operate on the per-VF mana_context,
+instead of per-port statistics. Introduce mana_ethtool_hc_stats to
+isolate hardware counter statistics and update the
+"ethtool -S <interface>" output to expose all relevant counters while
+preserving backward compatibility.
 
-Yes, I will.  It'd be much better.  Thank you very much for the comment.
+Add support for the standard rx_missed_errors counter by mapping it to
+the hardware's hc_rx_discards_no_wqe metric. Introduce a
+dedicated workqueue that refreshes statistics every 2 seconds, ensuring
+timely and consistent updates of hardware counters.
 
-	Byungchul
+---
+Changes in v2:
+* Update commit message.
+* Stop rescheduling workqueue only when HWC timeout is observed.
+* Introduce new variable in mana_context for detecting HWC timeout.
+* Warn once in mana_get_stat64 when HWC timeout is observed.
+---
+Erni Sri Satya Vennela (2):
+  net: mana: Refactor GF stats to use global mana_context
+  net: mana: Add standard counter rx_missed_errors
+
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 111 ++++++++++++------
+ .../ethernet/microsoft/mana/mana_ethtool.c    |  85 ++++++++------
+ include/net/mana/gdma.h                       |   6 +-
+ include/net/mana/mana.h                       |  18 ++-
+ 4 files changed, 140 insertions(+), 80 deletions(-)
+
+-- 
+2.34.1
+--
 
