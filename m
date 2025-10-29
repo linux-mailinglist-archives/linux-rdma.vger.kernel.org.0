@@ -1,75 +1,71 @@
-Return-Path: <linux-rdma+bounces-14109-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14110-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1D45C171BD
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Oct 2025 23:01:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57BF2C17ED4
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Oct 2025 02:34:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 596604E4719
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Oct 2025 22:01:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 909F43AB9E9
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Oct 2025 01:34:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C48354AFB;
-	Tue, 28 Oct 2025 22:01:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 042E62DE70B;
+	Wed, 29 Oct 2025 01:34:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eXlfkAn4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i2CacSQj"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B0102EAB83;
-	Tue, 28 Oct 2025 22:01:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4B5D2D0637;
+	Wed, 29 Oct 2025 01:33:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761688913; cv=none; b=JOd+T7+y6xIK6HrZ3FF+BBORuFAkU7SCntHTDDyjwuFu24ZjEOM+iEI318JuNs/U+l4GFvGrEP+ctSOCQPPt5186DtacgrNpUXbMs8Gqv16ZDfsYdH46aQV1CDQdXunTuJU79Pamw+yc+TbxwyKb1F0JNKdIP9pHSc7fK5EjMjc=
+	t=1761701640; cv=none; b=YRvLjjpXdjyDkWgLBB+IIZXtv8AYamcGiaVwp5JN61GLpgQyeyZWeG4oxvDjxrZsGIfl+4Q9IEAFTVUtvxdQP849Ym+TDqLgv6I4sfEnfgRlIaq2bF8DajVxvYW86Nx58hg1bNvh21M6KkxoVz9M87m0cYvfUg4Q0WETxchg/Rg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761688913; c=relaxed/simple;
-	bh=8dcVnJQwd2Q2vL09vQ2gjWRm7ih677qGthho3kpNnno=;
+	s=arc-20240116; t=1761701640; c=relaxed/simple;
+	bh=z3Yc/tloRcuK+HMyEVQv+U3jCVDjfWF9XOBpQagP+cI=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mS78x0fw1P9CmRu37aBMwUabzddTcYid1887L43E7LcsZZCuylPwwGhS3sEKKU3blbOqjKvoebjeVlnuKR2mQWR+DkqcdGWud1UFCjAj1rRBjBKYkTpTBQU0nUSS7fKs2mVdi58lMlQyJn6UaTWq6wNlS74Ct0NON6D51BR24SI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eXlfkAn4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9062C4CEE7;
-	Tue, 28 Oct 2025 22:01:51 +0000 (UTC)
+	 MIME-Version:Content-Type; b=KzLkxx8dVGWLz4CO2/83tiQpb0ap2OSOcSJJ94l3WeL7ExNhggunkMByOaKs8Uql2lLmqaxTPzcRu7SD6uOQrWPdZDnFsz0XHGddZwqFREsKgZNNpiHf8DIcfCwC9iTUwymWt06gSBv6+5lrUzZ3t0XXv6LY5Uhw/49iNpl9VTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i2CacSQj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA927C4CEE7;
+	Wed, 29 Oct 2025 01:33:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761688912;
-	bh=8dcVnJQwd2Q2vL09vQ2gjWRm7ih677qGthho3kpNnno=;
+	s=k20201202; t=1761701639;
+	bh=z3Yc/tloRcuK+HMyEVQv+U3jCVDjfWF9XOBpQagP+cI=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=eXlfkAn4OAiiHxOu01TQtSDmQrnCX/tKPX6Swu5Q7eAucYKlTCJVL4+pOgWVdLkuj
-	 M/FNt1bwALA4EjaTEov6iGYMr3nu/GmQIKjNg9BtnQEvPDUNqJoUM41V24juty2KWL
-	 k67/tv3RzNmzRjyukO0UpwuxmyIIS1MBkrA0Ic4Plm6aRWVGdvmHEx7kzqk28vhZLg
-	 /6EHvKljP1Za9D6hZdVi34faqn1lr9xpV1nxbDoiThi14YHMM6KtJBUuiI4gHtGO5A
-	 H/XvmAMSTDlTeGfXTxLwJ8xnrXdjU8VQEk2l1BaEcqGuat09KBFfeUy6wa62uxo8yG
-	 jXhkQQUypLTyg==
-Date: Tue, 28 Oct 2025 15:01:51 -0700
+	b=i2CacSQjHmj9Ut0QvjXn1yYD5TGTQrCJ7pqAe6TCS1ETgHaXGlSxkPdPXJENowIKr
+	 0dcWqbsoOMUnEU/I/CruVsiu1FngyDTvYg1X16idYC/1Zs+zy+SVhrgEe3k78xr5pA
+	 n7QZZPCDOwjpz9h+DjS1S8uEFVcNmIbOSYJRD/BA2OloR2NxGyUW01F57/MCKEW5a9
+	 bpQNcHPzyY7lIbPHuF2Ra5gUjlMSH29F+lI24DtTJLkpiWgvBjqg21XETQYbfePRvw
+	 N/q2GamWYah9nYQeCmC+MHDHZb9qHEGFecyQ9MMnrAcDfUTGTfZye0kTc6deTq4r76
+	 MiSZKe7WozKrw==
+Date: Tue, 28 Oct 2025 18:33:56 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: Paolo Abeni <pabeni@redhat.com>, Haiyang Zhang
- <haiyangz@linux.microsoft.com>, "linux-hyperv@vger.kernel.org"
- <linux-hyperv@vger.kernel.org>, "netdev@vger.kernel.org"
- <netdev@vger.kernel.org>, Paul Rosswurm <paulros@microsoft.com>, Dexuan Cui
- <DECUI@microsoft.com>, KY Srinivasan <kys@microsoft.com>,
- "wei.liu@kernel.org" <wei.liu@kernel.org>, "edumazet@google.com"
- <edumazet@google.com>, "davem@davemloft.net" <davem@davemloft.net>, Long Li
- <longli@microsoft.com>, "ssengar@linux.microsoft.com"
- <ssengar@linux.microsoft.com>, "ernis@linux.microsoft.com"
- <ernis@linux.microsoft.com>, "dipayanroy@linux.microsoft.com"
- <dipayanroy@linux.microsoft.com>, Konstantin Taranov
- <kotaranov@microsoft.com>, "horms@kernel.org" <horms@kernel.org>,
- "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
- "leon@kernel.org" <leon@kernel.org>, "mlevitsk@redhat.com"
- <mlevitsk@redhat.com>, "yury.norov@gmail.com" <yury.norov@gmail.com>,
- Shiraz Saleem <shirazsaleem@microsoft.com>, "andrew+netdev@lunn.ch"
- <andrew+netdev@lunn.ch>, "linux-rdma@vger.kernel.org"
- <linux-rdma@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [EXTERNAL] Re: [net-next, v3] net: mana: Support HW link state
- events
-Message-ID: <20251028150151.3b3b7121@kernel.org>
-In-Reply-To: <BY1PR21MB3870D5B860FB1F26932EB73ACAFDA@BY1PR21MB3870.namprd21.prod.outlook.com>
-References: <1761270105-27215-1-git-send-email-haiyangz@linux.microsoft.com>
-	<76598660-8b8e-4fe6-974b-5f3eb431a1ec@redhat.com>
-	<BY1PR21MB3870D5B860FB1F26932EB73ACAFDA@BY1PR21MB3870.namprd21.prod.outlook.com>
+To: Byungchul Park <byungchul@sk.com>
+Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+ harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
+ davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+ sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com,
+ mbloch@nvidia.com, andrew+netdev@lunn.ch, edumazet@google.com,
+ pabeni@redhat.com, akpm@linux-foundation.org, david@redhat.com,
+ lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+ rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org,
+ jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com,
+ ilias.apalodimas@linaro.org, willy@infradead.org, brauner@kernel.org,
+ kas@kernel.org, yuzhao@google.com, usamaarif642@gmail.com,
+ baolin.wang@linux.alibaba.com, almasrymina@google.com, toke@redhat.com,
+ asml.silence@gmail.com, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+ sfr@canb.auug.org.au, dw@davidwei.uk, ap420073@gmail.com,
+ dtatulea@nvidia.com
+Subject: Re: [RFC mm v4 1/2] page_pool: check if nmdesc->pp is !NULL to
+ confirm its usage as pp for net_iov
+Message-ID: <20251028183356.29601348@kernel.org>
+In-Reply-To: <20251023074410.78650-2-byungchul@sk.com>
+References: <20251023074410.78650-1-byungchul@sk.com>
+	<20251023074410.78650-2-byungchul@sk.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -79,29 +75,16 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue, 28 Oct 2025 19:36:02 +0000 Haiyang Zhang wrote:
-> > Why is  the above needed? I thought mana_link_state_handle() should kick
-> > and set the carrier on as needed???  
-> 
-> Thanks for the question -- our MANA NIC only sends out the link state down/up 
-> messages when need to let the VM rerun DHCP client and change IP address...
-> 
-> So, I need to add netif_carrier_on(ndev) in the probe(), otherwise the 
-> /sys/class/net/ethX/operstate will remain "unknown" until it receives the 
-> Link down/up messages which do NOT always happen.
+On Thu, 23 Oct 2025 16:44:09 +0900 Byungchul Park wrote:
+> As a preparation, the check for net_iov, that is not page-backed, should
+> avoid using ->pp_magic since net_iov doens't have to do with page type.
 
-Oh that makes the code make much more sense.
-Please add this and more detail into the commit message.
+doesn't
 
-> +			if (!netif_carrier_ok(ndev))
-> +				netif_carrier_on(ndev);
+> Instead, nmdesc->pp can be used if a net_iov or its nmdesc belongs to a
+> page pool, by making sure nmdesc->pp is NULL otherwise.
 
-Testing carrier_ok() before calling carrier_on/off is entirely
-pointless, please see the relevant implementations.
-
-BTW I think the ac->link_event accesses are technically racy,
-wrap them in READ_ONCE() / WRITE_ONCE() while you respin.
-(Unless mana_hwc_init_event_handler() is somehow under rtnl_lock)
--- 
-pw-bot: cr
+Please explain in the commit message why the new branch in
+netmem_is_pp() is necessary. We used to identify the pages based
+on PP_SIGNATURE, now we identify them based on page_type.
 
