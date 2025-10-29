@@ -1,47 +1,47 @@
-Return-Path: <linux-rdma+bounces-14125-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14126-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CED9C1BE38
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Oct 2025 17:00:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98E0CC1BCED
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Oct 2025 16:53:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EE08585FE9
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Oct 2025 15:51:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA9391A226E8
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Oct 2025 15:53:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ED1633F8BC;
-	Wed, 29 Oct 2025 15:50:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C19E34FF69;
+	Wed, 29 Oct 2025 15:51:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZRdaOinI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ct932OGc"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5F77258CEF;
-	Wed, 29 Oct 2025 15:50:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4DEB34F48F;
+	Wed, 29 Oct 2025 15:51:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761753047; cv=none; b=piP1qA6vXSH//j8+Xqombe/U4hh+mEjOm0naHv3N+HRwq07gB9HeLLMSNNfiA2Gxzk985fkHMtQaj2Ma8Bn8Krnij3tjA7f/CEiuAtUCl00eoIMmVp+Og6Nlc9sgFNAElZZZYoPXL68mVFhH5bzuSOGRW+hzmlR6fk1Fs65eapk=
+	t=1761753084; cv=none; b=pb4NapTrgGzAJPYzsejlGofk/BMGp8j5MHuWsYobJPxRqFJDMIO34qlSxQt/11ILmwcbc/5lsovBrG/AG5cpTAoTjutr/yaR/wCRfcCLh1hPEWS9Cj63MfN6S4rMdIfvhuwcU/mp0pkJbg/MdVYigQJQYjQ8Od9smNoH8fy4j+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761753047; c=relaxed/simple;
-	bh=xiFnKhDvDCgGSqdY8HtE2ivJ6Wc0+hEJCMnS/4j3jZw=;
+	s=arc-20240116; t=1761753084; c=relaxed/simple;
+	bh=fAuh1ZwrVRzJE7F0Hieu4U/dY1Mamd78vSjATD3RjTY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qYTIuFIJpTaevbKY8IOkT/qd79shH+OoKPOqUdV+MGyCOFLkujDx/hxaokOGlXRo9V9ZUrzDABkM1dT5kSibWLXL9ketzjLMZJOLuoIhVicO16+DqrNlmo8iR+z/NAnonzzC2R+BwvvHHy/2gKaAa4J9e4VqXtfvVvTTUd+n4Ks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZRdaOinI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF2BDC4CEF7;
-	Wed, 29 Oct 2025 15:50:43 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Bp3FIr7KUW7MfFNpIzegSHYEuyapYs8DfvQl3dNZIszC3NwLji/IecTtVItI+XNlxB3XR3Lvnivv8q6JSTivAOu/VLfKB0nICOuXMB0ijP/tbK4LD+AsyVk3VE6zPadiWlT/lFCdasoe+0u2aJm3rpGdWDM/7cu7JYgBXkBXoJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ct932OGc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEA20C4CEF8;
+	Wed, 29 Oct 2025 15:51:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761753046;
-	bh=xiFnKhDvDCgGSqdY8HtE2ivJ6Wc0+hEJCMnS/4j3jZw=;
+	s=k20201202; t=1761753083;
+	bh=fAuh1ZwrVRzJE7F0Hieu4U/dY1Mamd78vSjATD3RjTY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZRdaOinI6k5nlobzl2MEpY+Z/oAMRjDKf2sh+ZlhNN+fAj3lrhdCnraO1OHdRJjgD
-	 SgsxO5XIIAa+HTshrJsmvQDOfgG9H2+SFhypYtUAAxGvDcyxelGspYGOm1rRJztdFU
-	 fTNCbLJ2wiaj8hRCz8vJg1LOntsgx9xW94wjeaNkyF5QKVUDI1isKmvqOnR4dtW5MS
-	 uwtr0l83vgv7Xa6oBO+5RjOSjX9DifgRzWSO2ypa63RQB0QRCc7i96/ahG8QpD6z90
-	 98Fs+DyJR1wiQ4WyVqg+het+W03A4aaWaNKr4u+ERw2dcuUi9TkprxV/Hv2utv5ORf
-	 wWmAaQVsdqT/A==
-Date: Wed, 29 Oct 2025 15:50:41 +0000
+	b=ct932OGcYnA90PQtTCRe+3JADI10FmwzWcWl3iIZwSB4TMO7KkhIFtRgNgYBEm0mA
+	 8wPojx5aDL73UK55MsaDTWlICVu77IEaYz4Ia5Zfzk/8LGFMoPwqVG/+78afpNs7sm
+	 bVZxo2/I2xljEFekECwXBVEHko2CNojiVlU2VdkDfn8e0X5yTdKmf3mAPgGqh+tUTO
+	 DZY0H3chQpLmCILKN4vOP3qriu7Qo/qkfBNub+kGXjb6UVNinJC5Njda44bMduqAkw
+	 QWUR2TNGbLLDNbJ7VNUF5nQLJWZpckU7MjEVo8yCR1jtq3pmI/dCKmpPmWJPls1FlW
+	 4WT4DECKDza0Q==
+Date: Wed, 29 Oct 2025 15:51:18 +0000
 From: Simon Horman <horms@kernel.org>
 To: Tariq Toukan <tariqt@nvidia.com>
 Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
@@ -53,11 +53,11 @@ Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
 	Dragos Tatulea <dtatulea@nvidia.com>
-Subject: Re: [PATCH net 2/3] net/mlx5e: SHAMPO, Fix skb size check for 64K
+Subject: Re: [PATCH net 1/3] net/mlx5e: SHAMPO, Fix header mapping for 64K
  pages
-Message-ID: <aQI30QptJw-xRGWQ@horms.kernel.org>
+Message-ID: <aQI39mMN-YADabUB@horms.kernel.org>
 References: <1761634039-999515-1-git-send-email-tariqt@nvidia.com>
- <1761634039-999515-3-git-send-email-tariqt@nvidia.com>
+ <1761634039-999515-2-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -66,33 +66,63 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1761634039-999515-3-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1761634039-999515-2-git-send-email-tariqt@nvidia.com>
 
-On Tue, Oct 28, 2025 at 08:47:18AM +0200, Tariq Toukan wrote:
+On Tue, Oct 28, 2025 at 08:47:17AM +0200, Tariq Toukan wrote:
 > From: Dragos Tatulea <dtatulea@nvidia.com>
 > 
-> mlx5e_hw_gro_skb_has_enough_space() uses a formula to check if there is
-> enough space in the skb frags to store more data. This formula is
-> incorrect for 64K page sizes and it triggers early GRO session
-> termination because the first fragment will blow up beyond
-> GRO_LEGACY_MAX_SIZE.
+> HW-GRO is broken on mlx5 for 64K page sizes. The patch in the fixes tag
+> didn't take into account larger page sizes when doing an align down
+> of max_ksm_entries. For 64K page size, max_ksm_entries is 0 which will skip
+> mapping header pages via WQE UMR. This breaks header-data split
+> and will result in the following syndrome:
 > 
-> This patch adds a special case for page sizes >= GRO_LEGACY_MAX_SIZE
-> (64K) which will uses the skb->data_len instead. Within this context,
-> this check will be safe from fragment overflow.
-
-The above mentions skb->data_len, but the code uses skb->len.
-
-Also, I think it would be worth describing why this is safe
-in this context.
-
+> mlx5_core 0000:00:08.0 eth2: Error cqe on cqn 0x4c9, ci 0x0, qn 0x1133, opcode 0xe, syndrome 0x4, vendor syndrome 0x32
+> 00000000: 00 00 00 00 04 4a 00 00 00 00 00 00 20 00 93 32
+> 00000010: 55 00 00 00 fb cc 00 00 00 00 00 00 07 18 00 00
+> 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 4a
+> 00000030: 00 00 3b c7 93 01 32 04 00 00 00 00 00 00 bf e0
+> mlx5_core 0000:00:08.0 eth2: ERR CQE on RQ: 0x1133
 > 
-> It is expected that the if statement will be optimized out as the
-> check is done with constants.
+> Furthermore, the function that fills in WQE UMRs for the headers
+> (mlx5e_build_shampo_hd_umr()) only supports mapping page sizes that
+> fit in a single UMR WQE.
 > 
-> Fixes: 92552d3abd32 ("net/mlx5e: HW_GRO cqe handler implementation")
+> This patch goes back to the old non-aligned max_ksm_entries value and it
+> changes mlx5e_build_shampo_hd_umr() to support mapping a large page over
+> multiple UMR WQEs.
+> 
+> This means that mlx5e_build_shampo_hd_umr() can now leave a page only
+> partially mapped. The caller, mlx5e_build_shampo_hd_umr(), ensures that
+
+It's not particularly important, but I think the caller is
+mlx5e_alloc_rx_hd_mpwqe().
+
+> there are enough UMR WQEs to cover complete pages by working on
+> ksm_entries that are multiples of MLX5E_SHAMPO_WQ_HEADER_PER_PAGE.
+> 
+> Fixes: 8a0ee54027b1 ("net/mlx5e: SHAMPO, Simplify UMR allocation for headers")
 > Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
 > Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+> ---
+>  .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 34 +++++++++----------
+>  1 file changed, 16 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+> index 1c79adc51a04..77f7a1ca091d 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+> @@ -679,25 +679,24 @@ static int mlx5e_build_shampo_hd_umr(struct mlx5e_rq *rq,
+>  	umr_wqe = mlx5_wq_cyc_get_wqe(&sq->wq, pi);
+>  	build_ksm_umr(sq, umr_wqe, shampo->mkey_be, index, ksm_entries);
+>  
+> -	WARN_ON_ONCE(ksm_entries & (MLX5E_SHAMPO_WQ_HEADER_PER_PAGE - 1));
+> -	while (i < ksm_entries) {
+> -		struct mlx5e_frag_page *frag_page = mlx5e_shampo_hd_to_frag_page(rq, index);
+> +	for ( ; i < ksm_entries; i++, index++) {
+
+Also, if you have to respin for some reason, I would move the
+initialisation of i to 0 from it's declaration to the for loop.
 
 ...
 
