@@ -1,236 +1,201 @@
-Return-Path: <linux-rdma+bounces-14114-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14115-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27A3AC19DA5
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Oct 2025 11:49:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B7D4C1AA78
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Oct 2025 14:26:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8AC894FCC20
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Oct 2025 10:42:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED64818846D5
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Oct 2025 13:20:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 380DA2FFF98;
-	Wed, 29 Oct 2025 10:37:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5730727FD71;
+	Wed, 29 Oct 2025 13:12:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="oVqOBANR"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="IZw4DMMV"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B397330327;
-	Wed, 29 Oct 2025 10:37:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E3A637A3C0;
+	Wed, 29 Oct 2025 13:12:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761734278; cv=none; b=JLxSWVMZ+lFT0BsFB9ffFJgVI7tV7gfsVikYtF+O6GevcTxKUH4nhNLBdpq+0MBowp9zh4WVAdD1hDntuHPA24Hq0llVvem5kXJ/6raT0a6eAR4+KO//eoCJbMxgpn7jiyU2pvqw0C9kmMTqX8vV2sRqxBK0/KDnC/U/Lx98/2Q=
+	t=1761743558; cv=none; b=WxPZIuKMEFUn9yP2aef7h5g32pXv7pTjHXgv+r7ACClCoW++FHrg+TIHnBdTJ7TVI/Jb0apAGXIpozDMUUaqvNGM29wkASItih3s/Cf6PQD4OZxL6YbRfu7Pq73BOw0Z1rSddsnpMLtCildmc0yB2iivMutPHayp/xlA9ahFWWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761734278; c=relaxed/simple;
-	bh=h4ktVjJwrvb+bW+hTEgjMWw+BOzwEf7vjzxDc/TH23U=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References; b=qpmXbiRY0ec1uuyBury7ch3azMdtNFcDUKzcaRIJKqchvzLEBKn2TLxYv7cX9k6oP3Aag8m6ggUPtjZdZijvSQlsp9YdtnqvGoNVqAe2C4TJOVSiiZjywlxVuu6BbowzbDuj0xsBPY2fbm8cTJeiSBB7/g/YCaB7dUAbHUeJRY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=oVqOBANR; arc=none smtp.client-ip=13.77.154.182
+	s=arc-20240116; t=1761743558; c=relaxed/simple;
+	bh=acVh0xMIF1FK6zvgSwuG0VId6Lw4dlJ8hF/zn9/niSU=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=B5XZyIMMKvweVEjhQMscGZfAdsxoCyymD53zPelGcFcma6NiFbvX8mme8MsOOYTEos0DLxbE/0mH0hu0F2+lWznH9pUQFNXgARRD9Ty4vkvqSqVmv8+dKemhIUJANR2RxSHgB4lIGRp/Uj5owKKg0YrDsTJxfKty5m8I6RTUZ1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=IZw4DMMV; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1173)
-	id 24176211CF97; Wed, 29 Oct 2025 03:37:56 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 24176211CF97
+Received: by linux.microsoft.com (Postfix, from userid 1231)
+	id E16C1211CF97; Wed, 29 Oct 2025 06:12:35 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E16C1211CF97
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1761734276;
-	bh=sFK0LEa0ZlLnJ1Tx9uM2+AFX9+Izg/RNjd0uSAEK018=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=oVqOBANRtDzf05i5fW2QhJukQmI+aTusWxEvH5e5YOpwO5uoL3c7sZ0TK7UVFGiJq
-	 otpcFzKh+ILDLkzO5W/RreqrSTmytnzntEQuYi1gDXCL6GQSr4f6otjs8E2mE5RgSi
-	 Ii2BbiyKzcNN3siHsKu1nVak2RRYICcaaMeiKTNM=
-From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-To: kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	longli@microsoft.com,
-	kotaranov@microsoft.com,
-	horms@kernel.org,
-	shradhagupta@linux.microsoft.com,
-	ssengar@linux.microsoft.com,
-	ernis@linux.microsoft.com,
-	dipayanroy@linux.microsoft.com,
-	shirazsaleem@microsoft.com,
-	rosenp@gmail.com,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH net-next v2 2/2] net: mana: Add standard counter rx_missed_errors
-Date: Wed, 29 Oct 2025 03:37:52 -0700
-Message-Id: <1761734272-32055-3-git-send-email-ernis@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1761734272-32055-1-git-send-email-ernis@linux.microsoft.com>
-References: <1761734272-32055-1-git-send-email-ernis@linux.microsoft.com>
+	s=default; t=1761743555;
+	bh=RitJErJsOboiiweoi7x9S54p7/I4Sesb8v4ZX4CPXeo=;
+	h=Date:From:To:Subject:From;
+	b=IZw4DMMVGLJSp6wcHKNEvqJ8vUK/n0xG4lw3NaVeNWXgEGxRd1dAcLSyFQOl68BBG
+	 z16SUfhjyASfH/aoEli4Wc8g9bHhLOkueezylehCLzjSkPi/nIN/hXCXzE8Xr783in
+	 qsmVW5v+GIDNUUHiiDJwNDzru2j9ntWf8F0hm0zA=
+Date: Wed, 29 Oct 2025 06:12:35 -0700
+From: Aditya Garg <gargaditya@linux.microsoft.com>
+To: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+	ernis@linux.microsoft.com, dipayanroy@linux.microsoft.com,
+	shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, gargaditya@microsoft.com
+Subject: [PATCH net-next v2] net: mana: Handle SKB if TX SGEs exceed hardware
+ limit
+Message-ID: <20251029131235.GA3903@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-Report standard counter stats->rx_missed_errors
-using hc_rx_discards_no_wqe from the hardware.
+The MANA hardware supports a maximum of 30 scatter-gather entries (SGEs)
+per TX WQE. Exceeding this limit can cause TX failures.
+Add ndo_features_check() callback to validate SKB layout before
+transmission. For GSO SKBs that would exceed the hardware SGE limit, clear
+NETIF_F_GSO_MASK to enforce software segmentation in the stack.
+Add a fallback in mana_start_xmit() to linearize non-GSO SKBs that still
+exceed the SGE limit.
 
-Add a dedicated workqueue to periodically run
-mana_query_gf_stats every 2 seconds to get the latest
-info in eth_stats and define a driver capability flag
-to notify hardware of the periodic queries.
+Return NETDEV_TX_BUSY only for -ENOSPC from mana_gd_post_work_request(),
+send other errors to free_sgl_ptr to free resources and record the tx
+drop.
 
-To avoid repeated failures and log flooding, the workqueue
-is not rescheduled if mana_query_gf_stats fails on HWC timeout
-error and the stats are reset to 0. Other errors are transient
-which will not need a VF reset for recovery.
-
-Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Reviewed-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-Reviewed-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Co-developed-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+Signed-off-by: Aditya Garg <gargaditya@linux.microsoft.com>
 ---
-Changes in v2:
-* Update commit message.
-* Stop rescheduling workqueue only when HWC timeout is observed.
-* Introduce new variable in mana_context for detecting HWC timeout.
-* Warn once in mana_get_stat64 when HWC timeout is observed.
----
- drivers/net/ethernet/microsoft/mana/mana_en.c | 46 +++++++++++++++++--
- .../ethernet/microsoft/mana/mana_ethtool.c    |  2 -
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 48 +++++++++++++++++--
  include/net/mana/gdma.h                       |  6 ++-
- include/net/mana/mana.h                       |  6 ++-
- 4 files changed, 53 insertions(+), 7 deletions(-)
+ include/net/mana/mana.h                       |  1 +
+ 3 files changed, 49 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index 009e869ef296..48df44889f05 100644
+index 0142fd98392c..1f95b644eba1 100644
 --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
 +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -494,6 +494,11 @@ static void mana_get_stats64(struct net_device *ndev,
+@@ -11,6 +11,7 @@
+ #include <linux/mm.h>
+ #include <linux/pci.h>
+ #include <linux/export.h>
++#include <linux/skbuff.h>
  
- 	netdev_stats_to_stats64(st, &ndev->stats);
+ #include <net/checksum.h>
+ #include <net/ip6_checksum.h>
+@@ -289,6 +290,21 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+ 	cq = &apc->tx_qp[txq_idx].tx_cq;
+ 	tx_stats = &txq->stats;
  
-+	if (apc->ac->hwc_timeout_occurred)
-+		netdev_warn_once(ndev, "HWC timeout occurred\n");
-+
-+	st->rx_missed_errors = apc->ac->hc_stats.hc_rx_discards_no_wqe;
-+
- 	for (q = 0; q < num_queues; q++) {
- 		rx_stats = &apc->rxqs[q]->stats;
- 
-@@ -2769,7 +2774,7 @@ int mana_config_rss(struct mana_port_context *apc, enum TRI_STATE rx,
- 	return 0;
- }
- 
--void mana_query_gf_stats(struct mana_context *ac)
-+int mana_query_gf_stats(struct mana_context *ac)
- {
- 	struct mana_query_gf_stat_resp resp = {};
- 	struct mana_query_gf_stat_req req = {};
-@@ -2812,14 +2817,14 @@ void mana_query_gf_stats(struct mana_context *ac)
- 				sizeof(resp));
- 	if (err) {
- 		dev_err(dev, "Failed to query GF stats: %d\n", err);
--		return;
-+		return err;
- 	}
- 	err = mana_verify_resp_hdr(&resp.hdr, MANA_QUERY_GF_STAT,
- 				   sizeof(resp));
- 	if (err || resp.hdr.status) {
- 		dev_err(dev, "Failed to query GF stats: %d, 0x%x\n", err,
- 			resp.hdr.status);
--		return;
-+		return err;
- 	}
- 
- 	ac->hc_stats.hc_rx_discards_no_wqe = resp.rx_discards_nowqe;
-@@ -2854,6 +2859,8 @@ void mana_query_gf_stats(struct mana_context *ac)
- 	ac->hc_stats.hc_tx_mcast_pkts = resp.hc_tx_mcast_pkts;
- 	ac->hc_stats.hc_tx_mcast_bytes = resp.hc_tx_mcast_bytes;
- 	ac->hc_stats.hc_tx_err_gdma = resp.tx_err_gdma;
-+
-+	return 0;
- }
- 
- void mana_query_phy_stats(struct mana_port_context *apc)
-@@ -3390,6 +3397,24 @@ int mana_rdma_service_event(struct gdma_context *gc, enum gdma_service_type even
- 	return 0;
- }
- 
-+#define MANA_GF_STATS_PERIOD (2 * HZ)
-+
-+static void mana_gf_stats_work_handler(struct work_struct *work)
-+{
-+	struct mana_context *ac =
-+		container_of(to_delayed_work(work), struct mana_context, gf_stats_work);
-+	int err;
-+
-+	err = mana_query_gf_stats(ac);
-+	if (err == -ETIMEDOUT) {
-+		/* HWC timeout detected - reset stats and stop rescheduling */
-+		ac->hwc_timeout_occurred = true;
-+		memset(&ac->hc_stats, 0, sizeof(ac->hc_stats));
-+		return;
++	if (MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES &&
++	    skb_shinfo(skb)->nr_frags + 2 > MAX_TX_WQE_SGL_ENTRIES) {
++		/* GSO skb with Hardware SGE limit exceeded is not expected here
++		 * as they are handled in mana_features_check() callback
++		 */
++		if (skb_is_gso(skb))
++			netdev_warn_once(ndev, "GSO enabled skb exceeds max SGE limit\n");
++		if (skb_linearize(skb)) {
++			netdev_warn_once(ndev, "Failed to linearize skb with nr_frags=%d and is_gso=%d\n",
++					 skb_shinfo(skb)->nr_frags,
++					 skb_is_gso(skb));
++			goto tx_drop_count;
++		}
 +	}
-+	queue_delayed_work(ac->gf_stats_wq, &ac->gf_stats_work, MANA_GF_STATS_PERIOD);
++
+ 	pkg.tx_oob.s_oob.vcq_num = cq->gdma_id;
+ 	pkg.tx_oob.s_oob.vsq_frame = txq->vsq_frame;
+ 
+@@ -402,8 +418,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+ 		}
+ 	}
+ 
+-	WARN_ON_ONCE(pkg.wqe_req.num_sge > MAX_TX_WQE_SGL_ENTRIES);
+-
+ 	if (pkg.wqe_req.num_sge <= ARRAY_SIZE(pkg.sgl_array)) {
+ 		pkg.wqe_req.sgl = pkg.sgl_array;
+ 	} else {
+@@ -438,9 +452,13 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+ 
+ 	if (err) {
+ 		(void)skb_dequeue_tail(&txq->pending_skbs);
++		mana_unmap_skb(skb, apc);
+ 		netdev_warn(ndev, "Failed to post TX OOB: %d\n", err);
+-		err = NETDEV_TX_BUSY;
+-		goto tx_busy;
++		if (err == -ENOSPC) {
++			err = NETDEV_TX_BUSY;
++			goto tx_busy;
++		}
++		goto free_sgl_ptr;
+ 	}
+ 
+ 	err = NETDEV_TX_OK;
+@@ -478,6 +496,25 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+ 	return NETDEV_TX_OK;
+ }
+ 
++static netdev_features_t mana_features_check(struct sk_buff *skb,
++					     struct net_device *ndev,
++					     netdev_features_t features)
++{
++	if (MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES &&
++	    skb_shinfo(skb)->nr_frags + 2 > MAX_TX_WQE_SGL_ENTRIES) {
++		/* Exceeds HW SGE limit.
++		 * GSO case:
++		 *   Disable GSO so the stack will software-segment the skb
++		 *   into smaller skbs that fit the SGE budget.
++		 * Non-GSO case:
++		 *   The xmit path will attempt skb_linearize() as a fallback.
++		 */
++		if (skb_is_gso(skb))
++			features &= ~NETIF_F_GSO_MASK;
++	}
++	return features;
 +}
 +
- int mana_probe(struct gdma_dev *gd, bool resuming)
+ static void mana_get_stats64(struct net_device *ndev,
+ 			     struct rtnl_link_stats64 *st)
  {
- 	struct gdma_context *gc = gd->gdma_context;
-@@ -3478,6 +3503,15 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
- 	}
+@@ -838,6 +875,7 @@ static const struct net_device_ops mana_devops = {
+ 	.ndo_open		= mana_open,
+ 	.ndo_stop		= mana_close,
+ 	.ndo_select_queue	= mana_select_queue,
++	.ndo_features_check	= mana_features_check,
+ 	.ndo_start_xmit		= mana_start_xmit,
+ 	.ndo_validate_addr	= eth_validate_addr,
+ 	.ndo_get_stats64	= mana_get_stats64,
+@@ -1606,7 +1644,7 @@ static int mana_move_wq_tail(struct gdma_queue *wq, u32 num_units)
+ 	return 0;
+ }
  
- 	err = add_adev(gd, "eth");
-+	ac->gf_stats_wq = create_singlethread_workqueue("mana_gf_stats");
-+	if (!ac->gf_stats_wq) {
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
-+	INIT_DELAYED_WORK(&ac->gf_stats_work, mana_gf_stats_work_handler);
-+	queue_delayed_work(ac->gf_stats_wq, &ac->gf_stats_work, MANA_GF_STATS_PERIOD);
-+
- out:
- 	if (err) {
- 		mana_remove(gd, false);
-@@ -3501,6 +3535,12 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
- 	int err;
- 	int i;
- 
-+	if (ac->gf_stats_wq) {
-+		cancel_delayed_work_sync(&ac->gf_stats_work);
-+		destroy_workqueue(ac->gf_stats_wq);
-+		ac->gf_stats_wq = NULL;
-+	}
-+
- 	/* adev currently doesn't support suspending, always remove it */
- 	if (gd->adev)
- 		remove_adev(gd);
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-index 3dfd96146424..99e811208683 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-@@ -213,8 +213,6 @@ static void mana_get_ethtool_stats(struct net_device *ndev,
- 
- 	if (!apc->port_is_up)
- 		return;
--	/* we call mana function to update stats from GDMA */
--	mana_query_gf_stats(apc->ac);
- 
- 	/* We call this mana function to get the phy stats from GDMA and includes
- 	 * aggregate tx/rx drop counters, Per-TC(Traffic Channel) tx/rx and pause
+-static void mana_unmap_skb(struct sk_buff *skb, struct mana_port_context *apc)
++void mana_unmap_skb(struct sk_buff *skb, struct mana_port_context *apc)
+ {
+ 	struct mana_skb_head *ash = (struct mana_skb_head *)skb->head;
+ 	struct gdma_context *gc = apc->ac->gdma_dev->gdma_context;
 diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index 57df78cfbf82..88a81fb164a0 100644
+index 57df78cfbf82..b35ecc58fbab 100644
 --- a/include/net/mana/gdma.h
 +++ b/include/net/mana/gdma.h
 @@ -591,6 +591,9 @@ enum {
  /* Driver can self reset on FPGA Reconfig EQE notification */
  #define GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE BIT(17)
  
-+/* Driver can send HWC periodically to query stats */
-+#define GDMA_DRV_CAP_FLAG_1_PERIODIC_STATS_QUERY BIT(21)
++/* Driver supports linearizing the skb when num_sge exceeds hardware limit */
++#define GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE BIT(20)
 +
  #define GDMA_DRV_CAP_FLAGS1 \
  	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
@@ -241,35 +206,23 @@ index 57df78cfbf82..88a81fb164a0 100644
  	 GDMA_DRV_CAP_FLAG_1_SELF_RESET_ON_EQE | \
 -	 GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE)
 +	 GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE | \
-+	 GDMA_DRV_CAP_FLAG_1_PERIODIC_STATS_QUERY)
++	 GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE)
  
  #define GDMA_DRV_CAP_FLAGS2 0
  
 diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index 519c4384c51f..79532490cee6 100644
+index 0921485565c0..330e1bb088bb 100644
 --- a/include/net/mana/mana.h
 +++ b/include/net/mana/mana.h
-@@ -480,6 +480,10 @@ struct mana_context {
- 	struct mana_eq *eqs;
- 	struct dentry *mana_eqs_debugfs;
+@@ -580,6 +580,7 @@ int mana_set_bw_clamp(struct mana_port_context *apc, u32 speed,
+ void mana_query_phy_stats(struct mana_port_context *apc);
+ int mana_pre_alloc_rxbufs(struct mana_port_context *apc, int mtu, int num_queues);
+ void mana_pre_dealloc_rxbufs(struct mana_port_context *apc);
++void mana_unmap_skb(struct sk_buff *skb, struct mana_port_context *apc);
  
-+	struct workqueue_struct *gf_stats_wq;
-+	struct delayed_work gf_stats_work;
-+	bool hwc_timeout_occurred;
-+
- 	struct net_device *ports[MAX_PORTS_IN_MANA_DEV];
- };
- 
-@@ -577,7 +581,7 @@ u32 mana_run_xdp(struct net_device *ndev, struct mana_rxq *rxq,
- struct bpf_prog *mana_xdp_get(struct mana_port_context *apc);
- void mana_chn_setxdp(struct mana_port_context *apc, struct bpf_prog *prog);
- int mana_bpf(struct net_device *ndev, struct netdev_bpf *bpf);
--void mana_query_gf_stats(struct mana_context *ac);
-+int mana_query_gf_stats(struct mana_context *ac);
- int mana_query_link_cfg(struct mana_port_context *apc);
- int mana_set_bw_clamp(struct mana_port_context *apc, u32 speed,
- 		      int enable_clamping);
+ extern const struct ethtool_ops mana_ethtool_ops;
+ extern struct dentry *mana_debugfs_root;
 -- 
-2.34.1
+2.43.0
 
 
