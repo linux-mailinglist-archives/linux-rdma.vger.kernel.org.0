@@ -1,100 +1,120 @@
-Return-Path: <linux-rdma+bounces-14133-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14134-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B3D2C1E0DA
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Oct 2025 02:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A0BEC1F2D2
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Oct 2025 10:04:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id CB4F734B70B
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Oct 2025 01:50:45 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 9564D34D0C4
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Oct 2025 09:04:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D80B62D978C;
-	Thu, 30 Oct 2025 01:50:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 393F2338F5D;
+	Thu, 30 Oct 2025 09:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ohl4oLXA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q98e3fyT"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E7213FC2;
-	Thu, 30 Oct 2025 01:50:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D23A22BFC85;
+	Thu, 30 Oct 2025 09:04:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761789038; cv=none; b=JkgSkVfnRURsyyPYOzzQVgib4wh0PPOOMsz/mSYhTtuYvEUyUcq80Qz1OKgVHWBu5Jf2uIxAR6q4nBt99s0z+lSJpKWk8PjdJYx1zQlc80rMkFOqFWHvRqbsMKkPbBPSNoPreG3gIHf0qJrhR3Tlr/Pa6GLhgFUrf2gXOFt4bLA=
+	t=1761815091; cv=none; b=eNL+ENJfAhzBIIgKZif7CjbQes5DkB2DyTaWXQoZwWvQkt9+dsgNspjQTzw3wz9tAr4i6XEKCEtEgiUl917BfRoKPqoQZxqZyymu/RBCphJwj+1SjjVDabqbbT4l8ooCfk+/ffkMv5RMbJGFpEoRF5Chyynsil/cg+hN4kTwlfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761789038; c=relaxed/simple;
-	bh=eU7WGgbGrRXL6YcJBO7A6DdWWT6jGoKto2v87FPSkYU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=YtltGTpfE8Vd698E487Gsv8lSDvbSG95+Q6qpVM5ThSnyKqGFIlszDnXNwM1yDEATwH9NsaZbUvx1xSuom7xaY206u8Vlyfr1ewTDpmjgbZB8ysgPtq/AaM/PZtt7zLVe16ehJfh9DHnU9mgLbH0Ja5qyquVVSO/KmtA0WntiDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ohl4oLXA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B819C4CEF7;
-	Thu, 30 Oct 2025 01:50:38 +0000 (UTC)
+	s=arc-20240116; t=1761815091; c=relaxed/simple;
+	bh=a4b7pcEFWNkC27iTktg9YRlC8Ldupk1RfbsxDwDDIw4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D9CYIKPTjvvglnHPQnn4JXD5qICXntaU6kGeVd0ywjrCZPd/CIgGzv1Mj4INo74kOx0cewXg+akRmx9XOK/gCDlCmVdqTvN9DcMzVVnwmbMhn0f5SNtlkkZt/aflf1EznCK/jPlpbuFw919ZW8unmno/tLJMUkcXMbO7AS0o+h4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q98e3fyT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 634EFC4CEF1;
+	Thu, 30 Oct 2025 09:04:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761789038;
-	bh=eU7WGgbGrRXL6YcJBO7A6DdWWT6jGoKto2v87FPSkYU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Ohl4oLXApQ8qLxTi/pvYORGROOnBGx885NYRhMU05HhXQecSFH+sU4OqJk/hqikX7
-	 zfkNVPOCO6D9IzVC3c3n8v33a2gaUP+sueOxi8fFESxk3vHxMcprrFfbDeH625F5pW
-	 oAP4LZP7YfcnrifJrF5pwT7DT/8MQwZXc1olhcVNZZkiuutjV+lY3VwAf+YDMurYsx
-	 On4lcyjpMb2kwAeFxWiuKCNgTjOSmdbIX2qSgCrJha9QTEXXxeyiWVdz8virMZwqQn
-	 bcBPMEMVzxwkotBC/98Sytj92W0Z5U/PmP1pdYkTdMci8dY2DZfNJ8dBfAtq/4JGP0
-	 Q9PfO1ZLpZceQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33C213A55ED9;
-	Thu, 30 Oct 2025 01:50:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1761815090;
+	bh=a4b7pcEFWNkC27iTktg9YRlC8Ldupk1RfbsxDwDDIw4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Q98e3fyT6ngukxgtjVm+ar7nHCpxBlIZIk2KEeSFHwnVYks3ZbRnZHL0eztvAAUEA
+	 0iSi5J6F76Od4TT1uhw33Tl+EV7lWdnLApwPBNudO5VjUc3YBIEutO5NRaqOXf55b2
+	 zZHwCKYPcpg9KaOFM8HkSNFRCVEdX7ee0WzO15ZWUenZhqS52/+lqNO3vCy7bjQaXY
+	 SE/Y6Diryw4u6g4VF61G4gV2RvxOlo5dLnPmg6ok+y6eWcdKHrcee/mgIbDmWP0kvx
+	 v1/gDEKmtVSnvmAqEkZPpMWpF3dgl6NaOKU5UBQ/uUijmYGLTKGG4gy9suz4Tk3O6I
+	 kZXFtDjE4vPyw==
+Date: Thu, 30 Oct 2025 09:04:44 +0000
+From: Simon Horman <horms@kernel.org>
+To: Aditya Garg <gargaditya@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	longli@microsoft.com, kotaranov@microsoft.com,
+	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+	ernis@linux.microsoft.com, dipayanroy@linux.microsoft.com,
+	shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, gargaditya@microsoft.com
+Subject: Re: [PATCH net-next v2] net: mana: Handle SKB if TX SGEs exceed
+ hardware limit
+Message-ID: <aQMqLN0FRmNU3_ke@horms.kernel.org>
+References: <20251029131235.GA3903@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net V3 0/3] tls: Introduce and use RX async resync request
- cancel function
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176178901482.3280604.3668884235905347850.git-patchwork-notify@kernel.org>
-Date: Thu, 30 Oct 2025 01:50:14 +0000
-References: <1761508983-937977-1-git-send-email-tariqt@nvidia.com>
-In-Reply-To: <1761508983-937977-1-git-send-email-tariqt@nvidia.com>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: sd@queasysnail.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- saeedm@nvidia.com, leon@kernel.org, mbloch@nvidia.com,
- john.fastabend@gmail.com, netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, gal@nvidia.com, shshitrit@nvidia.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251029131235.GA3903@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 
-Hello:
-
-This series was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Sun, 26 Oct 2025 22:03:00 +0200 you wrote:
-> Hi,
+On Wed, Oct 29, 2025 at 06:12:35AM -0700, Aditya Garg wrote:
+> The MANA hardware supports a maximum of 30 scatter-gather entries (SGEs)
+> per TX WQE. Exceeding this limit can cause TX failures.
+> Add ndo_features_check() callback to validate SKB layout before
+> transmission. For GSO SKBs that would exceed the hardware SGE limit, clear
+> NETIF_F_GSO_MASK to enforce software segmentation in the stack.
+> Add a fallback in mana_start_xmit() to linearize non-GSO SKBs that still
+> exceed the SGE limit.
 > 
-> This is V3. Find previous one here:
-> https://lore.kernel.org/all/1760943954-909301-1-git-send-email-tariqt@nvidia.com/
+> Return NETDEV_TX_BUSY only for -ENOSPC from mana_gd_post_work_request(),
+> send other errors to free_sgl_ptr to free resources and record the tx
+> drop.
 > 
-> This series by Shahar introduces RX async resync request cancel function
-> in tls module, and uses it in mlx5e driver.
-> 
-> [...]
+> Co-developed-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+> Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+> Signed-off-by: Aditya Garg <gargaditya@linux.microsoft.com>
 
-Here is the summary with links:
-  - [net,V3,1/3] net: tls: Change async resync helpers argument
-    https://git.kernel.org/netdev/net/c/34892cfec0c2
-  - [net,V3,2/3] net: tls: Cancel RX async resync request on rcd_delta overflow
-    https://git.kernel.org/netdev/net/c/c15d5c62ab31
-  - [net,V3,3/3] net/mlx5e: kTLS, Cancel RX async resync request in error flows
-    https://git.kernel.org/netdev/net/c/426e9da3b284
+...
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> @@ -289,6 +290,21 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>  	cq = &apc->tx_qp[txq_idx].tx_cq;
+>  	tx_stats = &txq->stats;
+>  
+> +	if (MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES &&
+> +	    skb_shinfo(skb)->nr_frags + 2 > MAX_TX_WQE_SGL_ENTRIES) {
+> +		/* GSO skb with Hardware SGE limit exceeded is not expected here
+> +		 * as they are handled in mana_features_check() callback
+> +		 */
 
+Hi,
 
+I'm curious to know if we actually need this code.
+Are there cases where the mana_features_check() doesn't
+handle things and the kernel will reach this line?
+
+> +		if (skb_is_gso(skb))
+> +			netdev_warn_once(ndev, "GSO enabled skb exceeds max SGE limit\n");
+> +		if (skb_linearize(skb)) {
+> +			netdev_warn_once(ndev, "Failed to linearize skb with nr_frags=%d and is_gso=%d\n",
+> +					 skb_shinfo(skb)->nr_frags,
+> +					 skb_is_gso(skb));
+> +			goto tx_drop_count;
+> +		}
+> +	}
+> +
+>  	pkg.tx_oob.s_oob.vcq_num = cq->gdma_id;
+>  	pkg.tx_oob.s_oob.vsq_frame = txq->vsq_frame;
+>  
+
+...
 
