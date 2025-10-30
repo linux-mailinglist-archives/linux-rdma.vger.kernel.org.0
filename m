@@ -1,205 +1,358 @@
-Return-Path: <linux-rdma+bounces-14150-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14151-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59CECC2047E
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Oct 2025 14:41:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCC90C2161D
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Oct 2025 18:09:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BF674069CF
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Oct 2025 13:35:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 761591894B2A
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Oct 2025 17:09:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A1201D5CD1;
-	Thu, 30 Oct 2025 13:34:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D42963678BA;
+	Thu, 30 Oct 2025 17:09:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="KjruHlCD"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="CuaoEXYc"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11010027.outbound.protection.outlook.com [52.101.61.27])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f99.google.com (mail-qv1-f99.google.com [209.85.219.99])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6874C37A3CD;
-	Thu, 30 Oct 2025 13:34:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.27
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761831255; cv=fail; b=BXYy5MtlbHwb0uOh0wL2P3WCOxZIqrriSTB0+xq1iB423miToPEqPYwzfHxe+T4QU+QWGR+6O6furaq0eUSUVtZD+jQEh/vR1JI7hzvPJCKHMrcA659TdUbj7eWxT9u3KxkGtwv9ktddtwztMFwYNTr3dKa0RFFKVWohu0LbyuU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761831255; c=relaxed/simple;
-	bh=Y9QJWGZ80E5MG725RcU9tzDz3sOnBOa/OOKADuNjzFE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ct0FgMSU3jVkTqcofKcqGjtxc/jrOesO/ahrhF7gXm644WdUB+ZmZaDg1GFVk3yN8KbySXL6zG/OQhcYkOy3/fHM8xW2GFr5oiJ062TxElnMeFlPR7Qqkl+NR3Cb7HWzI+4g6Pxnkr6h/twtAmJIoyGaDk78v8Hj7KMPrr4upbU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=KjruHlCD; arc=fail smtp.client-ip=52.101.61.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=g//gDUs8beDJB2RCt1fzYnagFdActYFr1V/4/x2vsqZLbpYMU0zVy2D9gKH/sj7uMp6MK1W+bX4HzWEyxVjjscDKgiQ5NQyJjBV6C0RYj9bM66Nzzl1nQbbLypkcRqa7041XlyHTaBhYB7Zuy7QJNwPXo8aHBTNr39s3HnAlh2TA3w0j86pSJboMgxQRxSAl2XS3JXS+0ApqFm5IwgX/oaQlhT1aSc/uIyU5TLEljLlGBZbAP/xHxuaUjeRYC40gQhGKqDiLstZZdTU1tykhE1CGg0wf6eQZSIJPlt/Q7ZyPliJQADTaYrjD/DvNjqyxhlq/iRdtqyuqiEw1hCTdEw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=54SolZFmGdi6UjAf/qCKd4x5MYWktIAg7oCJTq2WZ18=;
- b=HDv+zcZ7ayqfjtf3YBcnoPRmCKy26TWxod7f5q/oG67LHlh9FOLKWldUiWxEac7Z1DG7uRHBFAYjz+HRHRPdoWcmYKpeKwAOs63Xq3J0EO8o0DxS2IUHXhnR/8gtoUUp9SJ4ZqjmK8AvPuxNWGdfRfFYO7m45Cuw/mtCqpVuA5eGmPHv78+R8I42AS3yXEefY1FW9c+XQrNfbgvz2+TM3Po2B7acUVGI6FVoy1EMHB8QEyseAEDRh39Ia4myn8ZfPZog0a3AmmLjBWT4g/HsEIhK+mimy4co5k0YDqtw9i57EC+ewJrsqSrC6V37Dzt2kKkSU+vip2srJl/GUw/Hiw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=54SolZFmGdi6UjAf/qCKd4x5MYWktIAg7oCJTq2WZ18=;
- b=KjruHlCDzalXhTYawG1rg6WJRjNIDe+9ize96Vx4vaizyK5UBy7Mrn7gYgufxnl1/2pLXlGo2aklE7nrdxbPLAndvyKV6Rqd5L4EqjqRAC6YJdlJyH5pp9e8uXhqRYdL7zrKPC1KM44I8TDNuMbpHxGp19ivLFk2utTr1PmYhpBJw6G74r2ZBJYsd0Wh7WAeAk1WHv0IL3jKKDBfCJEd4Nm7ImF5/Le3BZzX7cVTmj/STYQ29B4zDDHy2fu5n2IS1TUZVAhLpz7ffnrXjM2zXQv3ruEPKmh6yhKO5Ke/vlHolLZgEj15KtByTdwlvfzv9oLOfUmmRezF3lDa8iH//g==
-Received: from DM6PR03CA0083.namprd03.prod.outlook.com (2603:10b6:5:333::16)
- by PH7PR12MB7844.namprd12.prod.outlook.com (2603:10b6:510:27b::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9228.16; Thu, 30 Oct
- 2025 13:34:07 +0000
-Received: from CH3PEPF00000015.namprd21.prod.outlook.com
- (2603:10b6:5:333:cafe::3d) by DM6PR03CA0083.outlook.office365.com
- (2603:10b6:5:333::16) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9275.14 via Frontend Transport; Thu,
- 30 Oct 2025 13:34:05 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- CH3PEPF00000015.mail.protection.outlook.com (10.167.244.120) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9298.0 via Frontend Transport; Thu, 30 Oct 2025 13:34:06 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.14; Thu, 30 Oct
- 2025 06:33:45 -0700
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 30 Oct
- 2025 06:33:44 -0700
-Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.10)
- with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Thu, 30
- Oct 2025 06:33:40 -0700
-From: Tariq Toukan <tariqt@nvidia.com>
-To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
- S. Miller" <davem@davemloft.net>
-CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
-	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, "Carolina
- Jubran" <cjubran@nvidia.com>, Simon Horman <horms@kernel.org>
-Subject: [PATCH net-next V2 7/7] net/mlx5e: Defer channels closure to reduce interface down time
-Date: Thu, 30 Oct 2025 15:32:39 +0200
-Message-ID: <1761831159-1013140-8-git-send-email-tariqt@nvidia.com>
-X-Mailer: git-send-email 2.8.0
-In-Reply-To: <1761831159-1013140-1-git-send-email-tariqt@nvidia.com>
-References: <1761831159-1013140-1-git-send-email-tariqt@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7C983678C9
+	for <linux-rdma@vger.kernel.org>; Thu, 30 Oct 2025 17:09:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.99
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1761844143; cv=none; b=iUZ0FcA80IUiMgqOb3MlOHUc7fq97tOWURCydLpABtbyyc45oMpPH7y1786tMkP/3yvCZkcNpTksoL73p0yIXiRFV2yasyJn8+4CZpZjo1BBJvhg1ktWNaHL4dqVRbs6Zt0NybJX5GyygzjVrga9e23L8pDxmWVbz2fiZncsQb4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1761844143; c=relaxed/simple;
+	bh=xvBqZ8bHoWK98DBSnPW3LpZuxZ/G3yrI84jbUZ5zqxY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nxo2wtXwQ+Pmf/V9UFMnCnwiS8DgO3EItuDBmWyLy4/rd2qw66kRpikypbjNmXZuspn3/76gbtjtxk0pzzn1dj9j4mdDQN0qnPi7VUGDKxjkB4SEx6OzujgOVdR7eCkJKHeEAGBUdYeOdloN57QS67zgFR6fPjRHmYBMLw0w7OI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=CuaoEXYc; arc=none smtp.client-ip=209.85.219.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-qv1-f99.google.com with SMTP id 6a1803df08f44-87c11268b97so16086616d6.3
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Oct 2025 10:09:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1761844139; x=1762448939;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:dkim-signature:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lt1KjKw7KfwT8Y8RT53bGluyXX0yrSYFgvJsTxERKFw=;
+        b=RcY2pmW3s31+JQqqbmJ9fwCSv+7JEC0zeypLmfM2d1hzdn2moRW3hFai8pQOn85MSZ
+         Fz1bfzztmbrdx5FItOtq15iZyZQSm8CHC1RvTBo3HfwcWEWZ/Wkq3suw1Nz7hNP4OBpK
+         LLQhUnxV59g7JFJvbW0Lv7kg5S/NaHOHCh867emXsMzIQM3AvnK5MDm1vuY2gmm4Ve1m
+         Zjn3tLtIMOd701a6icjAEtTWnSzoJMMlb+CjyPYxCfQUri8e4oJgaKo4guN35Nfgfiw5
+         LG9WDUEko/NGf6F2s+QNDsw9pyL9hxLH178oy/MspXj+4kSoe0HJD6N2tIj1nzvRKZ7z
+         Nb5Q==
+X-Gm-Message-State: AOJu0Yx/Rud2pKAqMHHKOobKelzRLlYYJGsQJBm6o47hUPJjh2OxNGTM
+	Md+/eDQxwPNsrudV2sChqJc/wI2nrx0PKWq8yjlQTh2cKyJ7QbkNZ3YPrOyKwO5gC51BS89pcp8
+	LXPJrFqnRLPy3TcCn2BEA5e/748EJE9/8bzGabNfhcOaijKwx8hezBRIkJi0BuTCnficz8KSL+X
+	xoLxFlgLMz5kDMTDGdRjkOVKHjBGrSOW6I2NqOl5q+YYDjg94Q0rgbfh9rqI5pOhuFFxg17IakU
+	2ye0Ac53lbXI453CDln3U4Yk2qo5w==
+X-Gm-Gg: ASbGncvLIuUFy68TJenb+0yaMrecOQQG4lGLFFw64gKOmFB/rZ9ZgZFNivmcz+6gRhO
+	Ewve071iPB+SKcQVhQtX2OkEbFd4+ePoDHDdF4ZatwKkRvvX+jsNV77PpuR+IS2XNwYNKoWuT72
+	wikKZlvOronl+lrxM08J0DMMO8g27RK0yeAdD7Wf7MJSgCM2BT8RH/nnJsSbk3JmMMTCpksDwoR
+	So8GX3jxwCOnEgDs2W7dvLr+0rbMGdMv8ZC1KJmOWBSu9pBYHqhtbq1z9SEyINYqMeK6hweK5eQ
+	dIF7IGYwBu7LLP76PuKDKSUVR5okxMRneBooS2Lta2gfeJr+FxTowPOMagwKPWarcpm8FR72IZ/
+	yePSYk5DN18qRUEk1MymtsL53AwAggGbn5UZ3q7hgNpCXsGbadZmacOqX/hdz1SSs2Wb6OCitW9
+	NrDZ2o6m8qC8IhNJg3szy5VEiLm/29Mm9GxlEEbR7ioDtoK4ESQA==
+X-Google-Smtp-Source: AGHT+IFR1rubFGkspTOv6M9Kf+XZSFvTD7ArgSv1dZ+lj+9HmUXtArhlqzy2OKsh5huINmK389S2vE/8NT6o
+X-Received: by 2002:a05:6214:2522:b0:7ef:d35f:e1e3 with SMTP id 6a1803df08f44-8802f4d10f8mr3487266d6.57.1761844139131;
+        Thu, 30 Oct 2025 10:08:59 -0700 (PDT)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-101.dlp.protect.broadcom.com. [144.49.247.101])
+        by smtp-relay.gmail.com with ESMTPS id 6a1803df08f44-87fc49b90d8sm16513216d6.28.2025.10.30.10.08.58
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 30 Oct 2025 10:08:59 -0700 (PDT)
+X-Relaying-Domain: broadcom.com
+X-CFilter-Loop: Reflected
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-b630753cc38so2209388a12.1
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Oct 2025 10:08:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1761844138; x=1762448938; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lt1KjKw7KfwT8Y8RT53bGluyXX0yrSYFgvJsTxERKFw=;
+        b=CuaoEXYcFCJNrpTEKA65rsubNRJCZE1Jmn9DxPSVBPOi9N4YfZ18HXvCYPDYf7ao1c
+         Hjjv67XpFPIdPCvJCjenqDWjXAZo6w8GDroi9YHXLX6jqoNGjamv15CvkJ8cktA9HF3J
+         7RujbIFBMiMGP2l+jUiTO8t7W8S8mwQCIziac=
+X-Received: by 2002:a05:6a20:430d:b0:343:55a9:3ebf with SMTP id adf61e73a8af0-348ca763736mr474228637.16.1761844137666;
+        Thu, 30 Oct 2025 10:08:57 -0700 (PDT)
+X-Received: by 2002:a05:6a20:430d:b0:343:55a9:3ebf with SMTP id adf61e73a8af0-348ca763736mr474179637.16.1761844137051;
+        Thu, 30 Oct 2025 10:08:57 -0700 (PDT)
+Received: from dhcp-10-123-157-228.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-b712d20d76dsm18023208a12.28.2025.10.30.10.08.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Oct 2025 10:08:56 -0700 (PDT)
+From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+To: leon@kernel.org,
+	jgg@ziepe.ca
+Cc: linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com,
+	selvin.xavier@broadcom.com,
+	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+	Damodharam Ammepalli <damodharam.ammepalli@broadcom.com>,
+	Hongguang Gao <hongguang.gao@broadcom.com>
+Subject: [PATCH rdma-next] RDMA/bnxt_re: Add a debugfs entry for CQE coalescing tuning
+Date: Thu, 30 Oct 2025 22:45:40 +0530
+Message-ID: <20251030171540.12656-1-kalesh-anakkur.purayil@broadcom.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PEPF00000015:EE_|PH7PR12MB7844:EE_
-X-MS-Office365-Filtering-Correlation-Id: 43020b37-e1c9-4cc3-65f0-08de17b8ffe1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|82310400026|1800799024|7416014|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?brIwWtfSk5HW/H5GLWvlcWEBClpr9TG2aXbdJ0PcpKRUyyeLtngfgv/GZet4?=
- =?us-ascii?Q?lKbr1m1gAlwHh+JmBtBRF05U3JAy0+TbdNgsXtaYn/EFeAwoYdj5Gyp+Y0/h?=
- =?us-ascii?Q?Q4/hmcUsdShlbUhwEHzH1rCKsvpBTit6bvP23m7ve+8AYX6Qr77Z64fHYolD?=
- =?us-ascii?Q?N1plbIZD8qGQY5O2g7kh2JWZMhbwkt/B3HpUfdr50r1MDBDKYS5UyZmWDlY2?=
- =?us-ascii?Q?UbVHPAB/KAw3z4ERnn0qcL63/KDMra4Pgs0HJuqmcg44vzo136v3mcxXMsqC?=
- =?us-ascii?Q?PgL+km0je0UAejH769AMfDRLeBLckLrPPq73/f5dj77uLZ74Pp5lMx2aj+1+?=
- =?us-ascii?Q?AKtilDERGFdDoUWa5tM/Aflxef9AsQpeLYCw8CqkTUPoH8V0KZrykuO3Ahan?=
- =?us-ascii?Q?r15mtPi2rA9JVpiu6QkDfDz6XpW/iGkZ7dtP4w9HLHTfDuHU3Ik+LHWS8Rr3?=
- =?us-ascii?Q?iToinYIwSQL4qZw3Fp2hyO22WUwkRG4fQ9plE9mDNLd1IkhKd4Zd/zhzdppo?=
- =?us-ascii?Q?DP4t6swS/jXchSNIbHXK8YyY7FaA3SKc/YDUvuNkBg15hoJB8kNlJBpkg+jO?=
- =?us-ascii?Q?aGGsfiCcPWsjRxKUn7BZK2QvQ8XMeFxpM5pRGzs5HLaZ7+n71USVJNMfCUc6?=
- =?us-ascii?Q?a/hlJAB04gf0RYLdY6Pma7kRgr4tEe8C856ga0kJc7xQopMV1QzGuJd5V8wC?=
- =?us-ascii?Q?o+sfwYeHNfYmp4iVP+6oHXfEuligjzZ3XQwq+e6nCII0Qq7leh2Jhq4nv4Fe?=
- =?us-ascii?Q?rkhb8g0Jzb2s4Yv6f+4PfMkHuglQEph4i7CP2fQbVsnRTCOAymrlLRNlOkQH?=
- =?us-ascii?Q?1VxHZ3Z9DiVrCugexGoTJuyclS4WrFFiOY/4lRrGuTYnGNBklnBc+QBNxbwj?=
- =?us-ascii?Q?LDzHP8noGI8OSkYRNJIdGpkS+NybWS9Yxjj94b2yRHl40qHiytsNukWYANkn?=
- =?us-ascii?Q?AvtG94DqF6iD4cD7joTMhKsxPVo2GcQbw8OI+AIDy0GDdPT0Jiu6UFs7+Vfu?=
- =?us-ascii?Q?npvP6IRCmSYFetocTrBawSUfy5x+qn8zsB5JAjVANvI8ZqQ0LyUQ4JIowndR?=
- =?us-ascii?Q?/D2dF63HTN98Aq9sJiUn2a4BKmk1RW8DoIep7qoWK+6u3tLA22YU2gQGySo8?=
- =?us-ascii?Q?3fEjkr0G1NN8an2FGMcM7CQmdJPqrMv9jFWO0bE0bMRpp9Tn7cuO1t4DyBxM?=
- =?us-ascii?Q?Bb9R+tfncY9H6u5/2Ba+v3xRzGOMDp+e7ZhVgmQgHUNuhY+4PAKqXh9GPc0N?=
- =?us-ascii?Q?v9V23vaZLRLLDOMX7YBxPFzOw12jgbdRsOESW+XTfwX4ps1HYFbeTKptm7iC?=
- =?us-ascii?Q?0ljLuWsKLYaYcu8wMpemIO1twGGuWnXPbj7Y47XjWvuQToaFvCJNQC71cNuA?=
- =?us-ascii?Q?Ed/6K8sVCQ/ahzIXwWpEY//m3H/iMsxV0sXMI3/D15AA6tTw6KRh043BC+h8?=
- =?us-ascii?Q?1P6942nceWsW+10GegWnT8pd/hpbR48o5ByVR0KPPjSQ5oaNaFY0TsVSNovV?=
- =?us-ascii?Q?zVh5A9FKtVfHUw2u2LlqzhJLIJP6zcAeFVeijW9sQqGIYu4mIlZ1ztJlG0V4?=
- =?us-ascii?Q?QEtJIAGBQ6moA9jd/00=3D?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(82310400026)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2025 13:34:06.6054
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 43020b37-e1c9-4cc3-65f0-08de17b8ffe1
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CH3PEPF00000015.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7844
+Content-Transfer-Encoding: 8bit
+X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 
-Cap bit tis_tir_td_order=1 indicates that an old firmware requirement /
-limitation no longer exists. When unset, the latency of several firmware
-commands significantly increases with the presence of high number of
-co-existing channels (both old and new sets). Hence, we used to close
-unneeded old channels before invoking those firmware commands.
+This patch adds debugfs interfaces that allows the user to
+enable/disable the RoCE CQ coalescing and fine tune certain
+CQ coalescing parameters which would be helpful during debug.
 
-Today, on capable devices, this is no longer the case. Minimize the
-interface down time by deferring the old channels closure, after the
-activation of the new ones.
-
-Perf numbers:
-Measured the number of dropped packets in a simple ping flood test,
-during a configuration change operation, that switches the number of
-channels from 247 to 248.
-
-Before: 71 packets lost
-After:  15 packets lost, ~80% saving.
-
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Reviewed-by: Carolina Jubran <cjubran@nvidia.com>
+Signed-off-by: Damodharam Ammepalli <damodharam.ammepalli@broadcom.com>
+Reviewed-by: Hongguang Gao <hongguang.gao@broadcom.com>
+Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h  |   2 +
+ drivers/infiniband/hw/bnxt_re/debugfs.c  | 120 +++++++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/debugfs.h  |  28 ++++++
+ drivers/infiniband/hw/bnxt_re/main.c     |   1 +
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c |   3 +-
+ drivers/infiniband/hw/bnxt_re/qplib_fp.h |   1 +
+ 6 files changed, 154 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 4edf64e1572a..9650fa6c6a63 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -3384,7 +3384,8 @@ static int mlx5e_switch_priv_channels(struct mlx5e_priv *priv,
- 		}
- 	}
+diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+index 3485e495ac6a..3a7ce4729fcf 100644
+--- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
++++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+@@ -224,6 +224,8 @@ struct bnxt_re_dev {
+ 	struct workqueue_struct		*dcb_wq;
+ 	struct dentry                   *cc_config;
+ 	struct bnxt_re_dbg_cc_config_params *cc_config_params;
++	struct dentry			*cq_coal_cfg;
++	struct bnxt_re_dbg_cq_coal_params *cq_coal_cfg_params;
+ #define BNXT_VPD_FLD_LEN		32
+ 	char board_partno[BNXT_VPD_FLD_LEN];
+ 	/* RoCE mirror */
+diff --git a/drivers/infiniband/hw/bnxt_re/debugfs.c b/drivers/infiniband/hw/bnxt_re/debugfs.c
+index be5e9b5ca2f0..2b6cbd38ef54 100644
+--- a/drivers/infiniband/hw/bnxt_re/debugfs.c
++++ b/drivers/infiniband/hw/bnxt_re/debugfs.c
+@@ -349,6 +349,123 @@ static void bnxt_re_debugfs_add_info(struct bnxt_re_dev *rdev)
+ 	debugfs_create_file("info", 0400, rdev->dbg_root, rdev, &info_fops);
+ }
  
--	mlx5e_close_channels(old_chs);
-+	if (!MLX5_CAP_GEN(priv->mdev, tis_tir_td_order))
-+		mlx5e_close_channels(old_chs);
- 	priv->profile->update_rx(priv);
- 
- 	mlx5e_selq_apply(&priv->selq);
-@@ -3432,6 +3433,9 @@ int mlx5e_safe_switch_params(struct mlx5e_priv *priv,
- 	if (err)
- 		goto err_close;
- 
-+	if (MLX5_CAP_GEN(priv->mdev, tis_tir_td_order))
-+		mlx5e_close_channels(old_chs);
++static ssize_t cq_coal_cfg_write(struct file *file,
++				 const char __user *buf,
++				 size_t count, loff_t *pos)
++{
++	struct seq_file *s = file->private_data;
++	struct bnxt_re_cq_coal_param *param = s->private;
++	struct bnxt_re_dev *rdev = param->rdev;
++	int offset = param->offset;
++	char lbuf[16] = { };
++	u32 val;
 +
- 	kfree(new_chs);
- 	kfree(old_chs);
- 	return 0;
++	if (count > sizeof(lbuf))
++		return -EINVAL;
++
++	if (copy_from_user(lbuf, buf, count))
++		return -EFAULT;
++
++	lbuf[sizeof(lbuf) - 1] = '\0';
++
++	if (kstrtou32(lbuf, 0, &val))
++		return -EINVAL;
++
++	switch (offset) {
++	case BNXT_RE_COAL_CQ_BUF_MAXTIME:
++		if (val < 1 || val > BNXT_QPLIB_CQ_COAL_MAX_BUF_MAXTIME)
++			return -EINVAL;
++		rdev->cq_coalescing.buf_maxtime = val;
++		break;
++	case BNXT_RE_COAL_CQ_NORMAL_MAXBUF:
++		if (val < 1 || val > BNXT_QPLIB_CQ_COAL_MAX_NORMAL_MAXBUF)
++			return -EINVAL;
++		rdev->cq_coalescing.normal_maxbuf = val;
++		break;
++	case BNXT_RE_COAL_CQ_DURING_MAXBUF:
++		if (val < 1 || val > BNXT_QPLIB_CQ_COAL_MAX_DURING_MAXBUF)
++			return -EINVAL;
++		rdev->cq_coalescing.during_maxbuf = val;
++		break;
++	case BNXT_RE_COAL_CQ_EN_RING_IDLE_MODE:
++		if (val > BNXT_QPLIB_CQ_COAL_MAX_EN_RING_IDLE_MODE)
++			return -EINVAL;
++		rdev->cq_coalescing.en_ring_idle_mode = val;
++		break;
++	case BNXT_RE_COAL_CQ_ENABLE:
++		if (val > 1)
++			return -EINVAL;
++		rdev->cq_coalescing.enable = val;
++		break;
++	default:
++		return -EINVAL;
++	}
++	return  count;
++}
++
++static int cq_coal_cfg_show(struct seq_file *s, void *unused)
++{
++	struct bnxt_re_cq_coal_param *param = s->private;
++	struct bnxt_re_dev *rdev = param->rdev;
++	int offset = param->offset;
++	u32 val = 0;
++
++	switch (offset) {
++	case BNXT_RE_COAL_CQ_BUF_MAXTIME:
++		val = rdev->cq_coalescing.buf_maxtime;
++		break;
++	case BNXT_RE_COAL_CQ_NORMAL_MAXBUF:
++		val = rdev->cq_coalescing.normal_maxbuf;
++		break;
++	case BNXT_RE_COAL_CQ_DURING_MAXBUF:
++		val = rdev->cq_coalescing.during_maxbuf;
++		break;
++	case BNXT_RE_COAL_CQ_EN_RING_IDLE_MODE:
++		val = rdev->cq_coalescing.en_ring_idle_mode;
++		break;
++	case BNXT_RE_COAL_CQ_ENABLE:
++		val = rdev->cq_coalescing.enable;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	seq_printf(s, "%u\n", val);
++	return 0;
++}
++DEFINE_SHOW_STORE_ATTRIBUTE(cq_coal_cfg);
++
++static void bnxt_re_cleanup_cq_coal_debugfs(struct bnxt_re_dev *rdev)
++{
++	debugfs_remove_recursive(rdev->cq_coal_cfg);
++	kfree(rdev->cq_coal_cfg_params);
++}
++
++static void bnxt_re_init_cq_coal_debugfs(struct bnxt_re_dev *rdev)
++{
++	struct bnxt_re_dbg_cq_coal_params *dbg_cq_coal_params;
++	int i;
++
++	if (_is_cq_coalescing_supported(rdev->dev_attr->dev_cap_flags2))
++		return;
++
++	dbg_cq_coal_params = kzalloc(sizeof(*dbg_cq_coal_params), GFP_KERNEL);
++	if (!dbg_cq_coal_params)
++		return;
++
++	rdev->cq_coal_cfg = debugfs_create_dir("cq_coal_cfg", rdev->dbg_root);
++	rdev->cq_coal_cfg_params = dbg_cq_coal_params;
++
++	for (i = 0; i < BNXT_RE_COAL_CQ_MAX; i++) {
++		dbg_cq_coal_params->params[i].offset = i;
++		dbg_cq_coal_params->params[i].rdev = rdev;
++		debugfs_create_file(bnxt_re_cq_coal_str[i],
++				    0600, rdev->cq_coal_cfg,
++				    &dbg_cq_coal_params->params[i],
++				    &cq_coal_cfg_fops);
++	}
++}
++
+ void bnxt_re_debugfs_add_pdev(struct bnxt_re_dev *rdev)
+ {
+ 	struct pci_dev *pdev = rdev->en_dev->pdev;
+@@ -374,10 +491,13 @@ void bnxt_re_debugfs_add_pdev(struct bnxt_re_dev *rdev)
+ 							 rdev->cc_config, tmp_params,
+ 							 &bnxt_re_cc_config_ops);
+ 	}
++
++	bnxt_re_init_cq_coal_debugfs(rdev);
+ }
+ 
+ void bnxt_re_debugfs_rem_pdev(struct bnxt_re_dev *rdev)
+ {
++	bnxt_re_cleanup_cq_coal_debugfs(rdev);
+ 	debugfs_remove_recursive(rdev->qp_debugfs);
+ 	debugfs_remove_recursive(rdev->cc_config);
+ 	kfree(rdev->cc_config_params);
+diff --git a/drivers/infiniband/hw/bnxt_re/debugfs.h b/drivers/infiniband/hw/bnxt_re/debugfs.h
+index 8f101df4e838..4b3c86ceb68d 100644
+--- a/drivers/infiniband/hw/bnxt_re/debugfs.h
++++ b/drivers/infiniband/hw/bnxt_re/debugfs.h
+@@ -33,4 +33,32 @@ struct bnxt_re_cc_param {
+ struct bnxt_re_dbg_cc_config_params {
+ 	struct bnxt_re_cc_param	gen0_parms[BNXT_RE_CC_PARAM_GEN0];
+ };
++
++static const char * const bnxt_re_cq_coal_str[] = {
++	"buf_maxtime",
++	"normal_maxbuf",
++	"during_maxbuf",
++	"en_ring_idle_mode",
++	"enable",
++};
++
++struct bnxt_re_cq_coal_param {
++	struct bnxt_re_dev	*rdev;
++	u32			offset;
++};
++
++enum bnxt_re_cq_coal_types {
++	BNXT_RE_COAL_CQ_BUF_MAXTIME,
++	BNXT_RE_COAL_CQ_NORMAL_MAXBUF,
++	BNXT_RE_COAL_CQ_DURING_MAXBUF,
++	BNXT_RE_COAL_CQ_EN_RING_IDLE_MODE,
++	BNXT_RE_COAL_CQ_ENABLE,
++	BNXT_RE_COAL_CQ_MAX
++
++};
++
++struct bnxt_re_dbg_cq_coal_params {
++	struct dentry			*root;
++	struct bnxt_re_cq_coal_param	params[BNXT_RE_COAL_CQ_MAX];
++};
+ #endif
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index b13810572c2e..73003ad25ee8 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -1453,6 +1453,7 @@ static struct bnxt_re_dev *bnxt_re_dev_add(struct auxiliary_device *adev,
+ 	atomic_set(&rdev->stats.res.pd_count, 0);
+ 	rdev->cosq[0] = 0xFFFF;
+ 	rdev->cosq[1] = 0xFFFF;
++	rdev->cq_coalescing.enable = 1;
+ 	rdev->cq_coalescing.buf_maxtime = BNXT_QPLIB_CQ_COAL_DEF_BUF_MAXTIME;
+ 	if (bnxt_re_chip_gen_p7(en_dev->chip_num)) {
+ 		rdev->cq_coalescing.normal_maxbuf = BNXT_QPLIB_CQ_COAL_DEF_NORMAL_MAXBUF_P7;
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+index ce90d3d834d4..c88f049136fc 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+@@ -2226,7 +2226,8 @@ int bnxt_qplib_create_cq(struct bnxt_qplib_res *res, struct bnxt_qplib_cq *cq)
+ 	req.cq_handle = cpu_to_le64(cq->cq_handle);
+ 	req.cq_size = cpu_to_le32(cq->max_wqe);
+ 
+-	if (_is_cq_coalescing_supported(res->dattr->dev_cap_flags2)) {
++	if (_is_cq_coalescing_supported(res->dattr->dev_cap_flags2) &&
++	    cq->coalescing->enable) {
+ 		req.flags |= cpu_to_le16(CMDQ_CREATE_CQ_FLAGS_COALESCING_VALID);
+ 		coalescing |= ((cq->coalescing->buf_maxtime <<
+ 				CMDQ_CREATE_CQ_BUF_MAXTIME_SFT) &
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.h b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
+index b990d0c0ce1a..1b414a73b46d 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_fp.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
+@@ -395,6 +395,7 @@ struct bnxt_qplib_cq_coal_param {
+ 	u8 normal_maxbuf;
+ 	u8 during_maxbuf;
+ 	u8 en_ring_idle_mode;
++	u8 enable;
+ };
+ 
+ #define BNXT_QPLIB_CQ_COAL_DEF_BUF_MAXTIME		0x1
 -- 
-2.31.1
+2.43.5
 
 
