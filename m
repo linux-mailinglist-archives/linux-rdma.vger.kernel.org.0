@@ -1,120 +1,213 @@
-Return-Path: <linux-rdma+bounces-14134-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14135-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A0BEC1F2D2
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Oct 2025 10:04:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E122BC1F84A
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Oct 2025 11:26:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 9564D34D0C4
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Oct 2025 09:04:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5CE21A21B23
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Oct 2025 10:26:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 393F2338F5D;
-	Thu, 30 Oct 2025 09:04:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BBC8351FA1;
+	Thu, 30 Oct 2025 10:26:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q98e3fyT"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="t/L8PaR5"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11013052.outbound.protection.outlook.com [40.93.196.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D23A22BFC85;
-	Thu, 30 Oct 2025 09:04:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761815091; cv=none; b=eNL+ENJfAhzBIIgKZif7CjbQes5DkB2DyTaWXQoZwWvQkt9+dsgNspjQTzw3wz9tAr4i6XEKCEtEgiUl917BfRoKPqoQZxqZyymu/RBCphJwj+1SjjVDabqbbT4l8ooCfk+/ffkMv5RMbJGFpEoRF5Chyynsil/cg+hN4kTwlfk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761815091; c=relaxed/simple;
-	bh=a4b7pcEFWNkC27iTktg9YRlC8Ldupk1RfbsxDwDDIw4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D9CYIKPTjvvglnHPQnn4JXD5qICXntaU6kGeVd0ywjrCZPd/CIgGzv1Mj4INo74kOx0cewXg+akRmx9XOK/gCDlCmVdqTvN9DcMzVVnwmbMhn0f5SNtlkkZt/aflf1EznCK/jPlpbuFw919ZW8unmno/tLJMUkcXMbO7AS0o+h4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q98e3fyT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 634EFC4CEF1;
-	Thu, 30 Oct 2025 09:04:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761815090;
-	bh=a4b7pcEFWNkC27iTktg9YRlC8Ldupk1RfbsxDwDDIw4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Q98e3fyT6ngukxgtjVm+ar7nHCpxBlIZIk2KEeSFHwnVYks3ZbRnZHL0eztvAAUEA
-	 0iSi5J6F76Od4TT1uhw33Tl+EV7lWdnLApwPBNudO5VjUc3YBIEutO5NRaqOXf55b2
-	 zZHwCKYPcpg9KaOFM8HkSNFRCVEdX7ee0WzO15ZWUenZhqS52/+lqNO3vCy7bjQaXY
-	 SE/Y6Diryw4u6g4VF61G4gV2RvxOlo5dLnPmg6ok+y6eWcdKHrcee/mgIbDmWP0kvx
-	 v1/gDEKmtVSnvmAqEkZPpMWpF3dgl6NaOKU5UBQ/uUijmYGLTKGG4gy9suz4Tk3O6I
-	 kZXFtDjE4vPyw==
-Date: Thu, 30 Oct 2025 09:04:44 +0000
-From: Simon Horman <horms@kernel.org>
-To: Aditya Garg <gargaditya@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	longli@microsoft.com, kotaranov@microsoft.com,
-	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
-	ernis@linux.microsoft.com, dipayanroy@linux.microsoft.com,
-	shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org, gargaditya@microsoft.com
-Subject: Re: [PATCH net-next v2] net: mana: Handle SKB if TX SGEs exceed
- hardware limit
-Message-ID: <aQMqLN0FRmNU3_ke@horms.kernel.org>
-References: <20251029131235.GA3903@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC76C346E7E;
+	Thu, 30 Oct 2025 10:26:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.196.52
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1761819971; cv=fail; b=iFnVBwFCmWQH9HOfQqqd34tv6/OzyBfqOyeaPuuQzXV3mEObXONtGuSj1c6qB4IiPk8Ew0Dl8VShkAdGmwGqbjDLALQvoVeRSREc2F5Jt8YjUoyrmd5xCR2YYnMgcJGAqGgGAdscLuzL6C0Zxix1DAbJLNVp2PiWVozFdtQQwX0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1761819971; c=relaxed/simple;
+	bh=4Msg23iSF5WaNsoAUGWahLz3ldM6h/WhBlLPDxSylRI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=vAzT/a8F+qk2dp32PRvsPRm0VYODoKWwBQxr09f8jOpM0ZovXY+b0ZMOPVCLnEhOEkr9kgWY0ZzoB2Sm10IJExrZQUpYRPwVFNFO2v0NbWUONUmEs2WQaLPoaN8LTCR3X71vOXbc2jOsU2QCo4JueKLlPLjNY9Sw+2Q+fSAuUMM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=t/L8PaR5; arc=fail smtp.client-ip=40.93.196.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=V+KwzRlV5WzH5Yo8E3HzkxAnQ15ZirUR+Vxz/6/esxClyBQS8M4huswYHhyKBPwSkRd93oJUmjGykQPnjXYDHFZqrAD03jQTMw58PQ38Xwk3UEYla5m+unXCIaDzq2QZDX22aGZ2Mo8wgP0mtxH34L4JwniE/OPlKe/nF2iU0uGdouF1z2+aCX3+e/JDdlco/w6VhlUE7d2KLDJzBSDUxddT/+PjBqCB5pT8clOKjNo2CENiC+rpLHPvqYXzaq9++xuvLSOIFRvFDbZ4RLAgzogvAuP8TnvDmk/tWJ7Sx5NEjOWibbGmrLg5l3nu2WpRalqiLng8lyusZQZDRGrAqw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MSXwpPG871gQw9v/lBu7H31gN3Zbax3yISN2Wd13o20=;
+ b=H1p5psjqTOyV0DbyIjtYdv+fsNRzzDCb7IbOuu4yMfr3O7CJ6/bWxk87ZPE7DaVzqk5B7UKXJwyBHT4OobukLvgy3YXKU0GtpJuU1CD1KVSkJa7ymZ611EAvdTGV9rGsW+CsOkqgOjsl8nydrKxfwxlGSFBt8Wtd3pW19dBHnMa7GAZ1nueAair6M96NfpHeBQCYiYytXHNoKIKLI5LOmkb7SvSDrpxEpn/dX5Mbr34qDFvLywsdNuB7iVV441TS8kb7Om+RId/vpyOdQczj7OSZ/6hmFfOvm6JWfApeZ0nYWTQLrLO9z/Y8nkYkCx4Jx7oXYq/v81YHtqX8e+5s/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MSXwpPG871gQw9v/lBu7H31gN3Zbax3yISN2Wd13o20=;
+ b=t/L8PaR5SGR6ggD2RUvpG75R5GMwhLY7FDExAqhd8ybFmtVTNVAYg/FvQACug8Muq9vwWXAeMwxO6XksQhlq0bNU/E8lb04LbavzWr4RqZ1/1P2a11S9eggZQ3Ki2hYak9ZBmWA4rwHZ6Gxg/62+KZeWEQe3GzBgKMtS2xEulN7e3InxvpcmrGe5pvU1SVfUOHYGaimopowqcE0yZhdi71xNn5sIGiTASpcJOI8552XH59uyJmUdJ2w7UjeLB2+FxbYpJVncCgs7rThrMZigGoJ2dZd+q1k8u810r+vA38xpYFWFXNnrg5dEW8ouXt+d5lXHo0841ORariimX6YRRQ==
+Received: from BL0PR05CA0008.namprd05.prod.outlook.com (2603:10b6:208:91::18)
+ by SJ2PR12MB7964.namprd12.prod.outlook.com (2603:10b6:a03:4cf::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9275.14; Thu, 30 Oct
+ 2025 10:26:05 +0000
+Received: from BL6PEPF0001AB58.namprd02.prod.outlook.com
+ (2603:10b6:208:91:cafe::2e) by BL0PR05CA0008.outlook.office365.com
+ (2603:10b6:208:91::18) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9298.4 via Frontend Transport; Thu,
+ 30 Oct 2025 10:25:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ BL6PEPF0001AB58.mail.protection.outlook.com (10.167.241.10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9275.10 via Frontend Transport; Thu, 30 Oct 2025 10:26:04 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 30 Oct
+ 2025 03:25:47 -0700
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 30 Oct
+ 2025 03:25:47 -0700
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.7)
+ with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Thu, 30
+ Oct 2025 03:25:42 -0700
+From: Tariq Toukan <tariqt@nvidia.com>
+To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>
+CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch
+	<mbloch@nvidia.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+	<daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, "John
+ Fastabend" <john.fastabend@gmail.com>, Richard Cochran
+	<richardcochran@gmail.com>, <linux-rdma@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<bpf@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Carolina Jubran
+	<cjubran@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>
+Subject: [PATCH net-next 0/6] Convert mlx5e and IPoIB to ndo_hwtstamp_get/set
+Date: Thu, 30 Oct 2025 12:25:04 +0200
+Message-ID: <1761819910-1011051-1-git-send-email-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.8.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251029131235.GA3903@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-
-On Wed, Oct 29, 2025 at 06:12:35AM -0700, Aditya Garg wrote:
-> The MANA hardware supports a maximum of 30 scatter-gather entries (SGEs)
-> per TX WQE. Exceeding this limit can cause TX failures.
-> Add ndo_features_check() callback to validate SKB layout before
-> transmission. For GSO SKBs that would exceed the hardware SGE limit, clear
-> NETIF_F_GSO_MASK to enforce software segmentation in the stack.
-> Add a fallback in mana_start_xmit() to linearize non-GSO SKBs that still
-> exceed the SGE limit.
-> 
-> Return NETDEV_TX_BUSY only for -ENOSPC from mana_gd_post_work_request(),
-> send other errors to free_sgl_ptr to free resources and record the tx
-> drop.
-> 
-> Co-developed-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-> Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-> Signed-off-by: Aditya Garg <gargaditya@linux.microsoft.com>
-
-...
-
-> @@ -289,6 +290,21 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->  	cq = &apc->tx_qp[txq_idx].tx_cq;
->  	tx_stats = &txq->stats;
->  
-> +	if (MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES &&
-> +	    skb_shinfo(skb)->nr_frags + 2 > MAX_TX_WQE_SGL_ENTRIES) {
-> +		/* GSO skb with Hardware SGE limit exceeded is not expected here
-> +		 * as they are handled in mana_features_check() callback
-> +		 */
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB58:EE_|SJ2PR12MB7964:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4b8a9de9-0536-4fe8-a7e9-08de179ebb17
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|36860700013|1800799024|7416014|82310400026|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?t6W6V3a+LKLMoHmM+pCniGVprVmOgP4bBMhbfrj0vo2py+Z0QFyZkUfkAfaG?=
+ =?us-ascii?Q?NfcQz5Cr+Z2yazvBSL0FXhz0HyqckkoHPF5l7UKaH1nH7qmZx7XmjI5HtStP?=
+ =?us-ascii?Q?BVAVer9bRoaOXY4dgsDP+w+MgG/oavGkFmZAZKOYhHkWErlWFCzJ/ool9JzP?=
+ =?us-ascii?Q?QnO/EFnnVVp2/tbJWpaXHkAClB1Jut2xChHgSV1d9Fs0x7NwIWiFWW4kcIVR?=
+ =?us-ascii?Q?hZ3sY/ngbZKLOn6XXpklAtRJ7Tlj0DbGr7H05DXIe0fLgxOFMv5DAayd2QpI?=
+ =?us-ascii?Q?IVUVmhPNth0bzXFAB91fCxWyBqRTzPeX+bp12S20BKAKaEcxoTfaGNiVHKSH?=
+ =?us-ascii?Q?OS5KZyujhpSRlvAQEwovA1+aeM4zEaYV3ZaQnqT0t3b2Vm9ciMv0URk1BsR8?=
+ =?us-ascii?Q?9pU0HjZPkXYZzWO4DxwY4KhlPsR8Xar/j4899uHoRzzi2bkA4b5sTzKvNbJ/?=
+ =?us-ascii?Q?D0H5gQR4tSdEWx1v4+Ht3J7Lg3rT9w5cDX6KxdaxQJM5S9emeVdHaJ3HKmmG?=
+ =?us-ascii?Q?wknaCg30bDTYqCJlwO2S+CUj3+IHExQ5re4g5ZJabz9mMBmGeuHXAVczTnQH?=
+ =?us-ascii?Q?XV6rNLTYilRBoCGeTCTAEZB/i9vm5B4Sfy7tTFN9I3I3bFieXNGLXAJ/QczG?=
+ =?us-ascii?Q?yc5pE4iqjpKPeeroinol7adCTkNP6DR/gW15XtBnDrvTqF0Z9i/4pwP65XGC?=
+ =?us-ascii?Q?g9sBqAkOPTpdX1wzkABJk3sCvxsM7oMoApLzM5Xl3AD3FS8LLxQyi9QTqGtP?=
+ =?us-ascii?Q?ZW+5Ny90ZctpFjSarx+BuWyHMyDOT6IKmPbgohq5CdfDDWYaYKOcgM8q8VQk?=
+ =?us-ascii?Q?69oOBomPeBHO6BDimx8x3Es3I4OxgLeYVRA+EZZjggoMnP3Llhh3Vs0jcHye?=
+ =?us-ascii?Q?YeoW33GbKemSKJVSmhf6tzcybyCqVeG7TTg16xXx5lr+8qPgpHa/OrGXq3ox?=
+ =?us-ascii?Q?Do7w+knj4Mz/rH7uUL70/KUIkZsT5fDLCObTxSD3hGjziTmWAquQ2hrRmfMr?=
+ =?us-ascii?Q?5kBfGRCAy+WR5ggsK+hx1UcprZAhD4yMTtEvWyvkHjAcAwRdHskroBg/Zo6w?=
+ =?us-ascii?Q?CMA5tBlSwZWZ3DKZy+sS2o8SgWHfWQ0mkR6revqf/B/ilSbIIPOFUihKh25V?=
+ =?us-ascii?Q?tHi/63BAfr+VX7inwb4tHSH7RKwEFOxifU1CIr9TIgMvMfjE3Q3crXTgyj2L?=
+ =?us-ascii?Q?+yE2KFTY0vpMQ0dq9QBAiGUFM0UdZ87A0X+RFe8pANf1pePycRSTcjOtablv?=
+ =?us-ascii?Q?w2Guxim3ylM5xH7Mq1oVxuJrsA6GFVK1gcAcui06KDKV5NFOqd6h5e143EZh?=
+ =?us-ascii?Q?HdhQnceC35T5OD91pE5EKi+CJK9moUWUwRdKG1scd7Vl8A4auNnnL9PVGSCs?=
+ =?us-ascii?Q?xdQ9X8gVQbwncMy1V/BcCjUf8JErzLA7uE38Q2/VEOEvZVvrZ7CvvtQyFcgf?=
+ =?us-ascii?Q?1gDFzv9H0nHAOQJBM8BDH+hLtEXwL1s0sSA7bMSpi+8KqQwn8TiKD5P7UDZW?=
+ =?us-ascii?Q?xUSvwb8jjlCfBTLt0FFDIrMWIpTq+ppRKvJ1Usp2CAuIwfrxEvD1BlCgfqkU?=
+ =?us-ascii?Q?CfYT1ajh72bezsBEhtc=3D?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(7416014)(82310400026)(376014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Oct 2025 10:26:04.2462
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b8a9de9-0536-4fe8-a7e9-08de179ebb17
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL6PEPF0001AB58.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7964
 
 Hi,
 
-I'm curious to know if we actually need this code.
-Are there cases where the mana_features_check() doesn't
-handle things and the kernel will reach this line?
+This series by Carolina migrates mlx5e and IPoIB to the
+ndo_hwtstamp_get/set interface and removes legacy hardware timestamp
+ioctl handling.  While doing so, it also cleans up naming and removes
+redundant code.
 
-> +		if (skb_is_gso(skb))
-> +			netdev_warn_once(ndev, "GSO enabled skb exceeds max SGE limit\n");
-> +		if (skb_linearize(skb)) {
-> +			netdev_warn_once(ndev, "Failed to linearize skb with nr_frags=%d and is_gso=%d\n",
-> +					 skb_shinfo(skb)->nr_frags,
-> +					 skb_is_gso(skb));
-> +			goto tx_drop_count;
-> +		}
-> +	}
-> +
->  	pkg.tx_oob.s_oob.vcq_num = cq->gdma_id;
->  	pkg.tx_oob.s_oob.vsq_frame = txq->vsq_frame;
->  
+No functional change in timestamp behavior.
 
-...
+Cleanup patches:
+- net/mlx5e: Remove redundant tstamp pointer from channel structures
+- net/mlx5e: Remove unnecessary tstamp local variable in mlx5i_complete_rx_cqe
+- net/mlx5e: Rename hwstamp functions to hwtstamp
+- net/mlx5e: Rename timestamp fields to hwtstamp_config
+
+Add suppport in ipoib:
+- IB/IPoIB: Add support for hwtstamp get/set ndos
+
+Convert mlx5:
+- net/mlx5e: Convert to new hwtstamp_get/set interface
+
+Regards,
+Tariq
+
+
+Carolina Jubran (6):
+  net/mlx5e: Remove redundant tstamp pointer from channel structures
+  net/mlx5e: Remove unnecessary tstamp local variable in
+    mlx5i_complete_rx_cqe
+  net/mlx5e: Rename hwstamp functions to hwtstamp
+  net/mlx5e: Rename timestamp fields to hwtstamp_config
+  IB/IPoIB: Add support for hwtstamp get/set ndos
+  net/mlx5e: Convert to new hwtstamp_get/set interface
+
+ drivers/infiniband/ulp/ipoib/ipoib_main.c     | 29 ++++++++
+ drivers/net/ethernet/mellanox/mlx5/core/en.h  | 12 ++--
+ .../net/ethernet/mellanox/mlx5/core/en/ptp.c  |  3 +-
+ .../net/ethernet/mellanox/mlx5/core/en/ptp.h  |  1 -
+ .../mellanox/mlx5/core/en/reporter_rx.c       |  3 +-
+ .../net/ethernet/mellanox/mlx5/core/en/trap.c |  3 +-
+ .../net/ethernet/mellanox/mlx5/core/en/trap.h |  1 -
+ .../net/ethernet/mellanox/mlx5/core/en/txrx.h |  2 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  2 +-
+ .../mellanox/mlx5/core/en/xsk/setup.c         |  2 +-
+ .../ethernet/mellanox/mlx5/core/en_ethtool.c  |  2 +-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c | 66 ++++++++++---------
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  6 +-
+ .../ethernet/mellanox/mlx5/core/ipoib/ipoib.c | 34 +++++-----
+ .../ethernet/mellanox/mlx5/core/ipoib/ipoib.h |  6 +-
+ .../mellanox/mlx5/core/ipoib/ipoib_vlan.c     |  9 +--
+ .../ethernet/mellanox/mlx5/core/lib/clock.h   |  1 -
+ 17 files changed, 107 insertions(+), 75 deletions(-)
+
+
+base-commit: 1bae0fd90077875b6c9c853245189032cbf019f7
+-- 
+2.31.1
+
 
