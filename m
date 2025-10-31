@@ -1,138 +1,134 @@
-Return-Path: <linux-rdma+bounces-14160-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14161-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82E90C253D6
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Oct 2025 14:21:50 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA45DC25CC2
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Oct 2025 16:17:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BDF91A636F0
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Oct 2025 13:21:26 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E75974F8776
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Oct 2025 15:09:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B65C234B42D;
-	Fri, 31 Oct 2025 13:20:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D018B23AE66;
+	Fri, 31 Oct 2025 15:09:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="ZWImuyJM"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Vqwbh277"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15F351B142D;
-	Fri, 31 Oct 2025 13:20:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 283AA23D7C4
+	for <linux-rdma@vger.kernel.org>; Fri, 31 Oct 2025 15:09:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761916820; cv=none; b=S8UqkmMQz4jjt29aKOHu9OE/Q6sUVr4AoG6h/p2s7Z0oCO1OXbgkFuHfGhLBo96dlEDFFpJxwH9+dPRjadN19irCb0dJ0EDjx7n/OQTS/sUjUYcJgZ4W0vnjh1nfC0BceoRQ3a+8SxO2EGROpTQOlS05OYDjN3uYHQYB9OZicps=
+	t=1761923370; cv=none; b=HFCeKBf7G69ULnjGnnroh9/0CtFvK76tYRv/KR6AqhkOcix+z6LVqLCMoYsP/qTw+8i4MGpXlT+qfh//iMJKJ+qwb+Ac1G6ib0wIoVBXNGlb0Jzr116KjBdlo3W4+z52uGcrqHCeiNxxG3hUZTa/zknMm954UVROyOlDE/NKQeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761916820; c=relaxed/simple;
-	bh=DawxYnhCqvS1VLds39qbkKtQE0BqAIbIQ6H60jxljHM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GhdWeu0uNs/infHT32At1l8T0mPMGvGl1DTbFcV4dYL7eQRoQvl3a8/yA/U7X234cnCgvt3f6/VjzT8j6upTKx8TzmgE8u3pcVhkc84IsyqWNOThGhoEdupWj/9QDMYZPub/U8vewnp7L83LMY/Bt+Nm9+82NzLSuTWz04xfJR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=ZWImuyJM; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [192.168.1.19] (unknown [103.212.145.71])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 006D4201A7D2;
-	Fri, 31 Oct 2025 06:20:12 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 006D4201A7D2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1761916818;
-	bh=jnAwVyIj69/F/fVSjZqV+IT6X9/j+5+6TPTp7CUgj7A=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ZWImuyJMsrEdzFUuLTme2SU4Dt/KU4jg59orX5Ppr8PNkuptpnRvW0hpRTeBhRokh
-	 MdYiGUTInWEGFJiPHbbLBV/IOs+zsLRWECBYiy+dy2ip7hf4cgBjGmAfvimQCVI38x
-	 M3uftScXNcDyeR0tJHjHk2O1cy6s1rDrUJY/rdfg=
-Message-ID: <347c723b-d47c-49c2-9a3b-b49d967f875b@linux.microsoft.com>
-Date: Fri, 31 Oct 2025 18:50:10 +0530
+	s=arc-20240116; t=1761923370; c=relaxed/simple;
+	bh=h38XWH5oNliTqnSzDy6hKbk/3zxZrXB4UKzWrtXAiMc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IidHQNTs6HC0B6nhlJkqjf+I24ZY+finmyNujxClOy8aGktlXnOANug5nVix1MluB93ZzGnonjKewSQ3XFuCQxnP/WrAKeYirY0HvoJQSOQxrFHrwoRWSgQHD97VCtpmEFWH1+1AL47sLT/OMfgRiTliZfo4cZWeaao20A29TqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Vqwbh277; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1761923369; x=1793459369;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=h38XWH5oNliTqnSzDy6hKbk/3zxZrXB4UKzWrtXAiMc=;
+  b=Vqwbh277MYL4IAitTWyOmS5qjig992El9pZrgJ1B7fKpKzLdMPQFO8B+
+   ca3ek2QmPxvmgO7UyP4UHZYEBb/qDOJqrAY/wjHsbsuI7jBD1ts79L7CN
+   9vGE9bVvTA2HVq7/qH+9n/7xYntrr/ULGdxm1zJr3vQndW9/PSDJr/rD/
+   bAe9sr2FgPgSkaP3hRA12Q/YleZYcbrbMyASp1sZ0lx5Vo/FdjeN8UkW4
+   4ATTFyPjg3EbEsJKGwq+vwcm4aUNHik2MHiWnrQv2wqLniqQZgoO4v1TL
+   gpFjdZt1XSZBh9c7SCqoh3BxC42mMiqFTzJVdMaKYQ/hgA3fzN80WTPDm
+   Q==;
+X-CSE-ConnectionGUID: 3MNDUEalRRC/Zwq0Bkv6Aw==
+X-CSE-MsgGUID: 4+cc1kdkQ8eitZLjMjfpEw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11599"; a="81714959"
+X-IronPort-AV: E=Sophos;i="6.19,269,1754982000"; 
+   d="scan'208";a="81714959"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2025 08:09:29 -0700
+X-CSE-ConnectionGUID: 8KI+8oI1R9eoEZGYHij9DQ==
+X-CSE-MsgGUID: SETeYqBIQDS5+YXdY7aXLg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,269,1754982000"; 
+   d="scan'208";a="185943240"
+Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
+  by fmviesa007.fm.intel.com with ESMTP; 31 Oct 2025 08:09:26 -0700
+Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1vEqkm-000NKe-1O;
+	Fri, 31 Oct 2025 15:09:24 +0000
+Date: Fri, 31 Oct 2025 23:08:30 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>, leon@kernel.org,
+	jgg@ziepe.ca
+Cc: oe-kbuild-all@lists.linux.dev, linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
+	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+	Damodharam Ammepalli <damodharam.ammepalli@broadcom.com>,
+	Hongguang Gao <hongguang.gao@broadcom.com>
+Subject: Re: [PATCH rdma-next] RDMA/bnxt_re: Add a debugfs entry for CQE
+ coalescing tuning
+Message-ID: <202510312213.Pogyd6u5-lkp@intel.com>
+References: <20251030171540.12656-1-kalesh-anakkur.purayil@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2] net: mana: Handle SKB if TX SGEs exceed
- hardware limit
-To: Simon Horman <horms@kernel.org>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- longli@microsoft.com, kotaranov@microsoft.com,
- shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
- ernis@linux.microsoft.com, dipayanroy@linux.microsoft.com,
- shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, gargaditya@microsoft.com
-References: <20251029131235.GA3903@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <aQMqLN0FRmNU3_ke@horms.kernel.org>
-Content-Language: en-US
-From: Aditya Garg <gargaditya@linux.microsoft.com>
-In-Reply-To: <aQMqLN0FRmNU3_ke@horms.kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251030171540.12656-1-kalesh-anakkur.purayil@broadcom.com>
 
-On 30-10-2025 14:34, Simon Horman wrote:
-> On Wed, Oct 29, 2025 at 06:12:35AM -0700, Aditya Garg wrote:
->> The MANA hardware supports a maximum of 30 scatter-gather entries (SGEs)
->> per TX WQE. Exceeding this limit can cause TX failures.
->> Add ndo_features_check() callback to validate SKB layout before
->> transmission. For GSO SKBs that would exceed the hardware SGE limit, clear
->> NETIF_F_GSO_MASK to enforce software segmentation in the stack.
->> Add a fallback in mana_start_xmit() to linearize non-GSO SKBs that still
->> exceed the SGE limit.
->>
->> Return NETDEV_TX_BUSY only for -ENOSPC from mana_gd_post_work_request(),
->> send other errors to free_sgl_ptr to free resources and record the tx
->> drop.
->>
->> Co-developed-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
->> Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
->> Signed-off-by: Aditya Garg <gargaditya@linux.microsoft.com>
-> 
-> ...
-> 
->> @@ -289,6 +290,21 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->>   	cq = &apc->tx_qp[txq_idx].tx_cq;
->>   	tx_stats = &txq->stats;
->>   
->> +	if (MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES &&
->> +	    skb_shinfo(skb)->nr_frags + 2 > MAX_TX_WQE_SGL_ENTRIES) {
->> +		/* GSO skb with Hardware SGE limit exceeded is not expected here
->> +		 * as they are handled in mana_features_check() callback
->> +		 */
-> 
-> Hi,
-> 
-> I'm curious to know if we actually need this code.
-> Are there cases where the mana_features_check() doesn't
-> handle things and the kernel will reach this line?
-> 
->> +		if (skb_is_gso(skb))
->> +			netdev_warn_once(ndev, "GSO enabled skb exceeds max SGE limit\n");
->> +		if (skb_linearize(skb)) {
->> +			netdev_warn_once(ndev, "Failed to linearize skb with nr_frags=%d and is_gso=%d\n",
->> +					 skb_shinfo(skb)->nr_frags,
->> +					 skb_is_gso(skb));
->> +			goto tx_drop_count;
->> +		}
->> +	}
->> +
->>   	pkg.tx_oob.s_oob.vcq_num = cq->gdma_id;
->>   	pkg.tx_oob.s_oob.vsq_frame = txq->vsq_frame;
->>   
-> 
-> ...
+Hi Kalesh,
 
-Hi Simon,
-As it was previously discussed and agreed on with Eric, this is for 
-Non-GSO skbs which could have possibly nr_frags greater than hardware limit.
+kernel test robot noticed the following build warnings:
 
-Quoting Eric's comment from v1 thread: 
-https://lore.kernel.org/netdev/CANn89iKwHWdUaeAsdSuZUXG-W8XwyM2oppQL9spKkex0p9-Azw@mail.gmail.com/
-"I think that for non GSO, the linearization attempt is fine.
+[auto build test WARNING on rdma/for-next]
+[also build test WARNING on linus/master v6.18-rc3 next-20251031]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Note that this is extremely unlikely for non malicious users,
-and MTU being usually small (9K or less),
-the allocation will be much smaller than a GSO packet."
+url:    https://github.com/intel-lab-lkp/linux/commits/Kalesh-AP/RDMA-bnxt_re-Add-a-debugfs-entry-for-CQE-coalescing-tuning/20251031-011453
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+patch link:    https://lore.kernel.org/r/20251030171540.12656-1-kalesh-anakkur.purayil%40broadcom.com
+patch subject: [PATCH rdma-next] RDMA/bnxt_re: Add a debugfs entry for CQE coalescing tuning
+config: x86_64-rhel-9.4 (https://download.01.org/0day-ci/archive/20251031/202510312213.Pogyd6u5-lkp@intel.com/config)
+compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251031/202510312213.Pogyd6u5-lkp@intel.com/reproduce)
 
-Regards,
-Aditya
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202510312213.Pogyd6u5-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from drivers/infiniband/hw/bnxt_re/main.c:70:
+>> drivers/infiniband/hw/bnxt_re/debugfs.h:37:27: warning: 'bnxt_re_cq_coal_str' defined but not used [-Wunused-const-variable=]
+      37 | static const char * const bnxt_re_cq_coal_str[] = {
+         |                           ^~~~~~~~~~~~~~~~~~~
+
+
+vim +/bnxt_re_cq_coal_str +37 drivers/infiniband/hw/bnxt_re/debugfs.h
+
+    36	
+  > 37	static const char * const bnxt_re_cq_coal_str[] = {
+    38		"buf_maxtime",
+    39		"normal_maxbuf",
+    40		"during_maxbuf",
+    41		"en_ring_idle_mode",
+    42		"enable",
+    43	};
+    44	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
