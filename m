@@ -1,134 +1,99 @@
-Return-Path: <linux-rdma+bounces-14161-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14162-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA45DC25CC2
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Oct 2025 16:17:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D91F8C2729D
+	for <lists+linux-rdma@lfdr.de>; Sat, 01 Nov 2025 00:06:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E75974F8776
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Oct 2025 15:09:34 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id ACC974E686A
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Oct 2025 23:06:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D018B23AE66;
-	Fri, 31 Oct 2025 15:09:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 977F7328B5D;
+	Fri, 31 Oct 2025 23:06:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Vqwbh277"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uRhYtVql"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 283AA23D7C4
-	for <linux-rdma@vger.kernel.org>; Fri, 31 Oct 2025 15:09:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 497983254A7;
+	Fri, 31 Oct 2025 23:06:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761923370; cv=none; b=HFCeKBf7G69ULnjGnnroh9/0CtFvK76tYRv/KR6AqhkOcix+z6LVqLCMoYsP/qTw+8i4MGpXlT+qfh//iMJKJ+qwb+Ac1G6ib0wIoVBXNGlb0Jzr116KjBdlo3W4+z52uGcrqHCeiNxxG3hUZTa/zknMm954UVROyOlDE/NKQeI=
+	t=1761951995; cv=none; b=VNaFzCdDFq2QK9m2n569B/GmI+EK1+UWNeGZbEWyzlD2gRXeP0OUZ9NoxZNPTDOZQRnnhaZ8exXtyU3vOtrHm9+Vz3Nyt7gPDzB9/S3a20aOfJbfScRRTaDmYfh262k7+lIYX5jx2bxE93zk11LgLRYa5dzneRXXJNR/Ma47rN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761923370; c=relaxed/simple;
-	bh=h38XWH5oNliTqnSzDy6hKbk/3zxZrXB4UKzWrtXAiMc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IidHQNTs6HC0B6nhlJkqjf+I24ZY+finmyNujxClOy8aGktlXnOANug5nVix1MluB93ZzGnonjKewSQ3XFuCQxnP/WrAKeYirY0HvoJQSOQxrFHrwoRWSgQHD97VCtpmEFWH1+1AL47sLT/OMfgRiTliZfo4cZWeaao20A29TqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Vqwbh277; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1761923369; x=1793459369;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=h38XWH5oNliTqnSzDy6hKbk/3zxZrXB4UKzWrtXAiMc=;
-  b=Vqwbh277MYL4IAitTWyOmS5qjig992El9pZrgJ1B7fKpKzLdMPQFO8B+
-   ca3ek2QmPxvmgO7UyP4UHZYEBb/qDOJqrAY/wjHsbsuI7jBD1ts79L7CN
-   9vGE9bVvTA2HVq7/qH+9n/7xYntrr/ULGdxm1zJr3vQndW9/PSDJr/rD/
-   bAe9sr2FgPgSkaP3hRA12Q/YleZYcbrbMyASp1sZ0lx5Vo/FdjeN8UkW4
-   4ATTFyPjg3EbEsJKGwq+vwcm4aUNHik2MHiWnrQv2wqLniqQZgoO4v1TL
-   gpFjdZt1XSZBh9c7SCqoh3BxC42mMiqFTzJVdMaKYQ/hgA3fzN80WTPDm
-   Q==;
-X-CSE-ConnectionGUID: 3MNDUEalRRC/Zwq0Bkv6Aw==
-X-CSE-MsgGUID: 4+cc1kdkQ8eitZLjMjfpEw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11599"; a="81714959"
-X-IronPort-AV: E=Sophos;i="6.19,269,1754982000"; 
-   d="scan'208";a="81714959"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Oct 2025 08:09:29 -0700
-X-CSE-ConnectionGUID: 8KI+8oI1R9eoEZGYHij9DQ==
-X-CSE-MsgGUID: SETeYqBIQDS5+YXdY7aXLg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,269,1754982000"; 
-   d="scan'208";a="185943240"
-Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
-  by fmviesa007.fm.intel.com with ESMTP; 31 Oct 2025 08:09:26 -0700
-Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1vEqkm-000NKe-1O;
-	Fri, 31 Oct 2025 15:09:24 +0000
-Date: Fri, 31 Oct 2025 23:08:30 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>, leon@kernel.org,
-	jgg@ziepe.ca
-Cc: oe-kbuild-all@lists.linux.dev, linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	Damodharam Ammepalli <damodharam.ammepalli@broadcom.com>,
-	Hongguang Gao <hongguang.gao@broadcom.com>
-Subject: Re: [PATCH rdma-next] RDMA/bnxt_re: Add a debugfs entry for CQE
- coalescing tuning
-Message-ID: <202510312213.Pogyd6u5-lkp@intel.com>
-References: <20251030171540.12656-1-kalesh-anakkur.purayil@broadcom.com>
+	s=arc-20240116; t=1761951995; c=relaxed/simple;
+	bh=W30gxcU26HoYoi9+GzZbnuluexx6qMzSBo5idMNWlZM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bFX0LfACao2EGRMKnZxl1P3VJMUzq4zW65Mj5PTSNE2Ddeo5kwr6pVggvZbvRNcjpthLhHGTuHopDXcR7WvsUJmYFC0+ObtC5F/7oFpPBv5BSCxzoRW7eSDRKV/TiSpDnfTYvqGRn3sz6gndvCTZbTrdGdBidZEGEu5rJXP0aMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uRhYtVql; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFA2AC4CEE7;
+	Fri, 31 Oct 2025 23:06:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1761951994;
+	bh=W30gxcU26HoYoi9+GzZbnuluexx6qMzSBo5idMNWlZM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=uRhYtVqlU8YDNjIFHGOkCNn/qlWx2ams+oLrw5U3+R/TeK/d54wSmI7JUO/eSvejp
+	 lxfwQw29UT2jeyVxlFjsLsjhLWFiCvJ+l9tvjaw4LxhiM4zpbI17+XgT9+DicVxWRp
+	 XWmC5mvzAZOe0MSbu5B+8MKo6d5SjOW7JGtYzs2Olro9MdpDzw+xVYMRxQ61O77ljw
+	 a0/KRO3mD4yc9RVU5iR9Dq8zIpvUKbDNDiI5TVa6jUGcvK3tVCx48UNInS3UM8hRwU
+	 FgsXMypLzxJsowdJfPMY+PU797wmrijRjerVqRaFywS5M+2qS0mHsKZ6xJ81pdC8u7
+	 bFy9a9pT5U9qw==
+Date: Fri, 31 Oct 2025 16:06:32 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com, longli@microsoft.com,
+ kotaranov@microsoft.com, horms@kernel.org,
+ shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+ dipayanroy@linux.microsoft.com, shirazsaleem@microsoft.com,
+ rosenp@gmail.com, linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next v2 1/2] net: mana: Refactor GF stats to use
+ global mana_context
+Message-ID: <20251031160632.41c1167f@kernel.org>
+In-Reply-To: <1761734272-32055-2-git-send-email-ernis@linux.microsoft.com>
+References: <1761734272-32055-1-git-send-email-ernis@linux.microsoft.com>
+	<1761734272-32055-2-git-send-email-ernis@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251030171540.12656-1-kalesh-anakkur.purayil@broadcom.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi Kalesh,
+On Wed, 29 Oct 2025 03:37:51 -0700 Erni Sri Satya Vennela wrote:
+> Refactor mana_query_gf_stats() to use mana_context instead of per-port,
+> enabling single query for all VFs.
 
-kernel test robot noticed the following build warnings:
+What does "single query for all VFs" mean?
+All types? All within the host?
 
-[auto build test WARNING on rdma/for-next]
-[also build test WARNING on linus/master v6.18-rc3 next-20251031]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Coincidentally I don't know what HC and GF stand for.
+Please explain things in more detail, all atypical acronyms 
+(for *Linux* networking).
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Kalesh-AP/RDMA-bnxt_re-Add-a-debugfs-entry-for-CQE-coalescing-tuning/20251031-011453
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-patch link:    https://lore.kernel.org/r/20251030171540.12656-1-kalesh-anakkur.purayil%40broadcom.com
-patch subject: [PATCH rdma-next] RDMA/bnxt_re: Add a debugfs entry for CQE coalescing tuning
-config: x86_64-rhel-9.4 (https://download.01.org/0day-ci/archive/20251031/202510312213.Pogyd6u5-lkp@intel.com/config)
-compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251031/202510312213.Pogyd6u5-lkp@intel.com/reproduce)
+> Isolate hardware counter stats by introducing mana_ethtool_hc_stats
+> in mana_context and update the code to ensure all stats are properly
+> reported via ethtool -S <interface>, maintaining consistency with
+> previous behavior.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202510312213.Pogyd6u5-lkp@intel.com/
+> -void mana_query_gf_stats(struct mana_port_context *apc)
+> +void mana_query_gf_stats(struct mana_context *ac)
+>  {
+>  	struct mana_query_gf_stat_resp resp = {};
+>  	struct mana_query_gf_stat_req req = {};
+> -	struct net_device *ndev = apc->ndev;
+> +	struct gdma_context *gc = ac->gdma_dev->gdma_context;
 
-All warnings (new ones prefixed by >>):
+reverse xmas tree, please
 
-   In file included from drivers/infiniband/hw/bnxt_re/main.c:70:
->> drivers/infiniband/hw/bnxt_re/debugfs.h:37:27: warning: 'bnxt_re_cq_coal_str' defined but not used [-Wunused-const-variable=]
-      37 | static const char * const bnxt_re_cq_coal_str[] = {
-         |                           ^~~~~~~~~~~~~~~~~~~
+> +	struct device *dev = gc->dev;
+>  	int err;
 
-
-vim +/bnxt_re_cq_coal_str +37 drivers/infiniband/hw/bnxt_re/debugfs.h
-
-    36	
-  > 37	static const char * const bnxt_re_cq_coal_str[] = {
-    38		"buf_maxtime",
-    39		"normal_maxbuf",
-    40		"during_maxbuf",
-    41		"en_ring_idle_mode",
-    42		"enable",
-    43	};
-    44	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
