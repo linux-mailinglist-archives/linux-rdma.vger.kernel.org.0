@@ -1,163 +1,138 @@
-Return-Path: <linux-rdma+bounces-14159-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14160-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A680C23260
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Oct 2025 04:19:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82E90C253D6
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Oct 2025 14:21:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9E7804EFE94
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Oct 2025 03:18:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BDF91A636F0
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Oct 2025 13:21:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDF41254841;
-	Fri, 31 Oct 2025 03:18:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B65C234B42D;
+	Fri, 31 Oct 2025 13:20:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="wnbInXFi"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="ZWImuyJM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA15C223311;
-	Fri, 31 Oct 2025 03:18:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15F351B142D;
+	Fri, 31 Oct 2025 13:20:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761880733; cv=none; b=dFVSsJbKU/zw28MigCub/WdAO4thq/Bwa+RqhvRlh+QmPUoodWMxWm6Dmx6PNVQyGwaqZKxcaI+NEQJHvwfvLFQTeaS5pDSPsFn7sCjzv83Yu5K93Eag1uDY4JTrJ2XM2QUBPi5ZC3NhZZTuBX4ahX89dbUg7q+CeU2QjA3fiG8=
+	t=1761916820; cv=none; b=S8UqkmMQz4jjt29aKOHu9OE/Q6sUVr4AoG6h/p2s7Z0oCO1OXbgkFuHfGhLBo96dlEDFFpJxwH9+dPRjadN19irCb0dJ0EDjx7n/OQTS/sUjUYcJgZ4W0vnjh1nfC0BceoRQ3a+8SxO2EGROpTQOlS05OYDjN3uYHQYB9OZicps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761880733; c=relaxed/simple;
-	bh=GgihVl+uBsyPu7qZtoEFNChRo3uWJ78xi8wguId8kH4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZUHLBizQ5x3TLJCROeEmwlbYqjxvd98z6r0YVs9KrDDxUfsO/F6oj6qph7BKHmFqi7ExkClpf++4Ktms5KqhvXfwBb1fs94k86incTcXzpW6lsOhOKIpaIkG3T3AypYO6dXZq0PdN3B6HVK44IgKwpfw1LpZzbJQSCzhpKLw+Fc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=wnbInXFi; arc=none smtp.client-ip=115.124.30.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1761880721; h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	bh=/PhDBJxwxzmVHtJmdwo2JNVrwmuvABBk+lIBUXeVPL8=;
-	b=wnbInXFin1h/DCJEFsfkLnYcBw54ULZetq8aefsiMAASBXhWZqSBO29ZXu3r/bPPd19A9yR/1q3oKUrbOq1OOuNk2NHlJu32gAWbV+YJPz3IcWlpfRmn0iRm+czAtUSvP4WY/Iuw7xoIqAaDhPBDffQncd440pc1cocdGBueLtw=
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WrNZpdm_1761880708 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Fri, 31 Oct 2025 11:18:41 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-To: mjambigi@linux.ibm.com,
-	wenjia@linux.ibm.com,
-	wintera@linux.ibm.com,
-	dust.li@linux.alibaba.com,
-	tonylu@linux.alibaba.com,
-	guwen@linux.alibaba.com
-Cc: kuba@kernel.org,
-	davem@davemloft.net,
-	netdev@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	sidraya@linux.ibm.com,
-	jaka@linux.ibm.com
-Subject: [PATCH net] net/smc: fix mismatch between CLC header and proposal extensions
-Date: Fri, 31 Oct 2025 11:18:28 +0800
-Message-ID: <20251031031828.111364-1-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 2.45.0
+	s=arc-20240116; t=1761916820; c=relaxed/simple;
+	bh=DawxYnhCqvS1VLds39qbkKtQE0BqAIbIQ6H60jxljHM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GhdWeu0uNs/infHT32At1l8T0mPMGvGl1DTbFcV4dYL7eQRoQvl3a8/yA/U7X234cnCgvt3f6/VjzT8j6upTKx8TzmgE8u3pcVhkc84IsyqWNOThGhoEdupWj/9QDMYZPub/U8vewnp7L83LMY/Bt+Nm9+82NzLSuTWz04xfJR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=ZWImuyJM; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [192.168.1.19] (unknown [103.212.145.71])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 006D4201A7D2;
+	Fri, 31 Oct 2025 06:20:12 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 006D4201A7D2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1761916818;
+	bh=jnAwVyIj69/F/fVSjZqV+IT6X9/j+5+6TPTp7CUgj7A=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ZWImuyJMsrEdzFUuLTme2SU4Dt/KU4jg59orX5Ppr8PNkuptpnRvW0hpRTeBhRokh
+	 MdYiGUTInWEGFJiPHbbLBV/IOs+zsLRWECBYiy+dy2ip7hf4cgBjGmAfvimQCVI38x
+	 M3uftScXNcDyeR0tJHjHk2O1cy6s1rDrUJY/rdfg=
+Message-ID: <347c723b-d47c-49c2-9a3b-b49d967f875b@linux.microsoft.com>
+Date: Fri, 31 Oct 2025 18:50:10 +0530
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2] net: mana: Handle SKB if TX SGEs exceed
+ hardware limit
+To: Simon Horman <horms@kernel.org>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ longli@microsoft.com, kotaranov@microsoft.com,
+ shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+ ernis@linux.microsoft.com, dipayanroy@linux.microsoft.com,
+ shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, gargaditya@microsoft.com
+References: <20251029131235.GA3903@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <aQMqLN0FRmNU3_ke@horms.kernel.org>
+Content-Language: en-US
+From: Aditya Garg <gargaditya@linux.microsoft.com>
+In-Reply-To: <aQMqLN0FRmNU3_ke@horms.kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The current CLC proposal message construction uses a mix of
-`ini->smc_type_v1/v2` and `pclc_base->hdr.typev1/v2` to decide whether
-to include optional extensions (IPv6 prefix extension for v1, and v2
-extension). This leads to a critical inconsistency: when
-`smc_clc_prfx_set()` fails - for example, in IPv6-only environments with
-only link-local addresses, or when the local IP address and the outgoing
-interface’s network address are not in the same subnet.
+On 30-10-2025 14:34, Simon Horman wrote:
+> On Wed, Oct 29, 2025 at 06:12:35AM -0700, Aditya Garg wrote:
+>> The MANA hardware supports a maximum of 30 scatter-gather entries (SGEs)
+>> per TX WQE. Exceeding this limit can cause TX failures.
+>> Add ndo_features_check() callback to validate SKB layout before
+>> transmission. For GSO SKBs that would exceed the hardware SGE limit, clear
+>> NETIF_F_GSO_MASK to enforce software segmentation in the stack.
+>> Add a fallback in mana_start_xmit() to linearize non-GSO SKBs that still
+>> exceed the SGE limit.
+>>
+>> Return NETDEV_TX_BUSY only for -ENOSPC from mana_gd_post_work_request(),
+>> send other errors to free_sgl_ptr to free resources and record the tx
+>> drop.
+>>
+>> Co-developed-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+>> Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+>> Signed-off-by: Aditya Garg <gargaditya@linux.microsoft.com>
+> 
+> ...
+> 
+>> @@ -289,6 +290,21 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>>   	cq = &apc->tx_qp[txq_idx].tx_cq;
+>>   	tx_stats = &txq->stats;
+>>   
+>> +	if (MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES &&
+>> +	    skb_shinfo(skb)->nr_frags + 2 > MAX_TX_WQE_SGL_ENTRIES) {
+>> +		/* GSO skb with Hardware SGE limit exceeded is not expected here
+>> +		 * as they are handled in mana_features_check() callback
+>> +		 */
+> 
+> Hi,
+> 
+> I'm curious to know if we actually need this code.
+> Are there cases where the mana_features_check() doesn't
+> handle things and the kernel will reach this line?
+> 
+>> +		if (skb_is_gso(skb))
+>> +			netdev_warn_once(ndev, "GSO enabled skb exceeds max SGE limit\n");
+>> +		if (skb_linearize(skb)) {
+>> +			netdev_warn_once(ndev, "Failed to linearize skb with nr_frags=%d and is_gso=%d\n",
+>> +					 skb_shinfo(skb)->nr_frags,
+>> +					 skb_is_gso(skb));
+>> +			goto tx_drop_count;
+>> +		}
+>> +	}
+>> +
+>>   	pkg.tx_oob.s_oob.vcq_num = cq->gdma_id;
+>>   	pkg.tx_oob.s_oob.vsq_frame = txq->vsq_frame;
+>>   
+> 
+> ...
 
-As a result, the proposal message is assembled using the stale
-`ini->smc_type_v1` value—causing the IPv6 prefix extension to be
-included even though the header indicates v1 is not supported.
-The peer then receives a malformed CLC proposal where the header type
-does not match the payload, and immediately resets the connection.
+Hi Simon,
+As it was previously discussed and agreed on with Eric, this is for 
+Non-GSO skbs which could have possibly nr_frags greater than hardware limit.
 
-Fix this by consistently using `pclc_base->hdr.typev1` and
-`pclc_base->hdr.typev2`—the authoritative fields that reflect the
-actual capabilities advertised in the CLC header—when deciding whether
-to include optional extensions, as required by the SMC-R v2
-specification ("V1 IP Subnet Extension and V2 Extension only present if
-applicable").
+Quoting Eric's comment from v1 thread: 
+https://lore.kernel.org/netdev/CANn89iKwHWdUaeAsdSuZUXG-W8XwyM2oppQL9spKkex0p9-Azw@mail.gmail.com/
+"I think that for non GSO, the linearization attempt is fine.
 
-Fixes: 8c3dca341aea ("net/smc: build and send V2 CLC proposal")
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
----
- net/smc/smc_clc.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+Note that this is extremely unlikely for non malicious users,
+and MTU being usually small (9K or less),
+the allocation will be much smaller than a GSO packet."
 
-diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
-index 157aace169d4..d9ff5f433720 100644
---- a/net/smc/smc_clc.c
-+++ b/net/smc/smc_clc.c
-@@ -922,7 +922,7 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
- 				htons(smc_ism_get_chid(ini->ism_dev[0]));
- 		}
- 	}
--	if (ini->smc_type_v2 == SMC_TYPE_N) {
-+	if (pclc_base->hdr.typev2 == SMC_TYPE_N) {
- 		pclc_smcd->v2_ext_offset = 0;
- 	} else {
- 		struct smc_clc_eid_entry *ueident;
-@@ -931,7 +931,7 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
- 		v2_ext->hdr.flag.release = SMC_RELEASE;
- 		v2_ext_offset = sizeof(*pclc_smcd) -
- 			offsetofend(struct smc_clc_msg_smcd, v2_ext_offset);
--		if (ini->smc_type_v1 != SMC_TYPE_N)
-+		if (pclc_base->hdr.typev1 != SMC_TYPE_N)
- 			v2_ext_offset += sizeof(*pclc_prfx) +
- 						pclc_prfx->ipv6_prefixes_cnt *
- 						sizeof(ipv6_prfx[0]);
-@@ -949,7 +949,7 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
- 		}
- 		read_unlock(&smc_clc_eid_table.lock);
- 	}
--	if (smcd_indicated(ini->smc_type_v2)) {
-+	if (smcd_indicated(pclc_base->hdr.typev2)) {
- 		struct smcd_gid smcd_gid;
- 		u8 *eid = NULL;
- 		int entry = 0;
-@@ -987,7 +987,7 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
- 		}
- 		v2_ext->hdr.ism_gid_cnt = entry;
- 	}
--	if (smcr_indicated(ini->smc_type_v2)) {
-+	if (smcr_indicated(pclc_base->hdr.typev2)) {
- 		memcpy(v2_ext->roce, ini->smcrv2.ib_gid_v2, SMC_GID_SIZE);
- 		v2_ext->max_conns = net->smc.sysctl_max_conns_per_lgr;
- 		v2_ext->max_links = net->smc.sysctl_max_links_per_lgr;
-@@ -1003,7 +1003,7 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
- 	vec[i++].iov_len = sizeof(*pclc_base);
- 	vec[i].iov_base = pclc_smcd;
- 	vec[i++].iov_len = sizeof(*pclc_smcd);
--	if (ini->smc_type_v1 != SMC_TYPE_N) {
-+	if (pclc_base->hdr.typev1 != SMC_TYPE_N) {
- 		vec[i].iov_base = pclc_prfx;
- 		vec[i++].iov_len = sizeof(*pclc_prfx);
- 		if (pclc_prfx->ipv6_prefixes_cnt > 0) {
-@@ -1012,11 +1012,11 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini)
- 					   sizeof(ipv6_prfx[0]);
- 		}
- 	}
--	if (ini->smc_type_v2 != SMC_TYPE_N) {
-+	if (pclc_base->hdr.typev2 != SMC_TYPE_N) {
- 		vec[i].iov_base = v2_ext;
- 		vec[i++].iov_len = sizeof(*v2_ext) +
- 				   (v2_ext->hdr.eid_cnt * SMC_MAX_EID_LEN);
--		if (smcd_indicated(ini->smc_type_v2)) {
-+		if (smcd_indicated(pclc_base->hdr.typev2)) {
- 			vec[i].iov_base = smcd_v2_ext;
- 			vec[i++].iov_len = sizeof(*smcd_v2_ext);
- 			if (ini->ism_offered_cnt) {
--- 
-2.45.0
-
+Regards,
+Aditya
 
