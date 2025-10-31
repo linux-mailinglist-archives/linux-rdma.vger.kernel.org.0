@@ -1,100 +1,80 @@
-Return-Path: <linux-rdma+bounces-14165-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14166-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EE87C272EC
-	for <lists+linux-rdma@lfdr.de>; Sat, 01 Nov 2025 00:30:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B535AC2734B
+	for <lists+linux-rdma@lfdr.de>; Sat, 01 Nov 2025 00:42:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C247842441B
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Oct 2025 23:30:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 901203A6CF8
+	for <lists+linux-rdma@lfdr.de>; Fri, 31 Oct 2025 23:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BF9832C33D;
-	Fri, 31 Oct 2025 23:30:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E450832D0CF;
+	Fri, 31 Oct 2025 23:42:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mpaXpmWv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UNtZqGvi"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D14FB18787A;
-	Fri, 31 Oct 2025 23:30:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A3D12566F7;
+	Fri, 31 Oct 2025 23:42:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761953437; cv=none; b=PaqCptKxKecLw6okSwwkQ+atbDjDNcGoKyr7YHDK0pqL3JQVl75WEbUViT6fZ8znFfxQUASUGaNuetfYvBTVlt5ZiuWrGH29x/qIw1eGiIevCUDDv/62i7QW8XlLQCGwyWFzexDGyQr4NuVmgTaILoi4e6jC+lbTgpWvQ0IhV1M=
+	t=1761954130; cv=none; b=pZammAjA3Odt1YrvFW3NtnAAHPfBw6MPNY7M4mb32ZbdSfA+tWXtFNO8r7/PWdypJqg5doJ5m1oaYUS/S8x6cqZNaJKpNQ/0KgdbgwSQ92lTtBJiiWWUG1ep8XdYKBxzhfJuiiq4+avHt3RJmDEjVdgf0DvQ7cGlYDxIqrToCHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761953437; c=relaxed/simple;
-	bh=IIidDSjrIKesdtTWH6GAfBa/6yYNEJ0t+/i0FVLa4g8=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=RXm+uCyTHn72XNFtNjALwYKaRPVH8RiqmvITVx7JRljzw1H9VD6dJXLhIcZyILjXvPrUf6NJ7C6z27LWfTDNQ0mZS/Z5ZSGCGTX6Fuez2rZEREZnP+Y61lEqogUdTHUKE2QhaIFVSR0klrzTcEyrvYh0vHohGLl7NBrHmNMPi8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mpaXpmWv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 772FDC4CEE7;
-	Fri, 31 Oct 2025 23:30:37 +0000 (UTC)
+	s=arc-20240116; t=1761954130; c=relaxed/simple;
+	bh=eBbfPCOcUmxMSyq7wUBU6DgUuJD7akDtbLm7whVK5bg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=czQjlSNJxOnyht106hEOsPEHgYbWFRKq/+AKkv0QEX6ug03TuYWI9DC9dBh+UcO9Rsdxvm9upuNcpnxdEc5dPFVozVOsBTXxcy9Ula2fXP7ESq5BZHestbnjW3zvPzUJ+gSRVlMRUnyXrX0DAsBx67GchMF8dB/F6OWGznyy+HQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UNtZqGvi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40E5BC4CEE7;
+	Fri, 31 Oct 2025 23:42:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1761953437;
-	bh=IIidDSjrIKesdtTWH6GAfBa/6yYNEJ0t+/i0FVLa4g8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=mpaXpmWvZTXX6sSAYknXFtEYT22OAKyfE2BsfF0lN3Tb27e+xLscStw37NPdcmT4B
-	 ATknOee8nQio7T6Kpb0/l2Lf557tYQePWV4qLPTtuE+A4cwY9vEobK/wE8PMX2T4zW
-	 xwMQ7zzzi8vFoj4Ktj7v6OR9yVkPx7yXglBZsss++w4VAehc6LNVybUS9/BDySOeWZ
-	 8v2sOw/B+zvdQro9oAyjbB5jUGppKJJe3/XICluWmxF67YPBkaLm/dSqXf6ABPoLu/
-	 6B8m4a+FLft5AenmDShLGjugjpSiWc9+ABw+3bI/SJJVGy/bjfXKDOeNtO58J40NGO
-	 vReg2wdtDLyfw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADFC53809A00;
-	Fri, 31 Oct 2025 23:30:14 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1761954130;
+	bh=eBbfPCOcUmxMSyq7wUBU6DgUuJD7akDtbLm7whVK5bg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=UNtZqGviWSQCgguqSrqb89/EyeX0uh1ToYdr04R42VP5ICtBjSMQfFDhEKt2LSSCH
+	 KSYsMekB88H8foiwiBkizKT0kA4PPrZKzLI2X+sAzvXmXN3m5i9P5mtHbw8hWVPUPp
+	 plSX0koRCcONG6AHc2gHIXBBjdhtcJcRNx9IObO9Wpk9aVdvO341ikThuHbIJ3tFZe
+	 17Asvj6FaGVTPRW6Ht8j2xTZzm3x3Co3CKbUKZNlyUNzYozY2PsKbFFqqA5ODdNKfV
+	 TQxllv6loWy3T/cr2+rg5ESelW0mzdLeUJFUXHV+olP8Tf8LtxnmkzXsKFUeNiTB92
+	 dmA5s6u4IEfXQ==
+Date: Fri, 31 Oct 2025 16:42:08 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
+ <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>, Mark Bloch
+ <mbloch@nvidia.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, "John
+ Fastabend" <john.fastabend@gmail.com>, Richard Cochran
+ <richardcochran@gmail.com>, <linux-rdma@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+ <bpf@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Carolina Jubran
+ <cjubran@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>
+Subject: Re: [PATCH net-next 6/6] net/mlx5e: Convert to new hwtstamp_get/set
+ interface
+Message-ID: <20251031164208.7917f929@kernel.org>
+In-Reply-To: <1761819910-1011051-7-git-send-email-tariqt@nvidia.com>
+References: <1761819910-1011051-1-git-send-email-tariqt@nvidia.com>
+	<1761819910-1011051-7-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next,v4] net: mana: Support HW link state events
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176195341349.666625.13563540939353336247.git-patchwork-notify@kernel.org>
-Date: Fri, 31 Oct 2025 23:30:13 +0000
-References: <1761770601-16920-1-git-send-email-haiyangz@linux.microsoft.com>
-In-Reply-To: <1761770601-16920-1-git-send-email-haiyangz@linux.microsoft.com>
-To: Haiyang Zhang <haiyangz@linux.microsoft.com>
-Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, kys@microsoft.com,
- haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
- kotaranov@microsoft.com, horms@kernel.org, leon@kernel.org,
- shradhagupta@linux.microsoft.com, mlevitsk@redhat.com,
- ernis@linux.microsoft.com, yury.norov@gmail.com,
- dipayanroy@linux.microsoft.com, shirazsaleem@microsoft.com,
- ssengar@linux.microsoft.com, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, paulros@microsoft.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
+On Thu, 30 Oct 2025 12:25:10 +0200 Tariq Toukan wrote:
+> -		err = mlx5e_hwstamp_config_no_ptp_rx(priv,
+> -						     config.rx_filter != HWTSTAMP_FILTER_NONE);
+> +		err = mlx5e_hwstamp_config_no_ptp_rx(
+> +			priv, config->rx_filter != HWTSTAMP_FILTER_NONE);
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Wed, 29 Oct 2025 13:43:10 -0700 you wrote:
-> From: Haiyang Zhang <haiyangz@microsoft.com>
-> 
-> Handle the NIC hardware link state events received from the HW
-> channel, then set the proper link state accordingly.
-> 
-> And, add a feature bit, GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE,
-> to inform the NIC hardware this handler exists.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,v4] net: mana: Support HW link state events
-    https://git.kernel.org/netdev/net-next/c/54133f9b4b53
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+FWIW I think this formatting is even worse than going over 80 :(
 
