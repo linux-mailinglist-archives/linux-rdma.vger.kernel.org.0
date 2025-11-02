@@ -1,102 +1,85 @@
-Return-Path: <linux-rdma+bounces-14174-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14175-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25ABBC28D24
-	for <lists+linux-rdma@lfdr.de>; Sun, 02 Nov 2025 11:17:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F30A5C28E7B
+	for <lists+linux-rdma@lfdr.de>; Sun, 02 Nov 2025 12:53:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1C9C54E3497
-	for <lists+linux-rdma@lfdr.de>; Sun,  2 Nov 2025 10:17:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46BE3188B1A2
+	for <lists+linux-rdma@lfdr.de>; Sun,  2 Nov 2025 11:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33ECF1D5ABA;
-	Sun,  2 Nov 2025 10:17:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2969721D5BC;
+	Sun,  2 Nov 2025 11:53:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s0N5iF32"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="niNuvHHC"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6DB38C1F;
-	Sun,  2 Nov 2025 10:17:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAD4B34D3A6
+	for <linux-rdma@vger.kernel.org>; Sun,  2 Nov 2025 11:53:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762078641; cv=none; b=RfEQ98CzFXP/XlVVEuwrpR8bgfPJuNewQTSdsLrv6AdZGh06FUhJf7rcfwzUrx8jJj9HEZ0JZAys8QE0dzdSs6t6FZdm35h8ITr+O6q+LpDWqhklL8/pf/tr/PLq/LxwOxa23BRttIChdUfMWUvvkAovGdRDII70jxjv7OF5Ooc=
+	t=1762084418; cv=none; b=nT9lYa6I5dPlId6gb7gxVh/REfxi2/9ht+43cjONz8fo5+eo0pZAeqaRwbYqfSBOkiFFLDbTQbOJhRr6cXa51rc6ptW21VN6AWnYWSf17K6ildZfLoeTCmWqn0jUa55iEbV3odVbJL6pd7yaxfW40azR9vqWPrF998IHhBHfFZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762078641; c=relaxed/simple;
-	bh=2astGPBTqePob/d8q9xvK33xSRSffAq1TL6qpck7WAg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iFW0TZjVK8uxGp9aZBfLIUQn3LTmAmBARoi2+PsSZ/ATkEvGy9m3lDcmXtqyoYAV0ixoL0uFn9JgDTJtf18SsKrgdY8hfywzgluSgf5ubT+deplNpnpB3b13V6qy+e5gtIsiRnrcHNbXkVKvlYDNaJ7JsDi48H1eGTzfECyQpJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s0N5iF32; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A812AC4CEF7;
-	Sun,  2 Nov 2025 10:17:19 +0000 (UTC)
+	s=arc-20240116; t=1762084418; c=relaxed/simple;
+	bh=FEwmYWN+IGIw8AmTU7QO4nEAt9sZE3x2n+64mNQia6U=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=Rq9H9KQETAU9ihSoMppwoXT1A8iXBIW+KwBEk4JutIZWoOOcX2NU2tNy80uCZPIB2d4Kb4WBe5LcuDYSvXjvmCtK8yJfevHcvp9lUEC3PMa0/ZoizKfvbvE3ypsm0W/tOoDkhRozJDvgYCE3uLwFMQi4KBsL77wNPX6lsqqBj2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=niNuvHHC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9486C4CEF7;
+	Sun,  2 Nov 2025 11:53:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762078640;
-	bh=2astGPBTqePob/d8q9xvK33xSRSffAq1TL6qpck7WAg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=s0N5iF32iZdt8/mJtoWR59MSKK8++7UQjQjnKLRW5GbVCmhC0erDTeTG/u4a9FIrt
-	 xKfmUdQbUg4xUTCnHBMbFVSxQ+CPINfupN0Kytrf+Tbf7Ov44JZo/6pYMzMUV3qmlD
-	 ZtMAoxS669sVgx8X539WZ8Kd4Uv+EHEjI2G8M2Bl/Bqg5TFBQ2t7mBvjyJvhHPPigN
-	 rLLVnKlFgNUtqi44kO2GYhzt06w5seylnGbOCmdPsxqWUPA8oTWVDXWRfFS10crzfK
-	 eNrrHYIzase/2PYr6Ck1yhlLAQXIf3COKz97T8r5erYt3VbsftSQ3EakcjvplBHf6t
-	 3NG5N+fOGnU/w==
-Date: Sun, 2 Nov 2025 12:17:14 +0200
+	s=k20201202; t=1762084418;
+	bh=FEwmYWN+IGIw8AmTU7QO4nEAt9sZE3x2n+64mNQia6U=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=niNuvHHCqlj+xOzlolNOlTbAY7Br+QKCK335YUhh04YThkrQyns2FQebg+9dv0Fc9
+	 N6/sqTUaqyqhPjRxz4gDaJFBnVB2E3RbFfdGkGxeCeLmGxYzyje4IvNUcqHh9lptSf
+	 Lbm1sE1p46p5RRAf4kxZAOI5clMFdqQ/PEkJKy4AppfFcpCJ8CbyXbRlEgO24xYq+6
+	 Ol5padgTdawTG33nf36X21Y8ACHXEBwHBqoBm/Uqzd/7Hx1RbFHhqIt2vFvQfIOC+V
+	 TBXxzdYBI4YiNrP7skps40G70vQHnNJrW6TPTiU2BZ70tsMqXTmphrOh+q6PR6EtU9
+	 1etNv8ql9i8Pg==
 From: Leon Romanovsky <leon@kernel.org>
-To: Bjorn Helgaas <bhelgaas@google.com>, Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Edward Srouji <edwards@nvidia.com>
-Subject: Re: [PATCH mlx5-next 1/2] PCI/TPH: Expose pcie_tph_get_st_table_loc()
-Message-ID: <20251102101714.GA17533@unreal>
-References: <20251027-st-direct-mode-v1-0-e0ad953866b6@nvidia.com>
- <20251027-st-direct-mode-v1-1-e0ad953866b6@nvidia.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>, 
+ Tatyana Nikolova <tatyana.e.nikolova@intel.com>
+Cc: linux-rdma@vger.kernel.org, krzysztof.czurylo@intel.com, 
+ Jay Bhat <jay.bhat@intel.com>, Jacob Moroni <jmoroni@google.com>
+In-Reply-To: <20251031021726.1003-2-tatyana.e.nikolova@intel.com>
+References: <20251031021726.1003-2-tatyana.e.nikolova@intel.com>
+Subject: Re: [PATCH] RDMA/irdma: Initialize cqp_cmds_info to prevent
+ resource leaks
+Message-Id: <176208441518.10923.1922539590339901335.b4-ty@kernel.org>
+Date: Sun, 02 Nov 2025 06:53:35 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251027-st-direct-mode-v1-1-e0ad953866b6@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-3ae27
 
-On Mon, Oct 27, 2025 at 11:34:01AM +0200, Leon Romanovsky wrote:
-> From: Yishai Hadas <yishaih@nvidia.com>
+
+On Thu, 30 Oct 2025 21:17:21 -0500, Tatyana Nikolova wrote:
+> Failure to initialize info.create field to false in certain cases
+> was resulting in incorrect status code going to rdma-core when dereg_mr
+> failed during reset.  To fix this, memset entire cqp_request->info
+> in irdma_alloc_and_get_cqp_request() function, so that this is not spread
+> all over the code.
 > 
-> Expose pcie_tph_get_st_table_loc() to be used by drivers as will be done
-> in the next patch from the series.
 > 
-> Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-> Signed-off-by: Edward Srouji <edwards@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/pci/tph.c       | 7 ++++---
->  include/linux/pci-tph.h | 1 +
->  2 files changed, 5 insertions(+), 3 deletions(-)
+> [...]
 
-<...>
+Applied, thanks!
 
-> -static u32 get_st_table_loc(struct pci_dev *pdev)
-> +u32 pcie_tph_get_st_table_loc(struct pci_dev *pdev)
->  {
->  	u32 reg;
->  
-> @@ -163,6 +163,7 @@ static u32 get_st_table_loc(struct pci_dev *pdev)
->  
->  	return FIELD_GET(PCI_TPH_CAP_LOC_MASK, reg);
->  }
-> +EXPORT_SYMBOL(pcie_tph_get_st_table_loc);
+[1/1] RDMA/irdma: Initialize cqp_cmds_info to prevent resource leaks
+      https://git.kernel.org/rdma/rdma/c/153243086eef13
 
-Bjorn,
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
 
-Are you ok with this change?
-
-Thanks
 
