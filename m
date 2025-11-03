@@ -1,47 +1,47 @@
-Return-Path: <linux-rdma+bounces-14205-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14206-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E3A9C2C498
-	for <lists+linux-rdma@lfdr.de>; Mon, 03 Nov 2025 14:59:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25005C2C54F
+	for <lists+linux-rdma@lfdr.de>; Mon, 03 Nov 2025 15:08:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D96284EBEEF
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Nov 2025 13:58:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DD5D3BCFAB
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Nov 2025 13:58:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A030830C610;
-	Mon,  3 Nov 2025 13:57:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81E64306B0F;
+	Mon,  3 Nov 2025 13:58:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bk2AUTtt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ohAwUuwB"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56086291C19;
-	Mon,  3 Nov 2025 13:57:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35C1826B75B;
+	Mon,  3 Nov 2025 13:58:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762178270; cv=none; b=FvEXQg0ki8EUq9DJWtnJVnSYjURF9/B6k8Hp8q6nCKfjzKphrnj/INi6Fsh5K0xNWjPF4Rr+ioIEsLMJ2kZ+I1SuEvwGVjeu5Wao7Ok7kdSVmyPj9GyldWocj3HU+tUcpd4nt6NOC/lGvGAZ2cDmUupcjAs7nK8Wl9SmDLPZY5o=
+	t=1762178315; cv=none; b=U383VLZuPrWEi2SnFLyvrYCMpCqhF9TOu2hgMZvsCpyKvFo1W1uTgdYThcX4QQtN+9EgXOeTTsocx96qz+Mgf/dm5O6hZNSYfICvAL3LUF+oB8rXhHt45S2LzH0s7vIVat6nQ4Yfn5yXDcnEWai2/MQRqt2O0mz05wC90PxAOno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762178270; c=relaxed/simple;
-	bh=z9++M6BLS3/GwKMvunjND69BcrrUGZt+U2207QrSN64=;
+	s=arc-20240116; t=1762178315; c=relaxed/simple;
+	bh=/hK1RB0wAhEaoAegnALpBsHj7bt0H2aEonUwdIVDULM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DGBMSZP+0UNCjG/phItEBSS4a+Sh4jfQfQZpfVdV2SS1u+YnS10v6VqTylUKkoYZ+8yVKeeCm77JxAA9SggSqVYITbqgO3vnl8q76Er8xtrLP61Fs+zycChJYYzDfHj2YoH5BF0NQDecALtg42XNeSfc+DoNoMgEiN7dE8n/9VY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bk2AUTtt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 376B2C4CEE7;
-	Mon,  3 Nov 2025 13:57:47 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=rVgTjriJfSofiOiJvOTXI1L/CqMT/MIklPE13I2WAbWAe7w6aqMEyVijB2ESI4s99RXIEv0KFDeCrwi7TcuIvMJ4BYu5wSRr8v8HaNaaTxswFO2QPKuIM0agdvGjAg2pLZMOaXH6FZ5duWlKkX1j5Ir2rtEiA1GCdcJTrWmtCeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ohAwUuwB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14D59C4CEFD;
+	Mon,  3 Nov 2025 13:58:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762178269;
-	bh=z9++M6BLS3/GwKMvunjND69BcrrUGZt+U2207QrSN64=;
+	s=k20201202; t=1762178313;
+	bh=/hK1RB0wAhEaoAegnALpBsHj7bt0H2aEonUwdIVDULM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bk2AUTttePeboe9F2ygXVNEAkhOOtMvH1UgTnCby0MW/wk6eMXlAw4T8xP2xG+z7k
-	 /FutuG/eQZqmFR1qzsYAKFZc0We44vwpCsl747hod0yKY19WwqlccHI2RFnvxgbcS2
-	 +Ej2KfyVv495yvMEqS+oqDUZh5cr/pUUXe4biHvUeFiLHChG7N/NCdHWwHyi6lizXS
-	 I+awYKNhWudYOKYlOSr11g1qv9NOW7N2Yy61DGaRHrOfFnhg/bSdBP7Zsc0t12yJvN
-	 fCzRGb91RKWK6LIhaK6UI/Bgn89jjchkrXEamAvv+h6TangKx+a5/nONvasOkCnR6M
-	 X5ls7ERDvKo9g==
-Date: Mon, 3 Nov 2025 13:57:45 +0000
+	b=ohAwUuwBx6VU0+KKcmW8Z2HHgIO8rtfepopcN97qHRQiHeCub/sYGZrDqwtucegNa
+	 EGAkucV7YM9RsPrvoP0OtGO/gTcfHeL3iYPunWlAiVqFYKcHxYNh+XOFhNJWf/WfCH
+	 1DozvxkDkn8SImzwPrgNRbi23q4+fYFRJllTqOONOajPNjUAHPyrZ0ok/4fzHg7ytx
+	 Q6JAW9Y26t62zqSN3ePsxk+PlptdAtO+8jfOF31kUq6e8hejV5xoOYOlRnY844UfTO
+	 n8XZZHI18H9BhgpqP9N4rc3jYi4ncBkrv971Q8iujWCirqCsXNmU+Vypubw8c+Enjc
+	 r93FCpQNe+w8g==
+Date: Mon, 3 Nov 2025 13:58:28 +0000
 From: Simon Horman <horms@kernel.org>
 To: Tariq Toukan <tariqt@nvidia.com>
 Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
@@ -53,11 +53,11 @@ Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
 	Carolina Jubran <cjubran@nvidia.com>
-Subject: Re: [PATCH net-next V2 3/7] net/mlx5e: Allow setting self loopback
- prevention bits on TIR init
-Message-ID: <aQi02bAiInz9nXzz@horms.kernel.org>
+Subject: Re: [PATCH net-next V2 4/7] net/mlx5: IPoIB, set self loopback
+ prevention in TIR init
+Message-ID: <aQi1BFHJzE3sNyzi@horms.kernel.org>
 References: <1761831159-1013140-1-git-send-email-tariqt@nvidia.com>
- <1761831159-1013140-4-git-send-email-tariqt@nvidia.com>
+ <1761831159-1013140-5-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -66,14 +66,16 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1761831159-1013140-4-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1761831159-1013140-5-git-send-email-tariqt@nvidia.com>
 
-On Thu, Oct 30, 2025 at 03:32:35PM +0200, Tariq Toukan wrote:
-> Until now, IPoIB was creating TIRs without setting self loopback
-> prevention, then modifying them in activation stage.
+On Thu, Oct 30, 2025 at 03:32:36PM +0200, Tariq Toukan wrote:
+> In IPoIB, the self loopback prevention configuration apply in activation
+> stage has two roles: fulfill a firmware requirement for old firmware
+> (tis_tir_td_order=0), and update the proper configuration as it was not
+> set in init.
 > 
-> This is a preparation patch, that will be used by IPoIB to init TIRs
-> properly without the need for following calls of modify_tir.
+> Here we set the proper configuration in init, to allow skipping the
+> modify_tirs commands on new firmware in a downstream patch.
 > 
 > Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 > Reviewed-by: Carolina Jubran <cjubran@nvidia.com>
