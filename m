@@ -1,158 +1,155 @@
-Return-Path: <linux-rdma+bounces-14191-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14192-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D0F1C2A939
-	for <lists+linux-rdma@lfdr.de>; Mon, 03 Nov 2025 09:31:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DAAFC2B311
+	for <lists+linux-rdma@lfdr.de>; Mon, 03 Nov 2025 11:59:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEC453A4796
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Nov 2025 08:28:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C9B63A439D
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Nov 2025 10:57:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 395952DCC03;
-	Mon,  3 Nov 2025 08:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35FA82FF144;
+	Mon,  3 Nov 2025 10:57:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="J0Vw0PQV"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="hKL8EC6p"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f226.google.com (mail-pg1-f226.google.com [209.85.215.226])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 787FE53363;
-	Mon,  3 Nov 2025 08:28:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 846672FDC5B
+	for <linux-rdma@vger.kernel.org>; Mon,  3 Nov 2025 10:57:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762158522; cv=none; b=J/Ux7HLJUFxALfeAFJ9itZ6N2KNaKSu323qow5/RU4jwBWNpcWh5ioDfy2Rw7tLaG4UcFmxfkg44euj+/CnJaXulSMjiLMhQ0h37K+5htsHCPrKn0u2lX363Jmj5g72zVvZpaswmbdOnyiP0MR7odE9lwY6bthC9ADOHT/i7fSk=
+	t=1762167457; cv=none; b=mGE50IzqTQl+x4N9mQdJ33lMYN2dRJUCdJaBnI1OLD1sfJqjOQLTVpMQfZT1McCCH0BpqldihOMpCuDiZJ1JX1voNYhElHPGC3f4Jo/VYJ2mRG1zUom4+N7bqxxlKUTC0KiC9oA937PM2PFVjYuu+r3r9O/hV4fdlnO5vVGP7+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762158522; c=relaxed/simple;
-	bh=eS7KrlMq6jo/GsXOFtImqbS4/OQyOCDYwKWHLlIHG7E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Y9YmD9hHKgpl6EDhKJhiIGCG8/jPm6xHfwdHAQV+M8xCEQrxAWkTsBGEi8k+bBUgoZGJ1pUxLWrGYw990OGtO8XABvQMxV+8YIO2O8nmIpSkvcYXTrCo7Gy9AeXxkkWeNZ/zHnX6zO0YnRfFOONsp+Q/UEUla+ma2fUGrDUd980=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=J0Vw0PQV; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5A2JFURo028252;
-	Mon, 3 Nov 2025 08:28:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=TmjDXj
-	wR+nEddG/eZ6E1vM2d76S1OyWZE5K7xsFZokU=; b=J0Vw0PQViec67xL6kzKonQ
-	CignmYL8cuWyh3ZHZbe/Gy9r3epPtK00GhHk5piYzJq1y6l00GHmQqdn7cXENXAz
-	BVbGENVjL9PnRMgLbmqgq/DnbWG3myGobOYwgDYtKrbJXz3IdpIN1Be1sE4nKZtu
-	KqQrDGrI+OuOTzjiB6rSjmI7+Lq5gJnCIIvF72rhTz9oyLlgD1PPNMAt2OBV6mj6
-	U3apa4q8+McpgbGCt/XYP60aAtk5ADjq4T+sMT246bH5yd85VZ/J/t6nHrNhJfx5
-	R22vtDeXs7EfknPA/lOxNZ30sy8o2u6vOU6Al7NwWgHkUbNOvQ1zYqF68ieWhy4A
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4a59q8nn0s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 03 Nov 2025 08:28:28 +0000 (GMT)
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5A38SS3M012984;
-	Mon, 3 Nov 2025 08:28:28 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4a59q8nn0p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 03 Nov 2025 08:28:27 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5A37TrId009831;
-	Mon, 3 Nov 2025 08:28:26 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4a5x1k4jma-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 03 Nov 2025 08:28:26 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5A38SMP649218022
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 3 Nov 2025 08:28:22 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A0F422004B;
-	Mon,  3 Nov 2025 08:28:22 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5F90320043;
-	Mon,  3 Nov 2025 08:28:22 +0000 (GMT)
-Received: from [9.152.210.132] (unknown [9.152.210.132])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon,  3 Nov 2025 08:28:22 +0000 (GMT)
-Message-ID: <95bd9c85-8241-4040-bbd0-bcac3ffc78f7@linux.ibm.com>
-Date: Mon, 3 Nov 2025 09:28:22 +0100
+	s=arc-20240116; t=1762167457; c=relaxed/simple;
+	bh=P16YaxWi7YwYdN6kyC/InRqQ5z+TkxAvYNhF3WMfWoU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EFVGbFrLuJt1+iOCi1QmrF9cCqlolZM9PTK8xkvXN4eXKBqP8xkCaPYAUCD+z6QhYgi5l4VJGhYsNcGNMsDqC34bHl/Fdqv2fh95ilIqucDQMT+ua8vT3AajeMzNorjXgEFurAvtpQdpzFA+vxWLoSmGFmCzBWwaKiNIHxz0GBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=hKL8EC6p; arc=none smtp.client-ip=209.85.215.226
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pg1-f226.google.com with SMTP id 41be03b00d2f7-b8c0c0cdd61so4188116a12.2
+        for <linux-rdma@vger.kernel.org>; Mon, 03 Nov 2025 02:57:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762167455; x=1762772255;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:dkim-signature:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2xKRpzw6WM9uha1y0ZcKWu7DN7BAxye8b67lEfyJLbY=;
+        b=w/c87Ri9kTy54CZXgNJuleau963in7Bts4/Y5fejltlUlt1iVGT5uaJXJdVm6aeNgp
+         dZf0Jg+YFwzRUDNtf0DpFQpet134f4V/NMETeNnCgGyGZQ+iLbBqhWTCqyDt/QoIXvHY
+         BIjegMW/NfjdSL3mxl1YvWh4hS5+t/xVx9Tgc3RX08vdsp3ZyhQqY5jLaI5IBX09fR5l
+         Oy7zpJ27Gk8X0lqLtT+VyFf2bR1410/2K6+5IhKwjMwmyLhZGxeyIQuQmOqPyO403IDl
+         fUJg3bUJIZWkCW7VqCFn6Aqzk9n7lQWK31yyxizMdab4qylTSbVffhdCCDGvmbqb76W9
+         ULGQ==
+X-Gm-Message-State: AOJu0YwY+94O9lsuIZ8IcfbgtrI7DGAxIPIRSkHc+wZeeSsprfQDDIXF
+	5uKX6Y2LukCiL733i/zJsUilptRpMAGENSl5V69i1apQip8Yz1lDYoRfzwfcHWD4LKNcJIB+mVf
+	dUJ0tnRm24TaNuW9FPKbDln2GOgxpeo3pxkpg4DMMjdrBdPuGYNbBglUvc6IrPoVxZe2mlWkIH1
+	Q60ZV49sY0GHW9jwsci2DRRgdi5XpqqZ7hcV6X0Br4+I1qRPLZsEpHHYsKna0D6xqdAfW3W48+u
+	4SUMgtYMQZvZ1ICBS+BoB4xU4bx
+X-Gm-Gg: ASbGncuzhuL9fEIglG7yPLRvSEFSyMcitTg/5uv6+kLNG45ZiBzKEDEaowFKhDZbjU6
+	1tJWmpr4PffE1WFc7uqyEoWj5pmSuCfDS9fCVW9MO2TEtMKWO2O2n6GiWQ7ODItZXltseBOHSjt
+	pPJRHMTGFJHIETs1WcdCvUqjI0MMVb1SzZK7yoblOkMr9dEmzIhE+YkLUr0ytU8+HJ7sUmvjyu8
+	2+0jz7K2gSZ1eDYDdnROJCEmw3R8PZr7u0/lqSrNN0avOLSc9xWMsBu0ce4TjsgAUUzhlpfZ183
+	SIkR6OHELTt2cK+qjGXY/3XbebSFiTUlIYJNgi/f0uJ58HumCtRzt0tUQ2a8t16mULZJt4/9vWj
+	eU8fmIV2ENaCYozrbQXQTnlKrDu8+tTkbA+e5n+iQHrcwUcJ/WUmam7tRXyfeviR0Y4kekLD23S
+	xdYQ1x6RDYMLUuqTLRT/xoPWsQ9fEfTeiF8hND72MVWv8egA==
+X-Google-Smtp-Source: AGHT+IFkTlfERNpL8WzgI98HNFXPMpu3vb8GhIWSo6vXbrSUHECtKm9AHdFcXUyHULX5ulppI2gsxTbonnuD
+X-Received: by 2002:a17:902:eccd:b0:295:34ba:7afa with SMTP id d9443c01a7336-29534ba7bafmr131845055ad.43.1762167454789;
+        Mon, 03 Nov 2025 02:57:34 -0800 (PST)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-19.dlp.protect.broadcom.com. [144.49.247.19])
+        by smtp-relay.gmail.com with ESMTPS id d9443c01a7336-29526984313sm9565155ad.50.2025.11.03.02.57.34
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 03 Nov 2025 02:57:34 -0800 (PST)
+X-Relaying-Domain: broadcom.com
+X-CFilter-Loop: Reflected
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-3324538ceb0so7868683a91.1
+        for <linux-rdma@vger.kernel.org>; Mon, 03 Nov 2025 02:57:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1762167453; x=1762772253; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2xKRpzw6WM9uha1y0ZcKWu7DN7BAxye8b67lEfyJLbY=;
+        b=hKL8EC6pFXaTfB20zRqgiQU6ydLZRLDGLdslRUfViTAvlzQoys0I2Yz9cUeNIGa1eo
+         ByO8uK7aS8kV0mYppBC9pF5xY0aKzgxY/73Ze8YjxcRuqA5qgOF3Ofc5x4w0K7+twxWQ
+         kRnxIZL1wZL0xXh6HjVWG99DYUKqGBel0vBZ4=
+X-Received: by 2002:a17:90b:314e:b0:340:d511:e15f with SMTP id 98e67ed59e1d1-340d511e56fmr7582398a91.18.1762167453150;
+        Mon, 03 Nov 2025 02:57:33 -0800 (PST)
+X-Received: by 2002:a17:90b:314e:b0:340:d511:e15f with SMTP id 98e67ed59e1d1-340d511e56fmr7582383a91.18.1762167452809;
+        Mon, 03 Nov 2025 02:57:32 -0800 (PST)
+Received: from dhcp-10-123-157-187.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34159fc0e19sm602263a91.4.2025.11.03.02.57.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Nov 2025 02:57:32 -0800 (PST)
+From: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+To: leon@kernel.org,
+	jgg@ziepe.ca
+Cc: linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com,
+	selvin.xavier@broadcom.com,
+	kalesh-anakkur.purayil@broadcom.com,
+	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+Subject: [PATCH rdma-next 0/4] RDMA/bnxt_re: Support direct verbs
+Date: Mon,  3 Nov 2025 16:20:29 +0530
+Message-ID: <20251103105033.205586-1-sriharsha.basavapatna@broadcom.com>
+X-Mailer: git-send-email 2.51.2.636.ga99f379adf
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] net/smc: fix mismatch between CLC header and proposal
- extensions
-To: "D. Wythe" <alibuda@linux.alibaba.com>, mjambigi@linux.ibm.com,
-        wenjia@linux.ibm.com, dust.li@linux.alibaba.com,
-        tonylu@linux.alibaba.com, guwen@linux.alibaba.com
-Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        pabeni@redhat.com, edumazet@google.com, sidraya@linux.ibm.com,
-        jaka@linux.ibm.com
-References: <20251031031828.111364-1-alibuda@linux.alibaba.com>
-Content-Language: en-US
-From: Alexandra Winter <wintera@linux.ibm.com>
-In-Reply-To: <20251031031828.111364-1-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Authority-Analysis: v=2.4 cv=StmdKfO0 c=1 sm=1 tr=0 ts=690867ac cx=c_pps
- a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
- a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=gmV_aJJbElOwqUTrwFQA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
- a=cPQSjfK2_nFv0Q5t_7PE:22
-X-Proofpoint-ORIG-GUID: DdUd5zz7N1UApgn1B4dBUjwhjixTIswZ
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTAxMDAxOCBTYWx0ZWRfX6TtwDzpP1ttX
- iJbdKr0Vjhi+kghB4sNNl5ClAC13llATV+QMaSNj/XcUA9IHmABTRSIm0KMBn4L79SZn+x0wHFB
- LBWjWP94N7Kkeis3hvv+NWNJfOGbRkGDxxdm7Q1ZhcEhhtuQ6k555f0dme9g2g/F5mAE+KVDH1u
- kQ8BVIhNyq3k5/sIDKpls4NNXixZkvGFgpMYUwNCBzAB2ebptrofSguPVQVihFbNYqJZ7Ft/Hd/
- uPiiak7RnuSNtUwQyqD6tdzGGNak5mv249yOwxegCQaCwsmzXQZtolm+Pz6V2stbrCF5xSHqwZ5
- HrrYIu6IuKVY3Yhb1POOFCucSSF/P0Bx+a8GzDnTWZGJya5Uho3+Y2B1tHIyX+C66nEFk1u71yp
- 5eTco38mTotQDSNOtpa1tLirIQ8YfQ==
-X-Proofpoint-GUID: hkI_LvqfU-gGO66Imq9UIf0mGczWjBTB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-02_02,2025-10-29_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 suspectscore=0 phishscore=0 impostorscore=0 priorityscore=1501
- malwarescore=0 clxscore=1015 adultscore=0 bulkscore=0 lowpriorityscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2511010018
+X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 
+Hi,
 
+This patchset supports Direct Verbs in the bnxt_re driver.
 
-On 31.10.25 04:18, D. Wythe wrote:
-> The current CLC proposal message construction uses a mix of
-> `ini->smc_type_v1/v2` and `pclc_base->hdr.typev1/v2` to decide whether
-> to include optional extensions (IPv6 prefix extension for v1, and v2
-> extension). This leads to a critical inconsistency: when
-> `smc_clc_prfx_set()` fails - for example, in IPv6-only environments with
-> only link-local addresses, or when the local IP address and the outgoing
-> interface’s network address are not in the same subnet.
-> 
-> As a result, the proposal message is assembled using the stale
-> `ini->smc_type_v1` value—causing the IPv6 prefix extension to be
-> included even though the header indicates v1 is not supported.
-> The peer then receives a malformed CLC proposal where the header type
-> does not match the payload, and immediately resets the connection.
-> 
-> Fix this by consistently using `pclc_base->hdr.typev1` and
-> `pclc_base->hdr.typev2`—the authoritative fields that reflect the
-> actual capabilities advertised in the CLC header—when deciding whether
-> to include optional extensions, as required by the SMC-R v2
-> specification ("V1 IP Subnet Extension and V2 Extension only present if
-> applicable").
+This is required by vendor specific applications that need to manage
+the HW resources directly and to implement the datapath in the
+application.
 
+To support this, the library and the driver are being enhanced to
+provide Direct Verbs using which the application can allocate and
+manage the HW resources (Queues, Doorbell etc) . The Direct Verbs
+enable the application to implement the control path.
 
-Just thinking out loud:
-It seems to me that the 'ini' structure exists once per socket and is used
-to pass information between many functions involved with the handshake.
-Did you consider updating ini->smc_type_v1/v2 when `smc_clc_prfx_set()` fails,
-and using ini as the authoritative source?
-With your patch, it seems to me `ini->smc_type_v1` still contains a stale value,
-which may lead to issues in other places or future code.
+Patch#1 Move uapi methods to a separate file
+Patch#2 Refactor existing bnxt_qplib_create_qp() function
+Patch#3 Support dbr and umem direct verbs
+Patch#4 Support cq and qp direct verbs
+
+Thanks,
+-Harsha
+
+******
+
+Kalesh AP (3):
+  RDMA/bnxt_re: Move the UAPI methods to a dedicated file
+  RDMA/bnxt_re: Refactor bnxt_qplib_create_qp() function
+  RDMA/bnxt_re: Direct Verbs: Support DBR and UMEM verbs
+
+Sriharsha Basavapatna (1):
+  RDMA/bnxt_re: Direct Verbs: Support CQ and QP verbs
+
+ drivers/infiniband/hw/bnxt_re/Makefile    |    2 +-
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h   |   12 +-
+ drivers/infiniband/hw/bnxt_re/dv.c        | 1822 +++++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c  |  549 +++----
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h  |   23 +
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c  |  311 ++--
+ drivers/infiniband/hw/bnxt_re/qplib_fp.h  |   10 +-
+ drivers/infiniband/hw/bnxt_re/qplib_res.c |   43 +
+ drivers/infiniband/hw/bnxt_re/qplib_res.h |   10 +
+ include/uapi/rdma/bnxt_re-abi.h           |  142 ++
+ 10 files changed, 2382 insertions(+), 542 deletions(-)
+ create mode 100644 drivers/infiniband/hw/bnxt_re/dv.c
+
+-- 
+2.51.2.636.ga99f379adf
+
 
