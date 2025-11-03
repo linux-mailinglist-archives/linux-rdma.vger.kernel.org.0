@@ -1,182 +1,137 @@
-Return-Path: <linux-rdma+bounces-14210-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14211-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDAB0C2C88F
-	for <lists+linux-rdma@lfdr.de>; Mon, 03 Nov 2025 16:01:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 30168C2CA9E
+	for <lists+linux-rdma@lfdr.de>; Mon, 03 Nov 2025 16:20:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C3AB34F5AA1
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Nov 2025 14:57:28 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EC95B4F69B5
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Nov 2025 15:12:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50D9532C942;
-	Mon,  3 Nov 2025 14:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B28F7318156;
+	Mon,  3 Nov 2025 14:58:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="by9UlC4f";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="RyaWd2qm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d3Aq3XRH"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86C4732D0F4
-	for <linux-rdma@vger.kernel.org>; Mon,  3 Nov 2025 14:50:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65E6C3112BD;
+	Mon,  3 Nov 2025 14:58:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762181420; cv=none; b=OKTm9MbKQzWqfVyTrwEMHOQ+43WaNTSHb2EyRIr4AYFahWzl7HgxkIMbMArCLtV05jGKvBh1GlRdALRT9egu7IpVRvQam7vaD91Ia1cHxiSa8QcW57cH8QtarKc6TOmwGs72LGLHx9kS1Jhzt6GM4dCZWm/gCBRzgABGeOON/lk=
+	t=1762181925; cv=none; b=eOMcfp5l+2Igm37NvGejtbv+1NpO7Fdy/cI/kkZzgCZQlFIeWzQ5igVGBa4G0t1oe1336hEi8IbilierYAQBGZXjTxl4Ab3/V27DLS4Z18Ea48IAVdxQIZbi4jegvuHv5Ug4Sc4M0Jod1uZY1jPEstolJsaeYWmTEfHLzJRHHXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762181420; c=relaxed/simple;
-	bh=awDPBHUqeWdiCTx68GRboOT/DtuaFpnsr65AopF29ug=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=kkz1m8t8Vv0ZywM7oty2EYXf5UJbL18V8c9SaJmDG1E+cB8fvkrQ5ThOnTeNRJluv9221CmuFfxknHuI3ocia8/qiKdKPZwAxNBTxL6/tHfTwEek0NysyxerR4e6Zd1VdKoofvD/3iUevQU+aKiYC9TK6SzunYYaKx8Kyan4x6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=by9UlC4f; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=RyaWd2qm; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1762181417;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+nMoLQg870a5vLIr0xXAcHBID4BH0thIsNlUoCS1bvw=;
-	b=by9UlC4f58KcKtON0qHfnThNHBnkgATF9tGkDpuax+SaXKAXxXR/pokn5hgNG/jeFO4bCe
-	1auCuJZ6e1x1h9RXq6DO39WTc1/rtLIBtNV+dpCQvbT0MbdSt2Q57nTCb4X2hJOsSiUL/U
-	WYhTmzaIhNYxXA3aGw+eurkhXeYt+6Q=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-599-te3z1uFEOzW7PMZ9DElA4Q-1; Mon, 03 Nov 2025 09:50:13 -0500
-X-MC-Unique: te3z1uFEOzW7PMZ9DElA4Q-1
-X-Mimecast-MFC-AGG-ID: te3z1uFEOzW7PMZ9DElA4Q_1762181412
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-640c4609713so2103964a12.2
-        for <linux-rdma@vger.kernel.org>; Mon, 03 Nov 2025 06:50:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1762181412; x=1762786212; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+nMoLQg870a5vLIr0xXAcHBID4BH0thIsNlUoCS1bvw=;
-        b=RyaWd2qmMgLNxTEMP+ty7Hf7+cPTiZbtYEZrbVlO5TCfB5ecEWMIgphfpThCwMzPk2
-         CKGLsyeGz4mjIXYVawPbk3kfmpTVVOhno2tLd/+QP9NgFDiOEghCaFaSKI3VREeM7sBf
-         0U91Mt2+hDO+jKrv4fXEcY+y0zVHcoGCa10Mo+KzHQ/QvfmUfY6neKC8sx/Be6gE99aV
-         JjhLNkdAFVzQBA950JK0ynx+/Ypg1zCaZLz9hwFEAyWFJ4Ki+5oSlrNv/U84tOWOCAAd
-         aTWnn/a9ozB6Z4Ktyze8X/yrGYEtRyBxki0m2v1suGKa6BZMw56FewcGoiqvVOfdOS6H
-         YTjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762181412; x=1762786212;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+nMoLQg870a5vLIr0xXAcHBID4BH0thIsNlUoCS1bvw=;
-        b=fwRA3NuIusGjwgO4joDD4g36VK/OUhLmIFLCwm/DpHk5b+uE+pngwcxQn7XV0/DYkA
-         8eU+QKE68vjXELsmYClM3h/BK+CJjDFzBvuls4+KrzDP/MOuXunxUjpOZTOSv1Fx297k
-         UuhAjhTJlzrhARARw927qB7mC6x2Z5kRFFok052CZeLEQzXuNhIoxgEuef0B1DW6YWCU
-         eH7e8/CqAzoHu/DNMUdcBMOHQNwzum6gMBunOW3qt9noQgucN07ztpC+dL7cg3B5BHCt
-         IQcHJl7b0MWT/PkGd1T2Cspz8ehimwlwtze9I3IZrQhl2G/yCl76DQUAmUpQ/QriaIte
-         PbFA==
-X-Forwarded-Encrypted: i=1; AJvYcCWUtc9cFhg+Ja4afw59nmCkXE3yrrlfuPuryUbTPkEPpYZ3rDKL3YBodsx91qsUu6cVWuHto5YlkGJl@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz6D2lJ6Y9YKPJIVT9CTqoPgnkwd16el3Oqq5jTeja7X1b73dli
-	+ZE1CRh0kIuoLETxhh+/jg7DLvVgR4uZadv9ZuIzQfMio8hsz8kR+z+g6BJNxt4KqLtcstdX7+Z
-	bgM7UVnl5huuxCpTzcrCmFeC1psOg1VEoSIcPUmaqBawQ9DnN+FPuWCyuiaQubp8=
-X-Gm-Gg: ASbGncuxn9uSp44kPc3ByrTqVrJce/1f2X3FoVNgtF0TQWJMG//vf8u93nCKTfEiBiL
-	fsYDy4X30yp5mSUdC9mdJu8mga9fGTv3ec6CSi6R8TP4WkD+KVSnaLUV7OW7yl7Fn0a6fH3wANg
-	YaESwjffQiCTXct1hezaOIcxGldBb7Z3BbNvBPzZwOGeyyUL2TGwczrEXUGDxFH4kuoJ3w+9rT/
-	hem/DBNiyRMWQp2xbbO39hVbUm/gJs8hqixNtcHr1wFm6wSCn6JS+h1ehWjK0byT8iD8U5RvtDp
-	MraHl0RNOmZkoUdL4ZK8rVZ8NGzfgJxBcFldLH8fpiFXElvrimhujfD/e/HA/6AX7zBUP7gt9zZ
-	S4Vs/KUhUqANZlcFG0MS2rkQ=
-X-Received: by 2002:a05:6402:34ca:b0:640:b497:bf71 with SMTP id 4fb4d7f45d1cf-640b497c2admr4755516a12.8.1762181411915;
-        Mon, 03 Nov 2025 06:50:11 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHNHHGCfan3xN8hz0VQLwH+oMIT11J2vhXom0DZu1MBhk6Duw5v6C2YzkNLZvnmt+vEeRS3LQ==
-X-Received: by 2002:a05:6402:34ca:b0:640:b497:bf71 with SMTP id 4fb4d7f45d1cf-640b497c2admr4755480a12.8.1762181411457;
-        Mon, 03 Nov 2025 06:50:11 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-640b977e6acsm4056741a12.25.2025.11.03.06.50.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Nov 2025 06:50:10 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id B7D07328476; Mon, 03 Nov 2025 15:50:09 +0100 (CET)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Byungchul Park <byungchul@sk.com>
-Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
- harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
- davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
- john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
- leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
- andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
- akpm@linux-foundation.org, david@redhat.com, lorenzo.stoakes@oracle.com,
- Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
- surenb@google.com, mhocko@suse.com, horms@kernel.org, jackmanb@google.com,
- hannes@cmpxchg.org, ziy@nvidia.com, ilias.apalodimas@linaro.org,
- willy@infradead.org, brauner@kernel.org, kas@kernel.org,
- yuzhao@google.com, usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
- almasrymina@google.com, asml.silence@gmail.com, bpf@vger.kernel.org,
- linux-rdma@vger.kernel.org, sfr@canb.auug.org.au, dw@davidwei.uk,
- ap420073@gmail.com, dtatulea@nvidia.com
-Subject: Re: [RFC mm v5 2/2] mm: introduce a new page type for page pool in
- page type
-In-Reply-To: <20251103123942.GA64460@system.software.com>
-References: <20251103075108.26437-1-byungchul@sk.com>
- <20251103075108.26437-3-byungchul@sk.com> <87jz07pajq.fsf@toke.dk>
- <20251103123942.GA64460@system.software.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Mon, 03 Nov 2025 15:50:09 +0100
-Message-ID: <87h5vbp3vi.fsf@toke.dk>
+	s=arc-20240116; t=1762181925; c=relaxed/simple;
+	bh=assirJLyUowDfFa7kE1YCP3FONPTzejJ9QbVSRO7hmk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tgPyT96ICT620jPUddb+Z8WUVq6bx8pyZw/GX0+8da1cUhiwLp1qiexCgaLiQEy6x9Q/0MGAFgCpNtnYfyxMrG/iJF/BR2v3Mlx9cjSqfhmLzq43Wkja1BHPppoSml1SJ9OWDWBdp/Q4jBIHKQL0sBVBfhbALCoNNyi/71Z0QTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d3Aq3XRH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F75EC4CEE7;
+	Mon,  3 Nov 2025 14:58:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762181925;
+	bh=assirJLyUowDfFa7kE1YCP3FONPTzejJ9QbVSRO7hmk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=d3Aq3XRH4FIiOr1ca7vksnvcqMT2DxCali/3rU18MibxJ85utRKsxdBOYb9EzU40r
+	 xqJtMN8cpcFuO0b4Dn3cRam2oug440FP4XgmXKtrlbxdhKlkrPJwTSrS9RJlekJS1y
+	 vE0aEX8wVSNH/anfrG7cZYrDjbekNqr9A2hq4JI/fFIof+O1C1OPlB08HlkYuwgyD9
+	 b1AhgTX+lC9OWxjwogLjeIqdAkPxnR/ejBDzpFZXDoQu9OIsoCMq3UGCo4otyPO0Wf
+	 DGGnGzWS9urm+sBqvyqfWTJ9stDEiyyA7n4VEE6P/puMYPnrlwgzRQs8p0t32bzEtE
+	 TYQkW0iQbuROQ==
+Date: Mon, 3 Nov 2025 14:58:39 +0000
+From: Simon Horman <horms@kernel.org>
+To: Aditya Garg <gargaditya@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	longli@microsoft.com, kotaranov@microsoft.com,
+	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+	ernis@linux.microsoft.com, dipayanroy@linux.microsoft.com,
+	shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org, gargaditya@microsoft.com
+Subject: Re: [PATCH net-next v2] net: mana: Handle SKB if TX SGEs exceed
+ hardware limit
+Message-ID: <aQjDHy5qSGYADPS7@horms.kernel.org>
+References: <20251029131235.GA3903@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <aQMqLN0FRmNU3_ke@horms.kernel.org>
+ <347c723b-d47c-49c2-9a3b-b49d967f875b@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <347c723b-d47c-49c2-9a3b-b49d967f875b@linux.microsoft.com>
 
-Byungchul Park <byungchul@sk.com> writes:
+On Fri, Oct 31, 2025 at 06:50:10PM +0530, Aditya Garg wrote:
+> On 30-10-2025 14:34, Simon Horman wrote:
+> > On Wed, Oct 29, 2025 at 06:12:35AM -0700, Aditya Garg wrote:
+> > > The MANA hardware supports a maximum of 30 scatter-gather entries (SGEs)
+> > > per TX WQE. Exceeding this limit can cause TX failures.
+> > > Add ndo_features_check() callback to validate SKB layout before
+> > > transmission. For GSO SKBs that would exceed the hardware SGE limit, clear
+> > > NETIF_F_GSO_MASK to enforce software segmentation in the stack.
+> > > Add a fallback in mana_start_xmit() to linearize non-GSO SKBs that still
+> > > exceed the SGE limit.
+> > > 
+> > > Return NETDEV_TX_BUSY only for -ENOSPC from mana_gd_post_work_request(),
+> > > send other errors to free_sgl_ptr to free resources and record the tx
+> > > drop.
+> > > 
+> > > Co-developed-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+> > > Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+> > > Signed-off-by: Aditya Garg <gargaditya@linux.microsoft.com>
+> > 
+> > ...
+> > 
+> > > @@ -289,6 +290,21 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+> > >   	cq = &apc->tx_qp[txq_idx].tx_cq;
+> > >   	tx_stats = &txq->stats;
+> > > +	if (MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES &&
+> > > +	    skb_shinfo(skb)->nr_frags + 2 > MAX_TX_WQE_SGL_ENTRIES) {
+> > > +		/* GSO skb with Hardware SGE limit exceeded is not expected here
+> > > +		 * as they are handled in mana_features_check() callback
+> > > +		 */
+> > 
+> > Hi,
+> > 
+> > I'm curious to know if we actually need this code.
+> > Are there cases where the mana_features_check() doesn't
+> > handle things and the kernel will reach this line?
+> > 
+> > > +		if (skb_is_gso(skb))
+> > > +			netdev_warn_once(ndev, "GSO enabled skb exceeds max SGE limit\n");
+> > > +		if (skb_linearize(skb)) {
+> > > +			netdev_warn_once(ndev, "Failed to linearize skb with nr_frags=%d and is_gso=%d\n",
+> > > +					 skb_shinfo(skb)->nr_frags,
+> > > +					 skb_is_gso(skb));
+> > > +			goto tx_drop_count;
+> > > +		}
+> > > +	}
+> > > +
+> > >   	pkg.tx_oob.s_oob.vcq_num = cq->gdma_id;
+> > >   	pkg.tx_oob.s_oob.vsq_frame = txq->vsq_frame;
+> > 
+> > ...
+> 
+> Hi Simon,
+> As it was previously discussed and agreed on with Eric, this is for Non-GSO
+> skbs which could have possibly nr_frags greater than hardware limit.
+> 
+> Quoting Eric's comment from v1 thread: https://lore.kernel.org/netdev/CANn89iKwHWdUaeAsdSuZUXG-W8XwyM2oppQL9spKkex0p9-Azw@mail.gmail.com/
+> "I think that for non GSO, the linearization attempt is fine.
+> 
+> Note that this is extremely unlikely for non malicious users,
+> and MTU being usually small (9K or less),
+> the allocation will be much smaller than a GSO packet."
 
-> On Mon, Nov 03, 2025 at 01:26:01PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> Byungchul Park <byungchul@sk.com> writes:
->>=20
->> > Currently, the condition 'page->pp_magic =3D=3D PP_SIGNATURE' is used =
-to
->> > determine if a page belongs to a page pool.  However, with the planned
->> > removal of ->pp_magic, we should instead leverage the page_type in
->> > struct page, such as PGTY_netpp, for this purpose.
->> >
->> > Introduce and use the page type APIs e.g. PageNetpp(), __SetPageNetpp(=
-),
->> > and __ClearPageNetpp() instead, and remove the existing APIs accessing
->> > ->pp_magic e.g. page_pool_page_is_pp(), netmem_or_pp_magic(), and
->> > netmem_clear_pp_magic().
->> >
->> > This work was inspired by the following link:
->> >
->> > [1] https://lore.kernel.org/all/582f41c0-2742-4400-9c81-0d46bf4e8314@g=
-mail.com/
->> >
->> > While at it, move the sanity check for page pool to on free.
->> >
->> > Suggested-by: David Hildenbrand <david@redhat.com>
->> > Co-developed-by: Pavel Begunkov <asml.silence@gmail.com>
->> > Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
->> > Signed-off-by: Byungchul Park <byungchul@sk.com>
->> > Acked-by: David Hildenbrand <david@redhat.com>
->> > Acked-by: Zi Yan <ziy@nvidia.com>
->> > Acked-by: Mina Almasry <almasrymina@google.com>
->>=20
->> Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->>=20
->> IIUC, this will allow us to move the PP-specific fields out of struct
->> page entirely at some point, right? What are the steps needed to get to
->> that point after this?
->
-> Yes, it'd be almost done once this set gets merged :-)
->
-> Will check if I can safely remove pp fields from struct page, and do
-> it!
+Thanks for the clarification, that makes sense to me.
 
-Sounds good, thanks!
-
--Toke
-
+FTR, Jakub's question (elsewhere) is different to mine.
 
