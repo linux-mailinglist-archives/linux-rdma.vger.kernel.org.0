@@ -1,173 +1,193 @@
-Return-Path: <linux-rdma+bounces-14214-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14215-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8E9BC2D776
-	for <lists+linux-rdma@lfdr.de>; Mon, 03 Nov 2025 18:28:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D30D8C2DED8
+	for <lists+linux-rdma@lfdr.de>; Mon, 03 Nov 2025 20:46:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id AF5D74E78C3
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Nov 2025 17:28:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 227141889ECA
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Nov 2025 19:46:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DB7631B102;
-	Mon,  3 Nov 2025 17:28:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05A6628DB49;
+	Mon,  3 Nov 2025 19:46:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mwWnPAkG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kkt4JyOR"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yx1-f51.google.com (mail-yx1-f51.google.com [74.125.224.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA8C2156678;
-	Mon,  3 Nov 2025 17:28:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C131A23A4
+	for <linux-rdma@vger.kernel.org>; Mon,  3 Nov 2025 19:45:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762190912; cv=none; b=kk5tGXidYCnNaYtU/TxljErpiYNix24lz6MchABblJ4Tnv4pYJzFGCc72Wx36ccA8nyXa5sPUW+dXgHjSKnNQ7ECZqZHkbCaTClSNfe8B82KkkTKMkSCNTWljlr5SWptHePFNqm+devFCKNJjZwTu9iupWGSmDBZigOc4DzuEXw=
+	t=1762199159; cv=none; b=Pcw5Fbe+Cemvd4K8GYfn6cwTi59v6W+KBAfPFtxTAF5zfLSCPyhebr3TiZSoHCKnV42dbbDb3ROm/udcMBDJVIuvqDyRCD0faRlV0E2+xCdZh2OFkBqRejnnoGGeVMMlLO1HKsuOIIuPXAh411T0VJ4dL7QSl+CLrRBNdmKwPH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762190912; c=relaxed/simple;
-	bh=xn8o05xUchR4VJZbvh3b7LrEVKldpcP244qArsTXXVI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=GS+3dseTTWJNAABZ21Dke7psqDD2iBSYEbXPyFY1UxL8964fN69ZjZ6vQlJuakgRicnJMZcmbNAlNdb6p6ctu7HGXXNPwrs1LOHmtOmI2o+y63TAeeOwJNhV0PyqL3wzIVX4j4LUZOUw18RVUHoH90fCNseqvowPtgZoAPjjK/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mwWnPAkG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0444BC4CEE7;
-	Mon,  3 Nov 2025 17:28:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762190912;
-	bh=xn8o05xUchR4VJZbvh3b7LrEVKldpcP244qArsTXXVI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=mwWnPAkGnsmPrgqlf8pyTOI5XUhmBZS5vXTg6IX9pJry4PPcJOfns8zSFy0SEufL+
-	 vsYNYNEmwmI8/2OhKWhXkkmisVla1c4lfW58fiYuX2j2gRktQTBVVtnE+VnsC4/kwi
-	 yKFzQhbeRX1MSlB2uXnpKiDv2iQi6TvBFEtrKnRpaS6Pm/LhteW3SEG7ouAQGV0ySR
-	 JeCYpgmuf81mrwKw8BEwLKRY5Zt4VN1PXUVxCAlK91G5m7t2gYYpdToke9K6TYq1Qi
-	 6t1Yqab9hRFg4QOlv4cUSnE18QfIUOkMGJOXmpE3M6NofJUkvFB8LWQ2RrnpQiLoDd
-	 InMlobK4o/Rtw==
-Date: Mon, 3 Nov 2025 11:28:30 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Yishai Hadas <yishaih@nvidia.com>
-Cc: Leon Romanovsky <leon@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
+	s=arc-20240116; t=1762199159; c=relaxed/simple;
+	bh=IPTBE8hzRKTSZ+5Dq4mYL083Sn9ZhFw3PxQbIPLRuNs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Tky2oHyri1pbE+OrmnqsVNYDYjbz2DXkDCoJaNHc2GgOd3jBhHq9cEhveXDTJ/1/GSWWPI7R/PIuKgziB65+EjFdtlEnepXxy8Z2elpWaJnekTuMlJwqZBAi70K0FwUh3d4YwRyALKzBQKP/kpJUX8ShW7KbwR3DFgZEcO0MZmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kkt4JyOR; arc=none smtp.client-ip=74.125.224.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yx1-f51.google.com with SMTP id 956f58d0204a3-63e393c49f1so4359014d50.0
+        for <linux-rdma@vger.kernel.org>; Mon, 03 Nov 2025 11:45:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762199156; x=1762803956; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zDgrJGPwTkDqRWUIRmg2o0UWPQlQh5Pa4lWjqQeT3Vs=;
+        b=Kkt4JyOR0bnSMdAAot+yuwREiDggObyb9FkBryzKkFA3AxVH8Tm/u0Fk/mF4zsTZoH
+         mcxNtLiSk2jWYd7USg7j/iauoVq+6C2GBd/RSNTvgdQK9dwQY9dZL/yNnNjI+4V4x43l
+         HNfO2seHzvyEMzP3QF7dxS832mPweLjFhxKbGbM0qz7h7+Lsbsh+CyLgtltX+oXFv7j8
+         zCRSs10iH7zPnU6u/AtxZR4u7pPJX6gCjyDeHTe+R6qV0hNIXqArL+zR8F0v0KGXYkMB
+         e2cJNzzxKZsA9dk9/EFm5tq9LPnX/JZDRl+q13wUwexKPIyg80sYF4/LkAUikIuIzsR6
+         25VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762199156; x=1762803956;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zDgrJGPwTkDqRWUIRmg2o0UWPQlQh5Pa4lWjqQeT3Vs=;
+        b=GoBvVjAJzWv/opzyo7TOmPSM5rOHQmx/IlLkuSIx0hE2IMQbqUFuyi1I/GGRMBrlSc
+         n46Gqj6bKYvl8eO/H5IjfJjHTEeH5vrHjfe8KQ9wVM++D3a4XeJI/4XIar4N5uFis2s4
+         b6MQ1WX6RJLCXQh7kekWE7abzhAodqFPuSRAphWe3YISaGoXzJSWT7AfzuZN0rHmwE5r
+         6YmkTzRbpwIYKyjtdxTMo/BD0XBND6G+EyInz13MEG93eaA09khr/wUGhv7TJmvle5z1
+         33L8ItAgbsx4K/D1ZaDc/Qn+mW4E/pEDsiewX7Cf/5x17PgnnPrfXi2x0PbJLk75y3bR
+         SYiA==
+X-Forwarded-Encrypted: i=1; AJvYcCX8l3a8MsbSlGf9GxtGmLQnnl8PjLegyF31rBMA4U9D0G0/hLJB3d52G/1kN/eHrL1HGAshyYLPTV4P@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzihotopy1iGWhl0cKzuktwBF4/zQFMdkxUYR3D/WnTxTB/1zmW
+	mXE14bf6hwx+FWIWLShAkeEsxDN+P0poN81UC9s/qj+uTO3lhLF3Lg9x
+X-Gm-Gg: ASbGnct6aXNNOvZVFTohIABMCHkHBudw3oXaQXgN0qnsVJZB8vdy+WERYSW3dZ/PESE
+	u7bsOZxdmoYatl7UeveaWTmi6d/3aNjqcp8sxgj3f8nL2d72HelmsiL/eIb4mOAaNYUz/wDaGi3
+	/t687JSZfEM0p1MwfrtpAUd1FrQsyacdpJQfdgQwvlQQ/BttxM3b32T5Tu6oaqCKC0oslb18n2Y
+	rbqSG7oZWAOROtmKUE6AmeXgtke0GqHGrxRsHj3pPMS5J3rtnIijEBnRryZ71MnsE0Nle8WyKkx
+	ecqBMuppNDc0l1njL0uzNNJbBZ4+l6+3KrBTdJFjUN9Na2DdQUZW8OAYdtEh5GN8Z6X9GIjzH42
+	V6umDGZSTSTtaIEVF4JAO9WuHowuNYSrs5rcvl8dKhFKHtBOZkSfxAQ4c8dy+PWk9eKHsL/jPSz
+	KTOa9WmDf493TYFpFOIk4trib30eaGito=
+X-Google-Smtp-Source: AGHT+IGNH0RPJesBeIcKsla8XUDm1bFpyEtjHsBQ6vejr6g2P49YD8AtgFLGMiN2odUrOWMz5ZeYtA==
+X-Received: by 2002:a05:690c:6706:b0:786:8dc1:5242 with SMTP id 00721157ae682-7868dc1591dmr18450727b3.53.1762199156319;
+        Mon, 03 Nov 2025 11:45:56 -0800 (PST)
+Received: from localhost ([2a03:2880:25ff:72::])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-7869200367fsm3408667b3.42.2025.11.03.11.45.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Nov 2025 11:45:55 -0800 (PST)
+From: Daniel Zahka <daniel.zahka@gmail.com>
+To: Jiri Pirko <jiri@resnulli.us>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	Edward Srouji <edwards@nvidia.com>
-Subject: Re: [PATCH mlx5-next 1/2] PCI/TPH: Expose pcie_tph_get_st_table_loc()
-Message-ID: <20251103172830.GA1811635@bhelgaas>
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Srujana Challa <schalla@marvell.com>,
+	Bharat Bhushan <bbhushan2@marvell.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Brett Creeley <brett.creeley@amd.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Michael Chan <michael.chan@broadcom.com>,
+	Pavan Chebbi <pavan.chebbi@broadcom.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Sunil Goutham <sgoutham@marvell.com>,
+	Linu Cherian <lcherian@marvell.com>,
+	Geetha sowjanya <gakula@marvell.com>,
+	Jerin Jacob <jerinj@marvell.com>,
+	hariprasad <hkelam@marvell.com>,
+	Subbaraya Sundeep <sbhatta@marvell.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Mark Bloch <mbloch@nvidia.com>,
+	Ido Schimmel <idosch@nvidia.com>,
+	Petr Machata <petrm@nvidia.com>,
+	Manish Chopra <manishc@marvell.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Siddharth Vadapalli <s-vadapalli@ti.com>,
+	Roger Quadros <rogerq@kernel.org>,
+	Loic Poulain <loic.poulain@oss.qualcomm.com>,
+	Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+	Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+	Dave Ertman <david.m.ertman@intel.com>,
+	Vlad Dumitrescu <vdumitrescu@nvidia.com>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+	Lorenzo Bianconi <lorenzo@kernel.org>
+Cc: netdev@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org,
+	linux-rdma@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-omap@vger.kernel.org
+Subject: [PATCH net-next v2 0/2] devlink: net/mlx5: implement swp_l4_csum_mode via devlink params
+Date: Mon,  3 Nov 2025 11:45:51 -0800
+Message-ID: <20251103194554.3203178-1-daniel.zahka@gmail.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c9cb13f6-570e-422f-b988-035a31e85330@nvidia.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Nov 03, 2025 at 06:23:26PM +0200, Yishai Hadas wrote:
-> On 03/11/2025 17:43, Bjorn Helgaas wrote:
-> > On Mon, Oct 27, 2025 at 11:34:01AM +0200, Leon Romanovsky wrote:
-> > > From: Yishai Hadas <yishaih@nvidia.com>
-> > > 
-> > > Expose pcie_tph_get_st_table_loc() to be used by drivers as will be done
-> > > in the next patch from the series.
-> > > 
-> > > Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-> > > Signed-off-by: Edward Srouji <edwards@nvidia.com>
-> > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > ---
-> > >   drivers/pci/tph.c       | 7 ++++---
-> > >   include/linux/pci-tph.h | 1 +
-> > >   2 files changed, 5 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/pci/tph.c b/drivers/pci/tph.c
-> > > index cc64f93709a4..8f8457ec9adb 100644
-> > > --- a/drivers/pci/tph.c
-> > > +++ b/drivers/pci/tph.c
-> > > @@ -155,7 +155,7 @@ static u8 get_st_modes(struct pci_dev *pdev)
-> > >   	return reg;
-> > >   }
-> > > -static u32 get_st_table_loc(struct pci_dev *pdev)
-> > > +u32 pcie_tph_get_st_table_loc(struct pci_dev *pdev)
-> > >   {
-> > >   	u32 reg;
-> > > @@ -163,6 +163,7 @@ static u32 get_st_table_loc(struct pci_dev *pdev)
-> > >   	return FIELD_GET(PCI_TPH_CAP_LOC_MASK, reg);
-> > >   }
-> > > +EXPORT_SYMBOL(pcie_tph_get_st_table_loc);
-> > 
-> > OK by me, but I think we should add kernel-doc for the return value.
-> > 
-> > With that doc added:
-> > 
-> > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> 
-> Thanks Bjorn.
-> 
-> We may add the below hunk.
-> 
-> Can that work for you ?
+This series contains two patches. The first is a pure refactor that
+passes through the extack to devlink_param::get() implementations. The
+second introduces a permanent devlink param to the mlx5 driver for
+controlling tx csum behavior.
 
-No, because (a) it just restates the function name and doesn't say how
-to interpret the return value (you would need a PCIe spec to look it
-up) and (b) kernel-doc syntax would be "Return: " (see
-Documentation/doc-guide/kernel-doc.rst for examples).
+Enabling extack for devlink_param::get() allows drivers to provide
+more information in cases when reading parameters from hardware can
+result in errors or unexpected values.
 
-> diff --git a/drivers/pci/tph.c b/drivers/pci/tph.c
-> index 8f8457ec9adb..385307a9a328 100644
-> --- a/drivers/pci/tph.c
-> +++ b/drivers/pci/tph.c
-> @@ -155,6 +155,12 @@ static u8 get_st_modes(struct pci_dev *pdev)
->         return reg;
->  }
-> 
-> +/**
-> + * pcie_tph_get_st_table_loc - query the device for its ST table location
-> + * @pdev: PCI device to query
-> + *
-> + * Return the location of the ST table
-> + */
->  u32 pcie_tph_get_st_table_loc(struct pci_dev *pdev)
->  {
->         u32 reg;
-> 
-> Yishai
-> 
-> > 
-> > 
-> > >   /*
-> > >    * Return the size of ST table. If ST table is not in TPH Requester Extended
-> > > @@ -174,7 +175,7 @@ u16 pcie_tph_get_st_table_size(struct pci_dev *pdev)
-> > >   	u32 loc;
-> > >   	/* Check ST table location first */
-> > > -	loc = get_st_table_loc(pdev);
-> > > +	loc = pcie_tph_get_st_table_loc(pdev);
-> > >   	/* Convert loc to match with PCI_TPH_LOC_* defined in pci_regs.h */
-> > >   	loc = FIELD_PREP(PCI_TPH_CAP_LOC_MASK, loc);
-> > > @@ -299,7 +300,7 @@ int pcie_tph_set_st_entry(struct pci_dev *pdev, unsigned int index, u16 tag)
-> > >   	 */
-> > >   	set_ctrl_reg_req_en(pdev, PCI_TPH_REQ_DISABLE);
-> > > -	loc = get_st_table_loc(pdev);
-> > > +	loc = pcie_tph_get_st_table_loc(pdev);
-> > >   	/* Convert loc to match with PCI_TPH_LOC_* */
-> > >   	loc = FIELD_PREP(PCI_TPH_CAP_LOC_MASK, loc);
-> > > diff --git a/include/linux/pci-tph.h b/include/linux/pci-tph.h
-> > > index 9e4e331b1603..ba28140ce670 100644
-> > > --- a/include/linux/pci-tph.h
-> > > +++ b/include/linux/pci-tph.h
-> > > @@ -29,6 +29,7 @@ int pcie_tph_get_cpu_st(struct pci_dev *dev,
-> > >   void pcie_disable_tph(struct pci_dev *pdev);
-> > >   int pcie_enable_tph(struct pci_dev *pdev, int mode);
-> > >   u16 pcie_tph_get_st_table_size(struct pci_dev *pdev);
-> > > +u32 pcie_tph_get_st_table_loc(struct pci_dev *pdev);
-> > >   #else
-> > >   static inline int pcie_tph_set_st_entry(struct pci_dev *pdev,
-> > >   					unsigned int index, u16 tag)
-> > > 
-> > > -- 
-> > > 2.51.0
-> > > 
-> 
+The mlx5 swp_l4_csum_mode devlink param is necessary for initializing
+PSP on CX7 NICs.
+
+CHANGES:
+v2:
+  - fix indentation issue in new mlx5.rst entry
+  - use extack in mlx5_nv_param_devlink_swp_l4_csum_mode_get()
+  - introduce extack patch.
+v1: https://lore.kernel.org/netdev/20251022190932.1073898-1-daniel.zahka@gmail.com/
+
+Daniel Zahka (2):
+  devlink: pass extack through to devlink_param::get()
+  net/mlx5: implement swp_l4_csum_mode via devlink params
+
+ Documentation/networking/devlink/mlx5.rst     |   9 +
+ .../marvell/octeontx2/otx2_cpt_devlink.c      |   6 +-
+ drivers/net/ethernet/amd/pds_core/core.h      |   3 +-
+ drivers/net/ethernet/amd/pds_core/devlink.c   |   3 +-
+ .../net/ethernet/broadcom/bnxt/bnxt_devlink.c |   6 +-
+ .../net/ethernet/intel/ice/devlink/devlink.c  |  12 +-
+ .../marvell/octeontx2/af/rvu_devlink.c        |  15 +-
+ .../marvell/octeontx2/nic/otx2_devlink.c      |   6 +-
+ drivers/net/ethernet/mellanox/mlx4/main.c     |   6 +-
+ .../net/ethernet/mellanox/mlx5/core/devlink.h |   3 +-
+ .../net/ethernet/mellanox/mlx5/core/eswitch.c |   3 +-
+ .../mellanox/mlx5/core/eswitch_offloads.c     |   3 +-
+ .../net/ethernet/mellanox/mlx5/core/fs_core.c |   3 +-
+ .../ethernet/mellanox/mlx5/core/fw_reset.c    |   3 +-
+ .../mellanox/mlx5/core/lib/nv_param.c         | 170 +++++++++++++++++-
+ .../mellanox/mlxsw/spectrum_acl_tcam.c        |   3 +-
+ .../ethernet/netronome/nfp/devlink_param.c    |   3 +-
+ drivers/net/ethernet/qlogic/qed/qed_devlink.c |   3 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |   3 +-
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c      |   3 +-
+ drivers/net/ethernet/ti/cpsw_new.c            |   6 +-
+ drivers/net/wwan/iosm/iosm_ipc_devlink.c      |   3 +-
+ include/net/devlink.h                         |   3 +-
+ include/net/dsa.h                             |   3 +-
+ net/devlink/param.c                           |  19 +-
+ net/dsa/devlink.c                             |   3 +-
+ 26 files changed, 257 insertions(+), 46 deletions(-)
+
+-- 
+2.47.3
+
 
