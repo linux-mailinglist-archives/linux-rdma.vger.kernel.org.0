@@ -1,293 +1,371 @@
-Return-Path: <linux-rdma+bounces-14185-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14186-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC044C2A05B
-	for <lists+linux-rdma@lfdr.de>; Mon, 03 Nov 2025 05:22:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37A6FC2A06D
+	for <lists+linux-rdma@lfdr.de>; Mon, 03 Nov 2025 05:29:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E4C03A72F2
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Nov 2025 04:22:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90EBB1886962
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Nov 2025 04:28:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE77D194AD7;
-	Mon,  3 Nov 2025 04:21:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBC5B262FDD;
+	Mon,  3 Nov 2025 04:28:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="gLP31Ea7"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="LWjqIh9V"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pg1-f228.google.com (mail-pg1-f228.google.com [209.85.215.228])
+Received: from mail-io1-f98.google.com (mail-io1-f98.google.com [209.85.166.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F312D8405C
-	for <linux-rdma@vger.kernel.org>; Mon,  3 Nov 2025 04:21:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.228
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07B6011CA0
+	for <linux-rdma@vger.kernel.org>; Mon,  3 Nov 2025 04:28:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762143716; cv=none; b=oWrNm7UQ6pxiMrErsOHnleboMvIHEPraiiEqzieCd2wHgs3HC2DUL/DZBzA/LpQOE4514wOLQ7vpxF0y4hNLvSTuw2hoMTfCWaqzVNHvbbSy5JkBgaV4TwMAxX3oo+jmhcgawd4kdRTqUoCn9dI71T8OTJ9GxQ47bdTPM/FUDt4=
+	t=1762144089; cv=none; b=S6YwCiBaPxYkUWaTl7OpOdBP9lc+3hu8Ttfj35cAvvJNRGzCQsietWLSRmL9NbYJFSkeNVGZL3Hix/vLexwC24MzWloodSE36Y3drIeZKTz2QlKGUGJBkeyCGqn0HbftPInmCrez1ekOlusjwbQ3ChRm7w1PK0RS2TIHvveDn9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762143716; c=relaxed/simple;
-	bh=z+mr9JjO94fxPjH8WFoceJ1izIJCBUJnYGStJ3cjakU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LP/ic78VSL12BKKO4dZw5p2tt28k+7HzcGF4Fdl7tIHPaIHqRn5YdNpBgPHFAsXYfWsRCevjV/kPtL1wjX8XoABCvMi9sq9iYWKnjyTNrMbG5smIKzTa6u3nKZm0gyUO7DQIOFnrNLQQ9haDy4uUW31w9EpKvguqS2HeDiAq71U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=gLP31Ea7; arc=none smtp.client-ip=209.85.215.228
+	s=arc-20240116; t=1762144089; c=relaxed/simple;
+	bh=KFehElOOfsi1z6PEfMVY+fJmMMa0kMEXINPjM3B9xos=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=A1K88sC82mef10G9ziAaTLhnWMCgbE2ganWGj76FDRendRVJizyAZ27fUBzFyO8xluhHpcsPFPFc1M5//hZrOS6+md9fU6drqESzbnWPlbw3pjhTOysz34zfvU2gwY3u7d+5IMkrIAl5LJnlFm9WqAm3Ky0NpmJe9ivD+23MYyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=LWjqIh9V; arc=none smtp.client-ip=209.85.166.98
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pg1-f228.google.com with SMTP id 41be03b00d2f7-b991ddb06a9so638756a12.3
-        for <linux-rdma@vger.kernel.org>; Sun, 02 Nov 2025 20:21:54 -0800 (PST)
+Received: by mail-io1-f98.google.com with SMTP id ca18e2360f4ac-9482ba6fc24so217236839f.2
+        for <linux-rdma@vger.kernel.org>; Sun, 02 Nov 2025 20:28:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762143714; x=1762748514;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=AKCCgrZrrwR7E47PQveFGJCYhoeAbAlYdBmxL4hHAxE=;
-        b=TJBRSEmDslSoZSO2Yt7EZqWnK+/f8z0B8se9Ly57vo0DnP4zt/IS75Y5sbzujZlZyB
-         Cp55lrGUTDchQEqgR+kcYUEtzVrhBRKWaodpdBtOIH8KA7UHwEy8+TWQ2jXg1th59BiI
-         v7Xd9jYeGxPEk9MjentYe1Bks90BKrWMkZth1pZG0MCF+J6nOvBUENSLTwxMJiaLztTQ
-         jSbYhVc3xt8W+PNmLoz+dkXYb/oEIYrKx31d2eud6IzgCxFLLaAAQ6JGTIJxOmd2wC4x
-         3UBS2vjxLC/ULu5klo12inD7dRPjo1yzVN+YzJDNdhUvXr2w8b0c2uKnIrNTfd0g/xOk
-         KCIw==
-X-Forwarded-Encrypted: i=1; AJvYcCUYTnbMpTJC2X4GxkC7Jfaar1Xm5gH67bW8TwMr/v1z9ZCBrDjMWHHgAb3BLLjzzH3Pjo8J+CCCY11S@vger.kernel.org
-X-Gm-Message-State: AOJu0YyBDhmTK1f5y5x4bCtNKVomBFR5d6m8AHYzIzu5t3dhmwwGHpZY
-	En4tTkXerDLWwhVYjvAPa6RbddhjCRl3yzShSpb+k5Ga8qFzXNzxBBUWB7L9RlSSrB0avFHFCPb
-	Mbmxte3foBh00RKJae2vJ930jwFzH71ZFJvwRkuUPn8ZqxDAcFsIeAC9L07jyCnFULxxFUgThU6
-	/4v6oalAJlP0L78G2i+q9F0fO2DRXIMVKc1Zr6QMywMAQW9iqrX7TlGArlh9CBYAV2m3TW7WyYg
-	zDcikRwaId0iNMs0rNOZwjXQ1Q+Zw==
-X-Gm-Gg: ASbGncuZvg+DjrtiKl1uXVkVoXZOMVgKvlvkn65VtaL9SDCJR2+2jXTRT5aAklo4Eh5
-	iVTK0TlGV6IznU5Y3q5BED9EQ1Vr0gTD7nbpLwiaWiW2BMxjhwb2p+4uYVFXHknMsYRyWHpaE7v
-	tX5aFHtEvbe1BInHd2GSumgS/m/vv4i+ApdVLcSvExeMdZYQeJ16qVSQ3bfrgaUAp/gj0kXZ5F9
-	YMYtdFiYihjO23nhpjqxOoWgtxRWWIaHypYd0pnAmAci2J+/QuSTSlRs/fhPuvFh13Z7//n6idf
-	HM+MUiTWqyq8MaQkK3o2DSGijJQUkbbxavyUGREmE+PLgPLpKCi6APbUQ8kmMV9WQN+RmWrxg+z
-	cxvhOSwGQrmcBOZU1bAHxtUJEd+ZD0vcnKbJpaMuH36zxlVwUywE6QB6KM79P/kgohbTwHfqYGs
-	ufeU7+//o62ah7/2giPeyb3VVGCvwj+P5kORcJtLEnXfFDk0gWGw==
-X-Google-Smtp-Source: AGHT+IGk3HWQzsjXoYc7DlPhA0Yt6NtS1wq+oHg8EqWmsK+1UkIns9dvFkr7FeefEWpkl1s+Vj5dKjclV1zY
-X-Received: by 2002:a17:903:41d0:b0:295:5116:6a7d with SMTP id d9443c01a7336-29551166bf6mr83125465ad.4.1762143714051;
-        Sun, 02 Nov 2025 20:21:54 -0800 (PST)
+        d=1e100.net; s=20230601; t=1762144086; x=1762748886;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:dkim-signature:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A2/KyBV32WbvOAaYCKvhCDToZx5k7ePfP5bvqwgDfKk=;
+        b=szAqs23qs9SrXml2WZd2v3Zy7atL6LTtJ7SugyHgRNOrV8dwZM+Bh5w0CEzLJwunQ1
+         sgoRX0QfBIaU4MTY0e6pt/AmHHQZvuwCvvAXzjiLNl8BUqxPx6DoJHPr/Us/013dg8m2
+         Zuo5LpObgYI4tyaN3wgekujgoT/9Q2GFrKmDTF39suqHNN4WmvDyiDi1dBFYI+8qz4G4
+         XrHf0GlHbrmNY52tsOiSKXX1IKxwi2cf7sLe/w7vVnHNSV7m7KV7EMTE37S3c7lOoLd4
+         cjU45n0vrOGJR1xwg/zw55/5GMEKith/2fdFIz6cNBxPRKBe5+HB6BBDbbfvFu49Uzgt
+         hY4Q==
+X-Gm-Message-State: AOJu0YwMdpdP+23env5opnRA2g1O7Ff7WysCkYWkb5zOTjq1pKh54WGR
+	ZEpEKNDaX3x5Wf9LeT11DeNwzeifGUuJ+8JoJ3mkoVl2Df876+VpnIgcoZd7hm14I87wXMBWblI
+	idSm52Ffx7tT1Nn1QRzXlGo2ew+0ZbsHcL4LksZ06A4Ul6bgYB8H2OqfSy8YMeeCS32KA/YuK5q
+	CH2nzzQrfM/lRHK+0t8o6WA0CTNjnhKaEkrnVboeCKagx+vFJ7hEV16WzctIrwOXrQ48lvKfkRc
+	iar84sScZpupqxzZ5FVpDzJhEqjqw==
+X-Gm-Gg: ASbGncvnYpixwjdqBZg8zAtNr+ybWD2/OrsmUMV4VD7L7ST2KXdPoB07Jf49dEzlV7D
+	M8mmhhHSb9jgiHZf/6oyQ8LnKtgjjg/gO9zsLq16q2pGd06TffwZ0Y0Gxdz8clHMOFLwUQ80YJ4
+	3c/qPHU5GgLE6k0SzGOcby8meZlefVZz5/loLF4jhD9AqmxbYaXkuQKUIo61sHJ+1FZ3GV2f3NJ
+	60h9JwbEFJwUOOMDXS3ScMX7DQP5qjez91GfxaWQGPn4C/4+cGEeH/5EZUzCZ9Qen75jFxeu4qT
+	rcsvts11rRbsYdRf/AOikLft5PXgpIZjjmfddzBsaYCRgBMoitaezsoGH/zSNwLMW8pki7zKvBm
+	KwIULIqKYXcbT+YUn66DmRf4GYbX+YwZGJNYULR0xkSJY9apHa1t7KPXdN4BSd4x6uMdeOmShLE
+	qWCMsa9hozf9LxlAdh+px7Fl0GxTn8jImV/c+G9UnxHdgCbm8EBg==
+X-Google-Smtp-Source: AGHT+IEBH3kzsoQ4Ry87t+JrLXO29fx2gEAsRj/WkbOJpbEsTdGiYvdxK9ueLRAC+l7Sbm20fuy/FCszKhJA
+X-Received: by 2002:a05:6602:1644:b0:93e:8c1e:cc5d with SMTP id ca18e2360f4ac-948229564ffmr2092107839f.5.1762144086124;
+        Sun, 02 Nov 2025 20:28:06 -0800 (PST)
 Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-101.dlp.protect.broadcom.com. [144.49.247.101])
-        by smtp-relay.gmail.com with ESMTPS id d9443c01a7336-2952698d353sm8269165ad.55.2025.11.02.20.21.53
+        by smtp-relay.gmail.com with ESMTPS id 8926c6da1cb9f-5b6a5b8f350sm671514173.29.2025.11.02.20.28.05
         for <linux-rdma@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 02 Nov 2025 20:21:54 -0800 (PST)
+        Sun, 02 Nov 2025 20:28:06 -0800 (PST)
 X-Relaying-Domain: broadcom.com
 X-CFilter-Loop: Reflected
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-b99d6bd6cc9so917616a12.1
-        for <linux-rdma@vger.kernel.org>; Sun, 02 Nov 2025 20:21:53 -0800 (PST)
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-b99dc8f439bso817347a12.2
+        for <linux-rdma@vger.kernel.org>; Sun, 02 Nov 2025 20:28:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1762143712; x=1762748512; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=AKCCgrZrrwR7E47PQveFGJCYhoeAbAlYdBmxL4hHAxE=;
-        b=gLP31Ea7lbb0ZjnFJEPfPDoQYYYs8gKIr/dcVhlBf9GmGpvsrF73QFjHces9OsIif7
-         SWFwcZQ5OtO3fJKW0gm96JZGlnmb6PGIIVHdgvLtAsW7CBi9qxLwiOEjyjbbigwDHqg2
-         9BpUxy13EdHgI0EGlTwSbHCzQ1sxBp8zY2I+c=
-X-Forwarded-Encrypted: i=1; AJvYcCVsRNPb092j3O0xiL8xLzMpprsBzyGyIgC2qNKAEBFvraA66ncpHgO7yyxqvvUeXqFQKShQRIKIX/hj@vger.kernel.org
-X-Received: by 2002:a17:902:d505:b0:24c:965a:f94d with SMTP id d9443c01a7336-2951a486843mr161567285ad.46.1762143712220;
-        Sun, 02 Nov 2025 20:21:52 -0800 (PST)
-X-Received: by 2002:a17:902:d505:b0:24c:965a:f94d with SMTP id
- d9443c01a7336-2951a486843mr161567075ad.46.1762143711860; Sun, 02 Nov 2025
- 20:21:51 -0800 (PST)
+        d=broadcom.com; s=google; t=1762144084; x=1762748884; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=A2/KyBV32WbvOAaYCKvhCDToZx5k7ePfP5bvqwgDfKk=;
+        b=LWjqIh9Vq/29jJjfDXeLUmFJq3RdGJbOFREwBsatGUt3/Kv1cPvb1zrQUDSzz7aute
+         gvF4TSWsqB78+wHrdagmcdCY52x38AT6ol9gfJOqQ9xPwWZcSBJSibKHVG64U6wK6/GQ
+         Tm394lRBcDHse6diTUl8Nr4SFot0BtZ2YDtCg=
+X-Received: by 2002:a17:90b:1a87:b0:340:b501:7b84 with SMTP id 98e67ed59e1d1-340b5017d5cmr9939198a91.9.1762144084164;
+        Sun, 02 Nov 2025 20:28:04 -0800 (PST)
+X-Received: by 2002:a17:90b:1a87:b0:340:b501:7b84 with SMTP id 98e67ed59e1d1-340b5017d5cmr9939183a91.9.1762144083745;
+        Sun, 02 Nov 2025 20:28:03 -0800 (PST)
+Received: from dhcp-10-123-157-228.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34091b48934sm9285677a91.0.2025.11.02.20.28.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 Nov 2025 20:28:03 -0800 (PST)
+From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+To: leon@kernel.org,
+	jgg@ziepe.ca
+Cc: linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com,
+	selvin.xavier@broadcom.com,
+	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+	Damodharam Ammepalli <damodharam.ammepalli@broadcom.com>,
+	Hongguang Gao <hongguang.gao@broadcom.com>
+Subject: [PATCH rdma-next V2] RDMA/bnxt_re: Add a debugfs entry for CQE coalescing tuning
+Date: Mon,  3 Nov 2025 10:04:25 +0530
+Message-ID: <20251103043425.234846-1-kalesh-anakkur.purayil@broadcom.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251030171540.12656-1-kalesh-anakkur.purayil@broadcom.com>
- <202510312213.Pogyd6u5-lkp@intel.com> <20251102120441.GC17533@unreal>
-In-Reply-To: <20251102120441.GC17533@unreal>
-From: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Date: Mon, 3 Nov 2025 09:51:38 +0530
-X-Gm-Features: AWmQ_bnmidPY8YGMQBQoS_ZQiDpHQQ6L3o_6aX8icLnUFPAxBijFD0D_4ruFeas
-Message-ID: <CAH-L+nOm9ssp7nVPDqNZzdDkZGjKOBYxKLeExdSvHnTJRwVmeQ@mail.gmail.com>
-Subject: Re: [PATCH rdma-next] RDMA/bnxt_re: Add a debugfs entry for CQE
- coalescing tuning
-To: Leon Romanovsky <leon@kernel.org>
-Cc: kernel test robot <lkp@intel.com>, jgg@ziepe.ca, oe-kbuild-all@lists.linux.dev, 
-	linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com, 
-	selvin.xavier@broadcom.com, 
-	Damodharam Ammepalli <damodharam.ammepalli@broadcom.com>, 
-	Hongguang Gao <hongguang.gao@broadcom.com>
+Content-Transfer-Encoding: 8bit
 X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000090a170642a90e8b"
 
---000000000000090a170642a90e8b
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+This patch adds debugfs interfaces that allows the user to
+enable/disable the RoCE CQ coalescing and fine tune certain
+CQ coalescing parameters which would be helpful during debug.
 
-ACK. I will push a V2.
+Signed-off-by: Damodharam Ammepalli <damodharam.ammepalli@broadcom.com>
+Reviewed-by: Hongguang Gao <hongguang.gao@broadcom.com>
+Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+---
 
-On Sun, Nov 2, 2025 at 5:34=E2=80=AFPM Leon Romanovsky <leon@kernel.org> wr=
-ote:
->
-> On Fri, Oct 31, 2025 at 11:08:30PM +0800, kernel test robot wrote:
-> > Hi Kalesh,
-> >
-> > kernel test robot noticed the following build warnings:
-> >
-> > [auto build test WARNING on rdma/for-next]
-> > [also build test WARNING on linus/master v6.18-rc3 next-20251031]
-> > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > And when submitting patch, we suggest to use '--base' as documented in
-> > https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> >
-> > url:    https://github.com/intel-lab-lkp/linux/commits/Kalesh-AP/RDMA-b=
-nxt_re-Add-a-debugfs-entry-for-CQE-coalescing-tuning/20251031-011453
-> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git f=
-or-next
-> > patch link:    https://lore.kernel.org/r/20251030171540.12656-1-kalesh-=
-anakkur.purayil%40broadcom.com
-> > patch subject: [PATCH rdma-next] RDMA/bnxt_re: Add a debugfs entry for =
-CQE coalescing tuning
-> > config: x86_64-rhel-9.4 (https://download.01.org/0day-ci/archive/202510=
-31/202510312213.Pogyd6u5-lkp@intel.com/config)
-> > compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
-> > reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/arc=
-hive/20251031/202510312213.Pogyd6u5-lkp@intel.com/reproduce)
-> >
-> > If you fix the issue in a separate patch/commit (i.e. not just a new ve=
-rsion of
-> > the same patch/commit), kindly add following tags
-> > | Reported-by: kernel test robot <lkp@intel.com>
-> > | Closes: https://lore.kernel.org/oe-kbuild-all/202510312213.Pogyd6u5-l=
-kp@intel.com/
-> >
-> > All warnings (new ones prefixed by >>):
-> >
-> >    In file included from drivers/infiniband/hw/bnxt_re/main.c:70:
-> > >> drivers/infiniband/hw/bnxt_re/debugfs.h:37:27: warning: 'bnxt_re_cq_=
-coal_str' defined but not used [-Wunused-const-variable=3D]
-> >       37 | static const char * const bnxt_re_cq_coal_str[] =3D {
-> >          |                           ^~~~~~~~~~~~~~~~~~~
-> >
-> >
-> > vim +/bnxt_re_cq_coal_str +37 drivers/infiniband/hw/bnxt_re/debugfs.h
-> >
-> >     36
-> >   > 37        static const char * const bnxt_re_cq_coal_str[] =3D {
-> >     38                "buf_maxtime",
-> >     39                "normal_maxbuf",
-> >     40                "during_maxbuf",
-> >     41                "en_ring_idle_mode",
-> >     42                "enable",
-> >     43        };
-> >     44
->
-> Right, it shouldn't be placed in header file. It needs to be in debugfs.c
->
-> Thanks
->
-> >
-> > --
-> > 0-DAY CI Kernel Test Service
-> > https://github.com/intel/lkp-tests/wiki
+Changes in v2:
+- Moved bnxt_re_cq_coal_str structure definition to debugfs.c.
+- Removed an unused element from struct bnxt_re_dbg_cq_coal_params
+v1:
+https://lore.kernel.org/linux-rdma/20251030171540.12656-1-kalesh-anakkur.purayil@broadcom.com/
 
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h  |   2 +
+ drivers/infiniband/hw/bnxt_re/debugfs.c  | 128 +++++++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/debugfs.h  |  19 ++++
+ drivers/infiniband/hw/bnxt_re/main.c     |   1 +
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c |   3 +-
+ drivers/infiniband/hw/bnxt_re/qplib_fp.h |   1 +
+ 6 files changed, 153 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/infiniband/hw/bnxt_re/bnxt_re.h b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+index 3485e495ac6a..3a7ce4729fcf 100644
+--- a/drivers/infiniband/hw/bnxt_re/bnxt_re.h
++++ b/drivers/infiniband/hw/bnxt_re/bnxt_re.h
+@@ -224,6 +224,8 @@ struct bnxt_re_dev {
+ 	struct workqueue_struct		*dcb_wq;
+ 	struct dentry                   *cc_config;
+ 	struct bnxt_re_dbg_cc_config_params *cc_config_params;
++	struct dentry			*cq_coal_cfg;
++	struct bnxt_re_dbg_cq_coal_params *cq_coal_cfg_params;
+ #define BNXT_VPD_FLD_LEN		32
+ 	char board_partno[BNXT_VPD_FLD_LEN];
+ 	/* RoCE mirror */
+diff --git a/drivers/infiniband/hw/bnxt_re/debugfs.c b/drivers/infiniband/hw/bnxt_re/debugfs.c
+index be5e9b5ca2f0..d03f5bb0d890 100644
+--- a/drivers/infiniband/hw/bnxt_re/debugfs.c
++++ b/drivers/infiniband/hw/bnxt_re/debugfs.c
+@@ -23,6 +23,14 @@
+ 
+ static struct dentry *bnxt_re_debugfs_root;
+ 
++static const char * const bnxt_re_cq_coal_str[] = {
++	"buf_maxtime",
++	"normal_maxbuf",
++	"during_maxbuf",
++	"en_ring_idle_mode",
++	"enable",
++};
++
+ static const char * const bnxt_re_cc_gen0_name[] = {
+ 	"enable_cc",
+ 	"run_avg_weight_g",
+@@ -349,6 +357,123 @@ static void bnxt_re_debugfs_add_info(struct bnxt_re_dev *rdev)
+ 	debugfs_create_file("info", 0400, rdev->dbg_root, rdev, &info_fops);
+ }
+ 
++static ssize_t cq_coal_cfg_write(struct file *file,
++				 const char __user *buf,
++				 size_t count, loff_t *pos)
++{
++	struct seq_file *s = file->private_data;
++	struct bnxt_re_cq_coal_param *param = s->private;
++	struct bnxt_re_dev *rdev = param->rdev;
++	int offset = param->offset;
++	char lbuf[16] = { };
++	u32 val;
++
++	if (count > sizeof(lbuf))
++		return -EINVAL;
++
++	if (copy_from_user(lbuf, buf, count))
++		return -EFAULT;
++
++	lbuf[sizeof(lbuf) - 1] = '\0';
++
++	if (kstrtou32(lbuf, 0, &val))
++		return -EINVAL;
++
++	switch (offset) {
++	case BNXT_RE_COAL_CQ_BUF_MAXTIME:
++		if (val < 1 || val > BNXT_QPLIB_CQ_COAL_MAX_BUF_MAXTIME)
++			return -EINVAL;
++		rdev->cq_coalescing.buf_maxtime = val;
++		break;
++	case BNXT_RE_COAL_CQ_NORMAL_MAXBUF:
++		if (val < 1 || val > BNXT_QPLIB_CQ_COAL_MAX_NORMAL_MAXBUF)
++			return -EINVAL;
++		rdev->cq_coalescing.normal_maxbuf = val;
++		break;
++	case BNXT_RE_COAL_CQ_DURING_MAXBUF:
++		if (val < 1 || val > BNXT_QPLIB_CQ_COAL_MAX_DURING_MAXBUF)
++			return -EINVAL;
++		rdev->cq_coalescing.during_maxbuf = val;
++		break;
++	case BNXT_RE_COAL_CQ_EN_RING_IDLE_MODE:
++		if (val > BNXT_QPLIB_CQ_COAL_MAX_EN_RING_IDLE_MODE)
++			return -EINVAL;
++		rdev->cq_coalescing.en_ring_idle_mode = val;
++		break;
++	case BNXT_RE_COAL_CQ_ENABLE:
++		if (val > 1)
++			return -EINVAL;
++		rdev->cq_coalescing.enable = val;
++		break;
++	default:
++		return -EINVAL;
++	}
++	return  count;
++}
++
++static int cq_coal_cfg_show(struct seq_file *s, void *unused)
++{
++	struct bnxt_re_cq_coal_param *param = s->private;
++	struct bnxt_re_dev *rdev = param->rdev;
++	int offset = param->offset;
++	u32 val = 0;
++
++	switch (offset) {
++	case BNXT_RE_COAL_CQ_BUF_MAXTIME:
++		val = rdev->cq_coalescing.buf_maxtime;
++		break;
++	case BNXT_RE_COAL_CQ_NORMAL_MAXBUF:
++		val = rdev->cq_coalescing.normal_maxbuf;
++		break;
++	case BNXT_RE_COAL_CQ_DURING_MAXBUF:
++		val = rdev->cq_coalescing.during_maxbuf;
++		break;
++	case BNXT_RE_COAL_CQ_EN_RING_IDLE_MODE:
++		val = rdev->cq_coalescing.en_ring_idle_mode;
++		break;
++	case BNXT_RE_COAL_CQ_ENABLE:
++		val = rdev->cq_coalescing.enable;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	seq_printf(s, "%u\n", val);
++	return 0;
++}
++DEFINE_SHOW_STORE_ATTRIBUTE(cq_coal_cfg);
++
++static void bnxt_re_cleanup_cq_coal_debugfs(struct bnxt_re_dev *rdev)
++{
++	debugfs_remove_recursive(rdev->cq_coal_cfg);
++	kfree(rdev->cq_coal_cfg_params);
++}
++
++static void bnxt_re_init_cq_coal_debugfs(struct bnxt_re_dev *rdev)
++{
++	struct bnxt_re_dbg_cq_coal_params *dbg_cq_coal_params;
++	int i;
++
++	if (_is_cq_coalescing_supported(rdev->dev_attr->dev_cap_flags2))
++		return;
++
++	dbg_cq_coal_params = kzalloc(sizeof(*dbg_cq_coal_params), GFP_KERNEL);
++	if (!dbg_cq_coal_params)
++		return;
++
++	rdev->cq_coal_cfg = debugfs_create_dir("cq_coal_cfg", rdev->dbg_root);
++	rdev->cq_coal_cfg_params = dbg_cq_coal_params;
++
++	for (i = 0; i < BNXT_RE_COAL_CQ_MAX; i++) {
++		dbg_cq_coal_params->params[i].offset = i;
++		dbg_cq_coal_params->params[i].rdev = rdev;
++		debugfs_create_file(bnxt_re_cq_coal_str[i],
++				    0600, rdev->cq_coal_cfg,
++				    &dbg_cq_coal_params->params[i],
++				    &cq_coal_cfg_fops);
++	}
++}
++
+ void bnxt_re_debugfs_add_pdev(struct bnxt_re_dev *rdev)
+ {
+ 	struct pci_dev *pdev = rdev->en_dev->pdev;
+@@ -374,10 +499,13 @@ void bnxt_re_debugfs_add_pdev(struct bnxt_re_dev *rdev)
+ 							 rdev->cc_config, tmp_params,
+ 							 &bnxt_re_cc_config_ops);
+ 	}
++
++	bnxt_re_init_cq_coal_debugfs(rdev);
+ }
+ 
+ void bnxt_re_debugfs_rem_pdev(struct bnxt_re_dev *rdev)
+ {
++	bnxt_re_cleanup_cq_coal_debugfs(rdev);
+ 	debugfs_remove_recursive(rdev->qp_debugfs);
+ 	debugfs_remove_recursive(rdev->cc_config);
+ 	kfree(rdev->cc_config_params);
+diff --git a/drivers/infiniband/hw/bnxt_re/debugfs.h b/drivers/infiniband/hw/bnxt_re/debugfs.h
+index 8f101df4e838..98f4620ef245 100644
+--- a/drivers/infiniband/hw/bnxt_re/debugfs.h
++++ b/drivers/infiniband/hw/bnxt_re/debugfs.h
+@@ -33,4 +33,23 @@ struct bnxt_re_cc_param {
+ struct bnxt_re_dbg_cc_config_params {
+ 	struct bnxt_re_cc_param	gen0_parms[BNXT_RE_CC_PARAM_GEN0];
+ };
++
++struct bnxt_re_cq_coal_param {
++	struct bnxt_re_dev	*rdev;
++	u32			offset;
++};
++
++enum bnxt_re_cq_coal_types {
++	BNXT_RE_COAL_CQ_BUF_MAXTIME,
++	BNXT_RE_COAL_CQ_NORMAL_MAXBUF,
++	BNXT_RE_COAL_CQ_DURING_MAXBUF,
++	BNXT_RE_COAL_CQ_EN_RING_IDLE_MODE,
++	BNXT_RE_COAL_CQ_ENABLE,
++	BNXT_RE_COAL_CQ_MAX
++
++};
++
++struct bnxt_re_dbg_cq_coal_params {
++	struct bnxt_re_cq_coal_param	params[BNXT_RE_COAL_CQ_MAX];
++};
+ #endif
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index b13810572c2e..73003ad25ee8 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -1453,6 +1453,7 @@ static struct bnxt_re_dev *bnxt_re_dev_add(struct auxiliary_device *adev,
+ 	atomic_set(&rdev->stats.res.pd_count, 0);
+ 	rdev->cosq[0] = 0xFFFF;
+ 	rdev->cosq[1] = 0xFFFF;
++	rdev->cq_coalescing.enable = 1;
+ 	rdev->cq_coalescing.buf_maxtime = BNXT_QPLIB_CQ_COAL_DEF_BUF_MAXTIME;
+ 	if (bnxt_re_chip_gen_p7(en_dev->chip_num)) {
+ 		rdev->cq_coalescing.normal_maxbuf = BNXT_QPLIB_CQ_COAL_DEF_NORMAL_MAXBUF_P7;
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+index ce90d3d834d4..c88f049136fc 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+@@ -2226,7 +2226,8 @@ int bnxt_qplib_create_cq(struct bnxt_qplib_res *res, struct bnxt_qplib_cq *cq)
+ 	req.cq_handle = cpu_to_le64(cq->cq_handle);
+ 	req.cq_size = cpu_to_le32(cq->max_wqe);
+ 
+-	if (_is_cq_coalescing_supported(res->dattr->dev_cap_flags2)) {
++	if (_is_cq_coalescing_supported(res->dattr->dev_cap_flags2) &&
++	    cq->coalescing->enable) {
+ 		req.flags |= cpu_to_le16(CMDQ_CREATE_CQ_FLAGS_COALESCING_VALID);
+ 		coalescing |= ((cq->coalescing->buf_maxtime <<
+ 				CMDQ_CREATE_CQ_BUF_MAXTIME_SFT) &
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.h b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
+index b990d0c0ce1a..1b414a73b46d 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_fp.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
+@@ -395,6 +395,7 @@ struct bnxt_qplib_cq_coal_param {
+ 	u8 normal_maxbuf;
+ 	u8 during_maxbuf;
+ 	u8 en_ring_idle_mode;
++	u8 enable;
+ };
+ 
+ #define BNXT_QPLIB_CQ_COAL_DEF_BUF_MAXTIME		0x1
+-- 
+2.43.5
 
---=20
-Regards,
-Kalesh AP
-
---000000000000090a170642a90e8b
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-tJVewHuOmXgWQxNWV7Oiszu1d9xAcqyj65s1PrEIIaHnxEM3eTK+teecLEy8QymZjjDTrCHg4x36
-2AczdlQAIiq5TSAucGja5VP8g1zTnfL/RAxEZvLS471GABptArolXY2hMVHdVEYcTduZlu8aHARc
-phXveOB5/l3bPqpMVf2aFalv4ab733Aw6cPuQkbtwpMFifp9Y3s/0HGBfADomK4OeDTDJfuvCp8g
-a907E48SjOJBGkh6c6B3ace2XH+CyB7+WBsoK6hsrV5twAXSe7frgP4lN/4Cm2isQl3D7vXM3PBQ
-ddI2aZzmewTfbgZptt4KCUhZh+t7FGB6ZKppQ++Rx0zsGN1s71MtjJnhXvJyPs9UyL1n7KQPTEX/
-07kwIwdMjxC/hpbZmVq0mVccpMy7FYlTuiwFD+TEnhmxGDTVTJ267fcfrySVBHioA7vugeXaX3yL
-SqGQdCWnsz5LyCxWvcfI7zjiXJLwefechLp0LWEBIH5+0fJPB1lfiy1DUutGDJTh9WZHeXfVVFsf
-rSQ3y0VaTqBESMjYsJnFFYQJ9tZJScBluOYacW6gqPGC6EU+bNYC1wpngwVayaQQMIIGtzCCBJ+g
-AwIBAgIMEvVs5DNhf00RSyR0MA0GCSqGSIb3DQEBCwUAMFIxCzAJBgNVBAYTAkJFMRkwFwYDVQQK
-ExBHbG9iYWxTaWduIG52LXNhMSgwJgYDVQQDEx9HbG9iYWxTaWduIEdDQyBSNiBTTUlNRSBDQSAy
-MDIzMB4XDTI1MDYyMDEzNDI1N1oXDTI3MDYyMTEzNDI1N1owgfUxCzAJBgNVBAYTAlVTMRMwEQYD
-VQQIEwpDYWxpZm9ybmlhMREwDwYDVQQHEwhTYW4gSm9zZTEZMBcGA1UEYRMQTlRSVVMrREUtNjYx
-MDExNzEYMBYGA1UEBBMPQW5ha2t1ciBQdXJheWlsMQ8wDQYDVQQqEwZLYWxlc2gxFjAUBgNVBAoT
-DUJST0FEQ09NIElOQy4xLDAqBgNVBAMMI2thbGVzaC1hbmFra3VyLnB1cmF5aWxAYnJvYWRjb20u
-Y29tMTIwMAYJKoZIhvcNAQkBFiNrYWxlc2gtYW5ha2t1ci5wdXJheWlsQGJyb2FkY29tLmNvbTCC
-ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOG5Nf+oQkB79NOTXl/T/Ixz4F6jXeF0+Qnn
-3JsEcyfkKD4bFwFz3ruqhN2XmFFaK0T8gjJ3ZX5J7miihNKl0Jxo5asbWsM4wCQLdq3/+QwN/xAm
-+ZAt/5BgDoPqdN61YPyPs8KNAQ8zHt8iZA0InZgmNkDcHhnOJ38cszc1S0eSlOqFa4W9TiQXDRYT
-NFREznPoL3aCNNbDPWAkAc+0/X1XdV1kt4D9jrei4RoDevg15euOaij9X7stUsj+IMgzCt2Fyp7+
-CeElPmNQ0YOba2ws52no4x/sT5R2k3DTPisRieErWuQNhePfW2fZFFXYv7N2LMgfMi9hiLi2Q3eO
-1jMCAwEAAaOCAecwggHjMA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMIGTBggrBgEFBQcB
-AQSBhjCBgzBGBggrBgEFBQcwAoY6aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQv
-Z3NnY2NyNnNtaW1lY2EyMDIzLmNydDA5BggrBgEFBQcwAYYtaHR0cDovL29jc3AuZ2xvYmFsc2ln
-bi5jb20vZ3NnY2NyNnNtaW1lY2EyMDIzMGUGA1UdIAReMFwwCQYHZ4EMAQUDAzALBgkrBgEEAaAy
-ASgwQgYKKwYBBAGgMgoDAjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNv
-bS9yZXBvc2l0b3J5LzBBBgNVHR8EOjA4MDagNKAyhjBodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29t
-L2dzZ2NjcjZzbWltZWNhMjAyMy5jcmwwLgYDVR0RBCcwJYEja2FsZXNoLWFuYWtrdXIucHVyYXlp
-bEBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYIKwYBBQUHAwQwHwYDVR0jBBgwFoAUACk2nlx6ug+v
-LVAt26AjhRiwoJIwHQYDVR0OBBYEFJ/R8BNY0JEVQpirvzzFQFgflqtJMA0GCSqGSIb3DQEBCwUA
-A4ICAQCLsxTSA9ERT90FGuX/UM2ZQboBpTPs7DwZPq12XIrkD58GkHWgWAYS2xL1yyvD7pEtN28N
-8d4+o6IcPz7yPrfWUCCpAitaeSbu0QiZzIAZlFWNUaOXCgZmHam8Oc+Lp/+XJFrRLhNkzczcw3zT
-cyViuRF/upsrQ3KY/kqimiQjR9BduvKiX/w/tMWDib1UhbVhXxuhuWMr8j8sja2/QR9fk670ViD9
-amx7b5x595AulQfiDhcN0qxG4fr7L22Y/RYX8fCoBAGo0SF7IpxSukVsp6z5uZp5ggdNr2Cq88qk
-if7GG/Oy1beosYD9I5S5dIRcP25oNbcJkbCb/GuvWegzGfxCCBuirb09mTSZRxaBmb1P6dANmPvh
-PdqGqxfFrXagvwbO15DN46GarD9KiHa8QHyTtWghL3q+G6ZHlZUWnyS4YMacrx8Ngy0x7HR4dNdT
-pqAqOOsOwDmQFBNRYomMdAaOXm6x6MFDnp51sIWVNGWK2u4le2VI6RJMzEqLzMZKL0vTW+HPqMaT
-hWv2s5x6cJdLio1vP63rDxJS7vH++zMaY0Jcptrx6eAhzfcq+y/TkHJaZ4dWrtbof1yw3z5EpCvT
-YDxV0XFQiCRLNKuZhkVvQ8dtmVhcpiT/mENrWKWOt0DwNEeC/3Fr1ruoyriggbnRmBQt1bC5uxfv
-+CEHcDGCAlcwggJTAgEBMGIwUjELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYt
-c2ExKDAmBgNVBAMTH0dsb2JhbFNpZ24gR0NDIFI2IFNNSU1FIENBIDIwMjMCDBL1bOQzYX9NEUsk
-dDANBglghkgBZQMEAgEFAKCBxzAvBgkqhkiG9w0BCQQxIgQgGk/uHN1pMfpNAEm63KWyp99TILQP
-m2RFrVGlX+cicywwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjUx
-MTAzMDQyMTUyWjBcBgkqhkiG9w0BCQ8xTzBNMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJ
-YIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcN
-AQEBBQAEggEAPjmERYec1Sx+WHg2SIe6AeZoRD0OnW4xSqEunaDEXt5/nYS5Mp9TWtRoih6A4Hkj
-BaoEIHe61X0hrt4qN6jl0AvKChhzpR2zRpempD6cA6arfcBEUWGYI1pMEMIpbIq8KW50GEdmk+sD
-MWssfOmA0A7/6pHXeUpt9HS4sBhKrFYLO9QPq9lPUx+m2YIBgtVqtzEw/F/paPlhhlTaX0TRi4lg
-nGhb9xIPF1JcGkcYaNVg18ZwoyyxBoNvF6ONkW/M7/LhM+3FZZwqKyyod+y60cBuClKmEKmoFY3R
-WLf1aFPAqrW/zlDXbCaYRgVBwjVy/aA+F5PqFOw2lS+cT0TEcg==
---000000000000090a170642a90e8b--
 
