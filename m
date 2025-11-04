@@ -1,220 +1,399 @@
-Return-Path: <linux-rdma+bounces-14236-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14237-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75786C300F3
-	for <lists+linux-rdma@lfdr.de>; Tue, 04 Nov 2025 09:52:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECFDAC30704
+	for <lists+linux-rdma@lfdr.de>; Tue, 04 Nov 2025 11:14:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A408A34C993
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Nov 2025 08:52:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82C183ADEB1
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Nov 2025 10:14:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7666027510B;
-	Tue,  4 Nov 2025 08:51:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 703D93148BE;
+	Tue,  4 Nov 2025 10:14:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="SGp64tuA"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="UK8x8Bdq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 927195D8F0;
-	Tue,  4 Nov 2025 08:51:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7108E3128AA
+	for <linux-rdma@vger.kernel.org>; Tue,  4 Nov 2025 10:14:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762246288; cv=none; b=biVOlYDyZHca9WZXlW6GPVYw6i4VHtaHL/uGLB5k5Ou/JGZn1gt2UVJLfbtc73806TESoJlORkGsiz/3u48u/j+dZ3NfEioUf0X/W2y2QCn3okT2Av6jRAIw/aztOPWoa2nXvU1uCbY07ST90JZgDut3AgFWjtFPCbEoA2YE0Ag=
+	t=1762251253; cv=none; b=slgjyrKYl1HXiSgJyGJ9gfOv11kVxID0pN8s1iX8UrYpifqIyzrpuztRzDLIOUdq24oRuE3imeXvdtgI3yLYTb9FOWto7ze7BRviXVneA7YoBJZN+g8sQLqXsbGu49eM8t+OcKTzboprAEihGNIJaIxIxWqDwc0OA7dPLEXFHP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762246288; c=relaxed/simple;
-	bh=fBOHBtTBNYAfORE7Ww0mntVd8j7j57lr5K25kuMAsLY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XYJQOylePxHuv9j2KwbKc9BX8V1gpyyNxD1Rd/u0C1JgQjaS4FP7YQIG5k94dxjaysNGmwORV/LHNkELNfndvuVPjEBm+MTs1Kj64CUkyuk5ukoCjN6tWPYkEOMlYIlMtes4JRK93Lqxz9B2EzK2PNkzuJIv9ozh/JeGVqSWn+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=SGp64tuA; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5A40wuxa025577;
-	Tue, 4 Nov 2025 08:51:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=cgPVl8
-	07fg3HR0iyDkr5HA0gSFYzqz/O+8EjiXgNNuE=; b=SGp64tuAl1n1O75Y9MRPEy
-	UNquXNDTe0hDeQ6J9/BBOK22Rub+Ke5EmjbJPAFnvSvTplAcaGw8hGCw94ygHqfU
-	F3y4wpQAPRhMWLKQzKG2Ti5ScVw+yhbwdq77sNmHIGDTuAzH9yIGE05Is/jzzmUI
-	TYb1o3Vgge87qKrEPJ4CWPOlkvfJ43gahlhlhzwBUgc0e7faO7oVcHVnQXPXvAas
-	ooLlKQ4pjv6GR7ZyGplRRL5JbPm3DvqlShgLSino42g+fis/KOhzbT/zKPt2FQzk
-	dwGLk0HYdDklh/lI8Vf1OhOemN8j8Moh7EKfptBcGVhJ85blSmdAxilKVoNiy8+g
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4a59vuay4s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 04 Nov 2025 08:51:15 +0000 (GMT)
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5A47xMiI020998;
-	Tue, 4 Nov 2025 08:51:15 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4a59vuay4p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 04 Nov 2025 08:51:14 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5A47o8DU012923;
-	Tue, 4 Nov 2025 08:51:14 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4a5y81swd5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 04 Nov 2025 08:51:13 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5A48pAjU30015774
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 4 Nov 2025 08:51:10 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4429220049;
-	Tue,  4 Nov 2025 08:51:10 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0A2B92004D;
-	Tue,  4 Nov 2025 08:51:10 +0000 (GMT)
-Received: from [9.152.210.132] (unknown [9.152.210.132])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue,  4 Nov 2025 08:51:09 +0000 (GMT)
-Message-ID: <5f415b7e-3557-4fa0-a0f9-f5643c1c7528@linux.ibm.com>
-Date: Tue, 4 Nov 2025 09:51:09 +0100
+	s=arc-20240116; t=1762251253; c=relaxed/simple;
+	bh=WE9+Ktyu+xlyKowaEUzMsa22wPI8fbdShWwoSf53wJo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kVz7c01w33hzafB3JNcnBz/iyQwAncxu2RzIA8t4M2NJsopTEHXT7Bg6fOWG+BIjZLElwp8eSlfQob6dTSesMlyT3ZewwwgxWERIwT/FTeX/QfvqjPAHSr1l0bBmSH7uhpmHHr4CyGzHQ9CDFMj2E7VJL4fBjILJKjjwZFgtw3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=UK8x8Bdq; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-47114a40161so5800725e9.3
+        for <linux-rdma@vger.kernel.org>; Tue, 04 Nov 2025 02:14:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1762251248; x=1762856048; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CgtBbLaC1qXEwG0EBrNcX2Q2+z7cTl6b5ktmRXlbEl0=;
+        b=UK8x8Bdqu7YdeT1X4Ctrj2RkUZZ/KHhF/8eImpUrSztYZljhA9XaEJ6rzB9IxgeSFw
+         /MC38Ds0CvRPWECQm4aMQ0SkzZHhEdkxFXNqKemgLLXAx29mmJl5MMQYC5bRHL/rLxCo
+         cMm0OxXfl3Pmarq1vOwX4AT7vfJurKBbKVAbaIBIxdvDNQKiF3f64G2+kfaA/NLS80g6
+         qIuPb0osPakv6dlMDK/P/BtHKiJfcM8pg00ouyB5MtYx0oosiV/NOiK/DhUCJ++3SzSD
+         WaLcZg4PEAMhHiWqOBQ/qdrT9uOOcJ66tP7Mg0+L1uEN9dyXke8HseY/MtsleIyUZcMV
+         meiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762251248; x=1762856048;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CgtBbLaC1qXEwG0EBrNcX2Q2+z7cTl6b5ktmRXlbEl0=;
+        b=a6qU58t0v0Ta9VHZpML9ddHN3KQJZj+rOAISj0gM3z1dsCw83HRFYqZgU0DWUhd1UK
+         NyTFUE1aJKIIxtxCSGvuZozb6ozOMHsl4zkq1r65CLICWGOlmR1vnv/uKUPjO5hS1Ja8
+         4DwXurnVcx/szAXk5SViRSSKuI2l2huAXeqyE17P10SUEHHHDSAI/Z4GZ2qQ2UXta3v/
+         jW0TqauK2ThXAkPytvI9Oc7AWtQ4gkAThoj3m1nFzI6BCq6Gh6XIyBV8vukPkF7FU56S
+         PBZCammZLg/3+pk3v5Hux9jzS/NpdvdG9qCDKP5jM5higr2HtW0iRGmG86gMgzFg16J7
+         Uyvw==
+X-Forwarded-Encrypted: i=1; AJvYcCUt74d2Viy++z5YCqwUViy5CCTlbNCUAEAdpRNaFOMtb8tjOa/797TCm4OREWflnbjQ2s+8n9zZhKfp@vger.kernel.org
+X-Gm-Message-State: AOJu0YzsqPMtIFKT3g+o2loSXW7q126TylESF/s2VLnuqFQ4Q7iJLvKx
+	ve4RjzKGo02Q5nOP+yyoZKT8/izaEcb9szHJlvjB0SRe2Ul7vfZRk6gN6ILgl8b9jnc=
+X-Gm-Gg: ASbGncuML0GrI4Y/CJYimStO3Dkl3vIyCuY+noVH4kXcR3UxkZH8Nhdt/h4RMT5BoyM
+	lmoAGbhIKni1vOCOo2dGt30entnx17Zo8NTv7J9ga+KTKSs4xhY2HA56Cz24KL19N6s6v/RdN87
+	FCZpWeL7j1OUJ6SDwdm8OhEIxatFth5VxnJGfPRfyzVZ7gtjypRzjAeuBzxIVByLhOb9bWhBMwf
+	paPvQ1vMNHEgLBP8VVhLafhYO5c5TXOGY1OGVvq7lOY2p7kyBQvr9smsfYr2zCq2/t0WqwZl60M
+	j2isD1xqeSbBssrn2c9TaSBzsBv0anX3pelEr9zCtjkoFpZC4pMyUgzVcBKOsezqWKPnyXau3A9
+	7n/CPfByED6Dg4LUoasAz7RYb4mq5W+B//9K3bXCcj4ksysZJe8gc+xNLI9G7Vim0vGH1fggtsg
+	SZ3rMU7sCS
+X-Google-Smtp-Source: AGHT+IFLhFW+4JqR6YGzodu6ZRf4ghsDtIxlWX1USrYQuB2vtrAyEu7aDLTWiSaN9Znd5ArYog5BpQ==
+X-Received: by 2002:a05:600c:1907:b0:46e:59bd:f7d3 with SMTP id 5b1f17b1804b1-4773089c432mr139320365e9.20.1762251248291;
+        Tue, 04 Nov 2025 02:14:08 -0800 (PST)
+Received: from jiri-mlt ([140.209.217.211])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4775594e311sm14408325e9.6.2025.11.04.02.14.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Nov 2025 02:14:07 -0800 (PST)
+Date: Tue, 4 Nov 2025 11:14:03 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Daniel Zahka <daniel.zahka@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Srujana Challa <schalla@marvell.com>, 
+	Bharat Bhushan <bbhushan2@marvell.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	Brett Creeley <brett.creeley@amd.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	Michael Chan <michael.chan@broadcom.com>, Pavan Chebbi <pavan.chebbi@broadcom.com>, 
+	Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
+	Sunil Goutham <sgoutham@marvell.com>, Linu Cherian <lcherian@marvell.com>, 
+	Geetha sowjanya <gakula@marvell.com>, Jerin Jacob <jerinj@marvell.com>, 
+	hariprasad <hkelam@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>, 
+	Tariq Toukan <tariqt@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>, Ido Schimmel <idosch@nvidia.com>, 
+	Petr Machata <petrm@nvidia.com>, Manish Chopra <manishc@marvell.com>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Siddharth Vadapalli <s-vadapalli@ti.com>, Roger Quadros <rogerq@kernel.org>, 
+	Loic Poulain <loic.poulain@oss.qualcomm.com>, Sergey Ryazanov <ryazanov.s.a@gmail.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Vladimir Oltean <olteanv@gmail.com>, 
+	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>, Aleksandr Loktionov <aleksandr.loktionov@intel.com>, 
+	Dave Ertman <david.m.ertman@intel.com>, Vlad Dumitrescu <vdumitrescu@nvidia.com>, 
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>, Alexander Sverdlin <alexander.sverdlin@gmail.com>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org, linux-doc@vger.kernel.org, 
+	intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org, 
+	linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org
+Subject: Re: [PATCH net-next v2 2/2] net/mlx5: implement swp_l4_csum_mode via
+ devlink params
+Message-ID: <mhm4hkz52gmqok56iuiukdcz2kaowvppbqrfi3zxuq67p3otit@5fhpgu2axab2>
+References: <20251103194554.3203178-1-daniel.zahka@gmail.com>
+ <20251103194554.3203178-3-daniel.zahka@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] net/smc: fix mismatch between CLC header and proposal
- extensions
-To: "D. Wythe" <alibuda@linux.alibaba.com>
-Cc: mjambigi@linux.ibm.com, wenjia@linux.ibm.com, dust.li@linux.alibaba.com,
-        tonylu@linux.alibaba.com, guwen@linux.alibaba.com, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        pabeni@redhat.com, edumazet@google.com, sidraya@linux.ibm.com,
-        jaka@linux.ibm.com
-References: <20251031031828.111364-1-alibuda@linux.alibaba.com>
- <95bd9c85-8241-4040-bbd0-bcac3ffc78f7@linux.ibm.com>
- <20251104070828.GA36449@j66a10360.sqa.eu95>
-Content-Language: en-US
-From: Alexandra Winter <wintera@linux.ibm.com>
-In-Reply-To: <20251104070828.GA36449@j66a10360.sqa.eu95>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: kiLWufkC6oXRBzEx9o1-DtQDnyxGneYq
-X-Proofpoint-GUID: KTNSXpGM43PnbJQfapaxT1egtmB2M6ju
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTAxMDAyMSBTYWx0ZWRfX6lnAvCFoK+Aj
- som7tXlk2I4tqPoCodNem3UBqe9ooGFhxZtmcSrSDi74WHl6RJ0THrIZ8+dnn2VywqEiRLk/tYc
- /aEy+7tcjLnw7a9Vb6g995X3E6ePq+piRmioxncftvSgcIVEUdMb1BuDUeVe0PJKPZbK3rfjWw1
- z8dTyY9YTJLJkMEHZzyvXyh0pj2uy9U9qKyJ8++q9iGsnnoAFq2nG+Jn33Jf8hPhuG8fCa0Ubqt
- C7D8+VWUGzQQ/nP16iuiA0/6LbbOFhHTJWFfYJXqVcpmYLrGwSrQkRDLF6iIJIDlcoHYujAAvOo
- 8sVnW6jIT+eu8nUnxV/ONGIPfpxjkV1V8C8dkwvLfczLhK/L/PuL5k/fADkMkWq+40YusL50rBc
- hyTKP2e6LDoi4h8Yr/lpzIFlHDMWfQ==
-X-Authority-Analysis: v=2.4 cv=U6qfzOru c=1 sm=1 tr=0 ts=6909be83 cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=LDwyJIfZ9AC3-zDn7cAA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
- a=cPQSjfK2_nFv0Q5t_7PE:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-03_06,2025-11-03_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0 adultscore=0 impostorscore=0 spamscore=0 phishscore=0
- clxscore=1015 malwarescore=0 lowpriorityscore=0 suspectscore=0
- priorityscore=1501 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2510240000
- definitions=main-2511010021
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251103194554.3203178-3-daniel.zahka@gmail.com>
 
-
-
-On 04.11.25 08:08, D. Wythe wrote:
-> On Mon, Nov 03, 2025 at 09:28:22AM +0100, Alexandra Winter wrote:
->>
->>
->> On 31.10.25 04:18, D. Wythe wrote:
->>> The current CLC proposal message construction uses a mix of
->>> `ini->smc_type_v1/v2` and `pclc_base->hdr.typev1/v2` to decide whether
->>> to include optional extensions (IPv6 prefix extension for v1, and v2
->>> extension). This leads to a critical inconsistency: when
->>> `smc_clc_prfx_set()` fails - for example, in IPv6-only environments with
->>> only link-local addresses, or when the local IP address and the outgoing
->>> interface’s network address are not in the same subnet.
->>>
->>> As a result, the proposal message is assembled using the stale
->>> `ini->smc_type_v1` value—causing the IPv6 prefix extension to be
->>> included even though the header indicates v1 is not supported.
->>> The peer then receives a malformed CLC proposal where the header type
->>> does not match the payload, and immediately resets the connection.
->>>
->>> Fix this by consistently using `pclc_base->hdr.typev1` and
->>> `pclc_base->hdr.typev2`—the authoritative fields that reflect the
->>> actual capabilities advertised in the CLC header—when deciding whether
->>> to include optional extensions, as required by the SMC-R v2
->>> specification ("V1 IP Subnet Extension and V2 Extension only present if
->>> applicable").
->>
->>
->> Just thinking out loud:
->> It seems to me that the 'ini' structure exists once per socket and is used
->> to pass information between many functions involved with the handshake.
->> Did you consider updating ini->smc_type_v1/v2 when `smc_clc_prfx_set()` fails,
->> and using ini as the authoritative source?
->> With your patch, it seems to me `ini->smc_type_v1` still contains a stale value,
->> which may lead to issues in other places or future code.
+Mon, Nov 03, 2025 at 08:45:53PM +0100, daniel.zahka@gmail.com wrote:
+>swp_l4_csum_mode controls how L4 transmit checksums are computed when
+>using Software Parser (SWP) hints for header locations.
+>
+>Supported values:
+>  1. device_default: use device default setting.
+>  2. full_csum: calculate L4 checksum with the pseudo-header.
+>  3. l4_only: calculate L4 checksum without the pseudo-header. Only
+>     available when swp_l4_csum_mode_l4_only is set in
+>     mlx5_ifc_nv_sw_offload_cap_bits.
+>
+>The l4_only setting is a dependency for PSP initialization in
+>mlx5e_psp_init().
+>
+>Signed-off-by: Daniel Zahka <daniel.zahka@gmail.com>
+>---
+>
+>Notes:
+>    v2:
+>    - use extack in mlx5_nv_param_devlink_swp_l4_csum_mode_get()
+>    - fix indentation issue in mlx5.rst entry
+>
+> Documentation/networking/devlink/mlx5.rst     |   9 +
+> .../net/ethernet/mellanox/mlx5/core/devlink.h |   3 +-
+> .../mellanox/mlx5/core/lib/nv_param.c         | 161 ++++++++++++++++++
+> 3 files changed, 172 insertions(+), 1 deletion(-)
+>
+>diff --git a/Documentation/networking/devlink/mlx5.rst b/Documentation/networking/devlink/mlx5.rst
+>index 0e5f9c76e514..675b5a1ec625 100644
+>--- a/Documentation/networking/devlink/mlx5.rst
+>+++ b/Documentation/networking/devlink/mlx5.rst
+>@@ -218,6 +218,15 @@ parameters.
+>        * ``balanced`` : Merges fewer CQEs, resulting in a moderate compression ratio but maintaining a balance between bandwidth savings and performance
+>        * ``aggressive`` : Merges more CQEs into a single entry, achieving a higher compression rate and maximizing performance, particularly under high traffic loads
 > 
-> Based on my understanding, ini->smc_type_v1/v2 represents the local
-> device's inherent hardware capabilities. This value is a static property
-> and, from my perspective, should remain immutable, independent of
-> transient network conditions such as invalid IPv6 prefixes or GID
-> mismatches. Therefore, I believe modifying this field within
-> smc_clc_send_proposal() might not be the most appropriate approach.
-
-
-'ini' is allocated in __smc_connect() and in smc_listen_work().
-So it seems to me the purpose of 'ini' is to store information about the
-current connection, not device's inherent hardware capabilities.
-
-Fields like ini->smc_type_v1/v2 and ini->smcd/r_version are adjusted in
-multiple places during the handshake.
-I must say that the usage of these fields is confusing and looks somehow
-redundant to me.
-But looking at pclc_base->hdr.typev1/v2, as yet another source of
-information doesn't make things cleaner IMO.
-
-
+>+   * - ``swp_l4_csum_mode``
+>+     - string
+>+     - permanent
+>+     - Configure how the L4 checksum is calculated by the device when using
+>+       Software Parser (SWP) hints for header locations.
+>+       * ``device_default`` : Use the device's default checksum calculation mode
+>+       * ``full_csum`` : Calculate full checksum including the pseudo-header
+>+       * ``l4_only`` : Calculate L4-only checksum, excluding the pseudo-header
+>+
+> The ``mlx5`` driver supports reloading via ``DEVLINK_CMD_RELOAD``
 > 
-> In contrast, pclc_base->hdr.typev1/v2 reflects the actual capabilities
-> negotiated for a specific connection—what we might term "soft
-> capabilities." These can, and often do, dynamically adjust based on
-> current network conditions (e.g., in the event of a prefix validation
-> failure) and could potentially be restored if network conditions
-> improve.
-
-I don't understand.
-The pclc block is freed at the end of smc_clc_send_proposal(). Its
-only purpose is to be sent out as intitial proposal. How could you
-restore it if network conditions improve?
-
-
+> Info versions
+>diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.h b/drivers/net/ethernet/mellanox/mlx5/core/devlink.h
+>index c9555119a661..43b9bf8829cf 100644
+>--- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.h
+>+++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.h
+>@@ -26,7 +26,8 @@ enum mlx5_devlink_param_id {
+> 	MLX5_DEVLINK_PARAM_ID_PCIE_CONG_IN_HIGH,
+> 	MLX5_DEVLINK_PARAM_ID_PCIE_CONG_OUT_LOW,
+> 	MLX5_DEVLINK_PARAM_ID_PCIE_CONG_OUT_HIGH,
+>-	MLX5_DEVLINK_PARAM_ID_CQE_COMPRESSION_TYPE
+>+	MLX5_DEVLINK_PARAM_ID_CQE_COMPRESSION_TYPE,
+>+	MLX5_DEVLINK_PARAM_ID_SWP_L4_CSUM_MODE,
+> };
 > 
-> Furthermore, once CLC negotiation is complete, the SMC protocol stack
-> relies exclusively on these negotiated results for all subsequent
-> operations. It no longer refers to the initial capability values stored
-> in ini. 
+> struct mlx5_trap_ctx {
+>diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/nv_param.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/nv_param.c
+>index 3d2195338d39..3dc5b899a5fb 100644
+>--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/nv_param.c
+>+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/nv_param.c
+>@@ -8,6 +8,8 @@ enum {
+> 	MLX5_CLASS_0_CTRL_ID_NV_GLOBAL_PCI_CONF               = 0x80,
+> 	MLX5_CLASS_0_CTRL_ID_NV_GLOBAL_PCI_CAP                = 0x81,
+> 	MLX5_CLASS_0_CTRL_ID_NV_SW_OFFLOAD_CONFIG             = 0x10a,
+>+	MLX5_CLASS_0_CTRL_ID_NV_SW_OFFLOAD_CAP                = 0x10b,
+>+	MLX5_CLASS_0_CTRL_ID_NV_SW_ACCELERATE_CONF            = 0x11d,
+> 
+> 	MLX5_CLASS_3_CTRL_ID_NV_PF_PCI_CONF                   = 0x80,
+> };
+>@@ -123,6 +125,17 @@ struct mlx5_ifc_nv_sw_offload_conf_bits {
+> 	u8         lro_log_timeout0[0x4];
+> };
+> 
+>+struct mlx5_ifc_nv_sw_offload_cap_bits {
+>+	u8         reserved_at_0[0x19];
+>+	u8         swp_l4_csum_mode_l4_only[0x1];
+>+	u8         reserved_at_1a[0x6];
+>+};
+>+
+>+struct mlx5_ifc_nv_sw_accelerate_conf_bits {
+>+	u8         swp_l4_csum_mode[0x2];
+>+	u8         reserved_at_2[0x3e];
+>+};
+>+
+> #define MNVDA_HDR_SZ \
+> 	(MLX5_ST_SZ_BYTES(mnvda_reg) - \
+> 	 MLX5_BYTE_OFF(mnvda_reg, configuration_item_data))
+>@@ -195,6 +208,30 @@ mlx5_nv_param_read_sw_offload_conf(struct mlx5_core_dev *dev, void *mnvda,
+> 	return mlx5_nv_param_read(dev, mnvda, len);
+> }
+> 
+>+static int
+>+mlx5_nv_param_read_sw_offload_cap(struct mlx5_core_dev *dev, void *mnvda,
+>+				  size_t len)
+>+{
+>+	MLX5_SET_CFG_ITEM_TYPE(global, mnvda, type_class, 0);
+>+	MLX5_SET_CFG_ITEM_TYPE(global, mnvda, parameter_index,
+>+			       MLX5_CLASS_0_CTRL_ID_NV_SW_OFFLOAD_CAP);
+>+	MLX5_SET_CFG_HDR_LEN(mnvda, nv_sw_offload_cap);
+>+
+>+	return mlx5_nv_param_read(dev, mnvda, len);
+>+}
+>+
+>+static int
+>+mlx5_nv_param_read_sw_accelerate_conf(struct mlx5_core_dev *dev, void *mnvda,
+>+				      size_t len)
+>+{
+>+	MLX5_SET_CFG_ITEM_TYPE(global, mnvda, type_class, 0);
+>+	MLX5_SET_CFG_ITEM_TYPE(global, mnvda, parameter_index,
+>+			       MLX5_CLASS_0_CTRL_ID_NV_SW_ACCELERATE_CONF);
+>+	MLX5_SET_CFG_HDR_LEN(mnvda, nv_sw_accelerate_conf);
+>+
+>+	return mlx5_nv_param_read(dev, mnvda, len);
+>+}
+>+
+> static const char *const
+> 	cqe_compress_str[] = { "balanced", "aggressive" };
+> 
+>@@ -269,6 +306,124 @@ mlx5_nv_param_devlink_cqe_compress_set(struct devlink *devlink, u32 id,
+> 	return mlx5_nv_param_write(dev, mnvda, sizeof(mnvda));
+> }
+> 
+>+enum swp_l4_csum_mode {
+>+	SWP_L4_CSUM_MODE_DEVICE_DEFAULT = 0,
+>+	SWP_L4_CSUM_MODE_FULL_CSUM = 1,
+>+	SWP_L4_CSUM_MODE_L4_ONLY = 2,
+>+};
+>+
+>+static const char *const
+>+	swp_l4_csum_mode_str[] = { "device_default", "full_csum", "l4_only" };
+>+
+>+static int
+>+mlx5_nv_param_devlink_swp_l4_csum_mode_get(struct devlink *devlink, u32 id,
+>+					   struct devlink_param_gset_ctx *ctx,
+>+					   struct netlink_ext_ack *extack)
+>+{
+>+	struct mlx5_core_dev *dev = devlink_priv(devlink);
+>+	u32 mnvda[MLX5_ST_SZ_DW(mnvda_reg)] = {};
+>+	u8 value = U8_MAX;
+>+	void *data;
+>+	int err;
+>+
+>+	err = mlx5_nv_param_read_sw_accelerate_conf(dev, mnvda, sizeof(mnvda));
+>+	if (err) {
+>+		NL_SET_ERR_MSG_MOD(extack,
+>+				   "Failed to read sw_accelerate_conf mnvda reg");
+>+		return err;
+>+	}
+>+
+>+	data = MLX5_ADDR_OF(mnvda_reg, mnvda, configuration_item_data);
+>+	value = MLX5_GET(nv_sw_accelerate_conf, data, swp_l4_csum_mode);
+>+
+>+	if (value >= ARRAY_SIZE(swp_l4_csum_mode_str)) {
+>+		NL_SET_ERR_MSG_FMT_MOD(extack,
+>+				       "Invalid swp_l4_csum_mode value %u read from device",
+>+				       value);
+>+		return -EINVAL;
+>+	}
+>+
+>+	strscpy(ctx->val.vstr, swp_l4_csum_mode_str[value],
+>+		sizeof(ctx->val.vstr));
+>+	return 0;
+>+}
+>+
+>+static int
+>+mlx5_nv_param_devlink_swp_l4_csum_mode_validate(struct devlink *devlink, u32 id,
+>+						union devlink_param_value val,
+>+						struct netlink_ext_ack *extack)
+>+{
+>+	struct mlx5_core_dev *dev = devlink_priv(devlink);
+>+	u32 cap[MLX5_ST_SZ_DW(mnvda_reg)] = {};
+>+	void *data;
+>+	int err, i;
+>+
+>+	for (i = 0; i < ARRAY_SIZE(swp_l4_csum_mode_str); i++) {
+>+		if (!strcmp(val.vstr, swp_l4_csum_mode_str[i]))
+>+			break;
+>+	}
+>+
+>+	if (i >= ARRAY_SIZE(swp_l4_csum_mode_str)) {
+>+		NL_SET_ERR_MSG_MOD(extack,
+>+				   "Invalid value, supported values are device_default/full_csum/l4_only");
+>+		return -EINVAL;
+>+	}
+>+
+>+	if (i == SWP_L4_CSUM_MODE_L4_ONLY) {
+>+		err = mlx5_nv_param_read_sw_offload_cap(dev, cap, sizeof(cap));
+>+		if (err) {
+>+			NL_SET_ERR_MSG_MOD(extack,
+>+					   "Failed to read sw_offload_cap");
+>+			return err;
+>+		}
+>+
+>+		data = MLX5_ADDR_OF(mnvda_reg, cap, configuration_item_data);
+>+		if (!MLX5_GET(nv_sw_offload_cap, data, swp_l4_csum_mode_l4_only)) {
+>+			NL_SET_ERR_MSG_MOD(extack,
+>+					   "l4_only mode is not supported on this device");
+>+			return -EOPNOTSUPP;
+>+		}
+>+	}
+>+
+>+	return 0;
+>+}
+>+
+>+static int
+>+mlx5_nv_param_devlink_swp_l4_csum_mode_set(struct devlink *devlink, u32 id,
+>+					   struct devlink_param_gset_ctx *ctx,
+>+					   struct netlink_ext_ack *extack)
+>+{
+>+	struct mlx5_core_dev *dev = devlink_priv(devlink);
+>+	u32 mnvda[MLX5_ST_SZ_DW(mnvda_reg)] = {};
+>+	void *data;
+>+	u8 value;
+>+	int err;
+>+
+>+	if (!strcmp(ctx->val.vstr, "device_default"))
 
-Could you give an example where these negotiated results are referred?
-Or do you mean within smc_clc_send_proposal()? The pclc block is freed
-at the end of smc_clc_send_proposal(), so where is that result stored?
+I did some research. 0/DEVICE_DEFAULT should not be ever reported back
+from FW. It's purpose is for user to reset to default FW configuration.
+What's the usecase for that? I think you could just avoid
+0/DEVICE_DEFAULT entirely, for both get and set.
+
+But ff you find a need to allow user to set FW default, it should be
+most likely done differently, perhaps by a new devlink command,
+rather than per-param free-form string.
 
 
-> Consequently, maintaining ini->smc_type_v1/v2 in its original,
-> unaltered state appears to present no practical risks or functional
-> issues.
+>+		value = SWP_L4_CSUM_MODE_DEVICE_DEFAULT;
+>+	else if (!strcmp(ctx->val.vstr, "full_csum"))
+>+		value = SWP_L4_CSUM_MODE_FULL_CSUM;
+>+	else
+>+		value = SWP_L4_CSUM_MODE_L4_ONLY;
+>+
+>+	err = mlx5_nv_param_read_sw_accelerate_conf(dev, mnvda, sizeof(mnvda));
+>+	if (err) {
+>+		NL_SET_ERR_MSG_MOD(extack,
+>+				   "Failed to read sw_accelerate_conf mnvda reg");
+>+		return err;
+>+	}
+>+
+>+	data = MLX5_ADDR_OF(mnvda_reg, mnvda, configuration_item_data);
+>+	MLX5_SET(nv_sw_accelerate_conf, data, swp_l4_csum_mode, value);
+>+
+>+	err = mlx5_nv_param_write(dev, mnvda, sizeof(mnvda));
+>+	if (err)
+>+		NL_SET_ERR_MSG_MOD(extack,
+>+				   "Failed to write sw_accelerate_conf mnvda reg");
+>+
+>+	return err;
+>+}
+>+
+> static int mlx5_nv_param_read_global_pci_conf(struct mlx5_core_dev *dev,
+> 					      void *mnvda, size_t len)
+> {
+>@@ -548,6 +703,12 @@ static const struct devlink_param mlx5_nv_param_devlink_params[] = {
+> 			     mlx5_nv_param_devlink_cqe_compress_get,
+> 			     mlx5_nv_param_devlink_cqe_compress_set,
+> 			     mlx5_nv_param_devlink_cqe_compress_validate),
+>+	DEVLINK_PARAM_DRIVER(MLX5_DEVLINK_PARAM_ID_SWP_L4_CSUM_MODE,
+>+			     "swp_l4_csum_mode", DEVLINK_PARAM_TYPE_STRING,
 
-Even if nobody reads these fields today after smc_clc_send_proposal(),
-I don't think it is good design to leave stale values there and hope
-future editors will understand that.
-I understand your patch fixes the observed problem. I am just wondering,
-whether it makes the code more maintainable or even more confusing than before.
+I still think that even unlikely this will be implemented in other
+driver, it is generic param. Could you please treat it as such?
+
+
+
+>+			     BIT(DEVLINK_PARAM_CMODE_PERMANENT),
+>+			     mlx5_nv_param_devlink_swp_l4_csum_mode_get,
+>+			     mlx5_nv_param_devlink_swp_l4_csum_mode_set,
+>+			     mlx5_nv_param_devlink_swp_l4_csum_mode_validate),
+> };
+> 
+> int mlx5_nv_param_register_dl_params(struct devlink *devlink)
+>-- 
+>2.47.3
+>
 
