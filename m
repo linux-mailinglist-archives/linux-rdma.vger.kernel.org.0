@@ -1,109 +1,130 @@
-Return-Path: <linux-rdma+bounces-14248-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14249-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAAA8C32C35
-	for <lists+linux-rdma@lfdr.de>; Tue, 04 Nov 2025 20:23:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B9EF9C33657
+	for <lists+linux-rdma@lfdr.de>; Wed, 05 Nov 2025 00:36:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3A13426BE6
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Nov 2025 19:22:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CC37428282
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Nov 2025 23:36:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C45442DC321;
-	Tue,  4 Nov 2025 19:22:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28B96346FAC;
+	Tue,  4 Nov 2025 23:36:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B+/TZv1X"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ceUjJz9z"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 757742DA74D;
-	Tue,  4 Nov 2025 19:22:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B647233892B
+	for <linux-rdma@vger.kernel.org>; Tue,  4 Nov 2025 23:36:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762284138; cv=none; b=OiD0w+lOqDPz3+Nr9KdiNQ9JBmo5nDHPsq1kB98/wVBhTkJS6inKvrm+p5+kG4dQg8pyyMSGCf8tl9UxcSKwA8m2QWEgqNpUThlmvNoNINJAo8+/pLHvYcmEwt2tFGLK+H0/AaRsj4roUqwc/2iFL+gvTGwp2lLb3YLzm7Di8XM=
+	t=1762299391; cv=none; b=JKF+PqdDxipRi934z5RKdBZcV/1YKJNWDk1oXCuYrIt7aKVC0QeTBqsY4CbwC/xNUH4BmhAcFEXGyPthUGGTIaEO8Heu+KiFwD9mIH2vFkjLSr044bRMYp6b3dPAM5ix1bn/sRYEWY+xVYLOWb1neamisH/7mSv0s18vAyZ2h60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762284138; c=relaxed/simple;
-	bh=+lf7dW++l2EW9+9yEsAcle5UBElW4w+UfVpXaHOHW2Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iiXUsgGjyXkPOmTLbUdAwSAhSJw+J8rDINuC46XCevETeFXg8hNauXVgEqYixPs/vraNT9hBxELvcYLV8PGkjuG2uubnb9FcbNgdtGypSqrPLNWFsaDElJjUYYoC1XBXLGmHUwzBru2CPfBaOGlJLFta5QUL/TZb2N1ccyM6qgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B+/TZv1X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A88DC16AAE;
-	Tue,  4 Nov 2025 19:22:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762284138;
-	bh=+lf7dW++l2EW9+9yEsAcle5UBElW4w+UfVpXaHOHW2Y=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=B+/TZv1XRq0zzd5NbGu3Z9bN5OyQZnNOsope6laxMrWxA3/9XRg7VX+3PhsjNe7lW
-	 5cbgxn6SqwRaVkJbyodTHSn0LdeO5DaMLbCFV/YkdMgryijwrq6LyocnrsiVuNyhLv
-	 xHsrmZselWKpvNIRQMjhLTdiIa0VnfoixY52BS0uFlEVig1wBgEFGzD/T3bGyB56e6
-	 1l8b7lD0a36nrmABwnEvq70bPZRM5IzkSVy7iTQN+TPjab7k/GpzkYFUllJxth410q
-	 4+JiRU+f29KNZ9lJy0ZuU0cQlh4AQfIsQMj0TIhuqexc7SbGFrZJBc5IimM07mEMvE
-	 R1RZeW1bSnP0w==
-Date: Tue, 4 Nov 2025 11:22:14 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: Daniel Zahka <daniel.zahka@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Jonathan Corbet
- <corbet@lwn.net>, Srujana Challa <schalla@marvell.com>, Bharat Bhushan
- <bbhushan2@marvell.com>, Herbert Xu <herbert@gondor.apana.org.au>, Brett
- Creeley <brett.creeley@amd.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Michael Chan <michael.chan@broadcom.com>, Pavan Chebbi
- <pavan.chebbi@broadcom.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>, Sunil Goutham
- <sgoutham@marvell.com>, Linu Cherian <lcherian@marvell.com>, Geetha
- sowjanya <gakula@marvell.com>, Jerin Jacob <jerinj@marvell.com>, hariprasad
- <hkelam@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>, Tariq Toukan
- <tariqt@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
- <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>, Ido Schimmel
- <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>, Manish Chopra
- <manishc@marvell.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>, Siddharth Vadapalli
- <s-vadapalli@ti.com>, Roger Quadros <rogerq@kernel.org>, Loic Poulain
- <loic.poulain@oss.qualcomm.com>, Sergey Ryazanov <ryazanov.s.a@gmail.com>,
- Johannes Berg <johannes@sipsolutions.net>, Vladimir Oltean
- <olteanv@gmail.com>, Michal Swiatkowski
- <michal.swiatkowski@linux.intel.com>, Aleksandr Loktionov
- <aleksandr.loktionov@intel.com>, Dave Ertman <david.m.ertman@intel.com>,
- Vlad Dumitrescu <vdumitrescu@nvidia.com>, "Russell King (Oracle)"
- <rmk+kernel@armlinux.org.uk>, Alexander Sverdlin
- <alexander.sverdlin@gmail.com>, Lorenzo Bianconi <lorenzo@kernel.org>,
- netdev@vger.kernel.org, linux-doc@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org
-Subject: Re: [PATCH net-next v2 2/2] net/mlx5: implement swp_l4_csum_mode
- via devlink params
-Message-ID: <20251104112214.7f60b252@kernel.org>
-In-Reply-To: <mhm4hkz52gmqok56iuiukdcz2kaowvppbqrfi3zxuq67p3otit@5fhpgu2axab2>
-References: <20251103194554.3203178-1-daniel.zahka@gmail.com>
-	<20251103194554.3203178-3-daniel.zahka@gmail.com>
-	<mhm4hkz52gmqok56iuiukdcz2kaowvppbqrfi3zxuq67p3otit@5fhpgu2axab2>
+	s=arc-20240116; t=1762299391; c=relaxed/simple;
+	bh=F26rfSSN1x7KeaPgbqhaghuk20JZMAp2Jes70pEFDnE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=R2yOA5ws0Nx7DJBWGFHuMP+2IOrZNYcOz86Llcy4wClu55Wn4+QLnZsOS9+GCULjgSkwvZ/IHlAC7/KvWjGC3tNxPMf5KrlBV3LZLEWAR1JNTnQTqxrmvYlP5hv00tyjTcdkbraaAnPm/U4G9jkTwPM5BQsfowBJ6zOpN2BK57Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ceUjJz9z; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1762299387;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=PfA4jxHfYnfbyzECoSzkW9jzJrwryJPXI6HWQQW/13Q=;
+	b=ceUjJz9zhLNI1RrtIYr/APXkhgXf00pTf2CDbLAgo10rLX5juN48dknPac9xMm+4J/F+45
+	asAhmjny11EuZm6qWO5F5FAa2RLaX6iNOBTgJP8Nit1lT8BzyOIqmzp3mArkmvgbdOvoij
+	v1XDhiS49Htle+YbbLZ+xKRaFmV67xU=
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+To: jgg@ziepe.ca,
+	leon@kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: Zhu Yanjun <yanjun.zhu@linux.dev>,
+	syzbot+b0da83a6c0e2e2bddbd4@syzkaller.appspotmail.com
+Subject: [PATCH rdma-next v2 1/1] RDMA/core: Fix WARNING in gid_table_release_one
+Date: Tue,  4 Nov 2025 15:36:01 -0800
+Message-ID: <20251104233601.1145-1-yanjun.zhu@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, 4 Nov 2025 11:14:03 +0100 Jiri Pirko wrote:
-> >@@ -548,6 +703,12 @@ static const struct devlink_param mlx5_nv_param_devlink_params[] = {
-> > 			     mlx5_nv_param_devlink_cqe_compress_get,
-> > 			     mlx5_nv_param_devlink_cqe_compress_set,
-> > 			     mlx5_nv_param_devlink_cqe_compress_validate),
-> >+	DEVLINK_PARAM_DRIVER(MLX5_DEVLINK_PARAM_ID_SWP_L4_CSUM_MODE,
-> >+			     "swp_l4_csum_mode", DEVLINK_PARAM_TYPE_STRING,  
-> 
-> I still think that even unlikely this will be implemented in other
-> driver, it is generic param. Could you please treat it as such?
+GID entry ref leak for dev syz1 index 2 ref=615
+...
+Call Trace:
+ <TASK>
+ ib_device_release+0xd2/0x1c0 drivers/infiniband/core/device.c:509
+ device_release+0x99/0x1c0 drivers/base/core.c:-1
+ kobject_cleanup lib/kobject.c:689 [inline]
+ kobject_release lib/kobject.c:720 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x228/0x480 lib/kobject.c:737
+ process_one_work kernel/workqueue.c:3263 [inline]
+ process_scheduled_works+0xae1/0x17b0 kernel/workqueue.c:3346
+ worker_thread+0x8a0/0xda0 kernel/workqueue.c:3427
+ kthread+0x711/0x8a0 kernel/kthread.c:463
+ ret_from_fork+0x47c/0x820 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
 
-We need a clearer definition of what this does then.
+When the state of a GID is GID_TABLE_ENTRY_PENDING_DEL, it indicates
+that the GID is about to be released soon. Therefore, it does not
+appear to be a leak.
 
-Is it basically disabling silicon validation of L4 checksum and allows
-for the FW to compute the L4 checksum? Which may negatively impact
-performance? (hence disabled by default?)
+Fixes: b150c3862d21 ("IB/core: Introduce GID entry reference counts")
+Reported-by: syzbot+b0da83a6c0e2e2bddbd4@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=b0da83a6c0e2e2bddbd4
+Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+---
+V1->V2: Use flush_workqueue instead of while loop
+---
+ drivers/infiniband/core/cache.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
+index 81cf3c902e81..74211fb37020 100644
+--- a/drivers/infiniband/core/cache.c
++++ b/drivers/infiniband/core/cache.c
+@@ -799,16 +799,26 @@ static void release_gid_table(struct ib_device *device,
+ 	if (!table)
+ 		return;
+ 
++	mutex_lock(&table->lock);
+ 	for (i = 0; i < table->sz; i++) {
+ 		if (is_gid_entry_free(table->data_vec[i]))
+ 			continue;
+ 
+-		WARN_ONCE(true,
+-			  "GID entry ref leak for dev %s index %d ref=%u\n",
++		WARN_ONCE(table->data_vec[i]->state != GID_TABLE_ENTRY_PENDING_DEL,
++			  "GID entry ref leak for dev %s index %d ref=%u, state: %d\n",
+ 			  dev_name(&device->dev), i,
+-			  kref_read(&table->data_vec[i]->kref));
++			  kref_read(&table->data_vec[i]->kref), table->data_vec[i]->state);
++		/*
++		 * The entry may be sitting in the WQ waiting for
++		 * free_gid_work(), flush it to try to clean it.
++		 */
++		mutex_unlock(&table->lock);
++		flush_workqueue(ib_wq);
++		mutex_lock(&table->lock);
+ 	}
+ 
++	mutex_unlock(&table->lock);
++
+ 	mutex_destroy(&table->lock);
+ 	kfree(table->data_vec);
+ 	kfree(table);
+-- 
+2.51.2
+
 
