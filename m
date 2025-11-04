@@ -1,81 +1,55 @@
-Return-Path: <linux-rdma+bounces-14244-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14245-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B2E4C319FC
-	for <lists+linux-rdma@lfdr.de>; Tue, 04 Nov 2025 15:51:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D476EC31B1C
+	for <lists+linux-rdma@lfdr.de>; Tue, 04 Nov 2025 16:02:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1825424323
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Nov 2025 14:48:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7186D3AA5CC
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Nov 2025 14:57:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D23632F770;
-	Tue,  4 Nov 2025 14:48:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BA25333736;
+	Tue,  4 Nov 2025 14:56:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lpK9nyZm"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="szIn24wp"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1950B2DECCB
-	for <linux-rdma@vger.kernel.org>; Tue,  4 Nov 2025 14:48:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59E493328F2;
+	Tue,  4 Nov 2025 14:56:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762267706; cv=none; b=V2v17tMrP8dmVwqdZRnVKOuxGzZ8/FD0oAhJpsrRNJZCwA1sH6Eotcpj3jpPNTuW0ow8JVu0ocHxE0YF+P+XYkF9Z8DrG7c1cuJzXuUz5ePI1io6T0CXkbbWJA+Vz7MryvRswtT4UhqmLx6cQv445a/bBnEfxR8eq2CiuAbCbFY=
+	t=1762268171; cv=none; b=VqUbG54ZHNMT+CWn8TlUShhiSJyGUJyvvi2LE2A2lcCrr7KpxGV86hgaywASewQCw9skFmv1unAtBV7Ihk0G9HaPC81K1rANXp7a/BMFQ0+RwrOdzMP0bAjzqC4GFeujw5y4mjU9rJU9x2MsDG7A+jws5FhWPJnPqC3loWRsyaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762267706; c=relaxed/simple;
-	bh=JMLaYY6hZzPARYlgwS336pFX+gMN7vDHCCMc++BjmpQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=c8bqr9XKfIQywwDtSkLmfxmJpvXHPB0fvGv960DeCnKQM9jUfS1bteMrxcwnNKYPwhl7Yl1qJxy49nJ+HxlU+8Ga/Wy3XFEMtWbQcUz2TwpfwzhaGzy03CA4SHNE9rh/sWrUa3wuMOsjOdho+cU1p9Cp+Y9yEbxQ6+lu32kYi+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lpK9nyZm; arc=none smtp.client-ip=209.85.222.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-8909f01bd00so659141785a.0
-        for <linux-rdma@vger.kernel.org>; Tue, 04 Nov 2025 06:48:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762267704; x=1762872504; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TYbk9wPxk/JA4+MxrrdLZ/GfKAsrpCoWC70+eUl4rp4=;
-        b=lpK9nyZmhhKVs4MaUwGdwSTH3jpjY2avo4MDRIQ5wFbIO5Lp6laDw2X1rj5LQe5QjX
-         5+0H0RAvSiwas1GTdRFBdguxoK1vTrKbzQ568DJ4NHWmgPF8uNoG2GCBOzQDD6N86uHE
-         k5f52xGDpxZ0N6i2WVXnCR8BP5E5dB/V/IrTkcOsjeEfGAIBvYA243u+4OrTCqa8nP8/
-         toWL2tFpt4wLEgr5wwVVT5kuIPp16zavB0wD7+OLpk2t7UVal3Q00kJgm33k/HeCzmkW
-         gJ6yReeDlpcXjJ3A7UIQ3IFOcgpEYckbC0fCC/e77NJcxwwrtR5ONlGW5oc69M+D4iqQ
-         9lCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762267704; x=1762872504;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TYbk9wPxk/JA4+MxrrdLZ/GfKAsrpCoWC70+eUl4rp4=;
-        b=tw7IsxVjB8Q0hTbSxgygIOgmQb4djbNHRW+kT5fND/GaiEz3976oFDOQUZN8leVztX
-         Q9lEWBJG+HAnLcTVrhgECsyyZXaEwtsF4Jy6PRqmcAcFz5WKBggRKJqeogUmf5BN+SBz
-         2ws1rCzZZjldGvb3JUG0D/zr2KkvZrrPj32FWrZmU+AZe33P+FRls4o99HL/GvVTjSck
-         MtUxRc03ria4WiiygXx0p0SUSUD3BGxkdB0LgVVZU0OjToY9jjrVeO36SKSigL634Om3
-         uGac1B/OQ1yX7wWZvI8F/O3C/iPTKNoO4DOGC6hWFOsivKupLj60N9Q2F2pX2zoJSGuJ
-         bphQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXbBkRGYNDTMFMXQOD6mgYQPSdYJRD/MCdbL3XmrV0Z0evleBJIDVbx6GVD7lhajWExU8JINk480N+/@vger.kernel.org
-X-Gm-Message-State: AOJu0YyYkBt5qwHJ7eiLunIKWjqmVHjwFtMWo3+hR6KcGOiazwzBZUVF
-	tQUSsU3stP04q3WcLWUBsT4XfZwRJjcF1/xD14x3rdR+Nb1ApSRfiSlz
-X-Gm-Gg: ASbGnctx7COBl2I6h6Z/0z3uiE/rOyDAhfVn3/O6rNjxIIWeVo9p6CbVPQikvKWXOJC
-	b36P+y8Rlh84/A9s9LLUhsaGPkzRpxwTBhUZrfjCsmyXqlHvb41efiugf4J2WiopaWQtYaYhJu3
-	U/EhQxe036rVfny/hXRN6m2QZob+Dk8LhIuHR7uEb2YYqLON+w6an8Vj+RSg6viJB5JY0H0AOus
-	/CzTW6pAuUrWw9uJoajPegjMt8Z3kCZ5b8uTQV78z6omRlRWvFjKX+klFcAJvSTC4h0UbV33VLR
-	DTInJ9S4Fg79D0NVFrZFVCYfhLqn8vI7amQxUIAg+5X5bq4R/lgSgCXW6cH04kWXF7/SoqAeXml
-	7QVlYgnBXcP/b0OHZMlCV9tusk7/Yoa7YoHqqIUllE9JZM+xV1Cbp0n52295xBIdMU+HioxaHFp
-	abeR3XQumPUdB7aWdwVhvwXuTjN++uDH0vd4nOUZP83RUkc6JugtyZtpSbSc0GDpM92A==
-X-Google-Smtp-Source: AGHT+IGmraHbZP2E2iRwXxMxNgGXM9zhZedCgpJV66vhLBH8PzAO8Dn4btILshzP2e0cEKgwNzEvBA==
-X-Received: by 2002:a05:620a:1a27:b0:886:173f:1b4c with SMTP id af79cd13be357-8ab9ba6fd3emr1982205785a.80.1762267703489;
-        Tue, 04 Nov 2025 06:48:23 -0800 (PST)
-Received: from ?IPV6:2600:4040:93b8:5f00:52dd:c164:4581:b7eb? ([2600:4040:93b8:5f00:52dd:c164:4581:b7eb])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8b0f543d90csm198693785a.17.2025.11.04.06.48.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 Nov 2025 06:48:23 -0800 (PST)
-Message-ID: <78db1fab-e482-4ebc-82ce-ba84b3f561e2@gmail.com>
-Date: Tue, 4 Nov 2025 09:48:21 -0500
+	s=arc-20240116; t=1762268171; c=relaxed/simple;
+	bh=lFHqmfqjInR++fuy7MylpWpAhCLAZ7fTkTfLDwYTIRI=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=GW1okTsGkEM4zaV/Yzrhbd2zt0iuw5pomJy5UVtJl7iBlsKzmOghdbugiGCF3I1jl6Epd5Q0h0J/gZfh8DTW29gIyUeE4NmBLqnYa56HEsLgG340wQq2Cfk3wr1sEGUzMqLH/Zyhm3GAh/yAIfsaYiMbV1tTlCMRUZaI1a2bDyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=szIn24wp; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1762268156; x=1762872956; i=markus.elfring@web.de;
+	bh=lFHqmfqjInR++fuy7MylpWpAhCLAZ7fTkTfLDwYTIRI=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=szIn24wpQsAers95vQ+PYSOkPw+E9Fb0kT8L81SqYp2nqxlpQ8Rl6r6xuVr9bx5o
+	 Lp1aJDToRzNAX7GNolfcQSfbB43MoXaANc/LzxyIyGg8q4bZLXBRzT9YswbkLyvJI
+	 CxnCa2nbe+lT3sgjJQUPeKDE+tR3WEyH7pGS0it6o5YMPB3c7vlLHZlhBJHxUnlkW
+	 Q8JaediQ7LB3cl2qLg4iYjf6ekxBYZ99ujwbHT1N8KSHIfCLr6d60oUNcyF3MOsWj
+	 cgM/s7u6SqIGw0XbHZ6eslI2Qx1DpWzsjpC6duBIdkZiNjzuXM9UCdDC5f3Zl142d
+	 qf4bRMaPL/BSysSLuA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.29] ([94.31.92.227]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MgzaR-1vtCUr0oqz-00nwdZ; Tue, 04
+ Nov 2025 15:55:56 +0100
+Message-ID: <073e1aed-11d4-4410-b40c-1d4684f3c192@web.de>
+Date: Tue, 4 Nov 2025 15:55:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -83,107 +57,109 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 2/2] net/mlx5: implement swp_l4_csum_mode via
- devlink params
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Jonathan Corbet <corbet@lwn.net>, Srujana Challa <schalla@marvell.com>,
- Bharat Bhushan <bbhushan2@marvell.com>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- Brett Creeley <brett.creeley@amd.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Michael Chan <michael.chan@broadcom.com>,
- Pavan Chebbi <pavan.chebbi@broadcom.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Sunil Goutham <sgoutham@marvell.com>, Linu Cherian <lcherian@marvell.com>,
- Geetha sowjanya <gakula@marvell.com>, Jerin Jacob <jerinj@marvell.com>,
- hariprasad <hkelam@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>,
- Tariq Toukan <tariqt@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
- Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
- Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
- Manish Chopra <manishc@marvell.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Siddharth Vadapalli <s-vadapalli@ti.com>, Roger Quadros <rogerq@kernel.org>,
- Loic Poulain <loic.poulain@oss.qualcomm.com>,
- Sergey Ryazanov <ryazanov.s.a@gmail.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Vladimir Oltean <olteanv@gmail.com>,
- Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
- Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
- Dave Ertman <david.m.ertman@intel.com>,
- Vlad Dumitrescu <vdumitrescu@nvidia.com>,
- "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
- linux-doc@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
- linux-rdma@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org
-References: <20251103194554.3203178-1-daniel.zahka@gmail.com>
- <20251103194554.3203178-3-daniel.zahka@gmail.com>
- <mhm4hkz52gmqok56iuiukdcz2kaowvppbqrfi3zxuq67p3otit@5fhpgu2axab2>
- <db5c46b4-cc66-48bb-aafb-40d83dd3620c@gmail.com>
- <6aa2f011-3ba5-4614-950d-d8f0ec62222b@gmail.com>
- <p3pj3mu4mabgninwowqikegeotxgzhc4yptf7qrfhns37bnkoz@ugkbgvlkxqxb>
-Content-Language: en-US
-From: Daniel Zahka <daniel.zahka@gmail.com>
-In-Reply-To: <p3pj3mu4mabgninwowqikegeotxgzhc4yptf7qrfhns37bnkoz@ugkbgvlkxqxb>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: make24@iscas.ac.cn, linux-rdma@vger.kernel.org
+Cc: stable@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+ Haris Iqbal <haris.iqbal@ionos.com>, Jack Wang <jinpu.wang@ionos.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+References: <20251104021900.11896-1-make24@iscas.ac.cn>
+Subject: Re: [PATCH] RDMA/rtrs: server: Fix error handling in
+ get_or_create_srv
+Content-Language: en-GB, de-DE
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20251104021900.11896-1-make24@iscas.ac.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:c1ZwohL0bP/VTTUzKNy7Uvy7AP9yv6cwF3amJ/OrcqNxUudfRfn
+ Hv+TGUJq4Z99ZcdZ2zGNvpXz2ouD93vvyRUdrzI6AISP8rLqwdW/3NQH1PCFkb4iBY1pua7
+ hM1PFWAK+pU/Z+6a5KmyiyQ7IB9NZZ+WqpP0iko0amsOn9jYQct8LUo6qVv052LgovFhmbk
+ 1VDc1wSUtiI/kJx5QKzLg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:ON9LiD21JUo=;GGcCWjEdgQgf7oPP04e+h6BNUgE
+ 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
+ mjNZ0eJj7R7mIQdb8R+zrBjSP8=
+
+> get_or_create_srv() fails to call put_device() after
+> device_initialize() when memory allocation fails. =E2=80=A6
+
+Why do you propose then to replace a kfree(srv) call by put_device(&srv->d=
+ev)?
 
 
+Would an other word wrapping be a bit nicer for such a change description?
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
+cumentation/process/submitting-patches.rst?h=3Dv6.18-rc4#n658
 
-On 11/4/25 9:39 AM, Jiri Pirko wrote:
-> Tue, Nov 04, 2025 at 01:51:16PM +0100, daniel.zahka@gmail.com wrote:
->>
->> On 11/4/25 6:38 AM, Daniel Zahka wrote:
->>>
->>> On 11/4/25 5:14 AM, Jiri Pirko wrote:
->>>> I did some research. 0/DEVICE_DEFAULT should not be ever reported back
->>>> from FW. It's purpose is for user to reset to default FW configuration.
->>>> What's the usecase for that? I think you could just avoid
->>>> 0/DEVICE_DEFAULT entirely, for both get and set.
->>> I find that 0/DEVICE_DEFAULT is reported back on my device. I have
->>> observed this same behavior when using the mstconfig tool for setting the
->>> parameter too.
->> e.g.
->> $ dmesg | grep -i mlx | grep -i firmware
->> [   10.165767] mlx5_core 0000:01:00.0: firmware version: 28.46.1006
->>
->> $ ./mstconfig -d 01:00.0 -b ./mlxconfig_host.db query SWP_L4_CHECKSUM_MODE
->>
->> Device #1:
->> ----------
->>
->> Device type:        ConnectX7
->> Name:               CX71143DMC-CDAE_FB_Ax
->> Description:        ConnectX-7 Ethernet adapter card; 100 GbE OCP3.0;
->> Single-port QSFP; Multi Host; 2 Host; PCIe 4.0 x16; Crypto and Secure Boot
->> Device:             01:00.0
->>
->> Configurations:                                          Next Boot
->>          SWP_L4_CHECKSUM_MODE DEVICE_DEFAULT(0)
-> This is next-boot value. You should query current (--enable_verbosity)
-> to show in param get.
-
-I am still seeing that DEVICE_DEFAULT(0) is read back:
-
-$ ./mstconfig --enable_verbosity -d 01:00.0 -b ./mlxconfig_host.db query 
-SWP_L4_CHECKSUM_MODE
-
-Device #1:
-----------
-
-Device type:        ConnectX7
-Name:               CX71143DMC-CDAE_FB_Ax
-Description:        ConnectX-7 Ethernet adapter card; 100 GbE OCP3.0; 
-Single-port QSFP; Multi Host; 2 Host; PCIe 4.0 x16; Crypto and Secure Boot
-Device:             01:00.0
-
-Configurations:                  Default             Current       Next Boot
-         SWP_L4_CHECKSUM_MODE DEVICE_DEFAULT(0) DEVICE_DEFAULT(0)    
-DEVICE_DEFAULT(0)
-
+Regards,
+Markus
 
