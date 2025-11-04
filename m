@@ -1,166 +1,161 @@
-Return-Path: <linux-rdma+bounces-14239-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14240-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E048C310FB
-	for <lists+linux-rdma@lfdr.de>; Tue, 04 Nov 2025 13:51:25 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 788C9C3119C
+	for <lists+linux-rdma@lfdr.de>; Tue, 04 Nov 2025 14:00:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id D5E5E34DE2E
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Nov 2025 12:51:24 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BB35B4EB90A
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Nov 2025 13:00:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D85872EC0A2;
-	Tue,  4 Nov 2025 12:51:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B7C72ED84A;
+	Tue,  4 Nov 2025 13:00:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dvGnXHbp"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="CB3Qqnuz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C58925F99B
-	for <linux-rdma@vger.kernel.org>; Tue,  4 Nov 2025 12:51:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 206E12EFDA1
+	for <linux-rdma@vger.kernel.org>; Tue,  4 Nov 2025 13:00:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762260681; cv=none; b=V9iPKaCcjC9xu8NaaHR8oncBASNSnDYk9dfqd37Sd8QKPj33BB6ZgK2+gmB5KkojbG6GUUVm9qLe0Uau3YTCFg9MEhjGxEJjWOaLsGcQUGN5VpN1A6wJzoLBmGoOVWtXrwlNWXx81qOArAU+2WhPDHxh9ZuxjoiwJmbEgIWJLpI=
+	t=1762261206; cv=none; b=XY0ceLyOYwLq/CcvCTY/d9G9keh81q22WuPbzYo9UAY45k6FVm96Il/Q1qEMHgtya48NctPmxHIaBVIatw3zqnH6olOuon4kpRB0IMcaJ2X/fDkL8LNqgWIcoQrjE1zIlFhvAoyeEM2FAM0XryuirRHcPsd59Es8WtTO+HcJcio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762260681; c=relaxed/simple;
-	bh=Tm7Z1rbJg1xBtYLywrxZOtnC4oE4srr+4uBIseDYWug=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ML9cZT/tQoVu+/gHTC8/TF1bgqU+wugTIfowIm0XBkHlLOu3/uCEzp2XENO/3n1NnAbyLyUbdbMk6hrEVrIewvP5+kWXI4CZuCTavdgdJKL2Hn38wyrIAhNB8673kVlLJDnD7wYDthZ8J3ibThg7MSn9SLONK0yOPjRCr5mxz3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dvGnXHbp; arc=none smtp.client-ip=209.85.219.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-81efcad9c90so63793126d6.0
-        for <linux-rdma@vger.kernel.org>; Tue, 04 Nov 2025 04:51:19 -0800 (PST)
+	s=arc-20240116; t=1762261206; c=relaxed/simple;
+	bh=4+cPbc26eTg87r6oJopQT70VDMp9odHkuY0GoP6OCnc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=n1HVF0Tf+q17jTfcjAiHK+bGQewd5OUxyztfvva0Rsq9EjWaVtTCGf0wqi1ILASkyRyO4qA832magiL0deKb6s/lYj5YM/rVVNEF3hOK+9ApKoaRaQCcqLDl1WxuFbrZQGzACBd3hi89xOI3rZCAcvUiKqH2zgi7T21aQccslTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=CB3Qqnuz; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-88057f5d041so22487436d6.1
+        for <linux-rdma@vger.kernel.org>; Tue, 04 Nov 2025 05:00:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762260679; x=1762865479; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=eNACkyQqVSo6Hmo5PjkrfufaeZZc3fNY7YlAuWMuRq0=;
-        b=dvGnXHbpBabcXnzRnM6SfnJRJdhcUrfu7DWxWACFpfYxqxVPLOHCOV250+gGlVqaCN
-         FoxYutoTSt/9t4Wzi/xkydfelXC0MWBN6itwSaSmkMFQJjM0FpT1+GkmH0IPqXW0U8lR
-         A0Y9d1t2S0vKXFrMsguWkeFGiEjvg8IHfldf0S6UZvTikVD3jCJl9eQI91vo3RFmLafZ
-         JPdDBrAtwVfVMkJrlQkhomY2RSc0gePKqxcdHf1vTUfLUINmXZHnZkgfT+cnJt9b9y5B
-         IOmCKKUhgw7V7uJ0ZVz9Fg6iS3w4jR3cOSt2O/Eybs+9pw7oO7VKwOfRjxE7swYYJv6I
-         MDfw==
+        d=ziepe.ca; s=google; t=1762261203; x=1762866003; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=h5ZDuXhF3NhcH+qMj7Ygph/U6Fs8/ZJ52VUJPhLQzOk=;
+        b=CB3QqnuzUnFNJt+5ok5wKg6dPtqze9Gm/B8y0FxDn/ZHSHR9Q+PJhKsV9kIvSsSZuS
+         PS+OjylmJd/a5+EA1/cJlGo6/70rl0fs6SGXXXoAGIKNmSWVQDSzxXpA/qzOeufgnoe9
+         SXqUogD0agKciHO7iWrs1KUQzcQK72Y6iWqfFg5gViXj0l8vmo5xlFdmWoieX6D8BFSx
+         hFMdEAHxc46FDhOFUWz2sJF30WSw+FfM0Sd7WiDifzFQlaHtt++sIn92hc/R13R/ppu7
+         ksNnZRh2z0E4fuUxGoNrdnO77GMaTYYL50y7briRPZRmPStPmOqgt/LzNIgMV+TLVptC
+         Ujug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762260679; x=1762865479;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eNACkyQqVSo6Hmo5PjkrfufaeZZc3fNY7YlAuWMuRq0=;
-        b=Ak7XPJYfUyw19HCdFe6z7l5JAE4HeiLAV+Ty51snvtor0pqzyZuPV8pM52GO+ZSmiC
-         g+/ExDZ6vReyqR9zWzEiYj6thtKjb2yb2fobXaTiF1xaP7u1Pf+SziyL5qKCmHVF9dW9
-         V12OeW+l33VN+rbCdg3c76/h5ak9QdXLaHdULXK4RKYDQvy9qcINybHlje8GJes6n8VN
-         mpGn/ORMT1qJQ+BNAaEqMoAAqV2YjLisbWbonG7JwWmdnmjNHEVB5/JptJcTRUnaclk4
-         n4iYPISndqWDR6dk4JUk4t6aiBzQcCn/zr7Nhe0tS9JpkGSCKrWzyFrRJvPva3wsYl64
-         8X2w==
-X-Forwarded-Encrypted: i=1; AJvYcCWJbOVDGy6gDsk8DewIn1C8jtgPFtnU2nBlCP6e1EP/ipSf/3ef3mikw0GlBoPqd0D+f4QUQVo5ngXw@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz79sYh5p1dSP6FEdM7gfQHDsJWL47vKV0TOAIyNiutgwfUr8jF
-	+EVci9o145USK5nCeOHKD+WjrWcKGvEE/ZT7slU87QQJlRv028rmkX8y
-X-Gm-Gg: ASbGncvzP6xoVqZUk8mwxcYX+/exuv43jFlkG78meohKjsyMbPAkjInsmmsbA05J08W
-	brHwaxGdjRpl4a7tpgyrPtPWCTgNCbhAUYL2aPh7CjkDdqu1D4OMGDpG4smovZHs4xuAvu1+rpz
-	qFJ/oIl+o2Kk34pixg9KPHst+eTcymP9jSChhLFhp5ZbJCeF0+lClTszs/0aEiNnPoTIocFNhe5
-	iOFbeX40AcjeZZQvusZ6AXef/BFQ2RcQyDF1Ue+X3+hhJHq66fEJ38AAo5oixfWpsNukCgNuQYu
-	z4ICWolRPIPOGuCENf65LAr+9EZnd2Ae1XP/OWV0aw28Wtp73EOmegFf4V6ky6f5tLrcG+lIfAR
-	N96ot6VVIfdZzc8p0t9O7asU7jESblolJ4wQVIBMWf7aymqf49S7G3GqLMkMFnV3Wg8p7grJhpK
-	0dMaDKhcLUQQazCAxmx8/3jbEq8bgMFcRArfXbzg7u754B7L/ETYP+CSU=
-X-Google-Smtp-Source: AGHT+IFm58ty03czXFexlH5hj0mLZA/g2M5F1UsdQEG3Wd5VnU77sQjl9srK3J0v7dmYKkp7SqLOlQ==
-X-Received: by 2002:a05:6214:262e:b0:880:5edf:d177 with SMTP id 6a1803df08f44-8805edfd5b5mr52809046d6.11.1762260678910;
-        Tue, 04 Nov 2025 04:51:18 -0800 (PST)
-Received: from ?IPV6:2600:4040:93b8:5f00:52dd:c164:4581:b7eb? ([2600:4040:93b8:5f00:52dd:c164:4581:b7eb])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-88060e906efsm19114706d6.45.2025.11.04.04.51.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 Nov 2025 04:51:18 -0800 (PST)
-Message-ID: <6aa2f011-3ba5-4614-950d-d8f0ec62222b@gmail.com>
-Date: Tue, 4 Nov 2025 07:51:16 -0500
+        d=1e100.net; s=20230601; t=1762261203; x=1762866003;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h5ZDuXhF3NhcH+qMj7Ygph/U6Fs8/ZJ52VUJPhLQzOk=;
+        b=B2utDT1eipX4Zd+EINQDrSDuWbVKIrLoPsQlBE53qbrwU2pVkdS9zHOhjpNlzGvsUJ
+         IPLgdQUlMh5IhixrEpjZHDLhX1iPq3JG0K/A+7tA473oiiCczHIhvpbZ9lvECe/XwB10
+         vkQpkgc89OBUtxYRQfP2n68Xnc953CH5AIkiabQTC7zU+eMeZAPeM+F03K/VXjky32y3
+         V/esM2hmcFuq29FNbUsJSD4VhceHqO4Wv2dKPdAzo2HQcxYOVdDi/7CRTktKa+TndCfx
+         GC0icA80pWDfhm50xu4kiqvI8FBrxLvMMs2vrahNhLUFNDc9Srg9Xfl3Mm6oOWYHiOP2
+         3bdQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWC2U63J3W+ZJuCMKNu/au4102qCPSa0TaCD7TR+hreWl75ZQ7lx4Pae4de1slh3lOeFAUx6N/aJXn3@vger.kernel.org
+X-Gm-Message-State: AOJu0YwqoK584ByM/nyFJg8M9r4JGSLtviIq3pJnT7HeWO0XjecngLYA
+	qrCpXfpUuCxVb/tixoQYo6g3z6aTKeF2JnLFuBSvxzOrBHdO0CNYi3ntBdTL/krFX3s=
+X-Gm-Gg: ASbGnctcum2UH5RFEmDZ2yrKLKwCYX5cWAQLOx03Qhri4e8N4cgGJPwwRvALVe0pS33
+	nSmLxlcAbffk2+D/D8QMitkRO72HVdlddUASLzVRqqwXEQig5QPBuclEx5eSUdCakaApW60okrU
+	qrZxxW6bv748fNzYgBSAaq+a7j3oAmsk9+zlspZA/wYHn4JsofXxFtMmI1LT3PLM5LF9/46nPQd
+	idvz9DhMFbU1mWVbM4HD6RbgT6cbhxJ9p4PjPqCOdzjnUBVn6PcJ8o2HHFyvUsTQoAO3U1xkugU
+	txJZ9j0Au5U/IHIjfcf3FJnuBNHEqoBd0VCgGVv0D6x7hvoEtarjOZG1iKvHaKUexOluBlr2Qyn
+	gcJZIp7TKTcD54jPjEaHXhv5ErzDa1eQ6wStSHP7cElj3gTNI2cAQilD4DjXnpgg+mO6lOvQ8n7
+	jaOU+ruioM/4usOwfNnvVN5qYZVN6380jaJL450AgjWbZcBA==
+X-Google-Smtp-Source: AGHT+IEOlTc9oaA1x2AfRvPAJ6w1B+4RCq2EMB6Kyjai8qU12ysDDGOXz8qZlna1fR+S9ooK3h+FDA==
+X-Received: by 2002:a05:6214:d85:b0:880:48c6:ad02 with SMTP id 6a1803df08f44-88048c6ae5dmr121169746d6.52.1762261202787;
+        Tue, 04 Nov 2025 05:00:02 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-47-55-120-4.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.120.4])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-88060dd572fsm20682896d6.16.2025.11.04.05.00.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Nov 2025 05:00:02 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1vGGdl-00000006jtX-2vJW;
+	Tue, 04 Nov 2025 09:00:01 -0400
+Date: Tue, 4 Nov 2025 09:00:01 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: leon@kernel.org, linux-rdma@vger.kernel.org,
+	syzbot+b0da83a6c0e2e2bddbd4@syzkaller.appspotmail.com
+Subject: Re: [PATCH rdma-next 1/1] RDMA/core: Fix WARNING in
+ gid_table_release_one
+Message-ID: <20251104130001.GI1204670@ziepe.ca>
+References: <20251104020845.254870-1-yanjun.zhu@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 2/2] net/mlx5: implement swp_l4_csum_mode via
- devlink params
-From: Daniel Zahka <daniel.zahka@gmail.com>
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Jonathan Corbet <corbet@lwn.net>, Srujana Challa <schalla@marvell.com>,
- Bharat Bhushan <bbhushan2@marvell.com>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- Brett Creeley <brett.creeley@amd.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Michael Chan <michael.chan@broadcom.com>,
- Pavan Chebbi <pavan.chebbi@broadcom.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Sunil Goutham <sgoutham@marvell.com>, Linu Cherian <lcherian@marvell.com>,
- Geetha sowjanya <gakula@marvell.com>, Jerin Jacob <jerinj@marvell.com>,
- hariprasad <hkelam@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>,
- Tariq Toukan <tariqt@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
- Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
- Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
- Manish Chopra <manishc@marvell.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Siddharth Vadapalli <s-vadapalli@ti.com>, Roger Quadros <rogerq@kernel.org>,
- Loic Poulain <loic.poulain@oss.qualcomm.com>,
- Sergey Ryazanov <ryazanov.s.a@gmail.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Vladimir Oltean <olteanv@gmail.com>,
- Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
- Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
- Dave Ertman <david.m.ertman@intel.com>,
- Vlad Dumitrescu <vdumitrescu@nvidia.com>,
- "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
- linux-doc@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
- linux-rdma@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org
-References: <20251103194554.3203178-1-daniel.zahka@gmail.com>
- <20251103194554.3203178-3-daniel.zahka@gmail.com>
- <mhm4hkz52gmqok56iuiukdcz2kaowvppbqrfi3zxuq67p3otit@5fhpgu2axab2>
- <db5c46b4-cc66-48bb-aafb-40d83dd3620c@gmail.com>
-Content-Language: en-US
-In-Reply-To: <db5c46b4-cc66-48bb-aafb-40d83dd3620c@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251104020845.254870-1-yanjun.zhu@linux.dev>
+
+On Mon, Nov 03, 2025 at 06:08:45PM -0800, Zhu Yanjun wrote:
+> @@ -800,13 +800,24 @@ static void release_gid_table(struct ib_device *device,
+>  		return;
+>  
+>  	for (i = 0; i < table->sz; i++) {
+> +		int cnt = 200;
+> +
+>  		if (is_gid_entry_free(table->data_vec[i]))
+>  			continue;
+>  
+> -		WARN_ONCE(true,
+> -			  "GID entry ref leak for dev %s index %d ref=%u\n",
+> +		WARN_ONCE(table->data_vec[i]->state != GID_TABLE_ENTRY_PENDING_DEL,
+> +			  "GID entry ref leak for dev %s index %d ref=%u, state: %d\n",
+>  			  dev_name(&device->dev), i,
+> -			  kref_read(&table->data_vec[i]->kref));
+> +			  kref_read(&table->data_vec[i]->kref), table->data_vec[i]->state);
+> +
+> +		while ((kref_read(&table->data_vec[i]->kref) > 0) && (cnt > 0)) {
+> +			cnt--;
+> +			msleep(10);
+> +		}
+
+Definately don't want to see this looping.
+
+If it is waiting for the work queue then maybe this should flush the
+work queue.
+
+Something like this?
+
+--- a/drivers/infiniband/core/cache.c
++++ b/drivers/infiniband/core/cache.c
+@@ -799,7 +799,19 @@ static void release_gid_table(struct ib_device *device,
+        if (!table)
+                return;
+ 
++       mutex_lock(&table->lock);
+        for (i = 0; i < table->sz; i++) {
++               if (is_gid_entry_free(table->data_vec[i]))
++                       continue;
++
++               /*
++                * The entry may be sitting in the WQ waiting for
++                * free_gid_work(), flush it to try to clean it.
++                */
++               mutex_unlock(&table->lock);
++               flush_workqueue(ib_wq);
++               mutex_lock(&table->lock);
++
+                if (is_gid_entry_free(table->data_vec[i]))
+                        continue;
+ 
+@@ -808,6 +820,7 @@ static void release_gid_table(struct ib_device *device,
+                          dev_name(&device->dev), i,
+                          kref_read(&table->data_vec[i]->kref));
+        }
++       mutex_unlock(&table->lock);
+ 
+        mutex_destroy(&table->lock);
+        kfree(table->data_vec);
 
 
-
-On 11/4/25 6:38 AM, Daniel Zahka wrote:
->
->
-> On 11/4/25 5:14 AM, Jiri Pirko wrote:
->> I did some research. 0/DEVICE_DEFAULT should not be ever reported back
->> from FW. It's purpose is for user to reset to default FW configuration.
->> What's the usecase for that? I think you could just avoid
->> 0/DEVICE_DEFAULT entirely, for both get and set.
->
-> I find that 0/DEVICE_DEFAULT is reported back on my device. I have 
-> observed this same behavior when using the mstconfig tool for setting 
-> the parameter too.
-
-e.g.
-$ dmesg | grep -i mlx | grep -i firmware
-[   10.165767] mlx5_core 0000:01:00.0: firmware version: 28.46.1006
-
-$ ./mstconfig -d 01:00.0 -b ./mlxconfig_host.db query SWP_L4_CHECKSUM_MODE
-
-Device #1:
-----------
-
-Device type:        ConnectX7
-Name:               CX71143DMC-CDAE_FB_Ax
-Description:        ConnectX-7 Ethernet adapter card; 100 GbE OCP3.0; 
-Single-port QSFP; Multi Host; 2 Host; PCIe 4.0 x16; Crypto and Secure Boot
-Device:             01:00.0
-
-Configurations:                                          Next Boot
-         SWP_L4_CHECKSUM_MODE DEVICE_DEFAULT(0)
 
