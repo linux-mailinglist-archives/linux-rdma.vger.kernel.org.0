@@ -1,107 +1,151 @@
-Return-Path: <linux-rdma+bounces-14218-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14219-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4379AC2E3CA
-	for <lists+linux-rdma@lfdr.de>; Mon, 03 Nov 2025 23:15:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93986C2ECED
+	for <lists+linux-rdma@lfdr.de>; Tue, 04 Nov 2025 02:39:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C02363BE81B
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Nov 2025 22:14:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D69DF1883D11
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Nov 2025 01:36:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14E4A2EF65B;
-	Mon,  3 Nov 2025 22:14:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42C9E2264B1;
+	Tue,  4 Nov 2025 01:34:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VTLqZ0hL"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YLhtPymq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B79572DF122;
-	Mon,  3 Nov 2025 22:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5FC224240
+	for <linux-rdma@vger.kernel.org>; Tue,  4 Nov 2025 01:34:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762208039; cv=none; b=J58EgCYmMRU3f82z+pu3e01imxbx5L8ltxNuqRFsEqIMFFKuLL5j54mC+A6vcypA0Urj0UKbpLz6GbqFYKYdFVV/7oiFe1n+uJ/nmmeNqyWa4IrMHA0ZCrolKaKXF71zAAmgwj12nZin3uEEc6gjDJi2eFHBdkwhopD5nFyX600=
+	t=1762220080; cv=none; b=kj3o2bcekjrDM71d3G6PGWap5cPEVCwshcwWOimfHG/hntIMp9k+2JKdXFvFX91WzYoJTRQhftd3iCSSIePoDJ4d07/Trfnd5vAbGmbA52ShkrhLdu+XyneAdHIvyqINcXzbnt8Xbkt4VOBLhW+0A/IpdCQEPkqCaYNXXvT42SU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762208039; c=relaxed/simple;
-	bh=G5G/nJ6BwUDbjhos8smIO/3KjLQpgzD5ntWtzL13rts=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DS0P2BjMSjQokhmuSHQORVqSaE5npmz5x9g1twdhfptkWvDdwf8lcHjDulSjMplLDlAZLV8MDPtKonq/+zFKTL8q57oIdzp9Q0oEksZnk439CSgphQ6yuvqSDm8oU5nyvbqlR8HG7gYbS28sKAX/YlxwNvRtSr1n9t6cPycrAeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VTLqZ0hL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24CA6C4CEE7;
-	Mon,  3 Nov 2025 22:13:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762208039;
-	bh=G5G/nJ6BwUDbjhos8smIO/3KjLQpgzD5ntWtzL13rts=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=VTLqZ0hL1/6PHxQ6NOhzlLM6gCmDmZLOEBjsopkNlCfT1UDEUzEpPJ9dRNKIC0lpk
-	 5IP+NEjFrjtzZVi9MxoejBWIBOkHCXcmGUgODEYUdCpVLHPVh0cAJSOTWB1fhrl1iF
-	 z5hTda/0Y1Q5VJjkd598Vr+sNABtNOoGLJsImaT4TxCqGru5AW2vpM+yUdVgTQvw9e
-	 /xQrqh0iCogqr918cBXp+vPSsanb+KqgUvy7E+gfIndbbpFuHJomc+J7CSVORGK8ey
-	 IER03KXPAHJ9fglF87N61IoFLE7kR2HkjQvV097joGTXbveYEVNBBe/8GgHu9hoePF
-	 1hperBfe4REqA==
-Date: Mon, 3 Nov 2025 14:13:56 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Daniel Zahka <daniel.zahka@gmail.com>
-Cc: Jiri Pirko <jiri@resnulli.us>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Simon
- Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Srujana Challa
- <schalla@marvell.com>, Bharat Bhushan <bbhushan2@marvell.com>, Herbert Xu
- <herbert@gondor.apana.org.au>, Brett Creeley <brett.creeley@amd.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, Michael Chan
- <michael.chan@broadcom.com>, Pavan Chebbi <pavan.chebbi@broadcom.com>, Tony
- Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel
- <przemyslaw.kitszel@intel.com>, Sunil Goutham <sgoutham@marvell.com>, Linu
- Cherian <lcherian@marvell.com>, Geetha sowjanya <gakula@marvell.com>, Jerin
- Jacob <jerinj@marvell.com>, hariprasad <hkelam@marvell.com>, Subbaraya
- Sundeep <sbhatta@marvell.com>, Tariq Toukan <tariqt@nvidia.com>, Saeed
- Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Mark Bloch
- <mbloch@nvidia.com>, Ido Schimmel <idosch@nvidia.com>, Petr Machata
- <petrm@nvidia.com>, Manish Chopra <manishc@marvell.com>, Maxime Coquelin
- <mcoquelin.stm32@gmail.com>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, Siddharth Vadapalli <s-vadapalli@ti.com>,
- Roger Quadros <rogerq@kernel.org>, Loic Poulain
- <loic.poulain@oss.qualcomm.com>, Sergey Ryazanov <ryazanov.s.a@gmail.com>,
- Johannes Berg <johannes@sipsolutions.net>, Vladimir Oltean
- <olteanv@gmail.com>, Michal Swiatkowski
- <michal.swiatkowski@linux.intel.com>, Aleksandr Loktionov
- <aleksandr.loktionov@intel.com>, Dave Ertman <david.m.ertman@intel.com>,
- Vlad Dumitrescu <vdumitrescu@nvidia.com>, "Russell King (Oracle)"
- <rmk+kernel@armlinux.org.uk>, Alexander Sverdlin
- <alexander.sverdlin@gmail.com>, Lorenzo Bianconi <lorenzo@kernel.org>,
- netdev@vger.kernel.org, linux-doc@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org
-Subject: Re: [PATCH net-next v2 1/2] devlink: pass extack through to
- devlink_param::get()
-Message-ID: <20251103141356.3470701b@kernel.org>
-In-Reply-To: <20251103194554.3203178-2-daniel.zahka@gmail.com>
-References: <20251103194554.3203178-1-daniel.zahka@gmail.com>
-	<20251103194554.3203178-2-daniel.zahka@gmail.com>
+	s=arc-20240116; t=1762220080; c=relaxed/simple;
+	bh=PD0fT2/G5PeBw1YSpO6vFTtLb30V9P9O3gXC/MNJuNM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zs4v8pQtu9eX4ErL68yyyNDoQ9qvqSk5nK+zrQg5R8nLs9ipuHLAuWIbGcZFIaZlRmGHn+jzh4ZaEJwXgbVvKC3WzLmA2iTXKGAYUg/n4ehsalTD88PzrNZ7IyUblJMpZPSjDnJAznfQL79Hr0RNjax5xQznFhl+rKkuGBBkvq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YLhtPymq; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1762220077; x=1793756077;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=PD0fT2/G5PeBw1YSpO6vFTtLb30V9P9O3gXC/MNJuNM=;
+  b=YLhtPymqaFzYG70Vlliwk2G2u6JRvKV2QvPnq30MHJrM2TbE6ZD/S+3L
+   mmXLBHxLX98dEEPE6ba4skuyJnGDmvvFI6YYnPLzoUhKjjhiQkUNmAbvg
+   78b+spCFJ5VgOt84c5SF0j5nuaFKx9EtSWVt3oHYtgjGFn9jIPMOxeR7G
+   Ydz/64SWLxeg2xolGo+WWOGofaI8+B9jpVo2EbhnODU2PRdkeZdT/r9M9
+   Zy2b5X+Ub8dt0/8MdSv47Xa15qXWbcoUmlw02C81BVfDxizsI7Bk2EGaZ
+   2hc7Un15a4fddU3KNQL4d6PAKXUpwINupNXGIl3Z/g9ZUDFFw6s2UpYHG
+   A==;
+X-CSE-ConnectionGUID: lrwVjz0SQFqvElEGUNc8gA==
+X-CSE-MsgGUID: X5j5Hjo6QwmnBNknw3yB1A==
+X-IronPort-AV: E=McAfee;i="6800,10657,11602"; a="74910682"
+X-IronPort-AV: E=Sophos;i="6.19,277,1754982000"; 
+   d="scan'208";a="74910682"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2025 17:34:36 -0800
+X-CSE-ConnectionGUID: xnS5Q7r2RYma6owAF6BYLw==
+X-CSE-MsgGUID: kXnwvqeXQWadpRY4Atq6MQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,277,1754982000"; 
+   d="scan'208";a="186261546"
+Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
+  by orviesa006.jf.intel.com with ESMTP; 03 Nov 2025 17:34:35 -0800
+Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1vG5wD-000Qj8-1Y;
+	Tue, 04 Nov 2025 01:34:24 +0000
+Date: Tue, 4 Nov 2025 09:34:03 +0800
+From: kernel test robot <lkp@intel.com>
+To: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+	leon@kernel.org, jgg@ziepe.ca
+Cc: oe-kbuild-all@lists.linux.dev, linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
+	kalesh-anakkur.purayil@broadcom.com,
+	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+Subject: Re: [PATCH rdma-next 3/4] RDMA/bnxt_re: Direct Verbs: Support DBR
+ and UMEM verbs
+Message-ID: <202511040929.WGNASMrK-lkp@intel.com>
+References: <20251103105033.205586-4-sriharsha.basavapatna@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251103105033.205586-4-sriharsha.basavapatna@broadcom.com>
 
-On Mon,  3 Nov 2025 11:45:52 -0800 Daniel Zahka wrote:
-> Allow devlink_param::get() handlers to report error messages via
-> extack. This function is called in a few different contexts, but not
-> all of them will have an valid extack to use.
-> 
-> When devlink_param::get() is called from param_get_doit or
-> param_get_dumpit contexts, pass the extack through so that drivers can
-> report errors when retrieving param values. devlink_param::get() is
-> called from the context of devlink_param_notify(), pass NULL in for
-> the extack.
+Hi Sriharsha,
 
-Warning: drivers/net/ethernet/intel/ice/devlink/devlink.c:618 function parameter 'extack' not described in 'ice_devlink_tx_sched_layers_get'
-Warning: drivers/net/ethernet/intel/ice/devlink/devlink.c:1533 function parameter 'extack' not described in 'ice_devlink_local_fwd_get'
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on rdma/for-next]
+[also build test WARNING on linus/master v6.18-rc4 next-20251103]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Sriharsha-Basavapatna/RDMA-bnxt_re-Move-the-UAPI-methods-to-a-dedicated-file/20251103-190151
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+patch link:    https://lore.kernel.org/r/20251103105033.205586-4-sriharsha.basavapatna%40broadcom.com
+patch subject: [PATCH rdma-next 3/4] RDMA/bnxt_re: Direct Verbs: Support DBR and UMEM verbs
+config: x86_64-rhel-9.4-ltp (https://download.01.org/0day-ci/archive/20251104/202511040929.WGNASMrK-lkp@intel.com/config)
+compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251104/202511040929.WGNASMrK-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202511040929.WGNASMrK-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/infiniband/hw/bnxt_re/dv.c: In function 'bnxt_re_handler_BNXT_RE_METHOD_DBR_QUERY':
+>> drivers/infiniband/hw/bnxt_re/dv.c:552:29: warning: variable 'rdev' set but not used [-Wunused-but-set-variable]
+     552 |         struct bnxt_re_dev *rdev;
+         |                             ^~~~
+
+
+vim +/rdev +552 drivers/infiniband/hw/bnxt_re/dv.c
+
+   546	
+   547	static int UVERBS_HANDLER(BNXT_RE_METHOD_DBR_QUERY)(struct uverbs_attr_bundle *attrs)
+   548	{
+   549		struct bnxt_re_dv_db_region dpi = {};
+   550		struct bnxt_re_ucontext *uctx;
+   551		struct ib_ucontext *ib_uctx;
+ > 552		struct bnxt_re_dev *rdev;
+   553		int ret;
+   554	
+   555		ib_uctx = ib_uverbs_get_ucontext(attrs);
+   556		if (IS_ERR(ib_uctx))
+   557			return PTR_ERR(ib_uctx);
+   558	
+   559		uctx = container_of(ib_uctx, struct bnxt_re_ucontext, ib_uctx);
+   560		rdev = uctx->rdev;
+   561	
+   562		dpi.umdbr = uctx->dpi.umdbr;
+   563		dpi.dpi = uctx->dpi.dpi;
+   564	
+   565		ret = uverbs_copy_to_struct_or_zero(attrs, BNXT_RE_DV_QUERY_DBR_ATTR,
+   566						    &dpi, sizeof(dpi));
+   567		if (ret)
+   568			return ret;
+   569	
+   570		return 0;
+   571	}
+   572	
+
 -- 
-pw-bot: cr
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
