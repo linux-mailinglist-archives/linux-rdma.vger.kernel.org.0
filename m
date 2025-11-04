@@ -1,82 +1,82 @@
-Return-Path: <linux-rdma+bounces-14235-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14236-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86BC8C2FE59
-	for <lists+linux-rdma@lfdr.de>; Tue, 04 Nov 2025 09:31:31 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75786C300F3
+	for <lists+linux-rdma@lfdr.de>; Tue, 04 Nov 2025 09:52:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9443F3B8478
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Nov 2025 08:28:46 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A408A34C993
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Nov 2025 08:52:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78EC731196A;
-	Tue,  4 Nov 2025 08:28:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7666027510B;
+	Tue,  4 Nov 2025 08:51:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="fJjsZ3sd"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="SGp64tuA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from BYAPR05CU005.outbound.protection.outlook.com (mail-westusazon11010056.outbound.protection.outlook.com [52.101.85.56])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 746CC3112D3;
-	Tue,  4 Nov 2025 08:28:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.85.56
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762244892; cv=fail; b=b0dO8G2euvzrpwV7aWWW8YCFGzyNz+w6hIFH3gANe7LWM0ZmejxTT0yNlU0yC1U2VRQE6qnEJx0li8fi5uctEQ2QmYGHbFH+6z55qD1Ho1Pp3iATkeVy/OiTvPrQ/4kTt+KvMS2FnwjxraRFO38bzzSu1h+oANoQvfbtvJdWuWc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762244892; c=relaxed/simple;
-	bh=wIZ+se4XThP6oQLFaCxUk+Ynx4TTXLdV52VCm0MlYtU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=lQKUoEUVuINW3b1P8+65SG02xQKvU6hj5sHRxiRBZLW9sACr82JrDTXi3PB6veQ7bwHAM/VEw6dqdFDK+1Aku7U0WMHaMj1b4naiZegUix28Scomvu4K0xHDUxNzgwuaUqVy13s47P1A1lXq/K3rkzTAibqBCmuWrYdoWQOcsnA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=fJjsZ3sd; arc=fail smtp.client-ip=52.101.85.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=NRdyxQTjdA0Fiwagw9DEOWt8PhlWxRzbeh+cOC83QGr9aEvDBGz7lViQefxVJ0m6L4KJplY2bbw5nkal3qlphA1dMBCC4qTrJjSTqWfyKd9ryIZM2Q2xJti+qsRE8QxpokcjfT8xmKq+WxfcxD0DfPY32QkVx05wvRiR3XL6Svxisb9zU76my4PT34+3W2DNUVtXF93GNKtFPnt0qgevsIxMzqrx5GtBe6pEfZnF4Au8LTvJjzxobaCgK0sPckN9mvN4oaJVSGtVsyZldv4jcaw7pq45F1e29vfCOaNnZr+fDuQ9+zU1Ei/j4mZncn2wZArLhXOmzr22MvkF39U1IQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mHSNfBydgSeGNWmOPzpHP+vW+w/SvP4tIK28akpNLOY=;
- b=owj1nmOJs+SWDBQ7fey1FdjckK0U5aKMsUjXW29D5C7IQyfU6LMVn+HAKMk1WY7EjpAy77XWrZnfTgiBY0kDPwBUHqZ5wzreeNVl8poAf6Wo9f3z2q+MgtOE7S3QRm2m65i0Fa6/ef+JBvlO5FfRxjMNO5LWBOjzNKpOrT4uDGxAXJYodc7Cuo99THHX1Skae92WeCQYJxZIbU7WE4qMJ3/2825i1O6Ezz5THRFe/qhmxMoBxHQK81CLwmEwIp0EJzxCuDiK/0lMV0z72c7Mk3+T6NA0FyNTTwTWXnymMIZnTIa6V7BZgDbN2aNgFLKrLU1INM84WJOfPPnrxwnexw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mHSNfBydgSeGNWmOPzpHP+vW+w/SvP4tIK28akpNLOY=;
- b=fJjsZ3sdoUKvy51h+JFMo9EYhizXz6IsmPu8W3NAlXs/PLCrSic92PR+WZhebnWq9TcZT0kNW70RK75tLz7YwL2Cf2PM6+d6WMlYI6t6s1b2h0cVaQK+y1MPAUuMpO/0gtWLz9QXN1SKwGg0A4bLskiBHRdTe2JDh19y8ocWcTflF8yziVIs7+tmGNr4ptXS7fDNL+qn5eXfXlNadkhZ8G5svRYdp1+U9ILJPnJsLnyCgU6VHnPtp1iS/viFXaS++iQG1qU5pSoKHG8KE5/rWsnC4I2A41ToluwqUw2mRAR3tsJNhZ5vHMllP4+tRQzrpaZFSOCkq34wOq291OPnkg==
-Received: from CH0PR03CA0226.namprd03.prod.outlook.com (2603:10b6:610:e7::21)
- by PH7PR12MB6933.namprd12.prod.outlook.com (2603:10b6:510:1b7::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9275.15; Tue, 4 Nov
- 2025 08:28:06 +0000
-Received: from CH3PEPF0000000C.namprd04.prod.outlook.com
- (2603:10b6:610:e7:cafe::b6) by CH0PR03CA0226.outlook.office365.com
- (2603:10b6:610:e7::21) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9298.7 via Frontend Transport; Tue, 4
- Nov 2025 08:28:05 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- CH3PEPF0000000C.mail.protection.outlook.com (10.167.244.39) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9298.6 via Frontend Transport; Tue, 4 Nov 2025 08:28:05 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 4 Nov
- 2025 00:27:52 -0800
-Received: from [10.221.224.195] (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 4 Nov
- 2025 00:27:44 -0800
-Message-ID: <be552e0e-164b-49c0-b1ea-d35d4c64e3d9@nvidia.com>
-Date: Tue, 4 Nov 2025 10:26:41 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 927195D8F0;
+	Tue,  4 Nov 2025 08:51:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1762246288; cv=none; b=biVOlYDyZHca9WZXlW6GPVYw6i4VHtaHL/uGLB5k5Ou/JGZn1gt2UVJLfbtc73806TESoJlORkGsiz/3u48u/j+dZ3NfEioUf0X/W2y2QCn3okT2Av6jRAIw/aztOPWoa2nXvU1uCbY07ST90JZgDut3AgFWjtFPCbEoA2YE0Ag=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1762246288; c=relaxed/simple;
+	bh=fBOHBtTBNYAfORE7Ww0mntVd8j7j57lr5K25kuMAsLY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XYJQOylePxHuv9j2KwbKc9BX8V1gpyyNxD1Rd/u0C1JgQjaS4FP7YQIG5k94dxjaysNGmwORV/LHNkELNfndvuVPjEBm+MTs1Kj64CUkyuk5ukoCjN6tWPYkEOMlYIlMtes4JRK93Lqxz9B2EzK2PNkzuJIv9ozh/JeGVqSWn+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=SGp64tuA; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5A40wuxa025577;
+	Tue, 4 Nov 2025 08:51:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=cgPVl8
+	07fg3HR0iyDkr5HA0gSFYzqz/O+8EjiXgNNuE=; b=SGp64tuAl1n1O75Y9MRPEy
+	UNquXNDTe0hDeQ6J9/BBOK22Rub+Ke5EmjbJPAFnvSvTplAcaGw8hGCw94ygHqfU
+	F3y4wpQAPRhMWLKQzKG2Ti5ScVw+yhbwdq77sNmHIGDTuAzH9yIGE05Is/jzzmUI
+	TYb1o3Vgge87qKrEPJ4CWPOlkvfJ43gahlhlhzwBUgc0e7faO7oVcHVnQXPXvAas
+	ooLlKQ4pjv6GR7ZyGplRRL5JbPm3DvqlShgLSino42g+fis/KOhzbT/zKPt2FQzk
+	dwGLk0HYdDklh/lI8Vf1OhOemN8j8Moh7EKfptBcGVhJ85blSmdAxilKVoNiy8+g
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4a59vuay4s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 04 Nov 2025 08:51:15 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5A47xMiI020998;
+	Tue, 4 Nov 2025 08:51:15 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4a59vuay4p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 04 Nov 2025 08:51:14 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5A47o8DU012923;
+	Tue, 4 Nov 2025 08:51:14 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4a5y81swd5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 04 Nov 2025 08:51:13 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5A48pAjU30015774
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 4 Nov 2025 08:51:10 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4429220049;
+	Tue,  4 Nov 2025 08:51:10 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0A2B92004D;
+	Tue,  4 Nov 2025 08:51:10 +0000 (GMT)
+Received: from [9.152.210.132] (unknown [9.152.210.132])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue,  4 Nov 2025 08:51:09 +0000 (GMT)
+Message-ID: <5f415b7e-3557-4fa0-a0f9-f5643c1c7528@linux.ibm.com>
+Date: Tue, 4 Nov 2025 09:51:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -84,212 +84,137 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH mlx5-next 1/2] PCI/TPH: Expose pcie_tph_get_st_table_loc()
-To: Bjorn Helgaas <helgaas@kernel.org>
-CC: Leon Romanovsky <leon@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, "Mark
- Bloch" <mbloch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, "Jakub
- Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	<linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>, Edward Srouji
-	<edwards@nvidia.com>
-References: <20251103172830.GA1811635@bhelgaas>
+Subject: Re: [PATCH net] net/smc: fix mismatch between CLC header and proposal
+ extensions
+To: "D. Wythe" <alibuda@linux.alibaba.com>
+Cc: mjambigi@linux.ibm.com, wenjia@linux.ibm.com, dust.li@linux.alibaba.com,
+        tonylu@linux.alibaba.com, guwen@linux.alibaba.com, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        pabeni@redhat.com, edumazet@google.com, sidraya@linux.ibm.com,
+        jaka@linux.ibm.com
+References: <20251031031828.111364-1-alibuda@linux.alibaba.com>
+ <95bd9c85-8241-4040-bbd0-bcac3ffc78f7@linux.ibm.com>
+ <20251104070828.GA36449@j66a10360.sqa.eu95>
 Content-Language: en-US
-From: Yishai Hadas <yishaih@nvidia.com>
-In-Reply-To: <20251103172830.GA1811635@bhelgaas>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PEPF0000000C:EE_|PH7PR12MB6933:EE_
-X-MS-Office365-Filtering-Correlation-Id: f4169202-1a8f-4115-44bd-08de1b7c13e6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|82310400026|36860700013|7416014|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?QUlTc2tFcFdSdjZGQ2EyYS9oNm1iOWRlT2FGVDB6aXJHajBIYUt0WGw3Yk42?=
- =?utf-8?B?S3hQRnZNakN5SFZrZW5OZVl3UDhQL09nTmxEQllNNFlxek1RbXptcEFGRHZj?=
- =?utf-8?B?djhuRVEzZmNYZEpESmNWL1ZkaEhJNXFPaFkyTE5xU3hGTWhnaTdYWHV3a2VM?=
- =?utf-8?B?RWhtTWdvZWZxUUZpUzBUVno1Q0FRZGY1amZwYkxybXlMTi83MHhiRGhNV2pk?=
- =?utf-8?B?NUxjSUVJYU9pdllTZUcyeG81R3orMlYzY1l2TFI5ckZtVks3RnpiVElSOU9Z?=
- =?utf-8?B?SGV3UGFIWm03SG16czQyaTZsUmZzQ2U4YTdMQjg2dTZkenhQcS9saFdWVG9C?=
- =?utf-8?B?OWFXeUx6S1VDT2greDNhcmt2RTc2RVZQWkxTZnFVMTcyYndwbkQ5c1dGTjBq?=
- =?utf-8?B?bUREQ0E4cXFpaHpkY3JUMnl0ZFNIa2g3S1BlTERtREp5dWN6aWx5QTkvM1I2?=
- =?utf-8?B?MXBxK0RVb2pVOTM3MFppS3I1ZkpocnZLYTVCNjcvZ1lzeTY2VUFid24rZFFq?=
- =?utf-8?B?ZDhvdlYrNENqVWd0UkJ1b1BFKzJqWFlRNFFDVmhiTkRkdlA0bWxRNWhwak1R?=
- =?utf-8?B?L296WWdmZWxNVVFMMzhvN2lVUGYyblZIQ3J2aCtpbFBsQ0IzMzJnREYvS0M0?=
- =?utf-8?B?bHJSTGkveCtyWFJ5TDUyRER2Mkx6U2czcFBMbGNXbG9vSnR6QlVueHhvRGdB?=
- =?utf-8?B?MHQ4UUZZU25GODNZR1I4NGJqQ3pIb3hKWFV2RXdhVjBvaXJvZUdqK3ZsNmFF?=
- =?utf-8?B?VDVtcjBWRWQ4eEp2N0FIbHhYcGNNQlBJeTVnSlRRZjY2Z2krbko2eHJ0YXU4?=
- =?utf-8?B?U0lmeDQzSldLSWk0blZWTFZhNUtxS1htSVB3S3FIc0IvREtxTktpUXBRUTdQ?=
- =?utf-8?B?bkhFcFRIR3RXS0ZhWThWc0VKbGJleXYvQmJrWkRkVGdMNHhGRXc0T0MwOEpX?=
- =?utf-8?B?M0tLalNlR0p2SFV6WC9iQW9rMXNtVHRmbGhtM3RkUnhLcWNZUUZuMmJYZWYz?=
- =?utf-8?B?K1VocXNtekpqRWwrdisxZzlMN2lsbWwvTnBBLzdlcEJmN2hBNE9idVN4eHJX?=
- =?utf-8?B?OTVFM2ZzdnZneTllUStTemVLb2VFcmN2a1ZmWjROWk9yT3NnWksvS3FPeGNr?=
- =?utf-8?B?N0RwSXMvU0ZjR1RHNHpaZThQSjZZR0p0Rnd5dmpIVVA2eXdvNlRoMnlLWXZ5?=
- =?utf-8?B?RWJ1bFF5MXlhM21mYUwwbFRiYTk0NWZXRmtQVEFTQkZ6bXZ2VkZDQnhOTjdo?=
- =?utf-8?B?M2RoWkNWLzJHWmZtNmcvZGRRQ2Z6US83NmZIQ3JNbUNHWFh2bnZOSEJvNEZu?=
- =?utf-8?B?T0t3b29XOW41M2pNdmlGL1pORnFFSkVCMWVIaHlZdGcybkNPR0Vnb1dxeTQz?=
- =?utf-8?B?SG9tWmdIKzlmY1QzdSs0MWUwaW9ZL05qRlNkTkg3cjhlbVZkYXRxWDd4MDBS?=
- =?utf-8?B?N0x4SWxJZWxyaDV1K3lvQWlTLzlTbXJXNm9BUUZpekxtM3N5dGh5Y3N6ZTZv?=
- =?utf-8?B?ZUVBaW82S1ZWNVFqNEQrd01LK1VuZ0RSd3BnL0hsUG5yNTZMcG1iVTBzMVZT?=
- =?utf-8?B?c3dpdkJQbGpyalJlRWlnNTNZNHJqWXlyWnJ4NnlrZXFjbk51Qnp3SklFeGw4?=
- =?utf-8?B?RVhRRXJLN1NqVXF0SDZJbHJ5dnc3SHNGTkI0UnlEWXh5dWVaWWxwSERMK3R4?=
- =?utf-8?B?cW94VzRWQTUxMHZrY1N1ZWw2K1ZIVlJlVk5CcWN5UzIvMzhmN1hIbVVBN3l4?=
- =?utf-8?B?NFNxVVF5ZXVndktXMVFHTVdnejNGSFRkVDY1eGlXYlZsS3JqQlhwdU1jRVp2?=
- =?utf-8?B?K2xZSGswMW9UUlF6NWpPM0JhSVV2bVo4QUF1VnM4SGlmN01icFlCTnZOQVc4?=
- =?utf-8?B?aCtwbWlEM01iRlhHeGM5M3BmWW9EWlpVR29VVXlPRUZrK1htY0RhS2VwaVdW?=
- =?utf-8?B?TS9MNEhSQjgwOXFRQjlCSld3YVRWZlVReGN4UjhLVzFrczZ3OUJFaGdyOS8w?=
- =?utf-8?B?Yzl2dmI5QkgrSUZMZHE4enVldlVsMEFacWF2NVJoRUNQU0NhbnpTRmErTmNG?=
- =?utf-8?B?dHJ1RktOaVAvN3c4N2xJQ1ZqdnRhaVE2dk44UmpCbERKblBWN2k4ZXVjSUhG?=
- =?utf-8?Q?j79I=3D?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(36860700013)(7416014)(376014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2025 08:28:05.5293
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4169202-1a8f-4115-44bd-08de1b7c13e6
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CH3PEPF0000000C.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6933
+From: Alexandra Winter <wintera@linux.ibm.com>
+In-Reply-To: <20251104070828.GA36449@j66a10360.sqa.eu95>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: kiLWufkC6oXRBzEx9o1-DtQDnyxGneYq
+X-Proofpoint-GUID: KTNSXpGM43PnbJQfapaxT1egtmB2M6ju
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTAxMDAyMSBTYWx0ZWRfX6lnAvCFoK+Aj
+ som7tXlk2I4tqPoCodNem3UBqe9ooGFhxZtmcSrSDi74WHl6RJ0THrIZ8+dnn2VywqEiRLk/tYc
+ /aEy+7tcjLnw7a9Vb6g995X3E6ePq+piRmioxncftvSgcIVEUdMb1BuDUeVe0PJKPZbK3rfjWw1
+ z8dTyY9YTJLJkMEHZzyvXyh0pj2uy9U9qKyJ8++q9iGsnnoAFq2nG+Jn33Jf8hPhuG8fCa0Ubqt
+ C7D8+VWUGzQQ/nP16iuiA0/6LbbOFhHTJWFfYJXqVcpmYLrGwSrQkRDLF6iIJIDlcoHYujAAvOo
+ 8sVnW6jIT+eu8nUnxV/ONGIPfpxjkV1V8C8dkwvLfczLhK/L/PuL5k/fADkMkWq+40YusL50rBc
+ hyTKP2e6LDoi4h8Yr/lpzIFlHDMWfQ==
+X-Authority-Analysis: v=2.4 cv=U6qfzOru c=1 sm=1 tr=0 ts=6909be83 cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=LDwyJIfZ9AC3-zDn7cAA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+ a=cPQSjfK2_nFv0Q5t_7PE:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-11-03_06,2025-11-03_03,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ bulkscore=0 adultscore=0 impostorscore=0 spamscore=0 phishscore=0
+ clxscore=1015 malwarescore=0 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2510240000
+ definitions=main-2511010021
 
-On 03/11/2025 19:28, Bjorn Helgaas wrote:
-> On Mon, Nov 03, 2025 at 06:23:26PM +0200, Yishai Hadas wrote:
->> On 03/11/2025 17:43, Bjorn Helgaas wrote:
->>> On Mon, Oct 27, 2025 at 11:34:01AM +0200, Leon Romanovsky wrote:
->>>> From: Yishai Hadas <yishaih@nvidia.com>
->>>>
->>>> Expose pcie_tph_get_st_table_loc() to be used by drivers as will be done
->>>> in the next patch from the series.
->>>>
->>>> Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
->>>> Signed-off-by: Edward Srouji <edwards@nvidia.com>
->>>> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
->>>> ---
->>>>    drivers/pci/tph.c       | 7 ++++---
->>>>    include/linux/pci-tph.h | 1 +
->>>>    2 files changed, 5 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/drivers/pci/tph.c b/drivers/pci/tph.c
->>>> index cc64f93709a4..8f8457ec9adb 100644
->>>> --- a/drivers/pci/tph.c
->>>> +++ b/drivers/pci/tph.c
->>>> @@ -155,7 +155,7 @@ static u8 get_st_modes(struct pci_dev *pdev)
->>>>    	return reg;
->>>>    }
->>>> -static u32 get_st_table_loc(struct pci_dev *pdev)
->>>> +u32 pcie_tph_get_st_table_loc(struct pci_dev *pdev)
->>>>    {
->>>>    	u32 reg;
->>>> @@ -163,6 +163,7 @@ static u32 get_st_table_loc(struct pci_dev *pdev)
->>>>    	return FIELD_GET(PCI_TPH_CAP_LOC_MASK, reg);
->>>>    }
->>>> +EXPORT_SYMBOL(pcie_tph_get_st_table_loc);
->>>
->>> OK by me, but I think we should add kernel-doc for the return value.
->>>
->>> With that doc added:
->>>
->>> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+
+
+On 04.11.25 08:08, D. Wythe wrote:
+> On Mon, Nov 03, 2025 at 09:28:22AM +0100, Alexandra Winter wrote:
 >>
->> Thanks Bjorn.
 >>
->> We may add the below hunk.
+>> On 31.10.25 04:18, D. Wythe wrote:
+>>> The current CLC proposal message construction uses a mix of
+>>> `ini->smc_type_v1/v2` and `pclc_base->hdr.typev1/v2` to decide whether
+>>> to include optional extensions (IPv6 prefix extension for v1, and v2
+>>> extension). This leads to a critical inconsistency: when
+>>> `smc_clc_prfx_set()` fails - for example, in IPv6-only environments with
+>>> only link-local addresses, or when the local IP address and the outgoing
+>>> interface’s network address are not in the same subnet.
+>>>
+>>> As a result, the proposal message is assembled using the stale
+>>> `ini->smc_type_v1` value—causing the IPv6 prefix extension to be
+>>> included even though the header indicates v1 is not supported.
+>>> The peer then receives a malformed CLC proposal where the header type
+>>> does not match the payload, and immediately resets the connection.
+>>>
+>>> Fix this by consistently using `pclc_base->hdr.typev1` and
+>>> `pclc_base->hdr.typev2`—the authoritative fields that reflect the
+>>> actual capabilities advertised in the CLC header—when deciding whether
+>>> to include optional extensions, as required by the SMC-R v2
+>>> specification ("V1 IP Subnet Extension and V2 Extension only present if
+>>> applicable").
 >>
->> Can that work for you ?
+>>
+>> Just thinking out loud:
+>> It seems to me that the 'ini' structure exists once per socket and is used
+>> to pass information between many functions involved with the handshake.
+>> Did you consider updating ini->smc_type_v1/v2 when `smc_clc_prfx_set()` fails,
+>> and using ini as the authoritative source?
+>> With your patch, it seems to me `ini->smc_type_v1` still contains a stale value,
+>> which may lead to issues in other places or future code.
 > 
-> No, because (a) it just restates the function name and doesn't say how
-> to interpret the return value (you would need a PCIe spec to look it
-> up) and (b) kernel-doc syntax would be "Return: " (see
-> Documentation/doc-guide/kernel-doc.rst for examples).
+> Based on my understanding, ini->smc_type_v1/v2 represents the local
+> device's inherent hardware capabilities. This value is a static property
+> and, from my perspective, should remain immutable, independent of
+> transient network conditions such as invalid IPv6 prefixes or GID
+> mismatches. Therefore, I believe modifying this field within
+> smc_clc_send_proposal() might not be the most appropriate approach.
+
+
+'ini' is allocated in __smc_connect() and in smc_listen_work().
+So it seems to me the purpose of 'ini' is to store information about the
+current connection, not device's inherent hardware capabilities.
+
+Fields like ini->smc_type_v1/v2 and ini->smcd/r_version are adjusted in
+multiple places during the handshake.
+I must say that the usage of these fields is confusing and looks somehow
+redundant to me.
+But looking at pclc_base->hdr.typev1/v2, as yet another source of
+information doesn't make things cleaner IMO.
+
+
 > 
+> In contrast, pclc_base->hdr.typev1/v2 reflects the actual capabilities
+> negotiated for a specific connection—what we might term "soft
+> capabilities." These can, and often do, dynamically adjust based on
+> current network conditions (e.g., in the event of a prefix validation
+> failure) and could potentially be restored if network conditions
+> improve.
 
-I see.
+I don't understand.
+The pclc block is freed at the end of smc_clc_send_proposal(). Its
+only purpose is to be sent out as intitial proposal. How could you
+restore it if network conditions improve?
 
-How about adding the below as part of V1 with your Acked-by: ?
 
-diff --git a/drivers/pci/tph.c b/drivers/pci/tph.c
-index 8f8457ec9adb..510173cc8b63 100644
---- a/drivers/pci/tph.c
-+++ b/drivers/pci/tph.c
-@@ -155,6 +155,15 @@ static u8 get_st_modes(struct pci_dev *pdev)
-         return reg;
-  }
+> 
+> Furthermore, once CLC negotiation is complete, the SMC protocol stack
+> relies exclusively on these negotiated results for all subsequent
+> operations. It no longer refers to the initial capability values stored
+> in ini. 
 
-+/**
-+ * pcie_tph_get_st_table_loc - Return the device's ST table location
-+ * @pdev: PCI device to query
-+ *
-+ * Return:
-+ * * PCI_TPH_LOC_NONE - Not present
-+ * * PCI_TPH_LOC_CAP  - Located in the TPH Requester Extended Capability
-+ * * PCI_TPH_LOC_MSIX - Located in the MSI-X Table
-+ */
+Could you give an example where these negotiated results are referred?
+Or do you mean within smc_clc_send_proposal()? The pclc block is freed
+at the end of smc_clc_send_proposal(), so where is that result stored?
 
-Yishai
 
->> diff --git a/drivers/pci/tph.c b/drivers/pci/tph.c
->> index 8f8457ec9adb..385307a9a328 100644
->> --- a/drivers/pci/tph.c
->> +++ b/drivers/pci/tph.c
->> @@ -155,6 +155,12 @@ static u8 get_st_modes(struct pci_dev *pdev)
->>          return reg;
->>   }
->>
->> +/**
->> + * pcie_tph_get_st_table_loc - query the device for its ST table location
->> + * @pdev: PCI device to query
->> + *
->> + * Return the location of the ST table
->> + */
->>   u32 pcie_tph_get_st_table_loc(struct pci_dev *pdev)
->>   {
->>          u32 reg;
->>
->> Yishai
->>
->>>
->>>
->>>>    /*
->>>>     * Return the size of ST table. If ST table is not in TPH Requester Extended
->>>> @@ -174,7 +175,7 @@ u16 pcie_tph_get_st_table_size(struct pci_dev *pdev)
->>>>    	u32 loc;
->>>>    	/* Check ST table location first */
->>>> -	loc = get_st_table_loc(pdev);
->>>> +	loc = pcie_tph_get_st_table_loc(pdev);
->>>>    	/* Convert loc to match with PCI_TPH_LOC_* defined in pci_regs.h */
->>>>    	loc = FIELD_PREP(PCI_TPH_CAP_LOC_MASK, loc);
->>>> @@ -299,7 +300,7 @@ int pcie_tph_set_st_entry(struct pci_dev *pdev, unsigned int index, u16 tag)
->>>>    	 */
->>>>    	set_ctrl_reg_req_en(pdev, PCI_TPH_REQ_DISABLE);
->>>> -	loc = get_st_table_loc(pdev);
->>>> +	loc = pcie_tph_get_st_table_loc(pdev);
->>>>    	/* Convert loc to match with PCI_TPH_LOC_* */
->>>>    	loc = FIELD_PREP(PCI_TPH_CAP_LOC_MASK, loc);
->>>> diff --git a/include/linux/pci-tph.h b/include/linux/pci-tph.h
->>>> index 9e4e331b1603..ba28140ce670 100644
->>>> --- a/include/linux/pci-tph.h
->>>> +++ b/include/linux/pci-tph.h
->>>> @@ -29,6 +29,7 @@ int pcie_tph_get_cpu_st(struct pci_dev *dev,
->>>>    void pcie_disable_tph(struct pci_dev *pdev);
->>>>    int pcie_enable_tph(struct pci_dev *pdev, int mode);
->>>>    u16 pcie_tph_get_st_table_size(struct pci_dev *pdev);
->>>> +u32 pcie_tph_get_st_table_loc(struct pci_dev *pdev);
->>>>    #else
->>>>    static inline int pcie_tph_set_st_entry(struct pci_dev *pdev,
->>>>    					unsigned int index, u16 tag)
->>>>
->>>> -- 
->>>> 2.51.0
->>>>
->>
+> Consequently, maintaining ini->smc_type_v1/v2 in its original,
+> unaltered state appears to present no practical risks or functional
+> issues.
 
+Even if nobody reads these fields today after smc_clc_send_proposal(),
+I don't think it is good design to leave stale values there and hope
+future editors will understand that.
+I understand your patch fixes the observed problem. I am just wondering,
+whether it makes the code more maintainable or even more confusing than before.
 
