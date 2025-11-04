@@ -1,104 +1,242 @@
-Return-Path: <linux-rdma+bounces-14221-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14222-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DE1EC2EF2C
-	for <lists+linux-rdma@lfdr.de>; Tue, 04 Nov 2025 03:20:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A65D8C2F30E
+	for <lists+linux-rdma@lfdr.de>; Tue, 04 Nov 2025 04:47:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04EE73BFD25
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Nov 2025 02:19:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 397451895F25
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Nov 2025 03:47:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B848B23EA89;
-	Tue,  4 Nov 2025 02:19:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E5E02BD580;
+	Tue,  4 Nov 2025 03:46:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aME0xI5/"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05BC91DE4DC;
-	Tue,  4 Nov 2025 02:19:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C86B82727E7
+	for <linux-rdma@vger.kernel.org>; Tue,  4 Nov 2025 03:46:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762222768; cv=none; b=RD6UoREV6xUjo2u0IfWVUwtsNwLSTeORyBMFM+Cnf+Cns8DK93OyS4UewKazG5BKGPpWEvqyT3byX/wLZwof1Ao9owFziz7Vs5Ix57Yu73wdnZBE1Tkw0y7YluFWtLvfeKoILY/Yh1UpL5g+5b/Ggn1fTT4s043gxbleY+P8rVg=
+	t=1762228009; cv=none; b=sKIwZ1IISSGqZnKxkk6gFu5knSCE1go72S0BBnfKxrb2RPLqvvD2KGiIkIsjhh/PWHQl3hfzp4+sbTG2yvVJOIhWI2bIxH8dBox3iwwArHMV49Ny7Ym69da0BNPVmlXyN7TfyyC+u4/Ya6vWdpOwvtPsEbZ7JomPZXuane236lw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762222768; c=relaxed/simple;
-	bh=JNjqqmVgb8J3TccifQdiTrH0i2wB+/4zg5Jy48kseOc=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=VqW2qF0Sxt+iAuhqCg/NiqWJ8Bxq+x4NkhLxXlwuhsz64WbR8bnc8QelE++uwFB0iIQ8DbLPKsD6uqCfMOfGdooIAnhEpyrqyL05T/RnDHYqxk9B3J0qYF5jEB1Ui99fMM+/4W+kVVxpcba+BiFo8DJGjTxVg7Ddl856+q0ZEQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from localhost.localdomain (unknown [202.112.113.212])
-	by APP-03 (Coremail) with SMTP id rQCowACHA+ucYglpnw9aAQ--.26347S2;
-	Tue, 04 Nov 2025 10:19:11 +0800 (CST)
-From: Ma Ke <make24@iscas.ac.cn>
-To: haris.iqbal@ionos.com,
-	jinpu.wang@ionos.com,
-	jgg@ziepe.ca,
-	leon@kernel.org,
-	danil.kipnis@cloud.ionos.com
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	akpm@linux-foundation.org,
-	Ma Ke <make24@iscas.ac.cn>,
-	stable@vger.kernel.org
-Subject: [PATCH] RDMA/rtrs: server: Fix error handling in get_or_create_srv
-Date: Tue,  4 Nov 2025 10:19:00 +0800
-Message-Id: <20251104021900.11896-1-make24@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:rQCowACHA+ucYglpnw9aAQ--.26347S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKF4Dtw4xAFykCr45ZryfXrb_yoWDGFXEkF
-	4xJr97Jry8Ar1vga45ur4fuFyFkw1qgrn3Z3Z0qws2y3y7ZFs8Wr1kZr4rXw15Xw4jkFn8
-	Aw13Kry0kr4IkjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbDkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-	Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-	0_GcWlnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-	F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-	4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
-	648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFylc2xSY4AK67
-	AK6r4UMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
-	wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc4
-	0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AK
-	xVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr
-	1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUb9NVDUU
-	UUU==
-X-CM-SenderInfo: ppdnvj2u6l2u1dvotugofq/
+	s=arc-20240116; t=1762228009; c=relaxed/simple;
+	bh=xi/hW3NfngeZ5NWuTMWiUQ8P+RCzK4LcoZLxVlOP4oM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SwhDvR7bA2sof7RZ63H23EQuFei5NYAjFIP9YlNUZM7aWyFoR4fNBlkKIw1YBLklhkJqoUJD72m7pGjkpJJZrni2UK9tdBwfhMIlUshB/QKR4JG+8z2t7wiRyXPqfVg37m/J/6TIEUmGgB4FiuuBBQsH+drS5mgO9GYxE9jLcew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aME0xI5/; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1762228008; x=1793764008;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xi/hW3NfngeZ5NWuTMWiUQ8P+RCzK4LcoZLxVlOP4oM=;
+  b=aME0xI5/steHvArgox/sVKHF076JhFU+FT3acC8Mvoa8ay9Ev/w3v7ZT
+   SvjOCSZ+ihFjonsWX0tnsTuFqjwVAuoRWgy1n7/ryttHpoWfiUDi+FqpG
+   LcA5TXN7j4ACdWUVyBxeJB98LDrGFVSbg7WXAmzIZAchmNY9iFj3i1PaC
+   XEyC8nP8nVFcoqGXSoTZl+OxqAgKTwA7ScrgvTDPT/GscH4g8GII9l+Ri
+   yaNCt4BPur+/zfCKss7lZaryAEOhvAz6B2/qE+uWOpSzVW4ZPTSsRyxB0
+   ot9hnWK0KBqEFoqbfpK/igpJNT4sTntzkGK6+miICyrCs8FYOpFzKT6/k
+   g==;
+X-CSE-ConnectionGUID: xuVDYL5ASPq875AVgBp6ig==
+X-CSE-MsgGUID: OQTmqy3GQfWf3YbMaU3XvA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11602"; a="64012739"
+X-IronPort-AV: E=Sophos;i="6.19,278,1754982000"; 
+   d="scan'208";a="64012739"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2025 19:46:47 -0800
+X-CSE-ConnectionGUID: pELMU9h3T7CrEYFApCaCcg==
+X-CSE-MsgGUID: uWuyGm8FSLWm6cVAlOTpYA==
+X-ExtLoop1: 1
+Received: from lkp-server02.sh.intel.com (HELO 66d7546c76b2) ([10.239.97.151])
+  by fmviesa003.fm.intel.com with ESMTP; 03 Nov 2025 19:46:45 -0800
+Received: from kbuild by 66d7546c76b2 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1vG809-000QpW-2p;
+	Tue, 04 Nov 2025 03:46:36 +0000
+Date: Tue, 4 Nov 2025 11:45:56 +0800
+From: kernel test robot <lkp@intel.com>
+To: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+	leon@kernel.org, jgg@ziepe.ca
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com,
+	selvin.xavier@broadcom.com, kalesh-anakkur.purayil@broadcom.com,
+	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+Subject: Re: [PATCH rdma-next 4/4] RDMA/bnxt_re: Direct Verbs: Support CQ and
+ QP verbs
+Message-ID: <202511041131.c3AuE5DZ-lkp@intel.com>
+References: <20251103105033.205586-5-sriharsha.basavapatna@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251103105033.205586-5-sriharsha.basavapatna@broadcom.com>
 
-get_or_create_srv() fails to call put_device() after
-device_initialize() when memory allocation fails. This could cause
-reference count leaks during error handling, preventing proper device
-cleanup and resulting in memory leaks.
+Hi Sriharsha,
 
-Found by code review.
+kernel test robot noticed the following build warnings:
 
-Cc: stable@vger.kernel.org
-Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
-Signed-off-by: Ma Ke <make24@iscas.ac.cn>
----
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[auto build test WARNING on rdma/for-next]
+[also build test WARNING on linus/master v6.18-rc4 next-20251103]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index ef4abdea3c2d..9ecc6343455d 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -1450,7 +1450,7 @@ static struct rtrs_srv_sess *get_or_create_srv(struct rtrs_srv_ctx *ctx,
- 	kfree(srv->chunks);
- 
- err_free_srv:
--	kfree(srv);
-+	put_device(&srv->dev);
- 	return ERR_PTR(-ENOMEM);
- }
- 
+url:    https://github.com/intel-lab-lkp/linux/commits/Sriharsha-Basavapatna/RDMA-bnxt_re-Move-the-UAPI-methods-to-a-dedicated-file/20251103-190151
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+patch link:    https://lore.kernel.org/r/20251103105033.205586-5-sriharsha.basavapatna%40broadcom.com
+patch subject: [PATCH rdma-next 4/4] RDMA/bnxt_re: Direct Verbs: Support CQ and QP verbs
+config: s390-allmodconfig (https://download.01.org/0day-ci/archive/20251104/202511041131.c3AuE5DZ-lkp@intel.com/config)
+compiler: clang version 18.1.8 (https://github.com/llvm/llvm-project 3b5b5c1ec4a3095ab096dd780e84d7ab81f3d7ff)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251104/202511041131.c3AuE5DZ-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202511041131.c3AuE5DZ-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/infiniband/hw/bnxt_re/dv.c:635:22: warning: variable 'rdev' set but not used [-Wunused-but-set-variable]
+     635 |         struct bnxt_re_dev *rdev;
+         |                             ^
+>> drivers/infiniband/hw/bnxt_re/dv.c:891:30: warning: variable 'ib_cq' is uninitialized when used here [-Wuninitialized]
+     891 |         bnxt_re_dv_init_ib_cq(rdev, ib_cq, re_cq);
+         |                                     ^~~~~
+   drivers/infiniband/hw/bnxt_re/dv.c:835:21: note: initialize the variable 'ib_cq' to silence this warning
+     835 |         struct ib_cq *ib_cq;
+         |                            ^
+         |                             = NULL
+   drivers/infiniband/hw/bnxt_re/dv.c:1105:27: warning: variable 'cntx' set but not used [-Wunused-but-set-variable]
+    1105 |         struct bnxt_re_ucontext *cntx;
+         |                                  ^
+>> drivers/infiniband/hw/bnxt_re/dv.c:1131:18: warning: variable 'umem' is uninitialized when used here [-Wuninitialized]
+    1131 |                 __func__, (u64)umem, sginfo->npages, sginfo->pgsize, sginfo->pgshft);
+         |                                ^~~~
+   include/linux/dev_printk.h:165:39: note: expanded from macro 'dev_dbg'
+     165 |         dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
+         |                                              ^~~~~~~~~~~
+   include/linux/dynamic_debug.h:274:19: note: expanded from macro 'dynamic_dev_dbg'
+     274 |                            dev, fmt, ##__VA_ARGS__)
+         |                                        ^~~~~~~~~~~
+   include/linux/dynamic_debug.h:250:59: note: expanded from macro '_dynamic_func_call'
+     250 |         _dynamic_func_call_cls(_DPRINTK_CLASS_DFLT, fmt, func, ##__VA_ARGS__)
+         |                                                                  ^~~~~~~~~~~
+   include/linux/dynamic_debug.h:248:65: note: expanded from macro '_dynamic_func_call_cls'
+     248 |         __dynamic_func_call_cls(__UNIQUE_ID(ddebug), cls, fmt, func, ##__VA_ARGS__)
+         |                                                                        ^~~~~~~~~~~
+   include/linux/dynamic_debug.h:224:15: note: expanded from macro '__dynamic_func_call_cls'
+     224 |                 func(&id, ##__VA_ARGS__);                       \
+         |                             ^~~~~~~~~~~
+   drivers/infiniband/hw/bnxt_re/dv.c:1106:22: note: initialize the variable 'umem' to silence this warning
+    1106 |         struct ib_umem *umem;
+         |                             ^
+         |                              = NULL
+   4 warnings generated.
+
+
+vim +/ib_cq +891 drivers/infiniband/hw/bnxt_re/dv.c
+
+   823	
+   824	static int UVERBS_HANDLER(BNXT_RE_METHOD_DV_CREATE_CQ)(struct uverbs_attr_bundle *attrs)
+   825	{
+   826		struct ib_uobject *uobj =
+   827			uverbs_attr_get_uobject(attrs, BNXT_RE_DV_CREATE_CQ_HANDLE);
+   828		struct bnxt_re_dv_umem *umem_handle = NULL;
+   829		struct bnxt_re_dv_cq_resp resp = {};
+   830		struct bnxt_re_dv_cq_req req = {};
+   831		struct bnxt_re_ucontext *re_uctx;
+   832		struct ib_ucontext *ib_uctx;
+   833		struct bnxt_re_dev *rdev;
+   834		struct bnxt_re_cq *re_cq;
+   835		struct ib_cq *ib_cq;
+   836		u64 offset;
+   837		int ret;
+   838	
+   839		ib_uctx = ib_uverbs_get_ucontext(attrs);
+   840		if (IS_ERR(ib_uctx))
+   841			return PTR_ERR(ib_uctx);
+   842	
+   843		re_uctx = container_of(ib_uctx, struct bnxt_re_ucontext, ib_uctx);
+   844		rdev = re_uctx->rdev;
+   845	
+   846		ret = uverbs_copy_from_or_zero(&req, attrs, BNXT_RE_DV_CREATE_CQ_REQ);
+   847		if (ret) {
+   848			dev_err(rdev_to_dev(rdev), "%s: Failed to copy request: %d\n",
+   849				__func__, ret);
+   850			return ret;
+   851		}
+   852	
+   853		umem_handle = uverbs_attr_get_obj(attrs, BNXT_RE_DV_CREATE_CQ_UMEM_HANDLE);
+   854		if (IS_ERR(umem_handle)) {
+   855			dev_err(rdev_to_dev(rdev),
+   856				"%s: BNXT_RE_DV_CREATE_CQ_UMEM_HANDLE is not valid\n",
+   857				__func__);
+   858			return PTR_ERR(umem_handle);
+   859		}
+   860	
+   861		ret = uverbs_copy_from(&offset, attrs, BNXT_RE_DV_CREATE_CQ_UMEM_OFFSET);
+   862		if (ret) {
+   863			dev_err(rdev_to_dev(rdev), "%s: Failed to copy umem offset: %d\n",
+   864				__func__, ret);
+   865			return ret;
+   866		}
+   867	
+   868		re_cq = bnxt_re_dv_create_qplib_cq(rdev, re_uctx, &req, umem_handle, offset);
+   869		if (!re_cq) {
+   870			dev_err(rdev_to_dev(rdev), "%s: Failed to create qplib cq\n",
+   871				__func__);
+   872			return -EIO;
+   873		}
+   874	
+   875		ret = bnxt_re_dv_create_cq_resp(rdev, re_cq, &resp);
+   876		if (ret) {
+   877			dev_err(rdev_to_dev(rdev),
+   878				"%s: Failed to create cq response\n", __func__);
+   879			goto fail_resp;
+   880		}
+   881	
+   882		ret = bnxt_re_dv_uverbs_copy_to(rdev, attrs, BNXT_RE_DV_CREATE_CQ_RESP,
+   883						&resp, sizeof(resp));
+   884		if (ret) {
+   885			dev_err(rdev_to_dev(rdev),
+   886				"%s: Failed to copy cq response: %d\n", __func__, ret);
+   887			goto fail_resp;
+   888		}
+   889	
+   890		bnxt_re_dv_finalize_uobj(uobj, re_cq, attrs, BNXT_RE_DV_CREATE_CQ_HANDLE);
+ > 891		bnxt_re_dv_init_ib_cq(rdev, ib_cq, re_cq);
+   892		re_cq->is_dv_cq = true;
+   893		atomic_inc(&rdev->dv_cq_count);
+   894	
+   895		dev_dbg(rdev_to_dev(rdev), "%s: Created CQ: 0x%llx, handle: 0x%x\n",
+   896			__func__, (u64)re_cq, uobj->id);
+   897	
+   898		return 0;
+   899	
+   900	fail_resp:
+   901		bnxt_qplib_destroy_cq(&rdev->qplib_res, &re_cq->qplib_cq);
+   902		bnxt_re_put_nq(rdev, re_cq->qplib_cq.nq);
+   903		if (re_cq->umem_handle) {
+   904			ib_umem_release(re_cq->umem);
+   905			kfree(re_cq->umem_handle);
+   906		}
+   907		kfree(re_cq);
+   908		return ret;
+   909	};
+   910	
+
 -- 
-2.17.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
