@@ -1,138 +1,316 @@
-Return-Path: <linux-rdma+bounces-14259-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14260-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83FF4C35C5A
-	for <lists+linux-rdma@lfdr.de>; Wed, 05 Nov 2025 14:10:09 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15E03C35CBE
+	for <lists+linux-rdma@lfdr.de>; Wed, 05 Nov 2025 14:17:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 174DB1A21BEA
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Nov 2025 13:10:34 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3D9374F1F6A
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Nov 2025 13:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFA933168E2;
-	Wed,  5 Nov 2025 13:10:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DEED3164C5;
+	Wed,  5 Nov 2025 13:17:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QzMFZWby"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MMdPfoug"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F88118A921
-	for <linux-rdma@vger.kernel.org>; Wed,  5 Nov 2025 13:10:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC10230C61E;
+	Wed,  5 Nov 2025 13:17:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762348204; cv=none; b=r1EhoJGPbbZQSeVi6T9uOGjYciRjcNUJHaGww9SViGaqHetANOCJQA8++YPSDk8P/Rxdy1jr0bYCaqFPo9VGfaB5yrgAt+nMXaxYhFsH83c1Rpp0qgZw5x8pgj8eaNCtbpM1NlB7jTg2feD48vFtE1witKHWkSKUiKWS81c4778=
+	t=1762348641; cv=none; b=C7sOg/Ov00Hl11x1B82bomMB8N9Dp5gWScUoqKdp3ThlUNjCJqs0fASkwej1AmQ2KKr2A+3iFB9PaYRJZUxg+YlVIelSVX0tpHdpnoZlZmIOhKPonXOcfvwKVTonOde8DVMJzEynY6fOa4ifSjajeVfFUn6vhzZROcxNcw25TLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762348204; c=relaxed/simple;
-	bh=33eVLwZWon6c02IkTyPtr3R4OvRuvGWNhqVzTN2VsiQ=;
+	s=arc-20240116; t=1762348641; c=relaxed/simple;
+	bh=bLxDqXBX8K8Vjlzjd8C7ymdM8fXtuJMsKxknQnu4/K0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ODYiYJd1qL4DFpcWMUAsmmexXHDONmsCkVDnP4WpebaYCCyq7N3t5zx9GCHCh2TmEQOIxTWSHU+eXtRgQEEUZTeTdbIpSOgRa/VMPnEq0U+MKwQquru4T8NdF+yBnwR9A7UPKHoqyjlTXLZJXjxxeoFJpP6Rzb0IGeIALd1LIuA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QzMFZWby; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F7B7C4CEF8;
-	Wed,  5 Nov 2025 13:10:03 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=LeaNjc6M4eu1qg88mXAvxhNe4xX3NzRDitCGVqh3CQpsaPhfNYZTtX4Hz5wRzT+3AiSB4O9UBqt7YtR6b1QUdF9Zj5kEb+RApzis0CzH2IIkoHmvxP3bXZcnRcHW2+9jfyrsV9DLYL2uV0tMqL2v/YKw8vSsMxKnG7in0WGxOZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MMdPfoug; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C547CC4CEF8;
+	Wed,  5 Nov 2025 13:17:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762348204;
-	bh=33eVLwZWon6c02IkTyPtr3R4OvRuvGWNhqVzTN2VsiQ=;
+	s=k20201202; t=1762348641;
+	bh=bLxDqXBX8K8Vjlzjd8C7ymdM8fXtuJMsKxknQnu4/K0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QzMFZWby8zQ8sovgzxsNWM47fjjAKTt0CR6rhmN1/yBg3QszuAiH05uDs0ggM112p
-	 omxopmKLkh6EsIZd3Q2uz5qBHa7ylh2pGewdrNuK65Zx1bIugOuRSqyPKeKIUBtzME
-	 dNJ5B9ia0PrKah5SSIJOl85JPEyR65hol1aW9RIXsMUXcOrhhREDML+12AI+Vy/F2Z
-	 NM5NSC2/mhICUXH8jfhjfRM+msx1n0CupWSrP4m6iRz53UbaWDb7qngLN/ysoM8zNo
-	 xGysJwyq7Vaptoud/KPCHYOiXeiHWBXpotoNGK/LL4ll3I6KIsYYgg01MWevKlVGVX
-	 wqxr3g92Ry3Cw==
-Date: Wed, 5 Nov 2025 15:09:58 +0200
+	b=MMdPfoug6TCmKIXTnbMF8GnCZFF3aqE12inf+YDun3vddfLfsQ6TiUriJCO53QccX
+	 fFA0JI55Mr6uw+l29ZUa4d6iq1r94wT/s78sMgvxUA1VEjXM8r2dXl2hyzOkgVqPwn
+	 wXU1/5YUyOgEUpYaeMte0YZbUtywZh7dL14Z9OwzQ9DC6tNjEzJ5eLtuJ7TnIaaPCQ
+	 idGc6cWGwrLtQCrANjSUivztDHnhiIc4lfc3d4gezrwOUDCmT+D2w6q9inQkQWz5nj
+	 Jam+1JawYgPoizGpd6zn0jQfgMUads+04AhT1yI4FgGvaCT4o9yWgwiMO8sbFpb+QP
+	 3ANYPof57i0Eg==
+Date: Wed, 5 Nov 2025 15:17:17 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-	syzbot+b0da83a6c0e2e2bddbd4@syzkaller.appspotmail.com
-Subject: Re: [PATCH rdma-next v2 1/1] RDMA/core: Fix WARNING in
- gid_table_release_one
-Message-ID: <20251105130958.GE16832@unreal>
-References: <20251104233601.1145-1-yanjun.zhu@linux.dev>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: netdev@vger.kernel.org,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Jason Gunthorpe <jgg@nvidia.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] IB/rdmavt: rdmavt_qp.h: clean up kernel-doc comments
+Message-ID: <20251105131717.GF16832@unreal>
+References: <20251105045127.106822-1-rdunlap@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20251104233601.1145-1-yanjun.zhu@linux.dev>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20251105045127.106822-1-rdunlap@infradead.org>
 
-On Tue, Nov 04, 2025 at 03:36:01PM -0800, Zhu Yanjun wrote:
-> GID entry ref leak for dev syz1 index 2 ref=615
-> ...
-> Call Trace:
->  <TASK>
->  ib_device_release+0xd2/0x1c0 drivers/infiniband/core/device.c:509
->  device_release+0x99/0x1c0 drivers/base/core.c:-1
->  kobject_cleanup lib/kobject.c:689 [inline]
->  kobject_release lib/kobject.c:720 [inline]
->  kref_put include/linux/kref.h:65 [inline]
->  kobject_put+0x228/0x480 lib/kobject.c:737
->  process_one_work kernel/workqueue.c:3263 [inline]
->  process_scheduled_works+0xae1/0x17b0 kernel/workqueue.c:3346
->  worker_thread+0x8a0/0xda0 kernel/workqueue.c:3427
->  kthread+0x711/0x8a0 kernel/kthread.c:463
->  ret_from_fork+0x47c/0x820 arch/x86/kernel/process.c:158
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
->  </TASK>
+On Tue, Nov 04, 2025 at 08:51:27PM -0800, Randy Dunlap wrote:
+> Correct the kernel-doc comments format to avoid around 35 kernel-doc
+> warnings:
 > 
-> When the state of a GID is GID_TABLE_ENTRY_PENDING_DEL, it indicates
-> that the GID is about to be released soon. Therefore, it does not
-> appear to be a leak.
+> - use struct keyword to introduce struct kernel-doc comments
+> - use correct variable name for some struct members
+> - use correct function name in comments for some functions
+> - fix spelling in a few comments
+> - use a ':' instead of '-' to separate struct members from their
+>   descriptions
+> - add a function name heading for rvt_div_mtu()
 > 
-> Fixes: b150c3862d21 ("IB/core: Introduce GID entry reference counts")
-> Reported-by: syzbot+b0da83a6c0e2e2bddbd4@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=b0da83a6c0e2e2bddbd4
-> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> This leaves one struct member that is not described:
+> rdmavt_qp.h:206: warning: Function parameter or struct member 'wq'
+>  not described in 'rvt_krwq'
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 > ---
-> V1->V2: Use flush_workqueue instead of while loop
+> Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+> Cc: Jason Gunthorpe <jgg@nvidia.com>
+> Cc: Leon Romanovsky <leonro@nvidia.com>
+> Cc: linux-rdma@vger.kernel.org
 > ---
->  drivers/infiniband/core/cache.c | 16 +++++++++++++---
->  1 file changed, 13 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
-> index 81cf3c902e81..74211fb37020 100644
-> --- a/drivers/infiniband/core/cache.c
-> +++ b/drivers/infiniband/core/cache.c
-> @@ -799,16 +799,26 @@ static void release_gid_table(struct ib_device *device,
->  	if (!table)
->  		return;
->  
-> +	mutex_lock(&table->lock);
->  	for (i = 0; i < table->sz; i++) {
->  		if (is_gid_entry_free(table->data_vec[i]))
->  			continue;
->  
-> -		WARN_ONCE(true,
-> -			  "GID entry ref leak for dev %s index %d ref=%u\n",
-> +		WARN_ONCE(table->data_vec[i]->state != GID_TABLE_ENTRY_PENDING_DEL,
-> +			  "GID entry ref leak for dev %s index %d ref=%u, state: %d\n",
->  			  dev_name(&device->dev), i,
-> -			  kref_read(&table->data_vec[i]->kref));
-> +			  kref_read(&table->data_vec[i]->kref), table->data_vec[i]->state);
-> +		/*
-> +		 * The entry may be sitting in the WQ waiting for
-> +		 * free_gid_work(), flush it to try to clean it.
-> +		 */
-> +		mutex_unlock(&table->lock);
-> +		flush_workqueue(ib_wq);
-> +		mutex_lock(&table->lock);
+>  include/rdma/rdmavt_qp.h |   70 +++++++++++++++++++------------------
+>  1 file changed, 36 insertions(+), 34 deletions(-)
 
-I can't agree with idea that flush_workqueue() is called in the loop.
+I applied this to RDMA tree.
+
+➜  kernel git:(wip/leon-for-next) ./scripts/get_maintainer.pl /tmp/0001-IB-rdmavt-rdmavt_qp.h-clean-up-kernel-doc-comments.patch
+Jason Gunthorpe <jgg@ziepe.ca> (maintainer:INFINIBAND SUBSYSTEM)
+Leon Romanovsky <leon@kernel.org> (maintainer:INFINIBAND SUBSYSTEM)
+linux-rdma@vger.kernel.org (open list:INFINIBAND SUBSYSTEM)
+linux-kernel@vger.kernel.org (open list)
+INFINIBAND SUBSYSTEM status: Supported
 
 Thanks
 
->  	}
+> 
+> --- linux-next-20251103.orig/include/rdma/rdmavt_qp.h
+> +++ linux-next-20251103/include/rdma/rdmavt_qp.h
+> @@ -144,7 +144,7 @@
+>  #define RVT_SEND_COMPLETION_ONLY	(IB_SEND_RESERVED_START << 1)
 >  
-> +	mutex_unlock(&table->lock);
-> +
->  	mutex_destroy(&table->lock);
->  	kfree(table->data_vec);
->  	kfree(table);
-> -- 
-> 2.51.2
+>  /**
+> - * rvt_ud_wr - IB UD work plus AH cache
+> + * struct rvt_ud_wr - IB UD work plus AH cache
+>   * @wr: valid IB work request
+>   * @attr: pointer to an allocated AH attribute
+>   *
+> @@ -184,10 +184,10 @@ struct rvt_swqe {
+>   * struct rvt_krwq - kernel struct receive work request
+>   * @p_lock: lock to protect producer of the kernel buffer
+>   * @head: index of next entry to fill
+> - * @c_lock:lock to protect consumer of the kernel buffer
+> + * @c_lock: lock to protect consumer of the kernel buffer
+>   * @tail: index of next entry to pull
+> - * @count: count is aproximate of total receive enteries posted
+> - * @rvt_rwqe: struct of receive work request queue entry
+> + * @count: count is approximate of total receive entries posted
+> + * @curr_wq: struct of receive work request queue entry
+>   *
+>   * This structure is used to contain the head pointer,
+>   * tail pointer and receive work queue entries for kernel
+> @@ -309,10 +309,10 @@ struct rvt_ack_entry {
+>  #define RVT_OPERATION_MAX (IB_WR_RESERVED10 + 1)
+>  
+>  /**
+> - * rvt_operation_params - op table entry
+> - * @length - the length to copy into the swqe entry
+> - * @qpt_support - a bit mask indicating QP type support
+> - * @flags - RVT_OPERATION flags (see above)
+> + * struct rvt_operation_params - op table entry
+> + * @length: the length to copy into the swqe entry
+> + * @qpt_support: a bit mask indicating QP type support
+> + * @flags: RVT_OPERATION flags (see above)
+>   *
+>   * This supports table driven post send so that
+>   * the driver can have differing an potentially
+> @@ -552,7 +552,7 @@ static inline struct rvt_rwqe *rvt_get_r
+>  
+>  /**
+>   * rvt_is_user_qp - return if this is user mode QP
+> - * @qp - the target QP
+> + * @qp: the target QP
+>   */
+>  static inline bool rvt_is_user_qp(struct rvt_qp *qp)
+>  {
+> @@ -561,7 +561,7 @@ static inline bool rvt_is_user_qp(struct
+>  
+>  /**
+>   * rvt_get_qp - get a QP reference
+> - * @qp - the QP to hold
+> + * @qp: the QP to hold
+>   */
+>  static inline void rvt_get_qp(struct rvt_qp *qp)
+>  {
+> @@ -570,7 +570,7 @@ static inline void rvt_get_qp(struct rvt
+>  
+>  /**
+>   * rvt_put_qp - release a QP reference
+> - * @qp - the QP to release
+> + * @qp: the QP to release
+>   */
+>  static inline void rvt_put_qp(struct rvt_qp *qp)
+>  {
+> @@ -580,7 +580,7 @@ static inline void rvt_put_qp(struct rvt
+>  
+>  /**
+>   * rvt_put_swqe - drop mr refs held by swqe
+> - * @wqe - the send wqe
+> + * @wqe: the send wqe
+>   *
+>   * This drops any mr references held by the swqe
+>   */
+> @@ -597,8 +597,8 @@ static inline void rvt_put_swqe(struct r
+>  
+>  /**
+>   * rvt_qp_wqe_reserve - reserve operation
+> - * @qp - the rvt qp
+> - * @wqe - the send wqe
+> + * @qp: the rvt qp
+> + * @wqe: the send wqe
+>   *
+>   * This routine used in post send to record
+>   * a wqe relative reserved operation use.
+> @@ -612,8 +612,8 @@ static inline void rvt_qp_wqe_reserve(
+>  
+>  /**
+>   * rvt_qp_wqe_unreserve - clean reserved operation
+> - * @qp - the rvt qp
+> - * @flags - send wqe flags
+> + * @qp: the rvt qp
+> + * @flags: send wqe flags
+>   *
+>   * This decrements the reserve use count.
+>   *
+> @@ -653,8 +653,8 @@ u32 rvt_restart_sge(struct rvt_sge_state
+>  
+>  /**
+>   * rvt_div_round_up_mtu - round up divide
+> - * @qp - the qp pair
+> - * @len - the length
+> + * @qp: the qp pair
+> + * @len: the length
+>   *
+>   * Perform a shift based mtu round up divide
+>   */
+> @@ -664,8 +664,9 @@ static inline u32 rvt_div_round_up_mtu(s
+>  }
+>  
+>  /**
+> - * @qp - the qp pair
+> - * @len - the length
+> + * rvt_div_mtu - shift-based divide
+> + * @qp: the qp pair
+> + * @len: the length
+>   *
+>   * Perform a shift based mtu divide
+>   */
+> @@ -676,7 +677,7 @@ static inline u32 rvt_div_mtu(struct rvt
+>  
+>  /**
+>   * rvt_timeout_to_jiffies - Convert a ULP timeout input into jiffies
+> - * @timeout - timeout input(0 - 31).
+> + * @timeout: timeout input(0 - 31).
+>   *
+>   * Return a timeout value in jiffies.
+>   */
+> @@ -690,7 +691,8 @@ static inline unsigned long rvt_timeout_
+>  
+>  /**
+>   * rvt_lookup_qpn - return the QP with the given QPN
+> - * @ibp: the ibport
+> + * @rdi: rvt device info structure
+> + * @rvp: the ibport
+>   * @qpn: the QP number to look up
+>   *
+>   * The caller must hold the rcu_read_lock(), and keep the lock until
+> @@ -716,9 +718,9 @@ static inline struct rvt_qp *rvt_lookup_
+>  }
+>  
+>  /**
+> - * rvt_mod_retry_timer - mod a retry timer
+> - * @qp - the QP
+> - * @shift - timeout shift to wait for multiple packets
+> + * rvt_mod_retry_timer_ext - mod a retry timer
+> + * @qp: the QP
+> + * @shift: timeout shift to wait for multiple packets
+>   * Modify a potentially already running retry timer
+>   */
+>  static inline void rvt_mod_retry_timer_ext(struct rvt_qp *qp, u8 shift)
+> @@ -753,7 +755,7 @@ static inline void rvt_put_qp_swqe(struc
+>  }
+>  
+>  /**
+> - * rvt_qp_sqwe_incr - increment ring index
+> + * rvt_qp_swqe_incr - increment ring index
+>   * @qp: the qp
+>   * @val: the starting value
+>   *
+> @@ -811,10 +813,10 @@ static inline void rvt_send_cq(struct rv
+>  
+>  /**
+>   * rvt_qp_complete_swqe - insert send completion
+> - * @qp - the qp
+> - * @wqe - the send wqe
+> - * @opcode - wc operation (driver dependent)
+> - * @status - completion status
+> + * @qp: the qp
+> + * @wqe: the send wqe
+> + * @opcode: wc operation (driver dependent)
+> + * @status: completion status
+>   *
+>   * Update the s_last information, and then insert a send
+>   * completion into the completion
+> @@ -891,7 +893,7 @@ void rvt_ruc_loopback(struct rvt_qp *qp)
+>  
+>  /**
+>   * struct rvt_qp_iter - the iterator for QPs
+> - * @qp - the current QP
+> + * @qp: the current QP
+>   *
+>   * This structure defines the current iterator
+>   * state for sequenced access to all QPs relative
+> @@ -913,7 +915,7 @@ struct rvt_qp_iter {
+>  
+>  /**
+>   * ib_cq_tail - Return tail index of cq buffer
+> - * @send_cq - The cq for send
+> + * @send_cq: The cq for send
+>   *
+>   * This is called in qp_iter_print to get tail
+>   * of cq buffer.
+> @@ -929,7 +931,7 @@ static inline u32 ib_cq_tail(struct ib_c
+>  
+>  /**
+>   * ib_cq_head - Return head index of cq buffer
+> - * @send_cq - The cq for send
+> + * @send_cq: The cq for send
+>   *
+>   * This is called in qp_iter_print to get head
+>   * of cq buffer.
+> @@ -945,7 +947,7 @@ static inline u32 ib_cq_head(struct ib_c
+>  
+>  /**
+>   * rvt_free_rq - free memory allocated for rvt_rq struct
+> - * @rvt_rq: request queue data structure
+> + * @rq: request queue data structure
+>   *
+>   * This function should only be called if the rvt_mmap_info()
+>   * has not succeeded.
 > 
 
