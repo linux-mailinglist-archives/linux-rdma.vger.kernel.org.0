@@ -1,54 +1,50 @@
-Return-Path: <linux-rdma+bounces-14249-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14250-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9EF9C33657
-	for <lists+linux-rdma@lfdr.de>; Wed, 05 Nov 2025 00:36:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F165C339FA
+	for <lists+linux-rdma@lfdr.de>; Wed, 05 Nov 2025 02:20:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CC37428282
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Nov 2025 23:36:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7038464610
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Nov 2025 01:20:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28B96346FAC;
-	Tue,  4 Nov 2025 23:36:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74A41226D14;
+	Wed,  5 Nov 2025 01:20:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ceUjJz9z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cWtTGfB0"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B647233892B
-	for <linux-rdma@vger.kernel.org>; Tue,  4 Nov 2025 23:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B0141C01;
+	Wed,  5 Nov 2025 01:20:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762299391; cv=none; b=JKF+PqdDxipRi934z5RKdBZcV/1YKJNWDk1oXCuYrIt7aKVC0QeTBqsY4CbwC/xNUH4BmhAcFEXGyPthUGGTIaEO8Heu+KiFwD9mIH2vFkjLSr044bRMYp6b3dPAM5ix1bn/sRYEWY+xVYLOWb1neamisH/7mSv0s18vAyZ2h60=
+	t=1762305642; cv=none; b=rapxZXp11Cf0lqkOJ5NflQpu83GiG87Y5rmLMKvotzfoeMzITTl9ZWrpBIygbCJ90fr7/Rmq7qU2euck7T9yvOJF1Uzwp+jhbIc6CUHpTrRz9cHUZMovUBwXwTt63Owe8mOdkDhN+5iJEU/nzMzUbb/aIMd0lUs6XO38/y4EkOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762299391; c=relaxed/simple;
-	bh=F26rfSSN1x7KeaPgbqhaghuk20JZMAp2Jes70pEFDnE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=R2yOA5ws0Nx7DJBWGFHuMP+2IOrZNYcOz86Llcy4wClu55Wn4+QLnZsOS9+GCULjgSkwvZ/IHlAC7/KvWjGC3tNxPMf5KrlBV3LZLEWAR1JNTnQTqxrmvYlP5hv00tyjTcdkbraaAnPm/U4G9jkTwPM5BQsfowBJ6zOpN2BK57Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ceUjJz9z; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1762299387;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=PfA4jxHfYnfbyzECoSzkW9jzJrwryJPXI6HWQQW/13Q=;
-	b=ceUjJz9zhLNI1RrtIYr/APXkhgXf00pTf2CDbLAgo10rLX5juN48dknPac9xMm+4J/F+45
-	asAhmjny11EuZm6qWO5F5FAa2RLaX6iNOBTgJP8Nit1lT8BzyOIqmzp3mArkmvgbdOvoij
-	v1XDhiS49Htle+YbbLZ+xKRaFmV67xU=
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-To: jgg@ziepe.ca,
-	leon@kernel.org,
-	linux-rdma@vger.kernel.org
-Cc: Zhu Yanjun <yanjun.zhu@linux.dev>,
-	syzbot+b0da83a6c0e2e2bddbd4@syzkaller.appspotmail.com
-Subject: [PATCH rdma-next v2 1/1] RDMA/core: Fix WARNING in gid_table_release_one
-Date: Tue,  4 Nov 2025 15:36:01 -0800
-Message-ID: <20251104233601.1145-1-yanjun.zhu@linux.dev>
+	s=arc-20240116; t=1762305642; c=relaxed/simple;
+	bh=PSVlqZwXnnGN8qZr9cuQ31q2STWtg6ryhmbZfLVJajc=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=KfIbE/IvPNNSUPnd1y86hfiioXHjp4vtWNhl8WLLJaYaXcfPVDf96dzvDOLZ8IAEBL7CbZjpj+lgUo+VjX1me5YgW/ELsMDIOAe3ado2QXyiKeXmq3k0D6yyh1zS+AVZsuXbw1XAgMjHBsyK0UVF3FFd+UMOyqolUGpaRddcXX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cWtTGfB0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A693FC4CEF7;
+	Wed,  5 Nov 2025 01:20:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762305641;
+	bh=PSVlqZwXnnGN8qZr9cuQ31q2STWtg6ryhmbZfLVJajc=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=cWtTGfB0ZJkOxRJGB2SJlPyBAyAt1j2XBGInqUqkcSfwzjyr5DFcEBXR2CkRubTnB
+	 Whw+gFr/BM5IlSIlt/E5dKa9JJy1OUCVqw383v1JPXps3pqX+Nn9XZfQgcW3dVOy3b
+	 Ci1rWZYg0LDEQ5Pv8DLMcHPN1xoFYUxGxFmY3SM6z4WnJUTvwjd+e1BzRB99Jkgrkn
+	 piXfpZ1n1p7I9sdtTmHY5Ojr03gZPtZM1uqmwdvJlIrf5t0VzfLwIl0N+8Q0B155hG
+	 oo3yMmjrsp9CHzeqCWVgKcQl63byu/dbVEKcEDTgZtKrmLCFdLu7qQejlunYFYnePr
+	 WIOyaCOWiFmFg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADEB6380AA54;
+	Wed,  5 Nov 2025 01:20:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -56,75 +52,58 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Subject: Re: [PATCH net-next V2 0/7] net/mlx5e: Reduce interface downtime on
+ configuration change
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176230561550.3049609.2299589262372697174.git-patchwork-notify@kernel.org>
+Date: Wed, 05 Nov 2025 01:20:15 +0000
+References: <1761831159-1013140-1-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1761831159-1013140-1-git-send-email-tariqt@nvidia.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
+ leon@kernel.org, mbloch@nvidia.com, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, gal@nvidia.com,
+ cjubran@nvidia.com, horms@kernel.org
 
-GID entry ref leak for dev syz1 index 2 ref=615
-...
-Call Trace:
- <TASK>
- ib_device_release+0xd2/0x1c0 drivers/infiniband/core/device.c:509
- device_release+0x99/0x1c0 drivers/base/core.c:-1
- kobject_cleanup lib/kobject.c:689 [inline]
- kobject_release lib/kobject.c:720 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x228/0x480 lib/kobject.c:737
- process_one_work kernel/workqueue.c:3263 [inline]
- process_scheduled_works+0xae1/0x17b0 kernel/workqueue.c:3346
- worker_thread+0x8a0/0xda0 kernel/workqueue.c:3427
- kthread+0x711/0x8a0 kernel/kthread.c:463
- ret_from_fork+0x47c/0x820 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
+Hello:
 
-When the state of a GID is GID_TABLE_ENTRY_PENDING_DEL, it indicates
-that the GID is about to be released soon. Therefore, it does not
-appear to be a leak.
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Fixes: b150c3862d21 ("IB/core: Introduce GID entry reference counts")
-Reported-by: syzbot+b0da83a6c0e2e2bddbd4@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=b0da83a6c0e2e2bddbd4
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
-V1->V2: Use flush_workqueue instead of while loop
----
- drivers/infiniband/core/cache.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+On Thu, 30 Oct 2025 15:32:32 +0200 you wrote:
+> Hi,
+> 
+> This series significantly reduces the interface downtime while swapping
+> channels during a configuration change, on capable devices.
+> 
+> Here we remove an old requirement on operations ordering that became
+> obsolete on recent capable devices. This helps cutting the downtime by a
+> factor of magnitude, ~80% in our example.
+> 
+> [...]
 
-diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
-index 81cf3c902e81..74211fb37020 100644
---- a/drivers/infiniband/core/cache.c
-+++ b/drivers/infiniband/core/cache.c
-@@ -799,16 +799,26 @@ static void release_gid_table(struct ib_device *device,
- 	if (!table)
- 		return;
- 
-+	mutex_lock(&table->lock);
- 	for (i = 0; i < table->sz; i++) {
- 		if (is_gid_entry_free(table->data_vec[i]))
- 			continue;
- 
--		WARN_ONCE(true,
--			  "GID entry ref leak for dev %s index %d ref=%u\n",
-+		WARN_ONCE(table->data_vec[i]->state != GID_TABLE_ENTRY_PENDING_DEL,
-+			  "GID entry ref leak for dev %s index %d ref=%u, state: %d\n",
- 			  dev_name(&device->dev), i,
--			  kref_read(&table->data_vec[i]->kref));
-+			  kref_read(&table->data_vec[i]->kref), table->data_vec[i]->state);
-+		/*
-+		 * The entry may be sitting in the WQ waiting for
-+		 * free_gid_work(), flush it to try to clean it.
-+		 */
-+		mutex_unlock(&table->lock);
-+		flush_workqueue(ib_wq);
-+		mutex_lock(&table->lock);
- 	}
- 
-+	mutex_unlock(&table->lock);
-+
- 	mutex_destroy(&table->lock);
- 	kfree(table->data_vec);
- 	kfree(table);
+Here is the summary with links:
+  - [net-next,V2,1/7] net/mlx5e: Enhance function structures for self loopback prevention application
+    https://git.kernel.org/netdev/net-next/c/091400a5d411
+  - [net-next,V2,2/7] net/mlx5e: Use TIR API in mlx5e_modify_tirs_lb()
+    https://git.kernel.org/netdev/net-next/c/5c51a86122b2
+  - [net-next,V2,3/7] net/mlx5e: Allow setting self loopback prevention bits on TIR init
+    https://git.kernel.org/netdev/net-next/c/99b002018f6a
+  - [net-next,V2,4/7] net/mlx5: IPoIB, set self loopback prevention in TIR init
+    https://git.kernel.org/netdev/net-next/c/a4c81e72f132
+  - [net-next,V2,5/7] net/mlx5e: Do not re-apply TIR loopback configuration if not necessary
+    https://git.kernel.org/netdev/net-next/c/477c352adda4
+  - [net-next,V2,6/7] net/mlx5e: Pass old channels as argument to mlx5e_switch_priv_channels
+    https://git.kernel.org/netdev/net-next/c/911e3a37b024
+  - [net-next,V2,7/7] net/mlx5e: Defer channels closure to reduce interface down time
+    https://git.kernel.org/netdev/net-next/c/3b88a535a8e1
+
+You are awesome, thank you!
 -- 
-2.51.2
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
