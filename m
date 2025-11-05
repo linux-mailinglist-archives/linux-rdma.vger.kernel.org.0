@@ -1,304 +1,138 @@
-Return-Path: <linux-rdma+bounces-14251-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14252-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94C88C33F33
-	for <lists+linux-rdma@lfdr.de>; Wed, 05 Nov 2025 05:51:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADA87C342E9
+	for <lists+linux-rdma@lfdr.de>; Wed, 05 Nov 2025 08:13:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 963BF4E2DF2
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Nov 2025 04:51:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BEC118C41D7
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Nov 2025 07:13:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0012246781;
-	Wed,  5 Nov 2025 04:51:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8BF62D0C79;
+	Wed,  5 Nov 2025 07:12:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="lE2Xe52w"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="e7sy115+"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 293B122B5A5;
-	Wed,  5 Nov 2025 04:51:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 819B725291B;
+	Wed,  5 Nov 2025 07:12:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762318299; cv=none; b=qED860z/LI/q8o+er+FVvPiADsEfvOdG4AjlMtWa+b4ZkSBPph+zSj1ydlMnQQ8dbtkLlB5SLw7jifxoedgr6PZkgqO/jEpVq1CzhSHS9BtHWuqmfGse0laE2g9odqTDDNpw74QUfT6R8o6nOiVdkpJk8/iwh1yGf0iYsXhtMT4=
+	t=1762326777; cv=none; b=M37VdjoS9N87KH7HqfpX1DnLXRX5/SGGsJN84RzqbsmvrXK+HCuSWsTfxSh3U2xH/vTrv+BOQ16UTlgwXwoKnRJZvPAK2NHFbYXcFYkc8xR7dweef4ZmlPJQV8xLpA0mKc+2gfujI8wVBMLADOdOhCdOYqktsRga+FgaYGENnJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762318299; c=relaxed/simple;
-	bh=sZB8G529unNpWy/FyH90fT8ohk3mTLsQ5PJlJmE8SPk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Wko5zcR3jxbpKqK0iWmEWOg86TrTq5yu7Vt63JWzF+HH9yIXN5+YDRTJTA5TjI50T5tZDcmZt5tHDPWpI3Yrj/3JVTJmljjsT/R1+u/gNFulVnxzIbaq6LvYVvVU95/TO8PWiYhK3GAgcg4SjXznR+XfCoIbnPrKzgfwH7qSPnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=lE2Xe52w; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=2k5Kp89MAx36JxKWDQj+W8fBkTj0Ai55gOiGWH9soyQ=; b=lE2Xe52wHaoem0E59PgUZKKJy4
-	VgRNKgo+gIdfvDmjBvlql6xa/HUINS3C3eutu/MRRb+f6soB1o9FVpyL2nxiMt+1luHRmgKMsv7YB
-	1EklvIav+4q1P1pF3+M0MXUloD5VLkeWxkm1WqZ9Rs2vpTVEgQ0mk2RkPiz9sKOf8VRjY8kquw0/h
-	ydNE5joEw+hjlq3ZUrx5dVuGyNOCfJ8aYMs9Bn1RdmpWUYTYMtqCsxfHy+o8w5LBK0uivlNcKkH6c
-	RPk+oOKvGNDS5ozpRPpsPgNJwNYQk5Tg8AlOvEOK+2GxURAGvh5ol6L7JIxEzh96z6ni+QeC4xiDD
-	0S1/skgw==;
-Received: from [50.53.43.113] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vGVUV-0000000D12U-39Ra;
-	Wed, 05 Nov 2025 04:51:27 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: netdev@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Leon Romanovsky <leonro@nvidia.com>,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH] IB/rdmavt: rdmavt_qp.h: clean up kernel-doc comments
-Date: Tue,  4 Nov 2025 20:51:27 -0800
-Message-ID: <20251105045127.106822-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.51.1
+	s=arc-20240116; t=1762326777; c=relaxed/simple;
+	bh=e6xxS2KcAuUEtj6xiPqplUbCE/tjj/nNZKvuVlT6zUo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Awd7ibX4QeBRxz+H+Py4NECrqrkqtV8AS9iKVM25oBrvndpU30/xZlhexw1If/dDM9AMTOsafmEPfjdgTmphQBwkgbYwpKOKGqgDbZKza4gjocNfWevX1LQGz/oYUXMbB0LCuantNDOrbxu4ir1h4GSTD1HMCCTT0Ni8xarQ30Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=e7sy115+; arc=none smtp.client-ip=115.124.30.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1762326765; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=tDwgROlxpHCEod2UJ8fw5P9DnURew1R9BGzDCvNPSec=;
+	b=e7sy115+Rsmmn5ij9nWNwlu0CPcJ6MGVV/CDf42SajNf0346+3W9RtCU8USO3EgWEfZSLE8bI8qhb6FjbBum3TrGEsF+5+7Vnt9tIamY4Q9IZOKh5MNiljd/mZc9WOQSz4ojt98ikgXfOfwTbPlLhJ3RJKO8W4b17WLMusvfdSw=
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0WrkOLwv_1762326764 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Wed, 05 Nov 2025 15:12:44 +0800
+Date: Wed, 5 Nov 2025 15:12:44 +0800
+From: "D. Wythe" <alibuda@linux.alibaba.com    >
+To: Alexandra Winter <wintera@linux.ibm.com>
+Cc: "D. Wythe" <alibuda@linux.alibaba.com>, mjambigi@linux.ibm.com,
+	wenjia@linux.ibm.com, dust.li@linux.alibaba.com,
+	tonylu@linux.alibaba.com, guwen@linux.alibaba.com, kuba@kernel.org,
+	davem@davemloft.net, netdev@vger.kernel.org,
+	linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+	pabeni@redhat.com, edumazet@google.com, sidraya@linux.ibm.com,
+	jaka@linux.ibm.com
+Subject: Re: [PATCH net] net/smc: fix mismatch between CLC header and
+ proposal extensions
+Message-ID: <20251105071244.GA87813@j66a10360.sqa.eu95>
+References: <20251031031828.111364-1-alibuda@linux.alibaba.com>
+ <95bd9c85-8241-4040-bbd0-bcac3ffc78f7@linux.ibm.com>
+ <20251104070828.GA36449@j66a10360.sqa.eu95>
+ <5f415b7e-3557-4fa0-a0f9-f5643c1c7528@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <5f415b7e-3557-4fa0-a0f9-f5643c1c7528@linux.ibm.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-Correct the kernel-doc comments format to avoid around 35 kernel-doc
-warnings:
+On Tue, Nov 04, 2025 at 09:51:09AM +0100, Alexandra Winter wrote:
+> 
+> 
+> On 04.11.25 08:08, D. Wythe wrote:
+> > On Mon, Nov 03, 2025 at 09:28:22AM +0100, Alexandra Winter wrote:
+> >>
+> >>
+> >> On 31.10.25 04:18, D. Wythe wrote:
+> >>> The current CLC proposal message construction uses a mix of
+> >>> `ini->smc_type_v1/v2` and `pclc_base->hdr.typev1/v2` to decide whether
+> >>> to include optional extensions (IPv6 prefix extension for v1, and v2
+> >>> extension). This leads to a critical inconsistency: when
+> >>> `smc_clc_prfx_set()` fails - for example, in IPv6-only environments with
+> >>> only link-local addresses, or when the local IP address and the outgoing
+> >>> interface’s network address are not in the same subnet.
+> >>>
+> >>> As a result, the proposal message is assembled using the stale
+> >>> `ini->smc_type_v1` value—causing the IPv6 prefix extension to be
+> >>> included even though the header indicates v1 is not supported.
+> >>> The peer then receives a malformed CLC proposal where the header type
+> >>> does not match the payload, and immediately resets the connection.
+> >>>
+> >>> Fix this by consistently using `pclc_base->hdr.typev1` and
+> >>> `pclc_base->hdr.typev2`—the authoritative fields that reflect the
+> >>> actual capabilities advertised in the CLC header—when deciding whether
+> >>> to include optional extensions, as required by the SMC-R v2
+> >>> specification ("V1 IP Subnet Extension and V2 Extension only present if
+> >>> applicable").
+> >>
+> >>
+> >> Just thinking out loud:
+> >> It seems to me that the 'ini' structure exists once per socket and is used
+> >> to pass information between many functions involved with the handshake.
+> >> Did you consider updating ini->smc_type_v1/v2 when `smc_clc_prfx_set()` fails,
+> >> and using ini as the authoritative source?
+> >> With your patch, it seems to me `ini->smc_type_v1` still contains a stale value,
+> >> which may lead to issues in other places or future code.
+> > 
+> > Based on my understanding, ini->smc_type_v1/v2 represents the local
+> > device's inherent hardware capabilities. This value is a static property
+> > and, from my perspective, should remain immutable, independent of
+> > transient network conditions such as invalid IPv6 prefixes or GID
+> > mismatches. Therefore, I believe modifying this field within
+> > smc_clc_send_proposal() might not be the most appropriate approach.
+> 
+> 
+> 'ini' is allocated in __smc_connect() and in smc_listen_work().
+> So it seems to me the purpose of 'ini' is to store information about the
+> current connection, not device's inherent hardware capabilities.
+> 
+> Fields like ini->smc_type_v1/v2 and ini->smcd/r_version are adjusted in
+> multiple places during the handshake.
+> I must say that the usage of these fields is confusing and looks somehow
+> redundant to me.
+> But looking at pclc_base->hdr.typev1/v2, as yet another source of
+> information doesn't make things cleaner IMO.
+>
 
-- use struct keyword to introduce struct kernel-doc comments
-- use correct variable name for some struct members
-- use correct function name in comments for some functions
-- fix spelling in a few comments
-- use a ':' instead of '-' to separate struct members from their
-  descriptions
-- add a function name heading for rvt_div_mtu()
+That’s definitely a reasonable way to look at it as well. If the community
+prefers this interpretation as more natural, I’m fully open to it.
 
-This leaves one struct member that is not described:
-rdmavt_qp.h:206: warning: Function parameter or struct member 'wq'
- not described in 'rvt_krwq'
+I’d like to do some testing first, as I have concerns about
+possible side effects from directly modifying ini and if nothing
+problematic shows up, I’ll send the updated version with this change.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
----
-Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Leon Romanovsky <leonro@nvidia.com>
-Cc: linux-rdma@vger.kernel.org
----
- include/rdma/rdmavt_qp.h |   70 +++++++++++++++++++------------------
- 1 file changed, 36 insertions(+), 34 deletions(-)
-
---- linux-next-20251103.orig/include/rdma/rdmavt_qp.h
-+++ linux-next-20251103/include/rdma/rdmavt_qp.h
-@@ -144,7 +144,7 @@
- #define RVT_SEND_COMPLETION_ONLY	(IB_SEND_RESERVED_START << 1)
- 
- /**
-- * rvt_ud_wr - IB UD work plus AH cache
-+ * struct rvt_ud_wr - IB UD work plus AH cache
-  * @wr: valid IB work request
-  * @attr: pointer to an allocated AH attribute
-  *
-@@ -184,10 +184,10 @@ struct rvt_swqe {
-  * struct rvt_krwq - kernel struct receive work request
-  * @p_lock: lock to protect producer of the kernel buffer
-  * @head: index of next entry to fill
-- * @c_lock:lock to protect consumer of the kernel buffer
-+ * @c_lock: lock to protect consumer of the kernel buffer
-  * @tail: index of next entry to pull
-- * @count: count is aproximate of total receive enteries posted
-- * @rvt_rwqe: struct of receive work request queue entry
-+ * @count: count is approximate of total receive entries posted
-+ * @curr_wq: struct of receive work request queue entry
-  *
-  * This structure is used to contain the head pointer,
-  * tail pointer and receive work queue entries for kernel
-@@ -309,10 +309,10 @@ struct rvt_ack_entry {
- #define RVT_OPERATION_MAX (IB_WR_RESERVED10 + 1)
- 
- /**
-- * rvt_operation_params - op table entry
-- * @length - the length to copy into the swqe entry
-- * @qpt_support - a bit mask indicating QP type support
-- * @flags - RVT_OPERATION flags (see above)
-+ * struct rvt_operation_params - op table entry
-+ * @length: the length to copy into the swqe entry
-+ * @qpt_support: a bit mask indicating QP type support
-+ * @flags: RVT_OPERATION flags (see above)
-  *
-  * This supports table driven post send so that
-  * the driver can have differing an potentially
-@@ -552,7 +552,7 @@ static inline struct rvt_rwqe *rvt_get_r
- 
- /**
-  * rvt_is_user_qp - return if this is user mode QP
-- * @qp - the target QP
-+ * @qp: the target QP
-  */
- static inline bool rvt_is_user_qp(struct rvt_qp *qp)
- {
-@@ -561,7 +561,7 @@ static inline bool rvt_is_user_qp(struct
- 
- /**
-  * rvt_get_qp - get a QP reference
-- * @qp - the QP to hold
-+ * @qp: the QP to hold
-  */
- static inline void rvt_get_qp(struct rvt_qp *qp)
- {
-@@ -570,7 +570,7 @@ static inline void rvt_get_qp(struct rvt
- 
- /**
-  * rvt_put_qp - release a QP reference
-- * @qp - the QP to release
-+ * @qp: the QP to release
-  */
- static inline void rvt_put_qp(struct rvt_qp *qp)
- {
-@@ -580,7 +580,7 @@ static inline void rvt_put_qp(struct rvt
- 
- /**
-  * rvt_put_swqe - drop mr refs held by swqe
-- * @wqe - the send wqe
-+ * @wqe: the send wqe
-  *
-  * This drops any mr references held by the swqe
-  */
-@@ -597,8 +597,8 @@ static inline void rvt_put_swqe(struct r
- 
- /**
-  * rvt_qp_wqe_reserve - reserve operation
-- * @qp - the rvt qp
-- * @wqe - the send wqe
-+ * @qp: the rvt qp
-+ * @wqe: the send wqe
-  *
-  * This routine used in post send to record
-  * a wqe relative reserved operation use.
-@@ -612,8 +612,8 @@ static inline void rvt_qp_wqe_reserve(
- 
- /**
-  * rvt_qp_wqe_unreserve - clean reserved operation
-- * @qp - the rvt qp
-- * @flags - send wqe flags
-+ * @qp: the rvt qp
-+ * @flags: send wqe flags
-  *
-  * This decrements the reserve use count.
-  *
-@@ -653,8 +653,8 @@ u32 rvt_restart_sge(struct rvt_sge_state
- 
- /**
-  * rvt_div_round_up_mtu - round up divide
-- * @qp - the qp pair
-- * @len - the length
-+ * @qp: the qp pair
-+ * @len: the length
-  *
-  * Perform a shift based mtu round up divide
-  */
-@@ -664,8 +664,9 @@ static inline u32 rvt_div_round_up_mtu(s
- }
- 
- /**
-- * @qp - the qp pair
-- * @len - the length
-+ * rvt_div_mtu - shift-based divide
-+ * @qp: the qp pair
-+ * @len: the length
-  *
-  * Perform a shift based mtu divide
-  */
-@@ -676,7 +677,7 @@ static inline u32 rvt_div_mtu(struct rvt
- 
- /**
-  * rvt_timeout_to_jiffies - Convert a ULP timeout input into jiffies
-- * @timeout - timeout input(0 - 31).
-+ * @timeout: timeout input(0 - 31).
-  *
-  * Return a timeout value in jiffies.
-  */
-@@ -690,7 +691,8 @@ static inline unsigned long rvt_timeout_
- 
- /**
-  * rvt_lookup_qpn - return the QP with the given QPN
-- * @ibp: the ibport
-+ * @rdi: rvt device info structure
-+ * @rvp: the ibport
-  * @qpn: the QP number to look up
-  *
-  * The caller must hold the rcu_read_lock(), and keep the lock until
-@@ -716,9 +718,9 @@ static inline struct rvt_qp *rvt_lookup_
- }
- 
- /**
-- * rvt_mod_retry_timer - mod a retry timer
-- * @qp - the QP
-- * @shift - timeout shift to wait for multiple packets
-+ * rvt_mod_retry_timer_ext - mod a retry timer
-+ * @qp: the QP
-+ * @shift: timeout shift to wait for multiple packets
-  * Modify a potentially already running retry timer
-  */
- static inline void rvt_mod_retry_timer_ext(struct rvt_qp *qp, u8 shift)
-@@ -753,7 +755,7 @@ static inline void rvt_put_qp_swqe(struc
- }
- 
- /**
-- * rvt_qp_sqwe_incr - increment ring index
-+ * rvt_qp_swqe_incr - increment ring index
-  * @qp: the qp
-  * @val: the starting value
-  *
-@@ -811,10 +813,10 @@ static inline void rvt_send_cq(struct rv
- 
- /**
-  * rvt_qp_complete_swqe - insert send completion
-- * @qp - the qp
-- * @wqe - the send wqe
-- * @opcode - wc operation (driver dependent)
-- * @status - completion status
-+ * @qp: the qp
-+ * @wqe: the send wqe
-+ * @opcode: wc operation (driver dependent)
-+ * @status: completion status
-  *
-  * Update the s_last information, and then insert a send
-  * completion into the completion
-@@ -891,7 +893,7 @@ void rvt_ruc_loopback(struct rvt_qp *qp)
- 
- /**
-  * struct rvt_qp_iter - the iterator for QPs
-- * @qp - the current QP
-+ * @qp: the current QP
-  *
-  * This structure defines the current iterator
-  * state for sequenced access to all QPs relative
-@@ -913,7 +915,7 @@ struct rvt_qp_iter {
- 
- /**
-  * ib_cq_tail - Return tail index of cq buffer
-- * @send_cq - The cq for send
-+ * @send_cq: The cq for send
-  *
-  * This is called in qp_iter_print to get tail
-  * of cq buffer.
-@@ -929,7 +931,7 @@ static inline u32 ib_cq_tail(struct ib_c
- 
- /**
-  * ib_cq_head - Return head index of cq buffer
-- * @send_cq - The cq for send
-+ * @send_cq: The cq for send
-  *
-  * This is called in qp_iter_print to get head
-  * of cq buffer.
-@@ -945,7 +947,7 @@ static inline u32 ib_cq_head(struct ib_c
- 
- /**
-  * rvt_free_rq - free memory allocated for rvt_rq struct
-- * @rvt_rq: request queue data structure
-+ * @rq: request queue data structure
-  *
-  * This function should only be called if the rvt_mmap_info()
-  * has not succeeded.
+Best wishes,
+D. Wythe
 
