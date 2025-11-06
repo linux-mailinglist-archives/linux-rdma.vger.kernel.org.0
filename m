@@ -1,101 +1,100 @@
-Return-Path: <linux-rdma+bounces-14273-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14274-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3381DC38737
-	for <lists+linux-rdma@lfdr.de>; Thu, 06 Nov 2025 01:18:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B70A8C38BDB
+	for <lists+linux-rdma@lfdr.de>; Thu, 06 Nov 2025 02:51:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1AC434E78CA
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Nov 2025 00:18:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 998541A23558
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Nov 2025 01:51:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6EE615442C;
-	Thu,  6 Nov 2025 00:17:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06B9823D7DF;
+	Thu,  6 Nov 2025 01:50:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="txxNrIn9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cvm36Yvv"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7650C11713;
-	Thu,  6 Nov 2025 00:17:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B432623B63F;
+	Thu,  6 Nov 2025 01:50:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762388276; cv=none; b=TDvD8eIlweuAU0kdcebSdxJ1WET4/cfjisSeZEsLKf/Ut0r7EonLDQ9NV63BJ8VXEgx9XhkjnCOFV+nhRYfH952M0/kTO+M1RK63dj6Kj1gZLavDx0UskpG/yOOpSZgi0Wezh1AbzMP/JZFR2jShWNMKGzOP9aiH55OtQ/dxokE=
+	t=1762393841; cv=none; b=KAewqAoAgKwmgQPOIJne4MrV5xRIvhaFGn3upDAT94wPYauQ2mZl2D52fSNwXV38jHnr+nsLRRdtXs6FwhTU8DArrpqBDxijjTrgsRULeaioj/wGjv4h1yPFMYVuFG+EnHS4m7Z0Z6fntW3Lx71DO8Aqk1YoSULOfnwh8WRDTkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762388276; c=relaxed/simple;
-	bh=GVz+TVoRh+RjWKgd1xdbBvSkK6ruOqrTXrULqH739jY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ECgvNIRv/MANTEdTZ29dlRqChJIHQ79Ec+cKXI9q0uWjrVnSSSZkhRO7/GBgM//jGOw1NNqY00sljJeGguVF6Wva60OuE0i2hbN//eys+RkbZf9hR7JZo8pn9QSQpAXXZsC2sVceZuA5y0GzeREbDF7+vMFhgWtY2f1Egy3o110=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=txxNrIn9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28746C4CEF5;
-	Thu,  6 Nov 2025 00:17:55 +0000 (UTC)
+	s=arc-20240116; t=1762393841; c=relaxed/simple;
+	bh=lNkBiARZtn/rKskJaEUZ4Wqa4m4tkJPpwzva2NxnKBU=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=f/+Em1PF+2JFR57MgHIqAK6cQ+1QwC/4VAGDIJSTfiWogZDum7nRmiw0Q1terPam2qfY1AR1COrKsxyq7V2L/h387JOLiDFjRskdtWSjkqDN68goavHKFDkq/LMKQzcWeyjaRd0EcPO8GL8k7A0S8jvvGiFb9KlH3T60OZpzfnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cvm36Yvv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37CC0C4CEF8;
+	Thu,  6 Nov 2025 01:50:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762388276;
-	bh=GVz+TVoRh+RjWKgd1xdbBvSkK6ruOqrTXrULqH739jY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=txxNrIn90M/a5q/AZXy6vsUneD21zc4Nryy5OMeU1JH94vrA2MHX+DJkUXTFPWu6x
-	 FHIMUxv70o48VAr+lkiH0R5AOQm8ecBiyLbRpNTI2vYo5NrKvMoDLzJT5aY+2x8YV7
-	 fh61ewGWMAkRqe76wR/auwZr6USnYiDqOTu3hudCQ7yy/EPjX+XcUIW83CC3xuTQLs
-	 BBT06OSz3uaDlQ76wabhcOZk9HGU+fjLm6AgXZT+vf0kNayy1i/shUYU2WgvPhFFqo
-	 n3RgYBRg9fAwz50m9HChfiCOUdNdMLevmNhgW245kz2dLc9Jl9PXlHA9Cz9iL/UHbh
-	 yxK+8+4OEg6Zw==
-Date: Wed, 5 Nov 2025 16:17:54 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Aditya Garg <gargaditya@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, longli@microsoft.com,
- kotaranov@microsoft.com, horms@kernel.org,
- shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
- ernis@linux.microsoft.com, dipayanroy@linux.microsoft.com,
- shirazsaleem@microsoft.com, linux-hyperv@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, gargaditya@microsoft.com
-Subject: Re: [PATCH net-next v2] net: mana: Handle SKB if TX SGEs exceed
- hardware limit
-Message-ID: <20251105161754.4b9a1363@kernel.org>
-In-Reply-To: <82bcd959-571e-42ce-b341-cbfa19f9f86d@linux.microsoft.com>
-References: <20251029131235.GA3903@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-	<20251031162611.2a981fdf@kernel.org>
-	<82bcd959-571e-42ce-b341-cbfa19f9f86d@linux.microsoft.com>
+	s=k20201202; t=1762393841;
+	bh=lNkBiARZtn/rKskJaEUZ4Wqa4m4tkJPpwzva2NxnKBU=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=cvm36YvvGML8N0jW9IhuxhCHYKSG9tF7bZrsc8REFl8755kA0n1fmQkoAE7UFUB+3
+	 2P0oatr6lGLbhp5uYIl3+NIh03F3q6QU6IloJCtr1gr7GwRa/cUth+DJscV4IcehyV
+	 +H+LTj1rZiPXNiY7puJP6w9Rzo5n01UKIxIa3riRS1ODbaun1gqvWqmmketA/XNiGr
+	 uN26cfL3YBh3eqRf5Z6gh1JTrZdHhx0HZ6555Q2RFDK0UOkLYcw9SzPh9Og/uTE1jK
+	 n+V0Et17j/Ni7IEP2mX3eZ0hGdQNbHRy/PRwq10TxgACfnOryJiFnybr+Rfvfw7ag6
+	 R00x1Es+m8M4A==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADD6A380AAF5;
+	Thu,  6 Nov 2025 01:50:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net/mlx5e: Fix return value in case of module EEPROM
+ read
+ error
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176239381424.3828781.3734885280355871994.git-patchwork-notify@kernel.org>
+Date: Thu, 06 Nov 2025 01:50:14 +0000
+References: <1762265736-1028868-1-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1762265736-1028868-1-git-send-email-tariqt@nvidia.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
+ mbloch@nvidia.com, leon@kernel.org, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, gal@nvidia.com,
+ alazar@nvidia.com
 
-On Wed, 5 Nov 2025 22:10:23 +0530 Aditya Garg wrote:
-> >>   	if (err) {
-> >>   		(void)skb_dequeue_tail(&txq->pending_skbs);
-> >> +		mana_unmap_skb(skb, apc);
-> >>   		netdev_warn(ndev, "Failed to post TX OOB: %d\n", err);  
-> > 
-> > You have a print right here and in the callee. This condition must
-> > (almost) never happen in practice. It's likely fine to just drop
-> > the packet.
->
-> The logs placed in callee doesn't covers all the failure scenarios,   
-> hence I feel to have this log here with proper status. Maybe I can 
-> remove the log in the callee?
+Hello:
 
-I think my point was that since there are logs (per packet!) when the
-condition is hit -- if it did in fact hit with any noticeable frequency
-your users would have complained. So handling the condition gracefully
-and returning BUSY is likely just unnecessary complexity in practice.
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-The logs themselves I don't care all that much about. Sure, having two
-lines for one error is a bit unclean.
- 
-> > Either way -- this should be a separate patch.
-> >   
-> Are you suggesting a separate patch altogether or two patch in the same 
-> series?
+On Tue, 4 Nov 2025 16:15:36 +0200 you wrote:
+> From: Gal Pressman <gal@nvidia.com>
+> 
+> mlx5e_get_module_eeprom_by_page() has weird error handling.
+> 
+> First, it is treating -EINVAL as a special case, but it is unclear why.
+> 
+> Second, it tries to fail "gracefully" by returning the number of bytes
+> read even in case of an error. This results in wrongly returning
+> success (0 return value) if the error occurs before any bytes were
+> read.
+> 
+> [...]
 
-The changes feel related enough to make them a series, but either way
-is fine.
+Here is the summary with links:
+  - [net] net/mlx5e: Fix return value in case of module EEPROM read error
+    https://git.kernel.org/netdev/net/c/d1c94bc5b90c
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
