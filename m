@@ -1,113 +1,121 @@
-Return-Path: <linux-rdma+bounces-14281-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14282-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6BA3C3B218
-	for <lists+linux-rdma@lfdr.de>; Thu, 06 Nov 2025 14:15:25 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE993C3B2BC
+	for <lists+linux-rdma@lfdr.de>; Thu, 06 Nov 2025 14:20:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE56018910C7
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Nov 2025 13:05:55 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 888DB4F9C97
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Nov 2025 13:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A764832A3EB;
-	Thu,  6 Nov 2025 13:01:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2677732BF41;
+	Thu,  6 Nov 2025 13:14:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="g/zGGMgR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bvdn8hxM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E6E5322533;
-	Thu,  6 Nov 2025 13:01:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF238D531;
+	Thu,  6 Nov 2025 13:14:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762434064; cv=none; b=Iz9hJz6tthN0U4O1UZ22Z5lcs0/wk2bImkaXmr+bQjxAVk/bqhXLTzt2Y7qeXR71m5oez90ryPpn8RjS/JD4ZfErTpcHmfDINlwF3kEwcy4/XBhrgqjuoN1CyECr4M5VX2HcOJHNmkd7gOqGQFou/WxQPfCEdF8S4CkDGY/cH04=
+	t=1762434864; cv=none; b=jaJuumaAHhAoIe4up/6eLSwFNkMmTchDSN7wtwhwqXrD9X4VpLbi9p8U3unwZX7Lg9opbhus/700MIMj6A8EneAlPEeF4smoBuCkIpi2XPNTcvUhvyNp/RPEyPLaaZPEwcsr7QzIsPnnzTyRNee8AkvHUW1HGBwZnfU70/vX9O8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762434064; c=relaxed/simple;
-	bh=sIdmkOlklbdUeXbbmmQ8uH8kjWwUsCKYxEVwZZSgns4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cMSSuLq3hXA5nrO1nJLFO4N78UpXlY7wrU6VnOhhthwY1D7EF1Yr1nXY06Qg57MEExnEFIkVLuvr5Sf2jXwBTAqgrpeW9RBULyu++8iEWRX17ARmnwf1zOpbThlxx8dYqeGesetxVTD6PTRD0m1mXyg0NUqKH+Bq+oKJxlzJXts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=g/zGGMgR; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [192.168.1.19] (unknown [103.212.145.25])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 5E8062120391;
-	Thu,  6 Nov 2025 05:00:54 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5E8062120391
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1762434060;
-	bh=oJDH7+GUsgWHDbJLdKnF0OjdtOyo5nb2QP3ep2Mj55o=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=g/zGGMgRW91Cq6o9e1mqsHmhNchjKquvwz6daoqWK6clliedPglJgHiUU1FS5xO3U
-	 XKbQACxg/MZxdqZ+kffxcfj09wmZV8IEdCVFLD03CsDpzRweGT4BbmRXc+8ENOrVM7
-	 9k3oJBybiUeJJ2CLFBVpR6DEGxpl5SOVezhdba18=
-Message-ID: <bb692420-25f9-4d6e-a68b-dd83c8f4be10@linux.microsoft.com>
-Date: Thu, 6 Nov 2025 18:30:50 +0530
+	s=arc-20240116; t=1762434864; c=relaxed/simple;
+	bh=bR/+/R+baLpO5FuzBWsOS1XGaMj5gHO48nzAAZPjp9I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iNTmXnNGeH4uLEP69W9KaJzza2So1UIBohI+Xf2QZVxJnvwmLCf/hyAP7aEvOeBSl3IE/4NWv86soNWPPppofmKxpiqrld1q1Wz09aJ9rbCbQ3GpzYs8IXVyq6FTKWw7XpP1Man9fHyhqusjhThXpMaH7S+KS94XsOupjOf2Xdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bvdn8hxM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5B3CC4CEF7;
+	Thu,  6 Nov 2025 13:14:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762434864;
+	bh=bR/+/R+baLpO5FuzBWsOS1XGaMj5gHO48nzAAZPjp9I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bvdn8hxMm67rfm2smrfCSJPimMsivBNyPtDOYdJ27Jkaf1AnxDYMxFqmJKL3h4Kb6
+	 1oxEyVaZ9p9GXNqy3+ZC6GPxzBC360h8aUBfKGIk8sATn4RuVytH2frz56Gna04ykP
+	 OdNUPg9GQhFuZjwkf67PRk3C8odrlH2Rt1JVVfHe49jia6e3sKPwkTM/nLmxzH+nQj
+	 YnKeuqf5Bo3w0JUXfRzG3/CDhYPYtrPUnwW4R51EQ+gAkZFoQVUF9RK1lNDEm1z1mT
+	 oBQg3OpPK2cSfG1bEdeHXG+0QNfSHBkoge6y8MGX4SWAUw/hS4jbYq+KsvrIgsc4Q7
+	 sjtXjFed+hKRg==
+Date: Thu, 6 Nov 2025 15:14:19 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Gerd Bayer <gbayer@linux.ibm.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Saeed Mahameed <saeedm@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Jay Cornwall <Jay.Cornwall@amd.com>,
+	Felix Kuehling <Felix.Kuehling@amd.com>,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	Alexander Schmidt <alexs@linux.ibm.com>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 2/2] ib/mlx5: Request PCIe AtomicOps enabled for all
+ 3 sizes
+Message-ID: <20251106131419.GC15456@unreal>
+References: <20251105-mlxatomics-v1-0-10c71649e08d@linux.ibm.com>
+ <20251105-mlxatomics-v1-2-10c71649e08d@linux.ibm.com>
+ <20251106101917.GB15456@unreal>
+ <ec44c1ceab176c0a4c6447f966da8b7061958ffe.camel@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2] net: mana: Handle SKB if TX SGEs exceed
- hardware limit
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, longli@microsoft.com,
- kotaranov@microsoft.com, horms@kernel.org, shradhagupta@linux.microsoft.com,
- ssengar@linux.microsoft.com, ernis@linux.microsoft.com,
- dipayanroy@linux.microsoft.com, shirazsaleem@microsoft.com,
- linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- gargaditya@microsoft.com
-References: <20251029131235.GA3903@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20251031162611.2a981fdf@kernel.org>
- <82bcd959-571e-42ce-b341-cbfa19f9f86d@linux.microsoft.com>
- <20251105161754.4b9a1363@kernel.org>
-Content-Language: en-US
-From: Aditya Garg <gargaditya@linux.microsoft.com>
-In-Reply-To: <20251105161754.4b9a1363@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ec44c1ceab176c0a4c6447f966da8b7061958ffe.camel@linux.ibm.com>
 
-On 06-11-2025 05:47, Jakub Kicinski wrote:
-> On Wed, 5 Nov 2025 22:10:23 +0530 Aditya Garg wrote:
->>>>    	if (err) {
->>>>    		(void)skb_dequeue_tail(&txq->pending_skbs);
->>>> +		mana_unmap_skb(skb, apc);
->>>>    		netdev_warn(ndev, "Failed to post TX OOB: %d\n", err);
->>>
->>> You have a print right here and in the callee. This condition must
->>> (almost) never happen in practice. It's likely fine to just drop
->>> the packet.
->>
->> The logs placed in callee doesn't covers all the failure scenarios,
->> hence I feel to have this log here with proper status. Maybe I can
->> remove the log in the callee?
+On Thu, Nov 06, 2025 at 01:16:18PM +0100, Gerd Bayer wrote:
+> On Thu, 2025-11-06 at 12:19 +0200, Leon Romanovsky wrote:
+> > On Wed, Nov 05, 2025 at 06:55:14PM +0100, Gerd Bayer wrote:
+> > > Pass fully populated capability bit-mask requesting support for all 3
+> > > sizes of AtomicOps at once when attempting to enable AtomicOps for PCI
+> > > function.
+> > > 
+> > > When called individually, pci_enable_atomic_ops_to_root() may enable the
+> > > device to send requests as soon as one size is supported. According to
+> > > PCIe Spec 7.0 Section 6.15.3.1 support of 32-bit and 64-bit AtomicOps
+> > > completer capabilities are tied together for root-ports. Only the
+> > > 128-bit/CAS completer capabilities is an optional feature, but still we
+> > > might end up end up enabling AtomicOps despite 128-bit/CAS is not
+> > > supported at the root-port.
+> > > 
+> > > Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
+> > > ---
+> > >  drivers/infiniband/hw/mlx5/data_direct.c | 6 +++---
+> > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/drivers/infiniband/hw/mlx5/data_direct.c b/drivers/infiniband/hw/mlx5/data_direct.c
+> > > index b81ac5709b56f6ac0d9f60572ce7144258fa2794..112185be53f1ccc6a797e129f24432bdc86008ae 100644
+> > > --- a/drivers/infiniband/hw/mlx5/data_direct.c
+> > > +++ b/drivers/infiniband/hw/mlx5/data_direct.c
+> > > @@ -179,9 +179,9 @@ static int mlx5_data_direct_probe(struct pci_dev *pdev, const struct pci_device_
+> > >  	if (err)
+> > >  		goto err_disable;
+> > >  
+> > > -	if (pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP32) &&
+> > > -	    pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP64) &&
+> > > -	    pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP128))
+> > > +	if (pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP32 |
+> > > +						PCI_EXP_DEVCAP2_ATOMIC_COMP64 |
+> > > +						PCI_EXP_DEVCAP2_ATOMIC_COMP128))
+> > 
+> > I would expect some new define which combines all together, with some
+> > comment why it exists:
+> > #define PCI_ATOMIC_COMP_v7  PCI_EXP_DEVCAP2_ATOMIC_COMP32 | PCI_EXP_DEVCAP2_ATOMIC_COMP64 | PCI_EXP_DEVCAP2_ATOMIC_COMP128
 > 
-> I think my point was that since there are logs (per packet!) when the
-> condition is hit -- if it did in fact hit with any noticeable frequency
-> your users would have complained. So handling the condition gracefully
-> and returning BUSY is likely just unnecessary complexity in practice.
-> 
+> I see your point. I don't understand the _v7
 
-In this, we are returning tx_busy when the error reason is -ENOSPC, for 
-all other errors, skb is dropped.
-Is it okay requeue only for -ENOSPC cases or should we drop the skb?
+v7 - > PCI spec *v7.0*
 
-> The logs themselves I don't care all that much about. Sure, having two
-> lines for one error is a bit unclean.
->   
->>> Either way -- this should be a separate patch.
->>>    
->> Are you suggesting a separate patch altogether or two patch in the same
->> series?
-> 
-> The changes feel related enough to make them a series, but either way
-> is fine.
+But it was just suggestion.
 
-Regards,
-Aditya
-
+Thanks
 
