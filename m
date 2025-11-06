@@ -1,114 +1,134 @@
-Return-Path: <linux-rdma+bounces-14277-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14278-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24897C3A3C3
-	for <lists+linux-rdma@lfdr.de>; Thu, 06 Nov 2025 11:27:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FF0AC3A789
+	for <lists+linux-rdma@lfdr.de>; Thu, 06 Nov 2025 12:11:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C6061A4330D
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Nov 2025 10:19:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A5893A317A
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Nov 2025 11:08:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CEC9272E41;
-	Thu,  6 Nov 2025 10:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87783308F32;
+	Thu,  6 Nov 2025 11:08:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eRZyuhTz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lFsaGLaa"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00A1B24A066;
-	Thu,  6 Nov 2025 10:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF4212DC346
+	for <linux-rdma@vger.kernel.org>; Thu,  6 Nov 2025 11:08:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762424363; cv=none; b=aIAyuDRixMGpghu7z6+OY2+dfq5YlR4Zg1RC+KjT6gTUNeuYAaPYv+Dq90CbDCHsvg/yF5n/KTV25L+BHdkzLSURwGFXPZD4VdWFMTpH7gTzvLqGkR1gLzN9Yqylu8TOSjQ9/iXaqFigRV2V1d7VEH034OuIU1Z+Uoiey1wjhzU=
+	t=1762427284; cv=none; b=n55KOMP/MCRxWNFKxAB8J9myEqIkyNlGrnJTNJ4lsVYgsBdwA40E16u0SViYbwFI3yJi2Deg+G3ovOYqIHXpsEFQupL3KWw2M28uyC943QDS+3BbKliMbXp298m5ZXMCfjMlpV3Jew4ySiy6cyUJzMXb7XXv2/u9g/SPw4v1VbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762424363; c=relaxed/simple;
-	bh=hs/A+N+htIsKKvVU/+NDMC5chb5uIaWj8bHWDdptfYE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=orO2arU3YUp+FeBuT9tZKBfny8tFZygT8pb5bh8tK4eZlKwjquvjzlzqOT500q8FtqXq5kB+LW1yPMS+GDENpFjyeeQLBs/i5LnKs3YJAClCEq5VJnT9eXgvCTqVeSwcbcfS93BSDerrPcNXtOG31yXO30RUdd5FRhQTxK/JB7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eRZyuhTz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1BC5C4CEFB;
-	Thu,  6 Nov 2025 10:19:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762424362;
-	bh=hs/A+N+htIsKKvVU/+NDMC5chb5uIaWj8bHWDdptfYE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eRZyuhTz7mHE8pK88VtwEAirygTFJiB8B5RM40tRKUgk+Iadxln4YxmNWnDPmS6bQ
-	 z9ySCW/wVXL+oOt+eTfuIrbpP2bDarCyvQXuSNdlyHHscKKFMx1WzTFqwM1XBTc6ye
-	 Bc6WUttxyt+3hKDtkrU8mNUZ74K6mJOTgXl++Wn3sgfa/HCqPA8jNkeSnQz9Xy16fq
-	 vpGsUtHIzLo17RFoHdlGEz1+YQ0I7GethLXXU82acXpodT2U6SedZozXbcR0SD3VbT
-	 FlE27Ham7pNomQUZkMVl2xfRQ6/EvNOsnKGmUCyO9k9CxgtARRR0QxraS53DMDhVWa
-	 ELeDUnIZGiYZQ==
-Date: Thu, 6 Nov 2025 12:19:17 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Gerd Bayer <gbayer@linux.ibm.com>
-Cc: Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
-	Mark Bloch <mbloch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Bjorn Helgaas <bhelgaas@google.com>,
-	Jay Cornwall <Jay.Cornwall@amd.com>,
-	Felix Kuehling <Felix.Kuehling@amd.com>,
-	Niklas Schnelle <schnelle@linux.ibm.com>,
-	Alexander Schmidt <alexs@linux.ibm.com>, netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 2/2] ib/mlx5: Request PCIe AtomicOps enabled for all
- 3 sizes
-Message-ID: <20251106101917.GB15456@unreal>
-References: <20251105-mlxatomics-v1-0-10c71649e08d@linux.ibm.com>
- <20251105-mlxatomics-v1-2-10c71649e08d@linux.ibm.com>
+	s=arc-20240116; t=1762427284; c=relaxed/simple;
+	bh=iflFF8uGA+JQqg5PeOnkh0xBZA/LPV6uIzaa7UsyVRQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OZ9th474xonib5rk8SzGaYnVD4HJ46/01bF+eSNZ0JZH4y9PA0pmjV/WMflFDlOYpB3TxJ3gPFinIb/NJP+l3v8OcH1pXrDRluGdPn5/E6Qozs1uIZacpiHqk2a+AiWPhqFmYDCulAH6YeEwEpv1KEA7xRFI6Y+mYv1GkkOPF78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lFsaGLaa; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-4298b865f84so418271f8f.3
+        for <linux-rdma@vger.kernel.org>; Thu, 06 Nov 2025 03:08:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1762427281; x=1763032081; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KemrrCvE16IUsPvIdPc7ZklZCJchRhA/4dXIse7pcqc=;
+        b=lFsaGLaav2Wzq+kdJsJU1Wb4wW+hsZE5/nqsyi2eb0dBlUw0xGSjTlzzn4Sa1cJnLz
+         qOyyIeD4YWjmrVzmwvu8aLSvJiCrNWiWtPu3V2gOXZd2hOq/2CFDkuqVKsyHc8xWaV+2
+         UnIEinVpCzCm1HQ4R8dAMK+BQyH5QFyCxuMW0Wu90+6fKHiCDqa85zysgdJoHRrOgGTY
+         4TuJETudPaQ70g6dro3pDcNu6mNd5AGjgpMzdSEf+ANdVpng/0xQwNfcTBWXI4fgmKma
+         Gx1wfD/x+CU3EW9C3Q90NaljRbG7J9kS+1tSE2oTZqfxywlZzb1JbKbJFTSXG8MyWUxe
+         SNhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762427281; x=1763032081;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KemrrCvE16IUsPvIdPc7ZklZCJchRhA/4dXIse7pcqc=;
+        b=Skd3LBwFrSjsr4Oz0ow4ZczfA9JpEUMogwXyJ2ZqZ7v77ywf6/ZfkoNCorv5L771Go
+         MWi/T3TeFfXIx6Cho8o4T6iacFX5tH/Du1OabOLwTfwdrpbZdaUSsiLJjq4j0MjRgYPr
+         Z/3kunUC9arwMhI0rov/EK0mRbVWLzoFSqaRie5flD8PWvnDyVHl+NOJFZ6SsA6+zVfj
+         4cl6BKs85r+omwPvYc8ISQM6oTPcIb/KCrJz/qOhrSKUNn/dou+j2ruM4XQWr3CqqE09
+         g2KVngrdAUtBsjBLGH5a4eG9yZHy/+GgCpNNo4VkSQUhBpWNeDz9XYbBz7LBi1aCpNlF
+         ar2g==
+X-Forwarded-Encrypted: i=1; AJvYcCWl+jpP9+OAyLISz8jM2wXHjUFSxfUhU/QtzKK3B8WGVStEmH9MtdGk9b+Ko7+Rq8E65gCyzmZbVMDo@vger.kernel.org
+X-Gm-Message-State: AOJu0YxM8c0XVE8AdAzVrYdtiu7ox8shXLSnRGu52Yy5CPQLuEUDT9Uc
+	reyIaLA4Bf76nXk1v5EHb/NHvkD79lvz2u2hCRnxh008J6I2BAy1DlCK
+X-Gm-Gg: ASbGncuGZs4D3qBhSMwdxsCVNSU8kgXhbzbRyyFSQw/ilHQbGgEjJ2rrbQqOvHfmbQX
+	HGV7f7x3kl4+7CGizKGU96POUyokNCIZT+bM0oXDVztJ0QPI519YFocwvOX/QUwAmMCrV3Z+hSN
+	l/rV+In8zEJ42vkssne5ciBIL+D20vx1f2qUk6BA05PNFdULRYizxz8oLuUSdnKdVHj/jVoVI9M
+	mhgLzkaFJ5IgpyCjb4hgtX/wNimyvo6P59XawyhKbH5wq9zExUhYZuqif4EqaD8Lm27ICaZvKMW
+	ww3tYOOqjgXMooSl+8/+n7Xl2MrbsMncAP33URC4syt1m00uTxmePO5TqhoXhEkCFkLxz01FygE
+	ulast4u3F/Fj1UD9owbg5FyS5qrmyC34MInNdRNL12ZBDc5oebQ4E359hVYRoY/7tbL9qBKdUrY
+	4A0SKCT22AnB4pTDnn3tCJqYOTmH1LGDbJT0kA00Ik540Mo9f8sBI=
+X-Google-Smtp-Source: AGHT+IG/WPvgkkz5ima282cKyz2di1ByWQE6/QNBfZEdI+atynO653MZ5MMOXdVnpoH97C2BXp1trA==
+X-Received: by 2002:a05:6000:250a:b0:426:ee44:6d9 with SMTP id ffacd0b85a97d-429e32e3595mr5318368f8f.21.1762427280858;
+        Thu, 06 Nov 2025 03:08:00 -0800 (PST)
+Received: from ?IPV6:2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c? ([2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429eb403849sm4648357f8f.1.2025.11.06.03.07.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Nov 2025 03:08:00 -0800 (PST)
+Message-ID: <785c9d27-23e7-4ecf-ad2e-202ba506f2e0@gmail.com>
+Date: Thu, 6 Nov 2025 11:07:58 +0000
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251105-mlxatomics-v1-2-10c71649e08d@linux.ibm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC mm v5 1/2] page_pool: check nmdesc->pp to see its usage as
+ page pool for net_iov not page-backed
+To: Byungchul Park <byungchul@sk.com>, linux-mm@kvack.org,
+ netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+ harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
+ davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+ john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
+ leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
+ andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
+ akpm@linux-foundation.org, david@redhat.com, lorenzo.stoakes@oracle.com,
+ Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com,
+ mhocko@suse.com, horms@kernel.org, jackmanb@google.com, hannes@cmpxchg.org,
+ ziy@nvidia.com, ilias.apalodimas@linaro.org, willy@infradead.org,
+ brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
+ usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
+ almasrymina@google.com, toke@redhat.com, bpf@vger.kernel.org,
+ linux-rdma@vger.kernel.org, sfr@canb.auug.org.au, dw@davidwei.uk,
+ ap420073@gmail.com, dtatulea@nvidia.com
+References: <20251103075108.26437-1-byungchul@sk.com>
+ <20251103075108.26437-2-byungchul@sk.com>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <20251103075108.26437-2-byungchul@sk.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Nov 05, 2025 at 06:55:14PM +0100, Gerd Bayer wrote:
-> Pass fully populated capability bit-mask requesting support for all 3
-> sizes of AtomicOps at once when attempting to enable AtomicOps for PCI
-> function.
+On 11/3/25 07:51, Byungchul Park wrote:
+> Currently, the condition 'page->pp_magic == PP_SIGNATURE' is used to
+> determine if a page belongs to a page pool.  However, with the planned
+> removal of ->pp_magic, we will instead leverage the page_type in struct
+> page, such as PGTY_netpp, for this purpose.
 > 
-> When called individually, pci_enable_atomic_ops_to_root() may enable the
-> device to send requests as soon as one size is supported. According to
-> PCIe Spec 7.0 Section 6.15.3.1 support of 32-bit and 64-bit AtomicOps
-> completer capabilities are tied together for root-ports. Only the
-> 128-bit/CAS completer capabilities is an optional feature, but still we
-> might end up end up enabling AtomicOps despite 128-bit/CAS is not
-> supported at the root-port.
+> That works for page-backed network memory.  However, for net_iov not
+> page-backed, the identification cannot be based on the page_type.
+> Instead, nmdesc->pp can be used to see if it belongs to a page pool, by
+> making sure nmdesc->pp is NULL otherwise.
 > 
-> Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
-> ---
->  drivers/infiniband/hw/mlx5/data_direct.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/mlx5/data_direct.c b/drivers/infiniband/hw/mlx5/data_direct.c
-> index b81ac5709b56f6ac0d9f60572ce7144258fa2794..112185be53f1ccc6a797e129f24432bdc86008ae 100644
-> --- a/drivers/infiniband/hw/mlx5/data_direct.c
-> +++ b/drivers/infiniband/hw/mlx5/data_direct.c
-> @@ -179,9 +179,9 @@ static int mlx5_data_direct_probe(struct pci_dev *pdev, const struct pci_device_
->  	if (err)
->  		goto err_disable;
->  
-> -	if (pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP32) &&
-> -	    pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP64) &&
-> -	    pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP128))
-> +	if (pci_enable_atomic_ops_to_root(pdev, PCI_EXP_DEVCAP2_ATOMIC_COMP32 |
-> +						PCI_EXP_DEVCAP2_ATOMIC_COMP64 |
-> +						PCI_EXP_DEVCAP2_ATOMIC_COMP128))
+> For net_iov not page-backed, initialize it using nmdesc->pp = NULL in
+> net_devmem_bind_dmabuf() and using kvmalloc_array(__GFP_ZERO) in
+> io_zcrx_create_area() so that netmem_is_pp() can check if nmdesc->pp is
+> !NULL to confirm its usage as page pool.
 
-I would expect some new define which combines all together, with some
-comment why it exists:
-#define PCI_ATOMIC_COMP_v7  PCI_EXP_DEVCAP2_ATOMIC_COMP32 | PCI_EXP_DEVCAP2_ATOMIC_COMP64 | PCI_EXP_DEVCAP2_ATOMIC_COMP128
+Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
 
-Anyway the change looks right to me.
+-- 
+Pavel Begunkov
 
-Thanks,
-Acked-by: Leon Romanovsky <leon@kernel.org>
 
