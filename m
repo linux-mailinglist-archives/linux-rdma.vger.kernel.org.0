@@ -1,81 +1,82 @@
-Return-Path: <linux-rdma+bounces-14278-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14279-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FF0AC3A789
-	for <lists+linux-rdma@lfdr.de>; Thu, 06 Nov 2025 12:11:00 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id E44CBC3A7C5
+	for <lists+linux-rdma@lfdr.de>; Thu, 06 Nov 2025 12:13:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A5893A317A
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Nov 2025 11:08:08 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A7CD2501B33
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Nov 2025 11:08:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87783308F32;
-	Thu,  6 Nov 2025 11:08:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2821730CD8F;
+	Thu,  6 Nov 2025 11:08:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lFsaGLaa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NHL+/B5m"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF4212DC346
-	for <linux-rdma@vger.kernel.org>; Thu,  6 Nov 2025 11:08:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CEA13090F5
+	for <linux-rdma@vger.kernel.org>; Thu,  6 Nov 2025 11:08:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762427284; cv=none; b=n55KOMP/MCRxWNFKxAB8J9myEqIkyNlGrnJTNJ4lsVYgsBdwA40E16u0SViYbwFI3yJi2Deg+G3ovOYqIHXpsEFQupL3KWw2M28uyC943QDS+3BbKliMbXp298m5ZXMCfjMlpV3Jew4ySiy6cyUJzMXb7XXv2/u9g/SPw4v1VbE=
+	t=1762427321; cv=none; b=CtjxMfNLIKTIeQEDYmKaQ7SdGWCa4mAOdBsyUIfPVrBxnmpiAtngPOg1gwKS91vIhKRvjJ0LHlRA2Y9TAu+hGmcvTxkrjw4V8OMhSidDz19t1NNRKqf85g/XDGpgKGtr34rB+NTSqqHjnpLPgBmMOzD/gZlhZRj21OTz/IiwhXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762427284; c=relaxed/simple;
-	bh=iflFF8uGA+JQqg5PeOnkh0xBZA/LPV6uIzaa7UsyVRQ=;
+	s=arc-20240116; t=1762427321; c=relaxed/simple;
+	bh=PXhPi+1hjJwewKP9F5q/Fq4A6lOFuf7yfuMD/xspVc4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OZ9th474xonib5rk8SzGaYnVD4HJ46/01bF+eSNZ0JZH4y9PA0pmjV/WMflFDlOYpB3TxJ3gPFinIb/NJP+l3v8OcH1pXrDRluGdPn5/E6Qozs1uIZacpiHqk2a+AiWPhqFmYDCulAH6YeEwEpv1KEA7xRFI6Y+mYv1GkkOPF78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lFsaGLaa; arc=none smtp.client-ip=209.85.221.48
+	 In-Reply-To:Content-Type; b=EHYQXVeL81tcNLlnqSRMYuoxbVG1j3+fUA/NGTXugCLHIz9kLc3l7fyg6lW0A8QUHmwNkRKdwkqkINBN5awb95pCTtdWLA/FY7LtpPWm7SRPg2arQLKOrO74YYxlhLz5ZuRZ6q5eMQbS6+QhaQBxlZrpdgDE5GLCuTxK5cR5JRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NHL+/B5m; arc=none smtp.client-ip=209.85.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-4298b865f84so418271f8f.3
-        for <linux-rdma@vger.kernel.org>; Thu, 06 Nov 2025 03:08:02 -0800 (PST)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4710683a644so5712545e9.0
+        for <linux-rdma@vger.kernel.org>; Thu, 06 Nov 2025 03:08:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762427281; x=1763032081; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1762427318; x=1763032118; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=KemrrCvE16IUsPvIdPc7ZklZCJchRhA/4dXIse7pcqc=;
-        b=lFsaGLaav2Wzq+kdJsJU1Wb4wW+hsZE5/nqsyi2eb0dBlUw0xGSjTlzzn4Sa1cJnLz
-         qOyyIeD4YWjmrVzmwvu8aLSvJiCrNWiWtPu3V2gOXZd2hOq/2CFDkuqVKsyHc8xWaV+2
-         UnIEinVpCzCm1HQ4R8dAMK+BQyH5QFyCxuMW0Wu90+6fKHiCDqa85zysgdJoHRrOgGTY
-         4TuJETudPaQ70g6dro3pDcNu6mNd5AGjgpMzdSEf+ANdVpng/0xQwNfcTBWXI4fgmKma
-         Gx1wfD/x+CU3EW9C3Q90NaljRbG7J9kS+1tSE2oTZqfxywlZzb1JbKbJFTSXG8MyWUxe
-         SNhA==
+        bh=3smk6GeMQLyg2bWpqf+opFvd8OFCVzmfS4zTn2VVngo=;
+        b=NHL+/B5mvjXpeuKKe4fkmjixR7Nm80lIkURNcityRDYr+D5pkL1GNX9f+cIT1HbnK5
+         fIpG8yLJ5JAhuBaLZAISDF9jIzv6un2EbKUyjcAEiUie88cyD1+cfzRlegYGxW5bjGWG
+         vAA5/sWSADsQY596hceHBxGsqR6UOR1ApH5S7ukBdPOitdjqWuUuL+pFYFPKJjtnssIj
+         wIdLP2Z2lJRhPm59pJ3E6evFOghju2DEVWiLc8wecJqLLrrF57AQnsbEhuIbmbwqqNrI
+         s0f9K2HaUHtBkAtHEGmPWowo2jTfaoyTAvpKsgyIGhq6Hn0qUDbmks5YZTK3Qs9DW8Lw
+         L0Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762427281; x=1763032081;
+        d=1e100.net; s=20230601; t=1762427318; x=1763032118;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KemrrCvE16IUsPvIdPc7ZklZCJchRhA/4dXIse7pcqc=;
-        b=Skd3LBwFrSjsr4Oz0ow4ZczfA9JpEUMogwXyJ2ZqZ7v77ywf6/ZfkoNCorv5L771Go
-         MWi/T3TeFfXIx6Cho8o4T6iacFX5tH/Du1OabOLwTfwdrpbZdaUSsiLJjq4j0MjRgYPr
-         Z/3kunUC9arwMhI0rov/EK0mRbVWLzoFSqaRie5flD8PWvnDyVHl+NOJFZ6SsA6+zVfj
-         4cl6BKs85r+omwPvYc8ISQM6oTPcIb/KCrJz/qOhrSKUNn/dou+j2ruM4XQWr3CqqE09
-         g2KVngrdAUtBsjBLGH5a4eG9yZHy/+GgCpNNo4VkSQUhBpWNeDz9XYbBz7LBi1aCpNlF
-         ar2g==
-X-Forwarded-Encrypted: i=1; AJvYcCWl+jpP9+OAyLISz8jM2wXHjUFSxfUhU/QtzKK3B8WGVStEmH9MtdGk9b+Ko7+Rq8E65gCyzmZbVMDo@vger.kernel.org
-X-Gm-Message-State: AOJu0YxM8c0XVE8AdAzVrYdtiu7ox8shXLSnRGu52Yy5CPQLuEUDT9Uc
-	reyIaLA4Bf76nXk1v5EHb/NHvkD79lvz2u2hCRnxh008J6I2BAy1DlCK
-X-Gm-Gg: ASbGncuGZs4D3qBhSMwdxsCVNSU8kgXhbzbRyyFSQw/ilHQbGgEjJ2rrbQqOvHfmbQX
-	HGV7f7x3kl4+7CGizKGU96POUyokNCIZT+bM0oXDVztJ0QPI519YFocwvOX/QUwAmMCrV3Z+hSN
-	l/rV+In8zEJ42vkssne5ciBIL+D20vx1f2qUk6BA05PNFdULRYizxz8oLuUSdnKdVHj/jVoVI9M
-	mhgLzkaFJ5IgpyCjb4hgtX/wNimyvo6P59XawyhKbH5wq9zExUhYZuqif4EqaD8Lm27ICaZvKMW
-	ww3tYOOqjgXMooSl+8/+n7Xl2MrbsMncAP33URC4syt1m00uTxmePO5TqhoXhEkCFkLxz01FygE
-	ulast4u3F/Fj1UD9owbg5FyS5qrmyC34MInNdRNL12ZBDc5oebQ4E359hVYRoY/7tbL9qBKdUrY
-	4A0SKCT22AnB4pTDnn3tCJqYOTmH1LGDbJT0kA00Ik540Mo9f8sBI=
-X-Google-Smtp-Source: AGHT+IG/WPvgkkz5ima282cKyz2di1ByWQE6/QNBfZEdI+atynO653MZ5MMOXdVnpoH97C2BXp1trA==
-X-Received: by 2002:a05:6000:250a:b0:426:ee44:6d9 with SMTP id ffacd0b85a97d-429e32e3595mr5318368f8f.21.1762427280858;
-        Thu, 06 Nov 2025 03:08:00 -0800 (PST)
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3smk6GeMQLyg2bWpqf+opFvd8OFCVzmfS4zTn2VVngo=;
+        b=KXID/tDOKfYh48qSsgJkoj25Ro/QvZVSKDoaojSuJ1EXqbdux5Lk6PPHQs08yMcsHt
+         Aw6mfiIZtWaMvpnvMba0cAVodWQOzypwt2z8jWspuiI67Z5t+L/Kisw5YZyh0G/VM4Jj
+         EuBls4mHEKamgJ+mImJLhD2/YaNSmkwZ4cEOTbOb2Q0IQJm3Gfd4Y9tt4uFz6t48oak7
+         T3UDWqs26J/dnUQ9pWwrgTzM0K9GC5GpzyZuri9oiA0K0T0jbrvpY8fFst5NC3ngzVht
+         8hPkB45GhX7s+WqtuTqAY3uaxaTUFhoNTRDxeXn6sv2LaRa1sq8/w5V3fOvVNlOVT50f
+         Q4Kg==
+X-Forwarded-Encrypted: i=1; AJvYcCWFZ3roLCGdOkB3XKIpLq5Q8YecJZplOmkYvau5N7I4d8XLVsRjkdp9ELw2nC29b+MgoBXMoQ9D1ybt@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw3p7B2XnE2ZIQE9+AhBQ5+V+iL3Uej6IangCvna4LFgR7KqrII
+	Tuq6ngrg8Uc+OWmYdGgkf6NxT3b539jiT8/937N4z0isEfqLB9eQwG4a
+X-Gm-Gg: ASbGncvgvU035pbnEhQO9vAKU9W/qMnye89L/iHp9j0Eq6hpFPd1lEiA8IWNmvOoBhs
+	2UySwZ6k7PQHlvuKuxJBeMJDz0LZ6j0h5RhW6izSnwHAgXDkLI5FruFgCyVVNtL7Fu3Bk7pTMFw
+	NFcEVWTS0yQl3QjRaEEvQknyk6CrQ11pSlM0s0ZQimbHG/ouyHOtZb7ZvkFbxPcd/5X/L6nyvZv
+	RM0oRgPxEvtJo0VyinhlsjKgzG51T7Gq35rnh/YuLpZXaXUrPtLiP7t5mwq06eyEiTeKh/h6iEr
+	p+Q1/Yy4SMQSWFrjPnZljS/ugZV9gNAQUaOLEPW8itiYG6zN9H6pUjdjgshUBOtd9a6nQcN9jJE
+	2LvXMrNSmXi6Yqsck05lz2my0tVKO4d9ZpaF/C1g/wgGIARHfhkXufWElCVnh3oOkWqAfv6l1H7
+	0wSPRpXXL5B8RPhvQM5YsgzrfNOGBEV/lYbOZoluEGFRAsVo49gddPig4CJ1Ozww==
+X-Google-Smtp-Source: AGHT+IFUsWMoUQp2LAQBvEqelZeh8+i2mx6qm6o3gPPvtfcki9Q9yd5em3sUzeuAg53ANmu2/8izdQ==
+X-Received: by 2002:a05:600c:4c27:b0:477:14ba:28da with SMTP id 5b1f17b1804b1-4776201cbb8mr15583175e9.5.1762427318220;
+        Thu, 06 Nov 2025 03:08:38 -0800 (PST)
 Received: from ?IPV6:2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c? ([2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-429eb403849sm4648357f8f.1.2025.11.06.03.07.59
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4775ce2cde0sm102571845e9.15.2025.11.06.03.08.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Nov 2025 03:08:00 -0800 (PST)
-Message-ID: <785c9d27-23e7-4ecf-ad2e-202ba506f2e0@gmail.com>
-Date: Thu, 6 Nov 2025 11:07:58 +0000
+        Thu, 06 Nov 2025 03:08:37 -0800 (PST)
+Message-ID: <4ab9d277-97ef-414d-bb5d-910fd8964c2b@gmail.com>
+Date: Thu, 6 Nov 2025 11:08:35 +0000
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -83,8 +84,8 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC mm v5 1/2] page_pool: check nmdesc->pp to see its usage as
- page pool for net_iov not page-backed
+Subject: Re: [RFC mm v5 2/2] mm: introduce a new page type for page pool in
+ page type
 To: Byungchul Park <byungchul@sk.com>, linux-mm@kvack.org,
  netdev@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
@@ -103,28 +104,31 @@ Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
  linux-rdma@vger.kernel.org, sfr@canb.auug.org.au, dw@davidwei.uk,
  ap420073@gmail.com, dtatulea@nvidia.com
 References: <20251103075108.26437-1-byungchul@sk.com>
- <20251103075108.26437-2-byungchul@sk.com>
+ <20251103075108.26437-3-byungchul@sk.com>
 Content-Language: en-US
 From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <20251103075108.26437-2-byungchul@sk.com>
+In-Reply-To: <20251103075108.26437-3-byungchul@sk.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 11/3/25 07:51, Byungchul Park wrote:
 > Currently, the condition 'page->pp_magic == PP_SIGNATURE' is used to
 > determine if a page belongs to a page pool.  However, with the planned
-> removal of ->pp_magic, we will instead leverage the page_type in struct
-> page, such as PGTY_netpp, for this purpose.
+> removal of ->pp_magic, we should instead leverage the page_type in
+> struct page, such as PGTY_netpp, for this purpose.
 > 
-> That works for page-backed network memory.  However, for net_iov not
-> page-backed, the identification cannot be based on the page_type.
-> Instead, nmdesc->pp can be used to see if it belongs to a page pool, by
-> making sure nmdesc->pp is NULL otherwise.
+> Introduce and use the page type APIs e.g. PageNetpp(), __SetPageNetpp(),
+> and __ClearPageNetpp() instead, and remove the existing APIs accessing
+> ->pp_magic e.g. page_pool_page_is_pp(), netmem_or_pp_magic(), and
+> netmem_clear_pp_magic().
 > 
-> For net_iov not page-backed, initialize it using nmdesc->pp = NULL in
-> net_devmem_bind_dmabuf() and using kvmalloc_array(__GFP_ZERO) in
-> io_zcrx_create_area() so that netmem_is_pp() can check if nmdesc->pp is
-> !NULL to confirm its usage as page pool.
+> This work was inspired by the following link:
+> 
+> [1] https://lore.kernel.org/all/582f41c0-2742-4400-9c81-0d46bf4e8314@gmail.com/
+> 
+> While at it, move the sanity check for page pool to on free.
+
+Looks good to me
 
 Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
 
