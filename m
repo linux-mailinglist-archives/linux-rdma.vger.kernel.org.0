@@ -1,126 +1,204 @@
-Return-Path: <linux-rdma+bounces-14293-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14294-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29000C3E698
-	for <lists+linux-rdma@lfdr.de>; Fri, 07 Nov 2025 05:11:30 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B9B8C3E78F
+	for <lists+linux-rdma@lfdr.de>; Fri, 07 Nov 2025 05:47:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id F01B64E2E94
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Nov 2025 04:11:28 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E1B854E517D
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Nov 2025 04:47:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A9DF286430;
-	Fri,  7 Nov 2025 04:11:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BFlwnPFC"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 844A724E4BD;
+	Fri,  7 Nov 2025 04:47:23 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8625C1991D2
-	for <linux-rdma@vger.kernel.org>; Fri,  7 Nov 2025 04:11:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBD764315E;
+	Fri,  7 Nov 2025 04:47:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762488683; cv=none; b=sfy8REtgItdkmCtumuIbAtPtZ1OycmVg8SOjILOgEiCa4xEC2XvtUv/9E2bhpJQXWYr+yEKfJ+EvMhUeJgQ4f73TnPuqfU3rCAuNILH5VvkDkIFgcaz3vr6wJi2lvsAbtE+skXhEjRpM7J6mmaTg0B0k7fwz860AxwNfuoq22dM=
+	t=1762490843; cv=none; b=KG4uMGT3lcZJBGfpyHsYVEL0mdg1T9cngO5OT/VwNfE6SctNa1AI4mrCVlcMtn+jIT9ED17RCdOpVEYjhqZh2PVHNqjPBsih/mSha96pw/DbsnldJYHJ+K5nelYneu6pWhmHebOLcfh2NKdtcC+HMZZIEiLwykVfRXiojNM6sS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762488683; c=relaxed/simple;
-	bh=4Zk8MXXmDdkOu+U1cEM8A5GphCzC0fyVF7jnwu8pbKE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hFa7scmvbgj5dOcTQyVGwGl6PGjcYv7V5FNeqBYOHH9Jx6PpmkpDXyw5tUtIILruab5niYZux5/BXUnP7QZzgZ0T6ixvota5QBSx3SM5T3iBAhyGIQZ2b2eVLxfdTe8CiZwRIMvKTN/0MwfyEJ15By6/gOPiOzUnyB7Q44z4+uY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BFlwnPFC; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-7a4c202a30aso263316b3a.2
-        for <linux-rdma@vger.kernel.org>; Thu, 06 Nov 2025 20:11:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762488682; x=1763093482; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UB1bXzlzFcUbuTT9ZaXIDznGKcuL53MySKJi6hY373E=;
-        b=BFlwnPFCfWpHAefcmfDFQCZSfkKhL6HEXSxhCM6yEP0ZyCH1D/9lJxi9nn6HqA3trM
-         HS783KCxnHZGzc7XTGOXag9Qkvor4MJklnZwUGfOcw04HEiVtRPvHv1blIOR69RY2HjW
-         Hrd/dUyWLZqruRWuiqfVoXlYvFXvvp1jNjJc2Yx4paYcEVF/5K359v8HQPREXKCGpebl
-         OCG44XnvJTvhvldL2WOzFpGHZKfJbg0KLQR6+rFQDFtD2oEDsNzHyb2pLRLQINNI2MYu
-         +P5NYSmC0QAQlgRHwdYEgEtezn86rkth3RqJpcnYFdT2IBhGsAaZQsT3ICEENySUjsQN
-         YoSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762488682; x=1763093482;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UB1bXzlzFcUbuTT9ZaXIDznGKcuL53MySKJi6hY373E=;
-        b=V+LFQwkc98LfVW6Zhg/ir87Qd/prWtqia/GAMgmFdxoxgWufl224dmnzfvj8djZrD7
-         82CNruas1ZMpm9k6YC0u8lfskmCDBJs9APbYutHyxJ0USoa4UFA4g+KXAOHUBVdQnN9+
-         ImD+Q6qBpathGf83s1sI/6ysQGg8xFn2roUJtcsthwK+HnY9LgFlN7pshqrG6JBITHia
-         OOQ56opUT7vdM0oZ95npCMSYRK52pfo6rCdXw8GiyfCV6J8px5U3GqrG1hQU4HDjn/PD
-         /iAXldhF3SBjkOYIGdrbqFPpeQyVDR8Io3MbFWRhcyVBriZVu7SH7Xh42lzxzmqRw8bg
-         mqKQ==
-X-Gm-Message-State: AOJu0Yw82kUl5Q1Yj2sP1gCs3FjUq9hqwZzBdL3mMrHiUSOW/PG8xHZB
-	BAaYNNADJ9fQNfT0MCI2KcNfo5KwMBkd2od4lb9OdhIYk19btj/LwFwF
-X-Gm-Gg: ASbGncsjkpw3jt/oEhYsGYN2olBklfKKTULQWcvEw3xvqrbse1lFgfshsI6wdn6aXBv
-	SAwHL7NIKaxpN6inq5AKxHXvgRFFnLrkItojkRK1+aCU0U8NVoJlfJWYy/3GswAHLUHwnMuw8U4
-	O+M4RJRiV8wanj2X80kTxtzzcKcODGVfvZPd7cZ4zPcuVBpdh9127m3WEq9Krda0q0ke5WXu7bp
-	n/VVOcM3lNVZ0KxMqVw7Kvi1AuNFJ5KgIpEgQ02Sv43Gwyq2YzvtRng3eJPtfUQi9OQoFWdI5NI
-	G08TAu75UrgMGS3Lp9BSv5iON5AUa931Blv4ynpjVPHijS1SEkQL01M32CFEB2GQqyIYzbAGCrG
-	cgZj1sz1xzGFoKZYuxnyuCx+N7eBHjT9DlcBHqdILOfIl+XGrK/1W0icPDG1RmqJcj0J7/qBFIl
-	h0c3GO2YrKaFjP6Bhm
-X-Google-Smtp-Source: AGHT+IFTBdtjUvs97i0n6PZZPCRYPFFLtE+1ia2eL7OO1k3lvWBqZorflY6YekXtzcFlMjotdUuR/A==
-X-Received: by 2002:a05:6a00:896:b0:7ab:75fc:f8bc with SMTP id d2e1a72fcca58-7b0bb81fc9amr2493970b3a.1.1762488681758;
-        Thu, 06 Nov 2025 20:11:21 -0800 (PST)
-Received: from crl-3.node2.local ([125.63.65.162])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7b0c9c08ee9sm1289384b3a.21.2025.11.06.20.11.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Nov 2025 20:11:21 -0800 (PST)
-From: Kriish Sharma <kriish.sharma2006@gmail.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Vlad Dumitrescu <vdumitrescu@nvidia.com>,
-	Parav Pandit <parav@nvidia.com>,
-	Edward Srouji <edwards@nvidia.com>
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kriish Sharma <kriish.sharma2006@gmail.com>,
-	syzbot+938fcd548c303fe33c1a@syzkaller.appspotmail.com
-Subject: [PATCH] RDMA/core: Fix uninitialized gid in ib_nl_process_good_ip_rsep()
-Date: Fri,  7 Nov 2025 04:10:02 +0000
-Message-Id: <20251107041002.2091584-1-kriish.sharma2006@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1762490843; c=relaxed/simple;
+	bh=VCJ59lycIri74X1yqvv8ek1VO/VNrs0puBEdc9NZc2A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ftGa31RkJNVIm6SCKJaQhJRHuYAkEujoUKuWIGHFbEOUZhY/pt1/qWUo7eI9zC4spiSrdad/opZXg4aTCF9k/1XS677LzvXHArmCy2d8XCzjYuCCIMlog5z52imWm9hCbvzhFQWLGt5FDSTnbvk1iwxO3fTPFIkw7UksoX44IpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-c45ff70000001609-0a-690d79d21061
+Date: Fri, 7 Nov 2025 13:47:08 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+	harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
+	davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+	sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org,
+	tariqt@nvidia.com, mbloch@nvidia.com, andrew+netdev@lunn.ch,
+	edumazet@google.com, pabeni@redhat.com, akpm@linux-foundation.org,
+	david@redhat.com, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, horms@kernel.org,
+	jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com,
+	ilias.apalodimas@linaro.org, willy@infradead.org,
+	brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
+	usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
+	almasrymina@google.com, toke@redhat.com, asml.silence@gmail.com,
+	bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+	sfr@canb.auug.org.au, dw@davidwei.uk, ap420073@gmail.com,
+	dtatulea@nvidia.com
+Subject: Re: [RFC mm v5 1/2] page_pool: check nmdesc->pp to see its usage as
+ page pool for net_iov not page-backed
+Message-ID: <20251107044708.GA54407@system.software.com>
+References: <20251103075108.26437-1-byungchul@sk.com>
+ <20251103075108.26437-2-byungchul@sk.com>
+ <20251106173320.2f8e683a@kernel.org>
+ <20251107015902.GA3021@system.software.com>
+ <20251106180810.6b06f71a@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251106180810.6b06f71a@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRzGe885e8/ZcHVat7dEi3URhOxCwT+o6Et0IKKiD0UFdciDDnXG
+	vKTRZZZgSdrVnNNqEdVSYzjzMnGr5l2JxCiPlK5WuUpTcbU0pdqsqG8/nufh938/vByt6VAs
+	4HT6VMmgFxO1WMWoPofdXN6Vqdat7OjWQImtHEPZWAbcfV2rgPFyHwUlpdUIvoy/ZOGnsxmB
+	v7EFw0DDKIJbNwM0lDzNZuCr7TsNjjofgk+m+xjeN3tZKLNvA8+dfgbqc2po8J5vxZCXPUGD
+	c3yIhVO11qC40shCZ3W+Aq58v01DjfE1C8/qSjD0lf9UQL87j4E28z0GRgoaafDkb4Jmy1wI
+	dAwiaLTVUBA4dw3D86I6Cqqcz1m43GXB8Dbbg6CrwctAweQZDMVZ+QgmxoLKoQtfFFDc1Mdu
+	ihGyZBkLDYPDtPDgXg8lvDBdZATZ1U4JDnMvK1jsaUKlNVrIlbtowV56Fgv20Uus8OpFPRZa
+	TROM4HizTnDU+ikh7/QQ3jFnr2p9rJSoS5cMKzYeVMX3D6gPv5yX8fFyIWNEuTNzkZIj/BrS
+	5rxK/eWehxVMiBl+CWnvLqJDjPkoIsvjUzw7mGdXFgU3Ko7mR1hikvsUoWIWn0pGho1TIzUP
+	5LqlkA6NNHwvIib/efy7mEnait5NXaD5aCL/+Bi8zAU5nNz9wYViJb+KWF1NU845/GLyqLqF
+	CnkIP8iRG9eMf146nzy2yswFxJv/05r/05r/aS2ILkUanT49SdQlromJz9TrMmIOJSfZUfCL
+	3Tk+ua8WjXbuciOeQ9ow9ZgrTKdRiOkpmUluRDhaO1u9Vh+M1LFi5lHJkHzAkJYopbhROMdo
+	56lXB47Eavg4MVVKkKTDkuFvS3HKBUbEiMXmyA23FAVHF3nTjrk7E7SWnoRIl7g10u+pcuyP
+	ODu4sPXch5Nvc6aTirhhr8fRNIuLudS5R2XzIay/7XqVvNu/eWfOk27biWWRvoj1vsKWJQcM
+	08pm1E8eG4j6NtkevvaEckuE0bk0C/eWKRvrt6+8aC3VLo8bC1TEgtGmZVLixVXRtCFF/AWh
+	HQ69XgMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SW0hTcRzH+Z9zds5xeOJ4KQ/W04qCkZpU9utCWBD9CYp6inqxUx5ypFM2
+	E9fFZo4ukmZZuK0Zi6jMnOY03aSpODMvD8XKmpaXrIzSlqiZU7M2I+rtw/f2e/mxZHiFLJpV
+	qTMljVpMVdBySr5nc16MR8ep1tg2gKWqgoYH09lwb9AhA3/FJwIs5XUIJv1vGPjlakMw0fqU
+	hhH3OILbt6ZIsDwzUPC9aoYEZ8MnBF+MNho+tg0x8MC+GwbuDlPw+Hw9CUOX22koMMyS4PL7
+	GDjrKAsM1+gZcJd2yOB5XaEMrs3cIaFeP8jAiwYLDf0Vv2Qw3FJAQYf5PgVj11tJGChMhDbr
+	EpjqGkXQWlVPwNSlUhq6TQ0EPHJ1M1DssdLw3jCAwOMeouD63AUabuQWIpidDkz6iiZlcONJ
+	P5MYh3O9Xhq7R7+RuPZ+D4FfGa9Q2NvYSWCnuY/BVvtxXFOmxPleD4nt5RdpbB+/yuC3rx7T
+	uN04S2Hnu43Y6ZggcEGej9675KB8S7KUqsqSNHFbD8lThke4jDdR2Z+LSyg9yg/LRyGswK8T
+	epqqqSBT/Aqh87WJDDLNrxK8Xv8CRwZ0Q40pkJGzJD/GCEZvvyxoRPCZwtg3/UKI40G4aS0h
+	g6Fwvg8JxonL9B8jTOgwfVi4QPJKwTv/mchHbICXCvfm2aAcwscLZY1PFjYX88uF5rqnRBHi
+	zP+1zf+1zf/aVkSWo0iVOitNVKWuj9UeS9GpVdmxR9LT7CjwQ3dPz11xoMkXO1sQzyJFKDfd
+	GKoKl4lZWl1aCxJYUhHJrVcHJC5Z1J2QNOlJmuOpkrYFLWUpRRS3a790KJw/KmZKxyQpQ9L8
+	dQk2JFqPNuiKlkX3FCe6T0bGxOWs3H42t2vbNs+ZRQlrdcrakpIcZ+0m7Do82rzHsCbeUDnz
+	tbpL6LI1p4eNvPRx9nbT7I9dlYsP+iLW7Ssd/MmGnVY6bEmrhvy3qeaUS5acn2L5w8SEuaRT
+	ved6Vy9aFn8yxHegf2VGk+jqGNvh7rZ0NtkUlDZFjFeSGq34G6w0CIU/AwAA
+X-CFilter-Loop: Reflected
 
-KMSAN reported a use of uninitialized memory in hex_byte_pack()
-via ip6_string() when printing %pI6 from ib_nl_handle_ip_res_resp().
-If the LS_NLA_TYPE_DGID attribute is missing, 'gid' remains
-uninitialized before being used in pr_info(), leading to a
-KMSAN uninit-value report.
+On Thu, Nov 06, 2025 at 06:08:10PM -0800, Jakub Kicinski wrote:
+> On Fri, 7 Nov 2025 10:59:02 +0900 Byungchul Park wrote:
+> > > > page-backed, the identification cannot be based on the page_type.
+> > > > Instead, nmdesc->pp can be used to see if it belongs to a page pool, by
+> > > > making sure nmdesc->pp is NULL otherwise.
+> > >
+> > > Please explain why. Isn't the type just a value in a field?
+> > > Which net_iov could also set accordingly.. ?
+> >
+> > page_type field is in 'struct page', so 'struct page' can check the type.
+> >
+> > However, the field is not in 'struct net_iov', so 'struct net_iov' that
+> > is not backed by page, cannot use the type checking to see if it's page
+> > pool'ed instance.
+> >
+> > I'm afraid I didn't get your questions.  I will try to explain again
+> > properly if you give me more detail and example about your questions or
+> > requirement.
+> 
+> net_iov has members in the same place as page. page_type is just
+> a field right now.
 
-Reported-by: syzbot+938fcd548c303fe33c1a@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=938fcd548c303fe33c1a
-Fixes: ae43f8286730 ("IB/core: Add IP to GID netlink offload")
-Signed-off-by: Kriish Sharma <kriish.sharma2006@gmail.com>
----
- drivers/infiniband/core/addr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The current layout is:
 
-diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
-index 61596cda2b65..4c602fcae12f 100644
---- a/drivers/infiniband/core/addr.c
-+++ b/drivers/infiniband/core/addr.c
-@@ -99,7 +99,7 @@ static inline bool ib_nl_is_good_ip_resp(const struct nlmsghdr *nlh)
- static void ib_nl_process_good_ip_rsep(const struct nlmsghdr *nlh)
- {
- 	const struct nlattr *head, *curr;
--	union ib_gid gid;
-+	union ib_gid gid = {};
- 	struct addr_req *req;
- 	int len, rem;
- 	int found = 0;
--- 
-2.34.1
+  struct page {
+	memdesc_flags_t flags;
+	union {
+		...
+		struct {
+			unsigned long pp_magic;
+			struct page_pool *pp;
+			unsigned long _pp_mapping_pad;
+			unsigned long dma_addr;
+			atomic_long_t pp_ref_count;
+		};
+		...
+	};
+	unsigned int page_type;
+	...
+  };
 
+  struct net_iov {
+	union {
+		struct netmem_desc desc;
+		struct
+		{
+			unsigned long _flags;
+			unsigned long pp_magic;
+			struct page_pool *pp;
+			unsigned long _pp_mapping_pad;
+			unsigned long dma_addr;
+			atomic_long_t pp_ref_count;
+		};
+	};
+	struct net_iov_area *owner; // the same offet of page_type
+	enum net_iov_type type;
+  };
+
+The offset of page_type in struct page cannot be used in struct net_iov
+for the same purpose, since the offset in struct net_iov is for storing
+(struct net_iov_area *)owner.
+
+Yeah, you can tell 'why don't we add the field, page_type, to struct
+net_iov (or struct netmem_desc)' so as to be like:
+
+  struct net_iov {
+	union {
+		struct netmem_desc desc;
+		struct
+		{
+			unsigned long _flags;
+			unsigned long pp_magic;
+			struct page_pool *pp;
+			unsigned long _pp_mapping_pad;
+			unsigned long dma_addr;
+			atomic_long_t pp_ref_count;
++			unsigned int page_type; // add this field newly
+		};
+	};
+	struct net_iov_area *owner; // the same offet of page_type
+	enum net_iov_type type;
+  };
+
+I think we can make it anyway but it makes less sense to add page_type
+to struct net_iov, only for PGTY_netpp.
+
+It'd be better to use netmem_desc->pp for that purpose, IMO.
+
+Thoughts?
+
+	Byungchul
+
+> static __always_inline int Page##uname(const struct page *page)         \
+> {                                                                       \
+>         return data_race(page->page_type >> 24) == PGTY_##lname;        \
+> }                                                                       \
+> 
+> The whole thing works right now by overlaying one struct on top of
+> another, and shared members being in the same places.
+> 
+> Is this clear enough?
 
