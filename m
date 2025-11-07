@@ -1,171 +1,187 @@
-Return-Path: <linux-rdma+bounces-14306-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14307-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD5F3C413E3
-	for <lists+linux-rdma@lfdr.de>; Fri, 07 Nov 2025 19:13:50 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66818C4166D
+	for <lists+linux-rdma@lfdr.de>; Fri, 07 Nov 2025 20:11:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAE543ADF7C
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Nov 2025 18:13:47 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3EBBA4E5E7C
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Nov 2025 19:11:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3604B338F39;
-	Fri,  7 Nov 2025 18:13:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1E9A2DFA48;
+	Fri,  7 Nov 2025 19:11:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mLUnu4ZV"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="QD2RESc3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11013049.outbound.protection.outlook.com [40.93.196.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 819963271EC
-	for <linux-rdma@vger.kernel.org>; Fri,  7 Nov 2025 18:13:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762539224; cv=none; b=t/NnX2j2mXsC1kQ1X8lovF/umFVREeetpM3dKh/7uCWXMO5/IdDTdnc9K0FRaf7QCskvlI28qCZfty9nLRDJnzttIOyY+l1v1AbVBvx70vJD3ZLP83rZN5T8O2k+AyVeb+kVHOsrVxNWBsGcxN754N06jEQaNEWa/y+L72o6DDs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762539224; c=relaxed/simple;
-	bh=9sh+7gKZnu+G9v/dh397O3r/GNLHc2HTT/eEqyQCuKE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qYJoyniBmmd4fD8Nn3AUoCRBkcgocgIZ8DeOR7wtYmQqi+7kr74hmFhmDW2iFf+t4jRwM6Kr9o2jsIVXnu4lImOpbDAqyRClesFVHzZyfH0JIkxyrQaP+bwrWzsRSGIKw6EVB/1RSANUEm/BgxCl3IRz+j5TSYiBS0CwXKTBbGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mLUnu4ZV; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-b550eff972eso644882a12.3
-        for <linux-rdma@vger.kernel.org>; Fri, 07 Nov 2025 10:13:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762539222; x=1763144022; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ycx0Q+pL77eWatZeqNGTS924eNL4q/k8Nowo0Bt2oYw=;
-        b=mLUnu4ZVoeQfGOofF+XyUCndP+C61xEy1u2DWZuMHQtkW4VwMtSuU8EfjiqMgTVSlK
-         BjL8TSDdvbxdWxXSNp0wDKSJUAIT/hQl8iX8k1qTDTiHOXZu0tXZTVdX0NjV/ijWplGL
-         gD0vUqXKUSpGoy/Ncvg53NhZDcwH/ZNS+osuOMqUa+/5ltce7OZFINObgB6KgxrU2+ar
-         16ka1JvFWWQsn0IBE6LP6CxjmdfUk+pn7cHC2QD0L9JjI6S9T1nvFYQHHZSq3xB5xC1m
-         aObqs/kojCl3mFNSB1/G612JCNkyvLb7OovNDrBD9gLVrjn3fQTRLgtCmTUbrlqDRUpo
-         E3xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762539222; x=1763144022;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=ycx0Q+pL77eWatZeqNGTS924eNL4q/k8Nowo0Bt2oYw=;
-        b=h+sT+OSmjHvdbNb7SzUEjg1FY5Iw5Fh0DKQZU7Cw88xsxFhOdvTJFWjl09Cw97kvkN
-         q7TFY1n5OqaN4K28oDZPzdwU+k9nXR+Y7DI25hzh7TdDcGmwhcGkXIBzDaJkl2Au+c0J
-         EovQLBI3grcLkqgIj/NljyKCaSkHlns3q2vqJrACQoO4hMuwkodNGK27cz6Ve1tWub6h
-         qBL4I960DsUHNv1eWMONEdjYueMYW87MvMty801CXZyuD+V3sUyxnDr7kp/gQ/cNBxG3
-         X3LXRJb/lj8m5SRgwc3QqMK3PKt2Tse+iSCid4EUYsVHUminV8ecE7HeEkqsfs+LIkxD
-         lafQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWVSLOmNd0mXQwyDucRrvZIZ4qXVfRQGAnMgvoLosHUf3DIIgG/SIHHkx9T+/hSCBm+qgvP53JtieGm@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxn1Cdd6KQJstLCGAVNnj+pgvzfTNZPLrgoGy+Bkz7SmpvG753d
-	xJsVF8qIkfv2xR2WBqlXh/8G6Ubw8lJPCBTViNizVJTj5AYTexwLhNQhd0wikYoLXXNbgoKgOtp
-	RTHqsT3fFkfNW9gkw5mXGb1zjAMYyLyw=
-X-Gm-Gg: ASbGncvgzf+DMC//HXb1mYAyBNGI2d3/fFwP6VE3fO6t6serA22zNJEScY5zoFM1J/e
-	e837QlFlm91y0+84e7AOkA7yRsX3xqCUYedNBU24s0gRy8CjDOEcBKFOmKHSn8SSHrD9JI1I1VA
-	fwgipaVhM7TEuTiW4TrcKN6y/juXxWpWLZ4spfAZxLv4+LfiHhzkiLQMQNICQAU1+4qLnPuE8YO
-	HMJ7jd3ACeDXRRh1eMGs/KBd0EijAnFuIntXWt/XMry1Ft64UBQgdYH3JQL
-X-Google-Smtp-Source: AGHT+IFFUFeKNH7UjQgWxAMlS+k/djxBAsHPA9H+ubZBXi3ipyMUElpaci6boohgp6n9bbHug0ab1/fv2/9Hl1zSYE0=
-X-Received: by 2002:a17:902:d485:b0:295:7b8c:6622 with SMTP id
- d9443c01a7336-297e5412e9emr643855ad.11.1762539221759; Fri, 07 Nov 2025
- 10:13:41 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C1488F7D;
+	Fri,  7 Nov 2025 19:11:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.196.49
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1762542712; cv=fail; b=T7SBWWGC7UybyYbHa7c7OhcleBNmoGfZtkQP30J+jsgpoUu0BBNayoP7dW9RBKaeK54fZ0y8EeTMCPuvIK33vW/zqe/OIVrxBcePx4a91n0uPBIhbN4ucJnoPv33yT6fFD7sBMmMvDz3JPOpr6Le2jZXBp8KAEwGXxYJ6JqcKkQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1762542712; c=relaxed/simple;
+	bh=nM1EeVWyCPmilX3oAKfPrA9hfDMGnyCQRNaf1V4ByvI=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=LNprxRW2icXZR1x+sUWB0njBm/2pX9RRP7mYU9UlN5YG1TghE8FGb2Wrk4v6CHLC8NolN7//H5OOXak6m2si3b4vwRvJrAejSN6M+UlrKztvjz4d3jZGw9tDj+RQBN81P/jFHUnWNjUHwHq7PI4vTMlsEuhdVQFjcPg0iXI+vGY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=QD2RESc3; arc=fail smtp.client-ip=40.93.196.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=GQUpCQiWtm725HiKuXmboPGJRnfiLuxv/x3+6dRTs8yV2i+bXvv2kSdMpRD2ivsqgQeDX6XZnbkRy8NFHXcyX8Ve0XbNEoNRRXwKLY8X9JEvbK7+yQDJueGhpA/iTUquEcVudjztetc4V3gk3m4FPWG04TRuULwhk2We9JGjOwLWF3qirqG34lgDSKr8ApqtZMdfkwntlJDONAhVg2YBXeS0DMXmFOTchUMBuIopAPDRhmlz11geNOu7VWUgR3Ha/PAWCDOLiCl9rsgbMbHHdUlxmaIi5fuoj8b7qoEGZhdImH+H404q8UFvKDriAF6F19hT7YQjRtwkANWJhdDz6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=laBbhsj4DY1tOQ5/6yucMaNMfRcEeQtPqaRANT47H/E=;
+ b=U3MDaRWvvxacdcxhvhMqLhI/78699nco6ZAYMPv5Ns7WSvshn93fTwfPT0w7MxSG5ziPioKZu/1c1L822m4rKDG3RimdCI3DCL8HZRoFblK30+3maP7jdfIXkovBvqs+qmT/2492NuSCY9wzfBa1jeIBjMkJyJtYwGg0fV9hyUqtvS6D29Vky+Pl6F1aG95C9SsHUx3ZVMO1+F9D5eat7gU0CR+ch9nrzhvzYy1nFKkS/m8xfZI2Q99fIdx1J3YicWN3PvdZlJZsrVEW4JuNT2RDGzMXhJuJ+zZviELe6Ihs3StmXeExPOn53zfRAIm7c+Gzpl24HoMu7a0CYKbEYA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=laBbhsj4DY1tOQ5/6yucMaNMfRcEeQtPqaRANT47H/E=;
+ b=QD2RESc3oRdCTit4zoRf52jPjZ7WXdEVje68MMDeLdXwj+3qDMBHvDrOhc7ddVBqEsGIHS8eR3MNuVEzv4gtsSlti2As3ClT1jskbKHziUmqsdmka8D4oyx6HTCqRLVFFNR4soZ/SpzTLikJCnjlXGZqcAU/13rFSZXtkzF6K8O1EpP5hnxNHuGSB1bn9iqpelYbZcnV1RF533dxvVMToR2+g5FdWahBAE+6rwMcI8sKlUwIEwasw0RkiaXgMgPNCZkpTk1mvc9zWnXBVQzqQde0OV2LfLTlXpGUtSIO1O2X81V1B4DDNznXLHTO7LvlpYIv8mFQyIWdtv1JW54CnQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BL1PR12MB5205.namprd12.prod.outlook.com (2603:10b6:208:308::17)
+ by DM4PR12MB5940.namprd12.prod.outlook.com (2603:10b6:8:6b::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9298.12; Fri, 7 Nov
+ 2025 19:11:45 +0000
+Received: from BL1PR12MB5205.namprd12.prod.outlook.com
+ ([fe80::604c:d57f:52e0:73fe]) by BL1PR12MB5205.namprd12.prod.outlook.com
+ ([fe80::604c:d57f:52e0:73fe%4]) with mapi id 15.20.9298.010; Fri, 7 Nov 2025
+ 19:11:45 +0000
+Message-ID: <c9c8b90f-4edb-47da-8ad0-94f9e58d71e0@nvidia.com>
+Date: Fri, 7 Nov 2025 11:11:40 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] RDMA/core: Fix uninitialized gid in
+ ib_nl_process_good_ip_rsep()
+To: Jason Gunthorpe <jgg@ziepe.ca>,
+ Kriish Sharma <kriish.sharma2006@gmail.com>
+Cc: Leon Romanovsky <leon@kernel.org>, Parav Pandit <parav@nvidia.com>,
+ Edward Srouji <edwards@nvidia.com>, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ syzbot+938fcd548c303fe33c1a@syzkaller.appspotmail.com
+References: <20251107041002.2091584-1-kriish.sharma2006@gmail.com>
+ <20251107153733.GA1859178@ziepe.ca>
+Content-Language: en-US
+From: Vlad Dumitrescu <vdumitrescu@nvidia.com>
+In-Reply-To: <20251107153733.GA1859178@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DS7PR05CA0061.namprd05.prod.outlook.com
+ (2603:10b6:8:57::15) To BL1PR12MB5205.namprd12.prod.outlook.com
+ (2603:10b6:208:308::17)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251107041002.2091584-1-kriish.sharma2006@gmail.com> <20251107153733.GA1859178@ziepe.ca>
-In-Reply-To: <20251107153733.GA1859178@ziepe.ca>
-From: Kriish Sharma <kriish.sharma2006@gmail.com>
-Date: Fri, 7 Nov 2025 23:43:30 +0530
-X-Gm-Features: AWmQ_bkYmNN1Ow00_1J_Au4KiZUVKCYmWRJkOuHhbjGjJ9ysQoELaf0ZI9PBhdY
-Message-ID: <CAL4kbRMM=dt_PUUjJKwE5QJVLTJONGBSntg_b0vDbbgxpBoiDg@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/core: Fix uninitialized gid in ib_nl_process_good_ip_rsep()
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Leon Romanovsky <leon@kernel.org>, Vlad Dumitrescu <vdumitrescu@nvidia.com>, 
-	Parav Pandit <parav@nvidia.com>, Edward Srouji <edwards@nvidia.com>, linux-rdma@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, 
-	syzbot+938fcd548c303fe33c1a@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5205:EE_|DM4PR12MB5940:EE_
+X-MS-Office365-Filtering-Correlation-Id: dede8751-9327-4ed3-7b7b-08de1e317dee
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?QlR5V0VJY0pXNGxlZ01Wa0o0R2xQTlFWZTBFRkhKNmZzdHFiRDA4M2VqV0dp?=
+ =?utf-8?B?UjlLbmRNWXM3eE5uUks0dmE1N3BzOWtpTFJKMDYwMi9MSGJOWVZoZlFjdEsy?=
+ =?utf-8?B?VFlneklzVkpVRHZYRktWTW94N00wdGdVcnoxaDg3MFk3MktzaXluTVFUT3ZE?=
+ =?utf-8?B?R1JYN0hXSzcyTGVGVHJsZDBZV0pacE9wVTRUVkF6aDc0QWU5V0dZQ25tTkhQ?=
+ =?utf-8?B?bUZFTTdBQUpBU0ZKaUlrRnoyN0NQcGlGQWxZT1dPUU1YNDR3UGpMYXowVEpD?=
+ =?utf-8?B?NHJKN3dBM3hvMTY5TGIyRWY2ZWdJL0tpRVJOZnU3eFdKVFVzYmNqSERqSHZK?=
+ =?utf-8?B?MkRNa3I4cm4rUm1OVzV2N283SFBGZXlpQXBWMkdHN0NIcDRQNzN0dFdHVWNi?=
+ =?utf-8?B?UGZTOVNSazZnZzBKUFZMZG0zZm5kRllxOTg2S1M0WExCaGJiK0hHZk8vUU45?=
+ =?utf-8?B?V3lXY1ZFU0VpRzlHdWExVUNyVDJJQXFoQlhPREREOU8xaWkybHBQRUNDZmxT?=
+ =?utf-8?B?cGJtMHdjMzc2dVRYNWZ2dlYzR0ZQeFNKSnNCM2N6MzJLVmkzbFAwc0hBdko2?=
+ =?utf-8?B?QWZQbWFuT1RpRDNyMlVCUDNUZmxEVmFDb0ZEV2NaMjM0VTltSnQyMzVNWmNl?=
+ =?utf-8?B?YjBKOWY0VkVITlZ1OGhnVGtsQ00zWWdLZjZHamp6Z0JnK2lsbGIyNnNKdEVV?=
+ =?utf-8?B?ekNzcnRmcTBVWHpDYW1pNloyNFQyWll5ZjA1MXQ3SURHSHpDZEpWYlZJc01U?=
+ =?utf-8?B?dllFZm15a3lWWUptRU5Eb2U5bGdrMXpncko1TmxxYUtuNjAzT1lrWURTYkRE?=
+ =?utf-8?B?cDZtUjBkQ1J2eE9pMG1BK28yNjdrTVoyNkdmYTRBdTZUbFFCY3RqRDI2NGdt?=
+ =?utf-8?B?UzdIQy9EbG5iUERGUE1nWllHeUhjOWVFN25mNGQ4YmlIYnNWQThJYVRnSGQ0?=
+ =?utf-8?B?N2svZExYMFdsMXc2dE5MWm1xbTV6ZVVSajdYQTBETGYwYzlOSHBpUko2OUls?=
+ =?utf-8?B?eUlrNkRSOWdJdFhGWEdzNlVQNStRbHRrMXJCVS92WmdJRzNzMnRjeURad1VG?=
+ =?utf-8?B?clhXU21RbXUrVktOZmxmUkZ6ckcyV3RKQ1JKSkZLQ0F2ZUMrYytXOVBoQ1Ez?=
+ =?utf-8?B?QWI5cDhVNEh1Z0RGSWNVRnFHOEV2KzZlaGVOQVBkc09qUDFLNXdzdzJNc1ZS?=
+ =?utf-8?B?OU5mRld3b0o3dTAvMnRyT0pvZytEdHR5Snp1ZnBEbG1SZXlVMkU0OXZBZDRx?=
+ =?utf-8?B?MWlGanhHUVlHRGhTQzJBVFFyYVJXVFFHZUJRTkVHWVVNc2V1YjQxWUVTc3E3?=
+ =?utf-8?B?Q3BoS2d0aU1TNUtBQllaeDlRZ3JTY0NvWXB5bzlabU9kcjNtT09kUkpFenBG?=
+ =?utf-8?B?bEZMbFc1K2VHSUtqQ0lGV2pmN0xxY2NtbXB6R2UyTHVuZ1lIcHUxRHRlYTBi?=
+ =?utf-8?B?S0lZTktIUVlaNldZQU9FQ0xwRWFCVlFWRUtLcW04VlJ0c0lpbkNmdTdkVXJi?=
+ =?utf-8?B?elJBOWhWNmdUWGhadStITlBWSjZScmJOa0NlR3NUaFh5STFoSDdNUUtQcjNh?=
+ =?utf-8?B?VER2V0w3dmVHZFdRNXdPUzRsYkduWkk3N1I2amNSeks1bVlJc3JSQVd6bVZB?=
+ =?utf-8?B?c3dqVktZNHRYcjRGOU9mQksraXdMNFk1TTVzM2U4cXBLQkhrSjcxcUdHRE53?=
+ =?utf-8?B?bWNKWmdDZSthNi9lek0yQlNLbTV5WHphcnVyL1RYSWJzOHF4RUVFR0FMR0Yz?=
+ =?utf-8?B?dzVKc1pWcUhOZEJNMGkzdkxPUldPZXdZWTBwdjBWUS92QTdQSkFsNzdpcTBD?=
+ =?utf-8?B?a0RUMDVrUHF3YTFVUndPVEZNaHdaM3YyaXp1YUF4bUljenozVUVmQzhKeG1l?=
+ =?utf-8?B?bHRyOUtlSW9GTGI5QjVuMEFyall5dHFKUVdkRUVhMHZUR0l1QmdlMXlHb2tL?=
+ =?utf-8?Q?7kHD5eYtqGH9KQHO4voGsBsBB3W4rblw?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5205.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?bCt1K0Zsb3k2M2hKS0tSRFc2WEJQZTYxQXNaN2lsWVp6WjhlN0x0Z1RQc2c3?=
+ =?utf-8?B?UEJRQy9GNUd2MVZiRldvTUlRSDVOZ1VsZnN4UEZXWDVmaHA0cCtTeGYzMDl1?=
+ =?utf-8?B?QkZpeEZHaXEzQmNudzMvdDZXWktxVWU3YmRBM2R4ZndyVlUxc3pTT252M2V0?=
+ =?utf-8?B?S3drSWFXNHVpV0pWSGVzck5MaFdFY1hiMkVWMmFaSVpuTWVjczN5SXZWTHBi?=
+ =?utf-8?B?OFBlSWRUOS9ZWG9BczZvR3pGUnE0R1FBR0NYVkJjWHNEQ3dmS1ZSdWdaL3NW?=
+ =?utf-8?B?Mmpra1p2YXU5R0hmZmJnVVlyY1QzVVZlZkhHR3R0MDRWTmFOdWhvVzlTSm1H?=
+ =?utf-8?B?aW4reC9zbEtVTm1aSmoxYVJ1WUZiNGFRMVEyKzM0UENHL2R5c1ZGeGxlaVM0?=
+ =?utf-8?B?MmhuUUxsdElJOE1pM0FGaGM2R0hBL0FvR1dhUEVIcFJER2VGQWZ4WUVldldo?=
+ =?utf-8?B?Z2FCSWJySklmOG80UzYwYkJUNFN5L2UyVnpJYytwY0xSZGc3SC9WaVZSVjBG?=
+ =?utf-8?B?MFhSRC80aGlwbXlKalRKdEFIcTJuS3hUL2NURFZKRUdMT25FRkpSMXZ1Q0hy?=
+ =?utf-8?B?NTVTTzk0YVZ0RjdHeE54OTJYb2libDJoak9jSE9ja0ZYSGZrYytYRXkrL0Ey?=
+ =?utf-8?B?QzRWMnZZVCs0dmUycWNpN0hPM1RTdHNpL3k0Ykp4aEdteldVcnlWNUJMTkZM?=
+ =?utf-8?B?bVRXb1hqTmRIMzVBYkZsZFNvanNxK1I4OFZQUnQrMzYyK0JFeDQvcDFwNE52?=
+ =?utf-8?B?cXVYOFJSbTF1SU5LYWVnWTNqRXZqeWhwczNLZlAva1ZkRU9Qd3J3a0lGLzhM?=
+ =?utf-8?B?dERucVA0cEdQeUdhclU3SUl6MjRkR2MvazlTRkQ1bnJyYldxdEdYUkNYTG4z?=
+ =?utf-8?B?cEhKZXZsZUMxajg5K3FXMW96Z2M0bFhqaWNEbXJhNHdaK3NSbUdKS0NpcnU3?=
+ =?utf-8?B?MjJxMWxXWEl0Q2RZVDdrMDI5TGFQbWVVYWJOMHZhNUlHbkRrQ1I0KzF3WktE?=
+ =?utf-8?B?T29TOXBKakMrbXJOekNuY2lSREg5dCtjRVZvcmRwZ015T1BXVm1YOUFPNnFi?=
+ =?utf-8?B?K0krT2l5ZVk3a21wUFRrc2VLQnNibGQxY3g4UHBycm5EdjlNN1gzZUlvakV1?=
+ =?utf-8?B?NlRtNUNYWXFJbnhPTnd0U28xTmRxRDZNOHpCQ25EVnJmSmYvZElwL3JrTTBv?=
+ =?utf-8?B?Qk9CVzloUWIvOXlLNFFFU2hCUk1QS0lWSk1jRXJBNnJlNEZSRkl1SVJpR3c5?=
+ =?utf-8?B?Y3kvUXNDa0MwMVZOQW0zRTc1cXRmL2h4QkNGUmI1ZkU3MGU3RnhCWGhLVHp6?=
+ =?utf-8?B?RStLa0VOTG5VcEVUaUNYbHRHVzI1Mkh1UkczVGlST3c1dGJWM0V5VE0zaUJY?=
+ =?utf-8?B?bnRNdkhhbmp5S2R6dzFSMmVQeENaL1NGaU5pRE5xcjAwRnUzdW1OeUZvUFVC?=
+ =?utf-8?B?MmdHWHNJc0s1Y0xHSCs0MFVqWGhiaXNneFM3TkRtMW0yekZDZGVVWUFaaW5T?=
+ =?utf-8?B?bjRkREFHQ2ZUcDdhTWxoMytEZjIwQlJGQzdXZ0xidTNxZnNHOVhXWmJNd0Er?=
+ =?utf-8?B?amlUT1g0STVNazZJSW9QbU9PaEc5WGVwZlZ4SDA4Qy9zVzlqK3hZRlBmMnVI?=
+ =?utf-8?B?TFhsY3FwQnB6am1GZll2eFVjdmx1OVVkT1NHR1ZNRkdJZy80R0lod1dvUmZa?=
+ =?utf-8?B?by84QmxFdGN5dmNxVW8zbTJvdnhBa25rRUNHaUthcU1MVXJ0azJDR0FCQjJS?=
+ =?utf-8?B?aXE2aTduNy9XZERldm5CbG9TcTVENy9BZDZWQ0dmMEQyN2dFWDZ4aXdKU2tk?=
+ =?utf-8?B?d1JVd1JHVEJ3dm9SVC8wREpVbjF2c1Jsc1ZJZi9MVjFIRVoxaXRkMG1LT2R5?=
+ =?utf-8?B?SkJaZVY4czFBcmFtakptRVluRkkvYXV5K0hMbm1ybnI0eHdGYUtYK0x0bEdk?=
+ =?utf-8?B?U2htODg4UGdYRlVoL3lEQjIwQmNOWTJTWjhFL0ZKYTd2SWwvQ3ZRRkpsaksr?=
+ =?utf-8?B?WUl3N2owSjdXYXc3TzhzcFFJbG5nTFM5b3MrdEd6MXBKcnJYeUYyRGpXbTJj?=
+ =?utf-8?B?UU9HOUY1SGhxMithOUpqN0JnWk93dzlIZXZDNDNZdFlPUjJoR1Jla3N4dXp5?=
+ =?utf-8?B?RzN4WHFMbjk1ZVNtVUhSUU1EVUIwM3l5UkdzSXNpQjZJRm5TN0xodjBpclpU?=
+ =?utf-8?B?R0E9PQ==?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dede8751-9327-4ed3-7b7b-08de1e317dee
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5205.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2025 19:11:45.0856
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: brvzDlRrtUivCADLpvEpOmPyD4dRQUxDp309SJlMcQaivlhRREKWtIbpCV23kjdSHMt280aOdxCVAcenDBpAcQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5940
 
-Hi Jason,
-
-Thanks for the insight. I=E2=80=99ll dig deeper into the handling inside
-ib_nl_is_good_ip_resp() and follow up with an updated analysis or
-patch.
-
-Regards,
-Kriish
-
-On Fri, Nov 7, 2025 at 9:07=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrote=
-:
->
-> On Fri, Nov 07, 2025 at 04:10:02AM +0000, Kriish Sharma wrote:
-> > KMSAN reported a use of uninitialized memory in hex_byte_pack()
-> > via ip6_string() when printing %pI6 from ib_nl_handle_ip_res_resp().
-> > If the LS_NLA_TYPE_DGID attribute is missing, 'gid' remains
-> > uninitialized before being used in pr_info(), leading to a
-> > KMSAN uninit-value report.
-> >
-> > Reported-by: syzbot+938fcd548c303fe33c1a@syzkaller.appspotmail.com
-> > Closes: https://syzkaller.appspot.com/bug?extid=3D938fcd548c303fe33c1a
-> > Fixes: ae43f8286730 ("IB/core: Add IP to GID netlink offload")
-> > Signed-off-by: Kriish Sharma <kriish.sharma2006@gmail.com>
-> > ---
-> >  drivers/infiniband/core/addr.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/a=
-ddr.c
-> > index 61596cda2b65..4c602fcae12f 100644
-> > --- a/drivers/infiniband/core/addr.c
-> > +++ b/drivers/infiniband/core/addr.c
-> > @@ -99,7 +99,7 @@ static inline bool ib_nl_is_good_ip_resp(const struct=
- nlmsghdr *nlh)
-> >  static void ib_nl_process_good_ip_rsep(const struct nlmsghdr *nlh)
-> >  {
-> >       const struct nlattr *head, *curr;
-> > -     union ib_gid gid;
-> > +     union ib_gid gid =3D {};
-> >       struct addr_req *req;
-> >       int len, rem;
-> >       int found =3D 0;
->
-> This doesn't seem right.
->
-> We have this as the only caller:
->
->         if (ib_nl_is_good_ip_resp(nlh))
->                 ib_nl_process_good_ip_rsep(nlh);
->
-> And ib_nl_is_good_ip_resp() does:
->
->         ret =3D nla_parse_deprecated(tb, LS_NLA_TYPE_MAX - 1, nlmsg_data(=
-nlh),
->                                    nlmsg_len(nlh), ib_nl_addr_policy,
->                                    NULL);
->
-> static const struct nla_policy ib_nl_addr_policy[LS_NLA_TYPE_MAX] =3D {
->         [LS_NLA_TYPE_DGID] =3D {.type =3D NLA_BINARY,
->                 .len =3D sizeof(struct rdma_nla_ls_gid),
->                 .validation_type =3D NLA_VALIDATE_MIN,
->                 .min =3D sizeof(struct rdma_nla_ls_gid)},
-> };
->
-> So I expect the nla_parse_deprecated() to fail if this:
->
->         nla_for_each_attr(curr, head, len, rem) {
->                 if (curr->nla_type =3D=3D LS_NLA_TYPE_DGID)
->                         memcpy(&gid, nla_data(curr), nla_len(curr));
->         }
->
-> Doesn't find a DGID.
->
-> So how can gid be uninitialized?
->
+On 11/7/25 07:37, Jason Gunthorpe wrote: 
 > The fix to whatever this is should be in ib_nl_is_good_ip_resp().
->
-> Jason
+
+nla_parse_deprecated returns success if attrs are missing?
+
+Other callers also check for their expected attrs to be present in tb,
+after checking nla_parse_deprecated()'s return code.
 
