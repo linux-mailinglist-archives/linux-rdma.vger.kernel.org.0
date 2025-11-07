@@ -1,141 +1,137 @@
-Return-Path: <linux-rdma+bounces-14303-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14304-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EE97C4098D
-	for <lists+linux-rdma@lfdr.de>; Fri, 07 Nov 2025 16:33:36 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id E09B3C409EA
+	for <lists+linux-rdma@lfdr.de>; Fri, 07 Nov 2025 16:37:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 983AE4F1159
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Nov 2025 15:33:31 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4D7734F249C
+	for <lists+linux-rdma@lfdr.de>; Fri,  7 Nov 2025 15:37:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A62231B82E;
-	Fri,  7 Nov 2025 15:33:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E890332B9BA;
+	Fri,  7 Nov 2025 15:37:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=joshua.hu header.i=@joshua.hu header.b="F1yQAeD0"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="BeuYfa91"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-05.mail-europe.com (mail-05.mail-europe.com [85.9.206.169])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4B7C2DF143;
-	Fri,  7 Nov 2025 15:33:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.9.206.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E16B268690;
+	Fri,  7 Nov 2025 15:37:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762529608; cv=none; b=iYOIHDr7XuMjsZ3NFesDyozqD9mm5O8KTk8Lb4mpF8UFDqQYcaRB/yfBenO1YaWJe6sQ/la2YAJFqDVbhdKCHZCAYx8SjgtcMQ8AkkESkhESjhIjeGD85APBZym3sRvVG6N7HRwEcn0zAWpIQU4+r8y794kQe+Tm80r54ZqSBZU=
+	t=1762529830; cv=none; b=N4GgXg/2zIdGGvOvJ6rbAe6ku7lwytB5R5XSJsWV7ugfHksewiLgxIcFPujSlEGa0jOIVRWswoZXm9Pum+hKUw/dLs7yOQr6yA8MAfS2J3yhfpvzYaXfhoHN8ERZfMNoqVPlmlZhnvxs+AWONg/S+rars1xWdoKHamLL4doa4JU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762529608; c=relaxed/simple;
-	bh=kjg383YF4V5gMKJkRMwdf6DMCJZdUCNBnKqt93sK2ao=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gydnd6xzuacd7kjJL8OuP8ifYepAN17JpDj+cm34LvwIcZPj//QolgyByxfBO1YW7X0QHdg3FPcUC4PmgHzQ1M8IkXC1DCo1RD3gPJjGw9QwCUVnR+8S0QHhXylLYPn5LRejaoF4fZXMKxAN6XCVGpTNgcxxIgQC3UVB7OG+jjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=joshua.hu; spf=pass smtp.mailfrom=joshua.hu; dkim=pass (2048-bit key) header.d=joshua.hu header.i=@joshua.hu header.b=F1yQAeD0; arc=none smtp.client-ip=85.9.206.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=joshua.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joshua.hu
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=joshua.hu;
-	s=protonmail2; t=1762529591; x=1762788791;
-	bh=kjg383YF4V5gMKJkRMwdf6DMCJZdUCNBnKqt93sK2ao=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=F1yQAeD050Bkaz5EIV8HsIHdiGqDeXgGGGCJTXiV+kpWIbJc9/vWT2i/+OPCZsyJK
-	 SmrbHf2NfgO/4rRM44KMyRa2UsEhNOM0gtA+U3jYujTmvFKP6C6kzqaArZOUvLF3kc
-	 8oc0ArWMX/1HHTX4EegART3LWs/TkC28qa+WEoYRWwZsLICVMWxnk4uRXNRO164kMI
-	 usRxPm8JtO7B3qQe5xbw8URqeDEi3XFX2arnIsE16O6yOu2Mzk9fNHO3lexy8GHpgp
-	 kzL5HRUGrMBJMq4VPaZeg7P92ZXKCuKpJjeJ9fwTwgodCsw3brmtw3QW6+dJxVtCyr
-	 QB/vSuV40bcyQ==
-Date: Fri, 07 Nov 2025 15:33:05 +0000
-To: Chuck Lever <cel@kernel.org>
-From: Joshua Rogers <reszta@joshua.hu>
-Cc: NeilBrown <neil@brown.name>, Jeff Layton <jlayton@kernel.org>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <dai.ngo@oracle.com>, Tom Talpey <tom@talpey.com>, linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>, Joshua Rogers <linux@joshua.hu>
-Subject: Re: [PATCH 1/3] svcrdma: use rc_pageoff for memcpy byte offset
-Message-ID: <XGrEQAquPtPkXsfrTIl7DWn7XiZ60-155zIIzZHtUshCNeOd8eeAMcm4NgGu8PQK03PLynLPzfc33pEpGN3f2lzGuFBOocvb_YFo1y4WuJA=@joshua.hu>
-In-Reply-To: <5bbbbf82-a44b-4093-9119-c221f9e8f9a1@kernel.org>
-References: <20251107150949.3808-1-cel@kernel.org> <fxcda7FkdbPG_fttyXlSupjn11fncefYSlmcpQVVhEqZtDujhBlOxPADG_Havmcju29ZqPMXVwmMI980FtUVWs9jDUYiy-JWbaClISNNwQk=@joshua.hu> <5bbbbf82-a44b-4093-9119-c221f9e8f9a1@kernel.org>
-Feedback-ID: 126372902:user:proton
-X-Pm-Message-ID: d58b71d5e95144e7ed5713ba9a57fd9ae6b37508
+	s=arc-20240116; t=1762529830; c=relaxed/simple;
+	bh=bCrSoQu63h7TXwxNL43pN4r1ALSnNbU5F1bAl9mdBuo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Zsmu/ZzhxeSPZnQ0ZBnEWmaaqxGRiechWgqNNl+XH78lOwz+jB9aHgnX4qKA1jOkZAtEcGrO8vVUq73Ii5ddaEofjd2LWKQn6lAjIaF3ieQEKkIAw78seuo1ADDNCjw7Z15ZDFLGKvovy4PFB32a9/AhJBl1rqanUznoUXIQr2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=BeuYfa91; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5A7EsWro030381;
+	Fri, 7 Nov 2025 15:37:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=bCrSoQ
+	u63h7TXwxNL43pN4r1ALSnNbU5F1bAl9mdBuo=; b=BeuYfa914//ktvu51uwdg2
+	NYmbwv7NxePH+S87wg4vSgN0kqEhq+KL13zMZkpaaBy81SNyPLdMuMHzkQncMWKo
+	e3d5Ra1P/fr1kV4hfaHnj5hnccayOUFd/5P+EYKZb2wtQFprVinpQOx6PI9Y5vqz
+	NVzNDt9A9P7GVkTejtSuIfWmuaCLQqBgDrJOkRRePYMYwQpewLi9kdpauslfrKNQ
+	ztUrpA7a1gw+C76Er0L8VlKi+nu+lmWRBt1l31XNsILf2akEDAAVNKmyrsCURdqo
+	IysLIgIBerQqXb4mdG4i+ZwACUxWi6MP9V0PpgkcljanGlpaHN3TuY5njGgs05PQ
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4a9jxmr8b3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 07 Nov 2025 15:37:02 +0000 (GMT)
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5A7FPskd003030;
+	Fri, 7 Nov 2025 15:37:02 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4a9jxmr8ax-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 07 Nov 2025 15:37:02 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5A7FJVF2019320;
+	Fri, 7 Nov 2025 15:37:01 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4a5whnud8b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 07 Nov 2025 15:37:00 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5A7FausR50725316
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 7 Nov 2025 15:36:56 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id BBDEA20040;
+	Fri,  7 Nov 2025 15:36:56 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6806920043;
+	Fri,  7 Nov 2025 15:36:56 +0000 (GMT)
+Received: from [9.111.185.176] (unknown [9.111.185.176])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri,  7 Nov 2025 15:36:56 +0000 (GMT)
+Message-ID: <e238fdb5-f495-41dc-9f5a-7367d480cd08@linux.ibm.com>
+Date: Fri, 7 Nov 2025 16:36:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v2] net/smc: fix mismatch between CLC header and
+ proposal
+To: "D. Wythe" <alibuda@linux.alibaba.com>, mjambigi@linux.ibm.com,
+        wenjia@linux.ibm.com, dust.li@linux.alibaba.com,
+        tonylu@linux.alibaba.com, guwen@linux.alibaba.com
+Cc: kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        pabeni@redhat.com, edumazet@google.com, sidraya@linux.ibm.com,
+        jaka@linux.ibm.com
+References: <20251107024029.88753-1-alibuda@linux.alibaba.com>
+Content-Language: en-US
+From: Alexandra Winter <wintera@linux.ibm.com>
+In-Reply-To: <20251107024029.88753-1-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Authority-Analysis: v=2.4 cv=BZvVE7t2 c=1 sm=1 tr=0 ts=690e121e cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=SRrdq9N9AAAA:8 a=VnNF1IyMAAAA:8 a=ESNYVigEsH7QVG4fgMUA:9 a=QEXdDO2ut3YA:10
+ a=cPQSjfK2_nFv0Q5t_7PE:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTA3MDEyMiBTYWx0ZWRfX4dvWmd4ENyMG
+ YEEIXZN2fK2l3iRHs4ufppVhOz7ld6lfm+cosbqGrQ7xiPUt/mW5ZQ5Uhmukkdp+veHg5Hy6vvS
+ Qfe0l7WHQdkJeK9NKUyRo3/gWDFRu/H5sQ7FhSCvK5ChrMwg7/vROyjK/nOBFVTpGSfWe1G31qK
+ 7Sezvm37LK6AHQiZuxa+Xy5j6mG5Nw97cDXlYb224SVxzOm+djrV1OS1D59L99IEKKUKAn+ia8X
+ kI8m43rDNHIf6MHAEWCBHp/K0xkgh6lwFhJAthLXJvFo0ZBgYqAaKJ0TuBqz/oa6Sof7A0T2tzI
+ A98ZWZSmyWgdgsqYiaVm8ri1qdBsO9kOY6Gru+BltkQl+/pUopPgJs9n+Pp+hQRgqGjkAx+tiF7
+ /FwdQRtW9iLVpk4TPU3IyhRZUH7teg==
+X-Proofpoint-GUID: KH4Tg-uLZ3AOsT9Olu5qQBTbighSBv6V
+X-Proofpoint-ORIG-GUID: -zCtIbyES6nWr9OnAqwO-vYTlvTm_mUY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-11-07_04,2025-11-06_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ adultscore=0 spamscore=0 phishscore=0 suspectscore=0 clxscore=1015
+ priorityscore=1501 malwarescore=0 impostorscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.19.0-2510240000
+ definitions=main-2511070122
 
-Sounds reasonable, or "Found by Joshua Rogers with ZeroPath(https://zeropat=
-h.com)", but I have no problem with either.
 
-thx
 
-On Friday, 7 November 2025 at 23:30, Chuck Lever <cel@kernel.org> wrote:
+On 07.11.25 03:40, D. Wythe wrote:
+> Fixes: 8c3dca341aea ("net/smc: build and send V2 CLC proposal")
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
 
->=20
->=20
-> On 11/7/25 10:23 AM, Joshua Rogers wrote:
->=20
-> > Apologies: is it possible to slightly change the commit msg to include =
-"Found with ZeroPath"? As this bug was, indeed, found with a tool called Ze=
-roPath. If not, it's OK, thought I'd ask.
-> >=20
-> > Thank you.
->=20
->=20
-> Patch description in my tree now reads:
->=20
-> svcrdma: use rc_pageoff for memcpy byte offset
->=20
-> svc_rdma_copy_inline_range added rc_curpage (page index) to the page
-> base instead of the byte offset rc_pageoff. Use rc_pageoff so copies
-> land within the current page.
->=20
-> Found by ZeroPath (https://zeropath.com)
->=20
->=20
->=20
-> > On Friday, 7 November 2025 at 23:09, Chuck Lever cel@kernel.org wrote:
-> >=20
-> > > From: Joshua Rogers linux@joshua.hu
-> > >=20
-> > > svc_rdma_copy_inline_range added rc_curpage (page index) to the page
-> > > base instead of the byte offset rc_pageoff. Use rc_pageoff so copies
-> > > land within the current page.
-> > >=20
-> > > Fixes: 8e122582680c ("svcrdma: Move svc_rdma_read_info::ri_pageno to =
-struct svc_rdma_recv_ctxt")
-> > > X-Cc: stable@vger.kernel.org
-> > > Signed-off-by: Joshua Rogers linux@joshua.hu
-> > >=20
-> > > Signed-off-by: Chuck Lever chuck.lever@oracle.com
-> > >=20
-> > > ---
-> > > net/sunrpc/xprtrdma/svc_rdma_rw.c | 2 +-
-> > > 1 file changed, 1 insertion(+), 1 deletion(-)
-> > >=20
-> > > diff --git a/net/sunrpc/xprtrdma/svc_rdma_rw.c b/net/sunrpc/xprtrdma/=
-svc_rdma_rw.c
-> > > index 661b3fe2779f..945fbb374331 100644
-> > > --- a/net/sunrpc/xprtrdma/svc_rdma_rw.c
-> > > +++ b/net/sunrpc/xprtrdma/svc_rdma_rw.c
-> > > @@ -848,7 +848,7 @@ static int svc_rdma_copy_inline_range(struct svc_=
-rqst *rqstp,
-> > > head->rc_page_count++;
-> > >=20
-> > > dst =3D page_address(rqstp->rq_pages[head->rc_curpage]);
-> > >=20
-> > > - memcpy(dst + head->rc_curpage, src + offset, page_len);
-> > >=20
-> > > + memcpy((unsigned char *)dst + head->rc_pageoff, src + offset, page_=
-len);
-> > >=20
-> > > head->rc_readbytes +=3D page_len;
-> > >=20
-> > > head->rc_pageoff +=3D page_len;
-> > >=20
-> > > --
-> > > 2.51.0
->=20
->=20
->=20
-> --
-> Chuck Lever
+Thank you, D. Wythe
+
+Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
+
 
