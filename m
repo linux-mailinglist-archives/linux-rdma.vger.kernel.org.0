@@ -1,47 +1,47 @@
-Return-Path: <linux-rdma+bounces-14320-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14321-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF972C427CE
-	for <lists+linux-rdma@lfdr.de>; Sat, 08 Nov 2025 06:38:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 37E64C4282C
+	for <lists+linux-rdma@lfdr.de>; Sat, 08 Nov 2025 07:14:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6932C188FE89
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Nov 2025 05:39:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8BDE18865C7
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Nov 2025 06:15:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B950A2777E0;
-	Sat,  8 Nov 2025 05:38:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD3C42DC79E;
+	Sat,  8 Nov 2025 06:14:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R6rzkZ9a"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IS7muG4U"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60E8E19DF62;
-	Sat,  8 Nov 2025 05:38:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6884525A2CF;
+	Sat,  8 Nov 2025 06:14:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762580314; cv=none; b=N8/g90y+PQPgViOrQT166Eg+mUukt9D87THnn8McP6zmV6YoimxCEdlbUBPqPGsd8IJEJt6x/cgG7Cen3Jn//5yINquLJC5nNHXpOH9OGjl5p20YkXyrf68u3EDVR3lkt2a24AwJ08ENgVC2yP0noO29WNXzPTYifI7xlcADVfE=
+	t=1762582490; cv=none; b=OzhEw3JX6kz3KiikmZ8KF+tvJmXOEaI0jtuLqM4H1qe7Otot17mFUYoGi4q52nKC4FGt3tYUcuJbdfAwqk2T3eJAsM7VbM0MJItwVTnAve8X9gcrDInk3ypA53g0jm+tQF6e3Djoxd9pWKN8caJB3L2fq58wE5WaJz14Ppr7aI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762580314; c=relaxed/simple;
-	bh=w6GXV8F8qq8Ivlsip/h/QX7gHcMdkkyqZQffmsH93Go=;
+	s=arc-20240116; t=1762582490; c=relaxed/simple;
+	bh=RfmnN8SkT/NA8/nAPHXA3/wK857y4g74VnEoG/OzvnA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oGo0f2+Ys6FOeruPJqU1Lku63wnfEHbwk7+hTV94xHRXOj5Sr9NXyVUS3suQWg3xDsV1sxHqeEQrxCYDdslbmrn1l1AsAtDKYYiYiodfxBC5FpTVDc2bJxj+ifiV+VoWlaRq5qUMck/ElPlU23wjfaya0I3tX77nmsf9M6lDzxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R6rzkZ9a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC516C19422;
-	Sat,  8 Nov 2025 05:38:33 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=MsGULbTgD8AkUSbDenFyUuFKrc/jrAx7aLBMJbgIFzsxczczfQko7xcv7n0de7MAwttMvBGUOVvHl7Nl5ntzNKceVsGBooQUJ9ZTAohRzrDMGqi03kPa3kUmTBttr81/zc6xbkOAfd0BWFWzQFRPSg2HdaDXtXsbAl0pAjZxiNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IS7muG4U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3D8AC116C6;
+	Sat,  8 Nov 2025 06:14:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762580313;
-	bh=w6GXV8F8qq8Ivlsip/h/QX7gHcMdkkyqZQffmsH93Go=;
+	s=k20201202; t=1762582487;
+	bh=RfmnN8SkT/NA8/nAPHXA3/wK857y4g74VnEoG/OzvnA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=R6rzkZ9aOnGt/EQ9R93dim8mBYYjOjakJehQ5+rN7x3rvkrZwgPe3DNMNBLOS6Sh4
-	 mImZKwWN8OxH6gjwHfbPpky8S4xfaMEw4jAyYKPEkT3ztoZqWXNpmZBCg3s9GW11DH
-	 ubqLYGlFVZD9/bwsgi4HUeIL+tGoVZRpcmwSzbCHe4/tKN/YY1WJFNFfWmJhYpQvYq
-	 aLmPydUhP1j4nb/QPh4Bpfzi2TidyWlqi7OIYoBoMGpHxUbV0BbBU/eCT9rJf0d0LI
-	 UGX4tJ2pBMvLkxAGG5WdK5NuaGVKDGXY0wPCPhO3ZVQAVKzkoatva84A/KHH/1yljJ
-	 uT5/heaaQlZPQ==
-Date: Fri, 7 Nov 2025 21:38:32 -0800
+	b=IS7muG4UIYCkWGEFfaHsvzK6TXa7DRpURdW21lRUyN937YvxASXc5BGNxgfJggXRx
+	 cWtpSjrQ4UDfyg1+tD6fKxOLf0UoNsz+OYFUpNbYtwH4xlL5QhbvEBwA39Jc3Q8zln
+	 P+9c+9n92HkGzngidqsgDOuRSskvpxhkUh0OgxxPH8PkkCAsSkWYgvkhC8Qpcl+29O
+	 /UzBwaos/CnZSzI6J0l7u/NkGz9nJm1zawX8Gn6RtUF/QdoNCDOb2/8LcRsf8J6NPf
+	 T6ZmIoOAS5YpcAkd+8SxP7rgnaHLXpl6k0PEdrlrPrcvEfGEsyfv5/WWuCEBT/0S+F
+	 UzjSArVdaA6ug==
+Date: Fri, 7 Nov 2025 22:14:45 -0800
 From: Saeed Mahameed <saeed@kernel.org>
 To: Daniel Zahka <daniel.zahka@gmail.com>
 Cc: Jiri Pirko <jiri@resnulli.us>, "David S. Miller" <davem@davemloft.net>,
@@ -86,88 +86,302 @@ Cc: Jiri Pirko <jiri@resnulli.us>, "David S. Miller" <davem@davemloft.net>,
 	linux-rdma@vger.kernel.org,
 	linux-stm32@st-md-mailman.stormreply.com,
 	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org
-Subject: Re: [PATCH net-next v2 2/2] net/mlx5: implement swp_l4_csum_mode via
+Subject: Re: [PATCH net-next v3 2/2] net/mlx5: implement swp_l4_csum_mode via
  devlink params
-Message-ID: <aQ7XWOI68rVDRewR@x130>
-References: <20251103194554.3203178-1-daniel.zahka@gmail.com>
- <20251103194554.3203178-3-daniel.zahka@gmail.com>
- <mhm4hkz52gmqok56iuiukdcz2kaowvppbqrfi3zxuq67p3otit@5fhpgu2axab2>
- <db5c46b4-cc66-48bb-aafb-40d83dd3620c@gmail.com>
- <6aa2f011-3ba5-4614-950d-d8f0ec62222b@gmail.com>
- <p3pj3mu4mabgninwowqikegeotxgzhc4yptf7qrfhns37bnkoz@ugkbgvlkxqxb>
- <78db1fab-e482-4ebc-82ce-ba84b3f561e2@gmail.com>
+Message-ID: <aQ7f1T1ZFUKRLQRh@x130>
+References: <20251107204347.4060542-1-daniel.zahka@gmail.com>
+ <20251107204347.4060542-3-daniel.zahka@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <78db1fab-e482-4ebc-82ce-ba84b3f561e2@gmail.com>
+In-Reply-To: <20251107204347.4060542-3-daniel.zahka@gmail.com>
 
-On 04 Nov 09:48, Daniel Zahka wrote:
+On 07 Nov 12:43, Daniel Zahka wrote:
+>swp_l4_csum_mode controls how L4 transmit checksums are computed when
+>using Software Parser (SWP) hints for header locations.
 >
+>Supported values:
+>  1. device_default: use device default setting.
+>  2. full_csum: calculate L4 checksum with the pseudo-header.
+>  3. l4_only: calculate L4 checksum without the pseudo-header. Only
+>     available when swp_l4_csum_mode_l4_only is set in
+>     mlx5_ifc_nv_sw_offload_cap_bits.
 >
->On 11/4/25 9:39 AM, Jiri Pirko wrote:
->>Tue, Nov 04, 2025 at 01:51:16PM +0100, daniel.zahka@gmail.com wrote:
->>>
->>>On 11/4/25 6:38 AM, Daniel Zahka wrote:
->>>>
->>>>On 11/4/25 5:14 AM, Jiri Pirko wrote:
->>>>>I did some research. 0/DEVICE_DEFAULT should not be ever reported back
->>>>>from FW. It's purpose is for user to reset to default FW configuration.
->>>>>What's the usecase for that? I think you could just avoid
->>>>>0/DEVICE_DEFAULT entirely, for both get and set.
->>>>I find that 0/DEVICE_DEFAULT is reported back on my device. I have
->>>>observed this same behavior when using the mstconfig tool for setting the
->>>>parameter too.
->>>e.g.
->>>$ dmesg | grep -i mlx | grep -i firmware
->>>[   10.165767] mlx5_core 0000:01:00.0: firmware version: 28.46.1006
->>>
->>>$ ./mstconfig -d 01:00.0 -b ./mlxconfig_host.db query SWP_L4_CHECKSUM_MODE
->>>
->>>Device #1:
->>>----------
->>>
->>>Device type:        ConnectX7
->>>Name:               CX71143DMC-CDAE_FB_Ax
->>>Description:        ConnectX-7 Ethernet adapter card; 100 GbE OCP3.0;
->>>Single-port QSFP; Multi Host; 2 Host; PCIe 4.0 x16; Crypto and Secure Boot
->>>Device:             01:00.0
->>>
->>>Configurations:                                          Next Boot
->>>         SWP_L4_CHECKSUM_MODE DEVICE_DEFAULT(0)
->>This is next-boot value. You should query current (--enable_verbosity)
->>to show in param get.
+>The l4_only setting is a dependency for PSP initialization in
+>mlx5e_psp_init().
 >
->I am still seeing that DEVICE_DEFAULT(0) is read back:
+>Signed-off-by: Daniel Zahka <daniel.zahka@gmail.com>
+>---
 >
->$ ./mstconfig --enable_verbosity -d 01:00.0 -b ./mlxconfig_host.db 
->query SWP_L4_CHECKSUM_MODE
+>Notes:
+>    v2:
+>    - use extack in mlx5_nv_param_devlink_swp_l4_csum_mode_get()
+>    - fix indentation issue in mlx5.rst entry
 >
->Device #1:
->----------
+> Documentation/networking/devlink/mlx5.rst     |   9 +
+> .../net/ethernet/mellanox/mlx5/core/devlink.h |   3 +-
+> .../mellanox/mlx5/core/lib/nv_param.c         | 161 ++++++++++++++++++
+> 3 files changed, 172 insertions(+), 1 deletion(-)
 >
->Device type:        ConnectX7
->Name:               CX71143DMC-CDAE_FB_Ax
->Description:        ConnectX-7 Ethernet adapter card; 100 GbE OCP3.0; 
->Single-port QSFP; Multi Host; 2 Host; PCIe 4.0 x16; Crypto and Secure 
->Boot
->Device:             01:00.0
+>diff --git a/Documentation/networking/devlink/mlx5.rst b/Documentation/networking/devlink/mlx5.rst
+>index 0e5f9c76e514..675b5a1ec625 100644
+>--- a/Documentation/networking/devlink/mlx5.rst
+>+++ b/Documentation/networking/devlink/mlx5.rst
+>@@ -218,6 +218,15 @@ parameters.
+>        * ``balanced`` : Merges fewer CQEs, resulting in a moderate compression ratio but maintaining a balance between bandwidth savings and performance
+>        * ``aggressive`` : Merges more CQEs into a single entry, achieving a higher compression rate and maximizing performance, particularly under high traffic loads
 >
->Configurations:                  Default             Current       Next Boot
->        SWP_L4_CHECKSUM_MODE DEVICE_DEFAULT(0) DEVICE_DEFAULT(0)    
->DEVICE_DEFAULT(0)
->
+>+   * - ``swp_l4_csum_mode``
+>+     - string
+>+     - permanent
+>+     - Configure how the L4 checksum is calculated by the device when using
+>+       Software Parser (SWP) hints for header locations.
+>+       * ``device_default`` : Use the device's default checksum calculation mode
 
-When default value of nvconfig is managed by FW, 0 will always mean
-DEVICE_DEFAULT, and it is a way for the driver to reset back to default on
-write, but on read FW should never return it, so this is a FW bug.
+Let's omit the device, just "default". 
 
-But this shouldn't block this series so just return 'default', from the 
-driver perspective we should return 'default' when we know 0 means that.
+So, I checked a couple of flows internally, and it seems this allows
+some flexibility in the FW to decide later on which mode to pick,
+based on other parameters, which practically means
+"user has no preference on this param". Driver can only find out
+after boot, when it reads the runtime capabilities, but still
+this is a bug, by the time the driver reads this (in devlink), the
+default value should've already been determined by FW, so FW must
+return the actual runtime value. Which can only be one of the following
 
+>+       * ``full_csum`` : Calculate full checksum including the pseudo-header
+>+       * ``l4_only`` : Calculate L4-only checksum, excluding the pseudo-header
+>+
+> The ``mlx5`` driver supports reloading via ``DEVLINK_CMD_RELOAD``
+>
+> Info versions
+>diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.h b/drivers/net/ethernet/mellanox/mlx5/core/devlink.h
+>index c9555119a661..43b9bf8829cf 100644
+>--- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.h
+>+++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.h
+>@@ -26,7 +26,8 @@ enum mlx5_devlink_param_id {
+> 	MLX5_DEVLINK_PARAM_ID_PCIE_CONG_IN_HIGH,
+> 	MLX5_DEVLINK_PARAM_ID_PCIE_CONG_OUT_LOW,
+> 	MLX5_DEVLINK_PARAM_ID_PCIE_CONG_OUT_HIGH,
+>-	MLX5_DEVLINK_PARAM_ID_CQE_COMPRESSION_TYPE
+>+	MLX5_DEVLINK_PARAM_ID_CQE_COMPRESSION_TYPE,
+>+	MLX5_DEVLINK_PARAM_ID_SWP_L4_CSUM_MODE,
+> };
+>
+> struct mlx5_trap_ctx {
+>diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/nv_param.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/nv_param.c
+>index 3d2195338d39..3dc5b899a5fb 100644
+>--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/nv_param.c
+>+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/nv_param.c
+>@@ -8,6 +8,8 @@ enum {
+> 	MLX5_CLASS_0_CTRL_ID_NV_GLOBAL_PCI_CONF               = 0x80,
+> 	MLX5_CLASS_0_CTRL_ID_NV_GLOBAL_PCI_CAP                = 0x81,
+> 	MLX5_CLASS_0_CTRL_ID_NV_SW_OFFLOAD_CONFIG             = 0x10a,
+>+	MLX5_CLASS_0_CTRL_ID_NV_SW_OFFLOAD_CAP                = 0x10b,
+>+	MLX5_CLASS_0_CTRL_ID_NV_SW_ACCELERATE_CONF            = 0x11d,
+>
+> 	MLX5_CLASS_3_CTRL_ID_NV_PF_PCI_CONF                   = 0x80,
+> };
+>@@ -123,6 +125,17 @@ struct mlx5_ifc_nv_sw_offload_conf_bits {
+> 	u8         lro_log_timeout0[0x4];
+> };
+>
+>+struct mlx5_ifc_nv_sw_offload_cap_bits {
+>+	u8         reserved_at_0[0x19];
+>+	u8         swp_l4_csum_mode_l4_only[0x1];
+>+	u8         reserved_at_1a[0x6];
+>+};
+>+
+>+struct mlx5_ifc_nv_sw_accelerate_conf_bits {
+>+	u8         swp_l4_csum_mode[0x2];
+>+	u8         reserved_at_2[0x3e];
+>+};
+>+
+> #define MNVDA_HDR_SZ \
+> 	(MLX5_ST_SZ_BYTES(mnvda_reg) - \
+> 	 MLX5_BYTE_OFF(mnvda_reg, configuration_item_data))
+>@@ -195,6 +208,30 @@ mlx5_nv_param_read_sw_offload_conf(struct mlx5_core_dev *dev, void *mnvda,
+> 	return mlx5_nv_param_read(dev, mnvda, len);
+> }
+>
+>+static int
+>+mlx5_nv_param_read_sw_offload_cap(struct mlx5_core_dev *dev, void *mnvda,
+>+				  size_t len)
+>+{
+>+	MLX5_SET_CFG_ITEM_TYPE(global, mnvda, type_class, 0);
+>+	MLX5_SET_CFG_ITEM_TYPE(global, mnvda, parameter_index,
+>+			       MLX5_CLASS_0_CTRL_ID_NV_SW_OFFLOAD_CAP);
+>+	MLX5_SET_CFG_HDR_LEN(mnvda, nv_sw_offload_cap);
+>+
+>+	return mlx5_nv_param_read(dev, mnvda, len);
+>+}
+>+
+>+static int
+>+mlx5_nv_param_read_sw_accelerate_conf(struct mlx5_core_dev *dev, void *mnvda,
+>+				      size_t len)
+>+{
+>+	MLX5_SET_CFG_ITEM_TYPE(global, mnvda, type_class, 0);
+>+	MLX5_SET_CFG_ITEM_TYPE(global, mnvda, parameter_index,
+>+			       MLX5_CLASS_0_CTRL_ID_NV_SW_ACCELERATE_CONF);
+>+	MLX5_SET_CFG_HDR_LEN(mnvda, nv_sw_accelerate_conf);
+>+
+>+	return mlx5_nv_param_read(dev, mnvda, len);
+>+}
+>+
+> static const char *const
+> 	cqe_compress_str[] = { "balanced", "aggressive" };
+>
+>@@ -269,6 +306,124 @@ mlx5_nv_param_devlink_cqe_compress_set(struct devlink *devlink, u32 id,
+> 	return mlx5_nv_param_write(dev, mnvda, sizeof(mnvda));
+> }
+>
+>+enum swp_l4_csum_mode {
+>+	SWP_L4_CSUM_MODE_DEVICE_DEFAULT = 0,
+>+	SWP_L4_CSUM_MODE_FULL_CSUM = 1,
+>+	SWP_L4_CSUM_MODE_L4_ONLY = 2,
+>+};
+>+
+>+static const char *const
+>+	swp_l4_csum_mode_str[] = { "device_default", "full_csum", "l4_only" };
+>+
+>+static int
+>+mlx5_nv_param_devlink_swp_l4_csum_mode_get(struct devlink *devlink, u32 id,
+>+					   struct devlink_param_gset_ctx *ctx,
+>+					   struct netlink_ext_ack *extack)
+>+{
+>+	struct mlx5_core_dev *dev = devlink_priv(devlink);
+>+	u32 mnvda[MLX5_ST_SZ_DW(mnvda_reg)] = {};
+>+	u8 value = U8_MAX;
+>+	void *data;
+>+	int err;
+>+
+>+	err = mlx5_nv_param_read_sw_accelerate_conf(dev, mnvda, sizeof(mnvda));
+>+	if (err) {
+>+		NL_SET_ERR_MSG_MOD(extack,
+>+				   "Failed to read sw_accelerate_conf mnvda reg");
+
+Plug in the err, NL_SET_ERR_MSG_FMT_MOD(.., .., err);
+other locations as well.
+
+LGTM over all. extack usage is fine, just add the err where applicable.
+
+>+		return err;
+>+	}
+>+
+>+	data = MLX5_ADDR_OF(mnvda_reg, mnvda, configuration_item_data);
+>+	value = MLX5_GET(nv_sw_accelerate_conf, data, swp_l4_csum_mode);
+>+
+>+	if (value >= ARRAY_SIZE(swp_l4_csum_mode_str)) {
+>+		NL_SET_ERR_MSG_FMT_MOD(extack,
+>+				       "Invalid swp_l4_csum_mode value %u read from device",
+>+				       value);
+>+		return -EINVAL;
+>+	}
+>+
+>+	strscpy(ctx->val.vstr, swp_l4_csum_mode_str[value],
+>+		sizeof(ctx->val.vstr));
+>+	return 0;
+>+}
+>+
+>+static int
+>+mlx5_nv_param_devlink_swp_l4_csum_mode_validate(struct devlink *devlink, u32 id,
+>+						union devlink_param_value val,
+>+						struct netlink_ext_ack *extack)
+>+{
+>+	struct mlx5_core_dev *dev = devlink_priv(devlink);
+>+	u32 cap[MLX5_ST_SZ_DW(mnvda_reg)] = {};
+>+	void *data;
+>+	int err, i;
+>+
+>+	for (i = 0; i < ARRAY_SIZE(swp_l4_csum_mode_str); i++) {
+>+		if (!strcmp(val.vstr, swp_l4_csum_mode_str[i]))
+>+			break;
+>+	}
+>+
+>+	if (i >= ARRAY_SIZE(swp_l4_csum_mode_str)) {
+>+		NL_SET_ERR_MSG_MOD(extack,
+>+				   "Invalid value, supported values are device_default/full_csum/l4_only");
+>+		return -EINVAL;
+>+	}
+>+
+>+	if (i == SWP_L4_CSUM_MODE_L4_ONLY) {
+>+		err = mlx5_nv_param_read_sw_offload_cap(dev, cap, sizeof(cap));
+>+		if (err) {
+>+			NL_SET_ERR_MSG_MOD(extack,
+>+					   "Failed to read sw_offload_cap");
+>+			return err;
+>+		}
+>+
+>+		data = MLX5_ADDR_OF(mnvda_reg, cap, configuration_item_data);
+>+		if (!MLX5_GET(nv_sw_offload_cap, data, swp_l4_csum_mode_l4_only)) {
+>+			NL_SET_ERR_MSG_MOD(extack,
+>+					   "l4_only mode is not supported on this device");
+>+			return -EOPNOTSUPP;
+>+		}
+>+	}
+>+
+>+	return 0;
+>+}
+>+
+>+static int
+>+mlx5_nv_param_devlink_swp_l4_csum_mode_set(struct devlink *devlink, u32 id,
+>+					   struct devlink_param_gset_ctx *ctx,
+>+					   struct netlink_ext_ack *extack)
+>+{
+>+	struct mlx5_core_dev *dev = devlink_priv(devlink);
+>+	u32 mnvda[MLX5_ST_SZ_DW(mnvda_reg)] = {};
+>+	void *data;
+>+	u8 value;
+>+	int err;
+>+
+>+	if (!strcmp(ctx->val.vstr, "device_default"))
+>+		value = SWP_L4_CSUM_MODE_DEVICE_DEFAULT;
+>+	else if (!strcmp(ctx->val.vstr, "full_csum"))
+>+		value = SWP_L4_CSUM_MODE_FULL_CSUM;
+>+	else
+>+		value = SWP_L4_CSUM_MODE_L4_ONLY;
+>+
+>+	err = mlx5_nv_param_read_sw_accelerate_conf(dev, mnvda, sizeof(mnvda));
+>+	if (err) {
+>+		NL_SET_ERR_MSG_MOD(extack,
+>+				   "Failed to read sw_accelerate_conf mnvda reg");
+>+		return err;
+>+	}
+>+
+>+	data = MLX5_ADDR_OF(mnvda_reg, mnvda, configuration_item_data);
+>+	MLX5_SET(nv_sw_accelerate_conf, data, swp_l4_csum_mode, value);
+>+
+>+	err = mlx5_nv_param_write(dev, mnvda, sizeof(mnvda));
+>+	if (err)
+>+		NL_SET_ERR_MSG_MOD(extack,
+>+				   "Failed to write sw_accelerate_conf mnvda reg");
+>+
+>+	return err;
+>+}
+>+
+> static int mlx5_nv_param_read_global_pci_conf(struct mlx5_core_dev *dev,
+> 					      void *mnvda, size_t len)
+> {
+>@@ -548,6 +703,12 @@ static const struct devlink_param mlx5_nv_param_devlink_params[] = {
+> 			     mlx5_nv_param_devlink_cqe_compress_get,
+> 			     mlx5_nv_param_devlink_cqe_compress_set,
+> 			     mlx5_nv_param_devlink_cqe_compress_validate),
+>+	DEVLINK_PARAM_DRIVER(MLX5_DEVLINK_PARAM_ID_SWP_L4_CSUM_MODE,
+>+			     "swp_l4_csum_mode", DEVLINK_PARAM_TYPE_STRING,
+>+			     BIT(DEVLINK_PARAM_CMODE_PERMANENT),
+>+			     mlx5_nv_param_devlink_swp_l4_csum_mode_get,
+>+			     mlx5_nv_param_devlink_swp_l4_csum_mode_set,
+>+			     mlx5_nv_param_devlink_swp_l4_csum_mode_validate),
+> };
+>
+> int mlx5_nv_param_register_dl_params(struct devlink *devlink)
+>-- 
+>2.47.3
+>
+>
 
