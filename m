@@ -1,57 +1,57 @@
-Return-Path: <linux-rdma+bounces-14329-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14330-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72BEAC43A73
-	for <lists+linux-rdma@lfdr.de>; Sun, 09 Nov 2025 10:12:12 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CCCBC43A8F
+	for <lists+linux-rdma@lfdr.de>; Sun, 09 Nov 2025 10:21:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C22BC3AC542
-	for <lists+linux-rdma@lfdr.de>; Sun,  9 Nov 2025 09:12:10 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E4C614E1ADB
+	for <lists+linux-rdma@lfdr.de>; Sun,  9 Nov 2025 09:21:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39F2B2C15A5;
-	Sun,  9 Nov 2025 09:12:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42D6D22157B;
+	Sun,  9 Nov 2025 09:21:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UcGEujvA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="USx4PKkL"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC72A1A23AC
-	for <linux-rdma@vger.kernel.org>; Sun,  9 Nov 2025 09:12:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01DDD1A23AC
+	for <linux-rdma@vger.kernel.org>; Sun,  9 Nov 2025 09:21:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762679528; cv=none; b=UU68npy2NiOnvqbQLqCBBWdyOhD0QgSMtmFRvFd8kZEciPrO5FcDhNQQw5F+cS9mHkO0c59pYkMMOTOKhbw40jci995MYjgjOA8QgoFGxZIhHxpxotspSqFj983y7TxmELWCD7TC2JC6hXlHaV9bNRtyHN3tmwRqEWnuBqNApDY=
+	t=1762680109; cv=none; b=jAfdmC8yTziPqa2O6DRYEiWQJ9+y12/jYMHmRlO/AR4mu3GTR0ao32Nq0CCGOtLYCk+TzNW6wsuvw1+y+2rSJHg70MYnSsHTw5xbXGAdRJWbuF/k4Xoh3TPMKBEPKlNO0B22hROWxgnWPfb3zfut2zj1gPZhWcX4YgMMwKt4x2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762679528; c=relaxed/simple;
-	bh=kBLtIPf8/P4akx0GFBtj1dFtp5pgWibOeKZ3jPEt5rY=;
+	s=arc-20240116; t=1762680109; c=relaxed/simple;
+	bh=ROPeb/ZWivbuvRsmHHq/crnADAmT9hqBgIad5D/rDqM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HPLencYfwdxZOjRh6t7JktPzYamZFyac/dzCfx38xylHl68N7dwtr8gSwjCrVTnC0YdK8Z0/vd62L8kKw7dEwz9MSOHIbKmqJH8BuKRuak7tm3Y4vA4HZ9Frsk2cnZ/aurCF7U+lsBLq0f56FSGYwAS3MU54w6eehkSdyzkeWl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UcGEujvA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3A7CC2BCAF;
-	Sun,  9 Nov 2025 09:12:06 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=XWApTV+txid68RIda69bi9D4PRyZYA6K5dKjJIFjSnktVEjDuJeJWO8io3IVNEtUmUrxOpHF/zmpbWd5JwHE2ABttzs8SOtfR/poLQWKAm0embWtL8XzsYrZWQj7JyQ21w5wc5RIOoP8aSmpOaTIKdNZQ7nRXLWjThb3pgGocPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=USx4PKkL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19C3EC4CEFB;
+	Sun,  9 Nov 2025 09:21:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762679527;
-	bh=kBLtIPf8/P4akx0GFBtj1dFtp5pgWibOeKZ3jPEt5rY=;
+	s=k20201202; t=1762680108;
+	bh=ROPeb/ZWivbuvRsmHHq/crnADAmT9hqBgIad5D/rDqM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UcGEujvAYMS821QShIrYEY9rQFXmvi2p0qWMu0FGKWD1pbwuJO6t7CjOTa7pM0ugY
-	 dkayzkQAr895dMj61+cpLvbQdpr/13d6XY6krosagJSXHBA3TUIg/yc0Oo4Jix/KoX
-	 eIHM3OSPS0aVi/m2VOLYRVyqAG6RDn45avfzu2FSmJtGn59aUmOlXrOl+KQVumwT6s
-	 57OMG49ihn1bRRHHGpys6L9DxCPyqoA6LUOndAPPBIbQ2etnM7d4gatOnrm6wJ6jp4
-	 9VbDoJHVjvGD2xXsXgMhp0TgS8UuLmAnOcKdq2xqYqmsmgwDz3+T4CwRlQpb3bCY/D
-	 z5DVh1MpT5pLw==
-Date: Sun, 9 Nov 2025 11:12:02 +0200
+	b=USx4PKkLuA9BZUjT3kLst266bkfHZturLJ2FcovHcwy68reOLTCX6gVt7dmBq2JTP
+	 hfgDisVCN+hhroYCy9EHGb5BDD2wRK69L7ts5LvjLaFZ30Uu8FvwfxDRkOFRY4l6OP
+	 P+YKABQeLjD29NFF+vZ/265LkD9flYgrM+8Cm+r/f37AgEG+CFeEUTz5XomzBOJ6O/
+	 zDq4ESkNNf/vn/Czg0vHC2WGSn0aH5EX38XX4opJCNX7FXhNdVGPGAQ0r1ur0Z9Rt7
+	 1y7UhtXpKk0NM+n7BOllokhdiQ1P0oMtH+FdTxABdcSnrtUoLCPC6ARJGzp5GS2JLP
+	 2Tjjz0vtHMYuQ==
+Date: Sun, 9 Nov 2025 11:21:43 +0200
 From: Leon Romanovsky <leon@kernel.org>
 To: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
 Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org,
 	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
 	kalesh-anakkur.purayil@broadcom.com
-Subject: Re: [PATCH rdma-next v2 1/4] RDMA/bnxt_re: Move the UAPI methods to
- a dedicated file
-Message-ID: <20251109091202.GF15456@unreal>
+Subject: Re: [PATCH rdma-next v2 2/4] RDMA/bnxt_re: Refactor
+ bnxt_qplib_create_qp() function
+Message-ID: <20251109092143.GG15456@unreal>
 References: <20251104072320.210596-1-sriharsha.basavapatna@broadcom.com>
- <20251104072320.210596-2-sriharsha.basavapatna@broadcom.com>
+ <20251104072320.210596-3-sriharsha.basavapatna@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -60,88 +60,81 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251104072320.210596-2-sriharsha.basavapatna@broadcom.com>
+In-Reply-To: <20251104072320.210596-3-sriharsha.basavapatna@broadcom.com>
 
-On Tue, Nov 04, 2025 at 12:53:17PM +0530, Sriharsha Basavapatna wrote:
+On Tue, Nov 04, 2025 at 12:53:18PM +0530, Sriharsha Basavapatna wrote:
 > From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 > 
-> This is in preparation for upcoming patches in the series.
-> Driver has to support additional UAPIs for Direct verbs.
-> Moving current UAPI implementation to a new file, dv.c.
+> Inside bnxt_qplib_create_qp(), driver currently is doing
+> a lot of things like allocating HWQ memory for SQ/RQ/ORRQ/IRRQ,
+> initializing few of qplib_qp fields etc.
+> 
+> Refactored the code such that all memory allocation for HWQs
+> have been moved to bnxt_re_init_qp_attr() function and inside
+> bnxt_qplib_create_qp() function just initialize the request
+> structure and issue the HWRM command to firmware.
+> 
+> Introduced couple of new functions bnxt_re_setup_qp_hwqs() and
+> bnxt_re_setup_qp_swqs() moved the hwq and swq memory allocation
+> logic there.
+> 
+> This patch also introduces a change to store the PD id in
+> bnxt_qplib_qp. Instead of keeping a pointer to "struct
+> bnxt_qplib_pd", store PD id directly in "struct bnxt_qplib_qp".
+> This change is needed for a subsequent change in this patch
+> series. This PD ID value will be used in new DV implementation
+> for create_qp(). There is no functional change.
 > 
 > Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 > Reviewed-by: Selvin Thyparampil Xavier <selvin.xavier@broadcom.com>
 > Signed-off-by: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
 > ---
->  drivers/infiniband/hw/bnxt_re/Makefile   |   2 +-
->  drivers/infiniband/hw/bnxt_re/dv.c       | 356 +++++++++++++++++++++++
->  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 305 +------------------
->  drivers/infiniband/hw/bnxt_re/ib_verbs.h |   3 +
->  4 files changed, 361 insertions(+), 305 deletions(-)
->  create mode 100644 drivers/infiniband/hw/bnxt_re/dv.c
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.c  | 207 ++++++++++++--
+>  drivers/infiniband/hw/bnxt_re/qplib_fp.c  | 311 +++++++---------------
+>  drivers/infiniband/hw/bnxt_re/qplib_fp.h  |  10 +-
+>  drivers/infiniband/hw/bnxt_re/qplib_res.h |   6 +
+>  4 files changed, 304 insertions(+), 230 deletions(-)
 
 <...>
 
-> +++ b/drivers/infiniband/hw/bnxt_re/dv.c
-> @@ -0,0 +1,356 @@
-> +/*
-> + * Broadcom NetXtreme-E RoCE driver.
-> + *
-> + * Copyright (c) 2025, Broadcom. All rights reserved.  The term
-> + * Broadcom refers to Broadcom Inc. and/or its subsidiaries.
-> + *
-> + * This software is available to you under a choice of one of two
-> + * licenses.  You may choose to be licensed under the terms of the GNU
-> + * General Public License (GPL) Version 2, available from the file
-> + * COPYING in the main directory of this source tree, or the
-> + * BSD license below:
-> + *
-> + * Redistribution and use in source and binary forms, with or without
-> + * modification, are permitted provided that the following conditions
-> + * are met:
-> + *
-> + * 1. Redistributions of source code must retain the above copyright
-> + *    notice, this list of conditions and the following disclaimer.
-> + * 2. Redistributions in binary form must reproduce the above copyright
-> + *    notice, this list of conditions and the following disclaimer in
-> + *    the documentation and/or other materials provided with the
-> + *    distribution.
-> + *
-> + * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS''
-> + * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
-> + * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-> + * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS
-> + * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-> + * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-> + * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-> + * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-> + * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
-> + * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
-> + * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-> + *
-> + * Description: Direct Verbs interpreter
-> + */
-
-Please remove all this boilerplate and use SPDX tag instead,
-
-> +
-> +#include <rdma/ib_addr.h>
-> +#include <rdma/uverbs_types.h>
-> +#include <rdma/uverbs_std_types.h>
-> +#include <rdma/ib_user_ioctl_cmds.h>
-> +#define UVERBS_MODULE_NAME bnxt_re
-> +#include <rdma/uverbs_named_ioctl.h>
-> +#include <rdma/bnxt_re-abi.h>
+> +free_umem:
+> +	if (uctx)
+> +		bnxt_re_qp_free_umem(qp);
 
 <...>
 
-> +	uctx = container_of(ib_uverbs_get_ucontext(attrs), struct bnxt_re_ucontext, ib_uctx);
-> +	if (IS_ERR(uctx))
+> +	if (udata)
+> +		bnxt_re_qp_free_umem(qp);
 
-This is can't be right, you should check ib_uverbs_get_ucontext() for
-error first, before doing container_of().
+<...>
 
-> +		return PTR_ERR(uctx);
+Do you need to have if (..) here?
+ib_umem_release() does nothing if pointer is NULL.
+
+
+> +	kfree(sq->swq);
+> +	sq->swq = NULL;
+
+Is this SQ reused?
+
+> +	return rc;
+> +}
+
+<...>
+
+>  struct bnxt_qplib_qp {
+> -	struct bnxt_qplib_pd		*pd;
+> +	u32				pd_id;
+>  	struct bnxt_qplib_dpi		*dpi;
+>  	struct bnxt_qplib_chip_ctx	*cctx;
+>  	u64				qp_handle;
+> @@ -279,6 +279,7 @@ struct bnxt_qplib_qp {
+>  	u8				wqe_mode;
+>  	u8				state;
+>  	u8				cur_qp_state;
+> +	u8				is_user;
+
+This is already known to IB/core, use rdma_is_kernel_res().
 
 Thanks
 
