@@ -1,111 +1,286 @@
-Return-Path: <linux-rdma+bounces-14353-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14354-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48D6FC45B68
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Nov 2025 10:47:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E20BC45F48
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Nov 2025 11:36:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 321AF3B7C9E
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Nov 2025 09:46:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F78B1883532
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Nov 2025 10:36:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7875E30149E;
-	Mon, 10 Nov 2025 09:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4045726A0F8;
+	Mon, 10 Nov 2025 10:35:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="HYTErRMq"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="hhQAuU+N"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57774301460
-	for <linux-rdma@vger.kernel.org>; Mon, 10 Nov 2025 09:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5994D2FF64C;
+	Mon, 10 Nov 2025 10:35:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762767975; cv=none; b=mp4HIWZHaRZaWQUgwXVDEtTHpGZOsAdk9EUvYrhWpb+gZ23U6uQyNMIcZ3RQgJS6+dU1Oe4KRQ3FgkaMG8mFtXUzXyYjLkfMStpX+M4SfAQ5saJzoolv04S4WdmOHp2J3sypDE/6oeWimHwA3/d7ZulcNKSIhtnjnCxYcz6RcOM=
+	t=1762770944; cv=none; b=hq658YpeDG1WDArAELaDdtO9ESKvAWZFWhXb0oRUYaZSIo5iYdT8p+/IMvfMZrVdcW+OlU8STKZq2CToH+Jo0MSiMWiAMPB4cnoKYhbHY/EwOACAvIlOZNTSbatUb9XT6oaDaONlHL/e0EC9xwc6LxFLHzxZwUqQ2bQPmbywoHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762767975; c=relaxed/simple;
-	bh=G8FyUb4ahZ5DaUZfNRANTrYRf6oD8kdXRJpCHUd06PA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nWGK56sp0rYcxXdvLQkHRD4ZtaogVvlQcfDsr9UmnpAQhS9rsXEzvC/2yFSJe6XDjVwTS+VHIEg+Uhk/AUcmnlQuRhPdME4Z3jmwvl5razWZoZ3yBX+LnG++EtXBx1v+hUDM+kOaPH2f/v9sDKrPey7P4xBoumZWDwScVC80+F8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=HYTErRMq; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-591ec7af7a1so2361151e87.3
-        for <linux-rdma@vger.kernel.org>; Mon, 10 Nov 2025 01:46:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1762767971; x=1763372771; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GaXS6m3NcTkH+l9Uwp9vlSWhXICs1XAI8l9sEjUIZu0=;
-        b=HYTErRMq42J6I7OM51UzHsne0kRDistQ1SShANn/IFd2+HgUL8BxHoeDnF6jTPOs1R
-         oXQ1Hkgurq+ud29XGAIWUpVQ7Pos6R2Hf881n75NrfRkEMUwYttipgQ+TtAr2Mif2FwR
-         oZ5tJyQyA7CCdFoB9tj05yWMpRz2ihTFTyO8lkEY53ONb53XWZj3Tp6ljEqPA5y3jnKp
-         rDsexGTeW3iurEem1PqFIYUZRVBPU/nGEAgSo9T4f8MxJXTpU54uoMqIiud1P5vivVAN
-         XYqGdBy1U4YyIJmYDh99ipBpKENBBE3XYxnUSdq5uTI2LqLtIKTh0fJBb752ma4vv4OB
-         QViA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762767971; x=1763372771;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=GaXS6m3NcTkH+l9Uwp9vlSWhXICs1XAI8l9sEjUIZu0=;
-        b=eqyaTTeioeCuXJPJTYw/3ulDUgTpF3q5SAswn4WcNUYRYg/EiB5bVAa/uLqYasJkEG
-         e4lmZwOrAqGBCUMrLR1ZB9hcD1TPCMUSFxfwDF7fQLeji/KPgEovIAvbtJ5Dqb3+f+DR
-         PQv0CWodpv+e1mZVD3PXtagEhaoAUn1pJvCdFfouSen3eHTq2C+Rp83Lfb2IrZGBgWFn
-         hjsYgnVyoBrK93xgwmRjB6ZNnHg/YzsU8Tt2CTZSNH96uiEk8SGanCZu02uB4JRhAL++
-         ElXVhOkrBs4/7UNFfMUV+pjDteDLeZedmo8sLJOWJdw0NAz33GTpKu4kpO0+ycUwqvor
-         04cQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX0zTmfgCXS/N2qlVzoadM/AYl8O0z7ZPfJwbFqnA728b1x8V321PO+u3CD9GwHGOjhwbTYdw75vL9Z@vger.kernel.org
-X-Gm-Message-State: AOJu0YyM6+6b6pAsjYKDix2TzGthmjbk6fX2tCbpJ7lVRoe4HL/BvGE+
-	5/dGeBXOI5ID+5rEOvSO1pt78fSQQSTPnzrMH2poE3FtrLG0SRVsNIPurcZqHupuvmeTtFS8+YF
-	vEHVIEieRQBjNv6fTn6ClxjbOMg6YjaM8u7RM55g27g==
-X-Gm-Gg: ASbGncsvDz2TGxL2EWME/f/2bORAc2V4FUNMInL3+uFTidMu1j0jFzm0Rz/KMKbX+F/
-	bRQBoB712ntk0TIDpmqi8kMBDNAvr44CdyObCNpLdjSFPDoG1bg6CzUb72cV1YxkxXuEgpF60fI
-	7VktS0oBSK7aqMiF58Jvw10qhRCXu0wq7yFBSf/aaixfa0omWa8VKyx/aocOSMmU/NSfvF2khEq
-	dT/Ewnn7lzkUdLEcJA+hiWkCu9HwlXCMm45IvSjkSurNcJckAsU86z4LBpCYYhMH0wuYYIXAHA9
-	kRU0RoZ1hjHgVeIC7M69sQyY4D1t
-X-Google-Smtp-Source: AGHT+IFl1HIzxhu+5+xHMGe9KG/BTowlyYL1X4kciQxoixfdv4RCOTF+DqBRORHhpwcj1OT/9qYIy2M7s4tgYPW892U=
-X-Received: by 2002:a05:6512:39d2:b0:594:339d:8b8d with SMTP id
- 2adb3069b0e04-5945f1cbc64mr2296242e87.54.1762767971378; Mon, 10 Nov 2025
- 01:46:11 -0800 (PST)
+	s=arc-20240116; t=1762770944; c=relaxed/simple;
+	bh=NeK6KcdchkOG9JyXWuzd9Vn57w0zA4fF1eY5e0HFOns=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=dERKp8pS3KM5BK1A6cdqN6wRbj9buhyEqJlIphOfyuQ7+el8SoiM+xfZTw/yz1E+AlPJzSM+8BsH9o/F+MVu9AH/OIA3hm0+LafZEtpFZKBPoo6C6zxFAUGD/eMSDK0MZIRnIyt/5R30wbMo3Bx1dXVOB0hSJkifk1kDCsZbj5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=hhQAuU+N; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1204)
+	id D7054206C153; Mon, 10 Nov 2025 02:35:41 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D7054206C153
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1762770941;
+	bh=0EpIh5dOPNjMm5DcewM3l78ahgbqe1mDUcWq6FpXZ+c=;
+	h=Date:From:To:Subject:From;
+	b=hhQAuU+NtmNDGglssz0HPzjdYZ6il2OToUc0Y8T83MUCKakgM0aXvEAxBAaID2wt+
+	 0DCKH+h0ivatUHIUt3tMDXL7m3QGCzgNqR1vrdqd16egHz72+shzEeePVw40hM+RK4
+	 xTKbU0ND1RnaWhtHc+7WIy3YzU/EeqANYuKJYVLI=
+Date: Mon, 10 Nov 2025 02:35:41 -0800
+From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+To: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	dipayanroy@microsoft.com
+Subject: [PATCH net-next, v3] net: mana: Implement ndo_tx_timeout and
+ serialize queue resets per port.
+Message-ID: <20251110103541.GA30450@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251107133626.190952-1-marco.crivellari@suse.com> <176268787482.581844.7324846885016543491.b4-ty@kernel.org>
-In-Reply-To: <176268787482.581844.7324846885016543491.b4-ty@kernel.org>
-From: Marco Crivellari <marco.crivellari@suse.com>
-Date: Mon, 10 Nov 2025 10:46:00 +0100
-X-Gm-Features: AWmQ_bnrAuDTTrwaWs2Ag0G5kodCMZnaZYI4o0vDoMUA-msokQy6U766q6ZjZ9Y
-Message-ID: <CAAofZF6smnssmFpg9KpLzQH=sxB4bC8Vq0SpgQkrNh8O8n741Q@mail.gmail.com>
-Subject: Re: [PATCH] IB/isert: add WQ_PERCPU to alloc_workqueue users
-To: Leon Romanovsky <leon@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	target-devel@vger.kernel.org, Tejun Heo <tj@kernel.org>, 
-	Lai Jiangshan <jiangshanlai@gmail.com>, Frederic Weisbecker <frederic@kernel.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Michal Hocko <mhocko@suse.com>, 
-	Sagi Grimberg <sagi@grimberg.me>, Jason Gunthorpe <jgg@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Sun, Nov 9, 2025 at 12:31=E2=80=AFPM Leon Romanovsky <leon@kernel.org> w=
-rote:
-> [...]
-> Applied, thanks!
->
-> [1/1] IB/isert: add WQ_PERCPU to alloc_workqueue users
->       https://git.kernel.org/rdma/rdma/c/5c467151f6197d
->
+Implement .ndo_tx_timeout for MANA so any stalled TX queue can be detected
+and a device-controlled port reset for all queues can be scheduled to a
+ordered workqueue. The reset for all queues on stall detection is
+recomended by hardware team.
 
-Many thanks!
+The change introduces a single ordered workqueue
+("mana_per_port_queue_reset_wq") with WQ_UNBOUND | WQ_MEM_RECLAIM and
+queues exactly one work_struct per port onto it.
 
---=20
+Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
+Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+---
+Changes in v3:
+  -Fixed commit meesage, removed rtnl_trylock and added
+   disable_work_sync, fixed mana_queue_reset_work, and few
+   cosmetics.
+Changes in v2:
+  -Fixed cosmetic changes.
+---
+---
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 78 ++++++++++++++++++-
+ include/net/mana/gdma.h                       |  7 +-
+ include/net/mana/mana.h                       |  7 ++
+ 3 files changed, 90 insertions(+), 2 deletions(-)
 
-Marco Crivellari
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index cccd5b63cee6..636df3b066c5 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -298,6 +298,42 @@ static int mana_get_gso_hs(struct sk_buff *skb)
+ 	return gso_hs;
+ }
+ 
++static void mana_per_port_queue_reset_work_handler(struct work_struct *work)
++{
++	struct mana_queue_reset_work *reset_queue_work =
++			container_of(work, struct mana_queue_reset_work, work);
++
++	struct mana_port_context *apc = container_of(reset_queue_work,
++						     struct mana_port_context,
++						     queue_reset_work);
++	struct net_device *ndev = apc->ndev;
++	int err;
++
++	rtnl_lock();
++
++	/* Pre-allocate buffers to prevent failure in mana_attach later */
++	err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
++	if (err) {
++		netdev_err(ndev, "Insufficient memory for reset post tx stall detection\n");
++		goto out;
++	}
++
++	err = mana_detach(ndev, false);
++	if (err) {
++		netdev_err(ndev, "mana_detach failed: %d\n", err);
++		goto dealloc_pre_rxbufs;
++	}
++
++	err = mana_attach(ndev);
++	if (err)
++		netdev_err(ndev, "mana_attach failed: %d\n", err);
++
++dealloc_pre_rxbufs:
++	mana_pre_dealloc_rxbufs(apc);
++out:
++	rtnl_unlock();
++}
++
+ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+ {
+ 	enum mana_tx_pkt_format pkt_fmt = MANA_SHORT_PKT_FMT;
+@@ -802,6 +838,23 @@ static int mana_change_mtu(struct net_device *ndev, int new_mtu)
+ 	return err;
+ }
+ 
++static void mana_tx_timeout(struct net_device *netdev, unsigned int txqueue)
++{
++	struct mana_port_context *apc = netdev_priv(netdev);
++	struct mana_context *ac = apc->ac;
++	struct gdma_context *gc = ac->gdma_dev->gdma_context;
++
++	/* Already in service, hence tx queue reset is not required.*/
++	if (gc->in_service)
++		return;
++
++	/* Note: If there are pending queue reset work for this port(apc),
++	 * subsequent request queued up from here are ignored. This is because
++	 * we are using the same work instance per port(apc).
++	 */
++	queue_work(ac->per_port_queue_reset_wq, &apc->queue_reset_work.work);
++}
++
+ static int mana_shaper_set(struct net_shaper_binding *binding,
+ 			   const struct net_shaper *shaper,
+ 			   struct netlink_ext_ack *extack)
+@@ -884,7 +937,9 @@ static const struct net_device_ops mana_devops = {
+ 	.ndo_bpf		= mana_bpf,
+ 	.ndo_xdp_xmit		= mana_xdp_xmit,
+ 	.ndo_change_mtu		= mana_change_mtu,
+-	.net_shaper_ops         = &mana_shaper_ops,
++	.ndo_tx_timeout		= mana_tx_timeout,
++	.net_shaper_ops		= &mana_shaper_ops,
++
+ };
+ 
+ static void mana_cleanup_port_context(struct mana_port_context *apc)
+@@ -3244,6 +3299,7 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
+ 	ndev->min_mtu = ETH_MIN_MTU;
+ 	ndev->needed_headroom = MANA_HEADROOM;
+ 	ndev->dev_port = port_idx;
++	ndev->watchdog_timeo = 15 * HZ;
+ 	SET_NETDEV_DEV(ndev, gc->dev);
+ 
+ 	netif_set_tso_max_size(ndev, GSO_MAX_SIZE);
+@@ -3283,6 +3339,10 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
+ 
+ 	debugfs_create_u32("current_speed", 0400, apc->mana_port_debugfs, &apc->speed);
+ 
++	/* Initialize the per port queue reset work.*/
++	INIT_WORK(&apc->queue_reset_work.work,
++		  mana_per_port_queue_reset_work_handler);
++
+ 	return 0;
+ 
+ free_indir:
+@@ -3488,6 +3548,15 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
+ 	if (ac->num_ports > MAX_PORTS_IN_MANA_DEV)
+ 		ac->num_ports = MAX_PORTS_IN_MANA_DEV;
+ 
++	ac->per_port_queue_reset_wq =
++			alloc_ordered_workqueue("mana_per_port_queue_reset_wq",
++						WQ_UNBOUND | WQ_MEM_RECLAIM);
++	if (!ac->per_port_queue_reset_wq) {
++		dev_err(dev, "Failed to allocate per port queue reset workqueue\n");
++		err = -ENOMEM;
++		goto out;
++	}
++
+ 	if (!resuming) {
+ 		for (i = 0; i < ac->num_ports; i++) {
+ 			err = mana_probe_port(ac, i, &ac->ports[i]);
+@@ -3557,6 +3626,8 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
+ 			goto out;
+ 		}
+ 
++		disable_work_sync(&apc->queue_reset_work.work);
++
+ 		/* All cleanup actions should stay after rtnl_lock(), otherwise
+ 		 * other functions may access partially cleaned up data.
+ 		 */
+@@ -3581,6 +3652,11 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
+ 		free_netdev(ndev);
+ 	}
+ 
++	if (ac->per_port_queue_reset_wq) {
++		destroy_workqueue(ac->per_port_queue_reset_wq);
++		ac->per_port_queue_reset_wq = NULL;
++	}
++
+ 	mana_destroy_eq(ac);
+ out:
+ 	mana_gd_deregister_device(gd);
+diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+index 637f42485dba..b892296705de 100644
+--- a/include/net/mana/gdma.h
++++ b/include/net/mana/gdma.h
+@@ -590,6 +590,10 @@ enum {
+ 
+ /* Driver can self reset on FPGA Reconfig EQE notification */
+ #define GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE BIT(17)
++
++/* Driver detects stalled send queues and recovers them */
++#define GDMA_DRV_CAP_FLAG_1_HANDLE_STALL_SQ_RECOVERY BIT(18)
++
+ #define GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE BIT(6)
+ 
+ #define GDMA_DRV_CAP_FLAGS1 \
+@@ -601,7 +605,8 @@ enum {
+ 	 GDMA_DRV_CAP_FLAG_1_DYNAMIC_IRQ_ALLOC_SUPPORT | \
+ 	 GDMA_DRV_CAP_FLAG_1_SELF_RESET_ON_EQE | \
+ 	 GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE | \
+-	 GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE)
++	 GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE |\
++	 GDMA_DRV_CAP_FLAG_1_HANDLE_STALL_SQ_RECOVERY)
+ 
+ #define GDMA_DRV_CAP_FLAGS2 0
+ 
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index 8906901535f5..095f5f1cb2ad 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -475,6 +475,7 @@ struct mana_context {
+ 
+ 	struct mana_eq *eqs;
+ 	struct dentry *mana_eqs_debugfs;
++	struct workqueue_struct *per_port_queue_reset_wq;
+ 
+ 	struct net_device *ports[MAX_PORTS_IN_MANA_DEV];
+ 
+@@ -483,9 +484,15 @@ struct mana_context {
+ 	u32 link_event;
+ };
+ 
++struct mana_queue_reset_work {
++	/* Work structure */
++	struct work_struct work;
++};
++
+ struct mana_port_context {
+ 	struct mana_context *ac;
+ 	struct net_device *ndev;
++	struct mana_queue_reset_work queue_reset_work;
+ 
+ 	u8 mac_addr[ETH_ALEN];
+ 
+-- 
+2.43.0
 
-L3 Support Engineer, Technology & Product
 
