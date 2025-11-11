@@ -1,145 +1,159 @@
-Return-Path: <linux-rdma+bounces-14375-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14376-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id D96FAC4B3CF
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Nov 2025 03:45:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C36F3C4B506
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Nov 2025 04:27:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C93B14E345A
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Nov 2025 02:45:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0545F1885E78
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Nov 2025 03:27:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBF8A30F538;
-	Tue, 11 Nov 2025 02:45:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F7993491D4;
+	Tue, 11 Nov 2025 03:26:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="arA+s8Lc"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FB27346E53;
-	Tue, 11 Nov 2025 02:45:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4D6D303CB4;
+	Tue, 11 Nov 2025 03:26:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762829116; cv=none; b=VBr3mhHnFVi0qg7M1qKpBj/GD7KG/o1KnQGC1GU5ZYi0mgsi0nDKntS+6ZFPqS/sJadbfkhucOYIBV0NIxiqRUxSLl/p8FhB0QyCm/S2JsTlkzh7NfaojOHrBF6dmLqe/t8Aa+hTSV5PUlcQePHDTuK0nPRUsQIn2ZXdxHSo1Lw=
+	t=1762831596; cv=none; b=qEq8VJH4C4KoVsZ8saLYPHUEzy9GOY+4HR+hi8msBtlKG1XLHUJe3FayQ9O43ymx4BhaxIZpkLLEdH//DOzBp9QmDD/wCi+tUJreLIk+UWiwa6a8HO+9tyVkxQu9z0nYUtuZNnh4upc6ZMAcWeWprw049ZpBx7IDFHy0tWJ7AkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762829116; c=relaxed/simple;
-	bh=rwaTaD8H95OEQUA2cvjGJVhLOhyYpCwkPUaKbmTZ/TY=;
+	s=arc-20240116; t=1762831596; c=relaxed/simple;
+	bh=SF8ejBUx63BEWVbo35HrIhmuFlhum3NF91vPz7W/S9I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uukIxRPQ2ipu2apLefbZQ8HoThmJNexlmP+EkY1quZFdUw0j2LDhU8jJ8oVZ5nMeJm/W+cfWm4I0JusERPImoDrsiHKkb+jryOeJCTMUKn1092AM7jtduMv5hNNIYES+vub6xnSjpXFXW1f5ROTj1uBbZeLbDCPxsnO90CoRIsg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-c2dff70000001609-21-6912a3311e0d
-Date: Tue, 11 Nov 2025 11:45:00 +0900
-From: Byungchul Park <byungchul@sk.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=HZM6UNWBKH0FlF2NIi3btEZG+m5MDLhQNAVCRVpYLgwKotyyjQJtzA4gdIjzsebNpTFgikf/oElWGeaSdhLZ2ps8C0tkLieqvI44BAnalS5A8mbfKZmg+KrNj24EnRIEf1d+sgH/iGD4q1cHNbwUm9MiZVm2mJcVlqPc311xI9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=arA+s8Lc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37601C4CEF5;
+	Tue, 11 Nov 2025 03:26:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762831596;
+	bh=SF8ejBUx63BEWVbo35HrIhmuFlhum3NF91vPz7W/S9I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=arA+s8Lck9ZMVhIL7OYtfs+oWUJRLcttj4EpE7KRk7v1UFN/ft+8fCUgtsMc9gd76
+	 xbz4H/FDW92jLwUvPHG1/WqhhK/z+mVldQc2od6H+BtjiQB5JxvQ4gM5lD1vbzg+pb
+	 OIGUaErFPL8HlyvrJVGOJSgG6krBoN0V6JHOlVSp76LaFGEO6EWU5piCu0OvjblFrG
+	 F1/jjUCtMmVj/39yjWouTOw7gaRBlyA5oyUIXix6w4uHaltQIts5/VuBnRuBzJrWIH
+	 Cq/wXocuXrdrwYG9qhGNsItJ2oZ+mWg1KHT70AM/kbW2xbJC2oehFU+RZ7t/XXG9uM
+	 4U13e4tZIDmyA==
+Date: Mon, 10 Nov 2025 19:26:34 -0800
+From: Saeed Mahameed <saeed@kernel.org>
 To: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
-	harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
-	davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
-	sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org,
-	tariqt@nvidia.com, mbloch@nvidia.com, andrew+netdev@lunn.ch,
-	edumazet@google.com, pabeni@redhat.com, akpm@linux-foundation.org,
-	david@redhat.com, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, horms@kernel.org,
-	jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com,
-	ilias.apalodimas@linaro.org, willy@infradead.org,
-	brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
-	usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
-	almasrymina@google.com, toke@redhat.com, asml.silence@gmail.com,
-	bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
-	sfr@canb.auug.org.au, dw@davidwei.uk, ap420073@gmail.com,
-	dtatulea@nvidia.com
-Subject: Re: [RFC mm v5 1/2] page_pool: check nmdesc->pp to see its usage as
- page pool for net_iov not page-backed
-Message-ID: <20251111024500.GA79866@system.software.com>
-References: <20251107015902.GA3021@system.software.com>
- <20251106180810.6b06f71a@kernel.org>
- <20251107044708.GA54407@system.software.com>
- <20251107174129.62a3f39c@kernel.org>
- <20251108022458.GA65163@system.software.com>
- <20251107183712.36228f2a@kernel.org>
- <20251110010926.GA70011@system.software.com>
- <20251111014052.GA51630@system.software.com>
- <20251110175650.78902c74@kernel.org>
- <20251111021741.GB51630@system.software.com>
+Cc: Jiri Pirko <jiri@resnulli.us>, Daniel Zahka <daniel.zahka@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+	Srujana Challa <schalla@marvell.com>,
+	Bharat Bhushan <bbhushan2@marvell.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Brett Creeley <brett.creeley@amd.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Michael Chan <michael.chan@broadcom.com>,
+	Pavan Chebbi <pavan.chebbi@broadcom.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Sunil Goutham <sgoutham@marvell.com>,
+	Linu Cherian <lcherian@marvell.com>,
+	Geetha sowjanya <gakula@marvell.com>,
+	Jerin Jacob <jerinj@marvell.com>, hariprasad <hkelam@marvell.com>,
+	Subbaraya Sundeep <sbhatta@marvell.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>,
+	Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
+	Manish Chopra <manishc@marvell.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Siddharth Vadapalli <s-vadapalli@ti.com>,
+	Roger Quadros <rogerq@kernel.org>,
+	Loic Poulain <loic.poulain@oss.qualcomm.com>,
+	Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+	Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+	Dave Ertman <david.m.ertman@intel.com>,
+	Vlad Dumitrescu <vdumitrescu@nvidia.com>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+	Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
+	linux-doc@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+	linux-rdma@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org
+Subject: Re: [PATCH net-next v3 2/2] net/mlx5: implement swp_l4_csum_mode via
+ devlink params
+Message-ID: <aRKs6jXqSvC3G_R0@x130>
+References: <20251107204347.4060542-1-daniel.zahka@gmail.com>
+ <20251107204347.4060542-3-daniel.zahka@gmail.com>
+ <aQ7f1T1ZFUKRLQRh@x130>
+ <jhmdihtp63rblcjiy2pibhnz2sikvbm6bhnkclq3l2ndxgbqbb@e3t23x2x2r46>
+ <20251110154643.66d15800@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20251111021741.GB51630@system.software.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SXUxTZxjH85739JzTYpPXCtsr3GxlCwlq3YgXD8n8uFlyLrZk2eKFumQW
-	OUpjqaYgHyYmZdSgBJgbmpSCGUoGWIpI0dJWMVqwaE0cw8HOglIoExT5SgXCRyfjaMy8++f/
-	/+WX5+IRsO6hKlkwWfIlq8Vo1nMaVjO94dK2jAad6bO/QglQ1+bmoGWpCJpGfCpYdk8wUOfy
-	IphfHuJhrSuE4FVPLwcvu2MIGi4tYqj73c7CQtsKBn9gAsGko5WDZ6EoDy2eryHSOM7CrbJO
-	DNGf7nNQaV/F0LU8w8OPvuZ1cYeNhz5vlQrOr/yGodM2wsPjQB0Hw+41FYwHK1l44LzCwtyF
-	HgyRqj0Qqv8AFh9OIehp62RgseIiBwM1AQZudA3wUN1fz8GYPYKgvzvKwoX4GQ5qS6oQrC6t
-	K2fOzaug9t4wv8cglsgyJ3ZPzWLx+pW/GXHQ8TMryrfDjOh3PuXFes8JsaM5XSyX+7HocZ3l
-	RE/sF158MniLE+87VlnRP5op+n2vGLGydIb7Jmm/5otsyWwqkKzbdx3U5LTJY/zxeELRZMVT
-	1oZ+VZcjtUDJDtrgucy/yyWxm5ySWfIpPdvX+qbnSBqV5WWs5ETyCbV31LDlSCNgMsdThzys
-	UoZNJJ/OzdrWIUHQEqAtbr3C6MhtTMOPXIzCaMlG+qDmH1bJmKRT+fULRuExSaFNrwWlVpNM
-	ejU4+UaZRFLpHW8vo3gomRfo9dM17NtDN9O7zTJ7DhHne1rne1rn/9p6hF1IZ7IU5BpN5h2G
-	nGKLqchw6FiuB62/WOOp+AEfivV9F0REQPoNWvn5RpNOZSzIK84NIipgfaI2nkVMOm22sfik
-	ZD32g/WEWcoLohSB1X+ozVgszNaRI8Z86agkHZes71ZGUCfbkGHrR/njB1JuVDPmsYqL+7aE
-	ptyj1ea9j1O/igQ696YeMWxvbz84/e9p9eiEeXe07NrKx/FTQyOzQ2n7rV36zKzDBT5SuM9+
-	eLbHuxCtTQ2XhVtKd0U0XkvSlzmGbefTdBma3OHEnVPXlhxZf84ntH8/EHZ/ywTWmmO9tf7M
-	0B8uPZuXY/w8HVvzjP8BjLVwBF4DAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUhTYRiGec97ds5xtTgtXYeEoPUFiyyj4LEiin70EhQagX1RrTzkaC7b
-	TLQIZg00S7MPYy4rS7Sps9UsdZZRm/nVl2jGkUxNK8tkiZk0lcoTRP27eO7rvn89HFaXK2Zx
-	BlOSaDbpjVpGSSs3rzq5OLJQbVja8mop5LtdDJT9SIGbPdUKCLr6KcgvrUQwEnzDwq/aegTf
-	6hoY+OIfRlB4fRRD/ksbDd/dYxi8Nf0IBuzlDHyo72WhzLMJuos/0vAgvQpD79lGBrJs4xhq
-	gwEWTlQ7J4crrCz4rzQpoKUyWwEXx4owVFl7WGiryWegy/VLAR99WTQ0OUpoGMqtw9CdvRbq
-	CzQw+nQQQZ27ioLRM1cYaM+roeBebTsLF1oLGOizdSNo9ffSkDuRwcDltGwE4z8mJwM5Iwq4
-	/KSLXbuEpEkSQ/yDXzG5W9JBkdf2czSRHjZTxOt4y5ICzxFS4dSRTKkVE0/pKYZ4hs+zpPP1
-	A4Y02sdp4n0XRbzV3yiSdTLARGt2KFfHiUZDsmhesmavMt4t9bGJE1NSBs68pa3oWkgmCuEE
-	frmQNnyfkZnm5wunWspZmRl+oSBJQSxzKD9PsFXk0ZlIyWF+iBXsUpdCDmbwScLQV+ukxHEq
-	HoQyl1Z21PxDLDS/KKVkR8VPF5ry3tMyY14nSD8/U7KP+XDh5k9OPofwUcIt38CfyTB+rvCo
-	soHKQSrHf23Hf23Hv3YBwqUo1GBKTtAbjCsiLAfjU02GlIj9hxI8aPKJio9PnKtGI20bfIjn
-	kHaqSvo03aBW6JMtqQk+JHBYG6qa2Mcb1Ko4fepR0Xxoj/mIUbT4UDhHa2eqNsaKe9X8AX2S
-	eFAUE0Xz35TiQmZZ0SrN7ZXKS9ZjcVHfmzft3BKo90fr5+xJT1i+8PCN29uKBnurWjQBf6F3
-	cWxOR9Gi3XWBsHXOGFNE8AlNbYBlMcGSO506e79q/fNpVzsanBej3/jO7xRjM3K53AWacGG7
-	Oia709mlm91/eL3tWbrrMcna5X6v2WJ6ZlyZsvU0sX/S0pZ4faQOmy3633ErMQVAAwAA
-X-CFilter-Loop: Reflected
+In-Reply-To: <20251110154643.66d15800@kernel.org>
 
-On Tue, Nov 11, 2025 at 11:17:41AM +0900, Byungchul Park wrote:
-> On Mon, Nov 10, 2025 at 05:56:50PM -0800, Jakub Kicinski wrote:
-> > On Tue, 11 Nov 2025 10:40:52 +0900 Byungchul Park wrote:
-> > > > > I understand the end goal. I don't understand why patch 1 is a step
-> > > > > in that direction, and you seem incapable of explaining it. So please
-> > > > > either follow my suggestion on how to proceed with patch 2 without
-> > > >
-> > > > struct page and struct netmem_desc should keep difference information.
-> > > > Even though they are sharing some fields at the moment, it should
-> > > > eventually be decoupled, which I'm working on now.
-> > >
-> > > I'm removing the shared space between struct page and struct net_iov so
-> > > as to make struct page look its own way to be shrinked and let struct
-> > > net_iov be independent.
-> > >
-> > > Introduing a new shared space for page type is non-sense.  Still not
-> > > clear to you?
-> > 
-> > I've spent enough time reasoning with out and suggesting alternatives.
-> 
-> I'm not trying to be arguing but trying my best to understand you and
-> want to adopt your opinion.  However, it's not about objection but I
-> really don't understand what you meant.  Can anyone explain what he
-> meant who understood?
+On 10 Nov 15:46, Jakub Kicinski wrote:
+>On Sun, 9 Nov 2025 11:46:37 +0100 Jiri Pirko wrote:
+>> >So, I checked a couple of flows internally, and it seems this allows
+>> >some flexibility in the FW to decide later on which mode to pick,
+>> >based on other parameters, which practically means
+>> >"user has no preference on this param". Driver can only find out
+>> >after boot, when it reads the runtime capabilities, but still
+>> >this is a bug, by the time the driver reads this (in devlink), the
+>> >default value should've already been determined by FW, so FW must
+>> >return the actual runtime value. Which can only be one of the following
+>>
+>> I don't think it is correct to expose the "default" as a value.
+>>
+>> On read, user should see the configured value, either "full_csum" or
+>> "l4_only". Reporting "default" to the user does not make any sense.
+>> On write, user should pass either "full_csum" or "l4_only". Why we would
+>> ever want to pass "default"?
+>
+>FWIW I agree that this feels a bit odd. Should the default be a flag
+>attr? On get flag being present means the value is the FW default (no
+>override present). On set passing the flag means user wants to reset
+>to FW default (remove override)?
+>
+>> Regardless this patch, since this is param to be reflected on fw reboot
+>> (permanent cmode), I think it would be nice to expose indication if
+>> param value passed to user currently affects the fw, or if it is going
+>> to be applied after fw reboot. Perhaps a simple bool attr would do?
+>
+>IIUC we're basically talking about user having no information that
+>the update is pending? Could this be done by the core? Core can do
+>a ->get prior to calling ->set and if the ->set succeeds and
+>cmode != runtime record that the update is pending?
+>
 
-If no objection against Jakub's opinion, I will resend with his
-alternaltive applied.
+Could work if on GET driver reads 'current' value from FW, then it should
+be simpler if GET != SET then 'pending', one problem though is if SET was
+done by external tool or value wasn't applied after reboot, then we loose
+that information, but do we care? I think we shouldn't.
 
-	Byungchul
+>That feels very separate from the series tho, there are 3 permanent
+>params in mlx5, already. Is there something that makes this one special?
 
-> 	Byungchul
-> 
-> > If you respin this please carry:
-> > 
-> > Nacked-by: Jakub Kicinski <kuba@kernel.org>
-> > 
-> > Until I say otherwise.
+In mlx5 they all have the same behavior, devlink sets 'next' value, 
+devlink reads 'next' value. The only special thing about the new param
+is that it has a 'device_default' value and when you read that from 
+'next' it will always show 'device_default' as the actual value is only
+known at run time ,e.g. 'next boot'.
+
+I think the only valid solution for permanent and drv_init params is to
+have 'next' and 'current' values reported by driver on read. 
+Or maybe go just with  'set' != 'get' then 'pending' as discussed above ?
+
 
