@@ -1,34 +1,34 @@
-Return-Path: <linux-rdma+bounces-14374-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14375-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53200C4B2FA
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Nov 2025 03:18:04 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id D96FAC4B3CF
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Nov 2025 03:45:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 150924E1247
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Nov 2025 02:18:03 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C93B14E345A
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Nov 2025 02:45:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF348346FBD;
-	Tue, 11 Nov 2025 02:17:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBF8A30F538;
+	Tue, 11 Nov 2025 02:45:16 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A39B03446C5;
-	Tue, 11 Nov 2025 02:17:49 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FB27346E53;
+	Tue, 11 Nov 2025 02:45:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762827477; cv=none; b=D9ScVo+1Cms2iGcS1KxLVVbKNS7DJOLFHgvS1kN1ycCDYHOP/e9RadtELfXvBuvj9zijAGOx6IdjAUfVr3rKgW+wLldDRynHZYXvQwCibswg/dWtMJJGXqmPFPJdrmeH+N9S4gVebIuvBZ123AI/MZHpDECwxyLGvi6S8ippKBg=
+	t=1762829116; cv=none; b=VBr3mhHnFVi0qg7M1qKpBj/GD7KG/o1KnQGC1GU5ZYi0mgsi0nDKntS+6ZFPqS/sJadbfkhucOYIBV0NIxiqRUxSLl/p8FhB0QyCm/S2JsTlkzh7NfaojOHrBF6dmLqe/t8Aa+hTSV5PUlcQePHDTuK0nPRUsQIn2ZXdxHSo1Lw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762827477; c=relaxed/simple;
-	bh=bYsZjtJawtkd8QLTuI04PFok1Qb8IgGzTJfuLXKRcDU=;
+	s=arc-20240116; t=1762829116; c=relaxed/simple;
+	bh=rwaTaD8H95OEQUA2cvjGJVhLOhyYpCwkPUaKbmTZ/TY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QWDqb9yRMcvMmzx8HKJNLCgil5gMp1emQgpqWgHfBak+Kkux8umIx700O8vladKTRsxE91oNWEYX6O/2b3h0NEzAPySbsxAljy7+GMzHsrtSY/F1zgscAlhNPz+zjZD8IuD7Lz02pmo3H1aodCYS9XIUKP8Y2jw95lREm08TpoU=
+	 Content-Type:Content-Disposition:In-Reply-To; b=uukIxRPQ2ipu2apLefbZQ8HoThmJNexlmP+EkY1quZFdUw0j2LDhU8jJ8oVZ5nMeJm/W+cfWm4I0JusERPImoDrsiHKkb+jryOeJCTMUKn1092AM7jtduMv5hNNIYES+vub6xnSjpXFXW1f5ROTj1uBbZeLbDCPxsnO90CoRIsg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-c45ff70000001609-71-69129ccbaebc
-Date: Tue, 11 Nov 2025 11:17:41 +0900
+X-AuditID: a67dfc5b-c2dff70000001609-21-6912a3311e0d
+Date: Tue, 11 Nov 2025 11:45:00 +0900
 From: Byungchul Park <byungchul@sk.com>
 To: Jakub Kicinski <kuba@kernel.org>
 Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
@@ -51,9 +51,8 @@ Cc: linux-mm@kvack.org, netdev@vger.kernel.org,
 	dtatulea@nvidia.com
 Subject: Re: [RFC mm v5 1/2] page_pool: check nmdesc->pp to see its usage as
  page pool for net_iov not page-backed
-Message-ID: <20251111021741.GB51630@system.software.com>
-References: <20251106173320.2f8e683a@kernel.org>
- <20251107015902.GA3021@system.software.com>
+Message-ID: <20251111024500.GA79866@system.software.com>
+References: <20251107015902.GA3021@system.software.com>
  <20251106180810.6b06f71a@kernel.org>
  <20251107044708.GA54407@system.software.com>
  <20251107174129.62a3f39c@kernel.org>
@@ -62,6 +61,7 @@ References: <20251106173320.2f8e683a@kernel.org>
  <20251110010926.GA70011@system.software.com>
  <20251111014052.GA51630@system.software.com>
  <20251110175650.78902c74@kernel.org>
+ <20251111021741.GB51630@system.software.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -70,71 +70,76 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251110175650.78902c74@kernel.org>
+In-Reply-To: <20251111021741.GB51630@system.software.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SXUxTZxjH95739JxDY5PXivqu7EI7jQmJ+JGaPCRmEm88F86Y6GKiF3qU
-	EzlaqraAsGWxSLOJWlSUCLUzdR+KgKJF+ahgFBAVgxAUPW6s1aowHRSkFflS1rIYvfvn+f+f
-	3/O/eASsb9UYBMWSIVstktnIaVlt/7RfF95z65XF718ZwF1ZwUH5SDace1qrgdGKXgbcZdUI
-	IqN/8TDZ0IIg3Hybg3+bhhD8dmYYg7vdwcLbyjEMdb5eBK+LL3DwsiXIQ7n3Wwic7WGh/uca
-	DMEjdzhwOsYxNIyGeNhfWxoFV9l56Kgu0MCJsT8w1Nif8vDA5+bAXzGpgZ5GJwt3XedZGCxq
-	xhAoSIEWzywYvteHoLmyhoHhw79w0FXiY+BqQxcPxzs9HDx3BBB0NgVZKJo4wMGp3AIE4yNR
-	ZOhoRAOnbvn5lCQxV1U5salvAItXzj9hxEfFx1hRvd7KiHWuv3nR480Uq0oTxYNqJxa9Zfmc
-	6B0q5MXuR/WceKd4nBXrniWLdbVhRnTmhbi1Mzdql6fKZiVLti76Zos2zec5xu8+qc1uc/xg
-	R2P8QRQnUGKik++D7Ed98kGEi2mWzKf54dM4pjmygKrq6JSOJ/Ooo6okmtcKmAzytFj1a2LG
-	DJJBBwfs0ZAg6AhQe0Aby+hJNaa/P+mbWtaR6fRuyYupY5gkUvXDKyaWxySBnvsgxMZxZAkt
-	zA1OdZhJvqY3qm8zMQ4leXH0z4cvmP+LfklvlqrsUURcn2Fdn2Fdn7AehMuQXrFkpUuK2ZSU
-	lmNRspO27Ur3ouiHnf1xYlMtGupY14iIgIzTdOo/0xW9Rsqy5aQ3IipgY7xuYitR9LpUKed7
-	2bprszXTLNsaUYLAGmfrlg7vTdWT7VKGvFOWd8vWjy4jxBnsaH9h/QrTMs2NpIsJY93zTKS/
-	3nitYUD6aXHAMBnfHX5+IC3SdV+2ODe0P043HCrvf7PpZoi5orwLrTNfCqsj9lZpx57Vc/K2
-	PzalXNv63ZEVMy5/1Z45d5V/QXbyF7bImlUP12du2cy0JYcPSb0nmjp6Vq4vUtr8Vanh/Ouv
-	W52+fUbWliYtScRWm/Qf6eEt3l0DAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUiTaxjHuZ/7eXO0uJvLngoi1jl4kNSCoit6YRSd7hMV5/SlwzlBTn3I
-	ka7azDSJZi0yT3o0i3StWlRmuhKmzRcywi3NpBcU5enNlb2oJTZziVN7cULUtx/X9f/9uT5c
-	Ita4uDmi0ZQum02GVB2vYlWbVxyOvefQGBcVP1gBjioXD5WjmXDlRR0HIVcvA44KD4Jg6KkA
-	XxubEQz7Wnh47/2I4OKFEQyOhzYWPlWNYahv6EXwruQaD2+aewSodG8Cf9lbFm4ercXQ8/9d
-	HvJt4xgaQ4MCHKornyyutgrgPdvKwSNPAQcnxy5jqLW+EKCjwcFDt+srB2+b8llotV9lIXDK
-	h8FfoIdmZxSMtA0g8FXVMjBy/CwPnaUNDNxo7BSguN3JwyubH0G7t4eFUxO5PJzJKUAwPjpZ
-	OVgY5ODMnW5BH09zFIWn3oEPmNZcfczQrpIiliq37jG03v5coE73XlpdHkPzlHZM3RXHeOr+
-	eEKgz7pu8vRuyThL618up/V1wwzNPzzI/xn1j2plspxqzJDN8asTVCkNziJh92lV5n1bthWN
-	CXkoQpTIEul0R5APM0t+lY4Nn8Nh5km0pCihKdaSXyRbdSmbh1QiJgFBKlG6ufAikqRLgQ/W
-	yZAoqglIVr8qnNEQD5YuPR6YktVkhtRa+poNMyYxkvKlnwnnMZkrXfkihscRZLF0Iqdn6oaZ
-	ZIF029PCFCK1/Sfb/pNt/2E7Ea5AWqMpI81gTF0aZ9mZkmUyZsYl7Upzo8kfKjswUVSHgh3r
-	mxARkW6aWumbYdRwhgxLVloTkkSs06onEolRo042ZO2Xzbu2m/emypYmNFdkdbPUG7bKCRqy
-	w5Au75Tl3bL5+5YRI+ZYUey69Y7/MqJ+S6Lbsmfrn5VOd81v4/ZfH++NWxZ5Z2joZP+nls9b
-	RufFayv8f5H3Pl1fdeXB7AjTnn/XxBaeS/o9cXVie/SryH0b9nkclsDaRUs3Thvq7YrUdp4P
-	BIs1n1f6juhzvZbcZfq/3/Wte7KwrKhM1fbHteTQqpqhuGHzqukHdawlxbA4Bpsthm+MZrNg
-	PwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SXUxTZxjH85739JzTYpPXCtsr3GxlCwlq3YgXD8n8uFlyLrZk2eKFumQW
+	OUpjqaYgHyYmZdSgBJgbmpSCGUoGWIpI0dJWMVqwaE0cw8HOglIoExT5SgXCRyfjaMy8++f/
+	/+WX5+IRsO6hKlkwWfIlq8Vo1nMaVjO94dK2jAad6bO/QglQ1+bmoGWpCJpGfCpYdk8wUOfy
+	IphfHuJhrSuE4FVPLwcvu2MIGi4tYqj73c7CQtsKBn9gAsGko5WDZ6EoDy2eryHSOM7CrbJO
+	DNGf7nNQaV/F0LU8w8OPvuZ1cYeNhz5vlQrOr/yGodM2wsPjQB0Hw+41FYwHK1l44LzCwtyF
+	HgyRqj0Qqv8AFh9OIehp62RgseIiBwM1AQZudA3wUN1fz8GYPYKgvzvKwoX4GQ5qS6oQrC6t
+	K2fOzaug9t4wv8cglsgyJ3ZPzWLx+pW/GXHQ8TMryrfDjOh3PuXFes8JsaM5XSyX+7HocZ3l
+	RE/sF158MniLE+87VlnRP5op+n2vGLGydIb7Jmm/5otsyWwqkKzbdx3U5LTJY/zxeELRZMVT
+	1oZ+VZcjtUDJDtrgucy/yyWxm5ySWfIpPdvX+qbnSBqV5WWs5ETyCbV31LDlSCNgMsdThzys
+	UoZNJJ/OzdrWIUHQEqAtbr3C6MhtTMOPXIzCaMlG+qDmH1bJmKRT+fULRuExSaFNrwWlVpNM
+	ejU4+UaZRFLpHW8vo3gomRfo9dM17NtDN9O7zTJ7DhHne1rne1rn/9p6hF1IZ7IU5BpN5h2G
+	nGKLqchw6FiuB62/WOOp+AEfivV9F0REQPoNWvn5RpNOZSzIK84NIipgfaI2nkVMOm22sfik
+	ZD32g/WEWcoLohSB1X+ozVgszNaRI8Z86agkHZes71ZGUCfbkGHrR/njB1JuVDPmsYqL+7aE
+	ptyj1ea9j1O/igQ696YeMWxvbz84/e9p9eiEeXe07NrKx/FTQyOzQ2n7rV36zKzDBT5SuM9+
+	eLbHuxCtTQ2XhVtKd0U0XkvSlzmGbefTdBma3OHEnVPXlhxZf84ntH8/EHZ/ywTWmmO9tf7M
+	0B8uPZuXY/w8HVvzjP8BjLVwBF4DAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUhTYRiGec97ds5xtTgtXYeEoPUFiyyj4LEiin70EhQagX1RrTzkaC7b
+	TLQIZg00S7MPYy4rS7Sps9UsdZZRm/nVl2jGkUxNK8tkiZk0lcoTRP27eO7rvn89HFaXK2Zx
+	BlOSaDbpjVpGSSs3rzq5OLJQbVja8mop5LtdDJT9SIGbPdUKCLr6KcgvrUQwEnzDwq/aegTf
+	6hoY+OIfRlB4fRRD/ksbDd/dYxi8Nf0IBuzlDHyo72WhzLMJuos/0vAgvQpD79lGBrJs4xhq
+	gwEWTlQ7J4crrCz4rzQpoKUyWwEXx4owVFl7WGiryWegy/VLAR99WTQ0OUpoGMqtw9CdvRbq
+	CzQw+nQQQZ27ioLRM1cYaM+roeBebTsLF1oLGOizdSNo9ffSkDuRwcDltGwE4z8mJwM5Iwq4
+	/KSLXbuEpEkSQ/yDXzG5W9JBkdf2czSRHjZTxOt4y5ICzxFS4dSRTKkVE0/pKYZ4hs+zpPP1
+	A4Y02sdp4n0XRbzV3yiSdTLARGt2KFfHiUZDsmhesmavMt4t9bGJE1NSBs68pa3oWkgmCuEE
+	frmQNnyfkZnm5wunWspZmRl+oSBJQSxzKD9PsFXk0ZlIyWF+iBXsUpdCDmbwScLQV+ukxHEq
+	HoQyl1Z21PxDLDS/KKVkR8VPF5ry3tMyY14nSD8/U7KP+XDh5k9OPofwUcIt38CfyTB+rvCo
+	soHKQSrHf23Hf23Hv3YBwqUo1GBKTtAbjCsiLAfjU02GlIj9hxI8aPKJio9PnKtGI20bfIjn
+	kHaqSvo03aBW6JMtqQk+JHBYG6qa2Mcb1Ko4fepR0Xxoj/mIUbT4UDhHa2eqNsaKe9X8AX2S
+	eFAUE0Xz35TiQmZZ0SrN7ZXKS9ZjcVHfmzft3BKo90fr5+xJT1i+8PCN29uKBnurWjQBf6F3
+	cWxOR9Gi3XWBsHXOGFNE8AlNbYBlMcGSO506e79q/fNpVzsanBej3/jO7xRjM3K53AWacGG7
+	Oia709mlm91/eL3tWbrrMcna5X6v2WJ6ZlyZsvU0sX/S0pZ4faQOmy3633ErMQVAAwAA
 X-CFilter-Loop: Reflected
 
-On Mon, Nov 10, 2025 at 05:56:50PM -0800, Jakub Kicinski wrote:
-> On Tue, 11 Nov 2025 10:40:52 +0900 Byungchul Park wrote:
-> > > > I understand the end goal. I don't understand why patch 1 is a step
-> > > > in that direction, and you seem incapable of explaining it. So please
-> > > > either follow my suggestion on how to proceed with patch 2 without
+On Tue, Nov 11, 2025 at 11:17:41AM +0900, Byungchul Park wrote:
+> On Mon, Nov 10, 2025 at 05:56:50PM -0800, Jakub Kicinski wrote:
+> > On Tue, 11 Nov 2025 10:40:52 +0900 Byungchul Park wrote:
+> > > > > I understand the end goal. I don't understand why patch 1 is a step
+> > > > > in that direction, and you seem incapable of explaining it. So please
+> > > > > either follow my suggestion on how to proceed with patch 2 without
+> > > >
+> > > > struct page and struct netmem_desc should keep difference information.
+> > > > Even though they are sharing some fields at the moment, it should
+> > > > eventually be decoupled, which I'm working on now.
 > > >
-> > > struct page and struct netmem_desc should keep difference information.
-> > > Even though they are sharing some fields at the moment, it should
-> > > eventually be decoupled, which I'm working on now.
-> >
-> > I'm removing the shared space between struct page and struct net_iov so
-> > as to make struct page look its own way to be shrinked and let struct
-> > net_iov be independent.
-> >
-> > Introduing a new shared space for page type is non-sense.  Still not
-> > clear to you?
+> > > I'm removing the shared space between struct page and struct net_iov so
+> > > as to make struct page look its own way to be shrinked and let struct
+> > > net_iov be independent.
+> > >
+> > > Introduing a new shared space for page type is non-sense.  Still not
+> > > clear to you?
+> > 
+> > I've spent enough time reasoning with out and suggesting alternatives.
 > 
-> I've spent enough time reasoning with out and suggesting alternatives.
+> I'm not trying to be arguing but trying my best to understand you and
+> want to adopt your opinion.  However, it's not about objection but I
+> really don't understand what you meant.  Can anyone explain what he
+> meant who understood?
 
-I'm not trying to be arguing but trying my best to understand you and
-want to adopt your opinion.  However, it's not about objection but I
-really don't understand what you meant.  Can anyone explain what he
-meant who understood?
+If no objection against Jakub's opinion, I will resend with his
+alternaltive applied.
 
 	Byungchul
 
-> If you respin this please carry:
+> 	Byungchul
 > 
-> Nacked-by: Jakub Kicinski <kuba@kernel.org>
-> 
-> Until I say otherwise.
+> > If you respin this please carry:
+> > 
+> > Nacked-by: Jakub Kicinski <kuba@kernel.org>
+> > 
+> > Until I say otherwise.
 
