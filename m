@@ -1,227 +1,180 @@
-Return-Path: <linux-rdma+bounces-14392-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14393-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id F098CC4DA5B
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Nov 2025 13:23:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CE2E6C4DB96
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Nov 2025 13:31:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6CDB54F9388
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Nov 2025 12:16:01 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 439664FCE65
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Nov 2025 12:25:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3178535772B;
-	Tue, 11 Nov 2025 12:15:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DB8E358D24;
+	Tue, 11 Nov 2025 12:25:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="IIYDpcXV"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="AydTrWNd"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazon11012008.outbound.protection.outlook.com [40.93.195.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5096C3396E4
-	for <linux-rdma@vger.kernel.org>; Tue, 11 Nov 2025 12:15:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.33
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762863354; cv=none; b=sJzmeI32SshUd3Vlp2OsqkM8jWkdLtiVZ4vx9JFPRmgzoPXARn450e6jwDiWx7vbUTvwfhnqIUTlJP01Smg4iogEriPfPIVzqYl5Qt/9AdhPbcdeVDuwOV/225IQwkOKMBYO2H3OXQ1qV+p7/Q0skKD7WT1IKs//tXJ3UYlkd98=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762863354; c=relaxed/simple;
-	bh=7PE1Ra6Wd21DmBff64tqh3yjwSx+bptn3SGutDd7UGg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jbfHhintXWhoUMln5ukadTY4w/NU7ecP4Y3NzBivr4F/cvf5fPUiKzhRj8Md9I/2Z/msMLxPoGI3Dt8Y11J4hS+0PDODu2fsqAygM+/lcRumZs/C8KkEHW7e6Xytoae80GnbFeujPRX/1pOg2kIDVMP/hIRJexkRR3yI/+NmziU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=IIYDpcXV; arc=none smtp.client-ip=35.89.44.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-5003b.ext.cloudfilter.net ([10.0.29.155])
-	by cmsmtp with ESMTPS
-	id IcjsvfqY2Zx2iInGJvNwcj; Tue, 11 Nov 2025 12:14:16 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id InGJvsQfsuWNOInGJv55YP; Tue, 11 Nov 2025 12:14:15 +0000
-X-Authority-Analysis: v=2.4 cv=N+gpF39B c=1 sm=1 tr=0 ts=69132897
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=F0GicbU7tRTSLTLZ85HXVw==:17
- a=IkcTkHD0fZMA:10 a=6UeiqGixMTsA:10 a=7T7KSl7uo7wA:10 a=VwQbUJbxAAAA:8
- a=oBrga82o3JoBcljm_xYA:9 a=QEXdDO2ut3YA:10 a=xYX6OU9JNrHFPr8prv8u:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=YHkNqbWnHwvdQg3BLnlc11EHlTVWBrg1MAlKIBmYEBw=; b=IIYDpcXV7hQM8CE6fsCi1jQkDs
-	zQgAvdaPn+V/l/ERdNXhMCVR7pD4QQR2a0L4afe6/QfHXjjlVAFd6rDK+6DVFykG7cfYVAoeKLMft
-	b0afW8alX4NRdXcsH9FnAxnbncQood2+s3rCiX7q2F5tp6RIrMPeSQcuw3p5tKOhqK6NRgnKqTGxm
-	BlC/+hiiKobes9wJx0d6mWvBeOOXACVV0dDLG3YyounnrH8wHPwz5XRLbkxJC7900Gc6buqym2ogT
-	MNR1G+nqmNV2sr86N2fWDfRg2wMDCVOwsjSYXxegSe6p4daNeGGip7cdCkDSxNDTTctzrpyMK0Gq8
-	cSsmprsQ==;
-Received: from m106072098064.v4.enabler.ne.jp ([106.72.98.64]:45116 helo=[10.221.86.44])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.98.1)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1vInGI-00000002Z9Q-2mWK;
-	Tue, 11 Nov 2025 06:14:14 -0600
-Message-ID: <a9e5156b-2279-4ddd-992c-ca8ca7ab218a@embeddedor.com>
-Date: Tue, 11 Nov 2025 21:14:05 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 597A7358D19;
+	Tue, 11 Nov 2025 12:25:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.195.8
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1762863936; cv=fail; b=ZvUfMuLSxIkuSIlv6oRqeA/uO679FOUfamIBQTxaXy+u9sVQuY1b6kBu+mipxMQDLZ5aJ2wsWU4NRKUQTFmFr9Pnk/M4CFSNsu0pCZHkPAbA5zxu5nPdHdvBrZUi2fQF2N0YH+bzZYI+bZ53h3aSMNb8nvW2kNxFCDxT3Qmyy0o=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1762863936; c=relaxed/simple;
+	bh=Va0ZUN8h4LZYTv/gpwvdRHTHn3ZUj2axJPrf0+NukAQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gO50pXLli8kjVAu3N4VnfxIJ3iheKGsU10OfVrOFMkts5HlRuUiRw5LxBGX664WufZgMQrpqO/MkbpoMlQnouXumgvZdxWtos/ZguJ3Kn2fL9CcqqRcgMk7hoppTkAwb5Nlayje8EyoIWggJOTxvcPkBwmIyZQ6u/6fcHCHQ/Ak=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=AydTrWNd; arc=fail smtp.client-ip=40.93.195.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=bfTSJNhZRffivQDDmk840dDhFUSH7q7xXX2nCD9TXJkgRZRkxkxXKA7bcwJekubOR7ANoS8MRza/m4TC3S17d1WXViYAHbCaOmme2wlWvplS99z4LQLMOWkosN9TgFOWO4yfc8+2TCyNPF/4iUfhd97JFpSZzgMTqSZ0XauTxRqHGkZyUZuM3su12u5BHlxrGIRGJn6U2YSuk48lW7Ryp2H1X5uE4/x+aPYxr6RGwi81oDJf1ci3kAqzfbPbHbuFh79ufwm4hnGfOh890hQHFvu/lH2fhwsveTO8CwK2WcxFSHYlLa6Q6Wzt1XiT+SF6J1U5X9K3ekCHleQdUfi3zA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=568ZJI1t63TwE+2Vg6FBO7twsNmkVlvaTSH/AwD3Ghs=;
+ b=nY8ufuyeLhR3pAmUGgQ3CEMpivCBSRrkBzTXiyfrTY1LHY0L9zhSmIpIiinA7x6P1kO/EPDvvukunP9pFUTYgYer/TNLz4OB+jyfBiV6ZHzAT6/6OBlpQFZYK8eWQsmFM8m/UmsmSDL9JJaoA/ZEFdOnMlkhocB31djuvjBNFmlb4d8w5KVWZzI9iRNTyPTebYTAjoJumNaHUuXEGCutmZKp95tmVL8PktJfJySjlF4GY3icJV7cQbSX+VTscMPjKSZKcW85tsXr1jr11F+l8lnBN4WYYFUqLthHhkX6Q+4urYdg+/sy4igKYeu+K4vIkZz2hMULxmZT43xm+P/3SQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=568ZJI1t63TwE+2Vg6FBO7twsNmkVlvaTSH/AwD3Ghs=;
+ b=AydTrWNdnzpMStlbvQl/k/pq8mjbO0AfqDLNclYMpxJi7Ij4l9rS1yJsJaT369Od8iMiFgtPwBjcZxf+Ixqwp4CLNv7Fn4yGWUmPHOqCS3DyV9bZl/MuqzMtjk7wyMXOGuVOs+nvzLa8PMDP616cKmrlihIAlh7Xha8iMkkTJN9abQi5JuNDUpJAEIxy/ZjknBY8QDjjcqdoyCEyFFBemzE/hocHoibum0WtdHbs/JXfxSZJttcFTvOZDkEaPUmhBo8+uxpSo8MrUMhRwPNXcBJMlKwFCudfgLzGu34LsOFF/KM60GhOyprXApO7Gn/AC0VTwgiu0bQjaN/E/kEtBQ==
+Received: from MN0P223CA0019.NAMP223.PROD.OUTLOOK.COM (2603:10b6:208:52b::34)
+ by SA1PR12MB6679.namprd12.prod.outlook.com (2603:10b6:806:252::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9298.16; Tue, 11 Nov
+ 2025 12:25:27 +0000
+Received: from BL02EPF00021F69.namprd02.prod.outlook.com
+ (2603:10b6:208:52b:cafe::cc) by MN0P223CA0019.outlook.office365.com
+ (2603:10b6:208:52b::34) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9298.16 via Frontend Transport; Tue,
+ 11 Nov 2025 12:25:16 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ BL02EPF00021F69.mail.protection.outlook.com (10.167.249.5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9320.13 via Frontend Transport; Tue, 11 Nov 2025 12:25:25 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 11 Nov
+ 2025 04:25:18 -0800
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.20; Tue, 11 Nov 2025 04:25:18 -0800
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
+ (10.126.190.181) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
+ Transport; Tue, 11 Nov 2025 04:25:13 -0800
+From: Tariq Toukan <tariqt@nvidia.com>
+To: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+CC: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>, Gal Pressman <gal@nvidia.com>, "Leon
+ Romanovsky" <leonro@nvidia.com>, Yael Chemla <ychemla@nvidia.com>, "Moshe
+ Shemesh" <moshe@nvidia.com>, Shahar Shitrit <shshitrit@nvidia.com>, "Maher
+ Sanalla" <msanalla@nvidia.com>
+Subject: [PATCH mlx5-next] net/mlx5: Expose definition for 1600Gbps link mode
+Date: Tue, 11 Nov 2025 14:24:48 +0200
+Message-ID: <1762863888-1092798-1-git-send-email-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.8.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] RDMA/rxe: Avoid -Wflex-array-member-not-at-end
- warnings
-To: Leon Romanovsky <leon@kernel.org>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <aRKu5lNV04Sq82IG@kspp> <20251111115621.GO15456@unreal>
-Content-Language: en-US
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20251111115621.GO15456@unreal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 106.72.98.64
-X-Source-L: No
-X-Exim-ID: 1vInGI-00000002Z9Q-2mWK
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: m106072098064.v4.enabler.ne.jp ([10.221.86.44]) [106.72.98.64]:45116
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfKGhfxBB7elHhxN+4afeBW6AA7O9Kr4FbZDN3zvrew6RRyaUHwMt0yhT2vyyWs0RFZERtx2xsW8EkDH4h9gtA3nPOxP+HIrm45g9KrI71DFS9I4/RWxP
- rGFKAXOJkeJJwZLIE1lkc0p4QvXMARLsRBemsZhen8sIvTbkYU5E8MpMzjFJq8nIEZmETwdFAlWMYcABcEPotbLb50BlP6u992DaWXEbwuLnBTYjXlp1eT+s
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL02EPF00021F69:EE_|SA1PR12MB6679:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2705dddf-b262-4e2f-6865-08de211d64be
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|376014|36860700013|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?QmltMvdEpVpfkVbqBWmKwCSM4oWQeFeklI+YzITp28nTZl1VDlvDdKfHoDMG?=
+ =?us-ascii?Q?aKCD+loYMT9l2oxoyA04nOGYi6OSAh+hWUqOs3yZs0aOQTGXuGUdElYH4Okl?=
+ =?us-ascii?Q?a7wadsM81Dgok6i5W89A40FIIEEq4pkhmOJNnrlNLrUnjQjwjjd+1Yhystc5?=
+ =?us-ascii?Q?tUeiZo/g0NmiJkbrutWcI72w3cixJfhknaJ2AjY11/ZRYsqcMJqjpmHcqWyh?=
+ =?us-ascii?Q?xJ2+fSD+k0YqNML/Q5l/N1UefMSG/IEj3vqk780G9JsXqTAL4lJg8L2OQmic?=
+ =?us-ascii?Q?CEaHMDyv/0ZvSsaQ413jQE14SgUv0mRh3EgpOEVxGddBmx1+oe8vwyFyoQHT?=
+ =?us-ascii?Q?v2yAv8r2KFxpfgz2ABKv6kyuKsTOxYn1vgavGnnQIqZdQVyeJOQ5DVqUy23u?=
+ =?us-ascii?Q?hdrGRQLVIhO6ueMkgAlVOiffpdOpQQAdnBZ9jjt4XdVDA3w4BK/8XnO2nVzz?=
+ =?us-ascii?Q?avK3yMCDUjtOLzLoOAOv0uXtflSv+f/09fOo80cA1pl8ZNgV44v5PbIK6Gn9?=
+ =?us-ascii?Q?f08vkkCBUKhENxI7HzFuZChm6y2dIbDJd2gW0VnARVf8/uX/MjysWy7PaZzA?=
+ =?us-ascii?Q?JahmsKaxFKnRgsolrFxJ0QhkuXJsIVtlJTzBTQj29PrJu/R9RS+YDT1Co0mb?=
+ =?us-ascii?Q?3b9nI52+oySqw2JIXoDuW4WHimjHwNzYuvO9X0JJH/UaKd+EVlXSO3ZXDKER?=
+ =?us-ascii?Q?Q271qLv8SPVcxghGiWLn+Sbhi90DL0lgeQ6bHBZ9vHQLhThw0hTUiPkWNr/1?=
+ =?us-ascii?Q?cAEzPhKOCmvlsXxYQNNfTnxC9mvdfHpqO6kWYOYNV0TVGZLg85Sv30wtgUoH?=
+ =?us-ascii?Q?3+Vwq/OG5AhNGX5WIY3wknGLgbx24w+d+qkuv+p7bNx9XnRZNMginssg9XQo?=
+ =?us-ascii?Q?8Xjbudab8Wx9LuWgoHUdz5CSpLUBouTCYHSN/sq5r04pdrwZS6NVq4jjPc9/?=
+ =?us-ascii?Q?SEGUCxcsj72JsiauP7J80kduaWQkxbgVlFvc4u+NfCsz5YkUGJFyFSKl7DN2?=
+ =?us-ascii?Q?iZgyULO93vRqFCVtv7aE/RgVerfwIUNwmODurZc7feORIsJlIKZWjqpb4mcG?=
+ =?us-ascii?Q?/DnqjiJmJ/Dn6zw6dA1jYAJOAcrE+G7Kdz9+OJ9OyQwTjUkLCeJlH6zyaYt0?=
+ =?us-ascii?Q?hrSDvxzHA4HmYmVHsEdwSeEkC69Fqno1Vy3PDusWiggPCGa4uvYdrU/Y2duZ?=
+ =?us-ascii?Q?g0BaBopG7Esj1twJv1781rsPY6OQvdbTDKNJCGhfWSb3X/2jg3z5GMtk0jjr?=
+ =?us-ascii?Q?Nn3ar82WgruTPhD3wAODSqpXqaonPwC4I2EP9aY+L4zt1S8eRYWM89uSv4o5?=
+ =?us-ascii?Q?navUOF1i0yANBeu9X3MQTC0qgiKIH0ns3Tn+3qdvDIl8Z7jU3VKKl4JeGqdo?=
+ =?us-ascii?Q?/ANZysmvldDbg6LOjc+4v+7EPTYNZioI5wf9Ke5rkX67hv7w86h4J5mbJSyN?=
+ =?us-ascii?Q?5LWjwTZzZKedRhBBKcw0jrdaZFXaPjI0Sk574OdFPWwpRLvqlaNrzkN87U9u?=
+ =?us-ascii?Q?oYXXeNnYhmQ3a0ffaXdODRT+3kmbxi9JvEhE6JNVJRHLUjvAMom6X57b5nHV?=
+ =?us-ascii?Q?dJgpo753Zb6Q1fN7yVY=3D?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(376014)(36860700013)(1800799024);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Nov 2025 12:25:25.9934
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2705dddf-b262-4e2f-6865-08de211d64be
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL02EPF00021F69.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6679
 
+This patch exposes new link mode for 1600Gbps, utilizing 8 lanes at
+200Gbps per lane.
 
+Co-developed-by: Yael Chemla <ychemla@nvidia.com>
+Reviewed-by: Shahar Shitrit <shshitrit@nvidia.com>
+Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+---
+ include/linux/mlx5/port.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 11/11/25 20:56, Leon Romanovsky wrote:
-> On Tue, Nov 11, 2025 at 12:35:02PM +0900, Gustavo A. R. Silva wrote:
->> -Wflex-array-member-not-at-end was introduced in GCC-14, and we are
->> getting ready to enable it, globally.
->>
->> Use the new TRAILING_OVERLAP() helper to fix the following warning:
->>
->> 21 drivers/infiniband/sw/rxe/rxe_verbs.h:271:33: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
->>
->> This helper creates a union between a flexible-array member (FAM) and a
->> set of MEMBERS that would otherwise follow it.
->>
->> This overlays the trailing MEMBER struct ib_sge sge[RXE_MAX_SGE]; onto
->> the FAM struct rxe_recv_wqe::dma.sge, while keeping the FAM and the
->> start of MEMBER aligned.
->>
->> The static_assert() ensures this alignment remains, and it's
->> intentionally placed inmediately after the related structure --no
->> blank line in between.
->>
->> Lastly, move the conflicting declaration struct rxe_resp_info resp;
->> to the end of the corresponding structure.
->>
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->>   drivers/infiniband/sw/rxe/rxe_verbs.h | 18 +++++++++++-------
->>   1 file changed, 11 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
->> index fd48075810dd..6498d61e8956 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
->> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
->> @@ -219,12 +219,6 @@ struct rxe_resp_info {
->>   	u32			rkey;
->>   	u32			length;
->>   
->> -	/* SRQ only */
->> -	struct {
->> -		struct rxe_recv_wqe	wqe;
->> -		struct ib_sge		sge[RXE_MAX_SGE];
->> -	} srq_wqe;
->> -
->>   	/* Responder resources. It's a circular list where the oldest
->>   	 * resource is dropped first.
->>   	 */
->> @@ -232,7 +226,15 @@ struct rxe_resp_info {
->>   	unsigned int		res_head;
->>   	unsigned int		res_tail;
->>   	struct resp_res		*res;
->> +
->> +	/* SRQ only */
->> +	/* Must be last as it ends in a flexible-array member. */
->> +	TRAILING_OVERLAP(struct rxe_recv_wqe, wqe, dma.sge,
->> +		struct ib_sge		sge[RXE_MAX_SGE];
->> +	) srq_wqe;
-> 
-> Will this change be enough?
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> index fd48075810dd..9ab11421a585 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> @@ -219,12 +219,6 @@ struct rxe_resp_info {
->          u32                     rkey;
->          u32                     length;
->   
-> -       /* SRQ only */
-> -       struct {
-> -               struct rxe_recv_wqe     wqe;
-> -               struct ib_sge           sge[RXE_MAX_SGE];
-> -       } srq_wqe;
-> -
->          /* Responder resources. It's a circular list where the oldest
->           * resource is dropped first.
->           */
-> @@ -232,6 +226,12 @@ struct rxe_resp_info {
->          unsigned int            res_head;
->          unsigned int            res_tail;
->          struct resp_res         *res;
-> +
-> +       /* SRQ only */
-> +       struct {
-> +               struct ib_sge           sge[RXE_MAX_SGE];
-> +               struct rxe_recv_wqe     wqe;
-> +       } srq_wqe;
->   };
+diff --git a/include/linux/mlx5/port.h b/include/linux/mlx5/port.h
+index 58770b86f793..1df9d9a57bbc 100644
+--- a/include/linux/mlx5/port.h
++++ b/include/linux/mlx5/port.h
+@@ -112,6 +112,7 @@ enum mlx5e_ext_link_mode {
+ 	MLX5E_400GAUI_2_400GBASE_CR2_KR2	= 17,
+ 	MLX5E_800GAUI_8_800GBASE_CR8_KR8	= 19,
+ 	MLX5E_800GAUI_4_800GBASE_CR4_KR4	= 20,
++	MLX5E_1600TAUI_8_1600TBASE_CR8_KR8	= 23,
+ 	MLX5E_EXT_LINK_MODES_NUMBER,
+ };
+ 
 
-The question is if this is really what you want?
-
-sge[RXE_MAX_SGE] is of the following type:
-
-struct ib_sge {
-         u64     addr;
-         u32     length;
-         u32     lkey;
-};
-
-and struct rxe_recv_wqe::dma.sge[] is of type:
-
-struct rxe_sge {
-         __aligned_u64 addr;
-         __u32   length;
-         __u32   lkey;
-};
-
-Both types are basically the same, and the original code looks
-pretty much like what people do when they want to pre-allocate
-a number of elements (of the same element type as the flex array)
-for a flexible-array member.
-
-Based on the above, the change you suggest seems a bit suspicious,
-and I'm not sure that's actually what you want?
-
-Thanks
--Gustavo
-
-
-
-
+base-commit: 583b4fe1c19d978bb787e0adf9ce469cb7f68455
+-- 
+2.31.1
 
 
