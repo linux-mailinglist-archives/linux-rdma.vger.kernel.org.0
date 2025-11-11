@@ -1,187 +1,255 @@
-Return-Path: <linux-rdma+bounces-14406-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14407-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 342B2C4EDC1
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Nov 2025 16:51:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D9A74C4F2D3
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Nov 2025 18:05:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2388F4EAD68
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Nov 2025 15:49:05 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 449694E417C
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Nov 2025 17:02:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D57336A011;
-	Tue, 11 Nov 2025 15:49:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6288377EAF;
+	Tue, 11 Nov 2025 17:02:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QDuUJTI5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f5x3C+2y"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 049FD34AAE0;
-	Tue, 11 Nov 2025 15:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5406B377E99;
+	Tue, 11 Nov 2025 17:02:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762876141; cv=none; b=XLw5QO8PM7WBx6NxCXsM7qysulCGROLhTpz0rO7preYEg+9G0V4AXpT8JNPLhsZBfUhX2/IvPlaDadugSkDqzTEbz0YLo2Hirutc8zMWHDJN8u9yaf1QojliWnSGXhnirJO4CQjGjaXl2cHe7ILpulwQFiJaZdYzvdgzFK8he5Y=
+	t=1762880548; cv=none; b=mJzUeyMVgzzvYjYzj3AXZE+OOSb5QVtDPtW28KhLkEy9V+UBInzXRuTg5H4AMhgUhL9B7mUI5rnYRJqWBGPb+CCeH/dj8clbja+pnT1Lpt7wPXtubuo9N+K38HUPoka+oSSXiHrpSEAONIRAiPSStayq7ItdU9l1CtXiYT0JLkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762876141; c=relaxed/simple;
-	bh=Gd488RsUGSpxyLROhr/DeWbJLb69PP0AZLYMgSD5IeI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BOSr5zJKrDQUQ7NwVn0ZL/wWyrO5120bIt028oXrFcsXez/Egze05TcxQ7x5lZ6ExAdGlIWxhFZqwXQWM3unUqDgYsqtBgsTNeiI2J9Wj/cbvK5kEKC7WzFdfANMTm4CWGFqAJqYc+ridIIbtdliiqoRltE35HuIKHzVuUVfhqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QDuUJTI5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFC01C16AAE;
-	Tue, 11 Nov 2025 15:48:58 +0000 (UTC)
+	s=arc-20240116; t=1762880548; c=relaxed/simple;
+	bh=aC8mFVsiXSKQII7rj8zfxhDyGl3N32KQM4gxk2P9u9g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rD8PXiUtOTwue+Xng7uETUAkEyD4fPgsuCMXZiCKTISKhhAwxnxnMWtQRjBULzeR9qcUhJ8weyesySSqf67q74Cy36A7J1mCctocatjllYNRCRi2Vk9DREhQ4w1xXl+w3x7unW9DePo2Un2zPpsxIqEbdMkBwD5mCwX8Q3ZgBFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f5x3C+2y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1F8CC19423;
+	Tue, 11 Nov 2025 17:02:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762876140;
-	bh=Gd488RsUGSpxyLROhr/DeWbJLb69PP0AZLYMgSD5IeI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=QDuUJTI5rcGRBMT8WX8HL0Z8Irit8SyhSKMs6hhQNmT3MJFpqKEPCFRhBHJ0lcXPQ
-	 R+KcnFRHHlDqku8Yg/Y3LYomSmAi35QZ57Jyf+SUfECgXj6KvMZGg0qZAxxOY2d9OF
-	 ocGwd+Q4E1Zkenr/EQWsFJlrgLqY0fXOYajg8rDKN6qRKFWn7/KFdaucXnYoVvfiD0
-	 gl3FZEosbxMS8rga/mc6vUc2hCoFYoYpzqNTJiLCYc23k/Yqfo5zYbcDC1rr2GvjmV
-	 GwAQrmp4Y6MGvKYrLy0pMtFLvC78r/cmHbSlVPSHWmYOa4gQJO4ZGjAiZZ5bA7Q10a
-	 +onXuhoxqZ2rA==
-Date: Tue, 11 Nov 2025 07:48:57 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: Saeed Mahameed <saeed@kernel.org>, Daniel Zahka
- <daniel.zahka@gmail.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Simon
- Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Srujana Challa
- <schalla@marvell.com>, Bharat Bhushan <bbhushan2@marvell.com>, Herbert Xu
- <herbert@gondor.apana.org.au>, Brett Creeley <brett.creeley@amd.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, Michael Chan
- <michael.chan@broadcom.com>, Pavan Chebbi <pavan.chebbi@broadcom.com>, Tony
- Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel
- <przemyslaw.kitszel@intel.com>, Sunil Goutham <sgoutham@marvell.com>, Linu
- Cherian <lcherian@marvell.com>, Geetha sowjanya <gakula@marvell.com>, Jerin
- Jacob <jerinj@marvell.com>, hariprasad <hkelam@marvell.com>, Subbaraya
- Sundeep <sbhatta@marvell.com>, Tariq Toukan <tariqt@nvidia.com>, Saeed
- Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Mark Bloch
- <mbloch@nvidia.com>, Ido Schimmel <idosch@nvidia.com>, Petr Machata
- <petrm@nvidia.com>, Manish Chopra <manishc@marvell.com>, Maxime Coquelin
- <mcoquelin.stm32@gmail.com>, Alexandre Torgue
- <alexandre.torgue@foss.st.com>, Siddharth Vadapalli <s-vadapalli@ti.com>,
- Roger Quadros <rogerq@kernel.org>, Loic Poulain
- <loic.poulain@oss.qualcomm.com>, Sergey Ryazanov <ryazanov.s.a@gmail.com>,
- Johannes Berg <johannes@sipsolutions.net>, Vladimir Oltean
- <olteanv@gmail.com>, Michal Swiatkowski
- <michal.swiatkowski@linux.intel.com>, Aleksandr Loktionov
- <aleksandr.loktionov@intel.com>, Dave Ertman <david.m.ertman@intel.com>,
- Vlad Dumitrescu <vdumitrescu@nvidia.com>, "Russell King (Oracle)"
- <rmk+kernel@armlinux.org.uk>, Alexander Sverdlin
- <alexander.sverdlin@gmail.com>, Lorenzo Bianconi <lorenzo@kernel.org>,
- netdev@vger.kernel.org, linux-doc@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next v3 2/2] net/mlx5: implement swp_l4_csum_mode
- via devlink params
-Message-ID: <20251111074857.7fdb7e88@kernel.org>
-In-Reply-To: <cgg6fxjjf6zq6yyzx4njhjmetrlhjgor4lzktwe6nls6rgqd6s@c3abd3ehlzvr>
-References: <20251107204347.4060542-1-daniel.zahka@gmail.com>
-	<20251107204347.4060542-3-daniel.zahka@gmail.com>
-	<aQ7f1T1ZFUKRLQRh@x130>
-	<jhmdihtp63rblcjiy2pibhnz2sikvbm6bhnkclq3l2ndxgbqbb@e3t23x2x2r46>
-	<20251110154643.66d15800@kernel.org>
-	<aRKs6jXqSvC3G_R0@x130>
-	<cgg6fxjjf6zq6yyzx4njhjmetrlhjgor4lzktwe6nls6rgqd6s@c3abd3ehlzvr>
+	s=k20201202; t=1762880547;
+	bh=aC8mFVsiXSKQII7rj8zfxhDyGl3N32KQM4gxk2P9u9g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=f5x3C+2y1jD+A5cP+v5i8GCa6B/a+dIXL20RXE6Md41ka7o8g8EYVMKUW2N7yPjy9
+	 7G7zmmBQB/8i+T5SuWuIN+UUCnUsiz+NMNOcCH4QkYL3gynmSRBRhYV0LGTTh2TWAK
+	 3FFbsjD3yluks9jj5/kf9reZD3Y0eqzQIZZXHxvaqaQO5vj9lOCO1FAGbEwAVuoR7R
+	 LmZZXXDi7VoS7uVVjQCe7deT98bskfftEn8obU2om9HrNFtah24cZ8whp9gvMV/D+F
+	 kMHGyKCi+a1xYFj653hZ0qei3xqUYp6GO/hnUXRqZSaE03oYDJgDcimzFmPlP1yRyb
+	 6tGBIpxK9fFwg==
+Date: Tue, 11 Nov 2025 17:02:21 +0000
+From: Simon Horman <horms@kernel.org>
+To: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	longli@microsoft.com, kotaranov@microsoft.com,
+	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	dipayanroy@microsoft.com
+Subject: Re: [PATCH net-next, v3] net: mana: Implement ndo_tx_timeout and
+ serialize queue resets per port.
+Message-ID: <aRNsHUjW3PybGXCK@horms.kernel.org>
+References: <20251110103541.GA30450@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251110103541.GA30450@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 
-[stripping some of the bouncy CCs.]
-
-On Tue, 11 Nov 2025 15:39:03 +0100 Jiri Pirko wrote:
-> Tue, Nov 11, 2025 at 04:26:34AM +0100, saeed@kernel.org wrote:
-> >On 10 Nov 15:46, Jakub Kicinski wrote:  
-> >> On Sun, 9 Nov 2025 11:46:37 +0100 Jiri Pirko wrote:  
-> >> > >So, I checked a couple of flows internally, and it seems this allows
-> >> > >some flexibility in the FW to decide later on which mode to pick,
-> >> > >based on other parameters, which practically means
-> >> > >"user has no preference on this param". Driver can only find out
-> >> > >after boot, when it reads the runtime capabilities, but still
-> >> > >this is a bug, by the time the driver reads this (in devlink), the
-> >> > >default value should've already been determined by FW, so FW must
-> >> > >return the actual runtime value. Which can only be one of the following  
-> >> > 
-> >> > I don't think it is correct to expose the "default" as a value.
-> >> > 
-> >> > On read, user should see the configured value, either "full_csum" or
-> >> > "l4_only". Reporting "default" to the user does not make any sense.
-> >> > On write, user should pass either "full_csum" or "l4_only". Why we would
-> >> > ever want to pass "default"?  
-> >> 
-> >> FWIW I agree that this feels a bit odd. Should the default be a flag
-> >> attr? On get flag being present means the value is the FW default (no
-> >> override present). On set passing the flag means user wants to reset
-> >> to FW default (remove override)?
-
-Y'all did not respond to this part, should we assume that what 
-I described is clear and makes sense? I think we should make that
-part of the series, unlike the pending indication.
-
-> >> > Regardless this patch, since this is param to be reflected on fw reboot
-> >> > (permanent cmode), I think it would be nice to expose indication if
-> >> > param value passed to user currently affects the fw, or if it is going
-> >> > to be applied after fw reboot. Perhaps a simple bool attr would do?  
-> >> 
-> >> IIUC we're basically talking about user having no information that
-> >> the update is pending? Could this be done by the core? Core can do
-> >> a ->get prior to calling ->set and if the ->set succeeds and
-> >> cmode != runtime record that the update is pending?
-> >>   
-> >
-> >Could work if on GET driver reads 'current' value from FW, then it should
-> >be simpler if GET != SET then 'pending', one problem though is if SET was
-> >done by external tool or value wasn't applied after reboot, then we loose
-> >that information, but do we care? I think we shouldn't.
-> >  
-> >> That feels very separate from the series tho, there are 3 permanent
-> >> params in mlx5, already. Is there something that makes this one special?  
+On Mon, Nov 10, 2025 at 02:35:41AM -0800, Dipayaan Roy wrote:
+> Implement .ndo_tx_timeout for MANA so any stalled TX queue can be detected
+> and a device-controlled port reset for all queues can be scheduled to a
+> ordered workqueue. The reset for all queues on stall detection is
+> recomended by hardware team.
 > 
-> Agreed. That is why I wrote "regardless this patch". But I think the
-> pending indication is definitelly nice to have.
+> The change introduces a single ordered workqueue
+> ("mana_per_port_queue_reset_wq") with WQ_UNBOUND | WQ_MEM_RECLAIM and
+> queues exactly one work_struct per port onto it.
 
-Yes, I've been wondering why it's missing since the day devlink params
-were added :)
+I see that this goes some way to addressing Jakub's feedback
+on the commit message in his review of v2. But I this paragraph
+isn't adding much in it's current form. It seems to me some
+explanation of why why WQ_UNBOUND and WQ_MEM_RECLAIM are used is
+appropriate.
 
-> >In mlx5 they all have the same behavior, devlink sets 'next' value, devlink
-> >reads 'next' value. The only special thing about the new param
-> >is that it has a 'device_default' value and when you read that from 'next' it
-> >will always show 'device_default' as the actual value is only
-> >known at run time ,e.g. 'next boot'.
-> >
-> >I think the only valid solution for permanent and drv_init params is to
-> >have 'next' and 'current' values reported by driver on read. Or maybe go just
-> >with  'set' != 'get' then 'pending' as discussed above ?  
+[1] https://lore.kernel.org/all/20251029182233.59aea2d3@kernel.org/
+
+> Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
+> Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+> Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+> ---
+> Changes in v3:
+>   -Fixed commit meesage, removed rtnl_trylock and added
+>    disable_work_sync, fixed mana_queue_reset_work, and few
+>    cosmetics.
+> Changes in v2:
+>   -Fixed cosmetic changes.
+> ---
+> ---
+>  drivers/net/ethernet/microsoft/mana/mana_en.c | 78 ++++++++++++++++++-
+>  include/net/mana/gdma.h                       |  7 +-
+>  include/net/mana/mana.h                       |  7 ++
+>  3 files changed, 90 insertions(+), 2 deletions(-)
 > 
-> Hmm, is it possible to rebind the driver without fw going through
-> next-boot phase? I'm wondering if it wouldn't be safer to have this
-> pending flag set to be responsibility of the driver...
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> index cccd5b63cee6..636df3b066c5 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> @@ -298,6 +298,42 @@ static int mana_get_gso_hs(struct sk_buff *skb)
+>  	return gso_hs;
+>  }
+>  
+> +static void mana_per_port_queue_reset_work_handler(struct work_struct *work)
+> +{
+> +	struct mana_queue_reset_work *reset_queue_work =
+> +			container_of(work, struct mana_queue_reset_work, work);
+> +
+> +	struct mana_port_context *apc = container_of(reset_queue_work,
+> +						     struct mana_port_context,
+> +						     queue_reset_work);
+> +	struct net_device *ndev = apc->ndev;
+> +	int err;
+> +
+> +	rtnl_lock();
+> +
+> +	/* Pre-allocate buffers to prevent failure in mana_attach later */
+> +	err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
+> +	if (err) {
+> +		netdev_err(ndev, "Insufficient memory for reset post tx stall detection\n");
+> +		goto out;
+> +	}
+> +
+> +	err = mana_detach(ndev, false);
+> +	if (err) {
+> +		netdev_err(ndev, "mana_detach failed: %d\n", err);
+> +		goto dealloc_pre_rxbufs;
+> +	}
+> +
+> +	err = mana_attach(ndev);
+> +	if (err)
+> +		netdev_err(ndev, "mana_attach failed: %d\n", err);
+> +
+> +dealloc_pre_rxbufs:
+> +	mana_pre_dealloc_rxbufs(apc);
+> +out:
+> +	rtnl_unlock();
+> +}
+> +
+>  netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>  {
+>  	enum mana_tx_pkt_format pkt_fmt = MANA_SHORT_PKT_FMT;
+> @@ -802,6 +838,23 @@ static int mana_change_mtu(struct net_device *ndev, int new_mtu)
+>  	return err;
+>  }
+>  
+> +static void mana_tx_timeout(struct net_device *netdev, unsigned int txqueue)
+> +{
+> +	struct mana_port_context *apc = netdev_priv(netdev);
+> +	struct mana_context *ac = apc->ac;
+> +	struct gdma_context *gc = ac->gdma_dev->gdma_context;
+> +
+> +	/* Already in service, hence tx queue reset is not required.*/
+> +	if (gc->in_service)
+> +		return;
+> +
+> +	/* Note: If there are pending queue reset work for this port(apc),
+> +	 * subsequent request queued up from here are ignored. This is because
+> +	 * we are using the same work instance per port(apc).
+> +	 */
+> +	queue_work(ac->per_port_queue_reset_wq, &apc->queue_reset_work.work);
+> +}
+> +
+>  static int mana_shaper_set(struct net_shaper_binding *binding,
+>  			   const struct net_shaper *shaper,
+>  			   struct netlink_ext_ack *extack)
+> @@ -884,7 +937,9 @@ static const struct net_device_ops mana_devops = {
+>  	.ndo_bpf		= mana_bpf,
+>  	.ndo_xdp_xmit		= mana_xdp_xmit,
+>  	.ndo_change_mtu		= mana_change_mtu,
+> -	.net_shaper_ops         = &mana_shaper_ops,
+> +	.ndo_tx_timeout		= mana_tx_timeout,
+> +	.net_shaper_ops		= &mana_shaper_ops,
+> +
+>  };
+>  
+>  static void mana_cleanup_port_context(struct mana_port_context *apc)
+> @@ -3244,6 +3299,7 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
+>  	ndev->min_mtu = ETH_MIN_MTU;
+>  	ndev->needed_headroom = MANA_HEADROOM;
+>  	ndev->dev_port = port_idx;
+> +	ndev->watchdog_timeo = 15 * HZ;
+>  	SET_NETDEV_DEV(ndev, gc->dev);
+>  
+>  	netif_set_tso_max_size(ndev, GSO_MAX_SIZE);
+> @@ -3283,6 +3339,10 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
+>  
+>  	debugfs_create_u32("current_speed", 0400, apc->mana_port_debugfs, &apc->speed);
+>  
+> +	/* Initialize the per port queue reset work.*/
+> +	INIT_WORK(&apc->queue_reset_work.work,
+> +		  mana_per_port_queue_reset_work_handler);
+> +
 
-The downside is that drivers may either have bugs or not implement 
-the new feature. So when there's no indication of pending change
-the user will have no idea whether its because there's none or the
-driver simply does not report both. 
+I think it would make more sense to move this to before the call to
+register_netdev(), which is a few lines above this hunk.
 
-My experience implementing the pending FW version in a couple of
-products is that it takes a lot of "discussions" to get FW people 
-to implement this sort of a thing right. mlx5 already has the right 
-FW APIs so we should allow their full use. But I don't think the 
-"what if user change the setting with fwctl", "what if user reloaded
-the driver" corner cases should stop us from trying to get the core
-to implement 99% of the cases right.
+I suppose that because a watchdog timeout is involved, it won't happen in
+practice, but in theory could fire ndo_tx_timeout before INIT_WORK is
+called, resulting in access to the work queue before it is initialised.
 
-FTR I'm not aware of any Meta-internal products having permanent knobs.
-I just don't think we can depend on the random people that submit
-drivers these days to get this right. And devlink users will assume
-that it's Linux that sucks if it doesn't work right, not vendor X.
+>  	return 0;
+>  
+>  free_indir:
+> @@ -3488,6 +3548,15 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
+>  	if (ac->num_ports > MAX_PORTS_IN_MANA_DEV)
+>  		ac->num_ports = MAX_PORTS_IN_MANA_DEV;
+>  
+> +	ac->per_port_queue_reset_wq =
+> +			alloc_ordered_workqueue("mana_per_port_queue_reset_wq",
+> +						WQ_UNBOUND | WQ_MEM_RECLAIM);
+> +	if (!ac->per_port_queue_reset_wq) {
+> +		dev_err(dev, "Failed to allocate per port queue reset workqueue\n");
+> +		err = -ENOMEM;
+> +		goto out;
+> +	}
+> +
+>  	if (!resuming) {
+>  		for (i = 0; i < ac->num_ports; i++) {
+>  			err = mana_probe_port(ac, i, &ac->ports[i]);
 
-Long story short I think we can add the reporting of both values via GET
-but I'd definitely still like to see the core trying to do the tracking
-automatically.
+It is not strictly related to this patch, but the lines above the hunk
+below look like this:
+
+		apc = netdev_priv(ndev);
+		if (!ndev) {
+			if (i == 0)
+				dev_err(dev, "No net device to remove\n");
+
+If ndev is null then the call to netdev_priv() will result in a
+NULL pointer dereference. So I think it should be moved
+to after the check for !ndev.
+
+> @@ -3557,6 +3626,8 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
+>  			goto out;
+>  		}
+>  
+> +		disable_work_sync(&apc->queue_reset_work.work);
+> +
+>  		/* All cleanup actions should stay after rtnl_lock(), otherwise
+>  		 * other functions may access partially cleaned up data.
+>  		 */
+
+Comments on code flagged by Claude Code with
+https://github.com/masoncl/review-prompts/
 
