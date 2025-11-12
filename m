@@ -1,287 +1,111 @@
-Return-Path: <linux-rdma+bounces-14451-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14452-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBFA3C529D1
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Nov 2025 15:07:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 400C4C52AAD
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Nov 2025 15:21:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3C513BF4F9
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Nov 2025 13:55:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B1743B41A8
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Nov 2025 13:58:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EB5423E320;
-	Wed, 12 Nov 2025 13:55:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 199A623EA96;
+	Wed, 12 Nov 2025 13:56:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fzxacDtT"
+	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="bpLgztjA"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4321146A66
-	for <linux-rdma@vger.kernel.org>; Wed, 12 Nov 2025 13:55:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB3B622A4FC
+	for <linux-rdma@vger.kernel.org>; Wed, 12 Nov 2025 13:56:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.251
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762955723; cv=none; b=mDAFGAC0gp2OkqBtxIhbjyIWsO3SmXfi6of8CT9rl4jV6o7InVp4tRIO1Kq5R4b1XsV5oMsLNfyr5N9er8K/Xm0MrKr7Qegn3LKSDqnY0C1PROZeE4p1OZVcmiWxdnat/U3Mk8ye/+fEt6BUcUbob7yKlVYmSGuaseIMtJeGmrE=
+	t=1762955794; cv=none; b=Y63UI8hq7jrCLk+KZfsj4HHDuDBqqFFOU+cCJ+cQMxRpg3Qkk/ZBMuIYtQ0oQRGp9DsWFbukD9yyCpQfH0Pz3ZBphAcrZo8NBWXp0cXlm07H6Cjyw3EOOa9c1TXEOJSeJ7BcaAbkRex3eb+zdpfJ+upGWsYdKLY/PsaHxcC2LHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762955723; c=relaxed/simple;
-	bh=mQTO3qMBrrbrec+vOaxyEQHikAOjUWJdth7psxqKQd8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FXqj9XSz0l19Qj8muCdj8MnAQDyQDkOh5wkqZPe6zRfCxqE3Sa/zwEghkX56MDoiBvRFMSPjPTWDcKLziPB/sHojsJrxrmXq2rRotdTyyg5z+yR/8jjI6//EzWUW76T/wUS/gVHUKl9+m7bepp1ikvL6YPZFwrzm0YK5mAic3eM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fzxacDtT; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-4ed9c1924adso7362461cf.1
-        for <linux-rdma@vger.kernel.org>; Wed, 12 Nov 2025 05:55:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1762955721; x=1763560521; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=olHOzv1HDFcRoKcRPLEDHq3xryx1qVQZjsYC+KidFkM=;
-        b=fzxacDtTVBYEo2ig08MTouQLS7EZwDZWtN79+J7Y3ueIH6+g2jBz3ciIGxzFFe+qPf
-         cvHJeMVlJEj66XqA++SQKpwKEp2atrNZhwUnCrIYYbjSjyZe+sM5Jh3QWzmD+tAy8nyF
-         ne5W0rKBRlNVylPNt4VRIVKl1MBKS4Rn1YTZF7W3dazXrzndxjQBQJ9AOcROgxAHxDH7
-         go8wydTVQPpnRFX3QnTfxGNhM9XCe9A0nq5xCq9uUmqHktOnuWKAIj+cbQGxRjVyV9Ng
-         jrNSUkdkChDcrf7ItxeyNY+DC+Fr7jT7f4kE1hz/VCq1aS+70H+iZofrnmgdY4fbZQwY
-         Lo+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762955721; x=1763560521;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=olHOzv1HDFcRoKcRPLEDHq3xryx1qVQZjsYC+KidFkM=;
-        b=FkyAI8rNF3GeZx34My8FmUYU03gUYqMmC6sFC8UPD4dKPuyVkj+cOwebZ+x1C4w7SJ
-         3Gs1smzORPOddgelhFMI0gid0edhjCPOOmdUpnDGDeQzZA6gHgdZu5BGhm0AHbVQCjkw
-         cqPyoMjZik1vmVYfR3j+1SMvXCWWl5jy9atod+d8ixIHOvC4ZduhHlIinPWFGld1SCpo
-         SK2np4U0vtIVSTwLGitaiLw7xhLaY0xVFuna2nGk8IsfybtjxRh3p3PD7pU0JTyMFcqs
-         Yf7MS6OaA/7SIcOLflQJ9SdhqQkaxp0yEBWymT84wCDPwHQ5mM8vasYNDlCRO8h4aYcT
-         5tHw==
-X-Forwarded-Encrypted: i=1; AJvYcCUWTAbry/SNIDGo7gg/FE2TSN3+1616KNLaFlmcUpNBWlN4/fVRhBNYRD7nT4dgXqhjl45VTZMMRZkP@vger.kernel.org
-X-Gm-Message-State: AOJu0YwYmn9Ea4doGZ83P8J2FPhypQ5xiv5Wv8ll0LbxBZuFnhNelMP7
-	RZqe7RZH2K/0MKtiN2yGnPNTUpFzxByJtZp4DePL+p5eol7aHuhDR3+2gZkoS8UtE1v6oVlvlo5
-	SZ93RwXXzE1W8r+bTP0HVytbN5y4b6YsBjgcc7Qtl
-X-Gm-Gg: ASbGncsCB0E0oUiVORO9eANOXu/h/M9boDErl3smcCq6tVAIpU3UizTDjqyMMFrgF5O
-	ev9GY0soiK8F/Wd8Iz+GG+dJT8GtVmQ9wPKvd7rZEOQHRsciSsYBRADfOaVlqSTF976b+qk7CYy
-	Whk7B4Hmfw7Qqew8EEeZfSK9qNACixE9BVd2MdL/tqntEEEgNBFJT0n1P2DmkpSIT9lH5z6Yx0i
-	cmZoGag2JNH4/lvjRWR2Wa21GdcFDdkvMcGT3Vy2VsBG4wAssPTvsZk9RRPZbfv1S0A+IpX
-X-Google-Smtp-Source: AGHT+IH5mtOTw5ql/3tyCPfaJIqRYelbwEuY2GxwU9SpSn2Er1u7sqEWL7WpBlKzBs9sxmpYzFu7SfnMl4N6pUgTzCk=
-X-Received: by 2002:a05:622a:54e:b0:4ec:f07c:3e73 with SMTP id
- d75a77b69052e-4eddbe1c28amr37326511cf.76.1762955720119; Wed, 12 Nov 2025
- 05:55:20 -0800 (PST)
+	s=arc-20240116; t=1762955794; c=relaxed/simple;
+	bh=3LcT0gPp+dC3cs///MYsr8SGXVixlb+IM3cvKkrMw4M=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=Zes2JDJAf3dvKVBluXJh8D45tEhKoJ42LDMuU1cbGrg8466wML+vb+EEVYuawI+/hprm2eo2AHQzmBoksEHicpbrqFhirpO2Ctplo3nDgk3s21zrdhtQqyHylyl96uh1TCYMxNS6YNItiWQ3tSHqyev6G9yvsMKlWUpVAt9Om2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=bpLgztjA; arc=none smtp.client-ip=185.125.188.251
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
+Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id 294F640EB0
+	for <linux-rdma@vger.kernel.org>; Wed, 12 Nov 2025 13:56:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+	s=20210803; t=1762955791;
+	bh=3LcT0gPp+dC3cs///MYsr8SGXVixlb+IM3cvKkrMw4M=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+	 Reply-To;
+	b=bpLgztjAAyTA5RFR7DSMymnQy8GPobdiDLrCrgxpPePT7JdWP5VRgAC8mujgAYhUw
+	 4EYjOn2BsPInRCQIOtaD20H1pLk2JZfg0n+wlQa8tYy16DzbpDpOFzGaaZ8FEauzUD
+	 iqvO6lhRloMR6Yu9UehdOYDYun32lmX9T2kiV13CeBhABdijQK5X4PoXZYQ4eGqsBu
+	 bmvvn9Y51FnWX1KjjbpXKfobsgTL7VNhVfmmbbj2xEe+ATDgn8JgOLYthH+XL3QG87
+	 SiSjgeZKz9QTdcOQ1H15Z4xcoakQeL2T63D1eLx0Wgqwl9tfLGJ801v6y+qxawb5Jh
+	 RvcidOFVsw6Jg==
+Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
+	by buildd-manager.lp.internal (Postfix) with ESMTP id F28AA7E982
+	for <linux-rdma@vger.kernel.org>; Wed, 12 Nov 2025 13:56:30 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1762952506-23593-1-git-send-email-gargaditya@linux.microsoft.com> <1762952506-23593-2-git-send-email-gargaditya@linux.microsoft.com>
-In-Reply-To: <1762952506-23593-2-git-send-email-gargaditya@linux.microsoft.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Wed, 12 Nov 2025 05:55:07 -0800
-X-Gm-Features: AWmQ_bluu1-AEflxU_3suMcewGFMw8kM6f7K2JJf4BGWU2evk1xj6w6Ga79O0hY
-Message-ID: <CANn89iL-RJ84WB9W8SoZn6_UMko8sLBb_FEGjjGZTEO+9KOpAg@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 1/2] net: mana: Handle SKB if TX SGEs exceed
- hardware limit
-To: Aditya Garg <gargaditya@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org, 
-	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net, 
-	kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com, 
-	kotaranov@microsoft.com, horms@kernel.org, shradhagupta@linux.microsoft.com, 
-	ssengar@linux.microsoft.com, ernis@linux.microsoft.com, 
-	dipayanroy@linux.microsoft.com, shirazsaleem@microsoft.com, leon@kernel.org, 
-	mlevitsk@redhat.com, yury.norov@gmail.com, sbhatta@marvell.com, 
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	gargaditya@microsoft.com
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-
-On Wed, Nov 12, 2025 at 5:11=E2=80=AFAM Aditya Garg
-<gargaditya@linux.microsoft.com> wrote:
->
-> The MANA hardware supports a maximum of 30 scatter-gather entries (SGEs)
-> per TX WQE. Exceeding this limit can cause TX failures.
-> Add ndo_features_check() callback to validate SKB layout before
-> transmission. For GSO SKBs that would exceed the hardware SGE limit, clea=
-r
-> NETIF_F_GSO_MASK to enforce software segmentation in the stack.
-> Add a fallback in mana_start_xmit() to linearize non-GSO SKBs that still
-> exceed the SGE limit.
->
-> Also, Add ethtool counter for SKBs linearized
->
-> Co-developed-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-> Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-> Signed-off-by: Aditya Garg <gargaditya@linux.microsoft.com>
-> ---
->  drivers/net/ethernet/microsoft/mana/mana_en.c | 37 ++++++++++++++++++-
->  .../ethernet/microsoft/mana/mana_ethtool.c    |  2 +
->  include/net/mana/gdma.h                       |  6 ++-
->  include/net/mana/mana.h                       |  1 +
->  4 files changed, 43 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/=
-ethernet/microsoft/mana/mana_en.c
-> index cccd5b63cee6..67ae5421f9ee 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> @@ -11,6 +11,7 @@
->  #include <linux/mm.h>
->  #include <linux/pci.h>
->  #include <linux/export.h>
-> +#include <linux/skbuff.h>
->
->  #include <net/checksum.h>
->  #include <net/ip6_checksum.h>
-> @@ -329,6 +330,20 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, str=
-uct net_device *ndev)
->         cq =3D &apc->tx_qp[txq_idx].tx_cq;
->         tx_stats =3D &txq->stats;
->
-> +       if (MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES &&
-> +           skb_shinfo(skb)->nr_frags + 2 > MAX_TX_WQE_SGL_ENTRIES) {
-> +               /* GSO skb with Hardware SGE limit exceeded is not expect=
-ed here
-> +                * as they are handled in mana_features_check() callback
-> +                */
-> +               if (skb_linearize(skb)) {
-> +                       netdev_warn_once(ndev, "Failed to linearize skb w=
-ith nr_frags=3D%d and is_gso=3D%d\n",
-> +                                        skb_shinfo(skb)->nr_frags,
-> +                                        skb_is_gso(skb));
-> +                       goto tx_drop_count;
-> +               }
-> +               apc->eth_stats.linear_pkt_tx_cnt++;
-> +       }
-> +
->         pkg.tx_oob.s_oob.vcq_num =3D cq->gdma_id;
->         pkg.tx_oob.s_oob.vsq_frame =3D txq->vsq_frame;
->
-> @@ -442,8 +457,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, stru=
-ct net_device *ndev)
->                 }
->         }
->
-> -       WARN_ON_ONCE(pkg.wqe_req.num_sge > MAX_TX_WQE_SGL_ENTRIES);
-> -
->         if (pkg.wqe_req.num_sge <=3D ARRAY_SIZE(pkg.sgl_array)) {
->                 pkg.wqe_req.sgl =3D pkg.sgl_array;
->         } else {
-> @@ -518,6 +531,25 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, str=
-uct net_device *ndev)
->         return NETDEV_TX_OK;
->  }
->
+X-Launchpad-Message-Rationale: Creator @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: package-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: FAILEDTOBUILD
+X-Launchpad-Build-Component: main
+X-Launchpad-Build-Arch: armhf
+X-Creator-Recipient: linux-rdma@vger.kernel.org
+X-Launchpad-PPA: linux-rdma-rdma-core-daily
+To: Linux RDMA <linux-rdma@vger.kernel.org>
+From: Launchpad Buildd System <noreply@launchpad.net>
+Subject: [Build #31483543] armhf build of rdma-core 61.0~202511120819+git7528827b~ubuntu20.04.1 in ubuntu focal RELEASE [~linux-rdma/ubuntu/rdma-core-daily]
+Message-Id: <176295579096.1218157.6034167137878024719.launchpad@buildd-manager.lp.internal>
+Date: Wed, 12 Nov 2025 13:56:30 -0000
+Reply-To: Launchpad Buildd System <noreply@launchpad.net>
+Sender: noreply@launchpad.net
+Errors-To: noreply@launchpad.net
+Precedence: bulk
+X-Generated-By: Launchpad (canonical.com); Revision="1d08ffb47b836b8a4c9a0f11318dfdea7420ab6d"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: fef7766c6cd2502a20f27215b78be972793c8543
 
 
-#if MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES
-
-> +static netdev_features_t mana_features_check(struct sk_buff *skb,
-> +                                            struct net_device *ndev,
-> +                                            netdev_features_t features)
-> +{
-> +       if (MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES &&
-> +           skb_shinfo(skb)->nr_frags + 2 > MAX_TX_WQE_SGL_ENTRIES) {
-> +               /* Exceeds HW SGE limit.
-> +                * GSO case:
-> +                *   Disable GSO so the stack will software-segment the s=
-kb
-> +                *   into smaller skbs that fit the SGE budget.
-> +                * Non-GSO case:
-> +                *   The xmit path will attempt skb_linearize() as a fall=
-back.
-> +                */
-> +               if (skb_is_gso(skb))
-
-No need to test skb_is_gso(skb), you can clear bits, this will be a
-NOP if the packet is non GSO anyway.
-
-> +                       features &=3D ~NETIF_F_GSO_MASK;
-> +       }
-> +       return features;
-> +}
-
-#endif
-
-> +
->  static void mana_get_stats64(struct net_device *ndev,
->                              struct rtnl_link_stats64 *st)
->  {
-> @@ -878,6 +910,7 @@ static const struct net_device_ops mana_devops =3D {
->         .ndo_open               =3D mana_open,
->         .ndo_stop               =3D mana_close,
->         .ndo_select_queue       =3D mana_select_queue,
-> +       .ndo_features_check     =3D mana_features_check,
-
-Note that if your mana_features_check() is a nop if MAX_SKB_FRAGS is
-small enough,
-you could set a non NULL .ndo_features_check based on a preprocessor condit=
-ion
-
-#if MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES
-    .ndo_features_check =3D ....
-#endif
-
-This would avoid an expensive indirect call when possible.
+ * Source Package: rdma-core
+ * Version: 61.0~202511120819+git7528827b~ubuntu20.04.1
+ * Architecture: armhf
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Component: main
+ * State: Failed to build
+ * Duration: 8 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+build/31483543/+files/buildlog_ubuntu-focal-armhf.rdma-core_61.0~2025=
+11120819+git7528827b~ubuntu20.04.1_BUILDING.txt.gz
+ * Builder: https://launchpad.net/builders/bos03-arm64-116
+ * Source: not available
 
 
->         .ndo_start_xmit         =3D mana_start_xmit,
->         .ndo_validate_addr      =3D eth_validate_addr,
->         .ndo_get_stats64        =3D mana_get_stats64,
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers=
-/net/ethernet/microsoft/mana/mana_ethtool.c
-> index a1afa75a9463..fa5e1a2f06a9 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> @@ -71,6 +71,8 @@ static const struct mana_stats_desc mana_eth_stats[] =
-=3D {
->         {"tx_cq_err", offsetof(struct mana_ethtool_stats, tx_cqe_err)},
->         {"tx_cqe_unknown_type", offsetof(struct mana_ethtool_stats,
->                                         tx_cqe_unknown_type)},
-> +       {"linear_pkt_tx_cnt", offsetof(struct mana_ethtool_stats,
-> +                                       linear_pkt_tx_cnt)},
->         {"rx_coalesced_err", offsetof(struct mana_ethtool_stats,
->                                         rx_coalesced_err)},
->         {"rx_cqe_unknown_type", offsetof(struct mana_ethtool_stats,
-> diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-> index 637f42485dba..84614ebe0f4c 100644
-> --- a/include/net/mana/gdma.h
-> +++ b/include/net/mana/gdma.h
-> @@ -592,6 +592,9 @@ enum {
->  #define GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE BIT(17)
->  #define GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE BIT(6)
->
-> +/* Driver supports linearizing the skb when num_sge exceeds hardware lim=
-it */
-> +#define GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE BIT(20)
-> +
->  #define GDMA_DRV_CAP_FLAGS1 \
->         (GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
->          GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
-> @@ -601,7 +604,8 @@ enum {
->          GDMA_DRV_CAP_FLAG_1_DYNAMIC_IRQ_ALLOC_SUPPORT | \
->          GDMA_DRV_CAP_FLAG_1_SELF_RESET_ON_EQE | \
->          GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE | \
-> -        GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE)
-> +        GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE | \
-> +        GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE)
->
->  #define GDMA_DRV_CAP_FLAGS2 0
->
-> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-> index 8906901535f5..50a532fb30d6 100644
-> --- a/include/net/mana/mana.h
-> +++ b/include/net/mana/mana.h
-> @@ -404,6 +404,7 @@ struct mana_ethtool_stats {
->         u64 hc_tx_err_gdma;
->         u64 tx_cqe_err;
->         u64 tx_cqe_unknown_type;
-> +       u64 linear_pkt_tx_cnt;
->         u64 rx_coalesced_err;
->         u64 rx_cqe_unknown_type;
->  };
-> --
-> 2.43.0
->
+
+If you want further information about this situation, feel free to
+contact us by asking a question on Launchpad
+(https://answers.launchpad.net/launchpad/+addquestion).
+
+--=20
+armhf build of rdma-core 61.0~202511120819+git7528827b~ubuntu20.04.1 in ubu=
+ntu focal RELEASE
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+build/31=
+483543
+
+You are receiving this email because you created this version of this
+package.
+
 
