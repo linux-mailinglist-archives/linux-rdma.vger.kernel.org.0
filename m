@@ -1,39 +1,39 @@
-Return-Path: <linux-rdma+bounces-14431-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14425-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B23DCC5162A
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Nov 2025 10:37:55 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 069D4C5181E
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Nov 2025 10:57:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 945FB1882EF3
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Nov 2025 09:37:09 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B63134FF89D
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Nov 2025 09:36:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31EDB3009F1;
-	Wed, 12 Nov 2025 09:35:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73EFE2FFDDF;
+	Wed, 12 Nov 2025 09:35:17 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from canpmsgout06.his.huawei.com (canpmsgout06.his.huawei.com [113.46.200.221])
+Received: from canpmsgout10.his.huawei.com (canpmsgout10.his.huawei.com [113.46.200.225])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B957F301000
-	for <linux-rdma@vger.kernel.org>; Wed, 12 Nov 2025 09:35:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.221
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA95E2FF150
+	for <linux-rdma@vger.kernel.org>; Wed, 12 Nov 2025 09:35:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.225
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762940123; cv=none; b=HNqrtQvC5FdSWE0+UOdJKhbZMtuBnawMQglJ9dFajRgokoqKULDhIs9BRetMoDKpfb/hZuke2q1ZiFBbf1e/EddSRqn06e8f5XsjSZgC7MCObupZEGVEMBy876MWb7qIwasOnj94/j/Wtmh3W4+fTcf2CRXWFhGdY6OsgQX3g20=
+	t=1762940117; cv=none; b=RCcF7FILT0aEUTBxwzrScsReiaI/w/sK8taGCrp8/FuemzqAo9HfBmgZATp7uJPYQQX+CSDZ1Ok1YpG1Y28xrEcIKJbBAQxTGL9kfk946zIvY8xggsvmfnmVci7edDXTa8z/RCaDWr+m/WaHgOAQIzEfJ32kjMSlOHGahrUB24g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762940123; c=relaxed/simple;
-	bh=6Nwr7ESCyo2k2mF7s+mBmRgUdKhvQfjjSnhNlqjOiSU=;
+	s=arc-20240116; t=1762940117; c=relaxed/simple;
+	bh=1oGgl76tfV4QXSaUQcfaWtkavDULM2bkgqcQ6NYbTfo=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iMlcIrhUC5CmCLbAo35orQKw7AA6BaDvixwN9xIbSXFC38KnBcV27xlKmjx8btLzsYJzVpF2gpaW2gVUf4fiXq7WMN8+NA3hF+GZZ2aPr1fOSe1kwyJFojz8rsZIqU1lSnG+OsOjZhT5zcNDpuISxQUPxSwFfwViAiLLn7J8syQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=113.46.200.221
+	 MIME-Version:Content-Type; b=LNdajgZedRgFC/lhbV6J8aKdyej11H2cWEMcxQV8KPpTaJytJfHKa9z+OWL0ebcTtfSpeJSYF5wKWkOpg674EL7xLfsy4sObBP4v53dfITVklatt1LQoCnb1gQgpdBMKttdfTf1f6zhZy4K9CsXczY1HkjhqtipvlcPl0Nno9Ts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=113.46.200.225
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by canpmsgout06.his.huawei.com (SkyGuard) with ESMTPS id 4d5yrX3TskzRhRd;
-	Wed, 12 Nov 2025 17:33:32 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by canpmsgout10.his.huawei.com (SkyGuard) with ESMTPS id 4d5yrZ02t5z1K97S;
+	Wed, 12 Nov 2025 17:33:34 +0800 (CST)
 Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7BF0F180B50;
+	by mail.maildlp.com (Postfix) with ESMTPS id D43241401F4;
 	Wed, 12 Nov 2025 17:35:11 +0800 (CST)
 Received: from localhost.localdomain (10.50.163.32) by
  kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
@@ -43,9 +43,9 @@ From: Junxian Huang <huangjunxian6@hisilicon.com>
 To: <jgg@ziepe.ca>, <leon@kernel.org>
 CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
 	<huangjunxian6@hisilicon.com>, <tangchengchang@huawei.com>
-Subject: [PATCH v3 for-next 1/8] RDMA/hns: Add helpers to obtain netdev and bus_num from hr_dev
-Date: Wed, 12 Nov 2025 17:35:03 +0800
-Message-ID: <20251112093510.3696363-2-huangjunxian6@hisilicon.com>
+Subject: [PATCH v3 for-next 2/8] RDMA/hns: Initialize bonding resources
+Date: Wed, 12 Nov 2025 17:35:04 +0800
+Message-ID: <20251112093510.3696363-3-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20251112093510.3696363-1-huangjunxian6@hisilicon.com>
 References: <20251112093510.3696363-1-huangjunxian6@hisilicon.com>
@@ -60,178 +60,361 @@ Content-Type: text/plain
 X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
  kwepemf100018.china.huawei.com (7.202.181.17)
 
-Add helpers to obtain netdev and bus_num from hr_dev.
+Allocate bond_grp resources for each card when the first device in
+this card is registered. Block the initialization of VF when its PF
+is a bonded slave, as VF is not supported in this case due to HW
+constraints.
 
 Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_ah.c     |  1 -
- drivers/infiniband/hw/hns/hns_roce_device.h | 12 ++++++++++++
- drivers/infiniband/hw/hns/hns_roce_main.c   | 19 ++++++++++---------
- drivers/infiniband/hw/hns/hns_roce_pd.c     |  1 -
- drivers/infiniband/hw/hns/hns_roce_qp.c     |  5 +++--
- drivers/infiniband/hw/hns/hns_roce_srq.c    |  1 -
- 6 files changed, 25 insertions(+), 14 deletions(-)
+ drivers/infiniband/hw/hns/Makefile          |   4 +-
+ drivers/infiniband/hw/hns/hns_roce_bond.c   | 192 ++++++++++++++++++++
+ drivers/infiniband/hw/hns/hns_roce_bond.h   |  38 ++++
+ drivers/infiniband/hw/hns/hns_roce_device.h |   1 +
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |   6 +
+ drivers/infiniband/hw/hns/hns_roce_main.c   |  11 ++
+ 6 files changed, 251 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/infiniband/hw/hns/hns_roce_bond.c
+ create mode 100644 drivers/infiniband/hw/hns/hns_roce_bond.h
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_ah.c b/drivers/infiniband/hw/hns/hns_roce_ah.c
-index 307c35888b30..0c1c32d23c88 100644
---- a/drivers/infiniband/hw/hns/hns_roce_ah.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_ah.c
-@@ -30,7 +30,6 @@
-  * SOFTWARE.
-  */
+diff --git a/drivers/infiniband/hw/hns/Makefile b/drivers/infiniband/hw/hns/Makefile
+index baf592e6f21b..d07ef02c5231 100644
+--- a/drivers/infiniband/hw/hns/Makefile
++++ b/drivers/infiniband/hw/hns/Makefile
+@@ -4,11 +4,13 @@
+ #
  
--#include <linux/pci.h>
- #include <rdma/ib_addr.h>
- #include <rdma/ib_cache.h>
- #include "hns_roce_device.h"
+ ccflags-y :=  -I $(srctree)/drivers/net/ethernet/hisilicon/hns3
++ccflags-y +=  -I $(srctree)/drivers/net/ethernet/hisilicon/hns3/hns3pf
++ccflags-y +=  -I $(srctree)/drivers/net/ethernet/hisilicon/hns3/hns3_common
+ ccflags-y +=  -I $(src)
+ 
+ hns-roce-hw-v2-objs := hns_roce_main.o hns_roce_cmd.o hns_roce_pd.o \
+ 	hns_roce_ah.o hns_roce_hem.o hns_roce_mr.o hns_roce_qp.o \
+ 	hns_roce_cq.o hns_roce_alloc.o hns_roce_db.o hns_roce_srq.o hns_roce_restrack.o \
+-	hns_roce_debugfs.o hns_roce_hw_v2.o
++	hns_roce_debugfs.o hns_roce_hw_v2.o hns_roce_bond.o
+ 
+ obj-$(CONFIG_INFINIBAND_HNS_HIP08) += hns-roce-hw-v2.o
+diff --git a/drivers/infiniband/hw/hns/hns_roce_bond.c b/drivers/infiniband/hw/hns/hns_roce_bond.c
+new file mode 100644
+index 000000000000..918c1382fa65
+--- /dev/null
++++ b/drivers/infiniband/hw/hns/hns_roce_bond.c
+@@ -0,0 +1,192 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright (c) 2025 Hisilicon Limited.
++ */
++
++#include "hns_roce_device.h"
++#include "hns_roce_hw_v2.h"
++#include "hns_roce_bond.h"
++
++static DEFINE_XARRAY(roce_bond_xa);
++
++static struct net_device *get_upper_dev_from_ndev(struct net_device *net_dev)
++{
++	struct net_device *upper_dev;
++
++	rcu_read_lock();
++	upper_dev = netdev_master_upper_dev_get_rcu(net_dev);
++	dev_hold(upper_dev);
++	rcu_read_unlock();
++
++	return upper_dev;
++}
++
++static int get_netdev_bond_slave_id(struct net_device *net_dev,
++				    struct hns_roce_bond_group *bond_grp)
++{
++	int i;
++
++	for (i = 0; i < ROCE_BOND_FUNC_MAX; i++)
++		if (net_dev == bond_grp->bond_func_info[i].net_dev)
++			return i;
++
++	return -ENOENT;
++}
++
++struct hns_roce_bond_group *hns_roce_get_bond_grp(struct net_device *net_dev,
++						  u8 bus_num)
++{
++	struct hns_roce_die_info *die_info = xa_load(&roce_bond_xa, bus_num);
++	struct hns_roce_bond_group *bond_grp;
++	struct net_device *upper_dev = NULL;
++	int i;
++
++	if (!die_info)
++		return NULL;
++
++	for (i = 0; i < ROCE_BOND_NUM_MAX; i++) {
++		bond_grp = die_info->bgrps[i];
++		if (!bond_grp)
++			continue;
++		if (get_netdev_bond_slave_id(net_dev, bond_grp) >= 0)
++			return bond_grp;
++		if (bond_grp->upper_dev) {
++			upper_dev = get_upper_dev_from_ndev(net_dev);
++			if (bond_grp->upper_dev == upper_dev) {
++				dev_put(upper_dev);
++				return bond_grp;
++			}
++			dev_put(upper_dev);
++		}
++	}
++
++	return NULL;
++}
++
++static struct hns_roce_die_info *alloc_die_info(int bus_num)
++{
++	struct hns_roce_die_info *die_info;
++	int ret;
++
++	die_info = kzalloc(sizeof(*die_info), GFP_KERNEL);
++	if (!die_info)
++		return NULL;
++
++	ret = xa_err(xa_store(&roce_bond_xa, bus_num, die_info, GFP_KERNEL));
++	if (ret) {
++		kfree(die_info);
++		return NULL;
++	}
++
++	return die_info;
++}
++
++static void dealloc_die_info(struct hns_roce_die_info *die_info, u8 bus_num)
++{
++	xa_erase(&roce_bond_xa, bus_num);
++	kfree(die_info);
++}
++
++static int alloc_bond_id(struct hns_roce_bond_group *bond_grp)
++{
++	u8 bus_num = bond_grp->bus_num;
++	struct hns_roce_die_info *die_info = xa_load(&roce_bond_xa, bus_num);
++	int i;
++
++	if (!die_info) {
++		die_info = alloc_die_info(bus_num);
++		if (!die_info)
++			return -ENOMEM;
++	}
++
++	for (i = 0; i < ROCE_BOND_NUM_MAX; i++) {
++		if (die_info->bond_id_mask & BOND_ID(i))
++			continue;
++
++		die_info->bond_id_mask |= BOND_ID(i);
++		die_info->bgrps[i] = bond_grp;
++		bond_grp->bond_id = i;
++
++		return 0;
++	}
++
++	return -ENOSPC;
++}
++
++static int remove_bond_id(int bus_num, u8 bond_id)
++{
++	struct hns_roce_die_info *die_info = xa_load(&roce_bond_xa, bus_num);
++
++	if (bond_id >= ROCE_BOND_NUM_MAX)
++		return -EINVAL;
++
++	if (!die_info)
++		return -ENODEV;
++
++	die_info->bond_id_mask &= ~BOND_ID(bond_id);
++	die_info->bgrps[bond_id] = NULL;
++	if (!die_info->bond_id_mask)
++		dealloc_die_info(die_info, bus_num);
++
++	return 0;
++}
++
++int hns_roce_alloc_bond_grp(struct hns_roce_dev *hr_dev)
++{
++	struct hns_roce_bond_group *bgrps[ROCE_BOND_NUM_MAX];
++	struct hns_roce_bond_group *bond_grp;
++	u8 bus_num = get_hr_bus_num(hr_dev);
++	int ret;
++	int i;
++
++	if (xa_load(&roce_bond_xa, bus_num))
++		return 0;
++
++	for (i = 0; i < ROCE_BOND_NUM_MAX; i++) {
++		bond_grp = kvzalloc(sizeof(*bond_grp), GFP_KERNEL);
++		if (!bond_grp) {
++			ret = -ENOMEM;
++			goto mem_err;
++		}
++
++		bond_grp->bus_num = bus_num;
++
++		ret = alloc_bond_id(bond_grp);
++		if (ret) {
++			dev_err(hr_dev->dev,
++				"failed to alloc bond ID, ret = %d.\n", ret);
++			goto alloc_id_err;
++		}
++
++		bgrps[i] = bond_grp;
++	}
++
++	return 0;
++
++alloc_id_err:
++	kvfree(bond_grp);
++mem_err:
++	for (i--; i >= 0; i--) {
++		remove_bond_id(bgrps[i]->bus_num, bgrps[i]->bond_id);
++		kvfree(bgrps[i]);
++	}
++	return ret;
++}
++
++void hns_roce_dealloc_bond_grp(void)
++{
++	struct hns_roce_bond_group *bond_grp;
++	struct hns_roce_die_info *die_info;
++	unsigned long id;
++	int i;
++
++	xa_for_each(&roce_bond_xa, id, die_info) {
++		for (i = 0; i < ROCE_BOND_NUM_MAX; i++) {
++			bond_grp = die_info->bgrps[i];
++			if (!bond_grp)
++				continue;
++			remove_bond_id(bond_grp->bus_num, bond_grp->bond_id);
++			kvfree(bond_grp);
++		}
++	}
++}
+diff --git a/drivers/infiniband/hw/hns/hns_roce_bond.h b/drivers/infiniband/hw/hns/hns_roce_bond.h
+new file mode 100644
+index 000000000000..61c52135588e
+--- /dev/null
++++ b/drivers/infiniband/hw/hns/hns_roce_bond.h
+@@ -0,0 +1,38 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * Copyright (c) 2025 Hisilicon Limited.
++ */
++
++#ifndef _HNS_ROCE_BOND_H
++#define _HNS_ROCE_BOND_H
++
++#include <linux/netdevice.h>
++#include <net/bonding.h>
++
++#define ROCE_BOND_FUNC_MAX 4
++#define ROCE_BOND_NUM_MAX 2
++
++#define BOND_ID(id) BIT(id)
++
++struct hns_roce_func_info {
++	struct net_device *net_dev;
++};
++
++struct hns_roce_bond_group {
++	struct net_device *upper_dev;
++	u8 bond_id;
++	u8 bus_num;
++	struct hns_roce_func_info bond_func_info[ROCE_BOND_FUNC_MAX];
++};
++
++struct hns_roce_die_info {
++	u8 bond_id_mask;
++	struct hns_roce_bond_group *bgrps[ROCE_BOND_NUM_MAX];
++};
++
++struct hns_roce_bond_group *hns_roce_get_bond_grp(struct net_device *net_dev,
++						  u8 bus_num);
++int hns_roce_alloc_bond_grp(struct hns_roce_dev *hr_dev);
++void hns_roce_dealloc_bond_grp(void);
++
++#endif
 diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 78ee04a48a74..5ae37832059f 100644
+index 5ae37832059f..cc1402fc8943 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_device.h
 +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -33,6 +33,7 @@
- #ifndef _HNS_ROCE_DEVICE_H
- #define _HNS_ROCE_DEVICE_H
+@@ -154,6 +154,7 @@ enum {
+ 	HNS_ROCE_CAP_FLAG_SDI_MODE		= BIT(14),
+ 	HNS_ROCE_CAP_FLAG_STASH			= BIT(17),
+ 	HNS_ROCE_CAP_FLAG_CQE_INLINE		= BIT(19),
++	HNS_ROCE_CAP_FLAG_BOND                  = BIT(21),
+ 	HNS_ROCE_CAP_FLAG_SRQ_RECORD_DB         = BIT(22),
+ };
  
-+#include <linux/pci.h>
- #include <rdma/ib_verbs.h>
- #include <rdma/hns-abi.h>
- #include "hns_roce_debugfs.h"
-@@ -1165,6 +1166,17 @@ static inline u8 get_tclass(const struct ib_global_route *grh)
- 	       grh->traffic_class >> DSCP_SHIFT : grh->traffic_class;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 64bca08f3f1a..786c20aa46a6 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -43,11 +43,13 @@
+ #include <rdma/ib_umem.h>
+ #include <rdma/uverbs_ioctl.h>
+ 
++#include "hclge_main.h"
+ #include "hns_roce_common.h"
+ #include "hns_roce_device.h"
+ #include "hns_roce_cmd.h"
+ #include "hns_roce_hem.h"
+ #include "hns_roce_hw_v2.h"
++#include "hns_roce_bond.h"
+ 
+ #define CREATE_TRACE_POINTS
+ #include "hns_roce_trace.h"
+@@ -2270,6 +2272,9 @@ static int hns_roce_query_caps(struct hns_roce_dev *hr_dev)
+ 	caps->flags |= le16_to_cpu(resp_d->cap_flags_ex) <<
+ 		       HNS_ROCE_CAP_FLAGS_EX_SHIFT;
+ 
++	if (hr_dev->is_vf)
++		caps->flags &= ~HNS_ROCE_CAP_FLAG_BOND;
++
+ 	caps->num_cqs = 1 << hr_reg_read(resp_c, PF_CAPS_C_NUM_CQS);
+ 	caps->gid_table_len[0] = hr_reg_read(resp_c, PF_CAPS_C_MAX_GID);
+ 	caps->max_cqes = 1 << hr_reg_read(resp_c, PF_CAPS_C_CQ_DEPTH);
+@@ -7260,6 +7265,7 @@ static int __init hns_roce_hw_v2_init(void)
+ 
+ static void __exit hns_roce_hw_v2_exit(void)
+ {
++	hns_roce_dealloc_bond_grp();
+ 	hnae3_unregister_client(&hns_roce_hw_v2_client);
+ 	hns_roce_cleanup_debugfs();
  }
- 
-+static inline struct net_device *get_hr_netdev(struct hns_roce_dev *hr_dev,
-+					       u8 port)
-+{
-+	return hr_dev->iboe.netdevs[port];
-+}
-+
-+static inline u8 get_hr_bus_num(struct hns_roce_dev *hr_dev)
-+{
-+	return hr_dev->pci_dev->bus->number;
-+}
-+
- void hns_roce_init_uar_table(struct hns_roce_dev *dev);
- int hns_roce_uar_alloc(struct hns_roce_dev *dev, struct hns_roce_uar *uar);
- 
 diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index d50f36f8a110..8bca0b10c69e 100644
+index 8bca0b10c69e..7fa25586ccd8 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_main.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -32,7 +32,6 @@
-  */
- #include <linux/acpi.h>
- #include <linux/module.h>
--#include <linux/pci.h>
- #include <rdma/ib_addr.h>
- #include <rdma/ib_smi.h>
- #include <rdma/ib_user_verbs.h>
-@@ -148,12 +147,13 @@ static int hns_roce_netdev_event(struct notifier_block *self,
+@@ -40,6 +40,7 @@
+ #include "hns_roce_device.h"
+ #include "hns_roce_hem.h"
+ #include "hns_roce_hw_v2.h"
++#include "hns_roce_bond.h"
  
- static int hns_roce_setup_mtu_mac(struct hns_roce_dev *hr_dev)
- {
-+	struct net_device *net_dev;
- 	int ret;
- 	u8 i;
- 
- 	for (i = 0; i < hr_dev->caps.num_ports; i++) {
--		ret = hns_roce_set_mac(hr_dev, i,
--				       hr_dev->iboe.netdevs[i]->dev_addr);
-+		net_dev = get_hr_netdev(hr_dev, i);
-+		ret = hns_roce_set_mac(hr_dev, i, net_dev->dev_addr);
- 		if (ret)
- 			return ret;
- 	}
-@@ -246,7 +246,7 @@ static int hns_roce_query_port(struct ib_device *ib_dev, u32 port_num,
- 
- 	spin_lock_irqsave(&hr_dev->iboe.lock, flags);
- 
--	net_dev = hr_dev->iboe.netdevs[port];
-+	net_dev = get_hr_netdev(hr_dev, port);
- 	if (!net_dev) {
- 		spin_unlock_irqrestore(&hr_dev->iboe.lock, flags);
- 		dev_err(dev, "find netdev %u failed!\n", port);
-@@ -704,11 +704,12 @@ static const struct ib_device_ops hns_roce_dev_restrack_ops = {
- 
- static int hns_roce_register_device(struct hns_roce_dev *hr_dev)
- {
--	int ret;
- 	struct hns_roce_ib_iboe *iboe = NULL;
--	struct ib_device *ib_dev = NULL;
- 	struct device *dev = hr_dev->dev;
-+	struct ib_device *ib_dev = NULL;
-+	struct net_device *net_dev;
- 	unsigned int i;
-+	int ret;
- 
- 	iboe = &hr_dev->iboe;
- 	spin_lock_init(&iboe->lock);
-@@ -744,11 +745,11 @@ static int hns_roce_register_device(struct hns_roce_dev *hr_dev)
+ static int hns_roce_set_mac(struct hns_roce_dev *hr_dev, u32 port,
+ 			    const u8 *addr)
+@@ -744,6 +745,16 @@ static int hns_roce_register_device(struct hns_roce_dev *hr_dev)
+ 	ib_set_device_ops(ib_dev, hr_dev->hw->hns_roce_dev_ops);
  	ib_set_device_ops(ib_dev, &hns_roce_dev_ops);
  	ib_set_device_ops(ib_dev, &hns_roce_dev_restrack_ops);
++
++	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_BOND) {
++		ret = hns_roce_alloc_bond_grp(hr_dev);
++		if (ret) {
++			dev_err(dev, "failed to alloc bond_grp for bus %u, ret = %d\n",
++				get_hr_bus_num(hr_dev), ret);
++			return ret;
++		}
++	}
++
  	for (i = 0; i < hr_dev->caps.num_ports; i++) {
--		if (!hr_dev->iboe.netdevs[i])
-+		net_dev = get_hr_netdev(hr_dev, i);
-+		if (!net_dev)
- 			continue;
- 
--		ret = ib_device_set_netdev(ib_dev, hr_dev->iboe.netdevs[i],
--					   i + 1);
-+		ret = ib_device_set_netdev(ib_dev, net_dev, i + 1);
- 		if (ret)
- 			return ret;
- 	}
-diff --git a/drivers/infiniband/hw/hns/hns_roce_pd.c b/drivers/infiniband/hw/hns/hns_roce_pd.c
-index d35cf59d0f43..225c3e328e0e 100644
---- a/drivers/infiniband/hw/hns/hns_roce_pd.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_pd.c
-@@ -30,7 +30,6 @@
-  * SOFTWARE.
-  */
- 
--#include <linux/pci.h>
- #include "hns_roce_device.h"
- 
- void hns_roce_init_pd_table(struct hns_roce_dev *hr_dev)
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 6ff1b8ce580c..e0e28c4ff1ca 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -31,7 +31,6 @@
-  * SOFTWARE.
-  */
- 
--#include <linux/pci.h>
- #include <rdma/ib_addr.h>
- #include <rdma/ib_umem.h>
- #include <rdma/uverbs_ioctl.h>
-@@ -1350,11 +1349,13 @@ static int check_mtu_validate(struct hns_roce_dev *hr_dev,
- 			      struct hns_roce_qp *hr_qp,
- 			      struct ib_qp_attr *attr, int attr_mask)
- {
-+	struct net_device *net_dev;
- 	enum ib_mtu active_mtu;
- 	int p;
- 
- 	p = attr_mask & IB_QP_PORT ? (attr->port_num - 1) : hr_qp->port;
--	active_mtu = iboe_get_mtu(hr_dev->iboe.netdevs[p]->mtu);
-+	net_dev = get_hr_netdev(hr_dev, p);
-+	active_mtu = iboe_get_mtu(net_dev->mtu);
- 
- 	if ((hr_dev->caps.max_mtu >= IB_MTU_2048 &&
- 	    attr->path_mtu > hr_dev->caps.max_mtu) ||
-diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
-index 1090051f493b..8a6efb6b9c9e 100644
---- a/drivers/infiniband/hw/hns/hns_roce_srq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
-@@ -3,7 +3,6 @@
-  * Copyright (c) 2018 Hisilicon Limited.
-  */
- 
--#include <linux/pci.h>
- #include <rdma/ib_umem.h>
- #include <rdma/uverbs_ioctl.h>
- #include "hns_roce_device.h"
+ 		net_dev = get_hr_netdev(hr_dev, i);
+ 		if (!net_dev)
 -- 
 2.33.0
 
