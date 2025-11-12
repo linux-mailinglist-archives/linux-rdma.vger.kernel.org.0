@@ -1,228 +1,236 @@
-Return-Path: <linux-rdma+bounces-14422-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14423-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9FAFC515EC
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Nov 2025 10:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 17BCFC515F5
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Nov 2025 10:34:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99E3C1893C7D
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Nov 2025 09:34:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90AF2189B97D
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Nov 2025 09:35:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B6B32FF658;
-	Wed, 12 Nov 2025 09:32:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82DBD2FFDEA;
+	Wed, 12 Nov 2025 09:32:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="G7IywWZu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k++Gdm2e"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from BYAPR05CU005.outbound.protection.outlook.com (mail-westusazon11010067.outbound.protection.outlook.com [52.101.85.67])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF95303CA0;
-	Wed, 12 Nov 2025 09:32:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.85.67
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762939924; cv=fail; b=m+UnJfGlMoPBqAK8NxDhzle8U7mNFCWpTN2z3TxeQDk+xmTwYOqy2lDoKe8lq+3vXQ1m6+jqJ9f3tD5Vy6zN68PwvbZxmE2NjOjIMo93U29fb2O0Gv9DM8VrLNA+jGQu1eEFdpJBVkuokXEvGfKRA2xWgaZ4+6yPRkbk5jGygo0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762939924; c=relaxed/simple;
-	bh=n4v9b+uitHwW4vmRhhhRvdG3/rLVn/O3s5uRc0wx4iI=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=E+oc8j21BYUwA+2+2zyhJpDuTgKR0C2jAwNmLBiZyd3FhUN8HElpx4W3zbyGSwJ8WKVzEasca8aoTvNBqOBlnBPa1ZdPpq25YokOh61l8cSMByALw3FkEOgULEaGQcYX2iQj6mAxJM46SAVAVP7kxWGWO/FDWT4Lz0iTd1hlgjI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=G7IywWZu; arc=fail smtp.client-ip=52.101.85.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=XgX8Aox2h01/teXPjlPJld4fEBbY9dMWouiRMKR+JIZkO8lDACSaidFICeFwmWs4Wz8mUwtOoJMN4dLK4ynNGqQrd6chkjcd7qdkqdNaOYH8QYS2vYTi10MS9aFPD37m9izEyZxfIRLe0PrMMUIRmV19OewU3JgrK9uqp1NNU524K+uaBoIH7RvBfb0DPq+vgLU8NxEwld6oBNu52ApScoRST80BcFTBj09GLssxPxDYlpFW+IJBBqhaFItzmkcS2/Bh1an4E67Lg7Gat4gGSPrkPB6F+eYBNQ291xIfPMtm4v8dR2kHGINp5VC45tUK3/E03pXzUPDDz3aZLYnEqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FZ6d72Q+8KzAtf17ZtvDWts8GkBxVbalnzI7vsz9EIM=;
- b=IbQWVp0nKKZB/lu4ce0AIKFo4OJ2XAlV9uLcGOwubprza6G+VbH0ksSfzSsrnjZ2ELUBAI5TOG3Dh/ZBorHACs7h1YE4ESP/nUQHTJMD1Ber2pLQdTXc/+E88yvmqT42aMk7E6psauB8VVJ8ZYZ3nmLhRdTWINa12oPEF/MALIkYslJ4vM4tQyqAV1yqmFR4TyU2IoaLap6p3nZdpuxAbRL1h07We0eVUYUERitgfAy23AQSCAetwI35+tkI5nfL3EFnEgnKp75xmrm8ZTVdiB6QWSaAzFY3L6ead7EX4MVcSxHIXiCcDbZz1FJhm/lH0a5lO9b/4/7ZCIoriS/fsA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FZ6d72Q+8KzAtf17ZtvDWts8GkBxVbalnzI7vsz9EIM=;
- b=G7IywWZuC1DlnIrj8gPb8RihalNOhl3Rfp/TQtjmNphNQ/hrMapKfSF2GOFiO+V5KAwXVDRT85/ZQx9VZ7BJjF+cWR8uS3WrQG+mvBAzf7DSb1o7ICR8hna+mGJ4Bwab0KJQ5IhwvYIZJN7wwWgyuGQaDKjtPHPP0GstCWsRDik4+9Z/ll1sCotmEtdXYHZwdw/ArBZ3MK70qnL3tVjY/2xIcLoa04olbNqCGiZ+83zQwXBQ2gYSlTD1I0rcWKSmYUs+lqjec5GSdMUktFnTtSdmceiZrJui1fDpwspLdEzyE8doB4sd00bNUFy/bZGjHVmL0eR55/TXkQvCl5d/YA==
-Received: from SN7PR18CA0011.namprd18.prod.outlook.com (2603:10b6:806:f3::19)
- by IA1PR12MB6233.namprd12.prod.outlook.com (2603:10b6:208:3e7::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9298.16; Wed, 12 Nov
- 2025 09:31:56 +0000
-Received: from SA2PEPF00001504.namprd04.prod.outlook.com
- (2603:10b6:806:f3:cafe::cb) by SN7PR18CA0011.outlook.office365.com
- (2603:10b6:806:f3::19) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9298.16 via Frontend Transport; Wed,
- 12 Nov 2025 09:31:56 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- SA2PEPF00001504.mail.protection.outlook.com (10.167.242.36) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9320.13 via Frontend Transport; Wed, 12 Nov 2025 09:31:56 +0000
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 12 Nov
- 2025 01:31:40 -0800
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail205.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 12 Nov
- 2025 01:31:39 -0800
-Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.10)
- with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Wed, 12
- Nov 2025 01:31:33 -0800
-From: Tariq Toukan <tariqt@nvidia.com>
-To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
- S. Miller" <davem@davemloft.net>
-CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, "Alexei
- Starovoitov" <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-	"Jesper Dangaard Brouer" <hawk@kernel.org>, John Fastabend
-	<john.fastabend@gmail.com>, <netdev@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<bpf@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Leon Romanovsky
-	<leonro@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>, William Tu
-	<witu@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>, Nimrod Oren
-	<noren@nvidia.com>, Alex Lazar <alazar@nvidia.com>
-Subject: [PATCH net-next 6/6] net/mlx5e: Support XDP target xmit with dummy program
-Date: Wed, 12 Nov 2025 11:29:09 +0200
-Message-ID: <1762939749-1165658-7-git-send-email-tariqt@nvidia.com>
-X-Mailer: git-send-email 2.8.0
-In-Reply-To: <1762939749-1165658-1-git-send-email-tariqt@nvidia.com>
-References: <1762939749-1165658-1-git-send-email-tariqt@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 389D42FF66C;
+	Wed, 12 Nov 2025 09:32:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1762939951; cv=none; b=itu6HPUVlXydeTcoo7HM7MasQ3S9pR1rPu92ZLPWlC8ssrEjqY1i6FhIyEUb1zDKd8o049PhvVTbxsagn1cLYUW5j/DaI0CkLe8T9KmUymex6YI6R0OGM3kQjDkFJg52QoSvYbCassLgY0xi8i4PUUY/0msMZX8KjQCKqfewREk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1762939951; c=relaxed/simple;
+	bh=uDgqiKTZnV4++p6VffHqEG3cTXU/PY5QmS5TDQiUCCM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sU89ENFEzNHrzTP2fAwygE7hLXd2f8x2qTZ3C+G8gDHNWrjSfmBXEfCwdijyo2WT18dmWwele3yhxsmWf8OmNSnZFtuDYv630brqDemwc59Bxxthukj8uR33vAcPY1sHUfgvrHrEfQV61a7s6X/IWjN44K8OcOFh34IXMJeVb8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k++Gdm2e; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40793C16AAE;
+	Wed, 12 Nov 2025 09:32:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762939950;
+	bh=uDgqiKTZnV4++p6VffHqEG3cTXU/PY5QmS5TDQiUCCM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=k++Gdm2e30hC1tal1dPHb3WlWUFviYvbuHsVtkLXDfmNBpiixKnRq6QBqy0C5gqzU
+	 mEtutMvS+8NbJLTf905fYFdJgHRgdbVSZELutn97XzKvV7yVSSuE3PG3VtKeIJ9BkP
+	 +KCbRTZitWzLNIebY1E5NxhMZ0RBiJkQlmX16/kyP/sjcpBh0ogLCMiA9Nq6BvtwfO
+	 hV8yPmILH8jJYqpP64zpFajGb4yJgC14bKeeTLXtxf2YbjVwWs0JC5eIpkUwgXgbuJ
+	 poefE/8d4qWuB6mFyqNBdyez/nG6tNYX3CyWAqpyIy30stQS7Ls+ZhKDmZhgtPCEyL
+	 oPxoOt97nym/Q==
+Date: Wed, 12 Nov 2025 11:32:26 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] RDMA/rxe: Avoid -Wflex-array-member-not-at-end
+ warnings
+Message-ID: <20251112093226.GA17382@unreal>
+References: <aRKu5lNV04Sq82IG@kspp>
+ <20251111115621.GO15456@unreal>
+ <a9e5156b-2279-4ddd-992c-ca8ca7ab218a@embeddedor.com>
+ <20251111141945.GQ15456@unreal>
+ <d3336e9d-2b84-4698-a799-b49e3845f38f@embeddedor.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF00001504:EE_|IA1PR12MB6233:EE_
-X-MS-Office365-Filtering-Correlation-Id: 85baff6c-4c57-4563-1901-08de21ce525f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|376014|36860700013|1800799024|82310400026;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?uRnT7w09OMAf0MnOp8HybOGJptA2FXRI8MCV1BvXgvfkb9Ju2EuGcAPrrR03?=
- =?us-ascii?Q?YfnZy+U3WodAy67ji7bE+7uuDGsn3TciWJt0f9RJ6Ew2Di6ErqglwRyrEchK?=
- =?us-ascii?Q?xcN0Pr6dOUKw5h0FZ6boa39Aww1HWSiy49BSMFbznCiwBIyCdcI+wmjtwhiZ?=
- =?us-ascii?Q?BBPl7omCVA7sgcYyPcyYNidnNrBr9UB1mA/kuRWx55NE2hATEEuhsWiy58no?=
- =?us-ascii?Q?O6nrRC1i8+oxIGoHys/c9arWQpw5PQtHQOEv4eYqmaRMgpNYUO3025/AsJE5?=
- =?us-ascii?Q?6lmtoak/8u9PBcdg9aI4R2UPswZ2RBPEufe2+f6PU4Lv9u/IwlstqWCuGMal?=
- =?us-ascii?Q?RVLGZE4xI0864iarLH5+i58VMXxnzT9aJYwblDNz/RDfjsNYq07kOokh0+/Q?=
- =?us-ascii?Q?kamlsVeoVSDY88nI6i6IFm3zKYIczh99JSlzcKykgzTbJ3EQiMOWqobwNwBu?=
- =?us-ascii?Q?aOoDq9LqQxI33Ovf9dqCDdqKAvckACW1K85aAF0uOnQR7u2H21kGgS3b9IhI?=
- =?us-ascii?Q?dG7p0uc1H38rWX16aLSvcky5aSF5Ad35BmPWsNEgXkjRn5KVQU95+l0lyKIJ?=
- =?us-ascii?Q?z8u8/x1kKZpFk4omMyuwYFtWJ/r4NlVDPjdRF3O0bgbzsalFHC5u3/bDT+Bi?=
- =?us-ascii?Q?IuJ3FGMIYsPfQEx540h3fOOhMq7IW7aNQdGP7owFXODOckXZgfniVEky0Tcf?=
- =?us-ascii?Q?2NsxTujcaHrGzK0x0fjZL69bF0f3DusSsmNaNggQB0+OjKXleLigoOP6bt/8?=
- =?us-ascii?Q?BGYckyZ4J32f+9V2zctp5yv3ZSxcXhcwIvsZbYdKS4udOpK+9o/kH0coG0JO?=
- =?us-ascii?Q?JSeWUS0G3wzjSeHWKS624IJJpg9TTq7DE5VWy8n3g1YtqYo/wTmENpTSyqOM?=
- =?us-ascii?Q?rwBexpeZ6qR2b3Xb8EJ0FngHZAEbZiyw6p7mf36Zp7W0piataIKPnKH4SsVv?=
- =?us-ascii?Q?/5XYwsyMkon+Zvxe/uLdCjpyFo8aqH8BJtSaHYSH+rgLj6H5iGn0TbC3LaMN?=
- =?us-ascii?Q?dyL6U+zbQpEpeIP07NS/TeLV/oX2QuXAxGj8ZdxLIO5ctTQLfB+Qj0fRhIRD?=
- =?us-ascii?Q?rJIggCl8Q+ow7EjxujUIe6Zc5ejLrQ6Wg6Kdqdl42VrZC6O/zPFLLxyhB656?=
- =?us-ascii?Q?gFvT+YtMlXWhqBN3aUAf1rp1lk6KOTaMIMtWuUfGs/WyMQmjLtMwuPt50H4z?=
- =?us-ascii?Q?4/4Z1MvqGQj0kLSN/XIkBEXdw4UdpYShRncm2j7nLQuJ9vfidykzKBMImAp0?=
- =?us-ascii?Q?V+QgaXKOGQHVHtmG7Eh+RLyyQfynk/JgMnSBBQBPbLd2vbQRcrtJloYqIAi/?=
- =?us-ascii?Q?syFuOWXO2uLkg1yaOfkLn/OhwF0ijOazAJdKefCvyj1RRd87//cJYfN2ErXb?=
- =?us-ascii?Q?6YzJO4ayXLsXWyRzwEhTLVN7qQWSIMMsIlnuGfDiJfS7O6hJ6VeD5TK9nF0f?=
- =?us-ascii?Q?wYcF/j858z5TXIjM1mxlqlnx0QqBSucFWvNXYPGOeTXGCrGrzXsMDAexWPDW?=
- =?us-ascii?Q?4o5CBs0+2gxYZdiCfhJITZoo2lCG9F9Z8vc4u5x7940r0Pt6KDA7ajbtsTjl?=
- =?us-ascii?Q?NRwXMdn3o+aLCV5Xsw0=3D?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(7416014)(376014)(36860700013)(1800799024)(82310400026);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2025 09:31:56.0220
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85baff6c-4c57-4563-1901-08de21ce525f
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SA2PEPF00001504.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6233
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d3336e9d-2b84-4698-a799-b49e3845f38f@embeddedor.com>
 
-Save per-channel resources in default.
+On Wed, Nov 12, 2025 at 05:49:05PM +0900, Gustavo A. R. Silva wrote:
+> 
+> 
+> On 11/11/25 23:19, Leon Romanovsky wrote:
+> > On Tue, Nov 11, 2025 at 09:14:05PM +0900, Gustavo A. R. Silva wrote:
+> > > 
+> > > 
+> > > On 11/11/25 20:56, Leon Romanovsky wrote:
+> > > > On Tue, Nov 11, 2025 at 12:35:02PM +0900, Gustavo A. R. Silva wrote:
+> > > > > -Wflex-array-member-not-at-end was introduced in GCC-14, and we are
+> > > > > getting ready to enable it, globally.
+> > > > > 
+> > > > > Use the new TRAILING_OVERLAP() helper to fix the following warning:
+> > > > > 
+> > > > > 21 drivers/infiniband/sw/rxe/rxe_verbs.h:271:33: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+> > > > > 
+> > > > > This helper creates a union between a flexible-array member (FAM) and a
+> > > > > set of MEMBERS that would otherwise follow it.
+> > > > > 
+> > > > > This overlays the trailing MEMBER struct ib_sge sge[RXE_MAX_SGE]; onto
+> > > > > the FAM struct rxe_recv_wqe::dma.sge, while keeping the FAM and the
+> > > > > start of MEMBER aligned.
+> > > > > 
+> > > > > The static_assert() ensures this alignment remains, and it's
+> > > > > intentionally placed inmediately after the related structure --no
+> > > > > blank line in between.
+> > > > > 
+> > > > > Lastly, move the conflicting declaration struct rxe_resp_info resp;
+> > > > > to the end of the corresponding structure.
+> > > > > 
+> > > > > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > > > > ---
+> > > > >    drivers/infiniband/sw/rxe/rxe_verbs.h | 18 +++++++++++-------
+> > > > >    1 file changed, 11 insertions(+), 7 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> > > > > index fd48075810dd..6498d61e8956 100644
+> > > > > --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
+> > > > > +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> > > > > @@ -219,12 +219,6 @@ struct rxe_resp_info {
+> > > > >    	u32			rkey;
+> > > > >    	u32			length;
+> > > > > -	/* SRQ only */
+> > > > > -	struct {
+> > > > > -		struct rxe_recv_wqe	wqe;
+> > > > > -		struct ib_sge		sge[RXE_MAX_SGE];
+> > > > > -	} srq_wqe;
+> > > > > -
+> > > > >    	/* Responder resources. It's a circular list where the oldest
+> > > > >    	 * resource is dropped first.
+> > > > >    	 */
+> > > > > @@ -232,7 +226,15 @@ struct rxe_resp_info {
+> > > > >    	unsigned int		res_head;
+> > > > >    	unsigned int		res_tail;
+> > > > >    	struct resp_res		*res;
+> > > > > +
+> > > > > +	/* SRQ only */
+> > > > > +	/* Must be last as it ends in a flexible-array member. */
+> > > > > +	TRAILING_OVERLAP(struct rxe_recv_wqe, wqe, dma.sge,
+> > > > > +		struct ib_sge		sge[RXE_MAX_SGE];
+> > > > > +	) srq_wqe;
+> > > > 
+> > > > Will this change be enough?
+> > > > 
+> > > > diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> > > > index fd48075810dd..9ab11421a585 100644
+> > > > --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
+> > > > +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> > > > @@ -219,12 +219,6 @@ struct rxe_resp_info {
+> > > >           u32                     rkey;
+> > > >           u32                     length;
+> > > > -       /* SRQ only */
+> > > > -       struct {
+> > > > -               struct rxe_recv_wqe     wqe;
+> > > > -               struct ib_sge           sge[RXE_MAX_SGE];
+> > > > -       } srq_wqe;
+> > > > -
+> > > >           /* Responder resources. It's a circular list where the oldest
+> > > >            * resource is dropped first.
+> > > >            */
+> > > > @@ -232,6 +226,12 @@ struct rxe_resp_info {
+> > > >           unsigned int            res_head;
+> > > >           unsigned int            res_tail;
+> > > >           struct resp_res         *res;
+> > > > +
+> > > > +       /* SRQ only */
+> > > > +       struct {
+> > > > +               struct ib_sge           sge[RXE_MAX_SGE];
+> > > > +               struct rxe_recv_wqe     wqe;
+> > > > +       } srq_wqe;
+> > > >    };
+> > > 
+> > > The question is if this is really what you want?
+> > > 
+> > > sge[RXE_MAX_SGE] is of the following type:
+> > > 
+> > > struct ib_sge {
+> > >          u64     addr;
+> > >          u32     length;
+> > >          u32     lkey;
+> > > };
+> > > 
+> > > and struct rxe_recv_wqe::dma.sge[] is of type:
+> > > 
+> > > struct rxe_sge {
+> > >          __aligned_u64 addr;
+> > >          __u32   length;
+> > >          __u32   lkey;
+> > > };
+> > > 
+> > > Both types are basically the same, and the original code looks
+> > > pretty much like what people do when they want to pre-allocate
+> > > a number of elements (of the same element type as the flex array)
+> > > for a flexible-array member.
+> > > 
+> > > Based on the above, the change you suggest seems a bit suspicious,
+> > > and I'm not sure that's actually what you want?
+> > 
+> > You wrote about this error: "warning: structure containing a flexible array
+> > member is not at the end of another structure".
+> > 
+> > My suggestion was simply to move that flex array to be the last element
+> > and save us from the need to have some complex, magic macro in RXE.
+> 
+> Yep, but as I commented above, that doesn't seem to be the right change.
+> 
+> Look at the following couple of lines:
+> 
+> drivers/infiniband/sw/rxe/rxe_resp.c-286-       size = sizeof(*wqe) + wqe->dma.num_sge*sizeof(struct rxe_sge);
+> drivers/infiniband/sw/rxe/rxe_resp.c-287-       memcpy(&qp->resp.srq_wqe, wqe, size);
+> 
+> Notice that line 286 is the open-coded arithmetic (struct_size(wqe,
+> dma.sge, wqe->dma.num_sge) is preferred) to get the number of bytes
+> to allocate for a flexible structure, in this case struct rxe_recv_wqe,
+> and its flexible-array member, in this case struct rxe_recv_wqe::dma.sge[].
+> 
+> So, `size` bytes are written in qp->resp.srq_wqe, and the reason this works
+> seems to be because of the pre-allocation of RXE_MAX_SGE number of elements
+> for flex array struct rxe_recv_wqe::dma.sge[] given by:
+> 
+> struct {
+> 	struct rxe_recv_wqe	wqe;
+> 	struct ib_sge		sge[RXE_MAX_SGE];
+> } srq_wqe;
 
-As no better API exist, make the XDP-redirect-target SQ available by
-loading a dummy XDP program.
+So you are saying that it works because it is written properly, so what
+is the problem? Why do we need to fix properly working and written code
+to be less readable?
 
-This improves the latency of interface up/down operations when feature
-is disabled.
+> 
+> So, unless I'm missing something, struct ib_sge sge[RXE_MAX_SGE];
+> should be aligned with struct rxe_recv_wqe wqe::dma.sge[].
 
-Perf numbers:
-NIC: Connect-X7.
-Setup: 248 channels.
+It is and moving to the end of struct will continue to keep it aligned.
 
-Interface up + down:
-Before: 2.246 secs
-After:  1.798 secs (1.25x faster)
-
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
-Reviewed-by: William Tu <witu@nvidia.com>
----
- .../net/ethernet/mellanox/mlx5/core/en_main.c | 23 +++++++++----------
- 1 file changed, 11 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 078fd591c540..23a0b50b9dbd 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -2652,7 +2652,7 @@ static int mlx5e_open_queues(struct mlx5e_channel *c,
- 	if (err)
- 		goto err_close_icosq_cq;
- 
--	if (netdev_ops->ndo_xdp_xmit) {
-+	if (netdev_ops->ndo_xdp_xmit && c->xdp) {
- 		c->xdpsq = mlx5e_open_xdpredirect_sq(c, params, cparam, &ccp);
- 		if (IS_ERR(c->xdpsq)) {
- 			err = PTR_ERR(c->xdpsq);
-@@ -4467,19 +4467,18 @@ void mlx5e_set_xdp_feature(struct mlx5e_priv *priv)
- {
- 	struct mlx5e_params *params = &priv->channels.params;
- 	struct net_device *netdev = priv->netdev;
--	xdp_features_t val;
-+	xdp_features_t val = 0;
- 
--	if (!netdev->netdev_ops->ndo_bpf ||
--	    params->packet_merge.type != MLX5E_PACKET_MERGE_NONE) {
--		xdp_set_features_flag_locked(netdev, 0);
--		return;
--	}
-+	if (netdev->netdev_ops->ndo_bpf &&
-+	    params->packet_merge.type == MLX5E_PACKET_MERGE_NONE)
-+		val = NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
-+		      NETDEV_XDP_ACT_XSK_ZEROCOPY |
-+		      NETDEV_XDP_ACT_RX_SG;
-+
-+	if (netdev->netdev_ops->ndo_xdp_xmit && params->xdp_prog)
-+		val |= NETDEV_XDP_ACT_NDO_XMIT |
-+			NETDEV_XDP_ACT_NDO_XMIT_SG;
- 
--	val = NETDEV_XDP_ACT_BASIC | NETDEV_XDP_ACT_REDIRECT |
--	      NETDEV_XDP_ACT_XSK_ZEROCOPY |
--	      NETDEV_XDP_ACT_RX_SG |
--	      NETDEV_XDP_ACT_NDO_XMIT |
--	      NETDEV_XDP_ACT_NDO_XMIT_SG;
- 	xdp_set_features_flag_locked(netdev, val);
- }
- 
--- 
-2.31.1
-
+> 
+> The TRAILING_OVERLAP() macro is also designed to ensure alignment in these
+> cases (and the static_assert() to preserve it). See this thread:
+> 
+> https://lore.kernel.org/linux-hardening/aLiYrQGdGmaDTtLF@kspp/
+> 
+> Thanks
+> -Gustavo
+> 
+> 
+> 
+> 
 
