@@ -1,167 +1,93 @@
-Return-Path: <linux-rdma+bounces-14448-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14449-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 293B2C5275B
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Nov 2025 14:24:12 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFA09C5286C
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Nov 2025 14:44:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 824C44236BA
-	for <lists+linux-rdma@lfdr.de>; Wed, 12 Nov 2025 13:12:09 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C40BD4E86E6
+	for <lists+linux-rdma@lfdr.de>; Wed, 12 Nov 2025 13:35:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D101338931;
-	Wed, 12 Nov 2025 13:11:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A01E2337B9D;
+	Wed, 12 Nov 2025 13:35:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="kBYxLbE2"
+	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="JKbH1zqG"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B015F337BBD;
-	Wed, 12 Nov 2025 13:11:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E8E2F1FC7
+	for <linux-rdma@vger.kernel.org>; Wed, 12 Nov 2025 13:35:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.250
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762953110; cv=none; b=Iey1AQVIDXtvOSO+B429tt05ebkXjoAwrLFvqsSiQY1Z5CxoLtFvKMDdCuWh8pzMJm1RkJIsFODXGEP476Q1QthnZh8icWU7EeIUCIgXPsZG+CwIFd80OYv2P8ChrMTkKdOD90yP/ZbGi4Md+zfPCnIvyNjXyInrcUzuDXbCEvY=
+	t=1762954516; cv=none; b=pEFiY38B/Gj7mrB2pgvoftt95HXGYpZM5jVB79Xd+Ku7djBaDH6M2wLpA/CLh0xGEgj/Gmd9S8hQCJkRIs7HMcVZmnGiNrcGNGzaPfn7S+y8tOePr3y57mjtVUxPoXSje5GS+ehCws2z+cpszWRVX825x+jK2MzCPx4fov62AIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762953110; c=relaxed/simple;
-	bh=EJzR4sIlnN9uNuZaGeDHic11ALulh1hmmkfzpNsZ/1E=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=EIWsFJqBoYoFpLTHFsQQMyYx9VvUUG1f8h+qwIOP3XSwzgy6MEAyl2SVahq85Z3vhqsscIVDCZtTZhy6SWzwp+rPOK/0y7YIpuDJTKdtDoy16YiWIcAy6hlB1liOQ79OWBTUiTKOBVF0OlHc0yT6abH3zjtzmEIxRkGGFNRlPv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=kBYxLbE2; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1231)
-	id 5B7D9201335C; Wed, 12 Nov 2025 05:11:48 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5B7D9201335C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1762953108;
-	bh=se0x+F/xDG1dSGAj+MYIh+M/qnKmpcnkyeeS1RLVacA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kBYxLbE2+pcCXIDoUW/+o9R1RYBHIbANhi35cN3PMvBmqAg3RHebpEGwls2kV5LX0
-	 l9OW+Y3lPFa3DGXPDf8wzvpOZw1xClwubXXx2tlv2VUT/aulevyIAHJMCxd8unk6Wl
-	 gJ+OvPLUCU3RMaxe+0cqEy6npoR4kbvucg4f/fa0=
-From: Aditya Garg <gargaditya@linux.microsoft.com>
-To: kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	longli@microsoft.com,
-	kotaranov@microsoft.com,
-	horms@kernel.org,
-	shradhagupta@linux.microsoft.com,
-	ssengar@linux.microsoft.com,
-	ernis@linux.microsoft.com,
-	dipayanroy@linux.microsoft.com,
-	shirazsaleem@microsoft.com,
-	leon@kernel.org,
-	mlevitsk@redhat.com,
-	yury.norov@gmail.com,
-	sbhatta@marvell.com,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	gargaditya@microsoft.com
-Cc: Aditya Garg <gargaditya@linux.microsoft.com>
-Subject: [PATCH net-next v4 2/2] net: mana: Drop TX skb on post_work_request failure and unmap resources
-Date: Wed, 12 Nov 2025 05:01:46 -0800
-Message-Id: <1762952506-23593-3-git-send-email-gargaditya@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1762952506-23593-1-git-send-email-gargaditya@linux.microsoft.com>
-References: <1762952506-23593-1-git-send-email-gargaditya@linux.microsoft.com>
+	s=arc-20240116; t=1762954516; c=relaxed/simple;
+	bh=oAqcEqeMfHudm8tz9pkh0GipktsDWrE307qyKM5DSvc=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=KAo/IJbfLdCtM3b7EWc7tGsqyyfUF8TnK2/DMzGxJIscZH9ucMk0EqIi6Og9FmpWApA5g+sc78TasRxJpOOn7p+RpfG1M6Nwl3aEUaU8DohWn3YVFiw0QZZlO1snthfXPY/zvdP9SHPyIINeIySGKQtoudUfjWvxNSjnK7T9aGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=JKbH1zqG; arc=none smtp.client-ip=185.125.188.250
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
+Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id C345640094
+	for <linux-rdma@vger.kernel.org>; Wed, 12 Nov 2025 13:35:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+	s=20210803; t=1762954505;
+	bh=oAqcEqeMfHudm8tz9pkh0GipktsDWrE307qyKM5DSvc=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+	 Reply-To;
+	b=JKbH1zqGXYrlJ1JFMWrA6+2XrrXLEb2I43Kt+mQ9TyZzT1BQaG3sXU3OeLRt5PZX4
+	 bja3SXpWFCvDwvpYYdiJHSLr6xlfcPf6F6N4dAkp8iq/rler4qP40KWjuGuUfibZ2T
+	 DJ26xytbwzI6yixxmMpHbW/2s38xc/HHtTA0LnMUYFboP85UK+dxaW6PZMEJlfsV1F
+	 /QkGHWrB0EuXNqV54K//hXDEEQw/OchUTnJs6cv/sPkxWkv9KEwkBVhSV/Zk+mF0BG
+	 Lo08OrIt8ViirSPBoNwkPS8knosc1mHPAGnRh5fO0sciP6kc/2ywIToVk4XzcykV85
+	 RPag7lqf3EivA==
+Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
+	by buildd-manager.lp.internal (Postfix) with ESMTP id AE30B7E982
+	for <linux-rdma@vger.kernel.org>; Wed, 12 Nov 2025 13:35:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To: Linux RDMA <linux-rdma@vger.kernel.org>
+From: noreply@launchpad.net
+Subject: [recipe build #3971060] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <176295450571.1218157.4688963926693928956.launchpad@buildd-manager.lp.internal>
+Date: Wed, 12 Nov 2025 13:35:05 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+Errors-To: noreply@launchpad.net
+Precedence: bulk
+X-Generated-By: Launchpad (canonical.com); Revision="1d08ffb47b836b8a4c9a0f11318dfdea7420ab6d"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: 4ff855a91cf5775e0b510a0a18a91a3d53ad76b7
 
-Drop TX packets when posting the work request fails and ensure DMA
-mappings are always cleaned up.
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 4 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3971060/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-055
 
-Signed-off-by: Aditya Garg <gargaditya@linux.microsoft.com>
----
-Changes in v4:
-* Fix warning during build reported by kernel test robot
----
- drivers/net/ethernet/microsoft/mana/gdma_main.c | 6 +-----
- drivers/net/ethernet/microsoft/mana/mana_en.c   | 7 +++----
- include/net/mana/mana.h                         | 1 +
- 3 files changed, 5 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index effe0a2f207a..8fd70b34807a 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -1300,7 +1300,6 @@ int mana_gd_post_work_request(struct gdma_queue *wq,
- 			      struct gdma_posted_wqe_info *wqe_info)
- {
- 	u32 client_oob_size = wqe_req->inline_oob_size;
--	struct gdma_context *gc;
- 	u32 sgl_data_size;
- 	u32 max_wqe_size;
- 	u32 wqe_size;
-@@ -1330,11 +1329,8 @@ int mana_gd_post_work_request(struct gdma_queue *wq,
- 	if (wqe_size > max_wqe_size)
- 		return -EINVAL;
- 
--	if (wq->monitor_avl_buf && wqe_size > mana_gd_wq_avail_space(wq)) {
--		gc = wq->gdma_dev->gdma_context;
--		dev_err(gc->dev, "unsuccessful flow control!\n");
-+	if (wq->monitor_avl_buf && wqe_size > mana_gd_wq_avail_space(wq))
- 		return -ENOSPC;
--	}
- 
- 	if (wqe_info)
- 		wqe_info->wqe_size_in_bu = wqe_size / GDMA_WQE_BU_SIZE;
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index 67ae5421f9ee..066d822f68f0 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -491,9 +491,9 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 
- 	if (err) {
- 		(void)skb_dequeue_tail(&txq->pending_skbs);
-+		mana_unmap_skb(skb, apc);
- 		netdev_warn(ndev, "Failed to post TX OOB: %d\n", err);
--		err = NETDEV_TX_BUSY;
--		goto tx_busy;
-+		goto free_sgl_ptr;
- 	}
- 
- 	err = NETDEV_TX_OK;
-@@ -513,7 +513,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 	tx_stats->bytes += len + ((num_gso_seg - 1) * gso_hs);
- 	u64_stats_update_end(&tx_stats->syncp);
- 
--tx_busy:
- 	if (netif_tx_queue_stopped(net_txq) && mana_can_tx(gdma_sq)) {
- 		netif_tx_wake_queue(net_txq);
- 		apc->eth_stats.wake_queue++;
-@@ -1679,7 +1678,7 @@ static int mana_move_wq_tail(struct gdma_queue *wq, u32 num_units)
- 	return 0;
- }
- 
--static void mana_unmap_skb(struct sk_buff *skb, struct mana_port_context *apc)
-+void mana_unmap_skb(struct sk_buff *skb, struct mana_port_context *apc)
- {
- 	struct mana_skb_head *ash = (struct mana_skb_head *)skb->head;
- 	struct gdma_context *gc = apc->ac->gdma_dev->gdma_context;
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index 50a532fb30d6..d05457d3e1ab 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -585,6 +585,7 @@ int mana_set_bw_clamp(struct mana_port_context *apc, u32 speed,
- void mana_query_phy_stats(struct mana_port_context *apc);
- int mana_pre_alloc_rxbufs(struct mana_port_context *apc, int mtu, int num_queues);
- void mana_pre_dealloc_rxbufs(struct mana_port_context *apc);
-+void mana_unmap_skb(struct sk_buff *skb, struct mana_port_context *apc);
- 
- extern const struct ethtool_ops mana_ethtool_ops;
- extern struct dentry *mana_debugfs_root;
--- 
-2.43.0
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3971060
+Your team Linux RDMA is the requester of the build.
 
 
