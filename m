@@ -1,138 +1,148 @@
-Return-Path: <linux-rdma+bounces-14459-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14460-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AD51C57060
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Nov 2025 11:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A9E6C57136
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Nov 2025 12:03:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9624B4E9FDE
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Nov 2025 10:49:54 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 680354E91A1
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Nov 2025 10:59:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F784332EDE;
-	Thu, 13 Nov 2025 10:49:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF30A33469C;
+	Thu, 13 Nov 2025 10:59:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="h7C6Ooxb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iQ3gJ3CK"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ot1-f98.google.com (mail-ot1-f98.google.com [209.85.210.98])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D40732D979C
-	for <linux-rdma@vger.kernel.org>; Thu, 13 Nov 2025 10:49:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F91B3321D0
+	for <linux-rdma@vger.kernel.org>; Thu, 13 Nov 2025 10:59:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763030988; cv=none; b=rPMmrH7GynaDBiVUp+NUl0RGqabWqYnRlM/3Tayqm1gjj9EQwXH43X238xBji532HLRtVG8QvmTpppKta1JDcbXke6UacKgFcZo31ALTtKqtvt3/8zhXBjLzliPRdpdVhdWCrnz/LgvH0NZ21nu8cvrcOjtNie7nr8FDQg+o1tk=
+	t=1763031589; cv=none; b=pIJwfHI8gtiSzayTCksrZ98hcZUNc2BXGPG9koJjbCg+DVUWbMuK8BExi1BB6jhwiSiAhjaeXD9iUP5744rcVHPDm4xAw4zCqPU/AbeqjLwhJEXtvSESH6OKRfno+YdSSyc5mQjV8jazDx6pj3Y0wPZSMc4n4/lli9/dfruPqQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763030988; c=relaxed/simple;
-	bh=RqMk/T14w9MZRZFZOkV+0ThwIbRDnYFxA7nkdtjdbrY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fRcVYOJzjPx3OVupZ8EaxgTWh9aV0Exr0O8XazPj6nkY5EfGosRa5L+V1Ecu/4shSMburhsIZPL/+h5UOPEux7CHqqLsTczVk7Zn7bVtPqfnTlKpSyTZcWHZDwIcJ9iIMN6Bffkm8ZTGo05BJL1Hk1TWgc7swONIaVcNMkIeg+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=h7C6Ooxb; arc=none smtp.client-ip=209.85.210.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-ot1-f98.google.com with SMTP id 46e09a7af769-7c6dbdaced8so464235a34.1
-        for <linux-rdma@vger.kernel.org>; Thu, 13 Nov 2025 02:49:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763030986; x=1763635786;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yRjqhZsvMiW0zkf+qbdc3//DIWYEnn9SfyYAz2Pu1hs=;
-        b=RVpTvOlU4xEqIRq4iM91qOM7sg1H62WQaKwoz5KcIa6XR7kuKzcIjlDLoVsC8vqR5j
-         A+EZYxvbA/MITY/5QwhqDg5eiu2GL6xpvepU6rln37peojic5EEI5qRkcR3/30MWTy2p
-         FV/U1bG4SojZ6+JFeYvRmDM+tOInf1NHh+fyTDH7ImQqOq8n4mctM4CKru9+CorUlBUn
-         /qTav1xnulZ1VcJF/3p7s+9UA8snsefVClE7H5LLZsv2AIuUfALD9CNkVAoNYNnSlWZs
-         JQyHjpRY3GP2XomvCD5JkbtTEJrTmf/4zooDHD/YTN5gaxRWVTcS7ycuPn7cllaDdJc3
-         Q1Fw==
-X-Gm-Message-State: AOJu0YwC/uyg2FU5diqpdSaXBtoNsY9ObsjWi43e4Zs5WmHUzIbuD0ZV
-	xCVmK1WqQYc4cLBoi4ZU8Pgx19FD2M6PZJ6QMHAQMQPXRaX6NGcUjtZPTjCiejqtGb8qRpnvapm
-	gogaumuM6S4SNMA/RsuRBNLuJauIxXWdo+EQOSnzrWPWKcuSCQQgKFseFUDdAIav/rYn2dPG8QR
-	02CsHhhX/DuBYkOmNU2e2Snz4foKFhxDnBQxLaPbnYapcMDpW6zxGomqQr5G+z1cUpp56S5ESiv
-	K+ez6oc7xkyOmNO7IxrepB6Jnix/Q==
-X-Gm-Gg: ASbGncsX2WlHgXJgJ58s2ppImcgu8Dxj5zopHJxOT9eh/E0fThWPcbnlDPzOV1pF61F
-	HlxOGxPqXNexsdFzfAf3aHC7kTKLIJjo3us1TPrVNNlUg4La09p17LqISHdHx6rFGLHD1RTaH+C
-	RbAJrlRADfOF2LwkY8Eh2QmwYxv6NbrbJh14kkKHZsIhSLxG46eZZaKqPMACr2D2z8spfWvT1PR
-	PC4K8fUR2vJqWy+woP2pXgIVlDUedT0v/6FIGLt32cUBL5eIkWNPezu2HimZwuoFYx5esflT0+D
-	BAXg4o7exY8mhevT13YfSOB52q4/oSXGgGrvWkm13SzfbbioxbCypj/VN1sgz2o3/oxEG90whxN
-	TNxPeNIy2olaZCTpQC0DFQDWndZJMY1s+e7dk+GgdC2dpkx7FA087vs2AsOIb4tdoCGCAJhWVOy
-	haSXVccv4zuKgMjsKON+UChbQWRmbLc/Typdgm+uyiTdmYGzo=
-X-Google-Smtp-Source: AGHT+IE6BN+dEO2eH1RtiCF2YjRXzTg6yBBTiGhc4vBBqo+yPMxQVZUoqdy7qI06fmnmc3GhhJyT+eey5c87
-X-Received: by 2002:a05:6830:34a1:b0:7c5:3045:6c7e with SMTP id 46e09a7af769-7c72e20ff3cmr4216443a34.13.1763030985821;
-        Thu, 13 Nov 2025 02:49:45 -0800 (PST)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-14.dlp.protect.broadcom.com. [144.49.247.14])
-        by smtp-relay.gmail.com with ESMTPS id 46e09a7af769-7c73a292469sm116979a34.2.2025.11.13.02.49.45
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 13 Nov 2025 02:49:45 -0800 (PST)
-X-Relaying-Domain: broadcom.com
-X-CFilter-Loop: Reflected
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-34374bfbcccso722270a91.0
-        for <linux-rdma@vger.kernel.org>; Thu, 13 Nov 2025 02:49:44 -0800 (PST)
+	s=arc-20240116; t=1763031589; c=relaxed/simple;
+	bh=ugZFlfc+l2S+0zWCSf1PxybsJPWJGmiF5NzWiKPgTzM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mCDsXlfjErXt0zMpA07WT8GZZX/r0I0ijRyK880WAUMdRCVaB9hJoMmjyxH0sMcyIfsORmp2y+TkGgpp3AqgjSeRU83rXIDnfia4qGt0NPqnu2jamFnVmiSsNKpBjAKXzop7+Vq0WTF6Zkyjwe1NICu2cmS+o4cHixMIB6DJuAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iQ3gJ3CK; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4711810948aso4608045e9.2
+        for <linux-rdma@vger.kernel.org>; Thu, 13 Nov 2025 02:59:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1763030984; x=1763635784; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yRjqhZsvMiW0zkf+qbdc3//DIWYEnn9SfyYAz2Pu1hs=;
-        b=h7C6OoxbjTmgtJuuDRbhmAUj7VIeG4EVIvpQx5s8ysFYQ8bkodJItPlmN5QjxhvTVF
-         bsQzIYGMZ4sPc+yziaNawkJok0rtt+nlvOjsWt0Fc8XJrB6aJ/tqVZ6dtoagAYXJcCPi
-         AchP/6bKngiOgvL6IRIbfkvR3CSeOHvJqTi2w=
-X-Received: by 2002:a17:90b:2741:b0:33b:a5d8:f198 with SMTP id 98e67ed59e1d1-343ddec0cefmr7113188a91.25.1763030983806;
-        Thu, 13 Nov 2025 02:49:43 -0800 (PST)
-X-Received: by 2002:a17:90b:2741:b0:33b:a5d8:f198 with SMTP id 98e67ed59e1d1-343ddec0cefmr7113155a91.25.1763030983354;
-        Thu, 13 Nov 2025 02:49:43 -0800 (PST)
-Received: from dhcp-10-123-157-228.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-bc3760d9887sm1810417a12.28.2025.11.13.02.49.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Nov 2025 02:49:42 -0800 (PST)
-From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-To: leon@kernel.org,
-	jgg@ziepe.ca
-Cc: linux-rdma@vger.kernel.org,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-Subject: [PATCH rdma-next] RDMA/restrack: Fix typos in the comments
-Date: Thu, 13 Nov 2025 16:24:57 +0530
-Message-ID: <20251113105457.879903-1-kalesh-anakkur.purayil@broadcom.com>
-X-Mailer: git-send-email 2.43.5
+        d=gmail.com; s=20230601; t=1763031586; x=1763636386; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DEJC7gRTebDUaxwAOnQ9BV9gIzheu37nMO4ePUyMYEM=;
+        b=iQ3gJ3CK+EvoGocot/Chl1ETCyQHG6GXKwpS32/w52vYJtH8PF+c+cxZV/V6Y1PWxe
+         qQBxxItLa7wBBe1zZ9JtuCwAePN8hF0IEfGpf7mwgZHswAUr5F5z5W2+oHO8d/5u8Kqn
+         ZcpzG3QzVsMaDloGTcuam0H7i2Vx7Tf3pNPAOErn3+NNfXOeDcu5CkOla0vCNq6j0eRq
+         kb7ALrEYpAPxkYAqzmZhzie7mwW91sUlFc0t5W5GEqiI2Wu+s3s92KmvLriUjGRIAv08
+         Sp/gVpLYzBsC4LCG1dy2lrfz5a117+bAMyb8ZQCcKJw3j3+ZsX69A4qprDhlEiWVh4NE
+         qEcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763031586; x=1763636386;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DEJC7gRTebDUaxwAOnQ9BV9gIzheu37nMO4ePUyMYEM=;
+        b=oS1r7EQ11mIxTSEgy8vl1UaDyFv6LVz0vyIk435KBu5WroX9JdvWDA3352HRbNoejw
+         85Q4vPHvPVR/T7cBfFUdO90YBKqg6meqSiyZxDprklZTAnmISeF0ZbUaLJMetmPwSJKg
+         PCGXlrp23snRkLGZV2QaUgPheJdcnL4rZ6EzQmgnMPCI541xj7GElihVLh/Gq+Cyze+H
+         I+OHIPPHUHJ8/Gr33zSia9OGUAwAlf8tGK/Qk/QWwCso0C7P8RTHCJiC81PaXRdlJ6wv
+         Hg0bVX3II+oe2ffLFBWGvGu/BhLrNtj8UsoEbtgG7zG2VvYRpCrrZ01zd3kjWzvZsG1X
+         FtXw==
+X-Forwarded-Encrypted: i=1; AJvYcCV4nsTsHcMe/XGFRe3VawqSkmN8e3zWsCb+NLYnpbg6pWZqgDllVdaqMCi3lHm9mu4zD/YHtWhdd/G0@vger.kernel.org
+X-Gm-Message-State: AOJu0YyztBV4Ap7llSfMbOIbdTFrDq5CivZx2ESo/J+pKEEUujQ3vXlB
+	9gtmW8Kzd32Tq6h1cR/u92QGy7/25AK/XjkSOL+FrXnmQ/gJmHBZVgvV
+X-Gm-Gg: ASbGncv/MkFdxCcoa6mVkB79VYg8xCdfV7WnAQ0eSDabwG4wjYdWs+Yod0+9z4OXSxr
+	+VKV3l2GQXNkTbVcZKn6ovt8/wbylRcp4sajxkpoiAGgR4dLVTRMLoO7PoWK+f2hb8y+h4gLDYz
+	YrLZkIlC6MLC3mQK4A58E0KKIS1WRoamk1cVwzMsRQQmdaLpoEqnxmuOwyydwJDS6KfBCeR8o9f
+	YQuhvmWSGtjvVFiV90BFMw4bqqyiYUfqhW66dukQ0C6j8tG3nvrj8lXSI9oy+wrOXIr9XHuO+yM
+	SKR/GwIgbxriRQNjUwAuPyFHiz9yoUlkkelcajugIhYOz5FTweVaywhSbdROTJ3VhKefWzQNeXK
+	FBeZAIhb6O2K/1tIMXk28mAaZjPEx9pBLuoad8kl2qvhUl68DA2WQSQFbU3GZVrx3Jn6EDyz4td
+	frNmbS5MCoiDMp2uhseNqd
+X-Google-Smtp-Source: AGHT+IFCpVKEMNGa1TiGFz1du/mkrAjFihX7xaQjFh0qLSpjr6GgH+cPEzn+8D8uBc5acStTR7O0cA==
+X-Received: by 2002:a05:600c:4694:b0:477:7f4a:44ae with SMTP id 5b1f17b1804b1-477870bf2fdmr57386475e9.39.1763031586191;
+        Thu, 13 Nov 2025 02:59:46 -0800 (PST)
+Received: from [10.158.36.109] ([72.25.96.17])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42b53f0b513sm3255195f8f.30.2025.11.13.02.59.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Nov 2025 02:59:45 -0800 (PST)
+Message-ID: <60c0b805-92e9-48c0-a4dc-5ea071728b3d@gmail.com>
+Date: Thu, 13 Nov 2025 12:59:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 0/6] net/mlx5e: Speedup channel configuration
+ operations
+To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>
+Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Mark Bloch <mbloch@nvidia.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
+ Leon Romanovsky <leonro@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>,
+ William Tu <witu@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>,
+ Nimrod Oren <noren@nvidia.com>, Alex Lazar <alazar@nvidia.com>
+References: <1762939749-1165658-1-git-send-email-tariqt@nvidia.com>
+ <874iqzldvq.fsf@toke.dk> <89e33ec4-051d-4ca5-8fcd-f500362dee91@gmail.com>
+ <87ms4rjjm0.fsf@toke.dk>
+Content-Language: en-US
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <87ms4rjjm0.fsf@toke.dk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 
-Fix couple of occurrences of the misspelled word "reource"
-in the comments with the correct spelling "resource".
 
-Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
----
- drivers/infiniband/core/restrack.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
-index a7de6f403fca..b097cfcade1c 100644
---- a/drivers/infiniband/core/restrack.c
-+++ b/drivers/infiniband/core/restrack.c
-@@ -175,7 +175,7 @@ void rdma_restrack_new(struct rdma_restrack_entry *res,
- EXPORT_SYMBOL(rdma_restrack_new);
- 
- /**
-- * rdma_restrack_add() - add object to the reource tracking database
-+ * rdma_restrack_add() - add object to the resource tracking database
-  * @res:  resource entry
-  */
- void rdma_restrack_add(struct rdma_restrack_entry *res)
-@@ -277,7 +277,7 @@ int rdma_restrack_put(struct rdma_restrack_entry *res)
- EXPORT_SYMBOL(rdma_restrack_put);
- 
- /**
-- * rdma_restrack_del() - delete object from the reource tracking database
-+ * rdma_restrack_del() - delete object from the resource tracking database
-  * @res:  resource entry
-  */
- void rdma_restrack_del(struct rdma_restrack_entry *res)
--- 
-2.43.5
+On 12/11/2025 18:33, Toke Høiland-Jørgensen wrote:
+> Tariq Toukan <ttoukan.linux@gmail.com> writes:
+> 
+>> On 12/11/2025 12:54, Toke Høiland-Jørgensen wrote:
+>>> Tariq Toukan <tariqt@nvidia.com> writes:
+>>>
+>>>> Hi,
+>>>>
+>>>> This series significantly improves the latency of channel configuration
+>>>> operations, like interface up (create channels), interface down (destroy
+>>>> channels), and channels reconfiguration (create new set, destroy old
+>>>> one).
+>>>
+>>> On the topic of improving ifup/ifdown times, I noticed at some point
+>>> that mlx5 will call synchronize_net() once for every queue when they are
+>>> deactivated (in mlx5e_deactivate_txqsq()). Have you considered changing
+>>> that to amortise the sync latency over the full interface bringdown? :)
+>>>
+>>> -Toke
+>>>
+>>>
+>>
+>> Correct!
+>> This can be improved and I actually have WIP patches for this, as I'm
+>> revisiting this code area recently.
+> 
+> Excellent! We ran into some issues with this a while back, so would be
+> great to see this improved.
+> 
+> -Toke
+> 
 
+Can you elaborate on the test case and issues encountered?
+To make sure I'm addressing them.
 
