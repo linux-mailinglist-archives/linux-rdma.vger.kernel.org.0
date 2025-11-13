@@ -1,148 +1,141 @@
-Return-Path: <linux-rdma+bounces-14460-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14461-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A9E6C57136
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Nov 2025 12:03:55 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id E12DCC572E7
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Nov 2025 12:29:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 680354E91A1
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Nov 2025 10:59:53 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 79FE84E3C34
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Nov 2025 11:29:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF30A33469C;
-	Thu, 13 Nov 2025 10:59:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iQ3gJ3CK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 040F933BBA6;
+	Thu, 13 Nov 2025 11:27:50 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from canpmsgout08.his.huawei.com (canpmsgout08.his.huawei.com [113.46.200.223])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F91B3321D0
-	for <linux-rdma@vger.kernel.org>; Thu, 13 Nov 2025 10:59:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1098433F381
+	for <linux-rdma@vger.kernel.org>; Thu, 13 Nov 2025 11:27:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.223
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763031589; cv=none; b=pIJwfHI8gtiSzayTCksrZ98hcZUNc2BXGPG9koJjbCg+DVUWbMuK8BExi1BB6jhwiSiAhjaeXD9iUP5744rcVHPDm4xAw4zCqPU/AbeqjLwhJEXtvSESH6OKRfno+YdSSyc5mQjV8jazDx6pj3Y0wPZSMc4n4/lli9/dfruPqQM=
+	t=1763033269; cv=none; b=Yjauwv2chfpRm8dGq932spVtrMkEhtPNTNtRagn6G5KTQCXp1sfDW2mrnB6ujC253EvvzKbjXYI3TfZzMbY/pfSud02B7f0hab2nahktqlPPbulVIyel9vYIvXBJT/mkbNgYVLszEYpkMV8PZ+tZ1Civ807uJlbEzXh8oPA8bHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763031589; c=relaxed/simple;
-	bh=ugZFlfc+l2S+0zWCSf1PxybsJPWJGmiF5NzWiKPgTzM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mCDsXlfjErXt0zMpA07WT8GZZX/r0I0ijRyK880WAUMdRCVaB9hJoMmjyxH0sMcyIfsORmp2y+TkGgpp3AqgjSeRU83rXIDnfia4qGt0NPqnu2jamFnVmiSsNKpBjAKXzop7+Vq0WTF6Zkyjwe1NICu2cmS+o4cHixMIB6DJuAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iQ3gJ3CK; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4711810948aso4608045e9.2
-        for <linux-rdma@vger.kernel.org>; Thu, 13 Nov 2025 02:59:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763031586; x=1763636386; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DEJC7gRTebDUaxwAOnQ9BV9gIzheu37nMO4ePUyMYEM=;
-        b=iQ3gJ3CK+EvoGocot/Chl1ETCyQHG6GXKwpS32/w52vYJtH8PF+c+cxZV/V6Y1PWxe
-         qQBxxItLa7wBBe1zZ9JtuCwAePN8hF0IEfGpf7mwgZHswAUr5F5z5W2+oHO8d/5u8Kqn
-         ZcpzG3QzVsMaDloGTcuam0H7i2Vx7Tf3pNPAOErn3+NNfXOeDcu5CkOla0vCNq6j0eRq
-         kb7ALrEYpAPxkYAqzmZhzie7mwW91sUlFc0t5W5GEqiI2Wu+s3s92KmvLriUjGRIAv08
-         Sp/gVpLYzBsC4LCG1dy2lrfz5a117+bAMyb8ZQCcKJw3j3+ZsX69A4qprDhlEiWVh4NE
-         qEcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763031586; x=1763636386;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DEJC7gRTebDUaxwAOnQ9BV9gIzheu37nMO4ePUyMYEM=;
-        b=oS1r7EQ11mIxTSEgy8vl1UaDyFv6LVz0vyIk435KBu5WroX9JdvWDA3352HRbNoejw
-         85Q4vPHvPVR/T7cBfFUdO90YBKqg6meqSiyZxDprklZTAnmISeF0ZbUaLJMetmPwSJKg
-         PCGXlrp23snRkLGZV2QaUgPheJdcnL4rZ6EzQmgnMPCI541xj7GElihVLh/Gq+Cyze+H
-         I+OHIPPHUHJ8/Gr33zSia9OGUAwAlf8tGK/Qk/QWwCso0C7P8RTHCJiC81PaXRdlJ6wv
-         Hg0bVX3II+oe2ffLFBWGvGu/BhLrNtj8UsoEbtgG7zG2VvYRpCrrZ01zd3kjWzvZsG1X
-         FtXw==
-X-Forwarded-Encrypted: i=1; AJvYcCV4nsTsHcMe/XGFRe3VawqSkmN8e3zWsCb+NLYnpbg6pWZqgDllVdaqMCi3lHm9mu4zD/YHtWhdd/G0@vger.kernel.org
-X-Gm-Message-State: AOJu0YyztBV4Ap7llSfMbOIbdTFrDq5CivZx2ESo/J+pKEEUujQ3vXlB
-	9gtmW8Kzd32Tq6h1cR/u92QGy7/25AK/XjkSOL+FrXnmQ/gJmHBZVgvV
-X-Gm-Gg: ASbGncv/MkFdxCcoa6mVkB79VYg8xCdfV7WnAQ0eSDabwG4wjYdWs+Yod0+9z4OXSxr
-	+VKV3l2GQXNkTbVcZKn6ovt8/wbylRcp4sajxkpoiAGgR4dLVTRMLoO7PoWK+f2hb8y+h4gLDYz
-	YrLZkIlC6MLC3mQK4A58E0KKIS1WRoamk1cVwzMsRQQmdaLpoEqnxmuOwyydwJDS6KfBCeR8o9f
-	YQuhvmWSGtjvVFiV90BFMw4bqqyiYUfqhW66dukQ0C6j8tG3nvrj8lXSI9oy+wrOXIr9XHuO+yM
-	SKR/GwIgbxriRQNjUwAuPyFHiz9yoUlkkelcajugIhYOz5FTweVaywhSbdROTJ3VhKefWzQNeXK
-	FBeZAIhb6O2K/1tIMXk28mAaZjPEx9pBLuoad8kl2qvhUl68DA2WQSQFbU3GZVrx3Jn6EDyz4td
-	frNmbS5MCoiDMp2uhseNqd
-X-Google-Smtp-Source: AGHT+IFCpVKEMNGa1TiGFz1du/mkrAjFihX7xaQjFh0qLSpjr6GgH+cPEzn+8D8uBc5acStTR7O0cA==
-X-Received: by 2002:a05:600c:4694:b0:477:7f4a:44ae with SMTP id 5b1f17b1804b1-477870bf2fdmr57386475e9.39.1763031586191;
-        Thu, 13 Nov 2025 02:59:46 -0800 (PST)
-Received: from [10.158.36.109] ([72.25.96.17])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42b53f0b513sm3255195f8f.30.2025.11.13.02.59.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Nov 2025 02:59:45 -0800 (PST)
-Message-ID: <60c0b805-92e9-48c0-a4dc-5ea071728b3d@gmail.com>
-Date: Thu, 13 Nov 2025 12:59:43 +0200
+	s=arc-20240116; t=1763033269; c=relaxed/simple;
+	bh=dFtiDGz2KxFul2YF+9mqRdNElyQbFSC2bJZ601rTn6o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=FGsXmv8gjQahLyjRbgtGk+AuaKD8ZREre+Jm+FApoAzlcsNM14ldnkl9AQzugwuvbfNuhq+gO6gUDVXWO0oeyHkkt796W9Ma8PWpCvKX4amBhXUxmaptv7I+98dQ3f0wlh5aHwA35AnsvkVzrRvtM2gyV6XKGuUb0Ezi5lkKTWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=113.46.200.223
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by canpmsgout08.his.huawei.com (SkyGuard) with ESMTPS id 4d6dHn3TbCzmVCN;
+	Thu, 13 Nov 2025 19:25:57 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id C031D1A016C;
+	Thu, 13 Nov 2025 19:27:37 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 13 Nov 2025 19:27:37 +0800
+Message-ID: <7f1305c4-e0e8-9988-3ac2-6c81a1917e97@hisilicon.com>
+Date: Thu, 13 Nov 2025 19:27:36 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 0/6] net/mlx5e: Speedup channel configuration
- operations
-To: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>
-Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Mark Bloch <mbloch@nvidia.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
- Leon Romanovsky <leonro@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>,
- William Tu <witu@nvidia.com>, Dragos Tatulea <dtatulea@nvidia.com>,
- Nimrod Oren <noren@nvidia.com>, Alex Lazar <alazar@nvidia.com>
-References: <1762939749-1165658-1-git-send-email-tariqt@nvidia.com>
- <874iqzldvq.fsf@toke.dk> <89e33ec4-051d-4ca5-8fcd-f500362dee91@gmail.com>
- <87ms4rjjm0.fsf@toke.dk>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH][v2] RDMA/core: Prevent soft lockup during large user
+ memory region cleanup
+To: lirongqing <lirongqing@baidu.com>, Jason Gunthorpe <jgg@ziepe.ca>, Leon
+ Romanovsky <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+References: <20251113095317.2628-1-lirongqing@baidu.com>
 Content-Language: en-US
-From: Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <87ms4rjjm0.fsf@toke.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+In-Reply-To: <20251113095317.2628-1-lirongqing@baidu.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
 
 
-On 12/11/2025 18:33, Toke Høiland-Jørgensen wrote:
-> Tariq Toukan <ttoukan.linux@gmail.com> writes:
+On 2025/11/13 17:53, lirongqing wrote:
+> From: Li RongQing <lirongqing@baidu.com>
 > 
->> On 12/11/2025 12:54, Toke Høiland-Jørgensen wrote:
->>> Tariq Toukan <tariqt@nvidia.com> writes:
->>>
->>>> Hi,
->>>>
->>>> This series significantly improves the latency of channel configuration
->>>> operations, like interface up (create channels), interface down (destroy
->>>> channels), and channels reconfiguration (create new set, destroy old
->>>> one).
->>>
->>> On the topic of improving ifup/ifdown times, I noticed at some point
->>> that mlx5 will call synchronize_net() once for every queue when they are
->>> deactivated (in mlx5e_deactivate_txqsq()). Have you considered changing
->>> that to amortise the sync latency over the full interface bringdown? :)
->>>
->>> -Toke
->>>
->>>
->>
->> Correct!
->> This can be improved and I actually have WIP patches for this, as I'm
->> revisiting this code area recently.
+> When a process exits with numerous large, pinned memory regions consisting
+> of 4KB pages, the cleanup of the memory region through __ib_umem_release()
+> may cause soft lockups. This is because unpin_user_page_range_dirty_lock()
+> is called in a tight loop for unpin and releasing page without yielding the
+> CPU.
 > 
-> Excellent! We ran into some issues with this a while back, so would be
-> great to see this improved.
+>  watchdog: BUG: soft lockup - CPU#44 stuck for 26s! [python3:73464]
+>  Kernel panic - not syncing: softlockup: hung tasks
+>  CPU: 44 PID: 73464 Comm: python3 Tainted: G           OEL
 > 
-> -Toke
+>  asm_sysvec_apic_timer_interrupt+0x1b/0x20
+>  RIP: 0010:free_unref_page+0xff/0x190
 > 
+>   ? free_unref_page+0xe3/0x190
+>   __put_page+0x77/0xe0
+>   put_compound_head+0xed/0x100
+>   unpin_user_page_range_dirty_lock+0xb2/0x180
+>   __ib_umem_release+0x57/0xb0 [ib_core]
+>   ib_umem_release+0x3f/0xd0 [ib_core]
+>   mlx5_ib_dereg_mr+0x2e9/0x440 [mlx5_ib]
+>   ib_dereg_mr_user+0x43/0xb0 [ib_core]
+>   uverbs_free_mr+0x15/0x20 [ib_uverbs]
+>   destroy_hw_idr_uobject+0x21/0x60 [ib_uverbs]
+>   uverbs_destroy_uobject+0x38/0x1b0 [ib_uverbs]
+>   __uverbs_cleanup_ufile+0xd1/0x150 [ib_uverbs]
+>   uverbs_destroy_ufile_hw+0x3f/0x100 [ib_uverbs]
+>   ib_uverbs_close+0x1f/0xb0 [ib_uverbs]
+>   __fput+0x9c/0x280
+>   ____fput+0xe/0x20
+>   task_work_run+0x6a/0xb0
+>   do_exit+0x217/0x3c0
+>   do_group_exit+0x3b/0xb0
+>   get_signal+0x150/0x900
+>   arch_do_signal_or_restart+0xde/0x100
+>   exit_to_user_mode_loop+0xc4/0x160
+>   exit_to_user_mode_prepare+0xa0/0xb0
+>   syscall_exit_to_user_mode+0x27/0x50
+>   do_syscall_64+0x63/0xb0
+> 
+> Fix soft lockup issues by incorporating cond_resched() calls within
+> __ib_umem_release(), and this SG entries are typically grouped in 2MB
+> chunks on x86_64, adding cond_resched() should has minimal performance
+> impact.
+> 
+> Signed-off-by: Li RongQing <lirongqing@baidu.com>
+> ---
+> diff v1: move the cond_sched into loop, add the calling trace to change log
+> 
+>  drivers/infiniband/core/umem.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+> index c5b6863..8fd84aa 100644
+> --- a/drivers/infiniband/core/umem.c
+> +++ b/drivers/infiniband/core/umem.c
+> @@ -55,9 +55,11 @@ static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int d
+>  		ib_dma_unmap_sgtable_attrs(dev, &umem->sgt_append.sgt,
+>  					   DMA_BIDIRECTIONAL, 0);
+>  
+> -	for_each_sgtable_sg(&umem->sgt_append.sgt, sg, i)
+> +	for_each_sgtable_sg(&umem->sgt_append.sgt, sg, i) {
+>  		unpin_user_page_range_dirty_lock(sg_page(sg),
+>  			DIV_ROUND_UP(sg->length, PAGE_SIZE), make_dirty);
+> +		cond_resched();
+> +	}
 
-Can you elaborate on the test case and issues encountered?
-To make sure I'm addressing them.
+Acked-by: Junxian Huang <huangjunxian6@hisilicon.com>
+
+>  
+>  	sg_free_append_table(&umem->sgt_append);
+>  }
 
