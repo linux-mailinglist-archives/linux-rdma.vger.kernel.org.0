@@ -1,128 +1,255 @@
-Return-Path: <linux-rdma+bounces-14484-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14485-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB051C5D4E7
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Nov 2025 14:20:22 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72CAFC5F4E8
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Nov 2025 21:59:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E09934E20C8
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Nov 2025 13:12:43 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CF1E74E2967
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Nov 2025 20:58:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88AEE27990C;
-	Fri, 14 Nov 2025 13:12:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F0B62FBDFB;
+	Fri, 14 Nov 2025 20:58:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="XTM1Wogw"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8795619E7D1;
-	Fri, 14 Nov 2025 13:12:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 607EC2FB99A;
+	Fri, 14 Nov 2025 20:58:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763125958; cv=none; b=gow99QKnvJNy+pQ9cPaIrq3O+39rirWCfUFYO//ue+9LNitiadRxd493Yk/5SZI3yNkds5rLFxneLsUssv2iYsEjbv8o02PSyX93iAh3G2D1vJhsSKOsgj/gzrt2BFeGzSlfXTJ7FfsYNEeUbHPRHpjAU0qWg3EcaoOkKFv4lj4=
+	t=1763153910; cv=none; b=D0PD+s6Ay3BmbloKy4U9wtrL2tjRgKwLJvA4bm2QKj4HGMxzLzhMQEqLl4MkgfLFk4HMGP2KW9XEwS6jwzT03+j/FIQZQdBS99a9Q4BO+TUeJHPjWOPMSfJVz5MtFmofNu3mfApHZ9MA0J6BDUlROgd5UtB6MnlfG3JqLJ8Z4bg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763125958; c=relaxed/simple;
-	bh=1hXjKIg4/jA/DRDAjapwgRzU4bIgIF8InlmC3moADzU=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=P7U6+RCvMgBBUL9lplCbMS52VziXashmhlA7R+NHQYvC9gb2M/DU6jQTBTT1XTrKJvyQj6Yxypre8tarLY1dURyLvdZPbxzxBMmyeBo0oZcr8rE4uYEBYXZNDVXkpYlWhkkYCR2jo71k4zoKZ4R7hlU9/voNEUqmgHfAKAePZkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTPS id 4d7Hbf4QRDzJ46F0;
-	Fri, 14 Nov 2025 21:11:58 +0800 (CST)
-Received: from dubpeml100005.china.huawei.com (unknown [7.214.146.113])
-	by mail.maildlp.com (Postfix) with ESMTPS id 601F714027A;
-	Fri, 14 Nov 2025 21:12:34 +0800 (CST)
-Received: from localhost (10.126.173.232) by dubpeml100005.china.huawei.com
- (7.214.146.113) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.36; Fri, 14 Nov
- 2025 13:12:33 +0000
-Date: Fri, 14 Nov 2025 13:12:32 +0000
-From: Jonathan Cameron <jonathan.cameron@huawei.com>
-To: Zhiping Zhang <zhipingz@meta.com>
-CC: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, "Bjorn
- Helgaas" <bhelgaas@google.com>, <linux-rdma@vger.kernel.org>,
-	<linux-pci@vger.kernel.org>, <netdev@vger.kernel.org>, Keith Busch
-	<kbusch@kernel.org>, Yochai Cohen <yochai@nvidia.com>, Yishai Hadas
-	<yishaih@nvidia.com>
-Subject: Re: [RFC 1/2] Set steering-tag directly for PCIe P2P memory access
-Message-ID: <20251114131232.00006e9e@huawei.com>
-In-Reply-To: <20251113213712.776234-2-zhipingz@meta.com>
-References: <20251113213712.776234-1-zhipingz@meta.com>
-	<20251113213712.776234-2-zhipingz@meta.com>
-X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
+	s=arc-20240116; t=1763153910; c=relaxed/simple;
+	bh=NU8I6DFBBDxSVvP0Y1JJZ4FZjERpbk7xEGubtlerNL0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JlgEutXfv6BCXOneol7zbDr5buce6rMugWnte/CQMhUA3d860lJr2Z3bFByH7zl+0PHHsjLr7XwkK4hoadOO5hNn3sMUglBVl3j7LEvH+Lg3A8GPgKnpNRYN3eiw3kdVYXVZwkPKVXIsxrmmm9JqUrozs5MBwK3SWVnOMEPr2KY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=XTM1Wogw; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [100.79.200.7] (unknown [4.194.122.170])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 65761201AE5A;
+	Fri, 14 Nov 2025 12:58:15 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 65761201AE5A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1763153901;
+	bh=hXU5XnfCF/cwE4/J20YkIzYBKcMQJTB9H9fJo5UCttM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=XTM1Wogwg1tNwyDj0aOA0i2Bh6FmczbUmImLlDtPjLdf4eXncF2OVIk9slIMF6ga2
+	 fK8YS735k+PuWOGUiJPYC1l/qTYOspzEToDFiCoF5Zlq1G6/BahDITQSVGIGx85YMl
+	 QO3wL87A0LffXqD7tIiFaPWp9ipgCUfBTQaX3Fy4=
+Message-ID: <18ee6a8b-21fd-49c6-964a-2eb1b0b61c1d@linux.microsoft.com>
+Date: Sat, 15 Nov 2025 02:28:11 +0530
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500011.china.huawei.com (7.191.174.215) To
- dubpeml100005.china.huawei.com (7.214.146.113)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v4 1/2] net: mana: Handle SKB if TX SGEs exceed
+ hardware limit
+To: Eric Dumazet <edumazet@google.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+ kotaranov@microsoft.com, horms@kernel.org, shradhagupta@linux.microsoft.com,
+ ssengar@linux.microsoft.com, ernis@linux.microsoft.com,
+ dipayanroy@linux.microsoft.com, shirazsaleem@microsoft.com, leon@kernel.org,
+ mlevitsk@redhat.com, yury.norov@gmail.com, sbhatta@marvell.com,
+ linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ gargaditya@microsoft.com
+References: <1762952506-23593-1-git-send-email-gargaditya@linux.microsoft.com>
+ <1762952506-23593-2-git-send-email-gargaditya@linux.microsoft.com>
+ <CANn89iL-RJ84WB9W8SoZn6_UMko8sLBb_FEGjjGZTEO+9KOpAg@mail.gmail.com>
+Content-Language: en-US
+From: Aditya Garg <gargaditya@linux.microsoft.com>
+In-Reply-To: <CANn89iL-RJ84WB9W8SoZn6_UMko8sLBb_FEGjjGZTEO+9KOpAg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, 13 Nov 2025 13:37:11 -0800
-Zhiping Zhang <zhipingz@meta.com> wrote:
-
-> PCIe: Add a memory type for P2P memory access
+On 12-11-2025 19:25, Eric Dumazet wrote:
+> On Wed, Nov 12, 2025 at 5:11 AM Aditya Garg
+> <gargaditya@linux.microsoft.com> wrote:
+>>
+>> The MANA hardware supports a maximum of 30 scatter-gather entries (SGEs)
+>> per TX WQE. Exceeding this limit can cause TX failures.
+>> Add ndo_features_check() callback to validate SKB layout before
+>> transmission. For GSO SKBs that would exceed the hardware SGE limit, clear
+>> NETIF_F_GSO_MASK to enforce software segmentation in the stack.
+>> Add a fallback in mana_start_xmit() to linearize non-GSO SKBs that still
+>> exceed the SGE limit.
+>>
+>> Also, Add ethtool counter for SKBs linearized
+>>
+>> Co-developed-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+>> Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+>> Signed-off-by: Aditya Garg <gargaditya@linux.microsoft.com>
+>> ---
+>>   drivers/net/ethernet/microsoft/mana/mana_en.c | 37 ++++++++++++++++++-
+>>   .../ethernet/microsoft/mana/mana_ethtool.c    |  2 +
+>>   include/net/mana/gdma.h                       |  6 ++-
+>>   include/net/mana/mana.h                       |  1 +
+>>   4 files changed, 43 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+>> index cccd5b63cee6..67ae5421f9ee 100644
+>> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+>> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+>> @@ -11,6 +11,7 @@
+>>   #include <linux/mm.h>
+>>   #include <linux/pci.h>
+>>   #include <linux/export.h>
+>> +#include <linux/skbuff.h>
+>>
+>>   #include <net/checksum.h>
+>>   #include <net/ip6_checksum.h>
+>> @@ -329,6 +330,20 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>>          cq = &apc->tx_qp[txq_idx].tx_cq;
+>>          tx_stats = &txq->stats;
+>>
+>> +       if (MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES &&
+>> +           skb_shinfo(skb)->nr_frags + 2 > MAX_TX_WQE_SGL_ENTRIES) {
+>> +               /* GSO skb with Hardware SGE limit exceeded is not expected here
+>> +                * as they are handled in mana_features_check() callback
+>> +                */
+>> +               if (skb_linearize(skb)) {
+>> +                       netdev_warn_once(ndev, "Failed to linearize skb with nr_frags=%d and is_gso=%d\n",
+>> +                                        skb_shinfo(skb)->nr_frags,
+>> +                                        skb_is_gso(skb));
+>> +                       goto tx_drop_count;
+>> +               }
+>> +               apc->eth_stats.linear_pkt_tx_cnt++;
+>> +       }
+>> +
+>>          pkg.tx_oob.s_oob.vcq_num = cq->gdma_id;
+>>          pkg.tx_oob.s_oob.vsq_frame = txq->vsq_frame;
+>>
+>> @@ -442,8 +457,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>>                  }
+>>          }
+>>
+>> -       WARN_ON_ONCE(pkg.wqe_req.num_sge > MAX_TX_WQE_SGL_ENTRIES);
+>> -
+>>          if (pkg.wqe_req.num_sge <= ARRAY_SIZE(pkg.sgl_array)) {
+>>                  pkg.wqe_req.sgl = pkg.sgl_array;
+>>          } else {
+>> @@ -518,6 +531,25 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>>          return NETDEV_TX_OK;
+>>   }
+>>
 > 
-> The current tph memory type definition applies for CPU use cases. For device
-> memory accessed in the peer-to-peer (P2P) manner, we need another memory
-> type.
 > 
-> Signed-off-by: Zhiping Zhang <zhipingz@meta.com>
-> ---
->  drivers/pci/tph.c       | 4 ++++
->  include/linux/pci-tph.h | 4 +++-
->  2 files changed, 7 insertions(+), 1 deletion(-)
+> #if MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES
 > 
-> diff --git a/drivers/pci/tph.c b/drivers/pci/tph.c
-> index cc64f93709a4..d983c9778c72 100644
-> --- a/drivers/pci/tph.c
-> +++ b/drivers/pci/tph.c
-> @@ -67,6 +67,8 @@ static u16 tph_extract_tag(enum tph_mem_type mem_type, u8 req_type,
->  			if (info->pm_st_valid)
->  				return info->pm_st;
->  			break;
-> +		default:
-> +			return 0;
->  		}
->  		break;
->  	case PCI_TPH_REQ_EXT_TPH: /* 16-bit tag */
-> @@ -79,6 +81,8 @@ static u16 tph_extract_tag(enum tph_mem_type mem_type, u8 req_type,
->  			if (info->pm_xst_valid)
->  				return info->pm_xst;
->  			break;
-> +		default:
-> +			return 0;
->  		}
->  		break;
->  	default:
-> diff --git a/include/linux/pci-tph.h b/include/linux/pci-tph.h
-> index 9e4e331b1603..b989302b6755 100644
-> --- a/include/linux/pci-tph.h
-> +++ b/include/linux/pci-tph.h
-> @@ -14,10 +14,12 @@
->   * depending on the memory type: Volatile Memory or Persistent Memory. When a
->   * caller query about a target's Steering Tag, it must provide the target's
->   * tph_mem_type. ECN link: https://members.pcisig.com/wg/PCI-SIG/document/15470.
-> + * Add a new tph type for PCI peer-to-peer access use case.
->   */
->  enum tph_mem_type {
->  	TPH_MEM_TYPE_VM,	/* volatile memory */
-> -	TPH_MEM_TYPE_PM		/* persistent memory */
-> +	TPH_MEM_TYPE_PM,	/* persistent memory */
-> +	TPH_MEM_TYPE_P2P	/* peer-to-peer accessable memory */
+>> +static netdev_features_t mana_features_check(struct sk_buff *skb,
+>> +                                            struct net_device *ndev,
+>> +                                            netdev_features_t features)
+>> +{
+>> +       if (MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES &&
+>> +           skb_shinfo(skb)->nr_frags + 2 > MAX_TX_WQE_SGL_ENTRIES) {
+>> +               /* Exceeds HW SGE limit.
+>> +                * GSO case:
+>> +                *   Disable GSO so the stack will software-segment the skb
+>> +                *   into smaller skbs that fit the SGE budget.
+>> +                * Non-GSO case:
+>> +                *   The xmit path will attempt skb_linearize() as a fallback.
+>> +                */
+>> +               if (skb_is_gso(skb))
+> 
+> No need to test skb_is_gso(skb), you can clear bits, this will be a
+> NOP if the packet is non GSO anyway.
+> 
+>> +                       features &= ~NETIF_F_GSO_MASK;
+>> +       }
+>> +       return features;
+>> +}
+> 
+> #endif
+> 
+>> +
+>>   static void mana_get_stats64(struct net_device *ndev,
+>>                               struct rtnl_link_stats64 *st)
+>>   {
+>> @@ -878,6 +910,7 @@ static const struct net_device_ops mana_devops = {
+>>          .ndo_open               = mana_open,
+>>          .ndo_stop               = mana_close,
+>>          .ndo_select_queue       = mana_select_queue,
+>> +       .ndo_features_check     = mana_features_check,
+> 
+> Note that if your mana_features_check() is a nop if MAX_SKB_FRAGS is
+> small enough,
+> you could set a non NULL .ndo_features_check based on a preprocessor condition
+> 
+> #if MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES
+>      .ndo_features_check = ....
+> #endif
+> 
+> This would avoid an expensive indirect call when possible.
+> 
+> 
+>>          .ndo_start_xmit         = mana_start_xmit,
+>>          .ndo_validate_addr      = eth_validate_addr,
+>>          .ndo_get_stats64        = mana_get_stats64,
+>> diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+>> index a1afa75a9463..fa5e1a2f06a9 100644
+>> --- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+>> +++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+>> @@ -71,6 +71,8 @@ static const struct mana_stats_desc mana_eth_stats[] = {
+>>          {"tx_cq_err", offsetof(struct mana_ethtool_stats, tx_cqe_err)},
+>>          {"tx_cqe_unknown_type", offsetof(struct mana_ethtool_stats,
+>>                                          tx_cqe_unknown_type)},
+>> +       {"linear_pkt_tx_cnt", offsetof(struct mana_ethtool_stats,
+>> +                                       linear_pkt_tx_cnt)},
+>>          {"rx_coalesced_err", offsetof(struct mana_ethtool_stats,
+>>                                          rx_coalesced_err)},
+>>          {"rx_cqe_unknown_type", offsetof(struct mana_ethtool_stats,
+>> diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+>> index 637f42485dba..84614ebe0f4c 100644
+>> --- a/include/net/mana/gdma.h
+>> +++ b/include/net/mana/gdma.h
+>> @@ -592,6 +592,9 @@ enum {
+>>   #define GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE BIT(17)
+>>   #define GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE BIT(6)
+>>
+>> +/* Driver supports linearizing the skb when num_sge exceeds hardware limit */
+>> +#define GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE BIT(20)
+>> +
+>>   #define GDMA_DRV_CAP_FLAGS1 \
+>>          (GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
+>>           GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
+>> @@ -601,7 +604,8 @@ enum {
+>>           GDMA_DRV_CAP_FLAG_1_DYNAMIC_IRQ_ALLOC_SUPPORT | \
+>>           GDMA_DRV_CAP_FLAG_1_SELF_RESET_ON_EQE | \
+>>           GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE | \
+>> -        GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE)
+>> +        GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE | \
+>> +        GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE)
+>>
+>>   #define GDMA_DRV_CAP_FLAGS2 0
+>>
+>> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+>> index 8906901535f5..50a532fb30d6 100644
+>> --- a/include/net/mana/mana.h
+>> +++ b/include/net/mana/mana.h
+>> @@ -404,6 +404,7 @@ struct mana_ethtool_stats {
+>>          u64 hc_tx_err_gdma;
+>>          u64 tx_cqe_err;
+>>          u64 tx_cqe_unknown_type;
+>> +       u64 linear_pkt_tx_cnt;
+>>          u64 rx_coalesced_err;
+>>          u64 rx_cqe_unknown_type;
+>>   };
+>> --
+>> 2.43.0
+>>
 
-Trivial but this time definitely add the trailing comma!  Maybe there will never
-be any more in here but maybe there will and we can avoid a line of
-churn next time.
+Thanks for the review Eric. I will incorporate these changes in next 
+revision.
 
->  };
->  
->  #ifdef CONFIG_PCIE_TPH
-
+Regards,
+Aditya
 
