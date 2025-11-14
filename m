@@ -1,255 +1,239 @@
-Return-Path: <linux-rdma+bounces-14485-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14486-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72CAFC5F4E8
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Nov 2025 21:59:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42588C5F4FA
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Nov 2025 22:04:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CF1E74E2967
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Nov 2025 20:58:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC1D53B047C
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Nov 2025 21:04:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F0B62FBDFB;
-	Fri, 14 Nov 2025 20:58:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="XTM1Wogw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D9272FC00B;
+	Fri, 14 Nov 2025 21:04:39 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 607EC2FB99A;
-	Fri, 14 Nov 2025 20:58:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763153910; cv=none; b=D0PD+s6Ay3BmbloKy4U9wtrL2tjRgKwLJvA4bm2QKj4HGMxzLzhMQEqLl4MkgfLFk4HMGP2KW9XEwS6jwzT03+j/FIQZQdBS99a9Q4BO+TUeJHPjWOPMSfJVz5MtFmofNu3mfApHZ9MA0J6BDUlROgd5UtB6MnlfG3JqLJ8Z4bg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763153910; c=relaxed/simple;
-	bh=NU8I6DFBBDxSVvP0Y1JJZ4FZjERpbk7xEGubtlerNL0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JlgEutXfv6BCXOneol7zbDr5buce6rMugWnte/CQMhUA3d860lJr2Z3bFByH7zl+0PHHsjLr7XwkK4hoadOO5hNn3sMUglBVl3j7LEvH+Lg3A8GPgKnpNRYN3eiw3kdVYXVZwkPKVXIsxrmmm9JqUrozs5MBwK3SWVnOMEPr2KY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=XTM1Wogw; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [100.79.200.7] (unknown [4.194.122.170])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 65761201AE5A;
-	Fri, 14 Nov 2025 12:58:15 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 65761201AE5A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1763153901;
-	bh=hXU5XnfCF/cwE4/J20YkIzYBKcMQJTB9H9fJo5UCttM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=XTM1Wogwg1tNwyDj0aOA0i2Bh6FmczbUmImLlDtPjLdf4eXncF2OVIk9slIMF6ga2
-	 fK8YS735k+PuWOGUiJPYC1l/qTYOspzEToDFiCoF5Zlq1G6/BahDITQSVGIGx85YMl
-	 QO3wL87A0LffXqD7tIiFaPWp9ipgCUfBTQaX3Fy4=
-Message-ID: <18ee6a8b-21fd-49c6-964a-2eb1b0b61c1d@linux.microsoft.com>
-Date: Sat, 15 Nov 2025 02:28:11 +0530
+Received: from BN1PR04CU002.outbound.protection.outlook.com (mail-eastus2azon11020089.outbound.protection.outlook.com [52.101.56.89])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13BD82F2616;
+	Fri, 14 Nov 2025 21:04:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.56.89
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1763154278; cv=fail; b=sMksvXKfs3peRShFk1qK3twW94pPSkYSS4LUt4FQiJFZz2no7U3+PhTeI24QX8srPVtbGp2xZXtH6SFr06S7FXxLnPvciIV4v8GP2JD/Xcy3Ve1gmNVqddrIfA2jJsJK/ktHtD+D3hfluChFV062DGLKL1OHd/WfRJVmrlbSJRg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1763154278; c=relaxed/simple;
+	bh=ndO3sSHw0iynkNrAtCmKm8BYj//2+5ze/o8CXa0Zefo=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=AExIvPVj/MmfjIIw5HqekwtxlcLlfeK0WTXeBhWOGDGkPOnQ3Hoq0fJUVQSftxx8gpu0Dggmws6oo+6952lhvBSJLJuwvIMkzo4wZO39oLmvmKjQLX3ZnoWtIKuoTN62GVMgXUt6Is9HaTNLf85YKmyPbAmN4jnevWQPu5zheJU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=talpey.com; spf=pass smtp.mailfrom=talpey.com; arc=fail smtp.client-ip=52.101.56.89
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=talpey.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=talpey.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=WZPFIu7phmN19owywuixopBJSjp/iOWJu3CJ1rHGDtn4Ljf3pNs/FAuym+Fob8Mst7mXsE5SCPjzcFoUNGYB1szHUMi+4xkprNIVa3ryqsxZ6w1qfnLdfaKT3pM0sdtFgRuuijqMeGz8JP7Cjlct/ZFHvF32yfwtM4pl3XgkgNbazIpZPKLlyEGJqZCRz8VjDX3UUs4TE84GvnkRP5Ot0uayS37ToXJ0oBwg/Wj9Jpaubm4UnRS0gf0KGWO6f7raDkqy836AwqoNzL9ZqXiz+kSnwwRTfphNq4XQDpzRRS2eaipi/vfx9QAz7KmCkRMiwtw3AK0ZYjX6N0EEg/h/Qw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=K7J/aejzfM4xbuy+4R8ghBFPz+1KTMFQKaMaoHTmzCU=;
+ b=Ps3MZOwSJXX1R6UBUTJ3RnjklkXrkv4FsC9xj54nGppgjxcLfPGPTe+pV7ZxrhKMoZWn8rPEuXsgA37folJDKTAoV/0vYbHyvDnaB5rkLwROARcslCjI1/qtDzSgNGEfxIVh9FO+oRIAwWSF4uheAeZwzX9UqJPpqnbTnhh6+vV8DdJnavZzB26wkaGF0phC+tX1VhmsH6wsf76IC4ytZL30xE5xcOiu+GlAwJjt3M3K++6J03hJNygAZSkFki4eoqgaJVWoaV60ELJw1SlPdnTj18v7BBhzl8ldwaxVMdhKkohERCSNJDisEz/c2AkQXx8BSY3v4nlymzx4HuNyRw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=talpey.com; dmarc=pass action=none header.from=talpey.com;
+ dkim=pass header.d=talpey.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=talpey.com;
+Received: from BYAPR01MB5144.prod.exchangelabs.com (2603:10b6:a03:7e::17) by
+ BL1PR01MB7650.prod.exchangelabs.com (2603:10b6:208:395::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9320.17; Fri, 14 Nov 2025 21:04:29 +0000
+Received: from BYAPR01MB5144.prod.exchangelabs.com
+ ([fe80::f973:4d38:accd:b75]) by BYAPR01MB5144.prod.exchangelabs.com
+ ([fe80::f973:4d38:accd:b75%5]) with mapi id 15.20.9320.013; Fri, 14 Nov 2025
+ 21:04:28 +0000
+Message-ID: <55be56d3-b286-4b39-8246-4be80b03c22c@talpey.com>
+Date: Fri, 14 Nov 2025 16:04:17 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Make RPCRDMA_MAX_RECV_BATCH configurable.
+To: Chuck Lever <chuck.lever@oracle.com>,
+ gaurav gangalwar <gaurav.gangalwar@gmail.com>
+Cc: linux-nfs@vger.kernel.org, Olga Kornievskaia <okorniev@redhat.com>,
+ Dai Ngo <Dai.Ngo@oracle.com>, neilb@brown.name,
+ Jeff Layton <jlayton@kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20251113093720.20428-1-gaurav.gangalwar@gmail.com>
+ <d3b2e4c8-18ec-4b8f-a05f-42bc00196e1c@oracle.com>
+ <CAJiE4O=zhEaJKQO7bBc8g9gXCiMoi7G7qSiVbQ5Cq+SwBK8OVw@mail.gmail.com>
+ <fc58b0f2-d00b-4e4e-a353-ffe43bec6c6e@oracle.com>
+From: Tom Talpey <tom@talpey.com>
+Content-Language: en-US
+In-Reply-To: <fc58b0f2-d00b-4e4e-a353-ffe43bec6c6e@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BLAPR03CA0056.namprd03.prod.outlook.com
+ (2603:10b6:208:32d::31) To BYAPR01MB5144.prod.exchangelabs.com
+ (2603:10b6:a03:7e::17)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v4 1/2] net: mana: Handle SKB if TX SGEs exceed
- hardware limit
-To: Eric Dumazet <edumazet@google.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
- kotaranov@microsoft.com, horms@kernel.org, shradhagupta@linux.microsoft.com,
- ssengar@linux.microsoft.com, ernis@linux.microsoft.com,
- dipayanroy@linux.microsoft.com, shirazsaleem@microsoft.com, leon@kernel.org,
- mlevitsk@redhat.com, yury.norov@gmail.com, sbhatta@marvell.com,
- linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- gargaditya@microsoft.com
-References: <1762952506-23593-1-git-send-email-gargaditya@linux.microsoft.com>
- <1762952506-23593-2-git-send-email-gargaditya@linux.microsoft.com>
- <CANn89iL-RJ84WB9W8SoZn6_UMko8sLBb_FEGjjGZTEO+9KOpAg@mail.gmail.com>
-Content-Language: en-US
-From: Aditya Garg <gargaditya@linux.microsoft.com>
-In-Reply-To: <CANn89iL-RJ84WB9W8SoZn6_UMko8sLBb_FEGjjGZTEO+9KOpAg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR01MB5144:EE_|BL1PR01MB7650:EE_
+X-MS-Office365-Filtering-Correlation-Id: 703ae03e-1794-472c-6ba0-08de23c1666f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024|7053199007;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?ZjVRVkt0clpHUlJ0bURIZXJDcTFoUklhTzVaSXplNFZ4ZmxZNkQ0Z1EvYmw2?=
+ =?utf-8?B?VjFuOHpXZWcxZkNmZ2ZZblRrMTNPYVJnQjJGREo1SjZGQlRJcCtaRzFrSFgx?=
+ =?utf-8?B?OWxuTHpGcm5MWjBrWkliTFQ3K2ljS2pWWUNtODFsZ21KTnVoQVV0Lzk2UWVQ?=
+ =?utf-8?B?Nm1NZmZKN2daNW1LaVBVT2FwNDdZOENycnZzN3NQOER1ZFBUWVJUZDRaaEpw?=
+ =?utf-8?B?WXphemo0OVdVS3c5dWZKTCtVaWlLbFRtckQybW1Wd1hNd2dGRmZoeUZjS2VH?=
+ =?utf-8?B?cFJoYmR6QVJsR2oyRGNudFZnQUg3UTdES1J5S2NuZ29Ta0t4NGlUU0pjaTdG?=
+ =?utf-8?B?Z05hL0tBNmUvVHhJMEhUeThqck81STZRQkM3eEFxVTFwUW9kb1dxVDR1c3hv?=
+ =?utf-8?B?TkhDUWxQdW1JQWI3alNEazhRa2JnQ201cjcrSDVZVmQ2K096MXh6RGM4dEkr?=
+ =?utf-8?B?M21JVWNrNEQ3TXN1Rk5GTGtodDRKWG40d25ZTHBTL3dYRDFqemg1QzFyNDZO?=
+ =?utf-8?B?c1V3NkZDNnZhdnhvQnkyY2l6MkxlMGpKVUZTNUF5MkF6S281N0sxS0dRRDBV?=
+ =?utf-8?B?KzRMd3dHdzJ5S0g5ckJqNVoxWThhbmZGclRqYjloV05JNjVhdWRkSzU4SnBx?=
+ =?utf-8?B?dHJoKy9ib0QwV0dOemwvYlg1KytGTzRQY3ZRUmo5VWtlRlNQcmIxWDhPNVBC?=
+ =?utf-8?B?Wkx2SUw0dnZsSStMaExnYUtnVFdYRlkxREtHQ3JVYmdWNlZUeUJ1VkREaVJI?=
+ =?utf-8?B?OGZScCtRWi9VaC9KU3JLL0dEcUtCaHp0V2lGWUtlTEl4RXh3d2cvSE96NEZ0?=
+ =?utf-8?B?TSsrKzltQyt1VTN3MUpYZE9iSmJWVzhtMTJOb1JYOG8weTllQ3FGWElFUkNR?=
+ =?utf-8?B?VWsyYmo1aEF1aVhVeVgrYTg3d01PVmhMRDBTR1BUenpjeVN0Rm1BRVprMmdi?=
+ =?utf-8?B?SDZCenhaNHhQbVlHZ2xDUSthOXRKRjFheURhbGNLRWMycWpUbjlrT2k5eTI0?=
+ =?utf-8?B?S0RCSlhXeExQQ3djMGQ4dG96NUtrOHBWNkozcGJBWEl0VGJjZ3ErUmJEcGhp?=
+ =?utf-8?B?c1FUNEJqQVhmTklzcnVXbk9iVzIxSlhIYjBjUnpINW1uTXpMalFsYTA5S0I1?=
+ =?utf-8?B?dWthUWFlUUsyem9oc2RtZGZmb2ZKNkhOZWVuRmo3K2Z2bExJY25Mb2wyNnFL?=
+ =?utf-8?B?TFpnd2lwdnl3TUEzWjZ2bE01M2VrN0wvRVlha1BzWkFsby8zSkgxUk9RbXFx?=
+ =?utf-8?B?M2hnWEhCdHJkd0J2SzhoUEptQWhhcUhvOUxUVGxEaXRiWnp4YVhCYkVoRmIr?=
+ =?utf-8?B?cDhhSGljVzMrRUV6WW0wNXNDelVUVHpQZ3c3eDJsSG5xakxlU0FzN2lKV0hh?=
+ =?utf-8?B?MFZKdGNjbytheVdVRjFmbThJcXd1cVJWOHhDRklnS29TUisvSTFnOWwybFBm?=
+ =?utf-8?B?aDV5YXRCMklVcEkvTkZ1S0g4MHJIYk5KOFdmbmpNdGdsS1RadktkVVpDTGFQ?=
+ =?utf-8?B?UDZIbnFocjU0SnV3S3czTUtTNDA0N0U5azZ0Rlk4TUNXS0hwSDVyY1U0Y0dW?=
+ =?utf-8?B?djk1SmsvR1J1MHNHUXRKWkRnQW1XKzNxOXVzMDF2ZEpwMGhKakludy9YNFdF?=
+ =?utf-8?B?ZGtkUkVyTFBGN2wwbXZ0cFNwWnhtUTkwUGI4TVY2MFVhMDI3U1BUSnEzdVM2?=
+ =?utf-8?B?b1hJV1A1MllhOG9LOGxhZlRsbHRrRHQwRGFHdWxMVytGcHJQOVN0STg1Y3dM?=
+ =?utf-8?B?Rk9pTXFCWGdQRU5GMGZhdGZZK0JIKzFvVVB6MCtDaWtyMmIxaDhqZW1nWDlv?=
+ =?utf-8?B?QWJDMFJYUHFtR2ZoUkpncU9aeU04SmUyRm9JYkl1S1BiLzRkbHZvR3hqajRW?=
+ =?utf-8?B?b1JMNFBiaFVuVmk0cjJsSTRDSWJIcmY1MkVFWGFYMVJFbmZCTkIrUTNNUnlU?=
+ =?utf-8?Q?BbGX4O5W0UQCHRskR5eQyRBcEIuCr3Ij?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR01MB5144.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(7053199007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Vkt1YnVLd0x4YkNHY1M2RGFlUllyV2FzUHFORWNmMklwUUxIU2FoYThYRDht?=
+ =?utf-8?B?MGFwOElSUXRYdi9NRTM2bkphOU1oT1hjWFFPSERNdjgyekVDV2xvcURYdjFa?=
+ =?utf-8?B?T3EyK2prSXJ4R1pHUENmcEVBTFV6d1dGV2llTEFRNkp4YUkydWhIWjJ2ckhy?=
+ =?utf-8?B?S0pMZlVwOE85SkpIRVhsNlZQVVJjYXJ1ajYwTG1hdTdtbDBvMUFLR0hmZVUx?=
+ =?utf-8?B?eVlVcUtOOUJOOU13WHJOcTZxZVVFNVI3RXBGTWZFMjh3dGlabk9kMkhSR0hN?=
+ =?utf-8?B?a04xTUJpckxpanF5eGlSSktIT1A5L2g2Nm5MNEpSRklzMmhIWnhTNVA4Rmx0?=
+ =?utf-8?B?Y1NaTFpiNWs1NjdodkVnN3lycjhZL3dVKzIrT2tzNDNFc0J1Sm1CeEU5WGpH?=
+ =?utf-8?B?MEQvcWc5SEdjKzlDL040d3V2aXpyZjJiWUxKZStPL2o0c3dZNzBoUkF3RHZB?=
+ =?utf-8?B?c1lmNkhWRDZ0R0tDWm4rVlBvelJrNkxUdTdXT09pb0IwL0piWjhlY0k1OTk1?=
+ =?utf-8?B?b0JDeEhZRHlVMzUyVG9ncDEvKzRHb3lXRWZ0eU5CdnczaGlMeHNha2ZkS2hK?=
+ =?utf-8?B?K0pWNXRudXd6YmNQalRwbDJTU0orNnluR3NDZTI5NkFmOEV3Wm12ZmI0c2Uz?=
+ =?utf-8?B?d1JZa2VITXQwWXUveVIxcURCVUVrMHJVMS8yV29McjNZTkRORUhNT1ZRK0l4?=
+ =?utf-8?B?a0ZPMFluWFNKdElkMXA2UHRTZ2ZIK1pnYmIzODlYZHhaT0tMZ2dxbVRCUlIz?=
+ =?utf-8?B?NEkzMHlxeFVIS1lFQytYVys2bFVxdGh6ZFZhMG14ZDBQVVdsZDl1bG5XL3B1?=
+ =?utf-8?B?UENFSmtRZXBvczNKTTg0a0d2NnNjVjhsbWFDb1oyZGZMeCtESEZ5Y3FlN1Bi?=
+ =?utf-8?B?VEwwcVk4bWJmZlcvT0c5cm1LeWsxQlZsUUw3c201VndxTUpMNVk2dnlBTmN6?=
+ =?utf-8?B?OXZ6dlljYUpVTnNlKzg4aVIzT1NyUURYR0xjTXhkZmgvOWhaaTNyaElyUjBj?=
+ =?utf-8?B?RWxPTGVMRXJObEVXQlZxZzZpVDlvSjdzM3MzNldDNktwcDhVb0RLdzRLa3pt?=
+ =?utf-8?B?N2lWb0dLY2RtL1NFNnlkUHllZ1d1M0hteDlURzlYYlRxSGlGL09YamU4czB5?=
+ =?utf-8?B?Z0FSc29zbzdEak9UeUhwaFgwOWgwYlhkU3VrU2pZUUlhWGVFZ3lWVDlhWFhX?=
+ =?utf-8?B?Y1FsZFI2NzF5eDlLQWF0K3Y0K0RYdGdGMmNpZmc3Z2k4eWgrdkl1U1V6eDJ6?=
+ =?utf-8?B?QnBhN1VnVVgvdkUvYUZoMXkvWnJPenNWZjJnTFV0NWtEemRmbVBJVWwraWRF?=
+ =?utf-8?B?d0xPc0NwR24wZ2wrcnNOdFdUa2grU3dQWTJ3SXBHNDV2ODVKZFdScUNyYm9t?=
+ =?utf-8?B?ZEhRL1ZMUU1rUmNYYmN3anZ4d215L0ZnTUFDOTduT3MwTkFlb3ZnT2huOHVt?=
+ =?utf-8?B?d0V3bTE1Vk1DN3p6UFVpYVVibHMvaVE2ODBlaHkzMkdpZFc0UEhoVWtNRE55?=
+ =?utf-8?B?OXc2OUdSOGpnYWFSeUt2Q2hyd3ZuY2pFTWlsK3lxLzI3b3dpakN3aDdNUkxv?=
+ =?utf-8?B?NitzSGZBalk5dW5mRjZweHg1ZEJWaWROYmp1QTJBUi8xN2dqOWFKc3VNU2du?=
+ =?utf-8?B?VHFTVFZoM0EyTGFjeFRwc0JKYjhsWEJMMko0UXBBME50SmJobVlOMzhLUm1W?=
+ =?utf-8?B?U2FOV2ZiOTJ1ZTh5clRQNFRJZ0lSbTVKWmFsNEJGWTduQjVwakdqT1QrVHZY?=
+ =?utf-8?B?R3ZLN3V6TUdxbi9oamh2UGRSTWNpTnZJMDlsRFkrNWxOUEg4ZWFEOHRBeTQx?=
+ =?utf-8?B?S1RJb3ZaYkZyM3VLSnBHSG1iOVRTSmRSVXlKVnpaZ2EzVlMyVHZ5UHJJcm1N?=
+ =?utf-8?B?LzdhczhJcUdWamQrdFdxVFhscFllRHBQTzh3dW5NRkZNV3pLVHJSSE9FWWx1?=
+ =?utf-8?B?VVkzbVdLRzVMdDRQUDFrQTE4L2tIZVRGZWlBREpUYkdQN2JKMVRwVXUwTUth?=
+ =?utf-8?B?V0ZhS2RDekd6NG9QS2Q3WVNiaS8xa0xPRlRHLzhRTjdUaDNOZmtsNzNHWjQ1?=
+ =?utf-8?B?YUlLb1pNb3pkS0kxeEFJclk0bkRhYzRRQ2d3VzNzUmtpNkd3Z3JGTnhob3VE?=
+ =?utf-8?Q?ZCLynUiDP7Gi7YkqgGTQssUIN?=
+X-OriginatorOrg: talpey.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 703ae03e-1794-472c-6ba0-08de23c1666f
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR01MB5144.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2025 21:04:28.9037
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 2b2dcae7-2555-4add-bc80-48756da031d5
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 77EsBBnb0sUYQMmMs+/AIfU3sggX0RiX4MEvwlLIBl+upIJ5+/F/nHJoFXJxf+Qj
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR01MB7650
 
-On 12-11-2025 19:25, Eric Dumazet wrote:
-> On Wed, Nov 12, 2025 at 5:11 AM Aditya Garg
-> <gargaditya@linux.microsoft.com> wrote:
+On 11/13/2025 12:41 PM, Chuck Lever wrote:
+> On 11/13/25 11:39 AM, gaurav gangalwar wrote:
+>> On Thu, Nov 13, 2025 at 7:49 PM Chuck Lever <chuck.lever@oracle.com> wrote:
+>>>
+>>> On 11/13/25 4:37 AM, Gaurav Gangalwar wrote:
+>>>> Bumped up rpcrdma_max_recv_batch to 64.
+>>>> Added param to change to it, it becomes handy to use higher value
+>>>> to avoid hung.
+>>>
+>>> [ Resend with correct NFSD reviewer email addresses and linux-rdma@ ]
+>>>
+>>> Hi Gaurav -
+>>>
+>>> Adding an administrative setting is generally a last resort. First,
+>>> we want a full root-cause analysis to understand the symptoms you
+>>> are trying to address. Do you have an RCA or a simple reproducer to
+>>> share with us?
 >>
->> The MANA hardware supports a maximum of 30 scatter-gather entries (SGEs)
->> per TX WQE. Exceeding this limit can cause TX failures.
->> Add ndo_features_check() callback to validate SKB layout before
->> transmission. For GSO SKBs that would exceed the hardware SGE limit, clear
->> NETIF_F_GSO_MASK to enforce software segmentation in the stack.
->> Add a fallback in mana_start_xmit() to linearize non-GSO SKBs that still
->> exceed the SGE limit.
+>> Issue found while testing fio workload over RDMA
+>> Client: Ubuntu 24.04
+>> Server: Ganesha NFS server
+>> We have seen intermittent hung on client with buffered IO workload at
+>> large scale with around 30 RDMA connections, client was under memory
+>> pressure.
+>> Ganesha log shows
 >>
->> Also, Add ethtool counter for SKBs linearized
+>> 10/11/2025 16:39:12Z : ntnx-10-57-210-224-a-fsvm 1309416[none]
+>> [0x7f49a6c3fe80] rpc :TIRPC :EVENT :rpc_rdma_cq_event_handler() cq
+>> completion status: RNR retry counter exceeded (13) rdma_xprt state 5
+>> opcode 2 cbc 0x7f4996688000 inline 1
 >>
->> Co-developed-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
->> Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
->> Signed-off-by: Aditya Garg <gargaditya@linux.microsoft.com>
->> ---
->>   drivers/net/ethernet/microsoft/mana/mana_en.c | 37 ++++++++++++++++++-
->>   .../ethernet/microsoft/mana/mana_ethtool.c    |  2 +
->>   include/net/mana/gdma.h                       |  6 ++-
->>   include/net/mana/mana.h                       |  1 +
->>   4 files changed, 43 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
->> index cccd5b63cee6..67ae5421f9ee 100644
->> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
->> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
->> @@ -11,6 +11,7 @@
->>   #include <linux/mm.h>
->>   #include <linux/pci.h>
->>   #include <linux/export.h>
->> +#include <linux/skbuff.h>
->>
->>   #include <net/checksum.h>
->>   #include <net/ip6_checksum.h>
->> @@ -329,6 +330,20 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->>          cq = &apc->tx_qp[txq_idx].tx_cq;
->>          tx_stats = &txq->stats;
->>
->> +       if (MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES &&
->> +           skb_shinfo(skb)->nr_frags + 2 > MAX_TX_WQE_SGL_ENTRIES) {
->> +               /* GSO skb with Hardware SGE limit exceeded is not expected here
->> +                * as they are handled in mana_features_check() callback
->> +                */
->> +               if (skb_linearize(skb)) {
->> +                       netdev_warn_once(ndev, "Failed to linearize skb with nr_frags=%d and is_gso=%d\n",
->> +                                        skb_shinfo(skb)->nr_frags,
->> +                                        skb_is_gso(skb));
->> +                       goto tx_drop_count;
->> +               }
->> +               apc->eth_stats.linear_pkt_tx_cnt++;
->> +       }
->> +
->>          pkg.tx_oob.s_oob.vcq_num = cq->gdma_id;
->>          pkg.tx_oob.s_oob.vsq_frame = txq->vsq_frame;
->>
->> @@ -442,8 +457,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->>                  }
->>          }
->>
->> -       WARN_ON_ONCE(pkg.wqe_req.num_sge > MAX_TX_WQE_SGL_ENTRIES);
->> -
->>          if (pkg.wqe_req.num_sge <= ARRAY_SIZE(pkg.sgl_array)) {
->>                  pkg.wqe_req.sgl = pkg.sgl_array;
->>          } else {
->> @@ -518,6 +531,25 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->>          return NETDEV_TX_OK;
->>   }
->>
+>> Which points to lack of posted recv buffers on client.
+>> Once we increased rpcrdma_max_recv_batch to 64, issue was resolved.
 > 
-> 
-> #if MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES
-> 
->> +static netdev_features_t mana_features_check(struct sk_buff *skb,
->> +                                            struct net_device *ndev,
->> +                                            netdev_features_t features)
->> +{
->> +       if (MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES &&
->> +           skb_shinfo(skb)->nr_frags + 2 > MAX_TX_WQE_SGL_ENTRIES) {
->> +               /* Exceeds HW SGE limit.
->> +                * GSO case:
->> +                *   Disable GSO so the stack will software-segment the skb
->> +                *   into smaller skbs that fit the SGE budget.
->> +                * Non-GSO case:
->> +                *   The xmit path will attempt skb_linearize() as a fallback.
->> +                */
->> +               if (skb_is_gso(skb))
-> 
-> No need to test skb_is_gso(skb), you can clear bits, this will be a
-> NOP if the packet is non GSO anyway.
-> 
->> +                       features &= ~NETIF_F_GSO_MASK;
->> +       }
->> +       return features;
->> +}
-> 
-> #endif
-> 
->> +
->>   static void mana_get_stats64(struct net_device *ndev,
->>                               struct rtnl_link_stats64 *st)
->>   {
->> @@ -878,6 +910,7 @@ static const struct net_device_ops mana_devops = {
->>          .ndo_open               = mana_open,
->>          .ndo_stop               = mana_close,
->>          .ndo_select_queue       = mana_select_queue,
->> +       .ndo_features_check     = mana_features_check,
-> 
-> Note that if your mana_features_check() is a nop if MAX_SKB_FRAGS is
-> small enough,
-> you could set a non NULL .ndo_features_check based on a preprocessor condition
-> 
-> #if MAX_SKB_FRAGS + 2 > MAX_TX_WQE_SGL_ENTRIES
->      .ndo_features_check = ....
-> #endif
-> 
-> This would avoid an expensive indirect call when possible.
-> 
-> 
->>          .ndo_start_xmit         = mana_start_xmit,
->>          .ndo_validate_addr      = eth_validate_addr,
->>          .ndo_get_stats64        = mana_get_stats64,
->> diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
->> index a1afa75a9463..fa5e1a2f06a9 100644
->> --- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
->> +++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
->> @@ -71,6 +71,8 @@ static const struct mana_stats_desc mana_eth_stats[] = {
->>          {"tx_cq_err", offsetof(struct mana_ethtool_stats, tx_cqe_err)},
->>          {"tx_cqe_unknown_type", offsetof(struct mana_ethtool_stats,
->>                                          tx_cqe_unknown_type)},
->> +       {"linear_pkt_tx_cnt", offsetof(struct mana_ethtool_stats,
->> +                                       linear_pkt_tx_cnt)},
->>          {"rx_coalesced_err", offsetof(struct mana_ethtool_stats,
->>                                          rx_coalesced_err)},
->>          {"rx_cqe_unknown_type", offsetof(struct mana_ethtool_stats,
->> diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
->> index 637f42485dba..84614ebe0f4c 100644
->> --- a/include/net/mana/gdma.h
->> +++ b/include/net/mana/gdma.h
->> @@ -592,6 +592,9 @@ enum {
->>   #define GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE BIT(17)
->>   #define GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE BIT(6)
->>
->> +/* Driver supports linearizing the skb when num_sge exceeds hardware limit */
->> +#define GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE BIT(20)
->> +
->>   #define GDMA_DRV_CAP_FLAGS1 \
->>          (GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
->>           GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
->> @@ -601,7 +604,8 @@ enum {
->>           GDMA_DRV_CAP_FLAG_1_DYNAMIC_IRQ_ALLOC_SUPPORT | \
->>           GDMA_DRV_CAP_FLAG_1_SELF_RESET_ON_EQE | \
->>           GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE | \
->> -        GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE)
->> +        GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE | \
->> +        GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE)
->>
->>   #define GDMA_DRV_CAP_FLAGS2 0
->>
->> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
->> index 8906901535f5..50a532fb30d6 100644
->> --- a/include/net/mana/mana.h
->> +++ b/include/net/mana/mana.h
->> @@ -404,6 +404,7 @@ struct mana_ethtool_stats {
->>          u64 hc_tx_err_gdma;
->>          u64 tx_cqe_err;
->>          u64 tx_cqe_unknown_type;
->> +       u64 linear_pkt_tx_cnt;
->>          u64 rx_coalesced_err;
->>          u64 rx_cqe_unknown_type;
->>   };
->> --
->> 2.43.0
->>
+> That still doesn't convince me that increasing the receive batch count
+> is a good fix, though it's certainly a workaround.
 
-Thanks for the review Eric. I will incorporate these changes in next 
-revision.
+It's not a workaround, this will fail on any RDMA provider that doesn't
+perform RNR retry, for example iWARP. But more importantly, RNR retry is
+unnecessary because the rpcrdma protocol implements a strict crediting
+exchange. A proper rpcrdma implementation will never trigger RNR.
 
-Regards,
-Aditya
+This is almost certainly an rpcrdma protocol violation in the sender,
+which is failing to honor the credit limit granted by the receiving
+peer and is overrunning the peer's receive queue. A wireshark trace
+would prove it. Please do this research.
+
+Tom.
+
+
+> 
+> The client's RPC/RDMA code is supposed to track the number of Sends and
+> keep the correct number of Receives on the Receive Queue. The goal of
+> the implementation is to never encounter an RNR.
+> 
+> Therefore, if it's not doing that (and the RNR retries suggests that's
+> the case) there is an actual bug somewhere. The extra batch Receives are
+> an optimization, and should have no impact on correct operation.
+> 
+> If you can't reproduce this with the Linux NFS server, the place to
+> start looking for misbehavior is NFS/Ganesha, as it is the newer NFS
+> over RDMA implementation of the two servers. Maybe it's not handling
+> credit accounting correctly, or perhaps it's putting more Sends on
+> the wire than the credit limit allows.
+> 
+> 
+
 
