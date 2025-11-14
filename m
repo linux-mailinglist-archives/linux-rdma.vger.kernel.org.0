@@ -1,266 +1,128 @@
-Return-Path: <linux-rdma+bounces-14483-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14484-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ACAEC5CE96
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Nov 2025 12:44:57 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB051C5D4E7
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Nov 2025 14:20:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id AE31435AEDD
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Nov 2025 11:43:55 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E09934E20C8
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Nov 2025 13:12:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CCAF314D25;
-	Fri, 14 Nov 2025 11:43:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="UZKlzQBx"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88AEE27990C;
+	Fri, 14 Nov 2025 13:12:38 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 474A53148B1;
-	Fri, 14 Nov 2025 11:43:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8795619E7D1;
+	Fri, 14 Nov 2025 13:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763120604; cv=none; b=bUkhzxyOYLwlp1XMQNcHfM+120nKC2LCX28FURIg9B1du/fQZP2MLc8IEPyRFAChOorWehpEfFc/j90HOdvj/CiRjuOOw0d/ZiamJpg/8rSvD5s3enoR4M9GMzH793VlWf1RsnOruMsmQNK++JGOZejn6oK1EnahpvHngXNbWAY=
+	t=1763125958; cv=none; b=gow99QKnvJNy+pQ9cPaIrq3O+39rirWCfUFYO//ue+9LNitiadRxd493Yk/5SZI3yNkds5rLFxneLsUssv2iYsEjbv8o02PSyX93iAh3G2D1vJhsSKOsgj/gzrt2BFeGzSlfXTJ7FfsYNEeUbHPRHpjAU0qWg3EcaoOkKFv4lj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763120604; c=relaxed/simple;
-	bh=NAjEO2l/7TT2dg+RJwWy/qrXQnXVKSmFSZxHLdwJUUc=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References; b=ILRl4ZBI+NViDY1xgM4zREWTQcZh+BoCtOKSD4xEqjcIr88TIa5XER9GB5RUUVfz1xEyfI6924OAfm4XuWeUrq2BFb5SW8dQQZqyi8VV2N8LR7lvgq4gKVHJDL6JN4j7mFRpIc6JaOSccFmTnHu87KFeLfP5ifKyTQ/g3y+YfBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=UZKlzQBx; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1173)
-	id EF0E8201AE5F; Fri, 14 Nov 2025 03:43:22 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EF0E8201AE5F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1763120602;
-	bh=vnJk8LGOxLRkcMfO5rBoEy0rgFlSz2jeBb39ewcebbg=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=UZKlzQBxz9WPXrtr1+/ehfZb3D+2qMp4rJ1jJEWsSPKpzMaLixbPddQJCMJdbv0tY
-	 k6oNnMxxsyervV1Ov69ZVN0Q+bZyQ7wACt8uqYAHe7+mGFFjJTJJ6aA+T7jCqj97YN
-	 25V5odEV24VQTf59fxZh2cycwsw2oC6wRSyqad/Y=
-From: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
-To: kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	longli@microsoft.com,
-	kotaranov@microsoft.com,
-	horms@kernel.org,
-	shradhagupta@linux.microsoft.com,
-	ssengar@linux.microsoft.com,
-	ernis@linux.microsoft.com,
-	dipayanroy@linux.microsoft.com,
-	shirazsaleem@microsoft.com,
-	sbhatta@marvell.com,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Subject: [PATCH net-next v3 2/2] net: mana: Add standard counter rx_missed_errors
-Date: Fri, 14 Nov 2025 03:43:19 -0800
-Message-Id: <1763120599-6331-3-git-send-email-ernis@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1763120599-6331-1-git-send-email-ernis@linux.microsoft.com>
-References: <1763120599-6331-1-git-send-email-ernis@linux.microsoft.com>
+	s=arc-20240116; t=1763125958; c=relaxed/simple;
+	bh=1hXjKIg4/jA/DRDAjapwgRzU4bIgIF8InlmC3moADzU=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=P7U6+RCvMgBBUL9lplCbMS52VziXashmhlA7R+NHQYvC9gb2M/DU6jQTBTT1XTrKJvyQj6Yxypre8tarLY1dURyLvdZPbxzxBMmyeBo0oZcr8rE4uYEBYXZNDVXkpYlWhkkYCR2jo71k4zoKZ4R7hlU9/voNEUqmgHfAKAePZkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTPS id 4d7Hbf4QRDzJ46F0;
+	Fri, 14 Nov 2025 21:11:58 +0800 (CST)
+Received: from dubpeml100005.china.huawei.com (unknown [7.214.146.113])
+	by mail.maildlp.com (Postfix) with ESMTPS id 601F714027A;
+	Fri, 14 Nov 2025 21:12:34 +0800 (CST)
+Received: from localhost (10.126.173.232) by dubpeml100005.china.huawei.com
+ (7.214.146.113) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.36; Fri, 14 Nov
+ 2025 13:12:33 +0000
+Date: Fri, 14 Nov 2025 13:12:32 +0000
+From: Jonathan Cameron <jonathan.cameron@huawei.com>
+To: Zhiping Zhang <zhipingz@meta.com>
+CC: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, "Bjorn
+ Helgaas" <bhelgaas@google.com>, <linux-rdma@vger.kernel.org>,
+	<linux-pci@vger.kernel.org>, <netdev@vger.kernel.org>, Keith Busch
+	<kbusch@kernel.org>, Yochai Cohen <yochai@nvidia.com>, Yishai Hadas
+	<yishaih@nvidia.com>
+Subject: Re: [RFC 1/2] Set steering-tag directly for PCIe P2P memory access
+Message-ID: <20251114131232.00006e9e@huawei.com>
+In-Reply-To: <20251113213712.776234-2-zhipingz@meta.com>
+References: <20251113213712.776234-1-zhipingz@meta.com>
+	<20251113213712.776234-2-zhipingz@meta.com>
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500011.china.huawei.com (7.191.174.215) To
+ dubpeml100005.china.huawei.com (7.214.146.113)
 
-Report standard counter stats->rx_missed_errors
-using hc_rx_discards_no_wqe from the hardware.
+On Thu, 13 Nov 2025 13:37:11 -0800
+Zhiping Zhang <zhipingz@meta.com> wrote:
 
-Add a global workqueue to periodically run
-mana_query_gf_stats every 2 seconds to get the latest
-info in eth_stats and define a driver capability flag
-to notify hardware of the periodic queries.
+> PCIe: Add a memory type for P2P memory access
+> 
+> The current tph memory type definition applies for CPU use cases. For device
+> memory accessed in the peer-to-peer (P2P) manner, we need another memory
+> type.
+> 
+> Signed-off-by: Zhiping Zhang <zhipingz@meta.com>
+> ---
+>  drivers/pci/tph.c       | 4 ++++
+>  include/linux/pci-tph.h | 4 +++-
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/tph.c b/drivers/pci/tph.c
+> index cc64f93709a4..d983c9778c72 100644
+> --- a/drivers/pci/tph.c
+> +++ b/drivers/pci/tph.c
+> @@ -67,6 +67,8 @@ static u16 tph_extract_tag(enum tph_mem_type mem_type, u8 req_type,
+>  			if (info->pm_st_valid)
+>  				return info->pm_st;
+>  			break;
+> +		default:
+> +			return 0;
+>  		}
+>  		break;
+>  	case PCI_TPH_REQ_EXT_TPH: /* 16-bit tag */
+> @@ -79,6 +81,8 @@ static u16 tph_extract_tag(enum tph_mem_type mem_type, u8 req_type,
+>  			if (info->pm_xst_valid)
+>  				return info->pm_xst;
+>  			break;
+> +		default:
+> +			return 0;
+>  		}
+>  		break;
+>  	default:
+> diff --git a/include/linux/pci-tph.h b/include/linux/pci-tph.h
+> index 9e4e331b1603..b989302b6755 100644
+> --- a/include/linux/pci-tph.h
+> +++ b/include/linux/pci-tph.h
+> @@ -14,10 +14,12 @@
+>   * depending on the memory type: Volatile Memory or Persistent Memory. When a
+>   * caller query about a target's Steering Tag, it must provide the target's
+>   * tph_mem_type. ECN link: https://members.pcisig.com/wg/PCI-SIG/document/15470.
+> + * Add a new tph type for PCI peer-to-peer access use case.
+>   */
+>  enum tph_mem_type {
+>  	TPH_MEM_TYPE_VM,	/* volatile memory */
+> -	TPH_MEM_TYPE_PM		/* persistent memory */
+> +	TPH_MEM_TYPE_PM,	/* persistent memory */
+> +	TPH_MEM_TYPE_P2P	/* peer-to-peer accessable memory */
 
-To avoid repeated failures and log flooding, the workqueue
-is not rescheduled if mana_query_gf_stats fails on HWC timeout
-error and the stats are reset to 0. Other errors are transient
-which will not need a VF reset for recovery.
+Trivial but this time definitely add the trailing comma!  Maybe there will never
+be any more in here but maybe there will and we can avoid a line of
+churn next time.
 
-Signed-off-by: Erni Sri Satya Vennela <ernis@linux.microsoft.com>
----
-Changes in v3:
-* Use schedule_delayed_work (global workqueue) instead of
-  queue_delayed_work (dedicated workqueue) in MANA driver.
-* Update commit message.
-Changes in v2:
-* Update commit message.
-* Stop rescheduling workqueue only when HWC timeout is observed.
-* Introduce new variable in mana_context for detecting HWC timeout.
-* Warn once in mana_get_stat64 when HWC timeout is observed.
----
- drivers/net/ethernet/microsoft/mana/mana_en.c | 36 +++++++++++++++++--
- .../ethernet/microsoft/mana/mana_ethtool.c    |  2 --
- include/net/mana/gdma.h                       |  6 +++-
- include/net/mana/mana.h                       |  6 +++-
- 4 files changed, 43 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index d8ce4402c696..13f47be7aca6 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -534,6 +534,11 @@ static void mana_get_stats64(struct net_device *ndev,
- 
- 	netdev_stats_to_stats64(st, &ndev->stats);
- 
-+	if (apc->ac->hwc_timeout_occurred)
-+		netdev_warn_once(ndev, "HWC timeout occurred\n");
-+
-+	st->rx_missed_errors = apc->ac->hc_stats.hc_rx_discards_no_wqe;
-+
- 	for (q = 0; q < num_queues; q++) {
- 		rx_stats = &apc->rxqs[q]->stats;
- 
-@@ -2809,7 +2814,7 @@ int mana_config_rss(struct mana_port_context *apc, enum TRI_STATE rx,
- 	return 0;
- }
- 
--void mana_query_gf_stats(struct mana_context *ac)
-+int mana_query_gf_stats(struct mana_context *ac)
- {
- 	struct gdma_context *gc = ac->gdma_dev->gdma_context;
- 	struct mana_query_gf_stat_resp resp = {};
-@@ -2852,14 +2857,14 @@ void mana_query_gf_stats(struct mana_context *ac)
- 				sizeof(resp));
- 	if (err) {
- 		dev_err(dev, "Failed to query GF stats: %d\n", err);
--		return;
-+		return err;
- 	}
- 	err = mana_verify_resp_hdr(&resp.hdr, MANA_QUERY_GF_STAT,
- 				   sizeof(resp));
- 	if (err || resp.hdr.status) {
- 		dev_err(dev, "Failed to query GF stats: %d, 0x%x\n", err,
- 			resp.hdr.status);
--		return;
-+		return err;
- 	}
- 
- 	ac->hc_stats.hc_rx_discards_no_wqe = resp.rx_discards_nowqe;
-@@ -2894,6 +2899,8 @@ void mana_query_gf_stats(struct mana_context *ac)
- 	ac->hc_stats.hc_tx_mcast_pkts = resp.hc_tx_mcast_pkts;
- 	ac->hc_stats.hc_tx_mcast_bytes = resp.hc_tx_mcast_bytes;
- 	ac->hc_stats.hc_tx_err_gdma = resp.tx_err_gdma;
-+
-+	return 0;
- }
- 
- void mana_query_phy_stats(struct mana_port_context *apc)
-@@ -3428,6 +3435,24 @@ int mana_rdma_service_event(struct gdma_context *gc, enum gdma_service_type even
- 	return 0;
- }
- 
-+#define MANA_GF_STATS_PERIOD (2 * HZ)
-+
-+static void mana_gf_stats_work_handler(struct work_struct *work)
-+{
-+	struct mana_context *ac =
-+		container_of(to_delayed_work(work), struct mana_context, gf_stats_work);
-+	int err;
-+
-+	err = mana_query_gf_stats(ac);
-+	if (err == -ETIMEDOUT) {
-+		/* HWC timeout detected - reset stats and stop rescheduling */
-+		ac->hwc_timeout_occurred = true;
-+		memset(&ac->hc_stats, 0, sizeof(ac->hc_stats));
-+		return;
-+	}
-+	schedule_delayed_work(&ac->gf_stats_work, MANA_GF_STATS_PERIOD);
-+}
-+
- int mana_probe(struct gdma_dev *gd, bool resuming)
- {
- 	struct gdma_context *gc = gd->gdma_context;
-@@ -3520,6 +3545,10 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
- 	}
- 
- 	err = add_adev(gd, "eth");
-+
-+	INIT_DELAYED_WORK(&ac->gf_stats_work, mana_gf_stats_work_handler);
-+	schedule_delayed_work(&ac->gf_stats_work, MANA_GF_STATS_PERIOD);
-+
- out:
- 	if (err) {
- 		mana_remove(gd, false);
-@@ -3544,6 +3573,7 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
- 	int i;
- 
- 	disable_work_sync(&ac->link_change_work);
-+	cancel_delayed_work_sync(&ac->gf_stats_work);
- 
- 	/* adev currently doesn't support suspending, always remove it */
- 	if (gd->adev)
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-index 3dfd96146424..99e811208683 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-@@ -213,8 +213,6 @@ static void mana_get_ethtool_stats(struct net_device *ndev,
- 
- 	if (!apc->port_is_up)
- 		return;
--	/* we call mana function to update stats from GDMA */
--	mana_query_gf_stats(apc->ac);
- 
- 	/* We call this mana function to get the phy stats from GDMA and includes
- 	 * aggregate tx/rx drop counters, Per-TC(Traffic Channel) tx/rx and pause
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index 637f42485dba..2e4f2f3175e5 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -592,6 +592,9 @@ enum {
- #define GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE BIT(17)
- #define GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE BIT(6)
- 
-+/* Driver can send HWC periodically to query stats */
-+#define GDMA_DRV_CAP_FLAG_1_PERIODIC_STATS_QUERY BIT(21)
-+
- #define GDMA_DRV_CAP_FLAGS1 \
- 	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
- 	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
-@@ -601,7 +604,8 @@ enum {
- 	 GDMA_DRV_CAP_FLAG_1_DYNAMIC_IRQ_ALLOC_SUPPORT | \
- 	 GDMA_DRV_CAP_FLAG_1_SELF_RESET_ON_EQE | \
- 	 GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE | \
--	 GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE)
-+	 GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE | \
-+	 GDMA_DRV_CAP_FLAG_1_PERIODIC_STATS_QUERY)
- 
- #define GDMA_DRV_CAP_FLAGS2 0
- 
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index 3484f42803e3..d37f4cea0ac3 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -480,6 +480,10 @@ struct mana_context {
- 	struct mana_eq *eqs;
- 	struct dentry *mana_eqs_debugfs;
- 
-+	/* Workqueue for querying hardware stats */
-+	struct delayed_work gf_stats_work;
-+	bool hwc_timeout_occurred;
-+
- 	struct net_device *ports[MAX_PORTS_IN_MANA_DEV];
- 
- 	/* Link state change work */
-@@ -581,7 +585,7 @@ u32 mana_run_xdp(struct net_device *ndev, struct mana_rxq *rxq,
- struct bpf_prog *mana_xdp_get(struct mana_port_context *apc);
- void mana_chn_setxdp(struct mana_port_context *apc, struct bpf_prog *prog);
- int mana_bpf(struct net_device *ndev, struct netdev_bpf *bpf);
--void mana_query_gf_stats(struct mana_context *ac);
-+int mana_query_gf_stats(struct mana_context *ac);
- int mana_query_link_cfg(struct mana_port_context *apc);
- int mana_set_bw_clamp(struct mana_port_context *apc, u32 speed,
- 		      int enable_clamping);
--- 
-2.34.1
+>  };
+>  
+>  #ifdef CONFIG_PCIE_TPH
 
 
