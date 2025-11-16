@@ -1,291 +1,496 @@
-Return-Path: <linux-rdma+bounces-14495-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14496-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33E38C60889
-	for <lists+linux-rdma@lfdr.de>; Sat, 15 Nov 2025 17:31:32 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id B43C3C618B4
+	for <lists+linux-rdma@lfdr.de>; Sun, 16 Nov 2025 17:36:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.lore.kernel.org (Postfix) with ESMTPS id C97812428E
-	for <lists+linux-rdma@lfdr.de>; Sat, 15 Nov 2025 16:31:29 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D34D94EB1EB
+	for <lists+linux-rdma@lfdr.de>; Sun, 16 Nov 2025 16:36:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 704D01DF27D;
-	Sat, 15 Nov 2025 16:31:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDBF330E0ED;
+	Sun, 16 Nov 2025 16:36:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="CPUnZzwP"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazon11023100.outbound.protection.outlook.com [40.107.201.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DF281E1E00
-	for <linux-rdma@vger.kernel.org>; Sat, 15 Nov 2025 16:31:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763224283; cv=none; b=FSWM3ZWIVdvQXrHHPcMrR6HRtSffRc4EnOXo7xXXvW33joBdSH33OY0ZFrsNehdItjobMo4WEArsoT/zbKYomTLiF1C1VeSyP+wbBAsemT5VUePkjxo2yiBej3uqGGBDIROg3deI4TuWAEvTiLUjzG9SU2cuHYwkaBYgk7ptpk0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763224283; c=relaxed/simple;
-	bh=TWQvIINaswKPWu1tgrEVqbMcZs+KA419++3kmB43XuU=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=j+F35aixS+Sl6QsZq8GC+GVMcbmyCcVtVQ3wRG6AeRQgGm6OBUo2cHK8KCETrYKg5qBynFofCxRK8YRP218TsQm1oUTGF2goPwMonbUcWmNo9oJmbygN9D43pH41X1Do+kdoe5B6/8+W0+DalZXXlx5bMw299Bv9mRJOMgssMGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-43331ea8ed8so28955945ab.3
-        for <linux-rdma@vger.kernel.org>; Sat, 15 Nov 2025 08:31:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763224280; x=1763829080;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gObGYVOeXiLjSXzoNnI5JIjGDVKD50rx4iXO4PEaljM=;
-        b=W9eKI/adysK6jlI8jCnOp9LPgD7KQaDtfYyJOILKh/zaQ3HCArcbN01dMmozXCPW0L
-         iOSDnImDx/Z5oImq/Q/tYS1SfAhjcKFXJq+JonkgUFesL9ZEAyc1MlCNH4RwlEEPx7aK
-         LrqJ/gRV+w3zJPTV+Q9TFk9VxngfhBj6wuS8Eu2CeAY5TMtEkb33a8Yf95eswOiEznGP
-         UKxHqc9tHm0t1hPV7h6DlZrPAGRdb+ttMWf1qJNa/pVJ1BknHrd3TJFuahoG+2c+f7Mw
-         A0clyl6kNB8cQJA8SHQnVUlABjCElfjJ1pH/YLtqXGWJcQg2sSj3nAFt1fiR9MreILVe
-         Mshg==
-X-Forwarded-Encrypted: i=1; AJvYcCUPaK/OOjwotoysRGzLChtNNAaTAdPJeYFUhmgIWpoe9p+ZZp4eTGZnPYdk6oeW8DesVii6KDrrX7f0@vger.kernel.org
-X-Gm-Message-State: AOJu0YzTWZpiYCK+s9N60r9/DyX/s2r0bneMtuiHzSoZ0fvUjwWcmCje
-	Tgeiz4ZTJ5NrjXL3IxfFA8M9NQo5Ae7AdAASj4KWjJXRImjP252S2HNVQDmKFBcj7LuPMMxQ/A7
-	S3nYzmuTjXaomHyF48y+0h6i0OQUnrhquct4uiGp2YsC1uO8m1tnrFN7OC1g=
-X-Google-Smtp-Source: AGHT+IHWjb0KwlErCAvMDzgwfx0Ie1NVKorWr7p/8y/uYAv4qEJHPypHxmKDJFUOp9DK6n1YSTRP0tPzDyq6+4nDvRj4mzlVBKPW
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF87F30B519;
+	Sun, 16 Nov 2025 16:36:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.201.100
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1763310970; cv=fail; b=KrzXHXPYx5DMkw6QsQpk8tQfzrte5TyuyvlJB70FrxztQH0U8XhWu6AHbd22wA1cDHBwKB2lVWFetZxrUMb76lIRlapVJehjYxuYaocU+5h2LCkskf5ssHff1YMqFp6gLE87XWNiKEGJY+q4JLEyzTpXmdZPBXH8B/Qohfd2cuA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1763310970; c=relaxed/simple;
+	bh=y67f5uYjhuTuWCfCuGPJ8wb074EDsVrIz3DkIQKi6B4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=gU1EUuZB8masW4o9K81ohN6Q7gRbkQgmTaAy0bCIztU2vPb8dYDnLC1xA4OtIV6scRAuANvmlihE2kkVV6yNzw64xFj1ObAp3Df95dfp+yXPSf+qq2328BPGt60IyJOLBOnQZJUbo1elLTwOPAM+rw2wY9krxBoNNcmSF20I0NY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=CPUnZzwP; arc=fail smtp.client-ip=40.107.201.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=MAwtfz73+s6IejMNL+8MuNL2GkdkUdqdDgdt0kFOUtMnt5A3LsfPuc7Ig5AcZcKOs/z+GGyehQRL1kpkpSjQq5Gn++ClgC0eumqVcGLoL3z828XieMxA0ex0z/C+V8EYm9MKOKMgVk7dkIS+knFPFdQyiDJeJ0bV1LG2Dvs/4CXS98fGwBZv5ZfDOWY4tdfZpQBJsOLiEoUeBBs0o0ZNxtpRT41WKTzNTffMSiqapgLwEDsaowzNaaGYv38Xx3bGgAbPrjF+sbAsYCQJxcjF6IkkvGCwallmeyYcRMgc45qFZL1AjqHNz3u/PsuFyOZ+IrXS9EOb0lBtTiaTlEc+zw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/vsMMOH/eJMU1/YDcfjYSuEtWjLbPpn8LxfPsm29a9Q=;
+ b=BqEd9eN8SsD/Hth2HwAoJYptBPy0XqKxyROzWqFgH5cHSee97bYCYNUA/k/wXkCVVuRhX+pyeXbZgSlxjdVm6XX4GeXPrS0dKwgmdO8Q7DH6oohKCFiQ0Y0NcP7YxAuXzjOgbQPkLFeq2lafVppBUagioEiqvAZ/AYQ/xmzOqN2IJ3gvxcloURW6k6W1EThkNsL40iuSvd9sglw/vP4CUvgUXbSwy+pS2fbGU2y2titDdkXsF6Y7SgfmDj8cRBTto2yq285+QC+bWSHhpREWUzffMbwQGSWLY6H6ySXrJYpXBin6Hyh0peRwWp98v51VjvaamXzcMf797c8PqjVZaA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/vsMMOH/eJMU1/YDcfjYSuEtWjLbPpn8LxfPsm29a9Q=;
+ b=CPUnZzwPUUNhR6dLasBJoFxU0/7mYTrFYiZ6IZe3rxdoL/rZ7sMaGt3huxrivxgFv9/X1JQM7rF36jGEjarXav+/JVjkJ0ggqTw0gZaJM2sWPGlvi3eEy9mgI7r/y+5jELo2TrqxMayCUiyfgifhoQhBQxZUGE7nCNxFX5AWPE0=
+Received: from SA3PR21MB3867.namprd21.prod.outlook.com (2603:10b6:806:2fc::15)
+ by DS0PR21MB6264.namprd21.prod.outlook.com (2603:10b6:8:2f0::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9343.7; Sun, 16 Nov
+ 2025 16:36:03 +0000
+Received: from SA3PR21MB3867.namprd21.prod.outlook.com
+ ([fe80::70ff:4d3:2cb6:92a3]) by SA3PR21MB3867.namprd21.prod.outlook.com
+ ([fe80::70ff:4d3:2cb6:92a3%4]) with mapi id 15.20.9343.006; Sun, 16 Nov 2025
+ 16:36:03 +0000
+From: Haiyang Zhang <haiyangz@microsoft.com>
+To: "longli@linux.microsoft.com" <longli@linux.microsoft.com>, KY Srinivasan
+	<kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
+	<DECUI@microsoft.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Shradha Gupta <shradhagupta@linux.microsoft.com>, Simon
+ Horman <horms@kernel.org>, Konstantin Taranov <kotaranov@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>, Erick Archer
+	<erick.archer@outlook.com>, "linux-hyperv@vger.kernel.org"
+	<linux-hyperv@vger.kernel.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-rdma@vger.kernel.org"
+	<linux-rdma@vger.kernel.org>
+CC: Long Li <longli@microsoft.com>
+Subject: RE: [patch net-next] net: mana: Handle hardware reset events when
+ probing the device
+Thread-Topic: [patch net-next] net: mana: Handle hardware reset events when
+ probing the device
+Thread-Index: AQHcVdeZn1ZwFr7axUafLZH5t/R3ebT1fGLQ
+Date: Sun, 16 Nov 2025 16:36:02 +0000
+Message-ID:
+ <SA3PR21MB3867695C1B6C975ADFDE635BCAC8A@SA3PR21MB3867.namprd21.prod.outlook.com>
+References: <1763173729-28430-1-git-send-email-longli@linux.microsoft.com>
+In-Reply-To: <1763173729-28430-1-git-send-email-longli@linux.microsoft.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=8e9f0834-7ceb-4fc9-9067-2b03ca083e03;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2025-11-16T16:14:07Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
+ 3, 0, 1;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA3PR21MB3867:EE_|DS0PR21MB6264:EE_
+x-ms-office365-filtering-correlation-id: de26e9cf-38c6-46d3-6144-08de252e3b78
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|7416014|376014|1800799024|366016|921020|38070700021;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?uHu7H68lWVu09yOWo1zZ3vMsfK2/YOjWUb8I3Qhr8SyKavsLal0DlbOYhC4R?=
+ =?us-ascii?Q?n+sCAMvzwsaWw7Mj4BWGjvDRq4P+9HH9VfKMKrYSV9nXxBf/VFDa3pRSl8js?=
+ =?us-ascii?Q?gowgQO2THiNNFpW3n2ZUJM9NUDOOtZZ29geK6SBTHdNKSPvSZ/rD2nSjekmS?=
+ =?us-ascii?Q?z2hyYr6D7Mrd/o5oXeBNn6zVM9KtOr6oC+Sblf7Vxg1pm8hSsB4tGo54tzAa?=
+ =?us-ascii?Q?jAEJ1TquotnMICafQAVluIumGx84stu2mDG5eMwn84pD4c594HWBXl71Mw+M?=
+ =?us-ascii?Q?u3aSvzvjRYcnkk4Lue1Ne8yut1lvWg4mz3lV4UktIjCWV6EV+m2vbfHOhxFz?=
+ =?us-ascii?Q?+3OV3g2pI77mDVvHupjUyKbKElEgvIeLBQ9FDufivEOX20wCIrxmVkyS4Q/b?=
+ =?us-ascii?Q?bUip1UN2It0Q/N+cXDCf+bV11MtgR1xNXvuDfOKiUEYP2I6ob21Bu1w/FA6d?=
+ =?us-ascii?Q?3G8KQnO7lp/GOQSytPc4N1XcT81kIGYwD6IerOQ5UD0yTFD/EeK0YNzD3lB1?=
+ =?us-ascii?Q?23CY3QNadudR8zD+cdnLsFR1PS7WrFhHkErfQUYnbrIr/ncKEDOHInqPb8/3?=
+ =?us-ascii?Q?pVbeCYizcBVMWrpQjSGm0FGMkCX0USGoK/PZLMTcFaT4+PTtOI7riW5Digc5?=
+ =?us-ascii?Q?7sErCw/UPS9LDYMIvSad2mdqSKLQRl+zBZKWUsLL7BCzOUkwLSVsOdWopW76?=
+ =?us-ascii?Q?EJWnqn8G+8YgKeruiPCOzfwt3t8Om8bW4PjmJd6d5n2zq+COsGUf5C/DPu71?=
+ =?us-ascii?Q?lC/mElN8iXzvp5M0qlpUv6r7bvqwqLLhLhw5B2F5T3MEf1ye3OKSfl/GuHx0?=
+ =?us-ascii?Q?RXnB95knumeAoJQH5Uad72EYx9CWR8QmGjV3xgsWiFshx1tkOHocam9jNu4h?=
+ =?us-ascii?Q?cBunwgE3Ll+LoXNRVvpam6ZPiOpdkmwJX/Y8QBGGbtVH25QM5110yZ9YKa0E?=
+ =?us-ascii?Q?wuldqoJFamupNUxVPMi+pMo5f6znGVAqtKmRmczVV6b0J6lgT49zk5Fpz6ut?=
+ =?us-ascii?Q?+VwXNO0oMbm3rBiCEP7iMn5tJTE+hErxaPlHwZ/Z18p3S7rgdHrP+KvJ3KL0?=
+ =?us-ascii?Q?34magsOltfVmPYDDjNUk0Yv71yMF6+/xpY9nZcpOP5VsAAGU7dcF4cJ3fdKC?=
+ =?us-ascii?Q?pRGu50G9xraMIQjoPPDGPdci9FqTIQch41HEtgGn89ggClC60suKONAMEybl?=
+ =?us-ascii?Q?BQ+HyvLYIiAy6Dy8mxsu+U/X+vMXczDICDd8p9g1cb8r1f/fKGD0EGNKujmv?=
+ =?us-ascii?Q?wBWGy5fRuHi+NkwNf1/jI17hf4FD+G5CRzstj2+jROgFwrRPbqZDzFDpyICY?=
+ =?us-ascii?Q?mCS8f1pSikSmbqA7weVTsAOifMgFL7UNGn+u+LEA/neJHH/WdT3ep/55JXzI?=
+ =?us-ascii?Q?+0yHwwDuI8QR/w8moKRhZ65x0afmG4ppOpeVA57nKdqxvHaG/GBGlbiVeC5b?=
+ =?us-ascii?Q?SCD/dpVxRNJFaO4z8MDjdhinEltx4zv+WFjVq9RKpRot69As8AxGOU494aYz?=
+ =?us-ascii?Q?akXqJgU9QeMc/1eG7v0fLQykM/WkglHAh2g3rpg4gexM8uQj+tiuyjkEDA?=
+ =?us-ascii?Q?=3D=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA3PR21MB3867.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016)(921020)(38070700021);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?qbYoPwHh1dRAKLFHI5bU+Qk7lfUYvmDHeLkKajDtlKMJgMK0RHujyUcYWNJz?=
+ =?us-ascii?Q?u8mgnjH9EVCyKvb9OAds23oUMh+CcIIwMJObI7LRz+D5Jb3EOmADerkLzJ5i?=
+ =?us-ascii?Q?J4mcqHgE16rpGuWStzQFQRe+v8nl24h2DnjS2qdTXCsTYWSCzcqKeTKC/OJc?=
+ =?us-ascii?Q?vlKj9DTMIzeA+iaFCf0tw6zLspR9E/3xPvef/EtJWym6YwVLWRMpOeSZSaQZ?=
+ =?us-ascii?Q?c07Rq+5vxOJSRQFcECO0PTcU4uywolS0vNMadUvl9J0KOkhPPCnzkTBGlWa4?=
+ =?us-ascii?Q?SFMSmsGcVcNVZ8U9Qk+9iacUzDkx28YknCFjQGG+5twfuTFrXTzdv2uyo4sN?=
+ =?us-ascii?Q?P+WeSKc8058OMTTwXRWnX2A+SuEaPpUongYLTAu9aS633lW3jWQ5HhazuSZE?=
+ =?us-ascii?Q?Gpd0XeDMhNaURr1PjZEwyV3DXQJ8PD3vEOKnOcKTVknByhIhFx5caf3AfDaj?=
+ =?us-ascii?Q?xG0X+aYyb4bsCf7lNQM84TtwBzdCWd86r2MHco/EIR70ltNJjuXWf5ZCm0/u?=
+ =?us-ascii?Q?yYujtz0G11KecxTroXdYCb7mN+N8rZpQyBpxxEnvhyszEsOAj/B2uxxAJG0m?=
+ =?us-ascii?Q?AOjkCsJucx6SNmmEQFOnzIeNZozWq4tJ7SQeZVakhgvpSXW5/ZsOBNiVxuON?=
+ =?us-ascii?Q?U9lrSiptk54kcyRrAKwJjXkG99ZDybG910+ScKDkdxuTN2HsxtpuTjyAyEmL?=
+ =?us-ascii?Q?xdE6P5dYiLoA13iNgUovxFdnIYEfZz0QeJo+1G8lv9Dr3wftHq724Hwt3WTD?=
+ =?us-ascii?Q?eHHcB4ITgodXN2Udqsj1e6vCG8pqk566xPkgSUJUsj4Nvt21R0DokQzuXi6F?=
+ =?us-ascii?Q?cfILGJD4Ho7kvbXVCVX4/DDD0IhQRBYO7HdKMuC6iZMASP+SS/i5YvmmQiQc?=
+ =?us-ascii?Q?k2A9NRa/smTDhQ9RUuCgA+fpVE7x+cZH1RuV5ANgc+MuGcPYCgWsLOcRol+4?=
+ =?us-ascii?Q?JwAjWGOSnARLAjj7uxz+6ER+3IGiVq5wkFH6yYmtAAV+6cJN/N+KfgxeF+Ni?=
+ =?us-ascii?Q?DYKco2hyIiuJCjfDBerLCDOF3Dr09nZ2eZMlh0z5DsErlEQeiTBdNJ2FfESF?=
+ =?us-ascii?Q?8PoSzoyRF3HVuqS9Kda3wwgs/AxVYqxV9ap516qKsx6InByUmWYkm5u3dY6z?=
+ =?us-ascii?Q?2yRx3tLq8zImWUtx3w7bbMUNS1jFmYrIOG1FxhUE/r5HrTsX5fKs3DVHcQQn?=
+ =?us-ascii?Q?pMmW11fEuiPQNe25BYwqQJ2qL+MsJX/mnCCTBFM0+PD82nCQZ2DZI+aadkwD?=
+ =?us-ascii?Q?jEUGTtSSgwEEp78wqGqDDOWb6QgBUC+oO3q8syCBYnh+MJbwhFhKpDy1y02+?=
+ =?us-ascii?Q?cVG76qpzlC00LGcmJ4y8NviGpcmDIUy/+OfWx7brcBn0xgYWuVFdYe9Bm5tW?=
+ =?us-ascii?Q?rykfYsBO1Q1eui63kEIr+1Nlj2iql/s/epSJFtaOil7mU6V89mmmSSBP/Ffj?=
+ =?us-ascii?Q?IuDyIBkSWwcpKoDxNdhdoT70RG81IUBee233woWSnzrmTLboN+h9NGNEGG26?=
+ =?us-ascii?Q?ceJp4Z3M/+zsTN3bw0KLljfTC18JMK41hclpaRo7IKQe6PPl2i0V979jimU3?=
+ =?us-ascii?Q?xPtZz3iZQvSJB+agSLQ6ClCwpGjg+1tyrwgVXlaN?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:730a:0:b0:434:96ea:ff5f with SMTP id
- e9e14a558f8ab-43496eb0125mr42170615ab.40.1763224280559; Sat, 15 Nov 2025
- 08:31:20 -0800 (PST)
-Date: Sat, 15 Nov 2025 08:31:20 -0800
-In-Reply-To: <67eaf9b8.050a0220.3c3d88.004a.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6918aad8.050a0220.1c914e.0042.GAE@google.com>
-Subject: Re: [syzbot] [smc?] KASAN: null-ptr-deref Read in smc_tcp_syn_recv_sock
-From: syzbot <syzbot+827ae2bfb3a3529333e9@syzkaller.appspotmail.com>
-To: agordeev@linux.ibm.com, alibuda@linux.alibaba.com, contact@arnaud-lcm.com, 
-	davem@davemloft.net, dust.li@linux.alibaba.com, edumazet@google.com, 
-	guwen@linux.alibaba.com, hdanton@sina.com, horms@kernel.org, 
-	jaka@linux.ibm.com, kuba@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org, 
-	mjambigi@linux.ibm.com, netdev@vger.kernel.org, pabeni@redhat.com, 
-	richard120310@gmail.com, sidraya@linux.ibm.com, 
-	syzkaller-bugs@googlegroups.com, tonylu@linux.alibaba.com, 
-	wenjia@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
-
-syzbot has found a reproducer for the following issue on:
-
-HEAD commit:    db9030a787e3 Merge remote-tracking branch 'will/for-next/p..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=167bc97c580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fdc83aa8a8b9d1ae
-dashboard link: https://syzkaller.appspot.com/bug?extid=827ae2bfb3a3529333e9
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10496884580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14da2692580000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/8932d8648ef5/disk-db9030a7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8446b6e4ef5c/vmlinux-db9030a7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b17118b94e44/Image-db9030a7.gz.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+827ae2bfb3a3529333e9@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: null-ptr-deref in instrument_atomic_read include/linux/instrumented.h:68 [inline]
-BUG: KASAN: null-ptr-deref in atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
-BUG: KASAN: null-ptr-deref in smc_tcp_syn_recv_sock+0x84/0x574 net/smc/af_smc.c:134
-Read of size 4 at addr 0000000000000acc by task syz.0.42/6792
-
-CPU: 1 UID: 0 PID: 6792 Comm: syz.0.42 Not tainted syzkaller #0 PREEMPT 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/03/2025
-Call trace:
- show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:499 (C)
- __dump_stack+0x30/0x40 lib/dump_stack.c:94
- dump_stack_lvl+0xd8/0x12c lib/dump_stack.c:120
- print_report+0x58/0x84 mm/kasan/report.c:485
- kasan_report+0xb0/0x110 mm/kasan/report.c:595
- check_region_inline mm/kasan/generic.c:-1 [inline]
- kasan_check_range+0x264/0x2a4 mm/kasan/generic.c:200
- __kasan_check_read+0x20/0x30 mm/kasan/shadow.c:31
- instrument_atomic_read include/linux/instrumented.h:68 [inline]
- atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
- smc_tcp_syn_recv_sock+0x84/0x574 net/smc/af_smc.c:134
- tcp_check_req+0xf6c/0x18e8 net/ipv4/tcp_minisocks.c:912
- tcp_v6_rcv+0xf50/0x2460 net/ipv6/tcp_ipv6.c:1845
- ip6_protocol_deliver_rcu+0x9a4/0x12d4 net/ipv6/ip6_input.c:438
- ip6_input_finish+0x154/0x350 net/ipv6/ip6_input.c:489
- NF_HOOK+0x2c4/0x358 include/linux/netfilter.h:318
- ip6_input+0x15c/0x270 net/ipv6/ip6_input.c:500
- dst_input include/net/dst.h:474 [inline]
- ip6_rcv_finish+0x1f0/0x21c net/ipv6/ip6_input.c:79
- NF_HOOK+0x2c4/0x358 include/linux/netfilter.h:318
- ipv6_rcv+0x9c/0xbc net/ipv6/ip6_input.c:311
- __netif_receive_skb_one_core net/core/dev.c:6079 [inline]
- __netif_receive_skb+0xcc/0x2a8 net/core/dev.c:6192
- process_backlog+0x60c/0x10e4 net/core/dev.c:6544
- __napi_poll+0xb4/0x310 net/core/dev.c:7594
- napi_poll net/core/dev.c:7657 [inline]
- net_rx_action+0x548/0xd00 net/core/dev.c:7784
- handle_softirqs+0x328/0xc88 kernel/softirq.c:622
- __do_softirq+0x14/0x20 kernel/softirq.c:656
- ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:68
- call_on_irq_stack+0x30/0x48 arch/arm64/kernel/entry.S:891
- do_softirq_own_stack+0x20/0x2c arch/arm64/kernel/irq.c:73
- do_softirq+0x90/0xf8 kernel/softirq.c:523
- __local_bh_enable_ip+0x240/0x35c kernel/softirq.c:450
- local_bh_enable+0x28/0x34 include/linux/bottom_half.h:33
- rcu_read_unlock_bh include/linux/rcupdate.h:936 [inline]
- __dev_queue_xmit+0x17ac/0x32a8 net/core/dev.c:4790
- dev_queue_xmit include/linux/netdevice.h:3365 [inline]
- neigh_hh_output include/net/neighbour.h:531 [inline]
- neigh_output include/net/neighbour.h:545 [inline]
- ip6_finish_output2+0x1150/0x1a78 net/ipv6/ip6_output.c:136
- __ip6_finish_output net/ipv6/ip6_output.c:-1 [inline]
- ip6_finish_output+0x418/0x7b4 net/ipv6/ip6_output.c:220
- NF_HOOK_COND include/linux/netfilter.h:307 [inline]
- ip6_output+0x2c8/0x640 net/ipv6/ip6_output.c:247
- dst_output include/net/dst.h:464 [inline]
- NF_HOOK include/linux/netfilter.h:318 [inline]
- ip6_xmit+0x1134/0x1a20 net/ipv6/ip6_output.c:371
- inet6_csk_xmit+0x454/0x66c net/ipv6/inet6_connection_sock.c:120
- __tcp_transmit_skb+0x1a34/0x3214 net/ipv4/tcp_output.c:1628
- tcp_transmit_skb net/ipv4/tcp_output.c:1646 [inline]
- tcp_write_xmit+0x159c/0x52a4 net/ipv4/tcp_output.c:2999
- __tcp_push_pending_frames net/ipv4/tcp_output.c:3182 [inline]
- tcp_send_fin+0x620/0xc08 net/ipv4/tcp_output.c:3800
- __tcp_close+0x558/0xf68 net/ipv4/tcp.c:3207
- tcp_close+0x38/0x144 net/ipv4/tcp.c:3298
- inet_release+0x154/0x1d0 net/ipv4/af_inet.c:437
- inet6_release+0x5c/0x78 net/ipv6/af_inet6.c:487
- __sock_release net/socket.c:662 [inline]
- sock_close+0xa0/0x1e4 net/socket.c:1455
- __fput+0x340/0x75c fs/file_table.c:468
- ____fput+0x20/0x58 fs/file_table.c:496
- task_work_run+0x1dc/0x260 kernel/task_work.c:227
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- exit_to_user_mode_loop+0xfc/0x178 kernel/entry/common.c:43
- exit_to_user_mode_prepare include/linux/irq-entry-common.h:225 [inline]
- arm64_exit_to_user_mode arch/arm64/kernel/entry-common.c:81 [inline]
- el0_svc+0x170/0x254 arch/arm64/kernel/entry-common.c:725
- el0t_64_sync_handler+0x84/0x12c arch/arm64/kernel/entry-common.c:743
- el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:596
-==================================================================
-Unable to handle kernel paging request at virtual address dfff800000000159
-KASAN: null-ptr-deref in range [0x0000000000000ac8-0x0000000000000acf]
-Mem abort info:
-  ESR = 0x0000000096000005
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x05: level 1 translation fault
-Data abort info:
-  ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
-  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[dfff800000000159] address between user and kernel address ranges
-Internal error: Oops: 0000000096000005 [#1]  SMP
-Modules linked in:
-CPU: 1 UID: 0 PID: 6792 Comm: syz.0.42 Tainted: G    B               syzkaller #0 PREEMPT 
-Tainted: [B]=BAD_PAGE
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/03/2025
-pstate: 43400005 (nZcv daif +PAN -UAO +TCO +DIT -SSBS BTYPE=--)
-pc : raw_atomic_read include/linux/atomic/atomic-arch-fallback.h:457 [inline]
-pc : atomic_read include/linux/atomic/atomic-instrumented.h:33 [inline]
-pc : smc_tcp_syn_recv_sock+0x88/0x574 net/smc/af_smc.c:134
-lr : instrument_atomic_read include/linux/instrumented.h:68 [inline]
-lr : atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
-lr : smc_tcp_syn_recv_sock+0x84/0x574 net/smc/af_smc.c:134
-sp : ffff800097937340
-x29: ffff800097937340 x28: 0000000000000000 x27: dfff800000000000
-x26: 0000000000000000 x25: 0000000000000acc x24: ffff0000cdd47270
-x23: ffff0000d72a7a00 x22: ffff0000d72a7a00 x21: ffff800097937480
-x20: 0000000000000000 x19: ffff0000c7c80000 x18: 0000000000000000
-x17: 3d3d3d3d3d3d3d3d x16: ffff800082debe40 x15: 0000000000000001
-x14: 1ffff000125cd314 x13: 0000000000000000 x12: 0000000000000000
-x11: ffff7000125cd315 x10: 0000000000ff0100 x9 : 0000000000000000
-x8 : 0000000000000159 x7 : 0000000000000001 x6 : ffff8000805653c0
-x5 : 0000000000000000 x4 : 0000000000000000 x3 : ffff8000803c084c
-x2 : 0000000000000001 x1 : 0000000000000000 x0 : 0000000000000000
-Call trace:
- raw_atomic_read include/linux/atomic/atomic-arch-fallback.h:457 [inline] (P)
- atomic_read include/linux/atomic/atomic-instrumented.h:33 [inline] (P)
- smc_tcp_syn_recv_sock+0x88/0x574 net/smc/af_smc.c:134 (P)
- tcp_check_req+0xf6c/0x18e8 net/ipv4/tcp_minisocks.c:912
- tcp_v6_rcv+0xf50/0x2460 net/ipv6/tcp_ipv6.c:1845
- ip6_protocol_deliver_rcu+0x9a4/0x12d4 net/ipv6/ip6_input.c:438
- ip6_input_finish+0x154/0x350 net/ipv6/ip6_input.c:489
- NF_HOOK+0x2c4/0x358 include/linux/netfilter.h:318
- ip6_input+0x15c/0x270 net/ipv6/ip6_input.c:500
- dst_input include/net/dst.h:474 [inline]
- ip6_rcv_finish+0x1f0/0x21c net/ipv6/ip6_input.c:79
- NF_HOOK+0x2c4/0x358 include/linux/netfilter.h:318
- ipv6_rcv+0x9c/0xbc net/ipv6/ip6_input.c:311
- __netif_receive_skb_one_core net/core/dev.c:6079 [inline]
- __netif_receive_skb+0xcc/0x2a8 net/core/dev.c:6192
- process_backlog+0x60c/0x10e4 net/core/dev.c:6544
- __napi_poll+0xb4/0x310 net/core/dev.c:7594
- napi_poll net/core/dev.c:7657 [inline]
- net_rx_action+0x548/0xd00 net/core/dev.c:7784
- handle_softirqs+0x328/0xc88 kernel/softirq.c:622
- __do_softirq+0x14/0x20 kernel/softirq.c:656
- ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:68
- call_on_irq_stack+0x30/0x48 arch/arm64/kernel/entry.S:891
- do_softirq_own_stack+0x20/0x2c arch/arm64/kernel/irq.c:73
- do_softirq+0x90/0xf8 kernel/softirq.c:523
- __local_bh_enable_ip+0x240/0x35c kernel/softirq.c:450
- local_bh_enable+0x28/0x34 include/linux/bottom_half.h:33
- rcu_read_unlock_bh include/linux/rcupdate.h:936 [inline]
- __dev_queue_xmit+0x17ac/0x32a8 net/core/dev.c:4790
- dev_queue_xmit include/linux/netdevice.h:3365 [inline]
- neigh_hh_output include/net/neighbour.h:531 [inline]
- neigh_output include/net/neighbour.h:545 [inline]
- ip6_finish_output2+0x1150/0x1a78 net/ipv6/ip6_output.c:136
- __ip6_finish_output net/ipv6/ip6_output.c:-1 [inline]
- ip6_finish_output+0x418/0x7b4 net/ipv6/ip6_output.c:220
- NF_HOOK_COND include/linux/netfilter.h:307 [inline]
- ip6_output+0x2c8/0x640 net/ipv6/ip6_output.c:247
- dst_output include/net/dst.h:464 [inline]
- NF_HOOK include/linux/netfilter.h:318 [inline]
- ip6_xmit+0x1134/0x1a20 net/ipv6/ip6_output.c:371
- inet6_csk_xmit+0x454/0x66c net/ipv6/inet6_connection_sock.c:120
- __tcp_transmit_skb+0x1a34/0x3214 net/ipv4/tcp_output.c:1628
- tcp_transmit_skb net/ipv4/tcp_output.c:1646 [inline]
- tcp_write_xmit+0x159c/0x52a4 net/ipv4/tcp_output.c:2999
- __tcp_push_pending_frames net/ipv4/tcp_output.c:3182 [inline]
- tcp_send_fin+0x620/0xc08 net/ipv4/tcp_output.c:3800
- __tcp_close+0x558/0xf68 net/ipv4/tcp.c:3207
- tcp_close+0x38/0x144 net/ipv4/tcp.c:3298
- inet_release+0x154/0x1d0 net/ipv4/af_inet.c:437
- inet6_release+0x5c/0x78 net/ipv6/af_inet6.c:487
- __sock_release net/socket.c:662 [inline]
- sock_close+0xa0/0x1e4 net/socket.c:1455
- __fput+0x340/0x75c fs/file_table.c:468
- ____fput+0x20/0x58 fs/file_table.c:496
- task_work_run+0x1dc/0x260 kernel/task_work.c:227
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- exit_to_user_mode_loop+0xfc/0x178 kernel/entry/common.c:43
- exit_to_user_mode_prepare include/linux/irq-entry-common.h:225 [inline]
- arm64_exit_to_user_mode arch/arm64/kernel/entry-common.c:81 [inline]
- el0_svc+0x170/0x254 arch/arm64/kernel/entry-common.c:725
- el0t_64_sync_handler+0x84/0x12c arch/arm64/kernel/entry-common.c:743
- el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:596
-Code: 52800081 aa1903e0 9761d4da d343ff28 (38fb6908) 
----[ end trace 0000000000000000 ]---
-----------------
-Code disassembly (best guess):
-   0:	52800081 	mov	w1, #0x4                   	// #4
-   4:	aa1903e0 	mov	x0, x25
-   8:	9761d4da 	bl	0xfffffffffd875370
-   c:	d343ff28 	lsr	x8, x25, #3
-* 10:	38fb6908 	ldrsb	w8, [x8, x27] <-- trapping instruction
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA3PR21MB3867.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: de26e9cf-38c6-46d3-6144-08de252e3b78
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Nov 2025 16:36:02.9287
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vdqhhdyRXDOBBjP0ZnMGtL5vry9UWqPotQoM7/G7quotgaJ4TyjYvb9OorZLUHYg7Ajvdk2H+iK0yyJMcofBEQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR21MB6264
 
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+
+> -----Original Message-----
+> From: longli@linux.microsoft.com <longli@linux.microsoft.com>
+> Sent: Friday, November 14, 2025 9:29 PM
+> To: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
+> <haiyangz@microsoft.com>; Wei Liu <wei.liu@kernel.org>; Dexuan Cui
+> <DECUI@microsoft.com>; David S. Miller <davem@davemloft.net>; Eric Dumaze=
+t
+> <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo Abeni
+> <pabeni@redhat.com>; Shradha Gupta <shradhagupta@linux.microsoft.com>;
+> Simon Horman <horms@kernel.org>; Konstantin Taranov
+> <kotaranov@microsoft.com>; Souradeep Chakrabarti
+> <schakrabarti@linux.microsoft.com>; Erick Archer
+> <erick.archer@outlook.com>; linux-hyperv@vger.kernel.org;
+> netdev@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
+> rdma@vger.kernel.org
+> Cc: Long Li <longli@microsoft.com>
+> Subject: [patch net-next] net: mana: Handle hardware reset events when
+> probing the device
+>=20
+> From: Long Li <longli@microsoft.com>
+>=20
+> When MANA is being probed, it's possible that hardware is in recovery
+> mode and the device may get GDMA_EQE_HWC_RESET_REQUEST over HWC in the
+> middle of the probe. Detect such condition and go through the recovery
+> service procedure.
+>=20
+> Fixes: fbe346ce9d62 ("net: mana: Handle Reset Request from MANA NIC")
+> Signed-off-by: Long Li <longli@microsoft.com>
+> ---
+>  .../net/ethernet/microsoft/mana/gdma_main.c   | 131 +++++++++++++++---
+>  include/net/mana/gdma.h                       |   9 +-
+>  2 files changed, 122 insertions(+), 18 deletions(-)
+>=20
+> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> index effe0a2f207a..1d9c2beb22b2 100644
+> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> @@ -15,6 +15,12 @@
+>=20
+>  struct dentry *mana_debugfs_root;
+>=20
+> +static struct mana_serv_delayed_work {
+> +	struct delayed_work work;
+> +	struct pci_dev *pdev;
+> +	enum gdma_eqe_type type;
+> +} mns_delayed_wk;
+> +
+>  static u32 mana_gd_r32(struct gdma_context *g, u64 offset)
+>  {
+>  	return readl(g->bar0_va + offset);
+> @@ -387,6 +393,25 @@ EXPORT_SYMBOL_NS(mana_gd_ring_cq, "NET_MANA");
+>=20
+>  #define MANA_SERVICE_PERIOD 10
+>=20
+> +static void mana_serv_rescan(struct pci_dev *pdev)
+> +{
+> +	struct pci_bus *parent;
+> +
+> +	pci_lock_rescan_remove();
+> +
+> +	parent =3D pdev->bus;
+> +	if (!parent) {
+> +		dev_err(&pdev->dev, "MANA service: no parent bus\n");
+> +		goto out;
+> +	}
+> +
+> +	pci_stop_and_remove_bus_device(pdev);
+> +	pci_rescan_bus(parent);
+> +
+> +out:
+> +	pci_unlock_rescan_remove();
+> +}
+> +
+>  static void mana_serv_fpga(struct pci_dev *pdev)
+>  {
+>  	struct pci_bus *bus, *parent;
+> @@ -419,9 +444,12 @@ static void mana_serv_reset(struct pci_dev *pdev)
+>  {
+>  	struct gdma_context *gc =3D pci_get_drvdata(pdev);
+>  	struct hw_channel_context *hwc;
+> +	int ret;
+>=20
+>  	if (!gc) {
+> -		dev_err(&pdev->dev, "MANA service: no GC\n");
+> +		/* Perform PCI rescan on device if GC is not set up */
+> +		dev_err(&pdev->dev, "MANA service: GC not setup,
+> rescanning\n");
+> +		mana_serv_rescan(pdev);
+>  		return;
+>  	}
+>=20
+> @@ -440,9 +468,18 @@ static void mana_serv_reset(struct pci_dev *pdev)
+>=20
+>  	msleep(MANA_SERVICE_PERIOD * 1000);
+>=20
+> -	mana_gd_resume(pdev);
+> +	ret =3D mana_gd_resume(pdev);
+> +	if (ret =3D=3D -ETIMEDOUT || ret =3D=3D -EPROTO) {
+> +		/* Perform PCI rescan on device if we failed on HWC */
+> +		dev_err(&pdev->dev, "MANA service: resume failed,
+> rescanning\n");
+> +		mana_serv_rescan(pdev);
+> +		goto out;
+> +	}
+>=20
+> -	dev_info(&pdev->dev, "MANA reset cycle completed\n");
+> +	if (ret)
+> +		dev_info(&pdev->dev, "MANA reset cycle failed err %d\n", ret);
+> +	else
+> +		dev_info(&pdev->dev, "MANA reset cycle completed\n");
+>=20
+>  out:
+>  	gc->in_service =3D false;
+> @@ -454,18 +491,9 @@ struct mana_serv_work {
+>  	enum gdma_eqe_type type;
+>  };
+>=20
+> -static void mana_serv_func(struct work_struct *w)
+> +static void mana_do_service(enum gdma_eqe_type type, struct pci_dev
+> *pdev)
+>  {
+> -	struct mana_serv_work *mns_wk;
+> -	struct pci_dev *pdev;
+> -
+> -	mns_wk =3D container_of(w, struct mana_serv_work, serv_work);
+> -	pdev =3D mns_wk->pdev;
+> -
+> -	if (!pdev)
+> -		goto out;
+> -
+> -	switch (mns_wk->type) {
+> +	switch (type) {
+>  	case GDMA_EQE_HWC_FPGA_RECONFIG:
+>  		mana_serv_fpga(pdev);
+>  		break;
+> @@ -475,12 +503,36 @@ static void mana_serv_func(struct work_struct *w)
+>  		break;
+>=20
+>  	default:
+> -		dev_err(&pdev->dev, "MANA service: unknown type %d\n",
+> -			mns_wk->type);
+> +		dev_err(&pdev->dev, "MANA service: unknown type %d\n", type);
+>  		break;
+>  	}
+> +}
+> +
+> +static void mana_serv_delayed_func(struct work_struct *w)
+> +{
+> +	struct mana_serv_delayed_work *dwork;
+> +	struct pci_dev *pdev;
+> +
+> +	dwork =3D container_of(w, struct mana_serv_delayed_work, work.work);
+> +	pdev =3D dwork->pdev;
+> +
+> +	if (pdev)
+> +		mana_do_service(dwork->type, pdev);
+> +
+> +	pci_dev_put(pdev);
+> +}
+> +
+> +static void mana_serv_func(struct work_struct *w)
+> +{
+> +	struct mana_serv_work *mns_wk;
+> +	struct pci_dev *pdev;
+> +
+> +	mns_wk =3D container_of(w, struct mana_serv_work, serv_work);
+> +	pdev =3D mns_wk->pdev;
+> +
+> +	if (pdev)
+> +		mana_do_service(mns_wk->type, pdev);
+>=20
+> -out:
+>  	pci_dev_put(pdev);
+>  	kfree(mns_wk);
+>  	module_put(THIS_MODULE);
+> @@ -541,6 +593,17 @@ static void mana_gd_process_eqe(struct gdma_queue
+> *eq)
+>  	case GDMA_EQE_HWC_RESET_REQUEST:
+>  		dev_info(gc->dev, "Recv MANA service type:%d\n", type);
+>=20
+> +		if (atomic_inc_return(&gc->in_probe) =3D=3D 1) {
+
+Since we don't care about how many times it entered probe/service,
+test_and_set_bit() should be sufficient here.
+
+> +			/*
+> +			 * Device is in probe and we received an hardware reset
+> +			 * event, probe() will detect that "in_probe" has
+> +			 * changed and perform service procedure.
+> +			 */
+> +			dev_info(gc->dev,
+> +				 "Service is to be processed in probe\n");
+> +			break;
+> +		}
+> +
+>  		if (gc->in_service) {
+>  			dev_info(gc->dev, "Already in service\n");
+>  			break;
+> @@ -1930,6 +1993,8 @@ static int mana_gd_probe(struct pci_dev *pdev, cons=
+t
+> struct pci_device_id *ent)
+>  		gc->mana_pci_debugfs =3D debugfs_create_dir(pci_slot_name(pdev-
+> >slot),
+>  							  mana_debugfs_root);
+>=20
+> +	atomic_set(&gc->in_probe, 0);
+> +
+>  	err =3D mana_gd_setup(pdev);
+>  	if (err)
+>  		goto unmap_bar;
+> @@ -1942,8 +2007,19 @@ static int mana_gd_probe(struct pci_dev *pdev,
+> const struct pci_device_id *ent)
+>  	if (err)
+>  		goto cleanup_mana;
+>=20
+> +	/*
+> +	 * If a hardware reset event has occurred over HWC during probe,
+> +	 * rollback and perform hardware reset procedure.
+> +	 */
+> +	if (atomic_inc_return(&gc->in_probe) > 1) {
+> +		err =3D -EPROTO;
+> +		goto cleanup_mana_rdma;
+> +	}
+> +
+>  	return 0;
+>=20
+> +cleanup_mana_rdma:
+> +	mana_rdma_remove(&gc->mana_ib);
+>  cleanup_mana:
+>  	mana_remove(&gc->mana, false);
+>  cleanup_gd:
+> @@ -1967,6 +2043,25 @@ static int mana_gd_probe(struct pci_dev *pdev,
+> const struct pci_device_id *ent)
+>  disable_dev:
+>  	pci_disable_device(pdev);
+>  	dev_err(&pdev->dev, "gdma probe failed: err =3D %d\n", err);
+> +
+> +	/*
+> +	 * Hardware could be in recovery mode and the HWC returns TIMEDOUT
+> or
+> +	 * EPROTO from mana_gd_setup(), mana_probe() or mana_rdma_probe(),
+> or
+> +	 * we received a hardware reset event over HWC interrupt. In this
+> case,
+> +	 * perform the device recovery procedure after MANA_SERVICE_PERIOD
+> +	 * seconds.
+> +	 */
+> +	if (err =3D=3D -ETIMEDOUT || err =3D=3D -EPROTO) {
+> +		dev_info(&pdev->dev, "Start MANA recovery mode\n");
+> +
+> +		mns_delayed_wk.pdev =3D pci_dev_get(pdev);
+> +		mns_delayed_wk.type =3D GDMA_EQE_HWC_RESET_REQUEST;
+> +
+> +		INIT_DELAYED_WORK(&mns_delayed_wk.work,
+> mana_serv_delayed_func);
+
+To avoid INIT_DELAYED_WORK potentially multiple times this should be in=20
+the mana_driver_init()
+
+> +		schedule_delayed_work(&mns_delayed_wk.work,
+> +				      secs_to_jiffies(MANA_SERVICE_PERIOD));
+> +	}
+> +
+>  	return err;
+>  }
+>=20
+> @@ -2084,6 +2179,8 @@ static int __init mana_driver_init(void)
+>=20
+>  static void __exit mana_driver_exit(void)
+>  {
+> +	cancel_delayed_work_sync(&mns_delayed_wk.work);
+
+I think we should call disable_delayed_work_sync() to prevent the work
+scheduled again after this line.
+
+> +
+>  	pci_unregister_driver(&mana_driver);
+>=20
+>  	debugfs_remove(mana_debugfs_root);
+> diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+> index 637f42485dba..1bb4c6ada2b6 100644
+> --- a/include/net/mana/gdma.h
+> +++ b/include/net/mana/gdma.h
+> @@ -430,6 +430,9 @@ struct gdma_context {
+>  	u64 pf_cap_flags1;
+>=20
+>  	struct workqueue_struct *service_wq;
+> +
+> +	/* Count how many times we have finished probe or HWC events */
+> +	atomic_t		in_probe;
+>  };
+>=20
+>  static inline bool mana_gd_is_mana(struct gdma_dev *gd)
+> @@ -592,6 +595,9 @@ enum {
+>  #define GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE BIT(17)
+>  #define GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE BIT(6)
+>=20
+> +/* Driver can handle hardware reset events during probe */
+> +#define GDMA_DRV_CAP_FLAG_1_RECOVER_PROBE BIT(22)
+> +
+>  #define GDMA_DRV_CAP_FLAGS1 \
+>  	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
+>  	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
+> @@ -601,7 +607,8 @@ enum {
+>  	 GDMA_DRV_CAP_FLAG_1_DYNAMIC_IRQ_ALLOC_SUPPORT | \
+>  	 GDMA_DRV_CAP_FLAG_1_SELF_RESET_ON_EQE | \
+>  	 GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE | \
+> -	 GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE)
+> +	 GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE | \
+> +	 GDMA_DRV_CAP_FLAG_1_RECOVER_PROBE)
+>=20
+>  #define GDMA_DRV_CAP_FLAGS2 0
+>=20
+> --
+> 2.43.0
+
 
