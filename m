@@ -1,496 +1,280 @@
-Return-Path: <linux-rdma+bounces-14496-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14497-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id B43C3C618B4
-	for <lists+linux-rdma@lfdr.de>; Sun, 16 Nov 2025 17:36:19 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EDE2C61B3A
+	for <lists+linux-rdma@lfdr.de>; Sun, 16 Nov 2025 20:11:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D34D94EB1EB
-	for <lists+linux-rdma@lfdr.de>; Sun, 16 Nov 2025 16:36:15 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 26A044E0245
+	for <lists+linux-rdma@lfdr.de>; Sun, 16 Nov 2025 19:11:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDBF330E0ED;
-	Sun, 16 Nov 2025 16:36:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53ADB239E63;
+	Sun, 16 Nov 2025 19:11:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="CPUnZzwP"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ofjQP1lU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazon11023100.outbound.protection.outlook.com [40.107.201.100])
+Received: from CH1PR05CU001.outbound.protection.outlook.com (mail-northcentralusazon11010060.outbound.protection.outlook.com [52.101.193.60])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF87F30B519;
-	Sun, 16 Nov 2025 16:36:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.201.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4467B1C862E;
+	Sun, 16 Nov 2025 19:11:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.193.60
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763310970; cv=fail; b=KrzXHXPYx5DMkw6QsQpk8tQfzrte5TyuyvlJB70FrxztQH0U8XhWu6AHbd22wA1cDHBwKB2lVWFetZxrUMb76lIRlapVJehjYxuYaocU+5h2LCkskf5ssHff1YMqFp6gLE87XWNiKEGJY+q4JLEyzTpXmdZPBXH8B/Qohfd2cuA=
+	t=1763320306; cv=fail; b=XdaMc0ThfRIP1OtfMgOWDeocwQGOGPVryp6IfKasDr7rz7Sc/VeP341YcqlS9VAFCH/u7VAcbZp6r6e7IZLMcMOJ2wFYB0rsSzzWuUIw82+mNRtiGsEiwy01otId0seE12CytTA+0+4OctpMV0oZivpbgp6jxTCfeqDxYrX+VtA=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763310970; c=relaxed/simple;
-	bh=y67f5uYjhuTuWCfCuGPJ8wb074EDsVrIz3DkIQKi6B4=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=gU1EUuZB8masW4o9K81ohN6Q7gRbkQgmTaAy0bCIztU2vPb8dYDnLC1xA4OtIV6scRAuANvmlihE2kkVV6yNzw64xFj1ObAp3Df95dfp+yXPSf+qq2328BPGt60IyJOLBOnQZJUbo1elLTwOPAM+rw2wY9krxBoNNcmSF20I0NY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=CPUnZzwP; arc=fail smtp.client-ip=40.107.201.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+	s=arc-20240116; t=1763320306; c=relaxed/simple;
+	bh=N7Y3T3mnMnX09sIvKeC11eVNfV2oouiDggHtcl/zK4A=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type:To:CC; b=q5+QddI5lQFaKto7HHdQbNH81uPCytQB4QINBb/LGMmSWbWBEc8D3mjkbawKSKdSQ1GzvlfpWquSfkAxu/bt8SCUIJ7zlOVcXrKmhHbJJtkDClW3B+4wHpX6Gw2s68rF+QWg5Do3KeytSMTTEtD36nov+XwreRSvsaYv2kV9O50=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ofjQP1lU; arc=fail smtp.client-ip=52.101.193.60
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=MAwtfz73+s6IejMNL+8MuNL2GkdkUdqdDgdt0kFOUtMnt5A3LsfPuc7Ig5AcZcKOs/z+GGyehQRL1kpkpSjQq5Gn++ClgC0eumqVcGLoL3z828XieMxA0ex0z/C+V8EYm9MKOKMgVk7dkIS+knFPFdQyiDJeJ0bV1LG2Dvs/4CXS98fGwBZv5ZfDOWY4tdfZpQBJsOLiEoUeBBs0o0ZNxtpRT41WKTzNTffMSiqapgLwEDsaowzNaaGYv38Xx3bGgAbPrjF+sbAsYCQJxcjF6IkkvGCwallmeyYcRMgc45qFZL1AjqHNz3u/PsuFyOZ+IrXS9EOb0lBtTiaTlEc+zw==
+ b=f3qb6y//y4dKDGqWId9nNa5QbGTnhC0f0uYNHsvb60MaAriw0PllwrIolk9vQ7LQwgGmJs2st3A3O75csQ4n5kQhZkxksrf3XfgYd2HBhC489f/I4kOnmoasX+XGo+9COGi3m3+FWBDm1RxRMVoEXgR8MyiXHgoQHH1hQrKdFYyWB9q4Op2c6uFL9+I7JVwoVuEVByh+t7MenewOYvK/BbPFqH9PcHdLNsBrKZ8RE+bntXIOKQO9bu86A0V630qCD3iTD3PE7cr5AGXkYJK13qFzxfkrSKEqxBM0vmQ8jYOe5/7SwWIeCO4Rp5pd727pAyC8YrN/psSI7G2qNKm9Mw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/vsMMOH/eJMU1/YDcfjYSuEtWjLbPpn8LxfPsm29a9Q=;
- b=BqEd9eN8SsD/Hth2HwAoJYptBPy0XqKxyROzWqFgH5cHSee97bYCYNUA/k/wXkCVVuRhX+pyeXbZgSlxjdVm6XX4GeXPrS0dKwgmdO8Q7DH6oohKCFiQ0Y0NcP7YxAuXzjOgbQPkLFeq2lafVppBUagioEiqvAZ/AYQ/xmzOqN2IJ3gvxcloURW6k6W1EThkNsL40iuSvd9sglw/vP4CUvgUXbSwy+pS2fbGU2y2titDdkXsF6Y7SgfmDj8cRBTto2yq285+QC+bWSHhpREWUzffMbwQGSWLY6H6ySXrJYpXBin6Hyh0peRwWp98v51VjvaamXzcMf797c8PqjVZaA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ bh=H5K/e37qq7uGxhodbG0K4cc3LkRtEq4njCWEflh+sU4=;
+ b=X7C5H3JjZIJxi0+dRhOqEdL+7tZX5A9s+r+HVbLWsNqze+YAdjx+ZNQ9Gk0I84IFumc7ohZYL+aNhZae6vfYwaNXOelBX6dVG2Y/t0yvLjq9//h2lkKhfgKgqvIhpUQ39vK+bThvTwBZDiOVD0pTbBR7xdSOnhizMtewfraIRnBPkSikW/qA/d10mAX9rNcN5L1wP1Fr2jMlXhkFbEroSyPJznarKoVR9IjMVxDCSjVahIhVY9+l4OeMkzI36KqF8Xdp1jwKnNNwQMYWDmrdqrvb5xTDi8lMnkLKlLC9LrpmHUdF9PdVEaJ3jnyJdje8TGecFtoFd1XhhU66vNWX7A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/vsMMOH/eJMU1/YDcfjYSuEtWjLbPpn8LxfPsm29a9Q=;
- b=CPUnZzwPUUNhR6dLasBJoFxU0/7mYTrFYiZ6IZe3rxdoL/rZ7sMaGt3huxrivxgFv9/X1JQM7rF36jGEjarXav+/JVjkJ0ggqTw0gZaJM2sWPGlvi3eEy9mgI7r/y+5jELo2TrqxMayCUiyfgifhoQhBQxZUGE7nCNxFX5AWPE0=
-Received: from SA3PR21MB3867.namprd21.prod.outlook.com (2603:10b6:806:2fc::15)
- by DS0PR21MB6264.namprd21.prod.outlook.com (2603:10b6:8:2f0::16) with
+ bh=H5K/e37qq7uGxhodbG0K4cc3LkRtEq4njCWEflh+sU4=;
+ b=ofjQP1lUW3ChHwJDaoWEhmYirZZcyycq07mobV8Um61BXGud8CwSV1qKVweriWvnPw68exG8wMBLfWBNk2fER4MiWPuRPQNbfpNGsTfOph4nDHedcWLE2Pgc0v5nd7dlaFjQSEN1OPUcGrnm5GvtuUB3FSNo2gcUDfIyLuRrACB6Dp4+mW7H0+1Csbdr3MI4htRpGhr7m9RqoW1Czhu11WfeIF2hBb8ZxHNdJSWqESfj0a+1KCcDXtZn3+5mp7KWdPw7XIj1gxV4WvDwd+9Ra4IXRv4Z0qRX7WqXH3K6e0ANbGjPVkEcllDBeNdrHU7tcNWO88m2WyWlQE62c5DsuQ==
+Received: from BY1P220CA0001.NAMP220.PROD.OUTLOOK.COM (2603:10b6:a03:59d::14)
+ by MW3PR12MB4442.namprd12.prod.outlook.com (2603:10b6:303:55::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9343.7; Sun, 16 Nov
- 2025 16:36:03 +0000
-Received: from SA3PR21MB3867.namprd21.prod.outlook.com
- ([fe80::70ff:4d3:2cb6:92a3]) by SA3PR21MB3867.namprd21.prod.outlook.com
- ([fe80::70ff:4d3:2cb6:92a3%4]) with mapi id 15.20.9343.006; Sun, 16 Nov 2025
- 16:36:03 +0000
-From: Haiyang Zhang <haiyangz@microsoft.com>
-To: "longli@linux.microsoft.com" <longli@linux.microsoft.com>, KY Srinivasan
-	<kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
-	<DECUI@microsoft.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Shradha Gupta <shradhagupta@linux.microsoft.com>, Simon
- Horman <horms@kernel.org>, Konstantin Taranov <kotaranov@microsoft.com>,
-	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>, Erick Archer
-	<erick.archer@outlook.com>, "linux-hyperv@vger.kernel.org"
-	<linux-hyperv@vger.kernel.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>
-CC: Long Li <longli@microsoft.com>
-Subject: RE: [patch net-next] net: mana: Handle hardware reset events when
- probing the device
-Thread-Topic: [patch net-next] net: mana: Handle hardware reset events when
- probing the device
-Thread-Index: AQHcVdeZn1ZwFr7axUafLZH5t/R3ebT1fGLQ
-Date: Sun, 16 Nov 2025 16:36:02 +0000
-Message-ID:
- <SA3PR21MB3867695C1B6C975ADFDE635BCAC8A@SA3PR21MB3867.namprd21.prod.outlook.com>
-References: <1763173729-28430-1-git-send-email-longli@linux.microsoft.com>
-In-Reply-To: <1763173729-28430-1-git-send-email-longli@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=8e9f0834-7ceb-4fc9-9067-2b03ca083e03;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2025-11-16T16:14:07Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
- 3, 0, 1;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA3PR21MB3867:EE_|DS0PR21MB6264:EE_
-x-ms-office365-filtering-correlation-id: de26e9cf-38c6-46d3-6144-08de252e3b78
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|7416014|376014|1800799024|366016|921020|38070700021;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?uHu7H68lWVu09yOWo1zZ3vMsfK2/YOjWUb8I3Qhr8SyKavsLal0DlbOYhC4R?=
- =?us-ascii?Q?n+sCAMvzwsaWw7Mj4BWGjvDRq4P+9HH9VfKMKrYSV9nXxBf/VFDa3pRSl8js?=
- =?us-ascii?Q?gowgQO2THiNNFpW3n2ZUJM9NUDOOtZZ29geK6SBTHdNKSPvSZ/rD2nSjekmS?=
- =?us-ascii?Q?z2hyYr6D7Mrd/o5oXeBNn6zVM9KtOr6oC+Sblf7Vxg1pm8hSsB4tGo54tzAa?=
- =?us-ascii?Q?jAEJ1TquotnMICafQAVluIumGx84stu2mDG5eMwn84pD4c594HWBXl71Mw+M?=
- =?us-ascii?Q?u3aSvzvjRYcnkk4Lue1Ne8yut1lvWg4mz3lV4UktIjCWV6EV+m2vbfHOhxFz?=
- =?us-ascii?Q?+3OV3g2pI77mDVvHupjUyKbKElEgvIeLBQ9FDufivEOX20wCIrxmVkyS4Q/b?=
- =?us-ascii?Q?bUip1UN2It0Q/N+cXDCf+bV11MtgR1xNXvuDfOKiUEYP2I6ob21Bu1w/FA6d?=
- =?us-ascii?Q?3G8KQnO7lp/GOQSytPc4N1XcT81kIGYwD6IerOQ5UD0yTFD/EeK0YNzD3lB1?=
- =?us-ascii?Q?23CY3QNadudR8zD+cdnLsFR1PS7WrFhHkErfQUYnbrIr/ncKEDOHInqPb8/3?=
- =?us-ascii?Q?pVbeCYizcBVMWrpQjSGm0FGMkCX0USGoK/PZLMTcFaT4+PTtOI7riW5Digc5?=
- =?us-ascii?Q?7sErCw/UPS9LDYMIvSad2mdqSKLQRl+zBZKWUsLL7BCzOUkwLSVsOdWopW76?=
- =?us-ascii?Q?EJWnqn8G+8YgKeruiPCOzfwt3t8Om8bW4PjmJd6d5n2zq+COsGUf5C/DPu71?=
- =?us-ascii?Q?lC/mElN8iXzvp5M0qlpUv6r7bvqwqLLhLhw5B2F5T3MEf1ye3OKSfl/GuHx0?=
- =?us-ascii?Q?RXnB95knumeAoJQH5Uad72EYx9CWR8QmGjV3xgsWiFshx1tkOHocam9jNu4h?=
- =?us-ascii?Q?cBunwgE3Ll+LoXNRVvpam6ZPiOpdkmwJX/Y8QBGGbtVH25QM5110yZ9YKa0E?=
- =?us-ascii?Q?wuldqoJFamupNUxVPMi+pMo5f6znGVAqtKmRmczVV6b0J6lgT49zk5Fpz6ut?=
- =?us-ascii?Q?+VwXNO0oMbm3rBiCEP7iMn5tJTE+hErxaPlHwZ/Z18p3S7rgdHrP+KvJ3KL0?=
- =?us-ascii?Q?34magsOltfVmPYDDjNUk0Yv71yMF6+/xpY9nZcpOP5VsAAGU7dcF4cJ3fdKC?=
- =?us-ascii?Q?pRGu50G9xraMIQjoPPDGPdci9FqTIQch41HEtgGn89ggClC60suKONAMEybl?=
- =?us-ascii?Q?BQ+HyvLYIiAy6Dy8mxsu+U/X+vMXczDICDd8p9g1cb8r1f/fKGD0EGNKujmv?=
- =?us-ascii?Q?wBWGy5fRuHi+NkwNf1/jI17hf4FD+G5CRzstj2+jROgFwrRPbqZDzFDpyICY?=
- =?us-ascii?Q?mCS8f1pSikSmbqA7weVTsAOifMgFL7UNGn+u+LEA/neJHH/WdT3ep/55JXzI?=
- =?us-ascii?Q?+0yHwwDuI8QR/w8moKRhZ65x0afmG4ppOpeVA57nKdqxvHaG/GBGlbiVeC5b?=
- =?us-ascii?Q?SCD/dpVxRNJFaO4z8MDjdhinEltx4zv+WFjVq9RKpRot69As8AxGOU494aYz?=
- =?us-ascii?Q?akXqJgU9QeMc/1eG7v0fLQykM/WkglHAh2g3rpg4gexM8uQj+tiuyjkEDA?=
- =?us-ascii?Q?=3D=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA3PR21MB3867.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016)(921020)(38070700021);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?qbYoPwHh1dRAKLFHI5bU+Qk7lfUYvmDHeLkKajDtlKMJgMK0RHujyUcYWNJz?=
- =?us-ascii?Q?u8mgnjH9EVCyKvb9OAds23oUMh+CcIIwMJObI7LRz+D5Jb3EOmADerkLzJ5i?=
- =?us-ascii?Q?J4mcqHgE16rpGuWStzQFQRe+v8nl24h2DnjS2qdTXCsTYWSCzcqKeTKC/OJc?=
- =?us-ascii?Q?vlKj9DTMIzeA+iaFCf0tw6zLspR9E/3xPvef/EtJWym6YwVLWRMpOeSZSaQZ?=
- =?us-ascii?Q?c07Rq+5vxOJSRQFcECO0PTcU4uywolS0vNMadUvl9J0KOkhPPCnzkTBGlWa4?=
- =?us-ascii?Q?SFMSmsGcVcNVZ8U9Qk+9iacUzDkx28YknCFjQGG+5twfuTFrXTzdv2uyo4sN?=
- =?us-ascii?Q?P+WeSKc8058OMTTwXRWnX2A+SuEaPpUongYLTAu9aS633lW3jWQ5HhazuSZE?=
- =?us-ascii?Q?Gpd0XeDMhNaURr1PjZEwyV3DXQJ8PD3vEOKnOcKTVknByhIhFx5caf3AfDaj?=
- =?us-ascii?Q?xG0X+aYyb4bsCf7lNQM84TtwBzdCWd86r2MHco/EIR70ltNJjuXWf5ZCm0/u?=
- =?us-ascii?Q?yYujtz0G11KecxTroXdYCb7mN+N8rZpQyBpxxEnvhyszEsOAj/B2uxxAJG0m?=
- =?us-ascii?Q?AOjkCsJucx6SNmmEQFOnzIeNZozWq4tJ7SQeZVakhgvpSXW5/ZsOBNiVxuON?=
- =?us-ascii?Q?U9lrSiptk54kcyRrAKwJjXkG99ZDybG910+ScKDkdxuTN2HsxtpuTjyAyEmL?=
- =?us-ascii?Q?xdE6P5dYiLoA13iNgUovxFdnIYEfZz0QeJo+1G8lv9Dr3wftHq724Hwt3WTD?=
- =?us-ascii?Q?eHHcB4ITgodXN2Udqsj1e6vCG8pqk566xPkgSUJUsj4Nvt21R0DokQzuXi6F?=
- =?us-ascii?Q?cfILGJD4Ho7kvbXVCVX4/DDD0IhQRBYO7HdKMuC6iZMASP+SS/i5YvmmQiQc?=
- =?us-ascii?Q?k2A9NRa/smTDhQ9RUuCgA+fpVE7x+cZH1RuV5ANgc+MuGcPYCgWsLOcRol+4?=
- =?us-ascii?Q?JwAjWGOSnARLAjj7uxz+6ER+3IGiVq5wkFH6yYmtAAV+6cJN/N+KfgxeF+Ni?=
- =?us-ascii?Q?DYKco2hyIiuJCjfDBerLCDOF3Dr09nZ2eZMlh0z5DsErlEQeiTBdNJ2FfESF?=
- =?us-ascii?Q?8PoSzoyRF3HVuqS9Kda3wwgs/AxVYqxV9ap516qKsx6InByUmWYkm5u3dY6z?=
- =?us-ascii?Q?2yRx3tLq8zImWUtx3w7bbMUNS1jFmYrIOG1FxhUE/r5HrTsX5fKs3DVHcQQn?=
- =?us-ascii?Q?pMmW11fEuiPQNe25BYwqQJ2qL+MsJX/mnCCTBFM0+PD82nCQZ2DZI+aadkwD?=
- =?us-ascii?Q?jEUGTtSSgwEEp78wqGqDDOWb6QgBUC+oO3q8syCBYnh+MJbwhFhKpDy1y02+?=
- =?us-ascii?Q?cVG76qpzlC00LGcmJ4y8NviGpcmDIUy/+OfWx7brcBn0xgYWuVFdYe9Bm5tW?=
- =?us-ascii?Q?rykfYsBO1Q1eui63kEIr+1Nlj2iql/s/epSJFtaOil7mU6V89mmmSSBP/Ffj?=
- =?us-ascii?Q?IuDyIBkSWwcpKoDxNdhdoT70RG81IUBee233woWSnzrmTLboN+h9NGNEGG26?=
- =?us-ascii?Q?ceJp4Z3M/+zsTN3bw0KLljfTC18JMK41hclpaRo7IKQe6PPl2i0V979jimU3?=
- =?us-ascii?Q?xPtZz3iZQvSJB+agSLQ6ClCwpGjg+1tyrwgVXlaN?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9320.21; Sun, 16 Nov
+ 2025 19:11:40 +0000
+Received: from SJ5PEPF000001E9.namprd05.prod.outlook.com
+ (2603:10b6:a03:59d:cafe::be) by BY1P220CA0001.outlook.office365.com
+ (2603:10b6:a03:59d::14) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9320.21 via Frontend Transport; Sun,
+ 16 Nov 2025 19:11:42 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ SJ5PEPF000001E9.mail.protection.outlook.com (10.167.242.197) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9343.9 via Frontend Transport; Sun, 16 Nov 2025 19:11:40 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Sun, 16 Nov
+ 2025 11:11:36 -0800
+Received: from drhqmail201.nvidia.com (10.126.190.180) by
+ drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.20; Sun, 16 Nov 2025 11:11:36 -0800
+Received: from c-237-169-180-182.mtl.labs.mlnx (10.127.8.13) by
+ mail.nvidia.com (10.126.190.180) with Microsoft SMTP Server id 15.2.2562.20
+ via Frontend Transport; Sun, 16 Nov 2025 11:11:31 -0800
+From: Edward Srouji <edwards@nvidia.com>
+Subject: [PATCH rdma-next 0/9] RDMA/core: Introduce FRMR pools
+ infrastructure
+Date: Sun, 16 Nov 2025 21:10:21 +0200
+Message-ID: <20251116-frmr_pools-v1-0-5eb3c8f5c9c4@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA3PR21MB3867.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: de26e9cf-38c6-46d3-6144-08de252e3b78
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Nov 2025 16:36:02.9287
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAJ8hGmkC/x3MTQqAIBBA4avErBPSMKSrRITYWAP5wxgRRHdPW
+ n6L9x4oyIQFxuYBxosKpVgh2wbcbuOGgtZqUJ3SUspBeA685JSOIrxRvXMajdUGapAZPd3/bAJ
+ egxUR7xPm9/0ADlHtJGcAAAA=
+X-Change-ID: 20251116-frmr_pools-f823cc5e8a58
+To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, "Saeed
+ Mahameed" <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch
+	<mbloch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<netdev@vger.kernel.org>, Michael Guralnik <michaelgur@nvidia.com>, "Edward
+ Srouji" <edwards@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>, "Patrisious
+ Haddad" <phaddad@nvidia.com>
+X-Mailer: b4 0.14.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1763320291; l=4686;
+ i=edwards@nvidia.com; s=20251029; h=from:subject:message-id;
+ bh=N7Y3T3mnMnX09sIvKeC11eVNfV2oouiDggHtcl/zK4A=;
+ b=z8PA8yhaNEP8sPLSyeJbljdqawAEhylwkfLAqdds7HRKnTUFR/QPngCAE0R3tIzD70N+Dr5cO
+ g8Fej1TyOYMCfXO8USzKhjjzAn39/4KWGhYl/1EBAqaZTAt3jit2rk+
+X-Developer-Key: i=edwards@nvidia.com; a=ed25519;
+ pk=VME+d2WbMZT5AY+AolKh2XIdrnXWUwwzz/XLQ3jXgDM=
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ5PEPF000001E9:EE_|MW3PR12MB4442:EE_
+X-MS-Office365-Filtering-Correlation-Id: 27d31897-b0f8-4dee-ecaa-08de2543f90e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|7416014|376014|36860700013|1800799024|82310400026|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?M1pkbWxxVnZyOHUrNEgyenhoYUJNSFBSZkYwMFJoOXYzMnk0VndQM1hDcGk3?=
+ =?utf-8?B?WFBla05rMSt4U09ORXpMZlFHaFdsTGU2aWpGWGRPNDBRTHhrVFFHZUw4UDg2?=
+ =?utf-8?B?c1pXT2dsaUdmYmpTZ2ZkQlhXcXBmd2ZrWU1BNVFtbVo0dkh6eW5MeVdSM2ta?=
+ =?utf-8?B?N292S1RZU3JmMmlpN0Rma05SdHNBVmJ6VExEQUFqU1lVVmRiL0REelJKYkcz?=
+ =?utf-8?B?Tkt1U3NYdStsNlUxSTZyQnY5YlJPQk1MZXlzOENLR2NyTVBneEFlWXBlL05R?=
+ =?utf-8?B?VlA1cjRVWjNSbXpnR1J4bU1IbDYvTWx0RHBybHFZdi9NR0h1MWkxaEg5VjNR?=
+ =?utf-8?B?RkliZWcySEVQb3duNnlRTWphS2Y4ZER5MDFzWnJYQ2RQZ05zYkxFYkN6Yko5?=
+ =?utf-8?B?T3kxSlhQRU00MkQrNVA0SENZVVhkSStuWUd6NTQ1N1k0eVppczFHMW8vMits?=
+ =?utf-8?B?ZjhRend3aGgzaEdzbVBiNW9TT243ZjdsN2ZQN3VHRXJnS1pJQkRVWE5IdU1R?=
+ =?utf-8?B?enMzeElpZm9BT1grSFJkQUFKVDdDaHhsUVBHaHpOVDFMeThwVWc0T0p2RWVU?=
+ =?utf-8?B?bTF3R0djWnRWUmRMWEpIQmtlc2JpTHpoaHNjYnR3YjRWcHFsMm4xZXB4L2x1?=
+ =?utf-8?B?STNTYTk0OTVGUHppNE9vZ3VuenJxcVJVSW94UDU5eXArTU16eS9weEg3bzBV?=
+ =?utf-8?B?Ti9sTWxEOE8zbVhMeUdOa1h4TlBCbGZsK1BOYXpVUmplK1IxSnM3UmdNOXVI?=
+ =?utf-8?B?c1d6eVNuSUNsYVp0SG15aDRIUG9scFJUa2NDSTJKbVczbFJNbmxOdzBSUUVR?=
+ =?utf-8?B?eE9jd011ZnA4RXZMMTVtcUtwREFZOUZuNEZ5OFFaWVF5ZzJSZm5ibVdMMUFk?=
+ =?utf-8?B?bExWNFhZV1B6VE9LMHpMWERGNTk2b0FTV25QdGZoNFRRank1Z3ZDMVdEK1Rz?=
+ =?utf-8?B?YWJlVnU1NXovaHhRcytQeC9aa1VTVkc1dFloaWhCR1JwdkFxQUhtQ1VtTCtu?=
+ =?utf-8?B?eEl3UlB1dHp1d0RrazlxNENoWTNlTlBUR2J2OGVERWdOUTBwR3I2ZnR0Uzk0?=
+ =?utf-8?B?VFgyOXJLSkpaMWRsVEN0R3hMOTdvdTE3VXVvS0kzUGJQaUtuQXFYbW1tb3lx?=
+ =?utf-8?B?SUlVaFBuUmJHMzdRSER5OVhSRVNHVlpxSE1mVlJRaXFrQllSV1VtYTRwRWJI?=
+ =?utf-8?B?dE1hOFBqQjVNSmlCUEhoSy9SUlBzVVlrSkRCdytzZ0hOWXJTL3BEOWZDMnJR?=
+ =?utf-8?B?OWVWcU52UE9kclRISUFoMlc1L2xGQzR0c0xHbk1MRmtXVTZUZytxc0Ntemc3?=
+ =?utf-8?B?cWhXU1NnVUl6UXA5UXZqMHVDTzhPbjJDam5CUkhLb21LcTQ0RzBKdkRFNEJ5?=
+ =?utf-8?B?bVZFcktxYlpXajZoNnlnaXB1dXpxY0NSaC9BWE1GM09CVG41czJ2cEMwL0pL?=
+ =?utf-8?B?VWdZVTNWK3hpWkFLcFdTTEN0eUhtR3huOTNEL05pMStyQnJGK0g2Q1VXUncr?=
+ =?utf-8?B?YUpqWHJ3cThNeEJDZXNsRDQwcnVNOUUyQkpQa1hhdlVlTVFtVG9PVGFSdjV1?=
+ =?utf-8?B?b3g4a1pLMmJEdmRmckFRMWFaTkc0VHdoUWJ1bmxJczJ3UVd3NndGTUJObXk4?=
+ =?utf-8?B?cC9VNEtCU1QvUE5udFBORVNkMmVKRWRxRExqbEFOYjQzdkdOOTU0amY5UFpY?=
+ =?utf-8?B?Q3IwTitoRVdCQ011VVV4UE14Q05BWFBYRDVnNjJmSERNNDk2MjQ1dXVCKys4?=
+ =?utf-8?B?TWFQcVlKSXFnOWphSkpoS1dHUTBUVVMvQmlMOHJQVmZXMHhVVG5DaDBXZXU1?=
+ =?utf-8?B?L2pmZXE4cFRwVWJpdDU2MGRwVVlHZFNaVGxLalRBa0NGTThYb09KNm1rNmly?=
+ =?utf-8?B?VFNZQmhLZDk2V0Y3cHpjU29sM2xLb2ZQT0JwZ0VaM3IwT3pLVmY4WXhVZGxD?=
+ =?utf-8?B?dXVwbVlTSnNnTlhOVG9vczFjQVV0c1VtMUtveTRpU2kwVXR2TWw5VzdxSVhK?=
+ =?utf-8?B?dTJHRDBheisyWkE5WU9xZlFoNXRsZnNMWHdScTBsemhaZEdkQ2RabXJFZmVH?=
+ =?utf-8?B?VmZDODF0ZUFkMldHSTllTmcvOE9IMTNnWWNaQ1d3SUpkVHlramRaYnBFVVc0?=
+ =?utf-8?Q?RBRLeCt2V2TdwM0UnecGI8FZX?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(7416014)(376014)(36860700013)(1800799024)(82310400026)(921020);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2025 19:11:40.4504
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vdqhhdyRXDOBBjP0ZnMGtL5vry9UWqPotQoM7/G7quotgaJ4TyjYvb9OorZLUHYg7Ajvdk2H+iK0yyJMcofBEQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR21MB6264
+X-MS-Exchange-CrossTenant-Network-Message-Id: 27d31897-b0f8-4dee-ecaa-08de2543f90e
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ5PEPF000001E9.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4442
 
+From Michael:
 
+This patch series introduces a new FRMR (Fast Registration Memory Region)
+pool infrastructure for the RDMA core subsystem. The goal is to provide
+efficient management and allow reuse of MRs (Memory Regions) for RDMA
+device drivers.
 
-> -----Original Message-----
-> From: longli@linux.microsoft.com <longli@linux.microsoft.com>
-> Sent: Friday, November 14, 2025 9:29 PM
-> To: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
-> <haiyangz@microsoft.com>; Wei Liu <wei.liu@kernel.org>; Dexuan Cui
-> <DECUI@microsoft.com>; David S. Miller <davem@davemloft.net>; Eric Dumaze=
-t
-> <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo Abeni
-> <pabeni@redhat.com>; Shradha Gupta <shradhagupta@linux.microsoft.com>;
-> Simon Horman <horms@kernel.org>; Konstantin Taranov
-> <kotaranov@microsoft.com>; Souradeep Chakrabarti
-> <schakrabarti@linux.microsoft.com>; Erick Archer
-> <erick.archer@outlook.com>; linux-hyperv@vger.kernel.org;
-> netdev@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
-> rdma@vger.kernel.org
-> Cc: Long Li <longli@microsoft.com>
-> Subject: [patch net-next] net: mana: Handle hardware reset events when
-> probing the device
->=20
-> From: Long Li <longli@microsoft.com>
->=20
-> When MANA is being probed, it's possible that hardware is in recovery
-> mode and the device may get GDMA_EQE_HWC_RESET_REQUEST over HWC in the
-> middle of the probe. Detect such condition and go through the recovery
-> service procedure.
->=20
-> Fixes: fbe346ce9d62 ("net: mana: Handle Reset Request from MANA NIC")
-> Signed-off-by: Long Li <longli@microsoft.com>
-> ---
->  .../net/ethernet/microsoft/mana/gdma_main.c   | 131 +++++++++++++++---
->  include/net/mana/gdma.h                       |   9 +-
->  2 files changed, 122 insertions(+), 18 deletions(-)
->=20
-> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> index effe0a2f207a..1d9c2beb22b2 100644
-> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> @@ -15,6 +15,12 @@
->=20
->  struct dentry *mana_debugfs_root;
->=20
-> +static struct mana_serv_delayed_work {
-> +	struct delayed_work work;
-> +	struct pci_dev *pdev;
-> +	enum gdma_eqe_type type;
-> +} mns_delayed_wk;
-> +
->  static u32 mana_gd_r32(struct gdma_context *g, u64 offset)
->  {
->  	return readl(g->bar0_va + offset);
-> @@ -387,6 +393,25 @@ EXPORT_SYMBOL_NS(mana_gd_ring_cq, "NET_MANA");
->=20
->  #define MANA_SERVICE_PERIOD 10
->=20
-> +static void mana_serv_rescan(struct pci_dev *pdev)
-> +{
-> +	struct pci_bus *parent;
-> +
-> +	pci_lock_rescan_remove();
-> +
-> +	parent =3D pdev->bus;
-> +	if (!parent) {
-> +		dev_err(&pdev->dev, "MANA service: no parent bus\n");
-> +		goto out;
-> +	}
-> +
-> +	pci_stop_and_remove_bus_device(pdev);
-> +	pci_rescan_bus(parent);
-> +
-> +out:
-> +	pci_unlock_rescan_remove();
-> +}
-> +
->  static void mana_serv_fpga(struct pci_dev *pdev)
->  {
->  	struct pci_bus *bus, *parent;
-> @@ -419,9 +444,12 @@ static void mana_serv_reset(struct pci_dev *pdev)
->  {
->  	struct gdma_context *gc =3D pci_get_drvdata(pdev);
->  	struct hw_channel_context *hwc;
-> +	int ret;
->=20
->  	if (!gc) {
-> -		dev_err(&pdev->dev, "MANA service: no GC\n");
-> +		/* Perform PCI rescan on device if GC is not set up */
-> +		dev_err(&pdev->dev, "MANA service: GC not setup,
-> rescanning\n");
-> +		mana_serv_rescan(pdev);
->  		return;
->  	}
->=20
-> @@ -440,9 +468,18 @@ static void mana_serv_reset(struct pci_dev *pdev)
->=20
->  	msleep(MANA_SERVICE_PERIOD * 1000);
->=20
-> -	mana_gd_resume(pdev);
-> +	ret =3D mana_gd_resume(pdev);
-> +	if (ret =3D=3D -ETIMEDOUT || ret =3D=3D -EPROTO) {
-> +		/* Perform PCI rescan on device if we failed on HWC */
-> +		dev_err(&pdev->dev, "MANA service: resume failed,
-> rescanning\n");
-> +		mana_serv_rescan(pdev);
-> +		goto out;
-> +	}
->=20
-> -	dev_info(&pdev->dev, "MANA reset cycle completed\n");
-> +	if (ret)
-> +		dev_info(&pdev->dev, "MANA reset cycle failed err %d\n", ret);
-> +	else
-> +		dev_info(&pdev->dev, "MANA reset cycle completed\n");
->=20
->  out:
->  	gc->in_service =3D false;
-> @@ -454,18 +491,9 @@ struct mana_serv_work {
->  	enum gdma_eqe_type type;
->  };
->=20
-> -static void mana_serv_func(struct work_struct *w)
-> +static void mana_do_service(enum gdma_eqe_type type, struct pci_dev
-> *pdev)
->  {
-> -	struct mana_serv_work *mns_wk;
-> -	struct pci_dev *pdev;
-> -
-> -	mns_wk =3D container_of(w, struct mana_serv_work, serv_work);
-> -	pdev =3D mns_wk->pdev;
-> -
-> -	if (!pdev)
-> -		goto out;
-> -
-> -	switch (mns_wk->type) {
-> +	switch (type) {
->  	case GDMA_EQE_HWC_FPGA_RECONFIG:
->  		mana_serv_fpga(pdev);
->  		break;
-> @@ -475,12 +503,36 @@ static void mana_serv_func(struct work_struct *w)
->  		break;
->=20
->  	default:
-> -		dev_err(&pdev->dev, "MANA service: unknown type %d\n",
-> -			mns_wk->type);
-> +		dev_err(&pdev->dev, "MANA service: unknown type %d\n", type);
->  		break;
->  	}
-> +}
-> +
-> +static void mana_serv_delayed_func(struct work_struct *w)
-> +{
-> +	struct mana_serv_delayed_work *dwork;
-> +	struct pci_dev *pdev;
-> +
-> +	dwork =3D container_of(w, struct mana_serv_delayed_work, work.work);
-> +	pdev =3D dwork->pdev;
-> +
-> +	if (pdev)
-> +		mana_do_service(dwork->type, pdev);
-> +
-> +	pci_dev_put(pdev);
-> +}
-> +
-> +static void mana_serv_func(struct work_struct *w)
-> +{
-> +	struct mana_serv_work *mns_wk;
-> +	struct pci_dev *pdev;
-> +
-> +	mns_wk =3D container_of(w, struct mana_serv_work, serv_work);
-> +	pdev =3D mns_wk->pdev;
-> +
-> +	if (pdev)
-> +		mana_do_service(mns_wk->type, pdev);
->=20
-> -out:
->  	pci_dev_put(pdev);
->  	kfree(mns_wk);
->  	module_put(THIS_MODULE);
-> @@ -541,6 +593,17 @@ static void mana_gd_process_eqe(struct gdma_queue
-> *eq)
->  	case GDMA_EQE_HWC_RESET_REQUEST:
->  		dev_info(gc->dev, "Recv MANA service type:%d\n", type);
->=20
-> +		if (atomic_inc_return(&gc->in_probe) =3D=3D 1) {
+Background
+==========
 
-Since we don't care about how many times it entered probe/service,
-test_and_set_bit() should be sufficient here.
+Memory registration and deregistration can be a significant bottleneck in
+RDMA applications that need to register memory regions dynamically in
+their data path or must re-register memory on application restart.
+Repeatedly allocating and freeing these resources introduces overhead,
+particularly in high-throughput or latency-sensitive environments where
+memory regions are frequently cycled. Notably, the mlx5_ib driver has
+already adopted memory registration reuse mechanisms and has demonstrated
+notable performance improvements as a result.
 
-> +			/*
-> +			 * Device is in probe and we received an hardware reset
-> +			 * event, probe() will detect that "in_probe" has
-> +			 * changed and perform service procedure.
-> +			 */
-> +			dev_info(gc->dev,
-> +				 "Service is to be processed in probe\n");
-> +			break;
-> +		}
-> +
->  		if (gc->in_service) {
->  			dev_info(gc->dev, "Already in service\n");
->  			break;
-> @@ -1930,6 +1993,8 @@ static int mana_gd_probe(struct pci_dev *pdev, cons=
-t
-> struct pci_device_id *ent)
->  		gc->mana_pci_debugfs =3D debugfs_create_dir(pci_slot_name(pdev-
-> >slot),
->  							  mana_debugfs_root);
->=20
-> +	atomic_set(&gc->in_probe, 0);
-> +
->  	err =3D mana_gd_setup(pdev);
->  	if (err)
->  		goto unmap_bar;
-> @@ -1942,8 +2007,19 @@ static int mana_gd_probe(struct pci_dev *pdev,
-> const struct pci_device_id *ent)
->  	if (err)
->  		goto cleanup_mana;
->=20
-> +	/*
-> +	 * If a hardware reset event has occurred over HWC during probe,
-> +	 * rollback and perform hardware reset procedure.
-> +	 */
-> +	if (atomic_inc_return(&gc->in_probe) > 1) {
-> +		err =3D -EPROTO;
-> +		goto cleanup_mana_rdma;
-> +	}
-> +
->  	return 0;
->=20
-> +cleanup_mana_rdma:
-> +	mana_rdma_remove(&gc->mana_ib);
->  cleanup_mana:
->  	mana_remove(&gc->mana, false);
->  cleanup_gd:
-> @@ -1967,6 +2043,25 @@ static int mana_gd_probe(struct pci_dev *pdev,
-> const struct pci_device_id *ent)
->  disable_dev:
->  	pci_disable_device(pdev);
->  	dev_err(&pdev->dev, "gdma probe failed: err =3D %d\n", err);
-> +
-> +	/*
-> +	 * Hardware could be in recovery mode and the HWC returns TIMEDOUT
-> or
-> +	 * EPROTO from mana_gd_setup(), mana_probe() or mana_rdma_probe(),
-> or
-> +	 * we received a hardware reset event over HWC interrupt. In this
-> case,
-> +	 * perform the device recovery procedure after MANA_SERVICE_PERIOD
-> +	 * seconds.
-> +	 */
-> +	if (err =3D=3D -ETIMEDOUT || err =3D=3D -EPROTO) {
-> +		dev_info(&pdev->dev, "Start MANA recovery mode\n");
-> +
-> +		mns_delayed_wk.pdev =3D pci_dev_get(pdev);
-> +		mns_delayed_wk.type =3D GDMA_EQE_HWC_RESET_REQUEST;
-> +
-> +		INIT_DELAYED_WORK(&mns_delayed_wk.work,
-> mana_serv_delayed_func);
+Device driver integration requires the ability to modify the hardware
+objects underlying MRs when reusing FRMR handles, allowing the update
+of pre-allocated handles to fit the parameters of requested MR
+registrations. The FRMR pools manage memory region handles with respect
+to attributes that cannot be changed after allocation such as access flags,
+ATS capabilities, vendor keys, and DMA block size so each pool is uniquely
+characterized by these non-modifiable attributes.
+This ensures compatibility and correctness while allowing drivers
+flexibility in managing other aspects of the MR lifecycle.
 
-To avoid INIT_DELAYED_WORK potentially multiple times this should be in=20
-the mana_driver_init()
+Solution Overview
+=================
 
-> +		schedule_delayed_work(&mns_delayed_wk.work,
-> +				      secs_to_jiffies(MANA_SERVICE_PERIOD));
-> +	}
-> +
->  	return err;
->  }
->=20
-> @@ -2084,6 +2179,8 @@ static int __init mana_driver_init(void)
->=20
->  static void __exit mana_driver_exit(void)
->  {
-> +	cancel_delayed_work_sync(&mns_delayed_wk.work);
+This patch series introduces a centralized, per-device FRMR pooling
+infrastructure that provides:
 
-I think we should call disable_delayed_work_sync() to prevent the work
-scheduled again after this line.
+1. Pool Organization: Uses an RB-tree to organize pools by FRMR
+   characteristics (ATS support, access flags, vendor-specific keys,
+   and DMA block count). This allows efficient lookup and reuse of
+   compatible FRMR handles.
 
-> +
->  	pci_unregister_driver(&mana_driver);
->=20
->  	debugfs_remove(mana_debugfs_root);
-> diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-> index 637f42485dba..1bb4c6ada2b6 100644
-> --- a/include/net/mana/gdma.h
-> +++ b/include/net/mana/gdma.h
-> @@ -430,6 +430,9 @@ struct gdma_context {
->  	u64 pf_cap_flags1;
->=20
->  	struct workqueue_struct *service_wq;
-> +
-> +	/* Count how many times we have finished probe or HWC events */
-> +	atomic_t		in_probe;
->  };
->=20
->  static inline bool mana_gd_is_mana(struct gdma_dev *gd)
-> @@ -592,6 +595,9 @@ enum {
->  #define GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE BIT(17)
->  #define GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE BIT(6)
->=20
-> +/* Driver can handle hardware reset events during probe */
-> +#define GDMA_DRV_CAP_FLAG_1_RECOVER_PROBE BIT(22)
-> +
->  #define GDMA_DRV_CAP_FLAGS1 \
->  	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
->  	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
-> @@ -601,7 +607,8 @@ enum {
->  	 GDMA_DRV_CAP_FLAG_1_DYNAMIC_IRQ_ALLOC_SUPPORT | \
->  	 GDMA_DRV_CAP_FLAG_1_SELF_RESET_ON_EQE | \
->  	 GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE | \
-> -	 GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE)
-> +	 GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE | \
-> +	 GDMA_DRV_CAP_FLAG_1_RECOVER_PROBE)
->=20
->  #define GDMA_DRV_CAP_FLAGS2 0
->=20
-> --
-> 2.43.0
+2. Dynamic Allocation: Pools grow dynamically on demand when no cached
+   handles are available, ensuring optimal memory usage without
+   sacrificing performance.
+
+3. Aging Mechanism: Implements an aging system. Unused handles are
+   gradually moved to the freed after a configurable aging period
+   (default: 60 seconds), preventing memory bloat during idle periods.
+
+4. Pinned Handles: Supports pinning a minimum number of handles per
+   pool to maintain performance for latency-sensitive workloads, avoiding
+   allocation overhead on critical paths.
+
+5. Driver Flexibility: Provides a callback-based interface
+   (ib_frmr_pool_ops) that allows drivers to implement their own FRMR
+   creation/destruction logic while leveraging the common pooling
+   infrastructure.
+
+API
+===
+
+The infrastructure exposes the following APIs:
+
+- ib_frmr_pools_init(): Initialize FRMR pools for a device
+- ib_frmr_pools_cleanup(): Clean up all pools for a device
+- ib_frmr_pool_pop(): Get an FRMR handle from the pool
+- ib_frmr_pool_push(): Return an FRMR handle to the pool
+- ib_frmr_pools_set_aging_period(): Configure aging period
+- ib_frmr_pools_set_pinned(): Set minimum pinned handles per pool
+
+Signed-off-by: Michael Guralnik <michaelgur@nvidia.com>
+Signed-off-by: Edward Srouji <edwards@nvidia.com>
+---
+Michael Guralnik (9):
+      IB/core: Introduce FRMR pools
+      RDMA/core: Add aging to FRMR pools
+      RDMA/core: Add FRMR pools statistics
+      RDMA/core: Add pinned handles to FRMR pools
+      RDMA/mlx5: Switch from MR cache to FRMR pools
+      net/mlx5: Drop MR cache related code
+      RDMA/nldev: Add command to get FRMR pools
+      RDMA/core: Add netlink command to modify FRMR aging
+      RDMA/core: Add command to set pinned FRMR handles
+
+ drivers/infiniband/core/Makefile               |    2 +-
+ drivers/infiniband/core/frmr_pools.c           |  553 ++++++++++++
+ drivers/infiniband/core/frmr_pools.h           |   63 ++
+ drivers/infiniband/core/nldev.c                |  347 +++++++
+ drivers/infiniband/hw/mlx5/main.c              |    7 +-
+ drivers/infiniband/hw/mlx5/mlx5_ib.h           |   86 +-
+ drivers/infiniband/hw/mlx5/mr.c                | 1141 ++++--------------------
+ drivers/infiniband/hw/mlx5/odp.c               |   19 -
+ drivers/infiniband/hw/mlx5/umr.h               |    1 +
+ drivers/net/ethernet/mellanox/mlx5/core/main.c |   67 +-
+ include/linux/mlx5/driver.h                    |   11 -
+ include/rdma/frmr_pools.h                      |   39 +
+ include/rdma/ib_verbs.h                        |    8 +
+ include/uapi/rdma/rdma_netlink.h               |   21 +
+ 14 files changed, 1219 insertions(+), 1146 deletions(-)
+---
+base-commit: d056bc45b62b5981ebcd18c4303a915490b8ebe9
+change-id: 20251116-frmr_pools-f823cc5e8a58
+
+Best regards,
+-- 
+Edward Srouji <edwards@nvidia.com>
 
 
