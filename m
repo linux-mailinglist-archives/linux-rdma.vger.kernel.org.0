@@ -1,43 +1,43 @@
-Return-Path: <linux-rdma+bounces-14505-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14506-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5234FC61B8C
-	for <lists+linux-rdma@lfdr.de>; Sun, 16 Nov 2025 20:16:16 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id D44DAC61B89
+	for <lists+linux-rdma@lfdr.de>; Sun, 16 Nov 2025 20:16:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B4893B8C2A
-	for <lists+linux-rdma@lfdr.de>; Sun, 16 Nov 2025 19:14:14 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3A8D23440CF
+	for <lists+linux-rdma@lfdr.de>; Sun, 16 Nov 2025 19:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E53C27056F;
-	Sun, 16 Nov 2025 19:12:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1E8D276049;
+	Sun, 16 Nov 2025 19:12:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="jj94Ecrj"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="gZk6/6jb"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012024.outbound.protection.outlook.com [52.101.43.24])
+Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011044.outbound.protection.outlook.com [52.101.62.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 912C4271457;
-	Sun, 16 Nov 2025 19:12:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC9D0271A7C;
+	Sun, 16 Nov 2025 19:12:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.62.44
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763320353; cv=fail; b=Wqlwy6eibTCng81VLwO34zKkgGnAye6OvYlZ0yh+b51bWdmLPUQgxgqFarRfH+dWCKCLuWvHAGem6fsvN5ggB4ztuMBB3voEtocj1PLvuYz0+M8UOTJKOYUsST9cXQOSAlCl+wJFRyvermgAFSXQCH05PpgbJ3mwr3NidFeP04s=
+	t=1763320354; cv=fail; b=gFDQV6jfdRhF10Ngrulkx52cHSDYmTqTgpSb/TozfIjT34n7yEaQj8jB/vJ1tJKP0wJJIRj+or2MxZ2s5Ccrk5CQAVEKyU6zxoAsvJlMGWdLYwp/6uk6AeSj0zkqXJKqIfU4eQMMM1PZ+QNJNU4rOjRwYpmZQtb67wXmLigCXg4=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763320353; c=relaxed/simple;
-	bh=2H+aWiDOtSeiyxEGkbDWVBaHwUa52u3WRBwjdq6laJk=;
+	s=arc-20240116; t=1763320354; c=relaxed/simple;
+	bh=U/hbhXTUOk/qsqx40FR+thGoZZE1WZ2LLxD9cEyo2Bw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=s5kPoyH8I08PUrizsnVENcJtSLBOuy1euIMKZWlMU+za0lSrt7fnWL75kglvDYDOm3X6aSFDL+YebneVLUbb+aXU7tVk6uIDCzDOHHzD07O0YnsoyhK+FUN+9Y/oDTV0Sp0z50lD7DzHYsPnkjbpZxCmroMzKrIVV96BLxsPDN4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=jj94Ecrj; arc=fail smtp.client-ip=52.101.43.24
+	 In-Reply-To:To:CC; b=OiEDc6pBy1xARuNNkSCxSNU78uYQZUL0lxX1XTH3YIMLbN0mc2SsGUHIN7ualrBq7QqKDNhXmlX7Gmr2ni+kukJ1X94otenvVrIbx8IMzij64qk+2rqLVMcTtlxisQ2M/YFLQtIsJ1X6YxplgK6Ph0XxuCNWa3/hU2VZqD7WO8M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=gZk6/6jb; arc=fail smtp.client-ip=52.101.62.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=DhrgLSPd4vGRhYCqtATeOBi5n34Y+djWIWwpM6zrdR6KxqvgXfBXwVpPD3Oc+NdL3fhSI5AYoV6oeqk3F1WkaZAQ04zyrLAnS9/WfmTuAd483UNw5W1edcugBTs4W1/GD2iGlxFe/EFc2nfhrkqHTuojoMd06SaBaJSO2p2NefuBbLE56duGd/BVBEmEmA5OENXhU7V3SBX1Do0IYMH7FVNddc5ej/JaugiIvnGxRklmNhf9dE0VX8KsWn5rz7F6qXpqbgzB+4/Fv/1+34hq5s+fpAyIGEc1psS+/yB9aZ3L26/EtwmVDVfbLVGWOGEznZmmxxaTy0bPUa1fNmM9yg==
+ b=OmBoIDFD1N9znLox6ZBahCB72q3g1ItXn2hNrRoCdDvTT3R8qVfowL/s5OXDvo0yIAENx0lfaEb1BD/5O+cFRmtXUPKtKmP0NcyrnkuMCa4MzCmnHplaAe1udlKqkaSY4k3kYYk1mjMr3Vnc0B92+eKIj78GtfAYMo5VbOF0sZz6xDlNAxuyu/ggS1R0Zaj9gohoBnGlSdPyfZjMgfZrcK+jvz+nO/oww0mZHpljJ6u8MP+Z51PDLkg3VIJlrBqhUDFnxK7tCVdv87+r2bUkE3Jjtq56gwwpBfjId5DKXBIlZQjcT+wXq/MBk1yqddwgG7zY7d9wmJwpk+OkhTFMgw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FG8UHWe6mJicZFDijYd9mlpuuEJI5r42MFlV1dfmK04=;
- b=JmifirXe7g5J+qpyjkoXeg/rbddvtMGaOsL5vmdmE8NvvKl+3YMmtmtKsOJHsVfdiMmeAWQ7ityoaPx30MtnWhyyPCiTBB8jvhb9e/6WW5lIjABswagF6U6G6cmSpn2UIbuLgsKgWXIgWaOmAPQZJd3/efSC9RXj+BHpkwpDAdufxleVYgVR/RR3BLEXFC6jOGtL1Qs7awvUjrM3ViFs5Lq4ZcFtwAVQoV3j4QFD5qSXdGIx7r2z4pMvrN8E7sd+Uj1vTvy4SVX3o906C+4OYfwbHBqBZcZfHqpolrVCSavG1iIctnj5zm4FOmgXU1gaAXndW0YMLGhl1ShSvSFaMg==
+ bh=dCn3B+uEl92GaSpTXyeYDKFDkNWWNkXuzvZfbFeab7U=;
+ b=oGhd4J8rMXhHqAi+ofOsE3AN689kcVncrhiiRllz/zF4+W7zS1rN9AYmcKDTc6VqHrm5wV6sL7Ed33XsNvNTG5z3w4g+CCO9WX0UrlZ2dteosrJtysmpOk94NA7X/PHFMsBGZDT8Uj1UxwuQoJTUbzq5gt9cOJ4K47+OkAXypO/40cS5/T3E3A5JL0J+7+vIoKax5XfRy+S9h9iTyUBHjPLBkqa8XU6HSLO+jm9OTnGvELaPXA2MhfksburgkW81125c3KCVICTQQ3VwvVCw247BEe8qG1ONZzTe0jCvVwwu5gFu1JvNOjoWWiEo8HDWpXwYATr7Pd6fy8Qe/zWyYQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.118.232) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -45,18 +45,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FG8UHWe6mJicZFDijYd9mlpuuEJI5r42MFlV1dfmK04=;
- b=jj94Ecrjnifhv9UhcgMkbPJQRywlUO8kfYIz4ervV7s+AtDdnc1K8Fq3Yb9f7iBwiJsXe3X9ymK96yCyc4oMSWzCJ8ZvKThYm0kdUg/72DZfDpBRo1hT1hGxx4e2C6Wkt3t2OR/wInVo5crXxvyfOlvlCKFVKzU6nNrhU+zfko50Rk+wpRG/az7xX+bcqeqmDg9ZTKsfKSsYSIi0CJ8KVMFW4yXvXq/4GRDOMloyMqbHWFl8pcK55tQKk3Lk1CnVf6kApDUqHpoBE5mdBYGGoqyER/XusXGQg+vUpno/GweR9RZSmY7KMmLErS0xDx6MPGzzyzqI1SwiAaLLpI9gQg==
-Received: from BN9PR03CA0316.namprd03.prod.outlook.com (2603:10b6:408:112::21)
- by DM6PR12MB4092.namprd12.prod.outlook.com (2603:10b6:5:214::14) with
+ bh=dCn3B+uEl92GaSpTXyeYDKFDkNWWNkXuzvZfbFeab7U=;
+ b=gZk6/6jbgUd8lYWSpAuL9BzyRNP017aNW89U6QAN+EXVXQNz1Gfpq0EohPSVqSt0IVEA5vu6BKb8DFxsXneH+Yf7VDU3p8M4VnjYhtTxXuoogQWYFsdJDj9/2Rqy6EpzgyjCCVC960reMieaHOAeVO4LMGLqYTgrOic9wNPeqITsLOF75ZpBMei9Qm1sr3SZNOPl8WwTbzAHQaq6Gpqm/o6Qhl+Cto412zPv+/UflqegeIh6dWzY5wRCHCN/kcUse+y1aMINvkxZOf9qBL163TuT6Eo+EbtP78fh/FzsZTdRPkg2L/M/lcwC0q43WVSzPbr/u/I1JqpZ+CqzcQSEQw==
+Received: from BN0PR03CA0017.namprd03.prod.outlook.com (2603:10b6:408:e6::22)
+ by CYXPR12MB9340.namprd12.prod.outlook.com (2603:10b6:930:e4::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9320.21; Sun, 16 Nov
- 2025 19:12:27 +0000
-Received: from BN3PEPF0000B06B.namprd21.prod.outlook.com
- (2603:10b6:408:112:cafe::ac) by BN9PR03CA0316.outlook.office365.com
- (2603:10b6:408:112::21) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9320.17 via Frontend Transport; Sun,
- 16 Nov 2025 19:12:21 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9320.20; Sun, 16 Nov
+ 2025 19:12:29 +0000
+Received: from BN3PEPF0000B06D.namprd21.prod.outlook.com
+ (2603:10b6:408:e6:cafe::ae) by BN0PR03CA0017.outlook.office365.com
+ (2603:10b6:408:e6::22) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9320.20 via Frontend Transport; Sun,
+ 16 Nov 2025 19:12:19 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -64,24 +64,24 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.118.232 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.118.232) by
- BN3PEPF0000B06B.mail.protection.outlook.com (10.167.243.70) with Microsoft
+ BN3PEPF0000B06D.mail.protection.outlook.com (10.167.243.72) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9366.1 via Frontend Transport; Sun, 16 Nov 2025 19:12:26 +0000
+ 15.20.9366.1 via Frontend Transport; Sun, 16 Nov 2025 19:12:28 +0000
 Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
  (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Sun, 16 Nov
- 2025 11:12:16 -0800
+ 2025 11:12:21 -0800
 Received: from drhqmail201.nvidia.com (10.126.190.180) by
  drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.20; Sun, 16 Nov 2025 11:12:16 -0800
+ 15.2.2562.20; Sun, 16 Nov 2025 11:12:20 -0800
 Received: from c-237-169-180-182.mtl.labs.mlnx (10.127.8.13) by
  mail.nvidia.com (10.126.190.180) with Microsoft SMTP Server id 15.2.2562.20
- via Frontend Transport; Sun, 16 Nov 2025 11:12:11 -0800
+ via Frontend Transport; Sun, 16 Nov 2025 11:12:16 -0800
 From: Edward Srouji <edwards@nvidia.com>
-Date: Sun, 16 Nov 2025 21:10:29 +0200
-Subject: [PATCH rdma-next 8/9] RDMA/core: Add netlink command to modify
- FRMR aging
+Date: Sun, 16 Nov 2025 21:10:30 +0200
+Subject: [PATCH rdma-next 9/9] RDMA/core: Add command to set pinned FRMR
+ handles
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -90,7 +90,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20251116-frmr_pools-v1-8-5eb3c8f5c9c4@nvidia.com>
+Message-ID: <20251116-frmr_pools-v1-9-5eb3c8f5c9c4@nvidia.com>
 References: <20251116-frmr_pools-v1-0-5eb3c8f5c9c4@nvidia.com>
 In-Reply-To: <20251116-frmr_pools-v1-0-5eb3c8f5c9c4@nvidia.com>
 To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, "Saeed
@@ -102,253 +102,215 @@ CC: <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
 	<netdev@vger.kernel.org>, Michael Guralnik <michaelgur@nvidia.com>, "Edward
  Srouji" <edwards@nvidia.com>, Patrisious Haddad <phaddad@nvidia.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1763320291; l=6601;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1763320291; l=5498;
  i=edwards@nvidia.com; s=20251029; h=from:subject:message-id;
- bh=bQokp/MlllEPmlUzZoAj+8KcHyrhuf1+gKxd9AJgtt8=;
- b=M+hB2tXE3U7IKAJr0mIAW2hNj+bb7O4+4tiTNIzDALJ7iUiTLCs1febz7fFZkeJ5zTlfKFO3P
- 7TztROe/cgmBvziU2VM1r8bjJOp1q34KfnY+D3j9TCo1jxUMgVwqC+U
+ bh=YQ0wDiv2bMuWaIF3WnxWy8wPAcMWZX5AiaUc80wqWf0=;
+ b=M2u7ryVdMS2JZzuptOOcUbFxWDW9o3OuE7aJTT7qUfnjp+Qwynd2dw5/yhZbrnqj76fIHpo6K
+ yGQxNG6X/yqBksh8Lc5l7grvCMkON62XkDn36GQAq+MnZ8B2HBkF8xK
 X-Developer-Key: i=edwards@nvidia.com; a=ed25519;
  pk=VME+d2WbMZT5AY+AolKh2XIdrnXWUwwzz/XLQ3jXgDM=
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN3PEPF0000B06B:EE_|DM6PR12MB4092:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1a63e770-6db0-4eea-603b-08de254414bd
+X-MS-TrafficTypeDiagnostic: BN3PEPF0000B06D:EE_|CYXPR12MB9340:EE_
+X-MS-Office365-Filtering-Correlation-Id: 835790a9-487d-4a83-9c2f-08de254415db
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|376014|1800799024|82310400026|36860700013|921020;
+	BCL:0;ARA:13230040|36860700013|1800799024|82310400026|7416014|376014|921020;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?dGRtQ2FoMG9oM2Yyc2lMd2xocWpCSUhpOWx1cU05TGpvS2hMeXQ4UklxMitr?=
- =?utf-8?B?SnBiVWN3bUJSN0Q1aWhDQWZBRVRKVnpPVzN0cGVFdVJEWUVPdjRFODZwR1ov?=
- =?utf-8?B?ZjczbXVuclk5SlNTb3V6UzdKZ2VrbmdzYzNBNzgvelB4ZnR6ZlkzbEhEVC9h?=
- =?utf-8?B?ZVFYdzRzZzZiNGRWUUhSYURMOG4yU3U4eWxWczAwcnlBeTZNQU05SzVOSW96?=
- =?utf-8?B?WXkwek4rdm5KUnh2K2tWQzIvWmYzYlJPS1ZLNTgzU0dEck9mb2g2b1NyNXBT?=
- =?utf-8?B?ZjhHeS9vUmZ5cUh3VDc4ejZiL3JNUFkwNzdWd0JWOGs2U2YzWmJoNWtRam1O?=
- =?utf-8?B?dW1mNnQ0aFJxcWhCcEtlSGZxaTRYM3FFWFhZTVEza1hDcEplN2l0alBYYllk?=
- =?utf-8?B?RW9nYmsyM1dscjh6M0ZIOVgrNlFrdnl3ZXd6TXhyM1VFQm1QbXdCb0FlVVdI?=
- =?utf-8?B?RjcrWmNPOXUzMXRyMmZURXFFUDRMN1MycDNQc1UwUXVWYWNOZHo2WnZya0Jy?=
- =?utf-8?B?ZUk2T0lIcUNoalpPVnE5T21KZ0E2MkI5WlhzbW9saytIeEJ4UkNoUEY4aG1U?=
- =?utf-8?B?dms3REx0NTY3bFpJOFdIdW9pdmxqb0Q4cEJIaFlYUjN2andNT2Y2TnFWelRx?=
- =?utf-8?B?MWhRR3V3ODV0UWEwdXhCc0EzMEF6aE1sL3l1VXc1VDlDSVhtRUhhMVlVYWoz?=
- =?utf-8?B?ekJWTWtlaWVKb1o5anREYUp2QXlCclFZZTB6aytnUDIyMmhXU0dCSVMxWlEr?=
- =?utf-8?B?c21FQndzelYzOWZydDhxRDJDcnhYYUozY3g5bWVFeFBTOGo3TTJ3UGg5Wlp2?=
- =?utf-8?B?QmJ1MTBNeGttTEZvYjh2SmZSbTZMVEhOMFRSNjk4VjJuZkd4RmNoNUQ1aitI?=
- =?utf-8?B?U0JTTWxsZkUyVjlGL2Y5dnVJYXlYYWEyMEoxK3ZPckt5ZjlNejR3Q1o0RExV?=
- =?utf-8?B?WENGOWgzeVRTWnU0T05lWXVJRzZTUlJrS3M1WFB1UTRaV1BiOHovU0Z4QTlZ?=
- =?utf-8?B?NjkyUlIvWENBcmltL1JGQUMrZ2tzcFFCZHNZZ0M3aExOMnhudmp4RTRZMml3?=
- =?utf-8?B?cUNXMWxSQkJEdEkyWUMzNHVxc3doaUV2eHROWFAzbFdEeEgzcVViQVpUbFF6?=
- =?utf-8?B?cE0wVnhxOHlUa3JiT2N3ZTh1MVdreEk4c0c2Q0RMWGJiMG01eDJLRk0xOENz?=
- =?utf-8?B?d3l5aCs5NEZsVHFMRk50WU1wRW1nbXVnWGtkUnVTbU5XbitIeVgzTTkwTDli?=
- =?utf-8?B?eDI5blV4Y2JkUitUZGVIeE80MlNiYU5VOEE0ZnVPK0tBanNyWEtBUFUxTXNG?=
- =?utf-8?B?MFJQSFA4V21uZ2tUdWxmdUY2Y1hYYTNZbUJVV04ySElWbjIxaXNHRGp6RGZR?=
- =?utf-8?B?VzJ0bzBSSnBGLzZTRWlReU12cGk1U3JHMHYxN3ZrQTltWFpzM3V5bmFFY0I5?=
- =?utf-8?B?a3Z4Q0cyR2JWSHE0K3hnRUhmL0plaU5MZFV5Y0ZSNGRDUGxENTlCYm82QmZV?=
- =?utf-8?B?cUJUUkRDdmxFYURqSmQ2TXB1UURzSnVORkFiUWR0aERSTU9hU2ZUR2MxVG5k?=
- =?utf-8?B?ODJyS3h3bDg1Ym9CM2Z3Unk3cjZ1Qk5LVHlBWDFMdjhxNnNsMVZtSFJTYVdw?=
- =?utf-8?B?QlhIcjVKd2RCeE03SHpvRFZBMFBKU2F5elFWYTRWNmNnNHFUR3Eya3BJY1VD?=
- =?utf-8?B?UGJ3NEcvUjZHSC9ScWtwckdmQU8xd2pkYmNuNm1uYUVnM2FJTWtVL1RyUFg1?=
- =?utf-8?B?dUR1ZC9OdUdHL0VORlpRSGF1QW81bW9ad0RIZU1UOEhaVUV5QTNad2thYVFI?=
- =?utf-8?B?YnFpUUdHSyt0T21iclZlSGl5azIvazNiV1NEMy9pdEZwMjU2K3NJNkN4RU9N?=
- =?utf-8?B?RzFZUTQzMk1LRVR1YVdSaXZvNE51bU5xSTdzeDM2RGxDejA1YXRoOU1Kcmxa?=
- =?utf-8?B?S2dVUzRVdUNYSTlpZ3YwSmlGT2lNV2VLbXQyeDludFlFUlpkaUl5SXRkb2dx?=
- =?utf-8?B?b2hPaWlvZ2Z2alFuMTA5SnB2ZUpPaHRXMXEvY29ZVlpmbnc5NG9pVlFhWVB6?=
- =?utf-8?B?U3M5T1JnNW5nR0JsMFAxa0RhVjJsMExqQWdydz09?=
+	=?utf-8?B?dFIwN1RZaXFOTFo5TExKa290S0QyUk1tRmRLZGF6Tm9PL3BGUlU0WHpBbkQ2?=
+ =?utf-8?B?V0hHb2hWbzZ2NzhFN0RpUzBCS0kyM0UrczgvZXlOMm9xYVZTQWtUV2UrTGMz?=
+ =?utf-8?B?MGVsNjZwVzN5dkZIaGR2bWJSTTltZ09ERE5OTzV0TjRqUTJ2cS8xVThkWXNh?=
+ =?utf-8?B?Qm9HNjRMNmd4YzNpc2pKeXlKRmZQOGhjclhmbWVJNWU1Y1l2aWhiKzJqODVu?=
+ =?utf-8?B?SlBURUxOOUR2SzdnWkp2cDNteVdHdTlLc3ZFaTNrYU9nR0QvWWVCaXJ5U091?=
+ =?utf-8?B?YXMrYTNVbFRrM0tGWUNpZ3kvejRpcThObEFySzdIQzZTU3UwZE1WMFBYNDQy?=
+ =?utf-8?B?VDRqb2MraVFwMzBNak82NjZkWWdxb1lUYWRSeDMyK2ovY2ZJeFdKYkxOOGxy?=
+ =?utf-8?B?cCtZS1pHOEpwZE45NVVLeE9mdExLS05NTXlYbWRsdENKSE1FZHZmbDZzTWw5?=
+ =?utf-8?B?ekQ4RTNEQ0lWdHlmWU1WZThrb1ZLMnFEUmtaNU81L2hGd0pTSkRqQU5pTUJa?=
+ =?utf-8?B?cmRLMURNdk45ZnlWNDFhenF0dHlHZ2tjeUJSaFNJY0pieExJNVZHS0VtTEI5?=
+ =?utf-8?B?OC9DRDdVdVczTUZkQkVHeVNQeWN4TytoVTdXREk2aHJ0MWxjZ2QxS21UR1Er?=
+ =?utf-8?B?V1lvdU9sT01sR2pXYVVTaXVaMDJWZnpSMmU2dGl3bFNnQVhxK1lSSkNVcU12?=
+ =?utf-8?B?Rk9DVUVDVkI5Sll1cXNMb3FjRFpMd1ZOVEJ6aW03MTQ2QjFad2tWUmRta25T?=
+ =?utf-8?B?ekdQUzBmU1N2RjRicitpeEtPYmhMdVA3WW5lQkpVcE1YZEU0VDNlei92K2s1?=
+ =?utf-8?B?aWV0V2sxeFVRVEljajdtY0J5QXRkSGRXV0l3WkZ1bzFVeDZQZWFCaDMvMmFT?=
+ =?utf-8?B?b0V2QTcrYTg2VnFTaVIvc1pkM2hlZ2FMUWY0SFBKY0l2WHp2K1Z0MFNIMzU4?=
+ =?utf-8?B?dFprc2p6WnMxeG5BaDIzTERVRE9ENk1hTXZDY2tQbjlYc2g4aThQdGJ3TzFN?=
+ =?utf-8?B?YzdQdm92UmV3ZkhHMmtQMkNsSnNuL1pmcG5CaTJZMHJORmZqLzFNRWU0M1ov?=
+ =?utf-8?B?V1hLWHpNVVRRNVpXUis0b3hRSmR1WTJtU1U3Z1JWL05iOVJLTlNPT29wdjFa?=
+ =?utf-8?B?Q05wMElXblM2eUZ6QjEyU096bnBBS3RNS2RGN3NWMTFGOEcvT2tkcTN2K0dl?=
+ =?utf-8?B?elNXRGJoYXkxUzBFaWhwSGdXTFkrZlJzY3V1Ym93ck1JOXJEako3ZXlRRTd1?=
+ =?utf-8?B?UWg2RENIZS9veUZZWHlYWkVjWEZRYVhmdzNZU0VQZDVoZlQzUnRXOW5MeU00?=
+ =?utf-8?B?M2pJUDB5Ni91NDBvZ2JjVitkTnJGdXVOaXhEZHF2L2dUMHQxTVJqazhZUGU3?=
+ =?utf-8?B?M1VzM1JXOFA1Y3IzVVd1RHNPTDF5S2crKzJ2V0h0YXdoT3ZvTS9XblBxU08x?=
+ =?utf-8?B?U2Zzb0FORWNuTG1MTWptVk5UeGx6anp0NWdzLzlGUkhhMHYyTGNxMGpZV1Bi?=
+ =?utf-8?B?MHR5RTVHMDM2cUt6RnJGTmJyUDRZSHBpUiszckQwQ3VETm1SV3JCdlBaK001?=
+ =?utf-8?B?WTBlQWZaSm5MUmRaWmRuYnN2bkxHVUdwMnNwZkcwQ1hDKy9aSHp4UEwyck05?=
+ =?utf-8?B?dnJrS1ZpcUNONnNLNC8rUEZMZVNFRjNzODhsNVhkdDI2Z2t4dW1ZVnFzOHhY?=
+ =?utf-8?B?enZ4TEJMbzg3bEMxOXk0VFBTNXc3WmdLd25FbHExR0cxdXFWZ2Z5UmVWZkFa?=
+ =?utf-8?B?MDh4M25FVERQdFhwK3p1YzFhdmZmL0crbXNYVktTV2xMajk4REE5YzBxWW9V?=
+ =?utf-8?B?bmxwSWRVcGVXbnNGT2tqZ0IwVC9GMXNsQlJlQ2pESnB2bVhrUjYyNGxiakN6?=
+ =?utf-8?B?OVlSTWEwa0VZMDFXNGc2bDFvZXd3WnJsQ1lzSWdRenVWOVpuZjhIWUcxd2lV?=
+ =?utf-8?B?bUh0bE04MHprTFhwRC9WS1Rja0FuZGtqdGRRbEUvRHpvY0FQK2o5WWMyZHNu?=
+ =?utf-8?B?a1lkOHZCMHZMQm5vR3MvbitBNDJSSzJhbkNyZmI2RUNFZ2hJNkxsTWJhWXlH?=
+ =?utf-8?B?ZDBsdDBJb294RGZ1MnJJUTNHbEZ6bjVpeUFjUT09?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(82310400026)(36860700013)(921020);DIR:OUT;SFP:1101;
+	CIP:216.228.118.232;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(82310400026)(7416014)(376014)(921020);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2025 19:12:26.6926
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2025 19:12:28.6128
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a63e770-6db0-4eea-603b-08de254414bd
+X-MS-Exchange-CrossTenant-Network-Message-Id: 835790a9-487d-4a83-9c2f-08de254415db
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BN3PEPF0000B06B.namprd21.prod.outlook.com
+	BN3PEPF0000B06D.namprd21.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4092
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYXPR12MB9340
 
 From: Michael Guralnik <michaelgur@nvidia.com>
 
-Allow users to set FRMR pools aging timer through netlink.
-This functionality will allow user to control how long handles reside in
-the kernel before being destroyed, thus being able to tune the tradeoff
-between memory and HW object consumption and memory registration
-optimization.
-Since FRMR pools is highly beneficial for application restart scenarios,
-this command allows users to modify the aging timer to their application
-restart time, making sure the FRMR handles deregistered on application
-teardown are kept for long enough in the pools for reuse in the
-application startup.
+Allow users to set through netlink, for a specific FRMR pool, the amount
+of handles that are not aged, and fill the pool to this amount.
+
+This allows users to warm-up the FRMR pools to an expected amount of
+handles with specific attributes that fits their expected usage.
 
 Signed-off-by: Michael Guralnik <michaelgur@nvidia.com>
 Reviewed-by: Patrisious Haddad <phaddad@nvidia.com>
 Signed-off-by: Edward Srouji <edwards@nvidia.com>
 ---
- drivers/infiniband/core/frmr_pools.c | 31 ++++++++++++++++++++++++++++--
- drivers/infiniband/core/frmr_pools.h |  2 ++
- drivers/infiniband/core/nldev.c      | 37 ++++++++++++++++++++++++++++++++++++
- include/uapi/rdma/rdma_netlink.h     |  3 +++
- 4 files changed, 71 insertions(+), 2 deletions(-)
+ drivers/infiniband/core/frmr_pools.c |  1 +
+ drivers/infiniband/core/nldev.c      | 66 +++++++++++++++++++++++++++++++++---
+ include/uapi/rdma/rdma_netlink.h     |  1 +
+ 3 files changed, 63 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/infiniband/core/frmr_pools.c b/drivers/infiniband/core/frmr_pools.c
-index 254113d2442d5d6956587a1c444dc74cd48204fb..b150bb78de3c4fd89990f7aed7874e4db94eac0a 100644
+index b150bb78de3c4fd89990f7aed7874e4db94eac0a..9a27ff2d9aec20b415c187909ba660a94590b2d7 100644
 --- a/drivers/infiniband/core/frmr_pools.c
 +++ b/drivers/infiniband/core/frmr_pools.c
-@@ -174,7 +174,7 @@ static void pool_aging_work(struct work_struct *work)
- 	if (has_work)
- 		queue_delayed_work(
- 			pools->aging_wq, &pool->aging_work,
--			secs_to_jiffies(FRMR_POOLS_DEFAULT_AGING_PERIOD_SECS));
-+			secs_to_jiffies(READ_ONCE(pools->aging_period_sec)));
- }
+@@ -452,6 +452,7 @@ int ib_frmr_pools_set_pinned(struct ib_device *device, struct ib_frmr_key *key,
+ 	kfree(handles);
  
- static void destroy_frmr_pool(struct ib_device *device,
-@@ -214,6 +214,8 @@ int ib_frmr_pools_init(struct ib_device *device,
- 		return -ENOMEM;
- 	}
- 
-+	pools->aging_period_sec = FRMR_POOLS_DEFAULT_AGING_PERIOD_SECS;
-+
- 	device->frmr_pools = pools;
- 	return 0;
- }
-@@ -249,6 +251,31 @@ void ib_frmr_pools_cleanup(struct ib_device *device)
- }
- EXPORT_SYMBOL(ib_frmr_pools_cleanup);
- 
-+int ib_frmr_pools_set_aging_period(struct ib_device *device, u32 period_sec)
-+{
-+	struct ib_frmr_pools *pools = device->frmr_pools;
-+	struct ib_frmr_pool *pool;
-+	struct rb_node *node;
-+
-+	if (!pools)
-+		return -EINVAL;
-+
-+	if (period_sec == 0)
-+		return -EINVAL;
-+
-+	WRITE_ONCE(pools->aging_period_sec, period_sec);
-+
-+	read_lock(&pools->rb_lock);
-+	for (node = rb_first(&pools->rb_root); node; node = rb_next(node)) {
-+		pool = rb_entry(node, struct ib_frmr_pool, node);
-+		mod_delayed_work(pools->aging_wq, &pool->aging_work,
-+				 secs_to_jiffies(period_sec));
-+	}
-+	read_unlock(&pools->rb_lock);
-+
-+	return 0;
-+}
-+
- static int compare_keys(struct ib_frmr_key *key1, struct ib_frmr_key *key2)
- {
- 	int res;
-@@ -518,7 +545,7 @@ int ib_frmr_pool_push(struct ib_device *device, struct ib_mr *mr)
- 
- 	if (ret == 0 && schedule_aging)
- 		queue_delayed_work(pools->aging_wq, &pool->aging_work,
--			secs_to_jiffies(FRMR_POOLS_DEFAULT_AGING_PERIOD_SECS));
-+			secs_to_jiffies(READ_ONCE(pools->aging_period_sec)));
+ schedule_aging:
++	/* Ensure aging is scheduled to adjust to new pinned handles count */
+ 	mod_delayed_work(pools->aging_wq, &pool->aging_work, 0);
  
  	return ret;
- }
-diff --git a/drivers/infiniband/core/frmr_pools.h b/drivers/infiniband/core/frmr_pools.h
-index b144273ee34785623d2254d19f5af40869e00e83..81149ff15e003358b6d060c98fb68120c9a0e8b9 100644
---- a/drivers/infiniband/core/frmr_pools.h
-+++ b/drivers/infiniband/core/frmr_pools.h
-@@ -54,8 +54,10 @@ struct ib_frmr_pools {
- 	const struct ib_frmr_pool_ops *pool_ops;
- 
- 	struct workqueue_struct *aging_wq;
-+	u32 aging_period_sec;
- };
- 
- int ib_frmr_pools_set_pinned(struct ib_device *device, struct ib_frmr_key *key,
- 			     u32 pinned_handles);
-+int ib_frmr_pools_set_aging_period(struct ib_device *device, u32 period_sec);
- #endif /* RDMA_CORE_FRMR_POOLS_H */
 diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index 6cdf6073fdf9c51ee291a63bb86ac690b094aa9f..e22c999d164120ac070b435e92f53c15f976bf5c 100644
+index e22c999d164120ac070b435e92f53c15f976bf5c..5c8a4e19fdf8e82e78237d4e6ced9c519613505e 100644
 --- a/drivers/infiniband/core/nldev.c
 +++ b/drivers/infiniband/core/nldev.c
-@@ -184,6 +184,7 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
- 	[RDMA_NLDEV_ATTR_FRMR_POOL_QUEUE_HANDLES] = { .type = NLA_U32 },
+@@ -185,6 +185,7 @@ static const struct nla_policy nldev_policy[RDMA_NLDEV_ATTR_MAX] = {
  	[RDMA_NLDEV_ATTR_FRMR_POOL_MAX_IN_USE]	= { .type = NLA_U64 },
  	[RDMA_NLDEV_ATTR_FRMR_POOL_IN_USE]	= { .type = NLA_U64 },
-+	[RDMA_NLDEV_ATTR_FRMR_POOLS_AGING_PERIOD] = { .type = NLA_U32 },
+ 	[RDMA_NLDEV_ATTR_FRMR_POOLS_AGING_PERIOD] = { .type = NLA_U32 },
++	[RDMA_NLDEV_ATTR_FRMR_POOL_PINNED_HANDLES] = { .type = NLA_U32 },
  };
  
  static int put_driver_name_print_type(struct sk_buff *msg, const char *name,
-@@ -2887,6 +2888,38 @@ static int nldev_frmr_pools_get_dumpit(struct sk_buff *skb,
+@@ -2692,6 +2693,9 @@ static int fill_frmr_pool_entry(struct sk_buff *msg, struct ib_frmr_pool *pool)
+ 	if (nla_put_u64_64bit(msg, RDMA_NLDEV_ATTR_FRMR_POOL_IN_USE,
+ 			      pool->in_use, RDMA_NLDEV_ATTR_PAD))
+ 		goto err_unlock;
++	if (nla_put_u32(msg, RDMA_NLDEV_ATTR_FRMR_POOL_PINNED_HANDLES,
++			pool->pinned_handles))
++		goto err_unlock;
+ 	spin_unlock(&pool->lock);
+ 
+ 	return 0;
+@@ -2789,6 +2793,54 @@ static int nldev_frmr_pools_get_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
  	return ret;
  }
  
-+static int nldev_frmr_pools_set_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
-+				     struct netlink_ext_ack *extack)
++static void nldev_frmr_pools_parse_key(struct nlattr *tb[],
++				       struct ib_frmr_key *key,
++				       struct netlink_ext_ack *extack)
 +{
-+	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX];
-+	struct ib_device *device;
-+	u32 aging_period;
-+	int err;
++	if (tb[RDMA_NLDEV_ATTR_FRMR_POOL_KEY_ATS])
++		key->ats = nla_get_u8(tb[RDMA_NLDEV_ATTR_FRMR_POOL_KEY_ATS]);
 +
-+	err = nlmsg_parse(nlh, 0, tb, RDMA_NLDEV_ATTR_MAX - 1, nldev_policy,
-+			  extack);
++	if (tb[RDMA_NLDEV_ATTR_FRMR_POOL_KEY_ACCESS_FLAGS])
++		key->access_flags = nla_get_u32(
++			tb[RDMA_NLDEV_ATTR_FRMR_POOL_KEY_ACCESS_FLAGS]);
++
++	if (tb[RDMA_NLDEV_ATTR_FRMR_POOL_KEY_VENDOR_KEY])
++		key->vendor_key = nla_get_u64(
++			tb[RDMA_NLDEV_ATTR_FRMR_POOL_KEY_VENDOR_KEY]);
++
++	if (tb[RDMA_NLDEV_ATTR_FRMR_POOL_KEY_NUM_DMA_BLOCKS])
++		key->num_dma_blocks = nla_get_u64(
++			tb[RDMA_NLDEV_ATTR_FRMR_POOL_KEY_NUM_DMA_BLOCKS]);
++}
++
++static int nldev_frmr_pools_set_pinned(struct ib_device *device,
++				       struct nlattr *tb[],
++				       struct netlink_ext_ack *extack)
++{
++	struct nlattr *key_tb[RDMA_NLDEV_ATTR_MAX];
++	struct ib_frmr_key key = { 0 };
++	u32 pinned_handles = 0;
++	int err = 0;
++
++	pinned_handles =
++		nla_get_u32(tb[RDMA_NLDEV_ATTR_FRMR_POOL_PINNED_HANDLES]);
++
++	if (!tb[RDMA_NLDEV_ATTR_FRMR_POOL_KEY])
++		return -EINVAL;
++
++	err = nla_parse_nested(key_tb, RDMA_NLDEV_ATTR_MAX - 1,
++			       tb[RDMA_NLDEV_ATTR_FRMR_POOL_KEY], nldev_policy,
++			       extack);
 +	if (err)
 +		return err;
 +
-+	if (!tb[RDMA_NLDEV_ATTR_DEV_INDEX])
-+		return -EINVAL;
++	nldev_frmr_pools_parse_key(key_tb, &key, extack);
 +
-+	if (!tb[RDMA_NLDEV_ATTR_FRMR_POOLS_AGING_PERIOD])
-+		return -EINVAL;
++	err = ib_frmr_pools_set_pinned(device, &key, pinned_handles);
 +
-+	device = ib_device_get_by_index(
-+		sock_net(skb->sk), nla_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]));
-+	if (!device)
-+		return -EINVAL;
-+
-+	aging_period = nla_get_u32(tb[RDMA_NLDEV_ATTR_FRMR_POOLS_AGING_PERIOD]);
-+
-+	err = ib_frmr_pools_set_aging_period(device, aging_period);
-+
-+	ib_device_put(device);
 +	return err;
 +}
 +
- static const struct rdma_nl_cbs nldev_cb_table[RDMA_NLDEV_NUM_OPS] = {
- 	[RDMA_NLDEV_CMD_GET] = {
- 		.doit = nldev_get_doit,
-@@ -2997,6 +3030,10 @@ static const struct rdma_nl_cbs nldev_cb_table[RDMA_NLDEV_NUM_OPS] = {
- 		.doit = nldev_frmr_pools_get_doit,
- 		.dump = nldev_frmr_pools_get_dumpit,
- 	},
-+	[RDMA_NLDEV_CMD_FRMR_POOLS_SET] = {
-+		.doit = nldev_frmr_pools_set_doit,
-+		.flags = RDMA_NL_ADMIN_PERM,
-+	},
- };
+ static int nldev_frmr_pools_get_dumpit(struct sk_buff *skb,
+ 				       struct netlink_callback *cb)
+ {
+@@ -2904,18 +2956,22 @@ static int nldev_frmr_pools_set_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	if (!tb[RDMA_NLDEV_ATTR_DEV_INDEX])
+ 		return -EINVAL;
  
- static int fill_mon_netdev_rename(struct sk_buff *msg,
+-	if (!tb[RDMA_NLDEV_ATTR_FRMR_POOLS_AGING_PERIOD])
+-		return -EINVAL;
+-
+ 	device = ib_device_get_by_index(
+ 		sock_net(skb->sk), nla_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]));
+ 	if (!device)
+ 		return -EINVAL;
+ 
+-	aging_period = nla_get_u32(tb[RDMA_NLDEV_ATTR_FRMR_POOLS_AGING_PERIOD]);
++	if (tb[RDMA_NLDEV_ATTR_FRMR_POOLS_AGING_PERIOD]) {
++		aging_period = nla_get_u32(
++			tb[RDMA_NLDEV_ATTR_FRMR_POOLS_AGING_PERIOD]);
++		err = ib_frmr_pools_set_aging_period(device, aging_period);
++		goto done;
++	}
+ 
+-	err = ib_frmr_pools_set_aging_period(device, aging_period);
++	if (tb[RDMA_NLDEV_ATTR_FRMR_POOL_PINNED_HANDLES])
++		err = nldev_frmr_pools_set_pinned(device, tb, extack);
+ 
++done:
+ 	ib_device_put(device);
+ 	return err;
+ }
 diff --git a/include/uapi/rdma/rdma_netlink.h b/include/uapi/rdma/rdma_netlink.h
-index 8f17ffe0190cb86131109209c45caec155ab36da..f9c295caf2b1625e3636d4279a539d481fdeb4ac 100644
+index f9c295caf2b1625e3636d4279a539d481fdeb4ac..39178df104f01d19a8135554adece66be881fd15 100644
 --- a/include/uapi/rdma/rdma_netlink.h
 +++ b/include/uapi/rdma/rdma_netlink.h
-@@ -310,6 +310,8 @@ enum rdma_nldev_command {
- 
- 	RDMA_NLDEV_CMD_FRMR_POOLS_GET, /* can dump */
- 
-+	RDMA_NLDEV_CMD_FRMR_POOLS_SET,
-+
- 	RDMA_NLDEV_NUM_OPS
- };
- 
-@@ -598,6 +600,7 @@ enum rdma_nldev_attr {
- 	RDMA_NLDEV_ATTR_FRMR_POOL_QUEUE_HANDLES,	/* u32 */
+@@ -601,6 +601,7 @@ enum rdma_nldev_attr {
  	RDMA_NLDEV_ATTR_FRMR_POOL_MAX_IN_USE,	/* u64 */
  	RDMA_NLDEV_ATTR_FRMR_POOL_IN_USE,	/* u64 */
-+	RDMA_NLDEV_ATTR_FRMR_POOLS_AGING_PERIOD,	/* u32 */
+ 	RDMA_NLDEV_ATTR_FRMR_POOLS_AGING_PERIOD,	/* u32 */
++	RDMA_NLDEV_ATTR_FRMR_POOL_PINNED_HANDLES,	/* u32 */
  
  	/*
  	 * Always the end
