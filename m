@@ -1,86 +1,86 @@
-Return-Path: <linux-rdma+bounces-14498-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14499-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 031D2C61B43
-	for <lists+linux-rdma@lfdr.de>; Sun, 16 Nov 2025 20:12:13 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2A64C61B46
+	for <lists+linux-rdma@lfdr.de>; Sun, 16 Nov 2025 20:12:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0BB9035D961
-	for <lists+linux-rdma@lfdr.de>; Sun, 16 Nov 2025 19:12:10 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9FE744E3B53
+	for <lists+linux-rdma@lfdr.de>; Sun, 16 Nov 2025 19:12:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956FA23ABB0;
-	Sun, 16 Nov 2025 19:11:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB89246BD8;
+	Sun, 16 Nov 2025 19:12:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="b+GgbD5Q"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="XiARZO/X"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazon11012049.outbound.protection.outlook.com [40.93.195.49])
+Received: from MW6PR02CU001.outbound.protection.outlook.com (mail-westus2azon11012013.outbound.protection.outlook.com [52.101.48.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 487FB1C862E;
-	Sun, 16 Nov 2025 19:11:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.195.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 825B123AB87;
+	Sun, 16 Nov 2025 19:11:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.48.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763320319; cv=fail; b=NQ+dNQQlp3hs0nB7T9p9zZA4/Qhs91QSfzxpcD9U3c3+Fmg2n4uPkY/866DAafutEkGEx1wcAdz2nYLDmQ2RfXDYybAaNyRSecg/9eQntQA5ZNGLFDk6bIuUKOlahKRbv2ZH+t2wRsMJihmBaVnjAsJFo5n7M+6eBMZHE9S1V5o=
+	t=1763320321; cv=fail; b=KWFac4gnXlnh1xhdAKlnI+pfAqE6iYb4qArJuKqn/HBJoB1f8bKYXs4AlHp68hOGQp+Or3hppbT7xxWXh0G11pfLm9dTnFOXafnUjLFL1iq5jsvX0+qYfOvtnhFbQBx75yM1tLdOut9segRRtba/LptXZHl1MyeH1STW9pYN1aI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763320319; c=relaxed/simple;
-	bh=LHDxHyZAtAycHq37BELJ+4bdWyfh0xhf6+go+14dLGc=;
+	s=arc-20240116; t=1763320321; c=relaxed/simple;
+	bh=HZS8CUzCrTDneadJFGtrARf1sHkQKTR3X7WJJ5Dl5n8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=OeDv+6cVO95dVd+Yn1C56kr3AWsVpTxlzp45Mrepthl8TmTNUa0HOPdAAgi+F/eV6lfv2jnBfKY3omp1vvmnwZdyInRueVvEOITguYkv6gDfRcm684xOA45TJCTiZ7ZN2BfMdTubIJdxBveQUvFqlrNWMjZwcBUbePJlBX9qnug=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=b+GgbD5Q; arc=fail smtp.client-ip=40.93.195.49
+	 In-Reply-To:To:CC; b=rkeIOSmhIOqPzk4X+wLEthzO6IKlzG21y0/MGLP6Go7Od2H+SpzTU5JnYVWdjliZW3+eSApQbxP2LjabGp0XCeYh0kEnq52STQjEFyY+HWaCePBVeurSMNUvxg75ur9HtV7hWKme/POn9Ams7ByA6kxRegddzQz+D7dy2JQIYVo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=XiARZO/X; arc=fail smtp.client-ip=52.101.48.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=SUu/nEh3MPs14E/OtuGSwdaUKEIFdW72L20WxB34kCey2hGdq4jVWry3QozeduzMBeNO0YQ+RW7isKAAprbp2K349BkCprHhz+yJxXxh0k4dyQrgXXeF1qVtgthd5w85kZ7zWxneiRVQSvkiqzrQPh94z3QuqRBDa11nC51/df9jCBxemE8wcnJn5GxUyoap7+8bsMtzZkjag+IOqS3BUeoDECKZ0hiUBh/ngH12ATkNRDXdTGA+7hxsN4/wtYSy93kWlEqf62BavAiltBu3vAqQmfNTk3d4FsnNFYI2ZvzBweKWZE26FKq54G8kIivzBoON/0dwZrjdAh9MF768hg==
+ b=MgN0k0jz0AkakmkXCut/lF5sZhe04uQiwHly9zAbUbA/r0u1kazS6Fth3+wBhULldfXBMHaMneemek5Ta4u6LsDUgUaJ2qIrsqZuUEMiQmw/hogNdqw4uh1wryQWbLCCphotbVwO7vPCpjzBv06zn0zTuxOBd1wYXCDt5oL8VLlz2uyQZ2RnsZ0zxysmQU0ZYF4OEdpKJHfd+nnJ5cSVBBODuWdPlA8Il/1pEgx9retcjPkJuzKZX0Mv3YxwIVHMHEsK1y8Q3QbrBz9DUOjcYANHfEctVK3W8bkXp0OeLCsoHU8UqSScjDCAwD6iNEIF2pnJMCDI7l+vxAfXhJg4hQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+Ok+B+nObHkQRc3hezNiybiKfnjVO7cyW6hq8QXeR6g=;
- b=iLBl/ApOQLUBRWTXEECRGbsRTLceliUc1GFtv2WgGbhVDRq2+/lcQs6V95NtVlHL9QJsHpglnOR+Y7+hAQFy9VJ9weKp6rf8VreWzgS4HtiqbLHst8sw+CwjZ+Wr9Y0f/zv3r/lFLl2M4TTX67Zof5juZMpA4IEeuB7V0lutMSVsXSfgFXIhw/50eVK9SucGNbg4pMJVT9dwVPOcIPRouHmxIkTGfscsMw+DHDnT3qjLuYERMa3bo/0qcni1KvkljlGyF7ytx11ghr7NEzQlXZthntBLZyo0KY3IZ6u0kXF8S1yBCPkP1s/DEmrXfj3Zqc9IQJfkGi7Xaf/HEiFWHw==
+ bh=S66BFgehDCuGj3gMIzzuSLMVDkXKYeG7Ln+tPAHFpx4=;
+ b=MLFbkoXePA6jCVVihOLlWSbs349GvV5G6uDjCkSgr1+xJpz+NhduQGhOtarSniy+ZY/H5mE6oBUGPmIbob0I5CUyhbTUSmmFxpUELLM7JuWfOVVvOtsluvZLpNN6BakLgTxPr6tfTSkIb7C3l1AwK49dXJIAm0YQpCQPOUhNH4nIIC51EDh0nu3hl0UEJR9/Madx837ZzdpSRhZx8qD+fxNH3PzbXbldvd76NmvyRaLv75+elBP69R9WgreT5D9UKZzzqoqDvprMq3K/KKhUKNQYXJf3SgJxnoj3g3oGBjT6MUjPN8iR6+yDQJXvWScbwnrHJ0Nz3Z98CoYZOTek6g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ 216.228.118.233) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+Ok+B+nObHkQRc3hezNiybiKfnjVO7cyW6hq8QXeR6g=;
- b=b+GgbD5Q4Q1FszfeCOH2G+vzP9iP5+x0sYbnB8IbdLCHoXeOSAbqebCUJgPue4J9/6QEra7SSEAmswBrlPJJQA5DLyGgIZRdd9SKm2Uo/svE+BzhqjAmuHWr8R4xS5VBcH4qUKVvVHo+15CJEOp6E97oZNcz7EQ7F/VvuM57W+DKBs7ZvrlGFpTmNSV9wK138hhCbpB+BaiBB+ty4WPUYVONWNjG/tCCEX24wPHRvER+tgs1ofSrVjDEFD1ofLG/zFPjAH1LS+dvSgHTVe6CuZQMDwl8+yBI9htInLTmxJ4g1IqQnbcC9HOTpITo/NKh+a573RhO9ShfABTCSXQmQg==
-Received: from BN0PR03CA0026.namprd03.prod.outlook.com (2603:10b6:408:e6::31)
- by BY5PR12MB4290.namprd12.prod.outlook.com (2603:10b6:a03:20e::8) with
+ bh=S66BFgehDCuGj3gMIzzuSLMVDkXKYeG7Ln+tPAHFpx4=;
+ b=XiARZO/XYN0TF10gGKVDk2JywPd//9gX8X26PIkk1QXDjz5VMYo3D4ggFZ8E7zhhkoPdL9lC24G6C9uJcPbv9x0OVEwLPFwi0AKh4Ie4W1XpH91dKStwySgn1x4HiVvo1WgHWqPAr6XYbK6QPvjOUV3K3yXmF2utPD8p14xCH4qxcWvBq+bennD13XMXlmM2zmWChCQPYKYB8Qp32hdB7CvI10XJg8Yn8go1aJejVMLpOh/2r5WISI+IOSoMe8tP2IRWi1n8PIZur8Q+VblgqFYqlpkfbMOYQxO8UN8pweWwsFK+7Pll5Rzal/ar9IXbXqP8JBk9k4Uqv06Pr0vfdg==
+Received: from SJ0PR13CA0072.namprd13.prod.outlook.com (2603:10b6:a03:2c4::17)
+ by SA1PR12MB5639.namprd12.prod.outlook.com (2603:10b6:806:22b::7) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9320.21; Sun, 16 Nov
- 2025 19:11:49 +0000
-Received: from BN3PEPF0000B06D.namprd21.prod.outlook.com
- (2603:10b6:408:e6:cafe::78) by BN0PR03CA0026.outlook.office365.com
- (2603:10b6:408:e6::31) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9320.20 via Frontend Transport; Sun,
- 16 Nov 2025 19:11:43 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ 2025 19:11:54 +0000
+Received: from SJ5PEPF000001EC.namprd05.prod.outlook.com
+ (2603:10b6:a03:2c4:cafe::5f) by SJ0PR13CA0072.outlook.office365.com
+ (2603:10b6:a03:2c4::17) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9343.10 via Frontend Transport; Sun,
+ 16 Nov 2025 19:11:39 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- BN3PEPF0000B06D.mail.protection.outlook.com (10.167.243.72) with Microsoft
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ SJ5PEPF000001EC.mail.protection.outlook.com (10.167.242.200) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9366.1 via Frontend Transport; Sun, 16 Nov 2025 19:11:48 +0000
+ 15.20.9343.9 via Frontend Transport; Sun, 16 Nov 2025 19:11:54 +0000
 Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Sun, 16 Nov
- 2025 11:11:41 -0800
+ 2025 11:11:46 -0800
 Received: from drhqmail201.nvidia.com (10.126.190.180) by
  drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.20; Sun, 16 Nov 2025 11:11:41 -0800
+ 15.2.2562.20; Sun, 16 Nov 2025 11:11:46 -0800
 Received: from c-237-169-180-182.mtl.labs.mlnx (10.127.8.13) by
  mail.nvidia.com (10.126.190.180) with Microsoft SMTP Server id 15.2.2562.20
- via Frontend Transport; Sun, 16 Nov 2025 11:11:36 -0800
+ via Frontend Transport; Sun, 16 Nov 2025 11:11:41 -0800
 From: Edward Srouji <edwards@nvidia.com>
-Date: Sun, 16 Nov 2025 21:10:22 +0200
-Subject: [PATCH rdma-next 1/9] IB/core: Introduce FRMR pools
+Date: Sun, 16 Nov 2025 21:10:23 +0200
+Subject: [PATCH rdma-next 2/9] RDMA/core: Add aging to FRMR pools
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -89,7 +89,7 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20251116-frmr_pools-v1-1-5eb3c8f5c9c4@nvidia.com>
+Message-ID: <20251116-frmr_pools-v1-2-5eb3c8f5c9c4@nvidia.com>
 References: <20251116-frmr_pools-v1-0-5eb3c8f5c9c4@nvidia.com>
 In-Reply-To: <20251116-frmr_pools-v1-0-5eb3c8f5c9c4@nvidia.com>
 To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, "Saeed
@@ -101,594 +101,282 @@ CC: <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
 	<netdev@vger.kernel.org>, Michael Guralnik <michaelgur@nvidia.com>, "Edward
  Srouji" <edwards@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>
 X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1763320291; l=15418;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1763320291; l=6977;
  i=edwards@nvidia.com; s=20251029; h=from:subject:message-id;
- bh=ZalCWuNwIiSFKRjjJwQckGiUkX5blL63kb3PFdjXVTA=;
- b=YV7M0BT0CsgM6jxioI6PECArhN8hpAtNBAmZEHX3CU9SIGIKFDOpkgAEo7cbueC+JiIip5NMr
- Yma/tiF7BLPDyu7Ei2VWsj4vFZOm74szsCtDZG0kUDX1cBoTbCi9qw2
+ bh=rJ7RYVNjeLG9rK4QuGSikClc06agmvcyuyIckptX9PU=;
+ b=HB00Lf8clXrFXBJ15+i5VQisnRfjWYWXXAuWNmrq8wxwzXuWEv8Y4Of+gvOTkcAJWJvsKpgjK
+ 6Zbr0KP8+y+DG3P2BzAG30bPkHYKY11CYXEqF6SOnsDsde2XMyva61d
 X-Developer-Key: i=edwards@nvidia.com; a=ed25519;
  pk=VME+d2WbMZT5AY+AolKh2XIdrnXWUwwzz/XLQ3jXgDM=
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN3PEPF0000B06D:EE_|BY5PR12MB4290:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3c22f7c3-869f-4e29-c93f-08de2543fe02
+X-MS-TrafficTypeDiagnostic: SJ5PEPF000001EC:EE_|SA1PR12MB5639:EE_
+X-MS-Office365-Filtering-Correlation-Id: 90cef015-7f7e-45d6-86e4-08de25440142
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|36860700013|82310400026|7416014|376014|921020;
+	BCL:0;ARA:13230040|7416014|376014|1800799024|82310400026|36860700013|921020;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?cVpJL0pqMXJQTjVvVlZ5UFllRGN4ZlpITlhaQXYyWlJrblo0cVRHNVJpaFNj?=
- =?utf-8?B?UElYMTF5VWJjeXV3THEvckhCbEN2Kzdpd25iQ1NqRjZ3WjAyQjhWYnpobFBv?=
- =?utf-8?B?Qm5nT1A4WUFvOWRVT2hZWSttRW1BUVhkMFVXZVRIL1JlV0tINjBBY21kQTVR?=
- =?utf-8?B?VzJOWGJaM25XdEZsVTJoYjQrUXhmZE16eXk4ZE5MdStFMGc3YVI3b0VlYTlN?=
- =?utf-8?B?eHVJUXlMUjEvQzJlOWVQZngwaklFWm83bmZocmRyQUYyaTJ2YnExaDZPRFBh?=
- =?utf-8?B?NmhRVDBzWDd2WHE2RlJ1d0plT3ltL2UvOXVZamhzSlZKa3IyYWg0QjNiQW9Y?=
- =?utf-8?B?T0d5czc4U3RsUTBPajlXRWI3b29ERkQ3TG5JMkRPb0d2aS9Td0RlVUtzWHda?=
- =?utf-8?B?QldyN0NDQTVzTEgrbWFsbzZBMzVHa0lldHJSRmgydWxwTldZVkUySHZkMzh3?=
- =?utf-8?B?SkF6RkI3bERCMEs2Rzl6bjRXOGU4dUhRV0I5cktRQTBOM3RzS3RCWTEwbWpt?=
- =?utf-8?B?M0Nxc2U3S1ZZRTFnUmUveXU0UmVpc3p3Mm52NnFPU3ljMHZxdDZUamFHb09l?=
- =?utf-8?B?VVNMSUlnTzRDbXI2bkEzWGZXTDY1RE9oUWdRMGx4MCtnczFYVURlSWxwRksy?=
- =?utf-8?B?Nm1qSDZ1YWVySjdJT3p4TXdoSGRxMWxHZlVLamN2TnBmOHJnRlBEQjh4azBv?=
- =?utf-8?B?QXBST1dzeUtGZW1HWUovaHZGdFFIamN1aVROYUdNM2hudTZjbXduMUMxbWhl?=
- =?utf-8?B?dkwvcXZMeXc0akh2eXJIMEd0dUxqS3pVSC90VmtjNnJFZTJkS1dWbzJqNTda?=
- =?utf-8?B?U0gvbXE1RjZTTGtBSFNSa3djZ2ptQVZQOHJEMytOcnBEaVpkTmNsK2M5RmJm?=
- =?utf-8?B?QkR0dmZ2cXpiVWwzRmYzY0plTjI3V3laZ3NHV0lUZzZaeGNPYk5jWnU0dmVv?=
- =?utf-8?B?amg3OEJRR0IyK2E4UjZjWVh3NkFsbjZnMHRQMWZrckVBRUJBWGFnSmowRFJJ?=
- =?utf-8?B?STV1ZzgwVjl6TnZiVHIwcERMMTd1bzc3citSNjhBVTdsOEhVZllRU3JldlZ6?=
- =?utf-8?B?YnkwcUN1dllGY3ppM3ljY2N0VzFrVTc4aGJ1VkxYMFR2NjJMQjluTWx6ZFB5?=
- =?utf-8?B?RDVMSWNpTmMwV0txbWRNeFAzcElvcHhVUC8xS3pnRVdnZzdWcUlXMk96b3NS?=
- =?utf-8?B?eWo5a0pOUW1lWnlZWFFadm5ra0NyeE5UN0NrcXc0UDRJWG1mM0VUWlJHNFBW?=
- =?utf-8?B?Y0h2bUpOR0lYMEp1S1A2VG83ak00ODhHblNzTXNFUjJKWHlaY1NrRkttSzVw?=
- =?utf-8?B?Vm50eWhta25VVU5ja2NrVUlKMGwwUDRzWjJiaDZJMlZMRjRCRTVaRHlQY2RT?=
- =?utf-8?B?bkIyZG5MQk5COFdkWndMV29WTWRXTEdadVNLN2poTFZvSjRCell4SG1RbklN?=
- =?utf-8?B?b1pRYkV1SWVCR3RUdDNybHJ6YjZYemxsRzc5VGpFMVRNa3RIdjAzazVHYWla?=
- =?utf-8?B?cUk3WVhOM1JDMFdic01lY0F3Zk1EMDNvSVBhMCs0RklNdTRhcmozYzg5MlRm?=
- =?utf-8?B?cHU0b2ZQcUU4Sk1WN1paUm4yMjVRTFJOYXpGY0hwNmRrRGRXdFZPK2M0TmMw?=
- =?utf-8?B?dUdwOE8zdEFvZHdxS1pPNGRLbGNUSnFwbkVtandldlZSSUh0L0R5cHE0S3ov?=
- =?utf-8?B?TGFHc0VMK0l2VFo1QTViYTduRkY4UmdlaXhickluZmNjTENMT2FOdVU5ZTBK?=
- =?utf-8?B?TU1yQ3NrMlFNemFzTU15UExkajNWUFRKSDVJQlZ0NkhpZ1lwWDRFaXVuSm54?=
- =?utf-8?B?SG1XUU5VUmlWOEY5ZUk5NS9rVkdjYTNDQjJyRnYvZWFxNnBybmY0MHdRcTFm?=
- =?utf-8?B?M2llT3NCSHZiM3hwSlJpeTRBcUUySEErcEFSV3daRkhUUVpqQXYrTE10b1du?=
- =?utf-8?B?QzZIcEp4bFZGVXNjT29yZHdhSXowRlF3UG1nQnpOUkNUNHBGeXJISFRRYlN0?=
- =?utf-8?B?cEh0YzVmemVsUTQ4SlZzM0NDWFJBTHdFL2FQK1YwWGxuaENlZ3N4OXZ5cDZu?=
- =?utf-8?B?bFRqOXE2OFJ4Y2NJZXEvWXBRRzRIUnV2QXNSUT09?=
+	=?utf-8?B?WUx5dE9SWS9OTjhGQUIyRFhpRGgveXM1ajVTODZIZXFKM3FYOXlycGtCQkEw?=
+ =?utf-8?B?UjdRWHhYUXFLS3BZaTc2V0FKaFhjb1pBdm9NTngxUysrZjhPWU9DQWJ5Vk8x?=
+ =?utf-8?B?ODVES3I4M1p6bklwN1N5S2FKd2NwclgyUkFjZ3FtTmcwUTBob1RTOXJCQytO?=
+ =?utf-8?B?alZHMUxEY0lvLzl5VlpHRFIyczJRWHlOckFxTUdCN2hUeGhmUWQ4T0Z0ZDZO?=
+ =?utf-8?B?d0tzZVdNQ2pENjVsSlNNQ3BSOCszVG1RNEtHVS9ldEFyRFk2b1o3eTFQTGNX?=
+ =?utf-8?B?eEdXSWxXZUxVbkNRNEREZTFGWkpiWVdPTC9paWp4UnVGT3pSanNuL1NNbEdB?=
+ =?utf-8?B?ZXc4a1ZrdzBRTUxmL08wRkd5ZE9CSlJDWURwNHpoTEdrbkZRWTBQeDJJd2Zm?=
+ =?utf-8?B?NGVocmFBbmRvcVF6LzlJMHMrV0ZROHVtcDl3b2x6REdNc25vWDhRQUJvSG56?=
+ =?utf-8?B?a2s4Z2loY3laNmYrN2ttcGZ0NmUvQ3g3eGFiWDFNcHlIc1owY0VNRUo3UW9h?=
+ =?utf-8?B?SUpCZGRXMFE2UVh2bVBJaDM4NWFwQlBHTXprQXpoSUdwT3RXYjBHWXY3UUdN?=
+ =?utf-8?B?VFNCSExaMDR3dmR5QU84V29rcjdWSERkc2kxMVU1akVKWEZEakp0V2dWNWdH?=
+ =?utf-8?B?RDkweVZ2TXMveEYyRXpUa1pKNlA1Ylc3dGRsOHlhdXZnNTdzb2kxSUR4MnNO?=
+ =?utf-8?B?OTIzRU41WVZGaVVKQ0t3L0ZCZnhVZkFEYU8yY3h2YjlYeDI5dWx3R2lRUXZu?=
+ =?utf-8?B?aEJucXhTNmVLWUlNa1NnckxmbGt3bVNTTXBFQVgrVkJLY3VkQmZ0QW1tVTVr?=
+ =?utf-8?B?Z20rdXNZdDRxc2FJTVhLSERha1NXd2NUbDdWTGROeW4yYVRRMUw2Si9mNzlX?=
+ =?utf-8?B?ZktGM0lobFk0clg2ME9nNzVvaU1SMlhKNXBQSS9YQ0hObTBPeC9XZnhaZ1Y2?=
+ =?utf-8?B?eEVUSVh5c2Y1NmROSXdiRmVlVmZhRVhodTg0Sm1saDZzKzFsUVRmSnE5cERU?=
+ =?utf-8?B?cUZ5dnVORGFKalhzQ2kzZUt1Z2tMV0w1V1lDNFRTWVZ5Y0ZlTGczM2w0L00w?=
+ =?utf-8?B?bDBJbzdzVmo4RGVZdFVHQjJWcTM2Z05LaXIvb0xiOVhDdmxiQ1M1WG16S3pW?=
+ =?utf-8?B?cTNWK2R0QWxtVEVSNlppWlZndys3Vk9HMW1YYzRRSGwvTDZXazQ3NEI4eTQv?=
+ =?utf-8?B?bDhBQmxDdUNWSjNUYW15TnZVTi85alpuWU9XbThqNG93NnlaZGQ2a1FpNTFH?=
+ =?utf-8?B?dnZMS2c0a0NsOXJHeExCMWNwLzRveXFITjFvdUJZNEwwRUZTZ08xK29hN2Ju?=
+ =?utf-8?B?aTZWNjVZaEhYSHZqTktGMytDSlZLSmhhb1lKeGcySnRWSTQvdTZxN25aNC9k?=
+ =?utf-8?B?NUVJOW5GVWFhU3d6NDUwVXdkUzF6dVNwT3dEOTRkUnEwSWtzUGpvdEdiRytB?=
+ =?utf-8?B?bHo1TXU0Q091WjMzNENyRWtQQnQ5TkpiV01OL2J4MDRhUmFiN1NPWVZiNTln?=
+ =?utf-8?B?Mm5WOTA2d0FROFYxRW4wNVJSSjd1aSs1MHVYV1N4SXNLd05vQkZOVkZaZE1E?=
+ =?utf-8?B?Smh1Y0Irbkt3NWNuZG9UbVYxSUcyWW11RjJpL3l5N2dsT3kvc2tFRW1vMk9J?=
+ =?utf-8?B?bFI1WDQ0Y0IrcmFWWjgreFVTSjd1THZ4Q3pNVitUNHl5Sjd6WEJTM0VkeXhr?=
+ =?utf-8?B?c3RSZnF6SUlMNWRCdmFpTjBlbVhoSHJGeUJ5bU1DbDd4VW85alJhUXpxR21t?=
+ =?utf-8?B?dnJwWU5VZ2E2Zk9UQ0xOc0pjMDhIVEM1UWpGczhaNml6SUN1SGhqTWZUenhv?=
+ =?utf-8?B?c056YzZQTm91U2wyaEZVakFuL3BPc0ZaVWpzR21lZEZHWm9tTHpPaUk2TXVC?=
+ =?utf-8?B?Q2c5V29PM0VuZUdWL2VFRmhmYzdabjZ6cUtURkFjbHJUb2d3WUVwVE9mN1hs?=
+ =?utf-8?B?dVdKc2RnWFV0dGdsOWMvcXpCaCt1bkxmby9kWTNpbUluUWlENUZlbWxOZllB?=
+ =?utf-8?B?aFNFdm1abnNORDRxczdIWVVjazFEY2pGTzhXL09NNDlZSzNBdHE2ZWpic29h?=
+ =?utf-8?B?V3JJMXY2bWtPTW9JU0ZVelA1QjRqZWk5ZksvN09wMjl2ZXVTVlhkaFVxNzUz?=
+ =?utf-8?Q?HV1MyG9wkfZ5vR9mhSrbw7yT0?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(36860700013)(82310400026)(7416014)(376014)(921020);DIR:OUT;SFP:1101;
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(82310400026)(36860700013)(921020);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2025 19:11:48.6048
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2025 19:11:54.2049
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3c22f7c3-869f-4e29-c93f-08de2543fe02
+X-MS-Exchange-CrossTenant-Network-Message-Id: 90cef015-7f7e-45d6-86e4-08de25440142
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BN3PEPF0000B06D.namprd21.prod.outlook.com
+	SJ5PEPF000001EC.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4290
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB5639
 
 From: Michael Guralnik <michaelgur@nvidia.com>
 
-Add a generic Fast Registration Memory Region pools mechanism to allow
-drivers to optimize memory registration performance.
-Drivers that have the ability to reuse MRs or their underlying HW
-objects can take advantage of the mechanism to keep a 'handle' for those
-objects and use them upon user request.
-We assume that to achieve this goal a driver and its HW should implement
-a modify operation for the MRs that is able to at least clear and set the
-MRs and in more advanced implementations also support changing a subset
-of the MRs properties.
+Add aging mechanism to handles of FRMR pools.
+Keep the handles stored in FRMR pools for at least 1 minute for
+application to reuse, destroy all handles which were not reused.
 
-The mechanism is built using an RB-tree consisting of pools, each pool
-represents a set of MR properties that are shared by all of the MRs
-residing in the pool and are unmodifiable by the vendor driver or HW.
-
-The exposed API from ib_core to the driver has 4 operations:
-Init and cleanup - handles data structs and locks for the pools.
-Push and pop - store and retrieve 'handle' for a memory registration
-or deregistrations request.
-
-The FRMR pools mechanism implements the logic to search the RB-tree for
-a pool with matching properties and create a new one when needed and
-requires the driver to implement creation and destruction of a 'handle'
-when pool is empty or a handle is requested or is being destroyed.
-
-Later patch will introduce Netlink API to interact with the FRMR pools
-mechanism to allow users to both configure and track its usage.
-A vendor wishing to configure FRMR pool without exposing it or without
-exposing internal MR properties to users, should use the
-kernel_vendor_key field in the pools key. This can be useful in a few
-cases, e.g, when the FRMR handle has a vendor-specific un-modifiable
-property that the user registering the memory might not be aware of.
+Add a new queue to each pool to accomplish that.
+Upon aging trigger, destroy all FRMR handles from the new 'inactive'
+queue and move all handles from the 'active' pool to the 'inactive' pool.
+This ensures all destroyed handles were not reused for at least one aging
+time period and were not held longer than 2 aging time periods.
+Handles from the inactive queue will be popped only if the active queue is
+empty.
 
 Signed-off-by: Michael Guralnik <michaelgur@nvidia.com>
 Reviewed-by: Yishai Hadas <yishaih@nvidia.com>
 Signed-off-by: Edward Srouji <edwards@nvidia.com>
 ---
- drivers/infiniband/core/Makefile     |   2 +-
- drivers/infiniband/core/frmr_pools.c | 328 +++++++++++++++++++++++++++++++++++
- drivers/infiniband/core/frmr_pools.h |  48 +++++
- include/rdma/frmr_pools.h            |  37 ++++
- include/rdma/ib_verbs.h              |   8 +
- 5 files changed, 422 insertions(+), 1 deletion(-)
+ drivers/infiniband/core/frmr_pools.c | 84 ++++++++++++++++++++++++++++++++----
+ drivers/infiniband/core/frmr_pools.h |  7 +++
+ 2 files changed, 82 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/infiniband/core/Makefile b/drivers/infiniband/core/Makefile
-index f483e0c124445c1e9796dc7d766517b12f6dfc2f..7089a982b876f1f5088e922f296725954697a1a4 100644
---- a/drivers/infiniband/core/Makefile
-+++ b/drivers/infiniband/core/Makefile
-@@ -12,7 +12,7 @@ ib_core-y :=			packer.o ud_header.o verbs.o cq.o rw.o sysfs.o \
- 				roce_gid_mgmt.o mr_pool.o addr.o sa_query.o \
- 				multicast.o mad.o smi.o agent.o mad_rmpp.o \
- 				nldev.o restrack.o counters.o ib_core_uverbs.o \
--				trace.o lag.o
-+				trace.o lag.o frmr_pools.o
- 
- ib_core-$(CONFIG_SECURITY_INFINIBAND) += security.o
- ib_core-$(CONFIG_CGROUP_RDMA) += cgroup.o
 diff --git a/drivers/infiniband/core/frmr_pools.c b/drivers/infiniband/core/frmr_pools.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..073b2fcfb2cc7d466fedfba14ad04f1e2d7edf65
---- /dev/null
+index 073b2fcfb2cc7d466fedfba14ad04f1e2d7edf65..406664a6e2099b2a7827e12a40820ecab75cb59c 100644
+--- a/drivers/infiniband/core/frmr_pools.c
 +++ b/drivers/infiniband/core/frmr_pools.c
-@@ -0,0 +1,328 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
-+ */
+@@ -7,9 +7,12 @@
+ #include <linux/rbtree.h>
+ #include <linux/spinlock.h>
+ #include <rdma/ib_verbs.h>
++#include <linux/timer.h>
+ 
+ #include "frmr_pools.h"
+ 
++#define FRMR_POOLS_DEFAULT_AGING_PERIOD_SECS 60
 +
-+#include <linux/slab.h>
-+#include <linux/rbtree.h>
-+#include <linux/spinlock.h>
-+#include <rdma/ib_verbs.h>
-+
-+#include "frmr_pools.h"
-+
-+static int push_handle_to_queue_locked(struct frmr_queue *queue, u32 handle)
-+{
-+	u32 tmp = queue->ci % NUM_HANDLES_PER_PAGE;
-+	struct frmr_handles_page *page;
-+
-+	if (queue->ci >= queue->num_pages * NUM_HANDLES_PER_PAGE) {
-+		page = kzalloc(sizeof(*page), GFP_ATOMIC);
-+		if (!page)
-+			return -ENOMEM;
-+		queue->num_pages++;
-+		list_add_tail(&page->list, &queue->pages_list);
-+	} else {
-+		page = list_last_entry(&queue->pages_list,
-+				       struct frmr_handles_page, list);
-+	}
-+
-+	page->handles[tmp] = handle;
-+	queue->ci++;
-+	return 0;
+ static int push_handle_to_queue_locked(struct frmr_queue *queue, u32 handle)
+ {
+ 	u32 tmp = queue->ci % NUM_HANDLES_PER_PAGE;
+@@ -79,19 +82,58 @@ static bool pop_frmr_handles_page(struct ib_frmr_pool *pool,
+ 	return true;
+ }
+ 
+-static void destroy_frmr_pool(struct ib_device *device,
+-			      struct ib_frmr_pool *pool)
++static void destroy_all_handles_in_queue(struct ib_device *device,
++					 struct ib_frmr_pool *pool,
++					 struct frmr_queue *queue)
+ {
+ 	struct ib_frmr_pools *pools = device->frmr_pools;
+ 	struct frmr_handles_page *page;
+ 	u32 count;
+ 
+-	while (pop_frmr_handles_page(pool, &pool->queue, &page, &count)) {
++	while (pop_frmr_handles_page(pool, queue, &page, &count)) {
+ 		pools->pool_ops->destroy_frmrs(device, page->handles, count);
+ 		kfree(page);
+ 	}
 +}
 +
-+static u32 pop_handle_from_queue_locked(struct frmr_queue *queue)
++static void pool_aging_work(struct work_struct *work)
 +{
-+	u32 tmp = (queue->ci - 1) % NUM_HANDLES_PER_PAGE;
-+	struct frmr_handles_page *page;
-+	u32 handle;
++	struct ib_frmr_pool *pool = container_of(
++		to_delayed_work(work), struct ib_frmr_pool, aging_work);
++	struct ib_frmr_pools *pools = pool->device->frmr_pools;
++	bool has_work = false;
 +
-+	page = list_last_entry(&queue->pages_list, struct frmr_handles_page,
-+			       list);
-+	handle = page->handles[tmp];
-+	queue->ci--;
++	destroy_all_handles_in_queue(pool->device, pool, &pool->inactive_queue);
 +
-+	if (!tmp) {
-+		list_del(&page->list);
-+		queue->num_pages--;
-+		kfree(page);
-+	}
-+
-+	return handle;
-+}
-+
-+static bool pop_frmr_handles_page(struct ib_frmr_pool *pool,
-+				  struct frmr_queue *queue,
-+				  struct frmr_handles_page **page, u32 *count)
-+{
++	/* Move all pages from regular queue to inactive queue */
 +	spin_lock(&pool->lock);
-+	if (list_empty(&queue->pages_list)) {
-+		spin_unlock(&pool->lock);
-+		return false;
++	if (pool->queue.ci > 0) {
++		list_splice_tail_init(&pool->queue.pages_list,
++				      &pool->inactive_queue.pages_list);
++		pool->inactive_queue.num_pages = pool->queue.num_pages;
++		pool->inactive_queue.ci = pool->queue.ci;
++
++		pool->queue.num_pages = 0;
++		pool->queue.ci = 0;
++		has_work = true;
 +	}
-+
-+	*page = list_first_entry(&queue->pages_list, struct frmr_handles_page,
-+				 list);
-+	list_del(&(*page)->list);
-+	queue->num_pages--;
-+
-+	/* If this is the last page, count may be less than
-+	 * NUM_HANDLES_PER_PAGE.
-+	 */
-+	if (queue->ci >= NUM_HANDLES_PER_PAGE)
-+		*count = NUM_HANDLES_PER_PAGE;
-+	else
-+		*count = queue->ci;
-+
-+	queue->ci -= *count;
 +	spin_unlock(&pool->lock);
-+	return true;
++
++	/* Reschedule if there are handles to age in next aging period */
++	if (has_work)
++		queue_delayed_work(
++			pools->aging_wq, &pool->aging_work,
++			secs_to_jiffies(FRMR_POOLS_DEFAULT_AGING_PERIOD_SECS));
 +}
 +
 +static void destroy_frmr_pool(struct ib_device *device,
 +			      struct ib_frmr_pool *pool)
 +{
-+	struct ib_frmr_pools *pools = device->frmr_pools;
-+	struct frmr_handles_page *page;
-+	u32 count;
-+
-+	while (pop_frmr_handles_page(pool, &pool->queue, &page, &count)) {
-+		pools->pool_ops->destroy_frmrs(device, page->handles, count);
-+		kfree(page);
-+	}
-+
-+	rb_erase(&pool->node, &pools->rb_root);
-+	kfree(pool);
-+}
-+
-+/*
-+ * Initialize the FRMR pools for a device.
-+ *
-+ * @device: The device to initialize the FRMR pools for.
-+ * @pool_ops: The pool operations to use.
-+ *
-+ * Returns 0 on success, negative error code on failure.
-+ */
-+int ib_frmr_pools_init(struct ib_device *device,
-+		       const struct ib_frmr_pool_ops *pool_ops)
-+{
-+	struct ib_frmr_pools *pools;
-+
-+	pools = kzalloc(sizeof(*pools), GFP_KERNEL);
-+	if (!pools)
++	cancel_delayed_work_sync(&pool->aging_work);
++	destroy_all_handles_in_queue(device, pool, &pool->queue);
++	destroy_all_handles_in_queue(device, pool, &pool->inactive_queue);
+ 
+-	rb_erase(&pool->node, &pools->rb_root);
++	rb_erase(&pool->node, &device->frmr_pools->rb_root);
+ 	kfree(pool);
+ }
+ 
+@@ -115,6 +157,11 @@ int ib_frmr_pools_init(struct ib_device *device,
+ 	pools->rb_root = RB_ROOT;
+ 	rwlock_init(&pools->rb_lock);
+ 	pools->pool_ops = pool_ops;
++	pools->aging_wq = create_singlethread_workqueue("frmr_aging_wq");
++	if (!pools->aging_wq) {
++		kfree(pools);
 +		return -ENOMEM;
-+
-+	pools->rb_root = RB_ROOT;
-+	rwlock_init(&pools->rb_lock);
-+	pools->pool_ops = pool_ops;
-+
-+	device->frmr_pools = pools;
-+	return 0;
-+}
-+EXPORT_SYMBOL(ib_frmr_pools_init);
-+
-+/*
-+ * Clean up the FRMR pools for a device.
-+ *
-+ * @device: The device to clean up the FRMR pools for.
-+ *
-+ * Call cleanup only after all FRMR handles have been pushed back to the pool
-+ * and no other FRMR operations are allowed to run in parallel.
-+ * Ensuring this allows us to save synchronization overhead in pop and push
-+ * operations.
-+ */
-+void ib_frmr_pools_cleanup(struct ib_device *device)
-+{
-+	struct ib_frmr_pools *pools = device->frmr_pools;
-+	struct rb_node *node = rb_first(&pools->rb_root);
-+	struct ib_frmr_pool *pool;
-+
-+	while (node) {
-+		struct rb_node *next = rb_next(node);
-+
-+		pool = rb_entry(node, struct ib_frmr_pool, node);
-+		destroy_frmr_pool(device, pool);
-+		node = next;
 +	}
-+
-+	kfree(pools);
-+	device->frmr_pools = NULL;
-+}
-+EXPORT_SYMBOL(ib_frmr_pools_cleanup);
-+
-+static int compare_keys(struct ib_frmr_key *key1, struct ib_frmr_key *key2)
-+{
-+	int res;
-+
-+	res = key1->ats - key2->ats;
-+	if (res)
-+		return res;
-+
-+	res = key1->access_flags - key2->access_flags;
-+	if (res)
-+		return res;
-+
-+	res = key1->vendor_key - key2->vendor_key;
-+	if (res)
-+		return res;
-+
-+	res = key1->kernel_vendor_key - key2->kernel_vendor_key;
-+	if (res)
-+		return res;
-+
-+	/*
-+	 * allow using handles that support more DMA blocks, up to twice the
-+	 * requested number
-+	 */
-+	res = key1->num_dma_blocks - key2->num_dma_blocks;
-+	if (res > 0 && res < key2->num_dma_blocks)
-+		return 0;
-+
-+	return res;
-+}
-+
-+static struct ib_frmr_pool *ib_frmr_pool_find(struct ib_frmr_pools *pools,
-+					      struct ib_frmr_key *key)
-+{
-+	struct rb_node *node = pools->rb_root.rb_node;
-+	struct ib_frmr_pool *pool;
-+	int cmp;
-+
-+	/* find operation is done under read lock for performance reasons.
-+	 * The case of threads failing to find the same pool and creating it
-+	 * is handled by the create_frmr_pool function.
-+	 */
-+	read_lock(&pools->rb_lock);
-+	while (node) {
-+		pool = rb_entry(node, struct ib_frmr_pool, node);
-+		cmp = compare_keys(&pool->key, key);
-+		if (cmp < 0) {
-+			node = node->rb_right;
-+		} else if (cmp > 0) {
-+			node = node->rb_left;
+ 
+ 	device->frmr_pools = pools;
+ 	return 0;
+@@ -145,6 +192,7 @@ void ib_frmr_pools_cleanup(struct ib_device *device)
+ 		node = next;
+ 	}
+ 
++	destroy_workqueue(pools->aging_wq);
+ 	kfree(pools);
+ 	device->frmr_pools = NULL;
+ }
+@@ -226,7 +274,10 @@ static struct ib_frmr_pool *create_frmr_pool(struct ib_device *device,
+ 
+ 	memcpy(&pool->key, key, sizeof(*key));
+ 	INIT_LIST_HEAD(&pool->queue.pages_list);
++	INIT_LIST_HEAD(&pool->inactive_queue.pages_list);
+ 	spin_lock_init(&pool->lock);
++	INIT_DELAYED_WORK(&pool->aging_work, pool_aging_work);
++	pool->device = device;
+ 
+ 	write_lock(&pools->rb_lock);
+ 	while (*new) {
+@@ -265,11 +316,17 @@ static int get_frmr_from_pool(struct ib_device *device,
+ 
+ 	spin_lock(&pool->lock);
+ 	if (pool->queue.ci == 0) {
+-		spin_unlock(&pool->lock);
+-		err = pools->pool_ops->create_frmrs(device, &pool->key, &handle,
+-						    1);
+-		if (err)
+-			return err;
++		if (pool->inactive_queue.ci > 0) {
++			handle = pop_handle_from_queue_locked(
++				&pool->inactive_queue);
++			spin_unlock(&pool->lock);
 +		} else {
-+			read_unlock(&pools->rb_lock);
-+			return pool;
++			spin_unlock(&pool->lock);
++			err = pools->pool_ops->create_frmrs(device, &pool->key,
++							    &handle, 1);
++			if (err)
++				return err;
 +		}
-+	}
-+
-+	read_unlock(&pools->rb_lock);
-+
-+	return NULL;
-+}
-+
-+static struct ib_frmr_pool *create_frmr_pool(struct ib_device *device,
-+					     struct ib_frmr_key *key)
-+{
-+	struct rb_node **new = &device->frmr_pools->rb_root.rb_node,
-+		       *parent = NULL;
+ 	} else {
+ 		handle = pop_handle_from_queue_locked(&pool->queue);
+ 		spin_unlock(&pool->lock);
+@@ -317,12 +374,21 @@ EXPORT_SYMBOL(ib_frmr_pool_pop);
+ int ib_frmr_pool_push(struct ib_device *device, struct ib_mr *mr)
+ {
+ 	struct ib_frmr_pool *pool = mr->frmr.pool;
 +	struct ib_frmr_pools *pools = device->frmr_pools;
-+	struct ib_frmr_pool *pool;
-+	int cmp;
++	bool schedule_aging = false;
+ 	int ret;
+ 
+ 	spin_lock(&pool->lock);
++	/* Schedule aging every time an empty pool becomes non-empty */
++	if (pool->queue.ci == 0)
++		schedule_aging = true;
+ 	ret = push_handle_to_queue_locked(&pool->queue, mr->frmr.handle);
+ 	spin_unlock(&pool->lock);
+ 
++	if (ret == 0 && schedule_aging)
++		queue_delayed_work(pools->aging_wq, &pool->aging_work,
++			secs_to_jiffies(FRMR_POOLS_DEFAULT_AGING_PERIOD_SECS));
 +
-+	pool = kzalloc(sizeof(*pool), GFP_KERNEL);
-+	if (!pool)
-+		return ERR_PTR(-ENOMEM);
-+
-+	memcpy(&pool->key, key, sizeof(*key));
-+	INIT_LIST_HEAD(&pool->queue.pages_list);
-+	spin_lock_init(&pool->lock);
-+
-+	write_lock(&pools->rb_lock);
-+	while (*new) {
-+		parent = *new;
-+		cmp = compare_keys(
-+			&rb_entry(parent, struct ib_frmr_pool, node)->key, key);
-+		if (cmp < 0)
-+			new = &((*new)->rb_left);
-+		else
-+			new = &((*new)->rb_right);
-+		/* If a different thread has already created the pool, return
-+		 * it. The insert operation is done under the write lock so we
-+		 * are sure that the pool is not inserted twice.
-+		 */
-+		if (cmp == 0) {
-+			write_unlock(&pools->rb_lock);
-+			kfree(pool);
-+			return rb_entry(parent, struct ib_frmr_pool, node);
-+		}
-+	}
-+
-+	rb_link_node(&pool->node, parent, new);
-+	rb_insert_color(&pool->node, &pools->rb_root);
-+
-+	write_unlock(&pools->rb_lock);
-+
-+	return pool;
-+}
-+
-+static int get_frmr_from_pool(struct ib_device *device,
-+			      struct ib_frmr_pool *pool, struct ib_mr *mr)
-+{
-+	struct ib_frmr_pools *pools = device->frmr_pools;
-+	u32 handle;
-+	int err;
-+
-+	spin_lock(&pool->lock);
-+	if (pool->queue.ci == 0) {
-+		spin_unlock(&pool->lock);
-+		err = pools->pool_ops->create_frmrs(device, &pool->key, &handle,
-+						    1);
-+		if (err)
-+			return err;
-+	} else {
-+		handle = pop_handle_from_queue_locked(&pool->queue);
-+		spin_unlock(&pool->lock);
-+	}
-+
-+	mr->frmr.pool = pool;
-+	mr->frmr.handle = handle;
-+
-+	return 0;
-+}
-+
-+/*
-+ * Pop an FRMR handle from the pool.
-+ *
-+ * @device: The device to pop the FRMR handle from.
-+ * @mr: The MR to pop the FRMR handle from.
-+ *
-+ * Returns 0 on success, negative error code on failure.
-+ */
-+int ib_frmr_pool_pop(struct ib_device *device, struct ib_mr *mr)
-+{
-+	struct ib_frmr_pools *pools = device->frmr_pools;
-+	struct ib_frmr_pool *pool;
-+
-+	WARN_ON_ONCE(!device->frmr_pools);
-+	pool = ib_frmr_pool_find(pools, &mr->frmr.key);
-+	if (!pool) {
-+		pool = create_frmr_pool(device, &mr->frmr.key);
-+		if (IS_ERR(pool))
-+			return PTR_ERR(pool);
-+	}
-+
-+	return get_frmr_from_pool(device, pool, mr);
-+}
-+EXPORT_SYMBOL(ib_frmr_pool_pop);
-+
-+/*
-+ * Push an FRMR handle back to the pool.
-+ *
-+ * @device: The device to push the FRMR handle to.
-+ * @mr: The MR containing the FRMR handle to push back to the pool.
-+ *
-+ * Returns 0 on success, negative error code on failure.
-+ */
-+int ib_frmr_pool_push(struct ib_device *device, struct ib_mr *mr)
-+{
-+	struct ib_frmr_pool *pool = mr->frmr.pool;
-+	int ret;
-+
-+	spin_lock(&pool->lock);
-+	ret = push_handle_to_queue_locked(&pool->queue, mr->frmr.handle);
-+	spin_unlock(&pool->lock);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(ib_frmr_pool_push);
+ 	return ret;
+ }
+ EXPORT_SYMBOL(ib_frmr_pool_push);
 diff --git a/drivers/infiniband/core/frmr_pools.h b/drivers/infiniband/core/frmr_pools.h
-new file mode 100644
-index 0000000000000000000000000000000000000000..5a4d03b3d86f431c3f2091dd5ab27292547c2030
---- /dev/null
+index 5a4d03b3d86f431c3f2091dd5ab27292547c2030..a20323e03e3f446856dda921811e2359232e0b82 100644
+--- a/drivers/infiniband/core/frmr_pools.h
 +++ b/drivers/infiniband/core/frmr_pools.h
-@@ -0,0 +1,48 @@
-+/* SPDX-License-Identifier: GPL-2.0-only
-+ *
-+ * Copyright (c) 2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
-+ */
-+
-+#ifndef RDMA_CORE_FRMR_POOLS_H
-+#define RDMA_CORE_FRMR_POOLS_H
-+
-+#include <rdma/frmr_pools.h>
-+#include <linux/rbtree_types.h>
-+#include <linux/spinlock_types.h>
-+#include <linux/types.h>
-+#include <asm/page.h>
-+
-+#define NUM_HANDLES_PER_PAGE \
-+	((PAGE_SIZE - sizeof(struct list_head)) / sizeof(u32))
-+
-+struct frmr_handles_page {
-+	struct list_head list;
-+	u32 handles[NUM_HANDLES_PER_PAGE];
-+};
-+
-+/* FRMR queue holds a list of frmr_handles_page.
-+ * num_pages: number of pages in the queue.
-+ * ci: current index in the handles array across all pages.
-+ */
-+struct frmr_queue {
-+	struct list_head pages_list;
-+	u32 num_pages;
-+	unsigned long ci;
-+};
-+
-+struct ib_frmr_pool {
-+	struct rb_node node;
-+	struct ib_frmr_key key; /* Pool key */
-+
-+	/* Protect access to the queue */
-+	spinlock_t lock;
-+	struct frmr_queue queue;
-+};
-+
-+struct ib_frmr_pools {
-+	struct rb_root rb_root;
-+	rwlock_t rb_lock;
-+	const struct ib_frmr_pool_ops *pool_ops;
-+};
-+
-+#endif /* RDMA_CORE_FRMR_POOLS_H */
-diff --git a/include/rdma/frmr_pools.h b/include/rdma/frmr_pools.h
-new file mode 100644
-index 0000000000000000000000000000000000000000..da92ef4d7310c0fe0cebf937a0049f81580ad386
---- /dev/null
-+++ b/include/rdma/frmr_pools.h
-@@ -0,0 +1,37 @@
-+/* SPDX-License-Identifier: GPL-2.0-only
-+ *
-+ * Copyright (c) 2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
-+ */
-+
-+#ifndef FRMR_POOLS_H
-+#define FRMR_POOLS_H
-+
-+#include <linux/types.h>
-+#include <asm/page.h>
-+
-+struct ib_device;
-+struct ib_mr;
-+
-+struct ib_frmr_key {
-+	u64 vendor_key;
-+	/* A pool with non-zero kernel_vendor_key is a kernel-only pool. */
-+	u64 kernel_vendor_key;
-+	size_t num_dma_blocks;
-+	int access_flags;
-+	u8 ats:1;
-+};
-+
-+struct ib_frmr_pool_ops {
-+	int (*create_frmrs)(struct ib_device *device, struct ib_frmr_key *key,
-+			    u32 *handles, u32 count);
-+	void (*destroy_frmrs)(struct ib_device *device, u32 *handles,
-+			      u32 count);
-+};
-+
-+int ib_frmr_pools_init(struct ib_device *device,
-+		       const struct ib_frmr_pool_ops *pool_ops);
-+void ib_frmr_pools_cleanup(struct ib_device *device);
-+int ib_frmr_pool_pop(struct ib_device *device, struct ib_mr *mr);
-+int ib_frmr_pool_push(struct ib_device *device, struct ib_mr *mr);
-+
-+#endif /* FRMR_POOLS_H */
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 0a85af610b6b72db33ddd90b30163e18f7038e7d..6cc557424e2323161a3d50181190ad36d9d0a149 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -43,6 +43,7 @@
- #include <uapi/rdma/rdma_user_ioctl.h>
- #include <uapi/rdma/ib_user_ioctl_verbs.h>
- #include <linux/pci-tph.h>
-+#include <rdma/frmr_pools.h>
+@@ -11,6 +11,7 @@
+ #include <linux/spinlock_types.h>
+ #include <linux/types.h>
+ #include <asm/page.h>
++#include <linux/workqueue.h>
  
- #define IB_FW_VERSION_NAME_MAX	ETHTOOL_FWVERS_LEN
- 
-@@ -1886,6 +1887,11 @@ struct ib_mr {
- 	struct ib_dm      *dm;
- 	struct ib_sig_attrs *sig_attrs; /* only for IB_MR_TYPE_INTEGRITY MRs */
- 	struct ib_dmah *dmah;
-+	struct {
-+		struct ib_frmr_pool *pool;
-+		struct ib_frmr_key key;
-+		u32 handle;
-+	} frmr;
- 	/*
- 	 * Implementation details of the RDMA core, don't use in drivers:
- 	 */
-@@ -2879,6 +2885,8 @@ struct ib_device {
- 	struct list_head subdev_list;
- 
- 	enum rdma_nl_name_assign_type name_assign_type;
+ #define NUM_HANDLES_PER_PAGE \
+ 	((PAGE_SIZE - sizeof(struct list_head)) / sizeof(u32))
+@@ -37,12 +38,18 @@ struct ib_frmr_pool {
+ 	/* Protect access to the queue */
+ 	spinlock_t lock;
+ 	struct frmr_queue queue;
++	struct frmr_queue inactive_queue;
 +
-+	struct ib_frmr_pools *frmr_pools;
++	struct delayed_work aging_work;
++	struct ib_device *device;
  };
  
- static inline void *rdma_zalloc_obj(struct ib_device *dev, size_t size,
+ struct ib_frmr_pools {
+ 	struct rb_root rb_root;
+ 	rwlock_t rb_lock;
+ 	const struct ib_frmr_pool_ops *pool_ops;
++
++	struct workqueue_struct *aging_wq;
+ };
+ 
+ #endif /* RDMA_CORE_FRMR_POOLS_H */
 
 -- 
 2.47.1
