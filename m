@@ -1,91 +1,91 @@
-Return-Path: <linux-rdma+bounces-14525-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14526-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB2C2C62811
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Nov 2025 07:25:13 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D8CFC62814
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Nov 2025 07:25:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2D76C35E69D
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Nov 2025 06:25:13 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3C2BE35E795
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Nov 2025 06:25:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DABCC314D0C;
-	Mon, 17 Nov 2025 06:25:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61588314D2E;
+	Mon, 17 Nov 2025 06:25:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="hazaPtFj"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Hn2+Ylzp"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oa1-f98.google.com (mail-oa1-f98.google.com [209.85.160.98])
+Received: from mail-qv1-f97.google.com (mail-qv1-f97.google.com [209.85.219.97])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 653B731282A
-	for <linux-rdma@vger.kernel.org>; Mon, 17 Nov 2025 06:25:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 468C23148A0
+	for <linux-rdma@vger.kernel.org>; Mon, 17 Nov 2025 06:25:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.97
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763360707; cv=none; b=O2GlInD8pCaFHUUGuaXyFBCwnhtTlE3L1lc8aIu3JBBuCe6lfBmX1nHY91lAfnOiAVOdbGUcfU2+jGD4zy4P8Gtif9L74h8mIt/XCdOr/bDQq38Oo2MaovnRSvtN38NK1RDFIBHn3ZEAXOGVpa/uNT3prC/9mVMLwW281pGkY7A=
+	t=1763360709; cv=none; b=L2VkWDMjsF/o3B6EaHK2IJ23UbloFFlNmmw6uGg70COj9oXLkETc1TSh1vcshfHLaEPUoKpzc6lf1lXbhMygRd2uSakpo7+wgJvtdD2GQRL0FZJ5MXEzgpcRMMlZETLTzfe+6xa0IihiRnG7a7YqA4yhKIjuyOS+nahgHnrQWAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763360707; c=relaxed/simple;
-	bh=9vvyYIB6zY6qNaHDIxth28sLy6GHda+iYXT/sMoDnAs=;
+	s=arc-20240116; t=1763360709; c=relaxed/simple;
+	bh=2KuAR/pWlYthA4Shp4xE7vsaIZOYzZ/bI93Y2GtPB4o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MvhiLtDEiuV5Nt6ipTzoAd7A8bd2vCBastWNKRDzOVcfxOctGAv5U2J54/XQq89EpOT4lFAzyje80BneOU82aGjo6VCd2FtxHOzidE/LU2LCqsT6VYkJSa9O0DfRelwuGY5LkG4clhymmSaNJz6f2ggpOpo+o3NPtvZ4cP4kUFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=hazaPtFj; arc=none smtp.client-ip=209.85.160.98
+	 MIME-Version; b=LQ47LHvgxtSIHG7fxqVPZAHK1v/1wirtHg9A0XBq5F25KA3bnZsUOqaF3++f5XM73qLPCicq5jGda9mGHRP75ikbkqrp4YuntVGddxvSEE5AMgaPUrqlROXMA7qCX87RRrws/KLVz+to6YeIbkfemg+iCnS8wrjQSK68sd7rXyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Hn2+Ylzp; arc=none smtp.client-ip=209.85.219.97
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-oa1-f98.google.com with SMTP id 586e51a60fabf-3e2f4c5b26dso1010164fac.0
-        for <linux-rdma@vger.kernel.org>; Sun, 16 Nov 2025 22:25:03 -0800 (PST)
+Received: by mail-qv1-f97.google.com with SMTP id 6a1803df08f44-882399d60baso37268816d6.0
+        for <linux-rdma@vger.kernel.org>; Sun, 16 Nov 2025 22:25:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763360702; x=1763965502;
+        d=1e100.net; s=20230601; t=1763360705; x=1763965505;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:dkim-signature:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3UTlcWMULBvaWzRkZD8jJNvlerC/E1wpKhQFdvUVugo=;
-        b=RargMemFpSJSG7cEdlEmObUOdelQUJu7IbKSzZR2fN0oONk8vBUiFuZoiFLnAOdYKj
-         d17ULZHYZlKN3tdDnmD8gFzgWVEZVZaI5tbOV5aLysgnpWluHVTKp802CYJYXEJwYySs
-         ZX5CyeWWz9ku+MXchdSTi/64UrIigdCgoB8PB6I5ImwiEfuPze+tGW3YiKl3lAe3P4WL
-         oGIbP/JFtPOubXjEPdLUebO3yGQcmORGssSUMu4249WsCaOrvOJksYdB7woxD5ZiMFEj
-         P3jA80dv9hmy7j1t7PFuOXJrH4MSKSTa/G3vQ4fQ9CCtKLOQqeOB3Otqr60n+FdhQ0y1
-         2Sng==
-X-Gm-Message-State: AOJu0Yx3pV7NX4qFowUun3GgScFRCnvDPhqo4LAyi/1zfIdSpgeuOUv0
-	D+X4gu4QzSkHXxmBNMxZsPDE9rM7jdoin4a790Eq90QKhJdAhYJfiNa6fpvFuKySDwumiCjqtav
-	CO67h7/8uPXfohMYbUfarGIilkf2XetIzLLo+rO5Gjo8KH37EINcVLbC6oiRsv36bkSvqxa2YKc
-	uEWWvVKblP8aMWrC1yBFuJ+r8/xLZLXASMrM96Lqo4SuDp3z9xLcVHtf0QTLOE+E5ItPWt+H9R4
-	6JPH2YXVzxvOnbysapwzPoTbGyi
-X-Gm-Gg: ASbGnctg4yKAsyy8STOLCtiSZPCxZLTtU/rktStHpmhPwKZqqsZM876X94lMYljxy4i
-	FIgvgieZT8tvP4C2WS//y4vTA3SxTQemkATMM+/pVVqg4rgN9UaHRgHDACGG302yEeTzb5l64lW
-	l6f/qNUODh5dJgrInk4EJf7pQN5Py3Q9cW1DggKxY9tw6B4RfF4bYMgm9UYTPO4dKuV+f8w23+i
-	VI0Kxn3TaRvi+LknIZvr6haMobacQO/3QYEHLPo2GC0ut+Oi8R8tQVSjsYwwRZIyKQLtHvw7EwB
-	tfwJxawW9wECC/Y12NUDisy2wyfEfsk0LJI/QfC/00bHseSNRYR4jKC2r8u9pw4RuqK9qx9iQTa
-	mqKilh+HdIs1+G0N/CHjQl+Ojz/Detg96/QNUlNet6hhPJnADICrNTtCSQDNiD7EjnoF7mTqKEF
-	+IfMObo2Em3OMnRn2Nv/4O9bWQ0Ai97zLKK+SQB5VIBuiQoJjgbK3usbct
-X-Google-Smtp-Source: AGHT+IHZI65/CJmpBoL1j/O+wCS3sG978ZO8O8v/5b3dhGaSgDX/umUjOSSch9GopK/BJsWtVzX8RZR5ZydY
-X-Received: by 2002:a05:6871:79c:b0:3d1:93ab:eaa2 with SMTP id 586e51a60fabf-3e868f4f18amr4709858fac.20.1763360702191;
-        Sun, 16 Nov 2025 22:25:02 -0800 (PST)
+        bh=6C/0BXHQbHnLNchIXNujI8MRptatJaFtSqqyqrnCS04=;
+        b=Up6ORFFnVrozu5opQMKUPNVRbVEzdNQMTGcEkfLpwleLyAqIvFxL3r8hEYjJzIdRxm
+         9JWpwQJ7PILrlZ6/KfrV/3zf3pAQdILrVdOE4UXfqLg+CMEDVIzSm4JIdA8u/fCcQdSg
+         9+hYDL+Sh92HOXSVABBX6oWZ0ezWIqV1uVRHGOnMDuC7prTAGLA2wN1m7rbwqi7IsKJG
+         I/Uk2nJeQImobopFTkBflIyBgTylpWiTQKvaKa1gAj8iH08VhL2JEwlNgqgzTV2rsk1J
+         cG6fgCvm6m3Tlj14Zx5y26OM8TuIFyGC2rsLuTmNdePdzNdSMBiswaHIT0R8kaWTHVkQ
+         vHaw==
+X-Gm-Message-State: AOJu0YwqoxQ7yv1YMEdSjESEJDd9bdxwSjsIZH+cJJuu3wiZm5MyIr5v
+	+Zvya3TRk2qOUOMKP99ZT1NTSh7kXvK+2rRwq9tlWE1IM8nRzH+x5WoEjDZ6v/Jm74VhGUTfdvT
+	hHCgLamrpjY8Knh9iVGH7AbTrPdrBqw9SLQLhMcAoHSCOm8bjyLTEtBhqhpxcgqQph1RoIChI0i
+	RHJ4Sl4J9ARLxSOtpuLaMBjFqVKObxkwPWHkazXezNKbpxwJJmgmVMG8wKpJuxQGb4tI/tScfC2
+	Ziy1/+LOEYEHFcnNB9xylqwnFud
+X-Gm-Gg: ASbGnct5I0R45cec5cjjzrLIcZ86Dq9JnHHwO+tJfucqjuzThtLQmWbDHEfK8TIFCit
+	TPBgv/mDrpjXQGJu1x0PwEXIoJeUzUXghNkKVOh+DlxKFgNmB7o2UOczM7cwkfF2ZVHG0j8EylI
+	+kcCOIjkyEPa7FKebQoiF7SgBocHMMmjkDaXSFfNj/WC00tpUcRLdIhAQEFOU1H3qrbrgbp7nnk
+	yW7g8eKqgmUiSXIfuRI5RE1Uuoz2KCq7jUHw5NEWkYyiwcqHzeVVmpZVJjZP3CsGJ/f2Wbef1Y2
+	U064q3xaGgLpMbU6Q5KxlX9/fuN081Ndwmfme5MnSBhIFK23XbkdTblY2lMiTDOUdwkmBnYkKgY
+	h7IG11LxqBRxuQHOcrYPLEpRpidCNkaszGTGXSAN0OzYAcnu5qp+T19I4d5ZJfU28ofrXmI1Kzf
+	ovm9LlBdYMcKzHCVpLF3vU6bvxrjfVPXMMcB/PjdA0UuJBQqeAdTFM0KFB
+X-Google-Smtp-Source: AGHT+IEmSDOefm9qdsIOh+qiZTkKkhxhyFwZEDH8/86fmF46MM43FEtNB/bEU8LtYFSUWbr+M7kjGsFUZhj1
+X-Received: by 2002:a05:6214:f6a:b0:87d:9d5a:b092 with SMTP id 6a1803df08f44-88292658c42mr155379486d6.32.1763360704996;
+        Sun, 16 Nov 2025 22:25:04 -0800 (PST)
 Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-77.dlp.protect.broadcom.com. [144.49.247.77])
-        by smtp-relay.gmail.com with ESMTPS id 586e51a60fabf-3e8522c77f1sm1097652fac.19.2025.11.16.22.25.01
+        by smtp-relay.gmail.com with ESMTPS id 6a1803df08f44-882862f836fsm15206046d6.10.2025.11.16.22.25.04
         for <linux-rdma@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 16 Nov 2025 22:25:02 -0800 (PST)
+        Sun, 16 Nov 2025 22:25:04 -0800 (PST)
 X-Relaying-Domain: broadcom.com
 X-CFilter-Loop: Reflected
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-340c07119bfso11246350a91.2
-        for <linux-rdma@vger.kernel.org>; Sun, 16 Nov 2025 22:25:01 -0800 (PST)
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-343daf0f488so5019833a91.1
+        for <linux-rdma@vger.kernel.org>; Sun, 16 Nov 2025 22:25:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1763360701; x=1763965501; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1763360704; x=1763965504; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3UTlcWMULBvaWzRkZD8jJNvlerC/E1wpKhQFdvUVugo=;
-        b=hazaPtFjqG6mf5JiyXbUI3KridtOPUHkvTIaclyVWjbMk9Pr/kQG28qGvyvi+Ln2rh
-         N2AEhPcaeMKK1nLLfYCaKcxYT3YEG7rrHBuAO3mRzD1+pkGTrfoJHPtco9ZYvKSYMHGn
-         0Mk7BJzmypfLOb7TkCA8Ow4CV19ykQagteXB0=
-X-Received: by 2002:a17:90b:4fcf:b0:343:c839:21d2 with SMTP id 98e67ed59e1d1-343fa74b1d8mr12003845a91.28.1763360700465;
-        Sun, 16 Nov 2025 22:25:00 -0800 (PST)
-X-Received: by 2002:a17:90b:4fcf:b0:343:c839:21d2 with SMTP id 98e67ed59e1d1-343fa74b1d8mr12003813a91.28.1763360699888;
-        Sun, 16 Nov 2025 22:24:59 -0800 (PST)
+        bh=6C/0BXHQbHnLNchIXNujI8MRptatJaFtSqqyqrnCS04=;
+        b=Hn2+Ylzp8nZQaB0gbXzwqNyOQBxdOiBRocG514DXQvjhWqtGvAYwZuZBaW+rE+B6dJ
+         5vKWP1mzumGj2qi9CtK3RobYg+HBZpUYjZvWTWRIShtyRe/0jgtrcbWaz7iyYml+rMQE
+         r/rTaVAw3+azYXMDbNpXUTGN54PvfmbUw7JTU=
+X-Received: by 2002:a17:90b:1b4d:b0:32e:c6b6:956b with SMTP id 98e67ed59e1d1-343f9d907bbmr13484875a91.4.1763360703610;
+        Sun, 16 Nov 2025 22:25:03 -0800 (PST)
+X-Received: by 2002:a17:90b:1b4d:b0:32e:c6b6:956b with SMTP id 98e67ed59e1d1-343f9d907bbmr13484845a91.4.1763360703016;
+        Sun, 16 Nov 2025 22:25:03 -0800 (PST)
 Received: from dhcp-10-123-157-187.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7b927151d38sm11897785b3a.40.2025.11.16.22.24.57
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7b927151d38sm11897785b3a.40.2025.11.16.22.25.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Nov 2025 22:24:59 -0800 (PST)
+        Sun, 16 Nov 2025 22:25:02 -0800 (PST)
 From: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
@@ -94,9 +94,9 @@ Cc: linux-rdma@vger.kernel.org,
 	selvin.xavier@broadcom.com,
 	kalesh-anakkur.purayil@broadcom.com,
 	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Subject: [PATCH rdma-next v4 3/5] RDMA/bnxt_re: Refactor bnxt_qplib_create_qp() function
-Date: Mon, 17 Nov 2025 11:47:39 +0530
-Message-ID: <20251117061741.15752-4-sriharsha.basavapatna@broadcom.com>
+Subject: [PATCH rdma-next v4 4/5] RDMA/bnxt_re: Direct Verbs: Support DBR and UMEM verbs
+Date: Mon, 17 Nov 2025 11:47:40 +0530
+Message-ID: <20251117061741.15752-5-sriharsha.basavapatna@broadcom.com>
 X-Mailer: git-send-email 2.51.2.636.ga99f379adf
 In-Reply-To: <20251117061741.15752-1-sriharsha.basavapatna@broadcom.com>
 References: <20251117061741.15752-1-sriharsha.basavapatna@broadcom.com>
@@ -111,874 +111,493 @@ X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 
 From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 
-Inside bnxt_qplib_create_qp(), driver currently is doing
-a lot of things like allocating HWQ memory for SQ/RQ/ORRQ/IRRQ,
-initializing few of qplib_qp fields etc.
+The following Direct Verb (DV) methods have been implemented in
+this patch.
 
-Refactored the code such that all memory allocation for HWQs
-have been moved to bnxt_re_init_qp_attr() function and inside
-bnxt_qplib_create_qp() function just initialize the request
-structure and issue the HWRM command to firmware.
+Doorbell Region Direct Verbs:
+-----------------------------
+- BNXT_RE_METHOD_DBR_ALLOC:
+  This will allow the appliation to create extra doorbell regions
+  and use the associated doorbell page index in DV_CREATE_QP and
+  use the associated DB address while ringing the doorbell.
 
-Introduced couple of new functions bnxt_re_setup_qp_hwqs() and
-bnxt_re_setup_qp_swqs() moved the hwq and swq memory allocation
-logic there.
+- BNXT_RE_METHOD_DBR_FREE:
+  Free the allocated doorbell region.
 
-This patch also introduces a change to store the PD id in
-bnxt_qplib_qp. Instead of keeping a pointer to "struct
-bnxt_qplib_pd", store PD id directly in "struct bnxt_qplib_qp".
-This change is needed for a subsequent change in this patch
-series. This PD ID value will be used in new DV implementation
-for create_qp(). There is no functional change.
+- BNXT_RE_METHOD_DBR_QUERY:
+  Return the default doorbell page index and doorbell page address
+  associated with the ucontext.
 
+Umem Registration Direct Verbs:
+-------------------------------
+- BNXT_RE_METHOD_UMEM_REG:
+  Register the user memory to be used by the application with
+  the driver. Application can register a large chunk of memory and
+  use it during subsequent resource creation DV APIs.
+
+  Note that the driver doesn't really map/pin the user memory
+  during dv_umem_reg(). The app specified memory params (addr, len)
+  are saved and a corresponding umem-handle is returned.
+
+  This memory is mapped/pinned when the application subsequently
+  creates the required resources (CQ/QP) using respective direct
+  verbs. This is implemented in the next patch in this series.
+
+- BNXT_RE_METHOD_UMEM_DEREG:
+  Deregister the user memory specified by the umem-handle.
+
+Co-developed-by: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+Signed-off-by: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
 Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Reviewed-by: Selvin Xavier <selvin.xavier@broadcom.com>
-Signed-off-by: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/ib_verbs.c  | 205 ++++++++++++--
- drivers/infiniband/hw/bnxt_re/qplib_fp.c  | 310 +++++++---------------
- drivers/infiniband/hw/bnxt_re/qplib_fp.h  |  10 +-
- drivers/infiniband/hw/bnxt_re/qplib_res.h |   6 +
- 4 files changed, 301 insertions(+), 230 deletions(-)
+ drivers/infiniband/hw/bnxt_re/dv.c        | 252 ++++++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h  |   8 +
+ drivers/infiniband/hw/bnxt_re/qplib_res.c |  43 ++++
+ drivers/infiniband/hw/bnxt_re/qplib_res.h |   4 +
+ include/uapi/rdma/bnxt_re-abi.h           |  49 +++++
+ 5 files changed, 356 insertions(+)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 034f5744127f..9390624b00e1 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -971,6 +971,12 @@ static void bnxt_re_del_unique_gid(struct bnxt_re_dev *rdev)
- 		dev_err(rdev_to_dev(rdev), "Failed to delete unique GID, rc: %d\n", rc);
- }
+diff --git a/drivers/infiniband/hw/bnxt_re/dv.c b/drivers/infiniband/hw/bnxt_re/dv.c
+index 5655c6176af4..1485aa0a6818 100644
+--- a/drivers/infiniband/hw/bnxt_re/dv.c
++++ b/drivers/infiniband/hw/bnxt_re/dv.c
+@@ -12,6 +12,7 @@
+ #include <rdma/ib_user_ioctl_cmds.h>
+ #define UVERBS_MODULE_NAME bnxt_re
+ #include <rdma/uverbs_named_ioctl.h>
++#include <rdma/ib_umem.h>
+ #include <rdma/bnxt_re-abi.h>
  
-+static void bnxt_re_qp_free_umem(struct bnxt_re_qp *qp)
-+{
-+	ib_umem_release(qp->rumem);
-+	ib_umem_release(qp->sumem);
-+}
+ #include "roce_hsi.h"
+@@ -22,6 +23,15 @@
+ #include "bnxt_re.h"
+ #include "ib_verbs.h"
+ 
++struct bnxt_re_dv_umem {
++	struct bnxt_re_dev *rdev;
++	struct ib_umem *umem;
++	__u64 addr;
++	size_t size;
++	__u32 access;
++	int dmabuf_fd;
++};
 +
- /* Queue Pairs */
- int bnxt_re_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
+ static struct bnxt_re_cq *bnxt_re_search_for_cq(struct bnxt_re_dev *rdev, u32 cq_id)
  {
-@@ -1013,8 +1019,7 @@ int bnxt_re_destroy_qp(struct ib_qp *ib_qp, struct ib_udata *udata)
- 	if (qp->qplib_qp.type == CMDQ_CREATE_QP_TYPE_RAW_ETHERTYPE)
- 		bnxt_re_del_unique_gid(rdev);
+ 	struct bnxt_re_cq *cq = NULL, *tmp_cq;
+@@ -331,9 +341,251 @@ DECLARE_UVERBS_NAMED_OBJECT(BNXT_RE_OBJECT_GET_TOGGLE_MEM,
+ 			    &UVERBS_METHOD(BNXT_RE_METHOD_GET_TOGGLE_MEM),
+ 			    &UVERBS_METHOD(BNXT_RE_METHOD_RELEASE_TOGGLE_MEM));
  
--	ib_umem_release(qp->rumem);
--	ib_umem_release(qp->sumem);
-+	bnxt_re_qp_free_umem(qp);
- 
- 	/* Flush all the entries of notification queue associated with
- 	 * given qp.
-@@ -1158,6 +1163,7 @@ static int bnxt_re_init_user_qp(struct bnxt_re_dev *rdev, struct bnxt_re_pd *pd,
- 	}
- 
- 	qplib_qp->dpi = &cntx->dpi;
-+	qplib_qp->is_user = true;
- 	return 0;
- rqfail:
- 	ib_umem_release(qp->sumem);
-@@ -1215,6 +1221,114 @@ static struct bnxt_re_ah *bnxt_re_create_shadow_qp_ah
- 	return NULL;
- }
- 
-+static int bnxt_re_qp_alloc_init_xrrq(struct bnxt_re_qp *qp)
++static int bnxt_re_dv_validate_umem_attr(struct bnxt_re_dev *rdev,
++					 struct uverbs_attr_bundle *attrs,
++					 struct bnxt_re_dv_umem *obj)
 +{
-+	struct bnxt_qplib_res *res = &qp->rdev->qplib_res;
-+	struct bnxt_qplib_qp *qplib_qp = &qp->qplib_qp;
-+	struct bnxt_qplib_hwq_attr hwq_attr = {};
-+	struct bnxt_qplib_sg_info sginfo = {};
-+	struct bnxt_qplib_hwq *irrq, *orrq;
-+	int rc, req_size;
++	int dmabuf_fd = 0;
++	u32 access_flags;
++	size_t size;
++	u64 addr;
++	int err;
 +
-+	orrq = &qplib_qp->orrq;
-+	orrq->max_elements =
-+		ORD_LIMIT_TO_ORRQ_SLOTS(qplib_qp->max_rd_atomic);
-+	req_size = orrq->max_elements *
-+		BNXT_QPLIB_MAX_ORRQE_ENTRY_SIZE + PAGE_SIZE - 1;
-+	req_size &= ~(PAGE_SIZE - 1);
-+	sginfo.pgsize = req_size;
-+	sginfo.pgshft = PAGE_SHIFT;
++	err = uverbs_get_flags32(&access_flags, attrs,
++				 BNXT_RE_UMEM_OBJ_REG_ACCESS,
++				 IB_ACCESS_LOCAL_WRITE |
++				 IB_ACCESS_REMOTE_WRITE |
++				 IB_ACCESS_REMOTE_READ);
++	if (err)
++		return err;
 +
-+	hwq_attr.res = res;
-+	hwq_attr.sginfo = &sginfo;
-+	hwq_attr.depth = orrq->max_elements;
-+	hwq_attr.stride = BNXT_QPLIB_MAX_ORRQE_ENTRY_SIZE;
-+	hwq_attr.aux_stride = 0;
-+	hwq_attr.aux_depth = 0;
-+	hwq_attr.type = HWQ_TYPE_CTX;
-+	rc = bnxt_qplib_alloc_init_hwq(orrq, &hwq_attr);
-+	if (rc)
-+		return rc;
++	err = ib_check_mr_access(&rdev->ibdev, access_flags);
++	if (err)
++		return err;
 +
-+	irrq = &qplib_qp->irrq;
-+	irrq->max_elements =
-+		IRD_LIMIT_TO_IRRQ_SLOTS(qplib_qp->max_dest_rd_atomic);
-+	req_size = irrq->max_elements *
-+		BNXT_QPLIB_MAX_IRRQE_ENTRY_SIZE + PAGE_SIZE - 1;
-+	req_size &= ~(PAGE_SIZE - 1);
-+	sginfo.pgsize = req_size;
-+	hwq_attr.sginfo = &sginfo;
-+	hwq_attr.depth =  irrq->max_elements;
-+	hwq_attr.stride = BNXT_QPLIB_MAX_IRRQE_ENTRY_SIZE;
-+	rc = bnxt_qplib_alloc_init_hwq(irrq, &hwq_attr);
-+	if (rc)
-+		goto free_orrq_hwq;
-+	return 0;
-+free_orrq_hwq:
-+	bnxt_qplib_free_hwq(res, orrq);
-+	return rc;
-+}
-+
-+static int bnxt_re_setup_qp_hwqs(struct bnxt_re_qp *qp)
-+{
-+	struct bnxt_qplib_res *res = &qp->rdev->qplib_res;
-+	struct bnxt_qplib_qp *qplib_qp = &qp->qplib_qp;
-+	struct bnxt_qplib_hwq_attr hwq_attr = {};
-+	struct bnxt_qplib_q *sq = &qplib_qp->sq;
-+	struct bnxt_qplib_q *rq = &qplib_qp->rq;
-+	u8 wqe_mode = qplib_qp->wqe_mode;
-+	u8 pg_sz_lvl;
-+	int rc;
-+
-+	hwq_attr.res = res;
-+	hwq_attr.sginfo = &sq->sg_info;
-+	hwq_attr.stride = bnxt_qplib_get_stride();
-+	hwq_attr.depth = bnxt_qplib_get_depth(sq, wqe_mode, true);
-+	hwq_attr.aux_stride = qplib_qp->psn_sz;
-+	hwq_attr.aux_depth = (qplib_qp->psn_sz) ?
-+		bnxt_qplib_set_sq_size(sq, wqe_mode) : 0;
-+	if (qplib_qp->is_host_msn_tbl && qplib_qp->psn_sz)
-+		hwq_attr.aux_depth = qplib_qp->msn_tbl_sz;
-+	hwq_attr.type = HWQ_TYPE_QUEUE;
-+	rc = bnxt_qplib_alloc_init_hwq(&sq->hwq, &hwq_attr);
-+	if (rc)
-+		return rc;
-+
-+	pg_sz_lvl = bnxt_qplib_base_pg_size(&sq->hwq) << CMDQ_CREATE_QP_SQ_PG_SIZE_SFT;
-+	pg_sz_lvl |= ((sq->hwq.level & CMDQ_CREATE_QP_SQ_LVL_MASK) <<
-+		      CMDQ_CREATE_QP_SQ_LVL_SFT);
-+	sq->hwq.pg_sz_lvl = pg_sz_lvl;
-+
-+	hwq_attr.res = res;
-+	hwq_attr.sginfo = &rq->sg_info;
-+	hwq_attr.stride = bnxt_qplib_get_stride();
-+	hwq_attr.depth = bnxt_qplib_get_depth(rq, qplib_qp->wqe_mode, false);
-+	hwq_attr.aux_stride = 0;
-+	hwq_attr.aux_depth = 0;
-+	hwq_attr.type = HWQ_TYPE_QUEUE;
-+	rc = bnxt_qplib_alloc_init_hwq(&rq->hwq, &hwq_attr);
-+	if (rc)
-+		goto free_sq_hwq;
-+	pg_sz_lvl = bnxt_qplib_base_pg_size(&rq->hwq) <<
-+		CMDQ_CREATE_QP_RQ_PG_SIZE_SFT;
-+	pg_sz_lvl |= ((rq->hwq.level & CMDQ_CREATE_QP_RQ_LVL_MASK) <<
-+		      CMDQ_CREATE_QP_RQ_LVL_SFT);
-+	rq->hwq.pg_sz_lvl = pg_sz_lvl;
-+
-+	if (qplib_qp->psn_sz) {
-+		rc = bnxt_re_qp_alloc_init_xrrq(qp);
-+		if (rc)
-+			goto free_rq_hwq;
++	if (uverbs_copy_from(&addr, attrs, BNXT_RE_UMEM_OBJ_REG_ADDR) ||
++	    uverbs_copy_from(&size, attrs, BNXT_RE_UMEM_OBJ_REG_LEN))
++		return -EFAULT;
++	if (uverbs_attr_is_valid(attrs, BNXT_RE_UMEM_OBJ_REG_DMABUF_FD)) {
++		if (uverbs_get_raw_fd(&dmabuf_fd, attrs,
++				      BNXT_RE_UMEM_OBJ_REG_DMABUF_FD))
++			return -EFAULT;
 +	}
++	obj->addr = addr;
++	obj->size = size;
++	obj->access = access_flags;
++	obj->dmabuf_fd = dmabuf_fd;
 +
 +	return 0;
-+free_rq_hwq:
-+	bnxt_qplib_free_hwq(res, &rq->hwq);
-+free_sq_hwq:
-+	bnxt_qplib_free_hwq(res, &sq->hwq);
-+	return rc;
 +}
 +
- static struct bnxt_re_qp *bnxt_re_create_shadow_qp
- 				(struct bnxt_re_pd *pd,
- 				 struct bnxt_qplib_res *qp1_res,
-@@ -1233,9 +1347,10 @@ static struct bnxt_re_qp *bnxt_re_create_shadow_qp
- 	/* Initialize the shadow QP structure from the QP1 values */
- 	ether_addr_copy(qp->qplib_qp.smac, rdev->netdev->dev_addr);
- 
--	qp->qplib_qp.pd = &pd->qplib_pd;
-+	qp->qplib_qp.pd_id = pd->qplib_pd.id;
- 	qp->qplib_qp.qp_handle = (u64)(unsigned long)(&qp->qplib_qp);
- 	qp->qplib_qp.type = IB_QPT_UD;
-+	qp->qplib_qp.cctx = rdev->chip_ctx;
- 
- 	qp->qplib_qp.max_inline_data = 0;
- 	qp->qplib_qp.sig_type = true;
-@@ -1268,10 +1383,14 @@ static struct bnxt_re_qp *bnxt_re_create_shadow_qp
- 	qp->qplib_qp.rq_hdr_buf_size = BNXT_QPLIB_MAX_GRH_HDR_SIZE_IPV6;
- 	qp->qplib_qp.dpi = &rdev->dpi_privileged;
- 
--	rc = bnxt_qplib_create_qp(qp1_res, &qp->qplib_qp);
-+	rc = bnxt_re_setup_qp_hwqs(qp);
- 	if (rc)
- 		goto fail;
- 
-+	rc = bnxt_qplib_create_qp(qp1_res, &qp->qplib_qp);
-+	if (rc)
-+		goto free_hwq;
-+
- 	spin_lock_init(&qp->sq_lock);
- 	INIT_LIST_HEAD(&qp->list);
- 	mutex_lock(&rdev->qp_lock);
-@@ -1279,6 +1398,9 @@ static struct bnxt_re_qp *bnxt_re_create_shadow_qp
- 	atomic_inc(&rdev->stats.res.qp_count);
- 	mutex_unlock(&rdev->qp_lock);
- 	return qp;
-+
-+free_hwq:
-+	bnxt_qplib_free_qp_res(&rdev->qplib_res, &qp->qplib_qp);
- fail:
- 	kfree(qp);
- 	return NULL;
-@@ -1449,6 +1571,39 @@ static int bnxt_re_init_qp_type(struct bnxt_re_dev *rdev,
- 	return qptype;
- }
- 
-+static void bnxt_re_qp_calculate_msn_psn_size(struct bnxt_re_qp *qp)
++static int bnxt_re_dv_umem_cleanup(struct ib_uobject *uobject,
++				   enum rdma_remove_reason why,
++				   struct uverbs_attr_bundle *attrs)
 +{
-+	struct bnxt_qplib_qp *qplib_qp = &qp->qplib_qp;
-+	struct bnxt_qplib_q *sq = &qplib_qp->sq;
-+	struct bnxt_re_dev *rdev = qp->rdev;
-+	u8 wqe_mode = qplib_qp->wqe_mode;
-+
-+	if (rdev->dev_attr)
-+		qplib_qp->is_host_msn_tbl =
-+			_is_host_msn_table(rdev->dev_attr->dev_cap_flags2);
-+
-+	if (qplib_qp->type == CMDQ_CREATE_QP_TYPE_RC) {
-+		qplib_qp->psn_sz = bnxt_qplib_is_chip_gen_p5_p7(rdev->chip_ctx) ?
-+			sizeof(struct sq_psn_search_ext) :
-+			sizeof(struct sq_psn_search);
-+		if (qplib_qp->is_host_msn_tbl) {
-+			qplib_qp->psn_sz = sizeof(struct sq_msn_search);
-+			qplib_qp->msn = 0;
-+		}
-+	}
-+
-+	/* Update msn tbl size */
-+	if (qplib_qp->is_host_msn_tbl && qplib_qp->psn_sz) {
-+		if (wqe_mode == BNXT_QPLIB_WQE_MODE_STATIC)
-+			qplib_qp->msn_tbl_sz =
-+				roundup_pow_of_two(bnxt_qplib_set_sq_size(sq, wqe_mode));
-+		else
-+			qplib_qp->msn_tbl_sz =
-+				roundup_pow_of_two(bnxt_qplib_set_sq_size(sq, wqe_mode)) / 2;
-+		qplib_qp->msn = 0;
-+	}
++	kfree(uobject->object);
++	return 0;
 +}
 +
- static int bnxt_re_init_qp_attr(struct bnxt_re_qp *qp, struct bnxt_re_pd *pd,
- 				struct ib_qp_init_attr *init_attr,
- 				struct bnxt_re_ucontext *uctx,
-@@ -1466,17 +1621,17 @@ static int bnxt_re_init_qp_attr(struct bnxt_re_qp *qp, struct bnxt_re_pd *pd,
- 
- 	/* Setup misc params */
- 	ether_addr_copy(qplqp->smac, rdev->netdev->dev_addr);
--	qplqp->pd = &pd->qplib_pd;
-+	qplqp->pd_id = pd->qplib_pd.id;
- 	qplqp->qp_handle = (u64)qplqp;
- 	qplqp->max_inline_data = init_attr->cap.max_inline_data;
- 	qplqp->sig_type = init_attr->sq_sig_type == IB_SIGNAL_ALL_WR;
- 	qptype = bnxt_re_init_qp_type(rdev, init_attr);
--	if (qptype < 0) {
--		rc = qptype;
--		goto out;
--	}
-+	if (qptype < 0)
-+		return qptype;
- 	qplqp->type = (u8)qptype;
- 	qplqp->wqe_mode = bnxt_re_is_var_size_supported(rdev, uctx);
-+	qplqp->dev_cap_flags = dev_attr->dev_cap_flags;
-+	qplqp->cctx = rdev->chip_ctx;
- 	if (init_attr->qp_type == IB_QPT_RC) {
- 		qplqp->max_rd_atomic = dev_attr->max_qp_rd_atom;
- 		qplqp->max_dest_rd_atomic = dev_attr->max_qp_init_rd_atom;
-@@ -1506,20 +1661,32 @@ static int bnxt_re_init_qp_attr(struct bnxt_re_qp *qp, struct bnxt_re_pd *pd,
- 	/* Setup RQ/SRQ */
- 	rc = bnxt_re_init_rq_attr(qp, init_attr, uctx);
- 	if (rc)
--		goto out;
-+		return rc;
- 	if (init_attr->qp_type == IB_QPT_GSI)
- 		bnxt_re_adjust_gsi_rq_attr(qp);
- 
- 	/* Setup SQ */
- 	rc = bnxt_re_init_sq_attr(qp, init_attr, uctx, ureq);
- 	if (rc)
--		goto out;
-+		return rc;
- 	if (init_attr->qp_type == IB_QPT_GSI)
- 		bnxt_re_adjust_gsi_sq_attr(qp, init_attr, uctx);
- 
--	if (uctx) /* This will update DPI and qp_handle */
-+	if (uctx) { /* This will update DPI and qp_handle */
- 		rc = bnxt_re_init_user_qp(rdev, pd, qp, uctx, ureq);
--out:
-+		if (rc)
-+			return rc;
-+	}
++static int UVERBS_HANDLER(BNXT_RE_METHOD_UMEM_REG)(struct uverbs_attr_bundle *attrs)
++{
++	struct ib_uobject *uobj =
++		uverbs_attr_get_uobject(attrs, BNXT_RE_UMEM_OBJ_REG_HANDLE);
++	struct bnxt_re_ucontext *uctx;
++	struct ib_ucontext *ib_uctx;
++	struct bnxt_re_dv_umem *obj;
++	struct bnxt_re_dev *rdev;
++	int err;
 +
-+	bnxt_re_qp_calculate_msn_psn_size(qp);
++	ib_uctx = ib_uverbs_get_ucontext(attrs);
++	if (IS_ERR(ib_uctx))
++		return PTR_ERR(ib_uctx);
 +
-+	rc = bnxt_re_setup_qp_hwqs(qp);
-+	if (rc)
-+		goto free_umem;
++	uctx = container_of(ib_uctx, struct bnxt_re_ucontext, ib_uctx);
++	rdev = uctx->rdev;
++
++	obj = kzalloc(sizeof(*obj), GFP_KERNEL);
++	if (!obj)
++		return -ENOMEM;
++
++	obj->rdev = rdev;
++	err = bnxt_re_dv_validate_umem_attr(rdev, attrs, obj);
++	if (err)
++		goto free_mem;
++
++	obj->umem = NULL;
++	uobj->object = obj;
++	uverbs_finalize_uobj_create(attrs, BNXT_RE_UMEM_OBJ_REG_HANDLE);
 +
 +	return 0;
-+free_umem:
-+	bnxt_re_qp_free_umem(qp);
- 	return rc;
- }
- 
-@@ -1577,6 +1744,7 @@ static int bnxt_re_create_gsi_qp(struct bnxt_re_qp *qp, struct bnxt_re_pd *pd,
- 
- 	rdev = qp->rdev;
- 	qplqp = &qp->qplib_qp;
-+	qplqp->cctx = rdev->chip_ctx;
- 
- 	qplqp->rq_hdr_buf_size = BNXT_QPLIB_MAX_QP1_RQ_HDR_SIZE_V2;
- 	qplqp->sq_hdr_buf_size = BNXT_QPLIB_MAX_QP1_SQ_HDR_SIZE_V2;
-@@ -1680,13 +1848,14 @@ int bnxt_re_create_qp(struct ib_qp *ib_qp, struct ib_qp_init_attr *qp_init_attr,
- 		if (rc == -ENODEV)
- 			goto qp_destroy;
- 		if (rc)
--			goto fail;
-+			goto free_hwq;
- 	} else {
- 		rc = bnxt_qplib_create_qp(&rdev->qplib_res, &qp->qplib_qp);
- 		if (rc) {
- 			ibdev_err(&rdev->ibdev, "Failed to create HW QP");
--			goto free_umem;
-+			goto free_hwq;
- 		}
++free_mem:
++	kfree(obj);
++	return err;
++}
 +
- 		if (udata) {
- 			struct bnxt_re_qp_resp resp;
- 
-@@ -1737,9 +1906,9 @@ int bnxt_re_create_qp(struct ib_qp *ib_qp, struct ib_qp_init_attr *qp_init_attr,
- 	return 0;
- qp_destroy:
- 	bnxt_qplib_destroy_qp(&rdev->qplib_res, &qp->qplib_qp);
--free_umem:
--	ib_umem_release(qp->rumem);
--	ib_umem_release(qp->sumem);
-+free_hwq:
-+	bnxt_qplib_free_qp_res(&rdev->qplib_res, &qp->qplib_qp);
-+	bnxt_re_qp_free_umem(qp);
- fail:
- 	return rc;
- }
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-index ce90d3d834d4..481cc0589c17 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-@@ -793,8 +793,6 @@ int bnxt_qplib_post_srq_recv(struct bnxt_qplib_srq *srq,
- 	return 0;
- }
- 
--/* QP */
--
- static int bnxt_qplib_alloc_init_swq(struct bnxt_qplib_q *que)
- {
- 	int indx;
-@@ -813,9 +811,71 @@ static int bnxt_qplib_alloc_init_swq(struct bnxt_qplib_q *que)
- 	return 0;
- }
- 
-+static int bnxt_re_setup_qp_swqs(struct bnxt_qplib_qp *qplqp)
++DECLARE_UVERBS_NAMED_METHOD(BNXT_RE_METHOD_UMEM_REG,
++			    UVERBS_ATTR_IDR(BNXT_RE_UMEM_OBJ_REG_HANDLE,
++					    BNXT_RE_OBJECT_UMEM,
++					    UVERBS_ACCESS_NEW,
++					    UA_MANDATORY),
++			    UVERBS_ATTR_PTR_IN(BNXT_RE_UMEM_OBJ_REG_ADDR,
++					       UVERBS_ATTR_TYPE(u64),
++					       UA_MANDATORY),
++			    UVERBS_ATTR_PTR_IN(BNXT_RE_UMEM_OBJ_REG_LEN,
++					       UVERBS_ATTR_TYPE(u64),
++					       UA_MANDATORY),
++			    UVERBS_ATTR_FLAGS_IN(BNXT_RE_UMEM_OBJ_REG_ACCESS,
++						 enum ib_access_flags),
++			    UVERBS_ATTR_RAW_FD(BNXT_RE_UMEM_OBJ_REG_DMABUF_FD,
++					       UA_OPTIONAL),
++			    UVERBS_ATTR_CONST_IN(BNXT_RE_UMEM_OBJ_REG_PGSZ_BITMAP,
++						 u64));
++
++DECLARE_UVERBS_NAMED_METHOD_DESTROY(BNXT_RE_METHOD_UMEM_DEREG,
++				    UVERBS_ATTR_IDR(BNXT_RE_UMEM_OBJ_DEREG_HANDLE,
++						    BNXT_RE_OBJECT_UMEM,
++						    UVERBS_ACCESS_DESTROY,
++						    UA_MANDATORY));
++
++DECLARE_UVERBS_NAMED_OBJECT(BNXT_RE_OBJECT_UMEM,
++			    UVERBS_TYPE_ALLOC_IDR(bnxt_re_dv_umem_cleanup),
++			    &UVERBS_METHOD(BNXT_RE_METHOD_UMEM_REG),
++			    &UVERBS_METHOD(BNXT_RE_METHOD_UMEM_DEREG));
++
++static int UVERBS_HANDLER(BNXT_RE_METHOD_DBR_ALLOC)(struct uverbs_attr_bundle *attrs)
 +{
-+	struct bnxt_qplib_q *sq = &qplqp->sq;
-+	struct bnxt_qplib_q *rq = &qplqp->rq;
-+	int rc;
++	struct bnxt_re_dv_db_region dbr = {};
++	struct bnxt_re_alloc_dbr_obj *obj;
++	struct bnxt_re_ucontext *uctx;
++	struct ib_ucontext *ib_uctx;
++	struct bnxt_qplib_dpi *dpi;
++	struct bnxt_re_dev *rdev;
++	struct ib_uobject *uobj;
++	u64 mmap_offset;
++	int ret;
 +
-+	if (qplqp->is_user)
-+		return 0;
++	ib_uctx = ib_uverbs_get_ucontext(attrs);
++	if (IS_ERR(ib_uctx))
++		return PTR_ERR(ib_uctx);
 +
-+	rc = bnxt_qplib_alloc_init_swq(sq);
-+	if (rc)
-+		return rc;
++	uctx = container_of(ib_uctx, struct bnxt_re_ucontext, ib_uctx);
++	rdev = uctx->rdev;
++	uobj = uverbs_attr_get_uobject(attrs, BNXT_RE_DV_ALLOC_DBR_HANDLE);
 +
-+	if (!qplqp->srq) {
-+		rc = bnxt_qplib_alloc_init_swq(rq);
-+		if (rc)
-+			goto free_sq_swq;
++	obj = kzalloc(sizeof(*obj), GFP_KERNEL);
++	if (!obj)
++		return -ENOMEM;
++
++	dpi = &obj->dpi;
++	ret = bnxt_qplib_alloc_uc_dpi(&rdev->qplib_res, dpi);
++	if (ret)
++		goto free_mem;
++
++	obj->entry = bnxt_re_mmap_entry_insert(uctx, 0, BNXT_RE_MMAP_UC_DB,
++					       &mmap_offset);
++	if (!obj->entry) {
++		ret = -ENOMEM;
++		goto free_dpi;
 +	}
++
++	obj->rdev = rdev;
++	dbr.umdbr = dpi->umdbr;
++	dbr.dpi = dpi->dpi;
++
++	ret = uverbs_copy_to_struct_or_zero(attrs, BNXT_RE_DV_ALLOC_DBR_ATTR,
++					    &dbr, sizeof(dbr));
++	if (ret)
++		goto free_entry;
++
++	ret = uverbs_copy_to(attrs, BNXT_RE_DV_ALLOC_DBR_OFFSET,
++			     &mmap_offset, sizeof(mmap_offset));
++	if (ret)
++		goto free_entry;
++
++	uobj->object = obj;
++	uverbs_finalize_uobj_create(attrs, BNXT_RE_DV_ALLOC_DBR_HANDLE);
++	return 0;
++free_entry:
++	rdma_user_mmap_entry_remove(&obj->entry->rdma_entry);
++free_dpi:
++	bnxt_qplib_free_uc_dpi(&rdev->qplib_res, dpi);
++free_mem:
++	kfree(obj);
++	return ret;
++}
++
++static int bnxt_re_dv_dbr_cleanup(struct ib_uobject *uobject,
++				  enum rdma_remove_reason why,
++				  struct uverbs_attr_bundle *attrs)
++{
++	struct bnxt_re_alloc_dbr_obj *obj = uobject->object;
++	struct bnxt_re_dev *rdev = obj->rdev;
++
++	rdma_user_mmap_entry_remove(&obj->entry->rdma_entry);
++	bnxt_qplib_free_uc_dpi(&rdev->qplib_res, &obj->dpi);
++	kfree(obj);
++	return 0;
++}
++
++static int UVERBS_HANDLER(BNXT_RE_METHOD_DBR_QUERY)(struct uverbs_attr_bundle *attrs)
++{
++	struct bnxt_re_dv_db_region dpi = {};
++	struct bnxt_re_ucontext *uctx;
++	struct ib_ucontext *ib_uctx;
++	int ret;
++
++	ib_uctx = ib_uverbs_get_ucontext(attrs);
++	if (IS_ERR(ib_uctx))
++		return PTR_ERR(ib_uctx);
++
++	uctx = container_of(ib_uctx, struct bnxt_re_ucontext, ib_uctx);
++	dpi.umdbr = uctx->dpi.umdbr;
++	dpi.dpi = uctx->dpi.dpi;
++
++	ret = uverbs_copy_to_struct_or_zero(attrs, BNXT_RE_DV_QUERY_DBR_ATTR,
++					    &dpi, sizeof(dpi));
++	if (ret)
++		return ret;
 +
 +	return 0;
-+free_sq_swq:
-+	kfree(sq->swq);
-+	return rc;
 +}
 +
-+static void bnxt_qp_init_dbinfo(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
-+{
-+	struct bnxt_qplib_q *sq = &qp->sq;
-+	struct bnxt_qplib_q *rq = &qp->rq;
++DECLARE_UVERBS_NAMED_METHOD(BNXT_RE_METHOD_DBR_ALLOC,
++			    UVERBS_ATTR_IDR(BNXT_RE_DV_ALLOC_DBR_HANDLE,
++					    BNXT_RE_OBJECT_DBR,
++					    UVERBS_ACCESS_NEW,
++					    UA_MANDATORY),
++			    UVERBS_ATTR_PTR_OUT(BNXT_RE_DV_ALLOC_DBR_ATTR,
++						UVERBS_ATTR_STRUCT(struct bnxt_re_dv_db_region,
++								   dbr),
++								   UA_MANDATORY),
++			    UVERBS_ATTR_PTR_IN(BNXT_RE_DV_ALLOC_DBR_OFFSET,
++					       UVERBS_ATTR_TYPE(u64),
++					       UA_MANDATORY));
 +
-+	sq->dbinfo.hwq = &sq->hwq;
-+	sq->dbinfo.xid = qp->id;
-+	sq->dbinfo.db = qp->dpi->dbr;
-+	sq->dbinfo.max_slot = bnxt_qplib_set_sq_max_slot(qp->wqe_mode);
-+	sq->dbinfo.flags = 0;
-+	if (rq->max_wqe) {
-+		rq->dbinfo.hwq = &rq->hwq;
-+		rq->dbinfo.xid = qp->id;
-+		rq->dbinfo.db = qp->dpi->dbr;
-+		rq->dbinfo.max_slot = bnxt_qplib_set_rq_max_slot(rq->wqe_size);
-+		rq->dbinfo.flags = 0;
-+	}
-+}
++DECLARE_UVERBS_NAMED_METHOD(BNXT_RE_METHOD_DBR_QUERY,
++			    UVERBS_ATTR_PTR_OUT(BNXT_RE_DV_QUERY_DBR_ATTR,
++						UVERBS_ATTR_STRUCT(struct bnxt_re_dv_db_region,
++								   dbr),
++						UA_MANDATORY));
 +
-+static void bnxt_qplib_init_psn_ptr(struct bnxt_qplib_qp *qp, int size)
-+{
-+	struct bnxt_qplib_hwq *sq_hwq;
-+	struct bnxt_qplib_q *sq;
-+	u64 fpsne, psn_pg;
-+	u16 indx_pad = 0;
++DECLARE_UVERBS_NAMED_METHOD_DESTROY(BNXT_RE_METHOD_DBR_FREE,
++				    UVERBS_ATTR_IDR(BNXT_RE_DV_FREE_DBR_HANDLE,
++						    BNXT_RE_OBJECT_DBR,
++						    UVERBS_ACCESS_DESTROY,
++						    UA_MANDATORY));
 +
-+	sq = &qp->sq;
-+	sq_hwq = &sq->hwq;
-+	/* First psn entry */
-+	fpsne = (u64)bnxt_qplib_get_qe(sq_hwq, sq_hwq->depth, &psn_pg);
-+	if (!IS_ALIGNED(fpsne, PAGE_SIZE))
-+		indx_pad = (fpsne & ~PAGE_MASK) / size;
-+	sq_hwq->pad_pgofft = indx_pad;
-+	sq_hwq->pad_pg = (u64 *)psn_pg;
-+	sq_hwq->pad_stride = size;
-+}
++DECLARE_UVERBS_NAMED_OBJECT(BNXT_RE_OBJECT_DBR,
++			    UVERBS_TYPE_ALLOC_IDR(bnxt_re_dv_dbr_cleanup),
++			    &UVERBS_METHOD(BNXT_RE_METHOD_DBR_ALLOC),
++			    &UVERBS_METHOD(BNXT_RE_METHOD_DBR_FREE),
++			    &UVERBS_METHOD(BNXT_RE_METHOD_DBR_QUERY));
 +
-+/* QP */
- int bnxt_qplib_create_qp1(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- {
--	struct bnxt_qplib_hwq_attr hwq_attr = {};
- 	struct bnxt_qplib_rcfw *rcfw = res->rcfw;
- 	struct creq_create_qp1_resp resp = {};
- 	struct bnxt_qplib_cmdqmsg msg = {};
-@@ -824,7 +884,6 @@ int bnxt_qplib_create_qp1(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	struct cmdq_create_qp1 req = {};
- 	struct bnxt_qplib_pbl *pbl;
- 	u32 qp_flags = 0;
--	u8 pg_sz_lvl;
- 	u32 tbl_indx;
- 	int rc;
- 
-@@ -838,26 +897,12 @@ int bnxt_qplib_create_qp1(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	req.qp_handle = cpu_to_le64(qp->qp_handle);
- 
- 	/* SQ */
--	hwq_attr.res = res;
--	hwq_attr.sginfo = &sq->sg_info;
--	hwq_attr.stride = sizeof(struct sq_sge);
--	hwq_attr.depth = bnxt_qplib_get_depth(sq, qp->wqe_mode, false);
--	hwq_attr.type = HWQ_TYPE_QUEUE;
--	rc = bnxt_qplib_alloc_init_hwq(&sq->hwq, &hwq_attr);
--	if (rc)
--		return rc;
--
--	rc = bnxt_qplib_alloc_init_swq(sq);
--	if (rc)
--		goto fail_sq;
-+	sq->max_sw_wqe = bnxt_qplib_get_depth(sq, qp->wqe_mode, true);
-+	req.sq_size = cpu_to_le32(sq->max_sw_wqe);
-+	req.sq_pg_size_sq_lvl = sq->hwq.pg_sz_lvl;
- 
--	req.sq_size = cpu_to_le32(bnxt_qplib_set_sq_size(sq, qp->wqe_mode));
- 	pbl = &sq->hwq.pbl[PBL_LVL_0];
- 	req.sq_pbl = cpu_to_le64(pbl->pg_map_arr[0]);
--	pg_sz_lvl = (bnxt_qplib_base_pg_size(&sq->hwq) <<
--		     CMDQ_CREATE_QP1_SQ_PG_SIZE_SFT);
--	pg_sz_lvl |= (sq->hwq.level & CMDQ_CREATE_QP1_SQ_LVL_MASK);
--	req.sq_pg_size_sq_lvl = pg_sz_lvl;
- 	req.sq_fwo_sq_sge =
- 		cpu_to_le16((sq->max_sge & CMDQ_CREATE_QP1_SQ_SGE_MASK) <<
- 			     CMDQ_CREATE_QP1_SQ_SGE_SFT);
-@@ -866,24 +911,10 @@ int bnxt_qplib_create_qp1(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	/* RQ */
- 	if (rq->max_wqe) {
- 		rq->dbinfo.flags = 0;
--		hwq_attr.res = res;
--		hwq_attr.sginfo = &rq->sg_info;
--		hwq_attr.stride = sizeof(struct sq_sge);
--		hwq_attr.depth = bnxt_qplib_get_depth(rq, qp->wqe_mode, false);
--		hwq_attr.type = HWQ_TYPE_QUEUE;
--		rc = bnxt_qplib_alloc_init_hwq(&rq->hwq, &hwq_attr);
--		if (rc)
--			goto sq_swq;
--		rc = bnxt_qplib_alloc_init_swq(rq);
--		if (rc)
--			goto fail_rq;
- 		req.rq_size = cpu_to_le32(rq->max_wqe);
- 		pbl = &rq->hwq.pbl[PBL_LVL_0];
- 		req.rq_pbl = cpu_to_le64(pbl->pg_map_arr[0]);
--		pg_sz_lvl = (bnxt_qplib_base_pg_size(&rq->hwq) <<
--			     CMDQ_CREATE_QP1_RQ_PG_SIZE_SFT);
--		pg_sz_lvl |= (rq->hwq.level & CMDQ_CREATE_QP1_RQ_LVL_MASK);
--		req.rq_pg_size_rq_lvl = pg_sz_lvl;
-+		req.rq_pg_size_rq_lvl = rq->hwq.pg_sz_lvl;
- 		req.rq_fwo_rq_sge =
- 			cpu_to_le16((rq->max_sge &
- 				     CMDQ_CREATE_QP1_RQ_SGE_MASK) <<
-@@ -894,11 +925,11 @@ int bnxt_qplib_create_qp1(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	rc = bnxt_qplib_alloc_qp_hdr_buf(res, qp);
- 	if (rc) {
- 		rc = -ENOMEM;
--		goto rq_rwq;
-+		return rc;
- 	}
- 	qp_flags |= CMDQ_CREATE_QP1_QP_FLAGS_RESERVED_LKEY_ENABLE;
- 	req.qp_flags = cpu_to_le32(qp_flags);
--	req.pd_id = cpu_to_le32(qp->pd->id);
-+	req.pd_id = cpu_to_le32(qp->pd_id);
- 
- 	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, NULL, sizeof(req), sizeof(resp), 0);
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, &msg);
-@@ -907,73 +938,39 @@ int bnxt_qplib_create_qp1(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 
- 	qp->id = le32_to_cpu(resp.xid);
- 	qp->cur_qp_state = CMDQ_MODIFY_QP_NEW_STATE_RESET;
--	qp->cctx = res->cctx;
--	sq->dbinfo.hwq = &sq->hwq;
--	sq->dbinfo.xid = qp->id;
--	sq->dbinfo.db = qp->dpi->dbr;
--	sq->dbinfo.max_slot = bnxt_qplib_set_sq_max_slot(qp->wqe_mode);
--	if (rq->max_wqe) {
--		rq->dbinfo.hwq = &rq->hwq;
--		rq->dbinfo.xid = qp->id;
--		rq->dbinfo.db = qp->dpi->dbr;
--		rq->dbinfo.max_slot = bnxt_qplib_set_rq_max_slot(rq->wqe_size);
--	}
-+
-+	rc = bnxt_re_setup_qp_swqs(qp);
-+	if (rc)
-+		goto destroy_qp;
-+	bnxt_qp_init_dbinfo(res, qp);
-+
- 	tbl_indx = map_qp_id_to_tbl_indx(qp->id, rcfw);
- 	rcfw->qp_tbl[tbl_indx].qp_id = qp->id;
- 	rcfw->qp_tbl[tbl_indx].qp_handle = (void *)qp;
- 
- 	return 0;
- 
-+destroy_qp:
-+	bnxt_qplib_destroy_qp(res, qp);
- fail:
- 	bnxt_qplib_free_qp_hdr_buf(res, qp);
--rq_rwq:
--	kfree(rq->swq);
--fail_rq:
--	bnxt_qplib_free_hwq(res, &rq->hwq);
--sq_swq:
--	kfree(sq->swq);
--fail_sq:
--	bnxt_qplib_free_hwq(res, &sq->hwq);
- 	return rc;
- }
- 
--static void bnxt_qplib_init_psn_ptr(struct bnxt_qplib_qp *qp, int size)
--{
--	struct bnxt_qplib_hwq *hwq;
--	struct bnxt_qplib_q *sq;
--	u64 fpsne, psn_pg;
--	u16 indx_pad = 0;
--
--	sq = &qp->sq;
--	hwq = &sq->hwq;
--	/* First psn entry */
--	fpsne = (u64)bnxt_qplib_get_qe(hwq, hwq->depth, &psn_pg);
--	if (!IS_ALIGNED(fpsne, PAGE_SIZE))
--		indx_pad = (fpsne & ~PAGE_MASK) / size;
--	hwq->pad_pgofft = indx_pad;
--	hwq->pad_pg = (u64 *)psn_pg;
--	hwq->pad_stride = size;
--}
--
- int bnxt_qplib_create_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- {
- 	struct bnxt_qplib_rcfw *rcfw = res->rcfw;
--	struct bnxt_qplib_hwq_attr hwq_attr = {};
--	struct bnxt_qplib_sg_info sginfo = {};
- 	struct creq_create_qp_resp resp = {};
- 	struct bnxt_qplib_cmdqmsg msg = {};
- 	struct bnxt_qplib_q *sq = &qp->sq;
- 	struct bnxt_qplib_q *rq = &qp->rq;
- 	struct cmdq_create_qp req = {};
--	int rc, req_size, psn_sz = 0;
--	struct bnxt_qplib_hwq *xrrq;
- 	struct bnxt_qplib_pbl *pbl;
- 	u32 qp_flags = 0;
--	u8 pg_sz_lvl;
- 	u32 tbl_indx;
- 	u16 nsge;
-+	int rc;
- 
--	qp->is_host_msn_tbl = _is_host_msn_table(res->dattr->dev_cap_flags2);
- 	sq->dbinfo.flags = 0;
- 	bnxt_qplib_rcfw_cmd_prep((struct cmdq_base *)&req,
- 				 CMDQ_BASE_OPCODE_CREATE_QP,
-@@ -985,56 +982,10 @@ int bnxt_qplib_create_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	req.qp_handle = cpu_to_le64(qp->qp_handle);
- 
- 	/* SQ */
--	if (qp->type == CMDQ_CREATE_QP_TYPE_RC) {
--		psn_sz = bnxt_qplib_is_chip_gen_p5_p7(res->cctx) ?
--			 sizeof(struct sq_psn_search_ext) :
--			 sizeof(struct sq_psn_search);
--
--		if (qp->is_host_msn_tbl) {
--			psn_sz = sizeof(struct sq_msn_search);
--			qp->msn = 0;
--		}
--	}
--
--	hwq_attr.res = res;
--	hwq_attr.sginfo = &sq->sg_info;
--	hwq_attr.stride = sizeof(struct sq_sge);
--	hwq_attr.depth = bnxt_qplib_get_depth(sq, qp->wqe_mode, true);
--	hwq_attr.aux_stride = psn_sz;
--	hwq_attr.aux_depth = psn_sz ? bnxt_qplib_set_sq_size(sq, qp->wqe_mode)
--				    : 0;
--	/* Update msn tbl size */
--	if (qp->is_host_msn_tbl && psn_sz) {
--		if (qp->wqe_mode == BNXT_QPLIB_WQE_MODE_STATIC)
--			hwq_attr.aux_depth =
--				roundup_pow_of_two(bnxt_qplib_set_sq_size(sq, qp->wqe_mode));
--		else
--			hwq_attr.aux_depth =
--				roundup_pow_of_two(bnxt_qplib_set_sq_size(sq, qp->wqe_mode)) / 2;
--		qp->msn_tbl_sz = hwq_attr.aux_depth;
--		qp->msn = 0;
--	}
--
--	hwq_attr.type = HWQ_TYPE_QUEUE;
--	rc = bnxt_qplib_alloc_init_hwq(&sq->hwq, &hwq_attr);
--	if (rc)
--		return rc;
--
--	if (!sq->hwq.is_user) {
--		rc = bnxt_qplib_alloc_init_swq(sq);
--		if (rc)
--			goto fail_sq;
--
--		if (psn_sz)
--			bnxt_qplib_init_psn_ptr(qp, psn_sz);
--	}
--	req.sq_size = cpu_to_le32(bnxt_qplib_set_sq_size(sq, qp->wqe_mode));
-+	req.sq_size = cpu_to_le32(sq->max_sw_wqe);
- 	pbl = &sq->hwq.pbl[PBL_LVL_0];
- 	req.sq_pbl = cpu_to_le64(pbl->pg_map_arr[0]);
--	pg_sz_lvl = (bnxt_qplib_base_pg_size(&sq->hwq) <<
--		     CMDQ_CREATE_QP_SQ_PG_SIZE_SFT);
--	pg_sz_lvl |= (sq->hwq.level & CMDQ_CREATE_QP_SQ_LVL_MASK);
--	req.sq_pg_size_sq_lvl = pg_sz_lvl;
-+	req.sq_pg_size_sq_lvl = sq->hwq.pg_sz_lvl;
- 	req.sq_fwo_sq_sge =
- 		cpu_to_le16(((sq->max_sge & CMDQ_CREATE_QP_SQ_SGE_MASK) <<
- 			     CMDQ_CREATE_QP_SQ_SGE_SFT) | 0);
-@@ -1043,29 +994,10 @@ int bnxt_qplib_create_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	/* RQ */
- 	if (!qp->srq) {
- 		rq->dbinfo.flags = 0;
--		hwq_attr.res = res;
--		hwq_attr.sginfo = &rq->sg_info;
--		hwq_attr.stride = sizeof(struct sq_sge);
--		hwq_attr.depth = bnxt_qplib_get_depth(rq, qp->wqe_mode, false);
--		hwq_attr.aux_stride = 0;
--		hwq_attr.aux_depth = 0;
--		hwq_attr.type = HWQ_TYPE_QUEUE;
--		rc = bnxt_qplib_alloc_init_hwq(&rq->hwq, &hwq_attr);
--		if (rc)
--			goto sq_swq;
--		if (!rq->hwq.is_user) {
--			rc = bnxt_qplib_alloc_init_swq(rq);
--			if (rc)
--				goto fail_rq;
--		}
--
- 		req.rq_size = cpu_to_le32(rq->max_wqe);
- 		pbl = &rq->hwq.pbl[PBL_LVL_0];
- 		req.rq_pbl = cpu_to_le64(pbl->pg_map_arr[0]);
--		pg_sz_lvl = (bnxt_qplib_base_pg_size(&rq->hwq) <<
--			     CMDQ_CREATE_QP_RQ_PG_SIZE_SFT);
--		pg_sz_lvl |= (rq->hwq.level & CMDQ_CREATE_QP_RQ_LVL_MASK);
--		req.rq_pg_size_rq_lvl = pg_sz_lvl;
-+		req.rq_pg_size_rq_lvl = rq->hwq.pg_sz_lvl;
- 		nsge = (qp->wqe_mode == BNXT_QPLIB_WQE_MODE_STATIC) ?
- 			6 : rq->max_sge;
- 		req.rq_fwo_rq_sge =
-@@ -1091,68 +1023,34 @@ int bnxt_qplib_create_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	req.qp_flags = cpu_to_le32(qp_flags);
- 
- 	/* ORRQ and IRRQ */
--	if (psn_sz) {
--		xrrq = &qp->orrq;
--		xrrq->max_elements =
--			ORD_LIMIT_TO_ORRQ_SLOTS(qp->max_rd_atomic);
--		req_size = xrrq->max_elements *
--			   BNXT_QPLIB_MAX_ORRQE_ENTRY_SIZE + PAGE_SIZE - 1;
--		req_size &= ~(PAGE_SIZE - 1);
--		sginfo.pgsize = req_size;
--		sginfo.pgshft = PAGE_SHIFT;
--
--		hwq_attr.res = res;
--		hwq_attr.sginfo = &sginfo;
--		hwq_attr.depth = xrrq->max_elements;
--		hwq_attr.stride = BNXT_QPLIB_MAX_ORRQE_ENTRY_SIZE;
--		hwq_attr.aux_stride = 0;
--		hwq_attr.aux_depth = 0;
--		hwq_attr.type = HWQ_TYPE_CTX;
--		rc = bnxt_qplib_alloc_init_hwq(xrrq, &hwq_attr);
--		if (rc)
--			goto rq_swq;
--		pbl = &xrrq->pbl[PBL_LVL_0];
--		req.orrq_addr = cpu_to_le64(pbl->pg_map_arr[0]);
--
--		xrrq = &qp->irrq;
--		xrrq->max_elements = IRD_LIMIT_TO_IRRQ_SLOTS(
--						qp->max_dest_rd_atomic);
--		req_size = xrrq->max_elements *
--			   BNXT_QPLIB_MAX_IRRQE_ENTRY_SIZE + PAGE_SIZE - 1;
--		req_size &= ~(PAGE_SIZE - 1);
--		sginfo.pgsize = req_size;
--		hwq_attr.depth =  xrrq->max_elements;
--		hwq_attr.stride = BNXT_QPLIB_MAX_IRRQE_ENTRY_SIZE;
--		rc = bnxt_qplib_alloc_init_hwq(xrrq, &hwq_attr);
--		if (rc)
--			goto fail_orrq;
--
--		pbl = &xrrq->pbl[PBL_LVL_0];
--		req.irrq_addr = cpu_to_le64(pbl->pg_map_arr[0]);
-+	if (qp->psn_sz) {
-+		req.orrq_addr = cpu_to_le64(bnxt_qplib_get_base_addr(&qp->orrq));
-+		req.irrq_addr = cpu_to_le64(bnxt_qplib_get_base_addr(&qp->irrq));
- 	}
--	req.pd_id = cpu_to_le32(qp->pd->id);
-+
-+	req.pd_id = cpu_to_le32(qp->pd_id);
- 
- 	bnxt_qplib_fill_cmdqmsg(&msg, &req, &resp, NULL, sizeof(req),
- 				sizeof(resp), 0);
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, &msg);
- 	if (rc)
--		goto fail;
-+		return rc;
- 
- 	qp->id = le32_to_cpu(resp.xid);
-+
-+	if (!qp->is_user) {
-+		rc = bnxt_re_setup_qp_swqs(qp);
-+		if (rc)
-+			goto destroy_qp;
-+	}
-+	bnxt_qp_init_dbinfo(res, qp);
-+	if (qp->psn_sz)
-+		bnxt_qplib_init_psn_ptr(qp, qp->psn_sz);
-+
- 	qp->cur_qp_state = CMDQ_MODIFY_QP_NEW_STATE_RESET;
- 	INIT_LIST_HEAD(&qp->sq_flush);
- 	INIT_LIST_HEAD(&qp->rq_flush);
- 	qp->cctx = res->cctx;
--	sq->dbinfo.hwq = &sq->hwq;
--	sq->dbinfo.xid = qp->id;
--	sq->dbinfo.db = qp->dpi->dbr;
--	sq->dbinfo.max_slot = bnxt_qplib_set_sq_max_slot(qp->wqe_mode);
--	if (rq->max_wqe) {
--		rq->dbinfo.hwq = &rq->hwq;
--		rq->dbinfo.xid = qp->id;
--		rq->dbinfo.db = qp->dpi->dbr;
--		rq->dbinfo.max_slot = bnxt_qplib_set_rq_max_slot(rq->wqe_size);
--	}
- 	spin_lock_bh(&rcfw->tbl_lock);
- 	tbl_indx = map_qp_id_to_tbl_indx(qp->id, rcfw);
- 	rcfw->qp_tbl[tbl_indx].qp_id = qp->id;
-@@ -1160,18 +1058,8 @@ int bnxt_qplib_create_qp(struct bnxt_qplib_res *res, struct bnxt_qplib_qp *qp)
- 	spin_unlock_bh(&rcfw->tbl_lock);
- 
- 	return 0;
--fail:
--	bnxt_qplib_free_hwq(res, &qp->irrq);
--fail_orrq:
--	bnxt_qplib_free_hwq(res, &qp->orrq);
--rq_swq:
--	kfree(rq->swq);
--fail_rq:
--	bnxt_qplib_free_hwq(res, &rq->hwq);
--sq_swq:
--	kfree(sq->swq);
--fail_sq:
--	bnxt_qplib_free_hwq(res, &sq->hwq);
-+destroy_qp:
-+	bnxt_qplib_destroy_qp(res, qp);
- 	return rc;
- }
- 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.h b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-index b990d0c0ce1a..1fd4deac3eff 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.h
-@@ -268,7 +268,7 @@ struct bnxt_qplib_q {
+ const struct uapi_definition bnxt_re_uapi_defs[] = {
+ 	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_ALLOC_PAGE),
+ 	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_NOTIFY_DRV),
+ 	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_GET_TOGGLE_MEM),
++	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_DBR),
++	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_UMEM),
+ 	{}
+ };
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+index a11f56730a31..1ff89192a728 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+@@ -113,6 +113,7 @@ struct bnxt_re_cq {
+ 	int			resize_cqe;
+ 	void			*uctx_cq_page;
+ 	struct hlist_node	hash_entry;
++	struct bnxt_re_ucontext *uctx;
  };
  
- struct bnxt_qplib_qp {
--	struct bnxt_qplib_pd		*pd;
-+	u32				pd_id;
- 	struct bnxt_qplib_dpi		*dpi;
- 	struct bnxt_qplib_chip_ctx	*cctx;
- 	u64				qp_handle;
-@@ -279,6 +279,7 @@ struct bnxt_qplib_qp {
- 	u8				wqe_mode;
- 	u8				state;
- 	u8				cur_qp_state;
-+	u8				is_user;
- 	u64				modify_flags;
- 	u32				max_inline_data;
- 	u32				mtu;
-@@ -343,9 +344,11 @@ struct bnxt_qplib_qp {
- 	struct list_head		rq_flush;
- 	u32				msn;
- 	u32				msn_tbl_sz;
-+	u32				psn_sz;
- 	bool				is_host_msn_tbl;
- 	u8				tos_dscp;
- 	u32				ugid_index;
-+	u16				dev_cap_flags;
+ struct bnxt_re_mr {
+@@ -164,6 +165,13 @@ struct bnxt_re_user_mmap_entry {
+ 	u8 mmap_flag;
  };
  
- #define BNXT_RE_MAX_MSG_SIZE	0x80000000
-@@ -613,6 +616,11 @@ static inline void bnxt_qplib_swq_mod_start(struct bnxt_qplib_q *que, u32 idx)
- 	que->swq_start = que->swq[idx].next_idx;
++struct bnxt_re_alloc_dbr_obj {
++	struct bnxt_re_dev *rdev;
++	struct bnxt_re_dv_db_region attr;
++	struct bnxt_qplib_dpi dpi;
++	struct bnxt_re_user_mmap_entry *entry;
++};
++
+ struct bnxt_re_flow {
+ 	struct ib_flow		ib_flow;
+ 	struct bnxt_re_dev	*rdev;
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+index 875d7b52c06a..30cc2d64a9ae 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+@@ -685,6 +685,49 @@ static int bnxt_qplib_alloc_pd_tbl(struct bnxt_qplib_res *res,
  }
  
-+static inline u32 bnxt_qplib_get_stride(void)
+ /* DPIs */
++int bnxt_qplib_alloc_uc_dpi(struct bnxt_qplib_res *res, struct bnxt_qplib_dpi *dpi)
 +{
-+	return sizeof(struct sq_sge);
++	struct bnxt_qplib_dpi_tbl *dpit = &res->dpi_tbl;
++	struct bnxt_qplib_reg_desc *reg;
++	u32 bit_num;
++	int rc = 0;
++
++	reg = &dpit->wcreg;
++	mutex_lock(&res->dpi_tbl_lock);
++	bit_num = find_first_bit(dpit->tbl, dpit->max);
++	if (bit_num >= dpit->max) {
++		rc = -ENOMEM;
++		goto unlock;
++	}
++	/* Found unused DPI */
++	clear_bit(bit_num, dpit->tbl);
++	dpi->bit = bit_num;
++	dpi->dpi = bit_num + (reg->offset - dpit->ucreg.offset) / PAGE_SIZE;
++	dpi->umdbr = reg->bar_base + reg->offset + bit_num * PAGE_SIZE;
++unlock:
++	mutex_unlock(&res->dpi_tbl_lock);
++	return rc;
 +}
 +
- static inline u32 bnxt_qplib_get_depth(struct bnxt_qplib_q *que, u8 wqe_mode, bool is_sq)
- {
- 	u32 slots;
++int bnxt_qplib_free_uc_dpi(struct bnxt_qplib_res *res, struct bnxt_qplib_dpi *dpi)
++{
++	struct bnxt_qplib_dpi_tbl *dpit = &res->dpi_tbl;
++	int rc = 0;
++
++	mutex_lock(&res->dpi_tbl_lock);
++	if (dpi->bit >= dpit->max) {
++		rc = -EINVAL;
++		goto unlock;
++	}
++
++	if (test_and_set_bit(dpi->bit, dpit->tbl))
++		rc = -EINVAL;
++	memset(dpi, 0, sizeof(*dpi));
++unlock:
++	mutex_unlock(&res->dpi_tbl_lock);
++	return rc;
++}
++
+ int bnxt_qplib_alloc_dpi(struct bnxt_qplib_res *res,
+ 			 struct bnxt_qplib_dpi *dpi,
+ 			 void *app, u8 type)
 diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.h b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-index 2ea3b7f232a3..ccdab938d707 100644
+index ccdab938d707..3a8162ef4c33 100644
 --- a/drivers/infiniband/hw/bnxt_re/qplib_res.h
 +++ b/drivers/infiniband/hw/bnxt_re/qplib_res.h
-@@ -198,6 +198,7 @@ struct bnxt_qplib_hwq {
- 	u32				cons;		/* raw */
- 	u8				cp_bit;
- 	u8				is_user;
-+	u8				pg_sz_lvl;
- 	u64				*pad_pg;
- 	u32				pad_stride;
- 	u32				pad_pgofft;
-@@ -358,6 +359,11 @@ static inline u8 bnxt_qplib_get_ring_type(struct bnxt_qplib_chip_ctx *cctx)
- 	       RING_ALLOC_REQ_RING_TYPE_ROCE_CMPL;
- }
+@@ -436,6 +436,10 @@ int bnxt_qplib_alloc_dpi(struct bnxt_qplib_res *res,
+ 			 void *app, u8 type);
+ int bnxt_qplib_dealloc_dpi(struct bnxt_qplib_res *res,
+ 			   struct bnxt_qplib_dpi *dpi);
++int bnxt_qplib_alloc_uc_dpi(struct bnxt_qplib_res *res,
++			    struct bnxt_qplib_dpi *dpi);
++int bnxt_qplib_free_uc_dpi(struct bnxt_qplib_res *res,
++			   struct bnxt_qplib_dpi *dpi);
+ void bnxt_qplib_cleanup_res(struct bnxt_qplib_res *res);
+ int bnxt_qplib_init_res(struct bnxt_qplib_res *res);
+ void bnxt_qplib_free_res(struct bnxt_qplib_res *res);
+diff --git a/include/uapi/rdma/bnxt_re-abi.h b/include/uapi/rdma/bnxt_re-abi.h
+index faa9d62b3b30..59a0b030de04 100644
+--- a/include/uapi/rdma/bnxt_re-abi.h
++++ b/include/uapi/rdma/bnxt_re-abi.h
+@@ -162,6 +162,8 @@ enum bnxt_re_objects {
+ 	BNXT_RE_OBJECT_ALLOC_PAGE = (1U << UVERBS_ID_NS_SHIFT),
+ 	BNXT_RE_OBJECT_NOTIFY_DRV,
+ 	BNXT_RE_OBJECT_GET_TOGGLE_MEM,
++	BNXT_RE_OBJECT_DBR,
++	BNXT_RE_OBJECT_UMEM,
+ };
  
-+static inline u64 bnxt_qplib_get_base_addr(struct bnxt_qplib_hwq *hwq)
-+{
-+	return hwq->pbl[PBL_LVL_0].pg_map_arr[0];
-+}
+ enum bnxt_re_alloc_page_type {
+@@ -215,4 +217,51 @@ enum bnxt_re_toggle_mem_methods {
+ 	BNXT_RE_METHOD_GET_TOGGLE_MEM = (1U << UVERBS_ID_NS_SHIFT),
+ 	BNXT_RE_METHOD_RELEASE_TOGGLE_MEM,
+ };
 +
- static inline u8 bnxt_qplib_base_pg_size(struct bnxt_qplib_hwq *hwq)
- {
- 	u8 pg_size = BNXT_QPLIB_HWRM_PG_SIZE_4K;
++struct bnxt_re_dv_db_region {
++	__u32 dbr_handle;
++	__u32 dpi;
++	__u64 umdbr;
++	void *dbr;
++	__aligned_u64 comp_mask;
++};
++
++enum bnxt_re_obj_dbr_alloc_attrs {
++	BNXT_RE_DV_ALLOC_DBR_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
++	BNXT_RE_DV_ALLOC_DBR_ATTR,
++	BNXT_RE_DV_ALLOC_DBR_OFFSET,
++};
++
++enum bnxt_re_obj_dbr_free_attrs {
++	BNXT_RE_DV_FREE_DBR_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
++};
++
++enum bnxt_re_obj_dbr_query_attrs {
++	BNXT_RE_DV_QUERY_DBR_ATTR = (1U << UVERBS_ID_NS_SHIFT),
++};
++
++enum bnxt_re_obj_dpi_methods {
++	BNXT_RE_METHOD_DBR_ALLOC = (1U << UVERBS_ID_NS_SHIFT),
++	BNXT_RE_METHOD_DBR_FREE,
++	BNXT_RE_METHOD_DBR_QUERY,
++};
++
++enum bnxt_re_dv_umem_reg_attrs {
++	BNXT_RE_UMEM_OBJ_REG_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
++	BNXT_RE_UMEM_OBJ_REG_ADDR,
++	BNXT_RE_UMEM_OBJ_REG_LEN,
++	BNXT_RE_UMEM_OBJ_REG_ACCESS,
++	BNXT_RE_UMEM_OBJ_REG_DMABUF_FD,
++	BNXT_RE_UMEM_OBJ_REG_PGSZ_BITMAP,
++};
++
++enum bnxt_re_dv_umem_dereg_attrs {
++	BNXT_RE_UMEM_OBJ_DEREG_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
++};
++
++enum bnxt_re_dv_umem_methods {
++	BNXT_RE_METHOD_UMEM_REG = (1U << UVERBS_ID_NS_SHIFT),
++	BNXT_RE_METHOD_UMEM_DEREG,
++};
++
+ #endif /* __BNXT_RE_UVERBS_ABI_H__*/
 -- 
 2.51.2.636.ga99f379adf
 
