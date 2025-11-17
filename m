@@ -1,48 +1,38 @@
-Return-Path: <linux-rdma+bounces-14537-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14539-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86DE8C65055
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Nov 2025 17:02:43 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98319C653CC
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Nov 2025 17:49:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sea.lore.kernel.org (Postfix) with ESMTPS id 4695D28FA1
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Nov 2025 16:02:42 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B630D4E258A
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Nov 2025 16:48:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B464E2BEC4A;
-	Mon, 17 Nov 2025 16:02:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HRN9ah8J"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 239E92F49F4;
+	Mon, 17 Nov 2025 16:48:25 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from vps-29453c8d.vps.ovh.ca (mail.tendersportal.com [158.69.221.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 691CF275112;
-	Mon, 17 Nov 2025 16:02:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 950422F3C3D
+	for <linux-rdma@vger.kernel.org>; Mon, 17 Nov 2025 16:48:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=158.69.221.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763395356; cv=none; b=jSDtHw/hdbkl6T7c5Dc6HUHPxnEZrpa2Cj5uMFUeoDBJ7EvP2sRN5HgjGc9803MPawbwjcKN8M7rBCxq2423TWWt663Oa/hR2aJHWRNtxWV8aoTx0W+QiOcrj7Y3m2jjLoLi+efgrSQm4dxxayRsYkizS/t5Nlmudb+Jclcn6k4=
+	t=1763398104; cv=none; b=Vf2RwsNxcurFIaAjvl3SGW/GvInmAVEmhRGehEQ1d4/83MIz1HlJU0blQ2W0MS+YldxeoTlW/7njyL2zlJsQcCdOqzo3FP33EuVwkfO7GAW7I7BmQGCIA3l2FpchnIDgUGJaEfaVf1R3xntaljr9dblege2jvxOx6BPctlrIrfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763395356; c=relaxed/simple;
-	bh=Jkvmu4Q+7pA4zSpi9OFk7bJIcNsGVtBgomWoRKHdM8A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BiOgSsI2eqbl74C4bSuy/TPaZTkMRXo/4xY7Z8GI1w2F788Cb2YwXBG61+3gwQ+Hxxo+C4JBctF9ZT0nW16cy9taYfEegJ3hkilbIqEjJES7qjcaFTpZfP46+m86Ah20yV7O0DopogY9DbvwpPZfmi8CyOQUl960R1kn4USabnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HRN9ah8J; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B502C113D0;
-	Mon, 17 Nov 2025 16:02:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763395356;
-	bh=Jkvmu4Q+7pA4zSpi9OFk7bJIcNsGVtBgomWoRKHdM8A=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=HRN9ah8J0i3UDd6igt5wSrmwF/x03+POYYvvNYin0MqGa7LWADEznY83zaPtwUDRs
-	 ScnopSM94D7deN4mSE1KVPZzP934yzIg+LXrta6j2nrouhyFH8av2u/a0qRtna5hcS
-	 25x8yxJl/uczThIH67MpaOJdwwfBJbiJeFru+UKaP8JGt3PlkKh4hRQ652Cb9cKrPs
-	 E2r8M8rZOR3hxKd5EgzdfshSFNvH8gXZCEuOUMYRte20uezKAeZzYovSXDLoq6Ifp0
-	 HcHsxX7esNJloZeJSP6iRggCBQFjamV20khnzZ5sVK1x/n1QLcw8tOqAiGCv274hvX
-	 8cuBHc5tDmKWQ==
-Message-ID: <f25a95a4-5371-40bd-8cc8-d5f7ede9a6ac@kernel.org>
-Date: Mon, 17 Nov 2025 17:02:24 +0100
+	s=arc-20240116; t=1763398104; c=relaxed/simple;
+	bh=vPlmLc8BCr2EG7YbQ2RLyiDzvm3J5IqXYLyUmBcIIbY=;
+	h=Message-ID:Date:MIME-Version:From:To:Subject:Content-Type; b=ceRDiflDSWUbj65I4nefZLJeB4GlIcfRyW+aP01XbwMnhJ1n7rJgxIhHTtgNweIl0QkXzBpt0khz7SIJ20qaF12stlgTNmTyXKtwLrd2lPzrOuh4XwKU7onmsJrYSnT7Lj8GNH+dqvFiUnOYkT9nMfj+v+rXgvbxMn66AL1fEMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=qatarairwaybids.com; spf=pass smtp.mailfrom=qatarairwaybids.com; arc=none smtp.client-ip=158.69.221.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=qatarairwaybids.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qatarairwaybids.com
+Received: from [10.5.18.69] (unknown [140.228.24.194])
+	by vps-29453c8d.vps.ovh.ca (Postfix) with ESMTPSA id ACBD448EC1
+	for <linux-rdma@vger.kernel.org>; Mon, 17 Nov 2025 16:43:06 +0000 (UTC)
+Message-ID: <c45f27c0-8536-451c-9791-2b2173216f7c@qatarairwaybids.com>
+Date: Mon, 17 Nov 2025 11:43:03 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -50,79 +40,32 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC mm v6] mm: introduce a new page type for page pool in page
- type
-To: Byungchul Park <byungchul@sk.com>, linux-mm@kvack.org,
- netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
- harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
- davem@davemloft.net, kuba@kernel.org, john.fastabend@gmail.com,
- sdf@fomichev.me, saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com,
- mbloch@nvidia.com, andrew+netdev@lunn.ch, edumazet@google.com,
- pabeni@redhat.com, akpm@linux-foundation.org, david@redhat.com,
- lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
- rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org,
- jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com,
- ilias.apalodimas@linaro.org, willy@infradead.org, brauner@kernel.org,
- kas@kernel.org, yuzhao@google.com, usamaarif642@gmail.com,
- baolin.wang@linux.alibaba.com, almasrymina@google.com, toke@redhat.com,
- asml.silence@gmail.com, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
- sfr@canb.auug.org.au, dw@davidwei.uk, ap420073@gmail.com, dtatulea@nvidia.com
-References: <20251117052041.52143-1-byungchul@sk.com>
 Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <20251117052041.52143-1-byungchul@sk.com>
+Organization: Qatar Airways
+From: Qatar Airways <register@qatarairwaybids.com>
+To: linux-rdma@vger.kernel.org
+Subject: Vendor Registration - Qatar Airways
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
+Dear Sir/Madam,
 
-On 17/11/2025 06.20, Byungchul Park wrote:
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 600d9e981c23..01dd14123065 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -1041,7 +1041,6 @@ static inline bool page_expected_state(struct page *page,
->   #ifdef CONFIG_MEMCG
->   			page->memcg_data |
->   #endif
-> -			page_pool_page_is_pp(page) |
->   			(page->flags.f & check_flags)))
->   		return false;
->   
-> @@ -1068,8 +1067,6 @@ static const char *page_bad_reason(struct page *page, unsigned long flags)
->   	if (unlikely(page->memcg_data))
->   		bad_reason = "page still charged to cgroup";
->   #endif
-> -	if (unlikely(page_pool_page_is_pp(page)))
-> -		bad_reason = "page_pool leak";
->   	return bad_reason;
->   }
+We hope this message finds you well.
 
-This code have helped us catch leaks in the past.
-When this happens the result is that the page is marked as a bad page.
+Qatar Airways is pleased to announce the launch of its 2026/27 Expansion 
+Program. We are currently seeking to engage with qualified Suppliers, 
+Vendors, Manufacturers, and Contractors across a wide range of sectors.
 
->   
-> @@ -1378,9 +1375,12 @@ __always_inline bool free_pages_prepare(struct page *page,
->   		mod_mthp_stat(order, MTHP_STAT_NR_ANON, -1);
->   		folio->mapping = NULL;
->   	}
-> -	if (unlikely(page_has_type(page)))
-> +	if (unlikely(page_has_type(page))) {
-> +		/* networking expects to clear its page type before releasing */
-> +		WARN_ON_ONCE(PageNetpp(page));
->   		/* Reset the page_type (which overlays _mapcount) */
->   		page->page_type = UINT_MAX;
-> +	}
->   
->   	if (is_check_pages_enabled()) {
->   		if (free_page_is_bad(page))
+If your organization is interested in participating in this exciting 
+initiative, we invite you to request our Vendor Application Form and 
+submit your Expression of Interest (EOI) for evaluation.
 
-What happens to the page? ... when it gets marked with:
-   page->page_type = UINT_MAX
+We look forward to the opportunity to collaborate and achieve mutual 
+growth through this strategic partnership.
+Best regards,
 
-Will it get freed and allowed to be used by others?
-- if so it can result in other hard-to-catch bugs
-
---Jesper
-
+Hamza Mohammed Sahib
+Procurement & Logistics Manager
+Phone/ WhatsApp: +971-56-778-2809
+Qatar Airways
 
