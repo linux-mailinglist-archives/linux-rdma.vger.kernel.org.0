@@ -1,195 +1,111 @@
-Return-Path: <linux-rdma+bounces-14583-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14584-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 416C7C66D1E
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Nov 2025 02:19:10 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04A21C66D63
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Nov 2025 02:30:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2EF584EBFB0
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Nov 2025 01:18:54 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A76E234C1EE
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Nov 2025 01:30:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA11B2EBBBC;
-	Tue, 18 Nov 2025 01:18:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B0341F8BD6;
+	Tue, 18 Nov 2025 01:30:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="QRo1qMrO"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 384212116E0;
-	Tue, 18 Nov 2025 01:18:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from mail-m1973177.qiye.163.com (mail-m1973177.qiye.163.com [220.197.31.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EE621BFE00;
+	Tue, 18 Nov 2025 01:30:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763428727; cv=none; b=Ru/wMQMPXHWe2KSz8Xx3GyL312250Sg9dVHg420HBa2VctqVDXmayi5bQggL/lBRTkT9zztybg/NAX4Xmstgy6kpgI6Fwow8HzwxO/CCUb2QdYztpwRF2EjmnYwyDkodwFoxF0QBdgRx/Q0tp3bS8bsbysrf32214MAEMfIT28M=
+	t=1763429445; cv=none; b=RWbKqOLn3XP5xlKuEkD59aP2k3S7bA8L16KJnJV2q/G7EGdcsgonbo3HJnmu0/gKk/cVr6fyoa/HBBcWA5JKoPl1IO2q0p8OiBHI0ynOaOWWwMvH/uLj9FPGO4lhBHaEvC6yY7XIj1ezEqiYjvTbif09ZF+LQRe1m8W8svtyXVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763428727; c=relaxed/simple;
-	bh=jD+OLEZrx5faVBOWN3bNyGiiTb48d/+g0wALvbyUffw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H83xNycZK6dQUckdENoGh+8ZM9GtzF51ywAUvFhwlAVWrHQPoyoQ4WoZ/ea7sFUPwySlewe0r0gda4U5fpkTYwAWKJidSy8Y/+oAM+LJz+V8wOaMUpyGHFtfwtjoZSiTRt3ofPIrSXqQPkFzwtz/5GEv1s/yDMcSrgqqFbTR66c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-c45ff70000001609-12-691bc96c1cc2
-Date: Tue, 18 Nov 2025 10:18:31 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: "David Hildenbrand (Red Hat)" <david@kernel.org>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, linux-mm@kvack.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel_team@skhynix.com, harry.yoo@oracle.com, ast@kernel.org,
-	daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
-	john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
-	leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
-	andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
-	akpm@linux-foundation.org, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, horms@kernel.org,
-	jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com,
-	ilias.apalodimas@linaro.org, willy@infradead.org,
-	brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
-	usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
-	almasrymina@google.com, toke@redhat.com, asml.silence@gmail.com,
-	bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
-	sfr@canb.auug.org.au, dw@davidwei.uk, ap420073@gmail.com,
-	dtatulea@nvidia.com
-Subject: Re: [RFC mm v6] mm: introduce a new page type for page pool in page
- type
-Message-ID: <20251118011831.GA7184@system.software.com>
-References: <20251117052041.52143-1-byungchul@sk.com>
- <f25a95a4-5371-40bd-8cc8-d5f7ede9a6ac@kernel.org>
- <e470c73a-9867-4387-9a9a-a63cd3b2654f@kernel.org>
- <20251118010735.GA73807@system.software.com>
+	s=arc-20240116; t=1763429445; c=relaxed/simple;
+	bh=7+TFWmZmNoQgAfLcvdsXgt+UNGSQvvvPnRu+oq/s7IY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CVUJTT1XkWSwesDaaNbUaLmX1UJYLyX9ajiRIau9jAloX8MkX5gY3n6lS4MLWBZFMk7pYZ6eiXPRtpH0cceL4tmw8nDjv14wGOWiS6z9oW3YWqKpYVqnfYCPPFsDZY9PgNTRJ6LQfwAuemcrTvaB4Rpb4Y6WT5Y5sZYFe4pHdS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=QRo1qMrO; arc=none smtp.client-ip=220.197.31.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
+Received: from [172.16.12.51] (unknown [58.22.7.114])
+	by smtp.qiye.163.com (Hmail) with ESMTP id 29e9711a9;
+	Tue, 18 Nov 2025 09:30:31 +0800 (GMT+08:00)
+Message-ID: <26019e39-d36a-4290-ac80-c8b0b09104c8@rock-chips.com>
+Date: Tue, 18 Nov 2025 09:30:29 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251118010735.GA73807@system.software.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SfUzMcRzH9/09d3Pzc4kv95czM20Ks/nYjNiar81Dmz80jG76TTc92KUn
-	G6tkKkoeos5Rka7rQXPp4VJG5cjZJNV+RClRKmnJrYT8rtb032vvz/vz2uePj0BrmtilgiH8
-	hGQM14fqOBWj+jbv9uqwJq1hjT2ZAnNZCQfF47Fg+VjNwkRJnxIVVSIYm+jgYarOgeBH4zMO
-	BhtGEdzJc9FgfpXEQF/FLwT2mj4EA1mlHHx29PBQbNsFXQVfGKg9V0VDz8XnHKQlTdJQNzHM
-	Q2J1oSIuj+ehuTKdhau/7tJQFf+Rhzc1Zg46S6ZY+FKfxkCTycrASGYjDV3pfuDIXQQu5xCC
-	xrIqClwXbnLQll1DQUVdGw9XWnI5+JTUhaCloYeBzN/JHNxISEcwOa4ohzPGWLjxtJP38yEJ
-	ssyRhqHvNHlgfUuR9qxLDJEfvaCI3fSBJ7m2KFJe6E1S5Raa2IpSOGIbvcyT9+21HHmeNckQ
-	e/dGYq/+QZG0M8NcgNd+1aZgKdQQLRl9NwepQlprc+jjVm3sdWtEPBrwTEUeAhbX43fOh+ws
-	l1/rptzMiCtwmaV1mjlxJZblCdrNC5VOf6k83afFZAGnmrGbPcW9OOnnmelcLW7ACW1nkZs1
-	4kuEa/P3zOQLcFN2LzOz643lv18Vv6CwFlv+Cu7YQ9yInfmvpyte4nL8uPKZUlEpp/ULOLG0
-	mZq5cwl+UigzGUg0zdGa5mhN/7W5iC5CGkN4dJjeELreJyQu3BDrcyQizIaUBys49ftANRpt
-	3luPRAHp5qmJl9agYfXRkXFh9QgLtG6h+txObNCog/VxJyVjxGFjVKgUWY+0AqNbrF7nignW
-	iEf1J6RjknRcMs5OKcFjaTzK2bAmgLVkDo50jNNWlJnvFzjl3MJ+KD/isO9eMZLHw/2B0+0v
-	G73tZcYubQa31jf50JXtAartIdYYyXl+ic58wWeqtK4NBd07usc3JiXnvOnteGdr77arjh3N
-	W29Z6FZxYHUaZO+bH7isV9sDfG9MR7+/5/c/B/1bTketwi4dExmiX+tNGyP1/wDdYy8PXAMA
-	AA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sf0yMcRzHfZ/nued5Om4eJ/nqxuzMbG2EMZ/8aP7i6zdjmH+4uWc6rit3
-	STF2KaOmFKLOmdDPq8Sln7uMK+X8THXtaSjlR4S0pHVlcZcZ/732/rxf778+PK0slAXyOkOU
-	aDRo9GpWzsg3Loufq3epdPOvu2eCtaSIhcKhGMh7UykDT1E3BVZbOYIBz0sOftXUI/he18DC
-	59p+BDeuDdJgfZ7AQHfZMIKq6m4EPRnFLLyv7+Kg0L4BOnI/MOA4VUFD19mHLCQnjNBQ4+nl
-	4ERlvne41MxB7RWXDBrLU2RwYTiHhgrzGw6aq60stBf9ksEHZzIDLksBA33pdTR0pKyE+qwA
-	GHz8BUFdSQUFg2eusODOrKagrMbNwfmmLBbeJnQgaKrtYiD952kWLselIBgZ8k72pg7I4PKD
-	dm5lMImTJJbUfvlGkzsFbRRpzUhjiHT3EUWqLK85kmU/RErzg0iS1EQTuy2RJfb+cxx51epg
-	ycOMEYZUdYaQqsrvFEmO72U3B+ySL9eKel20aAwO3SMPa3FcpSMLVDGXCiLMqGdyEvLjsbAI
-	l17spHzMCLNxSV7LGLPCHCxJHtrH/t7Ox2JJ5mNaOM3jJCv28WRhK074ET+WK4QlOM59EvlY
-	KTxB2JG96U8+Cbsy3zF/3CAsjX7y7vNeVuG8Ud4X+wkh+HH2i7HKFGEWvlfeQKUiheU/2/Kf
-	bflnZyHahvx1huhwjU6/eJ7pQFisQRczb29EuB15Xyj32M+0SjTQvNqJBB6pJyjIFJVOKdNE
-	m2LDnQjztNpfcWo91ikVWk3sEdEYsdt4SC+anEjFM+qpirU7xD1KYZ8mSjwgipGi8e+V4v0C
-	zWi3NqWmLGCoISa0PmTvzVeFt6alHyUn1q1afXtcZ4+HUabNyAm3RVp3fN35VtF2b18mXloc
-	cDxErlW1yvtbVwR1B9uq+w8PJY70bTVJB0O3qalZ9xsXTn9Wx5U3aqPHr/kab13R5qQfOQxP
-	R8197k+pmdv3j2uf2Jk3/UJxs2vYvUXNmMI0C4Joo0nzG4TMdJA+AwAA
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] iommu: Allow drivers to say if they use
+ report_iommu_fault()
+To: Jason Gunthorpe <jgg@nvidia.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Christian Benvenuti <benve@cisco.com>, Heiko Stuebner <heiko@sntech.de>,
+ iommu@lists.linux.dev, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Joerg Roedel <joro@8bytes.org>, Leon Romanovsky <leon@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-rdma@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Nelson Escobar <neescoba@cisco.com>, Rob Clark
+ <robin.clark@oss.qualcomm.com>, Robin Murphy <robin.murphy@arm.com>,
+ Samuel Holland <samuel@sholland.org>,
+ Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+ Chen-Yu Tsai <wens@csie.org>, Will Deacon <will@kernel.org>,
+ Yong Wu <yong.wu@mediatek.com>
+Cc: Lu Baolu <baolu.lu@linux.intel.com>, patches@lists.linux.dev
+References: <3-v2-25fc75484cab+ab-iommu_set_fault_jgg@nvidia.com>
+Content-Language: en-US
+From: Chaoyi Chen <chaoyi.chen@rock-chips.com>
+In-Reply-To: <3-v2-25fc75484cab+ab-iommu_set_fault_jgg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-HM-Tid: 0a9a9495ba3803abkunm15b0adc69f2477
+X-HM-MType: 1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGRkdHlYZGhhKTE4dT0kYQxhWFRQJFh
+	oXVRMBExYaEhckFA4PWVdZGBILWUFZTkNVSUlVTFVKSk9ZV1kWGg8SFR0UWUFZT0tIVUpLSU9PT0
+	hVSktLVUpCS0tZBg++
+DKIM-Signature: a=rsa-sha256;
+	b=QRo1qMrOcfJjKh6zkNQm7Q+laoUJwAHpzYU+Kfpz2Zq1FQVguylVfS3NwtS9e2eavcEEnmDelf0Cvg+rdRCX0a5Ga6KMJ9m3Z32pyEpqYVaYKezexAoecIhCuJTveZ363vARWnJIw7yOvVgaM6baUYg4KhPn0q2mZr+M2K8HeyY=; c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
+	bh=bxEjiiQIXypnGaMm2YV0gh5gU0/Rq/qPeCgs1Qr4rXw=;
+	h=date:mime-version:subject:message-id:from;
 
-On Tue, Nov 18, 2025 at 10:07:35AM +0900, Byungchul Park wrote:
-> On Mon, Nov 17, 2025 at 05:47:05PM +0100, David Hildenbrand (Red Hat) wrote:
-> > On 17.11.25 17:02, Jesper Dangaard Brouer wrote:
-> > > 
-> > > On 17/11/2025 06.20, Byungchul Park wrote:
-> > > > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > > > index 600d9e981c23..01dd14123065 100644
-> > > > --- a/mm/page_alloc.c
-> > > > +++ b/mm/page_alloc.c
-> > > > @@ -1041,7 +1041,6 @@ static inline bool page_expected_state(struct page *page,
-> > > >    #ifdef CONFIG_MEMCG
-> > > >                      page->memcg_data |
-> > > >    #endif
-> > > > -                    page_pool_page_is_pp(page) |
-> > > >                      (page->flags.f & check_flags)))
-> > > >              return false;
-> > > > 
-> > > > @@ -1068,8 +1067,6 @@ static const char *page_bad_reason(struct page *page, unsigned long flags)
-> > > >      if (unlikely(page->memcg_data))
-> > > >              bad_reason = "page still charged to cgroup";
-> > > >    #endif
-> > > > -    if (unlikely(page_pool_page_is_pp(page)))
-> > > > -            bad_reason = "page_pool leak";
-> > > >      return bad_reason;
-> > > >    }
-> > > 
-> > > This code have helped us catch leaks in the past.
-> > > When this happens the result is that the page is marked as a bad page.
-> > > 
-> > > > 
-> > > > @@ -1378,9 +1375,12 @@ __always_inline bool free_pages_prepare(struct page *page,
-> > > >              mod_mthp_stat(order, MTHP_STAT_NR_ANON, -1);
-> > > >              folio->mapping = NULL;
-> > > >      }
-> > > > -    if (unlikely(page_has_type(page)))
-> > > > +    if (unlikely(page_has_type(page))) {
-> > > > +            /* networking expects to clear its page type before releasing */
-> > > > +            WARN_ON_ONCE(PageNetpp(page));
-> > > >              /* Reset the page_type (which overlays _mapcount) */
-> > > >              page->page_type = UINT_MAX;
-> > > > +    }
-> > > > 
-> > > >      if (is_check_pages_enabled()) {
-> > > >              if (free_page_is_bad(page))
-> > > 
-> > > What happens to the page? ... when it gets marked with:
-> > >     page->page_type = UINT_MAX
-> > > 
-> > > Will it get freed and allowed to be used by others?
-> > > - if so it can result in other hard-to-catch bugs
-> > 
-> > Yes, just like most other use-after-free from any other subsystem in the
-> > kernel :)
-> > 
-> > The expectation is that such BUGs are found early during testing
-> > (triggering a WARN) such that they can be fixed early.
-> > 
-> > But we could also report a bad page here and just stop (return false).
-> 
-> I think the WARN_ON_ONCE() makes the problematic situation detectable.
-> However, if we should prevent the page from being used on the detection,
-> sure, I can update the patch.
+Hello Jason,
 
-I will respin with the following diff folded on the top.
+On 11/7/2025 4:34 AM, Jason Gunthorpe wrote:
+> report_iommu_fault() is an older API that has been superseded by
+> iommu_report_device_fault() which is capable to support PRI.
+>
+> Only two external drivers consume this, drivers/remoteproc and
+> drivers/gpu/drm/msm. Ideally they would move over to the new APIs, but for
+> now protect against accidentally mix and matching the wrong components.
+>
+> The iommu drivers support either the old iommu_set_fault_handler() via the
+> driver calling report_iommu_fault(), or they are newer server focused
+> drivers that call iommu_report_device_fault().
+>
+> Include a flag in the iommu_ops if the driver calls report_iommu_fault()
+> and block iommu_set_fault_handler() for domain's of iommu drivers that
+> can't support it.
+>
+> Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> Reviewed-by: Vasant Hegde <vasant.hegde@amd.com>
+> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
 
-	Byungchul
----
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 01dd14123065..5ae55a5d7b5d 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1377,7 +1377,10 @@ __always_inline bool free_pages_prepare(struct page *page,
- 	}
- 	if (unlikely(page_has_type(page))) {
- 		/* networking expects to clear its page type before releasing */
--		WARN_ON_ONCE(PageNetpp(page));
-+		if (unlikely(PageNetpp(page))) {
-+			bad_page(page, "page_pool leak");
-+			return false;
-+		}
- 		/* Reset the page_type (which overlays _mapcount) */
- 		page->page_type = UINT_MAX;
- 	}
+Sorry for the noise. Sometimes non-IOMMU drivers, such as DRM devices, also want to handle IOMMU fault events, so they might use iommu_set_fault_handler() before. What API should they use as an alternative now? Thank you.
 
-> 
-> Thanks,
-> 	Byungchul
-> 
-> > 
-> > --
-> > Cheers
-> > 
-> > David
+
+-- 
+Best,
+Chaoyi
+
 
