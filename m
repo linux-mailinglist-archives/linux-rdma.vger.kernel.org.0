@@ -1,111 +1,398 @@
-Return-Path: <linux-rdma+bounces-14584-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14585-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04A21C66D63
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Nov 2025 02:30:50 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76229C66E3B
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Nov 2025 02:52:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A76E234C1EE
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Nov 2025 01:30:49 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTPS id 3083828C35
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Nov 2025 01:52:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B0341F8BD6;
-	Tue, 18 Nov 2025 01:30:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8893330C63A;
+	Tue, 18 Nov 2025 01:52:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="QRo1qMrO"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="aC7nRbQe"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-m1973177.qiye.163.com (mail-m1973177.qiye.163.com [220.197.31.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EE621BFE00;
-	Tue, 18 Nov 2025 01:30:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.77
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8882E770FE;
+	Tue, 18 Nov 2025 01:52:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763429445; cv=none; b=RWbKqOLn3XP5xlKuEkD59aP2k3S7bA8L16KJnJV2q/G7EGdcsgonbo3HJnmu0/gKk/cVr6fyoa/HBBcWA5JKoPl1IO2q0p8OiBHI0ynOaOWWwMvH/uLj9FPGO4lhBHaEvC6yY7XIj1ezEqiYjvTbif09ZF+LQRe1m8W8svtyXVM=
+	t=1763430734; cv=none; b=okHi+xoeRvIJ9fqVEZenvtk0v6I2dtU51CWlq/503OF4hOrWNjBfC3NDpidwreqjzOFBvxxloZTvEfEAOW8p7s7kLRfe0+xW6KBh5gJgP6k5KJQzBN2jrTS49IK5AHWK4jTq+VzGns6e2k96rHCjnw3KVsrnWDekvp4Ag+AzR1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763429445; c=relaxed/simple;
-	bh=7+TFWmZmNoQgAfLcvdsXgt+UNGSQvvvPnRu+oq/s7IY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CVUJTT1XkWSwesDaaNbUaLmX1UJYLyX9ajiRIau9jAloX8MkX5gY3n6lS4MLWBZFMk7pYZ6eiXPRtpH0cceL4tmw8nDjv14wGOWiS6z9oW3YWqKpYVqnfYCPPFsDZY9PgNTRJ6LQfwAuemcrTvaB4Rpb4Y6WT5Y5sZYFe4pHdS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=QRo1qMrO; arc=none smtp.client-ip=220.197.31.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
-Received: from [172.16.12.51] (unknown [58.22.7.114])
-	by smtp.qiye.163.com (Hmail) with ESMTP id 29e9711a9;
-	Tue, 18 Nov 2025 09:30:31 +0800 (GMT+08:00)
-Message-ID: <26019e39-d36a-4290-ac80-c8b0b09104c8@rock-chips.com>
-Date: Tue, 18 Nov 2025 09:30:29 +0800
+	s=arc-20240116; t=1763430734; c=relaxed/simple;
+	bh=rv8beW9UxDJtU0acu1M4bult0kX9RJfigpn0/Gb5+Aw=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=dkYzE3YVYl3oXEK2prEzM3YwYY/dlPvkSwPgJKT3lI/+Xp3qz7bmIoZmBb44ggX4QTgN0uH+3vUdRCAcgbUGJ7GuOLdGYm+/3hCp5y2c96frVpuDus+OLmYruUEC4dblN5FSIfzh2ZcJoj+K26Ipob7cRXfsZuKS3/ZLL1JtIzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=aC7nRbQe; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1202)
+	id 12981211CFAF; Mon, 17 Nov 2025 17:52:12 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 12981211CFAF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1763430732;
+	bh=VU5PuTPbzOxJsnCIylZBNdJHiBHIXTNC7e4rCuI09L8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=aC7nRbQekG3Z2uW1g1H6SVjnx3P3XZ4eJ8h0jAhOh11i9Q6IDDcIdeNFY5XODmdPI
+	 JZUW/vAxDF4/l/npnkMkluuCMIVnXcGSpM5a4RT3cFgYrMR0senRXnpylyWA+yrsPJ
+	 hEXtU6AYQtsFuuZCM+/2NpvLMAgcs5VPJmSDvn1s=
+From: longli@linux.microsoft.com
+To: "K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Simon Horman <horms@kernel.org>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+	Erick Archer <erick.archer@outlook.com>,
+	linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: Long Li <longli@microsoft.com>
+Subject: [Patch net-next v2] net: mana: Handle hardware recovery events when probing the device
+Date: Mon, 17 Nov 2025 17:52:04 -0800
+Message-Id: <1763430724-24719-1-git-send-email-longli@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] iommu: Allow drivers to say if they use
- report_iommu_fault()
-To: Jason Gunthorpe <jgg@nvidia.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Christian Benvenuti <benve@cisco.com>, Heiko Stuebner <heiko@sntech.de>,
- iommu@lists.linux.dev, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Joerg Roedel <joro@8bytes.org>, Leon Romanovsky <leon@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- linux-mediatek@lists.infradead.org, linux-rdma@vger.kernel.org,
- linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Nelson Escobar <neescoba@cisco.com>, Rob Clark
- <robin.clark@oss.qualcomm.com>, Robin Murphy <robin.murphy@arm.com>,
- Samuel Holland <samuel@sholland.org>,
- Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
- Chen-Yu Tsai <wens@csie.org>, Will Deacon <will@kernel.org>,
- Yong Wu <yong.wu@mediatek.com>
-Cc: Lu Baolu <baolu.lu@linux.intel.com>, patches@lists.linux.dev
-References: <3-v2-25fc75484cab+ab-iommu_set_fault_jgg@nvidia.com>
-Content-Language: en-US
-From: Chaoyi Chen <chaoyi.chen@rock-chips.com>
-In-Reply-To: <3-v2-25fc75484cab+ab-iommu_set_fault_jgg@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-HM-Tid: 0a9a9495ba3803abkunm15b0adc69f2477
-X-HM-MType: 1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGRkdHlYZGhhKTE4dT0kYQxhWFRQJFh
-	oXVRMBExYaEhckFA4PWVdZGBILWUFZTkNVSUlVTFVKSk9ZV1kWGg8SFR0UWUFZT0tIVUpLSU9PT0
-	hVSktLVUpCS0tZBg++
-DKIM-Signature: a=rsa-sha256;
-	b=QRo1qMrOcfJjKh6zkNQm7Q+laoUJwAHpzYU+Kfpz2Zq1FQVguylVfS3NwtS9e2eavcEEnmDelf0Cvg+rdRCX0a5Ga6KMJ9m3Z32pyEpqYVaYKezexAoecIhCuJTveZ363vARWnJIw7yOvVgaM6baUYg4KhPn0q2mZr+M2K8HeyY=; c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
-	bh=bxEjiiQIXypnGaMm2YV0gh5gU0/Rq/qPeCgs1Qr4rXw=;
-	h=date:mime-version:subject:message-id:from;
 
-Hello Jason,
+From: Long Li <longli@microsoft.com>
 
-On 11/7/2025 4:34 AM, Jason Gunthorpe wrote:
-> report_iommu_fault() is an older API that has been superseded by
-> iommu_report_device_fault() which is capable to support PRI.
->
-> Only two external drivers consume this, drivers/remoteproc and
-> drivers/gpu/drm/msm. Ideally they would move over to the new APIs, but for
-> now protect against accidentally mix and matching the wrong components.
->
-> The iommu drivers support either the old iommu_set_fault_handler() via the
-> driver calling report_iommu_fault(), or they are newer server focused
-> drivers that call iommu_report_device_fault().
->
-> Include a flag in the iommu_ops if the driver calls report_iommu_fault()
-> and block iommu_set_fault_handler() for domain's of iommu drivers that
-> can't support it.
->
-> Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> Reviewed-by: Vasant Hegde <vasant.hegde@amd.com>
-> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+When MANA is being probed, it's possible that hardware is in recovery
+mode and the device may get GDMA_EQE_HWC_RESET_REQUEST over HWC in the
+middle of the probe. Detect such condition and go through the recovery
+service procedure.
 
-Sorry for the noise. Sometimes non-IOMMU drivers, such as DRM devices, also want to handle IOMMU fault events, so they might use iommu_set_fault_handler() before. What API should they use as an alternative now? Thank you.
+Fixes: fbe346ce9d62 ("net: mana: Handle Reset Request from MANA NIC")
+Signed-off-by: Long Li <longli@microsoft.com>
+---
+Changes
+v2: Use a list for handling multiple devices.
+    Use disable_delayed_work_sync() on driver exit.
+    Replace atomic_t with flags to detect if interrupt happens before probe finishes
 
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 172 ++++++++++++++++--
+ include/net/mana/gdma.h                       |  12 +-
+ 2 files changed, 166 insertions(+), 18 deletions(-)
 
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index effe0a2f207a..57d58adf623a 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -15,6 +15,20 @@
+ 
+ struct dentry *mana_debugfs_root;
+ 
++struct mana_dev_recovery {
++	struct list_head list;
++	struct pci_dev *pdev;
++	enum gdma_eqe_type type;
++};
++
++static struct mana_dev_recovery_work {
++	struct list_head dev_list;
++	struct delayed_work work;
++
++	/* Lock for dev_list above */
++	spinlock_t lock;
++} mana_dev_recovery_work;
++
+ static u32 mana_gd_r32(struct gdma_context *g, u64 offset)
+ {
+ 	return readl(g->bar0_va + offset);
+@@ -387,6 +401,25 @@ EXPORT_SYMBOL_NS(mana_gd_ring_cq, "NET_MANA");
+ 
+ #define MANA_SERVICE_PERIOD 10
+ 
++static void mana_serv_rescan(struct pci_dev *pdev)
++{
++	struct pci_bus *parent;
++
++	pci_lock_rescan_remove();
++
++	parent = pdev->bus;
++	if (!parent) {
++		dev_err(&pdev->dev, "MANA service: no parent bus\n");
++		goto out;
++	}
++
++	pci_stop_and_remove_bus_device(pdev);
++	pci_rescan_bus(parent);
++
++out:
++	pci_unlock_rescan_remove();
++}
++
+ static void mana_serv_fpga(struct pci_dev *pdev)
+ {
+ 	struct pci_bus *bus, *parent;
+@@ -419,9 +452,12 @@ static void mana_serv_reset(struct pci_dev *pdev)
+ {
+ 	struct gdma_context *gc = pci_get_drvdata(pdev);
+ 	struct hw_channel_context *hwc;
++	int ret;
+ 
+ 	if (!gc) {
+-		dev_err(&pdev->dev, "MANA service: no GC\n");
++		/* Perform PCI rescan on device if GC is not set up */
++		dev_err(&pdev->dev, "MANA service: GC not setup, rescanning\n");
++		mana_serv_rescan(pdev);
+ 		return;
+ 	}
+ 
+@@ -440,9 +476,18 @@ static void mana_serv_reset(struct pci_dev *pdev)
+ 
+ 	msleep(MANA_SERVICE_PERIOD * 1000);
+ 
+-	mana_gd_resume(pdev);
++	ret = mana_gd_resume(pdev);
++	if (ret == -ETIMEDOUT || ret == -EPROTO) {
++		/* Perform PCI rescan on device if we failed on HWC */
++		dev_err(&pdev->dev, "MANA service: resume failed, rescanning\n");
++		mana_serv_rescan(pdev);
++		goto out;
++	}
+ 
+-	dev_info(&pdev->dev, "MANA reset cycle completed\n");
++	if (ret)
++		dev_info(&pdev->dev, "MANA reset cycle failed err %d\n", ret);
++	else
++		dev_info(&pdev->dev, "MANA reset cycle completed\n");
+ 
+ out:
+ 	gc->in_service = false;
+@@ -454,18 +499,9 @@ struct mana_serv_work {
+ 	enum gdma_eqe_type type;
+ };
+ 
+-static void mana_serv_func(struct work_struct *w)
++static void mana_do_service(enum gdma_eqe_type type, struct pci_dev *pdev)
+ {
+-	struct mana_serv_work *mns_wk;
+-	struct pci_dev *pdev;
+-
+-	mns_wk = container_of(w, struct mana_serv_work, serv_work);
+-	pdev = mns_wk->pdev;
+-
+-	if (!pdev)
+-		goto out;
+-
+-	switch (mns_wk->type) {
++	switch (type) {
+ 	case GDMA_EQE_HWC_FPGA_RECONFIG:
+ 		mana_serv_fpga(pdev);
+ 		break;
+@@ -475,12 +511,46 @@ static void mana_serv_func(struct work_struct *w)
+ 		break;
+ 
+ 	default:
+-		dev_err(&pdev->dev, "MANA service: unknown type %d\n",
+-			mns_wk->type);
++		dev_err(&pdev->dev, "MANA service: unknown type %d\n", type);
+ 		break;
+ 	}
++}
++
++static void mana_recovery_delayed_func(struct work_struct *w)
++{
++	struct mana_dev_recovery_work *work;
++	struct mana_dev_recovery *dev, *tmp;
++	unsigned long flags;
++
++	work = container_of(w, struct mana_dev_recovery_work, work.work);
++
++	spin_lock_irqsave(&work->lock, flags);
++
++	list_for_each_entry_safe(dev, tmp, &work->dev_list, list) {
++		list_del(&dev->list);
++		spin_unlock_irqrestore(&work->lock, flags);
++
++		mana_do_service(dev->type, dev->pdev);
++		pci_dev_put(dev->pdev);
++		kfree(dev);
++
++		spin_lock_irqsave(&work->lock, flags);
++	}
++
++	spin_unlock_irqrestore(&work->lock, flags);
++}
++
++static void mana_serv_func(struct work_struct *w)
++{
++	struct mana_serv_work *mns_wk;
++	struct pci_dev *pdev;
++
++	mns_wk = container_of(w, struct mana_serv_work, serv_work);
++	pdev = mns_wk->pdev;
++
++	if (pdev)
++		mana_do_service(mns_wk->type, pdev);
+ 
+-out:
+ 	pci_dev_put(pdev);
+ 	kfree(mns_wk);
+ 	module_put(THIS_MODULE);
+@@ -541,6 +611,17 @@ static void mana_gd_process_eqe(struct gdma_queue *eq)
+ 	case GDMA_EQE_HWC_RESET_REQUEST:
+ 		dev_info(gc->dev, "Recv MANA service type:%d\n", type);
+ 
++		if (!test_and_set_bit(GC_PROBE_SUCCEEDED, &gc->flags)) {
++			/*
++			 * Device is in probe and we received a hardware reset
++			 * event, the probe function will detect that the flag
++			 * has changed and perform service procedure.
++			 */
++			dev_info(gc->dev,
++				 "Service is to be processed in probe\n");
++			break;
++		}
++
+ 		if (gc->in_service) {
+ 			dev_info(gc->dev, "Already in service\n");
+ 			break;
+@@ -1942,8 +2023,19 @@ static int mana_gd_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	if (err)
+ 		goto cleanup_mana;
+ 
++	/*
++	 * If a hardware reset event has occurred over HWC during probe,
++	 * rollback and perform hardware reset procedure.
++	 */
++	if (test_and_set_bit(GC_PROBE_SUCCEEDED, &gc->flags)) {
++		err = -EPROTO;
++		goto cleanup_mana_rdma;
++	}
++
+ 	return 0;
+ 
++cleanup_mana_rdma:
++	mana_rdma_remove(&gc->mana_ib);
+ cleanup_mana:
+ 	mana_remove(&gc->mana, false);
+ cleanup_gd:
+@@ -1967,6 +2059,35 @@ static int mana_gd_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ disable_dev:
+ 	pci_disable_device(pdev);
+ 	dev_err(&pdev->dev, "gdma probe failed: err = %d\n", err);
++
++	/*
++	 * Hardware could be in recovery mode and the HWC returns TIMEDOUT or
++	 * EPROTO from mana_gd_setup(), mana_probe() or mana_rdma_probe(), or
++	 * we received a hardware reset event over HWC interrupt. In this case,
++	 * perform the device recovery procedure after MANA_SERVICE_PERIOD
++	 * seconds.
++	 */
++	if (err == -ETIMEDOUT || err == -EPROTO) {
++		struct mana_dev_recovery *dev;
++		unsigned long flags;
++
++		dev_info(&pdev->dev, "Start MANA recovery mode\n");
++
++		dev = kzalloc(sizeof(*dev), GFP_KERNEL);
++		if (!dev)
++			return err;
++
++		dev->pdev = pci_dev_get(pdev);
++		dev->type = GDMA_EQE_HWC_RESET_REQUEST;
++
++		spin_lock_irqsave(&mana_dev_recovery_work.lock, flags);
++		list_add_tail(&dev->list, &mana_dev_recovery_work.dev_list);
++		spin_unlock_irqrestore(&mana_dev_recovery_work.lock, flags);
++
++		schedule_delayed_work(&mana_dev_recovery_work.work,
++				      secs_to_jiffies(MANA_SERVICE_PERIOD));
++	}
++
+ 	return err;
+ }
+ 
+@@ -2071,6 +2192,10 @@ static int __init mana_driver_init(void)
+ {
+ 	int err;
+ 
++	INIT_LIST_HEAD(&mana_dev_recovery_work.dev_list);
++	spin_lock_init(&mana_dev_recovery_work.lock);
++	INIT_DELAYED_WORK(&mana_dev_recovery_work.work, mana_recovery_delayed_func);
++
+ 	mana_debugfs_root = debugfs_create_dir("mana", NULL);
+ 
+ 	err = pci_register_driver(&mana_driver);
+@@ -2084,6 +2209,19 @@ static int __init mana_driver_init(void)
+ 
+ static void __exit mana_driver_exit(void)
+ {
++	struct mana_dev_recovery *dev, *tmp;
++	unsigned long flags;
++
++	disable_delayed_work_sync(&mana_dev_recovery_work.work);
++
++	spin_lock_irqsave(&mana_dev_recovery_work.lock, flags);
++	list_for_each_entry_safe(dev, tmp, &mana_dev_recovery_work.dev_list, list) {
++		list_del(&dev->list);
++		pci_dev_put(dev->pdev);
++		kfree(dev);
++	}
++	spin_unlock_irqrestore(&mana_dev_recovery_work.lock, flags);
++
+ 	pci_unregister_driver(&mana_driver);
+ 
+ 	debugfs_remove(mana_debugfs_root);
+diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+index 637f42485dba..bf3b32540786 100644
+--- a/include/net/mana/gdma.h
++++ b/include/net/mana/gdma.h
+@@ -382,6 +382,10 @@ struct gdma_irq_context {
+ 	char name[MANA_IRQ_NAME_SZ];
+ };
+ 
++enum gdma_context_flags {
++	GC_PROBE_SUCCEEDED	= 0,
++};
++
+ struct gdma_context {
+ 	struct device		*dev;
+ 	struct dentry		*mana_pci_debugfs;
+@@ -430,6 +434,8 @@ struct gdma_context {
+ 	u64 pf_cap_flags1;
+ 
+ 	struct workqueue_struct *service_wq;
++
++	unsigned long		flags;
+ };
+ 
+ static inline bool mana_gd_is_mana(struct gdma_dev *gd)
+@@ -592,6 +598,9 @@ enum {
+ #define GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE BIT(17)
+ #define GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE BIT(6)
+ 
++/* Driver can handle hardware recovery events during probe */
++#define GDMA_DRV_CAP_FLAG_1_PROBE_RECOVERY BIT(22)
++
+ #define GDMA_DRV_CAP_FLAGS1 \
+ 	(GDMA_DRV_CAP_FLAG_1_EQ_SHARING_MULTI_VPORT | \
+ 	 GDMA_DRV_CAP_FLAG_1_NAPI_WKDONE_FIX | \
+@@ -601,7 +610,8 @@ enum {
+ 	 GDMA_DRV_CAP_FLAG_1_DYNAMIC_IRQ_ALLOC_SUPPORT | \
+ 	 GDMA_DRV_CAP_FLAG_1_SELF_RESET_ON_EQE | \
+ 	 GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE | \
+-	 GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE)
++	 GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE | \
++	 GDMA_DRV_CAP_FLAG_1_PROBE_RECOVERY)
+ 
+ #define GDMA_DRV_CAP_FLAGS2 0
+ 
 -- 
-Best,
-Chaoyi
+2.43.0
 
 
