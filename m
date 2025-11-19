@@ -1,79 +1,79 @@
-Return-Path: <linux-rdma+bounces-14614-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14613-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBEAAC6C734
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Nov 2025 03:51:57 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95820C6C75E
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Nov 2025 03:53:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C863B35313B
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Nov 2025 02:51:41 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 97BE64EE8F4
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Nov 2025 02:51:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A236F2DCBFA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 327A92DBF5B;
 	Wed, 19 Nov 2025 02:50:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BkgyTcNW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mliOOtzB"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yx1-f45.google.com (mail-yx1-f45.google.com [74.125.224.45])
+Received: from mail-yx1-f51.google.com (mail-yx1-f51.google.com [74.125.224.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B56E2D640A
-	for <linux-rdma@vger.kernel.org>; Wed, 19 Nov 2025 02:50:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1BA29E10B
+	for <linux-rdma@vger.kernel.org>; Wed, 19 Nov 2025 02:50:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763520648; cv=none; b=XE3PatFm722jyrlcvYdyj/YjsnnPb3zK+JznprjDix41F1L+Ggsf4AwVrEFrUHVThnssgQIb5Rl/j+MqP7kMD7HVgRZZ2ATqRaGwi7CZkTDhHzpGf+IHZ0RTSNSU2wzGrxrNapR2rWj3jW8si7E0bVnY9ARamH8lz16qvKs/6CQ=
+	t=1763520648; cv=none; b=XpUGpqC3PJ+GzfZAUogM+sUtkdbK4lKS2/e1wEjHr/y1lHjdffL7yU5XZG9C2pY8BflmPLUlQbqh3JeljpQknFqGFbEHBM8LtcmaesP32aPq/SsS7NAkOiPpTszr5cAFMmkNIWDBHsVGY8TU+y5OBSlWIP6QlzVZYQ9rEzQUEns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1763520648; c=relaxed/simple;
-	bh=VHPxI86I2z9HnNsShgldXRit2sT6zEmOVhYx3vZe0zA=;
+	bh=l/PApn1G/c4u9BEsPG1poIW4K3XiIGRyssMDc+QqiBM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tJKRpTxsGHWf7ImH3K2+1a23huIxQfsWn8WGP6leEKBEAZ6xK4IhtJCWVU5s2yRam9Qk5CBrZQ4cZKfMr33GXYypcwlFerujPQHqMjGMyKwmvHiIPleu6RaIHseBhctqt96OBW/tBWUBgNKgG1MxR5+xQggC/4eyis+Uk/6isE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BkgyTcNW; arc=none smtp.client-ip=74.125.224.45
+	 MIME-Version; b=FX0+yqOgyQXg16QmVrRtVjCB3Hkq49AFdp1tn7qI1KG021fBOKIT4Xv6VAgdoL6QNfYRHJoayrsyzygDXSc4cte+uDohrp+8Iub2jAle/BGFfmlZkqMkPPOIdL6JP5o6y2GnijFYKbl0Kq+rx7eW1ffUq1aJ8PLL/GUsSV+ivPI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mliOOtzB; arc=none smtp.client-ip=74.125.224.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f45.google.com with SMTP id 956f58d0204a3-640d0895d7cso678254d50.1
-        for <linux-rdma@vger.kernel.org>; Tue, 18 Nov 2025 18:50:45 -0800 (PST)
+Received: by mail-yx1-f51.google.com with SMTP id 956f58d0204a3-63e19642764so5275382d50.1
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Nov 2025 18:50:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763520644; x=1764125444; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1763520645; x=1764125445; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BreYBC71bublrppl+bRS4Jb4maUm+MKccjwekY9gnDY=;
-        b=BkgyTcNWIJj8bYjVwg5E8Y4He80zphzsQON4olelmuycRZbK3Wr122yYgbzTlguJyu
-         MMZ1/9qhc9vtPU/GGXG6bYM4pFHwdNYhBc6XEn+Q/03Wg6d0oA53Bhkqd8zApR43c4vj
-         VfLdohhQTR5GYNIYXyyy1yIuhArlAb9ABPjpjfx46tmg2NbUDXli8l6qEe85qGf99qhn
-         75y2/jNrn1NIpKfbgKpke1FuNw1qPWyMAzcnWSbeZfCUYPu8WpkUlCbQL9EB10KeI1Ks
-         2p9iIUfPJV0PAq51p1PjS3S3N0AaYykToXBiDpzqW/awUkh/R0bC0MbiR8+YPm3Gm8+D
-         0hQg==
+        bh=SfMYKL1MowanU+ydcWrbRX5x+m+UA3104k+MyV8UJCU=;
+        b=mliOOtzBJ34BZeVHA3TxaQTLNzsoWolk7hMB2EGCh1bvYTprwMwxtKXQQn3+9LadLc
+         1sdSkciwdi6k/EGBDzW/skQMBgyoxzAqPcqpeorbgkCH9UAIv5AQN2xab7TrN/NqvQxT
+         PT1L8k45eL2hqwestEfrocTONhBVTAuGIijieLoBhZe8gCKUJIpBvSDh/CwuSzp6nC2a
+         UyLm8A9uXcyQh0LUdl18OIVXBnvjtOVK8rLXHvB6eD+R9ZLVZrk6lARb0l04UI7yz/wV
+         ysBgBmApz6uLfSgl42SyVcwAuFiq3e01lOHRBxZSLj0nSFXFJ8OCwG/u9fEfjHbUAEeM
+         YPkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763520644; x=1764125444;
+        d=1e100.net; s=20230601; t=1763520645; x=1764125445;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=BreYBC71bublrppl+bRS4Jb4maUm+MKccjwekY9gnDY=;
-        b=vl6eJ4C21VS2HGLApHxN2k5T19oCQAY4ikUw63p3KQKtZaxryWdPRboDUwNh5duc3b
-         /w6Q8n+2lT8edoRS0BzAr1Mc3iIGu098wGgFvzxbuvaSPjuAOqE2BzBqEjjHgoYWNyHj
-         x0UDmWDUJaW2bhYLEV1u5CtjwV0ZdFpiEfvTIBAp2xtcw6aJPsMyXXDVAgOHXVPh5oT4
-         y5fnXQkilFUhkO2Pscct52vWtGfw4Gos1eA/WMv2sb/ryVZKpu9Ek+pj/jpQ/sOlLtd5
-         RwlrpW8tin1Zhb015PHq+oxW2XPsNfSmulHC1Zb1twOF3NrBVsQDakmDeQISNCUz/cwV
-         H1zg==
-X-Forwarded-Encrypted: i=1; AJvYcCXKYOGMEWPK5PW6VRFvCiCW7VMjgxAXj3pmDiozq/770LAAHyUFaB0CY44Auic74C07MZ+6K0cqysoT@vger.kernel.org
-X-Gm-Message-State: AOJu0YxAhPQVbg1TmeCYU/6VktZVsUGMm9COk9HNCMK+U9Pl7H/8WD1S
-	mGyTS9uRB93G+7nr9hi9TcABjC2ZQkzd18dfD5Vfv0cTPppA3MtXRM+X
-X-Gm-Gg: ASbGncsG04Sb0gEKMZh2Js+QKduJEsyJgrHrSGN1ibswcL6OcNTxCpSO/H782D/9mKC
-	G+meJnDW2BmGaVZ4rIvfDYHh3JPW/TvMC3dKVJzq6qJVZcC+26i7tLaDQ8xYLwjRO99BC8tKjSs
-	JuaAAAMljjnAvtnQO2MhehWQZw/LEtD2pOq8mCCjWkIQmH/7WdprqOmxwJnZjqc+ioAawYQa57t
-	1e6YPTfKwtBpTdjLOmKqkGHoVAEy77J3BA+vNWvRpx5IvY+gi7g8UQYQ0WsN0eBZckFMoZ4taZV
-	dbBYlVc7HO5x+wZN36koknWf96pxvj26JQOcWUOYRfN4cJetLyXrOLlum/2cqrlqelwWEQqoi9b
-	f8ZBbSb0j0ax5p3GvD6gex7w1lm/lqGRhQP7kJ7t1kfuKQ0wAk8nQAL13qgP9cA1TICOI00tb2x
-	/f9BBBhUJBl3DVpGfe7L1XhFh+rX7OqA==
-X-Google-Smtp-Source: AGHT+IH622+UQptuxoHrUWriQIkdgWf1CVTuKJQQ6ahiEHfucIEGCVK6IPmyL1PLdHHtTWqK6KR9uA==
-X-Received: by 2002:a05:690e:1546:10b0:63f:96d7:a369 with SMTP id 956f58d0204a3-642ed678b4fmr663956d50.28.1763520644051;
-        Tue, 18 Nov 2025 18:50:44 -0800 (PST)
-Received: from localhost ([2a03:2880:25ff:8::])
-        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-6410ead4394sm6427345d50.21.2025.11.18.18.50.43
+        bh=SfMYKL1MowanU+ydcWrbRX5x+m+UA3104k+MyV8UJCU=;
+        b=YoyzjjEBsmQbgyL0OEDCIqt/uEEzF77wRaN8SYRumXq2kd322oU48F/jnmA8orjnuj
+         TS16DDb8RAiSt40ngoZXJaUDD5ON6SEN4D29ao6ppauC89XfNRmfwuVpjI7DqOH9i5Cf
+         01YvARGZBQk2a9vP+PAP6imBIUGelLbeYPfBZrDWeQwS/LmGUGjo72l6NKPn1DAVaTaI
+         RMSU/CL1kXs589PMh+Czy1papKUoYl64qNvOMq50eIQspUbw94cSVURWgqvEC640SnGQ
+         zBtNqaaXSz0YvgXCoWQ4wes2WN3bOg8pxdwv9Bia8b2yZ6iWepa/LOz5ssdFYnyxifWk
+         /P5w==
+X-Forwarded-Encrypted: i=1; AJvYcCU0R0ab9FiboPSKfX1g3zlBcDbe1q2ygII6F2owWQiTIoowKhYAK9H4aU1qX8h0yIaPCS3ifzVGSD14@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywbgaf8Z4cM7e2z14P0rcj1FsLCWM2l9EVcWjiqSoBzB8uWBDvQ
+	Aa4lqueOlcVaYoH3JZL89taz5PzUrvjxgKCCoPw5iky+VB1rNQGRJAQg
+X-Gm-Gg: ASbGncv4LTzJyBrHu5cIcO9xQKnEk0Kf2eeqy49TljYL2N/pe0OanDilvsZq0u5HUBw
+	QHZ5/JCrnjl4yfrAnUocLuNYi8QD1tueOXR4Vy4npAEev95b/q8X4UNxQSXyDaI/wQE5L0InArD
+	k8gITCog98AdFa4qflnjhoeyF57VZ6WuS9Liegm7noEZCrdXQiefd2C0UaXJHzN34B8A/89wDcA
+	1Mq/mZr42tm3UyIT1JCmF9egiJodZNR1pVjum9qmmxkZAwneu+DZkdzoS3cnm3kTBqCT9BEHeNi
+	wZjt4m2qcys+MQmC+kyOtcg5ytkWsX4Tw5N0UufF9H1tdg1kE+yUAwRcFmdd5q+Pm1Bo66Y8owE
+	r4y+oAxsMgrtCEg4JK+kcUO3e8OIiSSbDGca5ASzhB6fG8mCC3lF5a9V0ddgUKcL0KX7QHIqDMl
+	y0i1X1Bu1kD2P4qeOgEz40EUuqFtRmOc0=
+X-Google-Smtp-Source: AGHT+IH0Fq/B03G5Ni+5EL+C2Zjoi3HIOENrIEn4SmPL1fIk2tuLkPEZkquimopS4n2FAt0wQw4oUQ==
+X-Received: by 2002:a53:c052:0:20b0:63f:b922:ed79 with SMTP id 956f58d0204a3-641e755565amr13345889d50.14.1763520645166;
+        Tue, 18 Nov 2025 18:50:45 -0800 (PST)
+Received: from localhost ([2a03:2880:25ff:5a::])
+        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-6410eabb46esm6540895d50.17.2025.11.18.18.50.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Nov 2025 18:50:43 -0800 (PST)
+        Tue, 18 Nov 2025 18:50:44 -0800 (PST)
 From: Daniel Zahka <daniel.zahka@gmail.com>
 To: Jiri Pirko <jiri@resnulli.us>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -122,9 +122,9 @@ To: Jiri Pirko <jiri@resnulli.us>,
 Cc: netdev@vger.kernel.org,
 	linux-doc@vger.kernel.org,
 	linux-rdma@vger.kernel.org
-Subject: [PATCH net-next v5 4/6] net/mlx5: implement swp_l4_csum_mode via devlink params
-Date: Tue, 18 Nov 2025 18:50:34 -0800
-Message-ID: <20251119025038.651131-5-daniel.zahka@gmail.com>
+Subject: [PATCH net-next v5 5/6] netdevsim: register a new devlink param with default value interface
+Date: Tue, 18 Nov 2025 18:50:35 -0800
+Message-ID: <20251119025038.651131-6-daniel.zahka@gmail.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20251119025038.651131-1-daniel.zahka@gmail.com>
 References: <20251119025038.651131-1-daniel.zahka@gmail.com>
@@ -136,357 +136,124 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-swp_l4_csum_mode controls how L4 transmit checksums are computed when
-using Software Parser (SWP) hints for header locations.
-
-Supported values:
-  1. default: device will choose between full_csum or l4_only. Driver
-     will discover the device's choice during initialization.
-  2. full_csum: calculate L4 checksum with the pseudo-header.
-  3. l4_only: calculate L4 checksum without the pseudo-header. Only
-     available when swp_l4_csum_mode_l4_only is set in
-     mlx5_ifc_nv_sw_offload_cap_bits.
-
-Note that 'default' might be returned from the device and passed to
-userspace, and it might also be set during a
-devlink_param::reset_default() call, but attempts to set a value of
-default directly with param-set will be rejected.
-
-The l4_only setting is a dependency for PSP initialization in
-mlx5e_psp_init().
+Create a new devlink param, test2, that supports default param actions
+via the devlink_param::get_default() and
+devlink_param::reset_default() functions.
 
 Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
 Signed-off-by: Daniel Zahka <daniel.zahka@gmail.com>
 ---
 
 Notes:
-    v4:
-    - rename device_default to default
-    - implement get_default and reset_default handlers
-    - don't allow user to request "default" in set cmd
-    v2:
-    - use extack in mlx5_nv_param_devlink_swp_l4_csum_mode_get()
-    - fix indentation issue in mlx5.rst entry
+    v5:
+     - don't use magic value in get_default() reset_default()
 
- Documentation/networking/devlink/mlx5.rst     |  14 ++
- .../net/ethernet/mellanox/mlx5/core/devlink.h |   3 +-
- .../mellanox/mlx5/core/lib/nv_param.c         | 229 ++++++++++++++++++
- 3 files changed, 245 insertions(+), 1 deletion(-)
+ drivers/net/netdevsim/dev.c       | 56 +++++++++++++++++++++++++++++++
+ drivers/net/netdevsim/netdevsim.h |  1 +
+ 2 files changed, 57 insertions(+)
 
-diff --git a/Documentation/networking/devlink/mlx5.rst b/Documentation/networking/devlink/mlx5.rst
-index 0e5f9c76e514..4bba4d780a4a 100644
---- a/Documentation/networking/devlink/mlx5.rst
-+++ b/Documentation/networking/devlink/mlx5.rst
-@@ -218,6 +218,20 @@ parameters.
-        * ``balanced`` : Merges fewer CQEs, resulting in a moderate compression ratio but maintaining a balance between bandwidth savings and performance
-        * ``aggressive`` : Merges more CQEs into a single entry, achieving a higher compression rate and maximizing performance, particularly under high traffic loads
- 
-+   * - ``swp_l4_csum_mode``
-+     - string
-+     - permanent
-+     - Configure how the L4 checksum is calculated by the device when using
-+       Software Parser (SWP) hints for header locations.
-+
-+       * ``default`` : Use the device's default checksum calculation
-+         mode. The driver will discover during init whether or
-+         full_csum or l4_only is in use. Setting this value explicitly
-+         from userspace is not allowed, but some firmware versions may
-+         return this value on param read.
-+       * ``full_csum`` : Calculate full checksum including the pseudo-header
-+       * ``l4_only`` : Calculate L4-only checksum, excluding the pseudo-header
-+
- The ``mlx5`` driver supports reloading via ``DEVLINK_CMD_RELOAD``
- 
- Info versions
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.h b/drivers/net/ethernet/mellanox/mlx5/core/devlink.h
-index c9555119a661..43b9bf8829cf 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.h
-@@ -26,7 +26,8 @@ enum mlx5_devlink_param_id {
- 	MLX5_DEVLINK_PARAM_ID_PCIE_CONG_IN_HIGH,
- 	MLX5_DEVLINK_PARAM_ID_PCIE_CONG_OUT_LOW,
- 	MLX5_DEVLINK_PARAM_ID_PCIE_CONG_OUT_HIGH,
--	MLX5_DEVLINK_PARAM_ID_CQE_COMPRESSION_TYPE
-+	MLX5_DEVLINK_PARAM_ID_CQE_COMPRESSION_TYPE,
-+	MLX5_DEVLINK_PARAM_ID_SWP_L4_CSUM_MODE,
+diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
+index 95f66c1f59db..2683a989873e 100644
+--- a/drivers/net/netdevsim/dev.c
++++ b/drivers/net/netdevsim/dev.c
+@@ -320,6 +320,8 @@ static int nsim_dev_debugfs_init(struct nsim_dev *nsim_dev)
+ 			   &nsim_dev->max_macs);
+ 	debugfs_create_bool("test1", 0600, nsim_dev->ddir,
+ 			    &nsim_dev->test1);
++	debugfs_create_u32("test2", 0600, nsim_dev->ddir,
++			   &nsim_dev->test2);
+ 	nsim_dev->take_snapshot = debugfs_create_file("take_snapshot",
+ 						      0200,
+ 						      nsim_dev->ddir,
+@@ -521,8 +523,53 @@ static int nsim_dev_resources_register(struct devlink *devlink)
+ enum nsim_devlink_param_id {
+ 	NSIM_DEVLINK_PARAM_ID_BASE = DEVLINK_PARAM_GENERIC_ID_MAX,
+ 	NSIM_DEVLINK_PARAM_ID_TEST1,
++	NSIM_DEVLINK_PARAM_ID_TEST2,
  };
- 
- struct mlx5_trap_ctx {
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/nv_param.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/nv_param.c
-index 3d2195338d39..2dfc3fc367c0 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/nv_param.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/nv_param.c
-@@ -8,6 +8,8 @@ enum {
- 	MLX5_CLASS_0_CTRL_ID_NV_GLOBAL_PCI_CONF               = 0x80,
- 	MLX5_CLASS_0_CTRL_ID_NV_GLOBAL_PCI_CAP                = 0x81,
- 	MLX5_CLASS_0_CTRL_ID_NV_SW_OFFLOAD_CONFIG             = 0x10a,
-+	MLX5_CLASS_0_CTRL_ID_NV_SW_OFFLOAD_CAP                = 0x10b,
-+	MLX5_CLASS_0_CTRL_ID_NV_SW_ACCELERATE_CONF            = 0x11d,
- 
- 	MLX5_CLASS_3_CTRL_ID_NV_PF_PCI_CONF                   = 0x80,
- };
-@@ -32,6 +34,12 @@ union mlx5_ifc_config_item_type_auto_bits {
- 	u8 reserved_at_0[0x20];
- };
- 
-+enum {
-+	MLX5_ACCESS_MODE_NEXT = 0,
-+	MLX5_ACCESS_MODE_CURRENT,
-+	MLX5_ACCESS_MODE_DEFAULT,
-+};
-+
- struct mlx5_ifc_config_item_bits {
- 	u8         valid[0x2];
- 	u8         priority[0x2];
-@@ -123,6 +131,17 @@ struct mlx5_ifc_nv_sw_offload_conf_bits {
- 	u8         lro_log_timeout0[0x4];
- };
- 
-+struct mlx5_ifc_nv_sw_offload_cap_bits {
-+	u8         reserved_at_0[0x19];
-+	u8         swp_l4_csum_mode_l4_only[0x1];
-+	u8         reserved_at_1a[0x6];
-+};
-+
-+struct mlx5_ifc_nv_sw_accelerate_conf_bits {
-+	u8         swp_l4_csum_mode[0x2];
-+	u8         reserved_at_2[0x3e];
-+};
-+
- #define MNVDA_HDR_SZ \
- 	(MLX5_ST_SZ_BYTES(mnvda_reg) - \
- 	 MLX5_BYTE_OFF(mnvda_reg, configuration_item_data))
-@@ -195,6 +214,32 @@ mlx5_nv_param_read_sw_offload_conf(struct mlx5_core_dev *dev, void *mnvda,
- 	return mlx5_nv_param_read(dev, mnvda, len);
- }
  
 +static int
-+mlx5_nv_param_read_sw_offload_cap(struct mlx5_core_dev *dev, void *mnvda,
-+				  size_t len)
++nsim_devlink_param_test2_get(struct devlink *devlink, u32 id,
++			     struct devlink_param_gset_ctx *ctx,
++			     struct netlink_ext_ack *extack)
 +{
-+	MLX5_SET_CFG_ITEM_TYPE(global, mnvda, type_class, 0);
-+	MLX5_SET_CFG_ITEM_TYPE(global, mnvda, parameter_index,
-+			       MLX5_CLASS_0_CTRL_ID_NV_SW_OFFLOAD_CAP);
-+	MLX5_SET_CFG_HDR_LEN(mnvda, nv_sw_offload_cap);
++	struct nsim_dev *nsim_dev = devlink_priv(devlink);
 +
-+	return mlx5_nv_param_read(dev, mnvda, len);
-+}
-+
-+static int
-+mlx5_nv_param_read_sw_accelerate_conf(struct mlx5_core_dev *dev, void *mnvda,
-+				      size_t len, int access_mode)
-+{
-+	MLX5_SET_CFG_ITEM_TYPE(global, mnvda, type_class, 0);
-+	MLX5_SET_CFG_ITEM_TYPE(global, mnvda, parameter_index,
-+			       MLX5_CLASS_0_CTRL_ID_NV_SW_ACCELERATE_CONF);
-+	MLX5_SET_CFG_HDR_LEN(mnvda, nv_sw_accelerate_conf);
-+	MLX5_SET(mnvda_reg, mnvda, configuration_item_header.access_mode,
-+		 access_mode);
-+
-+	return mlx5_nv_param_read(dev, mnvda, len);
-+}
-+
- static const char *const
- 	cqe_compress_str[] = { "balanced", "aggressive" };
- 
-@@ -269,6 +314,182 @@ mlx5_nv_param_devlink_cqe_compress_set(struct devlink *devlink, u32 id,
- 	return mlx5_nv_param_write(dev, mnvda, sizeof(mnvda));
- }
- 
-+enum swp_l4_csum_mode {
-+	SWP_L4_CSUM_MODE_DEFAULT = 0,
-+	SWP_L4_CSUM_MODE_FULL_CSUM = 1,
-+	SWP_L4_CSUM_MODE_L4_ONLY = 2,
-+};
-+
-+static const char *const
-+	swp_l4_csum_mode_str[] = { "default", "full_csum", "l4_only" };
-+
-+static int
-+mlx5_swp_l4_csum_mode_get(struct devlink *devlink, u32 id,
-+			  int access_mode, u8 *value,
-+			  struct netlink_ext_ack *extack)
-+{
-+	struct mlx5_core_dev *dev = devlink_priv(devlink);
-+	u32 mnvda[MLX5_ST_SZ_DW(mnvda_reg)] = {};
-+	void *data;
-+	int err;
-+
-+	err = mlx5_nv_param_read_sw_accelerate_conf(dev, mnvda, sizeof(mnvda),
-+						    access_mode);
-+	if (err) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "Failed to read sw_accelerate_conf mnvda reg");
-+		return err;
-+	}
-+
-+	data = MLX5_ADDR_OF(mnvda_reg, mnvda, configuration_item_data);
-+	*value = MLX5_GET(nv_sw_accelerate_conf, data, swp_l4_csum_mode);
-+
-+	if (*value >= ARRAY_SIZE(swp_l4_csum_mode_str)) {
-+		NL_SET_ERR_MSG_FMT_MOD(extack,
-+				       "Invalid swp_l4_csum_mode value %u read from device",
-+				       *value);
-+		return -EINVAL;
-+	}
-+
++	ctx->val.vu32 = nsim_dev->test2;
 +	return 0;
 +}
 +
 +static int
-+mlx5_devlink_swp_l4_csum_mode_get(struct devlink *devlink, u32 id,
-+				  struct devlink_param_gset_ctx *ctx,
-+				  struct netlink_ext_ack *extack)
++nsim_devlink_param_test2_set(struct devlink *devlink, u32 id,
++			     struct devlink_param_gset_ctx *ctx,
++			     struct netlink_ext_ack *extack)
 +{
-+	u8 value;
-+	int err;
++	struct nsim_dev *nsim_dev = devlink_priv(devlink);
 +
-+	err = mlx5_swp_l4_csum_mode_get(devlink, id, MLX5_ACCESS_MODE_NEXT,
-+					&value, extack);
-+	if (err)
-+		return err;
++	nsim_dev->test2 = ctx->val.vu32;
++	return 0;
++}
 +
-+	strscpy(ctx->val.vstr, swp_l4_csum_mode_str[value],
-+		sizeof(ctx->val.vstr));
++#define NSIM_DEV_TEST2_DEFAULT 1234
++
++static int
++nsim_devlink_param_test2_get_default(struct devlink *devlink, u32 id,
++				     struct devlink_param_gset_ctx *ctx,
++				     struct netlink_ext_ack *extack)
++{
++	ctx->val.vu32 = NSIM_DEV_TEST2_DEFAULT;
 +	return 0;
 +}
 +
 +static int
-+mlx5_devlink_swp_l4_csum_mode_validate(struct devlink *devlink, u32 id,
-+				       union devlink_param_value val,
++nsim_devlink_param_test2_reset_default(struct devlink *devlink, u32 id,
++				       enum devlink_param_cmode cmode,
 +				       struct netlink_ext_ack *extack)
 +{
-+	struct mlx5_core_dev *dev = devlink_priv(devlink);
-+	u32 cap[MLX5_ST_SZ_DW(mnvda_reg)] = {};
-+	void *data;
-+	int err, i;
++	struct nsim_dev *nsim_dev = devlink_priv(devlink);
 +
-+	for (i = 0; i < ARRAY_SIZE(swp_l4_csum_mode_str); i++) {
-+		if (!strcmp(val.vstr, swp_l4_csum_mode_str[i]))
-+			break;
-+	}
-+
-+	if (i >= ARRAY_SIZE(swp_l4_csum_mode_str) ||
-+	    i == SWP_L4_CSUM_MODE_DEFAULT) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "Invalid value, supported values are full_csum/l4_only");
-+		return -EINVAL;
-+	}
-+
-+	if (i == SWP_L4_CSUM_MODE_L4_ONLY) {
-+		err = mlx5_nv_param_read_sw_offload_cap(dev, cap, sizeof(cap));
-+		if (err) {
-+			NL_SET_ERR_MSG_MOD(extack,
-+					   "Failed to read sw_offload_cap");
-+			return err;
-+		}
-+
-+		data = MLX5_ADDR_OF(mnvda_reg, cap, configuration_item_data);
-+		if (!MLX5_GET(nv_sw_offload_cap, data, swp_l4_csum_mode_l4_only)) {
-+			NL_SET_ERR_MSG_MOD(extack,
-+					   "l4_only mode is not supported on this device");
-+			return -EOPNOTSUPP;
-+		}
-+	}
-+
++	nsim_dev->test2 = NSIM_DEV_TEST2_DEFAULT;
 +	return 0;
 +}
 +
-+static int
-+mlx5_swp_l4_csum_mode_set(struct devlink *devlink, u32 id, u8 value,
-+			  struct netlink_ext_ack *extack)
-+{
-+	struct mlx5_core_dev *dev = devlink_priv(devlink);
-+	u32 mnvda[MLX5_ST_SZ_DW(mnvda_reg)] = {};
-+	void *data;
-+	int err;
-+
-+	err = mlx5_nv_param_read_sw_accelerate_conf(dev, mnvda, sizeof(mnvda),
-+						    MLX5_ACCESS_MODE_NEXT);
-+	if (err) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "Failed to read sw_accelerate_conf mnvda reg");
-+		return err;
-+	}
-+
-+	data = MLX5_ADDR_OF(mnvda_reg, mnvda, configuration_item_data);
-+	MLX5_SET(nv_sw_accelerate_conf, data, swp_l4_csum_mode, value);
-+
-+	err = mlx5_nv_param_write(dev, mnvda, sizeof(mnvda));
-+	if (err)
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "Failed to write sw_accelerate_conf mnvda reg");
-+
-+	return err;
-+}
-+
-+static int
-+mlx5_devlink_swp_l4_csum_mode_set(struct devlink *devlink, u32 id,
-+				  struct devlink_param_gset_ctx *ctx,
-+				  struct netlink_ext_ack *extack)
-+{
-+	u8 value;
-+
-+	if (!strcmp(ctx->val.vstr, "full_csum"))
-+		value = SWP_L4_CSUM_MODE_FULL_CSUM;
-+	else
-+		value = SWP_L4_CSUM_MODE_L4_ONLY;
-+
-+	return mlx5_swp_l4_csum_mode_set(devlink, id, value, extack);
-+}
-+
-+static int
-+mlx5_devlink_swp_l4_csum_mode_get_default(struct devlink *devlink, u32 id,
-+					  struct devlink_param_gset_ctx *ctx,
-+					  struct netlink_ext_ack *extack)
-+{
-+	u8 value;
-+	int err;
-+
-+	err = mlx5_swp_l4_csum_mode_get(devlink, id, MLX5_ACCESS_MODE_DEFAULT,
-+					&value, extack);
-+	if (err)
-+		return err;
-+
-+	strscpy(ctx->val.vstr, swp_l4_csum_mode_str[value],
-+		sizeof(ctx->val.vstr));
-+	return 0;
-+}
-+
-+static int
-+mlx5_devlink_swp_l4_csum_mode_set_default(struct devlink *devlink, u32 id,
-+					  enum devlink_param_cmode cmode,
-+					  struct netlink_ext_ack *extack)
-+{
-+	u8 value;
-+	int err;
-+
-+	err = mlx5_swp_l4_csum_mode_get(devlink, id, MLX5_ACCESS_MODE_DEFAULT,
-+					&value, extack);
-+	if (err)
-+		return err;
-+
-+	return mlx5_swp_l4_csum_mode_set(devlink, id, value, extack);
-+}
-+
- static int mlx5_nv_param_read_global_pci_conf(struct mlx5_core_dev *dev,
- 					      void *mnvda, size_t len)
- {
-@@ -548,6 +769,14 @@ static const struct devlink_param mlx5_nv_param_devlink_params[] = {
- 			     mlx5_nv_param_devlink_cqe_compress_get,
- 			     mlx5_nv_param_devlink_cqe_compress_set,
- 			     mlx5_nv_param_devlink_cqe_compress_validate),
-+	DEVLINK_PARAM_DRIVER_WITH_DEFAULTS(MLX5_DEVLINK_PARAM_ID_SWP_L4_CSUM_MODE,
-+					   "swp_l4_csum_mode", DEVLINK_PARAM_TYPE_STRING,
-+					   BIT(DEVLINK_PARAM_CMODE_PERMANENT),
-+					   mlx5_devlink_swp_l4_csum_mode_get,
-+					   mlx5_devlink_swp_l4_csum_mode_set,
-+					   mlx5_devlink_swp_l4_csum_mode_validate,
-+					   mlx5_devlink_swp_l4_csum_mode_get_default,
-+					   mlx5_devlink_swp_l4_csum_mode_set_default),
+ static const struct devlink_param nsim_devlink_params[] = {
+ 	DEVLINK_PARAM_GENERIC(MAX_MACS,
+ 			      BIT(DEVLINK_PARAM_CMODE_DRIVERINIT),
+@@ -531,6 +578,14 @@ static const struct devlink_param nsim_devlink_params[] = {
+ 			     "test1", DEVLINK_PARAM_TYPE_BOOL,
+ 			     BIT(DEVLINK_PARAM_CMODE_DRIVERINIT),
+ 			     NULL, NULL, NULL),
++	DEVLINK_PARAM_DRIVER_WITH_DEFAULTS(NSIM_DEVLINK_PARAM_ID_TEST2,
++					   "test2", DEVLINK_PARAM_TYPE_U32,
++					   BIT(DEVLINK_PARAM_CMODE_RUNTIME),
++					   nsim_devlink_param_test2_get,
++					   nsim_devlink_param_test2_set,
++					   NULL,
++					   nsim_devlink_param_test2_get_default,
++					   nsim_devlink_param_test2_reset_default),
  };
  
- int mlx5_nv_param_register_dl_params(struct devlink *devlink)
+ static void nsim_devlink_set_params_init_values(struct nsim_dev *nsim_dev,
+@@ -1590,6 +1645,7 @@ int nsim_drv_probe(struct nsim_bus_dev *nsim_bus_dev)
+ 	nsim_dev->fw_update_flash_chunk_time_ms = NSIM_DEV_FLASH_CHUNK_TIME_MS_DEFAULT;
+ 	nsim_dev->max_macs = NSIM_DEV_MAX_MACS_DEFAULT;
+ 	nsim_dev->test1 = NSIM_DEV_TEST1_DEFAULT;
++	nsim_dev->test2 = NSIM_DEV_TEST2_DEFAULT;
+ 	spin_lock_init(&nsim_dev->fa_cookie_lock);
+ 
+ 	dev_set_drvdata(&nsim_bus_dev->dev, nsim_dev);
+diff --git a/drivers/net/netdevsim/netdevsim.h b/drivers/net/netdevsim/netdevsim.h
+index af6fcfcda8ba..d1a941e2b18f 100644
+--- a/drivers/net/netdevsim/netdevsim.h
++++ b/drivers/net/netdevsim/netdevsim.h
+@@ -331,6 +331,7 @@ struct nsim_dev {
+ 	u32 fw_update_flash_chunk_time_ms;
+ 	u32 max_macs;
+ 	bool test1;
++	u32 test2;
+ 	bool dont_allow_reload;
+ 	bool fail_reload;
+ 	struct devlink_region *dummy_region;
 -- 
 2.47.3
 
