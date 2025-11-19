@@ -1,49 +1,49 @@
-Return-Path: <linux-rdma+bounces-14616-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14617-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15617C6C95B
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Nov 2025 04:26:41 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 055BDC6C973
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Nov 2025 04:28:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 90DF24F1026
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Nov 2025 03:22:12 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id EF4D934DE47
+	for <lists+linux-rdma@lfdr.de>; Wed, 19 Nov 2025 03:22:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB6FB2EAB6F;
-	Wed, 19 Nov 2025 03:20:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AB462EBDCD;
+	Wed, 19 Nov 2025 03:20:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nTzQJElP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bMd6259V"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2F420D4E9;
-	Wed, 19 Nov 2025 03:20:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E619C1C861A;
+	Wed, 19 Nov 2025 03:20:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763522445; cv=none; b=hgHu8bXERTtf5IpV2K3C0inhGM/3v2KZBV07JIdwUIZOQLR3M1bFRV/U6LjkwcgcUfX4tvbG6sBX2ufkGXh+mpS1Hy790Y4C65WY9h2X3INq7zf0JF8q4IYfmqIwTslm+3B2A5QggXnSj4SqfzF9HYMWPeX+HoEnk1ARHFiOQfY=
+	t=1763522457; cv=none; b=CLkAqXtLgnjLWvS+FuhAkbrQXTJKXwuFzZjmUna4fguN6T+mQYpHzczATLZjsNlo/1FryJC6VdQuXVykySQb9op9Z2PKu6Sj7YQkVtrBIF99fNPDXcLjnzG2rDWUL05B8rw4MlasuQFZ3Z2H1D7Vt+346gUq6T+sOR9phTg0h9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763522445; c=relaxed/simple;
-	bh=eOC6tGauOJdErGyxtuvSSvFZQ9jXZDFARNZhSFw4ZFQ=;
+	s=arc-20240116; t=1763522457; c=relaxed/simple;
+	bh=eWcQfUXFcstGpwOUaOnYmWP5KYZxhUIwy0AJAkJhDLo=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=IhRR4/dyUrELa1dUEYaLyPyVa+VjBRz5OFX7YlbF84pHLF6srHpPIbi8x1Rl3Mc2BI5DYMr+IaxfsCJOhgIBwFOpP8sEsbHPYJGyDMklnM9xVOwbv+8uIOSmFs623RdgWx5YmviY91bCl+MrM17KxBtmvTEoK2WApB/Xsd5tAoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nTzQJElP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13676C113D0;
-	Wed, 19 Nov 2025 03:20:45 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=iMXj4JwQYq7PzKgICYOshOqSunz8Wnb8R2ubtGvXKazYiMuB/oBPxwCsJAnXCPooLTrAgqm6Y1Oj/vxvEms9mTwcMMYkat2+NNfWsgMVv1z3J+hdzDGp2nwnnX46cfm/enlhLqyjmNOPfoDaVSVm3s6EQntk/9Cjqv2MsKDyEwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bMd6259V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10226C19421;
+	Wed, 19 Nov 2025 03:20:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763522445;
-	bh=eOC6tGauOJdErGyxtuvSSvFZQ9jXZDFARNZhSFw4ZFQ=;
+	s=k20201202; t=1763522456;
+	bh=eWcQfUXFcstGpwOUaOnYmWP5KYZxhUIwy0AJAkJhDLo=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=nTzQJElP4EsswwgfkWu6ebm4PWxZzkPD2YFciahz9ny7K83w8c8W/0wG+jNUzHVF4
-	 v4KVvRiLSY/paBCwZgZDbeODXU/iMx6QMpXEH9eNgfI0liA6qkczDJN1ueah+E3K4S
-	 aGKiAvmxs1qu3EJVsHoDsXZJmvHxr5cHi33Cy91fZs/mzzHvX/1h7mPlKLBXz56c53
-	 a5SdC+KMfP6KQHbMzGkEouIFWTeFZExUBs/0g28wu2vyzXLZkKJrr91Zyw+pl7B9OY
-	 RCAIgfRWQWtLIrh2kXUd+8KXxIkSFAJhZWPsWAM7wlEVzNFjxwk2UgLsUHETeCYO2M
-	 zNeb8agFxjbOw==
+	b=bMd6259VjoNfBBFU88cBg5afDws4q1s+LbHwibflzkeD5yjUh84w2diC4u5ob0QAj
+	 a2rFzD2ACd0ar02TaYzSrpQnU4K307tGaOj/rE5sBEMfBC3Vi72s2eVDvtmDClwYeW
+	 td+Z+BjZkaZ8r6HhTFuu8iAcdfXy0BRORf/9Y/t5XapKL+5cCKGwzIz/3hK+/0P8Jz
+	 qbM5KruWCoB59RJ1q/1QR5yF97nI55iGHI0gm8m+Gw3Z05W4meyeMQz5iIuzndATvP
+	 uc/3Qt7XOmLhSoNxaRSZYBNeXXoGlGsuHrZiolplxrTsuLr2YSvAr4JRPQGRtnj2jZ
+	 O8I/gjyl1Keug==
 Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADF38380A955;
-	Wed, 19 Nov 2025 03:20:11 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EACF9380A954;
+	Wed, 19 Nov 2025 03:20:22 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -52,46 +52,47 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net V3] net/mlx5: Clean up only new IRQ glue on
- request_irq()
- failure
+Subject: Re: [PATCH net-next 0/5] net/mlx5: misc changes 2025-11-17
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <176352241025.205878.1321360381444626119.git-patchwork-notify@kernel.org>
-Date: Wed, 19 Nov 2025 03:20:10 +0000
-References: <1763381768-1234998-1-git-send-email-tariqt@nvidia.com>
-In-Reply-To: <1763381768-1234998-1-git-send-email-tariqt@nvidia.com>
+ <176352242149.205878.14124712790930552629.git-patchwork-notify@kernel.org>
+Date: Wed, 19 Nov 2025 03:20:21 +0000
+References: <1763415729-1238421-1-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1763415729-1238421-1-git-send-email-tariqt@nvidia.com>
 To: Tariq Toukan <tariqt@nvidia.com>
 Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
  andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
- leon@kernel.org, mbloch@nvidia.com, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, gal@nvidia.com,
- leonro@nvidia.com, cratiu@nvidia.com, moshe@nvidia.com,
- anand.a.khoje@oracle.com, elic@nvidia.com, jacob.e.keller@intel.com,
- manjunath.b.patil@oracle.com, pradyumn.rahar@oracle.com,
- qing.huang@oracle.com, rajesh.sivaramasubramaniom@oracle.com,
- rama.nichanamatlu@oracle.com, rohit.sajan.kumar@oracle.com, shayd@nvidia.com,
- mohith.k.kumar.thummaluru@oracle.com
+ leon@kernel.org, mbloch@nvidia.com, richardcochran@gmail.com,
+ netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, gal@nvidia.com, moshe@nvidia.com,
+ dtatulea@nvidia.com
 
 Hello:
 
-This patch was applied to netdev/net.git (main)
+This series was applied to netdev/net-next.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Mon, 17 Nov 2025 14:16:08 +0200 you wrote:
-> From: Pradyumn Rahar <pradyumn.rahar@oracle.com>
+On Mon, 17 Nov 2025 23:42:04 +0200 you wrote:
+> Hi,
 > 
-> The mlx5_irq_alloc() function can inadvertently free the entire rmap
-> and end up in a crash[1] when the other threads tries to access this,
-> when request_irq() fails due to exhausted IRQ vectors. This commit
-> modifies the cleanup to remove only the specific IRQ mapping that was
-> just added.
+> This series contains misc enhancements to the mlx5 driver.
+> 
+> Regards,
+> Tariq
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,V3] net/mlx5: Clean up only new IRQ glue on request_irq() failure
-    https://git.kernel.org/netdev/net/c/d47515af6ccc
+  - [net-next,1/5] net/mlx5: Refactor EEPROM query error handling to return status separately
+    https://git.kernel.org/netdev/net-next/c/2e4c44b12f4d
+  - [net-next,2/5] net/mlx5e: Recover SQ on excessive PTP TX timestamp delta
+    https://git.kernel.org/netdev/net-next/c/391dad2e686f
+  - [net-next,3/5] net/mlx5: Remove redundant bw_share minimal value assignment
+    https://git.kernel.org/netdev/net-next/c/ea3270351c79
+  - [net-next,4/5] net/mlx5: Abort new commands if all command slots are stalled
+    https://git.kernel.org/netdev/net-next/c/fbb9933666e3
+  - [net-next,5/5] net/mlx5: Use EOPNOTSUPP instead of ENOTSUPP
+    https://git.kernel.org/netdev/net-next/c/70ca239b612c
 
 You are awesome, thank you!
 -- 
