@@ -1,79 +1,79 @@
-Return-Path: <linux-rdma+bounces-14653-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14654-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F62DC74AE0
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 15:55:14 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id E72E9C74B3F
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 16:00:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A56E634CBBF
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 14:52:51 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 96F9F356F94
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 14:54:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 860E8334C32;
-	Thu, 20 Nov 2025 14:52:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDEBA33BBB6;
+	Thu, 20 Nov 2025 14:53:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="1KgjbmiQ"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="EaEoyWdu"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F1412DA760
-	for <linux-rdma@vger.kernel.org>; Thu, 20 Nov 2025 14:52:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8895334C04
+	for <linux-rdma@vger.kernel.org>; Thu, 20 Nov 2025 14:53:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763650361; cv=none; b=B4pl54pC89rmwmDlf8Oc5tq84T/e/ohzs8tWOw9DnN8krJ98xDDD5WUwbYvNbNTfBwu+Qf3W9cs+G2Bn/A8Lz6RPBY81KzKuipiU0TeyFFmrSq1wSf3aLx683WmV+xy8kGtYvGgDEeteM6gWnAp39EkXx85NhEfh2BqjijUOdAg=
+	t=1763650392; cv=none; b=SqcBM9Wvw9qL2fnT5AMniRdsSFMVuIwqOBofD9gsFcl02RrlM33eMLrqzXKmQa3w7h8SvxPFLnR0cYlZkmi41AmjRwakcVRMBl4miIvyaH4/kUiXrbyWIwFiaQoeeLUr/fcFND8B0Sc4Y6vs+mLaOYKpWWibJ7QlmYpq1zpmAwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763650361; c=relaxed/simple;
-	bh=qlVoOV1b0m1EsqTqevKebTa5adC2s2q0Xm1TYQIEY5c=;
+	s=arc-20240116; t=1763650392; c=relaxed/simple;
+	bh=Hs8Y4srjRXSDmflQe1JQvRGbJo0svHHlH0JZJV2BibQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OXFdBvsLadDgc8e0KqlARcwpTj7dcRV2emPewBvppTCK7rWJY8NZ+QsdXWaoFoGni7ASRFAT3uUqpbcEAhExJ2yxgcaw5Ot5PwvqPYi2kL8oCQv40cTBLVYTiWhGRsdq8A2yTmP4gPgJ2kHgyLz5CWeGnAYlNEaSNq1NEVmRLto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=1KgjbmiQ; arc=none smtp.client-ip=209.85.208.47
+	 Content-Type:Content-Disposition:In-Reply-To; b=qTMT1RWZJJY3VCV5HJM++1bJwGqUUIGhnNsKU0AYdIK9LuIHpVBgfx2wVq+1BLlTpyyTPBfHzAgz51TwRtdNWQacqcfXwrpf0Mn0qhKXRvmgvq+zP4Nrj7EN6zp1S3dVMCuntpsxxpfTqUaBSUMF3PQq115OQAP8Ejd5vL/a/eE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=EaEoyWdu; arc=none smtp.client-ip=209.85.208.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-6419b7b4b80so1320303a12.2
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Nov 2025 06:52:39 -0800 (PST)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-640c6577120so1655548a12.1
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Nov 2025 06:53:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1763650358; x=1764255158; darn=vger.kernel.org;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1763650389; x=1764255189; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qlVoOV1b0m1EsqTqevKebTa5adC2s2q0Xm1TYQIEY5c=;
-        b=1KgjbmiQcA2RVz54IvXXlSdGGsuG++U7UX4hfHSFB4tLAKJpux6kPxygEldzuHAZkq
-         wdoXebLApjfbrZ+2yY2brZByqzAdbURTMN5OaBc6uVa9cnhwXNHvXB/6mvg4585jXWdo
-         68uGnDjlfRdY2UK8IguwYer+G2pbFtwRfye2PlZ1YIAqq6xWLlt16XlrSBvRrnLMZpNR
-         x9tHhhmEBnj8LPysGf/Ct+Hxxl3JThedC7OTgE2wLqEnKL2vLxLEMUi1aOtGqRoNqVS8
-         gU8ZAR33ebFCTMg+LTGgZTi1D1aV+l7Knc4MDkGddR8GQ3RuRiPAoRbBd2R1CVEAFBx0
-         yNLg==
+        bh=Hs8Y4srjRXSDmflQe1JQvRGbJo0svHHlH0JZJV2BibQ=;
+        b=EaEoyWduEzmqyPeavUzgsFNnUa7ir9Ss7/cVWRn4tjus4OhJKWgyF+0XIXHnu1PKd4
+         ZkzflYIgmcJDHZ0qX5Npw7D6wHNNxqPV44h7J7tIyCjH5ZImw4jcvi2k991pzmkZEvrO
+         OnWUy3G25q0tA4OuOcOwvtGJIwlta9AygvQT/w1Z7xYEaQKop0p/1qUInMDgwNBqcQg4
+         CzQu1QIjvb6Vu2d9sSpRb8IZqOe/09zCLS7uKkue3xlvCwZJhU4CyVOyaxfFQy5MuoTR
+         /0uX0b048r9IcFkw1BjYGdNbM7f6zy0t/mY94T60GiTjfgl8Op7PQJFk69vz+eekH8l6
+         uSDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763650358; x=1764255158;
+        d=1e100.net; s=20230601; t=1763650389; x=1764255189;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qlVoOV1b0m1EsqTqevKebTa5adC2s2q0Xm1TYQIEY5c=;
-        b=f61Q/GHo3iD8/DSKfol8RtmxULb0SVNfJ8GZEaofefBQOkx/JCD6tiYUOVhL96YyQv
-         6NlyhOUf1v2An2wrV+KZIn0jsNCYsv1rM5SEWLvIzqO8uDXJNvZ4NQnAHydeQNgURixV
-         /gbTsMaHvb8fgjbf55GLhJWD5Zt0/7oU8zBAUlIM1En9f8t6IPS23ACijYmMSHFA/aFV
-         xxQzSZlhW4T6vH7Ha6izGE16YLmyLyKtAp6p9pTMdKmbetQVA5t15VWiTcfl1bhdDFOd
-         3nTgybalpqYhi2q5P0lkkOBJPGTh4oblSm/ocqk3TLDbgrzJx7cfl6JiaGcTLKN+17Tl
-         kvAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWg8RUBvluxi8wD11lShFtYqG5hsSQA4WXPfLTfZBOPV1jBMxL+bt506lt0cZszwLY802LNiNU2Uxti@vger.kernel.org
-X-Gm-Message-State: AOJu0YzXwdHhya0q9ouiPYOZ5PHB7cPH7l7dMP9H1TyS/zqqx7LUr61V
-	hFSgYA934Vnhn8MIOIZfE2gjb/5CGJb75lIXgkcU0WAsH3KCW13Yo2F+IM1oNyoQKL8=
-X-Gm-Gg: ASbGncuMVPIO4Bd86ZWDrs5XhQeFk0bQ75zcTLQqFRDftyJEZq6EzWYRhAG3tF0iY+9
-	2u8YZCzv4Bl5cDkycwYDwTf0J11p0qlNQK9JSdBhie2YH02ZW4CfptF4amIdz/60SIehtvSHQYG
-	j6CdkHS8wxnBQ0HVDTYElIxYSZq2dgYnLpFpWlhGhRSkADzN8Ia3htyT7pOUcbtQsAGOMjJoALR
-	07++f5+xNlqDAx0Lmd3w7Zb2nxJOduN2IPEvDzim6+yiIKFb0rCmn5wUgCVhRHj6hiQmSMmfGAN
-	Xe1DtrkpSAOwg+VqI1tcmLxdZG85azgz9LPU+37gNHf8XkC/OME8/t1iVb3TrkkeKvM19iRZaR7
-	IU7kpohXwVABuODJgwfp5E2lu9kJPu37POkjejHBCJ5cb7BLmY/fBKoBTPiMnAQiiMg8GFXspjM
-	X+YPkvk5IOzVSxOKYn6l8=
-X-Google-Smtp-Source: AGHT+IHij78wIttXL5qrzeJ5Fr4uMDiSvsvUdH/MMYd2AuxlJUx0L+zs8iuv/NdnITfidNIJsVOY8Q==
-X-Received: by 2002:a17:906:478b:b0:b6c:38d9:6935 with SMTP id a640c23a62f3a-b76552b9f32mr307984766b.24.1763650357685;
-        Thu, 20 Nov 2025 06:52:37 -0800 (PST)
+        bh=Hs8Y4srjRXSDmflQe1JQvRGbJo0svHHlH0JZJV2BibQ=;
+        b=Q3EOBTwStrebUKG6zzkdP3olLur+vKkRKTkpsIeh5RA2cLMmstDkCBGCDcqIQALUcj
+         XnBjLWxC70jE1slgZJNpTo+G7vzMMWBplaXoh9RZUnhGX4y6LhYu3hGgyEvXJdDRprpQ
+         j1pgDhe47awx7+6RkTd4ZbveLjwG1o6kpjjymlaOxWFTHIBnxjvNNT4LifwUQUzpAW+d
+         XB4fwHVj68KDA8qh4vlSsuo8T/CtxKYdfujoWmF2Vx1NG/g7OpqJLdinWMyooy4wl5Su
+         Say/pkI4T3w1eHfmmdvFb4lEj3lOyHPJa6D5Qx2LGy0CBHApFyLqGGBrgXddllg8xqeB
+         gUdw==
+X-Forwarded-Encrypted: i=1; AJvYcCVPKe8osSPMmq1vh7dLSfEDnmeqKvHoHPqRLeA6Ml4FNpRu9RhDIDZ+AoDPuoA/tKg/RQ5OvtGsuyOi@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw9DhTtyZ/g0vQ3+HFXSA4/LvAtyuFyDkXTmzDy4YgC56TdFZsb
+	KjH7G2uxlnjXyDf2I2/nMfDeqbOPTEqbt0pP+xwcDRqhJEd9FV7TufPeyConlc4t2h4=
+X-Gm-Gg: ASbGnct+5si+8DMu4022dRNBP+w4p/OGpBX4p09Za5x5P3PFxrIoJaZOkqhRb0zTThd
+	JWccZ2o4zNLhm6GOHVdkZSiAtA9QTXmztsbFewkaKaCY+bnPydiEc2pVPyxmo6n1u+u9PFowBJJ
+	q5vebHN3u87ui++5EV2s6QIzvrvibH4SaMJgzTQon57HUT+/6Fz8qGSSR90583bLmbD0CkLA1au
+	UBdAOsMiVYppUKScfvfdGuCSkavajONKH0eKKKdi67HJFtD4hfIvXrHQkD4Jsb09eIipEPA6P2q
+	RaWbfXH4hGKqMq7J/Pd5j3y9F4Xhn5bIcDBwTQcYqUNmLpOoRxj4da0w8+NhaqQ8w1Gv7k+Ys3B
+	uzhsnG3oDUq4eI04R3xnFE0uR+syGyijQJwTFC+FPsYvC5KCat0IGWzGrdFLdjWgRKNIRp+Up2Q
+	GZx6XLCakazWEQoY0vgVU=
+X-Google-Smtp-Source: AGHT+IH7CoEyCVFu/qkrb/nXh2Nvt6ZT+I/QXVymMAmlXeUbqUpzFWKvc2NGr9Yw1jk0rVm9T4o5hQ==
+X-Received: by 2002:a05:6402:27d3:b0:640:ebca:e66c with SMTP id 4fb4d7f45d1cf-64538227960mr2444296a12.23.1763650389157;
+        Thu, 20 Nov 2025 06:53:09 -0800 (PST)
 Received: from FV6GYCPJ69 ([85.163.81.98])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-645363c56a4sm2255897a12.15.2025.11.20.06.52.36
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-64536443a9csm2243827a12.29.2025.11.20.06.53.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Nov 2025 06:52:37 -0800 (PST)
-Date: Thu, 20 Nov 2025 15:52:33 +0100
+        Thu, 20 Nov 2025 06:53:08 -0800 (PST)
+Date: Thu, 20 Nov 2025 15:53:07 +0100
 From: Jiri Pirko <jiri@resnulli.us>
 To: Tariq Toukan <tariqt@nvidia.com>
 Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
@@ -84,11 +84,10 @@ Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org, 
 	Gal Pressman <gal@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>, 
 	Carolina Jubran <cjubran@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
-Subject: Re: [PATCH net-next 03/14] devlink: Add helpers to lock nested-in
- instances
-Message-ID: <hj37vfeodmmjpfrfa6vnwm3rwp7an4fzt7bvi4fwyusjzgbtrm@fc6j4szuodq6>
+Subject: Re: [PATCH net-next 04/14] devlink: Refactor devlink_rate_nodes_check
+Message-ID: <jpxxt7vxoltrf6r636rch4cd7tbharffrlgunsjfgnlud2lmx4@em5lcb5zhmcl>
 References: <1763644166-1250608-1-git-send-email-tariqt@nvidia.com>
- <1763644166-1250608-4-git-send-email-tariqt@nvidia.com>
+ <1763644166-1250608-5-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -97,14 +96,23 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1763644166-1250608-4-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1763644166-1250608-5-git-send-email-tariqt@nvidia.com>
 
-Thu, Nov 20, 2025 at 02:09:15PM +0100, tariqt@nvidia.com wrote:
+Thu, Nov 20, 2025 at 02:09:16PM +0100, tariqt@nvidia.com wrote:
 >From: Cosmin Ratiu <cratiu@nvidia.com>
 >
->Upcoming code will need to obtain a reference to locked nested-in
->devlink instances. Add helpers to lock, obtain an already locked
->reference and unlock/unref the nested-in instance.
+>devlink_rate_nodes_check() was used to verify there are no devlink rate
+>nodes created when switching the esw mode.
+>
+>Rate management code is about to become more complex, so refactor this
+>function:
+>- remove unused param 'mode'.
+>- add a new 'rate_filter' param.
+>- rename to devlink_rates_check().
+>- expose devlink_rate_is_node() to be used as a rate filter.
+>
+>This makes it more usable from multiple places, so use it from those
+>places as well.
 >
 >Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
 >Reviewed-by: Carolina Jubran <cjubran@nvidia.com>
