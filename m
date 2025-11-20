@@ -1,110 +1,104 @@
-Return-Path: <linux-rdma+bounces-14627-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14628-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id DED42C71FCF
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 04:28:47 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA4A6C72325
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 05:31:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 991C14E2D8B
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 03:28:46 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E0EB2347656
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 04:30:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48CFF27CCE2;
-	Thu, 20 Nov 2025 03:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 642E5285073;
+	Thu, 20 Nov 2025 04:30:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kw38CNHB"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from baidu.com (mx24.baidu.com [111.206.215.185])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439A723D7E6
-	for <linux-rdma@vger.kernel.org>; Thu, 20 Nov 2025 03:28:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.206.215.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1331C23BF9C;
+	Thu, 20 Nov 2025 04:30:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763609322; cv=none; b=dmTEyEJnh/pDluVngeXBe+eDQflD8gq1kpV1NN+xy3MHyAm4dyvX+kWlZwF6YOVJun6KubuDRQizq2VoJy7a64/b1XkEcqrzEuB6AtBkJARBAeWP6r7xn5qcRGatBBcfg2TlxIReL2tZ8dRezlw1u1LAHKJQWfa4YUe8Wp4XQqg=
+	t=1763613045; cv=none; b=m33/8Id6SFMRpIjPLxzD20j3CANE8gV6wjlb5AYOmPwN1So6GMoT0NaiJLpKrFMQNpQSyB08WAdrQsvzMIzLHjh2kEqueETQz0onVOXqh+UPAO5d4MmKVWSL0xEP99BIjpMThEFl7j3SYDeIsUEH55d737PkEdgrsR2b8RdMVhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763609322; c=relaxed/simple;
-	bh=wnkTHUFL/MQjHGVAdJTsR5WEB4rs83R+jUip7W/L/HM=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Xfn1/L2BzInb1bRu9hslbLBOkxvp0R8uHy8M9TIaFQCqhXAh8LcT7Ovgamk1ywj+vxMeY7f9SwzIYvCmwXdNtp9saJqGgEawsn6VxkCrxHQ+c0dSLL6wG0/wIqGAKPVEsRP9oaihX90VljqJslRGhcOYwzGbUcDH6ZGQ15lBK7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com; spf=pass smtp.mailfrom=baidu.com; arc=none smtp.client-ip=111.206.215.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baidu.com
-From: "Li,Rongqing" <lirongqing@baidu.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-CC: Leon Romanovsky <leon@kernel.org>, "huangjunxian6@hisilicon.com"
-	<huangjunxian6@hisilicon.com>, "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>
-Subject: RE: [????] Re: [????] Re: [PATCH][v2] RDMA/core: Prevent soft lockup
- during large user memory region cleanup
-Thread-Topic: [????] Re: [????] Re: [PATCH][v2] RDMA/core: Prevent soft lockup
- during large user memory region cleanup
-Thread-Index: AQHcVINZYLa5twxwjECtSFjMAFPff7T2pWMAgAKUKyCAAKZnAIABEaDg
-Date: Thu, 20 Nov 2025 03:28:18 +0000
-Message-ID: <4482842b3e774a7d996130b0651d1923@baidu.com>
-References: <20251113095317.2628-1-lirongqing@baidu.com>
- <20251117174738.GE17968@ziepe.ca>
- <02011baf337649f6997166f223417417@baidu.com>
- <20251119190602.GN17968@ziepe.ca>
-In-Reply-To: <20251119190602.GN17968@ziepe.ca>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1763613045; c=relaxed/simple;
+	bh=XDBowCbVb6T1WoqzF+S0IyPnF3QQ1o/ZS55y3qujj7U=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=nhAO6b5IXENdoSJaekBIF4YnH/pyeBeiLAOJV7zcQ+MGsC8htGGaHTBNLHXOggL/hv1bJkPtTg+kaVSFOpDhm2WRmmD+RfiQ+0CTOpD2k6z3XTjEnM2Okcqxd7g9mpY5+2RzR0Ra6TCxMj5xfStcyRE1kiAr/7wXzNFCFsU4C9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kw38CNHB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABE24C4CEF1;
+	Thu, 20 Nov 2025 04:30:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763613044;
+	bh=XDBowCbVb6T1WoqzF+S0IyPnF3QQ1o/ZS55y3qujj7U=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Kw38CNHBKMBgMjOj/zQI3NGqSusDzDEAbchk5HWvEfJH3IkIGAQvNRNfMqMq56eEq
+	 Y8VBQnIcq2/q7DhuQfKM3nXgzMphhxYdalGESMgSH610vJOqmSlcNeSvj1rIXD0IVk
+	 jrGUOKHMpUlUoxLCfCQSEmmUJKYyrO6uLBG9WolGlk7YiLXCG+H+jMuCdWDJKHLL71
+	 WX0OYM0gNAn0TzMhUoiXBNNeVrzKY0BnP1KNZtYo4rMgmkmbDOLBmG4FI08IoSoIQH
+	 Fg8+ON+LoQyyMSmAk2K8Vwap5xUdn7dAPQYJryFkic2TBZHoc364OlVZYgulgwe+xt
+	 a+Zbr1ZrymfWg==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 70E3C39EF974;
+	Thu, 20 Nov 2025 04:30:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-FEAS-Client-IP: 172.31.3.12
-X-FE-Policy-ID: 52:10:53:SYSTEM
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v6 0/2] net: mana: Enforce TX SGE limit and fix
+ error
+ cleanup
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176361301025.1077848.8735410574086807354.git-patchwork-notify@kernel.org>
+Date: Thu, 20 Nov 2025 04:30:10 +0000
+References: <1763464269-10431-1-git-send-email-gargaditya@linux.microsoft.com>
+In-Reply-To: 
+ <1763464269-10431-1-git-send-email-gargaditya@linux.microsoft.com>
+To: Aditya Garg <gargaditya@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+ shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+ ernis@linux.microsoft.com, dipayanroy@linux.microsoft.com,
+ shirazsaleem@microsoft.com, leon@kernel.org, mlevitsk@redhat.com,
+ yury.norov@gmail.com, sbhatta@marvell.com, linux-hyperv@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, gargaditya@microsoft.com
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSmFzb24gR3VudGhvcnBl
-IDxqZ2dAemllcGUuY2E+DQo+IFNlbnQ6IDIwMjXE6jEx1MIyMMjVIDM6MDYNCj4gVG86IExpLFJv
-bmdxaW5nIDxsaXJvbmdxaW5nQGJhaWR1LmNvbT4NCj4gQ2M6IExlb24gUm9tYW5vdnNreSA8bGVv
-bkBrZXJuZWwub3JnPjsgaHVhbmdqdW54aWFuNkBoaXNpbGljb24uY29tOw0KPiBsaW51eC1yZG1h
-QHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBbPz8/P10gUmU6IFs/Pz8/XSBSZTogW1BBVENI
-XVt2Ml0gUkRNQS9jb3JlOiBQcmV2ZW50IHNvZnQgbG9ja3VwDQo+IGR1cmluZyBsYXJnZSB1c2Vy
-IG1lbW9yeSByZWdpb24gY2xlYW51cA0KPiANCj4gT24gV2VkLCBOb3YgMTksIDIwMjUgYXQgMDI6
-MDM6MjBBTSArMDAwMCwgTGksUm9uZ3Fpbmcgd3JvdGU6DQo+ID4gPiA+IEZpeCBzb2Z0IGxvY2t1
-cCBpc3N1ZXMgYnkgaW5jb3Jwb3JhdGluZyBjb25kX3Jlc2NoZWQoKSBjYWxscw0KPiA+ID4gPiB3
-aXRoaW4gX19pYl91bWVtX3JlbGVhc2UoKSwgYW5kIHRoaXMgU0cgZW50cmllcyBhcmUgdHlwaWNh
-bGx5DQo+ID4gPiA+IGdyb3VwZWQgaW4gMk1CIGNodW5rcyBvbiB4ODZfNjQsIGFkZGluZyBjb25k
-X3Jlc2NoZWQoKSBzaG91bGQgaGFzDQo+ID4gPiA+IG1pbmltYWwNCj4gPiA+IHBlcmZvcm1hbmNl
-DQo+ID4gPiA+IGltcGFjdC4NCj4gPiA+DQo+ID4gPiBUaGlzIGlzIG5vdCB0cnVlLCBJIHRoaW5r
-IHRoaXMgc2hvdWxkIGhhdmUgYmVlbiBtb3JlIGNhcmVmdWwgdG8gb25seQ0KPiA+ID4gcmVzY2hl
-ZCBhZnRlciBsYXJnZXIgZ3JvdXBpbmdzLi4gSG93IG11Y2ggc2xvd2VyIGRpZCB5b3UgbWFrZSBu
-b3JtYWwNCj4gNGsgdW5waW5zPz8NCj4gPiA+DQo+ID4gPiBKYXNvbg0KPiA+DQo+ID4NCj4gPiBJ
-IGRvbid0IHNlZSB0aGlzIGFzIGEgaXNzdWUgZm9yIHNldmVyYWwgcmVhc29ucy4gRmlyc3QsIHRo
-aXMgY29kZSBwYXRoDQo+ID4gaXMgbm90IHBlcmZvcm1hbmNlLWNyaXRpY2FsLg0KPiANCj4gWWVz
-IGl0IGlzIQ0KPiANCj4gPiBTZWNvbmQsIHRoZSBudW1iZXIgb2YgY29uZF9yZXNjaGVkDQo+ID4g
-Y2FsbHMgYWRkZWQgYnkgdGhpcyBtb2RpZmljYXRpb24gaXMgaWRlbnRpY2FsIHRvIHdoYXQgd2Fz
-IGludHJvZHVjZWQNCj4gPiBpbiBjb21taXQgOTI4ZGEzN2EyMjlmMzQ0NCwNCj4gDQo+IE5vIGl0
-cyBub3QhIFRoYXQgbG9vcCBkb2VzIGVudGlyZSBiYXRjaGVzIG9mIHBhZ2VzIGludG8gYSBQQUdF
-X1NJWkUgbWVtb3J5DQo+IGJ1ZmZlciwgdGhpcyBkb2VzIGl0IGZvciBldmVyeSBzaW5nbGUgNGsg
-cGFnZS4NCj4gDQoNClRoYW5rcywgSSB1bmRlcnN0YW5kDQoNClRvIG1pbmltaXplIHBlcmZvcm1h
-bmNlIGltcGFjdCBvbiByZWxlYXNpbmcgbWVtb3J5IHJlZ2lvbnMsIGNhbGwgY29uZF9yZXNjaGVk
-KCkgcGVyIDRrIGxvb3AsIGhvdyBhYm91dCB0aGUgYmVsb3cgDQoNCmRpZmYgLS1naXQgYS9kcml2
-ZXJzL2luZmluaWJhbmQvY29yZS91bWVtLmMgYi9kcml2ZXJzL2luZmluaWJhbmQvY29yZS91bWVt
-LmMNCmluZGV4IGM1YjY4NjMuLjYxM2MxNmQgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL2luZmluaWJh
-bmQvY29yZS91bWVtLmMNCisrKyBiL2RyaXZlcnMvaW5maW5pYmFuZC9jb3JlL3VtZW0uYw0KQEAg
-LTQ1LDYgKzQ1LDggQEANCg0KICNpbmNsdWRlICJ1dmVyYnMuaCINCg0KKyNkZWZpbmUgUkVTQ0hF
-RF9MT09QX0NOVF9USFJFU0hPTEQgMHhmZmYNCisNCiBzdGF0aWMgdm9pZCBfX2liX3VtZW1fcmVs
-ZWFzZShzdHJ1Y3QgaWJfZGV2aWNlICpkZXYsIHN0cnVjdCBpYl91bWVtICp1bWVtLCBpbnQgZGly
-dHkpDQogew0KICAgICAgICBib29sIG1ha2VfZGlydHkgPSB1bWVtLT53cml0YWJsZSAmJiBkaXJ0
-eTsNCkBAIC01NSwxMCArNTcsMTUgQEAgc3RhdGljIHZvaWQgX19pYl91bWVtX3JlbGVhc2Uoc3Ry
-dWN0IGliX2RldmljZSAqZGV2LCBzdHJ1Y3QgaWJfdW1lbSAqdW1lbSwgaW50IGQNCiAgICAgICAg
-ICAgICAgICBpYl9kbWFfdW5tYXBfc2d0YWJsZV9hdHRycyhkZXYsICZ1bWVtLT5zZ3RfYXBwZW5k
-LnNndCwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBETUFfQklE
-SVJFQ1RJT05BTCwgMCk7DQoNCi0gICAgICAgZm9yX2VhY2hfc2d0YWJsZV9zZygmdW1lbS0+c2d0
-X2FwcGVuZC5zZ3QsIHNnLCBpKQ0KKyAgICAgICBmb3JfZWFjaF9zZ3RhYmxlX3NnKCZ1bWVtLT5z
-Z3RfYXBwZW5kLnNndCwgc2csIGkpIHsNCiAgICAgICAgICAgICAgICB1bnBpbl91c2VyX3BhZ2Vf
-cmFuZ2VfZGlydHlfbG9jayhzZ19wYWdlKHNnKSwNCiAgICAgICAgICAgICAgICAgICAgICAgIERJ
-Vl9ST1VORF9VUChzZy0+bGVuZ3RoLCBQQUdFX1NJWkUpLCBtYWtlX2RpcnR5KTsNCg0KKyAgICAg
-ICAgICAgICAgIGlmICghKGkgJiBSRVNDSEVEX0xPT1BfQ05UX1RIUkVTSE9MRCkpIHsNCisgICAg
-ICAgICAgICAgICAgICAgICAgIGNvbmRfcmVzY2hlZCgpOw0KKyAgICAgICAgICAgICAgIH0NCisg
-ICAgICAgfQ0KKw0KICAgICAgICBzZ19mcmVlX2FwcGVuZF90YWJsZSgmdW1lbS0+c2d0X2FwcGVu
-ZCk7DQogfQ0KDQoNCi1MaQ0KDQo=
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Tue, 18 Nov 2025 03:11:07 -0800 you wrote:
+> Add pre-transmission checks to block SKBs that exceed the hardware's SGE
+> limit. Force software segmentation for GSO traffic and linearize non-GSO
+> packets as needed.
+> 
+> Update TX error handling to drop failed SKBs and unmap resources
+> immediately.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v6,1/2] net: mana: Handle SKB if TX SGEs exceed hardware limit
+    https://git.kernel.org/netdev/net-next/c/934fa943b537
+  - [net-next,v6,2/2] net: mana: Drop TX skb on post_work_request failure and unmap resources
+    https://git.kernel.org/netdev/net-next/c/45120304e841
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
