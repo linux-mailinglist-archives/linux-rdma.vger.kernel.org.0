@@ -1,88 +1,89 @@
-Return-Path: <linux-rdma+bounces-14631-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14632-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B43AC72B8A
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 09:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 20B0DC72B8D
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 09:07:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0529E357570
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 08:07:28 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3A80C3575BC
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 08:07:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CF693081A1;
-	Thu, 20 Nov 2025 08:06:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A520309DA1;
+	Thu, 20 Nov 2025 08:06:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="DOGDxEXf"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="FJjEPrfq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f98.google.com (mail-qv1-f98.google.com [209.85.219.98])
+Received: from mail-io1-f98.google.com (mail-io1-f98.google.com [209.85.166.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4722EE617
-	for <linux-rdma@vger.kernel.org>; Thu, 20 Nov 2025 08:06:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 883892EE617
+	for <linux-rdma@vger.kernel.org>; Thu, 20 Nov 2025 08:06:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763626013; cv=none; b=X3li7uIL/fVTp4oaNn+NyHMzyN1Zl//wvvWkv+VUlrDXuBd4DYABg2V5acdxx+53tvM7qmwxHGE5V+l7v4o5TXu3dGUFJoEnI4wzrX+10WDzkNZpcp9dW9MpfjsJlC2cj5/wMYCWik7Gv+ykIxm3gAnBg/SUGqnGpZmaPYlTJyQ=
+	t=1763626016; cv=none; b=ZcYXeTdH2mw/se0Lf6k6nDKYpfay1uZ9opm230vkeae8jQ/1/IQoran2Ci7dUNbfOoV8YnW3ITP4+Ah/bX3kZtTXO37cVtUmH1nL9xG5Id5wJ0dDRRtLjy5uj/jfc6nOJgVdbs/G08T79YpSmN7/QgjZu4lLQT9dEiWcDfHvx+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763626013; c=relaxed/simple;
-	bh=xC4tw6ruiqiQ0SLFPGurYiUYYtJ1uYDiQV6ghiBg6+4=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=gY9NxDLwn2NtwlVsbv8COEwgGvsbP2hJimC+yK4ae1ws3D4zZOcSrqUq22m8fzCbKcIH1YaSFUbtkiUyoDeNmkq4Y+dKiWqz4YLWPR4E68XZ+Sz0rTqrbhGHXZT3O+1Szag5R+N/EJRl5KXTWEgNIpGk+SgLXagyOGCZq0jKA+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=DOGDxEXf; arc=none smtp.client-ip=209.85.219.98
+	s=arc-20240116; t=1763626016; c=relaxed/simple;
+	bh=q2qlG5vBmryakmmntqw2BTgxgky5HWXXVo2zDIJPJYc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=ZhByG/BphB9wTTBNH1HZ31BSIbEulFp/sTllOeH5N+w02OSo8Ee6PjW3EZt3zUJpAYQGC5K0wqwzbI4HBi4Mz5e2bFmtcpHmAhVN7nKPj/BmFM66+HTjZ2TDgTELNy6ESviqvk0KjIS4ecwDpGqrWPwLce/YjKlvmQX3ANvdrzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=FJjEPrfq; arc=none smtp.client-ip=209.85.166.98
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-qv1-f98.google.com with SMTP id 6a1803df08f44-88056cab4eeso3345176d6.2
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Nov 2025 00:06:51 -0800 (PST)
+Received: by mail-io1-f98.google.com with SMTP id ca18e2360f4ac-9487e2b9622so24510939f.2
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Nov 2025 00:06:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763626010; x=1764230810;
-        h=message-id:date:subject:cc:to:from:dkim-signature:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XPZpKjuReuloaTrnxM3BGvjifrrIBcp8jkBNhhtV/SA=;
-        b=mRtNtoshrkJOUsiUof0AoWApEcFNBO1ZkeCFa5K+d1MvxR0LIOPy14HqvdR3sZr6rI
-         tWaU7jhoT4w9owBcTpWBWvQU8/Ez0dbwTbduS3z4gb3bQw6DGE+IHEwr0hgFG1kAUOXN
-         vEAmP/5KaR8fYhl5iAxcIeQ2ny6hMoCPXQkjaLc8EUKV9vtU4W2GhgXSIl9sq2wV5ZA2
-         FQfZ+pCanQkLRNJfqA5xkY5l4+lPnLTDM01YFoSZ+XZXMh0A5Tgsc/T1mdgF8m13epdI
-         TufO+oUsSlNOBksm2gaYLtfERXCoSSWtvPbJkx52ivfXvU7+XcmSTa3iWStV9kAaI4nM
-         Kc7Q==
-X-Gm-Message-State: AOJu0YwbC2SLJVIRSlkawzrZolhS5FOMxHVWeVfuR3pDbtGyWxlQSW25
-	NiC4dJ0X95K2oN5sR0eg1XjWnHaD3QDh6kOCWcdqlQvNYNXD0is2Go6mQ38PxxLmcYk/k/Ik03x
-	rC91QkWCT78jgWfoOt3VO91OGx4us5dM5XYyEsulHiEy0zGyZu4XX/cV1F+jtZF63eQGh4zQ3xG
-	8C4NZskVy7YOutdw0AZyVLb2Zvnbibk2Y50kDxudZgHaX9+Rvs5q8QSh2vPWM70C0KYwe6oE6V2
-	ZzBNvMZ/Wjm+wk8qA==
-X-Gm-Gg: ASbGncsEnUpL3qY6wDShjU11e3+Qc4eHgXbQVSubJZ65TkJvmWd25Ma01ep+0Wf4YdQ
-	UFS/v4NYLMbBLFHENpSmIJ9Jwi6CWHszou6KRd2RfigB2YaOYJOSYAqELPU9ZdqM3rB8xz+0gjJ
-	GbkryN8cenx2BSwQFj1QqOtJZYwIL8bTfGGtGbQHABvP8+FknK2JGg6LRWEpLG1ZibCawcXw9KK
-	vl6WYHiXy1d3Qth4mz8hS8lPv3KBrLvbYLq3NbwEcrYNcU9tt7guhDtzZSr695kmVhVhB/4+X/S
-	XlRzGJNxQ7EVUV+fTggMjfTefYiLba+Z/z7UbVevu8ZQADwDUFjJabbmGc6plj9zwShg3tvrdHI
-	b956J3I7Lhhz1KOcJZBc2XtP6oXhI/BsYUFbFMLIsqtTdSdW4qnmbgARSbrzMKCWhus6ei5ZnNg
-	vetUoNNKXL5JKA/9xRCQFOKRzQfS+Ir8E5+ZvPdjpVbpGwPg==
-X-Google-Smtp-Source: AGHT+IEZPjfgGdL4Ztj3oNHTY9wCEuL4/PvScIWtXNn6c1Ic8DuYSLSVjNCmbXh4vI1/rphjTRNsKlqhDfuF
-X-Received: by 2002:a05:6214:428c:b0:880:5548:93a0 with SMTP id 6a1803df08f44-8846e08b41cmr31117706d6.21.1763626010450;
-        Thu, 20 Nov 2025 00:06:50 -0800 (PST)
+        d=1e100.net; s=20230601; t=1763626014; x=1764230814;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yJiTm2nE9hjnbWqeZNozLg/C5SFb3jyhS8CEzzEb+l8=;
+        b=cHpa5g4LN7UW9dXtDl+Bg6Uuc6ws+msmmKkrwXFbke+m1Z5n6kgXeIXtayNt5YYj3Z
+         HHm9wPT2ivpsB19Ts9S0pPe5mLIaQvzl018Erwbf31BQNH+HqFhCHb3FW+B9pFSBMIuq
+         zePCxzwIwwoZOS/Ca4oUKtaS/m6Sd53wfMWSiLrfq8O7/QNWjAZ2ciNSE3Ip8lSWyLaj
+         /Z1m53g7THpHM0U3Doz641T0m8uNVcFVsrKhYFdPu/lgWuApzF9cfVLYjPWX84sUsugw
+         pc+W87awWsosNte0i/ZLix2XAMpnFRDrF/pK2sX7cX4qooBC4TECr3Vn1n0jjhIb3YU3
+         lajA==
+X-Gm-Message-State: AOJu0Yz37hmxy8MZV9c8B2UWAYTknsM3Uv2u/knGMbTzmCiiEE76qP6V
+	Y1obVU4pKmEio6fV22TtgCO00UO8icN4vrsktjXIRDMffZXqw9M6D0o69umSC4BtiRAcLmnH/9t
+	ycO/TtkEJWfdLKk/g21hkyN0zYn7KxecmXrjsjwnrV++zA8kFmcb6tAwAYi8bu0jRDvH2+fnV1d
+	pgr1DgFkjk1ulMhSmARDmMdHilnshc5PjYfEMKm/0YDIDhxCqKrRqbQ8Lubgf/LtXNjZqNFc/ND
+	opQMZuHSkXvaKGSXA==
+X-Gm-Gg: ASbGnct3e5IXf2v6XAqq1zPu18GVGX+5QQOrcVEPyVyvu3yT4RMybu6NxTZK9BNLm8U
+	H/u8fIKoFE9aL9qSfemNeP5UnQyAVjSbwxP9aXVxICVH+oOGv5miXRoMRLyl6RZlnMN5GDp1KyX
+	8XwORNdjAuZva4qCCS8/pxpaSZEMcAE2I293tNxILPkTaso1qHw8LxyNBE3gH2D3ZrUb6MuvMh6
+	x9oJIGQTJXlb/7MIf5SqjWVqAwH4hvnHgVrUHsZBu8lJpyWsdcZAJyJQKUQuejJFU0yQbK7ZGpz
+	R73JMzaFEcmL8I1etqJJx8PpoDaCYwRNEfhUxNU3eaiJwzBgXmayv9kgX+XDG3pl9qhGmdji5S0
+	lICEMhbyOVnVC0qDkR/iEbAd/oZ46+YWd2HkitG9NCHwm70Zrb4hbF9ngs2N3aDDlSElUMUdBqF
+	+FytFcd65MJz6kpLqQaINbHq4+TQW58iHXupZLopqahLa3xA==
+X-Google-Smtp-Source: AGHT+IFpEm67EaUcpgg9wwWht6qYIo6KCmmv3IpcNOVxNrwjjcHtU9Gq0naIy6kFyycpddFrB11Haj1kvYVl
+X-Received: by 2002:a05:6638:6a12:b0:5b7:267c:35c7 with SMTP id 8926c6da1cb9f-5b953ffb6f1mr1390270173.2.1763626013585;
+        Thu, 20 Nov 2025 00:06:53 -0800 (PST)
 Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-77.dlp.protect.broadcom.com. [144.49.247.77])
-        by smtp-relay.gmail.com with ESMTPS id 6a1803df08f44-8846e5b13ffsm1843556d6.28.2025.11.20.00.06.50
+        by smtp-relay.gmail.com with ESMTPS id 8926c6da1cb9f-5b954a08bf2sm150061173.3.2025.11.20.00.06.53
         for <linux-rdma@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 20 Nov 2025 00:06:50 -0800 (PST)
+        Thu, 20 Nov 2025 00:06:53 -0800 (PST)
 X-Relaying-Domain: broadcom.com
 X-CFilter-Loop: Reflected
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-3438744f12fso1916872a91.2
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Nov 2025 00:06:50 -0800 (PST)
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-3438744f12fso1916966a91.2
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Nov 2025 00:06:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1763626009; x=1764230809; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XPZpKjuReuloaTrnxM3BGvjifrrIBcp8jkBNhhtV/SA=;
-        b=DOGDxEXfJG3Ztw5Cmdm5uEJ3G8sgdN6aoLz67RThMoUVpe+7nQa+rIzmUAxo2ixc1c
-         ILDub+NUSqQLMbOm41lbLHV7sWv7gTfoPmiHy9H/uy+FjHxr8ddEFTTlxpHuOZf4m3II
-         iMj+gavo6sHa9Qe8+oxW6VwdOH+kEgghu9kSE=
-X-Received: by 2002:a17:90b:3947:b0:339:ec9c:b275 with SMTP id 98e67ed59e1d1-34727bdba56mr2651392a91.6.1763626009272;
-        Thu, 20 Nov 2025 00:06:49 -0800 (PST)
-X-Received: by 2002:a17:90b:3947:b0:339:ec9c:b275 with SMTP id 98e67ed59e1d1-34727bdba56mr2651372a91.6.1763626008893;
-        Thu, 20 Nov 2025 00:06:48 -0800 (PST)
+        d=broadcom.com; s=google; t=1763626012; x=1764230812; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=yJiTm2nE9hjnbWqeZNozLg/C5SFb3jyhS8CEzzEb+l8=;
+        b=FJjEPrfqQyyKLeqNoFnpO5XgqwsQCEA+M6FIcsWxn66HnQKfsMMFXP9jKhefyO8DvT
+         shKhPlCIavoBG/PTcYaCwpCigFDcHvVbtWYubU9kfg/M4lvGNvj5hvvQj1CvFes30Fp8
+         lAa4DW2vhePgUUtTfVxcHLEjViMXvr6vuvtPY=
+X-Received: by 2002:a17:90b:5645:b0:32b:c9c0:2a11 with SMTP id 98e67ed59e1d1-34727bdc112mr2523642a91.4.1763626012020;
+        Thu, 20 Nov 2025 00:06:52 -0800 (PST)
+X-Received: by 2002:a17:90b:5645:b0:32b:c9c0:2a11 with SMTP id 98e67ed59e1d1-34727bdc112mr2523615a91.4.1763626011674;
+        Thu, 20 Nov 2025 00:06:51 -0800 (PST)
 Received: from sxavier-dev.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34727c4baffsm1549119a91.12.2025.11.20.00.06.46
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34727c4baffsm1549119a91.12.2025.11.20.00.06.49
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 20 Nov 2025 00:06:48 -0800 (PST)
+        Thu, 20 Nov 2025 00:06:50 -0800 (PST)
 From: Selvin Xavier <selvin.xavier@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
@@ -90,10 +91,12 @@ Cc: linux-rdma@vger.kernel.org,
 	andrew.gospodarek@broadcom.com,
 	Selvin Xavier <selvin.xavier@broadcom.com>,
 	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-Subject: [PATCH rdma-rc 1/2] RDMA/bnxt_re: Fix the inline size for GenP7 devices
-Date: Wed, 19 Nov 2025 23:36:54 -0800
-Message-Id: <1763624215-10382-1-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH rdma-rc 2/2] RDMA/bnxt_re: Pass correct flag for dma mr creation
+Date: Wed, 19 Nov 2025 23:36:55 -0800
+Message-Id: <1763624215-10382-2-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
+In-Reply-To: <1763624215-10382-1-git-send-email-selvin.xavier@broadcom.com>
+References: <1763624215-10382-1-git-send-email-selvin.xavier@broadcom.com>
 X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -101,31 +104,100 @@ List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 
-Inline size supported by the device is based on the number
-of SGEs supported by the adapter. Change the inline
-size calculation based on that.
+DMA MR doesn't use the unified MR model. So the lkey passed
+on to the reg_mr command to FW should contain the correct
+lkey. Driver is incorrectly over writing the lkey with pdid
+and firmware commands fails due to this.
 
-Fixes: de1d364c3815 ("RDMA/bnxt_re: Add support for Variable WQE in Genp7 adapters")
-Reviewed-by: Kashyap Desai <kashyap.desai@broadcom.com>
+Avoid passing the wrong key for cases where the unified MR
+registration is not used.
+
+Fixes: f786eebbbefa ("RDMA/bnxt_re: Avoid an extra hwrm per MR creation")
 Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_sp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 8 +++++---
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c | 6 +++---
+ drivers/infiniband/hw/bnxt_re/qplib_sp.h | 2 +-
+ 3 files changed, 9 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index 84ce3fc..f19b55c 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -601,7 +601,8 @@ static int bnxt_re_create_fence_mr(struct bnxt_re_pd *pd)
+ 	mr->qplib_mr.va = (u64)(unsigned long)fence->va;
+ 	mr->qplib_mr.total_size = BNXT_RE_FENCE_BYTES;
+ 	rc = bnxt_qplib_reg_mr(&rdev->qplib_res, &mr->qplib_mr, NULL,
+-			       BNXT_RE_FENCE_PBL_SIZE, PAGE_SIZE);
++			       BNXT_RE_FENCE_PBL_SIZE, PAGE_SIZE,
++			       _is_alloc_mr_unified(rdev->dev_attr->dev_cap_flags));
+ 	if (rc) {
+ 		ibdev_err(&rdev->ibdev, "Failed to register fence-MR\n");
+ 		goto fail;
+@@ -4027,7 +4028,7 @@ struct ib_mr *bnxt_re_get_dma_mr(struct ib_pd *ib_pd, int mr_access_flags)
+ 	mr->qplib_mr.hwq.level = PBL_LVL_MAX;
+ 	mr->qplib_mr.total_size = -1; /* Infinte length */
+ 	rc = bnxt_qplib_reg_mr(&rdev->qplib_res, &mr->qplib_mr, NULL, 0,
+-			       PAGE_SIZE);
++			       PAGE_SIZE, false);
+ 	if (rc)
+ 		goto fail_mr;
+ 
+@@ -4257,7 +4258,8 @@ static struct ib_mr *__bnxt_re_user_reg_mr(struct ib_pd *ib_pd, u64 length, u64
+ 
+ 	umem_pgs = ib_umem_num_dma_blocks(umem, page_size);
+ 	rc = bnxt_qplib_reg_mr(&rdev->qplib_res, &mr->qplib_mr, umem,
+-			       umem_pgs, page_size);
++			       umem_pgs, page_size,
++			       _is_alloc_mr_unified(rdev->dev_attr->dev_cap_flags));
+ 	if (rc) {
+ 		ibdev_err(&rdev->ibdev, "Failed to register user MR - rc = %d\n", rc);
+ 		rc = -EIO;
 diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.c b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-index 9ef581e..a9afac2 100644
+index a9afac2..408a34d 100644
 --- a/drivers/infiniband/hw/bnxt_re/qplib_sp.c
 +++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.c
-@@ -162,7 +162,7 @@ int bnxt_qplib_get_dev_attr(struct bnxt_qplib_rcfw *rcfw)
- 	attr->max_srq_wqes = le32_to_cpu(sb->max_srq_wr) - 1;
- 	attr->max_srq_sges = sb->max_srq_sge;
- 	attr->max_pkey = 1;
--	attr->max_inline_data = le32_to_cpu(sb->max_inline_data);
-+	attr->max_inline_data = attr->max_qp_sges * sizeof(struct sq_sge);
- 	if (!bnxt_qplib_is_chip_gen_p7(rcfw->res->cctx))
- 		attr->l2_db_size = (sb->l2_db_space_size + 1) *
- 				    (0x01 << RCFW_DBR_BASE_PAGE_SHIFT);
+@@ -578,7 +578,7 @@ int bnxt_qplib_dereg_mrw(struct bnxt_qplib_res *res, struct bnxt_qplib_mrw *mrw,
+ }
+ 
+ int bnxt_qplib_reg_mr(struct bnxt_qplib_res *res, struct bnxt_qplib_mrw *mr,
+-		      struct ib_umem *umem, int num_pbls, u32 buf_pg_size)
++		      struct ib_umem *umem, int num_pbls, u32 buf_pg_size, bool unified_mr)
+ {
+ 	struct bnxt_qplib_rcfw *rcfw = res->rcfw;
+ 	struct bnxt_qplib_hwq_attr hwq_attr = {};
+@@ -640,7 +640,7 @@ int bnxt_qplib_reg_mr(struct bnxt_qplib_res *res, struct bnxt_qplib_mrw *mr,
+ 	req.access = (mr->access_flags & BNXT_QPLIB_MR_ACCESS_MASK);
+ 	req.va = cpu_to_le64(mr->va);
+ 	req.key = cpu_to_le32(mr->lkey);
+-	if (_is_alloc_mr_unified(res->dattr->dev_cap_flags))
++	if (unified_mr)
+ 		req.key = cpu_to_le32(mr->pd->id);
+ 	req.flags = cpu_to_le16(mr->flags);
+ 	req.mr_size = cpu_to_le64(mr->total_size);
+@@ -651,7 +651,7 @@ int bnxt_qplib_reg_mr(struct bnxt_qplib_res *res, struct bnxt_qplib_mrw *mr,
+ 	if (rc)
+ 		goto fail;
+ 
+-	if (_is_alloc_mr_unified(res->dattr->dev_cap_flags)) {
++	if (unified_mr) {
+ 		mr->lkey = le32_to_cpu(resp.xid);
+ 		mr->rkey = mr->lkey;
+ 	}
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_sp.h b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+index 147b5d9..5a45c55 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_sp.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_sp.h
+@@ -341,7 +341,7 @@ int bnxt_qplib_alloc_mrw(struct bnxt_qplib_res *res,
+ int bnxt_qplib_dereg_mrw(struct bnxt_qplib_res *res, struct bnxt_qplib_mrw *mrw,
+ 			 bool block);
+ int bnxt_qplib_reg_mr(struct bnxt_qplib_res *res, struct bnxt_qplib_mrw *mr,
+-		      struct ib_umem *umem, int num_pbls, u32 buf_pg_size);
++		      struct ib_umem *umem, int num_pbls, u32 buf_pg_size, bool unified_mr);
+ int bnxt_qplib_free_mrw(struct bnxt_qplib_res *res, struct bnxt_qplib_mrw *mr);
+ int bnxt_qplib_alloc_fast_reg_mr(struct bnxt_qplib_res *res,
+ 				 struct bnxt_qplib_mrw *mr, int max);
 -- 
 2.5.5
 
