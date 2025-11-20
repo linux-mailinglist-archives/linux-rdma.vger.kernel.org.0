@@ -1,169 +1,283 @@
-Return-Path: <linux-rdma+bounces-14635-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14637-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87FCEC73A60
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 12:13:07 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1634FC741D8
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 14:15:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 47DB3349297
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 11:11:33 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 923994EA9AE
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 13:13:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B111D32F74F;
-	Thu, 20 Nov 2025 11:11:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D5C833A709;
+	Thu, 20 Nov 2025 13:13:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="g1P4utE2";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="CScb18ra"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Cd1D0Tnm"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012007.outbound.protection.outlook.com [40.107.209.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56E2232FA0B
-	for <linux-rdma@vger.kernel.org>; Thu, 20 Nov 2025 11:11:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763637090; cv=none; b=B1+zA446ZK36z5EgbRIfnoZORM/pbwCi8iYclGRismf1YKQ8DLn6Sl+ukFb8/9mMAbFgY7nQ5Dk8Dz97RKzh6oFwuJM6UDtlC9VUYr3a4zd7Z16qE19+U8EKdTkInjo5+1noyj+/Acy8v8YMFQeE+BWPg8nllfvAlGIjyWzw7tg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763637090; c=relaxed/simple;
-	bh=4w94fCVl14EEV0Zihb71NNS/ooZ/eDdAuYJP2GMD/70=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HOaUMuSa15dlHK29g+DWP65I0/oT4zmd7ILjaDJyaNxY4+x4obkxvCA7gnOadsT6hZJ1oViOr/RbM72DkZM/GY9amdLDz3n+1jORpcOuhgUA+dzLUFIZAaqGZRxuRYjHrtuiiGbvlSe0AwsA1/a1QHmifJxqozUKyFeQR5io7a8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=g1P4utE2; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=CScb18ra; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1763637087;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VMS34UwrZ8S2nle8FVRzl8w579va+uy0VBnhRljJShQ=;
-	b=g1P4utE2Rf4IQKEV5SF5hNdWAKgNWyzhPnzE4VXdIM6aBq+mfZp+S7CFGBGJwIJG29EhfV
-	GpaHq/QaO6yHGyLOqScXcUymNCbreKijl+09MiFBUm4WakSrXkLq1tGTN/3djwxbNlCHlc
-	h66V0MVO1fODIASU9jM1ju6vraogEm4=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-36-78Q3mEXpOha4MtfNdhgS2A-1; Thu, 20 Nov 2025 06:11:25 -0500
-X-MC-Unique: 78Q3mEXpOha4MtfNdhgS2A-1
-X-Mimecast-MFC-AGG-ID: 78Q3mEXpOha4MtfNdhgS2A_1763637085
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-47754e6bddbso5218505e9.3
-        for <linux-rdma@vger.kernel.org>; Thu, 20 Nov 2025 03:11:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1763637084; x=1764241884; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VMS34UwrZ8S2nle8FVRzl8w579va+uy0VBnhRljJShQ=;
-        b=CScb18raWHf2CQJLRDUi+l8B51BmVrX63VFmtLeUAtYlhRak/R/TCDgO+VJp69KXqo
-         Y+itwfjb52IW8k7ojUeCy0Aj8yU0lSf7S7RVZ/joHObbAWxw1HRG/5tLAzOzVH1Uf5UD
-         484OCGFvuf8vrABUtbgzrk0y7DLCNZX+oRgsukkc3N2OW2TfrbvRYJcnym7ycGwTOcgr
-         W5SPH8Q0eHi1RMl3Zt9stGiFjnP2V03ZcFycwGt8GYTPuEU6U4SzlhOx/mbKOpm0z0Lo
-         FyALlrXpRTFN7PdDP33mq3Z4p3bWNaDp1ZQD+PYmFGuhoiG1ZjiqfHiRzC+L2ED/ZVgh
-         sKug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763637084; x=1764241884;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VMS34UwrZ8S2nle8FVRzl8w579va+uy0VBnhRljJShQ=;
-        b=jF/HqOnnjvTWRme+evStDkMSVUydfCvfJ12H8fHbrIA3Ycai7BGjUrpPr/JcxsaSu8
-         92SKiK8DTcDb5EPttovt8IxrhRbKqOmxrlpkQI65LCzsZQ2rEpq48q3DVTL24Zp90tAj
-         rWLUsm9FC6fLpWhLBFJoXQRqk7SWcIJ9Y3e4q5eceRVQK2R/1trc/KXkk/IJDosBft2A
-         rG++XAsrC2Ps9UHNRaZkj/kBeHgahLuabJv+fBfNxTKEX0oW2wt4PjlkTf2fycm01VZe
-         zAY2qu5pyKcim5LJcOY0RmriMu+g3EJ8+eqhABiIL37GlAX0Ulq3/SPcVrIvARj7Ffcl
-         jAjA==
-X-Forwarded-Encrypted: i=1; AJvYcCXe4i46imfahEFVsP1nBvNUK0L0UsH0AUP9tF+Nf9LWQErLng5nZrxX/xjS+JgSbH7zoE9J+tQ1yuwz@vger.kernel.org
-X-Gm-Message-State: AOJu0YzWaGZA4ULBr1RFVxAHxr9nOFWuwJARuKCCtEbDdtB7wi6kt3pv
-	I9xcF6bSLFAoYPrGmkI02zV+gMcXfhFqkUW4AlZ6FFgLFKF7ssRUpcEkEEWFBR3IrAcHdsmN07k
-	7lIzT/myn/tvrdtygeICUEw4G7VOx88dyO09XLYPSmipNZwMzt/rDvwUJ1ibPeRA=
-X-Gm-Gg: ASbGncsrihFMHrXN4YsFhV1N3YVCVJ2/i7N6aVJBxTbf0L0ti4Gv/DwBWjx5X1USSu3
-	U1ZuyvS7BaLWgpmUSRaMzIbQ3aHz+PJ7+6XhNJXrgEQhjg47zJi3TZy0c01f5usdQS6Jl4q3Coo
-	0Ik7rNrzx9FDUfsNOJPGNY2QYMnvyZoeGM4oE+pRYTzExJOIVndpFTGGEOZ/YkK2ZekCItrxAE0
-	/JdtB2+Zf3nUg9MneVH3Xo3oq2GD7lfkBW1Uc5uwfap5sFMsl8tvGEuONUYSAJUxOmqzBWYizXW
-	2FJsmFFUNaRDuehPUx08O6806DME3+qArzqKc6TV/eSgHqp2N7E76ajE90kDIxZdcWtzHglcWnY
-	z47oj8KF4+am/
-X-Received: by 2002:a05:600c:21d6:b0:470:fe3c:a3b7 with SMTP id 5b1f17b1804b1-477b9ea4d28mr16744265e9.5.1763637084533;
-        Thu, 20 Nov 2025 03:11:24 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE/fUTeDI0WH8NPmq3GHHJh/IHPYx2tPHiKQdM9TuqaRUB2LyRCR8etaEIrIUjerN5jw8l6jg==
-X-Received: by 2002:a05:600c:21d6:b0:470:fe3c:a3b7 with SMTP id 5b1f17b1804b1-477b9ea4d28mr16743945e9.5.1763637084152;
-        Thu, 20 Nov 2025 03:11:24 -0800 (PST)
-Received: from [192.168.88.32] ([212.105.155.41])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-477a9ddef38sm63385435e9.3.2025.11.20.03.11.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Nov 2025 03:11:23 -0800 (PST)
-Message-ID: <7d835eb1-f111-46e5-8834-a1fafb53bd8f@redhat.com>
-Date: Thu, 20 Nov 2025 12:11:21 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3972B33A026;
+	Thu, 20 Nov 2025 13:13:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.7
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1763644411; cv=fail; b=LmLzxijVsieJzWucdeQMQuMXw5GH59Pt9ob9db/tp+ra5JsYYULSheeRPhz4jZdGVgwl8YFgEv1kFJe4gtso1PSLcFmNsE2LDWbXgOnWNifUI6NaBLnOmBMNjyiQ9+TmrQ70qRgltA172U76TtYRhMiaEROPQNNDmAbsUkfYNoo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1763644411; c=relaxed/simple;
+	bh=cvbu+TYGWr8I482e3JdZi6DE1Dw6t7yTt2XWnE6OZoA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=hQaS2bV8Ny0djv5kFR+YspmHVxvnlJMNqs6kV0QsSpWRmueoPinw53YTchOmrzcOFmV2QIFZFbw8iUZwi9DLkWyPZ/zgbuJ/mJQTPQEI4h+4psKnHmKWa8ZPZgANYLX8EVRMI/0+aDX2JvwY6NMy+xlX4lHSzwrRz3D1gCzMapc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Cd1D0Tnm; arc=fail smtp.client-ip=40.107.209.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=genlCUHZqjdGiBqbgVCEc6JB6aVH46tU9g1xrfK6cgetmzKUjY2qsTI+Itw6yw5GsFN/+xX2+gElA8N1HlR+mFo3GQJWwHZ1HXkoKAH6P7luRiCTePpjb1JC0lXkzuMAXJVDIts/Ir/GiFTrHF9yrMjpirr62qpEb/JT9jojcBxHK5xTXAMOhHrDy37u3QFIP3F/aIWX3nPsXWVxY3FZVpIPIQPaoTEy/pLAl/GFVLIFBQSHZTfeC2p0l3k+DkfNtUXR/bgif9qWlLTMMzFBzuytlYsuxo5oU4Ql5ceWwOkSzl1A+/Lg1u1HxrosLCu2k5Y1RUbNEEGe3YVnHgV73w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=87Sc/t+asddKWEeiFTJPdF2VFlg6xfMms0SecW7lo70=;
+ b=jlw0OGNedHOXtIIZ6tdluKgZNS0kpMilhp7nEU4dPMoWaQZmpXd4JfU0MxqEP1+b4aLm3FyK/5oQBatzRtssb4mVWWXwSuRqu9cGC0/cjjaQpxL+n+WS9WnJK9P0NqF+kz8t1VRKQMHt9RaOOOw8qKZaytRf3kHiHOofKD2Y72wlhmd85xTSHGbTJHIQ3iX7LRWtBx3hNDpIHANRPuda38TlhPe9p/EXGcfcLebmut3VlzPkI3dq0Bw0iyOVmN5SwaPYVWR1DKXjm0gbdrTiO/yF2rrlS0PVwbPXwrUsQrQQXzmkxDUT7v+tovm7k8bnE68dO+bkUM2AYAuSNY9QXw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=87Sc/t+asddKWEeiFTJPdF2VFlg6xfMms0SecW7lo70=;
+ b=Cd1D0TnmmY9uKwwVipisUU66HGyP2Vgtxc9BZFkQ2l7op1EqS8W9P5tDT89UPZCEN2c9flwI3jeWD5vnybmX3ztw8QtxnqWX2c+OVxqLe9TGKKmdwfc28qX62OXh0nF4meH9NvLPQFNKouIhujk0q30yOtmvLgi+CSoXkVWciQXJjyM2yDIVmUbkg7zaK5zkCg7UNvODTjpTpi6WMQ4RCRNYp4jec0giZbwNxU0cs8TPYhJAPP/irbDwj4beCnAMLv9XFVD3h2ov5lg/7z6jai0bGvlXVrrWZsXnXnYaAVaXQNLpsrwTaJ0Kd+7tczSW4Pb0iyJfT70xcja1nC165w==
+Received: from SA1P222CA0148.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:3c2::14)
+ by PH7PR12MB5928.namprd12.prod.outlook.com (2603:10b6:510:1db::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9343.10; Thu, 20 Nov
+ 2025 13:13:23 +0000
+Received: from SN1PEPF00026367.namprd02.prod.outlook.com
+ (2603:10b6:806:3c2:cafe::fd) by SA1P222CA0148.outlook.office365.com
+ (2603:10b6:806:3c2::14) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9343.11 via Frontend Transport; Thu,
+ 20 Nov 2025 13:13:23 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ SN1PEPF00026367.mail.protection.outlook.com (10.167.241.132) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9343.9 via Frontend Transport; Thu, 20 Nov 2025 13:13:23 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 20 Nov
+ 2025 05:13:08 -0800
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 20 Nov
+ 2025 05:13:07 -0800
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.6)
+ with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Thu, 20
+ Nov 2025 05:13:01 -0800
+From: Tariq Toukan <tariqt@nvidia.com>
+To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>
+CC: Donald Hunter <donald.hunter@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+	Jonathan Corbet <corbet@lwn.net>, Saeed Mahameed <saeedm@nvidia.com>, "Leon
+ Romanovsky" <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch
+	<mbloch@nvidia.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Moshe Shemesh
+	<moshe@nvidia.com>, Carolina Jubran <cjubran@nvidia.com>, Cosmin Ratiu
+	<cratiu@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
+Subject: [PATCH net-next 00/14] devlink and mlx5: Support cross-function rate scheduling
+Date: Thu, 20 Nov 2025 15:09:12 +0200
+Message-ID: <1763644166-1250608-1-git-send-email-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.8.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch net-next v2] net: mana: Handle hardware recovery events
- when probing the device
-To: longli@linux.microsoft.com, "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Shradha Gupta <shradhagupta@linux.microsoft.com>,
- Simon Horman <horms@kernel.org>, Konstantin Taranov
- <kotaranov@microsoft.com>,
- Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
- Erick Archer <erick.archer@outlook.com>, linux-hyperv@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org
-Cc: Long Li <longli@microsoft.com>
-References: <1763430724-24719-1-git-send-email-longli@linux.microsoft.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <1763430724-24719-1-git-send-email-longli@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF00026367:EE_|PH7PR12MB5928:EE_
+X-MS-Office365-Filtering-Correlation-Id: 00ed1fbb-ad1a-4678-6b0b-08de283695b4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|7416014|376014|36860700013|82310400026|30052699003|1800799024|13003099007;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?cl9vhuWhhoDEfj/gTFMer9FLMayEFSonHyqNe2j4ZsVjKajHRrhBVYwxf89Y?=
+ =?us-ascii?Q?RzZZEUzlwe1RuBzP4C3szvTzu4zM25NnyUyXX0fM4ccrwMI1UiJEqOGLuoLW?=
+ =?us-ascii?Q?lh87cDmVseYWxP8iN7Bhru9hLEdSg0pKMl7c9yfzt+14ya26norK8QWCfJDS?=
+ =?us-ascii?Q?zciU0bl7w56X8liwABcqa36Mnm+62GVBtd/lLdFdOUZBEzvNnvf/81jJvDsz?=
+ =?us-ascii?Q?buskAiY2kFLcIKrnu044yvc/yPZCT/DL75aDaXtaduqNsDyRMdh97CA79lgP?=
+ =?us-ascii?Q?DgfriVvT4c5g6AX/DxXkG/4GJXVik76MSLoSrGdmluYxqVdUeIvVdvxZe1ei?=
+ =?us-ascii?Q?GVDzMXtb8KRRgFDhx2Tlba9c/WHT0RhGGJgbO/QZ2kRhXuUuSpvRJzttr906?=
+ =?us-ascii?Q?ZWJ/FPz9c2GelLnu5lLWABBAf0qemy1Aek5CYPpwjCZUMsgoqr170yDl3px1?=
+ =?us-ascii?Q?qthsrCaOEMHavYeS8qcckfjUt5VORiRFFMLbHmbUOzZjMj2jmOHmQgafC4NT?=
+ =?us-ascii?Q?R+9RequOv8M01SpuRjzg26ZQXJX59E3hRfM1syMp1WUxz9NUkrN4NspM+gWt?=
+ =?us-ascii?Q?Ztm2tCo4DXAvHhaHBKV5qw5q9zRV+h7F5zyrLSoRlKh9YvlKgLj3R2jiMaRO?=
+ =?us-ascii?Q?taJX9PmwqhyuUTjt+73LIf8ldpiVOghDj4cVBejuupNXiayJL2zki1BLHTmv?=
+ =?us-ascii?Q?hbiGUNM70SW8ssxG/cu0pj3E0r2MXgP7vIEiQ47yJLZW3jEJCN9S+IQHCwwN?=
+ =?us-ascii?Q?bQkprc0YpcrhVu5Y+lgcp5lYf2JPCqD0zLzS3YkMT46MXZbUn7yR8iImCtaE?=
+ =?us-ascii?Q?4n8RhjMsgOf7dHVixBoOkkcBZUrm+ODboxqW6RdPO8XjDMUvhZvcMzy0ddzn?=
+ =?us-ascii?Q?aWB24zpv0PuaVItodHqflBYqjiqEWLbOSl6L02tAlLS8hFAiJ/YCCayvB84o?=
+ =?us-ascii?Q?PTGyS9MuofuHFsEck8zpxpgZWEtgjhLg4VnkV8DgwvWlyf+Ta8NsfNI0QYgB?=
+ =?us-ascii?Q?2mn7D1ZtLb2eBEjCzfoC9fT0L3ZN1FNBJUBIXm1roQltdJGALEiutLqkUe90?=
+ =?us-ascii?Q?cf4oN4HDh5lwETboH8CPnxfY1X5OZ715EnFVOkNupuEwf465rEoWjFg8aEQW?=
+ =?us-ascii?Q?U5meH/t0O9oKmrDe9giHoHp+fpGcVuJTyZOOAZ9k6pucDhSruzEU+iz7W4AQ?=
+ =?us-ascii?Q?MR+/TcNQKMYqlRVmmFGj/zktqmVsbb/222bvEvCdigmeWk/7QOKkIuqik35y?=
+ =?us-ascii?Q?BIIn/PObvcQwom86+LwNdOWn5go4e7FkgxTTJR3BSmavkiGCo7r/74JWgcEt?=
+ =?us-ascii?Q?zPOPZ1dUhA/F441KelcwJqlGMq0mv1Tm3ZSiX0H/Ok2tW5j9hj6wOIq5BeFZ?=
+ =?us-ascii?Q?a/shlD+ZWGJ0QqfFKdA3d1OH4BRBWL4wc7cDQGBs9ID+b374bkuVD6L1nfwj?=
+ =?us-ascii?Q?Pg/cDwRhVwKVvENkL5Fp9cEOzBNDVXfT+SgmTVpB0UBtobjKmbARcGOJKsJZ?=
+ =?us-ascii?Q?9Z209TeznHPUdsaTQYu/EJILJJsfkNoRkMThQ9jnvWzNf4/nZl2kNW8Vd/XM?=
+ =?us-ascii?Q?1Fe02ly5KT4ReY84Low=3D?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(7416014)(376014)(36860700013)(82310400026)(30052699003)(1800799024)(13003099007);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2025 13:13:23.6962
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 00ed1fbb-ad1a-4678-6b0b-08de283695b4
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SN1PEPF00026367.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5928
 
-On 11/18/25 2:52 AM, longli@linux.microsoft.com wrote:
-> From: Long Li <longli@microsoft.com>
-> 
-> When MANA is being probed, it's possible that hardware is in recovery
-> mode and the device may get GDMA_EQE_HWC_RESET_REQUEST over HWC in the
-> middle of the probe. Detect such condition and go through the recovery
-> service procedure.
-> 
-> Fixes: fbe346ce9d62 ("net: mana: Handle Reset Request from MANA NIC")
-> Signed-off-by: Long Li <longli@microsoft.com>
+Hi,
 
-Does not apply cleanly anymore due to commit
-934fa943b53795339486cc0026b3ab7ad39dc600, please rebase and repost.
+This series by Cosmin and Jiri adds support for cross-function rate
+scheduling in devlink and mlx5.
+This is a different approach for the series discussed in [2] earlier
+this year. See detailed feature description by Cosmin below [1].
 
-> +static void mana_recovery_delayed_func(struct work_struct *w)
-> +{
-> +	struct mana_dev_recovery_work *work;
-> +	struct mana_dev_recovery *dev, *tmp;
-> +	unsigned long flags;
-> +
-> +	work = container_of(w, struct mana_dev_recovery_work, work.work);
-> +
-> +	spin_lock_irqsave(&work->lock, flags);
-> +
-> +	list_for_each_entry_safe(dev, tmp, &work->dev_list, list) {
-> +		list_del(&dev->list);
+Code dependency:
+This series should apply cleanly after the pulling of
+'net-2025_11_19_05_03', specifically commit f94c1a114ac2 ("devlink:
+rate: Unset parent pointer in devl_rate_nodes_destroy").
 
-Minor nit: here and in similar code below I find sligly more readable
-something alike:
+Regards,
+Tariq
 
-	while (!list_empty(&work->dev_list)) {
-		dev = list_first_entry(&work->dev_list);
-		list_del(dev);
-		//...
 
-as it's more clear that releasing the lock will not causes races, but no
-strong opinion against the current style.
+[1]
+devlink objects support rate management for TX scheduling, which
+involves maintaining a tree of rate nodes that corresponds to TX
+schedulers in hardware. 'man devlink-rate' has the full details.
 
-/P
+The tree of rate nodes is maintained per devlink object, protected by
+the devlink lock.
 
-/P
+There exists hardware capable of instantiating TX scheduling trees
+spanning multiple functions of the same physical device (and thus
+devlink objects) and therefore the current API and locking scheme is
+insufficient.
+
+This patch series changes the devlink rate implementation and API to
+allow supporting such hardware and managing TX scheduling trees across
+multiple functions of a physical device.
+
+Modeling this requires having devlink rate nodes with parents in other
+devlink objects. A naive approach that relies on the current
+one-lock-per-devlink model is impossible, as it would require in some
+cases acquiring multiple devlink locks in the correct order.
+
+The solution proposed in this patch series consists of two parts:
+
+1. Modeling the underlying physical NIC as a shared devlink object on
+   the faux bus and nesting all its PF devlink instances in it.
+
+2. Changing the devlink rate implementation to store rates in this
+   shared devlink object, if it exists, and use its lock to protect
+   against concurrent changes of the scheduling tree.
+
+With these in place, cross-esw scheduling support is added to mlx5.  The
+neat part about this approach is that it works for SFs as well, which
+are already nested in their parent PF instances.
+
+V1 of this patch series was sent a long time ago [2], using a different
+approach of storing rates in a shared rate domain with special locking
+rules. This new approach uses standard devlink instances and nesting.
+
+Patches:
+
+devlink rate changes for cross-device TX scheduling:
+devlink: Reverse locking order for nested instances
+documentation: networking: add shared devlink documentation
+devlink: Add helpers to lock nested-in instances
+devlink: Refactor devlink_rate_nodes_check
+devlink: Decouple rate storage from associated devlink object
+devlink: Add parent dev to devlink API
+devlink: Allow parent dev for rate-set and rate-new
+devlink: Allow rate node parents from other devlinks
+
+mlx5 support for cross-devuce TX scheduling:
+net/mlx5: Introduce shared devlink instance for PFs on same chip
+net/mlx5: Expose a function to clear a vport's parent
+net/mlx5: Store QoS sched nodes in the sh_devlink
+net/mlx5: qos: Support cross-esw tx scheduling
+net/mlx5: qos: Enable cross-device scheduling
+net/mlx5: Document devlink rates and cross-esw scheduling
+
+[2] https://lore.kernel.org/netdev/20250213180134.323929-1-tariqt@nvidia.com/
+
+
+Cosmin Ratiu (12):
+  devlink: Reverse locking order for nested instances
+  devlink: Add helpers to lock nested-in instances
+  devlink: Refactor devlink_rate_nodes_check
+  devlink: Decouple rate storage from associated devlink object
+  devlink: Add parent dev to devlink API
+  devlink: Allow parent dev for rate-set and rate-new
+  devlink: Allow rate node parents from other devlinks
+  net/mlx5: Expose a function to clear a vport's parent
+  net/mlx5: Store QoS sched nodes in the sh_devlink
+  net/mlx5: qos: Support cross-device tx scheduling
+  net/mlx5: qos: Enable cross-device scheduling
+  net/mlx5: Document devlink rates
+
+Jiri Pirko (2):
+  documentation: networking: add shared devlink documentation
+  net/mlx5: Introduce shared devlink instance for PFs on same chip
+
+ Documentation/netlink/specs/devlink.yaml      |  22 +-
+ .../networking/devlink/devlink-port.rst       |   2 +
+ .../networking/devlink/devlink-shared.rst     |  66 ++++
+ Documentation/networking/devlink/index.rst    |   3 +
+ Documentation/networking/devlink/mlx5.rst     |  33 ++
+ .../net/ethernet/mellanox/mlx5/core/Makefile  |   5 +-
+ .../net/ethernet/mellanox/mlx5/core/devlink.c |   1 +
+ .../mellanox/mlx5/core/esw/devlink_port.c     |   2 +-
+ .../net/ethernet/mellanox/mlx5/core/esw/qos.c | 324 ++++++++----------
+ .../net/ethernet/mellanox/mlx5/core/esw/qos.h |   3 -
+ .../net/ethernet/mellanox/mlx5/core/eswitch.c |   9 +-
+ .../net/ethernet/mellanox/mlx5/core/eswitch.h |  14 +-
+ .../net/ethernet/mellanox/mlx5/core/main.c    |  18 +
+ .../ethernet/mellanox/mlx5/core/sh_devlink.c  | 183 ++++++++++
+ .../ethernet/mellanox/mlx5/core/sh_devlink.h  |  16 +
+ include/linux/mlx5/driver.h                   |   5 +
+ include/net/devlink.h                         |   7 +
+ include/uapi/linux/devlink.h                  |   2 +
+ net/devlink/core.c                            |  48 ++-
+ net/devlink/dev.c                             |   7 +-
+ net/devlink/devl_internal.h                   |  11 +-
+ net/devlink/netlink.c                         |  67 +++-
+ net/devlink/netlink_gen.c                     |  23 +-
+ net/devlink/netlink_gen.h                     |   8 +
+ net/devlink/rate.c                            | 287 ++++++++++++----
+ 25 files changed, 873 insertions(+), 293 deletions(-)
+ create mode 100644 Documentation/networking/devlink/devlink-shared.rst
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sh_devlink.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/sh_devlink.h
+
+-- 
+2.31.1
 
 
