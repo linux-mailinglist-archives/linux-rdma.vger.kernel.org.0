@@ -1,355 +1,114 @@
-Return-Path: <linux-rdma+bounces-14652-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14653-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6726EC74AB9
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 15:54:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F62DC74AE0
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 15:55:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id CDD1335C8BE
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 14:49:46 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A56E634CBBF
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 14:52:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E57442F1FCB;
-	Thu, 20 Nov 2025 14:49:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 860E8334C32;
+	Thu, 20 Nov 2025 14:52:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RBTMZ+BU"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="1KgjbmiQ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A242266EFC;
-	Thu, 20 Nov 2025 14:49:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F1412DA760
+	for <linux-rdma@vger.kernel.org>; Thu, 20 Nov 2025 14:52:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763650175; cv=none; b=SFJJqUAUNF3pRPxD18o+34OkFwYfejBEYQgYtPEsBEhNIXu70h6dN1KYHm+YU/8CdecUfAA24KrxXjjdqTsr2Zx4MAdl1VzaqzGDL2O5XWlRZyizijYXXFVrakueIQNx8ig88iCaH/YmKVGwYcU21y2fxXMjIc4jfBoSrZYxYcE=
+	t=1763650361; cv=none; b=B4pl54pC89rmwmDlf8Oc5tq84T/e/ohzs8tWOw9DnN8krJ98xDDD5WUwbYvNbNTfBwu+Qf3W9cs+G2Bn/A8Lz6RPBY81KzKuipiU0TeyFFmrSq1wSf3aLx683WmV+xy8kGtYvGgDEeteM6gWnAp39EkXx85NhEfh2BqjijUOdAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763650175; c=relaxed/simple;
-	bh=brlOZ4qQsvv0b9NPc30tO5696xoN05KOIgVTU/7B7vw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pS1ppPfCrmj0fm+8Y0FFlA5HxNz9Rm5FkxuHHR1bs/fkbff2rxGXvazA4BWE5M33OPlE67titbvP3VJWsgze+pyMq0KvdpFpAde8jx2wSrN6AsEQ3WdREOC6VM8YPErC7rR7wigV/XR/32RFtuPzFaI260D9C+qrcMylfJcyPXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RBTMZ+BU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A908FC4CEF1;
-	Thu, 20 Nov 2025 14:49:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763650175;
-	bh=brlOZ4qQsvv0b9NPc30tO5696xoN05KOIgVTU/7B7vw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=RBTMZ+BUleUAvpfUIQ0NQO4A9LYVGtT6T1St1WJXhR4qZN4bO+vUn7SsWfl5hMGRD
-	 7tGwACQxJSpSSmdupDjKexNACDGx+ThwSoLpmIdEZH5UJUUoxKOjaRZO1LRSINoaMP
-	 AdJz0y4sLjlqwoA4eoyCW4mkugNJlHG0nnz6hMfY2elV7mhsZL0KGatoMZRq4Y1yJP
-	 u+jRD6HWpUSkCqZPiAUwBPXhi7eWT6Rfe5MeThFApk2+Mw9GbHhIGZm8CF0NJRVG7w
-	 v05I12Ul4q7QLlj3dvc7PcSYjp8ZiIO7jfEXah5WcD4xkQCXKbs/g3AbYmMtNDLEMA
-	 /pveQcpiqv3FA==
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Or Har-Toov <ohartoov@nvidia.com>,
-	Michael Guralnik <michaelgur@nvidia.com>,
-	Edward Srouji <edwards@nvidia.com>
-Subject: [PATCH rdma-next] IB/mlx5: Reduce IMR KSM size when 5-level paging is enabled
-Date: Thu, 20 Nov 2025 16:49:28 +0200
-Message-ID: <20251120-reduce-ksm-v1-1-6864bfc814dc@kernel.org>
-X-Mailer: git-send-email 2.51.1
+	s=arc-20240116; t=1763650361; c=relaxed/simple;
+	bh=qlVoOV1b0m1EsqTqevKebTa5adC2s2q0Xm1TYQIEY5c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OXFdBvsLadDgc8e0KqlARcwpTj7dcRV2emPewBvppTCK7rWJY8NZ+QsdXWaoFoGni7ASRFAT3uUqpbcEAhExJ2yxgcaw5Ot5PwvqPYi2kL8oCQv40cTBLVYTiWhGRsdq8A2yTmP4gPgJ2kHgyLz5CWeGnAYlNEaSNq1NEVmRLto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=1KgjbmiQ; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-6419b7b4b80so1320303a12.2
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Nov 2025 06:52:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1763650358; x=1764255158; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qlVoOV1b0m1EsqTqevKebTa5adC2s2q0Xm1TYQIEY5c=;
+        b=1KgjbmiQcA2RVz54IvXXlSdGGsuG++U7UX4hfHSFB4tLAKJpux6kPxygEldzuHAZkq
+         wdoXebLApjfbrZ+2yY2brZByqzAdbURTMN5OaBc6uVa9cnhwXNHvXB/6mvg4585jXWdo
+         68uGnDjlfRdY2UK8IguwYer+G2pbFtwRfye2PlZ1YIAqq6xWLlt16XlrSBvRrnLMZpNR
+         x9tHhhmEBnj8LPysGf/Ct+Hxxl3JThedC7OTgE2wLqEnKL2vLxLEMUi1aOtGqRoNqVS8
+         gU8ZAR33ebFCTMg+LTGgZTi1D1aV+l7Knc4MDkGddR8GQ3RuRiPAoRbBd2R1CVEAFBx0
+         yNLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763650358; x=1764255158;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qlVoOV1b0m1EsqTqevKebTa5adC2s2q0Xm1TYQIEY5c=;
+        b=f61Q/GHo3iD8/DSKfol8RtmxULb0SVNfJ8GZEaofefBQOkx/JCD6tiYUOVhL96YyQv
+         6NlyhOUf1v2An2wrV+KZIn0jsNCYsv1rM5SEWLvIzqO8uDXJNvZ4NQnAHydeQNgURixV
+         /gbTsMaHvb8fgjbf55GLhJWD5Zt0/7oU8zBAUlIM1En9f8t6IPS23ACijYmMSHFA/aFV
+         xxQzSZlhW4T6vH7Ha6izGE16YLmyLyKtAp6p9pTMdKmbetQVA5t15VWiTcfl1bhdDFOd
+         3nTgybalpqYhi2q5P0lkkOBJPGTh4oblSm/ocqk3TLDbgrzJx7cfl6JiaGcTLKN+17Tl
+         kvAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWg8RUBvluxi8wD11lShFtYqG5hsSQA4WXPfLTfZBOPV1jBMxL+bt506lt0cZszwLY802LNiNU2Uxti@vger.kernel.org
+X-Gm-Message-State: AOJu0YzXwdHhya0q9ouiPYOZ5PHB7cPH7l7dMP9H1TyS/zqqx7LUr61V
+	hFSgYA934Vnhn8MIOIZfE2gjb/5CGJb75lIXgkcU0WAsH3KCW13Yo2F+IM1oNyoQKL8=
+X-Gm-Gg: ASbGncuMVPIO4Bd86ZWDrs5XhQeFk0bQ75zcTLQqFRDftyJEZq6EzWYRhAG3tF0iY+9
+	2u8YZCzv4Bl5cDkycwYDwTf0J11p0qlNQK9JSdBhie2YH02ZW4CfptF4amIdz/60SIehtvSHQYG
+	j6CdkHS8wxnBQ0HVDTYElIxYSZq2dgYnLpFpWlhGhRSkADzN8Ia3htyT7pOUcbtQsAGOMjJoALR
+	07++f5+xNlqDAx0Lmd3w7Zb2nxJOduN2IPEvDzim6+yiIKFb0rCmn5wUgCVhRHj6hiQmSMmfGAN
+	Xe1DtrkpSAOwg+VqI1tcmLxdZG85azgz9LPU+37gNHf8XkC/OME8/t1iVb3TrkkeKvM19iRZaR7
+	IU7kpohXwVABuODJgwfp5E2lu9kJPu37POkjejHBCJ5cb7BLmY/fBKoBTPiMnAQiiMg8GFXspjM
+	X+YPkvk5IOzVSxOKYn6l8=
+X-Google-Smtp-Source: AGHT+IHij78wIttXL5qrzeJ5Fr4uMDiSvsvUdH/MMYd2AuxlJUx0L+zs8iuv/NdnITfidNIJsVOY8Q==
+X-Received: by 2002:a17:906:478b:b0:b6c:38d9:6935 with SMTP id a640c23a62f3a-b76552b9f32mr307984766b.24.1763650357685;
+        Thu, 20 Nov 2025 06:52:37 -0800 (PST)
+Received: from FV6GYCPJ69 ([85.163.81.98])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-645363c56a4sm2255897a12.15.2025.11.20.06.52.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Nov 2025 06:52:37 -0800 (PST)
+Date: Thu, 20 Nov 2025 15:52:33 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	"David S. Miller" <davem@davemloft.net>, Donald Hunter <donald.hunter@gmail.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	Gal Pressman <gal@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>, 
+	Carolina Jubran <cjubran@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
+Subject: Re: [PATCH net-next 03/14] devlink: Add helpers to lock nested-in
+ instances
+Message-ID: <hj37vfeodmmjpfrfa6vnwm3rwp7an4fzt7bvi4fwyusjzgbtrm@fc6j4szuodq6>
+References: <1763644166-1250608-1-git-send-email-tariqt@nvidia.com>
+ <1763644166-1250608-4-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Change-ID: 20251103-reduce-ksm-a091ca606e8b
-X-Mailer: b4 0.15-dev-a6db3
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1763644166-1250608-4-git-send-email-tariqt@nvidia.com>
 
-From: Yishai Hadas <yishaih@nvidia.com>=0D
-=0D
-Enabling 5-level paging (LA57) increases TASK_SIZE on x86_64 from 2^47=0D
-to 2^56. This affects implicit ODP, which uses TASK_SIZE to calculate=0D
-the number of IMR KSM entries.=0D
-=0D
-As a result, the number of entries and the memory usage for KSM mkeys=0D
-increase drastically:=0D
-=0D
-- With 2^47 TASK_SIZE: 0x20000 entries (~2MB)=0D
-- With 2^56 TASK_SIZE: 0x4000000 entries (~1GB)=0D
-=0D
-This issue could happen previously on systems with LA57 manually=0D
-enabled, but now commit 7212b58d6d71 ("x86/mm/64: Make 5-level paging=0D
-support unconditional") enables LA57 by default on all supported=0D
-systems. This makes the issue impact widespread.=0D
-=0D
-To mitigate this, increase the size each MTT entry maps from 1GB to 16GB=0D
-when 5-level paging is enabled. This reduces the number of KSM entries=0D
-and lowers the memory usage on LA57 systems from 1GB to 64MB per IMR.=0D
-=0D
-As now 'mlx5_imr_mtt_size' is larger than 32 bits, we move to use u64=0D
-instead of int as part of populate_klm() to prevent overflow of the=0D
-'step' variable.=0D
-=0D
-In addition, as populate_klm() actually handles KSM and not KLM, as it's=0D
-used only by implicit ODP, we renamed its signature and the internal=0D
-structures accordingly while dropping the byte_count handling which is=0D
-not relevant in KSM. The page size in KSM is fixed for all the entries=0D
-and come from the log_page_size of the mkey.=0D
-=0D
-Note:=0D
-On platforms where the calculated value for 'mlx5_imr_ksm_page_shift' is=0D
-higher than the max firmware cap to be changed over UMR, or that the=0D
-calculated value for 'log_va_pages' is higher than what we may expect,=0D
-the implicit ODP cap will be simply turned off.=0D
-=0D
-Co-developed-by: Or Har-Toov <ohartoov@nvidia.com>=0D
-Signed-off-by: Or Har-Toov <ohartoov@nvidia.com>=0D
-Signed-off-by: Yishai Hadas <yishaih@nvidia.com>=0D
-Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>=0D
-Signed-off-by: Edward Srouji <edwards@nvidia.com>=0D
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>=0D
----=0D
- drivers/infiniband/hw/mlx5/odp.c | 89 +++++++++++++++++++++++-------------=
-----=0D
- 1 file changed, 51 insertions(+), 38 deletions(-)=0D
-=0D
-diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/=
-odp.c=0D
-index 6441abdf1f3b..e71ee3d52eb0 100644=0D
---- a/drivers/infiniband/hw/mlx5/odp.c=0D
-+++ b/drivers/infiniband/hw/mlx5/odp.c=0D
-@@ -97,33 +97,28 @@ struct mlx5_pagefault {=0D
-  * a pagefault. */=0D
- #define MMU_NOTIFIER_TIMEOUT 1000=0D
- =0D
--#define MLX5_IMR_MTT_BITS (30 - PAGE_SHIFT)=0D
--#define MLX5_IMR_MTT_SHIFT (MLX5_IMR_MTT_BITS + PAGE_SHIFT)=0D
--#define MLX5_IMR_MTT_ENTRIES BIT_ULL(MLX5_IMR_MTT_BITS)=0D
--#define MLX5_IMR_MTT_SIZE BIT_ULL(MLX5_IMR_MTT_SHIFT)=0D
--#define MLX5_IMR_MTT_MASK (~(MLX5_IMR_MTT_SIZE - 1))=0D
--=0D
--#define MLX5_KSM_PAGE_SHIFT MLX5_IMR_MTT_SHIFT=0D
--=0D
- static u64 mlx5_imr_ksm_entries;=0D
-+static u64 mlx5_imr_mtt_entries;=0D
-+static u64 mlx5_imr_mtt_size;=0D
-+static u8 mlx5_imr_mtt_shift;=0D
-+static u8 mlx5_imr_ksm_page_shift;=0D
- =0D
--static void populate_klm(struct mlx5_klm *pklm, size_t idx, size_t nentrie=
-s,=0D
-+static void populate_ksm(struct mlx5_ksm *pksm, size_t idx, size_t nentrie=
-s,=0D
- 			struct mlx5_ib_mr *imr, int flags)=0D
- {=0D
- 	struct mlx5_core_dev *dev =3D mr_to_mdev(imr)->mdev;=0D
--	struct mlx5_klm *end =3D pklm + nentries;=0D
--	int step =3D MLX5_CAP_ODP(dev, mem_page_fault) ? MLX5_IMR_MTT_SIZE : 0;=0D
-+	struct mlx5_ksm *end =3D pksm + nentries;=0D
-+	u64 step =3D MLX5_CAP_ODP(dev, mem_page_fault) ? mlx5_imr_mtt_size : 0;=0D
- 	__be32 key =3D MLX5_CAP_ODP(dev, mem_page_fault) ?=0D
- 			     cpu_to_be32(imr->null_mmkey.key) :=0D
- 			     mr_to_mdev(imr)->mkeys.null_mkey;=0D
- 	u64 va =3D=0D
--		MLX5_CAP_ODP(dev, mem_page_fault) ? idx * MLX5_IMR_MTT_SIZE : 0;=0D
-+		MLX5_CAP_ODP(dev, mem_page_fault) ? idx * mlx5_imr_mtt_size : 0;=0D
- =0D
- 	if (flags & MLX5_IB_UPD_XLT_ZAP) {=0D
--		for (; pklm !=3D end; pklm++, idx++, va +=3D step) {=0D
--			pklm->bcount =3D cpu_to_be32(MLX5_IMR_MTT_SIZE);=0D
--			pklm->key =3D key;=0D
--			pklm->va =3D cpu_to_be64(va);=0D
-+		for (; pksm !=3D end; pksm++, idx++, va +=3D step) {=0D
-+			pksm->key =3D key;=0D
-+			pksm->va =3D cpu_to_be64(va);=0D
- 		}=0D
- 		return;=0D
- 	}=0D
-@@ -147,16 +142,15 @@ static void populate_klm(struct mlx5_klm *pklm, size_=
-t idx, size_t nentries,=0D
- 	 */=0D
- 	lockdep_assert_held(&to_ib_umem_odp(imr->umem)->umem_mutex);=0D
- =0D
--	for (; pklm !=3D end; pklm++, idx++, va +=3D step) {=0D
-+	for (; pksm !=3D end; pksm++, idx++, va +=3D step) {=0D
- 		struct mlx5_ib_mr *mtt =3D xa_load(&imr->implicit_children, idx);=0D
- =0D
--		pklm->bcount =3D cpu_to_be32(MLX5_IMR_MTT_SIZE);=0D
- 		if (mtt) {=0D
--			pklm->key =3D cpu_to_be32(mtt->ibmr.lkey);=0D
--			pklm->va =3D cpu_to_be64(idx * MLX5_IMR_MTT_SIZE);=0D
-+			pksm->key =3D cpu_to_be32(mtt->ibmr.lkey);=0D
-+			pksm->va =3D cpu_to_be64(idx * mlx5_imr_mtt_size);=0D
- 		} else {=0D
--			pklm->key =3D key;=0D
--			pklm->va =3D cpu_to_be64(va);=0D
-+			pksm->key =3D key;=0D
-+			pksm->va =3D cpu_to_be64(va);=0D
- 		}=0D
- 	}=0D
- }=0D
-@@ -201,7 +195,7 @@ int mlx5_odp_populate_xlt(void *xlt, size_t idx, size_t=
- nentries,=0D
- 			  struct mlx5_ib_mr *mr, int flags)=0D
- {=0D
- 	if (flags & MLX5_IB_UPD_XLT_INDIRECT) {=0D
--		populate_klm(xlt, idx, nentries, mr, flags);=0D
-+		populate_ksm(xlt, idx, nentries, mr, flags);=0D
- 		return 0;=0D
- 	} else {=0D
- 		return populate_mtt(xlt, idx, nentries, mr, flags);=0D
-@@ -226,7 +220,7 @@ static void free_implicit_child_mr_work(struct work_str=
-uct *work)=0D
- =0D
- 	mutex_lock(&odp_imr->umem_mutex);=0D
- 	mlx5r_umr_update_xlt(mr->parent,=0D
--			     ib_umem_start(odp) >> MLX5_IMR_MTT_SHIFT, 1, 0,=0D
-+			     ib_umem_start(odp) >> mlx5_imr_mtt_shift, 1, 0,=0D
- 			     MLX5_IB_UPD_XLT_INDIRECT | MLX5_IB_UPD_XLT_ATOMIC);=0D
- 	mutex_unlock(&odp_imr->umem_mutex);=0D
- 	mlx5_ib_dereg_mr(&mr->ibmr, NULL);=0D
-@@ -237,7 +231,7 @@ static void free_implicit_child_mr_work(struct work_str=
-uct *work)=0D
- static void destroy_unused_implicit_child_mr(struct mlx5_ib_mr *mr)=0D
- {=0D
- 	struct ib_umem_odp *odp =3D to_ib_umem_odp(mr->umem);=0D
--	unsigned long idx =3D ib_umem_start(odp) >> MLX5_IMR_MTT_SHIFT;=0D
-+	unsigned long idx =3D ib_umem_start(odp) >> mlx5_imr_mtt_shift;=0D
- 	struct mlx5_ib_mr *imr =3D mr->parent;=0D
- =0D
- 	/*=0D
-@@ -425,7 +419,10 @@ static void internal_fill_odp_caps(struct mlx5_ib_dev =
-*dev)=0D
- 	if (MLX5_CAP_GEN(dev->mdev, fixed_buffer_size) &&=0D
- 	    MLX5_CAP_GEN(dev->mdev, null_mkey) &&=0D
- 	    MLX5_CAP_GEN(dev->mdev, umr_extended_translation_offset) &&=0D
--	    !MLX5_CAP_GEN(dev->mdev, umr_indirect_mkey_disabled))=0D
-+	    !MLX5_CAP_GEN(dev->mdev, umr_indirect_mkey_disabled) &&=0D
-+	    mlx5_imr_ksm_entries !=3D 0 &&=0D
-+	    !(mlx5_imr_ksm_page_shift >=0D
-+	      get_max_log_entity_size_cap(dev, MLX5_MKC_ACCESS_MODE_KSM)))=0D
- 		caps->general_caps |=3D IB_ODP_SUPPORT_IMPLICIT;=0D
- }=0D
- =0D
-@@ -476,14 +473,14 @@ static struct mlx5_ib_mr *implicit_get_child_mr(struc=
-t mlx5_ib_mr *imr,=0D
- 	int err;=0D
- =0D
- 	odp =3D ib_umem_odp_alloc_child(to_ib_umem_odp(imr->umem),=0D
--				      idx * MLX5_IMR_MTT_SIZE,=0D
--				      MLX5_IMR_MTT_SIZE, &mlx5_mn_ops);=0D
-+				      idx * mlx5_imr_mtt_size,=0D
-+				      mlx5_imr_mtt_size, &mlx5_mn_ops);=0D
- 	if (IS_ERR(odp))=0D
- 		return ERR_CAST(odp);=0D
- =0D
- 	mr =3D mlx5_mr_cache_alloc(dev, imr->access_flags,=0D
- 				 MLX5_MKC_ACCESS_MODE_MTT,=0D
--				 MLX5_IMR_MTT_ENTRIES);=0D
-+				 mlx5_imr_mtt_entries);=0D
- 	if (IS_ERR(mr)) {=0D
- 		ib_umem_odp_release(odp);=0D
- 		return mr;=0D
-@@ -495,7 +492,7 @@ static struct mlx5_ib_mr *implicit_get_child_mr(struct =
-mlx5_ib_mr *imr,=0D
- 	mr->umem =3D &odp->umem;=0D
- 	mr->ibmr.lkey =3D mr->mmkey.key;=0D
- 	mr->ibmr.rkey =3D mr->mmkey.key;=0D
--	mr->ibmr.iova =3D idx * MLX5_IMR_MTT_SIZE;=0D
-+	mr->ibmr.iova =3D idx * mlx5_imr_mtt_size;=0D
- 	mr->parent =3D imr;=0D
- 	odp->private =3D mr;=0D
- =0D
-@@ -506,7 +503,7 @@ static struct mlx5_ib_mr *implicit_get_child_mr(struct =
-mlx5_ib_mr *imr,=0D
- 	refcount_set(&mr->mmkey.usecount, 2);=0D
- =0D
- 	err =3D mlx5r_umr_update_xlt(mr, 0,=0D
--				   MLX5_IMR_MTT_ENTRIES,=0D
-+				   mlx5_imr_mtt_entries,=0D
- 				   PAGE_SHIFT,=0D
- 				   MLX5_IB_UPD_XLT_ZAP |=0D
- 				   MLX5_IB_UPD_XLT_ENABLE);=0D
-@@ -611,7 +608,7 @@ struct mlx5_ib_mr *mlx5_ib_alloc_implicit_mr(struct mlx=
-5_ib_pd *pd,=0D
- 	struct mlx5_ib_mr *imr;=0D
- 	int err;=0D
- =0D
--	if (!mlx5r_umr_can_load_pas(dev, MLX5_IMR_MTT_ENTRIES * PAGE_SIZE))=0D
-+	if (!mlx5r_umr_can_load_pas(dev, mlx5_imr_mtt_entries * PAGE_SIZE))=0D
- 		return ERR_PTR(-EOPNOTSUPP);=0D
- =0D
- 	umem_odp =3D ib_umem_odp_alloc_implicit(&dev->ib_dev, access_flags);=0D
-@@ -647,7 +644,7 @@ struct mlx5_ib_mr *mlx5_ib_alloc_implicit_mr(struct mlx=
-5_ib_pd *pd,=0D
- =0D
- 	err =3D mlx5r_umr_update_xlt(imr, 0,=0D
- 				   mlx5_imr_ksm_entries,=0D
--				   MLX5_KSM_PAGE_SHIFT,=0D
-+				   mlx5_imr_ksm_page_shift,=0D
- 				   MLX5_IB_UPD_XLT_INDIRECT |=0D
- 				   MLX5_IB_UPD_XLT_ZAP |=0D
- 				   MLX5_IB_UPD_XLT_ENABLE);=0D
-@@ -750,20 +747,20 @@ static int pagefault_implicit_mr(struct mlx5_ib_mr *i=
-mr,=0D
- 				 struct ib_umem_odp *odp_imr, u64 user_va,=0D
- 				 size_t bcnt, u32 *bytes_mapped, u32 flags)=0D
- {=0D
--	unsigned long end_idx =3D (user_va + bcnt - 1) >> MLX5_IMR_MTT_SHIFT;=0D
-+	unsigned long end_idx =3D (user_va + bcnt - 1) >> mlx5_imr_mtt_shift;=0D
- 	unsigned long upd_start_idx =3D end_idx + 1;=0D
- 	unsigned long upd_len =3D 0;=0D
- 	unsigned long npages =3D 0;=0D
- 	int err;=0D
- 	int ret;=0D
- =0D
--	if (unlikely(user_va >=3D mlx5_imr_ksm_entries * MLX5_IMR_MTT_SIZE ||=0D
--		     mlx5_imr_ksm_entries * MLX5_IMR_MTT_SIZE - user_va < bcnt))=0D
-+	if (unlikely(user_va >=3D mlx5_imr_ksm_entries * mlx5_imr_mtt_size ||=0D
-+		     mlx5_imr_ksm_entries * mlx5_imr_mtt_size - user_va < bcnt))=0D
- 		return -EFAULT;=0D
- =0D
- 	/* Fault each child mr that intersects with our interval. */=0D
- 	while (bcnt) {=0D
--		unsigned long idx =3D user_va >> MLX5_IMR_MTT_SHIFT;=0D
-+		unsigned long idx =3D user_va >> mlx5_imr_mtt_shift;=0D
- 		struct ib_umem_odp *umem_odp;=0D
- 		struct mlx5_ib_mr *mtt;=0D
- 		u64 len;=0D
-@@ -1924,9 +1921,25 @@ void mlx5_ib_odp_cleanup_one(struct mlx5_ib_dev *dev=
-)=0D
- =0D
- int mlx5_ib_odp_init(void)=0D
- {=0D
-+	u32 log_va_pages =3D ilog2(TASK_SIZE) - PAGE_SHIFT;=0D
-+	u8 mlx5_imr_mtt_bits;=0D
-+=0D
-+	/* 48 is default ARM64 VA space and covers X86 4-level paging which is 47=
- */=0D
-+	if (log_va_pages <=3D 48 - PAGE_SHIFT)=0D
-+		mlx5_imr_mtt_shift =3D 30;=0D
-+	/* 56 is x86-64, 5-level paging */=0D
-+	else if (log_va_pages <=3D 56 - PAGE_SHIFT)=0D
-+		mlx5_imr_mtt_shift =3D 34;=0D
-+	else=0D
-+		return 0;=0D
-+=0D
-+	mlx5_imr_mtt_size =3D BIT_ULL(mlx5_imr_mtt_shift);=0D
-+	mlx5_imr_mtt_bits =3D mlx5_imr_mtt_shift - PAGE_SHIFT;=0D
-+	mlx5_imr_mtt_entries =3D BIT_ULL(mlx5_imr_mtt_bits);=0D
- 	mlx5_imr_ksm_entries =3D BIT_ULL(get_order(TASK_SIZE) -=0D
--				       MLX5_IMR_MTT_BITS);=0D
-+				       mlx5_imr_mtt_bits);=0D
- =0D
-+	mlx5_imr_ksm_page_shift =3D mlx5_imr_mtt_shift;=0D
- 	return 0;=0D
- }=0D
- =0D
-=0D
----=0D
-base-commit: d056bc45b62b5981ebcd18c4303a915490b8ebe9=0D
-change-id: 20251103-reduce-ksm-a091ca606e8b=0D
-=0D
-Best regards,=0D
---  =0D
-Leon Romanovsky <leon@kernel.org>=0D
-=0D
+Thu, Nov 20, 2025 at 02:09:15PM +0100, tariqt@nvidia.com wrote:
+>From: Cosmin Ratiu <cratiu@nvidia.com>
+>
+>Upcoming code will need to obtain a reference to locked nested-in
+>devlink instances. Add helpers to lock, obtain an already locked
+>reference and unlock/unref the nested-in instance.
+>
+>Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
+>Reviewed-by: Carolina Jubran <cjubran@nvidia.com>
+>Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 
