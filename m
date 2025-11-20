@@ -1,130 +1,110 @@
-Return-Path: <linux-rdma+bounces-14626-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14627-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C84B1C716C7
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 00:12:04 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id DED42C71FCF
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 04:28:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id AD2E2349825
-	for <lists+linux-rdma@lfdr.de>; Wed, 19 Nov 2025 23:11:58 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 991C14E2D8B
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Nov 2025 03:28:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF5032B981;
-	Wed, 19 Nov 2025 23:11:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b="Lt1gjpav"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48CFF27CCE2;
+	Thu, 20 Nov 2025 03:28:42 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from baidu.com (mx24.baidu.com [111.206.215.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5D5C28507B
-	for <linux-rdma@vger.kernel.org>; Wed, 19 Nov 2025 23:11:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439A723D7E6
+	for <linux-rdma@vger.kernel.org>; Thu, 20 Nov 2025 03:28:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.206.215.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763593910; cv=none; b=IRScDUGlfspOX/O8VM2LHNSyDxjGSgjhAd1HPi33/W1P1HDShPhkNoNFHNInwcnIwYDlWY05z3P2pY8aL1wreoHrkSNsjllsQMkhWvBvQnDpqeyb+BAWT/94SBzwsFfSr4/c377BO7bLviMXxyfNmOB9Mtl7nntmiNShZH8Hhmo=
+	t=1763609322; cv=none; b=dmTEyEJnh/pDluVngeXBe+eDQflD8gq1kpV1NN+xy3MHyAm4dyvX+kWlZwF6YOVJun6KubuDRQizq2VoJy7a64/b1XkEcqrzEuB6AtBkJARBAeWP6r7xn5qcRGatBBcfg2TlxIReL2tZ8dRezlw1u1LAHKJQWfa4YUe8Wp4XQqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763593910; c=relaxed/simple;
-	bh=B4ogaSzeCTEfO2fyf8QMTYxTmdo61Vz7PJm9iZmEd3Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=i6w/l0LNO43k79hWkXo5pwjZSyUyiwGnzLcvb/4/Ee6G/emK+rD1lQjsjwNOEvEIZcR0zUciGgPyPLq5DurxNVil6O0UUFv1xRUDfvTgMuImb5MrsKuF7HfY7k/SpqKDF2IqUijs4p1VOVDb3k8bS6XWlA3bln/9s9Rx/TQYr1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com; spf=fail smtp.mailfrom=purestorage.com; dkim=pass (2048-bit key) header.d=purestorage.com header.i=@purestorage.com header.b=Lt1gjpav; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=purestorage.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=purestorage.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-64080ccf749so385337a12.2
-        for <linux-rdma@vger.kernel.org>; Wed, 19 Nov 2025 15:11:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1763593906; x=1764198706; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZZaTR1bnryMwBTD6jnnFcRa6YP7RbWnYcC+dF48Y8gs=;
-        b=Lt1gjpavpSK9inte/G57cwm4PSwPwttll4e+ymij3cyrakoFzX5zF+cp+l0Duw2unE
-         Cj9YFP9FCAa6UL+1/iZCK4/U1HfDG8KMkkQFEWfA7LD1ZF0CHRoMFoX+wf2W2gkqNOSr
-         baq3Jr8PZC6S8u47xPkFKIYIJlCGbhJHPK6xTeqzSx8ojhjE3YGndy+mljtrna6ezvl5
-         wOMrQah3zr0jrP7SlN2OC39R9K0P9FW7TU6F+rAXBFrBzC05zC/ASF+OjJmh1qoahNX8
-         XdhULDXE5nKDPxTooC340LvRvgbXlf5s/rs+yKg3nTTjdpM0HrZQHLUpF54qRCekB4Vp
-         qFmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763593906; x=1764198706;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=ZZaTR1bnryMwBTD6jnnFcRa6YP7RbWnYcC+dF48Y8gs=;
-        b=m/SWleXcLiDhoJxrheVy3XBgVk2TJg1uyLpOoV/kjnGebYEpFCFbIvTu5r+3y7DduB
-         Chx/ybbIgFE48ju1R+k7sIH2sdgWUvhaFHGF8ms23qXSCpmdu7IDeQnk6+aKHkRwF9a0
-         2LxDLmmuJJeWw4pYksOpsc4mqwuJu/YxHHHKGYNMDApVN6o6esURbKECKfbninwAqwrZ
-         zMWFjfCXpNdPS4DjF7WpdYooGklWUfTTW/5dFz/QRckFkvh9a4BcpGkqUaVQSh+zCfvz
-         V5p8f3on34dLwT6evoeZhPtgYIN9xai1FSfbFHNhGqCVRhAedwA4jEvhTmVss1+FraUY
-         5pcg==
-X-Forwarded-Encrypted: i=1; AJvYcCUpPdnEafrs0tOF83vZPnbpAwfJTsLmrGPYx9HikVsGwJH3TteX8fAY8eEQwRbjk9EtuIgX1zEFfPPL@vger.kernel.org
-X-Gm-Message-State: AOJu0YznPEYvV1Z3CBeuxBqKPJvkQGUoZ9DJhIkvPQnLmtpu9ampwheE
-	I3P8QFxLAS9+12xJ4bflIFUmHuCGT/VcaucWuPWRX6c+tm98jHBtYCFQ6H0a225DOf8=
-X-Gm-Gg: ASbGncuFR6Fj0TvS1WJAqr2slr1Yh79LzU8CeeUTpkPJ9sblNl3u40Vs9V+N2b2kuwV
-	lCw+WPC8dbC2ElpmJ83DvlMSpKUP1neB7o+gQaRsXa8q07G8LLAu1yBUgB9kHFhyV9+umMwF0A6
-	5w23n1MzDnRevZjzykuUlJdOqBQ2253tdAmI8g453ya6x1eENYgeaVEVCvWJNCHABg7/s7RJLQ9
-	R1ycbQtuBzcu3YUpr9vR3wBkxIRkwpMBYI/9/kl5MkX1JnwCkqWfkOW5vBpwiphnR/loKPCtvNn
-	T9L4NOCbsxDqOSdYENGKa6IDd9Fe7o0Ix6Yc9EEBRVzJs2FEI4z/YW03QNHmhUyqzg0S7ECFUdu
-	MPhyjbXIyM5NL6l9dbJvwt7xvV+STKcZkBCAewLxFHb0dzmmiUIbPb+t9p4fi172AaInMNiaEFK
-	s4sSQLFPhHFgIdcyh9POtWAkDZHtl1n3QOtRD9
-X-Google-Smtp-Source: AGHT+IGsbJFAHX8SXEuf70GC/fdHzn+3vcHUS7IST+d0xdlWSQsiYTr0gIPPSua8jakHdIJ/TGNUrA==
-X-Received: by 2002:a17:907:2d20:b0:b73:572d:3aff with SMTP id a640c23a62f3a-b7654eaf8c8mr99610366b.35.1763593906003;
-        Wed, 19 Nov 2025 15:11:46 -0800 (PST)
-Received: from dev-mattc2.dev.purestorage.com ([208.88.159.129])
-        by smtp.googlemail.com with ESMTPSA id a640c23a62f3a-b7654d80665sm54469166b.31.2025.11.19.15.11.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Nov 2025 15:11:45 -0800 (PST)
-From: Matthew W Carlis <mattc@purestorage.com>
-To: tariqt@nvidia.com
-Cc: andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	dtatulea@nvidia.com,
-	edumazet@google.com,
-	gal@nvidia.com,
-	kuba@kernel.org,
-	leon@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	mattc@purestorage.com,
-	mbloch@nvidia.com,
-	moshe@nvidia.com,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	richardcochran@gmail.com,
-	saeedm@nvidia.com
-Subject: Re: [PATCH net-next 1/5] net/mlx5: Refactor EEPROM query error handling to return status separately
-Date: Wed, 19 Nov 2025 16:11:15 -0700
-Message-ID: <20251119231115.8722-1-mattc@purestorage.com>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <1763415729-1238421-2-git-send-email-tariqt@nvidia.com>
-References: <1763415729-1238421-2-git-send-email-tariqt@nvidia.com>
+	s=arc-20240116; t=1763609322; c=relaxed/simple;
+	bh=wnkTHUFL/MQjHGVAdJTsR5WEB4rs83R+jUip7W/L/HM=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Xfn1/L2BzInb1bRu9hslbLBOkxvp0R8uHy8M9TIaFQCqhXAh8LcT7Ovgamk1ywj+vxMeY7f9SwzIYvCmwXdNtp9saJqGgEawsn6VxkCrxHQ+c0dSLL6wG0/wIqGAKPVEsRP9oaihX90VljqJslRGhcOYwzGbUcDH6ZGQ15lBK7A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com; spf=pass smtp.mailfrom=baidu.com; arc=none smtp.client-ip=111.206.215.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baidu.com
+From: "Li,Rongqing" <lirongqing@baidu.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+CC: Leon Romanovsky <leon@kernel.org>, "huangjunxian6@hisilicon.com"
+	<huangjunxian6@hisilicon.com>, "linux-rdma@vger.kernel.org"
+	<linux-rdma@vger.kernel.org>
+Subject: RE: [????] Re: [????] Re: [PATCH][v2] RDMA/core: Prevent soft lockup
+ during large user memory region cleanup
+Thread-Topic: [????] Re: [????] Re: [PATCH][v2] RDMA/core: Prevent soft lockup
+ during large user memory region cleanup
+Thread-Index: AQHcVINZYLa5twxwjECtSFjMAFPff7T2pWMAgAKUKyCAAKZnAIABEaDg
+Date: Thu, 20 Nov 2025 03:28:18 +0000
+Message-ID: <4482842b3e774a7d996130b0651d1923@baidu.com>
+References: <20251113095317.2628-1-lirongqing@baidu.com>
+ <20251117174738.GE17968@ziepe.ca>
+ <02011baf337649f6997166f223417417@baidu.com>
+ <20251119190602.GN17968@ziepe.ca>
+In-Reply-To: <20251119190602.GN17968@ziepe.ca>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-FEAS-Client-IP: 172.31.3.12
+X-FE-Policy-ID: 52:10:53:SYSTEM
 
-On Mon, 17 Nov 2025 23:42:05 +0200, Gal Pressman said
-
-> Matthew and Jakub reported [1] issues where inventory automation tools
-> are calling EEPROM query repeatedly on a port that doesn't have an SFP
-> connected, resulting in millions of error prints.
-
-I'm not very familiar with the networking stack in general, but I poked around a
-little trying to be able to come up with a meaningful review. I noticed that in
-ethtool there are two methods registered for "ethtool -m".. Looks like it first
-prefers a netlink method, but also may fall back on an ioctl implementation.
-
-Will users who end up in the ioctl path expect to see the kernel message? In the
-case of users who run "ethtool -m" on a device without a transceiver installed I
-think we should expect to see something as follows?  (Is this correct?)
-
-$ ethtool -m ethx
-"netlink error: mlx5: Query module eeprom by page failed, read xxx bytes, err xxx, status xxx"
-
-
-Thank you for helping on this issue.
--Matt
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSmFzb24gR3VudGhvcnBl
+IDxqZ2dAemllcGUuY2E+DQo+IFNlbnQ6IDIwMjXE6jEx1MIyMMjVIDM6MDYNCj4gVG86IExpLFJv
+bmdxaW5nIDxsaXJvbmdxaW5nQGJhaWR1LmNvbT4NCj4gQ2M6IExlb24gUm9tYW5vdnNreSA8bGVv
+bkBrZXJuZWwub3JnPjsgaHVhbmdqdW54aWFuNkBoaXNpbGljb24uY29tOw0KPiBsaW51eC1yZG1h
+QHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBbPz8/P10gUmU6IFs/Pz8/XSBSZTogW1BBVENI
+XVt2Ml0gUkRNQS9jb3JlOiBQcmV2ZW50IHNvZnQgbG9ja3VwDQo+IGR1cmluZyBsYXJnZSB1c2Vy
+IG1lbW9yeSByZWdpb24gY2xlYW51cA0KPiANCj4gT24gV2VkLCBOb3YgMTksIDIwMjUgYXQgMDI6
+MDM6MjBBTSArMDAwMCwgTGksUm9uZ3Fpbmcgd3JvdGU6DQo+ID4gPiA+IEZpeCBzb2Z0IGxvY2t1
+cCBpc3N1ZXMgYnkgaW5jb3Jwb3JhdGluZyBjb25kX3Jlc2NoZWQoKSBjYWxscw0KPiA+ID4gPiB3
+aXRoaW4gX19pYl91bWVtX3JlbGVhc2UoKSwgYW5kIHRoaXMgU0cgZW50cmllcyBhcmUgdHlwaWNh
+bGx5DQo+ID4gPiA+IGdyb3VwZWQgaW4gMk1CIGNodW5rcyBvbiB4ODZfNjQsIGFkZGluZyBjb25k
+X3Jlc2NoZWQoKSBzaG91bGQgaGFzDQo+ID4gPiA+IG1pbmltYWwNCj4gPiA+IHBlcmZvcm1hbmNl
+DQo+ID4gPiA+IGltcGFjdC4NCj4gPiA+DQo+ID4gPiBUaGlzIGlzIG5vdCB0cnVlLCBJIHRoaW5r
+IHRoaXMgc2hvdWxkIGhhdmUgYmVlbiBtb3JlIGNhcmVmdWwgdG8gb25seQ0KPiA+ID4gcmVzY2hl
+ZCBhZnRlciBsYXJnZXIgZ3JvdXBpbmdzLi4gSG93IG11Y2ggc2xvd2VyIGRpZCB5b3UgbWFrZSBu
+b3JtYWwNCj4gNGsgdW5waW5zPz8NCj4gPiA+DQo+ID4gPiBKYXNvbg0KPiA+DQo+ID4NCj4gPiBJ
+IGRvbid0IHNlZSB0aGlzIGFzIGEgaXNzdWUgZm9yIHNldmVyYWwgcmVhc29ucy4gRmlyc3QsIHRo
+aXMgY29kZSBwYXRoDQo+ID4gaXMgbm90IHBlcmZvcm1hbmNlLWNyaXRpY2FsLg0KPiANCj4gWWVz
+IGl0IGlzIQ0KPiANCj4gPiBTZWNvbmQsIHRoZSBudW1iZXIgb2YgY29uZF9yZXNjaGVkDQo+ID4g
+Y2FsbHMgYWRkZWQgYnkgdGhpcyBtb2RpZmljYXRpb24gaXMgaWRlbnRpY2FsIHRvIHdoYXQgd2Fz
+IGludHJvZHVjZWQNCj4gPiBpbiBjb21taXQgOTI4ZGEzN2EyMjlmMzQ0NCwNCj4gDQo+IE5vIGl0
+cyBub3QhIFRoYXQgbG9vcCBkb2VzIGVudGlyZSBiYXRjaGVzIG9mIHBhZ2VzIGludG8gYSBQQUdF
+X1NJWkUgbWVtb3J5DQo+IGJ1ZmZlciwgdGhpcyBkb2VzIGl0IGZvciBldmVyeSBzaW5nbGUgNGsg
+cGFnZS4NCj4gDQoNClRoYW5rcywgSSB1bmRlcnN0YW5kDQoNClRvIG1pbmltaXplIHBlcmZvcm1h
+bmNlIGltcGFjdCBvbiByZWxlYXNpbmcgbWVtb3J5IHJlZ2lvbnMsIGNhbGwgY29uZF9yZXNjaGVk
+KCkgcGVyIDRrIGxvb3AsIGhvdyBhYm91dCB0aGUgYmVsb3cgDQoNCmRpZmYgLS1naXQgYS9kcml2
+ZXJzL2luZmluaWJhbmQvY29yZS91bWVtLmMgYi9kcml2ZXJzL2luZmluaWJhbmQvY29yZS91bWVt
+LmMNCmluZGV4IGM1YjY4NjMuLjYxM2MxNmQgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL2luZmluaWJh
+bmQvY29yZS91bWVtLmMNCisrKyBiL2RyaXZlcnMvaW5maW5pYmFuZC9jb3JlL3VtZW0uYw0KQEAg
+LTQ1LDYgKzQ1LDggQEANCg0KICNpbmNsdWRlICJ1dmVyYnMuaCINCg0KKyNkZWZpbmUgUkVTQ0hF
+RF9MT09QX0NOVF9USFJFU0hPTEQgMHhmZmYNCisNCiBzdGF0aWMgdm9pZCBfX2liX3VtZW1fcmVs
+ZWFzZShzdHJ1Y3QgaWJfZGV2aWNlICpkZXYsIHN0cnVjdCBpYl91bWVtICp1bWVtLCBpbnQgZGly
+dHkpDQogew0KICAgICAgICBib29sIG1ha2VfZGlydHkgPSB1bWVtLT53cml0YWJsZSAmJiBkaXJ0
+eTsNCkBAIC01NSwxMCArNTcsMTUgQEAgc3RhdGljIHZvaWQgX19pYl91bWVtX3JlbGVhc2Uoc3Ry
+dWN0IGliX2RldmljZSAqZGV2LCBzdHJ1Y3QgaWJfdW1lbSAqdW1lbSwgaW50IGQNCiAgICAgICAg
+ICAgICAgICBpYl9kbWFfdW5tYXBfc2d0YWJsZV9hdHRycyhkZXYsICZ1bWVtLT5zZ3RfYXBwZW5k
+LnNndCwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBETUFfQklE
+SVJFQ1RJT05BTCwgMCk7DQoNCi0gICAgICAgZm9yX2VhY2hfc2d0YWJsZV9zZygmdW1lbS0+c2d0
+X2FwcGVuZC5zZ3QsIHNnLCBpKQ0KKyAgICAgICBmb3JfZWFjaF9zZ3RhYmxlX3NnKCZ1bWVtLT5z
+Z3RfYXBwZW5kLnNndCwgc2csIGkpIHsNCiAgICAgICAgICAgICAgICB1bnBpbl91c2VyX3BhZ2Vf
+cmFuZ2VfZGlydHlfbG9jayhzZ19wYWdlKHNnKSwNCiAgICAgICAgICAgICAgICAgICAgICAgIERJ
+Vl9ST1VORF9VUChzZy0+bGVuZ3RoLCBQQUdFX1NJWkUpLCBtYWtlX2RpcnR5KTsNCg0KKyAgICAg
+ICAgICAgICAgIGlmICghKGkgJiBSRVNDSEVEX0xPT1BfQ05UX1RIUkVTSE9MRCkpIHsNCisgICAg
+ICAgICAgICAgICAgICAgICAgIGNvbmRfcmVzY2hlZCgpOw0KKyAgICAgICAgICAgICAgIH0NCisg
+ICAgICAgfQ0KKw0KICAgICAgICBzZ19mcmVlX2FwcGVuZF90YWJsZSgmdW1lbS0+c2d0X2FwcGVu
+ZCk7DQogfQ0KDQoNCi1MaQ0KDQo=
 
