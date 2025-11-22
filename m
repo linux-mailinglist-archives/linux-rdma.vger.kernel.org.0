@@ -1,100 +1,267 @@
-Return-Path: <linux-rdma+bounces-14681-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14682-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 209DAC7C7FA
-	for <lists+linux-rdma@lfdr.de>; Sat, 22 Nov 2025 06:29:20 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27B6BC7C90D
+	for <lists+linux-rdma@lfdr.de>; Sat, 22 Nov 2025 08:04:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8436E35AFBF
-	for <lists+linux-rdma@lfdr.de>; Sat, 22 Nov 2025 05:29:19 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 528894E1744
+	for <lists+linux-rdma@lfdr.de>; Sat, 22 Nov 2025 07:03:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A41B29E114;
-	Sat, 22 Nov 2025 05:29:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 784F32E8B96;
+	Sat, 22 Nov 2025 07:03:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b="cMJWU5Rk"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="nBaWpsjq"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtpbgau2.qq.com (smtpbgau2.qq.com [54.206.34.216])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E50B72622;
-	Sat, 22 Nov 2025 05:29:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.206.34.216
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF2D1F37A1;
+	Sat, 22 Nov 2025 07:03:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763789353; cv=none; b=nNCYNwOK5kBwk4lm9JJx7HjwTA6ZqfEW6xg3sIPPLhh22Q2t0TWEUklSu24sQG70Hi13f6gWX168Ralk2cweqEO//yAf1FGp1Ys+V7CvC6OpU6wYqn+xMhSV4NLdU7gzl/Sim/qpr8S3VKWTAFqwdcUgxRxcZxefwGAfDvxfO0I=
+	t=1763795029; cv=none; b=loJz1umLr8pNsYxzxB6fIpu0MjEVqAv62nbhlbhwfDKUJpZtG5pt3J4QNZPUp3Pw9EAQPqQuE+QacDTsCOHe2zsWCuK8H47q0wZCKlWtHlNJotYdNDl96JDcMfH/dorRFE1cKyV41TIoH7ZOI+lHJC7JiyGl2Xn9fx9pCG8aS1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763789353; c=relaxed/simple;
-	bh=JHnyGanJdKBv1lmhk4hIYwjzvp2kyvgpJi8HlRz6v2Y=;
-	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
-	 References:In-Reply-To; b=bqE5Mo62U6T4TLgTJPk4sw9AfquWFOGRR187vNqh1sBmpYhHT4h8jDdrz+QiNPwF5aEK7s9zs3wSt+SmFsmsHLk1BgbnoHX6uDWmP03g7MlJlWPdAv5Jq1dKPR3mynHi6ev150eag6VOHImzki+HU46DbWi0ZXBSo8y1aXvIkZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b=cMJWU5Rk; arc=none smtp.client-ip=54.206.34.216
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
-	s=onoh2408; t=1763789321;
-	bh=JHnyGanJdKBv1lmhk4hIYwjzvp2kyvgpJi8HlRz6v2Y=;
-	h=From:To:Subject:Mime-Version:Date:Message-ID;
-	b=cMJWU5RkGLf0plkIKPH4/h+ByIUQLDefy8efiejdDvFhptEC4FOu2PbxnPTWpTi2V
-	 +k2krCCUWRG5N0tHUs127XZ/eM4FpdamLun8jD+6b2iZxFqTaNCpSHZqJhThKxtbDV
-	 UJDI1MUIU6q091dGHGoIYzsVHZkuny5k64zRm+38=
-EX-QQ-RecipientCnt: 8
-X-QQ-GoodBg: 1
-X-QQ-SSF: 00400000000000F0
-X-QQ-FEAT: D4aqtcRDiqRRDMu1q775QruR7Y790WuywJEQvw7b5Zs=
-X-QQ-BUSINESS-ORIGIN: 2
-X-QQ-Originating-IP: XRNTu+GrJrUl+I074H3im/c2i3Qkw1iaOTJPGAJuieo=
-X-QQ-STYLE: 
-X-QQ-mid: lv3gz7b-6t1763789296t14bfa025
-From: "=?utf-8?B?V2VudGFvIEd1YW4=?=" <guanwentao@uniontech.com>
-To: "=?utf-8?B?Tmlrb2xvdmEsIFRhdHlhbmEgRQ==?=" <tatyana.e.nikolova@intel.com>, "=?utf-8?B?bGVvbkBrZXJuZWwub3Jn?=" <leon@kernel.org>
-Cc: "=?utf-8?B?c2hpcmF6LnNhbGVlbUBpbnRlbC5jb20=?=" <shiraz.saleem@intel.com>, "=?utf-8?B?bGludXgtcmRtYUB2Z2VyLmtlcm5lbC5vcmc=?=" <linux-rdma@vger.kernel.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, "=?utf-8?B?5Y2g5L+K?=" <zhanjun@uniontech.com>, "=?utf-8?B?6IGC6K+a?=" <niecheng1@uniontech.com>, "=?utf-8?B?c3RhYmxl?=" <stable@vger.kernel.org>
-Subject: Re:RE: [PATCH] RDMA/irdma: fix Kconfig dependency
+	s=arc-20240116; t=1763795029; c=relaxed/simple;
+	bh=4DNT74O83rpfg9lpILaihFi/E0iM7wiCeukShvcIIg0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DEfTX1sio0N3WKFBP6zJFxWSPM6lERM0sr1bhvArJ3rpye9QutjTrQvSVaRRXANLSCcZRW8Avk/Hs9p6a2ov9RlLJ1h2EliC+B73h+GZySnKmBe17Ck964VTeUjqgZLOIexv6/ULDTPOyu4pY9bClH6YqsUkgqyE43sXduyyNAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=nBaWpsjq; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1204)
+	id 16F02212070F; Fri, 21 Nov 2025 23:03:47 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 16F02212070F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1763795027;
+	bh=r0cvwqhSVkvElalGOoVJsrZPJjG6Fo0xBbUMg8aw8IM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nBaWpsjqbZXBFaHz0wfI7oUgaRmYz9WRJNG4Dii25WhxE4GjcdXVyOlL3Eym5UZsN
+	 IFMwh26FZYO3wFZDna3Jt3lp7Zz6EACdBQvbM3sP9bty4LipJfHqKz2Evx18iebSY2
+	 TJb5kDtHaCPXGII7/sLELxmAikgfcFPktWpOlfso=
+Date: Fri, 21 Nov 2025 23:03:47 -0800
+From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+To: Simon Horman <horms@kernel.org>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	longli@microsoft.com, kotaranov@microsoft.com,
+	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	dipayanroy@microsoft.com
+Subject: Re: [PATCH net-next, v3] net: mana: Implement ndo_tx_timeout and
+ serialize queue resets per port.
+Message-ID: <20251122070347.GA14726@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20251110103541.GA30450@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <aRNsHUjW3PybGXCK@horms.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Date: Sat, 22 Nov 2025 13:28:16 +0800
-X-Priority: 3
-Message-ID: <tencent_25349C931FCC96137880D01F@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <20251117120551.1672104-1-guanwentao@uniontech.com>
-	<IA1PR11MB7727692DE0ECFE84E9B52F02CBD5A@IA1PR11MB7727.namprd11.prod.outlook.com>
-In-Reply-To: <IA1PR11MB7727692DE0ECFE84E9B52F02CBD5A@IA1PR11MB7727.namprd11.prod.outlook.com>
-X-QQ-ReplyHash: 2448271237
-X-BIZMAIL-ID: 2146458608414262690
-X-Address-Ticket:version=;type=;ticket_id=;id_list=;display_name=;session_id=;
-X-QQ-SENDSIZE: 520
-Received: from qq.com (unknown [127.0.0.1])
-	by smtp.qq.com (ESMTP) with SMTP
-	id ; Sat, 22 Nov 2025 13:28:17 +0800 (CST)
-Feedback-ID: lv:uniontech.com:qybglogicsvrsz:qybglogicsvrsz4b-0
-X-QQ-XMAILINFO: NImvdRhE6fHp1TYj7/vl3op8hweCcOZ/X2DvZlIfM0MTL12szw/EwRre
-	gWPfN2LH6wwRcHZj8YCApHrF+6SfeYoTzI5EwRjcnTFZhUuDHtrnwyX9wACl4snY2HHuCmm
-	0OWcXyHOHRjGTkac4roYMy6G1cLZySjvVWggtqNE1JD2dMHPC30dn7S5yP0HolQspWChrn0
-	UyRwUa563xYjIIdaD5pRO9/2ObFSato7yRaSW/vAbEHHaUjPMQZne3t9PGxMgH2awc+30v8
-	YVAhRDye+7QIG3oEja0z/pJu9fQOm8xSrjHdM0kL1k6huHrMz9y8uu2d0Uf99sSdzoGJGta
-	VVOIR9h5auRODwbDOYK2lWvHYKE07hCZK9H6vOCpVWdyA+EG9A2xGzM8WSXRhYbuhK2+aR7
-	jGSC1uxeOU3AMElroMNS6AyAAgiHvv9K6JeeD7Me+HooTqGru4ERyT22PxFsRfQ+zyGRUiY
-	7WG7zHN3LdIPcUyQXQy++kH6/qfDjeVYU7uroPD3iZnwpvU6GxZOMS63LC9HlpW0LQRb465
-	OxP5m9sSGdnuV8fHcpaP2CIWUw3ZZj6tHq5ZjwpOgALp5Fzk8h+ooTvivATf9eMOfpFqIZx
-	1Xkzx4LaVD5eX/ABU8m7x1E2bs30YqUmC0mM+FZmOtexz1xxyEi/JSQ886xLJa+HZ4xhts5
-	5hQqLG9eiUsIwBTIAqAkc1IE4IF74uPsMYxDUbn6p3Dab46E8hPHocbGJJGqRtodRypl7N0
-	x8K2qLKT3cJzRXG7XIRUPEAz/wj424/sDv7yFpFcuS+S+Bg/qRPaYkn5bTDNFrwgys0pVcJ
-	Oi9nyHdbo2nnEi3YC6fvtSVmtfAqqWnSAE2dcKswYokUX4e+7O3GeF4m6SdxyBE4GEakoe6
-	+HoAIqpLL1GuLX+FBLwkrjdbu7NJoVeJR8SIKXnQxjLOfE99IB/3qPO5HMl5E8Qo+hZ9kMV
-	WD9BPu7T3lDRGAItsGYfG/hzBaG01QAn/xRkMh9WwvohBB8Rc9DyNoLACrb0UKZyzFlg42E
-	ad79U0EwYjk8g6e0rTMtfTIbhlni+0Ij9sY1w8Eg==
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
-X-QQ-RECHKSPAM: 0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aRNsHUjW3PybGXCK@horms.kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-RmluZSwgdGhhbmtzLg0KDQpCUnMNCldlbnRhbyBHdWFu
+On Tue, Nov 11, 2025 at 05:02:21PM +0000, Simon Horman wrote:
+> On Mon, Nov 10, 2025 at 02:35:41AM -0800, Dipayaan Roy wrote:
+> > Implement .ndo_tx_timeout for MANA so any stalled TX queue can be detected
+> > and a device-controlled port reset for all queues can be scheduled to a
+> > ordered workqueue. The reset for all queues on stall detection is
+> > recomended by hardware team.
+> > 
+> > The change introduces a single ordered workqueue
+> > ("mana_per_port_queue_reset_wq") with WQ_UNBOUND | WQ_MEM_RECLAIM and
+> > queues exactly one work_struct per port onto it.
+> 
+> I see that this goes some way to addressing Jakub's feedback
+> on the commit message in his review of v2. But I this paragraph
+> isn't adding much in it's current form. It seems to me some
+> explanation of why why WQ_UNBOUND and WQ_MEM_RECLAIM are used is
+> appropriate.
+> 
+> [1] https://lore.kernel.org/all/20251029182233.59aea2d3@kernel.org/
+>
+Sure, I can add short explanation on the flag usage.
+ 
+> > Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
+> > Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+> > Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+> > ---
+> > Changes in v3:
+> >   -Fixed commit meesage, removed rtnl_trylock and added
+> >    disable_work_sync, fixed mana_queue_reset_work, and few
+> >    cosmetics.
+> > Changes in v2:
+> >   -Fixed cosmetic changes.
+> > ---
+> > ---
+> >  drivers/net/ethernet/microsoft/mana/mana_en.c | 78 ++++++++++++++++++-
+> >  include/net/mana/gdma.h                       |  7 +-
+> >  include/net/mana/mana.h                       |  7 ++
+> >  3 files changed, 90 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > index cccd5b63cee6..636df3b066c5 100644
+> > --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> > @@ -298,6 +298,42 @@ static int mana_get_gso_hs(struct sk_buff *skb)
+> >  	return gso_hs;
+> >  }
+> >  
+> > +static void mana_per_port_queue_reset_work_handler(struct work_struct *work)
+> > +{
+> > +	struct mana_queue_reset_work *reset_queue_work =
+> > +			container_of(work, struct mana_queue_reset_work, work);
+> > +
+> > +	struct mana_port_context *apc = container_of(reset_queue_work,
+> > +						     struct mana_port_context,
+> > +						     queue_reset_work);
+> > +	struct net_device *ndev = apc->ndev;
+> > +	int err;
+> > +
+> > +	rtnl_lock();
+> > +
+> > +	/* Pre-allocate buffers to prevent failure in mana_attach later */
+> > +	err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
+> > +	if (err) {
+> > +		netdev_err(ndev, "Insufficient memory for reset post tx stall detection\n");
+> > +		goto out;
+> > +	}
+> > +
+> > +	err = mana_detach(ndev, false);
+> > +	if (err) {
+> > +		netdev_err(ndev, "mana_detach failed: %d\n", err);
+> > +		goto dealloc_pre_rxbufs;
+> > +	}
+> > +
+> > +	err = mana_attach(ndev);
+> > +	if (err)
+> > +		netdev_err(ndev, "mana_attach failed: %d\n", err);
+> > +
+> > +dealloc_pre_rxbufs:
+> > +	mana_pre_dealloc_rxbufs(apc);
+> > +out:
+> > +	rtnl_unlock();
+> > +}
+> > +
+> >  netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+> >  {
+> >  	enum mana_tx_pkt_format pkt_fmt = MANA_SHORT_PKT_FMT;
+> > @@ -802,6 +838,23 @@ static int mana_change_mtu(struct net_device *ndev, int new_mtu)
+> >  	return err;
+> >  }
+> >  
+> > +static void mana_tx_timeout(struct net_device *netdev, unsigned int txqueue)
+> > +{
+> > +	struct mana_port_context *apc = netdev_priv(netdev);
+> > +	struct mana_context *ac = apc->ac;
+> > +	struct gdma_context *gc = ac->gdma_dev->gdma_context;
+> > +
+> > +	/* Already in service, hence tx queue reset is not required.*/
+> > +	if (gc->in_service)
+> > +		return;
+> > +
+> > +	/* Note: If there are pending queue reset work for this port(apc),
+> > +	 * subsequent request queued up from here are ignored. This is because
+> > +	 * we are using the same work instance per port(apc).
+> > +	 */
+> > +	queue_work(ac->per_port_queue_reset_wq, &apc->queue_reset_work.work);
+> > +}
+> > +
+> >  static int mana_shaper_set(struct net_shaper_binding *binding,
+> >  			   const struct net_shaper *shaper,
+> >  			   struct netlink_ext_ack *extack)
+> > @@ -884,7 +937,9 @@ static const struct net_device_ops mana_devops = {
+> >  	.ndo_bpf		= mana_bpf,
+> >  	.ndo_xdp_xmit		= mana_xdp_xmit,
+> >  	.ndo_change_mtu		= mana_change_mtu,
+> > -	.net_shaper_ops         = &mana_shaper_ops,
+> > +	.ndo_tx_timeout		= mana_tx_timeout,
+> > +	.net_shaper_ops		= &mana_shaper_ops,
+> > +
+> >  };
+> >  
+> >  static void mana_cleanup_port_context(struct mana_port_context *apc)
+> > @@ -3244,6 +3299,7 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
+> >  	ndev->min_mtu = ETH_MIN_MTU;
+> >  	ndev->needed_headroom = MANA_HEADROOM;
+> >  	ndev->dev_port = port_idx;
+> > +	ndev->watchdog_timeo = 15 * HZ;
+> >  	SET_NETDEV_DEV(ndev, gc->dev);
+> >  
+> >  	netif_set_tso_max_size(ndev, GSO_MAX_SIZE);
+> > @@ -3283,6 +3339,10 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
+> >  
+> >  	debugfs_create_u32("current_speed", 0400, apc->mana_port_debugfs, &apc->speed);
+> >  
+> > +	/* Initialize the per port queue reset work.*/
+> > +	INIT_WORK(&apc->queue_reset_work.work,
+> > +		  mana_per_port_queue_reset_work_handler);
+> > +
+> 
+> I think it would make more sense to move this to before the call to
+> register_netdev(), which is a few lines above this hunk.
+> 
+> I suppose that because a watchdog timeout is involved, it won't happen in
+> practice, but in theory could fire ndo_tx_timeout before INIT_WORK is
+> called, resulting in access to the work queue before it is initialised.
+>
+Sure, will address this in next version. 
+> >  	return 0;
+> >  
+> >  free_indir:
+> > @@ -3488,6 +3548,15 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
+> >  	if (ac->num_ports > MAX_PORTS_IN_MANA_DEV)
+> >  		ac->num_ports = MAX_PORTS_IN_MANA_DEV;
+> >  
+> > +	ac->per_port_queue_reset_wq =
+> > +			alloc_ordered_workqueue("mana_per_port_queue_reset_wq",
+> > +						WQ_UNBOUND | WQ_MEM_RECLAIM);
+> > +	if (!ac->per_port_queue_reset_wq) {
+> > +		dev_err(dev, "Failed to allocate per port queue reset workqueue\n");
+> > +		err = -ENOMEM;
+> > +		goto out;
+> > +	}
+> > +
+> >  	if (!resuming) {
+> >  		for (i = 0; i < ac->num_ports; i++) {
+> >  			err = mana_probe_port(ac, i, &ac->ports[i]);
+> 
+> It is not strictly related to this patch, but the lines above the hunk
+> below look like this:
+> 
+> 		apc = netdev_priv(ndev);
+> 		if (!ndev) {
+> 			if (i == 0)
+> 				dev_err(dev, "No net device to remove\n");
+> 
+> If ndev is null then the call to netdev_priv() will result in a
+> NULL pointer dereference. So I think it should be moved
+> to after the check for !ndev.
+> 
+Thanks for pointing this, I will fix this along with my next version.
+> > @@ -3557,6 +3626,8 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
+> >  			goto out;
+> >  		}
+> >  
+> > +		disable_work_sync(&apc->queue_reset_work.work);
+> > +
+> >  		/* All cleanup actions should stay after rtnl_lock(), otherwise
+> >  		 * other functions may access partially cleaned up data.
+> >  		 */
+> 
+> Comments on code flagged by Claude Code with
+> https://github.com/masoncl/review-prompts/
+
+Thanks Simon for the review. I will send the rebased next version with all the
+comments addressed.
+
+
+Regards
 
 
