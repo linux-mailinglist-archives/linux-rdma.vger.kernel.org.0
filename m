@@ -1,267 +1,135 @@
-Return-Path: <linux-rdma+bounces-14682-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14683-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27B6BC7C90D
-	for <lists+linux-rdma@lfdr.de>; Sat, 22 Nov 2025 08:04:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 204F8C7DC8E
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Nov 2025 07:58:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 528894E1744
-	for <lists+linux-rdma@lfdr.de>; Sat, 22 Nov 2025 07:03:54 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DC5D84E1C94
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Nov 2025 06:58:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 784F32E8B96;
-	Sat, 22 Nov 2025 07:03:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C577A296BA2;
+	Sun, 23 Nov 2025 06:58:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="nBaWpsjq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lae+GEgi"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF2D1F37A1;
-	Sat, 22 Nov 2025 07:03:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF39D272E42
+	for <linux-rdma@vger.kernel.org>; Sun, 23 Nov 2025 06:58:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763795029; cv=none; b=loJz1umLr8pNsYxzxB6fIpu0MjEVqAv62nbhlbhwfDKUJpZtG5pt3J4QNZPUp3Pw9EAQPqQuE+QacDTsCOHe2zsWCuK8H47q0wZCKlWtHlNJotYdNDl96JDcMfH/dorRFE1cKyV41TIoH7ZOI+lHJC7JiyGl2Xn9fx9pCG8aS1s=
+	t=1763881083; cv=none; b=fZeyyB7chkMFt24vtlq9xaIJxa6wrPNnMf70EBqwFQSx9TDEI4R05uEAuBs0dk6zjvcgqVJt7YR4vBRpJiVtIWNJ67QonMFDAXvCtoFu2HzLor9jSaVz6nx7Z/R/qA1uHydfn+0XU59l5HHSJ2aSvH+Hdv1S3GoRYkcOyXj7NO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763795029; c=relaxed/simple;
-	bh=4DNT74O83rpfg9lpILaihFi/E0iM7wiCeukShvcIIg0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DEfTX1sio0N3WKFBP6zJFxWSPM6lERM0sr1bhvArJ3rpye9QutjTrQvSVaRRXANLSCcZRW8Avk/Hs9p6a2ov9RlLJ1h2EliC+B73h+GZySnKmBe17Ck964VTeUjqgZLOIexv6/ULDTPOyu4pY9bClH6YqsUkgqyE43sXduyyNAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=nBaWpsjq; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1204)
-	id 16F02212070F; Fri, 21 Nov 2025 23:03:47 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 16F02212070F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1763795027;
-	bh=r0cvwqhSVkvElalGOoVJsrZPJjG6Fo0xBbUMg8aw8IM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nBaWpsjqbZXBFaHz0wfI7oUgaRmYz9WRJNG4Dii25WhxE4GjcdXVyOlL3Eym5UZsN
-	 IFMwh26FZYO3wFZDna3Jt3lp7Zz6EACdBQvbM3sP9bty4LipJfHqKz2Evx18iebSY2
-	 TJb5kDtHaCPXGII7/sLELxmAikgfcFPktWpOlfso=
-Date: Fri, 21 Nov 2025 23:03:47 -0800
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: Simon Horman <horms@kernel.org>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	longli@microsoft.com, kotaranov@microsoft.com,
-	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
-	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	dipayanroy@microsoft.com
-Subject: Re: [PATCH net-next, v3] net: mana: Implement ndo_tx_timeout and
- serialize queue resets per port.
-Message-ID: <20251122070347.GA14726@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20251110103541.GA30450@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <aRNsHUjW3PybGXCK@horms.kernel.org>
+	s=arc-20240116; t=1763881083; c=relaxed/simple;
+	bh=X6Wl+GsUv9tb9D2ZvYsvZDKqKoy8NWR2CEfCfgI0xKQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fdbujSo7AQ4oyuZemD4WfIkOcxqDE3HNrs9amIjJbT25mZOrL8qrPo7S1CAcIMhJR7/D3GMpnrsOPtLidM7mALe7s/3X2s+Pfhd27m0yAx2sy864Uhd+SsZ87TxYIz4+mJFYyDGwRXUAqLBzh9jiURY9h//R/MRVGZtfpOSDRSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lae+GEgi; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-47774d3536dso25404935e9.0
+        for <linux-rdma@vger.kernel.org>; Sat, 22 Nov 2025 22:58:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1763881079; x=1764485879; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uRVJRvrkA9r6FA5gPvj5O31mT6myPASpJOJtCaPGU+U=;
+        b=lae+GEgiIQGzocy1m+fSXOQouErV2WPA/WnROV6iDyQWaesQJOcKWXU3PJ/1OUwH+L
+         ruHDhXKVW+zfJRPCHRubp5rZpUeLzy7Ssu15XUavwFLurY2QsYuWNpsOYn5ATnXKfriH
+         E40fiQZ0jA6Pz7OM8zfGhZ4jnmf99nC6B7z1PWw3db0e0iMOVbn+wfOap60nx5Zo/lBq
+         DllQf6H7mYIXNMSVkGEPMQUcnndsLwKmqQVCfLQUQJccLT+n7PY4ThWiYH+cHmfu1sKD
+         x5TmvEF6oF4/UsLwfOiVx6UH05+yC4W2hC05PBpQOiwhBYUL7Jt3DlVJIL7i8cqmNnQN
+         e99A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763881079; x=1764485879;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uRVJRvrkA9r6FA5gPvj5O31mT6myPASpJOJtCaPGU+U=;
+        b=dhfJt6l9Xv9QLtKcPUmOdiWW/GxarQQ50gPwgI96+HAowVOTnwO/V7a6UY47HZnDgP
+         cfP7z/dnH1ZUE4BPc0qYZclRdAH3SdlByt5I5dOKnoU01jaAixuAd2eWim8cZ7Ndgn6w
+         MS2lHj7t4MUg6c67ob+6If20HvWu3AoYCQZEnVijMkYx+usXXpzpvlcZZaqNc4iw8JDg
+         jHmn67fFIXDwhDewekMqx7/O3sl9ucKFL3Acu+lbTy30I+/8RFhhD3EI28ofVi0k2txg
+         7OKZ3jpA63zWJHBU5Is/pNHJjHZgS9ZcC7fileDwIsCcf32WxplBRXJ9n9054y8/Z7FB
+         vUzg==
+X-Forwarded-Encrypted: i=1; AJvYcCXJOGydiiq+VfbZLyvWMvrgEtSFFx5cqiI0pS53Zxj606PxHwvGu9lf+POsT1lABGopJK5arDdIhAX/@vger.kernel.org
+X-Gm-Message-State: AOJu0YwNQzpZyDgoJXqyC46/Nu4E3kMuIAFCNm7tzu+zLwJN0uYTgCqR
+	YYNamROhDba23hgorE5OF2vcd+h+rA7StaWsOHz8tRwix01K5n23mGVa
+X-Gm-Gg: ASbGncs8TLvStA7OgAtIGTGdYCPIMSQz0BYNlJShDJuUcssuPFl+qf8FEzLisgv3LAp
+	NniXU5wb9z/PFMWmeq/ZOCrLN6Qd37gM5nylxhmGvXI2miOKUQv+StCNHdZzJcu7/T+8OAvvsPx
+	N3qQb0/m0rxFzTtjdfd3kARo0isKx2iB1KVfTEyqVRmjmORfcsl4slIZeQ8A+QHTKIwoCCQZd8N
+	H764EHaGGQ4XXpfRg1ds9AKveYnqdFK5b++cooHyRjPdIjymoYH0mAQ6JhV0QsJIgcIfc/3jZMo
+	GxAXX+/RSijdM/bobpC9I9SZJKDh1sAD86Idi4ddoYAHkU/6bwBXI+y2GJlNdlAzenZN6NIqPE9
+	OurxCM2UatqDV0SrpN4vuWeObiTrDpNpzuNBfS+WZ6i3i5o+NOofT1PHq9cKMkjG9h4phGJ+Nt/
+	QGZ3WRiHFC/dV/MibQoV02M83xGTxLdbihmM4=
+X-Google-Smtp-Source: AGHT+IHFAxOYU/3SO3J8aYD3YuAqZ07wcswkAErFmGjX6P2Bxhft7F/WMDyO2OFrbewioiPNPQbtkg==
+X-Received: by 2002:a05:600c:c8a:b0:471:5c0:94fc with SMTP id 5b1f17b1804b1-477c04cfb70mr82290215e9.6.1763881078919;
+        Sat, 22 Nov 2025 22:57:58 -0800 (PST)
+Received: from [10.125.200.125] ([165.85.126.96])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-477a9dfb639sm119878835e9.13.2025.11.22.22.57.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 22 Nov 2025 22:57:58 -0800 (PST)
+Message-ID: <f828d5d5-6ba3-4e9c-a7fb-3a0193f7e9bf@gmail.com>
+Date: Sun, 23 Nov 2025 08:57:58 +0200
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aRNsHUjW3PybGXCK@horms.kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-
-On Tue, Nov 11, 2025 at 05:02:21PM +0000, Simon Horman wrote:
-> On Mon, Nov 10, 2025 at 02:35:41AM -0800, Dipayaan Roy wrote:
-> > Implement .ndo_tx_timeout for MANA so any stalled TX queue can be detected
-> > and a device-controlled port reset for all queues can be scheduled to a
-> > ordered workqueue. The reset for all queues on stall detection is
-> > recomended by hardware team.
-> > 
-> > The change introduces a single ordered workqueue
-> > ("mana_per_port_queue_reset_wq") with WQ_UNBOUND | WQ_MEM_RECLAIM and
-> > queues exactly one work_struct per port onto it.
-> 
-> I see that this goes some way to addressing Jakub's feedback
-> on the commit message in his review of v2. But I this paragraph
-> isn't adding much in it's current form. It seems to me some
-> explanation of why why WQ_UNBOUND and WQ_MEM_RECLAIM are used is
-> appropriate.
-> 
-> [1] https://lore.kernel.org/all/20251029182233.59aea2d3@kernel.org/
->
-Sure, I can add short explanation on the flag usage.
- 
-> > Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
-> > Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-> > Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-> > ---
-> > Changes in v3:
-> >   -Fixed commit meesage, removed rtnl_trylock and added
-> >    disable_work_sync, fixed mana_queue_reset_work, and few
-> >    cosmetics.
-> > Changes in v2:
-> >   -Fixed cosmetic changes.
-> > ---
-> > ---
-> >  drivers/net/ethernet/microsoft/mana/mana_en.c | 78 ++++++++++++++++++-
-> >  include/net/mana/gdma.h                       |  7 +-
-> >  include/net/mana/mana.h                       |  7 ++
-> >  3 files changed, 90 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > index cccd5b63cee6..636df3b066c5 100644
-> > --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> > @@ -298,6 +298,42 @@ static int mana_get_gso_hs(struct sk_buff *skb)
-> >  	return gso_hs;
-> >  }
-> >  
-> > +static void mana_per_port_queue_reset_work_handler(struct work_struct *work)
-> > +{
-> > +	struct mana_queue_reset_work *reset_queue_work =
-> > +			container_of(work, struct mana_queue_reset_work, work);
-> > +
-> > +	struct mana_port_context *apc = container_of(reset_queue_work,
-> > +						     struct mana_port_context,
-> > +						     queue_reset_work);
-> > +	struct net_device *ndev = apc->ndev;
-> > +	int err;
-> > +
-> > +	rtnl_lock();
-> > +
-> > +	/* Pre-allocate buffers to prevent failure in mana_attach later */
-> > +	err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
-> > +	if (err) {
-> > +		netdev_err(ndev, "Insufficient memory for reset post tx stall detection\n");
-> > +		goto out;
-> > +	}
-> > +
-> > +	err = mana_detach(ndev, false);
-> > +	if (err) {
-> > +		netdev_err(ndev, "mana_detach failed: %d\n", err);
-> > +		goto dealloc_pre_rxbufs;
-> > +	}
-> > +
-> > +	err = mana_attach(ndev);
-> > +	if (err)
-> > +		netdev_err(ndev, "mana_attach failed: %d\n", err);
-> > +
-> > +dealloc_pre_rxbufs:
-> > +	mana_pre_dealloc_rxbufs(apc);
-> > +out:
-> > +	rtnl_unlock();
-> > +}
-> > +
-> >  netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
-> >  {
-> >  	enum mana_tx_pkt_format pkt_fmt = MANA_SHORT_PKT_FMT;
-> > @@ -802,6 +838,23 @@ static int mana_change_mtu(struct net_device *ndev, int new_mtu)
-> >  	return err;
-> >  }
-> >  
-> > +static void mana_tx_timeout(struct net_device *netdev, unsigned int txqueue)
-> > +{
-> > +	struct mana_port_context *apc = netdev_priv(netdev);
-> > +	struct mana_context *ac = apc->ac;
-> > +	struct gdma_context *gc = ac->gdma_dev->gdma_context;
-> > +
-> > +	/* Already in service, hence tx queue reset is not required.*/
-> > +	if (gc->in_service)
-> > +		return;
-> > +
-> > +	/* Note: If there are pending queue reset work for this port(apc),
-> > +	 * subsequent request queued up from here are ignored. This is because
-> > +	 * we are using the same work instance per port(apc).
-> > +	 */
-> > +	queue_work(ac->per_port_queue_reset_wq, &apc->queue_reset_work.work);
-> > +}
-> > +
-> >  static int mana_shaper_set(struct net_shaper_binding *binding,
-> >  			   const struct net_shaper *shaper,
-> >  			   struct netlink_ext_ack *extack)
-> > @@ -884,7 +937,9 @@ static const struct net_device_ops mana_devops = {
-> >  	.ndo_bpf		= mana_bpf,
-> >  	.ndo_xdp_xmit		= mana_xdp_xmit,
-> >  	.ndo_change_mtu		= mana_change_mtu,
-> > -	.net_shaper_ops         = &mana_shaper_ops,
-> > +	.ndo_tx_timeout		= mana_tx_timeout,
-> > +	.net_shaper_ops		= &mana_shaper_ops,
-> > +
-> >  };
-> >  
-> >  static void mana_cleanup_port_context(struct mana_port_context *apc)
-> > @@ -3244,6 +3299,7 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
-> >  	ndev->min_mtu = ETH_MIN_MTU;
-> >  	ndev->needed_headroom = MANA_HEADROOM;
-> >  	ndev->dev_port = port_idx;
-> > +	ndev->watchdog_timeo = 15 * HZ;
-> >  	SET_NETDEV_DEV(ndev, gc->dev);
-> >  
-> >  	netif_set_tso_max_size(ndev, GSO_MAX_SIZE);
-> > @@ -3283,6 +3339,10 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
-> >  
-> >  	debugfs_create_u32("current_speed", 0400, apc->mana_port_debugfs, &apc->speed);
-> >  
-> > +	/* Initialize the per port queue reset work.*/
-> > +	INIT_WORK(&apc->queue_reset_work.work,
-> > +		  mana_per_port_queue_reset_work_handler);
-> > +
-> 
-> I think it would make more sense to move this to before the call to
-> register_netdev(), which is a few lines above this hunk.
-> 
-> I suppose that because a watchdog timeout is involved, it won't happen in
-> practice, but in theory could fire ndo_tx_timeout before INIT_WORK is
-> called, resulting in access to the work queue before it is initialised.
->
-Sure, will address this in next version. 
-> >  	return 0;
-> >  
-> >  free_indir:
-> > @@ -3488,6 +3548,15 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
-> >  	if (ac->num_ports > MAX_PORTS_IN_MANA_DEV)
-> >  		ac->num_ports = MAX_PORTS_IN_MANA_DEV;
-> >  
-> > +	ac->per_port_queue_reset_wq =
-> > +			alloc_ordered_workqueue("mana_per_port_queue_reset_wq",
-> > +						WQ_UNBOUND | WQ_MEM_RECLAIM);
-> > +	if (!ac->per_port_queue_reset_wq) {
-> > +		dev_err(dev, "Failed to allocate per port queue reset workqueue\n");
-> > +		err = -ENOMEM;
-> > +		goto out;
-> > +	}
-> > +
-> >  	if (!resuming) {
-> >  		for (i = 0; i < ac->num_ports; i++) {
-> >  			err = mana_probe_port(ac, i, &ac->ports[i]);
-> 
-> It is not strictly related to this patch, but the lines above the hunk
-> below look like this:
-> 
-> 		apc = netdev_priv(ndev);
-> 		if (!ndev) {
-> 			if (i == 0)
-> 				dev_err(dev, "No net device to remove\n");
-> 
-> If ndev is null then the call to netdev_priv() will result in a
-> NULL pointer dereference. So I think it should be moved
-> to after the check for !ndev.
-> 
-Thanks for pointing this, I will fix this along with my next version.
-> > @@ -3557,6 +3626,8 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
-> >  			goto out;
-> >  		}
-> >  
-> > +		disable_work_sync(&apc->queue_reset_work.work);
-> > +
-> >  		/* All cleanup actions should stay after rtnl_lock(), otherwise
-> >  		 * other functions may access partially cleaned up data.
-> >  		 */
-> 
-> Comments on code flagged by Claude Code with
-> https://github.com/masoncl/review-prompts/
-
-Thanks Simon for the review. I will send the rebased next version with all the
-comments addressed.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 00/14] devlink and mlx5: Support cross-function
+ rate scheduling
+To: Jakub Kicinski <kuba@kernel.org>, Tariq Toukan <tariqt@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Donald Hunter <donald.hunter@gmail.com>,
+ Jiri Pirko <jiri@resnulli.us>, Jonathan Corbet <corbet@lwn.net>,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Mark Bloch <mbloch@nvidia.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-rdma@vger.kernel.org, Gal Pressman <gal@nvidia.com>,
+ Moshe Shemesh <moshe@nvidia.com>, Carolina Jubran <cjubran@nvidia.com>,
+ Cosmin Ratiu <cratiu@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
+References: <1763644166-1250608-1-git-send-email-tariqt@nvidia.com>
+ <20251120193942.51832b96@kernel.org>
+Content-Language: en-US
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20251120193942.51832b96@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
-Regards
+
+On 21/11/2025 5:39, Jakub Kicinski wrote:
+> On Thu, 20 Nov 2025 15:09:12 +0200 Tariq Toukan wrote:
+>> Code dependency:
+>> This series should apply cleanly after the pulling of
+>> 'net-2025_11_19_05_03', specifically commit f94c1a114ac2 ("devlink:
+>> rate: Unset parent pointer in devl_rate_nodes_destroy").
+> 
+> repost please, we don't do dependencies
+> 
+
+Hi,
+
+I submitted the code before my weekend as we have a gap of ~1.5 working 
+days (timezones + Friday). It could be utilized for collecting feedback 
+on the proposed solution, or even get it accepted.
+
+I referred to a net-* tag from the net branch, part of your regular 
+process, that was about to get merged any minute. Btw it was indeed 
+pulled before this response, so our series would in fact apply cleanly.
+
+Anyway, not a big deal, I'm re-posting the series now.
+
+Regards,
+Tariq
 
 
