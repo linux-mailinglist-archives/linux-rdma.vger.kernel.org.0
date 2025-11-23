@@ -1,56 +1,58 @@
-Return-Path: <linux-rdma+bounces-14702-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14703-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE3D1C7DE86
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Nov 2025 10:05:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6673AC7DE8E
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Nov 2025 10:13:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id EFA4534D45C
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Nov 2025 09:04:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E153B3A92F1
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Nov 2025 09:13:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0509B2848A8;
-	Sun, 23 Nov 2025 09:04:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AF7329B764;
+	Sun, 23 Nov 2025 09:13:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oSslETor"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RdRrQvQo"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87A9224B14
-	for <linux-rdma@vger.kernel.org>; Sun, 23 Nov 2025 09:04:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 134D713B293;
+	Sun, 23 Nov 2025 09:13:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763888695; cv=none; b=qhMpfa7H0hJpvAeJSwJL+s15OKrvhMn1pkcS8VDNVDc3IGYggq9qRtLZueMxAUjotpYBkAadwsddYPbsoVojc0Cywj6cssdUaRaTzn/GjgqVA7nYF+FYnQWCYiPA2DxHgM9scX31UkxPUtfRXSn9aEngBYlg2GXvdi5rQUv4ZwE=
+	t=1763889198; cv=none; b=Kqd9JpfSdrDZBC7FmjznT0qgLKQ0lQbEpdL1KfkbCj+nLKKaiKLKGWwr8mCM13O54iTMuEXQk/K1m90jFy1KlZKvl+imfZk4Mf7h9zvkuMwCAcquvXB5pwxRpaobkzdZyY+QSGFyYz/jokfletwRvLK7/pATtznnf4Ycve1KQzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763888695; c=relaxed/simple;
-	bh=AI8vLesthCpgxvakRMSJjkrIL+XlwDCgpakzWPitqTk=;
+	s=arc-20240116; t=1763889198; c=relaxed/simple;
+	bh=qMwQ/vf94s4B8hgH1kN9jESt5L4ZK46ZgtivkUnpZTM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=QUMENQQHEvLY/9Ls97OMob0Wzk3h1/dXVsPG7JPvZAAE/2W+uONXAh3JilpTjCfA/4a0hgzNHtZduyswgkAcNotBsCfxKsDpddnBG4TKqZzF8Tu7wqxoW+GWKDMoIRxUqGC2IT/bBJ/5kQ5/bpwt4ZXyJl4drFhyB5F4SfekeKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oSslETor; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD8B6C113D0;
-	Sun, 23 Nov 2025 09:04:54 +0000 (UTC)
+	 MIME-Version:Content-Type; b=bnVlrQAP+RMbiMaf5a/GQs6fm0VTV0piZOe6dFeL76bNZjYMuSDLJPTvY2l3deYrbiL5cLEpjI4opfKuu3Yu26drPlGTecWc9mb8pRoKKnSVdpejQjPrPzqP6Fi0xph4GN+t92Ez4BRiaPiGrrQIkd4V3Y85urYU4X4UiYsiFCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RdRrQvQo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67F40C113D0;
+	Sun, 23 Nov 2025 09:13:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763888695;
-	bh=AI8vLesthCpgxvakRMSJjkrIL+XlwDCgpakzWPitqTk=;
+	s=k20201202; t=1763889197;
+	bh=qMwQ/vf94s4B8hgH1kN9jESt5L4ZK46ZgtivkUnpZTM=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=oSslETorROaVyWC6n+j1v9pVOcbvSszGOdAKqBlh2IUeJPEw80mB8gajS1qp6U/FE
-	 KpOiq3tJ9Rnza8WOvU4ulwaj5GWahriaWISHbnb8mNd8LU0kjz07PcAEN8yFnmw0Zm
-	 OYnFQTS13dWtgIfNRix8ZCDHc4t1crv5ZcC4bnfOItjbjeGVHYSMVE2/BrCr9Y2KG6
-	 86uqI1ammiCuPjE8kXsViWlqwg8vnbN7kqmcBjZzwxkd4+er6bC/96QeLNuPrnOtew
-	 VJeMLKUHRuXXmY5Y30KVZ+g2rglasgH3fm3GWb3KXyIJLhKUl6LYAnrWLX/fWkJYse
-	 u1hZCnJc4CS6A==
+	b=RdRrQvQoc5SCg22nO/ge5bmpHgy7jRrMARdauiiiT6VK8sNYUuFlZPqbFVnBI2X5j
+	 37XzyG7f4wkoSjfMvSgqz8y8fCH0QmHQt38U+G6+s5Vjr3KH4lGtvqWqEf8QYQR0rQ
+	 zHw4btIAunzD8BvRHN8/VOEnbjBuOxShyRHjxm52GN04p3m0GIuEvMWOLI5oLEdlrW
+	 mUuuweBbbaVwO3ESbBX8StDX8dJYvj8nS6466FsP7KhKq5bKTl+O2OE7JP6mCxKnRC
+	 yTft9n1upSDupMQBi/1Pc4LMDDEmIspxLIjyYjKRnB2riWszn2kadNdgEzYVxgPR88
+	 uYtMjnVqCRg0w==
 From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Selvin Xavier <selvin.xavier@broadcom.com>
-Cc: linux-rdma@vger.kernel.org, andrew.gospodarek@broadcom.com, 
- Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-In-Reply-To: <1763624215-10382-1-git-send-email-selvin.xavier@broadcom.com>
-References: <1763624215-10382-1-git-send-email-selvin.xavier@broadcom.com>
-Subject: Re: [PATCH rdma-rc 1/2] RDMA/bnxt_re: Fix the inline size for
- GenP7 devices
-Message-Id: <176388869214.1783202.1704915356803875358.b4-ty@kernel.org>
-Date: Sun, 23 Nov 2025 04:04:52 -0500
+To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Yishai Hadas <yishaih@nvidia.com>, Or Har-Toov <ohartoov@nvidia.com>, 
+ Michael Guralnik <michaelgur@nvidia.com>, 
+ Edward Srouji <edwards@nvidia.com>
+In-Reply-To: <20251120-reduce-ksm-v1-1-6864bfc814dc@kernel.org>
+References: <20251120-reduce-ksm-v1-1-6864bfc814dc@kernel.org>
+Subject: Re: [PATCH rdma-next] IB/mlx5: Reduce IMR KSM size when 5-level
+ paging is enabled
+Message-Id: <176388919468.1783514.9358959459855331067.b4-ty@kernel.org>
+Date: Sun, 23 Nov 2025 04:13:14 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -62,19 +64,20 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-a6db3
 
 
-On Wed, 19 Nov 2025 23:36:54 -0800, Selvin Xavier wrote:
-> Inline size supported by the device is based on the number
-> of SGEs supported by the adapter. Change the inline
-> size calculation based on that.
+On Thu, 20 Nov 2025 16:49:28 +0200, Leon Romanovsky wrote:
+> Enabling 5-level paging (LA57) increases TASK_SIZE on x86_64 from 2^47
+> to 2^56. This affects implicit ODP, which uses TASK_SIZE to calculate
+> the number of IMR KSM entries.
 > 
+> As a result, the number of entries and the memory usage for KSM mkeys
+> increase drastically:
 > 
+> [...]
 
 Applied, thanks!
 
-[1/2] RDMA/bnxt_re: Fix the inline size for GenP7 devices
-      https://git.kernel.org/rdma/rdma/c/431d0339402d01
-[2/2] RDMA/bnxt_re: Pass correct flag for dma mr creation
-      https://git.kernel.org/rdma/rdma/c/9384e9a6e726cf
+[1/1] IB/mlx5: Reduce IMR KSM size when 5-level paging is enabled
+      https://git.kernel.org/rdma/rdma/c/4bf35d1d17c8d5
 
 Best regards,
 -- 
