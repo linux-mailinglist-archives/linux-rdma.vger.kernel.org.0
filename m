@@ -1,43 +1,43 @@
-Return-Path: <linux-rdma+bounces-14686-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14687-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B833FC7DCD8
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Nov 2025 08:23:53 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97D64C7DD0B
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Nov 2025 08:26:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1EF23AA826
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Nov 2025 07:23:44 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C07AD3487D0
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Nov 2025 07:23:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3143729B8DD;
-	Sun, 23 Nov 2025 07:23:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781A62BE05A;
+	Sun, 23 Nov 2025 07:23:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="E5T1XH8W"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="oBBFkxnx"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from SN4PR0501CU005.outbound.protection.outlook.com (mail-southcentralusazon11011071.outbound.protection.outlook.com [40.93.194.71])
+Received: from CH1PR05CU001.outbound.protection.outlook.com (mail-northcentralusazon11010054.outbound.protection.outlook.com [52.101.193.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 154C22343C0;
-	Sun, 23 Nov 2025 07:23:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.194.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C766296BBE;
+	Sun, 23 Nov 2025 07:23:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.193.54
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763882615; cv=fail; b=aTGayoh1viDFVxC62kbw5UNTEh1N8KAA84qNpmTn+ptahDM+IwKRUqfF5t0PB2H0MbjkZhh0fC6HDD1YuCSpwUP2pA78Vo/LgbhkEl8BQpR0ZRPe9NjxHWIoNurrW9p6pgG5sPkxHaTgFOKchG5RVfsXcZu4JRCbUyYLNAAvRGs=
+	t=1763882621; cv=fail; b=TCU1rVipIR1A7PI3Y5VYKwYBfO3O+nSAVDUaDNiaKNojepkEqA1wKJ36gPcu6a/MQSA0SDFX5o03dvANn6Ovw585WreXosm9p4C72Um4MxoMvgl15vt9oudtzgfWW5XDmJTwX924uxPti5rGHiYJ3tyw7BJF6oechYKYDt2vREY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763882615; c=relaxed/simple;
-	bh=P8W0FIsXR1/VWMEyIG4knFrRhHdsOvI7EcP/vxGKWms=;
+	s=arc-20240116; t=1763882621; c=relaxed/simple;
+	bh=Qkb6pNUnyaj/v81+ET9DNUBziUveBX//R0BNmlCVy9g=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qpARWDZX5ZnMxftv1gl3vuea0wCGaD9sH6JjqU+Ixp6yCckzrhRCK20v8PrPI1tEkdgS+m/PpUE14IkXVvohokyyvj/11LvbFed29rt3ukcF1uxGJJ3OFx8RxPYFbn6jWGlBsY15wkiVOPCNFgqUdpAhcGY3HVwuer/lh4J/uLk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=E5T1XH8W; arc=fail smtp.client-ip=40.93.194.71
+	 MIME-Version:Content-Type; b=cwkJHTCsW3OroE5qdpyLZMW+o/YC/3CAAgO9L5Eu0ntFFjb8w/gFswXEDIMxp66AvN5GLXwmay2i9ErC1Xer3SYdHJUX0TW231K5YnULAFsWxUc34xqWz/udEoGtxkAIbRaTPMJIqVx4SN75TaTuyuCA/7SN3BLnvxyNlFWr2UY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=oBBFkxnx; arc=fail smtp.client-ip=52.101.193.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Mvmh0PC2lmhpIl9n38YOi6eLk7rmiesQvOyRW32/qcnAcSOVGapKfzmdtuQCUJl7Llrl8w0tSU2eYB/SyjBpjlN8lIG4W8tMZKf6UC0GG2je+A4nlt/U8UW7Gyzj22Lh0DJhWl0NnLNcUiXN+DyFpyUKfEu1SnzgGKtJskJCE1cxqj041PDGhmuctQ6SrNIiH0aJC5YdpPqUPIJoiOSBz1YTLizFuP9q5dsw02kuBSTsto4rNfNapbhuH659EWw3ZhLckOnUk8nesaM7CguEHULg251RpbMru52C6ZyYNWJUIEhXIsE87w1dvR0WE3fiVou9KZNlu/YIuKmIcPepuw==
+ b=IJg3bOYuY6Y3HjXPY8Ewa/4/5j8Nhtg51WezMRbbrjbWYINoR3DynlyI6SHhbrh3WAwMwZDSDjpM/H42QcQ3FjGUxWIUsA+u2+BDZJFPGadmXg6svD5vjm+gUZm4jkmqEOtJ8Cq3XuHFtopyIfYF/Qh95T0mVR0DN+hn1k+bLMVCBUiBOleAR6ive7PS22NYpM8PwFy9iP4syPcH0vuxutRXXhH16ukska4kO1c/GaxU6taJzz9/wYdc648qmJK0j8MI1WDB1JKt4DcHeqjggPfjp5SBgArxVbgxSK65JpcFLOTysL6guv3qBlXc0mPjbQUFHgs3pggs2NTqsKBpuQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kglGhXi4BWERJc11i4b/YsEsnv0Fea8SDE586jjlVTY=;
- b=sTNXaYpmO2bEtLFSB5N2UEW+mxMA10VMbVdMUCfxSoX1lfgDPQa5ieN9xX0JeYrAl2zHaJ82IwdKl/+qeZCEjAtv8h7XAwSK446HF3IrU0+2huGZgzeJADUPF46FFIBN9U75kPa9muD4FL+lSWIOE4sM2GsFYTwYh8bHC3fwEZrFS43PYt05q42rYdYObY+y1B+8rPY9fCn/p8f8k/+cQ+TvW0kkkE5ITVLRLMDMZETri81QpBpc3iY0CkPbVnjpW/djPdCWEmZSg4l+wCX2pKxOjKj9qA+QYSy138bdt8+atcr6nJSJbcmcVWuTWMIC6cUBBL+VF1UbEZ/0ytUA5g==
+ bh=dB0KCazrhTv9T4oxZp74zais9T3F8hs6VqNcq2QNfQM=;
+ b=A43m7XZpGNG/8tDF4D00iwfYwSai1JeMaCKwZt+CN44Aa2lWVYGYNdsld0kFqWDb9SIKXDPqEJZTvkcsFZAuddcUgB0/WCJ6GvFGh3Pc8Fbp6nEBg5enTRYZs9iwo1aoOy2+rhR8iqe3KFWSe1FY/xeIYKPXJHfH65UL6xmqy4oN/qsLlefpu2xFywS58sXCeSjnOat0nZjJAfq96mqL+o+IIAPTcNc74OmeSZlXImgEJ6EP9T5+ezlh9DVOvOIr2CseogPOkF78AAO2YDD/8giglQcDPQKRl+zzcLLzOTjAVKJ8g98BHJ6ARiD9zvoHtkVTDp0CdWWiqC9yBSgGtQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -45,18 +45,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kglGhXi4BWERJc11i4b/YsEsnv0Fea8SDE586jjlVTY=;
- b=E5T1XH8WQ/uW/q8ORe7ph2VwRnwBHiIcoY/nltknWUgE1eSrBE/CwldD6phjv/IuUMcvZvNchH0mYw11LPK0BfK8IjJ/EmFCKr1YvuAN/Fn0fiCjr0Dd2MMDtOHyJlgGuA5wXTzdVm88P7WMBXK217caahtnEnuw3WQTAI9h00gb7O7DgqS4Uu53BbtwtWkYYOFkqro3VouCtJLtUXPKahBfCfgXF6/ekaH7GR7tDk0aYU70XFrdOWk8SJ5AQQJb+MZdFzT78jZ9JYJuqyoNF+rejb6VE9c69T2uldUR5F2W+ps/OzT1j58SnkpzVwsl57jTn1UaeYFPAA6Pxtmj+A==
-Received: from DM6PR02CA0142.namprd02.prod.outlook.com (2603:10b6:5:332::9) by
- BY5PR12MB4258.namprd12.prod.outlook.com (2603:10b6:a03:20d::10) with
+ bh=dB0KCazrhTv9T4oxZp74zais9T3F8hs6VqNcq2QNfQM=;
+ b=oBBFkxnxYy2oTRfYoGYEEgNw5Bjm6sEH7+z/ZN9BO64HSVlpaixpXGoXZRdSaJqbmpB/hUo/vsmlFwF7QDvjyg6VU7pgUi4FH39FJp7msbHOPsE16MHFms1Qo//ldxXovVvnCjXHs3ccsZSHfMjL/f2ohgA+mJwQ6pexu1rb2aeGjgPMpmdsegO6G78HFd3NamXREvzHvN6iWMJgzUaUDxPW9TpWcr0+9rtSbDJD/aFYwgGdHdMYjlajILaNSRW4ojC54mponCeiM3nUSRKi5geV5IiUSk4x2fMGtPe5ZloZWONNyVISxj80ZJnh0MTp3cPhoEtRswUoLMwz5nk4Sg==
+Received: from CH0PR04CA0021.namprd04.prod.outlook.com (2603:10b6:610:76::26)
+ by CYYPR12MB8891.namprd12.prod.outlook.com (2603:10b6:930:c0::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9343.16; Sun, 23 Nov
- 2025 07:23:27 +0000
-Received: from DS2PEPF00003442.namprd04.prod.outlook.com
- (2603:10b6:5:332:cafe::2c) by DM6PR02CA0142.outlook.office365.com
- (2603:10b6:5:332::9) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9343.15 via Frontend Transport; Sun,
- 23 Nov 2025 07:23:23 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9343.15; Sun, 23 Nov
+ 2025 07:23:32 +0000
+Received: from DS2PEPF00003447.namprd04.prod.outlook.com
+ (2603:10b6:610:76:cafe::a1) by CH0PR04CA0021.outlook.office365.com
+ (2603:10b6:610:76::26) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9343.16 via Frontend Transport; Sun,
+ 23 Nov 2025 07:23:32 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -64,20 +64,20 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.117.161 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.117.161) by
- DS2PEPF00003442.mail.protection.outlook.com (10.167.17.69) with Microsoft
+ DS2PEPF00003447.mail.protection.outlook.com (10.167.17.74) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9343.9 via Frontend Transport; Sun, 23 Nov 2025 07:23:26 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
+ 15.20.9366.7 via Frontend Transport; Sun, 23 Nov 2025 07:23:32 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
  (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Sat, 22 Nov
- 2025 23:23:18 -0800
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ 2025 23:23:24 -0800
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Sat, 22 Nov
- 2025 23:23:17 -0800
+ 2025 23:23:23 -0800
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.8)
  with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Sat, 22
- Nov 2025 23:23:12 -0800
+ Nov 2025 23:23:18 -0800
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -90,9 +90,9 @@ CC: Donald Hunter <donald.hunter@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
 	<linux-rdma@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Moshe Shemesh
 	<moshe@nvidia.com>, Carolina Jubran <cjubran@nvidia.com>, Cosmin Ratiu
 	<cratiu@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
-Subject: [PATCH net-next V2 01/14] devlink: Reverse locking order for nested instances
-Date: Sun, 23 Nov 2025 09:22:47 +0200
-Message-ID: <1763882580-1295213-2-git-send-email-tariqt@nvidia.com>
+Subject: [PATCH net-next V2 02/14] documentation: networking: add shared devlink documentation
+Date: Sun, 23 Nov 2025 09:22:48 +0200
+Message-ID: <1763882580-1295213-3-git-send-email-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.8.0
 In-Reply-To: <1763882580-1295213-1-git-send-email-tariqt@nvidia.com>
 References: <1763882580-1295213-1-git-send-email-tariqt@nvidia.com>
@@ -106,105 +106,153 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003442:EE_|BY5PR12MB4258:EE_
-X-MS-Office365-Filtering-Correlation-Id: ba5ae0ca-2970-4bae-2df8-08de2a6131b4
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003447:EE_|CYYPR12MB8891:EE_
+X-MS-Office365-Filtering-Correlation-Id: e8b08e2a-b99e-4724-11db-08de2a613531
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|82310400026|376014|7416014|1800799024;
+	BCL:0;ARA:13230040|36860700013|1800799024|7416014|376014|82310400026;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?3yEDzQD/YSiOEzj3Hbj0iJqQiOokHzR+C8Kh7Fch+mAeZ+zvzW1xTzmd0skg?=
- =?us-ascii?Q?w2nRkVuimsPicstvKepx2GOcnIezxvXWafis68qw0brsBeyyRej0OY316brH?=
- =?us-ascii?Q?oVLxlD7a72gpu5hOgGNsdOSUgiZKxhiKj1NTeRC6YwAYdVICWf06UWi9AqIq?=
- =?us-ascii?Q?SmoUH1+rcnCkD4MSJTKeFH3rPsjs6/u8wv7pw8+QTwT4GeHfx1WhX4bnLxhA?=
- =?us-ascii?Q?i9+xIfXMIrpNGy7hpVZeCzgS2luJhR0rwfx0W7bRW9nrV27vqhed2OpzXJYv?=
- =?us-ascii?Q?fSd4tldUMRIyyAKd6PYN1sAZ58x1wqEPZ92ovyHwg3dXlcq/pWtGlOAnC/Y+?=
- =?us-ascii?Q?69DGhcENcfy1CBVeabeV+HaE9tG7d33QzR2fpkYhMSJJP12TA/GIWKQkvzYp?=
- =?us-ascii?Q?433kv0iskHClV6W6QqVEYOy57XsmhmbBre6VV3yUuIPUj0HgJ8/ydqiGVijE?=
- =?us-ascii?Q?S60R7DxPaG2qtHhexviN/7HEPDfOKUWCscMLHPJN6j5daPabFaWWSt+7CT+c?=
- =?us-ascii?Q?mtI8pCXsE0sB+OrbU5VK92iF6K1PoK+JMQzNQVl8t14xGn5lR3tMhGrgPGpI?=
- =?us-ascii?Q?fGmKTv1FhlMb/6GCENQhBqhq3laBwkwYz4/ksVfY+IvWQrzUsQYdB7nf1xK4?=
- =?us-ascii?Q?POVKiZ+hPC8eRZ6Q61AmE06fZWX/Vi2b+1D11WVV9FCuXTWo91M2DBCj1Bdb?=
- =?us-ascii?Q?9bLT1dwqwqumLlG4TmrDGiOLXeIGxAYEDqmKorwTekh+ts1bTrYMRX/UI347?=
- =?us-ascii?Q?7g/jnWNUdMBo4HvPjV7jp6RMrIPmexzspDi7pWo7DijQD5viQEFgk6vrv7Fk?=
- =?us-ascii?Q?xo6Z8ZNrHJMdCKQiPloq/xW91DPxAKfbwMvTWHtA/K+2DvROadB0ODa7jDgQ?=
- =?us-ascii?Q?OQJORha+ISlsGLGAn5p9Lq28AQIQrAA8L0bgRmbBTJLKC8j4oP9/AEeWA8xB?=
- =?us-ascii?Q?AEb0LTAVP4XC6jx5x6XAcSMqMWejdMAdmVluwuWg2ur3QbbOK3ipTKblrB5m?=
- =?us-ascii?Q?HBTAdyRIm0lZE6xgJxTg7IjIWcgYSksU0g3vRQEST1ePXlMKKSVO+RBz2gG9?=
- =?us-ascii?Q?pesOP2obIBI+RLCUFzIBpYe+Y1fDBD9p8NwwYdPXVOq7Pe2qJOFRTefXHJgC?=
- =?us-ascii?Q?yPqHGzXJiOlA2XAq5ZSx90YH03sWHMDACx38RtFmbBldxqOtcbF6o9JmkJ12?=
- =?us-ascii?Q?y0wHtnTOznAKXMxRmXsA1yGNvp6ypsUeZav7HeVf1AA4kUXpuUFCT7HMIU4I?=
- =?us-ascii?Q?OERj4qCNszIebwlOUe0AcgyuyoPJfbALOBKJMiVoDtdlE/NAb1jIc8Obk+8X?=
- =?us-ascii?Q?8FMylpdFSYI3KuiaWWYbotuvPSEwm71xhUo6lJU92eAoGxD7Jk2CzUMJGsSe?=
- =?us-ascii?Q?wjTTbrSDwtRxEoETCA3TQxoplb7VW9NznW5HiuFiMbdZE8sVn3w0Cc5J/Jzz?=
- =?us-ascii?Q?a4XFAeVtaY5eBLQxxnoOoLKlxyZbf2b0NkRvSWO1Td2Z0qMvn0lnp956cq7z?=
- =?us-ascii?Q?twtB9CNJbbV8uS+lWkFUPZL9MF6DzU541xqFztfWNLJluNIA3RhMncfyjILI?=
- =?us-ascii?Q?suK95AtN2lHHU9sY0H4=3D?=
+	=?us-ascii?Q?o8QI8FrrPNMjFIKJhxxr/UL3S6S8THTn0zfAuYgg0JeMIlPZTjmGLLNASuDz?=
+ =?us-ascii?Q?l8aCH1PQvz3/kiv8Vf9Pk9nsSNoIbxAQkZIxVIb7x5whHSng50JQw+rSekdV?=
+ =?us-ascii?Q?10D7zD9w0PZ2zJovFeLBd7+Q0TP9+yEP/nReqTdiUVumv9omKIpEkGGuKgZ5?=
+ =?us-ascii?Q?vh2AT6tMtwuUWNIIs56bLNObcKYwSYbN0RCrv7SPzG0yke+mj6mLQ+hRZde7?=
+ =?us-ascii?Q?4bLsibpA5pYc43rJS17wAWv77vo2pzzuHGNlW0LzNIdZPfke6mbhFGU//7NI?=
+ =?us-ascii?Q?+vrplpSw2oYx3ZBOkIKI1B3rDnSEc1xqkb9NiOM3nO8MkjU4iY0tN50yuHqN?=
+ =?us-ascii?Q?6e5iUK7OaE3Fhl0KhI4kGZFDGKwwGnBmCRMCS6YZdRzHa2QY9o8lMfOWnI4B?=
+ =?us-ascii?Q?fRivcFdEDeFXMaiqEZqB2ne07PEDM0ucSLyHtwLYkV2ZuoMSgqXwIFMDQjMy?=
+ =?us-ascii?Q?bIN3fxdsTOweq4T9fPQO7KmADdsIDomV/+sp77Ag/G6OAjV5xA86q2r9hcFx?=
+ =?us-ascii?Q?vgfiph4P2n3EfFmyo3m/ZWSGnohf7vc/F/pKcsutI97RxPEFM6t/AVn/VPxM?=
+ =?us-ascii?Q?7qvWfTgBBaoo68IrQmoGYdWcoFrZokMNy5OfTtNQKdBHtP+IOSBVvAJzxRw0?=
+ =?us-ascii?Q?gmJMvLoIXP+PSscPorKs7djMtg0ncs58bNUpg/a2CpSBrMNk+ozuICg9ppGX?=
+ =?us-ascii?Q?52bS4Gg/vBOjiMeYSnCxA3ZCRxpcolRZdMnmdWPfiqEpZnbcStgVUiys/geV?=
+ =?us-ascii?Q?oK5yqnF0lERokT4llqcOeTKNCt039EHLOOizetsC0oj6oCx5Y9xGjewOsvz1?=
+ =?us-ascii?Q?okuu4WwtdXrxA8j4p2xZgawP+b8NgYNyPfWMDGAel9OewKeyxeH+n/+fsFfc?=
+ =?us-ascii?Q?mFEkCHomoxzjwxPErX5Og4/b7QbxGgBk1P8eChgVBLNIfH9QOuLqMBILXGzL?=
+ =?us-ascii?Q?U/O0eI/7wregl7BFA2xTZ7cPVaL6V71a7p5IzIweov+e87oEXxjv0qSo+F4e?=
+ =?us-ascii?Q?/1MEfGdvZusgShLNr4CoKIGKl8C7RRRtw/xFaxtIFxE+yPUgSR1eFYMt0pZj?=
+ =?us-ascii?Q?cNyu04SJ40D9iu20RyTVmpMhsUWfYVHZemQZbFKdVo9ywIfhtQdBrwdJGPvA?=
+ =?us-ascii?Q?3/S596brXYzaXe0JzAFCkN76qe5tMB0Sveb97iG0z0ClFnZZ35Pl92nvZ2c+?=
+ =?us-ascii?Q?wsx+tuNltud9OwB6HZ1lCMZHyJlZkh50nWQ271SmHzBpms9gWpFMN86Vfv5K?=
+ =?us-ascii?Q?7xVTlzSl9D6faxyoR1mO4z9+R19/5Fi+l8Ppkx+u2GfZ8IDkBL12V898m9FX?=
+ =?us-ascii?Q?OozDMLQEQUKf8JzyaLIrsCt/Nff1oTHR0/0EpkupbyTlrmO0ELXfQIBzyVH2?=
+ =?us-ascii?Q?ZD4m2c2t/c7LsqCt+6nCJztNMqYfrR8T3EaHqWMhUjwc08PE+g5f26/zc/38?=
+ =?us-ascii?Q?4wa/7SAeEBBvJTz1NFPRae/1QhjKOVVCbbdeMFeHlXKjYoYclhPt0cl5OMYr?=
+ =?us-ascii?Q?Y+2kZMhDyRRrGRvB0rVR3SEgQd/t9Y1ghDWB852ItKPPink9gf6o4vQjQWcu?=
+ =?us-ascii?Q?ms3gkcsKxmKJkHGreYg=3D?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(82310400026)(376014)(7416014)(1800799024);DIR:OUT;SFP:1101;
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(7416014)(376014)(82310400026);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2025 07:23:26.5793
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2025 07:23:32.4242
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba5ae0ca-2970-4bae-2df8-08de2a6131b4
+X-MS-Exchange-CrossTenant-Network-Message-Id: e8b08e2a-b99e-4724-11db-08de2a613531
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	DS2PEPF00003442.namprd04.prod.outlook.com
+	DS2PEPF00003447.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4258
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8891
 
-From: Cosmin Ratiu <cratiu@nvidia.com>
+From: Jiri Pirko <jiri@nvidia.com>
 
-Commit [1] defined the locking expectations for nested devlink
-instances: the nested-in devlink instance lock needs to be acquired
-before the nested devlink instance lock. The code handling devlink rels
-was architected with that assumption in mind.
+Document shared devlink instances for multiple PFs on the same chip.
 
-There are no actual users of double locking yet but that is about to
-change in the upcoming patches in the series.
-
-Code operating on nested devlink instances will require also obtaining
-the nested-in instance lock, but such code may already be called from a
-variety of places with the nested devlink instance lock. Then, there's
-no way to acquire the nested-in lock other than making sure that all
-callers acquire it first.
-
-Reversing the nested lock order allows incrementally acquiring the
-nested-in instance lock when needed (perhaps even a chain of locks up to
-the root) without affecting any caller.
-
-The only affected use of nesting is devlink_nl_nested_fill(), which
-iterates over nested devlink instances with the RCU lock, without
-locking them, so there's no possibility of deadlock.
-
-So this commit just updates a comment regarding the nested locks.
-
-[1] commit c137743bce02b ("devlink: introduce object and nested devlink
-relationship infra")
-
-Signed-off-by: Cosmin Ratiu <cratiu@nvidia.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Signed-off-by: Jiri Pirko <jiri@nvidia.com>
+Reviewed-by: Cosmin Ratiu <cratiu@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- net/devlink/core.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ .../networking/devlink/devlink-shared.rst     | 66 +++++++++++++++++++
+ Documentation/networking/devlink/index.rst    |  3 +
+ 2 files changed, 69 insertions(+)
+ create mode 100644 Documentation/networking/devlink/devlink-shared.rst
 
-diff --git a/net/devlink/core.c b/net/devlink/core.c
-index 58093f49c090..6ae62c7f2a80 100644
---- a/net/devlink/core.c
-+++ b/net/devlink/core.c
-@@ -178,9 +178,7 @@ int devlink_rel_nested_in_add(u32 *rel_index, u32 devlink_index,
-  * a notification of a change of this object should be sent
-  * over netlink. The parent devlink instance lock needs to be
-  * taken during the notification preparation.
-- * However, since the devlink lock of nested instance is held here,
-- * we would end with wrong devlink instance lock ordering and
-- * deadlock. Therefore the work is utilized to avoid that.
-+ * Since the parent may or may not be locked, 'work' is utilized.
-  */
- void devlink_rel_nested_in_notify(struct devlink *devlink)
- {
+diff --git a/Documentation/networking/devlink/devlink-shared.rst b/Documentation/networking/devlink/devlink-shared.rst
+new file mode 100644
+index 000000000000..8377d524998f
+--- /dev/null
++++ b/Documentation/networking/devlink/devlink-shared.rst
+@@ -0,0 +1,66 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++============================
++Devlink Shared Instances
++============================
++
++Overview
++========
++
++Shared devlink instances allow multiple physical functions (PFs) on the same
++chip to share an additional devlink instance for chip-wide operations. This
++should be implemented within individual drivers alongside the individual PF
++devlink instances, not replacing them.
++
++The shared devlink instance should be backed by a faux device and should
++provide a common interface for operations that affect the entire chip
++rather than individual PFs.
++
++Implementation
++==============
++
++Architecture
++------------
++
++The implementation should use:
++
++* **Faux device**: Virtual device backing the shared devlink instance
++* **Chip identification**: PFs are grouped by chip using a driver-specific identifier
++* **Shared instance management**: Global list of shared instances with reference counting
++
++Initialization Flow
++-------------------
++
++1. **PF calls shared devlink init** during driver probe
++2. **Chip identification** using driver-specific method to determine device identity
++3. **Lookup existing shared instance** for this chip identifier
++4. **Create new shared instance** if none exists:
++
++   * Create faux device with chip identifier as name
++   * Allocate and register devlink instance
++   * Add to global shared instances list
++
++5. **Add PF to shared instance** PF list
++6. **Set nested devlink instance** dor the PF devlink instance
++
++Cleanup Flow
++------------
++
++1. **Cleanup** when PF is removed; destroy shared instance when last PF is removed
++
++Chip Identification
++-------------------
++
++PFs belonging to the same chip are identified using a driver-specific method.
++The driver is free to choose any identifier that is suitable for determining
++whether two PFs are part of the same device. Examples include VPD serial numbers,
++device tree properties, or other hardware-specific identifiers.
++
++Locking
++-------
++
++A global per-driver mutex protects the shared instances list and individual shared
++instance PF lists during registration/deregistration.
++
++Similarly to other nested devlink instance relationships, devlink lock of
++the shared instance should be always taken after the devlink lock of PF.
+diff --git a/Documentation/networking/devlink/index.rst b/Documentation/networking/devlink/index.rst
+index 35b12a2bfeba..d14a764e9b1d 100644
+--- a/Documentation/networking/devlink/index.rst
++++ b/Documentation/networking/devlink/index.rst
+@@ -68,6 +68,9 @@ general.
+    devlink-resource
+    devlink-selftests
+    devlink-trap
++   devlink-linecard
++   devlink-eswitch-attr
++   devlink-shared
+ 
+ Driver-specific documentation
+ -----------------------------
 -- 
 2.31.1
 
