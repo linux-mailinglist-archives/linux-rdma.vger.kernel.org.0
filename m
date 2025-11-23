@@ -1,99 +1,106 @@
-Return-Path: <linux-rdma+bounces-14700-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14701-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8353C7DDFB
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Nov 2025 09:36:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B1B2C7DE67
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Nov 2025 09:41:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1EFE94E1DE5
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Nov 2025 08:36:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42EB53A2202
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Nov 2025 08:41:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCB0A28489B;
-	Sun, 23 Nov 2025 08:36:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E5B3273D66;
+	Sun, 23 Nov 2025 08:41:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rbvVrdpK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EB2NdVRM"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78E7C21A449
-	for <linux-rdma@vger.kernel.org>; Sun, 23 Nov 2025 08:36:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C0C121A449
+	for <linux-rdma@vger.kernel.org>; Sun, 23 Nov 2025 08:41:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763886976; cv=none; b=TWQhKrwsvdc6wAo0BoQ+hKjku/LOqGsPQgbpftFRRTBTLOvs2c4s2PiChp366DMrUf1tIB3rYfDDlhRpLXUJjh3sqW+1E0+jv7ZcU1Q4rCWzvrkIHUUnTdKtQ4ToR3/YGd8tqNRqSi/VGo+lBqyHPoptbE7H25qFk8drEmtnpJ0=
+	t=1763887309; cv=none; b=Iol/dlh3cfnVVYqxwuyXel/eoSVg2eCAYr3NyMEDWcOyIfSACMHBmbbXqlPaJJ/JmnNFX0C0UhArDZC29ZShNFQ+u5KENR5ieIcVfoL6pb/SIhl/4wETcjvYsUJHN608h+G4/Nh1TmTU0+Nvsvl/muPtInkdoGo8NRMHSL5J2eY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763886976; c=relaxed/simple;
-	bh=acvCBwhGKf71JE/uFJ8URI63jkutd2+s/xJ9eWOzm30=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=U2dbT86krJ3nn9fMeLbXqU2ANTr2fLyeEzwCTCNPipODZiy268KsW1hILFypG9ZGMkgU8uPNDJ/7Trg9nnziapuvMsTQELE1ruDCZ9dzaI+9hTQRTd8dRA0xbdKzLM4peER1t1VB+B7010lQAkL1hOyIXNX/Plc01R/T8/Nf1OU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rbvVrdpK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E9CCC113D0;
-	Sun, 23 Nov 2025 08:36:15 +0000 (UTC)
+	s=arc-20240116; t=1763887309; c=relaxed/simple;
+	bh=SkXz8I7iJPH5QUPATHU8eyHil3y0ywT7GLwkhnbJT4k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TzQU6l2+osRCSCyNVECWT8JP7TVT2aX9qk2pUAPZCBNuOe+pwtkRO6kJU9QpcQIEUWalJKTt7hNeLs8qSXgonxT/B+xKT4BZFlsQT4n5zuN5iqA0TvYOVNWJdjiLlpoGyuWl0LLW9fzk8CNoYmZcLEyilo0pL79GJSqM1dX0eN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EB2NdVRM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B856C113D0;
+	Sun, 23 Nov 2025 08:41:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763886975;
-	bh=acvCBwhGKf71JE/uFJ8URI63jkutd2+s/xJ9eWOzm30=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=rbvVrdpKhgjVcLhgq9Fai9NgXgAKvxUqCbLC9KejLmY25Tz3rO1IydNxxvcMPBfVc
-	 71KYQTvaM32A3Ce0RZRxyHZO3roVgCcZVoGYQFQqO3GturDqcGev6qpS5n7hzkfQlT
-	 MLRTTtqnpmiA8SCyjCltGYqmqxQxWR9dKooyVpu9n6e4OH6Y0edYwL4ImLKe3mxSWK
-	 vch8nf7UiPFbEa9DbOA0MuSYxcRk4KuuJNJv36Q4gchZyB7trHTdo5JTEgi8+1d5mc
-	 7WZpkDOkUr4ONrXezDJk0TLBSgLYRkFN7UzgJeNV9IG5Gw4a9Drl8pXhH5eqWpmvrM
-	 HpaL67vE6uhAg==
+	s=k20201202; t=1763887308;
+	bh=SkXz8I7iJPH5QUPATHU8eyHil3y0ywT7GLwkhnbJT4k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EB2NdVRMYXbHIgmC6+uqJWSsV7CQvRaYbw2yXIOU+JFbIsD8hkd7t3waZWQ6Tc8pY
+	 ZSPg8J1rRNtL65VzjuAqNuI+4TC6ViTGviLTmTZrOxo2F5Pf9+zQQwHSpUo4VD7fYl
+	 LaKMaPhXlsXsK8LmzoOkdXLgtrfNocZvOQEKXvdXnDGpZ3gvTmbbMLZhxDu0IFYne7
+	 nYS0k1IieEEFGZB1bVWs8BViCnO7clNGhywohstMfhAWy1rKM2YV3qyOsK2hp4fwHT
+	 VfdRn2zYMnxr5z8jaknjqJwt7uWsJgDehrTmXik0rzXHTbszZCRYoPSBj4cwoqbXEp
+	 x49whiPj0vqKg==
+Date: Sun, 23 Nov 2025 10:41:44 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Junxian Huang <huangjunxian6@hisilicon.com>
-Cc: linux-rdma@vger.kernel.org, linuxarm@huawei.com, 
- tangchengchang@huawei.com
-In-Reply-To: <20251112093510.3696363-1-huangjunxian6@hisilicon.com>
-References: <20251112093510.3696363-1-huangjunxian6@hisilicon.com>
-Subject: Re: [PATCH v3 for-next 0/8] RDMA/hns: Support RoCE bonding
-Message-Id: <176388697253.1782849.16149251557488712036.b4-ty@kernel.org>
-Date: Sun, 23 Nov 2025 03:36:12 -0500
+To: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
+Cc: jgg@nvidia.com, linux-rdma@vger.kernel.org, krzysztof.czurylo@intel.com
+Subject: Re: [PATCH] RDMA/irdma: Fix data race in irdma_sc_ccq_arm
+Message-ID: <20251123084144.GA16619@unreal>
+References: <20251117210756.723-1-tatyana.e.nikolova@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-a6db3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251117210756.723-1-tatyana.e.nikolova@intel.com>
 
-
-On Wed, 12 Nov 2025 17:35:02 +0800, Junxian Huang wrote:
-> This series adds support for RoCE bonding. The bond mode is active
-> when multiple PF netdevs are enslaved to a bond master while all
-> following rules are met:
->   * All the slaves are on the same card, i.e., they share the same
->     bus number.
->   * The bond mode are set to mode 1 (active-backup), 2 (XOR) or
->     4 (802.3ad).
->   * None of the slaves have generated a VF.
+On Mon, Nov 17, 2025 at 03:07:49PM -0600, Tatyana Nikolova wrote:
+> From: Krzysztof Czurylo <krzysztof.czurylo@intel.com>
 > 
-> [...]
+> - Adds a lock around irdma_sc_ccq_arm body to prevent inter-thread
+>   data race.
+> 
+> - Fixes data race in irdma_sc_ccq_arm() reported by KCSAN:
+> 
+> BUG: KCSAN: data-race in irdma_sc_ccq_arm [irdma] / irdma_sc_ccq_arm [irdma]
+> 
+> read to 0xffff9d51b4034220 of 8 bytes by task 255 on cpu 11:
+>  irdma_sc_ccq_arm+0x36/0xd0 [irdma]
+>  irdma_cqp_ce_handler+0x300/0x310 [irdma]
+>  cqp_compl_worker+0x2a/0x40 [irdma]
+>  process_one_work+0x402/0x7e0
+>  worker_thread+0xb3/0x6d0
+>  kthread+0x178/0x1a0
+>  ret_from_fork+0x2c/0x50
+> 
+> write to 0xffff9d51b4034220 of 8 bytes by task 89 on cpu 3:
+>  irdma_sc_ccq_arm+0x7e/0xd0 [irdma]
+>  irdma_cqp_ce_handler+0x300/0x310 [irdma]
+>  irdma_wait_event+0xd4/0x3e0 [irdma]
+>  irdma_handle_cqp_op+0xa5/0x220 [irdma]
+>  irdma_hw_flush_wqes+0xb1/0x300 [irdma]
+>  irdma_flush_wqes+0x22e/0x3a0 [irdma]
+>  irdma_cm_disconn_true+0x4c7/0x5d0 [irdma]
+>  irdma_disconnect_worker+0x35/0x50 [irdma]
+>  process_one_work+0x402/0x7e0
+>  worker_thread+0xb3/0x6d0
+>  kthread+0x178/0x1a0
+>  ret_from_fork+0x2c/0x50
+> 
+> value changed: 0x0000000000024000 -> 0x0000000000034000
+> 
+> Signed-off-by: Krzysztof Czurylo <krzysztof.czurylo@intel.com>
+> Signed-off-by: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
+> ---
+>  drivers/infiniband/hw/irdma/ctrl.c | 3 +++
+>  1 file changed, 3 insertions(+)
 
-Applied, thanks!
+Please add Fixes line to all these patches and send them as a series and
+not as standalone patches with reply-to to some random patch as it is now.
 
-[1/8] RDMA/hns: Add helpers to obtain netdev and bus_num from hr_dev
-      https://git.kernel.org/rdma/rdma/c/c1f6bb0b902987
-[2/8] RDMA/hns: Initialize bonding resources
-      https://git.kernel.org/rdma/rdma/c/e7866309b37d76
-[3/8] RDMA/hns: Add bonding event handler
-      https://git.kernel.org/rdma/rdma/c/8cecb218f01a7a
-[4/8] RDMA/hns: Add bonding cmds
-      https://git.kernel.org/rdma/rdma/c/8ffde55747b796
-[5/8] RDMA/hns: Implement bonding init/uninit process
-      https://git.kernel.org/rdma/rdma/c/4e10539fb33546
-[6/8] RDMA/hns: Add delayed work for bonding
-      https://git.kernel.org/rdma/rdma/c/bffb0934602694
-[7/8] RDMA/hns: Support link state reporting for bond
-      https://git.kernel.org/rdma/rdma/c/44c2d40340ac30
-[8/8] RDMA/hns: Support reset recovery for bond
-      https://git.kernel.org/rdma/rdma/c/c7d2ba8b19256c
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
-
+Thanks
 
