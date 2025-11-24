@@ -1,136 +1,105 @@
-Return-Path: <linux-rdma+bounces-14714-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14715-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5374C7EF9F
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Nov 2025 06:07:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6680DC7F3D5
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Nov 2025 08:46:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 7F35434606A
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Nov 2025 05:07:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B4983A61FE
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Nov 2025 07:46:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 131732BE64C;
-	Mon, 24 Nov 2025 05:07:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAA62252900;
+	Mon, 24 Nov 2025 07:46:27 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from baidu.com (mx22.baidu.com [220.181.50.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B937D29D29A
-	for <linux-rdma@vger.kernel.org>; Mon, 24 Nov 2025 05:06:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.181.50.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 242AF1A9FB3
+	for <linux-rdma@vger.kernel.org>; Mon, 24 Nov 2025 07:46:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763960819; cv=none; b=icFLKTn8Sxy/i/7sqizEfxi/cJKdLymPEK4lklfn9a1MekzeRZP6yCMNELXu8TBKNk5MLWQwWzhdnF0UQKD7sL3kR8i7jDFIudBZD/TxerGU3k37RSi2OtZAUwGpP1uGkZv6EeGQdXxaqyLraisUJdUBgGRqQ5c2fTUEN007C8w=
+	t=1763970387; cv=none; b=NscuYX9+vDSKo8Uiuot6QR1xCxlNxSEtsoHyGb1BtMVAy+ksjijWmM1pF6s4Q94ABAMaR3R0ACaj+Dk3SnVpryzaBbkT0Uy/RQjrks3FRg7x+2Y5ngowP2z7+r1OE87ZYxmSdbVSQft+ZvfedQpd+ENDEl912PhvNN36iDaw3Yg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763960819; c=relaxed/simple;
-	bh=RQrlcU22HSYIb3eJyYSCj5kegrI9IQoVqL4sPwlI/BA=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ShBHjy7AL8s43+Cpn7zb9r1jLzwCtwB+hW6dwP+FnYaRGmjneXgnP/A3vCVQdeD9ax0UzhGS9xMQ8B2Quw+Mwy8TMjfOAQQ/PW6kvfgvNEq2Y/T3+a6UzHic7EymDgLdOLm/Kajg7BaKkqJ5CFk0hI1GdoIjZ3qgsGNYuc7ai5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com; spf=pass smtp.mailfrom=baidu.com; arc=none smtp.client-ip=220.181.50.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baidu.com
-From: lirongqing <lirongqing@baidu.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	<huangjunxian6@hisilicon.com>, <linux-rdma@vger.kernel.org>
-CC: Li RongQing <lirongqing@baidu.com>
-Subject: [PATCH][v3] RDMA/core: Prevent soft lockup during large user memory region cleanup
-Date: Mon, 24 Nov 2025 13:06:21 +0800
-Message-ID: <20251124050621.2622-1-lirongqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1763970387; c=relaxed/simple;
+	bh=4xNB/nilpZtfVdOhcj6FdiLhPBHM3G5dcosoha1IVnQ=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=FbQECj4nhAYcofJWu0r8GKrsHAae3MMnFwbZPjlfkXQsAxF9HsjNJcWwqJuc94B6DzXFqloc9KKQfCyM+2aUCif0BECesxHwcRYWT6e4PLLHfTw04eQPc0kMNjx1vyXmcmcqvBBh0hOrdJN0SbfeVjyWo7T2epKRLJ3vhFOIYGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-43328dcdac1so36859695ab.2
+        for <linux-rdma@vger.kernel.org>; Sun, 23 Nov 2025 23:46:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763970385; x=1764575185;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ttxvOXl0bPzz6xot1ZSj7Ko2e2bMJkWTlI3KmEOuNIs=;
+        b=r1FTKt0TfE2NxDmo3zLBqmRGhU7HPUkMwr7iK4TlH9At9YUjU8Xo2AUv7gwHdw+iTN
+         0KFJ1alpQwLdhOLq/0NYxtzGWu5Z9BOfDGeACsmaSZ84IXhmj4qa1wT5TLnHKe4oUdNF
+         5hKwNEkr4NttjZZ0fDcoV5ecHZqhwXLaOGFwvlzS0ARApCEx19/INFOn9BKZQeDqEU7D
+         FPXCjeoY/tH9JcISueRQ359PY8AInlxPd25ttac6k3swfy7ka/l9B4R8aaO2Ej6iFOwp
+         QekxHvjuiJyGeaoV2hSCtviQfteP8BBrugiYwbSmpd7zf28/uPJoTfAbObAvkqlMAdTf
+         nrXg==
+X-Forwarded-Encrypted: i=1; AJvYcCVB0gGOgtnVsiHxqeTMXassgTvbWxf/GbnGc+PZCNjlgrdcCwDeVGMzywisxrxs2VEYQK8J8FOrq1yW@vger.kernel.org
+X-Gm-Message-State: AOJu0YzYU10Y+C7Oj6Q/uL9IIcPdGxaNlgWHyCyoEniPlk6ukkYzgdUP
+	GlzFING7LS0gzH4F7nTZ8Umb40foeTSV5SRCo84gK0xHqI3gT9s16T5Eli7UJH4sbtwjU3ebhnw
+	zOsgwDdYNMU4mrGKRgHuLg6g7Yw6jVkJmUQIWT8JcT4nS6tLD0b9yXhSXADo=
+X-Google-Smtp-Source: AGHT+IGpxk/PJ0OfsW3IzlmskyROGbDpBEVQokJQbGTjZ0yZ3hU2rLg1CFTNK9UViGbk5yLMg+HfFlTMf5NJtI2NJ09uqWfi96kF
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: bjhj-exc8.internal.baidu.com (172.31.3.18) To
- bjkjy-exc3.internal.baidu.com (172.31.50.47)
-X-FEAS-Client-IP: 172.31.50.47
-X-FE-Policy-ID: 52:10:53:SYSTEM
+X-Received: by 2002:a05:6e02:248c:b0:431:d951:ab9b with SMTP id
+ e9e14a558f8ab-435b8b6c9c7mr90655845ab.0.1763970385120; Sun, 23 Nov 2025
+ 23:46:25 -0800 (PST)
+Date: Sun, 23 Nov 2025 23:46:25 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <69240d51.a70a0220.d98e3.007e.GAE@google.com>
+Subject: [syzbot] Monthly rdma report (Nov 2025)
+From: syzbot <syzbot+list82a918bf0af167b1c8dc@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: Li RongQing <lirongqing@baidu.com>
+Hello rdma maintainers/developers,
 
-When a process exits with numerous large, pinned memory regions consisting
-of 4KB pages, the cleanup of the memory region through __ib_umem_release()
-may cause soft lockups. This is because unpin_user_page_range_dirty_lock()
-is called in a tight loop for unpin and releasing page without yielding the
-CPU.
+This is a 31-day syzbot report for the rdma subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/rdma
 
- watchdog: BUG: soft lockup - CPU#44 stuck for 26s! [python3:73464]
- Kernel panic - not syncing: softlockup: hung tasks
- CPU: 44 PID: 73464 Comm: python3 Tainted: G           OEL
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 8 issues are still open and 66 have already been fixed.
 
- asm_sysvec_apic_timer_interrupt+0x1b/0x20
- RIP: 0010:free_unref_page+0xff/0x190
+Some of the still happening issues:
 
-  ? free_unref_page+0xe3/0x190
-  __put_page+0x77/0xe0
-  put_compound_head+0xed/0x100
-  unpin_user_page_range_dirty_lock+0xb2/0x180
-  __ib_umem_release+0x57/0xb0 [ib_core]
-  ib_umem_release+0x3f/0xd0 [ib_core]
-  mlx5_ib_dereg_mr+0x2e9/0x440 [mlx5_ib]
-  ib_dereg_mr_user+0x43/0xb0 [ib_core]
-  uverbs_free_mr+0x15/0x20 [ib_uverbs]
-  destroy_hw_idr_uobject+0x21/0x60 [ib_uverbs]
-  uverbs_destroy_uobject+0x38/0x1b0 [ib_uverbs]
-  __uverbs_cleanup_ufile+0xd1/0x150 [ib_uverbs]
-  uverbs_destroy_ufile_hw+0x3f/0x100 [ib_uverbs]
-  ib_uverbs_close+0x1f/0xb0 [ib_uverbs]
-  __fput+0x9c/0x280
-  ____fput+0xe/0x20
-  task_work_run+0x6a/0xb0
-  do_exit+0x217/0x3c0
-  do_group_exit+0x3b/0xb0
-  get_signal+0x150/0x900
-  arch_do_signal_or_restart+0xde/0x100
-  exit_to_user_mode_loop+0xc4/0x160
-  exit_to_user_mode_prepare+0xa0/0xb0
-  syscall_exit_to_user_mode+0x27/0x50
-  do_syscall_64+0x63/0xb0
+Ref Crashes Repro Title
+<1> 1145    No    INFO: task hung in rdma_dev_change_netns
+                  https://syzkaller.appspot.com/bug?extid=73c5eab674c7e1e7012e
+<2> 579     Yes   WARNING in rxe_pool_cleanup
+                  https://syzkaller.appspot.com/bug?extid=221e213bf17f17e0d6cd
+<3> 192     Yes   WARNING in gid_table_release_one (3)
+                  https://syzkaller.appspot.com/bug?extid=b0da83a6c0e2e2bddbd4
+<4> 114     No    INFO: task hung in rdma_dev_exit_net (6)
+                  https://syzkaller.appspot.com/bug?extid=3658758f38a2f0f062e7
+<5> 97      No    INFO: task hung in add_one_compat_dev (3)
+                  https://syzkaller.appspot.com/bug?extid=6dee15fdb0606ef7b6ba
+<6> 8       Yes   KMSAN: uninit-value in ib_nl_handle_ip_res_resp
+                  https://syzkaller.appspot.com/bug?extid=938fcd548c303fe33c1a
 
-Fix the soft lockup by adding cond_resched() calls in __ib_umem_release, To
-minimize performance impact on releasing memory regions, introduce a
-RESCHED_THRESHOLD_ON_PAGE, call cond_resched() per it, and cond_resched()
-to be called during the very first iteration.
-
-Signed-off-by: Li RongQing <lirongqing@baidu.com>
 ---
-diff v2: limit calling cond_resched per 4k
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
- drivers/infiniband/core/umem.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index c5b6863..ff540a2 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -45,6 +45,8 @@
- 
- #include "uverbs.h"
- 
-+#define RESCHED_LOOP_CNT_THRESHOLD 0x1000
-+
- static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int dirty)
- {
- 	bool make_dirty = umem->writable && dirty;
-@@ -55,10 +57,14 @@ static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int d
- 		ib_dma_unmap_sgtable_attrs(dev, &umem->sgt_append.sgt,
- 					   DMA_BIDIRECTIONAL, 0);
- 
--	for_each_sgtable_sg(&umem->sgt_append.sgt, sg, i)
-+	for_each_sgtable_sg(&umem->sgt_append.sgt, sg, i) {
- 		unpin_user_page_range_dirty_lock(sg_page(sg),
- 			DIV_ROUND_UP(sg->length, PAGE_SIZE), make_dirty);
- 
-+		if (!(i % RESCHED_LOOP_CNT_THRESHOLD))
-+			cond_resched();
-+	}
-+
- 	sg_free_append_table(&umem->sgt_append);
- }
- 
--- 
-2.9.4
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
 
+You may send multiple commands in a single email message.
 
