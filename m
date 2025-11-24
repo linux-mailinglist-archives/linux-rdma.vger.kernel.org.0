@@ -1,55 +1,58 @@
-Return-Path: <linux-rdma+bounces-14716-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14717-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1B5BC7FCE1
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Nov 2025 11:07:42 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8960C81A41
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Nov 2025 17:44:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 4DE56341793
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Nov 2025 10:07:42 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B89324E5B23
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Nov 2025 16:44:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58C9A2F60C4;
-	Mon, 24 Nov 2025 10:07:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E68F82BDC01;
+	Mon, 24 Nov 2025 16:44:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vC9LBixI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FrIiqskb"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A19F2F49F2
-	for <linux-rdma@vger.kernel.org>; Mon, 24 Nov 2025 10:07:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A612BD013;
+	Mon, 24 Nov 2025 16:44:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763978859; cv=none; b=QpViBnsyK73fANiajiQyWd/MccoDuuV4YNbAZufPlo5MPbutEau3StU0CIJbEi7JSXlTIh8I8osT8VRk/zpny1Um1XY4J04jZFxLg8ETB8TvGhzrW29GcEELJM7weYjjnjapgoP5SSu5sZtAQayNarX6B1Lw9Bjv36YqGex1v8c=
+	t=1764002665; cv=none; b=M4/WNnxRIhb6f/DDn64iEKnvI6H+JVBjL4a0Pq4CsSJBrN3AurdB9/c+LOzdBe3iL0SXTJtpgxkM1j3Ex6slNZ1bmyMIqrb9R/CKT+usW9ayeAySeA275JPC3y4XWEWXYAgdygnjmxUeCK+Xp+kCu1KwoFBTpYOZjvA/b8h9yRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763978859; c=relaxed/simple;
-	bh=TNqPVW9p9MSdmb/WAkCmXYYZzMCybbaGVAd9rDheD7E=;
+	s=arc-20240116; t=1764002665; c=relaxed/simple;
+	bh=VfRk0Gq4weG8EQRxjLjNBEfFFt3k0AUt+s0lMf2o0hA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Bpl0VQ13J5D9iL95rBUEwqcORwvkx1RvcVscAOXq9evXWbHn26NU/HeeAj+/kBCLaLsYZ8xHRaR7NdPAAWYCDt5zrk5nhXr0cbM5KgFO6L07dLUz+pyX8uePajnFMWqHvt/8SRPVGKULN2rWj5Dma70if65Yy0p60n8s+OiRw/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vC9LBixI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24FFBC116D0;
-	Mon, 24 Nov 2025 10:07:37 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=M7uasH/LtOEdk2ArpIc7fY4JlTSr/5c+nZ03B7JY25xCwetYD+N/Me9yt8pqGKrsdnZtHgqyMF2AculjNX7BeFontSPKPfMrLdr15S4KGW1cHM6ReegmQCU4t77z4kOTiBp40EwnU5/mlc5507J0q+cNsSrciF0cwzEhnlggkYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FrIiqskb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63399C116D0;
+	Mon, 24 Nov 2025 16:44:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763978858;
-	bh=TNqPVW9p9MSdmb/WAkCmXYYZzMCybbaGVAd9rDheD7E=;
+	s=k20201202; t=1764002665;
+	bh=VfRk0Gq4weG8EQRxjLjNBEfFFt3k0AUt+s0lMf2o0hA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=vC9LBixIaQJd3+N5fFE9ObnMuFRoOjl8prpzFsg763UwO4quQxjOx+TNSiPuyp1bE
-	 PW5Xw99jwszdXujHPs2B5dEOA7ldKXXH9Ohnp7I370dZdlgdWKDPQqUawy0MxJgaUq
-	 mpT7wCdb6llpjwJVQcL6eAN/yY6ugi5vtl9MBjlOYZzb/zeE/JwoWzDH3fT7LG20S/
-	 bpCtZm93LEqMJCWj9VX0Qjqyy4INS1BpvdFLvt8eRFA2lQi5PmK/YnNFaqnUD6//rk
-	 sNEMGFKpzr5cDBP9c4US/YA837bHp2MSZmjF29m/wI7KdIRYrVXLQy07mpmRAqjLFt
-	 6fA9PY4T7c2Yw==
-Date: Mon, 24 Nov 2025 12:07:34 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: lirongqing <lirongqing@baidu.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, huangjunxian6@hisilicon.com,
-	linux-rdma@vger.kernel.org
-Subject: Re: [PATCH][v3] RDMA/core: Prevent soft lockup during large user
- memory region cleanup
-Message-ID: <20251124100734.GA12483@unreal>
-References: <20251124050621.2622-1-lirongqing@baidu.com>
+	b=FrIiqskbY03moY5cHsHXsAToElIwprLNpiQ+z5nnrLJE96R9GHunJqoIsoQs07332
+	 2Mf6HSqvULegeDOA+GfnKVg/H65Bta/Sd6pABJlIBGcvSx+MEtA+M0w+nVYmI41pgO
+	 6pHV+8hGozm+dXR+cJE9rw53Kwo28wITOvR6gUbqLuhvBbbwwtyqrWWa7LoNUBYICy
+	 7zvZg6jx6vUwAlarHdmDpIoJgdi/4L5afPCrkAXlweWn9h68zoAPky60RxTvQJv7kp
+	 gvAdDjFX0G2FqSifT1ia/XqIxztDl4cODrG2vkUIAM1nIK1v2BP2rOOYhyL0SAcfsk
+	 ZhLy38utKKbBw==
+Date: Mon, 24 Nov 2025 16:44:21 +0000
+From: Simon Horman <horms@kernel.org>
+To: Siva Reddy Kallam <siva.kallam@broadcom.com>
+Cc: leonro@nvidia.com, jgg@nvidia.com, linux-rdma@vger.kernel.org,
+	netdev@vger.kernel.org, vikas.gupta@broadcom.com,
+	selvin.xavier@broadcom.com, anand.subramanian@broadcom.com,
+	usman.ansari@broadcom.com
+Subject: Re: [PATCH v3 5/8] RDMA/bng_re: Add infrastructure for enabling
+ Firmware channel
+Message-ID: <aSSLZZM4vgG_SZcm@horms.kernel.org>
+References: <20251117171136.128193-1-siva.kallam@broadcom.com>
+ <20251117171136.128193-6-siva.kallam@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -58,98 +61,150 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251124050621.2622-1-lirongqing@baidu.com>
+In-Reply-To: <20251117171136.128193-6-siva.kallam@broadcom.com>
 
-On Mon, Nov 24, 2025 at 01:06:21PM +0800, lirongqing wrote:
-> From: Li RongQing <lirongqing@baidu.com>
-> 
-> When a process exits with numerous large, pinned memory regions consisting
-> of 4KB pages, the cleanup of the memory region through __ib_umem_release()
-> may cause soft lockups. This is because unpin_user_page_range_dirty_lock()
-> is called in a tight loop for unpin and releasing page without yielding the
-> CPU.
-> 
->  watchdog: BUG: soft lockup - CPU#44 stuck for 26s! [python3:73464]
->  Kernel panic - not syncing: softlockup: hung tasks
->  CPU: 44 PID: 73464 Comm: python3 Tainted: G           OEL
-> 
->  asm_sysvec_apic_timer_interrupt+0x1b/0x20
->  RIP: 0010:free_unref_page+0xff/0x190
-> 
->   ? free_unref_page+0xe3/0x190
->   __put_page+0x77/0xe0
->   put_compound_head+0xed/0x100
->   unpin_user_page_range_dirty_lock+0xb2/0x180
->   __ib_umem_release+0x57/0xb0 [ib_core]
->   ib_umem_release+0x3f/0xd0 [ib_core]
->   mlx5_ib_dereg_mr+0x2e9/0x440 [mlx5_ib]
->   ib_dereg_mr_user+0x43/0xb0 [ib_core]
->   uverbs_free_mr+0x15/0x20 [ib_uverbs]
->   destroy_hw_idr_uobject+0x21/0x60 [ib_uverbs]
->   uverbs_destroy_uobject+0x38/0x1b0 [ib_uverbs]
->   __uverbs_cleanup_ufile+0xd1/0x150 [ib_uverbs]
->   uverbs_destroy_ufile_hw+0x3f/0x100 [ib_uverbs]
->   ib_uverbs_close+0x1f/0xb0 [ib_uverbs]
->   __fput+0x9c/0x280
->   ____fput+0xe/0x20
->   task_work_run+0x6a/0xb0
->   do_exit+0x217/0x3c0
->   do_group_exit+0x3b/0xb0
->   get_signal+0x150/0x900
->   arch_do_signal_or_restart+0xde/0x100
->   exit_to_user_mode_loop+0xc4/0x160
->   exit_to_user_mode_prepare+0xa0/0xb0
->   syscall_exit_to_user_mode+0x27/0x50
->   do_syscall_64+0x63/0xb0
-> 
-> Fix the soft lockup by adding cond_resched() calls in __ib_umem_release, To
-> minimize performance impact on releasing memory regions, introduce a
-> RESCHED_THRESHOLD_ON_PAGE, call cond_resched() per it, and cond_resched()
-> to be called during the very first iteration.
-> 
-> Signed-off-by: Li RongQing <lirongqing@baidu.com>
-> ---
-> diff v2: limit calling cond_resched per 4k
+On Mon, Nov 17, 2025 at 05:11:23PM +0000, Siva Reddy Kallam wrote:
 
-It is already too late for v3, because v2 was already merged.
-Please send separate patch.
+...
 
-Thanks
+> diff --git a/drivers/infiniband/hw/bng_re/bng_dev.c b/drivers/infiniband/hw/bng_re/bng_dev.c
 
-> 
->  drivers/infiniband/core/umem.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-> index c5b6863..ff540a2 100644
-> --- a/drivers/infiniband/core/umem.c
-> +++ b/drivers/infiniband/core/umem.c
-> @@ -45,6 +45,8 @@
->  
->  #include "uverbs.h"
->  
-> +#define RESCHED_LOOP_CNT_THRESHOLD 0x1000
-> +
->  static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int dirty)
->  {
->  	bool make_dirty = umem->writable && dirty;
-> @@ -55,10 +57,14 @@ static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int d
->  		ib_dma_unmap_sgtable_attrs(dev, &umem->sgt_append.sgt,
->  					   DMA_BIDIRECTIONAL, 0);
->  
-> -	for_each_sgtable_sg(&umem->sgt_append.sgt, sg, i)
-> +	for_each_sgtable_sg(&umem->sgt_append.sgt, sg, i) {
->  		unpin_user_page_range_dirty_lock(sg_page(sg),
->  			DIV_ROUND_UP(sg->length, PAGE_SIZE), make_dirty);
->  
-> +		if (!(i % RESCHED_LOOP_CNT_THRESHOLD))
-> +			cond_resched();
-> +	}
-> +
->  	sg_free_append_table(&umem->sgt_append);
+...
+
+> @@ -105,6 +105,69 @@ static void bng_re_fill_fw_msg(struct bnge_fw_msg *fw_msg, void *msg,
+>  	fw_msg->timeout = timeout;
 >  }
 >  
-> -- 
-> 2.9.4
-> 
+> +static int bng_re_net_ring_free(struct bng_re_dev *rdev,
+> +				u16 fw_ring_id, int type)
+> +{
+> +	struct bnge_auxr_dev *aux_dev = rdev->aux_dev;
+
+Hi Siva,
+
+rdev is dereferenced unconditionally here...
+
+> +	struct hwrm_ring_free_input req = {};
+> +	struct hwrm_ring_free_output resp;
+> +	struct bnge_fw_msg fw_msg = {};
+> +	int rc = -EINVAL;
+> +
+> +	if (!rdev)
+> +		return rc;
+
+... but it is assumed that rdev may be NULL here.
+
+This does not seem consistent.
+
+IMHO a good approach would be to drop this check, and the one below,
+and only call bng_re_net_ring_free() in contexts where  rdev
+and aux_dev are not NULL.
+
+But I didn't look carefully to see if that idea matches the rest
+of the code.
+
+Flagged by Smatch.
+
+> +
+> +	if (!aux_dev)
+> +		return rc;
+> +
+> +	bng_re_init_hwrm_hdr((void *)&req, HWRM_RING_FREE);
+> +	req.ring_type = type;
+> +	req.ring_id = cpu_to_le16(fw_ring_id);
+> +	bng_re_fill_fw_msg(&fw_msg, (void *)&req, sizeof(req), (void *)&resp,
+> +			    sizeof(resp), BNGE_DFLT_HWRM_CMD_TIMEOUT);
+> +	rc = bnge_send_msg(aux_dev, &fw_msg);
+> +	if (rc)
+> +		ibdev_err(&rdev->ibdev, "Failed to free HW ring:%d :%#x",
+> +			  req.ring_id, rc);
+> +	return rc;
+> +}
+
+...
+
+> diff --git a/drivers/infiniband/hw/bng_re/bng_fw.c b/drivers/infiniband/hw/bng_re/bng_fw.c
+
+...
+
+> +static int bng_re_process_qp_event(struct bng_re_rcfw *rcfw,
+> +				   struct creq_qp_event *qp_event,
+> +				   u32 *num_wait)
+> +{
+> +	struct bng_re_hwq *hwq = &rcfw->cmdq.hwq;
+> +	struct bng_re_crsqe *crsqe;
+> +	u32 req_size;
+> +	u16 cookie;
+> +	bool is_waiter_alive;
+> +	struct pci_dev *pdev;
+> +	u32 wait_cmds = 0;
+> +	int rc = 0;
+
+rc is always 0, so it may be slightly nicer to remove this variable and
+simply return 0.
+
+Flagged by Coccinelle.
+
+> +
+> +	pdev = rcfw->pdev;
+> +	switch (qp_event->event) {
+> +	case CREQ_QP_EVENT_EVENT_QP_ERROR_NOTIFICATION:
+> +		dev_err(&pdev->dev, "Received QP error notification\n");
+> +		break;
+> +	default:
+> +		/*
+> +		 * Command Response
+> +		 * cmdq->lock needs to be acquired to synchronie
+> +		 * the command send and completion reaping. This function
+> +		 * is always called with creq->lock held. Using
+> +		 * the nested variant of spin_lock.
+> +		 *
+> +		 */
+> +
+> +		spin_lock_nested(&hwq->lock, SINGLE_DEPTH_NESTING);
+> +		cookie = le16_to_cpu(qp_event->cookie);
+> +		cookie &= BNG_FW_MAX_COOKIE_VALUE;
+> +		crsqe = &rcfw->crsqe_tbl[cookie];
+> +
+> +		if (WARN_ONCE(test_bit(FIRMWARE_STALL_DETECTED,
+> +				       &rcfw->cmdq.flags),
+> +		    "Unreponsive rcfw channel detected.!!")) {
+> +			dev_info(&pdev->dev,
+> +				 "rcfw timedout: cookie = %#x, free_slots = %d",
+> +				 cookie, crsqe->free_slots);
+> +			spin_unlock(&hwq->lock);
+> +			return rc;
+> +		}
+> +
+> +		if (crsqe->is_waiter_alive) {
+> +			if (crsqe->resp) {
+> +				memcpy(crsqe->resp, qp_event, sizeof(*qp_event));
+> +				/* Insert write memory barrier to ensure that
+> +				 * response data is copied before clearing the
+> +				 * flags
+> +				 */
+> +				smp_wmb();
+> +			}
+> +		}
+> +
+> +		wait_cmds++;
+> +
+> +		req_size = crsqe->req_size;
+> +		is_waiter_alive = crsqe->is_waiter_alive;
+> +
+> +		crsqe->req_size = 0;
+> +		if (!is_waiter_alive)
+> +			crsqe->resp = NULL;
+> +
+> +		crsqe->is_in_used = false;
+> +
+> +		hwq->cons += req_size;
+> +
+> +		spin_unlock(&hwq->lock);
+> +	}
+> +	*num_wait += wait_cmds;
+> +	return rc;
+> +}
+
+...
 
