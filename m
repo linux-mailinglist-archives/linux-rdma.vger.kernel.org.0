@@ -1,93 +1,87 @@
-Return-Path: <linux-rdma+bounces-14776-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14777-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7989CC87A04
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Nov 2025 01:50:50 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B321C87B08
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Nov 2025 02:24:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 250A5353E01
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Nov 2025 00:50:50 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B2B544E1182
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Nov 2025 01:24:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 994C32F3611;
-	Wed, 26 Nov 2025 00:50:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0183F2F6586;
+	Wed, 26 Nov 2025 01:24:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YIAQVN+E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NaQABkY8"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C69B189F20;
-	Wed, 26 Nov 2025 00:50:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6AA8249EB;
+	Wed, 26 Nov 2025 01:24:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764118244; cv=none; b=lEAK04PddEf60REQa8y6Jk5vX+iwCJ8YmPvP0RU3pQG/TSm6ju0QKcxOcVg5nTKbTMQlrmuN19qbaprDhBX2HOL+GRTwqs7YU9td29MmXS5tsh48VeFCYqZmYTMGUcI8llAht55P+AjXu4uTcfREffJPbw8wbAFfzn5gwM9HhIA=
+	t=1764120252; cv=none; b=enW25E0Ss+7D3HP8aKK8JfwfHyFqntf+5SqiC3pCdxBC9rO4W1aUQ0L/2S0KbobI9slmG3U1lPU1fgCfPuPkogdN+fhEjCRVFzKbtJIGuptWJubSZ+MKEJVWrjif+jHj1OoYFmKzKnSx1bhQWOQzsFpuDZVQLXyW6upYOAbyiEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764118244; c=relaxed/simple;
-	bh=IGG/k9VEnN2vUXPkStO/Qf5dnnQWnJmhlvvuRgu4Z/w=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=E9yxtxujrlv1Vji09t+aqc37dyh5COLsz37tJNnGZ7GSsGiv+8SypiDTVLbgmkocs0aSxux+zQz78FtOHpG3JNiSGsdrK7X1FbXWeV+mxdgZbIB6j73dbtcX84Mix6jTP4UxSH1u4brjvcuzLm/DDY5EQpD/I1x6HjpDDscC0Ms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YIAQVN+E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B747BC4CEF1;
-	Wed, 26 Nov 2025 00:50:43 +0000 (UTC)
+	s=arc-20240116; t=1764120252; c=relaxed/simple;
+	bh=GLj4prEKIPiMdsxFheckPZ2kGP9oA58mW2Ph+HORJVM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SQ93wtBkprX99ntialiXntY2KklZAucLkhIown81PLuh5DRvgRJMtyPJn02L0q5rpTa4dXla9zYOAIcebu2FqKJ7quofb4aUvWMIVgU3Y46Da8R0oM1auKdUaQj7Y+UxezprGDsxE5ox7+2f5i2OT/0//20xecZQR435hmdSRFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NaQABkY8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79D60C4CEF1;
+	Wed, 26 Nov 2025 01:24:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764118243;
-	bh=IGG/k9VEnN2vUXPkStO/Qf5dnnQWnJmhlvvuRgu4Z/w=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=YIAQVN+EOCCGCRHjs21hEALOQ3D1uJir4A2oUbmZpfYW4Cq2GxTgkk19QicohEzMm
-	 wXdzJ6U+zxF32COBa8X2PcJJvvS4vybc8QvuuaelHpPrYQWrxIuMLXyDieCuiSjlGm
-	 ATyYhw8hatylrIlHRkL4o2YRG/jRdgA7ALjfwkr4uLR/0zPTHmcgVcMmtvHfcLp+z6
-	 4UrnFx4gQ4cUOhNwI9cUMkNAAs6ITpiotAVV/E2m29JTIvxb4wdZSkrtGR7GnZ0GiW
-	 7Xfng+9o/zFcfMInUPapL9zwzhDJow7SRbX741EOcgUzX0HHZSWH9TFlWtTzTeiqoa
-	 2CezF1qpnKfjw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 33E0D380AAE9;
-	Wed, 26 Nov 2025 00:50:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1764120252;
+	bh=GLj4prEKIPiMdsxFheckPZ2kGP9oA58mW2Ph+HORJVM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=NaQABkY87QiHXyNa0Cc499L8aC6ums31LQWlBvqYU5ZaWL32iqFNWvZx7ADjLmjAP
+	 iyrCJCMdmf4tFo4bxmCjE4YIRf82EZM1Tg2iykrU7o9J+0HsAUalpKTm7bIR31VJQh
+	 og97fVlR/6uMZSXnkq0R5lRIrx5RJ1mAqRiohOTuGXNOa560Wl7+fhejRsxdCB0Hbc
+	 URoWM9UhCOD9aV5duUlpGgQ9wPC7Cv2vl8sSCKfwE7E55PlRj+F0h0pDvs+jevDR7R
+	 v9zFgghzW1/A6bdb6Y1E5lOXS/c/cTn3vS6r3Ap7tKiGu9StxqXkTkmCvKc4MX8bbr
+	 ZOCynVZwqR/9Q==
+Date: Tue, 25 Nov 2025 17:24:10 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Long Li <longli@microsoft.com>
+Cc: Simon Horman <horms@kernel.org>, "longli@linux.microsoft.com"
+ <longli@linux.microsoft.com>, KY Srinivasan <kys@microsoft.com>, Haiyang
+ Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
+ <DECUI@microsoft.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Shradha
+ Gupta <shradhagupta@linux.microsoft.com>, Konstantin Taranov
+ <kotaranov@microsoft.com>, Souradeep Chakrabarti
+ <schakrabarti@linux.microsoft.com>, Erick Archer
+ <erick.archer@outlook.com>, "linux-hyperv@vger.kernel.org"
+ <linux-hyperv@vger.kernel.org>, "netdev@vger.kernel.org"
+ <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-rdma@vger.kernel.org"
+ <linux-rdma@vger.kernel.org>
+Subject: Re: [EXTERNAL] Re: [Patch net-next v3] net: mana: Handle hardware
+ recovery events when probing the device
+Message-ID: <20251125172410.124e2eba@kernel.org>
+In-Reply-To: <DS3PR21MB5735CC21A800623D2DB5D144CEDEA@DS3PR21MB5735.namprd21.prod.outlook.com>
+References: <1763680033-5835-1-git-send-email-longli@linux.microsoft.com>
+	<aSWKLefd_mhycGDv@horms.kernel.org>
+	<DS3PR21MB5735CC21A800623D2DB5D144CEDEA@DS3PR21MB5735.namprd21.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net/mlx5e: Fix validation logic in rate limiting
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176411820601.971301.9105241183448628229.git-patchwork-notify@kernel.org>
-Date: Wed, 26 Nov 2025 00:50:06 +0000
-References: <20251124180043.2314428-1-dcostantino@meta.com>
-In-Reply-To: <20251124180043.2314428-1-dcostantino@meta.com>
-To: Danielle Costantino <dcostantino@meta.com>
-Cc: netdev@vger.kernel.org, kuba@kernel.org, gal@nvidia.com,
- tariqt@nvidia.com, pabeni@redhat.com, saeedm@nvidia.com,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
-
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Mon, 24 Nov 2025 10:00:43 -0800 you wrote:
-> The rate limiting validation condition currently checks the output
-> variable max_bw_value[i] instead of the input value
-> maxrate->tc_maxrate[i]. This causes the validation to compare an
-> uninitialized or stale value rather than the actual requested rate.
+On Wed, 26 Nov 2025 00:40:08 +0000 Long Li wrote:
+> > tags (with a blank line in between).  
 > 
-> The condition should check the input rate to properly validate against
-> the upper limit:
-> 
-> [...]
+> Can we keep the "Fixes" tag and queue the patch to net-next?
 
-Here is the summary with links:
-  - [net] net/mlx5e: Fix validation logic in rate limiting
-    https://git.kernel.org/netdev/net/c/d2099d9f16db
+No.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> There are other MANA patches pending in net-next and they will
+> conflict with each other when merging.
 
-
+We merge the trees every Thursday.
 
