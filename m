@@ -1,61 +1,61 @@
-Return-Path: <linux-rdma+bounces-14786-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14787-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 980F5C8958E
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Nov 2025 11:42:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A700AC895A9
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Nov 2025 11:43:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95A3A3B1125
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Nov 2025 10:42:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 558163B361D
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Nov 2025 10:43:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2215531A55E;
-	Wed, 26 Nov 2025 10:42:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F0A731CA54;
+	Wed, 26 Nov 2025 10:43:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="jTjwU11t"
+	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="D3ZCYVEY"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F40A02F83CC;
-	Wed, 26 Nov 2025 10:42:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BBEF31AF2A;
+	Wed, 26 Nov 2025 10:43:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764153761; cv=none; b=HbcNAHtd0FkwGS8J2Uj9xzpJGHu5zl7v8klX9+e5MYd4eXpKMy1UwkUGqqN/AU8p7mDJEKL7x6ta7fnM7Gvuz0Lwjai1v8xuS7PAMgKhxd7Yo+9ux2IhhajIhI6gELadDnZi7+XAITv4+V/a3us0UR4xDSN3ZUj7jPPmLauvfCs=
+	t=1764153786; cv=none; b=uVXZ87AkRiDNEufQupAoKofz1dTtRA8SPlPXYDEh1oT5Fu/qrMPRh4BlWut4zesTFzeyGvQdsYABWcfRq99nVmhxHYPWXZXqtK2X6MVveudaBeamuGaJs972/aH8DxcbSWSfD1Pe4Xr3VSw23xWnI6efkeQFXs7dJd6krMMASm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764153761; c=relaxed/simple;
-	bh=9VLvOAKlk/hcKFX8hRvVwzLPJ3J7jDmC67iP78rYnEM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mR0I3DVk11ECcGLB9ExPfroyMZ/RsH2bO2iozzXg3FB4fKT7IZm9a9R6KRP/Zqr6B0eqc8+L/VLwp53eKOp5t7JmlzhTgvsKDCvW9loc8tR4rbhiL2Anvkk7uTTzFSCgQEECsx5v2QEHY8NylFFXMDL4l8m8zJ7FGmuyzlrjPyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=jTjwU11t; arc=none smtp.client-ip=144.76.82.148
+	s=arc-20240116; t=1764153786; c=relaxed/simple;
+	bh=OkADygjlRoVPGAbq0d+cwV79q9FIkjNboU2SKi45lMk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=L0W0RYLYpDkUyO7xp3trOG8vhels4XpJSPwwihsCMhi5GNdhObaFLgNlr4W3LP3FLRok+12cQYq3DCYvrT/OlhyCzsX/WETzszgZbgyqwmPJNthzaGtXGhUqQo4qy7CEFRdmV3fTVinP/AXsNQN3SVTfLL4M9BNZXispLPm1kOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=D3ZCYVEY; arc=none smtp.client-ip=144.76.82.148
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
 	s=42; h=Message-ID:Date:Cc:To:From;
-	bh=MHTGJaWuvLdgm11gXq7+G8Q8tvzsUZC9MImkeg7yziI=; b=jTjwU11tZoLcuJyFiivoGfziYP
-	A4jsvcASWLuFtTr375quXVoDKc0Qbd/aoCqugVCa/ybfvw9gUyYpxoFc60f3qVbDcBnn5C9O66W6v
-	sFmgJu7Y7A5AEVlJaAOlmtunQadntbc1+EaLif40DfldyuTpxIY6r+a99vq2NXHN4V0Jtxq6/5uS9
-	mguwRtWmx+oHVJfM2VADF9YAU585j+xzCgvfQK8Fy/+JO5Wn6Y2EralfYjgHjxRmFVGJ1BHx0NpEU
-	Ic2P2O7f0NQO/9rymrU3fh7Z0i1BloTIgDmc03XBBawJHnGeLH7tdaKUOPzfU4MexbI/4XJeqN9q/
-	44lejenaFebhunDEeJEcXTdGx+kTYmnJL4STPfTeCQDihePlwjQTn31mpEJQdo6TEtacHcyKmeSeJ
-	7wPhHQ1ZFRihvjbItQ8+XNEhNVrEHxyZkaIPYKGkAS0AuYKSf6I59Qo4+IfxD6EgTYlTubnLhB0Lu
-	E/tEfF5ZIykxpydmTMKuDoox;
+	bh=GYtkyvkPbQix9eph0sG1FUHXrSGDrprVPxpRebp6Ls0=; b=D3ZCYVEYTopR41BmWVb/RwYZ1o
+	mf2lYD/1BBAw/qWcV5sRwBKgezW1K5QiuKi8qUtARnS7Opg6H03UHsrBqqDUiTQWBWEnY1mPxNBHS
+	6UazCqc7lZhp+Ih4MQnj94R9w6Hn/FXoBwb7R5t3pCe6Sh7QZdWZD1KbhNo9afP18ksZlOk6lvQlD
+	1n1qaRWvSiMo61dgp9UBTlcsTqhtAX3EP7F5m8XZkZ0M5XyQwpBtO6msrk3A+YuS5tDXu0PEFNrnO
+	7/D1hYRYFMI0Fx3UJjxhV1lUycDBuQXyohCWfUvj+SFHWrOVbI22shSmBB+1/x5gCenIkOESlDwWn
+	oINQsqpZZOJhSJ/pVZ/zZxCXiCyG+swEqBP+Vnl0vlVT6MxnGM1d2O2496F7vQqUrkQnmV9IlN2zf
+	9u/v46Z/TnA/TZoX15Ro8wi8RsR/UZbNK+EMLCgG7fGDuoLkkGe98u3B5ZaBsESORrEjldCVoZX6Z
+	W1bUgACpRcwrEpju/0AyMVIp;
 Received: from [127.0.0.2] (localhost [127.0.0.1])
 	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
 	(Exim)
-	id 1vOCyp-00Fouh-2w;
-	Wed, 26 Nov 2025 10:42:35 +0000
+	id 1vOCzD-00FovB-0B;
+	Wed, 26 Nov 2025 10:43:00 +0000
 From: Stefan Metzmacher <metze@samba.org>
 To: linux-rdma@vger.kernel.org
 Cc: metze@samba.org,
-	Zhu Yanjun <zyjzyj2000@gmail.com>,
+	Bernard Metzler <bernard.metzler@linux.dev>,
 	Jason Gunthorpe <jgg@ziepe.ca>,
 	Leon Romanovsky <leon@kernel.org>,
 	netdev@vger.kernel.org,
 	linux-cifs@vger.kernel.org
-Subject: [PATCH] RDMA/rxe: reclassify sockets in order to avoid false positives from lockdep
-Date: Wed, 26 Nov 2025 11:42:25 +0100
-Message-ID: <20251126104225.1779639-1-metze@samba.org>
+Subject: [PATCH] RDMA/siw: reclassify sockets in order to avoid false positives from lockdep
+Date: Wed, 26 Nov 2025 11:42:54 +0100
+Message-ID: <20251126104254.1779732-1-metze@samba.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
@@ -68,110 +68,169 @@ Content-Transfer-Encoding: 8bit
 While developing IPPROTO_SMBDIRECT support for the code
 under fs/smb/common/smbdirect [1], I noticed false positives like this:
 
-[+0,003927] ============================================
-[+0,000532] WARNING: possible recursive locking detected
-[+0,000611] 6.18.0-rc5-metze-kasan-lockdep.02+ #1 Tainted: G           OE
-[+0,000835] --------------------------------------------
-[+0,000729] ksmbd:r5445/3609 is trying to acquire lock:
-[+0,000709] ffff88800b9570f8 (k-sk_lock-AF_INET){+.+.}-{0:0},
-                              at: inet_shutdown+0x52/0x360
-[+0,000831]
-            but task is already holding lock:
-[+0,000684] ffff88800654af78 (k-sk_lock-AF_INET){+.+.}-{0:0},
-                           at: smbdirect_sk_close+0x122/0x790 [smbdirect]
-[+0,000928]
-            other info that might help us debug this:
-[+0,005552]  Possible unsafe locking scenario:
+[T79] ======================================================
+[T79] WARNING: possible circular locking dependency detected
+[T79] 6.18.0-rc4-metze-kasan-lockdep.01+ #1 Tainted: G           OE
+[T79] ------------------------------------------------------
+[T79] kworker/2:0/79 is trying to acquire lock:
+[T79] ffff88801f968278 (sk_lock-AF_INET){+.+.}-{0:0},
+                        at: sock_set_reuseaddr+0x14/0x70
+[T79]
+        but task is already holding lock:
+[T79] ffffffffc10f7230 (lock#9){+.+.}-{4:4},
+                        at: rdma_listen+0x3d2/0x740 [rdma_cm]
+[T79]
+        which lock already depends on the new lock.
 
-[+0,000723]        CPU0
-[+0,000359]        ----
-[+0,000377]   lock(k-sk_lock-AF_INET);
-[+0,000478]   lock(k-sk_lock-AF_INET);
-[+0,000498]
-             *** DEADLOCK ***
+[T79]
+        the existing dependency chain (in reverse order) is:
+[T79]
+        -> #1 (lock#9){+.+.}-{4:4}:
+[T79]        __lock_acquire+0x535/0xc30
+[T79]        lock_acquire.part.0+0xb3/0x240
+[T79]        lock_acquire+0x60/0x140
+[T79]        __mutex_lock+0x1af/0x1c10
+[T79]        mutex_lock_nested+0x1b/0x30
+[T79]        cma_get_port+0xba/0x7d0 [rdma_cm]
+[T79]        rdma_bind_addr_dst+0x598/0x9a0 [rdma_cm]
+[T79]        cma_bind_addr+0x107/0x320 [rdma_cm]
+[T79]        rdma_resolve_addr+0xa3/0x830 [rdma_cm]
+[T79]        destroy_lease_table+0x12b/0x420 [ksmbd]
+[T79]        ksmbd_NTtimeToUnix+0x3e/0x80 [ksmbd]
+[T79]        ndr_encode_posix_acl+0x6e9/0xab0 [ksmbd]
+[T79]        ndr_encode_v4_ntacl+0x53/0x870 [ksmbd]
+[T79]        __sys_connect_file+0x131/0x1c0
+[T79]        __sys_connect+0x111/0x140
+[T79]        __x64_sys_connect+0x72/0xc0
+[T79]        x64_sys_call+0xe7d/0x26a0
+[T79]        do_syscall_64+0x93/0xff0
+[T79]        entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[T79]
+        -> #0 (sk_lock-AF_INET){+.+.}-{0:0}:
+[T79]        check_prev_add+0xf3/0xcd0
+[T79]        validate_chain+0x466/0x590
+[T79]        __lock_acquire+0x535/0xc30
+[T79]        lock_acquire.part.0+0xb3/0x240
+[T79]        lock_acquire+0x60/0x140
+[T79]        lock_sock_nested+0x3b/0xf0
+[T79]        sock_set_reuseaddr+0x14/0x70
+[T79]        siw_create_listen+0x145/0x1540 [siw]
+[T79]        iw_cm_listen+0x313/0x5b0 [iw_cm]
+[T79]        cma_iw_listen+0x271/0x3c0 [rdma_cm]
+[T79]        rdma_listen+0x3b1/0x740 [rdma_cm]
+[T79]        cma_listen_on_dev+0x46a/0x750 [rdma_cm]
+[T79]        rdma_listen+0x4b0/0x740 [rdma_cm]
+[T79]        ksmbd_rdma_init+0x12b/0x270 [ksmbd]
+[T79]        ksmbd_conn_transport_init+0x26/0x70 [ksmbd]
+[T79]        server_ctrl_handle_work+0x1e5/0x280 [ksmbd]
+[T79]        process_one_work+0x86c/0x1930
+[T79]        worker_thread+0x6f0/0x11f0
+[T79]        kthread+0x3ec/0x8b0
+[T79]        ret_from_fork+0x314/0x400
+[T79]        ret_from_fork_asm+0x1a/0x30
+[T79]
+        other info that might help us debug this:
 
-[+0,001012]  May be due to missing lock nesting notation
+[T79]  Possible unsafe locking scenario:
 
-[+0,000831] 3 locks held by ksmbd:r5445/3609:
-[+0,000484]  #0: ffff88800654af78 (k-sk_lock-AF_INET){+.+.}-{0:0},
-                           at: smbdirect_sk_close+0x122/0x790 [smbdirect]
-[+0,001000]  #1: ffff888020a40458 (&id_priv->handler_mutex){+.+.}-{4:4},
-                           at: rdma_lock_handler+0x17/0x30 [rdma_cm]
-[+0,000982]  #2: ffff888020a40350 (&id_priv->qp_mutex){+.+.}-{4:4},
-                           at: rdma_destroy_qp+0x5d/0x1f0 [rdma_cm]
-[+0,000934]
-            stack backtrace:
-[+0,000589] CPU: 0 UID: 0 PID: 3609 Comm: ksmbd:r5445 Kdump: loaded
-             Tainted: G           OE
-             6.18.0-rc5-metze-kasan-lockdep.02+ #1 PREEMPT(voluntary)
-[+0,000023] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
-[+0,000004] Hardware name: innotek GmbH VirtualBox/VirtualBox,
-            BIOS VirtualBox 12/01/2006
+[T79]        CPU0                    CPU1
+[T79]        ----                    ----
+[T79]   lock(lock#9);
+[T79]                                lock(sk_lock-AF_INET);
+[T79]                                lock(lock#9);
+[T79]   lock(sk_lock-AF_INET);
+[T79]
+         *** DEADLOCK ***
+
+[T79] 5 locks held by kworker/2:0/79:
+[T79] #0: ffff88800120b158 ((wq_completion)events_long){+.+.}-{0:0},
+                           at: process_one_work+0xfca/0x1930
+[T79] #1: ffffc9000474fd00 ((work_completion)(&ctrl->ctrl_work))
+                           {+.+.}-{0:0},
+                           at: process_one_work+0x804/0x1930
+[T79] #2: ffffffffc11307d0 (ctrl_lock){+.+.}-{4:4},
+                           at: server_ctrl_handle_work+0x21/0x280 [ksmbd]
+[T79] #3: ffffffffc11347b0 (init_lock){+.+.}-{4:4},
+                           at: ksmbd_conn_transport_init+0x18/0x70 [ksmbd]
+[T79] #4: ffffffffc10f7230 (lock#9){+.+.}-{4:4},
+                            at: rdma_listen+0x3d2/0x740 [rdma_cm]
+[T79]
+        stack backtrace:
+[T79] CPU: 2 UID: 0 PID: 79 Comm: kworker/2:0 Kdump: loaded
+      Tainted: G           OE
+      6.18.0-rc4-metze-kasan-lockdep.01+ #1 PREEMPT(voluntary)
+[T79] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+[T79] Hardware name: innotek GmbH VirtualBox/VirtualBox,
+      BIOS VirtualBox 12/01/2006
+[T79] Workqueue: events_long server_ctrl_handle_work [ksmbd]
 ...
-[+0,000010] print_deadlock_bug+0x245/0x330
-[+0,000014] validate_chain+0x32a/0x590
-[+0,000012] __lock_acquire+0x535/0xc30
-[+0,000013] lock_acquire.part.0+0xb3/0x240
-[+0,000017] ? inet_shutdown+0x52/0x360
-[+0,000013] ? srso_alias_return_thunk+0x5/0xfbef5
-[+0,000007] ? mark_held_locks+0x46/0x90
-[+0,000012] lock_acquire+0x60/0x140
-[+0,000006] ? inet_shutdown+0x52/0x360
-[+0,000028] lock_sock_nested+0x3b/0xf0
-[+0,000009] ? inet_shutdown+0x52/0x360
-[+0,000008] inet_shutdown+0x52/0x360
-[+0,000010] kernel_sock_shutdown+0x5b/0x90
-[+0,000011] rxe_qp_do_cleanup+0x4ef/0x810 [rdma_rxe]
-[+0,000043] ? __pfx_rxe_qp_do_cleanup+0x10/0x10 [rdma_rxe]
-[+0,000030] execute_in_process_context+0x2b/0x170
-[+0,000013] rxe_qp_cleanup+0x1c/0x30 [rdma_rxe]
-[+0,000021] __rxe_cleanup+0x1cf/0x2e0 [rdma_rxe]
-[+0,000036] ? __pfx___rxe_cleanup+0x10/0x10 [rdma_rxe]
-[+0,000020] ? srso_alias_return_thunk+0x5/0xfbef5
-[+0,000006] ? __kasan_check_read+0x11/0x20
-[+0,000012] rxe_destroy_qp+0xe1/0x230 [rdma_rxe]
-[+0,000035] ib_destroy_qp_user+0x217/0x450 [ib_core]
-[+0,000074] rdma_destroy_qp+0x83/0x1f0 [rdma_cm]
-[+0,000034] smbdirect_connection_destroy_qp+0x98/0x2e0 [smbdirect]
-[+0,000017] ? __pfx_smb_direct_logging_needed+0x10/0x10 [ksmbd]
-[+0,000044] smbdirect_connection_destroy+0x698/0xed0 [smbdirect]
-[+0,000023] ? __pfx_smbdirect_connection_destroy+0x10/0x10 [smbdirect]
-[+0,000033] ? __pfx_smb_direct_logging_needed+0x10/0x10 [ksmbd]
-[+0,000031] smbdirect_connection_destroy_sync+0x42b/0x9f0 [smbdirect]
-[+0,000029] ? mark_held_locks+0x46/0x90
-[+0,000012] ? __pfx_smbdirect_connection_destroy_sync+0x10/0x10 [smbdirect]
-[+0,000019] ? srso_alias_return_thunk+0x5/0xfbef5
-[+0,000007] ? trace_hardirqs_on+0x64/0x70
-[+0,000029] ? srso_alias_return_thunk+0x5/0xfbef5
-[+0,000010] ? srso_alias_return_thunk+0x5/0xfbef5
-[+0,000006] ? __smbdirect_connection_schedule_disconnect+0x339/0x4b0
-[+0,000021] smbdirect_sk_destroy+0xb0/0x680 [smbdirect]
-[+0,000024] ? srso_alias_return_thunk+0x5/0xfbef5
-[+0,000006] ? trace_hardirqs_on+0x64/0x70
-[+0,000006] ? srso_alias_return_thunk+0x5/0xfbef5
-[+0,000005] ? __local_bh_enable_ip+0xba/0x150
-[+0,000011] sk_common_release+0x66/0x340
-[+0,000010] smbdirect_sk_close+0x12a/0x790 [smbdirect]
-[+0,000023] ? ip_mc_drop_socket+0x1e/0x240
-[+0,000013] inet_release+0x10a/0x240
-[+0,000011] smbdirect_sock_release+0x502/0xe80 [smbdirect]
-[+0,000015] ? srso_alias_return_thunk+0x5/0xfbef5
-[+0,000024] sock_release+0x91/0x1c0
-[+0,000010] smb_direct_free_transport+0x31/0x50 [ksmbd]
-[+0,000025] ksmbd_conn_free+0x1d0/0x240 [ksmbd]
-[+0,000040] smb_direct_disconnect+0xb2/0x120 [ksmbd]
-[+0,000023] ? srso_alias_return_thunk+0x5/0xfbef5
-[+0,000018] ksmbd_conn_handler_loop+0x94e/0xf10 [ksmbd]
-...
+[T79]  print_circular_bug+0xfd/0x130
+[T79]  check_noncircular+0x150/0x170
+[T79]  check_prev_add+0xf3/0xcd0
+[T79]  validate_chain+0x466/0x590
+[T79]  __lock_acquire+0x535/0xc30
+[T79]  ? srso_alias_return_thunk+0x5/0xfbef5
+[T79]  lock_acquire.part.0+0xb3/0x240
+[T79]  ? sock_set_reuseaddr+0x14/0x70
+[T79]  ? srso_alias_return_thunk+0x5/0xfbef5
+[T79]  ? __kasan_check_write+0x14/0x30
+[T79]  ? srso_alias_return_thunk+0x5/0xfbef5
+[T79]  ? apparmor_socket_post_create+0x180/0x700
+[T79]  lock_acquire+0x60/0x140
+[T79]  ? sock_set_reuseaddr+0x14/0x70
+[T79]  lock_sock_nested+0x3b/0xf0
+[T79]  ? sock_set_reuseaddr+0x14/0x70
+[T79]  sock_set_reuseaddr+0x14/0x70
+[T79]  siw_create_listen+0x145/0x1540 [siw]
+[T79]  ? srso_alias_return_thunk+0x5/0xfbef5
+[T79]  ? local_clock_noinstr+0xe/0xd0
+[T79]  ? __pfx_siw_create_listen+0x10/0x10 [siw]
+[T79]  ? trace_preempt_on+0x4c/0x130
+[T79]  ? __raw_spin_unlock_irqrestore+0x4a/0x90
+[T79]  ? srso_alias_return_thunk+0x5/0xfbef5
+[T79]  ? preempt_count_sub+0x52/0x80
+[T79]  iw_cm_listen+0x313/0x5b0 [iw_cm]
+[T79]  cma_iw_listen+0x271/0x3c0 [rdma_cm]
+[T79]  ? srso_alias_return_thunk+0x5/0xfbef5
+[T79]  rdma_listen+0x3b1/0x740 [rdma_cm]
+[T79]  ? _raw_spin_unlock+0x2c/0x60
+[T79]  ? __pfx_rdma_listen+0x10/0x10 [rdma_cm]
+[T79]  ? rdma_restrack_add+0x12c/0x630 [ib_core]
+[T79]  ? srso_alias_return_thunk+0x5/0xfbef5
+[T79]  cma_listen_on_dev+0x46a/0x750 [rdma_cm]
+[T79]  rdma_listen+0x4b0/0x740 [rdma_cm]
+[T79]  ? __pfx_rdma_listen+0x10/0x10 [rdma_cm]
+[T79]  ? cma_get_port+0x30d/0x7d0 [rdma_cm]
+[T79]  ? srso_alias_return_thunk+0x5/0xfbef5
+[T79]  ? rdma_bind_addr_dst+0x598/0x9a0 [rdma_cm]
+[T79]  ksmbd_rdma_init+0x12b/0x270 [ksmbd]
+[T79]  ? __pfx_ksmbd_rdma_init+0x10/0x10 [ksmbd]
+[T79]  ? srso_alias_return_thunk+0x5/0xfbef5
+[T79]  ? srso_alias_return_thunk+0x5/0xfbef5
+[T79]  ? register_netdevice_notifier+0x1dc/0x240
+[T79]  ksmbd_conn_transport_init+0x26/0x70 [ksmbd]
+[T79]  server_ctrl_handle_work+0x1e5/0x280 [ksmbd]
+[T79]  process_one_work+0x86c/0x1930
+[T79]  ? __pfx_process_one_work+0x10/0x10
+[T79]  ? srso_alias_return_thunk+0x5/0xfbef5
+[T79]  ? assign_work+0x16f/0x280
+[T79]  worker_thread+0x6f0/0x11f0
 
-I'll also add reclassify to the smbdirect socket code [1],
-but I think it's better to have it in both direction
-(below and above the RDMA layer).
+I was not able to reproduce this as I was testing with various
+runs switching siw and rxe as well as IPPROTO_SMBDIRECT sockets,
+while the above stack used siw with the non IPPROTO_SMBDIRECT
+patches [1].
+
+Even if this patch doesn't solve the above I think it's
+a good idea to reclassify the sockets used by siw,
+I also send patches for rxe to reclassify, as well
+as my IPPROTO_SMBDIRECT socket patches [1] will do it,
+this should minimize potential false positives.
 
 [1]
 https://git.samba.org/?p=metze/linux/wip.git;a=shortlog;h=refs/heads/master-ipproto-smbdirect
 
-Cc: Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc: Bernard Metzler <bernard.metzler@linux.dev>
 Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: Leon Romanovsky <leon@kernel.org>
 Cc: linux-rdma@vger.kernel.org
@@ -179,22 +238,22 @@ Cc: netdev@vger.kernel.org
 Cc: linux-cifs@vger.kernel.org
 Signed-off-by: Stefan Metzmacher <metze@samba.org>
 ---
- drivers/infiniband/sw/rxe/rxe_net.c | 16 ++++++++++++++++
- drivers/infiniband/sw/rxe/rxe_qp.c  | 16 ++++++++++++++++
- 2 files changed, 32 insertions(+)
+ drivers/infiniband/sw/siw/siw_cm.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index ac0183a2ff7a..39d867d7b443 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -18,6 +18,21 @@
- #include "rxe_net.h"
- #include "rxe_loc.h"
+diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
+index 708b13993fdf..b83abf0ea15e 100644
+--- a/drivers/infiniband/sw/siw/siw_cm.c
++++ b/drivers/infiniband/sw/siw/siw_cm.c
+@@ -39,6 +39,22 @@ static void siw_cm_llp_error_report(struct sock *s);
+ static int siw_cm_upcall(struct siw_cep *cep, enum iw_cm_event_type reason,
+ 			 int status);
  
-+static struct lock_class_key rxe_recv_sk_key;
-+static struct lock_class_key rxe_recv_slock_key;
 +
-+static inline void rxe_reclassify_recv_socket(struct socket *sock)
++static struct lock_class_key siw_sk_key;
++static struct lock_class_key siw_slock_key;
++
++static inline void siw_reclassify_socket(struct socket *sock)
 +{
 +	struct sock *sk = sock->sk;
 +
@@ -202,55 +261,29 @@ index ac0183a2ff7a..39d867d7b443 100644
 +		return;
 +
 +	sock_lock_init_class_and_name(sk,
-+				      "slock-RDMA-RXE-RECV", &rxe_recv_slock_key,
-+				      "sk_lock-RDMA-RXE-RECV", &rxe_recv_sk_key);
++				      "slock-RDMA-SIW", &siw_slock_key,
++				      "sk_lock-RDMA-SIW", &siw_sk_key);
 +}
 +
- static struct rxe_recv_sockets recv_sockets;
- 
- static struct dst_entry *rxe_find_route4(struct rxe_qp *qp,
-@@ -192,6 +207,7 @@ static struct socket *rxe_setup_udp_tunnel(struct net *net, __be16 port,
- 	err = udp_sock_create(net, &udp_cfg, &sock);
- 	if (err < 0)
- 		return ERR_PTR(err);
-+	rxe_reclassify_recv_socket(sock);
- 
- 	tnl_cfg.encap_type = 1;
- 	tnl_cfg.encap_rcv = rxe_udp_encap_recv;
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index 95f1c1c2949d..4330d98102d0 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -15,6 +15,21 @@
- #include "rxe_queue.h"
- #include "rxe_task.h"
- 
-+static struct lock_class_key rxe_send_sk_key;
-+static struct lock_class_key rxe_send_slock_key;
-+
-+static inline void rxe_reclassify_send_socket(struct socket *sock)
-+{
-+	struct sock *sk = sock->sk;
-+
-+	if (WARN_ON_ONCE(!sock_allow_reclassification(sk)))
-+		return;
-+
-+	sock_lock_init_class_and_name(sk,
-+				      "slock-RDMA-RXE-SEND", &rxe_send_slock_key,
-+				      "sk_lock-RDMA-RXE-SEND", &rxe_send_sk_key);
-+}
-+
- static int rxe_qp_chk_cap(struct rxe_dev *rxe, struct ib_qp_cap *cap,
- 			  int has_srq)
+ static void siw_sk_assign_cm_upcalls(struct sock *sk)
  {
-@@ -244,6 +259,7 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
- 	err = sock_create_kern(&init_net, AF_INET, SOCK_DGRAM, 0, &qp->sk);
- 	if (err < 0)
- 		return err;
-+	rxe_reclassify_send_socket(qp->sk);
- 	qp->sk->sk->sk_user_data = qp;
+ 	struct siw_cep *cep = sk_to_cep(sk);
+@@ -1394,6 +1410,7 @@ int siw_connect(struct iw_cm_id *id, struct iw_cm_conn_param *params)
+ 	rv = sock_create(v4 ? AF_INET : AF_INET6, SOCK_STREAM, IPPROTO_TCP, &s);
+ 	if (rv < 0)
+ 		goto error;
++	siw_reclassify_socket(s);
  
- 	/* pick a source UDP port number for this QP based on
+ 	/*
+ 	 * NOTE: For simplification, connect() is called in blocking
+@@ -1770,6 +1787,7 @@ int siw_create_listen(struct iw_cm_id *id, int backlog)
+ 	rv = sock_create(addr_family, SOCK_STREAM, IPPROTO_TCP, &s);
+ 	if (rv < 0)
+ 		return rv;
++	siw_reclassify_socket(s);
+ 
+ 	/*
+ 	 * Allow binding local port when still in TIME_WAIT from last close.
 -- 
 2.43.0
 
