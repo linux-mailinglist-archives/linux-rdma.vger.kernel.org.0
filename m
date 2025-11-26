@@ -1,103 +1,93 @@
-Return-Path: <linux-rdma+bounces-14779-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14780-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8E48C886A3
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Nov 2025 08:26:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 33DE6C886D6
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Nov 2025 08:32:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0741F354654
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Nov 2025 07:26:52 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C7184354691
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Nov 2025 07:32:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A040428D83F;
-	Wed, 26 Nov 2025 07:26:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDF35285073;
+	Wed, 26 Nov 2025 07:32:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t74ZQjbw"
+	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="bGCzOTJv"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F9C0288520
-	for <linux-rdma@vger.kernel.org>; Wed, 26 Nov 2025 07:26:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 157C428727E
+	for <linux-rdma@vger.kernel.org>; Wed, 26 Nov 2025 07:32:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.250
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764141999; cv=none; b=TyxDAzzZc9d2en7k+cMxY2GXKJ+c/BYbjNK1KuAw9ZUSYcXouQDHCUuFCaDrALeWQf5MEAI4Zf0hN9ycVTTIZVU1g/vEL9wXhXCF+oy862/XGcKQE7yT3J4qBUEMLhPFdcQdVIrJ5dzZQM6cXJqMhmT+gMmLt/TIGfh2kqqqR4c=
+	t=1764142350; cv=none; b=mHX7NBYN+RnWSpBsj0EYY4uIw30wEOFBEMjGSL0LkaZceD23eR9CPB44CsDVhkZx1t4rjdhVz9FqFzWBjXS8RBfZotGM56YgK8KgJ79uDiPdip3lWm6X2Tk0LlKcYUQMFwg9hC9vhCrH7PYOi5rKBVLr4RXD2qTGcnYwoKYzndU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764141999; c=relaxed/simple;
-	bh=f/dW+yvnf6fQjEfIHF8GG4mQhV3eQ8rGqN7wpMKSgG4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=i4GmRqKw9ukCMMy+Rz2b4xUT3rvs3qStARxY4A0aiH+nr0OSVGkuu9TPXGwujWrfDoHrhy8C1zvhSGKmbpCuFU8bfj4lSsl+T8bgquFYrZU/guc97oH/Pwy16vZDTzq4G3uRHNqii2JCl9ZJ+XWhJg9md7yOkG7tHOiRmJ1EIpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t74ZQjbw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83453C113D0;
-	Wed, 26 Nov 2025 07:26:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764141999;
-	bh=f/dW+yvnf6fQjEfIHF8GG4mQhV3eQ8rGqN7wpMKSgG4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=t74ZQjbwrNt7cHGtLKTNRXcil84g11n6I5LQWXCGLwh2DHKjDtI9jSgC3c0V8YGu/
-	 F4hUG87hJg5rCS4aVp5cr/YYREvY12bNVCEsZi7fieoVQokvMwqZuF4l2wmhc76PRW
-	 8N6HFX0wsuK8lUAFEQFrijq1Gm4iyHMHXz1c7BCUej8qU/y3EAhfw3GfthPc1EpVJE
-	 e9PVG8em+3xKAYZLIYB2FZ/eD9zdFt47mt599JuBb00TvFoFLc6gtVJUHFsriJ3OQP
-	 DkY8AZljRFc1edQXGfOceL51p2S6/yxfNxtQq9JJeh6k5fZNwMIRZlWbb4wqmxDJp7
-	 Wu3J1ZkkWSQ/g==
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, 
- Tatyana Nikolova <tatyana.e.nikolova@intel.com>
-Cc: linux-rdma@vger.kernel.org, krzysztof.czurylo@intel.com, 
- jmoroni@google.com
-In-Reply-To: <20251125025350.180-1-tatyana.e.nikolova@intel.com>
-References: <20251125025350.180-1-tatyana.e.nikolova@intel.com>
-Subject: Re: [PATCH 0/9] RDMA/irdma: A few fixes related to GEN3 Support
-Message-Id: <176414199591.1821759.2802321086632048487.b4-ty@kernel.org>
-Date: Wed, 26 Nov 2025 02:26:35 -0500
+	s=arc-20240116; t=1764142350; c=relaxed/simple;
+	bh=SWaPAh5Yl6vPqBMg11hB8mp0rJMBTW+TDz/DBTDc3Bo=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=K+z4ctXYrCaHELDsbqEF0cYs0k3DhNCgM12SJJ7CVF8VpvWUwiaYikG/hv8aDrJbZf/NfVRg0Y/PqvijNg58O9Aalm4Ic9C6EgfpOJurZPPx/0B6eVU2aTXpTQcmFKAHqmlKhZLCCgPhnj8+WtMG0QBBhWA5JXQxcTxFQufDYX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=bGCzOTJv; arc=none smtp.client-ip=185.125.188.250
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
+Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id 7537D44F12
+	for <linux-rdma@vger.kernel.org>; Wed, 26 Nov 2025 07:32:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+	s=20210803; t=1764142340;
+	bh=SWaPAh5Yl6vPqBMg11hB8mp0rJMBTW+TDz/DBTDc3Bo=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+	 Reply-To;
+	b=bGCzOTJv6/4KOt5sCKj3DJxzp7OKZQzWEYMMHxDjC0+XOQl6wgzODSSAPekYsYOlN
+	 yvPXcNLU+iBXXLqh+8FisGhuupYTp9IFXPRCFQ9b2jZNoeXmFnCfV8uRpvA7cCRIQA
+	 yK5hZv2TNHhghMAF0lQ0QlJ0kkCkgqFTg0W4/zo0dMVnJ8V47Ha67CqCtWGw3Btfxx
+	 iVvgL3aZzvJCMALfYiw30HrajSLujYNgO3r8VmT6FesvVBW1vI2adqq8kFEgSl1bAZ
+	 UQ5zTOZzf34QHXuG8Yjq9q3bqbTXpSjisT2SM+ec6/uGYMX1+d79sFPPQ8wSDkeU8r
+	 MD5F9qWVSHNkg==
+Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
+	by buildd-manager.lp.internal (Postfix) with ESMTP id 5962F7E7AD
+	for <linux-rdma@vger.kernel.org>; Wed, 26 Nov 2025 07:32:20 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-a6db3
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To: Linux RDMA <linux-rdma@vger.kernel.org>
+From: noreply@launchpad.net
+Subject: [recipe build #3976909] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <176414234034.791410.10818673859249643640.launchpad@buildd-manager.lp.internal>
+Date: Wed, 26 Nov 2025 07:32:20 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+Errors-To: noreply@launchpad.net
+Precedence: bulk
+X-Generated-By: Launchpad (canonical.com); Revision="1d08ffb47b836b8a4c9a0f11318dfdea7420ab6d"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: 3900fc12cd752ec71b0270ff828feb7fcff35c5c
 
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 2 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3976909/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-065
 
-On Mon, 24 Nov 2025 20:53:41 -0600, Tatyana Nikolova wrote:
-> This series includes a few fixes found after the addition of GEN3 Support.
-> 
-> Anil Samal (1):
->   RDMA/irdma: Add missing mutex destroy
-> 
-> Jacob Moroni (3):
->   RDMA/irdma: Do not directly rely on IB_PD_UNSAFE_GLOBAL_RKEY
->   RDMA/irdma: Do not set IBK_LOCAL_DMA_LKEY for GEN3+
->   RDMA/irdma: Remove doorbell elision logic
-> 
-> [...]
-
-Applied, thanks!
-
-[1/9] RDMA/irdma: Fix data race in irdma_sc_ccq_arm
-      https://git.kernel.org/rdma/rdma/c/a521928164433d
-[2/9] RDMA/irdma: Fix data race in irdma_free_pble
-      https://git.kernel.org/rdma/rdma/c/81f44409fb4f02
-[3/9] RDMA/irdma: Add a missing kfree of struct irdma_pci_f for GEN2
-      https://git.kernel.org/rdma/rdma/c/9e13d880ebae5d
-[4/9] RDMA/irdma: Fix SIGBUS in AEQ destroy
-      https://git.kernel.org/rdma/rdma/c/5eff1ecce30143
-[5/9] RDMA/irdma: Add missing mutex destroy
-      https://git.kernel.org/rdma/rdma/c/35bd787babd1f5
-[6/9] RDMA/irdma: Do not directly rely on IB_PD_UNSAFE_GLOBAL_RKEY
-      https://git.kernel.org/rdma/rdma/c/71d3bdae5eab21
-[7/9] RDMA/irdma: Do not set IBK_LOCAL_DMA_LKEY for GEN3+
-      https://git.kernel.org/rdma/rdma/c/eef3ad030b08c0
-[8/9] RDMA/irdma: Remove doorbell elision logic
-      https://git.kernel.org/rdma/rdma/c/62356fccb195f8
-[9/9] RDMA/irdma: Fix SRQ shadow area address initialization
-      https://git.kernel.org/rdma/rdma/c/01dad9ca37c60d
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3976909
+Your team Linux RDMA is the requester of the build.
 
 
