@@ -1,294 +1,187 @@
-Return-Path: <linux-rdma+bounces-14807-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14808-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04D7EC8EA85
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Nov 2025 15:00:14 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CE43C8EC57
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Nov 2025 15:32:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id F22FD348B41
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Nov 2025 13:58:59 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 161854E816C
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Nov 2025 14:32:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5675528750A;
-	Thu, 27 Nov 2025 13:58:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F12333344C;
+	Thu, 27 Nov 2025 14:32:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="OzSATa2/"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gsmNEvZD"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6648427703C;
-	Thu, 27 Nov 2025 13:58:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD36332EAF
+	for <linux-rdma@vger.kernel.org>; Thu, 27 Nov 2025 14:32:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764251932; cv=none; b=WGxlP20GROO9dIKmXx7eeRwA3WtVLxUqI3+fExkFUo9JfDiMqYXskEw4WhAe+d2OHNTQrd9ldkOvlrEWQEm6G0bluaaVVKH4DA5HPxuu5XpRBH4QmhhP/yE/GO7U780eYbvCwQSO4M6SSesvfEBHCXMjY2HX92QxxG1BhziQwOI=
+	t=1764253940; cv=none; b=nWMzNW8L5V8qP5K91ytL+vE74Of/C9xZdF0IvGsTuPDmllsEIh40UanjF5R+mcKepgmSF8GJmczy4R9jxoUP1OToVOaRmTbJE7p/q0y+kOroDx4EDesfA1nEa2GWXYusFcXruDiiWFnIJK8jlAoZ+DslCdXQ0cDGxXIE4L+Fi0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764251932; c=relaxed/simple;
-	bh=UkN77h0WycF5RA0dcdHcAnnPNVo9IeOdBPJn2N+k1cw=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=sLCoqCesytM45vYZiL+6UCploQ0T1QuzaJkMbHSVXsfhnxWlvNeA4OFEyqvh18gYPxbMOgEI0RYpDwAxuiHvfZ/3LRos2dPvfqzc0ZrnHU145+semOG/w0oqugpjNW4jPSIUjlHKScF6NrPvQoYXxyiQeDfZd0AtDwFTreJMkL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=OzSATa2/; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1204)
-	id E4ABF2126F7A; Thu, 27 Nov 2025 05:58:49 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E4ABF2126F7A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1764251929;
-	bh=IouluG9PMtOZ6OngX5FzdYCbFa+r2tI8hRcBEe5WM4E=;
-	h=Date:From:To:Subject:From;
-	b=OzSATa2/31Sv+qjYgjHc4tAt7gVuQxujEFSMqKaaXqiUmv++ZkqKoMaG+1azas4S2
-	 q4bq+BJw5eN2a7msojLBs/zln6aZPObarT4f8HSz7pVCp19rhtYx38b4tKUYd9VU2o
-	 HjIYBzimLALQF6ffh+npWKlkrOq91s2oUCugaPWw=
-Date: Thu, 27 Nov 2025 05:58:49 -0800
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
-	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
-	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	dipayanroy@microsoft.com
-Subject: [PATCH net-next, v5] net: mana: Implement ndo_tx_timeout and
- serialize queue resets per port.
-Message-ID: <20251127135849.GA8411@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	s=arc-20240116; t=1764253940; c=relaxed/simple;
+	bh=0kwzv6pFxzHtGaJnxCuZYa8K5c8rzoCEBUvt8o7dX/w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XA5eXE/StWEsQ9SAyvOmEyA7IqbND4IJ6QQQtVYRxv3/YUV9sn10GkaM7geE3bp72nmpUTmNU+it0mlqE3CQKxWq37Mm2fyNGrUIIQfRdGKNwlzGpu84hKhLc0OWXF8OjVWho24SM+kgNf/ViGGq3o+z6dsZMqfoMtyCT/pxh3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gsmNEvZD; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1764253937;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=cwWSpzAZ8o+kEIvUvxCYtrV+7teolmZBzgeeBR8Mg1s=;
+	b=gsmNEvZDEynDYJpPsbSUMX0j7kKGIeAX//PzrjygJ081EfnECjNge2mZRopiCyPmbpLGsc
+	bt3OmxIB5b32jwUPFjWDZtmiqiiGp2udk6vk/tBtF4F9Vtc6wd/epq6cu8xjOyxwLRqcN3
+	2zFh//mN+9/9lWm2x/zuCkp8xeu/A0Y=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-389-w5PffJQdNEun3dr-Kmttyg-1; Thu,
+ 27 Nov 2025 09:32:13 -0500
+X-MC-Unique: w5PffJQdNEun3dr-Kmttyg-1
+X-Mimecast-MFC-AGG-ID: w5PffJQdNEun3dr-Kmttyg_1764253931
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 2C4011956089;
+	Thu, 27 Nov 2025 14:32:11 +0000 (UTC)
+Received: from rhel-developer-toolbox.redhat.com (unknown [10.45.224.138])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 5AB4419560B0;
+	Thu, 27 Nov 2025 14:32:06 +0000 (UTC)
+From: Michal Schmidt <mschmidt@redhat.com>
+To: Krzysztof Czurylo <krzysztof.czurylo@intel.com>,
+	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Shiraz Saleem <shiraz.saleem@intel.com>,
+	Mustafa Ismail <mustafa.ismail@intel.com>
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] RDMA/irdma: avoid invalid read in irdma_net_event
+Date: Thu, 27 Nov 2025 15:31:50 +0100
+Message-ID: <20251127143150.121099-1-mschmidt@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-Implement .ndo_tx_timeout for MANA so any stalled TX queue can be detected
-and a device-controlled port reset for all queues can be scheduled to a
-ordered workqueue. The reset for all queues on stall detection is
-recommended by hardware team.
+irdma_net_event() should not dereference anything from "neigh" (alias
+"ptr") until it has checked that the event is NETEVENT_NEIGH_UPDATE.
+Other events come with different structures pointed to by "ptr" and they
+may be smaller than struct neighbour.
 
-Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
----
-Changes in v5:
-  -Fixed commit message, used 'create_singlethread_workqueue' and fixed
-   cleanup part.
-Changes in v4:
-  -Fixed commit message, work initialization before registering netdev,
-   fixed potential null pointer de-reference bug.
-Changes in v3:
-  -Fixed commit meesage, removed rtnl_trylock and added
-   disable_work_sync, fixed mana_queue_reset_work, and few
-   cosmetics.
-Changes in v2:
-  -Fixed cosmetic changes.
----
----
- drivers/net/ethernet/microsoft/mana/mana_en.c | 77 ++++++++++++++++++-
- include/net/mana/gdma.h                       |  7 +-
- include/net/mana/mana.h                       |  8 +-
- 3 files changed, 89 insertions(+), 3 deletions(-)
+Move the read of neigh->dev under the NETEVENT_NEIGH_UPDATE case.
 
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index 1ad154f9db1a..d8451f550db4 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -299,6 +299,42 @@ static int mana_get_gso_hs(struct sk_buff *skb)
- 	return gso_hs;
- }
- 
-+static void mana_per_port_queue_reset_work_handler(struct work_struct *work)
-+{
-+	struct mana_queue_reset_work *reset_queue_work =
-+			container_of(work, struct mana_queue_reset_work, work);
-+
-+	struct mana_port_context *apc = container_of(reset_queue_work,
-+						     struct mana_port_context,
-+						     queue_reset_work);
-+	struct net_device *ndev = apc->ndev;
-+	int err;
-+
-+	rtnl_lock();
-+
-+	/* Pre-allocate buffers to prevent failure in mana_attach later */
-+	err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
-+	if (err) {
-+		netdev_err(ndev, "Insufficient memory for reset post tx stall detection\n");
-+		goto out;
-+	}
-+
-+	err = mana_detach(ndev, false);
-+	if (err) {
-+		netdev_err(ndev, "mana_detach failed: %d\n", err);
-+		goto dealloc_pre_rxbufs;
-+	}
-+
-+	err = mana_attach(ndev);
-+	if (err)
-+		netdev_err(ndev, "mana_attach failed: %d\n", err);
-+
-+dealloc_pre_rxbufs:
-+	mana_pre_dealloc_rxbufs(apc);
-+out:
-+	rtnl_unlock();
-+}
-+
- netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+The bug is mostly harmless, but it triggers KASAN on debug kernels:
+
+ ==================================================================
+ BUG: KASAN: stack-out-of-bounds in irdma_net_event+0x32e/0x3b0 [irdma]
+ Read of size 8 at addr ffffc900075e07f0 by task kworker/27:2/542554
+
+ CPU: 27 PID: 542554 Comm: kworker/27:2 Kdump: loaded Not tainted 5.14.0-630.el9.x86_64+debug #1
+ Hardware name: [...]
+ Workqueue: events rt6_probe_deferred
+ Call Trace:
+  <IRQ>
+  dump_stack_lvl+0x60/0xb0
+  print_address_description.constprop.0+0x2c/0x3f0
+  print_report+0xb4/0x270
+  kasan_report+0x92/0xc0
+  irdma_net_event+0x32e/0x3b0 [irdma]
+  notifier_call_chain+0x9e/0x180
+  atomic_notifier_call_chain+0x5c/0x110
+  rt6_do_redirect+0xb91/0x1080
+  tcp_v6_err+0xe9b/0x13e0
+  icmpv6_notify+0x2b2/0x630
+  ndisc_redirect_rcv+0x328/0x530
+  icmpv6_rcv+0xc16/0x1360
+  ip6_protocol_deliver_rcu+0xb84/0x12e0
+  ip6_input_finish+0x117/0x240
+  ip6_input+0xc4/0x370
+  ipv6_rcv+0x420/0x7d0
+  __netif_receive_skb_one_core+0x118/0x1b0
+  process_backlog+0xd1/0x5d0
+  __napi_poll.constprop.0+0xa3/0x440
+  net_rx_action+0x78a/0xba0
+  handle_softirqs+0x2d4/0x9c0
+  do_softirq+0xad/0xe0
+  </IRQ>
+  <TASK>
+  __local_bh_enable_ip+0xfd/0x120
+  ip6_finish_output2+0x55d/0x10b0
+  ip6_finish_output+0x549/0x12e0
+  ndisc_send_skb+0x92d/0x17e0
+  ndisc_send_ns+0x9a/0x100
+  rt6_probe_deferred+0xe1/0x1c0
+  process_one_work+0x89c/0x1ab0
+  worker_thread+0x588/0xd30
+  kthread+0x2d3/0x370
+  ret_from_fork+0x2b/0x50
+  </TASK>
+
+ The buggy address belongs to the virtual mapping at
+  [ffffc900075d9000, ffffc900075e2000) created by:
+  irq_init_percpu_irqstack+0x1f4/0x310
+
+ The buggy address belongs to the physical page:
+ page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x180d209
+ flags: 0x57ffffc0004000(reserved|node=1|zone=2|lastcpupid=0x1fffff)
+ page_type: 0xffffffff()
+ raw: 0057ffffc0004000 ffffea0060348248 ffffea0060348248 0000000000000000
+ raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
+ page dumped because: kasan: bad access detected
+
+ Memory state around the buggy address:
+  ffffc900075e0680: 00 00 00 00 00 00 00 00 00 00 00 00 f1 f1 f1 f1
+  ffffc900075e0700: 04 f3 f3 f3 00 00 00 00 00 00 00 00 00 00 00 00
+ >ffffc900075e0780: 00 00 00 f1 f1 f1 f1 f1 f1 01 f2 02 f3 f3 f3 00
+                                                              ^
+  ffffc900075e0800: 00 00 00 00 00 00 00 00 00 00 00 00 f1 f1 f1 f1
+  ffffc900075e0880: f1 f1 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ==================================================================
+
+Fixes: 915cc7ac0f8e ("RDMA/irdma: Add miscellaneous utility definitions")
+Signed-off-by: Michal Schmidt <mschmidt@redhat.com>
+---
+ drivers/infiniband/hw/irdma/utils.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/irdma/utils.c b/drivers/infiniband/hw/irdma/utils.c
+index 8b94d87b0192..b6c4ccf38eb7 100644
+--- a/drivers/infiniband/hw/irdma/utils.c
++++ b/drivers/infiniband/hw/irdma/utils.c
+@@ -250,17 +250,18 @@ int irdma_inet6addr_event(struct notifier_block *notifier, unsigned long event,
+ int irdma_net_event(struct notifier_block *notifier, unsigned long event,
+ 		    void *ptr)
  {
- 	enum mana_tx_pkt_format pkt_fmt = MANA_SHORT_PKT_FMT;
-@@ -839,6 +875,23 @@ static int mana_change_mtu(struct net_device *ndev, int new_mtu)
- 	return err;
- }
+ 	struct neighbour *neigh = ptr;
+-	struct net_device *real_dev, *netdev = (struct net_device *)neigh->dev;
++	struct net_device *real_dev, *netdev;
+ 	struct irdma_device *iwdev;
+ 	struct ib_device *ibdev;
+ 	__be32 *p;
+ 	u32 local_ipaddr[4] = {};
+ 	bool ipv4 = true;
  
-+static void mana_tx_timeout(struct net_device *netdev, unsigned int txqueue)
-+{
-+	struct mana_port_context *apc = netdev_priv(netdev);
-+	struct mana_context *ac = apc->ac;
-+	struct gdma_context *gc = ac->gdma_dev->gdma_context;
-+
-+	/* Already in service, hence tx queue reset is not required.*/
-+	if (gc->in_service)
-+		return;
-+
-+	/* Note: If there are pending queue reset work for this port(apc),
-+	 * subsequent request queued up from here are ignored. This is because
-+	 * we are using the same work instance per port(apc).
-+	 */
-+	queue_work(ac->per_port_queue_reset_wq, &apc->queue_reset_work.work);
-+}
-+
- static int mana_shaper_set(struct net_shaper_binding *binding,
- 			   const struct net_shaper *shaper,
- 			   struct netlink_ext_ack *extack)
-@@ -924,6 +977,7 @@ static const struct net_device_ops mana_devops = {
- 	.ndo_bpf		= mana_bpf,
- 	.ndo_xdp_xmit		= mana_xdp_xmit,
- 	.ndo_change_mtu		= mana_change_mtu,
-+	.ndo_tx_timeout		= mana_tx_timeout,
- 	.net_shaper_ops         = &mana_shaper_ops,
- };
- 
-@@ -3287,6 +3341,8 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
- 	ndev->min_mtu = ETH_MIN_MTU;
- 	ndev->needed_headroom = MANA_HEADROOM;
- 	ndev->dev_port = port_idx;
-+	/* Recommended timeout based on HW FPGA re-config scenario. */
-+	ndev->watchdog_timeo = 15 * HZ;
- 	SET_NETDEV_DEV(ndev, gc->dev);
- 
- 	netif_set_tso_max_size(ndev, GSO_MAX_SIZE);
-@@ -3303,6 +3359,10 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
- 	if (err)
- 		goto reset_apc;
- 
-+	/* Initialize the per port queue reset work.*/
-+	INIT_WORK(&apc->queue_reset_work.work,
-+		  mana_per_port_queue_reset_work_handler);
-+
- 	netdev_lockdep_set_classes(ndev);
- 
- 	ndev->hw_features = NETIF_F_SG | NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM;
-@@ -3549,6 +3609,14 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
- 	if (ac->num_ports > MAX_PORTS_IN_MANA_DEV)
- 		ac->num_ports = MAX_PORTS_IN_MANA_DEV;
- 
-+	ac->per_port_queue_reset_wq =
-+		create_singlethread_workqueue("mana_per_port_queue_reset_wq");
-+	if (!ac->per_port_queue_reset_wq) {
-+		dev_err(dev, "Failed to allocate per port queue reset workqueue\n");
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
- 	if (!resuming) {
- 		for (i = 0; i < ac->num_ports; i++) {
- 			err = mana_probe_port(ac, i, &ac->ports[i]);
-@@ -3616,13 +3684,15 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
- 
- 	for (i = 0; i < ac->num_ports; i++) {
- 		ndev = ac->ports[i];
--		apc = netdev_priv(ndev);
- 		if (!ndev) {
- 			if (i == 0)
- 				dev_err(dev, "No net device to remove\n");
- 			goto out;
- 		}
- 
-+		apc = netdev_priv(ndev);
-+		disable_work_sync(&apc->queue_reset_work.work);
-+
- 		/* All cleanup actions should stay after rtnl_lock(), otherwise
- 		 * other functions may access partially cleaned up data.
- 		 */
-@@ -3649,6 +3719,11 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
- 
- 	mana_destroy_eq(ac);
- out:
-+	if (ac->per_port_queue_reset_wq) {
-+		destroy_workqueue(ac->per_port_queue_reset_wq);
-+		ac->per_port_queue_reset_wq = NULL;
-+	}
-+
- 	mana_gd_deregister_device(gd);
- 
- 	if (suspending)
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index a4cf307859f8..808622ae5ccc 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -592,6 +592,10 @@ enum {
- 
- /* Driver can self reset on FPGA Reconfig EQE notification */
- #define GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE BIT(17)
-+
-+/* Driver detects stalled send queues and recovers them */
-+#define GDMA_DRV_CAP_FLAG_1_HANDLE_STALL_SQ_RECOVERY BIT(18)
-+
- #define GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE BIT(6)
- 
- /* Driver supports linearizing the skb when num_sge exceeds hardware limit */
-@@ -611,7 +615,8 @@ enum {
- 	 GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE | \
- 	 GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE | \
- 	 GDMA_DRV_CAP_FLAG_1_PERIODIC_STATS_QUERY | \
--	 GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE)
-+	 GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE        | \
-+	 GDMA_DRV_CAP_FLAG_1_HANDLE_STALL_SQ_RECOVERY)
- 
- #define GDMA_DRV_CAP_FLAGS2 0
- 
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index d7e089c6b694..cef78a871c7c 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -480,7 +480,7 @@ struct mana_context {
- 	struct mana_ethtool_hc_stats hc_stats;
- 	struct mana_eq *eqs;
- 	struct dentry *mana_eqs_debugfs;
--
-+	struct workqueue_struct *per_port_queue_reset_wq;
- 	/* Workqueue for querying hardware stats */
- 	struct delayed_work gf_stats_work;
- 	bool hwc_timeout_occurred;
-@@ -492,9 +492,15 @@ struct mana_context {
- 	u32 link_event;
- };
- 
-+struct mana_queue_reset_work {
-+	/* Work structure */
-+	struct work_struct work;
-+};
-+
- struct mana_port_context {
- 	struct mana_context *ac;
- 	struct net_device *ndev;
-+	struct mana_queue_reset_work queue_reset_work;
- 
- 	u8 mac_addr[ETH_ALEN];
- 
+ 	switch (event) {
+ 	case NETEVENT_NEIGH_UPDATE:
++		netdev = neigh->dev;
+ 		real_dev = rdma_vlan_dev_real_dev(netdev);
+ 		if (!real_dev)
+ 			real_dev = netdev;
+ 		ibdev = ib_device_get_by_netdev(real_dev, RDMA_DRIVER_IRDMA);
 -- 
-2.43.0
+2.51.1
 
 
