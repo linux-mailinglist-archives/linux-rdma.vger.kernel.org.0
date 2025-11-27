@@ -1,174 +1,333 @@
-Return-Path: <linux-rdma+bounces-14800-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14801-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF563C8DD7F
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Nov 2025 11:53:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52E3EC8DDB2
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Nov 2025 11:56:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A519734B11E
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Nov 2025 10:53:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 028AC3AF7C1
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Nov 2025 10:56:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A34432AADA;
-	Thu, 27 Nov 2025 10:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 639CC17BA2;
+	Thu, 27 Nov 2025 10:56:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="h6ZkOMpx";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="VDobi9ht"
+	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="Upqx5nKO"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B659324717
-	for <linux-rdma@vger.kernel.org>; Thu, 27 Nov 2025 10:53:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FBF832573B;
+	Thu, 27 Nov 2025 10:56:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764240788; cv=none; b=SKCEmH4rv194cnjzLsQ6/MR8tcYzg86UCCsRB2qFJIkN5LOLzEMpBA0rYH3VzgchtuovFeX/1b27C4ldMG+6xCP7klBD+hRJH7gNL/1HaArBatnPW4I9QZjoSsuQU6FmkAOwfuKR5mLdFmKAc1wG+TpTHK9onkdP8+65wX/7EEk=
+	t=1764240983; cv=none; b=cRIYGOs5oYXZQH9JzoaWydQ7vUP2dVDalN1e+b+YaBuoESHaDAkvebqQtg//6ophBQTusDXVrJiARR9jlR0nLjRDeRUS6EQ5pzaHhJjK6NfqPyGhepyTavfjFd5BRV+0IvO7AI0C1hH5BlR3W5OVNAFFpweBbDeyI1kZWOlcSGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764240788; c=relaxed/simple;
-	bh=dcwrY/ZJN91y8VKMVtZWMrFkXvzI5f8E1cX3IfcGFlI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LMhS0C1HK1W2x7e8VI4zMojcQcLuzfaVpkTqFsvH0yD904oqnzZE9vboKFoVRjVL2HoXsX2gqc2CQ1wseUmvw94U5KwxUL9SFh2g1h2tg7CYbf+zf8CS+gGojW9qbrblsH54rj08arwZ2Yg6le/JhiDwp5qeH1wQDfcqjBHjtCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=h6ZkOMpx; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=VDobi9ht; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1764240786;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ia9KLe6KKWosICN6WhPtsQJNk42J7XjtbWZtakRXDh8=;
-	b=h6ZkOMpxF2kZPd+LGmDZ8ItesLKjz2uEVujPawUkQMoxA6m5VBgXd8QKgyXy+nhFwX7ifK
-	wLleQCyPEOxOr4PzSTG6W460ITa7R/M0xEikW5kok50u2W5Jm/d/9rYyVIZFs6AlK1LnGH
-	KVTQHLjnBVDZLhKvlZSUlhMJP/cYlQI=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-657-z_V89Ly0PVWaNiZdFLBQZQ-1; Thu, 27 Nov 2025 05:53:04 -0500
-X-MC-Unique: z_V89Ly0PVWaNiZdFLBQZQ-1
-X-Mimecast-MFC-AGG-ID: z_V89Ly0PVWaNiZdFLBQZQ_1764240783
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-640cdaf43aeso748009a12.2
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Nov 2025 02:53:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1764240783; x=1764845583; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ia9KLe6KKWosICN6WhPtsQJNk42J7XjtbWZtakRXDh8=;
-        b=VDobi9htot0b//4JIG6gpekF0SrRDd40rwQ6rhYTzmO5opmj3Lf6N9e8W0fgxjULJk
-         tffeJwoTk9h6xjXRTF4Q2hnmDtH1uEX+KLLMR9izOe0sFdR5E+nzEnzcabh7csP7FdzX
-         192xL+mtFq3XQki3Pek6cx2AqOaZJbAGTSzYAaUfKUMrLteWR9O+tVau1qDA2SJcQaW0
-         rrLyHs+Wo7+FGSq7KqCIqUKYMuga95u/GvN0vJjanpOyEXyd/svf9ZHZADR/AIVc0rau
-         h5frWRc8OVuzj9DvYIic7HrwAgwkvsm3ffuGmvkRLXjW/zdZ+teOQRhMt1GHqKZHg2zX
-         akmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764240783; x=1764845583;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ia9KLe6KKWosICN6WhPtsQJNk42J7XjtbWZtakRXDh8=;
-        b=PO1hzzG6JPCqxxvNISbQ2djNxJkuqaS+PgTXt4xENxK6Esj0ot71DUx9wdIfHynIzN
-         xiaWKouMFh56NO3P3n7OJccuL47S6AC9HgCV8Y5lFLR8etWY7O2TcZs1wvgmQr/z6cGs
-         RBgsf+OFCtExsI6Kb3TSGHUEX0BeW0SGMr3sKrGtVtdYcSAnu1tJQ5XOge5Yqd5i8UMh
-         KCJ6Uz3vJtqX4+Uws8UUoSNbvORxgyXR9/gvwI1ipiyLYfUuw1eA6FocE754Y0c6HXK7
-         Sb+LguRzPZTVfQyDCIPBxu1FtnZ9glvt6DzL/YnS8dbxVQUbVHEbtm2RGUvO7KGpimnr
-         tnig==
-X-Forwarded-Encrypted: i=1; AJvYcCXx3HJrkHQH4B6uRIdhQRfN35Y3KW2N4HSJkciS1XfKlRzfxOXL8WtsKA4Y3HB7mI8XTd4ZQASNc48i@vger.kernel.org
-X-Gm-Message-State: AOJu0YzO0m62piYF40pl/czGVKd34UEKfnrFDU0C5ckNXUKAoFZ+oAJU
-	sAZGiKKBDIWEET+0PX7LtRL0IPfmMGV/v76u/YBqM7QGzKJ5EHF6Cvdtr4//V2qI+RuFSEH6PJy
-	Yhv4pPjum4fkYfb6bmTpJTkL0tHPv8i7iCHVivennEzq3PyQ/PYZM1qtEPqS62Bk=
-X-Gm-Gg: ASbGnct5izHj+v7Ww4fw5GIv6JUdm2xovikNgm9zOnJjZQFSIG6CtxuXwRb7k1YeLG4
-	VwXXBZuLDs2VzsL0AtvrNrM1y+qa4ogmHyDuC2Szq3Aam+cGOVdgjoNSlRQKtDOmchILc8VqgH+
-	T5E+Thl0rG+MZkk66D+sTxMswKsxCXGjWGEqwPoEqkFUlubVijojZiLBUqtp9xOHxPxchjy74pE
-	JOMxp7G2y2lEX2AQ5rLErpqbS9CsswZxNBorCq2pMeaeHU6N/SQfFYqBli/Qr5Ly8bbOPwcWz9C
-	LJcSSi8vzjCbRv+SXQzrXWub0j0VhAvhGI6llqmnHScSPCV99L5OUyJ2j5xX9s7Bp2waRaIxadk
-	RN4IGTpyTy/Arxg==
-X-Received: by 2002:a05:6402:3054:20b0:645:c6b1:5f9d with SMTP id 4fb4d7f45d1cf-645c6b15fd9mr10852306a12.5.1764240783204;
-        Thu, 27 Nov 2025 02:53:03 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHeDyRIqcyD3zKEeif485rXKITX1uTQeYkqs0WbdFhc4RqC7yJG2evwVTiptKplRdNES0CvPg==
-X-Received: by 2002:a05:6402:3054:20b0:645:c6b1:5f9d with SMTP id 4fb4d7f45d1cf-645c6b15fd9mr10852281a12.5.1764240782769;
-        Thu, 27 Nov 2025 02:53:02 -0800 (PST)
-Received: from [192.168.88.32] ([212.105.155.212])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-647509896d1sm1316264a12.0.2025.11.27.02.53.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Nov 2025 02:53:02 -0800 (PST)
-Message-ID: <383aed26-aa07-4759-92b9-5448161ba6a4@redhat.com>
-Date: Thu, 27 Nov 2025 11:53:00 +0100
+	s=arc-20240116; t=1764240983; c=relaxed/simple;
+	bh=Z4M5myIGvLQ6ZmE8Q0dSdeK+YTBLU3RNWLFj8ju9W34=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qVFZUqZPEidsLqt6Dr2pj/qFLl7GK5Sc4/z4BJs540WNopcMn8LSndiuMfEkTeD4h0dZUJgZXjzRjPed+285VLiqCZHR3eCnmn4DlpRsFFSJ1lP4D1rIXkEOeEbJkOXzkSYivv5jYRElw9JSxJsdzOP3Zk1EffGWcILqvASXvkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=Upqx5nKO; arc=none smtp.client-ip=144.76.82.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+	s=42; h=Message-ID:Date:Cc:To:From;
+	bh=Mgr1oguCVV66C9s6vpufwwzzTIkeB9ZytpnRZM4qlJE=; b=Upqx5nKOmVBEgAIROBiyAvThSH
+	nFs3nzy57dUuqFtQoPhe6oAH4yT34jSkloJ2t74wMYmbRYtaqkZ0dgvkayDeca4w3gj20H39rbU0r
+	RIteDQv9ZhtYE6QSqFODjsUSj8L+D2NR1v6KVdZhcLYWLGOcd+lXLm4GeYgUUXL42YrXwrvjF8MBW
+	88KGOzqTEY43//OQ1ceUXBY0tg8e+xlw7Jxa6V6Im6vpUzdnE4kL+0SJiG0f+KSf1oXefwaEAH+El
+	n3v+gLRCQ4fbcYuF9YaYW5fTJfrdyuWRD8wqMtdsVS6fyB0P8XOPwfxZ0FV1tKyhzCRM+Z1yrQn2F
+	KwE5RMGyIjeaMKAN6RNYxs7o937iUODel7GDpjO5z7Gfga4DhEzA8+JEzsaX4OW4e/R/QSowhyetF
+	UmGLQJhRiUZ2GAENWZOJyt3AJrHGEewuJBdgZDGVoUx52+g4ZAA2DMSfTAsR83U8luiNsSg3w7RCO
+	ueaYx8ANpH1C2Q9guw40DHfb;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
+	(Exim)
+	id 1vOZfd-00Fz9b-1D;
+	Thu, 27 Nov 2025 10:56:17 +0000
+From: Stefan Metzmacher <metze@samba.org>
+To: linux-rdma@vger.kernel.org
+Cc: metze@samba.org,
+	Zhu Yanjun <zyjzyj2000@gmail.com>,
+	Zhu Yanjun <yanjun.zhu@linux.dev>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	netdev@vger.kernel.org,
+	linux-cifs@vger.kernel.org
+Subject: [PATCH v3] RDMA/rxe: reclassify sockets in order to avoid false positives from lockdep
+Date: Thu, 27 Nov 2025 11:56:14 +0100
+Message-ID: <20251127105614.2040922-1-metze@samba.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 1/3] net: Introduce
- netif_xmit_time_out_duration() helper
-To: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>
-Cc: Jian Shen <shenjian15@huawei.com>, Salil Mehta <salil.mehta@huawei.com>,
- Jijie Shao <shaojijie@huawei.com>, Saeed Mahameed <saeedm@nvidia.com>,
- Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>,
- Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- Gal Pressman <gal@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>,
- Yael Chemla <ychemla@nvidia.com>, Shahar Shitrit <shshitrit@nvidia.com>
-References: <1764054776-1308696-1-git-send-email-tariqt@nvidia.com>
- <1764054776-1308696-2-git-send-email-tariqt@nvidia.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <1764054776-1308696-2-git-send-email-tariqt@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 11/25/25 8:12 AM, Tariq Toukan wrote:
-> From: Shahar Shitrit <shshitrit@nvidia.com>
-> 
-> Introduce a new helper function netif_xmit_time_out_duration() to
-> check if a TX queue has timed out and report the timeout duration.
-> This helper consolidates the logic that is duplicated in several
-> locations and also encapsulates the check for whether the TX queue
-> is stopped.
-> 
-> As the first user, convert dev_watchdog() to use this helper.
-> 
-> Signed-off-by: Shahar Shitrit <shshitrit@nvidia.com>
-> Reviewed-by: Yael Chemla <ychemla@nvidia.com>
-> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-> ---
->  include/linux/netdevice.h | 15 +++++++++++++++
->  net/sched/sch_generic.c   |  7 +++----
->  2 files changed, 18 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index e808071dbb7d..3cd73769fcfa 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -3680,6 +3680,21 @@ static inline bool netif_xmit_stopped(const struct netdev_queue *dev_queue)
->  	return dev_queue->state & QUEUE_STATE_ANY_XOFF;
->  }
->  
-> +static inline unsigned int
-> +netif_xmit_timeout_ms(struct netdev_queue *txq, unsigned long *trans_start)
-> +{
-> +	unsigned long txq_trans_start = READ_ONCE(txq->trans_start);
-> +
-> +	if (trans_start)
-> +		*trans_start = txq_trans_start;
+While developing IPPROTO_SMBDIRECT support for the code
+under fs/smb/common/smbdirect [1], I noticed false positives like this:
 
-What about making this argument mandatory?
+[+0,003927] ============================================
+[+0,000532] WARNING: possible recursive locking detected
+[+0,000611] 6.18.0-rc5-metze-kasan-lockdep.02+ #1 Tainted: G           OE
+[+0,000835] --------------------------------------------
+[+0,000729] ksmbd:r5445/3609 is trying to acquire lock:
+[+0,000709] ffff88800b9570f8 (k-sk_lock-AF_INET){+.+.}-{0:0},
+                              at: inet_shutdown+0x52/0x360
+[+0,000831]
+            but task is already holding lock:
+[+0,000684] ffff88800654af78 (k-sk_lock-AF_INET){+.+.}-{0:0},
+                           at: smbdirect_sk_close+0x122/0x790 [smbdirect]
+[+0,000928]
+            other info that might help us debug this:
+[+0,005552]  Possible unsafe locking scenario:
 
-> +
-> +	if (netif_xmit_stopped(txq) &&
+[+0,000723]        CPU0
+[+0,000359]        ----
+[+0,000377]   lock(k-sk_lock-AF_INET);
+[+0,000478]   lock(k-sk_lock-AF_INET);
+[+0,000498]
+             *** DEADLOCK ***
 
-Why restricting to the <queue stopped> case? AFAICS the watchdog is
-intended to additionally catch the scenarios where the rx ring is not
-full but the H/W is stuck for whatever reasons, and this change will not
-catch them anymore.
+[+0,001012]  May be due to missing lock nesting notation
 
-/P
+[+0,000831] 3 locks held by ksmbd:r5445/3609:
+[+0,000484]  #0: ffff88800654af78 (k-sk_lock-AF_INET){+.+.}-{0:0},
+                           at: smbdirect_sk_close+0x122/0x790 [smbdirect]
+[+0,001000]  #1: ffff888020a40458 (&id_priv->handler_mutex){+.+.}-{4:4},
+                           at: rdma_lock_handler+0x17/0x30 [rdma_cm]
+[+0,000982]  #2: ffff888020a40350 (&id_priv->qp_mutex){+.+.}-{4:4},
+                           at: rdma_destroy_qp+0x5d/0x1f0 [rdma_cm]
+[+0,000934]
+            stack backtrace:
+[+0,000589] CPU: 0 UID: 0 PID: 3609 Comm: ksmbd:r5445 Kdump: loaded
+             Tainted: G           OE
+             6.18.0-rc5-metze-kasan-lockdep.02+ #1 PREEMPT(voluntary)
+[+0,000023] Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+[+0,000004] Hardware name: innotek GmbH VirtualBox/VirtualBox,
+            BIOS VirtualBox 12/01/2006
+...
+[+0,000010] print_deadlock_bug+0x245/0x330
+[+0,000014] validate_chain+0x32a/0x590
+[+0,000012] __lock_acquire+0x535/0xc30
+[+0,000013] lock_acquire.part.0+0xb3/0x240
+[+0,000017] ? inet_shutdown+0x52/0x360
+[+0,000013] ? srso_alias_return_thunk+0x5/0xfbef5
+[+0,000007] ? mark_held_locks+0x46/0x90
+[+0,000012] lock_acquire+0x60/0x140
+[+0,000006] ? inet_shutdown+0x52/0x360
+[+0,000028] lock_sock_nested+0x3b/0xf0
+[+0,000009] ? inet_shutdown+0x52/0x360
+[+0,000008] inet_shutdown+0x52/0x360
+[+0,000010] kernel_sock_shutdown+0x5b/0x90
+[+0,000011] rxe_qp_do_cleanup+0x4ef/0x810 [rdma_rxe]
+[+0,000043] ? __pfx_rxe_qp_do_cleanup+0x10/0x10 [rdma_rxe]
+[+0,000030] execute_in_process_context+0x2b/0x170
+[+0,000013] rxe_qp_cleanup+0x1c/0x30 [rdma_rxe]
+[+0,000021] __rxe_cleanup+0x1cf/0x2e0 [rdma_rxe]
+[+0,000036] ? __pfx___rxe_cleanup+0x10/0x10 [rdma_rxe]
+[+0,000020] ? srso_alias_return_thunk+0x5/0xfbef5
+[+0,000006] ? __kasan_check_read+0x11/0x20
+[+0,000012] rxe_destroy_qp+0xe1/0x230 [rdma_rxe]
+[+0,000035] ib_destroy_qp_user+0x217/0x450 [ib_core]
+[+0,000074] rdma_destroy_qp+0x83/0x1f0 [rdma_cm]
+[+0,000034] smbdirect_connection_destroy_qp+0x98/0x2e0 [smbdirect]
+[+0,000017] ? __pfx_smb_direct_logging_needed+0x10/0x10 [ksmbd]
+[+0,000044] smbdirect_connection_destroy+0x698/0xed0 [smbdirect]
+[+0,000023] ? __pfx_smbdirect_connection_destroy+0x10/0x10 [smbdirect]
+[+0,000033] ? __pfx_smb_direct_logging_needed+0x10/0x10 [ksmbd]
+[+0,000031] smbdirect_connection_destroy_sync+0x42b/0x9f0 [smbdirect]
+[+0,000029] ? mark_held_locks+0x46/0x90
+[+0,000012] ? __pfx_smbdirect_connection_destroy_sync+0x10/0x10 [smbdirect]
+[+0,000019] ? srso_alias_return_thunk+0x5/0xfbef5
+[+0,000007] ? trace_hardirqs_on+0x64/0x70
+[+0,000029] ? srso_alias_return_thunk+0x5/0xfbef5
+[+0,000010] ? srso_alias_return_thunk+0x5/0xfbef5
+[+0,000006] ? __smbdirect_connection_schedule_disconnect+0x339/0x4b0
+[+0,000021] smbdirect_sk_destroy+0xb0/0x680 [smbdirect]
+[+0,000024] ? srso_alias_return_thunk+0x5/0xfbef5
+[+0,000006] ? trace_hardirqs_on+0x64/0x70
+[+0,000006] ? srso_alias_return_thunk+0x5/0xfbef5
+[+0,000005] ? __local_bh_enable_ip+0xba/0x150
+[+0,000011] sk_common_release+0x66/0x340
+[+0,000010] smbdirect_sk_close+0x12a/0x790 [smbdirect]
+[+0,000023] ? ip_mc_drop_socket+0x1e/0x240
+[+0,000013] inet_release+0x10a/0x240
+[+0,000011] smbdirect_sock_release+0x502/0xe80 [smbdirect]
+[+0,000015] ? srso_alias_return_thunk+0x5/0xfbef5
+[+0,000024] sock_release+0x91/0x1c0
+[+0,000010] smb_direct_free_transport+0x31/0x50 [ksmbd]
+[+0,000025] ksmbd_conn_free+0x1d0/0x240 [ksmbd]
+[+0,000040] smb_direct_disconnect+0xb2/0x120 [ksmbd]
+[+0,000023] ? srso_alias_return_thunk+0x5/0xfbef5
+[+0,000018] ksmbd_conn_handler_loop+0x94e/0xf10 [ksmbd]
+...
+
+I'll also add reclassify to the smbdirect socket code [1],
+but I think it's better to have it in both direction
+(below and above the RDMA layer).
+
+[1]
+https://git.samba.org/?p=metze/linux/wip.git;a=shortlog;h=refs/heads/master-ipproto-smbdirect
+
+Cc: Zhu Yanjun <zyjzyj2000@gmail.com>
+Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>
+Cc: linux-rdma@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: linux-cifs@vger.kernel.org
+Signed-off-by: Stefan Metzmacher <metze@samba.org>
+
+---
+
+v3: - move recv_sockets to the top again (Zhu Yanjun)
+
+v2: - use CONFIG_DEBUG_LOCK_ALLOC (Bernard on siw patch)
+    - add a comment (Bernard on siw patch)
+    - AF_INET vs. AF_INET6 (Bernard on siw patch)
+---
+ drivers/infiniband/sw/rxe/rxe_net.c | 49 +++++++++++++++++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_qp.c  | 49 +++++++++++++++++++++++++++++
+ 2 files changed, 98 insertions(+)
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+index ac0183a2ff7a..0195d361e5e3 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -20,6 +20,54 @@
+ 
+ static struct rxe_recv_sockets recv_sockets;
+ 
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
++/*
++ * lockdep can detect false positive circular dependencies
++ * when there are user-space socket API users or in kernel
++ * users switching between a tcp and rdma transport.
++ * Maybe also switching between siw and rxe may cause
++ * problems as per default sockets are only classified
++ * by family and not by ip protocol. And there might
++ * be different locks used between the application
++ * and the low level sockets.
++ *
++ * Problems were seen with ksmbd.ko and cifs.ko,
++ * switching transports, use git blame to find
++ * more details.
++ */
++static struct lock_class_key rxe_recv_sk_key[2];
++static struct lock_class_key rxe_recv_slock_key[2];
++#endif /* CONFIG_DEBUG_LOCK_ALLOC */
++
++static inline void rxe_reclassify_recv_socket(struct socket *sock)
++{
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
++	struct sock *sk = sock->sk;
++
++	if (WARN_ON_ONCE(!sock_allow_reclassification(sk)))
++		return;
++
++	switch (sk->sk_family) {
++	case AF_INET:
++		sock_lock_init_class_and_name(sk,
++					      "slock-AF_INET-RDMA-RXE-RECV",
++					      &rxe_recv_slock_key[0],
++					      "sk_lock-AF_INET-RDMA-RXE-RECV",
++					      &rxe_recv_sk_key[0]);
++		break;
++	case AF_INET6:
++		sock_lock_init_class_and_name(sk,
++					      "slock-AF_INET6-RDMA-RXE-RECV",
++					      &rxe_recv_slock_key[1],
++					      "sk_lock-AF_INET6-RDMA-RXE-RECV",
++					      &rxe_recv_sk_key[1]);
++		break;
++	default:
++		WARN_ON_ONCE(1);
++	}
++#endif /* CONFIG_DEBUG_LOCK_ALLOC */
++}
++
+ static struct dst_entry *rxe_find_route4(struct rxe_qp *qp,
+ 					 struct net_device *ndev,
+ 					 struct in_addr *saddr,
+@@ -192,6 +240,7 @@ static struct socket *rxe_setup_udp_tunnel(struct net *net, __be16 port,
+ 	err = udp_sock_create(net, &udp_cfg, &sock);
+ 	if (err < 0)
+ 		return ERR_PTR(err);
++	rxe_reclassify_recv_socket(sock);
+ 
+ 	tnl_cfg.encap_type = 1;
+ 	tnl_cfg.encap_rcv = rxe_udp_encap_recv;
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index 95f1c1c2949d..845bdd03ca28 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -15,6 +15,54 @@
+ #include "rxe_queue.h"
+ #include "rxe_task.h"
+ 
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
++/*
++ * lockdep can detect false positive circular dependencies
++ * when there are user-space socket API users or in kernel
++ * users switching between a tcp and rdma transport.
++ * Maybe also switching between siw and rxe may cause
++ * problems as per default sockets are only classified
++ * by family and not by ip protocol. And there might
++ * be different locks used between the application
++ * and the low level sockets.
++ *
++ * Problems were seen with ksmbd.ko and cifs.ko,
++ * switching transports, use git blame to find
++ * more details.
++ */
++static struct lock_class_key rxe_send_sk_key[2];
++static struct lock_class_key rxe_send_slock_key[2];
++#endif /* CONFIG_DEBUG_LOCK_ALLOC */
++
++static inline void rxe_reclassify_send_socket(struct socket *sock)
++{
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
++	struct sock *sk = sock->sk;
++
++	if (WARN_ON_ONCE(!sock_allow_reclassification(sk)))
++		return;
++
++	switch (sk->sk_family) {
++	case AF_INET:
++		sock_lock_init_class_and_name(sk,
++					      "slock-AF_INET-RDMA-RXE-SEND",
++					      &rxe_send_slock_key[0],
++					      "sk_lock-AF_INET-RDMA-RXE-SEND",
++					      &rxe_send_sk_key[0]);
++		break;
++	case AF_INET6:
++		sock_lock_init_class_and_name(sk,
++					      "slock-AF_INET6-RDMA-RXE-SEND",
++					      &rxe_send_slock_key[1],
++					      "sk_lock-AF_INET6-RDMA-RXE-SEND",
++					      &rxe_send_sk_key[1]);
++		break;
++	default:
++		WARN_ON_ONCE(1);
++	}
++#endif /* CONFIG_DEBUG_LOCK_ALLOC */
++}
++
+ static int rxe_qp_chk_cap(struct rxe_dev *rxe, struct ib_qp_cap *cap,
+ 			  int has_srq)
+ {
+@@ -244,6 +292,7 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 	err = sock_create_kern(&init_net, AF_INET, SOCK_DGRAM, 0, &qp->sk);
+ 	if (err < 0)
+ 		return err;
++	rxe_reclassify_send_socket(qp->sk);
+ 	qp->sk->sk->sk_user_data = qp;
+ 
+ 	/* pick a source UDP port number for this QP based on
+-- 
+2.43.0
 
 
