@@ -1,180 +1,177 @@
-Return-Path: <linux-rdma+bounces-14815-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14816-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ACE5C90D2C
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Nov 2025 05:16:54 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF622C90E59
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Nov 2025 06:48:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8C14034F430
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Nov 2025 04:16:53 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 48A224E1B79
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Nov 2025 05:48:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D33382FC899;
-	Fri, 28 Nov 2025 04:16:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11CF6253359;
+	Fri, 28 Nov 2025 05:48:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FhDG0e7M"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mr6+48NU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F6E321CC64;
-	Fri, 28 Nov 2025 04:16:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CAEB17BA6
+	for <linux-rdma@vger.kernel.org>; Fri, 28 Nov 2025 05:48:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764303408; cv=none; b=J25N48jl8smF2fR/K8Du8CUH5N7yvOBTqXB0XdCEjzDrczrhAc1MZBQX7GavulclxA5yRDtfCJiNK8Lwf7J4EkU0qO3IQler7Rqj/BGiOTTwsbyN5TrLBg7abBThnYfYv4+yEX3rxpzh68gQ9XiUzCzcoEcK5sOFwHW+7CYjwFM=
+	t=1764308930; cv=none; b=i2NoiSwqmjWZPg80gliXBw93S6uKXR4pn2tuj2VJxDPPXMn/w981Z4pFTpsJchd18396tzkVT2vTTwU+0P/3F5sqkGsPBR8U/MqQZMsq0basCKAhuZj/GLU4tEIc5YX0tvQ+cazs3bsI2ce49n/q/qj79B1LMFGJZDzpkbPg1Mc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764303408; c=relaxed/simple;
-	bh=LuWc4OPdwOePNFT72nG7ZLXUHvAW3UEQTHkrGj7af+0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WVQq2ewfmxSzD0IakA2j3+WdoBRwQOfjU31Xztnm3JAhNaOZm/WoNY0MeIlv1fz3z4SmiTWHQAFuN7GC0r8ZQBdZLdnpr8E6oQH0pqG2ecOn2E9/QRlJBzy4eyZN78S4pvka83RI4WJ8vCsv69b9YGOk8O7ZRtVHNNET3jnSRco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FhDG0e7M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC7EEC4CEF1;
-	Fri, 28 Nov 2025 04:16:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764303407;
-	bh=LuWc4OPdwOePNFT72nG7ZLXUHvAW3UEQTHkrGj7af+0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=FhDG0e7MLVVidQgSV2u34kGymZf2UUB7vXAOvbHGQrEkaHqN1JRQuR4U6S2aoz7MH
-	 xtuA2lSF4bFoVMWkZjrY321+3bnU0OdrPDOrB0zk6PfiLNkJdiy/Lyo6Q2MizTi7EY
-	 xrxEWJBkDydW1VSkYMIWwdX2hHr7ks/u4gw/1AEO8iYgM6YzS2Dr+YxgaOArI23UGz
-	 dn5rzJJM/R9iOYlL7gbygOuU7h6WE/ClT34ZlNWLHYTRD7ikgkNdjXDYvbA6iXhJmO
-	 aWMRwY9n99AgFrafBcDW34CHC/sMUJY79cy+apPOFuD490M2RF92iR/A+0lRM+WWsC
-	 YUegCD27q+G+Q==
-Date: Thu, 27 Nov 2025 20:16:45 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Donald Hunter <donald.hunter@gmail.com>, Jiri Pirko
- <jiri@resnulli.us>, Jonathan Corbet <corbet@lwn.net>, Saeed Mahameed
- <saeedm@nvidia.com>, "Leon Romanovsky" <leon@kernel.org>, Mark Bloch
- <mbloch@nvidia.com>, <netdev@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
- <linux-rdma@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Moshe Shemesh
- <moshe@nvidia.com>, Carolina Jubran <cjubran@nvidia.com>, Cosmin Ratiu
- <cratiu@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, Randy Dunlap
- <rdunlap@infradead.org>
-Subject: Re: [PATCH net-next V4 02/14] documentation: networking: add shared
- devlink documentation
-Message-ID: <20251127201645.3d7a10f6@kernel.org>
-In-Reply-To: <1764101173-1312171-3-git-send-email-tariqt@nvidia.com>
-References: <1764101173-1312171-1-git-send-email-tariqt@nvidia.com>
-	<1764101173-1312171-3-git-send-email-tariqt@nvidia.com>
+	s=arc-20240116; t=1764308930; c=relaxed/simple;
+	bh=fSjIyGyS4jVRIJpVP5drxPSucJxMk9FPbAbE4rfGF1U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XmBJOJfAocNCg9hcwxQw7rCyvbU5pOYB/TkAdDBTERC7xJv3nnOXc6dCQnypaZVg0E2XfbbIUOIHwbU+21ocy/A5JIndtlyigS/eUPteC2Ppt47T+E1rpA+I1FMMO7B+N+R/EU52ZRL2jkPeW2hytWTRGe3Xj9PtHpzh1rUMNMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mr6+48NU; arc=none smtp.client-ip=209.85.161.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-6592e70b629so636508eaf.0
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Nov 2025 21:48:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1764308928; x=1764913728; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fSjIyGyS4jVRIJpVP5drxPSucJxMk9FPbAbE4rfGF1U=;
+        b=mr6+48NUxGK1ER18Fu2U63afyQliZseZXRlBwnTh6JhblgEOrN4KvvnKCGG8v8KYf+
+         nvaJA0gUsoCJ76Z5VFSav2X4CKzjZahSE5N4NfQvyq0yH9IO4OwfG4PMeozn2HVy/9Bw
+         +kzJQu0AUw7VomAFJIo+DliWIrl2+CFlMEAYOkqC8saD4JxjWVig3i1oiN/z9+ol9wiF
+         uGxeSZR6RbFhWYVVcmStQhKIqT+/BlwoQtOX3v/YXcOuWJwLWXK7ZOY0wSw6HubNJnMt
+         yrHwzotjd/tnUMgNiZX5GeeF5rKhbYJb+yoNZ55r/vmbwDiSkVNCUUxXyBt1jQNpYzv/
+         ahTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764308928; x=1764913728;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=fSjIyGyS4jVRIJpVP5drxPSucJxMk9FPbAbE4rfGF1U=;
+        b=S1guQhALadld71tKR1tSI2xMz93q9cOr+CudbAIOdmVuR9efI4OJ32XoC68endP9Yq
+         sxQbiqWC23x4VbVneWKbGKPDnawx9NiYUZC6XgPHYnXniTxFiQXXPzz0BhFCXREqJplZ
+         VTk322em9Rsm1EuV+hbbtnpsXVQbTXKPkVmTfPCh2e7eZrH5jKAUCPDbNabT0lvUOoJ0
+         ySNQ1tXIL5NNS4ab+3s74LXqqwLzaBBP39uvOHqTPcywabdsNi2zevWHOAJW+zQIac/u
+         CUUrgFtNZWrcV1pFpqcr77ohiEeLo88LnW+jg+zTVIv3vN/9iBTQgXIvij5Ze/ekHKDR
+         BQGA==
+X-Forwarded-Encrypted: i=1; AJvYcCVfVSK8pc/O/q60XyH4jnhNA9AiibTzfXrbzgkNhTYbtVWQ2u7wqf43udjVuXpYbb4NqA6lnO/F2Rao@vger.kernel.org
+X-Gm-Message-State: AOJu0YzVuTV4g/L9+PtaLVJcIjMWcYK7+nEGwVoD1senMYV3Ifugc+MG
+	kqAHtJIODfRtGVx6DWEVeiImKzydEi0DaFdJKEDSdj6Nqr/QNY9rvBzD17TAx+FCR38XK/b5GCq
+	5lokqWjdQ/+fTQrqzuYs35+cScTcs1EQ=
+X-Gm-Gg: ASbGncvDvKmy0MhL4bUkc36AcHNk+Ba4DCsXqHnRzI1Qv8A5wam9AEosztD3V8qiqvB
+	n07rncZjwHnQTgcTWf07pWqRFAVPp5lYM3nJUp5Rl7E6/zVdI+FHcic+CmBaPfCfG/P4NRIdU+O
+	segOiGmSzqPKafAXvQUDOoPJBDVicfR2PbwZzajjN3Q/UMlNvBtyf+jRBnAwVxfmSR8InBDO09p
+	sUpi4DRLCtfj9OCKj2GZ8JH/XMXj64gYCwi1TATQT6f9VAzqLYA6nLTn8jJI1d7Ap0aaZIJdw==
+X-Google-Smtp-Source: AGHT+IETVVoMLF/ZbBbT6Lkyv00mgDtVUreHT7hilfznapRWibURo+ZvVRSnOJY7itZuwYEpeHBeJgOOfD2EIXJG9co=
+X-Received: by 2002:a05:6820:2017:b0:657:5cc3:f38 with SMTP id
+ 006d021491bc7-657908538bcmr9144016eaf.0.1764308928307; Thu, 27 Nov 2025
+ 21:48:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20251113093720.20428-1-gaurav.gangalwar@gmail.com>
+ <d3b2e4c8-18ec-4b8f-a05f-42bc00196e1c@oracle.com> <CAJiE4O=zhEaJKQO7bBc8g9gXCiMoi7G7qSiVbQ5Cq+SwBK8OVw@mail.gmail.com>
+ <fc58b0f2-d00b-4e4e-a353-ffe43bec6c6e@oracle.com> <55be56d3-b286-4b39-8246-4be80b03c22c@talpey.com>
+In-Reply-To: <55be56d3-b286-4b39-8246-4be80b03c22c@talpey.com>
+From: gaurav gangalwar <gaurav.gangalwar@gmail.com>
+Date: Fri, 28 Nov 2025 11:18:37 +0530
+X-Gm-Features: AWmQ_bm2eeyH_w63djEYQd-J6wll3KLYlQ4mWv5zbTcFuZT9EAoM28QZhLoY65k
+Message-ID: <CAJiE4OndWrE5jCrVXg4jse-nWUawPXnzEkYA9L1UAoMCL=KfAw@mail.gmail.com>
+Subject: Re: [PATCH] Make RPCRDMA_MAX_RECV_BATCH configurable.
+To: Tom Talpey <tom@talpey.com>
+Cc: Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org, 
+	Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, neilb@brown.name, 
+	Jeff Layton <jlayton@kernel.org>, 
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 25 Nov 2025 22:06:01 +0200 Tariq Toukan wrote:
-> From: Jiri Pirko <jiri@nvidia.com>
-> 
-> Document shared devlink instances for multiple PFs on the same chip.
-> 
-> Signed-off-by: Jiri Pirko <jiri@nvidia.com>
-> Reviewed-by: Cosmin Ratiu <cratiu@nvidia.com>
-> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-> ---
->  .../networking/devlink/devlink-shared.rst     | 66 +++++++++++++++++++
->  Documentation/networking/devlink/index.rst    |  1 +
->  2 files changed, 67 insertions(+)
->  create mode 100644 Documentation/networking/devlink/devlink-shared.rst
-> 
-> diff --git a/Documentation/networking/devlink/devlink-shared.rst b/Documentation/networking/devlink/devlink-shared.rst
-> new file mode 100644
-> index 000000000000..be9dd6f295df
-> --- /dev/null
-> +++ b/Documentation/networking/devlink/devlink-shared.rst
-> @@ -0,0 +1,66 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +============================
-> +Devlink Shared Instances
-> +============================
-> +
-> +Overview
-> +========
-> +
-> +Shared devlink instances allow multiple physical functions (PFs) on the same
-> +chip to share an additional devlink instance for chip-wide operations. This
-> +should be implemented within individual drivers alongside the individual PF
-> +devlink instances, not replacing them.
-> +
-> +The shared devlink instance should be backed by a faux device and should
-> +provide a common interface for operations that affect the entire chip
-> +rather than individual PFs.
+On Sat, Nov 15, 2025 at 2:34=E2=80=AFAM Tom Talpey <tom@talpey.com> wrote:
+>
+> On 11/13/2025 12:41 PM, Chuck Lever wrote:
+> > On 11/13/25 11:39 AM, gaurav gangalwar wrote:
+> >> On Thu, Nov 13, 2025 at 7:49=E2=80=AFPM Chuck Lever <chuck.lever@oracl=
+e.com> wrote:
+> >>>
+> >>> On 11/13/25 4:37 AM, Gaurav Gangalwar wrote:
+> >>>> Bumped up rpcrdma_max_recv_batch to 64.
+> >>>> Added param to change to it, it becomes handy to use higher value
+> >>>> to avoid hung.
+> >>>
+> >>> [ Resend with correct NFSD reviewer email addresses and linux-rdma@ ]
+> >>>
+> >>> Hi Gaurav -
+> >>>
+> >>> Adding an administrative setting is generally a last resort. First,
+> >>> we want a full root-cause analysis to understand the symptoms you
+> >>> are trying to address. Do you have an RCA or a simple reproducer to
+> >>> share with us?
+> >>
+> >> Issue found while testing fio workload over RDMA
+> >> Client: Ubuntu 24.04
+> >> Server: Ganesha NFS server
+> >> We have seen intermittent hung on client with buffered IO workload at
+> >> large scale with around 30 RDMA connections, client was under memory
+> >> pressure.
+> >> Ganesha log shows
+> >>
+> >> 10/11/2025 16:39:12Z : ntnx-10-57-210-224-a-fsvm 1309416[none]
+> >> [0x7f49a6c3fe80] rpc :TIRPC :EVENT :rpc_rdma_cq_event_handler() cq
+> >> completion status: RNR retry counter exceeded (13) rdma_xprt state 5
+> >> opcode 2 cbc 0x7f4996688000 inline 1
+> >>
+> >> Which points to lack of posted recv buffers on client.
+> >> Once we increased rpcrdma_max_recv_batch to 64, issue was resolved.
+> >
+> > That still doesn't convince me that increasing the receive batch count
+> > is a good fix, though it's certainly a workaround.
+>
+> It's not a workaround, this will fail on any RDMA provider that doesn't
+> perform RNR retry, for example iWARP. But more importantly, RNR retry is
+> unnecessary because the rpcrdma protocol implements a strict crediting
+> exchange. A proper rpcrdma implementation will never trigger RNR.
+>
+> This is almost certainly an rpcrdma protocol violation in the sender,
+> which is failing to honor the credit limit granted by the receiving
+> peer and is overrunning the peer's receive queue. A wireshark trace
+> would prove it. Please do this research.
+>
+> Tom.
+>
+>
+> >
+> > The client's RPC/RDMA code is supposed to track the number of Sends and
+> > keep the correct number of Receives on the Receive Queue. The goal of
+> > the implementation is to never encounter an RNR.
+> >
+> > Therefore, if it's not doing that (and the RNR retries suggests that's
+> > the case) there is an actual bug somewhere. The extra batch Receives ar=
+e
+> > an optimization, and should have no impact on correct operation.
+> >
+> > If you can't reproduce this with the Linux NFS server, the place to
+> > start looking for misbehavior is NFS/Ganesha, as it is the newer NFS
+> > over RDMA implementation of the two servers. Maybe it's not handling
+> > credit accounting correctly, or perhaps it's putting more Sends on
+> > the wire than the credit limit allows.
+> >
+> >
+>
+Thanks for the review, I was going through server implementation for
+NFS Ganesha, we strictly honor read_chunks, write_chunks and
+reply_chunks, so the credit limit should be client driven only.
+Only in case of callbacks from server to client, as of now there is no
+credits check, we advertise server_credits in cb call similar to
+rb_bc_max_requests in linux NFS server, but don't check for
+client_credits from client in reply. We need to limit callbacks to
+MIN(server_credits, client_credits)
 
-If we go with this we must state very clearly that this is a crutch and
-_not_ the recommended configuration...
-
-> +Implementation
-> +==============
-> +
-> +Architecture
-> +------------
-> +
-> +The implementation should use:
-> +
-> +* **Faux device**: Virtual device backing the shared devlink instance
-> +* **Chip identification**: PFs are grouped by chip using a driver-specific identifier
-> +* **Shared instance management**: Global list of shared instances with reference counting
-> +
-> +Initialization Flow
-> +-------------------
-> +
-> +1. **PF calls shared devlink init** during driver probe
-> +2. **Chip identification** using driver-specific method to determine device identity
-> +3. **Lookup existing shared instance** for this chip identifier
-> +4. **Create new shared instance** if none exists:
-> +
-> +   * Create faux device with chip identifier as name
-> +   * Allocate and register devlink instance
-> +   * Add to global shared instances list
-> +
-> +5. **Add PF to shared instance** PF list
-> +6. **Set nested devlink instance** for the PF devlink instance
-
-... because presumably we could use this infra to manage a single
-devlink instance? Which is what I asked for initially.
-
-> +Cleanup Flow
-> +------------
-> +
-> +1. **Cleanup** when PF is removed; destroy shared instance when last PF is removed
-> +
-> +Chip Identification
-> +-------------------
-> +
-> +PFs belonging to the same chip are identified using a driver-specific method.
-> +The driver is free to choose any identifier that is suitable for determining
-> +whether two PFs are part of the same device. Examples include VPD serial numbers,
-> +device tree properties, or other hardware-specific identifiers.
-> +
-> +Locking
-> +-------
-> +
-> +A global per-driver mutex protects the shared instances list and individual shared
-> +instance PF lists during registration/deregistration.
-
-Why can't this mutex live in the core?
-
-> +Similarly to other nested devlink instance relationships, devlink lock of
-> +the shared instance should be always taken after the devlink lock of PF.
-> diff --git a/Documentation/networking/devlink/index.rst b/Documentation/networking/devlink/index.rst
-> index 35b12a2bfeba..f7ba7dcf477d 100644
-> --- a/Documentation/networking/devlink/index.rst
-> +++ b/Documentation/networking/devlink/index.rst
-> @@ -68,6 +68,7 @@ general.
->     devlink-resource
->     devlink-selftests
->     devlink-trap
-> +   devlink-shared
->  
->  Driver-specific documentation
->  -----------------------------
-
+Regards,
+Gaurav
 
