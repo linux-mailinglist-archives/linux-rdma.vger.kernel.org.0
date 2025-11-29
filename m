@@ -1,198 +1,280 @@
-Return-Path: <linux-rdma+bounces-14820-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14821-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CAEEC93562
-	for <lists+linux-rdma@lfdr.de>; Sat, 29 Nov 2025 01:53:32 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id D811CC93696
+	for <lists+linux-rdma@lfdr.de>; Sat, 29 Nov 2025 03:21:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B64983A9302
-	for <lists+linux-rdma@lfdr.de>; Sat, 29 Nov 2025 00:53:30 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 05C9D3477A2
+	for <lists+linux-rdma@lfdr.de>; Sat, 29 Nov 2025 02:21:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FCF214F125;
-	Sat, 29 Nov 2025 00:53:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75B0C185955;
+	Sat, 29 Nov 2025 02:21:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="kl61N4qq"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Juq7kA9r"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11010060.outbound.protection.outlook.com [52.101.61.60])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17737169AD2;
-	Sat, 29 Nov 2025 00:53:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.60
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764377606; cv=fail; b=Axpuwdd/U97fB8qKp7DvjxoPsnKJloDsN6JMVNGki9HIVwZhBivMg1gYiMakMqhpyVVFMb3f5FKUwUj5nXMnoDBvKweJkUSVxmw182T8rT0JiQLr3YqkeACPOxLZZp0YGaOjA0qvPNpX6SDvtA3ObCTgOSmiDnobVuWwmP2XMxQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764377606; c=relaxed/simple;
-	bh=jAEU3ArMgiG1Bk56p/tiA+IWxK2RuxBE3kFcAnUDtHo=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=tQG+BAwC9lNEbXdJ769mu3e4/8q0ojfml262bqiV2V1oGGTwJGAeYqV3HJAn8orAgf12n+fA4fDvFvTTWnF6oqRcYk1kN/LGDEjMyV5pQnFsqgt74n6OlCxOpliI1eyUh/DBkV7++grOSeGgij+QEXS2gdxjxNQpGGUuZ/JVKSU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=kl61N4qq; arc=fail smtp.client-ip=52.101.61.60
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ONHbtQsCevdEKyF6Xa4qf+2UZFKR5NFLmJ5g7fcy/4GfWtmLJgqbeWh+qm7CVno3rwBCYSC3bSJECnp9EWvTYsz9lQtV5miej6zCjGVLKGwrxPTTnMjnC95xQPB1b3s9jljPSTxSKPuSBTHETFfhqT4RepCim7spWl9g2l0t4+iCh5y2xgetI3E4S8OPuuYn1Ic/kex5833HwosxWipRHTvb5SU6aE2w4Yo1OgHib0+qoDxnrFsGcqDpaMZBrblxiTLd1UKiKXddLWDhhBpF5yj3OwSlXRiMVW/RfMI9f+kLTpt457a8IMAKFynMVKG5jIa5c6tvC8AQICNixA5Y6Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2ePAzX5xSBA4FxTCFy7Ha0ttlgHbb3nLBSLgcJcL6NY=;
- b=vu/E4dR+4XRizIFBaEzDkwRhMZgCdNayBpydFnm5GiTo8dpu9Yvq1qbJhw+0q7UgMzV+V59DgBSQvNEBusSkTvZvrcM2NIELlSUITnqjauXJLvGECfjvkcKSCYYPC9806ABDyzlzNfBzWv4wjL6u8oWGncA+B8SzCegf943gxIY/Kf4+lFNri1hr3igwI5NvPpxCYwcrjKzTIFS+ASoAdHZxbPzfkvRR33LVus40Wo2cqY4orWDCZYE34AfR7oCYHOSejzpdhJLEeQ/0+DHdFs/sYLwY8DThddaMkHKO+QZ6ujCv4NvNwUHbYPoBJghE0DClNFvvf132OcOQBWf9qw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2ePAzX5xSBA4FxTCFy7Ha0ttlgHbb3nLBSLgcJcL6NY=;
- b=kl61N4qqrr3lQdppnwgnj7rfJtELfEzS4rLeftizxRUCMVNiNtjQeXPUEqkuc+r1CAKLEhqVkbM3nLYuoD/lFWY6gLYXt3U20Qfi58gDb9uweSpXGyUsd7cTqBsEpWqMkiFT46NQVxorjPF/a6eo4YrRHUF6Bf5dc9I+1YWboTiSXiet5ov981mcVpwghUAgd9ez89nC2r9CfT5d735OQqhB4UXfF6IiaYc7XwDRnXEbVbGV5SpaAn3aj92TtCsasfbk/GQMa2KpXtgUNxxsKG3H1h9eg2z4scWFoVn4b7VNvjvBJpAlYCxSQacGfbqAketkYHncmsD96+o+4bqgsw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB3613.namprd12.prod.outlook.com (2603:10b6:208:c1::17)
- by MN2PR12MB4208.namprd12.prod.outlook.com (2603:10b6:208:1d0::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9366.17; Sat, 29 Nov
- 2025 00:53:22 +0000
-Received: from MN2PR12MB3613.namprd12.prod.outlook.com
- ([fe80::1b3b:64f5:9211:608b]) by MN2PR12MB3613.namprd12.prod.outlook.com
- ([fe80::1b3b:64f5:9211:608b%4]) with mapi id 15.20.9366.012; Sat, 29 Nov 2025
- 00:53:22 +0000
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Leon Romanovsky <leon@kernel.org>,
-	linux-rdma@vger.kernel.org
-Cc: Avihai Horon <avihaih@nvidia.com>,
-	Eli Cohen <eli@mellanox.co.il>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E4B69443;
+	Sat, 29 Nov 2025 02:21:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1764382912; cv=none; b=n8LnB2SKHGgLOQMw/mBFwIhabUmNvGNZBs0jTqUjS8REFlixiGXEceuKb6mS4wpPbyl2qg74ltQKnGhjn6PTzscv26Rp0/5t2aKS1hBb2kMUjbjmQMXEtlTAjME58tB/fNEcXeR21FXGSGweDe5V9Un0dwN4Q2d52xOtaLkS0FQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1764382912; c=relaxed/simple;
+	bh=3d2xHMrTc1PHy+U5d1UlTBoq0ASGh1ZlsavDXYZD0p8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oiIdHxS1qojKVoXRY6HGXINNftVvI2UshNW2xhDMjuthSajnvsTnFmbGkIqKXWiBVSUl+/Yl2Rl4TjEVVToMGNjqy87zrJKKxsjUTMFCTKOUJhtzFdd8LL7NVaGLgaRjOQn4qFM6RjTprYKiCT+v/mStXaFl8xprY+XPigKDyj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Juq7kA9r; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=tppLXCmUU85+SVDKZ/T10MBOSK7gbVfqLaIDYlXlyTU=; b=Juq7kA9rhmQrvY1ObBVrUMTghd
+	ID8siey7MNFUvqN5LCtn17qdWvaHa/LR6AvEHwyg/iWK2Wxp6CqO/cdgQEahNN9wOJfoa4cPBWwVo
+	94TBBbvNZbQAQ/T6h+lojorqf1udcDUIj0v6EMyToxZFJ4zbe+y9dAi8iDpACMVcFcy3b2rzAFYrq
+	A+lc2LOZJGo8D0vHzioPyCrYkz81QCM7fCFxOyHEmThS/QoxrVP3EE2j9LVvTKPtysD9oq83lY25V
+	B7mEyqh1ZQvjKow+C4KNzUWLY2WUGfDD5EHMyvXBVDSyuB7632+Tdhw6WN7w1Mn4K6YJ5/5KCYryG
+	Y6r4LR5Q==;
+Received: from [50.53.43.113] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vPAap-00000001AoN-11Ek;
+	Sat, 29 Nov 2025 02:21:47 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: netdev@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Jack Wang <jinpu.wang@ionos.com>,
+	Jason Gunthorpe <jgg@nvidia.com>,
 	Leon Romanovsky <leonro@nvidia.com>,
-	Amit Matityahu <mitm@nvidia.com>,
-	patches@lists.linux.dev,
-	Roland Dreier <rolandd@cisco.com>,
-	stable@vger.kernel.org,
-	syzbot+b0da83a6c0e2e2bddbd4@syzkaller.appspotmail.com
-Subject: [PATCH] RDMA/cm: Fix leaking the multicast GID table reference
-Date: Fri, 28 Nov 2025 20:53:21 -0400
-Message-ID: <0-v1-4285d070a6b2+20a-rdma_mc_gid_leak_syz_jgg@nvidia.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MN2PR03CA0011.namprd03.prod.outlook.com
- (2603:10b6:208:23a::16) To MN2PR12MB3613.namprd12.prod.outlook.com
- (2603:10b6:208:c1::17)
+	linux-rdma@vger.kernel.org
+Subject: [PATCH] RTRS/rtrs: clean up rtrs headers kernel-doc
+Date: Fri, 28 Nov 2025 18:21:46 -0800
+Message-ID: <20251129022146.1498273-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3613:EE_|MN2PR12MB4208:EE_
-X-MS-Office365-Filtering-Correlation-Id: 50bc32b2-7fbd-4a7a-6fea-08de2ee1b1ef
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?+kSdCTsS7piEoNXb/Wt6p/HNjnuW21BMQG7TQeid2sOnkP5naWwV8Hpe+RQa?=
- =?us-ascii?Q?WGu8H/7mzB4k3s84RI6uyib6dhU3w3pHs5AWfUlzD7XUHangk5QDyw9O1m+G?=
- =?us-ascii?Q?qEBsoZGT0rk8YkSVM9dbl8WTaWobHOPa9lkEAJ0dpvKPr1E4ZTA0Ap508pNW?=
- =?us-ascii?Q?/Zl7VPszvogkIavoVcHU2ld9qRnzDx6vqYnPNJtZa3wZbMMo0qLw9fZmZu9a?=
- =?us-ascii?Q?T7d9mdteOmL8YtFV3lss0daV67Q7Tik+OLag7HaIFe4kWBZhucWw+xlPzOQ4?=
- =?us-ascii?Q?+zD8xIwqSJ5WB3DOxi32qyGXX9yf2+LCMlhE7Sm17+R84OZenip5IGfXfo6c?=
- =?us-ascii?Q?UFKC9a6t+Z/vUYDevqspk8mm0qkg4S3WUT5123Kh3dUiGO2qTcjt0TzKdQcV?=
- =?us-ascii?Q?UnKeXWezeV1K6v8mn3sXEVM+WogPIyy4JZjdyntJ89Zcx+9wQF25rjApVUA4?=
- =?us-ascii?Q?5MQuId4shZ8lJKGi5m/IYV7BBQXybNDbwImm5D4KIfeyzTBvcSthxTISXxYt?=
- =?us-ascii?Q?Lfhz0GICxvwW+Qz6boeSY/oYoM74fonMHW8zb4qyaZJ07TxJ+ZIm4dYj277C?=
- =?us-ascii?Q?gBHFZVOboIVbBl7dgvdvOTtSVrSful9H7EEvwUh6uohQQTpE/tatq2Q9MIdj?=
- =?us-ascii?Q?eN0JjRzZs4EOjW/HQaGoIweqWO88jtpzTMDA6jUuglg8daDjxZw9RNVhxnma?=
- =?us-ascii?Q?bHUgwKSdoDXpvPd69U44Ep5E525O9PhrM2KxKD6c4zdBlRlLkanQnrqHsQG3?=
- =?us-ascii?Q?P1a3ivNuunqNmsY+24NEXHwigBCX26rKwycaA669aDFcKGE1bPhHlLZAA9Jg?=
- =?us-ascii?Q?+ROP66UDpSoVklAJqWEGKTNPiEDOFGiBYwjNOp3tIYFdEXqnUhEH521juxUA?=
- =?us-ascii?Q?NEuoM8OL9DzGO8PhH4QD1AMO4nB3zXY/l+qauR6n2EC/LaytplXmzgHv4IPC?=
- =?us-ascii?Q?UCCFHYyZ3j03g+akd8hB0nHNos31BvzaF+7MRxKMcpsC18I3MQ5U7phcfhvb?=
- =?us-ascii?Q?ebqwAaWolw2qvAOHl86NdqIzrYziYRhiHN6/aBM2BNEv70Uki7eLIrzBbMoe?=
- =?us-ascii?Q?ppafwnwZ/7vC/tENFSLHbK3JAGxsou28UpDM91zT8WytwWP4+zySVJqhYNrs?=
- =?us-ascii?Q?8TMJs9kooqjf+skGoKwpfSUzIBSxzS0i/Mp0AVVoSUTeG/EbWJL6jnny55es?=
- =?us-ascii?Q?cqyYXYDO0GJnXJnj1J7Zq+ibD+6/LXo5d2tw4VUhtvlXrCaktYHmhJP0nb5P?=
- =?us-ascii?Q?qnjbZkw7Lx4WslahhrVrodoY/HS+ejEMt20PCBSm6rZzDuC1E+vNDuKCXTPV?=
- =?us-ascii?Q?5OLZhNLPgtYheIFTE3XagM71r36w9XNnoDAle66lX560kEGrL+cBrtBr0Ty4?=
- =?us-ascii?Q?b3a95DusbtpNPJT1jKEvr6ClGI1RqYAitRQ6SuTcrzB0u7p0Zg2Lub319a2X?=
- =?us-ascii?Q?dcxlBum9yHoQl8exlrvmfDuv8nJ2Vp39EBRClvXlodq+Oo4eE4yFcg=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3613.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?JQPJ/LOSKot4UY/vrvm9B/cbUQIe6/PkKFnnvIOx+6ZVXIHqsmrhDjllQUmG?=
- =?us-ascii?Q?C/GDCavxSdr3SpR7zGBOqeVtqeFjRbWwzqupRbv9oOkxKYhI3dJHJksrOxAM?=
- =?us-ascii?Q?XPWqMFrk+KHPHrLY/PI3uaXTIlxl80MKCiR4sAWEbIHxB0bARpGGzSor2k/I?=
- =?us-ascii?Q?HTpdMQ5Sh3/sk2nwDVEsj1orQmiAcY4PMaPZgN1nXstmpCez8sbRCK+25tL+?=
- =?us-ascii?Q?wOwkJCHJinGzpMcrJ7OM+jMszlPEvbY+74cmQdJibq3cfuCIaBZ4X2K0VX1o?=
- =?us-ascii?Q?uMsHq1tOM5AXPxJSW4kx49t5EqbECtOnlG09BrCkvkYtHsltiOvDlGfcXMRQ?=
- =?us-ascii?Q?z4i1TrpS5Ic22rDK1IDLrhUdWAJ8kJkbtyh0apH2yXLFrBH3OY7SmD5wflXc?=
- =?us-ascii?Q?Gzw86UvMCVs5R94IbIpImYxsiM53AJ1LBMTJiyClvd87SwrECYo+hOs+ya0i?=
- =?us-ascii?Q?TLkZ+Box0xTAtFGw11cx7FunPHHm2ePcSHmWcKDGNgh8dfEdha35xxPrVDef?=
- =?us-ascii?Q?A8VjmDH2RiHrJxtlrTHVIS7pi4VL2mCP5aMSQnMbL4tYNnXwh0qp5eeO7NYl?=
- =?us-ascii?Q?OjX0iBXvwS6+3ew38zOSbB0oeHRn+stJqwuhJmJWUBAg2y4KYAo1H848Jpw8?=
- =?us-ascii?Q?to1I7SeLfP1FspXahF4h7tojf8qNL8z8ZtTZCFIjyhPqPU7WhU//DQKRoQ36?=
- =?us-ascii?Q?yJ0sBrywrqg7TRRcT4WAhxuh9EQwXdzpUkxzI5wrKyCpaWKQuAJpo9Pp3Uyy?=
- =?us-ascii?Q?DvLfpM3sfXIMUm6+t7b1FFu0fKFdlT3q15OeUlFhdEcQpbiQmp+i+UciXvpV?=
- =?us-ascii?Q?m3tQnzNptl1O0r8LDR8YIAscEb2fgb08RWINkreuTrjakSB7jv6Lbh+tI5D/?=
- =?us-ascii?Q?eztMhInpDIj9ls6u1fXozBXnoNaZBkVcvk3WpA8C4buZjEFWnLKXXD/pzXiU?=
- =?us-ascii?Q?4UyPG5vXtDGKibN1ZRoIDHTqBGGij8XvY5rjvJx11AAwFfo0+AoacVqb7XyB?=
- =?us-ascii?Q?te0/87iQ5xrJPI70npFZFkedXY78iAnVhErVHEf+bh6Bafz/fSY9jyxXFWTK?=
- =?us-ascii?Q?mzyNgMXlDOgV1I2p+2opWpN5psRF3MOMf4yojF8PsnPfxeTBdQJCqJhGs7eN?=
- =?us-ascii?Q?pIBww8YHuJd9WUxPvyevgs7KwFPZ8nU2n+hsZIxBZLoOd6/QoANSQNNJDllm?=
- =?us-ascii?Q?+ep9xv5FuCaun7vYGH86OdJhftqaA1u/IqHgQTQoVmb6rxZC0mOzSRZYOdFk?=
- =?us-ascii?Q?bltBHB7QD29mb5PdSUiX2mPWeEgrgOZV2L03oHxSO7KBKGi7bmrAMDpZx6QG?=
- =?us-ascii?Q?gAfsalI0BNtsjm18TPwS45xVuuhEhLRC4XoOu+H19qP2xWYGbv0Cf9hiz1k6?=
- =?us-ascii?Q?Q4ik0w5T7r5ZSS0Bd9bow+/V455KOmSai+GjNUdEHYybonsTzxCclllNBnhC?=
- =?us-ascii?Q?fvrgliy9uKaQ8UNy/qEFYOIv+h8SXW72qNVoc5KGAXMPuxBIbmUFqrMsCN/1?=
- =?us-ascii?Q?6Ux9h+EDPNl0bFq5LoADkRHl00Sorf0xbXjgU9WZMgnmNCDEhUshvDhYmAl4?=
- =?us-ascii?Q?c7vpS7AYvBWNOmwa+yY=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 50bc32b2-7fbd-4a7a-6fea-08de2ee1b1ef
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3613.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2025 00:53:22.3526
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: onAxFSVUeTXIDrdM2gkq80HsDsSkx2emd7U8g7Px72A4Sq6a59tNzdjcTlEe2ioH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4208
+Content-Transfer-Encoding: 8bit
 
-If the CM ID is destroyed while the CM event for multicast creating is
-still queued the cancel_work_sync() will prevent the work from running
-which also prevents destroying the ah_attr. This leaks a refcount and
-triggers a WARN:
+Fix all (30+) kernel-doc warnings in rtrs.h and rtrs-pri.h.
+The changes are:
 
-   GID entry ref leak for dev syz1 index 2 ref=573
-   WARNING: CPU: 1 PID: 655 at drivers/infiniband/core/cache.c:809 release_gid_table drivers/infiniband/core/cache.c:806 [inline]
-   WARNING: CPU: 1 PID: 655 at drivers/infiniband/core/cache.c:809 gid_table_release_one+0x284/0x3cc drivers/infiniband/core/cache.c:886
+- add ending ':' to enum member names
+- change enum description separators from '-' to ':'
+- add "struct" keyword to kernel-doc for structs where missing
+- fix enum names in enum rtrs_clt_con_type
+- add a '-' separator and drop the "()" in enum rtrs_clt_con_type
+- convert struct rtrs_addr to kernel-doc format
+- add missing struct member descriptions for struct rtrs_attrs
 
-Destroy the ah_attr after canceling the work, it is safe to call this
-twice.
-
-Cc: stable@vger.kernel.org
-Fixes: fe454dc31e84 ("RDMA/ucma: Fix use-after-free bug in ucma_create_uevent")
-Reported-by: syzbot+b0da83a6c0e2e2bddbd4@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/all/68232e7b.050a0220.f2294.09f6.GAE@google.com
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 ---
- drivers/infiniband/core/cma.c | 2 ++
- 1 file changed, 2 insertions(+)
+Cc: "Md. Haris Iqbal" <haris.iqbal@ionos.com>
+Cc: Jack Wang <jinpu.wang@ionos.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Leon Romanovsky <leonro@nvidia.com>
+Cc: linux-rdma@vger.kernel.org
+---
+ drivers/infiniband/ulp/rtrs/rtrs-pri.h |   32 +++++++++++++++--------
+ drivers/infiniband/ulp/rtrs/rtrs.h     |   24 ++++++++++-------
+ 2 files changed, 36 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 95e89f5c147c2c..4f5fd47086ab90 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -2031,6 +2031,8 @@ static void destroy_mc(struct rdma_id_private *id_priv,
- 		dev_put(ndev);
+--- linux-next-20251128.orig/drivers/infiniband/ulp/rtrs/rtrs.h
++++ linux-next-20251128/drivers/infiniband/ulp/rtrs/rtrs.h
+@@ -24,8 +24,8 @@ struct rtrs_srv_op;
  
- 		cancel_work_sync(&mc->iboe_join.work);
-+		if (event->event == RDMA_CM_EVENT_MULTICAST_JOIN)
-+			rdma_destroy_ah_attr(&event->param.ud.ah_attr);
- 	}
- 	kfree(mc);
- }
-
-base-commit: 3fbaef0942719187f3396bfd0c780d55d35e0980
--- 
-2.43.0
-
+ /**
+  * enum rtrs_clt_link_ev - Events about connectivity state of a client
+- * @RTRS_CLT_LINK_EV_RECONNECTED	Client was reconnected.
+- * @RTRS_CLT_LINK_EV_DISCONNECTED	Client was disconnected.
++ * @RTRS_CLT_LINK_EV_RECONNECTED:	Client was reconnected.
++ * @RTRS_CLT_LINK_EV_DISCONNECTED:	Client was disconnected.
+  */
+ enum rtrs_clt_link_ev {
+ 	RTRS_CLT_LINK_EV_RECONNECTED,
+@@ -33,7 +33,9 @@ enum rtrs_clt_link_ev {
+ };
+ 
+ /**
+- * Source and destination address of a path to be established
++ * struct rtrs_addr - Source and destination address of a path to be established
++ * @src:	source address
++ * @dst:	destination address
+  */
+ struct rtrs_addr {
+ 	struct sockaddr_storage *src;
+@@ -41,7 +43,7 @@ struct rtrs_addr {
+ };
+ 
+ /**
+- * rtrs_clt_ops - it holds the link event callback and private pointer.
++ * struct rtrs_clt_ops - it holds the link event callback and private pointer.
+  * @priv: User supplied private data.
+  * @link_ev: Event notification callback function for connection state changes
+  *	@priv: User supplied data that was passed to rtrs_clt_open()
+@@ -67,10 +69,10 @@ enum wait_type {
+ };
+ 
+ /**
+- * enum rtrs_clt_con_type() type of ib connection to use with a given
++ * enum rtrs_clt_con_type - type of ib connection to use with a given
+  * rtrs_permit
+- * @ADMIN_CON - use connection reserved for "service" messages
+- * @IO_CON - use a connection reserved for IO
++ * @RTRS_ADMIN_CON: use connection reserved for "service" messages
++ * @RTRS_IO_CON: use a connection reserved for IO
+  */
+ enum rtrs_clt_con_type {
+ 	RTRS_ADMIN_CON,
+@@ -85,7 +87,7 @@ void rtrs_clt_put_permit(struct rtrs_clt
+ 			 struct rtrs_permit *permit);
+ 
+ /**
+- * rtrs_clt_req_ops - it holds the request confirmation callback
++ * struct rtrs_clt_req_ops - it holds the request confirmation callback
+  * and a private pointer.
+  * @priv: User supplied private data.
+  * @conf_fn:	callback function to be called as confirmation
+@@ -105,7 +107,11 @@ int rtrs_clt_request(int dir, struct rtr
+ int rtrs_clt_rdma_cq_direct(struct rtrs_clt_sess *clt, unsigned int index);
+ 
+ /**
+- * rtrs_attrs - RTRS session attributes
++ * struct rtrs_attrs - RTRS session attributes
++ * @queue_depth:	queue_depth saved from rtrs_clt_sess message
++ * @max_io_size:	max_io_size from rtrs_clt_sess message, capped to
++ *			  @max_segments * %SZ_4K
++ * @max_segments:	max_segments saved from rtrs_clt_sess message
+  */
+ struct rtrs_attrs {
+ 	u32		queue_depth;
+--- linux-next-20251128.orig/drivers/infiniband/ulp/rtrs/rtrs-pri.h
++++ linux-next-20251128/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+@@ -150,7 +150,7 @@ enum rtrs_msg_types {
+ 
+ /**
+  * enum rtrs_msg_flags - RTRS message flags.
+- * @RTRS_NEED_INVAL:	Send invalidation in response.
++ * @RTRS_MSG_NEED_INVAL_F: Send invalidation in response.
+  * @RTRS_MSG_NEW_RKEY_F: Send refreshed rkey in response.
+  */
+ enum rtrs_msg_flags {
+@@ -179,16 +179,19 @@ struct rtrs_sg_desc {
+  * @recon_cnt:	   Reconnections counter
+  * @sess_uuid:	   UUID of a session (path)
+  * @paths_uuid:	   UUID of a group of sessions (paths)
+- *
++ * @first_conn:    %1 if the connection request is the first for that session,
++ *			otherwise %0
+  * NOTE: max size 56 bytes, see man rdma_connect().
+  */
+ struct rtrs_msg_conn_req {
+-	/* Is set to 0 by cma.c in case of AF_IB, do not touch that.
+-	 * see https://www.spinics.net/lists/linux-rdma/msg22397.html
++	/**
++	 * @__cma_version: Is set to 0 by cma.c in case of AF_IB, do not touch
++	 * that. See https://www.spinics.net/lists/linux-rdma/msg22397.html
+ 	 */
+ 	u8		__cma_version;
+-	/* On sender side that should be set to 0, or cma_save_ip_info()
+-	 * extract garbage and will fail.
++	/**
++	 * @__ip_version: On sender side that should be set to 0, or
++	 * cma_save_ip_info() extract garbage and will fail.
+ 	 */
+ 	u8		__ip_version;
+ 	__le16		magic;
+@@ -199,6 +202,7 @@ struct rtrs_msg_conn_req {
+ 	uuid_t		sess_uuid;
+ 	uuid_t		paths_uuid;
+ 	u8		first_conn : 1;
++	/* private: */
+ 	u8		reserved_bits : 7;
+ 	u8		reserved[11];
+ };
+@@ -211,6 +215,7 @@ struct rtrs_msg_conn_req {
+  * @queue_depth:   max inflight messages (queue-depth) in this session
+  * @max_io_size:   max io size server supports
+  * @max_hdr_size:  max msg header size server supports
++ * @flags:	   RTRS message flags for this message
+  *
+  * NOTE: size is 56 bytes, max possible is 136 bytes, see man rdma_accept().
+  */
+@@ -222,22 +227,24 @@ struct rtrs_msg_conn_rsp {
+ 	__le32		max_io_size;
+ 	__le32		max_hdr_size;
+ 	__le32		flags;
++	/* private: */
+ 	u8		reserved[36];
+ };
+ 
+ /**
+- * struct rtrs_msg_info_req
++ * struct rtrs_msg_info_req - client additional info request
+  * @type:		@RTRS_MSG_INFO_REQ
+  * @pathname:		Path name chosen by client
+  */
+ struct rtrs_msg_info_req {
+ 	__le16		type;
+ 	u8		pathname[NAME_MAX];
++	/* private: */
+ 	u8		reserved[15];
+ };
+ 
+ /**
+- * struct rtrs_msg_info_rsp
++ * struct rtrs_msg_info_rsp - server additional info response
+  * @type:		@RTRS_MSG_INFO_RSP
+  * @sg_cnt:		Number of @desc entries
+  * @desc:		RDMA buffers where the client can write to server
+@@ -245,12 +252,14 @@ struct rtrs_msg_info_req {
+ struct rtrs_msg_info_rsp {
+ 	__le16		type;
+ 	__le16          sg_cnt;
++	/* private: */
+ 	u8              reserved[4];
++	/* public: */
+ 	struct rtrs_sg_desc desc[];
+ };
+ 
+ /**
+- * struct rtrs_msg_rkey_rsp
++ * struct rtrs_msg_rkey_rsp - server refreshed rkey response
+  * @type:		@RTRS_MSG_RKEY_RSP
+  * @buf_id:		RDMA buf_id of the new rkey
+  * @rkey:		new remote key for RDMA buffers id from server
+@@ -264,6 +273,7 @@ struct rtrs_msg_rkey_rsp {
+ /**
+  * struct rtrs_msg_rdma_read - RDMA data transfer request from client
+  * @type:		always @RTRS_MSG_READ
++ * @flags:		RTRS message flags (enum rtrs_msg_flags)
+  * @usr_len:		length of user payload
+  * @sg_cnt:		number of @desc entries
+  * @desc:		RDMA buffers where the server can write the result to
+@@ -277,7 +287,7 @@ struct rtrs_msg_rdma_read {
+ };
+ 
+ /**
+- * struct_msg_rdma_write - Message transferred to server with RDMA-Write
++ * struct rtrs_msg_rdma_write - Message transferred to server with RDMA-Write
+  * @type:		always @RTRS_MSG_WRITE
+  * @usr_len:		length of user payload
+  */
+@@ -287,7 +297,7 @@ struct rtrs_msg_rdma_write {
+ };
+ 
+ /**
+- * struct_msg_rdma_hdr - header for read or write request
++ * struct rtrs_msg_rdma_hdr - header for read or write request
+  * @type:		@RTRS_MSG_WRITE | @RTRS_MSG_READ
+  */
+ struct rtrs_msg_rdma_hdr {
 
