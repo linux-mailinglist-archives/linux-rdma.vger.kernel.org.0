@@ -1,191 +1,161 @@
-Return-Path: <linux-rdma+bounces-14843-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14844-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 090ABC9653A
-	for <lists+linux-rdma@lfdr.de>; Mon, 01 Dec 2025 10:08:00 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DA6FC96B89
+	for <lists+linux-rdma@lfdr.de>; Mon, 01 Dec 2025 11:50:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 7E67034441E
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Dec 2025 09:07:59 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E49594E123A
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Dec 2025 10:50:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B50FF2FDC5A;
-	Mon,  1 Dec 2025 09:07:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D9673043DB;
+	Mon,  1 Dec 2025 10:50:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gYSEDxxb"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="x0H5Sflv"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 164F32F90EA
-	for <linux-rdma@vger.kernel.org>; Mon,  1 Dec 2025 09:07:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FECD3043C7
+	for <linux-rdma@vger.kernel.org>; Mon,  1 Dec 2025 10:50:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764580074; cv=none; b=P1t0rNo4HYSArdNZj8XJC0h89/u784Z/cndeJf9vy1PCOywV2DIp71UKwmnedP3bMbqMqE6BqsB1PnGBpOBGa2eTqe5e4ZiteLqXHnKpjAj4l3GddjlN2eqvKu/3Q44Tf42m+N8D5mnBp7uSErN7uQgueUyRYSNBDSsfgxuQpJI=
+	t=1764586215; cv=none; b=U0UNnuQAFvdIg6UwRrWWbpaJ9AJGA7mPkVJTE2XkDStEIu1ZTKaNqdpt5LMmzUlYsH6gP4y6nIKWqGCi5xTBkfkfW2neBPfYxo5ZdQ55LOR/aOgVI3wU6REEEJ4XrVF/Z/MuUzl7dKtbUw90UWWvp2EDOhZLU/a2DLO8jzILe3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764580074; c=relaxed/simple;
-	bh=hFpoh+4KLKujfvVkJovsm9Fy1NIfmJfUCcw9DyAbbP4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jgPco+Rc491XYmP/x5HUjYIDDT0miCp5Cj7A1EsMgu9+ARf9P/Ow3Xqp798A7F98C2tN/5cZqNOzQXuXpo6nux7Or6Auw00N0/SI8boB2B+QfO0HAt5M1yODONHgGqdG70xdsba8iqoblR6ZNztzVLA5KW7U62nqVRPw6TufqAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gYSEDxxb; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-bddba676613so2456463a12.2
-        for <linux-rdma@vger.kernel.org>; Mon, 01 Dec 2025 01:07:52 -0800 (PST)
+	s=arc-20240116; t=1764586215; c=relaxed/simple;
+	bh=Vl5Pt6fbbWhiVMNLXXFQfg4zF9/xEjpl7rTTd1qmuhc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=a6O6/PVYRprQj96/Jadp0V/WKRXyHIVRxrQl7ntPQMUeltUPNjQZN7s6zN/i6HgVwUou6REK45yhYjQPRrSjIE6bA4ws31/GPSb0VhCFICbVLyE5ZIrYMuF2TUCfpZcFrB+5Ss5LhhsiWggEcZC35+CGS2j9FmkZFtDAr7SH4GI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=x0H5Sflv; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-42e2e6aa22fso558557f8f.2
+        for <linux-rdma@vger.kernel.org>; Mon, 01 Dec 2025 02:50:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764580072; x=1765184872; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oOfGslD6FpADHGJ9zJuTzDFQa1FBgdOpqbfefOYbpVg=;
-        b=gYSEDxxbsfRT29g1So99PS/F/B76n+7munhv/cUyq5fwBMSAkXps0klHo6f1KVwAko
-         x+2b8sT2yRMGzoA0lly2BhIh27HCq+AlekbW0SCtkxYzmWa6QoCXMGbAbfT+4LK4Ed40
-         3yvGKecoOvBswh+PD4S2KeZGt279xwqvzxebIxLHoJQUDDbc+Dq3a7pNbjvJldqBm8KX
-         6QN1whc89FHbOz9UM8tOXI+OFVBf93fcvKvlpkpq85zmwRtz1ZNUUwGrfdYaOeYUFD4e
-         6nEo9GwWRBVm4J8pCJap66Naww92ISaHkpu5i2RpTGxSkU8jFZ/qaCHs5oKnh7T0pw7l
-         buBA==
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1764586212; x=1765191012; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vsBhiX0PVPZ+1c2Xkz/7qg2YuqZk4pwJLdnYaEMKyy4=;
+        b=x0H5SflvsYhHeVejbOzjFjA6IxemuZ+5XE0kEgoxSRNMgoLmme6pS0YKTpXhsCKumV
+         SWWrYbtAZqZQwqCkDtK3HePLav9G9ld614dc+jmCpOWPfv51eTLRgKlutWSVmSJqkzdx
+         VVTG5IGZAQ+cxj2sR0af8arQOyytwYBKAO8hZ/RFIh3v8+Kp0i/udQXKCB3yhfnkkUMf
+         RirGGb5O0S95DPE569OB4HsFg7WRlxbBd8buPYcGNdaYwAipotN7MDWRF+gHm8Z/4gaL
+         UkiyVG46MY+yzzJxHOYZjInitRclZ3H6J0j6C8eLIFScQhn5cNsfD3oHGQgoZZioC+gW
+         rUGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764580072; x=1765184872;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oOfGslD6FpADHGJ9zJuTzDFQa1FBgdOpqbfefOYbpVg=;
-        b=bY0W39kgZslHKmJgBbWe247o1GgEs9r94V08TFlg+Twg6ru08zw1zjbZP3XlHDWmL0
-         kISLK5ZQW8oaGVnd+HxI9B4uj5Rmc8wc6xYzjI7ft5Eq1PTY+/6ROzEmQA0inQTjh7wF
-         F1Nu9sKkSCarC8FUkN5MUezAJmtr3+hpPyn4VGmsZ3X3K/qxNx31Si0PFhCIXmFr+r+F
-         ipdFHYyRJmzXBB7gcTTFqoHry4c1WrLTitEX2VUD82livdp9vwnPk7EvgiKBxcn9oE6v
-         vOc1QWWb3RrrxHEsE9CbKurR8IeySStfB3dc4JIsOAzQl6vKZRHeRd/8wBNYgZdjMhtM
-         0WPA==
-X-Forwarded-Encrypted: i=1; AJvYcCUVhel4Ur9aM+nuT8lHMm8WDADHvo3WbBcm0RMo9XSQ1hxkSZNGNkskrfVYaRPdmfvVvUQoaeUGEspx@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyc+dOcEtCwd8tXQpuJSILJhXU3p1Fxa8unpZYVBI+RBCIW3mGY
-	pCdihrX1xiqbHIWVvXUHsY9O/tneFIUo67EVWBDX4gSXFve9tRwH7a4hEF8IhapAFM4=
-X-Gm-Gg: ASbGncuiSbkpWVmh80Q5KNe3gX+3Y6nDBdZnc6rXGFQMvWZWG+Lt0fdQwuzQ5XsjY18
-	kaMRjZZTAoFxmqqbAkPuoTvYfIXrimBGZCEce0ducEGc8hfR63ZkXnu3+aowNSzmN/G8prHOggd
-	GWH4hZDK15dawPyapciZFD5xCet7HbZzhT1C6lcwQMdOXZyoPh/4Yup1TM7knevKdqSPyd2Ricb
-	5SLmIbFrDVw9v4vwskyjskjTCAmjrMNp5CIhvFPjcaJpv1ZmEYdw1Ng61oH7cWJVGF3Qm5UGNnJ
-	K7OPGypOEXW291MnVHPToylJ9UFZ6kg9oYrElWCwOpilLziPuxFMagyFnWUarlBq/eR0bSmvZ1E
-	Q9lu3Hj7W+r2ikY0TmMldNWRU2GE2bciHO5J3imGao4wyQH0fMQI2x5uwJQ2teVpiZdAWFpWSDB
-	hkoj48ibHXwhXUyido8F3qfDZ41Albn7iY5WZuRzbgwtJl8w==
-X-Google-Smtp-Source: AGHT+IHTmGQfng0rMYCLos6QdfyYuoGuoNcKnknPoKlzTqtyV2WqYOZ72IvcF099lFzZVR3jhak8nw==
-X-Received: by 2002:a05:7300:7c0e:b0:2a4:87e2:bcca with SMTP id 5a478bee46e88-2a7194ef22emr27010718eec.13.1764580072125;
-        Mon, 01 Dec 2025 01:07:52 -0800 (PST)
-Received: from localhost.localdomain ([192.146.154.240])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-11dcae73bedsm54932769c88.0.2025.12.01.01.07.51
+        d=1e100.net; s=20230601; t=1764586212; x=1765191012;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vsBhiX0PVPZ+1c2Xkz/7qg2YuqZk4pwJLdnYaEMKyy4=;
+        b=d+AeCgYEEZVasDPyf3wltwG81KiW2Jho5obhGzjq3ToG7lkajgfRxaJJ1+1LUKEA63
+         SDibG63WM1+WAHrGSc3PkrqVoIN3XKjdH/XRbIl+ujn83T4o4g7as4xDtbQc5GN/nX5b
+         r73PhKdpZrxj74ht3o+Ekjm7ZR5vmUQe1Z1X6G+0ZNkxDh1cLyW7aZg6GWJM4mbwZClh
+         xz+iBHKRDfv+3YJKjVqYM6pWU7ggUAK9PDcclEHC3HtbCwqulap5173D/+y2I71EmkwF
+         p6IBxNjnPKVscDXnsrGZ1oIVzUz4V2q87ryn52ZUXWOaOVshhnbik+Nly60nCdz+ddCp
+         Zjgw==
+X-Forwarded-Encrypted: i=1; AJvYcCVYCjwa8vtpv5PyQLFA80x4aOrjDe622+t/TvVY69oxDvqkG2Z1fbPVR3Gm3HN9E7NOCSPIKaGmDMoc@vger.kernel.org
+X-Gm-Message-State: AOJu0YxwGDMSLsohz4X0PNSAiBJCavJrH9RrWRglpSrRKanRALTV8DFJ
+	CAGwskepiU5aAUiy2RA57W1nTmKjzgfhNx4816YNVwm5vfF2wt7yD+S+TrKit4kCD5k=
+X-Gm-Gg: ASbGnctjRsVnm8Ra7vYALTp4s9Nt/W+Mu3zXhCSINQHmem34ccsWzY/o66hKsUEHab6
+	VG/FgLfut0QOulsHGYHZUKZnxbMzkk+YeV+vpOnzSvl/aRaSKtv8F0Hki0fqTSO50ulpiz2HWB6
+	IujVEuHkf9Brxabh7M/dcmS+1r6mhfM5RFhIe+hs/ayjp9Bq8xVNFnaLdKhAeeP04N9dGK8660m
+	eF07+OOlJnN8w/r6jTh5OdSdS/Oq8BawsgcKpvyNHgnSk2vxWFze3NyJDeCjF2LvUfOz0D14ZNj
+	e/CvmaJIIgudKY8LsvaNWxLMZGWurAbiMB+QKdX/D1eNkRNmlO66Xm0b74rLWt9yoxqhuYGcH8/
+	MThfxKyzEI/0WY50C4JdTWx7LQKHnrgPigIToo7Ztr2jnF9Bl9jSD4N7FToH+yYj9j5Ic67qDyp
+	6hqM9h97rMYrcYhj5fsGP4Vg==
+X-Google-Smtp-Source: AGHT+IF8Tu4veq+TqWb6qimoMPLbdTzxlzvlIjg1tAKG25deNHRi+KLPl07N+U3YsCQceTPRWYr3CA==
+X-Received: by 2002:a05:6000:2288:b0:429:c4bb:fbbb with SMTP id ffacd0b85a97d-42e0f2129cemr26950630f8f.13.1764586211765;
+        Mon, 01 Dec 2025 02:50:11 -0800 (PST)
+Received: from FV6GYCPJ69 ([140.209.217.211])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42e1caa5d02sm25827129f8f.36.2025.12.01.02.50.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Dec 2025 01:07:51 -0800 (PST)
-From: Gaurav Gangalwar <gaurav.gangalwar@gmail.com>
-To: trondmy@kernel.org,
-	anna@kernel.org,
-	tom@talpey.com,
-	chuck.lever@oracle.com
-Cc: linux-nfs@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	Gaurav Gangalwar <gaurav.gangalwar@gmail.com>
-Subject: [PATCH] When following NFS referrals, the client always attempts RDMA first (if compiled in), even when the parent mount uses TCP. This causes unnecessary timeouts when the referral server doesn't support RDMA.
-Date: Mon,  1 Dec 2025 04:07:32 -0500
-Message-ID: <20251201090732.4608-1-gaurav.gangalwar@gmail.com>
-X-Mailer: git-send-email 2.43.7
+        Mon, 01 Dec 2025 02:50:11 -0800 (PST)
+Date: Mon, 1 Dec 2025 11:50:08 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>, 
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	"David S. Miller" <davem@davemloft.net>, Donald Hunter <donald.hunter@gmail.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Saeed Mahameed <saeedm@nvidia.com>, 
+	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	Gal Pressman <gal@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>, 
+	Carolina Jubran <cjubran@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, 
+	Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH net-next V4 02/14] documentation: networking: add shared
+ devlink documentation
+Message-ID: <n6mey5dbfpw7ykp3wozgtxo5grvac642tskcn4mqknrurhpwy7@ugolzkzzujba>
+References: <1764101173-1312171-1-git-send-email-tariqt@nvidia.com>
+ <1764101173-1312171-3-git-send-email-tariqt@nvidia.com>
+ <20251127201645.3d7a10f6@kernel.org>
+ <hidhx467pn6pcisuoxdw3pykyvnlq7rdicmjksbozw4dtqysti@yd5lin3qft4q>
+ <20251128191924.7c54c926@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251128191924.7c54c926@kernel.org>
 
-Modify nfs4_create_referral_server() to check the parent client's
-transport protocol. Only attempt RDMA if the parent is using RDMA,
-otherwise use the parent's protocol (TCP/TCP-TLS) directly.
+Sat, Nov 29, 2025 at 04:19:24AM +0100, kuba@kernel.org wrote:
+>On Fri, 28 Nov 2025 12:00:13 +0100 Jiri Pirko wrote:
+>> >> +Shared devlink instances allow multiple physical functions (PFs) on the same
+>> >> +chip to share an additional devlink instance for chip-wide operations. This
+>> >> +should be implemented within individual drivers alongside the individual PF
+>> >> +devlink instances, not replacing them.
+>> >> +
+>> >> +The shared devlink instance should be backed by a faux device and should
+>> >> +provide a common interface for operations that affect the entire chip
+>> >> +rather than individual PFs.  
+>> >
+>> >If we go with this we must state very clearly that this is a crutch and
+>> >_not_ the recommended configuration...  
+>> 
+>> Why "not recommented". If there is a usecase for this in a dirrerent
+>> driver, it is probably good to utilize the shared instance, isn't it?
+>> Perhaps I'm missing something.
+>
+>Having a single instance seems preferable from user's point of view.
 
-Add module parameter 'nfs4_inherit_referral_transport' (default: Y)
-to control this behavior, allowing administrators to restore the
-previous "always try RDMA" behavior if needed.
+Sure, if there is no need for sharing, correct.
 
-This eliminates connection delays for TCP-based referrals in
-environments where RDMA is compiled in but not deployed.
 
-Signed-off-by: Gaurav Gangalwar <gaurav.gangalwar@gmail.com>
----
- fs/nfs/nfs4_fs.h    |  1 +
- fs/nfs/nfs4client.c | 18 +++++++++++++-----
- fs/nfs/super.c      |  8 ++++++++
- 3 files changed, 22 insertions(+), 5 deletions(-)
+>
+>> >... because presumably we could use this infra to manage a single
+>> >devlink instance? Which is what I asked for initially.  
+>> 
+>> I'm not sure I follow. If there is only one PF bound, there is 1:1
+>> relationship. Depends on how many PFs of the same ASIC you have.
+>
+>I'm talking about multi-PF devices. mlx5 supports multi-PF setup for
+>NUMA locality IIUC. In such configurations per-PF parameters can be
+>configured on PCI PF ports.
 
-diff --git a/fs/nfs/nfs4_fs.h b/fs/nfs/nfs4_fs.h
-index c34c89af9c7d..d8516fb8a711 100644
---- a/fs/nfs/nfs4_fs.h
-+++ b/fs/nfs/nfs4_fs.h
-@@ -548,6 +548,7 @@ extern unsigned short max_session_cb_slots;
- extern unsigned short send_implementation_id;
- extern bool recover_lost_locks;
- extern short nfs_delay_retrans;
-+extern bool nfs4_inherit_referral_transport;
- 
- #define NFS4_CLIENT_ID_UNIQ_LEN		(64)
- extern char nfs4_client_id_uniquifier[NFS4_CLIENT_ID_UNIQ_LEN];
-diff --git a/fs/nfs/nfs4client.c b/fs/nfs/nfs4client.c
-index 3a4baed993c9..7fb39bf662af 100644
---- a/fs/nfs/nfs4client.c
-+++ b/fs/nfs/nfs4client.c
-@@ -1258,12 +1258,20 @@ struct nfs_server *nfs4_create_referral_server(struct fs_context *fc)
- 	nfs_server_copy_userdata(server, parent_server);
- 
- 	/* Get a client representation */
-+	/*
-+	 * If nfs4_inherit_referral_transport is enabled (default), only try
-+	 * RDMA if the parent client is using RDMA. This avoids connection
-+	 * delays when parent uses TCP and referral server doesn't support RDMA.
-+	 */
- #if IS_ENABLED(CONFIG_SUNRPC_XPRT_RDMA)
--	rpc_set_port(&ctx->nfs_server.address, NFS_RDMA_PORT);
--	cl_init.proto = XPRT_TRANSPORT_RDMA;
--	error = nfs4_set_client(server, &cl_init);
--	if (!error)
--		goto init_server;
-+	if (!nfs4_inherit_referral_transport ||
-+	    parent_client->cl_proto == XPRT_TRANSPORT_RDMA) {
-+		rpc_set_port(&ctx->nfs_server.address, NFS_RDMA_PORT);
-+		cl_init.proto = XPRT_TRANSPORT_RDMA;
-+		error = nfs4_set_client(server, &cl_init);
-+		if (!error)
-+			goto init_server;
-+	}
- #endif	/* IS_ENABLED(CONFIG_SUNRPC_XPRT_RDMA) */
- 
- 	cl_init.proto = XPRT_TRANSPORT_TCP;
-diff --git a/fs/nfs/super.c b/fs/nfs/super.c
-index 72dee6f3050e..cb9618a0df0f 100644
---- a/fs/nfs/super.c
-+++ b/fs/nfs/super.c
-@@ -1426,6 +1426,8 @@ unsigned short max_session_cb_slots = NFS4_DEF_CB_SLOT_TABLE_SIZE;
- unsigned short send_implementation_id = 1;
- char nfs4_client_id_uniquifier[NFS4_CLIENT_ID_UNIQ_LEN] = "";
- bool recover_lost_locks = false;
-+/* Inherit parent transport for referral mounts */
-+bool nfs4_inherit_referral_transport = true;
- short nfs_delay_retrans = -1;
- 
- EXPORT_SYMBOL_GPL(nfs_callback_nr_threads);
-@@ -1437,6 +1439,7 @@ EXPORT_SYMBOL_GPL(max_session_cb_slots);
- EXPORT_SYMBOL_GPL(send_implementation_id);
- EXPORT_SYMBOL_GPL(nfs4_client_id_uniquifier);
- EXPORT_SYMBOL_GPL(recover_lost_locks);
-+EXPORT_SYMBOL_GPL(nfs4_inherit_referral_transport);
- EXPORT_SYMBOL_GPL(nfs_delay_retrans);
- 
- #define NFS_CALLBACK_MAXPORTNR (65535U)
-@@ -1486,6 +1489,11 @@ MODULE_PARM_DESC(recover_lost_locks,
- 		 "If the server reports that a lock might be lost, "
- 		 "try to recover it risking data corruption.");
- 
-+module_param(nfs4_inherit_referral_transport, bool, 0644);
-+MODULE_PARM_DESC(nfs4_inherit_referral_transport,
-+		 "Referral mounts inherit parent's transport protocol. "
-+		 "If disabled, always try RDMA first (default=Y)");
-+
- module_param_named(delay_retrans, nfs_delay_retrans, short, 0644);
- MODULE_PARM_DESC(delay_retrans,
- 		 "Unless negative, specifies the number of times the NFSv4 "
--- 
-2.43.7
+Correct. IFAIK there is one PF devlink instance per NUMA node. The
+shared instance on top would make sense to me. That was one of
+motivations to introduce it. Then this shared instance would hold
+netdev, vf representors etc.
 
+
+>
+>> >Why can't this mutex live in the core?  
+>> 
+>> Well, the mutex protect the list of instances which are managed in the
+>> driver. If you want to move the mutex, I don't see how to do it without
+>> moving all the code related to shared devlink instances, including faux
+>> probe etc. Is that what you suggest?
+>
+>Multiple ways you can solve it, but drivers should have to duplicate
+>all the instance management and locking. BTW please don't use guard().
+
+I'm having troubles to undestand what you say, sorry :/ Do you prefer to
+move the code from driver to devlink core or not?
+Regarding guard(), sure. I wonder how much more time it's gonna take
+since this resistentance fades out :)
 
