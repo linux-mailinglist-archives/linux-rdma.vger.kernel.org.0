@@ -1,183 +1,183 @@
-Return-Path: <linux-rdma+bounces-14848-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14849-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A6DEC9882E
-	for <lists+linux-rdma@lfdr.de>; Mon, 01 Dec 2025 18:26:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DDA92C98923
+	for <lists+linux-rdma@lfdr.de>; Mon, 01 Dec 2025 18:44:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0C2CA4E1D68
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Dec 2025 17:26:37 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1C4784E1D5C
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Dec 2025 17:44:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D00DC3191D0;
-	Mon,  1 Dec 2025 17:26:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABFED338593;
+	Mon,  1 Dec 2025 17:43:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cqS+MW7K"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="iaXlWHOw"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A57B30E0D4;
-	Mon,  1 Dec 2025 17:26:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 017F73370E5
+	for <linux-rdma@vger.kernel.org>; Mon,  1 Dec 2025 17:43:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764609993; cv=none; b=uMhZnkCyIZaozTb+WB/LT/2F9YsPaxfXCiCv6i5S1c+iQtYJyzmzrtxh1F5dZUHHa9Pog98/DXpfmV93HhZoeNPfkpocq6sfgMIKWysN4efwkrGTPzz7M+v6c0Z87dLJS2iUauxiwyApJN+I5K8VWq56miPL5x5l42JaV58Ae1A=
+	t=1764611035; cv=none; b=rUQ4j/GQMHUw5tMufZ5/ZymGpIsFrbTn1NafjnA5n83SxypEBrPf7ODd7c6JVjMx8Qvh2xIGH3Qpmd59MW9lHK7RTGR1s8cDoCCC1VxHnMTRl4+114Ur4i60Gs6Bb4fLIW+RgAftu9Uf4a7WYzIVjzsfBwE0Z68zWRz19+TGYoc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764609993; c=relaxed/simple;
-	bh=7AasdRgLRi4qaixMvXfG1exskygBRvqyj7df5offskU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=qZl00C39Led4YoAaie0fh0ToaMs/Q/nGsKn8j1OWGQdTbAgcipmlo3/mh/i/IQjiNOgDZrKRBYNMGScaqH6k1hzD4iYSzHjbsxx6terfiZxMqa+TCzl79qr+ZKJWg2FMNdP41cPV3GXfBp51rWa5HAn49Fe3SusoUIwWM8ITIVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cqS+MW7K; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB018C4CEF1;
-	Mon,  1 Dec 2025 17:26:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764609993;
-	bh=7AasdRgLRi4qaixMvXfG1exskygBRvqyj7df5offskU=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=cqS+MW7KeoIxUV1QC4D+Y4jzx2Duaf+HEX77FyZiWgaH5FE5C3DTEjC6KIzcbUNC/
-	 MmwXOV4LpLr0uTQ7LHZkKxV7oIkIld11IByIbLPhgfFrX3yFwSA+h9oPieTQdQ7E/8
-	 yyrNrLaYhSkm41c/Xe8Zmeroo7TouHda7eAy4PW37OYtwAwmga9CDbT6C/pwrOEKCM
-	 yPbY9xte5DjfHGBG1y+WpHSEMzZ1GSzs+HzRuCiaCy++XCZV6YiuKU2pobTWnZuavB
-	 86vBwJxyxzkcLtDjgRU2NZeOwlAtEZ+iGUxAlu1efbyNwiOAr/e/PGESnyKqe4km6M
-	 j8yMZ/Ly2e7bw==
-Message-ID: <a09d7b34f02b67be947b82eb1f677fa5e09280d8.camel@kernel.org>
-Subject: Re: [PATCH] When following NFS referrals, the client always
- attempts RDMA first (if compiled in), even when the parent mount uses TCP.
- This causes unnecessary timeouts when the referral server doesn't support
- RDMA.
-From: Trond Myklebust <trondmy@kernel.org>
-To: Gaurav Gangalwar <gaurav.gangalwar@gmail.com>, anna@kernel.org, 
-	tom@talpey.com, chuck.lever@oracle.com
-Cc: linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Date: Mon, 01 Dec 2025 12:26:12 -0500
-In-Reply-To: <20251201090732.4608-1-gaurav.gangalwar@gmail.com>
-References: <20251201090732.4608-1-gaurav.gangalwar@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.2 (3.58.2-1.fc43) 
+	s=arc-20240116; t=1764611035; c=relaxed/simple;
+	bh=vjOMJrWFQpr1l88g7CIRlvPS5Pmc7X/YX9VtAzCpaCQ=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=gY1ta7YnjDUm5No9FMRawUQjka6R5Pn3/ZN3VByM1r0K5mwMyZluIGAp0vRfzR/vzsX1jFXxI0Obt8D37TesALKdCSsbAA4/4HaNImcst9Ct/RopmXyXFlGHQ1pquV3SSh7sDOw07ZzsE4wbOV2juoVmPwIH2B9v5bL27ULe0MA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=iaXlWHOw; arc=none smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 5B1DxaDD3692447
+	for <linux-rdma@vger.kernel.org>; Mon, 1 Dec 2025 09:43:53 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
+	 bh=Nx2UlxPjAHEeAyLfVRPlU3Hm4xB6ZJ8PKySSxUXhnfs=; b=iaXlWHOwfkel
+	ZJyZWL/esQTbnTK2151OSIX+o4Ji9ep+FASbSPTccT4Y5mvR9IEpPZkeyzE3Ea+l
+	3ClIwG9JOppInwWJ8n2Bzmg3dLc0QfFtgalJY/MG0w+GgVMqkIgmrwZAzksKS9hk
+	RtXb5q8UeFodFCw3FIQskN/2L5TBfLrnVTZHJdpCsOEoo+etXKoe7KV4TMKbJGhl
+	TD5wN32YnjPfjuhSus+Q6hXqScQEMTzE3qij7fc0cjLeUMx+6IAA3G4fSX5kq7pI
+	hbUhkuYiUwirqYXiWMelCltG4y5F8yeNRtdPaMHU8DtCJtoHTTqgaGdvhx4ptxdF
+	odq9tbll5g==
+Received: from maileast.thefacebook.com ([163.114.135.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4asccyt4b2-8
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <linux-rdma@vger.kernel.org>; Mon, 01 Dec 2025 09:43:53 -0800 (PST)
+Received: from twshared24723.01.snb1.facebook.com (2620:10d:c0a8:1b::2d) by
+ mail.thefacebook.com (2620:10d:c0a9:6f::8fd4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.2562.29; Mon, 1 Dec 2025 17:43:49 +0000
+Received: by devbig259.ftw1.facebook.com (Postfix, from userid 664516)
+	id 7C26BCBE0463; Mon,  1 Dec 2025 09:43:39 -0800 (PST)
+From: Zhiping Zhang <zhipingz@meta.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+CC: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Bjorn
+ Helgaas <bhelgaas@google.com>, <linux-rdma@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Keith Busch
+	<kbusch@kernel.org>, Yochai Cohen <yochai@nvidia.com>,
+        Yishai Hadas
+	<yishaih@nvidia.com>
+Subject: Re: [RFC 1/2] Set steering-tag directly for PCIe P2P memory access
+Date: Mon, 1 Dec 2025 09:43:20 -0800
+Message-ID: <20251201174339.1852344-1-zhipingz@meta.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251124212753.GA2714985@bhelgaas>
+References: <20251124212753.GA2714985@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjAxMDE0NCBTYWx0ZWRfX7jrHVKgRhikZ
+ 2fNoaC7QipIC0Y2Zw/aUWePnRA78OkTg5BY7l1k7QrkKqLE/V/oHGElde5WDbnTCldj/CECOS2j
+ /eQzDB71DaMtcIxUHtxVfrz759VICcBbuchGar3J7Alvjo72YYHpUGLerL3C+bJH5sbDRwksDn+
+ +a8qPoD8Y73NoG+N2BFawJMjnT/3GMC/al7yDA7tMJwV6SOT4ZpYneoXkVx7KfSoIKPVuAOhxD3
+ OAFxgjiUXsiQefh51XjiDsgWz7uFsZsW5+jNBV0quP2DwCLwb184kVXd5mcL1nOi8BLqNm+VF0c
+ ArNNf3aLmcnfbaIvDViIVRCZS1nxzFYSGzWRxl/qooU57pZT3V9aVKDKD7XiTYEJIfA8ivVOu7m
+ izQP0EIn6s3pu/ZDbmhC4f0rWZTqMA==
+X-Proofpoint-ORIG-GUID: u36mgK8GD5FAgxhCxaDBfdsdb6NZutXD
+X-Authority-Analysis: v=2.4 cv=TbKbdBQh c=1 sm=1 tr=0 ts=692dd3d9 cx=c_pps
+ a=MfjaFnPeirRr97d5FC5oHw==:117 a=MfjaFnPeirRr97d5FC5oHw==:17
+ a=IkcTkHD0fZMA:10 a=wP3pNCr1ah4A:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=S7gPgYD2AAAA:8 a=VabnemYjAAAA:8 a=8hobeDgTnmXHB3sxjRwA:9 a=QEXdDO2ut3YA:10
+ a=1f8SinR9Uz0LDa1zYla5:22 a=gKebqoRLp9LExxC7YDUY:22
+X-Proofpoint-GUID: u36mgK8GD5FAgxhCxaDBfdsdb6NZutXD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-11-28_08,2025-11-27_02,2025-10-01_01
 
-On Mon, 2025-12-01 at 04:07 -0500, Gaurav Gangalwar wrote:
-> Modify nfs4_create_referral_server() to check the parent client's
-> transport protocol. Only attempt RDMA if the parent is using RDMA,
-> otherwise use the parent's protocol (TCP/TCP-TLS) directly.
->=20
-> Add module parameter 'nfs4_inherit_referral_transport' (default: Y)
-> to control this behavior, allowing administrators to restore the
-> previous "always try RDMA" behavior if needed.
->=20
-> This eliminates connection delays for TCP-based referrals in
-> environments where RDMA is compiled in but not deployed.
+> On Mon, 24 Nov 2025 15:27:53 -0600, Bjorn Helgaas wrote:
+> > PCIe: Add a memory type for P2P memory access
 
-Do we really need the module parameter? If you go back to Chuck's
-commit 530ea4219231 ("nfs: Referrals should use the same proto setting
-as their parent") then his intention was to make the RDMA behaviour
-inheritable, and that has always been my preference too.
+> This should be in the Subject: line.
 
-It is all the more important now that we also have TLS protection,
-which would break when we default to RDMA.
+> It should also start with "PCI/TPH: ..." (not "PCIe") to match
+> previous history.
 
->=20
-> Signed-off-by: Gaurav Gangalwar <gaurav.gangalwar@gmail.com>
-> ---
-> =C2=A0fs/nfs/nfs4_fs.h=C2=A0=C2=A0=C2=A0 |=C2=A0 1 +
-> =C2=A0fs/nfs/nfs4client.c | 18 +++++++++++++-----
-> =C2=A0fs/nfs/super.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 8 ++++++++
-> =C2=A03 files changed, 22 insertions(+), 5 deletions(-)
->=20
-> diff --git a/fs/nfs/nfs4_fs.h b/fs/nfs/nfs4_fs.h
-> index c34c89af9c7d..d8516fb8a711 100644
-> --- a/fs/nfs/nfs4_fs.h
-> +++ b/fs/nfs/nfs4_fs.h
-> @@ -548,6 +548,7 @@ extern unsigned short max_session_cb_slots;
-> =C2=A0extern unsigned short send_implementation_id;
-> =C2=A0extern bool recover_lost_locks;
-> =C2=A0extern short nfs_delay_retrans;
-> +extern bool nfs4_inherit_referral_transport;
-> =C2=A0
-> =C2=A0#define NFS4_CLIENT_ID_UNIQ_LEN		(64)
-> =C2=A0extern char nfs4_client_id_uniquifier[NFS4_CLIENT_ID_UNIQ_LEN];
-> diff --git a/fs/nfs/nfs4client.c b/fs/nfs/nfs4client.c
-> index 3a4baed993c9..7fb39bf662af 100644
-> --- a/fs/nfs/nfs4client.c
-> +++ b/fs/nfs/nfs4client.c
-> @@ -1258,12 +1258,20 @@ struct nfs_server
-> *nfs4_create_referral_server(struct fs_context *fc)
-> =C2=A0	nfs_server_copy_userdata(server, parent_server);
-> =C2=A0
-> =C2=A0	/* Get a client representation */
-> +	/*
-> +	 * If nfs4_inherit_referral_transport is enabled (default),
-> only try
-> +	 * RDMA if the parent client is using RDMA. This avoids
-> connection
-> +	 * delays when parent uses TCP and referral server doesn't
-> support RDMA.
-> +	 */
-> =C2=A0#if IS_ENABLED(CONFIG_SUNRPC_XPRT_RDMA)
-> -	rpc_set_port(&ctx->nfs_server.address, NFS_RDMA_PORT);
-> -	cl_init.proto =3D XPRT_TRANSPORT_RDMA;
-> -	error =3D nfs4_set_client(server, &cl_init);
-> -	if (!error)
-> -		goto init_server;
-> +	if (!nfs4_inherit_referral_transport ||
-> +	=C2=A0=C2=A0=C2=A0 parent_client->cl_proto =3D=3D XPRT_TRANSPORT_RDMA) =
-{
-> +		rpc_set_port(&ctx->nfs_server.address,
-> NFS_RDMA_PORT);
-> +		cl_init.proto =3D XPRT_TRANSPORT_RDMA;
-> +		error =3D nfs4_set_client(server, &cl_init);
-> +		if (!error)
-> +			goto init_server;
-> +	}
-> =C2=A0#endif	/* IS_ENABLED(CONFIG_SUNRPC_XPRT_RDMA) */
-> =C2=A0
-> =C2=A0	cl_init.proto =3D XPRT_TRANSPORT_TCP;
-> diff --git a/fs/nfs/super.c b/fs/nfs/super.c
-> index 72dee6f3050e..cb9618a0df0f 100644
-> --- a/fs/nfs/super.c
-> +++ b/fs/nfs/super.c
-> @@ -1426,6 +1426,8 @@ unsigned short max_session_cb_slots =3D
-> NFS4_DEF_CB_SLOT_TABLE_SIZE;
-> =C2=A0unsigned short send_implementation_id =3D 1;
-> =C2=A0char nfs4_client_id_uniquifier[NFS4_CLIENT_ID_UNIQ_LEN] =3D "";
-> =C2=A0bool recover_lost_locks =3D false;
-> +/* Inherit parent transport for referral mounts */
-> +bool nfs4_inherit_referral_transport =3D true;
-> =C2=A0short nfs_delay_retrans =3D -1;
-> =C2=A0
-> =C2=A0EXPORT_SYMBOL_GPL(nfs_callback_nr_threads);
-> @@ -1437,6 +1439,7 @@ EXPORT_SYMBOL_GPL(max_session_cb_slots);
-> =C2=A0EXPORT_SYMBOL_GPL(send_implementation_id);
-> =C2=A0EXPORT_SYMBOL_GPL(nfs4_client_id_uniquifier);
-> =C2=A0EXPORT_SYMBOL_GPL(recover_lost_locks);
-> +EXPORT_SYMBOL_GPL(nfs4_inherit_referral_transport);
-> =C2=A0EXPORT_SYMBOL_GPL(nfs_delay_retrans);
-> =C2=A0
-> =C2=A0#define NFS_CALLBACK_MAXPORTNR (65535U)
-> @@ -1486,6 +1489,11 @@ MODULE_PARM_DESC(recover_lost_locks,
-> =C2=A0		 "If the server reports that a lock might be lost, "
-> =C2=A0		 "try to recover it risking data corruption.");
-> =C2=A0
-> +module_param(nfs4_inherit_referral_transport, bool, 0644);
-> +MODULE_PARM_DESC(nfs4_inherit_referral_transport,
-> +		 "Referral mounts inherit parent's transport
-> protocol. "
-> +		 "If disabled, always try RDMA first (default=3DY)");
-> +
-> =C2=A0module_param_named(delay_retrans, nfs_delay_retrans, short, 0644);
-> =C2=A0MODULE_PARM_DESC(delay_retrans,
-> =C2=A0		 "Unless negative, specifies the number of times the
-> NFSv4 "
+Thanks, ack! I will update the subject line.
 
---=20
-Trond Myklebust
-Linux NFS client maintainer, Hammerspace
-trondmy@kernel.org, trond.myklebust@hammerspace.com
+> > The current tph memory type definition applies for CPU use cases. For=
+ device
+> > memory accessed in the peer-to-peer (P2P) manner, we need another mem=
+ory
+> > type.
+
+> s/tph/TPH/
+
+> Make this say what the patch does (not just that we *need* another
+> memory type, that we actually *add* one).
+
+> The subject line should also say what the patch does.  I don't think
+> this patch actually changes the *setting* of the steering tag (I could
+> be wrong, I haven't looked carefully).
+
+Sure, I=E2=80=99ll correct and revise the commit message to clearly state=
+ what the
+patch does.
+
+> > Signed-off-by: Zhiping Zhang <zhipingz@meta.com>
+> > ---
+> >  drivers/pci/tph.c       | 4 ++++
+> >  include/linux/pci-tph.h | 4 +++-
+> >  2 files changed, 7 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/pci/tph.c b/drivers/pci/tph.c
+> > index cc64f93709a4..d983c9778c72 100644
+> > --- a/drivers/pci/tph.c
+> > +++ b/drivers/pci/tph.c
+> > @@ -67,6 +67,8 @@ static u16 tph_extract_tag(enum tph_mem_type mem_ty=
+pe, u8 req_type,
+> > 			if (info->pm_st_valid)
+> > 				return info->pm_st;
+> > 			break;
+> > +		default:
+> > +			return 0;
+> > 		}
+> > 		break;
+> > 	case PCI_TPH_REQ_EXT_TPH: /* 16-bit tag */
+> > @@ -79,6 +81,8 @@ static u16 tph_extract_tag(enum tph_mem_type mem_ty=
+pe, u8 req_type,
+> > 			if (info->pm_xst_valid)
+> > 				return info->pm_xst;
+> > 			break;
+> > +		default:
+> > +			return 0;
+> > 		}
+> >  		break;
+> >  	default:
+> > diff --git a/include/linux/pci-tph.h b/include/linux/pci-tph.h
+> > index 9e4e331b1603..b989302b6755 100644
+> > --- a/include/linux/pci-tph.h
+> > +++ b/include/linux/pci-tph.h
+> > @@ -14,10 +14,12 @@
+> >   * depending on the memory type: Volatile Memory or Persistent Memor=
+y. When a
+> >   * caller query about a target's Steering Tag, it must provide the t=
+arget's
+> >   * tph_mem_type. ECN link: https://members.pcisig.com/wg/PCI-SIG/doc=
+ument/15470.
+> > + * Add a new tph type for PCI peer-to-peer access use case.
+> >   */
+> >  enum tph_mem_type {
+> >  	TPH_MEM_TYPE_VM,	/* volatile memory */
+> > -	TPH_MEM_TYPE_PM		/* persistent memory */
+> > +	TPH_MEM_TYPE_PM,	/* persistent memory */
+> > +	TPH_MEM_TYPE_P2P	/* peer-to-peer accessable memory */
+> >  };
+> > =20
+> >  #ifdef CONFIG_PCIE_TPH
+> > --=20
+> > 2.47.3
+> >=20
 
