@@ -1,57 +1,61 @@
-Return-Path: <linux-rdma+bounces-14860-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14861-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE42AC9BE6B
-	for <lists+linux-rdma@lfdr.de>; Tue, 02 Dec 2025 16:10:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 965A7C9BEE6
+	for <lists+linux-rdma@lfdr.de>; Tue, 02 Dec 2025 16:24:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9FDCC4E3097
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Dec 2025 15:10:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B2703A8C0C
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Dec 2025 15:23:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0551F239E6F;
-	Tue,  2 Dec 2025 15:10:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE1D3255248;
+	Tue,  2 Dec 2025 15:23:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QcU7YjQp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OphAwwMu"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3AA01EB193;
-	Tue,  2 Dec 2025 15:10:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3CF8218AAD;
+	Tue,  2 Dec 2025 15:23:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764688222; cv=none; b=UPa3x6GZQxZqm6CKAKrmpSUCsxFat0ljIFqLy4iTtKTNnA2+nAUQsUhSo2psVzEt68r8HU0UljDKF/nRu139XfZRtFoSOvXOszxDSOuOu9yfZgiWsRqNro+BLraqdZclYf94PfyNCszHSPQoxBENXMHXQJ7Bw/JIK2QT/0SMVsw=
+	t=1764689033; cv=none; b=NeR+zVBDGzmJrdJs9KnmJxRLwjswrOt4mht7EZ0DJ+lYmAfbk08HSz6jvnS/cvqoRROQ83C2j67UVgoHXuWwo9cIUH8uhgavRnCjDd/u+6cvccJUivwtniNdRUmKs7CsHnd92Nv5sIbymML1h7BBXKeN/KtTxK4DMPH+Fdq0EVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764688222; c=relaxed/simple;
-	bh=VH9j/YlfCAx45ZkyVMgan3hc8DYV60HSZBBWPJufM3M=;
+	s=arc-20240116; t=1764689033; c=relaxed/simple;
+	bh=uz1+HGXMT2n2/YYRdY5QbfvnvA3WvX0x3GOduJJO+vA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tASuE2P+g+S2Q0KI8V0cfFwm8vXzGdU+SM9IE1f5+TcYAAecBog/b5AIHWqYJ+D2THpB3XG4Cw6eAummoi7evx17IwEDjyR3RPGW8H/tlE6+WmSk4OBJi5FgWuRnnlBGjMoc+AXnXaajeKvGZiyAmoFzjuUv36KKh5qu4yBBqnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QcU7YjQp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 475A4C4CEF1;
-	Tue,  2 Dec 2025 15:10:19 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q/7VhSJxqmJAhU1W3V4n7dfZMNmUQX/bDsSyy537nlv38phnWZDW3csD3cxwdmEkVvJd2Fe+Nxgez956VTBco3WJ4e43gYqPnFjWaguH9ECUbSH+xZw/HHIQOZWNbglHvCoZ3uBPOD02M9nQNwMGzmgv7i2H8kj5fD8qORloza8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OphAwwMu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C322C4CEF1;
+	Tue,  2 Dec 2025 15:23:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764688222;
-	bh=VH9j/YlfCAx45ZkyVMgan3hc8DYV60HSZBBWPJufM3M=;
+	s=k20201202; t=1764689033;
+	bh=uz1+HGXMT2n2/YYRdY5QbfvnvA3WvX0x3GOduJJO+vA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QcU7YjQpHG2tryDBHgQL+E5pDCwVKlkKkdXj/CSZNt0Mb1eStmxemT/Iqy1SIio15
-	 UKwTSUKa9kJj908VPwp6IbMUzlsGla8xnB5yTNX4TRKgJ5IFHuliutMvBjT+5CkVQk
-	 jiCn2LlDp4wEtKYDTjgacRbVuufJ3lY7whfSeun1o6il3njlEKSDXYQIx7iowddYWI
-	 igHAGKWpmYL+19VtNHxCZ0F3eOdqGxo7olKhzMFa7hCsRWCHMg6ea++T2yLFxyu9N/
-	 qH6nUhpCRJ5UiECMmWpXEKtjGjZGqXu0WMBoVB28rjWmGGR07glLRI6QP9pQ2lfJwv
-	 vgrhBqw820JAg==
-Date: Tue, 2 Dec 2025 15:10:17 +0000
+	b=OphAwwMuYQV34X/fRQfcbm/I7VOg8J7jieD0R3chXOXSgFfpO47D1EWyvnWGjbb/X
+	 E3TaOBsjmsAUYgiv0hVhMCUuienKYzOpLFd3p80nrullX/fugtLvNwR5ngn7zOxkfA
+	 c7ayxSexjzm8iX4qh65qOb70ifUofg9w+jip5monFPmSi26utdTQ37cvJes4fcLsMl
+	 bfcP5jjLuxNTAEgI8tPiz+QQcEeXbxN6xWGd1P130z4SQrM/odyMF6xv2vzCZs+5cX
+	 xQPP1KisL8aAhDahnzpGcF+ctAmAQr2ne3dhTwUPIPcEHeusKskwZ8lGsbCp+5KcpC
+	 2qJNkJ55O+3Lw==
+Date: Tue, 2 Dec 2025 15:23:47 +0000
 From: Simon Horman <horms@kernel.org>
-To: Allison Henderson <achender@kernel.org>
-Cc: netdev@vger.kernel.org, pabeni@redhat.com, edumazet@google.com,
-	rds-devel@oss.oracle.com, kuba@kernel.org,
-	linux-rdma@vger.kernel.org, allison.henderson@oracle.com
-Subject: Re: [PATCH net-next v3 2/2] net/rds: Give each connection path its
- own workqueue
-Message-ID: <aS8BWWQDiDMjxpGZ@horms.kernel.org>
-References: <20251201061036.48865-1-achender@kernel.org>
- <20251201061036.48865-3-achender@kernel.org>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Saeed Mahameed <saeedm@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>, netdev@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Gal Pressman <gal@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>
+Subject: Re: [PATCH net 1/2] net/mlx5: make enable_mpesw idempotent
+Message-ID: <aS8Eg4I2B2b6rJBU@horms.kernel.org>
+References: <1764602008-1334866-1-git-send-email-tariqt@nvidia.com>
+ <1764602008-1334866-2-git-send-email-tariqt@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -60,72 +64,24 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251201061036.48865-3-achender@kernel.org>
+In-Reply-To: <1764602008-1334866-2-git-send-email-tariqt@nvidia.com>
 
-On Sun, Nov 30, 2025 at 11:10:36PM -0700, Allison Henderson wrote:
+On Mon, Dec 01, 2025 at 05:13:27PM +0200, Tariq Toukan wrote:
+> From: Moshe Shemesh <moshe@nvidia.com>
+> 
+> The enable_mpesw() function returns -EINVAL if ldev->mode is not
+> MLX5_LAG_MODE_NONE. This means attempting to enable MPESW mode when it's
+> already enabled will fail. In contrast, disable_mpesw() properly checks
+> if the mode is MLX5_LAG_MODE_MPESW before proceeding, making it
+> naturally idempotent and safe to call multiple times.
+> 
+> Fix enable_mpesw() to return success if mpesw is already enabled.
+> 
+> Fixes: a32327a3a02c ("net/mlx5: Lag, Control MultiPort E-Switch single FDB mode")
+> Signed-off-by: Moshe Shemesh <moshe@nvidia.com>
+> Reviewed-by: Shay Drori <shayd@nvidia.com>
+> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 
-...
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-> diff --git a/net/rds/connection.c b/net/rds/connection.c
-> index dc7323707f450..cfe6b50db8a6f 100644
-> --- a/net/rds/connection.c
-> +++ b/net/rds/connection.c
-> @@ -269,7 +269,11 @@ static struct rds_connection *__rds_conn_create(struct net *net,
->  		__rds_conn_path_init(conn, &conn->c_path[i],
->  				     is_outgoing);
->  		conn->c_path[i].cp_index = i;
-> -		conn->c_path[i].cp_wq = rds_wq;
-> +		conn->c_path[i].cp_wq =
-> +			alloc_ordered_workqueue("krds_cp_wq#%lu/%d", 0,
-> +						rds_conn_count, i);
-> +		if (!conn->c_path[i].cp_wq)
-> +			conn->c_path[i].cp_wq = rds_wq;
->  	}
->  	rcu_read_lock();
->  	if (rds_destroy_pending(conn))
-
-Hi Allison,
-
-The code following the hunk above looks like this:
-
-		ret = -ENETDOWN;
-	else
-		ret = trans->conn_alloc(conn, GFP_ATOMIC);
-	if (ret) {
-		rcu_read_unlock();
-		kfree(conn->c_path);
-		kmem_cache_free(rds_conn_slab, conn);
-		conn = ERR_PTR(ret);
-		goto out;
-	}
-
-There are no more error paths that free resources in the remainder of
-the function. And the out label simply returns conn.
-
-It looks like the ordered workqueue allocation added by this patch
-will be leaked if we reach the error condition above.
-
-Flagged by Code Spell with review prompts.
-
-https://netdev-ai.bots.linux.dev/ai-review.html?id=89a5d15b-cd8c-4403-81ff-8577dc0069a6#patch-1
-
-...
-
-Also, please note that net-next is currently closed for the merge window.
-So the usual guidance about that applies:
-
-## Form letter - net-next-closed
-
-The merge window for v6.19 has begun and therefore net-next is closed
-for new drivers, features, code refactoring and optimizations. We are
-currently accepting bug fixes only.
-
-Please repost when net-next reopens after 15th December.
-
-RFC patches sent for review only are obviously welcome at any time.
-
-See: https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#development-cycle
-
--- 
-pw-bot: changes-requested
 
