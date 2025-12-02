@@ -1,115 +1,143 @@
-Return-Path: <linux-rdma+bounces-14864-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14865-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E9C3C9C922
-	for <lists+linux-rdma@lfdr.de>; Tue, 02 Dec 2025 19:15:21 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82E32C9CBD9
+	for <lists+linux-rdma@lfdr.de>; Tue, 02 Dec 2025 20:18:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id AD8B3349CED
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Dec 2025 18:15:06 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7048B4E2F79
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Dec 2025 19:18:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F4DF2D028A;
-	Tue,  2 Dec 2025 18:14:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8B672D6400;
+	Tue,  2 Dec 2025 19:17:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GUaxHgL4"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="VZQ79aRn"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D26442C237E;
-	Tue,  2 Dec 2025 18:14:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 040A91F09B3
+	for <linux-rdma@vger.kernel.org>; Tue,  2 Dec 2025 19:17:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764699286; cv=none; b=Mz3rFuGcl/pjaGZzkCb7WmzX2JlYCHgmmpy1aK6Y//wSsfK/fOCf36WEIx1D4xPTXWIKz7Yz3KaF9KTv8OO5LIkU8enc6YqiSJfKhGT3yAhQOHVWdZ2G7yLX3XyOc6bb7khi2mRtKDSQJ449mA1nap9woW3yfGJTuGxwszxoOV4=
+	t=1764703076; cv=none; b=uYpy8gcSsHxVbLj/qeI7lEkBzyCghF7rOrfS0D7nqi5yGMRo+rhl6PWlnwHnnRGGTEW2QaXN6Qq9wyhdQ6xeEjeiRCVgS/GrZF0k8l50lVY1GIEyAZlIQ49KqndWy6Qg6oNgwn+TZDcsP6+j3ov82SnQKGOl8shk6aeZODc/ep8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764699286; c=relaxed/simple;
-	bh=jRSbQ9Ne/+OOJgP0Z0DxW9fXwOZ0hOe2Zw0P1wm7xhQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=adgyFn1XZ5Gn/Cu6kvSve3NaRPbKUhXfciIPGKJO89avxHl4tc7IefFQyqg5aeMXoafddLCkdYBvridPKXQVso20e1i8HUtGdDl8DzuKiXKO0uVMO655LXQD2KzOCtwOK+8+D8bbB9TsqfHDhi7GBK5wAiKcgzxQpHdiIvwTOXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GUaxHgL4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80409C4CEF1;
-	Tue,  2 Dec 2025 18:14:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764699286;
-	bh=jRSbQ9Ne/+OOJgP0Z0DxW9fXwOZ0hOe2Zw0P1wm7xhQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=GUaxHgL4GY9fsqv8UmFGFWvYCTWtR5oAqKkY5DK6pcwDe9jAbJ2UB4/0V+u1bZS4P
-	 zZ9Zgr1LxfvIs2gl1X+s0odz0wic1by62hkmzEyTrh7G1s/0JKW/8573fnlAoKahot
-	 dR/NyjKNt9g6NgOYWQ8Sgs7/3Y1te65t1tWpFF7wqhsmKhwE+sfNCaiRPJRokrw7Ri
-	 RqEU7zTiSrmOygOG60RIU5clxN3qwwdoHm1DcSAGjBnj5ShxGTUMgSvU2NAphVtVkX
-	 taDq1uRV/mtBvHlAjjaaHFnHXx0uzrKhRW0DcAAZDTWZWBevB1AJiIo29QBzyq8P3e
-	 fNoQPRtiMpmpA==
-Date: Tue, 2 Dec 2025 10:14:44 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Donald Hunter
- <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Saeed Mahameed
- <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Mark Bloch
- <mbloch@nvidia.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org, Gal Pressman
- <gal@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>, Carolina Jubran
- <cjubran@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, Jiri Pirko
- <jiri@nvidia.com>, Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH net-next V4 02/14] documentation: networking: add shared
- devlink documentation
-Message-ID: <20251202101444.7f6d14a8@kernel.org>
-In-Reply-To: <2lnqrb3fu7dukdkgfculj53q2vwb36nrz5copjfg3khlqnbmix@jbfmhnks7svq>
-References: <1764101173-1312171-1-git-send-email-tariqt@nvidia.com>
-	<1764101173-1312171-3-git-send-email-tariqt@nvidia.com>
-	<20251127201645.3d7a10f6@kernel.org>
-	<hidhx467pn6pcisuoxdw3pykyvnlq7rdicmjksbozw4dtqysti@yd5lin3qft4q>
-	<20251128191924.7c54c926@kernel.org>
-	<n6mey5dbfpw7ykp3wozgtxo5grvac642tskcn4mqknrurhpwy7@ugolzkzzujba>
-	<20251201134954.6b8a8d48@kernel.org>
-	<2lnqrb3fu7dukdkgfculj53q2vwb36nrz5copjfg3khlqnbmix@jbfmhnks7svq>
+	s=arc-20240116; t=1764703076; c=relaxed/simple;
+	bh=kcbFNjJuTm91U5cyytq0dKIVQhkZa+v5TZFLoItEAbg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qE2SOxnWhVdFIJMZELPIiw9cW7D/OAw7ahfak9nCvc7n8QBeGckXuEWKpWqVhXOmTdmKTMqJaVqLJOrh2pjii0TNPCUXWZ8poxNRKwfFgE/F2CcKx8esw2PRzl/a0/op3oF7Qoq59b0Sb1Khju79GLiYH9m/Bc1Lyvs3YaaewLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=VZQ79aRn; arc=none smtp.client-ip=209.85.219.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-88245cc8c92so45362216d6.0
+        for <linux-rdma@vger.kernel.org>; Tue, 02 Dec 2025 11:17:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1764703074; x=1765307874; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=JGxE+S/efhMYcIgbfTS8CoVT9v6By9hamlqYQ+GXc1o=;
+        b=VZQ79aRnqoYXBPMKwCXiFoENrlr4zn6/nJ4O6Da0k7EBJlSKLm0dpJw/uWZbnbCI1r
+         vKFpdFn8CvmAlDZYNxx9KqJLa+b/Vpd57fe7zmpmJhR4ttKLlFlOjBbjCJpzpdX/SVGl
+         L0UPrGTLy1uX2WN+AV0530lBzGm1I+EBPyJDg4EbYZYonvWPVmcIr1exC8VI8FETIPYC
+         Fw23+vUVIWQjZIMg5tdsCIDgxWDi6c1yQrz89nNCDUhK/XEz4J5We1qNcgpem/yYBBdE
+         N5agSNJCuCdcZQOQodRKkom9tLY1KTurURwm2oVZV92g3J6mSKsPKunk0FDcZvleJJhL
+         NnYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764703074; x=1765307874;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JGxE+S/efhMYcIgbfTS8CoVT9v6By9hamlqYQ+GXc1o=;
+        b=cAwAQjvTf0vL05wV1GDBk9jJ/mFoCbw8ZQ3wmGCdFSiPUBZUJVhlM2lSeGnv5wyA1S
+         +b3X0+br+gkUzlZ2m6G1l2VtckX8nilSyUiw+Mxov57VIFNQ/+qrJ2TzXcursTG8Kzib
+         CbZrGnXACLKXilx0T8sS30WXrymZM4lvs8B0xndk59yMT9iNGNDhybRTk7iYOQ4Wa8yn
+         7yHVznkw0m3MjQLWaiK1JjI4jZiqPWniFUMc8CV9Bblpds35EUZ2daT8OxC7rW2TYbl0
+         HunkBFvJOLI+tvY3TExR0uPvDlWcqEi+h8+VxBYsbwzhAbcTXqISzUq2DMYjqQoemvWq
+         hZbg==
+X-Forwarded-Encrypted: i=1; AJvYcCUZBM9QJ6Z8QVfrg+F1j1d5szGCZHAFcJjJlmGVffosdu/hv3rqwxqHQaAed4wYAV8Pecxp8vRLGu5q@vger.kernel.org
+X-Gm-Message-State: AOJu0YzPZbCAAFn5bHCjRmYuWuZ0VKrudPJQqJkM8VyhRihh8zE6bGUo
+	E3Dddeq2DZ6MKEIJrDkuTnhErO1aKqdG7nGQaypBP8YBLEqBCwNKWtu+q0khN0ZCXx0=
+X-Gm-Gg: ASbGnctqIK4Zs+2iEAz48eJQQkGaOjbBrZttrG/4xjxY4uMjYaclGItOanF7Jslg74y
+	lZ/Ut9I6AL3OhnvvxWxS2mgwqdoOGn1Vj+PPmfS87R0cjtxv6N40tAS+vOQGumVtolMqQZCwG9K
+	JwjvDqlqtN9nc4bzDdRg6Kw9cxffP3rLTCLWatwlbhmrRI7jbwh4IUHmbsdjGfbIPWyE/nI4QU/
+	g7uPpxgr3nlZTRxpnNAlhOFvU/0uUNMMRp0C+vK8E7z/I2dpeCeWWmZUZIFBvVJNBVKHHSMkPJh
+	fbDjn9M6zOP6LS8MVpVjE/Rkcz6kk79Nf6nhmIRIHwuyyJ1Cjb48TwNVi4clWiaY2db003anRt2
+	7TGN6G6+ZcWQ8XRFEDwMwKYVj0YRcaMuuhTH2X1Y2rv7VbeJP02a9R5uC4nqDPtwajalDBIzbEN
+	HsSGoaXyMRq0kMCXtjtbd+8DsrKo2w1q9JduzlUWNTJYpOEul9jN+4J7AT
+X-Google-Smtp-Source: AGHT+IEkzzEi6bdPBdl2QhfgFxa14qu0tatBMNGdan8YKpAzDQBKXYs/8MQtD/NGQNGy669Z3ihRug==
+X-Received: by 2002:a05:6214:5bc3:b0:880:477f:88eb with SMTP id 6a1803df08f44-8863b032494mr444154406d6.66.1764703073893;
+        Tue, 02 Dec 2025 11:17:53 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-47-55-120-4.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.120.4])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-88652b6cc1bsm108664796d6.46.2025.12.02.11.17.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Dec 2025 11:17:53 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1vQVsm-00000004tDk-2NcE;
+	Tue, 02 Dec 2025 15:17:52 -0400
+Date: Tue, 2 Dec 2025 15:17:52 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Marco Crivellari <marco.crivellari@suse.com>
+Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Michal Hocko <mhocko@suse.com>, Leon Romanovsky <leon@kernel.org>,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Yishai Hadas <yishaih@nvidia.com>
+Subject: Re: [PATCH 0/5] replaced system_unbound_wq, added WQ_PERCPU to
+ alloc_workqueue
+Message-ID: <20251202191752.GJ812105@ziepe.ca>
+References: <20251101163121.78400-1-marco.crivellari@suse.com>
+ <CAAofZF7o+hA18Eiw=F9jbXBkeFqiw__eRx74Wb41EeTE1KP5PA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAofZF7o+hA18Eiw=F9jbXBkeFqiw__eRx74Wb41EeTE1KP5PA@mail.gmail.com>
 
-On Tue, 2 Dec 2025 08:43:49 +0100 Jiri Pirko wrote:
-> Mon, Dec 01, 2025 at 10:49:54PM +0100, kuba@kernel.org wrote:
-> >On Mon, 1 Dec 2025 11:50:08 +0100 Jiri Pirko wrote:  
-> >> Correct. IFAIK there is one PF devlink instance per NUMA node.  
+On Tue, Dec 02, 2025 at 02:22:55PM +0100, Marco Crivellari wrote:
+> Hi,
+> 
+> On Sat, Nov 1, 2025 at 5:31 PM Marco Crivellari
+> <marco.crivellari@suse.com> wrote:
+> > Marco Crivellari (5):
+> >   RDMA/core: RDMA/mlx5: replace use of system_unbound_wq with
+> >     system_dfl_wq
+> >   RDMA/core: WQ_PERCPU added to alloc_workqueue users
+> >   hfi1: WQ_PERCPU added to alloc_workqueue users
+> >   RDMA/mlx4: WQ_PERCPU added to alloc_workqueue users
+> >   IB/rdmavt: WQ_PERCPU added to alloc_workqueue users
 > >
-> >You say "correct" and then disagree with what I'm saying. I said
-> >ports because a port is a devlink object. Not a devlink instance.  
+> >  drivers/infiniband/core/cm.c      | 2 +-
+> >  drivers/infiniband/core/device.c  | 4 ++--
+> >  drivers/infiniband/core/ucma.c    | 2 +-
+> >  drivers/infiniband/hw/hfi1/init.c | 4 ++--
+> >  drivers/infiniband/hw/hfi1/opfn.c | 4 ++--
+> >  drivers/infiniband/hw/mlx4/cm.c   | 2 +-
+> >  drivers/infiniband/hw/mlx5/odp.c  | 4 ++--
+> >  drivers/infiniband/sw/rdmavt/cq.c | 3 ++-
+> >  8 files changed, 13 insertions(+), 12 deletions(-)
 > 
-> Okay, you mean devlink_port. You would like to see NUMA node leg as
-> devlink_port? Having troubles to undestand exactly what you mean, lot of
-> guessing on my side. Probably I'm slow, sorry.
-> 
-> But there is a PCI device per NUMA node leg. Not sure how to model it.
-> Devink instances have 1:1 relationship with bus devices.
-> 
-> Care to draw a picture perhaps?
-> 
-> >> The shared instance on top would make sense to me. That was one of
-> >> motivations to introduce it. Then this shared instance would hold
-> >> netdev, vf representors etc.  
-> >
-> >I don't understand what the shared instance is representing and how
-> >user is expect to find their way thru the maze of devlink instanced,
-> >for real bus, aux bus, and now shared instanced.  
-> 
-> Well, I tried to desrtibe it in the documentation path, Not sure what is
-> not clear :/
-> 
-> Nested devlinks expose the connections between devlink instances.
+> Gentle ping.
 
-To be clear -- I understand how you're laying things out. My point is
-not about that. My question is how can user make intuitive sense of this
-mess of random object floating around. Every SW engineering problem can
-be solved by another layer of abstraction, that's not the challenge. 
-The challenge is to design those layers so that they make intuitive
-sense (to people who don't spend their life programming against mlx FW
-interfaces).
+It looks like it was picked up, the thank you email must have become lost:
+
+5c467151f6197d IB/isert: add WQ_PERCPU to alloc_workqueue users
+65d21dee533755 IB/iser: add WQ_PERCPU to alloc_workqueue users
+7196156b0ce3dc IB/rdmavt: WQ_PERCPU added to alloc_workqueue users
+5267feda50680c RDMA/mlx4: WQ_PERCPU added to alloc_workqueue users
+5f93287fa9d0db hfi1: WQ_PERCPU added to alloc_workqueue users
+e60c5583b661da RDMA/core: WQ_PERCPU added to alloc_workqueue users
+f673fb3449fcd8 RDMA/core: RDMA/mlx5: replace use of system_unbound_wq with system_dfl_wq
+
+Jason
 
