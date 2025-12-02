@@ -1,162 +1,99 @@
-Return-Path: <linux-rdma+bounces-14858-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14859-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 803E1C9B991
-	for <lists+linux-rdma@lfdr.de>; Tue, 02 Dec 2025 14:30:57 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A918C9BCA9
+	for <lists+linux-rdma@lfdr.de>; Tue, 02 Dec 2025 15:33:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4E21F4E037A
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Dec 2025 13:30:56 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 123C1346916
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Dec 2025 14:33:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E23A7307ACB;
-	Tue,  2 Dec 2025 13:30:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B930219319;
+	Tue,  2 Dec 2025 14:33:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TmgN+RSz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MzGRScc/"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ED271DDC1B
-	for <linux-rdma@vger.kernel.org>; Tue,  2 Dec 2025 13:30:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C19618BC3D;
+	Tue,  2 Dec 2025 14:33:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764682252; cv=none; b=mmIx/XpFwZfSHfNjzr/WQtsYKzMYcN3eglPoBUQ0aMsteynPdYFzXAgbzikeEeaS1gRVAzH+vdC5XwTnF9miuiIu2d1+tA+BRqUFBczqxbNvE2d+Iy64FFrGZcuYQ2Nes/3lDlZFnaXE95NaQI7rI8qfGe1eFL1Bh/XqrzbZvUk=
+	t=1764685990; cv=none; b=os9kUu04yxFY5HNcQB1ZkgMGMgmTzAFyH9wZoXoVtQe31J6/xi/wMe711nPEySCkZT6xGUnHOGq52l/yB8R8rHFiI38H6Lf59zEbCk/T5VGDcvmYtzyn2fXfYHwaWCgZLIqF6jo/L0imV+oXyBefZI5SafLNahYOawo4IdEpFeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764682252; c=relaxed/simple;
-	bh=uH8Hrj3CxylpoxxMlepAkaZd9o4VmK7o2JSGH7YCt4A=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=QV5LNrXECQ33JltO6nRH+coT24B1rR3IHR7ewCbo8DawuGCrycRyhKMn3ClQsrAWeUCtNgGY5jconuTq6jsJd3TE/kGAcSqDaerffzKGlDOMUvQSxt23zO+H6H5GIwchTsPmFcRXv4AqFQC6DoyzhLzu/5qcUgCu7a9za5BTVuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TmgN+RSz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45387C113D0;
-	Tue,  2 Dec 2025 13:30:52 +0000 (UTC)
+	s=arc-20240116; t=1764685990; c=relaxed/simple;
+	bh=Ly/4cWuHRE5Ksuv+Yo/Z1qdg0Fg7JiBJoCRjb1P4hcI=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=OTztHJCpxIfTSUFAmn/o6Q2Y5T2POAyE2zD/xKVCAExvZCasB1rUNZRbgGgnYv6I4vSMnBbuCgOyR2hILZYstjCZdPBTv7RJWF3FoyM8omSH/tUF3i3rWO4IYQjc0u9msjKfntWr0jHi7ZeaKkPIXUAioPXO5o1fcODRisl2q8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MzGRScc/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8046EC4CEF1;
+	Tue,  2 Dec 2025 14:33:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764682252;
-	bh=uH8Hrj3CxylpoxxMlepAkaZd9o4VmK7o2JSGH7YCt4A=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=TmgN+RSzTavPFHXxlygDXEgH1Rz01endsX7Ey628WC6unaNTG1zjIVt7zxUQrnQnS
-	 rAYwP/UQsU2a4ynFylgAIqGZQWQksKmg6+T7vxaCfBppbrxd5/b1u72txxhqCOZNDf
-	 6WpeHSa+mrDMPwa3vQZJBAGBNbSsfoQhyl0LHuONJkMDeYjP6WQcORHchAqMdGpPX+
-	 9IWaoA2SnGe0dk9FUkj4pNFaKyT6Le54+qxYtbRCnxJs6f//iLIHRpsnSAVEFjF/9+
-	 JXnyJLuHGwWxTRBHQXXh9dO4JWFbStKsEMfOU6/AgPCsY9szeIaPBXI4Vnras8Jjxx
-	 oTqBYebU3IdOw==
-Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
-	by mailfauth.phl.internal (Postfix) with ESMTP id 49AACF40083;
-	Tue,  2 Dec 2025 08:30:51 -0500 (EST)
-Received: from phl-imap-15 ([10.202.2.104])
-  by phl-compute-10.internal (MEProxy); Tue, 02 Dec 2025 08:30:51 -0500
-X-ME-Sender: <xms:C-ouaTxBgKj5EvSYQEBwYMpl63EXNV8BJAwL7UM_SuutMkgzydeaPA>
-    <xme:C-ouaWGCFgCHzjETNjlymi5Goyig2edB-o7o96O3BNCO6X5N0tSB5-c6Jh51iZLlh
-    CP4qyiDeHJaXINqkuInMpR6lrffrBhEYmPU8snmQ1-4czhIW9RUsZH0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegrihhl
-    ohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpe
-    foggffhffvvefkjghfufgtgfesthejredtredttdenucfhrhhomhepfdevhhhutghkucfn
-    vghvvghrfdcuoegtvghlsehkvghrnhgvlhdrohhrgheqnecuggftrfgrthhtvghrnhephf
-    ffkefffedtgfehieevkeduuefhvdejvdefvdeuuddvgeelkeegtefgudfhfeelnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheptghhuhgtkhhlvg
-    hvvghrodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduieefgeelleelheel
-    qdefvdelkeeggedvfedqtggvlheppehkvghrnhgvlhdrohhrghesfhgrshhtmhgrihhlrd
-    gtohhmpdhnsggprhgtphhtthhopeejpdhmohguvgepshhmthhpohhuthdprhgtphhtthho
-    pehgrghurhgrvhdrghgrnhhgrghlfigrrhesghhmrghilhdrtghomhdprhgtphhtthhope
-    grnhhnrgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepthhrohhnughmhieskhgvrhhn
-    vghlrdhorhhgpdhrtghpthhtoheptghhuhgtkhdrlhgvvhgvrhesohhrrggtlhgvrdgtoh
-    hmpdhrtghpthhtohepthhomhesthgrlhhpvgihrdgtohhmpdhrtghpthhtoheplhhinhhu
-    gidqnhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqd
-    hrughmrgesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:C-ouaZaYe9vdtbcyrGXbnIj-BBKXm6mUJXuCPMOjerybTuBX_KJRVw>
-    <xmx:C-ouaacbTI9Mo679Oy_isE3JwZ9YXtJXKGjVE9vDTSgQ6cqoFjrxVA>
-    <xmx:C-ouab0rDijFWMCHvx9NwZm9lOC5fhFTHdYjIs-UUIPlPcdhZzDJfg>
-    <xmx:C-ouaZJo-Y_4At_vnBAluK14yzb0YgjgP3VDKnYkpCgj8uYe7npMOQ>
-    <xmx:C-ouaSFwSfdz2WnfxAH2vojW_A6vIn4IUzCr0eny0TOKqBoEz0Wx4EOU>
-Feedback-ID: ifa6e4810:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 0023778006C; Tue,  2 Dec 2025 08:30:50 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=k20201202; t=1764685989;
+	bh=Ly/4cWuHRE5Ksuv+Yo/Z1qdg0Fg7JiBJoCRjb1P4hcI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=MzGRScc/IvXrcvO07PgdzuZMI416Qfgaa7Lm/majdXSijKvkGq6aQwnFdUrUXDAX9
+	 lb3CNPW9+4V781IzXL+iQnOh0eUXggIp31aaCg75dbm8VI309F+/sCyqL5mSoh0Rid
+	 ViVaYBiAyMjOiCpaIEwAjqk1JY90Glc9dQCCc+ulcAIjanFDr78aQB5aZUpEPrJz3b
+	 DX/dDYB3JH60KzTOHOIdgxshShBrRAUg2F+PKUqTxdfkcZwgHR03iE0KsZKZJfDWkM
+	 RUcefJPNN/nTnqoyF7h9olevuzwKbt70zVQM1vSzzrVKRktgrq5d69E+pc/ZT1gylt
+	 DpNgK+E/8hrhA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 32EA03A54A16;
+	Tue,  2 Dec 2025 14:30:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AbSDIoz78V8B
-Date: Tue, 02 Dec 2025 08:30:30 -0500
-From: "Chuck Lever" <cel@kernel.org>
-To: "Gaurav Gangalwar" <gaurav.gangalwar@gmail.com>, trondmy@kernel.org,
- anna@kernel.org, "Tom Talpey" <tom@talpey.com>,
- "Chuck Lever" <chuck.lever@oracle.com>
-Cc: linux-nfs@vger.kernel.org, linux-rdma@vger.kernel.org
-Message-Id: <67ae96f3-efe9-45ee-9924-d50d87bc58a7@app.fastmail.com>
-In-Reply-To: <20251202095212.69329-1-gaurav.gangalwar@gmail.com>
-References: 
- <CAJiE4OkW6XT71xvv49VN5STPx7dQ6GxV+-Rz1=55JhoFPyM7PQ@mail.gmail.com>
- <20251202095212.69329-1-gaurav.gangalwar@gmail.com>
-Subject: Re: [PATCH v2] NFS: inherit parent transport protocol for referral mounts
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next V2 0/2] net/mlx5e: Disable egress xdp-redirect in
+ default
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176468580905.3250289.13105138318084701594.git-patchwork-notify@kernel.org>
+Date: Tue, 02 Dec 2025 14:30:09 +0000
+References: <1764497617-1326331-1-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1764497617-1326331-1-git-send-email-tariqt@nvidia.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
+ leon@kernel.org, mbloch@nvidia.com, ast@kernel.org, daniel@iogearbox.net,
+ hawk@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, gal@nvidia.com, moshe@nvidia.com, dtatulea@nvidia.com,
+ witu@nvidia.com, toke@redhat.com
 
+Hello:
 
+This series was applied to netdev/net-next.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-On Tue, Dec 2, 2025, at 4:52 AM, Gaurav Gangalwar wrote:
-> When following NFS referrals, the client always attempts RDMA first
-> (if compiled in), even when the parent mount uses TCP. This causes
-> unnecessary timeouts when the referral server doesn't support RDMA.
->
-> Modify nfs4_create_referral_server() to check the parent client's
-> transport protocol. Only attempt RDMA if the parent is using RDMA,
-> otherwise use the parent's protocol (TCP/TCP-TLS) directly.
->
-> This eliminates connection delays for TCP-based referrals in
-> environments where RDMA is compiled in but not deployed.
->
-> Signed-off-by: Gaurav Gangalwar <gaurav.gangalwar@gmail.com>
->
-> ---
-> Changes since v1:
-> - Removed module parameter.
-> ---
->  fs/nfs/nfs4client.c | 17 ++++++++++++-----
->  1 file changed, 12 insertions(+), 5 deletions(-)
->
-> diff --git a/fs/nfs/nfs4client.c b/fs/nfs/nfs4client.c
-> index 3a4baed993c9..39a0424523e5 100644
-> --- a/fs/nfs/nfs4client.c
-> +++ b/fs/nfs/nfs4client.c
-> @@ -1258,12 +1258,19 @@ struct nfs_server 
-> *nfs4_create_referral_server(struct fs_context *fc)
->  	nfs_server_copy_userdata(server, parent_server);
+On Sun, 30 Nov 2025 12:13:35 +0200 you wrote:
+> Hi,
 > 
->  	/* Get a client representation */
-> +	/*
-> +	 * Only try RDMA if the parent client is using RDMA. This avoids
-> +	 * connection delays when parent uses TCP and referral server doesn't
-> +	 * support RDMA.
-> +	 */
->  #if IS_ENABLED(CONFIG_SUNRPC_XPRT_RDMA)
-> -	rpc_set_port(&ctx->nfs_server.address, NFS_RDMA_PORT);
-> -	cl_init.proto = XPRT_TRANSPORT_RDMA;
-> -	error = nfs4_set_client(server, &cl_init);
-> -	if (!error)
-> -		goto init_server;
-> +	if (parent_client->cl_proto == XPRT_TRANSPORT_RDMA) {
-> +		rpc_set_port(&ctx->nfs_server.address, NFS_RDMA_PORT);
-> +		cl_init.proto = XPRT_TRANSPORT_RDMA;
-> +		error = nfs4_set_client(server, &cl_init);
-> +		if (!error)
-> +			goto init_server;
-> +	}
->  #endif	/* IS_ENABLED(CONFIG_SUNRPC_XPRT_RDMA) */
+> This small series disables the egress xdp-redirect feature in default.
+> It can still be enabled by loading a dummy XDP program.
 > 
->  	cl_init.proto = XPRT_TRANSPORT_TCP;
-> -- 
-> 2.43.7
+> Patches were previously submitted as part of [1].
+> 
+> [...]
 
-The reason it tries RDMA first is because RDMA is supposed to fail
-quickly when there's no RDMA-capable path to the remote. If RDMA
-is taking a long time to fail, there's a problem elsewhere.
+Here is the summary with links:
+  - [net-next,V2,1/2] net/mlx5e: Update XDP features in switch channels
+    https://git.kernel.org/netdev/net-next/c/96a839506135
+  - [net-next,V2,2/2] net/mlx5e: Support XDP target xmit with dummy program
+    https://git.kernel.org/netdev/net-next/c/d4aa0cc9bd31
 
-
+You are awesome, thank you!
 -- 
-Chuck Lever
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
