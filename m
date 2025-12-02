@@ -1,173 +1,151 @@
-Return-Path: <linux-rdma+bounces-14854-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14855-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0DCBC9A87F
-	for <lists+linux-rdma@lfdr.de>; Tue, 02 Dec 2025 08:44:39 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8E98C9AFFA
+	for <lists+linux-rdma@lfdr.de>; Tue, 02 Dec 2025 10:57:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2F2833479C4
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Dec 2025 07:44:09 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 55D9C348957
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Dec 2025 09:56:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A8123019D2;
-	Tue,  2 Dec 2025 07:43:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B3B309F01;
+	Tue,  2 Dec 2025 09:52:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="QRRRrqBj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mzaGZ+5B"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2280301033
-	for <linux-rdma@vger.kernel.org>; Tue,  2 Dec 2025 07:43:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 703C031A056
+	for <linux-rdma@vger.kernel.org>; Tue,  2 Dec 2025 09:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764661437; cv=none; b=NebS8tKTzhia1qQ0xo5J7r9BPRcTTAIBuayboP1dqt6+eju428hf+NEaG5ff0qTc4CFz4tqfRXcjkt9aMkJoGZqIHqru/cvknXTTcXpv7IkZX37+HOmBiqt1XeH+Vnfb0huqEQE1h8ltslMMDyYZm8JvufVlZ+TJWCoUyI3Sdrc=
+	t=1764669153; cv=none; b=mPyOuaz6uqy5n0MqOQ7ZlFhcKrx+7tRso3v++LHHbmUkz29q7HhfwLg0tvFRn5S+3LvyAIi6P1PEEMrEJhCKaSp7zL3hn0a7UmTeyEl6iL8kMVbjbxyHqRgeiGtzItmDzV5C1YijwW/jO0L7wVBkRwEmlA5ba7Y6krCSCL8r+CA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764661437; c=relaxed/simple;
-	bh=8ckkjeL/RXlFhgjRWL4DkGaDUwGUgzLODQckI9b7r3M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K1AjAOp0eZWBJwTuKn7F/de3SkWeEK7lsAVu+nA45t/I1reIUvKLi9GQ4vJLWneyN5q0r1TSdVfGHq7un4h0GRcnXnBO574Jfd47uCxMXD0hJ3d/RdTdCzZYP9Mpt/ig2OB/Phf8KV3ryO+J8UFxBTWT/7f3N54GEQjdQpjWDGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=QRRRrqBj; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-477b91680f8so45948775e9.0
-        for <linux-rdma@vger.kernel.org>; Mon, 01 Dec 2025 23:43:55 -0800 (PST)
+	s=arc-20240116; t=1764669153; c=relaxed/simple;
+	bh=A2mUuXYeXgH3GWgj/1Uvi0IkvWKTlPl3+NWkZcL1hdk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=UdhAgmfFbuSfRhIbQBv76Z0zCvFBxiQScyJUVfEEFfeXptnZlQQexl7u2TEVnNwuLDrppnCaZXAgzWJiqiQ7Q8e/UvmQu+pd/m9Ey1Oqcw5PDuV9peTHfRuYVjgqTBEyYBl7L6vJizxImCXpxeCKVyq58ZX76/3DdfK32bs3YJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mzaGZ+5B; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-b996c8db896so6192795a12.3
+        for <linux-rdma@vger.kernel.org>; Tue, 02 Dec 2025 01:52:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1764661434; x=1765266234; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MUBQ/3hc4NZIDLxuHm2/2S+7bD6q76Ih+ZYX+6Y2vGc=;
-        b=QRRRrqBjD1QVpEKwDHZwcJN6JR7HoApRoRpUwQrwGyqiLWHqdbR7+Aa4YLo9Y0KV9Y
-         cS8lNT5P72jDxpxGODw8S5xmz9OJ/QdVnuhnc2ioszPbtc3rhCuYAaXvsRkGwLfY4+Sx
-         JgYS/06XI1smxz4HEDZFxPTxKRCQuy8wfRXDq1OSrWuShLcv2Kr1EwDpDyvngBdbp/Yb
-         txLz5haTlv0FuFZdrPD0N1ILvj6elwxAo6niYS3m4Wd/XE9PIDzhnEerJ9R/PNG8Dxj7
-         w56PyAB0uNZtnlr4owZhE1DiMAK0oUgv5WA4f2WeMj5TwZpzm8t9eT1oY+DkvkIIMVd7
-         O5bA==
+        d=gmail.com; s=20230601; t=1764669151; x=1765273951; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X+6Q/13dXqqU2hdMSbPVRMXa6L7LavqU9DAw5tswhZM=;
+        b=mzaGZ+5B3ktREpH/BxlYH4UVp0gqR6Sd28HPen0E5pXTnZ49CM1uQOrm4jc3XFqEBs
+         pCs5+amAKjOi8Xbl0i51Ex7YlRZcVvJZSa6Pluik59LNDfcU0vKO/zRmtigpZW4bXlfV
+         N1dAI5ywT1fB4p61Qm39bjZQHfijFc/YZYM0b4P2sxIIMser52edwnODoxr0lfuLcPPy
+         qQbujrGumoeo32lMxvp8E4R9wIr0B0ViRbLy3Bev8sZ/h52M6QgC86wz2nkZJpYtPNY+
+         koNKFofPAyW7YeiWOClGwl797q9SvW1JkObwlqFq0JWA6faOE1UZ1wH30Y37LRWzRygP
+         /RQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764661434; x=1765266234;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MUBQ/3hc4NZIDLxuHm2/2S+7bD6q76Ih+ZYX+6Y2vGc=;
-        b=tj3czA8JFn+WBGjCjbKN3g77voPnGE0OoADHF2xWVFP7Am7FuVRyoPD0IZTVbSpViT
-         dm8zltrAE/Ar/SlxIkvpeTgVDU25UMdJ2j1fA9irolfg/+/u4zYc/gqzHfmPvHu1kBUA
-         9K/NdtSRsp5poISAQRFeHdbvvAsGq1N2nP2IgO0BkjdbfyOZdHz9x9jPdwhWHAIYDF2l
-         3MmrdgF03J6BmMrYkTYBpr7iUHKESp0M7cnO27ChqnbqwDx8H4R2pO9LKFezPNhdubRd
-         XXjnXf/alRUTicBQxih4COjS3G4d59zN8ihZHqsLlV1CGKaVSMwP1t83HsmJG9JZ/Qct
-         ONZA==
-X-Forwarded-Encrypted: i=1; AJvYcCUPyXfBhkBWeaSc9DDCw3YZNO4W5H0HHQSyixbr8hVPvQQZv+ZZFFmYMmbDL9TX8ezGcfqBnT6cDYxe@vger.kernel.org
-X-Gm-Message-State: AOJu0YyDv/K4iAI7SSaO8fu/H6TwnnZrfewrv6dGBeS77EUdayhl8k61
-	26hFHu0y0lkRl82D1sWVExQbGcjn9ovU5vJgpIpJAlTsTyZk8KVGlVP/x31C3iQEP3I=
-X-Gm-Gg: ASbGnct1eJUsL7c1xLSAW9xO7FZuFH/cjruQIH75VPVK17oZO7utaveOh7ULd9cGBWr
-	qL6JMv3OlI1OY+kxHQESouKUNVMS8YhvWkEUPRmNLRzytaA+ni1bTJqnV0odSgDHwyGejz800LJ
-	905eDeXJ2VLfvUcf1+YmQpFTjPQiYOKD0vDAhlUhAlxLtO6QdzfSv3keSH8HjE3dLs7dQkvz3nc
-	+cRjjx7AQRwoVtEHaDZOskfIE6wNJMThSnVxT313yLunvnriPm2iS/ixIPkFNuNOFLshD2diBGo
-	7LOlbkE/1qnvfnc9m//CO++j7pHfSxpJaBfuxWqiEydU7QGjrL8ZrndOmfCX3gAproBnWr9aYhp
-	Fl7+Pncm5ruep4AMn6DBFAvnEff341hA2AQeKk9kAcKwOtC3+tqfhx9WKxIJnoa0wg/yiYRYYyd
-	W9C3msGofeIFLWUCGXO7Afxg==
-X-Google-Smtp-Source: AGHT+IFOBP7is3O7E3ngO9hcbwxAgJIe2rx8/X9n/iT0/JjDDDlV2gJyo8InmRgjZ9TfFpWZK3LaVg==
-X-Received: by 2002:a05:600c:4691:b0:477:58af:a91d with SMTP id 5b1f17b1804b1-477c10c8e61mr387655555e9.5.1764661433540;
-        Mon, 01 Dec 2025 23:43:53 -0800 (PST)
-Received: from FV6GYCPJ69 ([140.209.217.211])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-479279e594fsm7823225e9.12.2025.12.01.23.43.51
+        d=1e100.net; s=20230601; t=1764669151; x=1765273951;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=X+6Q/13dXqqU2hdMSbPVRMXa6L7LavqU9DAw5tswhZM=;
+        b=R1/1K7cz7d36mXpXaeNU+aC30mXVCH+0aDTLnEmI5ZlkoWKBfthPuklD+xZOsPWTxI
+         BruhZCdUid8HzxXaLDfuq9xP/VX5tidEnHZV9c7fd2EafElS4KUsY3a2AVITQG2vK3CW
+         Cb3T2FLmoXf251cTRbEDmlKrnqF13HqxbY5q8s1erOsY/zf37WWd3VVnDSThFh6fK0uH
+         Gn9MVcyg8raauwJmS3tT3YWVCMVGtxoQNMWMo7m32iMadoQTx3kDMHAXHQTsSUNiM7w4
+         BNVtwhs4TcyO50oZ6NP50wRFN4024s/iMc0s+ORxopf9oQI6a1DRAngtgbAjeCv3qF3v
+         y6YQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV0sVAzx+xixgRbnUm+TIah/aUYYXkCi5q40njdUBN6JNZ8/b8jvrZGEX5zuT6LOeXVzMPtYaj5Xrmx@vger.kernel.org
+X-Gm-Message-State: AOJu0YxlV1kvHsrJ2Z9rKn5BAt0JDY/UnS145rFn9nGT0HLeqmBCeSnT
+	23m4xJoayXVFVz+RDOp8NE7chZL6+lKkDh1654357bkHCjaFGIOfqHcmt1qlhbQ5R4c=
+X-Gm-Gg: ASbGnct5bgYuloHe/a+2/CtWD1MKancMNW34957ZrcoNZnHiQi1EVMawiKo4M2K2tH1
+	BswLaldiGM+t3kLjgTJSvj5k3/xm3/jFGfGZk+MZZpEpRjgLXtWVwGK2nappmKidAhCc42CBz3M
+	gyHq8ZbQuMNrLJBYT2z5x+1waw3RfHLKkvLFljRyFFcxAynCKO1EPNHUUl7EBtdluIqezJ1J17y
+	RYao/tcqxIl/vQEw8/I3WG2ez68p9sB77TeOE4y+k3FZoeEandYv8kjc9ZJxDiAQsFEfhtOnf2j
+	XMPIA5R2cC8DXM5xaVs5/vGtAFtT/9+BHuVxxRZwY/mR8ljJ/RWBnIDKxX7mXRugmimcgG332tB
+	H7WsYG3dyctBM1R+KggC478xdpAS4OVGmiAffZVi5xO8peoGktn2AEwCSpPyHxFLicz7QCmJ69T
+	8F+51X9SFfE6Ve0UPTrXDx+T80g49urc91RFM=
+X-Google-Smtp-Source: AGHT+IFA62oLYKnlDqtoBnPUAYcC3aQLjfERYxHt0mlC+Wj3TDUDWpCBfU4LNshvI4iel+R8CqbMaA==
+X-Received: by 2002:a05:7300:8a1d:b0:2a4:3592:cf5e with SMTP id 5a478bee46e88-2a9415824d7mr14493264eec.2.1764669150541;
+        Tue, 02 Dec 2025 01:52:30 -0800 (PST)
+Received: from localhost.localdomain ([192.146.154.240])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-11dcaed5fcasm83532079c88.2.2025.12.02.01.52.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Dec 2025 23:43:53 -0800 (PST)
-Date: Tue, 2 Dec 2025 08:43:49 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>, 
-	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Donald Hunter <donald.hunter@gmail.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Saeed Mahameed <saeedm@nvidia.com>, 
-	Leon Romanovsky <leon@kernel.org>, Mark Bloch <mbloch@nvidia.com>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	Gal Pressman <gal@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>, 
-	Carolina Jubran <cjubran@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, Jiri Pirko <jiri@nvidia.com>, 
-	Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH net-next V4 02/14] documentation: networking: add shared
- devlink documentation
-Message-ID: <2lnqrb3fu7dukdkgfculj53q2vwb36nrz5copjfg3khlqnbmix@jbfmhnks7svq>
-References: <1764101173-1312171-1-git-send-email-tariqt@nvidia.com>
- <1764101173-1312171-3-git-send-email-tariqt@nvidia.com>
- <20251127201645.3d7a10f6@kernel.org>
- <hidhx467pn6pcisuoxdw3pykyvnlq7rdicmjksbozw4dtqysti@yd5lin3qft4q>
- <20251128191924.7c54c926@kernel.org>
- <n6mey5dbfpw7ykp3wozgtxo5grvac642tskcn4mqknrurhpwy7@ugolzkzzujba>
- <20251201134954.6b8a8d48@kernel.org>
+        Tue, 02 Dec 2025 01:52:30 -0800 (PST)
+From: Gaurav Gangalwar <gaurav.gangalwar@gmail.com>
+To: trondmy@kernel.org,
+	anna@kernel.org,
+	tom@talpey.com,
+	chuck.lever@oracle.com
+Cc: linux-nfs@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	Gaurav Gangalwar <gaurav.gangalwar@gmail.com>
+Subject: [PATCH v2] NFS: inherit parent transport protocol for referral mounts
+Date: Tue,  2 Dec 2025 04:52:12 -0500
+Message-ID: <20251202095212.69329-1-gaurav.gangalwar@gmail.com>
+X-Mailer: git-send-email 2.43.7
+In-Reply-To: <CAJiE4OkW6XT71xvv49VN5STPx7dQ6GxV+-Rz1=55JhoFPyM7PQ@mail.gmail.com>
+References: <CAJiE4OkW6XT71xvv49VN5STPx7dQ6GxV+-Rz1=55JhoFPyM7PQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251201134954.6b8a8d48@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-Mon, Dec 01, 2025 at 10:49:54PM +0100, kuba@kernel.org wrote:
->On Mon, 1 Dec 2025 11:50:08 +0100 Jiri Pirko wrote:
->> >> I'm not sure I follow. If there is only one PF bound, there is 1:1
->> >> relationship. Depends on how many PFs of the same ASIC you have.  
->> >
->> >I'm talking about multi-PF devices. mlx5 supports multi-PF setup for
->> >NUMA locality IIUC. In such configurations per-PF parameters can be
->> >configured on PCI PF ports.  
->> 
->> Correct. IFAIK there is one PF devlink instance per NUMA node.
->
->You say "correct" and then disagree with what I'm saying. I said
->ports because a port is a devlink object. Not a devlink instance.
+When following NFS referrals, the client always attempts RDMA first
+(if compiled in), even when the parent mount uses TCP. This causes
+unnecessary timeouts when the referral server doesn't support RDMA.
 
-Okay, you mean devlink_port. You would like to see NUMA node leg as
-devlink_port? Having troubles to undestand exactly what you mean, lot of
-guessing on my side. Probably I'm slow, sorry.
+Modify nfs4_create_referral_server() to check the parent client's
+transport protocol. Only attempt RDMA if the parent is using RDMA,
+otherwise use the parent's protocol (TCP/TCP-TLS) directly.
 
-But there is a PCI device per NUMA node leg. Not sure how to model it.
-Devink instances have 1:1 relationship with bus devices.
+This eliminates connection delays for TCP-based referrals in
+environments where RDMA is compiled in but not deployed.
 
-Care to draw a picture perhaps?
+Signed-off-by: Gaurav Gangalwar <gaurav.gangalwar@gmail.com>
 
+---
+Changes since v1:
+- Removed module parameter.
+---
+ fs/nfs/nfs4client.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
->
->> The shared instance on top would make sense to me. That was one of
->> motivations to introduce it. Then this shared instance would hold
->> netdev, vf representors etc.
->
->I don't understand what the shared instance is representing and how
->user is expect to find their way thru the maze of devlink instanced,
->for real bus, aux bus, and now shared instanced.
-
-Well, I tried to desrtibe it in the documentation path, Not sure what is
-not clear :/
-
-Nested devlinks expose the connections between devlink instances.
-
-
->
->> >> Well, the mutex protect the list of instances which are managed in the
->> >> driver. If you want to move the mutex, I don't see how to do it without
->> >> moving all the code related to shared devlink instances, including faux
->> >> probe etc. Is that what you suggest?  
->> >
->> >Multiple ways you can solve it, but drivers should have to duplicate
->> >all the instance management and locking. BTW please don't use guard().  
->> 
->> I'm having troubles to undestand what you say, sorry :/ Do you prefer to
->> move the code from driver to devlink core or not?
->
->I missed a "not".. drivers should _not_ have to duplicate, sorry.
-
-Okay, that means "yes".
-
-
->
->> Regarding guard(), sure. I wonder how much more time it's gonna take
->> since this resistentance fades out :)
->
->guard() locks code instead of data accesses. We used to make fun of
->Java in this community, you know.
-
-Time changes :)
+diff --git a/fs/nfs/nfs4client.c b/fs/nfs/nfs4client.c
+index 3a4baed993c9..39a0424523e5 100644
+--- a/fs/nfs/nfs4client.c
++++ b/fs/nfs/nfs4client.c
+@@ -1258,12 +1258,19 @@ struct nfs_server *nfs4_create_referral_server(struct fs_context *fc)
+ 	nfs_server_copy_userdata(server, parent_server);
+ 
+ 	/* Get a client representation */
++	/*
++	 * Only try RDMA if the parent client is using RDMA. This avoids
++	 * connection delays when parent uses TCP and referral server doesn't
++	 * support RDMA.
++	 */
+ #if IS_ENABLED(CONFIG_SUNRPC_XPRT_RDMA)
+-	rpc_set_port(&ctx->nfs_server.address, NFS_RDMA_PORT);
+-	cl_init.proto = XPRT_TRANSPORT_RDMA;
+-	error = nfs4_set_client(server, &cl_init);
+-	if (!error)
+-		goto init_server;
++	if (parent_client->cl_proto == XPRT_TRANSPORT_RDMA) {
++		rpc_set_port(&ctx->nfs_server.address, NFS_RDMA_PORT);
++		cl_init.proto = XPRT_TRANSPORT_RDMA;
++		error = nfs4_set_client(server, &cl_init);
++		if (!error)
++			goto init_server;
++	}
+ #endif	/* IS_ENABLED(CONFIG_SUNRPC_XPRT_RDMA) */
+ 
+ 	cl_init.proto = XPRT_TRANSPORT_TCP;
+-- 
+2.43.7
 
 
