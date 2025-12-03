@@ -1,280 +1,488 @@
-Return-Path: <linux-rdma+bounces-14871-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14872-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18433C9F6BC
-	for <lists+linux-rdma@lfdr.de>; Wed, 03 Dec 2025 16:23:50 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BF66C9F6E9
+	for <lists+linux-rdma@lfdr.de>; Wed, 03 Dec 2025 16:25:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 671473000B4F
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Dec 2025 15:23:46 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B6A4930139AD
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Dec 2025 15:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A75328B73;
-	Wed,  3 Dec 2025 15:15:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A680132C936;
+	Wed,  3 Dec 2025 15:18:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="JghMureU"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="fPOFiZ9i"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012059.outbound.protection.outlook.com [52.101.43.59])
+Received: from BL0PR03CU003.outbound.protection.outlook.com (mail-eastusazon11012032.outbound.protection.outlook.com [52.101.53.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD915186E40;
-	Wed,  3 Dec 2025 15:15:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.59
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77800381C4;
+	Wed,  3 Dec 2025 15:18:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.53.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764774917; cv=fail; b=fT2nV8v6+4NsS1ZwkZXnRiU8uMDsdsvoikJ52L5titMqVqfXzWP9W60piYKbCmH9a7q6yXhfXLQDjXkC4N36e+VBKiyZSQaMkdc9MPD2BPKAWjSRRRTTrXMBpoWaahpJ5QZznsyK6APS+CqjGRjIk0DvX7KNRS7KuGJk3gmWuHU=
+	t=1764775134; cv=fail; b=DO4TvTqeK+XKon5TULqdPp7UG687DGRC6a/p3G01gBHZhkrgq6qJ3YPgpJmHtlnPrFgfv5c/mPqU5usov7fc/CEJh4rE/A0BwPTYHbnPBMS8UEZqcrwee8zuITfmnkGB78/1rWqbwFXeNQBWTAl/x/m5PHbcs4uc76OtlldQI58=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764774917; c=relaxed/simple;
-	bh=DjqqyoD4D65cpIFYU7bW878Oa6zII0lT1xADulPHCbg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=n+KHh7VQeMCltHu7t0NcirDbP4GMwhWSJpFZNbgvUD1NDvbsoWsFZ8QJPCBC1SNC+j6Xijt3RkyEIsCVA+B0t5wwm/ufDJJLCBfesyBG3rmLr2hnWcGN/dnOMkVhyGssnmPIz7e2eh7LvBN7e9Iv0JJ8e79fzX9xLWk7K7JfEW8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=JghMureU; arc=fail smtp.client-ip=52.101.43.59
+	s=arc-20240116; t=1764775134; c=relaxed/simple;
+	bh=eiO3Yw6oouFjK1NhmrMbAHUt5yeWvCTZ0i7CCZqII8A=;
+	h=Date:From:To:Cc:Subject:Message-ID:Content-Type:
+	 Content-Disposition:MIME-Version; b=MPvp/59ygesSD+ZJ50XpZ5IY7deRXky5Pmgg6qwBVVI88iDFTsmD8nRJMR1+v1axNNGJV8k4Ei7/yrFjaHxOAD8Gwu9Iycc+gxL12T7RFWOwJMRP7eNbrqz27qO2zTu8dqWS3aYq7UNbanQ0GWgM+3ZtePHUOjxJBHtyE9ANpDU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=fPOFiZ9i; arc=fail smtp.client-ip=52.101.53.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=xi7Bmc4jKPDdGJlxvqfryY2DNt5c/UnUcBCSX/aG+J9VYBBrZb1e7B3yZvjJlDLzHj2dPe42Wsn10M4RIxl5TdqiovcLsRFMh2g4coVQTJ1mNnZ7Yn3n3q5thtLNrdtgRVvouwAfLzs0RXSi5+OAVcoFgsfaLxGM/PKCma/7HeFDInFEMehdlSOpaSZtLWegm6KihSiUSev1+N+/w4RIvGob5W+VM6feQermNznFCVzePUMaJp3ZWgMQLAcasn+ywIXcDBJX0tYafb3mLo2lYkEEDqDYJ/8y/jClfbZK+O2ujIQoHBOU3xKELYPWhB9W9p0Fscc5Lx1VUFftYBzxhQ==
+ b=zTPopb8V6PglXYopZfd+ZrSMDuHDUFaHlbKKsFu9PXN8uczA+mP7IRlZqX/VczeQA3a9+cu69QDGX5RejuuMBrbdDDrLU4+kJFYSW96StOPQcs9di4FJ5etieB3xeRrOg9E6/jvIvPWA3OlmNapT4xhD7ndNpaWatSXFdksYycFjId54qsH9xAlx3g0eadWEsNLJBEeM2gT6xPDwdlj1E2cPpExWf83Q3wSF/gcLD/rKkv/hxVJwjQ7SKu2IPC+oeRo7s4GCC7/Aq6vUZdFSVfhmm1fHMOCqntjMZRNK100RHr7NVK2jGm+uICDAdpptG8xoKWWOS7tlTuz6nFawqA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9jIMCnE0wLc8PmLuUzpvMZEGoV8UBPctCqq4B+QiwA0=;
- b=X732Qa20jj3uDlJyClhTQMnNZM4vPDxC2rTXLboktdYut9502S01KpJTsRDmAz1L0floRUcLctMnKNz7kpsf387Vmc2CXD37/xqD9WnbRH+HHBN8GxjvjDCmqztuA2VhPet/iHJVYcT3LEordk3Y6vMDePEJkF4/RpbvCW08g4yN6KUsVPLGB2HIGLfVOH2AS9lW2kdym0Am+5y/Jo9Ncu65SXVVbLC0508mTEAlWhWeU/owg9M76vL+/K5MNz4FnAi2K3B4OZSk0HJXWBYC63PS2mqpiq6UYjqfVz2P1m+26csKO4dxrC+NGt9sWGR5CKmH8ml1tWb26WDfv3S/ow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=linux.ibm.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
+ bh=/Ky+IXrgEvsne4eARC2iyXfvBQxEDoWuCVTQL71Gsts=;
+ b=xwPgr1GcdPu+Jy1n6wHcyGqaOQzT3o0h6c56TVf0Jf8KQEk3Lrt9a7DtpS8Ms0Rd3rNUvm5lMh5y6McYNSDBWaG40WePceq90zVTncZxWTrmNkECruG5/NohX9JWRvva52P/sAyC8A0JxD8BBE955G7qSwHTdNSzePdGiDu1PAsrHW8jcAZe5Quzv2/+xqsa8EUhXmFIPEioIT88QuuqBNDGnmMEtr7FyON+5Pr17Rj1NVjzgGp1hJEc9t5DsePyYXuvx6ZAX0JT1NlZppylwQ3i+AujoyMXPurljbQd3xCPRO1AXdNUGLOOhlW5hYOcjr+WFcM0SAlQbOcFWCjvKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9jIMCnE0wLc8PmLuUzpvMZEGoV8UBPctCqq4B+QiwA0=;
- b=JghMureU5GmLILUEkIpW1KVK428WT9AbMxJN1zsjPkhXC1CUBzK/h2XsydhF76s5gWzKo8XRYsstleHCl0nMHYyjoNwoDXon4WqDfYx3L/Zl585oznikidnTKYtyBoKODfWlGzXH2F2YYjMiGtPQRLlLb5qt1FNqBGiagp/dzG/HqnvuY5GmGDhTW8tKq/wVc8OFBq5Yy5jZyY1aHTkZRPCBa0BDbofqv70MBzNnVRD/oeayPomFYhvIZTdAT4SrQotTyz4VsGu9NAoFG/vrZEgwwVp1kntzH9xTDAfj6RGXUTt0TtCddu5jSnPjcMi3Y954rLTHO91mGXhnblcR/Q==
-Received: from SA9PR13CA0148.namprd13.prod.outlook.com (2603:10b6:806:27::33)
- by SA1PR12MB7101.namprd12.prod.outlook.com (2603:10b6:806:29d::16) with
+ bh=/Ky+IXrgEvsne4eARC2iyXfvBQxEDoWuCVTQL71Gsts=;
+ b=fPOFiZ9iW0eoDiSlOyw1FGn0WIzRTYI+aMwW61B/+SkEyS4BSg5h/eEBcQNSuGNyfL1tV9G4n1VV0r1n07n4aTaltfBQ2p2bDPIKqeejSjf06aEt4sxFOitJvOjdztGF1JCF29mpZr7cLw/CQTcIBzb9gFWz2SbrVDqyEZZp/XU4FOY1ee/jeJVyPvzEkxqOom1R3CzwGkCa4dq0Hte4fiXTOwHo5V67zB4Bf3dGp/9h/fR56WrvoXjjjDxTkPoUXfcHNC0KEXPBVIp7VqrjLH6ifDqy+xaWfKd3IM60mhcO0szC2vUJQ6G1DTNpqsTNbtHHhJYjpQnNK1+mjd+p9g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB3613.namprd12.prod.outlook.com (2603:10b6:208:c1::17)
+ by PH7PR12MB8038.namprd12.prod.outlook.com (2603:10b6:510:27c::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9388.9; Wed, 3 Dec
- 2025 15:15:08 +0000
-Received: from SN1PEPF0002529D.namprd05.prod.outlook.com
- (2603:10b6:806:27:cafe::4e) by SA9PR13CA0148.outlook.office365.com
- (2603:10b6:806:27::33) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9388.9 via Frontend Transport; Wed, 3
- Dec 2025 15:15:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SN1PEPF0002529D.mail.protection.outlook.com (10.167.242.4) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9388.8 via Frontend Transport; Wed, 3 Dec 2025 15:15:08 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 3 Dec
- 2025 07:14:47 -0800
-Received: from [10.242.1.82] (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Wed, 3 Dec
- 2025 07:14:41 -0800
-Message-ID: <7ae1ae03-b62d-4c49-9718-f01ac8713872@nvidia.com>
-Date: Wed, 3 Dec 2025 17:14:34 +0200
+ 2025 15:18:48 +0000
+Received: from MN2PR12MB3613.namprd12.prod.outlook.com
+ ([fe80::1b3b:64f5:9211:608b]) by MN2PR12MB3613.namprd12.prod.outlook.com
+ ([fe80::1b3b:64f5:9211:608b%4]) with mapi id 15.20.9388.003; Wed, 3 Dec 2025
+ 15:18:48 +0000
+Date: Wed, 3 Dec 2025 11:18:47 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Leon Romanovsky <leonro@nvidia.com>
+Subject: [GIT PULL] Please pull RDMA subsystem changes
+Message-ID: <20251203151847.GA1224837@nvidia.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="woCtgOTkQvIXHsUO"
+Content-Disposition: inline
+X-ClientProxiedBy: BN9PR03CA0470.namprd03.prod.outlook.com
+ (2603:10b6:408:139::25) To MN2PR12MB3613.namprd12.prod.outlook.com
+ (2603:10b6:208:c1::17)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] net/mlx5: Fix double unregister of HCA_PORTS
- component
-To: Gerd Bayer <gbayer@linux.ibm.com>, Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, "Mark
- Bloch" <mbloch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, "Jakub
- Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Shay Drory
-	<shayd@nvidia.com>, Simon Horman <horms@kernel.org>
-CC: Lukas Wunner <lukas@wunner.de>, Bjorn Helgaas <helgaas@kernel.org>,
-	"Niklas Schnelle" <schnelle@linux.ibm.com>, Farhan Ali <alifm@linux.ibm.com>,
-	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-s390@vger.kernel.org>,
-	<linux-pci@vger.kernel.org>
-References: <20251202-fix_lag-v1-1-59e8177ffce0@linux.ibm.com>
-Content-Language: en-US
-From: Moshe Shemesh <moshe@nvidia.com>
-In-Reply-To: <20251202-fix_lag-v1-1-59e8177ffce0@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002529D:EE_|SA1PR12MB7101:EE_
-X-MS-Office365-Filtering-Correlation-Id: ae0c957e-7e21-4277-d64c-08de327ebf40
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3613:EE_|PH7PR12MB8038:EE_
+X-MS-Office365-Filtering-Correlation-Id: b1706a1a-435c-44a6-cfe5-08de327f41f0
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|36860700013|376014|7416014|82310400026|921020;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
 X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?UXRmL0E3cXEwSEtRTlNZdVdneXgxWVRWb2l0WUd6am9ocTlLNWw2THRJMHRu?=
- =?utf-8?B?MVJnMHhVS1dNdGlzUXVqeThQQmNYUUFmTGxLeERBTkpBUmlJaGs2dnM1dlZv?=
- =?utf-8?B?VlM4YVBEUmFtaklNcVBsWGJPSVFNVUd4WmduajF1bEJlQ21hZjQrcVV0WmZO?=
- =?utf-8?B?TUhHamFKc3hvRHFES0lYWlI2b3Y5bWJQZWtVV2dBbWM0UC9RL2JndU14Tm5t?=
- =?utf-8?B?aFBhU0RuNm56NURnbHBrVHpUT2hGdHNGaFY1TFJ0dWM3RmVyZ05xZzNYTjhh?=
- =?utf-8?B?YmJZRnpwNnRxL1hJemR1SGRid0I2MHF6eU1MdnVWVjJKdnU5eXJQR1E2NVM3?=
- =?utf-8?B?Rjc4RE5iZGZtY0lNZm4ySkdNYkJWRjJwNy9aaUdlKzBxN0Z3THVjNUxuNk0y?=
- =?utf-8?B?LzlLSnlwQ2NBd215cTlJdmsrSXl1SGFqZENucTlHaWFTRmF1MkxOZFBtSStq?=
- =?utf-8?B?di9qN3A5eXNTSGhkRHY3LytSLzVNdDQwVEwwa1ZVUU52RUV5VVdPcStZSWZY?=
- =?utf-8?B?UGVub0lhR0VGcjVienlvQWxrV0FtWEhwRHVpZE04dnRocmo3UlJmcXZlL25M?=
- =?utf-8?B?cHdqUXM2Ym9qN3Vaa3FoQ0N2dXNud2Z4bThJdC9aSnRUOEw4SG4vamtUSExo?=
- =?utf-8?B?dWtoakdBczdGTFlQVmdLcjA2bEo0NmVWL3RlaW56em9NNnRscEN0WXlSeENm?=
- =?utf-8?B?ZWNmdlFlUlJRb0VyTVNuWXhPdkw4VWcvaDVjeUpSVUNUc1lwa1FHMU9jWkg3?=
- =?utf-8?B?dW82c1dGV3Q1WnpaeXNoNjRZOFlPTFBmc1ppZG84aHpLQi9reUwwOU1SL1dr?=
- =?utf-8?B?L09pZTJPeHFpTHVaTi9kcDJuU0E5TWZKcG00eWI0L0Izei8xSmpTZG1SbVJI?=
- =?utf-8?B?eFZmOFNWQlB6RXQyLyt1SFFDbkdkRGNKWXB2dG5aM2xnTTF3dWhxai9OYjdm?=
- =?utf-8?B?TVhvZFVwaTVHVFg3azhwWkJqQlQvRHo5b1UrcW1wMnd1WjdBNi8wUjNtZlBZ?=
- =?utf-8?B?Qk4vTk5hYityaWREb2pwN3VhalQ3WnNUQ094ekFqdUI0WFNZeVZVeVZydW0z?=
- =?utf-8?B?ZkU5aXRYUU9VRCtiVGRNUnBBdDVKM1c1M0dNRDNmTy95K3hRRmdQcTVjM3p4?=
- =?utf-8?B?SVBtS2dQNDZQSURPeElCVDF0KzU0YnZTQXdHUGpVT1dzNTZxNGNtamhnMlM5?=
- =?utf-8?B?dlpLWnkxM1BxWHVrR2RJeHpHa1VFVmh5bU5FTUVvWlVuZGNLVHMyZWZrblQv?=
- =?utf-8?B?V0U1dHdEWGk0cTlYUDVNaDBVMy94MnZGaWdDRDBYV2xpQjVyZWMxYW1QMVNi?=
- =?utf-8?B?c25lakhPT2REMTRFbEl0QUQvajNGeEhQZnBtTThrUktBcm1OM0l3ZE9KZVBC?=
- =?utf-8?B?SzQvdmNocjN2eTcvQ29tQWFacHhzcmtZL2dwWkI3RFJrMFNMZ3NmZVVhMGp1?=
- =?utf-8?B?RXpnK21SSlVwL2s3Q0lUek13dDFuMDZOazlmM3FGMEw3MVJJQ0FYWSs5QjRq?=
- =?utf-8?B?aDdHR29qWVFRNTJRYzZxY2UwTXhBZDlPTFVoSndCVXhYcjV6bDgvWVFZWWJU?=
- =?utf-8?B?VVZCUCtIOVV2bXRaOEpBbzJubThNSEpVc05Dcmg0YVdRbk5DZWJKeVdtVkF3?=
- =?utf-8?B?bHJiODJVQmN0dVlVazBHYmQ4clFZM3NVZERvNWNHTXdWMitSMFZCclE5RUJZ?=
- =?utf-8?B?RFZMQU1SRmpTSnIzcG1PdVhqTkF0VnpFbytQdmhYRjlFSElHSWxONjErQWll?=
- =?utf-8?B?U016bkdIYXYySFlFZ0cvcDdLVUthN1o2dWxYQ3RMdFVpQ1hmbzdOaDZTbWtk?=
- =?utf-8?B?OTd1Q0RQV3dpaWlvQ01PejFBbzd5UGxkbllQNXNHWnozOXVkSUtGays3MzJV?=
- =?utf-8?B?Y3RlaDJ4NDdSaGN0VlJYa1o5OGxsRE9nZUVOMjFOMkx0MUxEUlB3cWltejEr?=
- =?utf-8?B?NGZOMll3VDBxVGU4UXJzbnVyOEJKVXNvODVDdGdMemV1YVJ4M2lZN24yZzBx?=
- =?utf-8?B?Sno3cExhS05vdys4eFVhZWZtSGNtR2ZTSzN3WTNFVXJidnFzdnEveGlrbDJW?=
- =?utf-8?B?K1haMlpqTFJFc0ZJNmh0R3lBUlFPYnlwaURkY1N4U3JLakdHRlNUaEpvWXhO?=
- =?utf-8?B?cXdvQ0xaNmFFWG1Vc21WWDZuWFY1cG03ZjZ1TXE4TDFGbE5BeUpiQ055R0Rn?=
- =?utf-8?B?RGc9PQ==?=
+	=?utf-8?B?NWFWSGRkMVdnUXAxSXRZUVVxVnFaOTlNejdid3dqeUhrTEdiNkZ2UkptZ3hm?=
+ =?utf-8?B?eXNlQ0FUYm5SVyt3WkhHamQ0dlBNaUFjdzNvaEk0U2pBc2JaZzl6ZytWcWJC?=
+ =?utf-8?B?b2k3amwveVlQdHBLa3NnWDNmSXZ4ekYvTXowU0JPQWtMK1oyMTVaYXlaYURq?=
+ =?utf-8?B?Mk1lK0FxN29Cb2s0Nnl2U0w5d0IzZ1NnczlVVjJjNStaSkhlUERZckRLcXZi?=
+ =?utf-8?B?WWRjT0d3aG5vd1BoUUQ5eDY4ci9EZ3JoWW8waFQ1QlE2ZnpXazQxSXA0M3BO?=
+ =?utf-8?B?UXlxRDE3ejkxVGVsaFl1aVpBbFpoSlZMamhDK3VkdWJZUFZCalRYd1dzMnpx?=
+ =?utf-8?B?aU1SRUgvSEVaVWhrS203WjgxWVg5b0RsN1dRWFN0TlZTWlFTdkFDZmdaci9K?=
+ =?utf-8?B?UFB6WnF1RnZpbWRQc2ZBc2lTMktteFR4eFd1WDRncVZFczVjTkhid0U0ZWNH?=
+ =?utf-8?B?R1NVeGg3U2tBaFNUREVYazNsMGpZdGEwc3dzVXVWb2pRYmtaRlR2YmtEV2ZQ?=
+ =?utf-8?B?T0dIUU1INmZUUlpjdzduLzYrQUJWNXd1ejBHSnZ6elJIMHptUmZGWjhBK0JZ?=
+ =?utf-8?B?eVJKbUNRaU9oL1B1eEtoZjNZd1ZnRWFicUJad1A2MDA1UmxWQ3FzR2cxTWtI?=
+ =?utf-8?B?QnI3VUdzZ2diQUk3YXlMK2tTU3RDTTMzbU04ajRZRVZjRHVYTW9iRW9PQ0xD?=
+ =?utf-8?B?V0diNjJJN2c0OGhZek5SNXFtVXFlSGdGalBkYmxUTExzbGRYZUJSUGlGa2lv?=
+ =?utf-8?B?alFFSy9MclFwSVJKemxabzBhcUxicjZrY2FrOEN3cGFoS3JpWTVGMVp3aGJj?=
+ =?utf-8?B?cTIyL1JyeEhTU0xRbXRHdVlKVnNhN0lvOHliUEcxRjhxaDd4dS8yVTh3WVg4?=
+ =?utf-8?B?Wk4yU0xNb2JiMjZlb3Vva0NKMnhiWmtCSW1waFlrRkZsVk1Qd20yQXdJK3dQ?=
+ =?utf-8?B?TmE5YzM2cDdyRDA1emFjZ0IyczZYcEtOcE1hNXRONk1iZlhiT0pLRGlFNFB4?=
+ =?utf-8?B?cm84VFEzckRrTXBINlZwdk44aCtycmFOYUwraXZ3WW1PRCtKWE5TNHRmMmNZ?=
+ =?utf-8?B?YnVIMXBXckxWMk45bTlnRHhEa056ZDZJM3RLK3RUc3JvcGJ5dXk2TzBrbU94?=
+ =?utf-8?B?T0g4U05xVzViWlVJQ0lnOGhNNEJMbjF6RlFWWVIyYUdpVXkyaXdjQnU2SjRU?=
+ =?utf-8?B?RmRFdWdVYVFsMXRraTRFU0NlclJzZzdacU9lZGF4ZTVzZ1dXMzRQMDV2bmxi?=
+ =?utf-8?B?b1kyWG91a1REUWhnd0tJdU5yYU11THJrT3Q0Y1VUbm91OWcwdWVjZDZSbWF6?=
+ =?utf-8?B?Rk96dDc5eng1T21sS0grL1VkZGR4cUVtb3ZPTTd3cGpIckJsK2dwUExsV3Ur?=
+ =?utf-8?B?Sm5DUTFodkZaRWhtQUM4c2RnTHRCL1p2OFkyWUFDdG1zRWg0V045aDJGSE5r?=
+ =?utf-8?B?QllPL3VTZnNmdHRPTzkvcHRhMzJ0T2o5UnhYRGZJbUh6cHNNbktKWkVvK3hk?=
+ =?utf-8?B?bzFxaEhyMndoQ2l3cXlZN0ttWWxxRjl0ZDFjUDRtOHFEMk5DUTVNbFoxMm8v?=
+ =?utf-8?B?Tks0ay91S00rQTlNSzc4NHY0NXlzY0gwT2tCYitGajNnTEpkVGRwcnVtU1Nv?=
+ =?utf-8?B?cGZKZUhObHJDWnhHaXBGTi9Vd0RaQUlDa1daZi9ScU1LaENrQjN0MG5yd1dN?=
+ =?utf-8?B?RUlrNWRmNDVocHVCNkZmUi9CeUJVaDJXeGJ3SGZKUWhLOGpqTW1wbWdZdVlB?=
+ =?utf-8?B?T0Q5Z3J2Z3BESGxBZDZLZFhmOVNlWXV4cU41WEZDRVIrdUJZSGdFYXNWOGEx?=
+ =?utf-8?B?dUY3dW9NM1BuK1UweSt1OFd0c3Jybk11Q1VlMWtJRGY3UjRKUHB6b3pIMU9h?=
+ =?utf-8?B?MmJiUHBqd3ZSUVZnSm96dnZEM0JnRWdqUURHQmVaa2FhSkUxdDM0S3lsa0hQ?=
+ =?utf-8?Q?k5cqYDnC5hMu/OwFutxXn/2KM+L6Cm/F?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(36860700013)(376014)(7416014)(82310400026)(921020);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3613.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?bUd3bzRiL3dzcXNJOUd6UThIYVoxZ0I4TGg2bXlKL2ZJQzBoWTVlK2FjcGdi?=
+ =?utf-8?B?Mmh3T1hkS24rWDVGeFV2bHhYQkY4N0tVQ3RsRTZDQXYrS3g4dmZQQklWQ0p0?=
+ =?utf-8?B?dVVjQTVlOVB3WXIydFljbi9YZ1RDdkpJdmNwdm80NTVjUVd3YmplbG9NRDRH?=
+ =?utf-8?B?MUZ0OGpCN2JiMG5uNlErQ0x1RlBQUXdqYkxBNjJ1WjdacEkyQVRvRHRKajBv?=
+ =?utf-8?B?VCt2Y1VHQXVqbTNka3Y4MDlhVDB5c0xha2NKb1NDaEFieHNnMFY2YjFFV0ZU?=
+ =?utf-8?B?YVFtanZDcDNpc2hJc1dkcnB0cWZKQzluOXVVNGxORndJcklLSFNWL2cvWmd4?=
+ =?utf-8?B?ZG45cGNPN1UrcUVVQjRPdHB0cWMyczBZY3R0MXRlaC82c0RPdHJnM0tzL1RW?=
+ =?utf-8?B?dy80Znp6NHNzOWh4bUxMMldkNGNBaTdLQTJUZkJxaGhHdFBxb0gydUVwYXpC?=
+ =?utf-8?B?djZoalY3TDM3UXcreEpBMVJ6VUp6M0lZMDhzeFZBall1OU4zQ3BxR2ZjYzNT?=
+ =?utf-8?B?dXFMMmJ3NEUxV0RUSmlrOHA5L1hjQUo5akwvUEswaHdLNkYrMXo2RURDa0dn?=
+ =?utf-8?B?UlJHM0Q0MUVmWEhsNnFNWmdobkMrU2Jic0FjRzNZRnM0T2xSeGJMcDBnZ3Jy?=
+ =?utf-8?B?M1I5S1NSTFNVbC8yK1k2UDFUUE1rMitwMnBRdWtNKzlXSmJmcjBWbzV4ZXNn?=
+ =?utf-8?B?dkRXeGszOG5SbmM5c2swVkwzVVJSSXZjTU5EaDlHaHVIVTNzdG1RT2NWTTVx?=
+ =?utf-8?B?bjdkbktlWldHQUV4Tis4QlR6dm95VjFINHpFTlNtTFdnd29BQWRaUTNsZGdH?=
+ =?utf-8?B?K0JvUlIxZWZJY2wvYURjY3g3NnZJVXFJYVNrTC93b1lwUWF4QnR5dDhwZVAw?=
+ =?utf-8?B?WDZ1dWxRaTEySVJZL2QzNEt0VnFSK3hTNDRHbGRiSUVFcmZxVE16ajFwQ3BD?=
+ =?utf-8?B?Y0dHdVpsRUtDRU5lZndlK3dSdW1JUXpzdUZma0JPeUxWby9RM1RVQUxjdk8y?=
+ =?utf-8?B?eVNUbTVMWms5SEI2VVQzVEQ3czByYmV2ZWVibThwRHVrNm9YN3RuZE0zUVg0?=
+ =?utf-8?B?V3V3cmM0SnlValcrTmpWNTFZWUhDSmwxV3NKQU0wVVh0UEM1U2FtekxUTHUz?=
+ =?utf-8?B?aHdPajU0ZUkvUGxoNFZWeVhzMmI1TVRhaXNZR2FrKzV0dm50dUJZZ2RzdFJS?=
+ =?utf-8?B?WTJNME4vQWRtZmlGMmFxK2Z0QW11RFJTaENaVmd2NWozMmx0a2JOc2FmR3dr?=
+ =?utf-8?B?cWw4TDQwNWFSeXplektoN210UXI1ZlVPb1Y1Yk9iNUZsaFF0N1NpU1VmT0RZ?=
+ =?utf-8?B?c2dMOGdkZVdlQnFRY0F1a2huTldHT3QyVEVONDVVT0kxeldiY0h0QzdxVEJC?=
+ =?utf-8?B?ZTZ5a0haRTNuSGJUQzhrQWoxK2J0VVdPUUIrWFovRGk0VmxmdHUzdkRhd2pw?=
+ =?utf-8?B?cjlldHc4cHRxZ2w1VUdUYW9WUnN1NGw2RTdBc2FpcEU2VDliM1hkWXJEZ0Nm?=
+ =?utf-8?B?K0FTbk9DQmN4ZS9JeUIvYmJmVTd0cUxlNmFWWnJlQ2hIMzVYUFJxOTFLcHYv?=
+ =?utf-8?B?MXZ0RUxKN2pnYThHUDcrUm9kaXUwemFRdFRJNWNZUmdLV25NU2FUQmRqcytu?=
+ =?utf-8?B?ZDhWNjJ6bzZ2T3NYekxBM2w1S3kzTTV1SFVONzVOeWlUendTTjhnZjd0TDEz?=
+ =?utf-8?B?Y3dJTGN4cVpudFg0Z0t4c2ZRNjA0WU83M2JwRXVxeTJlYndpSTE3dWdsbkE5?=
+ =?utf-8?B?NWF0YThXeEo0Rm5zUEtzakZFTU1HUWJqa1Y2UUJzWEdjeDdyWnZkSjNPaWtl?=
+ =?utf-8?B?bXNEUFNlS29kREtmektlMXV4cENvc2ROTU5oTjRkU3JuT2NacGJUbnFjVVMy?=
+ =?utf-8?B?cHc3WUM5azQ3K3JXUEQ4TkErcmtBV0FWVXlkOHdDdUtBTnF6cGllbHZIMHJ0?=
+ =?utf-8?B?VEpXK1lWTmgyWlczaXd1ejdoMmZFaGd3Z3JuWk9HR3d5RWpZcGFLYkhtUzJC?=
+ =?utf-8?B?ZTBXVFBwYVFxSnRWZjNVVklQeThySlJKT2k1Q05ER1JhZkpqY0pTQ0dBVU1F?=
+ =?utf-8?B?WDZZdzFPNS9mTDkxWTVnMm10YTN4dUE2UzN5WEVLNERUTWo3NC9sWGFRUmZD?=
+ =?utf-8?Q?tBx8=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2025 15:15:08.7171
+X-MS-Exchange-CrossTenant-Network-Message-Id: b1706a1a-435c-44a6-cfe5-08de327f41f0
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3613.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2025 15:18:48.3896
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae0c957e-7e21-4277-d64c-08de327ebf40
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF0002529D.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7101
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DP7vZhVtotmLXBmNhM0EMj3BX6UU1mtmLiMGUnTxSXsxCg8N3TwFbISXPC6A/m0F
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8038
 
+--woCtgOTkQvIXHsUO
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi Linus,
 
-On 12/2/2025 1:12 PM, Gerd Bayer wrote:
-> Clear hca_devcom_comp in device's private data after unregistering it in
-> LAG teardown. Otherwise a slightly lagging second pass through
-> mlx5_unload_one() might try to unregister it again and trip over
-> use-after-free.
-> 
-> On s390 almost all PCI level recovery events trigger two passes through
-> mxl5_unload_one() - one through the poll_health() method and one through
-> mlx5_pci_err_detected() as callback from generic PCI error recovery.
-> While testing PCI error recovery paths with more kernel debug features
-> enabled, this issue reproducibly led to kernel panics with the following
-> call chain:
-> 
->   Unable to handle kernel pointer dereference in virtual kernel address space
->   Failing address: 6b6b6b6b6b6b6000 TEID: 6b6b6b6b6b6b6803 ESOP-2 FSI
->   Fault in home space mode while using kernel ASCE.
->   AS:00000000705c4007 R3:0000000000000024
->   Oops: 0038 ilc:3 [#1]SMP
-> 
->   CPU: 14 UID: 0 PID: 156 Comm: kmcheck Kdump: loaded Not tainted
->        6.18.0-20251130.rc7.git0.16131a59cab1.300.fc43.s390x+debug #1 PREEMPT
-> 
->   Krnl PSW : 0404e00180000000 0000020fc86aa1dc (__lock_acquire+0x5c/0x15f0)
->              R:0 T:1 IO:0 EX:0 Key:0 M:1 W:0 P:0 AS:3 CC:2 PM:0 RI:0 EA:3
->   Krnl GPRS: 0000000000000000 0000020f00000001 6b6b6b6b6b6b6c33 0000000000000000
->              0000000000000000 0000000000000000 0000000000000001 0000000000000000
->              0000000000000000 0000020fca28b820 0000000000000000 0000010a1ced8100
->              0000010a1ced8100 0000020fc9775068 0000018fce14f8b8 0000018fce14f7f8
->   Krnl Code: 0000020fc86aa1cc: e3b003400004        lg      %r11,832
->              0000020fc86aa1d2: a7840211           brc     8,0000020fc86aa5f4
->             *0000020fc86aa1d6: c09000df0b25       larl    %r9,0000020fca28b820
->             >0000020fc86aa1dc: d50790002000       clc     0(8,%r9),0(%r2)
->              0000020fc86aa1e2: a7840209           brc     8,0000020fc86aa5f4
->              0000020fc86aa1e6: c0e001100401       larl    %r14,0000020fca8aa9e8
->              0000020fc86aa1ec: c01000e25a00       larl    %r1,0000020fca2f55ec
->              0000020fc86aa1f2: a7eb00e8           aghi    %r14,232
-> 
->   Call Trace:
->    __lock_acquire+0x5c/0x15f0
->    lock_acquire.part.0+0xf8/0x270
->    lock_acquire+0xb0/0x1b0
->    down_write+0x5a/0x250
->    mlx5_detach_device+0x42/0x110 [mlx5_core]
->    mlx5_unload_one_devl_locked+0x50/0xc0 [mlx5_core]
->    mlx5_unload_one+0x42/0x60 [mlx5_core]
->    mlx5_pci_err_detected+0x94/0x150 [mlx5_core]
->    zpci_event_attempt_error_recovery+0xcc/0x388
-> 
-> Fixes: 5a977b5833b7 ("net/mlx5: Lag, move devcom registration to LAG layer")
-> Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
+This PR has another new RDMA driver "bng_en" for latest generation
+Broadcom NICs. There might be one more new driver still to come.
 
-Reviewed-by: Moshe Shemesh <moshe@nvidia.com>> ---
-> Hi Shay et al,
-> 
-> while checking for potential regressions by Lukas Wunner's recent work
-> on pci_save/restore_state() for the recoverability of mlx5 functions I
-> consistently hit this bug. (Bjorn has queued this up for 6.19, according
-> to [0] and [1])
-> 
-> Apparently, the issue is unrelated to Lukas' work but can be reproduced
-> with master. It appears to be timing-sensitive, since it shows up only
-> when I use s390's debug_defconfig, but I think needs fixing anyhow, as
-> timing can change for other reasons, too.
-
-Hi Gerd,
-  I stepped on this bug recently too, without s390 and was about to 
-submit same fix :) So as you wrote it is unrelated to Lukas' patches and 
-this fix is correct.
-
-> 
-> I've spotted two additional places where the devcom reference is not
-> cleared after calling mlx5_devcom_unregister_component() in
-> drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c that I have not
-> addressed with a patch, since I'm unclear about how to test these
-> paths.
-
-As for the other cases, we had the patch 664f76be38a1 ("net/mlx5: Fix 
-IPsec cleanup over MPV device") and two other cases on shared clock and 
-SD but I don't see any flow the shared clock or SD can fail, 
-specifically mlx5_sd_cleanup() checks sd pointer at beginning of the 
-function and nullify it right after sd_unregister() that free devcom.
+Otherwise it is a fairly quite cycle.
 
 Thanks,
-Moshe.>
-> Thanks,
-> Gerd
-> 
-> [0] https://lore.kernel.org/all/cover.1760274044.git.lukas@wunner.de/
-> [1] https://lore.kernel.org/linux-pci/cover.1763483367.git.lukas@wunner.de/
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
-> index 3db0387bf6dcb727a65df9d0253f242554af06db..8ec04a5f434dd4f717d6d556649fcc2a584db847 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
-> @@ -1413,6 +1413,7 @@ static int __mlx5_lag_dev_add_mdev(struct mlx5_core_dev *dev)
->   static void mlx5_lag_unregister_hca_devcom_comp(struct mlx5_core_dev *dev)
->   {
->   	mlx5_devcom_unregister_component(dev->priv.hca_devcom_comp);
-> +	dev->priv.hca_devcom_comp = NULL;
->   }
->   
->   static int mlx5_lag_register_hca_devcom_comp(struct mlx5_core_dev *dev)
-> 
-> ---
-> base-commit: 4a26e7032d7d57c998598c08a034872d6f0d3945
-> change-id: 20251202-fix_lag-6a59b39a0b3c
-> 
-> Best regards,
+Jason
 
+The following changes since commit 3a8660878839faadb4f1a6dd72c3179c1df56787:
+
+  Linux 6.18-rc1 (2025-10-12 13:42:36 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+
+for you to fetch changes up to 80a85a771deb113cfe2e295fb9e84467a43ebfe4:
+
+  RDMA/rxe: reclassify sockets in order to avoid false positives from lockd=
+ep (2025-11-27 07:10:02 -0500)
+
+----------------------------------------------------------------
+RDMA v6.19 merge window pull request
+
+- Minor driver bug fixes and updates to cxgb4, rxe, rdmavt, bnxt_re, mlx5
+
+- Many bug fix patches for irdma
+
+- WQ_PERCPU annotations and system_dfl_wq changes
+
+- Improved mlx5 support for "other eswitches" and multiple PFs
+
+- 1600Gbps link speed reporting support. Four Digits Now!
+
+- New driver bng_en for latest generation Broadcom NICs
+
+- Bonding support for hns
+
+- Adjust mlx5's hmm based ODP to work with the very large address space
+  created by the new 5 level paging default on x86
+
+- Lockdep fixups in rxe and siw
+
+----------------------------------------------------------------
+Adithya Jayachandran (1):
+      {rdma,net}/mlx5: Query vports mac address from device
+
+Alok Tiwari (1):
+      RDMA/cxgb4: fix typo in write_pbl() debug message
+
+Anil Samal (1):
+      RDMA/irdma: Add missing mutex destroy
+
+Colin Ian King (1):
+      RDMA/rxe: Remove redundant assignment to variable page_offset
+
+H=C3=A5kon Bugge (1):
+      RDMA/cm: Base cm_id destruction timeout on CMA values
+
+Jacob Moroni (5):
+      RDMA/irdma: Enforce local fence for LOCAL_INV WRs
+      RDMA/irdma: Remove unused CQ registry
+      RDMA/irdma: Do not directly rely on IB_PD_UNSAFE_GLOBAL_RKEY
+      RDMA/irdma: Do not set IBK_LOCAL_DMA_LKEY for GEN3+
+      RDMA/irdma: Remove doorbell elision logic
+
+Jay Bhat (4):
+      RDMA/irdma: Initialize cqp_cmds_info to prevent resource leaks
+      RDMA/irdma: Silently consume unsignaled completions
+      RDMA/irdma: CQ size and shadow update changes for GEN3
+      RDMA/irdma: Take a lock before moving SRQ tail in poll_cq
+
+Jijun Wang (1):
+      RDMA/irdma: Fix SRQ shadow area address initialization
+
+Junxian Huang (8):
+      RDMA/hns: Add helpers to obtain netdev and bus_num from hr_dev
+      RDMA/hns: Initialize bonding resources
+      RDMA/hns: Add bonding event handler
+      RDMA/hns: Add bonding cmds
+      RDMA/hns: Implement bonding init/uninit process
+      RDMA/hns: Add delayed work for bonding
+      RDMA/hns: Support link state reporting for bond
+      RDMA/hns: Support reset recovery for bond
+
+Kalesh AP (3):
+      RDMA/bnxt_re: Add a debugfs entry for CQE coalescing tuning
+      RDMA/restrack: Fix typos in the comments
+      RDMA/bnxt_re: Fix wrong check for CQ coalesc support
+
+Krzysztof Czurylo (3):
+      RDMA/irdma: Fix data race in irdma_sc_ccq_arm
+      RDMA/irdma: Fix data race in irdma_free_pble
+      RDMA/irdma: Fix SIGBUS in AEQ destroy
+
+Leon Romanovsky (3):
+      Add other eswitch support
+      Expose definition for 1600Gbps link mode
+      RDMA/bng_re: Remove prefetch instruction
+
+Li RongQing (2):
+      RDMA/core: Prevent soft lockup during large user memory region cleanup
+      RDMA/core: Reduce cond_resched() frequency in __ib_umem_release
+
+Ma Ke (1):
+      RDMA/rtrs: server: Fix error handling in get_or_create_srv
+
+Maher Sanalla (2):
+      RDMA/core: Add new IB rate for XDR (8x) support
+      RDMA/mlx5: Add support for 1600_8x lane speed
+
+Marco Crivellari (7):
+      RDMA/core: RDMA/mlx5: replace use of system_unbound_wq with system_df=
+l_wq
+      RDMA/core: WQ_PERCPU added to alloc_workqueue users
+      hfi1: WQ_PERCPU added to alloc_workqueue users
+      RDMA/mlx4: WQ_PERCPU added to alloc_workqueue users
+      IB/rdmavt: WQ_PERCPU added to alloc_workqueue users
+      IB/iser: add WQ_PERCPU to alloc_workqueue users
+      IB/isert: add WQ_PERCPU to alloc_workqueue users
+
+Patrisious Haddad (7):
+      net/mlx5: Add OTHER_ESWITCH HW capabilities
+      net/mlx5: fs, Add other_eswitch support for steering tables
+      net/mlx5: fs, set non default device per namespace
+      RDMA/mlx5: Change default device for LAG slaves in RDMA TRANSPORT nam=
+espaces
+      RDMA/mlx5: Add other_eswitch support for devx destruction
+      RDMA/mlx5: Refactor _get_prio() function
+      RDMA/mlx5: Add other eswitch support to userspace tables
+
+Randy Dunlap (3):
+      RDMA/uverbs: fix some kernel-doc warnings
+      IB/rdmavt: rdmavt_qp.h: clean up kernel-doc comments
+      RDMA/cm: Correct typedef and bad line warnings
+
+Selvin Xavier (2):
+      RDMA/bnxt_re: Fix the inline size for GenP7 devices
+      RDMA/bnxt_re: Pass correct flag for dma mr creation
+
+Siva Reddy Kallam (7):
+      RDMA/bng_re: Add Auxiliary interface
+      RDMA/bng_re: Register and get the resources from bnge driver
+      RDMA/bng_re: Allocate required memory resources for Firmware channel
+      RDMA/bng_re: Add infrastructure for enabling Firmware channel
+      RDMA/bng_re: Enable Firmware channel and query device attributes
+      RDMA/bng_re: Add basic debugfs infrastructure
+      RDMA/bng_re: Initialize the Firmware and Hardware
+
+Stefan Metzmacher (3):
+      RDMA/core: let rdma_connect_locked() call lockdep_assert_held(&id_pri=
+v->handler_mutex)
+      RDMA/siw: reclassify sockets in order to avoid false positives from l=
+ockdep
+      RDMA/rxe: reclassify sockets in order to avoid false positives from l=
+ockdep
+
+Tariq Toukan (1):
+      net/mlx5: Expose definition for 1600Gbps link mode
+
+Tatyana Nikolova (1):
+      RDMA/irdma: Add a missing kfree of struct irdma_pci_f for GEN2
+
+Tuo Li (1):
+      RDMA/irdma: Remove redundant NULL check of udata in irdma_create_user=
+_ah()
+
+Vikas Gupta (1):
+      bng_en: Add RoCE aux device support
+
+Yishai Hadas (3):
+      PCI/TPH: Expose pcie_tph_get_st_table_loc()
+      net/mlx5: Add direct ST mode support for RDMA
+      IB/mlx5: Reduce IMR KSM size when 5-level paging is enabled
+
+Zhu Yanjun (1):
+      RDMA/rxe: Fix null deref on srq->rq.queue after resize failure
+
+ MAINTAINERS                                        |    7 +
+ drivers/infiniband/Kconfig                         |    1 +
+ drivers/infiniband/core/cm.c                       |    9 +-
+ drivers/infiniband/core/cma.c                      |    2 +
+ drivers/infiniband/core/device.c                   |    4 +-
+ drivers/infiniband/core/restrack.c                 |    4 +-
+ drivers/infiniband/core/ucma.c                     |    2 +-
+ drivers/infiniband/core/umem.c                     |    8 +-
+ drivers/infiniband/core/verbs.c                    |    3 +
+ drivers/infiniband/hw/Makefile                     |    1 +
+ drivers/infiniband/hw/bng_re/Kconfig               |   10 +
+ drivers/infiniband/hw/bng_re/Makefile              |    8 +
+ drivers/infiniband/hw/bng_re/bng_debugfs.c         |   39 +
+ drivers/infiniband/hw/bng_re/bng_debugfs.h         |   12 +
+ drivers/infiniband/hw/bng_re/bng_dev.c             |  534 +++++++++++
+ drivers/infiniband/hw/bng_re/bng_fw.c              |  767 +++++++++++++++
+ drivers/infiniband/hw/bng_re/bng_fw.h              |  211 ++++
+ drivers/infiniband/hw/bng_re/bng_re.h              |   85 ++
+ drivers/infiniband/hw/bng_re/bng_res.c             |  279 ++++++
+ drivers/infiniband/hw/bng_re/bng_res.h             |  215 +++++
+ drivers/infiniband/hw/bng_re/bng_sp.c              |  131 +++
+ drivers/infiniband/hw/bng_re/bng_sp.h              |   47 +
+ drivers/infiniband/hw/bng_re/bng_tlv.h             |  128 +++
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h            |    2 +
+ drivers/infiniband/hw/bnxt_re/debugfs.c            |  128 +++
+ drivers/infiniband/hw/bnxt_re/debugfs.h            |   19 +
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c           |    8 +-
+ drivers/infiniband/hw/bnxt_re/main.c               |    1 +
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c           |    3 +-
+ drivers/infiniband/hw/bnxt_re/qplib_fp.h           |    1 +
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c           |    8 +-
+ drivers/infiniband/hw/bnxt_re/qplib_sp.h           |    2 +-
+ drivers/infiniband/hw/cxgb4/mem.c                  |    2 +-
+ drivers/infiniband/hw/hfi1/init.c                  |    4 +-
+ drivers/infiniband/hw/hfi1/opfn.c                  |    4 +-
+ drivers/infiniband/hw/hns/Makefile                 |    4 +-
+ drivers/infiniband/hw/hns/hns_roce_ah.c            |    1 -
+ drivers/infiniband/hw/hns/hns_roce_bond.c          | 1012 ++++++++++++++++=
+++++
+ drivers/infiniband/hw/hns/hns_roce_bond.h          |   95 ++
+ drivers/infiniband/hw/hns/hns_roce_device.h        |   16 +-
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c         |  141 ++-
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h         |   20 +
+ drivers/infiniband/hw/hns/hns_roce_main.c          |  185 +++-
+ drivers/infiniband/hw/hns/hns_roce_pd.c            |    1 -
+ drivers/infiniband/hw/hns/hns_roce_qp.c            |    5 +-
+ drivers/infiniband/hw/hns/hns_roce_srq.c           |    1 -
+ drivers/infiniband/hw/irdma/cm.c                   |    2 +-
+ drivers/infiniband/hw/irdma/ctrl.c                 |  107 +--
+ drivers/infiniband/hw/irdma/hw.c                   |    3 -
+ drivers/infiniband/hw/irdma/icrdma_if.c            |    6 +-
+ drivers/infiniband/hw/irdma/ig3rdma_if.c           |    4 +
+ drivers/infiniband/hw/irdma/main.h                 |    3 +-
+ drivers/infiniband/hw/irdma/pble.c                 |    6 +-
+ drivers/infiniband/hw/irdma/puda.c                 |   20 +-
+ drivers/infiniband/hw/irdma/type.h                 |    5 -
+ drivers/infiniband/hw/irdma/uk.c                   |   67 +-
+ drivers/infiniband/hw/irdma/user.h                 |    6 +-
+ drivers/infiniband/hw/irdma/utils.c                |   58 +-
+ drivers/infiniband/hw/irdma/verbs.c                |   49 +-
+ drivers/infiniband/hw/irdma/verbs.h                |    3 +-
+ drivers/infiniband/hw/mlx4/cm.c                    |    2 +-
+ drivers/infiniband/hw/mlx5/devx.c                  |   14 +
+ drivers/infiniband/hw/mlx5/fs.c                    |   65 +-
+ drivers/infiniband/hw/mlx5/ib_rep.c                |   74 +-
+ drivers/infiniband/hw/mlx5/main.c                  |    6 +-
+ drivers/infiniband/hw/mlx5/odp.c                   |   93 +-
+ drivers/infiniband/hw/mlx5/qp.c                    |    5 +-
+ drivers/infiniband/sw/rdmavt/cq.c                  |    3 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c                 |    1 -
+ drivers/infiniband/sw/rxe/rxe_net.c                |   49 +
+ drivers/infiniband/sw/rxe/rxe_odp.c                |    1 -
+ drivers/infiniband/sw/rxe/rxe_qp.c                 |   49 +
+ drivers/infiniband/sw/rxe/rxe_srq.c                |    7 +-
+ drivers/infiniband/sw/siw/siw_cm.c                 |   51 +
+ drivers/infiniband/ulp/iser/iscsi_iser.c           |    2 +-
+ drivers/infiniband/ulp/isert/ib_isert.c            |    2 +-
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c             |    2 +-
+ drivers/net/ethernet/broadcom/bnge/Makefile        |    3 +-
+ drivers/net/ethernet/broadcom/bnge/bnge.h          |   10 +
+ drivers/net/ethernet/broadcom/bnge/bnge_auxr.c     |  258 +++++
+ drivers/net/ethernet/broadcom/bnge/bnge_auxr.h     |   84 ++
+ drivers/net/ethernet/broadcom/bnge/bnge_core.c     |   18 +-
+ drivers/net/ethernet/broadcom/bnge/bnge_hwrm.c     |   40 +
+ drivers/net/ethernet/broadcom/bnge/bnge_hwrm.h     |    2 +
+ drivers/net/ethernet/broadcom/bnge/bnge_resc.c     |   12 +
+ drivers/net/ethernet/broadcom/bnge/bnge_resc.h     |    1 +
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch.c  |   20 +-
+ .../ethernet/mellanox/mlx5/core/eswitch_offloads.c |    3 +
+ drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c   |   31 +
+ drivers/net/ethernet/mellanox/mlx5/core/fs_core.c  |   74 +-
+ drivers/net/ethernet/mellanox/mlx5/core/fs_core.h  |   19 +-
+ drivers/net/ethernet/mellanox/mlx5/core/lib/st.c   |   29 +-
+ drivers/net/ethernet/mellanox/mlx5/core/vport.c    |   24 +-
+ drivers/pci/tph.c                                  |   16 +-
+ include/linux/mlx5/fs.h                            |   24 +
+ include/linux/mlx5/mlx5_ifc.h                      |   47 +-
+ include/linux/mlx5/port.h                          |    1 +
+ include/linux/mlx5/vport.h                         |    3 +-
+ include/linux/pci-tph.h                            |    1 +
+ include/rdma/ib_cm.h                               |    4 +-
+ include/rdma/ib_verbs.h                            |  100 +-
+ include/rdma/rdmavt_qp.h                           |   70 +-
+ 102 files changed, 5280 insertions(+), 549 deletions(-)
+ create mode 100644 drivers/infiniband/hw/bng_re/Kconfig
+ create mode 100644 drivers/infiniband/hw/bng_re/Makefile
+ create mode 100644 drivers/infiniband/hw/bng_re/bng_debugfs.c
+ create mode 100644 drivers/infiniband/hw/bng_re/bng_debugfs.h
+ create mode 100644 drivers/infiniband/hw/bng_re/bng_dev.c
+ create mode 100644 drivers/infiniband/hw/bng_re/bng_fw.c
+ create mode 100644 drivers/infiniband/hw/bng_re/bng_fw.h
+ create mode 100644 drivers/infiniband/hw/bng_re/bng_re.h
+ create mode 100644 drivers/infiniband/hw/bng_re/bng_res.c
+ create mode 100644 drivers/infiniband/hw/bng_re/bng_res.h
+ create mode 100644 drivers/infiniband/hw/bng_re/bng_sp.c
+ create mode 100644 drivers/infiniband/hw/bng_re/bng_sp.h
+ create mode 100644 drivers/infiniband/hw/bng_re/bng_tlv.h
+ create mode 100644 drivers/infiniband/hw/hns/hns_roce_bond.c
+ create mode 100644 drivers/infiniband/hw/hns/hns_roce_bond.h
+ create mode 100644 drivers/net/ethernet/broadcom/bnge/bnge_auxr.c
+ create mode 100644 drivers/net/ethernet/broadcom/bnge/bnge_auxr.h
+
+--woCtgOTkQvIXHsUO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRRRCHOFoQz/8F5bUaFwuHvBreFYQUCaTBU1QAKCRCFwuHvBreF
+YU/xAQCg8hAUbkYL4Pps4vL+kqaprEWEtJpjAQ6FViyebvGznAD+Ms84ZljnQdAM
+sn5MdjDRG4p13D6Kpa2exFOi0HjEPAE=
+=VjbF
+-----END PGP SIGNATURE-----
+
+--woCtgOTkQvIXHsUO--
 
