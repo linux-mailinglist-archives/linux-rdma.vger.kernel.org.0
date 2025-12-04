@@ -1,240 +1,166 @@
-Return-Path: <linux-rdma+bounces-14875-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14876-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E49CCA2059
-	for <lists+linux-rdma@lfdr.de>; Thu, 04 Dec 2025 01:07:27 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81A0CCA2645
+	for <lists+linux-rdma@lfdr.de>; Thu, 04 Dec 2025 06:09:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AFCDB300DA48
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Dec 2025 00:07:23 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 82AB53024180
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Dec 2025 05:09:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4DB01F92E;
-	Thu,  4 Dec 2025 00:07:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A2162586E8;
+	Thu,  4 Dec 2025 05:09:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vlbg1PdT"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="axeYvi3X"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 822E1A59
-	for <linux-rdma@vger.kernel.org>; Thu,  4 Dec 2025 00:07:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D992398FA3
+	for <linux-rdma@vger.kernel.org>; Thu,  4 Dec 2025 05:08:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764806842; cv=none; b=hD/L8JI62i9DCuDUFq94DKPLefZFs2W4VUz6CK7RCOzJldXrNYfuQJ3NkXe8zHHuIEO6r13kZ0ncGJ2rkv8iBVYrUgnxP0axCN/wgz3OYrhQzBy+0K7mJKDEhkZElY1Xd2AH+fmoCcG8zQc+iekm88xsAZ33XSet6joc8f53GVE=
+	t=1764824940; cv=none; b=rTBPC7Am4Nm9KnGSlB9gCGjJBL49sFg1bTJSk1pYXOxC8fbYHJDR5+o+reQL76GwfQmvF0RoYu6Q5d1cEf1GjrEP2pBAKyEP4lYwqNhVfb/xLhmpfFHitM1x046ijo8Y9yOtUqLQYX1qKVb82unLYcEiHu3RKs5vpZ5FTQylsNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764806842; c=relaxed/simple;
-	bh=5k031bdZ9Mu+dXIF+y2+BeP4p1iu+Nx/TI05NoGIOek=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L9uYKMkiegO430StajCzKya48y+38l9ElQaH18EHqMu+zHjR0+WMMohlR++m+mLB2MDs2sEYi6DIxeSkHy+P4Zdsk4AcsLiwaTl2yk5Uc3q0lrhcGloWhUlRPPe1iYT19RwW2/Ecq3CZVFrRe2XtblhFpMtVIcqzsvhk688ZHoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vlbg1PdT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A777C19421
-	for <linux-rdma@vger.kernel.org>; Thu,  4 Dec 2025 00:07:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764806842;
-	bh=5k031bdZ9Mu+dXIF+y2+BeP4p1iu+Nx/TI05NoGIOek=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Vlbg1PdT0uHXJttEJzEHrRFfmeJpezAjGKGElwiYRZWJ2HSZw0Evv9xbIANhAeWHn
-	 RNT/yf5rxn6irWOKEp1X4/2u+ABMqJj/3FFFAqffdFwnuCX8IvzIpL3Yd+nMFD7i6T
-	 CEEcROJllldvLHh5dLnAKUrzTwGOPnVs0vzModk6RlIjUjHe4cHy2+6ElSeSRVHsJh
-	 t79pxUZOC3Tos+uzsfgNdlcvs1pWLM2hRGocthkEQezCBlWVjNTR+8G4fASaQXbvcZ
-	 xGO8SNOOjRHq5kzr62itQbiILnfIjL6EHjF1HD4NUSh9g54nnBzDn80q8Q6GxjecOu
-	 wu8F/TFBV/+gA==
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-640a0812658so510223a12.0
-        for <linux-rdma@vger.kernel.org>; Wed, 03 Dec 2025 16:07:22 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV+Z2ygt/NCwvcAjtd8s2PCWlApmkdhDLyNUGXLX7B0mPSKqeXkHifTNmjRLivpkr4BoG0qacRNIaz7@vger.kernel.org
-X-Gm-Message-State: AOJu0YwherDzytvxnXgiUrcdrnaONdnVGCQHLaAeXxdER8sfhKePBrvW
-	B4D2ccU91hHMLC1sGSWUfQIs1SCArChs38jprH1nYxJL8ZXSr6vwi/8oCsayeTVGHH1rm5E8PPt
-	FmRPbY19MAuXOlUnjf8Wyud0tPkwFAM4=
-X-Google-Smtp-Source: AGHT+IHK1NSacj8N0iEpKDdCKuvfwaLmnLH5MToBcFmg/YN85veNJ4tO5vG89PJ0OzdLjzlB0ET/r3RP2EhXm40djVs=
-X-Received: by 2002:a17:907:6e89:b0:b3f:cc6d:e0a8 with SMTP id
- a640c23a62f3a-b79ec41fd53mr119310766b.17.1764806840632; Wed, 03 Dec 2025
- 16:07:20 -0800 (PST)
+	s=arc-20240116; t=1764824940; c=relaxed/simple;
+	bh=rkysJBKmBWU5tRwSxMdxSTg8zC/sl2ShZrtcNcm3FOo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aKzlu1JDbpOQGkUPLlj/rUHPyNbUk1M8c607a4NCOxAAN1SUCQ24E+y4yqQxUxz2LsJ7SNWWaaPOPx21lHkFCy2wWmG0ilcbxi8V9DNZ9tXZM5axtFBaXckCZ03pFzC2aQO3DXKBTTTlUcly2X5xJ1dIDSRQrhmqaRDoJZtYWCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=axeYvi3X; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <5ac954bb-ad4d-4b4c-b23b-47350b428404@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1764824936;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ne9RmrXxumOZj+MalhBuzRCKdFKIFcu4/kqNls92Qa4=;
+	b=axeYvi3XbS2IXBDgZ/Ye+tkJ0Klg93POR59ZcGejdoCaeS+Jhr3Zmh8Y6lOhvRz2p2Jik2
+	XPWaAm+n6Q/fNOa6iv3s72qwoNY4+c3ZnqJ/+PD0Xf1vl9jyhxYVTbFqGrw1KZZat9SbKB
+	rUS+JcQJysLaQp39XrmRsIpVFAPAnAQ=
+Date: Wed, 3 Dec 2025 21:08:45 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <35eec2e6-bf37-43d6-a2d8-7a939a68021b@samba.org>
-In-Reply-To: <35eec2e6-bf37-43d6-a2d8-7a939a68021b@samba.org>
-From: Namjae Jeon <linkinjeon@kernel.org>
-Date: Thu, 4 Dec 2025 09:07:08 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd9p=7BzmSSKi5n41OKkkw4qrr4cWpWet7rUfC+VT-6h1g@mail.gmail.com>
-X-Gm-Features: AWmQ_bnT_oPj60e-XBDCKSHcOu1lIZOU6fDnVagcXe5URfuMJg6Z3wqhpyWAxYg
-Message-ID: <CAKYAXd9p=7BzmSSKi5n41OKkkw4qrr4cWpWet7rUfC+VT-6h1g@mail.gmail.com>
-Subject: Re: Problem with smbdirect rw credits and initiator_depth
-To: Stefan Metzmacher <metze@samba.org>
-Cc: Tom Talpey <tom@talpey.com>, 
-	"linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>, 
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH][next] RDMA/rxe: Avoid -Wflex-array-member-not-at-end
+ warnings
+To: Jason Gunthorpe <jgg@nvidia.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc: Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <aRKu5lNV04Sq82IG@kspp> <20251202181334.GA1162842@nvidia.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <20251202181334.GA1162842@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Metze,
+在 2025/12/2 10:13, Jason Gunthorpe 写道:
+> On Tue, Nov 11, 2025 at 12:35:02PM +0900, Gustavo A. R. Silva wrote:
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+>> index fd48075810dd..6498d61e8956 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
+>> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+>> @@ -219,12 +219,6 @@ struct rxe_resp_info {
+>>   	u32			rkey;
+>>   	u32			length;
+>>   
+>> -	/* SRQ only */
+>> -	struct {
+>> -		struct rxe_recv_wqe	wqe;
+>> -		struct ib_sge		sge[RXE_MAX_SGE];
+>> -	} srq_wqe;
+> 
+> I think this existing is just a mess, can we fix it properly?
+> 
+> What this code wants to do is to have rxe_resp_info allocate a
+> rxe_recv_wqe and have a maximum size of its flex array pre-allocated.
+> 
+> Probably like this, though maybe we need a FLEX version of the
+> INIT_RDMA_OBJ_SIZE macro to make it safer.
+> 
+> Zhu, this seems like a good thing for you to look at?
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> index 38d8c408320f11..189eaa59a5fb14 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> @@ -1524,7 +1524,8 @@ static const struct ib_device_ops rxe_dev_ops = {
+>   	INIT_RDMA_OBJ_SIZE(ib_ah, rxe_ah, ibah),
+>   	INIT_RDMA_OBJ_SIZE(ib_cq, rxe_cq, ibcq),
+>   	INIT_RDMA_OBJ_SIZE(ib_pd, rxe_pd, ibpd),
+> -	INIT_RDMA_OBJ_SIZE(ib_qp, rxe_qp, ibqp),
+> +	/* For resp.srq_wqe.dma.sge */
+> +	INIT_RDMA_OBJ_SIZE(ib_qp, rxe_qp, ibqp) + RXE_MAX_SGE*sizeof(struct ib_sge),
+>   	INIT_RDMA_OBJ_SIZE(ib_srq, rxe_srq, ibsrq),
+>   	INIT_RDMA_OBJ_SIZE(ib_ucontext, rxe_ucontext, ibuc),
+>   	INIT_RDMA_OBJ_SIZE(ib_mw, rxe_mw, ibmw),
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> index fd48075810dd10..dda741ec3ac701 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> @@ -219,12 +219,6 @@ struct rxe_resp_info {
+>   	u32			rkey;
+>   	u32			length;
+>   
+> -	/* SRQ only */
+> -	struct {
+> -		struct rxe_recv_wqe	wqe;
+> -		struct ib_sge		sge[RXE_MAX_SGE];
+> -	} srq_wqe;
+> -
+>   	/* Responder resources. It's a circular list where the oldest
+>   	 * resource is dropped first.
+>   	 */
+> @@ -232,6 +226,9 @@ struct rxe_resp_info {
+>   	unsigned int		res_head;
+>   	unsigned int		res_tail;
+>   	struct resp_res		*res;
+> +
+> +	/* SRQ only. srq_wqe.dma.sge is a flex array */
+> +	struct rxe_recv_wqe srq_wqe;
 
-Okay, It seems like the issue has been improved in your v3 branch. If
-you send the official patches, I will test it more.
+drivers/infiniband/sw/rxe/rxe_resp.c: In function get_srq_wqe:
+drivers/infiniband/sw/rxe/rxe_resp.c:289:41: error: struct rxe_recv_wqe 
+has no member named wqe
+   289 |         qp->resp.wqe = &qp->resp.srq_wqe.wqe;
+       |                                         ^
 
-Thanks.
+struct {
+	struct rxe_recv_wqe	wqe;
+	struct ib_sge		sge[RXE_MAX_SGE];
+} srq_wqe;
 
-On Thu, Dec 4, 2025 at 3:18=E2=80=AFAM Stefan Metzmacher <metze@samba.org> =
-wrote:
->
-> Hi Namjae,
->
-> I found the problem why the 6.17.9 code of transport_rdma.c deadlocks
-> with a Windows client, when using irdma in roce mode, while the 6.18
-> code works fine.
->
-> irdma/roce in 6.17.9 code =3D> deadlock in wait_for_rw_credits()
-> [   T8653] ksmbd: smb_direct: initiator_depth:8 peer_initiator_depth:16
-> [   T8653] ksmbd: smb_direct: max_rw_credits:9
-> [   T7013] ------------[ cut here ]------------
-> [   T7013] needed:31 > max:9
-> [   T7013] WARNING: CPU: 1 PID: 7013 at transport_rdma.c:975 wait_for_cre=
-dits+0x3b8/0x430 [ksmbd]
->
-> When the client starts to send an array with larger number of smb2_buffer=
-_desc_v1
-> elements in a single SMB2 write request (most likely 31 in the above exam=
-ple)
-> wait_for_rw_credits() will simply deadlock, as there are only 9 credits p=
-ossible
-> and 31 are requested.
->
-> In the 6.18 code we have commit 0bd73ae09ba1b73137d0830b21820d24700e09b1
-> smb: server: allocate enough space for RW WRs and ib_drain_qp()
->
-> It makes sure we allocate qp_attr.cap.max_rdma_ctxs and qp_attr.cap.max_s=
-end_wr
-> correct. qp_attr.cap.max_rdma_ctxs was filled by sc->rw_io.credits.max be=
-fore,
-> so I changed sc->rw_io.credits.max, but that might need to be split from
-> each other.
->
-> But after that change we no longer deadlock when the client starts sendin=
-g
-> larger SMB2 writes, with a larger number of smb2_buffer_desc_v1 elements
-> it no longer deadlocks, 159 more than enough.
->
-> irdma/roce:
-> [   T6505] ksmbd: smb_direct: initiator_depth:8 peer_initiator_depth:16
-> ...
-> [   T6505] ksmbd: smb_direct: sc->rw_io.credits.num_pages=3D13 sc->rw_io.=
-credits.max:159
->
-> My current theory about the Mellanox problem is, that the number of pendi=
-ng
-> RDMA Read operations should be limited by the negotiated initiator_depth,=
- which is at max
-> SMB_DIRECT_CM_INITIATOR_DEPTH (8). And we're overflowing the hardware lim=
-its by
-> posting too much RDMA Read sqes.
->
-> The change in 0bd73ae09ba1b73137d0830b21820d24700e09b1 didn't change the
-> resulting values of sc->rw_io.credits.max for iwarp devices, it only adju=
-sted
-> the number for qp_attr.cap.max_send_wr.
->
-> So for iwarp we deadlock in both versions of transport_rdma.c, when
-> the client starts to send an array of 17 of smb2_buffer_desc_v1 elements
-> (I was able to see that using siw on the server, so that tcpdump was
-> able to capture it, see:
-> https://www.samba.org/~metze/caps/smb2/rdma/linux-6.18-regression/2025-12=
--03/rdma1-siw-r6.18-ace-fixed-hang-01-stream13.pcap.gz
-> With roce it's directly using 17:
-> https://www.samba.org/~metze/caps/smb2/rdma/linux-6.18-regression/2025-12=
--03/rdma1-rxe-r6.18-race-fixed-rw-credits-reverted-hang-01.pcap.gz
->
-> The first few SMB2 writes use 2 smb2_buffer_desc_v1 elements and at the e=
-nd
-> the Windows client switches to 17 smb2_buffer_desc_v1 elements.
->
-> irdma/iwarp:
-> [Wed Dec  3 13:45:22 2025] [   T7621] ksmbd: smb_direct: initiator_depth:=
-8 peer_initiator_depth:127
-> ..
-> [Wed Dec  3 13:45:22 2025] [   T7621] ksmbd: smb_direct: sc->rw_io.credit=
-s.num_pages=3D256 sc->rw_io.credits.max:9
-> ...
-> [Wed Dec  3 13:45:22 2025] [   T8638] ------------[ cut here ]-----------=
--
-> [Wed Dec  3 13:45:22 2025] [   T8638] needed:17 > max:9
->
->
-> siw/iwarp:
-> [Wed Dec  3 13:49:30 2025] [   T7621] ksmbd: smb_direct: initiator_depth:=
-8 peer_initiator_depth:16
-> ...
-> [Wed Dec  3 13:49:30 2025] [   T7621] ksmbd: smb_direct: sc->rw_io.credit=
-s.num_pages=3D256 sc->rw_io.credits.max:9
-> ...
-> [Wed Dec  3 13:49:30 2025] [   T9353] ------------[ cut here ]-----------=
--
-> [Wed Dec  3 13:49:30 2025] [   T9353] needed:17 > max:9
->
-> I've prepared 3 branches for testing:
->
-> for-6.18/ksmbd-smbdirect-regression-v1
-> https://git.samba.org/?p=3Dmetze/linux/wip.git;a=3Dshortlog;h=3Drefs/head=
-s/for-6.18/ksmbd-smbdirect-regression-v1
->
-> This has some pr_notice() messages and a WARN_ONCE() when the wait_for_rw=
-_credits() happens.
->
-> for-6.18/ksmbd-smbdirect-regression-v2
-> https://git.samba.org/?p=3Dmetze/linux/wip.git;a=3Dshortlog;h=3Drefs/head=
-s/for-6.18/ksmbd-smbdirect-regression-v2
->
-> This is based on for-6.18/ksmbd-smbdirect-regression-v1 but reverts
-> commit 0bd73ae09ba1b73137d0830b21820d24700e09b1, this might fix your setu=
-p.
->
-> for-6.18/ksmbd-smbdirect-regression-v3
-> https://git.samba.org/?p=3Dmetze/linux/wip.git;a=3Dshortlog;h=3Drefs/head=
-s/for-6.18/ksmbd-smbdirect-regression-v3
->
-> This reverts everything to the state of v6.17.9 +
-> This has some pr_notice() messages and a WARN_ONCE() when the wait_for_rw=
-_credits() happens.
->
-> Can you please test them with the priority of testing
-> for-6.18/ksmbd-smbdirect-regression-v2 first and the others if you have
-> more time.
->
-> I typically use this running on a 6.18 kernel:
-> modprobe ksmbd
-> ksmbd.control -s
-> rmmod ksmbd
-> cd fs/smb/server
-> make -j$(getconf _NPROCESSORS_ONLN) -C /lib/modules/$(uname -r)/build M=
-=3D$(pwd) KBUILD_MODPOST_WARN=3D1 modules
-> insmod ksmbd.ko
-> ksmbd.mountd
->
-> The in one window:
-> bpftrace -e 'kprobe:smb_direct_rdma_xmit { printf("%s: %s pid=3D%d %s\n",=
- strftime("%F %H:%M:%S", nsecs(sw_tai)), comm, pid, func); }'
-> And in another window:
-> dmesg -T -w
->
->
-> I assume the solution is to change smb_direct_rdma_xmit, so that
-> it doesn't try to get credits for all RDMA read/write requests at once.
-> Instead after collecting all ib_send_wr structures from all rdma_rw_ctx_w=
-rs()
-> we chunk the list to stay in the negotiated initiator depth,
-> before passing to ib_post_send().
->
-> At least we need to limit this for RDMA read requests, for RDMA write req=
-uests
-> we may not need to chunk and post them all together, but still chunking m=
-ight
-> be good in order to avoid blocking concurrent RDMA sends.
->
-> Tom is this assumption correct?
->
-> Thanks!
-> metze
->
+IMO, it is better to move this struct to the end of the struct 
+rxe_resp_info.
+
+Yanjun.Zhu
+
+>   };
+>   
+>   struct rxe_qp {
+> @@ -269,7 +266,6 @@ struct rxe_qp {
+>   
+>   	struct rxe_req_info	req;
+>   	struct rxe_comp_info	comp;
+> -	struct rxe_resp_info	resp;
+>   
+>   	atomic_t		ssn;
+>   	atomic_t		skb_out;
+> @@ -289,6 +285,7 @@ struct rxe_qp {
+>   	spinlock_t		state_lock; /* guard requester and completer */
+>   
+>   	struct execute_work	cleanup_work;
+> +	struct rxe_resp_info	resp;
+>   };
+>   
+>   enum {
+
 
