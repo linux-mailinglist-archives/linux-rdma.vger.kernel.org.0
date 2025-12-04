@@ -1,95 +1,118 @@
-Return-Path: <linux-rdma+bounces-14895-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14896-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A66BBCA50BC
-	for <lists+linux-rdma@lfdr.de>; Thu, 04 Dec 2025 20:01:48 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 784B1CA5194
+	for <lists+linux-rdma@lfdr.de>; Thu, 04 Dec 2025 20:16:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AE4AB31AE74E
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Dec 2025 18:57:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 545A930992F5
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Dec 2025 19:16:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B16F31B10F;
-	Thu,  4 Dec 2025 18:57:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8414634B197;
+	Thu,  4 Dec 2025 19:16:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JAByHYys"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XjxC7aFT"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E405C30B515;
-	Thu,  4 Dec 2025 18:57:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76CD434AB14
+	for <linux-rdma@vger.kernel.org>; Thu,  4 Dec 2025 19:16:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764874660; cv=none; b=Bsy/FPMdrvgEQt/DdCYF/bKz8fe/jQLYYc2jv+9zXHr42qpO8TeEQnuKw8Gvjh6B4cqNMrpFe8Okmr/uDJ5b8kT69lP9i8S9t4+YHNHi+8m+XQyiu3snkXYbTpfSx4KgdmNyKNU6w4teDMfeS75MdNQLN7RBgtJ6SPRTAgOzoE0=
+	t=1764875775; cv=none; b=Ta//X7zopxK7mh3QjYKxSe/7pTzk3Jzqe4IJWJxvjzJ1+4kokR6yHLF7O7JoscUbDVfRkYTrCWvE+Aa/g6hBmhA/5UQTLTz640plmnzeW8opmPoJrWWDMDJVzWvNGOlN0g9t15o3VwZBwn6gL2Lm1Naze6wV+DiKoNeNlDU0Zlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764874660; c=relaxed/simple;
-	bh=9Zq1ES5P5+XVpaBu1aYtF4Iei5gaOpjPUkiNGe726QE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=s1KWqtmkNY5mI3o4oR9cM7c9GkkR24r6LoWwtBAC9n6LEtu2WNnQQl8lBhGG9jbSwQBK5y3jeNn9M4PyKws2R2rrf1eP/rMXZia+RSlpqderoywtl1irqh8jRSbDrXQp74SnAgp8Oh9VZkNg76FVOnzVzEkLayp1etwOVR4Rvwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JAByHYys; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C84EC4CEFB;
-	Thu,  4 Dec 2025 18:57:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764874659;
-	bh=9Zq1ES5P5+XVpaBu1aYtF4Iei5gaOpjPUkiNGe726QE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=JAByHYysumQIT2lLJhP2nDT8Z5GRTiTBJevp7KII5nkDuPaCs4TsaRkWV75R7j3zN
-	 8+Cz/ihgjDjYoNdjFXAbDnrPNXGfZyevNytNtNZGYFB18iB+a1fm5c6+H4ANlj8T1t
-	 TbjHgbV305y9tPtlriIyxeHBAhIq6bTHghtKyaDX4z6dREKlDSl6/ZPYwT12ksDNh1
-	 3tVR2Zi1v/T6uCsnaaf1RKZLUOkWKtLL4wfhqkZKehE4aNNDSYo0tcQj86qVWipQTM
-	 lO9SjS1zgh7ges2zciQw5Mb1j/PAVhWoAW03ysfJLu73vUxhs1ZJJx2v5HlZQT4jM0
-	 +kBeWL/c2XuAg==
-Date: Thu, 4 Dec 2025 10:57:37 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Donald Hunter
- <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Saeed Mahameed
- <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Mark Bloch
- <mbloch@nvidia.com>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org, Gal Pressman
- <gal@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>, Carolina Jubran
- <cjubran@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, Jiri Pirko
- <jiri@nvidia.com>, Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH net-next V4 02/14] documentation: networking: add shared
- devlink documentation
-Message-ID: <20251204105737.551d1cc1@kernel.org>
-In-Reply-To: <vwdbowwy3eivqwwypwo2klexhu47qpvb6nevjg3st7a43ucmxl@tllljudder3l>
-References: <1764101173-1312171-1-git-send-email-tariqt@nvidia.com>
-	<1764101173-1312171-3-git-send-email-tariqt@nvidia.com>
-	<20251127201645.3d7a10f6@kernel.org>
-	<hidhx467pn6pcisuoxdw3pykyvnlq7rdicmjksbozw4dtqysti@yd5lin3qft4q>
-	<20251128191924.7c54c926@kernel.org>
-	<n6mey5dbfpw7ykp3wozgtxo5grvac642tskcn4mqknrurhpwy7@ugolzkzzujba>
-	<20251201134954.6b8a8d48@kernel.org>
-	<2lnqrb3fu7dukdkgfculj53q2vwb36nrz5copjfg3khlqnbmix@jbfmhnks7svq>
-	<20251202101444.7f6d14a8@kernel.org>
-	<vwdbowwy3eivqwwypwo2klexhu47qpvb6nevjg3st7a43ucmxl@tllljudder3l>
+	s=arc-20240116; t=1764875775; c=relaxed/simple;
+	bh=8QqMHn395gjILbfWZLrNtsZLdkM7F9T77/AVK16lBwc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uM6ZtFQ7178AkpbxprFLBZz5Avw3KVnRbN+k65/nxpIXlAMlqhuC2hhd7EyYP2OcPTfhlsCFBZ1bB36LyTCMqRzbWpffpCHCX++V7XjE0/kyWFqB7Lg7U5HGeVOXSXXrIZF7dQIZ5ju4ZHVJLVsEB07aZ4cuiTi0CDfyCZLk1N8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XjxC7aFT; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <33750d4d-a451-40e7-8642-5c3a3b5e001c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1764875759;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6SqJVsgPXrE/NXdzxz+yXxv/Ri3/90MygDa9S80ailo=;
+	b=XjxC7aFTKVRuJs3xK3Z9gC7JLLz5BTXTMVmtPqWIrNqmdS0qcT38hAe36UfBOt/Kk5fUw0
+	oR4i9yoe0ntvSyJZkw7RBLaHk+M5jCZZIPCpqIyhQWpo2bbfl7H4XqN9YWyeZ2hdSDFneo
+	PqXOJPwf5Al2tRTZek9gPZ5yF1nqO0Y=
+Date: Thu, 4 Dec 2025 11:15:35 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 2/2] net: smc: SMC_HS_CTRL_BPF should depend on BPF_JIT
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Kui-Feng Lee <thinker.li@gmail.com>, "D . Wythe"
+ <alibuda@linux.alibaba.com>, Dust Li <dust.li@linux.alibaba.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Sidraya Jayagond <sidraya@linux.ibm.com>, Wenjia Zhang
+ <wenjia@linux.ibm.com>, Mahanta Jambigi <mjambigi@linux.ibm.com>,
+ Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ bpf@vger.kernel.org, linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1764843951.git.geert@linux-m68k.org>
+ <988c61e5fea280872d81b3640f1f34d0619cfbbf.1764843951.git.geert@linux-m68k.org>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <988c61e5fea280872d81b3640f1f34d0619cfbbf.1764843951.git.geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 3 Dec 2025 11:36:13 +0100 Jiri Pirko wrote:
-> >To be clear -- I understand how you're laying things out. My point is
-> >not about that. My question is how can user make intuitive sense of this
-> >mess of random object floating around. Every SW engineering problem can
-> >be solved by another layer of abstraction, that's not the challenge. 
-> >The challenge is to design those layers so that they make intuitive
-> >sense (to people who don't spend their life programming against mlx FW
-> >interfaces).  
+On 12/4/25 2:29 AM, Geert Uytterhoeven wrote:
+> If CONFIG_BPF_SYSCALL=y, but CONFIG_BPF_JIT=n:
 > 
-> Well, this really has no relation to mlx FW interfaces. It is a generic
-> issue of having multiple PFs backed by 1 physical device sharing
-> resources. How to make things more intuitive, I don't know :/ Any
-> suggestion?
+>      net/smc/smc_hs_bpf.c: In function ‘bpf_smc_hs_ctrl_init’:
+>      include/linux/bpf.h:2068:50: error: statement with no effect [-Werror=unused-value]
+>       2068 | #define register_bpf_struct_ops(st_ops, type) ({ (void *)(st_ops); 0; })
+> 	  |                                                  ^~~~~~~~~~~~~~~~
+>      net/smc/smc_hs_bpf.c:139:16: note: in expansion of macro ‘register_bpf_struct_ops’
+>        139 |         return register_bpf_struct_ops(&bpf_smc_hs_ctrl_ops, smc_hs_ctrl);
+> 	  |                ^~~~~~~~~~~~~~~~~~~~~~~
+> 
+> While this compile error is caused by a bug in <linux/bpf.h>, none of
+> the code in net/smc/smc_hs_bpf.c becomes effective if CONFIG_BPF_JIT is
+> not enabled.  Hence add a dependency on BPF_JIT.
+> 
+> While at it, add the missing newline at the end of the file.
+> 
+> Fixes: 15f295f55656658e ("net/smc: bpf: Introduce generic hook for handshake flow")
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>   net/smc/Kconfig | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/smc/Kconfig b/net/smc/Kconfig
+> index 325addf83cc69f6c..277ef504bc26ef89 100644
+> --- a/net/smc/Kconfig
+> +++ b/net/smc/Kconfig
+> @@ -22,10 +22,10 @@ config SMC_DIAG
+>   
+>   config SMC_HS_CTRL_BPF
+>   	bool "Generic eBPF hook for SMC handshake flow"
+> -	depends on SMC && BPF_SYSCALL
+> +	depends on SMC && BPF_JIT && BPF_SYSCALL
+>   	default y
+>   	help
+>   	  SMC_HS_CTRL_BPF enables support to register generic eBPF hook for SMC
+>   	  handshake flow, which offer much greater flexibility in modifying the behavior
+>   	  of the SMC protocol stack compared to a complete kernel-based approach. Select
+> -	  this option if you want filtring the handshake process via eBPF programs.
+> \ No newline at end of file
+> +	  this option if you want filtring the handshake process via eBPF programs.
 
-We're talking in circles. Having a single devlink instance for the
-"1 physical device" is far more intuitive than stringing together
-ports from two devlink instances by using a third instance.
+I have applied patch 2 to the bpf tree. Thanks.
+
 
