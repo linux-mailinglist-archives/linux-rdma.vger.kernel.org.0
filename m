@@ -1,89 +1,238 @@
-Return-Path: <linux-rdma+bounces-14882-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14883-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB042CA2FE9
-	for <lists+linux-rdma@lfdr.de>; Thu, 04 Dec 2025 10:29:53 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93F87CA30C1
+	for <lists+linux-rdma@lfdr.de>; Thu, 04 Dec 2025 10:40:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 803F0312388E
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Dec 2025 09:25:06 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9C0DC30552FD
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Dec 2025 09:40:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38BA133033B;
-	Thu,  4 Dec 2025 09:25:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F847301033;
+	Thu,  4 Dec 2025 09:40:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="n0q0rcLg"
+	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="0F2rpp6o"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C53088632B;
-	Thu,  4 Dec 2025 09:25:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 049E717BB21;
+	Thu,  4 Dec 2025 09:40:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764840306; cv=none; b=Qs/+2ARM1P6U4OEIB+M3XMzAac34WSBeQFSYoGcOgHva9vlqSbQ46CZwd8743fZZcRVLdBmRylerFb/97yURd7OnZIzy/Wsf/ccDeiP8gNWvs8rIaF/Sof5UYkmpWFltpiyoWre5wvZguw5Gqp7OS1nEpZBI1nZgk1ltHUviRNE=
+	t=1764841210; cv=none; b=MTS/k7RRXibC05s0QjZfk+z6wYXFo9W6VRqs5BWTbVqCnFUM7C8dh8ndiCtZaj46/IoLgZvpMNNFvO8YXeLYsC2z1CXQzpQ2/jASEFme3XT6TvfFTGJd8rJLDPRdEXrlTSLQLPkIFicoVQplQrpcHHhQ+9CSRcuD+MF0JIdCKns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764840306; c=relaxed/simple;
-	bh=4xMQcOgZ98xKGqIhEaX7o23kKvpaYdnzLzWlSiFWer8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Tw9XfPQAMf15rGjFnEQRS/kWM+LU0tZBK5wW2dgJeQx4YMf3oITJQIS59C1Ailb8mnki5VJgirfkUp8+xiJBg+zvheb4th51bPrvH4xoN4mIkPPPOKffsOiWErl/voriXyW3mmn+9zmbT4H3CD3viGEiP+VY9Y7pp1GEzaJ4Sdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=n0q0rcLg; arc=none smtp.client-ip=115.124.30.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1764840295; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=RtoMOndX4hAyjb5HgYjhq44JrEwNFpCluKYWWcdrFt8=;
-	b=n0q0rcLgLhtUWfuf854kbmSBkLLarBahHY+usAO7IuoLwL4Zzaxyl6ZRU7nAmL2/oxzXjolMKLCpBkLFGO43GJxwC8ndS1WhewVTzpdbtphBI7YnBczwtpWHR/AzPhgcEwimrlw3KcFXwWF23x05Ls8MaMRscJ0JmKh+4svLzeE=
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Wu3q5m0_1764840291 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Thu, 04 Dec 2025 17:24:54 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: krzysztof.czurylo@intel.com
-Cc: tatyana.e.nikolova@intel.com,
-	jgg@ziepe.ca,
-	leon@kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH -next 2/2] RDMA/irdma: Simplify bool conversion
-Date: Thu,  4 Dec 2025 17:24:14 +0800
-Message-ID: <20251204092414.1261795-2-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.43.7
-In-Reply-To: <20251204092414.1261795-1-jiapeng.chong@linux.alibaba.com>
-References: <20251204092414.1261795-1-jiapeng.chong@linux.alibaba.com>
+	s=arc-20240116; t=1764841210; c=relaxed/simple;
+	bh=OLyPLGK4XqWzWdIzHIc099613a0cPBpmR0hPsCe+lb4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UZwz1vj+ej+gHa9Cv6CoD2/mQDcjfm+yhTXUlupICXOUtOM3GLFiJi34er9osHdWm+FRdZ3hvvHHf4Y43zTecEfZ19j+bomu2PktwdPvKP8XkhHfvmheaUHKXGpEp+78beHVwSx/wOaUTj/iOVGS5vuqflyAlW/gJcmSmWnpqnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=0F2rpp6o; arc=none smtp.client-ip=144.76.82.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+	s=42; h=From:Cc:To:Date:Message-ID;
+	bh=yrxomE7BvqqCHAaEbMCWJBGtDrGLLmvS6+kblNxY0Fs=; b=0F2rpp6ows7iW15sEBK3hx+R+5
+	kQIkguxbXCUNI68lfSKbm2KoClBq86jeefbNpTVucN+p7k4mLyh6Ia5Gd3F1kfzbxzrhHozNddivj
+	t54F/qlcoaOFjIQooY9GZ8mz4MhFI7wjO1Woj6jHI1OKkKmUEM4lNWiJaOZYPSTHi1+y84L51vzBJ
+	V20/6Enxe36gzP2CLUll0emakVerXNKmfZ/MmnnSOynsXQzahn7E5kvJtKjC6o+wwafwObl3LXgKu
+	R7Hz2/kxs17RFbBfZzmZoHUtZ/Zgat+sRpqH5vBYBNgXNMpDa1ZGl9l+lbzboysxxlXtC72/qEUPC
+	hdbreWfEI4hs4hG5AoxWgUcv411ujhGy48Hg9Z4AHDDE+18WVSJnKPSzqgAqpgHn45wTNThSFVqdC
+	CvsQabKqDU7xEK2vdtDahnhXKQE+Bg1PZOjCDnuuX13FoBbHj+dQY7evYPJ5v4sD4+KJNAaZ139Wa
+	MHwtmbRRAyotpHGzs5R0FQUV;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
+	(Exim)
+	id 1vR5od-00GwU4-1f;
+	Thu, 04 Dec 2025 09:39:59 +0000
+Message-ID: <f59e0dc7-e91c-4a13-8d49-fe183c10b6f4@samba.org>
+Date: Thu, 4 Dec 2025 10:39:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Problem with smbdirect rw credits and initiator_depth
+To: Namjae Jeon <linkinjeon@kernel.org>
+Cc: Tom Talpey <tom@talpey.com>,
+ "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <35eec2e6-bf37-43d6-a2d8-7a939a68021b@samba.org>
+ <CAKYAXd9p=7BzmSSKi5n41OKkkw4qrr4cWpWet7rUfC+VT-6h1g@mail.gmail.com>
+Content-Language: en-US
+From: Stefan Metzmacher <metze@samba.org>
+In-Reply-To: <CAKYAXd9p=7BzmSSKi5n41OKkkw4qrr4cWpWet7rUfC+VT-6h1g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-./drivers/infiniband/hw/irdma/uk.c:1412:6-11: WARNING: conversion to bool not needed here.
+Hi Namjae,
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=27521
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/infiniband/hw/irdma/uk.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> Okay, It seems like the issue has been improved in your v3 branch. If
+> you send the official patches, I will test it more.
 
-diff --git a/drivers/infiniband/hw/irdma/uk.c b/drivers/infiniband/hw/irdma/uk.c
-index f0846b800913..91669326d464 100644
---- a/drivers/infiniband/hw/irdma/uk.c
-+++ b/drivers/infiniband/hw/irdma/uk.c
-@@ -1408,8 +1408,7 @@ int irdma_uk_cq_poll_cmpl(struct irdma_cq_uk *cq,
- 		 * from SW for all unprocessed WQEs. For GEN3 and beyond
- 		 * FW will generate/flush these CQEs so move to the next CQE
- 		 */
--			move_cq_head = qp->uk_attrs->hw_rev <= IRDMA_GEN_2 ?
--						false : true;
-+			move_cq_head = qp->uk_attrs->hw_rev > IRDMA_GEN_2;
- 	}
- 
- 	if (move_cq_head) {
--- 
-2.43.7
+It's good to have verified that for-6.18/ksmbd-smbdirect-regression-v3
+on a 6.18 kernel behaves the same as with 6.17.9, as transport_rdma.c
+is the same, but it doesn't really allow forward process on
+the Mellanox problem.
+
+Can you at least post the dmesg output generated by this:
+https://git.samba.org/?p=metze/linux/wip.git;a=commitdiff;h=7e724ebc58e986f4e101a55f4ab5e96912239918
+Assuming that this wasn't triggered:
+if (WARN_ONCE(needed > max_possible, "needed:%u > max:%u\n", needed, max_possible))
+
+Did you run the bpftrace command? Did it print a lot of
+'smb_direct_rdma_xmit' message over the whole time of the file copy?
+
+Did you actually copied a file to or from the server?
+
+Have you actually tested for-6.18/ksmbd-smbdirect-regression-v2,
+as requested? As I was in hope that it would work in the
+same way as for-6.18/ksmbd-smbdirect-regression-v3,
+but with only a single patch reverted.
+
+I'll continue to fix the general problem that this works
+for non Mellanox setups, as it seems it never worked at all :-(
+
+Where you testing with RoCEv2 or Infiniband?
+
+I think moving forward for Mellanox setups requires these steps:
+- Test v1 vs. v2 and see that smb_direct_rdma_xmit is actually
+   called at all. And see the dmesg output.
+- Testing with Mellanox RoCEv2 on the client and rxe on
+   the server, so that we can create a network capture with tcpdump.
+
+Thanks!
+metze
+
+> Thanks.
+> 
+> On Thu, Dec 4, 2025 at 3:18 AM Stefan Metzmacher <metze@samba.org> wrote:
+>>
+>> Hi Namjae,
+>>
+>> I found the problem why the 6.17.9 code of transport_rdma.c deadlocks
+>> with a Windows client, when using irdma in roce mode, while the 6.18
+>> code works fine.
+>>
+>> irdma/roce in 6.17.9 code => deadlock in wait_for_rw_credits()
+>> [   T8653] ksmbd: smb_direct: initiator_depth:8 peer_initiator_depth:16
+>> [   T8653] ksmbd: smb_direct: max_rw_credits:9
+>> [   T7013] ------------[ cut here ]------------
+>> [   T7013] needed:31 > max:9
+>> [   T7013] WARNING: CPU: 1 PID: 7013 at transport_rdma.c:975 wait_for_credits+0x3b8/0x430 [ksmbd]
+>>
+>> When the client starts to send an array with larger number of smb2_buffer_desc_v1
+>> elements in a single SMB2 write request (most likely 31 in the above example)
+>> wait_for_rw_credits() will simply deadlock, as there are only 9 credits possible
+>> and 31 are requested.
+>>
+>> In the 6.18 code we have commit 0bd73ae09ba1b73137d0830b21820d24700e09b1
+>> smb: server: allocate enough space for RW WRs and ib_drain_qp()
+>>
+>> It makes sure we allocate qp_attr.cap.max_rdma_ctxs and qp_attr.cap.max_send_wr
+>> correct. qp_attr.cap.max_rdma_ctxs was filled by sc->rw_io.credits.max before,
+>> so I changed sc->rw_io.credits.max, but that might need to be split from
+>> each other.
+>>
+>> But after that change we no longer deadlock when the client starts sending
+>> larger SMB2 writes, with a larger number of smb2_buffer_desc_v1 elements
+>> it no longer deadlocks, 159 more than enough.
+>>
+>> irdma/roce:
+>> [   T6505] ksmbd: smb_direct: initiator_depth:8 peer_initiator_depth:16
+>> ...
+>> [   T6505] ksmbd: smb_direct: sc->rw_io.credits.num_pages=13 sc->rw_io.credits.max:159
+>>
+>> My current theory about the Mellanox problem is, that the number of pending
+>> RDMA Read operations should be limited by the negotiated initiator_depth, which is at max
+>> SMB_DIRECT_CM_INITIATOR_DEPTH (8). And we're overflowing the hardware limits by
+>> posting too much RDMA Read sqes.
+>>
+>> The change in 0bd73ae09ba1b73137d0830b21820d24700e09b1 didn't change the
+>> resulting values of sc->rw_io.credits.max for iwarp devices, it only adjusted
+>> the number for qp_attr.cap.max_send_wr.
+>>
+>> So for iwarp we deadlock in both versions of transport_rdma.c, when
+>> the client starts to send an array of 17 of smb2_buffer_desc_v1 elements
+>> (I was able to see that using siw on the server, so that tcpdump was
+>> able to capture it, see:
+>> https://www.samba.org/~metze/caps/smb2/rdma/linux-6.18-regression/2025-12-03/rdma1-siw-r6.18-ace-fixed-hang-01-stream13.pcap.gz
+>> With roce it's directly using 17:
+>> https://www.samba.org/~metze/caps/smb2/rdma/linux-6.18-regression/2025-12-03/rdma1-rxe-r6.18-race-fixed-rw-credits-reverted-hang-01.pcap.gz
+>>
+>> The first few SMB2 writes use 2 smb2_buffer_desc_v1 elements and at the end
+>> the Windows client switches to 17 smb2_buffer_desc_v1 elements.
+>>
+>> irdma/iwarp:
+>> [Wed Dec  3 13:45:22 2025] [   T7621] ksmbd: smb_direct: initiator_depth:8 peer_initiator_depth:127
+>> ..
+>> [Wed Dec  3 13:45:22 2025] [   T7621] ksmbd: smb_direct: sc->rw_io.credits.num_pages=256 sc->rw_io.credits.max:9
+>> ...
+>> [Wed Dec  3 13:45:22 2025] [   T8638] ------------[ cut here ]------------
+>> [Wed Dec  3 13:45:22 2025] [   T8638] needed:17 > max:9
+>>
+>>
+>> siw/iwarp:
+>> [Wed Dec  3 13:49:30 2025] [   T7621] ksmbd: smb_direct: initiator_depth:8 peer_initiator_depth:16
+>> ...
+>> [Wed Dec  3 13:49:30 2025] [   T7621] ksmbd: smb_direct: sc->rw_io.credits.num_pages=256 sc->rw_io.credits.max:9
+>> ...
+>> [Wed Dec  3 13:49:30 2025] [   T9353] ------------[ cut here ]------------
+>> [Wed Dec  3 13:49:30 2025] [   T9353] needed:17 > max:9
+>>
+>> I've prepared 3 branches for testing:
+>>
+>> for-6.18/ksmbd-smbdirect-regression-v1
+>> https://git.samba.org/?p=metze/linux/wip.git;a=shortlog;h=refs/heads/for-6.18/ksmbd-smbdirect-regression-v1
+>>
+>> This has some pr_notice() messages and a WARN_ONCE() when the wait_for_rw_credits() happens.
+>>
+>> for-6.18/ksmbd-smbdirect-regression-v2
+>> https://git.samba.org/?p=metze/linux/wip.git;a=shortlog;h=refs/heads/for-6.18/ksmbd-smbdirect-regression-v2
+>>
+>> This is based on for-6.18/ksmbd-smbdirect-regression-v1 but reverts
+>> commit 0bd73ae09ba1b73137d0830b21820d24700e09b1, this might fix your setup.
+>>
+>> for-6.18/ksmbd-smbdirect-regression-v3
+>> https://git.samba.org/?p=metze/linux/wip.git;a=shortlog;h=refs/heads/for-6.18/ksmbd-smbdirect-regression-v3
+>>
+>> This reverts everything to the state of v6.17.9 +
+>> This has some pr_notice() messages and a WARN_ONCE() when the wait_for_rw_credits() happens.
+>>
+>> Can you please test them with the priority of testing
+>> for-6.18/ksmbd-smbdirect-regression-v2 first and the others if you have
+>> more time.
+>>
+>> I typically use this running on a 6.18 kernel:
+>> modprobe ksmbd
+>> ksmbd.control -s
+>> rmmod ksmbd
+>> cd fs/smb/server
+>> make -j$(getconf _NPROCESSORS_ONLN) -C /lib/modules/$(uname -r)/build M=$(pwd) KBUILD_MODPOST_WARN=1 modules
+>> insmod ksmbd.ko
+>> ksmbd.mountd
+>>
+>> The in one window:
+>> bpftrace -e 'kprobe:smb_direct_rdma_xmit { printf("%s: %s pid=%d %s\n", strftime("%F %H:%M:%S", nsecs(sw_tai)), comm, pid, func); }'
+>> And in another window:
+>> dmesg -T -w
+>>
+>>
+>> I assume the solution is to change smb_direct_rdma_xmit, so that
+>> it doesn't try to get credits for all RDMA read/write requests at once.
+>> Instead after collecting all ib_send_wr structures from all rdma_rw_ctx_wrs()
+>> we chunk the list to stay in the negotiated initiator depth,
+>> before passing to ib_post_send().
+>>
+>> At least we need to limit this for RDMA read requests, for RDMA write requests
+>> we may not need to chunk and post them all together, but still chunking might
+>> be good in order to avoid blocking concurrent RDMA sends.
+>>
+>> Tom is this assumption correct?
+>>
+>> Thanks!
+>> metze
+>>
 
 
