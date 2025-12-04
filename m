@@ -1,93 +1,113 @@
-Return-Path: <linux-rdma+bounces-14893-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14894-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5090CA4CD3
-	for <lists+linux-rdma@lfdr.de>; Thu, 04 Dec 2025 18:49:48 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A35ABCA4E78
+	for <lists+linux-rdma@lfdr.de>; Thu, 04 Dec 2025 19:19:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id BCAEC3013457
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Dec 2025 17:49:22 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 15FCE30836C7
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Dec 2025 18:19:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24B783612EE;
-	Thu,  4 Dec 2025 17:49:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54ADD3659E5;
+	Thu,  4 Dec 2025 18:19:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Wv/OQul5"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kxolkMqO"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21A713612E0
-	for <linux-rdma@vger.kernel.org>; Thu,  4 Dec 2025 17:49:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 663D3364E97
+	for <linux-rdma@vger.kernel.org>; Thu,  4 Dec 2025 18:19:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764870555; cv=none; b=OdjeSMWv9DsB1T+fH1G/fOoIvpfPQEC/bYj1SH6JoxYTa8C0A1P21DgVK680auj/UOQ53Om5LZfu23dOEAs9xfkH98x/p4TowV4PfiXBLllHzauHwi595IpM8Xcev4mWgsgJUa9JFZEf/EDOuR/J+Gwr1jztyE21KX6JYs96Gxk=
+	t=1764872343; cv=none; b=PmJabbyJ7zXqoYsVKluP22k1jINK1CRkxjFiODKTXRG+uQ9CC2l+meDuT1T8UDm4QruDpe4at4P8IAF4Voo0WmvXsZPZVE2xtmkmpbD0hxnoIc7FBfQRtQ9WmmToNXGgn6fem8JnDTC7baYB6LW54VSP7pjl93zPaFOiHgxEygs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764870555; c=relaxed/simple;
-	bh=WWqGeiNVPO9/Fp6GzYFs3pCYDJOi3lGQxCNY3A3lxlU=;
+	s=arc-20240116; t=1764872343; c=relaxed/simple;
+	bh=7Vg+sUqDEGkddo9gM3K8cgAS0h36LZhkXtC/3PB2nRY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ziv36yhwBY5ENDLiYBbkkbMr+SMATSQdRp6x+5cxfNIqO4IMT/oK97qVZ3yR8UoTud3iJ8SMYTb0wpMSj4MzUH6J4kFCSdKhlItlAro/5YAD/ZGcRRCvDYddrhFVFpisvTWlaOOKWpUjtSlI9zTDP3QfW4+ByIXuOt/X79DeCgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Wv/OQul5; arc=none smtp.client-ip=91.218.175.185
+	 In-Reply-To:Content-Type; b=oWjH3QgakEaF8DfXO+pxIRIziAfITd8+0rb654bocr8JU07pAZmEHtQGFzINbccEoVA0xPxzEnsCCjfAD1NhKY4//9gxBMoLxTRFLKwUBDRrrvLWpZC3AWNRi2FtgjxlFbOpbuuJ1vy6/lQTIzgaiu24yE8oeRfAlDRECQIXmU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kxolkMqO; arc=none smtp.client-ip=91.218.175.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <80620d09-8187-45b1-a490-07c52733ac21@linux.dev>
+Message-ID: <ae991e0c-66e9-4e27-ab8a-ab166c12dd60@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1764870542;
+	t=1764872327;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zJf4yU0EsoB5weGrFCwtOtM8v9dAPibH72MKj1BMOlU=;
-	b=Wv/OQul5buHvEmsn+ke04fCFNRkSqPnlsrYX7Al0SFRmAXzBAI9r24+PuDT2IiPB8TpaYX
-	OUFwJQbHaRIBTmtr0SfLF3pPyHBOsda9HtCg1Mk2Tizi+W9A53JJD27HGu4+9b0o2xV+8V
-	PKxfhH7WX63eEuain5/y6B0nzpXt4aw=
-Date: Thu, 4 Dec 2025 09:48:42 -0800
+	bh=J4T+2P2ViQeWy94dgDnC4eMz2hzs9znnO0lAojnK0RQ=;
+	b=kxolkMqO0qBAZTVy/D44C+Y9O7D6GRxj35sMQpi/cVwkOYD2qc5IgYQ87oFivCfGIx8GTx
+	i1f+fks1/WC2KEk6Q5IwS/Ff3IjXDDDdFeNS8bNe0xwbWOQn2I5BeCkRoi8tlEFtztZ+8+
+	OiqFQ2r5Kbu2+iV9ndtSMacSOpP35qc=
+Date: Thu, 4 Dec 2025 10:18:40 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH][next] RDMA/rxe: Avoid -Wflex-array-member-not-at-end
- warnings
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Zhu Yanjun <zyjzyj2000@gmail.com>, Leon Romanovsky <leon@kernel.org>,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <aRKu5lNV04Sq82IG@kspp> <20251202181334.GA1162842@nvidia.com>
- <5ac954bb-ad4d-4b4c-b23b-47350b428404@linux.dev>
- <20251204130559.GA1219718@nvidia.com>
+Subject: Re: [PATCH 1/2] bpf: Fix register_bpf_struct_ops() dummy
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Kui-Feng Lee <thinker.li@gmail.com>, "D . Wythe"
+ <alibuda@linux.alibaba.com>, Dust Li <dust.li@linux.alibaba.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Sidraya Jayagond <sidraya@linux.ibm.com>, Wenjia Zhang
+ <wenjia@linux.ibm.com>, Mahanta Jambigi <mjambigi@linux.ibm.com>,
+ Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ bpf@vger.kernel.org, linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1764843951.git.geert@linux-m68k.org>
+ <ead27aa92275c71c1fcd148f88ca6926a524f322.1764843951.git.geert@linux-m68k.org>
 Content-Language: en-US
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "yanjun.zhu" <yanjun.zhu@linux.dev>
-In-Reply-To: <20251204130559.GA1219718@nvidia.com>
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <ead27aa92275c71c1fcd148f88ca6926a524f322.1764843951.git.geert@linux-m68k.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-On 12/4/25 5:05 AM, Jason Gunthorpe wrote:
-> On Wed, Dec 03, 2025 at 09:08:45PM -0800, Zhu Yanjun wrote:
->>>    	unsigned int		res_head;
->>>    	unsigned int		res_tail;
->>>    	struct resp_res		*res;
->>> +
->>> +	/* SRQ only. srq_wqe.dma.sge is a flex array */
->>> +	struct rxe_recv_wqe srq_wqe;
->>
->> drivers/infiniband/sw/rxe/rxe_resp.c: In function get_srq_wqe:
->> drivers/infiniband/sw/rxe/rxe_resp.c:289:41: error: struct rxe_recv_wqe has
->> no member named wqe
->>    289 |         qp->resp.wqe = &qp->resp.srq_wqe.wqe;
->>        |                                         ^
+On 12/4/25 2:29 AM, Geert Uytterhoeven wrote:
+> If CONFIG_BPF_SYSCALL=y, but CONFIG_BPF_JIT=n:
 > 
-> I didn't try to fix all the typos, you will need to do that.
-
-Exactly. I will fix this problem. This weekend, I will send out an 
-official commit.
-
-Yanjun.Zhu
-
+>      net/smc/smc_hs_bpf.c: In function ‘bpf_smc_hs_ctrl_init’:
+>      include/linux/bpf.h:2068:50: error: statement with no effect [-Werror=unused-value]
+>       2068 | #define register_bpf_struct_ops(st_ops, type) ({ (void *)(st_ops); 0; })
+> 	  |                                                  ^~~~~~~~~~~~~~~~
+>      net/smc/smc_hs_bpf.c:139:16: note: in expansion of macro ‘register_bpf_struct_ops’
+>        139 |         return register_bpf_struct_ops(&bpf_smc_hs_ctrl_ops, smc_hs_ctrl);
+> 	  |                ^~~~~~~~~~~~~~~~~~~~~~~
 > 
-> Jason
+> As type is not a variable, but a variable type, this cannot be fixed by
+> just converting register_bpf_struct_ops() into a static inline function.
+> Hence fix this by introducing a static inline intermediate dummy.
+> 
+> Fixes: f6be98d19985411c ("bpf, net: switch to dynamic registration")
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>   include/linux/bpf.h | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 6498be4c44f8c275..bb69905c28a761e7 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -2065,7 +2065,11 @@ int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+>   void bpf_map_struct_ops_info_fill(struct bpf_map_info *info, struct bpf_map *map);
+>   void bpf_struct_ops_desc_release(struct bpf_struct_ops_desc *st_ops_desc);
+>   #else
+> -#define register_bpf_struct_ops(st_ops, type) ({ (void *)(st_ops); 0; })
+> +static inline int __register_bpf_struct_ops(struct bpf_struct_ops *st_ops)
+> +{
+> +	return 0;
+> +}
+> +#define register_bpf_struct_ops(st_ops, type) __register_bpf_struct_ops(st_ops)
+
+Only patch 2 is needed. This empty register_bpf_struct_ops should be 
+removed in the bpf-next tree as a cleanup.
 
 
