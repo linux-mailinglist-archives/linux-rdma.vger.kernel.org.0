@@ -1,248 +1,147 @@
-Return-Path: <linux-rdma+bounces-14902-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14903-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4EDDCA78F4
-	for <lists+linux-rdma@lfdr.de>; Fri, 05 Dec 2025 13:21:47 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11C02CA8167
+	for <lists+linux-rdma@lfdr.de>; Fri, 05 Dec 2025 16:07:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 8BF4B30172B0
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Dec 2025 12:21:45 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 71A3B316C887
+	for <lists+linux-rdma@lfdr.de>; Fri,  5 Dec 2025 14:20:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E74C32FA05;
-	Fri,  5 Dec 2025 12:21:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oJtXNbNZ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D5E62FF66A;
+	Fri,  5 Dec 2025 14:20:40 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642E83002A3
-	for <linux-rdma@vger.kernel.org>; Fri,  5 Dec 2025 12:21:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C93D2745C;
+	Fri,  5 Dec 2025 14:20:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764937302; cv=none; b=nDMwFIj74qUURUxZzOGqD0aD1EdV9CE7dL3I/Bu2GPLMxMCGXs+U9xo9Da0U3NEZVYGgFA9vgbvDPzzG34KjVvvA83cyJ75BXIfPw1Pv8ZI8Nq73dIdfcIwMIVs1iZzAG+PD57odwVgkmpJVlYcltHm2/ZYdRQVgG4+RY4e6ITY=
+	t=1764944438; cv=none; b=cOoVvALkqmtGNz25bMzvtQyOoEPF9PX/9dOefNb1UGU9iM0CPMXycVD1aEffcG60WLTOstZglSxVn7Ff+NSBzhqpboDxqli2tnW1Oj8efscgCYXzA7LlEl626TgSLLKjNaVscOX1nJi+M2rwQySASTD3DKAo62nLgFCI+FkSRNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764937302; c=relaxed/simple;
-	bh=l7rkcdapF5ZfdsVnOuJihnwt6rQaKjn0Y0lW0Vu+Jkg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hto9O0LA84Rykdy6kgThvU0SSRyuptxYBualeLtCJIHotbf+5IXGBP47ijPkbsAAsVzKM8gPQSykmcpIpbsurZ77AuYhgePHWXZtL7115P998fgDQCTtu9Z2qFYvsiyJhqIEi5Rh1LgcFj4ZpLxRkHWxPMxxiwkBBP3OUs/aaho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oJtXNbNZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 101D6C16AAE
-	for <linux-rdma@vger.kernel.org>; Fri,  5 Dec 2025 12:21:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764937302;
-	bh=l7rkcdapF5ZfdsVnOuJihnwt6rQaKjn0Y0lW0Vu+Jkg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=oJtXNbNZc9TLGD3/HRUzeWDYvrFpyRUxUNdeT7ANhgsYz1aEaIK/4QimdA3JDyin6
-	 MG3nbJ2Qb97M75nQnE35cjtY0sLHFGq0mVAFnCMrkD1Q/wW/L3Q0HLnztsJOWDEmo8
-	 iMNBzN+ekkAhSOBpvnFTfAgKeYKr0VTG4i1IxiK7tVoRrTolAmfPoJL9D30UPQzGcd
-	 bnbUc+3rzkE1ipCl6Va/obJuEyI7Xsa7Pjj1K2HKER82/BZmIW0UrmiPYTScrAkbxF
-	 65msgrY5Un+CuDhNtcwVT6ylLgQpLyJqll9TniAE38jbiZ657W9iaojg9x7t3cZe21
-	 R3wh8CFwmlkMg==
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-640ca678745so3514031a12.2
-        for <linux-rdma@vger.kernel.org>; Fri, 05 Dec 2025 04:21:41 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXrg0gSCGh4Q5CalTjMQD4B1oHnsx1JtyCtVBVM7qQrVWyAqnzW5fzIenQ7+IMIgQtApGG102zOjlzq@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy8KWhf8G+viCSPRHTZXlRe2BtuaC2HObdpg9QLTjLzPqr5A+hw
-	yDjA9mnH8MuQlK3AU1jV8bZtb3cPXg95a6YuN/SYnTTOmwMnaechp8S1oMsbsDMf1wlionAJV1h
-	0jwuprT/Lx8/mBJRINh8tQ3s2sLevo/E=
-X-Google-Smtp-Source: AGHT+IGgjLo9huSCRNebWVzSQI2ChgV3ePC8ePmME7tnid80AFmod6ZSidLlBTJsKsJEZoHqMuOD/c/jqy/sTjkFF1Q=
-X-Received: by 2002:a05:6402:4308:b0:645:ccf0:379 with SMTP id
- 4fb4d7f45d1cf-6479c4e6e7dmr7754820a12.21.1764937300649; Fri, 05 Dec 2025
- 04:21:40 -0800 (PST)
+	s=arc-20240116; t=1764944438; c=relaxed/simple;
+	bh=6qWcomkKsDORhle21oPalA9U/qkT+YrO0YTpij/7ts8=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=MeK7PownhtORQYzsyWaEpi88FAYb2KQqJxW7lnuuXIKCFl4ry3cfM+pbly3WlTGkwDlBYjAtjtxWbmjOtKxxBD3FF0xQp/BOqBORvRUdylmjW68dYHU+YrfwMNr3nQU8xRSIXBUHA0hahnarOJQiT1U6M+HnswtH5nntVtBK/B8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 5B5EKDgk082831;
+	Fri, 5 Dec 2025 23:20:13 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from [192.168.1.10] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 5B5EKDr9082828
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Fri, 5 Dec 2025 23:20:13 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <8f90fba8-60b9-46e2-8990-45311c7b1540@I-love.SAKURA.ne.jp>
+Date: Fri, 5 Dec 2025 23:20:11 +0900
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <35eec2e6-bf37-43d6-a2d8-7a939a68021b@samba.org>
- <CAKYAXd9p=7BzmSSKi5n41OKkkw4qrr4cWpWet7rUfC+VT-6h1g@mail.gmail.com>
- <f59e0dc7-e91c-4a13-8d49-fe183c10b6f4@samba.org> <CAKYAXd-MF1j+CkbWakFJK2ov_SfRUXaRuT6jE0uHZoLxTu130Q@mail.gmail.com>
-In-Reply-To: <CAKYAXd-MF1j+CkbWakFJK2ov_SfRUXaRuT6jE0uHZoLxTu130Q@mail.gmail.com>
-From: Namjae Jeon <linkinjeon@kernel.org>
-Date: Fri, 5 Dec 2025 21:21:27 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd__T=L9aWwOuY7Z8fJgMf404=KQ2dTpNRd3mq9dnYCxRw@mail.gmail.com>
-X-Gm-Features: AQt7F2piEZ0QRJp5iXF854cczQM8xFRGxr2AxF1ktuXJQh-ifBY-76_4ojsBp9A
-Message-ID: <CAKYAXd__T=L9aWwOuY7Z8fJgMf404=KQ2dTpNRd3mq9dnYCxRw@mail.gmail.com>
-Subject: Re: Problem with smbdirect rw credits and initiator_depth
-To: Stefan Metzmacher <metze@samba.org>
-Cc: Tom Talpey <tom@talpey.com>, 
-	"linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>, 
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Content-Type: multipart/mixed; boundary="000000000000db6a430645337c83"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [rdma/siw] unregister_netdevice: waiting for bond0 to become
+ free. Usage count = 3
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To: Bernard Metzler <bernard.metzler@linux.dev>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+References: <30ec01df-6c32-490c-aa26-c41653f5a257@I-love.SAKURA.ne.jp>
+Content-Language: en-US
+In-Reply-To: <30ec01df-6c32-490c-aa26-c41653f5a257@I-love.SAKURA.ne.jp>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Virus-Status: clean
+X-Anti-Virus-Server: fsav404.rs.sakura.ne.jp
 
---000000000000db6a430645337c83
-Content-Type: text/plain; charset="UTF-8"
+On 2025/11/25 23:31, Tetsuo Handa wrote:
+> The output from the debug printk() patch is attached (because it has 2500 lines).
+> You can see that there is one alloc_gid_entry() call in bond0[74] but there is
+> no corresponding put_gid_ndev() call. I suspect that there is a refcount leak in
+> "struct ib_gid_table_entry" handling. Where should we check next?
 
-> > Can you at least post the dmesg output generated by this:
-> > https://git.samba.org/?p=metze/linux/wip.git;a=commitdiff;h=7e724ebc58e986f4e101a55f4ab5e96912239918
-> > Assuming that this wasn't triggered:
-> > if (WARN_ONCE(needed > max_possible, "needed:%u > max:%u\n", needed, max_possible))
-> I didn't know you wanted it. I will share it after office.
-I have attached v2 and v3 logs. Let me know if you need something more,
-> >
-> > Did you run the bpftrace command? Did it print a lot of
-> > 'smb_direct_rdma_xmit' message over the whole time of the file copy?
-> No, I didn't check it. but I will try this.
-/mnt# bpftrace ksmbd-rdma-xmit.bt
-Attaching 1 probe...
+Another debug printk() patch in next-20251204 reported that there is a refcount
+leak in "struct ib_gid_table_entry" handling.
 
-The absence of any output after Attaching 1 probe... indicates that
-the smb_direct_rdma_xmit function has not been called ?
+Is serialization between creating a new ib_gid_table_entry and deleting existing
+ib_gid_table_entry properly implemented (like a similar case explained in
+https://lkml.kernel.org/r/85b701a9-511d-4cf2-8c9c-5fade945f187@I-love.SAKURA.ne.jp ) ?
+Don't we need to check ndev->reg_state when creating a new ib_gid_table_entry (like
+https://lkml.kernel.org/r/b9653191-d479-4c8b-8536-1326d028db5c@I-love.SAKURA.ne.jp does) ?
 
---000000000000db6a430645337c83
-Content-Type: text/plain; charset="US-ASCII"; name="wip_v2.txt"
-Content-Disposition: attachment; filename="wip_v2.txt"
-Content-Transfer-Encoding: base64
-Content-ID: <f_misu0is10>
-X-Attachment-Id: f_misu0is10
+Regards.
 
-WyAgNDE0Ljc4NDU2OV0ga3NtYmQ6IHJ1bm5pbmcKWyAgNzg4LjE4MzMxMF0ga3NtYmQ6IHNtYl9k
-aXJlY3Q6IGRldltyb2NlcDFzMGYwXTogbWF4X3FwX3JkX2F0b209MTYgbWF4X2Zhc3RfcmVnX3Bh
-Z2VfbGlzdF9sZW49NjU1MzYgbWF4X3NnbF9yZD0zIG1heF9zZ2VfcmQ9MzAgbWF4X2NxZT00MTk0
-MzAzIG1heF9xcF93cj04MTkyIG1heF9zZW5kX3NnZT0zMCBtYXhfcmVjdl9zZ2U9MzIgZGV2aWNl
-X2NhcF9mbGFncz0weDE0MjUzMjFjMzYga2VybmVsX2NhcF9mbGFncz0weDJlClsgIDc4OC4xODMz
-MzRdIGtzbWJkOiBzbWJfZGlyZWN0OiBpbml0aWF0b3JfZGVwdGg6OCBwZWVyX2luaXRpYXRvcl9k
-ZXB0aDoxNgpbICA3ODguMTgzMzM3XSBrc21iZDogc21iX2RpcmVjdDogbWF4X3NlbmRfc2dlcz00
-IG1heF9yZWFkX3dyaXRlX3NpemU9ODM4ODYwOApbICA3ODguMTgzMzM5XSBrc21iZDogc21iX2Rp
-cmVjdDogc2MtPnJ3X2lvLmNyZWRpdHMubnVtX3BhZ2VzPTI1NiBzYy0+cndfaW8uY3JlZGl0cy5t
-YXg6OQpbICA3ODguMTgzMzQyXSBrc21iZDogc21iX2RpcmVjdDogbWF4X3NnZV9wZXJfd3I6MzAg
-d3JzX3Blcl9jcmVkaXQ6MTAgbWF4X3J3X3dyczo5MApbICA3ODguMTkzMTg2XSBrc21iZDogc21i
-X2RpcmVjdDogZGV2W3JvY2VwMXMwZjBdOiBtYXhfcXBfcmRfYXRvbT0xNiBtYXhfZmFzdF9yZWdf
-cGFnZV9saXN0X2xlbj02NTUzNiBtYXhfc2dsX3JkPTMgbWF4X3NnZV9yZD0zMCBtYXhfY3FlPTQx
-OTQzMDMgbWF4X3FwX3dyPTgxOTIgbWF4X3NlbmRfc2dlPTMwIG1heF9yZWN2X3NnZT0zMiBkZXZp
-Y2VfY2FwX2ZsYWdzPTB4MTQyNTMyMWMzNiBrZXJuZWxfY2FwX2ZsYWdzPTB4MmUKWyAgNzg4LjE5
-MzIwOV0ga3NtYmQ6IHNtYl9kaXJlY3Q6IGluaXRpYXRvcl9kZXB0aDo4IHBlZXJfaW5pdGlhdG9y
-X2RlcHRoOjE2ClsgIDc4OC4xOTMyMTNdIGtzbWJkOiBzbWJfZGlyZWN0OiBtYXhfc2VuZF9zZ2Vz
-PTQgbWF4X3JlYWRfd3JpdGVfc2l6ZT04Mzg4NjA4ClsgIDc4OC4xOTMyMTZdIGtzbWJkOiBzbWJf
-ZGlyZWN0OiBzYy0+cndfaW8uY3JlZGl0cy5udW1fcGFnZXM9MjU2IHNjLT5yd19pby5jcmVkaXRz
-Lm1heDo5ClsgIDc4OC4xOTMyMTldIGtzbWJkOiBzbWJfZGlyZWN0OiBtYXhfc2dlX3Blcl93cjoz
-MCB3cnNfcGVyX2NyZWRpdDoxMCBtYXhfcndfd3JzOjkwClsgIDc4OC4xOTk3MzFdIGtzbWJkOiBz
-bWJfZGlyZWN0OiBkZXZbcm9jZXAxczBmMV06IG1heF9xcF9yZF9hdG9tPTE2IG1heF9mYXN0X3Jl
-Z19wYWdlX2xpc3RfbGVuPTY1NTM2IG1heF9zZ2xfcmQ9MyBtYXhfc2dlX3JkPTMwIG1heF9jcWU9
-NDE5NDMwMyBtYXhfcXBfd3I9ODE5MiBtYXhfc2VuZF9zZ2U9MzAgbWF4X3JlY3Zfc2dlPTMyIGRl
-dmljZV9jYXBfZmxhZ3M9MHgxNDI1MzIxYzM2IGtlcm5lbF9jYXBfZmxhZ3M9MHgyZQpbICA3ODgu
-MTk5NzU2XSBrc21iZDogc21iX2RpcmVjdDogaW5pdGlhdG9yX2RlcHRoOjggcGVlcl9pbml0aWF0
-b3JfZGVwdGg6MTYKWyAgNzg4LjE5OTc2MF0ga3NtYmQ6IHNtYl9kaXJlY3Q6IG1heF9zZW5kX3Nn
-ZXM9NCBtYXhfcmVhZF93cml0ZV9zaXplPTgzODg2MDgKWyAgNzg4LjE5OTc2M10ga3NtYmQ6IHNt
-Yl9kaXJlY3Q6IHNjLT5yd19pby5jcmVkaXRzLm51bV9wYWdlcz0yNTYgc2MtPnJ3X2lvLmNyZWRp
-dHMubWF4OjkKWyAgNzg4LjE5OTc2Nl0ga3NtYmQ6IHNtYl9kaXJlY3Q6IG1heF9zZ2VfcGVyX3dy
-OjMwIHdyc19wZXJfY3JlZGl0OjEwIG1heF9yd193cnM6OTAKWyAgNzg4LjIwODE0NF0ga3NtYmQ6
-IHNtYl9kaXJlY3Q6IGRldltyb2NlcDFzMGYxXTogbWF4X3FwX3JkX2F0b209MTYgbWF4X2Zhc3Rf
-cmVnX3BhZ2VfbGlzdF9sZW49NjU1MzYgbWF4X3NnbF9yZD0zIG1heF9zZ2VfcmQ9MzAgbWF4X2Nx
-ZT00MTk0MzAzIG1heF9xcF93cj04MTkyIG1heF9zZW5kX3NnZT0zMCBtYXhfcmVjdl9zZ2U9MzIg
-ZGV2aWNlX2NhcF9mbGFncz0weDE0MjUzMjFjMzYga2VybmVsX2NhcF9mbGFncz0weDJlClsgIDc4
-OC4yMDgxNjJdIGtzbWJkOiBzbWJfZGlyZWN0OiBpbml0aWF0b3JfZGVwdGg6OCBwZWVyX2luaXRp
-YXRvcl9kZXB0aDoxNgpbICA3ODguMjA4MTYzXSBrc21iZDogc21iX2RpcmVjdDogbWF4X3NlbmRf
-c2dlcz00IG1heF9yZWFkX3dyaXRlX3NpemU9ODM4ODYwOApbICA3ODguMjA4MTY1XSBrc21iZDog
-c21iX2RpcmVjdDogc2MtPnJ3X2lvLmNyZWRpdHMubnVtX3BhZ2VzPTI1NiBzYy0+cndfaW8uY3Jl
-ZGl0cy5tYXg6OQpbICA3ODguMjA4MTY2XSBrc21iZDogc21iX2RpcmVjdDogbWF4X3NnZV9wZXJf
-d3I6MzAgd3JzX3Blcl9jcmVkaXQ6MTAgbWF4X3J3X3dyczo5MApbICA3OTEuNTAyMzM3XSBrc21i
-ZDogc21iX2RpcmVjdDogZGlzY29ubmVjdGVkClsgIDc5MS41MDIzNDRdIGtzbWJkOiBGYWlsZWQg
-dG8gc2VuZCBtZXNzYWdlOiAtMTA3ClsgIDc5MS41MDIzNTRdIGtzbWJkOiBzb2NrX3JlYWQgZmFp
-bGVkOiAtMTA3ClsgIDc5MS41MDIzNzhdIGtzbWJkOiBGYWlsZWQgdG8gc2VuZCBtZXNzYWdlOiAt
-MTA3ClsgIDc5MS41MDI0MDFdIGtzbWJkOiBGYWlsZWQgdG8gc2VuZCBtZXNzYWdlOiAtMTA3Clsg
-IDc5MS41MDI0MjFdIGtzbWJkOiBGYWlsZWQgdG8gc2VuZCBtZXNzYWdlOiAtMTA3ClsgIDc5MS41
-MDM0MDddIGtzbWJkOiBGYWlsZWQgdG8gc2VuZCBtZXNzYWdlOiAtMTA3ClsgIDc5MS41MDM0Mzhd
-IGtzbWJkOiBGYWlsZWQgdG8gc2VuZCBtZXNzYWdlOiAtMTA3ClsgIDc5MS41MDM0NjJdIGtzbWJk
-OiBGYWlsZWQgdG8gc2VuZCBtZXNzYWdlOiAtMTA3ClsgIDc5MS41MDM4MjBdIGtzbWJkOiBzbWJf
-ZGlyZWN0OiBTZW5kIGVycm9yLiBzdGF0dXM9J1dSIGZsdXNoZWQgKDUpJywgb3Bjb2RlPTAKWyAg
-NzkxLjUwNDc1Nl0ga3NtYmQ6IEZhaWxlZCB0byBzZW5kIG1lc3NhZ2U6IC0xMDcKWyAgNzkxLjUw
-NDc3Nl0ga3NtYmQ6IEZhaWxlZCB0byBzZW5kIG1lc3NhZ2U6IC0xMDcKWyAgNzkxLjUwNDc5M10g
-a3NtYmQ6IEZhaWxlZCB0byBzZW5kIG1lc3NhZ2U6IC0xMDcKWyAgNzkxLjUwNDgxMV0ga3NtYmQ6
-IEZhaWxlZCB0byBzZW5kIG1lc3NhZ2U6IC0xMDcKWyAgNzkxLjUwNDgyOF0ga3NtYmQ6IEZhaWxl
-ZCB0byBzZW5kIG1lc3NhZ2U6IC0xMDcKWyAgNzkxLjUwNDg0NF0ga3NtYmQ6IEZhaWxlZCB0byBz
-ZW5kIG1lc3NhZ2U6IC0xMDcKWyAgNzkxLjUwNDg3OF0ga3NtYmQ6IEZhaWxlZCB0byBzZW5kIG1l
-c3NhZ2U6IC0xMDcKWyAgNzkxLjUwNDkwMV0ga3NtYmQ6IEZhaWxlZCB0byBzZW5kIG1lc3NhZ2U6
-IC0xMDcKWyAgNzkxLjU2Nzk2Ml0ga3NtYmQ6IHNtYl9kaXJlY3Q6IGRldltyb2NlcDFzMGYxXTog
-bWF4X3FwX3JkX2F0b209MTYgbWF4X2Zhc3RfcmVnX3BhZ2VfbGlzdF9sZW49NjU1MzYgbWF4X3Nn
-bF9yZD0zIG1heF9zZ2VfcmQ9MzAgbWF4X2NxZT00MTk0MzAzIG1heF9xcF93cj04MTkyIG1heF9z
-ZW5kX3NnZT0zMCBtYXhfcmVjdl9zZ2U9MzIgZGV2aWNlX2NhcF9mbGFncz0weDE0MjUzMjFjMzYg
-a2VybmVsX2NhcF9mbGFncz0weDJlClsgIDc5MS41NjgwNDRdIGtzbWJkOiBzbWJfZGlyZWN0OiBp
-bml0aWF0b3JfZGVwdGg6OCBwZWVyX2luaXRpYXRvcl9kZXB0aDoxNgpbICA3OTEuNTY4MDUxXSBr
-c21iZDogc21iX2RpcmVjdDogbWF4X3NlbmRfc2dlcz00IG1heF9yZWFkX3dyaXRlX3NpemU9ODM4
-ODYwOApbICA3OTEuNTY4MDU4XSBrc21iZDogc21iX2RpcmVjdDogc2MtPnJ3X2lvLmNyZWRpdHMu
-bnVtX3BhZ2VzPTI1NiBzYy0+cndfaW8uY3JlZGl0cy5tYXg6OQpbICA3OTEuNTY4MDY0XSBrc21i
-ZDogc21iX2RpcmVjdDogbWF4X3NnZV9wZXJfd3I6MzAgd3JzX3Blcl9jcmVkaXQ6MTAgbWF4X3J3
-X3dyczo5MApbICA4MDEuOTI1MjgxXSBrc21iZDogRmFpbGVkIHRvIHNlbmQgbWVzc2FnZTogLTEw
-NwpbICA4MDEuOTI1MzY1XSBrc21iZDogRmFpbGVkIHRvIHNlbmQgbWVzc2FnZTogLTEwNwpbICA4
-MDEuOTI1MzkyXSBrc21iZDogc21iX2RpcmVjdDogZGlzY29ubmVjdGVkClsgIDgwMS45MjUzOTld
-IGtzbWJkOiBzb2NrX3JlYWQgZmFpbGVkOiAtMTA3ClsgIDgwMS45MjY2NTFdIGtzbWJkOiBzbWJf
-ZGlyZWN0OiBTZW5kIGVycm9yLiBzdGF0dXM9J1dSIGZsdXNoZWQgKDUpJywgb3Bjb2RlPTAKWyAg
-ODAxLjkyNjY2NV0ga3NtYmQ6IHNtYl9kaXJlY3Q6IFNlbmQgZXJyb3IuIHN0YXR1cz0nV1IgZmx1
-c2hlZCAoNSknLCBvcGNvZGU9MApbICA4MDEuOTI3NzE3XSBrc21iZDogRmFpbGVkIHRvIHNlbmQg
-bWVzc2FnZTogLTEwNwpbICA4MDEuOTI3NzM4XSBrc21iZDogRmFpbGVkIHRvIHNlbmQgbWVzc2Fn
-ZTogLTEwNwpbICA4MDEuOTM1OTQwXSBrc21iZDogc21iX2RpcmVjdDogZGV2W3JvY2VwMXMwZjFd
-OiBtYXhfcXBfcmRfYXRvbT0xNiBtYXhfZmFzdF9yZWdfcGFnZV9saXN0X2xlbj02NTUzNiBtYXhf
-c2dsX3JkPTMgbWF4X3NnZV9yZD0zMCBtYXhfY3FlPTQxOTQzMDMgbWF4X3FwX3dyPTgxOTIgbWF4
-X3NlbmRfc2dlPTMwIG1heF9yZWN2X3NnZT0zMiBkZXZpY2VfY2FwX2ZsYWdzPTB4MTQyNTMyMWMz
-NiBrZXJuZWxfY2FwX2ZsYWdzPTB4MmUKWyAgODAxLjkzNTk4Ml0ga3NtYmQ6IHNtYl9kaXJlY3Q6
-IGluaXRpYXRvcl9kZXB0aDo4IHBlZXJfaW5pdGlhdG9yX2RlcHRoOjE2ClsgIDgwMS45MzU5ODhd
-IGtzbWJkOiBzbWJfZGlyZWN0OiBtYXhfc2VuZF9zZ2VzPTQgbWF4X3JlYWRfd3JpdGVfc2l6ZT04
-Mzg4NjA4ClsgIDgwMS45MzU5OTNdIGtzbWJkOiBzbWJfZGlyZWN0OiBzYy0+cndfaW8uY3JlZGl0
-cy5udW1fcGFnZXM9MjU2IHNjLT5yd19pby5jcmVkaXRzLm1heDo5ClsgIDgwMS45MzU5OTldIGtz
-bWJkOiBzbWJfZGlyZWN0OiBtYXhfc2dlX3Blcl93cjozMCB3cnNfcGVyX2NyZWRpdDoxMCBtYXhf
-cndfd3JzOjkwClsgIDgwNS4yNTkxMzddIGtzbWJkOiBzbWJfZGlyZWN0OiBkaXNjb25uZWN0ZWQK
-WyAgODA1LjI1OTE1M10ga3NtYmQ6IHNvY2tfcmVhZCBmYWlsZWQ6IC0xMDcKWyAgODA1LjI1OTE2
-NV0ga3NtYmQ6IEZhaWxlZCB0byBzZW5kIG1lc3NhZ2U6IC0xMDcKWyAgODA1LjI1OTIxNV0ga3Nt
-YmQ6IEZhaWxlZCB0byBzZW5kIG1lc3NhZ2U6IC0xMDcKWyAgODA1LjI1OTc0OF0ga3NtYmQ6IHNt
-Yl9kaXJlY3Q6IFNlbmQgZXJyb3IuIHN0YXR1cz0nV1IgZmx1c2hlZCAoNSknLCBvcGNvZGU9MApb
-ICA4MDUuMjU5NzY3XSBrc21iZDogc21iX2RpcmVjdDogU2VuZCBlcnJvci4gc3RhdHVzPSdXUiBm
-bHVzaGVkICg1KScsIG9wY29kZT0wClsgIDgwNS4yNjQwMzRdIGtzbWJkOiBzbWJfZGlyZWN0OiBk
-ZXZbcm9jZXAxczBmMV06IG1heF9xcF9yZF9hdG9tPTE2IG1heF9mYXN0X3JlZ19wYWdlX2xpc3Rf
-bGVuPTY1NTM2IG1heF9zZ2xfcmQ9MyBtYXhfc2dlX3JkPTMwIG1heF9jcWU9NDE5NDMwMyBtYXhf
-cXBfd3I9ODE5MiBtYXhfc2VuZF9zZ2U9MzAgbWF4X3JlY3Zfc2dlPTMyIGRldmljZV9jYXBfZmxh
-Z3M9MHgxNDI1MzIxYzM2IGtlcm5lbF9jYXBfZmxhZ3M9MHgyZQpbICA4MDUuMjY0MjU2XSBrc21i
-ZDogc21iX2RpcmVjdDogaW5pdGlhdG9yX2RlcHRoOjggcGVlcl9pbml0aWF0b3JfZGVwdGg6MTYK
-WyAgODA1LjI2NDI2NF0ga3NtYmQ6IHNtYl9kaXJlY3Q6IG1heF9zZW5kX3NnZXM9NCBtYXhfcmVh
-ZF93cml0ZV9zaXplPTgzODg2MDgKWyAgODA1LjI2NDI2OV0ga3NtYmQ6IHNtYl9kaXJlY3Q6IHNj
-LT5yd19pby5jcmVkaXRzLm51bV9wYWdlcz0yNTYgc2MtPnJ3X2lvLmNyZWRpdHMubWF4OjkKWyAg
-ODA1LjI2NDI3NV0ga3NtYmQ6IHNtYl9kaXJlY3Q6IG1heF9zZ2VfcGVyX3dyOjMwIHdyc19wZXJf
-Y3JlZGl0OjEwIG1heF9yd193cnM6OTAKCg==
---000000000000db6a430645337c83
-Content-Type: text/plain; charset="US-ASCII"; name="wip_v3.txt"
-Content-Disposition: attachment; filename="wip_v3.txt"
-Content-Transfer-Encoding: base64
-Content-ID: <f_misu0n9o1>
-X-Attachment-Id: f_misu0n9o1
 
-WyAgOTE0LjY3MDQ5MV0ga3NtYmQ6IHJ1bm5pbmcKWyAgOTc4LjYzNjI0MF0ga3NtYmQ6IHNtYl9k
-aXJlY3Q6IGRldltyb2NlcDFzMGYwXTogbWF4X3FwX3JkX2F0b209MTYgbWF4X2Zhc3RfcmVnX3Bh
-Z2VfbGlzdF9sZW49NjU1MzYgbWF4X3NnbF9yZD0zIG1heF9zZ2VfcmQ9MzAgbWF4X2NxZT00MTk0
-MzAzIG1heF9xcF93cj04MTkyIG1heF9zZW5kX3NnZT0zMCBtYXhfcmVjdl9zZ2U9MzIgZGV2aWNl
-X2NhcF9mbGFncz0weDE0MjUzMjFjMzYga2VybmVsX2NhcF9mbGFncz0weDJlClsgIDk3OC42MzYy
-NThdIGtzbWJkOiBzbWJfZGlyZWN0OiBpbml0aWF0b3JfZGVwdGg6OCBwZWVyX2luaXRpYXRvcl9k
-ZXB0aDoxNgpbICA5NzguNjM2MjYxXSBrc21iZDogc21iX2RpcmVjdDogbWF4X3JkbWFfcndfc2l6
-ZTo4Mzg4NjA4IHBhZ2VzX3Blcl9yd19jcmVkaXQ6MjU2IG1heF9yd19jcmVkaXRzOjkKWyAgOTc4
-LjYzNjI2M10ga3NtYmQ6IHNtYl9kaXJlY3Q6IG1heF9zZW5kX3NnZXM6NCBtYXhfc2dlX3Blcl93
-cjozMCB3cnNfcGVyX2NyZWRpdDoxMCBtYXhfcndfd3JzOjkwClsgIDk3OC42NTU4MzZdIGtzbWJk
-OiBzbWJfZGlyZWN0OiBkZXZbcm9jZXAxczBmMF06IG1heF9xcF9yZF9hdG9tPTE2IG1heF9mYXN0
-X3JlZ19wYWdlX2xpc3RfbGVuPTY1NTM2IG1heF9zZ2xfcmQ9MyBtYXhfc2dlX3JkPTMwIG1heF9j
-cWU9NDE5NDMwMyBtYXhfcXBfd3I9ODE5MiBtYXhfc2VuZF9zZ2U9MzAgbWF4X3JlY3Zfc2dlPTMy
-IGRldmljZV9jYXBfZmxhZ3M9MHgxNDI1MzIxYzM2IGtlcm5lbF9jYXBfZmxhZ3M9MHgyZQpbICA5
-NzguNjU1ODYzXSBrc21iZDogc21iX2RpcmVjdDogaW5pdGlhdG9yX2RlcHRoOjggcGVlcl9pbml0
-aWF0b3JfZGVwdGg6MTYKWyAgOTc4LjY1NTg2N10ga3NtYmQ6IHNtYl9kaXJlY3Q6IG1heF9yZG1h
-X3J3X3NpemU6ODM4ODYwOCBwYWdlc19wZXJfcndfY3JlZGl0OjI1NiBtYXhfcndfY3JlZGl0czo5
-ClsgIDk3OC42NTU4NzFdIGtzbWJkOiBzbWJfZGlyZWN0OiBtYXhfc2VuZF9zZ2VzOjQgbWF4X3Nn
-ZV9wZXJfd3I6MzAgd3JzX3Blcl9jcmVkaXQ6MTAgbWF4X3J3X3dyczo5MApbICA5NzguNjY3Njcx
-XSBrc21iZDogc21iX2RpcmVjdDogZGV2W3JvY2VwMXMwZjFdOiBtYXhfcXBfcmRfYXRvbT0xNiBt
-YXhfZmFzdF9yZWdfcGFnZV9saXN0X2xlbj02NTUzNiBtYXhfc2dsX3JkPTMgbWF4X3NnZV9yZD0z
-MCBtYXhfY3FlPTQxOTQzMDMgbWF4X3FwX3dyPTgxOTIgbWF4X3NlbmRfc2dlPTMwIG1heF9yZWN2
-X3NnZT0zMiBkZXZpY2VfY2FwX2ZsYWdzPTB4MTQyNTMyMWMzNiBrZXJuZWxfY2FwX2ZsYWdzPTB4
-MmUKWyAgOTc4LjY2NzY5N10ga3NtYmQ6IHNtYl9kaXJlY3Q6IGluaXRpYXRvcl9kZXB0aDo4IHBl
-ZXJfaW5pdGlhdG9yX2RlcHRoOjE2ClsgIDk3OC42Njc3MDFdIGtzbWJkOiBzbWJfZGlyZWN0OiBt
-YXhfcmRtYV9yd19zaXplOjgzODg2MDggcGFnZXNfcGVyX3J3X2NyZWRpdDoyNTYgbWF4X3J3X2Ny
-ZWRpdHM6OQpbICA5NzguNjY3NzA1XSBrc21iZDogc21iX2RpcmVjdDogbWF4X3NlbmRfc2dlczo0
-IG1heF9zZ2VfcGVyX3dyOjMwIHdyc19wZXJfY3JlZGl0OjEwIG1heF9yd193cnM6OTAKWyAgOTc4
-LjY4ODg3M10ga3NtYmQ6IHNtYl9kaXJlY3Q6IGRldltyb2NlcDFzMGYxXTogbWF4X3FwX3JkX2F0
-b209MTYgbWF4X2Zhc3RfcmVnX3BhZ2VfbGlzdF9sZW49NjU1MzYgbWF4X3NnbF9yZD0zIG1heF9z
-Z2VfcmQ9MzAgbWF4X2NxZT00MTk0MzAzIG1heF9xcF93cj04MTkyIG1heF9zZW5kX3NnZT0zMCBt
-YXhfcmVjdl9zZ2U9MzIgZGV2aWNlX2NhcF9mbGFncz0weDE0MjUzMjFjMzYga2VybmVsX2NhcF9m
-bGFncz0weDJlClsgIDk3OC42ODg4OTRdIGtzbWJkOiBzbWJfZGlyZWN0OiBpbml0aWF0b3JfZGVw
-dGg6OCBwZWVyX2luaXRpYXRvcl9kZXB0aDoxNgpbICA5NzguNjg4ODk2XSBrc21iZDogc21iX2Rp
-cmVjdDogbWF4X3JkbWFfcndfc2l6ZTo4Mzg4NjA4IHBhZ2VzX3Blcl9yd19jcmVkaXQ6MjU2IG1h
-eF9yd19jcmVkaXRzOjkKWyAgOTc4LjY4ODg5OF0ga3NtYmQ6IHNtYl9kaXJlY3Q6IG1heF9zZW5k
-X3NnZXM6NCBtYXhfc2dlX3Blcl93cjozMCB3cnNfcGVyX2NyZWRpdDoxMCBtYXhfcndfd3JzOjkw
-Cg==
---000000000000db6a430645337c83--
+
+unregister_netdevice: waiting for ������ to become free. Usage count = 3
+ref_tracker: netdev@ffff88805e01c628 has 1/1 users at
+     __netdev_tracker_alloc include/linux/netdevice.h:4415 [inline]
+     netdev_hold include/linux/netdevice.h:4444 [inline]
+     ib_device_set_netdev+0x2e1/0x6d0 drivers/infiniband/core/device.c:2253
+     rxe_register_device+0x1bb/0x350 drivers/infiniband/sw/rxe/rxe_verbs.c:1552
+     rxe_net_add+0x81/0x110 drivers/infiniband/sw/rxe/rxe_net.c:586
+     rxe_newlink+0xdd/0x190 drivers/infiniband/sw/rxe/rxe.c:234
+     nldev_newlink+0x4a5/0x5a0 drivers/infiniband/core/nldev.c:1797
+     rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:-1 [inline]
+     rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+     rdma_nl_rcv+0x6ae/0x980 drivers/infiniband/core/netlink.c:259
+     netlink_unicast_kernel net/netlink/af_netlink.c:1318 [inline]
+     netlink_unicast+0x82f/0x9e0 net/netlink/af_netlink.c:1344
+     netlink_sendmsg+0x805/0xb30 net/netlink/af_netlink.c:1894
+     sock_sendmsg_nosec+0x18f/0x1d0 net/socket.c:728
+     __sock_sendmsg net/socket.c:743 [inline]
+     ____sys_sendmsg+0x577/0x880 net/socket.c:2601
+     ___sys_sendmsg+0x21f/0x2a0 net/socket.c:2655
+     __sys_sendmsg net/socket.c:2687 [inline]
+     __do_sys_sendmsg net/socket.c:2692 [inline]
+     __se_sys_sendmsg net/socket.c:2690 [inline]
+     __x64_sys_sendmsg+0x19b/0x260 net/socket.c:2690
+     do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+     do_syscall_64+0xfa/0xf80 arch/x86/entry/syscall_64.c:94
+     entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Call trace for ������@ffff8880254b5f00 +1 at
+     alloc_gid_entry drivers/infiniband/core/cache.c:410 [inline]
+     add_modify_gid+0x317/0xcc0 drivers/infiniband/core/cache.c:550
+     __ib_cache_gid_add+0x230/0x370 drivers/infiniband/core/cache.c:681
+     ib_cache_gid_set_default_gid+0x5f9/0x710 drivers/infiniband/core/cache.c:960
+     add_default_gids drivers/infiniband/core/roce_gid_mgmt.c:469 [inline]
+     enum_all_gids_of_dev_cb+0x17d/0x270 drivers/infiniband/core/roce_gid_mgmt.c:495
+     ib_enum_roce_netdev+0x1ab/0x2e0 drivers/infiniband/core/device.c:2419
+     gid_table_setup_one drivers/infiniband/core/cache.c:1033 [inline]
+     ib_cache_setup_one+0x428/0x5e0 drivers/infiniband/core/cache.c:1711
+     ib_register_device+0xfbe/0x1400 drivers/infiniband/core/device.c:1454
+     rxe_register_device+0x1e3/0x350 drivers/infiniband/sw/rxe/rxe_verbs.c:1556
+     rxe_net_add+0x81/0x110 drivers/infiniband/sw/rxe/rxe_net.c:586
+     rxe_newlink+0xdd/0x190 drivers/infiniband/sw/rxe/rxe.c:234
+     nldev_newlink+0x4a5/0x5a0 drivers/infiniband/core/nldev.c:1797
+     rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:-1 [inline]
+     rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+     rdma_nl_rcv+0x6ae/0x980 drivers/infiniband/core/netlink.c:259
+     netlink_unicast_kernel net/netlink/af_netlink.c:1318 [inline]
+     netlink_unicast+0x82f/0x9e0 net/netlink/af_netlink.c:1344
+     netlink_sendmsg+0x805/0xb30 net/netlink/af_netlink.c:1894
+     sock_sendmsg_nosec+0x18f/0x1d0 net/socket.c:728
+Call trace for ������@ffff8880254b5f00 +4 at
+     get_gid_entry drivers/infiniband/core/cache.c:435 [inline]
+     rdma_get_gid_attr+0x2ee/0x3f0 drivers/infiniband/core/cache.c:1300
+     smc_ib_fill_mac net/smc/smc_ib.c:160 [inline]
+     smc_ib_remember_port_attr net/smc/smc_ib.c:369 [inline]
+     smc_ib_port_event_work+0x196/0x940 net/smc/smc_ib.c:388
+     process_one_work+0x93a/0x15a0 kernel/workqueue.c:3261
+Call trace for ������@ffff8880254b5f00 -4 at
+     put_gid_entry drivers/infiniband/core/cache.c:441 [inline]
+     rdma_put_gid_attr+0x7c/0x130 drivers/infiniband/core/cache.c:1381
+     smc_ib_fill_mac net/smc/smc_ib.c:165 [inline]
+     smc_ib_remember_port_attr net/smc/smc_ib.c:369 [inline]
+     smc_ib_port_event_work+0x1d4/0x940 net/smc/smc_ib.c:388
+     process_one_work+0x93a/0x15a0 kernel/workqueue.c:3261
+balance for ������@ib_gid_table_entry is 1
+
 
