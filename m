@@ -1,147 +1,177 @@
-Return-Path: <linux-rdma+bounces-14903-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14904-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11C02CA8167
-	for <lists+linux-rdma@lfdr.de>; Fri, 05 Dec 2025 16:07:20 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F5AECAA0D9
+	for <lists+linux-rdma@lfdr.de>; Sat, 06 Dec 2025 05:42:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 71A3B316C887
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Dec 2025 14:20:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 11F6F30F0701
+	for <lists+linux-rdma@lfdr.de>; Sat,  6 Dec 2025 04:42:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D5E62FF66A;
-	Fri,  5 Dec 2025 14:20:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6C3E1DF25F;
+	Sat,  6 Dec 2025 04:42:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="C6UYuuJX"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C93D2745C;
-	Fri,  5 Dec 2025 14:20:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 079713595D
+	for <linux-rdma@vger.kernel.org>; Sat,  6 Dec 2025 04:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764944438; cv=none; b=cOoVvALkqmtGNz25bMzvtQyOoEPF9PX/9dOefNb1UGU9iM0CPMXycVD1aEffcG60WLTOstZglSxVn7Ff+NSBzhqpboDxqli2tnW1Oj8efscgCYXzA7LlEl626TgSLLKjNaVscOX1nJi+M2rwQySASTD3DKAo62nLgFCI+FkSRNw=
+	t=1764996134; cv=none; b=OwC8lJRVSYbyWfb9XPHFdp4xWOjQy3mkhRxzKIfvuND4uN6hVf0Su/vQWTp/AJjtm8K+NtCtJ79rdVxSas9bnFolP+/ANyU28idh661iTkvvQ2uF4pLgeC8PTe5S/dNXmg77mma34O0CJKs8m/46XVDPJQQHRDZYIUaxtu8PiUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764944438; c=relaxed/simple;
-	bh=6qWcomkKsDORhle21oPalA9U/qkT+YrO0YTpij/7ts8=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=MeK7PownhtORQYzsyWaEpi88FAYb2KQqJxW7lnuuXIKCFl4ry3cfM+pbly3WlTGkwDlBYjAtjtxWbmjOtKxxBD3FF0xQp/BOqBORvRUdylmjW68dYHU+YrfwMNr3nQU8xRSIXBUHA0hahnarOJQiT1U6M+HnswtH5nntVtBK/B8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 5B5EKDgk082831;
-	Fri, 5 Dec 2025 23:20:13 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from [192.168.1.10] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 5B5EKDr9082828
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Fri, 5 Dec 2025 23:20:13 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <8f90fba8-60b9-46e2-8990-45311c7b1540@I-love.SAKURA.ne.jp>
-Date: Fri, 5 Dec 2025 23:20:11 +0900
+	s=arc-20240116; t=1764996134; c=relaxed/simple;
+	bh=fZSCcJE/jHtRbn/JOrMnapqAYSNuYv6BeRIHONRe+rY=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=DR74STDn3IIwGELEQ+fBulAJAGkCKtO8zAO+IjMOySkHTHOZPecVqPArpmM2Cvi3Mn9+XHkPymrLZrfreEhBxjkbcHM6VpzyEdvmK3Kg54fk9mzo4hYjEIYwZe0yHNC4fbX2GjvQRRsJUbEKKtGi9wYwtp3C2yFYVxtzwhVKbc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=C6UYuuJX; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2191ee0f-a528-4187-ae5b-5aba18741701@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1764996123;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+zCrDLK95Dk01shngxPtJZXux1GwH3CbPaNNnxi3lGw=;
+	b=C6UYuuJXle/zuU/CDw9HiJ6vZO/cS3dD4s5ZQeZ3xVYEcunuc8Rh339kCJ7SzUJzt5kbLE
+	1aDoLRUIdTHH3sbaH8F8/aCrU3k+Uk3raPLtnHZGE0I6C7r3/kuBiI3bQrXtQKuLpwcZiN
+	xb5lcX0FNaz1xQ+aj6TQqMoBKRXkfnQ=
+Date: Fri, 5 Dec 2025 20:41:58 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [rdma/siw] unregister_netdevice: waiting for bond0 to become
- free. Usage count = 3
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To: Bernard Metzler <bernard.metzler@linux.dev>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>
-References: <30ec01df-6c32-490c-aa26-c41653f5a257@I-love.SAKURA.ne.jp>
-Content-Language: en-US
-In-Reply-To: <30ec01df-6c32-490c-aa26-c41653f5a257@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH][next] RDMA/rxe: Avoid -Wflex-array-member-not-at-end
+ warnings
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Zhu Yanjun <zyjzyj2000@gmail.com>, Leon Romanovsky <leon@kernel.org>,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+References: <aRKu5lNV04Sq82IG@kspp> <20251202181334.GA1162842@nvidia.com>
+ <5ac954bb-ad4d-4b4c-b23b-47350b428404@linux.dev>
+ <20251204130559.GA1219718@nvidia.com>
+ <80620d09-8187-45b1-a490-07c52733ac21@linux.dev>
+In-Reply-To: <80620d09-8187-45b1-a490-07c52733ac21@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Virus-Status: clean
-X-Anti-Virus-Server: fsav404.rs.sakura.ne.jp
-
-On 2025/11/25 23:31, Tetsuo Handa wrote:
-> The output from the debug printk() patch is attached (because it has 2500 lines).
-> You can see that there is one alloc_gid_entry() call in bond0[74] but there is
-> no corresponding put_gid_ndev() call. I suspect that there is a refcount leak in
-> "struct ib_gid_table_entry" handling. Where should we check next?
-
-Another debug printk() patch in next-20251204 reported that there is a refcount
-leak in "struct ib_gid_table_entry" handling.
-
-Is serialization between creating a new ib_gid_table_entry and deleting existing
-ib_gid_table_entry properly implemented (like a similar case explained in
-https://lkml.kernel.org/r/85b701a9-511d-4cf2-8c9c-5fade945f187@I-love.SAKURA.ne.jp ) ?
-Don't we need to check ndev->reg_state when creating a new ib_gid_table_entry (like
-https://lkml.kernel.org/r/b9653191-d479-4c8b-8536-1326d028db5c@I-love.SAKURA.ne.jp does) ?
-
-Regards.
+X-Migadu-Flow: FLOW_OUT
 
 
 
-unregister_netdevice: waiting for ������ to become free. Usage count = 3
-ref_tracker: netdev@ffff88805e01c628 has 1/1 users at
-     __netdev_tracker_alloc include/linux/netdevice.h:4415 [inline]
-     netdev_hold include/linux/netdevice.h:4444 [inline]
-     ib_device_set_netdev+0x2e1/0x6d0 drivers/infiniband/core/device.c:2253
-     rxe_register_device+0x1bb/0x350 drivers/infiniband/sw/rxe/rxe_verbs.c:1552
-     rxe_net_add+0x81/0x110 drivers/infiniband/sw/rxe/rxe_net.c:586
-     rxe_newlink+0xdd/0x190 drivers/infiniband/sw/rxe/rxe.c:234
-     nldev_newlink+0x4a5/0x5a0 drivers/infiniband/core/nldev.c:1797
-     rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:-1 [inline]
-     rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
-     rdma_nl_rcv+0x6ae/0x980 drivers/infiniband/core/netlink.c:259
-     netlink_unicast_kernel net/netlink/af_netlink.c:1318 [inline]
-     netlink_unicast+0x82f/0x9e0 net/netlink/af_netlink.c:1344
-     netlink_sendmsg+0x805/0xb30 net/netlink/af_netlink.c:1894
-     sock_sendmsg_nosec+0x18f/0x1d0 net/socket.c:728
-     __sock_sendmsg net/socket.c:743 [inline]
-     ____sys_sendmsg+0x577/0x880 net/socket.c:2601
-     ___sys_sendmsg+0x21f/0x2a0 net/socket.c:2655
-     __sys_sendmsg net/socket.c:2687 [inline]
-     __do_sys_sendmsg net/socket.c:2692 [inline]
-     __se_sys_sendmsg net/socket.c:2690 [inline]
-     __x64_sys_sendmsg+0x19b/0x260 net/socket.c:2690
-     do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-     do_syscall_64+0xfa/0xf80 arch/x86/entry/syscall_64.c:94
-     entry_SYSCALL_64_after_hwframe+0x77/0x7f
+在 2025/12/4 9:48, yanjun.zhu 写道:
+> On 12/4/25 5:05 AM, Jason Gunthorpe wrote:
+>> On Wed, Dec 03, 2025 at 09:08:45PM -0800, Zhu Yanjun wrote:
+>>>>        unsigned int        res_head;
+>>>>        unsigned int        res_tail;
+>>>>        struct resp_res        *res;
+>>>> +
+>>>> +    /* SRQ only. srq_wqe.dma.sge is a flex array */
+>>>> +    struct rxe_recv_wqe srq_wqe;
+>>>
+>>> drivers/infiniband/sw/rxe/rxe_resp.c: In function get_srq_wqe:
+>>> drivers/infiniband/sw/rxe/rxe_resp.c:289:41: error: struct 
+>>> rxe_recv_wqe has
+>>> no member named wqe
+>>>    289 |         qp->resp.wqe = &qp->resp.srq_wqe.wqe;
+>>>        |                                         ^
+>>
+>> I didn't try to fix all the typos, you will need to do that.
+> 
+> Exactly. I will fix this problem. This weekend, I will send out an 
+> official commit.
+Hi, Jason
 
-Call trace for ������@ffff8880254b5f00 +1 at
-     alloc_gid_entry drivers/infiniband/core/cache.c:410 [inline]
-     add_modify_gid+0x317/0xcc0 drivers/infiniband/core/cache.c:550
-     __ib_cache_gid_add+0x230/0x370 drivers/infiniband/core/cache.c:681
-     ib_cache_gid_set_default_gid+0x5f9/0x710 drivers/infiniband/core/cache.c:960
-     add_default_gids drivers/infiniband/core/roce_gid_mgmt.c:469 [inline]
-     enum_all_gids_of_dev_cb+0x17d/0x270 drivers/infiniband/core/roce_gid_mgmt.c:495
-     ib_enum_roce_netdev+0x1ab/0x2e0 drivers/infiniband/core/device.c:2419
-     gid_table_setup_one drivers/infiniband/core/cache.c:1033 [inline]
-     ib_cache_setup_one+0x428/0x5e0 drivers/infiniband/core/cache.c:1711
-     ib_register_device+0xfbe/0x1400 drivers/infiniband/core/device.c:1454
-     rxe_register_device+0x1e3/0x350 drivers/infiniband/sw/rxe/rxe_verbs.c:1556
-     rxe_net_add+0x81/0x110 drivers/infiniband/sw/rxe/rxe_net.c:586
-     rxe_newlink+0xdd/0x190 drivers/infiniband/sw/rxe/rxe.c:234
-     nldev_newlink+0x4a5/0x5a0 drivers/infiniband/core/nldev.c:1797
-     rdma_nl_rcv_msg drivers/infiniband/core/netlink.c:-1 [inline]
-     rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
-     rdma_nl_rcv+0x6ae/0x980 drivers/infiniband/core/netlink.c:259
-     netlink_unicast_kernel net/netlink/af_netlink.c:1318 [inline]
-     netlink_unicast+0x82f/0x9e0 net/netlink/af_netlink.c:1344
-     netlink_sendmsg+0x805/0xb30 net/netlink/af_netlink.c:1894
-     sock_sendmsg_nosec+0x18f/0x1d0 net/socket.c:728
-Call trace for ������@ffff8880254b5f00 +4 at
-     get_gid_entry drivers/infiniband/core/cache.c:435 [inline]
-     rdma_get_gid_attr+0x2ee/0x3f0 drivers/infiniband/core/cache.c:1300
-     smc_ib_fill_mac net/smc/smc_ib.c:160 [inline]
-     smc_ib_remember_port_attr net/smc/smc_ib.c:369 [inline]
-     smc_ib_port_event_work+0x196/0x940 net/smc/smc_ib.c:388
-     process_one_work+0x93a/0x15a0 kernel/workqueue.c:3261
-Call trace for ������@ffff8880254b5f00 -4 at
-     put_gid_entry drivers/infiniband/core/cache.c:441 [inline]
-     rdma_put_gid_attr+0x7c/0x130 drivers/infiniband/core/cache.c:1381
-     smc_ib_fill_mac net/smc/smc_ib.c:165 [inline]
-     smc_ib_remember_port_attr net/smc/smc_ib.c:369 [inline]
-     smc_ib_port_event_work+0x1d4/0x940 net/smc/smc_ib.c:388
-     process_one_work+0x93a/0x15a0 kernel/workqueue.c:3261
-balance for ������@ib_gid_table_entry is 1
+The followings are based on your commits and Leon's commits. And it can 
+pass the rdma-core tests.
+
+I am not sure if this commit is good or not.
+
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c 
+b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index 38d8c408320f..189eaa59a5fb 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -1524,7 +1524,8 @@ static const struct ib_device_ops rxe_dev_ops = {
+         INIT_RDMA_OBJ_SIZE(ib_ah, rxe_ah, ibah),
+         INIT_RDMA_OBJ_SIZE(ib_cq, rxe_cq, ibcq),
+         INIT_RDMA_OBJ_SIZE(ib_pd, rxe_pd, ibpd),
+-       INIT_RDMA_OBJ_SIZE(ib_qp, rxe_qp, ibqp),
++       /* For resp.srq_wqe.dma.sge */
++       INIT_RDMA_OBJ_SIZE(ib_qp, rxe_qp, ibqp) + 
+RXE_MAX_SGE*sizeof(struct ib_sge),
+         INIT_RDMA_OBJ_SIZE(ib_srq, rxe_srq, ibsrq),
+         INIT_RDMA_OBJ_SIZE(ib_ucontext, rxe_ucontext, ibuc),
+         INIT_RDMA_OBJ_SIZE(ib_mw, rxe_mw, ibmw),
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h 
+b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index fd48075810dd..8c17f5f4e318 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -219,12 +219,6 @@ struct rxe_resp_info {
+         u32                     rkey;
+         u32                     length;
+
+-       /* SRQ only */
+-       struct {
+-               struct rxe_recv_wqe     wqe;
+-               struct ib_sge           sge[RXE_MAX_SGE];
+-       } srq_wqe;
+-
+         /* Responder resources. It's a circular list where the oldest
+          * resource is dropped first.
+          */
+@@ -232,6 +226,12 @@ struct rxe_resp_info {
+         unsigned int            res_head;
+         unsigned int            res_tail;
+         struct resp_res         *res;
++
++       /* SRQ only. srq_wqe.dma.sge is a flex array */
++       struct {
++               struct rxe_recv_wqe     wqe;
++               struct ib_sge           sge[RXE_MAX_SGE];
++       } srq_wqe;
+  };
+
+  struct rxe_qp {
+@@ -269,7 +269,6 @@ struct rxe_qp {
+
+         struct rxe_req_info     req;
+         struct rxe_comp_info    comp;
+-       struct rxe_resp_info    resp;
+
+         atomic_t                ssn;
+         atomic_t                skb_out;
+@@ -289,6 +288,7 @@ struct rxe_qp {
+         spinlock_t              state_lock; /* guard requester and 
+completer */
+
+         struct execute_work     cleanup_work;
++       struct rxe_resp_info    resp;
+  };
+
+  enum {
+
+Yanjun.Zhu
+
+> 
+> Yanjun.Zhu
+> 
+>>
+>> Jason
+> 
+
+-- 
+Best Regards,
+Yanjun.Zhu
 
 
