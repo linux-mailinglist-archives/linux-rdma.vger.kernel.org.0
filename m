@@ -1,95 +1,121 @@
-Return-Path: <linux-rdma+bounces-14905-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14906-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53FAECAB164
-	for <lists+linux-rdma@lfdr.de>; Sun, 07 Dec 2025 05:29:10 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48981CAB46E
+	for <lists+linux-rdma@lfdr.de>; Sun, 07 Dec 2025 13:38:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0D54F308D5A0
-	for <lists+linux-rdma@lfdr.de>; Sun,  7 Dec 2025 04:29:07 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id ABE933006FC7
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Dec 2025 12:38:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C20B25D53C;
-	Sun,  7 Dec 2025 04:29:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9C8E2EC558;
+	Sun,  7 Dec 2025 12:38:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eDJQns4R"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F4B519CCF5
-	for <linux-rdma@vger.kernel.org>; Sun,  7 Dec 2025 04:29:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 233DC27145F
+	for <linux-rdma@vger.kernel.org>; Sun,  7 Dec 2025 12:38:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765081745; cv=none; b=E7z2vZwotcvxtb0UxlESYzOUzlbstq8ahgyViqTDBTMnG2mxnX5iCVCwAs28Css1kXCLHG49sms8m/73P2DUboAACkn6lqxB8uxDZtcP/Wl8KDtvd/Gfd7IrElsuIMs8m6tix9ou+YUgdc3ex6V/QPz4TttraXHB1Lf/Vgafgcg=
+	t=1765111102; cv=none; b=CFFvjfdjjEttZ4gwcTk04jhO6wi1jce5LL9G8oEVfN2tDBkgx6+oq9WNp6ySJLvjehVRiHHWx3UHZE9mX7Ts4AUFykrMq2/SRuBYJ3RQbVqmWQFgGPXRej8iBV6uGB5pj6d8FWC3XV3F0YPckgYf8wxImGRC/HNF6AJ84hpp2CU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765081745; c=relaxed/simple;
-	bh=eFje0BYZc36c7GlxVwvHcOD5WpJMi+Oo3iQMgT02PVs=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=gDCWySc6KTVhF0i5Wm5qk5iSXuWqhHKk+PXHqSGllEfT3LQRdnMyiwEFx3Ol0oXB5k4GnhrGtDtMSc3YauHtCE7f1v0y0bQcuTHcFku05XHAfsqzl5qbRJQMfKkbwZkpZqj2CGlfsIn7dEl+a24TF/QsVL4pXr83Z4dKNwi+HYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-657486eb435so4012405eaf.1
-        for <linux-rdma@vger.kernel.org>; Sat, 06 Dec 2025 20:29:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765081743; x=1765686543;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JUNWBhctNH94PHBLcTezwPnZsKvlmgikXPpcfVicFU4=;
-        b=JbohwjKEvoWzePqJqD1POTmzfnlhyEI6PIR+HLls1gFHeNi5nTe9s7KC9+6UXcGN8E
-         FTQeO5vLPyHt+jKWW0snG/ck8ZN2pg55y7HHURq/i9DUhiGoRnD6awZf/rd18m6sj/aj
-         OhG4QXYj7gi7dqljF2+pIO+n+0hQWxWC9VhaYhskCWQPaL6Yt4AjE9XE6r6hu11qFKEI
-         wcVsUn/ZQYaZuE5Y4l89vpw8o9RwkPNO4/WjM3XJr+kNMPy+OzofeO2TDz/kg18Boclb
-         fxJj5QSDLUjAq5B3jw36NMTuTaoB1SPI7wbqG5TndTkw8CPwvvYxfYv1JMb7zPHA0zhV
-         BIlw==
-X-Forwarded-Encrypted: i=1; AJvYcCX3NT1/UJCtkFCLgKatGiYFdgpwI8c3bKWbnldr7H9RUCaTMJ7Z+tKVVC307895yaYubZ0IAZnNGfwK@vger.kernel.org
-X-Gm-Message-State: AOJu0YxMHXQtvIq6A4RD4WDJrtgcdrb4CJDvQanSNX8GwxtGUtVGNNLA
-	WmXHNvf8lFc8Q111gY4NQ30c3OPN4ApEHjgkJ0i+Pk8g7jfpDs5bCk9u6TnEtl13pwbTYhj2Axz
-	0SLSBuyP+LUhSVR/e5XEi7WPGR96IBKey41zUAC6g6wmrYON2bK/M/IN1eFc=
-X-Google-Smtp-Source: AGHT+IHSeHYCjH1WF30LC4vlZ9tiWk2MUfW3UKXh1nskP+uvymmYU7oe3qVXmpZw1STQmVgtt4N2m3Kw9QoZWaaBCcXocytzU+OS
+	s=arc-20240116; t=1765111102; c=relaxed/simple;
+	bh=F7zr8Cs75tSdtgrViCUFLoXfov1UXJTsuww8Bn3boPI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=elEjLVoCjyyxHle5cnLDezGJg8FlZ/KzzcZ1MOhYIVyrTwPLM7rR05kJA91lo6Vg7VzOdykTUU9bxaqaySY8h85rpgB9oEY7MLHEzTk2O+RT2EPlvIbk4hqnJf+UT+Z+P1tm/U/rl2cdLw6MHM24ly2wEp8oYV2CWbBjI6wGApM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eDJQns4R; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1765111100;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=+SUXnBMjMPDW9AevCrJiO1mJpoSaewy40KTaeWq5vxk=;
+	b=eDJQns4R0TbYyOZXidP9wPMBTgkiD0E+MISQ70MCfLY0OYykmPksgpvV8erq0oXEoxjREq
+	gHE5aKPISrIHOFhJae86RcAGmZHE9v1y0XNvXBQ1eXyBGxxk03dXpfaEgz1NK+xnm2zDy6
+	9lcUI8EjWX3UslvVOtsP4MNNng4eql0=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-328-vrxS2WXmOGKs8vXhE9as-g-1; Sun,
+ 07 Dec 2025 07:38:15 -0500
+X-MC-Unique: vrxS2WXmOGKs8vXhE9as-g-1
+X-Mimecast-MFC-AGG-ID: vrxS2WXmOGKs8vXhE9as-g_1765111092
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 9956D1956088;
+	Sun,  7 Dec 2025 12:38:11 +0000 (UTC)
+Received: from fedora (unknown [10.44.32.50])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 2C14F1800357;
+	Sun,  7 Dec 2025 12:38:00 +0000 (UTC)
+Received: by fedora (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Sun,  7 Dec 2025 13:38:13 +0100 (CET)
+Date: Sun, 7 Dec 2025 13:38:01 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Carlos Llamas <cmllamas@google.com>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Felix Kuehling <Felix.Kuehling@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Boris Brezillon <boris.brezillon@collabora.com>,
+	Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
+	=?iso-8859-1?Q?Adri=E1n?= Larumbe <adrian.larumbe@collabora.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Liviu Dudau <liviu.dudau@arm.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Cc: linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH 0/7] don't abuse task_struct.group_leader
+Message-ID: <aTV1KYdcDGvjXHos@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:80b:b0:659:9a49:8f33 with SMTP id
- 006d021491bc7-6599a973dc8mr1988629eaf.68.1765081742693; Sat, 06 Dec 2025
- 20:29:02 -0800 (PST)
-Date: Sat, 06 Dec 2025 20:29:02 -0800
-In-Reply-To: <000000000000fabef5061f429db7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6935028e.a70a0220.38f243.0041.GAE@google.com>
-Subject: Re: [syzbot] [smc?] general protection fault in smc_diag_dump_proto
-From: syzbot <syzbot+f69bfae0a4eb29976e44@syzkaller.appspotmail.com>
-To: agordeev@linux.ibm.com, aha310510@gmail.com, alibuda@linux.alibaba.com, 
-	davem@davemloft.net, dust.li@linux.alibaba.com, edumazet@google.com, 
-	gbayer@linux.ibm.com, guwen@linux.alibaba.com, horms@kernel.org, 
-	jaka@linux.ibm.com, julianr@linux.ibm.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-s390@vger.kernel.org, lizhi.xu@windriver.com, netdev@vger.kernel.org, 
-	pabeni@redhat.com, sidraya@linux.ibm.com, syzkaller-bugs@googlegroups.com, 
-	tonylu@linux.alibaba.com, wenjia@linux.ibm.com, wintera@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-syzbot suspects this issue was fixed by commit:
+Hello.
 
-commit d324a2ca3f8efd57f5839aa2690554a5cbb3586f
-Author: Alexandra Winter <wintera@linux.ibm.com>
-Date:   Thu Sep 18 11:04:50 2025 +0000
+Untested but hopefully trivial, please review.
 
-    dibs: Register smc as dibs_client
+The patches do not depend on each other, this series just removes
+the usage of ->group_leader when it is "obviously unnecessary".
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16d64eb4580000
-start commit:   dbb9a7ef3478 net: fjes: use ethtool string helpers
-git tree:       net-next
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a9d1c42858837b59
-dashboard link: https://syzkaller.appspot.com/bug?extid=f69bfae0a4eb29976e44
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=178f0d5f980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10906b40580000
+I am going to move ->group_leader from task_struct to signal_struct
+or at least add the new task_group_leader() helper. So I will send
+more tree-wide changes on top of this series.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+If this series passes the review, can it be routed via mm tree?
 
-#syz fix: dibs: Register smc as dibs_client
+Oleg.
+---
+ drivers/android/binder.c                         |  9 ++++-----
+ drivers/android/binder_alloc.c                   |  2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c |  2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c           |  5 +----
+ drivers/gpu/drm/amd/amdkfd/kfd_process.c         | 10 ----------
+ drivers/gpu/drm/panfrost/panfrost_gem.c          |  2 +-
+ drivers/gpu/drm/panthor/panthor_gem.c            |  2 +-
+ drivers/infiniband/core/umem_odp.c               |  4 ++--
+ net/core/netclassid_cgroup.c                     |  2 +-
+ 9 files changed, 12 insertions(+), 26 deletions(-)
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
