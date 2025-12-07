@@ -1,61 +1,61 @@
-Return-Path: <linux-rdma+bounces-14907-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14908-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 802B1CAB48F
-	for <lists+linux-rdma@lfdr.de>; Sun, 07 Dec 2025 13:40:01 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A2A1CAB49E
+	for <lists+linux-rdma@lfdr.de>; Sun, 07 Dec 2025 13:40:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 3E60D300A239
-	for <lists+linux-rdma@lfdr.de>; Sun,  7 Dec 2025 12:39:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 199B63058A4B
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Dec 2025 12:39:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D356B19049B;
-	Sun,  7 Dec 2025 12:39:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E16E2ED164;
+	Sun,  7 Dec 2025 12:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EgZ2zvu3"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gkmY0U0F"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E78D2C031B
-	for <linux-rdma@vger.kernel.org>; Sun,  7 Dec 2025 12:39:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B11FB1F239B
+	for <linux-rdma@vger.kernel.org>; Sun,  7 Dec 2025 12:39:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765111167; cv=none; b=bmyzZJJghskFihSwfO4uKoyp9HN8H+qqZtP/lC1pUGA9fxPMeUteF49jufiudGpKQu8lwBtRhgyNVqqxT71r4oi0GWdWqoVH3WUbDqk3nJ8nNj8BSwo3J1NrIPuAjBfRY9XGoxOlZ2vZCrcbUgzt+00qVKnmvm8rG4Bvri0LJxc=
+	t=1765111176; cv=none; b=rMiTxv9Ok+CI8q1IK0YSnS1fShGwHWZlSAhqTwkNhSfiH6mntkok1oIceov5T9Q7UR/rOD+WIY+BZb9EheFr0Tjml0QW66AoQsip80IqWdHW68jCCawRc+uvPwT+H269RBBMNbf8hRZlE3IBk+edMyUb+NX3e8ksOFKjt3hqYmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765111167; c=relaxed/simple;
-	bh=6bJAp3FtnBT0Hpdk8297wzdwh4zG3qxVQVHhDbz1oig=;
+	s=arc-20240116; t=1765111176; c=relaxed/simple;
+	bh=3aC+u0nuPMsrqkVloCDN63ABR3XLIyUV3vUQuLukUCw=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=mHdB14b2ALL08RbxRavwobySU75de2lWrM3fO9klbI1iI2RVw3uSaqoEHs2pOu/ZiN3JYucxxUeXuNKldPqzvQwgpRMYF7U0LW2n113+3+l5A98jVvg2CfomNUwYQmhaA2XqYYM+/BVEZTVGn0jF+lLfh8l6w39GyGg6oCutXbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EgZ2zvu3; arc=none smtp.client-ip=170.10.133.124
+	 Content-Disposition:In-Reply-To; b=rYmaXW2PFgXzsvhtnSuXbbUpMUgX3Qq6Q4rkykTBpHYEdO/s9bbCp0+EjnIcHZY1thHBiaOl+H49CYKRtJty+QlyqOiWG9MG5exZR6RQnG897lNUnLYJcDzcMpTEfUCfXyk8XXKrkXc3mz+sAPUst2ttUsrKFYHGSrYYRsWvb5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gkmY0U0F; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1765111165;
+	s=mimecast20190719; t=1765111173;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to; bh=EsBQW8HxAVAKrwqsykmMqSqPHf2ZEI/TGurllEoeIZc=;
-	b=EgZ2zvu3sx1AOSZapu+Bu/ZIIUITcj8wJQMI52Ut0JeVUmAxY6Bfkn6suE7dm88BIGQ/jL
-	7X9ZXQOvzYbD64G33QFHWYEwnJlJU7IgxcVPnlwCTZe6ufpY6xcLaEd3oPhi2OteKFF0my
-	AYWV5DXdpWraLmsMUsaNuUtMBh3BtO4=
+	 in-reply-to:in-reply-to; bh=FXlhOdfvxpvaaDvBl5X+h/hsx7G14jGyMV7HWDsiG0A=;
+	b=gkmY0U0FJ+nZxO4Q5bmC9wuGc6N9Enr6oCjCou6UiR+u1cRhzfyj/XZgW1rIFnUTGWSLKD
+	7lzP2Sy5K0oDAiXLpjzuKfUk0OD5OByy6JFEkIcbji9VQv06Q57UG+4e3YvbV7pc4CSIAA
+	52IIp2g3biIFmXwn45/1AkDSKF2tKZY=
 Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-576-mgcHMoYVOeuGRxXPF14XEQ-1; Sun,
- 07 Dec 2025 07:39:18 -0500
-X-MC-Unique: mgcHMoYVOeuGRxXPF14XEQ-1
-X-Mimecast-MFC-AGG-ID: mgcHMoYVOeuGRxXPF14XEQ_1765111155
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-507-MnXhMlg-NOGbLn5AUANwSg-1; Sun,
+ 07 Dec 2025 07:39:29 -0500
+X-MC-Unique: MnXhMlg-NOGbLn5AUANwSg-1
+X-Mimecast-MFC-AGG-ID: MnXhMlg-NOGbLn5AUANwSg_1765111166
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 61B691956053;
-	Sun,  7 Dec 2025 12:39:14 +0000 (UTC)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 543F91956052;
+	Sun,  7 Dec 2025 12:39:26 +0000 (UTC)
 Received: from fedora (unknown [10.44.32.50])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id E641B1953986;
-	Sun,  7 Dec 2025 12:39:03 +0000 (UTC)
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 7F53119560BD;
+	Sun,  7 Dec 2025 12:39:16 +0000 (UTC)
 Received: by fedora (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Sun,  7 Dec 2025 13:39:16 +0100 (CET)
-Date: Sun, 7 Dec 2025 13:39:04 +0100
+	oleg@redhat.com; Sun,  7 Dec 2025 13:39:28 +0100 (CET)
+Date: Sun, 7 Dec 2025 13:39:17 +0100
 From: Oleg Nesterov <oleg@redhat.com>
 To: Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
@@ -80,8 +80,9 @@ To: Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
 Cc: linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH 1/7] android/binder: don't abuse current->group_leader
-Message-ID: <aTV1aJVZ8B8_n2LE@redhat.com>
+Subject: [PATCH 2/7] android/binder: use same_thread_group(proc->tsk,
+ current) in binder_mmap()
+Message-ID: <aTV1dc-I5vAw6i0n@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -91,65 +92,30 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <aTV1KYdcDGvjXHos@redhat.com>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-Cleanup and preparation to simplify the next changes.
-
-- Use current->tgid instead of current->group_leader->pid
-
-- Use the value returned by get_task_struct() to initialize proc->tsk
+With or without this change the checked condition can be falsely true
+if proc->tsk execs, but this is fine: binder_alloc_mmap_handler() checks
+vma->vm_mm == alloc->mm.
 
 Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 ---
- drivers/android/binder.c       | 7 +++----
- drivers/android/binder_alloc.c | 2 +-
- 2 files changed, 4 insertions(+), 5 deletions(-)
+ drivers/android/binder.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index a3a1b5c33ba3..a00f6678f04d 100644
+index a00f6678f04d..980bb13228fc 100644
 --- a/drivers/android/binder.c
 +++ b/drivers/android/binder.c
-@@ -6044,7 +6044,7 @@ static int binder_open(struct inode *nodp, struct file *filp)
- 	bool existing_pid = false;
- 
- 	binder_debug(BINDER_DEBUG_OPEN_CLOSE, "%s: %d:%d\n", __func__,
--		     current->group_leader->pid, current->pid);
-+		     current->tgid, current->pid);
- 
- 	proc = kzalloc(sizeof(*proc), GFP_KERNEL);
- 	if (proc == NULL)
-@@ -6053,8 +6053,8 @@ static int binder_open(struct inode *nodp, struct file *filp)
- 	dbitmap_init(&proc->dmap);
- 	spin_lock_init(&proc->inner_lock);
- 	spin_lock_init(&proc->outer_lock);
--	get_task_struct(current->group_leader);
--	proc->tsk = current->group_leader;
-+	proc->tsk = get_task_struct(current->group_leader);
-+	proc->pid = current->tgid;
- 	proc->cred = get_cred(filp->f_cred);
- 	INIT_LIST_HEAD(&proc->todo);
- 	init_waitqueue_head(&proc->freeze_wait);
-@@ -6073,7 +6073,6 @@ static int binder_open(struct inode *nodp, struct file *filp)
- 	binder_alloc_init(&proc->alloc);
- 
- 	binder_stats_created(BINDER_STAT_PROC);
--	proc->pid = current->group_leader->pid;
- 	INIT_LIST_HEAD(&proc->delivered_death);
- 	INIT_LIST_HEAD(&proc->delivered_freeze);
- 	INIT_LIST_HEAD(&proc->waiting_threads);
-diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
-index 979c96b74cad..145ed5f14cdb 100644
---- a/drivers/android/binder_alloc.c
-+++ b/drivers/android/binder_alloc.c
-@@ -1233,7 +1233,7 @@ static struct shrinker *binder_shrinker;
- VISIBLE_IF_KUNIT void __binder_alloc_init(struct binder_alloc *alloc,
- 					  struct list_lru *freelist)
+@@ -6013,7 +6013,7 @@ static int binder_mmap(struct file *filp, struct vm_area_struct *vma)
  {
--	alloc->pid = current->group_leader->pid;
-+	alloc->pid = current->tgid;
- 	alloc->mm = current->mm;
- 	mmgrab(alloc->mm);
- 	mutex_init(&alloc->mutex);
+ 	struct binder_proc *proc = filp->private_data;
+ 
+-	if (proc->tsk != current->group_leader)
++	if (!same_thread_group(proc->tsk, current))
+ 		return -EINVAL;
+ 
+ 	binder_debug(BINDER_DEBUG_OPEN_CLOSE,
 -- 
 2.52.0
 
