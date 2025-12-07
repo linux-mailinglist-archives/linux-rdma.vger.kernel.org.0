@@ -1,61 +1,61 @@
-Return-Path: <linux-rdma+bounces-14910-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14911-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 047B3CAB4A1
-	for <lists+linux-rdma@lfdr.de>; Sun, 07 Dec 2025 13:40:34 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E92BCAB4AD
+	for <lists+linux-rdma@lfdr.de>; Sun, 07 Dec 2025 13:41:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id F24C4300D331
-	for <lists+linux-rdma@lfdr.de>; Sun,  7 Dec 2025 12:40:05 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 31C0C301784B
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Dec 2025 12:40:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9BEF2EDD41;
-	Sun,  7 Dec 2025 12:40:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875D32EFDB4;
+	Sun,  7 Dec 2025 12:40:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UYNlsIBY"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dKkoz22W"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022E32D12EC
-	for <linux-rdma@vger.kernel.org>; Sun,  7 Dec 2025 12:39:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82C2F2D12EC
+	for <linux-rdma@vger.kernel.org>; Sun,  7 Dec 2025 12:40:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765111200; cv=none; b=q/U63d0PqJOoUaZUg+BkzU4J7aLhHa/kn8NEUEE4p4gYsj+iEHOpfo51CiOZrhyLqpfLx6OxrZRC/yc24VaNgpwWlonXWZa2SmmYCTc4Ttp0jnauRTF+zI+HBIDpAVYU+ONV8XVHQqJtr1c3BZAfBEPH1O6GZjiN3KTDNL5a7Vo=
+	t=1765111212; cv=none; b=X/DFuHtGQKHbKI7yxpTEJ0fNo9ytmLprtUw634IWHdncGxbwqtyKHgwGY7i0WN9GqxD2C3eBmIehvOYyNzToU70CufdF0s6Ta+Zt5oKVwrLbQPnYQRzAEAraj8IcKbkWQ8Q+1x5o6XDqaU7mAqR5lzqsx+wQqTmZCCVGLaVrVpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765111200; c=relaxed/simple;
-	bh=Ytz+SZqOIW+Xy5xzf61tHStbY6EtoqoLzDhjnRsCsAk=;
+	s=arc-20240116; t=1765111212; c=relaxed/simple;
+	bh=YTH3r3peosgWPKyoUacL9XewNPCT/1k4nAgk7xQQ9XY=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=WdY5vJtiuCL9xPXW6ij4CqTOLpG252rZvCjdJ68IYIhQizfR2L3fq1FE0OF4tbGgo7HbxKIyJxhhNrHMGS4aoSLE7VqWxjwI6n8Gf4VoFj8F+J6DVCwT8ebmWkPo9Va1aEkctYZ5NeWYPzTIsYOnDLjaJIJ/gBoPwk2Jyy3VMwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UYNlsIBY; arc=none smtp.client-ip=170.10.133.124
+	 Content-Disposition:In-Reply-To; b=Yao2sjD5dm4vLbNA3fbcyvDGUtep3T5R+9VvfXIPcINzp3BxgZ6yGuW9VyxNd4+sXmXyH3Fr53xzo8awhoXNA1md4jJDpnKQktwtSID1Eb+XmdvvUaAEHVq6d0HN4uYHajQwCLlIPVqP2ctikc73AzIHFYWGbi0+VR27DSjVDPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dKkoz22W; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1765111197;
+	s=mimecast20190719; t=1765111208;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to; bh=rgXA81QLeZ8uxrq5YssERSuP8GaYN0hU+8W5qT5Vtak=;
-	b=UYNlsIBYjXcXIwgqrXFYL+A6Mv7Uub2pgbZFfngr3SKJ+sSA4RLqktLbFh75/RZY3WRRf1
-	Kkz12Qa+OLf4SkguKCY2IwrBCtqv2vxhUY0OVhhf9iKyp878ohm1Cd4fDBG5tdKk4/3UnA
-	UoOZKWEw18Qwf3yOMPt1ulCkfGez0j4=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+	 in-reply-to:in-reply-to; bh=qm2SST2ROvbrb0g6IbjuLKtf6ZL8lExfalWyhBUzXok=;
+	b=dKkoz22WC5aEvuYek6pHMN7vnMIHILLnD5Q52kat1gJso3UiH9kauu7egyYDUTbP6jHD1V
+	il8o9C8UrChDQYvkPeFvAELALnP+ReSTlsxLL/SNJfy7BWpUU61mX3D6ukqqMFkCB3ohy1
+	zy7RALSV1cS0321ZXTpmx7zs9ZeF0CY=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-672-PXj43SbAMtaj8nAdWGYIEA-1; Sun,
- 07 Dec 2025 07:39:54 -0500
-X-MC-Unique: PXj43SbAMtaj8nAdWGYIEA-1
-X-Mimecast-MFC-AGG-ID: PXj43SbAMtaj8nAdWGYIEA_1765111191
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-265-PbT8magNPuOajFBJKgpfeA-1; Sun,
+ 07 Dec 2025 07:40:06 -0500
+X-MC-Unique: PbT8magNPuOajFBJKgpfeA-1
+X-Mimecast-MFC-AGG-ID: PbT8magNPuOajFBJKgpfeA_1765111202
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 8766018002C0;
-	Sun,  7 Dec 2025 12:39:50 +0000 (UTC)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 8D9241956095;
+	Sun,  7 Dec 2025 12:40:02 +0000 (UTC)
 Received: from fedora (unknown [10.44.32.50])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 76BD5180044F;
-	Sun,  7 Dec 2025 12:39:40 +0000 (UTC)
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 8A21F3011A86;
+	Sun,  7 Dec 2025 12:39:52 +0000 (UTC)
 Received: by fedora (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Sun,  7 Dec 2025 13:39:52 +0100 (CET)
-Date: Sun, 7 Dec 2025 13:39:41 +0100
+	oleg@redhat.com; Sun,  7 Dec 2025 13:40:04 +0100 (CET)
+Date: Sun, 7 Dec 2025 13:39:53 +0100
 From: Oleg Nesterov <oleg@redhat.com>
 To: Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
@@ -80,9 +80,8 @@ To: Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
 Cc: linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH 4/7] drm/amd: kill the outdated "Only the pthreads threading
- model is supported" checks
-Message-ID: <aTV1jTmYK3Bjh4k6@redhat.com>
+Subject: [PATCH 5/7] drm/pan*: don't abuse current->group_leader
+Message-ID: <aTV1maDfDvqgu1oT@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -92,62 +91,44 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <aTV1KYdcDGvjXHos@redhat.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-Nowaday task->group_leader->mm != task->mm is only possible if
-a) task is not a group leader and b) task->group_leader->mm == NULL
-because task->group_leader has already exited using sys_exit().
+Cleanup and preparation to simplify the next changes.
 
-I don't think that drm/amd tries to detect/nack this case.
+Use current->tgid instead of current->group_leader->pid.
 
 Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c   |  3 ---
- drivers/gpu/drm/amd/amdkfd/kfd_process.c | 10 ----------
- 2 files changed, 13 deletions(-)
+ drivers/gpu/drm/panfrost/panfrost_gem.c | 2 +-
+ drivers/gpu/drm/panthor/panthor_gem.c   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-index a0f8ba382b9e..e44f158a11f0 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-@@ -2551,9 +2551,6 @@ void amdgpu_vm_set_task_info(struct amdgpu_vm *vm)
- 	vm->task_info->task.pid = current->pid;
- 	get_task_comm(vm->task_info->task.comm, current);
+diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/panfrost/panfrost_gem.c
+index 8041b65c6609..1ff1f2c8b726 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_gem.c
++++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
+@@ -17,7 +17,7 @@
+ static void panfrost_gem_debugfs_bo_add(struct panfrost_device *pfdev,
+ 					struct panfrost_gem_object *bo)
+ {
+-	bo->debugfs.creator.tgid = current->group_leader->pid;
++	bo->debugfs.creator.tgid = current->tgid;
+ 	get_task_comm(bo->debugfs.creator.process_name, current->group_leader);
  
--	if (current->group_leader->mm != current->mm)
--		return;
--
- 	vm->task_info->tgid = current->tgid;
- 	get_task_comm(vm->task_info->process_name, current->group_leader);
- }
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-index a085faac9fe1..f8ef18a3aa71 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-@@ -833,12 +833,6 @@ struct kfd_process *kfd_create_process(struct task_struct *thread)
- 	if (!(thread->mm && mmget_not_zero(thread->mm)))
- 		return ERR_PTR(-EINVAL);
+ 	mutex_lock(&pfdev->debugfs.gems_lock);
+diff --git a/drivers/gpu/drm/panthor/panthor_gem.c b/drivers/gpu/drm/panthor/panthor_gem.c
+index fbde78db270a..29cc57efc4b9 100644
+--- a/drivers/gpu/drm/panthor/panthor_gem.c
++++ b/drivers/gpu/drm/panthor/panthor_gem.c
+@@ -27,7 +27,7 @@ static void panthor_gem_debugfs_bo_add(struct panthor_gem_object *bo)
+ 	struct panthor_device *ptdev = container_of(bo->base.base.dev,
+ 						    struct panthor_device, base);
  
--	/* Only the pthreads threading model is supported. */
--	if (thread->group_leader->mm != thread->mm) {
--		mmput(thread->mm);
--		return ERR_PTR(-EINVAL);
--	}
--
- 	/* If the process just called exec(3), it is possible that the
- 	 * cleanup of the kfd_process (following the release of the mm
- 	 * of the old process image) is still in the cleanup work queue.
-@@ -918,10 +912,6 @@ struct kfd_process *kfd_get_process(const struct task_struct *thread)
- 	if (!thread->mm)
- 		return ERR_PTR(-EINVAL);
+-	bo->debugfs.creator.tgid = current->group_leader->pid;
++	bo->debugfs.creator.tgid = current->tgid;
+ 	get_task_comm(bo->debugfs.creator.process_name, current->group_leader);
  
--	/* Only the pthreads threading model is supported. */
--	if (thread->group_leader->mm != thread->mm)
--		return ERR_PTR(-EINVAL);
--
- 	process = find_process(thread, false);
- 	if (!process)
- 		return ERR_PTR(-EINVAL);
+ 	mutex_lock(&ptdev->gems.lock);
 -- 
 2.52.0
 
