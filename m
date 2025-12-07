@@ -1,61 +1,61 @@
-Return-Path: <linux-rdma+bounces-14911-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14912-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E92BCAB4AD
-	for <lists+linux-rdma@lfdr.de>; Sun, 07 Dec 2025 13:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 96370CAB4C2
+	for <lists+linux-rdma@lfdr.de>; Sun, 07 Dec 2025 13:42:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 31C0C301784B
-	for <lists+linux-rdma@lfdr.de>; Sun,  7 Dec 2025 12:40:17 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7851D3007D88
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Dec 2025 12:40:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875D32EFDB4;
-	Sun,  7 Dec 2025 12:40:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACE552F0C63;
+	Sun,  7 Dec 2025 12:40:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dKkoz22W"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ALhBBNJz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82C2F2D12EC
-	for <linux-rdma@vger.kernel.org>; Sun,  7 Dec 2025 12:40:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA4B47083C
+	for <linux-rdma@vger.kernel.org>; Sun,  7 Dec 2025 12:40:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765111212; cv=none; b=X/DFuHtGQKHbKI7yxpTEJ0fNo9ytmLprtUw634IWHdncGxbwqtyKHgwGY7i0WN9GqxD2C3eBmIehvOYyNzToU70CufdF0s6Ta+Zt5oKVwrLbQPnYQRzAEAraj8IcKbkWQ8Q+1x5o6XDqaU7mAqR5lzqsx+wQqTmZCCVGLaVrVpA=
+	t=1765111226; cv=none; b=mfTJzpvbIubsr3/GgfRmS8KPU93+8WfsMlC9W+nDsnQV0SetIaqOdIweLlK1x9fV6LNQFr8YGueVoTN6wsYhDkR+zCKiOJkTdFwxL64q7KPnvgKtgmO78tNWpgVV2x2Lk9Fqslw8cKgoEGAIoU9iktMmcJLf+h4dUVdtgOCnNlg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765111212; c=relaxed/simple;
-	bh=YTH3r3peosgWPKyoUacL9XewNPCT/1k4nAgk7xQQ9XY=;
+	s=arc-20240116; t=1765111226; c=relaxed/simple;
+	bh=vfs6N9sDwumAAjFelXXmUF2gA0S98gkOcwdpB5QXLUc=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=Yao2sjD5dm4vLbNA3fbcyvDGUtep3T5R+9VvfXIPcINzp3BxgZ6yGuW9VyxNd4+sXmXyH3Fr53xzo8awhoXNA1md4jJDpnKQktwtSID1Eb+XmdvvUaAEHVq6d0HN4uYHajQwCLlIPVqP2ctikc73AzIHFYWGbi0+VR27DSjVDPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dKkoz22W; arc=none smtp.client-ip=170.10.129.124
+	 Content-Disposition:In-Reply-To; b=iRRpIM7oqUM3H/ZwZf4lqc+pZ8riY9MXByp8Bs1OYPrloDjXgyUBIFSPL1Ts9uNaAvW238+fq5bfKBqIemLR9V/KatYdlqL5CPd3LoT+OPMwYSUCC3VF8vTsbNq2+LiBYGs5kh0TBHTuXT9LcMLl1ausNVRK8sdqOLgdjx3heCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ALhBBNJz; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1765111208;
+	s=mimecast20190719; t=1765111222;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to; bh=qm2SST2ROvbrb0g6IbjuLKtf6ZL8lExfalWyhBUzXok=;
-	b=dKkoz22WC5aEvuYek6pHMN7vnMIHILLnD5Q52kat1gJso3UiH9kauu7egyYDUTbP6jHD1V
-	il8o9C8UrChDQYvkPeFvAELALnP+ReSTlsxLL/SNJfy7BWpUU61mX3D6ukqqMFkCB3ohy1
-	zy7RALSV1cS0321ZXTpmx7zs9ZeF0CY=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+	 in-reply-to:in-reply-to; bh=/HKvmdPqRZHJ9/v9r83b5lWZWkfSL/6IdXrUhiE9JhQ=;
+	b=ALhBBNJz+HUdIJUmaWhVGG+FuWjR9Q9506/yLTH4qWkeR38nNXo/vGF7cFMOf6TwOoH3LR
+	sgDWMpgralPpsA0TBawx+5FdbEHcWhAbSz0862y532PlR+Z3DlDOw5utxinSc7+LBRutXr
+	rD0Zd6RtvbXcu/8CHCxqioYGlSeB9bM=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-265-PbT8magNPuOajFBJKgpfeA-1; Sun,
- 07 Dec 2025 07:40:06 -0500
-X-MC-Unique: PbT8magNPuOajFBJKgpfeA-1
-X-Mimecast-MFC-AGG-ID: PbT8magNPuOajFBJKgpfeA_1765111202
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-628-lKGezg7JN4ahQWbzy3fjVQ-1; Sun,
+ 07 Dec 2025 07:40:18 -0500
+X-MC-Unique: lKGezg7JN4ahQWbzy3fjVQ-1
+X-Mimecast-MFC-AGG-ID: lKGezg7JN4ahQWbzy3fjVQ_1765111214
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 8D9241956095;
-	Sun,  7 Dec 2025 12:40:02 +0000 (UTC)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 98FA018002EC;
+	Sun,  7 Dec 2025 12:40:14 +0000 (UTC)
 Received: from fedora (unknown [10.44.32.50])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 8A21F3011A86;
-	Sun,  7 Dec 2025 12:39:52 +0000 (UTC)
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 852F6180044F;
+	Sun,  7 Dec 2025 12:40:04 +0000 (UTC)
 Received: by fedora (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Sun,  7 Dec 2025 13:40:04 +0100 (CET)
-Date: Sun, 7 Dec 2025 13:39:53 +0100
+	oleg@redhat.com; Sun,  7 Dec 2025 13:40:16 +0100 (CET)
+Date: Sun, 7 Dec 2025 13:40:05 +0100
 From: Oleg Nesterov <oleg@redhat.com>
 To: Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
@@ -80,8 +80,8 @@ To: Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
 Cc: linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH 5/7] drm/pan*: don't abuse current->group_leader
-Message-ID: <aTV1maDfDvqgu1oT@redhat.com>
+Subject: [PATCH 6/7] RDMA/umem: don't abuse current->group_leader
+Message-ID: <aTV1pbftBkH8n4kh@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -91,7 +91,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <aTV1KYdcDGvjXHos@redhat.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
 Cleanup and preparation to simplify the next changes.
 
@@ -99,36 +99,31 @@ Use current->tgid instead of current->group_leader->pid.
 
 Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 ---
- drivers/gpu/drm/panfrost/panfrost_gem.c | 2 +-
- drivers/gpu/drm/panthor/panthor_gem.c   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/core/umem_odp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/panfrost/panfrost_gem.c
-index 8041b65c6609..1ff1f2c8b726 100644
---- a/drivers/gpu/drm/panfrost/panfrost_gem.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
-@@ -17,7 +17,7 @@
- static void panfrost_gem_debugfs_bo_add(struct panfrost_device *pfdev,
- 					struct panfrost_gem_object *bo)
- {
--	bo->debugfs.creator.tgid = current->group_leader->pid;
-+	bo->debugfs.creator.tgid = current->tgid;
- 	get_task_comm(bo->debugfs.creator.process_name, current->group_leader);
+diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
+index 572a91a62a7b..32267258a19c 100644
+--- a/drivers/infiniband/core/umem_odp.c
++++ b/drivers/infiniband/core/umem_odp.c
+@@ -149,7 +149,7 @@ struct ib_umem_odp *ib_umem_odp_alloc_implicit(struct ib_device *device,
+ 	umem->owning_mm = current->mm;
+ 	umem_odp->page_shift = PAGE_SHIFT;
  
- 	mutex_lock(&pfdev->debugfs.gems_lock);
-diff --git a/drivers/gpu/drm/panthor/panthor_gem.c b/drivers/gpu/drm/panthor/panthor_gem.c
-index fbde78db270a..29cc57efc4b9 100644
---- a/drivers/gpu/drm/panthor/panthor_gem.c
-+++ b/drivers/gpu/drm/panthor/panthor_gem.c
-@@ -27,7 +27,7 @@ static void panthor_gem_debugfs_bo_add(struct panthor_gem_object *bo)
- 	struct panthor_device *ptdev = container_of(bo->base.base.dev,
- 						    struct panthor_device, base);
+-	umem_odp->tgid = get_task_pid(current->group_leader, PIDTYPE_PID);
++	umem_odp->tgid = get_task_pid(current, PIDTYPE_TGID);
+ 	ib_init_umem_implicit_odp(umem_odp);
+ 	return umem_odp;
+ }
+@@ -258,7 +258,7 @@ struct ib_umem_odp *ib_umem_odp_get(struct ib_device *device,
+ 		umem_odp->page_shift = HPAGE_SHIFT;
+ #endif
  
--	bo->debugfs.creator.tgid = current->group_leader->pid;
-+	bo->debugfs.creator.tgid = current->tgid;
- 	get_task_comm(bo->debugfs.creator.process_name, current->group_leader);
- 
- 	mutex_lock(&ptdev->gems.lock);
+-	umem_odp->tgid = get_task_pid(current->group_leader, PIDTYPE_PID);
++	umem_odp->tgid = get_task_pid(current, PIDTYPE_TGID);
+ 	ret = ib_init_umem_odp(umem_odp, ops);
+ 	if (ret)
+ 		goto err_put_pid;
 -- 
 2.52.0
 
