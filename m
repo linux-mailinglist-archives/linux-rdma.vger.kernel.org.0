@@ -1,177 +1,95 @@
-Return-Path: <linux-rdma+bounces-14904-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14905-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F5AECAA0D9
-	for <lists+linux-rdma@lfdr.de>; Sat, 06 Dec 2025 05:42:40 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53FAECAB164
+	for <lists+linux-rdma@lfdr.de>; Sun, 07 Dec 2025 05:29:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 11F6F30F0701
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Dec 2025 04:42:18 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0D54F308D5A0
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Dec 2025 04:29:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6C3E1DF25F;
-	Sat,  6 Dec 2025 04:42:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="C6UYuuJX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C20B25D53C;
+	Sun,  7 Dec 2025 04:29:05 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 079713595D
-	for <linux-rdma@vger.kernel.org>; Sat,  6 Dec 2025 04:42:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F4B519CCF5
+	for <linux-rdma@vger.kernel.org>; Sun,  7 Dec 2025 04:29:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764996134; cv=none; b=OwC8lJRVSYbyWfb9XPHFdp4xWOjQy3mkhRxzKIfvuND4uN6hVf0Su/vQWTp/AJjtm8K+NtCtJ79rdVxSas9bnFolP+/ANyU28idh661iTkvvQ2uF4pLgeC8PTe5S/dNXmg77mma34O0CJKs8m/46XVDPJQQHRDZYIUaxtu8PiUg=
+	t=1765081745; cv=none; b=E7z2vZwotcvxtb0UxlESYzOUzlbstq8ahgyViqTDBTMnG2mxnX5iCVCwAs28Css1kXCLHG49sms8m/73P2DUboAACkn6lqxB8uxDZtcP/Wl8KDtvd/Gfd7IrElsuIMs8m6tix9ou+YUgdc3ex6V/QPz4TttraXHB1Lf/Vgafgcg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764996134; c=relaxed/simple;
-	bh=fZSCcJE/jHtRbn/JOrMnapqAYSNuYv6BeRIHONRe+rY=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=DR74STDn3IIwGELEQ+fBulAJAGkCKtO8zAO+IjMOySkHTHOZPecVqPArpmM2Cvi3Mn9+XHkPymrLZrfreEhBxjkbcHM6VpzyEdvmK3Kg54fk9mzo4hYjEIYwZe0yHNC4fbX2GjvQRRsJUbEKKtGi9wYwtp3C2yFYVxtzwhVKbc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=C6UYuuJX; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2191ee0f-a528-4187-ae5b-5aba18741701@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1764996123;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+zCrDLK95Dk01shngxPtJZXux1GwH3CbPaNNnxi3lGw=;
-	b=C6UYuuJXle/zuU/CDw9HiJ6vZO/cS3dD4s5ZQeZ3xVYEcunuc8Rh339kCJ7SzUJzt5kbLE
-	1aDoLRUIdTHH3sbaH8F8/aCrU3k+Uk3raPLtnHZGE0I6C7r3/kuBiI3bQrXtQKuLpwcZiN
-	xb5lcX0FNaz1xQ+aj6TQqMoBKRXkfnQ=
-Date: Fri, 5 Dec 2025 20:41:58 -0800
+	s=arc-20240116; t=1765081745; c=relaxed/simple;
+	bh=eFje0BYZc36c7GlxVwvHcOD5WpJMi+Oo3iQMgT02PVs=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=gDCWySc6KTVhF0i5Wm5qk5iSXuWqhHKk+PXHqSGllEfT3LQRdnMyiwEFx3Ol0oXB5k4GnhrGtDtMSc3YauHtCE7f1v0y0bQcuTHcFku05XHAfsqzl5qbRJQMfKkbwZkpZqj2CGlfsIn7dEl+a24TF/QsVL4pXr83Z4dKNwi+HYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-657486eb435so4012405eaf.1
+        for <linux-rdma@vger.kernel.org>; Sat, 06 Dec 2025 20:29:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765081743; x=1765686543;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JUNWBhctNH94PHBLcTezwPnZsKvlmgikXPpcfVicFU4=;
+        b=JbohwjKEvoWzePqJqD1POTmzfnlhyEI6PIR+HLls1gFHeNi5nTe9s7KC9+6UXcGN8E
+         FTQeO5vLPyHt+jKWW0snG/ck8ZN2pg55y7HHURq/i9DUhiGoRnD6awZf/rd18m6sj/aj
+         OhG4QXYj7gi7dqljF2+pIO+n+0hQWxWC9VhaYhskCWQPaL6Yt4AjE9XE6r6hu11qFKEI
+         wcVsUn/ZQYaZuE5Y4l89vpw8o9RwkPNO4/WjM3XJr+kNMPy+OzofeO2TDz/kg18Boclb
+         fxJj5QSDLUjAq5B3jw36NMTuTaoB1SPI7wbqG5TndTkw8CPwvvYxfYv1JMb7zPHA0zhV
+         BIlw==
+X-Forwarded-Encrypted: i=1; AJvYcCX3NT1/UJCtkFCLgKatGiYFdgpwI8c3bKWbnldr7H9RUCaTMJ7Z+tKVVC307895yaYubZ0IAZnNGfwK@vger.kernel.org
+X-Gm-Message-State: AOJu0YxMHXQtvIq6A4RD4WDJrtgcdrb4CJDvQanSNX8GwxtGUtVGNNLA
+	WmXHNvf8lFc8Q111gY4NQ30c3OPN4ApEHjgkJ0i+Pk8g7jfpDs5bCk9u6TnEtl13pwbTYhj2Axz
+	0SLSBuyP+LUhSVR/e5XEi7WPGR96IBKey41zUAC6g6wmrYON2bK/M/IN1eFc=
+X-Google-Smtp-Source: AGHT+IHSeHYCjH1WF30LC4vlZ9tiWk2MUfW3UKXh1nskP+uvymmYU7oe3qVXmpZw1STQmVgtt4N2m3Kw9QoZWaaBCcXocytzU+OS
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH][next] RDMA/rxe: Avoid -Wflex-array-member-not-at-end
- warnings
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Zhu Yanjun <zyjzyj2000@gmail.com>, Leon Romanovsky <leon@kernel.org>,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <aRKu5lNV04Sq82IG@kspp> <20251202181334.GA1162842@nvidia.com>
- <5ac954bb-ad4d-4b4c-b23b-47350b428404@linux.dev>
- <20251204130559.GA1219718@nvidia.com>
- <80620d09-8187-45b1-a490-07c52733ac21@linux.dev>
-In-Reply-To: <80620d09-8187-45b1-a490-07c52733ac21@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6820:80b:b0:659:9a49:8f33 with SMTP id
+ 006d021491bc7-6599a973dc8mr1988629eaf.68.1765081742693; Sat, 06 Dec 2025
+ 20:29:02 -0800 (PST)
+Date: Sat, 06 Dec 2025 20:29:02 -0800
+In-Reply-To: <000000000000fabef5061f429db7@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6935028e.a70a0220.38f243.0041.GAE@google.com>
+Subject: Re: [syzbot] [smc?] general protection fault in smc_diag_dump_proto
+From: syzbot <syzbot+f69bfae0a4eb29976e44@syzkaller.appspotmail.com>
+To: agordeev@linux.ibm.com, aha310510@gmail.com, alibuda@linux.alibaba.com, 
+	davem@davemloft.net, dust.li@linux.alibaba.com, edumazet@google.com, 
+	gbayer@linux.ibm.com, guwen@linux.alibaba.com, horms@kernel.org, 
+	jaka@linux.ibm.com, julianr@linux.ibm.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-s390@vger.kernel.org, lizhi.xu@windriver.com, netdev@vger.kernel.org, 
+	pabeni@redhat.com, sidraya@linux.ibm.com, syzkaller-bugs@googlegroups.com, 
+	tonylu@linux.alibaba.com, wenjia@linux.ibm.com, wintera@linux.ibm.com
+Content-Type: text/plain; charset="UTF-8"
 
+syzbot suspects this issue was fixed by commit:
 
+commit d324a2ca3f8efd57f5839aa2690554a5cbb3586f
+Author: Alexandra Winter <wintera@linux.ibm.com>
+Date:   Thu Sep 18 11:04:50 2025 +0000
 
-在 2025/12/4 9:48, yanjun.zhu 写道:
-> On 12/4/25 5:05 AM, Jason Gunthorpe wrote:
->> On Wed, Dec 03, 2025 at 09:08:45PM -0800, Zhu Yanjun wrote:
->>>>        unsigned int        res_head;
->>>>        unsigned int        res_tail;
->>>>        struct resp_res        *res;
->>>> +
->>>> +    /* SRQ only. srq_wqe.dma.sge is a flex array */
->>>> +    struct rxe_recv_wqe srq_wqe;
->>>
->>> drivers/infiniband/sw/rxe/rxe_resp.c: In function get_srq_wqe:
->>> drivers/infiniband/sw/rxe/rxe_resp.c:289:41: error: struct 
->>> rxe_recv_wqe has
->>> no member named wqe
->>>    289 |         qp->resp.wqe = &qp->resp.srq_wqe.wqe;
->>>        |                                         ^
->>
->> I didn't try to fix all the typos, you will need to do that.
-> 
-> Exactly. I will fix this problem. This weekend, I will send out an 
-> official commit.
-Hi, Jason
+    dibs: Register smc as dibs_client
 
-The followings are based on your commits and Leon's commits. And it can 
-pass the rdma-core tests.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16d64eb4580000
+start commit:   dbb9a7ef3478 net: fjes: use ethtool string helpers
+git tree:       net-next
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a9d1c42858837b59
+dashboard link: https://syzkaller.appspot.com/bug?extid=f69bfae0a4eb29976e44
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=178f0d5f980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10906b40580000
 
-I am not sure if this commit is good or not.
+If the result looks correct, please mark the issue as fixed by replying with:
 
+#syz fix: dibs: Register smc as dibs_client
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c 
-b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 38d8c408320f..189eaa59a5fb 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -1524,7 +1524,8 @@ static const struct ib_device_ops rxe_dev_ops = {
-         INIT_RDMA_OBJ_SIZE(ib_ah, rxe_ah, ibah),
-         INIT_RDMA_OBJ_SIZE(ib_cq, rxe_cq, ibcq),
-         INIT_RDMA_OBJ_SIZE(ib_pd, rxe_pd, ibpd),
--       INIT_RDMA_OBJ_SIZE(ib_qp, rxe_qp, ibqp),
-+       /* For resp.srq_wqe.dma.sge */
-+       INIT_RDMA_OBJ_SIZE(ib_qp, rxe_qp, ibqp) + 
-RXE_MAX_SGE*sizeof(struct ib_sge),
-         INIT_RDMA_OBJ_SIZE(ib_srq, rxe_srq, ibsrq),
-         INIT_RDMA_OBJ_SIZE(ib_ucontext, rxe_ucontext, ibuc),
-         INIT_RDMA_OBJ_SIZE(ib_mw, rxe_mw, ibmw),
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h 
-b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index fd48075810dd..8c17f5f4e318 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -219,12 +219,6 @@ struct rxe_resp_info {
-         u32                     rkey;
-         u32                     length;
-
--       /* SRQ only */
--       struct {
--               struct rxe_recv_wqe     wqe;
--               struct ib_sge           sge[RXE_MAX_SGE];
--       } srq_wqe;
--
-         /* Responder resources. It's a circular list where the oldest
-          * resource is dropped first.
-          */
-@@ -232,6 +226,12 @@ struct rxe_resp_info {
-         unsigned int            res_head;
-         unsigned int            res_tail;
-         struct resp_res         *res;
-+
-+       /* SRQ only. srq_wqe.dma.sge is a flex array */
-+       struct {
-+               struct rxe_recv_wqe     wqe;
-+               struct ib_sge           sge[RXE_MAX_SGE];
-+       } srq_wqe;
-  };
-
-  struct rxe_qp {
-@@ -269,7 +269,6 @@ struct rxe_qp {
-
-         struct rxe_req_info     req;
-         struct rxe_comp_info    comp;
--       struct rxe_resp_info    resp;
-
-         atomic_t                ssn;
-         atomic_t                skb_out;
-@@ -289,6 +288,7 @@ struct rxe_qp {
-         spinlock_t              state_lock; /* guard requester and 
-completer */
-
-         struct execute_work     cleanup_work;
-+       struct rxe_resp_info    resp;
-  };
-
-  enum {
-
-Yanjun.Zhu
-
-> 
-> Yanjun.Zhu
-> 
->>
->> Jason
-> 
-
--- 
-Best Regards,
-Yanjun.Zhu
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
