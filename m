@@ -1,194 +1,103 @@
-Return-Path: <linux-rdma+bounces-14917-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14918-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 272B5CACCC0
-	for <lists+linux-rdma@lfdr.de>; Mon, 08 Dec 2025 11:08:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B213CAD496
+	for <lists+linux-rdma@lfdr.de>; Mon, 08 Dec 2025 14:36:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3D3D03007601
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Dec 2025 10:05:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 907A6308CB5E
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Dec 2025 13:33:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3073C2DC337;
-	Mon,  8 Dec 2025 10:05:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95577314D12;
+	Mon,  8 Dec 2025 13:33:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZdcTmJyG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MPbO4rp5"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40DCA2144C7
-	for <linux-rdma@vger.kernel.org>; Mon,  8 Dec 2025 10:05:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FB821EE033;
+	Mon,  8 Dec 2025 13:33:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765188331; cv=none; b=NMwu1nJQs/h46r+zD+sey5n1s2ttNms25pQxrLKTD+DVDSilHe82m/4j9WcQNyWw4j2XZzDGUuCfuYGO5D0kIJ2OILCAI9xQMyzY8xBEi72SBboHibXOasWMSp1NSqdrVu6sHA8uWxHSaxAjB/KxiQZPl3VyuOC31V+aAp753zQ=
+	t=1765200797; cv=none; b=a+Xr/3nkoizDOLAL8nHQ2MwGsuRHhwALubWB/XR89w+SugYsXzMHOjeb1k+ty6xUNB6mggPFgv4653ienrlYi7menj/xwifJIxEnkAJbCmzV/EsP8TMJPsvKDkGTghurSztXl5XC1LiJGIL98VZJTZjb0e1ZsgsB0IaYYRtWgvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765188331; c=relaxed/simple;
-	bh=uBffDVisZiuzB9gI9OLnpMb0BrZYxdobcZ1h3L9trY0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WznJZAF5A0KtqdOYxUIcyw066j9CFFvbAS0Ct7VS1s7vnICow+qrdPSg0BFSbljxHhN4RwVffpSUVLx/TEQV5MyaZPtmp8aJ98K8moArmDGKbhjLk1ouYBaUopRJjCr4rBRPze1dBnc+zQMqATMy1epUhdNrTMdRsfCbtUDH2mE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZdcTmJyG; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1765188328;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+5DRB1WNuUEh9dw4lXaZHc8OhCgJ52BllgGJz6/xq6I=;
-	b=ZdcTmJyG8ks9BG2HYsHWWwlFAdhmMkqfU7IPA9w9dp7KQD4or8YkP991/HPF/c0JWNICbX
-	g1JcyBRSgr5eB7723JVBtUDx4d8UXfHw6ztajYKrqTLoebLttSkXH7HkndYSiZWSkYe2S5
-	RyNGNiNuJWmd/HY8XKkoUuiqsYkgl3s=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-518-a3Wu67K0PRGCb4fHriYFCg-1; Mon,
- 08 Dec 2025 05:05:25 -0500
-X-MC-Unique: a3Wu67K0PRGCb4fHriYFCg-1
-X-Mimecast-MFC-AGG-ID: a3Wu67K0PRGCb4fHriYFCg_1765188322
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A154A19560AD;
-	Mon,  8 Dec 2025 10:05:21 +0000 (UTC)
-Received: from fedora (unknown [10.45.224.91])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 794571800357;
-	Mon,  8 Dec 2025 10:05:11 +0000 (UTC)
-Received: by fedora (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Mon,  8 Dec 2025 11:05:21 +0100 (CET)
-Date: Mon, 8 Dec 2025 11:05:09 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc: Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Carlos Llamas <cmllamas@google.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Felix Kuehling <Felix.Kuehling@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Boris Brezillon <boris.brezillon@collabora.com>,
-	Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
-	=?iso-8859-1?Q?Adri=E1n?= Larumbe <adrian.larumbe@collabora.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Liviu Dudau <liviu.dudau@arm.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	s=arc-20240116; t=1765200797; c=relaxed/simple;
+	bh=UKzwph4n7+DE3wQUt9HCn2QfOXRBKK9v1fiZqaJlFMo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jD3lHWPn9dww+9grILIt2v8WjMobNh08eoowTt/n3v3wT+h2JHC05oS1aj77L6PVX5S5gmEmF9MUWJjzT8XPL7I27Qwm4rfaSXb6RUMkfNvSzfvvt3RzdFISK3fhRWgm6GGoF5Bhh/95QflkKWxUSexTPZp1ZTkpS8n8+oBTS7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MPbO4rp5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0ECD8C4CEF1;
+	Mon,  8 Dec 2025 13:33:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765200796;
+	bh=UKzwph4n7+DE3wQUt9HCn2QfOXRBKK9v1fiZqaJlFMo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=MPbO4rp5Silgf8F07S7Y3ScffmLleX9esqKh8q2tZscuswi/eu6NN/xWNdcEX4ehw
+	 zzZ/H2Wbzo/8iFUxGfXTfNRiq8Rz7xBkDiZXC/+DX0ITtuNxjL5khlBDtJosMTGCTm
+	 AvSmj1jsZGNJQzrPwghjrCoBgG4yYr0vdJ58bhR6inEDI22ZKgWK34tbYAse/hArhN
+	 xEfnSjx2I7/9mhjRRLB3YbLAGV+r10s7z63+CkUJNZh3iAO0qAvc5pj4gZcdTF8xI0
+	 mGeJWm8jKqPkIYEoL9qNUyYCtpInikCUT5nWe6epbhCEPMdaomupcZ9QpzlsU6nLN0
+	 xtr70XiW6D2WA==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Jason Gunthorpe <jgg@ziepe.ca>,
 	Leon Romanovsky <leon@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH 4/7] drm/amd: kill the outdated "Only the pthreads
- threading model is supported" checks
-Message-ID: <aTai1a2sFqTh7wv9@redhat.com>
-References: <aTV1jTmYK3Bjh4k6@redhat.com>
- <e8846bef-2a6b-4552-8fb6-a33a00273aab@amd.com>
+	Or Har-Toov <ohartoov@nvidia.com>,
+	Vlad Dumitrescu <vdumitrescu@nvidia.com>,
+	Mark Zhang <markzhang@nvidia.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] RDMA/ucma: fix rdma_ucm_query_ib_service_resp struct padding
+Date: Mon,  8 Dec 2025 14:33:05 +0100
+Message-Id: <20251208133311.313977-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <e8846bef-2a6b-4552-8fb6-a33a00273aab@amd.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-On 12/08, Christian König wrote:
->
-> On 12/7/25 13:39, Oleg Nesterov wrote:
-> > Nowaday task->group_leader->mm != task->mm is only possible if
-> > a) task is not a group leader and b) task->group_leader->mm == NULL
-> > because task->group_leader has already exited using sys_exit().
->
-> Just for my understanding: That is because CLONE_THREAD can only be
-> specified together with CLONE_SIGHAND and CLONE_VM, correct?
+From: Arnd Bergmann <arnd@arndb.de>
 
-Yes, copy copy_process() does
+On a few 32-bit architectures, the newly added ib_user_service_rec
+structure is not 64-bit aligned the way it is on most regular ones.
 
-	if ((clone_flags & CLONE_THREAD) && !(clone_flags & CLONE_SIGHAND))
-		return ERR_PTR(-EINVAL);
+Add explicit padding into the rdma_ucm_query_ib_service_resp and
+rdma_ucm_resolve_ib_service structures that embed it, so that the
+layout is compatible across all of them.
 
-	if ((clone_flags & CLONE_SIGHAND) && !(clone_flags & CLONE_VM))
-		return ERR_PTR(-EINVAL);
+This is an ABI change on i386, aligning it with x86_64 and the other
+64-bit architectures to avoid having to use a compat ioctl handler.
 
-	...
+Fixes: 810f874eda8e ("RDMA/ucma: Support query resolved service records")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ include/uapi/rdma/rdma_user_cm.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-	if (clone_flags & CLONE_THREAD) {
-		p->group_leader = current->group_leader;
-		p->tgid = current->tgid;
-	} else {
-		p->group_leader = p;
-		p->tgid = p->pid;
-	}
-> Reviewed-by: Christian König <christian.koenig@amd.com>
-
-Thanks!
-
-> Should we pick that one up or do you want to merge it upstream somehow?
-
-If you don't object, I would like to route this series via -mm tree.
-
-See 0/7, I am going to send more (simple) tree-wide changes which depend
-on this series.
-
-Oleg.
-
-> Regards,
-> Christian.
->
-> > ---
-> >  drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c   |  3 ---
-> >  drivers/gpu/drm/amd/amdkfd/kfd_process.c | 10 ----------
-> >  2 files changed, 13 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> > index a0f8ba382b9e..e44f158a11f0 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> > @@ -2551,9 +2551,6 @@ void amdgpu_vm_set_task_info(struct amdgpu_vm *vm)
-> >  	vm->task_info->task.pid = current->pid;
-> >  	get_task_comm(vm->task_info->task.comm, current);
-> >
-> > -	if (current->group_leader->mm != current->mm)
-> > -		return;
-> > -
-> >  	vm->task_info->tgid = current->tgid;
-> >  	get_task_comm(vm->task_info->process_name, current->group_leader);
-> >  }
-> > diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-> > index a085faac9fe1..f8ef18a3aa71 100644
-> > --- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-> > +++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-> > @@ -833,12 +833,6 @@ struct kfd_process *kfd_create_process(struct task_struct *thread)
-> >  	if (!(thread->mm && mmget_not_zero(thread->mm)))
-> >  		return ERR_PTR(-EINVAL);
-> >
-> > -	/* Only the pthreads threading model is supported. */
-> > -	if (thread->group_leader->mm != thread->mm) {
-> > -		mmput(thread->mm);
-> > -		return ERR_PTR(-EINVAL);
-> > -	}
-> > -
-> >  	/* If the process just called exec(3), it is possible that the
-> >  	 * cleanup of the kfd_process (following the release of the mm
-> >  	 * of the old process image) is still in the cleanup work queue.
-> > @@ -918,10 +912,6 @@ struct kfd_process *kfd_get_process(const struct task_struct *thread)
-> >  	if (!thread->mm)
-> >  		return ERR_PTR(-EINVAL);
-> >
-> > -	/* Only the pthreads threading model is supported. */
-> > -	if (thread->group_leader->mm != thread->mm)
-> > -		return ERR_PTR(-EINVAL);
-> > -
-> >  	process = find_process(thread, false);
-> >  	if (!process)
-> >  		return ERR_PTR(-EINVAL);
->
+diff --git a/include/uapi/rdma/rdma_user_cm.h b/include/uapi/rdma/rdma_user_cm.h
+index 5ded174687ee..8e1d584f6633 100644
+--- a/include/uapi/rdma/rdma_user_cm.h
++++ b/include/uapi/rdma/rdma_user_cm.h
+@@ -192,6 +192,7 @@ struct rdma_ucm_query_path_resp {
+ 
+ struct rdma_ucm_query_ib_service_resp {
+ 	__u32 num_service_recs;
++	__u32 :32;
+ 	struct ib_user_service_rec recs[];
+ };
+ 
+@@ -362,6 +363,7 @@ struct rdma_ucm_ib_service {
+ 
+ struct rdma_ucm_resolve_ib_service {
+ 	__u32 id;
++	__u32 :32;
+ 	struct rdma_ucm_ib_service ibs;
+ };
+ 
+-- 
+2.39.5
 
 
