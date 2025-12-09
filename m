@@ -1,81 +1,81 @@
-Return-Path: <linux-rdma+bounces-14942-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14943-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B776DCB0005
-	for <lists+linux-rdma@lfdr.de>; Tue, 09 Dec 2025 14:03:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 60611CB0008
+	for <lists+linux-rdma@lfdr.de>; Tue, 09 Dec 2025 14:03:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 025BB31290E1
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8F283312A560
 	for <lists+linux-rdma@lfdr.de>; Tue,  9 Dec 2025 12:57:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72A13B8D75;
-	Tue,  9 Dec 2025 12:57:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59013329C69;
+	Tue,  9 Dec 2025 12:57:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ISHD/Edj"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="OP5EiTOj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazon11013035.outbound.protection.outlook.com [40.107.201.35])
+Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11010036.outbound.protection.outlook.com [52.101.61.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7826329C64;
-	Tue,  9 Dec 2025 12:57:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.201.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6832C25F995;
+	Tue,  9 Dec 2025 12:57:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.36
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765285037; cv=fail; b=SwBwGRh3pquJL/rh+O+/AN16cpurepSjKgz43hRlu87bVgkcChMy3Wz5wFnYbbWZ0keApPuzw+Xpm+ZoRCzkdCmgKlnzIz+m4of0sPZeDdYeQV+sTUVmbhcSP+6Q7WuvvYfVP5ModZ+qEvOG5/JqXmN8Bw/pa82LC61XZ1qpbX8=
+	t=1765285045; cv=fail; b=Tm7lS5UyN8sypnnP079FWqkAIP+P0WBa//vrcD55r7U/xx+nlQWDyM3LfsYJPjUbvjiJnVjtRtw4iq1xH35Q+53bDutuOQpYpgmCC2t56ZH1dZ3Mopz9lPjCaTJyHH+IbVrZ3QIflqstQ/hoWi6AHMu9+94FnnHK/se9nKjbVys=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765285037; c=relaxed/simple;
-	bh=gIiZoMNlSQWUkiLvjmbdpq3cPHtd8RFAhIQMJK67e/U=;
+	s=arc-20240116; t=1765285045; c=relaxed/simple;
+	bh=/9fWrblUYmjC+U5FydVBJiEWbp5ncjQLQmhe7ArYdL8=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YjYRqmQdoBYCki3KNWE3SY9Lb1RLvE/fOB+SGl19J/LN/O4mE59bZbNwGXnN5oIRl6cOX1MCAGtHTcPPMcmSAkMgMjJc8AnXaf5DnEHZOoIFHzMY7/ZQY2WibTfP6rb8UT5VK0GOXeNegEUhpltCo9kyvrhZD+aleb/4I9Qd92s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ISHD/Edj; arc=fail smtp.client-ip=40.107.201.35
+	 MIME-Version:Content-Type; b=GAw+B1eLq3YOh3ci4d3TtN5mpirp5gb6TBCX4UjzmMLLCyr29vtamHAPzKguxIqcNWlx5M6S0pdQRSUFNhCg1Y02CmprfMty+m1bgUpIC04ttoAcIC2ei1EmBvxBgG748B28FT53iVJ/Lty8WpB3VsQzUmA8pPGtVPrZpXmiE6M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=OP5EiTOj; arc=fail smtp.client-ip=52.101.61.36
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=esuxy60VariraSgvZLcDSQIofJUEgthLnhzVxLyUTtDmQtFd9497BZJuTa8X477biVptfho8ZpMAhHxK75vInM0C4mvjQeSUa2tXpII6rUzKycPHC4I/pnSNh5RlYv0vqhSr1Kb3EGwvCqqHwO9rzp/bTOXhKiVFrI992rYtW955y3/Slh+4BJ/TMhVmSh0F9sL28Rq5iCr42vHiIPfVTgt6ai3idOF30OXAJkBN/k59TXFcTXOdhSKK25t3iTbtvGv+0V8xLywSSWSiIUonh7hyIPJfOhQ5nEr+yRqkt/pgXNxae1DqMfCSD5V/CLQyi5h8nm1IUIyhG+59+KTcyw==
+ b=IOC2IhnT0258DGvz3XB7kJQ7ypu0c+jN6KCofXR7YofOcZzMNbByEIPJ/Kkl/gFTfNiC0WiLSNJZ/aAAFrInFhw3r+X/lu4pmrP3hap8wNUvbXIwwjCLUOn85xrrikS8W/sljqKmJbDp8vaWDW2ghr0Vqa47AhexsAatDS862n/VXt2e4igbKL+D8VqhY8UIQt2t+nK3NZfANKT3WZc1sqeMqd2P60tIai5dEEhsEOGBvdhzl7L+nvPrTdN/u0+2epzBf3zq7B6NqeKY9UIos6/8XsrtkD7HJJEsdgHhn6J99ixpF4yvJr8Vt9UNSSObdqc0N+MjpB6IfgpiiEbonw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dFPRvYiSLWwaq0YMaIFDZgZz8lupjIucuTciInsJtLw=;
- b=AVFMfGxucipefx3o/6wkAE2G6Yo3QCpe15iW3Bovl0oienSpNtclaSinTQRsFZaaKiGxEiyrSPzDWr+2QfFuodc9IalqLiIVNvZPJ6IERrzTZkXk7gtfDQu8rs1cYezrcrozOAYvSeQGJ0mk35tEQAdtHJ6sJRFMPkE5UVu2yWyrmNwG6VVo/kpv68Q7zoOzpBrscD1dLljSKEyIlUmArvZxCJRQYgSTfeld2bc/n5AaHrqgAkvtabgshXab6jIoq+OyND6wcoNkT84hrsktCTXyz5fYfD+HzhPlwIKQbPp2FBIrbM57bwpDyWKCwrkHiXxP+8bUy3C4kk2cL2KzTg==
+ bh=sCbhkLfJCNweK9+GeOOmJ5z4lbRTfmrkb1gQryb9Aiw=;
+ b=VSKWBok+m0drQyJpHXGql5qEKXP35mS5CTh1EMQwXVabU4jYgSqmnpHw8ypuvnjhdOoXJv4590A4UW/gmDgmG6jEPpYwdlu3JCX/pYIMXSkhjKg3eO4zmle+pcNcT/PgsJXlYIrDSphDm6zKdPvQeaBIVvZcHCFCczNIkE0TzCn4ixAvo+v/Gth7vGfK3qTVX8rZp3Lr/j2I5I/NeoorysA+ximU3yK6ZseVM6wOut/A8GcQx1zbnHAwaCBHfKVOXBHuN4shtapmxHU40MHO2gRL0PWxeODG4cPBFEfHx2IWS5k7102sc/f6oCjV77sMnsJvljZc8VUwitgivumjbA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ 216.228.118.232) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dFPRvYiSLWwaq0YMaIFDZgZz8lupjIucuTciInsJtLw=;
- b=ISHD/EdjdoaQ3YGaD1Hi3TntoJf7aXF9Pkb/AgULblDGcy9w4qD3VXbTgTuW4r6t/Eqzo8PHiWcDvakIQyYUdwSjC/oYIHFrUlhIORnDQNo+BnKLWP10hn1Cy80fodtkLCWE6hzmN9h7ONz8V7hD9/bBR/khz5Md/AdObt1hQVM7FR4qay9RVJWUTbnYGFKP2qIRO6DLHFr7I2nr48rRoeUPcJ8y06E8tTsM7izwfnd7b64xE2mD+3FTFsCbVGZaUtiZxAmOUxo5dz0CLzO352qU+oyV3gr0QMCnzHQ/pRfyV/aGWdWUf/xEqRYdMXIhdP6HXLoxc/L2I6s26NHmDA==
-Received: from SJ0PR13CA0079.namprd13.prod.outlook.com (2603:10b6:a03:2c4::24)
- by CH8PR12MB9815.namprd12.prod.outlook.com (2603:10b6:610:277::13) with
+ bh=sCbhkLfJCNweK9+GeOOmJ5z4lbRTfmrkb1gQryb9Aiw=;
+ b=OP5EiTOjxBHmeqA3NQPM4sXse9gPddLaDWEsJ0VqYNktSlT5h0ACklgBR6FLQsSoMCJdHF3IC1PxAqVIcE/1eLH5ftqfjbjjdWNA9zsIyrvLpz/rMh3G4u20USJHIs6KFr2ly8LpNz5wIORYIkLSSdSJjinIxeXMrbX3rmadAse9wzyI3h++ag+aR52TH7v4Yp7O3xvde3ZmEwaEDcRTktPUBt5RnsGcXwXxIlh/emFGf8clK5kDBlBSMgd4aO8CUGCtUnMryXocGsaR325Zpf7GN+nVbmznfCmiGQ1SI+mTSBJz4p71m4Yl7o2Nny8yCUg0V9QAArkfLjwWMkXIOg==
+Received: from BL0PR0102CA0033.prod.exchangelabs.com (2603:10b6:207:18::46) by
+ CH3PR12MB8533.namprd12.prod.outlook.com (2603:10b6:610:159::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9412.6; Tue, 9 Dec
- 2025 12:57:09 +0000
-Received: from SJ1PEPF0000231B.namprd03.prod.outlook.com
- (2603:10b6:a03:2c4:cafe::50) by SJ0PR13CA0079.outlook.office365.com
- (2603:10b6:a03:2c4::24) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9412.7; Tue, 9 Dec
+ 2025 12:57:13 +0000
+Received: from BL02EPF0001A105.namprd05.prod.outlook.com
+ (2603:10b6:207:18:cafe::d6) by BL0PR0102CA0033.outlook.office365.com
+ (2603:10b6:207:18::46) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.20.9412.6 via Frontend Transport; Tue, 9
- Dec 2025 12:57:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ Dec 2025 12:56:46 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- SJ1PEPF0000231B.mail.protection.outlook.com (10.167.242.232) with Microsoft
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ BL02EPF0001A105.mail.protection.outlook.com (10.167.241.137) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9388.8 via Frontend Transport; Tue, 9 Dec 2025 12:57:09 +0000
-Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.9412.4 via Frontend Transport; Tue, 9 Dec 2025 12:57:12 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 9 Dec
- 2025 04:56:58 -0800
+ 2025 04:57:03 -0800
 Received: from drhqmail203.nvidia.com (10.126.190.182) by
- drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.20; Tue, 9 Dec 2025 04:56:57 -0800
+ 15.2.2562.20; Tue, 9 Dec 2025 04:57:02 -0800
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
  (10.126.190.182) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
- Transport; Tue, 9 Dec 2025 04:56:53 -0800
+ Transport; Tue, 9 Dec 2025 04:56:58 -0800
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -85,10 +85,10 @@ CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
 	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Moshe Shemesh
 	<moshe@nvidia.com>, Breno Leitao <leitao@debian.org>, Alexandre Cassen
-	<acassen@corp.free.fr>, Shay Drory <shayd@nvidia.com>
-Subject: [PATCH net 5/9] net/mlx5: Serialize firmware reset with devlink
-Date: Tue, 9 Dec 2025 14:56:13 +0200
-Message-ID: <1765284977-1363052-6-git-send-email-tariqt@nvidia.com>
+	<acassen@corp.free.fr>, Jianbo Liu <jianbol@nvidia.com>
+Subject: [PATCH net 6/9] net/mlx5e: Use ip6_dst_lookup instead of ipv6_dst_lookup_flow for MAC init
+Date: Tue, 9 Dec 2025 14:56:14 +0200
+Message-ID: <1765284977-1363052-7-git-send-email-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.8.0
 In-Reply-To: <1765284977-1363052-1-git-send-email-tariqt@nvidia.com>
 References: <1765284977-1363052-1-git-send-email-tariqt@nvidia.com>
@@ -102,251 +102,90 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ1PEPF0000231B:EE_|CH8PR12MB9815:EE_
-X-MS-Office365-Filtering-Correlation-Id: 23abec29-3e7b-4b50-8533-08de372276af
+X-MS-TrafficTypeDiagnostic: BL02EPF0001A105:EE_|CH3PR12MB8533:EE_
+X-MS-Office365-Filtering-Correlation-Id: d51042fb-c6e2-4b48-aee3-08de372278ef
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|7416014|376014|82310400026|1800799024|41080700001;
+	BCL:0;ARA:13230040|82310400026|376014|7416014|1800799024|36860700013|41080700001;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?2aSCxTDvf+HxXqXMxz9/eCjFEchsvNF1QwE2XHzTZSgBfQ1Q85ai2eDdS1YL?=
- =?us-ascii?Q?MsX2H2yJAUIg6xQ0woqxkdaQAfZNf5RWkpjJQWG7Dq3+jDIGiETj1Awg8Mm9?=
- =?us-ascii?Q?uvKmL1vwriudBhgI1MsrI8ISveQOdtZszagl846CGBijK5/vLQWghVyuWJRd?=
- =?us-ascii?Q?VLcXC9v+wuTQIEkVh4JI8cpX+0gNdNYeG22gCqSEOCKt/AkiDydUvMbv4cco?=
- =?us-ascii?Q?0Mut5VrlPJrE21FMR3QzC3ZW1CWX8e6S9xwNxIWlojUUajED2Fu25xWkzZ1U?=
- =?us-ascii?Q?SOLJHODTwl6ItamuTfSW34jdMiXPw0r8SoHR/lMOibA4kIN/oznhephkTylJ?=
- =?us-ascii?Q?nwJSz3Sk4CHj/5Z7ZmE2qhSWFuDblRpC1cnk7BE2ntbyq5TqoddWmVAGIpzo?=
- =?us-ascii?Q?ovpE2spzcjpTgTPpnB1rP8JqwPpfASnf2II0G22L6TVJxZhA9471S7Te8PHs?=
- =?us-ascii?Q?qjricVKTLIJJ2FxRYrHHn9KaXT6SAYfX0hrP3n9TOhLkxn6rtGzH85SpzPHU?=
- =?us-ascii?Q?xlz4F74imwEcgPDsHpLyLXsaa0v7XdiHW/J9GX4aJRhnpUIuJvOwaap+qBam?=
- =?us-ascii?Q?KTeuzzftcDL1i009yfq/KZbh6jp5tYNJe6h68hGiEE1uYK/wR1DHy2YYUEvq?=
- =?us-ascii?Q?WRgBRaAgVCUtNB5k5O4o7t72aNpMCIowP3TXLxet2pVOMTWrieg/ARexpfrX?=
- =?us-ascii?Q?qk626Z1FyIpkWlkJpEQuccoIWTBkMw4/PHio+4AY62OucvAHHV2yYPwi6f3j?=
- =?us-ascii?Q?hxaXBN47WU9MmMghcSUm9DRh9+wg6RVSsXOt0Nt+StbKrMBGOz3rNZx68OYJ?=
- =?us-ascii?Q?7Qqs4WnKoVrZ7kuriEqRA3VjUFFVPT3AsRiyzp0nl+HxMgTxeNRsH+tDxp6T?=
- =?us-ascii?Q?wqa6KI9EMdsR1hXU55Em/k3OAudlhgCybv95Ea6eEDUL9tE6bkkwincn6/uj?=
- =?us-ascii?Q?CgMmq6vEUKkciV2XMi002ixnQ7Dvv03VSwk6sMe6SaIBXGU51okVSwxV/MHv?=
- =?us-ascii?Q?h7b0f6vAy20cA4CXxom3n3oGZj8QBU+dVeaNHNmdmLL9D7Fs1eyHCAi+5Ww+?=
- =?us-ascii?Q?NoubFXTcDL+bbl7p3thneGwjPBY9dEP3pNkke5B4mGQUB8DFVVMg1ANgB1DW?=
- =?us-ascii?Q?1hjrUpjf82AWyLMjBWCyKfm60rUzoKWtpiPganzp4+TLuX1m+8+RFEmDmaEa?=
- =?us-ascii?Q?q70d056fxiD9FGqnYTQ9w4BBNjBSPqfpJa3NRqiWLtHEeKQ1Y/q+qDa7uxa3?=
- =?us-ascii?Q?wSFiFNpseHx4RN0b/streKnw7F1bMrgkASgAD6RdGXk3IFpULDFtRC2HKCSA?=
- =?us-ascii?Q?LUJ5LneY2Kq6tKCgdFf7sZBYXS+8tpEeJ3ud+kRm3g1NgbalHNDbCZBvQ+Kx?=
- =?us-ascii?Q?syz8B9ySlCJ55YvgnLgfcrLOzLpN8rSbD3taDuLdVMMHNF3LYUfrCjbM59tA?=
- =?us-ascii?Q?6gHh/deWw68hAMaTU31NxrDddkq6XLggtioAHUzbLe2YsnrjYSDQA+Ym8K/B?=
- =?us-ascii?Q?lEJuxRLX2fdurTvN8VTeRO4ZNEUNTCVOMdd8B2UIPjrapILLyvKeh4r8kIAz?=
- =?us-ascii?Q?kpU0ku6ejf5HkbntVZddRnnVxzxHaae9UA0r+VFhY9yPodkC7omuP1nI96R2?=
- =?us-ascii?Q?ZA=3D=3D?=
+	=?us-ascii?Q?s5fXBnaCB+sWkwbMXRKPNPnF78Fcn7d2datGO6kLiSQHIaV+/5hHc51hbuu6?=
+ =?us-ascii?Q?QSBGlfrPstdcEdc3jGRcZshBHJOjvds/BOSW2DFtyyNXmzhNzlSIwTGMqIMz?=
+ =?us-ascii?Q?x/TS6SgFjJKrixJk1BgTYnRoMiBXYuZDPzjfLRcIsmj16X66vCCqGOJSnxD5?=
+ =?us-ascii?Q?53OEfXTHY7Oh6QiCEN7tCI4rrts3+0xtFeBI7vWiFh1Gz6ktkiqc25lB9Uzb?=
+ =?us-ascii?Q?8mu5S/B43qVaoENUg7TAUx/Ok72t9MRN4GRMwC5CuQRChOlsCBW7M5IT4pTt?=
+ =?us-ascii?Q?UsI3A2D5ckM8oB7MeVppIC9rd83NrY+mikli7MbWBPp9RbKscCxVvdgkVroG?=
+ =?us-ascii?Q?TaEmdJ+WZKbyZVntK+ZcZnLloSZrQ66HNLEhac4NRVFax/PY5OYC05eba7wd?=
+ =?us-ascii?Q?Cfa+XRP1Yx1s370vQBPpKw7Cnqygr7Lir3ru7+8Nj84JY6IhGCcEOr5yvsy7?=
+ =?us-ascii?Q?tSdM7E/2Nb0NSJNmr0G6SXFpEElu7cAPwe3CmLdEeJxQMupt89IMxh8w/JmN?=
+ =?us-ascii?Q?V6kp6AREj7H4DB3t8sr2uL5PXY/GgAE+r+wszTYrOzIuK2XgPlKiXo0DmUDQ?=
+ =?us-ascii?Q?zTFHZqBJvDPdjE0VATgQj9RKwe2YS8gF+KIfyxQzQNv/+VAH0LE4+MHRcI3I?=
+ =?us-ascii?Q?99fDyKg185Z64JhoVQ5Cv2dVVFQN58tbvr+bD059mPQVlsmW0QqnxXbbsONv?=
+ =?us-ascii?Q?y4xqWHQltpatPVJHsWU+zQ27grtCFC+qZwjra+t4V7fb/UqrnaAkpVEYm3zQ?=
+ =?us-ascii?Q?pL9CsJF6FSDk+r/G5hhdPsUzngFp+ZSJG7dQ2wsJ5jAseiLwwPVJiK5oSIzn?=
+ =?us-ascii?Q?RhNI36LqKOV6PPqYwaz3nsdPLxlxYQDGgI7wknwANiNAjGyY5Liw/87dKvXD?=
+ =?us-ascii?Q?HQbjDPiFfcEaCufoF7RVSN6vtuKKE6Y7TtXxlMdCSBw67ojDfzPEwPWaWXxp?=
+ =?us-ascii?Q?KWBnT7w4ZAU1hlkrtyyV+lohG1Ht/FPpWyB5+2lpPnSzaAdwRW+3Q5O15qh2?=
+ =?us-ascii?Q?zZ3nft28aa+RKprX0JGYByIyKwBPMD4C+Hxgdlm1r4aZX0QwXO3JBkjS6ibe?=
+ =?us-ascii?Q?R2/0i2UgeXoJvEeIxW7mgkelrHszLfssL3rk3iAYu+aDfJ2siXWyrQni2TWL?=
+ =?us-ascii?Q?klmeKYE08VuCe0KRVRWzu9u9FZB8gY8Dp6iHjCWCcVFwXKe9GLBZk9xXdARb?=
+ =?us-ascii?Q?oP/jowWy2wbdAC4a7D9Dm7lRBZzbI0BQo3laYxAwglaw7lBP0ooxiRh+pT4Q?=
+ =?us-ascii?Q?KSoHcYiOL8985vNMbiE2SqfavykeBL2ylIlbuNtLpYvBjp8xWcHC6Wr9LaSu?=
+ =?us-ascii?Q?JPJBWvgh2tgm9bGfmh0Ln4iJxf0QTh5F1k9bpNxYZ7Szw/0sj18wAkuwO+Dp?=
+ =?us-ascii?Q?0ANYvnVcp1ht/WdySqL53AAd2p2Vn4WOd/h8GKwnUkXys9HJSgNdleRQJIK4?=
+ =?us-ascii?Q?Im+QCAwHfInMX1zk7FE9IiGClfb8xVcDThcKLWER81ok5oyWQTKodpRaflMn?=
+ =?us-ascii?Q?5k0ifFQKpor1V5GyRgSBdVqJkXLdxLDNdRoivSUF9/LIDGUpkIinMHtOCNGb?=
+ =?us-ascii?Q?jX88OsQ6krp7c7sFGV+pAT9F4uRvPWjk7uAF/sSz?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(36860700013)(7416014)(376014)(82310400026)(1800799024)(41080700001);DIR:OUT;SFP:1101;
+	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(82310400026)(376014)(7416014)(1800799024)(36860700013)(41080700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2025 12:57:09.2639
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2025 12:57:12.8920
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 23abec29-3e7b-4b50-8533-08de372276af
+X-MS-Exchange-CrossTenant-Network-Message-Id: d51042fb-c6e2-4b48-aee3-08de372278ef
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SJ1PEPF0000231B.namprd03.prod.outlook.com
+	BL02EPF0001A105.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH8PR12MB9815
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8533
 
-From: Shay Drory <shayd@nvidia.com>
+From: Jianbo Liu <jianbol@nvidia.com>
 
-The firmware reset mechanism can be triggered by asynchronous events,
-which may race with other devlink operations like devlink reload or
-devlink dev eswitch set, potentially leading to inconsistent states.
+Replace ipv6_stub->ipv6_dst_lookup_flow() with ip6_dst_lookup() in
+mlx5e_ipsec_init_macs() since IPsec transformations are not needed
+during Security Association setup - only basic routing information is
+required for nexthop MAC address resolution.
 
-This patch addresses the race by using the devl_lock to serialize the
-firmware reset against other devlink operations. When a reset is
-requested, the driver attempts to acquire the lock. If successful, it
-sets a flag to block devlink reload or eswitch changes, ACKs the reset
-to firmware and then releases the lock. If the lock is already held by
-another operation, the driver NACKs the firmware reset request,
-indicating that the reset cannot proceed.
+This resolves an issue where XfrmOutNoStates error counter would be
+incremented when xfrm policy is configured before xfrm state, as the
+IPsec-aware routing function would attempt policy checks during SA
+initialization.
 
-Firmware reset does not keep the devl_lock and instead uses an internal
-firmware reset bit. This is because firmware resets can be triggered by
-asynchronous events, and processed in different threads. It is illegal
-and unsafe to acquire a lock in one thread and attempt to release it in
-another, as lock ownership is intrinsically thread-specific.
-
-This change ensures that firmware resets and other devlink operations
-are mutually exclusive during the critical reset request phase,
-preventing race conditions.
-
-Fixes: 38b9f903f22b ("net/mlx5: Handle sync reset request event")
-Signed-off-by: Shay Drory <shayd@nvidia.com>
-Reviewed-by: Mateusz Berezecki <mberezecki@nvidia.com>
-Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+Fixes: 71670f766b8f ("net/mlx5e: Support routed networks during IPsec MACs initialization")
+Signed-off-by: Jianbo Liu <jianbol@nvidia.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- .../net/ethernet/mellanox/mlx5/core/devlink.c |  5 +++
- .../mellanox/mlx5/core/eswitch_offloads.c     |  6 +++
- .../ethernet/mellanox/mlx5/core/fw_reset.c    | 45 +++++++++++++++++--
- .../ethernet/mellanox/mlx5/core/fw_reset.h    |  1 +
- 4 files changed, 53 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-index 887adf4807d1..ea77fbd98396 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-@@ -197,6 +197,11 @@ static int mlx5_devlink_reload_down(struct devlink *devlink, bool netns_change,
- 	struct pci_dev *pdev = dev->pdev;
- 	int ret = 0;
- 
-+	if (mlx5_fw_reset_in_progress(dev)) {
-+		NL_SET_ERR_MSG_MOD(extack, "Can't reload during firmware reset");
-+		return -EBUSY;
-+	}
-+
- 	if (mlx5_dev_is_lightweight(dev)) {
- 		if (action != DEVLINK_RELOAD_ACTION_DRIVER_REINIT)
- 			return -EOPNOTSUPP;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-index 8de6c7f6c294..ea94a727633f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
-@@ -52,6 +52,7 @@
- #include "devlink.h"
- #include "lag/lag.h"
- #include "en/tc/post_meter.h"
-+#include "fw_reset.h"
- 
- /* There are two match-all miss flows, one for unicast dst mac and
-  * one for multicast.
-@@ -3991,6 +3992,11 @@ int mlx5_devlink_eswitch_mode_set(struct devlink *devlink, u16 mode,
- 	if (IS_ERR(esw))
- 		return PTR_ERR(esw);
- 
-+	if (mlx5_fw_reset_in_progress(esw->dev)) {
-+		NL_SET_ERR_MSG_MOD(extack, "Can't change eswitch mode during firmware reset");
-+		return -EBUSY;
-+	}
-+
- 	if (esw_mode_from_devlink(mode, &mlx5_mode))
- 		return -EINVAL;
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
-index b81de792c181..ae10665c53f3 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
-@@ -15,6 +15,7 @@ enum {
- 	MLX5_FW_RESET_FLAGS_DROP_NEW_REQUESTS,
- 	MLX5_FW_RESET_FLAGS_RELOAD_REQUIRED,
- 	MLX5_FW_RESET_FLAGS_UNLOAD_EVENT,
-+	MLX5_FW_RESET_FLAGS_RESET_IN_PROGRESS,
- };
- 
- struct mlx5_fw_reset {
-@@ -128,6 +129,16 @@ int mlx5_fw_reset_query(struct mlx5_core_dev *dev, u8 *reset_level, u8 *reset_ty
- 	return mlx5_reg_mfrl_query(dev, reset_level, reset_type, NULL, NULL);
- }
- 
-+bool mlx5_fw_reset_in_progress(struct mlx5_core_dev *dev)
-+{
-+	struct mlx5_fw_reset *fw_reset = dev->priv.fw_reset;
-+
-+	if (!fw_reset)
-+		return false;
-+
-+	return test_bit(MLX5_FW_RESET_FLAGS_RESET_IN_PROGRESS, &fw_reset->reset_flags);
-+}
-+
- static int mlx5_fw_reset_get_reset_method(struct mlx5_core_dev *dev,
- 					  u8 *reset_method)
- {
-@@ -243,6 +254,8 @@ static void mlx5_fw_reset_complete_reload(struct mlx5_core_dev *dev)
- 							BIT(DEVLINK_RELOAD_ACTION_FW_ACTIVATE));
- 		devl_unlock(devlink);
- 	}
-+
-+	clear_bit(MLX5_FW_RESET_FLAGS_RESET_IN_PROGRESS, &fw_reset->reset_flags);
- }
- 
- static void mlx5_stop_sync_reset_poll(struct mlx5_core_dev *dev)
-@@ -462,27 +475,48 @@ static void mlx5_sync_reset_request_event(struct work_struct *work)
- 	struct mlx5_fw_reset *fw_reset = container_of(work, struct mlx5_fw_reset,
- 						      reset_request_work);
- 	struct mlx5_core_dev *dev = fw_reset->dev;
-+	bool nack_request = false;
-+	struct devlink *devlink;
- 	int err;
- 
- 	err = mlx5_fw_reset_get_reset_method(dev, &fw_reset->reset_method);
--	if (err)
-+	if (err) {
-+		nack_request = true;
- 		mlx5_core_warn(dev, "Failed reading MFRL, err %d\n", err);
-+	} else if (!mlx5_is_reset_now_capable(dev, fw_reset->reset_method) ||
-+		   test_bit(MLX5_FW_RESET_FLAGS_NACK_RESET_REQUEST,
-+			    &fw_reset->reset_flags)) {
-+		nack_request = true;
-+	}
- 
--	if (err || test_bit(MLX5_FW_RESET_FLAGS_NACK_RESET_REQUEST, &fw_reset->reset_flags) ||
--	    !mlx5_is_reset_now_capable(dev, fw_reset->reset_method)) {
-+	devlink = priv_to_devlink(dev);
-+	/* For external resets, try to acquire devl_lock. Skip if devlink reset is
-+	 * pending (lock already held)
-+	 */
-+	if (nack_request ||
-+	    (!test_bit(MLX5_FW_RESET_FLAGS_PENDING_COMP,
-+		       &fw_reset->reset_flags) &&
-+	     !devl_trylock(devlink))) {
- 		err = mlx5_fw_reset_set_reset_sync_nack(dev);
- 		mlx5_core_warn(dev, "PCI Sync FW Update Reset Nack %s",
- 			       err ? "Failed" : "Sent");
- 		return;
- 	}
-+
- 	if (mlx5_sync_reset_set_reset_requested(dev))
--		return;
-+		goto unlock;
-+
-+	set_bit(MLX5_FW_RESET_FLAGS_RESET_IN_PROGRESS, &fw_reset->reset_flags);
- 
- 	err = mlx5_fw_reset_set_reset_sync_ack(dev);
- 	if (err)
- 		mlx5_core_warn(dev, "PCI Sync FW Update Reset Ack Failed. Error code: %d\n", err);
- 	else
- 		mlx5_core_warn(dev, "PCI Sync FW Update Reset Ack. Device reset is expected.\n");
-+
-+unlock:
-+	if (!test_bit(MLX5_FW_RESET_FLAGS_PENDING_COMP, &fw_reset->reset_flags))
-+		devl_unlock(devlink);
- }
- 
- static int mlx5_pci_link_toggle(struct mlx5_core_dev *dev, u16 dev_id)
-@@ -722,6 +756,8 @@ static void mlx5_sync_reset_abort_event(struct work_struct *work)
- 
- 	if (mlx5_sync_reset_clear_reset_requested(dev, true))
- 		return;
-+
-+	clear_bit(MLX5_FW_RESET_FLAGS_RESET_IN_PROGRESS, &fw_reset->reset_flags);
- 	mlx5_core_warn(dev, "PCI Sync FW Update Reset Aborted.\n");
- }
- 
-@@ -758,6 +794,7 @@ static void mlx5_sync_reset_timeout_work(struct work_struct *work)
- 
- 	if (mlx5_sync_reset_clear_reset_requested(dev, true))
- 		return;
-+	clear_bit(MLX5_FW_RESET_FLAGS_RESET_IN_PROGRESS, &fw_reset->reset_flags);
- 	mlx5_core_warn(dev, "PCI Sync FW Update Reset Timeout.\n");
- }
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.h b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.h
-index d5b28525c960..2d96b2adc1cd 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.h
-@@ -10,6 +10,7 @@ int mlx5_fw_reset_query(struct mlx5_core_dev *dev, u8 *reset_level, u8 *reset_ty
- int mlx5_fw_reset_set_reset_sync(struct mlx5_core_dev *dev, u8 reset_type_sel,
- 				 struct netlink_ext_ack *extack);
- int mlx5_fw_reset_set_live_patch(struct mlx5_core_dev *dev);
-+bool mlx5_fw_reset_in_progress(struct mlx5_core_dev *dev);
- 
- int mlx5_fw_reset_wait_reset_done(struct mlx5_core_dev *dev);
- void mlx5_sync_reset_unload_flow(struct mlx5_core_dev *dev, bool locked);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
+index 35d9530037a6..6c79b9cea2ef 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
+@@ -342,9 +342,8 @@ static void mlx5e_ipsec_init_macs(struct mlx5e_ipsec_sa_entry *sa_entry,
+ 		rt_dst_entry = &rt->dst;
+ 		break;
+ 	case AF_INET6:
+-		rt_dst_entry = ipv6_stub->ipv6_dst_lookup_flow(
+-			dev_net(netdev), NULL, &fl6, NULL);
+-		if (IS_ERR(rt_dst_entry))
++		if (!IS_ENABLED(CONFIG_IPV6) ||
++		    ip6_dst_lookup(dev_net(netdev), NULL, &rt_dst_entry, &fl6))
+ 			goto neigh;
+ 		break;
+ 	default:
 -- 
 2.31.1
 
