@@ -1,53 +1,53 @@
-Return-Path: <linux-rdma+bounces-14934-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14935-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id B239DCAE99D
-	for <lists+linux-rdma@lfdr.de>; Tue, 09 Dec 2025 02:15:34 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACBEECAE9C8
+	for <lists+linux-rdma@lfdr.de>; Tue, 09 Dec 2025 02:20:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 54B08300CAB2
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Dec 2025 01:15:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D80223012DDB
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Dec 2025 01:18:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 965791C84A2;
-	Tue,  9 Dec 2025 01:15:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B56F8277026;
+	Tue,  9 Dec 2025 01:18:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="OuvBWm2J"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="orX610IJ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD1C525F995
-	for <linux-rdma@vger.kernel.org>; Tue,  9 Dec 2025 01:15:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB87A270553
+	for <linux-rdma@vger.kernel.org>; Tue,  9 Dec 2025 01:18:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765242924; cv=none; b=sRtFB2IoJdAWrUSHZM+PeTOAKKFcgJ2KgZVQd4qxq3nLmP/9EdAYWr294+9sqUS/bA6s9iPK8yeWIfK+K32e+iUyh3w/xXdwFrIpAG4N4xdTuXtZHB8zXSTx8b1L0ojZ5ZFpIx/eMfkN9f7haMeGq55gCNjeF0MPdwZuEan98bk=
+	t=1765243088; cv=none; b=jIYHz82givKwIW+XxhAMhnnKmdOxvZgIZcymmi54/vV7my+QQFy7UfTYMoG7PNq9PKycK+/b8e+NGP0sSH1GgTyZgkKfWFmmrd5+C8D2sDNno2Uu70XXoJ7lhy8RbmHH5BNVKOh6+eZdPpLTKHpyqF9ixHFhj/d4xGikxeZIsgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765242924; c=relaxed/simple;
-	bh=nexP4SWJruKUarJZ/rFU8+4k0KNca4gjU/1H4Gnhfh4=;
+	s=arc-20240116; t=1765243088; c=relaxed/simple;
+	bh=qUEMAy/edX16acAYBb9LboGkSC7ImdhOF1wk7jl/cpo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CttmxyJ8mzQn0N8J4WHc1OSymoNjnUDY8mP8KUwiaDthjj6MlHS8jg4ZDJNl0vkyPpj8rH2UyPBZshdrNmOX+dm7BgqrNtKdQNgjXmUlmaXepptznWoZWMYZVBG1rCCmoi2hUUoxQkPh6d3UPOliNkvV5PYfTLTH0SX+EpK9MJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=OuvBWm2J; arc=none smtp.client-ip=117.135.210.4
+	 Content-Type:Content-Disposition:In-Reply-To; b=MoA5fd4W3/YrXbZzAm0O1QgHqyM5bjOrHwc8oyMyAqJT7inntQW9fdd3hAdkhtG/0ruNSP4Qh7UKE7xzQhABCk0tHXqygYiYPurNmI5ZNAgeqFzlkFOnxbxn0HAdvizZxXQLlAGrZ9kJj+CsmjuQCeZe7ntEh3tKeWA3dVpzhsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=orX610IJ; arc=none smtp.client-ip=220.197.31.2
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
 	s=s110527; h=Date:From:To:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=2n363xOx+XYbTUr0bSoWFyjz1NjW0b8UvqXbQO3L3cQ=;
-	b=OuvBWm2Jz+9SAOOSYqP2INZuO+/FcfLXEVjOHYKYCa2JJ0/UURuCFHb+zZ6VEW
-	+h2Hh28OqaNIKHFbQzSGGbtCZ3kXkt7UJcKkEG2OopPVZC+DtvN0W8UGAI2n9gUQ
-	wmc/Trddc2n5vNgd8VyE5vooqF82LWOHInmdDCLHjT77c=
+	Content-Type; bh=AkC1feVMdupjD3+EGVRXr4/zUnPJLvnG1rtVQMhrWjo=;
+	b=orX610IJ+pS+fU1hcGS53QfE9V7J6tx9FZx9ZGiZvJ3JaXV7rj/oSF6tETPsr+
+	vcMZmEB//XI51ZbtXzS6ItViIWh6xIfTgfUSOoluFm7a5XrpgbKT7GLIa79/F0QZ
+	NGa7HVeKzswKFp1fdxaUMIswDBYlc5xSbx0RB8gZE0Fbc=
 Received: from localhost (unknown [])
-	by gzga-smtp-mtada-g0-0 (Coremail) with SMTP id _____wDnd9gHeDdp78KSAg--.1829S2;
-	Tue, 09 Dec 2025 09:14:48 +0800 (CST)
-Date: Tue, 9 Dec 2025 09:14:47 +0800
+	by gzga-smtp-mtada-g0-4 (Coremail) with SMTP id _____wDXSTCfeDdpQ+iUAg--.33520S2;
+	Tue, 09 Dec 2025 09:17:20 +0800 (CST)
+Date: Tue, 9 Dec 2025 09:17:19 +0800
 From: Honggang LI <honggangli@163.com>
 To: Md Haris Iqbal <haris.iqbal@ionos.com>
 Cc: linux-rdma@vger.kernel.org, bvanassche@acm.org, leon@kernel.org,
 	jgg@ziepe.ca, jinpu.wang@ionos.com, grzegorz.prajsner@ionos.com
-Subject: Re: [PATCH 5/9] RDMA/rtrs-clt: Remove unused list-head in
- rtrs_clt_io_req
-Message-ID: <aTd4B9vJ--hDESNJ@fedora>
+Subject: Re: [PATCH 6/9] RDMA/rtrs-srv: Add check and closure for possible
+ zombie paths
+Message-ID: <aTd4n-mGUSP_kk11@fedora>
 References: <20251208161513.127049-1-haris.iqbal@ionos.com>
- <20251208161513.127049-6-haris.iqbal@ionos.com>
+ <20251208161513.127049-7-haris.iqbal@ionos.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -56,45 +56,32 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251208161513.127049-6-haris.iqbal@ionos.com>
-X-CM-TRANSID:_____wDnd9gHeDdp78KSAg--.1829S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKF1xAryxur47Aw4kGFW3KFg_yoWkJwb_KF
-	40qrZ7XFyDCr18ta4Yg3W3WFyv9w1xZFn5Z3Z0g34DJ345tF4rXFn2vr1Fqwn8Xw1I9Fn8
-	Cr93Wr4vgrySkjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUU1SotUUUUU==
-X-CM-SenderInfo: 5krqwwxdqjzxi6rwjhhfrp/1tbiOhUfRWk3cZmjKAABsJ
+In-Reply-To: <20251208161513.127049-7-haris.iqbal@ionos.com>
+X-CM-TRANSID:_____wDXSTCfeDdpQ+iUAg--.33520S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtrW7trW3Jw1kXw13ur47twb_yoWxZrX_Za
+	1Yga92vrWDAFsrJ3ZFqrWxu3s5Ca1UX3Z3JasYgFWUZw15JrW5WFWkXr1rt34DJw1FkFnx
+	WF15Ww1kXrZ3AjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUb2YLPUUUUU==
+X-CM-SenderInfo: 5krqwwxdqjzxi6rwjhhfrp/1tbiFRMfRWk3c4WLYQAAse
 
-On Mon, Dec 08, 2025 at 05:15:09PM +0100, Md Haris Iqbal wrote:
-> Subject: [PATCH 5/9] RDMA/rtrs-clt: Remove unused list-head in
->  rtrs_clt_io_req
+On Mon, Dec 08, 2025 at 05:15:10PM +0100, Md Haris Iqbal wrote:
+> Subject: [PATCH 6/9] RDMA/rtrs-srv: Add check and closure for possible
+>  zombie paths
 > From: Md Haris Iqbal <haris.iqbal@ionos.com>
-> Date: Mon,  8 Dec 2025 17:15:09 +0100
+> Date: Mon,  8 Dec 2025 17:15:10 +0100
 > X-Mailer: git-send-email 2.43.0
 > 
-> From: Jack Wang <jinpu.wang@ionos.com>
-> 
-> Remove unused member.
-> 
-> Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-> Signed-off-by: Grzegorz Prajsner <grzegorz.prajsner@ionos.com>
-> ---
->  drivers/infiniband/ulp/rtrs/rtrs-clt.h | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.h b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
-> index 0f57759b3080..3633119d1db2 100644
-> --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.h
-> +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
-> @@ -92,7 +92,6 @@ struct rtrs_permit {
->   * rtrs_clt_io_req - describes one inflight IO request
->   */
->  struct rtrs_clt_io_req {
-> -	struct list_head        list;
-
-It seems these two members alse unused. Why keep them?
-
-struct rtrs_sg_desc        *desc;
-unsigned long                start_jiffies;
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> @@ -911,6 +911,13 @@ static int process_info_req(struct rtrs_srv_con *con,
+>  				      tx_iu->dma_addr,
+>  				      tx_iu->size, DMA_TO_DEVICE);
+>  
+> +	/*
+> +	 * Now disable zombie connection closing. Since from the logs and code,
+> +	 * we know that it can never be in CONNECTED state.
+> +	 * See RNBD-3128 comments.
+               ^^^^^^^^^^^^^^^^^
+What is it? How to access it?
 
 thanks
 
