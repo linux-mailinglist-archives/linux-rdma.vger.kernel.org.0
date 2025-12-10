@@ -1,123 +1,115 @@
-Return-Path: <linux-rdma+bounces-14955-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14956-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FF0FCB3812
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Dec 2025 17:42:26 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id F23BDCB3A48
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Dec 2025 18:37:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 6E5663005299
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Dec 2025 16:42:25 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 6B8503017A48
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Dec 2025 17:37:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95C430EF6B;
-	Wed, 10 Dec 2025 16:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99C5B3233E3;
+	Wed, 10 Dec 2025 17:37:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="Hcgn5/hR"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="LBAq/mqf"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
+Received: from pdx-out-015.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-015.esa.us-west-2.outbound.mail-perimeter.amazon.com [50.112.246.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E6C32EB846;
-	Wed, 10 Dec 2025 16:42:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2728207A32
+	for <linux-rdma@vger.kernel.org>; Wed, 10 Dec 2025 17:37:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.112.246.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765384943; cv=none; b=Dui+qiCsOjWlFA9FgKi/ih/RU2rjcTWl5FqTpLO7nJtrJ5swK/s6omCro4UjjSe6sCrRFsIF79PJyI376vhMRGxV5G2smDXDUTQM2TPawy0POLwSUER5XfOr5B0ipA0YinMQwi6mR2dUW1y7a8KcaNZGQH6GHb7I3J4hzxLxGkY=
+	t=1765388231; cv=none; b=g4F91Zi+wu4OpcuAKZsrE9zFTU4dptK6zGOT5lo2pHa5281GIYLTzCtEBzjdEMVrSRk2JxnpIjVZeSMFZwmdtXxEwzLmx53IRbYicRKupYDiX9os1tZ/b5gX8KAQcvUaexTQYZ+DnyKoY1QcBKFluVrMOA0lg1SDYd/hBQ5YT5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765384943; c=relaxed/simple;
-	bh=l2Ld7sBVKu8YDuGF611lQ99Ji+wx0fzq1oAUp+3Zin4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qCwYVDchUBJW1kCj2+KITcGV3m/UZWbs9LPwLDwR/r5AUdQv/d8QN83PRtHLIi+5ZJ4bNSqUe9qK15KzqVMhXozz4O5slNPLJIEd5BFhnA4Pv23PTorb0t0PBQiahICaLuwYZiy4W7B+WNEMqFoZnaZTOm/Z95a1A4nFkcAeHN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=Hcgn5/hR; arc=none smtp.client-ip=144.76.82.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-	s=42; h=From:Cc:To:Date:Message-ID;
-	bh=26mRdyj5ukbuYOEXWu6R6f0fK68V9mMcyWoL9cL1sjs=; b=Hcgn5/hRKy90FDEhzarkrU/qLW
-	d3VFjGJ4wWKwq9j6I4E9zRDxRVOfuUckQoR9SaThmrNZ0R3GfjTEoNhTB+dqONgqG6+X2sxD6Zgie
-	Lk+E29uGzs4NqjgCaBNa1z018SqCshH5dYA1MUXwVB6vAWtQbJJt6c9ats3+TMgtiQbMFS/5mZbin
-	2H5kuVR4W5tuk2/I5twBCAs2qZLM6EC8kuV+deTNztoSZ7Q8lAnIRshn2UQXa+qAceQUGesyPWAs7
-	j+sW1nbR+nBKmJn4P/cLH+7c7khW2+2U6Erl6W4EziWGEH2ZjSAHHnR/gmpfcue1uRq3NePoOQLRb
-	4Qf41Y7T76UFyka9W6GJxWvALezybfHr8F9z+vHKqGI8Oc4PK68lwQFhk1Ar17ZzR56Xr+DVkM0O1
-	6zDDHanHUeQxN8/VjHS7P9xkrZzoOjERI6W3z5P+Qto96n/Zsm3mRQ8Y8RhCTQ+Ay47XcX/lS+Ltb
-	2BceQJjNVzlAh7I7AMZ36RHR;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
-	(Exim)
-	id 1vTNGW-00086L-2I;
-	Wed, 10 Dec 2025 16:42:12 +0000
-Message-ID: <86b3c222-d765-4a6c-bb79-915609fa3d27@samba.org>
-Date: Wed, 10 Dec 2025 17:42:12 +0100
+	s=arc-20240116; t=1765388231; c=relaxed/simple;
+	bh=+oVYyKrTWRuooM+e6M7777f7fuo1Z8REtQ8qP7ti65I=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=tRImnmZZtvINsiX+a03fRpguI2ELPjtJpATX2Sg9Tx25+bN1s3kKk3HlETtSeOgf3U0j3u8AImnM3JWvoDxL2SyeTjiz9D3e1shi9zFLKxRGK/4nJW5TCvZ3OJ/j9jc2XcaBlLRKKJbievVm10gAgCuQvVJoeLNVABzSm24YoH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=LBAq/mqf; arc=none smtp.client-ip=50.112.246.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1765388229; x=1796924229;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=cwqjfpIeVCfdOlO4ch1vYJcdaWYPlm4fPoB7IKKw05M=;
+  b=LBAq/mqfHMI+jFire1ZO5O1NhfgoGfVw8M+pG2v73K6wfZnxuzxe8PIh
+   75HrotoiGD9/xqqGHYTsn4yrYvrUmyS1zbvY3thYxit5nRaw6M33+6R+U
+   T5OxIJcUvRMjMhaRUrdpUe0ouEPySRZKO5UB0W8ZIS0I1pFYldaMbzNaL
+   HHWqjjNzPQGJZfNT+QYWjIkvzdTt9RicB1bM/lgrYnG1RT5JtyruW7Uub
+   Pvb8seLX3e9JHpTxu8koePE6iN6eTB+xx4bE1J4t3kk4PXWzZ8rN6xAdQ
+   KtWtV5QVY7CCtoLgaOSMTdMswoTkdvRo9EpIUPnPOkzRAHQWerubcC6yO
+   w==;
+X-CSE-ConnectionGUID: HAjhV8JgRyOY0QmLeHGpSA==
+X-CSE-MsgGUID: Awddz8jFSa2UqdrRHXYWMw==
+X-IronPort-AV: E=Sophos;i="6.20,264,1758585600"; 
+   d="scan'208";a="8652178"
+Received: from ip-10-5-12-219.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.12.219])
+  by internal-pdx-out-015.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2025 17:37:07 +0000
+Received: from EX19MTAUWB001.ant.amazon.com [205.251.233.104:5398]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.59.230:2525] with esmtp (Farcaster)
+ id aca7c0a7-0aff-4cf4-aaa8-341bac7fd083; Wed, 10 Dec 2025 17:37:07 +0000 (UTC)
+X-Farcaster-Flow-ID: aca7c0a7-0aff-4cf4-aaa8-341bac7fd083
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.29;
+ Wed, 10 Dec 2025 17:36:59 +0000
+Received: from dev-dsk-mrgolin-1c-b2091117.eu-west-1.amazon.com
+ (10.253.103.172) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.29; Wed, 10 Dec 2025
+ 17:36:58 +0000
+From: Michael Margolin <mrgolin@amazon.com>
+To: <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>
+CC: <sleybo@amazon.com>, <matua@amazon.com>, <gal.pressman@linux.dev>, "Tom
+ Sela" <tomsela@amazon.com>, Yonatan Nachum <ynachum@amazon.com>
+Subject: [PATCH] RDMA/efa: Remove possible negative shift
+Date: Wed, 10 Dec 2025 17:36:56 +0000
+Message-ID: <20251210173656.8180-1-mrgolin@amazon.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Problem with smbdirect rw credits and initiator_depth
-To: Namjae Jeon <linkinjeon@kernel.org>
-Cc: Tom Talpey <tom@talpey.com>,
- "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <35eec2e6-bf37-43d6-a2d8-7a939a68021b@samba.org>
- <CAKYAXd9p=7BzmSSKi5n41OKkkw4qrr4cWpWet7rUfC+VT-6h1g@mail.gmail.com>
- <f59e0dc7-e91c-4a13-8d49-fe183c10b6f4@samba.org>
- <CAKYAXd-MF1j+CkbWakFJK2ov_SfRUXaRuT6jE0uHZoLxTu130Q@mail.gmail.com>
- <CAKYAXd__T=L9aWwOuY7Z8fJgMf404=KQ2dTpNRd3mq9dnYCxRw@mail.gmail.com>
-Content-Language: en-US
-From: Stefan Metzmacher <metze@samba.org>
-In-Reply-To: <CAKYAXd__T=L9aWwOuY7Z8fJgMf404=KQ2dTpNRd3mq9dnYCxRw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D031UWC003.ant.amazon.com (10.13.139.252) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
 
-Am 05.12.25 um 13:21 schrieb Namjae Jeon:
->>> Can you at least post the dmesg output generated by this:
->>> https://git.samba.org/?p=metze/linux/wip.git;a=commitdiff;h=7e724ebc58e986f4e101a55f4ab5e96912239918
->>> Assuming that this wasn't triggered:
->>> if (WARN_ONCE(needed > max_possible, "needed:%u > max:%u\n", needed, max_possible))
->> I didn't know you wanted it. I will share it after office.
-> I have attached v2 and v3 logs. Let me know if you need something more,
->>>
->>> Did you run the bpftrace command? Did it print a lot of
->>> 'smb_direct_rdma_xmit' message over the whole time of the file copy?
->> No, I didn't check it. but I will try this.
-> /mnt# bpftrace ksmbd-rdma-xmit.bt
-> Attaching 1 probe...
-> 
-> The absence of any output after Attaching 1 probe... indicates that
-> the smb_direct_rdma_xmit function has not been called ?
+The page size used for device might in some cases be smaller than
+PAGE_SIZE what results in a negative shift when calculating the number
+of host pages in PAGE_SIZE for a debug log. Remove the debug line
+together with the calculation.
 
-Assuming the client requires signing, I may found the
-reason for a recv credit problem.
+Reviewed-by: Tom Sela <tomsela@amazon.com>
+Reviewed-by: Yonatan Nachum <ynachum@amazon.com>
+Signed-off-by: Michael Margolin <mrgolin@amazon.com>
+---
+ drivers/infiniband/hw/efa/efa_verbs.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-ksmbd uses this:
+diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+index 22d3e25c3b9d..755bba8d58bb 100644
+--- a/drivers/infiniband/hw/efa/efa_verbs.c
++++ b/drivers/infiniband/hw/efa/efa_verbs.c
+@@ -1320,13 +1320,9 @@ static int umem_to_page_list(struct efa_dev *dev,
+ 			     u32 hp_cnt,
+ 			     u8 hp_shift)
+ {
+-	u32 pages_in_hp = BIT(hp_shift - PAGE_SHIFT);
+ 	struct ib_block_iter biter;
+ 	unsigned int hp_idx = 0;
+ 
+-	ibdev_dbg(&dev->ibdev, "hp_cnt[%u], pages_in_hp[%u]\n",
+-		  hp_cnt, pages_in_hp);
+-
+ 	rdma_umem_for_each_dma_block(umem, &biter, BIT(hp_shift))
+ 		page_list[hp_idx++] = rdma_block_iter_dma_address(&biter);
+ 
+-- 
+2.47.3
 
-smb_direct_max_fragmented_recv_size = 1024 * 1024
-smb_direct_max_receive_size = 1364;
-smb_direct_receive_credit_max = 255;
-
-In order for the client to fill the full eassembly buffer,
-all our recv buffers are moved into it, which means
-255 * (1364 - 24) = 341700 (0x536C4) bytes of payload,
-after that we no longer able to grant and new recv credits to
-the peer, which tries to send up to 1048576 (0x100000).
-
-I found this using smbclient to download a large file
-from a Windows server without using rdma offload.
-
-So I guess you are seeing the problem when Windows
-tries to copy a file to ksmbd.
-
-For smbclient I made it work by changing
-max_fragmented_recv_size to the minimum value of
-131072 (0x20000), this value is smaller than
-all local recv buffers 255 * (1364 - 24) = 341700 (0x536C4).
-
-I try to find what difference we have between 6.17.9
-and 6.18 tomorrow.
-
-In the meantime you may want to test if 6.18 with
-smb_direct_max_fragmented_recv_size = 131072 works
-for you, or change smb_direct_receive_credit_max = 1024.
-
-metze
 
