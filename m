@@ -1,74 +1,57 @@
-Return-Path: <linux-rdma+bounces-14948-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14949-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35A65CB0ED3
-	for <lists+linux-rdma@lfdr.de>; Tue, 09 Dec 2025 20:24:06 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA5B6CB2DAC
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Dec 2025 12:49:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id A15EF301E5F9
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Dec 2025 19:24:05 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 08F8230AEC8D
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Dec 2025 11:49:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 459742FF663;
-	Tue,  9 Dec 2025 19:24:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="lwC85Zwi"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95C2231B111;
+	Wed, 10 Dec 2025 11:49:37 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CH5PR02CU005.outbound.protection.outlook.com (mail-northcentralusazon11012048.outbound.protection.outlook.com [40.107.200.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B1731E5205;
-	Tue,  9 Dec 2025 19:24:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.200.48
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765308244; cv=fail; b=dKHPA6XDkGjPPJTCcuUmXsrnxR4tjuUGhTDNV3txLrirQ/ejMTWBC9inPa1S9Wq5vW9icegK/0yTtKSuTfrj/FnSnFu1oZHENHFw4xReWz9C1XIJgMLgXEzKiENx45YVul12h9djQ8Cu8T38sg2LO14bbVAuzQjWom35LxAB5FI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765308244; c=relaxed/simple;
-	bh=Dts1fp7I9td7bxzYMkqMGOhdmkUB4u1NOTb+O7HlSQk=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Ixa6bKSAGMlL4n0fbaPsnrFUSyJXKpAF47AvLY92p0WJvCoZmy1pYdM/QxNEP3msRcIibRP/ZUk3FKwuOrdYScQmgFbKGzjymx5fhrQRDsRRvN6Tc0qyRkRTzUXzqrI3N86gyH7G39De0BQdjvU4K2EphCFhjkXQ5lV2qE62heA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=lwC85Zwi; arc=fail smtp.client-ip=40.107.200.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=hIS3pz1tsTyuGunMGAWaN1F6AN1EhQMlJXUX11AalLzYAV+ak/LuPW560RrB3UD54gJYBnVf/a5/HQieuygDEosvM7Jslc8lf1Gznfx8Adb+laK8NV9HcxabgpJb4DsovabGELq2OjKe/Itps/6d+4nFw+1UdcHcQqFBiEOw2fQFyipX0R7T1NFLCg8wQj26OPBjKNzR5GT76ThdMlD/8AARpAvRDDnEySwttIA+AaQ8AX7fGVJGEtac1A9BD0RRBdfRPkQXh43zgpO6wQcGJvCtnUv82eOhippcZzOyyxt0fZ69ZyE0WotFIufIz8faK+FkGERQJiw0Vpd+udPH6g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Me64AP/eclEGKhxqgC5btNR2NVdJYh8FxL2R9D8wKxc=;
- b=THn4q307YZtQ7dyGVtSUJTQkCadPdK8HIn+ZlL7NcxaeC6snhw4YWxRSXuocmWytSJoTEYPuPUWfXL2lbJFw4DpjLaKpQqF6NDk2H+QIZJldGxRXZu3IJI7s9N3M36nnpTaeO9Erxc7qJdzZvWDZq2cfBg9z7w+8fBSVArt7HggZ/tyhvqzh23NN3MPwnYzPUGuhbnOPSYXUk7KkCbDRqCrAmGsSX/6CzrWm8UII6E30/nDaVSjbY/0Bn0Mi8ogxJvJzhyCX7fzpE0VkIq1m1E/kilcgN57ED1QinkSwNRtQsn5l/WYbEdy9FUMnXbk1SnEL4eyQsh0jqveeTJVSyg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Me64AP/eclEGKhxqgC5btNR2NVdJYh8FxL2R9D8wKxc=;
- b=lwC85Zwi9SWUlglzn9CT1opy5SoCgFjgMi+TCRcpxOdC1vDFs4s9HT/2zY/OCi6MpAr7+PwIrfCGPyNetg/qKCGZm7BPDsHqBLcvv9t5Y1kror3naEJZXaxh54EzoiwnPb9pHrqu1jH8OJLKhmCtBIP/prRyvulr5+XhbTgy/nM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
- by DS0PR12MB7607.namprd12.prod.outlook.com (2603:10b6:8:13f::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9412.6; Tue, 9 Dec
- 2025 19:23:56 +0000
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::9269:317f:e85:cf81]) by BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::9269:317f:e85:cf81%6]) with mapi id 15.20.9412.005; Tue, 9 Dec 2025
- 19:23:56 +0000
-Message-ID: <8bf372ab-2625-4f87-a8e8-7a1bc9debcc5@amd.com>
-Date: Tue, 9 Dec 2025 14:23:53 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4696A3B8D67;
+	Wed, 10 Dec 2025 11:49:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1765367377; cv=none; b=HDJD4PALjqdtouUBMscZg1MzoYd0xkeUiGj5adJkKlHBsPiM9KjBp4DH1HqDR+7qX/y6qLSyvioGyuRN9xRrlh2A0KYYI04ANHpdPO8Vfvtb3+kSU1FwznQQXIG1PStLPvNyx5j63+rHKQwLwR3HJEQ9sGDbWmqfAk3oYDURPqs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1765367377; c=relaxed/simple;
+	bh=KOB54iCbftV4526yBv+6XAewjZUQgJj6wjdObDTABUU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=s6TX6Wr6UIdOzhJ8PlUHCLCBd51JrsYxt7hE/P2y4Fg9a0sgRATRfytAXirdoQscVDhGlLTLzDRpcK9yS8Q0X5CnJaA51bMIIh2VSuGBp7FwiJWDfc/XOajQQujtQs1jJZ0jY7s4PbLj0uBN6BMOjqBZ/wbn3KBSp6m81QUR9pY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A8FB153B;
+	Wed, 10 Dec 2025 03:49:27 -0800 (PST)
+Received: from [10.57.45.72] (unknown [10.57.45.72])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A77063F762;
+	Wed, 10 Dec 2025 03:49:28 -0800 (PST)
+Message-ID: <c78de0f8-fc58-4fde-b39f-4b6dcb34a3e5@arm.com>
+Date: Wed, 10 Dec 2025 11:49:25 +0000
+Precedence: bulk
+X-Mailing-List: linux-rdma@vger.kernel.org
+List-Id: <linux-rdma.vger.kernel.org>
+List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/7] drm/amd: kill the outdated "Only the pthreads
- threading model is supported" checks
+Subject: Re: [PATCH 5/7] drm/pan*: don't abuse current->group_leader
 To: Oleg Nesterov <oleg@redhat.com>, Todd Kjos <tkjos@android.com>,
  Martijn Coenen <maco@android.com>, Joel Fernandes <joelagnelf@nvidia.com>,
  Christian Brauner <brauner@kernel.org>, Carlos Llamas <cmllamas@google.com>,
  Suren Baghdasaryan <surenb@google.com>,
+ Felix Kuehling <Felix.Kuehling@amd.com>,
  Alex Deucher <alexander.deucher@amd.com>,
  =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
  David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
  Boris Brezillon <boris.brezillon@collabora.com>,
- Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
- =?UTF-8?Q?Adri=C3=A1n_Larumbe?= <adrian.larumbe@collabora.com>,
+ Rob Herring <robh@kernel.org>, =?UTF-8?Q?Adri=C3=A1n_Larumbe?=
+ <adrian.larumbe@collabora.com>,
  Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
  Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
  Liviu Dudau <liviu.dudau@arm.com>, Jason Gunthorpe <jgg@ziepe.ca>,
@@ -78,174 +61,52 @@ To: Oleg Nesterov <oleg@redhat.com>, Todd Kjos <tkjos@android.com>,
 Cc: linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
  dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
  netdev@vger.kernel.org
-References: <aTV1jTmYK3Bjh4k6@redhat.com>
-Content-Language: en-US
-From: Felix Kuehling <felix.kuehling@amd.com>
-Organization: AMD Inc.
-In-Reply-To: <aTV1jTmYK3Bjh4k6@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <aTV1maDfDvqgu1oT@redhat.com>
+From: Steven Price <steven.price@arm.com>
+Content-Language: en-GB
+In-Reply-To: <aTV1maDfDvqgu1oT@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YT3PR01CA0027.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:86::13) To BN9PR12MB5115.namprd12.prod.outlook.com
- (2603:10b6:408:118::14)
-Precedence: bulk
-X-Mailing-List: linux-rdma@vger.kernel.org
-List-Id: <linux-rdma.vger.kernel.org>
-List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN9PR12MB5115:EE_|DS0PR12MB7607:EE_
-X-MS-Office365-Filtering-Correlation-Id: 18081901-f6a7-4af6-58ba-08de37587f2b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|376014|7416014|1800799024|7053199007|921020;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?cXl0b1NUVlZGZ0Fqeng2OFNXYXV3dXlvRTNrVlpYd0VQK1dvSU5MZnVKTEE3?=
- =?utf-8?B?ZnpLTkZwdFFvNDVHMTA4VG4vTkUvSjBPdkQxay9NWUgzdWNEL2U1bDd1Rm4r?=
- =?utf-8?B?MWJ2YWhyOTZkYWdUcXlTZGJMZDNjWk5NUVFTdmF5QUVJdjZ0SCtUUi9vS1I0?=
- =?utf-8?B?V3pnYndTMG50L041NUdKbEp4L21MVVFTUFpCeHN0MkZERzh3VEJnZHlrWjg1?=
- =?utf-8?B?WUJRQzZURXQ1YzRyajgxTEEvNWV5d3RORXZneEtIUDN1a092dWd2UHc0RCtT?=
- =?utf-8?B?djM2eHRnMk9zQjczUStkcFdZUkNubmJjRjM2UncxbnhWK01OdTFsWW00ZS9X?=
- =?utf-8?B?NFVnVjNXeWRyVVVzU3MvdHdSZHlQNzVqMk1NR3FJREZDaXhyNjkyRTJIdWwx?=
- =?utf-8?B?d2ZyT0JxWDVpa2t3eDV2QUE5WWtycHZxVUQvK1BRLzA1a2Y2ZDdCUHEzUkNQ?=
- =?utf-8?B?bUNUM2l3OFZPTnRkZGEvNjFubkNmaXlVOU9qTlhqN0N5MC9jY25mQ2ovS2Jp?=
- =?utf-8?B?QjJ2REVjUFkzMnBsNGFBTkZscExUdDNaTzV4YkJwWjA3cjRLZW9XcFF0Z2Jq?=
- =?utf-8?B?QXU2aEJoaWhwZVJDYVAvSDBqU053WXhLd2h2eS8rSHFyMERGSTU3VDZDR2Jk?=
- =?utf-8?B?ZDBxeG5XMWpuZHV4Nk1XeVJqTkJCblFqa2lBcXdUbUdxWDI4V1VRZXF3UDBC?=
- =?utf-8?B?R29YNUJJZTh0N2xtUFk1RVl4ZEx3a3pzaXpOZlU2RmZ3UFZZemV3aWlTWnJE?=
- =?utf-8?B?Q1pEUUt1eVZRY01DcTM5RnM2NVNPSjlmK0Vhc1VidFBHR0xWVlBwQytKc014?=
- =?utf-8?B?KzlkNDd3eld5L212L211UFY0K29mbnIyMWpJWmYxcXU0L040bWYwMnpEcjhw?=
- =?utf-8?B?WUhIRUlBSVpEUGEyb084SGliczlLT01zWTVLRlRISDlYdExYdTRaR3pVRzZh?=
- =?utf-8?B?UFk2SXhzWHQ3Q1FuZUlmRW92WEdwZVRmN2dvRGhyUXpyRkxyZkRkZ3diNVRh?=
- =?utf-8?B?ZXl3WTcwZ1RBbklXcFZ2YnVqbmpJME80cEZWMklXSmt2Q0ZCczgxampjdkxF?=
- =?utf-8?B?eXVuRmd5RW14WFdoUWhjOE9OQ2FnTVBMRjBGdzdCbWtyZU14TndWdFFUZ1Q0?=
- =?utf-8?B?bHdzTkRFYzFzY1RRRXRjdG9NR2tRVXJ1WWlpQUdXdEVjWXFadVVRd2RZWUc4?=
- =?utf-8?B?eVFPM1NSNXRYU2IxMmtJa1V3Rm9pZGNTK1FCZWh2d2JacFNCZi9mTUNCMWNU?=
- =?utf-8?B?QWJHSXh6MG94ek5aQjhkcEkvcnFDeElJTjFMRDF0UVVtMGMyaEJ1Nkdtem1J?=
- =?utf-8?B?VHMrSzVVTVhjK0JIMlg3dnA1TWRPTEpyaTNSY2RBSHAvYVVaUGJqZTlOZHFW?=
- =?utf-8?B?eXNsbEpVUnBqOUQwZVBBaFJ6Y0toQVpXcU5GZkhHVjBaM1ZpQnRlQytkRllj?=
- =?utf-8?B?eEdscTNYQndiSDJxd2pTU1h0YmNjZ1pSRVFOVy95aUxGZ29KSllHeC8zLzZS?=
- =?utf-8?B?dkdZakU2empTZTJLbHZnVnF0T2ZjeXcvOG1wcUdrU09xWFlIVFpCRy93WEQ4?=
- =?utf-8?B?bnYwVmV2ZmR2RkhEYzY5RktYc1U4ZWVDMVZ5Ni9KWTcxdlJhSnlvWExQMTFx?=
- =?utf-8?B?OXRjMkE4c0FXRzdyQXB6TFFPeDcvU2tUM0xRVWNkVmtwVEphTFl6VmxJUkVy?=
- =?utf-8?B?Q2pMZnVnTklOamNaNXNMVEVkSUt3MGJFWGVZNkY4eXZLU1ZJVzVUTWJaSmZ5?=
- =?utf-8?B?bXBkRUg2WUNoMmZwcmJzVWxYMFJVOXVpcGxuMjZYWlJZTWpaR0NQU0NocWg1?=
- =?utf-8?B?dDR2amEzR2hOMkQ1clU1aEI0YW1iSXNyQkJjOFBOckFVR0c5ZFRFbUw2bmky?=
- =?utf-8?B?TEtPaFlTQnlST0ZPZTBWY2NNTFBtUEFJNDJXVEdpdXd1WXlUS2hVVmVDSHFS?=
- =?utf-8?B?ZGNQMkZMbEFCelhoa05tZjk1SVJWcXdwR3I1MXhRN3o2NUVSN3IxYWJZSmd6?=
- =?utf-8?Q?qSrMZRQxAKGOv2XkdAYubtuCIGR9fc=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024)(7053199007)(921020);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?dDFrMm45RWZYZlBQODZGcVlDQ3d6bXAxM25UeUFtRGcyb2lIMmNxUVgyZmFO?=
- =?utf-8?B?ZW1ZeEQ4eWJVT0RoYkZvTHlaWFBLdFgrZUEwV1F4eWN3VVNjOEM1cVgzRENa?=
- =?utf-8?B?cHM3ZGI3U2xzM01SSFJFb3pWU1FaWVd6NlR0VEZiK1A5aGIvOUtabzNlQnJ4?=
- =?utf-8?B?aGJTZTFENGF1dnJ5bzRCUE9ndzhQYXR4Q21rQm9tY3ozQ1N1TFI3a0pkRHhE?=
- =?utf-8?B?NU9GdUNURENOUndEbU9SL3hYRDllOGFKb0NVS0ttZ0FkWFFkWU9laEZUOERH?=
- =?utf-8?B?Q3BrSWZ2OXUzdTFuc2w5M0ROcTBDaU8wb2wwRzNOWUxRa2YyV0dKbmJNNVp1?=
- =?utf-8?B?SmNHeTU1THkvZWxFTkI3Y0txemM1ZmdhM0lkKzluWHI3UzBQV2lrT3RCR01u?=
- =?utf-8?B?NERCL0NwTTczdHQ0Vy9rVzVzdWFWaFNzOHM3WmRoNnFHOGJJTm9EbGk0amFS?=
- =?utf-8?B?cGJ5dWoxdDB4YkEwMkF2TGZaQ2xoWTRnWFp1aC9ZZkhUVTMzWFA3bVpEVlVV?=
- =?utf-8?B?citZTDRRcGhPQWgzb2R0clVqUlJxU0d1RERBRUVHOG5pQ0pkell0bkFhUlJL?=
- =?utf-8?B?U0ZMRmJUT3JvTHJHUnl1aFczbnhJeUxONXh2czc2V0xMYzFjVG83NE9NRGdB?=
- =?utf-8?B?OUFIVHNrUTZ4REcxeXRCMXFGUklnbXBpQ2RsZjZWallpQklRWFYrQkw0WXF0?=
- =?utf-8?B?Y1NFeGs4Y205UkFQeGdwNnVpK2lka1VpRWlQVWdhbkROKzUyeVZhemJhSzU1?=
- =?utf-8?B?eXczUmlDcTI0OVJvR05JNlhNNjlzSzB2eHNmY1VUQUV0UGdtaGN5UDgzYWJR?=
- =?utf-8?B?MWRqYjhiZE43elhEYTZNcWdaNEtLY3RidFpjTng2NWtrZlNJVjR2YzRIL0Nz?=
- =?utf-8?B?am5UZUUwZkZhbnVtZStMRXN5OEw2T08yTytZZFk3VTdpaXdFZ2ZTUFJCOVkv?=
- =?utf-8?B?UG82ZlZMc3dLdGNrQUJxSHVac2RTVU1BU2JabGNocTNCUnErV3ArMjN2ekM3?=
- =?utf-8?B?YjB6QUhvYnVDNStkQjlYQmhxSVkrM2U4VWh5eGpLT3dQTGVVemJEdU0zcjN4?=
- =?utf-8?B?dFJZc0J5SkRiNW1XS1pEdEhzb1h6YVlwdWllaEFDNFI0ckZSeGVjN1ZuTHpu?=
- =?utf-8?B?RHI4WFNGNjd6dkE5UW9uMmJVdVphZUFGbkVBOGJJLyttaGY5SmcwRXVEMGJE?=
- =?utf-8?B?bnRnV2JSanpmall0Wjhsem9wMUh3MXBhb0tCNGdqQ0syS3d2SDRneTh0Y2pl?=
- =?utf-8?B?cm1DaHl4bnVQVWJRdzFmUzFqdUZqNGN6YWJOZTZvNEsvYXAvSFJwRWM2Nkx5?=
- =?utf-8?B?SE9velY1RzE1WFd5OWVudExGUUZWeVppSVk5L1JCU05FTlMzVkdzcUI1aEpi?=
- =?utf-8?B?aXRNY3N6cnRlT1l6OWd0WUxjbmlkcnE2b0dKN04vdmZPZ2FYR3JqQ3hZMDBZ?=
- =?utf-8?B?ZWZISWJhSHlTa1p2c3BlRW1JSlBicWl2a1RESWRkcWRlbll6TnBwZk1lT3ZH?=
- =?utf-8?B?dFhIU1JySHJhbVhUK2FqRkJVcUJZaDUraGxITWJTOThqU3dwejVVT2NvWHJH?=
- =?utf-8?B?SHljd0doUkRaUGxobkhxeG9QYmJjOWRMWWxvdEZQN0FLNlJ5d2dOZEkrMWxY?=
- =?utf-8?B?d0k3WUVRTXVIcmhPUEducTRZS1RMQ29jYVdIZUdUWVYwZEFNOXV2T3BtTnpF?=
- =?utf-8?B?SDlBYU9PNjNYM1ZJbnplM1V4MTZFVmRPWTRwWnNjT2lnaEVTWms5WXdaajJ3?=
- =?utf-8?B?aFRqa1FVWW15RjVUM2R3SWNicVV3Z004enFXKy9KbElQN3dUaDlCS0NmcU8w?=
- =?utf-8?B?L2xHMmxuZHJBeEoyeGJKTVRVd01rZm80ckFIdjM5ZzJEenZUdnEzSkZxODM0?=
- =?utf-8?B?aGFJQ1Y1cGM2MGRyNm1sNU5HZG9UT1hEdnFjNjFOZ2g1c0dKcEtmOG16SWVM?=
- =?utf-8?B?end2YnhzbFF1c2NQOC9OWnRZZzJrYXlaZzdGcTRaMGd1OFlNVUtsNXlMN3kr?=
- =?utf-8?B?d3JESVFpalM1UE9senlhcTYvTU1FcTNvTmtEZ2gzeUpzVzBCbDc5N3BwNTh3?=
- =?utf-8?B?UW9HVTFHTE95eTIvMlg1N1FvaXFEQTF1WFhYMDJnSUl1RFdaMnRoZzlTQngy?=
- =?utf-8?Q?8HXjXe8SA4DhDSbLiUDYoHIje?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 18081901-f6a7-4af6-58ba-08de37587f2b
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2025 19:23:56.4515
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hnLDoaRzZYrXWhypHZDAaEIbi9I+6kdqCC8+3tQLYwMd/os/bC7coetGb7yGofyQa2COxrs/ivJU4HEqmGrIhw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7607
 
-
-On 2025-12-07 07:39, Oleg Nesterov wrote:
-> Nowaday task->group_leader->mm != task->mm is only possible if
-> a) task is not a group leader and b) task->group_leader->mm == NULL
-> because task->group_leader has already exited using sys_exit().
->
-> I don't think that drm/amd tries to detect/nack this case.
->
+On 07/12/2025 12:39, Oleg Nesterov wrote:
+> Cleanup and preparation to simplify the next changes.
+> 
+> Use current->tgid instead of current->group_leader->pid.
+> 
 > Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 
-Acked-by: Felix Kuehling <felix.kuehling@amd.com>
-
+Acked-by: Steven Price <steven.price@arm.com>
 
 > ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c   |  3 ---
->   drivers/gpu/drm/amd/amdkfd/kfd_process.c | 10 ----------
->   2 files changed, 13 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> index a0f8ba382b9e..e44f158a11f0 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-> @@ -2551,9 +2551,6 @@ void amdgpu_vm_set_task_info(struct amdgpu_vm *vm)
->   	vm->task_info->task.pid = current->pid;
->   	get_task_comm(vm->task_info->task.comm, current);
->   
-> -	if (current->group_leader->mm != current->mm)
-> -		return;
-> -
->   	vm->task_info->tgid = current->tgid;
->   	get_task_comm(vm->task_info->process_name, current->group_leader);
->   }
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-> index a085faac9fe1..f8ef18a3aa71 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-> @@ -833,12 +833,6 @@ struct kfd_process *kfd_create_process(struct task_struct *thread)
->   	if (!(thread->mm && mmget_not_zero(thread->mm)))
->   		return ERR_PTR(-EINVAL);
->   
-> -	/* Only the pthreads threading model is supported. */
-> -	if (thread->group_leader->mm != thread->mm) {
-> -		mmput(thread->mm);
-> -		return ERR_PTR(-EINVAL);
-> -	}
-> -
->   	/* If the process just called exec(3), it is possible that the
->   	 * cleanup of the kfd_process (following the release of the mm
->   	 * of the old process image) is still in the cleanup work queue.
-> @@ -918,10 +912,6 @@ struct kfd_process *kfd_get_process(const struct task_struct *thread)
->   	if (!thread->mm)
->   		return ERR_PTR(-EINVAL);
->   
-> -	/* Only the pthreads threading model is supported. */
-> -	if (thread->group_leader->mm != thread->mm)
-> -		return ERR_PTR(-EINVAL);
-> -
->   	process = find_process(thread, false);
->   	if (!process)
->   		return ERR_PTR(-EINVAL);
+>  drivers/gpu/drm/panfrost/panfrost_gem.c | 2 +-
+>  drivers/gpu/drm/panthor/panthor_gem.c   | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/panfrost/panfrost_gem.c
+> index 8041b65c6609..1ff1f2c8b726 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_gem.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
+> @@ -17,7 +17,7 @@
+>  static void panfrost_gem_debugfs_bo_add(struct panfrost_device *pfdev,
+>  					struct panfrost_gem_object *bo)
+>  {
+> -	bo->debugfs.creator.tgid = current->group_leader->pid;
+> +	bo->debugfs.creator.tgid = current->tgid;
+>  	get_task_comm(bo->debugfs.creator.process_name, current->group_leader);
+>  
+>  	mutex_lock(&pfdev->debugfs.gems_lock);
+> diff --git a/drivers/gpu/drm/panthor/panthor_gem.c b/drivers/gpu/drm/panthor/panthor_gem.c
+> index fbde78db270a..29cc57efc4b9 100644
+> --- a/drivers/gpu/drm/panthor/panthor_gem.c
+> +++ b/drivers/gpu/drm/panthor/panthor_gem.c
+> @@ -27,7 +27,7 @@ static void panthor_gem_debugfs_bo_add(struct panthor_gem_object *bo)
+>  	struct panthor_device *ptdev = container_of(bo->base.base.dev,
+>  						    struct panthor_device, base);
+>  
+> -	bo->debugfs.creator.tgid = current->group_leader->pid;
+> +	bo->debugfs.creator.tgid = current->tgid;
+>  	get_task_comm(bo->debugfs.creator.process_name, current->group_leader);
+>  
+>  	mutex_lock(&ptdev->gems.lock);
+
 
