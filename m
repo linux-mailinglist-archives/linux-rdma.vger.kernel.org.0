@@ -1,103 +1,123 @@
-Return-Path: <linux-rdma+bounces-14954-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14955-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C526CB2FBF
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Dec 2025 14:16:20 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FF0FCB3812
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Dec 2025 17:42:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 2FF6D301E5F0
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Dec 2025 13:16:19 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6E5663005299
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Dec 2025 16:42:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D14C6207A32;
-	Wed, 10 Dec 2025 13:16:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95C430EF6B;
+	Wed, 10 Dec 2025 16:42:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="W4QQi92c"
+	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="Hcgn5/hR"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AE0943AA6;
-	Wed, 10 Dec 2025 13:16:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E6C32EB846;
+	Wed, 10 Dec 2025 16:42:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765372577; cv=none; b=rbDnXRtw1TJKrbYvt3r80o9fykyHMRPErhLP5Gz4NN/X8wod41grLgKiYemV+VQ3s2q0SETKYe2mB4f+issVCNUEaulCtn67uKFWgZNojWkq8x6cHzusJjZ404eHeWa9+yS1a02DWlLBrrVDxR1IT35qV+3yOM1d/melkLPqWmc=
+	t=1765384943; cv=none; b=Dui+qiCsOjWlFA9FgKi/ih/RU2rjcTWl5FqTpLO7nJtrJ5swK/s6omCro4UjjSe6sCrRFsIF79PJyI376vhMRGxV5G2smDXDUTQM2TPawy0POLwSUER5XfOr5B0ipA0YinMQwi6mR2dUW1y7a8KcaNZGQH6GHb7I3J4hzxLxGkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765372577; c=relaxed/simple;
-	bh=1L15fxF5wCvcnci/IDH1flEWQ/ZxEisBA1XCRveqJOc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mhPx8GUWYTM1+WXwyWufrEhU53cWKNaKY75Nto/ca4ACtGqgPNLBTmwuvIqa/1Qaelyl2jFSOQO648PxGBwqZGkDZzpcUjtZhYgEl3fY6oW5FWC0QiE39Ka4cU1ggbReTxBvZv4GY1PCZGiYaASvQ7Hw9P0lsqoZHtg2txb7Mp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=W4QQi92c; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1765372573;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=8tIAMfxaWjtRGPcV8/eYqm4n2ylsDhAaF/W3QJDQ3TI=;
-	b=W4QQi92cfhazsVDjshlk0rwhJ3RopDY48BMWMoe86JlBs0DxGcv5RI4OP70t75IZlmoyjs
-	+qDKfGLQ89aXbbaLOZsx/ZeeDkWZH3nHOE8g6HC/3ArHCAGPiL0Jf1ZM8kiGHbuJXTGZrq
-	8OOQw6zT7x7DPEPVajTi+XvZYtoTlig=
-From: Thorsten Blum <thorsten.blum@linux.dev>
-To: Selvin Xavier <selvin.xavier@broadcom.com>,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>
-Cc: Thorsten Blum <thorsten.blum@linux.dev>,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] RDMA/bnxt_re: Replace cpu_to_be64 + le64_to_cpu with swab64
-Date: Wed, 10 Dec 2025 14:15:29 +0100
-Message-ID: <20251210131528.569382-2-thorsten.blum@linux.dev>
+	s=arc-20240116; t=1765384943; c=relaxed/simple;
+	bh=l2Ld7sBVKu8YDuGF611lQ99Ji+wx0fzq1oAUp+3Zin4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qCwYVDchUBJW1kCj2+KITcGV3m/UZWbs9LPwLDwR/r5AUdQv/d8QN83PRtHLIi+5ZJ4bNSqUe9qK15KzqVMhXozz4O5slNPLJIEd5BFhnA4Pv23PTorb0t0PBQiahICaLuwYZiy4W7B+WNEMqFoZnaZTOm/Z95a1A4nFkcAeHN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=Hcgn5/hR; arc=none smtp.client-ip=144.76.82.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+	s=42; h=From:Cc:To:Date:Message-ID;
+	bh=26mRdyj5ukbuYOEXWu6R6f0fK68V9mMcyWoL9cL1sjs=; b=Hcgn5/hRKy90FDEhzarkrU/qLW
+	d3VFjGJ4wWKwq9j6I4E9zRDxRVOfuUckQoR9SaThmrNZ0R3GfjTEoNhTB+dqONgqG6+X2sxD6Zgie
+	Lk+E29uGzs4NqjgCaBNa1z018SqCshH5dYA1MUXwVB6vAWtQbJJt6c9ats3+TMgtiQbMFS/5mZbin
+	2H5kuVR4W5tuk2/I5twBCAs2qZLM6EC8kuV+deTNztoSZ7Q8lAnIRshn2UQXa+qAceQUGesyPWAs7
+	j+sW1nbR+nBKmJn4P/cLH+7c7khW2+2U6Erl6W4EziWGEH2ZjSAHHnR/gmpfcue1uRq3NePoOQLRb
+	4Qf41Y7T76UFyka9W6GJxWvALezybfHr8F9z+vHKqGI8Oc4PK68lwQFhk1Ar17ZzR56Xr+DVkM0O1
+	6zDDHanHUeQxN8/VjHS7P9xkrZzoOjERI6W3z5P+Qto96n/Zsm3mRQ8Y8RhCTQ+Ay47XcX/lS+Ltb
+	2BceQJjNVzlAh7I7AMZ36RHR;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
+	(Exim)
+	id 1vTNGW-00086L-2I;
+	Wed, 10 Dec 2025 16:42:12 +0000
+Message-ID: <86b3c222-d765-4a6c-bb79-915609fa3d27@samba.org>
+Date: Wed, 10 Dec 2025 17:42:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: Problem with smbdirect rw credits and initiator_depth
+To: Namjae Jeon <linkinjeon@kernel.org>
+Cc: Tom Talpey <tom@talpey.com>,
+ "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <35eec2e6-bf37-43d6-a2d8-7a939a68021b@samba.org>
+ <CAKYAXd9p=7BzmSSKi5n41OKkkw4qrr4cWpWet7rUfC+VT-6h1g@mail.gmail.com>
+ <f59e0dc7-e91c-4a13-8d49-fe183c10b6f4@samba.org>
+ <CAKYAXd-MF1j+CkbWakFJK2ov_SfRUXaRuT6jE0uHZoLxTu130Q@mail.gmail.com>
+ <CAKYAXd__T=L9aWwOuY7Z8fJgMf404=KQ2dTpNRd3mq9dnYCxRw@mail.gmail.com>
+Content-Language: en-US
+From: Stefan Metzmacher <metze@samba.org>
+In-Reply-To: <CAKYAXd__T=L9aWwOuY7Z8fJgMf404=KQ2dTpNRd3mq9dnYCxRw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Replace cpu_to_be64(le64_to_cpu()) with swab64() to simplify
-bnxt_re_assign_pma_port_ext_counters().  No functional changes.
+Am 05.12.25 um 13:21 schrieb Namjae Jeon:
+>>> Can you at least post the dmesg output generated by this:
+>>> https://git.samba.org/?p=metze/linux/wip.git;a=commitdiff;h=7e724ebc58e986f4e101a55f4ab5e96912239918
+>>> Assuming that this wasn't triggered:
+>>> if (WARN_ONCE(needed > max_possible, "needed:%u > max:%u\n", needed, max_possible))
+>> I didn't know you wanted it. I will share it after office.
+> I have attached v2 and v3 logs. Let me know if you need something more,
+>>>
+>>> Did you run the bpftrace command? Did it print a lot of
+>>> 'smb_direct_rdma_xmit' message over the whole time of the file copy?
+>> No, I didn't check it. but I will try this.
+> /mnt# bpftrace ksmbd-rdma-xmit.bt
+> Attaching 1 probe...
+> 
+> The absence of any output after Attaching 1 probe... indicates that
+> the smb_direct_rdma_xmit function has not been called ?
 
-Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
----
- drivers/infiniband/hw/bnxt_re/hw_counters.c | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
+Assuming the client requires signing, I may found the
+reason for a recv credit problem.
 
-diff --git a/drivers/infiniband/hw/bnxt_re/hw_counters.c b/drivers/infiniband/hw/bnxt_re/hw_counters.c
-index 651cf9d0e0c7..bb1137ad84c0 100644
---- a/drivers/infiniband/hw/bnxt_re/hw_counters.c
-+++ b/drivers/infiniband/hw/bnxt_re/hw_counters.c
-@@ -290,19 +290,12 @@ int bnxt_re_assign_pma_port_ext_counters(struct bnxt_re_dev *rdev, struct ib_mad
- 	pma_cnt_ext = (struct ib_pma_portcounters_ext *)(out_mad->data + 40);
- 	if ((bnxt_qplib_is_chip_gen_p5(rdev->chip_ctx) && rdev->is_virtfn) ||
- 	    !bnxt_qplib_is_chip_gen_p5(rdev->chip_ctx)) {
--		pma_cnt_ext->port_xmit_data =
--			cpu_to_be64(le64_to_cpu(hw_stats->tx_ucast_bytes) / 4);
--		pma_cnt_ext->port_rcv_data =
--			cpu_to_be64(le64_to_cpu(hw_stats->rx_ucast_bytes) / 4);
--		pma_cnt_ext->port_xmit_packets =
--			cpu_to_be64(le64_to_cpu(hw_stats->tx_ucast_pkts));
--		pma_cnt_ext->port_rcv_packets =
--			cpu_to_be64(le64_to_cpu(hw_stats->rx_ucast_pkts));
--		pma_cnt_ext->port_unicast_rcv_packets =
--			cpu_to_be64(le64_to_cpu(hw_stats->rx_ucast_pkts));
--		pma_cnt_ext->port_unicast_xmit_packets =
--			cpu_to_be64(le64_to_cpu(hw_stats->tx_ucast_pkts));
--
-+		pma_cnt_ext->port_xmit_data = swab64(hw_stats->tx_ucast_bytes / 4);
-+		pma_cnt_ext->port_rcv_data = swab64(hw_stats->rx_ucast_bytes / 4);
-+		pma_cnt_ext->port_xmit_packets = swab64(hw_stats->tx_ucast_pkts);
-+		pma_cnt_ext->port_rcv_packets = swab64(hw_stats->rx_ucast_pkts);
-+		pma_cnt_ext->port_unicast_rcv_packets = swab64(hw_stats->rx_ucast_pkts);
-+		pma_cnt_ext->port_unicast_xmit_packets = swab64(hw_stats->tx_ucast_pkts);
- 	} else {
- 		pma_cnt_ext->port_rcv_packets = cpu_to_be64(estat->rx_roce_good_pkts);
- 		pma_cnt_ext->port_rcv_data = cpu_to_be64(estat->rx_roce_good_bytes / 4);
--- 
-Thorsten Blum <thorsten.blum@linux.dev>
-GPG: 1D60 735E 8AEF 3BE4 73B6  9D84 7336 78FD 8DFE EAD4
+ksmbd uses this:
 
+smb_direct_max_fragmented_recv_size = 1024 * 1024
+smb_direct_max_receive_size = 1364;
+smb_direct_receive_credit_max = 255;
+
+In order for the client to fill the full eassembly buffer,
+all our recv buffers are moved into it, which means
+255 * (1364 - 24) = 341700 (0x536C4) bytes of payload,
+after that we no longer able to grant and new recv credits to
+the peer, which tries to send up to 1048576 (0x100000).
+
+I found this using smbclient to download a large file
+from a Windows server without using rdma offload.
+
+So I guess you are seeing the problem when Windows
+tries to copy a file to ksmbd.
+
+For smbclient I made it work by changing
+max_fragmented_recv_size to the minimum value of
+131072 (0x20000), this value is smaller than
+all local recv buffers 255 * (1364 - 24) = 341700 (0x536C4).
+
+I try to find what difference we have between 6.17.9
+and 6.18 tomorrow.
+
+In the meantime you may want to test if 6.18 with
+smb_direct_max_fragmented_recv_size = 131072 works
+for you, or change smb_direct_receive_credit_max = 1024.
+
+metze
 
