@@ -1,139 +1,272 @@
-Return-Path: <linux-rdma+bounces-14982-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14983-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F341CCB8B52
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Dec 2025 12:25:26 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CD0BCB926D
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Dec 2025 16:35:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id D485830120E3
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Dec 2025 11:25:22 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DB325300A285
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Dec 2025 15:35:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 405EA31BC8F;
-	Fri, 12 Dec 2025 11:25:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5233A30EF6D;
+	Fri, 12 Dec 2025 15:35:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="cMeOE3kA"
+	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="UNc5/sSj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FADE31AA80
-	for <linux-rdma@vger.kernel.org>; Fri, 12 Dec 2025 11:25:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55C16256C87;
+	Fri, 12 Dec 2025 15:35:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765538720; cv=none; b=IAkfaMP2/QNFsg3Fy6wJVgni3WQPZgPKxk7Lf7CWz/doen6DK44UjIhIEuVfD3gaUbtdIPFVH4jVwm+xD6o8b6lhbZFHhYyynWbmlir8kxrHtzm9V8VoVa94DO4QAisK39yyGr3N1QBpCzU4CbdS0dDSnJB58L/ELiBP1RSbzVI=
+	t=1765553726; cv=none; b=nvZTFIANZKTz/7HdEjRTvSLczM9t7hLQhy1TfOCheprJNfTh3lojbHNDEMpJX8E628e56XllQ1K1i+95z2bBxOEkCsKdT9n/5AeztT0uQXHW+gSN5NVb9PKEeYnY2d928bI9kQOtQYNCoaEQUcu3OKBbTlPpMrLFktAmC2gEoHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765538720; c=relaxed/simple;
-	bh=hTO9aQVk1BjsYhwnOVt6ys9wXkYUKex0i/wuCIuc6wM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZVrurZmwZPNnPWzsvbBawTy8ia1QwEYEI4qLDjqG48aR8ne91n0FyX0Ys6gITuofSNXxWNwR6JATQMToogIXb55Oa5cKqLjG/yk42jzIbks3EDG+RRZIrY/mXRgCuU2fDdkubW0CVWGCafjAAj64/tUUbvVfXupe648tXbZNLvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=cMeOE3kA; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-477632b0621so8070345e9.2
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Dec 2025 03:25:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1765538716; x=1766143516; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gEnn545SHxpJYbhpEqJ4kau8ivvtfD9Ghf76lIvPG6E=;
-        b=cMeOE3kACU3Ha23b+to+W7aPNYOihqvQuOjwSqGOXZ0gICe92Db6JhvmQ6BJ8/qtEw
-         PR194sicrzJkAYlJ+jmzXgJvZk09uDchh9eOJQWn7xKmHuA34Yt5Hgkalp6DkBvNaIu1
-         qCkppwq/uAyrsk4N3Gycwl6RZCj2PZgWbgeUSoBIRRpLNHKNREqryVW18rEw2cDBoZkO
-         fQNzhs4ug4EllxjaAewe+1nbz9dsEozWQCM7fnXWMPDozG4Urh8gHbe/161oSoGR2NbI
-         e7nXoLcLIKLETzBZByXcCxc/cqa56m0aYBV7XQAtagciJIMul+LBf0PGLxbU27r7A1h0
-         74Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765538716; x=1766143516;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gEnn545SHxpJYbhpEqJ4kau8ivvtfD9Ghf76lIvPG6E=;
-        b=DqaBv99474XvwGY5E8mXYTiMDQusR0oatT40YkLVEU+IpVR6GsGlmdRAmcryfoFm50
-         W7MiNpEEgeLof3RKkQt0Rp0sfQ6nqTxUaADEXs3GbYjqB+SQxS3nwnvszkOcLdDqzQ1p
-         GKtVoVEHUcWQvmBr+D7NW1enWM4Huxa4oknUH5/SekTwi6Cff+oNxhj/FrluWCX4UIjv
-         K1yS5P6SzKTRMXWju+NU3gNlRJtf7GEntnByW1bMeObUPOsQnxStxLcNKDjuIGPgOcRJ
-         lsoBSo8PMhfIcMGNPD2nv5j8yltuMCike1oN1b7ZAmJiLngTxE89+h2/hX/9UPdZiIMZ
-         xviQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWTSUYNqrldk33GIuSgNu1BF5rJlMVdBobgaMJ1NEoEA/vJmjOGEoYzE5ulgXhd65Rg3WpoSztpnoHT@vger.kernel.org
-X-Gm-Message-State: AOJu0YwUVUnAPeAk2OhFtecC1G/d67FpO/HPwHjioBF1ytqAVpePLreS
-	sGNEg8YgXILwJtvToUmckIr/oOikDFNmEGB2P/XCZR1efkitZpV/YLLyx1ArwZFI9Lc=
-X-Gm-Gg: AY/fxX5EpUkVh5814/QF2VpkFDzwhrxSREzSIyZl/uMeWXtv6VO1Uv+S9rn4DtYwC2z
-	q+vrylJoParhxm8IfrLtEFFHme0/xqyneFOz2Q/UmsGg4WBzV38ABNjIIOx0dStliygray8Cfnn
-	OWCcXeGFcJb6f3IFFyCqHxYce15tU9ynatRhoOCrRrZ/Fww60AUCfHDSox0S6C10rtAudyNxGjP
-	0qj1AMT0LbC8iS3rIA3STY93WnQjRQ0i5ncdiFR8FQgrzBq75jkS5I57rpS1BkNuqy/kdTYmhta
-	BeZFODG8lVdX/0RcT+jIB2yx0NJ/8FCqFPOXkxcaft/Q5pw4jhVVzqh/olIen8oiDhA36smbo6F
-	Q5W0WGrVyKbD92BVAMsU/JkbmvdpwJHyZXadup4inM1gGs/cc4TyNgnS4wfIth4IahKG1/8KIHE
-	aCDvtFDRe8QKjJ9pODJESUORs=
-X-Google-Smtp-Source: AGHT+IHkaay9CDV5kfE74IqgXxI+GzQAfyiag1hnUiI3Kv6EDGuWkv0C2Lwzh9GBMI+h6MNTm6fuig==
-X-Received: by 2002:a05:6000:2c09:b0:42b:5406:f289 with SMTP id ffacd0b85a97d-42fb44a24f0mr1717666f8f.3.1765538715596;
-        Fri, 12 Dec 2025 03:25:15 -0800 (PST)
-Received: from FV6GYCPJ69 ([140.209.217.211])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42fa8a66761sm11462241f8f.3.2025.12.12.03.25.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Dec 2025 03:25:15 -0800 (PST)
-Date: Fri, 12 Dec 2025 12:25:12 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Ivan Vecera <ivecera@redhat.com>
-Cc: netdev@vger.kernel.org, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>, Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>, 
-	Grzegorz Nitka <grzegorz.nitka@intel.com>, Petr Oros <poros@redhat.com>, 
-	Michal Schmidt <mschmidt@redhat.com>, Prathosh Satish <Prathosh.Satish@microchip.com>, 
-	Tony Nguyen <anthony.l.nguyen@intel.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
-	Richard Cochran <richardcochran@gmail.com>, Jonathan Lemon <jonathan.lemon@gmail.com>, 
-	Simon Horman <horms@kernel.org>, Alexander Lobakin <aleksander.lobakin@intel.com>, 
-	Willem de Bruijn <willemb@google.com>, Stefan Wahren <wahrenst@gmx.net>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH RFC net-next 02/13] dpll: Allow registering pin with
- firmware node
-Message-ID: <ahyyksqki6bas5rqngd735k4fmoeaj7l2a7lazm43ky3lj6ero@567g2ijcpekp>
-References: <20251211194756.234043-1-ivecera@redhat.com>
- <20251211194756.234043-3-ivecera@redhat.com>
+	s=arc-20240116; t=1765553726; c=relaxed/simple;
+	bh=yrLkqcLkxCR5PHxkrFRXmovlodobkJFUMtssj/mq3SY=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=PPuCMEbi52uvqiMTsw60AZoJfCQXf5eA/ifnV/qTIfmx9mDrLgh02GKeCSo0Fe9cF+eE1k7VILfHIfZGSd+uil50tkrlHbxVyc1GBgtF8XuWgKMltrqSFCw6WzLxakbN7ocdMNY4uRg6lbx/pdWfZLykaoboRQwmiFw26G+eo40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=UNc5/sSj; arc=none smtp.client-ip=144.76.82.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+	s=42; h=Cc:To:From:Date:Message-ID;
+	bh=OQFLuU+Vo7X5GCMUDr/RD+aQRHoorYWwJ5ZxzATMY5s=; b=UNc5/sSjwuugIEljbuiLPP0kvF
+	KNUSsYlGY+4mT9PaH4Aa2JmtEITpqQubuhc9hjuffEUcCFVcEc3iYR2r2Kvj6uvRXMznCaeUOAYtS
+	UgziTKWav+7iVidk52Q8unX2SYS2LBi5qXxG6IRt4OoBpxmu+0mIzHAE8UNyrJNkOxG82kG6TGzjw
+	kNjaUMrb+7lUg8y7v/oM0mROiJD8NPPStKE2O4nK0gebUt7oHkGB8CA68i/zXr5oNn91IrZKF5le/
+	xNLIC6iVdfweVtyQq8EpyTIIaRvqMjZ/D4h9Mb820nutbpJZGmZecUiDRWrxY1A2RDRS0p7cygSpR
+	TmVKi+Vyz7+DftVVzexdwwSK35DbzzshGcFP3iGsx+oUqs+GvgDZRcbYtrGzUnjSSvrQdOeFq93j/
+	OuX7hdV40rghwVr45n2GyntKfn6HhQOia78uUxDPaQ6jic6ncR00roD62GCH+S6eEh2tuDN2VVQUa
+	ZhGByM0xKt9MllqCkmzRbEq1;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
+	(Exim)
+	id 1vU5At-000QNp-14;
+	Fri, 12 Dec 2025 15:35:19 +0000
+Message-ID: <721eb7b1-dea9-4510-8531-05b2c95cb240@samba.org>
+Date: Fri, 12 Dec 2025 16:35:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251211194756.234043-3-ivecera@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Problem with smbdirect rw credits and initiator_depth
+From: Stefan Metzmacher <metze@samba.org>
+To: Namjae Jeon <linkinjeon@kernel.org>
+Cc: Tom Talpey <tom@talpey.com>,
+ "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <35eec2e6-bf37-43d6-a2d8-7a939a68021b@samba.org>
+ <CAKYAXd9p=7BzmSSKi5n41OKkkw4qrr4cWpWet7rUfC+VT-6h1g@mail.gmail.com>
+ <f59e0dc7-e91c-4a13-8d49-fe183c10b6f4@samba.org>
+ <CAKYAXd-MF1j+CkbWakFJK2ov_SfRUXaRuT6jE0uHZoLxTu130Q@mail.gmail.com>
+ <CAKYAXd__T=L9aWwOuY7Z8fJgMf404=KQ2dTpNRd3mq9dnYCxRw@mail.gmail.com>
+ <86b3c222-d765-4a6c-bb79-915609fa3d27@samba.org>
+ <a3760b26-7458-40a0-ae79-bb94dd0e1d01@samba.org>
+ <3c0c9728-6601-41f1-892f-469e83dd7f19@samba.org>
+Content-Language: en-US
+In-Reply-To: <3c0c9728-6601-41f1-892f-469e83dd7f19@samba.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Thu, Dec 11, 2025 at 08:47:45PM +0100, ivecera@redhat.com wrote:
+Am 12.12.25 um 10:58 schrieb Stefan Metzmacher:
+> Am 11.12.25 um 20:38 schrieb Stefan Metzmacher:
+>> Am 10.12.25 um 17:42 schrieb Stefan Metzmacher:
+>>> Am 05.12.25 um 13:21 schrieb Namjae Jeon:
+>>>>>> Can you at least post the dmesg output generated by this:
+>>>>>> https://git.samba.org/?p=metze/linux/wip.git;a=commitdiff;h=7e724ebc58e986f4e101a55f4ab5e96912239918
+>>>>>> Assuming that this wasn't triggered:
+>>>>>> if (WARN_ONCE(needed > max_possible, "needed:%u > max:%u\n", needed, max_possible))
+>>>>> I didn't know you wanted it. I will share it after office.
+>>>> I have attached v2 and v3 logs. Let me know if you need something more,
+>>>>>>
+>>>>>> Did you run the bpftrace command? Did it print a lot of
+>>>>>> 'smb_direct_rdma_xmit' message over the whole time of the file copy?
+>>>>> No, I didn't check it. but I will try this.
+>>>> /mnt# bpftrace ksmbd-rdma-xmit.bt
+>>>> Attaching 1 probe...
+>>>>
+>>>> The absence of any output after Attaching 1 probe... indicates that
+>>>> the smb_direct_rdma_xmit function has not been called ?
+>>>
+>>> Assuming the client requires signing, I may found the
+>>> reason for a recv credit problem.
+>>>
+>>> ksmbd uses this:
+>>>
+>>> smb_direct_max_fragmented_recv_size = 1024 * 1024
+>>> smb_direct_max_receive_size = 1364;
+>>> smb_direct_receive_credit_max = 255;
+>>>
+>>> In order for the client to fill the full eassembly buffer,
+>>> all our recv buffers are moved into it, which means
+>>> 255 * (1364 - 24) = 341700 (0x536C4) bytes of payload,
+>>> after that we no longer able to grant and new recv credits to
+>>> the peer, which tries to send up to 1048576 (0x100000).
+>>>
+>>> I found this using smbclient to download a large file
+>>> from a Windows server without using rdma offload.
+>>>
+>>> So I guess you are seeing the problem when Windows
+>>> tries to copy a file to ksmbd.
+>>>
+>>> For smbclient I made it work by changing
+>>> max_fragmented_recv_size to the minimum value of
+>>> 131072 (0x20000), this value is smaller than
+>>> all local recv buffers 255 * (1364 - 24) = 341700 (0x536C4).
+>>>
+>>> I try to find what difference we have between 6.17.9
+>>> and 6.18 tomorrow.
+>>
+>> The above is not a problem with 6.17.9 nor
+>> with 6.18 in the server, as I found this logic
+>> hiding in smb_direct_prepare().
+>>
+>>          sp->max_fragmented_recv_size =
+>>                  (sp->recv_credit_max * sp->max_recv_size) / 2;
+>>
+>> It explains why I saw the strange 173910 value in captures...
+> 
+> It also explains why the branch I proposed for 6.19
+> was worse than 6.18, as this logic got lost.
+> 
+> Today I tested with smbclient downloading a 32MB file
+> from ksmbd (in the state of 6.17.9, basically
+> for-6.18/ksmbd-smbdirect-regression-v3)
+> and was able to generate a problem that seems to
+> be verify similar as what you are seeing with 6.18
+> and the Mellanox setup.
+> 
+> During the stream of fragments ksmbd sends a pdu
+> a keepalive pdu (RemainingLength = 0 and DataLength = 0)
+> granting credits, this truncates the smb2 read response.
 
-[..]
 
->@@ -559,7 +563,8 @@ EXPORT_SYMBOL(dpll_netdev_pin_clear);
->  */
-> struct dpll_pin *
-> dpll_pin_get(u64 clock_id, u32 pin_idx, struct module *module,
->-	     const struct dpll_pin_properties *prop)
->+	     const struct dpll_pin_properties *prop,
->+	     struct fwnode_handle *fwnode)
-> {
-> 	struct dpll_pin *pos, *ret = NULL;
-> 	unsigned long i;
->@@ -568,14 +573,15 @@ dpll_pin_get(u64 clock_id, u32 pin_idx, struct module *module,
-> 	xa_for_each(&dpll_pin_xa, i, pos) {
-> 		if (pos->clock_id == clock_id &&
-> 		    pos->pin_idx == pin_idx &&
->-		    pos->module == module) {
->+		    pos->module == module &&
->+		    pos->fwnode == fwnode) {
+I've fixed like this:
 
-Is fwnode part of the key? Doesn't look to me like that. Then you can
-have a simple helper to set fwnode on struct dpll_pin *, and leave
-dpll_pin_get() out of this, no?
+  fs/smb/common/smbdirect/smbdirect_socket.h |  4 ++++
+  fs/smb/server/transport_rdma.c             | 14 ++++++++++++--
+  2 files changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/fs/smb/common/smbdirect/smbdirect_socket.h b/fs/smb/common/smbdirect/smbdirect_socket.h
+index ee4c2726771a..c541c9d0ae2d 100644
+--- a/fs/smb/common/smbdirect/smbdirect_socket.h
++++ b/fs/smb/common/smbdirect/smbdirect_socket.h
+@@ -178,6 +178,10 @@ struct smbdirect_socket {
+  			wait_queue_head_t wait_queue;
+  		} credits;
+
++		struct {
++			u32 remaining_data_length;
++		} batch;
++
+  		/*
+  		 * The state about posted/pending sends
+  		 */
+diff --git a/fs/smb/server/transport_rdma.c b/fs/smb/server/transport_rdma.c
+index 03944be02b14..cc0d647aa9df 100644
+--- a/fs/smb/server/transport_rdma.c
++++ b/fs/smb/server/transport_rdma.c
+@@ -360,11 +360,16 @@ static void smb_direct_send_immediate_work(struct work_struct *work)
+  {
+  	struct smbdirect_socket *sc =
+  		container_of(work, struct smbdirect_socket, idle.immediate_work);
++	int ret;
+
+  	if (sc->status != SMBDIRECT_SOCKET_CONNECTED)
+  		return;
+
+-	smb_direct_post_send_data(sc, NULL, NULL, 0, 0);
++	ret = smb_direct_post_send_data(sc, NULL, NULL, 0, 0);
++	if (ret == -EBUSY) {
++		pr_notice("%s: skipped batch running:%u\n",
++			  __func__, sc->send_io.batch.remaining_data_length);
++	}
+  }
+
+  static void smb_direct_idle_connection_timer(struct work_struct *work)
+@@ -1031,7 +1036,7 @@ static void smb_direct_post_recv_credits(struct work_struct *work)
+  		}
+  	}
+
+-	if (credits)
++	if (credits && !sc->send_io.batch.remaining_data_length)
+  		queue_work(sc->workqueue, &sc->idle.immediate_work);
+  }
+
+@@ -1427,6 +1432,11 @@ static int smb_direct_post_send_data(struct smbdirect_socket *sc,
+  	int data_length;
+  	struct scatterlist sg[SMBDIRECT_SEND_IO_MAX_SGE - 1];
+
++	if (send_ctx)
++		sc->send_io.batch.remaining_data_length = remaining_data_length;
++	else if (sc->send_io.batch.remaining_data_length)
++		return -EBUSY;
++
+  	ret = wait_for_send_lcredit(sc, send_ctx);
+  	if (ret)
+  		goto lcredit_failed;
 
 
-> 			ret = pos;
-> 			refcount_inc(&ret->refcount);
-> 			break;
-> 		}
 
-[..]
+> Maybe a7eef6144c97bd7031d40ebc6e8fdd038ea3f46f
+> smb: server: queue post_recv_credits_work in put_recvmsg() and avoid count_avail_recvmsg
+> makes it more likely to happen, but I'm exploring that.
+
+This was not the reason for the response truncation, but
+most likely caused the problem you are hitting as the logic
+for queue_work(smb_direct_wq, &t->post_recv_credits_work); in
+recv_done() was too strictly and not posting more recv buffers.
+
+I fixed it with this:
+
+--- a/fs/smb/server/transport_rdma.c
++++ b/fs/smb/server/transport_rdma.c
+@@ -645,6 +645,7 @@ static void recv_done(struct ib_cq *cq, struct ib_wc *wc)
+                 struct smbdirect_data_transfer *data_transfer =
+                         (struct smbdirect_data_transfer *)recvmsg->packet;
+                 u32 remaining_data_length, data_offset, data_length;
++               int current_recv_credits;
+                 u16 old_recv_credit_target;
+
+                 if (wc->byte_len <
+@@ -683,7 +684,7 @@ static void recv_done(struct ib_cq *cq, struct ib_wc *wc)
+                 }
+
+                 atomic_dec(&sc->recv_io.posted.count);
+-               atomic_dec(&sc->recv_io.credits.count);
++               current_recv_credits = atomic_dec_return(&sc->recv_io.credits.count);
+
+                 old_recv_credit_target = sc->recv_io.credits.target;
+                 sc->recv_io.credits.target =
+@@ -703,7 +704,8 @@ static void recv_done(struct ib_cq *cq, struct ib_wc *wc)
+                         wake_up(&sc->send_io.credits.wait_queue);
+
+                 if (data_length) {
+-                       if (sc->recv_io.credits.target > old_recv_credit_target)
++                       if (current_recv_credits <= (sc->recv_io.credits.target / 4) ||
++                           sc->recv_io.credits.target > old_recv_credit_target)
+                                 queue_work(sc->workqueue, &sc->recv_io.posted.refill_work);
+
+                         enqueue_reassembly(sc, recvmsg, (int)data_length);
+
+
+This seems to be similar than the logic in Windows it grants
+191 credits at once the peer is low on credits.
+255 / 4 = ~64 and 255 - 64 = 191
+
+I've put these changes a long with rw credit fixes into my
+for-6.18/ksmbd-smbdirect-regression-v4 branch, are you able to
+test this?
+
+If that works I'll prepare real patches...
+
+Note there's also a for-6.18/ksmbd-smbdirect-regression-v4+ branch,
+but that's only for my own usage with my debug kernel that has some
+backports required for the IPPROTO_SMBDIRECT patches...
+
+metze
 
