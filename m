@@ -1,168 +1,255 @@
-Return-Path: <linux-rdma+bounces-14984-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14985-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53B03CBA2DB
-	for <lists+linux-rdma@lfdr.de>; Sat, 13 Dec 2025 03:14:49 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60C2ECBBF93
+	for <lists+linux-rdma@lfdr.de>; Sun, 14 Dec 2025 20:31:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 98A1C3000B32
-	for <lists+linux-rdma@lfdr.de>; Sat, 13 Dec 2025 02:14:47 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C4A9C300F599
+	for <lists+linux-rdma@lfdr.de>; Sun, 14 Dec 2025 19:31:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46CA723EA97;
-	Sat, 13 Dec 2025 02:14:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CBD33148D2;
+	Sun, 14 Dec 2025 19:31:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gNVwcUYr"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KNYfAZr6";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="Py7nhpZe"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F28BE23E358
-	for <linux-rdma@vger.kernel.org>; Sat, 13 Dec 2025 02:14:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 241143B8D68
+	for <linux-rdma@vger.kernel.org>; Sun, 14 Dec 2025 19:31:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765592085; cv=none; b=ITbBC5SQzzvAPK6+kD03eqbJhB4ib0hys8CpIBrVaA/BpbV736eC3erxow5f1/UCHcCoQSyrHj29wiEh0Ft7mbF1OZbwL2XPzGts+/ht9TpU8dhwnRIt29b/q1BTAINjWERG3/9DvzMQpmRx+SGo+0Hh9yNAuv9d0VVcXzY9ygc=
+	t=1765740668; cv=none; b=fYOEE1XdMOcjbtCgg5+gVCqmlmWNOMeuJm/wQvDfE0sQ5FQ/OnGekk/HsYnkmcXUul8DjosjeTPWVw6WOXROsOyNKlisoHsL9MTTI7nwQyE+/Qw0U52iEsfr270g+pZh1+f7A4GUjY50uW0koIof/Mt3EUt4WJCs118RaYWFpC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765592085; c=relaxed/simple;
-	bh=BeWXYtO9Vh7C2i5AQfViuXzLL1asoIxB/QTiROfg4/8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bL7x9/euY0VJH2f2GCUUuppNQtpZcGI4xX3IJt+I6SwIRPw/mfI3+FbmmgmlhGB9dUlp/4XU/MUTk+2ROk5veng7CxQa8WNdZ1SlpysRhO9lchRmNqVmI+ZZTzMtQgv/oj47NEcXgQU5m3mWFv3luV09NGyHdXZ5lmNFWq4hX8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gNVwcUYr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CC39C16AAE
-	for <linux-rdma@vger.kernel.org>; Sat, 13 Dec 2025 02:14:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765592084;
-	bh=BeWXYtO9Vh7C2i5AQfViuXzLL1asoIxB/QTiROfg4/8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=gNVwcUYryDQuHoXfLjDFxKmlgjmtACo4a+6gYLx+ishzpwvwW5MsmvX5AtF39LJ3k
-	 MeYVz7Tj042xVa4s+cjc/1tut1QshqoyZ+kPCpOuewb45NDWNwpBDQs94oBK+5chmW
-	 qdD93i4wiyHcuTePytbkEbIDZK8t6Jd2xqat2rw5TKHh3c0x5lggCQLuJK24yVQ5kZ
-	 kU25NWKyo02BwOYdd/Y1c00aST+gmAKWu6q3uKiC/804bwHH3YeVuQjaTbJBv7gClK
-	 dJTyZQKvX9o7iOElzSMteAAs4IZgtIiY7y3cLB9otb9N9AJcSaS+9h/uc1DpCLSaYr
-	 NDpSnOFuTUitw==
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-b7370698a8eso235626566b.0
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Dec 2025 18:14:44 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV4X5kkVeK1odwrX/9NRctgXXp3MdIBEY5mPCSJYU585eB0jwwsasQ/XCs/78HxlzfZjquph0XPDvfS@vger.kernel.org
-X-Gm-Message-State: AOJu0YwLkl1w2nvbKGQWj6AEn7PLGpaFsDhyt9u0EKV0WceifhdQ2jMP
-	eNc/eru+ls78uaTp/Yr6HaxPNvqR4MCIgJmfn6B0vhqUCwVtsfvhTZgmGCanDmmnMSJ0qyfPYHG
-	5/tpEc0NEpEa0ekRViQo1NXSeeSClKwY=
-X-Google-Smtp-Source: AGHT+IG8f8o/pePvXmIPPZj1zf10P5xokIHgvDQ+GhvZjTy1X0sF3rPD4/ifjWXMC/VRDCDyFSpDq7uHQeAjTOydca0=
-X-Received: by 2002:a17:907:9617:b0:b76:8163:f1f8 with SMTP id
- a640c23a62f3a-b7d23a7d742mr379528866b.53.1765592083150; Fri, 12 Dec 2025
- 18:14:43 -0800 (PST)
+	s=arc-20240116; t=1765740668; c=relaxed/simple;
+	bh=k8u03FjgqDJBg8ERVle+DHdeeA7ayrFPrNQbxMFc2sg=;
+	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=KwbejRavpeNmghogJsGAfftTplU9S/jN76hyqAvC50cgW3QxalmNNI4MZyZD/iXIngZ1fwfUf91MrNu+IcYkQXydBwbwa9n5amqbnL/rW7lcbIo1O/yl5jtRguuDA5gLKA0cDLbt3sykYG5Bbr9J1rZQoUNCInamIqzakuwLnng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KNYfAZr6; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=Py7nhpZe; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1765740662;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AkDF/IHsQ0LQ2YPT4lm80CVidD6oYFhupeQzt7BNxAY=;
+	b=KNYfAZr6MTby4Rk8uSConZyN24iYmVkv0qT+o3s5nCJ/x0Z6yp0t87C8gTqmtC8fh0W415
+	j7fBD8wvxMiRkEbQ+XHLczUKD0onHs2nLH/H2ydQnzHYJ8Ol2dTm9q5LsiifvDf1hG+E1l
+	GelNgI04H0Lr7dcW1FeiNoljRtiOE88=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-173-iQGwYHOBO2ilaGbXIHcohg-1; Sun, 14 Dec 2025 14:31:00 -0500
+X-MC-Unique: iQGwYHOBO2ilaGbXIHcohg-1
+X-Mimecast-MFC-AGG-ID: iQGwYHOBO2ilaGbXIHcohg_1765740660
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-47a97b785bdso6448495e9.3
+        for <linux-rdma@vger.kernel.org>; Sun, 14 Dec 2025 11:31:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1765740659; x=1766345459; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:references
+         :in-reply-to:user-agent:subject:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AkDF/IHsQ0LQ2YPT4lm80CVidD6oYFhupeQzt7BNxAY=;
+        b=Py7nhpZelDVGHp1EFLuG1ZaqlNunvXbbPfXUsxbc0TNYReHvcC3Dy/DGXw6NWRO254
+         gJGyMVBbTVwlT1fuwAY6KuCSb9pFjzNwl0KsNRbk6lzbwm6cbDNg07CTK4FHMpU3alaM
+         BSF33hm1v/SeC5KVtA67vv4rOyZYN2tIhULbPHhJj3YsiskPZXAv95BahL9Z+2T+XJq9
+         b/g4Fre0xtKoxwpHUupI380ySm8NnqBrOFyXmElcPfmExV8ZVd3tBPUuupTF+qBDWArD
+         CGQfJjsra5uCxfzmihjWa1BTx7ysbcAI5RMqHT0VseSHL+AKUGTio637fCdXOuoLTpRB
+         Di0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765740659; x=1766345459;
+        h=content-transfer-encoding:mime-version:message-id:references
+         :in-reply-to:user-agent:subject:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AkDF/IHsQ0LQ2YPT4lm80CVidD6oYFhupeQzt7BNxAY=;
+        b=OCT9Vij8AklFx056tCRcMP8BKa/LLK1QiQ0K7G/2AS4+lqwm7WRmBb3PFvR5xk5xOc
+         0iWSNJq9uX7oJmBCpqSqRDydVxwHOROTA7dMZnlgXEdbev9H3HUOKuD3ID3GE2kratko
+         ZLNl4RQzgydtBLyOZ82cemtX24cgvORXibaUZTkzQvVuJ+2J4eIAYKbCIVHW/UbMoPCA
+         jYuhqvAzegd4MiR5NwKhT+pNhtsPYiQLrOQ9SfikGuPUM9SlOExR+KMT5KJyK20ZyQiq
+         JwZdvbz/F4Ici36pvFnWcaTqT5TmY0VPVRnHQd3dyArmGYL2nB0QG5qJDwhSpUeOMitc
+         A1mQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXz3iXN4S9N11dj/KIubIQZF3qSr+1sze3LsxE4IS6WCQMDjPFMPqHZkv/HLJUAoXxDmVBWXpNOydSo@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw25Tfvx9HEjHO8Pi04KK6ECs/w3ImvpRYBFqqrEISnRfU5sv+r
+	akAHhb6NHOQYPhXQZwccSMHT9CeNTUbnUMIW9EmDh+oHaeZD/+7rLDMge8Rk3SyvrV0RT96kDQO
+	MEDUy6HSVU4k3z6r3MSRfgofWkd6BgZF21+lf8Xmk/40ZsswD0ZZUY9xgeVuoUgc=
+X-Gm-Gg: AY/fxX6ze/96xsJ505YzVeY5HWgvIaXQdYmoN4q0IiYSBBXvvLekKNVuhKpgBLfrJo/
+	uS5YcxI+MIkZ3aNITxtFYg0J1TEuJg5ZwzBUkE1clZKeU4wEL5PPYq6hftilUTVbph2HOxVbP41
+	ATsiU7w4omnXP5USPVnWtUGXqkhEWpR2HZyhbtuTRWCIftsZh+6a7xDFOuYeDc5HlZrbCjtcWl+
+	4x5D7J4Qgf9O/KcxrJpr8ja5XF8rR4u8LD3MC4nPvd2R1MD0DO5lfMiy2n8EK1qhPygRQ7Ld59c
+	WCv3KUkh6w515I8Naa65C/o66M4hgyxb621AL+suHE0ZpRMkEz9cSocdBP5aSKf40lAYm1sE0X0
+	9LtpvbqzsC9FHkN+f
+X-Received: by 2002:a05:600c:1994:b0:477:a978:3a7b with SMTP id 5b1f17b1804b1-47a8f905675mr74588115e9.22.1765740659481;
+        Sun, 14 Dec 2025 11:30:59 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG1JD6sqz6cMNfj68jqPv9uhNS9gihklxA8B3t1RSm2FSST2qEHqefUpOZ7al5hM84O0pEMNA==
+X-Received: by 2002:a05:600c:1994:b0:477:a978:3a7b with SMTP id 5b1f17b1804b1-47a8f905675mr74587865e9.22.1765740659011;
+        Sun, 14 Dec 2025 11:30:59 -0800 (PST)
+Received: from ehlo.thunderbird.net ([2a00:e580:bf11:1:11d6:cade:a15:8421])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47a8f72ce1bsm55125135e9.5.2025.12.14.11.30.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 14 Dec 2025 11:30:58 -0800 (PST)
+Date: Sun, 14 Dec 2025 20:30:56 +0100
+From: Ivan Vecera <ivecera@redhat.com>
+To: "Loktionov, Aleksandr" <aleksandr.loktionov@intel.com>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+ Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+ "Kubalewski, Arkadiusz" <arkadiusz.kubalewski@intel.com>,
+ "Nitka, Grzegorz" <grzegorz.nitka@intel.com>, Jiri Pirko <jiri@resnulli.us>,
+ "Oros, Petr" <poros@redhat.com>, "Schmidt, Michal" <mschmidt@redhat.com>,
+ Prathosh Satish <Prathosh.Satish@microchip.com>,
+ "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+ "Kitszel, Przemyslaw" <przemyslaw.kitszel@intel.com>,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Jonathan Lemon <jonathan.lemon@gmail.com>, Simon Horman <horms@kernel.org>,
+ "Lobakin, Aleksander" <aleksander.lobakin@intel.com>,
+ Willem de Bruijn <willemb@google.com>, Stefan Wahren <wahrenst@gmx.net>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: =?US-ASCII?Q?RE=3A_=5BIntel-wired-lan=5D_=5BPAT?=
+ =?US-ASCII?Q?CH_RFC_net-next_13/13=5D_ice=3A?=
+ =?US-ASCII?Q?_dpll=3A_Support_E825-C_SyncE_and_dynamic_pin_discovery?=
+User-Agent: Thunderbird for Android
+In-Reply-To: <IA3PR11MB898612C9A66ABA4DA673D3FCE5AEA@IA3PR11MB8986.namprd11.prod.outlook.com>
+References: <20251211194756.234043-1-ivecera@redhat.com> <20251211194756.234043-14-ivecera@redhat.com> <IA3PR11MB898612C9A66ABA4DA673D3FCE5AEA@IA3PR11MB8986.namprd11.prod.outlook.com>
+Message-ID: <08A08E3A-0EEF-4FE3-B038-04300E2A5E3A@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <35eec2e6-bf37-43d6-a2d8-7a939a68021b@samba.org>
- <CAKYAXd9p=7BzmSSKi5n41OKkkw4qrr4cWpWet7rUfC+VT-6h1g@mail.gmail.com>
- <f59e0dc7-e91c-4a13-8d49-fe183c10b6f4@samba.org> <CAKYAXd-MF1j+CkbWakFJK2ov_SfRUXaRuT6jE0uHZoLxTu130Q@mail.gmail.com>
- <CAKYAXd__T=L9aWwOuY7Z8fJgMf404=KQ2dTpNRd3mq9dnYCxRw@mail.gmail.com>
- <86b3c222-d765-4a6c-bb79-915609fa3d27@samba.org> <a3760b26-7458-40a0-ae79-bb94dd0e1d01@samba.org>
- <3c0c9728-6601-41f1-892f-469e83dd7f19@samba.org> <721eb7b1-dea9-4510-8531-05b2c95cb240@samba.org>
-In-Reply-To: <721eb7b1-dea9-4510-8531-05b2c95cb240@samba.org>
-From: Namjae Jeon <linkinjeon@kernel.org>
-Date: Sat, 13 Dec 2025 11:14:31 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd-WTsVEyONDmOMbKseyAp29q71KiUPwGDp2L_a53oL0vg@mail.gmail.com>
-X-Gm-Features: AQt7F2rBArEeWijTVbJ6igYRF5Af7eyfIBmsXD2glrmdx56g46JcoSlDAuAmS78
-Message-ID: <CAKYAXd-WTsVEyONDmOMbKseyAp29q71KiUPwGDp2L_a53oL0vg@mail.gmail.com>
-Subject: Re: Problem with smbdirect rw credits and initiator_depth
-To: Stefan Metzmacher <metze@samba.org>
-Cc: Tom Talpey <tom@talpey.com>, 
-	"linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>, 
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-> I've put these changes a long with rw credit fixes into my
-> for-6.18/ksmbd-smbdirect-regression-v4 branch, are you able to
-> test this?
-Problems still occur. See:
 
-[ 5734.595709] ksmbd: running
-[ 5872.277551] ksmbd: smb_direct: dev[rocep1s0f0]: iwarp=0 ib=0 roce=1
-v1=1 v2=1 device_cap_flags=0x1425321c36 kernel_cap_flags=0x2e
-page_size_cap=0xfffffffffffff000
-[ 5872.277575] ksmbd: smb_direct: dev[rocep1s0f0]: max_qp_rd_atom=16
-max_qp_init_rd_atom=16 max_fast_reg_page_list_len=65536 max_sgl_rd=3
-max_sge_rd=30 max_cqe=4194303 max_qp_wr=8192 max_send_sge=30
-max_recv_sge=32
-[ 5872.277606] ksmbd: smb_direct: initiator_depth:16 peer_initiator_depth:16
-[ 5872.277612] ksmbd: smb_direct: max_send_sges=4
-max_read_write_size=8388608 maxpages=2048
-[ 5872.277619] ksmbd: smb_direct: sc->rw_io.credits.num_pages=256
-sc->rw_io.credits.max:9
-[ 5872.278221] ksmbd: smb_direct: max_rdma_ctxs=9 rdma_send_wr=27
-[ 5872.294920] ksmbd: smb_direct: dev[rocep1s0f0]: iwarp=0 ib=0 roce=1
-v1=1 v2=1 device_cap_flags=0x1425321c36 kernel_cap_flags=0x2e
-page_size_cap=0xfffffffffffff000
-[ 5872.294929] ksmbd: smb_direct: dev[rocep1s0f0]: max_qp_rd_atom=16
-max_qp_init_rd_atom=16 max_fast_reg_page_list_len=65536 max_sgl_rd=3
-max_sge_rd=30 max_cqe=4194303 max_qp_wr=8192 max_send_sge=30
-max_recv_sge=32
-[ 5872.294941] ksmbd: smb_direct: initiator_depth:16 peer_initiator_depth:16
-[ 5872.294942] ksmbd: smb_direct: max_send_sges=4
-max_read_write_size=8388608 maxpages=2048
-[ 5872.294956] ksmbd: smb_direct: sc->rw_io.credits.num_pages=256
-sc->rw_io.credits.max:9
-[ 5872.295110] ksmbd: smb_direct: dev[rocep1s0f1]: iwarp=0 ib=0 roce=1
-v1=1 v2=1 device_cap_flags=0x1425321c36 kernel_cap_flags=0x2e
-page_size_cap=0xfffffffffffff000
-[ 5872.295116] ksmbd: smb_direct: dev[rocep1s0f1]: max_qp_rd_atom=16
-max_qp_init_rd_atom=16 max_fast_reg_page_list_len=65536 max_sgl_rd=3
-max_sge_rd=30 max_cqe=4194303 max_qp_wr=8192 max_send_sge=30
-max_recv_sge=32
-[ 5872.295125] ksmbd: smb_direct: initiator_depth:16 peer_initiator_depth:16
-[ 5872.295126] ksmbd: smb_direct: max_send_sges=4
-max_read_write_size=8388608 maxpages=2048
-[ 5872.295128] ksmbd: smb_direct: sc->rw_io.credits.num_pages=256
-sc->rw_io.credits.max:9
-[ 5872.295144] ksmbd: smb_direct: max_rdma_ctxs=9 rdma_send_wr=27
-[ 5872.295276] ksmbd: smb_direct: max_rdma_ctxs=9 rdma_send_wr=27
-[ 5872.301380] ksmbd: smb_direct: dev[rocep1s0f1]: iwarp=0 ib=0 roce=1
-v1=1 v2=1 device_cap_flags=0x1425321c36 kernel_cap_flags=0x2e
-page_size_cap=0xfffffffffffff000
-[ 5872.301386] ksmbd: smb_direct: dev[rocep1s0f1]: max_qp_rd_atom=16
-max_qp_init_rd_atom=16 max_fast_reg_page_list_len=65536 max_sgl_rd=3
-max_sge_rd=30 max_cqe=4194303 max_qp_wr=8192 max_send_sge=30
-max_recv_sge=32
-[ 5872.301395] ksmbd: smb_direct: initiator_depth:16 peer_initiator_depth:16
-[ 5872.301396] ksmbd: smb_direct: max_send_sges=4
-max_read_write_size=8388608 maxpages=2048
-[ 5872.301398] ksmbd: smb_direct: sc->rw_io.credits.num_pages=256
-sc->rw_io.credits.max:9
-[ 5872.301536] ksmbd: smb_direct: max_rdma_ctxs=9 rdma_send_wr=27
-[ 5887.761125] ksmbd: smb_direct: disconnected
-[ 5887.762410] ksmbd: Failed to send message: -107
-[ 5887.762586] ksmbd: Failed to send message: -107
-[ 5887.762775] ksmbd: smb_direct: Send error. status='WR flushed (5)', opcode=0
-[ 5887.762794] ksmbd: smb_direct: Send error. status='WR flushed (5)', opcode=0
-[ 5887.762830] ksmbd: Failed to send message: -107
-[ 5887.762860] ksmbd: Failed to send message: -107
-[ 5887.762888] ksmbd: Failed to send message: -107
-[ 5887.762913] ksmbd: Failed to send message: -107
-[ 5887.762967] ksmbd: Failed to send message: -107
-[ 5887.763042] ksmbd: Failed to send message: -107
-[ 5887.765363] ksmbd: smb_direct: dev[rocep1s0f1]: iwarp=0 ib=0 roce=1
-v1=1 v2=1 device_cap_flags=0x1425321c36 kernel_cap_flags=0x2e
-page_size_cap=0xfffffffffffff000
-[ 5887.765385] ksmbd: smb_direct: dev[rocep1s0f1]: max_qp_rd_atom=16
-max_qp_init_rd_atom=16 max_fast_reg_page_list_len=65536 max_sgl_rd=3
-max_sge_rd=30 max_cqe=4194303 max_qp_wr=8192 max_send_sge=30
-max_recv_sge=32
-[ 5887.765416] ksmbd: smb_direct: initiator_depth:16 peer_initiator_depth:16
-[ 5887.765422] ksmbd: smb_direct: max_send_sges=4
-max_read_write_size=8388608 maxpages=2048
-[ 5887.765428] ksmbd: smb_direct: sc->rw_io.credits.num_pages=256
-sc->rw_io.credits.max:9
-[ 5887.765919] ksmbd: smb_direct: max_rdma_ctxs=9 rdma_send_wr=27
 
+On December 12, 2025 11:20:43 AM GMT+01:00, "Loktionov, Aleksandr" <aleksa=
+ndr=2Eloktionov@intel=2Ecom> wrote:
 >
-> If that works I'll prepare real patches...
 >
-> Note there's also a for-6.18/ksmbd-smbdirect-regression-v4+ branch,
-> but that's only for my own usage with my debug kernel that has some
-> backports required for the IPPROTO_SMBDIRECT patches...
+>> -----Original Message-----
+>> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl=2Eorg> On Behalf
+>> Of Ivan Vecera
+>> Sent: Thursday, December 11, 2025 8:48 PM
+>> To: netdev@vger=2Ekernel=2Eorg; Andrew Lunn <andrew+netdev@lunn=2Ech>;
+>> David S=2E Miller <davem@davemloft=2Enet>; Eric Dumazet
+>> <edumazet@google=2Ecom>; Jakub Kicinski <kuba@kernel=2Eorg>; Paolo Aben=
+i
+>> <pabeni@redhat=2Ecom>; Rob Herring <robh@kernel=2Eorg>; Krzysztof
+>> Kozlowski <krzk+dt@kernel=2Eorg>; Conor Dooley <conor+dt@kernel=2Eorg>;
+>> Vadim Fedorenko <vadim=2Efedorenko@linux=2Edev>; Kubalewski, Arkadiusz
+>> <arkadiusz=2Ekubalewski@intel=2Ecom>; Nitka, Grzegorz
+>> <grzegorz=2Enitka@intel=2Ecom>; Jiri Pirko <jiri@resnulli=2Eus>; Oros,
+>> Petr <poros@redhat=2Ecom>; Schmidt, Michal <mschmidt@redhat=2Ecom>;
+>> Prathosh Satish <Prathosh=2ESatish@microchip=2Ecom>; Nguyen, Anthony L
+>> <anthony=2El=2Enguyen@intel=2Ecom>; Kitszel, Przemyslaw
+>> <przemyslaw=2Ekitszel@intel=2Ecom>; Saeed Mahameed <saeedm@nvidia=2Ecom=
+>;
+>> Leon Romanovsky <leon@kernel=2Eorg>; Tariq Toukan <tariqt@nvidia=2Ecom>=
+;
+>> Mark Bloch <mbloch@nvidia=2Ecom>; Richard Cochran
+>> <richardcochran@gmail=2Ecom>; Jonathan Lemon
+>> <jonathan=2Elemon@gmail=2Ecom>; Simon Horman <horms@kernel=2Eorg>;
+>> Lobakin, Aleksander <aleksander=2Elobakin@intel=2Ecom>; Willem de Bruij=
+n
+>> <willemb@google=2Ecom>; Stefan Wahren <wahrenst@gmx=2Enet>;
+>> devicetree@vger=2Ekernel=2Eorg; linux-kernel@vger=2Ekernel=2Eorg; intel=
+-
+>> wired-lan@lists=2Eosuosl=2Eorg; linux-rdma@vger=2Ekernel=2Eorg
+>> Subject: [Intel-wired-lan] [PATCH RFC net-next 13/13] ice: dpll:
+>> Support E825-C SyncE and dynamic pin discovery
+>>=20
+>> From: Arkadiusz Kubalewski <arkadiusz=2Ekubalewski@intel=2Ecom>
+>>=20
+>> Add DPLL support for the Intel E825-C Ethernet controller=2E Unlike
+>> previous
+>> generations (E810), the E825-C connects to the platform's DPLL
+>> subsystem
+>> via MUX pins defined in the system firmware (Device Tree/ACPI)=2E
+>>=20
+>> Implement the following mechanisms to support this architecture:
+>>=20
+>> 1=2E Dynamic Pin Discovery: Use the fwnode_dpll_pin_find() helper to
+>>    locate the parent MUX pins defined in the firmware=2E
+>>=20
+>> 2=2E Asynchronous Registration: Since the platform DPLL driver may
+>> probe
+>>    independently of the network driver, utilize the DPLL notifier
+>> chain
+>>    (register_dpll_notifier)=2E The driver listens for DPLL_PIN_CREATED
+>>    events to detect when the parent MUX pins become available, then
+>>    registers its own Recovered Clock (RCLK) and PTP (1588) pins as
+>> children
+>>    of those parents=2E
+>>=20
+>> 3=2E Hardware Configuration: Implement the specific register access
+>> logic
+>>    for E825-C CGU (Clock Generation Unit) registers (R10, R11)=2E This
+>>    includes configuring the bypass MUXes and clock dividers required
+>> to
+>>    drive SyncE and PTP signals=2E
+>>=20
+>> 4=2E Split Initialization: Refactor `ice_dpll_init()` to separate the
+>>    static initialization path of E810 from the dynamic, firmware-
+>> driven
+>>    path required for E825-C=2E
+>>=20
+>> Co-developed-by: Ivan Vecera <ivecera@redhat=2Ecom>
+>> Co-developed-by: Grzegorz Nitka <grzegorz=2Enitka@intel=2Ecom>
+>> Signed-off-by: Ivan Vecera <ivecera@redhat=2Ecom>
+>> Signed-off-by: Grzegorz Nitka <grzegorz=2Enitka@intel=2Ecom>
+>> Signed-off-by: Arkadiusz Kubalewski <arkadiusz=2Ekubalewski@intel=2Ecom=
 >
-> metze
+>> ---
+>>  drivers/net/ethernet/intel/ice/ice_dpll=2Ec   | 964
+>> ++++++++++++++++++--
+>>  drivers/net/ethernet/intel/ice/ice_dpll=2Eh   |  29 +
+>>  drivers/net/ethernet/intel/ice/ice_lib=2Ec    |   3 +
+>>  drivers/net/ethernet/intel/ice/ice_ptp=2Ec    |  29 +
+>>  drivers/net/ethernet/intel/ice/ice_ptp_hw=2Ec |   9 +-
+>>  drivers/net/ethernet/intel/ice/ice_ptp_hw=2Eh |   1 +
+>>  drivers/net/ethernet/intel/ice/ice_tspll=2Ec  | 223 +++++
+>>  drivers/net/ethernet/intel/ice/ice_tspll=2Eh  |  14 +-
+>>  drivers/net/ethernet/intel/ice/ice_type=2Eh   |   6 +
+>>  9 files changed, 1188 insertions(+), 90 deletions(-)
+>>=20
+>> diff --git a/drivers/net/ethernet/intel/ice/ice_dpll=2Ec
+>
+>=2E=2E=2E
+>
+>> +static int
+>> +ice_dpll_pin_get_parent_num(struct ice_dpll_pin *pin,
+>> +			    const struct dpll_pin *parent)
+>> +{
+>> +	int i;
+>> +
+>> +	for (i =3D 0; pin->num_parents; i++)
+>> +		if (pin->pf->dplls=2Einputs[pin->parent_idx[i]]=2Epin =3D=3D
+>> parent)
+>Oh, no! we don't need a 2nd Infinite Loop in Cupertino!
+
+Oops, thanks for pointing out=2E=2E=2E During testing the parent
+was always found so this didn't cause any problem=2E
+
+Of course I will fix it=2E =F0=9F=98=89
+>
+>=2E=2E=2E
+>
+>
+>> --
+>> 2=2E51=2E2
+>
+
 
