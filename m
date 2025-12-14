@@ -1,62 +1,51 @@
-Return-Path: <linux-rdma+bounces-14987-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14988-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D70ECBC003
-	for <lists+linux-rdma@lfdr.de>; Sun, 14 Dec 2025 21:42:35 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 634ADCBC199
+	for <lists+linux-rdma@lfdr.de>; Sun, 14 Dec 2025 23:57:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2885E301B2E6
-	for <lists+linux-rdma@lfdr.de>; Sun, 14 Dec 2025 20:42:22 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 62B0A3007EDF
+	for <lists+linux-rdma@lfdr.de>; Sun, 14 Dec 2025 22:56:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A837329DB6C;
-	Sun, 14 Dec 2025 20:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28493314A74;
+	Sun, 14 Dec 2025 22:56:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N+VtpiFe"
+	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="RouBOS7r"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9C46287516
-	for <linux-rdma@vger.kernel.org>; Sun, 14 Dec 2025 20:42:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3EC123AB81;
+	Sun, 14 Dec 2025 22:56:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765744940; cv=none; b=nQDPy0BQ7m3jEk6+edGThUqt7SXH7K5VIdbT6pQ3v/WDJzt0GfOKrMtFZiTDSELSq11rb7AE+7W+WwZ60rRwTihlXQoJ/zfQo8y1M3Vd0U37h8IEzJGnClNG/yfGQVOvEDwe1uUWOLxmF9dbMAq54E+NUW5G1koP5haXSFQH7jg=
+	t=1765753017; cv=none; b=VFHuXZ8gIztJbLbHzVE8cFyEDWeDNXdTnG9uHT4ZYq809dQuu2bqdVYnVHiHAOAik0Ezs/AT+pMnYocsTe/Xmee/goHHohBVB0POQtRa1w9GPJ209EAcb3qSbRdVi3ry3U3JXm9uBZmzMEp0+P1J0tOhpv6w2nVAuHhc3pJm4lE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765744940; c=relaxed/simple;
-	bh=jEa658HLG0UG+Gha1cEfa5pm1E3PYVGVzZ3jVK5gWUQ=;
+	s=arc-20240116; t=1765753017; c=relaxed/simple;
+	bh=nMrTVTAT7uH5lmrS3i8sEn8Nd3ACl/R4qLE/M7/DLXc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qdq83y6IY3TyjVPVcQE6Fvze0BclH64a6xbHcJtRj6sc3IR7wCQJeVeynYSlWgAoDhYZ53Ffc/ggBFaMHbK8IG9smCzZhUQOBJ/L8iyNJ08FMFRrOizxkmp5mJScguUgWaYudbAeSvz5pbEClVaXUvyWBz5/biGZbS5QnzM0CuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N+VtpiFe; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1765744936;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7dtrcaVLTNzNgFmQjfOcQvmiNkCId0/CKPWI6nsR8CY=;
-	b=N+VtpiFesTTcp/VqlGBZ5DiC9dCAZ0AeDL+49ZSbF7PkRl0LXxRDx/tO6al0k7o4Ixb8TV
-	UkkPRxEInVu0kJ+BuBhEXr+OOzimTxblm2TY2oxX5wLG9lrhKPe0BePu6cc89tijkV9yeK
-	fe8hzBor3KbOZdyXYChARZVyBnaIz8Q=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-530-ZenklePwOjaeAwlmJE1OgQ-1; Sun,
- 14 Dec 2025 15:42:12 -0500
-X-MC-Unique: ZenklePwOjaeAwlmJE1OgQ-1
-X-Mimecast-MFC-AGG-ID: ZenklePwOjaeAwlmJE1OgQ_1765744929
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 4A1331956063;
-	Sun, 14 Dec 2025 20:42:08 +0000 (UTC)
-Received: from [10.45.224.53] (unknown [10.45.224.53])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 1B170180045B;
-	Sun, 14 Dec 2025 20:41:57 +0000 (UTC)
-Message-ID: <89eaccbb-bfcf-4dac-b7b7-f4259de75dd2@redhat.com>
-Date: Sun, 14 Dec 2025 21:41:53 +0100
+	 In-Reply-To:Content-Type; b=L4gzkpke0gctHWipDoxrAXnNc9W07a9MbkG2bfvO16BF+fIBpkMGJd4F6YH8q0tEcMcmteTQ1M6IieAKK+Y7k+7QvK9SDWIjOvLVEQk+OXZy1mDWdIb0SzvQFn91+n9socLtM3Rq1sG5c2azK5l5dLztWAWc809HS7EPyo6vzLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=RouBOS7r; arc=none smtp.client-ip=144.76.82.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+	s=42; h=From:Cc:To:Date:Message-ID;
+	bh=nMrTVTAT7uH5lmrS3i8sEn8Nd3ACl/R4qLE/M7/DLXc=; b=RouBOS7rhw76m37vK7N0MwP9T+
+	7PW8nTM96sw1QptX+fEi/Qvtkhf5vivgA9LffUhWdgzUpNIggvcEXa7miRpGgEXC/+dW7QKi8xIpo
+	qu2bmWF0A44a02n6rpoMo7AM3hO+AtQ4NWMjq6ma3+4oQgr4CZQQaVZsp924JzYyFQJgqzAFKOKwA
+	txVtDdFlaDPHVDX4Ran6EKRraDUNsOdhTI+ojr4m9/tXrqVeOxCpu16k322OgwCIco5+BJf7spxxH
+	tgl8B2KlN7G4ItZaGgzCiRGqN3Rv5NNgHZvm6f5NC3COHxNAVkm3WdUZsiwvkoEo/jiAaegTA7nL8
+	skLnhd6xBpB95ws8L4oPIgOFJ36lT+AKS2xjc+UVXzc/kGKkr+vu2zniw+ItWvWQs4V7yC9sKVUr2
+	L26+0v9qTe4xSeDfHTm75mq+f1r6vvi8dDmflh9XuhLZIRoGnKMBoCHQS07zlBYhBlatFC19FdSCN
+	U9rwTUM+fMXN9lIHSGyy96xB;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
+	(Exim)
+	id 1vUv1E-000gJC-0t;
+	Sun, 14 Dec 2025 22:56:48 +0000
+Message-ID: <183d92a0-6478-41bb-acb3-ccefd664d62f@samba.org>
+Date: Sun, 14 Dec 2025 23:56:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -64,70 +53,38 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC net-next 01/13] dt-bindings: net: ethernet-controller:
- Add DPLL pin properties
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: netdev@vger.kernel.org, Andrew Lunn <andrew+netdev@lunn.ch>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Vadim Fedorenko <vadim.fedorenko@linux.dev>,
- Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
- Grzegorz Nitka <grzegorz.nitka@intel.com>, Jiri Pirko <jiri@resnulli.us>,
- Petr Oros <poros@redhat.com>, Michal Schmidt <mschmidt@redhat.com>,
- Prathosh Satish <Prathosh.Satish@microchip.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
- Richard Cochran <richardcochran@gmail.com>,
- Jonathan Lemon <jonathan.lemon@gmail.com>, Simon Horman <horms@kernel.org>,
- Alexander Lobakin <aleksander.lobakin@intel.com>,
- Willem de Bruijn <willemb@google.com>, Stefan Wahren <wahrenst@gmx.net>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org
-References: <20251211194756.234043-1-ivecera@redhat.com>
- <20251211194756.234043-2-ivecera@redhat.com>
- <2de556f0-d7db-47f1-a59e-197f92f93d46@lunn.ch>
+Subject: Re: Problem with smbdirect rw credits and initiator_depth
+To: Namjae Jeon <linkinjeon@kernel.org>
+Cc: Tom Talpey <tom@talpey.com>,
+ "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <35eec2e6-bf37-43d6-a2d8-7a939a68021b@samba.org>
+ <CAKYAXd9p=7BzmSSKi5n41OKkkw4qrr4cWpWet7rUfC+VT-6h1g@mail.gmail.com>
+ <f59e0dc7-e91c-4a13-8d49-fe183c10b6f4@samba.org>
+ <CAKYAXd-MF1j+CkbWakFJK2ov_SfRUXaRuT6jE0uHZoLxTu130Q@mail.gmail.com>
+ <CAKYAXd__T=L9aWwOuY7Z8fJgMf404=KQ2dTpNRd3mq9dnYCxRw@mail.gmail.com>
+ <86b3c222-d765-4a6c-bb79-915609fa3d27@samba.org>
+ <a3760b26-7458-40a0-ae79-bb94dd0e1d01@samba.org>
+ <3c0c9728-6601-41f1-892f-469e83dd7f19@samba.org>
+ <721eb7b1-dea9-4510-8531-05b2c95cb240@samba.org>
+ <CAKYAXd-WTsVEyONDmOMbKseyAp29q71KiUPwGDp2L_a53oL0vg@mail.gmail.com>
 Content-Language: en-US
-From: Ivan Vecera <ivecera@redhat.com>
-In-Reply-To: <2de556f0-d7db-47f1-a59e-197f92f93d46@lunn.ch>
+From: Stefan Metzmacher <metze@samba.org>
+In-Reply-To: <CAKYAXd-WTsVEyONDmOMbKseyAp29q71KiUPwGDp2L_a53oL0vg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
-On 12/11/25 8:56 PM, Andrew Lunn wrote:
-> On Thu, Dec 11, 2025 at 08:47:44PM +0100, Ivan Vecera wrote:
->> Ethernet controllers may be connected to DPLL (Digital Phase Locked Loop)
->> pins for frequency synchronization purposes, such as in Synchronous
->> Ethernet (SyncE) configurations.
->>
->> Add 'dpll-pins' and 'dpll-pin-names' properties to the generic
->> ethernet-controller schema. This allows describing the physical
->> connections between the Ethernet controller and the DPLL subsystem pins
->> in the Device Tree, enabling drivers to request and manage these
->> resources.
-> 
-> Please include a .dts patch in the series which actually makes use of
-> these new properties.
-> 
-> 	Andrew
+Am 13.12.25 um 03:14 schrieb Namjae Jeon:
+>> I've put these changes a long with rw credit fixes into my
+>> for-6.18/ksmbd-smbdirect-regression-v4 branch, are you able to
+>> test this?
+> Problems still occur. See:
 
-Hi Andy,
+:-( Would you be able to use rxe and cake a network capture?
 
-I would include this but the development of this series was done on
-Microchip EVB-LAN9668 EDS2 development board [1] and its DTS is not
-present in upstream tree. The base DTS for this board is at vendor's
-github repo [2]. The second development environment was/is ACPI based
-Intel GNR-D platform and the goal is to use unified fwnode API so
-ACPI is providing _DSD nodes to specify dpll-pin-names and dpll-names
-properties.
+Using test files with all zeros, e.g.
+dd if=/dev/zero of=/tmp/4096MBzeros-sparse.dat seek=4096MB bs=1 count=1
+would allow gzip --best on the capture file to compress well...
 
-Ivan
-
-[1] https://www.microchip.com/en-us/development-tool/ev83e85a
-[2] 
-https://github.com/microchip-ung/linux/blob/bsp-6.12-2025/arch/arm/boot/dts/microchip/lan966x-pcb8385.dts
-
+metze
 
