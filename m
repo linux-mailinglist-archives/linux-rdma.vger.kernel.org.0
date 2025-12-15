@@ -1,113 +1,205 @@
-Return-Path: <linux-rdma+bounces-15004-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15005-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A0F1CBFB8E
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Dec 2025 21:20:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E1187CBFC15
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Dec 2025 21:31:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 032463028D82
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Dec 2025 20:17:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 34CEE3027CFD
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Dec 2025 20:31:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1EDC288502;
-	Mon, 15 Dec 2025 20:17:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6EA93126A6;
+	Mon, 15 Dec 2025 20:31:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="BiPUx/dh"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jB8phYrl"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33ACD26E708;
-	Mon, 15 Dec 2025 20:17:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1309429B8E8
+	for <linux-rdma@vger.kernel.org>; Mon, 15 Dec 2025 20:30:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765829875; cv=none; b=LvYJnu/nQr0SMRjVNJ7Ws6O9PklY5SMaumVbbC4kjowLQGJN3mv2FNRiLr0gYdSzS+RMrU10g31X2be0XNzYsOt0OmBbNMJDJY1g0Sf7r2YyyMXfjUjxqnhSrkFn5KnjRhG6A7Y+fjWZ96FQQYNxT7jd2HEK5wV/8DEQ5yMiVP8=
+	t=1765830661; cv=none; b=OZQvyNL0hZ84DStw3pg9BUqGDb/hTgnY1UTQmxWNnRltlmYtfUkrXgKJTp5ipFPkX8fxh/7Mxd/4Op2QtvZMEqpbz5wfEGB4Tg8cb23Ye63zgrDW1vvigEp85gsQ1e0sHvNa9U3nBws5abjvdrG9CL+QTHCmO91OuWNKlPbwUjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765829875; c=relaxed/simple;
-	bh=VpYsESqV0wjtzQTqk1L8Hlara3UWcPwJoFbE7XGdRJk=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=G0PN/hdl+tbCyohcYxu/r7jyXT2ayuuGac4gmTxL3iabdUVtNIisSbddCVPw3OxeyiksW66BRmbF4u2qj1ItGhIZkpiZuFIN7nkA4rI+gJz1dKeghTfsnmLL+iO6vDr2lVxbP+U0I5pKgXJtkJL09qDuvfONoHn3ZV+AvXu8j+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=BiPUx/dh; arc=none smtp.client-ip=144.76.82.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-	s=42; h=Cc:To:From:Date:Message-ID;
-	bh=q2/nZMPaU3boBZyOfQDLnSPi0tVtst41YVBrCjN2wTI=; b=BiPUx/dhJuQV4sQpBf5OCgE7Sp
-	kHTbT0v7orc2ftNMJB6n5UMI3VNjMH4Q4RlwU9fL9P8qO0EP9RQdoq29MJdj2g8cioC3ZrIt5KzZr
-	0U6rZAsAyIdlcZU2Zlcxk99IQbZBFCxRCywpnEAhaNQTB+zYFO4+GnCZPlAR25V69y9ZT3QNewNqM
-	64CNKmFHhbcxLr4EZdKvO9xZdu+FxZ9O0qiEXuY7yGYvLfkDHosy+t8aMTUqZoif4+wufERtPOvcU
-	qf6n9QHzSlo2QsAU2wTHGP3K6kMWO8/B+iUjcq1qfoVvNOXLSk9lM/49m78feJU8EW/xaUnuUOWGP
-	GIujeAWUfGqZhMa666HFQ0bdGG0eUfZHpiFS7tJrwDDFji8FmBMWwg+DU15MjLk7AFBugVpgEEo25
-	KpJkjEqaoi/z6Ow4VfbWvc5kyXbmLxxTjNsYjjUmRl3QJlC90JaS1MDFQy5gH34kGH0O2sabkie71
-	N8kElQSA4ToAegLuUfX3wSeI;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
-	(Exim)
-	id 1vVF0w-000oFt-2P;
-	Mon, 15 Dec 2025 20:17:50 +0000
-Message-ID: <ee6873d7-6e47-4d42-9822-cb55b2bfb79e@samba.org>
-Date: Mon, 15 Dec 2025 21:17:50 +0100
+	s=arc-20240116; t=1765830661; c=relaxed/simple;
+	bh=SHZt1xLw1ZmPdp57TFJNx25aVwMtAQfw8AmycOD6hIg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dob7lGx0Rh9ua9lguS1rA2tNEOZZYZTLNW3WHl+pHPOgR8OjGhL8UColT8cUkUwazEvkV5yKlxW6dsN+SOXknmDt+zWzRRq9X9D03LfgAAdiS6oH0Ir3jL63wsToHsEAEb/9jGcog+l3J2128XZTl8/lo4TWBsfBojyq+6i0gck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jB8phYrl; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1765830659;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=kFKP1wRB7MG8FdwSMPJtMRcQY82d/F+Hn/PXu/Kymsk=;
+	b=jB8phYrltOg/QaW4dI4s5ln3bN9bMIj/s52q02oqs4mEdH1xVtnu+jvarFXsAom9NlAc27
+	p8/Xq5opSRtc2mL2lGoTXYpp2vTbA02jmY7zr7Ly2euKdGEEqU3rV2atun2R87ylKIm3Jw
+	T23UOrXuH+O3qjVrYya+SNJHrjRFG0Q=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-295-fV4hTD3GOUeULQgWq9f_sw-1; Mon,
+ 15 Dec 2025 15:30:53 -0500
+X-MC-Unique: fV4hTD3GOUeULQgWq9f_sw-1
+X-Mimecast-MFC-AGG-ID: fV4hTD3GOUeULQgWq9f_sw_1765830649
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 30D6218002ED;
+	Mon, 15 Dec 2025 20:30:49 +0000 (UTC)
+Received: from p16v.redhat.com (unknown [10.45.224.214])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id C414630001A8;
+	Mon, 15 Dec 2025 20:30:38 +0000 (UTC)
+From: Ivan Vecera <ivecera@redhat.com>
+To: netdev@vger.kernel.org
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Grzegorz Nitka <grzegorz.nitka@intel.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Jonathan Lemon <jonathan.lemon@gmail.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Leon Romanovsky <leon@kernel.org>,
+	Mark Bloch <mbloch@nvidia.com>,
+	Michal Schmidt <mschmidt@redhat.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Petr Oros <poros@redhat.com>,
+	Prathosh Satish <Prathosh.Satish@microchip.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Rob Herring <robh@kernel.org>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Simon Horman <horms@kernel.org>,
+	Stefan Wahren <wahrenst@gmx.net>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	Willem de Bruijn <willemb@google.com>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH RFC net-next v2 00/13] dpll: Core improvements and ice E825-C SyncE support
+Date: Mon, 15 Dec 2025 21:30:25 +0100
+Message-ID: <20251215203037.1324945-1-ivecera@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Problem with smbdirect rw credits and initiator_depth
-From: Stefan Metzmacher <metze@samba.org>
-To: Namjae Jeon <linkinjeon@kernel.org>
-Cc: Tom Talpey <tom@talpey.com>,
- "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <35eec2e6-bf37-43d6-a2d8-7a939a68021b@samba.org>
- <CAKYAXd9p=7BzmSSKi5n41OKkkw4qrr4cWpWet7rUfC+VT-6h1g@mail.gmail.com>
- <f59e0dc7-e91c-4a13-8d49-fe183c10b6f4@samba.org>
- <CAKYAXd-MF1j+CkbWakFJK2ov_SfRUXaRuT6jE0uHZoLxTu130Q@mail.gmail.com>
- <CAKYAXd__T=L9aWwOuY7Z8fJgMf404=KQ2dTpNRd3mq9dnYCxRw@mail.gmail.com>
- <86b3c222-d765-4a6c-bb79-915609fa3d27@samba.org>
- <a3760b26-7458-40a0-ae79-bb94dd0e1d01@samba.org>
- <3c0c9728-6601-41f1-892f-469e83dd7f19@samba.org>
- <721eb7b1-dea9-4510-8531-05b2c95cb240@samba.org>
- <CAKYAXd-WTsVEyONDmOMbKseyAp29q71KiUPwGDp2L_a53oL0vg@mail.gmail.com>
- <183d92a0-6478-41bb-acb3-ccefd664d62f@samba.org>
-Content-Language: en-US
-In-Reply-To: <183d92a0-6478-41bb-acb3-ccefd664d62f@samba.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-Am 14.12.25 um 23:56 schrieb Stefan Metzmacher:
-> Am 13.12.25 um 03:14 schrieb Namjae Jeon:
->>> I've put these changes a long with rw credit fixes into my
->>> for-6.18/ksmbd-smbdirect-regression-v4 branch, are you able to
->>> test this?
->> Problems still occur. See:
-> 
-> :-( Would you be able to use rxe and cake a network capture?
-> 
-> Using test files with all zeros, e.g.
-> dd if=/dev/zero of=/tmp/4096MBzeros-sparse.dat seek=4096MB bs=1 count=1
-> would allow gzip --best on the capture file to compress well...
+This series introduces Synchronous Ethernet (SyncE) support for
+the Intel E825-C Ethernet controller. Unlike previous generations where
+DPLL connections were implicitly assumed, the E825-C architecture relies
+on the platform firmware to describe the physical connections between
+the network controller and external DPLLs (such as the ZL3073x).
 
-I think I found something that explains it and
-I was able to reproduce and what I have in mind.
+To accommodate this, the series extends the DPLL subsystem to support
+firmware node (fwnode) associations, asynchronous discovery via notifiers,
+and dynamic pin management. Additionally, a significant refactor of
+the DPLL reference counting logic is included to ensure robustness and
+debuggability.
 
-We increment recv_io.posted.count after ib_post_recv()
+DPLL Core Extensions:
+* Firmware Node Support: Pins can now be registered with an associated
+  struct fwnode_handle. This allows consumer drivers to lookup pins based
+  on device properties (dpll-pins).
+* Asynchronous Notifiers: A raw notifier chain is added to the DPLL core.
+  This allows the network driver (ice driver in this series) to subscribe
+  to events and react when the platform DPLL driver registers the parent
+  pins, resolving probe ordering dependencies.
+* Dynamic Indexing: Drivers can now request DPLL_PIN_IDX_UNSPEC to have
+  the core automatically allocate a unique pin index, simplifying driver
+  implementation for virtual or non-indexed pins.
 
-And manage_credits_prior_sending() uses
+Reference Counting & Debugging:
+* Refactor: The reference counting logic in the core is consolidated.
+  Internal list management helpers now automatically handle hold/put
+  operations, removing fragile open-coded logic in the registration paths.
+* Duplicate Checks: The core now strictly rejects duplicate registration
+  attempts for the same pin/device context.
+* Reference Tracking: A new Kconfig option DPLL_REFCNT_TRACKER is added
+  (using the kernel's REF_TRACKER infrastructure). This allows developers
+  to instrument and debug reference leaks by recording stack traces for
+  every get/put operation.
 
-new_credits = recv_io.posted.count - recv_io.credits.count
+Driver Updates:
+* zl3073x: Updated to register pins with their firmware nodes and support
+  the 'mux' pin type.
+* ice: Implements the E825-C specific hardware configuration for SyncE
+  (CGU registers). It utilizes the new notifier and fwnode APIs to
+  dynamically discover and attach to the platform DPLLs.
 
-But there is a race between the hardware receiving a message
-and recv_done being called in order to decrement recv_io.posted.count
-again. During that race manage_credits_prior_sending() might grant
-too much credits.
+Patch Summary:
+* Patch 1-3:
+  DT bindings and helper functions for finding DPLL pins via fwnode.
+* Patch 4:
+  Updates zl3073x to register pins with fwnode.
+* Patch 5-6:
+  Adds notifiers and dynamic pin index allocation to DPLL core.
+* Patch 7:
+  Adds 'mux' pin type support to zl3073x.
+* Patch 8-9:
+  Refactors DPLL core refcounting and adds duplicate registration checks.
+* Patch 10-11:
+  Adds REF_TRACKER infrastructure and updates existing drivers to support it.
+* Patch 12:
+  Implements the E825-C SyncE logic in the ice driver using the new
+  infrastructure.
 
-Please test my for-6.18/ksmbd-smbdirect-regression-v5 branch,
-I haven't tested this branch yet, I'm running out of time
-for the day.
+Arkadiusz Kubalewski (1):
+  ice: dpll: Support E825-C SyncE and dynamic pin discovery
 
-But I tested it with smbclient and having a similar
-logic in fs/smb/common/smbdirect/smbdirect_connection.c
+Ivan Vecera (10):
+  dt-bindings: net: ethernet-controller: Add DPLL pin properties
+  dpll: Allow associating dpll pin with a firmware node
+  net: eth: Add helpers to find DPLL pin firmware node
+  dpll: zl3073x: Associate pin with fwnode handle
+  dpll: Support dynamic pin index allocation
+  dpll: zl3073x: Add support for mux pin type
+  dpll: Enhance and consolidate reference counting logic
+  dpll: Prevent duplicate registrations
+  dpll: Add reference count tracking support
+  drivers: Add support for DPLL reference count tracking
 
-metze
+Petr Oros (1):
+  dpll: Add notifier chain for dpll events
+
+ .../bindings/net/ethernet-controller.yaml     |  13 +
+ drivers/dpll/Kconfig                          |  15 +
+ drivers/dpll/dpll_core.c                      | 296 +++++-
+ drivers/dpll/dpll_core.h                      |  11 +
+ drivers/dpll/dpll_netlink.c                   |   6 +
+ drivers/dpll/zl3073x/dpll.c                   |  14 +-
+ drivers/dpll/zl3073x/dpll.h                   |   1 +
+ drivers/dpll/zl3073x/prop.c                   |   2 +
+ drivers/net/ethernet/intel/ice/ice_dpll.c     | 977 ++++++++++++++++--
+ drivers/net/ethernet/intel/ice/ice_dpll.h     |  33 +
+ drivers/net/ethernet/intel/ice/ice_lib.c      |   3 +
+ drivers/net/ethernet/intel/ice/ice_ptp.c      |  29 +
+ drivers/net/ethernet/intel/ice/ice_ptp_hw.c   |   9 +-
+ drivers/net/ethernet/intel/ice/ice_ptp_hw.h   |   1 +
+ drivers/net/ethernet/intel/ice/ice_tspll.c    | 223 ++++
+ drivers/net/ethernet/intel/ice/ice_tspll.h    |  14 +-
+ drivers/net/ethernet/intel/ice/ice_type.h     |   6 +
+ .../net/ethernet/mellanox/mlx5/core/dpll.c    |  16 +-
+ drivers/ptp/ptp_ocp.c                         |  18 +-
+ include/linux/dpll.h                          |  59 +-
+ include/linux/etherdevice.h                   |   4 +
+ net/ethernet/eth.c                            |  20 +
+ 22 files changed, 1614 insertions(+), 156 deletions(-)
+
+-- 
+2.51.2
+
 
