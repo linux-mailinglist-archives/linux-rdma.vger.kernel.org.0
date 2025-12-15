@@ -1,424 +1,358 @@
-Return-Path: <linux-rdma+bounces-15001-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-14999-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40674CBEAFF
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Dec 2025 16:36:18 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC8CACBE3C4
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Dec 2025 15:17:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9BFF2300C6E4
-	for <lists+linux-rdma@lfdr.de>; Mon, 15 Dec 2025 15:31:12 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D830B30198B4
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Dec 2025 14:14:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 061E231A552;
-	Mon, 15 Dec 2025 15:31:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82016306D3D;
+	Mon, 15 Dec 2025 14:10:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="klnF1sau"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89D1031960F;
-	Mon, 15 Dec 2025 15:31:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765812671; cv=none; b=MX8/MPbzZOXpxQKASGizGwjllRnVn30Jv8Ijp1bLZ8QQRap/jIFBJRGR/fZXEEBVbianZ4zo04S3nEfA/QohF3OBFXy43Vz/H2vqcag5frrs+Q9l2fWRT05DhmvXwa+JuDB2+NpMazG44ERbTjCwuHMesfvilaU39pw4xmO//rA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765812671; c=relaxed/simple;
-	bh=Laywh6AoZCLizlR5zkvEenWtgcQ3qvm83Rx9rALleT0=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ub6v9MDVW/x4WThbdKxGwA6xYhSoONeu6yo4tn/NtjoZJ+jPLiWEEoQJC9PpOECG/YWRkXVdhghk0JYgbVgFYQ9ZnhztVIDXt95lqkuyB0ZMvvK4VSaaSYkV8qUyfTMGvfemESx4Ke0xAF6DdRfAVBOm4yxIRZ0w8XanAntdPGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 5BFE9tjK022316;
-	Mon, 15 Dec 2025 23:09:55 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from [192.168.1.10] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 5BFE9tkd022310
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Mon, 15 Dec 2025 23:09:55 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <9b4ce0df-1fbf-4052-9eb9-1f3d6ad6a685@I-love.SAKURA.ne.jp>
-Date: Mon, 15 Dec 2025 23:09:54 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A57B72F261C;
+	Mon, 15 Dec 2025 14:10:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.21
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1765807855; cv=fail; b=r+fhAl3APNkBZXlI9OAB8hdJpyfNoZ6Bo5zrgx1PF0LV+NtKNIzNcZv2w0RsWbcWMT9rIQTXbTJsOgmOJrTPsf3y+maWx4Nx5uQfW4epyhzLhEwpaZ4B/k0kvB7Mr++w5APQ2oNt5z0YxklUlTLh2gGknd5MzKtcSz/49s+0pq4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1765807855; c=relaxed/simple;
+	bh=Oh2Bg+is70hli9SXLfLfCf9bchAgvH+tzWRS+3C7CVE=;
+	h=Message-ID:Date:Subject:To:References:From:CC:In-Reply-To:
+	 Content-Type:MIME-Version; b=mqraKBlcbaLMQsqDhNSYfPvNRHSacSuU0m28UGjdYVXxIlSNmowNbfzhFQTnodR8Ah5alN3MtrumxKCg1uGVevtNSSkkPCE7y4YtRLZ+pfGUcQLwx8UzxcVmJBwz1VTrMvXLchVjxnqFOLIKwAfl8HV1RRqYikyGcL9NjpjMtTo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=klnF1sau; arc=fail smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1765807854; x=1797343854;
+  h=message-id:date:subject:to:references:from:cc:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=Oh2Bg+is70hli9SXLfLfCf9bchAgvH+tzWRS+3C7CVE=;
+  b=klnF1sauK9/HQJQ0rlBNsFiEylKHzoOUk/8ywmfvdtiwF0CTk/Tbka2G
+   73mA5i8cFMRp0SSUXyQiED/q71hcJs108QU1FDCQN5NQ6vLv6fTguTOlc
+   avSoJK/VyhojtROUJQ/kHtyP4SEiWW4+iGJWBRmD8jDUl5/mSVD3Gt+nv
+   HqYmnSJ30jPFmpbwiBpfI62wtWPPd5VQG8w0OGmp2EIcgTDbme82bmkPs
+   lDqCx9pbL2/vEYOgE3/+/tLtT2gCsnUMB52l7ahDh9o2ai7nofJw+g6Md
+   q50PmVm6qGmplflacMbYVLnuj8ZyyL3t0ey8URQPkLp5qml2l9WhDvmbJ
+   Q==;
+X-CSE-ConnectionGUID: /N0OtU43QbmPkYLtcS6dQg==
+X-CSE-MsgGUID: 7SPqwl96TDmyj+9xu3dNgA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11635"; a="67646024"
+X-IronPort-AV: E=Sophos;i="6.20,256,1758610800"; 
+   d="scan'208";a="67646024"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2025 06:10:53 -0800
+X-CSE-ConnectionGUID: +yJSsHk2SoCVBFRD7mGedQ==
+X-CSE-MsgGUID: HTJ4T2V3S3GzNICFXZFsNw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,150,1763452800"; 
+   d="scan'208";a="197782232"
+Received: from fmsmsx901.amr.corp.intel.com ([10.18.126.90])
+  by orviesa008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2025 06:10:52 -0800
+Received: from FMSMSX903.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx901.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.29; Mon, 15 Dec 2025 06:10:52 -0800
+Received: from fmsedg903.ED.cps.intel.com (10.1.192.145) by
+ FMSMSX903.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.29 via Frontend Transport; Mon, 15 Dec 2025 06:10:52 -0800
+Received: from CY3PR05CU001.outbound.protection.outlook.com (40.93.201.65) by
+ edgegateway.intel.com (192.55.55.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.29; Mon, 15 Dec 2025 06:10:51 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=yCTYX8CpFenqEaxeakY801zUATldgoEOU8ZX7F2BNY3PkxOBLNABUrlZGlEjiN8CRuu7Ly8x6ZDlZRPUGNT5rfhBA5ILotriaEVDF/aAVWNz3p7nEqWk/L4yTdNWX0AOgqc0qqFIjOtZrFZ8znccJ9cAUFPkjU3SB1UY5G9Q4xHrRmT62vWCVSF89yn+Ygm6YHox7DzZ0wtABkVvVanqF6vKrk3txJxQsiJjI2lv8Wsf2kIMUPSvrrFSQ7g1Dhi5voUS4NqzVIJt1mCbYr0RrMryMVDnjnKGL5rHARh3pNi9AjkVRGm7jTsJUDtqrl4QnNqcqfGg3VT7UbhzeePGcg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JjCvEEEBqv/mR+o/PuyaO6e6RLeIAvUFQoMaRzgCK+k=;
+ b=vcJKYfCb+L7EqMmumVdF1buw+74/ohCMG+sBox4359xZ+VExFeGUjI2p4MBP6VQSor1uIpsYYaRw2CwuLU6O4ikV2VMWYjvSoqVDy/+aGpafOD13MDUKMvwKYb/3fhR31PX21gK+W6dveOphB3Pm339wcFBCgRN1rYYB2deptIRA/Yuq0x/gUSHMEfj7F/x1VcWEKCr1/bsCtucaDxtI+OFGYNTxucSD0/Faskp1JKd/s5CDEpb81QbQSTofB3h0vNOCDen/B7bavxnhznCwBUtAmc5hs4octPd9MPO+2rEFMJpu5zejITWrGnt9k+JqrH0xXFL816PU7wdPqsZFqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN6PR11MB8102.namprd11.prod.outlook.com (2603:10b6:208:46d::9)
+ by DM4PR11MB6093.namprd11.prod.outlook.com (2603:10b6:8:b0::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9412.13; Mon, 15 Dec
+ 2025 14:10:48 +0000
+Received: from MN6PR11MB8102.namprd11.prod.outlook.com
+ ([fe80::15b2:ee05:2ae7:cfd6]) by MN6PR11MB8102.namprd11.prod.outlook.com
+ ([fe80::15b2:ee05:2ae7:cfd6%6]) with mapi id 15.20.9412.011; Mon, 15 Dec 2025
+ 14:10:48 +0000
+Message-ID: <7204d8f7-6482-4217-998f-2788d55f4235@intel.com>
+Date: Mon, 15 Dec 2025 15:10:39 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC net-next 06/13] dpll: Support dynamic pin index
+ allocation
+To: Ivan Vecera <ivecera@redhat.com>
+References: <20251211194756.234043-1-ivecera@redhat.com>
+ <20251211194756.234043-7-ivecera@redhat.com>
+From: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Content-Language: en-US
+CC: <netdev@vger.kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, "Jakub
+ Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring
+	<robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+	<conor+dt@kernel.org>, Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	"Arkadiusz Kubalewski" <arkadiusz.kubalewski@intel.com>, Grzegorz Nitka
+	<grzegorz.nitka@intel.com>, Jiri Pirko <jiri@resnulli.us>, Petr Oros
+	<poros@redhat.com>, Michal Schmidt <mschmidt@redhat.com>, Prathosh Satish
+	<Prathosh.Satish@microchip.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, "Tariq
+ Toukan" <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, Richard Cochran
+	<richardcochran@gmail.com>, Jonathan Lemon <jonathan.lemon@gmail.com>, "Simon
+ Horman" <horms@kernel.org>, Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Willem de Bruijn <willemb@google.com>, Stefan Wahren <wahrenst@gmx.net>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<intel-wired-lan@lists.osuosl.org>, <linux-rdma@vger.kernel.org>
+In-Reply-To: <20251211194756.234043-7-ivecera@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DU7P250CA0002.EURP250.PROD.OUTLOOK.COM
+ (2603:10a6:10:54f::15) To MN6PR11MB8102.namprd11.prod.outlook.com
+ (2603:10b6:208:46d::9)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [not-yet-signed PATCH] RDMA/core: flush gid_cache_wq WQ from
- disable_device()
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Majd Dibbiny <majd@mellanox.com>, Doug Ledford <dledford@redhat.com>,
-        Yuval Shaia <yuval.shaia@oracle.com>
-Cc: Bernard Metzler <bernard.metzler@linux.dev>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>
-References: <30ec01df-6c32-490c-aa26-c41653f5a257@I-love.SAKURA.ne.jp>
- <8f90fba8-60b9-46e2-8990-45311c7b1540@I-love.SAKURA.ne.jp>
- <1722eff3-14c1-408b-999b-1be3e8fbfe5a@I-love.SAKURA.ne.jp>
-Content-Language: en-US
-In-Reply-To: <1722eff3-14c1-408b-999b-1be3e8fbfe5a@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Virus-Status: clean
-X-Anti-Virus-Server: fsav304.rs.sakura.ne.jp
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN6PR11MB8102:EE_|DM4PR11MB6093:EE_
+X-MS-Office365-Filtering-Correlation-Id: 81a11feb-c434-4655-80aa-08de3be3be69
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|366016|376014|1800799024|7053199007;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?YjgzTFJtaCtiRnpOVDgzNGZranovZ3hLVnR4bEdBdXBrRXMxZkVjMGRNVlQv?=
+ =?utf-8?B?MXhmcVo0akVqUlZQTHgyeHZidzAycVNMK2RCbWJRL1c3SSt5enhQMUZXUzdD?=
+ =?utf-8?B?enN0ajVHa25EYXlCdFUya04wQ2NzM05oYXVyQ1V2UG5YMjJpWng1NldHb0dY?=
+ =?utf-8?B?bnArbE5oWE1ZUHNlQ2JKWVF6ZXlRRUlnR1ZUT1BZSXBaeGQ0S1czeHZKdEtv?=
+ =?utf-8?B?MEVzQnR6OHNEeTlPUEdJZFhicWpodThyUzhKZEZwcCt2Nk1ZRHBlaCs0dFQ3?=
+ =?utf-8?B?UktYMldmRkg1dXJIQlRPenRDamJ3VWdjSGNHVzZVNm5hS3NzMi9jdmpDRlZp?=
+ =?utf-8?B?NzlKV1ZsbGprTHRYMEVxS2ZnNUh3NWpuMDg2WDhNaWVTM2JtZlJCZXNNUlBh?=
+ =?utf-8?B?RWVUWlFxeldrQzVmdXdiT20zZUVOQnpabHlLeFozQzIrS1VlQ2s3UkxwZzhs?=
+ =?utf-8?B?M1JhZzlHazVUUEF3MnpjZWgycSttanNNVUV5dTdqd2IxbG9YUEorc1lVdUpx?=
+ =?utf-8?B?ZkZSWTlJWkQ0a2hWSDcxRDdFTnRjUFREVlpwMFY4S1VEeFV0ZHBGUlk5RG00?=
+ =?utf-8?B?UkVtNmVTU2hPY2dBc2RKYTlXVGJRRXBKbmFRWkg1VGROT0dpb2U0a1AwOW1m?=
+ =?utf-8?B?NGttUklOdms4R1JSZlJKQ1FYWVAyOHVNNmd1S09DSjdXekhRV0l1dlR5dHhl?=
+ =?utf-8?B?dWtLQ3BWYXJyTnpId01kNHJjSU9EbkFQMFBhZU9ybG5ucUZUU2s4S2d5U21G?=
+ =?utf-8?B?NTFJb3A5SG1JVzM3ankvQUFjMmRVU2JXUllYcXFzS1dUQzZLU1hhN1E3MTkz?=
+ =?utf-8?B?WGh5aXdGNDkrb3VkWWY5czdBK29FaGt1anZNSHc1WjdOd0hTdXhGckY1MVBs?=
+ =?utf-8?B?UGZsR0ZvQ1FQeXRKbnJ2dmdNUUpBUWs2bzVDRFMrMmxwVDI2cDlsKzEyQVh3?=
+ =?utf-8?B?UG44eUFJYW5sb3VWNTlab1ptcFNwNzhBeWVyTGdES2VsMGNWNUR0S2NPQzZY?=
+ =?utf-8?B?cHdJSnRZWVNST01RazRNMmpjWm1UQmpoV04rYnd2N2ZKZ1dyVEZpSEZlS1Fz?=
+ =?utf-8?B?N0xmd2hsSEw5UEZCdElmajhhWlNxREE1QS9NTXdrbVpRc0s0aE03KzBNMS9I?=
+ =?utf-8?B?RlJzU0RuQlV3b0RGdGJOQXJqVHpidlRHRE90RHgwdjBBZ3REeEU2QzU3TGxY?=
+ =?utf-8?B?dmVHSG5aV3hhS1RDUStxak5XZElqMG1UdVRXM2Rrdmhta3JHZUtaMjYyWnZj?=
+ =?utf-8?B?U2Noc01rMFpob1E1RzVnSGVsWXgyQjZEeUJXQzY3UE1rWEd4enBNYUhteUZr?=
+ =?utf-8?B?RjlhTGFVa0RNaW5YWHF6QlJ0b2tiVmFrR29NeTFzbkE0K3UvWDdZTGszT1p3?=
+ =?utf-8?B?UUNoeXUzUXZqRmY3QWZYY1JUVy9QaGlEMG1LdGMzdlJjZk51RFovL00wenBy?=
+ =?utf-8?B?eVZaeVRjeGd2eUltMUtUZ3BXcUlZUmFSRGloWnQyRGxXMVhaNDV1RDhieTU2?=
+ =?utf-8?B?TDlCZ2JRRk9DMDRRaW1ldEZDcjFCN1cxWjcvYk5qRWRIMlNHVVozZWx0OVNT?=
+ =?utf-8?B?cTg5Slc4dWU1THZYcDdSdVRNZDI0MUhrTFJ5WlZCZEdoUUo2S1E3MjVTT1VJ?=
+ =?utf-8?B?R1pWNjhXVWJDeWZ6S0RTZkJVZFlMNXpBY0JjMnVzdXh0Skw4R0lwTjM5cUhQ?=
+ =?utf-8?B?ZmNVekVJeFMzVEdybzU3VFEyV2lpbVd3NjVtMEk5MDJoSzdMV2ZHZm8yZTRa?=
+ =?utf-8?B?YnFtRko4MUZ6TkI5K21XdE1FWThFNU9DZFplSWdKaFBkYVFjdmNXSmRjbmVw?=
+ =?utf-8?B?RXFNN25MZUlxZWJnUjFrSGM3V2JHa3c4ZkVXY0JIaUZDd2NYMTNveXkyckpB?=
+ =?utf-8?B?bE50RWVSd2NBTSt1K3dtSUlNMGtmem81OWNSemdKT1p1cUJVQjZNaW9TRjRt?=
+ =?utf-8?Q?NZ72a5Oxcahvcvf4v9rUmUxfll1VmKsr?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN6PR11MB8102.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(366016)(376014)(1800799024)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bktxSW5TQTdCcHFVakdCZjhGWHduQkhBelIyWW1DRGh3R3JDNHVJV2lpcWw5?=
+ =?utf-8?B?VUJCSXAyV1ZvQ0hmdFA4VUlBMDU0Nm84eU9VeDNNWkw2MGtYNkZDSStidzMr?=
+ =?utf-8?B?MlBJTWUyUzB0aWE5YVI2OUl0UU1IYmVnNXQ0TWU5empSUldSK0pKOFpiUzZO?=
+ =?utf-8?B?YllZdGRIQ3hiNGNhY1V6K2R2YUxVc3U2bUR3NnRqS2lLbVRKZXBBbmJTNGpK?=
+ =?utf-8?B?Smo3NXR3bHJsM2V2VWV6bUlJU2NKQ0tQWWRrcE1lZVEzODgrRGNHdksrVi9T?=
+ =?utf-8?B?TjQ3dlhJRjlrOVJ1cnBUeTdoS0xzK0JsdHBIczVqZmRkdnZFNlVjeWNqSEQ1?=
+ =?utf-8?B?N0k1bk9GZzhUbjF0cTkvQU96MzAxUndKb1dZbk4zL2dRTXBETE1waWJuUWtJ?=
+ =?utf-8?B?OUw0UjRYbkR2ZUxLamFOZWwzNzgyLzEyR2RrdUhXcE16NEZtRlYrbThBVFlz?=
+ =?utf-8?B?N1Yzb0NXdlFKV0xRTHlJQnIvNThVdzNjUi9BMWhjVENyTzZWZFRycnpjTllZ?=
+ =?utf-8?B?VklkMXZzV0JTOWU3MlhvT0duMUJUVVVJeVJtMmQybjJTU1IrRXdNbU4vOUZw?=
+ =?utf-8?B?NUdac1FEd2dRaFdwYWRGY1VqSWVsSHdEYVVnKzhsclF5clVYRVNPaHFzcFhD?=
+ =?utf-8?B?U0kzVVVIQnNMMnp5WTV0UEh3eVoxTEV1RXRwRjlSMVZlWVRuRkd4b0p0ZGVT?=
+ =?utf-8?B?Q3AvMlFTNEdyWk1LRUpyRzY4eXVvUzdaYXN1ZXIvL3pWMitEN2JiUC8xMUJU?=
+ =?utf-8?B?d2FDN2VSWVNJZUNJdGtaUmtzTEgwSGlqY2FqVmF2Z3U1cXZsOEY0OENVbEZM?=
+ =?utf-8?B?NDhuSWJSNlF4ZHNxMHpNNE9wYjlieGRERVoyWlZuS09MU1k1NlVackdnUnlx?=
+ =?utf-8?B?dU91V2lRRlZaSlJBSWdyQllsTyszaWYxS2I1OFhyVWNMS00rOVJZUUxHZzJO?=
+ =?utf-8?B?eUFvMjF3bk1zb3ZTb3VzcnJNclB3dTBJREVlMHUwZlVMR2I1b1hSRHJnN3RR?=
+ =?utf-8?B?QXVjK0hsYXB0SDZjR3VFei9NTzgxRGIyUlZUSE5mQUczOTZLWUpwanU2L1hv?=
+ =?utf-8?B?NFc3YUFMaEp5SWx6QUxoWVlHYWx5dG1rWkZIWXVyb0d0UzlVRmp1S0lPYXBH?=
+ =?utf-8?B?SjFscVNQSG5tNXVHaXo0bjRDZHBBOXB4Qld4am1NYlJrcW9CRVk1c2o3T3Z2?=
+ =?utf-8?B?cGxtMlhqTnlTMmpQMVRoUzFzd0hiVWJRMVNDUDFsa2xvdnBJUXFWaFF0Y3FF?=
+ =?utf-8?B?U09waDZFSjFRUm5ldVFxdTRST1JScTJ0WXArc3lmNk0vcGdhZzBtU0lXandk?=
+ =?utf-8?B?TmkzK1BsSldGS2J3TXZhbEdPdTE3UGkwSVBkVXA3YnFIYTJrSkIySnQ1UG9U?=
+ =?utf-8?B?MkIvQUQweE9SNytjYUxaVmxndVJuK2ZRZjB0NVNnK3V3K0hvYTNPWnIwS0JW?=
+ =?utf-8?B?VDlFOGZGb0ViY0g4LzdnUEMvS2wvTTVkQTFrdUFvVkxiTU5BZ0FBaitYaGlE?=
+ =?utf-8?B?Q0hiWUlJZXFLa0k4cm1jeDZ5STlHOVhjMUJYd29KSkVKdTgrbDRWT3pnZ05x?=
+ =?utf-8?B?ZkpPUFc2c0Q0VVdraCtvcnliTUZoeG9nMnRnZ0ZMVzd5VlhiRkxRN0FYaFRo?=
+ =?utf-8?B?ZVhoaURQZXFlZDFua0lYWXpTZEdWWFBqam5ubmE4MVRkQVpmOVIrRkdEN2pl?=
+ =?utf-8?B?TzI0Z1ZZVHE4bDhYNE91Q25mK0NvR2JNcEtoSW1POFFMWEg1RVd6Mk1DMUs4?=
+ =?utf-8?B?M0FDa0JrQlZzdXgxaHlGK0cwTHdnZ2NxdlZHVGN3SnJZNGhZNVlKblVrakkz?=
+ =?utf-8?B?ei8zSkpYOS95WlRKaHJVWHdSbUNPeDdBRzlaMDMyM3NZWUNJY09uZVkzUzhj?=
+ =?utf-8?B?ODI0a2MzUjIvRUdtb3RZRTRIbCtmT2xCQ3FnUUF3KzRsZnQ5ejlIcXkvV3M5?=
+ =?utf-8?B?ZVh6YUZRY1lVQ3lVK3RxdlBDVXQxZzduYzBwVXhBdjFXUmt0U3Q0VStPYXUr?=
+ =?utf-8?B?NUJEMUVmVlFvb0d2SngwZkhzOVAxc1hZS09PTVFTNUh5dkg0T01OWkllWXhV?=
+ =?utf-8?B?RnhGL05ZWDdVckRsRTNXaGhWRXVXbzlyYWZha1J1T1d1YWI2SnpVSkhFWGE0?=
+ =?utf-8?B?Z0xaS3dOaml3T2kzQkdPblExQVFFSFJ1ZUVXcWg0cnlOTGlWNi85WHVueVVE?=
+ =?utf-8?Q?c334+Wh15H8jTQN6zBOnJ88=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 81a11feb-c434-4655-80aa-08de3be3be69
+X-MS-Exchange-CrossTenant-AuthSource: MN6PR11MB8102.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2025 14:10:47.4180
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jwQ6qB5v2Q3EuOSJ3zljni8U7bmhx5SAaIaNa4SxUJrRBQFX+6lTHOAg+8BtRy+Sn0he2lwKs5YWEYDHkc1T0UtjCJ+Sq6mRIEr1ZmO6dTE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6093
+X-OriginatorOrg: intel.com
 
-On 2025/12/11 22:24, Tetsuo Handa wrote:
-> Since a reproducer for this bug is not available, I haven't verified
-> whether this is a bug syzbot is currently reporting in
-> https://syzkaller.appspot.com/bug?extid=881d65229ca4f9ae8c84 .
-> But I'd like to add Reported-by: syzbot if netdevice_event_work_handler()
-> is supposed to be called for releasing GID entry upon NETDEV_UNREGISTER
-> event. Thus, please review this change.
+On 12/11/25 20:47, Ivan Vecera wrote:
+> Allow drivers to register DPLL pins without manually specifying a pin
+> index.
+> 
+> Currently, drivers must provide a unique pin index when calling
+> dpll_pin_get(). This works well for hardware-mapped pins but creates
+> friction for drivers handling virtual pins or those without a strict
+> hardware indexing scheme.
 
-I can observe using simple atomic_t counters that there are sometimes pending
-netdevice_event() works as of immediately before clearing DEVICE_REGISTERED flag.
-That is, clearing DEVICE_REGISTERED flag without flushing pending netdevice_event()
-works results in failing to process some of netdev events.
+wouldn't it be better to just switch everything to allocated IDs?
 
-I considered resolving DEVICE_REGISTERED flag inside netdevice_event() and then
-flush pending netdevice_event() works after clearing DEVICE_REGISTERED flag (diff
-is shown below). But I immediately got circular locking dependency problem by just
-executing "rdma link add siw0 type siw netdev lo" command line. Therefore, I guess
-that the reason RDMA code defers netdevice_event() handling to WQ context is to
-avoid circular locking dependency problem. But I guess that due to lack of reliable
-flushing mechanism when clearing DEVICE_REGISTERED flag, sometimes operations for
-deleting GID entry are not invoked, and syzbot is reporting refcount leak...
-
- drivers/infiniband/core/core_priv.h     |    5 +++++
- drivers/infiniband/core/device.c        |   12 ++++++++++++
- drivers/infiniband/core/roce_gid_mgmt.c |   45 ++++++++++++++++++++++++++-------------------
- 3 files changed, 43 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
-index 05102769a918..96ccfeb85547 100644
---- a/drivers/infiniband/core/core_priv.h
-+++ b/drivers/infiniband/core/core_priv.h
-@@ -99,6 +99,11 @@ void ib_enum_all_roce_netdevs(roce_netdev_filter filter,
- 			      void *filter_cookie,
- 			      roce_netdev_callback cb,
- 			      void *cookie);
-+extern struct workqueue_struct *gid_cache_wq;
-+struct netdev_event_work_cmd;
-+void roce_reserve_netdev_callback(struct ib_device *ib_dev, struct netdev_event_work_cmd *cmds,
-+				  struct net_device *ndev);
-+void ib_reserve_enum_all_roce_netdevs(struct netdev_event_work_cmd *cmds, struct net_device *ndev);
- 
- typedef int (*nldev_callback)(struct ib_device *device,
- 			      struct sk_buff *skb,
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 13e8a1714bbd..1817a6d207d1 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -1303,6 +1303,7 @@ static void disable_device(struct ib_device *device)
- 	down_write(&devices_rwsem);
- 	xa_clear_mark(&devices, device->index, DEVICE_REGISTERED);
- 	up_write(&devices_rwsem);
-+	flush_workqueue(gid_cache_wq);
- 
- 	/*
- 	 * Remove clients in LIFO order, see assign_client_id. This could be
-@@ -2446,6 +2447,17 @@ void ib_enum_all_roce_netdevs(roce_netdev_filter filter,
- 	up_read(&devices_rwsem);
- }
- 
-+void ib_reserve_enum_all_roce_netdevs(struct netdev_event_work_cmd *cmds, struct net_device *ndev)
-+{
-+	struct ib_device *dev;
-+	unsigned long index;
-+
-+	down_read(&devices_rwsem);
-+	xa_for_each_marked(&devices, index, dev, DEVICE_REGISTERED)
-+		roce_reserve_netdev_callback(dev, cmds, ndev);
-+	up_read(&devices_rwsem);
-+}
-+
- /*
-  * ib_enum_all_devs - enumerate all ib_devices
-  * @cb: Callback to call for each found ib_device
-diff --git a/drivers/infiniband/core/roce_gid_mgmt.c b/drivers/infiniband/core/roce_gid_mgmt.c
-index a9f2c6b1b29e..371f3bc564eb 100644
---- a/drivers/infiniband/core/roce_gid_mgmt.c
-+++ b/drivers/infiniband/core/roce_gid_mgmt.c
-@@ -42,7 +42,7 @@
- #include <rdma/ib_cache.h>
- #include <rdma/ib_addr.h>
- 
--static struct workqueue_struct *gid_cache_wq;
-+struct workqueue_struct *gid_cache_wq;
- 
- enum gid_op_type {
- 	GID_DEL = 0,
-@@ -69,6 +69,12 @@ struct netdev_event_work {
- 	struct netdev_event_work_cmd	cmds[ROCE_NETDEV_CALLBACK_SZ];
- };
- 
-+struct netdev_event_work2 {
-+	struct work_struct		work;
-+	struct ib_device		*ib_dev;
-+	struct netdev_event_work_cmd	cmds[ROCE_NETDEV_CALLBACK_SZ];
-+};
-+
- static const struct {
- 	bool (*is_supported)(const struct ib_device *device, u32 port_num);
- 	enum ib_gid_type gid_type;
-@@ -633,39 +639,41 @@ static void del_netdev_default_ips_join(struct ib_device *ib_dev, u32 port,
- 	}
- }
- 
--/* The following functions operate on all IB devices. netdevice_event and
-- * addr_event execute ib_enum_all_roce_netdevs through a work.
-+/* The following functions operate on all IB devices.
-+ * netdevice_event executes ib_enum_roce_netdev through netdev_event_work2.
-+ * addr_event executes ib_enum_all_roce_netdevs through update_gid_event_work.
-  * ib_enum_all_roce_netdevs iterates through all IB devices.
-  */
- 
- static void netdevice_event_work_handler(struct work_struct *_work)
- {
--	struct netdev_event_work *work =
--		container_of(_work, struct netdev_event_work, work);
-+	struct netdev_event_work2 *work =
-+		container_of(_work, struct netdev_event_work2, work);
- 	unsigned int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(work->cmds) && work->cmds[i].cb; i++) {
--		ib_enum_all_roce_netdevs(work->cmds[i].filter,
--					 work->cmds[i].filter_ndev,
--					 work->cmds[i].cb,
--					 work->cmds[i].ndev);
-+		ib_enum_roce_netdev(work->ib_dev,
-+				    work->cmds[i].filter,
-+				    work->cmds[i].filter_ndev,
-+				    work->cmds[i].cb,
-+				    work->cmds[i].ndev);
- 		dev_put(work->cmds[i].ndev);
- 		dev_put(work->cmds[i].filter_ndev);
- 	}
- 
-+	ib_device_put(work->ib_dev); /* Acquired by roce_reserve_netdev_callback(). */
- 	kfree(work);
- }
- 
--static int netdevice_queue_work(struct netdev_event_work_cmd *cmds,
--				struct net_device *ndev)
-+void roce_reserve_netdev_callback(struct ib_device *ib_dev, struct netdev_event_work_cmd *cmds,
-+				  struct net_device *ndev)
- {
- 	unsigned int i;
--	struct netdev_event_work *ndev_work =
--		kmalloc(sizeof(*ndev_work), GFP_KERNEL);
--
--	if (!ndev_work)
--		return NOTIFY_DONE;
-+	struct netdev_event_work2 *ndev_work =
-+		kmalloc(sizeof(*ndev_work), GFP_KERNEL | __GFP_NOFAIL);
- 
-+	refcount_inc(&ib_dev->refcount); /* Dropped by netdevice_event_work_handler(). */
-+	ndev_work->ib_dev = ib_dev;
- 	memcpy(ndev_work->cmds, cmds, sizeof(ndev_work->cmds));
- 	for (i = 0; i < ARRAY_SIZE(ndev_work->cmds) && ndev_work->cmds[i].cb; i++) {
- 		if (!ndev_work->cmds[i].ndev)
-@@ -678,8 +686,6 @@ static int netdevice_queue_work(struct netdev_event_work_cmd *cmds,
- 	INIT_WORK(&ndev_work->work, netdevice_event_work_handler);
- 
- 	queue_work(gid_cache_wq, &ndev_work->work);
--
--	return NOTIFY_DONE;
- }
- 
- static const struct netdev_event_work_cmd add_cmd = {
-@@ -820,7 +826,8 @@ static int netdevice_event(struct notifier_block *this, unsigned long event,
- 		return NOTIFY_DONE;
- 	}
- 
--	return netdevice_queue_work(cmds, ndev);
-+	ib_reserve_enum_all_roce_netdevs(cmds, ndev);
-+	return NOTIFY_DONE;
- }
- 
- static void update_gid_event_work_handler(struct work_struct *_work)
-
-
-[   T1228] SoftiWARP attached
-[   T1222] lo speed is unknown, defaulting to 1000
-[   T1222] lo speed is unknown, defaulting to 1000
-[   T1222] lo speed is unknown, defaulting to 1000
-
-[   T1222] ======================================================
-[   T1222] WARNING: possible circular locking dependency detected
-[   T1222] 6.19.0-rc1-dirty #232 Not tainted
-[   T1222] ------------------------------------------------------
-[   T1222] rdma/1222 is trying to acquire lock:
-[   T1222] ffffffffba281a28 (rtnl_mutex){+.+.}-{4:4}, at: ib_get_eth_speed+0x7a/0x360 [ib_core]
-[   T1222] 
-           but task is already holding lock:
-[   T1222] ffff88d54bd34fa8 (&device->compat_devs_mutex){+.+.}-{4:4}, at: add_one_compat_dev+0x72/0x380 [ib_core]
-[   T1222] 
-           which lock already depends on the new lock.
-
-[   T1222] 
-           the existing dependency chain (in reverse order) is:
-[   T1222] 
-           -> #3 (&device->compat_devs_mutex){+.+.}-{4:4}:
-[   T1222]        __lock_acquire+0x56d/0xbe0
-[   T1222]        lock_acquire.part.0+0x78/0x1c0
-[   T1222]        __mutex_lock+0xc7/0x10b0
-[   T1222]        add_one_compat_dev+0x72/0x380 [ib_core]
-[   T1222]        enable_device_and_get+0x1a4/0x200 [ib_core]
-[   T1222]        ib_register_device+0xf3/0x260 [ib_core]
-[   T1222]        siw_newlink+0xa4/0x140 [siw]
-[   T1222]        nldev_newlink+0x1d9/0x300 [ib_core]
-[   T1222]        rdma_nl_rcv_msg+0x12f/0x2f0 [ib_core]
-[   T1222]        rdma_nl_rcv_skb.constprop.0.isra.0+0xb2/0x100 [ib_core]
-[   T1222]        netlink_unicast+0x203/0x2e0
-[   T1222]        netlink_sendmsg+0x1f8/0x420
-[   T1222]        sock_sendmsg_nosec+0x81/0x90
-[   T1222]        __sys_sendto+0x125/0x180
-[   T1222]        __x64_sys_sendto+0x24/0x30
-[   T1222]        do_syscall_64+0x98/0x3c0
-[   T1222]        entry_SYSCALL_64_after_hwframe+0x76/0x7e
-[   T1222] 
-           -> #2 (rdma_nets_rwsem){.+.+}-{4:4}:
-[   T1222]        __lock_acquire+0x56d/0xbe0
-[   T1222]        lock_acquire.part.0+0x78/0x1c0
-[   T1222]        down_read+0x31/0x150
-[   T1222]        enable_device_and_get+0x147/0x200 [ib_core]
-[   T1222]        ib_register_device+0xf3/0x260 [ib_core]
-[   T1222]        siw_newlink+0xa4/0x140 [siw]
-[   T1222]        nldev_newlink+0x1d9/0x300 [ib_core]
-[   T1222]        rdma_nl_rcv_msg+0x12f/0x2f0 [ib_core]
-[   T1222]        rdma_nl_rcv_skb.constprop.0.isra.0+0xb2/0x100 [ib_core]
-[   T1222]        netlink_unicast+0x203/0x2e0
-[   T1222]        netlink_sendmsg+0x1f8/0x420
-[   T1222]        sock_sendmsg_nosec+0x81/0x90
-[   T1222]        __sys_sendto+0x125/0x180
-[   T1222]        __x64_sys_sendto+0x24/0x30
-[   T1222]        do_syscall_64+0x98/0x3c0
-[   T1222]        entry_SYSCALL_64_after_hwframe+0x76/0x7e
-[   T1222] 
-           -> #1 (devices_rwsem){++++}-{4:4}:
-[   T1222]        __lock_acquire+0x56d/0xbe0
-[   T1222]        lock_acquire.part.0+0x78/0x1c0
-[   T1222]        down_read+0x31/0x150
-[   T1222]        ib_reserve_enum_all_roce_netdevs+0x36/0xc0 [ib_core]
-[   T1222]        netdevice_event+0x114/0x240 [ib_core]
-[   T1222]        call_netdevice_register_net_notifiers+0x79/0x1b0
-[   T1222]        register_netdevice_notifier+0x8e/0x130
-[   T1222]        0xffffffffc08992a4
-[   T1222]        0xffffffffc089918f
-[   T1222]        do_one_initcall+0x70/0x380
-[   T1222]        do_init_module+0x84/0x260
-[   T1222]        init_module_from_file+0xd3/0xf0
-[   T1222]        idempotent_init_module+0x11a/0x310
-[   T1222]        __x64_sys_finit_module+0x71/0xe0
-[   T1222]        do_syscall_64+0x98/0x3c0
-[   T1222]        entry_SYSCALL_64_after_hwframe+0x76/0x7e
-[   T1222] 
-           -> #0 (rtnl_mutex){+.+.}-{4:4}:
-[   T1222]        check_prev_add+0xe1/0xca0
-[   T1222]        validate_chain+0x52c/0x7e0
-[   T1222]        __lock_acquire+0x56d/0xbe0
-[   T1222]        lock_acquire.part.0+0x78/0x1c0
-[   T1222]        __mutex_lock+0xc7/0x10b0
-[   T1222]        ib_get_eth_speed+0x7a/0x360 [ib_core]
-[   T1222]        siw_query_port+0x4b/0x190 [siw]
-[   T1222]        ib_setup_port_attrs+0x99/0x250 [ib_core]
-[   T1222]        add_one_compat_dev+0x286/0x380 [ib_core]
-[   T1222]        enable_device_and_get+0x1a4/0x200 [ib_core]
-[   T1222]        ib_register_device+0xf3/0x260 [ib_core]
-[   T1222]        siw_newlink+0xa4/0x140 [siw]
-[   T1222]        nldev_newlink+0x1d9/0x300 [ib_core]
-[   T1222]        rdma_nl_rcv_msg+0x12f/0x2f0 [ib_core]
-[   T1222]        rdma_nl_rcv_skb.constprop.0.isra.0+0xb2/0x100 [ib_core]
-[   T1222]        netlink_unicast+0x203/0x2e0
-[   T1222]        netlink_sendmsg+0x1f8/0x420
-[   T1222]        sock_sendmsg_nosec+0x81/0x90
-[   T1222]        __sys_sendto+0x125/0x180
-[   T1222]        __x64_sys_sendto+0x24/0x30
-[   T1222]        do_syscall_64+0x98/0x3c0
-[   T1222]        entry_SYSCALL_64_after_hwframe+0x76/0x7e
-[   T1222] 
-           other info that might help us debug this:
-
-[   T1222] Chain exists of:
-             rtnl_mutex --> rdma_nets_rwsem --> &device->compat_devs_mutex
-
-[   T1222]  Possible unsafe locking scenario:
-
-[   T1222]        CPU0                    CPU1
-[   T1222]        ----                    ----
-[   T1222]   lock(&device->compat_devs_mutex);
-[   T1222]                                lock(rdma_nets_rwsem);
-[   T1222]                                lock(&device->compat_devs_mutex);
-[   T1222]   lock(rtnl_mutex);
-[   T1222] 
-            *** DEADLOCK ***
-
-[   T1222] 5 locks held by rdma/1222:
-[   T1222]  #0: ffffffffc0ae1b18 (&rdma_nl_types[idx].sem){.+.+}-{4:4}, at: rdma_nl_rcv_msg+0x9e/0x2f0 [ib_core]
-[   T1222]  #1: ffffffffc0ae8a30 (link_ops_rwsem){++++}-{4:4}, at: nldev_newlink+0x278/0x300 [ib_core]
-[   T1222]  #2: ffffffffc0ae3e50 (devices_rwsem){++++}-{4:4}, at: enable_device_and_get+0x5c/0x200 [ib_core]
-[   T1222]  #3: ffffffffc0ae3c50 (rdma_nets_rwsem){.+.+}-{4:4}, at: enable_device_and_get+0x147/0x200 [ib_core]
-[   T1222]  #4: ffff88d54bd34fa8 (&device->compat_devs_mutex){+.+.}-{4:4}, at: add_one_compat_dev+0x72/0x380 [ib_core]
-[   T1222] 
-           stack backtrace:
-[   T1222] CPU: 5 UID: 0 PID: 1222 Comm: rdma Not tainted 6.19.0-rc1-dirty #232 PREEMPT(voluntary) 
-[   T1222] Hardware name: VMware, Inc. VMware Virtual Platform/440BX Desktop Reference Platform, BIOS 6.00 11/12/2020
-[   T1222] Call Trace:
-[   T1222]  <TASK>
-[   T1222]  dump_stack_lvl+0x6e/0xa0
-[   T1222]  print_circular_bug.cold+0x38/0x46
-[   T1222]  check_noncircular+0x148/0x170
-[   T1222]  check_prev_add+0xe1/0xca0
-[   T1222]  ? is_bpf_text_address+0x6e/0x100
-[   T1222]  ? kernel_text_address+0x120/0x130
-[   T1222]  validate_chain+0x52c/0x7e0
-[   T1222]  __lock_acquire+0x56d/0xbe0
-[   T1222]  lock_acquire.part.0+0x78/0x1c0
-[   T1222]  ? ib_get_eth_speed+0x7a/0x360 [ib_core]
-[   T1222]  __mutex_lock+0xc7/0x10b0
-[   T1222]  ? ib_get_eth_speed+0x7a/0x360 [ib_core]
-[   T1222]  ? find_held_lock+0x2b/0x80
-[   T1222]  ? ib_get_eth_speed+0x7a/0x360 [ib_core]
-[   T1222]  ? ib_get_eth_speed+0x7a/0x360 [ib_core]
-[   T1222]  ib_get_eth_speed+0x7a/0x360 [ib_core]
-[   T1222]  ? netlink_sendmsg+0x1f8/0x420
-[   T1222]  siw_query_port+0x4b/0x190 [siw]
-[   T1222]  ib_setup_port_attrs+0x99/0x250 [ib_core]
-[   T1222]  add_one_compat_dev+0x286/0x380 [ib_core]
-[   T1222]  enable_device_and_get+0x1a4/0x200 [ib_core]
-[   T1222]  ib_register_device+0xf3/0x260 [ib_core]
-[   T1222]  siw_newlink+0xa4/0x140 [siw]
-[   T1222]  nldev_newlink+0x1d9/0x300 [ib_core]
-[   T1222]  rdma_nl_rcv_msg+0x12f/0x2f0 [ib_core]
-[   T1222]  ? __lock_acquire+0x56d/0xbe0
-[   T1222]  rdma_nl_rcv_skb.constprop.0.isra.0+0xb2/0x100 [ib_core]
-[   T1222]  netlink_unicast+0x203/0x2e0
-[   T1222]  netlink_sendmsg+0x1f8/0x420
-[   T1222]  sock_sendmsg_nosec+0x81/0x90
-[   T1222]  __sys_sendto+0x125/0x180
-[   T1222]  __x64_sys_sendto+0x24/0x30
-[   T1222]  do_syscall_64+0x98/0x3c0
-[   T1222]  ? switch_fpu_return+0xd6/0x100
-[   T1222]  ? do_syscall_64+0x16d/0x3c0
-[   T1222]  ? lockdep_hardirqs_on_prepare.part.0+0x9b/0x140
-[   T1222]  ? irqentry_exit+0x8c/0x5b0
-[   T1222]  ? trace_hardirqs_off+0x44/0xa0
-[   T1222]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-[   T1222] RIP: 0033:0x7f38bc63d77e
-[   T1222] Code: 4d 89 d8 e8 d4 bc 00 00 4c 8b 5d f8 41 8b 93 08 03 00 00 59 5e 48 83 f8 fc 74 11 c9 c3 0f 1f 80 00 00 00 00 48 8b 45 10 0f 05 <c9> c3 83 e2 39 83 fa 08 75 e7 e8 13 ff ff ff 0f 1f 00 f3 0f 1e fa
-[   T1222] RSP: 002b:00007ffd972ef0b0 EFLAGS: 00000202 ORIG_RAX: 000000000000002c
-[   T1222] RAX: ffffffffffffffda RBX: 00005612aac892d0 RCX: 00007f38bc63d77e
-[   T1222] RDX: 000000000000002c RSI: 00005612aac882a0 RDI: 0000000000000004
-[   T1222] RBP: 00007ffd972ef0c0 R08: 00007f38bc7d19a0 R09: 000000000000000c
-[   T1222] R10: 0000000000000000 R11: 0000000000000202 R12: 00007ffd972ef380
-[   T1222] R13: 00007ffd972ef3d8 R14: 00007ffd972f15ba R15: 0000000069401105
-[   T1222]  </TASK>
-[   T1222] lo speed is unknown, defaulting to 1000
-[   T1222] lo speed is unknown, defaulting to 1000
-[   T1222] lo speed is unknown, defaulting to 1000
+> 
+> Introduce DPLL_PIN_IDX_UNSPEC (U32_MAX). When a driver passes this
+> value as the pin index:
+> 1. The core allocates a unique index using an IDA
+> 2. The allocated index is mapped to a range starting above `INT_MAX`
+> 
+> This separation ensures that dynamically allocated indices never collide
+> with standard driver-provided hardware indices, which are assumed to be
+> within the `0` to `INT_MAX` range. The index is automatically freed when
+> the pin is released in dpll_pin_put().
+> 
+> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+> ---
+>   drivers/dpll/dpll_core.c | 48 ++++++++++++++++++++++++++++++++++++++--
+>   include/linux/dpll.h     |  2 ++
+>   2 files changed, 48 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/dpll/dpll_core.c b/drivers/dpll/dpll_core.c
+> index fecc3d97acf5b..79f60e0de27ac 100644
+> --- a/drivers/dpll/dpll_core.c
+> +++ b/drivers/dpll/dpll_core.c
+> @@ -10,6 +10,7 @@
+>   
+>   #include <linux/device.h>
+>   #include <linux/err.h>
+> +#include <linux/idr.h>
+>   #include <linux/property.h>
+>   #include <linux/slab.h>
+>   #include <linux/string.h>
+> @@ -24,6 +25,7 @@ DEFINE_XARRAY_FLAGS(dpll_device_xa, XA_FLAGS_ALLOC);
+>   DEFINE_XARRAY_FLAGS(dpll_pin_xa, XA_FLAGS_ALLOC);
+>   
+>   static RAW_NOTIFIER_HEAD(dpll_notifier_chain);
+> +static DEFINE_IDA(dpll_pin_idx_ida);
+>   
+>   static u32 dpll_device_xa_id;
+>   static u32 dpll_pin_xa_id;
+> @@ -468,6 +470,36 @@ void dpll_device_unregister(struct dpll_device *dpll,
+>   }
+>   EXPORT_SYMBOL_GPL(dpll_device_unregister);
+>   
+> +static int dpll_pin_idx_alloc(u32 *pin_idx)
+> +{
+> +	int ret;
+> +
+> +	if (!pin_idx)
+> +		return -EINVAL;
+> +
+> +	/* Alloc unique number from IDA. Number belongs to <0, INT_MAX> range */
+> +	ret = ida_alloc(&dpll_pin_idx_ida, GFP_KERNEL);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/* Map the value to dynamic pin index range <INT_MAX+1, U32_MAX> */
+> +	*pin_idx = (u32)ret + INT_MAX + 1;
+> +
+> +	return 0;
+> +}
+> +
+> +static void dpll_pin_idx_free(u32 pin_idx)
+> +{
+> +	if (pin_idx <= INT_MAX)
+> +		return; /* Not a dynamic pin index */
+> +
+> +	/* Map the index value from dynamic pin index range to IDA range and
+> +	 * free it.
+> +	 */
+> +	pin_idx -= INT_MAX - 1;
+> +	ida_free(&dpll_pin_idx_ida, pin_idx);
+> +}
+> +
+>   static void dpll_pin_prop_free(struct dpll_pin_properties *prop)
+>   {
+>   	kfree(prop->package_label);
+> @@ -526,9 +558,18 @@ dpll_pin_alloc(u64 clock_id, u32 pin_idx, struct module *module,
+>   	struct dpll_pin *pin;
+>   	int ret;
+>   
+> +	if (pin_idx == DPLL_PIN_IDX_UNSPEC) {
+> +		ret = dpll_pin_idx_alloc(&pin_idx);
+> +		if (ret)
+> +			return ERR_PTR(ret);
+> +	} else if (pin_idx > INT_MAX) {
+> +		return ERR_PTR(-EINVAL);
+> +	}
+>   	pin = kzalloc(sizeof(*pin), GFP_KERNEL);
+> -	if (!pin)
+> -		return ERR_PTR(-ENOMEM);
+> +	if (!pin) {
+> +		ret = -ENOMEM;
+> +		goto err_pin_alloc;
+> +	}
+>   	pin->pin_idx = pin_idx;
+>   	pin->clock_id = clock_id;
+>   	pin->module = module;
+> @@ -557,6 +598,8 @@ dpll_pin_alloc(u64 clock_id, u32 pin_idx, struct module *module,
+>   	dpll_pin_prop_free(&pin->prop);
+>   err_pin_prop:
+>   	kfree(pin);
+> +err_pin_alloc:
+> +	dpll_pin_idx_free(pin_idx);
+>   	return ERR_PTR(ret);
+>   }
+>   
+> @@ -663,6 +706,7 @@ void dpll_pin_put(struct dpll_pin *pin)
+>   		xa_destroy(&pin->ref_sync_pins);
+>   		dpll_pin_prop_free(&pin->prop);
+>   		fwnode_handle_put(pin->fwnode);
+> +		dpll_pin_idx_free(pin->pin_idx);
+>   		kfree_rcu(pin, rcu);
+>   	}
+>   	mutex_unlock(&dpll_lock);
+> diff --git a/include/linux/dpll.h b/include/linux/dpll.h
+> index 441afb90d2a29..8aa1df38ce563 100644
+> --- a/include/linux/dpll.h
+> +++ b/include/linux/dpll.h
+> @@ -235,6 +235,8 @@ int dpll_device_register(struct dpll_device *dpll, enum dpll_type type,
+>   void dpll_device_unregister(struct dpll_device *dpll,
+>   			    const struct dpll_device_ops *ops, void *priv);
+>   
+> +#define DPLL_PIN_IDX_UNSPEC	U32_MAX
+> +
+>   struct dpll_pin *
+>   dpll_pin_get(u64 clock_id, u32 dev_driver_id, struct module *module,
+>   	     const struct dpll_pin_properties *prop,
 
 
