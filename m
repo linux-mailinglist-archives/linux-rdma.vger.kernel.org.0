@@ -1,112 +1,217 @@
-Return-Path: <linux-rdma+bounces-15036-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15037-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C317CCC42BE
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 17:14:55 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3342CCC46E1
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 17:51:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C61D33091983
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 16:07:48 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 67A83302E5B0
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 16:50:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CEE033984D;
-	Tue, 16 Dec 2025 16:06:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D218432143E;
+	Tue, 16 Dec 2025 16:50:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KKItq4mR"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 028C2330659
-	for <linux-rdma@vger.kernel.org>; Tue, 16 Dec 2025 16:06:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6F7121CC5C
+	for <linux-rdma@vger.kernel.org>; Tue, 16 Dec 2025 16:50:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765901192; cv=none; b=rG5gL9U72Ltr2vtl5BhF1J/Wx/glo9tknLnO0RolNTX0n31cri1Volj3S9FWNerouGsayjQXrGHRHjOeK21Qt9tJp52sQbFUCvkT6EbSQlhbqh5fbsLhfp8J+NI2xydJ2mVuRXkwwpyh0aD6alaL9hn5Oq5IDNA2ctfAO23fYGE=
+	t=1765903814; cv=none; b=aDDsHfX4+XIH6tJ7BtIkbK0bvCZgy9v9520p4oXhJNW03clOV5prQdLP7A/6rAa1VMUGI7x6RIcAQGm+sXQGfrodMSo0319wAD8yKlb02lZhuybjTh0rLTB5FnkoXkBJ+IWHT7BCR8wQfZ99FZWv5/BnLKc6QaKwVJ99LKJA+kM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765901192; c=relaxed/simple;
-	bh=ZbCxFXViYY0JqhcGfnxOHCUGcljEiGp2x9f+pJft6ug=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h4yj/6Quffi1181yQq360CePhaeZUby3fe8QXIUPpBbSEXLRQruv+1CJH9JNIX/5VkMPsr/8vk11Soq2Dt2YUa6tPyf7e14enmrdU9F0dRpwGGuhRisHXXgc5DmqlIUMxIDaoPtf3KQxmtf+NHHZ37LYeFUjcsxZqHC1fFpFcyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-55b1dde0961so3316192e0c.2
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Dec 2025 08:06:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765901190; x=1766505990;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ABolTLbL+Ijw9a+lTCbW30nxIpq4yhzUHc7TJQGRpDg=;
-        b=qVWHFJ4YOi69QkSVgS/eUh9sgq9n77pyXBbuiAGezX8+2GUZDt0TufUlAQI95R2NMx
-         5ofTbb305NiPMwpC/Bcq4ARD1E8LPK/QcuxRO2dt9TXhxYZGzAodSm0v7lFwrrhVBvSm
-         ScRjNTlB08/VM0g1pMjaxRg1pRobFMcuTmAbyWUatufS8e8lA9DNaGRmf6tr4tKSTw7t
-         e2NC4MLLOG4gFzfZsFvHagLQbyyJxuMVZrcq5bagK17oq3N0NAqGITcJt/ahxogsJOPe
-         0dkoKkKeZbZ2kt1iZVspLZHzY1qbAcA1Ct4Y2dFqinmAs/eP55rr7rd7I0LU0pj6BwjS
-         s6YQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVk9/TXaeaRjPu4/XTH5wzec8Wlga8+DbqaWG51Vi+9GEnxExp8uFNy04YRojLtG1NHI5l1A786I758@vger.kernel.org
-X-Gm-Message-State: AOJu0YwCIqwZSzbRlkKL7GU/7LBduiBaDtOGeIZUwBQ5iPMn28Ctd//4
-	P2HZDr1DtAK/sOBCJORtapx9g6RmRoiZPqs5X0ZzYhzsVVtjHjrGGFe+A2bArcGn
-X-Gm-Gg: AY/fxX6bJODQFblWv4ITSbWXtDDmowlCblZbsF/0podwWPQOkglf54z/awk5iPO9AGz
-	H+ABQHKQfEZJIIlWj2c5/vueYy18Gx0/qD1kUk+fNoVj7zygrWnYHDyyyBiFToeieO+BfB3GINR
-	aMeSng3vdkVn5OcoQWGgsDmrudcHh9w2vyUVZUNAfWXN0I+nbpCBQlGFFjR9i0nsmxlIKUnVKyh
-	0OHFLhzy0pB5TSy//iZBOQAOKnzg/FUpjL+gQ/V9ILS4atVO+5xrbDw3XCtKc1noICfbU/AdID9
-	6DhsWf4+DdlUBcFuHqs/zbGG2g+L5cnkxCKSBR7pfG10ptgz2VCbYHqMVnf+o1ndIxAtiNHfTob
-	kF9ZAK+BntpDB4QqcvqCVTrsXitT7rF0SISANaUcd/qfOkXdAr6ayJk/w4njNdnKvM1zr8rioIB
-	iTQJNfw5Cd5sXpIdtrzq4aUaVCJ+4TjPJyYWcJ39CKakrLpXoO
-X-Google-Smtp-Source: AGHT+IGUZQ9ksPdIH4wZmGdoFUUUAvUuhRQXMS8xhk+SW7Fy2Ge15MMvu3KO9PHaAPC1ca1NzUZORQ==
-X-Received: by 2002:a05:6122:2a13:b0:556:9cb9:65cd with SMTP id 71dfb90a1353d-55fed587a9cmr5197413e0c.6.1765901188788;
-        Tue, 16 Dec 2025 08:06:28 -0800 (PST)
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
-        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-93f5af00debsm5733423241.14.2025.12.16.08.06.25
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Dec 2025 08:06:26 -0800 (PST)
-Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-940c539de8fso2713117241.0
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Dec 2025 08:06:25 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU+8y9R1s367t24QyD9b1WsBhiHoaLOBXmrBSoaENNKgs3MjL8JMsYp5Jtle54Zp34yx+U18v66wbdo@vger.kernel.org
-X-Received: by 2002:a05:6122:208a:b0:544:7d55:78d6 with SMTP id
- 71dfb90a1353d-55fed5627c8mr4657306e0c.2.1765901184991; Tue, 16 Dec 2025
- 08:06:24 -0800 (PST)
+	s=arc-20240116; t=1765903814; c=relaxed/simple;
+	bh=amfFNKZq1GUMZKx6J2ykCTUYk0BUEzTOlZF4aDqDJBs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b9m30Izr6Jxjj7rvBwYwZM2YGJnjteoerlciYjpuYAlrlaPWI2D1fpHwCFjjaiKQUAOQHRqpS29E3jtyXxQxihkzysgwRxEtVXYkobcb2wZ2Wt6ybxEsJ5SiaF/xAIvIn3Pmv4ayWlVUMAcOVqxX8OuKj52SoyRMfucAnm8T63k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KKItq4mR; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1765903811;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YQaoEdb2Gv5mzjmA2yph1YCAS1Og7y9869UiTShKwOw=;
+	b=KKItq4mRB1UlHZarN80DDrTdYhCfxw3lI3bVMgdBoRRTe1XcGxTGCGltW2tuvoEcw/j+FA
+	TXwNPKsdAJrRIhPbVPwFM6aCU7BheeItteG5CGZe1xdC+uL8R2JijmekIrv91y189vroPw
+	z8K+kuJJLpiWR9BflOa0+4Y+QzyB8Qo=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-661-6LyMfdK8OfiS9pzsl521xg-1; Tue,
+ 16 Dec 2025 11:50:06 -0500
+X-MC-Unique: 6LyMfdK8OfiS9pzsl521xg-1
+X-Mimecast-MFC-AGG-ID: 6LyMfdK8OfiS9pzsl521xg_1765903802
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E77E3180121B;
+	Tue, 16 Dec 2025 16:50:01 +0000 (UTC)
+Received: from [10.45.224.214] (unknown [10.45.224.214])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 04967180044F;
+	Tue, 16 Dec 2025 16:49:53 +0000 (UTC)
+Message-ID: <2a50d5a3-3116-43e6-ada7-d6c02c483708@redhat.com>
+Date: Tue, 16 Dec 2025 17:49:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251208133849.315451-1-arnd@kernel.org> <CAMuHMdXvNzE++8w1nmD3QXBGb1BzstZwJTSb5=tFfHZDfdqEww@mail.gmail.com>
- <CAHYDg1QbNWW=wm4fH71yLVX_gKsPij5jed5R64JbN0mv6Lyx4g@mail.gmail.com>
-In-Reply-To: <CAHYDg1QbNWW=wm4fH71yLVX_gKsPij5jed5R64JbN0mv6Lyx4g@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 16 Dec 2025 17:06:13 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUnRGUCiLmPYhPA8-vkNqnzX74nad9d=0Cck66GorZK1Q@mail.gmail.com>
-X-Gm-Features: AQt7F2qvjXqrNdCfN0utewkCwdlxG_hIB-NvIkLGhwr-a8i2B8izMCC0vdDPNrs
-Message-ID: <CAMuHMdUnRGUCiLmPYhPA8-vkNqnzX74nad9d=0Cck66GorZK1Q@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/irdma: fix irdma_alloc_ucontext_resp padding
-To: Jacob Moroni <jmoroni@google.com>
-Cc: Arnd Bergmann <arnd@kernel.org>, Krzysztof Czurylo <krzysztof.czurylo@intel.com>, 
-	Tatyana Nikolova <tatyana.e.nikolova@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Leon Romanovsky <leon@kernel.org>, Faisal Latif <faisal.latif@intel.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Mustafa Ismail <mustafa.ismail@intel.com>, linux-rdma@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Intel-wired-lan] [PATCH RFC net-next v2 12/12] ice: dpll:
+ Support E825-C SyncE and dynamic pin discovery
+To: "Loktionov, Aleksandr" <aleksandr.loktionov@intel.com>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Cc: Eric Dumazet <edumazet@google.com>,
+ "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+ Rob Herring <robh@kernel.org>, Leon Romanovsky <leon@kernel.org>,
+ "Lobakin, Aleksander" <aleksander.lobakin@intel.com>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ "Kitszel, Przemyslaw" <przemyslaw.kitszel@intel.com>,
+ "Kubalewski, Arkadiusz" <arkadiusz.kubalewski@intel.com>,
+ "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Prathosh Satish <Prathosh.Satish@microchip.com>,
+ Willem de Bruijn <willemb@google.com>,
+ Vadim Fedorenko <vadim.fedorenko@linux.dev>, Mark Bloch <mbloch@nvidia.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Stefan Wahren <wahrenst@gmx.net>, Simon Horman <horms@kernel.org>,
+ Jonathan Lemon <jonathan.lemon@gmail.com>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Saeed Mahameed
+ <saeedm@nvidia.com>, "David S. Miller" <davem@davemloft.net>
+References: <20251215203037.1324945-1-ivecera@redhat.com>
+ <20251215203037.1324945-13-ivecera@redhat.com>
+ <IA3PR11MB8986B2F4DBD3CDBAE5753C8AE5AAA@IA3PR11MB8986.namprd11.prod.outlook.com>
+Content-Language: en-US
+From: Ivan Vecera <ivecera@redhat.com>
+In-Reply-To: <IA3PR11MB8986B2F4DBD3CDBAE5753C8AE5AAA@IA3PR11MB8986.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
-Hi Jacob,
 
-On Tue, 16 Dec 2025 at 15:17, Jacob Moroni <jmoroni@google.com> wrote:
-> This doesn't change the offset of max_hw_srq_quanta on my system, but I tested
-> with a verbs provider built with the previous and new proposed change
-> just in case,
-> and both worked.
 
-It indeed doesn't change the offset of that field (except on m68k),
-but it should restore the size of the structure to what it was before.
+On 12/16/25 2:28 PM, Loktionov, Aleksandr wrote:
+> 
+> 
+>> -----Original Message-----
+>> ...
+>> +		/* Register rclk pin */
+>> +		pin = &pf->dplls.rclk;
+>> +		dpll_pin_on_pin_unregister(parent->pin, pin->pin,
+>> +					   &ice_dpll_rclk_ops, pin);
+>> +
+>> +		/* Drop fwnode pin reference */
+>> +		dpll_pin_put(parent->pin, &parent->tracker);
+>> +		parent->pin = NULL;
+>> +		break;
+>> +	default:
+>> +		break;
+>> +	}
+>> +out:
+>> +	kfree(work);
+> It looks like you free the embedded work_struct pointer instead of the allocated ice_dpll_pin_work container @ice_dpll_pin_notify().
+> Isn't it?
 
-Gr{oetje,eeting}s,
+You are right, will fix this in non-RFC submission.
 
-                        Geert
+>> +}
+>> +
+>> ...
+>> +static int ice_dpll_init_info_e825c(struct ice_pf *pf)
+>> +{
+>> +	struct ice_dplls *d = &pf->dplls;
+>> +	int ret = 0;
+>> +	int i;
+>> +
+>> +	d->clock_id = ice_generate_clock_id(pf);
+>> +	d->num_inputs = ICE_SYNCE_CLK_NUM;
+>> +
+>> +	d->inputs = kcalloc(d->num_inputs, sizeof(*d->inputs),
+>> GFP_KERNEL);
+> It looks like for E825-C the allocated pin info (d->inputs and related fields) is never freed:
+> error paths in ice_dpll_init_info_e825c() return after kcalloc() without cleanup, and ice_dpll_deinit() explicitly skips ice_dpll_deinit_info() for this MAC.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+You are right, this is Arek's code part. I don't see any problem to call
+ice_dpll_deinit_info() also for this MAC (.outputs, .pps.input_prio and
+.eec.input_prio should be NULL for e825c so it is safe to kfree them).
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Will add correct cleanup into ice_dpll_init_info_e825c() and call
+ice_dpll_deinit_info() also for this MAC.
+
+> With the best regards
+> Alex
+> 
+>> +	if (!d->inputs)
+>> +		return -ENOMEM;
+>> +
+>> +	ret = ice_get_cgu_rclk_pin_info(&pf->hw, &d->base_rclk_idx,
+>> +					&pf->dplls.rclk.num_parents);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	for (i = 0; i < pf->dplls.rclk.num_parents; i++)
+>> +		pf->dplls.rclk.parent_idx[i] = d->base_rclk_idx + i;
+>> +
+>> +	if (ice_pf_src_tmr_owned(pf)) {
+>> +		d->base_1588_idx = ICE_E825_1588_BASE_IDX;
+>> +		pf->dplls.pin_1588.num_parents = pf-
+>>> dplls.rclk.num_parents;
+>> +		for (i = 0; i < pf->dplls.pin_1588.num_parents; i++)
+>> +			pf->dplls.pin_1588.parent_idx[i] = d-
+>>> base_1588_idx + i;
+>> +	}
+>> +	ret = ice_dpll_init_pins_info(pf,
+>> ICE_DPLL_PIN_TYPE_RCLK_INPUT);
+>> +	if (ret)
+>> +		return ret;
+>> +	dev_dbg(ice_pf_to_dev(pf),
+>> +		"%s - success, inputs: %u, outputs: %u, rclk-parents:
+>> %u, pin_1588-parents: %u\n",
+>> +		 __func__, d->num_inputs, d->num_outputs, d-
+>>> rclk.num_parents,
+>> +		 d->pin_1588.num_parents);
+>> +	return 0;
+>> +}
+>> +
+>> ...
+>> +int ice_tspll_bypass_mux_active_e825c(struct ice_hw *hw, u8 port,
+>> bool *active,
+>> +				      enum ice_synce_clk output)
+>> +{
+>> +	u8 active_clk;
+>> +	u32 val;
+>> +
+>> +	switch (output) {
+>> +	case ICE_SYNCE_CLK0:
+>> +		ice_read_cgu_reg(hw, ICE_CGU_R10, &val);
+>> +		active_clk = FIELD_GET(ICE_CGU_R10_SYNCE_S_REF_CLK,
+>> val);
+>> +		break;
+>> +	case ICE_SYNCE_CLK1:
+>> +		ice_read_cgu_reg(hw, ICE_CGU_R11, &val);
+>> +		active_clk = FIELD_GET(ICE_CGU_R11_SYNCE_S_BYP_CLK,
+>> val);
+>> +		break;
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
+> ice_read_cgu_reg() return codes are ignored, can you explain why?
+
+Arek's code... will fix in the non-RFC submission.
+
+Thanks a lot Alex for your sharp eyes. ;-)
+
+Ivan
+
 
