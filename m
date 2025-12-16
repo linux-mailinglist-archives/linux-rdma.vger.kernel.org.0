@@ -1,134 +1,126 @@
-Return-Path: <linux-rdma+bounces-15022-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15023-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 618D3CC1E64
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 11:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 21DADCC2098
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 11:55:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 565B73011ED4
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 10:00:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 44CA1302A396
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 10:55:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5279522579E;
-	Tue, 16 Dec 2025 10:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB6B325487;
+	Tue, 16 Dec 2025 10:55:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="Bl5KilvI"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="lA7HgkV5"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out203-205-221-239.mail.qq.com (out203-205-221-239.mail.qq.com [203.205.221.239])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D73BD3B28D;
-	Tue, 16 Dec 2025 10:00:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.239
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C51C2BCF6C;
+	Tue, 16 Dec 2025 10:55:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765879231; cv=none; b=lSbsTHWop4dReQBNt7urLp0p/Luib4a0Uh9t9QVmS/m51gQJJJ++dJ18xC3dXXJSvnDC51prihHNoHqtd8l5r78HBMvmZChDwg+5J7CxUHRk3UJbpWWQIsNizyVSE5+mLJzXge0EBNCFn/siBjO04d/MC0/oCSNcY/6uIANJA0M=
+	t=1765882509; cv=none; b=JPMtSiU6CtZs5RFtuiQ7WxYxjtgS7RLcjqOQK9F6w/FonVcHSvVIZdah+G5RPGfaVpFRXB032luupha/9NBDc6YkvPyueunnLDPC8WRgmqQ1OSSCTkaK6IYg+O/IFUUBxHL99jaxze5TMxurvog051lcF7WYYCAGBa9mu3YjN3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765879231; c=relaxed/simple;
-	bh=UL5tqmVeLHRRXomNnFwu9nDn2D7mScN5D1PM848I1H4=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZyqwcV2FcjTTpZrN2vNEyoHZ26c/a9tjwu56IdEL59TBy9SJ2fV33Z0RHp2ckJ+3S61kk4oR04sopqPScRAjzk9VEGXgxtuKKZFnthv1QbULGhMuAbODMMvECYVpIxBbD+dcLKmld3L+CeM+kUsNxh/GjrPJ/yvxk6xlIokRO6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=Bl5KilvI; arc=none smtp.client-ip=203.205.221.239
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1765879219; bh=Pvpu1HrogDXXfwVxCyVJR7BTlJho+/iC+GY8S71iB/c=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Bl5KilvIBFn5Sc7BsafW3/y3VC+uyrl1xi7csXFpfoR1a5f7XPVzDXAwgLC0WhlRG
-	 GtqwFAN0VTTpwsDvRtRlnmLVLauesiRXeIsirAQ5alK3+7YPgJ8WM2dKrtovu46764
-	 Hx6fGGcEKM9EK2Aha47Hg1vYuUqy8+NQdW5ns4NM=
-Received: from localhost.localdomain ([101.227.46.167])
-	by newxmesmtplogicsvrszc41-0.qq.com (NewEsmtp) with SMTP
-	id 11A94DA; Tue, 16 Dec 2025 18:00:17 +0800
-X-QQ-mid: xmsmtpt1765879217t8b56ju57
-Message-ID: <tencent_713807A8D67394A5D8339F8AD33FCCBFCE07@qq.com>
-X-QQ-XMAILINFO: No7DFzN00JnRQNR50r+6odcQusgDmwlhu3djQQJJBuXJ0YQq60NjCw2DnrIzxQ
-	 mnsfotfL12S4sGelFtIKCT+bYIBO5LS15ysqYRk3s5XT5VBVRPJOqdcA8woSkmEC3/fO6ofzKFPB
-	 pq/f8a6vYxTQ6ZyKgEtEUipI6JlxI/00lcgfDJ3W/PueKJtVAgSAJXbRibx9ajqCRw2VZL54QfEC
-	 U9WS5AGxL7sJbbZLtGeFqmrrK+9iqyvaHx+NhEXwDviM39x+7Zouf3ie7mjzP/eqUGGGSLBLshYL
-	 pAeA02UIL16a9rNqXLqqhFIgvzyMbXT1ErggSvHuI63byxF7ZjAzgN9B9W/CtyOaPb398lx7b4qy
-	 aDN4YLwWpnURMHOgga6rylV+cfyfjWkGZSln1Fsk6T4TC/oCw+3HtqthMLOkMYfo8yl2QlvRJ/+o
-	 SW6RN2Uh1ylN7DLAFKBWVkdi6YUVkleq5IckpEJIXidEzDUfckM2KUl5i4TYvZXXwT7OJQdHcfGZ
-	 Sve8DZuK0+JWYct1SaMmw2lYnlUfPzO/u89h8CUspocmcCcohgSOArYr5zVEOZImRDuGh2S+IsNu
-	 xAMb2wjFWPR4cZI2TvCykw4Tu6yNyVIdbcoBRNqflp4Nua6FvVMGuBXuqAnzfXZ/8jPSCpgaFx9v
-	 23kvWyJsa55Q/3T0bYn4VAvW89EFtRYDvkj2E5v+S4BZYmR73ZdFAKDBWowymZqUU+Dni672K7jc
-	 KzJvdHKHaWTc/XIoDOtQoL4ZbCh6WNSZ0uSmMaJetp45l9uKBYrADNlwXG7VOKtaJYEql8s8KTrB
-	 xbrLTDPVl8D59UezjOwag2V+3XblvI76PwxeJYNX83hAlC2iJe8LipFwC/pcFaSt55cpZ4Kr75t4
-	 8xpFxSsa9rrGZJopHK6pKfQFViIkPKHUeiRl/GwY3CpUNBaWRMaaR2aJ6A5TdpYU84JsyyUrIwcC
-	 Bc5ql+D1eFF+Z+QOx3xOOUEUImCPvENklpiTrVcleMdb75sspAtm3qyIvQOGoO4xsioVUXkZ6wEH
-	 e9Uc8ca8366jactRLop7iOeuaMcHobP/xO9KT6qtVCFQ0q7/JsxvfR8kfNmlg=
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
-From: wujing <realwujing@qq.com>
-To: jgg@ziepe.ca
-Cc: leon@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	realwujing@qq.com,
-	yuanql9@chinatelecom.cn
-Subject: Re: [PATCH] IB/core: Fix ABBA deadlock in rdma_dev_exit_net
-Date: Tue, 16 Dec 2025 17:59:52 +0800
-X-OQ-MSGID: <20251216095957.828120-1-realwujing@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20251216005705.GB31492@ziepe.ca>
-References: <20251216005705.GB31492@ziepe.ca>
+	s=arc-20240116; t=1765882509; c=relaxed/simple;
+	bh=B+f4zlNzZBPUZPXd/Z+otBEhzXLqmkj0hCenAv9cAlk=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=fQxTv/72I055TQ0uIM3PCN9zjNnmSqQV1BCs9kiZkciQEnAYntHHVOVU8eiHXl4f6Is0hXYD9VgQEv9eSnV7pFLmEVhIDA98Oa7fTT4W//jDUhkb9TNoHF0889hWvAj2TeYeb7oPWxoo/teneViTPH0Wg9s+a4xPqSiDOkrPa6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=lA7HgkV5; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1204)
+	id 12DFF2012428; Tue, 16 Dec 2025 02:55:08 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 12DFF2012428
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1765882508;
+	bh=o3bOnnraKXEZsNJ4ojfTJylt4MC87O/BQeSoi/0QbqQ=;
+	h=Date:From:To:Subject:From;
+	b=lA7HgkV5xivU+TzKse12cYyk9AIxKkh68l2nIfjWbYPpzxUM/0LrWQxKF7aHl7trW
+	 mFtT76ta/vpMlvRUdp04WLcWldNLODntHTbgtRONdwEnL+oSY5rxgG1A3oGFvLqiI7
+	 sfrDvMaPiLsSLryH+pMgXQ8y8AvEnp6UBJ8dqO40=
+Date: Tue, 16 Dec 2025 02:55:08 -0800
+From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+To: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	dipayanroy@microsoft.com
+Subject: [PATCH net-next] net: mana: Fix use-after-free in reset service
+ rescan path
+Message-ID: <20251216105508.GA13584@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=y
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-Hi Jason,
+When mana_serv_reset() encounters -ETIMEDOUT or -EPROTO from
+mana_gd_resume(), it performs a PCI rescan via mana_serv_rescan().
 
-You're right that the locks aren't nested in rdma_dev_exit_net() - it does release 
-rdma_nets_rwsem before acquiring devices_rwsem. However, this is still an ABBA deadlock,
-just not the trivial nested kind. The issue is caused by **rwsem writer priority**
-and lock ordering inconsistency.
+mana_serv_rescan() calls pci_stop_and_remove_bus_device(), which can
+invoke the driver's remove path and free the gdma_context associated
+with the device. After returning, mana_serv_reset() currently jumps to
+the out label and attempts to clear gc->in_service, dereferencing a
+freed gdma_context.
 
-Here's the actual deadlock scenario:
+The issue was observed with the following call logs:
+[  698.942636] BUG: unable to handle page fault for address: ff6c2b638088508d
+[  698.943121] #PF: supervisor write access in kernel mode
+[  698.943423] #PF: error_code(0x0002) - not-present page
+[S[  698.943793] Pat Dec  6 07:GD5 100000067 P4D 1002f7067 PUD 1002f8067 PMD 101bef067 PTE 0
+0:56 2025] hv_[n e 698.944283] Oops: Oops: 0002 [#1] SMP NOPTI
+tvsc f8615163-00[  698.944611] CPU: 28 UID: 0 PID: 249 Comm: kworker/28:1
+...
+[Sat Dec  6 07:50:56 2025] R10: [  699.121594] mana 7870:00:00.0 enP30832s1: Configured vPort 0 PD 18 DB 16
+000000000000001b R11: 0000000000000000 R12: ff44cf3f40270000
+[Sat Dec  6 07:50:56 2025] R13: 0000000000000001 R14: ff44cf3f402700c8 R15: ff44cf3f4021b405
+[Sat Dec  6 07:50:56 2025] FS:  0000000000000000(0000) GS:ff44cf7e9fcf9000(0000) knlGS:0000000000000000
+[Sat Dec  6 07:50:56 2025] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[Sat Dec  6 07:50:56 2025] CR2: ff6c2b638088508d CR3: 000000011fe43001 CR4: 0000000000b73ef0
+[Sat Dec  6 07:50:56 2025] Call Trace:
+[Sat Dec  6 07:50:56 2025]  <TASK>
+[Sat Dec  6 07:50:56 2025]  mana_serv_func+0x24/0x50 [mana]
+[Sat Dec  6 07:50:56 2025]  process_one_work+0x190/0x350
+[Sat Dec  6 07:50:56 2025]  worker_thread+0x2b7/0x3d0
+[Sat Dec  6 07:50:56 2025]  kthread+0xf3/0x200
+[Sat Dec  6 07:50:56 2025]  ? __pfx_worker_thread+0x10/0x10
+[Sat Dec  6 07:50:56 2025]  ? __pfx_kthread+0x10/0x10
+[Sat Dec  6 07:50:56 2025]  ret_from_fork+0x21a/0x250
+[Sat Dec  6 07:50:56 2025]  ? __pfx_kthread+0x10/0x10
+[Sat Dec  6 07:50:56 2025]  ret_from_fork_asm+0x1a/0x30
+[Sat Dec  6 07:50:56 2025]  </TASK>
 
-**Thread A (rdma_dev_exit_net - cleanup_net workqueue):**
-```
-down_write(&rdma_nets_rwsem);    // Acquired
-xa_store(&rdma_nets, ...);
-up_write(&rdma_nets_rwsem);      // Released
-down_read(&devices_rwsem);       // Waiting here <-- BLOCKED
-```
+Fix this by returning immediately after mana_serv_rescan() to avoid
+accessing GC state that may no longer be valid.
 
-**Thread B (rdma_dev_init_net - stress-ng-clone):**
-```
-down_read(&devices_rwsem);       // Acquired
-down_read(&rdma_nets_rwsem);     // Waiting here <-- BLOCKED
-```
+Fixes: 9bf66036d686 ("net: mana: Handle hardware recovery events when probing the device")
 
-The deadlock happens because:
+Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+---
+ drivers/net/ethernet/microsoft/mana/gdma_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-1. Thread A releases rdma_nets_rwsem as a **writer**
-2. Thread B (and many others) are waiting to acquire rdma_nets_rwsem as **readers**
-3. Thread A then tries to acquire devices_rwsem as a reader
-4. BUT: rwsem gives priority to pending writers over new readers
-5. Since Thread A was a pending writer on rdma_nets_rwsem, Thread B's read request is blocked
-6. Thread B holds devices_rwsem, which Thread A needs
-7. Thread A holds the "writer priority slot" on rdma_nets_rwsem, which Thread B needs
-
-This is a **priority inversion deadlock**, not a simple nested lock deadlock.
-
-The production crash log shows exactly this:
-- Thread A: `rdma_dev_exit_net+0x60` stuck in `rwsem_down_write_slowpath` trying to get devices_rwsem
-- Thread B: `rdma_dev_init_net+0x120` stuck in `rwsem_down_read_slowpath` trying to get rdma_nets_rwsem
-
-Lockdep doesn't catch this because:
-1. The locks aren't held simultaneously (no nested locking)
-2. It's a reader-writer priority issue, not a simple lock ordering issue
-3. It requires specific timing: writer releases lock, then tries to acquire another
-lock that readers (waiting for the first lock) already hold
-
-The fix ensures both paths acquire locks in the same order:
-- rdma_dev_init_net: devices_rwsem → rdma_nets_rwsem
-- rdma_dev_exit_net: devices_rwsem → rdma_nets_rwsem (was reversed)
-
-This eliminates the priority inversion scenario.
-
-Best regards
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index efb4e412ec7e..0055c231acf6 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -481,7 +481,7 @@ static void mana_serv_reset(struct pci_dev *pdev)
+ 		/* Perform PCI rescan on device if we failed on HWC */
+ 		dev_err(&pdev->dev, "MANA service: resume failed, rescanning\n");
+ 		mana_serv_rescan(pdev);
+-		goto out;
++		return;
+ 	}
+ 
+ 	if (ret)
+-- 
+2.34.1
 
 
