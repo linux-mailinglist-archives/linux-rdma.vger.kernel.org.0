@@ -1,166 +1,291 @@
-Return-Path: <linux-rdma+bounces-15033-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15034-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29D90CC3BBB
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 15:50:19 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D194CCC4299
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 17:13:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 549FA30699ED
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 14:44:30 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8484E3061C6B
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 16:10:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A139E3385A8;
-	Tue, 16 Dec 2025 14:41:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 720B2342525;
+	Tue, 16 Dec 2025 15:58:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="PzoVB5KM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB6AA336EF0
-	for <linux-rdma@vger.kernel.org>; Tue, 16 Dec 2025 14:41:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98527330646;
+	Tue, 16 Dec 2025 15:58:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765896078; cv=none; b=WDKpGJnKXZ0FvsNTr/4tQOTlGAPny2Xoj6QA+xmFTuKK2YGJ49FElYYOtnva02IdjoVPqUkQJ6Tmo+H8piQwTJlZ/yGRNpuHT1gHzpPp2mTn0IN+dWCK5PYYIC7X6jqrlMC1HI9qnCeFJwzSQ/cNjZFbfU/X26QmqpLNvTn2cVQ=
+	t=1765900704; cv=none; b=ahPRJAzvNxm6LBk70UTtbU9WdBEC9tm9VcTZahnf5AJzkAo/zeSfrhXC8VBoQmA5FeCnKJZSIRoJdZ3t+9V8szbWVOOEzIdSxMuLQeeDWZtbMh6m0t5HZCiZrtnOukjTNh0JKwrgdERVf0b01ssM0GSjYAYIm2CN7kB44AHuK6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765896078; c=relaxed/simple;
-	bh=b1k+1VZGu+5jj64DAxHNDoZ4uxvQQI5DwLS8flan4TU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AeSjhOCNf0pw2OewfwJt1mFCmgWJ06VoTCWOeC1UWcQ2O2z/ZMj4RiayO7VUX8TGdgyvlEJKGVsy5bESSNzhuO/AdDyKCXMdsNJ0njWEp7jkqdYUhk7GjqT7a61dwI2fTTAlv1PbH1WHbloExjL7AM/LWWCSTcaY3xljXfNUpdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 5BGEcdcI065864;
-	Tue, 16 Dec 2025 23:38:39 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from [192.168.1.10] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 5BGEcc9d065861
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Tue, 16 Dec 2025 23:38:38 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <10caea5b-9ad1-44ce-9eaf-a0f4023f2017@I-love.SAKURA.ne.jp>
-Date: Tue, 16 Dec 2025 23:38:37 +0900
+	s=arc-20240116; t=1765900704; c=relaxed/simple;
+	bh=XowZTd2mQEZTrab8yUt35vDdm0ayAgxkKMoP5IySFuw=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=uQgBqmMgmJDLPk2eSjU026H8BkTXQKxEfBjqDJdvSDaYBKxZVvFnP4VGWQKRU2So34tPJjwq/3UZHl+9xdErOX6TVUYUBwKMSrnXy469EaN2hWY/fFNXcpTog414NNu9MRGzFixVfpUP/eHpihCOkEeM6REC+KYERfSxk7I+jQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=PzoVB5KM; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1006)
+	id 14B33200D634; Tue, 16 Dec 2025 07:58:22 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 14B33200D634
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1765900702;
+	bh=GnoEUkMiB9Khm77EWJmo+0d7HBPDrUmiG7jx0eDwXBI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=PzoVB5KMNaq/Cyu9QandoRLmVtbZEkHEQbv2pIxfdbBbx+GcDs5OV62+rWGgzrvrn
+	 nsdMxHAoTVk63PKPDBxC3ESjDQb1mZ6oqv+svBYNkRI4jwrEg3NCdb58kjqUq1SFzu
+	 sOY728BopNrT+izZV1a27ller4dAIBud/nrDjs3M=
+From: Haiyang Zhang <haiyangz@linux.microsoft.com>
+To: linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Long Li <longli@microsoft.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Simon Horman <horms@kernel.org>,
+	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
+	Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Saurabh Sengar <ssengar@linux.microsoft.com>,
+	Aditya Garg <gargaditya@linux.microsoft.com>,
+	Dipayaan Roy <dipayanroy@linux.microsoft.com>,
+	Shiraz Saleem <shirazsaleem@microsoft.com>,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: paulros@microsoft.com
+Subject: [PATCH RFC 1/2] net: mana: Add support for coalesced RX packets on CQE
+Date: Tue, 16 Dec 2025 07:57:54 -0800
+Message-Id: <1765900682-22114-1-git-send-email-haiyangz@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH] RDMA/core: flush gid_cache_wq WQ from disable_device()
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Leon Romanovsky <leon@kernel.org>, Majd Dibbiny <majd@mellanox.com>,
-        Doug Ledford <dledford@redhat.com>, Yuval Shaia <yshaia@marvell.com>,
-        Bernard Metzler <bernard.metzler@linux.dev>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>
-References: <30ec01df-6c32-490c-aa26-c41653f5a257@I-love.SAKURA.ne.jp>
- <8f90fba8-60b9-46e2-8990-45311c7b1540@I-love.SAKURA.ne.jp>
- <1722eff3-14c1-408b-999b-1be3e8fbfe5a@I-love.SAKURA.ne.jp>
- <9b4ce0df-1fbf-4052-9eb9-1f3d6ad6a685@I-love.SAKURA.ne.jp>
- <13f54775-7a36-48f2-b9cd-62ab9f15a82b@I-love.SAKURA.ne.jp>
- <ace1ebe4-4fdb-49f4-a3fa-bbf11e1b40ed@I-love.SAKURA.ne.jp>
- <20251216140512.GC6079@nvidia.com>
-Content-Language: en-US
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <20251216140512.GC6079@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Virus-Status: clean
-X-Anti-Virus-Server: fsav203.rs.sakura.ne.jp
 
-syzbot is reporting a net_device refcount leak in RDMA code.
-A debug printk() patch reported that ib_enum_roce_netdev() is called for
-allocating GID entry but is not called for releasing GID entry.
-This result suggests that something is preventing ib_enum_roce_netdev()
- from ib_enum_all_roce_netdevs() from netdevice_event_work_handler() from
-being called when releasing GID entry.
+From: Haiyang Zhang <haiyangz@microsoft.com>
 
-Commit 03db3a2d81e6 ("IB/core: Add RoCE GID table management") introduced
-ib_enum_all_roce_netdevs(), but calling this function asynchronously from
-WQ context is racy. I can observe using simple atomic_t counters that there
-are sometimes pending netdevice_event() works as of immediately before
-clearing DEVICE_REGISTERED flag in disable_device() from
-__ib_unregister_device(). If pending works contained ib_enum_roce_netdev()
-call for releasing GID entry, this race can result in a net_device refcount
-leak.
+Our NIC can have up to 4 RX packets on 1 CQE. To support this feature,
+check and process the type CQE_RX_COALESCED_4. The default setting is
+disabled, to avoid possible regression on latency.
 
-Therefore, flush pending works immediately before clearing
-DEVICE_REGISTERED flag.
+And add ethtool handler to switch this feature. To turn it on, run:
+  ethtool -C <nic> rx-frames 4
+To turn it off:
+  ethtool -C <nic> rx-frames 1
 
-Also, since commit 8fe8bacb92f2 ("IB/core: Add ordered workqueue for RoCE
-GID management") was intended to ensure that netdev events are processed
-in the order netdevice_event() is called, failing to invoke corresponding
-event handler due to memory allocation failure is as bad as processing
-netdev events in parallel.
-
-Therefore, add __GFP_NOFAIL when allocating memory for a work for netdev
-events.
-
-Reported-by: syzbot+881d65229ca4f9ae8c84@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=881d65229ca4f9ae8c84
-Fixes: 03db3a2d81e6 ("IB/core: Add RoCE GID table management")
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
 ---
-I haven't confirmed that netdevice_event_work_handler() is called for
-releasing GID entry.
-But I'd like to try this patch in linux-next tree via my tree for testing.
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 32 ++++++-----
+ .../ethernet/microsoft/mana/mana_ethtool.c    | 55 +++++++++++++++++++
+ include/net/mana/mana.h                       |  2 +
+ 3 files changed, 74 insertions(+), 15 deletions(-)
 
- drivers/infiniband/core/core_priv.h     |  1 +
- drivers/infiniband/core/device.c        |  1 +
- drivers/infiniband/core/roce_gid_mgmt.c | 10 ++++++----
- 3 files changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
-index 05102769a918..8355020bb98a 100644
---- a/drivers/infiniband/core/core_priv.h
-+++ b/drivers/infiniband/core/core_priv.h
-@@ -142,6 +142,7 @@ int ib_cache_gid_del_all_netdev_gids(struct ib_device *ib_dev, u32 port,
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index 1ad154f9db1a..a46a1adf83bc 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -1330,7 +1330,7 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 	req->update_hashkey = update_key;
+ 	req->update_indir_tab = update_tab;
+ 	req->default_rxobj = apc->default_rxobj;
+-	req->cqe_coalescing_enable = 0;
++	req->cqe_coalescing_enable = apc->cqe_coalescing_enable;
  
- int roce_gid_mgmt_init(void);
- void roce_gid_mgmt_cleanup(void);
-+void roce_flush_gid_cache_wq(void);
- 
- unsigned long roce_gid_type_mask_support(struct ib_device *ib_dev, u32 port);
- 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 13e8a1714bbd..8638583a64f2 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -1300,6 +1300,7 @@ static void disable_device(struct ib_device *device)
- 
- 	WARN_ON(!refcount_read(&device->refcount));
- 
-+	roce_flush_gid_cache_wq();
- 	down_write(&devices_rwsem);
- 	xa_clear_mark(&devices, device->index, DEVICE_REGISTERED);
- 	up_write(&devices_rwsem);
-diff --git a/drivers/infiniband/core/roce_gid_mgmt.c b/drivers/infiniband/core/roce_gid_mgmt.c
-index a9f2c6b1b29e..79982d448cd2 100644
---- a/drivers/infiniband/core/roce_gid_mgmt.c
-+++ b/drivers/infiniband/core/roce_gid_mgmt.c
-@@ -661,10 +661,7 @@ static int netdevice_queue_work(struct netdev_event_work_cmd *cmds,
- {
- 	unsigned int i;
- 	struct netdev_event_work *ndev_work =
--		kmalloc(sizeof(*ndev_work), GFP_KERNEL);
--
--	if (!ndev_work)
--		return NOTIFY_DONE;
-+		kmalloc(sizeof(*ndev_work), GFP_KERNEL | __GFP_NOFAIL);
- 
- 	memcpy(ndev_work->cmds, cmds, sizeof(ndev_work->cmds));
- 	for (i = 0; i < ARRAY_SIZE(ndev_work->cmds) && ndev_work->cmds[i].cb; i++) {
-@@ -948,3 +945,8 @@ void __exit roce_gid_mgmt_cleanup(void)
- 	 */
- 	destroy_workqueue(gid_cache_wq);
+ 	if (update_key)
+ 		memcpy(&req->hashkey, apc->hashkey, MANA_HASH_KEY_SIZE);
+@@ -1864,11 +1864,12 @@ static struct sk_buff *mana_build_skb(struct mana_rxq *rxq, void *buf_va,
  }
+ 
+ static void mana_rx_skb(void *buf_va, bool from_pool,
+-			struct mana_rxcomp_oob *cqe, struct mana_rxq *rxq)
++			struct mana_rxcomp_oob *cqe, struct mana_rxq *rxq,
++			int i)
+ {
+ 	struct mana_stats_rx *rx_stats = &rxq->stats;
+ 	struct net_device *ndev = rxq->ndev;
+-	uint pkt_len = cqe->ppi[0].pkt_len;
++	uint pkt_len = cqe->ppi[i].pkt_len;
+ 	u16 rxq_idx = rxq->rxq_idx;
+ 	struct napi_struct *napi;
+ 	struct xdp_buff xdp = {};
+@@ -1912,7 +1913,7 @@ static void mana_rx_skb(void *buf_va, bool from_pool,
+ 	}
+ 
+ 	if (cqe->rx_hashtype != 0 && (ndev->features & NETIF_F_RXHASH)) {
+-		hash_value = cqe->ppi[0].pkt_hash;
++		hash_value = cqe->ppi[i].pkt_hash;
+ 
+ 		if (cqe->rx_hashtype & MANA_HASH_L4)
+ 			skb_set_hash(skb, hash_value, PKT_HASH_TYPE_L4);
+@@ -2047,9 +2048,11 @@ static void mana_process_rx_cqe(struct mana_rxq *rxq, struct mana_cq *cq,
+ 	struct mana_recv_buf_oob *rxbuf_oob;
+ 	struct mana_port_context *apc;
+ 	struct device *dev = gc->dev;
++	bool coalesced = false;
+ 	void *old_buf = NULL;
+ 	u32 curr, pktlen;
+ 	bool old_fp;
++	int i = 0;
+ 
+ 	apc = netdev_priv(ndev);
+ 
+@@ -2064,9 +2067,8 @@ static void mana_process_rx_cqe(struct mana_rxq *rxq, struct mana_cq *cq,
+ 		goto drop;
+ 
+ 	case CQE_RX_COALESCED_4:
+-		netdev_err(ndev, "RX coalescing is unsupported\n");
+-		apc->eth_stats.rx_coalesced_err++;
+-		return;
++		coalesced = true;
++		break;
+ 
+ 	case CQE_RX_OBJECT_FENCE:
+ 		complete(&rxq->fence_event);
+@@ -2079,14 +2081,10 @@ static void mana_process_rx_cqe(struct mana_rxq *rxq, struct mana_cq *cq,
+ 		return;
+ 	}
+ 
+-	pktlen = oob->ppi[0].pkt_len;
+-
+-	if (pktlen == 0) {
+-		/* data packets should never have packetlength of zero */
+-		netdev_err(ndev, "RX pkt len=0, rq=%u, cq=%u, rxobj=0x%llx\n",
+-			   rxq->gdma_id, cq->gdma_id, rxq->rxobj);
++nextpkt:
++	pktlen = oob->ppi[i].pkt_len;
++	if (pktlen == 0)
+ 		return;
+-	}
+ 
+ 	curr = rxq->buf_index;
+ 	rxbuf_oob = &rxq->rx_oobs[curr];
+@@ -2097,12 +2095,15 @@ static void mana_process_rx_cqe(struct mana_rxq *rxq, struct mana_cq *cq,
+ 	/* Unsuccessful refill will have old_buf == NULL.
+ 	 * In this case, mana_rx_skb() will drop the packet.
+ 	 */
+-	mana_rx_skb(old_buf, old_fp, oob, rxq);
++	mana_rx_skb(old_buf, old_fp, oob, rxq, i);
+ 
+ drop:
+ 	mana_move_wq_tail(rxq->gdma_rq, rxbuf_oob->wqe_inf.wqe_size_in_bu);
+ 
+ 	mana_post_pkt_rxq(rxq);
 +
-+void roce_flush_gid_cache_wq(void)
++	if (coalesced && (++i < MANA_RXCOMP_OOB_NUM_PPI))
++		goto nextpkt;
+ }
+ 
+ static void mana_poll_rx_cq(struct mana_cq *cq)
+@@ -3276,6 +3277,7 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
+ 	apc->port_handle = INVALID_MANA_HANDLE;
+ 	apc->pf_filter_handle = INVALID_MANA_HANDLE;
+ 	apc->port_idx = port_idx;
++	apc->cqe_coalescing_enable = 0;
+ 
+ 	mutex_init(&apc->vport_mutex);
+ 	apc->vport_use_count = 0;
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+index 0e2f4343ac67..1b9ed5c9bbff 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+@@ -397,6 +397,58 @@ static void mana_get_channels(struct net_device *ndev,
+ 	channel->combined_count = apc->num_queues;
+ }
+ 
++static int mana_get_coalesce(struct net_device *ndev,
++			     struct ethtool_coalesce *ec,
++			     struct kernel_ethtool_coalesce *kernel_coal,
++			     struct netlink_ext_ack *extack)
 +{
-+	flush_workqueue(gid_cache_wq);
++	struct mana_port_context *apc = netdev_priv(ndev);
++
++	ec->rx_max_coalesced_frames =
++		apc->cqe_coalescing_enable ? MANA_RXCOMP_OOB_NUM_PPI : 1;
++
++	return 0;
 +}
++
++static int mana_set_coalesce(struct net_device *ndev,
++			     struct ethtool_coalesce *ec,
++			     struct kernel_ethtool_coalesce *kernel_coal,
++			     struct netlink_ext_ack *extack)
++{
++	struct mana_port_context *apc = netdev_priv(ndev);
++	u8 saved_cqe_coalescing_enable;
++	int err;
++
++	if (ec->rx_max_coalesced_frames != 1 &&
++	    ec->rx_max_coalesced_frames != MANA_RXCOMP_OOB_NUM_PPI) {
++		NL_SET_ERR_MSG_FMT(extack,
++				   "rx-frames must be 1 or %u, got %u",
++				   MANA_RXCOMP_OOB_NUM_PPI,
++				   ec->rx_max_coalesced_frames);
++		return -EINVAL;
++	}
++
++	saved_cqe_coalescing_enable = apc->cqe_coalescing_enable;
++	apc->cqe_coalescing_enable =
++		ec->rx_max_coalesced_frames == MANA_RXCOMP_OOB_NUM_PPI;
++
++	if (!apc->port_is_up)
++		return 0;
++
++	err = mana_config_rss(apc, TRI_STATE_TRUE, false, false);
++
++	if (err) {
++		netdev_err(ndev, "Set rx-frames to %u failed:%d\n",
++			   ec->rx_max_coalesced_frames, err);
++		NL_SET_ERR_MSG_FMT(extack, "Set rx-frames to %u failed:%d\n",
++				   ec->rx_max_coalesced_frames, err);
++
++		apc->cqe_coalescing_enable = saved_cqe_coalescing_enable;
++	}
++
++	return err;
++}
++
+ static int mana_set_channels(struct net_device *ndev,
+ 			     struct ethtool_channels *channels)
+ {
+@@ -517,6 +569,7 @@ static int mana_get_link_ksettings(struct net_device *ndev,
+ }
+ 
+ const struct ethtool_ops mana_ethtool_ops = {
++	.supported_coalesce_params = ETHTOOL_COALESCE_RX_MAX_FRAMES,
+ 	.get_ethtool_stats	= mana_get_ethtool_stats,
+ 	.get_sset_count		= mana_get_sset_count,
+ 	.get_strings		= mana_get_strings,
+@@ -527,6 +580,8 @@ const struct ethtool_ops mana_ethtool_ops = {
+ 	.set_rxfh		= mana_set_rxfh,
+ 	.get_channels		= mana_get_channels,
+ 	.set_channels		= mana_set_channels,
++	.get_coalesce		= mana_get_coalesce,
++	.set_coalesce		= mana_set_coalesce,
+ 	.get_ringparam          = mana_get_ringparam,
+ 	.set_ringparam          = mana_set_ringparam,
+ 	.get_link_ksettings	= mana_get_link_ksettings,
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index d7e089c6b694..51d26ebeff6c 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -556,6 +556,8 @@ struct mana_port_context {
+ 	bool port_is_up;
+ 	bool port_st_save; /* Saved port state */
+ 
++	u8 cqe_coalescing_enable;
++
+ 	struct mana_ethtool_stats eth_stats;
+ 
+ 	struct mana_ethtool_phy_stats phy_stats;
 -- 
-2.47.3
-
+2.34.1
 
 
