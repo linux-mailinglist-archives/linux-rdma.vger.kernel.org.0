@@ -1,159 +1,144 @@
-Return-Path: <linux-rdma+bounces-15031-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15032-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02FE5CC3848
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 15:21:38 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FFC9CC38C3
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 15:26:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7287B3070176
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 14:17:59 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E5051307879C
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 14:22:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE865296BBF;
-	Tue, 16 Dec 2025 14:17:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54FAB3451D6;
+	Tue, 16 Dec 2025 14:22:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wpgSUrNY"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="mKY9SBk1"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B9DF27815E
-	for <linux-rdma@vger.kernel.org>; Tue, 16 Dec 2025 14:17:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB0C034405C
+	for <linux-rdma@vger.kernel.org>; Tue, 16 Dec 2025 14:22:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765894677; cv=none; b=Wp0tAXq6f3TL8AvcIWtgoIdiKKExJ/nKEZgtE+tpudAD/6RayTnzQphkEJLbQZk7buCOZPJLqeArFPNaK3/Nj5DjFf/Wo6d1ds3+QBZmPWFRAQ//WBmf4mx19RIeJweCToUsFyDUPeEijP0NA8qN4VstpEgI2wmyBp44lJHwSOg=
+	t=1765894961; cv=none; b=G0Wq128vWgh7Yj1x8gHB2LMnR624vuOkBbfXiPGCy3p8qmEXPmZu9hXVKTfrdvRk8Gqpb8wDZszq5Q8wkm+/rO2pUylHwpvE5e6ActLPlnD8YUZhBeLensC1Kg4lHEiiQ2zX4KqN01bPWyXECewQJYtDcu3BZA1FS4pWq3ZGXGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765894677; c=relaxed/simple;
-	bh=6ZOMSVoP5j5/oJeczvH0K8VYsiw/TB8ZX1wq8YopK4M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Tvw3+rtiGfyKnwgcVp2E7QEnBOrNk4Q4odUHmJDwrN+F8uk+jZ4PddVyK2131rx/B4tZnt4uDqVlAD5ySNKIJF2zxlmHH8Ppvic3yxuZ6frLGKrdOxOvAFKPehcFzBTHswpWEEzT+/7PNvEWvHoDzImMx58VT4y7iHgaD5/2710=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wpgSUrNY; arc=none smtp.client-ip=209.85.160.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-3e83c40e9dfso1859180fac.1
-        for <linux-rdma@vger.kernel.org>; Tue, 16 Dec 2025 06:17:55 -0800 (PST)
+	s=arc-20240116; t=1765894961; c=relaxed/simple;
+	bh=XGIiVNgmbcX0eVRdXfX6oOJ6DpkDt+GHo8sty1bDOMg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HCe17qOOxnQqdq8mEhg0T+0wg4ddBI0yS2eLwInGq+7rbUsb2LTVfHeilU/MtVoWUZBn9SL6RGBV6MdnCeH0dLa8HvFA1PdXweUVbJr4tTFAGokEUeC0d338PbFuJi8vO1LreyxbJVXZ29VeB7bjq1Sx0yyWIQtXOwXOYXqwVlM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=mKY9SBk1; arc=none smtp.client-ip=209.85.222.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-8bc53dae8c2so253401985a.2
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Dec 2025 06:22:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1765894675; x=1766499475; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QaJHY74T15CgE9XMXiSj1vrnnlykzi3ZNr7V3QhwxSw=;
-        b=wpgSUrNYe7b3YB2TCnHfX5hNu+QpxE3gGEOtxOjlaqDiHtzZj4+4bPWLiBxslNAIx7
-         JYYznmSdXZKyTy/vWGcJpcQPACoAqevjnzS2AqKcHg2jXA5a/YN5VYDt/KGKZ7oQfn9Y
-         0pWg+q0bW78E3v1B+zM5RlUQtFMq6UReHmHi36llgBVd3t6jM68yUeDaGXH3xFBEkjgz
-         67HP4WkRo1AClYYmwPTJXT5NNU+FC8681gNLquCvJVI1nZuSt5IuCWJptVrn/gs7VkME
-         1pWP0FbWb3PX+KBhdfoVrg+Ed+HUjZsidvLDHdJuS5EsB+V5Jbq80pJ478SwnmQEsLS3
-         PoMw==
+        d=ziepe.ca; s=google; t=1765894957; x=1766499757; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+6wGiQHUS31LUV2hFUdw9+vi8x8iNhVGvlP3n/hyQFA=;
+        b=mKY9SBk1FvKlMXFeD3yCaiRnbKMFuClpCIi+ygEfa75jZC5PEaOrV5Isf88ff1bLCg
+         bQvwq/Hduui/lxfGGOwHqoXSjh6q54AzSUi4nPxldEpL6vqMdxc81dZfn7NEE4j4tGt6
+         rFm8DnsqAOdrMTsrmvgnhQbHZgFYvbw2aIVJ0qQuq0GLlvF0ffG4BfJp2gPvedy7h+fG
+         G6BUHX9Bp5+1r7EAVTp8diEH5gfkGunYVW1hSCF7Xt7xaWUzaTVkYt2WHm50Z9siz+Sb
+         8P2Yi9TdE8mQVMjpUo72KJmyLXwwcqP5uJk32FD5g7ddbNzJuarCWWfn41uIrfBvX4t/
+         ZUfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765894675; x=1766499475;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=QaJHY74T15CgE9XMXiSj1vrnnlykzi3ZNr7V3QhwxSw=;
-        b=B3q6GNf/TqlnIi1SNi2mXdK3can7H+en7MIjxZ3KCSpr6PWz2rCvb77KLzqgOTlQ1G
-         z5sMmL/me3rUX2PSNGo57wH+GMaQ3f0FuqNx8Y7U9XXiRBvIvzO7Rz9NgahYMyk+dSOt
-         tB5EeVbT+pgNJmE2qcHmek11wLSVQuiElSz1Mk2zDXwt/6vzcUrIf0u3BR/LFKix1imT
-         lKwT/T3Quj4LR0XSnivWC4t6/97rTj3PYn5KkaL5HbzgmV1wdeidQkmJ1tjS9zM9nCFm
-         eXP5FWSbqaQxUhe06rEZrn8B40BgRODMQJCPZjGAaftJM9pta15hWdlI568TytzlYTgf
-         SegQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU4bzbshlqQRVknaNQUbDWYIcqENSvkAor/q9CdY/VNDiR7yAJxaLebEbiGRKROHn49A9HHmkhMSQ9q@vger.kernel.org
-X-Gm-Message-State: AOJu0YxZgssm+hVR0MoWwnhAFaY+YID6kS0NuRckqcDIBZGy9b4HdmQb
-	ccn2ciCXzupUp61RvdKSgnlnYCrf24sPsrxdyMUC2IRwWC4fc8wKj326JFFOtneOTlx0bWtnrT/
-	2HMQQtx7m9PfKbqKd163774Ki3uYLuaDGaZcCRVM5
-X-Gm-Gg: AY/fxX72ZkSla+M6EYhEKwm4pKN5Egc8RjjtEnWiKepvTuzUm+BCUF1GtZ72Iz+F+8Z
-	s6bl2wBdhkEN9M2IOCnso/uU4amRZPFpg/EHmWC/a5YrYZzttuFsCOakQUjmxgPdO65PsUMaMjy
-	MIEHHHFxNvtiEnQz0EZXs6RSr3BtBa+Zpt9em0qWrkdnOrKDoK0dJ54mWi7Hd1c2zO/Glwrtp4Y
-	YSfYyheSXAJIpSnE35vbvg7ESygh22FsI5x5jLUSQmaM01XZL4X8oZ1Oxw+Me32nD/JvNLzRSfI
-	rlPI6wMGMn3J1oQUtm7IUqaVsL4nqA==
-X-Google-Smtp-Source: AGHT+IFTijlZLNDvpKQ60+ReSQPxDZlsKGWiOPbQbAHGFxbKfZAkwGtIP7BpsqaJtl2bCaCSzbyAuU8/0a3eEvzexWg=
-X-Received: by 2002:a05:6871:33a7:b0:3f5:5af:c9de with SMTP id
- 586e51a60fabf-3f5fc62f334mr6165691fac.51.1765894674446; Tue, 16 Dec 2025
- 06:17:54 -0800 (PST)
+        d=1e100.net; s=20230601; t=1765894957; x=1766499757;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+6wGiQHUS31LUV2hFUdw9+vi8x8iNhVGvlP3n/hyQFA=;
+        b=AnvRmZfjThZZQSccWx4z5Lj1rD3kb8cr0+A2wPHMKZBvEcXzFZUd7l+oS+VAQIfD9F
+         FPniKBT1JQJL5Rb/WZc9Ay3Fvo7lvXBzhUzc0qn4pQA2hXG9k61gafFiC7imWHEzeKjX
+         M3FdNwr/oru+OcnTvGLlf2+M2wndBN5j0hM/nhfjKVM5SSVpuZUAJuVWE/5u7VeKGA2P
+         mmwp/zZEP3Us9ljtcerm9b2+DC3c2Z8BlqUaY/f01Tbs1AygtSX6WWCXtbPVaqP5VjE8
+         yDBPpDIivwUeGhQQ/LWzLLFtjsMJKCsbFfVJjqhB0T9tagdk18lD9Wxc9O5Gjz13ApmO
+         06vg==
+X-Forwarded-Encrypted: i=1; AJvYcCXtNwapD4Y2Z1iXP+3E4CZqXOIc4Hjps+jH/0Ye2i30ZLNCu+ASfb2JuOE0/oPpjciDyPPq6H2AX7Fb@vger.kernel.org
+X-Gm-Message-State: AOJu0YxSim1ycmqx4nt20YRDYlDgWqOLb9LJicpVlfFiMho5zIE3gp4l
+	CFgcIKuMjw4Z2poWfNSpG0LmJRw2YkVJtusfZyRJdT2vCavTDQjhEOGBIyD4O06reGw=
+X-Gm-Gg: AY/fxX4inDze+3opMNZlDKR3+rVHMV0rITyca5VoP9rhaRuLyQOPzX+BOIjANqAiQz8
+	s4Oq2ATmtSWn4RO/gGhc7rK/NfGl+jHJEUpU2pm3hXCrdplrxOwuk+o/n+TykV53VZ6ecbk1/Da
+	V8eINtWx8EL3MlUrwoC+BtDONERJMJ6lCoH6Me6A0ZoQ7OHIRy8/jyGueew/t51C2g6hgvDy1r1
+	OTgXykyKndmKFOFXo8h6ZHfz2ieCBBAUtDnkF2z9Ot8Qs8KgJyckVI7vS1jJU9KcKYXCRCQZGqY
+	grQTIXfZyYwS+4349SR3xqekxUx1JjS6nG7t+km1QelRxInSXw0nd/oVDY+dcHe3LE98nLn8S+d
+	UhtKUY/Vm89wwzNuUPPQGqmqKbdWbyYgaA0ed4AZPbfiXOMHLK2ulPxzYux7wU9cN0OfDYlSYpB
+	6A9X+Z1ws4cRuhDfaeY4ZqXyp/dydYJD1ZZ8avE0kIoyNjS/f3lEZnMwoc
+X-Google-Smtp-Source: AGHT+IFDZEDuaRCPwiJW2iKvnDZCiiVa/qjjwcwDcPiZ2BJvdS+08oL80HOVEhlMeknHb+YHZB0zcw==
+X-Received: by 2002:a05:622a:1f10:b0:4ed:b7ad:6fd with SMTP id d75a77b69052e-4f1d05a931cmr206640191cf.49.1765894957387;
+        Tue, 16 Dec 2025 06:22:37 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-47-55-120-4.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.120.4])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4f345c7e99dsm16973041cf.34.2025.12.16.06.22.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Dec 2025 06:22:36 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1vVVwi-00000000Jd5-0Q6n;
+	Tue, 16 Dec 2025 10:22:36 -0400
+Date: Tue, 16 Dec 2025 10:22:36 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Michael Gur <michaelgur@nvidia.com>
+Cc: wujing <realwujing@qq.com>, leon@kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	yuanql9@chinatelecom.cn
+Subject: Re: [PATCH] IB/core: Fix ABBA deadlock in rdma_dev_exit_net
+Message-ID: <20251216142236.GD31492@ziepe.ca>
+References: <20251216005705.GB31492@ziepe.ca>
+ <tencent_713807A8D67394A5D8339F8AD33FCCBFCE07@qq.com>
+ <a51bcd2d-d1c6-4516-90c1-f6c50ce01f9f@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251208133849.315451-1-arnd@kernel.org> <CAMuHMdXvNzE++8w1nmD3QXBGb1BzstZwJTSb5=tFfHZDfdqEww@mail.gmail.com>
-In-Reply-To: <CAMuHMdXvNzE++8w1nmD3QXBGb1BzstZwJTSb5=tFfHZDfdqEww@mail.gmail.com>
-From: Jacob Moroni <jmoroni@google.com>
-Date: Tue, 16 Dec 2025 09:17:41 -0500
-X-Gm-Features: AQt7F2qBqwiU7EaypioY8zx4HxoXUfIseVgU2PzgHa1NeHtumDhjUbUP6Sn8zM0
-Message-ID: <CAHYDg1QbNWW=wm4fH71yLVX_gKsPij5jed5R64JbN0mv6Lyx4g@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/irdma: fix irdma_alloc_ucontext_resp padding
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Arnd Bergmann <arnd@kernel.org>, Krzysztof Czurylo <krzysztof.czurylo@intel.com>, 
-	Tatyana Nikolova <tatyana.e.nikolova@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Leon Romanovsky <leon@kernel.org>, Faisal Latif <faisal.latif@intel.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Mustafa Ismail <mustafa.ismail@intel.com>, linux-rdma@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a51bcd2d-d1c6-4516-90c1-f6c50ce01f9f@nvidia.com>
 
-Hi,
+On Tue, Dec 16, 2025 at 03:59:32PM +0200, Michael Gur wrote:
+> 
+> On 12/16/2025 11:59 AM, wujing wrote:
+> > Hi Jason,
+> > 
+> > You're right that the locks aren't nested in rdma_dev_exit_net() - it does release
+> > rdma_nets_rwsem before acquiring devices_rwsem. However, this is still an ABBA deadlock,
+> > just not the trivial nested kind. The issue is caused by **rwsem writer priority**
+> > and lock ordering inconsistency.
+> > 
+> > Here's the actual deadlock scenario:
+> > 
+> > **Thread A (rdma_dev_exit_net - cleanup_net workqueue):**
+> > ```
+> > down_write(&rdma_nets_rwsem);    // Acquired
+> > xa_store(&rdma_nets, ...);
+> > up_write(&rdma_nets_rwsem);      // Released
+> > down_read(&devices_rwsem);       // Waiting here <-- BLOCKED
+> > ```
+> > 
+> > **Thread B (rdma_dev_init_net - stress-ng-clone):**
+> > ```
+> > down_read(&devices_rwsem);       // Acquired
+> > down_read(&rdma_nets_rwsem);     // Waiting here <-- BLOCKED
+> > ```
+> > 
+> > The deadlock happens because:
+> > 
+> > 1. Thread A releases rdma_nets_rwsem as a **writer**
+> > 2. Thread B (and many others) are waiting to acquire rdma_nets_rwsem as **readers**
+> > 3. Thread A then tries to acquire devices_rwsem as a reader
+> > 4. BUT: rwsem gives priority to pending writers over new readers
+> > 5. Since Thread A was a pending writer on rdma_nets_rwsem, Thread B's read request is blocked
+> > 6. Thread B holds devices_rwsem, which Thread A needs
+> > 7. Thread A holds the "writer priority slot" on rdma_nets_rwsem, which Thread B needs
+> > 
+> Why would Thread A still hold any writer priority after calling up_write()?
 
-This doesn't change the offset of max_hw_srq_quanta on my system, but I tes=
-ted
-with a verbs provider built with the previous and new proposed change
-just in case,
-and both worked.
+I've never heard of a 'writer priority slot' in linux, a thread does
+not block other users of a lock after it has released the lock.
 
-Out of curiosity, what is the policy for increasing the size of these
-uverbs driver
-response structures? I think the response gets silently truncated if the us=
-er
-provides a smaller buffer, so this shouldn't have broken any user applicati=
-ons
-using the old ABI IIUC.
+The rwsem priority is done by biasing the atomic counter, not with
+some kind of weird per-thread slots.
 
-Thanks!
-
-Tested-by: Jacob Moroni <jmoroni@google.com>
-
-On Mon, Dec 15, 2025 at 1:43=E2=80=AFAM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
->
-> Hi Arnd,
->
-> On Mon, 8 Dec 2025 at 14:39, Arnd Bergmann <arnd@kernel.org> wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > A recent modified struct irdma_alloc_ucontext_resp by adding a member
-> > with implicit padding in front of it, changing the ABI in an
-> > incompatibible way on all architectures other than m68k, as
-> > reported by scripts/check-uapi.sh:
-> >
-> > =3D=3D=3D=3D ABI differences detected in include/rdma/irdma-abi.h from =
-1dd7bde2e91c -> HEAD =3D=3D=3D=3D
-> >     [C] 'struct irdma_alloc_ucontext_resp' changed:
-> >       type size changed from 704 to 640 (in bits)
-> >       1 data member deletion:
-> >         '__u8 rsvd3[2]', at offset 640 (in bits) at irdma-abi.h:61:1
-> >       1 data member insertion:
-> >         '__u8 revd3[2]', at offset 592 (in bits) at irdma-abi.h:60:1
-> >
-> > Change the ABI back to the previous version, by moving the new
-> > max_hw_srq_quanta member into a naturally aligned location.
-> >
-> > Fixes: 563e1feb5f6e ("RDMA/irdma: Add SRQ support")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->
-> Thanks for the discussion in Tokyo!
->
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
-8k.org
->
-> In personal conversations with technical people, I call myself a hacker. =
-But
-> when I'm talking to journalists I just say "programmer" or something like=
- that.
->                                 -- Linus Torvalds
->
+Jason
 
