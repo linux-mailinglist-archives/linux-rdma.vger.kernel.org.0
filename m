@@ -1,250 +1,112 @@
-Return-Path: <linux-rdma+bounces-15035-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15036-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4D57CC42DC
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 17:15:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C317CCC42BE
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 17:14:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C4EAC30B019B
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 16:08:35 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C61D33091983
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 16:07:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF77734F479;
-	Tue, 16 Dec 2025 15:58:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="kuzj30AF"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CEE033984D;
+	Tue, 16 Dec 2025 16:06:33 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1746734E251;
-	Tue, 16 Dec 2025 15:58:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 028C2330659
+	for <linux-rdma@vger.kernel.org>; Tue, 16 Dec 2025 16:06:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765900718; cv=none; b=FpS0rAO0AS8Jk1NHamWfxX5i08Wngf9jEaKdCcVC6EVijjWn85Gsx2Hzynkm+3XW/5SpEcoTU3EK3IE9p8ELrNRttLZ6VnN3L6lyUVyprdJ+3lPx3rfBcM7rz229AZyQrv87oSzNEgVGlxAQvunct5cj1gKmHYZpuLsFJTYjVz4=
+	t=1765901192; cv=none; b=rG5gL9U72Ltr2vtl5BhF1J/Wx/glo9tknLnO0RolNTX0n31cri1Volj3S9FWNerouGsayjQXrGHRHjOeK21Qt9tJp52sQbFUCvkT6EbSQlhbqh5fbsLhfp8J+NI2xydJ2mVuRXkwwpyh0aD6alaL9hn5Oq5IDNA2ctfAO23fYGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765900718; c=relaxed/simple;
-	bh=8Cr7i59W/Y6MXosiPPE0ImJKXNOb4XIlNH3R+d6Ws88=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=OJJ8JWhPpvG44MhffLM9uFFgUAo/YAeFwNjcy8x1xPo1BENaexyhbUSzLgpp38yeiY9uCQPU7oA/BC9W+/6TmlYjwdX54MtdIgC3148qB4sqTtCbid5p+o21x2D5BI4nNEcHZH8H8rTfzFkiCIJpZQRZjdX8gFnSpEsKaq+sFQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=kuzj30AF; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1006)
-	id CBBCF200D62A; Tue, 16 Dec 2025 07:58:36 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CBBCF200D62A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1765900716;
-	bh=HEP60+8Vo7T50Jr3+kbQqaia7d5ZTn5s1mTO0BUZpR8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kuzj30AFXuD3vUqIteLbDvVIvAF5XxaYkqFpbhKpyza6x31Wk6k4diYvGeDGClwHA
-	 VH69EQVO6kzSisJaKFVWsTR7T9E2C4Zfn8rcmkeMLLyI7yQCHo9bifHoURQKLrMSVz
-	 c0drALHa8rR5vSMNfXiZnKv4aP7PKDtSTXeiTnaU=
-From: Haiyang Zhang <haiyangz@linux.microsoft.com>
-To: linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Long Li <longli@microsoft.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Simon Horman <horms@kernel.org>,
-	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
-	Shradha Gupta <shradhagupta@linux.microsoft.com>,
-	Saurabh Sengar <ssengar@linux.microsoft.com>,
-	Aditya Garg <gargaditya@linux.microsoft.com>,
-	Dipayaan Roy <dipayanroy@linux.microsoft.com>,
-	Shiraz Saleem <shirazsaleem@microsoft.com>,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org
-Cc: paulros@microsoft.com
-Subject: [PATCH RFC 2/2] net: mana: Add ethtool counters for RX CQEs in coalesced type
-Date: Tue, 16 Dec 2025 07:57:55 -0800
-Message-Id: <1765900682-22114-2-git-send-email-haiyangz@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1765900682-22114-1-git-send-email-haiyangz@linux.microsoft.com>
-References: <1765900682-22114-1-git-send-email-haiyangz@linux.microsoft.com>
+	s=arc-20240116; t=1765901192; c=relaxed/simple;
+	bh=ZbCxFXViYY0JqhcGfnxOHCUGcljEiGp2x9f+pJft6ug=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=h4yj/6Quffi1181yQq360CePhaeZUby3fe8QXIUPpBbSEXLRQruv+1CJH9JNIX/5VkMPsr/8vk11Soq2Dt2YUa6tPyf7e14enmrdU9F0dRpwGGuhRisHXXgc5DmqlIUMxIDaoPtf3KQxmtf+NHHZ37LYeFUjcsxZqHC1fFpFcyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-55b1dde0961so3316192e0c.2
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Dec 2025 08:06:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765901190; x=1766505990;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ABolTLbL+Ijw9a+lTCbW30nxIpq4yhzUHc7TJQGRpDg=;
+        b=qVWHFJ4YOi69QkSVgS/eUh9sgq9n77pyXBbuiAGezX8+2GUZDt0TufUlAQI95R2NMx
+         5ofTbb305NiPMwpC/Bcq4ARD1E8LPK/QcuxRO2dt9TXhxYZGzAodSm0v7lFwrrhVBvSm
+         ScRjNTlB08/VM0g1pMjaxRg1pRobFMcuTmAbyWUatufS8e8lA9DNaGRmf6tr4tKSTw7t
+         e2NC4MLLOG4gFzfZsFvHagLQbyyJxuMVZrcq5bagK17oq3N0NAqGITcJt/ahxogsJOPe
+         0dkoKkKeZbZ2kt1iZVspLZHzY1qbAcA1Ct4Y2dFqinmAs/eP55rr7rd7I0LU0pj6BwjS
+         s6YQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVk9/TXaeaRjPu4/XTH5wzec8Wlga8+DbqaWG51Vi+9GEnxExp8uFNy04YRojLtG1NHI5l1A786I758@vger.kernel.org
+X-Gm-Message-State: AOJu0YwCIqwZSzbRlkKL7GU/7LBduiBaDtOGeIZUwBQ5iPMn28Ctd//4
+	P2HZDr1DtAK/sOBCJORtapx9g6RmRoiZPqs5X0ZzYhzsVVtjHjrGGFe+A2bArcGn
+X-Gm-Gg: AY/fxX6bJODQFblWv4ITSbWXtDDmowlCblZbsF/0podwWPQOkglf54z/awk5iPO9AGz
+	H+ABQHKQfEZJIIlWj2c5/vueYy18Gx0/qD1kUk+fNoVj7zygrWnYHDyyyBiFToeieO+BfB3GINR
+	aMeSng3vdkVn5OcoQWGgsDmrudcHh9w2vyUVZUNAfWXN0I+nbpCBQlGFFjR9i0nsmxlIKUnVKyh
+	0OHFLhzy0pB5TSy//iZBOQAOKnzg/FUpjL+gQ/V9ILS4atVO+5xrbDw3XCtKc1noICfbU/AdID9
+	6DhsWf4+DdlUBcFuHqs/zbGG2g+L5cnkxCKSBR7pfG10ptgz2VCbYHqMVnf+o1ndIxAtiNHfTob
+	kF9ZAK+BntpDB4QqcvqCVTrsXitT7rF0SISANaUcd/qfOkXdAr6ayJk/w4njNdnKvM1zr8rioIB
+	iTQJNfw5Cd5sXpIdtrzq4aUaVCJ+4TjPJyYWcJ39CKakrLpXoO
+X-Google-Smtp-Source: AGHT+IGUZQ9ksPdIH4wZmGdoFUUUAvUuhRQXMS8xhk+SW7Fy2Ge15MMvu3KO9PHaAPC1ca1NzUZORQ==
+X-Received: by 2002:a05:6122:2a13:b0:556:9cb9:65cd with SMTP id 71dfb90a1353d-55fed587a9cmr5197413e0c.6.1765901188788;
+        Tue, 16 Dec 2025 08:06:28 -0800 (PST)
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-93f5af00debsm5733423241.14.2025.12.16.08.06.25
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Dec 2025 08:06:26 -0800 (PST)
+Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-940c539de8fso2713117241.0
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Dec 2025 08:06:25 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU+8y9R1s367t24QyD9b1WsBhiHoaLOBXmrBSoaENNKgs3MjL8JMsYp5Jtle54Zp34yx+U18v66wbdo@vger.kernel.org
+X-Received: by 2002:a05:6122:208a:b0:544:7d55:78d6 with SMTP id
+ 71dfb90a1353d-55fed5627c8mr4657306e0c.2.1765901184991; Tue, 16 Dec 2025
+ 08:06:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20251208133849.315451-1-arnd@kernel.org> <CAMuHMdXvNzE++8w1nmD3QXBGb1BzstZwJTSb5=tFfHZDfdqEww@mail.gmail.com>
+ <CAHYDg1QbNWW=wm4fH71yLVX_gKsPij5jed5R64JbN0mv6Lyx4g@mail.gmail.com>
+In-Reply-To: <CAHYDg1QbNWW=wm4fH71yLVX_gKsPij5jed5R64JbN0mv6Lyx4g@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 16 Dec 2025 17:06:13 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUnRGUCiLmPYhPA8-vkNqnzX74nad9d=0Cck66GorZK1Q@mail.gmail.com>
+X-Gm-Features: AQt7F2qvjXqrNdCfN0utewkCwdlxG_hIB-NvIkLGhwr-a8i2B8izMCC0vdDPNrs
+Message-ID: <CAMuHMdUnRGUCiLmPYhPA8-vkNqnzX74nad9d=0Cck66GorZK1Q@mail.gmail.com>
+Subject: Re: [PATCH] RDMA/irdma: fix irdma_alloc_ucontext_resp padding
+To: Jacob Moroni <jmoroni@google.com>
+Cc: Arnd Bergmann <arnd@kernel.org>, Krzysztof Czurylo <krzysztof.czurylo@intel.com>, 
+	Tatyana Nikolova <tatyana.e.nikolova@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Leon Romanovsky <leon@kernel.org>, Faisal Latif <faisal.latif@intel.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Mustafa Ismail <mustafa.ismail@intel.com>, linux-rdma@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-From: Haiyang Zhang <haiyangz@microsoft.com>
+Hi Jacob,
 
-For RX CQEs with type CQE_RX_COALESCED_4, to measure the coalescing
-efficiency, add counters to count how many CQEs contain 2, 3, 4 packets
-respectively.
-Also, add a counter for the error case of first packet with lenth == 0.
+On Tue, 16 Dec 2025 at 15:17, Jacob Moroni <jmoroni@google.com> wrote:
+> This doesn't change the offset of max_hw_srq_quanta on my system, but I tested
+> with a verbs provider built with the previous and new proposed change
+> just in case,
+> and both worked.
 
-Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
----
- drivers/net/ethernet/microsoft/mana/mana_en.c | 25 +++++++++++++++++--
- .../ethernet/microsoft/mana/mana_ethtool.c    | 17 ++++++++++---
- include/net/mana/mana.h                       | 10 +++++---
- 3 files changed, 42 insertions(+), 10 deletions(-)
+It indeed doesn't change the offset of that field (except on m68k),
+but it should restore the size of the structure to what it was before.
 
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index a46a1adf83bc..78824567d80b 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -2083,8 +2083,22 @@ static void mana_process_rx_cqe(struct mana_rxq *rxq, struct mana_cq *cq,
- 
- nextpkt:
- 	pktlen = oob->ppi[i].pkt_len;
--	if (pktlen == 0)
-+	if (pktlen == 0) {
-+		/* Collect coalesced CQE count based on packets processed.
-+		 * Coalesced CQEs have at least 2 packets, so index is i - 2.
-+		 */
-+		if (i > 1) {
-+			u64_stats_update_begin(&rxq->stats.syncp);
-+			rxq->stats.coalesced_cqe[i - 2]++;
-+			u64_stats_update_end(&rxq->stats.syncp);
-+		} else if (i == 0) {
-+			/* Error case stat */
-+			u64_stats_update_begin(&rxq->stats.syncp);
-+			rxq->stats.pkt_len0_err++;
-+			u64_stats_update_end(&rxq->stats.syncp);
-+		}
- 		return;
-+	}
- 
- 	curr = rxq->buf_index;
- 	rxbuf_oob = &rxq->rx_oobs[curr];
-@@ -2102,8 +2116,15 @@ static void mana_process_rx_cqe(struct mana_rxq *rxq, struct mana_cq *cq,
- 
- 	mana_post_pkt_rxq(rxq);
- 
--	if (coalesced && (++i < MANA_RXCOMP_OOB_NUM_PPI))
-+	if (!coalesced)
-+		return;
-+
-+	if (++i < MANA_RXCOMP_OOB_NUM_PPI)
- 		goto nextpkt;
-+
-+	u64_stats_update_begin(&rxq->stats.syncp);
-+	rxq->stats.coalesced_cqe[MANA_RXCOMP_OOB_NUM_PPI - 2]++;
-+	u64_stats_update_end(&rxq->stats.syncp);
- }
- 
- static void mana_poll_rx_cq(struct mana_cq *cq)
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-index 1b9ed5c9bbff..773f50b1a4f4 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-@@ -20,8 +20,6 @@ static const struct mana_stats_desc mana_eth_stats[] = {
- 					tx_cqe_unknown_type)},
- 	{"tx_linear_pkt_cnt", offsetof(struct mana_ethtool_stats,
- 				       tx_linear_pkt_cnt)},
--	{"rx_coalesced_err", offsetof(struct mana_ethtool_stats,
--					rx_coalesced_err)},
- 	{"rx_cqe_unknown_type", offsetof(struct mana_ethtool_stats,
- 					rx_cqe_unknown_type)},
- };
-@@ -151,7 +149,7 @@ static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
- {
- 	struct mana_port_context *apc = netdev_priv(ndev);
- 	unsigned int num_queues = apc->num_queues;
--	int i;
-+	int i, j;
- 
- 	if (stringset != ETH_SS_STATS)
- 		return;
-@@ -170,6 +168,9 @@ static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
- 		ethtool_sprintf(&data, "rx_%d_xdp_drop", i);
- 		ethtool_sprintf(&data, "rx_%d_xdp_tx", i);
- 		ethtool_sprintf(&data, "rx_%d_xdp_redirect", i);
-+		ethtool_sprintf(&data, "rx_%d_pkt_len0_err", i);
-+		for (j = 0; j < MANA_RXCOMP_OOB_NUM_PPI - 1; j++)
-+			ethtool_sprintf(&data, "rx_%d_coalesced_cqe_%d", i, j + 2);
- 	}
- 
- 	for (i = 0; i < num_queues; i++) {
-@@ -203,6 +204,8 @@ static void mana_get_ethtool_stats(struct net_device *ndev,
- 	u64 xdp_xmit;
- 	u64 xdp_drop;
- 	u64 xdp_tx;
-+	u64 pkt_len0_err;
-+	u64 coalesced_cqe[MANA_RXCOMP_OOB_NUM_PPI - 1];
- 	u64 tso_packets;
- 	u64 tso_bytes;
- 	u64 tso_inner_packets;
-@@ -211,7 +214,7 @@ static void mana_get_ethtool_stats(struct net_device *ndev,
- 	u64 short_pkt_fmt;
- 	u64 csum_partial;
- 	u64 mana_map_err;
--	int q, i = 0;
-+	int q, i = 0, j;
- 
- 	if (!apc->port_is_up)
- 		return;
-@@ -241,6 +244,9 @@ static void mana_get_ethtool_stats(struct net_device *ndev,
- 			xdp_drop = rx_stats->xdp_drop;
- 			xdp_tx = rx_stats->xdp_tx;
- 			xdp_redirect = rx_stats->xdp_redirect;
-+			pkt_len0_err = rx_stats->pkt_len0_err;
-+			for (j = 0; j < MANA_RXCOMP_OOB_NUM_PPI - 1; j++)
-+				coalesced_cqe[j] = rx_stats->coalesced_cqe[j];
- 		} while (u64_stats_fetch_retry(&rx_stats->syncp, start));
- 
- 		data[i++] = packets;
-@@ -248,6 +254,9 @@ static void mana_get_ethtool_stats(struct net_device *ndev,
- 		data[i++] = xdp_drop;
- 		data[i++] = xdp_tx;
- 		data[i++] = xdp_redirect;
-+		data[i++] = pkt_len0_err;
-+		for (j = 0; j < MANA_RXCOMP_OOB_NUM_PPI - 1; j++)
-+			data[i++] = coalesced_cqe[j];
- 	}
- 
- 	for (q = 0; q < num_queues; q++) {
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index 51d26ebeff6c..f8dd19860103 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -61,8 +61,11 @@ enum TRI_STATE {
- 
- #define MAX_PORTS_IN_MANA_DEV 256
- 
-+/* Maximum number of packets per coalesced CQE */
-+#define MANA_RXCOMP_OOB_NUM_PPI 4
-+
- /* Update this count whenever the respective structures are changed */
--#define MANA_STATS_RX_COUNT 5
-+#define MANA_STATS_RX_COUNT (6 + MANA_RXCOMP_OOB_NUM_PPI - 1)
- #define MANA_STATS_TX_COUNT 11
- 
- #define MANA_RX_FRAG_ALIGNMENT 64
-@@ -73,6 +76,8 @@ struct mana_stats_rx {
- 	u64 xdp_drop;
- 	u64 xdp_tx;
- 	u64 xdp_redirect;
-+	u64 pkt_len0_err;
-+	u64 coalesced_cqe[MANA_RXCOMP_OOB_NUM_PPI - 1];
- 	struct u64_stats_sync syncp;
- };
- 
-@@ -227,8 +232,6 @@ struct mana_rxcomp_perpkt_info {
- 	u32 pkt_hash;
- }; /* HW DATA */
- 
--#define MANA_RXCOMP_OOB_NUM_PPI 4
--
- /* Receive completion OOB */
- struct mana_rxcomp_oob {
- 	struct mana_cqe_header cqe_hdr;
-@@ -378,7 +381,6 @@ struct mana_ethtool_stats {
- 	u64 tx_cqe_err;
- 	u64 tx_cqe_unknown_type;
- 	u64 tx_linear_pkt_cnt;
--	u64 rx_coalesced_err;
- 	u64 rx_cqe_unknown_type;
- };
- 
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.34.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
