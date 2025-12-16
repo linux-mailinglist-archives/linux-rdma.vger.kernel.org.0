@@ -1,131 +1,149 @@
-Return-Path: <linux-rdma+bounces-15019-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15020-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 455FDCC066C
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 01:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 909C0CC0ACA
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 04:05:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D66A5300DC98
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 00:57:11 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 74725303D329
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Dec 2025 03:03:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B471C23EA81;
-	Tue, 16 Dec 2025 00:57:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="CG+ZPN/2"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C2A42F39CE;
+	Tue, 16 Dec 2025 03:03:36 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F622DF68
-	for <linux-rdma@vger.kernel.org>; Tue, 16 Dec 2025 00:57:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DA95259C84;
+	Tue, 16 Dec 2025 03:03:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765846629; cv=none; b=b7iNudZLCvQ/3kxGiTodC/Y+pfWh4SeNmEAdjig/iEk5Z2o5djJsplRU7p/PpXwr24WBezqUWlCRG7SQsjHeoo3JWLc74JgXgCcLpDpfYhah8bWDv5sQ65ZipBnxgupupu/Bgp8CxXxlbdVEfsCXVG6OVp/A7V86Lkkkpdd59cs=
+	t=1765854215; cv=none; b=QuOP1qzuenURu2ZpLSotIcZQWWqBW3TSvgon9hhqjd2aFWq/sfM/6/uEfDBD9mAEWB/pkM5f31OGBbZS6+/vgUIw0QAnK/Kqwvwi25eurSi2UUCSK/PMh44kwX6h7LTSoHIOUoEA8lknF+gEq/w1Eu0sA6hRydrL3j6vby2P7AE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765846629; c=relaxed/simple;
-	bh=QezPYSYTY8jyA8T5MiPTniswqhsfgFbCDuDyZ1kn3s4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E2eX3sjL+mroVdSqP2eZW+l7ESK6sqGTIt00ST0GMO0YhQAqOYBkcGlwjWT8zTRZ/X2oeJ8C8WwEVxQPeqks3nPAC8sUr9LvjERBM5BUowIPSbGN75jBcby2Jjbyb0nfwEQ1622G9n2oMbdJgqDM0ZWQigD26/I/hVjgSkpd7wY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=CG+ZPN/2; arc=none smtp.client-ip=209.85.222.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-8b602811a01so450991085a.2
-        for <linux-rdma@vger.kernel.org>; Mon, 15 Dec 2025 16:57:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1765846626; x=1766451426; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IPpXEBgVWwdvOViYbZAfQ/0F+69tA1X6CeobJwJ6WR0=;
-        b=CG+ZPN/2t2pJNeNDIIurpWpFOgs1v//P3tVTr156tjbQLlPupLFEVg3JPN/i3ilOu4
-         5zYgUImy9YnAOSp+t1MFFMWIBR3MlZqzSw0BbRx0biQoaLHmsKJNtcXgV78oYqD+o3+G
-         sWiLi8MdETK796lIStu2YcoYHqE9r6nTTXBj5+b1V7lPb2i3UyWsdhv//UeMYknbwKKK
-         QfZUNr8J0IkDAVJMWyXqdFQJBmfQNdoaRdzMBBHzmDd65o2XX4reNlLjoSg6xwpEFJtQ
-         l7fso7aL3MnR6VwLRu95i4ui5OdSgjMxh/dBbbFGrls5BMVQ2wzG4GJwEzH1wLExcgwR
-         zZkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765846626; x=1766451426;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IPpXEBgVWwdvOViYbZAfQ/0F+69tA1X6CeobJwJ6WR0=;
-        b=FbKNNHEHZnMokzsZxAdrhLqQZWzuaifiQEFd3iOcgA8ZKxrv6TO0egvEh4ukQ/ob+M
-         CT7/O7l5tKen+SqUNzRmd8zbBiqUWLR4wcq23tKP8y8CBNOO7NVzWm3bD4F8L0beHVAk
-         368AC6GWsagSyeL4yXwpzJ89FXIDb6b4CGvn+Bk1RE0TAX9y7By2HmtxqhOY0z3Kxngc
-         XgYykfzSrTcoWIBD4J+vNOKGKbLZUlfQFDoKTIpzqzcG40aTRhHEilu/hwbHhuHxBeut
-         YInaDasx0dJfQ8OUsjH54scP7kFUyj6IcOI1RQVYqNKZp9etG6ympes8kvV+nlGbtDmz
-         Qk1A==
-X-Forwarded-Encrypted: i=1; AJvYcCW0ppjexeXN85lMT5s+N7YNPfKix5czHA39LR3k979gvZDYyfbSv4lccEXOJn8qBAsHD9n5HBIfEV13@vger.kernel.org
-X-Gm-Message-State: AOJu0YyYs2uwp7ww8z3bK3HGoT56FtCkmRc4JLgQym4ahqg/noLlj2SN
-	4+xL5Tabqa/WAWkXpyTJ8adQXe/ychzlRY1wpTYBK4/oklc0x6b9jOr6nfKWXie2Okw=
-X-Gm-Gg: AY/fxX7TUPOYVMyc5whwJuJqjN6IJ9czRWFXGuT3044MAeBSFm+nRqissgTc0PWj/09
-	LAFYSKtTiyn3ODAzbaHHcfJ3O1LNkUbBbLfnUv8zfnJDj9xwCiN4gErmwxsMmtYdPpk9gIdulH3
-	JuF9NKCnQlwWaRWGov28UxagsPE01aegIdCIq+/MjZkB5gAfIZV7pm5NfsIptChKyNSZY/VG8Ky
-	PsO1WoZ32mJkzlDh1/lKZ0Cdcrr4cd4gyP6TFxn5X2tSiwDL0TG/2e8Y2pm9vJe2AxPKc9Uz1X4
-	YrUbrhHVufvpDoTBpn3ihuV/dxg4t6Jl3yclqF7BlvBK0TDSC2wUkmu/b1p3O1uet7G2Fx0+sVR
-	oQ3F5RjytUB5gZ4NUH+IstwAIDMgJ2OPQiOvWoIBkaUN5VG+YtH9HU0vIEbjMtYp+k4cnk/OOYH
-	mAGobg0iZjYjbDIHk42uceszJyX+Oqr1/WdsA12aRhxdW0n3Jp+X/qbmrJZ3sovAKmxVM=
-X-Google-Smtp-Source: AGHT+IFNRf5SYkdPtX8YbOp8FcLkqV1bOWRJhWcEbpFL7AiAOiWiOC2cyMdz9cLiPNPjgwCt2PsvcQ==
-X-Received: by 2002:a05:620a:44d5:b0:8aa:f08:bed0 with SMTP id af79cd13be357-8bb3a39df6fmr1819982185a.79.1765846626202;
-        Mon, 15 Dec 2025 16:57:06 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-47-55-120-4.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.120.4])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-88993b59838sm63654226d6.13.2025.12.15.16.57.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Dec 2025 16:57:05 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1vVJNB-000000008Lt-0Rrp;
-	Mon, 15 Dec 2025 20:57:05 -0400
-Date: Mon, 15 Dec 2025 20:57:05 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: wujing <realwujing@qq.com>
-Cc: Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Qiliang Yuan <yuanql9@chinatelecom.cn>
-Subject: Re: [PATCH] IB/core: Fix ABBA deadlock in rdma_dev_exit_net
-Message-ID: <20251216005705.GB31492@ziepe.ca>
-References: <tencent_96252FF6CE27E9F41F13AC73CCC1BE350905@qq.com>
+	s=arc-20240116; t=1765854215; c=relaxed/simple;
+	bh=ErpQkvysehdoKvtB95pcMs7X1/KMSCP1USDNrJsYuWs=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=fTZCjjxvs/AlX1qii5hVX78YQUdd/eCCu8HFHTLDT8vKAQh6/v41v2A0Jimf9PYGthdcv7dH80udei+A4gFRkN3MkVq9Od7Gp2l0dlyb5Z2EdyvVH5JesYPvLxiMhEfCVSrp71Mum3Q0aCdnVyt09cmByOKcSYeKD2HvrxdoTjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-c45ff70000001609-3d-6940cbfe996a
+From: Byungchul Park <byungchul@sk.com>
+To: linux-mm@kvack.org,
+	akpm@linux-foundation.org,
+	netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel_team@skhynix.com,
+	harry.yoo@oracle.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	hawk@kernel.org,
+	john.fastabend@gmail.com,
+	sdf@fomichev.me,
+	saeedm@nvidia.com,
+	leon@kernel.org,
+	tariqt@nvidia.com,
+	mbloch@nvidia.com,
+	andrew+netdev@lunn.ch,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	david@redhat.com,
+	lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com,
+	vbabka@suse.cz,
+	rppt@kernel.org,
+	surenb@google.com,
+	mhocko@suse.com,
+	horms@kernel.org,
+	jackmanb@google.com,
+	hannes@cmpxchg.org,
+	ziy@nvidia.com,
+	ilias.apalodimas@linaro.org,
+	willy@infradead.org,
+	brauner@kernel.org,
+	kas@kernel.org,
+	yuzhao@google.com,
+	usamaarif642@gmail.com,
+	baolin.wang@linux.alibaba.com,
+	almasrymina@google.com,
+	toke@redhat.com,
+	asml.silence@gmail.com,
+	bpf@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	sfr@canb.auug.org.au,
+	dw@davidwei.uk,
+	ap420073@gmail.com,
+	dtatulea@nvidia.com
+Subject: [PATCH v2 0/1] finalize removing the page pool members in struct page
+Date: Tue, 16 Dec 2025 12:03:13 +0900
+Message-Id: <20251216030314.29728-1-byungchul@sk.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWSa0hTYRyHe885O+e4HB7WxZNFwUSCIrtg8BfCRIJeIksoogtdRp7ayhub
+	mobFzNnM0tQSTVcppnlLY9rcxlbmvaQ0LZmUt3UxKjW1LHNkLvHbAw+/59OPJaUjlBerjIgW
+	VBHyMBktpsQj7oUb/rYHKjfZuj1BX11JQ8XvOLg/aBLBdOUwAfpyI4If028ZmLW1IJhsaqXh
+	a+MEgqLCKRL0HVoKflb/IcFsGUbwJfcBDR9bHAxUGIJhoOQTBVZdHQmO6200pGlnSLBNjzJw
+	yVQ6F67RMNBpTBfBzT/FJNRpBhnotuhp6K+cFcGnhjQKnuWVUfA9u4mEgfRAaClYDlPt3xA0
+	VdcRMHXtNg1vblkIeGR7w8CNrgIa3msHEHQ1OijIdqbQkJ+YjmDm91xyNOOHCPKb+5lAX5xo
+	t9O48dsYiWvLegnck5tJYfvj5wQ25/UxuMAQg2tK1+FUexeJDeVXaGyYyGLwux4rjdtyZyhs
+	HvLHZtMkgdOSRumQZYfF20KFMGWsoNoYcEKsuHe5mYzKEMcVtb5AGpTLpCI3luf8eEerRrTA
+	SUYn5WKaW8vb7dOki5dywXyV8TVKRWKW5EYZ3vrkF+0SS7g9fEp5DuFiivPhM7VF/8cSbivf
+	raum56Nr+IqH9aRrzHOFLD+WnIPmxQr+aamdykCLC9CiciRVRsSGy5Vhfr6K+AhlnO/JyHAD
+	mjtByQXnEROa6NzXgDgWydwleHa7UiqSx6rjwxsQz5KypZIUe4BSKgmVx58XVJHHVTFhgroB
+	rWQpmadky9S5UCl3Wh4tnBWEKEG1YAnWzUuDspynNJ+PJ1z08aq9mjTuPYReVc32JfToD8mW
+	Z+3q/bDJuqzt1vpowwEPfYj/7qo72/fJi0I6ysx+v86s0mVH6oymRLegZNvDYwaPXRmraz7u
+	7/Bor7Bo9+4oDre2HdYpmk9oulnsfdS7/uXdL3/HSoZFyf79aOd4sfqF09tBHAySUWqFfPM6
+	UqWW/wN8heHSAAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWRW0iTYRyHe7+zo8WXSX3ZRTCQTpQJFf9ISrqot+h0E4E3OfRDl5vKlrZ1
+	oJWiNnK5DmQ5wZppHlLZapviVDYzTcSYh9ZhakYlZTN0eVyZFt098PB7bn4cGd5DRXKKtLOi
+	Ok2ulDESSnJsT/bW311xiu19NhrMdTUMVM9ooWLYScNszRcCzFV2BMHZdywsuNoRTLa9YOCb
+	ZwKB5cEUCeaeHAp+1s2R0ND4BcHXoicMfGofYaHaehSGyj9T0JTnIGHkRgcDBTnzJLhmAyxc
+	dT5eDNv0LHhKOml4ZTfScHvuEQkO/TALvY1mBgZrFmj47C6goPN+JQU/7rSRMGSMg/bS1TDV
+	NYagrc5BwNT1Egb67zUS8MzVz8ItbykDH3OGEHg9IxTcCeUzUHzFiGB+ZjEZKAzSUPx8kI2L
+	xld8PgZ7xsZJ/LTyDYEHikwU9jW/JHDDfT+LS62Z2PZ4Mzb4vCS2Vl1jsHXiJovfDzQxuKNo
+	nsINH3bjBuckgQuyA8yJ1fGS2CRRqcgS1dF7EyQpZbnPyYxCidbyohvpURFrQGGcwO8Qsu0h
+	aokZfoPg882SSxzBHxVq7X3IgCQcyQdYoallmlkSq/hjQn7VXWKJKT5KMOVY/o6l/E6hN6+O
+	+RddL1TXt5KFiCtFy6pQhCItSyVXKHdu06Sm6NIU2m2J6SorWry5/FLI5ETB3oNuxHNItlyK
+	F/Ypwml5lkanciOBI2UR0nzfXkW4NEmuOy+q00+rM5Wixo3WcZRsjfTwKTEhnE+WnxVTRTFD
+	VP+3BBcWqUcQe9nyMFYf6dDHGafPnQRDrT/prX3U63LZOiuPl2U8SVYl+VX7Y9SOmC5t7MmQ
+	bmP3mUn/gVtbci2H5oLNgW7dwyNlTafiv3MX3/v9z1Yi24VNbr2pIi8st7znw4rlM2OOXd7E
+	X856nkDKtfQ4/Xo0qrWF121svTQ9mluSIqM0KfKYzaRaI/8DjxHjcOICAAA=
+X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_96252FF6CE27E9F41F13AC73CCC1BE350905@qq.com>
 
-On Thu, Dec 11, 2025 at 04:08:13PM +0800, wujing wrote:
-> Classic ABBA deadlock due to inconsistent lock ordering between
-> rdma_dev_exit_net() and rdma_dev_init_net():
-> 
-> Thread A (cleanup_net workqueue -> kworker/u256:1):
->   rdma_dev_exit_net():
->     down_write(&rdma_nets_rwsem)  <- held at line rdma_dev_exit_net+0x60
->     down_read(&devices_rwsem)      <- waiting (shown in rwsem_down_write_slowpath)
+Since this patch requires to use newly introduced APIs in net tree, I've
+been waiting for those to be ready in mm tree.  Now that mm tree has
+been rebased so as to include the APIs, this patch can be merged to mm
+tree.
 
-This isn't right, it unlocked the &rdma_nets_rwsem:
+This patch has been carried out in a separate thread so far for the
+reviews [1]:
 
-        down_write(&rdma_nets_rwsem);
-        /*
-         * Prevent the ID from being re-used and hide the id from xa_for_each.
-         */
-        ret = xa_err(xa_store(&rdma_nets, rnet->id, NULL, GFP_KERNEL));
-        WARN_ON(ret);
-        up_write(&rdma_nets_rwsem);  <------
+ [1] https://lore.kernel.org/all/20251119012709.35895-1-byungchul@sk.com/
+---
+Changes from v1:
+	1. Drop the finalizing patch removing the pp fields of struct
+	   page since I found that there is still code accessing a pp
+	   field via struct page.  I will retry the finalizing patch
+	   after resolving the issue.
+---
+Byungchul Park (1):
+  mm: introduce a new page type for page pool in page type
 
-        down_read(&devices_rwsem);
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  2 +-
+ include/linux/mm.h                            | 27 +++----------------
+ include/linux/page-flags.h                    |  6 +++++
+ include/net/netmem.h                          | 15 +++++++++--
+ mm/page_alloc.c                               | 11 +++++---
+ net/core/netmem_priv.h                        | 20 +++++---------
+ net/core/page_pool.c                          | 18 +++++++++++--
+ 7 files changed, 53 insertions(+), 46 deletions(-)
 
-It is not nested and there is not a dependency.
 
-> Thread B (stress-ng-clone processes):
->   rdma_dev_init_net():
->     down_read(&devices_rwsem)      <- held at line rdma_dev_init_net+0x120
->     down_read(&rdma_nets_rwsem)    <- waiting (blocked by pending writer from Thread A)
+base-commit: d0a24447990a9d8212bfb3a692d59efa74ce9f86
+-- 
+2.17.1
 
-This one is nested though.
-
-I don't know what your bug is, but it is not some trivial ABBA
-deadlock, lockdep would have found something like that ages ago.
-
-Jason
 
