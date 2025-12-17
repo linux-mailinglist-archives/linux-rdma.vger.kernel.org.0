@@ -1,174 +1,174 @@
-Return-Path: <linux-rdma+bounces-15044-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15045-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CF05CC5B91
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Dec 2025 02:46:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C9DF6CC6E10
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Dec 2025 10:49:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 839E3301CD06
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Dec 2025 01:46:43 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DA126306A2FF
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Dec 2025 09:47:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEF6F22A80D;
-	Wed, 17 Dec 2025 01:46:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90CB23469FD;
+	Wed, 17 Dec 2025 09:39:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="cDQxxyNW"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="B/oqGyYU"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11013002.outbound.protection.outlook.com [40.93.196.2])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E29D222A4F1;
-	Wed, 17 Dec 2025 01:46:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.196.2
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765936001; cv=fail; b=ZON+qd7ojaFiCHlJpNRvSh+TZ/Ypq8s7ozGn1k/45L1e1rl62OtsXDYyKwtIed9aSOUkr9sziQey1bmLlNPL7sd8QLqoSSvN6Ga5VU6kA0McREL/ETnAXK3meHFsdPTcN7CGBzGhiuyhavE0IRY17LR3HnptRUfXRUvvONhVV3I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765936001; c=relaxed/simple;
-	bh=i4T/yoBpRKYvdFiP38UMbZ+Yg3sfERtCxymf5rBd07g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=GFdqmk7wKBEsVq3gSTlmoRAfZV+HPg1ds9R+PSMEImELoejTGqWx6BC4Lmxdb52t1Ukqxvd2wGoWuR+i9eTb4MisJXARjz+OnFIpheIo0VWn73ZGGc4MCt0gEYXxOOAAK4NvwHXg3j43n6+ePmAtCo62sNzWEqPs88EFBFbLK/o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=cDQxxyNW; arc=fail smtp.client-ip=40.93.196.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Q5Md1/idwWxS9/hcNtMCk2nTLLKaChWWlyRkk9B9o5xF7Q5FXYk3h7yKjs73qkemh90KayoyUjGslOW2Yb30gw59xhVGbpXFOIgRHDMUoQJZpWV2XJ+6PHWSOP02pc9npOGce2etmD/yJLpj9dXfJn/dmYyNFeExail1q4x4W1FhSyCgnUUxoiTN+ycmVSuVpnq9sOQmTNZxO64u9/j0tq3efbuF0CF21FJUwkLvD82T1IcG5oWTUvGVD1CJ11zvBoMW7tPXtW+uBN6b6mXvWdBGRCVUWSfk67EdvKX3BSkN6tIuZzHG7HpUPA46Nn1ejY5NCKuzT9ga+pYXhWsU/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hxJuRf1wK1+n96DIoXUZyXKru14xCGw5WIx6o7DLK8g=;
- b=aq/WUbnwdyErrdjTrxbxWGik54FXN7DOXzmmg6KlIsGFIk4PWD3fn9cP2bu200ftGZvh+g+nRNi/khiLT0LO66PeWKqtNi0+7/38dJCtKxfRLcpKAhW+L4JqEwQPqbKoipNWxegvmVFUczxp8Q6ZcqivNk9jE4qLWfuICEQSOCHUIB6y2a048gWRKa+oWNs1DJ9UK7mhlxmniwCP0KXxqKAlyfC0Y6RJI5hsNieYeBJxh1H8ILnpxKuMKO6hbAkhulMs6fxgKbHIpL6yJuzj3PhjWdosTO+eAn9TAj60TsJ03G5RduE0A31qXPAiW1i7V0gQUAwOHiwV6AsUZNX84A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hxJuRf1wK1+n96DIoXUZyXKru14xCGw5WIx6o7DLK8g=;
- b=cDQxxyNWz0GH4xf+UjqPxnLnruk7pdLYgvc9Y8r2sVx1Q+HnsDMBA+lt8PbgkULfp78xLzQ/d8cPOU3mtsi+baAPax2N8xlPyMgydJfucGRUlXT7KFJB13SiFKRzgvjRRceK21AylK1oXrVWAFv5iyjOb3PHDBx/70hpT0hO58jSKsCRr3es8qwnYKAkQxpn3Bn7C6VUX4SCuyqpkVWEaF7sRsMfhRszCcVdvpAeYt9jg175eFzbm/fMN7ETHVzSWtI5aPC/+M7y1lPGzErh45hQujJbrIKKg6fRNFd5QEiWZRuWrF5nSclrrvAWkTYFMJWmp1g0rKXPWDt0IthPEg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19)
- by IA1PR12MB7710.namprd12.prod.outlook.com (2603:10b6:208:422::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9412.13; Wed, 17 Dec
- 2025 01:46:36 +0000
-Received: from LV8PR12MB9620.namprd12.prod.outlook.com
- ([fe80::1b59:c8a2:4c00:8a2c]) by LV8PR12MB9620.namprd12.prod.outlook.com
- ([fe80::1b59:c8a2:4c00:8a2c%3]) with mapi id 15.20.9434.001; Wed, 17 Dec 2025
- 01:46:36 +0000
-Date: Tue, 16 Dec 2025 21:46:35 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Krzysztof Czurylo <krzysztof.czurylo@intel.com>,
-	Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Faisal Latif <faisal.latif@intel.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Mustafa Ismail <mustafa.ismail@intel.com>,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/irdma: fix irdma_alloc_ucontext_resp padding
-Message-ID: <20251217014635.GD148079@nvidia.com>
-References: <20251208133849.315451-1-arnd@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251208133849.315451-1-arnd@kernel.org>
-X-ClientProxiedBy: BL0PR05CA0018.namprd05.prod.outlook.com
- (2603:10b6:208:91::28) To LV8PR12MB9620.namprd12.prod.outlook.com
- (2603:10b6:408:2a1::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B85D63469E3;
+	Wed, 17 Dec 2025 09:39:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1765964365; cv=none; b=L4MwgCLC8Gxd0jGXQYwe5yHKypXE0O+yeIsW1qXlV9IBtXGMPkrNY31Zm7tVgAD8IbMDWnpmEVYkoGxLjdjBceknhpod30/3LLrNE3jZUvDHlykmE1XBuzK9BAY35Ny8gZOK6AKPL2nMcl8WnDyINczvupvhzFO0Xvukd0lRt8M=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1765964365; c=relaxed/simple;
+	bh=eYYrjVemlUKTHiVNjX/V0rjo5z8MCJhDsLCPgRP7tgk=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:References:
+	 In-Reply-To:Content-Type; b=RdZrl8+IxInSbyWx/lAGuJoYYVnQ96puc76MwM2CIDJFu5cZaWI45FxuiAYJGXlMZ6cWIJ65UsSYplzQql8lBAUQ8G1avJiaksytT5mSomfzNiEN2O4LIuousBphdFWpKXbjWt1qpf8TY/ORXeSsMvpj96Kl+hjobuKl+xy1qaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=B/oqGyYU; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5BH7TL3k015312;
+	Wed, 17 Dec 2025 09:39:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
+	content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=dJNxgp
+	u+MEny/6i00FEvnSglnxKcDmqMay+PGy6W2Co=; b=B/oqGyYUSUuZhLLKZhfL2I
+	9Y2MSqCZ1HZwg+cOWxXs+BJG9rX/F/dMEpBkC3RK0OdcPSnLoFi2i7od8R3PIocC
+	SzSPbfDNgXnTLXYykQLjJUwWOc+TKweAlDEP9fnhMkE8pZvHQtrBHaNF7R3Cf5ig
+	wZhMhvDvqSVGw09VOWlK27IATWOzi//L6plhWN7RZaggSUrtLnFKj1V3uohBTwnz
+	MVZL5GENpvr5Rmjh4glcE9eLbDXpLDAGBYvS8jGRKIbn1Q68qhV1BT5lu0dw3kgM
+	K24QGW/630q9Sg/Swg/JnAGORrzQrJ8Brc/JM1YuX5YwcLq/Bz/Sf8M+cRz9dE/w
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4b0yt1k6nr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Dec 2025 09:39:16 +0000 (GMT)
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5BH9dAJu022771;
+	Wed, 17 Dec 2025 09:39:16 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4b0yt1k6nk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Dec 2025 09:39:15 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5BH8gbcD005806;
+	Wed, 17 Dec 2025 09:39:15 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4b1tgp0480-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 17 Dec 2025 09:39:14 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5BH9dB5j29688092
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 17 Dec 2025 09:39:11 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5CF862004B;
+	Wed, 17 Dec 2025 09:39:11 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 062AB20040;
+	Wed, 17 Dec 2025 09:39:11 +0000 (GMT)
+Received: from [9.52.217.163] (unknown [9.52.217.163])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 17 Dec 2025 09:39:10 +0000 (GMT)
+Message-ID: <03a57f0d-2b09-47d4-b1ac-f86dc128356b@linux.ibm.com>
+Date: Wed, 17 Dec 2025 10:39:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV8PR12MB9620:EE_|IA1PR12MB7710:EE_
-X-MS-Office365-Filtering-Correlation-Id: 37bb874f-4b8a-43d8-a12d-08de3d0e1cf8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?m6ebNGC/zoE7ZP9v/PpizP4Azxgealha7LGoO7vLHAMxDh/tRmk2tCNGWTPL?=
- =?us-ascii?Q?DXnQZE4S/0TalJixRDoSBG3sY+SIDbnusFIW2PtQUnW4vDPgyKJ1TBWj5Nvx?=
- =?us-ascii?Q?xEhsLJwiJpxVOQH8n/6fe1yNy1g4b0i8D2tPmILymoHZFy+HeC8oivIr3cK4?=
- =?us-ascii?Q?Gdk8rJDmd3Z6cvF4XmAS8bTHrj6EmGF7vSgSQTZ3aj8zfe2VpV80e1EhmQTK?=
- =?us-ascii?Q?kujN2yD38JNW4KSWp6zdMAAOQEbV2eXR5tIHp0du08RMFOo0umVlaz5moY0G?=
- =?us-ascii?Q?ggLSjT3TokkRy1uHq0oJ6CTO4cb3hed7qd8lc7v4xAJ7U95MEVe/PxO3vQh2?=
- =?us-ascii?Q?FzmsMzpQnr+miD048XJVLhf/qk5y+11sPXjPHpBXanlx30uhTeNqESJk6wnX?=
- =?us-ascii?Q?QAkp6P3Lb39hSUBTwHcqIT8Dyk4iEBsKYTtHTnfcNm9AFRLZrc90T9+7NcGb?=
- =?us-ascii?Q?au8U3gi6WCKwodshZRBLlQlnptEi8rAXdvfJQwUypjjGR7ji0V9sfh1AJUyZ?=
- =?us-ascii?Q?RVkIL8BSTiEk/xoD1L1deNoZv+xHQpSztfMHvkIgP4+xcBEoICBiVNii4SKY?=
- =?us-ascii?Q?jRlLz/VGeb7mDxmUGdsGe52dCRS7+mWYcHUybXUENJKW1FALYRkE9X08PM9Z?=
- =?us-ascii?Q?kthTz1aARdCn2xir1xxhJXkpLW9L1kbAKR7kymAXv5Vi+HRCqberaZowK/2J?=
- =?us-ascii?Q?CBlL29KhsMCGsWzfLp1KA+MawLzVIA1bgewV5sx1cSiCdTrwoKt922OcIYgk?=
- =?us-ascii?Q?LqZET4MMkv6Dd+R40eLXEtT5X7kxusvrbybMHSGzvA1GUPiOh4rHAwtkV1LG?=
- =?us-ascii?Q?961FdCZp31wae1iu6L5yH2lj3NbJR57fBazoWB3h7H/0PIvK6QRwqJYTs8VL?=
- =?us-ascii?Q?fHvoes4TMXgyCdN9kjOYKonEz7hFJz0r3b482DJ7iqVZhg6YExeOo69aTUSw?=
- =?us-ascii?Q?6t33za3LwZXHbI6KL3dtaukz6W4DDhNQ4Y4tW6OA4RGr8JqjGMo0NyxQHBrC?=
- =?us-ascii?Q?Rl4Qi6r25dobcu1yZb1B/stvE56y3bsx58jWAj9V7p7ILpoYdhTKGbVERdcM?=
- =?us-ascii?Q?u1VNaXSEa/12E5+8xmRAFnvE5cL5wI5fnklSwz2QMqXuCpMeQ0WgKam5ge5c?=
- =?us-ascii?Q?Nxa51KnSJxnebHPLbAu7eKLbEdQA+PIYJi4fllhWywCIyM44CbGEid94nxuc?=
- =?us-ascii?Q?2SwwDgjLshDHKy/JCTcMC9EddfkvXU5BRoNAV/p527/Szwee87dqoqjsc9ee?=
- =?us-ascii?Q?6oBHdNfd76WHa/VqvCDhbtpX5P+HkkCqsK5M3wtgzmBcGMcceQ7Uj7oUdJq3?=
- =?us-ascii?Q?ECn8/FQv4arYXNOgvb6aI8G03y83bnK1nKvc7drZN6uXt8idsZyAEhVICY5E?=
- =?us-ascii?Q?riT/2G/dUK5us9qaGXdbA/7z7UTV0VQhtbb0hq5bM49BREEMUPzwuf1KWMFe?=
- =?us-ascii?Q?Ms4SGvjYi0r8Xm72MEAvkig19v+SRMj4?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9620.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?OoFv3Ipm+oR9uWQUHdHfWKcU/xjQalFGI6lXvOC5tuYwT9xRIhIrOZHCLhQl?=
- =?us-ascii?Q?t+MAntbcUQdgaMQIAmam7TocRl4DL9v+w8ZPDT5i4yKx5r+CTFhpJpw1RZk6?=
- =?us-ascii?Q?INzEdSYS1bqMMpBXS5/kblquTHuwRhFkrTrhjzN3AKPeuIX2SU25dFbI42CY?=
- =?us-ascii?Q?//7sjnsyf9jn/vWvh3oAbYZqpoODadVDci2l2hod0krcTpc2pLSBcZ8MDm+2?=
- =?us-ascii?Q?d15D3bL2JO/moZxL1HHzoAO8+Y87DR3kXtRmHLSqHDvg6F9hQ+BJO+PmY8p+?=
- =?us-ascii?Q?VHrmQhWARyz+AgfuYi96f2X/LQX1G7Uq6XbJ7UKfyZ/gC4+TjzuUIpWBe2EE?=
- =?us-ascii?Q?u8WRf/GUo8JcFSv0g/PS5PC5AkdBmIcHgefu9ZIwnxEQ7t1l2OCoZAZoVM0c?=
- =?us-ascii?Q?NSnwhez3z5uCCHOmCJbZQnLfoE1vkLqkKluAj01aoK5QHWNB2wo64uSe+OsW?=
- =?us-ascii?Q?oxdwZFdynA1418rx+5pf5vJ+UCiB9Bm8j3eDD2NE0A0OFmWFvQBK57Uz3S8C?=
- =?us-ascii?Q?Z4nIswl6nwVM2hKKn5RNEt6XSpf6ipDks8Wv+BwSaqSL/q/VzDNkAMd4D/KY?=
- =?us-ascii?Q?xYXs2Ykvqy4bKdDO1U8Cx4Rbp/c13uRIuuGG2sij+J07y7qlLiQBb5dO/9Z5?=
- =?us-ascii?Q?ZAGoCy1ue/z33gProdn3/6S0ag/8pNi3okT4low7lIekhgmm5S0H3bc2Vagt?=
- =?us-ascii?Q?qFs/+CUfrW6j50XAxKt2aokM5QaR+ScwU1NdLsGjFuEsDnfulsAkowYzm4wy?=
- =?us-ascii?Q?Vv8HgW/g+d/nRuBT/bepNQjoD+R+T06zzTe8R4jGKJXK4gzEBiH4hRSluk5Y?=
- =?us-ascii?Q?oXqb0PJNPQbLhCYcN2ZO38s/BlI0Dc81MEOMGylSq7X27I0d6nR36aGwPIgY?=
- =?us-ascii?Q?eZF+EpI/7gZJaUh8aQAfAPs0jK4AvPYeMPWPQPLqTKHpZCMRsUHw4FBfVx+O?=
- =?us-ascii?Q?Qoivn4N//FZrNdTLO+xLCaj0k5ldKNzgtPKZrwbOP8UnemTpE3/xURd4Ko/z?=
- =?us-ascii?Q?XTKnrkJzYa10U2DBdkmBaZEFnM+ncpxm/K+atLZTBq2zgKRmgjo4CXGlwXgj?=
- =?us-ascii?Q?MyVREpVkw+tfChA0Dtddumlxc9h8pUVbliMl2KW52y2WxqccWpb7CB8kSVgP?=
- =?us-ascii?Q?DCFeVM+wW0C6vm4ELbO+n+JhqIj6/U+/uK4c3XaNjGG+w9ROJLkiG+wNh+M0?=
- =?us-ascii?Q?OzJQjmVpkszURAZ5sxG4vaoW6eNxL+LoKkz4W25komhFLr1k75jwk3uycyL3?=
- =?us-ascii?Q?irxpVk2vXI370H2jEvk3RFToJ3BVB2dGZysQUf0RlFnozsNv5wF4Lo2N1iHa?=
- =?us-ascii?Q?nXQj923zhv7OKLrUsZD/Jhxz8tYwB4FyFmk30f3oz0lnLKsPF9tCZ2JPTk1E?=
- =?us-ascii?Q?CUhjNz/7DzW/PDvPDxMfUjXrxCXLWucOqHotn8i9BhOdzMJ9q976m4n88giT?=
- =?us-ascii?Q?FaKF4MpCHumr5ELEGEAL8Bs9RUbKlyzZOS1z3QW1eLJbw5VYHlEIEqMBOGl9?=
- =?us-ascii?Q?S5GXOwHnxKAthOtX2qzFdY+hbZk4nIlxgZhsEdtsFa3mWq6/HrDqbzWHKbgu?=
- =?us-ascii?Q?IulZhQ7XT730iHgqvbc=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 37bb874f-4b8a-43d8-a12d-08de3d0e1cf8
-X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9620.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Dec 2025 01:46:36.0119
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ol7HQbzgwAKuSYE1DR2odtmu3ljyONUTc+5O/5/YkPMUf8hkGyQwAPiGWWBXwSi2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7710
+User-Agent: Mozilla Thunderbird
+From: Alexandra Winter <wintera@linux.ibm.com>
+Subject: Re: [syzbot] [smc?] general protection fault in smc_diag_dump_proto
+To: syzbot <syzbot+f69bfae0a4eb29976e44@syzkaller.appspotmail.com>,
+        agordeev@linux.ibm.com, aha310510@gmail.com, alibuda@linux.alibaba.com,
+        davem@davemloft.net, dust.li@linux.alibaba.com, edumazet@google.com,
+        gbayer@linux.ibm.com, guwen@linux.alibaba.com, horms@kernel.org,
+        jaka@linux.ibm.com, julianr@linux.ibm.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org, lizhi.xu@windriver.com,
+        netdev@vger.kernel.org, pabeni@redhat.com, sidraya@linux.ibm.com,
+        syzkaller-bugs@googlegroups.com, tonylu@linux.alibaba.com,
+        wenjia@linux.ibm.com
+References: <6935028e.a70a0220.38f243.0041.GAE@google.com>
+Content-Language: en-US
+In-Reply-To: <6935028e.a70a0220.38f243.0041.GAE@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Ds05PRbPaWBorWsEA3kLnsPCRBwfP2Rx
+X-Proofpoint-ORIG-GUID: WPsxbPA1b4TKEMZDsEZF1cA4MOQllvhN
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjEzMDAyMyBTYWx0ZWRfX/UYwe2kh6Oox
+ RB7owxuW/UOYRDqBly7lMkzcQck9l4xPTlTCsbPJYX5kC0pliKyTr+AoaO+5aaXSKo6yTSoT9pL
+ J09T9c8pqiVRTUAqehH6DxlB3+lkzGOP7byYJhBGYj7q3bb7mV0cxJtwaemjoTUg3HpHriGBDRj
+ LkliBgH95vX3omRHQbBUOLa8zb8T5kDKfsG3lzm4Zwz3eUitLum3fnzslCxXUKS2EHzhXWYP4vU
+ xtgVKlfY97RCyeYyImGOKW7bdwUSGgAgJQbNIhZkAEdAxjMvFhLu0SOJ2iGN4QeXa+oYZ6KRV5c
+ eI5WgCm5kxor8Y7cQLiVD9oZRrLXhBsO0EcFDO0vUy2FKwzayuIzEqJG92fQArFHjl+vE2guyFD
+ D6sAkk4XgKhCEMmiPEVhgc/SJva8Dg==
+X-Authority-Analysis: v=2.4 cv=L/MQguT8 c=1 sm=1 tr=0 ts=69427a44 cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=IkcTkHD0fZMA:10 a=wP3pNCr1ah4A:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=edf1wS77AAAA:8 a=oHvirCaBAAAA:8 a=VnNF1IyMAAAA:8 a=KtLUjaqJyylS1UVrumcA:9
+ a=QEXdDO2ut3YA:10 a=DcSpbTIhAlouE1Uv7lRv:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2025-12-17_01,2025-12-16_05,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 phishscore=0 malwarescore=0 adultscore=0 priorityscore=1501
+ clxscore=1011 lowpriorityscore=0 bulkscore=0 spamscore=0 suspectscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2512130023
 
-On Mon, Dec 08, 2025 at 02:38:44PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+
+
+On 07.12.25 05:29, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
 > 
-> A recent modified struct irdma_alloc_ucontext_resp by adding a member
-> with implicit padding in front of it, changing the ABI in an
-> incompatibible way on all architectures other than m68k, as
-> reported by scripts/check-uapi.sh:
+> commit d324a2ca3f8efd57f5839aa2690554a5cbb3586f
+> Author: Alexandra Winter <wintera@linux.ibm.com>
+> Date:   Thu Sep 18 11:04:50 2025 +0000
+> 
+>     dibs: Register smc as dibs_client
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16d64eb4580000
+> start commit:   dbb9a7ef3478 net: fjes: use ethtool string helpers
+> git tree:       net-next
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=a9d1c42858837b59
+> dashboard link: https://syzkaller.appspot.com/bug?extid=f69bfae0a4eb29976e44
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=178f0d5f980000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10906b40580000
+> 
+> If the result looks correct, please mark the issue as fixed by replying with:
+> 
+> #syz fix: dibs: Register smc as dibs_client
+> 
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-The growth of the structure should be tolerated, that is how the ABI
-is expected to work, though this is wrong and should be fixed while we
-still can.
 
-Applied to for-rc
+Unfortunately, I don't think
+d324a2ca3f8e ("dibs: Register smc as dibs_client")
+has fixed this issue.
 
-Thanks,
-Jason
+Iiuc https://syzkaller.appspot.com/bug?extid=f69bfae0a4eb29976e44 shows an occurrence on
+2025/10/17 13:18 	net-next 	7e0d4c111369
+that code level already contains the bisected commit 7e0d4c111369.
+
+
+Looking at net/smc/af_smc.c:smc_init()
+I think the bisected patch has changed the timing of smc_ism_init() which may have led to the bisect result.
+
+I think the issue may stem from the order of calls in smc_init().
+Especially smc_nl_init(), proto_register(&smc_proto, 1), proto_register(&smc_proto6, 1), sock_register(&smc_sock_family_ops)
+are all being called before:	
+	INIT_HLIST_HEAD(&smc_v4_hashinfo.ht);
+	INIT_HLIST_HEAD(&smc_v6_hashinfo.ht);
+
+I think this can lead to the described "KASAN: null-ptr-deref", when calling smc_diag_handler() while the module is still being initialized.
+I tried to reproduce such a race by calling smc_pnet and 'modprobe -r smc_diag smc'. But I did not hit a KASAN warning with that setting.
+I'll send a patch nevertheless.
+
 
