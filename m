@@ -1,150 +1,170 @@
-Return-Path: <linux-rdma+bounces-15052-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15055-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 051ECCC880F
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Dec 2025 16:39:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 75FB2CC9809
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Dec 2025 21:38:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0C19F30EE128
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Dec 2025 15:35:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6109D300957D
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Dec 2025 20:36:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 426C434D385;
-	Wed, 17 Dec 2025 15:25:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3FF309EE4;
+	Wed, 17 Dec 2025 20:36:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="wyGjkeW5"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Ke+RmEYV"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11010069.outbound.protection.outlook.com [52.101.61.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4763634BA33;
-	Wed, 17 Dec 2025 15:25:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765985153; cv=none; b=OuXw4pETCT6GYSMrfl76ta1MYxZ41Pn4+g8v1PEXGO1DjVb/TrE/CBOb1lKqZuyAd0o5pDdNLPrUMnvpi6U54mUWKhg6/A6oPfjbiE4j7vvHAMs6uCZjOqRd6a5+LRZxNvzkBqxcA/uTL8OoU0nfy0LZHd72R2iPzF+EiGyVBFU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765985153; c=relaxed/simple;
-	bh=JzAqeIxs9Y6eBR9vCupjOxU9CmPAR2zoqEEi7a1kSh0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=au6ahKQGkBZsjP6voMGpkQPrykaVl4u+niZalfFkaK0Q1C3WN95dtVk7aNVIX7vEjkOBBAgYR4yErT+58F04DU4rybdNpoGRRC0YfbNYM91fZNUsv/uDE8R0IbnS29Tb6qwwfUCG6ut2/z/N+kgkMUf8RPQ2Elt1ik2OuPENdvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=wyGjkeW5; arc=none smtp.client-ip=115.124.30.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1765985140; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=cSksazZjc+dILXEOFoB5Haajr6WS5BPannyIPcOlz1I=;
-	b=wyGjkeW58YIAmWEsdkLAApd7R+aVzlCC9yeeur2y54vS/kztINU9Sa640530Bn3G6y2KT7wn+U0YW90ctUadnKS+ZRn5bizEY7NSHeKp0hrHUhwAUl4KBln8mBoo71gDHG1sBUQ23GUGErgk3oXhLJzaQ0Q1o0WDrx4ov+Ih49k=
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0Wv4AG96_1765985139 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Wed, 17 Dec 2025 23:25:39 +0800
-Date: Wed, 17 Dec 2025 23:25:38 +0800
-From: Dust Li <dust.li@linux.alibaba.com>
-To: Alexandra Winter <wintera@linux.ibm.com>,
-	David Miller <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"D. Wythe" <alibuda@linux.alibaba.com>,
-	Sidraya Jayagond <sidraya@linux.ibm.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>
-Cc: netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-	Aswin Karuvally <aswin@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Simon Horman <horms@kernel.org>,
-	Mahanta Jambigi <mjambigi@linux.ibm.com>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>, linux-rdma@vger.kernel.org,
-	stable@vger.kernel.org,
-	syzbot+f69bfae0a4eb29976e44@syzkaller.appspotmail.com
-Subject: Re: [PATCH net] net/smc: Initialize smc hashtables before
- registering users
-Message-ID: <aULLcudhF10_sZO6@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20251217114819.2725882-1-wintera@linux.ibm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A26DF261B9C;
+	Wed, 17 Dec 2025 20:36:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.69
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1766003814; cv=fail; b=EzXy5zHovGpaXKm1B1BrvJj/lYGBzSAqzicCaKEvB8bUwa7cSKI4uRSj2znNcsegeRj1dyqg3xEwUCDxP62n+CgDeaQR6Ysy+K7+NbzwUABwRBaZ6qUJHfAoLwdrRugZ6Xc/w9rXihdG0xylKePn4VlMvVT/67d2l3N1iqNy+4U=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1766003814; c=relaxed/simple;
+	bh=fF5R+jjfw1a0S76pP3s+AExkbRgtUGbQBNLwjpYasH0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=s1MUxn6ze8o1cuZjFt1B8cJ+g5y+4kUru7FyDEQMk+cCBBHNjOgXYZ829zJStUDPcS9x4H6MELMlU8U96Omv7UMhHTzjD99TlGh8ZrpcKBkCh2rE/vT3HJyDX8d3wa9U6tkJoasakoF1n2n5IbHt1TXjrHdqRcQAQnPyaZrlM2A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Ke+RmEYV; arc=fail smtp.client-ip=52.101.61.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=bgcOntRH/0z20rFRTSaX2Tl1sJG3KzXFi0Mry9hwt7Y0jRplVPjIkSBLFXrGaBx8mZf36JXWCKenHJF7dY1atQrDMOcC5Q979eUXw68b9GVZErYqYt3HNaeBTGit3l8XQR8e3zlNw+3gwS6Rou0cb4rFVuM+eppVDuTlN0FGmg3sgtsLPPLTHRdbSlYQzj2WKQFkMhYF+zVywunuCyb/usz6GNcnhKjmRnb+rMXyF5aqPJQpG0vL3Pkk8DVUSnk2eE3i0If8nNcqas/vpFiVw96uEJhZ6XwF8quTJ2jJSdiZ0N+DiCvuGpgmfr5uV//hxlMTwKCiL2GagsSpAh4NGA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FEx40MIkEUGushvxbP5SF5WbEvi1LhGSMA3zl6AZ/Vo=;
+ b=P7h+6XZfRkmDqO5LbTd2V0yi9TB14rSKeM1ppjqVi6Jyai+kRtDp677drEfi9qRLcIp81iKrNFFXOZKN3RDsjwDRkeJkUWY3kM/6UWdaJDOj/zoygtHIboeMBe7DXABB3cUuHc5YY0pRZYcNbuFRiUQjkcIAGjO1EkVyuWEZiMzUUzUfgp66SdN7wK+xB6+j1HefiGBm+nzYbsnr0E6hbbtManrnm7SfthXztpRII21SVuQsPgZ/X4bTZTH950WUUaX3G7A/UrkcAqkinTIbwJYuZYyhndrCtqyFZnsRLmLVmz63VftiT5dlOPRXCMsIVA9RH+LijOtusqrvG+kagw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FEx40MIkEUGushvxbP5SF5WbEvi1LhGSMA3zl6AZ/Vo=;
+ b=Ke+RmEYVCsVtS0hSV1f5oUZPyo1lPqoTibCIwesyCzl6Uep/CO+BbYJXJ6dd08MTD17wRM330k8Jd2JkHkvQ46BnnoIbG1bEb1DUJE4EaA+aAHB26ky0FCwdnXWdqcroExMYJEEqRP4b969kwI4GB9qgb8cVP5+nVJicNdKl6kKILxHjdt9o5PgyjKjnPx/YnyyM0nzijRuLK+IS2p5Lg9x3IAT8WuQzPic74TS+sQWnbgWrqpxsp6JPKEj7hMjQgy7PRzIOmDP8Ea6va7jB9usLm2T3P7t5SVEpXhgs/e5xnigOn9Uaf6BYUlSrZCWIxDczJYKkyMJHc7lZ3PA3Ag==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19)
+ by DM4PR12MB5819.namprd12.prod.outlook.com (2603:10b6:8:63::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9434.6; Wed, 17 Dec
+ 2025 18:03:34 +0000
+Received: from LV8PR12MB9620.namprd12.prod.outlook.com
+ ([fe80::1b59:c8a2:4c00:8a2c]) by LV8PR12MB9620.namprd12.prod.outlook.com
+ ([fe80::1b59:c8a2:4c00:8a2c%3]) with mapi id 15.20.9434.001; Wed, 17 Dec 2025
+ 18:03:34 +0000
+Date: Wed, 17 Dec 2025 14:03:33 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Konstantin Taranov <kotaranov@linux.microsoft.com>
+Cc: kotaranov@microsoft.com, shirazsaleem@microsoft.com,
+	longli@microsoft.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH rdma-next] RDMA/mana_ib: check cqe length for kernel CQs
+Message-ID: <20251217180333.GA211693@nvidia.com>
+References: <1761213780-5457-1-git-send-email-kotaranov@linux.microsoft.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1761213780-5457-1-git-send-email-kotaranov@linux.microsoft.com>
+X-ClientProxiedBy: BL0PR05CA0013.namprd05.prod.outlook.com
+ (2603:10b6:208:91::23) To LV8PR12MB9620.namprd12.prod.outlook.com
+ (2603:10b6:408:2a1::19)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251217114819.2725882-1-wintera@linux.ibm.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV8PR12MB9620:EE_|DM4PR12MB5819:EE_
+X-MS-Office365-Filtering-Correlation-Id: 84d08811-b6cd-4036-3b95-08de3d9697f4
+X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info:
+ =?us-ascii?Q?Z1HcsLaFCDe3cu2o/YRuTVkEDZ3WijOAzYVNW/XWxrq8s6rLlLyr9WWNDa7I?=
+ =?us-ascii?Q?tgeyEcnraIDX22f+eIf2cwZae2NVn+C4qfqOwum03FVdcgt4oPNdr2O4bVse?=
+ =?us-ascii?Q?EXPYpuwjiqPuhNTAFSQ+USOSaIJG23mD27+3A9ZB0qgcEhAJwrvoEM3cT44b?=
+ =?us-ascii?Q?mWcOLwXfghtKAfgK820OUGJNFXIdIzkx3xkMnqZX5nLGQiu59Ev8qK7Bc0gZ?=
+ =?us-ascii?Q?sU+xuQ470MihKaOK5MdKnVCY69b1nL6xjzbYb96I2rHEB9Cz7uITiviHMVS2?=
+ =?us-ascii?Q?w1VAAVbX7X8gVIZUoQxqLsvqFc4Jn7m3QydRu1PMF5Xgc5yTeAzyO34tYonl?=
+ =?us-ascii?Q?4VxiFuBflVOY0bXO52ZkM61+XiE1IGlDM75nGZEVvMwFNW0cjPq//nM1vV3E?=
+ =?us-ascii?Q?Pc2HKoPgfcvPrv66G1TKopbOSagCcQPhsohCJmLL5WMSts012fIiTwUbULCD?=
+ =?us-ascii?Q?vjRzXiJSlDN2RtxFWe5faCdmtgJsxaxVTD54xNo+Jiens3nWa3PNv1bwZdkm?=
+ =?us-ascii?Q?1vLlYgZyjLnfslPjoA6oysVB2gIPd16swtGLc8hnMlK+BH49ByXYK9B/7ci6?=
+ =?us-ascii?Q?tIPX4s/n6vco5DoLd3xf37/wrTEMVgFXLFUmo+hB5UR+GY9llsNj9hSquRS9?=
+ =?us-ascii?Q?ZovmqScGlsxuiskO3BO9nIkQeeZTizm8PUN7I6quWo++hANIKSuWu/8hMI43?=
+ =?us-ascii?Q?Scn4S9VP3X3v3l5MztZO6adkZDBSlPAXaCgahILflML80SfAEONDLPj9rNLp?=
+ =?us-ascii?Q?+3fv/lGBOtM2BOvWhNKaGUE795p0LF9vb3/AdLYLZ5yPGFSkMdpLoimlvIHO?=
+ =?us-ascii?Q?fSmur7fwUfevMpu+Af6fJZ6xF+RUDTVc4bl3+dso2Z1DQvmf8OIgWRWRUf/k?=
+ =?us-ascii?Q?ZcPLdFLbvGrMFoFiLgZoOU0gn05myDDm7IvjwDMK0+hGqissU7i6DABITJMN?=
+ =?us-ascii?Q?OYuIWRR/IwJVpfan/CImEXQRKY7fc6kfr6Cw13aogCK1Sh+WqLot3XgW+3oI?=
+ =?us-ascii?Q?Fwk0ilf9awSYGfaLIiUkuOyISsSa0tcFCQr9DpCJGY0zooIkg6CZn4E0kFno?=
+ =?us-ascii?Q?sXNk/mDj4awX57McNuSsdx7vjkm34dqTx46PaHWTFAaXB+j/plr4aoQIxvSE?=
+ =?us-ascii?Q?chajE943XNFs1dsxsKXEJXIAd3iUooedZ9FIjc0kSYCecH7myzJd8Npxbtgi?=
+ =?us-ascii?Q?yYnHGJX0ncQ9/BKEUB9PFfnKaaC71XW1iPhEsg6EHMw6E8NMu9kzqFvl1f7Q?=
+ =?us-ascii?Q?ViNXfMJy+74vmMrx0wNUHK8txnw8VHBl7ywmEmoPXbM8bDI/iKlFPy0d1NuO?=
+ =?us-ascii?Q?louDaTWdJ2KLuLHEZgCoK+XkbhWE7KWq2XLByLJShQr736/mIUbWEL6AWfOg?=
+ =?us-ascii?Q?xxcln2g8Qahf54Dx4ib4rnJTKeU3ziZ+xPSp2Fw+8f0MuDIYQtIxqZt97Fkl?=
+ =?us-ascii?Q?SqQZVTXaZ8pKXQjvfPCRBv6MhUpk3r/P?=
+X-Forefront-Antispam-Report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9620.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+ =?us-ascii?Q?qEub6KYV2cD1pvsuBmujXKgK5bflZUAZRW/dpuapgZ0zHSZeFkNgMDUKLvre?=
+ =?us-ascii?Q?8xoKlVfSgpPxHqG0gWlgpsEdkA99ckEFywA1PNaEYT4fSnfZ962QJCyx+gO4?=
+ =?us-ascii?Q?jnINoBoYpCtqesPj0Io0Mi++tizr5/e4bAKBiktuSuthXXrDsi7bIdUEIMdF?=
+ =?us-ascii?Q?Hrh2qcCjdPRt6h6U3fhhTQaiP04WsCzMbpQNyf6DiYTJeHIuTa3KrRtpFjqF?=
+ =?us-ascii?Q?nQHVutUZDeYxTf0XVbvU1ax+hvF4se1/WtDkNnthV4Zfo+tF9akVyzrL1NIf?=
+ =?us-ascii?Q?ei99KAftKLR7Ti+zsBjQUOhvwK3ccym6t4ftORx5oX69pHmK7jap9cbO40xO?=
+ =?us-ascii?Q?h7pi7zopZWUMKB8nRAJZxGuZu6JIX8vMPyIodmNL0pcSX1gyJRvQezlWnUDu?=
+ =?us-ascii?Q?+RzTIgpMpqoUDD0msfltiWb2F7rq4AuXhjQvQdwGLiw+1kgLe++7up5MH6Ga?=
+ =?us-ascii?Q?PKfq7WlTpRNI4lOuhudRSP4l6YtEvKJh38cVRXlZFI2FCLcLj5o987h27GmG?=
+ =?us-ascii?Q?vp0S0ew4fFoQRVQ/eUHN0ZS5RK0aoTMNljISlrLbUYZrANVDisZvi/ZwTIsF?=
+ =?us-ascii?Q?g5MIMaDuOAuuSnolA7lveQ+DkFTT/b12ztZDjb9aQp8XCgaAFReUwuFoD+7w?=
+ =?us-ascii?Q?S/ywBxOMsUcw1xJqcdvZY5TG/eYiZGyfeapyZu2MSBhg7tmwmaeAKrQm5i4Z?=
+ =?us-ascii?Q?znZ/7v1IdQI4xfouPBJZjDDqt31PTUWJOt+j9HFh3MuLNq3Iuyh9KXOopweC?=
+ =?us-ascii?Q?b10aaXyhu4c53jyq78Hhi+pX2jGfw3aP50nbZdhubHdkIbOVI/zyw6TigoS8?=
+ =?us-ascii?Q?5ZBpw2c4bLTyPDTYQ13EhnrCKqL9Re8RSwT058Je4nx1SQjQGiaWV1JFIXmn?=
+ =?us-ascii?Q?AqaQw1rfYA2CQ7gszTvEFxDono6R+JXUiqLiFDNAyVyY3wUbkgzHPZQkW/q+?=
+ =?us-ascii?Q?6ifRjT+R0dafmhF8BX/Z0S7aiktdYVj7OM63s/lXRluXfmkRK4UCga/2Ah9x?=
+ =?us-ascii?Q?G1eunFfpFrdBf/hf//KWtS0oNahyRNFd7IBOOPIbSlXV44Pj7mBctIwwEodx?=
+ =?us-ascii?Q?CH8ggj7cU1QYq9hVfYRoxXGMMMGb3TUNOSE1T2/RVRtuACAeKMcTFh+vQNx6?=
+ =?us-ascii?Q?ok08JCdPY3ko/M/9V1WVqwxJgNNEcrPHTM4fMR3Z9swHBM9f6Am0QABJUFij?=
+ =?us-ascii?Q?opkMNRaAOV/ZfQBqOzDLyCuUFcVYUMzFCJXabGD0g+ij0TFqeyTUHtU0VtGE?=
+ =?us-ascii?Q?htbPF47c9zQBjcyS+6aW2HqdH9ELBQjnnVWP4/nlXHx99inLLKbBnygL8T05?=
+ =?us-ascii?Q?r1V7mrOxKKjtkr5A99iFCtEQJ3RHxfZ1pVhD5YIwCFherW1c77nzwf8sYfBC?=
+ =?us-ascii?Q?cyBmR1cG6j+uaMzOy6Qm/Eq12FDx+cocQJQ7nzUshqCz6MSDE97lNI4TCaBx?=
+ =?us-ascii?Q?3ZjI/mT3YnmGb9OjHRyumJeEpnLtZEJJJB4i6WDVxkJN6xe1SmA4MUgE0L26?=
+ =?us-ascii?Q?i1+eewupwksXBAuIydCojVflw0Mrddo/JTyoVKLf0ww4EAiosHunVBJta3+d?=
+ =?us-ascii?Q?lQ3h8HcKMXk1AHw09Pc=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 84d08811-b6cd-4036-3b95-08de3d9697f4
+X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9620.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Dec 2025 18:03:34.4170
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ino15w3r+DaxvRyKD/q/nrpJL65DGOKJwwdYPTwCuHvNmy7WVWrB4gw8G9wYXn2c
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5819
 
-On 2025-12-17 12:48:19, Alexandra Winter wrote:
->During initialisation of the SMC module initialize smc_v4/6_hashinfo before
->calling smc_nl_init(), proto_register() or sock_register(), to avoid a race
->that can cause use of an uninitialised pointer in case an smc protocol is
->called before the module is done initialising.
->
->syzbot report:
->KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
->Call Trace:
-> <TASK>
-> smc_diag_dump+0x59/0xa0 net/smc/smc_diag.c:236
-> netlink_dump+0x647/0xd80 net/netlink/af_netlink.c:2325
-> __netlink_dump_start+0x59f/0x780 net/netlink/af_netlink.c:2440
-> netlink_dump_start include/linux/netlink.h:339 [inline]
-> smc_diag_handler_dump+0x1ab/0x250 net/smc/smc_diag.c:251
-> sock_diag_rcv_msg+0x3dc/0x5f0
-> netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2550
-> netlink_unicast_kernel net/netlink/af_netlink.c:1331 [inline]
-> netlink_unicast+0x7f0/0x990 net/netlink/af_netlink.c:1357
-> netlink_sendmsg+0x8e4/0xcb0 net/netlink/af_netlink.c:1901
-
-
-I don't think this is related to smc_nl_init().
-
-Here the calltrace is smc_diag_dump(), which was registered in
-sock_diag_register(&smc_diag_handler).
-
-But smc_nl_init() is registering the general netlink in SMC,
-which is unrelated to smc_diag_dump().
-
-I think the root cause should be related to the initializing between
-smc_diag.ko and smc_v4/6_hashinfo.ht.
-The change in your previous patch 'dibs: Register smc as dibs_client'
-may change the possiblity to this bug.
-
-Best regards,
-Dust
-
->
->Fixes: f16a7dd5cf27 ("smc: netlink interface for SMC sockets")
->Reported-by: syzbot+f69bfae0a4eb29976e44@syzkaller.appspotmail.com
->Closes: https://syzkaller.appspot.com/bug?extid=f69bfae0a4eb29976e44
->Signed-off-by: Alexandra Winter <wintera@linux.ibm.com>
->---
-> net/smc/af_smc.c | 5 +++--
-> 1 file changed, 3 insertions(+), 2 deletions(-)
->
->diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
->index f97f77b041d9..b0f4405fb714 100644
->--- a/net/smc/af_smc.c
->+++ b/net/smc/af_smc.c
->@@ -3524,6 +3524,9 @@ static int __init smc_init(void)
-> 		goto out_pernet_subsys_stat;
-> 	smc_clc_init();
+On Thu, Oct 23, 2025 at 03:03:00AM -0700, Konstantin Taranov wrote:
+> From: Konstantin Taranov <kotaranov@microsoft.com>
 > 
->+	INIT_HLIST_HEAD(&smc_v4_hashinfo.ht);
->+	INIT_HLIST_HEAD(&smc_v6_hashinfo.ht);
->+
-> 	rc = smc_nl_init();
-> 	if (rc)
-> 		goto out_ism;
->@@ -3581,8 +3584,6 @@ static int __init smc_init(void)
-> 		pr_err("%s: sock_register fails with %d\n", __func__, rc);
-> 		goto out_proto6;
-> 	}
->-	INIT_HLIST_HEAD(&smc_v4_hashinfo.ht);
->-	INIT_HLIST_HEAD(&smc_v6_hashinfo.ht);
+> Check queue size during kernel CQ creation to prevent overflow of u32.
 > 
-> 	rc = smc_ib_register_client();
-> 	if (rc) {
->-- 
->2.51.0
+> Fixes: bec127e45d9f ("RDMA/mana_ib: create kernel-level CQs")
+> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+> Reviewed-by: Long Li <longli@microsoft.com>
+> ---
+>  drivers/infiniband/hw/mana/cq.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+
+Applied to for-rc, thanks
+
+Jason
 
