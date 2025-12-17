@@ -1,183 +1,229 @@
-Return-Path: <linux-rdma+bounces-15047-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15048-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8467FCC76E9
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Dec 2025 12:50:59 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8CC5CC80D4
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Dec 2025 15:02:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7C054303ADE0
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Dec 2025 11:48:37 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 685D130049DB
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Dec 2025 14:02:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D29335BC1;
-	Wed, 17 Dec 2025 11:48:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F4B0364021;
+	Wed, 17 Dec 2025 13:43:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Qpi3GS4E"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ybi8bsTq";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nj/6g9vP";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rWXg37lE";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yELPvp4G"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0F5E1F1302;
-	Wed, 17 Dec 2025 11:48:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AA0C366577
+	for <linux-rdma@vger.kernel.org>; Wed, 17 Dec 2025 13:43:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765972115; cv=none; b=SxzGmOAd2SzFvnjKnzK57iVLF+6lkf7zImgBDfk5dd3r9Kt2Y4BxIYrW956kQP6v6ctuHU+33Bi04ONvrhUL4cbCWBv8epbNBjsjGrznJGqcnGL1KEDrROq2zt0XG7VbZGJ6CmisMeAZK0adbrtc9+55ZjEyB7SB810N5DWVFI8=
+	t=1765978995; cv=none; b=qH71npaQMem/OMWexr0SGz014VPJWIShBLkPnGWTKk2SAi8/sY1sJGe7DXTGTjMYznLyLPwyPCuYk1cXD6Wqe6uaKIGLynzW+AiF6KTUAV8VPbmqAxsp9mSDkAXgAnvDtL88W41uxSUIP8/cWOZtcpep59kEj5t/CWn4ayne+8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765972115; c=relaxed/simple;
-	bh=2gF72S1YLF3R0pNhYu2u8i+yPBENIA+GEOWOho3xa6M=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aHfm8K83tGZpLqIH5kfNcOFqcLsK2Pz2KCZxB8cLhvuyimfvxVNSh6GDnol+ZnSyw5/kXRTKd/xlybedlXo7XiDpheTgOx2I8SQoMyPrmPZPSL2+5awjHJPpPMYTLK6b5SYM6Ti91O3VJo0eZAKKVuc/WmO5JLvqSfWvT62DWKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Qpi3GS4E; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5BGMx3BU018905;
-	Wed, 17 Dec 2025 11:48:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=pp1; bh=KozKZunQQa2HBaHNYq0kwwfVjsx26Yt4esz51T3RU
-	84=; b=Qpi3GS4E53qmdEgkecfGhiMLTRVIdO3rNEmgJu5Qa39lf0mfik8/InV8G
-	JkbUsiA4a9MnmoeQ7UXYmztlI2Ln9PvponlOr9chfACXHdusQP5XvlWO30zOqW6O
-	j08J2M3yaV04A+aA6FLMIAxt0NwGrIQ1E2HmnBtA2AYxcuSJrtWLeFaXnaGdzPbZ
-	tuHzwf4oNWH4NHTSRzFOwjBj1iQHe7cY+lc2ETzrM8aFMnMwHkegS9AMnsw3wdKt
-	vF4AHjzmRgAKRuDMVUV4nh/XgDTW1/6Y6ucR6NHeZL58Xjf2gW0NWkt4k1KnzGs1
-	Ha6fETlVpOOsXY3OJS8m6l3Bsy4dQ==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4b0wjq444t-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Dec 2025 11:48:25 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.1.12/8.18.0.8) with ESMTP id 5BHBmPu7021915;
-	Wed, 17 Dec 2025 11:48:25 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4b0wjq444r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Dec 2025 11:48:24 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5BH8N1Y6005690;
-	Wed, 17 Dec 2025 11:48:24 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4b1tgp0mj0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Dec 2025 11:48:23 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 5BHBmJKE11731368
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 17 Dec 2025 11:48:20 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DD4F12004E;
-	Wed, 17 Dec 2025 11:48:19 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C87DB2004D;
-	Wed, 17 Dec 2025 11:48:19 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.87.85.9])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 17 Dec 2025 11:48:19 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55271)
-	id 90B12E0B19; Wed, 17 Dec 2025 12:48:19 +0100 (CET)
-From: Alexandra Winter <wintera@linux.ibm.com>
-To: David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>,
-        Andrew Lunn <andrew+netdev@lunn.ch>,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        Dust Li <dust.li@linux.alibaba.com>,
-        Sidraya Jayagond <sidraya@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>
-Cc: netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        Aswin Karuvally <aswin@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>, Simon Horman <horms@kernel.org>,
-        Mahanta Jambigi <mjambigi@linux.ibm.com>,
-        Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>,
-        linux-rdma@vger.kernel.org, stable@vger.kernel.org,
-        syzbot+f69bfae0a4eb29976e44@syzkaller.appspotmail.com
-Subject: [PATCH net] net/smc: Initialize smc hashtables before registering users
-Date: Wed, 17 Dec 2025 12:48:19 +0100
-Message-ID: <20251217114819.2725882-1-wintera@linux.ibm.com>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1765978995; c=relaxed/simple;
+	bh=dfCzW7+MZOL3fC2W2UmAlhv69wpX6UTEOMs9QwGAy4s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pnOGrm2omD8wklsaijPt9mWmhpS2Nq5B6c7VEih8Ur5vcR+wuTuKR+00pXmD3jM1dOppln8z1cMZ3+X47pLtFu8P+mDmvDZI/g8zVovhv2mUc1sMUw8JOd2QzRx2C5OC1OAcASp0f2XxkrPx86KZOHwY3mC+uMZIW3wbw/A5KuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ybi8bsTq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nj/6g9vP; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rWXg37lE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yELPvp4G; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8CB49336D4;
+	Wed, 17 Dec 2025 13:43:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1765978989; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=FBjgti/w/DVH81mtuH8uFCoRWeqR8Uk0Q5nkCd9uPVk=;
+	b=ybi8bsTqBVfBFrRRaqXh1WLl4CoYZxMnLRfsx+I3W7xFHLx4i51Ca//p9gceFXwDv/QmKH
+	sJxKt7ciGhvdljjfOQLLSaQqugqM7JF+E6xO5dogt0ubffwDjTVM++BuC3V1aH0hZdDJ7Y
+	5t2e1uOSJ9eWE0SIn8e2OPcAVmQ7bJI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1765978989;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=FBjgti/w/DVH81mtuH8uFCoRWeqR8Uk0Q5nkCd9uPVk=;
+	b=nj/6g9vPZvvfB+fVnUCMfyYE2SBKJ2V0mOkoEl2zdMkmENasve3ByMkVULJrggMHDPouEv
+	Gk6mDqcwJBKzc8BQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1765978988; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=FBjgti/w/DVH81mtuH8uFCoRWeqR8Uk0Q5nkCd9uPVk=;
+	b=rWXg37lErWuxpeG/GaZ6hgEWx4/vITQfddnkTCm1nEvvt+LIyGL4fb0k9AWIHLholSFelg
+	2HVpVDXGu6uEYtChiSf5DvoIwsqQik1mjR7qlDj5/IwZidUFASuUSxsFouPNQh235pbr/k
+	8PMWa9d8c4aDs2teCwEINr3pR0icK80=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1765978988;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=FBjgti/w/DVH81mtuH8uFCoRWeqR8Uk0Q5nkCd9uPVk=;
+	b=yELPvp4Gz/ZYabrJ3OiTJPPR6MmiaDtT6CtpAcwdliGWv79/HgYwbv0rOwn1418wLJGlFD
+	QZPXYe68PoSD6lCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 31FE13EA63;
+	Wed, 17 Dec 2025 13:43:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 38axCmyzQmmlYAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 17 Dec 2025 13:43:08 +0000
+Message-ID: <776b0429-d5ae-4b00-ba83-e25f6d877c0a@suse.cz>
+Date: Wed, 17 Dec 2025 14:43:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMjEzMDAwMSBTYWx0ZWRfXxwD6kTJvvUnO
- U5zv0jOFsXg73v8vV/F4bde97bdp1PXZuwGVLkNky6lhjH497SV3G7z30RT7htCy/cu+hjphexu
- xE2QO2RSzZqiqJ/vgMJouyxkFh4UsjOMlcE08nUBkspOD4lFTulWAnt+aMGjFZu1AAeKP1qRGgI
- qD1UK3QzCGI5aAqdqKltypJowU/bFKolmEl23pGr4/pESeEFh3YnOwyxJdP61jlsQf4mSzVI88r
- MwCm5Bw4B+1brEiYovK3JB7QvCd3tvIzeWosJSJ3QxU8FqCoP/C0rybiSFqQUs2p2a+/Q8P6U7b
- RMSYZn33tQYMjdzzBkMuWZTXWHQL8wRXzD9aquYyr01u3PLls83ttwrJfSO7LUPW+sVWrxFtdhs
- eUYOVKUALRlceX6Lg2ci7YxYtpMvzg==
-X-Proofpoint-GUID: fny2lBTx4ZfyHRB8CAoQpTr3_tW8_8H0
-X-Proofpoint-ORIG-GUID: 9J7UBLqWusDpmmmEcrWxT1snfOgcUXHz
-X-Authority-Analysis: v=2.4 cv=Kq5AGGWN c=1 sm=1 tr=0 ts=69429889 cx=c_pps
- a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
- a=wP3pNCr1ah4A:10 a=VkNPw1HP01LnGYTKEx00:22 a=edf1wS77AAAA:8 a=hSkVLCK3AAAA:8
- a=VnNF1IyMAAAA:8 a=QX6q0mGeDEkcqCcECHkA:9 a=DcSpbTIhAlouE1Uv7lRv:22
- a=cQPPKAXgyycSBL8etih5:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-12-17_01,2025-12-16_05,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 malwarescore=0 impostorscore=0 clxscore=1011 spamscore=0
- priorityscore=1501 lowpriorityscore=0 bulkscore=0 phishscore=0 adultscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2510240000 definitions=main-2512130001
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/1] finalize removing the page pool members in struct
+ page
+Content-Language: en-US
+To: Byungchul Park <byungchul@sk.com>, linux-mm@kvack.org,
+ akpm@linux-foundation.org, netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+ harry.yoo@oracle.com, ast@kernel.org, daniel@iogearbox.net,
+ davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+ john.fastabend@gmail.com, sdf@fomichev.me, saeedm@nvidia.com,
+ leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
+ andrew+netdev@lunn.ch, edumazet@google.com, pabeni@redhat.com,
+ david@redhat.com, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+ rppt@kernel.org, surenb@google.com, mhocko@suse.com, horms@kernel.org,
+ jackmanb@google.com, hannes@cmpxchg.org, ziy@nvidia.com,
+ ilias.apalodimas@linaro.org, willy@infradead.org, brauner@kernel.org,
+ kas@kernel.org, yuzhao@google.com, usamaarif642@gmail.com,
+ baolin.wang@linux.alibaba.com, almasrymina@google.com, toke@redhat.com,
+ asml.silence@gmail.com, bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+ sfr@canb.auug.org.au, dw@davidwei.uk, ap420073@gmail.com, dtatulea@nvidia.com
+References: <20251216030314.29728-1-byungchul@sk.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
+ KxRWDHX0R2tgpFDXHnzZcQywawu8eSq0LxzxFNYMvtB7sV1pxYwej2qx9B75qW2plBs+7+YB
+ 87tMFA+u+L4Z5xAzIimfLD5EKC56kJ1CsXlM8S/LHcmdD9Ctkn3trYDNnat0eoAcfPIP2OZ+
+ 9oe9IF/R28zmh0ifLXyJQQz5ofdj4bPf8ecEW0rhcqHfTD8k4yK0xxt3xW+6Exqp9n9bydiy
+ tcSAw/TahjW6yrA+6JhSBv1v2tIm+itQc073zjSX8OFL51qQVzRFr7H2UQG33lw2QrvHRXqD
+ Ot7ViKam7v0Ho9wEWiQOOZlHItOOXFphWb2yq3nzrKe45oWoSgkxKb97MVsQ+q2SYjJRBBH4
+ 8qKhphADYxkIP6yut/eaj9ImvRUZZRi0DTc8xfnvHGTjKbJzC2xpFcY0DQbZzuwsIZ8OPJCc
+ LM4S7mT25NE5kUTG/TKQCk922vRdGVMoLA7dIQrgXnRXtyT61sg8PG4wcfOnuWf8577aXP1x
+ 6mzw3/jh3F+oSBHb/GcLC7mvWreJifUL2gEdssGfXhGWBo6zLS3qhgtwjay0Jl+kza1lo+Cv
+ BB2T79D4WGdDuVa4eOrQ02TxqGN7G0Biz5ZLRSFzQSQwLn8fbwARAQABzSBWbGFzdGltaWwg
+ QmFia2EgPHZiYWJrYUBzdXNlLmN6PsLBlAQTAQoAPgIbAwULCQgHAwUVCgkICwUWAgMBAAIe
+ AQIXgBYhBKlA1DSZLC6OmRA9UCJPp+fMgqZkBQJnyBr8BQka0IFQAAoJECJPp+fMgqZkqmMQ
+ AIbGN95ptUMUvo6aAdhxaOCHXp1DfIBuIOK/zpx8ylY4pOwu3GRe4dQ8u4XS9gaZ96Gj4bC+
+ jwWcSmn+TjtKW3rH1dRKopvC07tSJIGGVyw7ieV/5cbFffA8NL0ILowzVg8w1ipnz1VTkWDr
+ 2zcfslxJsJ6vhXw5/npcY0ldeC1E8f6UUoa4eyoskd70vO0wOAoGd02ZkJoox3F5ODM0kjHu
+ Y97VLOa3GG66lh+ZEelVZEujHfKceCw9G3PMvEzyLFbXvSOigZQMdKzQ8D/OChwqig8wFBmV
+ QCPS4yDdmZP3oeDHRjJ9jvMUKoYODiNKsl2F+xXwyRM2qoKRqFlhCn4usVd1+wmv9iLV8nPs
+ 2Db1ZIa49fJet3Sk3PN4bV1rAPuWvtbuTBN39Q/6MgkLTYHb84HyFKw14Rqe5YorrBLbF3rl
+ M51Dpf6Egu1yTJDHCTEwePWug4XI11FT8lK0LNnHNpbhTCYRjX73iWOnFraJNcURld1jL1nV
+ r/LRD+/e2gNtSTPK0Qkon6HcOBZnxRoqtazTU6YQRmGlT0v+rukj/cn5sToYibWLn+RoV1CE
+ Qj6tApOiHBkpEsCzHGu+iDQ1WT0Idtdynst738f/uCeCMkdRu4WMZjteQaqvARFwCy3P/jpK
+ uvzMtves5HvZw33ZwOtMCgbpce00DaET4y/UzsBNBFsZNTUBCACfQfpSsWJZyi+SHoRdVyX5
+ J6rI7okc4+b571a7RXD5UhS9dlVRVVAtrU9ANSLqPTQKGVxHrqD39XSw8hxK61pw8p90pg4G
+ /N3iuWEvyt+t0SxDDkClnGsDyRhlUyEWYFEoBrrCizbmahOUwqkJbNMfzj5Y7n7OIJOxNRkB
+ IBOjPdF26dMP69BwePQao1M8Acrrex9sAHYjQGyVmReRjVEtv9iG4DoTsnIR3amKVk6si4Ea
+ X/mrapJqSCcBUVYUFH8M7bsm4CSxier5ofy8jTEa/CfvkqpKThTMCQPNZKY7hke5qEq1CBk2
+ wxhX48ZrJEFf1v3NuV3OimgsF2odzieNABEBAAHCwXwEGAEKACYCGwwWIQSpQNQ0mSwujpkQ
+ PVAiT6fnzIKmZAUCZ8gcVAUJFhTonwAKCRAiT6fnzIKmZLY8D/9uo3Ut9yi2YCuASWxr7QQZ
+ lJCViArjymbxYB5NdOeC50/0gnhK4pgdHlE2MdwF6o34x7TPFGpjNFvycZqccSQPJ/gibwNA
+ zx3q9vJT4Vw+YbiyS53iSBLXMweeVV1Jd9IjAoL+EqB0cbxoFXvnjkvP1foiiF5r73jCd4PR
+ rD+GoX5BZ7AZmFYmuJYBm28STM2NA6LhT0X+2su16f/HtummENKcMwom0hNu3MBNPUOrujtW
+ khQrWcJNAAsy4yMoJ2Lw51T/5X5Hc7jQ9da9fyqu+phqlVtn70qpPvgWy4HRhr25fCAEXZDp
+ xG4RNmTm+pqorHOqhBkI7wA7P/nyPo7ZEc3L+ZkQ37u0nlOyrjbNUniPGxPxv1imVq8IyycG
+ AN5FaFxtiELK22gvudghLJaDiRBhn8/AhXc642/Z/yIpizE2xG4KU4AXzb6C+o7LX/WmmsWP
+ Ly6jamSg6tvrdo4/e87lUedEqCtrp2o1xpn5zongf6cQkaLZKQcBQnPmgHO5OG8+50u88D9I
+ rywqgzTUhHFKKF6/9L/lYtrNcHU8Z6Y4Ju/MLUiNYkmtrGIMnkjKCiRqlRrZE/v5YFHbayRD
+ dJKXobXTtCBYpLJM4ZYRpGZXne/FAtWNe4KbNJJqxMvrTOrnIatPj8NhBVI0RSJRsbilh6TE
+ m6M14QORSWTLRg==
+In-Reply-To: <20251216030314.29728-1-byungchul@sk.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[47];
+	TAGGED_RCPT(0.00)[netdev];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RLu874uidxseximu1chzy6dbs4)];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,skhynix.com,oracle.com,kernel.org,iogearbox.net,davemloft.net,gmail.com,fomichev.me,nvidia.com,lunn.ch,google.com,redhat.com,suse.com,cmpxchg.org,linaro.org,infradead.org,linux.alibaba.com,canb.auug.org.au,davidwei.uk];
+	RCVD_TLS_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:mid]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
 
-During initialisation of the SMC module initialize smc_v4/6_hashinfo before
-calling smc_nl_init(), proto_register() or sock_register(), to avoid a race
-that can cause use of an uninitialised pointer in case an smc protocol is
-called before the module is done initialising.
+On 12/16/25 04:03, Byungchul Park wrote:
+> Since this patch requires to use newly introduced APIs in net tree, I've
+> been waiting for those to be ready in mm tree.  Now that mm tree has
+> been rebased so as to include the APIs, this patch can be merged to mm
+> tree.
+> 
+> This patch has been carried out in a separate thread so far for the
+> reviews [1]:
+> 
+>  [1] https://lore.kernel.org/all/20251119012709.35895-1-byungchul@sk.com/
+> ---
+> Changes from v1:
+> 	1. Drop the finalizing patch removing the pp fields of struct
+> 	   page since I found that there is still code accessing a pp
+> 	   field via struct page.  I will retry the finalizing patch
+> 	   after resolving the issue.
 
-syzbot report:
-KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-Call Trace:
- <TASK>
- smc_diag_dump+0x59/0xa0 net/smc/smc_diag.c:236
- netlink_dump+0x647/0xd80 net/netlink/af_netlink.c:2325
- __netlink_dump_start+0x59f/0x780 net/netlink/af_netlink.c:2440
- netlink_dump_start include/linux/netlink.h:339 [inline]
- smc_diag_handler_dump+0x1ab/0x250 net/smc/smc_diag.c:251
- sock_diag_rcv_msg+0x3dc/0x5f0
- netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2550
- netlink_unicast_kernel net/netlink/af_netlink.c:1331 [inline]
- netlink_unicast+0x7f0/0x990 net/netlink/af_netlink.c:1357
- netlink_sendmsg+0x8e4/0xcb0 net/netlink/af_netlink.c:1901
+Could we just make that necessary change of
+drivers/net/ethernet/intel/ice/ice_ethtool.c part of this series and do it
+all at once? We're changing both mm and net anyway.
 
-Fixes: f16a7dd5cf27 ("smc: netlink interface for SMC sockets")
-Reported-by: syzbot+f69bfae0a4eb29976e44@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=f69bfae0a4eb29976e44
-Signed-off-by: Alexandra Winter <wintera@linux.ibm.com>
----
- net/smc/af_smc.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Also which tree will carry the series? I assume net will want to, as the
+changes are mostly there?
 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index f97f77b041d9..b0f4405fb714 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -3524,6 +3524,9 @@ static int __init smc_init(void)
- 		goto out_pernet_subsys_stat;
- 	smc_clc_init();
- 
-+	INIT_HLIST_HEAD(&smc_v4_hashinfo.ht);
-+	INIT_HLIST_HEAD(&smc_v6_hashinfo.ht);
-+
- 	rc = smc_nl_init();
- 	if (rc)
- 		goto out_ism;
-@@ -3581,8 +3584,6 @@ static int __init smc_init(void)
- 		pr_err("%s: sock_register fails with %d\n", __func__, rc);
- 		goto out_proto6;
- 	}
--	INIT_HLIST_HEAD(&smc_v4_hashinfo.ht);
--	INIT_HLIST_HEAD(&smc_v6_hashinfo.ht);
- 
- 	rc = smc_ib_register_client();
- 	if (rc) {
--- 
-2.51.0
+> ---
+> Byungchul Park (1):
+>   mm: introduce a new page type for page pool in page type
+> 
+>  .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  2 +-
+>  include/linux/mm.h                            | 27 +++----------------
+>  include/linux/page-flags.h                    |  6 +++++
+>  include/net/netmem.h                          | 15 +++++++++--
+>  mm/page_alloc.c                               | 11 +++++---
+>  net/core/netmem_priv.h                        | 20 +++++---------
+>  net/core/page_pool.c                          | 18 +++++++++++--
+>  7 files changed, 53 insertions(+), 46 deletions(-)
+> 
+> 
+> base-commit: d0a24447990a9d8212bfb3a692d59efa74ce9f86
 
 
