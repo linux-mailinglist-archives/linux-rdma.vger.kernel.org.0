@@ -1,109 +1,127 @@
-Return-Path: <linux-rdma+bounces-15068-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15069-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94B2CCCBEB7
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 14:07:27 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id B591ECCBF3F
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 14:17:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8282B3028F68
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 13:03:30 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id BDC9A301D336
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 13:17:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE02733B6DE;
-	Thu, 18 Dec 2025 13:03:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A8B933D6CB;
+	Thu, 18 Dec 2025 13:11:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dy+80sNE"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="auh/lOWZ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72BB82F83A2;
-	Thu, 18 Dec 2025 13:03:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0281B33D4ED;
+	Thu, 18 Dec 2025 13:11:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766063008; cv=none; b=IreT1eqNcK4Pk0PR+gSCwoBD1uRZ0iyWvNcSLMH5v/k2CEdm3/B0KZOKeSaw3gjWVrSnsSViXUt2wpsi1FZO3+aeOoZOGHFKPUDKHxcRScml3PlRSJEi6wy2FVk4ZDNIufp1bDB0iyHU0JhqGAWAKAsWcmwzmdDL4R4s20Kum94=
+	t=1766063465; cv=none; b=kbZ0C7HJ40Zrx0A5k8HKxQpTc3t60wsekBH8jztlC5JSIVu2/1uMD5er98+zojEinCu+8y0z3n0qyAnpyWMuIA7N8ilq0bI3+QtCupuKVb19Pmx38J5KQIIrCIiJUQTcvDJfrpCBYCI6JD4eJ/VayffGeuIfFjQeTQ5DVnoj1F4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766063008; c=relaxed/simple;
-	bh=VcQ8jEwxhX+R8hvX60yLjPYpobh9R0jIbJidY5mkfeU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=tsud7UEpgcAX+lvW6mROfLCjQb0hoUsm5zz60ZkQcI6a+LPKWNIHxjT1IOHXPPDhRjZXZIjsDXnuit56Y7UvGYNReZfhQRx6Vca0393H+fJZydgPuyIqBg+cZ0D2E0Q+Vqby4ILouWAbQuUbzkCH5UOWJjHUbM5DNKA9UoFHkOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dy+80sNE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45C1DC4CEFB;
-	Thu, 18 Dec 2025 13:03:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766063008;
-	bh=VcQ8jEwxhX+R8hvX60yLjPYpobh9R0jIbJidY5mkfeU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=dy+80sNEV1BVFS50koXGFZ993SJTn6B3D/KMbzAw21TnlCWEgsUjlyJApOSaH0QX8
-	 LuuW16+uuXPygjy16V1RF5oJNGaEE8XBQ5hyafYvaPcVUUWmabH6rgNp5/OtH38SG3
-	 CPsEwbaduXBv4Einfj7ZwzSPWBYzLv1harepL2nE9aIO6+vYVfsPLbOwiJGxPRz6c9
-	 3dL7TvQ9fl2UmUW/p+VQc3NMrrKUb1IT9+gIhH31WcQr2CqplOezrBvIM8OYGKhZM2
-	 96hJr2ErHWY3Ukfbn1nDNdj2Pd8mXulTutONIv8lPLAftVnKROUhzwQA+kjbonsK6C
-	 B/cMlOahuEVjA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id F2AD0380A955;
-	Thu, 18 Dec 2025 13:00:18 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1766063465; c=relaxed/simple;
+	bh=9uyvVoAwaaSXEm/9xYmGIpt0UEUWAvZjSJaIIGtK1HA=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=PGImaAJKA+Ip/C0RMoanL/OVitCz1gVwA9erZ/zAYIcTxVH23c/K9VPZ8SOOtkEoaYseRBeVFREJ0sZSqx2Amo9e/BdCeWjzqcw330g85dfOl0C6YfDJOmnDixE/Y3h6msIMclmUndKWzwAW69KDz5QNV7nwxIdy9Ms7OwCury0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=auh/lOWZ; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1204)
+	id 8E7142012434; Thu, 18 Dec 2025 05:10:54 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8E7142012434
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1766063454;
+	bh=TMw9pOTn5uAMLC86wI4i4CWFIVExYXMjnk2FqSE3yTQ=;
+	h=Date:From:To:Subject:From;
+	b=auh/lOWZJw48s3fj389H5MBMpCBhPX40WBAt94f2gxI+CHapw5KantD460lU7gjsv
+	 ie8mt3v/uBZYboYaNJMXF38NDN9CQM9i3+cuyvrMBegZfwWZgrpTg/9YNnfs5gKtaJ
+	 3RxtS4xoCboBUAUj83cZLJaMPhZrUh11vvLFg2k0=
+Date: Thu, 18 Dec 2025 05:10:54 -0800
+From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+To: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
+	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	dipayanroy@microsoft.com
+Subject: [PATCH net, v2] net: mana: Fix use-after-free in reset service
+ rescan path
+Message-ID: <20251218131054.GA3173@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 0/9] mlx5 misc fixes 2025-12-09
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176606281779.2943927.5802057198680861828.git-patchwork-notify@kernel.org>
-Date: Thu, 18 Dec 2025 13:00:17 +0000
-References: <1765284977-1363052-1-git-send-email-tariqt@nvidia.com>
-In-Reply-To: <1765284977-1363052-1-git-send-email-tariqt@nvidia.com>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
- leon@kernel.org, mbloch@nvidia.com, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, gal@nvidia.com,
- moshe@nvidia.com, leitao@debian.org, acassen@corp.free.fr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-Hello:
+When mana_serv_reset() encounters -ETIMEDOUT or -EPROTO from
+mana_gd_resume(), it performs a PCI rescan via mana_serv_rescan().
 
-This series was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+mana_serv_rescan() calls pci_stop_and_remove_bus_device(), which can
+invoke the driver's remove path and free the gdma_context associated
+with the device. After returning, mana_serv_reset() currently jumps to
+the out label and attempts to clear gc->in_service, dereferencing a
+freed gdma_context.
 
-On Tue, 9 Dec 2025 14:56:08 +0200 you wrote:
-> Hi,
-> 
-> This patchset provides misc bug fixes from the team to the mlx5 core and
-> Eth drivers.
-> 
-> Thanks,
-> Tariq.
-> 
-> [...]
+The issue was observed with the following call logs:
+[  698.942636] BUG: unable to handle page fault for address: ff6c2b638088508d
+[  698.943121] #PF: supervisor write access in kernel mode
+[  698.943423] #PF: error_code(0x0002) - not-present page
+[S[  698.943793] Pat Dec  6 07:GD5 100000067 P4D 1002f7067 PUD 1002f8067 PMD 101bef067 PTE 0
+0:56 2025] hv_[n e 698.944283] Oops: Oops: 0002 [#1] SMP NOPTI
+tvsc f8615163-00[  698.944611] CPU: 28 UID: 0 PID: 249 Comm: kworker/28:1
+...
+[Sat Dec  6 07:50:56 2025] R10: [  699.121594] mana 7870:00:00.0 enP30832s1: Configured vPort 0 PD 18 DB 16
+000000000000001b R11: 0000000000000000 R12: ff44cf3f40270000
+[Sat Dec  6 07:50:56 2025] R13: 0000000000000001 R14: ff44cf3f402700c8 R15: ff44cf3f4021b405
+[Sat Dec  6 07:50:56 2025] FS:  0000000000000000(0000) GS:ff44cf7e9fcf9000(0000) knlGS:0000000000000000
+[Sat Dec  6 07:50:56 2025] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[Sat Dec  6 07:50:56 2025] CR2: ff6c2b638088508d CR3: 000000011fe43001 CR4: 0000000000b73ef0
+[Sat Dec  6 07:50:56 2025] Call Trace:
+[Sat Dec  6 07:50:56 2025]  <TASK>
+[Sat Dec  6 07:50:56 2025]  mana_serv_func+0x24/0x50 [mana]
+[Sat Dec  6 07:50:56 2025]  process_one_work+0x190/0x350
+[Sat Dec  6 07:50:56 2025]  worker_thread+0x2b7/0x3d0
+[Sat Dec  6 07:50:56 2025]  kthread+0xf3/0x200
+[Sat Dec  6 07:50:56 2025]  ? __pfx_worker_thread+0x10/0x10
+[Sat Dec  6 07:50:56 2025]  ? __pfx_kthread+0x10/0x10
+[Sat Dec  6 07:50:56 2025]  ret_from_fork+0x21a/0x250
+[Sat Dec  6 07:50:56 2025]  ? __pfx_kthread+0x10/0x10
+[Sat Dec  6 07:50:56 2025]  ret_from_fork_asm+0x1a/0x30
+[Sat Dec  6 07:50:56 2025]  </TASK>
 
-Here is the summary with links:
-  - [net,1/9] net/mlx5: fw reset, clear reset requested on drain_fw_reset
-    https://git.kernel.org/netdev/net/c/89a898d63f6f
-  - [net,2/9] net/mlx5: Drain firmware reset in shutdown callback
-    https://git.kernel.org/netdev/net/c/5846a365fc64
-  - [net,3/9] net/mlx5: fw_tracer, Validate format string parameters
-    https://git.kernel.org/netdev/net/c/b35966042d20
-  - [net,4/9] net/mlx5: fw_tracer, Handle escaped percent properly
-    https://git.kernel.org/netdev/net/c/c0289f67f7d6
-  - [net,5/9] net/mlx5: Serialize firmware reset with devlink
-    https://git.kernel.org/netdev/net/c/367e501f8b09
-  - [net,6/9] net/mlx5e: Use ip6_dst_lookup instead of ipv6_dst_lookup_flow for MAC init
-    https://git.kernel.org/netdev/net/c/e35d7da8dd9e
-  - [net,7/9] net/mlx5e: Trigger neighbor resolution for unresolved destinations
-    https://git.kernel.org/netdev/net/c/9ab89bde13e5
-  - [net,8/9] net/mlx5e: Do not update BQL of old txqs during channel reconfiguration
-    https://git.kernel.org/netdev/net/c/c8591decd9db
-  - [net,9/9] net/mlx5e: Don't include PSP in the hard MTU calculations
-    https://git.kernel.org/netdev/net/c/4198a14c8c62
+Fix this by returning immediately after mana_serv_rescan() to avoid
+accessing GC state that may no longer be valid.
 
-You are awesome, thank you!
+Fixes: 9bf66036d686 ("net: mana: Handle hardware recovery events when probing the device")
+Reviewed-by: Simon Horman <horms@kernel.org>
+Reviewed-by: Long Li <longli@microsoft.com>
+Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+---
+ drivers/net/ethernet/microsoft/mana/gdma_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index efb4e412ec7e..0055c231acf6 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -481,7 +481,7 @@ static void mana_serv_reset(struct pci_dev *pdev)
+ 		/* Perform PCI rescan on device if we failed on HWC */
+ 		dev_err(&pdev->dev, "MANA service: resume failed, rescanning\n");
+ 		mana_serv_rescan(pdev);
+-		goto out;
++		return;
+ 	}
+ 
+ 	if (ret)
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.1
 
 
