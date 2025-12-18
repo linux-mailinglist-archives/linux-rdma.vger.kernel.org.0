@@ -1,115 +1,109 @@
-Return-Path: <linux-rdma+bounces-15067-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15068-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50C1CCCB8E6
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 12:11:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 94B2CCCBEB7
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 14:07:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EE3B630F9D51
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 11:06:54 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8282B3028F68
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 13:03:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 508B531A805;
-	Thu, 18 Dec 2025 11:06:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE02733B6DE;
+	Thu, 18 Dec 2025 13:03:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="R1rStvbO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dy+80sNE"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB369318146
-	for <linux-rdma@vger.kernel.org>; Thu, 18 Dec 2025 11:06:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72BB82F83A2;
+	Thu, 18 Dec 2025 13:03:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766055994; cv=none; b=VjeuIA2X95DYun7LWG5asgKq0BLDWym42/xKeEUL0HY7P3PKUPF8HBnQ1hCebKCKbNshLYXabITmGMn1tNXH5hj735e7lc6V/Z+GaHl0XTc977XailZWL4yRfuUjJzfuP9YBs48UTnpR9ZcquT4DKGrdBWiD1gPifDeCwIDunRY=
+	t=1766063008; cv=none; b=IreT1eqNcK4Pk0PR+gSCwoBD1uRZ0iyWvNcSLMH5v/k2CEdm3/B0KZOKeSaw3gjWVrSnsSViXUt2wpsi1FZO3+aeOoZOGHFKPUDKHxcRScml3PlRSJEi6wy2FVk4ZDNIufp1bDB0iyHU0JhqGAWAKAsWcmwzmdDL4R4s20Kum94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766055994; c=relaxed/simple;
-	bh=YdmSp98VOpb4w/1T9TrcnGT6vsEQNrGtK2z/qAxMy0I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=n7cpzOwJCrH9xkUZXJI6GrgokjpLGCt0DNy+OGWv2+SG5IfiBOc4gSn+iR+WpKDj5G4qzPhk++acIsglGJYBavaWaCaJ84fozX332mvqML4o5bJFK9/y5iZAl55PVyP/tYrjeTiXGtTpFZyXEUgKJ0GHl9+mPW/5MUNp/p1QYsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=R1rStvbO; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-47a8195e515so4343005e9.0
-        for <linux-rdma@vger.kernel.org>; Thu, 18 Dec 2025 03:06:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1766055989; x=1766660789; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YdmSp98VOpb4w/1T9TrcnGT6vsEQNrGtK2z/qAxMy0I=;
-        b=R1rStvbOQr7NSeZh4jY52XZ9TB7IioGPAQfJaZpIwuJOFmpU/F/IZ95KQ76/zXVMk9
-         7Yxdn2c18SGxPHCmJ3qAOWBmBZdrvEtaFg72nchPjiKuUMs5eK2cMBdNq4w/IOPXCB4v
-         mzVzrkQunocXzAAxtQUu7sH4LwetduVJXUONeSpvVfPRW9lvWUxGfE6FVrFtF3OER0h+
-         Ac0JRvJ5k7blRXFgtXiX7qo9MTGSspytwDOqkc7LV9T2IyXJPbl1wyhAIa31NhUyg5pX
-         yFibzmySo7nPrycOgG1M8g2cyVgNY+ECaSF424ueFbOktrFEabSaExPdH5mBH3yF4XX6
-         UeZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766055989; x=1766660789;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=YdmSp98VOpb4w/1T9TrcnGT6vsEQNrGtK2z/qAxMy0I=;
-        b=Vp15BA7Dhq3glct4WufWh0MOsNVOBOCxK+95jiSXGUsuIBsoqqvHZ88sh2MBKOTtO5
-         U5lVKQfSkXI2Epdg7CPhNFPRivPZYypVDm4mrLPU6TVt928lw6VaYL+Mu2ssq7SX3K91
-         ZwIjB5l5fRnDfZYdBMEipBEVUgDqMu4TCRpwCBpKHunRKps5FIZXxFTA6oL7xrzYxlkB
-         Nn1ad/z3goHH2g1Ghm95cu24/O8nLE/WxyVrMu4PK2ctg4SYzajl/kjj7/Hhjq+ze+lM
-         JmZjxr5xCPhWPT5fCr9OKABNQJvf8z/nnMEoAXpBhGWq98TmEE5QfiaNo2OLpGEMD/Q2
-         mEPA==
-X-Forwarded-Encrypted: i=1; AJvYcCUGpvNmu7mxx9Pqi4UYTEzxddOG2Z6i1WmGbacTN3UAqM4Vii9zXv2hWs2sSCkKicj0n/fOHlqiCJJu@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxq7Tf5+mu14f094Kfvq6pdxd9I7xQDYE+5tnYBuRC8Z8h75IvG
-	O25OJXpoJyk5syibzBKBcmBTcWfEN1WFdXfRy6Js9PvUYDTwx6igmF/A0I3Lw70AYZfBBhpvR9A
-	TfHO5N+7EN4pEo34+N6fOJ7SRq2wxpbHWLfYQnk4l
-X-Gm-Gg: AY/fxX5I3i/NPGdEhvIvOHiq+evIwDMceKI2kKtTegcJDWXXh+D4OSZ+EBX06MbSDRj
-	MbcLpp6pjQsRwk+Vc5BkzqaoFD51/mfIAqamJmIOpxVnvlHfd44Xqn3q+tySOlJAVv53PoLU5D9
-	7aXFyW8PUhQMnEzXyUL68WFMFTmo1w3fU0OXNPw68QhUq396aI9d3z3Exeo1ljVqlRWYSz+xEi2
-	/ZwEqhJtHbtb66StyVz9//vBTB+njF8GS7d5DrCpU9tANh/0a79bW5TGMr5BMMIMBFGTuN2V+VF
-	QAaxeG4dg7KWCRKeJqPAosFp0A==
-X-Google-Smtp-Source: AGHT+IHUVbI/1P7zakDM7Wi5UCm2XC9PsUzzgUmoBdz1wcDrZw0JyEjKaERyGFb8Dk6P9ewUvmrPIJy5bf6RJ2inAko=
-X-Received: by 2002:a05:6000:2311:b0:431:266:d150 with SMTP id
- ffacd0b85a97d-4310266d59dmr10262959f8f.44.1766055988640; Thu, 18 Dec 2025
- 03:06:28 -0800 (PST)
+	s=arc-20240116; t=1766063008; c=relaxed/simple;
+	bh=VcQ8jEwxhX+R8hvX60yLjPYpobh9R0jIbJidY5mkfeU=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=tsud7UEpgcAX+lvW6mROfLCjQb0hoUsm5zz60ZkQcI6a+LPKWNIHxjT1IOHXPPDhRjZXZIjsDXnuit56Y7UvGYNReZfhQRx6Vca0393H+fJZydgPuyIqBg+cZ0D2E0Q+Vqby4ILouWAbQuUbzkCH5UOWJjHUbM5DNKA9UoFHkOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dy+80sNE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45C1DC4CEFB;
+	Thu, 18 Dec 2025 13:03:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1766063008;
+	bh=VcQ8jEwxhX+R8hvX60yLjPYpobh9R0jIbJidY5mkfeU=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=dy+80sNEV1BVFS50koXGFZ993SJTn6B3D/KMbzAw21TnlCWEgsUjlyJApOSaH0QX8
+	 LuuW16+uuXPygjy16V1RF5oJNGaEE8XBQ5hyafYvaPcVUUWmabH6rgNp5/OtH38SG3
+	 CPsEwbaduXBv4Einfj7ZwzSPWBYzLv1harepL2nE9aIO6+vYVfsPLbOwiJGxPRz6c9
+	 3dL7TvQ9fl2UmUW/p+VQc3NMrrKUb1IT9+gIhH31WcQr2CqplOezrBvIM8OYGKhZM2
+	 96hJr2ErHWY3Ukfbn1nDNdj2Pd8mXulTutONIv8lPLAftVnKROUhzwQA+kjbonsK6C
+	 B/cMlOahuEVjA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id F2AD0380A955;
+	Thu, 18 Dec 2025 13:00:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <aTV1KYdcDGvjXHos@redhat.com> <aTV1aJVZ8B8_n2LE@redhat.com>
-In-Reply-To: <aTV1aJVZ8B8_n2LE@redhat.com>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Thu, 18 Dec 2025 12:06:16 +0100
-X-Gm-Features: AQt7F2oOZgjISObSjjmOs0kcLH0arkernyhqWoUniY0Q3NRwv2tC-Isq-vwEzQQ
-Message-ID: <CAH5fLgiYyfrwvmPyVGYD=sbsyY_2G5Z3mbfNRDa4uC2PS6iQTQ@mail.gmail.com>
-Subject: Re: [PATCH 1/7] android/binder: don't abuse current->group_leader
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joelagnelf@nvidia.com>, Christian Brauner <brauner@kernel.org>, 
-	Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>, 
-	Felix Kuehling <Felix.Kuehling@amd.com>, Alex Deucher <alexander.deucher@amd.com>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
-	Boris Brezillon <boris.brezillon@collabora.com>, Rob Herring <robh@kernel.org>, 
-	Steven Price <steven.price@arm.com>, =?UTF-8?Q?Adri=C3=A1n_Larumbe?= <adrian.larumbe@collabora.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Liviu Dudau <liviu.dudau@arm.com>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org, 
-	dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org, 
-	netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 0/9] mlx5 misc fixes 2025-12-09
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176606281779.2943927.5802057198680861828.git-patchwork-notify@kernel.org>
+Date: Thu, 18 Dec 2025 13:00:17 +0000
+References: <1765284977-1363052-1-git-send-email-tariqt@nvidia.com>
+In-Reply-To: <1765284977-1363052-1-git-send-email-tariqt@nvidia.com>
+To: Tariq Toukan <tariqt@nvidia.com>
+Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
+ leon@kernel.org, mbloch@nvidia.com, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, gal@nvidia.com,
+ moshe@nvidia.com, leitao@debian.org, acassen@corp.free.fr
 
-On Sun, Dec 7, 2025 at 1:39=E2=80=AFPM Oleg Nesterov <oleg@redhat.com> wrot=
-e:
->
-> Cleanup and preparation to simplify the next changes.
->
-> - Use current->tgid instead of current->group_leader->pid
->
-> - Use the value returned by get_task_struct() to initialize proc->tsk
->
-> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Hello:
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+This series was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
+
+On Tue, 9 Dec 2025 14:56:08 +0200 you wrote:
+> Hi,
+> 
+> This patchset provides misc bug fixes from the team to the mlx5 core and
+> Eth drivers.
+> 
+> Thanks,
+> Tariq.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,1/9] net/mlx5: fw reset, clear reset requested on drain_fw_reset
+    https://git.kernel.org/netdev/net/c/89a898d63f6f
+  - [net,2/9] net/mlx5: Drain firmware reset in shutdown callback
+    https://git.kernel.org/netdev/net/c/5846a365fc64
+  - [net,3/9] net/mlx5: fw_tracer, Validate format string parameters
+    https://git.kernel.org/netdev/net/c/b35966042d20
+  - [net,4/9] net/mlx5: fw_tracer, Handle escaped percent properly
+    https://git.kernel.org/netdev/net/c/c0289f67f7d6
+  - [net,5/9] net/mlx5: Serialize firmware reset with devlink
+    https://git.kernel.org/netdev/net/c/367e501f8b09
+  - [net,6/9] net/mlx5e: Use ip6_dst_lookup instead of ipv6_dst_lookup_flow for MAC init
+    https://git.kernel.org/netdev/net/c/e35d7da8dd9e
+  - [net,7/9] net/mlx5e: Trigger neighbor resolution for unresolved destinations
+    https://git.kernel.org/netdev/net/c/9ab89bde13e5
+  - [net,8/9] net/mlx5e: Do not update BQL of old txqs during channel reconfiguration
+    https://git.kernel.org/netdev/net/c/c8591decd9db
+  - [net,9/9] net/mlx5e: Don't include PSP in the hard MTU calculations
+    https://git.kernel.org/netdev/net/c/4198a14c8c62
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
