@@ -1,53 +1,58 @@
-Return-Path: <linux-rdma+bounces-15088-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15089-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AB87CCCA05
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 17:06:38 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9765DCCCD7E
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 17:46:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id C2CA630125D9
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 16:06:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7146F30A923A
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 16:41:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8200938258E;
-	Thu, 18 Dec 2025 16:06:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63E84368273;
+	Thu, 18 Dec 2025 16:09:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TqI+yheP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cepAEvCB"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3C4A38257D;
-	Thu, 18 Dec 2025 16:06:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC0CA366DDF;
+	Thu, 18 Dec 2025 16:09:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766073995; cv=none; b=hmQMZZUHsRYUPlmYTKXKjNHwUr575o+XvKFWKyYkPJHfaD13+hi1861Iw7UhAeBAvSwiWAWlcIpBym/1KOoluBpp+JCD80W6Osvpw/Qb1ZD0RDIZz/aI1o6Ayg0cuSw1Sp9YTOzkQTjIlzUHpd3yOAH255RTSjUKQbV6K2NGDLI=
+	t=1766074190; cv=none; b=ogZMz50jW64wEtNGUWFFY0rdCc2U+ln+W180w4GFFgTo4SPAyS1NK+Cm7U/6zbm76h2ZAaNzDHlITJGl7cC+7A6nV/rwS+7DMaqDtK1YyBdUigNi9zTb2240qO051/VytqCr+BSolvHK5CbElrGSaqhroSxG8xgDwSZW5sGBh04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766073995; c=relaxed/simple;
-	bh=zwFymrQ5F2DWEzcv03ijEdDl2G6GL23/8iabeBtES84=;
+	s=arc-20240116; t=1766074190; c=relaxed/simple;
+	bh=h5iO/egUUv5aO60s7ezCX0gBR0o81QoXAe6OhhRWj6U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G9bxMOR5Me9D6Ygdd0ZvwvbE8s+jgwQiV4QOQg2LDJPIPTfeIa/o0RMSr0rriL67bGunTJxLrtVAPEJV2ssofSpd1gpKmNT5zk886ko9pD45HqLO9PMKfymbhTXJ8sPQkb2ay9ONM/XkV3ImV3Emo9ljR/dwgMXrATf3BftgarI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TqI+yheP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1701C4CEFB;
-	Thu, 18 Dec 2025 16:06:34 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=W31Ac8NxMqYOR57bGyVbD7zQrOdE8t/Hc46GROz4ecUOHamB9H/HAut/yAx76u+OHAdtj93D+2fF0pXpV13n7E3anr8XamJI/QqOt+f/f9EfjIANH1CcANCTio66T/Uss8/66RlFdCgKR1VHHHoipo1Wlzdq9vngoCMBct9/H2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cepAEvCB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12734C116D0;
+	Thu, 18 Dec 2025 16:09:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766073995;
-	bh=zwFymrQ5F2DWEzcv03ijEdDl2G6GL23/8iabeBtES84=;
+	s=k20201202; t=1766074190;
+	bh=h5iO/egUUv5aO60s7ezCX0gBR0o81QoXAe6OhhRWj6U=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TqI+yhePmfgwXHk25ZhXnZu8Yo0Z7456tC3rAKYAOcSsRk23LdaaeA/mcGNRuriyP
-	 +kvKvi34WdF6AFnQe7RmW/J0UIT99F9jAQFHWH2FhxBu1zh6gJFpAmOPOrvfvam1Iq
-	 hg2CkiG0Z4UnauzVI2mLZc3hfmcHzyAdtBt5WdJeVqDD3ULBehekITlvSOhIt8YABR
-	 kBAsmlJdu+/SeJdIP2TBo4PWycgyzrkCpj2w7HeIfnQsctTSwBPDJocrmkYMJSJrhX
-	 WlseN8Mh9Dz7vOYtCTLldchFb9UzurAYZjHmCwFoNzZNVKDsx8LbWM3uukPUNF27gN
-	 Vm7I02aUZ4gug==
-Date: Thu, 18 Dec 2025 18:06:32 +0200
+	b=cepAEvCBzWawoYjJ3UoFyuXsiXqrkdSNd02w9DrJ+S62nDYh8syt0UPZ+YaPSr+Cs
+	 56GfRZHbsPIbgSyFGH/5jnDpTAjY5pOLvrpW3wH+DcGDI78W4j2IOspy+Hew8xo8aG
+	 K3E8fWAFDqteis/0lzm7XHz8Wp4nYE6GWR7t5Qy4Gs9BTvJZuiYMFVV77ORG4zAwWE
+	 yjS8/In97eLlhlpsVDWvq13Jzg8NoIPlPdaZN5fgrtv9wsX7Wc5xchsFzhmOlARbo6
+	 ouEFaOpp2u4fBJQrj3O9mFYH/vgvIcBDeh/knVXRcXrbsmbOc1UeafXyvo5dc8lwnL
+	 F9zJpqhcvCkjg==
+Date: Thu, 18 Dec 2025 18:09:47 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Wentao Liang <vulab@iscas.ac.cn>
-Cc: bharat@chelsio.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] RDMA/cxgb4: fix a memory leak in pass_accept_req() error
- path
-Message-ID: <20251218160632.GE400630@unreal>
-References: <20251215155607.1787217-1-vulab@iscas.ac.cn>
+To: Thorsten Blum <thorsten.blum@linux.dev>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>,
+	Abhijit Gangurde <abhijit.gangurde@amd.com>,
+	Allen Hubbe <allen.hubbe@amd.com>, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/ionic: Replace cpu_to_be64 + le64_to_cpu with swab64
+Message-ID: <20251218160947.GF400630@unreal>
+References: <20251210131428.569187-2-thorsten.blum@linux.dev>
+ <aTu7FFofH/ot1A74@ziepe.ca>
+ <66a98775-76f2-683f-77b1-7f5dc991ca14@amd.com>
+ <20251216005112.GA31492@ziepe.ca>
+ <3BC136A4-B5FF-40B1-968C-67BB30C73239@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -56,44 +61,26 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251215155607.1787217-1-vulab@iscas.ac.cn>
+In-Reply-To: <3BC136A4-B5FF-40B1-968C-67BB30C73239@linux.dev>
 
-On Mon, Dec 15, 2025 at 03:56:07PM +0000, Wentao Liang wrote:
-> In the alloc_ep_skb_list() failure path, the c4iw_put_ep() is
-> incorrectly used instead of the kfree(). Since the child_ep's
-> reference count hasn't been properly established at this point,
-> the c4iw_put_ep() won't actually free the memory, resulting in
-> permanent memory leak.
+On Tue, Dec 16, 2025 at 01:35:02PM +0100, Thorsten Blum wrote:
+> On 16. Dec 2025, at 01:51, Jason Gunthorpe wrote:
+> > Okay, so Throsten, please don't send patches for changing to swab.
 > 
-> Fix by releasing child_ep correctly in the fail path.
+> Yeah sorry, I didn't know about the sparse warnings before.
 > 
-> Fixes: 4a740838bf44 ("RDMA/iw_cxgb4: Low resource fixes for connection manager")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
-> ---
->  drivers/infiniband/hw/cxgb4/cm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> > If you want to improve it then the primitive should be
+> > 
+> > le64_to_be64(x)
 > 
-> diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
-> index b3b45c49077d..a09eeb48775f 100644
-> --- a/drivers/infiniband/hw/cxgb4/cm.c
-> +++ b/drivers/infiniband/hw/cxgb4/cm.c
-> @@ -2665,7 +2665,7 @@ static int pass_accept_req(struct c4iw_dev *dev, struct sk_buff *skb)
->  	}
->  	goto out;
->  fail:
-> -	c4iw_put_ep(&child_ep->com);
-> +	kfree(child_ep);
+> le64_to_be64() or a similar helper doesn't seem to exist.
 
-You should squash with your previous patch and get Acked-by from cxgb4
-maintainers.
+You can add it.
 
 Thanks
 
->  reject:
->  	reject_cr(dev, hwtid, skb);
->  out:
-> -- 
-> 2.34.1
+> 
+> Thanks,
+> Thorsten
 > 
 
