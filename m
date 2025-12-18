@@ -1,37 +1,44 @@
-Return-Path: <linux-rdma+bounces-15062-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15064-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51142CCA10C
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 03:16:23 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1519CCB452
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 10:54:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1BBF8301D585
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 02:16:21 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D453D300F1A5
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 09:54:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AA222F5331;
-	Thu, 18 Dec 2025 02:16:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BCD832E698;
+	Thu, 18 Dec 2025 09:54:12 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-m49208.qiye.163.com (mail-m49208.qiye.163.com [45.254.49.208])
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0878A285419;
-	Thu, 18 Dec 2025 02:16:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C6532AAC1
+	for <linux-rdma@vger.kernel.org>; Thu, 18 Dec 2025 09:54:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766024180; cv=none; b=QVA1hL4pVu5UVCUH31Yc2pWlFs34oObTYWl6rwNUf14/5NTPfX8Cl45f2/KINmzHsWIGuewnDd1MVMuTGzD/m4sCamitpJVCpb20uKs0vaCRwDqIAMz9Qzz8zQpll578/usd0EtjHCNEh3G8cOCPTjJ9BwocWbWMdcotlOM67gw=
+	t=1766051652; cv=none; b=sQ4JYMnsP0Y1WZq3PfTUk+s+jp2QNeeZh6c9JhFM0TGYFmVwDEEAV7ZPY3kHrfE/TQt/8gJCWmovGYhCthknDxJp7m2ZaoECQZl68Xm668NQPwty+Nb3mrxBLIR5PmWk5dKhbCwTxL8McM9h/YT1D2WxR3dwTNkPmGgrerQ35IA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766024180; c=relaxed/simple;
-	bh=r0tAt0Q+hwWm6ntETI8t4DAHnIMp8PQ6OaYJKpf5CUw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jh1NZytfhwQsrlWFWBM8fi/BGJJUVnFZuCCaBR7nWsD3K+F0RRxfcwfid8R+P6dQDKLuSXORkDOHULTLGt49ijz6FnEtNc4YdoTL8NY2IuzBbwGEDChxRWLJSxfXMpMJ7lmwEhpbXPDwbG2wxQOnyC94Tc4MptK1kyKu2313DOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn; spf=pass smtp.mailfrom=sangfor.com.cn; arc=none smtp.client-ip=45.254.49.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sangfor.com.cn
-Received: from [172.23.68.66] (unknown [43.247.70.80])
-	by smtp.qiye.163.com (Hmail) with ESMTP id 2dabaf0bb;
-	Thu, 18 Dec 2025 10:16:03 +0800 (GMT+08:00)
-Message-ID: <022b32b6-6ed5-465d-af01-a52deea16d62@sangfor.com.cn>
-Date: Thu, 18 Dec 2025 10:16:02 +0800
+	s=arc-20240116; t=1766051652; c=relaxed/simple;
+	bh=Y1zYvtM1CJh3dRA3GwjlMQkT2SDcc9ItRFo4Rht4O3Y=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=Nx5f7QCwEzfMHnkxBDzqARALVzl8KrrEcyhXlh/juw2lfWvygdtacBbXhP5HHB+wsltjhfa5miSTwYuHNb51nW/74YmMedCnjYJTkVFvdSkEWQl3r9yc+Yxw9nifTMDZz0100IDCGJsyFk85/ACU3Q3muc+rChAqb9oJRu3Nd0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 5BI9rBEo092692;
+	Thu, 18 Dec 2025 18:53:11 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from [192.168.1.10] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 5BI9rBEt092688
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Thu, 18 Dec 2025 18:53:11 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <b4457da3-be2e-4de3-ae16-5580e1fb625c@I-love.SAKURA.ne.jp>
+Date: Thu, 18 Dec 2025 18:53:08 +0900
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -39,85 +46,40 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] RDMA/bnxt_re: Fix OOB write in
- bnxt_re_copy_err_stats()
-To: selvin.xavier@broadcom.com, kalesh-anakkur.purayil@broadcom.com,
- jgg@ziepe.ca, leon@kernel.org, saravanan.vajravel@broadcom.com,
- vasuthevan.maheswaran@broadcom.com
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- zhengyingying@sangfor.com.cn
-References: <20251208072110.28874-1-dinghui@sangfor.com.cn>
+Subject: Re: [PATCH] RDMA/core: flush gid_cache_wq WQ from disable_device()
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Leon Romanovsky <leon@kernel.org>, Majd Dibbiny <majd@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>, Yuval Shaia <yshaia@marvell.com>,
+        Bernard Metzler <bernard.metzler@linux.dev>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+References: <30ec01df-6c32-490c-aa26-c41653f5a257@I-love.SAKURA.ne.jp>
+ <8f90fba8-60b9-46e2-8990-45311c7b1540@I-love.SAKURA.ne.jp>
+ <1722eff3-14c1-408b-999b-1be3e8fbfe5a@I-love.SAKURA.ne.jp>
+ <9b4ce0df-1fbf-4052-9eb9-1f3d6ad6a685@I-love.SAKURA.ne.jp>
+ <13f54775-7a36-48f2-b9cd-62ab9f15a82b@I-love.SAKURA.ne.jp>
+ <ace1ebe4-4fdb-49f4-a3fa-bbf11e1b40ed@I-love.SAKURA.ne.jp>
+ <20251216140512.GC6079@nvidia.com>
+ <10caea5b-9ad1-44ce-9eaf-a0f4023f2017@I-love.SAKURA.ne.jp>
 Content-Language: en-US
-From: Ding Hui <dinghui@sangfor.com.cn>
-In-Reply-To: <20251208072110.28874-1-dinghui@sangfor.com.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <10caea5b-9ad1-44ce-9eaf-a0f4023f2017@I-love.SAKURA.ne.jp>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-HM-Tid: 0a9b2f3e311009d9kunm77d2462c672470
-X-HM-MType: 1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkZThgYVklCHhkfTEhISxlJTVYVFAkWGhdVEwETFh
-	oSFyQUDg9ZV1kYEgtZQVlPSFVJT0xVTEtVQ0tZV1kWGg8SFR0UWUFZT0tIVUpLSU9PT0hVSktLVU
-	pCS0tZBg++
+X-Anti-Virus-Server: fsav303.rs.sakura.ne.jp
+X-Virus-Status: clean
 
-Friendly ping.
+On 2025/12/16 23:38, Tetsuo Handa wrote:
+> I haven't confirmed that netdevice_event_work_handler() is called for
+> releasing GID entry.
+> But I'd like to try this patch in linux-next tree via my tree for testing.
 
-On 2025/12/8 15:21, Ding Hui wrote:
-> Recently we encountered an OOB write issue on BCM957414A4142CC with outbox
-> NetXtreme-E-235.1.160.0 driver from broadcom. After a litte research,
-> we found the inbox driver from upstream maybe have the same issue.
-> 
-> The commit ef56081d1864 ("RDMA/bnxt_re: RoCE related hardware counters
-> update") introduced 3 counters, and appended after BNXT_RE_OUT_OF_SEQ_ERR.
-> 
-> However, BNXT_RE_OUT_OF_SEQ_ERR serves as a boundary marker for allocating
-> hw stats with different num_counters for chip_gen_p5_p7 hardware.
-> 
-> For BNXT_RE_NUM_STD_COUNTERS allocated hw_stats, leading to an
-> out-of-bounds write in bnxt_re_copy_err_stats().
-> 
-> It seems like that the BNXT_RE_REQ_CQE_ERROR, BNXT_RE_RESP_CQE_ERROR,
-> and BNXT_RE_RESP_REMOTE_ACCESS_ERRS can be updated for generic hardware,
-> not only for p5/p7 hardware.
-> 
-> Fix this by moving them before BNXT_RE_OUT_OF_SEQ_ERR so they become
-> part of the generic counter.
-> 
-> Compile tested only.
-> 
-> Fixes: ef56081d1864 ("RDMA/bnxt_re: RoCE related hardware counters update")
-> Reported-by: Yingying Zheng <zhengyingying@sangfor.com.cn>
-> Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
-> ---
->   drivers/infiniband/hw/bnxt_re/hw_counters.h | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/bnxt_re/hw_counters.h b/drivers/infiniband/hw/bnxt_re/hw_counters.h
-> index 09d371d442aa..cebec033f4a0 100644
-> --- a/drivers/infiniband/hw/bnxt_re/hw_counters.h
-> +++ b/drivers/infiniband/hw/bnxt_re/hw_counters.h
-> @@ -89,6 +89,9 @@ enum bnxt_re_hw_stats {
->   	BNXT_RE_RES_SRQ_LOAD_ERR,
->   	BNXT_RE_RES_TX_PCI_ERR,
->   	BNXT_RE_RES_RX_PCI_ERR,
-> +	BNXT_RE_REQ_CQE_ERROR,
-> +	BNXT_RE_RESP_CQE_ERROR,
-> +	BNXT_RE_RESP_REMOTE_ACCESS_ERRS,
->   	BNXT_RE_OUT_OF_SEQ_ERR,
->   	BNXT_RE_TX_ATOMIC_REQ,
->   	BNXT_RE_TX_READ_REQ,
-> @@ -110,9 +113,6 @@ enum bnxt_re_hw_stats {
->   	BNXT_RE_TX_CNP,
->   	BNXT_RE_RX_CNP,
->   	BNXT_RE_RX_ECN,
-> -	BNXT_RE_REQ_CQE_ERROR,
-> -	BNXT_RE_RESP_CQE_ERROR,
-> -	BNXT_RE_RESP_REMOTE_ACCESS_ERRS,
->   	BNXT_RE_NUM_EXT_COUNTERS
->   };
->   
+I tried this patch in linux-next, but unfortunately this patch did not help.
+I guess that we need to _explicitly_ invoke operations for deleting GIDs
+rather than counting on WQ context.
 
--- 
-Thanks,
-- Ding Hui
+Can somebody contact Matan Barak (the author of "IB/core: Add RoCE GID table
+management" commit) for how default GID is supposed to be deleted, for
+mellanox.com address is no longer reachable? 
 
 
