@@ -1,56 +1,53 @@
-Return-Path: <linux-rdma+bounces-15069-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15070-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id B591ECCBF3F
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 14:17:12 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F1B8CCC083
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 14:37:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id BDC9A301D336
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 13:17:10 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 26D6A30D9E75
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 13:32:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A8B933D6CB;
-	Thu, 18 Dec 2025 13:11:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97CD83376AA;
+	Thu, 18 Dec 2025 13:23:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="auh/lOWZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kJGUqZnB"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0281B33D4ED;
-	Thu, 18 Dec 2025 13:11:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F209336EE9;
+	Thu, 18 Dec 2025 13:23:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766063465; cv=none; b=kbZ0C7HJ40Zrx0A5k8HKxQpTc3t60wsekBH8jztlC5JSIVu2/1uMD5er98+zojEinCu+8y0z3n0qyAnpyWMuIA7N8ilq0bI3+QtCupuKVb19Pmx38J5KQIIrCIiJUQTcvDJfrpCBYCI6JD4eJ/VayffGeuIfFjQeTQ5DVnoj1F4=
+	t=1766064185; cv=none; b=EroixKcn4p957R5yHEZN5oAcwc4TRrPAv6BcEw4Pn7BXgChIv6UhR9tOLZyWLI3eKXO8N3M1fKjH/cF+EuDUMZ8il6HQx1OxZu3tLrcrfyG/aPeGf3GmeyD1NkuITy5eaPiXN9XpiglOD4ZbOVOdnk18bdJRfICG8OanV2tAEEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766063465; c=relaxed/simple;
-	bh=9uyvVoAwaaSXEm/9xYmGIpt0UEUWAvZjSJaIIGtK1HA=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=PGImaAJKA+Ip/C0RMoanL/OVitCz1gVwA9erZ/zAYIcTxVH23c/K9VPZ8SOOtkEoaYseRBeVFREJ0sZSqx2Amo9e/BdCeWjzqcw330g85dfOl0C6YfDJOmnDixE/Y3h6msIMclmUndKWzwAW69KDz5QNV7nwxIdy9Ms7OwCury0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=auh/lOWZ; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1204)
-	id 8E7142012434; Thu, 18 Dec 2025 05:10:54 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8E7142012434
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1766063454;
-	bh=TMw9pOTn5uAMLC86wI4i4CWFIVExYXMjnk2FqSE3yTQ=;
-	h=Date:From:To:Subject:From;
-	b=auh/lOWZJw48s3fj389H5MBMpCBhPX40WBAt94f2gxI+CHapw5KantD460lU7gjsv
-	 ie8mt3v/uBZYboYaNJMXF38NDN9CQM9i3+cuyvrMBegZfwWZgrpTg/9YNnfs5gKtaJ
-	 3RxtS4xoCboBUAUj83cZLJaMPhZrUh11vvLFg2k0=
-Date: Thu, 18 Dec 2025 05:10:54 -0800
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
-	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
-	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	dipayanroy@microsoft.com
-Subject: [PATCH net, v2] net: mana: Fix use-after-free in reset service
- rescan path
-Message-ID: <20251218131054.GA3173@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	s=arc-20240116; t=1766064185; c=relaxed/simple;
+	bh=cnp96vxWet6hk8u4hswpGDarA0U/OapE29sBMDoTdDU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=W3h40RkPhfUmlt0ZaQgp55b+CRTmEC8WTXviFh6H6VdUpoI8GjWYRF5dUhpbbBMF9bnY+qyG0PjhJEtJvUumhNqwyYBzE/pWLa3fNeHOaE+Yp1JJ5CLGMEdG8x1AWN8Pu3ufVPtjs8rtFMiLwXT5R96W1C8GFfE1ul+ze9XmG7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kJGUqZnB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B882C4CEFB;
+	Thu, 18 Dec 2025 13:23:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1766064184;
+	bh=cnp96vxWet6hk8u4hswpGDarA0U/OapE29sBMDoTdDU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kJGUqZnBh4ZimhKeb8KL3jFO69OtPGhLhVCiuWANCEQZFGD0ojxV3IYjVQZpM3rDg
+	 Kj8upXXXbEldS6WfjZVTK+fe3Ao3DtXuVCYxaFBDBsWSehLzW9ov3vToUqqVW4YMgx
+	 6xEiUOESG6CI/cophrStjJ6Y22NbShH3glNrdEsOefOQ698W/UfZilGxPLQxBOzRH3
+	 bZ5WAnxip+Qf+eoxicODSOHkkU8kjG3PNcw68ATp9asZajWHEZ4GIbb955K4YC9t/0
+	 NqD1VYG8l9zqjFLChR2+HKXSYyKv3fh1axKu9HwUXBG2EUFPU27pZ8yA31Qy7gMlhm
+	 95u6MyofAlIPQ==
+Date: Thu, 18 Dec 2025 15:22:59 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Honggang LI <honggangli@163.com>
+Cc: haris.iqbal@ionos.com, jinpu.wang@ionos.com, jgg@ziepe.ca,
+	danil.kipnis@cloud.ionos.com, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/rtrs: remove dead code
+Message-ID: <20251218132259.GE39046@unreal>
+References: <20251201032405.484231-1-honggangli@163.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -59,69 +56,75 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20251201032405.484231-1-honggangli@163.com>
 
-When mana_serv_reset() encounters -ETIMEDOUT or -EPROTO from
-mana_gd_resume(), it performs a PCI rescan via mana_serv_rescan().
+On Mon, Dec 01, 2025 at 11:24:05AM +0800, Honggang LI wrote:
+> As rkey had been initialized to zero, the WARN_ON_ONCE should never been
+> triggered. Remove it.
+> 
+> Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
+> Signed-off-by: Honggang LI <honggangli@163.com>
+> ---
+>  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> index ef4abdea3c2d..a95640e848a5 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> @@ -240,11 +240,7 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
+>  	wr->wr.num_sge	= 1;
+>  	wr->remote_addr	= le64_to_cpu(id->rd_msg->desc[0].addr);
+>  	wr->rkey	= le32_to_cpu(id->rd_msg->desc[0].key);
+> -	if (rkey == 0)
+> -		rkey = wr->rkey;
+> -	else
+> -		/* Only one key is actually used */
+> -		WARN_ON_ONCE(rkey != wr->rkey);
+> +	rkey = wr->rkey;
 
-mana_serv_rescan() calls pci_stop_and_remove_bus_device(), which can
-invoke the driver's remove path and free the gdma_context associated
-with the device. After returning, mana_serv_reset() currently jumps to
-the out label and attempts to clear gc->in_service, dereferencing a
-freed gdma_context.
+You can go one step further and remove rkey too.
 
-The issue was observed with the following call logs:
-[  698.942636] BUG: unable to handle page fault for address: ff6c2b638088508d
-[  698.943121] #PF: supervisor write access in kernel mode
-[  698.943423] #PF: error_code(0x0002) - not-present page
-[S[  698.943793] Pat Dec  6 07:GD5 100000067 P4D 1002f7067 PUD 1002f8067 PMD 101bef067 PTE 0
-0:56 2025] hv_[n e 698.944283] Oops: Oops: 0002 [#1] SMP NOPTI
-tvsc f8615163-00[  698.944611] CPU: 28 UID: 0 PID: 249 Comm: kworker/28:1
-...
-[Sat Dec  6 07:50:56 2025] R10: [  699.121594] mana 7870:00:00.0 enP30832s1: Configured vPort 0 PD 18 DB 16
-000000000000001b R11: 0000000000000000 R12: ff44cf3f40270000
-[Sat Dec  6 07:50:56 2025] R13: 0000000000000001 R14: ff44cf3f402700c8 R15: ff44cf3f4021b405
-[Sat Dec  6 07:50:56 2025] FS:  0000000000000000(0000) GS:ff44cf7e9fcf9000(0000) knlGS:0000000000000000
-[Sat Dec  6 07:50:56 2025] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[Sat Dec  6 07:50:56 2025] CR2: ff6c2b638088508d CR3: 000000011fe43001 CR4: 0000000000b73ef0
-[Sat Dec  6 07:50:56 2025] Call Trace:
-[Sat Dec  6 07:50:56 2025]  <TASK>
-[Sat Dec  6 07:50:56 2025]  mana_serv_func+0x24/0x50 [mana]
-[Sat Dec  6 07:50:56 2025]  process_one_work+0x190/0x350
-[Sat Dec  6 07:50:56 2025]  worker_thread+0x2b7/0x3d0
-[Sat Dec  6 07:50:56 2025]  kthread+0xf3/0x200
-[Sat Dec  6 07:50:56 2025]  ? __pfx_worker_thread+0x10/0x10
-[Sat Dec  6 07:50:56 2025]  ? __pfx_kthread+0x10/0x10
-[Sat Dec  6 07:50:56 2025]  ret_from_fork+0x21a/0x250
-[Sat Dec  6 07:50:56 2025]  ? __pfx_kthread+0x10/0x10
-[Sat Dec  6 07:50:56 2025]  ret_from_fork_asm+0x1a/0x30
-[Sat Dec  6 07:50:56 2025]  </TASK>
-
-Fix this by returning immediately after mana_serv_rescan() to avoid
-accessing GC state that may no longer be valid.
-
-Fixes: 9bf66036d686 ("net: mana: Handle hardware recovery events when probing the device")
-Reviewed-by: Simon Horman <horms@kernel.org>
-Reviewed-by: Long Li <longli@microsoft.com>
-Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
----
- drivers/net/ethernet/microsoft/mana/gdma_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index efb4e412ec7e..0055c231acf6 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -481,7 +481,7 @@ static void mana_serv_reset(struct pci_dev *pdev)
- 		/* Perform PCI rescan on device if we failed on HWC */
- 		dev_err(&pdev->dev, "MANA service: resume failed, rescanning\n");
- 		mana_serv_rescan(pdev);
--		goto out;
-+		return;
- 	}
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index 9ecc6343455d..396dfc41e6da 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -208,7 +208,6 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
+        size_t sg_cnt;
+        int err, offset;
+        bool need_inval;
+-       u32 rkey = 0;
+        struct ib_reg_wr rwr;
+        struct ib_sge *plist;
+        struct ib_sge list;
+@@ -240,12 +239,6 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
+        wr->wr.num_sge  = 1;
+        wr->remote_addr = le64_to_cpu(id->rd_msg->desc[0].addr);
+        wr->rkey        = le32_to_cpu(id->rd_msg->desc[0].key);
+-       if (rkey == 0)
+-               rkey = wr->rkey;
+-       else
+-               /* Only one key is actually used */
+-               WARN_ON_ONCE(rkey != wr->rkey);
+-
+        wr->wr.opcode = IB_WR_RDMA_WRITE;
+        wr->wr.wr_cqe   = &io_comp_cqe;
+        wr->wr.ex.imm_data = 0;
+@@ -277,7 +270,7 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
+                inv_wr.opcode = IB_WR_SEND_WITH_INV;
+                inv_wr.wr_cqe   = &io_comp_cqe;
+                inv_wr.send_flags = 0;
+-               inv_wr.ex.invalidate_rkey = rkey;
++               inv_wr.ex.invalidate_rkey = wr->rkey;
+        }
  
- 	if (ret)
--- 
-2.34.1
+        imm_wr.wr.next = NULL;
+~
 
+>  
+>  	wr->wr.opcode = IB_WR_RDMA_WRITE;
+>  	wr->wr.wr_cqe   = &io_comp_cqe;
+> -- 
+> 2.51.1
+> 
 
