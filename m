@@ -1,114 +1,100 @@
-Return-Path: <linux-rdma+bounces-15093-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15094-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41CD8CCD5ED
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 20:22:55 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F969CCE440
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Dec 2025 03:28:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 66649301FFAA
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Dec 2025 19:22:52 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 903953017EC9
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Dec 2025 02:28:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF593320CB1;
-	Thu, 18 Dec 2025 19:22:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96673293C44;
+	Fri, 19 Dec 2025 02:28:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UZUzzVNL"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="f9b6Yn9l"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB258302742
-	for <linux-rdma@vger.kernel.org>; Thu, 18 Dec 2025 19:22:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33C9E17BA6;
+	Fri, 19 Dec 2025 02:28:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766085770; cv=none; b=a+2ZKqq4WziI+QdUxiEPxTk+/iqbnhuXherkLpfzxqCKRNvRRCmQmoPmdAcKw0q2N3l/a96PfIVSxSFZnp55mKbzXD5nmXF6pLRfhexUh7wOsQdYw61DTC7IzM5sg4qSYkM5fI8hIrSDQnQDZnNr7hjHqsKZcGqVBHjakW/0BGo=
+	t=1766111290; cv=none; b=UXnosE11xu/UwIT4oZfYInsvoZl+ZXwpUAE+mFSjVGF6BUpW2us73wI5nNdRQnQB1+wDozsvz+861rIO46HGFrbdU9mq+wFPhGHE1CqAFfvZkMCXo5HkHyZ1GzgnkqV+gtg69MuPJ+DEj5VHlCR/NyTr97em7t8kmEpr9n14psw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766085770; c=relaxed/simple;
-	bh=ijYF4JbQvPFODetWEBKlK7bAqKSwXrgg2kzAPhDHmUY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=n1cjlJ8HySqxn4gpqvFVp6vOhwtzm2pVD/KwNT92cC+G3ymsr8wCzIhubxa8ScqmuyRO7ULnIrmPvGY3tKWugTmecBJq5/vMh/oyuN4ZjVtEbGfkh6ykZUJCyUPobmIu1Yi2+XqT6CeWA+2mM9VxbP6m/jqB1Rt7RFSQ1RxLxu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UZUzzVNL; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <5d950681-7f16-4b1e-a512-b118c747ffd7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766085756;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JrdWvcwlB/Kp5cwo07JH6P/TBZtebj35FcbjnD7K5Zs=;
-	b=UZUzzVNLbrlIJxVZVt3Ye50JFi1f6fWQmIIZx0nIbwGX6z7vxa44kt/D1fScP9oBaEsAHo
-	bEv3imp7VAPvEmw6aJv74lfu0QB+vpyZi4Siau8juvMS1c8le7prNl47XNQ8tnQ3UKOwzF
-	sUK1QgS4jHrgTBZEd6H1V8kYZDnkzB0=
-Date: Thu, 18 Dec 2025 11:22:30 -0800
+	s=arc-20240116; t=1766111290; c=relaxed/simple;
+	bh=zzWTfLen8COuX/q/sKLUzJAtj9cSvrwCqbBUYVz6l10=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID; b=I5G29TdC8gOZBDnC68qr5FIncKImMIi+EDXI3W59NThfcjLpkimx27qrQr3ZEFSBafrLu9PfhbF17nAsjClV+crIl2N6H08/4eLo6Fm5irUPMJ5irElG3Qi7ccO8qG5bhUVhcxMkD0XqGvK0MZbd/qLXX2upzNF4J29FRUihEGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=f9b6Yn9l; arc=none smtp.client-ip=117.135.210.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Date:From:To:Subject:Content-Type:MIME-Version:
+	Message-ID; bh=zzWTfLen8COuX/q/sKLUzJAtj9cSvrwCqbBUYVz6l10=; b=f
+	9b6Yn9lpfldBIebFac8ZhjCAfipn5whg40ODcftNj/pMJAS2/R1nEXKECOUF7mwa
+	7En0Kk5Lg4n9rU5PPO6f68NY4XANcZg8Fzn5k6pqs6vSexPCUr0vRBgls48z1Tnh
+	g5amu67ah9mCP9PLJqN6C0uL0XSMwEiycAExhK7HFg=
+Received: from 15927021679$163.com ( [116.128.244.169] ) by
+ ajax-webmail-wmsvr-40-107 (Coremail) ; Fri, 19 Dec 2025 10:27:09 +0800
+ (CST)
+Date: Fri, 19 Dec 2025 10:27:09 +0800 (CST)
+From: =?GBK?B?0NzOsMPxICA=?= <15927021679@163.com>
+To: "Leon Romanovsky" <leon@kernel.org>,
+	"Michael S . Tsirkin" <mst@redhat.com>,
+	"David Hildenbrand" <david@redhat.com>,
+	"Jason Wang" <jasowang@redhat.com>,
+	"Stefano Garzarella" <sgarzare@redhat.com>,
+	"Thomas Monjalon" <thomas@monjalon.net>,
+	"David Marchand" <david.marchand@redhat.com>,
+	"Luca Boccassi" <bluca@debian.org>,
+	"Kevin Traynor" <ktraynor@redhat.com>,
+	"Christian Ehrhardt" <christian.ehrhardt@canonical.com>,
+	"Xuan Zhuo" <xuanzhuo@linux.alibaba.com>,
+	=?GBK?Q?Eugenio_P=A8=A6rez?= <eperezma@redhat.com>,
+	"Xueming Li" <xuemingl@nvidia.com>,
+	"Maxime Coquelin" <maxime.coquelin@redhat.com>,
+	"Chenbo Xia" <chenbox@nvidia.com>,
+	"Bruce Richardson" <bruce.richardson@intel.com>
+Cc: kvm@vger.kernel.org, virtualization@lists.linux.dev,
+	netdev@vger.kernel.org,
+	"RDMA mailing list" <linux-rdma@vger.kernel.org>
+Subject: Re:Re: Implement initial driver for virtio-RDMA device(kernel)
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.4-cmXT build
+ 20250723(a044bf12) Copyright (c) 2002-2025 www.mailtech.cn 163com
+In-Reply-To: <20251218163008.GH400630@unreal>
+References: <20251218091050.55047-1-15927021679@163.com>
+ <20251218163008.GH400630@unreal>
+X-NTES-SC: AL_Qu2dBP2avkop7yKcYukfmU0VgOc9XsWwu/Uk2YRXc+AEvhn91i0NcGBfB13x3/C3Cw2orgSHdD9v4+NFc5ZjnscnuIaIph6uoKKQX33d3Q==
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH][next] RDMA/rxe: Avoid -Wflex-array-member-not-at-end
- warnings
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Jason Gunthorpe <jgg@nvidia.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Zhu Yanjun <zyjzyj2000@gmail.com>, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <aRKu5lNV04Sq82IG@kspp> <20251202181334.GA1162842@nvidia.com>
- <5ac954bb-ad4d-4b4c-b23b-47350b428404@linux.dev>
- <20251204130559.GA1219718@nvidia.com>
- <80620d09-8187-45b1-a490-07c52733ac21@linux.dev>
- <2191ee0f-a528-4187-ae5b-5aba18741701@linux.dev>
- <7e3a294f-5dc2-4e8c-aacc-0286c1592038@linux.dev>
- <20251218155623.GC400630@unreal>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Yanjun.Zhu" <yanjun.zhu@linux.dev>
-In-Reply-To: <20251218155623.GC400630@unreal>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Message-ID: <7076944c.4ac4.19b346eb549.Coremail.15927021679@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:aygvCgBnhST9t0Rps8U_AA--.11607W
+X-CM-SenderInfo: jprvmjixqsilmxzbiqqrwthudrp/xtbC0R2YIWlEt-1cmgAA3U
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 
-
-On 12/18/25 7:56 AM, Leon Romanovsky wrote:
-> On Sun, Dec 14, 2025 at 09:00:51PM -0800, Zhu Yanjun wrote:
->>
->> 在 2025/12/5 20:41, Zhu Yanjun 写道:
->>>
->>> 在 2025/12/4 9:48, yanjun.zhu 写道:
->>>> On 12/4/25 5:05 AM, Jason Gunthorpe wrote:
->>>>> On Wed, Dec 03, 2025 at 09:08:45PM -0800, Zhu Yanjun wrote:
->>>>>>>         unsigned int        res_head;
->>>>>>>         unsigned int        res_tail;
->>>>>>>         struct resp_res        *res;
->>>>>>> +
->>>>>>> +    /* SRQ only. srq_wqe.dma.sge is a flex array */
->>>>>>> +    struct rxe_recv_wqe srq_wqe;
->>>>>> drivers/infiniband/sw/rxe/rxe_resp.c: In function get_srq_wqe:
->>>>>> drivers/infiniband/sw/rxe/rxe_resp.c:289:41: error: struct
->>>>>> rxe_recv_wqe has
->>>>>> no member named wqe
->>>>>>     289 |         qp->resp.wqe = &qp->resp.srq_wqe.wqe;
->>>>>>         |                                         ^
->>>>> I didn't try to fix all the typos, you will need to do that.
->>>> Exactly. I will fix this problem. This weekend, I will send out an
->>>> official commit.
->>> Hi, Jason
->>>
->>> The followings are based on your commits and Leon's commits. And it can
->>> pass the rdma-core tests.
->>>
->>> I am not sure if this commit is good or not.
->> Hi, Jason && Leon
->>
->> Any update? If this looks good to you, I will send out an official commit
->> based on the following commit.
-> You are RXE maintainer, send the official patch.
-
-Will do. I will send it out very soon.
-
-Yanjun.Zhu
-
->
-> Thanks
+CgoKCgoKCgoKCgoKCgoKCgoKQXQgMjAyNS0xMi0xOSAwMDozMDowOCwgIkxlb24gUm9tYW5vdnNr
+eSIgPGxlb25Aa2VybmVsLm9yZz4gd3JvdGU6Cj5PbiBUaHUsIERlYyAxOCwgMjAyNSBhdCAwNTow
+OTo0MFBNICswODAwLCBYaW9uZyBXZWltaW4gd3JvdGU6Cj4+IEhpIGFsbCwKPj4gCj4+IFRoaXMg
+dGVzdGluZyBpbnN0cnVjdGlvbnMgYWltcyB0byBpbnRyb2R1Y2UgYW4gZW11bGF0aW5nIGEgc29m
+dCBST0NFIAo+PiBkZXZpY2Ugd2l0aCBub3JtYWwgTklDKG5vIFJETUEpLCB3ZSBoYXZlIGZpbmlz
+aGVkIGEgdmhvc3QtdXNlciBSRE1BCj4+IGRldmljZSBkZW1vLCB3aGljaCBjYW4gd29yayB3aXRo
+IFJETUEgZmVhdHVyZXMgc3VjaCBhcyBDTSwgUVAgdHlwZSBvZiAKPj4gVUMvVUQgYW5kIHNvIG9u
+Lgo+Cj5TYW1lIHF1ZXN0aW9uIGFzIG9uIHlvdXIgUUVNVSBwYXRjaGVzLgo+aHR0cHM6Ly9sb3Jl
+Lmtlcm5lbC5vcmcvYWxsLzIwMjUxMjE4MTYyMDI4LkdHNDAwNjMwQHVucmVhbC8KPgo+QW5kIGFz
+IGEgYmFyZSBtaW5pbXVtLCB5b3Ugc2hvdWxkIHJ1biBnZXRfbWFpbnRhaW5lcnMucGwgc2NyaXB0
+IG9uIHlvdXIKPnBhdGNoZXMgYW5kIGFkZCB0aGUgcmlnaHQgcGVvcGxlIGFuZCBNTCB0byB0aGUg
+Q0MvVE8gZmllbGRzLgo+Cgo+VGhhbmtzCgoKU2luY2UgdGhpcyBmZWF0dXJlIGludm9sdmVzIGNv
+b3JkaW5hdGVkIGNoYW5nZXMgYWNyb3NzIFFFTVUsIERQREssIGFuZCB0aGUga2VybmVsLCAKSSBo
+YXZlIHN1Ym1pdHRlZCBwYXRjaGVzIGZvciBhbGwgdGhyZWUgY29tcG9uZW50cyB0byBldmVyeSBt
+YWludGFpbmVyLiBUaGlzIGlzIHRvIAplbnN1cmUgdGhhdCBzZW5pb3IgZGV2ZWxvcGVycyBjYW4g
+cmV2aWV3IHRoZSBjb21wbGV0ZSBhcmNoaXRlY3R1cmUgYW5kIGNvZGUuCgoKVGhhbmtzLg==
 
