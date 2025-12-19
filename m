@@ -1,65 +1,45 @@
-Return-Path: <linux-rdma+bounces-15100-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15101-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A29DCCE963
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Dec 2025 06:48:49 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E970CCEB71
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Dec 2025 08:06:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0AC6A3019B6E
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Dec 2025 05:48:48 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id EEBC73012748
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Dec 2025 07:06:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CDCC2D0620;
-	Fri, 19 Dec 2025 05:48:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 505882E11B9;
+	Fri, 19 Dec 2025 07:00:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="XEiNg+fp"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="UWyL/zZj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55A094C79
-	for <linux-rdma@vger.kernel.org>; Fri, 19 Dec 2025 05:48:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CD412DA771;
+	Fri, 19 Dec 2025 07:00:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766123327; cv=none; b=rta546fR33ib3XNkPtYYli0nr6aHC0E5GHpj2NfEb/1VhRr70ofmZVBMJ3ePHoDJE3lOGNiLVALU2ENxwmC4tuxfHQg8r44YL1GudOioREETp2HssMv4NmCqagxB1S6aTybNvfExbwFu0M2wLs6zb12+o2c8YIA5UusNG8szRrE=
+	t=1766127627; cv=none; b=Vz2Ljk2jvPLxZ9UB5JeUTwZwT95PRrG1RWNe/ucAt8IouKLxmZ5STmViLwnqnT7erDCq+DOsH8b1FCmoxNv3tklLg5FfAT0gG0eK0qCds94cwfuabsx14Hv5R8QnvlQ66TyagA/IVTlGexQdUQtsnBvfj1tPW9ofWVvuvMwzS9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766123327; c=relaxed/simple;
-	bh=f4tJcY0zeyT2kIqUw9BwvcPuvmg7ZanfgE/69b1zWdk=;
+	s=arc-20240116; t=1766127627; c=relaxed/simple;
+	bh=BqFV1uI6FsLvLgqnP877yYtUztnhNNPPWWFqb21oGTs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Pkl2FymLUZwutxYCufYzJP539Y6Lzwp2Ycyy6gxyW2cH0A5FRkDl3jTJF9aVaMvjzk+S/YSfrkMV0WQGz59PM98tfCLvjIy1Lq49D/Q9uyNpOWkczkBfq0nQdhK+/5V2eMVZOqV/cpjnRhnaf8WsDCWr0KI5s8f5T4wIpiEg4tI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=XEiNg+fp; arc=none smtp.client-ip=35.89.44.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-6003b.ext.cloudfilter.net ([10.0.30.175])
-	by cmsmtp with ESMTPS
-	id WQM7vAUVJaPqLWTM4vYz9a; Fri, 19 Dec 2025 05:48:44 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id WTM4v6yLbhoT4WTM4vnQpu; Fri, 19 Dec 2025 05:48:44 +0000
-X-Authority-Analysis: v=2.4 cv=XZyJzJ55 c=1 sm=1 tr=0 ts=6944e73c
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=ujWNxKVE5dX343uAl30YYw==:17
- a=IkcTkHD0fZMA:10 a=wP3pNCr1ah4A:10 a=7T7KSl7uo7wA:10
- a=sCnCf3pnyfLPVqDf7dUA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
- a=2aFnImwKRvkU0tJ3nQRT:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Q1TkFPTfRwhSUh6QMJT32hEY62qRYKxTLZnluHvILIE=; b=XEiNg+fpj/bPghrBO1Oqyh9XsO
-	vdukHCfqYd/iItoXJgXHnTCnNEJKrkorP8ue621UdPVLkGMQMIPJgJFuXqmo/OXqXmviN4tZ01mq3
-	bQYmn+r6/UPdXwaCpd4FJyOM2Njxr+YxS16iiIjDupznV9DtKSgw9DsoSPlHDKaP+DTPNoazKTv5h
-	+TRK3+aTRNVEq03KH+1qIa/TvHQpf78FNbn7MHlU5//2PMR9fcDiu6L6ngRSGAVmow0wQ64spe0g+
-	KGx08W74oUGHMNAy2IrzxCrxB45lRo5xfWnXbNSDLSTpmQ4uTO9C4QQR8STWOrvwHyG30z1+D4TRF
-	8H+KiC+g==;
-Received: from i118-18-233-1.s41.a027.ap.plala.or.jp ([118.18.233.1]:61583 helo=[10.83.24.44])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.98.1)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1vWTM3-00000002JVZ-1XmM;
-	Thu, 18 Dec 2025 23:48:43 -0600
-Message-ID: <8470c362-8c41-4b99-8c05-0903285c1b6c@embeddedor.com>
-Date: Fri, 19 Dec 2025 14:48:31 +0900
+	 In-Reply-To:Content-Type; b=ctllz8BumyP7EaOr14vUdO+WqE5573GegbJlrhbI6Ay8XJRs7Gc/nUM/awzNoYVXBFZrfZZZhpGtBHjuu94Bb+2lKiwLnHOvzKWo/Ts5IldYxrBSIB2+wdynfr46DMlasbx2CSwIeXSNWQK1En9vkSC5jOX4Slnz2AbnIglwyZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=UWyL/zZj; arc=none smtp.client-ip=117.135.210.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Message-ID:Date:MIME-Version:Subject:To:From:
+	Content-Type; bh=FVKwEsHD4rrzoxkjd/L0TrE6XvcIxn//KqQMMsaWQMU=;
+	b=UWyL/zZjlv9pJAGBaD3qTpArakeN79rhjLLd5xHMST5rbJ+6udFv1xfREpHAH4
+	j9uxlM66Md+FrgVIctPrBeNNUyE6uoyfgt6+0pxFaykda2VzXldl/XU5tZKU/Azk
+	fIrkiwmMkAXYN1af+qdEaGy171SbuHppbUyzZu3415ILA=
+Received: from [IPV6:2601:647:6300:a030:413e:5806:c79e:2e5b] (unknown [])
+	by gzsmtp5 (Coremail) with SMTP id QCgvCgDnh0jD90RpufjJIA--.160S2;
+	Fri, 19 Dec 2025 14:59:21 +0800 (CST)
+Message-ID: <1bef81ba-be81-49df-9d86-3cc0cc4bf864@163.com>
+Date: Thu, 18 Dec 2025 22:59:13 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -69,7 +49,8 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH][next] RDMA/rxe: Avoid -Wflex-array-member-not-at-end
  warnings
-To: Zhu Yanjun <yanjun.zhu@linux.dev>, Leon Romanovsky <leon@kernel.org>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+ Zhu Yanjun <yanjun.zhu@linux.dev>, Leon Romanovsky <leon@kernel.org>
 Cc: Jason Gunthorpe <jgg@nvidia.com>,
  "Gustavo A. R. Silva" <gustavoars@kernel.org>,
  Zhu Yanjun <zyjzyj2000@gmail.com>, linux-rdma@vger.kernel.org,
@@ -86,53 +67,74 @@ References: <aRKu5lNV04Sq82IG@kspp> <20251202181334.GA1162842@nvidia.com>
  <6f15e334-8902-4d1d-adab-aa9ab8f009d6@linux.dev>
  <d569b5fd-fcca-4dd0-b94b-a6df4e52d940@embeddedor.com>
  <01b419f6-264e-4faa-b4df-480fdf952d14@linux.dev>
-Content-Language: en-US
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <01b419f6-264e-4faa-b4df-480fdf952d14@linux.dev>
+ <8470c362-8c41-4b99-8c05-0903285c1b6c@embeddedor.com>
+From: Zhu Yanjun <mounter625@163.com>
+In-Reply-To: <8470c362-8c41-4b99-8c05-0903285c1b6c@embeddedor.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 118.18.233.1
-X-Source-L: No
-X-Exim-ID: 1vWTM3-00000002JVZ-1XmM
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: i118-18-233-1.s41.a027.ap.plala.or.jp ([10.83.24.44]) [118.18.233.1]:61583
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfOOwT0sSbaVfnm+MJnSYCOBNpdkY52LZdU6M5U15F4hZBCu0MqJDUzn1Xs6XN3GqbvkLhbGz1axz7G6KTKYIKdm/K/Rs9/Tqvoa71X1V8VoorGG2AAVc
- 24/2gZPMjalTg/OxlEp8+CboH+Atjkq9dFDKLMn+I1sXYGS7fwvfU/I1AlA7EQHVYFjom2pzoZ/Cqa6/7a08E0B+9lZ0TnO3t71Qg6hZFgGNNw5GEkALuBry
+X-CM-TRANSID:QCgvCgDnh0jD90RpufjJIA--.160S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWrur13Xw17KF4DXF45AFy7ZFb_yoW8JryUpa
+	93tan8Zw4UXwn8uw12yw42vrs3K34fJw1UXFZ8Wa4Skr1j9F4xKF4xXr4YkFWrWF4xu3W2
+	qa47tr95Zr4YkaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRwL0rUUUUU=
+X-CM-SenderInfo: hprx03thuwjki6rwjhhfrp/xtbC7wqb02lE98p7RAAA3C
 
 
-> The struct rxe_recv_wqe is as below.
-> 
-> struct rxe_recv_wqe {
->      __aligned_u64       wr_id;
->      __u32           reserved;
->      __u32           padding;
->      struct rxe_dma_info dma;
+在 2025/12/18 21:48, Gustavo A. R. Silva 写道:
+>
+>> The struct rxe_recv_wqe is as below.
+>>
+>> struct rxe_recv_wqe {
+>>      __aligned_u64       wr_id;
+>>      __u32           reserved;
+>>      __u32           padding;
+>>      struct rxe_dma_info dma;
+>
+> Expand struct rxe_dma_info here.
 
-Expand struct rxe_dma_info here.
+Thanks. In struct rxe_dma_info, the struct is
 
-> };
-> 
-> But I can not find dma.sge in the above struct. Can you explain it?
-> 
-> To be honest, I read your original commit for several times, but I can not get it.  Can you explain the MACRO TRAILING_OVERLAP? And how can it replace the 
-> following struct?
+struct rxe_sge {
+        __aligned_u64 addr;
+        __u32   length;
+        __u32   lkey;
+};
 
-This is clearly explained in the changelog text. I think what you're
-missing will be clear once you understand how nested structures
-work. See my comment above.
+But in your commit, struct ib_sge is used.
 
--Gustavo
+struct ib_sge {
+     u64 addr;
+     u32 length;
+     u32 lkey;
+};
+__aligned_u64 is a 64-bit integer with a guaranteed 8-byte alignment,
+
+used to preserve ABI correctness across architectures and between
+
+userspace and kernel, while u64 has architecture-dependent alignment.
+
+I am not sure if we can treate "struct rxe_sge" as the same with "struct 
+ib_sge".
+
+
+Leon and Jason, please comment on it.
+
+
+Yanjun.Zhu
+
+>
+>> };
+>>
+>> But I can not find dma.sge in the above struct. Can you explain it?
+>>
+>> To be honest, I read your original commit for several times, but I 
+>> can not get it.  Can you explain the MACRO TRAILING_OVERLAP? And how 
+>> can it replace the following struct?
+>
+> This is clearly explained in the changelog text. I think what you're
+> missing will be clear once you understand how nested structures
+> work. See my comment above.
+>
+> -Gustavo
+
 
