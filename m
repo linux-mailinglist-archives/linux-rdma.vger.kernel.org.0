@@ -1,56 +1,75 @@
-Return-Path: <linux-rdma+bounces-15099-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15100-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A7F8CCE87C
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Dec 2025 06:28:03 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A29DCCE963
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Dec 2025 06:48:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0F2643021452
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Dec 2025 05:27:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0AC6A3019B6E
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Dec 2025 05:48:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDCD02C235E;
-	Fri, 19 Dec 2025 05:27:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CDCC2D0620;
+	Fri, 19 Dec 2025 05:48:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="szfgO3oO"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="XEiNg+fp"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DA17D531
-	for <linux-rdma@vger.kernel.org>; Fri, 19 Dec 2025 05:27:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55A094C79
+	for <linux-rdma@vger.kernel.org>; Fri, 19 Dec 2025 05:48:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766122075; cv=none; b=Rs7vq6JTiLF0QWs4HALFUTPMnSpeVCFOB4l/wPTLZCyq/zs6djU1gnRRTJAQCu6kZxRRPZp4yg6BzdVl5Gb3ICAu1k7jzgHG9sXNhqMZsEOwyFXq6h/WJpHwkQURtWc5B30/NgH+dNa7Q90OJpTQlzmQovuU3tNCGj1Gx0ekrZc=
+	t=1766123327; cv=none; b=rta546fR33ib3XNkPtYYli0nr6aHC0E5GHpj2NfEb/1VhRr70ofmZVBMJ3ePHoDJE3lOGNiLVALU2ENxwmC4tuxfHQg8r44YL1GudOioREETp2HssMv4NmCqagxB1S6aTybNvfExbwFu0M2wLs6zb12+o2c8YIA5UusNG8szRrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766122075; c=relaxed/simple;
-	bh=ZLPOsN93mhLBgc1DlgFNEARefAxozdoq2IoqoUCcGNs=;
+	s=arc-20240116; t=1766123327; c=relaxed/simple;
+	bh=f4tJcY0zeyT2kIqUw9BwvcPuvmg7ZanfgE/69b1zWdk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mIG3W5XcrLWZrBaBt+t7WI5WAFy04uJpIS+wk0/ZseFx0R0iz2iBpSV/RmVkMFUVOFQBpW39JlTTuuD4h8k+e+xyNtFBe+7IClprPLLlE9vdPu0lJa1IzBjlqNofFOs5HoksdPgOidKDZ/EfB9g7htejOJ7yjJyw7W9jy8tbuBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=szfgO3oO; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <01b419f6-264e-4faa-b4df-480fdf952d14@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766122061;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TuAsbNg8IXs9RS2NAbeaLJ4hnHbfDFyeT7DH3dnGHR0=;
-	b=szfgO3oOVzLCZiWDGJaoy/h6QDemWhZUqn+JYJOzQAIzVRlXlOW8kvEsQHZlkOzNf6eQSy
-	gKbtTnSXhHAda/q6i73BVLnryj9Q241nndlMJ6wYI2670YvdpjMrhY75tK4lxAsig1Q1jz
-	1AFHUzdsFBoNjKxQopG16lVjegIhV2Y=
-Date: Thu, 18 Dec 2025 21:27:30 -0800
+	 In-Reply-To:Content-Type; b=Pkl2FymLUZwutxYCufYzJP539Y6Lzwp2Ycyy6gxyW2cH0A5FRkDl3jTJF9aVaMvjzk+S/YSfrkMV0WQGz59PM98tfCLvjIy1Lq49D/Q9uyNpOWkczkBfq0nQdhK+/5V2eMVZOqV/cpjnRhnaf8WsDCWr0KI5s8f5T4wIpiEg4tI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=XEiNg+fp; arc=none smtp.client-ip=35.89.44.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-6003b.ext.cloudfilter.net ([10.0.30.175])
+	by cmsmtp with ESMTPS
+	id WQM7vAUVJaPqLWTM4vYz9a; Fri, 19 Dec 2025 05:48:44 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id WTM4v6yLbhoT4WTM4vnQpu; Fri, 19 Dec 2025 05:48:44 +0000
+X-Authority-Analysis: v=2.4 cv=XZyJzJ55 c=1 sm=1 tr=0 ts=6944e73c
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=ujWNxKVE5dX343uAl30YYw==:17
+ a=IkcTkHD0fZMA:10 a=wP3pNCr1ah4A:10 a=7T7KSl7uo7wA:10
+ a=sCnCf3pnyfLPVqDf7dUA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+ a=2aFnImwKRvkU0tJ3nQRT:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Q1TkFPTfRwhSUh6QMJT32hEY62qRYKxTLZnluHvILIE=; b=XEiNg+fpj/bPghrBO1Oqyh9XsO
+	vdukHCfqYd/iItoXJgXHnTCnNEJKrkorP8ue621UdPVLkGMQMIPJgJFuXqmo/OXqXmviN4tZ01mq3
+	bQYmn+r6/UPdXwaCpd4FJyOM2Njxr+YxS16iiIjDupznV9DtKSgw9DsoSPlHDKaP+DTPNoazKTv5h
+	+TRK3+aTRNVEq03KH+1qIa/TvHQpf78FNbn7MHlU5//2PMR9fcDiu6L6ngRSGAVmow0wQ64spe0g+
+	KGx08W74oUGHMNAy2IrzxCrxB45lRo5xfWnXbNSDLSTpmQ4uTO9C4QQR8STWOrvwHyG30z1+D4TRF
+	8H+KiC+g==;
+Received: from i118-18-233-1.s41.a027.ap.plala.or.jp ([118.18.233.1]:61583 helo=[10.83.24.44])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.98.1)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1vWTM3-00000002JVZ-1XmM;
+	Thu, 18 Dec 2025 23:48:43 -0600
+Message-ID: <8470c362-8c41-4b99-8c05-0903285c1b6c@embeddedor.com>
+Date: Fri, 19 Dec 2025 14:48:31 +0900
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH][next] RDMA/rxe: Avoid -Wflex-array-member-not-at-end
  warnings
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
- Leon Romanovsky <leon@kernel.org>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>, Leon Romanovsky <leon@kernel.org>
 Cc: Jason Gunthorpe <jgg@nvidia.com>,
  "Gustavo A. R. Silva" <gustavoars@kernel.org>,
  Zhu Yanjun <zyjzyj2000@gmail.com>, linux-rdma@vger.kernel.org,
@@ -66,150 +85,54 @@ References: <aRKu5lNV04Sq82IG@kspp> <20251202181334.GA1162842@nvidia.com>
  <cbb0ec98-0291-4ec4-9633-690e9199248b@embeddedor.com>
  <6f15e334-8902-4d1d-adab-aa9ab8f009d6@linux.dev>
  <d569b5fd-fcca-4dd0-b94b-a6df4e52d940@embeddedor.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <d569b5fd-fcca-4dd0-b94b-a6df4e52d940@embeddedor.com>
+ <01b419f6-264e-4faa-b4df-480fdf952d14@linux.dev>
+Content-Language: en-US
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <01b419f6-264e-4faa-b4df-480fdf952d14@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 118.18.233.1
+X-Source-L: No
+X-Exim-ID: 1vWTM3-00000002JVZ-1XmM
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: i118-18-233-1.s41.a027.ap.plala.or.jp ([10.83.24.44]) [118.18.233.1]:61583
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfOOwT0sSbaVfnm+MJnSYCOBNpdkY52LZdU6M5U15F4hZBCu0MqJDUzn1Xs6XN3GqbvkLhbGz1axz7G6KTKYIKdm/K/Rs9/Tqvoa71X1V8VoorGG2AAVc
+ 24/2gZPMjalTg/OxlEp8+CboH+Atjkq9dFDKLMn+I1sXYGS7fwvfU/I1AlA7EQHVYFjom2pzoZ/Cqa6/7a08E0B+9lZ0TnO3t71Qg6hZFgGNNw5GEkALuBry
 
-在 2025/12/18 20:35, Gustavo A. R. Silva 写道:
+
+> The struct rxe_recv_wqe is as below.
 > 
+> struct rxe_recv_wqe {
+>      __aligned_u64       wr_id;
+>      __u32           reserved;
+>      __u32           padding;
+>      struct rxe_dma_info dma;
+
+Expand struct rxe_dma_info here.
+
+> };
 > 
-> On 12/19/25 13:29, Zhu Yanjun wrote:
->>
->> 在 2025/12/18 18:51, Gustavo A. R. Silva 写道:
->>>
->>>
->>> On 12/19/25 04:22, Yanjun.Zhu wrote:
->>>>
->>>> On 12/18/25 7:56 AM, Leon Romanovsky wrote:
->>>>> On Sun, Dec 14, 2025 at 09:00:51PM -0800, Zhu Yanjun wrote:
->>>>>>
->>>>>> 在 2025/12/5 20:41, Zhu Yanjun 写道:
->>>>>>>
->>>>>>> 在 2025/12/4 9:48, yanjun.zhu 写道:
->>>>>>>> On 12/4/25 5:05 AM, Jason Gunthorpe wrote:
->>>>>>>>> On Wed, Dec 03, 2025 at 09:08:45PM -0800, Zhu Yanjun wrote:
->>>>>>>>>>>         unsigned int res_head;
->>>>>>>>>>>         unsigned int        res_tail;
->>>>>>>>>>>         struct resp_res        *res;
->>>>>>>>>>> +
->>>>>>>>>>> +    /* SRQ only. srq_wqe.dma.sge is a flex array */
->>>>>>>>>>> +    struct rxe_recv_wqe srq_wqe;
->>>>>>>>>> drivers/infiniband/sw/rxe/rxe_resp.c: In function get_srq_wqe:
->>>>>>>>>> drivers/infiniband/sw/rxe/rxe_resp.c:289:41: error: struct
->>>>>>>>>> rxe_recv_wqe has
->>>>>>>>>> no member named wqe
->>>>>>>>>>     289 |         qp->resp.wqe = &qp->resp.srq_wqe.wqe;
->>>>>>>>>>         |                                         ^
->>>>>>>>> I didn't try to fix all the typos, you will need to do that.
->>>>>>>> Exactly. I will fix this problem. This weekend, I will send out an
->>>>>>>> official commit.
->>>>>>> Hi, Jason
->>>>>>>
->>>>>>> The followings are based on your commits and Leon's commits. And 
->>>>>>> it can
->>>>>>> pass the rdma-core tests.
->>>>>>>
->>>>>>> I am not sure if this commit is good or not.
->>>>>> Hi, Jason && Leon
->>>>>>
->>>>>> Any update? If this looks good to you, I will send out an official 
->>>>>> commit
->>>>>> based on the following commit.
->>>>> You are RXE maintainer, send the official patch.
->>>>
->>>> Will do. I will send it out very soon.
->>>
->>> I don't see how this addresses the flex-array in the middle issue that
->>> originated this discussion.
->>
->> Could you please explain this in more detail?
->> Also, if you have a better approach, would you mind sending a new 
->> commit for discussion?
+> But I can not find dma.sge in the above struct. Can you explain it?
 > 
-> This is exactly what my original patch is about. I've explained this a 
-> couple of times
-> in this thread already.
+> To be honest, I read your original commit for several times, but I can not get it.  Can you explain the MACRO TRAILING_OVERLAP? And how can it replace the 
+> following struct?
 
-In your original patch, I have the following problem. I read all your 
-replies.  But I can not find your answers to my problem.
+This is clearly explained in the changelog text. I think what you're
+missing will be clear once you understand how nested structures
+work. See my comment above.
 
-My problem is as below:
-
-1. The followings are the declaration of __TRAILING_OVERLAP
-
-/**
-  * __TRAILING_OVERLAP() - Overlap a flexible-array member with trailing
-  *            members.
-  *
-  * Creates a union between a flexible-array member (FAM) in a struct 
-and a set
-  * of additional members that would otherwise follow it.
-  *
-  * @TYPE: Flexible structure type name, including "struct" keyword.
-  * @NAME: Name for a variable to define.
-  * @FAM: The flexible-array member within @TYPE          <----- Here
-  * @ATTRS: Any struct attributes (usually empty)
-  * @MEMBERS: Trailing overlapping members.
-  */
-#define __TRAILING_OVERLAP(TYPE, NAME, FAM, ATTRS, MEMBERS)         \
-     union {                                 \
-         TYPE NAME;                          \
-         struct {                            \
-             unsigned char __offset_to_FAM[offsetof(TYPE, FAM)]; \
-             MEMBERS                         \
-         } ATTRS;                            \
-     }
-
-2. I expanded the above MACRO __TRAILING_OVERLAP into the following 
-following the definition in your commit.
-
-union {
-
-         struct rxe_recv_wqe wqe;
-
-         struct {
-             unsigned char __offset_to_FAM[offsetof(struct rxe_recv_wqe, 
-dma.sge)]; \
-             struct ib_sge sge[RXE_MAX_SGE];
-         } ;
-
-     }srq_wqe;
-
-3. In your original commit, dma.sge should be the member of struct 
-rxe_recv_wqe. The struct rxe_recv_wqe is as below.
-
-
-"@FAM: The flexible-array member within @TYPE"
-
-
-The struct rxe_recv_wqe is as below.
-
-struct rxe_recv_wqe {
-     __aligned_u64       wr_id;
-     __u32           reserved;
-     __u32           padding;
-     struct rxe_dma_info dma;
-};
-
-But I can not find dma.sge in the above struct. Can you explain it?
-
-To be honest, I read your original commit for several times, but I can 
-not get it.  Can you explain the MACRO TRAILING_OVERLAP? And how can it 
-replace the following struct?
-
-struct {
-       struct rxe_recv_wqe    wqe;
-       struct ib_sge        sge[RXE_MAX_SGE];
-} srq_wqe;
-
-Thanks a lot.
-
-Yanjun.Zhu
-
-> 
-> -Gustavo
-
+-Gustavo
 
