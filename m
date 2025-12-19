@@ -1,189 +1,212 @@
-Return-Path: <linux-rdma+bounces-15104-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15105-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFE32CCF3BC
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Dec 2025 10:56:44 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FD51CCF92F
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Dec 2025 12:29:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2BA92303BE0B
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Dec 2025 09:55:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 46D0A300661A
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Dec 2025 11:29:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 419032EBB8A;
-	Fri, 19 Dec 2025 09:55:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A7163128A9;
+	Fri, 19 Dec 2025 11:29:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="MSrDkswr"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="T4PYMfs9";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="f3fLU4YM"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6127A2BE7B6
-	for <linux-rdma@vger.kernel.org>; Fri, 19 Dec 2025 09:55:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.35
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766138115; cv=none; b=FHWSKC+N3zCkrpNvuUNCN7P35CV+8GPHmtn1Y9CrOfVD7Lbff5+gZ42WsJRTRR2I47QDQyAaxdC0zvSHX3FZotocPKR0X5WGd9ShnPdEqXkQdcFv+XuP3J3mORqQiva92+YXLlY1pyoaW+0JJzT2k4yKrIhdvt8/tNzRWZP/wtw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766138115; c=relaxed/simple;
-	bh=LfPMAZQwG2CDhO0livSrqtZCmM4kbIyrEnve/M5Z09o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f4aueAcXHmpn+5eGtYa7M3Cq+BnnPKokdBHwxX91S+JnUJrC4AlV+xCp7H1bIXfeI/YF1ZYpb8/OmVPtaAyYhp8cHoI3OhhDAZUyCb5jpMgMJMTRyLzAOcLokg04ZTQmKkKMW82fHrcmn+GBl+MyDxjrhXw8NmqE/5Zry+osQNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=MSrDkswr; arc=none smtp.client-ip=35.89.44.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-5005b.ext.cloudfilter.net ([10.0.29.189])
-	by cmsmtp with ESMTPS
-	id WOqhv43OsVCBNWXCavde4F; Fri, 19 Dec 2025 09:55:12 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id WXCZvwD2bjAxuWXCav1XJh; Fri, 19 Dec 2025 09:55:12 +0000
-X-Authority-Analysis: v=2.4 cv=EoDSrTcA c=1 sm=1 tr=0 ts=69452100
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=ujWNxKVE5dX343uAl30YYw==:17
- a=IkcTkHD0fZMA:10 a=wP3pNCr1ah4A:10 a=7T7KSl7uo7wA:10 a=VwQbUJbxAAAA:8
- a=_Wotqz80AAAA:8 a=qPglhVzjI8gqfWa7ntcA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
- a=buJP51TR1BpY-zbLSsyS:22 a=2aFnImwKRvkU0tJ3nQRT:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Zi+7Rw0hPdq+BgnCCkLlPOiKXJVsrPVfrI28uMIfdY8=; b=MSrDkswrK7HG4GXVjaaIekbFup
-	AVjqjEZeYE/yrPBzXTIMyFMQ0uwgFeomKsBWPsaSLb+U9o4TuUWtemkFp+QJyql192ixI+A1ZQABb
-	ugQkUZFIZyqbEqnDswVxMf6D0NlexK/cM4slZCXxKzjOtmDEeOlkg4pMeQm5UfViW8duUlkeTMKPr
-	c1R1sX2trPe/Nia5Er2j/vzQvjRALS8M83QR1eu+7ywv8pHTPbuPN4VdV9LBJp9HItv5h1WA8RZ+O
-	x8FLyTKP5qXQjcP9oT2/7jhtwDaaC0U8weuxRTVzUpdNWMLcALF7bRJOoXiQ6U5vuTouMJZM/PgIl
-	4LRx0rfw==;
-Received: from i118-18-233-1.s41.a027.ap.plala.or.jp ([118.18.233.1]:61112 helo=[10.83.24.44])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.98.1)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1vWXCZ-00000002Zn5-0tMF;
-	Fri, 19 Dec 2025 03:55:11 -0600
-Message-ID: <ad8987ae-b7fe-47af-a1d2-5055749011c0@embeddedor.com>
-Date: Fri, 19 Dec 2025 18:55:01 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43BD83126C1
+	for <linux-rdma@vger.kernel.org>; Fri, 19 Dec 2025 11:29:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.143.124
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1766143746; cv=fail; b=mcJThzGTOrOEKZ9VuYkVeXULp9NuIEGH6WSUhEUKOjMuV58pNpWhfKD50OGPVFggdV2P/x+qDkSYMzA8W8HuDCHajfEsBo+KfUCRPYfxDd+ai9ujl0NagT+Zta/6YXly5In2he2v3liCuvC5cJvysqjRJf6ZxI2lDH0YwjOSlXI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1766143746; c=relaxed/simple;
+	bh=k8xjUFUNXoD2S8I0mOfLorAFglu26IziJUt9FuDfxp0=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=LLUp85DIiFn8yoWWTixXkkmC9MFua8UMvYb6PUwjvWhvPFRCqOHmeQUZKJlng8OzFY89CalvVo+hU4wco4AW1mfBEdzjHuRBkQ5A3NwFHjQIwoH1lMetNZSNTbsGixtpjvGPRUhH3IC0DtCqI14rCy7G3D+WYYKRePvqYNpcqho=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=T4PYMfs9; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=f3fLU4YM; arc=fail smtp.client-ip=68.232.143.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1766143743; x=1797679743;
+  h=from:to:cc:subject:date:message-id:content-id:
+   content-transfer-encoding:mime-version;
+  bh=k8xjUFUNXoD2S8I0mOfLorAFglu26IziJUt9FuDfxp0=;
+  b=T4PYMfs9goDK8XBB8W9WFUDQrhG2p8RVZiqdjupC3MkSSPrkQ1GzD68i
+   AenS6pMZLLN2jhCXKm7U8uinDI9o4sVMSWK5fd2TxhgQS2urTaLPO/BzQ
+   nPwpr4CKRREGUL4jzkyx7FJ7G4wJVlzPFt3Pu0/+bWNeGEcd4ROYYqHf8
+   IDifkEWb99Yss7vr/lOlx7GZfok22hE6JI0Ani2jw912zoRaxqzylFAPr
+   63FKFiBGJljLjrQAL3YQ/bHRrQPy6DFznLimyNoOirYIThII9N7bo2CEG
+   c6zREG/AFRfCYke1wmJP7IkovO/w3L1+FftL6Wyjs1MvXZxJxUm53FSCj
+   Q==;
+X-CSE-ConnectionGUID: tI1M6A7rTbKi+ZBsxEWlLQ==
+X-CSE-MsgGUID: ZbShz96DS4qQyluLoDUEDw==
+X-IronPort-AV: E=Sophos;i="6.21,161,1763395200"; 
+   d="scan'208";a="138654535"
+Received: from mail-westus2azon11010025.outbound.protection.outlook.com (HELO CO1PR03CU002.outbound.protection.outlook.com) ([52.101.46.25])
+  by ob1.hgst.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Dec 2025 19:29:02 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=NpbkUAFoR29xudngffMN85EZwwa89KC/4rVnX5MNOyKOXSxKgFhgqcOtKKODiq01u8rCpr+GYrDgoYhzBdSShci5r1fyJg2kpoGA+WeaBriaC8DC7YRmvXIbW3uI/VRAgh57MeLBbROxLHAKcFEoThahXJcZuIMaYttPks+Yo/B3eA9dSyDSVkzrBNstdDwnUQQN6Zp1bR+ieRkUJOsm/wr39QeI92cC3N0vWtfvqG2r6xdSkbxq8qhtEK71l2Hquc4p1Cx3Pj6tERnC+Xh9OLv7vNPoXAq955+3EnDJd1a5mgHgB3icSks/h22a9J/PkZ0X2G0z8/9B1O/N6Mz9JA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=k8xjUFUNXoD2S8I0mOfLorAFglu26IziJUt9FuDfxp0=;
+ b=TI9TN3Pl4pL3dLED1Hw2+pJzHQfPvVQjzIZE/VTqhJ2HQlCPzKYCUApiltE95cAN0lX8pWKYt7GD/9JuOI6pPiWwBxFXJGW64RpN7ZVjSEQgRo26IhO/mg2maQZ8TLv9xmAABuPFJQZR1HxQq4aXZv1+WT4I1CjWoCuyq/yYjTEvqQ17MZaxRZxnQ8ldNR08zd729nzK/r+CzZA69S/TBkx0C13QGPGIzK9lOI9ErVhPs9xbznJgbUz3euLbQk4aVyvF3rB56sbZQeJ+G+8SKn9NIL4bCl3PRZLy4emyawiLI9fZoV5E7zDH2GFbwxmPH/kyoH/SN2KBT7AXMQJKYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k8xjUFUNXoD2S8I0mOfLorAFglu26IziJUt9FuDfxp0=;
+ b=f3fLU4YMISAr+JA5TUAdNZtmI3Aj7UiBTNq/QrVHHMcy7G69kdd1oOcWsgrgRLHpxSe6Fq8k/ZkhqgGr3KhK+VenFv+XTvnN14hUj/rcO03S+pLr0plcTs4JdX3AFeDAVTzInKpyO3/Eg0LG85/HwBXnOXYMczWQKa82Nk4CCJE=
+Received: from SN7PR04MB8532.namprd04.prod.outlook.com (2603:10b6:806:350::6)
+ by SA2PR04MB7611.namprd04.prod.outlook.com (2603:10b6:806:144::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9434.7; Fri, 19 Dec
+ 2025 11:29:01 +0000
+Received: from SN7PR04MB8532.namprd04.prod.outlook.com
+ ([fe80::4e14:94e7:a9b3:a4d4]) by SN7PR04MB8532.namprd04.prod.outlook.com
+ ([fe80::4e14:94e7:a9b3:a4d4%7]) with mapi id 15.20.9434.009; Fri, 19 Dec 2025
+ 11:29:01 +0000
+From: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC: Stefan Metzmacher <metze@samba.org>, Leon Romanovsky <leon@kernel.org>
+Subject: [bug report] rdma_rxe module unload failure with DEBUG_LOCK_ALLOC
+ enabled
+Thread-Topic: [bug report] rdma_rxe module unload failure with
+ DEBUG_LOCK_ALLOC enabled
+Thread-Index: AQHccNqsjzVQPZSJAEeuIJj5Da+rsw==
+Date: Fri, 19 Dec 2025 11:29:01 +0000
+Message-ID: <170e3191-7e15-4af8-948f-14904fe260cc@wdc.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN7PR04MB8532:EE_|SA2PR04MB7611:EE_
+x-ms-office365-filtering-correlation-id: 9b995553-33d7-4aa8-ae6d-08de3ef1ceff
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|19092799006|376014|366016|1800799024|38070700021;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?djZ6UHhwU05zeXhsU3lvRHpQSklJUXRzU2F3RWc3dzVqNzVWekxZV1lCcElO?=
+ =?utf-8?B?Mk9IbktNb2YvVW5QMERwYVluWUVibVg4czlZZTNlcCsydVpOV3IrNFJPNWl1?=
+ =?utf-8?B?Umx2bXYwd29iSFluWk12YlpBRDkzZUQ0YzdGMHdVeTMwQXN3R29TcWx2TmRY?=
+ =?utf-8?B?M1lvM3o1SGN4WDVoNW9RbElZOXF0VVNtc29xb05VKzVvTWdtc2w5MEdWaFoz?=
+ =?utf-8?B?UVhzZWxVSnlMVnBMRmY1TDg3QWVOcHBIaHRlNVdIWXZKZTNFN3VvaEhoQTl2?=
+ =?utf-8?B?bzhtdVVlcnNhTE1jRFlQYmNNMW1BT3lPSFR6TWZRVDdzTTFKUWhNeFFvNFVu?=
+ =?utf-8?B?ZlVCVHJCTXJzMDFBRC83bk5XSnovV0pHbTZKS2ViV2xlZVhURU1EN0hwWTVG?=
+ =?utf-8?B?dWNxenFYcGtORVlWZjFJMUo2S2xDdFhHb2pYdkNKWlBHeXc2cXpoU3ptTmdS?=
+ =?utf-8?B?aHRJVm1FOWhkSGJHU0g2b1pXOEt2T21FdGg4b3FyTWJ2YVdIaDNtZTBEY3U3?=
+ =?utf-8?B?dG85TkpuZVo5QUVrR3VOK1lndlg2anNqREt1bHNXcmxpYjlyU050RC8zaG5J?=
+ =?utf-8?B?cE5ydStsMEVBS05LL284Y2dlT1BkUUFQb25obHBKQmN5SnBlRkVGMXk1VmRM?=
+ =?utf-8?B?STQzT0J6d1EwajdONU5PYzRWeHJFOXVBaGFJbDVlRTBxdzd0dVlURm1ST1VO?=
+ =?utf-8?B?YzhoVCtyZWdMdzV0c29uQ0oxMk5kelhlTjE3eTAwNURIZmxrSWFwSmU0em9j?=
+ =?utf-8?B?VVJnZ1BnV0xwQlFTdHpCcXRMN203ZkFiczFqQzRPb2FKOWpzL1ZEellJMlYr?=
+ =?utf-8?B?aXViRnZrYTVOUDBVK0xDR0Z0Vy9FUXEyVnFPVmxWR2VsV1lPcWlsbDVaanMy?=
+ =?utf-8?B?RmxsVEVHeXd2V2lRUWtXdUhkZndKc3BHT045K016cFRheENXdFAvdkRqUURL?=
+ =?utf-8?B?cEVZUndJd1lzUWI5LzM1SnJGOHpSSzlCZzFBRi9pTDJRSWE2bnBIcjZiT3pV?=
+ =?utf-8?B?bW54d3hVb3M1V2NwNE1ZVy9mcmJVcC9MWmE3a096VlZDcitndzRsMHVkaVRU?=
+ =?utf-8?B?UGx3VEgvOVJONmRQMEhvdnVtdFF4L25qV2JWY3FCeEEyM1VUa3NtSS8yenUr?=
+ =?utf-8?B?WjVWQUp2Y1owZUkzang4QXRTbDRGa2FPUjdMSkRFQnlZbnI4cDk0THdCMml6?=
+ =?utf-8?B?S3Ridmd2bElPVG9GeWhDUmxoSS9xTGgzeDhkWEc2eGVPYUg5cGJQR1dUK0pj?=
+ =?utf-8?B?M0RCaExRcm1LVllxeVFmeFJSRXlLeXk5d0NSdTU4SEk3eHF1eGJ3OVNLWFNC?=
+ =?utf-8?B?ejF5U3hoWDllK0pFMFpoZGZ2U1lNOHdmV1pZSXYrNC9rVy9xaGk0VXVsVUVl?=
+ =?utf-8?B?VVJuelV2WG5uM3RUREU4YVF0c05wZ2ZlZ3MvU3VsSW1vN3hhbGtmNzlrclcr?=
+ =?utf-8?B?RXJkODVrc0NiU0Z5Mm5pcTBwbC84N1lJOEl6djJtSWR6YXVpVER2WDVjT1hQ?=
+ =?utf-8?B?aWQ5UjFVZXZGamRRSUpaSTVDc2ZFc09aU1h0anpBOC8raEJscnAveU9GMU8w?=
+ =?utf-8?B?Y1dqVTBYejhBTWlZWUdFT0w3WnllcHd5QlEyZXlNN0NaRTg4LzE4cEZ0c1Q4?=
+ =?utf-8?B?TUpycmo0dmRoUlY4NGVXaG5ScTdmSlBtalhPMGtWaWdFbWt2UVZ2VUF1S1Rh?=
+ =?utf-8?B?akxMUHM5Tmk1ZEU1ZkFudllrU2djUjI1K0NxUVFDSWJYb2JNM3Z2WnNMSVJR?=
+ =?utf-8?B?ZjRObHJlQ3YzbzFnNEJnbDdpRXg2N1dPTGdLbGR2UmgrZlFEcXdXdmk3aHhi?=
+ =?utf-8?B?ZW4wOG53YzZ5MlFLYjFQVDNRYUw0QkdyNFViMkFXdk42TGlZY29UOXk5SFZB?=
+ =?utf-8?B?KzZiellDRlFxdyt5NGthRVpYaGpvYWZIQk4yY3ByTkFNVkZrUlBoK2Z5RDFD?=
+ =?utf-8?B?bFZOWEc1SVdlZUREdnNwVFduYXJ6MnFaTy83cndHUWV0R2J4d3NydS90UnZo?=
+ =?utf-8?B?Zm5JRWR2anRpRyt0R1Z3UHJUVVJZeUxUcWtDQWt3RlNpNWVPS01Tdk4zSWR5?=
+ =?utf-8?Q?sIq4rU?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR04MB8532.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(376014)(366016)(1800799024)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?M3E5Q0lrVXBjZUM5K3hURERmc09mbmplSjJQRHE0dWZKaXRKUmNyby9wZFRy?=
+ =?utf-8?B?T2orTmhiaElBb1BYbUg2MDAwb3ZPQkVNemtKMVRvRjF4MVFzUGUwcUc0Y3VT?=
+ =?utf-8?B?VjgxaHFicHprVVNjUVp4ZGZDbXRtRk1YeFlpeFFJTXVpMCthQzBKNHp5S2JT?=
+ =?utf-8?B?RWdnM3dUanNLWVRVOGVlcHJld3JQSXViQTVwT3R6NHM1cGZBb1ZMU0NEWC85?=
+ =?utf-8?B?d2Z3OGZRWHh6ckRDTEdLM2YxOWlWdzF6RGcwdEgwZitzZnVjRTNhMzhUWGkx?=
+ =?utf-8?B?TEo5QjhsaW5tMEEvQjRZUTh6bXVIckRDNlArNnZSN0VweDM2NWpjcFBlaW5U?=
+ =?utf-8?B?VkNpcE1ObERYU0JPUjE4cHhIRmE2STZ5UjRiaXJtQXljM2w2eUdNU3psTXI2?=
+ =?utf-8?B?WTJJSVJGeThBY1ROcWVrWVdqdHZuUjdmdzBPcFR0NHVBN0dDZEVOalpnbEdx?=
+ =?utf-8?B?aytjOE1wQUpXRmppRXNCcWdLRTg1dFN0eS9KbTlLNURRNUZBeFh0OWdPNTdX?=
+ =?utf-8?B?R2wrc1BmaGtyUzBqbUlrNVhpRkhTd0l6c2xjdU90T1RhNDJWVW5zbXNHUHFU?=
+ =?utf-8?B?N20relY0QVNvdklHcloxSkhmNWRkQlJBb1ZLVHA1dzg1ZXdWVGVKK3Fncmh1?=
+ =?utf-8?B?bU8ydTZDaGFmcE5JdEppZ1lYYlFySGFpWDhCOXBGNGtMbFQvdWhLTUs0VHBY?=
+ =?utf-8?B?UU9vSklxVFFUUkMvTm53K3JjR0hjaXBlTWphRjZPS2JxOU9EUjZ6Rm5YNlZi?=
+ =?utf-8?B?WjFrSWl0OHRpM25TbWpUM0pITkdaSnhnMWxiS3c0UDcxdmZhOXlNSHo2MURm?=
+ =?utf-8?B?a3lBZXVZVUI0TVZnMndQRUY2bXEvU0R3SGRVRVY5N1dIeGtvRnF6M21PZkZH?=
+ =?utf-8?B?US9xSlV6ck9NY0FsT0krL3ljR0t1VHdobWFjTjVQa2x4dE1mWjlyVERENmRZ?=
+ =?utf-8?B?YUNEZ21oNEhsUWlGVG9uZHZxMXVLNlUxek95QW5SbmIrNTRmaFpHdG50Njc3?=
+ =?utf-8?B?RG1qVGh5c2FpdEQ4KzM1NFJvbE5Cd3dGc1RuNExRUXk2ajRzbU8wVGY2NVFS?=
+ =?utf-8?B?c0hKa3lNVDlybWt2cWRkSDFKVkZ4UVJKMjI4T0lsMWpkd2lETUgvY2tqYStp?=
+ =?utf-8?B?aUZ1cjFaRnJuT3BuanlwZjVpMEJOTGhKaVVsTFk1Z0lJWlMyK0NmdDU2ZENB?=
+ =?utf-8?B?MlNxRWhVRlJiQUx0ci9YUWhqQjVnNzdrZm54RjhPakhWUEhESjJvbTJlVEhC?=
+ =?utf-8?B?Q281VkhwVmphR0ljUG9CVUVmWFoyV0llQVFma2lVSFNGeVJSS21xcHJrZWdP?=
+ =?utf-8?B?UDdxZlhMZWNFRGhNZGlXVDBLWDhBL3FSN1FQRnpLWDhxUjJhRHpkTjVrV0ZH?=
+ =?utf-8?B?RzVUZWd4cDJuZTA0WkdJdEMrR3RZb1VhWHozeGhHWmh0alpnMEltMFZsRUJu?=
+ =?utf-8?B?UDZ6d050Qlp6QlZKdjg2a0RJeVk2a08yT0hsSFNHRjJUbEVpN3Q1amFZYmtL?=
+ =?utf-8?B?STlnRXBrQ1BmSzlTZGlrUDFqQlVHNDFBS0x6bEdrU1A4NWxSVkNtS3piY21P?=
+ =?utf-8?B?NE5wa2RaTXF2Smt6SC9pcGpxQ0h5eTRMbEZla2owNVhkN1gxSldjUE0vRWIw?=
+ =?utf-8?B?bmE3ZlBIMEhIQU5OYktBNzh3Vk5Pd3VaNUJCODFWZnIrZ3FoVDhtdXdPak1E?=
+ =?utf-8?B?bTB0b240RVZjbG0vVHIrdTRVUnEyTE9raWd3MmFLNDZpYmI5VkRiUkdrbmJ3?=
+ =?utf-8?B?TTBuSExRdFcvTER1RUdmdlF1cmRjREpKVDE5UXBDanA0YW1ROTlXUklHWHJj?=
+ =?utf-8?B?NDN4clNGVGw1aWFabmN1M1d4TW56allxUVdmMnE5U3M2eGhkZkxsbTY1aHlG?=
+ =?utf-8?B?RjFDMTNlZE11a25MdXZINGRnTHV0NjF0TU9NSnpBR0xCWmkwSFNHSWs4cXha?=
+ =?utf-8?B?WStvZ1BBT3RaaGZaWGhMa0I5RXIxdElGTW1aVUlkNVV2V1hpYUpMWUxUV3Yy?=
+ =?utf-8?B?d3NRZFpwSkpPR1RvOUtXTDVXWktIbHlzYURac2NUbFNiSFowQi9CSkU3UnQ4?=
+ =?utf-8?B?MmJUMTdLNXQ4MDZGeGJWc2dDcldNSFRZR2xEVHhSMWJDNVhUY2piQSswcVUw?=
+ =?utf-8?B?NDlCOTg5MmJLSU16bFRYczlBdFdEUGpqQ0l1WnpGYzhLMUQvNktMMXZWWlVR?=
+ =?utf-8?B?amc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A3A8896B159E8848AB1C7498EA4ACCB4@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] RDMA/rxe: Avoid -Wflex-array-member-not-at-end
- warnings
-To: Zhu Yanjun <mounter625@163.com>, Zhu Yanjun <yanjun.zhu@linux.dev>,
- Leon Romanovsky <leon@kernel.org>
-Cc: Jason Gunthorpe <jgg@nvidia.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Zhu Yanjun <zyjzyj2000@gmail.com>, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <aRKu5lNV04Sq82IG@kspp> <20251202181334.GA1162842@nvidia.com>
- <5ac954bb-ad4d-4b4c-b23b-47350b428404@linux.dev>
- <20251204130559.GA1219718@nvidia.com>
- <80620d09-8187-45b1-a490-07c52733ac21@linux.dev>
- <2191ee0f-a528-4187-ae5b-5aba18741701@linux.dev>
- <7e3a294f-5dc2-4e8c-aacc-0286c1592038@linux.dev>
- <20251218155623.GC400630@unreal>
- <5d950681-7f16-4b1e-a512-b118c747ffd7@linux.dev>
- <cbb0ec98-0291-4ec4-9633-690e9199248b@embeddedor.com>
- <6f15e334-8902-4d1d-adab-aa9ab8f009d6@linux.dev>
- <d569b5fd-fcca-4dd0-b94b-a6df4e52d940@embeddedor.com>
- <01b419f6-264e-4faa-b4df-480fdf952d14@linux.dev>
- <8470c362-8c41-4b99-8c05-0903285c1b6c@embeddedor.com>
- <1bef81ba-be81-49df-9d86-3cc0cc4bf864@163.com>
-Content-Language: en-US
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <1bef81ba-be81-49df-9d86-3cc0cc4bf864@163.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 118.18.233.1
-X-Source-L: No
-X-Exim-ID: 1vWXCZ-00000002Zn5-0tMF
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: i118-18-233-1.s41.a027.ap.plala.or.jp ([10.83.24.44]) [118.18.233.1]:61112
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfOpV+6LQR1FXQaCGG7BSbWH2RStDJYOykU0GApmbKBmkxT6vj7DIbQcVNZmVFw2ffB+fHC1VVeeUXfX9tXGZKo1wSMzzeo5alcCqTRUQcuvUGw5nbPgq
- e+G2Ixeg6Y1KAvUXF6AgkBmwkmfFnFGtLVonh7ro5J198EQeIS1GrApNB/8YEBpyvPXNjH6jLa47CR9FzuTrQTlALe4FWQ/v3jV7z31weQWSRufTDvGjuZbC
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	nlHmHfQST1d5bI9aA2aMEtsb6I32ZGisiB7XMVMep3AHZ4jM6HxgqOwPMiQRKMh6wgN9PbJM45HGm3L9tm9zvPuFHLaar0fcXw2ABRRTJtKgnqCd3Tu9rb5Z6p7K26dpcAokG/yDmxdqCCgG0So5baTOpnKMlhtLMF9neRNtrmGHN1F2htfEwKZ+BZ2ysl30Da9EH6qK4VMa27YuMeqBpHLa7ygY2o8Yoejt3wRsPpP4YpR/2isSJ06Mf56dLOQLnvD0hYH+zg2RNvuPBZaiJpIPRvGoknlDbhqwcJhG+4StfLueFaVwL7jEvTZ8pbuLoSqLToX7hQxgT7iF+hjUR7/3bP/Q+y/e/fBj7rdPothZJdYoXwm/qsidlaKGuzTXY2B6iroQkKWhFQ/qbNS1I7IRi8cBy4ydGqHT78ik6IES4sLQzZ/1s6WXS+yAKT6jZtkqeWy8uGM42MAbz/nFRCtbw/5NgovT2/Olmh7Fvayy9MNFKleIS1ZSRVp0TVm2F1jBDW8ggiL9TZjPmGGr96JER8feBO76Ff7ubqVY03U3jeHKXKqsI0HvyDEyTJESz1T0PRn+zkmtdDgYgLKpD6c7Oce8i1muw6QeZCV6aY1Zjl9Fx3iFKoBWUUKDg+lA
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR04MB8532.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9b995553-33d7-4aa8-ae6d-08de3ef1ceff
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Dec 2025 11:29:01.3587
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UVtmUerVjb4go6QuV3DUBJa5mWHx+RNiU5tqdOjCB0hq5xf9ePbhCcWVCaWAXq5GqGdtEF3xL9NFGECqzhYHQs953xTndf296ygIiLDw2hk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR04MB7611
 
-
-
-On 12/19/25 15:59, Zhu Yanjun wrote:
-> 
-> 在 2025/12/18 21:48, Gustavo A. R. Silva 写道:
->>
->>> The struct rxe_recv_wqe is as below.
->>>
->>> struct rxe_recv_wqe {
->>>      __aligned_u64       wr_id;
->>>      __u32           reserved;
->>>      __u32           padding;
->>>      struct rxe_dma_info dma;
->>
->> Expand struct rxe_dma_info here.
-> 
-> Thanks. In struct rxe_dma_info, the struct is
-> 
-> struct rxe_sge {
->         __aligned_u64 addr;
->         __u32   length;
->         __u32   lkey;
-> };
-> 
-> But in your commit, struct ib_sge is used.
-> 
-> struct ib_sge {
->      u64 addr;
->      u32 length;
->      u32 lkey;
-> };
-> __aligned_u64 is a 64-bit integer with a guaranteed 8-byte alignment,
-> 
-> used to preserve ABI correctness across architectures and between
-> 
-> userspace and kernel, while u64 has architecture-dependent alignment.
-> 
-> I am not sure if we can treate "struct rxe_sge" as the same with "struct ib_sge".
-
-Just notice that the original code is the one actually doing that.
-See my response in this same thread:
-
-https://lore.kernel.org/linux-hardening/d3336e9d-2b84-4698-a799-b49e3845f38f@embeddedor.com/
-
-So, if that code is fine, this is fine. If the original code is wrong,
-then that code should be fixed first.
-
--Gustavo
-
-> 
-> 
-> Leon and Jason, please comment on it.
-> 
-> 
-> Yanjun.Zhu
-> 
->>
->>> };
->>>
->>> But I can not find dma.sge in the above struct. Can you explain it?
->>>
->>> To be honest, I read your original commit for several times, but I can not get it.  Can you explain the MACRO TRAILING_OVERLAP? And how can it replace the 
->>> following struct?
->>
->> This is clearly explained in the changelog text. I think what you're
->> missing will be clear once you understand how nested structures
->> work. See my comment above.
->>
->> -Gustavo
-> 
-
+SGVsbG8gYWxsLA0KDQpXaGlsZSBJIGV2YWx1YXRlIHY2LjE5LXJjMSBrZXJuZWwsIEkgZm91bmQg
+dGhhdCByZG1hX3J4ZSBtb2R1bGUgdW5sb2FkIGZhaWxzLg0KVGhlIGZhaWx1cmUgY2FuIGJlIHJl
+Y3JlYXRlZCBieSBzaW1wbGUgdHdvIGNvbW1hbmRzIGJlbG93Og0KDQogICAkIHN1ZG8gbW9kcHJv
+YmUgcmRtYV9yeGUNCiAgICQgc3VkbyBtb2Rwcm9iZSAtciByZG1hX3J4ZQ0KICAgbW9kcHJvYmU6
+IEZBVEFMOiBNb2R1bGUgcmRtYV9yeGUgaXMgaW4gdXNlLg0KDQpJIGJpc2VjdGVkIGFuZCBmb3Vu
+ZCB0aGUgdHJpZ2dlciBjb21taXQgaXMgdGhpczoNCg0KICAgODBhODVhNzcxZGViICgiUkRNQS9y
+eGU6IHJlY2xhc3NpZnkgc29ja2V0cyBpbiBvcmRlciB0byBhdm9pZCBmYWxzZSBwb3NpdGl2ZXMg
+ZnJvbSBsb2NrZGVwIikNCg0KVGhpcyBjb21taXQgY2hhbmdlcyB0aGUgZHJpdmVyIGJlaGF2aW9y
+IHdoZW4gdGhlIGtjb25maWcgREVCVUdfTE9DS19BTExPQyBpcw0KZW5hYmxlZCwgYW5kIG15IGtj
+b25maWcgZG9lcyBzby4NCg0KQWN0aW9ucyBmb3IgZml4IHdpbGwgYmUgYXBwcmVjaWF0ZWQuDQoN
+Cg==
 
