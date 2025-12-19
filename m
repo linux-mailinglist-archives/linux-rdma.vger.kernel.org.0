@@ -1,156 +1,107 @@
-Return-Path: <linux-rdma+bounces-15095-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15096-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD991CCE4CD
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Dec 2025 03:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 17EC3CCE6DE
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Dec 2025 05:25:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B09C230329C0
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Dec 2025 02:52:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D5292301A1BF
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Dec 2025 04:25:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 315F228489E;
-	Fri, 19 Dec 2025 02:52:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E9562475E3;
+	Fri, 19 Dec 2025 04:25:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="dJDJJNT7"
+	dkim=pass (2048-bit key) header.d=worksmobile.com header.i=@worksmobile.com header.b="N7t43T6q";
+	dkim=pass (1024-bit key) header.d=korea.ac.kr header.i=@korea.ac.kr header.b="IIPoLd59"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
+Received: from cvsmtppost105.wmail.worksmobile.com (cvsmtppost105.wmail.worksmobile.com [125.209.209.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D8821FBCA7
-	for <linux-rdma@vger.kernel.org>; Fri, 19 Dec 2025 02:52:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8FE976026
+	for <linux-rdma@vger.kernel.org>; Fri, 19 Dec 2025 04:25:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=125.209.209.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766112737; cv=none; b=IaEvRWWHAWKx5dOu6AP1hFPIuL07eeDbZLsWnZdT2RJdTQuxYje/1udZ5QU+g+mXRvgQlD+ugjJeBXDe8uZykP8MxiT7418FO1FTzin9jNZ8KgitjaEHhNbKmHRhWeAobHMcSasL0cRv88ZPO+erqlZDZYA1wSv60805yrOEG+Q=
+	t=1766118324; cv=none; b=ECpYxFadmimcBW0Oz7Se+YolSWCBOEXBuLUHBKXV2Gut4ts+Pkg+j1D+t81H9Jt7fmoC55sDlcJOkklNHNKp410rgyA8aevfN8grQNEXRT5ckJSy3OozXYRQmt2YzjhdaqIZScfd/r92mjNlEt4j6JDTBQJa6iDkddkuEFX6fHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766112737; c=relaxed/simple;
-	bh=0I+sA9xJCTN2L054Pgb1s/lcniDWoI3sgmYy/CC8k78=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fRDtSj09V2qGy7cufbDzVnvz9kTngKG/nuU/1AVy2BW7jkMKTd3qB96SLzEgFWN7S/B+DHkikWoD7Bhhf7+7bLIz1B0XO2vzT7EWnnbKmEjxd1L5plGday1gvZiJ96oWDzsBV6NKkFxhqcU+ZJplMvZ1sqGmoIaLDMBjYTfSY7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=dJDJJNT7; arc=none smtp.client-ip=44.202.169.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-6007b.ext.cloudfilter.net ([10.0.30.166])
-	by cmsmtp with ESMTPS
-	id WOddvcnHMv724WQb9v5piV; Fri, 19 Dec 2025 02:52:07 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id WQb8vMkRth8QWWQb8vxsj5; Fri, 19 Dec 2025 02:52:06 +0000
-X-Authority-Analysis: v=2.4 cv=Mcdsu4/f c=1 sm=1 tr=0 ts=6944bdd6
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=ujWNxKVE5dX343uAl30YYw==:17
- a=IkcTkHD0fZMA:10 a=wP3pNCr1ah4A:10 a=7T7KSl7uo7wA:10
- a=HKdHTREC5gtVaepGcnEA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
- a=2aFnImwKRvkU0tJ3nQRT:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=pftdnqYmBFO8fpYNuNoFhFopub0at3BioFFN9R/pFMw=; b=dJDJJNT7dwW0DxPS5qaR1eF2BA
-	LIvrXnURsPHudpbfrQ5wU1FEDdHFRcVx2dUZ1eZN2qPS3+0MhdcIGfk7pmWCzp34HlU3SymW20iAe
-	Tky9iKrM0oYiaLzIRawPAOcHfYuD6jiEO3CNeznULxVIrsQJ8t9VSEwK/ORf1b/AVZP7BNN6LyJuZ
-	6avv6S/Z94148qTdDII2Xb+WKM2rpRGeQ1kQT+qipB1JnXe7QDgYg9EdbzpSdZIenho54EHyfdQtq
-	DSflsECoRDTYmgAsZ61/t3fPfPJKccgE4153zDtUQVw6N4fHSzlnfqat7BkSDQLL1rd+KN2LcYguE
-	0j03D4oQ==;
-Received: from i118-18-233-1.s41.a027.ap.plala.or.jp ([118.18.233.1]:63755 helo=[10.83.24.44])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.98.1)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1vWQb7-00000003b8z-3egD;
-	Thu, 18 Dec 2025 20:52:06 -0600
-Message-ID: <cbb0ec98-0291-4ec4-9633-690e9199248b@embeddedor.com>
-Date: Fri, 19 Dec 2025 11:51:54 +0900
+	s=arc-20240116; t=1766118324; c=relaxed/simple;
+	bh=uARGzBY1AtW/PeYPQSthrejwhnJAeiPRkhbdYrR1piw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rc528eEjTeT2rQYmI7IKR7RNqoRtcgCmWBut2r1ineeJfDiKcFJyR3QB2oY9m+sCAW76t8jykkX65ZrSHv5cQNE2FU8KMg5TFV/5CKzZ09R1yCcU1FVPlKCDFlEKmvEKiRk7tcS6O6Faxj81zR+67PWtHmX4nvXhPvClISzMPos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=korea.ac.kr; spf=pass smtp.mailfrom=korea.ac.kr; dkim=pass (2048-bit key) header.d=worksmobile.com header.i=@worksmobile.com header.b=N7t43T6q; dkim=pass (1024-bit key) header.d=korea.ac.kr header.i=@korea.ac.kr header.b=IIPoLd59; arc=none smtp.client-ip=125.209.209.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=korea.ac.kr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=korea.ac.kr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=worksmobile.com;
+	s=s20171120; t=1766117710;
+	bh=uARGzBY1AtW/PeYPQSthrejwhnJAeiPRkhbdYrR1piw=;
+	h=From:To:Subject:Date:Message-Id:From:Subject:Feedback-ID:
+	 X-Works-Security;
+	b=N7t43T6qsMjCdxW8AcqXtmn/ey7ynZoHVrHN0kUDJR8G3K9C9mAwzfKB88IJtz4lS
+	 Lhek4gNwbjpRzgdCOCL8Rt2pMU4qeyt4//HAmVaCRqc/fuSGdu8qCssXZ5wvFHKNlL
+	 d6AkCBUghLYSxQxgIE2ffzloucGzCCaR5ZahtX7BaSVKYOoAflOzBbMFH0HmrIPXSM
+	 2r+zh3/MIswinMqLPoqUHOlx5GPXzv+Z10LAX4C0ciqSgwNzZQDke5qGa41ImD0Jqt
+	 wQu0mnds8M5UMBF4EbXWwZAfTkRGmKnHsVvX/9FZ7eT4ioOKKlL6b+KPg28Pgy6UWC
+	 LJHYMYhiYHPkA==
+Received: from cvsendbo004.wmail ([10.113.20.173])
+  by cvsmtppost105.wmail.worksmobile.com with ESMTP id OCtfJzQ3QeGxbZXQNdXvPw
+  for <linux-rdma@vger.kernel.org>;
+  Fri, 19 Dec 2025 04:15:10 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=korea.ac.kr;
+	s=naverworks; t=1766117710;
+	bh=uARGzBY1AtW/PeYPQSthrejwhnJAeiPRkhbdYrR1piw=;
+	h=From:To:Subject:Date:Message-Id:From:Subject:Feedback-ID:
+	 X-Works-Security;
+	b=IIPoLd59FVgCS94H+iPrNJ4kCV1mg5tdPFEMwj2OGvr9GJ/XX7Z6SqzyM8TVTKmhB
+	 N8caVmkXGLAmJUTm18ggXggbjnWmKSxtIUogWHaOl6IHRvjfsE80ZwI1dhUFE9lpkx
+	 nbQTdoVhujQ8K5vLRLqMORCBP58EKfyuYEt/0oOo=
+X-Session-ID: FnlQwr6rTTiZJA6hB9nI4A
+X-Works-Send-Opt: kendjAJYjHm/FqM9FqJYFxMqFNwYjAg=
+X-Works-Smtp-Source: Yqb/KAMrFqJZ+HmlKAK9+6E=
+Received: from s2lab05.. ([163.152.163.130])
+  by jvnsmtp403.gwmail.worksmobile.com with ESMTP id FnlQwr6rTTiZJA6hB9nI4A
+  for <multiple recipients>
+  (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
+  Fri, 19 Dec 2025 04:15:09 -0000
+From: Jang Ingyu <ingyujang25@korea.ac.kr>
+To: jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jang Ingyu <ingyujang25@korea.ac.kr>
+Subject: [PATCH] infiniband/core: Fix logic error in ib_get_gids_from_rdma_hdr()
+Date: Fri, 19 Dec 2025 13:15:08 +0900
+Message-Id: <20251219041508.1725947-1-ingyujang25@korea.ac.kr>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] RDMA/rxe: Avoid -Wflex-array-member-not-at-end
- warnings
-To: "Yanjun.Zhu" <yanjun.zhu@linux.dev>, Leon Romanovsky <leon@kernel.org>
-Cc: Jason Gunthorpe <jgg@nvidia.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Zhu Yanjun <zyjzyj2000@gmail.com>, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <aRKu5lNV04Sq82IG@kspp> <20251202181334.GA1162842@nvidia.com>
- <5ac954bb-ad4d-4b4c-b23b-47350b428404@linux.dev>
- <20251204130559.GA1219718@nvidia.com>
- <80620d09-8187-45b1-a490-07c52733ac21@linux.dev>
- <2191ee0f-a528-4187-ae5b-5aba18741701@linux.dev>
- <7e3a294f-5dc2-4e8c-aacc-0286c1592038@linux.dev>
- <20251218155623.GC400630@unreal>
- <5d950681-7f16-4b1e-a512-b118c747ffd7@linux.dev>
-Content-Language: en-US
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <5d950681-7f16-4b1e-a512-b118c747ffd7@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 118.18.233.1
-X-Source-L: No
-X-Exim-ID: 1vWQb7-00000003b8z-3egD
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: i118-18-233-1.s41.a027.ap.plala.or.jp ([10.83.24.44]) [118.18.233.1]:63755
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfG2h6jaZPo01cy6oCFu5HuZgBC9z9RONJcBNcl9/yZlJLb88Q4hLvTn7OEXWI4IGyx8rJ3yCXzuzLdjmmPovaB14uhK/M7JRYBexF2NjLEmPrXPa8Sa6
- nFbggeS1wUpAtSkUslzDBcmCFPshRB3kZrRq51WQ3IDVyZR64Zi7HF6+dLBZmDbQuP9DSk0tO6799ZU/qagOHrqB7NQCQSIOub6rQwlCTn5qzn8baS7uZ3LB
 
+Fix missing comparison operator for RDMA_NETWORK_ROCE_V1 in the
+conditional statement. The constant was used directly instead of
+being compared with net_type, causing the condition to always
+evaluate to true.
 
+Signed-off-by: Jang Ingyu <ingyujang25@korea.ac.kr>
+---
+ drivers/infiniband/core/verbs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 12/19/25 04:22, Yanjun.Zhu wrote:
-> 
-> On 12/18/25 7:56 AM, Leon Romanovsky wrote:
->> On Sun, Dec 14, 2025 at 09:00:51PM -0800, Zhu Yanjun wrote:
->>>
->>> 在 2025/12/5 20:41, Zhu Yanjun 写道:
->>>>
->>>> 在 2025/12/4 9:48, yanjun.zhu 写道:
->>>>> On 12/4/25 5:05 AM, Jason Gunthorpe wrote:
->>>>>> On Wed, Dec 03, 2025 at 09:08:45PM -0800, Zhu Yanjun wrote:
->>>>>>>>         unsigned int        res_head;
->>>>>>>>         unsigned int        res_tail;
->>>>>>>>         struct resp_res        *res;
->>>>>>>> +
->>>>>>>> +    /* SRQ only. srq_wqe.dma.sge is a flex array */
->>>>>>>> +    struct rxe_recv_wqe srq_wqe;
->>>>>>> drivers/infiniband/sw/rxe/rxe_resp.c: In function get_srq_wqe:
->>>>>>> drivers/infiniband/sw/rxe/rxe_resp.c:289:41: error: struct
->>>>>>> rxe_recv_wqe has
->>>>>>> no member named wqe
->>>>>>>     289 |         qp->resp.wqe = &qp->resp.srq_wqe.wqe;
->>>>>>>         |                                         ^
->>>>>> I didn't try to fix all the typos, you will need to do that.
->>>>> Exactly. I will fix this problem. This weekend, I will send out an
->>>>> official commit.
->>>> Hi, Jason
->>>>
->>>> The followings are based on your commits and Leon's commits. And it can
->>>> pass the rdma-core tests.
->>>>
->>>> I am not sure if this commit is good or not.
->>> Hi, Jason && Leon
->>>
->>> Any update? If this looks good to you, I will send out an official commit
->>> based on the following commit.
->> You are RXE maintainer, send the official patch.
-> 
-> Will do. I will send it out very soon.
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 11b1a194d..ee3909285 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -738,7 +738,7 @@ int ib_get_gids_from_rdma_hdr(const union rdma_network_hdr *hdr,
+ 				       (struct in6_addr *)dgid);
+ 		return 0;
+ 	} else if (net_type == RDMA_NETWORK_IPV6 ||
+-		   net_type == RDMA_NETWORK_IB || RDMA_NETWORK_ROCE_V1) {
++		   net_type == RDMA_NETWORK_IB || net_type == RDMA_NETWORK_ROCE_V1) {
+ 		*dgid = hdr->ibgrh.dgid;
+ 		*sgid = hdr->ibgrh.sgid;
+ 		return 0;
+-- 
+2.34.1
 
-I don't see how this addresses the flex-array in the middle issue that
-originated this discussion.
-
--Gustavo
 
