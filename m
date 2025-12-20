@@ -1,244 +1,103 @@
-Return-Path: <linux-rdma+bounces-15116-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15117-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 254EBCD298A
-	for <lists+linux-rdma@lfdr.de>; Sat, 20 Dec 2025 08:08:14 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23066CD2F82
+	for <lists+linux-rdma@lfdr.de>; Sat, 20 Dec 2025 14:05:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 41A653014600
-	for <lists+linux-rdma@lfdr.de>; Sat, 20 Dec 2025 07:07:49 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1B74C300DB8F
+	for <lists+linux-rdma@lfdr.de>; Sat, 20 Dec 2025 13:05:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A0EA2F5A35;
-	Sat, 20 Dec 2025 07:07:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD9F521A457;
+	Sat, 20 Dec 2025 13:05:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RqjUwU9Y"
+	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="Zyr/FCeG"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF20E2F616C
-	for <linux-rdma@vger.kernel.org>; Sat, 20 Dec 2025 07:07:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80B481A9B24;
+	Sat, 20 Dec 2025 13:05:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766214468; cv=none; b=VP1EOdQxLlErnDiTKlTLZhcyUiVjOR/yPq94DABpfZ8aox9QFx2VYu9HNP7UvYqqHedHFOxXxZGFFv7PCQj5q9Oap3ryZB7b7YLSgFjTIsclb629FMS5fGnr9TEu5p7rhdtp0PI32natQ/URlZZLRUzFyW0rsl9AvtiI9VlfAPk=
+	t=1766235921; cv=none; b=e2qH4zg0im/Ps2PqmWzFWr6r2cLZB1GN52NOCQKYjVZty5t5cPAk5b9KaFdoIl1G6fVDmDiyzQX3USoZ/HJEjm1ZOHV2AJcq3JHiIgsgtfg/bLuz+E7TGR9GV119121E1Eb8+9eZ+seokWMA8fQBB/ADcRJltYy2lhCMyd9uU0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766214468; c=relaxed/simple;
-	bh=x2cZeTt8nfXahNIgP5U//Vv6JqbmrMLmOmquVJbMeiA=;
+	s=arc-20240116; t=1766235921; c=relaxed/simple;
+	bh=EKSxeKKeUxtFjBveaxit83pYY3iBq1Mr71XoeIU99JY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QNEsgWXibWMoYBzmgmiD9Fu5nvXCtOmwEbW4WYVNqDYQ4PuR8D3tDvs4/0d/Nl/lu0gymDT5VuTlW2PJDJEElyZ+50ZqxRvTvb3wzJtjuGWQjgkpfiFEDcr/zPIDuBDIv3kV3ZL4RAFJwULzC+c8pmUbWb9g6lOXyOUJ3HFAdU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RqjUwU9Y; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ee5a3dbe-af8c-46e5-98ea-8165fbeeeccd@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766214449;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kUR73nv2KAuFsmcIH3gF6bSkayK0unPfWf5p0TiVjAg=;
-	b=RqjUwU9Y1KAuHQ1VKk0KdcGlIPuEIp7HZ69zu2eptfO7tmZia6188/YVg45pmv5FHDGIal
-	83RYISe8fJZ+uK/3aJY17xrg0dlj8nriVvOTC/QdB/FeI8wJnnJSqBaZVgsqk2pSmjgQf0
-	jomiDVFCdCCkkfKVBgNlr08+hdi3weI=
-Date: Fri, 19 Dec 2025 23:07:21 -0800
+	 In-Reply-To:Content-Type; b=LzgPXUnamZltCMMQ5uIs4iHxgUiXPyv70SwWchG0MKZMEdlDO2zonynU1Db0QL9V8a/vJmLbSTemGqoxVOVdCA9YSj2ZpBPdxBENclvKcmfVO1+uzgXsQig/02PK6Zfa+dWENXVN+tMU1fIHdk0UZxZqx+hekHLr9rJHf9mLNUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=Zyr/FCeG; arc=none smtp.client-ip=144.76.82.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+	s=42; h=From:Cc:To:Date:Message-ID;
+	bh=ltw4PPLkBzZKBc0c2B7F4qJxiL52Rko3SLEkYnUCIag=; b=Zyr/FCeGqUDQY0rOUkdL0TNMbk
+	y7v9w3FlfUhYxDV+gz8YbVxX53Jm6mYZx8/ZNaUiBDgaLiW/8EV+Zay3Tu2YzeqObFGfRPdTVJBgw
+	QEJZsQVUeYriaewVbLXk+65bsIcrKObQtgIiZiIISO9zFX0tiSerunn72NxwPcu5V8KuUBgyjXF9/
+	tDBko8dYP8lCpH64XziA+QNvHAPFMHPRdOC+ICgImyDBbyKAL6FZg5yDvy4SxbJD3HAS4WU+yKxJg
+	LcVeXbBE8ZKJO+3eOLdbfq2+f+fc70vDBukzhWfbGIWiMnzur2+MS6COn1nxTdRWoDRiDVqa+PTZB
+	Sr5pLL9dLgVCO838EpRIz69TIfWiEe06JtSrDae39ekWla8Tap88uA5fRZwZ3kwxUT6ju54ybE3Fb
+	canlOvR5ozF4TWyKLaIuSwnmzCID8SWve1kvx+CMSbE5sgbLGOf0gXr6cI4CwhXapRwhFQ9YItvjv
+	eq8QHddopsDsn4EI6mTzQGLg;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
+	(Exim)
+	id 1vWwe3-001TtL-2G;
+	Sat, 20 Dec 2025 13:05:15 +0000
+Message-ID: <01cd3f5a-2976-45ad-8a2d-32b3e39c6317@samba.org>
+Date: Sat, 20 Dec 2025 14:05:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH][next] RDMA/rxe: Avoid -Wflex-array-member-not-at-end
- warnings
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
- Zhu Yanjun <mounter625@163.com>, Leon Romanovsky <leon@kernel.org>
-Cc: Jason Gunthorpe <jgg@nvidia.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Zhu Yanjun <zyjzyj2000@gmail.com>, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <aRKu5lNV04Sq82IG@kspp> <20251202181334.GA1162842@nvidia.com>
- <5ac954bb-ad4d-4b4c-b23b-47350b428404@linux.dev>
- <20251204130559.GA1219718@nvidia.com>
- <80620d09-8187-45b1-a490-07c52733ac21@linux.dev>
- <2191ee0f-a528-4187-ae5b-5aba18741701@linux.dev>
- <7e3a294f-5dc2-4e8c-aacc-0286c1592038@linux.dev>
- <20251218155623.GC400630@unreal>
- <5d950681-7f16-4b1e-a512-b118c747ffd7@linux.dev>
- <cbb0ec98-0291-4ec4-9633-690e9199248b@embeddedor.com>
- <6f15e334-8902-4d1d-adab-aa9ab8f009d6@linux.dev>
- <d569b5fd-fcca-4dd0-b94b-a6df4e52d940@embeddedor.com>
- <01b419f6-264e-4faa-b4df-480fdf952d14@linux.dev>
- <8470c362-8c41-4b99-8c05-0903285c1b6c@embeddedor.com>
- <1bef81ba-be81-49df-9d86-3cc0cc4bf864@163.com>
- <ad8987ae-b7fe-47af-a1d2-5055749011c0@embeddedor.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <ad8987ae-b7fe-47af-a1d2-5055749011c0@embeddedor.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] RDMA/rxe: let rxe_reclassify_recv_socket() call
+ sk_owner_put()
+To: Zhu Yanjun <yanjun.zhu@linux.dev>, linux-rdma@vger.kernel.org
+Cc: Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Leon Romanovsky <leon@kernel.org>,
+ Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>, netdev@vger.kernel.org,
+ linux-cifs@vger.kernel.org
+References: <20251219140408.2300163-1-metze@samba.org>
+ <9ccc0635-7c0e-4a18-8469-9c5b6d9b268f@linux.dev>
+Content-Language: en-US
+From: Stefan Metzmacher <metze@samba.org>
+In-Reply-To: <9ccc0635-7c0e-4a18-8469-9c5b6d9b268f@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-在 2025/12/19 1:55, Gustavo A. R. Silva 写道:
+Am 20.12.25 um 04:51 schrieb Zhu Yanjun:
+> 在 2025/12/19 6:04, Stefan Metzmacher 写道:
+>> On kernels build with CONFIG_PROVE_LOCKING, CONFIG_MODULES
+>> and CONFIG_DEBUG_LOCK_ALLOC 'rmmod rdma_rxe' is no longer
+>> possible.
+>>
+>> For the global recv sockets rxe_net_exit() is where we
+>> call rxe_release_udp_tunnel-> udp_tunnel_sock_release(),
+>> which means the sockets are destroyed before 'rmmod rdma_rxe'
+>> finishes, so there's no need to protect against
+>> rxe_recv_slock_key and rxe_recv_sk_key disappearing
+>> while the sockets are still alive.
+>>
+>> Fixes: 80a85a771deb ("RDMA/rxe: reclassify sockets in order to avoid false positives from lockdep")
+>> Cc: Zhu Yanjun <zyjzyj2000@gmail.com>
+>> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+>> Cc: Leon Romanovsky <leon@kernel.org>
+>> Cc: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+>> Cc: linux-rdma@vger.kernel.org
+>> Cc: netdev@vger.kernel.org
+>> Cc: linux-cifs@vger.kernel.org
+>> Signed-off-by: Stefan Metzmacher <metze@samba.org>
 > 
-> 
-> On 12/19/25 15:59, Zhu Yanjun wrote:
->>
->> 在 2025/12/18 21:48, Gustavo A. R. Silva 写道:
->>>
->>>> The struct rxe_recv_wqe is as below.
->>>>
->>>> struct rxe_recv_wqe {
->>>>      __aligned_u64       wr_id;
->>>>      __u32           reserved;
->>>>      __u32           padding;
->>>>      struct rxe_dma_info dma;
->>>
->>> Expand struct rxe_dma_info here.
->>
->> Thanks. In struct rxe_dma_info, the struct is
->>
->> struct rxe_sge {
->>         __aligned_u64 addr;
->>         __u32   length;
->>         __u32   lkey;
->> };
->>
->> But in your commit, struct ib_sge is used.
->>
->> struct ib_sge {
->>      u64 addr;
->>      u32 length;
->>      u32 lkey;
->> };
->> __aligned_u64 is a 64-bit integer with a guaranteed 8-byte alignment,
->>
->> used to preserve ABI correctness across architectures and between
->>
->> userspace and kernel, while u64 has architecture-dependent alignment.
->>
->> I am not sure if we can treate "struct rxe_sge" as the same with 
->> "struct ib_sge".
-> 
-> Just notice that the original code is the one actually doing that.
-> See my response in this same thread:
-> 
-> https://lore.kernel.org/linux-hardening/d3336e9d-2b84-4698-a799- 
-> b49e3845f38f@embeddedor.com/
-> 
-> So, if that code is fine, this is fine. If the original code is wrong,
-> then that code should be fixed first.
+> Thanks a lot. IIRC, there is a similar commit for SIW driver. Thus, I am not sure if there is a similar problem in SIW driver or not.
 
-Thanks a lot. Because struct ib_sge and struct ib_sge is different,
-struct ib_sge {
-     u64 addr; <--- u64 has architecture-dependent alignment
-     u32 length;
-     u32 lkey;
-};
+I don't think so, siw and the other place in rxe  are attached to specific connections
+and there the reference is ok and needed.
 
-struct rxe_sge {
-        __aligned_u64 addr;   <---guaranteed 8-byte alignment,
+The problem was only related to the two global sockets with the lifetime
+the rdma_rxe is loaded.
 
-used to preserve ABI correctness across architectures and between
-
-userspace and kernel
-
-        __u32   length;
-        __u32   lkey;
-};
-
-and struct rxe_sge is used in rxe_mr, it is working between userspace 
-and kernel, thus, I want to keep struct rxe_mr in rxe_mr.
-
-But in other places, I want to replace struct rxe_sge with struct 
-ib_sge. The commit is as below.
-
-In short, the commit "RDMA/rxe: Avoid -Wflex-array-member-not-at-end 
-warnings" && the following commit will work well. I have made tests in 
-my local host. It can work well.
-
-Please Leon and Jason comment.
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c 
-b/drivers/infiniband/sw/rxe/rxe_mr.c
-index b1df05238848..390ae01f549d 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -341,7 +341,7 @@ int copy_data(
-         enum rxe_mr_copy_dir    dir)
-  {
-         int                     bytes;
--       struct rxe_sge          *sge    = &dma->sge[dma->cur_sge];
-+       struct ib_sge *sge      = &dma->sge[dma->cur_sge];
-         int                     offset  = dma->sge_offset;
-         int                     resid   = dma->resid;
-         struct rxe_mr           *mr     = NULL;
-@@ -580,7 +580,7 @@ enum resp_states rxe_mr_do_atomic_write(struct 
-rxe_mr *mr, u64 iova, u64 value)
-
-  int advance_dma_data(struct rxe_dma_info *dma, unsigned int length)
-  {
--       struct rxe_sge          *sge    = &dma->sge[dma->cur_sge];
-+       struct ib_sge *sge      = &dma->sge[dma->cur_sge];
-         int                     offset  = dma->sge_offset;
-         int                     resid   = dma->resid;
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c 
-b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 711f73e0bbb1..74f5b695da7a 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -283,7 +283,7 @@ static enum resp_states get_srq_wqe(struct rxe_qp *qp)
-                 rxe_dbg_qp(qp, "invalid num_sge in SRQ entry\n");
-                 return RESPST_ERR_MALFORMED_WQE;
-         }
--       size = sizeof(*wqe) + wqe->dma.num_sge*sizeof(struct rxe_sge);
-+       size = sizeof(*wqe) + wqe->dma.num_sge*sizeof(struct ib_sge);
-         memcpy(&qp->resp.srq_wqe, wqe, size);
-
-         qp->resp.wqe = &qp->resp.srq_wqe.wqe;
-diff --git a/include/uapi/rdma/rdma_user_rxe.h 
-b/include/uapi/rdma/rdma_user_rxe.h
-index bb092fccb813..360839498441 100644
---- a/include/uapi/rdma/rdma_user_rxe.h
-+++ b/include/uapi/rdma/rdma_user_rxe.h
-@@ -154,7 +154,7 @@ struct rxe_dma_info {
-         union {
-                 __DECLARE_FLEX_ARRAY(__u8, inline_data);
-                 __DECLARE_FLEX_ARRAY(__u8, atomic_wr);
--               __DECLARE_FLEX_ARRAY(struct rxe_sge, sge);
-+               __DECLARE_FLEX_ARRAY(struct ib_sge, sge);
-         };
-  };
-
-
-To this commit, plus the above commit, it should work well.
-
-Yanjun.Zhu
-
-> 
-> -Gustavo
-> 
->>
->>
->> Leon and Jason, please comment on it.
->>
->>
->> Yanjun.Zhu
->>
->>>
->>>> };
->>>>
->>>> But I can not find dma.sge in the above struct. Can you explain it?
->>>>
->>>> To be honest, I read your original commit for several times, but I 
->>>> can not get it.  Can you explain the MACRO TRAILING_OVERLAP? And how 
->>>> can it replace the following struct?
->>>
->>> This is clearly explained in the changelog text. I think what you're
->>> missing will be clear once you understand how nested structures
->>> work. See my comment above.
->>>
->>> -Gustavo
->>
-> 
-
+metze
 
