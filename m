@@ -1,227 +1,244 @@
-Return-Path: <linux-rdma+bounces-15115-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15116-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8A5ACD27F2
-	for <lists+linux-rdma@lfdr.de>; Sat, 20 Dec 2025 06:22:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 254EBCD298A
+	for <lists+linux-rdma@lfdr.de>; Sat, 20 Dec 2025 08:08:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A66403014AD8
-	for <lists+linux-rdma@lfdr.de>; Sat, 20 Dec 2025 05:22:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 41A653014600
+	for <lists+linux-rdma@lfdr.de>; Sat, 20 Dec 2025 07:07:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E6182ED848;
-	Sat, 20 Dec 2025 05:22:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A0EA2F5A35;
+	Sat, 20 Dec 2025 07:07:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="hFVF+dqi";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="j7/YtBGS"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RqjUwU9Y"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A29A927B33B
-	for <linux-rdma@vger.kernel.org>; Sat, 20 Dec 2025 05:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.154.45
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766208145; cv=fail; b=C2CD2pUKO8vihX1fhS7gqjVwWFssUU08RW3jIawp8H3gEOA9g0vybNA6tZ7N/9dafvIlLEaFdcDXu47Qi9Nb2HbK7QJj484NnOfuIslKfho2ZB8S5Ux9OhLwnm7s2pkTj5vggCO2RTLEZHam10hFo3nyu/pcoIxQS2eZyc7TkH4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766208145; c=relaxed/simple;
-	bh=Gp2z4ZKHCKbWRW4UTrYA5gIgXmA1Uafn19RM/dlrvYo=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=TnwMMa9qLc1VB45ILip+BnYLqgiihA7LjjDoSfnBl3hQBLlri/5gqiDuunr2LcD7TIiimgN9oETiYUMe5jN+kZXdzCvr5sGlO0WzuSquXn5oE/F+5NYkRHfGVIV1n7Iva452jMfEShD/iOuOLwKbDtOwb6fN4T2Mc5hZuEjqOFY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=hFVF+dqi; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=j7/YtBGS; arc=fail smtp.client-ip=216.71.154.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1766208143; x=1797744143;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=Gp2z4ZKHCKbWRW4UTrYA5gIgXmA1Uafn19RM/dlrvYo=;
-  b=hFVF+dqiflek2lAUPhja48drlLb093lD+5ZVyTFAM0sPF0WEYU5FneOv
-   uaeLdxJQkgc4shm1h+NOi44Rk6hbOC026bGL5DRwaRPtzpinn5ON56qQ7
-   X9ikOGHaHwLSf1ZCpvEae4g6AUtP+r2X7Co1Y6m9rYCOwqTKpmk9MT608
-   gfpj+eVImtjOBtFrx12Xs1YLcFk6YyaeekizPT4c4fjn6dSr5eBL1EWpG
-   Pt3zEK8+/zWbnXhGPBbaTVbMd77jCT+yHSh4mN3dl5/+mgvbALplNOwJu
-   4cpyHVX1hUz8KLPWRWqLy2Z6u0LTirG3uH4zSv4TvGyylwmzVEs5Gub3o
-   w==;
-X-CSE-ConnectionGUID: E2uLZCOyQmuXhOLyvdpXJA==
-X-CSE-MsgGUID: FvuJC8kCQjyy3bkIoRnSKg==
-X-IronPort-AV: E=Sophos;i="6.21,162,1763395200"; 
-   d="scan'208";a="136885773"
-Received: from mail-northcentralusazon11012003.outbound.protection.outlook.com (HELO CH5PR02CU005.outbound.protection.outlook.com) ([40.107.200.3])
-  by ob1.hgst.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Dec 2025 13:22:22 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=y2vosKi21FWV0QzEIg/qv8IIMuLMVZP1ABxUKvz4RagKUAtREHA+Ty8rOBDsXpVtkzvGeUtQ4+AGojcqC4NFZV5BGTcyyK7W9F/HMywetFwsX6avVX8pIRWN3BF4Tm6RkpgqsYLZn7NeaQs+HZ0v5ceE1cVnx+Il7BSRJO3T7eE/cbxhNCg1H7iY8a/S0jLXlnUvjRB0nG7OXD1eLxxFYd1YTK5xJxQEV6WB3ZeCOigZECabNT3rYpIJfm0f8FGsE0nMb4TPoI0ZfunC/eoatGspXFSdMKQ3eHuYHcE16TfotocWDVzFFfLrBUfRNwGsEPPQJRWP0RRlQRa2eZj79w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Gp2z4ZKHCKbWRW4UTrYA5gIgXmA1Uafn19RM/dlrvYo=;
- b=VBlVj1503Dlfl7aaS54/+dWIQN21RUOuYbfMmaAgRYi0gJIvVRjSWsIulBdUPy89vEtxIBaH43bJMpwBT+EfTsDY/XbCiQV7Nt4BWeS4cG+z/rkh57iC8Cecv1Uzs2xEvpTdL071YZf/ldD6m/FMbqibsFnHhfnOECS5RDnMNSE85TxwCweWHKtxCQzUYn3jGwf0TCnJ4v49HyYKdAZ2vmt9weTbUrj19SUTullDupNdkDPucGN84I8yQOHnr6kS7lbdo9TFVBo+EtE7raNVpt+Rr5jyHKCCWnRnGtifJSqKTL+j0N/zHW0LcPTPEqI8An0IGl7JiO1u5EtIHqJr8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Gp2z4ZKHCKbWRW4UTrYA5gIgXmA1Uafn19RM/dlrvYo=;
- b=j7/YtBGS4Pgh28sPnelMXn8PKcXLaBHhgd+urDDUdejZb3vIXBcEttUbT5xyINtyLGwqyPmTCVoW3PKYaC03rMHIplL7JhEuUn3Rog9cPKzN8XicCsaW4fzb+pzSL2jPnEV8bb8SHsF5O0J7MeGUwiQYZHpKmTo/9sUdH4O/myE=
-Received: from SN7PR04MB8532.namprd04.prod.outlook.com (2603:10b6:806:350::6)
- by CH2PR04MB6791.namprd04.prod.outlook.com (2603:10b6:610:9b::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9434.9; Sat, 20 Dec
- 2025 05:22:19 +0000
-Received: from SN7PR04MB8532.namprd04.prod.outlook.com
- ([fe80::4e14:94e7:a9b3:a4d4]) by SN7PR04MB8532.namprd04.prod.outlook.com
- ([fe80::4e14:94e7:a9b3:a4d4%7]) with mapi id 15.20.9434.009; Sat, 20 Dec 2025
- 05:22:19 +0000
-From: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-To: yanjun.zhu <yanjun.zhu@linux.dev>, Stefan Metzmacher <metze@samba.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-CC: Leon Romanovsky <leon@kernel.org>
-Subject: Re: [bug report] rdma_rxe module unload failure with DEBUG_LOCK_ALLOC
- enabled
-Thread-Topic: [bug report] rdma_rxe module unload failure with
- DEBUG_LOCK_ALLOC enabled
-Thread-Index: AQHccNqt8rFtEpUF3UaZITwEEl5z/rUo+coAgABG6ICAAL7RgA==
-Date: Sat, 20 Dec 2025 05:22:19 +0000
-Message-ID: <d70d489d-d083-405b-9795-0181cbcb65d7@wdc.com>
-References: <170e3191-7e15-4af8-948f-14904fe260cc@wdc.com>
- <7affc986-1378-4257-bac6-cd0be4e2f5c8@samba.org>
- <70fbec5d-1894-4660-a768-62e176e9e421@linux.dev>
-In-Reply-To: <70fbec5d-1894-4660-a768-62e176e9e421@linux.dev>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN7PR04MB8532:EE_|CH2PR04MB6791:EE_
-x-ms-office365-filtering-correlation-id: 97d51f76-aef2-4bf7-b77b-08de3f87bf5b
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|1800799024|366016|376014|19092799006|38070700021;
-x-microsoft-antispam-message-info:
- =?utf-8?B?ZERuV2JvL2xYY2dCMDJ2RVhjeTBPaXg4YkRObDhGSWJFRzdaWm9oZzhZMUJL?=
- =?utf-8?B?SHZzMXVadmVhZklhNnN6VVZpOTV6dk1XMk53ZmprM1NMSTdvSjMxci9jc29L?=
- =?utf-8?B?NlhYcGZWblBSUDdTV0RPb1lFRW9ZOTI2NWR0TjBuV05WMGZ4QUZVbWVPbC9a?=
- =?utf-8?B?Z1JSYUpsRGx6blJxdmlHMFNGU09mNW9qY2U2cjBwREpnUUhVelplZEFJK1Yz?=
- =?utf-8?B?d3NZQXJqMWRMTVhrQUh3cVY5eXFKMExpNlpIUW9nUmhPV1J6azd5aHpvVGFS?=
- =?utf-8?B?aXE2TkRXNnhHV2p5UlRYUk1FT2R1OGlmSWhnSmdhd3VlY1c2a2kweUFaRUpx?=
- =?utf-8?B?VytmYnNnRGdUZVozbjc1UjB4YUY3WG92d3RuT3RscUJQUXFiRno0N1VOM0V5?=
- =?utf-8?B?MGkyQkpmWnVGT0RyUVNJMmtJd3VNc053ODdISGJ3NmNBSlVabVpiUWhNRFd2?=
- =?utf-8?B?TjQ4WjhLNEc1VUJtOGVhMnBaWEFaRDM5dnFuRE9OWXdieXcyT3p2Z2ZNYVRN?=
- =?utf-8?B?VThtM1daOHU5bDEvTzI2ME84SEI5QnJETzYzbGxOeGVNY3R0OFZ0Q3JCZW5J?=
- =?utf-8?B?RUxJdWdVOG1vTGVlUDFtY1JQOStuSVJ4SU11RnZsRW95UnlwWHpJN0pJcTR1?=
- =?utf-8?B?L3Z3bU8vaDBmejRKT3ZYMlIzUCtXU2JkdmNMdlFVZXZvcTROYUh6RFQ0VWt5?=
- =?utf-8?B?MFlnOUozREhaVjFFT3R2SXUwSjN1ZjAySXgzd3VJejBFeGhmZFZBTjVmK3hU?=
- =?utf-8?B?UXdwbDQyNW5IblFWdTB6bFMrRVEwQ08yMU9vOTZhVkYzUC9odFdaWXRMWkUz?=
- =?utf-8?B?SWU3WG05UHpEV2NsUUd1MS9JeVZtSjY2UUNTTjZJK29jV290YktHRGEvMXlm?=
- =?utf-8?B?N1lZenJtd0VVZjFFMWRVa2dlNkxSZlJMVmk3cm1kaCt5MTNuaDZ0NHIrUDRu?=
- =?utf-8?B?dC91NWtNODVyOWMwRmNEOVp2eGFnN0grWS9NR2lqVnJSRFBoaE5NMkY3VEZO?=
- =?utf-8?B?WmlWRFlCOGJlZlZseVBsQ3hMa1ZpZ29oUUdsclMwbVA4UktnNCtkenJHTjhX?=
- =?utf-8?B?Qmd6bGdtdmRqSkdZdUlyVFF2R1dIOTZjSTdOQytTcEFvSThwdTJEb2p1dVl2?=
- =?utf-8?B?OVMveTNHWGZ4bk04RHNDS3o5S3lYWHFQTTRVYzJoZkpjdjAzY1QweEd6Y2xv?=
- =?utf-8?B?ZkFGY1VwYUFzTnBxajcvdVhuMXdtWDZYTlgvdmlIWVRiOXdLOWFOOVdiQ1FC?=
- =?utf-8?B?WG51cnI5aE80ZWxFejhnRHNybkg4bytKcDdxSkJ2UnVpZC9ZLzVoQUZtdUNW?=
- =?utf-8?B?aGxXZGFsRE5QVE4wQWxpd1NKN3Z1WkhHUG1uWFVsTFg0ZUx4ZWliNE9yNUZv?=
- =?utf-8?B?WXBoQ3lDVU02SGdEQnZaTnBpTnRja1BGdkREYmVGUm1UM3hOM3BwMWZ4L1Rv?=
- =?utf-8?B?VEQrRDBuZVRsTTYxUHdiL291UGFsR3pXQUdLdER0bnVhRXUxVUxUZ216cDBt?=
- =?utf-8?B?MktzMjJvTkRXblp5QlNxYzR6TmhncURlci9ZZEJxN005OEgvdUd6dkwzOUov?=
- =?utf-8?B?ZWNmVDAzdXA4Vlg3dU94UW82aXRKYU4xei9tbXI2N0s2RGJibnRML3dMYTQ3?=
- =?utf-8?B?ZnBPU2RmK3F1ZkVoNXI1ZW5mN0NzdmRXbG1JK3BCYjlXblc2RThpWlcwOTVE?=
- =?utf-8?B?QTJUajRQa0J3VGhmbC9kMmcxN0h5amNXazMxYkRBdmMwK1pZMHNReDRCMWU1?=
- =?utf-8?B?emw1N3drTzhSM0pwSWdWNlpJVitmcGVCY1M3Z1h0WDlhRFNjQ25hMUg0R0JH?=
- =?utf-8?B?S2JBdXBtemRpKzIvaTlHUkdPVTA5eXB6cFBkUFJmOEdKVWlBbWsvUFBMejZw?=
- =?utf-8?B?ZVJGQWx4MVJmRFFtdmhxNUxUMXVnb0I2SmlINlJ2clRGa0F4RnZvTThYd2Jk?=
- =?utf-8?Q?fq1pEoI9yfOEU9GBAxCk/CE3TMLYKV/I?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR04MB8532.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(19092799006)(38070700021);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?OGFEQ0RXdSt6UFdyOU5iL0ZQaWpzalVFaE1wV1BiUmpUNG1TOHhuVGM5WVND?=
- =?utf-8?B?dzNJMnliOUNhbjdmWFhLRmNBTTg3ZGRHUTVvRUppNjdBSVB4UUVvWEpFcFpX?=
- =?utf-8?B?cDY3T3piSEZuaG5vTGZpajBBcVAzTFFkV3BaaUYwZmpISVNvVXpWUUFKSzI1?=
- =?utf-8?B?dGkwUzRUTDZHNEhMVmd0QytGbTFuNTI5L09xQUJIVnVwak5yOWZyOWs2TTJG?=
- =?utf-8?B?UTVleXZxbXBiN2NuY0crR01mM0ZHdjNRdlI0d3V1TzJpdzR2OC9aazJPUmk4?=
- =?utf-8?B?MWRiMjNRRU9SWUNDVG9IeHdtaHdNVHJhZ2N6UlJjVFQ3a09vYmFTMVBmbzV5?=
- =?utf-8?B?SGtiWmpGbjJ2WUFaRWd4NEpqaE9wSDc2T1pDbzNWZENnK2pmQnhZRTdVUXVj?=
- =?utf-8?B?TFJFRndxNWsvTFdCRnQ2NUFZNmZOaWlBWFA2VitaNkpGaVNBT0EvZ1JhbUcx?=
- =?utf-8?B?bTJpenZSTXM5R1R2UmZqOGIyV3JIMUdQbE1qM0xKUVBaeUtBZzRvRjlzMEZu?=
- =?utf-8?B?cUh4cURXbDJSeXRTZlNRU2dyNGtOdVRTdnVZM0VHNCtQTFJHMTNkanBNNTlE?=
- =?utf-8?B?emwyQW01dWxiRExENjF0MW5MV1VGa0hRdVcyenFkUDErWmpYWXBOUXRJSEQ4?=
- =?utf-8?B?dWYyUnRsM1VDbklGa2dsNTZWeFR0OVF2a2J6bEF5UjgzdFZvajZOTHp0Qm8r?=
- =?utf-8?B?N2dVTUdBTXNNMEF0bFR6Z3Z2Nmo3QW82SVgvRHhNSWxkc1VXS0JNY0ZLWDZE?=
- =?utf-8?B?V083QVNFQ3pPV0hkeHFaSEVnNjBJaThSVE5KZlhPRlhqVHpGUmt0MVYvQVBi?=
- =?utf-8?B?SE5NR05Oa1BhZHZ3NURNSzRCVGpnYnVMZDZvNDNIWGdNajZEd1dXZ3piM295?=
- =?utf-8?B?WFFFMWtKWXR0ZElLNXdpcnArNEdROWlOWG9HN3NNVXI4eC9IaHBhb0crbVpj?=
- =?utf-8?B?WGljK2xIdmlXMWZ2ck55K29VZTIxSDc4bUVTUWlEcUpqMDhKVHN0WFRSN1dk?=
- =?utf-8?B?UTZLdE9idFMyTm54OTVYd3crUng3RE81UUZFQkF6L3FNNGYxOTczTzVjK2VS?=
- =?utf-8?B?eUhSdTUyUGJaRHhqN2hNaU03Y0JYTzZPeDZvT0ZXUzRrTzNvQStrczNGZ1Bw?=
- =?utf-8?B?UnA2VzJGb3JRVm5lSTFaNU05eFBZeWk5T082bVhGejZObGxHV012SG95aThX?=
- =?utf-8?B?cnVScHR4dzRucFZWZE8yNEY5K1drKzZiMElLaGhwV3lIUkcxM0pYSVNzUGU1?=
- =?utf-8?B?US93Tnh6VHlNVFJPZWRjTHlsNVNKYUtPc05BVzNqTlptSmgrUmVzcTlsZXMz?=
- =?utf-8?B?UFRSOHdzOEVabjc0Ri9RUEYvN1I3c21DVi9qYWw4MWw3eUlLNFJYOWU1bncv?=
- =?utf-8?B?QUMzYk5CT3NCL2lZempmZWpKU3BUZUJVSnFFUi9hWTJlSEdYeE9QSVZUUmFK?=
- =?utf-8?B?d1Vudm1NRVc1S3RNWnhKS1ZmQVZwRUt2MDFkVkFtU1pUMzF2MUF5ZmZCbEJW?=
- =?utf-8?B?aFJ3VHB1KzNMNXF1S0lMMWk5N3hVR2phNXJlUVBOWHdYQm5rWUlwRlZ6a2hl?=
- =?utf-8?B?NG4zQ2NHUXNjVDRSVW1GODlyakdpTlRBM0w5WnFwUTJJMitVWFRnQXhTK00w?=
- =?utf-8?B?dDBDR3RqcHdPSzJXTk90WnRna0RNbXRYZzhDZE0xUUpVQmtYRkdBaU1YZCtL?=
- =?utf-8?B?VkZITWNhRUV0RmpkUXVLR2xRTndueHpuWEQ4TjB1N0R1MnJYMnhKNjQ2ZzZQ?=
- =?utf-8?B?cFh3bWQrMVZjazlZNDQ4aHAyS0FWK2F0YUpwYVk0d3RHbi9vZ2RkbHpiTVpV?=
- =?utf-8?B?d1kxUXJWakJGeDduek9ueVRhSEtOZTB0eVlDS3ZLRHYxVU1NWXlDQlF1d0w1?=
- =?utf-8?B?eEtpM2hDVEZ6NlpYRlh2RGFYaVFzTVZxRm1rSDZSY0NZd3YybFc1Q0pGM25z?=
- =?utf-8?B?Rml5a1FvWjNZajF0NmVvUW94aEdKMlRRYnh4WlJmd3RzUSt1OTRCSGYzSVVQ?=
- =?utf-8?B?VHhzUmhacWtYdHZtdlNPSFJhd0FoRXNhajhFeGZ2RENIWXRWRXZDODdMODBa?=
- =?utf-8?B?QTVRZFM2SFdvVDd1b0JCZkZkVUs0RjdEcWpHaXFJbjdwbmo2LzNMUFNGY1Jj?=
- =?utf-8?B?YVhSaDIweG5kSktPZFBIYXNKS2JuMm1raXQzRzNqd1FYcDM4OHpQR05SQWZl?=
- =?utf-8?B?YlJyNWRrSTM0a0xpeDBjajdhVkdQTVIyVlI2OHQ2b245T1puZTVEWnJaZTMr?=
- =?utf-8?B?Z1M4Y2dZNFlwUUoreXBkczBxYmhxTEpHWnE2VXhiOXVSNFdLcWdsVFU1eE5a?=
- =?utf-8?B?NGhIWGV1MlJyUVdvc2VXQzJxeHNLODB2VzhQaTFubXd1Z0RGLzdqbjVrNWZr?=
- =?utf-8?Q?1hQbcVge+mIL20LM=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <9DB0B01AF318634880B61F43D621CF2B@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF20E2F616C
+	for <linux-rdma@vger.kernel.org>; Sat, 20 Dec 2025 07:07:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1766214468; cv=none; b=VP1EOdQxLlErnDiTKlTLZhcyUiVjOR/yPq94DABpfZ8aox9QFx2VYu9HNP7UvYqqHedHFOxXxZGFFv7PCQj5q9Oap3ryZB7b7YLSgFjTIsclb629FMS5fGnr9TEu5p7rhdtp0PI32natQ/URlZZLRUzFyW0rsl9AvtiI9VlfAPk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1766214468; c=relaxed/simple;
+	bh=x2cZeTt8nfXahNIgP5U//Vv6JqbmrMLmOmquVJbMeiA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QNEsgWXibWMoYBzmgmiD9Fu5nvXCtOmwEbW4WYVNqDYQ4PuR8D3tDvs4/0d/Nl/lu0gymDT5VuTlW2PJDJEElyZ+50ZqxRvTvb3wzJtjuGWQjgkpfiFEDcr/zPIDuBDIv3kV3ZL4RAFJwULzC+c8pmUbWb9g6lOXyOUJ3HFAdU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RqjUwU9Y; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ee5a3dbe-af8c-46e5-98ea-8165fbeeeccd@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1766214449;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kUR73nv2KAuFsmcIH3gF6bSkayK0unPfWf5p0TiVjAg=;
+	b=RqjUwU9Y1KAuHQ1VKk0KdcGlIPuEIp7HZ69zu2eptfO7tmZia6188/YVg45pmv5FHDGIal
+	83RYISe8fJZ+uK/3aJY17xrg0dlj8nriVvOTC/QdB/FeI8wJnnJSqBaZVgsqk2pSmjgQf0
+	jomiDVFCdCCkkfKVBgNlr08+hdi3weI=
+Date: Fri, 19 Dec 2025 23:07:21 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	88uhpbhniDlf042acjPjHwxn7aWqRuniG0EzGVzXsFEYk+no8SZ7ZyqSfbTOfgWcXtSw9+yh+NYt8QZUcBuOMBSKwrR7jvDrlVm7SKEimPzZMVPv+pvWPpTXW9qCdFxZusj8cuHueWzNxlBzY4BDRm87Ox7RVkhVSOvpaAiEFiBci4L1I1i8Wb3+mVT8xUctxha+H2VlpNMhth33yTkhlW4fF+OURRRd40+SEYoI4k3mJUHCgz6FmwuWXYQYH0CuuRBru9VevYPoi/AwefYWjOqKyIokswumVvgMMxumF3CPye3Z0/y4+iM2DnKH/Ax/+SCygfDupJo/+EPqpSmKAnVt81+1sgjP4/3RAyIH0qdNTEt+r/86JEe+0bqAgtNoczP1OUU+DcWmHwijJuXgfwO7ZrZ+Lphw6Wf1lZj1wo9PgIAzH10J/qXr+LaUXT8KynYTs7D26U2H0tZCME34278x6xVbRdVNiIqw2NGNUNK+yXgn9pNMOPPY7WfJ+ZBqUFijARNFLSO+AiUcsTmEOhJhMaX5Pf9TYuCYtWpWxFbzCt9wAW5GIqugzX7qR9BIUGxscmqMMTsrUJQE9C2W5813+ZdB6hyq5Wq95Stz6yPbvRcO5WWqR75yXxBHHrl3
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR04MB8532.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 97d51f76-aef2-4bf7-b77b-08de3f87bf5b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Dec 2025 05:22:19.6584
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: m87uIrh63pnUbqlePQiBXgqkvV7Q9px0GGv4BeNHIh6OjrQE/b+OINHrhtV2KGseRGox7+VaPqIxIUQkzkucEAOGkyMeyecMjm1TfHy2Uy8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB6791
+Subject: Re: [PATCH][next] RDMA/rxe: Avoid -Wflex-array-member-not-at-end
+ warnings
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+ Zhu Yanjun <mounter625@163.com>, Leon Romanovsky <leon@kernel.org>
+Cc: Jason Gunthorpe <jgg@nvidia.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Zhu Yanjun <zyjzyj2000@gmail.com>, linux-rdma@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <aRKu5lNV04Sq82IG@kspp> <20251202181334.GA1162842@nvidia.com>
+ <5ac954bb-ad4d-4b4c-b23b-47350b428404@linux.dev>
+ <20251204130559.GA1219718@nvidia.com>
+ <80620d09-8187-45b1-a490-07c52733ac21@linux.dev>
+ <2191ee0f-a528-4187-ae5b-5aba18741701@linux.dev>
+ <7e3a294f-5dc2-4e8c-aacc-0286c1592038@linux.dev>
+ <20251218155623.GC400630@unreal>
+ <5d950681-7f16-4b1e-a512-b118c747ffd7@linux.dev>
+ <cbb0ec98-0291-4ec4-9633-690e9199248b@embeddedor.com>
+ <6f15e334-8902-4d1d-adab-aa9ab8f009d6@linux.dev>
+ <d569b5fd-fcca-4dd0-b94b-a6df4e52d940@embeddedor.com>
+ <01b419f6-264e-4faa-b4df-480fdf952d14@linux.dev>
+ <8470c362-8c41-4b99-8c05-0903285c1b6c@embeddedor.com>
+ <1bef81ba-be81-49df-9d86-3cc0cc4bf864@163.com>
+ <ad8987ae-b7fe-47af-a1d2-5055749011c0@embeddedor.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <ad8987ae-b7fe-47af-a1d2-5055749011c0@embeddedor.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-T24gMTIvMjAvMjUgMjo1OSBBTSwgeWFuanVuLnpodSB3cm90ZToNCj4gT24gMTIvMTkvMjUgNTo0
-NSBBTSwgU3RlZmFuIE1ldHptYWNoZXIgd3JvdGU6DQo+PiBIaSBTaGluaWNoaXJvLA0KPj4NCj4+
-PiBXaGlsZSBJIGV2YWx1YXRlIHY2LjE5LXJjMSBrZXJuZWwsIEkgZm91bmQgdGhhdCByZG1hX3J4
-ZSBtb2R1bGUgdW5sb2FkDQo+Pj4gZmFpbHMuDQo+Pj4gVGhlIGZhaWx1cmUgY2FuIGJlIHJlY3Jl
-YXRlZCBieSBzaW1wbGUgdHdvIGNvbW1hbmRzIGJlbG93Og0KPj4+DQo+Pj4gIMKgwqDCoCAkIHN1
-ZG8gbW9kcHJvYmUgcmRtYV9yeGUNCj4+PiAgwqDCoMKgICQgc3VkbyBtb2Rwcm9iZSAtciByZG1h
-X3J4ZQ0KPj4+ICDCoMKgwqAgbW9kcHJvYmU6IEZBVEFMOiBNb2R1bGUgcmRtYV9yeGUgaXMgaW4g
-dXNlLg0KPj4+DQo+Pj4gSSBiaXNlY3RlZCBhbmQgZm91bmQgdGhlIHRyaWdnZXIgY29tbWl0IGlz
-IHRoaXM6DQo+Pj4NCj4+PiAgwqDCoMKgIDgwYTg1YTc3MWRlYiAoIlJETUEvcnhlOiByZWNsYXNz
-aWZ5IHNvY2tldHMgaW4gb3JkZXIgdG8gYXZvaWQNCj4+PiBmYWxzZSBwb3NpdGl2ZXMgZnJvbSBs
-b2NrZGVwIikNCj4gDQo+IFRoYW5rcyBhIGxvdC4NCj4gDQo+IGh0dHBzOi8vZ2l0LnNhbWJhLm9y
-Zy8/cD1tZXR6ZS9saW51eC93aXAuZ2l0O2E9Y29tbWl0ZGlmZjtoPTdmNTVlYjMzNzNkY2E5N2I3
-MDZlODUyMTcwNWEwNmQ0YmY4NGIwZjANCj4gDQo+IEhpLCBTaGluaWNoaXJvIEthd2FzYWtpDQo+
-IA0KPiBQbGVhc2UgY29uZmlybSBpZiB0aGUgYWJvdmUgbGluayBjYW4gZml4IHRoZSBhYm92ZSBw
-cm9ibGVtIG9yIG5vdC4NCg0KWWVzLCBJIGNvbmZpcm1lZCB0aGF0IHRoZSBwYXRjaCBhdm9pZHMg
-dGhlIHJkbWFfcnhlIG1vZHVsZSB1bmxvYWQgZmFpbHVyZSwNCmFuZCByZXBsaWVkIHdpdGggbXkg
-VGVzdGVkLWJ5IHRhZy4gU3RlZmFuLCBZZW5qdW4sIHRoYW5rIHlvdSBhZ2FpbiBmb3IgdGhlIGZp
-eC4NCg==
+在 2025/12/19 1:55, Gustavo A. R. Silva 写道:
+> 
+> 
+> On 12/19/25 15:59, Zhu Yanjun wrote:
+>>
+>> 在 2025/12/18 21:48, Gustavo A. R. Silva 写道:
+>>>
+>>>> The struct rxe_recv_wqe is as below.
+>>>>
+>>>> struct rxe_recv_wqe {
+>>>>      __aligned_u64       wr_id;
+>>>>      __u32           reserved;
+>>>>      __u32           padding;
+>>>>      struct rxe_dma_info dma;
+>>>
+>>> Expand struct rxe_dma_info here.
+>>
+>> Thanks. In struct rxe_dma_info, the struct is
+>>
+>> struct rxe_sge {
+>>         __aligned_u64 addr;
+>>         __u32   length;
+>>         __u32   lkey;
+>> };
+>>
+>> But in your commit, struct ib_sge is used.
+>>
+>> struct ib_sge {
+>>      u64 addr;
+>>      u32 length;
+>>      u32 lkey;
+>> };
+>> __aligned_u64 is a 64-bit integer with a guaranteed 8-byte alignment,
+>>
+>> used to preserve ABI correctness across architectures and between
+>>
+>> userspace and kernel, while u64 has architecture-dependent alignment.
+>>
+>> I am not sure if we can treate "struct rxe_sge" as the same with 
+>> "struct ib_sge".
+> 
+> Just notice that the original code is the one actually doing that.
+> See my response in this same thread:
+> 
+> https://lore.kernel.org/linux-hardening/d3336e9d-2b84-4698-a799- 
+> b49e3845f38f@embeddedor.com/
+> 
+> So, if that code is fine, this is fine. If the original code is wrong,
+> then that code should be fixed first.
+
+Thanks a lot. Because struct ib_sge and struct ib_sge is different,
+struct ib_sge {
+     u64 addr; <--- u64 has architecture-dependent alignment
+     u32 length;
+     u32 lkey;
+};
+
+struct rxe_sge {
+        __aligned_u64 addr;   <---guaranteed 8-byte alignment,
+
+used to preserve ABI correctness across architectures and between
+
+userspace and kernel
+
+        __u32   length;
+        __u32   lkey;
+};
+
+and struct rxe_sge is used in rxe_mr, it is working between userspace 
+and kernel, thus, I want to keep struct rxe_mr in rxe_mr.
+
+But in other places, I want to replace struct rxe_sge with struct 
+ib_sge. The commit is as below.
+
+In short, the commit "RDMA/rxe: Avoid -Wflex-array-member-not-at-end 
+warnings" && the following commit will work well. I have made tests in 
+my local host. It can work well.
+
+Please Leon and Jason comment.
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c 
+b/drivers/infiniband/sw/rxe/rxe_mr.c
+index b1df05238848..390ae01f549d 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -341,7 +341,7 @@ int copy_data(
+         enum rxe_mr_copy_dir    dir)
+  {
+         int                     bytes;
+-       struct rxe_sge          *sge    = &dma->sge[dma->cur_sge];
++       struct ib_sge *sge      = &dma->sge[dma->cur_sge];
+         int                     offset  = dma->sge_offset;
+         int                     resid   = dma->resid;
+         struct rxe_mr           *mr     = NULL;
+@@ -580,7 +580,7 @@ enum resp_states rxe_mr_do_atomic_write(struct 
+rxe_mr *mr, u64 iova, u64 value)
+
+  int advance_dma_data(struct rxe_dma_info *dma, unsigned int length)
+  {
+-       struct rxe_sge          *sge    = &dma->sge[dma->cur_sge];
++       struct ib_sge *sge      = &dma->sge[dma->cur_sge];
+         int                     offset  = dma->sge_offset;
+         int                     resid   = dma->resid;
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c 
+b/drivers/infiniband/sw/rxe/rxe_resp.c
+index 711f73e0bbb1..74f5b695da7a 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -283,7 +283,7 @@ static enum resp_states get_srq_wqe(struct rxe_qp *qp)
+                 rxe_dbg_qp(qp, "invalid num_sge in SRQ entry\n");
+                 return RESPST_ERR_MALFORMED_WQE;
+         }
+-       size = sizeof(*wqe) + wqe->dma.num_sge*sizeof(struct rxe_sge);
++       size = sizeof(*wqe) + wqe->dma.num_sge*sizeof(struct ib_sge);
+         memcpy(&qp->resp.srq_wqe, wqe, size);
+
+         qp->resp.wqe = &qp->resp.srq_wqe.wqe;
+diff --git a/include/uapi/rdma/rdma_user_rxe.h 
+b/include/uapi/rdma/rdma_user_rxe.h
+index bb092fccb813..360839498441 100644
+--- a/include/uapi/rdma/rdma_user_rxe.h
++++ b/include/uapi/rdma/rdma_user_rxe.h
+@@ -154,7 +154,7 @@ struct rxe_dma_info {
+         union {
+                 __DECLARE_FLEX_ARRAY(__u8, inline_data);
+                 __DECLARE_FLEX_ARRAY(__u8, atomic_wr);
+-               __DECLARE_FLEX_ARRAY(struct rxe_sge, sge);
++               __DECLARE_FLEX_ARRAY(struct ib_sge, sge);
+         };
+  };
+
+
+To this commit, plus the above commit, it should work well.
+
+Yanjun.Zhu
+
+> 
+> -Gustavo
+> 
+>>
+>>
+>> Leon and Jason, please comment on it.
+>>
+>>
+>> Yanjun.Zhu
+>>
+>>>
+>>>> };
+>>>>
+>>>> But I can not find dma.sge in the above struct. Can you explain it?
+>>>>
+>>>> To be honest, I read your original commit for several times, but I 
+>>>> can not get it.  Can you explain the MACRO TRAILING_OVERLAP? And how 
+>>>> can it replace the following struct?
+>>>
+>>> This is clearly explained in the changelog text. I think what you're
+>>> missing will be clear once you understand how nested structures
+>>> work. See my comment above.
+>>>
+>>> -Gustavo
+>>
+> 
+
 
