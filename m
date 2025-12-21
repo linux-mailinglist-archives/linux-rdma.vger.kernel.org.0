@@ -1,128 +1,79 @@
-Return-Path: <linux-rdma+bounces-15126-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15127-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3C6DCD3DB1
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 10:30:47 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5F2ACD3DB7
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 10:31:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 33916300B929
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 09:30:45 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B951B3007695
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 09:31:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E5E027CCF2;
-	Sun, 21 Dec 2025 09:30:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B76E327B34E;
+	Sun, 21 Dec 2025 09:31:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SvEu/vhJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nYs2q8VF"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD9D61D90DD;
-	Sun, 21 Dec 2025 09:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7202222F755;
+	Sun, 21 Dec 2025 09:31:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766309442; cv=none; b=ZgyJmyHMpbjGsYsxBQmR/XqUp7uc41QsWoz8zMDHrPzCfa3O6DKYsT9hHMfQ/AXWxr2HJUOTOA+zi3pB7Af6mky4hm/f5UbFQESiYXQj30CV7xvKl6k/bcvVB7O2cgq18SCAo4nnnGMETkv7H7KcE3KIZNiBcai8qY3uoxjyQqg=
+	t=1766309475; cv=none; b=BW40Ebw79LFsNWi04aeuEoWKe6/W6rapvXTKj6J40Ct253XFtjdpM9PfogdXNhhNJ6BcnXllg0rhHDywwR1MfHAoGjOchXOHFIn6u9iU+61uY3vfINkz9Qd7rlcllWdKCaLNXd8YNb2YkHxVVV2sxj5Wh10RIABrGP5P1YpOH5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766309442; c=relaxed/simple;
-	bh=valU7+/erzENN3/kCx/CVkyzp948pkICi8gK0ohNFPw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZvkOpBIhWpV6r0E6aUU91TVTJPh4Hwye7vXWwdSh7nHgTMI8CbGqBKw+Xf4Tp/qJCg/V287cKkvp+cYTx1O/WXBJdQV2ZB8I63JMHpxP16v7TC7mvRw1gGHIBOBmyV4Qn9rwKC36p/O+YKVoP9G6zFdZ9GIlD8ESOuRMDx/Z4y8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SvEu/vhJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8ED1C116B1;
-	Sun, 21 Dec 2025 09:30:41 +0000 (UTC)
+	s=arc-20240116; t=1766309475; c=relaxed/simple;
+	bh=0fFkgphsH1o0TEyWvtJIfc7DWPoF9vtAxrgjuEqcC7E=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=H66lVjUA9Fc5Xg82phDEZkG4gd5jJYpXeXdBlLDf+U9jxBYJeff1ZbZl35NvTRqbbLr2fMJnQdULIcq1jbdcv8JmT85hlR9V7U7yakuQde3FRNe8NuqxDkdkuYwuoN0i3NtVQsxygGgOOgVO5dxJHlPj8uozr7qezNFIXk5USm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nYs2q8VF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7314DC4CEFB;
+	Sun, 21 Dec 2025 09:31:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766309442;
-	bh=valU7+/erzENN3/kCx/CVkyzp948pkICi8gK0ohNFPw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SvEu/vhJO0VXeJuISDyMFFX+RKF3TTrZbiNvoxEo041qXZ68kqtwD0Kf/JXn0lDpG
-	 ijCbPYI/mV9hLRJmxzQ/T3TaHtP8Nr//Nh7lLEQdrd45lx5fGLEmLzidETVLFBcrQX
-	 BfhqM9ENPlQtkfdz2dOlILmefGaPh0OqcyYlvoH/YInIzGdFHp5K5H/NeHgbvK+XdY
-	 vZeAOHwQcieFGzt/7xanA8AUosrV2wEXOhJ+OowcJbZlbyQ1FEnG/1WN6mvE6D8gLO
-	 uE4mr3i1nx89qNtL1kTTSybUDvOlZMbV16e0aE9vYyfI8w2jdx6QXLS8wHqU61cE6A
-	 KvF6dvebzUGbg==
-Date: Sun, 21 Dec 2025 11:30:38 +0200
+	s=k20201202; t=1766309473;
+	bh=0fFkgphsH1o0TEyWvtJIfc7DWPoF9vtAxrgjuEqcC7E=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=nYs2q8VFtgPZo9w4ihXMHk7DIqnhYoAsCJY3+CpjwztktIy/G+vv1udD4U6UX1kr4
+	 PRzQXPJsW7xVhPc8JuHg2qSPDlqPtJUAT2RTy7gEOfbj5tQBZ6ojPda/EuJ2jeQl51
+	 uxFs2k78uGambEvfu8yMp6GIo51kCQurJRELqQLM5jQY71O4HtyejdX8UL/Ddk3R39
+	 QkhV6O5qE3IAJ4Y6bIkV8awKmi+HevnuuzZaxojr9cjn8oWg+D0pSOj/nbIKMFCSfs
+	 6Do8if30ejhUWI9jmIhSbXo59KvmJmxcyoeI5+N1q/1LaS/AURl5fE8Qk8UingNQmR
+	 0YnW2zhGa4hjQ==
 From: Leon Romanovsky <leon@kernel.org>
-To: Jang Ingyu <ingyujang25@korea.ac.kr>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+To: jgg@ziepe.ca, Jang Ingyu <ingyujang25@korea.ac.kr>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20251219041508.1725947-1-ingyujang25@korea.ac.kr>
+References: <20251219041508.1725947-1-ingyujang25@korea.ac.kr>
 Subject: Re: [PATCH] infiniband/core: Fix logic error in
  ib_get_gids_from_rdma_hdr()
-Message-ID: <20251221093038.GG13030@unreal>
-References: <20251219041508.1725947-1-ingyujang25@korea.ac.kr>
- <20251221092418.GF13030@unreal>
+Message-Id: <176630947091.2403900.16362203873754408569.b4-ty@kernel.org>
+Date: Sun, 21 Dec 2025 04:31:10 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20251221092418.GF13030@unreal>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-a6db3
 
-On Sun, Dec 21, 2025 at 11:24:18AM +0200, Leon Romanovsky wrote:
-> On Fri, Dec 19, 2025 at 01:15:08PM +0900, Jang Ingyu wrote:
-> > Fix missing comparison operator for RDMA_NETWORK_ROCE_V1 in the
-> > conditional statement. The constant was used directly instead of
-> > being compared with net_type, causing the condition to always
-> > evaluate to true.
+
+On Fri, 19 Dec 2025 13:15:08 +0900, Jang Ingyu wrote:
+> Fix missing comparison operator for RDMA_NETWORK_ROCE_V1 in the
+> conditional statement. The constant was used directly instead of
+> being compared with net_type, causing the condition to always
+> evaluate to true.
 > 
-> In current code, it doesn't matter as network type can be one of four
-> possible values, and this "else if" will be always true anyway.
 > 
-> I changed your patch to this and added Fixes line:
-> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-> index ee390928511ae..256f81c5803ff 100644
-> --- a/drivers/infiniband/core/verbs.c
-> +++ b/drivers/infiniband/core/verbs.c
-> @@ -737,14 +737,11 @@ int ib_get_gids_from_rdma_hdr(const union rdma_network_hdr *hdr,
->                 ipv6_addr_set_v4mapped(dst_saddr,
->                                        (struct in6_addr *)dgid);
->                 return 0;
-> -       } else if (net_type == RDMA_NETWORK_IPV6 ||
-> -                  net_type == RDMA_NETWORK_IB || net_type == RDMA_NETWORK_ROCE_V1) {
-> -               *dgid = hdr->ibgrh.dgid;
-> -               *sgid = hdr->ibgrh.sgid;
-> -               return 0;
-> -       } else {
-> -               return -EINVAL;
->         }
-> +
-> +       *dgid = hdr->ibgrh.dgid;
-> +       *sgid = hdr->ibgrh.sgid;
-> +       return 0;
->  }
->  EXPORT_SYMBOL(ib_get_gids_from_rdma_hdr);
 
-After some additional consideration, I'll keep your patch as is.
+Applied, thanks!
 
-My change is technically correct, but it's risky since some drivers  
-use non‑conformant values.
+[1/1] infiniband/core: Fix logic error in ib_get_gids_from_rdma_hdr()
+      https://git.kernel.org/rdma/rdma/c/8aaa848eaddd9e
 
-Thanks.
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
 
-> 
-> > 
-> > Signed-off-by: Jang Ingyu <ingyujang25@korea.ac.kr>
-> > ---
-> >  drivers/infiniband/core/verbs.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-> > index 11b1a194d..ee3909285 100644
-> > --- a/drivers/infiniband/core/verbs.c
-> > +++ b/drivers/infiniband/core/verbs.c
-> > @@ -738,7 +738,7 @@ int ib_get_gids_from_rdma_hdr(const union rdma_network_hdr *hdr,
-> >  				       (struct in6_addr *)dgid);
-> >  		return 0;
-> >  	} else if (net_type == RDMA_NETWORK_IPV6 ||
-> > -		   net_type == RDMA_NETWORK_IB || RDMA_NETWORK_ROCE_V1) {
-> > +		   net_type == RDMA_NETWORK_IB || net_type == RDMA_NETWORK_ROCE_V1) {
-> >  		*dgid = hdr->ibgrh.dgid;
-> >  		*sgid = hdr->ibgrh.sgid;
-> >  		return 0;
-> > -- 
-> > 2.34.1
-> > 
-> > 
-> 
 
