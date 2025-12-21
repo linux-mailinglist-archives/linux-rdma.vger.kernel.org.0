@@ -1,109 +1,94 @@
-Return-Path: <linux-rdma+bounces-15122-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15123-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B520CCD3CA3
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 09:02:00 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33494CD3CA8
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 09:03:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F3997300B838
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 08:01:45 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 8EB9730041C7
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 08:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C7E52405E1;
-	Sun, 21 Dec 2025 08:01:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2651A242D62;
+	Sun, 21 Dec 2025 08:03:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="UojBLrZW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bXqwdOwL"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DC4422F767
-	for <linux-rdma@vger.kernel.org>; Sun, 21 Dec 2025 08:01:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.251
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0367218AC4;
+	Sun, 21 Dec 2025 08:03:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766304102; cv=none; b=SJO9vRl9UzQGTvs8DOmUwSm/UP6hOy6Eh9b9mpQkxUm0ffdKCLeNo/wfiVTbm2aCr5/lrFV5/tsm3NNvxEFz0VnuzQcAoeLXMiW0eTAeXU/xLV2V8rQtoDyqk9XXGAGgV9AnYjz0+JWFfmRDxmbI/cKWbatjAf/8VEb4VsklkqA=
+	t=1766304219; cv=none; b=OMLO6+dgPI1/lHY8cSYY6dTaXrJHqLgPrmfbIql3UG7Z+oAT7oja5919YYtncugpnTVHj0K4Zsb0Jh+VzGdoO4i9GWDJe7xw1dSqvGrbF5QbnJZzvktCjesqlecboG9LEOrWo6WP9GfbHrn+OdNuoFFxzmUeqTclC2srvJs/yi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766304102; c=relaxed/simple;
-	bh=+RMvAcbzAHN0Fm8oHVYChw39J3SgnNgcTNgQo32PhiQ=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=ElHDm6ZEnjHMf99aulZlt9/pYt8hdV3LbypfQYzVCuHFLG6T1go3dqZDI9lOIe76Q9Wqq21d3XTtlVrB5B65kHRB9X0ESS2cSdU2xzv/dDN3QS6fLzBtqcI15BKBB2uCdrW8XhN8R6xBJJlSScrSm8cdnY4bU37ETj8hDkRkbQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=UojBLrZW; arc=none smtp.client-ip=185.125.188.251
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
-Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id 34EED3F059
-	for <linux-rdma@vger.kernel.org>; Sun, 21 Dec 2025 08:01:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-	s=20210803; t=1766304099;
-	bh=+RMvAcbzAHN0Fm8oHVYChw39J3SgnNgcTNgQo32PhiQ=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
-	 Reply-To;
-	b=UojBLrZWaviqeu0OHPDgsmx8sfiCJIuSnnaR85Yg8yxGCOFWQzrE2gDVsNAyTGtJ5
-	 UnPJyWC0T7yQHzQz8dDTb0qo2Cc93f0dF0vPVXikc7BN1w1pU9EmhWU8TL1dMwkcKb
-	 ZRbrPZfo6YtfjEPswKtJMqVnPdFewTRN9tdSgTzpz/d9A++wHZXphyUPuc3+YVEKvs
-	 JaFjcowpsLOQZW9TbRevUs437QB+i4M6Kz2nMplE0+8dDR4X1lDmwZXnx35KQ+ZJNu
-	 CSo/wGADvEAwEG1F7mJ+WnMJQheCPHVF93tsw5nTt5JKGchsC9WcVS2YWP6T/Cf+xg
-	 4dVgzrGOFs41A==
-Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
-	by buildd-manager.lp.internal (Postfix) with ESMTP id 1F5FD7E75D
-	for <linux-rdma@vger.kernel.org>; Sun, 21 Dec 2025 08:01:39 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1766304219; c=relaxed/simple;
+	bh=+zi1N9VwIHER6WrxiBOiWYKoYPkd9jJMNes2GHR5m70=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nirPAXtogrPvuOpzGg/corE4foY/nGu74rNWpRIW1MqTItbJXfAYLJGZ211gQHZ2mngEvL9u3o9oucdoKAGy4CjmYHCcfIs6dnBv2W38REXVnZBL2R2qqA6AAjqxLx+lte0OZeldsJnUjYLMhz6gMoATRCB+GMS2iieytT6iqpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bXqwdOwL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DACFC4CEFB;
+	Sun, 21 Dec 2025 08:03:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1766304219;
+	bh=+zi1N9VwIHER6WrxiBOiWYKoYPkd9jJMNes2GHR5m70=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bXqwdOwLJ1ot4Bd4V/La84l2fstRHfEoLIoVohfCehi9MV7T8WvAShPZZ+v8LrZhR
+	 3BFIsHFbTumZDqr6Nt25eHtWOr9k9dYWchpzOOj0hdeBDJ/vd8xs89zzxH6CW2emJd
+	 V2RHp7g5qD5MXp9fTMoG5A8ow8OutFG5kesc3YZlzaeOgXZp6FmJcyN8ZKhGurL5pb
+	 57yprU/oxN25dR5AqrwBziuJ6jAFSwdLredWN/dbii+H7PtMLYJ08cBULM1imNVFvd
+	 +2QBcrmWgMiYrEUFNElGnYuOaLq/2tjlIzQtn+i69mf00YLdha1UTTbtKEKq/egmUv
+	 vwOTp3WtjzUtg==
+Date: Sun, 21 Dec 2025 10:03:34 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Carlos Llamas <cmllamas@google.com>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Felix Kuehling <Felix.Kuehling@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Boris Brezillon <boris.brezillon@collabora.com>,
+	Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
+	=?iso-8859-1?Q?Adri=E1n?= Larumbe <adrian.larumbe@collabora.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Liviu Dudau <liviu.dudau@arm.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH 6/7] RDMA/umem: don't abuse current->group_leader
+Message-ID: <20251221080334.GC13030@unreal>
+References: <aTV1KYdcDGvjXHos@redhat.com>
+ <aTV1pbftBkH8n4kh@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Launchpad-Message-Rationale: Creator @linux-rdma
-X-Launchpad-Message-For: linux-rdma
-X-Launchpad-Notification-Type: package-build-status
-X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
-X-Launchpad-Build-State: FAILEDTOBUILD
-X-Launchpad-Build-Component: main
-X-Launchpad-Build-Arch: armhf
-X-Creator-Recipient: linux-rdma@vger.kernel.org
-X-Launchpad-PPA: linux-rdma-rdma-core-daily
-To: Linux RDMA <linux-rdma@vger.kernel.org>
-From: Launchpad Buildd System <noreply@launchpad.net>
-Subject: [Build #32078590] armhf build of rdma-core 61.0~202512210742+gited4d0d6e~ubuntu20.04.1 in ubuntu focal RELEASE [~linux-rdma/ubuntu/rdma-core-daily]
-Message-Id: <176630409912.3431851.16955424561017975119.launchpad@buildd-manager.lp.internal>
-Date: Sun, 21 Dec 2025 08:01:39 -0000
-Reply-To: Launchpad Buildd System <noreply@launchpad.net>
-Sender: noreply@launchpad.net
-Errors-To: noreply@launchpad.net
-Precedence: bulk
-X-Generated-By: Launchpad (canonical.com); Revision="99c00f518760bdd50fc6e353e7736d2fff8fba4a"; Instance="launchpad-buildd-manager"
-X-Launchpad-Hash: 1d8c55f5924f568b6be200f7ebf36de28168c0a7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aTV1pbftBkH8n4kh@redhat.com>
 
+On Sun, Dec 07, 2025 at 01:40:05PM +0100, Oleg Nesterov wrote:
+> Cleanup and preparation to simplify the next changes.
+> 
+> Use current->tgid instead of current->group_leader->pid.
+> 
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> ---
+>  drivers/infiniband/core/umem_odp.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
 
- * Source Package: rdma-core
- * Version: 61.0~202512210742+gited4d0d6e~ubuntu20.04.1
- * Architecture: armhf
- * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Component: main
- * State: Failed to build
- * Duration: 8 minutes
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+build/32078590/+files/buildlog_ubuntu-focal-armhf.rdma-core_61.0~2025=
-12210742+gited4d0d6e~ubuntu20.04.1_BUILDING.txt.gz
- * Builder: https://launchpad.net/builders/bos03-arm64-004
- * Source: not available
-
-
-
-If you want further information about this situation, feel free to
-contact us by asking a question on Launchpad
-(https://answers.launchpad.net/launchpad/+addquestion).
-
---=20
-armhf build of rdma-core 61.0~202512210742+gited4d0d6e~ubuntu20.04.1 in ubu=
-ntu focal RELEASE
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+build/32=
-078590
-
-You are receiving this email because you created this version of this
-package.
-
+Thanks,
+Acked-by: Leon Romanovsky <leon@kernel.org>
 
