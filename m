@@ -1,53 +1,55 @@
-Return-Path: <linux-rdma+bounces-15127-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15128-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5F2ACD3DB7
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 10:31:17 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6737CCD3DBD
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 10:33:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B951B3007695
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 09:31:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 37BBA300A1E9
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 09:33:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B76E327B34E;
-	Sun, 21 Dec 2025 09:31:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AADE424677A;
+	Sun, 21 Dec 2025 09:33:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nYs2q8VF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kft6JZa5"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7202222F755;
-	Sun, 21 Dec 2025 09:31:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F21227BA4
+	for <linux-rdma@vger.kernel.org>; Sun, 21 Dec 2025 09:33:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766309475; cv=none; b=BW40Ebw79LFsNWi04aeuEoWKe6/W6rapvXTKj6J40Ct253XFtjdpM9PfogdXNhhNJ6BcnXllg0rhHDywwR1MfHAoGjOchXOHFIn6u9iU+61uY3vfINkz9Qd7rlcllWdKCaLNXd8YNb2YkHxVVV2sxj5Wh10RIABrGP5P1YpOH5M=
+	t=1766309589; cv=none; b=qleWDqNsPbLFUsR0qI4ErnO+6rwZEiPWQt1csB2MG4ksgequjE8MFX7aWDgZ9hQhxM+iUPyJaVHBZiTNUBv8VB0dfzgFASQu1aCU54mWuu+kC6o4RxxCfeS1WzQJmIRGLxppzCAFWZMod5/AUKXStxCTnhxQhU5WgCkmBv5vw5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766309475; c=relaxed/simple;
-	bh=0fFkgphsH1o0TEyWvtJIfc7DWPoF9vtAxrgjuEqcC7E=;
+	s=arc-20240116; t=1766309589; c=relaxed/simple;
+	bh=h7lzSfstWw21yhdsGIikiBqtadieXl3ZnzpYhyFpdx0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=H66lVjUA9Fc5Xg82phDEZkG4gd5jJYpXeXdBlLDf+U9jxBYJeff1ZbZl35NvTRqbbLr2fMJnQdULIcq1jbdcv8JmT85hlR9V7U7yakuQde3FRNe8NuqxDkdkuYwuoN0i3NtVQsxygGgOOgVO5dxJHlPj8uozr7qezNFIXk5USm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nYs2q8VF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7314DC4CEFB;
-	Sun, 21 Dec 2025 09:31:13 +0000 (UTC)
+	 MIME-Version:Content-Type; b=WhPn9eMHQRUCyr1EOqWbGAO34zSxbOZCyTIyIdp5RrO6Iitc4Cg+2XoMpINAt0A0YAsMXtBOIn8ihx4+T+lzNPniZbHho7THSFhMuZuNW4JD3llMHAEl5emdr/PpxIyANs8jjdAVa87NcmwMShnzV5HJfxeoeo0Rpca0vSfL6+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kft6JZa5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BDA8C4CEFB;
+	Sun, 21 Dec 2025 09:33:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766309473;
-	bh=0fFkgphsH1o0TEyWvtJIfc7DWPoF9vtAxrgjuEqcC7E=;
+	s=k20201202; t=1766309586;
+	bh=h7lzSfstWw21yhdsGIikiBqtadieXl3ZnzpYhyFpdx0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=nYs2q8VFtgPZo9w4ihXMHk7DIqnhYoAsCJY3+CpjwztktIy/G+vv1udD4U6UX1kr4
-	 PRzQXPJsW7xVhPc8JuHg2qSPDlqPtJUAT2RTy7gEOfbj5tQBZ6ojPda/EuJ2jeQl51
-	 uxFs2k78uGambEvfu8yMp6GIo51kCQurJRELqQLM5jQY71O4HtyejdX8UL/Ddk3R39
-	 QkhV6O5qE3IAJ4Y6bIkV8awKmi+HevnuuzZaxojr9cjn8oWg+D0pSOj/nbIKMFCSfs
-	 6Do8if30ejhUWI9jmIhSbXo59KvmJmxcyoeI5+N1q/1LaS/AURl5fE8Qk8UingNQmR
-	 0YnW2zhGa4hjQ==
+	b=Kft6JZa5JZlRg7zU3Ey1c5OIXEvkzVvAo8t++ggtphuv9q65eGCkFYIH6iKJY0z4I
+	 dHPk9zO7YMaU6YyWYI32JjGAoTYkjqpSJXO0hX9AZ4QFN+mt7WNKpC7cP99lj2VobG
+	 uzUUZNK5V05ctm86692yB1Hu6dm6M4phUW0ynLWXoFVBOh52enEb1YLdb2HvgQqUbn
+	 NuNGrz+MJKFW56ybb1XTQjwXPtLTxZtb6rqWy9YzDN1h6p8VuP5/JeXs0WiOjrvcsH
+	 7Q6oJSHLI/WSSgB3fbvaD5C5JkFQuW5lNlbediMB875xxzmzhIVO6l9QRB3hOKnPen
+	 /cjSorZPIUedw==
 From: Leon Romanovsky <leon@kernel.org>
-To: jgg@ziepe.ca, Jang Ingyu <ingyujang25@korea.ac.kr>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20251219041508.1725947-1-ingyujang25@korea.ac.kr>
-References: <20251219041508.1725947-1-ingyujang25@korea.ac.kr>
-Subject: Re: [PATCH] infiniband/core: Fix logic error in
- ib_get_gids_from_rdma_hdr()
-Message-Id: <176630947091.2403900.16362203873754408569.b4-ty@kernel.org>
-Date: Sun, 21 Dec 2025 04:31:10 -0500
+To: jgg@ziepe.ca, kalesh-anakkur.purayil@broadcom.com, 
+ selvin.xavier@broadcom.com, linux-rdma@vger.kernel.org, 
+ Alok Tiwari <alok.a.tiwari@oracle.com>
+Cc: alok.a.tiwarilinux@gmail.com
+In-Reply-To: <20251217100158.752504-1-alok.a.tiwari@oracle.com>
+References: <20251217100158.752504-1-alok.a.tiwari@oracle.com>
+Subject: Re: [PATCH] RDMA/bnxt_re: Fix incorrect BAR check in
+ bnxt_qplib_map_creq_db()
+Message-Id: <176630958412.2404173.9823044913296121202.b4-ty@kernel.org>
+Date: Sun, 21 Dec 2025 04:33:04 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -59,18 +61,20 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-a6db3
 
 
-On Fri, 19 Dec 2025 13:15:08 +0900, Jang Ingyu wrote:
-> Fix missing comparison operator for RDMA_NETWORK_ROCE_V1 in the
-> conditional statement. The constant was used directly instead of
-> being compared with net_type, causing the condition to always
-> evaluate to true.
+On Wed, 17 Dec 2025 02:01:41 -0800, Alok Tiwari wrote:
+> RCFW_COMM_CONS_PCI_BAR_REGION is defined as BAR 2, so checking
+> !creq_db->reg.bar_id is incorrect and always false.
 > 
+> pci_resource_start() returns the BAR base address, and a value of 0
+> indicates that the BAR is unassigned. Update the condition to test
+> bar_base == 0 instead.
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] infiniband/core: Fix logic error in ib_get_gids_from_rdma_hdr()
-      https://git.kernel.org/rdma/rdma/c/8aaa848eaddd9e
+[1/1] RDMA/bnxt_re: Fix incorrect BAR check in bnxt_qplib_map_creq_db()
+      https://git.kernel.org/rdma/rdma/c/145a417a39d7ef
 
 Best regards,
 -- 
