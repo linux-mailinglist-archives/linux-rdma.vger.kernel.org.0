@@ -1,94 +1,113 @@
-Return-Path: <linux-rdma+bounces-15123-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15124-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33494CD3CA8
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 09:03:43 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 916D4CD3D22
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 09:46:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 8EB9730041C7
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 08:03:42 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id A535E3001615
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 08:46:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2651A242D62;
-	Sun, 21 Dec 2025 08:03:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8188A2773CA;
+	Sun, 21 Dec 2025 08:46:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bXqwdOwL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iqpj2yAW"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0367218AC4;
-	Sun, 21 Dec 2025 08:03:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33BCE1A262A;
+	Sun, 21 Dec 2025 08:46:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766304219; cv=none; b=OMLO6+dgPI1/lHY8cSYY6dTaXrJHqLgPrmfbIql3UG7Z+oAT7oja5919YYtncugpnTVHj0K4Zsb0Jh+VzGdoO4i9GWDJe7xw1dSqvGrbF5QbnJZzvktCjesqlecboG9LEOrWo6WP9GfbHrn+OdNuoFFxzmUeqTclC2srvJs/yi8=
+	t=1766306781; cv=none; b=hdx1dueONOaW7jd+MEwBD/x0hGFlo+rlXLy6kqcAcVxJgZXLH/IWVdi3jzth1iDwTPM+ORhKT6FP9afIug6TRlOLphg16xpidCNfKMOKwePQxfg78X31i7J3CHO7Up5x3wsssDKzaKrEwsXW+1rOgSVGXNCPs1D4h/SuEmNttGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766304219; c=relaxed/simple;
-	bh=+zi1N9VwIHER6WrxiBOiWYKoYPkd9jJMNes2GHR5m70=;
+	s=arc-20240116; t=1766306781; c=relaxed/simple;
+	bh=LzD3evTlbOZ9okKa/QPL8yyABDk/ui8XeBYX9VdYiL8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nirPAXtogrPvuOpzGg/corE4foY/nGu74rNWpRIW1MqTItbJXfAYLJGZ211gQHZ2mngEvL9u3o9oucdoKAGy4CjmYHCcfIs6dnBv2W38REXVnZBL2R2qqA6AAjqxLx+lte0OZeldsJnUjYLMhz6gMoATRCB+GMS2iieytT6iqpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bXqwdOwL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DACFC4CEFB;
-	Sun, 21 Dec 2025 08:03:38 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=e83JbEcbWMd8KveabuZ+AtXTZ1AylIRnsu2IV2qbJe13tNXlSB/tc9D3cWgBlxSZlWONo9rl3SRMiujMlx80pYBn1mLiJF3gjYHmU3JQ4zFgTgaOzRtBkIc5sBBNPxoCfnPu7UgttxwnsKOPzRgntV0kCjuo0eriFXWzdOrlIFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iqpj2yAW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02106C116B1;
+	Sun, 21 Dec 2025 08:46:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766304219;
-	bh=+zi1N9VwIHER6WrxiBOiWYKoYPkd9jJMNes2GHR5m70=;
+	s=k20201202; t=1766306780;
+	bh=LzD3evTlbOZ9okKa/QPL8yyABDk/ui8XeBYX9VdYiL8=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bXqwdOwLJ1ot4Bd4V/La84l2fstRHfEoLIoVohfCehi9MV7T8WvAShPZZ+v8LrZhR
-	 3BFIsHFbTumZDqr6Nt25eHtWOr9k9dYWchpzOOj0hdeBDJ/vd8xs89zzxH6CW2emJd
-	 V2RHp7g5qD5MXp9fTMoG5A8ow8OutFG5kesc3YZlzaeOgXZp6FmJcyN8ZKhGurL5pb
-	 57yprU/oxN25dR5AqrwBziuJ6jAFSwdLredWN/dbii+H7PtMLYJ08cBULM1imNVFvd
-	 +2QBcrmWgMiYrEUFNElGnYuOaLq/2tjlIzQtn+i69mf00YLdha1UTTbtKEKq/egmUv
-	 vwOTp3WtjzUtg==
-Date: Sun, 21 Dec 2025 10:03:34 +0200
+	b=iqpj2yAWQXba4lB65BL8nDC1aWyjVjtIjEMQGcnEx/w31Hcytp7St/mUJbbn9BUM2
+	 mZi8a1JUPvdGpq7uAmmyVglB9HJtI4W+LvtFeqCWtSz2gCVxn46mEbwmcHPHEffY3M
+	 pB8R3osQbPLuJcdSfV/lD9lONJ5QXPIbTlN/2vB8r+x7LXWLE0YoEgQpcvM8pGHVYJ
+	 glF4yGGndQ30vWEHuKbodeh5SedLAy+lCGo62tSXCMCMKtRYoioNfAfiDHIrS79RQu
+	 rL/b2JFXfPe7AtNqDvEzO0/262NCpkbKQ7/lrkQlwyBg3g+TOng1g4yFJf36SQiFh2
+	 LFiH6oqjQog4w==
+Date: Sun, 21 Dec 2025 10:46:15 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Carlos Llamas <cmllamas@google.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Felix Kuehling <Felix.Kuehling@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Boris Brezillon <boris.brezillon@collabora.com>,
-	Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
-	=?iso-8859-1?Q?Adri=E1n?= Larumbe <adrian.larumbe@collabora.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Liviu Dudau <liviu.dudau@arm.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: Re: [PATCH 6/7] RDMA/umem: don't abuse current->group_leader
-Message-ID: <20251221080334.GC13030@unreal>
-References: <aTV1KYdcDGvjXHos@redhat.com>
- <aTV1pbftBkH8n4kh@redhat.com>
+To: =?utf-8?B?54aK5Lyf5rCR?= <15927021679@163.com>
+Cc: "Michael S . Tsirkin" <mst@redhat.com>,
+	David Hildenbrand <david@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Stefano Garzarella <sgarzare@redhat.com>,
+	Thomas Monjalon <thomas@monjalon.net>,
+	David Marchand <david.marchand@redhat.com>,
+	Luca Boccassi <bluca@debian.org>,
+	Kevin Traynor <ktraynor@redhat.com>,
+	Christian Ehrhardt <christian.ehrhardt@canonical.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
+	Xueming Li <xuemingl@nvidia.com>,
+	Maxime Coquelin <maxime.coquelin@redhat.com>,
+	Chenbo Xia <chenbox@nvidia.com>,
+	Bruce Richardson <bruce.richardson@intel.com>, kvm@vger.kernel.org,
+	virtualization@lists.linux.dev, netdev@vger.kernel.org,
+	RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: Re: Implement initial driver for virtio-RDMA device(kernel)
+Message-ID: <20251221084615.GD13030@unreal>
+References: <20251218091050.55047-1-15927021679@163.com>
+ <20251218163008.GH400630@unreal>
+ <6ef11502.4847.19b34677a76.Coremail.15927021679@163.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <aTV1pbftBkH8n4kh@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6ef11502.4847.19b34677a76.Coremail.15927021679@163.com>
 
-On Sun, Dec 07, 2025 at 01:40:05PM +0100, Oleg Nesterov wrote:
-> Cleanup and preparation to simplify the next changes.
+On Fri, Dec 19, 2025 at 10:19:15AM +0800, 熊伟民  wrote:
 > 
-> Use current->tgid instead of current->group_leader->pid.
+> At 2025-12-19 00:30:08, "Leon Romanovsky" <leon@kernel.org> wrote:
+> >On Thu, Dec 18, 2025 at 05:09:40PM +0800, Xiong Weimin wrote:
+> >> Hi all,
+> >> 
+> >> This testing instructions aims to introduce an emulating a soft ROCE 
+> >> device with normal NIC(no RDMA), we have finished a vhost-user RDMA
+> >> device demo, which can work with RDMA features such as CM, QP type of 
+> >> UC/UD and so on.
+> >
+> >Same question as on your QEMU patches.
+> >https://lore.kernel.org/all/20251218162028.GG400630@unreal/
+> >
+> >And as a bare minimum, you should run get_maintainers.pl script on your
+> >patches and add the right people and ML to the CC/TO fields.
+> >
 > 
-> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-> ---
->  drivers/infiniband/core/umem_odp.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> >Thanks
 > 
+> 
+> Since this feature involves coordinated changes across QEMU, DPDK, and the kernel, 
+> I have submitted patches for all three components to every maintainer. This is to 
+> ensure that senior developers can review the complete architecture and code.
 
-Thanks,
-Acked-by: Leon Romanovsky <leon@kernel.org>
+Please run get_maintainers.pl on your kernel patches and check if you
+really added "every maintainer".
+
+Hint, you didn't even add right mailing list here.
+
+Thanks
+
+> 
+> 
+> Thanks.
 
