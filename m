@@ -1,115 +1,87 @@
-Return-Path: <linux-rdma+bounces-15129-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15130-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64FADCD3DFF
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 10:42:42 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id A705FCD3E7F
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 11:29:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5DCF73004F69
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 09:42:30 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 440E0300160C
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 10:29:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28727283FCF;
-	Sun, 21 Dec 2025 09:42:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B070287265;
+	Sun, 21 Dec 2025 10:29:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oawtw/FQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VnRgC/Kl"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA1E2376FD
-	for <linux-rdma@vger.kernel.org>; Sun, 21 Dec 2025 09:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D557A2472BA;
+	Sun, 21 Dec 2025 10:29:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766310148; cv=none; b=CP5ZKTwkyCLMYHqlzMa5T6P2BN3VGb+3rU3iuTX0QoWU8yQ7YuGOYDi0Ol/flIMcVPz8OdLC+O9Hk1BuKa2Cxi6NguW6FKDpg4KYJuFsehOKW/yvXoV5MWITHQwvOpjO/db3OWzUjrDm5Opq9t3qI9UO4D9P9GOQRbqr4BKRN68=
+	t=1766312964; cv=none; b=rDzSu4JG75GFAx8upPvTdsMcjsF/R3fhwhBEye8ecFCU3Hpu+b7qYqKMyAA9mSW1jD0ZBp25rmlhaEARdMrumm0irUCxEKQWX3QkbTmsxf70skeO+Z3+zVamwiY8FwfW2Tg7pIrhWEVkVfFLre10Y7kXLUpwHQXC1S8d7M4+aSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766310148; c=relaxed/simple;
-	bh=mQPjPGvO8bIx/8R+eLf3zERiOQ0zjj7aBJGicnOS2nI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LCd+15PmeK/6WO6V4KnK7XWVtnMYnw1e3JqzMIV6+1lyvrC7B43rQdpjFDjGMk6huC8YViCoW41lWa19GvltTUR7pLk9CofBGqQMn3umE9PAwFkzjn/u0dL8XO+an/lPc+McjAPCcIeSuBJVE5jYy6OgRmJV76re/DHUdBHnAxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oawtw/FQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5620C4CEFB;
-	Sun, 21 Dec 2025 09:42:27 +0000 (UTC)
+	s=arc-20240116; t=1766312964; c=relaxed/simple;
+	bh=PU/pk328aJBx84jd19OJQ3evhxWyuQPC6TH76pCd5WE=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=mUgO2b7yCz2u8FVa5HsITl5IeZUK7GILmmp2gZEZrizw0BtHXaQemH1gM+JwJR/S2pGrwAP+LgVKcod/55Ehn1IR0c60oPEo5j+ox3AxnzFX6AxYCmTgtUEK1EwExKrBY0QLqRVjnoDzf3BdB6sv8pfY41+gC5ZoHJtAyKIFQwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VnRgC/Kl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16DFCC4CEFB;
+	Sun, 21 Dec 2025 10:29:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766310148;
-	bh=mQPjPGvO8bIx/8R+eLf3zERiOQ0zjj7aBJGicnOS2nI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oawtw/FQ2jGORCbaeggvABKRLynOjSwir0aA+hfpVR6izYoWHV7T0IOXSASMzkMEp
-	 ViALFz3N9HTUYF7Xw0aPpkSnhyZw3AExaGtkgQ4rwXpiP6bI6FnMEziouGkKqnfy0n
-	 XjHjn/HGy/4/MfMdGrIU7g4F7R6TOI50Pk5HJCyavm7mmrJqCCLdtWaaLXwHwJdO3d
-	 w67aevBNHi6Nl3K7E3UiGVRdYDW5heaBrQVuB6Kpgf97vDL2ISRTed288HWUoTwV/b
-	 aYnGnJxyZHZFBNVrfXQ2oAGKHLfQW2LNPNmXFnpGRw2wbZDM3Jg30yqU3UcMELdpI/
-	 +Zlu6vRUL+mSA==
-Date: Sun, 21 Dec 2025 11:42:23 +0200
+	s=k20201202; t=1766312964;
+	bh=PU/pk328aJBx84jd19OJQ3evhxWyuQPC6TH76pCd5WE=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=VnRgC/KlI1IQsPjT2gw977tZt+ORy+RfrIhcUEVdu/V37jK+0eTiKNHVrxiyDBPeq
+	 1vS+yQu8qbrnveyfsyQza31V1n3B9URtBT5mUnCaxOJ//bP3voFUBTYsVEOcRIilN3
+	 9yXWWVzxHW2XU+hwfFtFPGAuCR2H8Z8HedaavvdqV24yoJW3NgWqKfU2SmckgErkPk
+	 dOJA9FXRpVe+y/+mQUlMhZb4Z2N0/XBvt2FilCjT6d/C517kPO8TqWegdx+woriPVt
+	 ebdTcBYesGDx+cENuHBCpAOGXTw0Mc5u52RtiVlSg+t8xwilkKDp25pq5d0t6jQYg+
+	 dIfmhGDkVn6Jg==
 From: Leon Romanovsky <leon@kernel.org>
-To: Alok Tiwari <alok.a.tiwari@oracle.com>
-Cc: somnath.kotur@broadcom.com, sriharsha.basavapatna@broadcom.com,
-	jgg@ziepe.ca, kalesh-anakkur.purayil@broadcom.com,
-	selvin.xavier@broadcom.com, linux-rdma@vger.kernel.org,
-	alok.a.tiwarilinux@gmail.com
-Subject: Re: [PATCH] RDMA/bnxt_re: Fix IB_SEND_IP_CSUM handling in post_send
-Message-ID: <20251221094223.GH13030@unreal>
-References: <20251219093308.2415620-1-alok.a.tiwari@oracle.com>
+To: linux-rdma@vger.kernel.org, Stefan Metzmacher <metze@samba.org>
+Cc: Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+ Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>, netdev@vger.kernel.org, 
+ linux-cifs@vger.kernel.org
+In-Reply-To: <20251219140408.2300163-1-metze@samba.org>
+References: <20251219140408.2300163-1-metze@samba.org>
+Subject: Re: [PATCH] RDMA/rxe: let rxe_reclassify_recv_socket() call
+ sk_owner_put()
+Message-Id: <176631296153.2404623.1401232430474772017.b4-ty@kernel.org>
+Date: Sun, 21 Dec 2025 05:29:21 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251219093308.2415620-1-alok.a.tiwari@oracle.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-a6db3
 
-On Fri, Dec 19, 2025 at 01:32:57AM -0800, Alok Tiwari wrote:
-> The bnxt_re SEND path checks wr->send_flags to enable features such as
-> IP checksum offload. However, send_flags is a bitmask and may contain
-> multiple flags (e.g. IB_SEND_SIGNALED | IB_SEND_IP_CSUM), while the
-> existing code uses a switch() statement that only matches when
-> send_flags is exactly IB_SEND_IP_CSUM.
-> 
-> As a result, checksum offload is not enabled when additional SEND
-> flags are present.
-> 
-> Replace the switch() with a bitmask test:
-> 
->     if (wr->send_flags & IB_SEND_IP_CSUM)
-> 
-> This ensures IP checksum offload is enabled correctly when multiple
-> SEND flags are used.
-> 
-> Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-> Signed-off-by: Alok Tiwari <alok.a.tiwari@oracle.com>
-> ---
->  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> index f19b55c13d58..ff91511bd338 100644
-> --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-> @@ -2919,14 +2919,9 @@ int bnxt_re_post_send(struct ib_qp *ib_qp, const struct ib_send_wr *wr,
->  				wqe.rawqp1.lflags |=
->  					SQ_SEND_RAWETH_QP1_LFLAGS_ROCE_CRC;
->  			}
-> -			switch (wr->send_flags) {
-> -			case IB_SEND_IP_CSUM:
-> +			if (wr->send_flags & IB_SEND_IP_CSUM)
->  				wqe.rawqp1.lflags |=
->  					SQ_SEND_RAWETH_QP1_LFLAGS_IP_CHKSUM;
-> -				break;
 
-> -			default:
-> -				break;
-> -			}
->  			fallthrough;
-
-The combination of "default with break" and "fallthrough" doesn't make
-any sense. Are you sure that we should keep "fallthrough"?
-
-Thanks
-
->  		case IB_WR_SEND_WITH_INV:
->  			rc = bnxt_re_build_send_wqe(qp, wr, &wqe);
-> -- 
-> 2.50.1
+On Fri, 19 Dec 2025 15:04:08 +0100, Stefan Metzmacher wrote:
+> On kernels build with CONFIG_PROVE_LOCKING, CONFIG_MODULES
+> and CONFIG_DEBUG_LOCK_ALLOC 'rmmod rdma_rxe' is no longer
+> possible.
 > 
+> For the global recv sockets rxe_net_exit() is where we
+> call rxe_release_udp_tunnel-> udp_tunnel_sock_release(),
+> which means the sockets are destroyed before 'rmmod rdma_rxe'
+> finishes, so there's no need to protect against
+> rxe_recv_slock_key and rxe_recv_sk_key disappearing
+> while the sockets are still alive.
+> 
+> [...]
+
+Applied, thanks!
+
+[1/1] RDMA/rxe: let rxe_reclassify_recv_socket() call sk_owner_put()
+      https://git.kernel.org/rdma/rdma/c/de41cbc64d02ae
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
