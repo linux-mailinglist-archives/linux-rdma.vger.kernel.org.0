@@ -1,108 +1,91 @@
-Return-Path: <linux-rdma+bounces-15139-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15140-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B463CCD4D86
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Dec 2025 08:09:59 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CF62CD4E6E
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Dec 2025 08:50:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9B411300C0F4
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Dec 2025 07:09:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 46BB43027A42
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Dec 2025 07:48:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84393306490;
-	Mon, 22 Dec 2025 07:09:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4DFB30B52B;
+	Mon, 22 Dec 2025 07:48:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="jWtr6qGI"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-m49241.qiye.163.com (mail-m49241.qiye.163.com [45.254.49.241])
+Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A573C27B349;
-	Mon, 22 Dec 2025 07:09:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.241
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA49130ACE5
+	for <linux-rdma@vger.kernel.org>; Mon, 22 Dec 2025 07:48:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.250
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766387381; cv=none; b=fgIt+T2CsybD96nrFXOkdJrJs2toOhlkVyybX+FMVHkD3+O8UcVTJUvR17PUT+Y0kr9bVQw5e7flIKWBwzeoeFQS+otEqR8RRNShosLgYLpGzoc+KuhnEZsSfMIO/JpdPae9vwc64IdKYsRKrIlDRJlLRRhzlH+OzBnkk6ISr3E=
+	t=1766389722; cv=none; b=rmARMOAoeHBSiI7ghNDTopUhyczRxctVa9yWIsdvjQzaJm7cVJnzVEi5iNFXpCAXituW5MH1TUCQOdNzDKHEhcBD1VnslBoQhZcYOPKXX5Yxgm3OOd+awT2zZjw9d97twXABgBhTusQgYUnK3JAPAys32YcfyrNYRSi/cFF6Hiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766387381; c=relaxed/simple;
-	bh=Wdt/tpIJGImroIGfuNWG/Wqs60j5AyvnZXDAhdxdS6s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Xgov7s4NjIZq0O2uZ9vd9DzRVyZX1VdPfhu0ASvGiglXgvEwmOdbgbB8C19olc3Q1jg/Au4pyRGi6FUR1a2uiSMJkCZMMrDaSdPvVCxVVoPMkAAtqb34ZtHR+22Ljcr0Dg3stjmkXIOIVGtfVE5lTC7JttOs6wwXoGtEIoPA/6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn; spf=pass smtp.mailfrom=sangfor.com.cn; arc=none smtp.client-ip=45.254.49.241
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sangfor.com.cn
-Received: from [172.23.68.66] (unknown [43.247.70.80])
-	by smtp.qiye.163.com (Hmail) with ESMTP id 2e174c524;
-	Mon, 22 Dec 2025 14:34:00 +0800 (GMT+08:00)
-Message-ID: <51ecb35a-4caf-43c6-b5ac-bc4b94462577@sangfor.com.cn>
-Date: Mon, 22 Dec 2025 14:33:59 +0800
+	s=arc-20240116; t=1766389722; c=relaxed/simple;
+	bh=NGWuhJI1sOTdjb7bY7jufBYdhy1J0oL3PTe/X4fZCfc=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=o6DIp88x1j8sWF17aM9clrO68P3z9t12/NZT/oRRgYK3vaEVTXE+0uCke0L/F7/JeBDJyM3evS36P/UEsIyYzWf1mSCUnyPYwYJjAYTGnxMhzdlaTylPcJkXoRkKhsR/L+HusikoC5OQB0rQD0AWUN9gpRaU7ggd77d6+zVGoWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=jWtr6qGI; arc=none smtp.client-ip=185.125.188.250
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
+Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id E7BC840BAC
+	for <linux-rdma@vger.kernel.org>; Mon, 22 Dec 2025 07:48:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+	s=20210803; t=1766389711;
+	bh=NGWuhJI1sOTdjb7bY7jufBYdhy1J0oL3PTe/X4fZCfc=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+	 Reply-To;
+	b=jWtr6qGI1Iam0j+imOBNm6gHW/WgYb4yhTC04cbKHXZK+UiEP8aNhQuF6wlJpzJBe
+	 ESBnnjMyvefLMocvW4T4fsS9IpHxhmSPiCtSMWop8gfaP4uDdbh+qbZTbtQddOYNvC
+	 k9WIWz/sV8eiDvpMPzKixfgCMONT/P7kbGx0FJfPqjr1nUygzkOyv6eNgOWdKn6pbY
+	 Rc7Y704n6rL2Xr199TSN4BfxCzPH2t8IZsLm3ZcnMSNknZvmWZV2BRqsvNtv6dPl8u
+	 gmKXDQCKkYcipYz6hbzP5nQhn98IBMpYW9oRV6QRnxPuj2lQQi5KuySPep7NP6CNXN
+	 WZh2LzRYX732A==
+Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
+	by buildd-manager.lp.internal (Postfix) with ESMTP id CBA577E756
+	for <linux-rdma@vger.kernel.org>; Mon, 22 Dec 2025 07:48:31 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] RDMA/bnxt_re: Fix OOB write in
- bnxt_re_copy_err_stats()
-To: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
-Cc: selvin.xavier@broadcom.com, jgg@ziepe.ca, leon@kernel.org,
- saravanan.vajravel@broadcom.com, vasuthevan.maheswaran@broadcom.com,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
- zhengyingying@sangfor.com.cn
-References: <20251208072110.28874-1-dinghui@sangfor.com.cn>
- <CAH-L+nMzQ9Xcm0WukZjJM4owJ5+wXoF31arRxPs=5-k=Y5LQfQ@mail.gmail.com>
-Content-Language: en-US
-From: Ding Hui <dinghui@sangfor.com.cn>
-In-Reply-To: <CAH-L+nMzQ9Xcm0WukZjJM4owJ5+wXoF31arRxPs=5-k=Y5LQfQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-HM-Tid: 0a9b44c3c90e09d9kunmf60c7e3a9bdfc7
-X-HM-MType: 1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlDQkwfVk4fSkgfSk0fTB8eSFYVFAkWGhdVEwETFh
-	oSFyQUDg9ZV1kYEgtZQVlPSFVJT0xVTEtVQ0tZV1kWGg8SFR0UWUFZT0tIVUpLSU9PT0hVSktLVU
-	pCS0tZBg++
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To: Linux RDMA <linux-rdma@vger.kernel.org>
+From: noreply@launchpad.net
+Subject: [recipe build #3988829] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <176638971183.3431851.13047381186641709336.launchpad@buildd-manager.lp.internal>
+Date: Mon, 22 Dec 2025 07:48:31 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+Errors-To: noreply@launchpad.net
+Precedence: bulk
+X-Generated-By: Launchpad (canonical.com); Revision="99c00f518760bdd50fc6e353e7736d2fff8fba4a"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: 0ea0e77b4051c3e8579283a2f71b6896a3b66492
 
-On 2025/12/21 23:47, Kalesh Anakkur Purayil wrote:
-> On Mon, Dec 8, 2025 at 12:52 PM Ding Hui <dinghui@sangfor.com.cn> wrote:
->>
->> Recently we encountered an OOB write issue on BCM957414A4142CC with outbox
->> NetXtreme-E-235.1.160.0 driver from broadcom. After a litte research,
->> we found the inbox driver from upstream maybe have the same issue.
->>
->> The commit ef56081d1864 ("RDMA/bnxt_re: RoCE related hardware counters
->> update") introduced 3 counters, and appended after BNXT_RE_OUT_OF_SEQ_ERR.
->>
->> However, BNXT_RE_OUT_OF_SEQ_ERR serves as a boundary marker for allocating
->> hw stats with different num_counters for chip_gen_p5_p7 hardware.
->>
->> For BNXT_RE_NUM_STD_COUNTERS allocated hw_stats, leading to an
->> out-of-bounds write in bnxt_re_copy_err_stats().
->>
->> It seems like that the BNXT_RE_REQ_CQE_ERROR, BNXT_RE_RESP_CQE_ERROR,
->> and BNXT_RE_RESP_REMOTE_ACCESS_ERRS can be updated for generic hardware,
->> not only for p5/p7 hardware.
->>
->> Fix this by moving them before BNXT_RE_OUT_OF_SEQ_ERR so they become
->> part of the generic counter.
->>
->> Compile tested only.
->>
->> Fixes: ef56081d1864 ("RDMA/bnxt_re: RoCE related hardware counters update")
->> Reported-by: Yingying Zheng <zhengyingying@sangfor.com.cn>
->> Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
-> 
-> Thank you Ding, the fix looks good to me and I have verified it locally.
-> 
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 3 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3988829/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-003
 
-Thanks for confirming.
-
-Do I need to resend the patch without RFC prefix and update some commit log,
-such as getting rid of the first paragraph about the outbox driver?
-
-> Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> Tested-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-> 
-
--- 
-Thanks,
-- Ding Hui
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3988829
+Your team Linux RDMA is the requester of the build.
 
 
