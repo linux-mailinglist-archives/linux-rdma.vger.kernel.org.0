@@ -1,140 +1,108 @@
-Return-Path: <linux-rdma+bounces-15138-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15139-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D201CD4702
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Dec 2025 00:34:55 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B463CCD4D86
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Dec 2025 08:09:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 795653003BDB
-	for <lists+linux-rdma@lfdr.de>; Sun, 21 Dec 2025 23:34:54 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9B411300C0F4
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Dec 2025 07:09:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E236A281357;
-	Sun, 21 Dec 2025 23:34:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LuhEny4U"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84393306490;
+	Mon, 22 Dec 2025 07:09:41 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from mail-m49241.qiye.163.com (mail-m49241.qiye.163.com [45.254.49.241])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E31E24E4C3
-	for <linux-rdma@vger.kernel.org>; Sun, 21 Dec 2025 23:34:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A573C27B349;
+	Mon, 22 Dec 2025 07:09:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.241
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766360091; cv=none; b=XJehx6WWgGl0eR0HZSL60VuJ2lCWpiYxJtc+dt7EK/Ife3Py1eTuE/1iNW6cAm8niQbPuwGUwjQmx1Td1iM/MZDnKnhVH/JkWmnkOtyeX5e981Nh12suUfmwqfsjF91I3oc23k+7EBmUj06Usg6Z52bdQZvpYT5UcR2XYW/i7Iw=
+	t=1766387381; cv=none; b=fgIt+T2CsybD96nrFXOkdJrJs2toOhlkVyybX+FMVHkD3+O8UcVTJUvR17PUT+Y0kr9bVQw5e7flIKWBwzeoeFQS+otEqR8RRNShosLgYLpGzoc+KuhnEZsSfMIO/JpdPae9vwc64IdKYsRKrIlDRJlLRRhzlH+OzBnkk6ISr3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766360091; c=relaxed/simple;
-	bh=FDPQAOFQ+Eab/e3x5CkS2ulRE4hZZ1o8g2esB2iVODQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jh6KXsWqiDVUl4A4nu/d0Ag8cNO4aIBUe4jTf1E6kYSM0G4T0c37PHEMV0nwEnFMEeJGsNnOSbjge9Gs2tJsuYp3VV2Ak/G+MN+JJqP6Ea8kOYQ24ff4UNDvcIvZiByip4VqwBMjH8vw3uB/6G2wzM6XsIYBIKBMFcZPb2UiP44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LuhEny4U; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766360087;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NxSmCTpIhS01vsEOYi+6c0LnmInYC9xfqz1Ki84BGL0=;
-	b=LuhEny4Uo/n3zDm5YHwC486nlNKG3puTdnqg3vV+4257g0O+zWEBO/BfRGW8HHN6BSEZHB
-	82oQw/71Mz9SjF7aLFcXNzRz8Fdqmvkx4UHGyIv2g3RVcjdNeORPVuQ5uJKLP9yKzGypAu
-	MiD6rsNoz5sY17sndYgvIoqQsdD1/ZQ=
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-To: zyjzyj2000@gmail.com,
-	jgg@ziepe.ca,
-	leon@kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Zhu Yanjun <yanjun.zhu@linux.dev>
-Subject: [PATCH v2 2/2] RDMA/rxe: Replace struct rxe_sge with struct ib_sge
-Date: Sun, 21 Dec 2025 18:34:04 -0500
-Message-Id: <20251221233404.332108-2-yanjun.zhu@linux.dev>
-In-Reply-To: <20251221233404.332108-1-yanjun.zhu@linux.dev>
-References: <20251221233404.332108-1-yanjun.zhu@linux.dev>
+	s=arc-20240116; t=1766387381; c=relaxed/simple;
+	bh=Wdt/tpIJGImroIGfuNWG/Wqs60j5AyvnZXDAhdxdS6s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Xgov7s4NjIZq0O2uZ9vd9DzRVyZX1VdPfhu0ASvGiglXgvEwmOdbgbB8C19olc3Q1jg/Au4pyRGi6FUR1a2uiSMJkCZMMrDaSdPvVCxVVoPMkAAtqb34ZtHR+22Ljcr0Dg3stjmkXIOIVGtfVE5lTC7JttOs6wwXoGtEIoPA/6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn; spf=pass smtp.mailfrom=sangfor.com.cn; arc=none smtp.client-ip=45.254.49.241
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sangfor.com.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sangfor.com.cn
+Received: from [172.23.68.66] (unknown [43.247.70.80])
+	by smtp.qiye.163.com (Hmail) with ESMTP id 2e174c524;
+	Mon, 22 Dec 2025 14:34:00 +0800 (GMT+08:00)
+Message-ID: <51ecb35a-4caf-43c6-b5ac-bc4b94462577@sangfor.com.cn>
+Date: Mon, 22 Dec 2025 14:33:59 +0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] RDMA/bnxt_re: Fix OOB write in
+ bnxt_re_copy_err_stats()
+To: Kalesh Anakkur Purayil <kalesh-anakkur.purayil@broadcom.com>
+Cc: selvin.xavier@broadcom.com, jgg@ziepe.ca, leon@kernel.org,
+ saravanan.vajravel@broadcom.com, vasuthevan.maheswaran@broadcom.com,
+ linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ zhengyingying@sangfor.com.cn
+References: <20251208072110.28874-1-dinghui@sangfor.com.cn>
+ <CAH-L+nMzQ9Xcm0WukZjJM4owJ5+wXoF31arRxPs=5-k=Y5LQfQ@mail.gmail.com>
+Content-Language: en-US
+From: Ding Hui <dinghui@sangfor.com.cn>
+In-Reply-To: <CAH-L+nMzQ9Xcm0WukZjJM4owJ5+wXoF31arRxPs=5-k=Y5LQfQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-HM-Tid: 0a9b44c3c90e09d9kunmf60c7e3a9bdfc7
+X-HM-MType: 1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlDQkwfVk4fSkgfSk0fTB8eSFYVFAkWGhdVEwETFh
+	oSFyQUDg9ZV1kYEgtZQVlPSFVJT0xVTEtVQ0tZV1kWGg8SFR0UWUFZT0tIVUpLSU9PT0hVSktLVU
+	pCS0tZBg++
 
-The struct rxe_sge is the same with struct ib_sge. Thus,
-the struct rxe_sge can be repaced with the struct ib_sge.
+On 2025/12/21 23:47, Kalesh Anakkur Purayil wrote:
+> On Mon, Dec 8, 2025 at 12:52 PM Ding Hui <dinghui@sangfor.com.cn> wrote:
+>>
+>> Recently we encountered an OOB write issue on BCM957414A4142CC with outbox
+>> NetXtreme-E-235.1.160.0 driver from broadcom. After a litte research,
+>> we found the inbox driver from upstream maybe have the same issue.
+>>
+>> The commit ef56081d1864 ("RDMA/bnxt_re: RoCE related hardware counters
+>> update") introduced 3 counters, and appended after BNXT_RE_OUT_OF_SEQ_ERR.
+>>
+>> However, BNXT_RE_OUT_OF_SEQ_ERR serves as a boundary marker for allocating
+>> hw stats with different num_counters for chip_gen_p5_p7 hardware.
+>>
+>> For BNXT_RE_NUM_STD_COUNTERS allocated hw_stats, leading to an
+>> out-of-bounds write in bnxt_re_copy_err_stats().
+>>
+>> It seems like that the BNXT_RE_REQ_CQE_ERROR, BNXT_RE_RESP_CQE_ERROR,
+>> and BNXT_RE_RESP_REMOTE_ACCESS_ERRS can be updated for generic hardware,
+>> not only for p5/p7 hardware.
+>>
+>> Fix this by moving them before BNXT_RE_OUT_OF_SEQ_ERR so they become
+>> part of the generic counter.
+>>
+>> Compile tested only.
+>>
+>> Fixes: ef56081d1864 ("RDMA/bnxt_re: RoCE related hardware counters update")
+>> Reported-by: Yingying Zheng <zhengyingying@sangfor.com.cn>
+>> Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
+> 
+> Thank you Ding, the fix looks good to me and I have verified it locally.
+> 
 
-No functional changes.
+Thanks for confirming.
 
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
- drivers/infiniband/sw/rxe/rxe_mr.c   | 4 ++--
- drivers/infiniband/sw/rxe/rxe_resp.c | 2 +-
- include/uapi/rdma/rdma_user_rxe.h    | 8 +-------
- 3 files changed, 4 insertions(+), 10 deletions(-)
+Do I need to resend the patch without RFC prefix and update some commit log,
+such as getting rid of the first paragraph about the outbox driver?
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index b1df05238848..ac31cc599f13 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -341,7 +341,7 @@ int copy_data(
- 	enum rxe_mr_copy_dir	dir)
- {
- 	int			bytes;
--	struct rxe_sge		*sge	= &dma->sge[dma->cur_sge];
-+	struct	ib_sge *sge	= &dma->sge[dma->cur_sge];
- 	int			offset	= dma->sge_offset;
- 	int			resid	= dma->resid;
- 	struct rxe_mr		*mr	= NULL;
-@@ -580,7 +580,7 @@ enum resp_states rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
- 
- int advance_dma_data(struct rxe_dma_info *dma, unsigned int length)
- {
--	struct rxe_sge		*sge	= &dma->sge[dma->cur_sge];
-+	struct	ib_sge *sge	= &dma->sge[dma->cur_sge];
- 	int			offset	= dma->sge_offset;
- 	int			resid	= dma->resid;
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 711f73e0bbb1..74f5b695da7a 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -283,7 +283,7 @@ static enum resp_states get_srq_wqe(struct rxe_qp *qp)
- 		rxe_dbg_qp(qp, "invalid num_sge in SRQ entry\n");
- 		return RESPST_ERR_MALFORMED_WQE;
- 	}
--	size = sizeof(*wqe) + wqe->dma.num_sge*sizeof(struct rxe_sge);
-+	size = sizeof(*wqe) + wqe->dma.num_sge*sizeof(struct ib_sge);
- 	memcpy(&qp->resp.srq_wqe, wqe, size);
- 
- 	qp->resp.wqe = &qp->resp.srq_wqe.wqe;
-diff --git a/include/uapi/rdma/rdma_user_rxe.h b/include/uapi/rdma/rdma_user_rxe.h
-index bb092fccb813..74eaae779c81 100644
---- a/include/uapi/rdma/rdma_user_rxe.h
-+++ b/include/uapi/rdma/rdma_user_rxe.h
-@@ -132,12 +132,6 @@ struct rxe_send_wr {
- 	} wr;
- };
- 
--struct rxe_sge {
--	__aligned_u64 addr;
--	__u32	length;
--	__u32	lkey;
--};
--
- struct mminfo {
- 	__aligned_u64		offset;
- 	__u32			size;
-@@ -154,7 +148,7 @@ struct rxe_dma_info {
- 	union {
- 		__DECLARE_FLEX_ARRAY(__u8, inline_data);
- 		__DECLARE_FLEX_ARRAY(__u8, atomic_wr);
--		__DECLARE_FLEX_ARRAY(struct rxe_sge, sge);
-+		__DECLARE_FLEX_ARRAY(struct ib_sge, sge);
- 	};
- };
- 
+> Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+> Tested-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+> 
+
 -- 
-2.39.5
+Thanks,
+- Ding Hui
 
 
