@@ -1,127 +1,145 @@
-Return-Path: <linux-rdma+bounces-15178-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15179-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79109CD849B
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Dec 2025 07:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B744CD86B3
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Dec 2025 09:00:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AB07B30274FF
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Dec 2025 06:46:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B4A21301F5EC
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Dec 2025 08:00:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58EC31FE44A;
-	Tue, 23 Dec 2025 06:46:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A7C1305943;
+	Tue, 23 Dec 2025 08:00:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XLRZSthk"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="dAMUbkl3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF45023E355
-	for <linux-rdma@vger.kernel.org>; Tue, 23 Dec 2025 06:46:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 166A521ADCB;
+	Tue, 23 Dec 2025 08:00:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766472414; cv=none; b=jzSbl6YjTOI30iKzxzHxPasgfKHEnq3OKQMIGSU8Nnu7p4YaoM/XCjGX2Gt3P2PrSrcA4fJusW1WF6a1Otb47IXwDWct/SUu/SpQ8M+DsAcqDAGdQQ/R79S35fRKHf1npsHA30ICUwbqoob6BBw7WqBrSLOXe3UMMcipIY8lI0I=
+	t=1766476841; cv=none; b=CfgkclQ1PKoYOhnpLu7zyZR2MRgiVCA+yE09qD54JsWTxuXNPdgto/xfmg/ehGC78k77nyxvpHevDbksDOHGc2DinTBwkAeKBw8B9N2ZM4P/PAhfIVrNKPKfhIEI4ggg5+VW4Vl2hY74/0o3FmxNk3ZVUagUuamW8sGx34rIboI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766472414; c=relaxed/simple;
-	bh=SPHyWl39ZDdojV3skGlX6PjWTErGXez/LzveK9bTIP0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Bj0Aipi5vO7i6oECzVX3meLp/w2SNm/KwQAhNj9I1WT2L6hWLHX8qzg269ypzIehhoMpYsjpvD/UG4nfZ2MnrXWaHKuExy2rBmrNPS0mqgGHYZl/BDH9AosBQDCqODmFvDS4EUTr2UYtM0puFTeJ078X16qy5hGjlP5rfz5xEbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XLRZSthk; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <061c81dd-c582-414e-999c-7256a98ced42@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766472399;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AGXxjCbwqFnoQbQ7VX6tfZlhS9rrq51K5OeFz/BwmmY=;
-	b=XLRZSthkDuPzEBirx1kcMAaLkgtpmlV+bUBuCd5n56tSPa0Uelr3I85pyoV53eBfPwyUyM
-	4c/RBeoUWiWhX/GQnlRPlVJi+YjUmylyLjhJakGtRNkYk8L99RO4vEDRMxCZFGNeAIhFPW
-	VN+FmA1qkdsm1aR78gt9QP5a7/dxYsg=
-Date: Mon, 22 Dec 2025 22:46:33 -0800
+	s=arc-20240116; t=1766476841; c=relaxed/simple;
+	bh=1D5pNj/TkMBhi5V3Ck3ECaJCkWlEDv2CKJGPHJjgyrE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UD5DlH71ZiMXQ59b1vEQ0c9LZtu5/mbwSEd74qKD6OLE6Z0i0zEmGpdh0og3BfWV6Ms562w8ZdgMY6GLkdwLlgMAT0mjGCM6IQuowxfU5i3fvRaptGw866lQdVjCu1nukMM1aUq0zmEn5ILphM3MLgYG/oA/l2W/DLXqv5Ps/e8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=dAMUbkl3; arc=none smtp.client-ip=115.124.30.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1766476833; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+	bh=IKcBNqtAnVdReDXaI7KKxldVsvfTjEsR07PqZbBV0cE=;
+	b=dAMUbkl3e64kVnUKil2FvVKzYHXmI2Hq06TdoorMUB+Af6RMpqDykbwpapBG1iYG9abufs3BEM/Jh0WmyjJbokMxg7HfF+A1YtfMrO6CMyJnJjrCfNMTnH+jcIKnbMTYrcjDRBgCuIkqz0CfqqgvkeWj7UNnsiZSX7SZAQYYAZQ=
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0WvX26rM_1766476831 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Tue, 23 Dec 2025 16:00:32 +0800
+Date: Tue, 23 Dec 2025 16:00:31 +0800
+From: Dust Li <dust.li@linux.alibaba.com>
+To: Alexandra Winter <wintera@linux.ibm.com>,
+	David Miller <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"D. Wythe" <alibuda@linux.alibaba.com>,
+	Sidraya Jayagond <sidraya@linux.ibm.com>,
+	Wenjia Zhang <wenjia@linux.ibm.com>,
+	Wang Liang <wangliang74@huawei.com>
+Cc: netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+	Aswin Karuvally <aswin@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Simon Horman <horms@kernel.org>,
+	Mahanta Jambigi <mjambigi@linux.ibm.com>,
+	Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>, linux-rdma@vger.kernel.org,
+	stable@vger.kernel.org,
+	syzbot+f69bfae0a4eb29976e44@syzkaller.appspotmail.com
+Subject: Re: [PATCH net] net/smc: Initialize smc hashtables before
+ registering users
+Message-ID: <aUpMH7_lHm1pFXcZ@linux.alibaba.com>
+Reply-To: dust.li@linux.alibaba.com
+References: <20251217114819.2725882-1-wintera@linux.ibm.com>
+ <aULLcudhF10_sZO6@linux.alibaba.com>
+ <64405058-23a9-49df-aed0-891fa0a19fbb@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 1/1] RDMA/rxe: Avoid -Wflex-array-member-not-at-end
- warnings
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, zyjzyj2000@gmail.com,
- jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-References: <20251223044129.6232-1-yanjun.zhu@linux.dev>
- <ea716013-0149-40fa-b781-b0968980b7bd@embeddedor.com>
- <4a8e3365-cb74-4531-99dc-9d2911045d4b@linux.dev>
- <1bf3f157-54b7-49ed-8dc2-6948dbcf670a@embeddedor.com>
- <7de9609c-afa2-4536-a65c-67e623885870@linux.dev>
- <77f7670a-db1f-41a2-afe8-58397e888118@embeddedor.com>
- <24901de5-f7dc-4070-8745-df114ce1ff75@linux.dev>
- <256da54b-519f-461d-9586-10b26ef7568e@embeddedor.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <256da54b-519f-461d-9586-10b26ef7568e@embeddedor.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <64405058-23a9-49df-aed0-891fa0a19fbb@linux.ibm.com>
 
-
-在 2025/12/22 21:54, Gustavo A. R. Silva 写道:
+On 2025-12-22 10:50:37, Alexandra Winter wrote:
 >
 >
-> On 12/23/25 14:44, Zhu Yanjun wrote:
->>
->> 在 2025/12/22 21:34, Gustavo A. R. Silva 写道:
+>On 17.12.25 16:25, Dust Li wrote:
+>> On 2025-12-17 12:48:19, Alexandra Winter wrote:
+>>> During initialisation of the SMC module initialize smc_v4/6_hashinfo before
+>>> calling smc_nl_init(), proto_register() or sock_register(), to avoid a race
+>>> that can cause use of an uninitialised pointer in case an smc protocol is
+>>> called before the module is done initialising.
 >>>
->>>>>>>> V2->V3: Replace struct ib_sge with struct rxe_sge
->>>>>>>
->>>>>>> What are you doing?
->>>>>>
->>>>>> Because struct rxe_sge differs from struct ib_sge, I aligned it 
->>>>>> to use the same structure.
->>>>>
->>>>> Listen, this is not how things are done upstream. Read what I 
->>>>> previously commented:
->>>>>
->>>>>>> You're making a mess of this whole thing. Please, don't make 
->>>>>>> changes
->>>>>>> to my patches on your own.
->>>>>
->>>>> and please, learn how to properly submit patch series.
->>>>>
->>>>> Lastly, do the changes that you want/need to implement in your 
->>>>> code, and don't
->>>>> submit my patch as part of those changes again.
->>>>
->>>> You can correct this patch by yourself.
->>>
->>> https://lore.kernel.org/linux-hardening/ad8987ae-b7fe-47af-a1d2-5055749011c0@embeddedor.com/ 
->>>
->>
->> You need to do some changes in your commit.
+>>> syzbot report:
+>>> KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+>>> Call Trace:
+>>> <TASK>
+>>> smc_diag_dump+0x59/0xa0 net/smc/smc_diag.c:236
+>>> netlink_dump+0x647/0xd80 net/netlink/af_netlink.c:2325
+>>> __netlink_dump_start+0x59f/0x780 net/netlink/af_netlink.c:2440
+>>> netlink_dump_start include/linux/netlink.h:339 [inline]
+>>> smc_diag_handler_dump+0x1ab/0x250 net/smc/smc_diag.c:251
+>>> sock_diag_rcv_msg+0x3dc/0x5f0
+>>> netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2550
+>>> netlink_unicast_kernel net/netlink/af_netlink.c:1331 [inline]
+>>> netlink_unicast+0x7f0/0x990 net/netlink/af_netlink.c:1357
+>>> netlink_sendmsg+0x8e4/0xcb0 net/netlink/af_netlink.c:1901
+>> 
+>> I don't think this is related to smc_nl_init().
+>> 
+>> Here the calltrace is smc_diag_dump(), which was registered in
+>> sock_diag_register(&smc_diag_handler).
+>> 
+>> But smc_nl_init() is registering the general netlink in SMC,
+>> which is unrelated to smc_diag_dump().
 >
-> This is what you haven't understood yet. If the original code is wrong 
-> (e.g. is
-> currently using struct ib_sge instead of struct rxe_sge or the other 
-> way around),
-> then _that_ code should be fixed _first_, regardless of any other 
-> patch that might
-> be applied on top of it.
-
-Your commit should align the 2 structs.
-
-Thanks,
-
-Yanjun.Zhu
-
 >
-> -Gustavo
+>I had assumed some dependency between the smc netlink diag socket and smc_nl_init()
+>and wrongly assumed that the smc_diag_init() and smc_init() could race.
+>I now understand that modprobe will ensure smc_diag_init() is called before smc_init(),
+>so you are right: this patch is indeed NOT a fix for this sysbot report [1]
 >
--- 
-Best Regards,
-Yanjun.Zhu
+>
+>> I think the root cause should be related to the initializing between
+>> smc_diag.ko and smc_v4/6_hashinfo.ht.
+>
+>Given modprobe initializes the modules sequentially, I do not see how these could race.
+>
+>I guess this syszbot report was fixed by
+>f584239a9ed2 ("net/smc: fix general protection fault in __smc_diag_dump")
+>as reported in [2] .
+>
+>I'm not sure about the correct procedure, if nobody recommends a better action, I'll send a
+>
+>#syz dup: general protection fault in __smc_diag_dump
+>to
+>syzbot+f69bfae0a4eb29976e44@syzkaller.appspotmail.com
+>(this one: general protection fault in smc_diag_dump_proto [1])
+>
+>
+>I still think initializing the hashtables before smc_nl_init()
+>makes sense. I'll resend this patch without mentioning syzbot.
 
+Agree.
+
+Best regards,
+Dust
 
