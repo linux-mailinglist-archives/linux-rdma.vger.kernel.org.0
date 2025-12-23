@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-15188-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15189-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F929CD9E37
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Dec 2025 17:02:46 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 423FDCD9E8B
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Dec 2025 17:14:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 13AD0300F332
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Dec 2025 16:02:25 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DFCC830194EC
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Dec 2025 16:14:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6987025C809;
-	Tue, 23 Dec 2025 16:02:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F5D2D6E53;
+	Tue, 23 Dec 2025 16:14:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nhvZcaWb"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fhaj1Z75"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64CD127472
-	for <linux-rdma@vger.kernel.org>; Tue, 23 Dec 2025 16:02:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DF372D0C63
+	for <linux-rdma@vger.kernel.org>; Tue, 23 Dec 2025 16:13:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766505744; cv=none; b=Cpui5Y9z/m/Z+f0IduLY0ZAunDNQcFltyz5OWy24+D4tLc7zALqfVC42KXFifxZ7vDyauvfoDR+0tBe6KUP/zGWRkzzUthyE9Z54CoRf0ICFoWCk6dJ90LysoNDaibjXsVzFIsjwidGYxcA3cw8VW0t216quzCFdrCysowlyDk4=
+	t=1766506441; cv=none; b=vBPnhudXs2l1p6P1/7ZipseUimPd5o2ioEuNz9qG+AB37o+GoG61YatGpkk6ALohdJD9wOAlYfYzqx2fkCmC7H6l1yuc5MtKhQ1wJHF0Rd53kr1iheAULhCDjzoBJX3tqHff8PhjUBJbJ6UEIQk8ap1EA/ejXXJKNV6ph/mAFwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766505744; c=relaxed/simple;
-	bh=Wgw4lUnhbAK2SuJREsC/TLvjP8fweiX3DpQoJ132GsY=;
+	s=arc-20240116; t=1766506441; c=relaxed/simple;
+	bh=f4AWNzs8FniP9xvHu54yv8fcxsAALCnxN3mj5budGHk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cznMkOm3gofZqKeakzTEwxO/YoTjA/FKUrYo80bpB1dH7C+7mLEHHzbw9oWH1bmDr//cDumy/U5Xe+/3orExAwkXfRfSMnKaLzcNj1N3bGFuaVAmLxHB4uIb7ZDyVwlmzz3FS8+zjl3o2I0cRoTl+MWn7CQdwnkjwa9PgXSE33I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nhvZcaWb; arc=none smtp.client-ip=91.218.175.188
+	 In-Reply-To:Content-Type; b=rERh5/6RySwPa65aK6iqByuLv6rNOuzyEA3RZCmz3DEQxDY5VLPlpF8ca3osduCvErWi9XtNtcDx9wdAOGw8xhpLl4aFJlkov3b/lZDHd4W7EM1nlNoOfQ4Ljy8Hieu8rmDxInUewSk1VD3axXbDDsyXWJykWV5Qcx4xcZ0YTws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fhaj1Z75; arc=none smtp.client-ip=91.218.175.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e6650ddc-7d9c-47ad-b24d-d6806f958648@linux.dev>
+Message-ID: <ba0fb412-455b-4348-a81c-013e7f40377f@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766505729;
+	t=1766506437;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6qno5Lv3o0et1YFZD/NDGPUTfKtUpErsqjsFbBj2QXc=;
-	b=nhvZcaWbCkPRdE86r1kgT0agSrWwo6rlvqVYLuoQhkSt8ygvvx4rNsMSfSoP0fwdvTrWw7
-	HPpMlFz2EyMqIdFj3rDJvdXyBb2qK3blUQPLfJJnLpnelJitBpekyCwHQEzj/JXbYlt6AG
-	RbtYaK4uIlFjLT9Cyv3rhoNUz3CYXT4=
-Date: Tue, 23 Dec 2025 08:02:01 -0800
+	bh=4YA4ueY+hnzmoZPAxp82QzMFokgtNSll8hzsXPYqcv4=;
+	b=fhaj1Z75OsmM3rGlUtwtMXepczoCUVCHfJToYMcntqzFM3i76cNy629KZJ9PokzEBJkkf8
+	K/lJCqOUz8tvZhipCMFmRnZv8RJ+RMY8XpxUmyuLBLEcJSQHm0UvEeCBWJgiBaxYFOUQsA
+	KXNvhY4peoxwPoOL9vHvC7XXOqJaEbs=
+Date: Tue, 23 Dec 2025 08:13:49 -0800
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -49,84 +49,75 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Subject: Re: [PATCH v3 1/1] RDMA/rxe: Avoid -Wflex-array-member-not-at-end
  warnings
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, zyjzyj2000@gmail.com,
- jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, zyjzyj2000@gmail.com,
+ jgg@ziepe.ca, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
 References: <20251223044129.6232-1-yanjun.zhu@linux.dev>
  <ea716013-0149-40fa-b781-b0968980b7bd@embeddedor.com>
  <4a8e3365-cb74-4531-99dc-9d2911045d4b@linux.dev>
- <1bf3f157-54b7-49ed-8dc2-6948dbcf670a@embeddedor.com>
- <7de9609c-afa2-4536-a65c-67e623885870@linux.dev>
- <77f7670a-db1f-41a2-afe8-58397e888118@embeddedor.com>
- <24901de5-f7dc-4070-8745-df114ce1ff75@linux.dev>
- <256da54b-519f-461d-9586-10b26ef7568e@embeddedor.com>
- <061c81dd-c582-414e-999c-7256a98ced42@linux.dev>
- <aedbed72-c080-406b-b9a9-391a413ced92@embeddedor.com>
+ <20251223142055.GC11869@unreal>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <aedbed72-c080-406b-b9a9-391a413ced92@embeddedor.com>
+In-Reply-To: <20251223142055.GC11869@unreal>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-在 2025/12/23 1:28, Gustavo A. R. Silva 写道:
-> 
-> 
-> On 12/23/25 15:46, Zhu Yanjun wrote:
->>
->> 在 2025/12/22 21:54, Gustavo A. R. Silva 写道:
->>>
->>>
->>> On 12/23/25 14:44, Zhu Yanjun wrote:
->>>>
->>>> 在 2025/12/22 21:34, Gustavo A. R. Silva 写道:
->>>>>
->>>>>>>>>> V2->V3: Replace struct ib_sge with struct rxe_sge
->>>>>>>>>
->>>>>>>>> What are you doing?
->>>>>>>>
->>>>>>>> Because struct rxe_sge differs from struct ib_sge, I aligned it 
->>>>>>>> to use the same structure.
->>>>>>>
->>>>>>> Listen, this is not how things are done upstream. Read what I 
->>>>>>> previously commented:
->>>>>>>
->>>>>>>>> You're making a mess of this whole thing. Please, don't make 
->>>>>>>>> changes
->>>>>>>>> to my patches on your own.
->>>>>>>
->>>>>>> and please, learn how to properly submit patch series.
->>>>>>>
->>>>>>> Lastly, do the changes that you want/need to implement in your 
->>>>>>> code, and don't
->>>>>>> submit my patch as part of those changes again.
->>>>>>
->>>>>> You can correct this patch by yourself.
->>>>>
->>>>> https://lore.kernel.org/linux-hardening/ad8987ae-b7fe-47af- 
->>>>> a1d2-5055749011c0@embeddedor.com/
->>>>
->>>> You need to do some changes in your commit.
->>>
->>> This is what you haven't understood yet. If the original code is 
->>> wrong (e.g. is
->>> currently using struct ib_sge instead of struct rxe_sge or the other 
->>> way around),
->>> then _that_ code should be fixed _first_, regardless of any other 
->>> patch that might
->>> be applied on top of it.
->>
->> Your commit should align the 2 structs.
-> 
-> No. It should not. To understand why, read my previous responses.
 
-There is something wrong in your commit. Please correct it. I have 
-already pointed it out.
+在 2025/12/23 6:20, Leon Romanovsky 写道:
+> On Mon, Dec 22, 2025 at 09:10:11PM -0800, Zhu Yanjun wrote:
+>> 在 2025/12/22 21:03, Gustavo A. R. Silva 写道:
+>>>
+>>> On 12/23/25 13:41, Zhu Yanjun wrote:
+>>>> From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+>>>>
+>>>> -Wflex-array-member-not-at-end was introduced in GCC-14, and we are
+>>>> getting ready to enable it, globally.
+>>>>
+>>>> Use the new TRAILING_OVERLAP() helper to fix the following warning:
+>>>>
+>>>> 21 drivers/infiniband/sw/rxe/rxe_verbs.h:271:33: warning: structure
+>>>> containing a flexible array member is not at the end of another
+>>>> structure [-Wflex-array-member-not-at-end]
+>>>>
+>>>> This helper creates a union between a flexible-array member (FAM) and a
+>>>> set of MEMBERS that would otherwise follow it.
+>>>>
+>>>> This overlays the trailing MEMBER struct ib_sge sge[RXE_MAX_SGE]; onto
+>>>> the FAM struct rxe_recv_wqe::dma.sge, while keeping the FAM and the
+>>>> start of MEMBER aligned.
+>>>>
+>>>> The static_assert() ensures this alignment remains, and it's
+>>>> intentionally placed inmediately after the related structure --no
+>>>> blank line in between.
+>>>>
+>>>> Lastly, move the conflicting declaration struct rxe_resp_info resp;
+>>>> to the end of the corresponding structure.
+>>>>
+>>>> Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>>>> ---
+>>>> V2->V3: Replace struct ib_sge with struct rxe_sge
+>>> What are you doing?
+>> Because struct rxe_sge differs from struct ib_sge, I aligned it to use the
+>> same structure.
+> Zhu,
+>
+> Please submit your rxe_sge to ib_sge change as standalone patch and
+> Gustavo will resubmit his patch later if he wants so.
+
+
+OK. I will do soon.
 
 Yanjun.Zhu
-> 
-> -Gustavo
-> 
+
+
+>
+> Thanks
+
+-- 
+Best Regards,
+Yanjun.Zhu
 
 
