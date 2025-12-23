@@ -1,243 +1,195 @@
-Return-Path: <linux-rdma+bounces-15170-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15171-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A5F4CD8159
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Dec 2025 05:58:28 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2629CD815D
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Dec 2025 06:03:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 357243015E37
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Dec 2025 04:58:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id F2554301175D
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Dec 2025 05:03:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42D822D9499;
-	Tue, 23 Dec 2025 04:58:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D09D91F3B85;
+	Tue, 23 Dec 2025 05:03:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jxQ6MStX"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="gZw3AknG"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 675F02C0F70
-	for <linux-rdma@vger.kernel.org>; Tue, 23 Dec 2025 04:58:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B19E41624C6
+	for <linux-rdma@vger.kernel.org>; Tue, 23 Dec 2025 05:03:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766465905; cv=none; b=EWgYpBqtDLEtS95CqdM5O8ZIBMTkXske1OvGG0YSprgmfpS6tIRcO34awc2Qo2aDdKugNPLjuVdGBvFaU/RprTtxP2zYSzU4vHUSI4b+jFTUIGCH5rBuGOlZ4EXcb2shwaxq7eRUD46SSa+A7CXTQQBRXrRxCoAf5XQMPoqJI0s=
+	t=1766466209; cv=none; b=jJMYRotQU0mAjR+wXA8rLkjz3dGwWf5FCzbJskFUWdyRlZ36k8lq2BFkY/3g37NEaiX5k3tDbkRIaQ6kGtGGqRU0YaJWWIfEhEWVU0o/uRRyHVIxzNxB50A3aHs/raNf2y1JmLd/1wxRLEu3pg/e83/vJLCfXayAD5KnKkJ+2I0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766465905; c=relaxed/simple;
-	bh=FK9U2N/WNJU7BiA2e6P4YzDYoJFNNzbfZMr+GH8+Orc=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=a73IJeeiY2UcAZ5WA3ES+g0zOxzgnGRXvw2DORRri12HhRyGJAWSoBuwL8D29XOsuAifLRNp4NO6QtpJHxnnJsZL3ch0LVuNelihVrVKaj83uhecVxSk3AK8k5CBfvZgWnmjHGhwOzVD7fSHXyRju243BcHWpSoCuPUujF5A3C8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jxQ6MStX; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1766465904; x=1798001904;
-  h=date:from:to:cc:subject:message-id;
-  bh=FK9U2N/WNJU7BiA2e6P4YzDYoJFNNzbfZMr+GH8+Orc=;
-  b=jxQ6MStXruBKZvmqwdxr1ylJGKiGD2mCF8ut1vqbgKKhi1GvpyR4YfB6
-   VD9eSSwIqWjaFY8ru5p1ibbwx79YvpXFfhM12aSdx4V7r6AfD/92Vlzkf
-   k3YXle4Z3XxVfFd8NXwDjyZcPvQ436B4PbvbTiaB9xoCDdBQxiNhW8Z87
-   iuemJ+1KhqIEyCom4qmmrYT7NcmP9id8pw5eGcYeEpYuSYIWo+3/4/RwL
-   4Tu8sqrw6yd5ukogVQvU3/KXDkTqpMqctLoZgwj03N/ZbsZSM8U7z5wGK
-   FwvNmbqM9GNwVS6T7PCn/32AbJmqQgPLNi2P1wWWf4WrEJZdWf3/HVgjd
-   g==;
-X-CSE-ConnectionGUID: On60qDSuQ76fHVgghXYqUQ==
-X-CSE-MsgGUID: H+b6Ln57T/uo/dd/GBd12w==
-X-IronPort-AV: E=McAfee;i="6800,10657,11650"; a="67312771"
-X-IronPort-AV: E=Sophos;i="6.21,170,1763452800"; 
-   d="scan'208";a="67312771"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2025 20:58:23 -0800
-X-CSE-ConnectionGUID: thbKAQbCRk+I/P+VVs1Pzg==
-X-CSE-MsgGUID: 9L41K7svSOWxQw/w19biiA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,170,1763452800"; 
-   d="scan'208";a="200603431"
-Received: from lkp-server02.sh.intel.com (HELO dd3453e2b682) ([10.239.97.151])
-  by fmviesa010.fm.intel.com with ESMTP; 22 Dec 2025 20:58:21 -0800
-Received: from kbuild by dd3453e2b682 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vXuTF-000000001Tp-35OR;
-	Tue, 23 Dec 2025 04:58:14 +0000
-Date: Tue, 23 Dec 2025 12:58:02 +0800
-From: kernel test robot <lkp@intel.com>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Doug Ledford <dledford@redhat.com>,
- Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [rdma:wip/leon-for-rc] BUILD SUCCESS
- 9b68a1cc966bc947d00e4c0df7722d118125aa37
-Message-ID: <202512231256.qh98zaNP-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	s=arc-20240116; t=1766466209; c=relaxed/simple;
+	bh=GyNqOUZ+1X3rQzHh4YKcDfcDdv1i6qU7wqsqlLMhd0s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YMsTX2V3ABIDLyfZsHuc7KVjIzhysUbegAEeeMtN08KBCJ5K/IPmr+lHjLCrBbE1RRzNIGcvBbUs2/HrJqudNhU8HyGFzukLTbyiixBLPRJtNCstY4aez0Rr09PIoOeLSUbM3PF27qZc+lYrpgTljs9C6TdVp8/K2x9FsDvxNZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=gZw3AknG; arc=none smtp.client-ip=35.89.44.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-6006b.ext.cloudfilter.net ([10.0.30.211])
+	by cmsmtp with ESMTPS
+	id XqCpvMpeaVCBNXuYLvFEKy; Tue, 23 Dec 2025 05:03:21 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id XuYKvE1p7vXvHXuYLvIdEX; Tue, 23 Dec 2025 05:03:21 +0000
+X-Authority-Analysis: v=2.4 cv=e4IGSbp/ c=1 sm=1 tr=0 ts=694a2299
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=ujWNxKVE5dX343uAl30YYw==:17
+ a=IkcTkHD0fZMA:10 a=wP3pNCr1ah4A:10 a=7T7KSl7uo7wA:10 a=VwQbUJbxAAAA:8
+ a=NvFtkyhO6lhFgDomvqQA:9 a=QEXdDO2ut3YA:10 a=2aFnImwKRvkU0tJ3nQRT:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=rkJ8Ikj3ciqsIopG15EtfvppotpuY6yhyIiQS++7BiQ=; b=gZw3AknGAphvGgdK57FPejwD/G
+	L4BtUpodikl4SuKCFIB+iJJNKf5NeE6m7sJ1LOZHkJSDB0vUI42r7l0MU7l6JFbkX0WNjzEWxGTGL
+	pDcVi4RGqn7vrwno3LOcHWls/0X9lZ52JeO3DMiOVCB7vmti4UMYBmqsYBOoXQ4sJhFqS1cU0Lxiq
+	UBLiOt8spbd8Rm5rSS8OdYxVnhjAsDuXAD+/zMLlVMorGQg/dyduVULdGJn1rQ0nzpchcubFcsmPK
+	2z8azvM4ibrY8qR1CvcC7LKbpyfY/V3ov8h8fr4RMcteCpUyZELyMJeUZt+bGTIs9cNYXK4i0SKlL
+	qPxmhALQ==;
+Received: from i118-18-233-1.s41.a027.ap.plala.or.jp ([118.18.233.1]:62629 helo=[10.83.24.44])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.98.1)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1vXuYJ-00000003T7R-3byC;
+	Mon, 22 Dec 2025 23:03:20 -0600
+Message-ID: <ea716013-0149-40fa-b781-b0968980b7bd@embeddedor.com>
+Date: Tue, 23 Dec 2025 14:03:06 +0900
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/1] RDMA/rxe: Avoid -Wflex-array-member-not-at-end
+ warnings
+To: Zhu Yanjun <yanjun.zhu@linux.dev>, zyjzyj2000@gmail.com, jgg@ziepe.ca,
+ leon@kernel.org, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+References: <20251223044129.6232-1-yanjun.zhu@linux.dev>
+Content-Language: en-US
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20251223044129.6232-1-yanjun.zhu@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 118.18.233.1
+X-Source-L: No
+X-Exim-ID: 1vXuYJ-00000003T7R-3byC
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: i118-18-233-1.s41.a027.ap.plala.or.jp ([10.83.24.44]) [118.18.233.1]:62629
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfPgDwNZyo07N8Do6Crwi1aBWj4k5pCSlf/6gkJvX8nBqMx/wPmhN5vQqI+IwvjvWjOumw/u7wmJx8thhpluvGQvc2SVHc9cZj9D2iCD9AkIkIDKB1VY9
+ pxur9oZ6xan7h90RQMyWfZ0C5lw+YE0KBn1HCnSxJF21oWCAvMnmPfzQaByAXdRiL0U7SCtuKg/2P8a4+0R6Pvgqb7F2ibo6PN/DQlL/m7ccAvHPns+yNWv/
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-rc
-branch HEAD: 9b68a1cc966bc947d00e4c0df7722d118125aa37  RDMA/bnxt_re: Fix OOB write in bnxt_re_copy_err_stats()
 
-elapsed time: 1190m
 
-configs tested: 151
-configs skipped: 3
+On 12/23/25 13:41, Zhu Yanjun wrote:
+> From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> 
+> -Wflex-array-member-not-at-end was introduced in GCC-14, and we are
+> getting ready to enable it, globally.
+> 
+> Use the new TRAILING_OVERLAP() helper to fix the following warning:
+> 
+> 21 drivers/infiniband/sw/rxe/rxe_verbs.h:271:33: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+> 
+> This helper creates a union between a flexible-array member (FAM) and a
+> set of MEMBERS that would otherwise follow it.
+> 
+> This overlays the trailing MEMBER struct ib_sge sge[RXE_MAX_SGE]; onto
+> the FAM struct rxe_recv_wqe::dma.sge, while keeping the FAM and the
+> start of MEMBER aligned.
+> 
+> The static_assert() ensures this alignment remains, and it's
+> intentionally placed inmediately after the related structure --no
+> blank line in between.
+> 
+> Lastly, move the conflicting declaration struct rxe_resp_info resp;
+> to the end of the corresponding structure.
+> 
+> Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+> V2->V3: Replace struct ib_sge with struct rxe_sge
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+What are you doing?
 
-tested configs:
-alpha                             allnoconfig    gcc-15.1.0
-alpha                            allyesconfig    gcc-15.1.0
-alpha                               defconfig    gcc-15.1.0
-arc                              allmodconfig    gcc-15.1.0
-arc                               allnoconfig    gcc-15.1.0
-arc                              allyesconfig    gcc-15.1.0
-arc                                 defconfig    gcc-15.1.0
-arc                     nsimosci_hs_defconfig    gcc-15.1.0
-arc                   randconfig-001-20251223    gcc-8.5.0
-arc                   randconfig-002-20251223    gcc-8.5.0
-arm                               allnoconfig    clang-22
-arm                              allyesconfig    gcc-15.1.0
-arm                     am200epdkit_defconfig    gcc-15.1.0
-arm                   randconfig-001-20251223    clang-22
-arm                   randconfig-002-20251223    gcc-10.5.0
-arm                   randconfig-003-20251223    clang-20
-arm                   randconfig-004-20251223    gcc-8.5.0
-arm                        spear3xx_defconfig    clang-17
-arm64                            allmodconfig    clang-19
-arm64                             allnoconfig    gcc-15.1.0
-arm64                 randconfig-001-20251223    clang-17
-arm64                 randconfig-002-20251223    clang-22
-arm64                 randconfig-003-20251223    clang-18
-arm64                 randconfig-004-20251223    gcc-9.5.0
-csky                             allmodconfig    gcc-15.1.0
-csky                              allnoconfig    gcc-15.1.0
-csky                  randconfig-001-20251223    gcc-11.5.0
-csky                  randconfig-002-20251223    gcc-15.1.0
-hexagon                          allmodconfig    clang-17
-hexagon                           allnoconfig    clang-22
-hexagon               randconfig-001-20251223    clang-22
-hexagon               randconfig-002-20251223    clang-22
-i386                             allmodconfig    gcc-14
-i386                              allnoconfig    gcc-14
-i386                             allyesconfig    gcc-14
-i386        buildonly-randconfig-001-20251223    clang-20
-i386        buildonly-randconfig-002-20251223    gcc-14
-i386        buildonly-randconfig-003-20251223    clang-20
-i386        buildonly-randconfig-004-20251223    clang-20
-i386        buildonly-randconfig-005-20251223    gcc-14
-i386        buildonly-randconfig-006-20251223    clang-20
-i386                  randconfig-001-20251223    clang-20
-i386                  randconfig-002-20251223    gcc-14
-i386                  randconfig-003-20251223    clang-20
-i386                  randconfig-004-20251223    gcc-14
-i386                  randconfig-005-20251223    gcc-13
-i386                  randconfig-006-20251223    gcc-14
-i386                  randconfig-007-20251223    gcc-14
-loongarch                        allmodconfig    clang-19
-loongarch                         allnoconfig    clang-22
-loongarch             randconfig-001-20251223    gcc-15.1.0
-loongarch             randconfig-002-20251223    clang-22
-m68k                             allmodconfig    gcc-15.1.0
-m68k                              allnoconfig    gcc-15.1.0
-m68k                             allyesconfig    gcc-15.1.0
-m68k                                defconfig    gcc-15.1.0
-microblaze                        allnoconfig    gcc-15.1.0
-microblaze                       allyesconfig    gcc-15.1.0
-microblaze                          defconfig    gcc-15.1.0
-mips                             allmodconfig    gcc-15.1.0
-mips                              allnoconfig    gcc-15.1.0
-mips                             allyesconfig    gcc-15.1.0
-mips                        vocore2_defconfig    clang-22
-nios2                         10m50_defconfig    gcc-11.5.0
-nios2                            allmodconfig    gcc-11.5.0
-nios2                             allnoconfig    gcc-11.5.0
-nios2                 randconfig-001-20251223    gcc-11.5.0
-nios2                 randconfig-002-20251223    gcc-11.5.0
-openrisc                         allmodconfig    gcc-15.1.0
-openrisc                          allnoconfig    gcc-15.1.0
-openrisc                            defconfig    gcc-15.1.0
-parisc                           allmodconfig    gcc-15.1.0
-parisc                            allnoconfig    gcc-15.1.0
-parisc                           allyesconfig    gcc-15.1.0
-parisc                              defconfig    gcc-15.1.0
-parisc                randconfig-001-20251223    gcc-8.5.0
-parisc                randconfig-002-20251223    gcc-8.5.0
-powerpc                          allmodconfig    gcc-15.1.0
-powerpc                           allnoconfig    gcc-15.1.0
-powerpc                     mpc512x_defconfig    clang-22
-powerpc               randconfig-001-20251223    clang-22
-powerpc               randconfig-002-20251223    clang-22
-powerpc64             randconfig-001-20251223    clang-17
-powerpc64             randconfig-002-20251223    clang-22
-riscv                            allmodconfig    clang-22
-riscv                             allnoconfig    gcc-15.1.0
-riscv                            allyesconfig    clang-16
-riscv                               defconfig    clang-22
-riscv                 randconfig-001-20251223    gcc-8.5.0
-riscv                 randconfig-002-20251223    clang-22
-s390                             allmodconfig    clang-18
-s390                              allnoconfig    clang-22
-s390                             allyesconfig    gcc-15.1.0
-s390                                defconfig    clang-22
-s390                  randconfig-001-20251223    gcc-14.3.0
-s390                  randconfig-002-20251223    gcc-14.3.0
-sh                               allmodconfig    gcc-15.1.0
-sh                                allnoconfig    gcc-15.1.0
-sh                               allyesconfig    gcc-15.1.0
-sh                                  defconfig    gcc-15.1.0
-sh                    randconfig-001-20251223    gcc-10.5.0
-sh                    randconfig-002-20251223    gcc-15.1.0
-sparc                             allnoconfig    gcc-15.1.0
-sparc                               defconfig    gcc-15.1.0
-sparc                 randconfig-001-20251223    gcc-15.1.0
-sparc                 randconfig-002-20251223    gcc-12.5.0
-sparc64                          allmodconfig    clang-22
-sparc64                             defconfig    clang-20
-sparc64               randconfig-001-20251223    gcc-8.5.0
-sparc64               randconfig-002-20251223    gcc-8.5.0
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-22
-um                               allyesconfig    gcc-14
-um                                  defconfig    clang-22
-um                             i386_defconfig    gcc-14
-um                    randconfig-001-20251223    clang-22
-um                    randconfig-002-20251223    gcc-14
-um                           x86_64_defconfig    clang-22
-x86_64                           allmodconfig    clang-20
-x86_64                            allnoconfig    clang-20
-x86_64                           allyesconfig    clang-20
-x86_64      buildonly-randconfig-001-20251223    clang-20
-x86_64      buildonly-randconfig-002-20251223    clang-20
-x86_64      buildonly-randconfig-003-20251223    gcc-14
-x86_64      buildonly-randconfig-004-20251223    gcc-14
-x86_64      buildonly-randconfig-005-20251223    clang-20
-x86_64      buildonly-randconfig-006-20251223    clang-20
-x86_64                              defconfig    gcc-14
-x86_64                randconfig-001-20251223    gcc-14
-x86_64                randconfig-002-20251223    clang-20
-x86_64                randconfig-003-20251223    gcc-14
-x86_64                randconfig-004-20251223    clang-20
-x86_64                randconfig-005-20251223    gcc-14
-x86_64                randconfig-006-20251223    clang-20
-x86_64                randconfig-011-20251223    gcc-14
-x86_64                randconfig-012-20251223    clang-20
-x86_64                randconfig-013-20251223    clang-20
-x86_64                randconfig-014-20251223    clang-20
-x86_64                randconfig-015-20251223    gcc-14
-x86_64                randconfig-016-20251223    gcc-14
-x86_64                randconfig-071-20251223    gcc-14
-x86_64                randconfig-072-20251223    clang-20
-x86_64                randconfig-073-20251223    clang-20
-x86_64                randconfig-074-20251223    gcc-14
-x86_64                randconfig-075-20251223    gcc-14
-x86_64                randconfig-076-20251223    clang-20
-x86_64                          rhel-9.4-rust    clang-20
-xtensa                            allnoconfig    gcc-15.1.0
-xtensa                           allyesconfig    gcc-15.1.0
-xtensa                randconfig-001-20251223    gcc-8.5.0
-xtensa                randconfig-002-20251223    gcc-15.1.0
+You're making a mess of this whole thing. Please, don't make changes
+to my patches on your own.
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+-Gustavo
+
+> ---
+>   drivers/infiniband/sw/rxe/rxe_verbs.h | 18 +++++++++++-------
+>   1 file changed, 11 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> index fd48075810dd..3ffd7be8e7b1 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> @@ -219,12 +219,6 @@ struct rxe_resp_info {
+>   	u32			rkey;
+>   	u32			length;
+>   
+> -	/* SRQ only */
+> -	struct {
+> -		struct rxe_recv_wqe	wqe;
+> -		struct ib_sge		sge[RXE_MAX_SGE];
+> -	} srq_wqe;
+> -
+>   	/* Responder resources. It's a circular list where the oldest
+>   	 * resource is dropped first.
+>   	 */
+> @@ -232,7 +226,15 @@ struct rxe_resp_info {
+>   	unsigned int		res_head;
+>   	unsigned int		res_tail;
+>   	struct resp_res		*res;
+> +
+> +	/* SRQ only */
+> +	/* Must be last as it ends in a flexible-array member. */
+> +	TRAILING_OVERLAP(struct rxe_recv_wqe, wqe, dma.sge,
+> +		struct rxe_sge		sge[RXE_MAX_SGE];
+> +	) srq_wqe;
+>   };
+> +static_assert(offsetof(struct rxe_resp_info, srq_wqe.wqe.dma.sge) ==
+> +	      offsetof(struct rxe_resp_info, srq_wqe.sge));
+>   
+>   struct rxe_qp {
+>   	struct ib_qp		ibqp;
+> @@ -269,7 +271,6 @@ struct rxe_qp {
+>   
+>   	struct rxe_req_info	req;
+>   	struct rxe_comp_info	comp;
+> -	struct rxe_resp_info	resp;
+>   
+>   	atomic_t		ssn;
+>   	atomic_t		skb_out;
+> @@ -289,6 +290,9 @@ struct rxe_qp {
+>   	spinlock_t		state_lock; /* guard requester and completer */
+>   
+>   	struct execute_work	cleanup_work;
+> +
+> +	/* Must be last as it ends in a flexible-array member. */
+> +	struct rxe_resp_info	resp;
+>   };
+>   
+>   enum {
+
 
