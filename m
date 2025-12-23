@@ -1,179 +1,144 @@
-Return-Path: <linux-rdma+bounces-15182-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15183-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BD21CD8CCD
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Dec 2025 11:29:22 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40AF9CD967F
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Dec 2025 14:12:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4F75930389AB
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Dec 2025 10:27:56 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 334F43012AE3
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Dec 2025 13:12:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEFAF30E836;
-	Tue, 23 Dec 2025 10:27:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0F2332D448;
+	Tue, 23 Dec 2025 13:12:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LcXR/eLR";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="bqcg7kit"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="SLgzLV+9"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f225.google.com (mail-pl1-f225.google.com [209.85.214.225])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4EAB2F5479
-	for <linux-rdma@vger.kernel.org>; Tue, 23 Dec 2025 10:27:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15063332EA2
+	for <linux-rdma@vger.kernel.org>; Tue, 23 Dec 2025 13:12:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.225
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766485675; cv=none; b=BdNOKtYteraBtHVwJT0cshL5AbOlbgvQ06X0/MK23lH9KCq0znpOe1y6eCqgrBbw2U3RyyrFFJfY8omU0FSUYkV9q9naLKrYRwLZVXaBiCxUiFs8lEGadaRm2lgVYiYfQx71z5fI9PMMmXs+kyxKu639ofePUjBvZqKlnt5+/bU=
+	t=1766495528; cv=none; b=aV8sKRQFPjWnu4gBsS4iGb7N4eiEOjlr+Ys08arrDSVwVEENQ/ZGZKsuHhncDor2DhmdQBKFImrmH/MQPvUavDnlbCra9cHmLESSBgZTaow48u9hnyCmlEYLgS/BFn7GzwoVSlKGHCjz/Qvbsnge3vTIrwDcSIgUS/gmBpPGDsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766485675; c=relaxed/simple;
-	bh=sCTEwrWLKqtVrl6SpFKxM5QRhYCfIEKH2rZHvlkAm68=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Mwfgx5y+GhTvc52247IUcZJ/0B9CBXucaUAqCk0vnfSDBXYN0Fc880HpGYLUBxNAC1A9h5C505cWlGm7Jh6SBkQby9s1XVAa4W4Nl9HFufcsmupbanTKgi3A1rTyvnFLMk5UtN37cavIjYTl1TIbX9MoW0JEtRRGMaJp2ni+8Ik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LcXR/eLR; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=bqcg7kit; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1766485673;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gW6Az7Odb7vsxG49M4eWTPA9mVwU0/De6Xv1KzqFvrI=;
-	b=LcXR/eLRL64RelzDt1diQcxoegmKMhOGOgbGF6O/gxCIHvA0nK+4BTf3ZdWrQFMZzPZ+L5
-	92S29XyTGNlARz1TA6k1YijYmZYF8tnd/KWg+MS8lAuC2Dlq5ULOjL0PcPgjLWQZPaUUMG
-	Yrp+hkraZq7bQ5M90yOc+TpaJDRNepk=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-491-LYCNB2P-OF2m6tsl9jyGzQ-1; Tue, 23 Dec 2025 05:27:50 -0500
-X-MC-Unique: LYCNB2P-OF2m6tsl9jyGzQ-1
-X-Mimecast-MFC-AGG-ID: LYCNB2P-OF2m6tsl9jyGzQ_1766485670
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-47918084ac1so41502635e9.2
-        for <linux-rdma@vger.kernel.org>; Tue, 23 Dec 2025 02:27:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1766485669; x=1767090469; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gW6Az7Odb7vsxG49M4eWTPA9mVwU0/De6Xv1KzqFvrI=;
-        b=bqcg7kit4SPNxtT6Shz6e0/2aarOYR9Dx+ymdnT2/dEtFihNB09r9aOiYDH06qDsT7
-         TAWMXP+PCc8Z50mOUG0HhcPy3VqttKDFFdbMlf/kf/Urbt1xDVWpFsx5Wg3gr2NIQoBj
-         WyYtHJ/iozu1BKXRGoXKeXmhc2CSlefkHghKQ8FPQPV+c0jLnG3/spyiohk676h0pk3y
-         J+cesC092ZrsNlR42VQXVppWMjhoBpFs5sna7A2k+A+noNbQkFYcS/CZw2JJa2syOdM6
-         kintmu0ow3+8qeyCYmaGe6wnkahhYQpKgGIUqLhjp7dr5w+XsglnunHc9UMU2zRcB0Ae
-         mkGg==
+	s=arc-20240116; t=1766495528; c=relaxed/simple;
+	bh=UObO+sewys7WApZvMix1mZ/u0hIOamJE7FEMBn1oSnc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZvkjuIAcPnG1/BipkZm0qfrYzIDncG9JNJvIReGmMiqbgn43vV4m/NipTIoFzUGJyodAAeAFJSTGUKGiC0OZHw4vu8O8OC0awiHv17ZnQblAAQ3C41RmN4aPVkCorcSRSg7qIzWGYEyxEqxMxcx8xZY4pIRWQnOI7Ila7cpe+kg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=SLgzLV+9; arc=none smtp.client-ip=209.85.214.225
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pl1-f225.google.com with SMTP id d9443c01a7336-2a07fac8aa1so54073215ad.1
+        for <linux-rdma@vger.kernel.org>; Tue, 23 Dec 2025 05:12:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766485669; x=1767090469;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gW6Az7Odb7vsxG49M4eWTPA9mVwU0/De6Xv1KzqFvrI=;
-        b=dS0oz9vueHPDHqttTn0IZMo9B4L4UPGgez7t5YbAmOpp7iBiWWDbItDysi80lxoawe
-         P4dOIi/EULR7LYeAlhdDUAJsYrwDD/O533ojMis5J/JCnJ6Xf+hQKHwSH0Rozt9Jp9tk
-         WcN3OuWzZvEUElPM8zyJkH/5f04uuGCP3PNugfxg7OjCLJEHGE/4GPn62/Q6xThZyk3e
-         LncnOXsiyosJNh/NwpVMD2er2QjGdH48zEyizXre7fhdJSyoXhL5loI85jPFbS6vtGje
-         +MjDNm1Z8cJayw0rLBMr3GI0g4hJdzRDqYrd0H63b5h/JjqQPen1RLMC9pDG37UKUWCO
-         vrBw==
-X-Forwarded-Encrypted: i=1; AJvYcCVMZWUuWkh8EhjnbGA9tFRlIHlwmkyYZsVX7AKmy+7ROvlt5xvGMjYlcLDK3vz1htULYHMCm4683fbP@vger.kernel.org
-X-Gm-Message-State: AOJu0YypfL3wTPhs75DniX1wwkZbv6hcepHgZuZX9el3QhpFc2GOjRiD
-	S/v6638HmU2hhFIqwR9pAnqDzktr9onG7jZHUkiH+QEy1z94TTTpkJUCpogSK3oxh3KewC60BSa
-	LKHwjYXO6/CYKyzHvX0CjCpAYeYLZAWw1mUrTu8V3S7jxoY60QJ9u9RdvFIqbu9A=
-X-Gm-Gg: AY/fxX77HxiBAuG/6YtsQ8B4Jd5YmE9S2kKkHfIYIFKoowz7vVpr4/Bhx3GF8Z/o2i3
-	MV8I0Jkja0AxsCO8eUI14Ou3lI5TGb22I61SHPuIGuyiYpQsItzowybqYd0bIKz/QDXFhAHDi77
-	Ys3592v897NBV96dkl6cjmLeYmvEOde6fwol8phURUBWr6fNPcH5ftKh2rW4sj5an4DDp2OKA83
-	JKI7snm37hQaoKj6KY7JFxJGYl8H7XsbXMzin3qFpQ+HoM4IASCduX804IJvi1nfjJIdmxgEnvL
-	0HmHiifolKLiDPAzAhaWVXBkz0D6I4T4U+Pktk4A6LxQJKgKZ2xU7gE8JaZqJi2OYyy3KGWYd5P
-	nOS2yzrXYYeoc
-X-Received: by 2002:a05:600c:350b:b0:477:aed0:f403 with SMTP id 5b1f17b1804b1-47d19549a95mr128307585e9.8.1766485669521;
-        Tue, 23 Dec 2025 02:27:49 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEo2375ubP3NGR4G/066i7ZpeEj+Z0OlHm2MPrvB8YlHkxm/CeEdo9o2skjUY6UCqpZioUlDA==
-X-Received: by 2002:a05:600c:350b:b0:477:aed0:f403 with SMTP id 5b1f17b1804b1-47d19549a95mr128307235e9.8.1766485669030;
-        Tue, 23 Dec 2025 02:27:49 -0800 (PST)
-Received: from [192.168.88.32] ([216.128.11.164])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4324ea830f3sm26613687f8f.22.2025.12.23.02.27.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Dec 2025 02:27:48 -0800 (PST)
-Message-ID: <a10a9239-ea4b-4a78-a5e6-d38d6ba749a9@redhat.com>
-Date: Tue, 23 Dec 2025 11:27:45 +0100
+        d=1e100.net; s=20230601; t=1766495526; x=1767100326;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=U+CzjxtQBlDg1zg17jSZfSgvsvrDAHLbUxrU+sqchZc=;
+        b=VVeHVZHzcuLv5y1OXstct5nvutfyyw6dRuIq3D18V4NeQIbM/s4NAZdJXsgLtRtF3x
+         +Nj9FdCWcYlZeBitxeWdu9psQG/sQGECGDzfvbG6vU/63heH0zq3X5tLSW62on+u43SB
+         wS+Is0DFn4ntvOY6XO8l58SvMp6GuGKQhYd+1YTRbFnP3SxYgl+WnBzXTIXo0XiufEje
+         gcJ/nci4gC3skDjLSMBx9tNQPKPYerrzOx7MrYGZa0ZIro5r5E+ENL6cvA+yR/6cA+pR
+         MzbjlpNeqK8p6h0p4zSYT16AgFuC4NkrzQQINMZHel/reGrzWauibe0We3zqNasDdd8w
+         svPA==
+X-Gm-Message-State: AOJu0YybQLlhHl7IyLDJ9SKflgjwWcCR1s8q8zfZjJhQHOBG+mUMXmtT
+	3QMDxxaGOfg4YTYBb9XuZ3cSpQ6yiu7lZ2xXABRpxRCDlJNTnWszPlYQEJA3meZCNf1SJaV0uP/
+	qaNDEYDrGpIsuGOPBYkvq47TtwIcyNoySqsX3qh6E6/fPdTOJvihrnZijpeervYQ+Tp2Yr6ZzN9
+	7SQgkvE5Tl/APq0OxS3qCfChP+BjaAAzS4k+pMplqQIcFNFilwe3y4kmmDcrAN45Xp++5j+VfmO
+	J35n1F2Vu4M1K0qqKFiNfG2UY6rEw==
+X-Gm-Gg: AY/fxX5syojD891VNa+7bzIW2wSO1yn0pWtgfZwzYSXBDj70Q7eC0n7nSvhIx2Mn25O
+	9EYpAf15LP8MuygP9zMMhUkXgOLuoaX/8sRo1QxxthY3SvCtZjttqYLZCGAJry5rZSvIYiDfS5k
+	I42TRLgm16VYGDo+vJUJlwZAILXAKuKGz9stFPHI/WyQB2Z2v1aRKutdsv7s4fdozl/7DbT6xEQ
+	l1+17Fr0+AdlAqmJWE5HmyGdg2KlG58JfGen7Ejj6t/qsA2p3CAsSjEqU7KVxqeOVNOl/US7T/T
+	Jn0Oot2aiOi2PH5JEye4tF5WAWQNU06RxOndyv1Ufb7FF9eXNCCs1OcCT4SI0RlIpDKlZFfoKMT
+	QSmgVq2+ydweMhHqXrRSSpZxEp6qrPUX3rvv4zMAwLMv8o4X4CB/lzH3YfAsw6mR+8xrV1sxt1t
+	B6ijOALA+D4oW2g8OyY6pU5Rc49TZS/7PBHd0Zb+bFhId9rqQahADFub+45w==
+X-Google-Smtp-Source: AGHT+IFTkzFasbDAy1AnO2JZDzxDoOtxoQheX8aSbKAIjKj6ip5GHenUXyLKiGqmMNAFihwRCzqh4Bp2eI97
+X-Received: by 2002:a05:7022:6887:b0:11b:ca88:c50f with SMTP id a92af1059eb24-121722e9d56mr17290358c88.40.1766495526109;
+        Tue, 23 Dec 2025 05:12:06 -0800 (PST)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-10.dlp.protect.broadcom.com. [144.49.247.10])
+        by smtp-relay.gmail.com with ESMTPS id a92af1059eb24-12172537f65sm2738162c88.6.2025.12.23.05.12.05
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 23 Dec 2025 05:12:06 -0800 (PST)
+X-Relaying-Domain: broadcom.com
+X-CFilter-Loop: Reflected
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-34c3501d784so5676173a91.1
+        for <linux-rdma@vger.kernel.org>; Tue, 23 Dec 2025 05:12:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1766495524; x=1767100324; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=U+CzjxtQBlDg1zg17jSZfSgvsvrDAHLbUxrU+sqchZc=;
+        b=SLgzLV+9caJEq0azohuSQ4+IXfdWd8z4u4HoLzyTHNxFwoalk8z126BaDuXmYtnUmb
+         qRM4HoXxu/jD8N6hjE2U4on4E7M9fLWZ5IUunR6a1kT5pz2e4VaZAg6VkcXM4O38p6A5
+         I/sHPM1R73g5ChTJi1NjsiYM87Ch0AMc3I2mE=
+X-Received: by 2002:a05:6a20:7d9f:b0:366:14af:9bca with SMTP id adf61e73a8af0-376a9acf00cmr12995285637.64.1766495524349;
+        Tue, 23 Dec 2025 05:12:04 -0800 (PST)
+X-Received: by 2002:a05:6a20:7d9f:b0:366:14af:9bca with SMTP id adf61e73a8af0-376a9acf00cmr12995261637.64.1766495523809;
+        Tue, 23 Dec 2025 05:12:03 -0800 (PST)
+Received: from dhcp-10-123-157-228.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7ff7e589b0csm13962617b3a.56.2025.12.23.05.12.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Dec 2025 05:12:03 -0800 (PST)
+From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+To: leon@kernel.org,
+	jgg@ziepe.ca
+Cc: linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com,
+	selvin.xavier@broadcom.com,
+	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+	Damodharam Ammepalli <damodharam.ammepalli@broadcom.com>
+Subject: [PATCH rdma-rc] RDMA/bnxt_re: Fix to use correct page size for PDE table
+Date: Tue, 23 Dec 2025 18:48:55 +0530
+Message-ID: <20251223131855.145955-1-kalesh-anakkur.purayil@broadcom.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/1] finalize removing the page pool members in struct
- page
-To: Byungchul Park <byungchul@sk.com>, Vlastimil Babka <vbabka@suse.cz>
-Cc: linux-mm@kvack.org, akpm@linux-foundation.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel_team@skhynix.com, harry.yoo@oracle.com,
- ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
- hawk@kernel.org, john.fastabend@gmail.com, sdf@fomichev.me,
- saeedm@nvidia.com, leon@kernel.org, tariqt@nvidia.com, mbloch@nvidia.com,
- andrew+netdev@lunn.ch, edumazet@google.com, david@redhat.com,
- lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, rppt@kernel.org,
- surenb@google.com, mhocko@suse.com, horms@kernel.org, jackmanb@google.com,
- hannes@cmpxchg.org, ziy@nvidia.com, ilias.apalodimas@linaro.org,
- willy@infradead.org, brauner@kernel.org, kas@kernel.org, yuzhao@google.com,
- usamaarif642@gmail.com, baolin.wang@linux.alibaba.com,
- almasrymina@google.com, toke@redhat.com, asml.silence@gmail.com,
- bpf@vger.kernel.org, linux-rdma@vger.kernel.org, sfr@canb.auug.org.au,
- dw@davidwei.uk, ap420073@gmail.com, dtatulea@nvidia.com
-References: <20251216030314.29728-1-byungchul@sk.com>
- <776b0429-d5ae-4b00-ba83-e25f6d877c0a@suse.cz>
- <20251218001749.GA15390@system.software.com>
-Content-Language: en-US
-From: Paolo Abeni <pabeni@redhat.com>
-In-Reply-To: <20251218001749.GA15390@system.software.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 
-On 12/18/25 1:17 AM, Byungchul Park wrote:
-> On Wed, Dec 17, 2025 at 02:43:07PM +0100, Vlastimil Babka wrote:
->> On 12/16/25 04:03, Byungchul Park wrote:
->>> Since this patch requires to use newly introduced APIs in net tree, I've
->>> been waiting for those to be ready in mm tree.  Now that mm tree has
->>> been rebased so as to include the APIs, this patch can be merged to mm
->>> tree.
->>>
->>> This patch has been carried out in a separate thread so far for the
->>> reviews [1]:
->>>
->>>  [1] https://lore.kernel.org/all/20251119012709.35895-1-byungchul@sk.com/
->>> ---
->>> Changes from v1:
->>>       1. Drop the finalizing patch removing the pp fields of struct
->>>          page since I found that there is still code accessing a pp
->>>          field via struct page.  I will retry the finalizing patch
->>>          after resolving the issue.
->>
->> Could we just make that necessary change of
->> drivers/net/ethernet/intel/ice/ice_ethtool.c part of this series and do it
->> all at once? We're changing both mm and net anyway.
-> 
-> Yes.  That's what I think it'd better do.  1/2 can be merged separately
-> and Andrew took it.  I'd like to re-post 'ice fix' + 2/2 in a series if
-> it's allowed.
-> 
->> Also which tree will carry the series? I assume net will want to, as the
-> 
-> I'm trying to apply changes focused on mm to mm tree, and changes
-> focused on net to net tree.  However, yeah, it'd make things simpler if
-> I can go with a single series for mm tree.
+In bnxt_qplib_alloc_init_hwq(), while allocating memory for PDE table
+driver incorrectly is using the "pg_size" value passed to the function.
+Fixed to use the right value 4K. Also, fixed the allocation size for
+PBL table.
 
-I *think* that the ice patch should go via the net-next tree (and
-ideally via the iwl tree first). Also it looks like both patches could
-cause quite a bit of conflicts, as the page pool code and the ice driver
-are touched frequently.
+Fixes: 0c4dcd602817 ("RDMA/bnxt_re: Refactor hardware queue memory allocation")
+Signed-off-by: Damodharam Ammepalli <damodharam.ammepalli@broadcom.com>
+Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Reviewed-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
+ drivers/infiniband/hw/bnxt_re/qplib_res.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Perhaps the easier/cleaner way to handle this is publishing a stable
-branch somewhere based on the most recent common ancestor and let both
-the mm and the net-next tree pull from it? Other opinions welcome!
-
-Anyway the net-next tree is and will be closed up to Jan 2.
-
-Cheers,
-
-Paolo
-
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_res.c b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+index 875d7b52c06a..d5c12a51aa43 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_res.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_res.c
+@@ -237,7 +237,7 @@ int bnxt_qplib_alloc_init_hwq(struct bnxt_qplib_hwq *hwq,
+ 			if (npbl % BIT(MAX_PDL_LVL_SHIFT))
+ 				npde++;
+ 			/* Alloc PDE pages */
+-			sginfo.pgsize = npde * pg_size;
++			sginfo.pgsize = npde * ROCE_PG_SIZE_4K;
+ 			sginfo.npages = 1;
+ 			rc = __alloc_pbl(res, &hwq->pbl[PBL_LVL_0], &sginfo);
+ 			if (rc)
+@@ -245,7 +245,7 @@ int bnxt_qplib_alloc_init_hwq(struct bnxt_qplib_hwq *hwq,
+ 
+ 			/* Alloc PBL pages */
+ 			sginfo.npages = npbl;
+-			sginfo.pgsize = PAGE_SIZE;
++			sginfo.pgsize = ROCE_PG_SIZE_4K;
+ 			rc = __alloc_pbl(res, &hwq->pbl[PBL_LVL_1], &sginfo);
+ 			if (rc)
+ 				goto fail;
+-- 
+2.43.5
 
 
