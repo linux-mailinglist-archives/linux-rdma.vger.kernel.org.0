@@ -1,87 +1,89 @@
-Return-Path: <linux-rdma+bounces-15196-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15197-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15994CDB56E
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Dec 2025 05:36:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DA99CDB571
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Dec 2025 05:36:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7783A301A1C3
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Dec 2025 04:36:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6B035301B2C0
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Dec 2025 04:36:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B92E286D73;
-	Wed, 24 Dec 2025 04:36:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBECD298991;
+	Wed, 24 Dec 2025 04:36:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="TkeRSzaW"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="dWkgQmXw"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yx1-f99.google.com (mail-yx1-f99.google.com [74.125.224.99])
+Received: from mail-oi1-f227.google.com (mail-oi1-f227.google.com [209.85.167.227])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18DFD1AA1D2
-	for <linux-rdma@vger.kernel.org>; Wed, 24 Dec 2025 04:36:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7296D1AA1D2
+	for <linux-rdma@vger.kernel.org>; Wed, 24 Dec 2025 04:36:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.227
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766550985; cv=none; b=ZqdI/jxTMxq4dCi6Vg6n/jrdQO3JfYPSHxeKvPtD2bKBfxvKabJrfoXhjP39bHYLq0OtdMn6L+D7aoyabtOoofZc4zTpks5Io+ToRwl9kKI9qdBpOcevqLtH04FNfmcJe2YV9gX66etjSPuaTirATZYMx3ga6i1wJNU+EsvSgZU=
+	t=1766550989; cv=none; b=hd6hztSkFpW9fwITckQqK2UHbd4wRWTNYvCjhmuulFO2x9Br1VD/mEELk5NeVXC0udgSy8QfiAxLzqKq3NpR53aKqWS0WsPB5hGU8+ORRDDgzm42gDqqhw7sPgyYLJWWGhsoj64yc0h2/4KuF4rHErYMko48eVGkTxbM7dB5LXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766550985; c=relaxed/simple;
-	bh=n6x+cX+zNefVv5Ewp7aGkuMfDY10pMmL9zqPg0k8zpw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iOGwxdYpIer/U2kVB9uQZGmTcS3f+S5/2HFU7OUILOUMa6yMeWJsvQx3w9mAUxn2LDJ6ETcAEjIm9HrohyTf9vsRh6ha+uxUz17erE4iDgw0llGN7RyU5HhEPvJAUvu05yjs9jIUBtUylaaL9rp3VgLlW5STlDfLXfb9ogpWkwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=TkeRSzaW; arc=none smtp.client-ip=74.125.224.99
+	s=arc-20240116; t=1766550989; c=relaxed/simple;
+	bh=D9v+esLvE/cYr/Dxgwq6jO6Vqe/qGmvz6DmEvPCOjAo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=SjQrHapxqEbHiEcIzr/tLdA0cr/Q/fpLe6ppHYC3YXYa4KfaO5si4Z4dfT0hLLyRfKya1l4TmGEz3Sh60x6jUW73L91i2XMcNTTaPzzr4e02elXIa9swBWFOwmnWb+yFb4YDpm8KQ9J936e3lIGoJlEIvqdteQPkvWfPTv2b7Co=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=dWkgQmXw; arc=none smtp.client-ip=209.85.167.227
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-yx1-f99.google.com with SMTP id 956f58d0204a3-63fc6d9fde5so5006817d50.3
-        for <linux-rdma@vger.kernel.org>; Tue, 23 Dec 2025 20:36:23 -0800 (PST)
+Received: by mail-oi1-f227.google.com with SMTP id 5614622812f47-450063be247so2407337b6e.2
+        for <linux-rdma@vger.kernel.org>; Tue, 23 Dec 2025 20:36:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766550983; x=1767155783;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hSAGW4wUAKUHD/SntoawHofeJFwo7/4XwBdT5nGf69U=;
-        b=UKeAXnL+1LSckc7+INun8i6InHea18Hf3+ajgNJSBAhI5JokdvN7XFX2Sh9SI7O2Aa
-         jQFw/p0xtss8SG1ekr+ztDucMuC+pgDJAbRjG914dBTkTBX5qdiNPyStpHXKNUROJxGv
-         RCfJlr3j82Pvfn+0n9bzAn5yk3Lzsx/wN+y/OUHHVrwe9yEqhaItNs4YKXBXcbCOfgZW
-         8KvGIZRt+N9KNnKNUKaEni6vmjZeu1J6OgZ6r970KAVJx+6uy/NfHdA0GzkTAFbO60Lx
-         gG6vg0WesiuKw/LY+TowHOpCaEGL/gXf9ojidoWyAOgWl7BYD5EyEboAlNL/MlDWuxjj
-         THkw==
-X-Gm-Message-State: AOJu0Yyc4Nm8ecmx1Aau63zrOY3Pr+4QcuuChCl80vIHDEEdlIqblUop
-	1YVtDapi9HnHb4+hERTgMg74bD076hHLqMfkOdg92tAdHBozxuU1RlElRHWzWIogYg9vq1B9sXs
-	UBaZptyyQKiLw24C6LnezuOl2x4/ecTjx1sKya+6Bl2rJLQ4l9/XAgtl2myjkSJz78irtRBL1YQ
-	0ZPn8kWdmjvRMrBtoO/MfsSlgMMjYspUv1DS7ITcrdwKtUNvBiXG7UYYrj/kO4sHmpFji66OovY
-	CwmfDWb1cY3Md5hocNazJb5wc3H
-X-Gm-Gg: AY/fxX6PQCykIwHvhpLKhxutwj83BMa/MGjjgR0CFFpG+fGdD6VDDIRGkr3QgRjA74k
-	6tPhefwsbrJmoOXduY4h4qV5sjnpNazCZV7LhUO2248jmcyFJxG0ucDUauAzvUEeZ7Wb2pFZl8X
-	dMQe2hCCi8z4e66uNpeOPXYMqL1i3W6SNE581PnI2cCjPoEvCYNRfj2kS9Px3QEUIOuqPo9Ji1Z
-	NAlBWBwDU6cCczl4KQBlu3kvJULgMs6EQYwrGZxbbNJIjVwAX18iKLRk+EnpcnAfRLC5KwSkBlU
-	d22wRc4ClkJgYj9jN49sdMBxIH6gdi3MqGc93x/l/DY8WjnSWlA/VVnEfugZUDANUtS3LRF9egw
-	2Ava3WpAWwaj8ceJt1pI6Rkx0nHdTVTGXxoqf94AZnBKMYodraYPaifLqgQqnp9bAV789rbDmbJ
-	usAY6eT2Yx0mZHz/leLQxXTq9Tm9byypjszYIDiMlUr0V0ATgHyKTBSvib
-X-Google-Smtp-Source: AGHT+IEG3BBLNdBSYg+4zO8fBLg9CqpCPNIgogDLLg+9yLDoWOiaR99f9SwyRP7vJJRoKTYajkc75repmkXU
-X-Received: by 2002:a05:690e:3c7:b0:63f:b6d3:5a44 with SMTP id 956f58d0204a3-6466a8b88c1mr9947039d50.67.1766550982991;
-        Tue, 23 Dec 2025 20:36:22 -0800 (PST)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-19.dlp.protect.broadcom.com. [144.49.247.19])
-        by smtp-relay.gmail.com with ESMTPS id 956f58d0204a3-6466a8b1e88sm684992d50.1.2025.12.23.20.36.22
+        d=1e100.net; s=20230601; t=1766550986; x=1767155786;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:dkim-signature:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hup/wCpgj/4GrVIoJHj1DNUmZ7StJh6ZGLjCnWlZHJs=;
+        b=lBYui25fNtMjmKMMxgOijJ+Rio5z0NNXWnJOpitflRH8BG9HQ9mKOLx36Zt1cCfUP8
+         X+Jb3cLSgqFuUCce574sDPtGFGfvmFZNVjcZbQIRfaaf2INjqlACtGBE7btujTZt5O/z
+         QoqbvV9a23t3EavS4UQXcwSJbnOT/+8/hrwnx+8kCZWM/DXDbhqXdXzmE1W3iD04okGF
+         rYa2Y6/Zx/Fy6rtVqrq3zgW++KSplaoZRa4RVf1G+qzU/Ovb3pAz4O1KN5rUIlDbCQkm
+         CYGU76IfcMzW3EeCjUJa1TSSrl6aBxfATN/B4SnW7ODRpAe0TRVz2ZL+3fD14Af15iNx
+         Zolg==
+X-Gm-Message-State: AOJu0YwS8VUfr1maaud9jkQQBIviK4bRqwvmgm1wR2U8Ci6BvUZ/Rjpr
+	lwQBXvcnEl6L19ArjWU7mG9eC0vjB6dAF9Cs1IZD54A6mSqmnJA+QVSse5wUHUr9JDsRS6mPtc5
+	+ckW9J6ftoyRtm/goCAfXvBjD031njbcfJ+FXADzzX2mNaTrTW4kd+HYPmitBNhNRxJ346fIxzD
+	njChS2OFqXDwer0ZWlTVzFtwS+AWstRFSfXC3Y/6fPDaql4qGunvja/tnqjCe1D3eJv8bPDHvzk
+	ysrpFnBWH5BgTS28057vNiWq7bB
+X-Gm-Gg: AY/fxX4h2bXclnsT57dVeg7/P5Mo4pzbT0SkMp7VijuAmBBwMDuNCy0dpUdROV0Lbb3
+	qyZP2uoqSry0xRhkjTSXb7YIKEqrGSN9DP48FvdZvsDp14lYWlK3jBbjGUMK/bc/qsKkvXwvY1a
+	WxNakPOClIlC3LEvlpad/snt+L9Xbimh2m9p38npLPvmbUvPqEFWJGXYZ7+yotAvF7g13Ssd9B9
+	Yy687huybpUnWjabyJIC8ZsKPSkw3XiC+SPdenVUYTUFTy/sil+JXcKFQQ3nHz7zrdWZiwwcHdF
+	unEFl4mwPQ1Dk+wiFWkN/PbCuYyNPKy5ui5NHBjKeQoMWnSYqALiHhO3xeecnlO1B8EmNHETHyO
+	g6XdsX8KjrEk4O3DAD91MXnW1HzFV4XCntcfhMZCvRdg+Y6uHVApNmPFelUduaUdiUioAbekcgs
+	RWVkFX8lmsupTTGsJZ7THIMr173TvLWEzd2jNC9Lr/TMeC1G3o2KoBZA==
+X-Google-Smtp-Source: AGHT+IElLBkdE2WL0mPFNwVDHeDqPo7o4HX+yLGKyd/eyktgkaDVVZKo6UEbf0hL1RPzV/ZrVOX95ll0EYaX
+X-Received: by 2002:a05:6808:2186:b0:441:8f74:e8b with SMTP id 5614622812f47-457b218053amr7086989b6e.53.1766550986184;
+        Tue, 23 Dec 2025 20:36:26 -0800 (PST)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-2.dlp.protect.broadcom.com. [144.49.247.2])
+        by smtp-relay.gmail.com with ESMTPS id 586e51a60fabf-3fdaa937e2esm1579422fac.5.2025.12.23.20.36.25
         for <linux-rdma@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Dec 2025 20:36:22 -0800 (PST)
+        Tue, 23 Dec 2025 20:36:26 -0800 (PST)
 X-Relaying-Domain: broadcom.com
 X-CFilter-Loop: Reflected
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-34ac819b2f2so7066524a91.0
-        for <linux-rdma@vger.kernel.org>; Tue, 23 Dec 2025 20:36:22 -0800 (PST)
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-34c213419f5so5362054a91.2
+        for <linux-rdma@vger.kernel.org>; Tue, 23 Dec 2025 20:36:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1766550982; x=1767155782; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hSAGW4wUAKUHD/SntoawHofeJFwo7/4XwBdT5nGf69U=;
-        b=TkeRSzaWdU1SsjHFoTfzlNNoTYLEpvacBA9YIOfIdk+wJfouMCZ7aymTKzAsNCtjDR
-         To8WK/VNyTgCaOW0kN9lqUfteVGI9gx0KZ8/qOmVXbzC8koqp1gZjLnjDLjfbnWnWaUv
-         aM2DojAxVVjAnOCJI1E2LBIbhCcIDFZD/viCk=
-X-Received: by 2002:a17:90b:2246:b0:34c:2db6:57a7 with SMTP id 98e67ed59e1d1-34e921131b8mr14263734a91.8.1766550981668;
-        Tue, 23 Dec 2025 20:36:21 -0800 (PST)
-X-Received: by 2002:a17:90b:2246:b0:34c:2db6:57a7 with SMTP id 98e67ed59e1d1-34e921131b8mr14263717a91.8.1766550981203;
-        Tue, 23 Dec 2025 20:36:21 -0800 (PST)
+        d=broadcom.com; s=google; t=1766550985; x=1767155785; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hup/wCpgj/4GrVIoJHj1DNUmZ7StJh6ZGLjCnWlZHJs=;
+        b=dWkgQmXwpij0bJoK08o3LYscChb3XaGWM7UH1cgHal1yHM/RrVM2BAvSXr44ab2gGK
+         o74kpfmcrrYuEiYblu2wNLcRy6Adg3kqwLCnVCmlsm9JrmIWf2PVu4Ds9SC77jHaJf6q
+         y6WlSuZVxveUGUe+jBTqh9zfsAwPRdZTqoTCE=
+X-Received: by 2002:a17:90a:ca90:b0:340:d06d:ea73 with SMTP id 98e67ed59e1d1-34e921af95amr9756974a91.19.1766550984532;
+        Tue, 23 Dec 2025 20:36:24 -0800 (PST)
+X-Received: by 2002:a17:90a:ca90:b0:340:d06d:ea73 with SMTP id 98e67ed59e1d1-34e921af95amr9756965a91.19.1766550984035;
+        Tue, 23 Dec 2025 20:36:24 -0800 (PST)
 Received: from dhcp-10-123-157-187.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34e921b165bsm14219525a91.6.2025.12.23.20.36.18
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34e921b165bsm14219525a91.6.2025.12.23.20.36.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Dec 2025 20:36:20 -0800 (PST)
+        Tue, 23 Dec 2025 20:36:23 -0800 (PST)
 From: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
 To: leon@kernel.org,
 	jgg@ziepe.ca
@@ -90,10 +92,12 @@ Cc: linux-rdma@vger.kernel.org,
 	selvin.xavier@broadcom.com,
 	kalesh-anakkur.purayil@broadcom.com,
 	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Subject: [PATCH rdma-next v6 0/4] RDMA/bnxt_re: Support direct verbs
-Date: Wed, 24 Dec 2025 09:55:58 +0530
-Message-ID: <20251224042602.56255-1-sriharsha.basavapatna@broadcom.com>
+Subject: [PATCH rdma-next v6 1/4] RDMA/bnxt_re: Move the UAPI methods to a dedicated file
+Date: Wed, 24 Dec 2025 09:55:59 +0530
+Message-ID: <20251224042602.56255-2-sriharsha.basavapatna@broadcom.com>
 X-Mailer: git-send-email 2.51.2.636.ga99f379adf
+In-Reply-To: <20251224042602.56255-1-sriharsha.basavapatna@broadcom.com>
+References: <20251224042602.56255-1-sriharsha.basavapatna@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -103,82 +107,717 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 
-Hi,
+From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
 
-This patchset supports Direct Verbs in the bnxt_re driver.
+This is in preparation for upcoming patches in the series.
+Driver has to support additional UAPIs for Direct verbs.
+Moving current UAPI implementation to a new file, dv.c.
 
-This is required by vendor specific applications that need to manage
-the HW resources directly and to implement the datapath in the
-application.
-
-To support this, the library and the driver are being enhanced to
-provide Direct Verbs using which the application can allocate and
-manage the HW resources (Queues, Doorbell etc) . The Direct Verbs
-enable the application to implement the control path.
-
-Patch#1 Move uapi methods to a separate file
-Patch#2 Refactor existing bnxt_qplib_create_qp() function
-Patch#3 Support dbr direct verbs
-Patch#4 Support cq and qp direct verbs
-
-Thanks,
--Harsha
-
-******
-
-Changes:
-
-v6:
-- Minor updates in Patch#3:
-  - Removed unused variables.
-  - Renamed & updated a uverbs method to a global.
-- Minor updates in Patch#4:
-  - Removed unused variables, stray hunks.
-v5:
-- Design changes to address previous round of comments:
-  - Reverted changes in rdma-core (removed V4-Patch#1).
-  - Removed driver support for umem-reg/dereg DVs (Patch#3).
-  - Enhanced driver specific udata to avoid new CQ/QP ioctls (Patch#4).
-  - Removed additional driver functions in modify/query QP (Patch#4).
-  - Utilized queue-va in udata for deferred pinning (Patch#4).
-v4:
-- Added a new (rdma core) patch.
-- Addressed code review comments in patch 5.
-v3:
-- Addressed code review comments in patches 1, 2 and 4.
-v2:
-- Fixed build warnings reported by test robot in patches 3 and 4.
-
-v5: https://lore.kernel.org/linux-rdma/20251129165441.75274-1-sriharsha.basavapatna@broadcom.com/
-v4: https://lore.kernel.org/linux-rdma/20251117061741.15752-1-sriharsha.basavapatna@broadcom.com/
-v3: https://lore.kernel.org/linux-rdma/20251110145628.290296-1-sriharsha.basavapatna@broadcom.com/
-v2: https://lore.kernel.org/linux-rdma/20251104072320.210596-1-sriharsha.basavapatna@broadcom.com/
-v1: https://lore.kernel.org/linux-rdma/20251103105033.205586-1-sriharsha.basavapatna@broadcom.com/
-
-******
-
-Kalesh AP (3):
-  RDMA/bnxt_re: Move the UAPI methods to a dedicated file
-  RDMA/bnxt_re: Refactor bnxt_qplib_create_qp() function
-  RDMA/bnxt_re: Direct Verbs: Support DBR verbs
-
-Sriharsha Basavapatna (1):
-  RDMA/bnxt_re: Direct Verbs: Support CQ and QP verbs
-
- drivers/infiniband/hw/bnxt_re/Makefile    |   2 +-
- drivers/infiniband/hw/bnxt_re/bnxt_re.h   |   7 +
- drivers/infiniband/hw/bnxt_re/dv.c        | 939 ++++++++++++++++++++++
- drivers/infiniband/hw/bnxt_re/ib_verbs.c  | 552 +++++--------
- drivers/infiniband/hw/bnxt_re/ib_verbs.h  |  21 +
- drivers/infiniband/hw/bnxt_re/main.c      |   1 +
- drivers/infiniband/hw/bnxt_re/qplib_fp.c  | 310 +++----
- drivers/infiniband/hw/bnxt_re/qplib_fp.h  |  10 +-
- drivers/infiniband/hw/bnxt_re/qplib_res.c |  43 +
- drivers/infiniband/hw/bnxt_re/qplib_res.h |  10 +
- include/uapi/rdma/bnxt_re-abi.h           |  45 ++
- 11 files changed, 1395 insertions(+), 545 deletions(-)
+Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+Reviewed-by: Selvin Xavier <selvin.xavier@broadcom.com>
+Signed-off-by: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+---
+ drivers/infiniband/hw/bnxt_re/Makefile   |   2 +-
+ drivers/infiniband/hw/bnxt_re/dv.c       | 339 +++++++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 305 +-------------------
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h |   3 +
+ 4 files changed, 344 insertions(+), 305 deletions(-)
  create mode 100644 drivers/infiniband/hw/bnxt_re/dv.c
 
+diff --git a/drivers/infiniband/hw/bnxt_re/Makefile b/drivers/infiniband/hw/bnxt_re/Makefile
+index f63417d2ccc6..b82d12df6269 100644
+--- a/drivers/infiniband/hw/bnxt_re/Makefile
++++ b/drivers/infiniband/hw/bnxt_re/Makefile
+@@ -5,4 +5,4 @@ obj-$(CONFIG_INFINIBAND_BNXT_RE) += bnxt_re.o
+ bnxt_re-y := main.o ib_verbs.o \
+ 	     qplib_res.o qplib_rcfw.o	\
+ 	     qplib_sp.o qplib_fp.o  hw_counters.o	\
+-	     debugfs.o
++	     debugfs.o dv.o
+diff --git a/drivers/infiniband/hw/bnxt_re/dv.c b/drivers/infiniband/hw/bnxt_re/dv.c
+new file mode 100644
+index 000000000000..5655c6176af4
+--- /dev/null
++++ b/drivers/infiniband/hw/bnxt_re/dv.c
+@@ -0,0 +1,339 @@
++// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
++/*
++ * Copyright (c) 2025, Broadcom. All rights reserved.  The term
++ * Broadcom refers to Broadcom Limited and/or its subsidiaries.
++ *
++ * Description: Direct Verbs interpreter
++ */
++
++#include <rdma/ib_addr.h>
++#include <rdma/uverbs_types.h>
++#include <rdma/uverbs_std_types.h>
++#include <rdma/ib_user_ioctl_cmds.h>
++#define UVERBS_MODULE_NAME bnxt_re
++#include <rdma/uverbs_named_ioctl.h>
++#include <rdma/bnxt_re-abi.h>
++
++#include "roce_hsi.h"
++#include "qplib_res.h"
++#include "qplib_sp.h"
++#include "qplib_fp.h"
++#include "qplib_rcfw.h"
++#include "bnxt_re.h"
++#include "ib_verbs.h"
++
++static struct bnxt_re_cq *bnxt_re_search_for_cq(struct bnxt_re_dev *rdev, u32 cq_id)
++{
++	struct bnxt_re_cq *cq = NULL, *tmp_cq;
++
++	hash_for_each_possible(rdev->cq_hash, tmp_cq, hash_entry, cq_id) {
++		if (tmp_cq->qplib_cq.id == cq_id) {
++			cq = tmp_cq;
++			break;
++		}
++	}
++	return cq;
++}
++
++static struct bnxt_re_srq *bnxt_re_search_for_srq(struct bnxt_re_dev *rdev, u32 srq_id)
++{
++	struct bnxt_re_srq *srq = NULL, *tmp_srq;
++
++	hash_for_each_possible(rdev->srq_hash, tmp_srq, hash_entry, srq_id) {
++		if (tmp_srq->qplib_srq.id == srq_id) {
++			srq = tmp_srq;
++			break;
++		}
++	}
++	return srq;
++}
++
++static int UVERBS_HANDLER(BNXT_RE_METHOD_NOTIFY_DRV)(struct uverbs_attr_bundle *attrs)
++{
++	struct bnxt_re_ucontext *uctx;
++	struct ib_ucontext *ib_uctx;
++
++	ib_uctx = ib_uverbs_get_ucontext(attrs);
++	if (IS_ERR(ib_uctx))
++		return PTR_ERR(ib_uctx);
++
++	uctx = container_of(ib_uctx, struct bnxt_re_ucontext, ib_uctx);
++	if (IS_ERR(uctx))
++		return PTR_ERR(uctx);
++
++	bnxt_re_pacing_alert(uctx->rdev);
++	return 0;
++}
++
++static int UVERBS_HANDLER(BNXT_RE_METHOD_ALLOC_PAGE)(struct uverbs_attr_bundle *attrs)
++{
++	struct ib_uobject *uobj = uverbs_attr_get_uobject(attrs, BNXT_RE_ALLOC_PAGE_HANDLE);
++	enum bnxt_re_alloc_page_type alloc_type;
++	struct bnxt_re_user_mmap_entry *entry;
++	enum bnxt_re_mmap_flag mmap_flag;
++	struct bnxt_qplib_chip_ctx *cctx;
++	struct bnxt_re_ucontext *uctx;
++	struct ib_ucontext *ib_uctx;
++	struct bnxt_re_dev *rdev;
++	u64 mmap_offset;
++	u32 length;
++	u32 dpi;
++	u64 addr;
++	int err;
++
++	ib_uctx = ib_uverbs_get_ucontext(attrs);
++	if (IS_ERR(ib_uctx))
++		return PTR_ERR(ib_uctx);
++
++	uctx = container_of(ib_uctx, struct bnxt_re_ucontext, ib_uctx);
++	if (IS_ERR(uctx))
++		return PTR_ERR(uctx);
++
++	err = uverbs_get_const(&alloc_type, attrs, BNXT_RE_ALLOC_PAGE_TYPE);
++	if (err)
++		return err;
++
++	rdev = uctx->rdev;
++	cctx = rdev->chip_ctx;
++
++	switch (alloc_type) {
++	case BNXT_RE_ALLOC_WC_PAGE:
++		if (cctx->modes.db_push)  {
++			if (bnxt_qplib_alloc_dpi(&rdev->qplib_res, &uctx->wcdpi,
++						 uctx, BNXT_QPLIB_DPI_TYPE_WC))
++				return -ENOMEM;
++			length = PAGE_SIZE;
++			dpi = uctx->wcdpi.dpi;
++			addr = (u64)uctx->wcdpi.umdbr;
++			mmap_flag = BNXT_RE_MMAP_WC_DB;
++		} else {
++			return -EINVAL;
++		}
++
++		break;
++	case BNXT_RE_ALLOC_DBR_BAR_PAGE:
++		length = PAGE_SIZE;
++		addr = (u64)rdev->pacing.dbr_bar_addr;
++		mmap_flag = BNXT_RE_MMAP_DBR_BAR;
++		break;
++
++	case BNXT_RE_ALLOC_DBR_PAGE:
++		length = PAGE_SIZE;
++		addr = (u64)rdev->pacing.dbr_page;
++		mmap_flag = BNXT_RE_MMAP_DBR_PAGE;
++		break;
++
++	default:
++		return -EOPNOTSUPP;
++	}
++
++	entry = bnxt_re_mmap_entry_insert(uctx, addr, mmap_flag, &mmap_offset);
++	if (!entry)
++		return -ENOMEM;
++
++	uobj->object = entry;
++	uverbs_finalize_uobj_create(attrs, BNXT_RE_ALLOC_PAGE_HANDLE);
++	err = uverbs_copy_to(attrs, BNXT_RE_ALLOC_PAGE_MMAP_OFFSET,
++			     &mmap_offset, sizeof(mmap_offset));
++	if (err)
++		return err;
++
++	err = uverbs_copy_to(attrs, BNXT_RE_ALLOC_PAGE_MMAP_LENGTH,
++			     &length, sizeof(length));
++	if (err)
++		return err;
++
++	err = uverbs_copy_to(attrs, BNXT_RE_ALLOC_PAGE_DPI,
++			     &dpi, sizeof(dpi));
++	if (err)
++		return err;
++
++	return 0;
++}
++
++static int alloc_page_obj_cleanup(struct ib_uobject *uobject,
++				  enum rdma_remove_reason why,
++			    struct uverbs_attr_bundle *attrs)
++{
++	struct  bnxt_re_user_mmap_entry *entry = uobject->object;
++	struct bnxt_re_ucontext *uctx = entry->uctx;
++
++	switch (entry->mmap_flag) {
++	case BNXT_RE_MMAP_WC_DB:
++		if (uctx && uctx->wcdpi.dbr) {
++			struct bnxt_re_dev *rdev = uctx->rdev;
++
++			bnxt_qplib_dealloc_dpi(&rdev->qplib_res, &uctx->wcdpi);
++			uctx->wcdpi.dbr = NULL;
++		}
++		break;
++	case BNXT_RE_MMAP_DBR_BAR:
++	case BNXT_RE_MMAP_DBR_PAGE:
++		break;
++	default:
++		goto exit;
++	}
++	rdma_user_mmap_entry_remove(&entry->rdma_entry);
++exit:
++	return 0;
++}
++
++DECLARE_UVERBS_NAMED_METHOD(BNXT_RE_METHOD_ALLOC_PAGE,
++			    UVERBS_ATTR_IDR(BNXT_RE_ALLOC_PAGE_HANDLE,
++					    BNXT_RE_OBJECT_ALLOC_PAGE,
++					    UVERBS_ACCESS_NEW,
++					    UA_MANDATORY),
++			    UVERBS_ATTR_CONST_IN(BNXT_RE_ALLOC_PAGE_TYPE,
++						 enum bnxt_re_alloc_page_type,
++						 UA_MANDATORY),
++			    UVERBS_ATTR_PTR_OUT(BNXT_RE_ALLOC_PAGE_MMAP_OFFSET,
++						UVERBS_ATTR_TYPE(u64),
++						UA_MANDATORY),
++			    UVERBS_ATTR_PTR_OUT(BNXT_RE_ALLOC_PAGE_MMAP_LENGTH,
++						UVERBS_ATTR_TYPE(u32),
++						UA_MANDATORY),
++			    UVERBS_ATTR_PTR_OUT(BNXT_RE_ALLOC_PAGE_DPI,
++						UVERBS_ATTR_TYPE(u32),
++						UA_MANDATORY));
++
++DECLARE_UVERBS_NAMED_METHOD_DESTROY(BNXT_RE_METHOD_DESTROY_PAGE,
++				    UVERBS_ATTR_IDR(BNXT_RE_DESTROY_PAGE_HANDLE,
++						    BNXT_RE_OBJECT_ALLOC_PAGE,
++						    UVERBS_ACCESS_DESTROY,
++						    UA_MANDATORY));
++
++DECLARE_UVERBS_NAMED_OBJECT(BNXT_RE_OBJECT_ALLOC_PAGE,
++			    UVERBS_TYPE_ALLOC_IDR(alloc_page_obj_cleanup),
++			    &UVERBS_METHOD(BNXT_RE_METHOD_ALLOC_PAGE),
++			    &UVERBS_METHOD(BNXT_RE_METHOD_DESTROY_PAGE));
++
++DECLARE_UVERBS_NAMED_METHOD(BNXT_RE_METHOD_NOTIFY_DRV);
++
++DECLARE_UVERBS_GLOBAL_METHODS(BNXT_RE_OBJECT_NOTIFY_DRV,
++			      &UVERBS_METHOD(BNXT_RE_METHOD_NOTIFY_DRV));
++
++/* Toggle MEM */
++static int UVERBS_HANDLER(BNXT_RE_METHOD_GET_TOGGLE_MEM)(struct uverbs_attr_bundle *attrs)
++{
++	struct ib_uobject *uobj = uverbs_attr_get_uobject(attrs, BNXT_RE_TOGGLE_MEM_HANDLE);
++	enum bnxt_re_mmap_flag mmap_flag = BNXT_RE_MMAP_TOGGLE_PAGE;
++	enum bnxt_re_get_toggle_mem_type res_type;
++	struct bnxt_re_user_mmap_entry *entry;
++	struct bnxt_re_ucontext *uctx;
++	struct ib_ucontext *ib_uctx;
++	struct bnxt_re_dev *rdev;
++	struct bnxt_re_srq *srq;
++	u32 length = PAGE_SIZE;
++	struct bnxt_re_cq *cq;
++	u64 mem_offset;
++	u32 offset = 0;
++	u64 addr = 0;
++	u32 res_id;
++	int err;
++
++	ib_uctx = ib_uverbs_get_ucontext(attrs);
++	if (IS_ERR(ib_uctx))
++		return PTR_ERR(ib_uctx);
++
++	err = uverbs_get_const(&res_type, attrs, BNXT_RE_TOGGLE_MEM_TYPE);
++	if (err)
++		return err;
++
++	uctx = container_of(ib_uctx, struct bnxt_re_ucontext, ib_uctx);
++	rdev = uctx->rdev;
++	err = uverbs_copy_from(&res_id, attrs, BNXT_RE_TOGGLE_MEM_RES_ID);
++	if (err)
++		return err;
++
++	switch (res_type) {
++	case BNXT_RE_CQ_TOGGLE_MEM:
++		cq = bnxt_re_search_for_cq(rdev, res_id);
++		if (!cq)
++			return -EINVAL;
++
++		addr = (u64)cq->uctx_cq_page;
++		break;
++	case BNXT_RE_SRQ_TOGGLE_MEM:
++		srq = bnxt_re_search_for_srq(rdev, res_id);
++		if (!srq)
++			return -EINVAL;
++
++		addr = (u64)srq->uctx_srq_page;
++		break;
++
++	default:
++		return -EOPNOTSUPP;
++	}
++
++	entry = bnxt_re_mmap_entry_insert(uctx, addr, mmap_flag, &mem_offset);
++	if (!entry)
++		return -ENOMEM;
++
++	uobj->object = entry;
++	uverbs_finalize_uobj_create(attrs, BNXT_RE_TOGGLE_MEM_HANDLE);
++	err = uverbs_copy_to(attrs, BNXT_RE_TOGGLE_MEM_MMAP_PAGE,
++			     &mem_offset, sizeof(mem_offset));
++	if (err)
++		return err;
++
++	err = uverbs_copy_to(attrs, BNXT_RE_TOGGLE_MEM_MMAP_LENGTH,
++			     &length, sizeof(length));
++	if (err)
++		return err;
++
++	err = uverbs_copy_to(attrs, BNXT_RE_TOGGLE_MEM_MMAP_OFFSET,
++			     &offset, sizeof(offset));
++	if (err)
++		return err;
++
++	return 0;
++}
++
++static int get_toggle_mem_obj_cleanup(struct ib_uobject *uobject,
++				      enum rdma_remove_reason why,
++				      struct uverbs_attr_bundle *attrs)
++{
++	struct  bnxt_re_user_mmap_entry *entry = uobject->object;
++
++	rdma_user_mmap_entry_remove(&entry->rdma_entry);
++	return 0;
++}
++
++DECLARE_UVERBS_NAMED_METHOD(BNXT_RE_METHOD_GET_TOGGLE_MEM,
++			    UVERBS_ATTR_IDR(BNXT_RE_TOGGLE_MEM_HANDLE,
++					    BNXT_RE_OBJECT_GET_TOGGLE_MEM,
++					    UVERBS_ACCESS_NEW,
++					    UA_MANDATORY),
++			    UVERBS_ATTR_CONST_IN(BNXT_RE_TOGGLE_MEM_TYPE,
++						 enum bnxt_re_get_toggle_mem_type,
++						 UA_MANDATORY),
++			    UVERBS_ATTR_PTR_IN(BNXT_RE_TOGGLE_MEM_RES_ID,
++					       UVERBS_ATTR_TYPE(u32),
++					       UA_MANDATORY),
++			    UVERBS_ATTR_PTR_OUT(BNXT_RE_TOGGLE_MEM_MMAP_PAGE,
++						UVERBS_ATTR_TYPE(u64),
++						UA_MANDATORY),
++			    UVERBS_ATTR_PTR_OUT(BNXT_RE_TOGGLE_MEM_MMAP_OFFSET,
++						UVERBS_ATTR_TYPE(u32),
++						UA_MANDATORY),
++			    UVERBS_ATTR_PTR_OUT(BNXT_RE_TOGGLE_MEM_MMAP_LENGTH,
++						UVERBS_ATTR_TYPE(u32),
++						UA_MANDATORY));
++
++DECLARE_UVERBS_NAMED_METHOD_DESTROY(BNXT_RE_METHOD_RELEASE_TOGGLE_MEM,
++				    UVERBS_ATTR_IDR(BNXT_RE_RELEASE_TOGGLE_MEM_HANDLE,
++						    BNXT_RE_OBJECT_GET_TOGGLE_MEM,
++						    UVERBS_ACCESS_DESTROY,
++						    UA_MANDATORY));
++
++DECLARE_UVERBS_NAMED_OBJECT(BNXT_RE_OBJECT_GET_TOGGLE_MEM,
++			    UVERBS_TYPE_ALLOC_IDR(get_toggle_mem_obj_cleanup),
++			    &UVERBS_METHOD(BNXT_RE_METHOD_GET_TOGGLE_MEM),
++			    &UVERBS_METHOD(BNXT_RE_METHOD_RELEASE_TOGGLE_MEM));
++
++const struct uapi_definition bnxt_re_uapi_defs[] = {
++	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_ALLOC_PAGE),
++	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_NOTIFY_DRV),
++	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_GET_TOGGLE_MEM),
++	{}
++};
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index f19b55c13d58..f758f92ba72b 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -627,7 +627,7 @@ static int bnxt_re_create_fence_mr(struct bnxt_re_pd *pd)
+ 	return rc;
+ }
+ 
+-static struct bnxt_re_user_mmap_entry*
++struct bnxt_re_user_mmap_entry*
+ bnxt_re_mmap_entry_insert(struct bnxt_re_ucontext *uctx, u64 mem_offset,
+ 			  enum bnxt_re_mmap_flag mmap_flag, u64 *offset)
+ {
+@@ -4531,32 +4531,6 @@ int bnxt_re_destroy_flow(struct ib_flow *flow_id)
+ 	return rc;
+ }
+ 
+-static struct bnxt_re_cq *bnxt_re_search_for_cq(struct bnxt_re_dev *rdev, u32 cq_id)
+-{
+-	struct bnxt_re_cq *cq = NULL, *tmp_cq;
+-
+-	hash_for_each_possible(rdev->cq_hash, tmp_cq, hash_entry, cq_id) {
+-		if (tmp_cq->qplib_cq.id == cq_id) {
+-			cq = tmp_cq;
+-			break;
+-		}
+-	}
+-	return cq;
+-}
+-
+-static struct bnxt_re_srq *bnxt_re_search_for_srq(struct bnxt_re_dev *rdev, u32 srq_id)
+-{
+-	struct bnxt_re_srq *srq = NULL, *tmp_srq;
+-
+-	hash_for_each_possible(rdev->srq_hash, tmp_srq, hash_entry, srq_id) {
+-		if (tmp_srq->qplib_srq.id == srq_id) {
+-			srq = tmp_srq;
+-			break;
+-		}
+-	}
+-	return srq;
+-}
+-
+ /* Helper function to mmap the virtual memory from user app */
+ int bnxt_re_mmap(struct ib_ucontext *ib_uctx, struct vm_area_struct *vma)
+ {
+@@ -4659,280 +4633,3 @@ int bnxt_re_process_mad(struct ib_device *ibdev, int mad_flags,
+ 	ret |= IB_MAD_RESULT_REPLY;
+ 	return ret;
+ }
+-
+-static int UVERBS_HANDLER(BNXT_RE_METHOD_NOTIFY_DRV)(struct uverbs_attr_bundle *attrs)
+-{
+-	struct bnxt_re_ucontext *uctx;
+-
+-	uctx = container_of(ib_uverbs_get_ucontext(attrs), struct bnxt_re_ucontext, ib_uctx);
+-	bnxt_re_pacing_alert(uctx->rdev);
+-	return 0;
+-}
+-
+-static int UVERBS_HANDLER(BNXT_RE_METHOD_ALLOC_PAGE)(struct uverbs_attr_bundle *attrs)
+-{
+-	struct ib_uobject *uobj = uverbs_attr_get_uobject(attrs, BNXT_RE_ALLOC_PAGE_HANDLE);
+-	enum bnxt_re_alloc_page_type alloc_type;
+-	struct bnxt_re_user_mmap_entry *entry;
+-	enum bnxt_re_mmap_flag mmap_flag;
+-	struct bnxt_qplib_chip_ctx *cctx;
+-	struct bnxt_re_ucontext *uctx;
+-	struct bnxt_re_dev *rdev;
+-	u64 mmap_offset;
+-	u32 length;
+-	u32 dpi;
+-	u64 addr;
+-	int err;
+-
+-	uctx = container_of(ib_uverbs_get_ucontext(attrs), struct bnxt_re_ucontext, ib_uctx);
+-	if (IS_ERR(uctx))
+-		return PTR_ERR(uctx);
+-
+-	err = uverbs_get_const(&alloc_type, attrs, BNXT_RE_ALLOC_PAGE_TYPE);
+-	if (err)
+-		return err;
+-
+-	rdev = uctx->rdev;
+-	cctx = rdev->chip_ctx;
+-
+-	switch (alloc_type) {
+-	case BNXT_RE_ALLOC_WC_PAGE:
+-		if (cctx->modes.db_push)  {
+-			if (bnxt_qplib_alloc_dpi(&rdev->qplib_res, &uctx->wcdpi,
+-						 uctx, BNXT_QPLIB_DPI_TYPE_WC))
+-				return -ENOMEM;
+-			length = PAGE_SIZE;
+-			dpi = uctx->wcdpi.dpi;
+-			addr = (u64)uctx->wcdpi.umdbr;
+-			mmap_flag = BNXT_RE_MMAP_WC_DB;
+-		} else {
+-			return -EINVAL;
+-		}
+-
+-		break;
+-	case BNXT_RE_ALLOC_DBR_BAR_PAGE:
+-		length = PAGE_SIZE;
+-		addr = (u64)rdev->pacing.dbr_bar_addr;
+-		mmap_flag = BNXT_RE_MMAP_DBR_BAR;
+-		break;
+-
+-	case BNXT_RE_ALLOC_DBR_PAGE:
+-		length = PAGE_SIZE;
+-		addr = (u64)rdev->pacing.dbr_page;
+-		mmap_flag = BNXT_RE_MMAP_DBR_PAGE;
+-		break;
+-
+-	default:
+-		return -EOPNOTSUPP;
+-	}
+-
+-	entry = bnxt_re_mmap_entry_insert(uctx, addr, mmap_flag, &mmap_offset);
+-	if (!entry)
+-		return -ENOMEM;
+-
+-	uobj->object = entry;
+-	uverbs_finalize_uobj_create(attrs, BNXT_RE_ALLOC_PAGE_HANDLE);
+-	err = uverbs_copy_to(attrs, BNXT_RE_ALLOC_PAGE_MMAP_OFFSET,
+-			     &mmap_offset, sizeof(mmap_offset));
+-	if (err)
+-		return err;
+-
+-	err = uverbs_copy_to(attrs, BNXT_RE_ALLOC_PAGE_MMAP_LENGTH,
+-			     &length, sizeof(length));
+-	if (err)
+-		return err;
+-
+-	err = uverbs_copy_to(attrs, BNXT_RE_ALLOC_PAGE_DPI,
+-			     &dpi, sizeof(dpi));
+-	if (err)
+-		return err;
+-
+-	return 0;
+-}
+-
+-static int alloc_page_obj_cleanup(struct ib_uobject *uobject,
+-				  enum rdma_remove_reason why,
+-			    struct uverbs_attr_bundle *attrs)
+-{
+-	struct  bnxt_re_user_mmap_entry *entry = uobject->object;
+-	struct bnxt_re_ucontext *uctx = entry->uctx;
+-
+-	switch (entry->mmap_flag) {
+-	case BNXT_RE_MMAP_WC_DB:
+-		if (uctx && uctx->wcdpi.dbr) {
+-			struct bnxt_re_dev *rdev = uctx->rdev;
+-
+-			bnxt_qplib_dealloc_dpi(&rdev->qplib_res, &uctx->wcdpi);
+-			uctx->wcdpi.dbr = NULL;
+-		}
+-		break;
+-	case BNXT_RE_MMAP_DBR_BAR:
+-	case BNXT_RE_MMAP_DBR_PAGE:
+-		break;
+-	default:
+-		goto exit;
+-	}
+-	rdma_user_mmap_entry_remove(&entry->rdma_entry);
+-exit:
+-	return 0;
+-}
+-
+-DECLARE_UVERBS_NAMED_METHOD(BNXT_RE_METHOD_ALLOC_PAGE,
+-			    UVERBS_ATTR_IDR(BNXT_RE_ALLOC_PAGE_HANDLE,
+-					    BNXT_RE_OBJECT_ALLOC_PAGE,
+-					    UVERBS_ACCESS_NEW,
+-					    UA_MANDATORY),
+-			    UVERBS_ATTR_CONST_IN(BNXT_RE_ALLOC_PAGE_TYPE,
+-						 enum bnxt_re_alloc_page_type,
+-						 UA_MANDATORY),
+-			    UVERBS_ATTR_PTR_OUT(BNXT_RE_ALLOC_PAGE_MMAP_OFFSET,
+-						UVERBS_ATTR_TYPE(u64),
+-						UA_MANDATORY),
+-			    UVERBS_ATTR_PTR_OUT(BNXT_RE_ALLOC_PAGE_MMAP_LENGTH,
+-						UVERBS_ATTR_TYPE(u32),
+-						UA_MANDATORY),
+-			    UVERBS_ATTR_PTR_OUT(BNXT_RE_ALLOC_PAGE_DPI,
+-						UVERBS_ATTR_TYPE(u32),
+-						UA_MANDATORY));
+-
+-DECLARE_UVERBS_NAMED_METHOD_DESTROY(BNXT_RE_METHOD_DESTROY_PAGE,
+-				    UVERBS_ATTR_IDR(BNXT_RE_DESTROY_PAGE_HANDLE,
+-						    BNXT_RE_OBJECT_ALLOC_PAGE,
+-						    UVERBS_ACCESS_DESTROY,
+-						    UA_MANDATORY));
+-
+-DECLARE_UVERBS_NAMED_OBJECT(BNXT_RE_OBJECT_ALLOC_PAGE,
+-			    UVERBS_TYPE_ALLOC_IDR(alloc_page_obj_cleanup),
+-			    &UVERBS_METHOD(BNXT_RE_METHOD_ALLOC_PAGE),
+-			    &UVERBS_METHOD(BNXT_RE_METHOD_DESTROY_PAGE));
+-
+-DECLARE_UVERBS_NAMED_METHOD(BNXT_RE_METHOD_NOTIFY_DRV);
+-
+-DECLARE_UVERBS_GLOBAL_METHODS(BNXT_RE_OBJECT_NOTIFY_DRV,
+-			      &UVERBS_METHOD(BNXT_RE_METHOD_NOTIFY_DRV));
+-
+-/* Toggle MEM */
+-static int UVERBS_HANDLER(BNXT_RE_METHOD_GET_TOGGLE_MEM)(struct uverbs_attr_bundle *attrs)
+-{
+-	struct ib_uobject *uobj = uverbs_attr_get_uobject(attrs, BNXT_RE_TOGGLE_MEM_HANDLE);
+-	enum bnxt_re_mmap_flag mmap_flag = BNXT_RE_MMAP_TOGGLE_PAGE;
+-	enum bnxt_re_get_toggle_mem_type res_type;
+-	struct bnxt_re_user_mmap_entry *entry;
+-	struct bnxt_re_ucontext *uctx;
+-	struct ib_ucontext *ib_uctx;
+-	struct bnxt_re_dev *rdev;
+-	struct bnxt_re_srq *srq;
+-	u32 length = PAGE_SIZE;
+-	struct bnxt_re_cq *cq;
+-	u64 mem_offset;
+-	u32 offset = 0;
+-	u64 addr = 0;
+-	u32 res_id;
+-	int err;
+-
+-	ib_uctx = ib_uverbs_get_ucontext(attrs);
+-	if (IS_ERR(ib_uctx))
+-		return PTR_ERR(ib_uctx);
+-
+-	err = uverbs_get_const(&res_type, attrs, BNXT_RE_TOGGLE_MEM_TYPE);
+-	if (err)
+-		return err;
+-
+-	uctx = container_of(ib_uctx, struct bnxt_re_ucontext, ib_uctx);
+-	rdev = uctx->rdev;
+-	err = uverbs_copy_from(&res_id, attrs, BNXT_RE_TOGGLE_MEM_RES_ID);
+-	if (err)
+-		return err;
+-
+-	switch (res_type) {
+-	case BNXT_RE_CQ_TOGGLE_MEM:
+-		cq = bnxt_re_search_for_cq(rdev, res_id);
+-		if (!cq)
+-			return -EINVAL;
+-
+-		addr = (u64)cq->uctx_cq_page;
+-		break;
+-	case BNXT_RE_SRQ_TOGGLE_MEM:
+-		srq = bnxt_re_search_for_srq(rdev, res_id);
+-		if (!srq)
+-			return -EINVAL;
+-
+-		addr = (u64)srq->uctx_srq_page;
+-		break;
+-
+-	default:
+-		return -EOPNOTSUPP;
+-	}
+-
+-	entry = bnxt_re_mmap_entry_insert(uctx, addr, mmap_flag, &mem_offset);
+-	if (!entry)
+-		return -ENOMEM;
+-
+-	uobj->object = entry;
+-	uverbs_finalize_uobj_create(attrs, BNXT_RE_TOGGLE_MEM_HANDLE);
+-	err = uverbs_copy_to(attrs, BNXT_RE_TOGGLE_MEM_MMAP_PAGE,
+-			     &mem_offset, sizeof(mem_offset));
+-	if (err)
+-		return err;
+-
+-	err = uverbs_copy_to(attrs, BNXT_RE_TOGGLE_MEM_MMAP_LENGTH,
+-			     &length, sizeof(length));
+-	if (err)
+-		return err;
+-
+-	err = uverbs_copy_to(attrs, BNXT_RE_TOGGLE_MEM_MMAP_OFFSET,
+-			     &offset, sizeof(offset));
+-	if (err)
+-		return err;
+-
+-	return 0;
+-}
+-
+-static int get_toggle_mem_obj_cleanup(struct ib_uobject *uobject,
+-				      enum rdma_remove_reason why,
+-				      struct uverbs_attr_bundle *attrs)
+-{
+-	struct  bnxt_re_user_mmap_entry *entry = uobject->object;
+-
+-	rdma_user_mmap_entry_remove(&entry->rdma_entry);
+-	return 0;
+-}
+-
+-DECLARE_UVERBS_NAMED_METHOD(BNXT_RE_METHOD_GET_TOGGLE_MEM,
+-			    UVERBS_ATTR_IDR(BNXT_RE_TOGGLE_MEM_HANDLE,
+-					    BNXT_RE_OBJECT_GET_TOGGLE_MEM,
+-					    UVERBS_ACCESS_NEW,
+-					    UA_MANDATORY),
+-			    UVERBS_ATTR_CONST_IN(BNXT_RE_TOGGLE_MEM_TYPE,
+-						 enum bnxt_re_get_toggle_mem_type,
+-						 UA_MANDATORY),
+-			    UVERBS_ATTR_PTR_IN(BNXT_RE_TOGGLE_MEM_RES_ID,
+-					       UVERBS_ATTR_TYPE(u32),
+-					       UA_MANDATORY),
+-			    UVERBS_ATTR_PTR_OUT(BNXT_RE_TOGGLE_MEM_MMAP_PAGE,
+-						UVERBS_ATTR_TYPE(u64),
+-						UA_MANDATORY),
+-			    UVERBS_ATTR_PTR_OUT(BNXT_RE_TOGGLE_MEM_MMAP_OFFSET,
+-						UVERBS_ATTR_TYPE(u32),
+-						UA_MANDATORY),
+-			    UVERBS_ATTR_PTR_OUT(BNXT_RE_TOGGLE_MEM_MMAP_LENGTH,
+-						UVERBS_ATTR_TYPE(u32),
+-						UA_MANDATORY));
+-
+-DECLARE_UVERBS_NAMED_METHOD_DESTROY(BNXT_RE_METHOD_RELEASE_TOGGLE_MEM,
+-				    UVERBS_ATTR_IDR(BNXT_RE_RELEASE_TOGGLE_MEM_HANDLE,
+-						    BNXT_RE_OBJECT_GET_TOGGLE_MEM,
+-						    UVERBS_ACCESS_DESTROY,
+-						    UA_MANDATORY));
+-
+-DECLARE_UVERBS_NAMED_OBJECT(BNXT_RE_OBJECT_GET_TOGGLE_MEM,
+-			    UVERBS_TYPE_ALLOC_IDR(get_toggle_mem_obj_cleanup),
+-			    &UVERBS_METHOD(BNXT_RE_METHOD_GET_TOGGLE_MEM),
+-			    &UVERBS_METHOD(BNXT_RE_METHOD_RELEASE_TOGGLE_MEM));
+-
+-const struct uapi_definition bnxt_re_uapi_defs[] = {
+-	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_ALLOC_PAGE),
+-	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_NOTIFY_DRV),
+-	UAPI_DEF_CHAIN_OBJ_TREE_NAMED(BNXT_RE_OBJECT_GET_TOGGLE_MEM),
+-	{}
+-};
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.h b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+index 76ba9ab04d5c..a11f56730a31 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.h
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.h
+@@ -293,4 +293,7 @@ static inline u32 __to_ib_port_num(u16 port_id)
+ 
+ unsigned long bnxt_re_lock_cqs(struct bnxt_re_qp *qp);
+ void bnxt_re_unlock_cqs(struct bnxt_re_qp *qp, unsigned long flags);
++struct bnxt_re_user_mmap_entry*
++bnxt_re_mmap_entry_insert(struct bnxt_re_ucontext *uctx, u64 mem_offset,
++			  enum bnxt_re_mmap_flag mmap_flag, u64 *offset);
+ #endif /* __BNXT_RE_IB_VERBS_H__ */
 -- 
 2.51.2.636.ga99f379adf
 
