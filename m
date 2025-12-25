@@ -1,54 +1,52 @@
-Return-Path: <linux-rdma+bounces-15214-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15215-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3852CDDC0F
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Dec 2025 13:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC7BBCDDCBA
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Dec 2025 13:57:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 716E83010297
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Dec 2025 12:33:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EA77B3040743
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Dec 2025 12:56:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CF6331ED7A;
-	Thu, 25 Dec 2025 12:33:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48C67325486;
+	Thu, 25 Dec 2025 12:50:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="daEpoIN3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WuN+22bN"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E839031ED69;
-	Thu, 25 Dec 2025 12:33:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 029AA324B32;
+	Thu, 25 Dec 2025 12:50:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766666018; cv=none; b=QCEIROrVfgLoT4lkMfzgYA6nPNNt8TTnxsPhdZBNUPO1cz6UeJGdEvGWe3C0IxZqSACVDeWi4RqmT00QroOAGQSv6QTYIq53j5z/gVpCi8grdK92KP7iedyBQULyRyAw2vr7EBsXZa+mOPE5Zl43UeKN9ke5CZrnWObWrXWX7+A=
+	t=1766667019; cv=none; b=WTVXibL+EkgJQwuG9qACwV1TMPj3Pe8h5tb5OqPa9tXk2Pb8jbHLcOnInt85CvJ+8XGfxx8mHKyW3LuCYwdSPDElgsC+xq2DHvdcwdutre1KJQl0ttgECVkwmo1wIL1CLq7SJdvL62zVJ2o/NZWHcDb8vkfB2+fTUbGB5Vr6VsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766666018; c=relaxed/simple;
-	bh=hI4mtnlsg3wXmrphX1mt2jXkTCC0fKFnHALNWd7IqpI=;
+	s=arc-20240116; t=1766667019; c=relaxed/simple;
+	bh=auK0WAIK1+aYoZs3CUmnhmvJRbjGC5SkGUKn/CV7p8c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pUJ/2h2O5pl8DqFFMB4TLz6s/K0RicDKiJc4jwooOcP2WIXGbEWdLCuxUxLp5d40Y6OsqGEQRn8OMCf6ACSkI65/cJnInZcoDh0ZpmJeuX7rS8xX27xqpap+11yfQIriNuXGz7kbJP7dCS5rI44W4QHdQqk8BpGCb1CjlesWwwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=daEpoIN3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0DA6C4CEF1;
-	Thu, 25 Dec 2025 12:33:36 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ULhCysfHmyyPDp8zNBiFzCuAXhfY/O3zD3CO2qs8MlQvaIEdQ9EADgMdgLogQ1DTE7MEUgxT0H5p9p3VnwV4OYfpf4khf/KWuRprc5mMq1+46Pr+T61HcxCsg7BFBy4X/PSopTUb0kqRqJNDYs74IBO76OD4VQwcKyShxrqlqzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WuN+22bN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A786C4CEF1;
+	Thu, 25 Dec 2025 12:50:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766666017;
-	bh=hI4mtnlsg3wXmrphX1mt2jXkTCC0fKFnHALNWd7IqpI=;
+	s=k20201202; t=1766667018;
+	bh=auK0WAIK1+aYoZs3CUmnhmvJRbjGC5SkGUKn/CV7p8c=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=daEpoIN34L2O2dZjuS605468W/wvpNVt88Nualq1ROG+XTxDIr/HgzyCd3oH5tZrJ
-	 aPtTzXLsfBFPn8WNSEFOhhUXJ9xlDhqNkHvgySIVPrLH+GgGvpb9iHoPpPAVfggNge
-	 rRVNwVnGQoQ3NGGnxnrtTbh+Jl49JL+2q37S7Ml1p7VUFBI4S3Fm6fryI0g2Y9ODmV
-	 s1RZ4/9g0/oVhbhjRBFZ1uo1z8Do/9fkzfZmChaxKGl8A1UWgwWnhMExJ+1K7a8e4L
-	 OM2miWq2su7sux4oAKH0VXAR9Ee5yMEhWKNlH959NqXJ6NFf3DKZE78TrH8FR9g8e4
-	 1Fe3Y0vLH3y2A==
-Date: Thu, 25 Dec 2025 14:33:32 +0200
+	b=WuN+22bN6DpbeT0m3PNNCGTxbN10EsaX4YppmOInjYnWH/ryrCkdJ4OfBvOEOlMyT
+	 rBlioQfOpPEm0hD4W5YU9HWC5gMQ9grLOkwwH72r6h84XSQE1PqegW9+GpDuaTLIcs
+	 LJpQjV01o5PBGdOT7xbaJWO+FZfOYdh9fLW0tlNyiVTifFhMq2R5BBuKzTeqRvch7a
+	 JliwLcGQ42e19OaPTWl+IeEtEREaSBDhhxN8CnQAlrHRqr7YIzAydTcHwo4QTGHCyx
+	 yLCeDjz+29kwEMsdA42ZsPAKtrQq6pMFfsSz1XLksikETzgN4TwlLPjIADo2VM0Lm/
+	 x6YnxhFqxRAfw==
+Date: Thu, 25 Dec 2025 14:50:14 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Honggang LI <honggangli@163.com>
-Cc: haris.iqbal@ionos.com, jinpu.wang@ionos.com, jgg@ziepe.ca,
-	danil.kipnis@cloud.ionos.com, linux-rdma@vger.kernel.org,
+To: Zhu Yanjun <yanjun.zhu@linux.dev>
+Cc: zyjzyj2000@gmail.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] RDMA/rtrs: client: Fix clt_path::max_pages_per_mr
- calculation
-Message-ID: <20251225123332.GI11869@unreal>
-References: <20251224095030.156465-1-honggangli@163.com>
+Subject: Re: [PATCH 1/1] RDMA/rxe: Align struct rxe_sge and struct ib_sge
+Message-ID: <20251225125014.GK11869@unreal>
+References: <20251225071959.3037-1-yanjun.zhu@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -57,47 +55,37 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251224095030.156465-1-honggangli@163.com>
+In-Reply-To: <20251225071959.3037-1-yanjun.zhu@linux.dev>
 
-On Wed, Dec 24, 2025 at 05:50:30PM +0800, Honggang LI wrote:
-> If device max_mr_size bits in the range [mr_page_shift+31:mr_page_shift]
-> are zero, the `min3` function will set clt_path::max_pages_per_mr to
-> zero.
+On Thu, Dec 25, 2025 at 02:19:59AM -0500, Zhu Yanjun wrote:
+> Replace struct ib_sge with struct rxe_sge in struct rxe_resp_info.
+> No functional changes.
 > 
-> `alloc_path_reqs` will pass zero, which is invalid, as the third parameter
-> to `ib_alloc_mr`.
-> 
-> v1 -> v2:
-> Correct the commit message and set max_pages_per_mr to U32_MAX
-> as Michael Gur suggested.
-
-Please put changelog under --- marker, below Signed-off-by tags.
-
-> Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
-> Signed-off-by: Honggang LI <honggangli@163.com>
+> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 > ---
->  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  drivers/infiniband/sw/rxe/rxe_verbs.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> index 71387811b281..e477d2c0ff35 100644
-> --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> @@ -1464,6 +1464,8 @@ static void query_fast_reg_mode(struct rtrs_clt_path *clt_path)
->  	mr_page_shift      = max(12, ffs(ib_dev->attrs.page_size_cap) - 1);
->  	max_pages_per_mr   = ib_dev->attrs.max_mr_size;
->  	do_div(max_pages_per_mr, (1ull << mr_page_shift));
-> +	if ((u32)max_pages_per_mr == 0)
-> +		max_pages_per_mr = U32_MAX;
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> index fd48075810dd..f1f6dda22b70 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> @@ -222,7 +222,7 @@ struct rxe_resp_info {
+>  	/* SRQ only */
+>  	struct {
+>  		struct rxe_recv_wqe	wqe;
+> -		struct ib_sge		sge[RXE_MAX_SGE];
+> +		struct rxe_sge		sge[RXE_MAX_SGE];
 
-It is "max_pages_per_mr = min_not_zero((u32)max_pages_per_mr, U32_MAX)"
+I would expect extra changes in addition to this one. For example, in
+the SRQ code which allocates the WQE size. Maybe in other places too.
 
 Thanks
 
->  	clt_path->max_pages_per_mr =
->  		min3(clt_path->max_pages_per_mr, (u32)max_pages_per_mr,
->  		     ib_dev->attrs.max_fast_reg_page_list_len);
+>  	} srq_wqe;
+>  
+>  	/* Responder resources. It's a circular list where the oldest
 > -- 
-> 2.52.0
+> 2.39.5
 > 
 
