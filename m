@@ -1,127 +1,249 @@
-Return-Path: <linux-rdma+bounces-15229-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15230-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5146CDF49F
-	for <lists+linux-rdma@lfdr.de>; Sat, 27 Dec 2025 06:30:55 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02019CDF4C7
+	for <lists+linux-rdma@lfdr.de>; Sat, 27 Dec 2025 07:54:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B5CA63006A95
-	for <lists+linux-rdma@lfdr.de>; Sat, 27 Dec 2025 05:30:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4061B3007949
+	for <lists+linux-rdma@lfdr.de>; Sat, 27 Dec 2025 06:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CB02219FC;
-	Sat, 27 Dec 2025 05:30:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DG1d8dlR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A83323BF8F;
+	Sat, 27 Dec 2025 06:54:14 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+Received: from canpmsgout06.his.huawei.com (canpmsgout06.his.huawei.com [113.46.200.221])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45B343A1E68
-	for <linux-rdma@vger.kernel.org>; Sat, 27 Dec 2025 05:30:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64BBDA937
+	for <linux-rdma@vger.kernel.org>; Sat, 27 Dec 2025 06:54:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.221
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766813451; cv=none; b=hxGVy2+b8RBw1kTazBHczhFCLFRHIe3ineAn9YUWtNwiq7/XnbnSqiX5o2kLswHE4+E3Lz37lE9hrFB74PLFvmoasf9OMYL++Y2WAHqbngE7sJhTNJdSa/LFDyh/ACrXv/7f63Wu1QONssPHj8vArKf0kFxopo6DoC2L+2RZVMM=
+	t=1766818454; cv=none; b=aTDlevoI2UD+RxYSFrHCqbOSiJRN3Vw6H3kZltXwuycX5HZgF/BE3a+WG5MWznwhE+Yn/UhqNmBUxVfxMRiwms57inM3CqhO6NulYfCm+KbVR6YbCjDxl7DYVdipHgFwit65pO95ibjFB/A3ccMYkSn0/dTYBBp7hTGExSyO3VE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766813451; c=relaxed/simple;
-	bh=AGJUyxUGJf2sRndL5BaTZPal/g0gjTG/rWD5iGoXb5Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LKOVggWdO+877a6RPmSID12TZO8Zg6MKXVE3JWr8uMbtu4+s1TUaG2RADA7Y8b0+Se8LlAEjFlkpCAxiW0KIYdL9G1jY0DX6T/Oq7CI8LfRgvZ2OzUKCEIJM3m4tSY8QGVUS/5GhHgdYUnTqRdjuRfr93X5vN3LvGWCmcFCzwLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DG1d8dlR; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <20a9c8d2-1151-4318-8e77-3cced4040128@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766813446;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ic329E6f7rpibmopmNxHnsgOp2wCIzrnu4OlFdxbf2o=;
-	b=DG1d8dlRgT1wv+QAePUtDDG+muZsc50YLQuLN1ZHqB129hWMGVCfOskhAVEogP7/Vb263r
-	M7pZ0TOSlaE47oUBithhL67W4NHfv4nc9coOsJDbZegJjtE+wdhtr1dM6bevJ7uQf583SW
-	+DZ5KFqhZLfY+Uw2tZc0GwzpgXwBZwg=
-Date: Fri, 26 Dec 2025 21:30:38 -0800
+	s=arc-20240116; t=1766818454; c=relaxed/simple;
+	bh=OzG4BXFrHyaV9RZR5URQVtpcSM6duRu1yjVwqCLS3Lo=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Hc7YunhWuUB1ucYwp1TXYmLnJPNL189lXl71j2DkaeFHZZ8hf7gZ+M5OXke6yJb4B2yOswW6e4oUvnUFO3UAvDq5qp4MOaWpOU5jDvbrZtDU6arSX6I1W9j+xxBaRtnNCSmfk24XBY6fZms/b4oBqSDIBkPh4PuXwVVgYeH9xWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=113.46.200.221
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.163.0])
+	by canpmsgout06.his.huawei.com (SkyGuard) with ESMTPS id 4ddY626xHlzRhQp;
+	Sat, 27 Dec 2025 14:50:50 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id F13524036C;
+	Sat, 27 Dec 2025 14:53:59 +0800 (CST)
+Received: from localhost.localdomain (10.50.163.32) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.36; Sat, 27 Dec 2025 14:53:59 +0800
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>
+CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<huangjunxian6@hisilicon.com>, <tangchengchang@huawei.com>
+Subject: [PATCH for-next] RDMA/hns: Introduce limit_bank mode with better performance
+Date: Sat, 27 Dec 2025 14:53:58 +0800
+Message-ID: <20251227065358.3397802-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] RDMA/rxe: Remove unused page_offset member
-To: Li Zhijian <lizhijian@fujitsu.com>, linux-rdma@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, zyjzyj2000@gmail.com, jgg@ziepe.ca,
- leon@kernel.org
-References: <20251226094159.3042935-1-lizhijian@fujitsu.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20251226094159.3042935-1-lizhijian@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
+X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-在 2025/12/26 1:41, Li Zhijian 写道:
-> The `page_offset` member of the `rxe_mr` struct was initialized based on
-> `ibmr.iova`, which at the initialization point hadn't been properly set.
-> 
-> Consequently, the value assigned to `page_offset` was incorrect. However,
+From: wenglianfa <wenglianfa@huawei.com>
 
-Hi, Zhijian
+In limit_bank mode, QPs/CQs are restricted to using half of the banks.
+HW concentrates resources on these banks, thereby improving performance
+compared to the default mode.
 
-Why page_offset was incorrect? Can you explain it and add the 
-explainations into commit log?
+Switch between limit_bank mode and default mode by setting the cap
+flag in FW. Since the number of QPs and CQs will be halved, this mode
+is suitable for scenarios where fewer QPs and CQs are required.
 
-But removing page_offset seems correct.
+Signed-off-by: wenglianfa <wenglianfa@huawei.com>
+Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_cq.c     | 13 +++++-
+ drivers/infiniband/hw/hns/hns_roce_device.h |  6 +++
+ drivers/infiniband/hw/hns/hns_roce_main.c   |  5 +++
+ drivers/infiniband/hw/hns/hns_roce_qp.c     | 49 ++++++++++++++++-----
+ 4 files changed, 61 insertions(+), 12 deletions(-)
 
-Thanks,
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-
-Zhu Yanjun
-
-> since `page_offset` was never utilized throughout the code, it can be safely
-> removed to clean up the codebase and avoid future confusion.
-> 
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-> ---
->   drivers/infiniband/sw/rxe/rxe_mr.c    | 1 -
->   drivers/infiniband/sw/rxe/rxe_odp.c   | 1 -
->   drivers/infiniband/sw/rxe/rxe_verbs.h | 1 -
->   3 files changed, 3 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-> index bcb97b3ea58a..b28b56db725a 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> @@ -237,7 +237,6 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sgl,
->   	mr->nbuf = 0;
->   	mr->page_shift = ilog2(page_size);
->   	mr->page_mask = ~((u64)page_size - 1);
-> -	mr->page_offset = mr->ibmr.iova & (page_size - 1);
->   
->   	return ib_sg_to_pages(ibmr, sgl, sg_nents, sg_offset, rxe_set_page);
->   }
-> diff --git a/drivers/infiniband/sw/rxe/rxe_odp.c b/drivers/infiniband/sw/rxe/rxe_odp.c
-> index f58e3ec6252f..8b6a8b064d3c 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_odp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_odp.c
-> @@ -110,7 +110,6 @@ int rxe_odp_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
->   	mr->access = access_flags;
->   	mr->ibmr.length = length;
->   	mr->ibmr.iova = iova;
-> -	mr->page_offset = ib_umem_offset(&umem_odp->umem);
->   
->   	err = rxe_odp_init_pages(mr);
->   	if (err) {
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> index fd48075810dd..f94ce85eb807 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> @@ -347,7 +347,6 @@ struct rxe_mr {
->   	int			access;
->   	atomic_t		num_mw;
->   
-> -	unsigned int		page_offset;
->   	unsigned int		page_shift;
->   	u64			page_mask;
->   
+diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
+index 6aa82fe9dd3d..bc57806abd39 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_cq.c
++++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
+@@ -53,9 +53,10 @@ void hns_roce_put_cq_bankid_for_uctx(struct hns_roce_ucontext *uctx)
+ 
+ void hns_roce_get_cq_bankid_for_uctx(struct hns_roce_ucontext *uctx)
+ {
++#define INVALID_LOAD_CQNUM 0xFFFFFFFF
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(uctx->ibucontext.device);
+ 	struct hns_roce_cq_table *cq_table = &hr_dev->cq_table;
+-	u32 least_load = cq_table->ctx_num[0];
++	u32 least_load = INVALID_LOAD_CQNUM;
+ 	u8 bankid = 0;
+ 	u8 i;
+ 
+@@ -63,7 +64,10 @@ void hns_roce_get_cq_bankid_for_uctx(struct hns_roce_ucontext *uctx)
+ 		return;
+ 
+ 	mutex_lock(&cq_table->bank_mutex);
+-	for (i = 1; i < HNS_ROCE_CQ_BANK_NUM; i++) {
++	for (i = 0; i < HNS_ROCE_CQ_BANK_NUM; i++) {
++		if (!(cq_table->valid_cq_bank_mask & BIT(i)))
++			continue;
++
+ 		if (cq_table->ctx_num[i] < least_load) {
+ 			least_load = cq_table->ctx_num[i];
+ 			bankid = i;
+@@ -581,6 +585,11 @@ void hns_roce_init_cq_table(struct hns_roce_dev *hr_dev)
+ 		cq_table->bank[i].max = hr_dev->caps.num_cqs /
+ 					HNS_ROCE_CQ_BANK_NUM - 1;
+ 	}
++
++	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_LIMIT_BANK)
++		cq_table->valid_cq_bank_mask = VALID_CQ_BANK_MASK_LIMIT;
++	else
++		cq_table->valid_cq_bank_mask = VALID_CQ_BANK_MASK_DEFAULT;
+ }
+ 
+ void hns_roce_cleanup_cq_table(struct hns_roce_dev *hr_dev)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 318f18cf37aa..3f032b8038af 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -103,6 +103,10 @@
+ 
+ #define CQ_BANKID_SHIFT 2
+ #define CQ_BANKID_MASK GENMASK(1, 0)
++#define VALID_CQ_BANK_MASK_DEFAULT 0xF
++#define VALID_CQ_BANK_MASK_LIMIT 0x9
++
++#define VALID_EXT_SGE_QP_BANK_MASK_LIMIT 0x42
+ 
+ #define HNS_ROCE_MAX_CQ_COUNT 0xFFFF
+ #define HNS_ROCE_MAX_CQ_PERIOD 0xFFFF
+@@ -156,6 +160,7 @@ enum {
+ 	HNS_ROCE_CAP_FLAG_CQE_INLINE		= BIT(19),
+ 	HNS_ROCE_CAP_FLAG_BOND                  = BIT(21),
+ 	HNS_ROCE_CAP_FLAG_SRQ_RECORD_DB         = BIT(22),
++	HNS_ROCE_CAP_FLAG_LIMIT_BANK            = BIT(23),
+ };
+ 
+ #define HNS_ROCE_DB_TYPE_COUNT			2
+@@ -500,6 +505,7 @@ struct hns_roce_cq_table {
+ 	struct hns_roce_bank bank[HNS_ROCE_CQ_BANK_NUM];
+ 	struct mutex			bank_mutex;
+ 	u32 ctx_num[HNS_ROCE_CQ_BANK_NUM];
++	u8 valid_cq_bank_mask;
+ };
+ 
+ struct hns_roce_srq_table {
+diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
+index 2f4864ab7d4e..a3490bab297a 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_main.c
++++ b/drivers/infiniband/hw/hns/hns_roce_main.c
+@@ -259,6 +259,11 @@ static int hns_roce_query_device(struct ib_device *ib_dev,
+ 		props->max_srq_sge = hr_dev->caps.max_srq_sges;
+ 	}
+ 
++	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_LIMIT_BANK) {
++		props->max_cq >>= 1;
++		props->max_qp >>= 1;
++	}
++
+ 	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_FRMR &&
+ 	    hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09) {
+ 		props->device_cap_flags |= IB_DEVICE_MEM_MGT_EXTENSIONS;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index d1640c5fbaab..5f7ea6c16644 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -197,22 +197,16 @@ static u8 get_affinity_cq_bank(u8 qp_bank)
+ 	return (qp_bank >> 1) & CQ_BANKID_MASK;
+ }
+ 
+-static u8 get_least_load_bankid_for_qp(struct ib_qp_init_attr *init_attr,
+-					struct hns_roce_bank *bank)
++static u8 get_least_load_bankid_for_qp(struct hns_roce_bank *bank, u8 valid_qp_bank_mask)
+ {
+ #define INVALID_LOAD_QPNUM 0xFFFFFFFF
+-	struct ib_cq *scq = init_attr->send_cq;
+ 	u32 least_load = INVALID_LOAD_QPNUM;
+-	unsigned long cqn = 0;
+ 	u8 bankid = 0;
+ 	u32 bankcnt;
+ 	u8 i;
+ 
+-	if (scq)
+-		cqn = to_hr_cq(scq)->cqn;
+-
+ 	for (i = 0; i < HNS_ROCE_QP_BANK_NUM; i++) {
+-		if (scq && (get_affinity_cq_bank(i) != (cqn & CQ_BANKID_MASK)))
++		if (!(valid_qp_bank_mask & BIT(i)))
+ 			continue;
+ 
+ 		bankcnt = bank[i].inuse;
+@@ -246,6 +240,42 @@ static int alloc_qpn_with_bankid(struct hns_roce_bank *bank, u8 bankid,
+ 
+ 	return 0;
+ }
++
++static bool use_ext_sge(struct ib_qp_init_attr *init_attr)
++{
++	return init_attr->cap.max_send_sge > HNS_ROCE_SGE_IN_WQE ||
++		init_attr->qp_type == IB_QPT_UD ||
++		init_attr->qp_type == IB_QPT_GSI;
++}
++
++static u8 select_qp_bankid(struct hns_roce_dev *hr_dev,
++			   struct ib_qp_init_attr *init_attr)
++{
++	struct hns_roce_qp_table *qp_table = &hr_dev->qp_table;
++	struct hns_roce_bank *bank = qp_table->bank;
++	struct ib_cq *scq = init_attr->send_cq;
++	u8 valid_qp_bank_mask = 0;
++	unsigned long cqn = 0;
++	u8 i;
++
++	if (scq)
++		cqn = to_hr_cq(scq)->cqn;
++
++	for (i = 0; i < HNS_ROCE_QP_BANK_NUM; i++) {
++		if (scq && (get_affinity_cq_bank(i) != (cqn & CQ_BANKID_MASK)))
++			continue;
++
++		if ((hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_LIMIT_BANK) &&
++		    use_ext_sge(init_attr) &&
++		    !(VALID_EXT_SGE_QP_BANK_MASK_LIMIT & BIT(i)))
++			continue;
++
++		valid_qp_bank_mask |= BIT(i);
++	}
++
++	return get_least_load_bankid_for_qp(bank, valid_qp_bank_mask);
++}
++
+ static int alloc_qpn(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+ 		     struct ib_qp_init_attr *init_attr)
+ {
+@@ -258,8 +288,7 @@ static int alloc_qpn(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+ 		num = 1;
+ 	} else {
+ 		mutex_lock(&qp_table->bank_mutex);
+-		bankid = get_least_load_bankid_for_qp(init_attr, qp_table->bank);
+-
++		bankid = select_qp_bankid(hr_dev, init_attr);
+ 		ret = alloc_qpn_with_bankid(&qp_table->bank[bankid], bankid,
+ 					    &num);
+ 		if (ret) {
+-- 
+2.33.0
 
 
