@@ -1,335 +1,203 @@
-Return-Path: <linux-rdma+bounces-15237-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15238-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B960FCE8A9C
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Dec 2025 05:02:27 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5EAFCE8B00
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Dec 2025 05:47:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8612A300FF94
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Dec 2025 04:02:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4EC7E301D595
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Dec 2025 04:47:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D27A23D291;
-	Tue, 30 Dec 2025 04:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BA2B2DAFD5;
+	Tue, 30 Dec 2025 04:47:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="S9l0suf5"
+	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="cROurvri"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from TYVP286CU001.outbound.protection.outlook.com (mail-japaneastazon11011053.outbound.protection.outlook.com [52.101.125.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE5E0E573
-	for <linux-rdma@vger.kernel.org>; Tue, 30 Dec 2025 04:02:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767067345; cv=none; b=gyYRToeEguKVPBp31w1ctiYBoztJ/nEArUWJGKrQpssGntTm7Kjb/i6Oe7lbXv8ByT21RZf5uR/1zeKfZuWezmlfYbEtaZ2dE14pPzrcd8RBUwITQLiQ4KlFZ5UEi0o9WLs+tUYIol2/KUIER9buYeMMpZYj38F6C4r7OuUsM7I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767067345; c=relaxed/simple;
-	bh=QoDPE44FS/DqogRbhISDNGR4CkFtZ2/f30rREsHSEvM=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=tpFzoSpcpMlAtW5gMSbgKXNkWeOPrwje2egAkEvUUb8oyRceB7mwxmNZsRPHiaCXxXg89myfUgTiQzCJmWwG8TMf3HG8FCPl+SfMrWDXaCj0L8fNSFeJmZV8s3yy6TWQId1d1ekLzNuK/Get4ksv98+7EDgv1ol/4J0Q1FgD6EM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=S9l0suf5; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <5727c511-7fd2-4119-b7d9-3b33b578e767@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767067340;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YUuZPfcvvja5xFQYrYxQiQQ8iBQUOEyyn4AWpz6Spjo=;
-	b=S9l0suf5PSaXi15S7+ot6raBBnVHUTe57qkEAhUAFAN+UPMGuMo4UR6srkT3xqxfxx93pl
-	KABuq+lLclHSj1QZqYRVKH9HyNq4g9aSIOx3EdcS3Zqr84Tf3+dFcwqEovCpQ7eXoCfQTb
-	I/b+7DilabVIEyjpCa/mCqez9CUIQhU=
-Date: Mon, 29 Dec 2025 20:02:16 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6401D17D2;
+	Tue, 30 Dec 2025 04:47:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.125.53
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1767070025; cv=fail; b=mupCHCcPF6DiqI9cJ5CDhqr0lltmP5XhPvUWU4u52+UQbcRhPmGbjr20yf+B5vf23KF+WbXd3280WHvfbMwug/KzlTq48zu2qqI+rWZOtnLoafIgNk2bya+eeE7U05g3HIfPDWkKVW7MGQE9XU2v2lotm9dIk1b4Pu9qtvfpXpg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1767070025; c=relaxed/simple;
+	bh=82aqjOTj52wdYBm4eK0PtEQqmwYW01BV2bcL5/VqXio=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=RzpCM6Aweaxi0Ftl9dnrsT46QPmj6C6tXULpEKQ13unhF77LhcbOHiTCM+GF43LBlIBFpBugvwexghuZqyCrtcnV9A8J9naAtFS8IkVYZwIQv8FcNOmew5YlpRZTB5OT+i6b66GQPiBSpRgwn88YS+0sEahK5g8xUE/9N8ASQDI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=cROurvri; arc=fail smtp.client-ip=52.101.125.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=RBHHAY4CaKd6JswJh3tMabghm5jcF5i+MD9fz4PyN7uCmct116V/xm1dSYjypZEopZessbW2pR39SoI1J/B9De8VAO6ftvKbWOZw/fhgEHR8lPkb+lAOOnzAiNvwimsN5G0X4hIkrVSKVv45DUCTJI1VS86NN1wZg9y8lhgKl3tNPg9Xmy9A9l+bhnNbLReJ9mWPRB093p1eIVIsYzTjcZxyUuURJGmLTjD2NAc/HKWmQpz1V1yaDzYQ/b1t43X0iEdIdXCiEZ2pwTv4mRTpLPYtEqNYQQdkq7DulozDecM38NI5ft0j7PdRde/N0r9s5lSPJOzoDnK1dIbW8LcUwQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=82aqjOTj52wdYBm4eK0PtEQqmwYW01BV2bcL5/VqXio=;
+ b=GZgDzSwiOgFV2oQzZTNO+Vi1rXwhJq8uVSure5cs3tt9nO/yN2crySysiORAB59fKHV/vhRGJdFYJgTed4yv822TIE2/xcuED9U2k8Kxwo/tpGXfuS2Xzg+mUPpNyH9zqjDFl6VKp8HR+6JlA90JWv4OuODO0kUKAU+TCUxV9Wl4Uf2epUZ61OA61gd+TRry/2mJP9A3l5QyvuIyEHqz4v9ZvPMQmYBShzl/pp53NPkR2nrs1B/MeB51TGlatvKH95PMbyYU93l91NiUtX+9ojyiFTwo3Jeju/zit7P8eJgRCAdLlxTgxd3KPUqZbvaQbSfrbMqq/puexd6ruxAY2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fujitsu.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=82aqjOTj52wdYBm4eK0PtEQqmwYW01BV2bcL5/VqXio=;
+ b=cROurvriGJLCdWo4KuxNn8G78/A9XVu4An9vx6NR5EU8qBK7ocM4+CzN4D/FIDwJJY58OABjZjj7yBknDPo37LOK9wTRLIXAlmcJ1yKAQC4vu7jkPYHsJlTZe6HEmS70aAuL6uM8pH+Ac3Cx/TTFEEs9pcbIDlWzSajM6RGpPz72eubeI89xvH4kNfdqN77XQAz231NqOWofGW44qwj/9B8AxbF+Hut6rfM+mD61xNYuCTbI2zmg74lRaluVdUhktBosD5MtBTO7lpDGFbiNlZ/xLJF6mqw85nkc0AJC8kIafEutYR6xbVxjJHU1iycCgec/l1Y8VZ7/lyt3tMfxjw==
+Received: from OSZPR01MB7100.jpnprd01.prod.outlook.com (2603:1096:604:11a::13)
+ by OSZPR01MB8155.jpnprd01.prod.outlook.com (2603:1096:604:1a6::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9478.4; Tue, 30 Dec
+ 2025 04:47:01 +0000
+Received: from OSZPR01MB7100.jpnprd01.prod.outlook.com
+ ([fe80::392e:5cfe:7cd5:92af]) by OSZPR01MB7100.jpnprd01.prod.outlook.com
+ ([fe80::392e:5cfe:7cd5:92af%7]) with mapi id 15.20.9478.004; Tue, 30 Dec 2025
+ 04:47:01 +0000
+From: "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
+To: Zhu Yanjun <yanjun.zhu@linux.dev>, "linux-rdma@vger.kernel.org"
+	<linux-rdma@vger.kernel.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+	"leon@kernel.org" <leon@kernel.org>, Yi Zhang <yi.zhang@redhat.com>
+Subject: Re: [PATCH RFC] rxe: Fix iova-to-va conversion for MR page sizes !=
+ PAGE_SIZE
+Thread-Topic: [PATCH RFC] rxe: Fix iova-to-va conversion for MR page sizes !=
+ PAGE_SIZE
+Thread-Index: AQHcdk1rywJr32Xi+kGTH0jFIevMrrU09aYAgASf6gCAAAyAAA==
+Date: Tue, 30 Dec 2025 04:47:00 +0000
+Message-ID: <68c333fb-7026-4412-9bcd-be877b95b99f@fujitsu.com>
+References: <20251226095237.3047496-1-lizhijian@fujitsu.com>
+ <0afef9d8-dbe9-4df0-bdf0-0c4be15e7d04@linux.dev>
+ <5727c511-7fd2-4119-b7d9-3b33b578e767@linux.dev>
+In-Reply-To: <5727c511-7fd2-4119-b7d9-3b33b578e767@linux.dev>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: OSZPR01MB7100:EE_|OSZPR01MB8155:EE_
+x-ms-office365-filtering-correlation-id: e8f4bf30-4d68-4e38-d129-08de475e78b0
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|366016|376014|1800799024|38070700021|1580799027;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?eFBDNHdqNDJpdFFVUEVzNGo5VjVQRmdsR3lxblJnRHZmVVd0Ty9QaUx3SXRv?=
+ =?utf-8?B?K09QQzI5M21lYlN4T1pYYmlNVURhc2R4Rk5jbFFTT2E2bWpWN1ppRE9tc2FR?=
+ =?utf-8?B?T2NuanFMdi9tL1lYRjdZQ0hRRHJ0eGt3UzhjdUNDNW9QbEwxR3NGU2hmSk15?=
+ =?utf-8?B?NTVmYkVBaDlMU0ZIRVNwNXdkMG5FSHlzcWtURFF3ajRFVm1KMGYvTGFQbENq?=
+ =?utf-8?B?cGxlQXI3WGtJVGpyNUMvcEhjTithYms0bkxTWHNHUUdOd0EvLzNmeHQyZ0xw?=
+ =?utf-8?B?MU5JQWlhTnNTeU1udkpidDVjNlB4MkRuRklBSTlrdEhRUmxMdXMwR3l6eGY3?=
+ =?utf-8?B?UVFVZmZES3pvb2FFMHYvc0Z5RCtpdk1IN3EyZVk2bnRZTlVVbUFwTGNHS0hI?=
+ =?utf-8?B?ZTVla3dIWlRpemFpdjBaTDZpSmd6aHdQd296cXVHbFVWVzUwWitPQ2NKU3Vo?=
+ =?utf-8?B?K1RSVE9meFlZc0VqNC9WNVZueWpjZGdCY2daUzQvSFBFTWRIK3RPTytkMENS?=
+ =?utf-8?B?MEVqc2FQdWNUcUxEamVuTlUvRGZlTE1PemlHaHovZFlaTk14S0pycXc0Nm5H?=
+ =?utf-8?B?VDloL0t3b1doem5JK1g3TEErUWJNRlFQbEJubUtYUUtEL1E3TWNkcWRpcERU?=
+ =?utf-8?B?WThkcERaUjFMNjJ3d1BVS3VzbXcxM0pBQTZBTzRoU1R5dGZISmNuL1lxbU0y?=
+ =?utf-8?B?QkhpWUcvb0pyTCtHcU5wRkY0VVl3cGhHYzIxamlBU2V6WHdjOHlzb1JkNXRR?=
+ =?utf-8?B?dmJPVVFnUjFYYlJaWGxTRGJKY2VVZGpVYVN6bW5ET2pzZkkwazU1Myt5WlZV?=
+ =?utf-8?B?OVAzOW1raG9Va1RwMU5Mc21UVDZOYkUveWtaUkdSaFFnVjcwUnFoUmVITkE4?=
+ =?utf-8?B?QTdJMFMvRzNNSzhkZk5idUNKekdQMS9NQlU5Vkl5TlgzRmpld3BIWXJIRzZa?=
+ =?utf-8?B?b0JZQlR3eXM0RGpCQm9SakxXRUZGcW4wOGFRYkhnQUZ2VUhSOG9UUnFLdFZZ?=
+ =?utf-8?B?Qk1peGlMRDJpeUNiZE0xWGRweXhPNURpejJuTExHbFFIVzY1bUdRTWEzNDlk?=
+ =?utf-8?B?clI3OGRMVGRrKzRqeDBoM3hoU2IrV0g0L1hlREhZV2phZ1NDUm54RHdITENM?=
+ =?utf-8?B?d1V6MERVZnRUU214Ui9IaFE5eFptQ1BzRUZRWDN4TUVFTmMwU2hGd3dHd213?=
+ =?utf-8?B?OWkvd2syUk12aDRDTXp5QytSOGh1MSszNEw1YUhucWVId0hEckp6YThjSzEr?=
+ =?utf-8?B?M0pGOWwxZG5iRG1JNU4vVzExWFlaMDRvc1lnalp3dVBoczdUNVFoOU0yQVkv?=
+ =?utf-8?B?MTBtUFQ1RVlMb1NRYXMzL1oxM1dxbnhKRTA3MlFtb3B3WGgrbVJVRTJsaTRW?=
+ =?utf-8?B?Ui9BWGtSNENvTlFnKys2d3k1aU9EQWdyR0JzVFUrUGtiSnFtaEE3TTMrckJl?=
+ =?utf-8?B?bUtjUWN1bkRIUytvellmcFlFUW9VSWlCQURyYURDYXorT2RwaGJjZXhieHpr?=
+ =?utf-8?B?bG9ScDYwSk9OWU04NzFUSHhub2hhSXljTmhORllBMVQxQUJnam92QlhQMExs?=
+ =?utf-8?B?TnpXa3NNOGZLcTJuT0ViZWQ0djVhendrTEVwUUE3MWRmZ3Flc2J1S0IxUEZX?=
+ =?utf-8?B?SjJ0WnJiSEtZYW1Pamlxd1d5d0xYL2FEY2o1cXdhb0tGTWdrbkZlSGlQN21o?=
+ =?utf-8?B?dVp1a1R3aGcreEtvZVNNOHMrT2pRNGxZcGpEM1E0Mjg5clUvNVdHRUVjT0Jt?=
+ =?utf-8?B?OVd1bDJWMzVGd1dka2h0WXJybkdVaVl4VVppZ1NRS0h2WFpWUHp0SmVRak1l?=
+ =?utf-8?B?cXluV3k0cFlTUGJxRFVjZmhWM01SYVJMMnlFb3cvRHlMeE5OQnpHMXNMQWZ4?=
+ =?utf-8?B?MksrWlZha1ROSGttQnRvT1pPU0ZIbklKNkJGNEptN2hMVlNQVXR4RWVsaW85?=
+ =?utf-8?B?SEhqUkJTSGdWdlhLV3Fxbk04akIrTmVOTEZ5bDBEUVV1ZFlJMG5wbE1LNFZJ?=
+ =?utf-8?Q?KPEa6OQcKRf83CYlYa7trsFwQ6GxvI=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSZPR01MB7100.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(38070700021)(1580799027);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?cGlBd00ySG10bE8rMGg3ZC9Mb24zMTY4OUQxSXF6VVFIa0xTc2JUOFpIbC94?=
+ =?utf-8?B?WHRWSWZicGNvNFRGSzdXT2k1MGdnaEpoWDhlOGd6ejV6M3dGUlp6WDFYTEts?=
+ =?utf-8?B?WHNpUWxuQWJqUm56RFJ0M1Q2d1J4MGRiTEJHcFRPZnlqTzB4YzBiaC9YNUp4?=
+ =?utf-8?B?SWovR21uem5NMWxZNmV0TkRCSHM2cjZEb3BTd0lNT01VdXJuWDF4T2l1a0hV?=
+ =?utf-8?B?RmNyTDFzRXVBVXQ1NFZtNGtlR3dVUTQ3YmpkS3prNU05ejNTVDhqakREWCs0?=
+ =?utf-8?B?TE16UUZ5b1d4MTNOWWlxSStoY1ZrSlNuYUwySFJ1NjFzOU82VG8xVU1vVmZ0?=
+ =?utf-8?B?em4wZHl2MlFiT3h3QVJEcFdRdi95clg3ZTI4WDV0aWxqY3FwRy9DeDhpRWZW?=
+ =?utf-8?B?aG4xY1JzNHZ1MkREQXFtZVlkOHd1S1phMlRwdzVzZ3ArdU5DeU51QVRYTlNZ?=
+ =?utf-8?B?NU9aRyt0TWJnVE01V1BsM3I0c1pUeWF6M3pOanQxVGJHQlNjRCtZY2VFRW81?=
+ =?utf-8?B?Q2Vpa3VKdUJYak9ZS01Nb1FaTHNHcUpKd0JVdC9keCtDYlZ4cUxkL3AvbzNO?=
+ =?utf-8?B?VWNESHRqMlRQMDFiUkprMUFteFZPK1dxeGMzQzhFWFp6QWNMRUNIMUUxMWY2?=
+ =?utf-8?B?MFZCWVdXM3c4dFpPRnFJTTgxZWY2NVpZYmx3QWZ4WDc3UUdtWmRLSjZXbHZX?=
+ =?utf-8?B?RFBvRFZWNFBoMW8rTTJ3enJnb2xWK0NsWjZXUkppRWJpNEJDUC9GWG1sZGk5?=
+ =?utf-8?B?WEtKME5JNmdaSTUwR1JGZFdLa3FmZXl1dTYrMGlTbkh4TG8vY3gxeExhYjBQ?=
+ =?utf-8?B?THlBQjFCWVg2UU5qMlFWRUN6ZDZ6bXIweDZ6QWJTYUhuQnlOZzVsenk3VDVp?=
+ =?utf-8?B?bFdDZVFjbTdYaVdHbGRvM3gxbzV3Zk1FUTIxOHNNWjB0clVnbHhrZEJJK1Qx?=
+ =?utf-8?B?bEtJSFNqdlJRc3pWMmttdHg2alFTdUVTdGdWenFWenhtNTN5cGgreGtua0k4?=
+ =?utf-8?B?NmJiTEZGbzZWZUw2TlQvYVYrZW9lWXVjMmFSaXoxSXoxb3RpU1NGU2tJbnBF?=
+ =?utf-8?B?SnZhOEpnZTFzL08rWlpYZkRTK3k5Tm8rWmJWbG80Umlla0ZySXYyZzYrc25u?=
+ =?utf-8?B?bnlRRkd3bnJjOVY5UFRBMnhmZElRckJuMGdUQnVnUVdWdmhMUk1LZ0xLMjEx?=
+ =?utf-8?B?amdYUXI1cXdHaVpOVU9sb1Jac01neTZwVzJ5SzBYVTQ0ZkVuc1V0aG9TMThK?=
+ =?utf-8?B?UWZIL2cvVlFSUGdJL0E4dEE0K2lCdUhjTUYwWUhmTThBOEhqTGhaNnFRU2Rt?=
+ =?utf-8?B?SUl4UkZuUVVvTXpFekMxeVBRMmhTMk5lS3pKVDE5M0RHdjVRZFIxY2tEbTRk?=
+ =?utf-8?B?Vk4vT0MwcVpLQjdwOTRRbkJBNE1NaUxwL2xaVmluTStHS1NBMHdPZHo3RmJY?=
+ =?utf-8?B?blJKZE5FQkZxUHNtRVdJeXplY0dQcmlOVjdTL1lOV2E0SmNhNXBzaGNSYkN0?=
+ =?utf-8?B?UTNYZHFKOE1DZTVuQUJWZW9IWW10NzN3R0Ftb1p5Y1Q1SzBEWHhzYkw2RWoy?=
+ =?utf-8?B?UUk2WE8zZkFRRjAxb01DV1pUYVRBR2FJR0FqTWNSSVB2S29VcmUyQWM2dWpQ?=
+ =?utf-8?B?Q3hoMWlLNjhYbUI4aUI1Z1E2U1B4aFgvc29pRi83Q2hGUld3ZWUyYzVCbDM5?=
+ =?utf-8?B?NzhVS0Z3U2VrRkI0WmZUclNZL2ZlQkdmZ1BLT1lnVkN2dWpxT0cwejdvbGhH?=
+ =?utf-8?B?ekY5Qy9QTHlONmNXMmFSaUZCWEF0Y2QraVlwdDY5VEoxcXljcm1rZVJZekll?=
+ =?utf-8?B?dE52VHZtc2pxcXZEdy9kK2ZtdjJvVzE4RXZnVTB6V21hUm1GZCs2UlNQYlFn?=
+ =?utf-8?B?elN6YVlHQ1NrMDRvYXpFRlB3OWZVOFJUdmEvYXREZVRZWkI1cWVPUkJJOWZy?=
+ =?utf-8?B?QmppbCtsQVFtYzBGQ2hEUUJvSWNmSGRMMU5ndTYzdjAzSGdwWHE5RldtL3Jk?=
+ =?utf-8?B?V0p4UUovTGhFS2NBWElCR1dZYjM4aGYySnRsM0N4Uys4WDZ4dTVQdndLYWUy?=
+ =?utf-8?B?NTRxRzFUZVBsWlpjcFE4cEYxZ242c0xWVFZPOFdLSVU2bmd0eWRxZmVnVmgw?=
+ =?utf-8?B?c3BhQzBEbzZaV2dPajBsaitvaXhjb3NsZ2psYzhCRWloU0tzbWJHaml0SGZQ?=
+ =?utf-8?B?aS9PemgzTHYxOU8rUlRXb3YwQ1Z0bFNoUnNveGJWZm83L3hzUWQyTENuN09K?=
+ =?utf-8?B?dmRqNlRrckhLMk11Y3JuYzd0eVNGcXEvdnE2a1VILzd4T1dBTXNnRHExZU9G?=
+ =?utf-8?B?SDVOT1dmalBIR0twc3AwL0RLTFVhTXhuQ3lsZTN1UmFEUE1CbXQ1anVELzBT?=
+ =?utf-8?Q?EdG0eHobdzSoRYU8=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <02B267513862294B9052DECDE2381425@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH RFC] rxe: Fix iova-to-va conversion for MR page sizes !=
- PAGE_SIZE
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-To: Li Zhijian <lizhijian@fujitsu.com>, linux-rdma@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, zyjzyj2000@gmail.com, jgg@ziepe.ca,
- leon@kernel.org, Yi Zhang <yi.zhang@redhat.com>
-References: <20251226095237.3047496-1-lizhijian@fujitsu.com>
- <0afef9d8-dbe9-4df0-bdf0-0c4be15e7d04@linux.dev>
-In-Reply-To: <0afef9d8-dbe9-4df0-bdf0-0c4be15e7d04@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSZPR01MB7100.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e8f4bf30-4d68-4e38-d129-08de475e78b0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Dec 2025 04:47:01.0028
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 05pQa3BCGDBIzEAFST6mnzKcWN6vZ9+HiHXrb6UA5TDA4rv3p/wRRf7E+oXjTiYKwbEe5iy/gn02+7NQWMyUYQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSZPR01MB8155
 
-
-在 2025/12/26 21:24, Zhu Yanjun 写道:
-> 在 2025/12/26 1:52, Li Zhijian 写道:
->> The current implementation incorrectly handles memory regions (MRs) with
->> page sizes different from the system PAGE_SIZE. The core issue is that
->> rxe_set_page() is called with mr->page_size step increments, but the
->> page_list stores individual struct page pointers, each representing
->> PAGE_SIZE of memory.
->>
->> Problem scenarios with concrete examples:
->>
->> 1. mr->page_size > PAGE_SIZE (e.g., 64K MR with 4K system pages):
->>
->>     Suppose: PAGE_SIZE=4K, mr->page_size=64K, mr->ibmr.iova=0x13010
->>     When rxe_set_page() is called with dma_addr=0x10000 (64K-aligned),
->>     it stores only one 4K page at page_list[0], but should store 16 
->> pages.
->>
->>     Accessing iova=0x13034:
->>     - Current code: index = (0x13034 >> 16) - (0x13010 >> 16) = 0
->>                    offset = 0x13034 & (64K-1) = 0x3034
->>     This calculates offset within 64K page, but page_list[0] is only 4K.
->>
->>     - Expected: The iova=0x13034 should map to:
->>                    base_align = 0x13010 & ~(64K-1) = 0x10000
->>                    index = (0x13034 - 0x10000) / 4K = 0x3034 / 0x1000 
->> = 3
->>                    offset = 0x13034 & (4K-1) = 0x034
->>                    So: page_list[3] with offset 0x34
->>
->> 2. mr->page_size < PAGE_SIZE (e.g., 2K MR with 4K system pages):
->>
->>     Suppose: PAGE_SIZE=4K, mr->page_size=2K, mr->ibmr.iova=0x1100
->>     When rxe_set_page() is called with dma_addr=0x1000, it stores a 
->> 4K page
->>     at page_list[0]. Another call with dma_addr=0x1800 should not store
->>     a new page since 0x1800 is within the same 4K page as 0x1000.
->>
->>     Accessing iova=0x1890:
->>     - Current code: index = (0x1890 >> 11) - (0x1100 >> 11) = 3
->>                    offset = 0x1890 & (2K-1) = 0x90
->>                    This assumes page_list[3] exists and is a 2K page.
->>
->>     - Expected: Both 0x1000 and 0x1800 are within the same 4K page:
->>                    index = (0x1890 >> 12) - (0x1100 >> 12) = 0
->>                    offset = 0x1890 & (4K-1) = 0x890
->>                    So: page_list[0] with offset 0x890
->>
->> Yi Zhang reported a kernel panic[1] years ago related to this defect.
->>
->> The fix introduces:
->>
->> 1. Enhanced iova-to-index conversion with proper alignment handling:
->>     - For mr->page_size > PAGE_SIZE: Uses aligned base address
->>       (mr->ibmr.iova & mr->page_mask) as reference, correctly 
->> calculating
->>       which PAGE_SIZE sub-page contains the iova
->>     - For mr->page_size <= PAGE_SIZE: Uses PAGE_SIZE shift arithmetic
->>       to ensure each page_list entry corresponds to a PAGE_SIZE page
->>
->> 2. Page splitting in rxe_set_page():
->>     - When mr->page_size > PAGE_SIZE, set_pages_per_mr() splits each
->>       MR page into multiple PAGE_SIZE pages stored consecutively
->>     - For mr->page_size <= PAGE_SIZE, maintains original behavior
->>
->> 3. Always use PAGE_SIZE for offset calculation:
->>     - Since page_list stores PAGE_SIZE pages, offsets must be within
->>       [0, PAGE_SIZE-1]
->>
->> 4. Compatibility checks:
->>     - Ensures mr->page_size and PAGE_SIZE have a compatible relationship
->>       (one is multiple of the other) for correct mapping
->>
->> The solution ensures correct iova-to-va conversion for all MR page sizes
->> while maintaining the existing IB verbs semantics for MR registration
->> and memory access.
->>
->> This patch enables srp rnbd nvme in 64K system page environment.
->>
->> Tests on (4K and 64K PAGE_SIZE):
->> - rdma-core/pytests
->>    $ ./build/bin/run_tests.py  --dev eth0_rxe
->> - blktest:
->>    $ TIMEOUT=30 QUICK_RUN=1 USE_RXE=1 NVMET_TRTYPES=rdma ./check nvme 
->> srp rnbd
->>
->> In 64K environment, srp/012 is failed while it's passed in 4K 
->> environment.
->
-> Hi, Yi
->
-> The mentioned testcase, the link is:
-> https://lore.kernel.org/all/CAHj4cs9XRqE25jyVw9rj9YugffLn5+f=1znaBEnu1usLOciD+g@mail.gmail.com/T/ 
->
->
-> Can you help to make tests to verify whether this problem is fixed or 
-> not?
->
-
-On x86_64 hosts, after this commit is applied, all the testcases in 
-rdma-core can pass. But in Fedora Core 42 with ARM64 architecture,
-
-there are some errors with rdma-core.
-
-I did not make tests with blktest.
-
-Zhu Yanjun
-
-
-> Thanks a lot.
-> Zhu Yanjun
->
->>
->> [1] 
->> https://lore.kernel.org/all/CAHj4cs9XRqE25jyVw9rj9YugffLn5+f=1znaBEnu1usLOciD+g@mail.gmail.com/T/
->> ixes: 592627ccbdff ("RDMA/rxe: Replace rxe_map and rxe_phys_buf by 
->> xarray")
->> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
->> ---
->>   drivers/infiniband/sw/rxe/rxe_mr.c | 83 +++++++++++++++++++++++++++---
->>   1 file changed, 76 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c 
->> b/drivers/infiniband/sw/rxe/rxe_mr.c
->> index b28b56db725a..8ad7d163b418 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
->> @@ -72,14 +72,40 @@ void rxe_mr_init_dma(int access, struct rxe_mr *mr)
->>       mr->ibmr.type = IB_MR_TYPE_DMA;
->>   }
->>   +/*
->> + * Convert iova to page_list index. The page_list stores pages of size
->> + * PAGE_SIZE, but MRs can have different page sizes. This function
->> + * handles the conversion for all cases:
->> + *
->> + * 1. mr->page_size > PAGE_SIZE:
->> + *    The MR's iova may not be aligned to mr->page_size. We use the
->> + *    aligned base (iova & page_mask) as reference, then calculate
->> + *    which PAGE_SIZE sub-page the iova falls into.
->> + *
->> + * 2. mr->page_size <= PAGE_SIZE:
->> + *    Use simple shift arithmetic since each page_list entry 
->> corresponds
->> + *    to one or more MR pages.
->> + *
->> + * Example for mr->page_size=64K, PAGE_SIZE=4K, iova=0x11034:
->> + *   base = iova & ~(64K-1) = 0x10000
->> + *   index = (0x11034 - 0x10000) / 4K = 0x1034 / 0x1000 = 4
->> + */
->>   static unsigned long rxe_mr_iova_to_index(struct rxe_mr *mr, u64 iova)
->>   {
->> -    return (iova >> mr->page_shift) - (mr->ibmr.iova >> 
->> mr->page_shift);
->> +    if (mr_page_size(mr) > PAGE_SIZE)
->> +        return (iova - (mr->ibmr.iova & mr->page_mask)) / PAGE_SIZE;
->> +    else
->> +        return (iova >> mr->page_shift) - (mr->ibmr.iova >> 
->> mr->page_shift);
->>   }
->>   +/*
->> + * Always return offset within a PAGE_SIZE page since page_list
->> + * stores individual struct page pointers, each representing
->> + * PAGE_SIZE of memory.
->> + */
->>   static unsigned long rxe_mr_iova_to_page_offset(struct rxe_mr *mr, 
->> u64 iova)
->>   {
->> -    return iova & (mr_page_size(mr) - 1);
->> +    return iova & (PAGE_SIZE - 1);
->>   }
->>     static bool is_pmem_page(struct page *pg)
->> @@ -205,11 +231,40 @@ int rxe_mr_init_fast(int max_pages, struct 
->> rxe_mr *mr)
->>       return err;
->>   }
->>   +/*
->> + * Split a large MR page (mr->page_size) into multiple PAGE_SIZE
->> + * sub-pages and store them in page_list.
->> + *
->> + * Called when mr->page_size > PAGE_SIZE. Each call to rxe_set_page()
->> + * represents one mr->page_size region, which we must split into
->> + * (mr->page_size / PAGE_SIZE) individual pages.
->> + */
->> +static int set_pages_per_mr(struct ib_mr *ibmr, u64 dma_addr)
->> +{
->> +    struct rxe_mr *mr = to_rmr(ibmr);
->> +    u32 page_size = mr_page_size(mr);
->> +    u64 addr = dma_addr & ~(u64)(page_size - 1);
->> +    u32 i, pages_per_mr = page_size / PAGE_SIZE;
->> +
->> +    for (i = 0; i < pages_per_mr; i++) {
->> +        struct page *sub_page =
->> +            ib_virt_dma_to_page(addr + i * PAGE_SIZE);
->> +        int err = xa_err(xa_store(&mr->page_list, mr->nbuf, sub_page,
->> +                      GFP_KERNEL));
->> +        if (err)
->> +            return err;
->> +
->> +        mr->nbuf++;
->> +    }
->> +    return 0;
->> +}
->> +
->>   static int rxe_set_page(struct ib_mr *ibmr, u64 dma_addr)
->>   {
->>       struct rxe_mr *mr = to_rmr(ibmr);
->>       struct page *page = ib_virt_dma_to_page(dma_addr);
->>       bool persistent = !!(mr->access & IB_ACCESS_FLUSH_PERSISTENT);
->> +    u32 page_size = mr_page_size(mr);
->>       int err;
->>         if (persistent && !is_pmem_page(page)) {
->> @@ -217,9 +272,13 @@ static int rxe_set_page(struct ib_mr *ibmr, u64 
->> dma_addr)
->>           return -EINVAL;
->>       }
->>   -    if (unlikely(mr->nbuf == mr->num_buf))
->> +    if (unlikely(mr->nbuf >= mr->num_buf))
->>           return -ENOMEM;
->>   +    if (page_size > PAGE_SIZE)
->> +        return set_pages_per_mr(ibmr, dma_addr);
->> +
->> +    /* page_size <= PAGE_SIZE */
->>       err = xa_err(xa_store(&mr->page_list, mr->nbuf, page, 
->> GFP_KERNEL));
->>       if (err)
->>           return err;
->> @@ -234,6 +293,18 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct 
->> scatterlist *sgl,
->>       struct rxe_mr *mr = to_rmr(ibmr);
->>       unsigned int page_size = mr_page_size(mr);
->>   +    /*
->> +     * Ensure page_size and PAGE_SIZE are compatible for mapping.
->> +     * We require one to be a multiple of the other for correct
->> +     * iova-to-page conversion.
->> +     */
->> +    if (!IS_ALIGNED(page_size, PAGE_SIZE) &&
->> +        !IS_ALIGNED(PAGE_SIZE, page_size)) {
->> +        rxe_err_mr(mr, "MR page size %u must be compatible with 
->> PAGE_SIZE %lu\n",
->> +               page_size, PAGE_SIZE);
->> +        return -EINVAL;
->> +    }
->> +
->>       mr->nbuf = 0;
->>       mr->page_shift = ilog2(page_size);
->>       mr->page_mask = ~((u64)page_size - 1);
->> @@ -255,8 +326,7 @@ static int rxe_mr_copy_xarray(struct rxe_mr *mr, 
->> u64 iova, void *addr,
->>           if (!page)
->>               return -EFAULT;
->>   -        bytes = min_t(unsigned int, length,
->> -                mr_page_size(mr) - page_offset);
->> +        bytes = min_t(unsigned int, length, PAGE_SIZE - page_offset);
->>           va = kmap_local_page(page);
->>           if (dir == RXE_FROM_MR_OBJ)
->>               memcpy(addr, va + page_offset, bytes);
->> @@ -442,8 +512,7 @@ static int rxe_mr_flush_pmem_iova(struct rxe_mr 
->> *mr, u64 iova, unsigned int leng
->>           page_offset = rxe_mr_iova_to_page_offset(mr, iova);
->>           if (!page)
->>               return -EFAULT;
->> -        bytes = min_t(unsigned int, length,
->> -                  mr_page_size(mr) - page_offset);
->> +        bytes = min_t(unsigned int, length, PAGE_SIZE - page_offset);
->>             va = kmap_local_page(page);
->>           arch_wb_cache_pmem(va + page_offset, bytes);
->
--- 
-Best Regards,
-Yanjun.Zhu
-
+SGkgWWFuanVuLA0KDQoNCk9uIDMwLzEyLzIwMjUgMTI6MDIsIFpodSBZYW5qdW4gd3JvdGU6DQo+
+Pj4NCj4+DQo+PiBIaSzCoFlpDQo+Pg0KPj4gVGhlwqBtZW50aW9uZWTCoHRlc3RjYXNlLMKgdGhl
+wqBsaW5rwqBpczoNCj4+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC9DQUhqNGNzOVhScUUy
+NWp5Vnc5cmo5WXVnZmZMbjUrZj0xem5hQkVudTF1c0xPY2lEK2dAbWFpbC5nbWFpbC5jb20vVC8N
+Cj4+DQo+PiBDYW4geW91IGhlbHAgdG8gbWFrZSB0ZXN0cyB0byB2ZXJpZnkgd2hldGhlciB0aGlz
+IHByb2JsZW0gaXMgZml4ZWQgb3Igbm90Pw0KPj4NCj4gDQo+IE9uIHg4Nl82NCBob3N0cywgYWZ0
+ZXIgdGhpcyBjb21taXQgaXMgYXBwbGllZCwgYWxsIHRoZSB0ZXN0Y2FzZXMgaW4gcmRtYS1jb3Jl
+wqBjYW7CoHBhc3MuwqBCdXTCoGluwqBGZWRvcmHCoENvcmXCoDQywqB3aXRowqBBUk02NMKgYXJj
+aGl0ZWN0dXJlLA0KPiANCj4gdGhlcmXCoGFyZcKgc29tZcKgZXJyb3JzwqB3aXRowqByZG1hLWNv
+cmUuDQoNCg0KTWFueSB0aGFua3MgZm9yIHlvdXIgdGVzdGluZy4NCg0KVGhpcyBjb21taXQgc2hv
+dWxkIG9ubHkgYWZmZWN0IElCX01SX1RZUEVfTUVNX1JFRyBNUnMsIHdoaWNoIGFyZSBleHBvc2Vk
+IHRvIHRoZQ0KVXBwZXIgTGF5ZXIgUHJvdG9jb2wgKFVMUCkgaW4gdGhlIGN1cnJlbnQga2VybmVs
+Lg0KDQpTaW5jZSByZG1hLWNvcmUgdHlwaWNhbGx5IHV0aWxpemVzIElCX01SX1RZUEVfVVNFUiht
+ci5wYWdlX3NpemUgYWx3YXlzIHNhbWUgd2l0aCBQQUdFX1NJWkUpLCBpdCBzaG91bGQgbm90IGJl
+IGltcGFjdGVkLg0KDQpUaGFua3MNClpoaWppYW4NCg0KPiANCj4gScKgZGlkwqBub3TCoG1ha2XC
+oHRlc3RzwqB3aXRowqBibGt0ZXN0Lg0K
 
