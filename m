@@ -1,294 +1,175 @@
-Return-Path: <linux-rdma+bounces-15273-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15274-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED0C4CEFAE2
-	for <lists+linux-rdma@lfdr.de>; Sat, 03 Jan 2026 05:57:16 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52542CEFB57
+	for <lists+linux-rdma@lfdr.de>; Sat, 03 Jan 2026 06:39:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EF4AA301276B
-	for <lists+linux-rdma@lfdr.de>; Sat,  3 Jan 2026 04:57:11 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id C1CB53005F1A
+	for <lists+linux-rdma@lfdr.de>; Sat,  3 Jan 2026 05:39:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0832722A4EB;
-	Sat,  3 Jan 2026 04:57:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE2E265CA8;
+	Sat,  3 Jan 2026 05:39:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Z44brt+4"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="KspRgSll"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C9E20E31C;
-	Sat,  3 Jan 2026 04:57:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 825801E1E16
+	for <linux-rdma@vger.kernel.org>; Sat,  3 Jan 2026 05:39:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767416227; cv=none; b=dmZfndUaV+z1VDwpMGzXhuLtskzh3A/035NlrMzRupkq0XK3jbqsWYBYZDyKNjXJB2TZVEUor2HUENi0IQ9FUr8mxg9GNS6Zsmahko3P6Wsfm93rez+FI6QatOZuP0e9zxsCmFS1aL3CQ3sdmgDMsmBKVrYdkahJnSFZjVa0qL0=
+	t=1767418745; cv=none; b=gmP5WOb2bKTeCuPrlZOWyiPG9sfHxp3Ast0w63ehK3MYpnzf5pWxgC7smLhYP/OyBWPHPFungO3HfpVpNiyKOSevf7+ifkmQTIefwMwlDVXGMbHtcUrZvA4wDfSObw39ftFU8OqnOwuyrdHdSRW6ZbzmMAjI6Px+BCRQvKWfYto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767416227; c=relaxed/simple;
-	bh=+f3ZRJAXg+xPmggbZCY4R8p0d2XUOUhaFD61CPOaa+4=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=L5/3Rcw+Klg3E/Otkvf6TdNKxQe0LHJVjg5fuo/8XbwNQkZ9NmARSS94H//WE4VGBqlEETca6YX50/daHcjzzA/JheqyKtN+dRO8Bka1bJ8wjoZF4mhhmTvGIptyRPojecnFdV1Ts74HGsLnXaP/tohkAL2lMlhW3ZmGOqIu6Kc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Z44brt+4; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1204)
-	id A31E2212536C; Fri,  2 Jan 2026 20:57:05 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A31E2212536C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1767416225;
-	bh=HuIWNrscgxXLoTeyAWg1MtA44CEADUTTT7E6koSAQ9g=;
-	h=Date:From:To:Subject:From;
-	b=Z44brt+4AnkBlBQ13REvAabQ2E6ktBUvrwBUSgYRGPNmHbiPNdR96lICeIC7nI4C9
-	 psX6rkvEwLoPMQKLueAemfXOHBoZ7u1P1E0IBxAQnTLLBSNCskaegxrzWEWUUFyrsD
-	 9BHc3Dsohx+UMGtfahaMcxMOlUu4NqoahnFfW2b0=
-Date: Fri, 2 Jan 2026 20:57:05 -0800
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
-	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
-	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	dipayanroy@microsoft.com
-Subject: [PATCH net-next, v6] net: mana: Implement ndo_tx_timeout and
- serialize queue resets per port.
-Message-ID: <20260103045705.GA3757@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	s=arc-20240116; t=1767418745; c=relaxed/simple;
+	bh=zB7InRxdhbUfArUeoDkJEcjsUSyvb8a9oqQTv82r8uQ=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=AFw63GUjGh/3SRb+/ZpEBSFoQxI7uxB6yA4//oULS58A0LdHP+nLyN23ywOGnS908DjTAZ8Rux+N95OD54WrpditYMBRRiwwMl4XCx9/lWVVv8MqnaEUWpdK1OU1m5YTTivDPRg+7DemOMFr9OiEHDjFApu/UTLS5bBTX8VA63I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=KspRgSll; arc=none smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6034abcs558689
+	for <linux-rdma@vger.kernel.org>; Fri, 2 Jan 2026 21:39:02 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
+	 bh=dPZistrW42shSqONuISjFKYdIKC68QTLEs9Rb5vD9I0=; b=KspRgSllwdkK
+	IhK21B6zhGAXdO7wsOGYpQj8wt8XNy+zWmzAN7bK0C3sI1Pww8ZCwJ+gaD29pxr5
+	AD8eiVPiFpazgLPcOEtDiPB7ZFI0lz6BikvHbKmJ5RQQG8QN7CRqubXNHyiA1mIe
+	lTLMw08nqKtZXBWvG8Uqjf12Ok2agLCuJlJ8a1dDGPFCUGfcoiuwt/nCDI5v8xah
+	zDAv9U03P8VaId/DLVyeDBTh1MWKx4ze/yaUhG3BIfawrkxSgA3bbbOT5z3CR9P/
+	hL6GLE9E8HAtIxm8BhX0e0lPlhBASyD7sOqgucXKcfTDiYusjyLtH9K2yoaPIicx
+	eHLUZ0UNEA==
+Received: from maileast.thefacebook.com ([163.114.135.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4bev80r4pe-5
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <linux-rdma@vger.kernel.org>; Fri, 02 Jan 2026 21:39:02 -0800 (PST)
+Received: from twshared17475.04.snb3.facebook.com (2620:10d:c0a8:1b::2d) by
+ mail.thefacebook.com (2620:10d:c0a9:6f::237c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.2562.29; Sat, 3 Jan 2026 05:38:59 +0000
+Received: by devbig259.ftw1.facebook.com (Postfix, from userid 664516)
+	id C9E25E3FFCE1; Fri,  2 Jan 2026 21:38:45 -0800 (PST)
+From: Zhiping Zhang <zhipingz@meta.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+CC: Leon Romanovsky <leon@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        <linux-rdma@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <netdev@vger.kernel.org>, Keith Busch <kbusch@kernel.org>,
+        Yochai Cohen
+	<yochai@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>,
+        Zhiping Zhang
+	<zhipingz@meta.com>
+Subject: [RFC 2/2] [fix] mlx5: modifications for use cases other than CPU
+Date: Fri, 2 Jan 2026 21:38:35 -0800
+Message-ID: <20260103053842.984489-1-zhipingz@meta.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251113213712.776234-1-zhipingz@meta.com>
+References: <20251113213712.776234-1-zhipingz@meta.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: zKWsZ3ISXyh26i_DYxOtklsLljFhRIpE
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTAzMDA0OSBTYWx0ZWRfXyOyyT25cv9E/
+ JVEsaW7RoV1EmaMKEOs55VvWZarZT9t/06/YAGmsjrk8fz/7uwRIE1903jffoUmtOw6iiuqjQLz
+ nTSTHGKqEIHNRVRAJBrFgp8RpeL0q4VNHY05Kfix7zlK719lxLsAd5iyLUqvdMC7Yknjojmfjua
+ k/WXfaA0AmCu5KYW9nlAAbmCTTmpcdY81lA+WLoTrkPGl8kQWaP2r7dx6DvVtn2idFFGQXq/3iM
+ Fv+feFYArb/4QmvJxFkiB/FTcPsZN2CFuFNZyBggUon7yQlKNG+/kPH8jVcWyaMJ5+1NBnYboa5
+ OPktH/me70Og2CUH0lEonIWFjTJeuRkrws4DG5TK+g6Dy9MUh63XwPFBcHV9ORXMN3GAoyZKD1m
+ LD8h7XL604TqfIFsFksfQtCHb+J/jE+fdAE2saLNkQ4X3lqctUlTdik4sKuRZAFKgFZbrWXBOeR
+ XFrBn4S+D1bIm7fRVOA==
+X-Authority-Analysis: v=2.4 cv=Bc7VE7t2 c=1 sm=1 tr=0 ts=6958ab76 cx=c_pps
+ a=MfjaFnPeirRr97d5FC5oHw==:117 a=MfjaFnPeirRr97d5FC5oHw==:17
+ a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22 a=VabnemYjAAAA:8
+ a=dY4F4hLoAaLEDHvlMMEA:9 a=gKebqoRLp9LExxC7YDUY:22
+X-Proofpoint-GUID: zKWsZ3ISXyh26i_DYxOtklsLljFhRIpE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2026-01-02_04,2025-12-31_01,2025-10-01_01
 
-Implement .ndo_tx_timeout for MANA so any stalled TX queue can be detected
-and a device-controlled port reset for all queues can be scheduled to a
-ordered workqueue. The reset for all queues on stall detection is
-recomended by hardware team.
+In order to set the tag value properly besides the CPU use case, we need
+to also fix and modify the few checks on CPU_ID in mlx5 RDMA code.
 
-Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
----
-Changes in v6:
-  - Rebased.
-Changes in v5:
-  -Fixed commit message, used 'create_singlethread_workqueue' and fixed
-   cleanup part.
-Changes in v4:
-  -Fixed commit message, work initialization before registering netdev,
-   fixed potential null pointer de-reference bug.
-Changes in v3:
-  -Fixed commit meesage, removed rtnl_trylock and added
-   disable_work_sync, fixed mana_queue_reset_work, and few
-   cosmetics.
-Changes in v2:
-  -Fixed cosmetic changes.
----
----
- drivers/net/ethernet/microsoft/mana/mana_en.c | 77 ++++++++++++++++++-
- include/net/mana/gdma.h                       |  7 +-
- include/net/mana/mana.h                       |  8 +-
- 3 files changed, 89 insertions(+), 3 deletions(-)
+Signed-off-by: Zhiping Zhang <zhipingz@meta.com>
 
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index 1ad154f9db1a..d8451f550db4 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -299,6 +299,42 @@ static int mana_get_gso_hs(struct sk_buff *skb)
- 	return gso_hs;
- }
- 
-+static void mana_per_port_queue_reset_work_handler(struct work_struct *work)
-+{
-+	struct mana_queue_reset_work *reset_queue_work =
-+			container_of(work, struct mana_queue_reset_work, work);
-+
-+	struct mana_port_context *apc = container_of(reset_queue_work,
-+						     struct mana_port_context,
-+						     queue_reset_work);
-+	struct net_device *ndev = apc->ndev;
-+	int err;
-+
-+	rtnl_lock();
-+
-+	/* Pre-allocate buffers to prevent failure in mana_attach later */
-+	err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
-+	if (err) {
-+		netdev_err(ndev, "Insufficient memory for reset post tx stall detection\n");
-+		goto out;
-+	}
-+
-+	err = mana_detach(ndev, false);
-+	if (err) {
-+		netdev_err(ndev, "mana_detach failed: %d\n", err);
-+		goto dealloc_pre_rxbufs;
-+	}
-+
-+	err = mana_attach(ndev);
-+	if (err)
-+		netdev_err(ndev, "mana_attach failed: %d\n", err);
-+
-+dealloc_pre_rxbufs:
-+	mana_pre_dealloc_rxbufs(apc);
-+out:
-+	rtnl_unlock();
-+}
-+
- netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- {
- 	enum mana_tx_pkt_format pkt_fmt = MANA_SHORT_PKT_FMT;
-@@ -839,6 +875,23 @@ static int mana_change_mtu(struct net_device *ndev, int new_mtu)
- 	return err;
- }
- 
-+static void mana_tx_timeout(struct net_device *netdev, unsigned int txqueue)
-+{
-+	struct mana_port_context *apc = netdev_priv(netdev);
-+	struct mana_context *ac = apc->ac;
-+	struct gdma_context *gc = ac->gdma_dev->gdma_context;
-+
-+	/* Already in service, hence tx queue reset is not required.*/
-+	if (gc->in_service)
-+		return;
-+
-+	/* Note: If there are pending queue reset work for this port(apc),
-+	 * subsequent request queued up from here are ignored. This is because
-+	 * we are using the same work instance per port(apc).
-+	 */
-+	queue_work(ac->per_port_queue_reset_wq, &apc->queue_reset_work.work);
-+}
-+
- static int mana_shaper_set(struct net_shaper_binding *binding,
- 			   const struct net_shaper *shaper,
- 			   struct netlink_ext_ack *extack)
-@@ -924,6 +977,7 @@ static const struct net_device_ops mana_devops = {
- 	.ndo_bpf		= mana_bpf,
- 	.ndo_xdp_xmit		= mana_xdp_xmit,
- 	.ndo_change_mtu		= mana_change_mtu,
-+	.ndo_tx_timeout		= mana_tx_timeout,
- 	.net_shaper_ops         = &mana_shaper_ops,
- };
- 
-@@ -3287,6 +3341,8 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
- 	ndev->min_mtu = ETH_MIN_MTU;
- 	ndev->needed_headroom = MANA_HEADROOM;
- 	ndev->dev_port = port_idx;
-+	/* Recommended timeout based on HW FPGA re-config scenario. */
-+	ndev->watchdog_timeo = 15 * HZ;
- 	SET_NETDEV_DEV(ndev, gc->dev);
- 
- 	netif_set_tso_max_size(ndev, GSO_MAX_SIZE);
-@@ -3303,6 +3359,10 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
- 	if (err)
- 		goto reset_apc;
- 
-+	/* Initialize the per port queue reset work.*/
-+	INIT_WORK(&apc->queue_reset_work.work,
-+		  mana_per_port_queue_reset_work_handler);
-+
- 	netdev_lockdep_set_classes(ndev);
- 
- 	ndev->hw_features = NETIF_F_SG | NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM;
-@@ -3549,6 +3609,14 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
- 	if (ac->num_ports > MAX_PORTS_IN_MANA_DEV)
- 		ac->num_ports = MAX_PORTS_IN_MANA_DEV;
- 
-+	ac->per_port_queue_reset_wq =
-+		create_singlethread_workqueue("mana_per_port_queue_reset_wq");
-+	if (!ac->per_port_queue_reset_wq) {
-+		dev_err(dev, "Failed to allocate per port queue reset workqueue\n");
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
- 	if (!resuming) {
- 		for (i = 0; i < ac->num_ports; i++) {
- 			err = mana_probe_port(ac, i, &ac->ports[i]);
-@@ -3616,13 +3684,15 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
- 
- 	for (i = 0; i < ac->num_ports; i++) {
- 		ndev = ac->ports[i];
--		apc = netdev_priv(ndev);
- 		if (!ndev) {
- 			if (i == 0)
- 				dev_err(dev, "No net device to remove\n");
- 			goto out;
- 		}
- 
-+		apc = netdev_priv(ndev);
-+		disable_work_sync(&apc->queue_reset_work.work);
-+
- 		/* All cleanup actions should stay after rtnl_lock(), otherwise
- 		 * other functions may access partially cleaned up data.
- 		 */
-@@ -3649,6 +3719,11 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
- 
- 	mana_destroy_eq(ac);
- out:
-+	if (ac->per_port_queue_reset_wq) {
-+		destroy_workqueue(ac->per_port_queue_reset_wq);
-+		ac->per_port_queue_reset_wq = NULL;
-+	}
-+
- 	mana_gd_deregister_device(gd);
- 
- 	if (suspending)
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index eaa27483f99b..a59bd4035a99 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -598,6 +598,10 @@ enum {
- 
- /* Driver can self reset on FPGA Reconfig EQE notification */
- #define GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE BIT(17)
-+
-+/* Driver detects stalled send queues and recovers them */
-+#define GDMA_DRV_CAP_FLAG_1_HANDLE_STALL_SQ_RECOVERY BIT(18)
-+
- #define GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE BIT(6)
- 
- /* Driver supports linearizing the skb when num_sge exceeds hardware limit */
-@@ -621,7 +625,8 @@ enum {
- 	 GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE | \
- 	 GDMA_DRV_CAP_FLAG_1_PERIODIC_STATS_QUERY | \
- 	 GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE | \
--	 GDMA_DRV_CAP_FLAG_1_PROBE_RECOVERY)
-+	 GDMA_DRV_CAP_FLAG_1_PROBE_RECOVERY | \
-+	 GDMA_DRV_CAP_FLAG_1_HANDLE_STALL_SQ_RECOVERY)
- 
- #define GDMA_DRV_CAP_FLAGS2 0
- 
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index d7e089c6b694..cef78a871c7c 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -480,7 +480,7 @@ struct mana_context {
- 	struct mana_ethtool_hc_stats hc_stats;
- 	struct mana_eq *eqs;
- 	struct dentry *mana_eqs_debugfs;
--
-+	struct workqueue_struct *per_port_queue_reset_wq;
- 	/* Workqueue for querying hardware stats */
- 	struct delayed_work gf_stats_work;
- 	bool hwc_timeout_occurred;
-@@ -492,9 +492,15 @@ struct mana_context {
- 	u32 link_event;
- };
- 
-+struct mana_queue_reset_work {
-+	/* Work structure */
-+	struct work_struct work;
-+};
-+
- struct mana_port_context {
- 	struct mana_context *ac;
- 	struct net_device *ndev;
-+	struct mana_queue_reset_work queue_reset_work;
- 
- 	u8 mac_addr[ETH_ALEN];
- 
--- 
-2.43.0
+> [RFC 2/2] RDMA: Set steering-tag value directly for P2P memory access
+>
+> Currently, the steering tag can be used for a CPU on the motherboard; t=
+he
+> ACPI check is in place to query and obtain the supported steering tag. =
+This
+> same check is not possible for the accelerator devices because they are
+> designed to be plug-and-play to and ownership can not be always confirm=
+ed.
+>
+> We intend to use the steering tag to improve RDMA NIC memory access on =
+a GPU
+> or accelerator device via PCIe peer-to-peer. An application can constru=
+ct a
+> dma handler (DMAH) with the device memory type and a direct steering-ta=
+g
+> value, and this DMAH can be used to register a RDMA memory region with =
+DMABUF
+> for the RDMA NIC to access the device memory. The steering tag contains
+> additional instructions or hints to the GPU or accelerator device for
+> advanced memory operations, such as, read cache selection.
+>
+> Signed-off-by: Zhiping Zhang <zhipingz@meta.com>
+---
+ drivers/infiniband/hw/mlx5/dmah.c | 3 ++-
+ drivers/infiniband/hw/mlx5/mr.c   | 6 ++++--
+ 2 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/infiniband/hw/mlx5/dmah.c b/drivers/infiniband/hw/ml=
+x5/dmah.c
+index 98c8d3313653..c0d8532f94ac 100644
+--- a/drivers/infiniband/hw/mlx5/dmah.c
++++ b/drivers/infiniband/hw/mlx5/dmah.c
+@@ -41,7 +41,8 @@ static int mlx5_ib_dealloc_dmah(struct ib_dmah *ibdmah,
+ 	struct mlx5_ib_dmah *dmah =3D to_mdmah(ibdmah);
+ 	struct mlx5_core_dev *mdev =3D to_mdev(ibdmah->device)->mdev;
+=20
+-	if (ibdmah->valid_fields & BIT(IB_DMAH_CPU_ID_EXISTS))
++	if (ibdmah->valid_fields & BIT(IB_DMAH_CPU_ID_EXISTS) ||
++	    ibdmah->valid_fields & BIT(IB_DMAH_DIRECT_ST_VAL_EXISTS))
+ 		return mlx5_st_dealloc_index(mdev, dmah->st_index);
+=20
+ 	return 0;
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5=
+/mr.c
+index d4917d5c2efa..fb0e0c5826c2 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -1470,7 +1470,8 @@ static struct ib_mr *create_real_mr(struct ib_pd *p=
+d, struct ib_umem *umem,
+ 		struct mlx5_ib_dmah *mdmah =3D to_mdmah(dmah);
+=20
+ 		ph =3D dmah->ph;
+-		if (dmah->valid_fields & BIT(IB_DMAH_CPU_ID_EXISTS))
++		if (dmah->valid_fields & BIT(IB_DMAH_CPU_ID_EXISTS) ||
++			dmah->valid_fields & BIT(IB_DMAH_DIRECT_ST_VAL_EXISTS))
+ 			st_index =3D mdmah->st_index;
+ 	}
+=20
+@@ -1660,7 +1661,8 @@ reg_user_mr_dmabuf(struct ib_pd *pd, struct device =
+*dma_device,
+ 		struct mlx5_ib_dmah *mdmah =3D to_mdmah(dmah);
+=20
+ 		ph =3D dmah->ph;
+-		if (dmah->valid_fields & BIT(IB_DMAH_CPU_ID_EXISTS))
++		if (dmah->valid_fields & BIT(IB_DMAH_CPU_ID_EXISTS) ||
++			dmah->valid_fields & BIT(IB_DMAH_DIRECT_ST_VAL_EXISTS))
+ 			st_index =3D mdmah->st_index;
+ 	}
+=20
+--=20
+2.47.3
 
 
