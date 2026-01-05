@@ -1,249 +1,158 @@
-Return-Path: <linux-rdma+bounces-15308-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15309-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3898FCF4E1E
-	for <lists+linux-rdma@lfdr.de>; Mon, 05 Jan 2026 18:03:33 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E05BCF527D
+	for <lists+linux-rdma@lfdr.de>; Mon, 05 Jan 2026 19:05:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 49730300C36B
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jan 2026 17:02:52 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 40392302D3AC
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jan 2026 18:05:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C1142D23A5;
-	Mon,  5 Jan 2026 17:02:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 332E7328625;
+	Mon,  5 Jan 2026 18:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="VFkZDf5y"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nH4pnKjB"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11020074.outbound.protection.outlook.com [52.101.61.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f201.google.com (mail-qt1-f201.google.com [209.85.160.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D3CF27E076;
-	Mon,  5 Jan 2026 17:02:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.74
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767632570; cv=fail; b=HT125j0FHsNa5kAoJzqClnmyBc4XOHrkH7YG+FK1IZtPfuXotW8tISoFNT/5ySEK031AoLdeUUNkHxaAtkuvIaayKPXecATJmViBUwiECSvDL1amOucok9UUXkKDzA76WXGqwdE9l/RR655z+l3hdSZYvoRWE69YPNbKYQwe88w=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767632570; c=relaxed/simple;
-	bh=ibAkGp3XUsIA6pt6fz6QiuySw8ZGpJO3Wk9iVD8Pdv8=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=W2BubUZ2BVgk6m3kt74XkM+kZsaP5sqX8xCgK/m/Nw4dEfU9wDH55+Vb27hswp3e01MFfr1mheRdqrCItg7kDLmJJlfrN8v3nxTJCahAIs3q28FnBPTiD00KFmd9uuTOKWxV+9EVKlbZpo9GpVowkSRALRu1Ehga9hTmMhDF1rA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=VFkZDf5y; arc=fail smtp.client-ip=52.101.61.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ocNAecATSJ2O7I90a8LVE4GccdFE33CQDve4xroXly/5OFezZrDJbmk2x/iJzP5u9tbcpnSCRszXiGqmD+R8pXE79Fyg3oiZJjmXIlPT6pini9RF8N4YqueWDsGDOuPIGzL7Y8Oe5BaM2FhXP+WAmSkAcJhhoUO1bx3xiZ7cPSd9PhvGdhsprHRtgmJozDHgSy60urbioPBTh6oQ8FZEEO2ErTzyNiISsfUJye7X4qvUx7mAuuBPd6OpTivonitDdlY+iBmDHxHI5SuMNqjt+vuev3DoqnfacYmzd4H/PUzO4jb5c20JUWBlCTHTgXf9FzIbZO+NY1bOfOzkOGxjzw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PkTQ0VBhfY1Bev6WkMq53jRCIlRNO6fpYzqMXoNiMvY=;
- b=fvmK5ajnQN3zgK9GUsJPhOgo45Voin3NzwWrWG6tApDgsnPC4rvr9pJWUOxytt8Zlwo4w0oQSQmKI74F1yg1AG0yJkhjk2LLSY8wLeACApF4Mb2s2XZ3f7EyOrkpdDVeoiLJDmCQhHSl1Wdu/P3/10033bipgzjczx2Pr85N/yz6Woxy1M9ZC32V9Z7kkci7w1P7FOJOCfpHXs6Fh2gWkm8sT3uAjVfYVCgpNsJf2MZ/rCi7ZtEOGSGxLPDUEEh5Vq9GfSpbR5aZpnq/HzElletqyzAn3rmDmz+nXXyH3FvKEIBXFOrcqTZbhKmQVkubwY2wxuGm0xEYhNmgewytQw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PkTQ0VBhfY1Bev6WkMq53jRCIlRNO6fpYzqMXoNiMvY=;
- b=VFkZDf5yoBrO8qCAoAcnc75SQDFWRAnW2yPm1c89IC2aip26aY6/5H48qMZA7ok7QeqgOdf/NFobKKMZ9LlJnW84Moc3Qd5X6A6Tq+NA32SVQkpcuVP45wZ04ONc5MYIZkDpamnmuRmzp2dFFqCabaKYNPZG0GET0M14SvJMeeE=
-Received: from SA3PR21MB3867.namprd21.prod.outlook.com (2603:10b6:806:2fc::15)
- by SA1PR21MB6778.namprd21.prod.outlook.com (2603:10b6:806:4a5::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9478.4; Mon, 5 Jan
- 2026 17:02:43 +0000
-Received: from SA3PR21MB3867.namprd21.prod.outlook.com
- ([fe80::70ff:4d3:2cb6:92a3]) by SA3PR21MB3867.namprd21.prod.outlook.com
- ([fe80::70ff:4d3:2cb6:92a3%6]) with mapi id 15.20.9520.000; Mon, 5 Jan 2026
- 17:02:43 +0000
-From: Haiyang Zhang <haiyangz@microsoft.com>
-To: Simon Horman <horms@kernel.org>, Haiyang Zhang
-	<haiyangz@linux.microsoft.com>
-CC: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, KY Srinivasan
-	<kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
-	<DECUI@microsoft.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
-	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Long Li
-	<longli@microsoft.com>, Konstantin Taranov <kotaranov@microsoft.com>, Erni
- Sri Satya Vennela <ernis@linux.microsoft.com>, Shradha Gupta
-	<shradhagupta@linux.microsoft.com>, Saurabh Sengar
-	<ssengar@linux.microsoft.com>, Aditya Garg <gargaditya@linux.microsoft.com>,
-	Dipayaan Roy <dipayanroy@linux.microsoft.com>, Shiraz Saleem
-	<shirazsaleem@microsoft.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-rdma@vger.kernel.org"
-	<linux-rdma@vger.kernel.org>, Paul Rosswurm <paulros@microsoft.com>
-Subject: RE: [EXTERNAL] Re: [PATCH RFC 1/2] net: mana: Add support for
- coalesced RX packets on CQE
-Thread-Topic: [EXTERNAL] Re: [PATCH RFC 1/2] net: mana: Add support for
- coalesced RX packets on CQE
-Thread-Index: AQHcbqTQSuopfBsQU0Kdu1gm5JI9E7VDlWiAgABXZNA=
-Date: Mon, 5 Jan 2026 17:02:43 +0000
-Message-ID:
- <SA3PR21MB386756824E5257A24338D2BFCA86A@SA3PR21MB3867.namprd21.prod.outlook.com>
-References: <1765900682-22114-1-git-send-email-haiyangz@linux.microsoft.com>
- <20260105114929.GA330625@horms.kernel.org>
-In-Reply-To: <20260105114929.GA330625@horms.kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=70bf5ec4-8b20-4823-a5d8-ef3518654f4f;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2026-01-05T17:02:15Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
- 3, 0, 1;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA3PR21MB3867:EE_|SA1PR21MB6778:EE_
-x-ms-office365-filtering-correlation-id: 47ccb854-3a53-4efc-48db-08de4c7c3df3
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|1800799024|7416014|376014|366016|38070700021;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?uyPtnyvtmEGcI53n20QFtQTVM3DPtWaiYncz32eLjAydb21D+9KssyTtGaCt?=
- =?us-ascii?Q?X9dngfgMx5PBFqmNHqXoQ/3wmYFOx9KPjDqxXwtlTr2CBze/aIyh5F5ZZn1i?=
- =?us-ascii?Q?YW5IYKIkoPrdrqgFZpkRvOq78pEy2ZNNJNKIIcI35ShhY5HENGcFVaC6CSw1?=
- =?us-ascii?Q?/xJ+rhBTdwlmDcNtwy072CD3CkFQXJXgGyvGG3wMsAAaic8psrzYBIUgXIVu?=
- =?us-ascii?Q?MJjEuWwSCFUWDFw2t38+j5QUy9r+MUpe60qxIYsmJu/XV2kioukGOswYUrra?=
- =?us-ascii?Q?oDkraqY20LHQaRlQ/9jT2iKQxqJjwHZUaZ9hjkMYraKDGB3fwwVAs7CDtbLo?=
- =?us-ascii?Q?zYT8wX4zUNNSiGOQLcNqe6wEy5PxHL1pfUxcbA6WIqlxPgwuFRUA2LSxz5KJ?=
- =?us-ascii?Q?JeHIEtQ62ua5wUnF0rDCnmTXjckcQyUKg3B9gDg9acKwtWFKx39T/vfsCm4g?=
- =?us-ascii?Q?JwHvz0vGar+7GSW2AFlomqMyEdq0JM60CqueGPxHX5MoklkDsEgM5lAO/T8D?=
- =?us-ascii?Q?5dIlsubamCWKg183tC/+TlWGooiBokzR/6lPtLcymk57rxmcqELfQvfqopFJ?=
- =?us-ascii?Q?ZAVqNl3jwQkPjGe4fR8zV0cCoR/jEzySUi4swXGtzx9NR/ZB3jH5PcXZubgV?=
- =?us-ascii?Q?MrT3/15tbQlmpWmJy/hYeVSt3qSgwDK4KA/DEFsg/cNt2ItVzwYM82JTIcA6?=
- =?us-ascii?Q?4gcVJ2cF+EmI6pYlhouDzuQrpl/qEYjFnSoWzzRvDOa5fO7nKF4awxpcE4vj?=
- =?us-ascii?Q?+G1b4dhntemjTVA3e7Umk9DIFewQBfC387DMJlh9IqukJSC3M8Cn1oJzsnpK?=
- =?us-ascii?Q?eKBQvAcyXVB7cGfm3KEf+zar4AXIxtDpctK+yH44dyi37D8yWnIX1zamVNSs?=
- =?us-ascii?Q?REPuNOlJGIPB4yEu8xEqqyUuKTflIi7oUolOK/rkMbxO9f51XZJUZIypZwGL?=
- =?us-ascii?Q?tMkCymd6bX6tZskShr3Q6X4ECOhQxBEGvr17oJIk14LjfSGgwrsC82W3ydkL?=
- =?us-ascii?Q?cQ72iRGiD/oUay1vsbPSiZrmOeokxXH5eTpXKwUDBtxGDM3IoTUlPGaQbAtj?=
- =?us-ascii?Q?D+M0wTwpz1zGux0msclQ28W0VJ1VXizx/vf9lXoZkS7gfABsseKF6c4Q1Y4M?=
- =?us-ascii?Q?i3XL88pvUGuhvgJnD5hM/AD8e6/C6EaWqGUg3k+E6ChZ+JLhjH7s6wgjpZn+?=
- =?us-ascii?Q?YJfwPyzVoVXg0yVJ+8SiMwL65ZJXdPNI5EcXz9u7KqSOd6POzZ/oRytSZnWi?=
- =?us-ascii?Q?ceE9RymSO7h64OBPgt5vvqrt55SjkX5s4i9tDoM8xA84/gkeAIGF6Mpsr5eB?=
- =?us-ascii?Q?LtTwVNiAajKHdBxYTPWgFSgpgm/DIz6+/Ov1gMedYw4USaWMNjjrK1wfXWpE?=
- =?us-ascii?Q?ds99P77Dl/TP0OBW7AMmzweCaibevJEK8WL7KAP1b1c1z5Dlam7yz4cKJ5B/?=
- =?us-ascii?Q?vTuHZ/6P9BHu+fdLSES43grkncidxz04xHsmDHeR97OKFK1yjSWOtXebFBIE?=
- =?us-ascii?Q?HwYOkeZpsv54ucnN/NT0eO4+eOe4uf5HCTQx?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA3PR21MB3867.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(376014)(366016)(38070700021);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?WJh7yNrv4te9rh5QbDsufQNxqFCeV+iC/mgbJ44uLxlUFhOU3wSwMbqe5oE0?=
- =?us-ascii?Q?AZDTmlzK8SAYSCuh1F+0kxkOIBm6CXjrgL2x3b5LIwCWrENMrVlYTtR7M8S4?=
- =?us-ascii?Q?BpsFoxZQBdT+v0JXZyenmom0cp3F5P2v3k5kRicxv94BwktjUL3be7iTrY6t?=
- =?us-ascii?Q?7Iey4KFH6pQnNrHIsCM+jxGOH62nipedZCLzxwT32N6fK6yEPt/+rebwZIZW?=
- =?us-ascii?Q?WavIhaXTxAgTIRU5avrbECkDs/5xGll7R7+nv1DrHk8IXjNaGsg8A8A8cAT+?=
- =?us-ascii?Q?OCd9zu1m7u0u+TOMt+CutfqefTmTK810NvO7fpNQ4MarvgGOo+tlZurg3A6+?=
- =?us-ascii?Q?39v/zp3Myt7gCe5ZaoHgzgmkv3UAg3PadfliMzplS+f3bAjhZVZejwgRmjV4?=
- =?us-ascii?Q?14wu7brM9TnJaKuTDqnkkjsWln+YNTOAtpQnIATRpRRKDQhhp0LvgPTNwJST?=
- =?us-ascii?Q?8jlZzaHFzMh02n5ow6Bse/qjCAgsFL2TyvSIeOG2MLW1yXKAmUBN9d4+8IOZ?=
- =?us-ascii?Q?2Ccm/Ed7CS8zMG5rcuFzaILt+fpOmLOUQPxbuJ08nVDtrlAlygzuX6QWtttJ?=
- =?us-ascii?Q?wcqMQ+VJu5RR/qBCLB7oi3GPKnz7wDZ6lt9E5JBVb364x/DtaNJaqRViUEKY?=
- =?us-ascii?Q?zisDAOykiEJFZ59WlVXww1qBKRch9JAlLRuZczEEK1Ty2a6Hho7yOI/Tv8iy?=
- =?us-ascii?Q?mR0oVV1C6EdjKDQKF+aC6IlOUDGPm7KNX2yj7EOas7lbiygSh6DzylVXJ89o?=
- =?us-ascii?Q?JBlW2L4KkDkGPEtxLrrxK5AcDJMO/cRviPJ8NJO0GukPDprtUa/PfshxN8Be?=
- =?us-ascii?Q?Cm+WbgJkmY31X3zKP4o4v7+vO6QYWvg8831Tkzlxwd45OPRBFhNNnybc/csb?=
- =?us-ascii?Q?1h2RabGi2iXPZsQaoJhO+m+sfGxRn5DtwznWB2K1QIKeZ+gujtruF6PvFEVU?=
- =?us-ascii?Q?q79kmpBCC7LJvqST+MXCeiJHplSaYsr1SSyMvtXZBDAOjldhPFvOYInoxvHS?=
- =?us-ascii?Q?DkLzx6QFjtwdol5xTGuGtozqsg9KcVVfSIjLEad/MBVsxrQ17+jaXaT6hpi4?=
- =?us-ascii?Q?aXYkTEKsBF7acgjvDFq+gaisYxa4RLnL6yRu1SC29XjhMCxJuh6toTEq1nyO?=
- =?us-ascii?Q?OYPoPYySsm1Mm1G45VG3LxyTmkMqeQNUQuMUF1UnMqMAt8GKbr9H3qqgq8hj?=
- =?us-ascii?Q?cigsDY2nRD6KoLihmUWr6sstJsXw4+yO7Q6CV7RuGK2R7KI5sTpWRnvR5LIi?=
- =?us-ascii?Q?Wmvob2nBlRCFuSf+1XANoXz+FxU2EI/X4ahCUP0QmPU7SGpe9jdGZSToQcnE?=
- =?us-ascii?Q?fp6ta2ZTByqUzGYupjhnUoHDpx4KWKWLo0iTbBoq4La8ndVci1BzDJ1mGhLb?=
- =?us-ascii?Q?gQVcmgpsOuv3KalyGxcS6+ckFm2t5eMdQ1KrEy/NuFN3xR6jnCzOR2yz9w3Z?=
- =?us-ascii?Q?V+D8x7L9IObnVRCGwxNnOvW3BOIRlRkOZEO7odAeiFfal2TYzzMl7u/eD6v0?=
- =?us-ascii?Q?eOnYhdtzkmnBA0zbiEWGiaJ4rSjaOsXZj737HKmNniy6XC1Rvhw34l2c0djg?=
- =?us-ascii?Q?vBqCqv0A1LIAIrGZD5CFGbTRmZQWJiWCUG3Uyi6/Sh4feCUpw0Azv+UDyxcJ?=
- =?us-ascii?Q?SUfwZAWyc6YDacb9k8XwNArUMa0Ty1J/v2YDAVJce16zuJThOR9eznATcYR0?=
- =?us-ascii?Q?ebBfH+alI12Phr+Ecu1fLColeOAR2vPTI7wWiT8bEOYQBXaAOMACa3PHNLyF?=
- =?us-ascii?Q?bJgzbcpeCQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B1332F6911
+	for <linux-rdma@vger.kernel.org>; Mon,  5 Jan 2026 18:05:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1767636355; cv=none; b=Gjc9QFnRNBp6dvJpfVxX+gHQLa4vaB0eiJDaXsRGVVUVRqFRQXD1GmXapYsHZupDYV4/8gwrazcYSrmjh3lGOdI7PWAteoqVzVcrxMl8PVu4uzRRa1nzPyKsQOONOzPQ35oQNBnRLr0+eiN1hzph/Y+walJ6qceyuyslOyeUkIE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1767636355; c=relaxed/simple;
+	bh=YCyF7cvbQH+q78vI4df4Y66o65mWldPU1/uIsAXFp4g=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Xe2/Dfctiai1Kuv/GdC9LwYL1KK3iVGanuGnWOYzryVh83iKNHIWtYXroVJxAq2HgrRZD7tu52ofYQGvzuzD12tdnMVZoo1OR4db0/QsXv+i/KIQUAYa9EzE34iTieEbu9crP+Tn4UzE/YTHtix35qiF3PfdF3SvDS/zNZR0Efc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nH4pnKjB; arc=none smtp.client-ip=209.85.160.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com
+Received: by mail-qt1-f201.google.com with SMTP id d75a77b69052e-4ee1b7293e7so5578521cf.0
+        for <linux-rdma@vger.kernel.org>; Mon, 05 Jan 2026 10:05:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1767636352; x=1768241152; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=DUTFqXYNeHk0NIq2Y8aPEtM74BaVRnqo4H7E8HKdnUc=;
+        b=nH4pnKjBwjvRNe960ePEHklhXnUxmgTQwkUwTf1aLFFcWL/FKD6Ay232Jin2Zj3Lfy
+         CBEb/AhLTl/crfgZ3lPoUWhUSn0w6tzuaM9Rs+tJP1pSIGr0LfOFYARitr3yJWETLlrD
+         8M/jxc3aKgJZrvs/LXdxGlKDOKw7ILTRt4qBlfMOijfQ5pVVLsspth15beGa9CUCs5Lb
+         mm+bt5sAOUi/np7TDIum5ZFximG8nNvdBM734uh5/as7FEhD+7mxs8ByNpDNxI3HvUyD
+         BQd+TgdbKu9RbTPi20IqjAuCAXXqHHkBKOX0PbyDeFhJSPSS5EvYebgJeG9r86JyafrO
+         7Ebg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767636352; x=1768241152;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DUTFqXYNeHk0NIq2Y8aPEtM74BaVRnqo4H7E8HKdnUc=;
+        b=NeaT3OZF4r/Y1Hgit8HFeXxaBvXzoZL11I/czN793/H0yvzXaiKxIPvcAX8M357XZF
+         fU0S0iQKnECuW7ttbndFzUupWZ0hXUpu6FOJDH6eWLUYuPseNveDypWTRhJelcLDJpYg
+         YXYjB4AL3LzD3JvKSk7lGroPS/5kOc0TZY7qkJ3/nhVO6kx6chYgC+AJcbd1JMyh4hH/
+         W3TzcCMEuxjLUo+1K1JKlt3NVKMQOjSrQ+tHoD0gSNR8Q29unLh6YNOefB6taQdhO2Gh
+         3xKthpIJtYM30H++LviaSDUo/SOy0hTMYCsaRZuFFklq9VjzdCR8y1FYny0B6kYug5YM
+         7JjA==
+X-Forwarded-Encrypted: i=1; AJvYcCUIaaRcloN2T+KMDl+AYiJj3bRYJsln6O4nx9ADiNiMfRgLNmYUkWGhU3HOs0SCxlg2ZYxYRLoldXGC@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywtd3htFyRdE+kqVGKbPY45LpZw5I1nHqYW6uGUSZzjrzaapUSW
+	HOhFu9bx20ZH5p8kLXXYw65XhIvqM21/VDwx/IPs58zFmxWS5poFjbutdqzXx588FRAHLx8gPGk
+	qNzjJYs3FrA==
+X-Google-Smtp-Source: AGHT+IEotxnMoM+FPQdcGf/RTwZRjntvYRQ/r+0emzrw6xu07anlWyk5s7BWHPRZRqCZk/XRdf8vAffeeVPI
+X-Received: from qvbpj11.prod.google.com ([2002:a05:6214:4b0b:b0:88a:25ce:560c])
+ (user=jmoroni job=prod-delivery.src-stubby-dispatcher) by 2002:ac8:5741:0:b0:4ff:4a7c:da11
+ with SMTP id d75a77b69052e-4ffa76a1195mr5376741cf.11.1767636351978; Mon, 05
+ Jan 2026 10:05:51 -0800 (PST)
+Date: Mon,  5 Jan 2026 18:05:50 +0000
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA3PR21MB3867.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 47ccb854-3a53-4efc-48db-08de4c7c3df3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Jan 2026 17:02:43.1847
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ClviRHaBXMoTcNOBDqkegJhDgy0slaIIgJYqUqg0V1GW8pd1xRmmukzdmObXsh6KNyMVg/hoqBr6Ej+iCylEGQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR21MB6778
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.52.0.351.gbe84eed79e-goog
+Message-ID: <20260105180550.2907858-1-jmoroni@google.com>
+Subject: [PATCH rdma-next] RDMA/irdma: Remove fixed 1 ms delay during AH wait loop
+From: Jacob Moroni <jmoroni@google.com>
+To: tatyana.e.nikolova@intel.com, krzysztof.czurylo@intel.com
+Cc: jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org, 
+	Jacob Moroni <jmoroni@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
+The AH CQP command wait loop executes in an atomic context and was
+using a fixed 1 ms delay. Since many AH create commands can complete
+much faster than 1 ms, use poll_timeout_us_atomic with a 1 us delay.
 
+Also, use the timeout value indicated during the capability exchange
+rather than a hard-coded value.
 
-> -----Original Message-----
-> From: Simon Horman <horms@kernel.org>
-> Sent: Monday, January 5, 2026 6:49 AM
-> To: Haiyang Zhang <haiyangz@linux.microsoft.com>
-> Cc: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; KY Srinivasan
-> <kys@microsoft.com>; Haiyang Zhang <haiyangz@microsoft.com>; Wei Liu
-> <wei.liu@kernel.org>; Dexuan Cui <DECUI@microsoft.com>; Andrew Lunn
-> <andrew+netdev@lunn.ch>; David S. Miller <davem@davemloft.net>; Eric
-> Dumazet <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo
-> Abeni <pabeni@redhat.com>; Long Li <longli@microsoft.com>; Konstantin
-> Taranov <kotaranov@microsoft.com>; Erni Sri Satya Vennela
-> <ernis@linux.microsoft.com>; Shradha Gupta
-> <shradhagupta@linux.microsoft.com>; Saurabh Sengar
-> <ssengar@linux.microsoft.com>; Aditya Garg
-> <gargaditya@linux.microsoft.com>; Dipayaan Roy
-> <dipayanroy@linux.microsoft.com>; Shiraz Saleem
-> <shirazsaleem@microsoft.com>; linux-kernel@vger.kernel.org; linux-
-> rdma@vger.kernel.org; Paul Rosswurm <paulros@microsoft.com>
-> Subject: [EXTERNAL] Re: [PATCH RFC 1/2] net: mana: Add support for
-> coalesced RX packets on CQE
->=20
-> On Tue, Dec 16, 2025 at 07:57:54AM -0800, Haiyang Zhang wrote:
-> > From: Haiyang Zhang <haiyangz@microsoft.com>
-> >
-> > Our NIC can have up to 4 RX packets on 1 CQE. To support this feature,
-> > check and process the type CQE_RX_COALESCED_4. The default setting is
-> > disabled, to avoid possible regression on latency.
-> >
-> > And add ethtool handler to switch this feature. To turn it on, run:
-> >   ethtool -C <nic> rx-frames 4
-> > To turn it off:
-> >   ethtool -C <nic> rx-frames 1
-> >
-> > Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
->=20
-> ...
->=20
-> > diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> > index 0e2f4343ac67..1b9ed5c9bbff 100644
-> > --- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> > +++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-> > @@ -397,6 +397,58 @@ static void mana_get_channels(struct net_device
-> *ndev,
-> >  	channel->combined_count =3D apc->num_queues;
-> >  }
-> >
-> > +static int mana_get_coalesce(struct net_device *ndev,
-> > +			     struct ethtool_coalesce *ec,
-> > +			     struct kernel_ethtool_coalesce *kernel_coal,
-> > +			     struct netlink_ext_ack *extack)
->=20
-> ...
->=20
-> > +	if (err) {
-> > +		netdev_err(ndev, "Set rx-frames to %u failed:%d\n",
-> > +			   ec->rx_max_coalesced_frames, err);
-> > +		NL_SET_ERR_MSG_FMT(extack, "Set rx-frames to %u failed:%d\n",
-> > +				   ec->rx_max_coalesced_frames, err);
->=20
-> nit: I don't think the trailing '\n' is necessary here.
->=20
-Will update it.
+Signed-off-by: Jacob Moroni <jmoroni@google.com>
+---
+ drivers/infiniband/hw/irdma/main.h  |  2 ++
+ drivers/infiniband/hw/irdma/utils.c |  2 +-
+ drivers/infiniband/hw/irdma/verbs.c | 16 ++++++++--------
+ 3 files changed, 11 insertions(+), 9 deletions(-)
 
-Thanks,
-- Haiyang
+diff --git a/drivers/infiniband/hw/irdma/main.h b/drivers/infiniband/hw/irdma/main.h
+index baab61e42..d320d1a22 100644
+--- a/drivers/infiniband/hw/irdma/main.h
++++ b/drivers/infiniband/hw/irdma/main.h
+@@ -23,6 +23,7 @@
+ #include <linux/workqueue.h>
+ #include <linux/slab.h>
+ #include <linux/io.h>
++#include <linux/iopoll.h>
+ #include <linux/crc32c.h>
+ #include <linux/kthread.h>
+ #ifndef CONFIG_64BIT
+@@ -528,6 +529,7 @@ void irdma_cq_wq_destroy(struct irdma_pci_f *rf, struct irdma_sc_cq *cq);
+ void irdma_srq_event(struct irdma_sc_srq *srq);
+ void irdma_srq_wq_destroy(struct irdma_pci_f *rf, struct irdma_sc_srq *srq);
+ void irdma_cleanup_pending_cqp_op(struct irdma_pci_f *rf);
++int irdma_get_timeout_threshold(struct irdma_sc_dev *dev);
+ int irdma_hw_modify_qp(struct irdma_device *iwdev, struct irdma_qp *iwqp,
+ 		       struct irdma_modify_qp_info *info, bool wait);
+ int irdma_qp_suspend_resume(struct irdma_sc_qp *qp, bool suspend);
+diff --git a/drivers/infiniband/hw/irdma/utils.c b/drivers/infiniband/hw/irdma/utils.c
+index cc2a12f73..3bac7c258 100644
+--- a/drivers/infiniband/hw/irdma/utils.c
++++ b/drivers/infiniband/hw/irdma/utils.c
+@@ -572,7 +572,7 @@ void irdma_cleanup_pending_cqp_op(struct irdma_pci_f *rf)
+ 	}
+ }
+ 
+-static int irdma_get_timeout_threshold(struct irdma_sc_dev *dev)
++int irdma_get_timeout_threshold(struct irdma_sc_dev *dev)
+ {
+ 	u16 time_s = dev->vc_caps.cqp_timeout_s;
+ 
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 6d9af41a2..1f1efd497 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -5027,15 +5027,15 @@ static int irdma_create_hw_ah(struct irdma_device *iwdev, struct irdma_ah *ah, b
+ 	}
+ 
+ 	if (!sleep) {
+-		int cnt = CQP_COMPL_WAIT_TIME_MS * CQP_TIMEOUT_THRESHOLD;
++		const u64 tmout_ms = irdma_get_timeout_threshold(&rf->sc_dev) *
++			CQP_COMPL_WAIT_TIME_MS;
+ 
+-		do {
+-			irdma_cqp_ce_handler(rf, &rf->ccq.sc_cq);
+-			mdelay(1);
+-		} while (!ah->sc_ah.ah_info.ah_valid && --cnt);
+-
+-		if (!cnt) {
+-			ibdev_dbg(&iwdev->ibdev, "VERBS: CQP create AH timed out");
++		if (poll_timeout_us_atomic(irdma_cqp_ce_handler(rf,
++								&rf->ccq.sc_cq),
++					   ah->sc_ah.ah_info.ah_valid, 1,
++					   tmout_ms * USEC_PER_MSEC, false)) {
++			ibdev_dbg(&iwdev->ibdev,
++				  "VERBS: CQP create AH timed out");
+ 			err = -ETIMEDOUT;
+ 			goto err_ah_create;
+ 		}
+-- 
+2.52.0.351.gbe84eed79e-goog
+
 
