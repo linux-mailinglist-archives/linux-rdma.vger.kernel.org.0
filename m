@@ -1,59 +1,57 @@
-Return-Path: <linux-rdma+bounces-15304-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15305-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F2B8CF2416
-	for <lists+linux-rdma@lfdr.de>; Mon, 05 Jan 2026 08:47:07 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AF04CF2B69
+	for <lists+linux-rdma@lfdr.de>; Mon, 05 Jan 2026 10:23:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7E5A2301BEB7
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jan 2026 07:46:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9A6F7307F002
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jan 2026 09:17:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12F042356C9;
-	Mon,  5 Jan 2026 07:46:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F21221B196;
+	Mon,  5 Jan 2026 09:07:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MsOGgugr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Oyt6ffNt"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEC1C4A35;
-	Mon,  5 Jan 2026 07:46:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED56F329E4B;
+	Mon,  5 Jan 2026 09:07:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767599199; cv=none; b=EZ9uy4ghh0xnz69NGbo8mJaNT9fusB80PrUilQ0oeJ66+J6UAJ2YeRN246t4yy7QYDi3VDlBcp6LhcXe7mUGBPWt5PQu3wrSTwWd/gyepe8ksJB7wi1SuJQmU9qaZCnknApfd5FhJoAXCgVy+fEPA6zQKsDfi7Y91GcKEGlVa54=
+	t=1767604053; cv=none; b=LZsFIjlFoW9n8jcQmYIOwaApqaWIyJGz1MhAtzgDmSQsqA+2C0ZL+n76RMebJPbKS+O6pf6N7xoKsF4tH3INtojWRzODXEXKP06dOlzlsw5KTP+PiLyJn4vPQPx4sxncszKrJ6SkRJgz7orsBUK1CUdsKHbQBDnpAzwg5TwdxUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767599199; c=relaxed/simple;
-	bh=q+ApUgnXUM4IKI4EuqMpS5rCqxB4UyTLSVFwbzh6d9o=;
+	s=arc-20240116; t=1767604053; c=relaxed/simple;
+	bh=FODxK3nxAIjOt/tMs/5PUdHO8mNK6v+7ICrti1LSlbs=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=UHVd1A4d/Xf1cwuItCSG6IK6nE9OUYKgLBVw2ZWiYichqy5U9fHrzj45YFgynwk8pRzTyrVS9v5RDewZ4aYBAckeQJ+a6rl8nr3I3pZHoSPI9MBoN2qyPZz7j5TJNPEoNEA+gJPJrM2Z22ICJwtov2RSEwN4fEY0t5UoxzDYrSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MsOGgugr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8EC9C116D0;
-	Mon,  5 Jan 2026 07:46:38 +0000 (UTC)
+	 MIME-Version:Content-Type; b=K7MOOthbp6C2eb9xTcVzi9EFRp0f8hAl4jUp5coUYxMWoOIItMzxX5X8XkcrZsWcqk3jkr5rbnRLI0jXNHmF3qR/7/5nTluzKgWTVA5Tk9zkefL3VoXwnCoUsmJWoKw4qENCJ6f02yM7USFB0nLc6OHXlSJ126r0skDXx7VI9ws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Oyt6ffNt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 140D9C4E694;
+	Mon,  5 Jan 2026 09:07:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767599199;
-	bh=q+ApUgnXUM4IKI4EuqMpS5rCqxB4UyTLSVFwbzh6d9o=;
+	s=k20201202; t=1767604051;
+	bh=FODxK3nxAIjOt/tMs/5PUdHO8mNK6v+7ICrti1LSlbs=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=MsOGgugrJXYS8xhKqJONEtYwRyRa6TX8HfVSWezQTI7zFjbNGW3EviNGDCnW+PVnN
-	 x5lDs8fiMoHSxv/b24LcmB2AwJ26pGFgH3Zam5NkUgsq5oI4NoiVApfsdiUYarbmQe
-	 rOIfPq6Ej9fxYoJuZcOb0orEJzMwMqV/d518SPGfypBRpMFNXstO7W67X5dhBNiNCK
-	 7qIL+Mn8qKM3mHWYqNqqbf0hfV0Zy42SvAgKr3PQ3dtZ6HczNKpZlKvHoWKsse1gi0
-	 jYud13AP+5nCkaOewqV4HizYez2aawJ9PuYiLy2+hxSTZJx3bUdMSa58DQUY0OZmuq
-	 YD1XQUc6u5enQ==
+	b=Oyt6ffNtgr+C7ESLyqvKL5xP7kg8eBSPOnX64S1VmqYMdmFAZ9Frqn7zasnNlV88S
+	 sWKH3ujsMYRWxYQ4JKGTKIIhSJfi7dMhq58kY0/GNeIsp/4DFP1IoeOtgrCA29uvFF
+	 9EL/m+Ijwlqvm3MvL/W9YfuUiu7eGrRhFEPy0Z7mYbsZAnKLIahws1s1HysUkwemE1
+	 uz4tGzyDkAkYEUVNQGQn7cjjGVkZTGtjZKX9jgXPDPcj+bA2q+RHwnwzLvsCOcIdMd
+	 OUClCQP3Xf3JkEXAjUru2c2FCBKmWkzvSnqw8bNvHPd+0oPXIcC3opXMC49cM+mslL
+	 xnGDIS1opk1Aw==
 From: Leon Romanovsky <leon@kernel.org>
-To: Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, 
- Mark Bloch <mbloch@nvidia.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Jason Gunthorpe <jgg@ziepe.ca>, Edward Srouji <edwards@nvidia.com>
-Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Or Har-Toov <ohartoov@nvidia.com>, 
- Maher Sanalla <msanalla@nvidia.com>
-In-Reply-To: <20251218-vf-bw-lag-mode-v1-0-7d8ed4368bea@nvidia.com>
-References: <20251218-vf-bw-lag-mode-v1-0-7d8ed4368bea@nvidia.com>
-Subject: Re: (subset) [PATCH rdma-next 00/10] Support effective VF
- bandwidth query in LAG mode
-Message-Id: <176759919623.1149539.16050199058638618062.b4-ty@kernel.org>
-Date: Mon, 05 Jan 2026 02:46:36 -0500
+To: Jason Gunthorpe <jgg@ziepe.ca>, Yishai Hadas <yishaih@nvidia.com>, 
+ Chiara Meiohas <cmeiohas@nvidia.com>, 
+ Michal Kalderon <mkalderon@marvell.com>, 
+ Selvin Xavier <selvin.xavier@broadcom.com>, 
+ Leon Romanovsky <leon@kernel.org>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Parav Pandit <parav@nvidia.com>, Maher Sanalla <msanalla@nvidia.com>
+In-Reply-To: <20260104-ib-core-misc-v1-0-00367f77f3a8@nvidia.com>
+References: <20260104-ib-core-misc-v1-0-00367f77f3a8@nvidia.com>
+Subject: Re: [PATCH rdma-next 0/6] Batch of unrelated cleanups in IB
+Message-Id: <176760404843.1151534.7543832472811485821.b4-ty@kernel.org>
+Date: Mon, 05 Jan 2026 04:07:28 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -65,31 +63,26 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.15-dev-a6db3
 
 
-On Thu, 18 Dec 2025 17:57:50 +0200, Edward Srouji wrote:
-> Currently, mlx5 driver exposes only the parent function's speed to VFs,
-> providing no way to query the actual effective bandwidth in LAG and
-> MPESW configurations. This limitation prevents userspace and
-> upper-layer software from obtaining accurate bandwidth information,
-> which impacts traffic scheduling decisions.
+On Sun, 04 Jan 2026 15:51:32 +0200, Leon Romanovsky wrote:
+> A collection of independent, self-contained cleanup patches in IB.
 > 
-> This series addresses this by:
+> Thanks
 > 
-> [...]
 
 Applied, thanks!
 
-[05/10] IB/core: Add async event on device speed change
-        (no commit info)
-[06/10] IB/core: Add helper to convert port attributes to data rate
-        (no commit info)
-[07/10] IB/core: Refactor rate_show to use ib_port_attr_to_rate()
-        (no commit info)
-[08/10] IB/core: Add query_port_speed verb
-        (no commit info)
-[09/10] RDMA/mlx5: Raise async event on device speed change
-        (no commit info)
-[10/10] RDMA/mlx5: Implement query_port_speed callback
-        (no commit info)
+[1/6] RDMA/umem: Remove redundant DMABUF ops check
+      https://git.kernel.org/rdma/rdma/c/ac7dea328ab52a
+[2/6] RDMA/core: Avoid exporting module local functions and remove not-used ones
+      https://git.kernel.org/rdma/rdma/c/8d466b155f8389
+[3/6] RDMA/mlx5: Fix ucaps init error flow
+      https://git.kernel.org/rdma/rdma/c/6dc78c53de99e4
+[4/6] RDMA/mlx5: Avoid direct access to DMA device pointer
+      https://git.kernel.org/rdma/rdma/c/522a5c1c56fbf7
+[5/6] RDMA/qedr: Remove unused defines
+      https://git.kernel.org/rdma/rdma/c/cc016ebeb146d0
+[6/6] RDMA/ocrdma: Remove unused OCRDMA_UVERBS definition
+      https://git.kernel.org/rdma/rdma/c/325e3b5431ddd2
 
 Best regards,
 -- 
