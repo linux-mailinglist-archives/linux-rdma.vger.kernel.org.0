@@ -1,91 +1,126 @@
-Return-Path: <linux-rdma+bounces-15305-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15306-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AF04CF2B69
-	for <lists+linux-rdma@lfdr.de>; Mon, 05 Jan 2026 10:23:54 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FAC7CF3664
+	for <lists+linux-rdma@lfdr.de>; Mon, 05 Jan 2026 13:01:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9A6F7307F002
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jan 2026 09:17:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 73D0F30D2EC8
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jan 2026 11:56:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F21221B196;
-	Mon,  5 Jan 2026 09:07:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DAEE334C1C;
+	Mon,  5 Jan 2026 11:49:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Oyt6ffNt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bA5rotvD"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED56F329E4B;
-	Mon,  5 Jan 2026 09:07:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90A57335060;
+	Mon,  5 Jan 2026 11:49:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767604053; cv=none; b=LZsFIjlFoW9n8jcQmYIOwaApqaWIyJGz1MhAtzgDmSQsqA+2C0ZL+n76RMebJPbKS+O6pf6N7xoKsF4tH3INtojWRzODXEXKP06dOlzlsw5KTP+PiLyJn4vPQPx4sxncszKrJ6SkRJgz7orsBUK1CUdsKHbQBDnpAzwg5TwdxUo=
+	t=1767613776; cv=none; b=d+zY6p2zNr/eiWqEimVj9deTVOZHwXTjGYyXaQXrmGqMRGvTCf2zfZS++PrBCw4N4yFTE/dXO5Dy2bSdlidRVZMWKpgVucgwU1UFicSv9Gpn1ae8XfoQIC04u5KSD/vFpPSWwo77MSNWFAuesa45JoTQixNxqq83CB0Vyhtklkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767604053; c=relaxed/simple;
-	bh=FODxK3nxAIjOt/tMs/5PUdHO8mNK6v+7ICrti1LSlbs=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=K7MOOthbp6C2eb9xTcVzi9EFRp0f8hAl4jUp5coUYxMWoOIItMzxX5X8XkcrZsWcqk3jkr5rbnRLI0jXNHmF3qR/7/5nTluzKgWTVA5Tk9zkefL3VoXwnCoUsmJWoKw4qENCJ6f02yM7USFB0nLc6OHXlSJ126r0skDXx7VI9ws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Oyt6ffNt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 140D9C4E694;
-	Mon,  5 Jan 2026 09:07:30 +0000 (UTC)
+	s=arc-20240116; t=1767613776; c=relaxed/simple;
+	bh=yWu645PPDBjG4J1fJYBg5tusEONb7bKGLU7c13nDQJ4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PTwXILZMeBWuTegz2yOlVGGJSR31gnswTzjyRmRaoNMhxVIEknYn8IOXZQRFcgm76XiR3z4P61h5w+XbMPC6tzlVQKEX5XOJ8gVXyePJgTgrBiMrBxzna2cPHcfkISHm83j1yCB98Ve0BvQuABzN9275FkjjLV8hsSetsXupumk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bA5rotvD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCB68C19421;
+	Mon,  5 Jan 2026 11:49:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767604051;
-	bh=FODxK3nxAIjOt/tMs/5PUdHO8mNK6v+7ICrti1LSlbs=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Oyt6ffNtgr+C7ESLyqvKL5xP7kg8eBSPOnX64S1VmqYMdmFAZ9Frqn7zasnNlV88S
-	 sWKH3ujsMYRWxYQ4JKGTKIIhSJfi7dMhq58kY0/GNeIsp/4DFP1IoeOtgrCA29uvFF
-	 9EL/m+Ijwlqvm3MvL/W9YfuUiu7eGrRhFEPy0Z7mYbsZAnKLIahws1s1HysUkwemE1
-	 uz4tGzyDkAkYEUVNQGQn7cjjGVkZTGtjZKX9jgXPDPcj+bA2q+RHwnwzLvsCOcIdMd
-	 OUClCQP3Xf3JkEXAjUru2c2FCBKmWkzvSnqw8bNvHPd+0oPXIcC3opXMC49cM+mslL
-	 xnGDIS1opk1Aw==
-From: Leon Romanovsky <leon@kernel.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Yishai Hadas <yishaih@nvidia.com>, 
- Chiara Meiohas <cmeiohas@nvidia.com>, 
- Michal Kalderon <mkalderon@marvell.com>, 
- Selvin Xavier <selvin.xavier@broadcom.com>, 
- Leon Romanovsky <leon@kernel.org>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Parav Pandit <parav@nvidia.com>, Maher Sanalla <msanalla@nvidia.com>
-In-Reply-To: <20260104-ib-core-misc-v1-0-00367f77f3a8@nvidia.com>
-References: <20260104-ib-core-misc-v1-0-00367f77f3a8@nvidia.com>
-Subject: Re: [PATCH rdma-next 0/6] Batch of unrelated cleanups in IB
-Message-Id: <176760404843.1151534.7543832472811485821.b4-ty@kernel.org>
-Date: Mon, 05 Jan 2026 04:07:28 -0500
+	s=k20201202; t=1767613775;
+	bh=yWu645PPDBjG4J1fJYBg5tusEONb7bKGLU7c13nDQJ4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bA5rotvDlyCaLm7EtL2iBPGJw/Au9k0G72MCu+EKs6p5iLzStc6XznizNcA8iQ6gV
+	 otTYllFnOWjne9l0Qs8D4fqOTWOBUg58fsvi0d4QVGhlSAdE0DmZMIXcwmUb6wQohE
+	 tlo+jPFzHYjExWA65Ik5GX7b+BHnYbN0PrS6+mhHW/wuP/pyOU01pQkm3pGWctuw7O
+	 qvFRuoKEHfG8sqj/7DFsjPba3EgP8I+1SToDrmWieg/ak9RtjY+12r+KuCjIESz63+
+	 ng0ogXey35ODFl1s572WpnSrfBVQdaz5liQ+iJF6kHfo3IAhJS7M08Hi7uAYn7mz8K
+	 jKspppuY0ls3g==
+Date: Mon, 5 Jan 2026 11:49:29 +0000
+From: Simon Horman <horms@kernel.org>
+To: Haiyang Zhang <haiyangz@linux.microsoft.com>
+Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Long Li <longli@microsoft.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
+	Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Saurabh Sengar <ssengar@linux.microsoft.com>,
+	Aditya Garg <gargaditya@linux.microsoft.com>,
+	Dipayaan Roy <dipayanroy@linux.microsoft.com>,
+	Shiraz Saleem <shirazsaleem@microsoft.com>,
+	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	paulros@microsoft.com
+Subject: Re: [PATCH RFC 1/2] net: mana: Add support for coalesced RX packets
+ on CQE
+Message-ID: <20260105114929.GA330625@horms.kernel.org>
+References: <1765900682-22114-1-git-send-email-haiyangz@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15-dev-a6db3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1765900682-22114-1-git-send-email-haiyangz@linux.microsoft.com>
 
-
-On Sun, 04 Jan 2026 15:51:32 +0200, Leon Romanovsky wrote:
-> A collection of independent, self-contained cleanup patches in IB.
+On Tue, Dec 16, 2025 at 07:57:54AM -0800, Haiyang Zhang wrote:
+> From: Haiyang Zhang <haiyangz@microsoft.com>
 > 
-> Thanks
+> Our NIC can have up to 4 RX packets on 1 CQE. To support this feature,
+> check and process the type CQE_RX_COALESCED_4. The default setting is
+> disabled, to avoid possible regression on latency.
 > 
+> And add ethtool handler to switch this feature. To turn it on, run:
+>   ethtool -C <nic> rx-frames 4
+> To turn it off:
+>   ethtool -C <nic> rx-frames 1
+> 
+> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
 
-Applied, thanks!
+...
 
-[1/6] RDMA/umem: Remove redundant DMABUF ops check
-      https://git.kernel.org/rdma/rdma/c/ac7dea328ab52a
-[2/6] RDMA/core: Avoid exporting module local functions and remove not-used ones
-      https://git.kernel.org/rdma/rdma/c/8d466b155f8389
-[3/6] RDMA/mlx5: Fix ucaps init error flow
-      https://git.kernel.org/rdma/rdma/c/6dc78c53de99e4
-[4/6] RDMA/mlx5: Avoid direct access to DMA device pointer
-      https://git.kernel.org/rdma/rdma/c/522a5c1c56fbf7
-[5/6] RDMA/qedr: Remove unused defines
-      https://git.kernel.org/rdma/rdma/c/cc016ebeb146d0
-[6/6] RDMA/ocrdma: Remove unused OCRDMA_UVERBS definition
-      https://git.kernel.org/rdma/rdma/c/325e3b5431ddd2
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> index 0e2f4343ac67..1b9ed5c9bbff 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> @@ -397,6 +397,58 @@ static void mana_get_channels(struct net_device *ndev,
+>  	channel->combined_count = apc->num_queues;
+>  }
+>  
+> +static int mana_get_coalesce(struct net_device *ndev,
+> +			     struct ethtool_coalesce *ec,
+> +			     struct kernel_ethtool_coalesce *kernel_coal,
+> +			     struct netlink_ext_ack *extack)
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+...
 
+> +	if (err) {
+> +		netdev_err(ndev, "Set rx-frames to %u failed:%d\n",
+> +			   ec->rx_max_coalesced_frames, err);
+> +		NL_SET_ERR_MSG_FMT(extack, "Set rx-frames to %u failed:%d\n",
+> +				   ec->rx_max_coalesced_frames, err);
+
+nit: I don't think the trailing '\n' is necessary here.
+
+     Flagged by coccinelle.
+
+> +
+> +		apc->cqe_coalescing_enable = saved_cqe_coalescing_enable;
+> +	}
+> +
+> +	return err;
+> +}
+
+...
 
