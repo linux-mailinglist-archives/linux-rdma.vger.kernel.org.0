@@ -1,89 +1,93 @@
-Return-Path: <linux-rdma+bounces-15315-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15316-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACD26CF634D
-	for <lists+linux-rdma@lfdr.de>; Tue, 06 Jan 2026 02:12:10 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12670CF6308
+	for <lists+linux-rdma@lfdr.de>; Tue, 06 Jan 2026 02:07:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 712BB3010D6C
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jan 2026 01:11:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1455F30478E1
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jan 2026 01:07:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC7C5329C48;
-	Tue,  6 Jan 2026 01:02:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59B0127815D;
+	Tue,  6 Jan 2026 01:07:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="MhgfidOF"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="WAdXLdY+"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1811832939C
-	for <linux-rdma@vger.kernel.org>; Tue,  6 Jan 2026 01:02:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BE7D274FDF
+	for <linux-rdma@vger.kernel.org>; Tue,  6 Jan 2026 01:07:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767661323; cv=none; b=t6lE1KEYK53pN6LqQF/Or6aUSo4runF9+fbHIDWxUrJd0qsYktegLTxB7b7CcqIwGEasT7wvjd9EEfgwekgwm9CFxdeFbfeiZw7WCJiOaA6nTuN+7m1wLWIS5SwEe8C85HzIzkIQ2xG/d4ZKgBuzH1opE6g/ltpK4wOjxk0ABqw=
+	t=1767661633; cv=none; b=LLLf3nPJQamt7/MI8FHT40aQg7T4pJsuuqmdzM3/ASq3fPXLWp8smPP1oVFlYfaLoW3BycdIFULex8lvjMKuYYfg1Vl7ARAskR1G/N72SiwIl9fco0y1dfMLZc4po6J/Oq5BM0bK6v0RwJB7IHDCb+Y+qHQ4pjkrJmz75whCIU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767661323; c=relaxed/simple;
-	bh=q+7bY+exb0qm+GHjS9hHzlxsx0dQmAC2AoJR8E36Qiw=;
+	s=arc-20240116; t=1767661633; c=relaxed/simple;
+	bh=TtpdHbukwEFQnmz3ckdmLHSJzLrBUAxVPaYrmXbSQQs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kwC4Q5TAoeEGbhbHP/SU1OuffZkPVJU10Zw+FlL3zjhjkX8zpbx9aSyGaGY51EI+iT4PoZKo7jXs8N3rarRKWHGsInn2ZSyBNOMjwhSjFuk1HhRpe5yR6sk1g/mOU6hJj+bxlfzUKfMRVX8PHIedKKDXuv9WRrzINN2h/RnYTQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=MhgfidOF; arc=none smtp.client-ip=209.85.222.172
+	 Content-Type:Content-Disposition:In-Reply-To; b=j+jcJTgQ4LIa9pdTwkQpjQAPECvhN1GlRlCIYhTUTyBL8lR2Cy4vT4WrPX2MRglpSFJXp+9ZlZxzOL6Zjd0SFDonVzRbcfQe5U89BMr6oUDySIUzd6Tfn7zNDSUTEJMklVzRMQ04faUutn9JzAiMDtPM0+1gBeeLZajyIHD+x6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=WAdXLdY+; arc=none smtp.client-ip=209.85.222.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-8c2c36c10dbso42765885a.2
-        for <linux-rdma@vger.kernel.org>; Mon, 05 Jan 2026 17:02:01 -0800 (PST)
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-8ba0d6c68a8so47226585a.1
+        for <linux-rdma@vger.kernel.org>; Mon, 05 Jan 2026 17:07:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1767661321; x=1768266121; darn=vger.kernel.org;
+        d=ziepe.ca; s=google; t=1767661630; x=1768266430; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RQzW4rirn4MIOmr+LUUhfG1dYc0MXYA9x0YMfT3n5fg=;
-        b=MhgfidOF6Y11B0vk/fVLnaC+sY4qBeGmWyTieQfMHIo9Vb3UK6t5XCmdK5cOruhb/b
-         dpak2YX2mjnuXltn61ISbsn12ViFWGlaI+YUNgdjsCuaso9m+48zWgi4Z8E9Tvri3fK3
-         tOtzgy5xApUopKAogd4x7P3OsUJ5d2BGwRs9mK8gldAMrYTCzwWsTVzM6YmdwgkEQ+zY
-         7M+te40td+VbfAgdkUjMCVSv7PZUKvBZI+SpCNxMEjmjYsuPkcD1uVM4UrjGoML/hee0
-         PpVT7t9MUj4v7MUZaUzkgvvk5xZZXsAmN58h1ynY89wZ1PCcK+l1I3TdAq5nsSVe2OCc
-         4mPQ==
+        bh=drgdDcwNGsxFqgCONrNiAAW6lMSwQ04qtIUzzps58Z0=;
+        b=WAdXLdY+xsEq2Bwew26X6rHqoYm3Pt7kjVpfN05xaN7KMcpaCSc/24JwE0MlDhyfRa
+         kxby86ilhfrQcBEGcsS8eU0htnXqV+EDYYpgh5ppHUOQvPv9YdCOZ73qHSDDVQRfYDLu
+         jU1Yn96W1X6YUmjgrL1pGRLS5Lc9CV38EATlORx1kN3PvpHTl/cwXS/YSZoBdTVvGEpM
+         EQw4SDeQx0p7wVDlCJPx+4/hfrLPoq/rF76S5rg1KN6USUyV6C7ZTsO5zlxN5U/6ABNZ
+         f8TFLiKRddC51Oh34ebZauDsvFdtBDGpyjbbjvzWQcP4U9IKk47Yl7/OAG/YDV2Z2TP5
+         AVQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767661321; x=1768266121;
+        d=1e100.net; s=20230601; t=1767661630; x=1768266430;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RQzW4rirn4MIOmr+LUUhfG1dYc0MXYA9x0YMfT3n5fg=;
-        b=llqarbIFx7Wlzqt1L4M/ZzIvs73YvRbGPv/mLbjsFYA4w8fxmKomj0DsPxnXbo+pDj
-         AHUENZ9RAYHeYE+VFUC6LF/GF6Pnwyw/wBCd3AY/SFy83+qDQPTHK7eYJ6OPZflr5PZg
-         ZrCpSBW9MsG8g5SLkVNT77lvcsxutBytY3/Nj5iQZCCaYnnUa5CXoaw79L5M6L7yNNCv
-         tx1qa2nYQPSeajuzeYNwsW5KOikWIhOYrimVGMkiLMrs3PthDAMNQdKDT6QPdlGI6Lyr
-         +0P5Or/uDZm1BfOHxMNbYxfMCQSGVAIeOTklE+RVd6F7BLgml1H6b/UVfWf6OKL0bl6v
-         cUqQ==
-X-Gm-Message-State: AOJu0YwoI0ETKV/R402fZwkwxVhoPbGtTPtGOTTBdlHMSj2IaZFQcPwA
-	ZCC4q4ITAm5AEOdrTy6Tz5z05wAU/j2Bj9BK3tFqP/MPErahr2Lr3N60YqebD4p6Z5k=
-X-Gm-Gg: AY/fxX7w4lvNMG2rYkHlwQ9K8wedYYGU+HUollfbsJ02wOE1CKKwAxpdXOOUznd7Z4F
-	fq888ewqJ7CWuzEX4bWkfplMje7fVg6+sM4rsOVtWVzkyd4cxzacYfi/zidVzYsogDKq5WGQRNL
-	BkeblANAMRxIvIhLSQc6UgdFHdQETl0SW3s/qXgqVab4pj8PkB0F2UXhpdHRXq3C8iWxVNCbnes
-	cov5UZlzrCSLSKoZqUbTvChWlEZgY94cL+CpZTbdfMET+TeqVzRBVHabaHMp0j4a0GY3/WkwdYb
-	w3Bcq5w0+a44rKo3/EopE8/B2ZVeaSCo7UOepVBDseJnyzu/b2WeEY0ldJy6n8dvK208143MhVH
-	1ylHigr67DayXszL1fUb8f+iwREBj+sqAN/GQN7t9xhw4YPaKyEjpcIpCrgDIpVrdsw51huuGMz
-	GrjbGk2JUert32Q8KQKOe69jpwUvUTQH2F1LxZCAya6e9vvPQgJr+8r5zFXpddoKpC2Og=
-X-Google-Smtp-Source: AGHT+IH2ONeQ3y76tda+WNWC0/pCf+cOd5Rvznrfxc67P/1fs1W8W9KaGHT4A4tcFYmOHNO4nGV/2w==
-X-Received: by 2002:a05:620a:7085:b0:8b2:e533:66f7 with SMTP id af79cd13be357-8c37eb353b4mr197395585a.10.1767661321015;
-        Mon, 05 Jan 2026 17:02:01 -0800 (PST)
+        bh=drgdDcwNGsxFqgCONrNiAAW6lMSwQ04qtIUzzps58Z0=;
+        b=Z8BqKuvv+KhrOmTeLzVibNlPuaTgzHcKc/3kbhZbd+KDLLyBgro9T4EywAkuNIRNbW
+         gv5vVardjj9/3NXMkSKHGME4O+xLhYyB1OppFobonwCxA6TevY53iVDZ/6rdPCS6QQLQ
+         wMR87kWpHaL3jxIPRfW0Iy4czElb6JT0F6msIM0Q67R34tvGyUJrQ1wToIG1UGtcN2Jy
+         CfsyySU8V4jT3iETjNlJsZjON79UoznVNUWXdSP1vwG7gET6bLcPO0R8UDP0kgoxGb9M
+         5A5WxZL+UgWgy432rdIztCNVQAeR43Wy1gCIlKHIvn/ePTyVqBu71EXXDne4KkHfzkwe
+         1+fw==
+X-Gm-Message-State: AOJu0YxaoUs/rUrvFHuskCuW9t3fwexwzyoZE19kCQI+nNZvPtVzDzp6
+	0H2VnQzRhxf2LNLznaIzO0w+qV34AphzSwHkvY9P9XZ2uJd8XGhbKH4a/CkEjoQsmKM=
+X-Gm-Gg: AY/fxX7ScfxtvPtQhsTTZuVL4FhGgVVHtBsx/D+3+bGmsn1hIpz8oSQzRs68NhlRi/8
+	4emPXefF9Zzjw8VsxcQV7ia5TLcTY1BcD9J3EIMcshD5lRKFavUsLDofSLIeITYdZ23gOxYV/V4
+	U3DS0KUTXV7tKCCeemZGdLMveVKLYOTTNHixRyq8bFbdv+2GCS6E/G0YmGl0g7XsFVyr0XrR2Rd
+	DlHerqjvYu2ZBNEaP736C8tgZBmZddLgxpNjJE5gO/pN78e2ohfDdIAo7MN2uCiNgKZRFTN46yB
+	21QIV0B2PAkKKbNblvsQU3PNOb83JKZwv9+FpNNgAUOTH392TMQUEAHyuPb+feGu31qgau+1tNJ
+	YYX+iY1ACLXeAUWZ06uCv4hvq3cMN9ZOMut3YyL+T981o4l6YEGayXUIEeEfuY4NE0LnEAqJLww
+	sfw6Omm8nECTEg/VHqV3Azq5p7ESrHulgBdbALormtQacjVRzwNrogNSU+81cTU0T/09w/g1jpn
+	jMq8w==
+X-Google-Smtp-Source: AGHT+IHhT1NOnu42pNSz12y0NefP0H/0F1k0TtCk86h7IFq9pIdlZ9qXpmEGoKQZYUBTJdVBDiNU1A==
+X-Received: by 2002:a05:620a:708b:b0:8c2:2b5c:6bb3 with SMTP id af79cd13be357-8c37ec03772mr174404885a.85.1767661630435;
+        Mon, 05 Jan 2026 17:07:10 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c37f4a9a19sm66438685a.1.2026.01.05.17.02.00
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c37f4a97fesm67018585a.4.2026.01.05.17.07.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jan 2026 17:02:00 -0800 (PST)
+        Mon, 05 Jan 2026 17:07:09 -0800 (PST)
 Received: from jgg by wakko with local (Exim 4.97)
 	(envelope-from <jgg@ziepe.ca>)
-	id 1vcvSR-00000001EZP-3HUW;
-	Mon, 05 Jan 2026 21:01:59 -0400
-Date: Mon, 5 Jan 2026 21:01:59 -0400
+	id 1vcvXR-00000001Eb9-164U;
+	Mon, 05 Jan 2026 21:07:09 -0400
+Date: Mon, 5 Jan 2026 21:07:09 -0400
 From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Li Zhijian <lizhijian@fujitsu.com>
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	zyjzyj2000@gmail.com, leon@kernel.org,
-	Yi Zhang <yi.zhang@redhat.com>
+To: "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
+Cc: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+	"leon@kernel.org" <leon@kernel.org>, Yi Zhang <yi.zhang@redhat.com>,
+	Bob Pearson <rpearsonhpe@gmail.com>
 Subject: Re: [PATCH RFC] rxe: Fix iova-to-va conversion for MR page sizes !=
  PAGE_SIZE
-Message-ID: <20260106010159.GN125261@ziepe.ca>
+Message-ID: <20260106010709.GO125261@ziepe.ca>
 References: <20251226095237.3047496-1-lizhijian@fujitsu.com>
+ <cbbba297-7095-49f1-82e0-8f22d4f94e1a@fujitsu.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -92,23 +96,30 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251226095237.3047496-1-lizhijian@fujitsu.com>
+In-Reply-To: <cbbba297-7095-49f1-82e0-8f22d4f94e1a@fujitsu.com>
 
-On Fri, Dec 26, 2025 at 05:52:37PM +0800, Li Zhijian wrote:
-> The current implementation incorrectly handles memory regions (MRs) with
-> page sizes different from the system PAGE_SIZE. The core issue is that
-> rxe_set_page() is called with mr->page_size step increments, but the
-> page_list stores individual struct page pointers, each representing
-> PAGE_SIZE of memory.
-> 
-> Problem scenarios with concrete examples:
-> 
-> 1. mr->page_size > PAGE_SIZE (e.g., 64K MR with 4K system pages):
+On Mon, Jan 05, 2026 at 06:55:22AM +0000, Zhijian Li (Fujitsu) wrote:
 
-Why does RXE even have mr->page_size at all?
+> After digging into the behavior during the srp/012 test again, it
+> turns out this fix is incomplete.  The current xarray page_list
+> approach cannot correctly map memory regions composed of two or more
+> scatter-gather segments.
 
-Real HW has this value to optimize for large page sizes, but I'm not
-sure we really need this for RXE..
+I seem to recall there are DMA API functions that can control what
+kinds of scatterlists the block stack will push down.
+
+For real HW we already cannot support less than 4K alignment of interior SGL
+segments.
+
+Maybe rxe can tell the block stack it can only support PAGE_SIZE
+alignment of interior SGL segments?
+
+If not then this would be the reason rxe needs mr->page_size, to
+support 4k.
+
+And obviously if the mr->page size is less than PAGE_SIZE the xarray
+datastructure does not work. You'd have to store physical addresses
+instead..
 
 Jason
 
