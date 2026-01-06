@@ -1,89 +1,100 @@
-Return-Path: <linux-rdma+bounces-15317-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15318-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21488CF6459
-	for <lists+linux-rdma@lfdr.de>; Tue, 06 Jan 2026 02:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F28ECF6F42
+	for <lists+linux-rdma@lfdr.de>; Tue, 06 Jan 2026 08:04:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AA447304C294
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jan 2026 01:31:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 89A9B301B832
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jan 2026 07:03:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4AEB230274;
-	Tue,  6 Jan 2026 01:30:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FDBC3093C7;
+	Tue,  6 Jan 2026 07:03:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bm1DeggK"
+	dkim=pass (2048-bit key) header.d=mgml.me header.i=@mgml.me header.b="gO3zELgT"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from www5210.sakura.ne.jp (www5210.sakura.ne.jp [133.167.8.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87BE141C71;
-	Tue,  6 Jan 2026 01:30:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BAD73090E0;
+	Tue,  6 Jan 2026 07:03:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=133.167.8.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767663058; cv=none; b=effQKOphf+O02DHAq03O98ye82zMqZ4LL/sNaa/mwDuH8cez21xIC2MfMVxfogn4nPViJUcn8H/6QPQehhBQAwwZqTrFe1WmBhLctc908YW7FtdT/1WWAFzXxUEDR4cHlM2MVkouy7G2Zg8wAqkFKCY6DMyo/wVcZEmEfLFuCB4=
+	t=1767682997; cv=none; b=OxNYKVfWk5CsKBBh58CU32j/3+GrU7s5PTavbaiF09FQSRFyRrVoAowUGIirbSQvMT8z7dh1tBojGCx3Jvz6w8R5fEWqhm4Nr8TVE+3KK7BtDmaTOmkRL1RTbI51x9XsSq3olp922TZE+9rpP61PpcQE4z+1354L+nuqYQo0xek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767663058; c=relaxed/simple;
-	bh=4uAVm2ZWkiuaol1HXlcytM5IJJy/t7P3QPqqjdvoEqg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fVOyormnhTyzukfGSjOPc4OxgSe/9W+3sytvd2cnyRAC+RVdYOAAeQrdSRS/Gar3Cr5Q2SjP1EfiOExe2B219AMWyBZk+IzIncPbgxCe3Rngura1G8rgElLNOjjcUn4HtUPiu6mcMslmDXbyEEsFndJ5OPCYlAztB/pdEt+O8sg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bm1DeggK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 814A5C19421;
-	Tue,  6 Jan 2026 01:30:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767663058;
-	bh=4uAVm2ZWkiuaol1HXlcytM5IJJy/t7P3QPqqjdvoEqg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=bm1DeggKLEYdAQ0O/D1NZ5NhYiEfNHIfgb5AEOQ11rU3vesRjtutDI56YlV0dCuBr
-	 zYi6uVZ96gupWKqg1IUC5S80mC6SYBdACc3ypMAQmcW+QLAaVUIrUjLiojFMIKlR6l
-	 dvStgBAJ1BiL23pbccrRVW/rkCRO2qHHt9qaFtXowIIcMjVSzsl8RjEqJss8VMKUBX
-	 2MfVSJZmBexaGCRqY+ALgbwc+9J8WDLDDuZ1Rw0yf4EWMuu6iWlimWKspLoZuibTdP
-	 o/3mGbhA3mGhxMQ0jtWyCwvJ+KDIdfcOmFouNf2l/jf34nvI3WTimW1c4xojBbsIte
-	 GrOgH6ED9woow==
-Date: Mon, 5 Jan 2026 17:30:56 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, longli@microsoft.com,
- kotaranov@microsoft.com, horms@kernel.org,
- shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
- ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
- linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- dipayanroy@microsoft.com
-Subject: Re: [PATCH net-next, v6] net: mana: Implement ndo_tx_timeout and
- serialize queue resets per port.
-Message-ID: <20260105173056.7c2c9d0a@kernel.org>
-In-Reply-To: <20260103045705.GA3757@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20260103045705.GA3757@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	s=arc-20240116; t=1767682997; c=relaxed/simple;
+	bh=uXiBJtsX0svQmePqiCn8rWdMoN1ClmUNN3b8dWA4RKk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dlE7rYDz2k/ohewzP3V8E5XbGPllb2DNxI8+XJOqUu/iwYaWhLNYu7jEIDa2uY1Owe8+Viv/Tct8VFBuF+pVjMmhGrMWpR1cuzR44ktN27WlEV0NcnZEx0SknasI3mK4s6Vsp78ST9lFnB6By+rIwvHHYssRahfzP+igC8YfSLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mgml.me; spf=pass smtp.mailfrom=mgml.me; dkim=pass (2048-bit key) header.d=mgml.me header.i=@mgml.me header.b=gO3zELgT; arc=none smtp.client-ip=133.167.8.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mgml.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mgml.me
+Received: from fedora (p4548043-ipxg00s01tokaisakaetozai.aichi.ocn.ne.jp [153.219.109.43])
+	(authenticated bits=0)
+	by www5210.sakura.ne.jp (8.16.1/8.16.1) with ESMTPSA id 60672QsI034247
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+	Tue, 6 Jan 2026 16:02:42 +0900 (JST)
+	(envelope-from k@mgml.me)
+DKIM-Signature: a=rsa-sha256; bh=KGA45rKZ0slnQFj06I4+4i25YQo4RQUItYgH6ErbTlI=;
+        c=relaxed/relaxed; d=mgml.me;
+        h=From:To:Subject:Date:Message-ID;
+        s=rs20250315; t=1767682962; v=1;
+        b=gO3zELgTpDfmQSU9qjMLoJkjDW6G3IDjOYKOrD1GAcpxb6ZMIvHvax0efKrxwBGH
+         3pRjXO74U9YZSQ+EPjHLSL2DD4RVKNsFMG4GejnjgWIhWC28364H8GI+4U02VsPV
+         z14ToaIm4niakJ5ySfmc73LPzjJWmi9sp3sHsX/FTEUfWeNx225I/27sWKkMOapx
+         JH5x2cywrrcwsykbIPVRMP0q3gUaVvmVJex8i6dXk9Tj0u5MLime9sKjCa1MmrWo
+         3BAnWrm47Z2eZee6TlpbKZSnyxiL6DOE1VrNzG3PWtuEdayu1ulnihaihQ7IuJOB
+         T0QchtwH/EoPQX3ADTGXzw==
+From: Kenta Akagi <k@mgml.me>
+To: Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
+        Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+        Andrew Lunn <andrew+netdev@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kenta Akagi <k@mgml.me>
+Subject: [PATCH] net/mlx5e: Expose physical received bits counters to ethtool
+Date: Tue,  6 Jan 2026 16:02:10 +0900
+Message-ID: <20260106070210.24449-1-k@mgml.me>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Fri, 2 Jan 2026 20:57:05 -0800 Dipayaan Roy wrote:
-> +		apc = netdev_priv(ndev);
-> +		disable_work_sync(&apc->queue_reset_work.work);
+rx_bits_phy is documented but not shown in ethtool --statistics.
+Make this value available via ethtool.
 
-AI code review points out:
+According to existing documentation, rx_bits_phy is needed to calculate the
+error rate from rx_pcs_symbol_err_phy and rx_corrected_bits_phy. The
+existing rx_bytes_phy cannot be used for this calculation as it appears
+to be a counter above the PHY in the strict sense (i.e. traffic based).
 
-  In mana_remove(), disable_work_sync() is called for each port's
-  queue_reset_work. However, when resuming=true, mana_probe() creates a new
-  workqueue but does not call mana_probe_port() (which contains INIT_WORK),
-  and there is no enable_work() call for queue_reset_work in the resume path.
+To avoid confusion, it might be better to use a different name (e.g.,
+rx_bits_pcs), but for now, I will submit the patch as per the
+documentation.
 
-  The existing link_change_work handles this correctly: it is disabled in
-  mana_remove() and re-enabled with enable_work(&ac->link_change_work) in
-  mana_probe() when resuming=true.
+Signed-off-by: Kenta Akagi <k@mgml.me>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en_stats.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-  Should enable_work(&apc->queue_reset_work.work) be called for each port in
-  the resuming path of mana_probe(), similar to how link_change_work is
-  handled? Otherwise TX timeout recovery appears to remain disabled after a
-  suspend/resume cycle.
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
+index a2802cfc9b98..e167355daad5 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_stats.c
+@@ -1226,6 +1226,7 @@ static const struct counter_desc pport_phy_layer_cntrs_stats_desc[] = {
+ 	MLX5_BYTE_OFF(ppcnt_reg, \
+ 		      counter_set.phys_layer_statistical_cntrs.c##_high)
+ static const struct counter_desc pport_phy_statistical_stats_desc[] = {
++	{ "rx_bits_phy", PPORT_PHY_STATISTICAL_OFF(phy_received_bits) },
+ 	{ "rx_pcs_symbol_err_phy", PPORT_PHY_STATISTICAL_OFF(phy_symbol_errors) },
+ 	{ "rx_corrected_bits_phy", PPORT_PHY_STATISTICAL_OFF(phy_corrected_bits) },
+ };
 -- 
-pw-bot: cr
+2.50.1
+
 
