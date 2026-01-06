@@ -1,148 +1,155 @@
-Return-Path: <linux-rdma+bounces-15312-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15313-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41B9ACF5DA4
-	for <lists+linux-rdma@lfdr.de>; Mon, 05 Jan 2026 23:36:39 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94775CF621A
+	for <lists+linux-rdma@lfdr.de>; Tue, 06 Jan 2026 01:56:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 66BEB309D6D8
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jan 2026 22:35:42 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 0E23C300A3D5
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jan 2026 00:56:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96CB03101B8;
-	Mon,  5 Jan 2026 22:35:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B75A20296E;
+	Tue,  6 Jan 2026 00:56:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C9yriTIz"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="SqhU27a2"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54A2B30214B;
-	Mon,  5 Jan 2026 22:35:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 164431F0E29
+	for <linux-rdma@vger.kernel.org>; Tue,  6 Jan 2026 00:55:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767652536; cv=none; b=IOOV1iYb9z28F/CapBc/fnv7usjgdu6r5EeXgWu8koY74DBr61U5JpWpXx4JJ1Uep+wYiLEaidGwRcp4JFngcsv/KaR3uC4mB9W9TyjtTwq/AXLARJBletDC6eYBSRgTpCvgnHEIaQf7oGrGXoKxMg40DTeCWZeTMff3FKuSQD0=
+	t=1767660961; cv=none; b=Qwv57pn/hb2hPiY15XCuKI/Ot40L9vz+ZK2ddqHpvbjJMaMVzoCAgRQiVszMwuAo0kmOfJu3qTsAxwuccUd4V0viZk8QK65eLCFXhDqhYwsCuROwOYrDuCMPAx/yvyQbs1E1e4QvFgtIEE0VaHVl/U1Ur3IiMhRHoAMpj2nJbx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767652536; c=relaxed/simple;
-	bh=+kM/GmtIbqwQHLHwaHV1Ua9/YznqzafHBGOpDlPW/ZI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jcY3yebjUp+YusAUjB16I+hHsXLW2f3Null6U5i/tx76r72csCRoUqRVrIjWO9DrvCwU/JuPqlTisVFmazGsIMM2ZVAocIZzP4sdUn5IuLtQYOyHx+uQcKIFPNvH9r2d4lbJVTS+w/ePhs6DrU4+9Q5qRhI+aQAWVvELW24nPgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C9yriTIz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68272C19422;
-	Mon,  5 Jan 2026 22:35:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767652536;
-	bh=+kM/GmtIbqwQHLHwaHV1Ua9/YznqzafHBGOpDlPW/ZI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=C9yriTIzDSmqY9ZQbkBkLTBwW9dlznAujNenik8XKRMgOHKlcP9XJhWPdNB79M1l9
-	 SmBCyk2b3VMEtOShaHEFArQ6uaL0tlsVbLfuavfz/M7cqsx6ek89xzLSn2gHWnSAlP
-	 GK5n3jjxvs3A9YJoCDJyDkyVp6etZAicJ1uwY9Xddd1gTmN6uEwEIpdLse2g+/e5i8
-	 zfLUEoFmR/luUTrpRsq55iF/hldzzC+yYTmAauAIFsJHyzFNdoCGcBJk1W/n81/4b7
-	 dwVAfSXV3WoTjkwPUzUm+n0f1kAsZai/I4kWHFUUUXgS9OyvcYlLpuZUh0IH/ewaK1
-	 GZNVNiNgmAv/g==
-From: Allison Henderson <achender@kernel.org>
-To: netdev@vger.kernel.org
-Cc: pabeni@redhat.com,
-	edumazet@google.com,
-	rds-devel@oss.oracle.com,
-	kuba@kernel.org,
-	horms@kernel.org,
-	linux-rdma@vger.kernel.org,
-	allison.henderson@oracle.com
-Subject: [PATCH net-next v4 2/2] net/rds: Give each connection path its own workqueue
-Date: Mon,  5 Jan 2026 15:35:32 -0700
-Message-ID: <20260105223532.167452-3-achender@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260105223532.167452-1-achender@kernel.org>
-References: <20260105223532.167452-1-achender@kernel.org>
+	s=arc-20240116; t=1767660961; c=relaxed/simple;
+	bh=abJpD/qRRa8BSnB0k+A5D0fdC9PhsRPfE1y9bMxV0DM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pAhngnnpusjvEwsqhd4VbjkWrt2UfzdOM0qzxl18NlPUC/nKH0HxPrjiOdShh+421JZ635O59dbrNyBv1kJd8QQsLCFHaJPXeanlyPqOK3fSKPEb4POFqfe3TWvtI3+yzsF+CsHGWnceLso56Lm1e96RMU3kycE0MQX5OtqT69o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=SqhU27a2; arc=none smtp.client-ip=209.85.222.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-8b144ec3aa8so47689885a.2
+        for <linux-rdma@vger.kernel.org>; Mon, 05 Jan 2026 16:55:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1767660957; x=1768265757; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=MDaatcwxGRMydCvVRMs3UB8MyV1SGaXPU4qbydS0qdk=;
+        b=SqhU27a2AkuX08eCs0gQEEHW6ijKDFiZVPsx4TlR6ITDo+Kedn3bOu6LTEli0dn0iU
+         6jLXtzbaq8JxCqZckUf3WQGiQU8AoQrMqRx2XDG4RXovaZrBbNogPUY+BrFNKI4P4xg1
+         Yw947i2sB+iNObXUSrfdIwId2o5/swFZICUexi/Vb2ktVurgRDLDTbcX1KSRcmpHDJ1U
+         xMNZXlDzi0hDMnW/k4kmCpU160zTkq4iGcjsxULos1WjFWzooRTx8ZU34uqTqr5CCkNp
+         P2DFSLdEf1m8UhSdAEIRTxXi7zOWp0P2+l+g2eytmUumx03n039TjxOp6HnDLSUx7EMQ
+         ACGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767660957; x=1768265757;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MDaatcwxGRMydCvVRMs3UB8MyV1SGaXPU4qbydS0qdk=;
+        b=LmycArrOoknYyX1hCwWdmm5n79Bu3+IHlWT9WD8Doyyqz60cu11tNC9MxGPi8p13jo
+         AXO61McTZeRtXMTMPxoFmBXDl90vHE4HQrTpCWq+UHuy9Pa1+wGcWTTfwpXipHGZImA5
+         4rSAMV4VhfM/Ydma/GRKU0xQ+O2JwtWz/zxGx6u8uRbZ7vje6g3nbo/EaqIiYp0hmip4
+         3PQVPaDHz69WFfd5JwTR3dwo7NL6hWhcr1h4U9rHKNCUfg5ePqz/axdcG1aJIdoHj6iA
+         yja037QmAXSLnKFn7R9I+0XqmrCDi4iQjSruMLrB0zBjHN26RwHfzEbMI+OPL5p/ErVZ
+         eBtw==
+X-Forwarded-Encrypted: i=1; AJvYcCUb/VBuv4bofqRMBbj4RNTfNqAXfVouvxWOIG8Vg7SCuFpAW3fl2V3j7HlggDiuuqQMNLZSZEs36YyQ@vger.kernel.org
+X-Gm-Message-State: AOJu0YwjH9l2tzMKf2bnHef0SAXcWPt8C4b6ucFJ3rXo3WT41tJIXdfT
+	TkJBRhjYLAajjQ8oSyMNgEemKgrsE1IppeXGJpQypwFbIWzZSxbTGY4bboJizsEfnxY=
+X-Gm-Gg: AY/fxX4Bapriy+vU3kpsIR20JNuS/KD/5CtVu4RzjY0z1gTepzAChkj7f7AcR2bkh87
+	w1Eo3JycI3eLdVrZE2Hfb26XhFK7eZ/NUN0aVnpsyCtC3rESx9oD/B70VU6T/70tGdQgr/vwE3F
+	iW1WspJZGvZn0QcUF9mvKWfzQkTgSlTIomdU81DUNMca8FcefbKsPegl8fy040UnjL5/sq3c9/t
+	mSCdcD2O55tNipI4RH20Vl4zMQTxDjFjqRMl1mmzNUtSsgzBSHT5w+zpVrbPATwmVXZBwmf3Ol0
+	c+Yir+mFridxKwOPRHeSTZBvtC6kwiYEKaII0nskfsFeExz37hNvFDDBvMfQROUaKSsF5EQebPq
+	LgzOTKRdUweo6QEq5LaIpbt8orDBUOQjPN/WBLqIPrD9ljQGtl37JzJU0W6mgGec4gn7iPPSOXF
+	UQI7a4gKj74WUQTpttItEgCLBvYuNX8PP2LiE0riXHyPL8C2pwK3/5rtQGM9aq3mrI/Rw=
+X-Google-Smtp-Source: AGHT+IHkp3tvc1TSQLjXfwX1R/16djzCewcOTCUqfELaiw90lDY/HdFwxvMQJsz2/fprn33eK02RsQ==
+X-Received: by 2002:a05:620a:4494:b0:8b2:d2c9:f73 with SMTP id af79cd13be357-8c37ebba292mr183184685a.41.1767660957054;
+        Mon, 05 Jan 2026 16:55:57 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c37f53129fsm63537585a.44.2026.01.05.16.55.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Jan 2026 16:55:56 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1vcvMZ-00000001EVK-3aKl;
+	Mon, 05 Jan 2026 20:55:55 -0400
+Date: Mon, 5 Jan 2026 20:55:55 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Jang Ingyu <ingyujang25@korea.ac.kr>, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] infiniband/core: Fix logic error in
+ ib_get_gids_from_rdma_hdr()
+Message-ID: <20260106005555.GL125261@ziepe.ca>
+References: <20251219041508.1725947-1-ingyujang25@korea.ac.kr>
+ <20251221092418.GF13030@unreal>
+ <20251221093038.GG13030@unreal>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20251221093038.GG13030@unreal>
 
-From: Allison Henderson <allison.henderson@oracle.com>
+On Sun, Dec 21, 2025 at 11:30:38AM +0200, Leon Romanovsky wrote:
+> On Sun, Dec 21, 2025 at 11:24:18AM +0200, Leon Romanovsky wrote:
+> > On Fri, Dec 19, 2025 at 01:15:08PM +0900, Jang Ingyu wrote:
+> > > Fix missing comparison operator for RDMA_NETWORK_ROCE_V1 in the
+> > > conditional statement. The constant was used directly instead of
+> > > being compared with net_type, causing the condition to always
+> > > evaluate to true.
+> > 
+> > In current code, it doesn't matter as network type can be one of four
+> > possible values, and this "else if" will be always true anyway.
+> > 
+> > I changed your patch to this and added Fixes line:
+> > diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+> > index ee390928511ae..256f81c5803ff 100644
+> > --- a/drivers/infiniband/core/verbs.c
+> > +++ b/drivers/infiniband/core/verbs.c
+> > @@ -737,14 +737,11 @@ int ib_get_gids_from_rdma_hdr(const union rdma_network_hdr *hdr,
+> >                 ipv6_addr_set_v4mapped(dst_saddr,
+> >                                        (struct in6_addr *)dgid);
+> >                 return 0;
+> > -       } else if (net_type == RDMA_NETWORK_IPV6 ||
+> > -                  net_type == RDMA_NETWORK_IB || net_type == RDMA_NETWORK_ROCE_V1) {
+> > -               *dgid = hdr->ibgrh.dgid;
+> > -               *sgid = hdr->ibgrh.sgid;
+> > -               return 0;
+> > -       } else {
+> > -               return -EINVAL;
+> >         }
+> > +
+> > +       *dgid = hdr->ibgrh.dgid;
+> > +       *sgid = hdr->ibgrh.sgid;
+> > +       return 0;
+> >  }
+> >  EXPORT_SYMBOL(ib_get_gids_from_rdma_hdr);
+> 
+> After some additional consideration, I'll keep your patch as is.
+> 
+> My change is technically correct, but it's risky since some drivers  
+> use non‑conformant values.
 
-RDS was written to require ordered workqueues for "cp->cp_wq":
-Work is executed in the order scheduled, one item at a time.
+I don't think it is that risky because it is what has been happening
+all this time anyhow.
 
-If these workqueues are shared across connections,
-then work executed on behalf of one connection blocks work
-scheduled for a different and unrelated connection.
+> > >  	} else if (net_type == RDMA_NETWORK_IPV6 ||
+> > > -		   net_type == RDMA_NETWORK_IB || RDMA_NETWORK_ROCE_V1) {
 
-Luckily we don't need to share these workqueues.
-While it obviously makes sense to limit the number of
-workers (processes) that ought to be allocated on a system,
-a workqueue that doesn't have a rescue worker attached,
-has a tiny footprint compared to the connection as a whole:
-A workqueue costs ~900 bytes, including the workqueue_struct,
-pool_workqueue, workqueue_attrs, wq_node_nr_active and the
-node_nr_active flex array.  Each connection can have up to 8
-(RDS_MPATH_WORKERS) paths for a worst case of ~7 KBytes per
-connection.  While an RDS/IB connection totals only ~5 MBytes.
+That expression is always true
 
-So we're getting a signficant performance gain
-(90% of connections fail over under 3 seconds vs. 40%)
-for a less than 0.02% overhead.
+Conversely with the "correct" patch if we have a net type of
+RDMA_NETWORK_IPV4 we now get an EINVAL that we didn't get before..
 
-RDS doesn't even benefit from the additional rescue workers:
-of all the reasons that RDS blocks workers, allocation under
-memory pressue is the least of our concerns. And even if RDS
-was stalling due to the memory-reclaim process, the work
-executed by the rescue workers are highly unlikely to free up
-any memory. If anything, they might try to allocate even more.
+I guess we will see if this turns into a problem or not..
 
-By giving each connection path its own workqueues, we allow
-RDS to better utilize the unbound workers that the system
-has available.
-
-Signed-off-by: Somasundaram Krishnasamy <somasundaram.krishnasamy@oracle.com>
-Signed-off-by: Allison Henderson <allison.henderson@oracle.com>
----
- net/rds/connection.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/net/rds/connection.c b/net/rds/connection.c
-index dc7323707f450..3743940423c83 100644
---- a/net/rds/connection.c
-+++ b/net/rds/connection.c
-@@ -269,7 +269,11 @@ static struct rds_connection *__rds_conn_create(struct net *net,
- 		__rds_conn_path_init(conn, &conn->c_path[i],
- 				     is_outgoing);
- 		conn->c_path[i].cp_index = i;
--		conn->c_path[i].cp_wq = rds_wq;
-+		conn->c_path[i].cp_wq =
-+			alloc_ordered_workqueue("krds_cp_wq#%lu/%d", 0,
-+						rds_conn_count, i);
-+		if (!conn->c_path[i].cp_wq)
-+			conn->c_path[i].cp_wq = rds_wq;
- 	}
- 	rcu_read_lock();
- 	if (rds_destroy_pending(conn))
-@@ -278,6 +282,9 @@ static struct rds_connection *__rds_conn_create(struct net *net,
- 		ret = trans->conn_alloc(conn, GFP_ATOMIC);
- 	if (ret) {
- 		rcu_read_unlock();
-+		for (i = 0; i < npaths; i++)
-+			if (conn->c_path[i].cp_wq != rds_wq)
-+				destroy_workqueue(conn->c_path[i].cp_wq);
- 		kfree(conn->c_path);
- 		kmem_cache_free(rds_conn_slab, conn);
- 		conn = ERR_PTR(ret);
-@@ -471,6 +478,11 @@ static void rds_conn_path_destroy(struct rds_conn_path *cp)
- 	WARN_ON(work_pending(&cp->cp_down_w));
- 
- 	cp->cp_conn->c_trans->conn_free(cp->cp_transport_data);
-+
-+	if (cp->cp_wq != rds_wq) {
-+		destroy_workqueue(cp->cp_wq);
-+		cp->cp_wq = NULL;
-+	}
- }
- 
- /*
--- 
-2.43.0
-
+Jason
 
