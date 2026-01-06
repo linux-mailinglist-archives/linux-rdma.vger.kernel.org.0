@@ -1,109 +1,297 @@
-Return-Path: <linux-rdma+bounces-15328-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15329-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69D38CF8B90
-	for <lists+linux-rdma@lfdr.de>; Tue, 06 Jan 2026 15:17:36 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC855CFB035
+	for <lists+linux-rdma@lfdr.de>; Tue, 06 Jan 2026 21:52:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E68D03048BB6
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jan 2026 14:16:52 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0FB9A30E56AE
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jan 2026 20:47:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3C482E62B3;
-	Tue,  6 Jan 2026 14:16:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F6B2D3727;
+	Tue,  6 Jan 2026 20:47:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="Dluh16kq"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="s03yhNUx"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp-relay-services-0.canonical.com (smtp-relay-services-0.canonical.com [185.125.188.250])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E422E2F1FDD
-	for <linux-rdma@vger.kernel.org>; Tue,  6 Jan 2026 14:16:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.250
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B47329D293;
+	Tue,  6 Jan 2026 20:47:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767709004; cv=none; b=MoCa4Uc/wK3HMIu1BqTt2B//4OMTj/51DBLfUxf/2aMsO0MwzNSIxe60PHJS6wBDSujFb1YfvlywXXQ+ogGwt1kH446DZoAv9pC/DEM6jHD1uSmnGSoEuDkt/W7Tg9hBUeyN4KrQ/oBX0XEXaTofj2zDWaNOS1YptcRTMutvuXE=
+	t=1767732437; cv=none; b=oruu7awr/ZSNd4HfsLdA5EdPDReHK1Z7xf+ZlH+A+SUgc7jYvKFywsFYQ4VtP9O4bHoDewHDdFInJAO+5FVOeK+KTCG8k934vz2TRLKVGivXBFT3hZ+N6O1SmPa8288EbUVY6ycPXG4bU9BO7T0ZL7NVw1x2Poborb6ThT348sc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767709004; c=relaxed/simple;
-	bh=D29iKI3mfFaNO25zxbIATpUxZfcq+grITYZO6mnHAdo=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=J4bxiJFN5QxzFT6jpD3oQtKIOpreWjKE9LP+ERz78kBnfr4elAngRtNWMbvMIKpyYpZc2ijOElaEe/eRLd64jj7MaX74QIxlO7wZP8noBHLKT8WDfkGYwPCSltpEPdtvtqRhILpk7RFkav/WqgSen/5WBrQLpP9Mt0ui9oRT9gc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=Dluh16kq; arc=none smtp.client-ip=185.125.188.250
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
-Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id 346583F78E
-	for <linux-rdma@vger.kernel.org>; Tue,  6 Jan 2026 14:16:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-	s=20210803; t=1767709001;
-	bh=D29iKI3mfFaNO25zxbIATpUxZfcq+grITYZO6mnHAdo=;
-	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
-	 Reply-To;
-	b=Dluh16kqo+MMhu/7WOvnxqFqpNUiEftcM/hxOIptK74QzLe1lp0LwSUzUtiPfA7yg
-	 Q30ILS3ZNKhhKwGEnEN8LlyO6NASbApLCLJIniZs81JKXTmM9XG6Hr/Xm+8cRv7osM
-	 7ar2DTfOhreQ443pyaERicdT46whTHN/k8rqh9HORmL1Q3ImM8bujjoLPpEOKlm/Y5
-	 zsWI1ovAXGwHQhAjH5xHv8JUoAWhllJCc05aNV+1B9fOuh/TDHC/u75Ws6DrsJ2L/u
-	 BrEqxSvLLXz+5Qz6Br/ahAe/YTh81+ehE0Vp2uYFjPPpQ8xnFKD0id30o8CZqTvO52
-	 qGkMt8YSDB+zw==
-Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
-	by buildd-manager.lp.internal (Postfix) with ESMTP id 136567E747
-	for <linux-rdma@vger.kernel.org>; Tue,  6 Jan 2026 14:16:41 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1767732437; c=relaxed/simple;
+	bh=HFg4PDmsYeHdWxuOj2B29+aqDm4Hxy3XUk+zmloxa6M=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=f0ZemVaoyEdMwEa0H5gnq3+mZWttP67JhX7g7Ys1+49b8xuO8CNigXDJoYOXRAXVQUo7AdBF+AA9igtFSqjd2R+RhaSOmugivqo2Qj8UZ0k9Pq+JEBla6lMPo0hHHtePJjmpteHaL0kyOo8GoEvXTbGSKsznUmZSHum/vFydIW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=s03yhNUx; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1006)
+	id B15B82016FF5; Tue,  6 Jan 2026 12:47:15 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B15B82016FF5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1767732435;
+	bh=j1Ue0DpzptuEADthEOV8JVMQKNZY7vwDj8mfrjhwUj0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=s03yhNUx1Nvow5qnTkgR4APVlz6IvDn8Nz91CuGNI4ytzh4vnSgnyPwU5e0QbhZOt
+	 ws2SDusTwzxV8Kpagd/NnNf7eGGpjMXyJxcP13iXNuDnHLFrL5XwNVM5j6IcJOPrsK
+	 wLbQIOO9R/r8s7rTY1DushZvcartO3FXNrUZKlQc=
+From: Haiyang Zhang <haiyangz@linux.microsoft.com>
+To: linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Simon Horman <horms@kernel.org>,
+	Erni Sri Satya Vennela <ernis@linux.microsoft.com>,
+	Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Saurabh Sengar <ssengar@linux.microsoft.com>,
+	Aditya Garg <gargaditya@linux.microsoft.com>,
+	Dipayaan Roy <dipayanroy@linux.microsoft.com>,
+	Shiraz Saleem <shirazsaleem@microsoft.com>,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Cc: paulros@microsoft.com
+Subject: [PATCH V2,net-next, 1/2] net: mana: Add support for coalesced RX packets on CQE
+Date: Tue,  6 Jan 2026 12:46:46 -0800
+Message-Id: <1767732407-12389-2-git-send-email-haiyangz@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1767732407-12389-1-git-send-email-haiyangz@linux.microsoft.com>
+References: <1767732407-12389-1-git-send-email-haiyangz@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Launchpad-Message-Rationale: Creator @linux-rdma
-X-Launchpad-Message-For: linux-rdma
-X-Launchpad-Notification-Type: package-build-status
-X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
-X-Launchpad-Build-State: FAILEDTOBUILD
-X-Launchpad-Build-Component: main
-X-Launchpad-Build-Arch: armhf
-X-Creator-Recipient: linux-rdma@vger.kernel.org
-X-Launchpad-PPA: linux-rdma-rdma-core-daily
-To: Linux RDMA <linux-rdma@vger.kernel.org>
-From: Launchpad Buildd System <noreply@launchpad.net>
-Subject: [Build #32114225] armhf build of rdma-core 62.0~202601061326+gitfd8657625~ubuntu20.04.1 in ubuntu focal RELEASE [~linux-rdma/ubuntu/rdma-core-daily]
-Message-Id: <176770900107.1103073.16844407588799705693.launchpad@buildd-manager.lp.internal>
-Date: Tue, 06 Jan 2026 14:16:41 -0000
-Reply-To: Launchpad Buildd System <noreply@launchpad.net>
-Sender: noreply@launchpad.net
-Errors-To: noreply@launchpad.net
-Precedence: bulk
-X-Generated-By: Launchpad (canonical.com); Revision="99c00f518760bdd50fc6e353e7736d2fff8fba4a"; Instance="launchpad-buildd-manager"
-X-Launchpad-Hash: 6072d39fd8eecc1542c4b7ccf907796e2aea8356
 
+From: Haiyang Zhang <haiyangz@microsoft.com>
 
- * Source Package: rdma-core
- * Version: 62.0~202601061326+gitfd8657625~ubuntu20.04.1
- * Architecture: armhf
- * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Component: main
- * State: Failed to build
- * Duration: 8 minutes
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+build/32114225/+files/buildlog_ubuntu-focal-armhf.rdma-core_62.0~2026=
-01061326+gitfd8657625~ubuntu20.04.1_BUILDING.txt.gz
- * Builder: https://launchpad.net/builders/bos03-arm64-098
- * Source: not available
+Our NIC can have up to 4 RX packets on 1 CQE. To support this feature,
+check and process the type CQE_RX_COALESCED_4. The default setting is
+disabled, to avoid possible regression on latency.
 
+And add ethtool handler to switch this feature. To turn it on, run:
+  ethtool -C <nic> rx-frames 4
+To turn it off:
+  ethtool -C <nic> rx-frames 1
 
+Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+---
+V2:
+  Updated extack msg, as recommended by Jakub Kicinski, and Simon Horman.
 
-If you want further information about this situation, feel free to
-contact us by asking a question on Launchpad
-(https://answers.launchpad.net/launchpad/+addquestion).
+---
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 32 ++++++-----
+ .../ethernet/microsoft/mana/mana_ethtool.c    | 55 +++++++++++++++++++
+ include/net/mana/mana.h                       |  2 +
+ 3 files changed, 74 insertions(+), 15 deletions(-)
 
---=20
-armhf build of rdma-core 62.0~202601061326+gitfd8657625~ubuntu20.04.1 in ub=
-untu focal RELEASE
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+build/32=
-114225
-
-You are receiving this email because you created this version of this
-package.
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index 1ad154f9db1a..a46a1adf83bc 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -1330,7 +1330,7 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 	req->update_hashkey = update_key;
+ 	req->update_indir_tab = update_tab;
+ 	req->default_rxobj = apc->default_rxobj;
+-	req->cqe_coalescing_enable = 0;
++	req->cqe_coalescing_enable = apc->cqe_coalescing_enable;
+ 
+ 	if (update_key)
+ 		memcpy(&req->hashkey, apc->hashkey, MANA_HASH_KEY_SIZE);
+@@ -1864,11 +1864,12 @@ static struct sk_buff *mana_build_skb(struct mana_rxq *rxq, void *buf_va,
+ }
+ 
+ static void mana_rx_skb(void *buf_va, bool from_pool,
+-			struct mana_rxcomp_oob *cqe, struct mana_rxq *rxq)
++			struct mana_rxcomp_oob *cqe, struct mana_rxq *rxq,
++			int i)
+ {
+ 	struct mana_stats_rx *rx_stats = &rxq->stats;
+ 	struct net_device *ndev = rxq->ndev;
+-	uint pkt_len = cqe->ppi[0].pkt_len;
++	uint pkt_len = cqe->ppi[i].pkt_len;
+ 	u16 rxq_idx = rxq->rxq_idx;
+ 	struct napi_struct *napi;
+ 	struct xdp_buff xdp = {};
+@@ -1912,7 +1913,7 @@ static void mana_rx_skb(void *buf_va, bool from_pool,
+ 	}
+ 
+ 	if (cqe->rx_hashtype != 0 && (ndev->features & NETIF_F_RXHASH)) {
+-		hash_value = cqe->ppi[0].pkt_hash;
++		hash_value = cqe->ppi[i].pkt_hash;
+ 
+ 		if (cqe->rx_hashtype & MANA_HASH_L4)
+ 			skb_set_hash(skb, hash_value, PKT_HASH_TYPE_L4);
+@@ -2047,9 +2048,11 @@ static void mana_process_rx_cqe(struct mana_rxq *rxq, struct mana_cq *cq,
+ 	struct mana_recv_buf_oob *rxbuf_oob;
+ 	struct mana_port_context *apc;
+ 	struct device *dev = gc->dev;
++	bool coalesced = false;
+ 	void *old_buf = NULL;
+ 	u32 curr, pktlen;
+ 	bool old_fp;
++	int i = 0;
+ 
+ 	apc = netdev_priv(ndev);
+ 
+@@ -2064,9 +2067,8 @@ static void mana_process_rx_cqe(struct mana_rxq *rxq, struct mana_cq *cq,
+ 		goto drop;
+ 
+ 	case CQE_RX_COALESCED_4:
+-		netdev_err(ndev, "RX coalescing is unsupported\n");
+-		apc->eth_stats.rx_coalesced_err++;
+-		return;
++		coalesced = true;
++		break;
+ 
+ 	case CQE_RX_OBJECT_FENCE:
+ 		complete(&rxq->fence_event);
+@@ -2079,14 +2081,10 @@ static void mana_process_rx_cqe(struct mana_rxq *rxq, struct mana_cq *cq,
+ 		return;
+ 	}
+ 
+-	pktlen = oob->ppi[0].pkt_len;
+-
+-	if (pktlen == 0) {
+-		/* data packets should never have packetlength of zero */
+-		netdev_err(ndev, "RX pkt len=0, rq=%u, cq=%u, rxobj=0x%llx\n",
+-			   rxq->gdma_id, cq->gdma_id, rxq->rxobj);
++nextpkt:
++	pktlen = oob->ppi[i].pkt_len;
++	if (pktlen == 0)
+ 		return;
+-	}
+ 
+ 	curr = rxq->buf_index;
+ 	rxbuf_oob = &rxq->rx_oobs[curr];
+@@ -2097,12 +2095,15 @@ static void mana_process_rx_cqe(struct mana_rxq *rxq, struct mana_cq *cq,
+ 	/* Unsuccessful refill will have old_buf == NULL.
+ 	 * In this case, mana_rx_skb() will drop the packet.
+ 	 */
+-	mana_rx_skb(old_buf, old_fp, oob, rxq);
++	mana_rx_skb(old_buf, old_fp, oob, rxq, i);
+ 
+ drop:
+ 	mana_move_wq_tail(rxq->gdma_rq, rxbuf_oob->wqe_inf.wqe_size_in_bu);
+ 
+ 	mana_post_pkt_rxq(rxq);
++
++	if (coalesced && (++i < MANA_RXCOMP_OOB_NUM_PPI))
++		goto nextpkt;
+ }
+ 
+ static void mana_poll_rx_cq(struct mana_cq *cq)
+@@ -3276,6 +3277,7 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
+ 	apc->port_handle = INVALID_MANA_HANDLE;
+ 	apc->pf_filter_handle = INVALID_MANA_HANDLE;
+ 	apc->port_idx = port_idx;
++	apc->cqe_coalescing_enable = 0;
+ 
+ 	mutex_init(&apc->vport_mutex);
+ 	apc->vport_use_count = 0;
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+index 0e2f4343ac67..b2b9bfb50396 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+@@ -397,6 +397,58 @@ static void mana_get_channels(struct net_device *ndev,
+ 	channel->combined_count = apc->num_queues;
+ }
+ 
++static int mana_get_coalesce(struct net_device *ndev,
++			     struct ethtool_coalesce *ec,
++			     struct kernel_ethtool_coalesce *kernel_coal,
++			     struct netlink_ext_ack *extack)
++{
++	struct mana_port_context *apc = netdev_priv(ndev);
++
++	ec->rx_max_coalesced_frames =
++		apc->cqe_coalescing_enable ? MANA_RXCOMP_OOB_NUM_PPI : 1;
++
++	return 0;
++}
++
++static int mana_set_coalesce(struct net_device *ndev,
++			     struct ethtool_coalesce *ec,
++			     struct kernel_ethtool_coalesce *kernel_coal,
++			     struct netlink_ext_ack *extack)
++{
++	struct mana_port_context *apc = netdev_priv(ndev);
++	u8 saved_cqe_coalescing_enable;
++	int err;
++
++	if (ec->rx_max_coalesced_frames != 1 &&
++	    ec->rx_max_coalesced_frames != MANA_RXCOMP_OOB_NUM_PPI) {
++		NL_SET_ERR_MSG_FMT(extack,
++				   "rx-frames must be 1 or %u, got %u",
++				   MANA_RXCOMP_OOB_NUM_PPI,
++				   ec->rx_max_coalesced_frames);
++		return -EINVAL;
++	}
++
++	saved_cqe_coalescing_enable = apc->cqe_coalescing_enable;
++	apc->cqe_coalescing_enable =
++		ec->rx_max_coalesced_frames == MANA_RXCOMP_OOB_NUM_PPI;
++
++	if (!apc->port_is_up)
++		return 0;
++
++	err = mana_config_rss(apc, TRI_STATE_TRUE, false, false);
++
++	if (err) {
++		netdev_err(ndev, "Set rx-frames to %u failed:%d\n",
++			   ec->rx_max_coalesced_frames, err);
++		NL_SET_ERR_MSG_FMT(extack, "Set rx-frames to %u failed",
++				   ec->rx_max_coalesced_frames);
++
++		apc->cqe_coalescing_enable = saved_cqe_coalescing_enable;
++	}
++
++	return err;
++}
++
+ static int mana_set_channels(struct net_device *ndev,
+ 			     struct ethtool_channels *channels)
+ {
+@@ -517,6 +569,7 @@ static int mana_get_link_ksettings(struct net_device *ndev,
+ }
+ 
+ const struct ethtool_ops mana_ethtool_ops = {
++	.supported_coalesce_params = ETHTOOL_COALESCE_RX_MAX_FRAMES,
+ 	.get_ethtool_stats	= mana_get_ethtool_stats,
+ 	.get_sset_count		= mana_get_sset_count,
+ 	.get_strings		= mana_get_strings,
+@@ -527,6 +580,8 @@ const struct ethtool_ops mana_ethtool_ops = {
+ 	.set_rxfh		= mana_set_rxfh,
+ 	.get_channels		= mana_get_channels,
+ 	.set_channels		= mana_set_channels,
++	.get_coalesce		= mana_get_coalesce,
++	.set_coalesce		= mana_set_coalesce,
+ 	.get_ringparam          = mana_get_ringparam,
+ 	.set_ringparam          = mana_set_ringparam,
+ 	.get_link_ksettings	= mana_get_link_ksettings,
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index d7e089c6b694..51d26ebeff6c 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -556,6 +556,8 @@ struct mana_port_context {
+ 	bool port_is_up;
+ 	bool port_st_save; /* Saved port state */
+ 
++	u8 cqe_coalescing_enable;
++
+ 	struct mana_ethtool_stats eth_stats;
+ 
+ 	struct mana_ethtool_phy_stats phy_stats;
+-- 
+2.34.1
 
 
