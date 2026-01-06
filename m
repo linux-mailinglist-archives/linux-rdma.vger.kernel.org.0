@@ -1,71 +1,71 @@
-Return-Path: <linux-rdma+bounces-15320-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15321-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD6C7CF78BD
-	for <lists+linux-rdma@lfdr.de>; Tue, 06 Jan 2026 10:33:00 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8790FCF787A
+	for <lists+linux-rdma@lfdr.de>; Tue, 06 Jan 2026 10:28:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BBBE23071BAC
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jan 2026 09:27:48 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 92F64303E694
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jan 2026 09:28:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D89B128CF6F;
-	Tue,  6 Jan 2026 09:27:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7E6F2DAFAA;
+	Tue,  6 Jan 2026 09:28:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="hN1pBZBm"
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="Nx3qMgDz"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48A1027B35F
-	for <linux-rdma@vger.kernel.org>; Tue,  6 Jan 2026 09:27:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1F961A285
+	for <linux-rdma@vger.kernel.org>; Tue,  6 Jan 2026 09:28:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767691667; cv=none; b=m/31PBREA3COXGly+Mo9Ccs1y9AfyyTyBamRx7gCkhOLHWfxn2zxcE4K2e6pLSwprJWy//5lMgfsSB9G7awqyn6TO2YN5VnKX+YLsbvTx8awtKiJI3B3d9O3Ug6DD3T9de1YLpeFDyJJruG5TdztqoHWLsk9ZwJGB+q6HCgQS5k=
+	t=1767691736; cv=none; b=MfS2SyWSYv2aKRNf5x6NRQNcWfWP8hEimMbUUOKhj6C7fFTcWggBg9ImfVdh+6GWsYY0c+87OXF90TCsD3ZxAn0C049TbEobrwUTCGRMToqlRyqM/vrL62hS+pM3T48NJ37cfuCL3VeqC8WiP3umPHyf7iHnM8OJOKhb7Wea7/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767691667; c=relaxed/simple;
-	bh=dtndWUsgj85PQo16LuZa/tafUe1MirpBxN+gQSL5zCI=;
+	s=arc-20240116; t=1767691736; c=relaxed/simple;
+	bh=fD9QgFOhbmzILNgf8uTSMN6AR332/6GC6k6XUR1cOYc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=p5j3o1pcIpNDRhylXPZ3wfGzOgOfRcZKaIKeQnAl5IgcVoOgrTSNrcZZVuhuVJfXkkm7xDBv0rj0/hKXfjvuSlaJIdSdQQlmXRJn9R4zIiYxWQjxaCFgBdZwTNM0i8hTGL+GSVIRbxip7KgJrjngt89LejyVH+O/kXLPAQ/9WB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=hN1pBZBm; arc=none smtp.client-ip=209.85.167.48
+	 To:Cc:Content-Type; b=IMY6ULBetIXab/d6uAm1CSD+CBGrXp0xV4qSo9bgM+h5veb+49wDXmmp1zBYm33Qw3aEw01/StBlYVNPbAmNED93uKDLusEumCINRAXslQV2JQUVdTWBnNMBS/m3bIEtBoSuXemobwfIlercNFk78UYtfBmFmjnxLErk2Uec/VY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=Nx3qMgDz; arc=none smtp.client-ip=209.85.208.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-595819064cdso1218291e87.0
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Jan 2026 01:27:44 -0800 (PST)
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-37fd6e91990so6705841fa.3
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Jan 2026 01:28:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1767691663; x=1768296463; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1767691733; x=1768296533; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Bg1reobfh/4Vy1aOcIyNvW5D6D+SJKCYz8ItnZLsKh4=;
-        b=hN1pBZBmhkyjuCh/4RTWzOiPMkCNlSAliMeE06hzUPBP2hA3AvrBPspm+vz+qSTa3Q
-         /ujO3EfjCCAotFNpPNw7yeO4WL7ECm+jpLLkssRdTfIdMnjsMtHHNdLGlZnAvt41Dq/7
-         keC8v4WAviXFLi4ZRMseD25i8KPwuox2GazPu+iiasBmjrDHEa95wyeXpWh43QGwNY9A
-         ptsVhABnuFkVzxaTTfGiv8wa3I26I0IKy2kugxR5uy4MEMY1IgmrK07zPfBQhYsFfZAr
-         1RIBCRudcdxr3UW2QpmDEJWQU18NmIKTLXIjV8J66V4OfO0TQO4hXbjclJ2jsBLxo49a
-         vuog==
+        bh=hOx6oMYGbl0Nm8fh2fQSWBSwuTZaFX/o6jedzBtP/qs=;
+        b=Nx3qMgDzk41OBRkaiz2xLepaJDrGdGU3fkK2eNj8fT408EqQ2da1fOMqLtZMMTI18p
+         mv+LcdsMi+pLACC0kNubch/9EbwGNnmvW2lEfngLVJ9Qn4HqvSCmgWmn0PNfGgA1+Yx4
+         j1Mp3suFpeQ7yG0z85inVr8SxP1xnyGq+03HImYeUzYDvygxArZbVEdTyLy8g9pNw/EB
+         2+wAPJ+shwpfLyeuX7URT9oP/OTU8eHSC9Wvo4mU8/+iX6ljQGVmFM51GpfMU9CXV4WJ
+         rQ7EB3wuTICKbAr5qdsd2/4aju3rBgwtzqODhOPNgPDcWMVePObD+gPdpntXu4SPLiI5
+         tLGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767691663; x=1768296463;
+        d=1e100.net; s=20230601; t=1767691733; x=1768296533;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=Bg1reobfh/4Vy1aOcIyNvW5D6D+SJKCYz8ItnZLsKh4=;
-        b=RsKKy/xz/YCZOr1HAVaXiC+oaS86ElFlVgeNTAdAncTHdd7Ih1yU+bhXkUn29w71gM
-         Vj81Y3lKsaMObvnWDUMlvFbAoNMV51HIv5ybF3iGTutsVuhveC3chA7V+OUPaTPn1qey
-         F4hP2s/qlW8WA00nBmBegfdN70Wd8gnfbMeU0nT5AvhA+WY0gp6mY1dNEkPQvorT3bXj
-         eYp2lv8TxsurBidx9pXXTukc1OatOrj4y2CWWLyFeKTCQxx4nNCl/ytM7A6jZkhN4QZR
-         wyflHmowQVYU4UjqVZZdBtCczwSzv9mMA3NZV1/K/pzwLVIsdZaeHOZT5tmayT+3o/DZ
-         bd+Q==
-X-Gm-Message-State: AOJu0YymWcMdtH/0PQ0eDXcoBh8ki39xsNFmhZIjzi9TUnT3pTjD5u3A
-	lA7Jv7JcU2V0lFxCZm0L2FgrBAcuXpGYx8XtZAEU6uCB5hFsHmdwSA0kh5VScXGEKkpMTInL3y2
-	+QJy+m2FHx0pHWpTM5RG+ifHeT1maUiKiHt4cNl0IbQ==
-X-Gm-Gg: AY/fxX7XEE56NesmOWhy6rmE29N0QMQ5X/+ZGJvRuI0kfh3Bgh80SCXuMVxEg4h4TjH
-	FbmaZ8jVFdEPKvlAaEvOkD3n6sqFcgbZuCQvuCtLwTutsjCqwniBUB+um0PMuscgnTXB6zJvHIp
-	o1KNckuHRWohpCLutUNOqRD1kivkqoK0wVc0VjDkOezTDu1Gxu3ZxEjDSpg/f6bSvUlRPcsPCo4
-	KxTEMRbI7h1jv63vhUEnOrgKSvbSUmN9DM8nYFqBtB4lCe/oP3qJeYGWYQwI9dE6TPf4Jo=
-X-Google-Smtp-Source: AGHT+IFQU1wkeJVczJ/OYqfklU4Mw+4ooJM6k4S6B353LssPAAQijyprxwUFQmHVjTlhQBpyXZE1q2ircQLMumz2nKg=
-X-Received: by 2002:a05:6512:a90:b0:59b:572e:83e8 with SMTP id
- 2adb3069b0e04-59b65899838mr739712e87.24.1767691663348; Tue, 06 Jan 2026
- 01:27:43 -0800 (PST)
+        bh=hOx6oMYGbl0Nm8fh2fQSWBSwuTZaFX/o6jedzBtP/qs=;
+        b=tS7ztpV4D2In/bG5elQxZ826PQwHNtUWrHlOl3SwqfIdrAROApI+dTIxyTHqfYJ5QN
+         iYzVzhc49h4IRqIEqFnwC47vPNx+8bWqkQ2/1DhcVk11mFFupXiciDG5KzAl/cJZNrOn
+         WQJIlhyUdExhqBrPoj7T/8AMBRAHnpOUBr5hvPNXtaQEbRDI2/6MBvMPXF+hfZjaDBn4
+         QCTLD48+slv0xo+4er/W+/OoVVeWIWw3t64spbh+wBNQFbW8Cg6ge9hjk1aSh6lXkzDS
+         BpcFIk5JgP4KrE22p5wB21m0VIdmf8jYENB22amTrA/swaI3WhixLmBoxrDJ4Uari2CQ
+         RJlw==
+X-Gm-Message-State: AOJu0YwGn2pwGUB7dr5hs8Cf0mg1rf2dnkaTHKKuumCBupk3h4jTWApg
+	gmzqYbuI+Zagz4HNEhs4GrKj+SWNDtvmVXbMT8QzDeqU69amHdCqPcYRWzlV63iBKELMBPHjfp/
+	RecZLvkK4XteddtTKT5n2/uAZrM9BjL1cVD2u0aoAaADh5GrlaIeh
+X-Gm-Gg: AY/fxX4pxhoZZISPIlcYUc6grPNbXNSx6CRILsFp2emgICMi8gmEnZmUN5Dk3A7TQw8
+	eKvB8E5v4hOKH+VukUHV9MWVix4PuFDwB8PCPYtOle8/N0cWMST88IpdLuxa5H7ZlMZvIhK/XgD
+	hD/jmrgVGQqVcwc8ns6onEBNxZPaPZf/YU0ohn99OFqAlETWV99T7/rEaqPoFu/P/Q992joh/7i
+	Fm0BWdk6W/Lo/1zlq6NN047Dn/RsFL59GRnPjWSD9QnchkNkVk5as4IwjJUyqFvd39t1CM=
+X-Google-Smtp-Source: AGHT+IEX92pqnk14BjfkDtNoItKAL+06o2l97yoaokxffXxQ/rznk9SNWZ/xuUc1yVxrkEJhN2GL+6gXIO4/mGcgr1Q=
+X-Received: by 2002:a05:651c:4210:b0:382:5f1b:99c5 with SMTP id
+ 38308e7fff4ca-382eaacd968mr5196581fa.28.1767691732866; Tue, 06 Jan 2026
+ 01:28:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -73,47 +73,38 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20251208161513.127049-1-haris.iqbal@ionos.com>
- <20251208161513.127049-7-haris.iqbal@ionos.com> <aTd4n-mGUSP_kk11@fedora>
-In-Reply-To: <aTd4n-mGUSP_kk11@fedora>
+ <20251208161513.127049-4-haris.iqbal@ionos.com> <aTd3fOJcyRklaHGg@fedora>
+In-Reply-To: <aTd3fOJcyRklaHGg@fedora>
 From: Haris Iqbal <haris.iqbal@ionos.com>
-Date: Tue, 6 Jan 2026 10:27:31 +0100
-X-Gm-Features: AQt7F2r2lY4SSjPqROC_ZMX76gCQ9duhliZbhwM3PrlR1ZyDUF7vokXRXS44mi4
-Message-ID: <CAJpMwyiCeSXmTojK7nhJtE+dDdTSzFs6Jq9ap6okomVm9SLXEw@mail.gmail.com>
-Subject: Re: [PATCH 6/9] RDMA/rtrs-srv: Add check and closure for possible
- zombie paths
+Date: Tue, 6 Jan 2026 10:28:41 +0100
+X-Gm-Features: AQt7F2pjgVjaWEauvl7pYRQYcfjAnP2uI_3780H3DPdOBQbrGriN7yHaQ7-gNOs
+Message-ID: <CAJpMwyi-Cc4EDfCizpop+koTtu0Bfjf_veqbOsad1xnJ=Kr5tA@mail.gmail.com>
+Subject: Re: [PATCH 3/9] RDMA/rtrs: Add optional support for IB_MR_TYPE_SG_GAPS
 To: Honggang LI <honggangli@163.com>
 Cc: linux-rdma@vger.kernel.org, bvanassche@acm.org, leon@kernel.org, 
-	jgg@ziepe.ca, jinpu.wang@ionos.com, grzegorz.prajsner@ionos.com
+	jgg@ziepe.ca, jinpu.wang@ionos.com, grzegorz.prajsner@ionos.com, 
+	Kim Zhu <zhu.yanjun@ionos.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 9, 2025 at 2:17=E2=80=AFAM Honggang LI <honggangli@163.com> wro=
+On Tue, Dec 9, 2025 at 2:13=E2=80=AFAM Honggang LI <honggangli@163.com> wro=
 te:
 >
-> On Mon, Dec 08, 2025 at 05:15:10PM +0100, Md Haris Iqbal wrote:
-> > Subject: [PATCH 6/9] RDMA/rtrs-srv: Add check and closure for possible
-> >  zombie paths
+> On Mon, Dec 08, 2025 at 05:15:07PM +0100, Md Haris Iqbal wrote:
+> > Subject: [PATCH 3/9] RDMA/rtrs: Add optional support for IB_MR_TYPE_SG_=
+GAPS
 > > From: Md Haris Iqbal <haris.iqbal@ionos.com>
-> > Date: Mon,  8 Dec 2025 17:15:10 +0100
+> > Date: Mon,  8 Dec 2025 17:15:07 +0100
 > > X-Mailer: git-send-email 2.43.0
 > >
-> > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> > @@ -911,6 +911,13 @@ static int process_info_req(struct rtrs_srv_con *c=
-on,
-> >                                     tx_iu->dma_addr,
-> >                                     tx_iu->size, DMA_TO_DEVICE);
-> >
-> > +     /*
-> > +      * Now disable zombie connection closing. Since from the logs and=
- code,
-> > +      * we know that it can never be in CONNECTED state.
-> > +      * See RNBD-3128 comments.
->                ^^^^^^^^^^^^^^^^^
-> What is it? How to access it?
+> > Support IB_MR_TYPE_SG_GAPS, which has less limitations
+> > than standard IB_MR_TYPE_MEM_REG, a few ULP support this.
+>
+> Do you have benchmark performance difference between IB_MR_TYPE_MEM_REG
+> and IB_MR_TYPE_SG_GAPS?
 
-It is an internal ticket number. Should have been removed, but we
-missed it. Will remove it.
-Thanks.
+We haven't benchmarked it yet. As a ULP, we wanted to first add
+support to RTRS.
 
 >
 > thanks
