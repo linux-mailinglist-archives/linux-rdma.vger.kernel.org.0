@@ -1,80 +1,91 @@
-Return-Path: <linux-rdma+bounces-15343-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15344-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3635DCFD940
-	for <lists+linux-rdma@lfdr.de>; Wed, 07 Jan 2026 13:14:16 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E055CCFE2DB
+	for <lists+linux-rdma@lfdr.de>; Wed, 07 Jan 2026 15:10:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 945FC3004F73
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Jan 2026 12:10:21 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id EC10830574D1
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Jan 2026 14:05:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E9CC30FC17;
-	Wed,  7 Jan 2026 12:10:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0EEE32C925;
+	Wed,  7 Jan 2026 14:05:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fncxoOsY"
+	dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b="NM9HQBvS"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp-relay-services-1.canonical.com (smtp-relay-services-1.canonical.com [185.125.188.251])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79EC730F53A
-	for <linux-rdma@vger.kernel.org>; Wed,  7 Jan 2026 12:10:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F744315D23
+	for <linux-rdma@vger.kernel.org>; Wed,  7 Jan 2026 14:05:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.251
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767787820; cv=none; b=du6IEVGB2TwZWPGHjgHg1DxJkg6dnSx0f14TxbL2tUEVXrGpKPIRQWhm/GbFz6OguSp6oU8vfuUKmZt6MNewU+nVkZ2iG6qos8/eL3lan656mU02RYzc5YWH57GsECIs7x3zHvUdItXq+Rms4ReZWzCO1MBEnESDLn9sGU1Q8Bc=
+	t=1767794751; cv=none; b=WfhQy6SKwIDP739KQwe9UB0gQUY4cnoXWjIPB6YE0WzTP5JYBBlIJKvTdXwK7FvsP28X8eWnn4oF9Ztd21D7RYJbVadu36mL35GgjWe3aQm4pDkswf4It7QDC2mvVP8rvcRidNgwJmsFdE8WmeRV+6h1z5Xmyzm5bSw9pJMvTTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767787820; c=relaxed/simple;
-	bh=+MeWLzBJhCgNfr6oqAb2bN0MvWd+w4M92RtrMQhnVpo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eBG/4WBku+kI3oMQ/1yi0ALfihOPOmwyKcS8hbXYVlXiEtDy+J8v4OEwyrzyvN/4oh+WrHuMMIH9hkfNwIcoueJKA9Yh2ZHaMi4tPWloHWqvsj1HuzmuPQTfMO6t79MGfIWN91SH/v+Xg4Uuu1hMN3dBBWjMXPk0zTL9CP14XgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fncxoOsY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78A85C16AAE;
-	Wed,  7 Jan 2026 12:10:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767787819;
-	bh=+MeWLzBJhCgNfr6oqAb2bN0MvWd+w4M92RtrMQhnVpo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fncxoOsYUrLuxs6jon+c74TucLq1oMUH9lAUjX/3PZqot2WBxZeZXRopvMSJWFmdN
-	 eOO4Lz+EJ302b41dZgOuuouLAYg1s/HNAt97R0j55Xj11tXwfvlXpIQfrxc1AGD38H
-	 XnBex53A9slAvMAiMmPR6LLViDB0Iryjvr7XExUy/nICMGhOniXGdpeb9qw4nnvAWu
-	 T+TViIJUEx7tQqCclABBeEKXY73i46+biN+454PiSF1tMbrCXcxLjgQjvPSEBPN+H1
-	 02IAAPvkGpeIxnTfywBKYLKXWcxSbqtTtuAwssVN7rwN+xqd9BIYrolCDnksPFj7Kr
-	 vUaPzXDThVgRg==
-Date: Wed, 7 Jan 2026 14:10:16 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Chen Zhen <chenzhen126@huawei.com>
-Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, huyizhen2@huawei.com
-Subject: Re: Question about the relevance of "Fix memory corruption in CM"
- patchset to syzkaller bugs found on stable 5.10
-Message-ID: <20260107121016.GC11783@unreal>
-References: <239215b6-5780-4f58-a6f4-5bddf1edf33e@huawei.com>
+	s=arc-20240116; t=1767794751; c=relaxed/simple;
+	bh=h0TjtQkfBDdSGpxFGZ5WgqM8qbVf4S6Vt2kI9L8ogl0=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date; b=d4z35137l4HL766NmgXZ3CwdXHuhX+pADheSSNlndwsGm70JUmqwRQYdUbS/pzny4r5qKCk7TPu2C/lf6PnuYNBfjbZBh2k9HQeiB6o+cBt4DBS+cnqqK/wWEWb+uTUbd3FtBxqLghjWWjbObmiCrI3gLorg8DrfB4HjWiA769Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net; spf=pass smtp.mailfrom=launchpad.net; dkim=pass (2048-bit key) header.d=launchpad.net header.i=@launchpad.net header.b=NM9HQBvS; arc=none smtp.client-ip=185.125.188.251
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=launchpad.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=launchpad.net
+Received: from buildd-manager.lp.internal (buildd-manager.lp.internal [10.131.215.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-services-1.canonical.com (Postfix) with ESMTPSA id 70A29430CE
+	for <linux-rdma@vger.kernel.org>; Wed,  7 Jan 2026 14:05:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
+	s=20210803; t=1767794742;
+	bh=h0TjtQkfBDdSGpxFGZ5WgqM8qbVf4S6Vt2kI9L8ogl0=;
+	h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
+	 Reply-To;
+	b=NM9HQBvStIVI0dMd5f00WJtOFdV5QM247kA+j1+tAFgd+00QWINj4e9w12RLBc4+K
+	 BuHCMyv2J2yuTezJjL3SLdgvDAVNf3qblbarxNI3DoFrFn7Itqk6admfLPycNehngO
+	 uO1uvZ9i9LC8ifhjSNp9AFb+Dgka+fPIlJWkiACWOTpfviZ2KVpXa/eCLF4nS9HgZy
+	 MQWsEpiIciCEGh4FPqqtu1cKsLM4mtD/dqj+e6I3AbAJFGwfukeuSW3bJJGxCs2A8k
+	 8ZkKBlHWPHEXkfMxDgZfqgMKTxSqlVpg6bbrF/STUe+D7CYxEHHptnUfiU0vvOkitg
+	 OL2I17BndKvqQ==
+Received: from buildd-manager.lp.internal (localhost [127.0.0.1])
+	by buildd-manager.lp.internal (Postfix) with ESMTP id 55B5C7E7E1
+	for <linux-rdma@vger.kernel.org>; Wed,  7 Jan 2026 14:05:42 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <239215b6-5780-4f58-a6f4-5bddf1edf33e@huawei.com>
+Content-Transfer-Encoding: quoted-printable
+X-Launchpad-Message-Rationale: Requester @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: recipe-build-status
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Launchpad-Build-State: MANUALDEPWAIT
+To: Linux RDMA <linux-rdma@vger.kernel.org>
+From: noreply@launchpad.net
+Subject: [recipe build #3995175] of ~linux-rdma rdma-core-daily in xenial: Dependency wait
+Message-Id: <176779474232.1103073.10447618047308620906.launchpad@buildd-manager.lp.internal>
+Date: Wed, 07 Jan 2026 14:05:42 -0000
+Reply-To: noreply@launchpad.net
+Sender: noreply@launchpad.net
+Errors-To: noreply@launchpad.net
+Precedence: bulk
+X-Generated-By: Launchpad (canonical.com); Revision="99c00f518760bdd50fc6e353e7736d2fff8fba4a"; Instance="launchpad-buildd-manager"
+X-Launchpad-Hash: 8c648ea3c08b68389653f12bb9e6e75dca39918c
 
-On Wed, Jan 07, 2026 at 05:22:55PM +0800, Chen Zhen wrote:
-> Hi everyone,
-> 
-> I am reaching out to consult on two recent syzkaller issues found in the ib/cm module on stable 5.10.
-> Both issues occur when ib_cancel_mad interacts with cm_id_priv->av.port data.
-> 
-> I noticed the following patchset from Leon:
-> Fix memory corruption in CM, Link:https://lore.kernel.org/all/cover.1622629024.git.leonro@nvidia.com/
-> The description of that patchset mentions fixing memory corruption.
-> 
-> I would like to ask:
-> Is this specific patchset intended to cover the null-ptr-deref and UAF scenarios described below?
+ * State: Dependency wait
+ * Recipe: linux-rdma/rdma-core-daily
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Distroseries: xenial
+ * Duration: 4 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
+aily/+recipebuild/3995175/+files/buildlog.txt.gz
+ * Upload Log:=20
+ * Builder: https://launchpad.net/builders/lcy02-amd64-021
 
-It looks like that work should address your MAD issues.
+--=20
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+recipebu=
+ild/3995175
+Your team Linux RDMA is the requester of the build.
 
-> If not, is there any other known work regarding these lifetime issues in the CM module?
-
-I'm not aware of any.
-
-Thanks
 
