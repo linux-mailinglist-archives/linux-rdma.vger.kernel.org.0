@@ -1,298 +1,269 @@
-Return-Path: <linux-rdma+bounces-15368-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15370-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84F9DD0269A
-	for <lists+linux-rdma@lfdr.de>; Thu, 08 Jan 2026 12:33:43 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60DBAD0326F
+	for <lists+linux-rdma@lfdr.de>; Thu, 08 Jan 2026 14:50:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 4E6DE3005F1A
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Jan 2026 11:33:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C2F73310EAB4
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Jan 2026 13:41:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB5693A7F53;
-	Thu,  8 Jan 2026 11:13:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="D32vAExF"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32AFD3DA7C7;
+	Thu,  8 Jan 2026 11:30:45 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011003.outbound.protection.outlook.com [52.101.62.3])
+Received: from canpmsgout01.his.huawei.com (canpmsgout01.his.huawei.com [113.46.200.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EE65347FCF;
-	Thu,  8 Jan 2026 11:13:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.62.3
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767870791; cv=fail; b=nyIwpB1WreHWQT/kZbz16T+iG0pD2Km9WE1F3I75LtprPY8u/14pG/1Ws/LqL68oaNcoe9tGprtpHtAZ+zMy+gsoAhwZlNHeVc7KFBWks49JrvWn1dRZ+cGRr2sWSJvyUYS39wPiLFEM2O89EnFIdFuqkCh+uK07qlXfFRqkK1g=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767870791; c=relaxed/simple;
-	bh=N7HI9gG5/OOvrdA6rvulCsa8GRmyteGxqwP83p8vUMY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=H56UdxBCkYJyBDYfUYYpSE35w08ihT2HPbTMxSRaNvonWQxXH0k+GzZQMXfFxhaxlOe5skHLn7Zp5QmWPdzaJ4cgEQk0f3RZaLFeU2yeBuuqYqdJs13oIPllNHQhFvX+TP0QEafUI9O5nC5dTEC2Q6TkTLiPhAJ5jnzRv//Syks=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=D32vAExF; arc=fail smtp.client-ip=52.101.62.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=o0PYXjUX8YBcLAO+yljLN/zQoJZA6cSmOlOiY9PibF7PKAq4MMVujz920zl5d1rXzi1PlUQhby05l3NH7btiMzPgsPmeeO9tjdO3mC+5hMz6iK/TdgozVgd3j+d43QcSldLG9IGXdifHwFjnKEWqy3x60KrxkeZOkFss2qE0kRi+Mf5Yu0Y7SNLcETcVU41Wrj9BTyrwc1374NWfTDvLlQVE42nI6jPEcEj9mT279J623Ng1h1VM7ohPusxcZKmXydLxPhdFgR83cyQXRnp3At/HL06xv0V4UFiyf0LLFs9rRHsyLehB81J1IM7gHWhfaBZWK3BRghbCkZTt8Rcimg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=q/W7LqEx18WUsxvfWM3YNeaXbbGsPWoCwQCAOTqXNu8=;
- b=hAm3xIXY6C9yjHrmOPwB2ezP1sYLT1xQA5mx6q8+xv+IYWDWZfpMd0JaLzG+Ws0ARjLvU21uWPPvrLtEcfKXM0YYLLCIIyHq5JlJSJkjB3H2slkUapzUE8f6v7z1hJWypyQGqxDJ/scj+Xt/0i9JFCduv7Le7hCy34cBC+S25hI04OpmbHtzCpchztA9GhdzmHhi4LO3V0F/SPNlPHL+jhEMoSwBchnBzccQAnikJeFAHe80SIiQ8ZSPMZceWnadVU35YvJNJaJN573UqK4bYJePHSvdo3CSYr5jiFT46TG3YrlSrX4XpHXGZkH5UDzxRXd3fwhEwgPw4Z6jlfMNQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=amd.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q/W7LqEx18WUsxvfWM3YNeaXbbGsPWoCwQCAOTqXNu8=;
- b=D32vAExFzG2JgbMQT18gHk6pIsqxITVLwM6b7TdzO10uonV4aW+qZ8zPoUDhhgBImUaFvHVpKPlsgOgd2fFtpoVEeFS05EPUm2grStnVC0f/y9knnuzqmpmHI2tptZIOAFPfG+0D9Bkg4WQlbXUK5OMl9KeOT+lkJuJHMtM3tHZWJFb6EUkpTly/riP3xc/E6AlJOInvJfod0c28RQLx395LoA2Yv/s27zYrR9KU8eioZOleMIqgxb1cp6yMjYd6G8l6i+zZzzA/Ff0pfCVUmHRCpFqRq6b9owSCVoyXWkWmYar83h8fs3zQ85j0/X2s0q25bgRzMTS2/hu17hmLDg==
-Received: from BN9PR03CA0268.namprd03.prod.outlook.com (2603:10b6:408:ff::33)
- by DM4PR12MB7528.namprd12.prod.outlook.com (2603:10b6:8:110::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9499.4; Thu, 8 Jan
- 2026 11:13:03 +0000
-Received: from BN2PEPF00004FC1.namprd04.prod.outlook.com
- (2603:10b6:408:ff:cafe::14) by BN9PR03CA0268.outlook.office365.com
- (2603:10b6:408:ff::33) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9478.5 via Frontend Transport; Thu, 8
- Jan 2026 11:12:58 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- BN2PEPF00004FC1.mail.protection.outlook.com (10.167.243.187) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9520.1 via Frontend Transport; Thu, 8 Jan 2026 11:13:02 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Thu, 8 Jan
- 2026 03:12:47 -0800
-Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4B733D6F3C
+	for <linux-rdma@vger.kernel.org>; Thu,  8 Jan 2026 11:30:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.216
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1767871843; cv=none; b=CZPNvHvs+L8nS3E48nCusrABFKleeHzofOnvi3heoldjYJbbMXoHibKCiSPzhmkjRhtLVhFu/UgcWvTBSR7pzUiebUCcTev+BeVNyZyYS9utEeOTgqFCqpTtnCmzqbxtp+R6/+02C0ELklsWN9nJNciv03MTr+RCYfaV45KAUGY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1767871843; c=relaxed/simple;
+	bh=W4jDJZ3PZQfnSKKZcIKRnwIVMoDC0DhTS91sds5oX3Y=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=H+Ha7TdH4gAEA5pEzl/JVDEW4PdZwpHjLj8fUIJb3sX3BeXw0NsPAyyklzL/TZUfjsvi8fbW4uwfLZd4olP6ICUN41mG9ylfcu6CjvD1EHmocmpLaaav9n+AC1iNZhS2RGg/ktfauCAjH5qb18x4jx2j8ZqDFR1M2OpXvIRWvq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=113.46.200.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.162.144])
+	by canpmsgout01.his.huawei.com (SkyGuard) with ESMTPS id 4dn2fx2Jgtz1T4GY;
+	Thu,  8 Jan 2026 19:26:49 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id D4DF04056A;
+	Thu,  8 Jan 2026 19:30:33 +0800 (CST)
+Received: from localhost.localdomain (10.50.163.32) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.20; Thu, 8 Jan 2026 03:12:46 -0800
-Received: from c-237-150-60-063.mtl.labs.mlnx (10.127.8.10) by mail.nvidia.com
- (10.126.190.181) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
- Transport; Thu, 8 Jan 2026 03:12:43 -0800
-From: Edward Srouji <edwards@nvidia.com>
-Date: Thu, 8 Jan 2026 13:11:15 +0200
-Subject: [PATCH rdma-next 2/2] RDMA/mlx5: Implement DMABUF export ops
+ 15.2.1544.36; Thu, 8 Jan 2026 19:30:33 +0800
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>
+CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<huangjunxian6@hisilicon.com>, <tangchengchang@huawei.com>
+Subject: [PATCH for-next] RDMA/hns: Support drain SQ and RQ
+Date: Thu, 8 Jan 2026 19:30:32 +0800
+Message-ID: <20260108113032.856306-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20260108-dmabuf-export-v1-2-6d47d46580d3@nvidia.com>
-References: <20260108-dmabuf-export-v1-0-6d47d46580d3@nvidia.com>
-In-Reply-To: <20260108-dmabuf-export-v1-0-6d47d46580d3@nvidia.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, "Sumit
- Semwal" <sumit.semwal@linaro.org>, =?utf-8?q?Christian_K=C3=B6nig?=
-	<christian.koenig@amd.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-	<linaro-mm-sig@lists.linaro.org>, Yishai Hadas <yishaih@nvidia.com>, "Edward
- Srouji" <edwards@nvidia.com>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1767870755; l=3906;
- i=edwards@nvidia.com; s=20251029; h=from:subject:message-id;
- bh=XKdedpkRWS96DSpISJqiO92oMp2BawoYlv3Gdfu8C30=;
- b=Z3qzzUy4/YtYqll05kvnHjMtCNcYnq7pKJCtoSRwXwA/u9STtr5eCIuAWZq6tLv5dxCyGKtFU
- ql4S5GsDEgVAMTvUIwCFI7C8J5l7ihMh8qqRBXfgrNTJFaHcfzUFaQX
-X-Developer-Key: i=edwards@nvidia.com; a=ed25519;
- pk=VME+d2WbMZT5AY+AolKh2XIdrnXWUwwzz/XLQ3jXgDM=
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN2PEPF00004FC1:EE_|DM4PR12MB7528:EE_
-X-MS-Office365-Filtering-Correlation-Id: c1ac149e-c850-4240-8a7c-08de4ea6e40e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|82310400026|36860700013|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?VDUyZjFmdi92eXRZWmZaSXhRK2QrdWtLL3pxV3JwSTVtTWZvYnNWUFJoRis0?=
- =?utf-8?B?OVk1K01hT3o3VUNEd3VMNU1mbnVRUXNQRzV1aWkxYXkwbGpHNTVSK2hJUDRR?=
- =?utf-8?B?VmJraE5OUTE3ZWxJSDQvaWRLMkJ5L3BZNHFmdXJYWWpBVlc5bDgwZVdsQm9Q?=
- =?utf-8?B?MmVqY1M4ZFg0MW12UHNwR2VucWY4RGo5Nzg5T2c0dWJPRldENG9qM2hpbkJ3?=
- =?utf-8?B?amVPRzdDQXZmdGl5Sis1VFI4SExydnFJdVJZVWNpLzV3Q2RvclRWYjM4TTVk?=
- =?utf-8?B?d1cyUWthRjFzclJYeEllWWVxS0NOakVSc3puTkVWcEoxNE01MVhPM1k3ZGRx?=
- =?utf-8?B?QUJuUE5iOWFhcTRoNmZOZktCMlZBL2FXeDF3S0JHSzdtQitMdFBrQzZlL1BC?=
- =?utf-8?B?QWxQaWVtcWdFeEFIUm9OekkrYW8zbEN5dnNVT0M4MDlvMmIybU9wVzRhREN1?=
- =?utf-8?B?MmxoYlVKblMzUHNGUzM1cHVZQll3cm9BaDljYzZySHI2c1hDOGQwc3JTZXRO?=
- =?utf-8?B?ZmUyOEJCUTg1UUd4cVRhQmIwWnVJaW5xWWJEc1F6YklCNnFHenFLL1dKN2tD?=
- =?utf-8?B?dUVBK0w3TTN4RjRYbC95RDBsbnkydGt2L1hNQVBPbW1GengvZHNWR2MwUktO?=
- =?utf-8?B?QUlJMHJTVFE0RmdQUUZ4ZCtPY09iem5nZzlLTkNPcDFYeVoya0o5aXBOMlJW?=
- =?utf-8?B?VnBvT2c4T3JYQnY3ZFNRdENSWDdacWNrek9Jczh5cEdITllVMCtFeGE2Ym10?=
- =?utf-8?B?QjZESU1GRWNhSlRIbzlvY2NjcHYwOE1xSEVKWnBrRnBzaXhFaWMyOUR3Ukxr?=
- =?utf-8?B?QnhDdGk2cGtFRE5mU2o1U2dlbG1OOUZGaGlWeTJNYmt4WnBSaEYwdTlxT0xZ?=
- =?utf-8?B?dyt0dHMxUndhbGM3enZYekxzTmtLeXpGVzk2SlUwMXZjWnhHQ0U3YVg5dk1K?=
- =?utf-8?B?eXV3dWc1TTRWeUdpQ2ZyUnMxZDAxMEl1OFdQbTVIU0ZlL1ROelQzNVh3WjdV?=
- =?utf-8?B?NmcwWWpxSzZuNjFNVitJRkx3WVRpSkFObHJ3eDZZL1NLa280QVU4aGFUVG0v?=
- =?utf-8?B?UUt3V1dRanRWanBjZVNrUEcrUVU3UVQ1MG9yTXczL0pRTDNJMW1DcEdzc2tS?=
- =?utf-8?B?dGUvNk5CNWRxVUxTWE91SkwvekJxeXh4UkMrZWtIRnRleE1JbU1jbVdrM05j?=
- =?utf-8?B?NWtyUzJEbktjcS8rUEl5V1lmTTQ4TlIyelUrV2piM0FTb2g1bEJPZ0UyUGVD?=
- =?utf-8?B?cmg2U3dhajNlSWJEQzJ2a3R5cVlUczgrTEgvM1FZL0U5Q1NpVndjNmFWMENL?=
- =?utf-8?B?UG03MWlGeHJuYlVmc2p4MmVaQUtNOEFrM3NJSTQ5bm1DdG0wTkg2a0JVL0xY?=
- =?utf-8?B?aXozVzNXWVYrMW5zbXp5aXZCQllXb0FldDhRd2lOSnd5MEllUGpoRFJWQ2tI?=
- =?utf-8?B?akhQZnZWVkNwSEljUE5KcGc1Y2gxN29Uc3I5K0JEdEgxWnR1L3ZqdW9CVmNw?=
- =?utf-8?B?MFBCLzV6S2ZNYmZvZlg1NTVsMjljN2VrMUxzaTdxRUdaVERJMCtDRkk0b1Jo?=
- =?utf-8?B?U21SU2VDTXBXR0Vsa1FBZXRRaTlnaUtwQlNSZUhycVFtSzIwazg0YkhWa2ll?=
- =?utf-8?B?ZUR1TVNsUlZHYUlhaEMwOUV5ZER4QnBtV1ZibkRvaEIrS05hUEpOdzdLY0d5?=
- =?utf-8?B?NXVlSWNIQk5kM0JIWldBM1ZWaUVsQXdLbEJ5eVI3UmFRMEg3eGJwc0pUSGdp?=
- =?utf-8?B?ckNFVjBBNWxZbjZlQ3V6YThKM29VSWpDUW9vaHFDR2w4L2dIWGNhYXRxb2pP?=
- =?utf-8?B?dGlFanB1NCtxcUFueWh5ZS82VDhtZytvMU9VZEZOQ0t0UlhPVG1INXJyRlRL?=
- =?utf-8?B?M1Jha2lzRFhrOE9rSy9qY1hkRWNnSDQ4TWt3Z2FvMnluK3NUNkU5ZUg2dW1q?=
- =?utf-8?B?RnNyc2ZzNStBK3l3b3owR3BwY1FsZWlxNnZpNjJ3Z0NZbWxneDdmK2Juai8v?=
- =?utf-8?B?L0pPNEx5aHRsN2lybHNWVU9iMUpSV3BCNHl4S0RtU3VtamdUeEpLaE0vQjRy?=
- =?utf-8?B?QllBb3lWT2cxYTNzZm0zQklOekYxb1cvRzNKRitxUFppVlhMMGpZcUlMbXgw?=
- =?utf-8?Q?oED8=3D?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(82310400026)(36860700013)(1800799024);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2026 11:13:02.9106
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c1ac149e-c850-4240-8a7c-08de4ea6e40e
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN2PEPF00004FC1.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7528
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: kwepems100001.china.huawei.com (7.221.188.238) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-From: Yishai Hadas <yishaih@nvidia.com>
+From: Chengchang Tang <tangchengchang@huawei.com>
 
-Enable p2pdma on the mlx5 PCI device to allow DMABUF-based peer-to-peer
-DMA mappings.
+Some ULPs, e.g. rpcrdma, rely on drain_qp() to ensure all outstanding
+requests are completed before releasing related memory. If drain_qp()
+fails, ULPs may release memory directly, and in-flight WRs may later be
+flushed after the memory is freed, potentially leading to UAF.
 
-Add implementation of the mmap_get_pfns and pgoff_to_mmap_entry device
-operations required for DMABUF support in the mlx5 RDMA driver.
+drain_qp() failures can happen when HW enters an error state or is
+reset. Add support to drain SQ and RQ in such cases by posting a
+fake WR during reset, so the driver can process all remaining WRs in
+sequence and generate corresponding completions.
 
-The pgoff_to_mmap_entry operation converts a page offset to the
-corresponding rdma_user_mmap_entry by extracting the command and index
-from the offset and looking it up in the ucontext's mmap_xa.
+Always invoke comp_handler() in drain process to ensure completions
+are not lost under concurrency (e.g. concurrent post_send() and
+reset, or QPs created during reset). If the CQ is already processed,
+cancel any already scheduled comp_handler() to avoid concurrency
+issues.
 
-The mmap_get_pfns operation retrieves the physical address and length
-from the mmap entry and obtains the p2pdma provider for the underlying
-PCI device, which is needed for peer-to-peer DMA operations with
-DMABUFs.
-
-Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-Signed-off-by: Edward Srouji <edwards@nvidia.com>
+Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
+Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- drivers/infiniband/hw/mlx5/main.c | 72 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 72 insertions(+)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 166 +++++++++++++++++++++
+ 1 file changed, 166 insertions(+)
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index e81080622283..f97c86c96d83 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -2446,6 +2446,70 @@ static int mlx5_ib_mmap_clock_info_page(struct mlx5_ib_dev *dev,
- 			      virt_to_page(dev->mdev->clock_info));
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index a2ae4f33e459..5233546ff330 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -876,6 +876,170 @@ static int hns_roce_v2_post_recv(struct ib_qp *ibqp,
+ 	return ret;
  }
  
-+static int phys_addr_to_bar(struct pci_dev *pdev, phys_addr_t pa)
++static int hns_roce_push_drain_wr(struct hns_roce_wq *wq, struct ib_cq *cq,
++				  u64 wr_id)
 +{
-+	resource_size_t start, end;
-+	int bar;
++	unsigned long flags;
++	int ret = 0;
 +
-+	for (bar = 0; bar < PCI_STD_NUM_BARS; bar++) {
-+		/* Skip BARs not present or not memory-mapped */
-+		if (!(pci_resource_flags(pdev, bar) & IORESOURCE_MEM))
-+			continue;
-+
-+		start = pci_resource_start(pdev, bar);
-+		end = pci_resource_end(pdev, bar);
-+
-+		if (!start || !end)
-+			continue;
-+
-+		if (pa >= start && pa <= end)
-+			return bar;
++	spin_lock_irqsave(&wq->lock, flags);
++	if (hns_roce_wq_overflow(wq, 1, cq)) {
++		ret = -ENOMEM;
++		goto out;
 +	}
 +
-+	return -1;
++	wq->wrid[wq->head & (wq->wqe_cnt - 1)] = wr_id;
++	wq->head++;
++
++out:
++	spin_unlock_irqrestore(&wq->lock, flags);
++	return ret;
 +}
 +
-+static int mlx5_ib_mmap_get_pfns(struct rdma_user_mmap_entry *entry,
-+				 struct dma_buf_phys_vec *phys_vec,
-+				 struct p2pdma_provider **provider)
++struct hns_roce_drain_cqe {
++	struct ib_cqe cqe;
++	struct completion done;
++};
++
++static void hns_roce_drain_qp_done(struct ib_cq *cq, struct ib_wc *wc)
 +{
-+	struct mlx5_user_mmap_entry *mentry = to_mmmap(entry);
-+	struct pci_dev *pdev = to_mdev(entry->ucontext->device)->mdev->pdev;
-+	int bar;
++	struct hns_roce_drain_cqe *cqe = container_of(wc->wr_cqe,
++						      struct hns_roce_drain_cqe,
++						      cqe);
++	complete(&cqe->done);
++}
 +
-+	phys_vec->paddr = mentry->address;
-+	phys_vec->len = entry->npages * PAGE_SIZE;
++static void handle_drain_completion(struct ib_cq *ibcq,
++				    struct hns_roce_drain_cqe *drain,
++				    struct hns_roce_dev *hr_dev)
++{
++#define TIMEOUT (HZ / 10)
++	struct hns_roce_cq *hr_cq = to_hr_cq(ibcq);
++	unsigned long flags;
++	bool triggered;
 +
-+	bar = phys_addr_to_bar(pdev, phys_vec->paddr);
-+	if (bar < 0)
-+		return -EINVAL;
++	if (ibcq->poll_ctx == IB_POLL_DIRECT) {
++		while (wait_for_completion_timeout(&drain->done, TIMEOUT) <= 0)
++			ib_process_cq_direct(ibcq, -1);
++		return;
++	}
 +
-+	*provider = pcim_p2pdma_provider(pdev, bar);
-+	/* If the kernel was not compiled with CONFIG_PCI_P2PDMA the
-+	 * functionality is not supported.
++	if (hr_dev->state < HNS_ROCE_DEVICE_STATE_RST_DOWN)
++		goto waiting_done;
++
++	spin_lock_irqsave(&hr_cq->lock, flags);
++	triggered = hr_cq->is_armed;
++	hr_cq->is_armed = 1;
++	spin_unlock_irqrestore(&hr_cq->lock, flags);
++
++	/* Triggered means this cq is processing or has been processed
++	 * by hns_roce_handle_device_err() or this function. We need to
++	 * cancel the already invoked comp_handler() to avoid concurrency.
++	 * If it has not been triggered, we can directly invoke
++	 * comp_handler().
 +	 */
-+	if (!*provider)
-+		return -EOPNOTSUPP;
++	if (triggered) {
++		switch (ibcq->poll_ctx) {
++		case IB_POLL_SOFTIRQ:
++			irq_poll_disable(&ibcq->iop);
++			irq_poll_enable(&ibcq->iop);
++			break;
++		case IB_POLL_WORKQUEUE:
++		case IB_POLL_UNBOUND_WORKQUEUE:
++			cancel_work_sync(&ibcq->work);
++			break;
++		default:
++			WARN_ON_ONCE(1);
++		}
++	}
 +
-+	return 0;
++	if (ibcq->comp_handler)
++		ibcq->comp_handler(ibcq, ibcq->cq_context);
++
++waiting_done:
++	if (ibcq->comp_handler)
++		wait_for_completion(&drain->done);
 +}
 +
-+static struct rdma_user_mmap_entry *
-+mlx5_ib_pgoff_to_mmap_entry(struct ib_ucontext *ucontext, off_t pg_off)
++void hns_roce_v2_drain_rq(struct ib_qp *ibqp)
 +{
-+	unsigned long entry_pgoff;
-+	unsigned long idx;
-+	u8 command;
++	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
++	struct ib_qp_attr attr = { .qp_state = IB_QPS_ERR };
++	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
++	struct hns_roce_drain_cqe rdrain = {};
++	const struct ib_recv_wr *bad_rwr;
++	struct ib_cq *cq = ibqp->recv_cq;
++	struct ib_recv_wr rwr = {};
++	int ret;
 +
-+	pg_off = pg_off >> PAGE_SHIFT;
-+	command = get_command(pg_off);
-+	idx = get_extended_index(pg_off);
++	ret = ib_modify_qp(ibqp, &attr, IB_QP_STATE);
++	if (ret && hr_dev->state < HNS_ROCE_DEVICE_STATE_RST_DOWN) {
++		ibdev_err_ratelimited(&hr_dev->ib_dev,
++				      "failed to modify qp during drain rq, ret = %d.\n",
++				      ret);
++		return;
++	}
 +
-+	entry_pgoff = command << 16 | idx;
++	rwr.wr_cqe = &rdrain.cqe;
++	rdrain.cqe.done = hns_roce_drain_qp_done;
++	init_completion(&rdrain.done);
 +
-+	return rdma_user_mmap_entry_get_pgoff(ucontext, entry_pgoff);
++	if (hr_dev->state >= HNS_ROCE_DEVICE_STATE_RST_DOWN)
++		ret = hns_roce_push_drain_wr(&hr_qp->rq, cq, rwr.wr_id);
++	else
++		ret = hns_roce_v2_post_recv(ibqp, &rwr, &bad_rwr);
++	if (ret) {
++		ibdev_err_ratelimited(&hr_dev->ib_dev,
++				      "failed to post recv for drain rq, ret = %d.\n",
++				      ret);
++		return;
++	}
++
++	handle_drain_completion(cq, &rdrain, hr_dev);
 +}
 +
- static void mlx5_ib_mmap_free(struct rdma_user_mmap_entry *entry)
- {
- 	struct mlx5_user_mmap_entry *mentry = to_mmmap(entry);
-@@ -4360,7 +4424,13 @@ static int mlx5_ib_stage_init_init(struct mlx5_ib_dev *dev)
- 	if (err)
- 		goto err_mp;
- 
-+	err = pcim_p2pdma_init(mdev->pdev);
-+	if (err && err != -EOPNOTSUPP)
-+		goto err_dd;
++void hns_roce_v2_drain_sq(struct ib_qp *ibqp)
++{
++	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
++	struct ib_qp_attr attr = { .qp_state = IB_QPS_ERR };
++	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
++	struct hns_roce_drain_cqe sdrain = {};
++	const struct ib_send_wr *bad_swr;
++	struct ib_cq *cq = ibqp->send_cq;
++	struct ib_rdma_wr swr = {
++		.wr = {
++			.next = NULL,
++			{ .wr_cqe	= &sdrain.cqe, },
++			.opcode	= IB_WR_RDMA_WRITE,
++		},
++	};
++	int ret;
 +
- 	return 0;
-+err_dd:
-+	mlx5_ib_data_direct_cleanup(dev);
- err_mp:
- 	mlx5_ib_cleanup_multiport_master(dev);
- err:
-@@ -4412,11 +4482,13 @@ static const struct ib_device_ops mlx5_ib_dev_ops = {
- 	.map_mr_sg_pi = mlx5_ib_map_mr_sg_pi,
- 	.mmap = mlx5_ib_mmap,
- 	.mmap_free = mlx5_ib_mmap_free,
-+	.mmap_get_pfns = mlx5_ib_mmap_get_pfns,
- 	.modify_cq = mlx5_ib_modify_cq,
- 	.modify_device = mlx5_ib_modify_device,
- 	.modify_port = mlx5_ib_modify_port,
- 	.modify_qp = mlx5_ib_modify_qp,
- 	.modify_srq = mlx5_ib_modify_srq,
-+	.pgoff_to_mmap_entry = mlx5_ib_pgoff_to_mmap_entry,
- 	.pre_destroy_cq = mlx5_ib_pre_destroy_cq,
- 	.poll_cq = mlx5_ib_poll_cq,
- 	.post_destroy_cq = mlx5_ib_post_destroy_cq,
-
++	ret = ib_modify_qp(ibqp, &attr, IB_QP_STATE);
++	if (ret && hr_dev->state < HNS_ROCE_DEVICE_STATE_RST_DOWN) {
++		ibdev_err_ratelimited(&hr_dev->ib_dev,
++				      "failed to modify qp during drain sq, ret = %d.\n",
++				      ret);
++		return;
++	}
++
++	sdrain.cqe.done = hns_roce_drain_qp_done;
++	init_completion(&sdrain.done);
++
++	if (hr_dev->state >= HNS_ROCE_DEVICE_STATE_RST_DOWN)
++		ret = hns_roce_push_drain_wr(&hr_qp->sq, cq, swr.wr.wr_id);
++	else
++		ret = hns_roce_v2_post_send(ibqp, &swr.wr, &bad_swr);
++	if (ret) {
++		ibdev_err_ratelimited(&hr_dev->ib_dev,
++				      "failed to post send for drain sq, ret = %d.\n",
++				      ret);
++		return;
++	}
++
++	handle_drain_completion(cq, &sdrain, hr_dev);
++}
++
+ static void *get_srq_wqe_buf(struct hns_roce_srq *srq, u32 n)
+ {
+ 	return hns_roce_buf_offset(srq->buf_mtr.kmem, n << srq->wqe_shift);
+@@ -7040,6 +7204,8 @@ static const struct ib_device_ops hns_roce_v2_dev_ops = {
+ 	.post_send = hns_roce_v2_post_send,
+ 	.query_qp = hns_roce_v2_query_qp,
+ 	.req_notify_cq = hns_roce_v2_req_notify_cq,
++	.drain_rq = hns_roce_v2_drain_rq,
++	.drain_sq = hns_roce_v2_drain_sq,
+ };
+ 
+ static const struct ib_device_ops hns_roce_v2_dev_srq_ops = {
 -- 
-2.49.0
+2.33.0
 
 
