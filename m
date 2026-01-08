@@ -1,58 +1,60 @@
-Return-Path: <linux-rdma+bounces-15371-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15372-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 475DBD05791
-	for <lists+linux-rdma@lfdr.de>; Thu, 08 Jan 2026 19:23:47 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1353ED057A3
+	for <lists+linux-rdma@lfdr.de>; Thu, 08 Jan 2026 19:24:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3E27F302BB93
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Jan 2026 18:23:42 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id ABE3030428B8
+	for <lists+linux-rdma@lfdr.de>; Thu,  8 Jan 2026 18:23:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33DAA3126DA;
-	Thu,  8 Jan 2026 18:23:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA50B3128A3;
+	Thu,  8 Jan 2026 18:23:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eLGCbYxu"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bnr2GJ8Y"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC3C52FB97D
-	for <linux-rdma@vger.kernel.org>; Thu,  8 Jan 2026 18:23:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A03D311C15
+	for <linux-rdma@vger.kernel.org>; Thu,  8 Jan 2026 18:23:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767896620; cv=none; b=WwFma1Brg025ACnhr4UeBVPgovy43fjNryEXFRIFlmcRgBw3FVz1wF7A+d2Voms2m1vOQrNlRLgk5G29VkF3+9Rf/4tmMaEtcOMLC43G4F9vc5AsBkCP6rkFtoE/pRbQAb50sQ4nP2V2M4SanXdDCCgz8Xhbna8XjID7OJzjkHE=
+	t=1767896624; cv=none; b=jCC/wPwED2PlJuv016n5+uLjIN/bHEvp/VF0nlozZkRPTyyxt5KH3ekkRqHF7XAR5gNtVx3xlMghUIRjOWAFTEj8xxLCwsLP1I4CWMnXGgC7/CTotp+0BpCMR8mk+dfytcdUz9StvTTMo1N/0LY5IT2TXKABwl79hZ7PTT/FUg0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767896620; c=relaxed/simple;
-	bh=byjnH73p+Jzsz7pjUDHFcwFHOJJHuGtBOHNwd7Y2sgI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=U1pZZLdnoTmX15Lh2mshGh/Kq5S4YmznnSpq/h0PbZaqLSIIqVjJ+i1EOISuY45TWyBUWxdn5KCTFfPAZsbod7AEAI6FrCV1VzUVPNlwHL4S8SQU1G5UQVP+Dl+n7fhsEPACaTwLS4DrowPVUvJSLDknzD+vqVFge9Kz0IjlDyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eLGCbYxu; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1767896624; c=relaxed/simple;
+	bh=z6M0GeMgfwCRK7ip2T9m4JSMhSCD/WsrpYiR6ZWGZ20=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=poz5SOaj6s8x3QREwog2+FAcwfkhFFusroyphqTMRbErRYSt3Vn33AXjpEj1ehXLVBw7AzzgC+7eLeql4Gcex8QunR6vCUjtZzHOfi4dblNgkuXYlLEwZjp1lfd0bEBjSZCEs1L+zzxgwl3cJJg0MgBdwuv5LtkoJHyoutHSscs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bnr2GJ8Y; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1767896616;
+	s=mimecast20190719; t=1767896622;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=EltKARJ+Nuab9bXI1zOrXiqWGrxnQkfq54M5thLshDQ=;
-	b=eLGCbYxuEufh6i80JON6kMcWjUy92ZgBiFcGVfoiqD26roZZipMPTiZtb39DeQhUzqeAO/
-	E8mGbTQ+Ebrd750ieJ/JwzCZW2s7J3JclvuO8j30xlMKwiI4UTdq9GnB2l15H/oiKPKmrT
-	l8UW90WQoZWVbhtI3YQh9clwzOACCSE=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l7UAWP2gVCuNI0Vx3D2ZNEyFfK9TlSzN+mM7vkRFKbM=;
+	b=bnr2GJ8Yy+0+5dmnvPW1xcOKr3IG2I6k5GQT1xjtySNJcUWzT0e4LzSRg8fsYvyCgxzQWm
+	wCVnjRq/jJmVdlouyHCMkLhVFqGpVIqM+jBeOe1WyFBqYGywaSAsSkzsCK5Ntj2TQYd4q8
+	gEuiS7UQwSSOxd7vztBxNIsG1S634Wc=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-370-6V4tQ_yYO2CbwPIdoXc16w-1; Thu,
- 08 Jan 2026 13:23:32 -0500
-X-MC-Unique: 6V4tQ_yYO2CbwPIdoXc16w-1
-X-Mimecast-MFC-AGG-ID: 6V4tQ_yYO2CbwPIdoXc16w_1767896609
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-178-T6LDz9oSMBejyACxrDvskg-1; Thu,
+ 08 Jan 2026 13:23:39 -0500
+X-MC-Unique: T6LDz9oSMBejyACxrDvskg-1
+X-Mimecast-MFC-AGG-ID: T6LDz9oSMBejyACxrDvskg_1767896616
 Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 98D1B180045C;
-	Thu,  8 Jan 2026 18:23:28 +0000 (UTC)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5512C1956089;
+	Thu,  8 Jan 2026 18:23:36 +0000 (UTC)
 Received: from p16v.luc.cera.cz (unknown [10.44.32.20])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 4F6131800285;
-	Thu,  8 Jan 2026 18:23:20 +0000 (UTC)
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 0B0E8180009E;
+	Thu,  8 Jan 2026 18:23:28 +0000 (UTC)
 From: Ivan Vecera <ivecera@redhat.com>
 To: netdev@vger.kernel.org
 Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
@@ -83,9 +85,11 @@ Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
 	Michal Schmidt <mschmidt@redhat.com>,
 	Petr Oros <poros@redhat.com>,
 	Grzegorz Nitka <grzegorz.nitka@intel.com>
-Subject: [PATCH net-next 00/12] dpll: Core improvements and ice E825-C SyncE support
-Date: Thu,  8 Jan 2026 19:23:06 +0100
-Message-ID: <20260108182318.20935-1-ivecera@redhat.com>
+Subject: [PATCH net-next 01/12] dt-bindings: dpll: add common dpll-pin-consumer schema
+Date: Thu,  8 Jan 2026 19:23:07 +0100
+Message-ID: <20260108182318.20935-2-ivecera@redhat.com>
+In-Reply-To: <20260108182318.20935-1-ivecera@redhat.com>
+References: <20260108182318.20935-1-ivecera@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -95,105 +99,68 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-This series introduces Synchronous Ethernet (SyncE) support for
-the Intel E825-C Ethernet controller. Unlike previous generations where
-DPLL connections were implicitly assumed, the E825-C architecture relies
-on the platform firmware to describe the physical connections between
-the network controller and external DPLLs (such as the ZL3073x).
+Introduce a common schema for DPLL pin consumers. Devices such as Ethernet
+controllers and PHYs may require connections to DPLL pins for Synchronous
+Ethernet (SyncE) or other frequency synchronization tasks.
 
-To accommodate this, the series extends the DPLL subsystem to support
-firmware node (fwnode) associations, asynchronous discovery via notifiers,
-and dynamic pin management. Additionally, a significant refactor of
-the DPLL reference counting logic is included to ensure robustness and
-debuggability.
+Defining these properties in a shared schema ensures consistency across
+different device types that consume DPLL resources.
 
-DPLL Core Extensions:
-* Firmware Node Support: Pins can now be registered with an associated
-  struct fwnode_handle. This allows consumer drivers to lookup pins based
-  on device properties (dpll-pins).
-* Asynchronous Notifiers: A raw notifier chain is added to the DPLL core.
-  This allows the network driver (ice driver in this series) to subscribe
-  to events and react when the platform DPLL driver registers the parent
-  pins, resolving probe ordering dependencies.
-* Dynamic Indexing: Drivers can now request DPLL_PIN_IDX_UNSPEC to have
-  the core automatically allocate a unique pin index, simplifying driver
-  implementation for virtual or non-indexed pins.
-
-Reference Counting & Debugging:
-* Refactor: The reference counting logic in the core is consolidated.
-  Internal list management helpers now automatically handle hold/put
-  operations, removing fragile open-coded logic in the registration paths.
-* Duplicate Checks: The core now strictly rejects duplicate registration
-  attempts for the same pin/device context.
-* Reference Tracking: A new Kconfig option DPLL_REFCNT_TRACKER is added
-  (using the kernel's REF_TRACKER infrastructure). This allows developers
-  to instrument and debug reference leaks by recording stack traces for
-  every get/put operation.
-
-Driver Updates:
-* zl3073x: Updated to register pins with their firmware nodes and support
-  the 'mux' pin type.
-* ice: Implements the E825-C specific hardware configuration for SyncE
-  (CGU registers). It utilizes the new notifier and fwnode APIs to
-  dynamically discover and attach to the platform DPLLs.
-
-Patch Summary:
-* Patch 1-3:
-  DT pin consumer schema and helper functions for finding DPLL pins via fwnode.
-* Patch 4:
-  Updates zl3073x to register pins with fwnode.
-* Patch 5-6:
-  Adds notifiers and dynamic pin index allocation to DPLL core.
-* Patch 7:
-  Adds 'mux' pin type support to zl3073x.
-* Patch 8-9:
-  Refactors DPLL core refcounting and adds duplicate registration checks.
-* Patch 10-11:
-  Adds REF_TRACKER infrastructure and updates existing drivers to support it.
-* Patch 12:
-  Implements the E825-C SyncE logic in the ice driver using the new
-  infrastructure.
-
-Arkadiusz Kubalewski (1):
-  ice: dpll: Support E825-C SyncE and dynamic pin discovery
-
-Ivan Vecera (10):
-  dt-bindings: dpll: add common dpll-pin-consumer schema
-  dpll: Allow associating dpll pin with a firmware node
-  dpll: Add helpers to find DPLL pin fwnode
-  dpll: zl3073x: Associate pin with fwnode handle
-  dpll: Support dynamic pin index allocation
-  dpll: zl3073x: Add support for mux pin type
-  dpll: Enhance and consolidate reference counting logic
-  dpll: Prevent duplicate registrations
-  dpll: Add reference count tracking support
-  drivers: Add support for DPLL reference count tracking
-
-Petr Oros (1):
-  dpll: Add notifier chain for dpll events
-
- .../bindings/dpll/dpll-pin-consumer.yaml      |  30 +
- drivers/dpll/Kconfig                          |  15 +
- drivers/dpll/dpll_core.c                      | 320 +++++++-
- drivers/dpll/dpll_core.h                      |  11 +
- drivers/dpll/dpll_netlink.c                   |   6 +
- drivers/dpll/zl3073x/dpll.c                   |  15 +-
- drivers/dpll/zl3073x/dpll.h                   |   2 +
- drivers/dpll/zl3073x/prop.c                   |   2 +
- drivers/net/ethernet/intel/ice/ice_dpll.c     | 728 +++++++++++++++---
- drivers/net/ethernet/intel/ice/ice_dpll.h     |  29 +
- drivers/net/ethernet/intel/ice/ice_lib.c      |   3 +
- drivers/net/ethernet/intel/ice/ice_ptp.c      |  29 +
- drivers/net/ethernet/intel/ice/ice_ptp_hw.c   |   9 +-
- drivers/net/ethernet/intel/ice/ice_tspll.c    | 217 ++++++
- drivers/net/ethernet/intel/ice/ice_tspll.h    |  13 +-
- drivers/net/ethernet/intel/ice/ice_type.h     |   6 +
- .../net/ethernet/mellanox/mlx5/core/dpll.c    |  16 +-
- drivers/ptp/ptp_ocp.c                         |  18 +-
- include/linux/dpll.h                          |  74 +-
- 19 files changed, 1385 insertions(+), 158 deletions(-)
+Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+---
+ .../bindings/dpll/dpll-pin-consumer.yaml      | 30 +++++++++++++++++++
+ MAINTAINERS                                   |  1 +
+ 2 files changed, 31 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/dpll/dpll-pin-consumer.yaml
 
+diff --git a/Documentation/devicetree/bindings/dpll/dpll-pin-consumer.yaml b/Documentation/devicetree/bindings/dpll/dpll-pin-consumer.yaml
+new file mode 100644
+index 0000000000000..60c184c18318a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/dpll/dpll-pin-consumer.yaml
+@@ -0,0 +1,30 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/dpll/dpll-pin-consumer.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: DPLL Pin Consumer
++
++maintainers:
++  - Ivan Vecera <ivecera@redhat.com>
++
++description: |
++  Common properties for devices that require connection to DPLL (Digital Phase
++  Locked Loop) pins for frequency synchronization (e.g. SyncE).
++
++properties:
++  dpll-pins:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description:
++      List of phandles to the DPLL pin nodes connected to this device.
++
++  dpll-pin-names:
++    $ref: /schemas/types.yaml#/definitions/string-array
++    description:
++      Names for the DPLL pins defined in 'dpll-pins', in the same order.
++
++dependencies:
++  dpll-pin-names: [ dpll-pins ]
++
++additionalProperties: true
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 765ad2daa2183..f6f58dfb20931 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7648,6 +7648,7 @@ M:	Jiri Pirko <jiri@resnulli.us>
+ L:	netdev@vger.kernel.org
+ S:	Supported
+ F:	Documentation/devicetree/bindings/dpll/dpll-device.yaml
++F:	Documentation/devicetree/bindings/dpll/dpll-pin-consumer.yaml
+ F:	Documentation/devicetree/bindings/dpll/dpll-pin.yaml
+ F:	Documentation/driver-api/dpll.rst
+ F:	drivers/dpll/
 -- 
 2.52.0
 
