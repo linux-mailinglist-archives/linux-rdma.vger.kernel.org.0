@@ -1,186 +1,101 @@
-Return-Path: <linux-rdma+bounces-15401-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15402-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0F4CD08F03
-	for <lists+linux-rdma@lfdr.de>; Fri, 09 Jan 2026 12:34:55 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D219D09E9E
+	for <lists+linux-rdma@lfdr.de>; Fri, 09 Jan 2026 13:45:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3A9FF30A94FD
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jan 2026 11:30:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 17D22317092D
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jan 2026 12:37:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4BF035CB95;
-	Fri,  9 Jan 2026 11:29:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA92C35971B;
+	Fri,  9 Jan 2026 12:37:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QwZdNikX"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="cLCNezeJ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4558835BDB1
-	for <linux-rdma@vger.kernel.org>; Fri,  9 Jan 2026 11:29:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 822ED336EDA;
+	Fri,  9 Jan 2026 12:37:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767958163; cv=none; b=T0ApJj5tJdvjcWqHLJhH3gVp4WhwtQVxu8v6K308HfNrdS1JuuGz7+lg82JUcyNxbl9MKx+8PYakJKRWyP4PXD6ZHgtkpGS4fIQqsUSnIL/2Cs2KfzNHWBQFB7K4nRhd6ETHcg7dpLh495gC7X6tmzkARPuh1qycqE3WVQ8TnEA=
+	t=1767962251; cv=none; b=ZJZ/f53D4Ey4gy5O88XyxLrm7LTkRaSiYVraEplmGd7iBRfY0TdFBREGKGGYPkxPz21TX/Mq2clvj4bloKymsUsyRBC3KOISu82pqQYUGQ7CTbuwMQwm9kJcqGVZJNYWySBdQGtc6mMOwrz3tvRJ3eQ4VHWveTGH6GlpmJ0xebI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767958163; c=relaxed/simple;
-	bh=axdc3q5KY7YeHULab/TvgzOYs0oof9ugiogriyYfhIs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=F0GBCsL4DqFtzEzarxmGiooDaSASTvaFY58OwUXF280FitBZQDgh6I4oijPRPgQq8jjktmPHqF2cl9LiCUsFGYbWCj4gHFq5cmdpL22cHo7j5Rnq/kHkKkmHiFC1eYVsZ/vOdc7nZpb165BBFQ3HI+QQVrCBkt86MzDrOqzEfi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QwZdNikX; arc=none smtp.client-ip=209.85.128.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-4779ce2a624so34536895e9.2
-        for <linux-rdma@vger.kernel.org>; Fri, 09 Jan 2026 03:29:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767958157; x=1768562957; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kiBEtLY6CE0u/w5HMF7IyfpDPmY7qzN3np9POU+8r/k=;
-        b=QwZdNikXMmUiWaP6LrA6Ss+L4IlbzqbF8LAkHZkrSJYHJAwJQzeZm6Hovf0wIRcqhB
-         PexztlOhMNAPcHnKno9bvafz3SBPHuPe1N7aTJkWq4qn5RX2N0DAbGl8jfVmU8Pzq1o6
-         FvOIooIaqyNuWlJfMg1Rv0KcZ2IBryt5yp4e8HRITnG2mhY5v8pSnqUDdS0cR8H5jQmV
-         TdNAm/O3qnO5a4/RMRYI/H+6j9zwcW+NQ/Kr2oZnB1oA3WbpZqAi6YFG9a4nhi9r1ekM
-         3d/nerDRq2lYdG8wL7uo6OszlN/QB0A6zKiLWKvDRusPD82tpNIL64qInLSG2s2XojGf
-         jOuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767958157; x=1768562957;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=kiBEtLY6CE0u/w5HMF7IyfpDPmY7qzN3np9POU+8r/k=;
-        b=fkwwd6vr4AiOsXHsD22iVxqPDpYaK5GEYEcB6r6ziUUF9OU2LPwfAKedoegu6EFdfd
-         wJnhsZZMHgHGeOtv+zsaeP4/go/5z9i3SnIuVVkX3mkq9sXLyavF0ckUxoUrSWxfktrS
-         uHuTRpk0S8lTIayxbGgFH4lUS7PspGzPuTanxSY39sYHUlrpuwXOr5pygUax7RuIR882
-         8VRkd4y8Vfj7516d4n15oO0VzkrSsrIG2iPesR4iFKK39oOBF7lDA1n9aM6qmKrJ86iZ
-         GVwol852FvMOEQMGYPR813zCQ4tc9VtphrDFjg/Fofu+LRPfKmqOJh0c7Ig8mufodLe3
-         B3fQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXe7khxv6pdhxRs6iD74M+jPNr48dfGeS4pmG2CdRMb/BcQ5nsrrfpiKn/cCw+RAtyc+q6FDHErKHfh@vger.kernel.org
-X-Gm-Message-State: AOJu0YwaY31bDQdqS0++GjAui73WJYu7z2BVi4k9rbg854vjgftGqCok
-	svjvqLE0FxWjUy0f5eoJjb8Ya3fzOYjZ/AtKPZ/i6s0GOxvU7aXqq8oI
-X-Gm-Gg: AY/fxX72gNw3nbxUGtAHjMz5FzaPS/RfBtWycyIrkZGnLu2Hh/HbrWZm7+PkjAjd3ZR
-	60ZGpawnGBAV3ZOjMr9/EiO3UpyNqjISbxiEXK1KEoyUAG5Uaf1goUrPmEeVDYf1h/OwXsiLDcj
-	JEGQshSDk7+C+eho0IdlVXiXfEaW7rbQJHM4IBmc/B24z8TdxsI8jtpcHXo4/W4OMBiWz1x2YKr
-	/xH626ThH5mWThWVK3JBpJCWgUesVKRB37kVxkOkrEPNdRE06bod0IAKLsz7NY4gnEwfKf+NyAr
-	z2pvswXf4pwqDavzHaU657XO24slHV9yLPxZOCNSq8P8cM4N4DRWls6m6TYtHmYA9FrnOltt49Z
-	2L7ChLRVzvER5ZrMmUF7vfAsoNHDAnmertrFxn9gp72aCeNnLmp69PdjykmWzfv4m7roGcIh2KF
-	ZB0RaSRt7JvN7v+07rNFpp9VQOfmQxCYioz+X7SDx3NGTKIPXd2Q/EYiD2eK9RsZHpmKWi9YxPR
-	r0TLOBk
-X-Google-Smtp-Source: AGHT+IF6sUa9JMjq/7LpBs2cdH8SCduGosXSIcxXOG6syAloBrtUa/I4hJziDJatmkaPD68dJ1oitQ==
-X-Received: by 2002:a05:600c:1d0c:b0:471:14b1:da13 with SMTP id 5b1f17b1804b1-47d84b1fcf9mr101969345e9.14.1767958156631;
-        Fri, 09 Jan 2026 03:29:16 -0800 (PST)
-Received: from 127.com ([2620:10d:c092:600::1:69b5])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47d8636c610sm60056985e9.0.2026.01.09.03.29.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jan 2026 03:29:15 -0800 (PST)
-From: Pavel Begunkov <asml.silence@gmail.com>
-To: netdev@vger.kernel.org
-Cc: "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Michael Chan <michael.chan@broadcom.com>,
-	Pavan Chebbi <pavan.chebbi@broadcom.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Joshua Washington <joshwash@google.com>,
-	Harshitha Ramamurthy <hramamurthy@google.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Mark Bloch <mbloch@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Alexander Duyck <alexanderduyck@fb.com>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Willem de Bruijn <willemb@google.com>,
-	Ankit Garg <nktgrg@google.com>,
-	Tim Hostetler <thostet@google.com>,
-	Alok Tiwari <alok.a.tiwari@oracle.com>,
-	Ziwei Xiao <ziweixiao@google.com>,
-	John Fraker <jfraker@google.com>,
-	Praveen Kaligineedi <pkaligineedi@google.com>,
-	Mohsin Bashir <mohsin.bashr@gmail.com>,
-	Joe Damato <joe@dama.to>,
-	Mina Almasry <almasrymina@google.com>,
-	Dimitri Daskalakis <dimitri.daskalakis1@gmail.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Kuniyuki Iwashima <kuniyu@google.com>,
-	Samiullah Khawaja <skhawaja@google.com>,
-	Ahmed Zaki <ahmed.zaki@intel.com>,
-	Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	David Wei <dw@davidwei.uk>,
-	Yue Haibing <yuehaibing@huawei.com>,
-	Haiyue Wang <haiyuewa@163.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	Simon Horman <horms@kernel.org>,
-	Vishwanath Seshagiri <vishs@fb.com>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	dtatulea@nvidia.com,
-	io-uring@vger.kernel.org
-Subject: [PATCH net-next v8 9/9] io_uring/zcrx: document area chunking parameter
-Date: Fri,  9 Jan 2026 11:28:48 +0000
-Message-ID: <65585c411f066a0565880ef0a9843e244d511bcf.1767819709.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <cover.1767819709.git.asml.silence@gmail.com>
-References: <cover.1767819709.git.asml.silence@gmail.com>
+	s=arc-20240116; t=1767962251; c=relaxed/simple;
+	bh=8pDDfY7TDl2vdKSx/8E0/tRnOGT+/B2sMv3x6LMfcqc=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=EW98xmmY9e4RnckXZFzu4SvBxMX1wxK7dD/jNZo7Y+0PUL/ZAC1tOfwt0612q6XgYul3a3GvQLf3JtFppQicjEd6la2JMXmj8Bk66qFp9nvTTrEjEMaq0NVqu2tZPARu4ikwKdv6ncuI3LFikl5bFk8IHAMKzXL7Ef8k82o4emA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=cLCNezeJ; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1186)
+	id 333FA201AC6B; Fri,  9 Jan 2026 04:37:30 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 333FA201AC6B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1767962250;
+	bh=EXT/ImmfH7DzAjHJomYxcMYRtAUxh3OJ4GJBQG7DiBY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=cLCNezeJ11+lFhI1tHs1sLrPvZw6zjvR2z7HLfgnhMt7lbG8vVS1Zis7LnzjvXr8w
+	 mCIXTl0t482/tJY9LqUVK553LD2wfXNVjoybCDIWHRHLSyvl0wuaL78Z5WB3Srvj2a
+	 WSUe8PGrl4kitQbg6z8tDEXeDMLXdQpo6HNzC9Bk=
+From: Konstantin Taranov <kotaranov@linux.microsoft.com>
+To: kotaranov@microsoft.com,
+	shirazsaleem@microsoft.com,
+	longli@microsoft.com,
+	jgg@ziepe.ca,
+	leon@kernel.org
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH rdma-next 1/1] RDMA/mana_ib: take CQ type from the device type
+Date: Fri,  9 Jan 2026 04:37:30 -0800
+Message-Id: <1767962250-2118-1-git-send-email-kotaranov@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-struct io_uring_zcrx_ifq_reg::rx_buf_len is used as a hint specifying
-the kernel what buffer size it should use. Document the API and
-limitations.
+From: Konstantin Taranov <kotaranov@microsoft.com>
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Get CQ type from the used gdma device. The MANA_IB_CREATE_RNIC_CQ
+flag is ignored. It was used in older kernel versions where
+the mana_ib was shared between ethernet and rnic.
+
+Fixes: d4293f96ce0b ("RDMA/mana_ib: unify mana_ib functions to support any gdma device")
+Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
 ---
- Documentation/networking/iou-zcrx.rst | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/infiniband/hw/mana/cq.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/Documentation/networking/iou-zcrx.rst b/Documentation/networking/iou-zcrx.rst
-index 54a72e172bdc..7f3f4b2e6cf2 100644
---- a/Documentation/networking/iou-zcrx.rst
-+++ b/Documentation/networking/iou-zcrx.rst
-@@ -196,6 +196,26 @@ Return buffers back to the kernel to be used again::
-   rqe->len = cqe->res;
-   IO_URING_WRITE_ONCE(*refill_ring.ktail, ++refill_ring.rq_tail);
+diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
+index 1becc8779..2dce1b677 100644
+--- a/drivers/infiniband/hw/mana/cq.c
++++ b/drivers/infiniband/hw/mana/cq.c
+@@ -24,6 +24,7 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
  
-+Area chunking
-+-------------
-+
-+zcrx splits the memory area into fixed-length physically contiguous chunks.
-+This limits the maximum buffer size returned in a single io_uring CQE. Users
-+can provide a hint to the kernel to use larger chunks by setting the
-+``rx_buf_len`` field of ``struct io_uring_zcrx_ifq_reg`` to the desired length
-+during registration. If this field is set to zero, the kernel defaults to
-+the system page size.
-+
-+To use larger sizes, the memory area must be backed by physically contiguous
-+ranges whose sizes are multiples of ``rx_buf_len``. It also requires kernel
-+and hardware support. If registration fails, users are generally expected to
-+fall back to defaults by setting ``rx_buf_len`` to zero.
-+
-+Larger chunks don't give any additional guarantees about buffer sizes returned
-+in CQEs, and they can vary depending on many factors like traffic pattern,
-+hardware offload, etc. It doesn't require any application changes beyond zcrx
-+registration.
-+
- Testing
- =======
+ 	cq->comp_vector = attr->comp_vector % ibdev->num_comp_vectors;
+ 	cq->cq_handle = INVALID_MANA_HANDLE;
++	is_rnic_cq = mana_ib_is_rnic(mdev);
  
+ 	if (udata) {
+ 		if (udata->inlen < offsetof(struct mana_ib_create_cq, flags))
+@@ -35,8 +36,6 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 			return err;
+ 		}
+ 
+-		is_rnic_cq = !!(ucmd.flags & MANA_IB_CREATE_RNIC_CQ);
+-
+ 		if ((!is_rnic_cq && attr->cqe > mdev->adapter_caps.max_qp_wr) ||
+ 		    attr->cqe > U32_MAX / COMP_ENTRY_SIZE) {
+ 			ibdev_dbg(ibdev, "CQE %d exceeding limit\n", attr->cqe);
+@@ -55,7 +54,6 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 							  ibucontext);
+ 		doorbell = mana_ucontext->doorbell;
+ 	} else {
+-		is_rnic_cq = true;
+ 		buf_size = MANA_PAGE_ALIGN(roundup_pow_of_two(attr->cqe * COMP_ENTRY_SIZE));
+ 		cq->cqe = buf_size / COMP_ENTRY_SIZE;
+ 		err = mana_ib_create_kernel_queue(mdev, buf_size, GDMA_CQ, &cq->queue);
 -- 
-2.52.0
+2.43.0
 
 
