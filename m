@@ -1,91 +1,91 @@
-Return-Path: <linux-rdma+bounces-15411-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15412-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24986D0BDD5
-	for <lists+linux-rdma@lfdr.de>; Fri, 09 Jan 2026 19:37:35 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA926D0BF58
+	for <lists+linux-rdma@lfdr.de>; Fri, 09 Jan 2026 19:54:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 59F55301D592
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jan 2026 18:37:13 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 5071A30245C1
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jan 2026 18:50:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5FBC274B28;
-	Fri,  9 Jan 2026 18:37:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 631042D1911;
+	Fri,  9 Jan 2026 18:50:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="no7Ij9oM"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="PUcBjLD3"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E9112737FC
-	for <linux-rdma@vger.kernel.org>; Fri,  9 Jan 2026 18:37:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B592C23182D
+	for <linux-rdma@vger.kernel.org>; Fri,  9 Jan 2026 18:50:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767983832; cv=none; b=t37kdwJs1SDLtLmyQ2D1JDXGEtF4AwxOpEVmlMKKZEJ7xbc4dV0jHBgEJEcs2fRDSziRkXdERDpXqqHZQi1fer/ajg1jQcbT53lWCE0kmXcTUbbaBkhx/YVG2Obz/fHocGIRUYLxF5id+iv+fxQu9leZJZODXasKZxoR3kPUeu0=
+	t=1767984641; cv=none; b=akKDwd+4jLWZ9BPn7vUOx2ZN10SuBaWlW8Pcy5AfgTts4O180hJyyHEz40cbSwQ/h40xyZ+XDc9T6FmSUT8mEevYNJByzMFpIzPrBncb3y7OOyaFJwb97blIrxY2r8C5RE2S2283oG3zSbcCucKRcbW2eBwHK8jYrMvXWhDoN1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767983832; c=relaxed/simple;
-	bh=cVhWPD05pNLk00XWZO+K6fUuVB1Q7hcOGmG3FRbxETg=;
+	s=arc-20240116; t=1767984641; c=relaxed/simple;
+	bh=ZDfTtCHMipajDRqOVfpRdUSQkuId9avB2+8sYn/fKXo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OPhg+kpxOcG1RcqkUBQcNEtPqw8vnm1j7uib6J6Dmv5JXdlaN5aVwKW5dGgNvTOhCkEmLP0qjZ08tccJC4tdixi4jhR+wnWyUVEA+PPNcLamDPVZ/2/57cT7QdEBF6ehzOzQmcVRO2TfcXv6+64yBdVlSP9HyvyxQkQ5lZBKkDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=no7Ij9oM; arc=none smtp.client-ip=209.85.160.180
+	 Content-Type:Content-Disposition:In-Reply-To; b=RD+pSQc7SCXMUtUE1TkyNwk/uEZTqhvMfMdPVDHw3qhnHLHeSCiQ4OyKetub4GxsutWnnkiFDF1l84pAJ54yoqG4/2ePaaaOWanqIhEOxuSQl0Y/5zlX/moVA0NcrRpL2vmgvWMwu/QFdc+jsLD2NRA58DkzcJA6PW5ztIneFYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=PUcBjLD3; arc=none smtp.client-ip=209.85.222.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-4f34c5f2f98so48010431cf.1
-        for <linux-rdma@vger.kernel.org>; Fri, 09 Jan 2026 10:37:11 -0800 (PST)
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-8c0f13e4424so441855485a.1
+        for <linux-rdma@vger.kernel.org>; Fri, 09 Jan 2026 10:50:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1767983830; x=1768588630; darn=vger.kernel.org;
+        d=ziepe.ca; s=google; t=1767984639; x=1768589439; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yzTqFe26noRhTMI3/AraU7Mf2H6W/8RNyHUCkvyfl78=;
-        b=no7Ij9oMhaaVl3mGbBnnCfbfkypfaTYjEsWLPCJxZ7MnCY+j3iAbzTT7ZLxfDFfq/W
-         FnTOZRgR5U2ZZ6slItMgXIZ2lhTpxNJAKmG8RjqBugcNYAkS17hw8fM2xu3RaSDLU4GC
-         8fAKON+CJ+ggGKcXdXYrbQqq8e+2vFq5zLhVt5gUG0sD9cAQJfU/P9pNxCbtde4jTeMA
-         YH2xLEScHSBGKYUTb9+aQtJcAQfkOHk5qNbZIdj1eB5ehxeLszVRNNyC7TsTYFNIQ6x2
-         UgO5IOxDUfayASqxF6bbKQF5PRuvANlDr3pm2lzOJNUM77AnUx6Lc6VTIzoU9NXiZj+H
-         2VFA==
+        bh=994aysxLOcWPLd3SMpqCxReGe0e8U8IOOOwG1n0x0TM=;
+        b=PUcBjLD3A9yJMMlKqNr3fxBms+BlN9Dyf1Ov95uqdHapg64qStNTTbhpmGtlprsTlW
+         E7Ggg7Q82Y0sX3Zy31mlH51+2tTpkLi2igSKZkQOiCSyDnS3hAxyfc2Fct8ilds+lMN8
+         tYwq9ZsNgsrVNTQLyj2G8G0dzDlsLrfVIjqwD+XdP0aeia7Cm6Xspg3OZQNaasCpPFSv
+         SkrxQtflS5UJdW7uyXY0sh73yFYi9lC61B6Qnp8qxIdzRwOxGXkJO2CSVEaFWLRsJNsP
+         dJtOWK0I6w5zetnT22UaynaHrI7auOeg/aCBJDd0PRcmDjNo9+tNsCg75SyEtgj5gGRb
+         CtRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767983830; x=1768588630;
+        d=1e100.net; s=20230601; t=1767984639; x=1768589439;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yzTqFe26noRhTMI3/AraU7Mf2H6W/8RNyHUCkvyfl78=;
-        b=WlVlengnwgs9kueqNWWK9BJP+pNVybNrpmB+2VH87ZiI+xw+WHvJ9qQoMbtmfR+0dR
-         1hcrohKAFIK6g3OY59vpjQvXnltUKD94ek+rRqrdI1r4qOVDVYyWa4i3rV7ALmGgqteH
-         /VaBf+Kxafpq5fBoKnJiksO/ESa4Z0MOFltStKY+w9eJg8A2ARMJxNcgYtHEA3sVltuu
-         MuwaVM+FM0RY3fPr+vsvWdgMNESkvz5gStSzCdGEMBg1Wa+nFvSiNag7RuOwbu8uY/B3
-         xsOSkr9BOLq/Q8nbGHlFiHpQFmDmZDBxn80/zYqGPKZqwKgozQ6zkf2OoX35S+ewNdXj
-         cWyg==
-X-Forwarded-Encrypted: i=1; AJvYcCXe+/gufIiXC/Qr24pmRFnM1T13Yx+8uw2YtVMPqcCx0XhY3qT3A851gfjcKzNC7o1PRbDZthN5JKH/@vger.kernel.org
-X-Gm-Message-State: AOJu0YwIqZH3Z+MhKFr7yivDR+9gLde0wNx9W7HzhEGtg7Wx69wzH6cD
-	PyK0q8hyvSJR8Cu8ZkL2urg0tlzRBrEh42crwwziXl936ybNQHI6pBkoVH0ZLvzV0LY=
-X-Gm-Gg: AY/fxX7leEtBG7LlDUNlwLuxqESrtThBTmjOaz4pfTNBKZ3n+4RJBZWDgrNt9f/nGhw
-	Iko+UpLnxhu3tlLLGE+INbxal6L772D4nL6oQ0UXdtAarkDdxyzn0JzSP+Yr/OFBYR1/PJthw25
-	t1j216+mkZTICiWLH11te0MB/OXtJYpawIKK6tU4enOpucCnJp2JlpAxvoMTJ99tdFSQcC8cyEK
-	d56BPOqeElNcxLFUTkE6NUtvg2OOMRUqFcfKaKk3Qo0bdpsYXeXvukTOHt97ZtUve6mvNlpP4HZ
-	dgxWNsSmg33dMb3WW8pW4oBicBHKgLDQ1a2gu2HCWimN1FB/Yfig1ynazj/XtU34dZmRCGdIVGv
-	705Ef4MSQ7fgcBOHBirg2K8jjqSTPmmptuv3JFyEzn8nOY/DyogiejqyPRijOq3PrLRyK5vOkbg
-	n6kgZ9MzMm/X/y2G/qybWu0Qb1nySqck9dbCOQDKPJU+wrF1/PI1NQwTOA/hmcZwYFvE0=
-X-Google-Smtp-Source: AGHT+IG8yn9xOUbjQefiaERgKk8U5mBvB4VRJBSl6sy7cxYGQWHhqsnwHPR5ujINfv5rqmbdEIuQjg==
-X-Received: by 2002:a05:622a:8617:b0:4ff:c639:4432 with SMTP id d75a77b69052e-4ffc6394517mr62794091cf.13.1767983830264;
-        Fri, 09 Jan 2026 10:37:10 -0800 (PST)
+        bh=994aysxLOcWPLd3SMpqCxReGe0e8U8IOOOwG1n0x0TM=;
+        b=cxHeyOjJc4LC5UAPCLVh9lw5qDHPVrzOWuQi7mt0CaSFAUhly6VMSuAocd8n0JrDzv
+         g9tkGxYXoteMycwkLvfZQFRrW/222FwzIZH93mmhIcMj2NuJL9SMwhFqD/nCPZ9XipMY
+         F3K3kx81bbJsaCf9v0Cju5vqJCewroh3Y3veVObHQYxJKlc8/zTnInz5J3uEyZAv9edL
+         sHFzywTHv5ThqqSCB1DuMo/Ze/Rr6pCqOULFMMkospCd2zlkBmwVlDR61j4CGfNPgoYK
+         4gDhlUAVS8amAjESwDmsIQ7qm8y8r9bHkCteg6MaUxmy6TVQ0kn9XnnwIzUD6+e/IFdj
+         9ieQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVUgF4MY+QNdjBkgv1YpzBAXNI2Rq9lGVPEot0dK4v4CmK6QY7V5MP74giNHMGH9JLkcdj+PuAwVnL+@vger.kernel.org
+X-Gm-Message-State: AOJu0YxobsEsVdOXpbnGBdAgQ10s6G1ZZEJ7sLIA9VwpU7hs5RySI7gz
+	z2iDF15QZlqk1Kmts1iYNZ2FO+pU1JrYRUdSygnCr6UJ2Db51punKMzJjWkkiIcNxDs=
+X-Gm-Gg: AY/fxX64PrbMokcm6S5JiU7y1uv7H2a4VegeT4UO9GjMhFSAKoRZjdSXI1e9IW44Vli
+	2Xo9OAVGgJtfUiA+HgGVo29Nixzdol2dy/coYNIbJrnygjzsRLHlHd1qx57J/++9uMNV1+5D3dp
+	sgKEHany0lkPZ2feaCW4Ho6ne9mFLiY8u3rMd7Ki6j0MCYETO99DSgw24csYqhCRQ+LoN1ByumA
+	B+3cCojuFp+TaOv4uriDZr4+90iKLPSwt2TunMJeuAo8a2kpNeDkCTq8QAPHgZPmx2d8bDICCrP
+	PMG2/kBSgLuIZ/t+U12hIIIWCECzW7n9374gemWUlnzH3Ydbbq++1jAISzHQWixu9lEvqaEShV2
+	pZCoZ74Qg5FCI56qhuy5CId60p3Esx1GngehW27TdSumAg8ERgIviJvBCtmoBfiReeNhmVHdKt5
+	8Pb4SjdFksEZ7AqqslH5TeGcUFvq81KkVptjlvabCMSxKugbWH7bbe5lq589Cd1mu590A=
+X-Google-Smtp-Source: AGHT+IFqVqEalYX6/JxmGMfFt5Q8z1APe+CdaB0uilHM8p6dUYjiODeHf+SdnqEtVX7YsgSR1I9k3Q==
+X-Received: by 2002:a05:620a:461f:b0:8b3:c8ee:7240 with SMTP id af79cd13be357-8c3893690efmr1570125985a.5.1767984638622;
+        Fri, 09 Jan 2026 10:50:38 -0800 (PST)
 Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4ffc17c288csm35696631cf.29.2026.01.09.10.37.09
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c37f51d06fsm857278085a.32.2026.01.09.10.50.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jan 2026 10:37:09 -0800 (PST)
+        Fri, 09 Jan 2026 10:50:38 -0800 (PST)
 Received: from jgg by wakko with local (Exim 4.97)
 	(envelope-from <jgg@ziepe.ca>)
-	id 1veHMD-000000037Mg-183W;
-	Fri, 09 Jan 2026 14:37:09 -0400
-Date: Fri, 9 Jan 2026 14:37:09 -0400
+	id 1veHZF-000000037Wv-2rTZ;
+	Fri, 09 Jan 2026 14:50:37 -0400
+Date: Fri, 9 Jan 2026 14:50:37 -0400
 From: Jason Gunthorpe <jgg@ziepe.ca>
 To: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
 Cc: leon@kernel.org, linux-rdma@vger.kernel.org,
 	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
 	kalesh-anakkur.purayil@broadcom.com
-Subject: Re: [PATCH rdma-next v6 4/4] RDMA/bnxt_re: Direct Verbs: Support CQ
- and QP verbs
-Message-ID: <20260109183709.GK545276@ziepe.ca>
+Subject: Re: [PATCH rdma-next v6 3/4] RDMA/bnxt_re: Direct Verbs: Support DBR
+ verbs
+Message-ID: <20260109185037.GL545276@ziepe.ca>
 References: <20251224042602.56255-1-sriharsha.basavapatna@broadcom.com>
- <20251224042602.56255-5-sriharsha.basavapatna@broadcom.com>
+ <20251224042602.56255-4-sriharsha.basavapatna@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -94,28 +94,32 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251224042602.56255-5-sriharsha.basavapatna@broadcom.com>
+In-Reply-To: <20251224042602.56255-4-sriharsha.basavapatna@broadcom.com>
 
-On Wed, Dec 24, 2025 at 09:56:02AM +0530, Sriharsha Basavapatna wrote:
-> @@ -101,10 +101,14 @@ struct bnxt_re_pd_resp {
->  struct bnxt_re_cq_req {
->  	__aligned_u64 cq_va;
->  	__aligned_u64 cq_handle;
-> +	__aligned_u64 comp_mask;
-> +	__u32 ncqe;
-> +	__u32 dmabuf_fd;
->  };
+On Wed, Dec 24, 2025 at 09:56:01AM +0530, Sriharsha Basavapatna wrote:
+> +	ret = uverbs_copy_to_struct_or_zero(attrs, BNXT_RE_DV_ALLOC_DBR_ATTR,
+> +					    &dbr, sizeof(dbr));
+> +	if (ret)
+> +		goto free_entry;
+> +
+> +	ret = uverbs_copy_to(attrs, BNXT_RE_DV_ALLOC_DBR_OFFSET,
+> +			     &mmap_offset, sizeof(mmap_offset));
+              ^^^^^^^^^^^^
 
-> +	__u32 pd_id;
-> +	__u32 dpi;
-> +	__u32 sq_dmabuf_fd;
-> +	__u32 sq_len;   /* total len including MSN area */
-> +	__u32 sq_wqe_sz;
-> +	__u32 sq_psn_sz;
-> +	__u32 sq_npsn;
-> +	__u32 rq_dmabuf_fd;
 
-All these fds are supposed to be __s32
+> +DECLARE_UVERBS_NAMED_METHOD(BNXT_RE_METHOD_DBR_ALLOC,
+> +			    UVERBS_ATTR_IDR(BNXT_RE_DV_ALLOC_DBR_HANDLE,
+> +					    BNXT_RE_OBJECT_DBR,
+> +					    UVERBS_ACCESS_NEW,
+> +					    UA_MANDATORY),
+> +			    UVERBS_ATTR_PTR_OUT(BNXT_RE_DV_ALLOC_DBR_ATTR,
+> +						UVERBS_ATTR_STRUCT(struct bnxt_re_dv_db_region,
+> +								   umdbr),
+> +								   UA_MANDATORY),
+> +			    UVERBS_ATTR_PTR_IN(BNXT_RE_DV_ALLOC_DBR_OFFSET,
+                                         ^^^^^^^
+
+ptr_in shuld not be used with copy_to
 
 Jason
 
