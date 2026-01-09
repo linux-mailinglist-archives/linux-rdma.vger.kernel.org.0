@@ -1,97 +1,109 @@
-Return-Path: <linux-rdma+bounces-15384-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15385-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2446D069B5
-	for <lists+linux-rdma@lfdr.de>; Fri, 09 Jan 2026 01:22:35 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A955ED06E24
+	for <lists+linux-rdma@lfdr.de>; Fri, 09 Jan 2026 03:51:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9E36330318D8
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jan 2026 00:22:25 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DFC11301B2ED
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jan 2026 02:51:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38FE41A9FB4;
-	Fri,  9 Jan 2026 00:22:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20ABD316904;
+	Fri,  9 Jan 2026 02:51:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VgUDy14k"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DQmEjGT0"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87DBE4A01
-	for <linux-rdma@vger.kernel.org>; Fri,  9 Jan 2026 00:22:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7BB61AF4D5;
+	Fri,  9 Jan 2026 02:51:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767918142; cv=none; b=HRfNn65+ZK/OaEGwZTucLhSlLhOzCLtWuBSBT2p9WwEbXT0+KtFoVz5G1QwA+C0XP8Vh5otdyiYOwHUBkwJFbp6CKHUb4dI9+H8+c2nC6Vx9NN37dEW2YT7iF3jpCml8W2/ZMX8BvOpx4qhg92RLe72NcwLhagcwWyE76fcDHJ0=
+	t=1767927112; cv=none; b=KpQy1jsENxMqv6ArjOgX9MclXQ20Y8W+UHXzDqWvmTxRIP9KoXGCvoZKHUuB+rDd6Q8KpXRx/Atki9gS4Iu8D/viXHEym9Tax227Vg/uVIk/mR1jhjat1H+jAzAPK00TpAbaxWUr1jyEcXtJ5yGNd+4NKN+QUm67ywYGPiU1/2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767918142; c=relaxed/simple;
-	bh=s6hMajc/WxPnJ8KMlq+g5bSYEESnqgOE6zR01kmwWfw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a+IT0RD2bWGADYbLVfuIL3tcQnMjth6+ZPGQXeep+WefYvXHiob7GYI+lsuoTxruSx6MG9LwGqEcQemogtphSgbOUJXR8WNDiUXFDhmDXNOMaVhQlw4JDVQvDf56WYhu10MBI++3c6lDfp/Y9PnIKNIvOCgEscnI2MPQ9R5MZS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VgUDy14k; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <0f1edef2-f788-4d91-89e3-348465f91635@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767918128;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3I9DcHBD4oEdTU67wQ5yymphc0845jveUaJjQQrn2to=;
-	b=VgUDy14kZ0r5fqlT6q4x+4+99qIOMlXtFwxryCMfme4COJXfYUVy0YCuJIFLflk6eJXaL9
-	LGERbvOu37YJYarI549LGYjjJXHNU4GBRMR/hbmLXvlUefEZPAPojH204HqJvOCcr2fLpi
-	5mGCer+ITvje//A8gj5Ikd/ylqs4Rz0=
-Date: Thu, 8 Jan 2026 16:22:01 -0800
+	s=arc-20240116; t=1767927112; c=relaxed/simple;
+	bh=BoUxRLW8fOKgcDo9sjE3LK2iX88FOP0BZDIaHBWU2wk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=njQs2tbcRJkFrUdFjEtmfTHWox+8jp+qNT2zJVsSlaSbyEX/E74AFVDM1E5Fm2fF19CuABgazUdlAtvo1+0vBFKg3OPmRV2bQfwu1PtqJ0huQtqaQhyPJ9qKfAexPOj9gBAyqE7dAHlSrVOWraLUtnotKSG8vZhJkekqdRPPWPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DQmEjGT0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EC7BC116C6;
+	Fri,  9 Jan 2026 02:51:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767927112;
+	bh=BoUxRLW8fOKgcDo9sjE3LK2iX88FOP0BZDIaHBWU2wk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=DQmEjGT0iVqZQDdywKI2pZrMtRzX/7v9kMyJt2PWOGlGpFi5ZUMpwa7l2Vh6SoyOT
+	 a9XzaxZ+D44U2cInuwdM8/EIp6QqlxjWeKqC/OojgNnJdxWS7M/AHv+N65ZnXLfBaB
+	 9bziqJeNdS2MA4UEyg3x3Z/9FhWTJ9u3Yd/SPb7Qrs/DHpQEWSeo/ayX1DBjz5Y1NM
+	 3p1SB8GIntug9sKcgPtNYX82Uz/RY+8FEJqcDfMHTXWNbkX5TsGPheCDv6r5c3XlgW
+	 RGdQFF8/PHKkngfOJdqRKn3Mv92TOwSkeB67t7yHPN+zi5c2zy+Qi18S+gkTrClhP/
+	 E5K83GzZYP2qw==
+From: Jakub Kicinski <kuba@kernel.org>
+To: achender@kernel.org
+Cc: Jakub Kicinski <kuba@kernel.org>,
+	edumazet@google.com,
+	pabeni@redhat.com,
+	linux-rdma@vger.kernel.org,
+	rds-devel@oss.oracle.com,
+	horms@kernel.org,
+	netdev@vger.kernel.org,
+	allison.henderson@oracle.com
+Subject: Re: [net-next,v4,1/2] net/rds: Add per cp work queue
+Date: Thu,  8 Jan 2026 18:51:43 -0800
+Message-ID: <20260109025143.2854604-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.52.0
+In-Reply-To: <20260105223532.167452-2-achender@kernel.org>
+References: <20260105223532.167452-2-achender@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 0/2 v6.6] Fix CVE-2024-57795
-To: Shivani Agarwal <shivani.agarwal@broadcom.com>, stable@vger.kernel.org,
- gregkh@linuxfoundation.org
-Cc: jgg@ziepe.ca, leon@kernel.org, zyjzyj2000@gmail.com, mbloch@nvidia.com,
- parav@nvidia.com, mrgolin@amazon.com, roman.gushchin@linux.dev,
- wangliang74@huawei.com, marco.crivellari@suse.com, zhao.xichao@vivo.com,
- haggaie@mellanox.com, monis@mellanox.com, dledford@redhat.com,
- amirv@mellanox.com, kamalh@mellanox.com, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org, ajay.kaher@broadcom.com,
- alexey.makhalov@broadcom.com, vamsi-krishna.brahmajosyula@broadcom.com,
- yin.ding@broadcom.com, tapas.kundu@broadcom.com
-References: <20260108100540.672666-1-shivani.agarwal@broadcom.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "yanjun.zhu" <yanjun.zhu@linux.dev>
-In-Reply-To: <20260108100540.672666-1-shivani.agarwal@broadcom.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On 1/8/26 2:05 AM, Shivani Agarwal wrote:
-> To fix CVE-2024-57795, commit 8ce2eb9dfac8 is required; however,
-> it depends on commit 2ac5415022d1. Therefore, both patches have
-> been backported to v6.6.
+This is an automated AI-generated review of your patch.
 
-Thanks a lot. It is my honor to fix this CVE problemm.
-I am fine with this patch series.
+For local reproduction steps see https://netdev-ai.bots.linux.dev/ai-local.html
+---
+commit 0d0b74852d11c82ac7d91c72b33c5dccb75934c5
+Author: Allison Henderson <allison.henderson@oracle.com>
 
-Zhu Yanjun
+    net/rds: Add per cp work queue
 
-> 
-> Zhu Yanjun (2):
->    RDMA/rxe: Remove the direct link to net_device
->    RDMA/rxe: Fix the failure of ibv_query_device() and
->      ibv_query_device_ex() tests
-> 
->   drivers/infiniband/core/device.c      |  1 +
->   drivers/infiniband/sw/rxe/rxe.c       | 22 ++++++++++++----------
->   drivers/infiniband/sw/rxe/rxe.h       |  3 ++-
->   drivers/infiniband/sw/rxe/rxe_mcast.c | 22 ++++++++++++++++++++--
->   drivers/infiniband/sw/rxe/rxe_net.c   | 25 ++++++++++++++++++++-----
->   drivers/infiniband/sw/rxe/rxe_verbs.c | 26 +++++++++++++++++++++-----
->   drivers/infiniband/sw/rxe/rxe_verbs.h | 11 ++++++++---
->   include/rdma/ib_verbs.h               |  2 ++
->   8 files changed, 86 insertions(+), 26 deletions(-)
-> 
+This patch adds cp_wq to struct rds_conn_path and substitutes rds_wq with
+cp->cp_wq throughout the RDS codebase to enable per-connection workqueue
+management.
 
+> diff --git a/net/rds/ib_send.c b/net/rds/ib_send.c
+> index 4190b90ff3b1..e35bbb6ffb68 100644
+> --- a/net/rds/ib_send.c
+> +++ b/net/rds/ib_send.c
+> @@ -419,7 +419,7 @@ void rds_ib_send_add_credits(struct rds_connection *conn, unsigned int credits)
+>
+>  	atomic_add(IB_SET_SEND_CREDITS(credits), &ic->i_credits);
+>  	if (test_and_clear_bit(RDS_LL_SEND_FULL, &conn->c_flags))
+> -		queue_delayed_work(rds_wq, &conn->c_send_w, 0);
+> +		queue_delayed_work(conn->c_path->cp_wq, &conn->c_send_w, 0);
+>
+>  	WARN_ON(IB_GET_SEND_CREDITS(credits) >= 16384);
+
+This substitution in rds_ib_send_add_credits() looks correct, but was the
+similar call site in rds_ib_send_cqe_handler() in the same file
+intentionally left unchanged? That function still uses:
+
+    queue_delayed_work(rds_wq, &conn->c_send_w, 0);
+
+Both functions have access to conn->c_path->cp_wq, so the inconsistency
+seems unintentional. If some call sites should remain on the global rds_wq
+while others use the per-connection workqueue, it would help to understand
+the reasoning.
+
+Similarly, rds_cong_queue_updates() in net/rds/cong.c still uses:
+
+    queue_delayed_work(rds_wq, &cp->cp_send_w, 0);
+
+even though it already has cp available. Should this also be updated to
+use cp->cp_wq for consistency with the other substitutions?
 
