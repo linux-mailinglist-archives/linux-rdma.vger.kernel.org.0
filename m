@@ -1,103 +1,138 @@
-Return-Path: <linux-rdma+bounces-15388-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15389-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C956D081B4
-	for <lists+linux-rdma@lfdr.de>; Fri, 09 Jan 2026 10:09:23 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EA7FD08509
+	for <lists+linux-rdma@lfdr.de>; Fri, 09 Jan 2026 10:49:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 03E30307A543
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jan 2026 09:07:49 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id D32AC3013BEA
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jan 2026 09:49:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E71E33321B3;
-	Fri,  9 Jan 2026 09:07:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EC78335097;
+	Fri,  9 Jan 2026 09:49:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="NEz8xk+a"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SBLbo8yV"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D062D358D3C;
-	Fri,  9 Jan 2026 09:07:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9449335076;
+	Fri,  9 Jan 2026 09:48:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767949666; cv=none; b=k29LKCB7cb2cz43wAksL9sA/905zdzkTHfBedklliPnwJrguPt0AEPwTY/Bs1aso/Fu3x+kJSRQ6cuNMIC8jSQ0LUQzb/CWcXYyLVFkeeNCiEvi/rOLAucpwt5Rm8JuR/foMQeRiZVAIyuu14ZGPHX5/aXkaAtI5kjgs+C2JLeU=
+	t=1767952140; cv=none; b=lFrEC4U79cMGVIyZz8nH30nYJauEUieN6BjGh7FDjR3b3bWP2/+YuOuAmUhljWf7TSJVYPTqA633AvH7x/uwAyz8MK99pl4yIGVsLcv9Zs/Z18878ExgO+Z7qWvKUCbj+EVUrip53+lInhgd7qEW793CNt8tgN/psohXXGVC30g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767949666; c=relaxed/simple;
-	bh=3hwaGAcFcggIgpihes8MMjjJIldk8j4e67WpwcS7sYE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OA0+wKBbtWLOGVS5S/KxIqn3pN+aVGH+/lGyM0K0WIzycF8OwkHSWuaO4i4GWcrAFdu2GwJ+dnQn36FEj6AKRnmXsx4gXLDJywLWa6rIulBDLAzGdy1SmzG2F3J40Jg0Ynd5tRH4KuYm9gVn+LdJ9xs0a+BbUb7MEQCg4ZgXzao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=NEz8xk+a; arc=none smtp.client-ip=117.135.210.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=9U
-	mGaF8kB2z7vJpTD1/CORh1KAvWfraUhIxE9qUDlWM=; b=NEz8xk+aRn+bkboOMJ
-	iR7EfXiHiymGwlGqL3PeAvYnBls2I2g9bDqGYNhTKq10Ab4PxDAtowZjUCRBz9Kl
-	hPRXdoalvsBT1Pio4dPZ11l0j6q7BkLmh7HT1HbI94Wr5SRz4uE7Fr8rzIf0vxyo
-	qOep4QLK1sJiEbwACi+a5sG4w=
-Received: from zengchi (unknown [])
-	by gzsmtp3 (Coremail) with SMTP id PigvCgBXuCMsxWBpFG8wKw--.19983S2;
-	Fri, 09 Jan 2026 17:06:54 +0800 (CST)
-From: Zeng Chi <zeng_chi911@163.com>
-To: saeedm@nvidia.com,
-	leon@kernel.org,
-	tariqt@nvidia.com,
-	mbloch@nvidia.com,
-	andrew+netdev@lunn.ch,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	zengchi@kylinos.cn
-Subject: [PATCH] net/mlx5: Fix return type mismatch in mlx5_esw_vport_vhca_id()
-Date: Fri,  9 Jan 2026 17:06:50 +0800
-Message-Id: <20260109090650.1734268-1-zeng_chi911@163.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1767952140; c=relaxed/simple;
+	bh=MIwSXM1zovhg5eHe8m4nTjGNEqVe+MTA5jK9Sla1M04=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=carhiRAALAszxK07tbUvjrUF86ZApQaDSA6+e9oPynn1aZgTqR7l2vYL/7Olkd4M5f/xcQFdEM6jACzndKzkYLDi7w5pkg+ibhXhgI94PIJFVVnBU0NXMmviIKqeiFysGiPppmxp3XL/2F3oQYJCy7dovhOSue/Uv8ZO2JI2aAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SBLbo8yV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3030C4CEF1;
+	Fri,  9 Jan 2026 09:48:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767952139;
+	bh=MIwSXM1zovhg5eHe8m4nTjGNEqVe+MTA5jK9Sla1M04=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SBLbo8yVVaeiwX3jIw0nuglrBWi1Qo1wwdQE7tlVUgeE90V97/GEkd6kcumCWToZy
+	 8JOZ21uG5bpw505JprJUpum3eJq7r5XtYrvpjod+4v76/ObOXwO4JyOq/pVoH+HUFe
+	 8CcQTrmCOwMim+omIJcvpgtn2VtNixN6BR2baV7DxMp1dBRoOo8Mw0ZUK6W11gkkaN
+	 cELSLTHTV8JngEOScacTlJY1lV1RtJ4GbPJSA3Lr6q6QxpnzBKk3u0cUBqRyXnNMVr
+	 qU4Rti7jY3eOLy9fyJQlilxQOj969N5dcewuBodz7fguQsRgINSw4OG8ryDTnrno69
+	 L/D58F3AsLxew==
+Date: Fri, 9 Jan 2026 10:48:57 +0100
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Ivan Vecera <ivecera@redhat.com>
+Cc: netdev@vger.kernel.org, Vadim Fedorenko <vadim.fedorenko@linux.dev>, 
+	Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>, Jiri Pirko <jiri@resnulli.us>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Prathosh Satish <Prathosh.Satish@microchip.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
+	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
+	Jonathan Lemon <jonathan.lemon@gmail.com>, Richard Cochran <richardcochran@gmail.com>, 
+	Alexander Lobakin <aleksander.lobakin@intel.com>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org, Michal Schmidt <mschmidt@redhat.com>, 
+	Petr Oros <poros@redhat.com>, Grzegorz Nitka <grzegorz.nitka@intel.com>
+Subject: Re: [PATCH net-next 01/12] dt-bindings: dpll: add common
+ dpll-pin-consumer schema
+Message-ID: <20260109-wonderful-acoustic-civet-e030da@quoll>
+References: <20260108182318.20935-1-ivecera@redhat.com>
+ <20260108182318.20935-2-ivecera@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:PigvCgBXuCMsxWBpFG8wKw--.19983S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtr1xAw48CFWDZrWUCr1fCrg_yoWkCrbEg3
-	WUXF43Xw4q9Fn8Kr1rWrWYgrWI9r1DWFZ3CFZ2vFZ8Jw4q9w1DJ3y8Z3WfAryxWr18XFyD
-	Ga12vayav34jvjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8jsj5UUUUU==
-X-CM-SenderInfo: 52hqws5fklmiqr6rljoofrz/xtbCwA7uqmlgxS4z4AAA37
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260108182318.20935-2-ivecera@redhat.com>
 
-From: Zeng Chi <zengchi@kylinos.cn>
+On Thu, Jan 08, 2026 at 07:23:07PM +0100, Ivan Vecera wrote:
+> Introduce a common schema for DPLL pin consumers. Devices such as Ethernet
+> controllers and PHYs may require connections to DPLL pins for Synchronous
+> Ethernet (SyncE) or other frequency synchronization tasks.
+> 
+> Defining these properties in a shared schema ensures consistency across
+> different device types that consume DPLL resources.
+> 
+> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+> ---
+>  .../bindings/dpll/dpll-pin-consumer.yaml      | 30 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  2 files changed, 31 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/dpll/dpll-pin-consumer.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/dpll/dpll-pin-consumer.yaml b/Documentation/devicetree/bindings/dpll/dpll-pin-consumer.yaml
+> new file mode 100644
+> index 0000000000000..60c184c18318a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dpll/dpll-pin-consumer.yaml
+> @@ -0,0 +1,30 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dpll/dpll-pin-consumer.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: DPLL Pin Consumer
+> +
+> +maintainers:
+> +  - Ivan Vecera <ivecera@redhat.com>
+> +
 
-The function mlx5_esw_vport_vhca_id() is declared to return bool,
-but returns -EOPNOTSUPP (-45), which is an int error code. This
-causes a signedness bug as reported by smatch.
+You miss select. Without it this binding is no-op.
 
-This patch fixes this smatch report:
-drivers/net/ethernet/mellanox/mlx5/core/eswitch.h:981 mlx5_esw_vport_vhca_id()
-warn: signedness bug returning '(-45)'
+> +description: |
 
-Signed-off-by: Zeng Chi <zengchi@kylinos.cn>
----
- drivers/net/ethernet/mellanox/mlx5/core/eswitch.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Drop |
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-index ad1073f7b79f..e7fe43799b23 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.h
-@@ -1009,7 +1009,7 @@ mlx5_esw_host_functions_enabled(const struct mlx5_core_dev *dev)
- static inline bool
- mlx5_esw_vport_vhca_id(struct mlx5_eswitch *esw, u16 vportn, u16 *vhca_id)
- {
--	return -EOPNOTSUPP;
-+	return false;
- }
- 
- #endif /* CONFIG_MLX5_ESWITCH */
--- 
-2.25.1
+
+> +  Common properties for devices that require connection to DPLL (Digital Phase
+> +  Locked Loop) pins for frequency synchronization (e.g. SyncE).
+> +
+> +properties:
+> +  dpll-pins:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description:
+> +      List of phandles to the DPLL pin nodes connected to this device.
+> +
+> +  dpll-pin-names:
+> +    $ref: /schemas/types.yaml#/definitions/string-array
+> +    description:
+> +      Names for the DPLL pins defined in 'dpll-pins', in the same order.
+> +
+> +dependencies:
+> +  dpll-pin-names: [ dpll-pins ]
+
+Binding should go to dtschema. See also commit
+3282a891060aace02e3eed4789739768060cea32 in dtschema or other examples
+how to add new provider/consumer properties.
+
+
+Best regards,
+Krzysztof
 
 
