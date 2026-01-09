@@ -1,176 +1,134 @@
-Return-Path: <linux-rdma+bounces-15416-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15417-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0417FD0C16A
-	for <lists+linux-rdma@lfdr.de>; Fri, 09 Jan 2026 20:38:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E59B6D0C7C4
+	for <lists+linux-rdma@lfdr.de>; Fri, 09 Jan 2026 23:48:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 2DA5230057F5
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jan 2026 19:38:03 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 12B92300E8E2
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jan 2026 22:48:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C3D32DF155;
-	Fri,  9 Jan 2026 19:38:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 736BA337B95;
+	Fri,  9 Jan 2026 22:48:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="o4zMi1pS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WFJHcS7t"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6C0E3398A
-	for <linux-rdma@vger.kernel.org>; Fri,  9 Jan 2026 19:37:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3768286353;
+	Fri,  9 Jan 2026 22:48:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767987480; cv=none; b=UFLogIUTpLtrlgrRMoWPMXoBv8hKBquhhX+y/1uTUi6T0MbdHoFsjHAUmV11xdkIf3AOVguSGmBsEenuCFsLYNNtwPqIyuO/ekOQ90J6/4BLtJsvnrkVDTTOsa/s1XBi+/NQa2nFvOuRpidr8eAMY94UenofYE/ANFbfAaH/idA=
+	t=1767998925; cv=none; b=c2smkdXQk7iBkC1jq5Us58lsHLsAB03Bi4u0a4BVf7MNS1G84N5suRrvZI0H1sOHbpTlZtvDpK+6jeXXSTpp296ZMLYECGwQzitZVHPlXJaZl/0HakBVXSS8NDEjaRYc7rV+T/3cnB43x88MWRTDKgVb4ZSrmb2s/NysZ7hmwcA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767987480; c=relaxed/simple;
-	bh=RHmHz8fS4az4yqMIxVBr+BG9D55GRIfry2ylvvOEH1M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mRaSOLp/wtn3NtWEvmGoZyqqipREP8lIeVQjj9spEFDLH6Uu4/iSnXF4fGmKSfdIrg9lwxfzYogfnmDtqDYDeTAQ26HgKyAh0HkzJyovySi135alR+SAaQckjTZURa0H2OgzprFCRsX3iLRP7fmxYA1y5yMfDj+4WIVxdYYM2yg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=o4zMi1pS; arc=none smtp.client-ip=209.85.219.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-88ffcb14e11so49587456d6.0
-        for <linux-rdma@vger.kernel.org>; Fri, 09 Jan 2026 11:37:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1767987478; x=1768592278; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=asEIVILQY87ZgG0bznR82f7SXq/st+iKwtLy6jXwxlY=;
-        b=o4zMi1pSXOqxqwowdSOg4xCiV/agtieqNVXRTIk2lyxI8hcumBIgQJuGpl280MpHU4
-         ba4jtUq1ekUmWpGteBN6jNTpVXlKhFPy2c8AbNd/dT3Qu5SwSydK6HwnpwPHmhoCysK9
-         TD0ZiQOa+ztNBXg4Xtu789TNkgGYaalPh+ST+WXbi7yEfHWVpIlZ8rCSUWjOQfEf6fBY
-         4PJZ/TcvakaYKgMoy9eYahhqnujIMoQ0ULdsb0zPX++LsX7ARjRUiNkvGGiJcnc/iFmi
-         meQ7F+S/tNrMW/BTzqHCMWsYtFAH6dAEDbi4ZgZffUfLv6Z7b3EHQ1z11RTbVFG8OmC8
-         5Fxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767987478; x=1768592278;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=asEIVILQY87ZgG0bznR82f7SXq/st+iKwtLy6jXwxlY=;
-        b=PQUvIzNGFeuzOsU+jr1uKQF1UQHU8YGeimUIFcgm9Sn4QK1gVtJx7kAlfJCTBpap5X
-         RuPmi/nEOg+G6ANML7O3uZaM5iLWcBHITctiBSoWDkSZ0rWVIwQ1KX5XNx9xTKEtYyB7
-         eQsfsnxXZSfRPe1q3UPpg3Z5fbQGnE/wlbDUoS0yfYMkorsPGKZo9clDMffjtyObpnR5
-         UfbZLS2XHmp+b/GqzMwgNCOO/5ATzG19zYzdbuGzEcK3TwK0evOpHG9UYJGugn6Vu8y8
-         chgb/8ebjcPijFYKhXZ7Z05h/MoBLiLETDxzjq7+cUZlM2mSUlhXn1ZQGNCwLBUPm/bq
-         y4ew==
-X-Forwarded-Encrypted: i=1; AJvYcCVY1xMQeZzCSugXKebDt1pYiGGMkcOGsn5nSFur/dzS0vFzYe6t9Z+wZFBUGu8LwMyRspp6vXfGi41J@vger.kernel.org
-X-Gm-Message-State: AOJu0YxYa7Plnu9ZhkGQQHQXSj4+Gv9PiYdpb8ncfFvO3HqjGgvaNOgT
-	S3CLXLsNZn/H0nAobrvcoueYHKnBuP73UpeEnJNZpUceX/59UchEt6no6pGDeTofZZA6iTIuctQ
-	N8Snt
-X-Gm-Gg: AY/fxX70nzxtvywW0JlUfNXafGssZD2IylAQUn8aQK4jLmw1fIyIedQ6B4OnZFH+d7F
-	G2AyYoxi1LQqzlC+8HN+mXTCoDZTWLIt3ReOUSGW+nqmkDH2wnDYt5LqXkSn1kJYhscAbp8V5iV
-	08FzQ7h+xJL59pRLFIIOcjLDRscLaKNzZew9PY37PpPuOmFl5kwUTQRhgixdQTB5udcer2ZcdZX
-	QgTKET7dON48o1RjtGJoUaISioJkfrM182Of80Zp7uFb6qMUyOvrkhKz7cYjFt1nzEZtmZfm6zH
-	lml6mcxKBGk1oxYTyR88lxbj4LjYpru7ux5P6pIH7wiiywR8a6W3LHXKlGnbXym8xlkH8sbdqDL
-	8MTb/q/Qm24DgiiF2XeMY+EMYu87sdUIZkGSEOic1f41pYWqiV3HCZE2MkagFY1sxqj5aedUjts
-	c7HwkVJ+7tzYDX4ZP6NvoJZHBKz8oGAYkoN94SJA9kQqR4ypxlI6Jjk5QYdg9my6AodRw=
-X-Google-Smtp-Source: AGHT+IF8yNPVlkd4sqod/EUFxVBMkkMwrVPRk2FVvmibO6o0+GW7Kkgws24zrcf1sfBVFNYsCXVj0A==
-X-Received: by 2002:a05:6214:5bc8:b0:880:5867:45b4 with SMTP id 6a1803df08f44-8908417514fmr163552876d6.13.1767987477723;
-        Fri, 09 Jan 2026 11:37:57 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-890770cc73dsm83512906d6.7.2026.01.09.11.37.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jan 2026 11:37:57 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1veIJ2-000000037wJ-3NuK;
-	Fri, 09 Jan 2026 15:37:56 -0400
-Date: Fri, 9 Jan 2026 15:37:56 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Cc: leon@kernel.org, linux-rdma@vger.kernel.org,
-	andrew.gospodarek@broadcom.com, selvin.xavier@broadcom.com,
-	kalesh-anakkur.purayil@broadcom.com
-Subject: Re: [PATCH rdma-next v6 4/4] RDMA/bnxt_re: Direct Verbs: Support CQ
- and QP verbs
-Message-ID: <20260109193756.GP545276@ziepe.ca>
-References: <20251224042602.56255-1-sriharsha.basavapatna@broadcom.com>
- <20251224042602.56255-5-sriharsha.basavapatna@broadcom.com>
+	s=arc-20240116; t=1767998925; c=relaxed/simple;
+	bh=hSclj7Vw5YVSOr94y9Puq7z7FipvJMoNGHQt+6rwjhU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=g4xfLqH4+OtUdkSFTc0snQsSfBAVXxgfRtutc5lJgUxsj3i+DeO4V++B8NDnZlWfmp0kgYF3OboLQRYbQbsk7Oxv5QuKNvNK66z7D8naKVLmFPoUAg6Y0ukehez2kobIPbdJMI0CXnzxaU9KPR3KRAQYeu4ZF8OVW1w8TEw/Ihk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WFJHcS7t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7344EC4CEF1;
+	Fri,  9 Jan 2026 22:48:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767998925;
+	bh=hSclj7Vw5YVSOr94y9Puq7z7FipvJMoNGHQt+6rwjhU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=WFJHcS7tc23m6TFwEO6KsadazxwwdjS8EEBzRjDiFHJmjg+fNly21w3EKQPAJ2dKr
+	 S7wjFqka33j3vHqxqWrTSQ+opSzyLBG+SXUOZtFDGEihg517QDs6xJQ6cf2vmEB2iU
+	 r3RSE428El1/M66NvU5MKYAPf940fz4Tpn5w1whnpu7vOzz2izoNtmj/Fy/9nJsSxy
+	 Pu8rA28Ym0eGunwDRjNx6D9sJ1XX1ar6AJoI+uUmOCpMrVYBYAw0K2LiWTlxV+q2Eq
+	 j5YUkHN5DxsVI80s0VNDO3ctt4LexN6Xzz3YHkikVYt4dSwzVaiNwQfL213liDzrd8
+	 Lh2IyP0BQKuhw==
+From: Allison Henderson <achender@kernel.org>
+To: netdev@vger.kernel.org
+Cc: pabeni@redhat.com,
+	edumazet@google.com,
+	rds-devel@oss.oracle.com,
+	kuba@kernel.org,
+	horms@kernel.org,
+	linux-rdma@vger.kernel.org,
+	allison.henderson@oracle.com
+Subject: [PATCH net-next v5 0/2] net/rds: RDS-TCP bug fix collection, subset 1: Work queue scalability
+Date: Fri,  9 Jan 2026 15:48:41 -0700
+Message-ID: <20260109224843.128076-1-achender@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251224042602.56255-5-sriharsha.basavapatna@broadcom.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 24, 2025 at 09:56:02AM +0530, Sriharsha Basavapatna wrote:
-> +static int bnxt_re_dv_create_qplib_cq(struct bnxt_re_dev *rdev,
-> +				      struct bnxt_re_ucontext *re_uctx,
-> +				      struct bnxt_re_cq *cq,
-> +				      struct bnxt_re_cq_req *req)
-> +{
-> +	struct bnxt_qplib_dev_attr *dev_attr = rdev->dev_attr;
-> +	struct bnxt_qplib_cq *qplcq;
-> +	struct ib_umem *umem;
-> +	u32 cqe = req->ncqe;
-> +	u32 max_active_cqs;
-> +	int rc = -EINVAL;
-> +
-> +	if (atomic_read(&rdev->stats.res.cq_count) >= dev_attr->max_cq) {
-> +		ibdev_dbg(&rdev->ibdev, "Create CQ failed - max exceeded(CQs)");
-> +		return rc;
-> +	}
+From: Allison Henderson <allison.henderson@oracle.com>
 
-This is a racy way to use atomics, this should be an
-atomic_inc_return, then check the return code, doing a dec on all
-error paths.
+Hi all,
 
-> +static void bnxt_re_dv_init_ib_cq(struct bnxt_re_dev *rdev,
-> +				  struct bnxt_re_cq *re_cq)
-> +{
-> +	struct ib_cq *ib_cq;
-> +
-> +	ib_cq = &re_cq->ib_cq;
-> +	ib_cq->device = &rdev->ibdev;
+This is subset 1 of the RDS-TCP bug fix collection series I posted last
+Oct.  The greater series aims to correct multiple rds-tcp bugs that
+can cause dropped or out of sequence messages.  The set was starting to
+get a bit large, so I've broken it down into smaller sets to make
+reviews more manageable.
 
+In this subset, we focus on work queue scalability.  Messages queues
+are refactored to operate in parallel across multiple connections,
+which improves response times and avoids timeouts.
 
-> +	ib_cq->uobject = NULL;
-> +	ib_cq->comp_handler  = NULL;
-> +	ib_cq->event_handler = NULL;
-> +	atomic_set(&ib_cq->usecnt, 0);
-> +}
+The entire set can be viewed in the rfc here:
+https://lore.kernel.org/netdev/20251022191715.157755-1-achender@kernel.org/
 
-All these should already be 0 since this was freshly zallocated, no?
+Questions, comments, flames appreciated!
+Thanks!
+Allison
 
-> +int bnxt_re_dv_create_cq(struct bnxt_re_dev *rdev, struct ib_udata *udata,
-> +			 struct bnxt_re_cq *re_cq, struct bnxt_re_cq_req *req)
-> +{
-> +	struct bnxt_re_ucontext *re_uctx =
-> +		rdma_udata_to_drv_context(udata, struct bnxt_re_ucontext, ib_uctx);
-> +	struct bnxt_re_cq_resp resp = {};
-> +	int ret;
-> +
-> +	ret = bnxt_re_dv_create_qplib_cq(rdev, re_uctx, re_cq, req);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = bnxt_re_dv_create_cq_resp(rdev, re_cq, &resp);
-> +	if (ret)
-> +		goto fail_resp;
-> +
-> +	ret = ib_copy_to_udata(udata, &resp, min(sizeof(resp), udata->outlen));
-> +	if (ret)
-> +		goto fail_resp;
-> +
-> +	bnxt_re_dv_init_ib_cq(rdev, re_cq);
-> +	re_cq->is_dv_cq = true;
-> +	atomic_inc(&rdev->dv_cq_count);
-> +	return 0;
-> +
-> +fail_resp:
-> +	bnxt_qplib_destroy_cq(&rdev->qplib_res, &re_cq->qplib_cq);
-> +	bnxt_re_put_nq(rdev, re_cq->qplib_cq.nq);
-> +	ib_umem_release(re_cq->umem);
+Change Log:
+rfc->v1
+ - Fixed lkp warnings and white space cleanup
+ - Split out the workqueue changes as a subset
 
-This seems really weird error unwinding, I expect to see functions
-with error unwinds that match the calls within the function.
+v2
+ [PATCH 1/2] net/rds: Add per cp work queue
+   - Checkpatch nits
+ [PATCH 2/2] net/rds: Give each connection its own workqueue
+   - Checkpatch nits
+   - Updated commit message with workqueue overhead accounting
 
-So why doesn't bnxt_qplib_destroy_cq() do the umem release and
-req_put_nq?
+v3
+ [PATCH 2/2] net/rds: Give each connection path its own workqueue
+   - Updated commit message with worst case connection path accounting
+   - Use rds_wq as a fall back if queue alloc fails
+   - Checkpatch nits 
 
-Jason
+v4
+  [PATCH 2/2] net/rds: Give each connection path its own workqueue
+   - Fixed memleak warning in __rds_conn_create error path
+
+v5
+  Fixed AI complaints
+
+  [PATCH 1/2] net/rds: Add per cp work queue
+  - updated rds_wq in rds_cong_queue_updates and
+    rds_ib_send_cqe_handler
+
+  [PATCH 2/2] net/rds: Give each connection path its own workqueue
+  - free paths on race detection error and move freeing of conn->c_path
+    outside of spinlocks
+ 
+Allison Henderson (2):
+  net/rds: Add per cp work queue
+  net/rds: Give each connection path its own workqueue
+
+ net/rds/cong.c       |  2 +-
+ net/rds/connection.c | 28 +++++++++++++++++++++++-----
+ net/rds/ib_recv.c    |  2 +-
+ net/rds/ib_send.c    |  4 ++--
+ net/rds/rds.h        |  1 +
+ net/rds/send.c       |  9 +++++----
+ net/rds/tcp_recv.c   |  2 +-
+ net/rds/tcp_send.c   |  2 +-
+ net/rds/threads.c    | 16 ++++++++--------
+ 9 files changed, 43 insertions(+), 23 deletions(-)
+
+-- 
+2.43.0
+
 
