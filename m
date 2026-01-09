@@ -1,44 +1,44 @@
-Return-Path: <linux-rdma+bounces-15385-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15386-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A955ED06E24
-	for <lists+linux-rdma@lfdr.de>; Fri, 09 Jan 2026 03:51:58 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6322AD06E33
+	for <lists+linux-rdma@lfdr.de>; Fri, 09 Jan 2026 03:52:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DFC11301B2ED
-	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jan 2026 02:51:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A3E483025159
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jan 2026 02:52:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20ABD316904;
-	Fri,  9 Jan 2026 02:51:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E9861AF4D5;
+	Fri,  9 Jan 2026 02:52:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DQmEjGT0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="haQ97BPE"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7BB61AF4D5;
-	Fri,  9 Jan 2026 02:51:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6265231A543;
+	Fri,  9 Jan 2026 02:52:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767927112; cv=none; b=KpQy1jsENxMqv6ArjOgX9MclXQ20Y8W+UHXzDqWvmTxRIP9KoXGCvoZKHUuB+rDd6Q8KpXRx/Atki9gS4Iu8D/viXHEym9Tax227Vg/uVIk/mR1jhjat1H+jAzAPK00TpAbaxWUr1jyEcXtJ5yGNd+4NKN+QUm67ywYGPiU1/2Y=
+	t=1767927126; cv=none; b=rqfV+ckT6u2DRQA+OGigKBJMVEBY8qRaFNy6JclJCQ7bqmHp4M50h2kIxk8dzWeA2ZMFppPGuvObeOQ2XXpqJUTiPEhSG6z6gAYBIAtdcTjK/vviVcFxLVbumV7s4HY2Bt/QOC7y1T2Oxp2KCzWvN0mvKmCLfuCtoEMgE2ixTK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767927112; c=relaxed/simple;
-	bh=BoUxRLW8fOKgcDo9sjE3LK2iX88FOP0BZDIaHBWU2wk=;
+	s=arc-20240116; t=1767927126; c=relaxed/simple;
+	bh=YsjfDLzKGHNkSwL8U3zYckthzURrz70xD8qtCOBMkwA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=njQs2tbcRJkFrUdFjEtmfTHWox+8jp+qNT2zJVsSlaSbyEX/E74AFVDM1E5Fm2fF19CuABgazUdlAtvo1+0vBFKg3OPmRV2bQfwu1PtqJ0huQtqaQhyPJ9qKfAexPOj9gBAyqE7dAHlSrVOWraLUtnotKSG8vZhJkekqdRPPWPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DQmEjGT0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EC7BC116C6;
-	Fri,  9 Jan 2026 02:51:51 +0000 (UTC)
+	 MIME-Version; b=dSDhX7QNPlNXumlglSE/9BJ4Brlye8BEC9PmP15H2Oc4OTNX5IKCd0vOhecR2Uvn+vpr/NaZYuhB2BW71hcerSJs9qQYt5FN+GF87Uo0yVvBZs7LMJA9f1wfyQOilvk8GuFjICoVQ547Y97xsIZC8fB4qhKlkVYrYm1aj9jgxZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=haQ97BPE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85EADC19422;
+	Fri,  9 Jan 2026 02:52:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767927112;
-	bh=BoUxRLW8fOKgcDo9sjE3LK2iX88FOP0BZDIaHBWU2wk=;
+	s=k20201202; t=1767927125;
+	bh=YsjfDLzKGHNkSwL8U3zYckthzURrz70xD8qtCOBMkwA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DQmEjGT0iVqZQDdywKI2pZrMtRzX/7v9kMyJt2PWOGlGpFi5ZUMpwa7l2Vh6SoyOT
-	 a9XzaxZ+D44U2cInuwdM8/EIp6QqlxjWeKqC/OojgNnJdxWS7M/AHv+N65ZnXLfBaB
-	 9bziqJeNdS2MA4UEyg3x3Z/9FhWTJ9u3Yd/SPb7Qrs/DHpQEWSeo/ayX1DBjz5Y1NM
-	 3p1SB8GIntug9sKcgPtNYX82Uz/RY+8FEJqcDfMHTXWNbkX5TsGPheCDv6r5c3XlgW
-	 RGdQFF8/PHKkngfOJdqRKn3Mv92TOwSkeB67t7yHPN+zi5c2zy+Qi18S+gkTrClhP/
-	 E5K83GzZYP2qw==
+	b=haQ97BPEyXg2CJ8MdmxEMm2b0E6gn5J9vW++zjsU1EneWY0b0wfySh4/NUvDKrVfu
+	 3w9Olo1f5wvyhRHINcPKil5QGYkh2wzEkGoJ/Ut3DDGHJG4mbbDh9jRQs814r37/WH
+	 lYlZmfdSTNbDGzm5VNktjTXqe5QcZ9Bb4SygMzKgs1x/iD6XZJG/7EZuUaLzoT1gy7
+	 /ca1z1GKNw2vv2MasAGbAAopcGNiXcaGqKKtj8F3oyucjV328PdKUgv9bLRhcGrT7W
+	 Uc8MCshyhajAlxuvaEXZei9mlrwyvsGxZAp8JD1P0UgdlJEQ73hHU7eK/UiEH1uxbs
+	 LO31kDzv6lADg==
 From: Jakub Kicinski <kuba@kernel.org>
 To: achender@kernel.org
 Cc: Jakub Kicinski <kuba@kernel.org>,
@@ -49,12 +49,12 @@ Cc: Jakub Kicinski <kuba@kernel.org>,
 	horms@kernel.org,
 	netdev@vger.kernel.org,
 	allison.henderson@oracle.com
-Subject: Re: [net-next,v4,1/2] net/rds: Add per cp work queue
-Date: Thu,  8 Jan 2026 18:51:43 -0800
-Message-ID: <20260109025143.2854604-1-kuba@kernel.org>
+Subject: Re: [net-next,v4,2/2] net/rds: Give each connection path its own workqueue
+Date: Thu,  8 Jan 2026 18:51:52 -0800
+Message-ID: <20260109025152.2854640-1-kuba@kernel.org>
 X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260105223532.167452-2-achender@kernel.org>
-References: <20260105223532.167452-2-achender@kernel.org>
+In-Reply-To: <20260105223532.167452-3-achender@kernel.org>
+References: <20260105223532.167452-3-achender@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -67,43 +67,72 @@ This is an automated AI-generated review of your patch.
 
 For local reproduction steps see https://netdev-ai.bots.linux.dev/ai-local.html
 ---
-commit 0d0b74852d11c82ac7d91c72b33c5dccb75934c5
+commit 95959b9817fcb113ceda9dcddc66514d2407af44
 Author: Allison Henderson <allison.henderson@oracle.com>
 
-    net/rds: Add per cp work queue
+net/rds: Give each connection path its own workqueue
 
-This patch adds cp_wq to struct rds_conn_path and substitutes rds_wq with
-cp->cp_wq throughout the RDS codebase to enable per-connection workqueue
-management.
+This patch allocates per-connection-path workqueues instead of using
+the shared rds_wq. This improves RDS failover performance by allowing
+connections to process work independently.
 
-> diff --git a/net/rds/ib_send.c b/net/rds/ib_send.c
-> index 4190b90ff3b1..e35bbb6ffb68 100644
-> --- a/net/rds/ib_send.c
-> +++ b/net/rds/ib_send.c
-> @@ -419,7 +419,7 @@ void rds_ib_send_add_credits(struct rds_connection *conn, unsigned int credits)
->
->  	atomic_add(IB_SET_SEND_CREDITS(credits), &ic->i_credits);
->  	if (test_and_clear_bit(RDS_LL_SEND_FULL, &conn->c_flags))
-> -		queue_delayed_work(rds_wq, &conn->c_send_w, 0);
-> +		queue_delayed_work(conn->c_path->cp_wq, &conn->c_send_w, 0);
->
->  	WARN_ON(IB_GET_SEND_CREDITS(credits) >= 16384);
+> diff --git a/net/rds/connection.c b/net/rds/connection.c
+> index dc7323707f45..3743940423c8 100644
+> --- a/net/rds/connection.c
+> +++ b/net/rds/connection.c
+> @@ -269,7 +269,11 @@ static struct rds_connection *__rds_conn_create(struct net *net,
+>  		__rds_conn_path_init(conn, &conn->c_path[i],
+>  				     is_outgoing);
+>  		conn->c_path[i].cp_index = i;
+> -		conn->c_path[i].cp_wq = rds_wq;
+> +		conn->c_path[i].cp_wq =
+> +			alloc_ordered_workqueue("krds_cp_wq#%lu/%d", 0,
+> +						rds_conn_count, i);
+> +		if (!conn->c_path[i].cp_wq)
+> +			conn->c_path[i].cp_wq = rds_wq;
+>  	}
+>  	rcu_read_lock();
+>  	if (rds_destroy_pending(conn))
+> @@ -278,6 +282,9 @@ static struct rds_connection *__rds_conn_create(struct net *net,
+>  		ret = trans->conn_alloc(conn, GFP_ATOMIC);
+>  	if (ret) {
+>  		rcu_read_unlock();
+> +		for (i = 0; i < npaths; i++)
+> +			if (conn->c_path[i].cp_wq != rds_wq)
+> +				destroy_workqueue(conn->c_path[i].cp_wq);
+>  		kfree(conn->c_path);
 
-This substitution in rds_ib_send_add_credits() looks correct, but was the
-similar call site in rds_ib_send_cqe_handler() in the same file
-intentionally left unchanged? That function still uses:
+The workqueues allocated above are properly destroyed here when
+trans->conn_alloc() fails, but what happens in the "race to create"
+paths later in this function?
 
-    queue_delayed_work(rds_wq, &conn->c_send_w, 0);
+When two threads race to create the same connection, one will win and
+the other must discard its connection. Looking at the existing code
+after this diff (around the "Creating passive conn" and "Creating
+normal conn" comments), those cleanup paths call trans->conn_free(),
+kfree(conn->c_path), and kmem_cache_free(), but they do not destroy
+the per-path workqueues.
 
-Both functions have access to conn->c_path->cp_wq, so the inconsistency
-seems unintentional. If some call sites should remain on the global rds_wq
-while others use the per-connection workqueue, it would help to understand
-the reasoning.
+For example, in the "found" path for normal connections:
 
-Similarly, rds_cong_queue_updates() in net/rds/cong.c still uses:
+    if (found) {
+        for (i = 0; i < npaths; i++) {
+            cp = &conn->c_path[i];
+            if (cp->cp_transport_data)
+                trans->conn_free(cp->cp_transport_data);
+        }
+        kfree(conn->c_path);
+        kmem_cache_free(rds_conn_slab, conn);
+        conn = found;
+    }
 
-    queue_delayed_work(rds_wq, &cp->cp_send_w, 0);
+Could this leak the workqueues allocated earlier in the function?
+Similar cleanup appears needed for the passive connection race path.
 
-even though it already has cp available. Should this also be updated to
-use cp->cp_wq for consistency with the other substitutions?
+Note that destroy_workqueue() cannot be called while holding the
+rds_conn_lock spinlock since it may sleep, so the fix would require
+restructuring the cleanup to destroy workqueues before acquiring
+the lock, similar to the trans->conn_alloc() failure path above.
+
+[ ... ]
 
