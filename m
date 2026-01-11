@@ -1,183 +1,102 @@
-Return-Path: <linux-rdma+bounces-15430-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15431-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AD99D0EF87
-	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jan 2026 14:23:04 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3690AD0EFED
+	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jan 2026 14:45:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2A2633008F86
-	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jan 2026 13:23:03 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id DDCC930010EC
+	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jan 2026 13:45:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6C163314B8;
-	Sun, 11 Jan 2026 13:23:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9DBA33C18C;
+	Sun, 11 Jan 2026 13:44:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IpyEDGyL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MFznhNIy"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A33C14F70
-	for <linux-rdma@vger.kernel.org>; Sun, 11 Jan 2026 13:23:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E7AA500947
+	for <linux-rdma@vger.kernel.org>; Sun, 11 Jan 2026 13:44:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768137782; cv=none; b=Lf3DkDKfoLSUrdp87ZCsiPIqKRaclc14XxE66sLyPywaAoOj6KSdTtHPSpZvQZJ0e6RRmHW25AausUae6PDIzwFWpUqJJhNHGR3pEf5lIkNVjU/nMDLcMEctBpfkR7S1+SV7ONq8HduVgU+fxINkNn67KqR6SrIojpjZBcGrWW4=
+	t=1768139099; cv=none; b=BpNQU24JbB/BTaNHH581T4c1kqz0wau0mGmr1IoB8klz7PnOpxrVrfl4b0yj2TnJgDDDtXXSGOtvO/ORnCKDsdZPo0RUDqije2Hcsqa7iPJNJNImXvyAQHwpdGwl7FhCkikixO4qntBX/+e6DvfpVz2HzxJVWrMuwR04lUbtksU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768137782; c=relaxed/simple;
-	bh=j9BQpkRe4mmr5UY3vF5OEp81SlkDXz3Q+XOlsZlHfac=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ccEpwoS4KKNEgaA+IEhdtqYHZq8GWPlERH3VwBfGinRN5rWS3ifBrLpEt8EfS5khMdeyEybjHR264TKjltmc1UQmTRSd0IGTVgJVaosnpjy3iNUW9WM2G24av8uj1S4YwG94/Aaakm3fcFw3Pg9ol5+hsa64Cs8E2ld+E7Yc74U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IpyEDGyL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9752C4CEF7;
-	Sun, 11 Jan 2026 13:23:01 +0000 (UTC)
+	s=arc-20240116; t=1768139099; c=relaxed/simple;
+	bh=N9zo/hXVz74yBtiHWwhvqlehSrJGb81KbUAxmqk2y5M=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=KdQvZakQ9I+j4hT/XLVCznrC5Z1dnqE38KQMq7ICQdnDdxB6nQR190nWEe1sfZUELBI7Vap92Ip6ebaa4fvWJL4IVfyKk/LbvV5U8zuB0SgdLCrpr5buzmIuYaNTxPOcc14P0yiNqab+wB11M42KaO5mtz1L/yD5F/ukVtFOw90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MFznhNIy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC5F2C4CEF7;
+	Sun, 11 Jan 2026 13:44:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768137782;
-	bh=j9BQpkRe4mmr5UY3vF5OEp81SlkDXz3Q+XOlsZlHfac=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IpyEDGyLkF6vHJcAnHsU4N+AV5RWjj1EtCp3ir0Aj90WR2da+cUzoWcMq3nW+UahI
-	 DmiUN4VF6Bsbu/8JYOj7B46URLK6TVPdc75KQyFPJ7vqRE8voQKP8RsFOaL2LLjZ8s
-	 imN/JPLzA0bMoYAS9yH1UKad2u8pW5QWLLR0lBG0kADesyklSeShHKO7H67ERX6SSS
-	 VFKLNHqCF9Sr+hr6w8Q1DwbEfQGl/O/6r6hDipfrtGM9BHbVzEeEqY2bd01ud2DtFZ
-	 wqa4nYPpZmdFBF9kdo7wHfkoU2YlTNGR6Pf6dQ0oqo9H/A5S90V0gYNlmBZi7jEuXu
-	 nbC02qqO/XpTQ==
-Date: Sun, 11 Jan 2026 15:22:55 +0200
+	s=k20201202; t=1768139099;
+	bh=N9zo/hXVz74yBtiHWwhvqlehSrJGb81KbUAxmqk2y5M=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=MFznhNIyESknLyCOKxBjN94DH8jW0GUKDeZge12Be6P8iws0JHi+i99iIheJ3px6A
+	 UVqZngljvp1UxXOScBWrSmvCLRe8GsdKqwd1GEh+9Vd9iNpTpzdXa5nSzPANbmALTk
+	 DU7Ao1kxZVloHRO6LhaR2zTTLAl/Qo0eKYrjjVt+fNeLtzjeUfDL39JNzhQtMs9NYM
+	 XYNikc+CTMyNfX9a7gji8q6VPPFuvJ5JgUUUBRr4DURgSuunmH0JL9krOamIRWOeR3
+	 F0y4ogKvg27ApRzUMNZ8fC/DiZQRELpoJE4aNQ+YVNHK1holXGfiLN51WqqGRx/N2A
+	 eKPdTk8P9H7kg==
 From: Leon Romanovsky <leon@kernel.org>
-To: Siva Reddy Kallam <siva.kallam@broadcom.com>
-Cc: jgg@nvidia.com, linux-rdma@vger.kernel.org, usman.ansari@broadcom.com,
-	Simon Horman <horms@kernel.org>, kernel test robot <lkp@intel.com>,
-	Dan Carpenter <error27@gmail.com>
-Subject: Re: [PATCH] RDMA/bng_re: Unwind bng_re_dev_init properly and remove
- unnecessary rdev check
-Message-ID: <20260111132255.GA14378@unreal>
-References: <20260107091607.104468-1-siva.kallam@broadcom.com>
+To: linux-rdma@vger.kernel.org, Md Haris Iqbal <haris.iqbal@ionos.com>
+Cc: bvanassche@acm.org, jgg@ziepe.ca, jinpu.wang@ionos.com, 
+ grzegorz.prajsner@ionos.com
+In-Reply-To: <20260107161517.56357-1-haris.iqbal@ionos.com>
+References: <20260107161517.56357-1-haris.iqbal@ionos.com>
+Subject: Re: [PATCH v2 00/10] Misc patches for RTRS
+Message-Id: <176813909590.385203.11259029514828478975.b4-ty@kernel.org>
+Date: Sun, 11 Jan 2026 08:44:55 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260107091607.104468-1-siva.kallam@broadcom.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-a6db3
 
-On Wed, Jan 07, 2026 at 09:16:07AM +0000, Siva Reddy Kallam wrote:
-> Fix below smatch warnings:
-> drivers/infiniband/hw/bng_re/bng_dev.c:113
-> bng_re_net_ring_free() warn: variable dereferenced before check 'rdev'
-> (see line 107)
-> drivers/infiniband/hw/bng_re/bng_dev.c:270
-> bng_re_dev_init() warn: missing unwind goto?
 
-Please provide commit message.
-
+On Wed, 07 Jan 2026 17:15:07 +0100, Md Haris Iqbal wrote:
+> Please consider to include following changes to the next merge window.
 > 
-> Fixes: 4f830cd8d7fe ("RDMA/bng_re: Add infrastructure for enabling Firmware channel")
-> Reported-by: Simon Horman <horms@kernel.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <error27@gmail.com>
-> Closes: https://lore.kernel.org/r/202601010413.sWadrQel-lkp@intel.com/
-> Signed-off-by: Siva Reddy Kallam <siva.kallam@broadcom.com>
-> Reviewed-by: Usman Ansari <usman.ansari@broadcom.com>
-> ---
->  drivers/infiniband/hw/bng_re/bng_dev.c | 33 +++++++++++++-------------
->  1 file changed, 16 insertions(+), 17 deletions(-)
+> Changes:
 > 
-> diff --git a/drivers/infiniband/hw/bng_re/bng_dev.c b/drivers/infiniband/hw/bng_re/bng_dev.c
-> index d8f8d7f7075f..e2dd2c8eb6d2 100644
-> --- a/drivers/infiniband/hw/bng_re/bng_dev.c
-> +++ b/drivers/infiniband/hw/bng_re/bng_dev.c
-> @@ -124,9 +124,6 @@ static int bng_re_net_ring_free(struct bng_re_dev *rdev,
->  	struct bnge_fw_msg fw_msg = {};
->  	int rc = -EINVAL;
->  
-> -	if (!rdev)
-
-You have other places with impossible "if (rdev)" check in this path which you should
-delete as well.
-
-> -		return rc;
-> -
->  	if (!aux_dev)
-
-You should remove this check too.
-
->  		return rc;
->  
-> @@ -303,7 +300,7 @@ static int bng_re_dev_init(struct bng_re_dev *rdev)
->  	if (rc) {
->  		ibdev_err(&rdev->ibdev,
->  				"Failed to register with netedev: %#x\n", rc);
-> -		return -EINVAL;
-> +		goto reg_netdev_fail;
->  	}
->  
->  	set_bit(BNG_RE_FLAG_NETDEV_REGISTERED, &rdev->flags);
-> @@ -312,19 +309,16 @@ static int bng_re_dev_init(struct bng_re_dev *rdev)
->  		ibdev_err(&rdev->ibdev,
->  			  "RoCE requires minimum 2 MSI-X vectors, but only %d reserved\n",
->  			  rdev->aux_dev->auxr_info->msix_requested);
-> -		bnge_unregister_dev(rdev->aux_dev);
-> -		clear_bit(BNG_RE_FLAG_NETDEV_REGISTERED, &rdev->flags);
-> -		return -EINVAL;
-> +		rc = -EINVAL;
-> +		goto msix_ctx_fail;
->  	}
->  	ibdev_dbg(&rdev->ibdev, "Got %d MSI-X vectors\n",
->  		  rdev->aux_dev->auxr_info->msix_requested);
->  
->  	rc = bng_re_setup_chip_ctx(rdev);
->  	if (rc) {
-> -		bnge_unregister_dev(rdev->aux_dev);
-> -		clear_bit(BNG_RE_FLAG_NETDEV_REGISTERED, &rdev->flags);
->  		ibdev_err(&rdev->ibdev, "Failed to get chip context\n");
-> -		return -EINVAL;
-> +		goto msix_ctx_fail;
->  	}
->  
->  	bng_re_query_hwrm_version(rdev);
-> @@ -333,16 +327,14 @@ static int bng_re_dev_init(struct bng_re_dev *rdev)
->  	if (rc) {
->  		ibdev_err(&rdev->ibdev,
->  			  "Failed to allocate RCFW Channel: %#x\n", rc);
-> -		goto fail;
-> +		goto alloc_fw_chl_fail;
->  	}
->  
->  	/* Allocate nq record memory */
->  	rdev->nqr = kzalloc(sizeof(*rdev->nqr), GFP_KERNEL);
->  	if (!rdev->nqr) {
-> -		bng_re_destroy_chip_ctx(rdev);
-> -		bnge_unregister_dev(rdev->aux_dev);
-> -		clear_bit(BNG_RE_FLAG_NETDEV_REGISTERED, &rdev->flags);
-> -		return -ENOMEM;
-> +		rc = -ENOMEM;
-> +		goto nq_alloc_fail;
->  	}
->  
->  	rdev->nqr->num_msix = rdev->aux_dev->auxr_info->msix_requested;
-> @@ -411,9 +403,16 @@ static int bng_re_dev_init(struct bng_re_dev *rdev)
->  free_ring:
->  	bng_re_net_ring_free(rdev, rdev->rcfw.creq.ring_id, type);
->  free_rcfw:
-> +	kfree(rdev->nqr);
-> +	rdev->nqr = NULL;
-
-Why do you need to set NULL here?
-
-> +nq_alloc_fail:
->  	bng_re_free_rcfw_channel(&rdev->rcfw);
-> -fail:
-> -	bng_re_dev_uninit(rdev);
-> +alloc_fw_chl_fail:
-> +	bng_re_destroy_chip_ctx(rdev);
-> +msix_ctx_fail:
-> +	bnge_unregister_dev(rdev->aux_dev);
-> +	clear_bit(BNG_RE_FLAG_NETDEV_REGISTERED, &rdev->flags);
-> +reg_netdev_fail:
->  	return rc;
->  }
->  
-> -- 
-> 2.25.1
+> v2:
+> - Addressed comment for patch 02 to print only error description.
+> - Addressed comment for patch 05 to remove additional unused members.
+> - Addressed comment for patch 06 to remove internal ticket reference.
+> - Added patch 10 which corrects the print for process_info_req.
 > 
-> 
+> [...]
+
+Applied, thanks!
+
+[01/10] RDMA/rtrs-srv: fix SG mapping
+        https://git.kernel.org/rdma/rdma/c/01ebdb00045d31
+[02/10] RDMA/rtrs: Add error description to the logs
+        https://git.kernel.org/rdma/rdma/c/342dfca90e9e7e
+[03/10] RDMA/rtrs: Add optional support for IB_MR_TYPE_SG_GAPS
+        https://git.kernel.org/rdma/rdma/c/d97780f47de8a2
+[04/10] RDMA/rtrs: Improve error logging for RDMA cm events
+        https://git.kernel.org/rdma/rdma/c/1c07af708c2264
+[05/10] RDMA/rtrs-clt: Remove unused members in rtrs_clt_io_req
+        https://git.kernel.org/rdma/rdma/c/6101e43a3b19fe
+[06/10] RDMA/rtrs-srv: Add check and closure for possible zombie paths
+        https://git.kernel.org/rdma/rdma/c/dfee29ab9bb51c
+[07/10] RDMA/rtrs-srv: Rate-limit I/O path error logging
+        https://git.kernel.org/rdma/rdma/c/39108b3b746a82
+[08/10] RDMA/rtrs: Extend log message when a port fails
+        https://git.kernel.org/rdma/rdma/c/309ed174a206d4
+[09/10] RDMA/rtrs-clt.c: For conn rejection use actual err number
+        https://git.kernel.org/rdma/rdma/c/5f33a5bf21a46e
+[10/10] RDMA/rtrs-srv: Fix error print in process_info_req()
+        https://git.kernel.org/rdma/rdma/c/8fb792a56b2257
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
+
 
