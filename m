@@ -1,106 +1,153 @@
-Return-Path: <linux-rdma+bounces-15424-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15425-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A4AFD0CCAB
-	for <lists+linux-rdma@lfdr.de>; Sat, 10 Jan 2026 03:02:27 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 840CDD0E972
+	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jan 2026 11:37:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CB5743034379
-	for <lists+linux-rdma@lfdr.de>; Sat, 10 Jan 2026 02:02:13 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7DF8F300D153
+	for <lists+linux-rdma@lfdr.de>; Sun, 11 Jan 2026 10:37:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E01C222A4E9;
-	Sat, 10 Jan 2026 02:02:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ED87334C05;
+	Sun, 11 Jan 2026 10:37:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wd+3VEil"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GJfxDiwS"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B3E612B93;
-	Sat, 10 Jan 2026 02:02:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C11623C50A;
+	Sun, 11 Jan 2026 10:37:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768010531; cv=none; b=KT/PXHkNGjz/uUSaJzmSYttDm8oDuyvXvgAyskrMfH0sp0AEkYsMV4zl7e6XPZ74e3HbaYgeSX0WB86sqLjlvjt1itsURegoa3MzsYpvB+adO5z/Sp5dUUh+Pk8/Xy62CX8sFHDA8lZ2sjj1oUKWccAZmfZhjnipGY0+w+gygFo=
+	t=1768127840; cv=none; b=EIaLDSzEYtm1uc0Y0jf/jYdHmgov8UVDPeqdzUQZ1eYOj0ugzt9lzbEN1AxJAsA4d/TzY4v9GVCRh+5dnjeR7XRj54fBpWH/OCZpTH/2Y5mqj54Afzecwq/JRClf6nMRjuSdIVW66tdbw/lgildUj1Cd5RYmfViAQr9Ot6THTcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768010531; c=relaxed/simple;
-	bh=1MOiVEexVGrwFEVsAZA/tszL4KabaceGog91OcJBTnE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rFamiTJN91fykmAvfsv4bOhmHCnXlSfQ3kmt3tGeyn1sbucYgtTTK9r9Ve0g6tIth8jiUAMgVS1538GR3SaBzlp6aryAVjVAG/6Yh76/XfJLJ/oDnDZ1INWXy/glYmU3NZNxRDUyHQ06dPOm+WcnmaIaJ4t7VxeaOMpRGAPSGxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wd+3VEil; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 473D7C4CEF1;
-	Sat, 10 Jan 2026 02:02:10 +0000 (UTC)
+	s=arc-20240116; t=1768127840; c=relaxed/simple;
+	bh=XZA4z75ZOHA3aBBuy9XF0n0lJ74IuJtROdjB9F6LTwg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KS8lQ61jmYzeWuycm3QNv161eCsSmr30pjyfZuGY2uKWYMeE8qWjUbBr7fl9SsdMGRQTA2pmDAqjFmST9jVv0C7pRlxKtXdbTnsPc4yLEADponHelLf9PBJCYMzDJC83UVOTv5EowMC4W6t5XEJT1Vs+hql0qPB0l6NfB3S0aVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GJfxDiwS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E15DC4CEF7;
+	Sun, 11 Jan 2026 10:37:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768010531;
-	bh=1MOiVEexVGrwFEVsAZA/tszL4KabaceGog91OcJBTnE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Wd+3VEilhx6c25iOV43CWBhiMYs6aEI1zKqAFF8/Y3YhE4igyDQLEViKqADeZF5HM
-	 94/Eh2dUrycT5muvCfr5C33/S33uo7tjQ90p0UHqYQUxHceu9qhEjyl7+/H5O1Pk55
-	 o6Ogq6ZBy7D2YdC54DKaditdUdTxkZntMSY6ZNMi0651hlKp4NPOU9/cTaZbt47tcp
-	 hHbHzEeAm8lUphQO1Yf6zeKrW5O+6JWaBkp3GMwHGDR/cgJqc619zmIDDWIyMd/dMa
-	 pUGI15Q/+z9wnX09byNq950AuIT6CQVo79FWt9lJXLwsO6r9vqJS2oFQfUCzH0JpH0
-	 R9XRWxDjYYJNA==
-Date: Fri, 9 Jan 2026 18:02:09 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
- decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
- edumazet@google.com, pabeni@redhat.com, longli@microsoft.com,
- kotaranov@microsoft.com, horms@kernel.org,
- shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
- ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
- linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
- dipayanroy@microsoft.com
-Subject: Re: [PATCH net-next, v7] net: mana: Implement ndo_tx_timeout and
- serialize queue resets per port.
-Message-ID: <20260109180209.023c50cf@kernel.org>
-In-Reply-To: <20260106230438.GA13125@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20260106230438.GA13125@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+	s=k20201202; t=1768127839;
+	bh=XZA4z75ZOHA3aBBuy9XF0n0lJ74IuJtROdjB9F6LTwg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=GJfxDiwSgzusKIQpJZPvotpXqneRfIW4Aw0aoP73c8C0uMUG2kZo2uFwS4W+jq8Z/
+	 ScyO11QB8QX+9Wp0ZPkxN5mbCMu8rBJk+2uz0yb2ZME/2iwTVCKsF6124sJPF8Y58m
+	 nCjdl0+oRyz1N224ttGKmOFL8AElqtrQei4VQRO8+UEBiVJxjxr9rLvjYvfGd243co
+	 pAQ96WtNcurKnh+UHt2hfeCfpNOmGe6+mOI9/4GVuhENuJItjyZHEsqeJTvzBNm9kh
+	 Z4bM3XW0wzDb6a7RZldoMydvWeT6tErDqQScE1ckUiHKNtOMHLhvXEJ2yjzPH32R97
+	 102Te8QiEqXTg==
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	=?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+	Alex Williamson <alex@shazbot.org>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>
+Cc: linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linaro-mm-sig@lists.linaro.org,
+	kvm@vger.kernel.org,
+	iommu@lists.linux.dev
+Subject: [PATCH 0/4] dma-buf: add revoke mechanism to invalidate shared buffers
+Date: Sun, 11 Jan 2026 12:37:07 +0200
+Message-ID: <20260111-dmabuf-revoke-v1-0-fb4bcc8c259b@nvidia.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Change-ID: 20251221-dmabuf-revoke-b90ef16e4236
+X-Mailer: b4 0.15-dev-a6db3
+Content-Transfer-Encoding: 8bit
 
-On Tue, 6 Jan 2026 15:04:38 -0800 Dipayaan Roy wrote:
-> +static void mana_per_port_queue_reset_work_handler(struct work_struct *work)
-> +{
-> +	struct mana_queue_reset_work *reset_queue_work =
-> +			container_of(work, struct mana_queue_reset_work, work);
-> +
-> +	struct mana_port_context *apc = container_of(reset_queue_work,
-> +						     struct mana_port_context,
-> +						     queue_reset_work);
+This series implements a dma-buf “revoke” mechanism: to allow a dma-buf
+exporter to explicitly invalidate (“kill”) a shared buffer after it has
+been distributed to importers, so that further CPU and device access is
+prevented and importers reliably observe failure.
 
-> +struct mana_queue_reset_work {
-> +	/* Work structure */
+Today, dma-buf effectively provides “if you have the fd, you can keep using
+the memory indefinitely.” That assumption breaks down when an exporter must
+reclaim, reset, evict, or otherwise retire backing memory after it has been
+shared. Concrete cases include GPU reset and recovery where old allocations
+become unsafe to access, memory eviction/overcommit where backing storage
+must be withdrawn, and security or isolation situations where continued access
+must be prevented. While drivers can sometimes approximate this with
+exporter-specific fencing and policy, there is no core dma-buf state transition
+that communicates “this buffer is no longer valid; fail access” across all
+access paths.
 
-Not sure what value this comment adds. Looks like something AI
-generator would add.
+The change in this series is to introduce a core “revoked” state on the dma-buf
+object and a corresponding exporter-triggered revoke operation. Once a dma-buf
+is revoked, new access paths are blocked so that attempts to DMA-map, vmap, or
+mmap the buffer fail in a consistent way.
 
-> +	struct work_struct work;
-> +};
-> +
->  struct mana_port_context {
->  	struct mana_context *ac;
->  	struct net_device *ndev;
-> +	struct mana_queue_reset_work queue_reset_work;
+In addition, the series aims to invalidate existing access as much as the kernel
+allows: device mappings are torn down where possible so devices and IOMMUs cannot
+continue DMA.
 
-Why did you wrap the work in another struct with just one member?
-It forces you to work thru two layers of container of.
+The semantics are intentionally simple: revoke is a one-way, permanent transition
+for the lifetime of that dma-buf instance.
 
-Either way, container_of supports nested structs so I think something
-like:
+From a compatibility perspective, users that never invoke revoke are unaffected,
+and exporters that adopt it gain a core-supported enforcement mechanism rather
+than relying on ad hoc driver behavior. The intent is to keep the interface
+minimal and avoid imposing policy; the series provides the mechanism to terminate
+access, with policy remaining in the exporter and higher-level components.
 
-	struct mana_port_context *apc = container_of(work,
-						     struct mana_port_context,
-						     queue_reset_work.work);
+BTW, see this megathread [1] for additional context.  
+Ironically, it was posted exactly one year ago.
 
-should work (untested). But really, better to just delete the pointless
-nesting.
--- 
-pw-bot: cr
+[1] https://lore.kernel.org/all/20250107142719.179636-2-yilun.xu@linux.intel.com/
+
+Thanks
+
+Cc: linux-rdma@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-media@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: linaro-mm-sig@lists.linaro.org
+Cc: kvm@vger.kernel.org
+Cc: iommu@lists.linux.dev
+To: Jason Gunthorpe <jgg@ziepe.ca>
+To: Leon Romanovsky <leon@kernel.org>
+To: Sumit Semwal <sumit.semwal@linaro.org>
+To: Christian König <christian.koenig@amd.com>
+To: Alex Williamson <alex@shazbot.org>
+To: Kevin Tian <kevin.tian@intel.com>
+To: Joerg Roedel <joro@8bytes.org>
+To: Will Deacon <will@kernel.org>
+To: Robin Murphy <robin.murphy@arm.com>
+
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+Leon Romanovsky (4):
+      dma-buf: Introduce revoke semantics
+      vfio: Use dma-buf revoke semantics
+      iommufd: Require DMABUF revoke semantics
+      iommufd/selftest: Reuse dma-buf revoke semantics
+
+ drivers/dma-buf/dma-buf.c          | 36 ++++++++++++++++++++++++++++++++----
+ drivers/iommu/iommufd/pages.c      |  2 +-
+ drivers/iommu/iommufd/selftest.c   | 12 ++++--------
+ drivers/vfio/pci/vfio_pci_dmabuf.c | 27 ++++++---------------------
+ include/linux/dma-buf.h            | 31 +++++++++++++++++++++++++++++++
+ 5 files changed, 74 insertions(+), 34 deletions(-)
+---
+base-commit: 9ace4753a5202b02191d54e9fdf7f9e3d02b85eb
+change-id: 20251221-dmabuf-revoke-b90ef16e4236
+
+Best regards,
+--  
+Leon Romanovsky <leonro@nvidia.com>
+
 
