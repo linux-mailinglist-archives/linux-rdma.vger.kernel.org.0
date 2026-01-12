@@ -1,271 +1,320 @@
-Return-Path: <linux-rdma+bounces-15436-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15437-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF262D104F7
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 03:00:35 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3527AD106AD
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 04:09:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id E304630146D3
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 02:00:34 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 3338B301EA0F
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 03:09:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 753C42DF134;
-	Mon, 12 Jan 2026 02:00:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8941306B25;
+	Mon, 12 Jan 2026 03:09:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qNEGxzJl"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HHl6Quom"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-yx1-f73.google.com (mail-yx1-f73.google.com [74.125.224.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1A902E03EC
-	for <linux-rdma@vger.kernel.org>; Mon, 12 Jan 2026 02:00:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFC01302767
+	for <linux-rdma@vger.kernel.org>; Mon, 12 Jan 2026 03:09:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768183233; cv=none; b=GKuiG4cx4GzG+hZKI5w7b+R+tkitZ/hEnv8VvQv/2LBMG9/WLHsmfMmxtZVw16TYcj0Sb6kNmHFsm38NlfZAlfLIOPgPOLqLzLnJUyqx+N+RyGU8JgVAq48FNR/srW2MTNn2igsycloc4U4ZB5bEA5xclaDTvBvMMZ+1SqQe6HY=
+	t=1768187391; cv=none; b=inAjLvoG/apmhU7OvUD7mxh6vEUtdW/VmFsNWRW3Lm3lGQbP5oa6nAPjedkoGRGWAT8vdM88QP8lWOO2gwKndstHv3OUuROmM8VkRwi26JIH/AU5ph/HUQkpgwXeYcTwJoxk7K9y3MkEdqSdugWGnoQEadkSxYEh2aro7zpyafA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768183233; c=relaxed/simple;
-	bh=lecCHqlcRShoBzPqrx8/4AX2hsmrmzZVdC2SCLsgQwE=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=LW2/tOXEtUurzkQ5AXJ7/lOD+Z+KkubmOFaEjeD3f/YVs0Y+UE+HAErT/barAN9N3R+vc1PmrbPo1yanbvZgFAQyIcOu78iw3JQCF9vWDSryEfCb/UbX/OVG/qVmYrGoEVyB1JGVQeC5JG16Hsu46CR5lMmJXBTrNHkOyMROkc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qNEGxzJl; arc=none smtp.client-ip=74.125.224.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jmoroni.bounces.google.com
-Received: by mail-yx1-f73.google.com with SMTP id 956f58d0204a3-6469251780aso11447022d50.1
-        for <linux-rdma@vger.kernel.org>; Sun, 11 Jan 2026 18:00:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1768183228; x=1768788028; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=5wVMnjkzX/WxnE38Z7SA1lZVCp33kPrXrQtrbA8REMo=;
-        b=qNEGxzJlVdnXjp+2nxjo6rRb5fH2+o/sTSInGqYb/oRGqaqEgNcA4L6HlJ8NVT599Y
-         JuQtBG408Y8Psxs1vpLKwRVlO6BspBxnT+1a4fS+nai4cpXk/OQXWUoxJ2aMmvbZj95M
-         e/2/0nQOvZpD73Ff9TrJwYk3RdFNFEZ9OZlOzc8Prcb87NNhM0QjEMuV8RN+8ZFGOFU0
-         K6siuTWHxptC6OgABl/Av1usXG5AAxohi6Y7qwYe4aNRl7aIwQWAy7Gy9+J7LHAYK/TG
-         D9W/lURcwUDnEfFZLhIaWaiSAXe/DOHQWUd+qy9WB8AoLOXAg2iwdM7SfUbCe+crpTtS
-         5Svg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768183228; x=1768788028;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5wVMnjkzX/WxnE38Z7SA1lZVCp33kPrXrQtrbA8REMo=;
-        b=qlq1rkRj6q50d63zXyY99x4k1nFDIzrLySGzqNC/zazDvnInQK/9agWLb6WguLnxGh
-         H0Rys5/RXM4B7oVMDGeev2GcHsgiqSf1TCOfPr5YVK5m8CuiiXwGun+PU1AfbXG2I9ny
-         fMf8P9MdttvQOL0XFViZuLfoVb88mn6d04ZoFsEBXZoZcWHlwyVvQ1D2S4VUzTDuOJHu
-         gr6KFaDvilQgtM5jpm+f7MSJ/Oxc8L4Y6y+wg1Bg8ndnWqKp2iNJ0r9F4Ibvtj5kWZOO
-         dZ0cq8I75lP0dlTO2HOJOeVrvFfmK8QdTzV+9+rFVt0dKvHgF+50RoJ0NoL6950M5EJp
-         h2uw==
-X-Gm-Message-State: AOJu0YwfPvAmIl7IIs3GWv2m1aml5i4U4HRdJOaFBBX2sulE1dSccH67
-	X2wMQMpDacdVpUkfLeqJ8OVa8a5pzlAyKvsDwsoRgnxNtWi+L/OtpLW4TsyeTqNoD2DjxHiTpcg
-	yJBdw1Pqq4Q==
-X-Google-Smtp-Source: AGHT+IG3+FAlJtklKzCdWE+cM3vPyAgP9zESYTNc5Lw43xaA/M65sszousTpL8fIcqFudX5SSv/EZKixQ1zh
-X-Received: from yxrr22.prod.google.com ([2002:a05:690e:2556:b0:644:48ee:338])
- (user=jmoroni job=prod-delivery.src-stubby-dispatcher) by 2002:a05:690e:b87:b0:641:f5bc:6952
- with SMTP id 956f58d0204a3-6471677924fmr13662684d50.35.1768183228037; Sun, 11
- Jan 2026 18:00:28 -0800 (PST)
-Date: Mon, 12 Jan 2026 02:00:06 +0000
+	s=arc-20240116; t=1768187391; c=relaxed/simple;
+	bh=GOft0pzEdGQbiWbpgSZ1qFdTBe2rBV2K1yt/G9R4C2k=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=BeagLGLq3cSyNZcRAHStwfka0UmbDrI/SVMyPb7TKEjIPOQ1uHQWq75/wWzUAgMJoK+l772Hru0IlgUHCu7WFQeJ0sx0GFjetBOSg5trH42tG4igA9gxVj6WuHofEo9Sf7OLVq5+5gyqAXRJirjxEwTSxHJWLTiOR3M7hohvuT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HHl6Quom; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1768187390; x=1799723390;
+  h=date:from:to:cc:subject:message-id;
+  bh=GOft0pzEdGQbiWbpgSZ1qFdTBe2rBV2K1yt/G9R4C2k=;
+  b=HHl6QuomWIx2f3VepRfsa3k4KOQYGZ5KwsmmtExomHi67xMD7NDFHFe6
+   5D24yl/xk5kAI9Ze/hTDGEG9qYwM+2EVDQ5iZWJDIGFkD9DJpI/vjTJtI
+   RkT5d01t1ifAVnROZYYAvROfAg8Sa4kd3A5IDnNRDl3EYP+O7uyGiqTNU
+   2AiFCItB1OElJvaXVaq0LZ0bKl+pPEIZ1DV6+27nzmjKJHmfvzWFz4c8Q
+   4W8U7gnfcjs1lLFCLqvWImKs/5tJxUkUNfHSDpJQYTYnP8k7D9x0RmsVA
+   Oqa2gcJDzfDdAlcZihveRVM77ty48N4MTrUQkY/M65LJsdohDPHkF8khh
+   Q==;
+X-CSE-ConnectionGUID: YjsQaTyaQHmANfzxRCUofA==
+X-CSE-MsgGUID: T5sf9vvfQXOLOcaaRFhdcw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11668"; a="80100555"
+X-IronPort-AV: E=Sophos;i="6.21,219,1763452800"; 
+   d="scan'208";a="80100555"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2026 19:09:49 -0800
+X-CSE-ConnectionGUID: VoG5Kqa0S9izn2Q4R7knsg==
+X-CSE-MsgGUID: ptgs4ON3SXGYZwym3vDFrw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,219,1763452800"; 
+   d="scan'208";a="208816521"
+Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
+  by fmviesa004.fm.intel.com with ESMTP; 11 Jan 2026 19:09:47 -0800
+Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vf8JM-00000000CvI-1wZT;
+	Mon, 12 Jan 2026 03:09:44 +0000
+Date: Mon, 12 Jan 2026 11:09:00 +0800
+From: kernel test robot <lkp@intel.com>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Doug Ledford <dledford@redhat.com>,
+ Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
+ 95b2717aa057e0637c2f36b5369a625a62741133
+Message-ID: <202601121151.a20Phkds-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.52.0.457.g6b5491de43-goog
-Message-ID: <20260112020006.1352438-1-jmoroni@google.com>
-Subject: [PATCH] RDMA/iwcm: Fix workqueue list corruption by removing work_list
-From: Jacob Moroni <jmoroni@google.com>
-To: jgg@ziepe.ca, leon@kernel.org, bvanassche@acm.org
-Cc: linux-rdma@vger.kernel.org, Jacob Moroni <jmoroni@google.com>
-Content-Type: text/plain; charset="UTF-8"
 
-The commit e1168f0 ("RDMA/iwcm: Simplify cm_event_handler()")
-changed the work submission logic to unconditionally call
-queue_work() with the expectation that queue_work() would
-have no effect if work was already pending. The problem is
-that a free list of struct iwcm_work is used (for which
-struct work_struct is embedded), so each call to queue_work()
-is basically unique and therefore does indeed queue the work.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
+branch HEAD: 95b2717aa057e0637c2f36b5369a625a62741133  RDMA/rtrs-srv: Fix error print in process_info_req()
 
-This causes a problem in the work handler which walks the work_list
-until it's empty to process entries. This means that a single
-run of the work handler could process item N+1 and release it
-back to the free list while the actual workqueue entry is still
-queued. It could then get reused (INIT_WORK...) and lead to
-list corruption in the workqueue logic.
+elapsed time: 773m
 
-Fix this by just removing the work_list. The workqueue already
-does this for us.
+configs tested: 228
+configs skipped: 2
 
-This fixes the following error that was observed when stress
-testing with ucmatose on an Intel E830 in iWARP mode:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-[  151.465780] list_del corruption. next->prev should be ffff9f0915c69c08, but was ffff9f0a1116be08. (next=ffff9f0a15b11c08)
-[  151.466639] ------------[ cut here ]------------
-[  151.466986] kernel BUG at lib/list_debug.c:67!
-[  151.467349] Oops: invalid opcode: 0000 [#1] SMP NOPTI
-[  151.467753] CPU: 14 UID: 0 PID: 2306 Comm: kworker/u64:18 Not tainted 6.19.0-rc4+ #1 PREEMPT(voluntary)
-[  151.468466] Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-[  151.469192] Workqueue:  0x0 (iw_cm_wq)
-[  151.469478] RIP: 0010:__list_del_entry_valid_or_report+0xf0/0x100
-[  151.469942] Code: c7 58 5f 4c b2 e8 10 50 aa ff 0f 0b 48 89 ef e8 36 57 cb ff 48 8b 55 08 48 89 e9 48 89 de 48 c7 c7 a8 5f 4c b2 e8 f0 4f aa ff <0f> 0b 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 90 90 90 90 90 90
-[  151.471323] RSP: 0000:ffffb15644e7bd68 EFLAGS: 00010046
-[  151.471712] RAX: 000000000000006d RBX: ffff9f0915c69c08 RCX: 0000000000000027
-[  151.472243] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff9f0a37d9c600
-[  151.472768] RBP: ffff9f0a15b11c08 R08: 0000000000000000 R09: c0000000ffff7fff
-[  151.473294] R10: 0000000000000001 R11: ffffb15644e7bba8 R12: ffff9f092339ee68
-[  151.473817] R13: ffff9f0900059c28 R14: ffff9f092339ee78 R15: 0000000000000000
-[  151.474344] FS:  0000000000000000(0000) GS:ffff9f0a847b5000(0000) knlGS:0000000000000000
-[  151.474934] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  151.475362] CR2: 0000559e233a9088 CR3: 000000020296b004 CR4: 0000000000770ef0
-[  151.475895] PKRU: 55555554
-[  151.476118] Call Trace:
-[  151.476331]  <TASK>
-[  151.476497]  move_linked_works+0x49/0xa0
-[  151.476792]  __pwq_activate_work.isra.46+0x2f/0xa0
-[  151.477151]  pwq_dec_nr_in_flight+0x1e0/0x2f0
-[  151.477479]  process_scheduled_works+0x1c8/0x410
-[  151.477823]  worker_thread+0x125/0x260
-[  151.478108]  ? __pfx_worker_thread+0x10/0x10
-[  151.478430]  kthread+0xfe/0x240
-[  151.478671]  ? __pfx_kthread+0x10/0x10
-[  151.478955]  ? __pfx_kthread+0x10/0x10
-[  151.479240]  ret_from_fork+0x208/0x270
-[  151.479523]  ? __pfx_kthread+0x10/0x10
-[  151.479806]  ret_from_fork_asm+0x1a/0x30
-[  151.480103]  </TASK>
+tested configs:
+alpha                             allnoconfig    gcc-15.2.0
+alpha                            allyesconfig    gcc-15.2.0
+alpha                               defconfig    gcc-15.2.0
+arc                              allmodconfig    clang-16
+arc                               allnoconfig    gcc-15.2.0
+arc                              allyesconfig    clang-22
+arc                                 defconfig    gcc-15.2.0
+arc                   randconfig-001-20260112    gcc-8.5.0
+arc                   randconfig-002-20260112    gcc-8.5.0
+arm                               allnoconfig    gcc-15.2.0
+arm                              allyesconfig    clang-16
+arm                                 defconfig    gcc-15.2.0
+arm                      footbridge_defconfig    clang-22
+arm                           h3600_defconfig    gcc-15.2.0
+arm                      integrator_defconfig    gcc-15.2.0
+arm                         lpc18xx_defconfig    gcc-15.2.0
+arm                        multi_v5_defconfig    gcc-15.2.0
+arm                       omap2plus_defconfig    gcc-15.2.0
+arm                   randconfig-001-20260112    gcc-8.5.0
+arm                   randconfig-002-20260112    gcc-8.5.0
+arm                   randconfig-003-20260112    gcc-8.5.0
+arm                   randconfig-004-20260112    gcc-8.5.0
+arm                         wpcm450_defconfig    clang-22
+arm                         wpcm450_defconfig    gcc-15.2.0
+arm64                            allmodconfig    clang-22
+arm64                             allnoconfig    gcc-15.2.0
+arm64                               defconfig    gcc-15.2.0
+arm64                 randconfig-001-20260112    gcc-8.5.0
+arm64                 randconfig-002-20260112    gcc-8.5.0
+arm64                 randconfig-003-20260112    gcc-8.5.0
+arm64                 randconfig-004-20260112    gcc-8.5.0
+csky                             allmodconfig    gcc-15.2.0
+csky                              allnoconfig    gcc-15.2.0
+csky                                defconfig    gcc-15.2.0
+csky                  randconfig-001-20260112    gcc-8.5.0
+csky                  randconfig-002-20260112    gcc-8.5.0
+hexagon                          allmodconfig    gcc-15.2.0
+hexagon                           allnoconfig    gcc-15.2.0
+hexagon                             defconfig    gcc-15.2.0
+hexagon               randconfig-001-20260112    clang-22
+hexagon               randconfig-002-20260112    clang-22
+i386                             allmodconfig    clang-20
+i386                              allnoconfig    gcc-15.2.0
+i386                             allyesconfig    clang-20
+i386        buildonly-randconfig-001-20260111    clang-20
+i386        buildonly-randconfig-001-20260112    gcc-14
+i386        buildonly-randconfig-002-20260111    clang-20
+i386        buildonly-randconfig-002-20260112    gcc-14
+i386        buildonly-randconfig-003-20260111    clang-20
+i386        buildonly-randconfig-003-20260112    gcc-14
+i386        buildonly-randconfig-004-20260111    clang-20
+i386        buildonly-randconfig-004-20260112    gcc-14
+i386        buildonly-randconfig-005-20260111    clang-20
+i386        buildonly-randconfig-005-20260112    gcc-14
+i386        buildonly-randconfig-006-20260111    clang-20
+i386        buildonly-randconfig-006-20260112    gcc-14
+i386                                defconfig    gcc-15.2.0
+i386                  randconfig-001-20260112    clang-20
+i386                  randconfig-002-20260112    clang-20
+i386                  randconfig-003-20260112    clang-20
+i386                  randconfig-004-20260112    clang-20
+i386                  randconfig-005-20260112    clang-20
+i386                  randconfig-006-20260112    clang-20
+i386                  randconfig-007-20260112    clang-20
+i386                  randconfig-011-20260112    clang-20
+i386                  randconfig-012-20260112    clang-20
+i386                  randconfig-013-20260112    clang-20
+i386                  randconfig-014-20260112    clang-20
+i386                  randconfig-015-20260112    clang-20
+i386                  randconfig-016-20260112    clang-20
+i386                  randconfig-017-20260112    clang-20
+loongarch                        allmodconfig    clang-22
+loongarch                         allnoconfig    gcc-15.2.0
+loongarch                           defconfig    clang-19
+loongarch             randconfig-001-20260112    clang-22
+loongarch             randconfig-002-20260112    clang-22
+m68k                             allmodconfig    gcc-15.2.0
+m68k                              allnoconfig    gcc-15.2.0
+m68k                             allyesconfig    clang-16
+m68k                          atari_defconfig    gcc-15.2.0
+m68k                                defconfig    clang-19
+microblaze                        allnoconfig    gcc-15.2.0
+microblaze                       allyesconfig    gcc-15.2.0
+microblaze                          defconfig    clang-19
+mips                             allmodconfig    gcc-15.2.0
+mips                              allnoconfig    gcc-15.2.0
+mips                             allyesconfig    gcc-15.2.0
+mips                      bmips_stb_defconfig    clang-22
+mips                      bmips_stb_defconfig    gcc-15.2.0
+mips                           ci20_defconfig    clang-22
+mips                     cu1830-neo_defconfig    clang-22
+mips                           ip22_defconfig    gcc-15.2.0
+mips                     loongson2k_defconfig    gcc-15.2.0
+mips                malta_qemu_32r6_defconfig    gcc-15.2.0
+mips                      pic32mzda_defconfig    gcc-15.2.0
+mips                       rbtx49xx_defconfig    gcc-15.2.0
+mips                   sb1250_swarm_defconfig    gcc-15.2.0
+mips                        vocore2_defconfig    clang-22
+nios2                            allmodconfig    clang-22
+nios2                             allnoconfig    clang-22
+nios2                               defconfig    clang-19
+nios2                 randconfig-001-20260112    clang-22
+nios2                 randconfig-002-20260112    clang-22
+openrisc                         allmodconfig    clang-22
+openrisc                          allnoconfig    clang-22
+openrisc                            defconfig    gcc-15.2.0
+parisc                           allmodconfig    gcc-15.2.0
+parisc                            allnoconfig    clang-22
+parisc                           allyesconfig    clang-19
+parisc                              defconfig    gcc-15.2.0
+parisc                generic-32bit_defconfig    clang-22
+parisc                randconfig-001-20260112    gcc-10.5.0
+parisc                randconfig-002-20260112    gcc-10.5.0
+parisc64                            defconfig    clang-19
+powerpc                          allmodconfig    gcc-15.2.0
+powerpc                           allnoconfig    clang-22
+powerpc                      arches_defconfig    gcc-15.2.0
+powerpc                        cell_defconfig    gcc-15.2.0
+powerpc                       eiger_defconfig    gcc-15.2.0
+powerpc                      ep88xc_defconfig    gcc-15.2.0
+powerpc                        fsp2_defconfig    gcc-15.2.0
+powerpc                     ksi8560_defconfig    gcc-15.2.0
+powerpc                 mpc8315_rdb_defconfig    gcc-15.2.0
+powerpc                 mpc834x_itx_defconfig    gcc-15.2.0
+powerpc                     mpc83xx_defconfig    gcc-15.2.0
+powerpc                    mvme5100_defconfig    gcc-15.2.0
+powerpc               randconfig-001-20260112    gcc-10.5.0
+powerpc               randconfig-002-20260112    gcc-10.5.0
+powerpc                     tqm8560_defconfig    clang-22
+powerpc                     tqm8560_defconfig    gcc-15.2.0
+powerpc64                        alldefconfig    gcc-15.2.0
+powerpc64             randconfig-001-20260112    gcc-10.5.0
+powerpc64             randconfig-002-20260112    gcc-10.5.0
+riscv                            allmodconfig    clang-22
+riscv                             allnoconfig    clang-22
+riscv                            allyesconfig    clang-16
+riscv                               defconfig    gcc-15.2.0
+riscv                 randconfig-001-20260111    gcc-11.5.0
+riscv                 randconfig-001-20260112    gcc-15.2.0
+riscv                 randconfig-002-20260111    gcc-11.5.0
+riscv                 randconfig-002-20260112    gcc-15.2.0
+s390                             allmodconfig    clang-19
+s390                              allnoconfig    clang-22
+s390                             allyesconfig    gcc-15.2.0
+s390                                defconfig    gcc-15.2.0
+s390                  randconfig-001-20260111    gcc-11.5.0
+s390                  randconfig-001-20260112    gcc-15.2.0
+s390                  randconfig-002-20260111    gcc-11.5.0
+s390                  randconfig-002-20260112    gcc-15.2.0
+sh                               allmodconfig    gcc-15.2.0
+sh                                allnoconfig    clang-22
+sh                               allyesconfig    clang-19
+sh                         ap325rxa_defconfig    gcc-15.2.0
+sh                                  defconfig    gcc-14
+sh                        dreamcast_defconfig    gcc-15.2.0
+sh                 kfr2r09-romimage_defconfig    gcc-15.2.0
+sh                    randconfig-001-20260111    gcc-11.5.0
+sh                    randconfig-001-20260112    gcc-15.2.0
+sh                    randconfig-002-20260111    gcc-11.5.0
+sh                    randconfig-002-20260112    gcc-15.2.0
+sh                      rts7751r2d1_defconfig    gcc-15.2.0
+sh                           se7206_defconfig    gcc-15.2.0
+sh                        sh7785lcr_defconfig    gcc-15.2.0
+sparc                             allnoconfig    clang-22
+sparc                               defconfig    gcc-15.2.0
+sparc                 randconfig-001-20260112    clang-20
+sparc                 randconfig-002-20260112    clang-20
+sparc64                          allmodconfig    clang-22
+sparc64                             defconfig    gcc-14
+sparc64               randconfig-001-20260112    clang-20
+sparc64               randconfig-002-20260112    clang-20
+um                               allmodconfig    clang-19
+um                                allnoconfig    clang-22
+um                               allyesconfig    gcc-15.2.0
+um                                  defconfig    gcc-14
+um                             i386_defconfig    gcc-14
+um                    randconfig-001-20260112    clang-20
+um                    randconfig-002-20260112    clang-20
+um                           x86_64_defconfig    gcc-14
+x86_64                           allmodconfig    clang-20
+x86_64                            allnoconfig    clang-22
+x86_64                           allyesconfig    clang-20
+x86_64      buildonly-randconfig-001-20260111    clang-20
+x86_64      buildonly-randconfig-001-20260112    gcc-14
+x86_64      buildonly-randconfig-002-20260111    clang-20
+x86_64      buildonly-randconfig-002-20260112    gcc-14
+x86_64      buildonly-randconfig-003-20260111    clang-20
+x86_64      buildonly-randconfig-003-20260112    gcc-14
+x86_64      buildonly-randconfig-004-20260111    clang-20
+x86_64      buildonly-randconfig-004-20260112    gcc-14
+x86_64      buildonly-randconfig-005-20260111    clang-20
+x86_64      buildonly-randconfig-005-20260112    gcc-14
+x86_64      buildonly-randconfig-006-20260111    clang-20
+x86_64      buildonly-randconfig-006-20260112    gcc-14
+x86_64                              defconfig    gcc-14
+x86_64                                  kexec    clang-20
+x86_64                randconfig-001-20260112    gcc-13
+x86_64                randconfig-002-20260112    gcc-13
+x86_64                randconfig-003-20260112    gcc-13
+x86_64                randconfig-004-20260112    gcc-13
+x86_64                randconfig-005-20260112    gcc-13
+x86_64                randconfig-006-20260112    gcc-13
+x86_64                randconfig-011-20260112    clang-20
+x86_64                randconfig-012-20260112    clang-20
+x86_64                randconfig-013-20260112    clang-20
+x86_64                randconfig-014-20260112    clang-20
+x86_64                randconfig-015-20260112    clang-20
+x86_64                randconfig-016-20260112    clang-20
+x86_64                randconfig-071-20260112    gcc-14
+x86_64                randconfig-072-20260112    gcc-14
+x86_64                randconfig-073-20260112    gcc-14
+x86_64                randconfig-074-20260112    gcc-14
+x86_64                randconfig-075-20260112    clang-20
+x86_64                randconfig-075-20260112    gcc-14
+x86_64                randconfig-076-20260112    clang-20
+x86_64                randconfig-076-20260112    gcc-14
+x86_64                               rhel-9.4    clang-20
+x86_64                           rhel-9.4-bpf    gcc-14
+x86_64                          rhel-9.4-func    clang-20
+x86_64                    rhel-9.4-kselftests    clang-20
+x86_64                         rhel-9.4-kunit    gcc-14
+x86_64                           rhel-9.4-ltp    gcc-14
+x86_64                          rhel-9.4-rust    clang-20
+xtensa                            allnoconfig    clang-22
+xtensa                           allyesconfig    clang-22
+xtensa                randconfig-001-20260112    clang-20
+xtensa                randconfig-002-20260112    clang-20
+xtensa                         virt_defconfig    gcc-15.2.0
 
-Fixes: e1168f09b331 ("RDMA/iwcm: Simplify cm_event_handler()")
-Signed-off-by: Jacob Moroni <jmoroni@google.com>
----
- drivers/infiniband/core/iwcm.c | 56 +++++++++++++---------------------
- drivers/infiniband/core/iwcm.h |  1 -
- 2 files changed, 21 insertions(+), 36 deletions(-)
-
-diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
-index 62410578d..eb942ab9c 100644
---- a/drivers/infiniband/core/iwcm.c
-+++ b/drivers/infiniband/core/iwcm.c
-@@ -95,7 +95,6 @@ static struct workqueue_struct *iwcm_wq;
- struct iwcm_work {
- 	struct work_struct work;
- 	struct iwcm_id_private *cm_id;
--	struct list_head list;
- 	struct iw_cm_event event;
- 	struct list_head free_list;
- };
-@@ -178,7 +177,6 @@ static int alloc_work_entries(struct iwcm_id_private *cm_id_priv, int count)
- 			return -ENOMEM;
- 		}
- 		work->cm_id = cm_id_priv;
--		INIT_LIST_HEAD(&work->list);
- 		put_work(work);
- 	}
- 	return 0;
-@@ -213,7 +211,6 @@ static void free_cm_id(struct iwcm_id_private *cm_id_priv)
- static bool iwcm_deref_id(struct iwcm_id_private *cm_id_priv)
- {
- 	if (refcount_dec_and_test(&cm_id_priv->refcount)) {
--		BUG_ON(!list_empty(&cm_id_priv->work_list));
- 		free_cm_id(cm_id_priv);
- 		return true;
- 	}
-@@ -260,7 +257,6 @@ struct iw_cm_id *iw_create_cm_id(struct ib_device *device,
- 	refcount_set(&cm_id_priv->refcount, 1);
- 	init_waitqueue_head(&cm_id_priv->connect_wait);
- 	init_completion(&cm_id_priv->destroy_comp);
--	INIT_LIST_HEAD(&cm_id_priv->work_list);
- 	INIT_LIST_HEAD(&cm_id_priv->work_free_list);
- 
- 	return &cm_id_priv->id;
-@@ -1007,13 +1003,13 @@ static int process_event(struct iwcm_id_private *cm_id_priv,
- }
- 
- /*
-- * Process events on the work_list for the cm_id. If the callback
-- * function requests that the cm_id be deleted, a flag is set in the
-- * cm_id flags to indicate that when the last reference is
-- * removed, the cm_id is to be destroyed. This is necessary to
-- * distinguish between an object that will be destroyed by the app
-- * thread asleep on the destroy_comp list vs. an object destroyed
-- * here synchronously when the last reference is removed.
-+ * Process events for the cm_id. If the callback function requests
-+ * that the cm_id be deleted, a flag is set in the cm_id flags to
-+ * indicate that when the last reference is removed, the cm_id is
-+ * to be destroyed. This is necessary to distinguish between an
-+ * object that will be destroyed by the app thread asleep on the
-+ * destroy_comp list vs. an object destroyed here synchronously
-+ * when the last reference is removed.
-  */
- static void cm_work_handler(struct work_struct *_work)
- {
-@@ -1024,35 +1020,26 @@ static void cm_work_handler(struct work_struct *_work)
- 	int ret = 0;
- 
- 	spin_lock_irqsave(&cm_id_priv->lock, flags);
--	while (!list_empty(&cm_id_priv->work_list)) {
--		work = list_first_entry(&cm_id_priv->work_list,
--					struct iwcm_work, list);
--		list_del_init(&work->list);
--		levent = work->event;
--		put_work(work);
--		spin_unlock_irqrestore(&cm_id_priv->lock, flags);
--
--		if (!test_bit(IWCM_F_DROP_EVENTS, &cm_id_priv->flags)) {
--			ret = process_event(cm_id_priv, &levent);
--			if (ret) {
--				destroy_cm_id(&cm_id_priv->id);
--				WARN_ON_ONCE(iwcm_deref_id(cm_id_priv));
--			}
--		} else
--			pr_debug("dropping event %d\n", levent.event);
--		if (iwcm_deref_id(cm_id_priv))
--			return;
--		spin_lock_irqsave(&cm_id_priv->lock, flags);
--	}
-+	levent = work->event;
-+	put_work(work);
- 	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-+
-+	if (!test_bit(IWCM_F_DROP_EVENTS, &cm_id_priv->flags)) {
-+		ret = process_event(cm_id_priv, &levent);
-+		if (ret) {
-+			destroy_cm_id(&cm_id_priv->id);
-+			WARN_ON_ONCE(iwcm_deref_id(cm_id_priv));
-+		}
-+	} else
-+		pr_debug("dropping event %d\n", levent.event);
-+	if (iwcm_deref_id(cm_id_priv))
-+		return;
- }
- 
- /*
-  * This function is called on interrupt context. Schedule events on
-  * the iwcm_wq thread to allow callback functions to downcall into
-- * the CM and/or block.  Events are queued to a per-CM_ID
-- * work_list. If this is the first event on the work_list, the work
-- * element is also queued on the iwcm_wq thread.
-+ * the CM and/or block.
-  *
-  * Each event holds a reference on the cm_id. Until the last posted
-  * event has been delivered and processed, the cm_id cannot be
-@@ -1094,7 +1081,6 @@ static int cm_event_handler(struct iw_cm_id *cm_id,
- 	}
- 
- 	refcount_inc(&cm_id_priv->refcount);
--	list_add_tail(&work->list, &cm_id_priv->work_list);
- 	queue_work(iwcm_wq, &work->work);
- out:
- 	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
-diff --git a/drivers/infiniband/core/iwcm.h b/drivers/infiniband/core/iwcm.h
-index bf74639be..b56fb12ed 100644
---- a/drivers/infiniband/core/iwcm.h
-+++ b/drivers/infiniband/core/iwcm.h
-@@ -50,7 +50,6 @@ struct iwcm_id_private {
- 	struct ib_qp *qp;
- 	struct completion destroy_comp;
- 	wait_queue_head_t connect_wait;
--	struct list_head work_list;
- 	spinlock_t lock;
- 	refcount_t refcount;
- 	struct list_head work_free_list;
--- 
-2.52.0.457.g6b5491de43-goog
-
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
