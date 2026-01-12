@@ -1,138 +1,193 @@
-Return-Path: <linux-rdma+bounces-15455-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15456-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id A54F4D12436
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 12:23:25 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id F35D4D1280F
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 13:20:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id A1E663019C61
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 11:22:50 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B6A7F30499E7
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 12:20:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BAD0356A0F;
-	Mon, 12 Jan 2026 11:22:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDF0933E34C;
+	Mon, 12 Jan 2026 12:20:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="AD7f0bZ+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iL2K02pv"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from canpmsgout10.his.huawei.com (canpmsgout10.his.huawei.com [113.46.200.225])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD754356A18;
-	Mon, 12 Jan 2026 11:22:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.225
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8931B2C21F3;
+	Mon, 12 Jan 2026 12:20:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768216967; cv=none; b=kttis/RD5XvlCcXFqMF/IB1X+DiYWUywbPMSB8Jl3yjpWVW0r9BxfLK2bBXW2HEl96B2u09NjAlIi5XcZha0HtcxfD0rpxZ4pCTluBOUHHfyjX96eAH+zYGunmwt1DAIEb7uUEWi3H3Q51vzuKLJxGX+dPjtmwsngfV7AJbRtyI=
+	t=1768220402; cv=none; b=DfDQFN0rrTo8HwD2+WwOHtKI+KamQp/DShjRLe/a0k9K9P7fwNg7tknpLwTgGFl94UUUT2ZGGxyqJmcoR3ZhWVjKw4v73Ur4WqNDs9oNPISiIQtJTczF7An+dGPVkjP56Zd0n2U+jPMdr3sj1Rxw7DY24V0gikIUUEiZWeYdKC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768216967; c=relaxed/simple;
-	bh=wHINRcFIg9zMRYnWoIA5DvfXXX2LdiW47hI/Zj2u9fo=;
-	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Mns8ywApmeiFdb5UplS8GCy4tD/0PmEiaApPAxmElTgOtu/GQudLLzZw2wBvMi21/aCanKPeAg9e/mMpAOioNlnkLroUf1Su4JkHXeqnGOi3t1/0jSN2gBvqcFg7iBJiX6a1oIlU5IB1YJJphGdkrIozSvNsEIP8J9fLHYrrmI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=AD7f0bZ+; arc=none smtp.client-ip=113.46.200.225
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=vbDYGIXXRXLnCmsRtUPUIjw1vXocJzMCGRQqtNEDzgY=;
-	b=AD7f0bZ+NL61KYTnk8rvo+Xd3BitgZNT4IGtXVpTpFnOIhMzgy8IyMednDhlh7SbdF/41PuA1
-	1lcOKTfDeYk8mGx8sRtllCtTpxxRvOqoQVf23PC+EmKdconn/tamS7SSz1rZIt+GRzXca0kS5dd
-	HhFDvh4c9anppPLqt3lSXj4=
-Received: from mail.maildlp.com (unknown [172.19.162.92])
-	by canpmsgout10.his.huawei.com (SkyGuard) with ESMTPS id 4dqVJS6CsFz1K96f;
-	Mon, 12 Jan 2026 19:19:20 +0800 (CST)
-Received: from kwepemk100013.china.huawei.com (unknown [7.202.194.61])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3F53340562;
-	Mon, 12 Jan 2026 19:22:37 +0800 (CST)
-Received: from [10.67.120.192] (10.67.120.192) by
- kwepemk100013.china.huawei.com (7.202.194.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.36; Mon, 12 Jan 2026 19:22:35 +0800
-Message-ID: <6c01abe2-7d0f-47d9-b4db-098e11b2b9e6@huawei.com>
-Date: Mon, 12 Jan 2026 19:22:33 +0800
+	s=arc-20240116; t=1768220402; c=relaxed/simple;
+	bh=+Nliq3Hq9k4ThIYArW3/W+oRJeWgrnz/ZUwpOJtv0cM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K+688+kJTHQ4HLSVF02wSH16ASWCT6732uP2dJVY9/JJZJV0HdLex233haeowDxr5N3qMXQz5pXw1/sqO2fU3X0YkyhT4tPVEi/bXLV1k8R8nyRan59TwBT/nWtNLLI23sxvA80wwe967TxkX5fTxPqBQi36YscFOyAUjVJvBEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iL2K02pv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 233D1C16AAE;
+	Mon, 12 Jan 2026 12:20:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768220402;
+	bh=+Nliq3Hq9k4ThIYArW3/W+oRJeWgrnz/ZUwpOJtv0cM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iL2K02pvk6E1DsvDlqWboBCtpQHXaKUBrL1wltPlg05hlgRoVPE9d6yCnJgpfHU3K
+	 5wnwkxG9AmFATvFjjgHmhJmW/kYdcxNn5zEl7CCQGsXozborPGix1NS3B6tfKluFUp
+	 4+jaQq6nlsWR88DToo/mPKJ87brhQnhnntP/R+nXtW3dhiXFicBW1f3BpAsty+mLjZ
+	 99FE2FBFc/kRsz2G+ht2VEMhhnQ2twEqyml4iPXDcjXNFCp0ahYY66D1dhde+2mS0q
+	 8Y77nf0bPjNjJG2JcBS0x7Evxif8Ub6tPWPTIo5nqywmPi5aJOLKCeAsDSKhiNLd77
+	 0aouxLftPfDUw==
+Date: Mon, 12 Jan 2026 14:19:56 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Sumit Semwal <sumit.semwal@linaro.org>,
+	Alex Williamson <alex@shazbot.org>,
+	Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linaro-mm-sig@lists.linaro.org, kvm@vger.kernel.org,
+	iommu@lists.linux.dev
+Subject: Re: [PATCH 0/4] dma-buf: add revoke mechanism to invalidate shared
+ buffers
+Message-ID: <20260112121956.GE14378@unreal>
+References: <20260111-dmabuf-revoke-v1-0-fb4bcc8c259b@nvidia.com>
+ <eed9fd4c-ca36-4f6a-af10-56d6e0997d8c@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC: <shaojijie@huawei.com>, Jian Shen <shenjian15@huawei.com>, Salil Mehta
-	<salil.mehta@huawei.com>, Saeed Mahameed <saeedm@nvidia.com>, Mark Bloch
-	<mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Moshe Shemesh
-	<moshe@nvidia.com>, Shahar Shitrit <shshitrit@nvidia.com>, Yael Chemla
-	<ychemla@nvidia.com>, Jamal Hadi Salim <jhs@mojatatu.com>
-Subject: Re: [PATCH net-next V2 2/3] net: hns3: Use netif_xmit_timeout_ms()
- helper
-To: Tariq Toukan <tariqt@nvidia.com>, Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Andrew
- Lunn <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>
-References: <1768209383-1546791-1-git-send-email-tariqt@nvidia.com>
- <1768209383-1546791-3-git-send-email-tariqt@nvidia.com>
-From: Jijie Shao <shaojijie@huawei.com>
-In-Reply-To: <1768209383-1546791-3-git-send-email-tariqt@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
- kwepemk100013.china.huawei.com (7.202.194.61)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <eed9fd4c-ca36-4f6a-af10-56d6e0997d8c@amd.com>
 
+On Mon, Jan 12, 2026 at 11:04:38AM +0100, Christian König wrote:
+> On 1/11/26 11:37, Leon Romanovsky wrote:
+> > This series implements a dma-buf “revoke” mechanism: to allow a dma-buf
+> > exporter to explicitly invalidate (“kill”) a shared buffer after it has
+> > been distributed to importers, so that further CPU and device access is
+> > prevented and importers reliably observe failure.
+> 
+> We already have that. This is what the move_notify is all about.
+> 
+> > Today, dma-buf effectively provides “if you have the fd, you can keep using
+> > the memory indefinitely.” That assumption breaks down when an exporter must
+> > reclaim, reset, evict, or otherwise retire backing memory after it has been
+> > shared. Concrete cases include GPU reset and recovery where old allocations
+> > become unsafe to access, memory eviction/overcommit where backing storage
+> > must be withdrawn, and security or isolation situations where continued access
+> > must be prevented. While drivers can sometimes approximate this with
+> > exporter-specific fencing and policy, there is no core dma-buf state transition
+> > that communicates “this buffer is no longer valid; fail access” across all
+> > access paths.
+> 
+> It's not correct that there is no DMA-buf handling for this use case.
+> 
+> > The change in this series is to introduce a core “revoked” state on the dma-buf
+> > object and a corresponding exporter-triggered revoke operation. Once a dma-buf
+> > is revoked, new access paths are blocked so that attempts to DMA-map, vmap, or
+> > mmap the buffer fail in a consistent way.
+> > 
+> > In addition, the series aims to invalidate existing access as much as the kernel
+> > allows: device mappings are torn down where possible so devices and IOMMUs cannot
+> > continue DMA.
+> > 
+> > The semantics are intentionally simple: revoke is a one-way, permanent transition
+> > for the lifetime of that dma-buf instance.
+> > 
+> > From a compatibility perspective, users that never invoke revoke are unaffected,
+> > and exporters that adopt it gain a core-supported enforcement mechanism rather
+> > than relying on ad hoc driver behavior. The intent is to keep the interface
+> > minimal and avoid imposing policy; the series provides the mechanism to terminate
+> > access, with policy remaining in the exporter and higher-level components.
+> 
+> As far as I can see that patch set is completely superfluous.
+> 
+> The move_notify mechanism has been implemented exactly to cover this use case and is in use for a couple of years now.
+> 
+> What exactly is missing?
 
-on 2026/1/12 17:16, Tariq Toukan wrote:
-> From: Shahar Shitrit <shshitrit@nvidia.com>
->
-> Replace the open-coded TX queue timeout check
-> in hns3_get_timeout_queue() with a call to
-> netif_xmit_timeout_ms() helper.
->
-> Signed-off-by: Shahar Shitrit <shshitrit@nvidia.com>
-> Reviewed-by: Yael Chemla <ychemla@nvidia.com>
-> Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+From what I can tell, the missing piece is what happens after .move_notify()
+is called. According to the documentation, the exporter remains valid, and
+the importer is expected to recreate all mappings.
 
-Thanks,
-Reviewed-by: Jijie Shao <shaojijie@huawei.com>
+include/linux/dma-buf.h:
+  471          * Mappings stay valid and are not directly affected by this callback.
+  472          * But the DMA-buf can now be in a different physical location, so all
+  473          * mappings should be destroyed and re-created as soon as possible.
+  474          *
+  475          * New mappings can be created after this callback returns, and will
+  476          * point to the new location of the DMA-buf.
 
-> ---
->   drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 12 +++++-------
->   1 file changed, 5 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-> index 7a0654e2d3dd..7b9269f6fdfc 100644
-> --- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-> @@ -25,6 +25,7 @@
->   #include <net/tcp.h>
->   #include <net/vxlan.h>
->   #include <net/geneve.h>
-> +#include <net/netdev_queues.h>
->   
->   #include "hnae3.h"
->   #include "hns3_enet.h"
-> @@ -2807,14 +2808,12 @@ static int hns3_get_timeout_queue(struct net_device *ndev)
->   
->   	/* Find the stopped queue the same way the stack does */
->   	for (i = 0; i < ndev->num_tx_queues; i++) {
-> +		unsigned int timedout_ms;
->   		struct netdev_queue *q;
-> -		unsigned long trans_start;
->   
->   		q = netdev_get_tx_queue(ndev, i);
-> -		trans_start = READ_ONCE(q->trans_start);
-> -		if (netif_xmit_stopped(q) &&
-> -		    time_after(jiffies,
-> -			       (trans_start + ndev->watchdog_timeo))) {
-> +		timedout_ms = netif_xmit_timeout_ms(q);
-> +		if (timedout_ms) {
->   #ifdef CONFIG_BQL
->   			struct dql *dql = &q->dql;
->   
-> @@ -2823,8 +2822,7 @@ static int hns3_get_timeout_queue(struct net_device *ndev)
->   				    dql->adj_limit, dql->num_completed);
->   #endif
->   			netdev_info(ndev, "queue state: 0x%lx, delta msecs: %u\n",
-> -				    q->state,
-> -				    jiffies_to_msecs(jiffies - trans_start));
-> +				    q->state, timedout_ms);
->   			break;
->   		}
->   	}
+Call to dma_buf_move_notify() does not prevent new attachments to that
+exporter, while "revoke" does. In the current code, the importer is not aware
+that the exporter no longer exists and will continue calling
+dma_buf_map_attachment().
+
+In summary, the current implementation allows a single .attach() check but
+permits multiple .map_dma_buf() calls. With "revoke", we gain the ability to
+block any subsequent .map_dma_buf() operations.
+
+Main use case is VFIO as exporter and IOMMUFD as importer.
+
+Thanks
+
+> 
+> Regards,
+> Christian.
+> 
+> > 
+> > BTW, see this megathread [1] for additional context.  
+> > Ironically, it was posted exactly one year ago.
+> > 
+> > [1] https://lore.kernel.org/all/20250107142719.179636-2-yilun.xu@linux.intel.com/
+> > 
+> > Thanks
+> > 
+> > Cc: linux-rdma@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: linux-media@vger.kernel.org
+> > Cc: dri-devel@lists.freedesktop.org
+> > Cc: linaro-mm-sig@lists.linaro.org
+> > Cc: kvm@vger.kernel.org
+> > Cc: iommu@lists.linux.dev
+> > To: Jason Gunthorpe <jgg@ziepe.ca>
+> > To: Leon Romanovsky <leon@kernel.org>
+> > To: Sumit Semwal <sumit.semwal@linaro.org>
+> > To: Christian König <christian.koenig@amd.com>
+> > To: Alex Williamson <alex@shazbot.org>
+> > To: Kevin Tian <kevin.tian@intel.com>
+> > To: Joerg Roedel <joro@8bytes.org>
+> > To: Will Deacon <will@kernel.org>
+> > To: Robin Murphy <robin.murphy@arm.com>
+> > 
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> > Leon Romanovsky (4):
+> >       dma-buf: Introduce revoke semantics
+> >       vfio: Use dma-buf revoke semantics
+> >       iommufd: Require DMABUF revoke semantics
+> >       iommufd/selftest: Reuse dma-buf revoke semantics
+> > 
+> >  drivers/dma-buf/dma-buf.c          | 36 ++++++++++++++++++++++++++++++++----
+> >  drivers/iommu/iommufd/pages.c      |  2 +-
+> >  drivers/iommu/iommufd/selftest.c   | 12 ++++--------
+> >  drivers/vfio/pci/vfio_pci_dmabuf.c | 27 ++++++---------------------
+> >  include/linux/dma-buf.h            | 31 +++++++++++++++++++++++++++++++
+> >  5 files changed, 74 insertions(+), 34 deletions(-)
+> > ---
+> > base-commit: 9ace4753a5202b02191d54e9fdf7f9e3d02b85eb
+> > change-id: 20251221-dmabuf-revoke-b90ef16e4236
+> > 
+> > Best regards,
+> > --  
+> > Leon Romanovsky <leonro@nvidia.com>
+> > 
+> 
+> 
 
