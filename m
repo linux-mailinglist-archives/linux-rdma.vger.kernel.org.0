@@ -1,62 +1,62 @@
-Return-Path: <linux-rdma+bounces-15477-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15478-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id E377ED1432A
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 17:56:14 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55F9AD1437C
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 18:00:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id E6064300875A
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 16:56:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BD22630807C7
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 16:57:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7DBC2FA0DD;
-	Mon, 12 Jan 2026 16:56:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC43937416A;
+	Mon, 12 Jan 2026 16:57:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QHjjwW7b"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ob96Ul8k"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 310E8374174
-	for <linux-rdma@vger.kernel.org>; Mon, 12 Jan 2026 16:56:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DBAF364036
+	for <linux-rdma@vger.kernel.org>; Mon, 12 Jan 2026 16:57:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768236967; cv=none; b=X3sma/SMz4cikLneqpXoiMTlAZ8/FyOtyrzc8nOSqNnPL74MtMePM7cIeoaAF0wob5WmUSLENIrBSLwojEsqJ0Hm6szwpnSqPMpMFo2T5jPibb38/LpKqaDXWTopR7znmHC4NPMX+iUeAYMF71JfFIwxkuC5vWEjwhAx5Wm1odE=
+	t=1768237024; cv=none; b=ZCrcVd96iRYhEkP74yi6pvfGGPDHve/p1wt/VlDZ4QoGXFXWS/FAIsWxltUMvOHVTscJfWYSvVpiaKfSnhMU4JnNZRiL60Ubf0ktKODQgcmSGCut6m2FniImHaNSXWYlzZIehmX972g+Ldoy1O5SDOb64Z7hSjdC/8rSFK57M9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768236967; c=relaxed/simple;
-	bh=53PqF1HokUhim5dGFw3XiukMqRe1lpRwS6R3c9/xZMU=;
+	s=arc-20240116; t=1768237024; c=relaxed/simple;
+	bh=ZVhUhDahJvVOMERR8LDJiAijzjP0a8psViuZ8vlZbKw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r2nftMyrOQCmOSdNKsrTeBI0/097N7LRTnWw3zt4sgmlBldLJP4rrjKkE5xyesadu0oJCcVyIPVgFPrZZn5mAWEkZbAVklGMY096ZPqel/t/NeuXO2UOajmwxJLd6icJP4WjhTizIpcuMdbRze+QPF+4LWqwu7SyLWNG59r8ApI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QHjjwW7b; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=U47ILlvSpRc98JvGjYuSSrzfji3pGwp+vm1BpEcTndLEEn7n664PheD4iIBxAiC5Fo92wC7hnAp9W9muZsmiZfOdBLrZMXZB0Ra2HYNExdTdWYDwNY7OZihL8zuH5crwMbL/3If6/5O9j3Tg2qh/jO1uRzilwm1YAcjz8yKPR2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ob96Ul8k; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1768236965;
+	s=mimecast20190719; t=1768237022;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bj92T4kdPMa4hTjyGAxNwL1RPMgnUsDf7pHcc06+7bY=;
-	b=QHjjwW7bdHeR5exPL2MjQqUZP+tL6g6J8hz7XxjT1qVDpQtBnyHRWVGZuWNzmgAbzbQhPs
-	6t/OPJghWZKnK9gzvWq5jJBHKTy0yncMNicjHf2vxZMTi/GcLagrP4GcsbGl7bt4H0Zovu
-	yAcbOykEqa+hNxPlMrgMg4lkN+vajbE=
+	bh=c+ytZ1c/Ea9PPW16FUHxaZOlzDf1w43iH7iqICQbdK0=;
+	b=Ob96Ul8k5l+HliUoooD0oSRbXd3hMh/+oam/fbohtZwASnfennwXFKmUMY5xg6ezxxMzMb
+	r4qSucf9CnoWPVT4DrWJEauNB4fKZOTvJxgKgaw/hsWfMM8bqE11LLxphrr5OAoz61BqYH
+	+BdQ9qOwAx686g5X62GPq6d9AJoUFZc=
 Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-435-PtbRvg4BPEq--o89R600bQ-1; Mon,
- 12 Jan 2026 11:55:46 -0500
-X-MC-Unique: PtbRvg4BPEq--o89R600bQ-1
-X-Mimecast-MFC-AGG-ID: PtbRvg4BPEq--o89R600bQ_1768236943
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-481-Ugn58wkyN1CvtXd7CIAw1w-1; Mon,
+ 12 Jan 2026 11:56:57 -0500
+X-MC-Unique: Ugn58wkyN1CvtXd7CIAw1w-1
+X-Mimecast-MFC-AGG-ID: Ugn58wkyN1CvtXd7CIAw1w_1768237013
 Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D90D01800342;
-	Mon, 12 Jan 2026 16:55:42 +0000 (UTC)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 6AA9E1800372;
+	Mon, 12 Jan 2026 16:56:53 +0000 (UTC)
 Received: from [10.44.34.128] (unknown [10.44.34.128])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 9966F30001A7;
-	Mon, 12 Jan 2026 16:55:35 +0000 (UTC)
-Message-ID: <d444e846-5891-4bcb-96b8-9b3aa3f925bd@redhat.com>
-Date: Mon, 12 Jan 2026 17:55:34 +0100
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 8CDD030001A2;
+	Mon, 12 Jan 2026 16:56:46 +0000 (UTC)
+Message-ID: <97487370-0ef5-4324-87e9-c86668055314@redhat.com>
+Date: Mon, 12 Jan 2026 17:56:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -64,90 +64,84 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 03/12] dpll: Add helpers to find DPLL pin fwnode
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: netdev@vger.kernel.org, Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+Subject: Re: [Intel-wired-lan] [PATCH net-next 06/12] dpll: Support dynamic
+ pin index allocation
+To: kernel test robot <lkp@intel.com>, netdev@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, Eric Dumazet <edumazet@google.com>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>, Rob Herring <robh@kernel.org>,
+ Leon Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ linux-rdma@vger.kernel.org, Przemek Kitszel <przemyslaw.kitszel@intel.com>,
  Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
- Jiri Pirko <jiri@resnulli.us>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Prathosh Satish <Prathosh.Satish@microchip.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>,
- Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
- Jonathan Lemon <jonathan.lemon@gmail.com>,
+ intel-wired-lan@lists.osuosl.org, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, devicetree@vger.kernel.org,
+ Conor Dooley <conor+dt@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
  Richard Cochran <richardcochran@gmail.com>,
+ Prathosh Satish <Prathosh.Satish@microchip.com>,
+ Vadim Fedorenko <vadim.fedorenko@linux.dev>, Mark Bloch <mbloch@nvidia.com>,
+ linux-kernel@vger.kernel.org, Tariq Toukan <tariqt@nvidia.com>,
  Alexander Lobakin <aleksander.lobakin@intel.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
- Michal Schmidt <mschmidt@redhat.com>, Petr Oros <poros@redhat.com>,
- Grzegorz Nitka <grzegorz.nitka@intel.com>
-References: <20260108182318.20935-1-ivecera@redhat.com>
- <20260108182318.20935-4-ivecera@redhat.com>
- <20260109-cooperative-chinchilla-of-swiftness-aebbc8@quoll>
- <09ffc379-85e5-41ce-b781-66ba6bb9a6c7@redhat.com>
- <fcc35747-81f3-4a3a-8b5d-cf29e9c52bb2@kernel.org>
+ Jonathan Lemon <jonathan.lemon@gmail.com>,
+ Krzysztof Kozlowski <krzk@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>
+References: <20260108182318.20935-7-ivecera@redhat.com>
+ <202601122216.BCarSN6K-lkp@intel.com>
 Content-Language: en-US
 From: Ivan Vecera <ivecera@redhat.com>
-In-Reply-To: <fcc35747-81f3-4a3a-8b5d-cf29e9c52bb2@kernel.org>
+In-Reply-To: <202601122216.BCarSN6K-lkp@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
 
 
-On 1/12/26 5:20 PM, Krzysztof Kozlowski wrote:
-> On 09/01/2026 15:19, Ivan Vecera wrote:
->>
->>
->> On 1/9/26 10:55 AM, Krzysztof Kozlowski wrote:
->>> On Thu, Jan 08, 2026 at 07:23:09PM +0100, Ivan Vecera wrote:
->>>> Add helper functions to the DPLL core to retrieve a DPLL pin's firmware
->>>> node handle based on the "dpll-pins" and "dpll-pin-names" properties.
->>>>
->>>> * `fwnode_dpll_pin_node_get()`: matches the given name against the
->>>>     "dpll-pin-names" property to find the correct index, then retrieves
->>>>     the reference from "dpll-pins".
->>>> * `device_dpll_pin_node_get()`: a wrapper around the fwnode helper for
->>>>     convenience when using a `struct device`.
->>>>
->>>> These helpers simplify the process for consumer drivers (such as Ethernet
->>>> controllers or PHYs) to look up their associated DPLL pins defined in
->>>> the DT or ACPI, which can then be passed to the DPLL subsystem to acquire
->>>> the pin object.
->>>>
->>>> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
->>>> ---
->>>>    drivers/dpll/dpll_core.c | 20 ++++++++++++++++++++
->>>>    include/linux/dpll.h     | 15 +++++++++++++++
->>>>    2 files changed, 35 insertions(+)
->>>>
->>>
->>> I don't see cells defined in your binding. Neither updated property.c.
->>
->> And if the cells are not required? I mean that dpll-names only specifies
->> array of phandles without parameters...
->>
->> e.g.
->> dpll-pin-names = "abc", "def";
->> dpll-pins = <&dpll_pin_abc>, <&dpll_pin_def>;
->>
->> Should '#dpll-pin-cells' be defined as constantly equal to 0?
+On 1/12/26 4:13 PM, kernel test robot wrote:
+> Hi Ivan,
 > 
-> I don't understand how can you guarantee for every possible future
-> device to have always cells=0. If that's the case then indeed you do not
-> need cells, but this needs explanation. You are designing now entire
-> ABI, so you must design it fully, not just "works for me now".
+> kernel test robot noticed the following build warnings:
+> 
+> [auto build test WARNING on net-next/main]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Ivan-Vecera/dt-bindings-dpll-add-common-dpll-pin-consumer-schema/20260109-022618
+> base:   net-next/main
+> patch link:    https://lore.kernel.org/r/20260108182318.20935-7-ivecera%40redhat.com
+> patch subject: [Intel-wired-lan] [PATCH net-next 06/12] dpll: Support dynamic pin index allocation
+> config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20260112/202601122216.BCarSN6K-lkp@intel.com/config)
+> compiler: m68k-linux-gcc (GCC) 15.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260112/202601122216.BCarSN6K-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202601122216.BCarSN6K-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>     drivers/dpll/dpll_core.c: In function 'dpll_pin_idx_free':
+>>> drivers/dpll/dpll_core.c:499:28: warning: integer overflow in expression of type 'int' results in '-2147483648' [-Woverflow]
+>       499 |         pin_idx -= INT_MAX + 1;
+>           |                            ^
+> 
+> 
+> vim +499 drivers/dpll/dpll_core.c
+> 
+>     490	
+>     491	static void dpll_pin_idx_free(u32 pin_idx)
+>     492	{
+>     493		if (pin_idx <= INT_MAX)
+>     494			return; /* Not a dynamic pin index */
+>     495	
+>     496		/* Map the index value from dynamic pin index range to IDA range and
+>     497		 * free it.
+>     498		 */
+>   > 499		pin_idx -= INT_MAX + 1;
 
-Get it, you are right... Theoretically is possible that number of cells
-will be > 0.
+'pin_idx -= (u32)INT_MAX + 1' should be here..
 
-Will add '#dpll-pin-cells'
+Will fix.
 
-Thanks,
-Ivan
+I.
+>     500		ida_free(&dpll_pin_idx_ida, pin_idx);
+>     501	}
+>     502	
+> 
 
 
