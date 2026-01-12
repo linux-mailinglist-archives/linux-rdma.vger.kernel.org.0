@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-15471-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15472-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F943D13ED2
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 17:15:49 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A607D13F06
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 17:18:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E37C63025A59
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 16:15:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A6D713089A35
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 16:16:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CF913659FD;
-	Mon, 12 Jan 2026 16:15:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CBF73659FA;
+	Mon, 12 Jan 2026 16:16:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o7yTm1+Z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hJW8AmCC"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46482364EA5;
-	Mon, 12 Jan 2026 16:15:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 399BA3624C7;
+	Mon, 12 Jan 2026 16:16:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768234502; cv=none; b=sMEQubMtXMPd4KKOAhZeDC69jkLWJYhMlEizFl7SOkfjb2/aX4yfjPIpREPcg5rdvSUvuiFSYfckFkW4hcSTexTUbX1Y108pZfAXQv6XgVq8apmXPcy3gN7LYVvtTBduw6L8qfKM4fCkYMRx6EOGL1VgNo5uJxDUT4BL+rgMUJg=
+	t=1768234573; cv=none; b=pPO9EfgkfbmcLbhFPjO3Mvo9ypoaMmJM0XOKZHGcb0ZQQWbI9cnAmAeDk6vAkZxPTgrNtOoGmNdQP/tf7P6pZljZhIJT4tRh/AitHZhyM2ViQbhBSOFFX4hHUVXs5OMAOp/U0CgA2y39SLA8BMudUOpzibQ2rp6QLJRVdwg4+aw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768234502; c=relaxed/simple;
-	bh=PmRsUuJqnWmX19O8SSFENbMFEb1Sg7/vMsXCttr9Ry4=;
+	s=arc-20240116; t=1768234573; c=relaxed/simple;
+	bh=VLv6+c253IeyK2kF+FrgrPyGN3TxjzmnUCtTvmlGwA0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UbeyAxXGAeSMRpwa75+uRLHRjKewy4mvjwpGOe38+Nf8cDQTmErGzgmSpDZuczIr14AJ3f9cTuBh/pIw+PnomakEccd7MFhVxa8NYcnrjJsWiIDLNT36CWuhwpcc+m1z3JV2VC+NiFWXiOrlJt3J2EtK+fEJh3Sp8ZdF588d+bQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o7yTm1+Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82247C116D0;
-	Mon, 12 Jan 2026 16:14:56 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=jFYPYLJB0a83njZCOastmEu4co5dGO5CynX+ptm3woFFdHGKBGC5BUO0zv/6xA2yyfko6v2YVDFfMzLz/Z2AFTjzb4JKeFj/uwWj+/G4VCdPhT6ezu5JqU2P8zRVEoDrPiYm9aDmi49ObFEeDykeVTYvYHUyrDl0o/B1M2trVGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hJW8AmCC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CE19C19422;
+	Mon, 12 Jan 2026 16:16:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768234501;
-	bh=PmRsUuJqnWmX19O8SSFENbMFEb1Sg7/vMsXCttr9Ry4=;
+	s=k20201202; t=1768234572;
+	bh=VLv6+c253IeyK2kF+FrgrPyGN3TxjzmnUCtTvmlGwA0=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=o7yTm1+ZHktF7rR6oGXdWbXYexfO0KHJz8OjoIVjplzDSXfP6uIpTQUWV7ys1FoA7
-	 txMpzxwGttmicDgVcIvjRDsHw/HdNvBLG98EWDRq9g61HSMf6Ya5M3SoW8EI7gGb3q
-	 5k9/vyVMO2P+zKAGuzw5jdw3pptN2nyl1c1v0m2lsxUt6xLrrdq3q6Df6Y67LfD9pJ
-	 4QZ/grRi/fzDdlEybds/lLr0E3IsP9fWAhS2phe9gZgOmukHqg04C+Mc3Q0UvhxzFq
-	 gXELRX8i7aakeligRCErr153bau5kvbnm2jUa8qmZnAgqnOZargIRYtlOtYmlb56Q2
-	 SBHoxKfbRpJAg==
-Message-ID: <cbf482be-4aa8-488f-9f78-181f8f145c28@kernel.org>
-Date: Mon, 12 Jan 2026 17:14:54 +0100
+	b=hJW8AmCCRmBGvt+S5sVmjCJin6/lR4tA6iBujti0d9E/ouu13Kjqx6jZO9aoo/L1A
+	 0eStjvZUkrrZK/4PRCOt1G7gmoWsQnwpKGiKDkFguWk/QORGUcVoX/zuGp+weh26dl
+	 YwOafoGHeUkXWfXCnCYlqoydNZpda2zMbIGfKhYhOUcYZsrMU3WVw2HYhQ/g4okS1a
+	 qSMmwj9q7YraweCHeK3dkJaM9Zrtu0Dgq7qylJDT52QSnZNlUAEfWpxjlf7HkrlXdO
+	 ZToaYvKtRBj3OI1KSUINwuIGbFOXhHkvSx63PoPOKwnlauyjJcx11n1A4+pZKbH3oT
+	 Z/zOEyUdC34wg==
+Message-ID: <22bdda82-9ebf-4381-a7d4-edbf97408a5f@kernel.org>
+Date: Mon, 12 Jan 2026 17:16:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -48,31 +48,31 @@ List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Intel-wired-lan] [PATCH net-next 01/12] dt-bindings: dpll: add
- common dpll-pin-consumer schema
+Subject: Re: [PATCH net-next 03/12] dpll: Add helpers to find DPLL pin fwnode
 To: Ivan Vecera <ivecera@redhat.com>
-Cc: Eric Dumazet <edumazet@google.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>, Rob Herring <robh@kernel.org>,
- Leon Romanovsky <leon@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>,
- linux-rdma@vger.kernel.org, Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+Cc: netdev@vger.kernel.org, Vadim Fedorenko <vadim.fedorenko@linux.dev>,
  Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
- intel-wired-lan@lists.osuosl.org, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, devicetree@vger.kernel.org,
- Conor Dooley <conor+dt@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
- Richard Cochran <richardcochran@gmail.com>,
- Prathosh Satish <Prathosh.Satish@microchip.com>,
- Vadim Fedorenko <vadim.fedorenko@linux.dev>, netdev@vger.kernel.org,
- Mark Bloch <mbloch@nvidia.com>, linux-kernel@vger.kernel.org,
- Tariq Toukan <tariqt@nvidia.com>,
- Alexander Lobakin <aleksander.lobakin@intel.com>,
+ Jiri Pirko <jiri@resnulli.us>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Prathosh Satish <Prathosh.Satish@microchip.com>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+ Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
  Jonathan Lemon <jonathan.lemon@gmail.com>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Saeed Mahameed
- <saeedm@nvidia.com>, "David S. Miller" <davem@davemloft.net>
+ Richard Cochran <richardcochran@gmail.com>,
+ Alexander Lobakin <aleksander.lobakin@intel.com>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
+ Michal Schmidt <mschmidt@redhat.com>, Petr Oros <poros@redhat.com>,
+ Grzegorz Nitka <grzegorz.nitka@intel.com>
 References: <20260108182318.20935-1-ivecera@redhat.com>
- <20260108182318.20935-2-ivecera@redhat.com>
- <20260109-wonderful-acoustic-civet-e030da@quoll>
- <a581a86d-d49c-4761-bd68-989a7a12cb56@redhat.com>
- <fd07e1f8-455c-464f-9760-9d16d450a7d5@redhat.com>
+ <20260108182318.20935-4-ivecera@redhat.com>
+ <20260109-cooperative-chinchilla-of-swiftness-aebbc8@quoll>
+ <25f49485-2228-4aa5-9023-0b00cc10a4da@redhat.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -118,50 +118,42 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  jWt87ecuHlpL3uuQ0ZZNWqHgZoQLXoqC2ZV5KrtKWb/jyiFX/sxSrodALf0zf+tfHv0FZWT2
  zHjUqd0t4njD/UOsuIMOQn4Ig0SdivYPfZukb5cdasKJukG1NOpbW7yRNivaCnfZz6dTawXw
  XRIV/KDsHQiyVxKvN73bThKhONkcX2LWuD928tAR6XMM2G5ovxLe09vuOzzfTWQDsm++9UKF a/A=
-In-Reply-To: <fd07e1f8-455c-464f-9760-9d16d450a7d5@redhat.com>
+In-Reply-To: <25f49485-2228-4aa5-9023-0b00cc10a4da@redhat.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 09/01/2026 15:11, Ivan Vecera wrote:
->>>> +  Common properties for devices that require connection to DPLL 
->>>> (Digital Phase
->>>> +  Locked Loop) pins for frequency synchronization (e.g. SyncE).
->>>> +
->>>> +properties:
->>>> +  dpll-pins:
->>>> +    $ref: /schemas/types.yaml#/definitions/phandle-array
->>>> +    description:
->>>> +      List of phandles to the DPLL pin nodes connected to this device.
->>>> +
->>>> +  dpll-pin-names:
->>>> +    $ref: /schemas/types.yaml#/definitions/string-array
->>>> +    description:
->>>> +      Names for the DPLL pins defined in 'dpll-pins', in the same 
->>>> order.
->>>> +
->>>> +dependencies:
->>>> +  dpll-pin-names: [ dpll-pins ]
+On 09/01/2026 11:22, Ivan Vecera wrote:
+> 
+> 
+> On 1/9/26 10:55 AM, Krzysztof Kozlowski wrote:
+>> On Thu, Jan 08, 2026 at 07:23:09PM +0100, Ivan Vecera wrote:
+>>> Add helper functions to the DPLL core to retrieve a DPLL pin's firmware
+>>> node handle based on the "dpll-pins" and "dpll-pin-names" properties.
 >>>
->>> Binding should go to dtschema. See also commit
->>> 3282a891060aace02e3eed4789739768060cea32 in dtschema or other examples
->>> how to add new provider/consumer properties.
-> 
-> Quick questions... if the dpll pin consumer properties schema should go
-> to dtschema...
-> 
-> 1) Should I remove this patch from this series? So this schema won't be
->     a part of kernel
+>>> * `fwnode_dpll_pin_node_get()`: matches the given name against the
+>>>    "dpll-pin-names" property to find the correct index, then retrieves
+>>>    the reference from "dpll-pins".
+>>> * `device_dpll_pin_node_get()`: a wrapper around the fwnode helper for
+>>>    convenience when using a `struct device`.
+>>>
+>>> These helpers simplify the process for consumer drivers (such as Ethernet
+>>> controllers or PHYs) to look up their associated DPLL pins defined in
+>>> the DT or ACPI, which can then be passed to the DPLL subsystem to acquire
+>>> the pin object.
+>>>
+>>> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+>>> ---
+>>>   drivers/dpll/dpll_core.c | 20 ++++++++++++++++++++
+>>>   include/linux/dpll.h     | 15 +++++++++++++++
+>>>   2 files changed, 35 insertions(+)
+>>>
+>>
+>> I don't see cells defined in your binding. Neither updated property.c.
+>>
+> WDYM by property.c ?
 
-Yes.
-
-> 2) dtschema does not contain dpll-device and dpll-pin schemas now, I
-
-The provider, so the #foo-cells should be in dtschema as well.
-
->     expect they should be added as well... or? I'm asking because there
->     is also e.g. hwlock-consumer.yaml in dtschema but no hwlock
-
-hwlock-cells are missing, probably due to licensing.
+Each standardized phandle reliationship is supposed to be reflected with
+device links (at least of now... maybe it already changed after this LPC?)
 
 Best regards,
 Krzysztof
