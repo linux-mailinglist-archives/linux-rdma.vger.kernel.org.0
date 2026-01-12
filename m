@@ -1,46 +1,46 @@
-Return-Path: <linux-rdma+bounces-15472-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15473-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A607D13F06
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 17:18:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 164D0D13F70
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 17:25:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A6D713089A35
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 16:16:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5C95E308E640
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 16:20:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CBF73659FA;
-	Mon, 12 Jan 2026 16:16:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A302C3644D4;
+	Mon, 12 Jan 2026 16:20:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hJW8AmCC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ArJe9oo7"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 399BA3624C7;
-	Mon, 12 Jan 2026 16:16:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 625C423ED6A;
+	Mon, 12 Jan 2026 16:20:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768234573; cv=none; b=pPO9EfgkfbmcLbhFPjO3Mvo9ypoaMmJM0XOKZHGcb0ZQQWbI9cnAmAeDk6vAkZxPTgrNtOoGmNdQP/tf7P6pZljZhIJT4tRh/AitHZhyM2ViQbhBSOFFX4hHUVXs5OMAOp/U0CgA2y39SLA8BMudUOpzibQ2rp6QLJRVdwg4+aw=
+	t=1768234848; cv=none; b=tv99x5uaaDNISuG4ZDLG6oEJu/fdWfg4gs9FzW+gDXOKmksLYGA1hdLcPjaRjvzMCNXK8gip4IWgHFO4/jU/q8tJY9c4PZZa7GZebLPwR+LrZbj94SUnqXk5ljK+aAPv/Yc1HFNkgrwn+705tePSXplAqZxQC4e0hHG+cSRXkmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768234573; c=relaxed/simple;
-	bh=VLv6+c253IeyK2kF+FrgrPyGN3TxjzmnUCtTvmlGwA0=;
+	s=arc-20240116; t=1768234848; c=relaxed/simple;
+	bh=/PdvU0M1gZ9pGznJXLnSLXthS7353A8aYAPJNcKB1vg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jFYPYLJB0a83njZCOastmEu4co5dGO5CynX+ptm3woFFdHGKBGC5BUO0zv/6xA2yyfko6v2YVDFfMzLz/Z2AFTjzb4JKeFj/uwWj+/G4VCdPhT6ezu5JqU2P8zRVEoDrPiYm9aDmi49ObFEeDykeVTYvYHUyrDl0o/B1M2trVGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hJW8AmCC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CE19C19422;
-	Mon, 12 Jan 2026 16:16:06 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=RvAl+HV6mmeakZD8wwguHhyVQRrvRVJs/XX6l7tq2GXnteTrHQ2ZV9XD5xu6aSwuGRbM59y0BMtiRGGZCVJeiZNUex7xMq/YZXjVnBBWJpjP+sFWRWEdEomUL2JoYQxy1yBhtYFU7P6QorQ5RSkUX1+J3/Kw9RRgpavDG8cfu/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ArJe9oo7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E47BC116D0;
+	Mon, 12 Jan 2026 16:20:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768234572;
-	bh=VLv6+c253IeyK2kF+FrgrPyGN3TxjzmnUCtTvmlGwA0=;
+	s=k20201202; t=1768234847;
+	bh=/PdvU0M1gZ9pGznJXLnSLXthS7353A8aYAPJNcKB1vg=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=hJW8AmCCRmBGvt+S5sVmjCJin6/lR4tA6iBujti0d9E/ouu13Kjqx6jZO9aoo/L1A
-	 0eStjvZUkrrZK/4PRCOt1G7gmoWsQnwpKGiKDkFguWk/QORGUcVoX/zuGp+weh26dl
-	 YwOafoGHeUkXWfXCnCYlqoydNZpda2zMbIGfKhYhOUcYZsrMU3WVw2HYhQ/g4okS1a
-	 qSMmwj9q7YraweCHeK3dkJaM9Zrtu0Dgq7qylJDT52QSnZNlUAEfWpxjlf7HkrlXdO
-	 ZToaYvKtRBj3OI1KSUINwuIGbFOXhHkvSx63PoPOKwnlauyjJcx11n1A4+pZKbH3oT
-	 Z/zOEyUdC34wg==
-Message-ID: <22bdda82-9ebf-4381-a7d4-edbf97408a5f@kernel.org>
-Date: Mon, 12 Jan 2026 17:16:05 +0100
+	b=ArJe9oo7Hwl+ssrsthaaQAI7mi51T4urx1Tk/XaEeNYSOJINQVIYrGKQkUZKennKd
+	 cNG74KbAlT9/tyZRdxJFrIJd6EXmnNv/RDQ9XF2QLFwm2FeScUoyeF+qs/SpYgErjU
+	 JhiX4KZLQ8CRTPe6ptyrfJRCnK5zSZRUAxsIGNX/e7BeDt0o4KrJ6VDb70nsBmm9+t
+	 dPgDsolJmGF8jpdrTud9i3Mpdw8tpMlFLuOh/LznVEtM52VMaAKB0Pb1Mm97N/VUq7
+	 gcCAjHE9CTn7g75O90oXwGw9JUvuIKIwL/c+RthTtoLhQ1JyiR89xuoxgHjNFxWJfs
+	 1KflpLJ7HrJvg==
+Message-ID: <fcc35747-81f3-4a3a-8b5d-cf29e9c52bb2@kernel.org>
+Date: Mon, 12 Jan 2026 17:20:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -72,7 +72,7 @@ Cc: netdev@vger.kernel.org, Vadim Fedorenko <vadim.fedorenko@linux.dev>,
 References: <20260108182318.20935-1-ivecera@redhat.com>
  <20260108182318.20935-4-ivecera@redhat.com>
  <20260109-cooperative-chinchilla-of-swiftness-aebbc8@quoll>
- <25f49485-2228-4aa5-9023-0b00cc10a4da@redhat.com>
+ <09ffc379-85e5-41ce-b781-66ba6bb9a6c7@redhat.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -118,11 +118,11 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  jWt87ecuHlpL3uuQ0ZZNWqHgZoQLXoqC2ZV5KrtKWb/jyiFX/sxSrodALf0zf+tfHv0FZWT2
  zHjUqd0t4njD/UOsuIMOQn4Ig0SdivYPfZukb5cdasKJukG1NOpbW7yRNivaCnfZz6dTawXw
  XRIV/KDsHQiyVxKvN73bThKhONkcX2LWuD928tAR6XMM2G5ovxLe09vuOzzfTWQDsm++9UKF a/A=
-In-Reply-To: <25f49485-2228-4aa5-9023-0b00cc10a4da@redhat.com>
+In-Reply-To: <09ffc379-85e5-41ce-b781-66ba6bb9a6c7@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 09/01/2026 11:22, Ivan Vecera wrote:
+On 09/01/2026 15:19, Ivan Vecera wrote:
 > 
 > 
 > On 1/9/26 10:55 AM, Krzysztof Kozlowski wrote:
@@ -149,11 +149,24 @@ On 09/01/2026 11:22, Ivan Vecera wrote:
 >>>
 >>
 >> I don't see cells defined in your binding. Neither updated property.c.
->>
-> WDYM by property.c ?
+> 
+> And if the cells are not required? I mean that dpll-names only specifies
+> array of phandles without parameters...
+> 
+> e.g.
+> dpll-pin-names = "abc", "def";
+> dpll-pins = <&dpll_pin_abc>, <&dpll_pin_def>;
+> 
+> Should '#dpll-pin-cells' be defined as constantly equal to 0?
 
-Each standardized phandle reliationship is supposed to be reflected with
-device links (at least of now... maybe it already changed after this LPC?)
+I don't understand how can you guarantee for every possible future
+device to have always cells=0. If that's the case then indeed you do not
+need cells, but this needs explanation. You are designing now entire
+ABI, so you must design it fully, not just "works for me now".
+
+Lack of complete DTS - nothing here, nothing in the changelog - is IMO
+reason to NAK this patchset completely, also for reason me guessing the
+entire design instead of seeing the big picture.
 
 Best regards,
 Krzysztof
