@@ -1,304 +1,186 @@
-Return-Path: <linux-rdma+bounces-15459-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15460-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57951D12ACE
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 14:06:02 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39C65D12BDE
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 14:23:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5F7E5301954D
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 13:05:58 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D13BE300EA21
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 13:23:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93EC53587B8;
-	Mon, 12 Jan 2026 13:05:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DA25358D2A;
+	Mon, 12 Jan 2026 13:23:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="M/Y6jAha"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="UUK2z0gl"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 047FD346AE6;
-	Mon, 12 Jan 2026 13:05:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768223154; cv=none; b=ZJddwLJEhxgtZUMxquu77KITgAoKH/XZu+SQVLGsVdweghjH2/pn5wFXSbvpGRM4KbPZSA5Xf5IwEUwNLo85S7wgFvM3R+AkJFUvwbaGUuvOYHGb/mC6aAbe+0ziAzftDnSYJSxTSg8GMswMWbThB6OcCkOqx4dH6FnqXNSekXU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768223154; c=relaxed/simple;
-	bh=LDRMrQRVyy1prgME2OQUHsThxIlbPrQ6Bi0i03otMnM=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=DMvIgvoebgxiQ6uZxqpG8sf2/CIP6lB1rnaZvyTpmN8vQgBixzsd7IzDekKXGhQ+t214WE1TVEml51bk6jQ1+9MjjBOED5EDoFyCrV3AJyUe8xSBePLwB2pbjkcKnXdHtWvDHx125ObQeD4UJUHo4+3Yfrdye9qKDEhMAC5OqVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=M/Y6jAha; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1204)
-	id ACA39201AC86; Mon, 12 Jan 2026 05:05:52 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com ACA39201AC86
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1768223152;
-	bh=tEofgjfRMhXX8w5hgxWzQkqBlNRBlhwkGqlGrIa89mQ=;
-	h=Date:From:To:Subject:From;
-	b=M/Y6jAhaGZvHcUM8xjpRplCaHhdvFsALngovYyCgthkKOJQM+Zut6y3o7/PWejbA8
-	 QqzIctEwcXRYKWzuXgn52oMu3BvUFDgoBHn5Jz3O8mJSH8I2EXrOfgeJuoO3blAPSr
-	 lsWwF0VVJxRgCzSq7d398HzlWwAcPF4N8L3p+JGY=
-Date: Mon, 12 Jan 2026 05:05:52 -0800
-From: Dipayaan Roy <dipayanroy@linux.microsoft.com>
-To: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
-	shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
-	ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
-	linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-	dipayanroy@microsoft.com
-Subject: [PATCH net-next, v8] net: mana: Implement ndo_tx_timeout and
- serialize queue resets per port.
-Message-ID: <20260112130552.GA11785@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Received: from DM1PR04CU001.outbound.protection.outlook.com (mail-centralusazon11010057.outbound.protection.outlook.com [52.101.61.57])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4D4427602C;
+	Mon, 12 Jan 2026 13:22:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.61.57
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768224180; cv=fail; b=ZLBMDSkfeIXevbz0+cu+2Ziw/34WdE6xJSMLBrsEfcogprjNhVv47Ryhw2SwAcOwsOHOlcdvi5ubm+HT8KeT9uTZSR71svpXcCfU84q1LdK+mHUrv0vIEuCTzW7yRE5MVaG+SHjVw2lmuMcBEntLbUoGhhnNmcvptDsEqfMIKEw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768224180; c=relaxed/simple;
+	bh=XsPKDeM9chUns6gELv/tvjyvR18aigNT8zkmAGpNQOE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=WQHPuukczxjbRTnnhXyiqFjGruFTZJWHQmLigQZAcHaNcXJ4nUfYxiB++01QzJ73ZFRB5XlXRhAXbvj+WROcZhVBb6hSRwSA8tNHmIN4LJXpBLrz+aaxkWB6XE0t3Z7P7bzNWLGVhn3VxD25liil4tRx4nUSWg+bUXD1+VoIsqY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=UUK2z0gl; arc=fail smtp.client-ip=52.101.61.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=XuLZ0E7iVLs0b2XvXpjye3Dp1L94SINpEhDD/tr3IfD0+qOegLqf/oouqAESABM97hrPnubeoX0jIg6KfjjQFW/nnZWC+qlT3/IXykI4n4UuAJXUcT0fltehzVkg2zselSmwHb/zdj8oTgceI9OHH+G88WF1G45FqzHYRlXvhdyZzdup9R/WsRUkp3AT3wTbRhRVauAo3JKjE7l7sHRQegGGZ9iic9yqsiumuQ4FwxTpc9ZF0+hXdHWdAkLPTqXLi7feYctqFMeGgQEUu2Vg8SVFJ/j4O8QBB8b6zMU5GHUfSlcCmmgMNv1A6/dQLxofKpQ96t+BPfS+devQOnU9MQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TaUDQaEBfRIh/hmc20BR6OJz5lcaPoRAm7LztmxjGK8=;
+ b=nX8mo3BIzeOntct4sqCD5ZsohFHgfz5rZiadxgzyd6ZpS2g0DgIcOrVM7AltRXk87LZByrMOEPfNpnuF+iA6gqSTKfpNXnGc6VlCbaQb6sE3JRqazqYxOoxyX5RBgJnKJL2SlczmS6iIXyhonq7hhXiHeM26coMUojZZPVoe57bfCxcb7ok47Bqm/FTxow6/6JIzEaz/bMh1iETCr9/eKP+u9l+7mLDRuoi2yotAA25wVpPBqyMwtwqVrBv2bO0C/loDqDN+mVppIOgSZAjGpNBwN0L+dWEADhBFSWZ/pqnZThkh2I5O8OYYZYABV9tAQWkUrguBPC3fTANVBSE6bQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TaUDQaEBfRIh/hmc20BR6OJz5lcaPoRAm7LztmxjGK8=;
+ b=UUK2z0glBAyVhuRhfFMNFaKRoC9VtZRM4pkO+9zg8EiRpfY4Vsa+Jcmqhh/lISTpNtA9Fx836FpxnugCOUtMGOkywIX9QZmCVF4EOcqLn3vm7LtCPCqP4WQ8ZkNhNN5r2sLswTrRMmG+vUh7ct5voemsQJNxQGPINyoHkdUBJEavQPstuUvJkSTfwTxeK/yLQemrMSEmRge2dRznFmC1F1nhtwHcAxOtTWcZHqhmNATzvwJJHKqJi3MUmejDBTXGKkjp5Nh3bUVCL1CwTd33gBxsmZIXs9RmLb/crFDC0Tr9vbKoNmKYc0PxC1uhtBiObLJmtId/qYEHxmxqSl8v7w==
+Received: from DS7PR03CA0038.namprd03.prod.outlook.com (2603:10b6:5:3b5::13)
+ by LV8PR12MB9081.namprd12.prod.outlook.com (2603:10b6:408:188::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9499.7; Mon, 12 Jan
+ 2026 13:22:52 +0000
+Received: from DS1PEPF0001709A.namprd05.prod.outlook.com
+ (2603:10b6:5:3b5:cafe::84) by DS7PR03CA0038.outlook.office365.com
+ (2603:10b6:5:3b5::13) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9499.7 via Frontend Transport; Mon,
+ 12 Jan 2026 13:22:18 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ DS1PEPF0001709A.mail.protection.outlook.com (10.167.18.104) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9520.1 via Frontend Transport; Mon, 12 Jan 2026 13:22:52 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 12 Jan
+ 2026 05:22:34 -0800
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 12 Jan
+ 2026 05:22:32 -0800
+Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.8)
+ with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Mon, 12
+ Jan 2026 05:22:28 -0800
+From: Tariq Toukan <tariqt@nvidia.com>
+To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
+ S. Miller" <davem@davemloft.net>
+CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Moshe Shemesh
+	<moshe@nvidia.com>, Cosmin Ratiu <cratiu@nvidia.com>, Dragos Tatulea
+	<dtatulea@nvidia.com>
+Subject: [PATCH net-next 0/3] net/mlx5e: RX datapath enhancements
+Date: Mon, 12 Jan 2026 15:22:06 +0200
+Message-ID: <1768224129-1600265-1-git-send-email-tariqt@nvidia.com>
+X-Mailer: git-send-email 2.8.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS1PEPF0001709A:EE_|LV8PR12MB9081:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2eb5093d-88ac-41a9-cbac-08de51ddb079
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|376014|36860700013|82310400026;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?CvFyUAfvxXShHi54tCmAtV+KMEteO3NYV7EiPsazuV6+Jm/6vCBj0ZWX4lVW?=
+ =?us-ascii?Q?UXXvvA7rPNx+rnznqp5ELBNZqUazeUG/1FvMKyU0o9WSJi4ET3ywRcjMO1ct?=
+ =?us-ascii?Q?vHd2w6qA0GlfrnwwtDV4cB7UYFDkv3PZNtv5AmXyY+b6TDZKPQs658kWQrSS?=
+ =?us-ascii?Q?PEgWgLWB758p6Axd6cV8mGxopFhGcFvD7pCm7dEA6Ws2Rmzce7xwXTLK5meI?=
+ =?us-ascii?Q?BDdYKbFKhxGBEjunmnySGim5OH2Km4+V1SW0a5Ukir92JyHT60Z0uBGMBc0t?=
+ =?us-ascii?Q?J4YJgIhYh6T4GIUtZ5aMdPXKIIPSPzh3ptueXslkosiInRbWNBJLm4d4mG4r?=
+ =?us-ascii?Q?zfek/Tg+cEnL+jz4DJ5Kx4lCBRK9IXGnNr+BACn17Zw6mVPXmfRjC2ah4lAg?=
+ =?us-ascii?Q?WtY4z81kyf1HUd9BFRmw62Y0eoUEf2ADBjS3kn3Y+n8VbQ9cd62jU54v9cLQ?=
+ =?us-ascii?Q?OxyJCHueET83Q31WS/ODTy3iagGwTa62uG8SYn188Z2z/EefOaGwOIk/1glH?=
+ =?us-ascii?Q?b8BE8L9pRinH2QbHQ34ts7UXk5YV2LOFduLjVNIEdoH6gSO8njosw/91gDqL?=
+ =?us-ascii?Q?TbuZB8kBNCk5GNQYtbodUZ77GANVSVjGolqlPMLxfCjUMSdYrudKqcLqHKHR?=
+ =?us-ascii?Q?b7t9Q+fCru6xd0AhY6EENvA7kbqL5S7IxpfFTxhwHGzyqZWv6pzSgrY0hm6T?=
+ =?us-ascii?Q?dN70xcI3fDf/WCGGI+0xfP1PMKx5IQefcZowutCPiB8Bv1NadwaXGxXXRgSt?=
+ =?us-ascii?Q?g/ztE09wGWSCHqaR4RmHJxxWEXZnonrgAs2X3hyuOjRol7nyVJ0X6sXuWSoq?=
+ =?us-ascii?Q?4qKYeqnS8JE4xBB/bSHa1CjHnly9Dt+nBU5W1TaOAVO+NsoTXzArjmvYbnHR?=
+ =?us-ascii?Q?oOB4/B7sSDZy+XQxv6qagn5NmGccRE8pqnioQfeaLsKPPWpl5Ru1V9W/bxNv?=
+ =?us-ascii?Q?cIKfKtZdS0FADEbE1VJp4N8BsQmPCJnugcHNLODufggtKJEHyxDej/ZDfrV6?=
+ =?us-ascii?Q?eJoERxWqAiENI1Ad0tn3gtH9GmX3UtRVicY4JvjIlqTDNKanq2JS0pwfvM1p?=
+ =?us-ascii?Q?xN/lxpcYj4863VRXM4on47aW2av8CecDYQsax+ykAIwFR/RZ9Hn5GVzjL27j?=
+ =?us-ascii?Q?+SQaWPKvBVDBth6m+Eme6kOxsp24SG08xy3q3cO1vPKU59Ty16a9DBguZRsw?=
+ =?us-ascii?Q?s8lxnrT6tn1gnQs7uEvXmBNJuNoNQl393609UeRjHqg1OFp3tGrMMKG+V8Hl?=
+ =?us-ascii?Q?MruIg5VlRygM5J6B1+JIVCGzBg4MTiPwO0aSDFx09w5BlDmTtozT5n4yP4cS?=
+ =?us-ascii?Q?i2epegc4WFCFc+Qng0XLfNbyh8pw8n6tt0M8A7+iLIpT6JTv9NyGFw7DTeEP?=
+ =?us-ascii?Q?GQQFg5Dp2crB2E7Yu6y5+q+h5w/SoV/R9QmJHRzPGSR8UeaHDNcRVZaq4kRD?=
+ =?us-ascii?Q?mekjq7hvSmo+6kqjZIRVxV3nxkLswMEmnTquj8qktGAibXK+f7fkpReVJOGI?=
+ =?us-ascii?Q?X7V9Vf5VKSLpKpADvP08meIZeEhFjY2wa0kgV4cQ+CKfaOR3cDF3NLnUjbVj?=
+ =?us-ascii?Q?+0hC5M67t2kWigypb6k=3D?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(376014)(36860700013)(82310400026);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2026 13:22:52.2133
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2eb5093d-88ac-41a9-cbac-08de51ddb079
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS1PEPF0001709A.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9081
 
-Implement .ndo_tx_timeout for MANA so any stalled TX queue can be detected
-and a device-controlled port reset for all queues can be scheduled to a
-ordered workqueue. The reset for all queues on stall detection is
-recomended by hardware team.
+Hi,
 
-Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
----
-Changes in v8:
-  - better aligned queue reset work struct.
-Changes in v7:
-  - Add enable_work in resume path.
-Changes in v6:
-  - Rebased.
-Changes in v5:
-  -Fixed commit message, used 'create_singlethread_workqueue' and fixed
-   cleanup part.
-Changes in v4:
-  -Fixed commit message, work initialization before registering netdev,
-   fixed potential null pointer de-reference bug.
-Changes in v3:
-  -Fixed commit meesage, removed rtnl_trylock and added
-   disable_work_sync, fixed mana_queue_reset_work, and few
-   cosmetics.
-Changes in v2:
-  -Fixed cosmetic changes.
----
----
- drivers/net/ethernet/microsoft/mana/mana_en.c | 77 ++++++++++++++++++-
- include/net/mana/gdma.h                       |  7 +-
- include/net/mana/mana.h                       |  3 +-
- 3 files changed, 84 insertions(+), 3 deletions(-)
+This series by Dragos introduces multiple RX datapath enhancements to
+the mlx5e driver.
 
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index 1ad154f9db1a..91c418097284 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -299,6 +299,39 @@ static int mana_get_gso_hs(struct sk_buff *skb)
- 	return gso_hs;
- }
- 
-+static void mana_per_port_queue_reset_work_handler(struct work_struct *work)
-+{
-+	struct mana_port_context *apc = container_of(work,
-+						     struct mana_port_context,
-+						     queue_reset_work);
-+	struct net_device *ndev = apc->ndev;
-+	int err;
-+
-+	rtnl_lock();
-+
-+	/* Pre-allocate buffers to prevent failure in mana_attach later */
-+	err = mana_pre_alloc_rxbufs(apc, ndev->mtu, apc->num_queues);
-+	if (err) {
-+		netdev_err(ndev, "Insufficient memory for reset post tx stall detection\n");
-+		goto out;
-+	}
-+
-+	err = mana_detach(ndev, false);
-+	if (err) {
-+		netdev_err(ndev, "mana_detach failed: %d\n", err);
-+		goto dealloc_pre_rxbufs;
-+	}
-+
-+	err = mana_attach(ndev);
-+	if (err)
-+		netdev_err(ndev, "mana_attach failed: %d\n", err);
-+
-+dealloc_pre_rxbufs:
-+	mana_pre_dealloc_rxbufs(apc);
-+out:
-+	rtnl_unlock();
-+}
-+
- netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- {
- 	enum mana_tx_pkt_format pkt_fmt = MANA_SHORT_PKT_FMT;
-@@ -839,6 +872,23 @@ static int mana_change_mtu(struct net_device *ndev, int new_mtu)
- 	return err;
- }
- 
-+static void mana_tx_timeout(struct net_device *netdev, unsigned int txqueue)
-+{
-+	struct mana_port_context *apc = netdev_priv(netdev);
-+	struct mana_context *ac = apc->ac;
-+	struct gdma_context *gc = ac->gdma_dev->gdma_context;
-+
-+	/* Already in service, hence tx queue reset is not required.*/
-+	if (gc->in_service)
-+		return;
-+
-+	/* Note: If there are pending queue reset work for this port(apc),
-+	 * subsequent request queued up from here are ignored. This is because
-+	 * we are using the same work instance per port(apc).
-+	 */
-+	queue_work(ac->per_port_queue_reset_wq, &apc->queue_reset_work);
-+}
-+
- static int mana_shaper_set(struct net_shaper_binding *binding,
- 			   const struct net_shaper *shaper,
- 			   struct netlink_ext_ack *extack)
-@@ -924,6 +974,7 @@ static const struct net_device_ops mana_devops = {
- 	.ndo_bpf		= mana_bpf,
- 	.ndo_xdp_xmit		= mana_xdp_xmit,
- 	.ndo_change_mtu		= mana_change_mtu,
-+	.ndo_tx_timeout		= mana_tx_timeout,
- 	.net_shaper_ops         = &mana_shaper_ops,
- };
- 
-@@ -3287,6 +3338,8 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
- 	ndev->min_mtu = ETH_MIN_MTU;
- 	ndev->needed_headroom = MANA_HEADROOM;
- 	ndev->dev_port = port_idx;
-+	/* Recommended timeout based on HW FPGA re-config scenario. */
-+	ndev->watchdog_timeo = 15 * HZ;
- 	SET_NETDEV_DEV(ndev, gc->dev);
- 
- 	netif_set_tso_max_size(ndev, GSO_MAX_SIZE);
-@@ -3303,6 +3356,10 @@ static int mana_probe_port(struct mana_context *ac, int port_idx,
- 	if (err)
- 		goto reset_apc;
- 
-+	/* Initialize the per port queue reset work.*/
-+	INIT_WORK(&apc->queue_reset_work,
-+		  mana_per_port_queue_reset_work_handler);
-+
- 	netdev_lockdep_set_classes(ndev);
- 
- 	ndev->hw_features = NETIF_F_SG | NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM;
-@@ -3492,6 +3549,7 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
- {
- 	struct gdma_context *gc = gd->gdma_context;
- 	struct mana_context *ac = gd->driver_data;
-+	struct mana_port_context *apc = NULL;
- 	struct device *dev = gc->dev;
- 	u8 bm_hostmode = 0;
- 	u16 num_ports = 0;
-@@ -3549,6 +3607,14 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
- 	if (ac->num_ports > MAX_PORTS_IN_MANA_DEV)
- 		ac->num_ports = MAX_PORTS_IN_MANA_DEV;
- 
-+	ac->per_port_queue_reset_wq =
-+		create_singlethread_workqueue("mana_per_port_queue_reset_wq");
-+	if (!ac->per_port_queue_reset_wq) {
-+		dev_err(dev, "Failed to allocate per port queue reset workqueue\n");
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
- 	if (!resuming) {
- 		for (i = 0; i < ac->num_ports; i++) {
- 			err = mana_probe_port(ac, i, &ac->ports[i]);
-@@ -3565,6 +3631,8 @@ int mana_probe(struct gdma_dev *gd, bool resuming)
- 	} else {
- 		for (i = 0; i < ac->num_ports; i++) {
- 			rtnl_lock();
-+			apc = netdev_priv(ac->ports[i]);
-+			enable_work(&apc->queue_reset_work);
- 			err = mana_attach(ac->ports[i]);
- 			rtnl_unlock();
- 			/* we log the port for which the attach failed and stop
-@@ -3616,13 +3684,15 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
- 
- 	for (i = 0; i < ac->num_ports; i++) {
- 		ndev = ac->ports[i];
--		apc = netdev_priv(ndev);
- 		if (!ndev) {
- 			if (i == 0)
- 				dev_err(dev, "No net device to remove\n");
- 			goto out;
- 		}
- 
-+		apc = netdev_priv(ndev);
-+		disable_work_sync(&apc->queue_reset_work);
-+
- 		/* All cleanup actions should stay after rtnl_lock(), otherwise
- 		 * other functions may access partially cleaned up data.
- 		 */
-@@ -3649,6 +3719,11 @@ void mana_remove(struct gdma_dev *gd, bool suspending)
- 
- 	mana_destroy_eq(ac);
- out:
-+	if (ac->per_port_queue_reset_wq) {
-+		destroy_workqueue(ac->per_port_queue_reset_wq);
-+		ac->per_port_queue_reset_wq = NULL;
-+	}
-+
- 	mana_gd_deregister_device(gd);
- 
- 	if (suspending)
-diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
-index eaa27483f99b..a59bd4035a99 100644
---- a/include/net/mana/gdma.h
-+++ b/include/net/mana/gdma.h
-@@ -598,6 +598,10 @@ enum {
- 
- /* Driver can self reset on FPGA Reconfig EQE notification */
- #define GDMA_DRV_CAP_FLAG_1_HANDLE_RECONFIG_EQE BIT(17)
-+
-+/* Driver detects stalled send queues and recovers them */
-+#define GDMA_DRV_CAP_FLAG_1_HANDLE_STALL_SQ_RECOVERY BIT(18)
-+
- #define GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE BIT(6)
- 
- /* Driver supports linearizing the skb when num_sge exceeds hardware limit */
-@@ -621,7 +625,8 @@ enum {
- 	 GDMA_DRV_CAP_FLAG_1_HW_VPORT_LINK_AWARE | \
- 	 GDMA_DRV_CAP_FLAG_1_PERIODIC_STATS_QUERY | \
- 	 GDMA_DRV_CAP_FLAG_1_SKB_LINEARIZE | \
--	 GDMA_DRV_CAP_FLAG_1_PROBE_RECOVERY)
-+	 GDMA_DRV_CAP_FLAG_1_PROBE_RECOVERY | \
-+	 GDMA_DRV_CAP_FLAG_1_HANDLE_STALL_SQ_RECOVERY)
- 
- #define GDMA_DRV_CAP_FLAGS2 0
- 
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index d7e089c6b694..a078af283bdd 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -480,7 +480,7 @@ struct mana_context {
- 	struct mana_ethtool_hc_stats hc_stats;
- 	struct mana_eq *eqs;
- 	struct dentry *mana_eqs_debugfs;
--
-+	struct workqueue_struct *per_port_queue_reset_wq;
- 	/* Workqueue for querying hardware stats */
- 	struct delayed_work gf_stats_work;
- 	bool hwc_timeout_occurred;
-@@ -495,6 +495,7 @@ struct mana_context {
- struct mana_port_context {
- 	struct mana_context *ac;
- 	struct net_device *ndev;
-+	struct work_struct queue_reset_work;
- 
- 	u8 mac_addr[ETH_ALEN];
- 
+First patch adds SW handling for oversized packets in non-linear SKB
+mode.
+
+Second patch adds a reclaim mechanism to mitigate memory allocation
+failures with memory providers.
+
+Third patch moves SHAMPO to use static memory for the headers, rather
+than replenishing the memory from a page_pool.
+This introduces an interesting performance tradeoff where copying the
+header pays off.
+
+Regards,
+Tariq
+
+Dragos Tatulea (3):
+  net/mlx5e: RX, Drop oversized packets in non-linear mode
+  net/mlx5e: SHAMPO, Improve allocation recovery
+  net/mlx5e: SHAMPO, Switch to header memcpy
+
+ drivers/net/ethernet/mellanox/mlx5/core/en.h  |  20 +-
+ .../net/ethernet/mellanox/mlx5/core/en/txrx.h |   1 -
+ .../net/ethernet/mellanox/mlx5/core/en_main.c | 312 ++++++---------
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 373 +++++-------------
+ include/linux/mlx5/device.h                   |   6 +
+ 5 files changed, 227 insertions(+), 485 deletions(-)
+
+
+base-commit: 60d8484c4cec811f5ceb6550655df74490d1a165
 -- 
-2.43.0
+2.31.1
 
 
