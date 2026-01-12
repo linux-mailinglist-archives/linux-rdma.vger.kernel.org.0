@@ -1,81 +1,81 @@
-Return-Path: <linux-rdma+bounces-15450-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15451-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15AE0D11951
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 10:46:36 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3B81D118D2
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 10:42:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A2C91311C599
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 09:41:31 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E6AAE30504DD
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jan 2026 09:41:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5887F34D4C9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B116234CFD5;
 	Mon, 12 Jan 2026 09:41:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="aF3J+lwW"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="AmPeYFva"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from CH1PR05CU001.outbound.protection.outlook.com (mail-northcentralusazon11010001.outbound.protection.outlook.com [52.101.193.1])
+Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazon11013004.outbound.protection.outlook.com [40.107.201.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 779DB34AB09;
-	Mon, 12 Jan 2026 09:41:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.193.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF2FF34AB0B;
+	Mon, 12 Jan 2026 09:41:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.201.4
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768210880; cv=fail; b=JEJ6cP6pw9urld1cfL/KEQvqF1DmxM4rGvkZgyO3DZdY2PRJdU99HhZHp1YOyrywG7SgasmO1c8V0qgzM/UkVoEBe83xcaHL7plgxbDyrQXeEVU5Lf6jlTVlSueya5WjpMKYpAAmRJsVq6E1oLKHgSW51EmuwAE64V6cZBdPdbs=
+	t=1768210881; cv=fail; b=giCjMqj08HogYsm7iJdoYGJKroNhSEjbRau45fQK2nCT+kPzJu11nx1T8g6O/67gSOa6Xrco6LUSAhk6fz+YO7z3VWLHbinAn/xzM61uHjyBiV6PbJFEKy1XDlTiLcC53AlrFv0mbsN0ZSflTYJBA2ir3cWfTMABou9GWYuRhuE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768210880; c=relaxed/simple;
-	bh=M0dC8ftDo2ys1vt7Cl/ni4LEncLNXRMoo4qs/zB83WA=;
+	s=arc-20240116; t=1768210881; c=relaxed/simple;
+	bh=rbDubrL/IFp4o5g2XhEBE5XZo7tuvHQcuj9fQCIDEcY=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XgiqbkQGc29zxafVt8DostgA2LaKurfuewnws9QnfmJ54fD6m9AD8IvMSIBHMe/8BburXWvsW7FW820A3vKLLl89StTYtZNarHxxI0gNNqMZ6NgfgmHwyPH7d5kefxB2G+8JNW2RFLdhPpmch4KESBpoiKJS/E0w0oEsz7nJVSE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=aF3J+lwW; arc=fail smtp.client-ip=52.101.193.1
+	 MIME-Version:Content-Type; b=BS7Jx+kOMy4RxtntfuFzAsJtRFrayqsXWpkjce3GBUu1LGA0ZqQOUAschzU/pBfnO1ckUFEAaqOWEBajDYukO66Ts7imw4hrF82PdlGRYKKdiaNXm+dsPIhRUyFZK/bspMsvEhzFX4mvL2xUgfyvl7B8ecU/jGtiKymr4CjOkII=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=AmPeYFva; arc=fail smtp.client-ip=40.107.201.4
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=PWgKb9GA1G6bjyDbjK+itjau7H+dHP4X7yKxPz2FGin4Sh8Al6VaTrsJIjNqPVmFMaKUn3TURml4wGczvejaTOLqRt2j2qVXYJ9QVutbcQLNndNfS1K9Ub7c9CkAVNppjaqaGP7gFCRYOCS7HjYfX3Bs0dm6O7xs22CRW463x8AimNpC+fyGsGZXk8a9yjU7SGtEVvJXQ3MKwxxzyOQ02lxEFOChuN5aSmMA1EnVWXwbqfy46Cuya+r05aDer7FLvUE+3jt/kKnYWFieI9WbReegWZzw7l3e7AbXna9yxI/dgMzIkIwGoGrC3aoUzRj5hIaSenXDox47FPXydWarzw==
+ b=WPagAbSJJaVKVy1LvEKuC6fgvn+evIePxRiDEvOXlNGr3UyAEntrrrs39NAmQcXHsOxGP6/ezRrx/09AsiExbu2CW3mf0T5s7aAs3Z6qz+mI11IPIZZzv0m5KJnz1ZdwuijLCyuQgD3zof2nVK41/6Nkk3eUYK76zVu7hDDfw0AGiAAKlBZQ3ipTD9sqVYRuo7vRg5QKB+apJ1mBijerUThDBUg+VAhzRAHmMoFjIt5mLzQo9KPQT503KaV8sn6gNjS7/TDJviunqPsEZyCPRJKyMHG5Pndpm5FrWyYpopoiDaRNJgRuMzgq63Hd7DfayEwx09hfsQp3vHurnSaE9g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ANjacQbri3PxJY8MiZJSO5BRqI0rp0n5/6XuLJyCEKU=;
- b=RZFVKzmhKDFeK91sTaxFgooZkkKLc+zcZMP8zDYP3SV1M+GY0sP0Z47Pm82taPVHBQR5WLVJzdJu4vwB1xRYPhpw94kmoQWDDQ+1v+J6xD2bYN/NNMm9cdWR5VnXVrFKYWcWzk8jYe3ZQAXHFYTZg3RgrhpGiXduDkpke41iUUQyyrIjYp7sX2tLqoIBr4i3pgoyWJFmFs7KSQeT1APdVsiGrstvyjw0H2/6BEyTll+UTBHR5hfJgS5f7gc4JUOLHsBA115DeHIa66DL/ZzGYlY8UkK/+d+OkKM9/oWSW+Ysm95gRnoXRe/KFV5GBZG/7e5DG7k/lcgO9GJvjUP3bw==
+ bh=7vAIirAMJG7ZIz7/43kyjqKUfCFLUDsdgsu97uDMHl4=;
+ b=ONT1EzYjG+mjX2voNkyyN0h2rJZ0lBBoVfu7L0ZroxbRtsG+E0TDL3M/r54FVluiPwp3RHYI+y1YAnqHqUI5zA/mtHusp/AaIq3AU2b2pkSTT36xfSCga28eiS8FBkydm2CamUV+0TYTkHY+vAPS89R5shhaCxL8O6x4vrhSGJlzSc02mmTY8SdNYeHRZ8AgqpGtEN2UzKB62g6MiSbCG7qGtraVfPU55aB+JllWmLAn9Ee3zNBv34B/WGcZtJmJ1414xVt9vZaCdbXJ99Ry3iKM9VHkFZy9EkmjDLdatf4gzaNNCqDe6l06n9j1CCDFz3LdCRoXMZBNN2a9btXSvg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ANjacQbri3PxJY8MiZJSO5BRqI0rp0n5/6XuLJyCEKU=;
- b=aF3J+lwWbb9SXX14UVvlpY73Ils4UX+cR4RgCSSIKOLsrYsRq7+jcp/0+MyB7hzbCbjgNWKIHlBKzv8A0KC0glCZuSCUvMtmMNprHe6NERHLY8fkkpSx4d+omLQEbzP6mej+6b7S+eaHWCeGgidG42hhcKeY5idAOzUe0crkkM6gXNr7KQWNhrOySI9MHusIcmlW1wkgeFrRUAvbQ1aLyGMNQ6MsGFRFDUKvV1MPz96sZ7c6QWLhyrSe0aRrZdML3RCJqX4y++JzbvYq41mAwWDiFyP1Pzp7xHIn4D6zuVNYKJtNYAykmkYng1iwo8idJApUAQfcRimitlVDKw7Alw==
-Received: from CH0PR04CA0020.namprd04.prod.outlook.com (2603:10b6:610:76::25)
- by DS0PR12MB7536.namprd12.prod.outlook.com (2603:10b6:8:11c::21) with
+ bh=7vAIirAMJG7ZIz7/43kyjqKUfCFLUDsdgsu97uDMHl4=;
+ b=AmPeYFvaIuhp+LErVX4HWpI2bxJHokBtvJPw+T1ltur1X3c78CO0U5OWSU9iRe9lioTRUA9T5wZeL38tZy+c5KkAtjLXlwbR0oRXJuoRt2SFiXtWK5l/Y9ReIhQSRPptiB+Raa1L2lSCQ/RzTo8g0WCuPR0LM9aK6GBf52xOmtUrCKPH4X98aMrjxlvF14OU3tbmUAKlBH0eMIQCtwPvPLYqphFLiKWy++D1hy2EeAX18Fy9zsD5XTbVly/YLje37EALgXgSt9Uv8OsP5oXIG5eYvt6iFm2QajxJG4dSw/uYSqawdHNSkkYFrE/PEQinLaw4sF6rvojA32K4CkrVOA==
+Received: from BLAPR05CA0016.namprd05.prod.outlook.com (2603:10b6:208:36e::22)
+ by CYYPR12MB8892.namprd12.prod.outlook.com (2603:10b6:930:be::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9499.7; Mon, 12 Jan
- 2026 09:41:03 +0000
-Received: from CH2PEPF00000144.namprd02.prod.outlook.com
- (2603:10b6:610:76:cafe::3) by CH0PR04CA0020.outlook.office365.com
- (2603:10b6:610:76::25) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9499.7 via Frontend Transport; Mon,
- 12 Jan 2026 09:41:02 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ 2026 09:41:07 +0000
+Received: from BL02EPF00021F6C.namprd02.prod.outlook.com
+ (2603:10b6:208:36e:cafe::3b) by BLAPR05CA0016.outlook.office365.com
+ (2603:10b6:208:36e::22) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9520.4 via Frontend Transport; Mon,
+ 12 Jan 2026 09:41:05 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- CH2PEPF00000144.mail.protection.outlook.com (10.167.244.101) with Microsoft
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ BL02EPF00021F6C.mail.protection.outlook.com (10.167.249.8) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9520.1 via Frontend Transport; Mon, 12 Jan 2026 09:41:03 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.9520.1 via Frontend Transport; Mon, 12 Jan 2026 09:41:07 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 12 Jan
- 2026 01:40:47 -0800
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ 2026 01:40:52 -0800
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Mon, 12 Jan
- 2026 01:40:47 -0800
+ 2026 01:40:51 -0800
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.6)
  with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Mon, 12
- Jan 2026 01:40:43 -0800
+ Jan 2026 01:40:47 -0800
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -85,9 +85,9 @@ CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
 	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Moshe Shemesh
 	<moshe@nvidia.com>, Yevgeny Kliteynik <kliteyn@nvidia.com>
-Subject: [PATCH net-next 2/3] net/mlx5: fs, split bulk init
-Date: Mon, 12 Jan 2026 11:40:24 +0200
-Message-ID: <1768210825-1598472-3-git-send-email-tariqt@nvidia.com>
+Subject: [PATCH net-next 3/3] net/mlx5: Initialize bulk for single flow counters
+Date: Mon, 12 Jan 2026 11:40:25 +0200
+Message-ID: <1768210825-1598472-4-git-send-email-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.8.0
 In-Reply-To: <1768210825-1598472-1-git-send-email-tariqt@nvidia.com>
 References: <1768210825-1598472-1-git-send-email-tariqt@nvidia.com>
@@ -101,175 +101,165 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH2PEPF00000144:EE_|DS0PR12MB7536:EE_
-X-MS-Office365-Filtering-Correlation-Id: 32d248e3-2d72-4e4a-1aba-08de51beb3a5
+X-MS-TrafficTypeDiagnostic: BL02EPF00021F6C:EE_|CYYPR12MB8892:EE_
+X-MS-Office365-Filtering-Correlation-Id: 043d2753-c010-403a-47c8-08de51beb61f
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|36860700013|376014|82310400026;
+	BCL:0;ARA:13230040|1800799024|82310400026|36860700013|376014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?ha7DwaZGNZolD5OXi4ZTLzrp5hCWecyOb9fwS4Sj0a7EJ2JZDf8RgEREp2rx?=
- =?us-ascii?Q?+AHUFOiejbTtScMR6uCgX2QR+nGqDD7NTV7OgsDWisE7Q2uC6mY363Z5VKa5?=
- =?us-ascii?Q?uCfEg7SD1sA2V1XPiGkFqTGhptbFKiJNyuNWmcuCRioQ522321/mKYdgXZ0w?=
- =?us-ascii?Q?bI69CcRy+nhFvxsfaHV2jlp+jBD9fjnREpbPPlZFV0EsPOcNtkF6ydZgeyAy?=
- =?us-ascii?Q?17XRldjYOypxwg1niypvnEeib0fE5j4FChsBE48XiRKnxRihDhcbZ7Q+oely?=
- =?us-ascii?Q?N0dE4uf8KV0J0NckrW8qe0bzVCrOh32idsLdL52BkOtSJnGU4JSg7pajtr6T?=
- =?us-ascii?Q?v5fEbqT0hzstXayHJp7mv0u46Hh7PgYCNaWgfvjHmtgJFARLpsJFObVD+auT?=
- =?us-ascii?Q?dMrpQBFZUl6pcqcqwVRJ5zE2GG9F6PX+aLGFwfIUr6yhk0q3Hl3k+z94CqF9?=
- =?us-ascii?Q?RgIq4vdSCDfN9IivUZ/85SuMYwOKW+mm1wB4aTPE+8tPweoXGSmIgZ6MutyO?=
- =?us-ascii?Q?7Z8S+qFQD8xvRrNeL859rV3lBL4Yc1xva10fCkZvj+027wtd+hCbCUiGcI/U?=
- =?us-ascii?Q?7vPou8PMNaLVUELzbOWKnoZ35YPv5sTy/JVB4sW0IbAZG6SJjRquAEUDkP40?=
- =?us-ascii?Q?QgOrP3UCNaL8ojf9t54qgICKmz9T7e7qk7K8EByAAMKRtiuJgXDh7/2wV/SD?=
- =?us-ascii?Q?XIUVauV8uJeVNdSANM1yVrKxZIlKS5dDNm6CZGTrRoLvfTAxscOKTeolx1yH?=
- =?us-ascii?Q?+QG4Zk0NjTi2lz7st4mlfjvY/lZZ7yaVzPRYBOURukqJOFgbnGmh+mup/s3A?=
- =?us-ascii?Q?KQpv6UBwYL2XS0HCcMgHpj/7nwQplmdyciprdPYIFa4Ks4z3Y9fITu6jdqLK?=
- =?us-ascii?Q?j5Kh4VL9LbNrIC1SMiovWErKiHp5lWojFfNkfP6WvefobPmRmQ95HLPDmkN1?=
- =?us-ascii?Q?wTvTxo/q1fopu7vngOQxksBEB+nw97YIzwp7EL9P/cFChO5x32PsVJC/bfZV?=
- =?us-ascii?Q?WvwnM8Ns5riYLD8u8v6wsjAIzTlzDGz1L6g2BPa6YrRyKu9A88E54ZO8CcER?=
- =?us-ascii?Q?uyNxIYVeV+/Hh7OqgX3J3XxMgplp3IBqnHsqsmehFgpagsNCXzKMx8KABYwk?=
- =?us-ascii?Q?FlrDz3l+P9gEpseRMYHD/kuI/bpjTzUv9Y3SlU+iDupLWTqN5CRskmK9OnEq?=
- =?us-ascii?Q?RksOWOsOvtSPA+wpuAmiR+vrd1DZ9oqLAEauAIySSLJ01oeKTkhVdgmtJIHp?=
- =?us-ascii?Q?6oWUYCsZyXMpzSXS1yOxjpU/sNn/ZYZBCPl5rGYADfnFw4lK9L1YOAQbDQql?=
- =?us-ascii?Q?7++dOzCgEzbOvEglK1+FhucdyRPqTokU0nlQphC+gQoJ/SWHHXNk5sLQdbec?=
- =?us-ascii?Q?/fL9AL7E3ycSkR2yOZlQcC55idLtgv91gIssTxBOXQ4gm5v9EVlD5oHL4rj/?=
- =?us-ascii?Q?nFFGzzq4y4I3P6aIzsaBJNAHBKnetiQrROxDZ4jCpngAH12ktEI3ho8Gt5HX?=
- =?us-ascii?Q?xuYlybYN1aojPixtuU/uCNDjzlOlOnk5HAGmcVLt18jhAf9HBJ5sXg+e/Q5x?=
- =?us-ascii?Q?N/WW1+aN0mlHDGls2qk=3D?=
+	=?us-ascii?Q?y2oOyEzFhUbeDuo/5xpYtwZPKL1l1wCw9AU3vRPK3tJRHtD2pIfK+YklNhMr?=
+ =?us-ascii?Q?wL+2IBmjqO/AWj5Q01P0MMrv66lxtlSjb/ZcjANL4NOoLVGaviXk5R7U+qot?=
+ =?us-ascii?Q?WjagnwBq3PmWB0AGbzdcBDp/XrgqkymBDlQeL123joKfj2Yt9Kp0jNva9SHW?=
+ =?us-ascii?Q?qhNYJ6S8VxiivDYrsCrPxegfLcs5vXTNz7jRp6O5ItzCPmdZRpVNgwfzZ3bs?=
+ =?us-ascii?Q?y8bFatBeBXTAZnwQDSic58ov1x3OjwnVe/vnKvwNY4IH7JNhlYhDH0VMU6Y7?=
+ =?us-ascii?Q?yYxpPzoYni70CWfmiLi99Y2K7Ur0HeMTGHmNyQcRf9ugaGXPsUzYjyPWzYzn?=
+ =?us-ascii?Q?wr6DKCPd+VZUM5oY/TKh1H5TUY5TyR3Et/m22/xixPV9cLE4SxzfYjv8SR8e?=
+ =?us-ascii?Q?Bdb3XtqAci5OjmEaD47lKe6hHrQHnIHIlMw/mdY8fCNQbqywFTIYdnXTK1VM?=
+ =?us-ascii?Q?YIOXzMI9JLqBDPmFbMGZRfih/9VGoatOoNsRUxsRxF/4sSgX42FR7xJDyk78?=
+ =?us-ascii?Q?BXvOPnisYFJhfQI1RzI725fcO/MnRy0GBL8Jp5JIYBLcgqerzBQ1TQyHW+F1?=
+ =?us-ascii?Q?SHfL3Pvas1EyhpOL4BKXj7BAaJODSDa2b9PFxR+yvp7z6fqKtx89dxMTRouY?=
+ =?us-ascii?Q?iz+AOo/P4z7eLpuv8wuFNOjjXzdio4kQgUAJ9RWWZnhTZOLz2lkcwH5KokOI?=
+ =?us-ascii?Q?3xfWpuZrKNaHyaDRQI/PQKXA1RgKHqBBHqIOEl50fVWxnFQKM06J1oKbPW2Z?=
+ =?us-ascii?Q?CcO/GX7s6baCJ2QIs0mQJAO1pzvmg268YX0ve7B7fA8KS1e8I3j8KFFXYU3k?=
+ =?us-ascii?Q?Dw1eLyLfk5efYz6Sb8D8TuGf0A5W7gsWraW5K5IHtVJc3GJ+AFLlpi8Gh4uv?=
+ =?us-ascii?Q?0MwgXN6MFNLdgiDc0jkACPWLs1gHRltSKf9bAzBI5O2ppWXSOEf0CcQT+fpH?=
+ =?us-ascii?Q?BS5NEomp6M+SuJFqFdl3DjMSzocPLjvlfYaIl2jrC0AtlDb8dG748aH4e7nM?=
+ =?us-ascii?Q?2iP4F5XXaxMvEV/UdHEylfcBCLZl7g4p8obdnWFS/5IYjoSkH3vCF4uUXWyV?=
+ =?us-ascii?Q?AD9gXeCWFrcT9TGhC3AjrzxSg15jtto89vBSEQF5paL9dNg5B6ThX3oZR5dV?=
+ =?us-ascii?Q?Qlie6el0Ef9rm3AGH5u0ByPmGzI6J4CkV5yqXuW4pw5nTMorOGE2nN3UwnYf?=
+ =?us-ascii?Q?iT3pd+rTHTFWXQ1ybi5PCuGIpTz0cCUmWYUVp3esGMrolqoI3P01kjgTi57q?=
+ =?us-ascii?Q?VXIi4wngBgn3wQsb01heKS5H59Zxvv8M8RQ+RTx/EKHlg10YFdBiAUa9g7KY?=
+ =?us-ascii?Q?n43as8WmwpVwuPzhbEJroIpa4v2Z+LTJs6Q0HbPFxeE2O5dTFASoQ883+tPg?=
+ =?us-ascii?Q?qDjxcUCGVIuacsQ3f0ZMgONdqAJj+cpWSa47YwvVBEWvjxo4hIoyYrzH1kA/?=
+ =?us-ascii?Q?rzMlJqM5gctXjZv/iHr/zAtTftM4BJCFqnnpR1mz2k+LfENjhyN6N7Y4HXbv?=
+ =?us-ascii?Q?4RXGEJCHhKf+xA69Kif3gku4rgESiFCG5vomPlIOj7AYPpPEwAUE22SWebbN?=
+ =?us-ascii?Q?jjjtiFakmiMM3L4sqCs=3D?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(36860700013)(376014)(82310400026);DIR:OUT;SFP:1101;
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(36860700013)(376014);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2026 09:41:03.0314
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2026 09:41:07.2074
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32d248e3-2d72-4e4a-1aba-08de51beb3a5
+X-MS-Exchange-CrossTenant-Network-Message-Id: 043d2753-c010-403a-47c8-08de51beb61f
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	CH2PEPF00000144.namprd02.prod.outlook.com
+	BL02EPF00021F6C.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7536
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8892
 
-From: Mark Bloch <mbloch@nvidia.com>
+From: Moshe Shemesh <moshe@nvidia.com>
 
-Refactor mlx5_fs_bulk_init() by moving bitmap allocation logic into a
-new helper function mlx5_fs_bulk_bitmap_alloc(). This change does not
-alter any logic.
+Ensure that flow counters allocated with mlx5_fc_single_alloc() have
+bulk correctly initialized so they can safely be used in HWS rules.
 
-Signed-off-by: Mark Bloch <mbloch@nvidia.com>
 Signed-off-by: Moshe Shemesh <moshe@nvidia.com>
+Reviewed-by: Mark Bloch <mbloch@nvidia.com>
 Reviewed-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- .../ethernet/mellanox/mlx5/core/fs_counters.c    |  6 ++++--
- .../net/ethernet/mellanox/mlx5/core/fs_pool.c    | 16 ++++++++++------
- .../net/ethernet/mellanox/mlx5/core/fs_pool.h    |  5 +++--
- .../mlx5/core/steering/hws/fs_hws_pools.c        |  8 ++++++--
- 4 files changed, 23 insertions(+), 12 deletions(-)
+ .../net/ethernet/mellanox/mlx5/core/fs_core.h |  3 +-
+ .../ethernet/mellanox/mlx5/core/fs_counters.c | 39 +++++++++++++------
+ 2 files changed, 29 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_counters.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_counters.c
-index e14570a3d492..14539a20a60f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fs_counters.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_counters.c
-@@ -449,7 +449,9 @@ static struct mlx5_fs_bulk *mlx5_fc_bulk_create(struct mlx5_core_dev *dev,
- 	if (!fc_bulk)
- 		return NULL;
- 
--	if (mlx5_fs_bulk_init(dev, &fc_bulk->fs_bulk, bulk_len))
-+	mlx5_fs_bulk_init(&fc_bulk->fs_bulk, bulk_len);
-+
-+	if (mlx5_fs_bulk_bitmap_alloc(dev, &fc_bulk->fs_bulk))
- 		goto fc_bulk_free;
- 
- 	if (mlx5_cmd_fc_bulk_alloc(dev, alloc_bitmask, &base_id))
-@@ -566,7 +568,7 @@ mlx5_fc_local_create(u32 counter_id, u32 offset, u32 bulk_size)
- 
- 	counter->type = MLX5_FC_TYPE_LOCAL;
- 	counter->id = counter_id;
--	fc_bulk->fs_bulk.bulk_len = bulk_size;
-+	mlx5_fs_bulk_init(&fc_bulk->fs_bulk, bulk_size);
- 	mlx5_fc_bulk_init(fc_bulk, counter_id - offset);
- 	counter->bulk = fc_bulk;
- 	refcount_set(&counter->fc_local_refcount, 1);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_pool.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_pool.c
-index f6c226664602..faa519254316 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fs_pool.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_pool.c
-@@ -4,23 +4,27 @@
- #include <mlx5_core.h>
- #include "fs_pool.h"
- 
--int mlx5_fs_bulk_init(struct mlx5_core_dev *dev, struct mlx5_fs_bulk *fs_bulk,
--		      int bulk_len)
-+int mlx5_fs_bulk_bitmap_alloc(struct mlx5_core_dev *dev,
-+			      struct mlx5_fs_bulk *fs_bulk)
- {
- 	int i;
- 
--	fs_bulk->bitmask = kvcalloc(BITS_TO_LONGS(bulk_len), sizeof(unsigned long),
--				    GFP_KERNEL);
-+	fs_bulk->bitmask = kvcalloc(BITS_TO_LONGS(fs_bulk->bulk_len),
-+				    sizeof(unsigned long), GFP_KERNEL);
- 	if (!fs_bulk->bitmask)
- 		return -ENOMEM;
- 
--	fs_bulk->bulk_len = bulk_len;
--	for (i = 0; i < bulk_len; i++)
-+	for (i = 0; i < fs_bulk->bulk_len; i++)
- 		set_bit(i, fs_bulk->bitmask);
- 
- 	return 0;
- }
- 
-+void mlx5_fs_bulk_init(struct mlx5_fs_bulk *fs_bulk, int bulk_len)
-+{
-+	fs_bulk->bulk_len = bulk_len;
-+}
-+
- void mlx5_fs_bulk_cleanup(struct mlx5_fs_bulk *fs_bulk)
- {
- 	kvfree(fs_bulk->bitmask);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_pool.h b/drivers/net/ethernet/mellanox/mlx5/core/fs_pool.h
-index f04ec3107498..4deb66479d16 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fs_pool.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_pool.h
-@@ -39,8 +39,9 @@ struct mlx5_fs_pool {
- 	int threshold;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.h b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.h
+index 1c6591425260..dbaf33b537f7 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.h
+@@ -308,7 +308,8 @@ struct mlx5_flow_root_namespace {
  };
  
--int mlx5_fs_bulk_init(struct mlx5_core_dev *dev, struct mlx5_fs_bulk *fs_bulk,
--		      int bulk_len);
-+void mlx5_fs_bulk_init(struct mlx5_fs_bulk *fs_bulk, int bulk_len);
-+int mlx5_fs_bulk_bitmap_alloc(struct mlx5_core_dev *dev,
-+			      struct mlx5_fs_bulk *fs_bulk);
- void mlx5_fs_bulk_cleanup(struct mlx5_fs_bulk *fs_bulk);
- int mlx5_fs_bulk_get_free_amount(struct mlx5_fs_bulk *bulk);
+ enum mlx5_fc_type {
+-	MLX5_FC_TYPE_ACQUIRED = 0,
++	MLX5_FC_TYPE_POOL_ACQUIRED = 0,
++	MLX5_FC_TYPE_SINGLE,
+ 	MLX5_FC_TYPE_LOCAL,
+ };
  
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/fs_hws_pools.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/fs_hws_pools.c
-index 839d71bd4216..5bc8e97ecf1c 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/fs_hws_pools.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/hws/fs_hws_pools.c
-@@ -121,7 +121,9 @@ mlx5_fs_hws_pr_bulk_create(struct mlx5_core_dev *dev, void *pool_ctx)
- 	if (!pr_bulk)
- 		return NULL;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_counters.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_counters.c
+index 14539a20a60f..fe7caa910219 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fs_counters.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_counters.c
+@@ -153,6 +153,7 @@ static void mlx5_fc_stats_query_all_counters(struct mlx5_core_dev *dev)
+ static void mlx5_fc_free(struct mlx5_core_dev *dev, struct mlx5_fc *counter)
+ {
+ 	mlx5_cmd_fc_free(dev, counter->id);
++	kfree(counter->bulk);
+ 	kfree(counter);
+ }
  
--	if (mlx5_fs_bulk_init(dev, &pr_bulk->fs_bulk, bulk_len))
-+	mlx5_fs_bulk_init(&pr_bulk->fs_bulk, bulk_len);
+@@ -163,7 +164,7 @@ static void mlx5_fc_release(struct mlx5_core_dev *dev, struct mlx5_fc *counter)
+ 	if (WARN_ON(counter->type == MLX5_FC_TYPE_LOCAL))
+ 		return;
+ 
+-	if (counter->bulk)
++	if (counter->type == MLX5_FC_TYPE_POOL_ACQUIRED)
+ 		mlx5_fc_pool_release_counter(&fc_stats->fc_pool, counter);
+ 	else
+ 		mlx5_fc_free(dev, counter);
+@@ -220,8 +221,16 @@ static void mlx5_fc_stats_work(struct work_struct *work)
+ 	mlx5_fc_stats_query_all_counters(dev);
+ }
+ 
++static void mlx5_fc_bulk_init(struct mlx5_fc_bulk *fc_bulk, u32 base_id)
++{
++	fc_bulk->base_id = base_id;
++	refcount_set(&fc_bulk->hws_data.hws_action_refcount, 0);
++	mutex_init(&fc_bulk->hws_data.lock);
++}
 +
-+	if (mlx5_fs_bulk_bitmap_alloc(dev, &pr_bulk->fs_bulk))
- 		goto free_pr_bulk;
+ static struct mlx5_fc *mlx5_fc_single_alloc(struct mlx5_core_dev *dev)
+ {
++	struct mlx5_fc_bulk *fc_bulk;
+ 	struct mlx5_fc *counter;
+ 	int err;
  
- 	for (i = 0; i < bulk_len; i++) {
-@@ -275,7 +277,9 @@ mlx5_fs_hws_mh_bulk_create(struct mlx5_core_dev *dev, void *pool_ctx)
- 	if (!mh_bulk)
- 		return NULL;
+@@ -229,13 +238,26 @@ static struct mlx5_fc *mlx5_fc_single_alloc(struct mlx5_core_dev *dev)
+ 	if (!counter)
+ 		return ERR_PTR(-ENOMEM);
  
--	if (mlx5_fs_bulk_init(dev, &mh_bulk->fs_bulk, bulk_len))
-+	mlx5_fs_bulk_init(&mh_bulk->fs_bulk, bulk_len);
+-	err = mlx5_cmd_fc_alloc(dev, &counter->id);
+-	if (err) {
+-		kfree(counter);
+-		return ERR_PTR(err);
++	fc_bulk = kzalloc(sizeof(*fc_bulk), GFP_KERNEL);
++	if (!fc_bulk) {
++		err = -ENOMEM;
++		goto free_counter;
+ 	}
++	err = mlx5_cmd_fc_alloc(dev, &counter->id);
++	if (err)
++		goto free_bulk;
+ 
++	counter->type = MLX5_FC_TYPE_SINGLE;
++	mlx5_fs_bulk_init(&fc_bulk->fs_bulk, 1);
++	mlx5_fc_bulk_init(fc_bulk, counter->id);
++	counter->bulk = fc_bulk;
+ 	return counter;
 +
-+	if (mlx5_fs_bulk_bitmap_alloc(dev, &mh_bulk->fs_bulk))
- 		goto free_mh_bulk;
++free_bulk:
++	kfree(fc_bulk);
++free_counter:
++	kfree(counter);
++	return ERR_PTR(err);
+ }
  
- 	for (int i = 0; i < bulk_len; i++) {
+ static struct mlx5_fc *mlx5_fc_acquire(struct mlx5_core_dev *dev, bool aging)
+@@ -421,13 +443,6 @@ static void mlx5_fc_init(struct mlx5_fc *counter, struct mlx5_fc_bulk *bulk,
+ 	counter->id = id;
+ }
+ 
+-static void mlx5_fc_bulk_init(struct mlx5_fc_bulk *fc_bulk, u32 base_id)
+-{
+-	fc_bulk->base_id = base_id;
+-	refcount_set(&fc_bulk->hws_data.hws_action_refcount, 0);
+-	mutex_init(&fc_bulk->hws_data.lock);
+-}
+-
+ u32 mlx5_fc_get_base_id(struct mlx5_fc *counter)
+ {
+ 	return counter->bulk->base_id;
 -- 
 2.31.1
 
