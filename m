@@ -1,114 +1,197 @@
-Return-Path: <linux-rdma+bounces-15516-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15524-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F430D1A653
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 17:49:29 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDD73D1A93A
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 18:18:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 87D4930101D3
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 16:49:28 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id A60C0300D643
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 17:18:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4057C34D916;
-	Tue, 13 Jan 2026 16:49:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CAB02DC769;
+	Tue, 13 Jan 2026 17:17:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="IUN+F7Os"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="UKBkURpu"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+Received: from mail-yx1-f100.google.com (mail-yx1-f100.google.com [74.125.224.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A5AD25B1FC
-	for <linux-rdma@vger.kernel.org>; Tue, 13 Jan 2026 16:49:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8441F2512C8
+	for <linux-rdma@vger.kernel.org>; Tue, 13 Jan 2026 17:17:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768322967; cv=none; b=e2kk57jyxjZhJYP8XHyjyspEM+rSjBn3yH9xJalEIsjjSKkLNFoJgRbrvI1CyWlgwfhDxIRSk0+kVEDgZYg6HSXUN0qjUkrNb9PnhgGAOIUB1VsQy0BQumNo36P81nruhLAzFxtKh9YNxYP1ScDLYnmKuGydUiithoa+AvC+AS4=
+	t=1768324678; cv=none; b=mjCnqKW0i3pLjeo+sysXZF2BomTIf0BB1DyCjqirbwMlU1dupdf6ecGgUokfk9lo6F3yWbN6osEfvTFyaql52aZXf1dIplnpL1uJitxGi2sGLxmPa9LJGpwUHRTdFNqf21Axvq3Epg86MrZIddD9CRvr0PbAkwCID5bSqorZYII=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768322967; c=relaxed/simple;
-	bh=FcKwhFtwMjJDEN2YQ222Ot6kSiGOtJGNAi5RAuQWTkY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J/lA2GkhUPLAPLuUOePYYx9rZHRDyWmvYIhmR7B0iN2RFcbhVjDeaVkfAyGsL1fDR0U4m2DRa5m4pnUSSc8vL+pUMHw6VW2BhHY3MO6fSuuvWxuPIiUnN2MNqEJ7fd5EcE6K6MCwASEI7YYuuXJscGh8dLMla34UJg/72Z4hh9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=IUN+F7Os; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-4f1b1948ffaso54151221cf.2
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Jan 2026 08:49:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1768322964; x=1768927764; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=FcKwhFtwMjJDEN2YQ222Ot6kSiGOtJGNAi5RAuQWTkY=;
-        b=IUN+F7Os2CbsEpMXD+uy4zfUryF0h24o1jyx/IiYJq7BeVoHZ6z1GLN7ui8LGfBeDP
-         DA6tBmkTPIySiWnRFO2xpwJfRu9SLXxaW5kpd8t9UaDDsOIyaFmhxxvdDzVLw7HDPgVZ
-         tMZlJgPmwHU2p01l/jcmvEXdj1SWT2nHiRpYbfEBCcreb/F5llf+NsHfCACTdfcMNR8l
-         DlZRQw8wRcmCaT2Nvcdpr1DkRQSeSiDyg/bGgMd6WUEpQRAUsjvSw0omNVCqKuNWw+pN
-         il0/6wjhstUZFg/vaSnhZQGAGHC5NTUavNRSWwIyuKwrr+1bpAAkJdGo4G27m5McLDER
-         h86Q==
+	s=arc-20240116; t=1768324678; c=relaxed/simple;
+	bh=8TJ+jeUePupYSPMl4pjipdGG8Gu6uaZBAk5L/V2zzT0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nrDlPMdhaKWESQuJZN16Mrw7ijoUgWm2z2hanIDx8M8fiN3BM3gbjHRqOsse7Nf9T/tFnfwDdZObDjhaOrfxESGbTmjXlyBw+sEysbozHCxmgQcVBRGzm2RhBcQPKdrUUXIyqtjvR/mpCrqvYmKa+EGMO/Bb1GqJDAQV8sLcErc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=UKBkURpu; arc=none smtp.client-ip=74.125.224.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-yx1-f100.google.com with SMTP id 956f58d0204a3-6446c924f9eso7305667d50.1
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Jan 2026 09:17:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768322964; x=1768927764;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FcKwhFtwMjJDEN2YQ222Ot6kSiGOtJGNAi5RAuQWTkY=;
-        b=lb06N4ZRYpMqWp9PN/b/bkGT/JLNz6LJJCV8OS8eYtKU5hPOF2uuWtm7yNo+y4u6v5
-         INWymSghcmJwSF3cAf/X5DhtAH5rWfqHSzpILd+MKoH+TASqMBTNjk2d9TgiHTKh8DU2
-         MOELr70USaf1/+oLSV6mSZv2X5rqS+BJWM356y8QEkEWaERVzLWAsuwflsPPLMUsi7v2
-         Xfm6UZBhNTLp0ZGATDzRmXfM9OG4LzynEg9PlopLaOZqEz3lc4vrWE/7IDBmlguzO8fw
-         osLLan/6dDh9AtSsHliCJYukXhFrhy5CQjO+dGsYUJYKNOVEqeTj3oFw4N+aUU3KnKk7
-         96hw==
-X-Forwarded-Encrypted: i=1; AJvYcCXeKaUcIlb/6qS3jpkQOqQRWWfcBiIs8WLQG/fbR7KaF/Zezf3mR03PmZJOTtgst5zJ/OsZY5OSRKBR@vger.kernel.org
-X-Gm-Message-State: AOJu0YzD6vqtKApwA/zOHSEW7rtKUGuy5BbEtWDBocEn2R/f1lS8fWrW
-	9fb7dRIEHPsH9pFknismF//0RP6k6KiTWX3GNelNp4jWcznIj2Yxp+rjdm3eVwI27tg=
-X-Gm-Gg: AY/fxX6BRc/7MskWs3d26b4GV5s1Opnhk4x47bECJT6ViVQ2Sn5L5oYU7a+8IBwVdJG
-	KjZ2cJBD3cQYzlrrHT0V0gCAsh1Fpgnlj+Rs2E/dubBNQN0le6eQoApNldHHlRMt0R/b+49iZcg
-	XCgpp1AVDRXNV1UiqpvaS4P75h9NEvnbW+sdFOIlB88a9Pr2RTNCmkRmkk+BLEA2evOSj2c2YIE
-	BMn2iL4A1neajK8Z6JWXN5ioPwz23li3GwpLtpTZVcVofU4miuYmY2l4yIKytrKk9nQFG9WzRUt
-	zr9qURBOqX7VHv3u0sCToeT2kC75QyILEMWGRsgtLWi+0IEYX5Sh+8RPddzZareOiCGdGDSf9ro
-	LMjDdDUgKVmUso9Vl3rs+4HiZNTMQXmU0cw4+BIOhsd8kO4FBfwOQgWNHmgF6ggFHLdAgeZfSjX
-	+k1a4ghVz93vtMWRMauKWK7XNt0kk8tbpwxL4r8ntxoU9OfCDTgRM+t0mhv4467GgkIBk=
-X-Google-Smtp-Source: AGHT+IFiSxb4uxmRYe6XxApgypPCZjK3lS4QULTVbEwLXNQHGmzceL2GIP7E4FtNXvFCswjqEyy+cQ==
-X-Received: by 2002:ac8:5e08:0:b0:4ff:a9d4:8773 with SMTP id d75a77b69052e-4ffb4afd0e0mr293395281cf.82.1768322964364;
-        Tue, 13 Jan 2026 08:49:24 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-89077253218sm159988626d6.43.2026.01.13.08.49.23
+        d=1e100.net; s=20230601; t=1768324676; x=1768929476;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6zBQS164TqY/RKfewboOFDZ6ye0GmLmrOSgdu3lR5Ok=;
+        b=uohKnq4eDZgg3hbJwIFe04a5n9WkNLxGdpiKGRevt6GSSYxU5YTFt/kmZOvA7AJAU0
+         iGx94s68x8fSu30f0HQyzAGIl3igFNzj59XNkMt3T5+SpCa0PT3y1UgdPGKsOqVwTKgh
+         u0+y8ewpkBENACvEWUQbCOpJWpshD9WY2+w57pd6HdG1TZXTuehnfqqhcn7ehko/SZW6
+         GWBT0UkiijFfmg2NvoBK8LZ7SupnQFOGuRiECWENcODm/+gOxaJc2EgCgl/Cf9LcEUHU
+         MRKjztjv1xerAtB1NzkqwZ8VTsuU4AgHWGh4wsatwRCuY+GhXV28nDidGbcqj3IVBSPQ
+         zriw==
+X-Gm-Message-State: AOJu0YwDDXUgLQCygmuUs9U5A/Itm/QXBwAoQBKxCgDQvxqNfrCe/qsl
+	05XEcwsFiZ16tmjeOIm581KZ0gEO3yfxSryGy5m++nY+z2/ZUQtY5MkcKu6ze25UeBzWvhqGj44
+	HM8ZSZYAH8NzSwGgLLwByTAVSIjEVOMBmV8IGFzOAGRIadwS1jVZIJcUGv90ppkN6uWDGrjE1oQ
+	OJFX6XsUa5hWylKcIscC8Ql2L8goe9+MeyG68EwgB2XNifJRLdWvMVgyuLLZ2N927PdNa6u6I9o
+	Xcdp7kQCMqwNYNYIiZk+BC8DWC/
+X-Gm-Gg: AY/fxX7KRu11GGO6MtcT4SYr8QZfWATdHAIw5jHVPn6v3+6Ae9I1C0796x1rPCid5n/
+	v5em1uRBOgtWhQzZ1TeLgxlwi/gHQJDHDbCLoX9e/Vk/mz/ol+iPUUp+o5kZAparucQYLOQQjTv
+	E1WojiI6J0wQCuwc8tudlrENa5I4sAX9E4y5Uyt8Al5bopy37FWvb4VKwt3461ANfs1wuL8YLnZ
+	UD3K6JyYwH7ccivDCXUNu6aN4rwC/I1vihdNVVaO5rvOrsO5EZ+I/Gwj9mNul9E+cCY7u/4o/tZ
+	maaVrKYvIAjP6aVvRstJHPByFHJFV3A7MYA6iVqGbLyCMPxZhj+VFDtrXac5xrmes7aY2SL36PD
+	EsmHFKxiMxxH5A7bCiCIUkgHuunAQrmrlN4cBZ+SMo3nRiOwmx+ZRElEXGJbGiddKNiZN2PSyFP
+	JB6faTYz+335bcqla2DJ98ONuVp55ybvOMNSt2Hs8KSE1N3ugnqZuxTZxFUwc=
+X-Google-Smtp-Source: AGHT+IEhpYdQeKXmNDLpph+tgU4G5TVrIa8oAivo/k/1eJOefslD1T3KUo/QBDzKkf5tllLKpmywhJ1VsKE3
+X-Received: by 2002:a05:690e:1247:b0:63c:f5a6:f2ef with SMTP id 956f58d0204a3-64716c4c245mr17681242d50.65.1768324676421;
+        Tue, 13 Jan 2026 09:17:56 -0800 (PST)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-118.dlp.protect.broadcom.com. [144.49.247.118])
+        by smtp-relay.gmail.com with ESMTPS id 956f58d0204a3-6470d8a14f3sm1978018d50.8.2026.01.13.09.17.56
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 13 Jan 2026 09:17:56 -0800 (PST)
+X-Relaying-Domain: broadcom.com
+X-CFilter-Loop: Reflected
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-2a0f0c7a06eso88344425ad.2
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Jan 2026 09:17:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1768324675; x=1768929475; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6zBQS164TqY/RKfewboOFDZ6ye0GmLmrOSgdu3lR5Ok=;
+        b=UKBkURpuNtkEoubrwj0u89mwmtZ/Nb6uUIsWpfHsrDgyXRdLi8/ZlAD2r0r9HoqhbV
+         nXnWQXrT6YWSniY0aMkiZKOYKUp3AxNsQLjlF+1WOGwl9fjYng5uj5RieTL2DBRcff8d
+         ItF9taDC1bTONAdDvZQONXdJ7nEPL8F7eZPKA=
+X-Received: by 2002:a17:903:2ec5:b0:297:f527:a38f with SMTP id d9443c01a7336-2a3ee452d90mr207120365ad.18.1768324675025;
+        Tue, 13 Jan 2026 09:17:55 -0800 (PST)
+X-Received: by 2002:a17:903:2ec5:b0:297:f527:a38f with SMTP id d9443c01a7336-2a3ee452d90mr207120195ad.18.1768324674625;
+        Tue, 13 Jan 2026 09:17:54 -0800 (PST)
+Received: from dhcp-10-123-157-187.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a3e3c3a2a4sm19357855ad.13.2026.01.13.09.17.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jan 2026 08:49:23 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1vfha7-00000003vHg-0bmX;
-	Tue, 13 Jan 2026 12:49:23 -0400
-Date: Tue, 13 Jan 2026 12:49:23 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Zhiping Zhang <zhipingz@meta.com>
-Cc: Leon Romanovsky <leon@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
-	netdev@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
-	Yochai Cohen <yochai@nvidia.com>, Yishai Hadas <yishaih@nvidia.com>
-Subject: Re: [RFC 2/2] Set steering-tag directly for PCIe P2P memory access
-Message-ID: <20260113164923.GQ745888@ziepe.ca>
-References: <20260106005758.GM125261@ziepe.ca>
- <20260113074318.941459-1-zhipingz@meta.com>
+        Tue, 13 Jan 2026 09:17:54 -0800 (PST)
+From: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+To: leon@kernel.org,
+	jgg@ziepe.ca
+Cc: linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com,
+	selvin.xavier@broadcom.com,
+	kalesh-anakkur.purayil@broadcom.com,
+	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+Subject: [PATCH rdma-next v7 0/4] RDMA/bnxt_re: Support direct verbs
+Date: Tue, 13 Jan 2026 22:39:52 +0530
+Message-ID: <20260113170956.103779-1-sriharsha.basavapatna@broadcom.com>
+X-Mailer: git-send-email 2.51.2.636.ga99f379adf
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260113074318.941459-1-zhipingz@meta.com>
+X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 
-On Mon, Jan 12, 2026 at 11:43:13PM -0800, Zhiping Zhang wrote:
-> Got it, thanks for pointing out the security concern! To address this, I
-> propose that we still pass the TPH value when allocating the dmah, but we add
-> a verification callback in the reg_mr_dmabuf flow to the dmabuf exporter. This
-> callback will ensure that the TPH value is correctly linked to the exporting
-> device’s MMIO, and only the exporter can authorize the TPH/tag association.
+Hi,
 
-That still sounds messy because we have to protect CPU memory.
+This patchset supports Direct Verbs in the bnxt_re driver.
 
-I think you should not use dmah possibly and make it so the dmabuf
-entirely supplies the TPH value.
+This is required by vendor specific applications that need to manage
+the HW resources directly and to implement the datapath in the
+application.
 
-Jason
+To support this, the library and the driver are being enhanced to
+provide Direct Verbs using which the application can allocate and
+manage the HW resources (Queues, Doorbell etc) . The Direct Verbs
+enable the application to implement the control path.
+
+Patch#1 Move uapi methods to a separate file
+Patch#2 Refactor existing bnxt_qplib_create_qp() function
+Patch#3 Support dbr direct verbs
+Patch#4 Support cq and qp direct verbs
+
+Thanks,
+-Harsha
+
+******
+
+Changes:
+
+v7:
+- Patch#3:
+  - DBR_OFFSET attribute changed to PTR_OUT.
+  - Added a reserved field in struct bnxt_re_dv_db_region.
+  - Reordered sequence in DBR_ALLOC (hash_add -> uverbs_finalize).
+  - Synchronized access to dpi hash table.
+- Patch#4:
+  - Changed dmabuf_fd type (u32->s32) in ABI.
+  - Changed num_dma_blocks() arg from PAGE_SIZE to SZ_4K. 
+  - Fixed atomic read/inc race window in bnxt_re_dv_create_qplib_cq().
+  - Deleted bnxt_re_dv_init_ib_cq(). 
+v6:
+- Minor updates in Patch#3:
+  - Removed unused variables.
+  - Renamed & updated a uverbs method to a global.
+- Minor updates in Patch#4:
+  - Removed unused variables, stray hunks.
+v5:
+- Design changes to address previous round of comments:
+  - Reverted changes in rdma-core (removed V4-Patch#1).
+  - Removed driver support for umem-reg/dereg DVs (Patch#3).
+  - Enhanced driver specific udata to avoid new CQ/QP ioctls (Patch#4).
+  - Removed additional driver functions in modify/query QP (Patch#4).
+  - Utilized queue-va in udata for deferred pinning (Patch#4).
+v4:
+- Added a new (rdma core) patch.
+- Addressed code review comments in patch 5.
+v3:
+- Addressed code review comments in patches 1, 2 and 4.
+v2:
+- Fixed build warnings reported by test robot in patches 3 and 4.
+
+v6: https://lore.kernel.org/linux-rdma/20251224042602.56255-1-sriharsha.basavapatna@broadcom.com/
+v5: https://lore.kernel.org/linux-rdma/20251129165441.75274-1-sriharsha.basavapatna@broadcom.com/
+v4: https://lore.kernel.org/linux-rdma/20251117061741.15752-1-sriharsha.basavapatna@broadcom.com/
+v3: https://lore.kernel.org/linux-rdma/20251110145628.290296-1-sriharsha.basavapatna@broadcom.com/
+v2: https://lore.kernel.org/linux-rdma/20251104072320.210596-1-sriharsha.basavapatna@broadcom.com/
+v1: https://lore.kernel.org/linux-rdma/20251103105033.205586-1-sriharsha.basavapatna@broadcom.com/
+
+******
+
+Kalesh AP (3):
+  RDMA/bnxt_re: Move the UAPI methods to a dedicated file
+  RDMA/bnxt_re: Refactor bnxt_qplib_create_qp() function
+  RDMA/bnxt_re: Direct Verbs: Support DBR verbs
+
+Sriharsha Basavapatna (1):
+  RDMA/bnxt_re: Direct Verbs: Support CQ and QP verbs
+
+ drivers/infiniband/hw/bnxt_re/Makefile    |   2 +-
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h   |   8 +
+ drivers/infiniband/hw/bnxt_re/dv.c        | 934 ++++++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c  | 552 +++++--------
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h  |  22 +
+ drivers/infiniband/hw/bnxt_re/main.c      |   2 +
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c  | 310 +++----
+ drivers/infiniband/hw/bnxt_re/qplib_fp.h  |  10 +-
+ drivers/infiniband/hw/bnxt_re/qplib_res.c |  43 +
+ drivers/infiniband/hw/bnxt_re/qplib_res.h |  10 +
+ include/uapi/rdma/bnxt_re-abi.h           |  46 ++
+ 11 files changed, 1394 insertions(+), 545 deletions(-)
+ create mode 100644 drivers/infiniband/hw/bnxt_re/dv.c
+
+-- 
+2.51.2.636.ga99f379adf
+
 
