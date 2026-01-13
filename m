@@ -1,98 +1,81 @@
-Return-Path: <linux-rdma+bounces-15496-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15497-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8E11D181ED
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 11:43:53 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A13FD181C0
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 11:43:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C51B1301A483
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 10:41:38 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 09BD03014111
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 10:43:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F4EF349AED;
-	Tue, 13 Jan 2026 10:41:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E07F4349AEE;
+	Tue, 13 Jan 2026 10:43:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TwDx6rus";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="MXjzljLa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dbGTUi6x"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 967D12DCBF8
-	for <linux-rdma@vger.kernel.org>; Tue, 13 Jan 2026 10:41:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C614F346E4A
+	for <linux-rdma@vger.kernel.org>; Tue, 13 Jan 2026 10:42:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768300897; cv=none; b=FtsD/bx0HUgVS55FXocmIsJf/+D6bhSqS9pDWodguwjFWKbXMbwsjSgsFx2/1DkfJM7xBBt0qeMu8VBSDMxLTSfHQK0rPnW71cn15GGNQikM/OzJ9GxZ73ZYGgzU/eYgBNpy4v3QfEp46XIwk5ltjLI98ZOVo7iiIGMxeddDTOs=
+	t=1768300981; cv=none; b=Uf5NG6n+VsNwWvhRMFMPXJRNpED+MmLxB9mdkcmlpGfrG26fgLS0USdnsYkKJITxPSs9OvYJHw9GumZ1xUMqMIA/6mFhqRCdfFiUVDmt4U1e390jqEbk1G5eUlXBaSpmxTDSkVZR6CLOC1k9cAy2++OVjW7RsN6vzOBMZAX0Qe8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768300897; c=relaxed/simple;
-	bh=6rphP0XeUY1TRejd2aNPhK+QTTqnj0/IWJtxgLJQFlY=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=nHjbWCEHSSMv3Rte4ujPbJ/hSbRzbRIVo43/LuzbNC/F/KUJJAoyKOnJYYpA90stZqMRVHpyBjP9/TlCYKkM+L5kLhSHuSsaPZpO5Oeuy/wLQ+i3lS41Y0OgYYsCK4qJQjrHY3YVzgtYU/Q3+bF6GLhva+kU6Y/cW1IOxh5cEvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TwDx6rus; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=MXjzljLa; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1768300894;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=S0UJyxAD7OV1Vlm9xAqwyNi0f+c77Epf12aV/zNPFd8=;
-	b=TwDx6ruslPmtpXkYyaxcLnjjHcqVMMNt4DoYRRyWpPrbV363SIZ/wCBq1vwtHGQNCP0edm
-	K0uf3uRU6dwnfsjRFfB+7jQRbyPiwFyxZu6JpwSTSQddH6uTr+SM0Esjy38s3kfh2/O8sm
-	765g5MI9SRvLISqktI0Xo6sk+KA7ebk=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-518-IH9dkASkO6C8V9_RimDl-w-1; Tue, 13 Jan 2026 05:41:33 -0500
-X-MC-Unique: IH9dkASkO6C8V9_RimDl-w-1
-X-Mimecast-MFC-AGG-ID: IH9dkASkO6C8V9_RimDl-w_1768300892
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-47d3ba3a49cso68293375e9.2
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Jan 2026 02:41:33 -0800 (PST)
+	s=arc-20240116; t=1768300981; c=relaxed/simple;
+	bh=h/iEAdqPaIY6WKNvkMpng0b6z40syJH+JgYaAQOu/Gk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sodAjAgcW/5jNbju9koZ5VMr5YALNIoklABMZxsqPxYd7gV0OFSieQ4zf2ncal5YbFPSLRgIXk1cM4nJuq3oJIAtNTq9CmSGf734W4FxIsA3Uv/BRC/pt2UpTSm8cfeR2S0R++vFMwtA4ryYGjXOMnnil7gunC7/GnxwaYfwFkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dbGTUi6x; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4779adb38d3so50360315e9.2
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Jan 2026 02:42:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1768300892; x=1768905692; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=S0UJyxAD7OV1Vlm9xAqwyNi0f+c77Epf12aV/zNPFd8=;
-        b=MXjzljLa7elUnoRzn0CoAuENKKL7+rkFSYz3pNVLDoVAhVOvcjNiZtPElWhwD7kXbq
-         qqw1wK7DLG3xP+IHUEoeKSvBbXw/xjF1X5a7bsQ3+FaJBe7nrHprzbxWKsEJEVKo6q6/
-         QasZpeKDDAsO2NzG21ebv3pCuprozp1/3E0UNsnhdDgRPAp68yooZ9OudB3vHOydBY26
-         Y8rHifgm7wMMhLVXDZ/srSFr6Djv6D81wpNO0ZVk6qOwWwyQQa8WK7HMuDb24yfQyIcO
-         WFpxnnQNPAuZ0vfEbhdoBGgiEDEhXueJsHEembd3aqyOkXcAJ6iHvBvNooKN81HAQlN8
-         pyGQ==
+        d=gmail.com; s=20230601; t=1768300978; x=1768905778; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LkhtI/R2xS3vmnHvCQqFwCBZTI8re8hBml5kcRz0zBY=;
+        b=dbGTUi6xuFCFDtZvChjPqVXFIpJBzcboY/+8bIt8Mpg5BT5HXHdalGDlR1fHJCL1dF
+         wdff2CYW56pIKesR4Csgy3hQtn99aNLr+w92OSyWKhyzmYCA7BTuo35KlGTKeAZgutZt
+         qXtVmXGOSdZYbkZmC7HGOVJN8ovdNPpEdQPbLk8+OHZoXxWrq+rvgEn45clEh+thX3T8
+         s0YXJChrVfPpnJ0GzFEuNa8G3f4SgakkPrTrv+7FgKytR+l+zr5RdgSdBW/vFaDVtNBl
+         bfm7UB5ubRZECmu/fSdk5EkGS/ALXQNiBioDJaRvVRIfFmJEIsvC1g8NICR2plnfbOYH
+         nCbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768300892; x=1768905692;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=S0UJyxAD7OV1Vlm9xAqwyNi0f+c77Epf12aV/zNPFd8=;
-        b=Z4HOSfbevD9V3W8QeT+S/kdFy8XW1ADcuf/DFemApnNwlxNIzS3/BWzwdJ8n9n5o+x
-         AtrGPrHTuECIapTt85r5iPbgoZedqqeivME/ou+fFalazj3Lz2nMDadCUaB+voXlmpSo
-         89pS6KpNiAwMN0DyX3XfnduxVPZIK9hvH6RT4jBQYw61BZ7NTJsGQdCFmVJ3vKKFNASX
-         fVqIv6VWTNln9OFZ4MOYICGNTXeMdzb/K9cMnVegAuvTaSF55GMrPEom2A7xmRIhb9MO
-         plqFFyxmzJj14XF4PRMT6Vo/xx7VWCEoAck+PR61pRfs7BR0yG7wKXq1qopmfc916NQ5
-         iUIA==
-X-Forwarded-Encrypted: i=1; AJvYcCUdNxqgQvJZPaUpWza+MpQ5/Wmn8NLs/vVzQ02CGLzw3xC07gpKj0DQZI61B/PXb/tO3RqfGLTEldqG@vger.kernel.org
-X-Gm-Message-State: AOJu0YyPM0waP0GqzMEJtGaSmE5QAp7XoC7hEg01layrT8eNMnJm9GzO
-	EPifYR2vIk0WQBE64bTTHVo6sR7awK2tFAg7jro5NW0BV1laDPD/Qnoo3+YnTYXiBErOQyrSF7t
-	FuQBuUVLKvTezBswREZoJbDovftS8aRzK91ELnAZtAUKk2Kmope9g6BpoIcDf53g=
-X-Gm-Gg: AY/fxX68OxdcioKzx0nhlhDCRxWYh3eCMxkMO867CFvfh4h4XGB+avXQp+CJ8XGNjGk
-	JPJon5+TvXU9DRMZ9nTW3qVvn6fuiC6xLVh2ZBCXVNX7LCf84Ec+utlZLkGbI+Lf0PJD033MZ/T
-	x80GbEY8h3+GsjtEQmu1CWh3W04WHd4tkk+BC7MGDr6natJf3my5VaBWYQ8Wkm5Na45RzK+MGId
-	nfNHuxNnxBKFcU0XcoThONs3d9EQYp03DtDYvTO9q0fDnkp6KhaQormhCjlsbQNB565T+plI7wI
-	RiwfTt8KHRsRxJRrUMoPqUjcQ3UP7QGB7foVeg7DlLA4MHEKF4HFOjVeRlyuS4jbocWtE7H2Yaz
-	2VoensfzbAdr1
-X-Received: by 2002:a05:600c:a16:b0:47b:de05:aa28 with SMTP id 5b1f17b1804b1-47d84b0aadcmr200306675e9.2.1768300892138;
-        Tue, 13 Jan 2026 02:41:32 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHyA6GIRnSDRUL9ab020nIrIsOT+mtQP2pIuI9imx0C1in3fLtYCcDSBcqt+RulymIY1xRsYA==
-X-Received: by 2002:a05:600c:a16:b0:47b:de05:aa28 with SMTP id 5b1f17b1804b1-47d84b0aadcmr200306215e9.2.1768300891731;
-        Tue, 13 Jan 2026 02:41:31 -0800 (PST)
-Received: from [192.168.88.32] ([212.105.155.93])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47edfd5cfd5sm4882345e9.8.2026.01.13.02.41.28
+        d=1e100.net; s=20230601; t=1768300978; x=1768905778;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LkhtI/R2xS3vmnHvCQqFwCBZTI8re8hBml5kcRz0zBY=;
+        b=ji84n0lYl0qzeQdaEPCerNW26kfh3leL6yIDFhghQYumXElwNe1oqIuhV+Wc2QfZb+
+         c3IDfvzmQkGjr0jJVzZn9vIAjkAgbHKLEaAYbpzTvmnriUfTBFd4z7I/Bh/5zLe6XmX5
+         iDRVW/HM28jvJTvid3LIEmfdRsn10vnsnpPtdqWCwZWaaedUJGHBwrO5jMe0/Wy1R+0X
+         1n8e4TJAWH4TrTUU4NC99pl2QiluS2nBPFdZcUXD3a+ishs8TePgxrut2ls+HRotXlm1
+         7EeEGB5OKrR1IOCauWJKKGmR/NKWxXqaUaC/0XRjDV3v1rVVqkL2kjMpD/IFBuOxx4fh
+         Qo0A==
+X-Forwarded-Encrypted: i=1; AJvYcCWPDOmKAWk+kHCyP4oru5Swm/5xCcXCSSXpkn9r4s0e56lr/q7JZj8M9kIVaGRo92flV3tGZJhy0uJg@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywv/0qhj+itrhYh9aS193YTO1pyiWGebkw8JxfYgwhSVJ4ZFNFp
+	DsZTdiXCUP7w6Ke6PWkWux57Z4HFGAZF0eNZUC3q1dfeWTaapfNpAxrC
+X-Gm-Gg: AY/fxX5uOs97sLaTPtP1yPSMWTlN0wtaJdayQrNQtUYNnVBjqHEdDnP698pYkvwsBdl
+	qArbJ/4etpakWqYuC65S7+UEAIZlIJ7YJz6QkZywdalOwcDWo68PuSbNOOnd6bckEwBjuxbdo7P
+	Jmhsf+nAYtVpeH7wH6/LsVkBAnJzuuKrmKov1gevDhXUPW/hXGL4WEdTxUeNMKWX5N+/bEEKta+
+	2RctvJvbSVTmRBecWEuK9HmPPFHznrTd+27S6sPkpI0AQUZp/fRnOIBBqkDC1InwVE/0oPumRdN
+	6d13AMx2ey5Cs1VWtM6xoXyEkus0Sb51lNrldLE7dFBfcimJltF+ORbbcD1qNGmffSQjAQDW/j4
+	z5qb9Nz3ZEa9xvzB9xQTAWYZsVhMuAvRecqfQDdaIYP3HQn+zVIf9fUMaJnH9GDanapfos1Q32c
+	EO1CzMfnDjL4is33tLrPg9BxRiW18PwHoO/rG9X22Kn7TLcWJPCZHOTPLiy89IUoFzQI84VwlCI
+	nj0ViKQkOwSnHY2JCow03i37Z9ZxaK/t2AJxJbcwdL3EzH/cXgqGIAhra0nBKCXq34MWfYp4VZK
+X-Google-Smtp-Source: AGHT+IFkZdiJcndAA0MyUMm8x2SeND7c9WKpL4+wjJVZyc9wRUscpxmE8qJsJDcPKd4tkE4BoGQKUg==
+X-Received: by 2002:a05:600c:3555:b0:47b:e2a9:2bd7 with SMTP id 5b1f17b1804b1-47d84b3b5dfmr248265925e9.19.1768300977891;
+        Tue, 13 Jan 2026 02:42:57 -0800 (PST)
+Received: from ?IPV6:2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c? ([2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47ed9ea45cesm13306085e9.1.2026.01.13.02.42.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jan 2026 02:41:31 -0800 (PST)
-Message-ID: <0eab9112-eedf-4425-9ce9-be0a59191d8d@redhat.com>
-Date: Tue, 13 Jan 2026 11:41:27 +0100
+        Tue, 13 Jan 2026 02:42:57 -0800 (PST)
+Message-ID: <52b4ac3d-7634-4545-af11-e25b589db700@gmail.com>
+Date: Tue, 13 Jan 2026 10:42:52 +0000
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -102,8 +85,7 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH net-next v8 6/9] eth: bnxt: adjust the fill level of agg
  queues with larger buffers
-From: Paolo Abeni <pabeni@redhat.com>
-To: Pavel Begunkov <asml.silence@gmail.com>, netdev@vger.kernel.org
+To: Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
 Cc: "David S . Miller" <davem@davemloft.net>,
  Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
  Jonathan Corbet <corbet@lwn.net>, Michael Chan <michael.chan@broadcom.com>,
@@ -140,11 +122,12 @@ References: <cover.1767819709.git.asml.silence@gmail.com>
  <8b6486d8a498875c4157f28171b5b0d26593c3d8.1767819709.git.asml.silence@gmail.com>
  <4db44c27-4654-46f9-be41-93bcf06302b2@redhat.com>
 Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
 In-Reply-To: <4db44c27-4654-46f9-be41-93bcf06302b2@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 1/13/26 11:27 AM, Paolo Abeni wrote:
+On 1/13/26 10:27, Paolo Abeni wrote:
 > On 1/9/26 12:28 PM, Pavel Begunkov wrote:
 >> From: Jakub Kicinski <kuba@kernel.org>
 >>
@@ -162,17 +145,17 @@ On 1/13/26 11:27 AM, Paolo Abeni wrote:
 >> [pavel: rebase on top of agg_size_fac, assert agg_size_fac]
 >> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
 >> ---
->>  drivers/net/ethernet/broadcom/bnxt/bnxt.c | 28 +++++++++++++++++++----
->>  1 file changed, 24 insertions(+), 4 deletions(-)
+>>   drivers/net/ethernet/broadcom/bnxt/bnxt.c | 28 +++++++++++++++++++----
+>>   1 file changed, 24 insertions(+), 4 deletions(-)
 >>
 >> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
 >> index 8f42885a7c86..137e348d2b9c 100644
 >> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
 >> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
 >> @@ -3816,16 +3816,34 @@ static void bnxt_free_rx_rings(struct bnxt *bp)
->>  	}
->>  }
->>  
+>>   	}
+>>   }
+>>   
 >> +static int bnxt_rx_agg_ring_fill_level(struct bnxt *bp,
 >> +				       struct bnxt_rx_ring_info *rxr)
 >> +{
@@ -192,10 +175,12 @@ On 1/13/26 11:27 AM, Paolo Abeni wrote:
 > Side note: this looks like something AI review could/should catch. The
 > fact it didn't makes me think I'm missing something...
 
-I see the next patch rejects too small `rx_page_size` values; so
-possibly the better option is to drop the confusing check in
-bnxt_alloc_rx_page_pool().
+I doubt LLMs will be able to see it, but rx_page_size is no less
+than BNXT_RX_PAGE_SIZE. It's either set from defaults, which is
+exactly BNXT_RX_PAGE_SIZE, or given by the provider and then
+checked in bnxt_validate_qcfg().
 
-/P
+-- 
+Pavel Begunkov
 
 
