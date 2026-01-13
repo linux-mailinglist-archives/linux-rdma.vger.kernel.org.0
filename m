@@ -1,155 +1,96 @@
-Return-Path: <linux-rdma+bounces-15500-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15501-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6721D185ED
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 12:12:36 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED53CD1887C
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 12:43:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8EBAF302AFB5
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 11:05:24 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 8BE9B3008144
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 11:43:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC3A0239E7E;
-	Tue, 13 Jan 2026 11:04:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781A038BDAD;
+	Tue, 13 Jan 2026 11:43:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mgml.me header.i=@mgml.me header.b="DRzsEkiW";
-	dkim=pass (1024-bit key) header.d=amazonses.com header.i=@amazonses.com header.b="GTwFtPI6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="COb26ahl"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from e234-53.smtp-out.ap-northeast-1.amazonses.com (e234-53.smtp-out.ap-northeast-1.amazonses.com [23.251.234.53])
-	(using TLSv1.2 with cipher AES128-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C68E82BE056;
-	Tue, 13 Jan 2026 11:04:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=23.251.234.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7D834A3C1;
+	Tue, 13 Jan 2026 11:43:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768302265; cv=none; b=LqfOSyAtlseoIiXFQNULvV2weVA7iYUY6aTzcJzXopscGTLNJc80hr39hgxh14AwM91YI2kigp7sB3++X8lFA26uUUl5fVZPDa0SnJaqUuc7DZ+4M9AQQVem9kclFDDyjG2Rfw9bxEX9LBDJSILt65xicBpRmbSaEdTVxnHrRtI=
+	t=1768304620; cv=none; b=oyaTvCPWEGFxzRNTePnyPo676FP+cHHE+mUlHWdfA1i/hKG0wpNL33TqJmedPew9KmqyeUmm5JCejdN52yW+65+mT7SPTUDnFyP35nIhkvx03ogaabWGDtesxIXo+6kCTzNAPEjs9V693Hp19jrSRCbTiu/3ruThjW9Gg5YoPcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768302265; c=relaxed/simple;
-	bh=EC4C2XIGIUrT7iZ5a0xr9IPkBwnlhsVppr+vB/rvi8A=;
-	h=In-Reply-To:From:To:Cc:Subject:Message-ID:Date:MIME-Version:
-	 Content-Type; b=PUZEnIqVcfU1a7ukkUuKAuQZLycaAUd1/JwtOUDl3q4G66NUuwdJM1qWB0exzipNCCwAv2MFLrr7SrEpp9DvYWBRarRQr8njfpXVVGWH2j54OfUFV7LCGLAz1W0EZr1NS7bg5K3sy9GFLntMhfY9JEJ5waQ3ZdHTsn0fKyu46Z8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mgml.me; spf=pass smtp.mailfrom=send.mgml.me; dkim=pass (1024-bit key) header.d=mgml.me header.i=@mgml.me header.b=DRzsEkiW; dkim=pass (1024-bit key) header.d=amazonses.com header.i=@amazonses.com header.b=GTwFtPI6; arc=none smtp.client-ip=23.251.234.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mgml.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=send.mgml.me
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple; s=resend;
-	d=mgml.me; t=1768302262;
-	h=In-Reply-To:From:To:Cc:Subject:Message-ID:Content-Transfer-Encoding:Date:MIME-Version:Content-Type;
-	bh=EC4C2XIGIUrT7iZ5a0xr9IPkBwnlhsVppr+vB/rvi8A=;
-	b=DRzsEkiW2HzlQLgByRA7X5y+6GHRnfIzvEhEELP2hTavAIJR5ooTtdWbF/3vfToG
-	qy12M9ZdIhfOmCt7yxwTnax4aEg7OA0T+cuhvDKfa1uChUV9rJ+aGp5VLIrOaBEfWXx
-	ygl26ZitrzFnQ4XWPvJgbYQx9rpD1X/znbcCTaQg=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-	s=suwteswkahkjx5z3rgaujjw4zqymtlt2; d=amazonses.com; t=1768302262;
-	h=In-Reply-To:From:To:Cc:Subject:Message-ID:Content-Transfer-Encoding:Date:MIME-Version:Content-Type:Feedback-ID;
-	bh=EC4C2XIGIUrT7iZ5a0xr9IPkBwnlhsVppr+vB/rvi8A=;
-	b=GTwFtPI6WFU6RY2VC8MRNsAjmdyiLZluJ0t4glHLl8M+ISJzUWzRLmqhmcVnZyc0
-	/4esGrfgjQUd0WY1iqb0Tlt6mfrnjvPHUYOIOO5rx/vvAMGZO3AyhyCxewxqAKLbFPD
-	6riyhXRG3iWU698ScvyQoJ9ezfZI/I0awB2GHaLs=
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-In-Reply-To: <e22a37a6-d15c-4abe-becd-4c538d99ad30@gmail.com>
-From: Kenta Akagi <k@mgml.me>
-To: ttoukan.linux@gmail.com, saeedm@nvidia.com, tariqt@nvidia.com, 
-	mbloch@nvidia.com, leon@kernel.org, andrew+netdev@lunn.ch, 
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	pabeni@redhat.com
-Cc: k@mgml.me, netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC mlx5-next 0/1] net/mlx5e: Expose physical received
- bits counters to ethtool
-Message-ID: <0106019bb70737d5-06bcc3e0-d534-4e42-b8a3-71dc3b53f318-000000@ap-northeast-1.amazonses.com>
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 13 Jan 2026 11:04:22 +0000
+	s=arc-20240116; t=1768304620; c=relaxed/simple;
+	bh=0aMmH+mP8gXuho7rQ6w6yVxZnem9t03bVCPnPCRACj4=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=jpVvt2SXP2gjIoyV4WkSpQQcyVlt32CsvD+tmRZRJpdFSi8OQ/lST9bjjcPGvyQKULpL/UU31jYvW+MhFQJKqHvFlJeET9PS9hUEEqNigOunvTTxuia6V36Es3oZ/bji3jghtaDeArlWzwopuzmfhUVspyZCLU4L/F35YgwQ0Xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=COb26ahl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C02FDC116C6;
+	Tue, 13 Jan 2026 11:43:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768304619;
+	bh=0aMmH+mP8gXuho7rQ6w6yVxZnem9t03bVCPnPCRACj4=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=COb26ahleijWeYWBQkq5wuS1j1tfufu2Xwo6r2wAzWPROuliz5aTep5Iqn8Mlu1M0
+	 VeRjskDHBdmSf/BipDlB+p7tjbTAXmP8pxoOeOOPexeoApnyCCnwIIISZs41HMpLZR
+	 mD7QxOvfQtUqcOgjiaMLOnR97ghK18ni9TGt1ZCMvNzGoJ3njBFb+Y0RC1OoM0QWBW
+	 By5tYNsxOUcBfH7/hikh+YJKKe/+/+hQTtqraeGson8w2kJ2vVt1Gu8zvOmWgbDGOS
+	 OMxbTH+WGQdAhmiGVTHQyidZfYmzR1AeJp1tcTbC3tCgXAJsh6Yu4jZYY05CS+xW3R
+	 vUZxN77gGrnOA==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 76DF83808200;
+	Tue, 13 Jan 2026 11:40:14 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Feedback-ID: ::1.ap-northeast-1.TOS0vxEE3Ar6ai29fkp2i/jb+l2iigajCGeLfF7S3sk=:AmazonSES
-X-SES-Outgoing: 2026.01.13-23.251.234.53
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v5 0/2] net/rds: RDS-TCP bug fix collection,
+ subset 1: Work queue scalability
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176830441313.2202748.11246831257261370626.git-patchwork-notify@kernel.org>
+Date: Tue, 13 Jan 2026 11:40:13 +0000
+References: <20260109224843.128076-1-achender@kernel.org>
+In-Reply-To: <20260109224843.128076-1-achender@kernel.org>
+To: Allison Henderson <achender@kernel.org>
+Cc: netdev@vger.kernel.org, pabeni@redhat.com, edumazet@google.com,
+ rds-devel@oss.oracle.com, kuba@kernel.org, horms@kernel.org,
+ linux-rdma@vger.kernel.org, allison.henderson@oracle.com
 
-On 2026/01/13 15:43, Tariq Toukan wrote:
->=20
->=20
-> On 13/01/2026 8:31, =
-Tariq Toukan wrote:
->>
->>
->> On 12/01/2026 9:03, Kenta Akagi wrote:
->>> Hi,
->>>
->>> I would like to measure the cable BER on ConnectX.
->>>
->>> According to the documentation[1][2], there are counters that can be =
-used
->>> for this purpose: rx_corrected_bits_phy, rx_pcs_symbol_err_phy and
->>> rx_bits_phy. However, rx_bits_phy does not show up in ethtool
->>> statistics.
->>>
->>> This patch exposes the PPCNT phy_received_bits as =
-rx_bits_phy.
->>>
->>>
->>> On a ConnectX-5 with 25Gbase connection, it works =
-as expected.
->>>
->>> On the other hand, although I have not verified it, in=
- an 800Gbps
->>> environment rx_bits_phy would likely overflow after about =
-124 days.
->>> Since I cannot judge whether this is acceptable, I am posting=
- this as an
->>> RFC first.
->>>
->>
->> Hi,
->>
->> This is a 64-bits counter so=
- no overflow is expected.
->>
->=20
-> Sorry, ignore my comment, your numbers =
-make sense.
-> Maybe it's ~248 days, but same idea.
->=20
+Hello:
 
-Hi, thank you for checking.
+This series was applied to netdev/net-next.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-Ah, it seems I didn't realize it was unsigned,=
- and I also forgot to
-include the expression. Sorry about that.
-Yes - at 800 Gbps, 0xFFFFFFFFFFFFFFFF / (800 * (2^30) * 86400) =3D 248.55 =
-days,
-so it will overflow.
+On Fri,  9 Jan 2026 15:48:41 -0700 you wrote:
+> From: Allison Henderson <allison.henderson@oracle.com>
+> 
+> Hi all,
+> 
+> This is subset 1 of the RDS-TCP bug fix collection series I posted last
+> Oct.  The greater series aims to correct multiple rds-tcp bugs that
+> can cause dropped or out of sequence messages.  The set was starting to
+> get a bit large, so I've broken it down into smaller sets to make
+> reviews more manageable.
+> 
+> [...]
 
-In practice, is it possible to expose this as a=
- statistic via ethtool?
-Or is there some other value that could be exposed =
-for BER calculation - e.g.,
-a register that indicates the elapsed seconds =
-since link-up?
+Here is the summary with links:
+  - [net-next,v5,1/2] net/rds: Add per cp work queue
+    https://git.kernel.org/netdev/net-next/c/d327e2e74aed
+  - [net-next,v5,2/2] net/rds: Give each connection path its own workqueue
+    https://git.kernel.org/netdev/net-next/c/4716af3897e9
 
-Thanks.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
->>>
->>> [1] commit 8ce3b586faa4 ("net/mlx5: Add =
-counter information to mlx5
->>> =C2=A0=C2=A0=C2=A0=C2=A0 driver =
-documentation")
->>> [2] https://docs.kernel.org/networking/device_drivers/e=
-thernet/ mellanox/mlx5/counters.html
->>>
->>> Kenta Akagi (1):
->>> =C2=A0=C2=A0 net/mlx5e: Expose physical received bits counters to =
-ethtool
->>>
->>> =C2=A0 drivers/net/ethernet/mellanox/mlx5/core/en_stats.c |=
- 1 +
->>> =C2=A0 1 file changed, 1 insertion(+)
->>>
->>
->=20
->=20
 
 
