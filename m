@@ -1,192 +1,172 @@
-Return-Path: <linux-rdma+bounces-15492-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15493-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 621DAD17F96
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 11:22:31 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C14C6D17FF0
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 11:26:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 1AEDE302C622
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 10:20:22 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 980C930B99AD
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 10:20:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 842FC38A2A7;
-	Tue, 13 Jan 2026 10:18:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6833938B9B0;
+	Tue, 13 Jan 2026 10:20:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="iOk76IjX"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="egFMINjG";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ooiqeq4C"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from PH7PR06CU001.outbound.protection.outlook.com (mail-westus3azon11010058.outbound.protection.outlook.com [52.101.201.58])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2E3E38A729;
-	Tue, 13 Jan 2026 10:18:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.201.58
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768299518; cv=fail; b=HEldpKqzjXP1HH9EQ5zACuan6GYkynwj3NZ4p0aCIJNrBk+qOuVh2zq7WXFp9jsS6I8CEfPr8qyDxcVaouKmrm6HOsay4bfCkiIriSppVTe3pcAGSvm1dYDptZUHPMG3MyiPBdyTo3Tuyenet1HEQkfo01kjoVWF6WYspnemWnQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768299518; c=relaxed/simple;
-	bh=3q3nrmBR7ock52HFuvs9jhFrvYTSo9IuAcn7Yx2idPs=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=s9CR1rO3bk0fUIVO4aXm++vL7WFydZ7lbL8Jd68PxDEFLCizmdCd5FcXchUnIkxoy08M4sVfymNSPtAj/3yZq5nrqCWgLejqV7kreqARdAK29+00mJRegJHT8xLxB7s/fm0X3o97mc19w4QqyOhPZwJY5jpD1YCh6fn2NvhLd08=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=iOk76IjX; arc=fail smtp.client-ip=52.101.201.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=f9B8plC4Fn4HOjAagl+Oo+YV68FjH9oNZr8Z2X6QNGrnT/PWwXf/+LJClX9UbCag8m2T+rzqlkzms7MslgPGZ/QXDQJVnesWnJwtRTz3tU1U9XFpnzQULDmF3hb032EekEVbWsQuCyShjbt1m5DD2GdFivXGKCzmlMYhLmpFutx+hkz2b9WQpBog13Mfs6i5c0t9+RWUydKbB2q/NXGZp5iKhh1lw9qMVPn62g45ddulETn7yaiR3yHHqdxv8dGxwruBfYLIZ0PFlcqCqgU5yn4gpDnzzrgbbH9T/SsBWu3mJ/BcQ38WgpvG8zBWx0cdky/VVRI+U/VfVn3Dp7nKLg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Gq/3YhSDI6qp9xzkYP6GoOEhy/awOGh0F6YiE/YpjrQ=;
- b=Jrm//9sGoBgtlNSmf0PSDBxGcJ3gWsFsrDeN6ELNHYTkLFtkmIu45vuC1Pa1cu/pcpg/JoUm2LHyimWt3c8Oy6Vf02TDY/nZT3hoMyXDkXkNQpUO3TUIGX0zIs/YhuxMYSmf6qCYjemyn5SUrtQakviljY2ElEluVfNG+xJ1uFLSPm2062s6v9XnoiZ8oE/rFd9dboXMvpbFaHYtx85bSgETFBfK4HBH2C2j21+AOKB/9trS90gXMjQ8XRO7UIB0SJtp9uCcnQK+zj4Cevj+X7BDrD2A2G2s5p0WFCOaPQkng4xiCmHtw4gslZrsocWwwfteC5ySIr9JNTSxfAE5/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Gq/3YhSDI6qp9xzkYP6GoOEhy/awOGh0F6YiE/YpjrQ=;
- b=iOk76IjXHMYSy3azZZSAp2Jl/nxbS3QfofssDmZhj5zKBfvbR3QttkDUWRFXbRoEGLPoeJ8F54dlU7a1IgCom9LMSqotIdwCCsB/gUXirDJ+ft0dXunsmlgr8XovrT4osU5viTMGHlmYWtI1pGR87MPiv4Zhr6zs+ArvCFtR5fHjEvqMw39+2k1qIG4ZaOZvEOdZ3Ebs5AFfhfJseoJK37nW8HjmU7y5Haqx35JG1K9cIJljOdQN6kl3WV2O7XfcdGCqRilDtLudqnlGS3PvgLpv5ZROWmWaYUynWDFTT4es8GYoA2/IdMhV3FG76NoPZwLLydvpjxokiyoINfAeNA==
-Received: from BN9PR03CA0898.namprd03.prod.outlook.com (2603:10b6:408:13c::33)
- by SJ1PR12MB6098.namprd12.prod.outlook.com (2603:10b6:a03:45f::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9520.5; Tue, 13 Jan
- 2026 10:18:30 +0000
-Received: from BN2PEPF000055DF.namprd21.prod.outlook.com
- (2603:10b6:408:13c:cafe::df) by BN9PR03CA0898.outlook.office365.com
- (2603:10b6:408:13c::33) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9499.7 via Frontend Transport; Tue,
- 13 Jan 2026 10:18:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- BN2PEPF000055DF.mail.protection.outlook.com (10.167.245.9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9542.0 via Frontend Transport; Tue, 13 Jan 2026 10:18:29 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 13 Jan
- 2026 02:18:14 -0800
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 13 Jan
- 2026 02:18:14 -0800
-Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com (10.129.68.9)
- with Microsoft SMTP Server id 15.2.2562.20 via Frontend Transport; Tue, 13
- Jan 2026 02:18:11 -0800
-From: Tariq Toukan <tariqt@nvidia.com>
-To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
- S. Miller" <davem@davemloft.net>
-CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
-	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, Alexei Lazar
-	<alazar@nvidia.com>, Or Har-Toov <ohartoov@nvidia.com>
-Subject: [pull-request] mlx5-next updates 2026-01-13
-Date: Tue, 13 Jan 2026 12:17:51 +0200
-Message-ID: <1768299471-1603093-1-git-send-email-tariqt@nvidia.com>
-X-Mailer: git-send-email 2.8.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E446038A735
+	for <linux-rdma@vger.kernel.org>; Tue, 13 Jan 2026 10:20:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768299610; cv=none; b=HPvPffSRkvq1Cjr2P4RvaeTG0caHhrzBmE9QP3xGs3UIVYSrfhdl0QJA9uLSH/0vrdjsBIszbMnORPKnrEXCr1fblpI3+mTGLFb31fSRUNIj1X8GYqt+MOxzeCJeGeIVPfDQ9alKnxlc7mi4wUxgiJhwFA4uE4dn8vLQkQUStj8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768299610; c=relaxed/simple;
+	bh=qrJawEyRk9QiRfi3F12wRwzElwNErv3g2l29eOs+r0k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=C0EkNQXEIXeGeTzVRTEXFbgnDeeAD4QOBRpI3HCOpphwyo2PkmyztKgnsI6x81y2osoXtMhcppYifOv4zq/dXEWUOV+4lCGDL11Woinfhh5YW7duOrhHT3fFWMjiC/b/HTseWI9CPpMQFYPtb/87xRyJJ0UB7lKTVscfxGHiz+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=egFMINjG; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ooiqeq4C; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1768299606;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Bv1RPjaO9ZdZred2Z39o/pHiVJywyFuAbsRMKmfexlM=;
+	b=egFMINjG9sVNBqb/bV2XZhNplBDral3aIcm6MjzJ8KkONL0HSYMqaA3QbUO65Z3VmjlDC2
+	avtolazSY5YtoSfHzUhX8IHXZImPjTKrSF0SpQI64PSxuQnsUBdIaTLYXLPKpPTo/rpFnH
+	rgclCKWeL9yRV6TXLr2qtEPxnARnTKo=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-354-b9a_5WIVN3KK-02QOaOUoQ-1; Tue, 13 Jan 2026 05:20:04 -0500
+X-MC-Unique: b9a_5WIVN3KK-02QOaOUoQ-1
+X-Mimecast-MFC-AGG-ID: b9a_5WIVN3KK-02QOaOUoQ_1768299603
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-4325b182e3cso3593739f8f.2
+        for <linux-rdma@vger.kernel.org>; Tue, 13 Jan 2026 02:20:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1768299603; x=1768904403; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Bv1RPjaO9ZdZred2Z39o/pHiVJywyFuAbsRMKmfexlM=;
+        b=Ooiqeq4CDJAdeztIVeP08RIjonIFbu0Ix1QSuGAGLnpXxoa1G3zjRACEzvO2cO3ng5
+         K2zLp5murkupoMQjsTkt9xyL+bugptxPbtuaxL0PmUm2MeHLsh6JpmYCJcD6ViHvQH8v
+         P3Xjf6FBz8ZsWfwg3RlydqvAFLgF734ZChGJX/Rxjup6E0lD0YazXep9YNEvw+gEXxhB
+         y0PYSiW7q1diBoV5bcyaw+WPI0/VuMzlg9av8Bske1sOljgBO+qV2wTVqNaE7l0+wop6
+         BIE3XlsWPy2wCq73FGqRfy/zu5PLxZ441tO03GqAILwUpvnuVJdr777gVgEP+SxqdJ3w
+         xkNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768299603; x=1768904403;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Bv1RPjaO9ZdZred2Z39o/pHiVJywyFuAbsRMKmfexlM=;
+        b=wPEtNY5tDtG0xI2EMmJkPWKG47e6psfH0HXrc40toJXBKEMHCQ1OuUPKxR/1M+xjux
+         owIUSPaGYJp7UmyZ8gGZtaISGLN4Ky6HY/srDdk7WtW7DFh1Gw4MVxFkqYtmTso0hZey
+         72IiXMvQgmzW0IymzJl+1NgILAWVxcbbOe+kSTOo2FkaRbwCF1HrpxKWtq3WVrQ59/56
+         bg19e+kaJYKrbk7jVuVsGy7V/m4oJiCgTia99q1+9pt9+dpaDdcKJEltWe/BIR9Hvb6K
+         o2mR+01QgM/JCVacIMeTq7LU35zCSdFZfVrGdovK7wSBa0V0pCPbZfPWi/OzohzIzBK+
+         6EYg==
+X-Forwarded-Encrypted: i=1; AJvYcCXei4hPEcgyNPan+DvJvU18y3fWmuKH8npRoECDf6mhVQoZuTeypXfxKn/D6hNlAY4dCSBdzwCME4c4@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx/UI/g4VjG2mIxV66F9jMIdiyvilA80hndqFJEtDO3nkqoMKkW
+	DqjUsG6h0iNRULYd1xlOUBLIfESU8TTA3sPKEEucnin22+hRbAoWciZp1yGyeC0165YDzXAqYFk
+	pQm73FqRpI8mWha6pTui29j5FF/TBBAqARjROs+xvp5r4oVacL8HDomQm8tJuaFU=
+X-Gm-Gg: AY/fxX6vjcD2nXoKNc2QdJ1He/bQ6taS14ZvxHeDPZn+efXvnM90py7lxuswRusngcS
+	5GgTH2PeWUq4rasNa79iPYmehEWqIfV3iRHa0UOMbUVMJcDiDG27Wl2H+NSo9uai1tFCu3EMnRm
+	g7zfGCoK1/lNw49Nbe2zLqiyKLGhvXAae5cjwJGiMaU57AMcXXVn0sl+cPba+TiamRcDpDacRfL
+	JmRAHSyAarMod7M2VHP37guCgIBGeCYnMAdeJkpYc6H3028QmAH/CqS3h7MPjIkYeYWi6otHFeJ
+	lOr75X8sv8hHcllvMOARQaQhtEO58/JJS01Q1NhiRtwh29HMiR7uKvwfVZtc/JhTlZaENlWeSIw
+	R/Yjkejil6U9G
+X-Received: by 2002:a05:6000:184d:b0:431:35a:4a97 with SMTP id ffacd0b85a97d-432c37c3600mr21248039f8f.59.1768299603322;
+        Tue, 13 Jan 2026 02:20:03 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHrath3hRlhdo9WrSLU/1jbO11BPh+MoIv4sHPe4d/wYiA0ReRHh6C563cNyJeTG7EVpok72g==
+X-Received: by 2002:a05:6000:184d:b0:431:35a:4a97 with SMTP id ffacd0b85a97d-432c37c3600mr21247977f8f.59.1768299602857;
+        Tue, 13 Jan 2026 02:20:02 -0800 (PST)
+Received: from [192.168.88.32] ([212.105.155.93])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd5df96asm42541852f8f.28.2026.01.13.02.19.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Jan 2026 02:20:02 -0800 (PST)
+Message-ID: <017b07c8-ed86-4ed1-9793-c150ded68097@redhat.com>
+Date: Tue, 13 Jan 2026 11:19:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN2PEPF000055DF:EE_|SJ1PR12MB6098:EE_
-X-MS-Office365-Filtering-Correlation-Id: 88f70508-7c8e-4753-49f3-08de528d18fd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|36860700013|82310400026|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?Nmfyp0rITdSgmmLLCCXzS5tXe5Bwt4D14jWC08IzVG5t9EdMDfn28wjRfgPY?=
- =?us-ascii?Q?BwJM/P+enkxXlUAA62mL3wbteQG4aniA+ZtzbbCVpX+flibXmWq1p6UzQbYN?=
- =?us-ascii?Q?CMbP0XsZfYXm6Oge8csyn8irGyU2MPWLipYhuMPG29zdLMWEc3G4V4u5mjKT?=
- =?us-ascii?Q?ZaquLQUdoLKSQ8aruXb/j1KHvh0tYm/wq9s6o/+c9sqzroH4rjzk11No+fZl?=
- =?us-ascii?Q?+yM5Ocql05o+hlbJWq1YZPufL6wvpp9c2HpqB+3SdgMcNFT9JyQ5B+9J6slc?=
- =?us-ascii?Q?LMGwyOaNzMpOCy2Hn6UAqg4GRwH+mjmzVXxKaHszK+HpsnQxQZFknCw+p3GI?=
- =?us-ascii?Q?Yl5NcBj+12+n6nJjiIRS20r009har6Aa17ZfbOLTMbPq14UXYHkDU2VnOVxA?=
- =?us-ascii?Q?aLROO8CIfcO5hXp+CCrI8JNPrqLlJmn3nf6ykgUh562LBw4HJAX2vBW2Z4e2?=
- =?us-ascii?Q?xYEHCVUi527zRzrUxXGYf2GxeIMztfZoTpQnHsUrtAF2ggnm3mBwXH52+eB3?=
- =?us-ascii?Q?Mz/xYvZFU04YyozbXCWcSYQZW/6y4SQW0RP6KVa60lCM+YoFcF17+Of6oNrd?=
- =?us-ascii?Q?kDVK1uwX1R0wksd1qJfE/p9bA4t2n0HVBoLzRxoT0x/1hUTZc4eSV0Hmv31i?=
- =?us-ascii?Q?1yTnE3mLsEzXKZLZeRGja5n8RzgYootS6ub6yjwDG87VVOJkNOpgOFugGnAk?=
- =?us-ascii?Q?HUtJ9NG8yDvMPnC5jIj+5mHDhOwGfRi9mD3ERwwlOr8CG71sOtnj7MD/hBCN?=
- =?us-ascii?Q?HlbbamLFchMswSXohdFJ/i22G/9GKFJWhZyPFZqtCaEsX3xlSCDsbpgRnwE9?=
- =?us-ascii?Q?1hTP1cFVnLERlr6bZNPMPRmwQlGB6vg3amRsF5FeB3+rUL90IRN3h5safEjA?=
- =?us-ascii?Q?4bWgMlfPEPlYWcKkkODsq5tBQb8okv6wUH6FrJFwzrOQl+RLFdogIKcNUPFR?=
- =?us-ascii?Q?JE4Jccgjq0b9y6O1iofA81krPjTs3kN2KIpbBcoCkIUh4DoeU82nCicC90xL?=
- =?us-ascii?Q?2t5FlTa5MIk0ahLqT6pNYw6t6PFhT+DKUQrLUkwGkSNSHl3GCUM2aTxP7EhE?=
- =?us-ascii?Q?kmG9GxtxaGfxHKIfWyVp/l4lMLGKxX29Xplz+CL0cXkoOXeeN4xk4WQAJ6Mk?=
- =?us-ascii?Q?q3cDt6IUWQZF7YwZJHCAj1aHU2aV45YXhwU65uI1ECxdGTahQPer4745VDac?=
- =?us-ascii?Q?i9Ih38ATLkNBf5uz8rJTTYVH4UcZmx9H8/v/VoKMlN7U9WPoTYSUC2lLFQkV?=
- =?us-ascii?Q?PBomhZtQM1Wle8Y/geXJgqzsLBx7vVUreJmrQsO6Ro2jocqgc7ItlU8tD0BU?=
- =?us-ascii?Q?4cNTz4peUYQqO7yhJt0qIMtQ9bbnK5sVXLDSAfCSkNz0X1u946BP89T0dn+x?=
- =?us-ascii?Q?TJ/PTdL3J5zeokGtac9Dy77tQbcrrRjPB6dAsHXcar1ArySDUI5qN8cBsND/?=
- =?us-ascii?Q?vgaczqboDWeKRmtOmYZ+rin4AyK3hORRQI7w4TLO/D3ztd+e3XctyFjy/xQS?=
- =?us-ascii?Q?rdjWXVyUeqJWbiKmdI6gxGUofNcZExkA94DA5N2QnDL1hPDiRA0+7WASr9rP?=
- =?us-ascii?Q?JsDGMRis15PjNlpJizs=3D?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(36860700013)(82310400026)(1800799024);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2026 10:18:29.4460
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 88f70508-7c8e-4753-49f3-08de528d18fd
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN2PEPF000055DF.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6098
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v8 5/9] eth: bnxt: store rx buffer size per queue
+To: Pavel Begunkov <asml.silence@gmail.com>, netdev@vger.kernel.org
+Cc: "David S . Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Jonathan Corbet <corbet@lwn.net>, Michael Chan <michael.chan@broadcom.com>,
+ Pavan Chebbi <pavan.chebbi@broadcom.com>, Andrew Lunn
+ <andrew+netdev@lunn.ch>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Joshua Washington <joshwash@google.com>,
+ Harshitha Ramamurthy <hramamurthy@google.com>,
+ Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
+ Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Alexander Duyck <alexanderduyck@fb.com>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>, Shuah Khan
+ <shuah@kernel.org>, Willem de Bruijn <willemb@google.com>,
+ Ankit Garg <nktgrg@google.com>, Tim Hostetler <thostet@google.com>,
+ Alok Tiwari <alok.a.tiwari@oracle.com>, Ziwei Xiao <ziweixiao@google.com>,
+ John Fraker <jfraker@google.com>,
+ Praveen Kaligineedi <pkaligineedi@google.com>,
+ Mohsin Bashir <mohsin.bashr@gmail.com>, Joe Damato <joe@dama.to>,
+ Mina Almasry <almasrymina@google.com>,
+ Dimitri Daskalakis <dimitri.daskalakis1@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>, Kuniyuki Iwashima <kuniyu@google.com>,
+ Samiullah Khawaja <skhawaja@google.com>, Ahmed Zaki <ahmed.zaki@intel.com>,
+ Alexander Lobakin <aleksander.lobakin@intel.com>, David Wei
+ <dw@davidwei.uk>, Yue Haibing <yuehaibing@huawei.com>,
+ Haiyue Wang <haiyuewa@163.com>, Jens Axboe <axboe@kernel.dk>,
+ Simon Horman <horms@kernel.org>, Vishwanath Seshagiri <vishs@fb.com>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, dtatulea@nvidia.com,
+ io-uring@vger.kernel.org
+References: <cover.1767819709.git.asml.silence@gmail.com>
+ <e01023029e10a8ff72b5d85cb15e7863b3613ff4.1767819709.git.asml.silence@gmail.com>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <e01023029e10a8ff72b5d85cb15e7863b3613ff4.1767819709.git.asml.silence@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi,
+On 1/9/26 12:28 PM, Pavel Begunkov wrote:
+> @@ -4478,7 +4485,7 @@ static void bnxt_init_one_rx_agg_ring_rxbd(struct bnxt *bp,
+>  	ring = &rxr->rx_agg_ring_struct;
+>  	ring->fw_ring_id = INVALID_HW_RING_ID;
+>  	if ((bp->flags & BNXT_FLAG_AGG_RINGS)) {
+> -		type = ((u32)BNXT_RX_PAGE_SIZE << RX_BD_LEN_SHIFT) |
+> +		type = ((u32)(u32)rxr->rx_page_size << RX_BD_LEN_SHIFT) |
 
-The following pull-request contains common mlx5 updates
-for your *net-next* tree.
-Please pull and let me know of any problem.
+Minor nit: duplicate cast above.
 
-Regards,
-Tariq
+> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.h b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
+> index f5f07a7e6b29..4c880a9fba92 100644
+> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.h
+> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
+> @@ -1107,6 +1107,7 @@ struct bnxt_rx_ring_info {
+>  
+>  	unsigned long		*rx_agg_bmap;
+>  	u16			rx_agg_bmap_size;
+> +	u16			rx_page_size;
 
-----------------------------------------------------------------
-The following changes since commit f8f9c1f4d0c7a64600e2ca312dec824a0bc2f1da:
+Any special reason for using u16 above? AFAICS using u32 will not change
+the struct size on 64 bit arches, and using u32 will likely yield better
+code.
 
-  Linux 6.19-rc3 (2025-12-28 13:24:26 -0800)
+/P
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git mlx5-next
-
-for you to fetch changes up to 49e41f3ea3f7545c732a0b399cb123173afc5cfe:
-
-  net/mlx5: Add IFC bits for extended ETS rate limit bandwidth value (2026-01-13 03:43:00 -0500)
-
-----------------------------------------------------------------
-Alexei Lazar (1):
-      net/mlx5: Add IFC bits for extended ETS rate limit bandwidth value
-
-Or Har-Toov (4):
-      net/mlx5: Add max_tx_speed and its CAP bit to IFC
-      net/mlx5: Propagate LAG effective max_tx_speed to vports
-      net/mlx5: Handle port and vport speed change events in MPESW
-      net/mlx5: Add support for querying bond speed
-
- drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c  | 215 +++++++++++++++++++++
- drivers/net/ethernet/mellanox/mlx5/core/lag/lag.h  |  11 ++
- .../net/ethernet/mellanox/mlx5/core/lag/mpesw.c    |  39 ++++
- .../net/ethernet/mellanox/mlx5/core/lag/mpesw.h    |  14 ++
- .../net/ethernet/mellanox/mlx5/core/mlx5_core.h    |   1 +
- drivers/net/ethernet/mellanox/mlx5/core/port.c     |  24 +++
- drivers/net/ethernet/mellanox/mlx5/core/vport.c    |  74 +++++++
- include/linux/mlx5/driver.h                        |   1 +
- include/linux/mlx5/mlx5_ifc.h                      |  16 +-
- include/linux/mlx5/vport.h                         |   6 +
- 10 files changed, 395 insertions(+), 6 deletions(-)
 
