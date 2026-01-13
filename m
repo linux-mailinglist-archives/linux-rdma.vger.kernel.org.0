@@ -1,155 +1,155 @@
-Return-Path: <linux-rdma+bounces-15499-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15500-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41C7ED182AE
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 11:48:54 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6721D185ED
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 12:12:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D10013035064
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 10:48:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8EBAF302AFB5
+	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 11:05:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30AAC34402D;
-	Tue, 13 Jan 2026 10:48:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC3A0239E7E;
+	Tue, 13 Jan 2026 11:04:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GRXR/S1S"
+	dkim=pass (1024-bit key) header.d=mgml.me header.i=@mgml.me header.b="DRzsEkiW";
+	dkim=pass (1024-bit key) header.d=amazonses.com header.i=@amazonses.com header.b="GTwFtPI6"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from e234-53.smtp-out.ap-northeast-1.amazonses.com (e234-53.smtp-out.ap-northeast-1.amazonses.com [23.251.234.53])
+	(using TLSv1.2 with cipher AES128-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67D92346FA7
-	for <linux-rdma@vger.kernel.org>; Tue, 13 Jan 2026 10:48:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C68E82BE056;
+	Tue, 13 Jan 2026 11:04:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=23.251.234.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768301316; cv=none; b=O8MmsgU3xMXtWgNXN4ty+lnYBmGwaCi5KXNQQfWkyfdng9RjNRE3hAVcyvwrSvK605LL+ZqCPRXDcu3ImiWhlDn6oD4NcS5kTtxmRp4TSv5q21sxePnd5LDOWPpFfPqyGD63VXHBloLs1VlYXA2htZaWKjTFlxtjXyMZwP3usHk=
+	t=1768302265; cv=none; b=LqfOSyAtlseoIiXFQNULvV2weVA7iYUY6aTzcJzXopscGTLNJc80hr39hgxh14AwM91YI2kigp7sB3++X8lFA26uUUl5fVZPDa0SnJaqUuc7DZ+4M9AQQVem9kclFDDyjG2Rfw9bxEX9LBDJSILt65xicBpRmbSaEdTVxnHrRtI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768301316; c=relaxed/simple;
-	bh=HVWq/nMqCWEx4KqTDxex3BJqfz0Jbfe3bSlD+3srwzk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ggTx6IC0KgzRnNuIv/AiKlrQ0CuvpAKEPd7vbxHROdUv2xb8GrMQlGtDxXO4XbsGMQspSuoZO+4uZ80XE7LJl9nv8XZIpvkBD6J4UnzMLqARkRDUzfpN7XXCbxyA14qmFjfP25TtLLDeqFLwZomJzlg3SZC0Cf46Ld0GA93IAiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GRXR/S1S; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-430f3ef2d37so6235854f8f.3
-        for <linux-rdma@vger.kernel.org>; Tue, 13 Jan 2026 02:48:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768301312; x=1768906112; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JIXnem9PesbM4LOcpc3aqv8ZBT0fEVIpmQqCM7UApXg=;
-        b=GRXR/S1S6o/2Ranq5ayXSyqhYVV8bg4+5JdPrIphjLLTHJFc1O2JOq2VCNapLtAJQC
-         N6ew3TpIyyO0Juxx46/LTt67OuI1/+NPG1PDDhXfr4KXRCWs5VHyDH0eFMJO14Q1EJ1K
-         nA/u5cGuLJJtr/IQRu4mxaqHAkiHxEMXyADjg1C0uBBWKI2C3KgQio/nU57qEgxlICp5
-         x1ME/NRHAPxue8p5TkkuxhWLz3oiK+AKebPlqbFYY6SUCxgHo24GC+iLEQJT67FNUJEm
-         ky1cwJd3rMdxvzzegaCRGwttKArdIByIKP9ze+XzGknlHB/zXf/+VCbUBBs7dw0PhnL5
-         qDtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768301312; x=1768906112;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JIXnem9PesbM4LOcpc3aqv8ZBT0fEVIpmQqCM7UApXg=;
-        b=IwU1e1e2GfUR+PB8UBYfSZTDMEKaxDVqa0ZD0LDn7ZZw+hgAzxckx2JURyKUhthvtP
-         Kfn2eJxonuL+PJh8ccWnl41/7UyOk5DGvzwnuyQzfzj5RFh/ppr/yQ6pHepgctyTgiz5
-         S6D2owZjbZAVQxamFXGgPgemc/LMj+qmgUZ5DIT9ulSfpF8xWSqbCG+K/EvLishKU5dJ
-         c8A8JfvfgLnxrerx9PQIGWGm99Xx4HICEWD2ijhalWT3BuDkBXR/KKEv4kkUYm1asaFK
-         NGEwqNucyQY8BKuEiyUC4K/6FjSgtVHalgMhC/kfByaEMD+s+huD4tPYSFdxTvneMaw5
-         rZqw==
-X-Forwarded-Encrypted: i=1; AJvYcCWyv70pS8T8kNCRprniq1TWeHn/6dJME0mjYK34qI4hqzxphbUI617dpbeRH2QVUsDFyIya2cfZjUI3@vger.kernel.org
-X-Gm-Message-State: AOJu0YyS6Vaa14qhpC9ygYzu4vp8XMyd5Yt0Z8eyI9pSoo5C9ISUJEMx
-	dKH1WWYV0IF0OpgNGghoIo5ImXX9PRAFENBGsNmNDkiG346RSXBfLyCy
-X-Gm-Gg: AY/fxX7Gum4btDX9bOynKFzCJbIBbiffP7aY9zuCH2E1IO6t9X390rKMTcT9qmNPXiQ
-	eoVuYIvxeo+wUFM/YunFB4yDV2SgxKG1yXAD838AfuxCt6sEgByQxUgrQbTCaeRf4rXEd4DAL/a
-	k2sqbImaVDmsQhEtHnMhZCNSLmM5HWqIk9APZ7iTLrG7LJNkPc0FgdXoUAKUWNQzwVGSEHaT6eW
-	OwNUAKNPzzujnI1GdmH3VU4H2+OzeSZ98BNsEeGsCBRyIjppKAEQx2UG5p/seb7w6krkSNUvvXB
-	uluOvOSMW1AGHpVlpDuLhAE4PvuG3cjz4G8nIBYSKr4Dcp399SqYmiNvng51DPfT3lCtifc5+qz
-	5fYtngE8Uc1cjelAZiwG1xVXuY1qcsVtgnYfuvQ3M4+iCfJihtHP7JaJbh6JiPkOcHjjgwHoqUm
-	w8FPmni/ym/TVvNeLfGhuUvYKgrpw4mM46Xn1GKfX0YacwNFVX6gCwEGstqiQNTV0YHjU3LUeBP
-	ZkrzCeRpaW+vF4eBg5yy1TaGcrRmxNdCKiql/4zF7TWC0jYcN3dIRLvMYcxARYmGg==
-X-Google-Smtp-Source: AGHT+IGJu2DfHIhwL2Wsz6KoyIUAUdvyVOnU75RxhvIHwpjQxcQz5RKKCJsMOQA4l3p4Bbb6eGcwyg==
-X-Received: by 2002:a5d:5d81:0:b0:430:fd9f:e6e2 with SMTP id ffacd0b85a97d-432c378a9b2mr22136397f8f.9.1768301311656;
-        Tue, 13 Jan 2026 02:48:31 -0800 (PST)
-Received: from ?IPV6:2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c? ([2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd0dade5sm43860084f8f.9.2026.01.13.02.48.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jan 2026 02:48:30 -0800 (PST)
-Message-ID: <a3b10677-a159-48dd-b45c-b78aed94f354@gmail.com>
-Date: Tue, 13 Jan 2026 10:48:25 +0000
+	s=arc-20240116; t=1768302265; c=relaxed/simple;
+	bh=EC4C2XIGIUrT7iZ5a0xr9IPkBwnlhsVppr+vB/rvi8A=;
+	h=In-Reply-To:From:To:Cc:Subject:Message-ID:Date:MIME-Version:
+	 Content-Type; b=PUZEnIqVcfU1a7ukkUuKAuQZLycaAUd1/JwtOUDl3q4G66NUuwdJM1qWB0exzipNCCwAv2MFLrr7SrEpp9DvYWBRarRQr8njfpXVVGWH2j54OfUFV7LCGLAz1W0EZr1NS7bg5K3sy9GFLntMhfY9JEJ5waQ3ZdHTsn0fKyu46Z8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mgml.me; spf=pass smtp.mailfrom=send.mgml.me; dkim=pass (1024-bit key) header.d=mgml.me header.i=@mgml.me header.b=DRzsEkiW; dkim=pass (1024-bit key) header.d=amazonses.com header.i=@amazonses.com header.b=GTwFtPI6; arc=none smtp.client-ip=23.251.234.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mgml.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=send.mgml.me
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple; s=resend;
+	d=mgml.me; t=1768302262;
+	h=In-Reply-To:From:To:Cc:Subject:Message-ID:Content-Transfer-Encoding:Date:MIME-Version:Content-Type;
+	bh=EC4C2XIGIUrT7iZ5a0xr9IPkBwnlhsVppr+vB/rvi8A=;
+	b=DRzsEkiW2HzlQLgByRA7X5y+6GHRnfIzvEhEELP2hTavAIJR5ooTtdWbF/3vfToG
+	qy12M9ZdIhfOmCt7yxwTnax4aEg7OA0T+cuhvDKfa1uChUV9rJ+aGp5VLIrOaBEfWXx
+	ygl26ZitrzFnQ4XWPvJgbYQx9rpD1X/znbcCTaQg=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=suwteswkahkjx5z3rgaujjw4zqymtlt2; d=amazonses.com; t=1768302262;
+	h=In-Reply-To:From:To:Cc:Subject:Message-ID:Content-Transfer-Encoding:Date:MIME-Version:Content-Type:Feedback-ID;
+	bh=EC4C2XIGIUrT7iZ5a0xr9IPkBwnlhsVppr+vB/rvi8A=;
+	b=GTwFtPI6WFU6RY2VC8MRNsAjmdyiLZluJ0t4glHLl8M+ISJzUWzRLmqhmcVnZyc0
+	/4esGrfgjQUd0WY1iqb0Tlt6mfrnjvPHUYOIOO5rx/vvAMGZO3AyhyCxewxqAKLbFPD
+	6riyhXRG3iWU698ScvyQoJ9ezfZI/I0awB2GHaLs=
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+In-Reply-To: <e22a37a6-d15c-4abe-becd-4c538d99ad30@gmail.com>
+From: Kenta Akagi <k@mgml.me>
+To: ttoukan.linux@gmail.com, saeedm@nvidia.com, tariqt@nvidia.com, 
+	mbloch@nvidia.com, leon@kernel.org, andrew+netdev@lunn.ch, 
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com
+Cc: k@mgml.me, netdev@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC mlx5-next 0/1] net/mlx5e: Expose physical received
+ bits counters to ethtool
+Message-ID: <0106019bb70737d5-06bcc3e0-d534-4e42-b8a3-71dc3b53f318-000000@ap-northeast-1.amazonses.com>
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 13 Jan 2026 11:04:22 +0000
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v8 8/9] selftests: iou-zcrx: test large chunk
- sizes
-To: Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
-Cc: "David S . Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Jonathan Corbet <corbet@lwn.net>, Michael Chan <michael.chan@broadcom.com>,
- Pavan Chebbi <pavan.chebbi@broadcom.com>, Andrew Lunn
- <andrew+netdev@lunn.ch>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Joshua Washington <joshwash@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
- Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
- Alexander Duyck <alexanderduyck@fb.com>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>, Shuah Khan
- <shuah@kernel.org>, Willem de Bruijn <willemb@google.com>,
- Ankit Garg <nktgrg@google.com>, Tim Hostetler <thostet@google.com>,
- Alok Tiwari <alok.a.tiwari@oracle.com>, Ziwei Xiao <ziweixiao@google.com>,
- John Fraker <jfraker@google.com>,
- Praveen Kaligineedi <pkaligineedi@google.com>,
- Mohsin Bashir <mohsin.bashr@gmail.com>, Joe Damato <joe@dama.to>,
- Mina Almasry <almasrymina@google.com>,
- Dimitri Daskalakis <dimitri.daskalakis1@gmail.com>,
- Stanislav Fomichev <sdf@fomichev.me>, Kuniyuki Iwashima <kuniyu@google.com>,
- Samiullah Khawaja <skhawaja@google.com>, Ahmed Zaki <ahmed.zaki@intel.com>,
- Alexander Lobakin <aleksander.lobakin@intel.com>, David Wei
- <dw@davidwei.uk>, Yue Haibing <yuehaibing@huawei.com>,
- Haiyue Wang <haiyuewa@163.com>, Jens Axboe <axboe@kernel.dk>,
- Simon Horman <horms@kernel.org>, Vishwanath Seshagiri <vishs@fb.com>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kselftest@vger.kernel.org, dtatulea@nvidia.com,
- io-uring@vger.kernel.org
-References: <cover.1767819709.git.asml.silence@gmail.com>
- <bb51fe4e6f30b0bd2335bfc665dc3e30b8de7acb.1767819709.git.asml.silence@gmail.com>
- <6d4941fd-9807-4288-a385-28b699972637@redhat.com>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <6d4941fd-9807-4288-a385-28b699972637@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Feedback-ID: ::1.ap-northeast-1.TOS0vxEE3Ar6ai29fkp2i/jb+l2iigajCGeLfF7S3sk=:AmazonSES
+X-SES-Outgoing: 2026.01.13-23.251.234.53
 
-On 1/13/26 10:34, Paolo Abeni wrote:
-> On 1/9/26 12:28 PM, Pavel Begunkov wrote:
->> @@ -65,6 +83,8 @@ static bool cfg_oneshot;
->>   static int cfg_oneshot_recvs;
->>   static int cfg_send_size = SEND_SIZE;
->>   static struct sockaddr_in6 cfg_addr;
->> +static unsigned cfg_rx_buf_len;
-> 
-> Checkpatch prefers 'unsigned int' above
-> 
->> @@ -132,6 +133,42 @@ def test_zcrx_rss(cfg) -> None:
->>           cmd(tx_cmd, host=cfg.remote)
->>   
->>   
->> +def test_zcrx_large_chunks(cfg) -> None:
-> 
-> pylint laments the lack of docstring. Perhaps explicitly silencing the
-> warning?
+On 2026/01/13 15:43, Tariq Toukan wrote:
+>=20
+>=20
+> On 13/01/2026 8:31, =
+Tariq Toukan wrote:
+>>
+>>
+>> On 12/01/2026 9:03, Kenta Akagi wrote:
+>>> Hi,
+>>>
+>>> I would like to measure the cable BER on ConnectX.
+>>>
+>>> According to the documentation[1][2], there are counters that can be =
+used
+>>> for this purpose: rx_corrected_bits_phy, rx_pcs_symbol_err_phy and
+>>> rx_bits_phy. However, rx_bits_phy does not show up in ethtool
+>>> statistics.
+>>>
+>>> This patch exposes the PPCNT phy_received_bits as =
+rx_bits_phy.
+>>>
+>>>
+>>> On a ConnectX-5 with 25Gbase connection, it works =
+as expected.
+>>>
+>>> On the other hand, although I have not verified it, in=
+ an 800Gbps
+>>> environment rx_bits_phy would likely overflow after about =
+124 days.
+>>> Since I cannot judge whether this is acceptable, I am posting=
+ this as an
+>>> RFC first.
+>>>
+>>
+>> Hi,
+>>
+>> This is a 64-bits counter so=
+ no overflow is expected.
+>>
+>=20
+> Sorry, ignore my comment, your numbers =
+make sense.
+> Maybe it's ~248 days, but same idea.
+>=20
 
-fwiw, I left it be because all other functions in the file
-have exactly the same problem.
+Hi, thank you for checking.
 
--- 
-Pavel Begunkov
+Ah, it seems I didn't realize it was unsigned,=
+ and I also forgot to
+include the expression. Sorry about that.
+Yes - at 800 Gbps, 0xFFFFFFFFFFFFFFFF / (800 * (2^30) * 86400) =3D 248.55 =
+days,
+so it will overflow.
+
+In practice, is it possible to expose this as a=
+ statistic via ethtool?
+Or is there some other value that could be exposed =
+for BER calculation - e.g.,
+a register that indicates the elapsed seconds =
+since link-up?
+
+Thanks.
+
+>>>
+>>> [1] commit 8ce3b586faa4 ("net/mlx5: Add =
+counter information to mlx5
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 driver =
+documentation")
+>>> [2] https://docs.kernel.org/networking/device_drivers/e=
+thernet/ mellanox/mlx5/counters.html
+>>>
+>>> Kenta Akagi (1):
+>>> =C2=A0=C2=A0 net/mlx5e: Expose physical received bits counters to =
+ethtool
+>>>
+>>> =C2=A0 drivers/net/ethernet/mellanox/mlx5/core/en_stats.c |=
+ 1 +
+>>> =C2=A0 1 file changed, 1 insertion(+)
+>>>
+>>
+>=20
+>=20
 
 
