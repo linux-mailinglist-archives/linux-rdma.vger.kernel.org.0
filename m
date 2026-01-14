@@ -1,103 +1,101 @@
-Return-Path: <linux-rdma+bounces-15538-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15539-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BA7DD1C450
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Jan 2026 04:36:20 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74CCCD1C4AB
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Jan 2026 04:44:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 6F9E53005011
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Jan 2026 03:36:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A6B64301FF4E
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Jan 2026 03:43:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD0C82D739B;
-	Wed, 14 Jan 2026 03:36:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 156D42DEA86;
+	Wed, 14 Jan 2026 03:43:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KtPxaBvF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NfjnGxO9"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88009296BB7;
-	Wed, 14 Jan 2026 03:36:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C32FD13DDAE;
+	Wed, 14 Jan 2026 03:43:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768361775; cv=none; b=FocCfMZOiK294dnuWPjq/CUbiTPNpDSSLBEsEbTN3wsmJXo6x3G3bd9wCC/CoIIt9GEG61/DLiLHmFWVzrKJ33Qx/8QGxPT/LR0ivI0K1pxz5LnFk6HkBu7xA28E9ty7st8lsQB5NLCsJKiOLisrgSRhrQmwtTjY1rEmu0qJHic=
+	t=1768362225; cv=none; b=fYdg6OmlW5W25SLBRFqPyCclINj+/pl5LleIkc/405B7aMcnGr5llPxO4Z7kcXUJERVy2fcw9TuH/WnSiGkX1UOADM0xzJuy/oM6cZgFii8VUbWBhJzVKNzIRfNIj1tea7G8dBXirYqn6nSIWd0qqfFXGFHQqeEH/e11UUso1Ns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768361775; c=relaxed/simple;
-	bh=XdgwGXL6Xkf7KFiVxYJaa6oGaEzMG6qYj6DrtcALVZw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TyRPnPB9CkYtPh7m+Ap0z1zVsPQ4PoqZVqvVXt3/+YgXDcVdhm8x+XDviL38sUV77PIjEWWTJJFqbD8zusirtRQlvDniDMLEQZw0pq5mrKA0BtvOOyfhfHos53GcKCvem5RKQtR3U0q/2Zm1cFoWktPksdA6gRuml2mE0lkiDik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KtPxaBvF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE5F8C4CEF7;
-	Wed, 14 Jan 2026 03:36:12 +0000 (UTC)
+	s=arc-20240116; t=1768362225; c=relaxed/simple;
+	bh=fsm+RbfBmzE3HHaX362NezsDg0pqF6wDy7Rk3jWR5B8=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=nFRj1yG+gPc1J+8po/fSwB8uA6oTZ/Y28a0xzWornEqf0S7a17Z3+0ZCwLpNbjiNXEy0p6/m4w7JvZCnRWO++jtJo5qn2abASEL2JrKYoF0bspSbFgBpzR4hjHNopxylWSdcCRj3Odt3Dx7sSXLZIWVwPDTwv8sLLvpqmVsbklQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NfjnGxO9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FC44C4CEF7;
+	Wed, 14 Jan 2026 03:43:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768361775;
-	bh=XdgwGXL6Xkf7KFiVxYJaa6oGaEzMG6qYj6DrtcALVZw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=KtPxaBvFjvBQXFgO6ttgm1CTd9pwSd7h+Lyh+D9BlZcO995/kseP/Wry1CiCN3v/n
-	 gBwIeg1brhKqIgABt6UECFua/Ct/X6gYsG38FVO8f6nWOf173R366ktySg2c/OI6jY
-	 vk2Ge2hCtjCrU3a9L6qa0l7mSw2vfPb0vGqD7MpfJV5pEDB/zBBeNPk3CdhrwD5Zu0
-	 eumNzZOYzfdZb4LKIHdXfESrFvoslPCoWdoC1b0JaoLC/mIXrjkvL3pAioVtBHM6eI
-	 WeCKp318EhcZFMv/64Kg8sLAhyMxzF4GhCzOaMZyc6/3d1xjwxIJU83EoMG09a8DJm
-	 WGF3Zo8ytomJg==
-Date: Tue, 13 Jan 2026 19:36:12 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Jonathan
- Corbet <corbet@lwn.net>, Michael Chan <michael.chan@broadcom.com>, Pavan
- Chebbi <pavan.chebbi@broadcom.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
- Fastabend <john.fastabend@gmail.com>, Joshua Washington
- <joshwash@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, Saeed
- Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch
- <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Alexander Duyck
- <alexanderduyck@fb.com>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Shuah Khan <shuah@kernel.org>, Willem de Bruijn <willemb@google.com>, Ankit
- Garg <nktgrg@google.com>, Tim Hostetler <thostet@google.com>, Alok Tiwari
- <alok.a.tiwari@oracle.com>, Ziwei Xiao <ziweixiao@google.com>, John Fraker
- <jfraker@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, Mohsin
- Bashir <mohsin.bashr@gmail.com>, Joe Damato <joe@dama.to>, Mina Almasry
- <almasrymina@google.com>, Dimitri Daskalakis
- <dimitri.daskalakis1@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>,
- Kuniyuki Iwashima <kuniyu@google.com>, Samiullah Khawaja
- <skhawaja@google.com>, Ahmed Zaki <ahmed.zaki@intel.com>, Alexander Lobakin
- <aleksander.lobakin@intel.com>, David Wei <dw@davidwei.uk>, Yue Haibing
- <yuehaibing@huawei.com>, Haiyue Wang <haiyuewa@163.com>, Jens Axboe
- <axboe@kernel.dk>, Simon Horman <horms@kernel.org>, Vishwanath Seshagiri
- <vishs@fb.com>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-kselftest@vger.kernel.org, dtatulea@nvidia.com,
- io-uring@vger.kernel.org
-Subject: Re: [PATCH net-next v8 7/9] eth: bnxt: support qcfg provided rx
- page size
-Message-ID: <20260113193612.2abfcf10@kernel.org>
-In-Reply-To: <28028611f572ded416b8ab653f1b9515b0337fba.1767819709.git.asml.silence@gmail.com>
-References: <cover.1767819709.git.asml.silence@gmail.com>
-	<28028611f572ded416b8ab653f1b9515b0337fba.1767819709.git.asml.silence@gmail.com>
+	s=k20201202; t=1768362225;
+	bh=fsm+RbfBmzE3HHaX362NezsDg0pqF6wDy7Rk3jWR5B8=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=NfjnGxO9p8v8tgyYZ1YLhipRYtvtuDQMcttpYqDdA5nkVicBUVIP6ZiIrwUg+QFOq
+	 PNAsvPKQh8TcV7D4n8HAFdrlmLiyf1v4xT5OZ6iaBokBAG0vYlP5iVRLT4u1eJiFDz
+	 GGxeem/NiqhIlbI9MYXUk7sV74em/ptwbYPmeEbIuxgOFgb7nnxDBFOXpmMaUh5w7B
+	 Jp23alHSDsViJVw+clYHoAPnTX3fMSIM5M80FnEtVSfjUM6P1NjFz5SVuAy4zNJU+Y
+	 pWH++LTXpCfPaIyJ7CEyk99A8fZ65D7zE+x39SXgSLRoz7xUZANcLPsHuPi/XYihOX
+	 v8ezxOgq1fyrQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id B58EE3808200;
+	Wed, 14 Jan 2026 03:40:19 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next, v8] net: mana: Implement ndo_tx_timeout and
+ serialize queue resets per port.
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <176836201827.2575016.15589980289559695566.git-patchwork-notify@kernel.org>
+Date: Wed, 14 Jan 2026 03:40:18 +0000
+References: 
+ <20260112130552.GA11785@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+In-Reply-To: 
+ <20260112130552.GA11785@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+To: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+ decui@microsoft.com, andrew+netdev@lunn.ch, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ longli@microsoft.com, kotaranov@microsoft.com, horms@kernel.org,
+ shradhagupta@linux.microsoft.com, ssengar@linux.microsoft.com,
+ ernis@linux.microsoft.com, shirazsaleem@microsoft.com,
+ linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+ dipayanroy@microsoft.com
 
-On Fri,  9 Jan 2026 11:28:46 +0000 Pavel Begunkov wrote:
-> @@ -4342,7 +4343,8 @@ static void bnxt_init_ring_struct(struct bnxt *bp)
->  		if (!rxr)
->  			goto skip_rx;
->  
-> -		rxr->rx_page_size = BNXT_RX_PAGE_SIZE;
-> +		rxq = __netif_get_rx_queue(bp->dev, i);
-> +		rxr->rx_page_size = rxq->qcfg.rx_page_size;
+Hello:
 
-Pretty sure I asked for the netdev_queue_config() helper to make 
-a return, instead of drivers poking directly into core state.
-Having the config live in rxq directly is also ugh.
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-But at this stage we're probably better off if you just respin
-to fix the nits from Paolo and I try to de-lobotimize the driver
-facing API. This is close enough.
+On Mon, 12 Jan 2026 05:05:52 -0800 you wrote:
+> Implement .ndo_tx_timeout for MANA so any stalled TX queue can be detected
+> and a device-controlled port reset for all queues can be scheduled to a
+> ordered workqueue. The reset for all queues on stall detection is
+> recomended by hardware team.
+> 
+> Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
+> Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
+> Signed-off-by: Dipayaan Roy <dipayanroy@linux.microsoft.com>
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v8] net: mana: Implement ndo_tx_timeout and serialize queue resets per port.
+    https://git.kernel.org/netdev/net-next/c/3b194343c250
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
