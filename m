@@ -1,94 +1,101 @@
-Return-Path: <linux-rdma+bounces-15534-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15535-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id A07FED1B635
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 22:26:36 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40EEDD1BE40
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Jan 2026 02:10:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 1E9333007646
-	for <lists+linux-rdma@lfdr.de>; Tue, 13 Jan 2026 21:26:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AFC573025312
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Jan 2026 01:09:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 720AD318BAB;
-	Tue, 13 Jan 2026 21:26:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0222D21FF2E;
+	Wed, 14 Jan 2026 01:09:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kux567s+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RKStq6y3"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 349F4632;
-	Tue, 13 Jan 2026 21:26:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B693015E5DC;
+	Wed, 14 Jan 2026 01:09:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768339590; cv=none; b=EqnMxHMRSBlHHchRYusd0TF1Hw8JcT/EkKK7y0roDpq4BCNDXonq05OSK9myFhpGoJhv5S1BqOtH225fXsjPltlZJemjhPmt93QWyLrwstza5CMjQ2qVfBZtHUK1bWDBze2q28QM0az2vEMLxxbpzxVvmee/ugKfKzz1N2f65uQ=
+	t=1768352990; cv=none; b=gerRHmmSWfeaJtLH7R9uCiGXRNoBxumG5vsiUSxzOT3a/g56H91wgM28+uuGcUjqNPIQTD39JZdDEuYTE6go8ouY1RYcioaCeZBlluqx43blieQI/XAjKEAxDTfY7Ke2TJ11qi9WcnvdsTdpgzri/XI1KQIjvNfSkswzaY91NPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768339590; c=relaxed/simple;
-	bh=DSpGbkss/5fbHFcpztSVDDE/5IHICOG994oOnN1kB9g=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=s/66N6LzZ4+N4Mx6gp1j94eeUW5eUeNZA1pzUo2E1ZJWsFGMrc2T0E2ZHMadJyeWjCeeUV7xBRyPNNMrolKn0NPkdUveWshdrUkKDDQ73zys8k1rz8k51hHmvxf9X3CXZW3Jq1ILnGZ03c9RdMgUec7FWhOAJMo8sAJ/b7ywgIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kux567s+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F02E8C116C6;
-	Tue, 13 Jan 2026 21:26:29 +0000 (UTC)
+	s=arc-20240116; t=1768352990; c=relaxed/simple;
+	bh=FhTE2O81vVOc5m/6D5KI8Ud3LAbeCf+yg7dqhY6WG68=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aqdBAaHwjBoDgQJ3dBT5wwEcIMJNykyrkn3jzyUJFXz6Xx/qLQQO0J+d9HuZbKagxHhHlx7eYbwbicgkexiXR1eKLnop/2Kw0bbXlL3QSn0wNuYkL2RX92XA5wfsO4yet250jnS1O4FBzWZworH8hf+UlyENSF0t2p4dJMbcmEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RKStq6y3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BB7DC116C6;
+	Wed, 14 Jan 2026 01:09:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768339590;
-	bh=DSpGbkss/5fbHFcpztSVDDE/5IHICOG994oOnN1kB9g=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=kux567s+wJGIxOaiydgPz9mtcsAN0i4v2Txv5Apc9iuFfEP1UAfszB8X2nfEag23K
-	 hVzvo0aXrRmqIEQuIqqgqM7GImcNI5v0GcvsYTw6+0DcOlgy/CYFE5+iLB1aBarpTq
-	 VZ9FZcSTxp0tLmQIV27c+ESUzRxFczBTRZ+o39Y7s3g3/PrqyGAlg9Zzg7GnmKrUqi
-	 LQuP1U+qoXuxa4No+xbiw/hWogv5nrWrbqmL4YnSpPwpyvBrJUZ/O4sULaoIRcDhju
-	 9gaL6cXXjjD4kB7BBPEh3hc/h1v5ZrCk2bKcOV/tbp3ka7QqVDBVUGG3NKktZz5fnu
-	 GqLGmZwqLlB3w==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 789C23808200;
-	Tue, 13 Jan 2026 21:23:04 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1768352990;
+	bh=FhTE2O81vVOc5m/6D5KI8Ud3LAbeCf+yg7dqhY6WG68=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=RKStq6y3WT2H4tBiUmrgERKeiP8a4xid8VrfXFdZdPbyCr2o0LhEc6qW/a/5ClxXO
+	 zxtMjhf790lOIqQ/iWzwaCXFQUBeeYlcwCPWKKE5m+LQinXlKMYSAiEBpVBKjzzm1F
+	 raulX2TO2qo2EWBlnJISWJrD6D3SUAaYsuLTu9TOhHIWDeGvxHHhM+AdndBOm8esck
+	 oS6a1E6Q5Fl9T/46lP2PHfua2gsMuJrpINkTs6ePSf7R7i/qccKHaIctZmdY7169ei
+	 lIAhRxLR8n43a3/V5vYRPoILHi2se1pmRreq/YDXkEzgMKgRybmaKjDQ7h8ljtO7ES
+	 2TMaAItMfuasw==
+Date: Tue, 13 Jan 2026 17:09:48 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: Haiyang Zhang <haiyangz@linux.microsoft.com>,
+ "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>, KY Srinivasan
+ <kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
+ <DECUI@microsoft.com>, Long Li <longli@microsoft.com>, Andrew Lunn
+ <andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Konstantin
+ Taranov <kotaranov@microsoft.com>, Simon Horman <horms@kernel.org>, Erni
+ Sri Satya Vennela <ernis@linux.microsoft.com>, Shradha Gupta
+ <shradhagupta@linux.microsoft.com>, Saurabh Sengar
+ <ssengar@linux.microsoft.com>, Aditya Garg
+ <gargaditya@linux.microsoft.com>, Dipayaan Roy
+ <dipayanroy@linux.microsoft.com>, Shiraz Saleem
+ <shirazsaleem@microsoft.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-rdma@vger.kernel.org"
+ <linux-rdma@vger.kernel.org>, Paul Rosswurm <paulros@microsoft.com>
+Subject: Re: [EXTERNAL] Re: [PATCH V2,net-next, 1/2] net: mana: Add support
+ for coalesced RX packets on CQE
+Message-ID: <20260113170948.1d6fbdaf@kernel.org>
+In-Reply-To: <SA3PR21MB3867A54AA709CEE59F610943CA8EA@SA3PR21MB3867.namprd21.prod.outlook.com>
+References: <1767732407-12389-1-git-send-email-haiyangz@linux.microsoft.com>
+	<1767732407-12389-2-git-send-email-haiyangz@linux.microsoft.com>
+	<20260109175610.0eb69acb@kernel.org>
+	<SA3PR21MB3867BAD6022A1CAE2AC9E202CA81A@SA3PR21MB3867.namprd21.prod.outlook.com>
+	<20260112172146.04b4a70f@kernel.org>
+	<SA3PR21MB3867B36A9565AB01B0114D3ACA8EA@SA3PR21MB3867.namprd21.prod.outlook.com>
+	<SA3PR21MB3867A54AA709CEE59F610943CA8EA@SA3PR21MB3867.namprd21.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [pull-request] mlx5-next updates 2026-01-13
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <176833938330.2413578.6783157955963748240.git-patchwork-notify@kernel.org>
-Date: Tue, 13 Jan 2026 21:23:03 +0000
-References: <1768299471-1603093-1-git-send-email-tariqt@nvidia.com>
-In-Reply-To: <1768299471-1603093-1-git-send-email-tariqt@nvidia.com>
-To: Tariq Toukan <tariqt@nvidia.com>
-Cc: edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- andrew+netdev@lunn.ch, davem@davemloft.net, saeedm@nvidia.com,
- leon@kernel.org, mbloch@nvidia.com, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, gal@nvidia.com,
- alazar@nvidia.com, ohartoov@nvidia.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
-
-This pull request was applied to bpf/bpf-next.git (net)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Tue, 13 Jan 2026 12:17:51 +0200 you wrote:
-> Hi,
+On Tue, 13 Jan 2026 15:13:24 +0000 Haiyang Zhang wrote:
+> > > I get that. What is the logic for combining 4 packets into a single
+> > > completion? How does it work? Your commit message mentions "regression
+> > > on latency" - what is the bound on that regression?  
+> > 
+> > When we received CQE type CQE_RX_COALESCED_4, it's a coalesced CQE. And in
+> > the CQE OOB, there is an array with 4 PPI elements, with each pkt's length:
+> > oob->ppi[i].pkt_len.
+> > 
+> > So we read the related WQE and the DMA buffers for the RX pkt payloads, up
+> > to 4.
+> > But, if the coalesced pkts <4, the pkt_len will be 0 after the last pkt,
+> > so we know when to stop reading the WQEs.  
 > 
-> The following pull-request contains common mlx5 updates
-> for your *net-next* tree.
-> Please pull and let me know of any problem.
-> 
-> Regards,
-> Tariq
-> 
-> [...]
+> And, the coalescing can add up to 2 microseconds into one-way latency.
 
-Here is the summary with links:
-  - [pull-request] mlx5-next updates 2026-01-13
-    https://git.kernel.org/bpf/bpf-next/c/c9dfb92de073
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+I am asking you how the _device_ (hypervisor?) decides when to coalesce
+and when to send a partial CQE (<4 packets in 4 pkt CQE). You are using
+the coalescing uAPI, so I'm trying to make sure this is the correct API.
+CQE configuration can also be done via ringparam.
 
