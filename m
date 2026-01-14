@@ -1,41 +1,41 @@
-Return-Path: <linux-rdma+bounces-15544-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15543-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF73AD1CF37
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Jan 2026 08:51:10 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id B55BAD1CF25
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Jan 2026 08:49:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BA79930C8054
-	for <lists+linux-rdma@lfdr.de>; Wed, 14 Jan 2026 07:49:24 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id E2E21301A385
+	for <lists+linux-rdma@lfdr.de>; Wed, 14 Jan 2026 07:49:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0C932F5306;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00AF237C0FA;
 	Wed, 14 Jan 2026 07:49:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="bRuNUyEK"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="bG5TxnfK"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from PH7PR06CU001.outbound.protection.outlook.com (mail-westus3azon11010006.outbound.protection.outlook.com [52.101.201.6])
+Received: from SN4PR0501CU005.outbound.protection.outlook.com (mail-southcentralusazon11011059.outbound.protection.outlook.com [40.93.194.59])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FD8737A4B7;
-	Wed, 14 Jan 2026 07:48:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.201.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBDCF36B054;
+	Wed, 14 Jan 2026 07:48:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.194.59
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768376941; cv=fail; b=l9Lok4+1vOqHnCeW96wYiOCvseTy6Ib0UycPhO69zfHg+dLHZilsfzwhY3N0FcT/d04EKWQ6IBF12KWKnQJ5LBegPfMlnw2TRxhgGjxDeVNqUoxZZ2bU90UQnC7ql2Kqm42MiI/np5pklIudZr/nP6+SUVHTZhiBGrjjSn8KdEM=
+	t=1768376940; cv=fail; b=WxbVaahnVEoqrjZUS4GjLRrm4erCiXaX6W/7D+O3m9PaXsSzg/gBC7/wn2eVquyl21KBdFm4ZbHDaS0d/DjczltqofSO+rBTnQm9gw5dryY5RJKWlfY8kM45LVNFpBQ4iPSfL6KddjPPsjQCDKF7Ymd0qAXjXz5eCCTDIJdhVvs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768376941; c=relaxed/simple;
-	bh=9IdCbZhLEprALAvnkUSponFptSck45v2LbfRSqKJWI4=;
+	s=arc-20240116; t=1768376940; c=relaxed/simple;
+	bh=u9f804gplbAHsgPckScxlHgBxbQXb2Uo+gNURZaeRMU=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kQvLGhoMmuIU8oudrInseyhyKgqqMF3xmvU66v6QQJcA7pERV0fEZGp/Wlma/9rnNFQUa5IZHAM4URPWQ77jVj0yHhVyz1+mCvp0jTmVoFheaA6lJkPCnBMgZXqj8YSfVeVsLB1iQEjl7i/kR6BX9eORE8pyanFc/GkJ44k1UBw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=bRuNUyEK; arc=fail smtp.client-ip=52.101.201.6
+	 MIME-Version:Content-Type; b=n+L7o9Cf2McpzidTRd//mItFjiby8laSQRd4BKfLvcIeP3XL2N7xy52oPTFeViUp5AaYF0aGQka6DbdwhMVqx+HYNkK8KqcMsmO/c/cN7lYf1fSR9Ej+SW2F1NIpft7IFV3LTLgbMDCx4OrhnMpjDEZNICjw2gyeYZt02tLUnAk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=bG5TxnfK; arc=fail smtp.client-ip=40.93.194.59
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=SiANm4W0UemnH4o1CprsMa8TLfi45j1mdtLioIVXRpnaWaFkcQp16aBhFVMGM7jZgrbV7Dtz4bceN83P7drgmLr0VWVlefIl5+INeNnS+TL57JRJDCkiz2udj+dpfyCv3FzAMrkT28DUBcMYlZcEN/MrEabwdacxKubJ4p3NyLZhFVvfsykjA9Kp8QEo8EvHaJRMDYCrII4S9uzF36mBkvPayTC4LI3ZEYey7pzlrhTzd7oqWtJHl9A3xYo8INXQEpnGauePXKx8n9Nje2CouhGDK3TtsLJnkY/OphGELXTNSc0efSM4OkvZJEMltAP+7gjZTFiyWY2+uSE/pLijkg==
+ b=CXBqoLgJt9MWKQGupMQkm8HauFE9Uew0dMV4vDjjr6Z4pmBJ28jsCwx25cTYLywzxUitqSXANxsJgUyGe+4gct+nUfg7UjYOO0Z4Y54D3k3Ujc0zgCmoYcvNiuPjEaA4fb/NaKBtS2JUOuIk/YzGslCJlCqt06Pr+4EzGZbvL58tD5mOvCKTakA0Il8bgqbUihJQoLe1glynjKFwmaPSP9SL6N7WKkSNt7GHCYjfQI8GuoVXDakrFFxTtaM/fEzyjgB6pcCfiWbR0uIajSm5RaOUjye27T8plV1d2qtlukSfACJYwUOvJOKdmxD0PSqWK7WrNWXq+zFWogVGjo7E9g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hVGm6sr/tpW+Gk3Vrypuo+Att00TQkVwsipZDJlmjJo=;
- b=ZVF2VYb4G9KzHYThurbBQSaGHFY4A4/X/mbqfhqSFJCE788FNnaIrSAkgRLuFv9PfmQR6vJoF+0JYOHF1+gDR7zZZFT8loA0g8bSDqjvcGhEQeTuI7u5jhq0i3eqzXmNfWHn2mIbcOKIqws5Mn82sdV2Cmx6C9ez2F7rZO2hq2wbsaoflapk8PLTaQHVbJ/Xx0vIobXWvRwHMPoEFosVegY2X+/aYo2WPfHGQSK4yEocsfi2NHOj/tkPvbP5b3CeUAW92KkqHRACifNQOyQLsmT+HRj70cwQrGpSBKkez3zYPUNuFFOn9c6ndztZ0W9hqRJZys9mKNVi2clXkDhjWw==
+ bh=5nQeYvscCk6rzdciWCOxtLCtnhwGQo8pqcU2Ke+wobs=;
+ b=r3O/RCzHTkco1z8b2peGz6T2mHD3KwwPmv4VKfyHP7fcVunyZFOcARb0pvzkWRner3cxHgG6E7UcIVeIQ44vgMfH9IGuuM0OGammvuJkd2Ka3H7B8FAMs2OUeitEeq+XXGibsMitoEroCsdkmWIQc7Y+NU25VIbn8xcaRRy8zzRWKKjA6dUgE9XDHfcnTeqwc6blh0v/6cr5BEROOs0pTrzprELP5N6O+B8yrjUEOgBuCYUtBbCJkFoge4Gr+R8gOadWIty4IeCqdRHMDXsznX2gNwM1XpBH7BYUmOM3HDnANkZJkRoQnBcz0jOVvel+uJv/cn0Gq6T/pr/swOEbFw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.118.233) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -43,18 +43,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hVGm6sr/tpW+Gk3Vrypuo+Att00TQkVwsipZDJlmjJo=;
- b=bRuNUyEKB+m/f5pkGljZxkP6QTDKCkkc5m+u8QZ8sGzesME/DgoskjtcwKfGlZcdXLdG/ojayh/nMeatWw2gh918HMwfui3QiIk4kHeQyOa2d7isPEqhezeDMEOoU0VIWLuUONJvhflLQyftIsOkYXRx/YR97aT/GpK5FhT1+sII+9Yc0kZSd8nyqspxjsLts6ypv4ZX4qGcn4UlSeKbU4JbLgCp8LedgCTK4jM0MOK3+sjXl9VtRisGL15GRIqLcK3onEcpbrK/s+B5/nBLE+KCKOrPoumWBs8pKT8sEddWRzAKJSngx5JVTFqF1+wbZeaH8YRstunUlFp9UF2Irw==
-Received: from SA0PR12CA0023.namprd12.prod.outlook.com (2603:10b6:806:6f::28)
- by CH2PR12MB4311.namprd12.prod.outlook.com (2603:10b6:610:a8::21) with
+ bh=5nQeYvscCk6rzdciWCOxtLCtnhwGQo8pqcU2Ke+wobs=;
+ b=bG5TxnfKSHskFKJNrM07+1uB3Mo+7AlMDIvhyXQzRBxkyGVXMCtETU/cDN9z45q98DhhYJWemXBMIPQLiD113IzsFvJcz1gw9Mgkntf98sEUNR/ZQXOl+o08jWnYxgImEgwcZwl09rsS4svrpM7Z4ob1BvepqUOoNr/O75BzZCKuT1R60kQDQFhHnNGhG6BGBeCycITfa8QynEbJ72X92dFHTvp0rH0ZKGoXLAPkBx1rjVtQ3twjj6MWVVu8ywc3gDJVU9NYrn7fVK2tKKo0esvZnjkU+4PHKERC1S4YMMYnWcFJo69DxRDR5j0jn/lbhao2bUbrhILUiibegOeWyg==
+Received: from SA1P222CA0177.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:3c4::25)
+ by MW4PR12MB7264.namprd12.prod.outlook.com (2603:10b6:303:22e::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9499.7; Wed, 14 Jan
- 2026 07:48:47 +0000
-Received: from SA2PEPF000015C6.namprd03.prod.outlook.com
- (2603:10b6:806:6f:cafe::10) by SA0PR12CA0023.outlook.office365.com
- (2603:10b6:806:6f::28) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9499.7 via Frontend Transport; Wed,
- 14 Jan 2026 07:48:49 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9520.5; Wed, 14 Jan
+ 2026 07:48:50 +0000
+Received: from SA2PEPF000015C8.namprd03.prod.outlook.com
+ (2603:10b6:806:3c4:cafe::29) by SA1P222CA0177.outlook.office365.com
+ (2603:10b6:806:3c4::25) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9520.4 via Frontend Transport; Wed,
+ 14 Jan 2026 07:48:50 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -62,20 +62,20 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.118.233 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.118.233) by
- SA2PEPF000015C6.mail.protection.outlook.com (10.167.241.196) with Microsoft
+ SA2PEPF000015C8.mail.protection.outlook.com (10.167.241.198) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9520.1 via Frontend Transport; Wed, 14 Jan 2026 07:48:46 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ 15.20.9520.1 via Frontend Transport; Wed, 14 Jan 2026 07:48:50 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
  (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.20; Tue, 13 Jan
- 2026 23:48:32 -0800
+ 2026 23:48:35 -0800
 Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.20; Tue, 13 Jan 2026 23:48:31 -0800
+ 15.2.2562.20; Tue, 13 Jan 2026 23:48:35 -0800
 Received: from vdi.nvidia.com (10.127.8.10) by mail.nvidia.com
  (10.126.190.181) with Microsoft SMTP Server id 15.2.2562.20 via Frontend
- Transport; Tue, 13 Jan 2026 23:48:28 -0800
+ Transport; Tue, 13 Jan 2026 23:48:32 -0800
 From: Tariq Toukan <tariqt@nvidia.com>
 To: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew+netdev@lunn.ch>, "David
@@ -85,9 +85,9 @@ CC: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
 	<netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, Gal Pressman <gal@nvidia.com>, William Tu
 	<witu@nvidia.com>, <toke@redhat.com>
-Subject: [PATCH net-next V2 3/4] net/mlx5e: Move async ICOSQ to dynamic allocation
-Date: Wed, 14 Jan 2026 09:46:39 +0200
-Message-ID: <1768376800-1607672-4-git-send-email-tariqt@nvidia.com>
+Subject: [PATCH net-next V2 4/4] net/mlx5e: Conditionally create async ICOSQ
+Date: Wed, 14 Jan 2026 09:46:40 +0200
+Message-ID: <1768376800-1607672-5-git-send-email-tariqt@nvidia.com>
 X-Mailer: git-send-email 2.8.0
 In-Reply-To: <1768376800-1607672-1-git-send-email-tariqt@nvidia.com>
 References: <1768376800-1607672-1-git-send-email-tariqt@nvidia.com>
@@ -101,326 +101,295 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF000015C6:EE_|CH2PR12MB4311:EE_
-X-MS-Office365-Filtering-Correlation-Id: 72281f93-461b-47dd-578b-08de53415961
+X-MS-TrafficTypeDiagnostic: SA2PEPF000015C8:EE_|MW4PR12MB7264:EE_
+X-MS-Office365-Filtering-Correlation-Id: ebedcd9b-6962-430f-c605-08de53415b96
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|7416014|82310400026|1800799024|36860700013;
+	BCL:0;ARA:13230040|1800799024|82310400026|36860700013|7416014|376014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?DfjU5Vas/g16FEd1Vsw3ZS1koOI0r+ss4t1cZBqizuexxSo+DlpLEMPW1tEL?=
- =?us-ascii?Q?n+lvG57MO9CHEG+gt8huVtVuiCMpTxlhqJ9WRT0gtbAvO5EiKr1MiLZzItHY?=
- =?us-ascii?Q?GABM/A+FKSwZuoEAKbYhUUOt80ejClcjgU2RESGD6OXmfAtFdgbbAw1fQJPS?=
- =?us-ascii?Q?J9xdh4W/YOHCdzhyXjibL9EQC6DWI6h2l59L81ZuUQdZ42FRg8dVIpBveIJQ?=
- =?us-ascii?Q?pCvnWkbcSQALdAFXXIlwMCRWeSErNM6NymgQcGU0+7xckoYmL3dbyc1Ghvjm?=
- =?us-ascii?Q?tPLiHwujPI8dfFHKkGBKZx8H2uWKb7SmIIa7hoWsI3UdIpn4XR/IWkPepajs?=
- =?us-ascii?Q?U9zGYQsi9JZaWLooQjW/H4EuxRL3/5dQEyrXxuLNKn9TEUsjKdhAq+OhNZQ0?=
- =?us-ascii?Q?n4YbzmIg/FgUzYW1kDXH5ez9Yfc4zTt7gz/6duwfBYKsQoDqmcYpVEubxsuH?=
- =?us-ascii?Q?kyrirtyoDknXHJQzr5dLeNeloxbvAhidJY/if1lOrLnjkmRtlNWLkc1bhQcl?=
- =?us-ascii?Q?Urhf5f8ZaQ86u5vKUTFTG3nR3hVsZfl7PVKUyPbemjZnAIUSLOF4+jhjLvsM?=
- =?us-ascii?Q?m722gNv8gGjg7TSqgZ0Pn6MwJdkiURN6j9sVhrdMmFUqCn9x8R5FrUQzvpxT?=
- =?us-ascii?Q?e78ur4s94JwXPBHLYGJi3twLdNKB9UgpOWOc5dnig7Wljd0XgfHcM6EQy0LQ?=
- =?us-ascii?Q?xwyxmdJbsDkGz0M+XNw5uLIgImMV92BAmhzihVjZdU+Xh8yUsr2KUVUfVaNX?=
- =?us-ascii?Q?56YC0/BbqwPHzGc9NwV/RDfTMkJeXqdFjAAkb9D0n8XXidvXfXH1Mc0N+47m?=
- =?us-ascii?Q?N0CScZLI8+ZdupzISqiwaWIX7iCeNzLVPuAx7egQyGOE9tQy6aQX3WPwb4BQ?=
- =?us-ascii?Q?idiNAi/g2FciqLwsMgbxE3wF7n9yj1s5jmw8lF0k2C/0cpyYAuVU16F9GK5h?=
- =?us-ascii?Q?BsXhON04WSljcKoK2Dx4eWdoloegjLUO7qzS9g7WhPWrxZHKnJAlnp+iK9HA?=
- =?us-ascii?Q?3rovLv6XjdDgTdrxtZtDSmSAUenTixKKeVnOLtrUF2pb92yGY8B1I5bHwzQW?=
- =?us-ascii?Q?psADtWIBfzeZLaIVoIvnLd7eV04m5H9/FsBfEQdHIXHypSdifPBMR8MvLNB1?=
- =?us-ascii?Q?A2fpDAeOl5SfVyvMw14UfdizNAEwq2nAtp4UipFahksDozFstQP6PWY8LnpN?=
- =?us-ascii?Q?O+2JBXhRnprTleFHxMn8PqOkGogVLTUCi45wUjl2YriDEL7rlm8m6DR43zGH?=
- =?us-ascii?Q?Xf05z6dYz+rAgo4/PbXhYPo0PmkfHyiz8EA9b0ZTG7yysV2zRv0szTBidvc4?=
- =?us-ascii?Q?hrdAsNQLqIrgcq0qm9Xd59PrKfNDx0Fz1xXtwPZ7uoSt88C6ZiXpnyEvO2DH?=
- =?us-ascii?Q?yAS+2dht0zNcc0sbL3eAI0QaqGZZg3PWIMDDFUVpt24LV/0Zg5gTd5vioDYV?=
- =?us-ascii?Q?4ExWETSMdbS9JH0HmWSDwJXWmLh4Un5pqTOdpKdd4rn/mb8oX6eGbZHYvmUu?=
- =?us-ascii?Q?Q7ZFjSnwXfymT+lpYj6iDXO+thbSdxW3Flt3YJqJT75JQx0n+CQCJxYq1jL2?=
- =?us-ascii?Q?JSsdRrH2Wr7CMp4p9t4=3D?=
+	=?us-ascii?Q?779yIG/IYqCsYGbwBYc5uSxYWFsYF57WvmnYEcgLaWnwdWO4YbzsnjYUaDTw?=
+ =?us-ascii?Q?K3Lu1GBLHUKlLLAADqL/Un0pfm2ck6yZ5uREvyHrCH0CftgwIMnpnaqOdMWP?=
+ =?us-ascii?Q?HrN3+ULOf7E8gGYbV2GA9ICm3+tNsql7m0o6XdjY54UtruNcjZSa6K5yLJQq?=
+ =?us-ascii?Q?tGaljgCHbKft4HYtZzLxAty8I0/uVve2KNO9UGu+KSY/KvweM3JQex9+W1ru?=
+ =?us-ascii?Q?N9Nxh7bl+Q0sdXr3DvbLMhfdjc5LH4htHeMBOpoH8pm6tlP64/R5adtM6NuU?=
+ =?us-ascii?Q?qce1fcM5236w8/2U1F3hPQ7YNhldf+c/CSAQ/32mTvajI1gW5b8yzPfqvtNW?=
+ =?us-ascii?Q?X5BGlPeSOQ7TGrWa06l5pFxbe4u18Up+eKxQ5FCXillLpjhd1ZgXx5iS6Y7b?=
+ =?us-ascii?Q?Z7WrWv/F6P+5SmjeWckHOWQrQy8xbSb9X6NCpGYAbLx/2atQsKzI70HYIyG8?=
+ =?us-ascii?Q?IPEgJuQQI3OVOhLpilMatEGA6Z0gwZdHI+TyuFq9iZjM91ZqBm1X8QTrGHfc?=
+ =?us-ascii?Q?AQENjxlP8sUsb4ZBiDYQsv5HE5qh10k/HddBIkqvhGRUJedS2lhdDazpejzy?=
+ =?us-ascii?Q?Y/I0CIIKuwNz+DBZIbhTg8W/JeR551OmZUsCGw4fwwYUcDIXNFGnQmV+p7nS?=
+ =?us-ascii?Q?uy6Tev5S+08M3WtACuxGdeYWfULNtKAcqeT0kmD/3XsoMo9ArYlX4CjjbSGj?=
+ =?us-ascii?Q?e5DzOSRFabsZqtXDy1e5zdBLiFWOK5H3lbj23Sj+iRL6kWl91U9o5JQ93nYT?=
+ =?us-ascii?Q?wiL08cQp/SFWhIYvw65nriqbkxozXv1yTZ4kWWKsH2+7/oL46ZpAYRx+WM8H?=
+ =?us-ascii?Q?3y9whqGX4BdRvV/P2CTnTvv8PYcq24ivV0zUWRuSwHNVrLRcEBolKzEas5TW?=
+ =?us-ascii?Q?+H42qypT96uQ38+aLNL0DtpF+UFyGkRKljP7YVzIXZ7q4QkecKn4GM0Ctnzf?=
+ =?us-ascii?Q?TcLBW2M9C3rq3E8V5ywlW5/DsHFVhMTMx8s0XRWbUayYl/zvihVJQIFH5yiU?=
+ =?us-ascii?Q?6X9vYUxxQrw24eQLmcZLmVbA7vdxYdpNW+44ytiNy30Katv1SX88Pk6PmFwV?=
+ =?us-ascii?Q?g5tn1NOLqUrjyduktDddEEY2q/yXa+4t1Uxe5dUihttouNm/THcG50pbOx6w?=
+ =?us-ascii?Q?WR9pLLZwUgxUd1Kg44o3LwYujL5BP7b2T8mvgxckmUlWSCMgsHIZWnktpI7X?=
+ =?us-ascii?Q?W/ZwUPo8mLzaxfsb/DORbIwAw/PQxaHj8zI+LAaFjAnbowYbEtxYW7DxTXMx?=
+ =?us-ascii?Q?utLWQt3VF0aJEVD/l+H/L6iDTJNY/f39UUFu6v5XI6K2lLGJlSnrTOEWxMNA?=
+ =?us-ascii?Q?sgeifI5LmMXn5SloExZ5NAT4M3hrLP1sAP1QL/cqoFEfFfxIW96jX0OSqYvG?=
+ =?us-ascii?Q?wdaCTWfp1YG400ZXtCarXIevpQaH2nQUJeH570otpv8JWX+z44ei7hgIXvHh?=
+ =?us-ascii?Q?jNYfw0R9wBxsbHZCBPkaCNsCtnQCKazKvc/NnyyWh/C2RAgd7VXQ+BonwfIn?=
+ =?us-ascii?Q?04FFAei2xeJMrNYImgRPG/LcMclZ+gyLmWgs24FIyyaoZVkWAzwzc2PQPaVc?=
+ =?us-ascii?Q?Q1imnbLu72IbDzr66/M=3D?=
 X-Forefront-Antispam-Report:
-	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(376014)(7416014)(82310400026)(1800799024)(36860700013);DIR:OUT;SFP:1101;
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(36860700013)(7416014)(376014);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jan 2026 07:48:46.9468
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jan 2026 07:48:50.6565
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 72281f93-461b-47dd-578b-08de53415961
+X-MS-Exchange-CrossTenant-Network-Message-Id: ebedcd9b-6962-430f-c605-08de53415b96
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SA2PEPF000015C6.namprd03.prod.outlook.com
+	SA2PEPF000015C8.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4311
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7264
 
 From: William Tu <witu@nvidia.com>
 
-Dynamically allocate async ICOSQ. ICO (Internal Communication
-Operations) is for driver to communicate with the HW, and it's
-not used for traffic. Currently mlx5 driver has sync and async
-ICO send queues. The async ICOSQ means that it's not necessarily
-under NAPI context protection. The patch is in preparation for
-the later patch to detect its usage and enable it when necessary.
+The async ICOSQ is only required by TLS RX (for re-sync flow) and XSK
+TX. Create it only when these features are enabled instead of always
+allocating it. This reduces per-channel memory usage, saves hardware
+resources, improves latency, and decreases the default number of SQs
+(from 3 to 2) and CQs (from 4 to 3). It also speeds up channel
+open/close operations for a netdev when async ICOSQ is not needed.
+
+Currently when TLS RX is enabled, there is no channel reset triggered.
+As a result, async ICOSQ allocation is not triggered, causing a NULL
+pointer crash. One solution is to do channel reset every time when
+toggling TLS RX. However, it's not straightforward as the offload
+state matters only on connection creation, and can go on beyond the
+channels reset.
+
+Instead, introduce a new field 'ktls_rx_was_enabled': if TLS RX is
+enabled for the first time: reset channels, create async ICOSQ, set
+the field. From that point on, no need to reset channels for any TLS
+RX enable/disable. Async ICOSQ will always be needed.
+
+For XSK TX, async ICOSQ is used in wakeup control and is guaranteed
+to have async ICOSQ allocated.
+
+This improves the latency of interface up/down operations when it
+applies.
+
+Perf numbers:
+NIC: Connect-X7.
+Test: Latency of interface up + down operations.
+
+Measured 20% speedup.
+Saving ~0.36 sec for 248 channels (~1.45 msec per channel).
 
 Signed-off-by: William Tu <witu@nvidia.com>
 Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en.h  |  2 +-
- .../ethernet/mellanox/mlx5/core/en/xsk/tx.c   |  6 +-
- .../mellanox/mlx5/core/en_accel/ktls_rx.c     |  8 +--
- .../mellanox/mlx5/core/en_accel/ktls_txrx.h   |  3 +-
- .../net/ethernet/mellanox/mlx5/core/en_main.c | 67 ++++++++++++++-----
- .../net/ethernet/mellanox/mlx5/core/en_txrx.c |  7 +-
- 6 files changed, 65 insertions(+), 28 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en.h  |  1 +
+ .../mellanox/mlx5/core/en_accel/ktls.c        | 10 ++++-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c | 30 ++++++++++-----
+ .../net/ethernet/mellanox/mlx5/core/en_txrx.c | 38 ++++++++++---------
+ 4 files changed, 50 insertions(+), 29 deletions(-)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-index 83cfa3983855..a7076b26fd5c 100644
+index a7076b26fd5c..d16bdef95703 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-@@ -782,7 +782,7 @@ struct mlx5e_channel {
- 	struct mlx5e_xdpsq         xsksq;
+@@ -939,6 +939,7 @@ struct mlx5e_priv {
+ 	u8                         max_opened_tc;
+ 	bool                       tx_ptp_opened;
+ 	bool                       rx_ptp_opened;
++	bool                       ktls_rx_was_enabled;
+ 	struct kernel_hwtstamp_config hwtstamp_config;
+ 	u16                        q_counter[MLX5_SD_MAX_GROUP_SZ];
+ 	u16                        drop_rq_q_counter;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls.c
+index e3e57c849436..1c2cc2aad2b0 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls.c
+@@ -135,10 +135,15 @@ int mlx5e_ktls_set_feature_rx(struct net_device *netdev, bool enable)
+ 	int err = 0;
  
- 	/* Async ICOSQ */
--	struct mlx5e_icosq         async_icosq;
-+	struct mlx5e_icosq        *async_icosq;
+ 	mutex_lock(&priv->state_lock);
+-	if (enable)
++	if (enable) {
+ 		err = mlx5e_accel_fs_tcp_create(priv->fs);
+-	else
++		if (!err && !priv->ktls_rx_was_enabled) {
++			priv->ktls_rx_was_enabled = true;
++			mlx5e_safe_reopen_channels(priv);
++		}
++	} else {
+ 		mlx5e_accel_fs_tcp_destroy(priv->fs);
++	}
+ 	mutex_unlock(&priv->state_lock);
  
- 	/* data path - accessed per napi poll */
- 	const struct cpumask	  *aff_mask;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/tx.c
-index a59199ed590d..9e33156fac8a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/tx.c
-@@ -26,10 +26,12 @@ int mlx5e_xsk_wakeup(struct net_device *dev, u32 qid, u32 flags)
- 		 * active and not polled by NAPI. Return 0, because the upcoming
- 		 * activate will trigger the IRQ for us.
- 		 */
--		if (unlikely(!test_bit(MLX5E_SQ_STATE_ENABLED, &c->async_icosq.state)))
-+		if (unlikely(!test_bit(MLX5E_SQ_STATE_ENABLED,
-+				       &c->async_icosq->state)))
- 			return 0;
- 
--		if (test_and_set_bit(MLX5E_SQ_STATE_PENDING_XSK_TX, &c->async_icosq.state))
-+		if (test_and_set_bit(MLX5E_SQ_STATE_PENDING_XSK_TX,
-+				     &c->async_icosq->state))
- 			return 0;
- 
- 		mlx5e_trigger_napi_icosq(c);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_rx.c
-index 8bc8231f521f..5d8fe252799e 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_rx.c
-@@ -202,7 +202,7 @@ static int post_rx_param_wqes(struct mlx5e_channel *c,
- 	int err;
- 
- 	err = 0;
--	sq = &c->async_icosq;
-+	sq = c->async_icosq;
- 	spin_lock_bh(&sq->lock);
- 
- 	cseg = post_static_params(sq, priv_rx);
-@@ -344,7 +344,7 @@ static void resync_handle_work(struct work_struct *work)
+ 	return err;
+@@ -161,6 +166,7 @@ int mlx5e_ktls_init_rx(struct mlx5e_priv *priv)
+ 			destroy_workqueue(priv->tls->rx_wq);
+ 			return err;
+ 		}
++		priv->ktls_rx_was_enabled = true;
  	}
  
- 	c = resync->priv->channels.c[priv_rx->rxq];
--	sq = &c->async_icosq;
-+	sq = c->async_icosq;
- 
- 	if (resync_post_get_progress_params(sq, priv_rx)) {
- 		priv_rx->rq_stats->tls_resync_req_skip++;
-@@ -371,7 +371,7 @@ static void resync_handle_seq_match(struct mlx5e_ktls_offload_context_rx *priv_r
- 	struct mlx5e_icosq *sq;
- 	bool trigger_poll;
- 
--	sq = &c->async_icosq;
-+	sq = c->async_icosq;
- 	ktls_resync = sq->ktls_resync;
- 	trigger_poll = false;
- 
-@@ -753,7 +753,7 @@ bool mlx5e_ktls_rx_handle_resync_list(struct mlx5e_channel *c, int budget)
- 	LIST_HEAD(local_list);
- 	int i, j;
- 
--	sq = &c->async_icosq;
-+	sq = c->async_icosq;
- 
- 	if (unlikely(!test_bit(MLX5E_SQ_STATE_ENABLED, &sq->state)))
- 		return false;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_txrx.h b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_txrx.h
-index cb08799769ee..4022c7e78a2e 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_txrx.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_txrx.h
-@@ -50,7 +50,8 @@ bool mlx5e_ktls_rx_handle_resync_list(struct mlx5e_channel *c, int budget);
- static inline bool
- mlx5e_ktls_rx_pending_resync_list(struct mlx5e_channel *c, int budget)
- {
--	return budget && test_bit(MLX5E_SQ_STATE_PENDING_TLS_RX_RESYNC, &c->async_icosq.state);
-+	return budget && test_bit(MLX5E_SQ_STATE_PENDING_TLS_RX_RESYNC,
-+				  &c->async_icosq->state);
- }
- 
- static inline void
+ 	return 0;
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index fdbcc22b6c61..aa4ff3963b86 100644
+index aa4ff3963b86..d04ba93fe617 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -2589,6 +2589,47 @@ static int mlx5e_open_rxq_rq(struct mlx5e_channel *c, struct mlx5e_params *param
- 	return mlx5e_open_rq(params, rq_params, NULL, cpu_to_node(c->cpu), q_counter, &c->rq);
- }
+@@ -2632,7 +2632,8 @@ static void mlx5e_close_async_icosq(struct mlx5e_icosq *async_icosq)
  
-+static struct mlx5e_icosq *
-+mlx5e_open_async_icosq(struct mlx5e_channel *c,
-+		       struct mlx5e_params *params,
-+		       struct mlx5e_channel_param *cparam,
-+		       struct mlx5e_create_cq_param *ccp)
-+{
-+	struct dim_cq_moder icocq_moder = {0, 0};
-+	struct mlx5e_icosq *async_icosq;
-+	int err;
-+
-+	async_icosq = kvzalloc_node(sizeof(*async_icosq), GFP_KERNEL,
-+				    cpu_to_node(c->cpu));
-+	if (!async_icosq)
-+		return ERR_PTR(-ENOMEM);
-+
-+	err = mlx5e_open_cq(c->mdev, icocq_moder, &cparam->async_icosq.cqp, ccp,
-+			    &async_icosq->cq);
-+	if (err)
-+		goto err_free_async_icosq;
-+
-+	err = mlx5e_open_icosq(c, params, &cparam->async_icosq, async_icosq,
-+			       mlx5e_async_icosq_err_cqe_work);
-+	if (err)
-+		goto err_close_async_icosq_cq;
-+
-+	return async_icosq;
-+
-+err_close_async_icosq_cq:
-+	mlx5e_close_cq(&async_icosq->cq);
-+err_free_async_icosq:
-+	kvfree(async_icosq);
-+	return ERR_PTR(err);
-+}
-+
-+static void mlx5e_close_async_icosq(struct mlx5e_icosq *async_icosq)
-+{
-+	mlx5e_close_icosq(async_icosq);
-+	mlx5e_close_cq(&async_icosq->cq);
-+	kvfree(async_icosq);
-+}
-+
  static int mlx5e_open_queues(struct mlx5e_channel *c,
  			     struct mlx5e_params *params,
- 			     struct mlx5e_channel_param *cparam)
-@@ -2600,15 +2641,10 @@ static int mlx5e_open_queues(struct mlx5e_channel *c,
- 
- 	mlx5e_build_create_cq_param(&ccp, c);
- 
--	err = mlx5e_open_cq(c->mdev, icocq_moder, &cparam->async_icosq.cqp, &ccp,
--			    &c->async_icosq.cq);
--	if (err)
--		return err;
--
- 	err = mlx5e_open_cq(c->mdev, icocq_moder, &cparam->icosq.cqp, &ccp,
- 			    &c->icosq.cq);
- 	if (err)
--		goto err_close_async_icosq_cq;
-+		return err;
- 
- 	err = mlx5e_open_tx_cqs(c, params, &ccp, cparam);
- 	if (err)
-@@ -2632,10 +2668,11 @@ static int mlx5e_open_queues(struct mlx5e_channel *c,
+-			     struct mlx5e_channel_param *cparam)
++			     struct mlx5e_channel_param *cparam,
++			     bool async_icosq_needed)
+ {
+ 	const struct net_device_ops *netdev_ops = c->netdev->netdev_ops;
+ 	struct dim_cq_moder icocq_moder = {0, 0};
+@@ -2668,10 +2669,13 @@ static int mlx5e_open_queues(struct mlx5e_channel *c,
  	if (err)
  		goto err_close_rx_cq;
  
--	err = mlx5e_open_icosq(c, params, &cparam->async_icosq, &c->async_icosq,
--			       mlx5e_async_icosq_err_cqe_work);
--	if (err)
-+	c->async_icosq = mlx5e_open_async_icosq(c, params, cparam, &ccp);
-+	if (IS_ERR(c->async_icosq)) {
-+		err = PTR_ERR(c->async_icosq);
- 		goto err_close_rq_xdpsq_cq;
-+	}
+-	c->async_icosq = mlx5e_open_async_icosq(c, params, cparam, &ccp);
+-	if (IS_ERR(c->async_icosq)) {
+-		err = PTR_ERR(c->async_icosq);
+-		goto err_close_rq_xdpsq_cq;
++	if (async_icosq_needed) {
++		c->async_icosq = mlx5e_open_async_icosq(c, params, cparam,
++							&ccp);
++		if (IS_ERR(c->async_icosq)) {
++			err = PTR_ERR(c->async_icosq);
++			goto err_close_rq_xdpsq_cq;
++		}
+ 	}
  
  	mutex_init(&c->icosq_recovery_lock);
- 
-@@ -2671,7 +2708,7 @@ static int mlx5e_open_queues(struct mlx5e_channel *c,
+@@ -2708,7 +2712,8 @@ static int mlx5e_open_queues(struct mlx5e_channel *c,
  	mlx5e_close_icosq(&c->icosq);
  
  err_close_async_icosq:
--	mlx5e_close_icosq(&c->async_icosq);
-+	mlx5e_close_async_icosq(c->async_icosq);
+-	mlx5e_close_async_icosq(c->async_icosq);
++	if (c->async_icosq)
++		mlx5e_close_async_icosq(c->async_icosq);
  
  err_close_rq_xdpsq_cq:
  	if (c->xdp)
-@@ -2690,9 +2727,6 @@ static int mlx5e_open_queues(struct mlx5e_channel *c,
- err_close_icosq_cq:
- 	mlx5e_close_cq(&c->icosq.cq);
- 
--err_close_async_icosq_cq:
--	mlx5e_close_cq(&c->async_icosq.cq);
--
- 	return err;
- }
- 
-@@ -2706,7 +2740,7 @@ static void mlx5e_close_queues(struct mlx5e_channel *c)
+@@ -2740,7 +2745,8 @@ static void mlx5e_close_queues(struct mlx5e_channel *c)
  	mlx5e_close_sqs(c);
  	mlx5e_close_icosq(&c->icosq);
  	mutex_destroy(&c->icosq_recovery_lock);
--	mlx5e_close_icosq(&c->async_icosq);
-+	mlx5e_close_async_icosq(c->async_icosq);
+-	mlx5e_close_async_icosq(c->async_icosq);
++	if (c->async_icosq)
++		mlx5e_close_async_icosq(c->async_icosq);
  	if (c->xdp)
  		mlx5e_close_cq(&c->rq_xdpsq.cq);
  	mlx5e_close_cq(&c->rq.cq);
-@@ -2714,7 +2748,6 @@ static void mlx5e_close_queues(struct mlx5e_channel *c)
- 		mlx5e_close_xdpredirect_sq(c->xdpsq);
- 	mlx5e_close_tx_cqs(c);
- 	mlx5e_close_cq(&c->icosq.cq);
--	mlx5e_close_cq(&c->async_icosq.cq);
- }
+@@ -2825,6 +2831,7 @@ static int mlx5e_open_channel(struct mlx5e_priv *priv, int ix,
+ 	struct mlx5e_channel_param *cparam;
+ 	struct mlx5_core_dev *mdev;
+ 	struct mlx5e_xsk_param xsk;
++	bool async_icosq_needed;
+ 	struct mlx5e_channel *c;
+ 	unsigned int irq;
+ 	int vec_ix;
+@@ -2874,7 +2881,8 @@ static int mlx5e_open_channel(struct mlx5e_priv *priv, int ix,
+ 	netif_napi_add_config_locked(netdev, &c->napi, mlx5e_napi_poll, ix);
+ 	netif_napi_set_irq_locked(&c->napi, irq);
  
- static u8 mlx5e_enumerate_lag_port(struct mlx5_core_dev *mdev, int ix)
-@@ -2879,7 +2912,7 @@ static void mlx5e_activate_channel(struct mlx5e_channel *c)
+-	err = mlx5e_open_queues(c, params, cparam);
++	async_icosq_needed = !!xsk_pool || priv->ktls_rx_was_enabled;
++	err = mlx5e_open_queues(c, params, cparam, async_icosq_needed);
+ 	if (unlikely(err))
+ 		goto err_napi_del;
+ 
+@@ -2912,7 +2920,8 @@ static void mlx5e_activate_channel(struct mlx5e_channel *c)
  	for (tc = 0; tc < c->num_tc; tc++)
  		mlx5e_activate_txqsq(&c->sq[tc]);
  	mlx5e_activate_icosq(&c->icosq);
--	mlx5e_activate_icosq(&c->async_icosq);
-+	mlx5e_activate_icosq(c->async_icosq);
+-	mlx5e_activate_icosq(c->async_icosq);
++	if (c->async_icosq)
++		mlx5e_activate_icosq(c->async_icosq);
  
  	if (test_bit(MLX5E_CHANNEL_STATE_XSK, c->state))
  		mlx5e_activate_xsk(c);
-@@ -2900,7 +2933,7 @@ static void mlx5e_deactivate_channel(struct mlx5e_channel *c)
+@@ -2933,7 +2942,8 @@ static void mlx5e_deactivate_channel(struct mlx5e_channel *c)
  	else
  		mlx5e_deactivate_rq(&c->rq);
  
--	mlx5e_deactivate_icosq(&c->async_icosq);
-+	mlx5e_deactivate_icosq(c->async_icosq);
+-	mlx5e_deactivate_icosq(c->async_icosq);
++	if (c->async_icosq)
++		mlx5e_deactivate_icosq(c->async_icosq);
  	mlx5e_deactivate_icosq(&c->icosq);
  	for (tc = 0; tc < c->num_tc; tc++)
  		mlx5e_deactivate_txqsq(&c->sq[tc]);
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
-index 76108299ea57..57c54265dbda 100644
+index 57c54265dbda..b31f689fe271 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_txrx.c
-@@ -180,11 +180,12 @@ int mlx5e_napi_poll(struct napi_struct *napi, int budget)
+@@ -125,6 +125,7 @@ int mlx5e_napi_poll(struct napi_struct *napi, int budget)
+ {
+ 	struct mlx5e_channel *c = container_of(napi, struct mlx5e_channel,
+ 					       napi);
++	struct mlx5e_icosq *aicosq = c->async_icosq;
+ 	struct mlx5e_ch_stats *ch_stats = c->stats;
+ 	struct mlx5e_xdpsq *xsksq = &c->xsksq;
+ 	struct mlx5e_txqsq __rcu **qos_sqs;
+@@ -180,16 +181,18 @@ int mlx5e_napi_poll(struct napi_struct *napi, int budget)
  	busy |= work_done == budget;
  
  	mlx5e_poll_ico_cq(&c->icosq.cq);
--	if (mlx5e_poll_ico_cq(&c->async_icosq.cq))
-+	if (mlx5e_poll_ico_cq(&c->async_icosq->cq))
- 		/* Don't clear the flag if nothing was polled to prevent
- 		 * queueing more WQEs and overflowing the async ICOSQ.
- 		 */
--		clear_bit(MLX5E_SQ_STATE_PENDING_XSK_TX, &c->async_icosq.state);
-+		clear_bit(MLX5E_SQ_STATE_PENDING_XSK_TX,
-+			  &c->async_icosq->state);
+-	if (mlx5e_poll_ico_cq(&c->async_icosq->cq))
+-		/* Don't clear the flag if nothing was polled to prevent
+-		 * queueing more WQEs and overflowing the async ICOSQ.
+-		 */
+-		clear_bit(MLX5E_SQ_STATE_PENDING_XSK_TX,
+-			  &c->async_icosq->state);
+-
+-	/* Keep after async ICOSQ CQ poll */
+-	if (unlikely(mlx5e_ktls_rx_pending_resync_list(c, budget)))
+-		busy |= mlx5e_ktls_rx_handle_resync_list(c, budget);
++	if (aicosq) {
++		if (mlx5e_poll_ico_cq(&aicosq->cq))
++			/* Don't clear the flag if nothing was polled to prevent
++			 * queueing more WQEs and overflowing the async ICOSQ.
++			 */
++			clear_bit(MLX5E_SQ_STATE_PENDING_XSK_TX,
++				  &aicosq->state);
++
++		/* Keep after async ICOSQ CQ poll */
++		if (unlikely(mlx5e_ktls_rx_pending_resync_list(c, budget)))
++			busy |= mlx5e_ktls_rx_handle_resync_list(c, budget);
++	}
  
- 	/* Keep after async ICOSQ CQ poll */
- 	if (unlikely(mlx5e_ktls_rx_pending_resync_list(c, budget)))
-@@ -236,7 +237,7 @@ int mlx5e_napi_poll(struct napi_struct *napi, int budget)
+ 	busy |= INDIRECT_CALL_2(rq->post_wqes,
+ 				mlx5e_post_rx_mpwqes,
+@@ -237,16 +240,17 @@ int mlx5e_napi_poll(struct napi_struct *napi, int budget)
  
  	mlx5e_cq_arm(&rq->cq);
  	mlx5e_cq_arm(&c->icosq.cq);
--	mlx5e_cq_arm(&c->async_icosq.cq);
-+	mlx5e_cq_arm(&c->async_icosq->cq);
+-	mlx5e_cq_arm(&c->async_icosq->cq);
++	if (aicosq) {
++		mlx5e_cq_arm(&aicosq->cq);
++		if (xsk_open) {
++			mlx5e_handle_rx_dim(xskrq);
++			mlx5e_cq_arm(&xsksq->cq);
++			mlx5e_cq_arm(&xskrq->cq);
++		}
++	}
  	if (c->xdpsq)
  		mlx5e_cq_arm(&c->xdpsq->cq);
  
+-	if (xsk_open) {
+-		mlx5e_handle_rx_dim(xskrq);
+-		mlx5e_cq_arm(&xsksq->cq);
+-		mlx5e_cq_arm(&xskrq->cq);
+-	}
+-
+ 	if (unlikely(aff_change && busy_xsk)) {
+ 		mlx5e_trigger_irq(&c->icosq);
+ 		ch_stats->force_irq++;
 -- 
 2.31.1
 
