@@ -1,119 +1,120 @@
-Return-Path: <linux-rdma+bounces-15571-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15572-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65C38D23B7A
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 10:51:59 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E9ACD23B41
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 10:50:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 17AF1302CA8A
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 09:36:33 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 3C4A230012DC
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 09:50:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7E0835BDD9;
-	Thu, 15 Jan 2026 09:36:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC01835EDC3;
+	Thu, 15 Jan 2026 09:50:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="VDdg3qnW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BH+ihF/S"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B9E81E5714;
-	Thu, 15 Jan 2026 09:36:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C40735E554;
+	Thu, 15 Jan 2026 09:50:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768469786; cv=none; b=YHU15A0+tbVAFQ/RUdwBHg/dMl1YNryjrhmwJGZxlW60jao+MOfHFiFP1uKQn7fxXTcBBD72uFMdvpz8C1AWyuZakIF/mgypsr2eXsLoXEwhHvgOsJMWdM4l2o/O9e/4ybusp8ZQ+U71b6OOofkagj6GmlVuDbiSoiJiEB4PhgU=
+	t=1768470605; cv=none; b=fczPcT51xjPQHtGQo//qMWzdPj0EsjlOJQ9/B9Be9bx6R9pcP5BPWwO1+vqyl10ERFYj1CNuVlqy+KE6D0O/WaC3iJrLUILKNqwprb62EKe+wYA7KgLVxAOhPiIHKGh6WN5sztxLhk5MF6mbQq1/Qr/i5ODPmhm/d3zJa9TToSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768469786; c=relaxed/simple;
-	bh=xQxEaqH4wba/vNuwXbmJUd5EZab78YcBzbqSMchNWxw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EXsGdYUM2zgjqQXxMylheLbsPASR5iXJk8yF9Di0Yu8XfmEggh3v1ZVycJPgF+RAmTX1/p5jaC8Kb3RysERKtNp2XwJuTppw7pGS/7Aq6QdisltuBua5QBChLWPQ3TcnK47iczK7r/69lFAQ4mzycrBGrEkdTcI68TXK8g2e3A8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=VDdg3qnW; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1186)
-	id 0FDF920B7165; Thu, 15 Jan 2026 01:36:25 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0FDF920B7165
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1768469785;
-	bh=k8PqDCsP5V15sWMgIxygyRQXgjNht3sJfTLhdwWNz40=;
-	h=From:To:Cc:Subject:Date:From;
-	b=VDdg3qnWroik5ta82Id59mymr4MHR7lVa28ss7jMECusr9LfYkvvy8dtKhWRS2Mi4
-	 9Y0dvuaFjaU1n37fiOr9i6iDqlhV6efsCU5+r79XLnP1XnJ/h2w3RK7n5PMB3/oxq4
-	 R3KGT9NNB7z23eiSMcJkd8YB0p1cFbLqGaO+y7cE=
-From: Konstantin Taranov <kotaranov@linux.microsoft.com>
-To: kotaranov@microsoft.com,
-	shirazsaleem@microsoft.com,
-	longli@microsoft.com,
-	jgg@ziepe.ca,
-	leon@kernel.org
-Cc: linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH rdma-next v2 1/1] RDMA/mana_ib: take CQ type from the device type
-Date: Thu, 15 Jan 2026 01:36:25 -0800
-Message-ID: <20260115093625.177306-1-kotaranov@linux.microsoft.com>
-X-Mailer: git-send-email 2.43.7
+	s=arc-20240116; t=1768470605; c=relaxed/simple;
+	bh=nWpTNQTecvtAu2Rp9pmV5c6Brq1O6zAz3WjevSE/eVk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cTTfiWsf+z6fqyYkhi3V8GdPXV99L/oeeffvA8o2G0Tw4tPoBBS7/yxsjBCv3KYIvNIgk3JYvUiLeVk//K8bcH1IiGcWT7FJiRkD458rhzYW6oVAJjeB9qpgOYgM1P2p0VS3Hz3OeArMNoMTQ0nnvZhqbcmcXt8aIY4eyZ/oHpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BH+ihF/S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72086C116D0;
+	Thu, 15 Jan 2026 09:50:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768470605;
+	bh=nWpTNQTecvtAu2Rp9pmV5c6Brq1O6zAz3WjevSE/eVk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BH+ihF/S/kDKyRJEQnALQoazoUbe53m4KZI3zKvg7ysQoiyiuOzqf6JNyNbVun2LP
+	 T4NO+sTd205FcJEz7jyY3pHSNabDPZVHXzN3jlcFeae/eCdfwH4xMBoWThahpoXNYG
+	 Ojy0wEmRppDj0yI38z7xz/r/MCG4ueUEww6YRZGhpGlzRSuu7kKxO7ZjV1HcuihvQz
+	 jZ6HkIlHQQ8wA4mbg5qe8rYy9Ed+q/NJWA5PumdZeDw2hrL9hMVBkxD4PwQkpzKWCp
+	 1WoEErpYDi3t+eO8kkygyMUtBNREdoANZjs97IJAao2kSNPREL29Hzh0nCx0kSr0Za
+	 qdMtjBMDpG4BA==
+Date: Thu, 15 Jan 2026 11:50:00 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Chuck Lever <cel@kernel.org>
+Cc: Jason Gunthorpe <jgg@nvidia.com>, Christoph Hellwig <hch@lst.de>,
+	linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org,
+	NeilBrown <neilb@ownmail.net>, Jeff Layton <jlayton@kernel.org>,
+	Olga Kornievskaia <okorniev@redhat.com>,
+	Dai Ngo <dai.ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+	Chuck Lever <chuck.lever@oracle.com>
+Subject: Re: [PATCH v1 0/4] Add a bio_vec based API to core/rw.c
+Message-ID: <20260115095000.GA14359@unreal>
+References: <20260114143948.3946615-1-cel@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260114143948.3946615-1-cel@kernel.org>
 
-From: Konstantin Taranov <kotaranov@microsoft.com>
+On Wed, Jan 14, 2026 at 09:39:44AM -0500, Chuck Lever wrote:
+> From: Chuck Lever <chuck.lever@oracle.com>
+> 
+> This series introduces a bio_vec based API for RDMA read and write
+> operations in the RDMA core, eliminating unnecessary scatterlist
+> conversions for callers that already work with bvecs.
+> 
+> Current users of rdma_rw_ctx_init() must convert their native data
+> structures into scatterlists. For subsystems like svcrdma that
+> maintain data in bvec format, this conversion adds overhead both in
+> CPU cycles and memory footprint. The new API accepts bvec arrays
+> directly.
+> 
+> For hardware RDMA devices, the implementation uses the IOVA-based
+> DMA mapping API to reduce IOTLB synchronization overhead from O(n)
+> per-page syncs to a single O(1) sync after all mappings complete.
+> Software RDMA devices (rxe, siw) continue using virtual addressing.
+> 
+> The series includes MR registration support for bvec arrays,
+> enabling iWARP devices and the force_mr debug parameter. The MR
+> path reuses existing ib_map_mr_sg() infrastructure by constructing
+> a synthetic scatterlist from the bvec DMA addresses.
+> 
+> The final patch adds the first consumer for the new API: svcrdma.
+> It replaces its scatterlist conversion code, significantly reducing
+> the svc_rdma_rw_ctxt structure size. The previous implementation
+> embedded a scatterlist array of RPCSVC_MAXPAGES entries (4KB or
+> more per context); the new implementation uses a pointer to a
+> dynamically allocated bvec array.
+> 
+> Based on v6.19-rc5.
+> 
+> Chuck Lever (4):
+>   RDMA/core: add bio_vec based RDMA read/write API
+>   RDMA/core: use IOVA-based DMA mapping for bvec RDMA operations
+>   RDMA/core: add MR support for bvec-based RDMA operations
+>   svcrdma: use bvec-based RDMA read/write API
 
-Get CQ type from the used gdma device. The MANA_IB_CREATE_RNIC_CQ
-flag is ignored. It was used in older kernel versions where
-the mana_ib was shared between ethernet and rnic.
+Amazing, thanks a lot.
 
-Fixes: d4293f96ce0b ("RDMA/mana_ib: unify mana_ib functions to support any gdma device")
-Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
----
-v2: added comment that the flag is reserved
- drivers/infiniband/hw/mana/cq.c | 4 +---
- include/uapi/rdma/mana-abi.h    | 3 +++
- 2 files changed, 4 insertions(+), 3 deletions(-)
+I haven’t done a deep‑dive review yet, but from what I’ve seen so far  
+it looks solid and well put together.
 
-diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
-index 1becc8779..2dce1b677 100644
---- a/drivers/infiniband/hw/mana/cq.c
-+++ b/drivers/infiniband/hw/mana/cq.c
-@@ -24,6 +24,7 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 
- 	cq->comp_vector = attr->comp_vector % ibdev->num_comp_vectors;
- 	cq->cq_handle = INVALID_MANA_HANDLE;
-+	is_rnic_cq = mana_ib_is_rnic(mdev);
- 
- 	if (udata) {
- 		if (udata->inlen < offsetof(struct mana_ib_create_cq, flags))
-@@ -35,8 +36,6 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 			return err;
- 		}
- 
--		is_rnic_cq = !!(ucmd.flags & MANA_IB_CREATE_RNIC_CQ);
--
- 		if ((!is_rnic_cq && attr->cqe > mdev->adapter_caps.max_qp_wr) ||
- 		    attr->cqe > U32_MAX / COMP_ENTRY_SIZE) {
- 			ibdev_dbg(ibdev, "CQE %d exceeding limit\n", attr->cqe);
-@@ -55,7 +54,6 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 							  ibucontext);
- 		doorbell = mana_ucontext->doorbell;
- 	} else {
--		is_rnic_cq = true;
- 		buf_size = MANA_PAGE_ALIGN(roundup_pow_of_two(attr->cqe * COMP_ENTRY_SIZE));
- 		cq->cqe = buf_size / COMP_ENTRY_SIZE;
- 		err = mana_ib_create_kernel_queue(mdev, buf_size, GDMA_CQ, &cq->queue);
-diff --git a/include/uapi/rdma/mana-abi.h b/include/uapi/rdma/mana-abi.h
-index 45c2df619..a75bf32b8 100644
---- a/include/uapi/rdma/mana-abi.h
-+++ b/include/uapi/rdma/mana-abi.h
-@@ -17,6 +17,9 @@
- #define MANA_IB_UVERBS_ABI_VERSION 1
- 
- enum mana_ib_create_cq_flags {
-+	/* Reserved for backward compatibility. Legacy
-+	 * kernel versions use it to create CQs in RNIC
-+	 */
- 	MANA_IB_CREATE_RNIC_CQ	= 1 << 0,
- };
- 
--- 
-2.43.0
+Thanks.
 
+> 
+>  drivers/infiniband/core/rw.c      | 492 ++++++++++++++++++++++++++++++
+>  include/rdma/ib_verbs.h           |  35 +++
+>  include/rdma/rw.h                 |  26 ++
+>  net/sunrpc/xprtrdma/svc_rdma_rw.c | 115 ++++---
+>  4 files changed, 608 insertions(+), 60 deletions(-)
+> 
+> -- 
+> 2.52.0
+> 
 
