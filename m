@@ -1,162 +1,95 @@
-Return-Path: <linux-rdma+bounces-15573-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15574-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE372D23C56
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 11:00:46 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B26CD23B6B
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 10:51:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 2A4F0302913E
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 09:50:26 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id E6C8A30119B3
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 09:51:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37D6535EDCA;
-	Thu, 15 Jan 2026 09:50:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA65B352F8A;
+	Thu, 15 Jan 2026 09:51:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="aYY/26LQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tonqnNnj"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFBB733B94A;
-	Thu, 15 Jan 2026 09:50:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E06435EDAD;
+	Thu, 15 Jan 2026 09:51:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768470620; cv=none; b=MvgXfII6Xsn0xmkpW17u5njFufm9XgurD1HA9L5zg4auP95DTsQeJeFQAN17zWGntpPIkdQHtP1INcmopQWE7H0Lbr31/s657oqWUZigLCzc6lWq+p7w5hxaQ6EWPYquvVuxQ67CxK4/S4FTBlJE/kUQP/ZyzLTv0HWXNgOpxJw=
+	t=1768470664; cv=none; b=Dt2vS8R8o/w3PHH7Nyd8Bu9L0r7n8qUc7tWxoqhTJVUncWTs0fY8GXBb2HLyev+pE07mIfhSUWqR1MApU8nWmBeZXsWSx4gETje4kccOhI2UxtmxwsqXDgm4P0aOX+ZY9oloGOPK70LzAUJAo2ghSzxr+OcNXRZ23bYvHmmvEMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768470620; c=relaxed/simple;
-	bh=qqpPoEO9gxcbBz4eYjFFtHnZrz2YL4OjzesdybMW56U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Skbj99Zg2G6ZvFZb/dB0EHlJdUxpY9ygFqMipECi2gTVSD4Fl/IWY7PddMf7pLwrFoNIf/KYmv06bNVFVaoKY00PaOZgvw3HvIZ3OyVigzsHEhYcmxKtcPfhXKQVvaP1Spe9cPVhL1XBTfhNcmLBfHe9gwB2+KB2oLZ/9dTT0Gc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=aYY/26LQ; arc=none smtp.client-ip=144.76.82.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-	s=42; h=From:Cc:To:Date:Message-ID;
-	bh=9WtjOjpx4ppvSOVIH8gVktPsx8DdXwLIbQqIiFGBX0I=; b=aYY/26LQqpbS35ZotWEZPdyMDM
-	5uG2Dl/qkktZ7xfDWu/n5pKDCi/wE6ttd7Ir7e0bxqoKBffL8wI0jwIvnGFL2UN7ZGAV8T7I9ADJo
-	qs7dpB6PAiQyLWwlwOlPxUwBjfEzEvYPGzlqQVTqoXYrKTAHyVW8L5qzXYJgWzIUVqWAaUdSM3tng
-	2pGoP0ZG1Yoj1l9pwD+gop4QcWkdRBNBu/02PSca41TVmVbyyi/Uqqzqr7r11U7Jw8d2OEQlu7O6f
-	tOgQiSf43/iceccS6xaRR9a9tcrzxxAoIzyIIzKAl+zVtiZjuisEw8PVrXw+2Lg+GXDsOMt8Yysgp
-	a5FC7P+7FS3ueA50LpKyKsluANUcPWFXhxIUZ+wHXTarz+DvecdIkuMwjaXUwxNRZsGV98lByuKQ6
-	aXFjZbVPRS6iQukaCgCEmHtiZOrEo4Av+vIF/NfISI3aOY7z5PKKDoHHzldVz06GqxTJzg3YNmPdc
-	bReHPn5xhpakqS5WLwsqNb3f;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
-	(Exim)
-	id 1vgJzc-00000000H3G-1w5o;
-	Thu, 15 Jan 2026 09:50:16 +0000
-Message-ID: <b58fa352-2386-4145-b42e-9b4b1d484e17@samba.org>
-Date: Thu, 15 Jan 2026 10:50:15 +0100
+	s=arc-20240116; t=1768470664; c=relaxed/simple;
+	bh=t0Mz1QXqjEvcLUzCNWQjw/rIfYPkHY0UFaVM0BkO7AA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IqF2ksfBfV7B93f/RVJ2J0X/MFlFWtSkhK9c02Ym5Bz4mFQHY+ew23zJWGNQz3EGf4vi9WsAIJTHadqdIB3L0M9dIeq/no9a6gYa116o4QamJOkVCuF+HGbkRQF28gKovIaZHLpdmbeTYzgwLslLlZ/GMo5p2lFkD4bJMueZ1qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tonqnNnj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97680C116D0;
+	Thu, 15 Jan 2026 09:51:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768470664;
+	bh=t0Mz1QXqjEvcLUzCNWQjw/rIfYPkHY0UFaVM0BkO7AA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tonqnNnjfuz5DW1mDPsuThM7KwaR/3CztyXqGt3PfrZA5mdse15LX6wTrEcphRFw3
+	 WGwwuxNIzufHuuKy8iHksBQK4ONcHMl+nit/YzPG7KFcaZpiy1VBYyUxlFgL/16W2K
+	 a/SNayngL9x2WBGnPSanwO6ExAa0UIXqcjDiBTqpjkZdnmCjzB45l3v6vMQfCOb0VK
+	 yoOG9TWnlmm9CpjXu0Q1m+SBBA7qjxaj9TNubQ8Ih3qOJ63naFYvJO1btKnbqx0rn2
+	 6WS6sp1XKRNhjLoZelI+w9vPVhekcFl2mFKzNr7s3VQmL5q7fy6x8AO+vWyojfRP1F
+	 KhggY3Ugy30bA==
+Date: Thu, 15 Jan 2026 11:51:00 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Chuck Lever <cel@kernel.org>
+Cc: Jason Gunthorpe <jgg@nvidia.com>, Christoph Hellwig <hch@lst.de>,
+	linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org,
+	NeilBrown <neilb@ownmail.net>, Jeff Layton <jlayton@kernel.org>,
+	Olga Kornievskaia <okorniev@redhat.com>,
+	Dai Ngo <dai.ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+	Chuck Lever <chuck.lever@oracle.com>
+Subject: Re: [PATCH v1 4/4] svcrdma: use bvec-based RDMA read/write API
+Message-ID: <20260115095100.GB14359@unreal>
+References: <20260114143948.3946615-1-cel@kernel.org>
+ <20260114143948.3946615-5-cel@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Problem with smbdirect rw credits and initiator_depth
-To: Namjae Jeon <linkinjeon@kernel.org>
-Cc: Tom Talpey <tom@talpey.com>,
- "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <35eec2e6-bf37-43d6-a2d8-7a939a68021b@samba.org>
- <CAKYAXd9p=7BzmSSKi5n41OKkkw4qrr4cWpWet7rUfC+VT-6h1g@mail.gmail.com>
- <f59e0dc7-e91c-4a13-8d49-fe183c10b6f4@samba.org>
- <CAKYAXd-MF1j+CkbWakFJK2ov_SfRUXaRuT6jE0uHZoLxTu130Q@mail.gmail.com>
- <CAKYAXd__T=L9aWwOuY7Z8fJgMf404=KQ2dTpNRd3mq9dnYCxRw@mail.gmail.com>
- <86b3c222-d765-4a6c-bb79-915609fa3d27@samba.org>
- <a3760b26-7458-40a0-ae79-bb94dd0e1d01@samba.org>
- <3c0c9728-6601-41f1-892f-469e83dd7f19@samba.org>
- <721eb7b1-dea9-4510-8531-05b2c95cb240@samba.org>
- <CAKYAXd-WTsVEyONDmOMbKseyAp29q71KiUPwGDp2L_a53oL0vg@mail.gmail.com>
- <183d92a0-6478-41bb-acb3-ccefd664d62f@samba.org>
- <ee6873d7-6e47-4d42-9822-cb55b2bfb79e@samba.org>
- <6a248fde-e0cd-489b-a640-d096fb458807@samba.org>
- <CAKYAXd-42_fSHBL7iZbuOtYFKqKyhPS-4C+nqbX=-Djq5L6Okg@mail.gmail.com>
-Content-Language: en-US
-From: Stefan Metzmacher <metze@samba.org>
-In-Reply-To: <CAKYAXd-42_fSHBL7iZbuOtYFKqKyhPS-4C+nqbX=-Djq5L6Okg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260114143948.3946615-5-cel@kernel.org>
 
-Am 15.01.26 um 03:01 schrieb Namjae Jeon:
-> On Thu, Jan 15, 2026 at 3:13 AM Stefan Metzmacher <metze@samba.org> wrote:
->>
->> Am 15.12.25 um 21:17 schrieb Stefan Metzmacher:
->>> Am 14.12.25 um 23:56 schrieb Stefan Metzmacher:
->>>> Am 13.12.25 um 03:14 schrieb Namjae Jeon:
->>>>>> I've put these changes a long with rw credit fixes into my
->>>>>> for-6.18/ksmbd-smbdirect-regression-v4 branch, are you able to
->>>>>> test this?
->>>>> Problems still occur. See:
->>>>
->>>> :-( Would you be able to use rxe and cake a network capture?
->>>>
->>>> Using test files with all zeros, e.g.
->>>> dd if=/dev/zero of=/tmp/4096MBzeros-sparse.dat seek=4096MB bs=1 count=1
->>>> would allow gzip --best on the capture file to compress well...
->>>
->>> I think I found something that explains it and
->>> I was able to reproduce and what I have in mind.
->>>
->>> We increment recv_io.posted.count after ib_post_recv()
->>>
->>> And manage_credits_prior_sending() uses
->>>
->>> new_credits = recv_io.posted.count - recv_io.credits.count
->>>
->>> But there is a race between the hardware receiving a message
->>> and recv_done being called in order to decrement recv_io.posted.count
->>> again. During that race manage_credits_prior_sending() might grant
->>> too much credits.
->>>
->>> Please test my for-6.18/ksmbd-smbdirect-regression-v5 branch,
->>> I haven't tested this branch yet, I'm running out of time
->>> for the day.
->>>
->>> But I tested it with smbclient and having a similar
->>> logic in fs/smb/common/smbdirect/smbdirect_connection.c
->>
->> I was able to reproduce the problem and the fix I created
->> for-6.18/ksmbd-smbdirect-regression-v5 was not correct.
->>
->> I needed to use
->>
->> available = atomic_xchg(&sc->recv_io.credits.available, 0);
->>
->> instead of
->>
->> available = atomic_read(&sc->recv_io.credits.available);
->> atomic_sub(new_credits, &sc->recv_io.credits.available);
->>
->> This following branch works for me:
->> for-6.18/ksmbd-smbdirect-regression-v7
->> and with the fixes again master this should also work:
->> for-6.19/ksmbd-smbdirect-regression-v1
->>
->> I'll post real patches tomorrow.
->>
->> Please check.
-> Okay, I will test it with two branches.
-> I'll try it too, but I recommend running frametest for performance
-> difference and stress testing.
+On Wed, Jan 14, 2026 at 09:39:48AM -0500, Chuck Lever wrote:
+> From: Chuck Lever <chuck.lever@oracle.com>
 > 
-> https://support.dvsus.com/hc/en-us/articles/212925466-How-to-use-frametest
+> Convert svcrdma to the bvec-based RDMA API introduced earlier in
+> this series.
 > 
-> ex) frametest.exe -w 4k -t 20 -n 2000
+> The bvec-based RDMA API eliminates the intermediate scatterlist
+> conversion step, allowing direct DMA mapping from bio_vec arrays.
+> This simplifies the svc_rdma_rw_ctxt structure by removing the
+> inline scatterlist and chained SG table management.
+> 
+> The structure size reduction is significant: the previous inline
+> scatterlist array of RPCSVC_MAXPAGES entries (4KB or more) is
+> replaced with a pointer to a dynamically allocated bvec array,
+> bringing the fixed structure size down to approximately 100 bytes.
+> 
+> The bvec API handles all device types internally, including iWARP
+> devices which require memory registration. No explicit fallback
+> path is needed.
+> 
+> Signed-off-by: cel@kernel.org
 
-That works fine, but
+Something went wrong here.
 
-  frametest.exe -r 4k -t 20 -n 2000
+Thanks
 
-generates a continues stream of such messages:
-ksmbd: Failed to send message: -107
-
-Both with 6.17.2 and for-6.19/ksmbd-smbdirect-regression-v1,
-so this is not a regression.
-
-I'll now check if the is related to the other problems
-I found and fixes in for-6.18/ksmbd-smbdirect-regression-v5
-
-metze
-
+> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> ---
+>  net/sunrpc/xprtrdma/svc_rdma_rw.c | 115 ++++++++++++++----------------
+>  1 file changed, 55 insertions(+), 60 deletions(-)
 
