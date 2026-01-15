@@ -1,441 +1,258 @@
-Return-Path: <linux-rdma+bounces-15605-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15606-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFC51D27F03
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 20:07:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 89DBCD28432
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 20:57:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EDBF1309FD24
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 19:02:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6A168305BC3D
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 19:57:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF9E22CBD9;
-	Thu, 15 Jan 2026 19:02:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ABB431AA94;
+	Thu, 15 Jan 2026 19:57:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T8SkLigk"
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="MXouC6vC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from CY7PR03CU001.outbound.protection.outlook.com (mail-westcentralusazon11020099.outbound.protection.outlook.com [40.93.198.99])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A1061799F
-	for <linux-rdma@vger.kernel.org>; Thu, 15 Jan 2026 19:02:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768503779; cv=none; b=ZT+l48hecTM1ES7UpW6gB+7tHbmbn6fckzIlmXqn7BkWtMS/KpSj6dafN0tKvkeHzDR32N3NRg6UVv/c9x0wla4RFrDR3zm+bMnONxHi0uKV+YcQFC4HOSDpOXQiDa5DBqIXRboQOl9e0neiSzpjJkoINkuqW9/GxQ+jXGXTGb4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768503779; c=relaxed/simple;
-	bh=38iSyjYoEwMzr+nrU6pjXPKBtQ2TX3V1C7DF25i/yc0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YNoM3VzPX6HGaI8UDrKCU4caP/W+8ydbKMiQfj2bR+VGv9VRP2H1spxePvnhDfyLkELQeALUQMh9aZpno3qe8wDFVJJDzxh2cXNjHD64tRi1AhjoP9UtXVw72KbflE84FYnHNvE2ugdvo1AEmbVM90qHnToIo85+EnIhtHO7r6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T8SkLigk; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-64b9dfc146fso2170120a12.0
-        for <linux-rdma@vger.kernel.org>; Thu, 15 Jan 2026 11:02:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768503775; x=1769108575; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bW47JMUnnrn3JGaUjgMVWNTwCOKFTT/lQ2uvrJQBiv0=;
-        b=T8SkLigktehgDT1bwbCVKlsu+MPH/y4txeuofElnTyD19Y+zNGIXPCm7/OjdU2aqZv
-         Q77UJvZ1lOVVRcq5x4kzEoWDN91FikELj3TLVzLrF8WIV+otWLmqBrO1HHyExizgw0Cm
-         YCiFfw4Sc7oNV8NZZzEsuBUJavWsggM7lm+KqIMYUc+oRSViGtjR4IW7q4umkZjSwoEX
-         3B3zVxlewy+I4U5b1rBbSuRv6oSsqDsvnZ39VIKoqN7xcaOIxDK10+EZVtfJfxgWgHPR
-         Zmb6QKNrr/rHlSpKlTcweIDdMQ36ZPWfsxLwCABBf5WA8yc7waQ/KirvOJjB6YISYzr7
-         MDhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768503775; x=1769108575;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=bW47JMUnnrn3JGaUjgMVWNTwCOKFTT/lQ2uvrJQBiv0=;
-        b=XAYNDfzr2Q27OFwQMzT442L7DgRXRlR+LMh3ilAZxru/Oog4z3b5oN72BK1fNDeVgM
-         lPe8A9sJwlYDAv1vnZ3Z/BRXaNlwqwwsIeswtFEpeylBajHsDWPpM2MzngA1tNd2dobZ
-         zyGTWi4TMVLoG33MoJxaQtVdjVWDHDwZ7Z/m5XTkBqEgg+Ad1ngKI5QdlPSUsZITslBl
-         ar5GLASnK4XpeLEZ/Q49cL/TtU0nOTXXfH72wn3NuSISRylBHVeMK/a98AcrnfVndWaj
-         AKaU3l8CU7eafqXxBRILMlPCLGfyWpKjH/gSA7eLl4qS7L6+WfbCXCWI4mIX+rblbEUm
-         1KlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVNMoD+gZVLQiIYrNzfB72MQoQtFIqygSEcidri3bYf0tjwqoHiXn9jL/XHlcpIuw0dIBnwtral9gCv@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzhmz91O/WNKoymzlXYs74T7pKvlTjsePRW42Rq6+PHgTcMm17i
-	olWoKnatp+Gjh0I1pXs3ckUVEgDyCCpxp9MyUGYTGo3yCpS6Giq7mEveirHDag==
-X-Gm-Gg: AY/fxX77BDPZYqym3BsjSFRlRoAlKTOSJ1SqEPPAIVKLnrufwcPufLe/rqnS6zKH1Y1
-	mnzOZCZ/1HkmmoS5Jm3AY5AhNmr2M0cF463bPmWjFo6oyKuo0JG2h7mb63Did6V57e6D47rTjPi
-	CTW7XDhPghd0kdd51hhZpn7jA8nuk4jXyJI5Ya3ihD7wCWKkUI/g2wuC0UXVsrdY82CITaTpjQW
-	vwf3jPFUUTOLs4YszlGKopQuwOxkz70O/i04NZwBC7tMbjzqzQbo6p7K+/xppUPSxde5SBKxLJW
-	B7j2QHwQ7rrAjbieVPOUYaZtJnxUjFqEn1wMTk0pNyO3+VR3+R94eFRk03+nEn9tnWBKN7cpPkG
-	v2CVmTvRAS/kFccbCf+ywnZTTQWxjLEe5YBf6u3JboPguNl8zLxFwaAzZD+CgeR4EhkNZLFhNeh
-	sw9OECEK2SjVLJUpWv4d9TFaXu9MwEdef6V+nIjdqLABIHnvQPXcJ/dYW0HK6UYFAKviS8abcZF
-	hfypXZx607w7p1SaQ==
-X-Received: by 2002:a05:600d:640f:20b0:47d:6c36:a125 with SMTP id 5b1f17b1804b1-4801e7d2a3cmr1465185e9.17.1768497153419;
-        Thu, 15 Jan 2026 09:12:33 -0800 (PST)
-Received: from 127.mynet ([2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47f429071a2sm54741645e9.11.2026.01.15.09.12.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jan 2026 09:12:32 -0800 (PST)
-From: Pavel Begunkov <asml.silence@gmail.com>
-To: netdev@vger.kernel.org
-Cc: "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Michael Chan <michael.chan@broadcom.com>,
-	Pavan Chebbi <pavan.chebbi@broadcom.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Joshua Washington <joshwash@google.com>,
-	Harshitha Ramamurthy <hramamurthy@google.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Mark Bloch <mbloch@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Alexander Duyck <alexanderduyck@fb.com>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Willem de Bruijn <willemb@google.com>,
-	Ankit Garg <nktgrg@google.com>,
-	Tim Hostetler <thostet@google.com>,
-	Alok Tiwari <alok.a.tiwari@oracle.com>,
-	Ziwei Xiao <ziweixiao@google.com>,
-	John Fraker <jfraker@google.com>,
-	Praveen Kaligineedi <pkaligineedi@google.com>,
-	Mohsin Bashir <mohsin.bashr@gmail.com>,
-	Joe Damato <joe@dama.to>,
-	Mina Almasry <almasrymina@google.com>,
-	Dimitri Daskalakis <dimitri.daskalakis1@gmail.com>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Kuniyuki Iwashima <kuniyu@google.com>,
-	Samiullah Khawaja <skhawaja@google.com>,
-	Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Pavel Begunkov <asml.silence@gmail.com>,
-	David Wei <dw@davidwei.uk>,
-	Yue Haibing <yuehaibing@huawei.com>,
-	Haiyue Wang <haiyuewa@163.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	Simon Horman <horms@kernel.org>,
-	Vishwanath Seshagiri <vishs@fb.com>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	dtatulea@nvidia.com,
-	kernel-team@meta.com,
-	io-uring@vger.kernel.org
-Subject: [PATCH net-next v9 5/9] eth: bnxt: store rx buffer size per queue
-Date: Thu, 15 Jan 2026 17:11:58 +0000
-Message-ID: <f57efb32aae1da5c0a25acf473ef4ab559894adf.1768493907.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <cover.1768493907.git.asml.silence@gmail.com>
-References: <cover.1768493907.git.asml.silence@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E5682E0925;
+	Thu, 15 Jan 2026 19:57:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.198.99
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768507068; cv=fail; b=G8snenDFTb8g2f2YRMqXLYnQnNefQjACdMTP9itzT1uwZHHo58hzL6gVGQx0EdwkW5J//kmSsOPjeNConEtfaZRcclFrlBtsNz5s17iBpGYI7/updEuxMe1rBZ1hnN2mBPi8gDjlFaNIM9n8dzh6Vlv8v/lSL3fbrLfNWmLKybg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768507068; c=relaxed/simple;
+	bh=srP5EKPttu3if2Vn7+g3ax/bT8SzA3fXIgVkOAz/7V8=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=iPSC3t5viGM1KgHqeWrwsDtchvLA8pyqn/iWvYgM/X2JZW7O26EcynWdft3hM3TU1ikqB+VEQIvLDGvuT7zT6X30Vom5KW7sjGJ5WqZLDPawj56vBYIEGM/qhlgq0+Z1wdXrWvb51pQmKiXN4QpTio4d2T91XHUOXRTyxq2nRvI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=MXouC6vC; arc=fail smtp.client-ip=40.93.198.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=BJbhIFNkBcPhFcLgPYdrWMbY3ffvzFqnvvaAxoXMpt6nmeeRIeAsxqjeQ9nwCG+g4+YHU/fCaRp6x4R6EFmhYqk1tuIZR1S0chkrsvlpNOGOprgl7OkiZc0I3bsgsFgukH2sv5jvoylvV6zgP+AjUY6qFQIvVIJGH1gcID0fUgXxKhFavB6ZL5a/taS+XTmWhZV4VAtK4yUhszS3v25msOpY2VyUHVKYe8ymKQF1Wwt1C6voc8c1TZ9nm+U0UfCjTQGZagIFnfEvAA5qVMJzIdCX560l9XL7fUtg3sCCH1TPJodNIp0n6P0mjBW3WS9wr8T874oM7oc8e0G8GCZEoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=srP5EKPttu3if2Vn7+g3ax/bT8SzA3fXIgVkOAz/7V8=;
+ b=WkFbMxNJwvVZgxDMKiBvxszguLdWKCHVmb6Cxh0aW68gUDZ7qwtQaEjJhNeFKBs07UNmtbb5EpF/NEDuRpsScnO/Ms70H6hBcu/3AxMWpn0rN4DVGx87tSU+vAFkjP5YAnixk5tXYWBhuBXlIoXY2I2cWVCJYNg8FC66qyfgSccWgAYJEgvV5vZX8qqjUi8geB/gCdNh+tmDY1Nyf4bw10ylzYqHtGvFxDNFIIz7RtW0v1I9nh2ozCM7R17Mz+WlSnSDx0rrJ5pYfsXZa+VApbMRSmlR/gVcVNgr0d2jc+dS+piHexDfFoVDLgjjOrfCkLZ4HC9RXx6efTjDQfr2HA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=srP5EKPttu3if2Vn7+g3ax/bT8SzA3fXIgVkOAz/7V8=;
+ b=MXouC6vCKBIz6mfM7O6VJYvVN+9D0gudajcwgVl9dbrKWpi3oHdLyZKRVyEPlWknATl/TngCOkuCwm/aG6F927J2i8dQa2onXh2GATmOnJT10bEFbZYjTvtvqks/LOtjPAGzCcsY9npIyMcyZoyJOE2ebrGvP5tdivrmwVlnpHg=
+Received: from SA3PR21MB3867.namprd21.prod.outlook.com (2603:10b6:806:2fc::15)
+ by SA1PR21MB6177.namprd21.prod.outlook.com (2603:10b6:806:4a8::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9542.4; Thu, 15 Jan
+ 2026 19:57:44 +0000
+Received: from SA3PR21MB3867.namprd21.prod.outlook.com
+ ([fe80::70ff:4d3:2cb6:92a3]) by SA3PR21MB3867.namprd21.prod.outlook.com
+ ([fe80::70ff:4d3:2cb6:92a3%6]) with mapi id 15.20.9542.001; Thu, 15 Jan 2026
+ 19:57:44 +0000
+From: Haiyang Zhang <haiyangz@microsoft.com>
+To: Jakub Kicinski <kuba@kernel.org>
+CC: Haiyang Zhang <haiyangz@linux.microsoft.com>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, KY Srinivasan
+	<kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
+	<DECUI@microsoft.com>, Long Li <longli@microsoft.com>, Andrew Lunn
+	<andrew+netdev@lunn.ch>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Konstantin
+ Taranov <kotaranov@microsoft.com>, Simon Horman <horms@kernel.org>, Erni Sri
+ Satya Vennela <ernis@linux.microsoft.com>, Shradha Gupta
+	<shradhagupta@linux.microsoft.com>, Saurabh Sengar
+	<ssengar@linux.microsoft.com>, Aditya Garg <gargaditya@linux.microsoft.com>,
+	Dipayaan Roy <dipayanroy@linux.microsoft.com>, Shiraz Saleem
+	<shirazsaleem@microsoft.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-rdma@vger.kernel.org"
+	<linux-rdma@vger.kernel.org>, Paul Rosswurm <paulros@microsoft.com>
+Subject: RE: [EXTERNAL] Re: [PATCH V2,net-next, 1/2] net: mana: Add support
+ for coalesced RX packets on CQE
+Thread-Topic: [EXTERNAL] Re: [PATCH V2,net-next, 1/2] net: mana: Add support
+ for coalesced RX packets on CQE
+Thread-Index:
+ AQHcf02oLJOgwMZgokiNaAnIBRMMibVKqfoAgARiUFCAAEsSAIAA4mDAgAAFB6CAAKeVAIABIOnwgACOxQCAARoLgA==
+Date: Thu, 15 Jan 2026 19:57:44 +0000
+Message-ID:
+ <SA3PR21MB38673CA4DDE618A5D9C4FA99CA8CA@SA3PR21MB3867.namprd21.prod.outlook.com>
+References: <1767732407-12389-1-git-send-email-haiyangz@linux.microsoft.com>
+	<1767732407-12389-2-git-send-email-haiyangz@linux.microsoft.com>
+	<20260109175610.0eb69acb@kernel.org>
+	<SA3PR21MB3867BAD6022A1CAE2AC9E202CA81A@SA3PR21MB3867.namprd21.prod.outlook.com>
+	<20260112172146.04b4a70f@kernel.org>
+	<SA3PR21MB3867B36A9565AB01B0114D3ACA8EA@SA3PR21MB3867.namprd21.prod.outlook.com>
+	<SA3PR21MB3867A54AA709CEE59F610943CA8EA@SA3PR21MB3867.namprd21.prod.outlook.com>
+	<20260113170948.1d6fbdaf@kernel.org>
+	<SA3PR21MB38676C98AA702F212CE391E2CA8FA@SA3PR21MB3867.namprd21.prod.outlook.com>
+ <20260114185450.58db5a6d@kernel.org>
+In-Reply-To: <20260114185450.58db5a6d@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=379d525b-92f1-427c-8160-e3388ac09052;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2026-01-15T19:44:18Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Tag=10,
+ 3, 0, 1;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA3PR21MB3867:EE_|SA1PR21MB6177:EE_
+x-ms-office365-filtering-correlation-id: 9c0d57f1-0912-47d7-852c-08de5470595f
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|366016|1800799024|376014|7416014|38070700021;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?xEKagOW/PFiFChvbjdNH+0/aSf2lU46l3je3JYsG7gBf9F88wND29FQCoJxF?=
+ =?us-ascii?Q?87WaLheraQNKBEXomT2WbLRhr2483gMo3R6ueYTPAvIZsPHm3wIb8aQjDZSH?=
+ =?us-ascii?Q?vMPDjfBT/OxB3y/gRu4Lzj3i6qgYzAv1TsgX+7oL2+adYkRK+9oTgUKwINPM?=
+ =?us-ascii?Q?vYzpEBT1FA4uG5FzEGkG7/ZgrmU4PLNzijwqKq6PDspn+VKGsDHi2FzAe27N?=
+ =?us-ascii?Q?ShNob6l9mSQu+wdyDkNMygMsv+M4swkRt6fNbkINoFewreUk3a6Tjkiyhrhl?=
+ =?us-ascii?Q?XMyenbb6EEjHu/TFwP1WMxv1pDsDFYZ0PZGjgGr5yhW42MclP6VDHEExRmyH?=
+ =?us-ascii?Q?2SDVjq95xhVpib1fVfpAYJCysjddnIJBsyz96D5LZ3uc0V0tP0TWitmii/UJ?=
+ =?us-ascii?Q?4re/2tmlKN2APEaGfnEdIuR4MOxGc++Wpyyl1p6sLlrtzf4Mcg1mikX1vxJf?=
+ =?us-ascii?Q?qAXnpuIaItHE9AoI3FADebk6L+xjtKkuAynWBZYL0DH84z48KP1tAnIwtp4i?=
+ =?us-ascii?Q?4VnalcWGd5eIjSwF+0ZP7Ah0/ajPzX7rZJvniwFiRkH59UMcoP9H0vkiUfHv?=
+ =?us-ascii?Q?a2xVtqPRAEUf35Z9f3lUfVaDDiacjY3nJFpQoVIu/D446hIgcTxz9Tq7KfuI?=
+ =?us-ascii?Q?BuRUQFQvfK1BvS1zlH4Wg25hT/RvvEsak/ds1aH7P+9bNdH+GHEk3T3y/oGF?=
+ =?us-ascii?Q?69bCxrYyu0KDHmkVX55UUHp2/Q1OkuFkSwKaWY9tCmWQJhW7A74muzL7Lgze?=
+ =?us-ascii?Q?N7pwI9c8jle9Aavc/4hSVpXXYFL3n8NMmdq4ueTOMNmMtAIj8Eu2B6sUz+tD?=
+ =?us-ascii?Q?YlObIZFLv5vIuWq68UKcG76iyxhxXqxPb7avtQPbmHKll+JGSe0rbkLkU6QB?=
+ =?us-ascii?Q?ah2+bc8ghKDsfeYv/yUOkVJwMj11Dnk4d/tIeAxAa74gRKdmVtAWWTVUYOUG?=
+ =?us-ascii?Q?0cdb7vBJahnj0TxBS2LBFnOTXvFpmU/Gn8QhlPgTukb7XpdWXdkf41+5HLXr?=
+ =?us-ascii?Q?GPBMBNfrSMKWgXhK8ni3wMjciZkMZ7PWe9vsYT70/7O/r2Ix1/NsDWpny8uI?=
+ =?us-ascii?Q?W69Jw2v62oP6wTr6puvNEQqeCh0QAdR5l0Z+MF8kP3TRKpP8u7x/eb9RuUYA?=
+ =?us-ascii?Q?kNlNEKbclKSI7oicLhB0b1MV+7OEDAyBbZXG5qx/y9kOlNbRvKI8jof4XStq?=
+ =?us-ascii?Q?vCZatl4IOYj4ZR1LdXBembFSiUtgGd/bMQ67n+1blo/O192m+gAVdD+6fUfF?=
+ =?us-ascii?Q?TL2qganFsu5AYwpB95pv9HhcmeR0wp0uoIsPbsgHx+kdoKR+CKfO6fToCnPW?=
+ =?us-ascii?Q?ASboEzk2kItpqTkVdD8MpD+9WVKjKsY+5DUIGP5X1l+F4MdsIBmmFwoYsIZF?=
+ =?us-ascii?Q?l5/0ghAZNyUVHryqat2aA61HUnAQd3bZMvZIk3ZcZIABwBVW3L+ODHaGbV6t?=
+ =?us-ascii?Q?g6oMq2dtLF/KX0PKx2R6GVpLSpEsvJMEuZ/7aMVkaM/p8gvG4ujDyOd3e2pc?=
+ =?us-ascii?Q?PsHAmvb6IUjB2NAWCmOXHIR3Of5FOiUbhF4nUiZBABb6DH+h1ePgasgkosq/?=
+ =?us-ascii?Q?5xoH2SlYLzeOUf9QTaSo5trA+SvRpYse1IZru3Lh3dRYB8geLbrR+4XLZKRJ?=
+ =?us-ascii?Q?e8B2bukiIUmzFmk/mQzuLV4=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA3PR21MB3867.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(38070700021);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?tMUnO/H/AwSulAi8rpncRIDauCtmFFr7b/QdKWRW/IMcwypzEeG3t9ej+6+K?=
+ =?us-ascii?Q?KTtGmRuVfNj/4Y3UJaLUxpPDlyIGN9oirjoUxISKKBAROxpapMtCVuMU9Mut?=
+ =?us-ascii?Q?zj+4QcmCbWKSNYl6yEgIIIvbXz1Va9+ajOT/0cxvYwSXRjd37r9m8652hrpO?=
+ =?us-ascii?Q?8ParS2SfFHSluaAc3YHkz4V4wksnTebR8+hJsmcKNpSVFeyFqEjddK4d1pAC?=
+ =?us-ascii?Q?3DB7SIrs4doVkBEhO4xB35oUIaEz9O0Xnc446oyxRp2ik+w1jpMZee9xFqoE?=
+ =?us-ascii?Q?M7gpyWsguKyfKPjOHqz7bM5EJc70jj8tGgF7DIMynz8sHqCV1ze5AQq/SEB7?=
+ =?us-ascii?Q?nv+i88amEGL52iZvlfOSNjkUWZutB9lDQIbGKht6M6RR3vh5/+oLzKeDJ5D8?=
+ =?us-ascii?Q?FT6Z7GCAavxh+QoWxSv/0oBRdyWr3WVfNUljn09Vk6s3/mOigLvgseqGZmrb?=
+ =?us-ascii?Q?CEIekcOAK79xwX30m0ncWkcx9BqZX7fm7qBNjjAqV8+6ZdpyyK5fwukKHhhX?=
+ =?us-ascii?Q?E+XrMDbo32pEeGeaeXpI7myBjRqmA0LuN7MsxkC+KtIKZJGlbhxlLeRzeRMs?=
+ =?us-ascii?Q?FJQTc4rvb+uNV7bI+wkBzIKTQwzrBSViyUJ74vBxKhY3OeudoMUJX3ja/TMK?=
+ =?us-ascii?Q?5/dHy0eDxcYLpmz3GkjnantKIhYkaYgz3M9C8BorCr9E0KAdBJrmi6/imSRY?=
+ =?us-ascii?Q?KZ0jSdewndCBzi/dfytm/HBA9zI7PM0ZP+vLbtzqGI+mQYtarcXZvixF2ub6?=
+ =?us-ascii?Q?V7iIMws0ogwmswXOycGckTRxJrMrUzeFQp27DUuXa1qXmYPU7+l793vPCm8r?=
+ =?us-ascii?Q?yAAm+cHI5jFaUMN14pSz5OxDCz/EMp1q0MHzvK8+/gYWEerg84o3t3/Rud7O?=
+ =?us-ascii?Q?rngJzsX6VKh0agsi7IYaGRefyFTV2YjJ+BsJOjKKHgeuwbrN2SfJvOXtrnST?=
+ =?us-ascii?Q?8G3+pKRxgQ2prPANCiwycHw5yeyfpr/XHAmyWorGCF5cBAfLwhdLPa7bpBZf?=
+ =?us-ascii?Q?RLVgJPuNdA26+Nx9Lr/1IQATeu8AubvtWqWVwodUziWYScHJUziLuye9xbml?=
+ =?us-ascii?Q?YuegJdk5PKYJn+0tjZ8DaCOGBr8Biw5f22B7cUFuATOshEAQtLXgvFQYA0zt?=
+ =?us-ascii?Q?wwZ+jUZgKjBY+ALcv+iYPCnH9bcazLNFLNP0HjM/7J7oSiJ7RKHbn/yAqN43?=
+ =?us-ascii?Q?sqWEuXrkNv6afniOgpR233LFGj2yap1aTthRn5GzCbuWVaCPAFPsflBpZ7v2?=
+ =?us-ascii?Q?ViNk1JJyM9gvsXmwxkiSWiEm0ZgQZljJsSGKHpmh3XqogEXjj1wsUkeOs2G1?=
+ =?us-ascii?Q?YmnuwOPRBbVRKdJBEj/4lbe+R0qTktjUBk2y2drHtM7jz9XdWXwhjzrQDXM3?=
+ =?us-ascii?Q?xBikSY8gULxcZOCKjx9Jz04q2SzO/Yp8uh+HfE7fpk4URE7wUpGWYvRlojFk?=
+ =?us-ascii?Q?BBP0cYuzQ9ra0d3D/WU6QucJvhIuWSuLl/GEsJV8TbXHU7dd3g37Xh7IiBpa?=
+ =?us-ascii?Q?amFwg3wkBnocfNclxss8eabf3xg8bg7HvP83A9lBO9nB2TJU7PUqDyXHz1UY?=
+ =?us-ascii?Q?VKlMcgBUwDFe+WgthI7Hh/DgUSw/Bp7XHikfiCTxI4VuVI22wmuybKPrb0jO?=
+ =?us-ascii?Q?QlggaqphKqM4LE0D+DMkwbG8w+3WXtl+VU54bq2BYPMbXZWvIqQoPOaPI8K+?=
+ =?us-ascii?Q?+f0tovDXz0J1CTDLqEJ2CxfJ3OiLmV0rIA8mVwTmRzqPJQ+nl8ZmSKLpaDQd?=
+ =?us-ascii?Q?MHQxYExczA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA3PR21MB3867.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c0d57f1-0912-47d7-852c-08de5470595f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jan 2026 19:57:44.5371
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LZlxhI4wrF4nf/4a8OoOpT2bQyFuyAevw4+5BaHv9Fd46EPhDORXFiOXfXxNmUCQQSDWppUQOqVG/QYZ9zCCGw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR21MB6177
 
-Instead of using a constant buffer length, allow configuring the size
-for each queue separately. There is no way to change the length yet, and
-it'll be passed from memory providers in a later patch.
 
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
----
- drivers/net/ethernet/broadcom/bnxt/bnxt.c     | 56 +++++++++++--------
- drivers/net/ethernet/broadcom/bnxt/bnxt.h     |  1 +
- drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c |  6 +-
- drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.h |  2 +-
- 4 files changed, 38 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index a0abe991f79a..196b972263bd 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -905,7 +905,7 @@ static void bnxt_tx_int(struct bnxt *bp, struct bnxt_napi *bnapi, int budget)
- 
- static bool bnxt_separate_head_pool(struct bnxt_rx_ring_info *rxr)
- {
--	return rxr->need_head_pool || PAGE_SIZE > BNXT_RX_PAGE_SIZE;
-+	return rxr->need_head_pool || rxr->rx_page_size < PAGE_SIZE;
- }
- 
- static struct page *__bnxt_alloc_rx_page(struct bnxt *bp, dma_addr_t *mapping,
-@@ -915,9 +915,9 @@ static struct page *__bnxt_alloc_rx_page(struct bnxt *bp, dma_addr_t *mapping,
- {
- 	struct page *page;
- 
--	if (PAGE_SIZE > BNXT_RX_PAGE_SIZE) {
-+	if (rxr->rx_page_size < PAGE_SIZE) {
- 		page = page_pool_dev_alloc_frag(rxr->page_pool, offset,
--						BNXT_RX_PAGE_SIZE);
-+						rxr->rx_page_size);
- 	} else {
- 		page = page_pool_dev_alloc_pages(rxr->page_pool);
- 		*offset = 0;
-@@ -936,8 +936,9 @@ static netmem_ref __bnxt_alloc_rx_netmem(struct bnxt *bp, dma_addr_t *mapping,
- {
- 	netmem_ref netmem;
- 
--	if (PAGE_SIZE > BNXT_RX_PAGE_SIZE) {
--		netmem = page_pool_alloc_frag_netmem(rxr->page_pool, offset, BNXT_RX_PAGE_SIZE, gfp);
-+	if (rxr->rx_page_size < PAGE_SIZE) {
-+		netmem = page_pool_alloc_frag_netmem(rxr->page_pool, offset,
-+						     rxr->rx_page_size, gfp);
- 	} else {
- 		netmem = page_pool_alloc_netmems(rxr->page_pool, gfp);
- 		*offset = 0;
-@@ -1155,9 +1156,9 @@ static struct sk_buff *bnxt_rx_multi_page_skb(struct bnxt *bp,
- 		return NULL;
- 	}
- 	dma_addr -= bp->rx_dma_offset;
--	dma_sync_single_for_cpu(&bp->pdev->dev, dma_addr, BNXT_RX_PAGE_SIZE,
-+	dma_sync_single_for_cpu(&bp->pdev->dev, dma_addr, rxr->rx_page_size,
- 				bp->rx_dir);
--	skb = napi_build_skb(data_ptr - bp->rx_offset, BNXT_RX_PAGE_SIZE);
-+	skb = napi_build_skb(data_ptr - bp->rx_offset, rxr->rx_page_size);
- 	if (!skb) {
- 		page_pool_recycle_direct(rxr->page_pool, page);
- 		return NULL;
-@@ -1189,7 +1190,7 @@ static struct sk_buff *bnxt_rx_page_skb(struct bnxt *bp,
- 		return NULL;
- 	}
- 	dma_addr -= bp->rx_dma_offset;
--	dma_sync_single_for_cpu(&bp->pdev->dev, dma_addr, BNXT_RX_PAGE_SIZE,
-+	dma_sync_single_for_cpu(&bp->pdev->dev, dma_addr, rxr->rx_page_size,
- 				bp->rx_dir);
- 
- 	if (unlikely(!payload))
-@@ -1203,7 +1204,7 @@ static struct sk_buff *bnxt_rx_page_skb(struct bnxt *bp,
- 
- 	skb_mark_for_recycle(skb);
- 	off = (void *)data_ptr - page_address(page);
--	skb_add_rx_frag(skb, 0, page, off, len, BNXT_RX_PAGE_SIZE);
-+	skb_add_rx_frag(skb, 0, page, off, len, rxr->rx_page_size);
- 	memcpy(skb->data - NET_IP_ALIGN, data_ptr - NET_IP_ALIGN,
- 	       payload + NET_IP_ALIGN);
- 
-@@ -1288,7 +1289,7 @@ static u32 __bnxt_rx_agg_netmems(struct bnxt *bp,
- 		if (skb) {
- 			skb_add_rx_frag_netmem(skb, i, cons_rx_buf->netmem,
- 					       cons_rx_buf->offset,
--					       frag_len, BNXT_RX_PAGE_SIZE);
-+					       frag_len, rxr->rx_page_size);
- 		} else {
- 			skb_frag_t *frag = &shinfo->frags[i];
- 
-@@ -1313,7 +1314,7 @@ static u32 __bnxt_rx_agg_netmems(struct bnxt *bp,
- 			if (skb) {
- 				skb->len -= frag_len;
- 				skb->data_len -= frag_len;
--				skb->truesize -= BNXT_RX_PAGE_SIZE;
-+				skb->truesize -= rxr->rx_page_size;
- 			}
- 
- 			--shinfo->nr_frags;
-@@ -1328,7 +1329,7 @@ static u32 __bnxt_rx_agg_netmems(struct bnxt *bp,
- 		}
- 
- 		page_pool_dma_sync_netmem_for_cpu(rxr->page_pool, netmem, 0,
--						  BNXT_RX_PAGE_SIZE);
-+						  rxr->rx_page_size);
- 
- 		total_frag_len += frag_len;
- 		prod = NEXT_RX_AGG(prod);
-@@ -2290,8 +2291,7 @@ static int bnxt_rx_pkt(struct bnxt *bp, struct bnxt_cp_ring_info *cpr,
- 			if (!skb)
- 				goto oom_next_rx;
- 		} else {
--			skb = bnxt_xdp_build_skb(bp, skb, agg_bufs,
--						 rxr->page_pool, &xdp);
-+			skb = bnxt_xdp_build_skb(bp, skb, agg_bufs, rxr, &xdp);
- 			if (!skb) {
- 				/* we should be able to free the old skb here */
- 				bnxt_xdp_buff_frags_free(rxr, &xdp);
-@@ -3837,11 +3837,13 @@ static int bnxt_alloc_rx_page_pool(struct bnxt *bp,
- 	pp.pool_size = bp->rx_agg_ring_size / agg_size_fac;
- 	if (BNXT_RX_PAGE_MODE(bp))
- 		pp.pool_size += bp->rx_ring_size / rx_size_fac;
-+
-+	pp.order = get_order(rxr->rx_page_size);
- 	pp.nid = numa_node;
- 	pp.netdev = bp->dev;
- 	pp.dev = &bp->pdev->dev;
- 	pp.dma_dir = bp->rx_dir;
--	pp.max_len = PAGE_SIZE;
-+	pp.max_len = PAGE_SIZE << pp.order;
- 	pp.flags = PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV |
- 		   PP_FLAG_ALLOW_UNREADABLE_NETMEM;
- 	pp.queue_idx = rxr->bnapi->index;
-@@ -3852,7 +3854,10 @@ static int bnxt_alloc_rx_page_pool(struct bnxt *bp,
- 	rxr->page_pool = pool;
- 
- 	rxr->need_head_pool = page_pool_is_unreadable(pool);
-+	rxr->need_head_pool |= !!pp.order;
- 	if (bnxt_separate_head_pool(rxr)) {
-+		pp.order = 0;
-+		pp.max_len = PAGE_SIZE;
- 		pp.pool_size = min(bp->rx_ring_size / rx_size_fac, 1024);
- 		pp.flags = PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV;
- 		pool = page_pool_create(&pp);
-@@ -4328,6 +4333,8 @@ static void bnxt_init_ring_struct(struct bnxt *bp)
- 		if (!rxr)
- 			goto skip_rx;
- 
-+		rxr->rx_page_size = BNXT_RX_PAGE_SIZE;
-+
- 		ring = &rxr->rx_ring_struct;
- 		rmem = &ring->ring_mem;
- 		rmem->nr_pages = bp->rx_nr_pages;
-@@ -4487,7 +4494,7 @@ static void bnxt_init_one_rx_agg_ring_rxbd(struct bnxt *bp,
- 	ring = &rxr->rx_agg_ring_struct;
- 	ring->fw_ring_id = INVALID_HW_RING_ID;
- 	if ((bp->flags & BNXT_FLAG_AGG_RINGS)) {
--		type = ((u32)BNXT_RX_PAGE_SIZE << RX_BD_LEN_SHIFT) |
-+		type = ((u32)rxr->rx_page_size << RX_BD_LEN_SHIFT) |
- 			RX_BD_TYPE_RX_AGG_BD;
- 
- 		/* On P7, setting EOP will cause the chip to disable
-@@ -7065,6 +7072,7 @@ static void bnxt_hwrm_ring_grp_free(struct bnxt *bp)
- 
- static void bnxt_set_rx_ring_params_p5(struct bnxt *bp, u32 ring_type,
- 				       struct hwrm_ring_alloc_input *req,
-+				       struct bnxt_rx_ring_info *rxr,
- 				       struct bnxt_ring_struct *ring)
- {
- 	struct bnxt_ring_grp_info *grp_info = &bp->grp_info[ring->grp_idx];
-@@ -7074,7 +7082,7 @@ static void bnxt_set_rx_ring_params_p5(struct bnxt *bp, u32 ring_type,
- 	if (ring_type == HWRM_RING_ALLOC_AGG) {
- 		req->ring_type = RING_ALLOC_REQ_RING_TYPE_RX_AGG;
- 		req->rx_ring_id = cpu_to_le16(grp_info->rx_fw_ring_id);
--		req->rx_buf_size = cpu_to_le16(BNXT_RX_PAGE_SIZE);
-+		req->rx_buf_size = cpu_to_le16(rxr->rx_page_size);
- 		enables |= RING_ALLOC_REQ_ENABLES_RX_RING_ID_VALID;
- 	} else {
- 		req->rx_buf_size = cpu_to_le16(bp->rx_buf_use_size);
-@@ -7088,6 +7096,7 @@ static void bnxt_set_rx_ring_params_p5(struct bnxt *bp, u32 ring_type,
- }
- 
- static int hwrm_ring_alloc_send_msg(struct bnxt *bp,
-+				    struct bnxt_rx_ring_info *rxr,
- 				    struct bnxt_ring_struct *ring,
- 				    u32 ring_type, u32 map_index)
- {
-@@ -7144,7 +7153,8 @@ static int hwrm_ring_alloc_send_msg(struct bnxt *bp,
- 			      cpu_to_le32(bp->rx_ring_mask + 1) :
- 			      cpu_to_le32(bp->rx_agg_ring_mask + 1);
- 		if (bp->flags & BNXT_FLAG_CHIP_P5_PLUS)
--			bnxt_set_rx_ring_params_p5(bp, ring_type, req, ring);
-+			bnxt_set_rx_ring_params_p5(bp, ring_type, req,
-+						   rxr, ring);
- 		break;
- 	case HWRM_RING_ALLOC_CMPL:
- 		req->ring_type = RING_ALLOC_REQ_RING_TYPE_L2_CMPL;
-@@ -7292,7 +7302,7 @@ static int bnxt_hwrm_rx_ring_alloc(struct bnxt *bp,
- 	u32 map_idx = bnapi->index;
- 	int rc;
- 
--	rc = hwrm_ring_alloc_send_msg(bp, ring, type, map_idx);
-+	rc = hwrm_ring_alloc_send_msg(bp, rxr, ring, type, map_idx);
- 	if (rc)
- 		return rc;
- 
-@@ -7312,7 +7322,7 @@ static int bnxt_hwrm_rx_agg_ring_alloc(struct bnxt *bp,
- 	int rc;
- 
- 	map_idx = grp_idx + bp->rx_nr_rings;
--	rc = hwrm_ring_alloc_send_msg(bp, ring, type, map_idx);
-+	rc = hwrm_ring_alloc_send_msg(bp, rxr, ring, type, map_idx);
- 	if (rc)
- 		return rc;
- 
-@@ -7336,7 +7346,7 @@ static int bnxt_hwrm_cp_ring_alloc_p5(struct bnxt *bp,
- 
- 	ring = &cpr->cp_ring_struct;
- 	ring->handle = BNXT_SET_NQ_HDL(cpr);
--	rc = hwrm_ring_alloc_send_msg(bp, ring, type, map_idx);
-+	rc = hwrm_ring_alloc_send_msg(bp, NULL, ring, type, map_idx);
- 	if (rc)
- 		return rc;
- 	bnxt_set_db(bp, &cpr->cp_db, type, map_idx, ring->fw_ring_id);
-@@ -7351,7 +7361,7 @@ static int bnxt_hwrm_tx_ring_alloc(struct bnxt *bp,
- 	const u32 type = HWRM_RING_ALLOC_TX;
- 	int rc;
- 
--	rc = hwrm_ring_alloc_send_msg(bp, ring, type, tx_idx);
-+	rc = hwrm_ring_alloc_send_msg(bp, NULL, ring, type, tx_idx);
- 	if (rc)
- 		return rc;
- 	bnxt_set_db(bp, &txr->tx_db, type, tx_idx, ring->fw_ring_id);
-@@ -7377,7 +7387,7 @@ static int bnxt_hwrm_ring_alloc(struct bnxt *bp)
- 
- 		vector = bp->irq_tbl[map_idx].vector;
- 		disable_irq_nosync(vector);
--		rc = hwrm_ring_alloc_send_msg(bp, ring, type, map_idx);
-+		rc = hwrm_ring_alloc_send_msg(bp, NULL, ring, type, map_idx);
- 		if (rc) {
- 			enable_irq(vector);
- 			goto err_out;
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.h b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-index f88e7769a838..9eaef6d7c150 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-@@ -1105,6 +1105,7 @@ struct bnxt_rx_ring_info {
- 
- 	unsigned long		*rx_agg_bmap;
- 	u16			rx_agg_bmap_size;
-+	u32			rx_page_size;
- 	bool                    need_head_pool;
- 
- 	dma_addr_t		rx_desc_mapping[MAX_RX_PAGES];
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-index c94a391b1ba5..85cbeb35681c 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-@@ -183,7 +183,7 @@ void bnxt_xdp_buff_init(struct bnxt *bp, struct bnxt_rx_ring_info *rxr,
- 			u16 cons, u8 *data_ptr, unsigned int len,
- 			struct xdp_buff *xdp)
- {
--	u32 buflen = BNXT_RX_PAGE_SIZE;
-+	u32 buflen = rxr->rx_page_size;
- 	struct bnxt_sw_rx_bd *rx_buf;
- 	struct pci_dev *pdev;
- 	dma_addr_t mapping;
-@@ -460,7 +460,7 @@ int bnxt_xdp(struct net_device *dev, struct netdev_bpf *xdp)
- 
- struct sk_buff *
- bnxt_xdp_build_skb(struct bnxt *bp, struct sk_buff *skb, u8 num_frags,
--		   struct page_pool *pool, struct xdp_buff *xdp)
-+		   struct bnxt_rx_ring_info *rxr, struct xdp_buff *xdp)
- {
- 	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
- 
-@@ -468,7 +468,7 @@ bnxt_xdp_build_skb(struct bnxt *bp, struct sk_buff *skb, u8 num_frags,
- 		return NULL;
- 
- 	xdp_update_skb_frags_info(skb, num_frags, sinfo->xdp_frags_size,
--				  BNXT_RX_PAGE_SIZE * num_frags,
-+				  rxr->rx_page_size * num_frags,
- 				  xdp_buff_get_skb_flags(xdp));
- 	return skb;
- }
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.h b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.h
-index 220285e190fc..8933a0dec09a 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.h
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.h
-@@ -32,6 +32,6 @@ void bnxt_xdp_buff_init(struct bnxt *bp, struct bnxt_rx_ring_info *rxr,
- void bnxt_xdp_buff_frags_free(struct bnxt_rx_ring_info *rxr,
- 			      struct xdp_buff *xdp);
- struct sk_buff *bnxt_xdp_build_skb(struct bnxt *bp, struct sk_buff *skb,
--				   u8 num_frags, struct page_pool *pool,
-+				   u8 num_frags, struct bnxt_rx_ring_info *rxr,
- 				   struct xdp_buff *xdp);
- #endif
--- 
-2.52.0
+> -----Original Message-----
+> From: Jakub Kicinski <kuba@kernel.org>
+> Sent: Wednesday, January 14, 2026 9:55 PM
+> To: Haiyang Zhang <haiyangz@microsoft.com>
+> Cc: Haiyang Zhang <haiyangz@linux.microsoft.com>; linux-
+> hyperv@vger.kernel.org; netdev@vger.kernel.org; KY Srinivasan
+> <kys@microsoft.com>; Wei Liu <wei.liu@kernel.org>; Dexuan Cui
+> <DECUI@microsoft.com>; Long Li <longli@microsoft.com>; Andrew Lunn
+> <andrew+netdev@lunn.ch>; David S. Miller <davem@davemloft.net>; Eric
+> Dumazet <edumazet@google.com>; Paolo Abeni <pabeni@redhat.com>; Konstanti=
+n
+> Taranov <kotaranov@microsoft.com>; Simon Horman <horms@kernel.org>; Erni
+> Sri Satya Vennela <ernis@linux.microsoft.com>; Shradha Gupta
+> <shradhagupta@linux.microsoft.com>; Saurabh Sengar
+> <ssengar@linux.microsoft.com>; Aditya Garg
+> <gargaditya@linux.microsoft.com>; Dipayaan Roy
+> <dipayanroy@linux.microsoft.com>; Shiraz Saleem
+> <shirazsaleem@microsoft.com>; linux-kernel@vger.kernel.org; linux-
+> rdma@vger.kernel.org; Paul Rosswurm <paulros@microsoft.com>
+> Subject: Re: [EXTERNAL] Re: [PATCH V2,net-next, 1/2] net: mana: Add
+> support for coalesced RX packets on CQE
+>=20
+> On Wed, 14 Jan 2026 18:27:50 +0000 Haiyang Zhang wrote:
+> > > > And, the coalescing can add up to 2 microseconds into one-way
+> latency.
+> > >
+> > > I am asking you how the _device_ (hypervisor?) decides when to
+> coalesce
+> > > and when to send a partial CQE (<4 packets in 4 pkt CQE). You are
+> using
+> > > the coalescing uAPI, so I'm trying to make sure this is the correct
+> API.
+> > > CQE configuration can also be done via ringparam.
+> >
+> > When coalescing is enabled, the device waits for packets which can
+> > have the CQE coalesced with previous packet(s). That coalescing process
+> > is finished (and a CQE written to the appropriate CQ) when the CQE is
+> > filled with 4 pkts, or time expired, or other device specific logic is
+> > satisfied.
+>=20
+> See, what I'm afraid is happening here is that you are enabling
+> completion coalescing (how long the device keeps the CQE pending).
+> Which is _not_ what rx_max_coalesced_frames controls for most NICs.
+> For most NICs rx_max_coalesced_frames controls IRQ generation logic.
+>=20
+> The NIC first buffers up CQEs for typically single digit usecs, and
+> then once CQE timer exipred and writeback happened it starts an IRQ
+> coalescing timer. Once the IRQ coalescing timer expires IRQ is
+> triggered, which schedules NAPI. (broad strokes, obviously many
+> differences and optimizations exist)
+>=20
+> Is my guess correct? Are you controlling CQE coalescing>
+>=20
+> Can you control the timeout instead of the frame count?
+
+Our NIC's timeout value cannot be controlled by driver. Also, the
+timeout may be changed in future NIC HW.
+
+So, I use the ethtool/rx-frames, which is either 1 or 4 on our
+NIC, to switch the CQE coalescing feature on/off.
+
+Thanks,
+- Haiyang
 
 
