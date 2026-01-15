@@ -1,77 +1,77 @@
-Return-Path: <linux-rdma+bounces-15595-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15596-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 958F2D267EA
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 18:34:42 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72D56D264CF
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 18:21:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B4C4030C0AB1
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 17:12:31 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 40028305911A
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 17:12:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 173F93BC4FE;
-	Thu, 15 Jan 2026 17:12:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6675A3BFE49;
+	Thu, 15 Jan 2026 17:12:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BpSyJ0Nx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BSozIh62"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BCEE3B8BAE
-	for <linux-rdma@vger.kernel.org>; Thu, 15 Jan 2026 17:12:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C7323BFE29
+	for <linux-rdma@vger.kernel.org>; Thu, 15 Jan 2026 17:12:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768497147; cv=none; b=jxKt41EA77YXLs06rYqKsT4QEkPAI8arllyvH+nPns/McODRKAh80krTK2+EWaMFrJBomJt/h9IGpVyrkKq8pDi2BbXZv4l6gWroeyWMaFUou4+EwKIF7E6mxWXDNJszzakF2+gRcpnSKB3kwpXTTP6dSjlNOKMHVxiNgXqUr0E=
+	t=1768497151; cv=none; b=suXw3e+wjoSomXe5qTiQQ4eUh/DAr6uTPyHQ1rRyU7BEJv5LtT0UpWvc490Dfipd+vTDYIN1ypWIRUmBA5FOyI6CKEN/uxoTrOJ+jJqKza4fcRyMJmUwbzgZNvy+KqH0HpQRU3UBVQeI+PAuMP4C7kaK0eLRT+PSho60ih4Bg04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768497147; c=relaxed/simple;
-	bh=LSh5hLuiJCxDRwJ+BQ+Xc7tCZE16QA/b770rYhc+vp8=;
+	s=arc-20240116; t=1768497151; c=relaxed/simple;
+	bh=42xckaESf3j1/c9BstDJDSEUMXBt7iNWBkDF/+HLvPg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LIzhuhtSdRopWETcNydF4DT0Ks1eCAu2i7KVmPVqjoSmtC189Oa4wXjC5fa92C6yYQytVpN8ryiPP/7xOY8/VnkJIWA3JS5N8CLz1d73h5fhzbWwJdZP2ClJzjTXwGeIaLJ27r57CZUvXPn+4RgXzmKLCeLj58NeLT6A2lVPXMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BpSyJ0Nx; arc=none smtp.client-ip=209.85.128.46
+	 MIME-Version; b=K9EL1eMAGRM/nRe3yukQ8N/Wg6CwOOdVd0lhpdZQmNyxc4a9KYrTg/eQZiMFbQjtwVYFzTHdgJaVewIb1OMMDST6wKFuV6AQLVptpaMPU9E+4EpBU62cgZmCcNHUdj7Iv5CVFdKpYbPKQ9BAoDmLcif8w6cxOc8e+HgsU2r65LU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BSozIh62; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-47ff94b46afso7862745e9.1
-        for <linux-rdma@vger.kernel.org>; Thu, 15 Jan 2026 09:12:25 -0800 (PST)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4801d24d91bso4256805e9.2
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Jan 2026 09:12:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768497144; x=1769101944; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768497147; x=1769101947; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BopLoWIhKj7xpDJExutQghL/d96/x+rVfP3p1ohtywE=;
-        b=BpSyJ0NxtpRPZ6abZNisiXXoEYNXasXggd9O3OKVrGnHSKsViorbq/MWM0H+4+vazG
-         wTWa6BJKsVkIsYVo4yw5n1V36rolO6khYXu1on9DSEl6H8AJa8Y7Z4y+Hr7EnSyAbAJL
-         DtY/5SZojfLmswHJCdLMrYeVy16h5gtGQFlxzRL2Zfsd2Gh15s7MO/hW57pZ5JtvIdbB
-         QsYiSaDzlLIQW0Vbt6yqGYOi1Tutq0LhPaSWhlPyAOp9WghftsjiYCqKgjEsBWG0k6oB
-         BbZEJGFMCKC46d5tVENMJ26vXugK9oIXgKOBZgW8fSv6KqwRyAHOkGrBH/EbNo6QQyaj
-         5NMg==
+        bh=ZzXTN5GPRXX9JktaEoAXzWi3s9VynOdluwYCuvOxVM0=;
+        b=BSozIh62kZ+spfzWRT6eykR7HFH56OVNcsqeNDIdtpTNdnNiv+AwKekWffGvnKsAHV
+         qggO678RCgaNXagQijZLaJXcvjglgpgq7Y1jMFOGQSQzPT5sc9PVXZiDbYtyzMM5fo0C
+         tecW0jtMBzVUmgNZ0kilpejk/Kf79dYApfsz8p6CxEj4vEGyUVtiai/B5KC75TqtFEVI
+         /dKyl/tXjKdiYRbYWWDIl17LI6eOPiqEV/sWWFlCHF1LO9Z8vSXyqNWG+ujyPfDeEZhL
+         NA+I+XmH1rfLO+qBltZ3oEy4pCx2t6yk2SBEJ3P7jR6Vv7kzjv2Imae9gW/NU3Wlvuyi
+         3CGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768497144; x=1769101944;
+        d=1e100.net; s=20230601; t=1768497147; x=1769101947;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=BopLoWIhKj7xpDJExutQghL/d96/x+rVfP3p1ohtywE=;
-        b=F/T7bpaxCU5rYnajPVpjNyGDluiexJeU4qFhZlE2moRZEeKh6fOa0AjxEylShRpSYv
-         YE38HudZ0K8dVci8lUaHJfiKhypPGNN5KSV0q9f93W3O0oWZWVxVkSFzifiVzRPUwW2I
-         Mvs1Bd538p2g6fHbjfhKTpabu6HcetUmQF/grkt6TnI5Yc70BxrJtEleRcGTXRl4/tNL
-         Ej7GeLAkdnPBeKTQLOdIKpj0xuoGkbPiFLO6E/S5WoyOhnz1VuuEuKEc1EJgGrOmsKOu
-         5IE/VBEsODgJic6l7hRoc27Mf0OWcIJAd3KRwqSxU5LML+Us8q8BqZhSsDGrup2f+C0x
-         1iUA==
-X-Forwarded-Encrypted: i=1; AJvYcCWVnisiBJgzkAFS54bcEnmLE1XBAJgV2jzejRGu+AT43aom0yk8qvLzqIcrw5xK8Uhy3y1KJZ7WiEZV@vger.kernel.org
-X-Gm-Message-State: AOJu0YywdV91hjvwc1wUZteiOz1hTShSSxTz7EOH4x6CN6thDTtMYwGe
-	9FTDNKlBIWUtpCMahO59zWTuz3Lye2CW4gbWuNtpRxm0/+t+y21resy9
-X-Gm-Gg: AY/fxX49MOIkv7fnthOWb7DVzF9EU5C6uvGaYp4tf+iZvML1glMjDCl+sjHcbUEmSJF
-	yd5U0+JF2sgvnU/WWcMHWTsFOwNgTGCGPIMo5N0hndegJJhS5c9AkNs9n8sQ2nItdnKenPs1bGO
-	wHWMYj763XYHg+uB3MjxtB9eAMQ/BEd3yHWrdV2lAkFoXJFDHQ5lT7HA4qouB7sIvmQdz3smloZ
-	huxsRJeqFScYxiO6YmYbjKZDnk18viaSy4UhMmf3O5OORA+M/jYXH26RbwkVc9x9oDjTkutXgiY
-	qm1DkCTrMwkFUp3quyQGMJGfTrGUOIgaSFY6necLYe4l66ztG4pQ8dbiCoKqBgVC/H/LMox2llu
-	rJIiofy41DH0ePYPnOQ9epqrZ593bsJMmSshgnfFvvR3abE8E/ikwdMEAQFzTfSqT3evIasFNY1
-	ftOvvcoDpvbS6cLpV59A8b20i+oj2p5omF0qkBlvCkieicz7aSXU46JpG5IjBmsc1GC8jv+y9vL
-	+c4nqoQnWgqjlBOFg==
-X-Received: by 2002:a05:600d:640f:20b0:47d:6c36:a125 with SMTP id 5b1f17b1804b1-4801e7d2a3cmr1460515e9.17.1768497144306;
-        Thu, 15 Jan 2026 09:12:24 -0800 (PST)
+        bh=ZzXTN5GPRXX9JktaEoAXzWi3s9VynOdluwYCuvOxVM0=;
+        b=hTuv6mg6cXQlRpMIaWS1d6C62FXnzzh14b7rlL3wTLcpm8guJSRAlHK/volI+0lkJy
+         E5fbOv1+y7AAUP0ZfiOCzz+WPfbTZf2QVxzRaNFP52OxeFLadGXNQFvgFDZd9Dnpk4HD
+         wPPMK4BUJqsthejOcv+lE/5oz34Tfx2b+80zLJwNSg3jcIGzh2hGRpFDwlowbR/4ysse
+         YLUU9Ayhnnhzwi+DTm5xb6KY+IXmYlEbSBq4Sp3C0iFJinPJFx0PG8nn2VZiyODX3yq7
+         mIYOD99LjqitSQGlA0ezFW5YFlvy92/NaSDa39rlR3KBAshseh7K1f15/Jo/J0ymKpOI
+         toww==
+X-Forwarded-Encrypted: i=1; AJvYcCWbY9ebiSYQW+M50Fe8ajprlgPOhc9YnT6TerCz+O89tqNAuRY01d4SHzYSwfc5zaorbsepmJu7A9oy@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxkr4tgew3hWcTqEul8m3sb29gCPFVT3KbXK2CZYxwVBcjEI9AU
+	52UyV2al2OLRdL+Zu6E9ekk/LiYc6cGF/eY1sqonboYdguqvfZHJsEp2
+X-Gm-Gg: AY/fxX7oTNyD9zsox+pkpSVo0xQmnDwDExz+n8ctQzgQ2jeUHjuB2b3p+RaU+BhARHO
+	cXm3wX1+u1/oLikBXp8bHBsNK+dlurW3f94hxi5GTOJwmUnMlJSYavuNY1MJMsL3zu2ljsswtfl
+	hj5kADRp2jTwK1gV9l7GrIbX++OsXnK2yxjbJIED3jr1mSF02P70SdWuSQ36yFp/zf58ErBqqfY
+	MPddH4kNOmi13uQoxmcJJT9mBgDeJpr2AvxYBnl0iQLXX7+3vZOL6po7kfamd3gQKplHSnAdAAz
+	hhRYmttXwoUoD1C3kqMAe4ENJFnWPsAe9xGjZL2HpffXowle5BQZzRTc4Kuq6/VBkV8RHBROQsN
+	3ZIlzfQJ1v2JCEbeLPLj109SxamkMScLc+G8DsoNJzcsNYeORFXQIN0LmdcMizFuVVXKY3YLy+S
+	IylHIfFiAUgHiC2BrND83ciSXbKCpV+XIGya17Eb8jtM03PfMlkV7/qHT/PiC4T7qhqHS/9NS5F
+	IBS3AF7coDmdwZu5l0OdGEbrgrL
+X-Received: by 2002:a05:600c:3504:b0:47a:935f:61a0 with SMTP id 5b1f17b1804b1-4801e2a95fcmr6718835e9.0.1768497146951;
+        Thu, 15 Jan 2026 09:12:26 -0800 (PST)
 Received: from 127.mynet ([2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47f429071a2sm54741645e9.11.2026.01.15.09.12.22
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47f429071a2sm54741645e9.11.2026.01.15.09.12.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Jan 2026 09:12:23 -0800 (PST)
+        Thu, 15 Jan 2026 09:12:25 -0800 (PST)
 From: Pavel Begunkov <asml.silence@gmail.com>
 To: netdev@vger.kernel.org
 Cc: "David S . Miller" <davem@davemloft.net>,
@@ -125,9 +125,9 @@ Cc: "David S . Miller" <davem@davemloft.net>,
 	dtatulea@nvidia.com,
 	kernel-team@meta.com,
 	io-uring@vger.kernel.org
-Subject: [PATCH net-next v9 1/9] net: memzero mp params when closing a queue
-Date: Thu, 15 Jan 2026 17:11:54 +0000
-Message-ID: <7073bb4b696f5593c1f2e0b9451f0120ca624182.1768493907.git.asml.silence@gmail.com>
+Subject: [PATCH net-next v9 2/9] net: reduce indent of struct netdev_queue_mgmt_ops members
+Date: Thu, 15 Jan 2026 17:11:55 +0000
+Message-ID: <92d76cf96dcbc3c58daa84dbbf71a3ca8d9de53d.1768493907.git.asml.silence@gmail.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <cover.1768493907.git.asml.silence@gmail.com>
 References: <cover.1768493907.git.asml.silence@gmail.com>
@@ -139,43 +139,58 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Instead of resetting memory provider parameters one by one in
-__net_mp_{open,close}_rxq, memzero the entire structure. It'll be used
-to extend the structure.
+From: Jakub Kicinski <kuba@kernel.org>
 
+Trivial change, reduce the indent. I think the original is copied
+from real NDOs. It's unnecessarily deep, makes passing struct args
+problematic.
+
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reviewed-by: Mina Almasry <almasrymina@google.com>
 Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
 ---
- net/core/netdev_rx_queue.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ include/net/netdev_queues.h | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/net/core/netdev_rx_queue.c b/net/core/netdev_rx_queue.c
-index c7d9341b7630..a0083f176a9c 100644
---- a/net/core/netdev_rx_queue.c
-+++ b/net/core/netdev_rx_queue.c
-@@ -139,10 +139,9 @@ int __net_mp_open_rxq(struct net_device *dev, unsigned int rxq_idx,
+diff --git a/include/net/netdev_queues.h b/include/net/netdev_queues.h
+index cd00e0406cf4..541e7d9853b1 100644
+--- a/include/net/netdev_queues.h
++++ b/include/net/netdev_queues.h
+@@ -135,20 +135,20 @@ void netdev_stat_queue_sum(struct net_device *netdev,
+  * be called for an interface which is open.
+  */
+ struct netdev_queue_mgmt_ops {
+-	size_t			ndo_queue_mem_size;
+-	int			(*ndo_queue_mem_alloc)(struct net_device *dev,
+-						       void *per_queue_mem,
+-						       int idx);
+-	void			(*ndo_queue_mem_free)(struct net_device *dev,
+-						      void *per_queue_mem);
+-	int			(*ndo_queue_start)(struct net_device *dev,
+-						   void *per_queue_mem,
+-						   int idx);
+-	int			(*ndo_queue_stop)(struct net_device *dev,
+-						  void *per_queue_mem,
+-						  int idx);
+-	struct device *		(*ndo_queue_get_dma_dev)(struct net_device *dev,
+-							 int idx);
++	size_t	ndo_queue_mem_size;
++	int	(*ndo_queue_mem_alloc)(struct net_device *dev,
++				       void *per_queue_mem,
++				       int idx);
++	void	(*ndo_queue_mem_free)(struct net_device *dev,
++				      void *per_queue_mem);
++	int	(*ndo_queue_start)(struct net_device *dev,
++				   void *per_queue_mem,
++				   int idx);
++	int	(*ndo_queue_stop)(struct net_device *dev,
++				  void *per_queue_mem,
++				  int idx);
++	struct device *	(*ndo_queue_get_dma_dev)(struct net_device *dev,
++						 int idx);
+ };
  
- 	rxq->mp_params = *p;
- 	ret = netdev_rx_queue_restart(dev, rxq_idx);
--	if (ret) {
--		rxq->mp_params.mp_ops = NULL;
--		rxq->mp_params.mp_priv = NULL;
--	}
-+	if (ret)
-+		memset(&rxq->mp_params, 0, sizeof(rxq->mp_params));
-+
- 	return ret;
- }
- 
-@@ -179,8 +178,7 @@ void __net_mp_close_rxq(struct net_device *dev, unsigned int ifq_idx,
- 			 rxq->mp_params.mp_priv != old_p->mp_priv))
- 		return;
- 
--	rxq->mp_params.mp_ops = NULL;
--	rxq->mp_params.mp_priv = NULL;
-+	memset(&rxq->mp_params, 0, sizeof(rxq->mp_params));
- 	err = netdev_rx_queue_restart(dev, ifq_idx);
- 	WARN_ON(err && err != -ENETDOWN);
- }
+ bool netif_rxq_has_unreadable_mp(struct net_device *dev, int idx);
 -- 
 2.52.0
 
