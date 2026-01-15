@@ -1,152 +1,108 @@
-Return-Path: <linux-rdma+bounces-15568-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15569-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07299D2213A
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 03:01:44 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B0A9D222BF
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 03:42:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 362DE301E9BE
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 02:01:42 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0D3FB304D0A3
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 02:42:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88DCD218ACC;
-	Thu, 15 Jan 2026 02:01:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c9z8iLqp"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 690AE27CB04;
+	Thu, 15 Jan 2026 02:42:01 +0000 (UTC)
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from canpmsgout08.his.huawei.com (canpmsgout08.his.huawei.com [113.46.200.223])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B49919E96D
-	for <linux-rdma@vger.kernel.org>; Thu, 15 Jan 2026 02:01:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C12B27B4F5
+	for <linux-rdma@vger.kernel.org>; Thu, 15 Jan 2026 02:41:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.223
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768442498; cv=none; b=u5Qk1YVwJddBj5SgR8ZIR/HVnZfq6S9bi6dru7N1S/A4Q602JswK9YitBYhuyVuHNxb5mCjYFtmKqVU5AbpPmOEpP/0mATYPvp0bAqHITXhlsn8dlL0Llq0IvrV7vqKaUsGxppsQWYAcJTlmTxGUA0xP6SD8yYoRWAGAwJ1o3NA=
+	t=1768444921; cv=none; b=f7oCeMYNupblxcnKFMPAvJkh4iX/Nif2nbfkao+z2bf3zxi/I7WCW8UzdXuclDRjqeIv+ma4KPaagrt2mkJGbTth4gSor5bji7DhBLMrLPR1A1fuv1yJlpTMbCp9zUoHrDC23T/MfspTl6u4ZPXJhUPGt1lbTsq0HHYaBaO3SUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768442498; c=relaxed/simple;
-	bh=DkVv3ggPA/6N7/ir/fzJJuTkTVceOMxCAOgDYhUF5P0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YPqK+dj/Jg7r2pIXdhLAu+cBuo2ImUyxZHyxHYK0RByTSlSRQo7ZBYaFapDSI7+XK481kwXw+msutDw4PcExIwkE35v3W3kPJBE3kWPzd/o00ogs9QGR0vMdoq5aSjYbsBtaHENiDeww02cuhmiyGthm0pkH2q/iP7sXwPLqZDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c9z8iLqp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9A6CC19424
-	for <linux-rdma@vger.kernel.org>; Thu, 15 Jan 2026 02:01:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768442497;
-	bh=DkVv3ggPA/6N7/ir/fzJJuTkTVceOMxCAOgDYhUF5P0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=c9z8iLqpwIdQWJ8QIKm6ytf8a4iHzOqfpkkmFjUega5KKE04PLbDVehATuR0KatG+
-	 jcAYhfOW3Hcbg0r0pdTpeHGofQ6qD2zQxvp+OCGoYOcqwJeePnxOUMvLTDODGcBHpl
-	 45EPtEFMJiZ3on2bG83fAi1aBOG1A2uommo7/elCT593Ip12Ls5/iA6WCRXMDQhyvj
-	 ptPqWyvyU9UdOY9jeE4xgt3cmFtqaPss6PcZYuI5gLepYSLNZVsFHIQo3jteOGomJl
-	 Jk0TxiURwuh8xf2jBiIYPVEykZ4sTC7aBXOVZ3uCOEzUiDzk42ekDIQ7FUiFzFXqQt
-	 Ajh4ewB1MJNXA==
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b87003e998bso257062966b.1
-        for <linux-rdma@vger.kernel.org>; Wed, 14 Jan 2026 18:01:37 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV6YeN8Xj2qiKyERCIu468u4Ikm0X41MUtodqSF1iYfgLfKd4w3Vq6iArXTFJwCYSzvlPb4usUuWE09@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxyg7u1QUd+jCdf2NibzHyu3wK6CzdwkeSnl6xc2l2jjowLS8bK
-	rbF3GZbiSwHEEcWF4wfzvM7QNU45IZLvUsxKhDq7Xyxwqmqn1CMV3SjdbOZSQ65LZ6Iaa5DrShk
-	EohGfI/oz1w+2SitAHj3+y/DgMYdV624=
-X-Received: by 2002:a17:907:96a7:b0:b87:e76:67a5 with SMTP id
- a640c23a62f3a-b8777c1a984mr130471266b.24.1768442496411; Wed, 14 Jan 2026
- 18:01:36 -0800 (PST)
+	s=arc-20240116; t=1768444921; c=relaxed/simple;
+	bh=zZM+rj4WNDPrXLsq38eBFqN30mH86iyz/7TYtIWdy2c=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HFQJxZBUXpWe9J83ezGaUvnOCwHzypHwfv26hsFb79HBxb6Tpw/6ZOdfylkL/HVA+0VZ790yKCyqtCLAXJdaTpu3QBO/8W+DZIprq+TZEikSp7DDXl4INGoGAfgrHdrvIFUPjekH7S9Y4weivsepA1QXvM+L21HenjOCbxFuBHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=113.46.200.223
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.163.15])
+	by canpmsgout08.his.huawei.com (SkyGuard) with ESMTPS id 4ds6cB5gsJzmVCW;
+	Thu, 15 Jan 2026 10:38:34 +0800 (CST)
+Received: from kwepemf100018.china.huawei.com (unknown [7.202.181.17])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6CE834056D;
+	Thu, 15 Jan 2026 10:41:55 +0800 (CST)
+Received: from localhost.localdomain (10.50.163.32) by
+ kwepemf100018.china.huawei.com (7.202.181.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.36; Thu, 15 Jan 2026 10:41:54 +0800
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>
+CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<huangjunxian6@hisilicon.com>, <tangchengchang@huawei.com>
+Subject: [PATCH for-next] RDMA/hns: Add 'static' declaration
+Date: Thu, 15 Jan 2026 10:41:54 +0800
+Message-ID: <20260115024154.1825736-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <35eec2e6-bf37-43d6-a2d8-7a939a68021b@samba.org>
- <CAKYAXd9p=7BzmSSKi5n41OKkkw4qrr4cWpWet7rUfC+VT-6h1g@mail.gmail.com>
- <f59e0dc7-e91c-4a13-8d49-fe183c10b6f4@samba.org> <CAKYAXd-MF1j+CkbWakFJK2ov_SfRUXaRuT6jE0uHZoLxTu130Q@mail.gmail.com>
- <CAKYAXd__T=L9aWwOuY7Z8fJgMf404=KQ2dTpNRd3mq9dnYCxRw@mail.gmail.com>
- <86b3c222-d765-4a6c-bb79-915609fa3d27@samba.org> <a3760b26-7458-40a0-ae79-bb94dd0e1d01@samba.org>
- <3c0c9728-6601-41f1-892f-469e83dd7f19@samba.org> <721eb7b1-dea9-4510-8531-05b2c95cb240@samba.org>
- <CAKYAXd-WTsVEyONDmOMbKseyAp29q71KiUPwGDp2L_a53oL0vg@mail.gmail.com>
- <183d92a0-6478-41bb-acb3-ccefd664d62f@samba.org> <ee6873d7-6e47-4d42-9822-cb55b2bfb79e@samba.org>
- <6a248fde-e0cd-489b-a640-d096fb458807@samba.org>
-In-Reply-To: <6a248fde-e0cd-489b-a640-d096fb458807@samba.org>
-From: Namjae Jeon <linkinjeon@kernel.org>
-Date: Thu, 15 Jan 2026 11:01:23 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd-42_fSHBL7iZbuOtYFKqKyhPS-4C+nqbX=-Djq5L6Okg@mail.gmail.com>
-X-Gm-Features: AZwV_QiICHmZTgWfUa8HpPmEG2AIn5JtvyNQUfRqLhCdXNs6jRjKxnX9Ow3akaM
-Message-ID: <CAKYAXd-42_fSHBL7iZbuOtYFKqKyhPS-4C+nqbX=-Djq5L6Okg@mail.gmail.com>
-Subject: Re: Problem with smbdirect rw credits and initiator_depth
-To: Stefan Metzmacher <metze@samba.org>
-Cc: Tom Talpey <tom@talpey.com>, 
-	"linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>, 
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: kwepems500001.china.huawei.com (7.221.188.70) To
+ kwepemf100018.china.huawei.com (7.202.181.17)
 
-On Thu, Jan 15, 2026 at 3:13=E2=80=AFAM Stefan Metzmacher <metze@samba.org>=
- wrote:
->
-> Am 15.12.25 um 21:17 schrieb Stefan Metzmacher:
-> > Am 14.12.25 um 23:56 schrieb Stefan Metzmacher:
-> >> Am 13.12.25 um 03:14 schrieb Namjae Jeon:
-> >>>> I've put these changes a long with rw credit fixes into my
-> >>>> for-6.18/ksmbd-smbdirect-regression-v4 branch, are you able to
-> >>>> test this?
-> >>> Problems still occur. See:
-> >>
-> >> :-( Would you be able to use rxe and cake a network capture?
-> >>
-> >> Using test files with all zeros, e.g.
-> >> dd if=3D/dev/zero of=3D/tmp/4096MBzeros-sparse.dat seek=3D4096MB bs=3D=
-1 count=3D1
-> >> would allow gzip --best on the capture file to compress well...
-> >
-> > I think I found something that explains it and
-> > I was able to reproduce and what I have in mind.
-> >
-> > We increment recv_io.posted.count after ib_post_recv()
-> >
-> > And manage_credits_prior_sending() uses
-> >
-> > new_credits =3D recv_io.posted.count - recv_io.credits.count
-> >
-> > But there is a race between the hardware receiving a message
-> > and recv_done being called in order to decrement recv_io.posted.count
-> > again. During that race manage_credits_prior_sending() might grant
-> > too much credits.
-> >
-> > Please test my for-6.18/ksmbd-smbdirect-regression-v5 branch,
-> > I haven't tested this branch yet, I'm running out of time
-> > for the day.
-> >
-> > But I tested it with smbclient and having a similar
-> > logic in fs/smb/common/smbdirect/smbdirect_connection.c
->
-> I was able to reproduce the problem and the fix I created
-> for-6.18/ksmbd-smbdirect-regression-v5 was not correct.
->
-> I needed to use
->
-> available =3D atomic_xchg(&sc->recv_io.credits.available, 0);
->
-> instead of
->
-> available =3D atomic_read(&sc->recv_io.credits.available);
-> atomic_sub(new_credits, &sc->recv_io.credits.available);
->
-> This following branch works for me:
-> for-6.18/ksmbd-smbdirect-regression-v7
-> and with the fixes again master this should also work:
-> for-6.19/ksmbd-smbdirect-regression-v1
->
-> I'll post real patches tomorrow.
->
-> Please check.
-Okay, I will test it with two branches.
-I'll try it too, but I recommend running frametest for performance
-difference and stress testing.
+Fix the following warnings:
 
-https://support.dvsus.com/hc/en-us/articles/212925466-How-to-use-frametest
+>> drivers/infiniband/hw/hns/hns_roce_hw_v2.c:964:6: warning: no previous prototype for function 'hns_roce_v2_drain_rq' [-Wmissing-prototypes]
+   void hns_roce_v2_drain_rq(struct ib_qp *ibqp)
+        ^
+   drivers/infiniband/hw/hns/hns_roce_hw_v2.c:964:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   void hns_roce_v2_drain_rq(struct ib_qp *ibqp)
+   ^
+   static
+>> drivers/infiniband/hw/hns/hns_roce_hw_v2.c:1001:6: warning: no previous prototype for function 'hns_roce_v2_drain_sq' [-Wmissing-prototypes]
+   void hns_roce_v2_drain_sq(struct ib_qp *ibqp)
+        ^
+   drivers/infiniband/hw/hns/hns_roce_hw_v2.c:1001:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   void hns_roce_v2_drain_sq(struct ib_qp *ibqp)
+   ^
+   static
 
-ex) frametest.exe -w 4k -t 20 -n 2000
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202601150334.jRDP5xSy-lkp@intel.com/
+Fixes: cfa74ad31baa ("RDMA/hns: Support drain SQ and RQ")
+Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks.
->
-> Thanks!
-> metze
->
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 5233546ff330..5d0a8662249d 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -961,7 +961,7 @@ static void handle_drain_completion(struct ib_cq *ibcq,
+ 		wait_for_completion(&drain->done);
+ }
+ 
+-void hns_roce_v2_drain_rq(struct ib_qp *ibqp)
++static void hns_roce_v2_drain_rq(struct ib_qp *ibqp)
+ {
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
+ 	struct ib_qp_attr attr = { .qp_state = IB_QPS_ERR };
+@@ -998,7 +998,7 @@ void hns_roce_v2_drain_rq(struct ib_qp *ibqp)
+ 	handle_drain_completion(cq, &rdrain, hr_dev);
+ }
+ 
+-void hns_roce_v2_drain_sq(struct ib_qp *ibqp)
++static void hns_roce_v2_drain_sq(struct ib_qp *ibqp)
+ {
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
+ 	struct ib_qp_attr attr = { .qp_state = IB_QPS_ERR };
+-- 
+2.33.0
+
 
