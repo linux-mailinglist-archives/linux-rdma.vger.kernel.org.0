@@ -1,142 +1,259 @@
-Return-Path: <linux-rdma+bounces-15603-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15604-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11A05D27BC1
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 19:45:15 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25AAAD27EED
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 20:06:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D0788320E5E2
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 18:31:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 287323012262
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 18:58:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C09093BFE37;
-	Thu, 15 Jan 2026 18:30:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4200A3D2FF5;
+	Thu, 15 Jan 2026 18:58:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ASQojbZP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AfhvQpp7"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80CE22D948A;
-	Thu, 15 Jan 2026 18:30:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 945533D1CCF
+	for <linux-rdma@vger.kernel.org>; Thu, 15 Jan 2026 18:58:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768501812; cv=none; b=fkcLXhuEr5QHHQaQeP6hPtYJUvt7C2wVEUO+GgIov9jV98MMvSYehbk9JR4IxZS7fJQwEe1/5nCq3vib1yKwfzklNg5ijstUQsGtQnuPFXqy4c3FKMC67QVRnACueJZHsCQhkdVH7q/4w8B7XFtfjBGUdXl3bwFFy6OAgYhaEVQ=
+	t=1768503487; cv=none; b=ERyNCxybUO36KSukG5Od9jQ64RHCR9MeNzA28GstZYBqHWBLUItrH8dcvqX9xlyQsiuzJF8qbPHtzAFblj8xjlNhIepTU0SEKWS5tcrBq6i9NY3lrGjzB8aJJTsjaMNCTeSebloFyKPbd10vJR+q+qLZA9OpzEYFYzFXjE009BA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768501812; c=relaxed/simple;
-	bh=D/cyD+UjPBaw5gPSvQNi/7c1SdeoE2VveN1I1UXAVBo=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=STIPQ3vSXs+t8boWfmSB+vUKz3RKqwRYuJ16ELOpWfPvWCKqGhWn52B/Lbjo169jGFJvkiYvu4q/bcvU2uqRrKsBZa+LbuFdGuXTfJVFsObCrqAoa76uj2tsf/bCS3hurLmCGelva2GnPpKS+nVdecRm02NxUdUyFsf+R9oCYUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ASQojbZP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4E04C116D0;
-	Thu, 15 Jan 2026 18:30:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768501812;
-	bh=D/cyD+UjPBaw5gPSvQNi/7c1SdeoE2VveN1I1UXAVBo=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=ASQojbZPxfa8rtYN+qckEbufJvSlgPd3rdWRAtno9nCX9LsDJiO46YUIU++xOtNxd
-	 bHri3X7o9gPC24bG6aEgKJwiQMmo4VzbRO0MMmA/5ThIw2lpA23BnZVpY7oeCISJ8a
-	 rLJVzmAoZuzB6XaAa8jhtN89Lq0FO2EBK5VVkuYZbai5EvcCAshkjkWNG6j9c+W4Bm
-	 eHssSsJ7QTHmIXFUSob3aMyvmNHNkJzdSj4ooeTDiODDeMl9KS8kf1Jn32YM/Jrqc8
-	 DiftKDiMyfvTZHAwyU/FzRHQVJDRZhf4sY8q0DtdVX/0dG4jbDP9JAH/vNJ7uF9+Kw
-	 5aiJhN+9eB6nw==
-Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
-	by mailfauth.phl.internal (Postfix) with ESMTP id C3217F4006A;
-	Thu, 15 Jan 2026 13:30:10 -0500 (EST)
-Received: from phl-imap-15 ([10.202.2.104])
-  by phl-compute-10.internal (MEProxy); Thu, 15 Jan 2026 13:30:10 -0500
-X-ME-Sender: <xms:MjJpacDzWE66h8HQ61g_NmEzskrnf1VSLT780nvGM3OrHsXMBp0jAQ>
-    <xme:MjJpaZUcbVftJBHKvRNV1bbg0xvUx0lt33LmJtsKeTuOo1M4jBnh0djk6sfVgRUFP
-    cGPPH_Jjh1ggU_NAtt7sBoZVUgPamY0vWqk0htQjzlGjifpZt883kE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduvdeijeekucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedfvehhuhgt
-    khcunfgvvhgvrhdfuceotggvlheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrh
-    hnpefhffekffeftdfgheeiveekudeuhfdvjedvfedvueduvdegleekgeetgfduhfefleen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegthhhutg
-    hklhgvvhgvrhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudeifeegleel
-    leehledqfedvleekgeegvdefqdgtvghlpeepkhgvrhhnvghlrdhorhhgsehfrghsthhmrg
-    hilhdrtghomhdpnhgspghrtghpthhtohepuddupdhmohguvgepshhmthhpohhuthdprhgt
-    phhtthhopehjlhgrhihtohhnsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlvghonh
-    eskhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgthheslhhsthdruggvpdhrtghpthht
-    ohepjhhgghesnhhvihguihgrrdgtohhmpdhrtghpthhtoheptghhuhgtkhdrlhgvvhgvrh
-    esohhrrggtlhgvrdgtohhmpdhrtghpthhtohepuggrihdrnhhgohesohhrrggtlhgvrdgt
-    ohhmpdhrtghpthhtohepnhgvihhlsgesohifnhhmrghilhdrnhgvthdprhgtphhtthhope
-    hokhhorhhnihgvvhesrhgvughhrghtrdgtohhmpdhrtghpthhtohepthhomhesthgrlhhp
-    vgihrdgtohhm
-X-ME-Proxy: <xmx:MjJpaQuS4neq3Xe55V6KggiZeZTFndTNE4Eoj2xto6SjGrbTIZKhgg>
-    <xmx:MjJpacornZZr2neYxTXK5y_mKqgYUHc9NUAXJeK6ZUkT8R1t_8hlEA>
-    <xmx:MjJpaeeLrJ1yCJ84OP-Zn_YDukDQBwmSK9m1aWOcxaccjmzbZfKFUw>
-    <xmx:MjJpaclUbju8burk9DPlozF_3Zfob0hvh09v5qKNMj3LsXXzDZx7Xg>
-    <xmx:MjJpadbsIBiEXaqQIA4H6CdUTPN7ydLVuTucQ2dWOyR5rMOqKyjnPT_F>
-Feedback-ID: ifa6e4810:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id A2B93780075; Thu, 15 Jan 2026 13:30:10 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1768503487; c=relaxed/simple;
+	bh=DToFpCuHSuhM+DNHpirRAz41A0l+z2tT9QDmqX4hQ4k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hbIrlS/ToIXtBlef04rUk6IYM5AkgDtbTcT3lX4dVDWVi9wzJv3jies/rtHhOXOoj0otYyL47y9meOQg1BIbEE+6mdm0g5vk88/oIfAW3PEGqJ0yW6J10gcM0rVg4bC2nHBDZmlWc9WpABE/+CKjt9L79L1lx1G4aQRIrleBldA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AfhvQpp7; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-38304020185so11173101fa.2
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Jan 2026 10:58:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768503482; x=1769108282; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZL3nD4Mi+r9SwzljwlE9pccItzJ+U5IHWeQeM/fGf6Q=;
+        b=AfhvQpp73Ls7OsPHhn6C3PTSVHgSWDKf+PZWPVvjGK4rpwNH6zWpxWW/aK4rfgGVQo
+         oPc5Cb5PodFIgH+wyI5VrKqROqEzyT1ldk6Jr+1RfoaGK1upH4TIuV8Zjoag89C9Sx/m
+         6Q4Flgg5m80rjqQ5p2WOnkriCksYmg/kyXV+BUnaevQGdbg2l7TBves8cfJ7HfDyv9c9
+         en4mZUA6r+zLIfMPp6gQ/QR6bpbajRsLLMnRbAigBuEjMGHyKXDQH2fUViJR0Kq9JeqZ
+         +9MWyvY2m5zXHgdlDrGxyOyXvKx30KKDoRHbsi4K5byL7LN19vMq9Uq0VS8Et5aQNn9M
+         OzlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768503482; x=1769108282;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZL3nD4Mi+r9SwzljwlE9pccItzJ+U5IHWeQeM/fGf6Q=;
+        b=lvlKXLjo+tPMgk+oDC6MnfBJm0o2H1TV65nTsCAay3Z8FH/YMoZzWyyblvE60mW5xi
+         QG0wTPW1Z/5SS8Er2Prpm80+hxRAW4NVf1h/W9h+1k+ioIUcrmQiwC65DVVGA/+yWXFV
+         EMSh8BPDKEVizbOcLclimcqSGrPVbvKIbNAxQ+aq60x/kI+GYtg3mzFZx6VRFPFUufYg
+         OBoz9JBQZG6JCmTHdwGEKwE6g6sGW3LsQzwxvR2U/QjvgGaXVRIfos260g2pZmtA/+Sf
+         1ZMzzdkSBL8EpxNizPAgSp/JVRHUrU89pDO1cq/PuMA8Xj6UOrfcfPGw/pK/h7L6PgR0
+         Js4A==
+X-Forwarded-Encrypted: i=1; AJvYcCXdjK8SCQz2ZdxYmKkdlIk/SYe2rRNhRXlmGS/uklFbKNQwlQiPwpf7Ta+6RN8bDteS9fYySzT8LEAH@vger.kernel.org
+X-Gm-Message-State: AOJu0YwyZOrjOhcj8Pr0rIQIdwZOv9+jubtpanUMPTAbGkSVujfaGC6I
+	ZXmuFNRmin34n2axf8oDITpuxVGMPfiKJFKohKiSZO0LuxY/NtCRIQo5
+X-Gm-Gg: AY/fxX4/dXuwpj5kVHRjmvDij5C3g2niVsdaDF/n3jsOb81NhP29KGE6Vsya8xl4BQ/
+	HUdPDPZo0/0vFu809ahp7Eeux781z/r+J8Z0MlDdpSh88SpPNmfkTeFVSkp1/Z05eG0CA5PJfUK
+	x/38kuefB8bJDlGYUpiQQKkbRFwKskDoD69crY16HizH78oPvMS0L9ViBJv1Z7MmTYjFX1JI7AU
+	fNLh8EOjBsJmcNDu+NQQQAJNBFF7nbwFj+RVwte7oTGpA8k+oLd7rt0tu7wTAU0xT6aRE21xXHN
+	e9VraV+xXQ/pxshst+WbwBRAxyXKdGFPzDSDUToItfxLIS/+vDTRJijv5iSpDh49TahFe6ZUX31
+	uqIDxpwMlaNB8UidzzWVu5nmczYQ4oDiETdnk7Qp9eu1aDM0kXYyxJKDsz8ehrysmWsDjopaqH8
+	yM2o+V4AsFCl0DJDKx/hXm/0hCylaiUFokMu4lpZtcqmV3Tfv6nFwjmI7v0CUr0RzFvsCuXqmew
+	mXyaj5zfGm/5zwDZA==
+X-Received: by 2002:a05:600c:4e43:b0:47e:d943:ec08 with SMTP id 5b1f17b1804b1-4801e33dc26mr5755305e9.28.1768497142655;
+        Thu, 15 Jan 2026 09:12:22 -0800 (PST)
+Received: from 127.mynet ([2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47f429071a2sm54741645e9.11.2026.01.15.09.12.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jan 2026 09:12:21 -0800 (PST)
+From: Pavel Begunkov <asml.silence@gmail.com>
+To: netdev@vger.kernel.org
+Cc: "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Michael Chan <michael.chan@broadcom.com>,
+	Pavan Chebbi <pavan.chebbi@broadcom.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Joshua Washington <joshwash@google.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Mark Bloch <mbloch@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Alexander Duyck <alexanderduyck@fb.com>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Willem de Bruijn <willemb@google.com>,
+	Ankit Garg <nktgrg@google.com>,
+	Tim Hostetler <thostet@google.com>,
+	Alok Tiwari <alok.a.tiwari@oracle.com>,
+	Ziwei Xiao <ziweixiao@google.com>,
+	John Fraker <jfraker@google.com>,
+	Praveen Kaligineedi <pkaligineedi@google.com>,
+	Mohsin Bashir <mohsin.bashr@gmail.com>,
+	Joe Damato <joe@dama.to>,
+	Mina Almasry <almasrymina@google.com>,
+	Dimitri Daskalakis <dimitri.daskalakis1@gmail.com>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Kuniyuki Iwashima <kuniyu@google.com>,
+	Samiullah Khawaja <skhawaja@google.com>,
+	Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	David Wei <dw@davidwei.uk>,
+	Yue Haibing <yuehaibing@huawei.com>,
+	Haiyue Wang <haiyuewa@163.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	Simon Horman <horms@kernel.org>,
+	Vishwanath Seshagiri <vishs@fb.com>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	dtatulea@nvidia.com,
+	kernel-team@meta.com,
+	io-uring@vger.kernel.org
+Subject: [PATCH net-next v9 0/9] Add support for providers with large rx buffer
+Date: Thu, 15 Jan 2026 17:11:53 +0000
+Message-ID: <cover.1768493907.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AytU4w2KIidk
-Date: Thu, 15 Jan 2026 13:29:41 -0500
-From: "Chuck Lever" <cel@kernel.org>
-To: "Christoph Hellwig" <hch@lst.de>
-Cc: "Jason Gunthorpe" <jgg@nvidia.com>, "Leon Romanovsky" <leon@kernel.org>,
- linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org,
- NeilBrown <neilb@ownmail.net>, "Jeff Layton" <jlayton@kernel.org>,
- "Olga Kornievskaia" <okorniev@redhat.com>, "Dai Ngo" <dai.ngo@oracle.com>,
- "Tom Talpey" <tom@talpey.com>, "Chuck Lever" <chuck.lever@oracle.com>
-Message-Id: <e85b5f0f-dbe1-4b4a-8e1c-56ecfe5853ea@app.fastmail.com>
-In-Reply-To: <20260115162929.GC17257@lst.de>
-References: <20260114143948.3946615-1-cel@kernel.org>
- <20260114143948.3946615-5-cel@kernel.org> <20260115162929.GC17257@lst.de>
-Subject: Re: [PATCH v1 4/4] svcrdma: use bvec-based RDMA read/write API
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+Note: it's net/ only bits and doesn't include changes, which shoulf be
+merged separately and are posted separately. The full branch for
+convenience is at [1], and the patch is here:
 
+https://lore.kernel.org/io-uring/7486ab32e99be1f614b3ef8d0e9bc77015b173f7.1764265323.git.asml.silence@gmail.com
 
-On Thu, Jan 15, 2026, at 11:29 AM, Christoph Hellwig wrote:
-> On Wed, Jan 14, 2026 at 09:39:48AM -0500, Chuck Lever wrote:
->> The structure size reduction is significant: the previous inline
->> scatterlist array of RPCSVC_MAXPAGES entries (4KB or more) is
->> replaced with a pointer to a dynamically allocated bvec array,
->> bringing the fixed structure size down to approximately 100 bytes.
->
-> Can you explain why this switches to the dynamic allocation?
-> To me that seems like a separate trade-off to bvec vs scatterlist.
+Many modern NICs support configurable receive buffer lengths, and zcrx and
+memory providers can use buffers larger than 4K to improve performance. When
+paired with hw-gro larger rx buffer sizes can drastically reduce the number
+of buffers traversing the stack and save a lot of processing time. It also
+allows to give to users larger contiguous chunks of data. The idea was first
+floated around by Saeed during netdev conf 2024 and was asked about by a few
+folks.
 
-The current implementation keeps a "default size" SGL in the
-context, and chains more on if a larger SGL size is needed.
-This keeps the size of the context reasonable while still
-enabling large requests.
+Single stream benchmarks showed up to ~30% CPU util improvement.
+E.g. comparison for 4K vs 32K buffers using a 200Gbit NIC:
 
-For bvec support, there's no concept of bvec array chaining.
-We always have to allocate the exact size of the bvec array
-that is needed for the request, otherwise we'd have to keep
-a maximum-sized biovec array in every context.
+packets=23987040 (MB=2745098), rps=199559 (MB/s=22837)
+CPU    %usr   %nice    %sys %iowait    %irq   %soft   %idle
+  0    1.53    0.00   27.78    2.72    1.31   66.45    0.22
+packets=24078368 (MB=2755550), rps=200319 (MB/s=22924)
+CPU    %usr   %nice    %sys %iowait    %irq   %soft   %idle
+  0    0.69    0.00    8.26   31.65    1.83   57.00    0.57
 
-Now, I suppose that later on we will be able to adopt the use of
-the rqstp->rq_bvec, when the full NFSD stack supports biovecs,
-and this allocation could be replaced, at least in some cases.
+This series adds net infrastructure for memory providers configuring
+the size and implements it for bnxt. It's an opt-in feature for drivers,
+they should advertise support for the parameter in the qops and must check
+if the hardware supports the given size. It's limited to memory providers
+as it drastically simplifies implementation. It doesn't affect the fast
+path zcrx uAPI, and the user exposed parameter is defined in zcrx terms,
+which allows it to be flexible and adjusted in the future.
 
+A liburing example can be found at [2]
 
->>   * Each WR chain handles a single contiguous server-side buffer,
->> - * because scatterlist entries after the first have to start on
->> + * because bio_vec entries after the first have to start on
->>   * page alignment. xdr_buf iovecs cannot guarantee alignment.
->
-> For both the old and new version, can you explain they have to
-> start on a page boundary?  Because that's not how scatterlists or
-> bvecs work in general.  I guess this just documents the sunrpc
-> limits, but somehow projects it to these structures?
+full branch:
+[1] https://github.com/isilence/linux.git zcrx/large-buffers-v8
+Liburing example:
+[2] https://github.com/isilence/liburing.git zcrx/rx-buf-len
 
-It's historic, and probably related to the sunrpc implementation.
-I didn't question it when doing the conversion, so I'll have to
-try to remember exactly why.
+---
+
+The following changes since commit 0f61b1860cc3f52aef9036d7235ed1f017632193:
+
+  Linux 6.19-rc5 (2026-01-11 17:03:14 -1000)
+
+are available in the Git repository at:
+
+  https://github.com/isilence/linux.git tags/net-queue-rx-buf-len-v9
+
+for you to fetch changes up to d1de61db1536727c1cad049c09decff22e8b6dd7:
+
+  io_uring/zcrx: document area chunking parameter (2026-01-14 02:13:37 +0000)
+
+v9: - correct nits from Paolo
+
+v8: - Add stripped down qcfg
+    - Retain the page size across resets for bnxt
+
+v7: - Add xa_destroy
+    - Rebase
+
+v6: - Update docs and add a selftest
+
+v5: https://lore.kernel.org/netdev/cover.1760440268.git.asml.silence@gmail.com/
+    - Remove all unnecessary bits like configuration via netlink, and
+      multi-stage queue configuration.
+
+v4: https://lore.kernel.org/all/cover.1760364551.git.asml.silence@gmail.com/
+    - Update fbnic qops
+    - Propagate max buf len for hns3
+    - Use configured buf size in __bnxt_alloc_rx_netmem
+    - Minor stylistic changes
+v3: https://lore.kernel.org/all/cover.1755499375.git.asml.silence@gmail.com/
+    - Rebased, excluded zcrx specific patches
+    - Set agg_size_fac to 1 on warning
+v2: https://lore.kernel.org/all/cover.1754657711.git.asml.silence@gmail.com/
+    - Add MAX_PAGE_ORDER check on pp init
+    - Applied comments rewording
+    - Adjust pp.max_len based on order
+    - Patch up mlx5 queue callbacks after rebase
+    - Minor ->queue_mgmt_ops refactoring
+    - Rebased to account for both fill level and agg_size_fac
+    - Pass providers buf length in struct pp_memory_provider_params and
+      apply it in __netdev_queue_confi().
+    - Use ->supported_ring_params to validate drivers support of set
+      qcfg parameters.
+
+Jakub Kicinski (2):
+  net: reduce indent of struct netdev_queue_mgmt_ops members
+  eth: bnxt: adjust the fill level of agg queues with larger buffers
+
+Pavel Begunkov (7):
+  net: memzero mp params when closing a queue
+  net: add bare bone queue configs
+  net: pass queue rx page size from memory provider
+  eth: bnxt: store rx buffer size per queue
+  eth: bnxt: support qcfg provided rx page size
+  selftests: iou-zcrx: test large chunk sizes
+  io_uring/zcrx: document area chunking parameter
+
+ Documentation/networking/iou-zcrx.rst         |  20 +++
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     | 123 +++++++++++++-----
+ drivers/net/ethernet/broadcom/bnxt/bnxt.h     |   2 +
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c |   6 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.h |   2 +-
+ drivers/net/ethernet/google/gve/gve_main.c    |   9 +-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |  10 +-
+ drivers/net/ethernet/meta/fbnic/fbnic_txrx.c  |   8 +-
+ drivers/net/netdevsim/netdev.c                |   7 +-
+ include/net/netdev_queues.h                   |  47 +++++--
+ include/net/netdev_rx_queue.h                 |   2 +
+ include/net/page_pool/types.h                 |   1 +
+ net/core/dev.c                                |  17 +++
+ net/core/netdev_rx_queue.c                    |  31 +++--
+ .../selftests/drivers/net/hw/iou-zcrx.c       |  72 ++++++++--
+ .../selftests/drivers/net/hw/iou-zcrx.py      |  39 ++++++
+ 16 files changed, 317 insertions(+), 79 deletions(-)
 
 -- 
-Chuck Lever
+2.52.0
+
 
