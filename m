@@ -1,57 +1,53 @@
-Return-Path: <linux-rdma+bounces-15574-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15575-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B26CD23B6B
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 10:51:24 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1A05D23F87
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 11:37:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id E6C8A30119B3
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 09:51:05 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1A28C300B839
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jan 2026 10:36:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA65B352F8A;
-	Thu, 15 Jan 2026 09:51:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D573C36C0B1;
+	Thu, 15 Jan 2026 10:36:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tonqnNnj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YnIOtNBV"
 X-Original-To: linux-rdma@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E06435EDAD;
-	Thu, 15 Jan 2026 09:51:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 916D936BCF8;
+	Thu, 15 Jan 2026 10:36:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768470664; cv=none; b=Dt2vS8R8o/w3PHH7Nyd8Bu9L0r7n8qUc7tWxoqhTJVUncWTs0fY8GXBb2HLyev+pE07mIfhSUWqR1MApU8nWmBeZXsWSx4gETje4kccOhI2UxtmxwsqXDgm4P0aOX+ZY9oloGOPK70LzAUJAo2ghSzxr+OcNXRZ23bYvHmmvEMs=
+	t=1768473415; cv=none; b=VvPfuGHwidXFoUHy2VgBn8c1sZPPHdq6igeFfEVfvsWBCBL/ukGltvC+BlDFb9dJb5j2q2Z6I5X9EQDJCOAFvieUY8KCg06zpixr6xZCcHt6tJfpE35Y33gPX3kw7mbObRH2Ymer/s5lBV3Bvynaqs24C5gs19LEz1+/6pN0E7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768470664; c=relaxed/simple;
-	bh=t0Mz1QXqjEvcLUzCNWQjw/rIfYPkHY0UFaVM0BkO7AA=;
+	s=arc-20240116; t=1768473415; c=relaxed/simple;
+	bh=JkNdweq4ujZj38nY1IHX1JBSxak2V5gWLQrmU3h0E44=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IqF2ksfBfV7B93f/RVJ2J0X/MFlFWtSkhK9c02Ym5Bz4mFQHY+ew23zJWGNQz3EGf4vi9WsAIJTHadqdIB3L0M9dIeq/no9a6gYa116o4QamJOkVCuF+HGbkRQF28gKovIaZHLpdmbeTYzgwLslLlZ/GMo5p2lFkD4bJMueZ1qo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tonqnNnj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97680C116D0;
-	Thu, 15 Jan 2026 09:51:03 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=lttUsNm3+cIBqNPqsxy+rm3OiQVVQgDOvvtib9hrEstD89KxzeGobcigpJ0WBj4RQZkRp60JxuhbiP3jwuFbRyfITnYhWXyXO6Fkzy0QIfwTTGir3Mhz4gHXLq1y4sSW/rHuyml1D9B1xk0A6pjQQGRhXR546bvkSvp4lhx8BLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YnIOtNBV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B05A2C116D0;
+	Thu, 15 Jan 2026 10:36:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768470664;
-	bh=t0Mz1QXqjEvcLUzCNWQjw/rIfYPkHY0UFaVM0BkO7AA=;
+	s=k20201202; t=1768473415;
+	bh=JkNdweq4ujZj38nY1IHX1JBSxak2V5gWLQrmU3h0E44=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tonqnNnjfuz5DW1mDPsuThM7KwaR/3CztyXqGt3PfrZA5mdse15LX6wTrEcphRFw3
-	 WGwwuxNIzufHuuKy8iHksBQK4ONcHMl+nit/YzPG7KFcaZpiy1VBYyUxlFgL/16W2K
-	 a/SNayngL9x2WBGnPSanwO6ExAa0UIXqcjDiBTqpjkZdnmCjzB45l3v6vMQfCOb0VK
-	 yoOG9TWnlmm9CpjXu0Q1m+SBBA7qjxaj9TNubQ8Ih3qOJ63naFYvJO1btKnbqx0rn2
-	 6WS6sp1XKRNhjLoZelI+w9vPVhekcFl2mFKzNr7s3VQmL5q7fy6x8AO+vWyojfRP1F
-	 KhggY3Ugy30bA==
-Date: Thu, 15 Jan 2026 11:51:00 +0200
+	b=YnIOtNBVqXDtR+ZVAl8zWZ6bAdM81HTnUARB1/YQjGf06y9UkprJwltlBt5klXLcd
+	 iRxrLTa2fmWckZddzJ3YUfu3UgVsaLU5pHumN1bSQNIfatwciBD9Q9VVmhiBfOocJQ
+	 MkjVvaf53UXWrrl9xGlCfb1B2eiZPS/pml9y6pWmlKiZs6YXIaFx2Lc2/MaTgb7BJ6
+	 QhDibfqIXSzbhOYcG4+EY/IU7LN7SydvOHNYSPqYu//9C0BlpQr8EyoluLnl1tsqQU
+	 2ws3MYnuXLgOUruMa8Uizhpl4KY9D3bRPRXq/Uq3q9VgOsE/BK8xZ0U8PUBhRHcw91
+	 droe/3z4R3Jpw==
+Date: Thu, 15 Jan 2026 12:36:50 +0200
 From: Leon Romanovsky <leon@kernel.org>
-To: Chuck Lever <cel@kernel.org>
-Cc: Jason Gunthorpe <jgg@nvidia.com>, Christoph Hellwig <hch@lst.de>,
-	linux-rdma@vger.kernel.org, linux-nfs@vger.kernel.org,
-	NeilBrown <neilb@ownmail.net>, Jeff Layton <jlayton@kernel.org>,
-	Olga Kornievskaia <okorniev@redhat.com>,
-	Dai Ngo <dai.ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-	Chuck Lever <chuck.lever@oracle.com>
-Subject: Re: [PATCH v1 4/4] svcrdma: use bvec-based RDMA read/write API
-Message-ID: <20260115095100.GB14359@unreal>
-References: <20260114143948.3946615-1-cel@kernel.org>
- <20260114143948.3946615-5-cel@kernel.org>
+To: Danila Chernetsov <listdansp@mail.ru>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: Re: [PATCH] RDMA/core: Add error handling in
+ rdma_user_mmap_disassociate.
+Message-ID: <20260115103650.GC14359@unreal>
+References: <20260114205324.136273-1-listdansp@mail.ru>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
@@ -60,36 +56,54 @@ List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260114143948.3946615-5-cel@kernel.org>
+In-Reply-To: <20260114205324.136273-1-listdansp@mail.ru>
 
-On Wed, Jan 14, 2026 at 09:39:48AM -0500, Chuck Lever wrote:
-> From: Chuck Lever <chuck.lever@oracle.com>
-> 
-> Convert svcrdma to the bvec-based RDMA API introduced earlier in
-> this series.
-> 
-> The bvec-based RDMA API eliminates the intermediate scatterlist
-> conversion step, allowing direct DMA mapping from bio_vec arrays.
-> This simplifies the svc_rdma_rw_ctxt structure by removing the
-> inline scatterlist and chained SG table management.
-> 
-> The structure size reduction is significant: the previous inline
-> scatterlist array of RPCSVC_MAXPAGES entries (4KB or more) is
-> replaced with a pointer to a dynamically allocated bvec array,
-> bringing the fixed structure size down to approximately 100 bytes.
-> 
-> The bvec API handles all device types internally, including iWARP
-> devices which require memory registration. No explicit fallback
-> path is needed.
-> 
-> Signed-off-by: cel@kernel.org
+On Wed, Jan 14, 2026 at 08:53:24PM +0000, Danila Chernetsov wrote:
+> rdma_user_mmap_disassociate can be called before
+> ib_set_client_data(device, &uverbs_client, uverbs_dev);
 
-Something went wrong here.
+It is not.
 
 Thanks
 
-> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+> and cause an error when calling ib_get_client_data.
+> Also, consider checking the result of ib_get_client_data to handle errors
+>  in other functions.
+> 
+> Fixes: 51976c6cd786 ("RDMA/core: Provide rdma_user_mmap_disassociate() to disassociate mmap pages")
+> Signed-off-by: Danila Chernetsov <listdansp@mail.ru>
 > ---
->  net/sunrpc/xprtrdma/svc_rdma_rw.c | 115 ++++++++++++++----------------
->  1 file changed, 55 insertions(+), 60 deletions(-)
+>  drivers/infiniband/core/uverbs_main.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+> index 973fe2c7ef53..a8a2d87f4d3e 100644
+> --- a/drivers/infiniband/core/uverbs_main.c
+> +++ b/drivers/infiniband/core/uverbs_main.c
+> @@ -901,10 +901,12 @@ void uverbs_user_mmap_disassociate(struct ib_uverbs_file *ufile)
+>   * This function should be called by drivers that need to disable mmaps for the
+>   * device, for instance because it is going to be reset.
+>   */
+> -void rdma_user_mmap_disassociate(struct ib_device *device)
+> +int rdma_user_mmap_disassociate(struct ib_device *device)
+>  {
+>  	struct ib_uverbs_device *uverbs_dev =
+>  		ib_get_client_data(device, &uverbs_client);
+> +	if (!uverbs_dev)
+> +		return -ENODEV;
+>  	struct ib_uverbs_file *ufile;
+>  
+>  	mutex_lock(&uverbs_dev->lists_mutex);
+> @@ -913,6 +915,7 @@ void rdma_user_mmap_disassociate(struct ib_device *device)
+>  			uverbs_user_mmap_disassociate(ufile);
+>  	}
+>  	mutex_unlock(&uverbs_dev->lists_mutex);
+> +	return 0;
+>  }
+>  EXPORT_SYMBOL(rdma_user_mmap_disassociate);
+>  
+> -- 
+> 2.25.1
+> 
+> 
 
