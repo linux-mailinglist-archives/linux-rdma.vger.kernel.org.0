@@ -1,624 +1,217 @@
-Return-Path: <linux-rdma+bounces-15628-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15629-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FAADD37A4F
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Jan 2026 18:36:35 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F686D38497
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Jan 2026 19:46:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id E66DB3010654
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Jan 2026 17:36:21 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 18C053020175
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Jan 2026 18:46:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED49934B1B0;
-	Fri, 16 Jan 2026 17:36:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE02E33C50D;
+	Fri, 16 Jan 2026 18:46:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SNgBG9nA"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BXoMAIoC"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67C8C36BCC4
-	for <linux-rdma@vger.kernel.org>; Fri, 16 Jan 2026 17:36:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 190B61F92E
+	for <linux-rdma@vger.kernel.org>; Fri, 16 Jan 2026 18:46:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768584978; cv=none; b=EAO1NvLvXVtzR9pZw6VINcjszRttSR3ePB8I15eUyhGeaXwmgHhkkat9IL9yKpIXvyxjrlLAjT6EElSarEND2InQN2opeZ5Cjk7bm81GHWohNN5QXIj5L07hhetTYzeWa63XLqPZUL7JNMoB0E4BjiRabNElRFZCuGPvv69ZQ8Y=
+	t=1768589189; cv=none; b=lfvOoCHhfOP0ocbwfoTlIvY8JkLRnNkKZWvNooPMZhxq+Vxhu7p8iAVaIaU1DZ1Z7rgMrHVxXwb5hx8D3fX8vCi1CrcPmMjQxBrzn1XgLh8fRbPLU7NwoeVzj0fpHDoU/1Tu/wfcwnUv7xZdvpauQTLnMNH5ZBEvhyFzuyKNn2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768584978; c=relaxed/simple;
-	bh=CLAJl70yxrG9qGPnN2jtq7XOsjMJZkyI18aWd6NBmT8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DJzDNiGU2XXndQ9sGBZY0QPmb3P9QxQ6nwdvKDXWmZFAFZ0sOSlqq3THE0RuldzRWwHGYkTSNnpj9hc47I3tNRde/5mt/k7kN5AW3KsuR/x7bqb3rZqe9fDVdK7sG1bmrlJXtXyu7cmDyqm4ObAGkjqLYcOpNSbkeDQdVX/rGtA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SNgBG9nA; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <1bc84ed5-6e06-47fd-a85a-c85ac8cc4118@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768584964;
+	s=arc-20240116; t=1768589189; c=relaxed/simple;
+	bh=DIqgn0H/WpJOkcEMvlIngavbCSSA8jftcwAzyQKIpc4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ld+A/tsTwOM8CrqPvi/G3hAOyKG6UQzGjqBTQK5NXsUnGbm5x7A1mnCUiA/eGbTStUUbAFvDyvsjEQJf0j1e3Y892+/y8i7JxZDdG/FIkOWyE/uvnZOLXqf07Ffsr6ClaUtyYeY/GQm6dejcP7VXMwne3gHFHfstkfRW9DywnG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BXoMAIoC; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1768589187;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=d+Gtlylz58ttlsAjEQ62T9c6xNDIdzRABb20ml95Qn0=;
-	b=SNgBG9nApOha9+obxmFYf67Yfys2dv2WifeTrf+rwveuPwXIpega5St+OUIlYBI3ps2VDp
-	Jz5a4S6BGeCIDT+nC25KU/njwpbEz6eTOZTPHv/wk8NgpYahx3KHMpvQragnTSedtMGJfr
-	zaKuXwdgtqAQEOBw/rt3jrMxF5RwuP4=
-Date: Fri, 16 Jan 2026 09:36:00 -0800
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ZJVObctK3llj4uA0acCK4Yyzz9vQu+ksQA0NFHgNQGU=;
+	b=BXoMAIoCK2gAEpkc+Owlo61VnE+ET+pyAw1PmGdifJ/mhwbQyQfKz+yK50IoEBh+nhsTqE
+	LOYt4BK7zwK9PfXdkGzgNXw+7a+i9nRPOhTx5p8RJs+AxBPc3TEsHb1eKXx59iI+Wt0ZI6
+	/tQRhV5KpV1GK5Ruey9s8Pzr4r4i0s0=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-185-4JBC-iLFNpum_AD3n3AJXA-1; Fri,
+ 16 Jan 2026 13:46:24 -0500
+X-MC-Unique: 4JBC-iLFNpum_AD3n3AJXA-1
+X-Mimecast-MFC-AGG-ID: 4JBC-iLFNpum_AD3n3AJXA_1768589180
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 55617180035D;
+	Fri, 16 Jan 2026 18:46:20 +0000 (UTC)
+Received: from p16v.luc.cera.cz (unknown [10.44.34.71])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 0730119560A7;
+	Fri, 16 Jan 2026 18:46:11 +0000 (UTC)
+From: Ivan Vecera <ivecera@redhat.com>
+To: netdev@vger.kernel.org
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Andrew Lunn <andrew+netdev@lunn.ch>,
+	Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Grzegorz Nitka <grzegorz.nitka@intel.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Jonathan Lemon <jonathan.lemon@gmail.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Leon Romanovsky <leon@kernel.org>,
+	Mark Bloch <mbloch@nvidia.com>,
+	Michal Schmidt <mschmidt@redhat.com>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Petr Oros <poros@redhat.com>,
+	Prathosh Satish <Prathosh.Satish@microchip.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Rob Herring <robh@kernel.org>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Saravana Kannan <saravanak@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	devicetree@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org,
+	linux-kernel@vger.kernel.org,
+	linux-rdma@vger.kernel.org
+Subject: [PATCH net-next v2 00/12] dpll: Core improvements and ice E825-C SyncE support
+Date: Fri, 16 Jan 2026 19:45:58 +0100
+Message-ID: <20260116184610.147591-1-ivecera@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH RFC v2] RDMA/rxe: Fix iova-to-va conversion for MR page
- sizes != PAGE_SIZE
-To: Li Zhijian <lizhijian@fujitsu.com>, linux-rdma@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, zyjzyj2000@gmail.com, jgg@ziepe.ca,
- leon@kernel.org, Yi Zhang <yi.zhang@redhat.com>
-References: <20260116032753.2574363-1-lizhijian@fujitsu.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "yanjun.zhu" <yanjun.zhu@linux.dev>
-In-Reply-To: <20260116032753.2574363-1-lizhijian@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-On 1/15/26 7:27 PM, Li Zhijian wrote:
-> The current implementation incorrectly handles memory regions (MRs) with
-> page sizes different from the system PAGE_SIZE. The core issue is that
-> rxe_set_page() is called with mr->page_size step increments, but the
-> page_list stores individual struct page pointers, each representing
-> PAGE_SIZE of memory.
-> 
-> ib_sg_to_page() has ensured that when i>=1 either
-> a) SG[i-1].dma_end and SG[i].dma_addr are contiguous
-> or
-> b) SG[i-1].dma_end and SG[i].dma_addr are mr->page_size aligned.
-> 
-> This leads to incorrect iova-to-va conversion in scenarios:
-> 
-> 1) page_size < PAGE_SIZE (e.g., MR: 4K, system: 64K):
->     ibmr->iova = 0x181800
->     sg[0]: dma_addr=0x181800, len=0x800
->     sg[1]: dma_addr=0x173000, len=0x1000
-> 
->     Access iova = 0x181800 + 0x810 = 0x182010
->     Expected VA: 0x173010 (second SG, offset 0x10)
->     Before fix:
->       - index = (0x182010 >> 12) - (0x181800 >> 12) = 1
->       - page_offset = 0x182010 & 0xFFF = 0x10
->       - xarray[1] stores system page base 0x170000
->       - Resulting VA: 0x170000 + 0x10 = 0x170010 (wrong)
-> 
-> 2) page_size > PAGE_SIZE (e.g., MR: 64K, system: 4K):
->     ibmr->iova = 0x18f800
->     sg[0]: dma_addr=0x18f800, len=0x800
->     sg[1]: dma_addr=0x170000, len=0x1000
-> 
->     Access iova = 0x18f800 + 0x810 = 0x190010
->     Expected VA: 0x170010 (second SG, offset 0x10)
->     Before fix:
->       - index = (0x190010 >> 16) - (0x18f800 >> 16) = 1
->       - page_offset = 0x190010 & 0xFFFF = 0x10
->       - xarray[1] stores system page for dma_addr 0x170000
->       - Resulting VA: system page of 0x170000 + 0x10 = 0x170010 (wrong)
-> 
-> Yi Zhang reported a kernel panic[1] years ago related to this defect.
+This series introduces Synchronous Ethernet (SyncE) support for
+the Intel E825-C Ethernet controller. Unlike previous generations where
+DPLL connections were implicitly assumed, the E825-C architecture relies
+on the platform firmware to describe the physical connections between
+the network controller and external DPLLs (such as the ZL3073x).
 
-Thanks a lot.
-I am not sure if this problem also occurs on SIW or not.
-If yes, can you also add this fix to SIW?
-If not, can you explain why this problem does not occur on SIW?
+To accommodate this, the series extends the DPLL subsystem to support
+firmware node (fwnode) associations, asynchronous discovery via notifiers,
+and dynamic pin management. Additionally, a significant refactor of
+the DPLL reference counting logic is included to ensure robustness and
+debuggability.
 
-I am just curious about this.
+DT Bindings:
+* Provider Support: The dpll-device schema is updated to support
+  '#dpll-pin-cells', allowing providers to define pin specifiers
+  (index/direction).
+* Core Schema: The core schema definitions for pin consumers and
+  providers have been submitted to dt-schema (PR #183).
 
-Best Regards,
-Zhu Yanjun
+DPLL Core Extensions:
+* Firmware Node Support: Pins can now be registered with an associated
+  struct fwnode_handle. This allows consumer drivers to lookup pins based
+  on device properties (dpll-pins).
+* Asynchronous Notifiers: A raw notifier chain is added to the DPLL core.
+  This allows the network driver (ice driver in this series) to subscribe
+  to events and react when the platform DPLL driver registers the parent
+  pins, resolving probe ordering dependencies.
+* Dynamic Indexing: Drivers can now request DPLL_PIN_IDX_UNSPEC to have
+  the core automatically allocate a unique pin index, simplifying driver
+  implementation for virtual or non-indexed pins.
 
+Reference Counting & Debugging:
+* Refactor: The reference counting logic in the core is consolidated.
+  Internal list management helpers now automatically handle hold/put
+  operations, removing fragile open-coded logic in the registration paths.
+* Duplicate Checks: The core now strictly rejects duplicate registration
+  attempts for the same pin/device context.
+* Reference Tracking: A new Kconfig option DPLL_REFCNT_TRACKER is added
+  (using the kernel's REF_TRACKER infrastructure). This allows developers
+  to instrument and debug reference leaks by recording stack traces for
+  every get/put operation.
 
-> 
-> Solution:
-> 1. Replace xarray with pre-allocated rxe_mr_page array for sequential
->     indexing (all MR page indices are contiguous)
-> 2. Each rxe_mr_page stores both struct page* and offset within the
->     system page
-> 3. Handle MR page_size != PAGE_SIZE relationships:
->     - page_size > PAGE_SIZE: Split MR pages into multiple system pages
->     - page_size <= PAGE_SIZE: Store offset within system page
-> 4. Add boundary checks and compatibility validation
-> 
-> This ensures correct iova-to-va conversion regardless of MR page size
-> and system PAGE_SIZE relationship, while improving performance through
-> array-based sequential access.
-> 
-> Tests on 4K and 64K PAGE_SIZE hosts:
-> - rdma-core/pytests
->    $ ./build/bin/run_tests.py  --dev eth0_rxe
-> - blktest:
->    $ TIMEOUT=30 QUICK_RUN=1 USE_RXE=1 NVMET_TRTYPES=rdma ./check nvme srp rnbd
-> 
-> [1] https://lore.kernel.org/all/CAHj4cs9XRqE25jyVw9rj9YugffLn5+f=1znaBEnu1usLOciD+g@mail.gmail.com/T/
-> Fixes: 592627ccbdff ("RDMA/rxe: Replace rxe_map and rxe_phys_buf by xarray")
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-> 
-> ---
-> If this patch is too huge, it can be split it to 'convert xarray to normal array' first.
-> 
-> V2:
->   - convert xarray to normal array because all MR page indices are contiguous
->   - Fix cases in 2+ SG entries and their dma_addr is not contiguous
->   - Resize page_info to (num_buf * system_page_per_mr) if needed
->   - remove set_page_per_mr(), unify back to rxe_set_page()
-> ---
->   drivers/infiniband/sw/rxe/rxe_mr.c    | 281 +++++++++++++++++---------
->   drivers/infiniband/sw/rxe/rxe_verbs.h |  10 +-
->   2 files changed, 194 insertions(+), 97 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-> index 05710d785a7e..c71ab780e379 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> @@ -72,14 +72,46 @@ void rxe_mr_init_dma(int access, struct rxe_mr *mr)
->   	mr->ibmr.type = IB_MR_TYPE_DMA;
->   }
->   
-> +/*
-> + * Convert iova to page_info index. The page_info stores pages of size
-> + * PAGE_SIZE, but MRs can have different page sizes. This function
-> + * handles the conversion for all cases:
-> + *
-> + * 1. mr->page_size > PAGE_SIZE:
-> + *    The MR's iova may not be aligned to mr->page_size. We use the
-> + *    aligned base (iova & page_mask) as reference, then calculate
-> + *    which PAGE_SIZE sub-page the iova falls into.
-> + *
-> + * 2. mr->page_size <= PAGE_SIZE:
-> + *    Use simple shift arithmetic since each page_info entry corresponds
-> + *    to one or more MR pages.
-> + */
->   static unsigned long rxe_mr_iova_to_index(struct rxe_mr *mr, u64 iova)
->   {
-> -	return (iova >> mr->page_shift) - (mr->ibmr.iova >> mr->page_shift);
-> +	int idx;
-> +
-> +	if (mr_page_size(mr) > PAGE_SIZE)
-> +		idx = (iova - (mr->ibmr.iova & mr->page_mask)) >> PAGE_SHIFT;
-> +	else
-> +		idx = (iova >> mr->page_shift) -
-> +			(mr->ibmr.iova >> mr->page_shift);
-> +
-> +	WARN_ON(idx >= mr->nbuf);
-> +	return idx;
->   }
->   
-> +/*
-> + * Convert iova to offset within the page_info entry.
-> + *
-> + * For mr_page_size > PAGE_SIZE, the offset is within the system page.
-> + * For mr_page_size <= PAGE_SIZE, the offset is within the MR page size.
-> + */
->   static unsigned long rxe_mr_iova_to_page_offset(struct rxe_mr *mr, u64 iova)
->   {
-> -	return iova & (mr_page_size(mr) - 1);
-> +	if (mr_page_size(mr) > PAGE_SIZE)
-> +		return iova & (PAGE_SIZE - 1);
-> +	else
-> +		return iova & (mr_page_size(mr) - 1);
->   }
->   
->   static bool is_pmem_page(struct page *pg)
-> @@ -93,37 +125,69 @@ static bool is_pmem_page(struct page *pg)
->   
->   static int rxe_mr_fill_pages_from_sgt(struct rxe_mr *mr, struct sg_table *sgt)
->   {
-> -	XA_STATE(xas, &mr->page_list, 0);
->   	struct sg_page_iter sg_iter;
->   	struct page *page;
->   	bool persistent = !!(mr->access & IB_ACCESS_FLUSH_PERSISTENT);
->   
-> +	WARN_ON(mr_page_size(mr) != PAGE_SIZE);
-> +
->   	__sg_page_iter_start(&sg_iter, sgt->sgl, sgt->orig_nents, 0);
->   	if (!__sg_page_iter_next(&sg_iter))
->   		return 0;
->   
-> -	do {
-> -		xas_lock(&xas);
-> -		while (true) {
-> -			page = sg_page_iter_page(&sg_iter);
-> -
-> -			if (persistent && !is_pmem_page(page)) {
-> -				rxe_dbg_mr(mr, "Page can't be persistent\n");
-> -				xas_set_err(&xas, -EINVAL);
-> -				break;
-> -			}
-> +	while (true) {
-> +		page = sg_page_iter_page(&sg_iter);
->   
-> -			xas_store(&xas, page);
-> -			if (xas_error(&xas))
-> -				break;
-> -			xas_next(&xas);
-> -			if (!__sg_page_iter_next(&sg_iter))
-> -				break;
-> +		if (persistent && !is_pmem_page(page)) {
-> +			rxe_dbg_mr(mr, "Page can't be persistent\n");
-> +			return -EINVAL;
->   		}
-> -		xas_unlock(&xas);
-> -	} while (xas_nomem(&xas, GFP_KERNEL));
->   
-> -	return xas_error(&xas);
-> +		mr->page_info[mr->nbuf].page = page;
-> +		mr->page_info[mr->nbuf].offset = 0;
-> +		mr->nbuf++;
-> +
-> +		if (!__sg_page_iter_next(&sg_iter))
-> +			break;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int __alloc_mr_page_info(struct rxe_mr *mr, int num_pages)
-> +{
-> +	mr->page_info = kcalloc(num_pages, sizeof(struct rxe_mr_page),
-> +				GFP_KERNEL);
-> +	if (!mr->page_info)
-> +		return -ENOMEM;
-> +
-> +	mr->max_allowed_buf = num_pages;
-> +	mr->nbuf = 0;
-> +
-> +	return 0;
-> +}
-> +
-> +static int alloc_mr_page_info(struct rxe_mr *mr, int num_pages)
-> +{
-> +	int ret;
-> +
-> +	WARN_ON(mr->num_buf);
-> +	ret = __alloc_mr_page_info(mr, num_pages);
-> +	if (ret)
-> +		return ret;
-> +
-> +	mr->num_buf = num_pages;
-> +
-> +	return 0;
-> +}
-> +
-> +static void free_mr_page_info(struct rxe_mr *mr)
-> +{
-> +	if (!mr->page_info)
-> +		return;
-> +
-> +	kfree(mr->page_info);
-> +	mr->page_info = NULL;
->   }
->   
->   int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
-> @@ -134,8 +198,6 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
->   
->   	rxe_mr_init(access, mr);
->   
-> -	xa_init(&mr->page_list);
-> -
->   	umem = ib_umem_get(&rxe->ib_dev, start, length, access);
->   	if (IS_ERR(umem)) {
->   		rxe_dbg_mr(mr, "Unable to pin memory region err = %d\n",
-> @@ -143,46 +205,24 @@ int rxe_mr_init_user(struct rxe_dev *rxe, u64 start, u64 length,
->   		return PTR_ERR(umem);
->   	}
->   
-> +	err = alloc_mr_page_info(mr, ib_umem_num_pages(umem));
-> +	if (err)
-> +		goto err2;
-> +
->   	err = rxe_mr_fill_pages_from_sgt(mr, &umem->sgt_append.sgt);
-> -	if (err) {
-> -		ib_umem_release(umem);
-> -		return err;
-> -	}
-> +	if (err)
-> +		goto err1;
->   
->   	mr->umem = umem;
->   	mr->ibmr.type = IB_MR_TYPE_USER;
->   	mr->state = RXE_MR_STATE_VALID;
->   
->   	return 0;
-> -}
-> -
-> -static int rxe_mr_alloc(struct rxe_mr *mr, int num_buf)
-> -{
-> -	XA_STATE(xas, &mr->page_list, 0);
-> -	int i = 0;
-> -	int err;
-> -
-> -	xa_init(&mr->page_list);
-> -
-> -	do {
-> -		xas_lock(&xas);
-> -		while (i != num_buf) {
-> -			xas_store(&xas, XA_ZERO_ENTRY);
-> -			if (xas_error(&xas))
-> -				break;
-> -			xas_next(&xas);
-> -			i++;
-> -		}
-> -		xas_unlock(&xas);
-> -	} while (xas_nomem(&xas, GFP_KERNEL));
-> -
-> -	err = xas_error(&xas);
-> -	if (err)
-> -		return err;
-> -
-> -	mr->num_buf = num_buf;
-> -
-> -	return 0;
-> +err1:
-> +	free_mr_page_info(mr);
-> +err2:
-> +	ib_umem_release(umem);
-> +	return err;
->   }
->   
->   int rxe_mr_init_fast(int max_pages, struct rxe_mr *mr)
-> @@ -192,7 +232,7 @@ int rxe_mr_init_fast(int max_pages, struct rxe_mr *mr)
->   	/* always allow remote access for FMRs */
->   	rxe_mr_init(RXE_ACCESS_REMOTE, mr);
->   
-> -	err = rxe_mr_alloc(mr, max_pages);
-> +	err = alloc_mr_page_info(mr, max_pages);
->   	if (err)
->   		goto err1;
->   
-> @@ -205,26 +245,43 @@ int rxe_mr_init_fast(int max_pages, struct rxe_mr *mr)
->   	return err;
->   }
->   
-> +/*
-> + * I) MRs with page_size >= PAGE_SIZE,
-> + * Split a large MR page (mr->page_size) into multiple PAGE_SIZE
-> + * sub-pages and store them in page_info, offset is always 0.
-> + *
-> + * Called when mr->page_size > PAGE_SIZE. Each call to rxe_set_page()
-> + * represents one mr->page_size region, which we must split into
-> + * (mr->page_size >> PAGE_SHIFT) individual pages.
-> + *
-> + * II) MRs with page_size < PAGE_SIZE,
-> + * Save each PAGE_SIZE page and its offset within the system page in page_info.
-> + */
->   static int rxe_set_page(struct ib_mr *ibmr, u64 dma_addr)
->   {
->   	struct rxe_mr *mr = to_rmr(ibmr);
-> -	struct page *page = ib_virt_dma_to_page(dma_addr);
->   	bool persistent = !!(mr->access & IB_ACCESS_FLUSH_PERSISTENT);
-> -	int err;
-> +	u32 i, pages_per_mr = mr_page_size(mr) >> PAGE_SHIFT;
->   
-> -	if (persistent && !is_pmem_page(page)) {
-> -		rxe_dbg_mr(mr, "Page cannot be persistent\n");
-> -		return -EINVAL;
-> -	}
-> +	pages_per_mr = MAX(1, pages_per_mr);
->   
-> -	if (unlikely(mr->nbuf == mr->num_buf))
-> -		return -ENOMEM;
-> +	for (i = 0; i < pages_per_mr; i++) {
-> +		u64 addr = dma_addr + i * PAGE_SIZE;
-> +		struct page *sub_page = ib_virt_dma_to_page(addr);
->   
-> -	err = xa_err(xa_store(&mr->page_list, mr->nbuf, page, GFP_KERNEL));
-> -	if (err)
-> -		return err;
-> +		if (unlikely(mr->nbuf >= mr->max_allowed_buf))
-> +			return -ENOMEM;
-> +
-> +		if (persistent && !is_pmem_page(sub_page)) {
-> +			rxe_dbg_mr(mr, "Page cannot be persistent\n");
-> +			return -EINVAL;
-> +		}
-> +
-> +		mr->page_info[mr->nbuf].page = sub_page;
-> +		mr->page_info[mr->nbuf].offset = addr & (PAGE_SIZE - 1);
-> +		mr->nbuf++;
-> +	}
->   
-> -	mr->nbuf++;
->   	return 0;
->   }
->   
-> @@ -234,6 +291,31 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sgl,
->   	struct rxe_mr *mr = to_rmr(ibmr);
->   	unsigned int page_size = mr_page_size(mr);
->   
-> +	/*
-> +	 * Ensure page_size and PAGE_SIZE are compatible for mapping.
-> +	 * We require one to be a multiple of the other for correct
-> +	 * iova-to-page conversion.
-> +	 */
-> +	if (!IS_ALIGNED(page_size, PAGE_SIZE) &&
-> +	    !IS_ALIGNED(PAGE_SIZE, page_size)) {
-> +		rxe_dbg_mr(mr, "MR page size %u must be compatible with PAGE_SIZE %lu\n",
-> +			   page_size, PAGE_SIZE);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (mr_page_size(mr) > PAGE_SIZE) {
-> +		/* resize page_info if needed */
-> +		u32 map_mr_pages = (page_size >> PAGE_SHIFT) * mr->num_buf;
-> +
-> +		if (map_mr_pages > mr->max_allowed_buf) {
-> +			rxe_dbg_mr(mr, "requested pages %u exceed max %u\n",
-> +				   map_mr_pages, mr->max_allowed_buf);
-> +			free_mr_page_info(mr);
-> +			if (__alloc_mr_page_info(mr, map_mr_pages))
-> +				return -ENOMEM;
-> +		}
-> +	}
-> +
->   	mr->nbuf = 0;
->   	mr->page_shift = ilog2(page_size);
->   	mr->page_mask = ~((u64)page_size - 1);
-> @@ -244,30 +326,30 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sgl,
->   static int rxe_mr_copy_xarray(struct rxe_mr *mr, u64 iova, void *addr,
->   			      unsigned int length, enum rxe_mr_copy_dir dir)
->   {
-> -	unsigned int page_offset = rxe_mr_iova_to_page_offset(mr, iova);
-> -	unsigned long index = rxe_mr_iova_to_index(mr, iova);
->   	unsigned int bytes;
-> -	struct page *page;
-> -	void *va;
-> +	u8 *va;
->   
->   	while (length) {
-> -		page = xa_load(&mr->page_list, index);
-> -		if (!page)
-> +		unsigned long index = rxe_mr_iova_to_index(mr, iova);
-> +		struct rxe_mr_page *info = &mr->page_info[index];
-> +		unsigned int page_offset = rxe_mr_iova_to_page_offset(mr, iova);
-> +
-> +		if (!info->page)
->   			return -EFAULT;
->   
-> -		bytes = min_t(unsigned int, length,
-> -				mr_page_size(mr) - page_offset);
-> -		va = kmap_local_page(page);
-> +		page_offset += info->offset;
-> +		bytes = min_t(unsigned int, length, PAGE_SIZE - page_offset);
-> +		va = kmap_local_page(info->page);
-> +
->   		if (dir == RXE_FROM_MR_OBJ)
->   			memcpy(addr, va + page_offset, bytes);
->   		else
->   			memcpy(va + page_offset, addr, bytes);
->   		kunmap_local(va);
->   
-> -		page_offset = 0;
->   		addr += bytes;
-> +		iova += bytes;
->   		length -= bytes;
-> -		index++;
->   	}
->   
->   	return 0;
-> @@ -425,9 +507,6 @@ int copy_data(
->   
->   static int rxe_mr_flush_pmem_iova(struct rxe_mr *mr, u64 iova, unsigned int length)
->   {
-> -	unsigned int page_offset;
-> -	unsigned long index;
-> -	struct page *page;
->   	unsigned int bytes;
->   	int err;
->   	u8 *va;
-> @@ -437,15 +516,17 @@ static int rxe_mr_flush_pmem_iova(struct rxe_mr *mr, u64 iova, unsigned int leng
->   		return err;
->   
->   	while (length > 0) {
-> -		index = rxe_mr_iova_to_index(mr, iova);
-> -		page = xa_load(&mr->page_list, index);
-> -		page_offset = rxe_mr_iova_to_page_offset(mr, iova);
-> -		if (!page)
-> +		unsigned long index = rxe_mr_iova_to_index(mr, iova);
-> +		struct rxe_mr_page *info = &mr->page_info[index];
-> +		unsigned int page_offset = rxe_mr_iova_to_page_offset(mr, iova);
-> +
-> +		if (!info->page)
->   			return -EFAULT;
-> -		bytes = min_t(unsigned int, length,
-> -			      mr_page_size(mr) - page_offset);
->   
-> -		va = kmap_local_page(page);
-> +		page_offset += info->offset;
-> +		bytes = min_t(unsigned int, length, PAGE_SIZE - page_offset);
-> +
-> +		va = kmap_local_page(info->page);
->   		arch_wb_cache_pmem(va + page_offset, bytes);
->   		kunmap_local(va);
->   
-> @@ -500,6 +581,7 @@ enum resp_states rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
->   	} else {
->   		unsigned long index;
->   		int err;
-> +		struct rxe_mr_page *info;
->   
->   		err = mr_check_range(mr, iova, sizeof(value));
->   		if (err) {
-> @@ -508,9 +590,12 @@ enum resp_states rxe_mr_do_atomic_op(struct rxe_mr *mr, u64 iova, int opcode,
->   		}
->   		page_offset = rxe_mr_iova_to_page_offset(mr, iova);
->   		index = rxe_mr_iova_to_index(mr, iova);
-> -		page = xa_load(&mr->page_list, index);
-> -		if (!page)
-> +		info = &mr->page_info[index];
-> +		if (!info->page)
->   			return RESPST_ERR_RKEY_VIOLATION;
-> +
-> +		page_offset += info->offset;
-> +		page = info->page;
->   	}
->   
->   	if (unlikely(page_offset & 0x7)) {
-> @@ -549,6 +634,7 @@ enum resp_states rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
->   	} else {
->   		unsigned long index;
->   		int err;
-> +		struct rxe_mr_page *info;
->   
->   		/* See IBA oA19-28 */
->   		err = mr_check_range(mr, iova, sizeof(value));
-> @@ -558,9 +644,12 @@ enum resp_states rxe_mr_do_atomic_write(struct rxe_mr *mr, u64 iova, u64 value)
->   		}
->   		page_offset = rxe_mr_iova_to_page_offset(mr, iova);
->   		index = rxe_mr_iova_to_index(mr, iova);
-> -		page = xa_load(&mr->page_list, index);
-> -		if (!page)
-> +		info = &mr->page_info[index];
-> +		if (!info->page)
->   			return RESPST_ERR_RKEY_VIOLATION;
-> +
-> +		page_offset += info->offset;
-> +		page = info->page;
->   	}
->   
->   	/* See IBA A19.4.2 */
-> @@ -724,5 +813,5 @@ void rxe_mr_cleanup(struct rxe_pool_elem *elem)
->   	ib_umem_release(mr->umem);
->   
->   	if (mr->ibmr.type != IB_MR_TYPE_DMA)
-> -		xa_destroy(&mr->page_list);
-> +		free_mr_page_info(mr);
->   }
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> index f94ce85eb807..fb149f37e91d 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> @@ -335,6 +335,11 @@ static inline int rkey_is_mw(u32 rkey)
->   	return (index >= RXE_MIN_MW_INDEX) && (index <= RXE_MAX_MW_INDEX);
->   }
->   
-> +struct rxe_mr_page {
-> +	struct page		*page;
-> +	unsigned int		offset; /* offset in system page */
-> +};
-> +
->   struct rxe_mr {
->   	struct rxe_pool_elem	elem;
->   	struct ib_mr		ibmr;
-> @@ -350,10 +355,13 @@ struct rxe_mr {
->   	unsigned int		page_shift;
->   	u64			page_mask;
->   
-> +	/* size of page_info when mr allocated */
->   	u32			num_buf;
-> +	/* real size of page_info */
-> +	u32			max_allowed_buf;
->   	u32			nbuf;
->   
-> -	struct xarray		page_list;
-> +	struct rxe_mr_page	*page_info;
->   };
->   
->   static inline unsigned int mr_page_size(struct rxe_mr *mr)
+Driver Updates:
+* zl3073x: Updated to register pins with their firmware nodes and support
+  the 'mux' pin type.
+* ice: Implements the E825-C specific hardware configuration for SyncE
+  (CGU registers). It utilizes the new notifier and fwnode APIs to
+  dynamically discover and attach to the platform DPLLs.
+
+Patch Summary:
+Patch 1: DT bindings (Provider support).
+Patch 2-3: DPLL Core (fwnode association and parsing helpers).
+Patch 4: Driver zl3073x (Set fwnode).
+Patch 5-6: DPLL Core (Notifiers and dynamic IDs).
+Patch 7: Driver zl3073x (Mux type).
+Patch 8-9: DPLL Core (Refcount refactor and duplicate checks).
+Patch 10-11: Refcount tracking infrastructure and driver updates.
+Patch 12: Driver ice (E825-C SyncE logic).
+
+Changes in v2:
+- Removed dpll-pin-consumer.yaml schema per request (submitted to dt-schema).
+- Added '#dpll-pin-cells' property into dpll-device.yaml and
+  microchip,zl30731.yaml.
+- Added include/dt-bindings/dpll/dpll.h
+- Added check for fwnode_property_match_string() return value.
+- Reworked searching for the pin using dpll device phandle and pin specifier
+  logic.
+- Added dpll-pins into OF core supplier_bindings.
+- Fixed integer overflow in dpll_pin_idx_free().
+- Fixed error path in ice_dpll_init_pins_e825().
+- Fixed misleading comment referring 'device tree'.
+
+Arkadiusz Kubalewski (1):
+  ice: dpll: Support E825-C SyncE and dynamic pin discovery
+
+Ivan Vecera (10):
+  dt-bindings: dpll: support acting as pin provider
+  dpll: Allow associating dpll pin with a firmware node
+  dpll: Add helpers to find DPLL pin fwnode
+  dpll: zl3073x: Associate pin with fwnode handle
+  dpll: Support dynamic pin index allocation
+  dpll: zl3073x: Add support for mux pin type
+  dpll: Enhance and consolidate reference counting logic
+  dpll: Prevent duplicate registrations
+  dpll: Add reference count tracking support
+  drivers: Add support for DPLL reference count tracking
+
+Petr Oros (1):
+  dpll: Add notifier chain for dpll events
+
+ .../devicetree/bindings/dpll/dpll-device.yaml |  10 +
+ .../bindings/dpll/microchip,zl30731.yaml      |   4 +
+ drivers/dpll/Kconfig                          |  15 +
+ drivers/dpll/dpll_core.c                      | 374 ++++++++-
+ drivers/dpll/dpll_core.h                      |  11 +
+ drivers/dpll/dpll_netlink.c                   |   6 +
+ drivers/dpll/zl3073x/dpll.c                   |  15 +-
+ drivers/dpll/zl3073x/dpll.h                   |   2 +
+ drivers/dpll/zl3073x/prop.c                   |   2 +
+ drivers/net/ethernet/intel/ice/ice_dpll.c     | 732 +++++++++++++++---
+ drivers/net/ethernet/intel/ice/ice_dpll.h     |  29 +
+ drivers/net/ethernet/intel/ice/ice_lib.c      |   3 +
+ drivers/net/ethernet/intel/ice/ice_ptp.c      |  29 +
+ drivers/net/ethernet/intel/ice/ice_ptp_hw.c   |   9 +-
+ drivers/net/ethernet/intel/ice/ice_tspll.c    | 217 ++++++
+ drivers/net/ethernet/intel/ice/ice_tspll.h    |  13 +-
+ drivers/net/ethernet/intel/ice/ice_type.h     |   6 +
+ .../net/ethernet/mellanox/mlx5/core/dpll.c    |  16 +-
+ drivers/of/property.c                         |   2 +
+ drivers/ptp/ptp_ocp.c                         |  18 +-
+ include/dt-bindings/dpll/dpll.h               |  13 +
+ include/linux/dpll.h                          |  74 +-
+ 22 files changed, 1442 insertions(+), 158 deletions(-)
+ create mode 100644 include/dt-bindings/dpll/dpll.h
+
+-- 
+2.52.0
 
 
