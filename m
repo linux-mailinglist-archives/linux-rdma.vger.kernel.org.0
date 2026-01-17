@@ -1,230 +1,209 @@
-Return-Path: <linux-rdma+bounces-15648-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15651-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AECF3D38A54
-	for <lists+linux-rdma@lfdr.de>; Sat, 17 Jan 2026 00:40:12 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5A05D38D2F
+	for <lists+linux-rdma@lfdr.de>; Sat, 17 Jan 2026 09:09:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E25A130869F1
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Jan 2026 23:39:49 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9EFAB3024255
+	for <lists+linux-rdma@lfdr.de>; Sat, 17 Jan 2026 08:09:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98AA7315775;
-	Fri, 16 Jan 2026 23:39:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AB52314A94;
+	Sat, 17 Jan 2026 08:08:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CPr7Dtsn"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="bMHXx8Cf"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f225.google.com (mail-pl1-f225.google.com [209.85.214.225])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49F073002D8
-	for <linux-rdma@vger.kernel.org>; Fri, 16 Jan 2026 23:39:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAF6F286400
+	for <linux-rdma@vger.kernel.org>; Sat, 17 Jan 2026 08:08:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.225
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768606788; cv=none; b=eRG5ARrwv4VtSCPW3Xgd9EHYc//IgUt2Y/3tbcawra3FJc8Io6PI7xQqQf2j71Pd3tGOdnKPHTcT7/NzDN6l3toOPlAUItark9GjAPUJ4Ga6HYJHAboVn4OS8Qd+oqRMh/vGA4VxrP+Jtrs9kl9AR0rbeeD6RW4CRBH1YChM3Ig=
+	t=1768637339; cv=none; b=Fz3mJcwXh4PC+OXRocknz6OU4Gdii0qQM/ctMD0jWqlwT/7hoPywhNAFreh+1TVNxWI24AfMCZiELCgU819n26sMEWugWoEXOB6SlatY6dBKCxwsP2SmGWanXEgMpdxrq1j9VClvf0tamSF4EmYZ2Z2c41EfU8ASqoFNg+4IiGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768606788; c=relaxed/simple;
-	bh=1L4Z10EN3fStlLWrOTv25Pq3Qk48HrL3c61DmZOsz6s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=e9nj3gEVuK7EurziTcz59h8EY72V7ZbQHeZLK6mq01lCBztjRDKqNox+YsHoEEpAgOQ3uwZQRy0C+BRL6HtMAHnmWFYLS9RIqXmPM6dS6Xx+WUuzLPNnjrWhF5SJ/Y19FdQCkq4wClj22oEksFZLxL0Wgnw8WTLW4qqCTytro+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CPr7Dtsn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09A52C2BCB0
-	for <linux-rdma@vger.kernel.org>; Fri, 16 Jan 2026 23:39:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768606788;
-	bh=1L4Z10EN3fStlLWrOTv25Pq3Qk48HrL3c61DmZOsz6s=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=CPr7Dtsnm5xqqjXRoF4zmWwxIcvihEIqjlYx3ZOjBpFWmdO+6X/jWujdQK9oaw2gp
-	 khc5ZIXwQLm32zCcGPWx58h/7b6Ar2SeZjjylFefDa0SyPZIeuCm6XPVxTVyqNILYc
-	 cGsBKMlC8DlhJQBl8v1ITDHAkqoEFnW9nnuMOmPQB8eW5+CjcfMo1mLhzsZUDYPFUe
-	 9v4fwygvZqHklVK8cdq+xo90aLrH+KhrA+JxOZ/C3EeM4rPHAzNTB3gjfXlwpPsg/y
-	 Q8Q8RCBh7QIaWDcGjgqE6LFQa5rq0PmGvEBeOg/QC57ckm0PJ4lqje94zowytehp0k
-	 N2SK0WfBEUNyw==
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-64b608ffca7so3968848a12.3
-        for <linux-rdma@vger.kernel.org>; Fri, 16 Jan 2026 15:39:47 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX1d8iPgaAGjkqez1SeIGExcRd9C7gJZrM5CZ6x3gbysyevaDbJ3OfaWTRcs40QJ8O+15dA1qNLi1VM@vger.kernel.org
-X-Gm-Message-State: AOJu0YyBcHdkvcLV3HxwEzWmcvP3nSbr+rINBiA+Z5YdNpjkPYRUThNw
-	ZZVnpYlvB5XIZIpOAxH4wTNRvksOEhRMkLWTXrn5icPTwD8U3ajBwjv/IFTaYbVHHkxBYYafqiI
-	sA8AM9BYZRDt7be7Behx+I/sgHCb1HQ==
-X-Received: by 2002:a05:6402:3547:b0:653:10be:c89b with SMTP id
- 4fb4d7f45d1cf-654bb70fa92mr3102930a12.34.1768606786546; Fri, 16 Jan 2026
- 15:39:46 -0800 (PST)
+	s=arc-20240116; t=1768637339; c=relaxed/simple;
+	bh=gaNmANuJkIdQql/i8QF1sqrWWFYC9/9hrFBDtFM3FFg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fPWNrd9ZdfBDM8SHg9ELnrRXlaa/oyeucvm06B+qhLsl+Ez8AUggWKJ4CgSuVxxOmfyHMwC59TQctkk7w8X0Z/MoUXfBJ9cytTUq9JAYG3ekzOFnI/5leoEnLOWl1kUt8JisthDEW9i+3bzi7GFxk2N//zIocXYVXN0jDaflHHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=bMHXx8Cf; arc=none smtp.client-ip=209.85.214.225
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pl1-f225.google.com with SMTP id d9443c01a7336-2a09757004cso24760545ad.3
+        for <linux-rdma@vger.kernel.org>; Sat, 17 Jan 2026 00:08:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768637337; x=1769242137;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Chjj4KECsdraHp3KJ11M5y3DUBmnDXYBuBomkNAmUx8=;
+        b=FPUhToZ6ghHUP+AZz6F/jNJ4kxZY9AoPIaN2wjkWXqzPtQd/LRSdVd0vlwMM/eBQrG
+         p+DcKg59iVq024BWqMnxwxV3iCrcUd3ilDq7tlLcqPCmenERVU8omuMJ79fenzcpbwnF
+         9dmK0bs0olQOmTdSEyIbUCYNIjZH/Z0Zn/Cj1V03YdYuMbkPVWGiXtxbsff1Nwt9Y+gr
+         c5mRjN3wNTT1d51QWfRzsJDnu29tPWO7qDrGgnjCUD+GsIePRbXinYnxGVYoZKsrw06y
+         WEeduozzqRftuCWrMOePV5hH2nO6IVzqfxZQw4dRAb0rO8m8Ll/GIKraLP9/NabfaMcP
+         aU7w==
+X-Gm-Message-State: AOJu0Yw3Qa+hD8HWNzNRtL/y+yUYxFbacwefwyUEFIM532KlxUMdlSNd
+	9qcYW5JZBjY5m9pBP1CBnS8ToA09H+Fsn9CmMPl1mKvckRATaSXbTUdf+8IcZogirE5ZSwOyImu
+	jAIugjETBFJyhztYrubdb95BjF+pt83GuEONl0jf3bgKnyFPrxlURO7nKf1ivwRtzXTqu2TvBiK
+	YWDMjm/fxKnDCK7RtAfoRE4/4WHpd+lhbfFs5rtEI+PGnfQOstol9lVUv3iATPjysotwlnLicGq
+	d0cieiOuOS4wsjGoSaENC4OPS1N
+X-Gm-Gg: AY/fxX5B/rgcZgJZPwDrpAs0AaatZAO85uY8m8fzpKpR5tkAXy0rK9A4S8BYbwOUM8J
+	D07d1gu06fZ+bHLFGt5B0d8AAfQk9x6Rh55JnqO4+a0O08DK0ZN457qHR/W1M5HJew/sf7TXe3w
+	9fCQdO8s7f/DwT967O0TLrTZsL7sCcVTHRFK8bnYjViuBTtZiYhAW4B4qlXpt7YYtdrjTv00s+t
+	DM4kAtVSNqvw1pok1vmxigd9gfypRvoku+WLrqkbqf2bZcvNY8glJSt7Jhhw1Gz4XXqB0XBNq3m
+	W33Rrfhf57TUsmAjhEO+kWHusPZdzkZgeEeN8VGIJB1RgjxkkQ9IC1Dv17B/vOwO9EGvaLTWlAy
+	UPfogG6RqJF5BChe9StBoZdMprTmmjIjawId7oExyZyZWL0jxKEjGfdJXzrM7uodUffBb36f0pJ
+	PGT/+qpq4BrRpq1j9tyQVrc5JMHFhYYgCggKb9SDeBXGz4iuJvKEZU4q4jQBI=
+X-Received: by 2002:a17:903:2451:b0:298:2e7a:3c47 with SMTP id d9443c01a7336-2a7175bc919mr50354965ad.42.1768637336903;
+        Sat, 17 Jan 2026 00:08:56 -0800 (PST)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-118.dlp.protect.broadcom.com. [144.49.247.118])
+        by smtp-relay.gmail.com with ESMTPS id d9443c01a7336-2a7190d249bsm6457285ad.23.2026.01.17.00.08.56
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 17 Jan 2026 00:08:56 -0800 (PST)
+X-Relaying-Domain: broadcom.com
+X-CFilter-Loop: Reflected
+Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-81f39ad0d82so5604310b3a.3
+        for <linux-rdma@vger.kernel.org>; Sat, 17 Jan 2026 00:08:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1768637335; x=1769242135; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Chjj4KECsdraHp3KJ11M5y3DUBmnDXYBuBomkNAmUx8=;
+        b=bMHXx8CfgdPPtnar9sQ3khHYQNfBaJd1ay57wG5wFcAbaXbcoIR/NzbD+Nr1WROynV
+         2e9fixNmxBdxA889LSqT1a/MjgeSaBOdTbZNayja0/IXKjrlhTCGVPOpj7w4Cf+oDVX/
+         AO3gJTyh850jU5v8/biFFkrOBQh5wbYqhymSU=
+X-Received: by 2002:a05:6a00:8c13:b0:7e8:4433:8fb4 with SMTP id d2e1a72fcca58-81fa03c99a3mr5723672b3a.60.1768637334959;
+        Sat, 17 Jan 2026 00:08:54 -0800 (PST)
+X-Received: by 2002:a05:6a00:8c13:b0:7e8:4433:8fb4 with SMTP id d2e1a72fcca58-81fa03c99a3mr5723655b3a.60.1768637334536;
+        Sat, 17 Jan 2026 00:08:54 -0800 (PST)
+Received: from dhcp-10-123-157-187.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-81fa10bdafdsm3833819b3a.15.2026.01.17.00.08.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Jan 2026 00:08:53 -0800 (PST)
+From: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+To: leon@kernel.org,
+	jgg@ziepe.ca
+Cc: linux-rdma@vger.kernel.org,
+	andrew.gospodarek@broadcom.com,
+	selvin.xavier@broadcom.com,
+	kalesh-anakkur.purayil@broadcom.com,
+	Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+Subject: [PATCH rdma-next v8 0/4] RDMA/bnxt_re: Support direct verbs
+Date: Sat, 17 Jan 2026 13:30:48 +0530
+Message-ID: <20260117080052.43279-1-sriharsha.basavapatna@broadcom.com>
+X-Mailer: git-send-email 2.51.2.636.ga99f379adf
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260108182318.20935-1-ivecera@redhat.com> <20260108182318.20935-2-ivecera@redhat.com>
- <92bfc390-d706-4988-b98d-841a50f10834@redhat.com> <CAL_Jsq+m7-wop-AU-7R-=2JsUqb+2LsVTXCbZw==1XuAAQ4Tkg@mail.gmail.com>
- <a5dad0f9-001c-468f-99bc-e24c23bc9b36@redhat.com>
-In-Reply-To: <a5dad0f9-001c-468f-99bc-e24c23bc9b36@redhat.com>
-From: Rob Herring <robh@kernel.org>
-Date: Fri, 16 Jan 2026 17:39:35 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJhqp-cgj604eEgxD47gJci0d3CFYf1wC_t1c00OptTiQ@mail.gmail.com>
-X-Gm-Features: AZwV_Qgghn897CtG_q8P6welgr6_MD-NJlyOmC0cWTEkTMdvGwzWh8_gNK8Dfu8
-Message-ID: <CAL_JsqJhqp-cgj604eEgxD47gJci0d3CFYf1wC_t1c00OptTiQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 01/12] dt-bindings: dpll: add common
- dpll-pin-consumer schema
-To: Ivan Vecera <ivecera@redhat.com>
-Cc: netdev@vger.kernel.org, Vadim Fedorenko <vadim.fedorenko@linux.dev>, 
-	Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>, Jiri Pirko <jiri@resnulli.us>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Prathosh Satish <Prathosh.Satish@microchip.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>, Andrew Lunn <andrew+netdev@lunn.ch>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Saeed Mahameed <saeedm@nvidia.com>, 
-	Leon Romanovsky <leon@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch <mbloch@nvidia.com>, 
-	Jonathan Lemon <jonathan.lemon@gmail.com>, Richard Cochran <richardcochran@gmail.com>, 
-	Alexander Lobakin <aleksander.lobakin@intel.com>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org, 
-	linux-rdma@vger.kernel.org, Michal Schmidt <mschmidt@redhat.com>, 
-	Petr Oros <poros@redhat.com>, Grzegorz Nitka <grzegorz.nitka@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 
-On Fri, Jan 16, 2026 at 1:00=E2=80=AFPM Ivan Vecera <ivecera@redhat.com> wr=
-ote:
->
-> On 1/16/26 4:23 PM, Rob Herring wrote:
-> > On Thu, Jan 15, 2026 at 6:02=E2=80=AFAM Ivan Vecera <ivecera@redhat.com=
-> wrote:
-> >>
-> >> On 1/8/26 7:23 PM, Ivan Vecera wrote:
-> >>> Introduce a common schema for DPLL pin consumers. Devices such as Eth=
-ernet
-> >>> controllers and PHYs may require connections to DPLL pins for Synchro=
-nous
-> >>> Ethernet (SyncE) or other frequency synchronization tasks.
-> >>>
-> >>> Defining these properties in a shared schema ensures consistency acro=
-ss
-> >>> different device types that consume DPLL resources.
-> >>>
-> >>> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
-> >>> ---
-> >>>    .../bindings/dpll/dpll-pin-consumer.yaml      | 30 +++++++++++++++=
-++++
-> >>>    MAINTAINERS                                   |  1 +
-> >>>    2 files changed, 31 insertions(+)
-> >>>    create mode 100644 Documentation/devicetree/bindings/dpll/dpll-pin=
--consumer.yaml
-> >>>
-> >>> diff --git a/Documentation/devicetree/bindings/dpll/dpll-pin-consumer=
-.yaml b/Documentation/devicetree/bindings/dpll/dpll-pin-consumer.yaml
-> >>> new file mode 100644
-> >>> index 0000000000000..60c184c18318a
-> >>> --- /dev/null
-> >>> +++ b/Documentation/devicetree/bindings/dpll/dpll-pin-consumer.yaml
-> >>> @@ -0,0 +1,30 @@
-> >>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> >>> +%YAML 1.2
-> >>> +---
-> >>> +$id: http://devicetree.org/schemas/dpll/dpll-pin-consumer.yaml#
-> >>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> >>> +
-> >>> +title: DPLL Pin Consumer
-> >>> +
-> >>> +maintainers:
-> >>> +  - Ivan Vecera <ivecera@redhat.com>
-> >>> +
-> >>> +description: |
-> >>> +  Common properties for devices that require connection to DPLL (Dig=
-ital Phase
-> >>> +  Locked Loop) pins for frequency synchronization (e.g. SyncE).
-> >>> +
-> >>> +properties:
-> >>> +  dpll-pins:
-> >>> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> >>> +    description:
-> >>> +      List of phandles to the DPLL pin nodes connected to this devic=
-e.
-> >>> +
-> >>> +  dpll-pin-names:
-> >>> +    $ref: /schemas/types.yaml#/definitions/string-array
-> >>> +    description:
-> >>> +      Names for the DPLL pins defined in 'dpll-pins', in the same or=
-der.
-> >>> +
-> >>> +dependencies:
-> >>> +  dpll-pin-names: [ dpll-pins ]
-> >>> +
-> >>> +additionalProperties: true
-> >>> diff --git a/MAINTAINERS b/MAINTAINERS
-> >>> index 765ad2daa2183..f6f58dfb20931 100644
-> >>> --- a/MAINTAINERS
-> >>> +++ b/MAINTAINERS
-> >>> @@ -7648,6 +7648,7 @@ M:      Jiri Pirko <jiri@resnulli.us>
-> >>>    L:  netdev@vger.kernel.org
-> >>>    S:  Supported
-> >>>    F:  Documentation/devicetree/bindings/dpll/dpll-device.yaml
-> >>> +F:   Documentation/devicetree/bindings/dpll/dpll-pin-consumer.yaml
-> >>>    F:  Documentation/devicetree/bindings/dpll/dpll-pin.yaml
-> >>>    F:  Documentation/driver-api/dpll.rst
-> >>>    F:  drivers/dpll/
-> >>
-> >> Based on private discussion with Andrew Lunn (thanks a lot), this is
-> >> wrong approach. Referencing directly dpll-pin nodes and using their
-> >> phandles in consumers is at least unusual.
-> >>
-> >> The right approach should be referencing dpll-device and use cells
-> >> to specify the dpll pin that is used.
-> >
-> > You only need a cells property if you expect the number of cells to
-> > vary by provider.
-> >
-> > However, the DPLL device just appears to be a clock provider and
-> > consumer, so why not just use the clock binding here? Also, there is
-> > no rule that using foo binding means you have to use foo subsystem in
-> > the kernel.
->
-> Hmm, do you mean something like this example?
->
-> &dpll0 {
->      ...
->      #clock-cells =3D <2>; /* 1st pin index, 2nd pin type (input/output) =
-*/
->
->      input-pins {
->          pin@2 {
->              reg =3D <2>;
->              ...
->          };
->          pin@4 {
->              reg =3D <4>;
->              ...
->          };
->      };
->      output-pins {
->          pin@3 {
->              reg =3D <3>;
->          };
->      };
-> };
-> &phy0 {
->      ...
->      clock-names =3D "rclk0", "rclk1", "synce_ref";
->      clocks =3D <&dpll0 2 DPLL_INPUT>,
->               <&dpll0 4 DPLL_INPUT>,
->               <&dpll0 3 DPLL_OUTPUT>;
->      ...
-> };
+Hi,
 
-No, clock providers are always the clock outputs, and clock consumers
-are the clock inputs. So something like this:
+This patchset supports Direct Verbs in the bnxt_re driver.
 
-&dpll0 {
-     ...
-     #clock-cells =3D <1>; /* 1st pin index */
+This is required by vendor specific applications that need to manage
+the HW resources directly and to implement the datapath in the
+application.
 
-     // clocks index corresponds to input pins on dpll0 */
-     clocks =3D <&phy0 0>, <&phy0 1>, <&phy1 0>, <&phy1 1>
-};
-&phy0 {
-     ...
-     #clock-cells =3D <1>;
-     clocks =3D <&dpll0 3>;
-     ...
-};
+To support this, the library and the driver are being enhanced to
+provide Direct Verbs using which the application can allocate and
+manage the HW resources (Queues, Doorbell etc) . The Direct Verbs
+enable the application to implement the control path.
 
-Rob
+Patch#1 Move uapi methods to a separate file
+Patch#2 Refactor existing bnxt_qplib_create_qp() function
+Patch#3 Support dbr direct verbs
+Patch#4 Support cq and qp direct verbs
+
+Thanks,
+-Harsha
+
+******
+
+Changes:
+
+v8:
+- Patch#3:
+  - Removed dpi_hash table (and lock/rcu).
+  - Renamed bnxt_re_alloc_dbr_obj->bnxt_re_dbr_obj.
+  - Added an atomic usecnt in dbr_obj.
+- Patch#4:
+  - Registered a driver specific attribute for dbr_handle.
+  - Process dbr_handle during QP creation.
+  - Added refcnt logic to avoid dbr deletion with active QPs.
+  - Reverted dpi hash table lookup and related code.
+  - Removed dpi from req_qp ABI.
+  - Added ib_umem_find_best_pgsz() in umem processing.
+  - Added a wrapper function for dv_cq deletion.
+v7:
+- Patch#3:
+  - DBR_OFFSET attribute changed to PTR_OUT.
+  - Added a reserved field in struct bnxt_re_dv_db_region.
+  - Reordered sequence in DBR_ALLOC (hash_add -> uverbs_finalize).
+  - Synchronized access to dpi hash table.
+- Patch#4:
+  - Changed dmabuf_fd type (u32->s32) in ABI.
+  - Changed num_dma_blocks() arg from PAGE_SIZE to SZ_4K. 
+  - Fixed atomic read/inc race window in bnxt_re_dv_create_qplib_cq().
+  - Deleted bnxt_re_dv_init_ib_cq(). 
+v6:
+- Minor updates in Patch#3:
+  - Removed unused variables.
+  - Renamed & updated a uverbs method to a global.
+- Minor updates in Patch#4:
+  - Removed unused variables, stray hunks.
+v5:
+- Design changes to address previous round of comments:
+  - Reverted changes in rdma-core (removed V4-Patch#1).
+  - Removed driver support for umem-reg/dereg DVs (Patch#3).
+  - Enhanced driver specific udata to avoid new CQ/QP ioctls (Patch#4).
+  - Removed additional driver functions in modify/query QP (Patch#4).
+  - Utilized queue-va in udata for deferred pinning (Patch#4).
+v4:
+- Added a new (rdma core) patch.
+- Addressed code review comments in patch 5.
+v3:
+- Addressed code review comments in patches 1, 2 and 4.
+v2:
+- Fixed build warnings reported by test robot in patches 3 and 4.
+
+v7: https://lore.kernel.org/linux-rdma/20260113170956.103779-1-sriharsha.basavapatna@broadcom.com/
+v6: https://lore.kernel.org/linux-rdma/20251224042602.56255-1-sriharsha.basavapatna@broadcom.com/
+v5: https://lore.kernel.org/linux-rdma/20251129165441.75274-1-sriharsha.basavapatna@broadcom.com/
+v4: https://lore.kernel.org/linux-rdma/20251117061741.15752-1-sriharsha.basavapatna@broadcom.com/
+v3: https://lore.kernel.org/linux-rdma/20251110145628.290296-1-sriharsha.basavapatna@broadcom.com/
+v2: https://lore.kernel.org/linux-rdma/20251104072320.210596-1-sriharsha.basavapatna@broadcom.com/
+v1: https://lore.kernel.org/linux-rdma/20251103105033.205586-1-sriharsha.basavapatna@broadcom.com/
+
+******
+
+Kalesh AP (3):
+  RDMA/bnxt_re: Move the UAPI methods to a dedicated file
+  RDMA/bnxt_re: Refactor bnxt_qplib_create_qp() function
+  RDMA/bnxt_re: Direct Verbs: Support DBR verbs
+
+Sriharsha Basavapatna (1):
+  RDMA/bnxt_re: Direct Verbs: Support CQ and QP verbs
+
+ drivers/infiniband/hw/bnxt_re/Makefile    |   2 +-
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h   |   6 +
+ drivers/infiniband/hw/bnxt_re/dv.c        | 952 ++++++++++++++++++++++
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c  | 552 +++++--------
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h  |  22 +
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c  | 310 +++----
+ drivers/infiniband/hw/bnxt_re/qplib_fp.h  |  10 +-
+ drivers/infiniband/hw/bnxt_re/qplib_res.c |  43 +
+ drivers/infiniband/hw/bnxt_re/qplib_res.h |  10 +
+ include/uapi/rdma/bnxt_re-abi.h           |  49 ++
+ 10 files changed, 1411 insertions(+), 545 deletions(-)
+ create mode 100644 drivers/infiniband/hw/bnxt_re/dv.c
+
+-- 
+2.51.2.636.ga99f379adf
+
 
