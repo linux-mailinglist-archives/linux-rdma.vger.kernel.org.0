@@ -1,129 +1,88 @@
-Return-Path: <linux-rdma+bounces-15675-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15676-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 761A5D39725
-	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jan 2026 15:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FDD5D397D6
+	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jan 2026 17:23:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E4195300E3C3
-	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jan 2026 14:29:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2909B300C28C
+	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jan 2026 16:23:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82FE53385A5;
-	Sun, 18 Jan 2026 14:29:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C26F218845;
+	Sun, 18 Jan 2026 16:23:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hP6EF4ql"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KYIY7IOJ"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0BD33346B5;
-	Sun, 18 Jan 2026 14:29:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DAB51D5160;
+	Sun, 18 Jan 2026 16:23:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768746553; cv=none; b=nZ+X5zfXeu5sTxvycjoNCyG5MVhDXiZzY8XU9y4p70XL/Ieu6Mr9wQR6RZHH3fqVWS4DGVE5cMla6/zZkl8MpMEuCdlS6RAGaSa/ckAfn8kNhi0azbd6zbXTRnHp2DZIt2WYEWlCZUQ2TThTp7J7i7sS80nlqTWbS4YVMTESPSs=
+	t=1768753392; cv=none; b=BnWKOy7EKrBhLwB3vjkZq5Q+H+biCpNtqd9q1bO/9M0p06d28dRYhFQrlFu0M7tr4R7xeoKrnBp05jNlnoXWdu1Su7rvZCAoAsJeamHO9PjXijHiNV45Hv0kbpakZFeaIAi9xca5uj/uPaJwzgUyDf9RakqVK4fKsMjWhywMzMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768746553; c=relaxed/simple;
-	bh=0+eaeMN1EHDT+lkQ4GIUQ4W12gE3E7ctCy4zVXTxlPk=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=PGv9pMT110CbUZUs1Rtp1ljQm8pwlWIBITgzaB7p9Tb/tjc44HdNCZRnC7PaW7qmqlnklwUsx4yVH6by6GKzAqD2mWu73tBD+/01iq4nApx0adawiHqUjHFy13ILHYTG3B2eoFiP0NJ2rX3wrzTSsHU+K6vvF6OwRBaHtCdmrkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hP6EF4ql; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1768746552; x=1800282552;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=0+eaeMN1EHDT+lkQ4GIUQ4W12gE3E7ctCy4zVXTxlPk=;
-  b=hP6EF4qlFgUINJkL2wEWjnpQchlqDrmCV5hr8bn0J7Uo+tKFnsaVtLe5
-   js9HqIZiQAm6dGmfPqM1uEZ0/rtrljDFMYUHZi2VRnXNk+HOM11u7qe5t
-   2lxaYRRbnw1VNY6qoJ0KTMO38YSxMVt9mGtQatwQwPmu64kdxPLVG1cnv
-   nHs2WHeRfDrgNGNJNhphBhglK+hwquVfgPkGRjoVCnsDFlYaE3kagKKQv
-   dEJXnzoTBc0V0gfhzHKXhS85NNHAGPA+1QVjEoxU21WjztschKfCzyPao
-   UdxJbF89U36/gogfK8j1f3Wr4Cf3dr9TctJREiXANulNL2cYXMOtl/jNb
-   Q==;
-X-CSE-ConnectionGUID: YDdxNlz5SwiFFSsIOCUzqA==
-X-CSE-MsgGUID: 5liDbC2gRrKIgAvODOvhCQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11675"; a="70146414"
-X-IronPort-AV: E=Sophos;i="6.21,235,1763452800"; 
-   d="scan'208";a="70146414"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2026 06:29:12 -0800
-X-CSE-ConnectionGUID: nCY8yfQeS1CtWSbdd073Iw==
-X-CSE-MsgGUID: VxUvo3fYR72cV06gEahrOg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,235,1763452800"; 
-   d="scan'208";a="205447268"
-Received: from egrumbac-mobl6.ger.corp.intel.com (HELO [10.245.244.5]) ([10.245.244.5])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2026 06:29:04 -0800
-Message-ID: <8bc75706c18c410f9564805c487907aba0aab627.camel@linux.intel.com>
-Subject: Re: [PATCH v2 2/4] dma-buf: Document revoke semantics
-From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
-To: Leon Romanovsky <leon@kernel.org>, Sumit Semwal
- <sumit.semwal@linaro.org>,  Christian =?ISO-8859-1?Q?K=F6nig?=	
- <christian.koenig@amd.com>, Alex Deucher <alexander.deucher@amd.com>, David
- Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, Gerd Hoffmann
- <kraxel@redhat.com>,  Dmitry Osipenko <dmitry.osipenko@collabora.com>,
- Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu	
- <olvaffe@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-  Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann
- <tzimmermann@suse.de>, Lucas De Marchi	 <lucas.demarchi@intel.com>, Rodrigo
- Vivi <rodrigo.vivi@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian
- <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>, Will Deacon
- <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, Alex Williamson
- <alex@shazbot.org>
-Cc: linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org, 
-	amd-gfx@lists.freedesktop.org, virtualization@lists.linux.dev, 
-	intel-xe@lists.freedesktop.org, linux-rdma@vger.kernel.org, 
-	iommu@lists.linux.dev, kvm@vger.kernel.org
-Date: Sun, 18 Jan 2026 15:29:02 +0100
-In-Reply-To: <20260118-dmabuf-revoke-v2-2-a03bb27c0875@nvidia.com>
-References: <20260118-dmabuf-revoke-v2-0-a03bb27c0875@nvidia.com>
-	 <20260118-dmabuf-revoke-v2-2-a03bb27c0875@nvidia.com>
-Organization: Intel Sweden AB, Registration Number: 556189-6027
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-2.fc41) 
+	s=arc-20240116; t=1768753392; c=relaxed/simple;
+	bh=PNyEIOyLJvpFOMh+7+Br84wCmLtyNH5iOoF/1ERMO40=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=OB1/c8+tSpEDy4nCe7z0mUZR4Cdwm5uhKHcC0UB0mpaKvUfC6bjBJC1ZMbujIbCkFMod4KKmlaflA9Z5BCGOr+q47aqoA/eI7r5vPNg6x5e712QxFsJ8oJ+fq3hX2G2L2khuyaFQKaBpC+VV886YL8DwcAv5t+ygfo9Y0tuk8UA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KYIY7IOJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AB00C116D0;
+	Sun, 18 Jan 2026 16:23:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768753391;
+	bh=PNyEIOyLJvpFOMh+7+Br84wCmLtyNH5iOoF/1ERMO40=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=KYIY7IOJdk2LXXpcl6Q+3hQkHNY7uSQUQTCcf0sQiwmBGERM7t9si/e+v8Bc9w8Wd
+	 5N32LtgcpsjYiCl1zlILOcAWL3ke41vl8UDB37dbv3K6ZOhBRNEk+efzu72Kjo6a2r
+	 Hy/gEaokYjuXX3UdkOyVkkdw/JRD7qFKi7Y1Az9oABsqBd3h36YIqjppE4YW86ydXV
+	 oU1MG2MPPeJEIyXLmBUXchVoQ7KCOq82frZSungITTgB6eS31JgLC3p5pe/SyKIiRm
+	 FN/1wrtC0cvCHoudSmXCzgUp5MxwIB8ILn9ccZsPxYVJ5imw1MQw0szb+D+Dp7rAF+
+	 ulHCIhdF0/2FA==
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@ziepe.ca>, Patrisious Haddad <phaddad@nvidia.com>, 
+ Michael Guralnik <michaelgur@nvidia.com>, 
+ Edward Srouji <edwards@nvidia.com>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Chiara Meiohas <cmeiohas@nvidia.com>, Maher Sanalla <msanalla@nvidia.com>, 
+ Mark Bloch <mbloch@nvidia.com>
+In-Reply-To: <20260113-umr-hand-lag-fix-v1-1-3dc476e00cd9@nvidia.com>
+References: <20260113-umr-hand-lag-fix-v1-1-3dc476e00cd9@nvidia.com>
+Subject: Re: [PATCH rdma-next] RDMA/mlx5: Fix UMR hang in LAG error state
+ unload
+Message-Id: <176875338879.525622.17025100833914120656.b4-ty@kernel.org>
+Date: Sun, 18 Jan 2026 11:23:08 -0500
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15-dev-a6db3
 
-On Sun, 2026-01-18 at 14:08 +0200, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
->=20
-> Document a DMA-buf revoke mechanism that allows an exporter to
-> explicitly
-> invalidate ("kill") a shared buffer after it has been handed out to
-> importers. Once revoked, all further CPU and device access is
-> blocked, and
-> importers consistently observe failure.
 
-See previous comment WRT this.
+On Tue, 13 Jan 2026 15:37:10 +0200, Edward Srouji wrote:
+> During firmware reset in LAG mode, a race condition causes the driver
+> to hang indefinitely while waiting for UMR completion during device
+> unload. See [1].
+> 
+> In LAG mode the bond device is only registered on the master, so it
+> never sees sys_error events from the slave.
+> During firmware reset this causes UMR waits to hang forever on unload
+> as the slave is dead but the master hasn't entered error state yet, so
+> UMR posts succeed but completions never arrive.
+> 
+> [...]
 
->=20
-> This requires both importers and exporters to honor the revoke
-> contract.
->=20
-> For importers, this means implementing .invalidate_mappings() and
-> calling
-> dma_buf_pin() after the DMA=E2=80=91buf is attached to verify the exporte=
-r=E2=80=99s
-> support
-> for revocation.
+Applied, thanks!
 
-Why would the importer want to verify the exporter's support for
-revocation? If the exporter doesn't support it, the only consequence
-would be that invalidate_mappings() would never be called, and that
-dma_buf_pin() is a NOP. Besides, dma_buf_pin() would not return an
-error if the exporter doesn't implement the pin() callback?
+[1/1] RDMA/mlx5: Fix UMR hang in LAG error state unload
+      https://git.kernel.org/rdma/rdma/c/ebc2164a4cd431
 
-Or perhaps I missed a prereq patch?
-
-Thanks,
-Thomas
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
 
 
