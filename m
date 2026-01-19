@@ -1,264 +1,281 @@
-Return-Path: <linux-rdma+bounces-15692-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15693-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B895FD3A26B
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 10:07:09 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66207D3A2E2
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 10:27:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C668D300DA6A
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 09:06:30 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id E8AB9300B37C
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 09:27:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59441352948;
-	Mon, 19 Jan 2026 09:06:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B32D43557E8;
+	Mon, 19 Jan 2026 09:27:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FvVSOxaH"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lCUcN4om"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7660352C4D
-	for <linux-rdma@vger.kernel.org>; Mon, 19 Jan 2026 09:06:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCDC02DC762;
+	Mon, 19 Jan 2026 09:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768813590; cv=none; b=Np2jbaYNyBEwV90fjZ4NvPN1GfyPs+9eguT1S1zuGQ6uUzv9nWTGcuq/ELoqxhseAtB8uFIPn51bSnRKpiw+jCYrrWdelbWqmEHuBsoZEqhez68TqmDsNb0CsD06SxFDrV0Pz6i+UQFM0pnUhj6AP8gQlGuYsiOuZ1+B+B6HWNY=
+	t=1768814841; cv=none; b=bxxJb1P+9cxFVWR0IKSpaaayxH2yONz7cQhdR2C/huq3wtRevfPqNT9vD7lhsycGG5PSJDCrKKvIYxxoeAGGjWbgcOjT9HkAwEL0ZstE3qQ+MOYeIRmrq7VDQOsH9kP5Q8PhRtpcDyOMgEBbvDeDSNMmCkIcsWGWDiVvPnXOZ5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768813590; c=relaxed/simple;
-	bh=BEmvY4J+hy/sdg6bzoW/HPwU4tRcUiZZOs0tdSuifKg=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=QPeOsFbWK4GQqdMoN4Qs8HohHKCNHAtSi1lHbbegqGjnaxKMmAXZeT7PmL3zGuqUs8MXQ2WgPfEIO/u9XfBSnu690EkNWPbRJEXLjVAYvfnSbMGcvTTreNQm8hKi+ttwoSU8KrfCFoRPQ8FbUv3fLrJaAAuo7IvW3J8hgXdj5qw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FvVSOxaH; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1768814841; c=relaxed/simple;
+	bh=1LWdKy0wxcp3AbNhZv5YgZA5HhjEKmlwhhAIxDXEKnI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=rSiVBb02I61goujlGPCug/xLruhlUgvSXIWxYVbJpQHmKdHdyzykKLFM3ax9KZlddbykCM0UAidb2p1L8GhcMbA+eeCZszWMhSINM3uWbKLbFj8/caCkRoLHCVx2S35vtUP+pseRO6RXG+HrvMZcJP0LExTcVKpdqAG73o7wqIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lCUcN4om; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1768813583; x=1800349583;
-  h=date:from:to:cc:subject:message-id;
-  bh=BEmvY4J+hy/sdg6bzoW/HPwU4tRcUiZZOs0tdSuifKg=;
-  b=FvVSOxaHfnHrOM7YRrBeMbkc2zi7yCf05J1NIywVqXmb2Z6gNQ1nxSMM
-   mpPcCzPbpt65CXnuBqSzBsYjIotVAtfyKg1CcpyBTgkRJbaUSlnD1I+kY
-   8GxJc9WnRX4aI9aY5R69dH0ODf02R0W13FdmL/ul2nKWu14GYq9OZ+S0L
-   l86cj/CfnWnuSygUdimcSXAMqSS8FHEmgiXPwLP+b85LtWT9UbmouqvVG
-   UJdPYhXk000w6C0ubprhdL/gquJSg0V6UvW+A3TBMxcEVqe1L3wtWefJI
-   8hRQmRinqTDb4zifJ14hssIjTDIOHKridOM1ds3VTref2h796CDj1CESj
-   Q==;
-X-CSE-ConnectionGUID: XaU/nmdjT9i8RigndXBAwA==
-X-CSE-MsgGUID: gHbKC9KpR2G2e8bU+FiswA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11675"; a="81392572"
+  t=1768814840; x=1800350840;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=1LWdKy0wxcp3AbNhZv5YgZA5HhjEKmlwhhAIxDXEKnI=;
+  b=lCUcN4omlnVLN9ToWQL+8Os53D1o+igys0Zvkj+AmwYNh3yNMpzITGQ9
+   LKVVm536jQWElFYBWjbDRfuTyXh8OGHIuiEU4bfBL6AEgip3PsMOtekuC
+   UgkHnxyiVSuOIpqeUBcCsxK9d5CPOjflvWtNcls+sM3quly4iT2X1QmXD
+   +Uj3JsByIjomPs5SNQnPZjQmmNNb9N4sdMNQmASFP0ncAl+HjbB6R/vXS
+   9iX11OmRwFl2xgdnPcKoWGJNm3gXpMRhePV3RghoSVq8E/DzsF6o8DxVS
+   CpVh4kTALyT5kciHzRfGdvTeWBvfCg85VGKs26DYKE4dLnnbLhnKByW2B
+   A==;
+X-CSE-ConnectionGUID: SmUbgZjFTyuSf5xnL+fz2A==
+X-CSE-MsgGUID: KBMgKT0NRE+QJ+3hTh2J/Q==
+X-IronPort-AV: E=McAfee;i="6800,10657,11675"; a="69223449"
 X-IronPort-AV: E=Sophos;i="6.21,237,1763452800"; 
-   d="scan'208";a="81392572"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2026 01:06:22 -0800
-X-CSE-ConnectionGUID: uvzOd7jpSTWvNeZj3b+sSQ==
-X-CSE-MsgGUID: vsGolMatRQeZNYuh6AUx0A==
+   d="scan'208";a="69223449"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2026 01:27:19 -0800
+X-CSE-ConnectionGUID: wVDcltDLQGSQ0FDWpueWJw==
+X-CSE-MsgGUID: rdbnuLpiR2SkFhlwu7xzJw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.21,237,1763452800"; 
-   d="scan'208";a="206169151"
-Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
-  by fmviesa010.fm.intel.com with ESMTP; 19 Jan 2026 01:06:20 -0800
-Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vhlDG-00000000NdF-0Pc3;
-	Mon, 19 Jan 2026 09:06:18 +0000
-Date: Mon, 19 Jan 2026 17:05:23 +0800
-From: kernel test robot <lkp@intel.com>
+   d="scan'208";a="210835738"
+Received: from egrumbac-mobl6.ger.corp.intel.com (HELO [10.245.244.32]) ([10.245.244.32])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2026 01:27:11 -0800
+Message-ID: <9112a605d2ee382e83b84b50c052dd9e4a79a364.camel@linux.intel.com>
+Subject: Re: [PATCH v2 0/4] dma-buf: document revoke mechanism to invalidate
+ shared buffers
+From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
 To: Leon Romanovsky <leon@kernel.org>
-Cc: Doug Ledford <dledford@redhat.com>,
- Jason Gunthorpe <jgg+lists@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [rdma:wip/leon-for-next] BUILD SUCCESS
- d3922f6dad69b3d1f7656c9035bd0e82f73091b7
-Message-ID: <202601191717.TgiqXd7T-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+Cc: Sumit Semwal <sumit.semwal@linaro.org>, Christian
+ =?ISO-8859-1?Q?K=F6nig?=	 <christian.koenig@amd.com>, Alex Deucher
+ <alexander.deucher@amd.com>, David Airlie <airlied@gmail.com>, Simona
+ Vetter <simona@ffwll.ch>, Gerd Hoffmann <kraxel@redhat.com>,  Dmitry
+ Osipenko <dmitry.osipenko@collabora.com>, Gurchetan Singh
+ <gurchetansingh@chromium.org>, Chia-I Wu	 <olvaffe@gmail.com>, Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>,  Maxime Ripard
+ <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, Lucas De
+ Marchi	 <lucas.demarchi@intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>, Joerg
+ Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, Robin Murphy
+ <robin.murphy@arm.com>, Alex Williamson <alex@shazbot.org>, 
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org, 
+	amd-gfx@lists.freedesktop.org, virtualization@lists.linux.dev, 
+	intel-xe@lists.freedesktop.org, linux-rdma@vger.kernel.org, 
+	iommu@lists.linux.dev, kvm@vger.kernel.org
+Date: Mon, 19 Jan 2026 10:27:00 +0100
+In-Reply-To: <20260119075229.GE13201@unreal>
+References: <20260118-dmabuf-revoke-v2-0-a03bb27c0875@nvidia.com>
+	 <f115c91bbc9c6087d8b32917b9e24e3363a91f33.camel@linux.intel.com>
+	 <20260119075229.GE13201@unreal>
+Organization: Intel Sweden AB, Registration Number: 556189-6027
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-2.fc41) 
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/leon-for-next
-branch HEAD: d3922f6dad69b3d1f7656c9035bd0e82f73091b7  RDMA/rxe: Remove unused page_offset member
+On Mon, 2026-01-19 at 09:52 +0200, Leon Romanovsky wrote:
+> On Sun, Jan 18, 2026 at 03:16:25PM +0100, Thomas Hellstr=C3=B6m wrote:
+> > Hi, Leon,
+> >=20
+> > On Sun, 2026-01-18 at 14:08 +0200, Leon Romanovsky wrote:
+> > > Changelog:
+> > > v2:
+> > > =C2=A0* Changed series to document the revoke semantics instead of
+> > > =C2=A0=C2=A0 implementing it.
+> > > v1:
+> > > https://patch.msgid.link/20260111-dmabuf-revoke-v1-0-fb4bcc8c259b@nvi=
+dia.com
+> > >=20
+> > > -----------------------------------------------------------------
+> > > ----
+> > > ----
+> > > This series documents a dma-buf =E2=80=9Crevoke=E2=80=9D mechanism: t=
+o allow a
+> > > dma-
+> > > buf
+> > > exporter to explicitly invalidate (=E2=80=9Ckill=E2=80=9D) a shared b=
+uffer after
+> > > it
+> > > has
+> > > been distributed to importers, so that further CPU and device
+> > > access
+> > > is
+> > > prevented and importers reliably observe failure.
+> > >=20
+> > > The change in this series is to properly document and use
+> > > existing
+> > > core
+> > > =E2=80=9Crevoked=E2=80=9D state on the dma-buf object and a correspon=
+ding
+> > > exporter-
+> > > triggered
+> > > revoke operation. Once a dma-buf is revoked, new access paths are
+> > > blocked so
+> > > that attempts to DMA-map, vmap, or mmap the buffer fail in a
+> > > consistent way.
+> >=20
+> > This sounds like it does not match how many GPU-drivers use the
+> > move_notify() callback.
+>=20
+> No change for them.
+>=20
+> >=20
+> > move_notify() would typically invalidate any device maps and any
+> > asynchronous part of that invalidation would be complete when the
+> > dma-
+> > buf's reservation object becomes idle WRT DMA_RESV_USAGE_BOOKKEEP
+> > fences.
+>=20
+> This part has not changed and remains the same for the revocation
+> flow as well.
+>=20
+> >=20
+> > However, the importer could, after obtaining the resv lock, obtain
+> > a
+> > new map using dma_buf_map_attachment(), and I'd assume the CPU maps
+> > work in the same way, I.E. move_notify() does not *permanently*
+> > revoke
+> > importer access.
+>=20
+> This part diverges by design and is documented to match revoke
+> semantics.=C2=A0=20
+> It defines what must occur after the exporter requests that the
+> buffer be=C2=A0=20
+> "killed". An importer that follows revoke semantics will not attempt
+> to call=C2=A0=20
+> dma_buf_map_attachment(), and the exporter will block any remapping
+> attempts=C2=A0=20
+> regardless. See the priv->revoked flag in the VFIO exporter.
+>=20
+> In addition, in this email thread, Christian explains that revoke
+> semantics already exists, with the combination of dma_buf_pin and
+> dma_buf_move_notify, just not documented:
+> https://lore.kernel.org/all/f7f1856a-44fa-44af-b496-eb1267a05d11@amd.com/
 
-elapsed time: 954m
 
-configs tested: 172
-configs skipped: 7
+Hmm,
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Considering=20
 
-tested configs:
-alpha                             allnoconfig    gcc-15.2.0
-alpha                            allyesconfig    gcc-15.2.0
-alpha                               defconfig    gcc-15.2.0
-arc                              allmodconfig    gcc-15.2.0
-arc                               allnoconfig    gcc-15.2.0
-arc                              allyesconfig    gcc-15.2.0
-arc                                 defconfig    gcc-15.2.0
-arc                   randconfig-001-20260119    gcc-11.5.0
-arc                   randconfig-002-20260119    gcc-8.5.0
-arm                               allnoconfig    clang-22
-arm                              allyesconfig    gcc-15.2.0
-arm                       aspeed_g5_defconfig    gcc-15.2.0
-arm                         bcm2835_defconfig    clang-22
-arm                          collie_defconfig    gcc-15.2.0
-arm                                 defconfig    clang-22
-arm                          gemini_defconfig    clang-20
-arm                       multi_v4t_defconfig    clang-16
-arm                       omap2plus_defconfig    gcc-15.2.0
-arm                   randconfig-001-20260119    clang-22
-arm                   randconfig-002-20260119    clang-22
-arm                   randconfig-003-20260119    clang-22
-arm                   randconfig-004-20260119    gcc-14.3.0
-arm                           sama5_defconfig    gcc-15.2.0
-arm64                            allmodconfig    clang-19
-arm64                             allnoconfig    gcc-15.2.0
-arm64                               defconfig    gcc-15.2.0
-arm64                 randconfig-001-20260119    gcc-15.2.0
-arm64                 randconfig-002-20260119    clang-19
-arm64                 randconfig-003-20260119    clang-16
-arm64                 randconfig-004-20260119    clang-20
-csky                             allmodconfig    gcc-15.2.0
-csky                              allnoconfig    gcc-15.2.0
-csky                                defconfig    gcc-15.2.0
-csky                  randconfig-001-20260119    gcc-12.5.0
-csky                  randconfig-002-20260119    gcc-15.2.0
-hexagon                          allmodconfig    clang-17
-hexagon                           allnoconfig    clang-22
-hexagon                             defconfig    clang-22
-hexagon               randconfig-001-20260119    clang-18
-hexagon               randconfig-002-20260119    clang-22
-i386                             allmodconfig    gcc-14
-i386                              allnoconfig    gcc-14
-i386                             allyesconfig    gcc-14
-i386        buildonly-randconfig-001-20260119    gcc-14
-i386        buildonly-randconfig-002-20260119    clang-20
-i386        buildonly-randconfig-003-20260119    gcc-14
-i386        buildonly-randconfig-004-20260119    clang-20
-i386        buildonly-randconfig-005-20260119    clang-20
-i386        buildonly-randconfig-006-20260119    gcc-13
-i386                                defconfig    clang-20
-i386                  randconfig-001-20260119    gcc-14
-i386                  randconfig-002-20260119    gcc-13
-i386                  randconfig-003-20260119    clang-20
-i386                  randconfig-004-20260119    gcc-14
-i386                  randconfig-005-20260119    clang-20
-i386                  randconfig-006-20260119    clang-20
-i386                  randconfig-007-20260119    clang-20
-i386                  randconfig-011-20260119    gcc-14
-i386                  randconfig-012-20260119    gcc-14
-i386                  randconfig-013-20260119    gcc-14
-i386                  randconfig-014-20260119    gcc-14
-i386                  randconfig-015-20260119    gcc-14
-i386                  randconfig-016-20260119    gcc-14
-i386                  randconfig-017-20260119    gcc-14
-loongarch                        allmodconfig    clang-19
-loongarch                         allnoconfig    clang-22
-loongarch                           defconfig    clang-19
-loongarch             randconfig-001-20260119    gcc-15.2.0
-loongarch             randconfig-002-20260119    gcc-15.2.0
-m68k                             allmodconfig    gcc-15.2.0
-m68k                              allnoconfig    gcc-15.2.0
-m68k                             allyesconfig    gcc-15.2.0
-m68k                                defconfig    gcc-15.2.0
-microblaze                        allnoconfig    gcc-15.2.0
-microblaze                       allyesconfig    gcc-15.2.0
-microblaze                          defconfig    gcc-15.2.0
-mips                             allmodconfig    gcc-15.2.0
-mips                              allnoconfig    gcc-15.2.0
-mips                             allyesconfig    gcc-15.2.0
-mips                        maltaup_defconfig    clang-22
-nios2                            allmodconfig    gcc-11.5.0
-nios2                             allnoconfig    gcc-11.5.0
-nios2                               defconfig    gcc-11.5.0
-nios2                 randconfig-001-20260119    gcc-10.5.0
-nios2                 randconfig-002-20260119    gcc-8.5.0
-openrisc                         allmodconfig    gcc-15.2.0
-openrisc                          allnoconfig    gcc-15.2.0
-openrisc                            defconfig    gcc-15.2.0
-parisc                           allmodconfig    gcc-15.2.0
-parisc                            allnoconfig    gcc-15.2.0
-parisc                           allyesconfig    gcc-15.2.0
-parisc                              defconfig    gcc-15.2.0
-parisc                randconfig-001-20260119    gcc-12.5.0
-parisc                randconfig-002-20260119    gcc-8.5.0
-parisc64                            defconfig    gcc-15.2.0
-powerpc                     akebono_defconfig    clang-22
-powerpc                          allmodconfig    gcc-15.2.0
-powerpc                           allnoconfig    gcc-15.2.0
-powerpc               randconfig-001-20260119    gcc-15.2.0
-powerpc               randconfig-002-20260119    clang-22
-powerpc64             randconfig-001-20260119    clang-22
-powerpc64             randconfig-002-20260119    clang-22
-riscv                            allmodconfig    clang-22
-riscv                             allnoconfig    gcc-15.2.0
-riscv                            allyesconfig    clang-16
-riscv                               defconfig    clang-22
-riscv                 randconfig-001-20260119    gcc-8.5.0
-riscv                 randconfig-002-20260119    clang-22
-s390                             allmodconfig    clang-18
-s390                              allnoconfig    clang-22
-s390                             allyesconfig    gcc-15.2.0
-s390                                defconfig    clang-22
-s390                  randconfig-001-20260119    gcc-9.5.0
-s390                  randconfig-002-20260119    clang-22
-s390                       zfcpdump_defconfig    clang-22
-sh                               allmodconfig    gcc-15.2.0
-sh                                allnoconfig    gcc-15.2.0
-sh                               allyesconfig    gcc-15.2.0
-sh                                  defconfig    gcc-15.2.0
-sh                    randconfig-001-20260119    gcc-15.2.0
-sh                    randconfig-002-20260119    gcc-12.5.0
-sh                   sh7724_generic_defconfig    gcc-15.2.0
-sparc                             allnoconfig    gcc-15.2.0
-sparc                               defconfig    gcc-15.2.0
-sparc                 randconfig-001-20260119    gcc-11.5.0
-sparc                 randconfig-002-20260119    gcc-15.2.0
-sparc64                          allmodconfig    clang-22
-sparc64                             defconfig    clang-20
-sparc64               randconfig-001-20260119    gcc-14.3.0
-sparc64               randconfig-002-20260119    clang-20
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-22
-um                               allyesconfig    gcc-14
-um                                  defconfig    clang-22
-um                             i386_defconfig    gcc-14
-um                    randconfig-001-20260119    clang-17
-um                    randconfig-002-20260119    gcc-14
-um                           x86_64_defconfig    clang-22
-x86_64                           allmodconfig    clang-20
-x86_64                            allnoconfig    clang-20
-x86_64                           allyesconfig    clang-20
-x86_64      buildonly-randconfig-001-20260119    gcc-14
-x86_64      buildonly-randconfig-002-20260119    clang-20
-x86_64      buildonly-randconfig-003-20260119    gcc-14
-x86_64      buildonly-randconfig-004-20260119    gcc-13
-x86_64      buildonly-randconfig-005-20260119    clang-20
-x86_64      buildonly-randconfig-006-20260119    clang-20
-x86_64                              defconfig    gcc-14
-x86_64                randconfig-001-20260119    gcc-14
-x86_64                randconfig-002-20260119    clang-20
-x86_64                randconfig-003-20260119    gcc-14
-x86_64                randconfig-004-20260119    gcc-12
-x86_64                randconfig-005-20260119    gcc-12
-x86_64                randconfig-006-20260119    clang-20
-x86_64                randconfig-011-20260119    clang-20
-x86_64                randconfig-012-20260119    gcc-14
-x86_64                randconfig-013-20260119    gcc-14
-x86_64                randconfig-014-20260119    clang-20
-x86_64                randconfig-015-20260119    gcc-14
-x86_64                randconfig-016-20260119    clang-20
-x86_64                randconfig-071-20260119    clang-20
-x86_64                randconfig-072-20260119    gcc-14
-x86_64                randconfig-073-20260119    gcc-14
-x86_64                randconfig-074-20260119    clang-20
-x86_64                randconfig-075-20260119    gcc-14
-x86_64                randconfig-076-20260119    gcc-14
-x86_64                          rhel-9.4-rust    clang-20
-xtensa                           alldefconfig    gcc-15.2.0
-xtensa                            allnoconfig    gcc-15.2.0
-xtensa                           allyesconfig    gcc-15.2.0
-xtensa                randconfig-001-20260119    gcc-12.5.0
-xtensa                randconfig-002-20260119    gcc-12.5.0
+https://elixir.bootlin.com/linux/v6.19-rc5/source/drivers/infiniband/core/u=
+mem_dmabuf.c#L192
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+this sounds like it's not just undocumented but also in some cases
+unimplemented. The xe driver for one doesn't expect move_notify() to be
+called on pinned buffers, so if that is indeed going to be part of the
+dma-buf protocol,  wouldn't support for that need to be advertised by
+the importer?
+
+Thanks,
+Thomas
+
+>=20
+> Thanks
+>=20
+> >=20
+> > /Thomas
+> >=20
+> >=20
+> > >=20
+> > > Thanks
+> > >=20
+> > > Cc: linux-media@vger.kernel.org
+> > > Cc: dri-devel@lists.freedesktop.org
+> > > Cc: linaro-mm-sig@lists.linaro.org
+> > > Cc: linux-kernel@vger.kernel.org
+> > > Cc: amd-gfx@lists.freedesktop.org
+> > > Cc: virtualization@lists.linux.dev
+> > > Cc: intel-xe@lists.freedesktop.org
+> > > Cc: linux-rdma@vger.kernel.org
+> > > Cc: iommu@lists.linux.dev
+> > > Cc: kvm@vger.kernel.org
+> > > To: Sumit Semwal <sumit.semwal@linaro.org>
+> > > To: Christian K=C3=B6nig <christian.koenig@amd.com>
+> > > To: Alex Deucher <alexander.deucher@amd.com>
+> > > To: David Airlie <airlied@gmail.com>
+> > > To: Simona Vetter <simona@ffwll.ch>
+> > > To: Gerd Hoffmann <kraxel@redhat.com>
+> > > To: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> > > To: Gurchetan Singh <gurchetansingh@chromium.org>
+> > > To: Chia-I Wu <olvaffe@gmail.com>
+> > > To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> > > To: Maxime Ripard <mripard@kernel.org>
+> > > To: Thomas Zimmermann <tzimmermann@suse.de>
+> > > To: Lucas De Marchi <lucas.demarchi@intel.com>
+> > > To: Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com>
+> > > To: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> > > To: Jason Gunthorpe <jgg@ziepe.ca>
+> > > To: Leon Romanovsky <leon@kernel.org>
+> > > To: Kevin Tian <kevin.tian@intel.com>
+> > > To: Joerg Roedel <joro@8bytes.org>
+> > > To: Will Deacon <will@kernel.org>
+> > > To: Robin Murphy <robin.murphy@arm.com>
+> > > To: Alex Williamson <alex@shazbot.org>
+> > >=20
+> > > ---
+> > > Leon Romanovsky (4):
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dma-buf: Rename .move_notify() callbac=
+k to a clearer
+> > > identifier
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dma-buf: Document revoke semantics
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iommufd: Require DMABUF revoke semanti=
+cs
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vfio: Add pinned interface to perform =
+revoke semantics
+> > >=20
+> > > =C2=A0drivers/dma-buf/dma-buf.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=
+=C2=A0 6 +++---
+> > > =C2=A0drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c |=C2=A0 4 ++--
+> > > =C2=A0drivers/gpu/drm/virtio/virtgpu_prime.c=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 |=C2=A0 2 +-
+> > > =C2=A0drivers/gpu/drm/xe/tests/xe_dma_buf.c=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 |=C2=A0 6 +++---
+> > > =C2=A0drivers/gpu/drm/xe/xe_dma_buf.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 2 +-
+> > > =C2=A0drivers/infiniband/core/umem_dmabuf.c=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 |=C2=A0 4 ++--
+> > > =C2=A0drivers/infiniband/hw/mlx5/mr.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 2 +-
+> > > =C2=A0drivers/iommu/iommufd/pages.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 11 +++++++++--
+> > > =C2=A0drivers/vfio/pci/vfio_pci_dmabuf.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 16
+> > > ++++++++++++++++
+> > > =C2=A0include/linux/dma-buf.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 | 25
+> > > ++++++++++++++++++++++---
+> > > =C2=A010 files changed, 60 insertions(+), 18 deletions(-)
+> > > ---
+> > > base-commit: 9ace4753a5202b02191d54e9fdf7f9e3d02b85eb
+> > > change-id: 20251221-dmabuf-revoke-b90ef16e4236
+> > >=20
+> > > Best regards,
+> > > --=C2=A0=20
+> > > Leon Romanovsky <leonro@nvidia.com>
+> > >=20
+> >=20
+
 
