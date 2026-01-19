@@ -1,182 +1,140 @@
-Return-Path: <linux-rdma+bounces-15708-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15709-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 379CFD3A9D7
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 14:03:34 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67EF5D3AADC
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 14:56:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D2A49309F064
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 13:02:50 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5784D3032CE7
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 13:54:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6681D363C79;
-	Mon, 19 Jan 2026 13:02:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47F0836E48B;
+	Mon, 19 Jan 2026 13:54:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="scELuI2G"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OYiIrJRs"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2513A2D1911;
-	Mon, 19 Jan 2026 13:02:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7590636D4F9
+	for <linux-rdma@vger.kernel.org>; Mon, 19 Jan 2026 13:54:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768827769; cv=none; b=s0Y/7nYn/seoOic9UacZgbnI7CFrrJoPJh33Z/lmhrh/h4hwpXM8qNCuOG8EyQPcMPUiMGCOWzjwOHgTnaiK5Z/rFCNOl0/XityeBdCs8qNgdOfxdJCpkd+Bk13PJzzVmaklVYBKU7HoCgjNy7C70UjlJeTHwQ+SshPi0F7strI=
+	t=1768830882; cv=none; b=rYBaSBzOoe1Q97tig1KF9MziSYw53GSyeCTUBQB+hC/8G7gUXLFELEGAZhcFhz46tWLU/pF0sQr01xaKTFePclCCRcpsCtTBbw2TDXGKPAzu3VqYxGUk4iZWe6+yBhLPHMzRpkETYPvj4wxlZnBvoYcg5ldCkKKr8fks1+oomgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768827769; c=relaxed/simple;
-	bh=cCxg8035viPJsz2XBq1ifbK2lrZlRG1OCR5jkwA4Q7M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c81fhG4ygYH+vT7YVCEqQcKyv0CP5uvWX3X7FcxshvXsWmsNiyWaILvKH79sv9TQK+U+23BEnfqdg043p5X5GZXNcYQcRFncGRCy0oMs/l8EhGf1sTGgy24DRgiLP43pgm+wVWn0H70pN6ZDVM+WCvYIaY5Qt+WvBRd4GlBhyyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=scELuI2G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4F21C116C6;
-	Mon, 19 Jan 2026 13:02:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768827768;
-	bh=cCxg8035viPJsz2XBq1ifbK2lrZlRG1OCR5jkwA4Q7M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=scELuI2GW3wYYW2ZENuAuFSaCJYKTwxSRnj2LRAqiwezAEBgiUivhNWu7wR7lsvrp
-	 JMiPt96eHalhzJp6zdj/VOztYexbL9CNdValyZad3QIoRwUqy2SNCBXDS5ZUmr2r5B
-	 3Q2LYZFjRo+TpYc7rFstqRHfbtMAFjLvRsXdqreX7yo2gyOr+diw1+LoloRIJTcEFf
-	 H3YM1NaUjV02Jdtuy+J3LR9/YjENpaZ6LVp9bzMZphF9Lehv4mUuhwTkRGGGpb2kcJ
-	 Ej14CRJRVv6csc6KuHzgzAe+xhdGGLSRvHHCsaiwAmERVJ+yIM5atMLB3FZRNKxX/w
-	 fRLM6YcjAxsPA==
-Date: Mon, 19 Jan 2026 15:02:44 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Gerd Hoffmann <kraxel@redhat.com>,
-	Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-	Gurchetan Singh <gurchetansingh@chromium.org>,
-	Chia-I Wu <olvaffe@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Lucas De Marchi <lucas.demarchi@intel.com>,
-	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Alex Williamson <alex@shazbot.org>, linux-media@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-	linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-	virtualization@lists.linux.dev, intel-xe@lists.freedesktop.org,
-	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
-	kvm@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] vfio: Add pinned interface to perform revoke
- semantics
-Message-ID: <20260119130244.GN13201@unreal>
-References: <20260118-dmabuf-revoke-v2-0-a03bb27c0875@nvidia.com>
- <20260118-dmabuf-revoke-v2-4-a03bb27c0875@nvidia.com>
- <bd37adf0-afd0-49c4-b608-7f9aa5994f7b@amd.com>
+	s=arc-20240116; t=1768830882; c=relaxed/simple;
+	bh=lo81BFx/Ulv0xcaPTgRdmV6KO1F84bHVc1SQVycS4S4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ud1FWbk090/j0eRbZ5TvEiVNnFbGHNkeaFEqi95hil6hSosR7kcHsjTSmH9+VCzc8MIUNXwnKk4rPaq8jfV7R69+ug3hwcbtMEXTTh0+k2VhikqyHzx6mCXSh49/VZQtBmddBnhShyXbKVwwLmvB5EK+P7AIfHFmHdLOh31royI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OYiIrJRs; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-42fb2314eb0so3557798f8f.2
+        for <linux-rdma@vger.kernel.org>; Mon, 19 Jan 2026 05:54:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768830878; x=1769435678; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MPy6cjzmHwuoEQvvRHEOfQ3zwGp51DN3ulInpeNRzkQ=;
+        b=OYiIrJRseciC2w1wnZYx/HQx+/0wX9AA+uU2X5/x12E/i8fcD9BBGk2WIj8Vzl3nQ2
+         heoHllWVgyETGz3o9UJgZUj2iw1g5A5wmNYoC6B6US3c9/XQGop6MP/TI4iL4MetxhRY
+         Kgm5v0Ns51mj3FsZElRH0eS5inpYEalQgzOnzZJg34NDzxt6sEx55JnBLY9QqwL0TAZM
+         yKR9AQMFWpTfpCIbn+BPlWKV+6IlkWqzjZnim0bEJWKxZhSFiE9zCJqz4FO0cu+JXDSh
+         KRlwuTmdMrX0dyEWK65U+OJAyPp+Pq2QXSV3yn85P+XNHgTTnyyXX46U0HrzUcZZQLQD
+         EG4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768830878; x=1769435678;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MPy6cjzmHwuoEQvvRHEOfQ3zwGp51DN3ulInpeNRzkQ=;
+        b=fg6D38EVA6czq+PoorAQCFfSx56tTfs2R+wwwcA39fliagTrq6z36IQKfNxNbcbmhG
+         3BrnLGZdV4FLiEsGz+nCKOB6bh724U9y2gMvZtevglhyJ8BRak3lrH9jS5ubyFV5kEiP
+         zJPZsNdHFMNBHmL38w4mFILN0ij9IH/3BWJlB2UkD96KOp7rJG1XyB619UlP1kBYo7Pm
+         yvXNeE3Sg0osY8nv6GYOaMSyD4BvfHA2OzSyEyuBxYf6p1cCIY0Mq0FfqubgiveJaVK+
+         5X0titebVckMsjtGML49f9yyKmTLbWIT5glhjvEioud2OQxKIWhT69g+50E3Vdg0nTe1
+         hgBA==
+X-Forwarded-Encrypted: i=1; AJvYcCVPXmTzwS7L6gXTDtIe6lPAczBQX+2OHN6tEYZuV7oDKhoBYSxUZRX3pgX7JmTuypoAPLhsvF/q30z0@vger.kernel.org
+X-Gm-Message-State: AOJu0YyNB2TyBHJZDBCkM+JGWEvNCKFPHBRK9Mr73Xg86NF4rFQyfjvN
+	Q5wucJBgzVZ3EUCJHmjOIf93T+YAyHoYR3PYdyLXzk0/h9CocZ6vIrO6
+X-Gm-Gg: AZuq6aJvxHredyo39H/ViGqcLEJjOK90z7odlcJIOscHYERelvvIKTPiPwYITYTmsTz
+	W7XnIbNz3j/pElhtmFiRXi1ge5Fd1bTiR9LIHofSyX5ZgDTz31hFUdqhD2Ye3jkoMprQbf087Vy
+	IsF2i/5kLEeRMlbGsWu2SzCF+fuEEispc1OqNHihMGUfp9lZOddXk07pkHdTDGTCew1pIqRrAgD
+	ejwbN69/Eocf8wKAUrCqgUEok3hQ05uTmu1MOxZYvRdDcxkumpCsUVZMc/RpHGQ8PbLK5zRKKoo
+	k7OffnBMeZPg3PW2QnpSAuPIvtTvMm6l/cWrRDMlv8wm2B579EvI9Q5wS5rv+W1Q7B5JnyJLtMQ
+	MapKgg/ozm0uzeQ4Q93JNNLZZN/5DYZAXrN2yT1w4+pTXdUEZEIuEBZEux/fYBYgbxZieUjpfpm
+	2c38Yakd5tJ3XvnLVHjhf+gRsEJqIeEXJrZfbLCznAKf+ZpnLgOnhOThSvAANIHyjOdLOPE/UFS
+	JWlpU8CC0DNv4HauipiyXwkovWMNOXdrD9LhMGJgsSvP8ZuuVg2dLA5rOZUfK3R
+X-Received: by 2002:a05:6000:3110:b0:431:48f:f78f with SMTP id ffacd0b85a97d-4356996f2f0mr12962136f8f.1.1768830877534;
+        Mon, 19 Jan 2026 05:54:37 -0800 (PST)
+Received: from ?IPV6:2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c? ([2a01:4b00:bd21:4f00:7cc6:d3ca:494:116c])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43569921f6esm22810483f8f.4.2026.01.19.05.54.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Jan 2026 05:54:36 -0800 (PST)
+Message-ID: <7ab5309d-8654-4fa8-9a1e-24b948bccba2@gmail.com>
+Date: Mon, 19 Jan 2026 13:54:37 +0000
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bd37adf0-afd0-49c4-b608-7f9aa5994f7b@amd.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v9 0/9] Add support for providers with large rx
+ buffer
+To: netdev@vger.kernel.org
+Cc: "David S . Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Michael Chan <michael.chan@broadcom.com>,
+ Pavan Chebbi <pavan.chebbi@broadcom.com>, Andrew Lunn
+ <andrew+netdev@lunn.ch>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Joshua Washington <joshwash@google.com>,
+ Harshitha Ramamurthy <hramamurthy@google.com>,
+ Saeed Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
+ Mark Bloch <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Alexander Duyck <alexanderduyck@fb.com>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>, Shuah Khan
+ <shuah@kernel.org>, Willem de Bruijn <willemb@google.com>,
+ Ankit Garg <nktgrg@google.com>, Tim Hostetler <thostet@google.com>,
+ Alok Tiwari <alok.a.tiwari@oracle.com>, Ziwei Xiao <ziweixiao@google.com>,
+ John Fraker <jfraker@google.com>,
+ Praveen Kaligineedi <pkaligineedi@google.com>,
+ Mohsin Bashir <mohsin.bashr@gmail.com>, Joe Damato <joe@dama.to>,
+ Mina Almasry <almasrymina@google.com>,
+ Dimitri Daskalakis <dimitri.daskalakis1@gmail.com>,
+ Stanislav Fomichev <sdf@fomichev.me>, Kuniyuki Iwashima <kuniyu@google.com>,
+ Samiullah Khawaja <skhawaja@google.com>,
+ Alexander Lobakin <aleksander.lobakin@intel.com>, David Wei
+ <dw@davidwei.uk>, Yue Haibing <yuehaibing@huawei.com>,
+ Haiyue Wang <haiyuewa@163.com>, Jens Axboe <axboe@kernel.dk>,
+ Simon Horman <horms@kernel.org>, Vishwanath Seshagiri <vishs@fb.com>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, dtatulea@nvidia.com, kernel-team@meta.com,
+ io-uring@vger.kernel.org
+References: <cover.1768493907.git.asml.silence@gmail.com>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <cover.1768493907.git.asml.silence@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 19, 2026 at 01:12:45PM +0100, Christian König wrote:
-> On 1/18/26 13:08, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > DMABUF ->pin() interface is called when the DMABUF importer perform
-> > its DMA mapping, so let's use this opportunity to check if DMABUF
-> > exporter revoked its buffer or not.
-> > 
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> >  drivers/vfio/pci/vfio_pci_dmabuf.c | 16 ++++++++++++++++
-> >  1 file changed, 16 insertions(+)
-> > 
-> > diff --git a/drivers/vfio/pci/vfio_pci_dmabuf.c b/drivers/vfio/pci/vfio_pci_dmabuf.c
-> > index d4d0f7d08c53..af9c315ddf71 100644
-> > --- a/drivers/vfio/pci/vfio_pci_dmabuf.c
-> > +++ b/drivers/vfio/pci/vfio_pci_dmabuf.c
-> > @@ -20,6 +20,20 @@ struct vfio_pci_dma_buf {
-> >  	u8 revoked : 1;
-> >  };
-> >  
-> > +static int vfio_pci_dma_buf_pin(struct dma_buf_attachment *attachment)
-> > +{
-> > +	struct vfio_pci_dma_buf *priv = attachment->dmabuf->priv;
-> > +
-> > +	dma_resv_assert_held(priv->dmabuf->resv);
-> > +
-> > +	return dma_buf_attachment_is_revoke(attachment) ? 0 : -EOPNOTSUPP;
-> 
-> It's probably better to do that check in vfio_pci_dma_buf_attach.
+On 1/15/26 17:11, Pavel Begunkov wrote:
+> Note: it's net/ only bits and doesn't include changes, which shoulf be
+> merged separately and are posted separately. The full branch for
+> convenience is at [1], and the patch is here:
 
-I assume you are proposing to add this check in both
-vfio_pci_dma_buf_attach() and vfio_pci_dma_buf_pin(). Otherwise,
-importers that lack .invalidate_mapping() will invoke dma_buf_pin()
-and will not fail.
+Looks like patchwork says the patches don't apply, but the branch
+still merges well. Alternatively, I can rebase on top of net-next
+and likely delay the final io_uring commit to one release after.
 
-> 
-> And BTW the function vfio_pci_dma_buf_move() seems to be broken:
-> 
-> void vfio_pci_dma_buf_move(struct vfio_pci_core_device *vdev, bool revoked)
-> {
->         struct vfio_pci_dma_buf *priv;
->         struct vfio_pci_dma_buf *tmp;
-> 
->         lockdep_assert_held_write(&vdev->memory_lock);
-> 
->         list_for_each_entry_safe(priv, tmp, &vdev->dmabufs, dmabufs_elm) {
->                 if (!get_file_active(&priv->dmabuf->file))
->                         continue;
-> 
->                 if (priv->revoked != revoked) {
->                         dma_resv_lock(priv->dmabuf->resv, NULL);
->                         priv->revoked = revoked;
->                         dma_buf_move_notify(priv->dmabuf);
-> 
-> A dma_buf_move_notify() just triggers asynchronous invalidation of the mapping!
-> 
-> You need to use dma_resv_wait() to wait for that to finish.
+-- 
+Pavel Begunkov
 
-We (VFIO and IOMMUFD) followed the same pattern used in  
-amdgpu_bo_move_notify(), which also does not wait.
-
-I'll add wait here.
-
-Thanks
-
-> 
->                         dma_resv_unlock(priv->dmabuf->resv);
->                 }
->                 fput(priv->dmabuf->file);
->         }
-> }
-> 
-> Regards,
-> Christian.
-> 
-> 
-> > +}
-> > +
-> > +static void vfio_pci_dma_buf_unpin(struct dma_buf_attachment *attachment)
-> > +{
-> > +	/* Do nothing */
-> > +}
-> > +
-> >  static int vfio_pci_dma_buf_attach(struct dma_buf *dmabuf,
-> >  				   struct dma_buf_attachment *attachment)
-> >  {
-> > @@ -76,6 +90,8 @@ static void vfio_pci_dma_buf_release(struct dma_buf *dmabuf)
-> >  }
-> >  
-> >  static const struct dma_buf_ops vfio_pci_dmabuf_ops = {
-> > +	.pin = vfio_pci_dma_buf_pin,
-> > +	.unpin = vfio_pci_dma_buf_unpin,
-> >  	.attach = vfio_pci_dma_buf_attach,
-> >  	.map_dma_buf = vfio_pci_dma_buf_map,
-> >  	.unmap_dma_buf = vfio_pci_dma_buf_unmap,
-> > 
-> 
 
