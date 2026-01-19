@@ -1,130 +1,91 @@
-Return-Path: <linux-rdma+bounces-15711-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15712-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45975D3AC9E
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 15:45:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C2E4D3AF43
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 16:36:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 98F2A3031663
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 14:39:07 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6EE483016F8F
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 15:36:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D67C37C111;
-	Mon, 19 Jan 2026 14:37:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B19938B983;
+	Mon, 19 Jan 2026 15:36:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EHIUYhRG"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Y6behdOw"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D1DA376BF8
-	for <linux-rdma@vger.kernel.org>; Mon, 19 Jan 2026 14:37:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 972BF329C79
+	for <linux-rdma@vger.kernel.org>; Mon, 19 Jan 2026 15:36:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768833477; cv=none; b=IOe2yQnURp6O/tEQzTCZ8D0/WTY46mJPAEADQJ7Bl833lY/X4R5TCJ9PiF4U+Sz+fKK7r2icwi01a2sUijnYtWfkEsqphYVT2hR0PjkP5ddx310yEI3lJrQolUL1ldxYdCmLFlndpRva7xrcZCRdI8MDDTiHQ7zVTK4X56D7VqI=
+	t=1768836998; cv=none; b=KcDmtVJCSnDgvUExoATg5GFDGjVPUZKcIL+fcw9DHbj+Gv8xLIV1VOQiU1VyIzLdKpujoX6H6NNF1N6WRVT3wpYokFqMFcZ++Z8KxjpjHQFqW4BVf6tjekOw8NQD0qkJZFywwm0/F54lnfPjcvW61vmz6wuwKbDCbFVEivjqCrQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768833477; c=relaxed/simple;
-	bh=iIU4pivrb99XPex6iS4SIDLMh4eAmP+7YrfqxQZHbMU=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=Nr3p2iMfnBo3rZ8qU9llITEYYQLeGty7+QCQXDByRkP8gZpV9FfkREaaiWbjKGsHRSzNfeCzb+4YZm8UAlDEVsbdBDlvZOVkzQoz1zFoVgWLhwSthGdUIoulU7vlAx+3YaqkeobABZ3dQwDuvTclAtHYztvXBAqYa3EirCplzAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EHIUYhRG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BAE9C4AF0B;
-	Mon, 19 Jan 2026 14:37:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768833476;
-	bh=iIU4pivrb99XPex6iS4SIDLMh4eAmP+7YrfqxQZHbMU=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=EHIUYhRGW8F/vYmOYU7GzEhoqxs0NMD84+NOs0/e76CjI3VIu9zZ9G0G/624ECUWz
-	 YP0QGRvJQ5RfGV4ilEMOD7J7cy7MBXI9RADyeFYVk2GnQS0a3VUiqKKbo67i4BZ+gJ
-	 S7mZlmNoP0kxmGIekY3vCpUMprH051VpfgAg3DrVOT/KnLBfba0EWSD33d3oJOgSQ6
-	 hFYnn1jLu4/groWGpemUUdhlcvao5QRu8eyG8KqXEeEzzgG94cWoq06EPiLDMntwj8
-	 QrwH9iBevz4Dprob9VvVkc+UjRW77YOePk8EpND1sR1tcxK2Pe3QAMw36CZ4/OAddJ
-	 HjlvrRSlrwVcA==
-Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
-	by mailfauth.phl.internal (Postfix) with ESMTP id ADE73F40068;
-	Mon, 19 Jan 2026 09:37:55 -0500 (EST)
-Received: from phl-imap-15 ([10.202.2.104])
-  by phl-compute-10.internal (MEProxy); Mon, 19 Jan 2026 09:37:55 -0500
-X-ME-Sender: <xms:w0FuaYd0t3KiJb2Pel2KewGMULqkzhW9JO6JctenshI8k-Iwz2uphw>
-    <xme:w0FuaVC70AQb8-nexI2moDmNHdcMkqEe2We_afKMHJZoQV5gTyIzWuosx5bVGzyEB
-    pyfxqxfIwTAwRzFdaWH-Sw-gQY4kiEGj9sb5PPV6KBZ8IT2XnvRDCw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddufeejkedvucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedfvehhuhgt
-    khcunfgvvhgvrhdfuceotggvlheskhgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrh
-    hnpefhffekffeftdfgheeiveekudeuhfdvjedvfedvueduvdegleekgeetgfduhfefleen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegthhhutg
-    hklhgvvhgvrhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudeifeegleel
-    leehledqfedvleekgeegvdefqdgtvghlpeepkhgvrhhnvghlrdhorhhgsehfrghsthhmrg
-    hilhdrtghomhdpnhgspghrtghpthhtohepuddupdhmohguvgepshhmthhpohhuthdprhgt
-    phhtthhopehjlhgrhihtohhnsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehlvghonh
-    eskhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgthheslhhsthdruggvpdhrtghpthht
-    ohepjhhgghesnhhvihguihgrrdgtohhmpdhrtghpthhtoheptghhuhgtkhdrlhgvvhgvrh
-    esohhrrggtlhgvrdgtohhmpdhrtghpthhtohepuggrihdrnhhgohesohhrrggtlhgvrdgt
-    ohhmpdhrtghpthhtohepnhgvihhlsgesohifnhhmrghilhdrnhgvthdprhgtphhtthhope
-    hokhhorhhnihgvvhesrhgvughhrghtrdgtohhmpdhrtghpthhtohepthhomhesthgrlhhp
-    vgihrdgtohhm
-X-ME-Proxy: <xmx:w0FuaUDaiJbfBaMa0j_U1OqWcVcuG0kh5zWxISpvcPGajf2T3WceSA>
-    <xmx:w0FuaSZAP7Y2ETiXECEqDwORnp17j268rlH6DlehFeavq1nhR4HzMw>
-    <xmx:w0FuaUmPY1Ne5STr3wC0wFxJMvFWYbAODqhxf6RuuLcmgE457Mrn9g>
-    <xmx:w0FuafoCnRaVn6H0OZp2I9r-YslL9ig1DWYsC-JA2XeWb0PIlkpaqw>
-    <xmx:w0FuaeAZUARzdN-OMfKDd1Rp3LowwJ2ZnIPwtYvWRiff3J5W5YCj1Yo1>
-Feedback-ID: ifa6e4810:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 8D5B0780070; Mon, 19 Jan 2026 09:37:55 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1768836998; c=relaxed/simple;
+	bh=e88EAJWlPwazHImhiAb0XFQNxdwL8O9wnAEVl5EVpDQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DPocCtpRgL+an/FGmjE80zHCsm4UwhnKpyI0Ot5Cb/jLp5cpimQM42wZuH26BcFiNK+cdVEXwNRB3b8Rc5z7oIew/rAoM5oYy512lVcISOmF2sbNqtHJdwFkX3NKf7jU4e/YPBSPRtoOHXwM6eH/et0pdX4Gmp5x/P4A3hpZeL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Y6behdOw; arc=none smtp.client-ip=185.246.85.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 1B7DA4E420D8;
+	Mon, 19 Jan 2026 15:36:35 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id C710660731;
+	Mon, 19 Jan 2026 15:36:34 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 69AF310B6B147;
+	Mon, 19 Jan 2026 16:36:30 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1768836993; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=e88EAJWlPwazHImhiAb0XFQNxdwL8O9wnAEVl5EVpDQ=;
+	b=Y6behdOw9Tape1gyqVI8+dOtAddglnwZP/wAIEjt38AZDN72qmzY1J0hjo6HxqENO+0CY4
+	DjF24GLVXRsJQZFyQYaSatGbICfmSf8IanPVBSPjO5y1QAnS9avpFt97gju8+/q9iX+7UE
+	eEL8f0gdLqpD22oNWlQX5ahCbM5X0mZyKfONRlXRzyUk+6G0pIZw0bFKmYvg4EVowyoiFH
+	x4MO9PlAu89Po3wyWUC6WOoh2/GME51ixbHO31BAx3LaSr7Ilnwim4CpTlfmqo27c2dbep
+	jZUzCDk8GCfo/zAQbHMzW0CKEzDaK5c+l5+ikBIcBKQezAF/UWE+9dCDikgkxQ==
+Date: Mon, 19 Jan 2026 16:36:29 +0100
+From: Kory Maincent <kory.maincent@bootlin.com>
+To: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Cc: Andrew Lunn <andrew+netdev@lunn.ch>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Richard Cochran
+ <richardcochran@gmail.com>, Simon Horman <horms@kernel.org>, Shuah Khan
+ <shuah@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Tariq Toukan
+ <tariqt@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ linux-rdma@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v2 1/2] net: remove legacy way to get/set HW
+ timestamp config
+Message-ID: <20260119163629.2e626ec8@kmaincent-XPS-13-7390>
+In-Reply-To: <20260116062121.1230184-1-vadim.fedorenko@linux.dev>
+References: <20260116062121.1230184-1-vadim.fedorenko@linux.dev>
+Organization: bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AJuicIy6M5dZ
-Date: Mon, 19 Jan 2026 09:37:20 -0500
-From: "Chuck Lever" <cel@kernel.org>
-To: "Christoph Hellwig" <hch@lst.de>, "Leon Romanovsky" <leon@kernel.org>
-Cc: "Jason Gunthorpe" <jgg@nvidia.com>, linux-rdma@vger.kernel.org,
- linux-nfs@vger.kernel.org, NeilBrown <neilb@ownmail.net>,
- "Jeff Layton" <jlayton@kernel.org>,
- "Olga Kornievskaia" <okorniev@redhat.com>, "Dai Ngo" <dai.ngo@oracle.com>,
- "Tom Talpey" <tom@talpey.com>, "Chuck Lever" <chuck.lever@oracle.com>
-Message-Id: <b8001e1b-9cca-46fd-80fe-b8243fb74ae2@app.fastmail.com>
-In-Reply-To: <20260119120311.GA23572@lst.de>
-References: <20260114143948.3946615-1-cel@kernel.org>
- <20260114143948.3946615-2-cel@kernel.org> <20260115155334.GB14083@lst.de>
- <20260116212425.GJ14359@unreal>
- <bad1a0d2-6408-4d0b-a421-f1e35265ac28@app.fastmail.com>
- <20260119065212.GA1423@lst.de> <20260119102857.GI13201@unreal>
- <20260119120311.GA23572@lst.de>
-Subject: Re: [PATCH v1 1/4] RDMA/core: add bio_vec based RDMA read/write API
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Last-TLS-Session-Version: TLSv1.3
 
+On Fri, 16 Jan 2026 06:21:20 +0000
+Vadim Fedorenko <vadim.fedorenko@linux.dev> wrote:
 
+> With all drivers converted to use ndo_hwstamp callbacks the legacy way
+> can be removed, marking ioctl interface as deprecated.
+>=20
+> Signed-off-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
 
-On Mon, Jan 19, 2026, at 7:03 AM, Christoph Hellwig wrote:
-> On Mon, Jan 19, 2026 at 12:28:57PM +0200, Leon Romanovsky wrote:
->> > > I can add some code to this series to do that, but I don't believe
->> > > I have facilities to test it.
->> > 
->> > Please don't add untested code.  If Leon wants the P2P support and
->> > volunteers to test it, sure.
->> 
->> I can do it with the help of how to setup the system.
->> 
->> > But let's not merge it without being tested.  And at least for NFS I don't
->> > really see how P2P would easily fit in anyway.
->> 
->> Chuck is proposing a new IB/core API that will also be used by NVMe too.
->
-> Hopefully eventually, yes.  Not in this series, though.
+Reviewed-by: Kory Maincent <kory.maincent@bootlin.com>
 
-I can understand that P2P is not in the narrow scope of the
-existing series. I have a patch now, but I'll postpone it
-until later. Obviously it's not something I would feel
-comfortable merging without testing.
-
-
--- 
-Chuck Lever
+Thank you!
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
