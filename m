@@ -1,227 +1,237 @@
-Return-Path: <linux-rdma+bounces-15723-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15724-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E546AD3B446
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 18:29:23 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3B64D3B587
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 19:22:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id BCE78300DDBA
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 17:28:33 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id CE00A3003FC2
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 18:22:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EDAC3033E4;
-	Mon, 19 Jan 2026 17:28:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C373366DD7;
+	Mon, 19 Jan 2026 18:22:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b="Bgj4l9rx"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="KHibO9X6";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="eWFMGwUd"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from hr2.samba.org (hr2.samba.org [144.76.82.148])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA1A330C608;
-	Mon, 19 Jan 2026 17:28:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.82.148
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768843710; cv=none; b=Z8Adv+e6BCrnV7qDqJUybISTHGkok4K/QGTrZKvoSqjT3gKpezyiqiGUjaqCXNISD0nDyZRej98veEmNpWNkT57narx7dgbdzATJrvuXl9Wh4Peuuz15CSXkk5//l6K2icTJupJlTLWiFYJW+JxeF77VqBQPSdZ5pzFaztzp77k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768843710; c=relaxed/simple;
-	bh=dAEN621rxaKLniJp++d1mCcqa+hHeDahYePAXwnepds=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CUFZtK4ik9PvwGbsL7+wUkMYTZJMm2n4ZYTLOv7WO58P1MuaDhIpDzz0ibvRennWNaBCZrz3L2Fv+heIx+YRN6iYTjXnI1zvhIhRBqXXOsUW08GBrTYlShvSWmOUWbn3ztTreo424KbTJUtdsiBJNFcp/dv0On++hkmi8SDatjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org; spf=pass smtp.mailfrom=samba.org; dkim=pass (3072-bit key) header.d=samba.org header.i=@samba.org header.b=Bgj4l9rx; arc=none smtp.client-ip=144.76.82.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=samba.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samba.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-	s=42; h=From:Cc:To:Date:Message-ID;
-	bh=JMxLJry4AoMWV6osPRsv8deFO4tQ6Q6IX6Od1VSMlo4=; b=Bgj4l9rx3hAFwtF+gr+N63DV6e
-	iBlpVY36M4faTbLJYyxNOO4qD5W99ekNkoEBsHPrthQE0LQVCiet8IRosV9YJJEEvYC0CM0xBQNku
-	LSaN9/h27btm3KPBDZZw8CK0n/sx+LxgMMSk0yTfnmr2tnqgg/EJAo7F+Ovc6hPh00K1BZuePEC3e
-	gtP0PLoToFU3Dj24dFg7Z62o9MqhK14JpIWwEjtpPTVBiRE6HBnMaQa9CmHGj+HV7owwjU4+al29z
-	2OsZEKKM7OPBZ9FCy19LR/njEKXXQ+SbdQY+BcIWTioFczivXeTay++jD2oOYVsrvPVAdQNeQ5DX+
-	uPnMcF80g3YMBWcb2YIUSeuP6l8Pqu5kmszoARG5Dy76Kpw4vt/p1U/k73yxzetvaqiCAn0WdNXeL
-	MWlwy0muGOo5+1FMHKd5wwFVvYfjYuoHw8LTmTqXpg7Y0U0Gasxf1l1w8UMgJ9bsB8rgRwSO+++aA
-	2Z+SO0OHhEQ/BR9KepaQLlxX;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-	by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
-	(Exim)
-	id 1vht35-00000001B4g-3TTx;
-	Mon, 19 Jan 2026 17:28:19 +0000
-Message-ID: <dbd2e0a8-c280-405c-8106-234078181d3d@samba.org>
-Date: Mon, 19 Jan 2026 18:28:19 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D619635FF53;
+	Mon, 19 Jan 2026 18:22:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768846966; cv=fail; b=nUOwpD6HmN0IRy2LtnFYZlmj+35N1Q5l5hltylUkJUloHHDg52YcL2T+YrWoH7rHnC7hWm8srKd3tK1NIsZCY3c6Hd838wqsgc2t8cBOFpBEWOazB4jqZ98K5BuKVarGuEo+Dx79T/cnGz++uiMxAHpeKbekQSw2SU+MYoJeWuo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768846966; c=relaxed/simple;
+	bh=9J4bRrPaE9GZioVWTXHeUMA5fIad3gPsX6EGvRuoLiQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=J6jhg8Q/vBbe9oP6IPy4pQVZTV5Im8GeE/URXZG6xD5+4bUweVVRIZYf2uhgkJCHsCZYH6FvPW81oJEUue8LJt/webB3W0h7kjoofQxMsbS7ufbXOhkt3nBO2Gf/PEG29VpkTo2TajOMFULGiPNCOTeNo/adNDLIsPOHLMh49pA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=KHibO9X6; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=eWFMGwUd; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 60JBD3ea2082864;
+	Mon, 19 Jan 2026 18:22:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=corp-2025-04-25; bh=ixDTuZse8to/Ecvo
+	/jiJoQzi3sTowARocoA87YZQzaU=; b=KHibO9X6UTQ3TODz0ttg326pR9jbGhSD
+	1HnMITzmMuuaujfb222lVx18xKyNH0vi9A8VkoRwFQoUHDwxTnqJdXX/xSkeW9kV
+	09ktQxIa3dRaokQjoP3HaK2asMK3QIcdYYexpVH97zrTAA6tEnlHgaICvG3V+KI0
+	MNcpB682+otlWc0FGxq+oCbuCCphWGHZPTh8HKeNcc+AIXHbhgRnW+gTde1QsNkg
+	K6N9EBnbCNJKKznbqmjYaAwq7EQ+T9Y0UwToJfWsoQMUO5a1oH01aMSnrWci+fz1
+	s646A1iLYn/41vZ8dLzeSE1IpkbLTsb9RkKJQUHNC0Mn4ZmChHDaJw==
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4br2fa2n5q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 19 Jan 2026 18:22:37 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 60JFhuox018004;
+	Mon, 19 Jan 2026 18:22:37 GMT
+Received: from bn1pr04cu002.outbound.protection.outlook.com (mail-eastus2azon11010065.outbound.protection.outlook.com [52.101.56.65])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4br0v8n5y1-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 19 Jan 2026 18:22:36 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=eyLG4be1XY+S7rbv5nHFvWusuMcQTKjCO9OuT9Y0v/Nfo/M8Aw6g36TinnG4vDl/mp5+UBUG0wmvg2GF3fUPlsPcKwyhSJ93kOcTXCYoIwEYWDG+vqMtMjGJHmyTJ4ke9KffkHpXZVmO7W5xP1xPbZ2FLWgBR/Stc9NCeezh1/N6Qquy/tCgYfQ5JB08hWwCwjIGm0GVqlhfIeAFxNc2RK5JvOapAJ7nG7DOP1wsNlnpoXccWtoL8Al82Q/Xg8ZkmaksOlD8kV3uWeXMpqzuWbwp2/Fu0dwZuX5S7mldrQNKglarXNPpMvawTZEGDxxthTVhyafaozmDr12FEQmq8g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ixDTuZse8to/Ecvo/jiJoQzi3sTowARocoA87YZQzaU=;
+ b=ZtsqIN620XR3XsVVMrkluKwry5lheawnSdsTbi2qKjlTk+Q1tE969grPRljerYYV4vkyFdgK7Cxj/CtESY8VC9aYQVF7jHyxIseOvWrrxTDNY/c1uj9Mjlso9QLgnWqiiKBmPLk7vWiRVgvVOGdWD1ibld95jBWyEmbIjCnBrChJ+03Yzuh2Ro5XWthMwaxF4aVLZxXWgwb5bm33UzGU3mYzZ4H/SlGMwCcNvDv6xH+Ygsm+oDbFNXLjTDSk3eNd87geIhjTPA2bOM22Ho6nFG7uKdkKKRZZjyMQQrXMJAxr/CThMwg0bzHaaaSpTpSVdU/bQrjgmJxnhrk73U/0IA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ixDTuZse8to/Ecvo/jiJoQzi3sTowARocoA87YZQzaU=;
+ b=eWFMGwUd/pjfhmsw946NbDNZuyA9U1DbEkRnQZZGhhEnLmdUbFPFCIchnRzHsr7ltHEJpR1iQkO1jvE/bWr/CbsmKHa2iMi8+I16tYMSCB/23X3jjjKQs5mt6zw1VXrVnVAUwWYHE9GzoymzosAY7S2MYUw2nrqvyspPbaAuE6U=
+Received: from DM4PR10MB7404.namprd10.prod.outlook.com (2603:10b6:8:180::7) by
+ PH0PR10MB7099.namprd10.prod.outlook.com (2603:10b6:510:26d::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9520.12; Mon, 19 Jan 2026 18:22:33 +0000
+Received: from DM4PR10MB7404.namprd10.prod.outlook.com
+ ([fe80::42e:713d:d4c8:793f]) by DM4PR10MB7404.namprd10.prod.outlook.com
+ ([fe80::42e:713d:d4c8:793f%6]) with mapi id 15.20.9520.011; Mon, 19 Jan 2026
+ 18:22:33 +0000
+From: allison.henderson@oracle.com
+To: netdev@vger.kernel.org
+Cc: linux-kselftest@vger.kernel.org, pabeni@redhat.com, edumazet@google.com,
+        rds-devel@oss.oracle.com, kuba@kernel.org, horms@kernel.org,
+        linux-rdma@vger.kernel.org, allison.henderson@oracle.com
+Subject: [RFC net-next 0/2] selftests: rds: refactor and expand rds selftests test
+Date: Mon, 19 Jan 2026 11:22:28 -0700
+Message-ID: <20260119182230.1296164-1-allison.henderson@oracle.com>
+X-Mailer: git-send-email 2.43.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: PH8PR02CA0022.namprd02.prod.outlook.com
+ (2603:10b6:510:2d0::12) To DM4PR10MB7404.namprd10.prod.outlook.com
+ (2603:10b6:8:180::7)
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Problem with smbdirect rw credits and initiator_depth
-To: Namjae Jeon <linkinjeon@kernel.org>
-Cc: Tom Talpey <tom@talpey.com>,
- "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <35eec2e6-bf37-43d6-a2d8-7a939a68021b@samba.org>
- <f59e0dc7-e91c-4a13-8d49-fe183c10b6f4@samba.org>
- <CAKYAXd-MF1j+CkbWakFJK2ov_SfRUXaRuT6jE0uHZoLxTu130Q@mail.gmail.com>
- <CAKYAXd__T=L9aWwOuY7Z8fJgMf404=KQ2dTpNRd3mq9dnYCxRw@mail.gmail.com>
- <86b3c222-d765-4a6c-bb79-915609fa3d27@samba.org>
- <a3760b26-7458-40a0-ae79-bb94dd0e1d01@samba.org>
- <3c0c9728-6601-41f1-892f-469e83dd7f19@samba.org>
- <721eb7b1-dea9-4510-8531-05b2c95cb240@samba.org>
- <CAKYAXd-WTsVEyONDmOMbKseyAp29q71KiUPwGDp2L_a53oL0vg@mail.gmail.com>
- <183d92a0-6478-41bb-acb3-ccefd664d62f@samba.org>
- <ee6873d7-6e47-4d42-9822-cb55b2bfb79e@samba.org>
- <6a248fde-e0cd-489b-a640-d096fb458807@samba.org>
- <CAKYAXd-42_fSHBL7iZbuOtYFKqKyhPS-4C+nqbX=-Djq5L6Okg@mail.gmail.com>
- <b58fa352-2386-4145-b42e-9b4b1d484e17@samba.org>
- <8b4cc986-cf06-42a9-ab5d-8b35615fa809@samba.org>
- <84554ae8-574c-4476-88df-ed9cfcc347f5@samba.org>
- <CAKYAXd8np_b1RUkPQj2pz6=F5dciDLooES-gZVkSMSrbWRjWSQ@mail.gmail.com>
-Content-Language: en-US
-From: Stefan Metzmacher <metze@samba.org>
-In-Reply-To: <CAKYAXd8np_b1RUkPQj2pz6=F5dciDLooES-gZVkSMSrbWRjWSQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR10MB7404:EE_|PH0PR10MB7099:EE_
+X-MS-Office365-Filtering-Correlation-Id: dfbade2e-5e92-4823-9263-08de5787b69b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?e2J8j2CAPJfLMgqO9LYHeIYglHDEOQgQ6mHl9+ttxdW0MB28hVQSuJKcD6Fl?=
+ =?us-ascii?Q?bgjUmFhHzcyihtr4EkzFIGWJXxol4SxT+akxBLDBywNzMkmiNTYdaZQfnA5r?=
+ =?us-ascii?Q?heWrvqQdd38+5MP7FEJQlXeSpjOdZFsMieih/ILw/EnouqSlzeq5IF9zLpNE?=
+ =?us-ascii?Q?n+fQfhM+b2CpvrHE9N5qceP7nHhsYw/W4cA2gfH6BrN3YzvNNEOsV+waKvVd?=
+ =?us-ascii?Q?P+R3FSWE1qjxGC1mFpl5YXtlSdGDby00dwfEowte5lFnm8z45iMvp3Ha35Ar?=
+ =?us-ascii?Q?vcoSgj4cuby5XaPa/e8GbpDQ9T+T9aSOzJk0Rp9VeygjMR4d8S+N7kZ970i6?=
+ =?us-ascii?Q?2cRX8/7q6AFlk4ez27rdDUAKR2U34ZFUELWsZ3Lf1iQkK+V9mHt7F7U7xI9I?=
+ =?us-ascii?Q?IOIU0rbpSkjEbadfyErFv16twD4eAbvjghMNY/VOreQCNsHV05zZINzuxzVx?=
+ =?us-ascii?Q?rPmiavPM4csfcBFSkB0aNBPANJksOLieXFZPledHcmMf6MoczIam3VykyMqm?=
+ =?us-ascii?Q?TQS6dTfJEK3w+tIqxY//ukUBMRo8dSBmj0RtjGI9tBV+GNBu7FGJhA7Dof/+?=
+ =?us-ascii?Q?yoSehv2cMCX73jGu0RruSlPGIqMckL9tYuyoirlwagxjA+ijOcys7JKyWXfO?=
+ =?us-ascii?Q?XfQqvP0brrdmvzUwK/7vvMsHLhkkOAayNHEEsr7nKcEeywSsnldtgb075qCr?=
+ =?us-ascii?Q?84WhAJawgCP/uSzVdMP7ATsibHGyvzojdfmy6FK2cSJzw3NrL3jwyF8FBY7P?=
+ =?us-ascii?Q?oZdYgYV+eB5AFK8Gm+NI7pPN+SKkKIoCrAP51pOmHMB5e3N5vebMylbsnukU?=
+ =?us-ascii?Q?ted1Z4Zpxa11JqM4y2/8vgi3+f8NRDUsnR/9XOeQSe9juhoWGfBvhAN/stQr?=
+ =?us-ascii?Q?HM+czM/EWgQx0c8tcZyiEmjcnE7uNAjXDK7KdqLkmGAYa5b5PBrDLBKkjHrm?=
+ =?us-ascii?Q?cPW/bCjt6X5OylIcnEjYBtyoDGO1xS3axpHfdRKOTcV3bRr/IhHRjw/OaD5L?=
+ =?us-ascii?Q?kszqjMDb66XFv71lykfNL64i7HPlrBzCuwrheTvMIde9i7kqLzd33ws2TLU3?=
+ =?us-ascii?Q?QeRcsmlw+FYgfKT5t2mroKD3UD3yoEytHuP+sV1y+pWs+LamZ0HpLRyCAdwX?=
+ =?us-ascii?Q?qd+aDzsINt/HbJzsD2TWIP7XKZlpOILHH6/ENuTLowq4+0vafaahwUdSflNS?=
+ =?us-ascii?Q?G+/diUijm238Z3Pvppti5TnzHp8oZ2Pyc4C9DAUb9Ak0rG+lTallpxBgYhYg?=
+ =?us-ascii?Q?6ObvACaX+/vAA3Zw6Vhes6FQvW7gG2chOH/GJzNZhlm5qwJGn3QLQ2x3XoRp?=
+ =?us-ascii?Q?5VI8+lpKOxvv/lNYgrwv8Q5Ie6dBbE+7Z71yn8kWop0vmTUlru9/SygaKY1j?=
+ =?us-ascii?Q?OI+T5qCxpK5AhS8DEGL31BtS+gwoGK137j71dzFGctx0j1YqKcPU2yoAJd6Y?=
+ =?us-ascii?Q?cqDwEWd6F/d7xt9Xi/O/QpYe+Ay973A5SurCU1sF/Xip16cmsqVeBJpjW/s4?=
+ =?us-ascii?Q?37EGKVS3I0NNsM9ViWgxVcnat6Q/2qBSrBZshVvVCG8UpXI6DPeQwRgNSvnE?=
+ =?us-ascii?Q?RF5qqxpRbtKrEGku3LE=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR10MB7404.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?V1tS2S0HNhUw7rpxNF5t87iLpI56NxAJ0lLuMCLuTzs6PuyDY0aCx7RhZTkK?=
+ =?us-ascii?Q?P+TwnmSuCVleiBLYybZq4xKmPxfI0S3UUqwVTuLs9LpYIBtpcSalb1gbCgoq?=
+ =?us-ascii?Q?7h2NNADV1S84KE6y7vw6AfHdN9MLqiLEPMrtDZ0tSKrHqQmY5IXUCq6qQwa2?=
+ =?us-ascii?Q?IfFQvvocYwdcftPdirZZgFBQZ18n+Jvpo07HK9HbghMf5VQ15vShk1MEq+4U?=
+ =?us-ascii?Q?pHMvkmxHTmx5o0eRxMLWbx6z1McibnJ0ADE/vUkUSLg8O7tgykr2P/6gxBgg?=
+ =?us-ascii?Q?IkcRdz132IIpa1CeEKPFd6K3hVeEJk6GO/gyi8PnR5h6c+POIKmueTD9WrAo?=
+ =?us-ascii?Q?pJKyFVwoHu/tK2U5wSFiL5b9ZY1ISAIuTEodP7EWZuwJfPCOEiCbydJ7CH/X?=
+ =?us-ascii?Q?BT0160rwgonn+WlgziSDMxDSSwH+DK3gKf4nzEnmoMY5UGL1JJ3RP7sb8R4E?=
+ =?us-ascii?Q?L6L+JGtujGFV5SJVojpAWL4znx3T/B9stwRV8U6nxR9+EePdjajR1VPyQ87T?=
+ =?us-ascii?Q?yQ5khd9t6nU6gUTMcg3JaIybljACFjIdut5q3JbFmR2OmP3c/lqgRIM4eh80?=
+ =?us-ascii?Q?GhZ/mSBsxH/4arqkq8M7/5iiWzpm9GRktLRSiUMViSf4y5bvaNRGrT18OZwT?=
+ =?us-ascii?Q?rdUFo/At7k9u39YaSIlkjRJ+fIZKTfvWA0SOUsrAloPmYJI95W7/C1U9fnFu?=
+ =?us-ascii?Q?FgsCnz0prdJ0eHEV5fnIjrRc7x9fKqq0AXowNVLBtKoFSb2JL+Q9+z/GNTg2?=
+ =?us-ascii?Q?4Kvjl1/abDtjKelI2EgcLrZDmdV9jgyJ8wptvx1beVDq3HO3p4v5u34NSEWW?=
+ =?us-ascii?Q?Q/iva45Vs6336GLgcghha9CBlgdTuixnjjjiWyUWgQLbk70wYH1ZxJDqRcU2?=
+ =?us-ascii?Q?iOOX9njQNXrcEHbMFmrNd36o5gm3D6ahYImuwf+x5tKPrNjYj+1fUFpBc+n4?=
+ =?us-ascii?Q?YxNTr5Ty5rwi4bzM4pj65HgAHEzFX9TZJd9L6mtrhHERGzmUMpqrlpd25Kob?=
+ =?us-ascii?Q?bo4DNtuNDxhGASSmEiOmrKoVhMwGNKr/UYj7Ynxnd6q+Ph8HrQphUyWn0cWq?=
+ =?us-ascii?Q?ZUEunMN9+Ytt8ScjvC1r9pcrmphs/d1rkhmJyLLgY9e+sHFvmXygIbaPA634?=
+ =?us-ascii?Q?PqnKalXCPCr2PJQT4QEq3sM2MRjJRBMVd9bE0LOe68uv4/9g//03Hvmda2oq?=
+ =?us-ascii?Q?K0KYUkS9mFDm1Y8HTTC/3vobZt8bdJgqJgxb0WyZUvU4PNl0lrp7UxPocvNS?=
+ =?us-ascii?Q?e0/KyAS+1WPsvZ3ZiXfcnZ6G0Hciu+EyWeSgRDgnaKHFQt+N9a+m+DkFjGYj?=
+ =?us-ascii?Q?Lyd87pzxIaQGmGstemY9jZXM5nVLkZj0Blh/0QkNKFq1E2xrHnTJOGrYytQn?=
+ =?us-ascii?Q?vVRS2eowuW5Vw82C5pahzrfdl+HNaG4+mEA6t1aEusYR8G5wtLAaLb2+8c03?=
+ =?us-ascii?Q?uH70YIXgAYFc2BUW93VKdSaFUahur2chKSQKAX/EbCql1pfvtLO84fjItqbz?=
+ =?us-ascii?Q?HgHNesdrwQ6PQufhLjFIT4LiNGuECe3uwZxEFrz3sKVaNnz88KhJeXrTUJEs?=
+ =?us-ascii?Q?NjILxNlNTYRhQ1bFyvgS70bKYmB12f5usvvzrK6SF0HgfkKbRWTCu5gW9vmc?=
+ =?us-ascii?Q?+858/i5H0jsyEgtNEt46DUJTNBLeufS6GzklUgt/ryVBEqnABG0i5Sa/Of65?=
+ =?us-ascii?Q?KM4MapGgGpohcBhu7uL9NIY9XzAi6z4z4fVajHyi52Wagfyu9S+AXWz1FoQ2?=
+ =?us-ascii?Q?6/fxCtTUa+g0AEtVlqyYMVNlSL1+dKg=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	+EkkQI5SAuvL2DCKRG2g7DVj9y1ncEl9sdMregyFg3AwWODakeT7+o9M1jXPTx5EEFS0WfpcmJyjeP+yguFbwffWAD9z4+bHG76ELJqeefXHzJT7KxUGEeIFMFJEj4+8fTvuYhkqRG6n494gqfr96ieOtJYB2UGJPU2Ks4UwBU0ypOX5Q+GGpFG7RCOPzeU11oyCd1Dr01+kRZlAdxNOLqNAGNAq2SSwecSWrQ5Xz8kD4amoMmSubGjh8ibhOAOq85cddQuqOQxV7ZbyETT/K2Ab62SJnrOjd6kVY+noH9DjUeQVx64IXsb5pUMK2IyasVVDGtDG89sd5yJezd51a+nPNlh8vkxzonxfxgTePkE9rZ7QxJ960ATI1b0PTfB056t21a5NRv42jo6riWgTQg8xCkJ0F9Tqf51OljdhmVP0A1ey846Jd/tRDsByLqKVGbghwksYR1nUHVFHofhCgGC+fLmopV+GjDZ1ynLnTdOo9boogNzzbcG1UHg96svLSKeW6fVrKunqgmKLShS/cRTt4TeNb6xeCbzcZT38cc7t/V8y1hHuswnfDLR+NUA9RSotHuXBzdpJbJ1SOu/X12dj3PNGV9LwLaYnYApQ2fM=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dfbade2e-5e92-4823-9263-08de5787b69b
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR10MB7404.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2026 18:22:33.0391
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZCGLppq6Z17HnJz3Lh5rkPqm1O7SsbJbxCNI6r3EtxZrIsCxPKGN74tLvQLQyGMBzmGv/Acyl3l84FahUcpXRHpc6f/0fvEKrgc2zwydRIE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB7099
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2026-01-19_04,2026-01-19_03,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 adultscore=0
+ phishscore=0 suspectscore=0 spamscore=0 mlxlogscore=873 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2601150000
+ definitions=main-2601190153
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTE5MDE1MyBTYWx0ZWRfX81t6C1+7dc7e
+ HDHkWlz3WybqliuVz87yWiosxZCce9IHUYyZ5jB5sRXT1JbYTs9FNpool92Hix+lZ5BRBB2lDff
+ p/fkYGaehmONU+kvid0dmqmo8TUwToZy3bfcdLEP8aUjTdn3+Jgj4NcHTJ1sY5GC2FX03lW8hw0
+ ulWshJ/kIZTKW6x1Eir4VGoIH14VCfO8zitpPyjs6l92bQcPvMxlPt+ZOiUTiE5ENYTok2FadPO
+ dL7kI1Orozf8LDbJtvvHkXP0VsUyNZUcTKfKGpu6Iu06iHdiaOU9r1uvLoQhmF7Jiz17JJ23vFe
+ ecIOQml4iqZ1ocOT1KWNsSQoV05lF5ukc7N9L164LlW7jBq3EMa9wK15/TJMM6ZhXcfUokms6Gu
+ LgHEqz6tQw0npR3NDOFivZRWYNWcGt4ieHJPvSq8xjcyWsVlcmJONhG7cNT5H3AkNmP7omqgX7K
+ JMFLi1izI5r1vPW1lmQ==
+X-Authority-Analysis: v=2.4 cv=HvB72kTS c=1 sm=1 tr=0 ts=696e766d cx=c_pps
+ a=XiAAW1AwiKB2Y8Wsi+sD2Q==:117 a=XiAAW1AwiKB2Y8Wsi+sD2Q==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
+ a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=vUbySO9Y5rIA:10
+ a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22 a=yPCof4ZbAAAA:8
+ a=CQ2ETe8rVkLRQgWGSPoA:9
+X-Proofpoint-ORIG-GUID: sx1ZJxo6ameeK6m0CUaqNEolO9u12Awi
+X-Proofpoint-GUID: sx1ZJxo6ameeK6m0CUaqNEolO9u12Awi
 
-Am 18.01.26 um 09:03 schrieb Namjae Jeon:
-> On Sat, Jan 17, 2026 at 10:15 PM Stefan Metzmacher <metze@samba.org> wrote:
->>
->> Am 17.01.26 um 00:08 schrieb Stefan Metzmacher:
->>> Am 15.01.26 um 10:50 schrieb Stefan Metzmacher:
->>>> Am 15.01.26 um 03:01 schrieb Namjae Jeon:
->>>>> On Thu, Jan 15, 2026 at 3:13 AM Stefan Metzmacher <metze@samba.org> wrote:
->>>>>>
->>>>>> Am 15.12.25 um 21:17 schrieb Stefan Metzmacher:
->>>>>>> Am 14.12.25 um 23:56 schrieb Stefan Metzmacher:
->>>>>>>> Am 13.12.25 um 03:14 schrieb Namjae Jeon:
->>>>>>>>>> I've put these changes a long with rw credit fixes into my
->>>>>>>>>> for-6.18/ksmbd-smbdirect-regression-v4 branch, are you able to
->>>>>>>>>> test this?
->>>>>>>>> Problems still occur. See:
->>>>>>>>
->>>>>>>> :-( Would you be able to use rxe and cake a network capture?
->>>>>>>>
->>>>>>>> Using test files with all zeros, e.g.
->>>>>>>> dd if=/dev/zero of=/tmp/4096MBzeros-sparse.dat seek=4096MB bs=1 count=1
->>>>>>>> would allow gzip --best on the capture file to compress well...
->>>>>>>
->>>>>>> I think I found something that explains it and
->>>>>>> I was able to reproduce and what I have in mind.
->>>>>>>
->>>>>>> We increment recv_io.posted.count after ib_post_recv()
->>>>>>>
->>>>>>> And manage_credits_prior_sending() uses
->>>>>>>
->>>>>>> new_credits = recv_io.posted.count - recv_io.credits.count
->>>>>>>
->>>>>>> But there is a race between the hardware receiving a message
->>>>>>> and recv_done being called in order to decrement recv_io.posted.count
->>>>>>> again. During that race manage_credits_prior_sending() might grant
->>>>>>> too much credits.
->>>>>>>
->>>>>>> Please test my for-6.18/ksmbd-smbdirect-regression-v5 branch,
->>>>>>> I haven't tested this branch yet, I'm running out of time
->>>>>>> for the day.
->>>>>>>
->>>>>>> But I tested it with smbclient and having a similar
->>>>>>> logic in fs/smb/common/smbdirect/smbdirect_connection.c
->>>>>>
->>>>>> I was able to reproduce the problem and the fix I created
->>>>>> for-6.18/ksmbd-smbdirect-regression-v5 was not correct.
->>>>>>
->>>>>> I needed to use
->>>>>>
->>>>>> available = atomic_xchg(&sc->recv_io.credits.available, 0);
->>>>>>
->>>>>> instead of
->>>>>>
->>>>>> available = atomic_read(&sc->recv_io.credits.available);
->>>>>> atomic_sub(new_credits, &sc->recv_io.credits.available);
->>>>>>
->>>>>> This following branch works for me:
->>>>>> for-6.18/ksmbd-smbdirect-regression-v7
->>>>>> and with the fixes again master this should also work:
->>>>>> for-6.19/ksmbd-smbdirect-regression-v1
->>>>>>
->>>>>> I'll post real patches tomorrow.
->>>>>>
->>>>>> Please check.
->>>>> Okay, I will test it with two branches.
->>>>> I'll try it too, but I recommend running frametest for performance
->>>>> difference and stress testing.
->>>>>
->>>>> https://support.dvsus.com/hc/en-us/articles/212925466-How-to-use-frametest
->>>>>
->>>>> ex) frametest.exe -w 4k -t 20 -n 2000
->>>>
->>>> That works fine, but
->>>>
->>>>    frametest.exe -r 4k -t 20 -n 2000
->>>>
->>>> generates a continues stream of such messages:
->>>> ksmbd: Failed to send message: -107
->>>>
->>>> Both with 6.17.2 and for-6.19/ksmbd-smbdirect-regression-v1,
->>>> so this is not a regression.
->>>>
->>>> I'll now check if the is related to the other problems
->>>> I found and fixes in for-6.18/ksmbd-smbdirect-regression-v5
->>>
->>> Ok, I found the problem.
->>>
->>> On send we are not allowed to consume the last send credit
->>> without granting any credit to the peer.
->>>
->>>       MS-SMBD 3.1.5.1 Sending Upper Layer Messages
->>>
->>>       ...
->>>       If Connection.SendCredits is 1 and the CreditsGranted field of the message is 0, stop
->>>       processing.
->>>       ...
->>>
->>>       MS-SMBD 3.1.5.9 Managing Credits Prior to Sending
->>>
->>>       ...
->>>       If Connection.ReceiveCredits is zero, or if Connection.SendCredits is one and the
->>>       Connection.SendQueue is not empty, the sender MUST allocate and post at least one receive of size
->>>       Connection.MaxReceiveSize and MUST increment Connection.ReceiveCredits by the number
->>>       allocated and posted. If no receives are posted, the processing MUST return a value of zero to indicate
->>>       to the caller that no Send message can be currently performed.
->>>       ...
->>>
->>> It works in my master-ipproto-smbdirect branch, see the top commit.
->>>
->>> I'll backport the related logic to ksmbd on top of
->>> for-6.19/ksmbd-smbdirect-regression-v1 tomorrow.
->>
->> for-6.19/ksmbd-smbdirect-regression-v2 has the fixes and works for
->> me, I'll prepare official patches (most likely) on Monday.
-> I have tested the for-6.19/ksmbd-smbdirect-regression-v2 branch, and I
-> can confirm that the issues I previously encountered in my test
-> environment have been fixed.
+From: Allison Henderson <allison.henderson@oracle.com>
 
-Great! Thanks for testing!
+This series aims to improve the current rds selftests.  The first patch
+refactors the existing test.py such that the networking set up can be
+reused as general purpose infrastructure for other tests.  The existing 
+send and receive code is hoisted into a separate rds_basic.py.  The next
+patch adds a new rds_stress.py that exercises RDS via the external
+rds-stress tool from the rds-tools package if it is available on the host.
+We add two new flags to test.py, -b and -s to select rds_basic or
+rds_stress respectively.  The intent is to make the RDS selftests more
+modular and extensible.  Let me know what you all think.
 
-> I have a couple of follow-up questions regarding this fix:
-> 1. Regarding your frametest results, did you not observe any
-> performance degradation or difference compared to linux-6.17.9?
+Questions, comments, suggestions appreciated!
+Thanks!
 
-Sorry, I don't understand what you are asking for.
-
-Do you mean with v6.19-rc5, for-6.19/ksmbd-smbdirect-regression-v1 or
-for-6.19/ksmbd-smbdirect-regression-v2?
+Allison
 
 
-> 2. You mentioned previously testing with Intel E810-CQDA2 NICs. Have
-> you tested both iWARP and RoCEv2 modes on the E810?
+Allison Henderson (2):
+  selftests: rds: Refactor test.py
+  selftests: rds: Add rds_stress.py
 
-Yes, both while there seem to be strange problems with iWarp.
+ tools/testing/selftests/net/rds/rds_basic.py  | 184 ++++++++++++++++++
+ tools/testing/selftests/net/rds/rds_stress.py |  58 ++++++
+ tools/testing/selftests/net/rds/run.sh        |  42 +++-
+ tools/testing/selftests/net/rds/test.py       | 182 +++--------------
+ 4 files changed, 306 insertions(+), 160 deletions(-)
+ create mode 100755 tools/testing/selftests/net/rds/rds_basic.py
+ create mode 100644 tools/testing/selftests/net/rds/rds_stress.py
 
-I'll have to re-test with these cards, we'll test if it's possible
-to have both cards installed together both only getting 8 PCIe 5 lanes,
-that would make it easier to test.
-
-At the time I was always testing with KSAN, lockdep and other debugging features
-turned on, so performance was not as expected anyway...
-
-metze
+-- 
+2.43.0
 
 
