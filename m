@@ -1,133 +1,99 @@
-Return-Path: <linux-rdma+bounces-15717-lists+linux-rdma=lfdr.de@vger.kernel.org>
+Return-Path: <linux-rdma+bounces-15718-lists+linux-rdma=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A853BD3B2C5
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 17:57:23 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6338D3B309
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 18:02:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7043D31AC8D6
-	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 16:50:06 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id A806E304A719
+	for <lists+linux-rdma@lfdr.de>; Mon, 19 Jan 2026 16:57:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99BF52FFDD6;
-	Mon, 19 Jan 2026 16:46:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D71A2EDD69;
+	Mon, 19 Jan 2026 16:57:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="LnhuTqCS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ROxnCHVY"
 X-Original-To: linux-rdma@vger.kernel.org
-Received: from mail-qt1-f195.google.com (mail-qt1-f195.google.com [209.85.160.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF2222C2374
-	for <linux-rdma@vger.kernel.org>; Mon, 19 Jan 2026 16:46:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00B512FE593;
+	Mon, 19 Jan 2026 16:57:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768841183; cv=none; b=ZNnk2AmH9fBgmARol9rb2kukSh0GTAKgj5RFV9mLF+Y7TandXzXrh1bbYyIePcz5xQo8umpW+vvphVjyHLkVW4fzpBtbhwAYUTz3lRc2CZJRhgpyJdNEr4cf+gvUzO6v52eJeBAWzosF23Rne7nYI/MSnDLRlBxzPu4WBT0xjMQ=
+	t=1768841862; cv=none; b=drk8OLHOCGj/dfSODZMCN7CpyEDvLnjVbB29CNpdE2vMntfJdFBf7fB8gSPt16M94V3/n+GUDXYlH3NOc9HuwacolH0n+j3tgvk8Mw9COFcfFAwQStHodk+9u8tuuF8PJwqA/iWnp9Bcjh5JtQvy0kWVDirg1ZuuubdGeYilJe4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768841183; c=relaxed/simple;
-	bh=QIsc13zuNMkL3drL8s77g4pkAR1CgvBQvDpaSTaFqoM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LRFExAX5iowaHp78QZh7P/DNy2s58OOjq3eg2lFNNvsOcKtQQpLHUO7VZxh0CXnrTSsZYY/jAQdXVA7+TbdeFBQ0eFcb7PhBOg+MTewnirJB8Tqg0YQZWsKv+UpJEOvf5iuFlNtZqxFwnhYWoFIwZbWOK4owy9Rfy5+hSE9o/oY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=LnhuTqCS; arc=none smtp.client-ip=209.85.160.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f195.google.com with SMTP id d75a77b69052e-4ffbea7fdf1so37390151cf.1
-        for <linux-rdma@vger.kernel.org>; Mon, 19 Jan 2026 08:46:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1768841181; x=1769445981; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=zfC54g6ZC0VxR+dcM7NfRz1NWoEdvriN2xR6YNn2bfs=;
-        b=LnhuTqCSYYu7TcIbAnYPkvI5sikLjgegupyFhj1AkXSeAQEmNvPoDaURBqTkmDOPh4
-         9GWTZ0kFXrwpgj0slJxOpserr7lLZzMuwjd2hvDRnBSj9KJIme4IAmQFNGuNnZvl1UN0
-         LWBNVR8hhShW3s/fLXz19OYkJWPh7AVfn/IPLAWFlP/sjIxzWBkHk7Hc+CNoTzYO9t8T
-         xS1LHAME5Pm2HQiPYUi68XNkGQNKO/B6HHRnDw9Hvet08fcq51PMU8dHXmil/AYj/eU8
-         YE2UB0nI5fUTsSGNWuQJlXh74grFC/zO0Nmd8137CiMr0RRY+lmD2B7GUFcAMeHMCVBA
-         naDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768841181; x=1769445981;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zfC54g6ZC0VxR+dcM7NfRz1NWoEdvriN2xR6YNn2bfs=;
-        b=OOIGH/ap/7jZKX21pW2ZzxAiGwCDtOyvmGes4h14hOScAN+PIu+IgQaLuNcXv9mXQA
-         zI9UkN/wlxlDYB7t7P30Pr4HKq5Tdnuu/AXRO608uNKOuVzoeIMtkspHaOKIw0PeNp2H
-         wbWK5CUdR3MwXVipHdjWGn+HdaBXRTjxsjGqKv71D5IE9hPTEtrJ5SjMSRPtbXPVAmqe
-         5+RNfOQ0J4mk/Oig5b96c7+8aZmKRERVVwhcyIBSNLZ2CPlIxqwmS16aceFc1kXoVypt
-         YZONC9EcWgy52/iJMQlcZhv5aOM4hfiKDOPkO03ebY2JOmzOWFSwHkdmC+NqJ3UP+fin
-         acAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWv+mMf9R/V+qrt/G9s2d/GTDqV3FCZCGaIEVKJ381Szv7YYlFpp2MwSAHvS9hZQE89HEUI4073bIMN@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz0ghrHxVNqaTbJns6ZJ2cqtleu4YFOqwDyKTanHez4mjHHEYcU
-	hh4B4v62ao7jf9Xh2orZVTaASUMGTtvILg88REtob+T6JHg07Axhwqa55wEtEvBl9qE=
-X-Gm-Gg: AY/fxX7HO9X5eGX6TNFV6E5O5v+wmOxqaffGe57yiH7W01ll7QGDKFyM49l5tGm+ac9
-	3GFqhZnOmT0tRUbuCWOvCMmzNAPccagB5g7YZ+E+sNhxvz5lRgVKgUgX5hBZ9CAcfWdfXxRu3uy
-	tq5z/P23SbZJ7Cx7LGggxByxr3Mo/i+TeC6+75Tn7upWXa+npus1gv0bJsk84yrwVzKl5lKi+EA
-	6u1imRhM0GWFdrFJw2Ij8WOPWrPJqeude1df5H1B4dPrKEQNJbAP0l0Pmaj0ucUcHuAhFJ5X3FE
-	1BZ0lTt56mvUVuvZBnWG9xkjl4fmZ+Ds9Okqak0gu+5utUYKNuRT9A/nZr0LQuWQ32xbrrhiyEH
-	ujVwJ/LHSuItc8Rd6PTtkOTbWJ92N5JSi1JOx1++mRJcXoLgNUlsfxY0v3Wh5AphlG/V5moKxoj
-	5HDXqNwvoQhOi9ClIUX7qDJd0Axc8VESb87xWmDPyAQRGmYWvZ7bLNht+SKhzQqdBU0Ss=
-X-Received: by 2002:a05:622a:58e:b0:4ee:17e9:999a with SMTP id d75a77b69052e-502a1e551b4mr166978451cf.33.1768841180580;
-        Mon, 19 Jan 2026 08:46:20 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-502a1d9ee19sm71855641cf.14.2026.01.19.08.46.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jan 2026 08:46:20 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1vhsOR-00000005IML-2VzR;
-	Mon, 19 Jan 2026 12:46:19 -0400
-Date: Mon, 19 Jan 2026 12:46:19 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Thomas =?utf-8?Q?Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>
-Cc: Leon Romanovsky <leon@kernel.org>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Gerd Hoffmann <kraxel@redhat.com>,
-	Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-	Gurchetan Singh <gurchetansingh@chromium.org>,
-	Chia-I Wu <olvaffe@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Lucas De Marchi <lucas.demarchi@intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	Alex Williamson <alex@shazbot.org>, linux-media@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-	linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-	virtualization@lists.linux.dev, intel-xe@lists.freedesktop.org,
-	linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
-	kvm@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] dma-buf: Document revoke semantics
-Message-ID: <20260119164619.GG961572@ziepe.ca>
-References: <20260118-dmabuf-revoke-v2-0-a03bb27c0875@nvidia.com>
- <20260118-dmabuf-revoke-v2-2-a03bb27c0875@nvidia.com>
- <8bc75706c18c410f9564805c487907aba0aab627.camel@linux.intel.com>
+	s=arc-20240116; t=1768841862; c=relaxed/simple;
+	bh=YW8Q9Lrp/bZQRu5rYELHUc9owzCj1x411m/oRmGY61A=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=a5S3LjSeguLSwCi8jBxo9cvBeo0YKhxmpOluPF6B4jo0O6aObabJ6o0Tcr7YvuOe2ag3VAdvZ98GFuIimUfPf0Go2LkSfO1ubRJnB7rfUm45DFkpVqWrAUt6MqZpvGKailyjMwXrGYXdUrFlM/8hETAQfOK7VJ5HkD9L0+qsttE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ROxnCHVY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FF98C116C6;
+	Mon, 19 Jan 2026 16:57:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768841861;
+	bh=YW8Q9Lrp/bZQRu5rYELHUc9owzCj1x411m/oRmGY61A=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ROxnCHVYM82zYZN+jSegSYEzsqVDfjVYwXb3yhsN3Z1ZlaUF5gukdxz9XNEvFF/5t
+	 mtrRIJVcR/okwxcWj+TbqhpTVzdQYh5BGz9VsSKZFN4ta0MzQIbHcU8S1Bu/mRWg+p
+	 1g3ZbULO9jvF+SBlE4G0pJmfv84EU9n3j/TamvLgQvZBC5nkTz3wDiDXei/jxErWmh
+	 d5GlLI9OjptF8FXjUzykeCU9hjns/DKjat7mHwQvDrrgUoWcvayl1q007/A2V8b1mA
+	 8I5/KxrFJtRHJWgKIQr5NZWfsY8BZVQDOAk3fpPZmmspIDbKVBWXUOoH+4Dp+QjBTJ
+	 Y6eZMsr498kLA==
+Date: Mon, 19 Jan 2026 08:57:37 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Jonathan
+ Corbet <corbet@lwn.net>, Michael Chan <michael.chan@broadcom.com>, Pavan
+ Chebbi <pavan.chebbi@broadcom.com>, Andrew Lunn <andrew+netdev@lunn.ch>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
+ Fastabend <john.fastabend@gmail.com>, Joshua Washington
+ <joshwash@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, Saeed
+ Mahameed <saeedm@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>, Mark Bloch
+ <mbloch@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Alexander Duyck
+ <alexanderduyck@fb.com>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Shuah Khan <shuah@kernel.org>, Willem de Bruijn <willemb@google.com>, Ankit
+ Garg <nktgrg@google.com>, Tim Hostetler <thostet@google.com>, Alok Tiwari
+ <alok.a.tiwari@oracle.com>, Ziwei Xiao <ziweixiao@google.com>, John Fraker
+ <jfraker@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, Mohsin
+ Bashir <mohsin.bashr@gmail.com>, Joe Damato <joe@dama.to>, Mina Almasry
+ <almasrymina@google.com>, Dimitri Daskalakis
+ <dimitri.daskalakis1@gmail.com>, Stanislav Fomichev <sdf@fomichev.me>,
+ Kuniyuki Iwashima <kuniyu@google.com>, Samiullah Khawaja
+ <skhawaja@google.com>, Alexander Lobakin <aleksander.lobakin@intel.com>,
+ David Wei <dw@davidwei.uk>, Yue Haibing <yuehaibing@huawei.com>, Haiyue
+ Wang <haiyuewa@163.com>, Jens Axboe <axboe@kernel.dk>, Simon Horman
+ <horms@kernel.org>, Vishwanath Seshagiri <vishs@fb.com>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, dtatulea@nvidia.com, kernel-team@meta.com,
+ io-uring@vger.kernel.org
+Subject: Re: [PATCH net-next v9 0/9] Add support for providers with large rx
+ buffer
+Message-ID: <20260119085737.2161f9e6@kernel.org>
+In-Reply-To: <7ab5309d-8654-4fa8-9a1e-24b948bccba2@gmail.com>
+References: <cover.1768493907.git.asml.silence@gmail.com>
+	<7ab5309d-8654-4fa8-9a1e-24b948bccba2@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-rdma@vger.kernel.org
 List-Id: <linux-rdma.vger.kernel.org>
 List-Subscribe: <mailto:linux-rdma+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-rdma+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8bc75706c18c410f9564805c487907aba0aab627.camel@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Sun, Jan 18, 2026 at 03:29:02PM +0100, Thomas Hellström wrote:
-> Why would the importer want to verify the exporter's support for
-> revocation? If the exporter doesn't support it, the only consequence
-> would be that invalidate_mappings() would never be called, and that
-> dma_buf_pin() is a NOP. Besides, dma_buf_pin() would not return an
-> error if the exporter doesn't implement the pin() callback?
+On Mon, 19 Jan 2026 13:54:37 +0000 Pavel Begunkov wrote:
+> On 1/15/26 17:11, Pavel Begunkov wrote:
+> > Note: it's net/ only bits and doesn't include changes, which shoulf be
+> > merged separately and are posted separately. The full branch for
+> > convenience is at [1], and the patch is here:  
+> 
+> Looks like patchwork says the patches don't apply, but the branch
+> still merges well. Alternatively, I can rebase on top of net-next
+> and likely delay the final io_uring commit to one release after.
 
-I think the comment and commit message should be clarified that 
-dma_buf_attachment_is_revoke() is called by the exporter.
-
-The purpose is for the exporter that wants to call move_notify() on a
-pinned DMABUF to determine if the importer is going to support it.
-
-Jason
+Yes, David refactored the test in the meantime :/
+I'll pull the branch.
 
